@@ -76,8 +76,12 @@
     "wssPort": 9002,
     "startWSS": true
   },
-  "useWarpSync": true,
   "plugins": {
     "chat": "orbit"
+  },
+  "ui": {
+    "showReloadModal": true,
+    "averageBlocktime": 2000,
+    "liteProvider": "jsonrpc"
   }
 }

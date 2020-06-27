@@ -1,5 +1,6 @@
-import { ethers } from "ethers";
-import { HotLoading, HotLoadMarketInfo } from "./api/HotLoading";
+import { NetworkId } from '@augurproject/utils';
+import { ethers } from 'ethers';
+import { HotLoading, HotLoadMarketInfo } from './api/HotLoading';
 
 export interface Addresses {
   HotLoading: string;
@@ -9,12 +10,12 @@ export interface Addresses {
 }
 
 export class AugurLite {
-  
     readonly hotLoading: HotLoading;
 
     constructor(
       readonly provider: ethers.providers.Provider,
       readonly addresses: Addresses,
+      readonly networkId: NetworkId
     ) {
       this.provider = provider;
       this.hotLoading = new HotLoading(this.provider);
