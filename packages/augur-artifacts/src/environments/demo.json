@@ -76,7 +76,6 @@
     "wssPort": 9002,
     "startWSS": true
   },
-  "useWarpSync": true,
   "plugins": {
     "chat": "orbit"
   }

@@ -1,5 +1,7 @@
 {
   "networkId": "42",
+  "logLevel": 0,
+  "uploadBlockNumber": 18855705,
   "ethereum": {
     "http": "https://kovan.augur.net/ethereum-http",
     "rpcRetryCount": 5,
@@ -42,7 +44,6 @@
       ]
     }
   },
-  "uploadBlockNumber": 18855705,
   "addresses": {
     "Augur": "0xAad8776770e1f38F81DeA5d1C1404B7fdBA2DA2B",
     "Universe": "0x919274CE3Ba5a0D0f11071Bb9fb402AE5c23381B",
@@ -80,7 +81,6 @@
     "AugurWalletRegistryV2": "0x942818dfD9E191D8A129b8bD21EE7a97fF9F441D",
     "RelayHubV2": "0x229c1a92792519Be0c2bbf366BC91d502020Dc3b"
   },
-  "useWarpSync": true,
   "server": {
     "httpPort": 9003,
     "startHTTP": true,
@@ -105,7 +105,9 @@
     "enabled": true,
     "autoReport": false
   },
-  "logLevel": 0,
-  "showReloadModal": true,
-  "averageBlocktime": 2000
+  "ui": {
+    "showReloadModal": true,
+    "averageBlocktime": 2000,
+    "fallbackProvider": "jsonrpc"
+  }
 }

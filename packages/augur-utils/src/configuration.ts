@@ -29,10 +29,13 @@ export function deepCopy<T>(x: T): T {
 
 export interface SDKConfiguration {
   networkId: NetworkId,
+  uploadBlockNumber?: number,
+  addresses?: ContractAddresses,
+  averageBlocktime?: number,
+  logLevel?: LoggerLevels, // In the JSON configs an integer will need to be used.
   ethereum?: {
     http?: string,
     ws?: string,
-    useWeb3Transport?: boolean,
     rpcRetryCount: number,
     rpcRetryInterval: number,
     rpcConcurrency: number
@@ -53,7 +56,7 @@ export interface SDKConfiguration {
     externalAddresses?: ExternalAddresses,
   },
   warpSync?: {
-    enabled?: boolean,
+    createCheckpoints?: boolean,
     autoReport?: boolean
   },
   uniswap?: {
@@ -95,8 +98,6 @@ export interface SDKConfiguration {
     certificateFile?: string;
     certificateKeyFile?: string;
   },
-  uploadBlockNumber?: number,
-  addresses?: ContractAddresses,
   plugins?: {
     chat?: '3box'|'orbit',
     comments?: '3box'|'facebook',
@@ -106,11 +107,11 @@ export interface SDKConfiguration {
     syncSDK?: boolean,
     skipApproval?: boolean,
   },
-  // In the JSON configs an integer will need to be used.
-  logLevel?: LoggerLevels,
-  showReloadModal?: boolean,
-  averageBlocktime?: number,
-  trackBestOffer?: boolean,
+  ui?: {
+    showReloadModal?: boolean,
+    trackBestOffer?: boolean,
+    fallbackProvider?: "jsonrpc" | "torus"
+  }
 };
 
 export interface ContractAddresses {
@@ -198,6 +199,9 @@ export interface NetworkContractAddresses {
 
 export const DEFAULT_SDK_CONFIGURATION: SDKConfiguration = {
   networkId: NetworkId.PrivateGanache,
+  uploadBlockNumber: 0,
+  logLevel: LoggerLevels.warn,
+  averageBlocktime: 2000,
   ethereum: {
     http: 'http://localhost:8545',
     ws: 'ws://localhost:8546',
@@ -219,7 +223,7 @@ export const DEFAULT_SDK_CONFIGURATION: SDKConfiguration = {
     serial: true,
   },
   warpSync: {
-    enabled: false,
+    createCheckpoints: false,
     autoReport: false,
   },
   uniswap: {
@@ -262,11 +266,11 @@ export const DEFAULT_SDK_CONFIGURATION: SDKConfiguration = {
     wssPort: 9002,
     startWSS: true,
   },
-  uploadBlockNumber: 0,
-  logLevel: LoggerLevels.warn,
-  showReloadModal: true,
-  averageBlocktime: 2000,
-  trackBestOffer: false
+  ui: {
+    showReloadModal: true,
+    trackBestOffer: false,
+    fallbackProvider: "torus"
+  }
 };
 
 export function sanitizeConfig(config: RecursivePartial<SDKConfiguration>): RecursivePartial<SDKConfiguration> {

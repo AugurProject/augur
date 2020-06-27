@@ -2067,7 +2067,7 @@ export function addScripts(flash: FlashSession) {
           mesh: { enabled: false },
         },
         warpSync: {
-          enabled: Boolean(args.useWarpSync),
+          createCheckpoints: Boolean(args.useWarpSync),
           autoReport: Boolean(args.autoReport) && Boolean(this.config?.deploy?.privateKey),
         }
       });

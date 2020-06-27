@@ -222,7 +222,7 @@ export const handleZeroStatusUpdated = (status, log = undefined) => (
   const { env } = getState();
   if (log && log.error && log.error.message.includes('too many blocks')) {
     console.error('too many blocks behind, reloading UI');
-    env.showReloadModal
+    env.ui?.showReloadModal
       ? dispatch(
           updateModal({
             type: MODAL_ERROR,
@@ -260,7 +260,7 @@ export const handleNewBlockLog = (log: NewBlock) => async (
   const blockTime = env.averageBlocktime;
   if (blocksBehindTimer) clearTimeout(blocksBehindTimer);
   blocksBehindTimer = setTimeout(function() {
-    env.showReloadModal
+    env.ui?.showReloadModal
       ? dispatch(
           updateModal({
             type: MODAL_ERROR,
