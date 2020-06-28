@@ -81,7 +81,6 @@ interface AppProps {
   ethereumNodeHttp: string;
   ethereumNodeWs: string;
   sdkEndpoint: string;
-  useWeb3Transport: boolean;
   logout: Function;
   stats: CoreStats;
   sidebarStatus: {
@@ -115,7 +114,6 @@ export default class AppView extends Component<AppProps> {
     ethereumNodeHttp: null,
     ethereumNodeWs: null,
     sdkEndpoint: null,
-    useWeb3Transport: false,
   };
 
   sideNavMenuData = [
@@ -168,7 +166,6 @@ export default class AppView extends Component<AppProps> {
       initAugur,
       location,
       updateModal,
-      useWeb3Transport,
       updateCurrentBasePath,
     } = this.props;
 
@@ -179,7 +176,6 @@ export default class AppView extends Component<AppProps> {
         ethereumNodeHttp,
         ethereumNodeWs,
         sdkEndpoint,
-        useWeb3Transport,
       },
       (err: any, res: any) => {
         if (err) {

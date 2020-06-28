@@ -7,6 +7,7 @@ export * from './onChainTrading';
 export { AugurLite } from './AugurLite';
 export * from './api/HotLoading';
 export * from './events';
+export * from './zeroX';
 export * from './templates/constants';
 export * from './templates/types'
 export * from '@augurproject/utils';

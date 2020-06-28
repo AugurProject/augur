@@ -8,7 +8,7 @@ import {
   FRIDAY_DAY_OF_WEEK,
   SATURDAY_DAY_OF_WEEK,
   SUNDAY_DAY_OF_WEEK,
-  ReplaceAbbreviations
+  ReplaceAbbreviations,
 } from '@augurproject/sdk-lite';
 
 interface TimezoneDateObject {
@@ -152,6 +152,7 @@ export interface TemplateGroupKeys {
   estInputId?: number;
   header: string;
   title?: string;
+  outcomes?: string[];
   keys: { key: string; id: number }[];
 }
 export interface TemplateGroup {
@@ -176,6 +177,7 @@ export interface Template {
   groupLineId?: number; // over under and spread markets to differentiate liquidity pools
   header?: string; // header for money line markets and top level markets
   title?: string; // market title for futures or non money line markets
+  outcomes?: string[]; // sportsbook only, money line outcomes for non money line combined templates
 }
 
 export interface TemplateInput {
@@ -238,6 +240,7 @@ export interface TemplateGroupInfo {
   title?: string;
   canPoolLiquidity: boolean;
   liquidityPoolId: string;
+  placeholderOutcomes: string[];
 }
 
 export enum ValidationType {
@@ -376,7 +379,7 @@ function hasSubstituteOutcomes(
 
 function hasRequiredOutcomes(requiredOutcomes: string[], outcomes: string[]) {
   return (
-    requiredOutcomes.filter(r => outcomes.includes(r)).length ===
+    requiredOutcomes.filter((r) => outcomes.includes(r)).length ===
     requiredOutcomes.length
   );
 }
@@ -385,7 +388,7 @@ export function generateResolutionRulesHash(rules: ResolutionRules) {
   let hash = null;
   if (!rules || !rules[REQUIRED]) return hash;
   try {
-    const details = rules[REQUIRED].map(r => r.text).join('\n');
+    const details = rules[REQUIRED].map((r) => r.text).join('\n');
     hash = hashResolutionRules(details);
   } catch (e) {
     console.log(rules, rules[REQUIRED]);
@@ -418,16 +421,16 @@ function hasMarketQuestionDependencies(
   inputs: ExtraInfoTemplateInput[]
 ) {
   if (!validationDep) return true;
-  const input = inputs.find(i => i.id === validationDep.inputSourceId);
+  const input = inputs.find((i) => i.id === validationDep.inputSourceId);
   if (!input) return false;
   const correctValues = validationDep.values[input.value] || [];
-  const testValues = inputs.filter(i =>
+  const testValues = inputs.filter((i) =>
     validationDep.inputDestIds.includes(i.id)
   );
   if (!testValues) return false;
   return (
     testValues.length ===
-    testValues.filter(value => correctValues.includes(value.value)).length
+    testValues.filter((value) => correctValues.includes(value.value)).length
   );
 }
 
@@ -438,14 +441,14 @@ function isDependencyOutcomesCorrect(
   outcomes: string[]
 ) {
   let result = false;
-  const testOutcomes = outcomes.filter(o => !requiredOutcomes.includes(o));
+  const testOutcomes = outcomes.filter((o) => !requiredOutcomes.includes(o));
 
   if (validationDep) {
-    const input = inputs.find(i => i.id === validationDep.inputSourceId);
+    const input = inputs.find((i) => i.id === validationDep.inputSourceId);
     if (!input) return false;
     const correctValues = validationDep.values[input.value] || [];
     result =
-      testOutcomes.filter(o => correctValues.includes(o)).length ===
+      testOutcomes.filter((o) => correctValues.includes(o)).length ===
       testOutcomes.length;
   }
   return result;
@@ -456,7 +459,7 @@ function estimatedDateTimeAfterMarketEndTime(
   hoursAfterEstimatedStartTime: number,
   endTime: number
 ) {
-  const input = inputs.find(i => i.type === TemplateInputType.ESTDATETIME);
+  const input = inputs.find((i) => i.type === TemplateInputType.ESTDATETIME);
   if (!input) return false;
   // add number of hours to estimated start timestamp then compare to market event expiration
   const secondsAfterEst = hoursAfterEstimatedStartTime * 60 * 60;
@@ -467,10 +470,12 @@ function daysRequiredAfterStartDate(
   daysAfterStartDate: number,
   endTime: number
 ) {
-  const input = inputs.find(i => i.type === TemplateInputType.DATESTART);
+  const input = inputs.find((i) => i.type === TemplateInputType.DATESTART);
   if (!input || !daysAfterStartDate) return true;
   // add number of hours to estimated start timestamp then compare to market event expiration
-  const secondsAfterStartDate = SECONDS_IN_A_DAY.multipliedBy(daysAfterStartDate).toNumber();
+  const secondsAfterStartDate = SECONDS_IN_A_DAY.multipliedBy(
+    daysAfterStartDate
+  ).toNumber();
   return Number(input.timestamp) + secondsAfterStartDate >= Number(endTime);
 }
 
@@ -481,14 +486,14 @@ function daysRequiredAfterMonthDate(
 ) {
   if (eventExpEndNextMonthValues.length === 0) return true;
   const monthId = eventExpEndNextMonthValues.find(
-    i => i.yearDropdown !== undefined
+    (i) => i.yearDropdown !== undefined
   );
   const yearId = eventExpEndNextMonthValues.find(
-    i => i.monthDropdown !== undefined
+    (i) => i.monthDropdown !== undefined
   );
 
-  const monthInput = monthId && inputs.find(i => i.id === monthId.id);
-  const yearInput = yearId && inputs.find(i => i.id === yearId.id);
+  const monthInput = monthId && inputs.find((i) => i.id === monthId.id);
+  const yearInput = yearId && inputs.find((i) => i.id === yearId.id);
 
   if (!monthInput || !yearInput) return false;
   const newEndTime = moment()
@@ -508,7 +513,7 @@ function isDateInQuestionValid(
   endTime: number,
   creationTime: number
 ): boolean {
-  const filteredInputs = inputs.filter(i =>
+  const filteredInputs = inputs.filter((i) =>
     [
       String(TemplateInputType.DATEYEAR),
       String(TemplateInputType.DATESTART),
@@ -536,13 +541,16 @@ function IsOnOrAfterWednesdayAfterOpeningOnOpeningFriday(
 ) {
   if (!ids || ids.length === 0) return true;
   const afterTuesday: ExtraInfoTemplateInput = inputs.find(
-    i => ids && ids.includes(i.id)
+    (i) => ids && ids.includes(i.id)
   );
-  const onFridayOpening = inputs.find(i => i.type === TemplateInputType.DATEYEAR);
+  const onFridayOpening = inputs.find(
+    (i) => i.type === TemplateInputType.DATEYEAR
+  );
   if (!afterTuesday && !onFridayOpening) return true;
   if (
     onFridayOpening &&
-    moment.unix(Number(onFridayOpening.timestamp)).weekday() !== FRIDAY_DAY_OF_WEEK
+    moment.unix(Number(onFridayOpening.timestamp)).weekday() !==
+      FRIDAY_DAY_OF_WEEK
   ) {
     return false;
   } else {
@@ -559,7 +567,7 @@ export function tellOnHoliday(
   closing: DateInputDependencies
 ) {
   let holidayPresent = null;
-  const exchange = inputs.find(i => i.id === closing.inputSourceId);
+  const exchange = inputs.find((i) => i.id === closing.inputSourceId);
   if (!exchange) return 'exchange not found'; //exchange is required
   if (exchange.value) {
     const holidayClosures = closing.holidayClosures[exchange.value];
@@ -568,7 +576,7 @@ export function tellOnHoliday(
       holidayClosures && holidayClosures[inputYear];
     if (holidayClosuresPerYear) {
       const userTimestamp = moment.unix(Number(input.timestamp));
-      holidayClosuresPerYear.forEach(holiday => {
+      holidayClosuresPerYear.forEach((holiday) => {
         const holidayDate = moment(
           `${holiday.date} ${inputYear}`,
           'MMM DD YYYY'
@@ -589,9 +597,9 @@ function dateNoWeekendHoliday(
   closingDateDependencies: DateInputDependencies[]
 ) {
   if (!dateDependencies) return true;
-  const deps = dateDependencies.filter(d => d.noWeekendHolidays);
+  const deps = dateDependencies.filter((d) => d.noWeekendHolidays);
   const result = deps.reduce((p, d) => {
-    const input = inputs.find(i => i.id === d.id);
+    const input = inputs.find((i) => i.id === d.id);
     if (!input) return false;
     const dayOfWeek = moment.unix(Number(input.timestamp)).weekday();
     if (
@@ -600,7 +608,7 @@ function dateNoWeekendHoliday(
     ) {
       return false;
     }
-    closingDateDependencies.forEach(closing => {
+    closingDateDependencies.forEach((closing) => {
       if (closing && tellOnHoliday(inputs, input, closing)) {
         p = false;
       }
@@ -615,10 +623,10 @@ function dateComparisonDependencies(
   dateDependencies: DateDependencies[]
 ) {
   if (!dateDependencies) return true;
-  const depBefore = dateDependencies.find(d => d.dateAfterId);
+  const depBefore = dateDependencies.find((d) => d.dateAfterId);
   if (!depBefore) return true;
-  const mustBeforeDate = inputs.find(i => i.id === depBefore.dateAfterId);
-  const source = inputs.find(i => i.id === depBefore.id);
+  const mustBeforeDate = inputs.find((i) => i.id === depBefore.dateAfterId);
+  const source = inputs.find((i) => i.id === depBefore.id);
   if (!source || !mustBeforeDate) return false;
   if (source.timestamp <= mustBeforeDate.timestamp) {
     return false;
@@ -641,20 +649,18 @@ export function getTemplateExchangeClosingWithBuffer(
   dayTimestamp: number,
   hour: number,
   minutes: number,
-  offset: number
+  offset: number,
 ) {
   // one hour time buffer after lastest exchange closing is built in.
   const OneHourBuffer = 1;
-  const closingDateTime = moment
-    .unix(dayTimestamp)
-    .utc()
-    .startOf('day');
-
+  const closingDateTime = moment.unix(dayTimestamp).startOf('day');
+  // get local offset mul -1 b/c of how date returns timezone offset
+  const localOffset: number = (new Date().getTimezoneOffset() / 60) * -1;
   closingDateTime.set({
-    hour: hour - offset + OneHourBuffer,
+    hour: hour - offset + localOffset + OneHourBuffer,
     minute: minutes,
   });
-  return closingDateTime.unix();
+  return closingDateTime.utc().unix();
 }
 
 function closingDateDependenciesCheck(
@@ -664,10 +670,10 @@ function closingDateDependenciesCheck(
   closingDateDependencies: DateInputDependencies[]
 ) {
   if (!closingDateDependencies) return true;
-  const deps = closingDateDependencies.filter(d => d.inputDateYearId);
+  const deps = closingDateDependencies.filter((d) => d.inputDateYearId);
   const result = deps.reduce((p, d) => {
-    const dateYearSource = inputs.find(i => i.id === d.inputDateYearId);
-    const exchangeValue = inputs.find(i => i.id === d.inputSourceId);
+    const dateYearSource = inputs.find((i) => i.id === d.inputDateYearId);
+    const exchangeValue = inputs.find((i) => i.id === d.inputSourceId);
     if (!dateYearSource || !exchangeValue || !dateYearSource.timestamp)
       return false;
     const timeOffset = d.inputTimeOffset[exchangeValue.value] as TimeOffset;
@@ -725,13 +731,14 @@ export function getGroupHashInfo({
     estTimestamp: undefined,
     canPoolLiquidity: false,
     liquidityPoolId: undefined,
+    placeholderOutcomes: undefined,
   };
   if (!hash || !inputs) return defaultValues;
-  const hashGroup: TemplateGroupKeys = TEMPLATE_GROUPS.find(g => g[hash]);
+  const hashGroup: TemplateGroupKeys = TEMPLATE_GROUPS.find((g) => g[hash]);
   if (!hashGroup) return defaultValues;
   const group = hashGroup[hash];
-  const keyValues = group.keys.map(key =>
-    String(inputs.find(i => i.id === key.id).value)
+  const keyValues = group.keys.map((key) =>
+    String(inputs.find((i) => i.id === key.id).value)
   );
   const hashKeyInputValues = hashGroupKeyValues(keyValues);
   const groupLine = group?.groupLineId
@@ -755,6 +762,13 @@ export function getGroupHashInfo({
       groupLine: groupLine,
     });
   }
+  const moneyLineOutcomes = group?.outcomes;
+  let placeholderOutcomes = undefined;
+  if (moneyLineOutcomes) {
+    placeholderOutcomes = moneyLineOutcomes.map((o) =>
+      populateTemplateTitle(o, inputs, false)
+    );
+  }
 
   return {
     hashKeyInputValues,
@@ -765,6 +779,7 @@ export function getGroupHashInfo({
     title,
     canPoolLiquidity,
     liquidityPoolId,
+    placeholderOutcomes,
   };
 }
 
@@ -775,8 +790,8 @@ function inputWithinNumericRange(
   let passes = true;
   if (!numberRangeValues || Object.keys(numberRangeValues).length === 0)
     return passes;
-  Object.keys(numberRangeValues).forEach(index => {
-    const input = inputs.find(i => String(i.id) === String(index));
+  Object.keys(numberRangeValues).forEach((index) => {
+    const input = inputs.find((i) => String(i.id) === String(index));
     const range = numberRangeValues[index];
     if (
       Number(input.value) < Number(range[0]) ||
@@ -794,7 +809,7 @@ export function isValidYearYearRangeInQuestion(
   endTime: number,
   creationTime: number
 ) {
-  const yearInputs = inputs.filter(input =>
+  const yearInputs = inputs.filter((input) =>
     yearYearRangeInputs.includes(input.id)
   );
   if (!yearInputs || yearInputs.length === 0) return true;
@@ -803,7 +818,7 @@ export function isValidYearYearRangeInQuestion(
   return yearInputs.reduce((p, input: ExtraInfoTemplateInput) => {
     const years = input.value
       ?.split('-')
-      .map(year => (year.length === 2 ? `20${year}` : year));
+      .map((year) => (year.length === 2 ? `20${year}` : year));
     const testYear = years.length === 1 ? years[0] : years[1];
     if (!testYear) return false;
     if (Number(testYear) < creationTimeYear) return false;
@@ -1083,9 +1098,7 @@ export const isTemplateMarket = (
 
     // verify template market is in correct categories
     if (!isMarketInAllCorrectCategories(categories, validation.reqCats)) {
-      errors.push(
-        'templated market does not have correct categories'
-      );
+      errors.push('templated market does not have correct categories');
     }
 
     return true;

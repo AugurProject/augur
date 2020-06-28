@@ -18,6 +18,7 @@ import {
   ZEROX_STATUSES,
 } from 'modules/common/constants';
 import { EMPTY_STATE } from 'modules/create-market/constants';
+import { handleMarketsUpdatedLog } from 'modules/events/actions/log-handlers';
 import MarketView from 'modules/market/components/market-view/market-view';
 import { hotloadMarket } from 'modules/markets/actions/load-markets';
 import { loadMarketsInfo } from 'modules/markets/actions/load-markets-info';
@@ -40,6 +41,7 @@ import parseQuery from 'modules/routes/helpers/parse-query';
 import { NewMarket } from 'modules/types';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
+import { augurSdkLite } from 'services/augursdklite';
 import deepClone from 'utils/deep-clone';
 import {
   convertUnixToFormattedDate,
@@ -99,7 +101,7 @@ const mapStateToProps = (state: AppState, ownProps) => {
     windowRef.localStorage &&
     windowRef.localStorage.getItem(SCALAR_MODAL_SEEN) === 'true';
 
-    if (market === null) {
+  if (market === null) {
     return {
       tradingTutorial,
       isMarketLoading: true,
@@ -187,6 +189,23 @@ const mapDispatchToProps = (dispatch, ownProps) => ({
   closeMarketLoadingModalOnly: (type: string) => type === MODAL_MARKET_LOADING && dispatch(closeModal()),
   addAlert: alert => dispatch(addAlert(alert)),
   removeAlert: (id: string, name: string) => dispatch(removeAlert(id, name)),
+  loadHotMarket: (id: string) => {
+    const augurLite = augurSdkLite.get();
+    augurLite.hotloadMarket(id).then((marketsInfo) => {
+      if(marketsInfo) {
+        handleMarketsUpdatedLog({
+          marketsInfo
+        })(dispatch);
+      } else {
+        dispatch(
+          updateModal({
+            type: MODAL_MARKET_NOT_FOUND,
+            history: ownProps.history,
+          })
+        )
+      }
+    });
+  }
 });
 
 const Market = withRouter(

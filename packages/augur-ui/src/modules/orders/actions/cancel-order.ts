@@ -36,6 +36,7 @@ export const cancelAllOpenOrders = orders => async (
 
   } catch (error) {
     console.error('Error canceling batch orders', error);
+    dispatch(setCancelOrderStatus(orders.map(o => o.id), TXEventName.Failure));
     throw error;
   }
 };
@@ -70,6 +71,6 @@ const sendCancelAlert = (order, dispatch) => {
   );
 };
 
-const setCancelOrderStatus = (ids: string[]) => dispatch => {
-  ids.map(id => dispatch(addCanceledOrder(id, TXEventName.Pending, null)))
+const setCancelOrderStatus = (ids: string[], status: string = TXEventName.Pending) => dispatch => {
+  ids.map(id => dispatch(addCanceledOrder(id, status, null)))
 }

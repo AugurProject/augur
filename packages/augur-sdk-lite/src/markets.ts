@@ -49,6 +49,7 @@ export interface SportsBookInfo {
   header: string;
   title?: string;
   liquidityPool: string;
+  placeholderOutcomes?: string[]
 }
 
 export interface MarketInfo {

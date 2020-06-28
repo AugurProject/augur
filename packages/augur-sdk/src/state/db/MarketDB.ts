@@ -96,14 +96,14 @@ export class MarketDB extends DerivedDB {
     if (process.env.NODE_ENV !== 'test') {
       if (!liquidityCheckInterval) {
         // call recalc liquidity every 30 seconds.
-        const ONE_MIN_IN_MS = 30000;
+        const RECALC_CYCLE_IN_MS = 30000;
         liquidityCheckInterval = setInterval(async () => {
           if (liquidityDirty.size > 0) {
             const marketIdsToCheck = Array.from(liquidityDirty) as string[];
             await this.syncOrderBooks(marketIdsToCheck);
             liquidityDirty.clear();
           }
-        }, ONE_MIN_IN_MS);
+        }, RECALC_CYCLE_IN_MS);
       }
     }
   }
@@ -131,9 +131,6 @@ export class MarketDB extends DerivedDB {
     syncing = false
   ): Promise<number> {
     const result = await super.handleMergeEvent(blocknumber, logs, syncing);
-
-    await this.syncOrderBooks([]);
-
     const timestamp = (await this.augur.getTimestamp()).toNumber();
     await this.processTimestamp(timestamp, result);
     return result;
@@ -150,8 +147,7 @@ export class MarketDB extends DerivedDB {
 
     let marketsData;
     if (marketIds.length === 0) {
-      marketsData = await this.allDocs();
-      ids = marketsData.map(data => data.market);
+      return;
     } else {
       marketsData = await this.table
         .where('market')
@@ -530,7 +526,7 @@ export class MarketDB extends DerivedDB {
 
         if (log['isTemplate'] && log['marketType'] === MarketType.Categorical) {
           const { groupLine, groupType, hashKeyInputValues, header, title, estTimestamp,
-            canPoolLiquidity, liquidityPoolId } = getGroupHashInfo(
+            canPoolLiquidity, liquidityPoolId, placeholderOutcomes } = getGroupHashInfo(
             log['extraInfo'].template
           );
           log['groupHash'] = hashKeyInputValues;
@@ -540,6 +536,7 @@ export class MarketDB extends DerivedDB {
           log['groupTitle'] = title;
           log['groupEstDatetime'] = estTimestamp;
           log['liquidityPool'] = canPoolLiquidity ? liquidityPoolId : log['market'];
+          if (placeholderOutcomes) log['groupPlaceholderOutcomes'] = placeholderOutcomes
         }
       }
     } catch (err) {

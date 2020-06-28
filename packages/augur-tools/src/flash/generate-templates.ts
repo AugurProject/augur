@@ -158,6 +158,7 @@ const addTemplates = (
             estInputId: t.inputs.find(i => i.type === TemplateInputType.ESTDATETIME)?.id,
             header: t.header,
             title: t.title,
+            outcomes: t.outcomes,
             keys
           }
         }

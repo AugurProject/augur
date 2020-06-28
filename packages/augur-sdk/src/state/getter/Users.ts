@@ -463,7 +463,9 @@ export class Users {
       account: params.account,
       universe: params.universe,
     });
-    const flattenOrders = collapseZeroXOrders(userOpenOrders.orders);
+    const flattenOrders = collapseZeroXOrders(userOpenOrders.orders).filter(
+      (order) => order.tokensEscrowed !== '0'
+    );
     const groupedOrders = _.groupBy(flattenOrders, 'market');
     frozenFundsBreakdown.openOrders = {
         total: userOpenOrders.totalOpenOrdersFrozenFunds,
