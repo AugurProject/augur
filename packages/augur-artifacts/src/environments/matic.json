@@ -1,0 +1,118 @@
+{
+  "networkId": "5",
+  "ethereum": {
+    "http": "https://goerli.infura.io/v3/89985f7aa2414a98987e2eae752c9790",
+    "rpcRetryCount": 5,
+    "rpcRetryInterval": 0,
+    "rpcConcurrency": 40,
+    "ws": "ws://localhost:8546"
+  },
+  "gas": {
+    "price": 20000000000,
+    "limit": 10000000
+  },
+  "deploy": {
+    "isProduction": false,
+    "enableFaucets": true,
+    "normalTime": true,
+    "writeArtifacts": true,
+    "serial": true,
+    "externalAddresses": {}
+  },
+  "uniswap": {
+    "exchangeRateBufferMultiplier": 1.075
+  },
+  "gsn": {
+    "enabled": true,
+    "minDaiForSignerETHBalanceInDAI": 40,
+    "desiredSignerBalanceInETH": 0.04
+  },
+  "zeroX": {
+    "rpc": {
+      "enabled": false,
+      "ws": "wss://v2.augur.net/0x-ws"
+    },
+    "mesh": {
+      "verbosity": 1,
+      "enabled": true,
+      "useBootstrapList": true,
+      "bootstrapList": []
+    }
+  },
+  "uploadBlockNumber": 2942822,
+  "addresses": {
+    "Augur": "0xCCfba5B23BCF598DFa25447603A1620e037952d7",
+    "Universe": "0x75972ebC3341D8FcDB4675a2eA8Dfc70771316A5",
+    "LegacyReputationToken": "0xa3237875B5116b9AeDD1caF0BC0380Bc4a8D8154",
+    "Cash": "0x498aE5e84b900b63bCC8FD1BFca4f23E0a2205a7",
+    "ProxyFactory": "0x929CF3F7f8bC73c17Ca6238F8408379A91Ee1f6F",
+    "GnosisSafe": "0x321fd7D3097190492CFf384F48d6d9f3B862c67F",
+    "CashFaucet": "0x498aE5e84b900b63bCC8FD1BFca4f23E0a2205a7",
+    "BuyParticipationTokens": "0x3a8914BCd3FCE32bDc0C42b45E4dDEF7Ee1710F8",
+    "RedeemStake": "0x4E5D3C25f91Cf66c86DCA0294F9ce79A252BE76e",
+    "GnosisSafeRegistry": "0xca3C2C3246902222C5f770729AE1A63C01f2d57A",
+    "WarpSync": "0x94C469440f816f209fb959552a757BCe4E955dAC",
+    "ShareToken": "0x1FF189B14aff4dd95650CCa92f741a37f199CCe1",
+    "HotLoading": "0x245428f594eba8962ab30E3a9D710FB3Ece88dbc",
+    "EthExchange": "0x8649b9D4eF157F5bCC7Cba3Ade1D8db8Ab2b20D4",
+    "Affiliates": "0x157Db5b22725dF30fD4f1cbA83299C625769519A",
+    "AffiliateValidator": "0x6bB573cF7e426073a14872d406F8195bdEA5e39b",
+    "Exchange": "0x3c0FE8a9fe66E38fD207249D220f3887BC55E66C",
+    "Time": "0xf5b94789054B818D6af327153BeF98bbc8817334",
+    "AugurTrading": "0x9042b06084eeDA3bd628C4c3826C85C39b835eE0",
+    "CancelOrder": "0x6EEf8097aC0f6aB46b1DB6F12b7fB86AFc82e994",
+    "CreateOrder": "0xC21cF207e2c1f0d8f00AEA6021fE8a8AE5d0B537",
+    "FillOrder": "0x8d0AD7B9cda5DcE7aE0634b44531918270C17A8a",
+    "Orders": "0xEe93B864c4D3Ed0B2E09A93015bF08a101600558",
+    "ProfitLoss": "0xa6C7F9F28AdB994e6541D3F53B766661f4C006A5",
+    "SimulateTrade": "0x6b056873Cb8196d08d1cAFC7A624C99F7Ada2722",
+    "Trade": "0x43B12224eb535f721f1d05746357fFC959b118be",
+    "ZeroXTrade": "0xB1012A83A4914F6755D94Cc8425Ac366fE67626e",
+    "OICash": "0xc628A92B169bC675d2884b19Be857c608dCcfba3",
+    "AugurWalletRegistry": "0x3e90971b14314Af228A18232aD631cf3E6159CBc",
+    "UniswapV2Factory": "0x7Ed8F9FE249e7F89bef8bC9a961BEB987a9fea1B",
+    "WETH9": "0x793192838F48926774F451ec1ef6c02eb194d0E3",
+    "UniswapV2Router01": "0x7a6cfc66f331242ba2d799957641969F8918b112",
+    "AuditFunds": "0x1cb90A2671E859Bb411e8F789784Bf4af2D2BD12",
+    "AugurWalletRegistryV2": "0x34ad40Ee9027523AfACfe1DdFB9D1a0FB198336E",
+    "RelayHubV2": "0xc1539da6830ee5Bacfc50F5E7B7F64F89B89Df2e",
+    "ERC20Proxy": "0x97b36E3227d0281102053F2ed13DDDC5F1Cc6174",
+    "ERC721Proxy": "0xed5d996DAeC33272D65E5D767A1A582665352993",
+    "ERC1155Proxy": "0xeB50d5D01F922eb81F72Dc90A43aFB3c07e936D6",
+    "MultiAssetProxy": "0xFc85164e43CaCE2e8aBd5F9D85dCE8D9Ef42e2D9",
+    "Coordinator": "0x0A0E4289C1A2f84d6839e76CC69183a1d53123fC",
+    "CoordinatorRegistry": "0xdd113A8Bb79ddD2daeEe3a3978852Ee525eDbBA9",
+    "ChaiBridge": "0xF0eA272ee31582ae53F9e53E3Bb3Fc1E079527D7",
+    "DevUtils": "0x2214406aFC6a207B4aa8612BA6D3884AFf0AAa9D",
+    "ZRXToken": "0x08A0945524B699038F0C41472F1EdB863273dF97"
+  },
+  "useWarpSync": true,
+  "server": {
+    "httpPort": 9003,
+    "startHTTP": true,
+    "httpsPort": 9004,
+    "startHTTPS": true,
+    "wsPort": 9001,
+    "startWS": true,
+    "wssPort": 9002,
+    "startWSS": true
+  },
+  "plugins": {
+    "chat": "orbit"
+  },
+  "syncing": {
+    "enabled": true
+  },
+  "sdk": {
+    "enabled": false,
+    "ws": "ws://localhost:9001"
+  },
+  "warpSync": {
+    "enabled": true,
+    "autoReport": false
+  },
+  "logLevel": 0,
+  "showReloadModal": true,
+  "averageBlocktime": 2000,
+  "trackBestOffer": false
+}
