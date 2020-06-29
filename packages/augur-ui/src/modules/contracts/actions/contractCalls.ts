@@ -11,7 +11,10 @@ import type {
   PlaceTradeDisplayParams,
   SimulateTradeData,
 } from '@augurproject/sdk';
-import { ExtraInfoTemplate, calculatePayoutNumeratorsArray  } from '@augurproject/sdk-lite';
+import {
+  calculatePayoutNumeratorsArray,
+  ExtraInfoTemplate,
+} from '@augurproject/sdk-lite';
 import {
   convertDisplayAmountToOnChainAmount,
   convertDisplayPriceToOnChainPrice,
@@ -30,6 +33,7 @@ import {
   SCALAR,
   TEN_TO_THE_EIGHTEENTH_POWER,
   ZERO,
+  NETWORK_IDS,
 } from 'modules/common/constants';
 import { constructMarketParams } from 'modules/create-market/helpers/construct-market-params';
 import {
@@ -39,6 +43,7 @@ import {
 } from 'modules/types';
 // put all calls to contracts here that need conversion from display values to onChain values
 import { augurSdk } from 'services/augursdk';
+import { augurSdkLite } from 'services/augursdklite';
 import { BigNumber, createBigNumber } from 'utils/create-big-number';
 import {
   formatAttoDai,
@@ -79,27 +84,16 @@ export async function getGasPrice(): Promise<BigNumber> {
   return gasPrice;
 }
 
-export async function isUnlocked(address: string): Promise<boolean> {
-  // TODO: do we need to stop supporting unlocked nodes
-  return false;
-}
-
 export function getNetworkId(): string {
-  const Augur = augurSdk.get();
-  const networkId = Augur.networkId;
+  // default to mainnet most likely that's the case
+  let networkId = NETWORK_IDS.Mainnet;
+  try {
+    const augur = augurSdkLite.get();
+    networkId = augur.networkId;
+  } catch (e) {
+    console.error(e);
+  }
   return networkId;
-}
-
-export async function getAccounts(): Promise<Array<string>> {
-  const Augur = augurSdk.get();
-  const accounts = await Augur.listAccounts();
-  return accounts.map((a: string) => a.toLowerCase());
-}
-
-export async function checkIsKnownUniverse(universeId: string) {
-  const { contracts } = augurSdk.get();
-  const result = await contracts.augur.isKnownUniverse_(universeId);
-  return result;
 }
 
 let maxEndTime = null; // cache value
@@ -847,16 +841,6 @@ export async function getAllowance(account: string): Promise<BigNumber> {
   const allowanceRaw = await contracts.cash.allowance_(account, augurContract);
   const allowance = allowanceRaw.dividedBy(TEN_TO_THE_EIGHTEENTH_POWER);
   return allowance;
-}
-
-export async function cancelOpenOrders(orderIds: string[]) {
-  const { contracts } = augurSdk.get();
-  return contracts.cancelOrder.cancelOrders(orderIds);
-}
-
-export async function cancelOpenOrder(orderId: string) {
-  const { contracts } = augurSdk.get();
-  return contracts.cancelOrder.cancelOrder(orderId);
 }
 
 export async function getReportingDivisor(): Promise<BigNumber> {

@@ -27,11 +27,12 @@ import {
   GWEI_CONVERSION,
   TRANSACTIONS,
   APPROVE,
-  MIGRATE_FROM_LEG_REP_TOKEN,
+  MIGRATE_FROM_LEG_REP_TOKEN, CREATEAUGURWALLET,
 } from 'modules/common/constants';
 
 import Styles from 'modules/modal/modal.styles.less';
 import { createBigNumber } from 'utils/create-big-number';
+import { DISMISSABLE_NOTICE_BUTTON_TYPES, DismissableNotice } from 'modules/reporting/common';
 
 interface MigrateRepForm {
   closeAction: Function;
@@ -104,9 +105,11 @@ export const MigrateRep = ({
           ${formatDai(gasInDai).formatted} DAI is needed for transaction fee
         </span>
       )}
-      <div>
-        {InfoIcon} Your wallet will need to sign <span>2</span> transactions
-      </div>
+      <DismissableNotice
+        show
+        title={'Your wallet will need to sign 2 transactions'}
+        buttonType={DISMISSABLE_NOTICE_BUTTON_TYPES.CLOSE}
+      />
     </>
   );
 

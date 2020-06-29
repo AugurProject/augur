@@ -290,6 +290,10 @@
     flex-flow: row nowrap;
     text-transform: uppercase;
 
+    &.RegularCase {
+      text-transform: unset;
+    }
+
     > label {
       margin: 0 0 0 @size-4;
       width: @size-10;
@@ -319,6 +323,13 @@
     }
     &.isAccented {
       color: @color-error;
+    }
+    &.isSecondary {
+      color: @color-secondary-text;
+    }
+    &.underline {
+      cursor: pointer;
+      text-decoration: underline;
     }
   }
 

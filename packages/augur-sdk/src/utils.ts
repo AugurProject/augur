@@ -9,6 +9,7 @@ export {
   logError,
   marketTypeToName,
   marketNameToType,
+  parseZeroXMakerAssetData,
 } from '@augurproject/sdk-lite';
 
 export {
@@ -27,10 +28,3 @@ export {
   convertDisplayValuetoAttoValue,
   convertAttoValueToDisplayValue
 } from "@augurproject/utils";
-
-import { OrderData, ZeroXOrders } from './state/db/ZeroXOrders';
-
-export function parseZeroXMakerAssetData(makerAssetData: string): OrderData {
-  const { orderData } = ZeroXOrders.parseAssetData(makerAssetData);
-  return orderData;
-}

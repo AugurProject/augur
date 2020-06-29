@@ -102,7 +102,7 @@ export default function(
       const updatedOutcomeUpdatedShares = recalculateCumulativeShares(
         updatedOrders
       );
-      const orderBook = {
+      let orderBook = {
         ...newMarket.orderBook,
         [outcome]: updatedOutcomeUpdatedShares,
       };
@@ -110,7 +110,9 @@ export default function(
       const { initialLiquidityDai, initialLiquidityGas } = calculateLiquidity(
         orderBook
       );
-
+      if (initialLiquidityDai.eq(createBigNumber(0))) {
+        orderBook = {};
+      }
       return {
         ...newMarket,
         initialLiquidityDai,

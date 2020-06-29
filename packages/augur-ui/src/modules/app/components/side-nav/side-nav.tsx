@@ -138,7 +138,7 @@ const SideNav = ({
                     action={() => migrateV1Rep()}
                     queueName={TRANSACTIONS}
                     queueId={MIGRATE_FROM_LEG_REP_TOKEN}
-                    secondaryButton
+                    primaryButton
                   />
                   <label
                     className={classNames(Styles.SideNavMigrateTooltipHint)}
