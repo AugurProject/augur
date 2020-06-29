@@ -725,7 +725,6 @@ export default class Form extends React.Component<FormProps, FormState> {
       });
     }
     this.onError(name, '');
-    console.log(updatedMarket);
     updateNewMarket(updatedMarket);
   };
 

@@ -6635,7 +6635,7 @@ export const TEMPLATES = {
                     type: TemplateInputType.DROPDOWN,
                     placeholder: `Year Range`,
                     validationType: ValidationType.YEAR_YEAR_RANGE,
-                    values: LIST_VALUES.YEAR_RANGE,
+                    values: LIST_VALUES.YEARS,
                   },
                   {
                     id: 2,

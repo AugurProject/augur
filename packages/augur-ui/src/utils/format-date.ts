@@ -161,7 +161,6 @@ export function buildformattedDate(
 
   const endTime = moment
     .unix(timestamp)
-    .utc()
     .startOf('day');
 
   endTime.set({
@@ -191,8 +190,9 @@ export function buildformattedDate(
   };
 }
 
-export function timestampComponents(timestamp: number, offset: number = 0, timezone: string = null): Partial<DateTimeComponents> {
-  const date = moment.unix(timestamp).utcOffset(offset);
+export function timestampComponents(timestamp: number, offset: number = 0, timezone: string = null, appyLocalOffset: boolean = false): Partial<DateTimeComponents> {
+  const localOffset: number = (new Date().getTimezoneOffset() / 60) * -1;
+  const date = moment.unix(timestamp).utcOffset(appyLocalOffset ? (offset + localOffset) : offset);
   let meridiem = 'AM';
   let hour = date.hours()
   if (hour == 0) {

@@ -1108,7 +1108,7 @@ export const SimpleTimeSelector = (props: EstimatedStartSelectorProps) => {
             setOffsetName(offsetName);
             break;
           case 'setEndTime':
-            setEndTime(value);
+            setEndTime(moment.unix(value).startOf('day').unix());
             break;
           case 'timeSelector':
             if (value.hour) setHour(value.hour);
@@ -1212,8 +1212,8 @@ export const EstimatedStartSelector = (props: EstimatedStartSelectorProps) => {
       else {
         const addHours = input.hoursAfterEst;
         userInput = String(endTimeFormatted.timestamp);
-        const newEndTime = (addHours * 60 * 60) + endTimeFormatted.timestamp
-        const comps = timestampComponents(newEndTime, offset);
+        const newEndTime = moment.unix(endTimeFormatted.timestamp).add('hours', Number(addHours)).unix();
+        const comps = timestampComponents(newEndTime, offset, null, true);
         onChange('updateEventExpiration', {
           setEndTime: comps.setEndTime,
           hour: comps.hour,
@@ -1271,7 +1271,7 @@ export const EstimatedStartSelector = (props: EstimatedStartSelectorProps) => {
               setOffsetName(offsetName);
               break;
             case 'setEndTime':
-              setEndTime(value);
+              setEndTime(moment.unix(value).startOf('day').unix());
               break;
             case 'timeSelector':
               if (value.hour) setHour(value.hour);
