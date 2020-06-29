@@ -187,7 +187,6 @@ const Wrapper = ({
   if (initialLiquidity) {
     availableDai = availableDai.minus(newMarket.initialLiquidityDai);
   }
-  const gasPrice = getGasPrice();
   const gsnUnavailable = isGSNUnavailable();
   const disclaimerSeen = !!getValueFromlocalStorage(DISCLAIMER_SEEN);
   const gsnWalletInfoSeen = !!getValueFromlocalStorage(GSN_WALLET_SEEN);
@@ -275,7 +274,7 @@ const Wrapper = ({
         const formattedGasCost = formatGasCostToEther(
           newOrder.gasLimit,
           { decimalsRounded: 4 },
-          String(gasPrice)
+          String(getGasPrice())
         ).toString();
         updateSelectedOrderProperties({
           ...selectedOrderProperties,
@@ -374,7 +373,7 @@ const Wrapper = ({
             const formattedGasCost = formatGasCostToEther(
               newOrder.gasLimit,
               { decimalsRounded: 4 },
-              String(gasPrice)
+              String(getGasPrice())
             ).toString();
             resolve({
               ...useValues,
