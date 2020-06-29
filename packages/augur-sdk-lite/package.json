@@ -27,7 +27,8 @@
     "@augurproject/artifacts": "2.0.0-alpha.2",
     "@augurproject/utils": "2.0.0-alpha.2",
     "async": "3.1.0",
-    "ethers": "4.0.47"
+    "ethers": "4.0.47",
+    "lz-string": "1.4.4"
   },
   "devDependencies": {
     "@types/async": "3.0.1",
