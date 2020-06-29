@@ -394,7 +394,7 @@ export const BetslipFooter = () => {
   const {
     selected: { header, subHeader },
     betslip,
-    actions: { toggleStep, sendAllBets, cancelAllBets, cancelAllUnmatched },
+    actions: { toggleStep, sendAllBets, cancelAllBets, cancelAllUnmatched, toggleHeader },
     step,
   } = useBetslipStore();
   const { wager, potential, fees } = calculateBetslipTotals(betslip);
@@ -449,6 +449,7 @@ export const BetslipFooter = () => {
               if (!isReview) {
                 toggleStep();
               } else {
+                toggleHeader(BETSLIP_SELECTED.MY_BETS);
                 sendAllBets();
               }
             }}
