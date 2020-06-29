@@ -68,7 +68,6 @@ const mapStateToProps = (state: AppState) => {
     modal: state.modal,
     toasts: alerts.filter(alert => alert.toast && !alert.seen),
     universe: state.universe,
-    useWeb3Transport: isGlobalWeb3(),
     sidebarStatus: state.sidebarStatus,
     isConnectionTrayOpen: state.authStatus.isConnectionTrayOpen,
     walletBalances,

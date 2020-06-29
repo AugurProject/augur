@@ -20,7 +20,7 @@ export const loginWithTorus = () => async (
 
   // Use import instead of import for wallet SDK packages
   // to conditionally load web3 into the DOM
-  const {default: Torus} = await import(/* webpackChunkName: "torus" */ '@toruslabs/torus-embed');
+  const { default: Torus } = await import( /*webpackChunkName: 'torus'*/ '@toruslabs/torus-embed');
   const torus = new Torus({});
 
   if (torusNetwork) {

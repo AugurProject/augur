@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 
-import { Breakdown } from 'modules/modal/common';
-import { CloseButton, SecondaryButton } from 'modules/common/buttons';
+import { Breakdown, Title, ButtonsRow } from 'modules/modal/common';
 import Styles from 'modules/modal/modal.styles.less';
 import { formatDai } from 'utils/format-number';
 import type { Getters } from '@augurproject/sdk';
@@ -81,15 +80,7 @@ export const ModalFrozenFunds = ({
 
   return (
     <div className={Styles.FrozenFundsBreakdown}>
-      <header>
-        <div>
-          <CloseButton action={() => closeAction()} />
-        </div>
-        <div>
-          <h1>Frozen Funds</h1>
-        </div>
-      </header>
-
+      <Title title="Frozen Funds" closeAction={closeAction} />
       <main>
         <section>
           {breakdowns.map(bk => (
@@ -116,9 +107,14 @@ export const ModalFrozenFunds = ({
           />
         </section>
       </main>
-      <div className={Styles.ButtonsRow}>
-        <SecondaryButton text={'Cancel'} action={closeAction} />
-      </div>
+      <ButtonsRow
+        buttons={[
+          {
+            text: 'Cancel',
+            action: closeAction,
+          },
+        ]}
+      />
     </div>
   );
 };
