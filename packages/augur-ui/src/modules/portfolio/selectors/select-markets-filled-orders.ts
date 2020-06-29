@@ -17,7 +17,7 @@ export const marketsFilledOrders = () => {
     loginAccount: { mixedCaseAddress: loginAccountAddress },
   } = AppStatus.get();
   const marketIds = filterMarketIds(
-    filledOrders[loginAccountAddress] || [],
+    filledOrders || [],
     [] // marketReportState.resolved
   );
   const markets = filterMarketsByStatus(marketIds, timestamps).sort(

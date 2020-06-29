@@ -168,7 +168,7 @@ export const selectUserFilledOrders = marketId => {
   } = AppStatus.get();
   const { marketInfos } = Markets.get();
   const openOrders = getUserOpenOrders(marketId);
-  const userFilledOrders = filledOrders[address] || [];
+  const userFilledOrders = filledOrders || [];
   const filledMarketOrders = userFilledOrders[marketId];
 
   if (
