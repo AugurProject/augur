@@ -402,7 +402,7 @@ export function getEventExpirationForExchange(
       timeOffset.minutes,
       timeOffset.offset
     );
-    return timestampComponents(closingDateTime, timeOffset.offset, timeOffset.timezone, true);
+    return timestampComponents(closingDateTime, timeOffset.offset, timeOffset.timezone);
   }
   return null;
 }

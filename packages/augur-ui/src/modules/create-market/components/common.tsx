@@ -914,8 +914,12 @@ export const InputFactory = (props: InputFactoryProps) => {
     return (
       <DatePickerSelector
         onChange={value => {
+          // adjust for local time, need input value in UTC
+          const localOffset: number = (new Date().getTimezoneOffset() / 60);
           const startOfDay = moment
           .unix(value)
+          .add(localOffset, 'hours')
+          .utc()
           .startOf('day')
           .unix();
           input.setEndTime = startOfDay;
@@ -1108,7 +1112,8 @@ export const SimpleTimeSelector = (props: EstimatedStartSelectorProps) => {
             setOffsetName(offsetName);
             break;
           case 'setEndTime':
-            setEndTime(moment.unix(value).startOf('day').unix());
+            const localOffset: number = (new Date().getTimezoneOffset() / 60);
+            setEndTime(moment.unix(value).add(localOffset, 'hours').utc().startOf('day').unix());
             break;
           case 'timeSelector':
             if (value.hour) setHour(value.hour);
@@ -1212,8 +1217,8 @@ export const EstimatedStartSelector = (props: EstimatedStartSelectorProps) => {
       else {
         const addHours = input.hoursAfterEst;
         userInput = String(endTimeFormatted.timestamp);
-        const newEndTime = moment.unix(endTimeFormatted.timestamp).add('hours', Number(addHours)).unix();
-        const comps = timestampComponents(newEndTime, offset, null, true);
+        const newEndTime = moment.unix(endTimeFormatted.timestamp).add(Number(addHours), 'hours').unix();
+        const comps = timestampComponents(newEndTime, offset, null);
         onChange('updateEventExpiration', {
           setEndTime: comps.setEndTime,
           hour: comps.hour,
