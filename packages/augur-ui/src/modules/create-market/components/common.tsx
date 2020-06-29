@@ -1276,7 +1276,8 @@ export const EstimatedStartSelector = (props: EstimatedStartSelectorProps) => {
               setOffsetName(offsetName);
               break;
             case 'setEndTime':
-              setEndTime(moment.unix(value).startOf('day').unix());
+              const localOffset: number = (new Date().getTimezoneOffset() / 60);
+              setEndTime(moment.unix(value).add(localOffset, 'hours').utc().startOf('day').unix());
               break;
             case 'timeSelector':
               if (value.hour) setHour(value.hour);
