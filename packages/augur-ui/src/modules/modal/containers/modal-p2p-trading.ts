@@ -91,7 +91,7 @@ const mergeProps = (sP: any, dP: any, oP: any) => ({
       content: `Account activation is required before making your first transaction.There will be a small transaction fee to activate your account. ${
         sP.highBalance
           ? `$${sP.reserveInDai.formattedValue} worth of ETH, from your total funds will be held in your Fee reserve to cover further transactions.`
-          : `If your account balance exceeds $${sP.daiHighValueAmount}, a portion of this equivilant to 0.04ETH will be held in your Fee reserve to cover further transactions.`
+          : `If your account balance exceeds $${sP.daiHighValueAmount}, a portion of this equivalent to 0.04ETH will be held in your Fee reserve to cover further transactions.`
       }`,
     },
     {

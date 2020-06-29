@@ -178,7 +178,7 @@ const ConnectDropdown = (props: ConnectDropdownProps) => {
               any of these fees.
             </p>
             <p>
-              If your account balance exceeds $40, 0.04 ETH equivilant in DAI
+              If your account balance exceeds $40, 0.04 ETH equivalent in DAI
               will be held in your Fee reserve to cover transaction fees, which
               results in cheaper transaction fees.
             </p>
