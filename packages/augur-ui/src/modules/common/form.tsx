@@ -1385,9 +1385,14 @@ export class TextInput extends React.Component<TextInputProps, TextInputState> {
     );
   };
 
+  debounceOnChange = debounce(
+    (value) => this.props.onChange(value),
+    500
+  );
+
   onChange = (e: any) => {
     const value = e.target.value;
-    this.props.onChange(value);
+    this.debounceOnChange(value);
     this.setState({ value });
   };
 

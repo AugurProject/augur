@@ -168,7 +168,7 @@ export const handleZeroStatusUpdated = (status, log = undefined) => {
   const {
     isLogged,
     zeroXStatus,
-    env: { showReloadModal },
+    env: { ui: { showReloadModal } },
   } = AppStatus.get();
   if (log && log.error && log.error.message.includes('too many blocks')) {
     console.error('too many blocks behind, reloading UI');
@@ -200,7 +200,7 @@ export const handleSDKReadyEvent = () => {
 export const handleNewBlockLog = async (log: Events.NewBlock) => {
   const {
     analytics,
-    env: { averageBlocktime, showReloadModal },
+    env: { averageBlocktime, ui: { showReloadModal } },
     isLogged,
     blockchain: { currentAugurTimestamp },
   } = AppStatus.get();
@@ -249,7 +249,7 @@ export const handleNewBlockLog = async (log: Events.NewBlock) => {
 export const handleMarketsUpdatedLog = ({
   marketsInfo = [],
 }: {
-  marketsInfo: Getters.Markets.MarketInfo[] | Getters.Markets.MarketInfo;
+  marketsInfo: MarketInfo[] | MarketInfo;
 }) => {
   let marketsDataById = {};
   if (Array.isArray(marketsInfo)) {

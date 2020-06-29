@@ -13,12 +13,10 @@ export const loginWithTorus = () => {
     const torusNetwork = getNetwork(networkId);
     let accountObject: Partial<LoginAccount> = {};
 
-    // Use import instead of import for wallet SDK packages
-    // to conditionally load web3 into the DOM
-    const { default: Torus } = await import(
-      /* webpackChunkName: "torus" */ '@toruslabs/torus-embed'
-    );
-    const torus = new Torus({});
+  // Use import instead of import for wallet SDK packages
+  // to conditionally load web3 into the DOM
+  const { default: Torus } = await import( /*webpackChunkName: 'torus'*/ '@toruslabs/torus-embed');
+  const torus = new Torus({});
 
     if (torusNetwork) {
       if (torusNetwork === 'localhost') {

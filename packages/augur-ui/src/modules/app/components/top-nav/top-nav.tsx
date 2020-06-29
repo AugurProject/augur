@@ -15,7 +15,6 @@ import { helpIcon, Dot } from 'modules/common/icons';
 import {
   TRANSACTIONS,
   MIGRATE_FROM_LEG_REP_TOKEN,
-  CREATEAUGURWALLET,
   TOTAL_FUNDS_TOOLTIP,
   WALLET_STATUS_VALUES,
   MODAL_MIGRATE_REP,
@@ -26,7 +25,6 @@ import Styles from 'modules/app/components/top-nav/top-nav.styles.less';
 import { LinearPropertyLabelUnderlineTooltip } from 'modules/common/labels';
 import { formatNumber } from 'utils/format-number';
 import { getEthReserveInDai } from 'modules/auth/helpers/get-eth-reserve';
-import { createFundedGsnWallet } from 'modules/auth/actions/update-sdk';
 
 interface TopNavProps {
   isLogged: boolean;
@@ -35,10 +33,7 @@ interface TopNavProps {
 
 const SPREAD_INDEX = 3;
 
-const TopNav = ({
-  isLogged,
-  menuData,
-}: TopNavProps) => {
+const TopNav = ({ isLogged, menuData }: TopNavProps) => {
   const {
     walletStatus,
     currentBasePath,
@@ -50,9 +45,12 @@ const TopNav = ({
     pendingQueue[TRANSACTIONS] &&
     pendingQueue[TRANSACTIONS][MIGRATE_FROM_LEG_REP_TOKEN];
   const showMigrateRepButton =
-    !!walletBalances.legacyRep || !!walletBalances.legacyRepNonSafe || !!pending;
-  const showCreateAccountButton = walletStatus === WALLET_STATUS_VALUES.WAITING_FOR_FUNDING ||
-  walletStatus === WALLET_STATUS_VALUES.FUNDED_NEED_CREATE;
+    walletBalances.legacyRep !== '0' ||
+    walletBalances.signerBalances.legacyRep !== '0' ||
+    !!pending;
+  const showCreateAccountButton =
+    walletStatus === WALLET_STATUS_VALUES.WAITING_FOR_FUNDING ||
+    walletStatus === WALLET_STATUS_VALUES.FUNDED_NEED_CREATE;
   const ethReserveInDai = getEthReserveInDai();
   const isCurrentItem = item => {
     if (item.route === 'markets' && currentBasePath === 'market') return true;
@@ -78,7 +76,7 @@ const TopNav = ({
                 >
                   <SecondaryButton
                     disabled={item.disabled}
-                    text={'Create Market'}
+                    text="Create Market"
                     action={() => null}
                   />
                 </Link>
@@ -95,7 +93,7 @@ const TopNav = ({
                 <LinearPropertyLabelUnderlineTooltip
                   {...formatNumber(0)}
                   highlightAlternateBolded
-                  id={'totalFunds_top_nav'}
+                  id="totalFunds_top_nav"
                   tipText={`${TOTAL_FUNDS_TOOLTIP} of $${ethReserveInDai.formatted} DAI`}
                 />
               </div>
@@ -104,18 +102,18 @@ const TopNav = ({
                 <li className={Styles.MigrateRepItem} key="migrate-rep-button">
                   <div className={Styles.MigrateRep}>
                     <ProcessingButton
-                      text={'Migrate V1 to V2 REP'}
+                      text="Migrate V1 to V2 REP"
                       action={() => setModal({ type: MODAL_MIGRATE_REP })}
                       queueName={TRANSACTIONS}
                       queueId={MIGRATE_FROM_LEG_REP_TOKEN}
-                      secondaryButton
+                      primaryButton
                     />
                   </div>
                   <span>
                     <label
                       className={classNames(TooltipStyles.TooltipHint)}
                       data-tip
-                      data-for={'tooltip--migrateRep'}
+                      data-for="tooltip--migrateRep"
                     >
                       {helpIcon}
                     </label>
@@ -156,9 +154,9 @@ const TopNav = ({
         {!isLogged && (
           <div className={Styles.BettingUI}>
             <ExternalLinkText
-              title={'Betting UI'}
-              label={' - Coming Soon!'}
-              URL={'https://augur.net'}
+              title="Betting UI"
+              label=" - Coming Soon!"
+              URL="https://augur.net"
             />
           </div>
         )}

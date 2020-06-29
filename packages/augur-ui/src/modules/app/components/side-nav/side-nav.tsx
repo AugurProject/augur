@@ -149,7 +149,7 @@ const SideNav = ({
                     action={() => setModal({ type: MODAL_MIGRATE_REP })}
                     queueName={TRANSACTIONS}
                     queueId={MIGRATE_FROM_LEG_REP_TOKEN}
-                    secondaryButton
+                    primaryButton
                   />
                   <label
                     className={classNames(Styles.SideNavMigrateTooltipHint)}

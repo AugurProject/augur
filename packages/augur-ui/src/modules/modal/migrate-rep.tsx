@@ -1,25 +1,23 @@
 import React, { useState, useEffect } from 'react';
 
-import { Title, AccountAddressDisplay } from 'modules/modal/common';
+import { Title, ButtonsRow } from 'modules/modal/common';
 import {
   formatRep,
   formatGasCostToEther,
   formatEther,
   formatDai,
 } from 'utils/format-number';
-import { toChecksumAddress } from 'ethereumjs-util';
 import { ExternalLinkButton } from 'modules/common/buttons';
 import { TransactionFeeLabel } from 'modules/common/labels';
-import { InfoIcon } from 'modules/common/icons';
 import {
   displayGasInDai,
   getGasInDai,
 } from 'modules/app/actions/get-ethToDai-rate';
 import {
   V1_REP_MIGRATE_ESTIMATE,
-  HELP_CENTER_LEARN_ABOUT_ADDRESS,
   HELP_CENTER_MIGRATE_REP,
   GWEI_CONVERSION,
+  TRANSACTIONS,
 } from 'modules/common/constants';
 import convertV1ToV2, {
   convertV1ToV2Estimate,
@@ -28,6 +26,7 @@ import convertV1ToV2, {
 import Styles from 'modules/modal/modal.styles.less';
 import { createBigNumber } from 'utils/create-big-number';
 import { useAppStatusStore } from 'modules/app/store/app-status';
+import { DISMISSABLE_NOTICE_BUTTON_TYPES, DismissableNotice } from 'modules/reporting/common';
 
 export const MigrateRep = () => {
   const {
@@ -40,7 +39,7 @@ export const MigrateRep = () => {
 
   const gasPrice = gasPriceInfo.userDefinedGasPrice || gasPriceInfo.average;
   const walletBalances = loginAccount.balances;
-  const showForSafeWallet = walletBalances.legacyRep > 0;
+  const showForSafeWallet = Number(walletBalances.legacyRep) > 0;
 
   const [gasLimit, setGasLimit] = useState(V1_REP_MIGRATE_ESTIMATE);
   const inSigningWallet = walletBalances.signerBalances.legacyRep !== '0';
@@ -94,22 +93,10 @@ export const MigrateRep = () => {
           ${formatDai(gasInDai).formatted} DAI is needed for transaction fee
         </span>
       )}
-      <div>
-        {InfoIcon} Your wallet will need to sign <span>2</span> transactions
-      </div>
-    </>
-  );
-
-  const mainWalletContent = (
-    <>
-      <h3>Trading account</h3>
-      <AccountAddressDisplay
-        copyable
-        address={toChecksumAddress(tradingAccount)}
-      />
-      <ExternalLinkButton
-        URL={HELP_CENTER_LEARN_ABOUT_ADDRESS}
-        label={'Learn about your address'}
+      <DismissableNotice
+        show
+        title={'Your wallet will need to sign 2 transactions'}
+        buttonType={DISMISSABLE_NOTICE_BUTTON_TYPES.CLOSE}
       />
     </>
   );

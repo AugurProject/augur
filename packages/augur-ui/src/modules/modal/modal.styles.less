@@ -4019,9 +4019,6 @@ div.ButtonsRow:last-of-type {
     border: 1px solid var(--color-secondary-action);
     align-items: flex-start;
 
-    @media @breakpoint-mobile {
-      padding: 0 @size-24;
-    }
     > section {
       color: var(--color-primary-text);
 
@@ -4037,15 +4034,6 @@ div.ButtonsRow:last-of-type {
       > div:last-of-type {
         margin-bottom: @size-12;
       }
-    }
-  }
-
-  > div:last-of-type {
-    padding: 0;
-    margin: @size-24 @size-32 @size-32;
-
-    @media @breakpoint-mobile {
-      margin: @size-24;
     }
   }
 }
@@ -4065,8 +4053,9 @@ div.ButtonsRow:last-of-type {
 
     > span > a {
       .text-12-bold;
-
+      .limit-lines(1);
     }
+
     > div:last-of-type {
       margin-top: @size-6;
     }

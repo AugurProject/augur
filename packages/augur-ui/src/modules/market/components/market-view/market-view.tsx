@@ -4,7 +4,7 @@ import React, { useRef, useState, useEffect } from 'react';
 import classNames from 'classnames';
 import { useLocation, useHistory } from 'react-router';
 import Media from 'react-media';
-
+import { augurSdkLite } from 'services/augursdklite';
 import { MarketHeader } from 'modules/market/components/market-header/market-header';
 import MarketOrdersPositionsTable from 'modules/market/components/market-orders-positions-table/market-orders-positions-table';
 import MarketOutcomesList from "modules/market/components/market-outcomes-list/market-outcomes-list";
@@ -14,33 +14,37 @@ import parseMarketTitle from 'modules/markets/helpers/parse-market-title';
 import MarketTradeHistory from 'modules/market/components/market-trade-history/market-trade-history';
 import { MarketComments } from 'modules/market/components/common/comments/market-comments';
 import {
-  CATEGORICAL,
   BUY,
-  PUBLICFILLORDER,
+  CATEGORICAL,
   LONG,
-  SCALAR,
-  TRADING_TUTORIAL,
-  TRADING_TUTORIAL_STEPS,
-  TRADING_TUTORIAL_COPY,
-  MODAL_TUTORIAL_OUTRO,
-  MODAL_TUTORIAL_INTRO,
   MODAL_SCALAR_MARKET,
-  TUTORIAL_QUANTITY,
-  TUTORIAL_PRICE,
+  MODAL_TUTORIAL_INTRO,
+  MODAL_TUTORIAL_OUTRO,
+  PUBLICFILLORDER,
+  SCALAR,
+  SMALL_MOBILE,
+  TRADING_TUTORIAL,
+  TRADING_TUTORIAL_COPY,
   TRADING_TUTORIAL_OUTCOMES,
+  TRADING_TUTORIAL_STEPS,
   TUTORIAL_OUTCOME,
   ZEROX_STATUSES,
   TUTORIAL_TRADING_HISTORY,
   TUTORIAL_ORDER_BOOK,
   SCALAR_MODAL_SEEN,
   MODAL_MARKET_LOADING,
+  TUTORIAL_PRICE,
+  TUTORIAL_QUANTITY,
+  MODAL_MARKET_NOT_FOUND,
 } from 'modules/common/constants';
 import ModuleTabs from 'modules/market/components/common/module-tabs/module-tabs';
 import ModulePane from 'modules/market/components/common/module-tabs/module-pane';
 import PriceHistory from "modules/market-charts/components/price-history/price-history";
 import Styles from 'modules/market/components/market-view/market-view.styles.less';
 import { LeftChevron } from 'modules/common/icons';
-import { SMALL_MOBILE } from 'modules/common/constants';
+import { getNetworkId } from 'modules/contracts/actions/contractCalls';
+import { MARKET_VIEW_HEAD_TAGS } from 'modules/seo/helmet-configs';
+import { HelmetTag } from 'modules/seo/helmet-tag';
 import {
   MarketData,
   DefaultOrderProperties,
@@ -48,18 +52,12 @@ import {
   TestTradingOrder,
 } from 'modules/types';
 import { getDefaultOutcomeSelected } from 'utils/convert-marketInfo-marketData';
-import { getNetworkId } from 'modules/contracts/actions/contractCalls';
-import { TutorialPopUp } from '../common/tutorial-pop-up';
-import { formatShares, formatDai } from 'utils/format-number';
-import { convertUnixToFormattedDate } from 'utils/format-date';
 import { createBigNumber } from 'utils/create-big-number';
 import makePath from 'modules/routes/helpers/make-path';
 import { MARKETS } from 'modules/routes/constants/views';
 import { formatOrderBook } from 'modules/create-market/helpers/format-order-book';
 import type { Getters } from '@augurproject/sdk';
 import { TXEventName } from '@augurproject/sdk-lite';
-import { HelmetTag } from 'modules/seo/helmet-tag';
-import { MARKET_VIEW_HEAD_TAGS } from 'modules/seo/helmet-configs';
 import { StatusErrorMessage } from 'modules/common/labels';
 import { useAppStatusStore } from 'modules/app/store/app-status';
 import {
@@ -77,7 +75,7 @@ import { NewMarket } from 'modules/types';
 import deepClone from 'utils/deep-clone';
 import { hotloadMarket } from 'modules/markets/actions/load-markets';
 import {
-  getMarketAgeInDays,
+  getMarketAgeInDays, convertUnixToFormattedDate,
 } from 'utils/format-date';
 import { AppStatus } from 'modules/app/store/app-status';
 import { useMarketsStore } from 'modules/markets/store/markets';
@@ -87,6 +85,8 @@ import { loadMarketTradingHistory } from 'modules/markets/actions/market-trading
 import { loadMarketsInfo } from 'modules/markets/actions/load-markets-info';
 import { addAlert } from 'modules/alerts/actions/alerts';
 import OrderBook from 'modules/market-charts/components/order-book/order-book';
+import { formatDai, formatShares } from 'utils/format-number';
+import { handleMarketsUpdatedLog } from 'modules/events/actions/log-handlers';
 
 interface MarketViewProps {
   history: History;
@@ -108,6 +108,22 @@ const EmptyOrderBook: IndividualOutcomeOrderBook = {
   spread: null,
   bids: [],
   asks: [],
+};
+
+const loadHotMarket = (id, history) => {
+  const augurLite = augurSdkLite.get();
+  augurLite.hotloadMarket(id).then((marketsInfo) => {
+    if(marketsInfo) {
+      handleMarketsUpdatedLog({
+        marketsInfo
+      });
+    } else {
+      AppStatus.actions.setModal({
+          type: MODAL_MARKET_NOT_FOUND,
+          history,
+        })
+    }
+  });
 };
 
 const MarketView = ({
@@ -277,7 +293,12 @@ const MarketView = ({
   }, [selectedOutcomeId]);
 
   useEffect(() => {
+    // This will only be called once on the 'canHotLoad' prop change.
+    if (canHotload && !tradingTutorial && marketId) loadHotMarket(marketId, history);
     
+  }, [canHotload])
+
+  useEffect(() => {
     if (outcomeId !== prevProps.current.outcomeId && outcomeId !== null) {
       setState({
         ...state,
