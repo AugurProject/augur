@@ -45,8 +45,6 @@ const OpenOrders = ({
     openOrders
   } = selectMarketsOpenOrders();
 
-  console.log(ordersObj);
-
   function filterComp(input, data) {
     return data.description.toLowerCase().indexOf(input.toLowerCase()) >= 0;
   }
