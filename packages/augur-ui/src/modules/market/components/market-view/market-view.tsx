@@ -35,7 +35,6 @@ import {
   MODAL_MARKET_LOADING,
   TUTORIAL_PRICE,
   TUTORIAL_QUANTITY,
-  MODAL_MARKET_NOT_FOUND,
 } from 'modules/common/constants';
 import ModuleTabs from 'modules/market/components/common/module-tabs/module-tabs';
 import ModulePane from 'modules/market/components/common/module-tabs/module-pane';
@@ -73,7 +72,7 @@ import { getAddress } from 'ethers/utils/address';
 import { EMPTY_STATE } from 'modules/create-market/constants';
 import { NewMarket } from 'modules/types';
 import deepClone from 'utils/deep-clone';
-import { hotloadMarket } from 'modules/markets/actions/load-markets';
+import { hotLoadMarket } from 'modules/markets/actions/load-markets';
 import {
   getMarketAgeInDays, convertUnixToFormattedDate,
 } from 'utils/format-date';
@@ -86,7 +85,6 @@ import { loadMarketsInfo } from 'modules/markets/actions/load-markets-info';
 import { addAlert } from 'modules/alerts/actions/alerts';
 import OrderBook from 'modules/market-charts/components/order-book/order-book';
 import { formatDai, formatShares } from 'utils/format-number';
-import { handleMarketsUpdatedLog } from 'modules/events/actions/log-handlers';
 
 interface MarketViewProps {
   history: History;
@@ -108,22 +106,6 @@ const EmptyOrderBook: IndividualOutcomeOrderBook = {
   spread: null,
   bids: [],
   asks: [],
-};
-
-const loadHotMarket = (id, history) => {
-  const augurLite = augurSdkLite.get();
-  augurLite.hotloadMarket(id).then((marketsInfo) => {
-    if(marketsInfo) {
-      handleMarketsUpdatedLog({
-        marketsInfo
-      });
-    } else {
-      AppStatus.actions.setModal({
-          type: MODAL_MARKET_NOT_FOUND,
-          history,
-        })
-    }
-  });
 };
 
 const MarketView = ({
@@ -294,8 +276,7 @@ const MarketView = ({
 
   useEffect(() => {
     // This will only be called once on the 'canHotLoad' prop change.
-    if (canHotload && !tradingTutorial && marketId) loadHotMarket(marketId, history);
-    
+    if (canHotload && !tradingTutorial && marketId && !market) hotLoadMarket(marketId, history);
   }, [canHotload])
 
   useEffect(() => {
@@ -556,7 +537,6 @@ const MarketView = ({
   }
 
   if (!market) {
-    if (canHotload && !tradingTutorial) hotloadMarket(marketId);
     return <div ref={node} className={Styles.MarketView} />;
   }
 
