@@ -1,3 +1,4 @@
+import React from 'react';
 import { TXEventName } from '@augurproject/sdk-lite';
 import classNames from 'classnames';
 import { SubmitTextButton } from 'modules/common/buttons';

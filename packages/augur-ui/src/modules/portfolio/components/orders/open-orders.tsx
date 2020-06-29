@@ -71,6 +71,8 @@ const OpenOrders = ({
       />
     );
   }
+
+  const hasPending = Boolean(openOrders.find(order => order.pending));
   return (
     <FilterSwitchBox
         title="Open Orders"

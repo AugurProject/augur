@@ -1,13 +1,4 @@
-import memoize from 'memoizee';
-import { createBigNumber } from 'utils/create-big-number';
-
-import {
-  selectCancelingOrdersState,
-  selectLoginAccountAddress,
-  selectMarketInfosState,
-  selectPendingOrdersState,
-  selectUserMarketOpenOrders,
-} from 'appStore/select-state';
+import { TXEventName } from '@augurproject/sdk-lite';
 import memoize from 'memoizee';
 import {
   BUY,
@@ -15,95 +6,86 @@ import {
   SELL,
   SELL_INDEX,
   YES_NO,
+  CANCELORDER,
 } from 'modules/common/constants';
 import { cancelOrder } from 'modules/orders/actions/cancel-order';
-import { createSelector } from 'reselect';
 import { createBigNumber } from 'utils/create-big-number';
 import {
- TXEventName
-} from '@augurproject/sdk-lite';
-import { convertUnixToFormattedDate, convertSaltToFormattedDate } from 'utils/format-date';
-import { formatNone, formatDai, formatMarketShares } from 'utils/format-number';
-import { cancelOrder } from 'modules/orders/actions/cancel-order';
-import { CANCELORDER } from 'modules/common/constants';
+  convertSaltToFormattedDate,
+  convertUnixToFormattedDate,
+} from 'utils/format-date';
+import { formatDai, formatMarketShares, formatNone } from 'utils/format-number';
+import getPrecision from 'utils/get-number-precision';
+import { Markets } from 'modules/markets/store/markets';
 import { AppStatus } from 'modules/app/store/app-status';
 import { PendingOrders } from 'modules/app/store/pending-orders';
-import { Markets } from 'modules/markets/store/markets';
-import getPrecision from 'utils/get-number-precision';
 
 export default function(marketId) {
   if (!marketId) return [];
-  return findUserOpenOrders(marketId);
+
+  return selectUserOpenOrders(marketId);
 }
 
-export const findUserOpenOrders = (marketId) => {
+export const selectUserOpenOrders = marketId => {
   const { marketInfos } = Markets.get();
-  const { pendingQueue, userOpenOrders: stateUserOpenOrders } = AppStatus.get();
+  const {
+    pendingQueue,
+    userOpenOrders: stateUserOpenOrders,
+    loginAccount: { address },
+  } = AppStatus.get();
   const { pendingOrders: allMarketsPendingOrders } = PendingOrders.get();
   const userMarketOpenOrders = stateUserOpenOrders[marketId];
   const pendingOrders = allMarketsPendingOrders[marketId];
   const orderCancellation = pendingQueue[CANCELORDER];
   const market = marketInfos[marketId];
-  if (!market) return [];
-  let userOpenOrders =
+  if (
+    !market ||
+    !address ||
+    (!userMarketOpenOrders && !orderCancellation && !pendingOrders)
+  )
+    return [];
+  let userOpenOrderCollection =
     market.outcomes
-      .map(outcome =>
-        selectUserOpenOrdersInternal(
+      .map(outcome => {
+        const orderData =
+          userMarketOpenOrders && userMarketOpenOrders[outcome.id];
+        if (!orderData && !orderCancellation) return [];
+        return userOpenOrders(
           market.id,
           outcome.id,
-          userMarketOpenOrders,
+          orderData,
           orderCancellation,
           market.description,
           outcome.description,
-          market.marketType
-        )
-      )
+          market.marketType,
+          market.tickSize
+        );
+      })
       .filter(collection => collection.length !== 0)
       .flat() || [];
 
+  const decimals = getPrecision(String(market.tickSize), 2);
   // formatting and add pending orders
   if (pendingOrders && pendingOrders.length > 0) {
-    const formatted = pendingOrders.map(o => {
-      if (!userOpenOrders.find(order => o.id === order.id)) {
-        return ({
-          ...o,
-          unmatchedShares: formatMarketShares(market.marketType, o.amount),
-          avgPrice: formatDai(o.fullPrecisionPrice),
-          tokensEscrowed: formatDai(0, {zeroStyled: true}),
-          sharesEscrowed: formatMarketShares(market.marketType, 0, { zeroStyled: true }),
-          pending: !!o.status, // TODO: can show status of transaction in the future
-          status: o.status,
-        });
-      }
-    });
-    userOpenOrders = formatted.concat(userOpenOrders);
+    const formatted = pendingOrders.map(o => ({
+      ...o,
+      unmatchedShares: formatMarketShares(market.marketType, o.amount),
+      avgPrice: formatDai(o.fullPrecisionPrice, {
+        decimals,
+        decimalsRounded: decimals,
+      }),
+      tokensEscrowed: formatDai(0, { zeroStyled: true }),
+      sharesEscrowed: formatMarketShares(market.marketType, 0, {
+        zeroStyled: true,
+      }),
+      pending: !!o.status, // TODO: can show status of transaction in the future
+      status: o.status,
+    }));
+    userOpenOrderCollection = formatted.concat(userOpenOrderCollection);
   }
-  return userOpenOrders || [];
+
+  return userOpenOrderCollection || [];
 };
-
-function selectUserOpenOrdersInternal(
-  marketId,
-  outcomeId,
-  userMarketOpenOrders,
-  orderCancellation,
-  marketDescription,
-  name,
-  marketType
-) {
-  const { loginAccount } = AppStatus.get();
-  if (!loginAccount.address || userMarketOpenOrders == null) return [];
-
-  return userOpenOrders(
-    marketId,
-    outcomeId,
-    loginAccount,
-    userMarketOpenOrders,
-    orderCancellation,
-    marketDescription,
-    name,
-    marketType
-  );
-}
 
 const userOpenOrders = memoize(
   (

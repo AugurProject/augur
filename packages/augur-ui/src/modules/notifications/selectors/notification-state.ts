@@ -1,5 +1,5 @@
 import { selectMarkets } from 'modules/markets/selectors/markets-all';
-import { MarketReportingState } from '@augurproject/sdk';
+import { MarketReportingState } from '@augurproject/sdk-lite';
 import {
   CANCELORDERS,
   CLAIM_REPORTING_FEES_TITLE,
