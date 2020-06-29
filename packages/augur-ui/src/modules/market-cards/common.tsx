@@ -874,7 +874,7 @@ const testCombo = (sportsGroup, orderBooks, addBet) => {
       (a, b) =>
         Number(a.sportsBook.liquidityRank) - Number(b.sportsBook.liquidityRank)
     );
-  // console.log(moneyLineMarkets, spreadMarkets, overUnderMarkets);
+  // console.log(mosneyLineMarkets, spreadMarkets, overUnderMarkets);
 };
 
 interface ReportedOutcomeProps {
@@ -918,6 +918,18 @@ export const MultiOutcomeMarketTable = ({
         </li>
       ))}
     </ul>
+  </section>
+);
+
+export const MultiOutcomeMarketRow = ({ data }) => (
+  <section className={classNames(Styles.MultiOutcomeMarketRow, {
+    [Styles.FourOutcomes]: data.length === 4
+  })}>
+    {data.map(outcomeData => (
+      <article key={outcomeData.title}>
+        <SportsOutcome {...outcomeData} />
+      </article>
+    ))}
   </section>
 );
 
@@ -1011,7 +1023,7 @@ export const SportsMarketContainer = ({
 }) => {
   const { FUTURES, COMBO, DAILY } = SPORTS_GROUP_TYPES;
   const { isLogged } = useAppStatusStore();
-  const [isCollapsed, setIsCollapsed] = useState(startOpen);
+  const [isCollapsed, setIsCollapsed] = useState(!startOpen);
   useEffect(() => {
     if (sportsGroup.type === FUTURES) {
       const clipboardMarketId = new Clipboard('#copy_marketId');
@@ -1020,10 +1032,23 @@ export const SportsMarketContainer = ({
   }, [market.id, market.author]);
 
   let innerContent = null;
-  let headingContent = title;
+  let headingContent = <h6>{title}</h6>;
+  const numOutcomesToShow = data.length;
+  if (numOutcomesToShow > 4) {
+    innerContent = (
+      <MultiOutcomeMarketGrid
+        key={marketId}
+        multiOutcomeMarketGridData={data}
+      />
+    );
+  } else {
+    innerContent = (
+      <MultiOutcomeMarketRow key={marketId} data={data} />
+    );
+  }
   // console.log(marketId, sportsGroup, data, title, startOpen, isCollapsed);
   switch (sportsGroup.type) {
-    default: {
+    case FUTURES: {
       // futures
       headingContent = (
         <Fragment key={`${marketId}-heading`}>
@@ -1035,7 +1060,7 @@ export const SportsMarketContainer = ({
           <span className={Styles.MatchedLine}>
             Matched<b>{market.volumeFormatted.full}</b>
           </span>
-          {/* <FavoritesButton marketId={marketId} hideText disabled={!isLogged} /> */}
+          <FavoritesButton marketId={marketId} hideText disabled={!isLogged} />
           <DotSelection>
             <SocialMediaButtons
               listView
@@ -1055,14 +1080,10 @@ export const SportsMarketContainer = ({
           </DotSelection>
         </Fragment>
       );
-      innerContent = (
-        <MultiOutcomeMarketGrid
-          key={marketId}
-          multiOutcomeMarketGridData={data}
-        />
-      );
       break;
     }
+    default:
+      break;
   }
 
   return (
@@ -1140,7 +1161,7 @@ export const prepareSportsGroup = (sportsGroup, orderBooks, addBet) => {
             marketId={market.id}
             market={market}
             sportsGroup={sportsGroup}
-            startOpen={index !== 0}
+            startOpen={index === 0}
           />
         );
       });
@@ -1177,24 +1198,47 @@ export const prepareSportsGroup = (sportsGroup, orderBooks, addBet) => {
           addBet
         );
         marketGroups.push(
-          <MultiOutcomeMarketTable
+          <SportsMarketContainer
             key={mainMarketId}
-            marketTitle={mainMarket.sportsBook.title || mainMarket.description}
-            multiOutcomeMarketTableData={dailyMarketData}
+            data={dailyMarketData}
+            marketId={mainMarketId}
+            market={mainMarket}
+            sportsGroup={sportsGroup}
+            startOpen={true}
+            title={mainMarket.sportsBook.title}
           />
         );
+        // marketGroups.push(
+        //   <MultiOutcomeMarketTable
+        //     key={mainMarketId}
+        //     marketTitle={mainMarket.sportsBook.title || mainMarket.description}
+        //     multiOutcomeMarketTableData={dailyMarketData}
+        //   />
+        // );
       }
       sortedMarkets.forEach((market) => {
         if (market.id === mainMarketId) return;
         const subMarketData = createOutcomesData(orderBooks, market, addBet);
+        const startOpen = marketGroups.length === 0;
         marketGroups.push(
-          <SubMarketCollapsible
+          <SportsMarketContainer
             key={market.id}
+            data={subMarketData}
             marketId={market.id}
-            title={market.sportsBook.title || market.description}
-            SubMarketCollapsibleData={subMarketData}
+            market={market}
+            sportsGroup={sportsGroup}
+            startOpen={startOpen}
+            title={market.sportsBook.title}
           />
         );
+        // marketGroups.push(
+        //   <SubMarketCollapsible
+        //     key={market.id}
+        //     marketId={market.id}
+        //     title={market.sportsBook.title || market.description}
+        //     SubMarketCollapsibleData={subMarketData}
+        //   />
+        // );
       });
       break;
     }
@@ -1205,7 +1249,7 @@ export const prepareSportsGroup = (sportsGroup, orderBooks, addBet) => {
       //   orderBooks,
       //   addBet
       // );
-      console.log(sportsGroup, testCombo(sportsGroup, orderBooks, addBet));
+      // console.log(sportsGroup, testCombo(sportsGroup, orderBooks, addBet));
       marketGroups.push(
         <section key={id} style={{ color: 'red', padding: '16px 0' }}>
           This is a Combinatorial Event and is currently under

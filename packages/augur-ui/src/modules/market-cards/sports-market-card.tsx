@@ -54,7 +54,7 @@ export const SportsMarketCard = ({
   const { type, markets, marketTypes } = sportsGroup;
   const market = markets[0];
   const { categories, reportingState, endTimeFormatted } = market;
-  const numExtraWagers = type === COMBO ? marketTypes.length - 3 : marketTypes.length - 1;
+  const numExtraWagers = type === COMBO ? markets.length - 3 : markets.length - 1;
   const showMoreButtonVisible = numExtraWagers > 0;
 
   const headerType =

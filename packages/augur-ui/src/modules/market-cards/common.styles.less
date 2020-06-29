@@ -939,6 +939,33 @@
 		}
 	}
 
+	.MultiOutcomeMarketRow {
+		display: flex;
+		flex-flow: row wrap;
+		justify-content: space-between;
+
+		> article {
+			.OutcomeArticle;
+
+			> div {
+				flex: 1;
+			}
+
+			flex: .34;
+			margin-right: @size-8;
+
+			&:last-of-type {
+				margin-right: 0;
+			}
+		}
+
+		&.FourOutcomes {
+			> article {
+				flex: 0.25;
+			}
+		}
+	}
+
 	.SubMarketCollapsible {
 		flex-flow: column nowrap;
 		flex: 1;
@@ -1155,6 +1182,13 @@
 			height: @size-30;
 			padding: 0 @size-12;
 
+			> h6 {
+				.text-10-semi-bold;
+
+				color: var(--color-secondary-text);
+				text-transform: uppercase;
+			}
+
 			> span[class*="ProgressLabel"] {
 				flex-flow: row nowrap;
 				flex: 1;
@@ -1175,10 +1209,13 @@
 				margin-left: @size-12;
 			}
 
-			> button {
+			> button[class*="FavoriteButton"] {
+				margin-left: @size-12;
+			}
+
+			> button:not([class*="FavoriteButton"]) {
 				align-items: center;
 				display: flex;
-				// flex: 1;
 				margin-left: auto;
 				width: @size-24;
 				height: 100%;
@@ -1203,12 +1240,6 @@
 			flex-flow: row wrap;
 			align-items: center;
 			justify-content: space-between;
-
-			> article {
-				.OutcomeArticle;
-
-				flex: .325;
-			}
 
 			> section {
 				width: 100%;

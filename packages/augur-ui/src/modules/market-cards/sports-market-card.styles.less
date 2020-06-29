@@ -66,8 +66,17 @@
     }
   }
 
+  > section[class*="SportsMarketContainer"] {
+    display: none;
+
+    &:first-of-type {
+      display: flex;
+    }
+  }
+
   &.ShowMore {
-    > section[class*="SubMarketCollapsible"] {
+    > section[class*="SubMarketCollapsible"],
+    > section[class*="SportsMarketContainer"] {
       display: flex;
     }
 
