@@ -103,7 +103,7 @@
   "warpSync": {
     "enabled": true,
     "autoReport": false,
-    "createCheckpoints": false
+    "createCheckpoints": true
   },
   "ui": {
     "showReloadModal": true,
