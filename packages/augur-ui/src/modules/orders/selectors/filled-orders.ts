@@ -174,7 +174,7 @@ export const selectUserFilledOrders = marketId => {
   if (
     !filledMarketOrders ||
     filledMarketOrders.length < 1 ||
-    marketInfos === undefined
+    marketInfos[marketId] === undefined
   ) {
     return [];
   }
@@ -182,7 +182,7 @@ export const selectUserFilledOrders = marketId => {
   const orders = findOrders(
     filledMarketOrders,
     accountId,
-    marketInfos,
+    marketInfos[marketId],
     openOrders
   );
   orders
