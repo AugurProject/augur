@@ -7,18 +7,22 @@ import {
   MAX_SPREAD_ALL_SPREADS,
   REPORTING_STATE,
   THEMES,
+  MODAL_MARKET_NOT_FOUND,
 } from 'modules/common/constants';
 import * as _ from 'lodash';
 import { Getters } from '@augurproject/sdk';
-import { GetMarketsSortBy, MarketReportingState, TemplateFilters } from '@augurproject/sdk-lite'
 import {
-  addUpdateMarketInfos
-} from 'modules/markets/actions/update-markets-data';
+  GetMarketsSortBy,
+  MarketReportingState,
+  TemplateFilters,
+} from '@augurproject/sdk-lite';
+import { addUpdateMarketInfos } from 'modules/markets/actions/update-markets-data';
 import { LoadReportingMarketsOptions } from 'modules/types';
 import { augurSdk } from 'services/augursdk';
 import { augurSdkLite } from 'services/augursdklite';
 import { AppStatus } from 'modules/app/store/app-status';
 import { Markets } from '../store/markets';
+import { handleMarketsUpdatedLog } from 'modules/events/actions/log-handlers';
 
 export const organizeReportingStates = reportingState => {
   let reportingStates: string[] = [];
@@ -139,7 +143,8 @@ export const loadMarketsByFilter = async (
   if (filterOptions.maxFee === MAX_FEE_100_PERCENT) delete params.maxFee;
   if (filterOptions.maxLiquiditySpread === MAX_SPREAD_ALL_SPREADS)
     delete params.maxLiquiditySpread;
-  if (filterOptions.marketTypeFilter === FILTER_ALL) delete params.marketTypeFilter;
+  if (filterOptions.marketTypeFilter === FILTER_ALL)
+    delete params.marketTypeFilter;
 
   const marketList = await augur.getMarkets({ ...params });
   const marketInfos = addUpdateMarketInfos(marketList.markets);
@@ -217,7 +222,7 @@ export const loadDesignatedReportingMarkets = (
     designatedReporter,
     ...filterOptions,
   };
- loadReportingMarkets(params, cb);
+  loadReportingMarkets(params, cb);
 };
 
 const loadReportingMarkets = (
@@ -230,7 +235,12 @@ const loadReportingMarkets = (
   let reportingState = null;
   if (filterOptions.reportingStates.length === 1) {
     reportingState = filterOptions.reportingStates[0];
-   Markets.actions.updateReportingList(reportingState, [], filterOptions, true);
+    Markets.actions.updateReportingList(
+      reportingState,
+      [],
+      filterOptions,
+      true
+    );
   }
   const params = {
     sortBy: GetMarketsSortBy.endTime,
@@ -246,7 +256,13 @@ const loadReportingMarkets = (
     params.offset = paginationOffset * filterOptions.limit;
   }
 
-  Markets.actions.updateReportingList(reportingState, null, filterOptions, false, getMarkets(reportingState, params, cb));
+  Markets.actions.updateReportingList(
+    reportingState,
+    null,
+    filterOptions,
+    false,
+    getMarkets(reportingState, params, cb)
+  );
 };
 
 const getMarkets = (reportingState, params, cb) => async () => {
@@ -254,7 +270,7 @@ const getMarkets = (reportingState, params, cb) => async () => {
   const marketList: Getters.Markets.MarketList = await augur.getMarkets({
     ...params,
   });
-  
+
   const marketInfos = addUpdateMarketInfos(marketList.markets);
   Markets.actions.updateMarketsData(marketInfos);
 
@@ -262,13 +278,24 @@ const getMarkets = (reportingState, params, cb) => async () => {
   if (cb) cb(null, marketList);
   if (reportingState) {
     return {
-      marketIds
-    }
+      marketIds,
+    };
   }
-}
+};
 
-export const hotLoadMarket = marketId => {
+export const hotLoadMarket = (marketId, history) => {
   console.log('Hot Loading Market', marketId);
   const augurLite = augurSdkLite.get();
-  return augurLite.hotloadMarket(marketId);
+  augurLite.hotloadMarket(marketId).then(marketsInfo => {
+    if (marketsInfo) {
+      handleMarketsUpdatedLog({
+        marketsInfo,
+      });
+    } else {
+      AppStatus.actions.setModal({
+        type: MODAL_MARKET_NOT_FOUND,
+        history,
+      });
+    }
+  });
 };
