@@ -620,14 +620,13 @@ jobs:
       - bash: |
           set -euo pipefail
           ipfs init > /dev/null 2>&1
-          IPFS_HASH=$(ipfs add -r -Q packages/augur-ui/build)
+          IPFS_HASH=$(ipfs add -r -Q -n --pin=false packages/augur-ui/build)
           echo nothing > $IPFS_HASH.ipfs
         displayName: ipfs hash of build dir
       - task: CopyFiles@2
         inputs:
           #sourceFolder: # Optional
           contents: |
-            augur.zip
             *.ipfs
           targetFolder: $(Build.ArtifactStagingDirectory)
           cleanTargetFolder: true
