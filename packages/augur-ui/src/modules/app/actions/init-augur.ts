@@ -229,7 +229,12 @@ export function connectAugur(
       config.networkId
     );
     dispatch(updateCanHotload(true)); // Hotload now!
-
+    // End init here for Googlebot 
+    // TODO: Market list do something with hotload
+    if(isGoogleBot()) {
+      callback(null);
+      return;
+    }
 
     // Since liteProvider and fallbackProvider can be the same
     // we can re-use it if we already have made the same one. If not
