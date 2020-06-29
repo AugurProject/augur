@@ -45,6 +45,8 @@ const OpenOrders = ({
     openOrders
   } = selectMarketsOpenOrders();
 
+  console.log(ordersObj);
+
   function filterComp(input, data) {
     return data.description.toLowerCase().indexOf(input.toLowerCase()) >= 0;
   }
@@ -71,6 +73,8 @@ const OpenOrders = ({
       />
     );
   }
+
+  const hasPending = Boolean(openOrders.find(order => order.pending));
   return (
     <FilterSwitchBox
         title="Open Orders"

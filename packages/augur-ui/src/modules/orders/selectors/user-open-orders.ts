@@ -8,7 +8,6 @@ import {
   selectPendingOrdersState,
   selectUserMarketOpenOrders,
 } from 'appStore/select-state';
-import memoize from 'memoizee';
 import {
   BUY,
   BUY_INDEX,
@@ -55,7 +54,8 @@ export const findUserOpenOrders = (marketId) => {
           orderCancellation,
           market.description,
           outcome.description,
-          market.marketType
+          market.marketType,
+          market.tickSize
         )
       )
       .filter(collection => collection.length !== 0)
@@ -88,20 +88,21 @@ function selectUserOpenOrdersInternal(
   orderCancellation,
   marketDescription,
   name,
-  marketType
+  marketType,
+  marketTickSize
 ) {
   const { loginAccount } = AppStatus.get();
-  if (!loginAccount.address || userMarketOpenOrders == null) return [];
-
+  const orderData = userMarketOpenOrders && userMarketOpenOrders[outcomeId];
+  if (!loginAccount.address || !orderData) return [];
   return userOpenOrders(
     marketId,
     outcomeId,
-    loginAccount,
     userMarketOpenOrders,
     orderCancellation,
     marketDescription,
     name,
-    marketType
+    marketType,
+    marketTickSize
   );
 }
 
