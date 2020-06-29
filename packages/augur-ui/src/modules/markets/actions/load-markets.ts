@@ -1,44 +1,24 @@
-import { augurSdk } from 'services/augursdk';
 import {
+  FILTER_ALL,
   MARKET_CLOSED,
   MARKET_REPORTING,
   MARKET_SORT_PARAMS,
   MAX_FEE_100_PERCENT,
   MAX_SPREAD_ALL_SPREADS,
   REPORTING_STATE,
-  FILTER_ALL,
   THEMES,
 } from 'modules/common/constants';
 import * as _ from 'lodash';
 import { Getters } from '@augurproject/sdk';
 import { GetMarketsSortBy, MarketReportingState, TemplateFilters } from '@augurproject/sdk-lite'
 import {
-  addUpdateMarketInfos,
-  UpdateMarketsAction,
+  addUpdateMarketInfos
 } from 'modules/markets/actions/update-markets-data';
-import { getOneWeekInFutureTimestamp } from 'utils/format-date';
 import { LoadReportingMarketsOptions } from 'modules/types';
+import { augurSdk } from 'services/augursdk';
+import { augurSdkLite } from 'services/augursdklite';
 import { AppStatus } from 'modules/app/store/app-status';
 import { Markets } from '../store/markets';
-
-interface SortOptions {
-  sortBy?: GetMarketsSortBy;
-  isSortDescending?: boolean;
-}
-
-export interface LoadMarketsFilterOptions {
-  categories: string[];
-  search: string;
-  filter: string;
-  sort: string;
-  maxFee: string;
-  maxLiquiditySpread: string;
-  includeInvalidMarkets: boolean;
-  limit: number;
-  offset: number;
-  templateFilter?: string;
-  marketTypeFilter?: string;
-}
 
 export const organizeReportingStates = reportingState => {
   let reportingStates: string[] = [];
@@ -71,7 +51,7 @@ export const organizeReportingStates = reportingState => {
 };
 
 export const loadMarketsByFilter = async (
-  filterOptions: LoadMarketsFilterOptions,
+  filterOptions,
   cb: Function = () => {}
 ) => {
   // console.log('loadMarketsByFilter called', filterOptions);
@@ -87,7 +67,7 @@ export const loadMarketsByFilter = async (
   const reportingStates: string[] = organizeReportingStates(
     filterOptions.filter
   );
-  const sort: SortOptions = {};
+  const sort = {};
   switch (filterOptions.sort) {
     case MARKET_SORT_PARAMS.RECENTLY_TRADED: {
       // Sort By Recently Traded:
@@ -287,17 +267,8 @@ const getMarkets = (reportingState, params, cb) => async () => {
   }
 }
 
-const hotLoadMarket = _.throttle(
-  marketId => {
-    console.log('Hot Loading Market', marketId);
-
-    const augur = augurSdk.get();
-    return augur.hotloadMarket(marketId);
-  },
-  1000,
-  { leading: true }
-);
-
-export const hotloadMarket = marketId => {
-  hotLoadMarket(marketId);
+export const hotLoadMarket = marketId => {
+  console.log('Hot Loading Market', marketId);
+  const augurLite = augurSdkLite.get();
+  return augurLite.hotloadMarket(marketId);
 };

@@ -192,14 +192,12 @@ const AppView = ({
   ];
 
   useEffect(() => {
-    const useWeb3Transport = isGlobalWeb3();
     initAugur(
       {
         ...env,
         ethereumNodeHttp,
         ethereumNodeWs,
         sdkEndpoint,
-        useWeb3Transport,
       },
       (err: any, res: any) => {
         if (err) {

@@ -1,12 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import { augurSdk } from 'services/augursdk';
-import { Breakdown } from 'modules/modal/common';
-import { CloseButton, SecondaryButton } from 'modules/common/buttons';
+import { SecondaryButton } from 'modules/common/buttons';
+import { Breakdown, Title } from 'modules/modal/common';
 import Styles from 'modules/modal/modal.styles.less';
 import { formatDai } from 'utils/format-number';
 import type { Getters } from '@augurproject/sdk';
 import { LinearPropertyLabel } from 'modules/common/labels';
 import MarketTitle from 'modules/market/components/common/market-title';
+import { useAppStatusStore } from 'modules/app/store/app-status';
 const FROZEN_FUNDS_KEYS = ['openOrders', 'positions', 'createdMarkets'];
 const TITLES = {
   [FROZEN_FUNDS_KEYS[0]]: `Open Orders`,
@@ -15,9 +16,9 @@ const TITLES = {
 };
 
 const TOTAL_TITLES = {
-  [FROZEN_FUNDS_KEYS[0]]: `Total Frozen Funds in Open Orders`,
-  [FROZEN_FUNDS_KEYS[1]]: `Total Frozen Funds in Positions`,
-  [FROZEN_FUNDS_KEYS[2]]: `Total Frozen Funds in Validity Bonds`,
+  [FROZEN_FUNDS_KEYS[0]]: `Total Frozen Funds of Open Orders`,
+  [FROZEN_FUNDS_KEYS[1]]: `Total Frozen Funds of Positions`,
+  [FROZEN_FUNDS_KEYS[2]]: `Total Frozen Funds of Validity Bonds`,
 };
 
 export const ModalFrozenFunds = () => {
@@ -44,6 +45,7 @@ export const ModalFrozenFunds = () => {
           label: `Frozen Funds`,
           value: formatDai(breakdown[key].markets[marketId]),
           regularCase: true,
+          secondary: true,
         }));
         return [
           ...p,
@@ -73,15 +75,7 @@ export const ModalFrozenFunds = () => {
 
   return (
     <div className={Styles.FrozenFundsBreakdown}>
-      <header>
-        <div>
-          <CloseButton action={() => closeModal()} />
-        </div>
-        <div>
-          <h1>Frozen Funds</h1>
-        </div>
-      </header>
-
+      <Title title="Frozen Funds" closeAction={() => closeModal()} />
       <main>
         <section>
           {breakdowns.map(bk => (

@@ -1,16 +1,15 @@
-import type { SDKConfiguration }  from '@augurproject/artifacts';
-import type { Augur, Connectors } from '@augurproject/sdk';
+import type { SDKConfiguration } from '@augurproject/artifacts';
 import type { EthersSigner } from '@augurproject/contract-dependencies-ethers';
-import type { JsonRpcProvider } from 'ethers/providers';
+import type { Augur, Connectors } from '@augurproject/sdk';
 
-import { AugurLite } from '@augurproject/sdk-lite';
 import { NetworkId } from '@augurproject/utils';
+import type { JsonRpcProvider } from 'ethers/providers';
+import { NULL_ADDRESS } from 'modules/common/constants';
 
 import {
   listenToUpdates,
   unListenToEvents,
 } from 'modules/events/actions/listen-to-updates';
-import { NULL_ADDRESS } from 'modules/common/constants'
 import { BigNumber } from 'utils/create-big-number';
 import { getFingerprint } from 'utils/get-fingerprint';
 import { isEmpty } from 'utils/is-empty';
@@ -118,11 +117,6 @@ export class SDK {
       return this.client;
     }
     throw new Error('API must be initialized before use.');
-  }
-
-  ready(): boolean {
-    if (this.client) return true;
-    return false;
   }
 
   subscribe(): void {

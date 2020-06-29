@@ -8526,6 +8526,7 @@ export const TEMPLATES = {
                 id: 3,
                 type: TemplateInputType.DROPDOWN,
                 placeholder: `Exchange`,
+                categoryDestId: 2,
                 values: LIST_VALUES.FIN_STOCK_EXCHANGES,
               },
               {
@@ -8592,6 +8593,7 @@ export const TEMPLATES = {
                 id: 3,
                 type: TemplateInputType.DROPDOWN,
                 placeholder: `Exchange`,
+                categoryDestId: 2,
                 values: LIST_VALUES.FIN_STOCK_EXCHANGES,
               },
               {
@@ -8660,6 +8662,7 @@ export const TEMPLATES = {
                 id: 2,
                 type: TemplateInputType.DROPDOWN,
                 placeholder: `Exchange`,
+                categoryDestId: 2,
                 values: LIST_VALUES.FIN_STOCK_EXCHANGES,
                 denomination: FIN_EXCHANGES_CURRENCIES,
               },
@@ -8716,6 +8719,7 @@ export const TEMPLATES = {
                 type: TemplateInputType.DROPDOWN,
                 placeholder: `Index`,
                 values: LIST_VALUES.FIN_INDEXES,
+                categoryDestId: 2,
               },
               {
                 id: 1,
@@ -8761,6 +8765,7 @@ export const TEMPLATES = {
                 type: TemplateInputType.DROPDOWN,
                 placeholder: `Index`,
                 values: LIST_VALUES.FIN_INDEXES,
+                categoryDestId: 2,
               },
               {
                 id: 2,

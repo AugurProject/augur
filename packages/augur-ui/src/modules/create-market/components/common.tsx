@@ -69,14 +69,6 @@ import {
   timestampComponents,
   dateHasPassed,
 } from 'utils/format-date';
-import MarkdownRenderer from 'modules/common/markdown-renderer';
-import {
-  buildMarketDescription,
-  createTemplateOutcomes,
-  substituteUserOutcome,
-  createTemplateValueList,
-  getEventExpirationForExchange,
-} from 'modules/create-market/get-template';
 import type {
   TemplateInput,
   Template,
@@ -96,17 +88,11 @@ import {
   MARKET_COPY_LIST,
   FRIDAY_DAY_OF_WEEK,
 } from 'modules/create-market/constants';
-import {
-  DismissableNotice,
-  DISMISSABLE_NOTICE_BUTTON_TYPES,
-} from 'modules/reporting/common';
-import PreviewMarketTitle from 'modules/market/components/common/PreviewMarketTitle';
 import { SECONDS_IN_A_DAY } from '@augurproject/sdk-lite';
 import { useAppStatusStore } from 'modules/app/store/app-status';
 import { selectMarket } from 'modules/markets/selectors/market';
 import { createBigNumber } from 'utils/create-big-number';
 import { selectReportingWinningsByMarket } from 'modules/positions/selectors/select-reporting-winnings-by-market';
-import { text } from 'modules/common/labels.styles.less';
 
 export interface HeaderProps {
   text: string;

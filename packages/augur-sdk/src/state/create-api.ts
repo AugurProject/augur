@@ -47,7 +47,7 @@ export function buildSyncStrategies(client:Augur, db:Promise<DB>, provider: Ethe
 
     await warpSyncStrategy.start(currentBlock, warpSyncHash);
 
-    if (config.warpSync && config.warpSync.enabled) {
+    if (config.warpSync && config.warpSync.createCheckpoints) {
       client.events.once(SubscriptionEventName.SDKReady, () => {
         // Check on each new block to see if we need to generate a checkpoint.
         client.events.on(SubscriptionEventName.NewBlock, async (newBlock) => {
@@ -175,7 +175,7 @@ export async function createServer(config: SDKConfiguration, client?: Augur): Pr
     config.zeroX?.mesh?.enabled || config.zeroX?.rpc?.enabled
   );
 
-  if(config.warpSync?.enabled && config.warpSync?.autoReport) {
+  if(config.warpSync?.createCheckpoints && config.warpSync?.autoReport) {
     client.events.on(SubscriptionEventName.WarpSyncHashUpdated,
       async ({ hash }) => {
         if (hash) {

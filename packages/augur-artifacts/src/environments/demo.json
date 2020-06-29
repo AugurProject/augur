@@ -93,6 +93,7 @@
   "plugins": {
     "chat": "orbit"
   },
+<<<<<<< HEAD
   "syncing": {
     "enabled": true
   },
@@ -107,4 +108,11 @@
   "logLevel": 0,
   "showReloadModal": true,
   "averageBlocktime": 2000
+=======
+  "ui": {
+    "showReloadModal": true,
+    "averageBlocktime": 2000,
+    "liteProvider": "jsonrpc"
+  }
+>>>>>>> master
 }
