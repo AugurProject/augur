@@ -93,26 +93,9 @@
   "plugins": {
     "chat": "orbit"
   },
-<<<<<<< HEAD
-  "syncing": {
-    "enabled": true
-  },
-  "sdk": {
-    "enabled": false,
-    "ws": "ws://localhost:9001"
-  },
-  "warpSync": {
-    "enabled": true,
-    "autoReport": false
-  },
-  "logLevel": 0,
-  "showReloadModal": true,
-  "averageBlocktime": 2000
-=======
   "ui": {
     "showReloadModal": true,
     "averageBlocktime": 2000,
     "liteProvider": "jsonrpc"
   }
->>>>>>> master
 }
