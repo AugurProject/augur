@@ -286,7 +286,7 @@ const ConnectDropdown = (props: ConnectDropdownProps) => {
                 </div>
                 <SecondaryButton
                   action={() => wallet.action()}
-                  text='OPEN'
+                  text='Open'
                   icon={Open}
                   disabled={wallet.disabled}
                 />
@@ -311,7 +311,7 @@ const ConnectDropdown = (props: ConnectDropdownProps) => {
           </div>
           <SecondaryButton
             action={() => gasModal()}
-            text='EDIT'
+            text='Edit'
             icon={Pencil}
           />
         </div>}
@@ -332,7 +332,7 @@ const ConnectDropdown = (props: ConnectDropdownProps) => {
             onClick={() => copyClicked()}
             className={isCopied ? Styles.ShowConfirmaiton : null}
           >
-            {ClipboardCopy} Copy
+            Copy {ClipboardCopy}
           </button>
         </div>
 
