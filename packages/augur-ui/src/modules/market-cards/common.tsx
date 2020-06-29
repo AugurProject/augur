@@ -999,7 +999,7 @@ export interface SportsMarketContainerProps {
   data: any;
   market: any;
   title?: string;
-  isCollapsable?: boolean;
+  startOpen?: boolean;
 }
 export const SportsMarketContainer = ({
   marketId,
@@ -1007,11 +1007,11 @@ export const SportsMarketContainer = ({
   data,
   market,
   title = '',
-  isCollapsable = false,
+  startOpen = false,
 }) => {
   const { FUTURES, COMBO, DAILY } = SPORTS_GROUP_TYPES;
   const { isLogged } = useAppStatusStore();
-  const [isCollapsed, setIsCollapsed] = useState(isCollapsable);
+  const [isCollapsed, setIsCollapsed] = useState(startOpen);
   useEffect(() => {
     if (sportsGroup.type === FUTURES) {
       const clipboardMarketId = new Clipboard('#copy_marketId');
@@ -1021,7 +1021,7 @@ export const SportsMarketContainer = ({
 
   let innerContent = null;
   let headingContent = title;
-  // console.log(marketId, sportsGroup, data, title, isCollapsable, isCollapsed);
+  // console.log(marketId, sportsGroup, data, title, startOpen, isCollapsed);
   switch (sportsGroup.type) {
     default: {
       // futures
@@ -1074,16 +1074,14 @@ export const SportsMarketContainer = ({
     >
       <header>
         {headingContent}
-        {isCollapsable && (
-          <button
-            onClick={(e) => {
-              e.preventDefault();
-              isCollapsable ? setIsCollapsed(!isCollapsed) : null;
-            }}
-          >
-            {ThickChevron}
-          </button>
-        )}
+        <button
+          onClick={(e) => {
+            e.preventDefault();
+            setIsCollapsed(!isCollapsed);
+          }}
+        >
+          {ThickChevron}
+        </button>
       </header>
       <div>{innerContent}</div>
     </section>
@@ -1142,7 +1140,7 @@ export const prepareSportsGroup = (sportsGroup, orderBooks, addBet) => {
             marketId={market.id}
             market={market}
             sportsGroup={sportsGroup}
-            isCollapsable={index !== 0}
+            startOpen={index !== 0}
           />
         );
       });
@@ -1207,7 +1205,7 @@ export const prepareSportsGroup = (sportsGroup, orderBooks, addBet) => {
       //   orderBooks,
       //   addBet
       // );
-      // // testCombo(sportsGroup, orderBooks, addBet);
+      console.log(sportsGroup, testCombo(sportsGroup, orderBooks, addBet));
       marketGroups.push(
         <section key={id} style={{ color: 'red', padding: '16px 0' }}>
           This is a Combinatorial Event and is currently under
