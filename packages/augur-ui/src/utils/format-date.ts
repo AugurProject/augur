@@ -191,7 +191,7 @@ export function buildformattedDate(
 }
 
 export function timestampComponents(timestamp: number, offset: number = 0, timezone: string = null): Partial<DateTimeComponents> {
-  const date = moment.unix(timestamp).add(offset, 'hours');
+  const date = moment.utc(timestamp * 1000).add(offset, 'hours');
   let meridiem = 'AM';
   let hour = date.hours()
   if (hour == 0) {

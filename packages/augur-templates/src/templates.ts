@@ -645,7 +645,21 @@ export function getTemplateWednesdayAfterOpeningDay(openingDay: number) {
   return wednesdayOfNextWeekOpeningDay.unix();
 }
 
-export function getTemplateExchangeClosingWithBuffer(
+export function getExchangeClosingWithBufferGivenDay(
+  dayFormat: string,
+  hour: number,
+  minutes: number,
+  offset: number,
+) {
+  if (!moment(dayFormat).isValid()) {
+    console.error(`Can not parse ${dayFormat}`);
+    return 0;
+  }
+  const closingDateTime = moment(dayFormat, 'MMMM D, YYYY').startOf('day').unix();
+  return getTemplateExchangeClosingWithBuffer(closingDateTime, hour, minutes, offset);
+}
+
+function getTemplateExchangeClosingWithBuffer(
   dayTimestamp: number,
   hour: number,
   minutes: number,
@@ -653,8 +667,8 @@ export function getTemplateExchangeClosingWithBuffer(
 ) {
   // one hour time buffer after lastest exchange closing is built in.
   const OneHourBuffer = 1;
-  const closingDateTime = moment.unix(dayTimestamp).utc();
-  closingDateTime.set({
+  const closingDateTime = moment.utc(dayTimestamp * 1000);
+  closingDateTime.utc().set({
     hour: hour - offset + OneHourBuffer,
     minute: minutes,
   });

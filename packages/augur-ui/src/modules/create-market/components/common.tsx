@@ -24,8 +24,8 @@ import {
   buildMarketDescription,
   createTemplateOutcomes,
   createTemplateValueList,
-  getEventExpirationForExchange,
   substituteUserOutcome,
+  getEventExpirationForExchangeDayInQuestion,
 } from 'modules/create-market/get-template';
 import PreviewMarketTitle
   from 'modules/market/components/common/PreviewMarketTitle';
@@ -921,7 +921,7 @@ export const InputFactory = (props: InputFactoryProps) => {
           const stringValue = convertUnixToFormattedDate(Number(startOfDay))
             .formattedSimpleData;
           updateData(stringValue);
-          const comps = getEventExpirationForExchange(inputs);
+          const comps = getEventExpirationForExchangeDayInQuestion(inputs);
           if (comps) {
             onChange('updateEventExpiration', {
               setEndTime: comps.setEndTime,
@@ -1017,7 +1017,7 @@ export const InputFactory = (props: InputFactoryProps) => {
               target.type === TemplateInputType.DATEYEAR_CLOSING
             ) {
               target.userInputObject = target.inputTimeOffset[value];
-              const comps = getEventExpirationForExchange(inputs);
+              const comps = getEventExpirationForExchangeDayInQuestion(inputs);
               if (comps) {
                 onChange('updateEventExpiration', {
                   setEndTime: comps.setEndTime,

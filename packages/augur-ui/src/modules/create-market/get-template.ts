@@ -16,9 +16,8 @@ import {
   TEMPLATES,
   TEMPLATE_VALIDATIONS,
   RETIRED_TEMPLATES,
-  getTemplateExchangeClosingWithBuffer,
   TemplateInputType,
-  TimeOffset
+  getExchangeClosingWithBufferGivenDay
 } from '@augurproject/templates';
 import {
   REQUIRED,
@@ -385,7 +384,7 @@ export function createTemplateValueList(values: string[]): NameValuePair[] {
   return values.map(v => ({ value: v, label: v }));
 }
 
-export function getEventExpirationForExchange(
+export function getEventExpirationForExchangeDayInQuestion(
   inputs
 ): Partial<DateTimeComponents> {
   const closing = inputs.find(
@@ -394,16 +393,16 @@ export function getEventExpirationForExchange(
   if (!closing) return null;
   const dateYearSource = inputs.find(i => i.id === closing.inputDateYearId);
   const timeOffset = closing.userInputObject as TimeOffset;
-  if (dateYearSource && dateYearSource.setEndTime && timeOffset) {
-    const closingDateTime = getTemplateExchangeClosingWithBuffer(
-      dateYearSource.setEndTime,
+  if (dateYearSource && dateYearSource.userInput && timeOffset) {
+    const closingDateTime = getExchangeClosingWithBufferGivenDay(
+      dateYearSource.userInput,
       timeOffset.hour,
       timeOffset.minutes,
       timeOffset.offset
     );
     // offset has already been applied but needs to be passed out
     return {
-      ...timestampComponents(closingDateTime, 0, timeOffset.timezone),
+      ...timestampComponents(closingDateTime, timeOffset.offset, timeOffset.timezone),
       offset: timeOffset.offset
     };
   }
