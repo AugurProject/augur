@@ -1,6 +1,6 @@
 import { useReducer } from 'react';
 import { formatDate } from 'utils/format-date';
-import { getNewToWin, convertToPrice } from 'utils/get-odds';
+import { getNewToWin } from 'utils/get-odds';
 
 import { ZERO } from 'modules/common/constants';
 import {
@@ -10,8 +10,7 @@ import {
   MOCK_BETSLIP_STATE,
   BETSLIP_ACTIONS,
 } from 'modules/trading/store/constants';
-import { Markets } from 'modules/markets/store/markets';
-import { placeTrade } from 'modules/contracts/actions/contractCalls';
+import { placeBet } from 'utils/betslip-helpers';
 
 const {
   CASH_OUT,
@@ -147,7 +146,7 @@ export function BetslipReducer(state, action) {
           };
         }
         orders.forEach((order) => {
-          placeBet(marketId, order);
+          placeBet(marketId, order, matchedItems[marketId].orders.length);
           matchedItems[marketId].orders.push({
             ...order,
             amountFilled: order.wager,
@@ -207,6 +206,7 @@ export function BetslipReducer(state, action) {
       const order = matchedItems[marketId].orders[orderId];
       order.status = PENDING;
       order.amountFilled = order.wager;
+      placeBet(marketId, order, orderId);
       break;
     }
     case CASH_OUT: {
@@ -269,26 +269,6 @@ export function BetslipReducer(state, action) {
   return updatedState;
 }
 
-export const placeBet = async (marketId, order) => {
-  const { marketInfos } = Markets.get();
-  const market = marketInfos[marketId];
-  // todo: need to add user shares, approval check, pending queue
-  await placeTrade(
-    0,
-    marketId,
-    market.numOutcomes,
-    order.outcomeId,
-    false,
-    market.numTicks,
-    market.minPrice,
-    market.maxPrice,
-    order.wager,
-    order.price,
-    0,
-    '0',
-    undefined
-  );
-};
 export const useBetslip = (defaultState = MOCK_BETSLIP_STATE) => {
   const [state, dispatch] = useReducer(BetslipReducer, defaultState);
   return {

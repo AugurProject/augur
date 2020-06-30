@@ -5,10 +5,8 @@ import {
   ONE,
   FIFTY,
   HUNDRED,
-  ASKS,
 } from 'modules/common/constants';
 import { createBigNumber, BigNumber } from 'utils/create-big-number';
-import { getOutcomeNameWithOutcome } from './get-outcome';
 
 const { DECIMAL, FRACTIONAL, AMERICAN, PERCENT } = ODDS_TYPE;
 
@@ -132,20 +130,3 @@ const convertAmericanToFractional = (americanOdds) => {
 
 // Negative odds - The probability divided by (1 minus (the probability divided by 100)) then multiply by -1 to convert into a negative e.g. a probability of 20% = (20 / (1 - (20/100))) * -1 = -25.
 
-export const convertPositionToBet = (position, marketInfo) => {
-  return {
-    ...position,
-    amountWon: '0',
-    amountFilled: '0',
-    price: position.averagePrice,
-    toWin: '0',
-    odds: convertToOdds({
-      price: position.averagePrice,
-      min: marketInfo.min,
-      max: marketInfo.max,
-      type: ASKS,
-    })[ODDS_TYPE.AMERICAN],
-    outcome: getOutcomeNameWithOutcome(marketInfo, position.outcome),
-    wager: position.rawPosition
-  }
-}

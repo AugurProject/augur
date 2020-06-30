@@ -9,7 +9,7 @@ import { isSameAddress } from 'utils/isSameAddress';
 import { Markets } from 'modules/markets/store/markets';
 import { Betslip } from 'modules/trading/store/betslip';
 import { createBigNumber } from 'utils/create-big-number';
-import { convertPositionToBet } from 'utils/get-odds';
+import { convertPositionToBet } from 'utils/betslip-helpers';
 
 export const checkUpdateUserPositions = (marketIds: string[]) => {
   const { accountPositions, loginAccount: { address } } = AppStatus.get();
