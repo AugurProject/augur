@@ -1147,26 +1147,7 @@ export const prepareSportsGroup = (sportsGroup, orderBooks, addBet) => {
   const { FUTURES, DAILY, COMBO } = SPORTS_GROUP_TYPES;
   let marketGroups = [];
   switch (type) {
-    case FUTURES: {
-      markets.forEach((market, index) => {
-        const multiOutcomeMarketGridData = createOutcomesData(
-          orderBooks,
-          market,
-          addBet
-        );
-        marketGroups.push(
-          <SportsMarketContainer
-            key={market.id}
-            data={multiOutcomeMarketGridData}
-            marketId={market.id}
-            market={market}
-            sportsGroup={sportsGroup}
-            startOpen={index === 0}
-          />
-        );
-      });
-      break;
-    }
+    case FUTURES:
     case DAILY: {
       // TODO: fix to use a constant for money line
       const { MONEY_LINE } = SPORTS_GROUP_MARKET_TYPES;
@@ -1189,41 +1170,13 @@ export const prepareSportsGroup = (sportsGroup, orderBooks, addBet) => {
           }
         }
       );
-      const mainMarket = sortedMarkets[0];
-      const mainMarketId = mainMarket?.id;
-      if (mainMarketId) {
-        const dailyMarketData = createOutcomesData(
-          orderBooks,
-          mainMarket,
-          addBet
-        );
-        marketGroups.push(
-          <SportsMarketContainer
-            key={mainMarketId}
-            data={dailyMarketData}
-            marketId={mainMarketId}
-            market={mainMarket}
-            sportsGroup={sportsGroup}
-            startOpen={true}
-            title={mainMarket.sportsBook.title}
-          />
-        );
-        // marketGroups.push(
-        //   <MultiOutcomeMarketTable
-        //     key={mainMarketId}
-        //     marketTitle={mainMarket.sportsBook.title || mainMarket.description}
-        //     multiOutcomeMarketTableData={dailyMarketData}
-        //   />
-        // );
-      }
       sortedMarkets.forEach((market) => {
-        if (market.id === mainMarketId) return;
-        const subMarketData = createOutcomesData(orderBooks, market, addBet);
+        const data = createOutcomesData(orderBooks, market, addBet);
         const startOpen = marketGroups.length === 0;
         marketGroups.push(
           <SportsMarketContainer
             key={market.id}
-            data={subMarketData}
+            data={data}
             marketId={market.id}
             market={market}
             sportsGroup={sportsGroup}
@@ -1231,14 +1184,6 @@ export const prepareSportsGroup = (sportsGroup, orderBooks, addBet) => {
             title={market.sportsBook.title}
           />
         );
-        // marketGroups.push(
-        //   <SubMarketCollapsible
-        //     key={market.id}
-        //     marketId={market.id}
-        //     title={market.sportsBook.title || market.description}
-        //     SubMarketCollapsibleData={subMarketData}
-        //   />
-        // );
       });
       break;
     }
