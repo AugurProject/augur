@@ -85,7 +85,6 @@ import toggleCategory from 'modules/routes/helpers/toggle-category';
 import { useMarketsStore } from 'modules/markets/store/markets';
 import { hasStakeInMarket } from 'modules/account/helpers/common';
 import { CountdownProgress } from 'modules/common/progress';
-import { string } from 'prop-types';
 
 export interface PercentProps {
   percent: number;
@@ -968,11 +967,14 @@ const filterSortByGroupType = (markets, groupType) =>
         Number(a.sportsBook.liquidityRank) - Number(b.sportsBook.liquidityRank)
     );
 
-const testCombo = (sportsGroup) => {
+const testCombo = sportsGroup => {
   const {
     COMBO_MONEY_LINE,
     COMBO_OVER_UNDER,
     COMBO_SPREAD,
+    SPREAD,
+    MONEY_LINE,
+    OVER_UNDER,
   } = SPORTS_GROUP_MARKET_TYPES;
   const moneyLineMarkets = filterSortByGroupType(
     sportsGroup.markets,
@@ -987,16 +989,17 @@ const testCombo = (sportsGroup) => {
     COMBO_OVER_UNDER
   );
   const topComboMarkets = {
-    spread: createOutcomesData(spreadMarkets[0]),
-    moneyLine: createOutcomesData(moneyLineMarkets[0]),
-    overUnder: createOutcomesData(overUnderMarkets[0]),
+    [SPREAD]: createOutcomesData(spreadMarkets[0]),
+    [MONEY_LINE]: createOutcomesData(moneyLineMarkets[0]),
+    [OVER_UNDER]: createOutcomesData(overUnderMarkets[0]),
   };
   const moneyLineMarketsExtra = moneyLineMarkets.splice(1);
   const spreadMarketsExtra = spreadMarkets.splice(1);
   const overUnderMarketsExtra = overUnderMarkets.splice(1);
-  const additionalMarkets = (moneyLineMarketsExtra
+  const additionalMarkets = moneyLineMarketsExtra
     .concat(spreadMarketsExtra)
-    .concat(overUnderMarketsExtra)).map(market => createOutcomesData(market));
+    .concat(overUnderMarketsExtra)
+    .map(market => createOutcomesData(market));
   return {
     topComboMarkets,
     additionalMarkets,
@@ -1055,6 +1058,48 @@ export const MultiOutcomeMarketGrid = ({ data }) => (
     ))}
   </section>
 );
+
+export const ComboMarketContainer = ({ data, sportsGroup }) => {
+  const {
+    SPREAD,
+    MONEY_LINE,
+    OVER_UNDER,
+  } = SPORTS_GROUP_MARKET_TYPES;
+  const { placeholderOutcomes } = sportsGroup.markets[0].sportsBook;
+  return (
+    <section
+      className={classNames(
+        Styles.SportsMarketContainer,
+        Styles.ComboContainer
+      )}
+    >
+      <header>
+        <ul>
+          <li></li>
+          <li>Spread</li>
+          <li>Moneyline</li>
+          <li>Over/Under</li>
+        </ul>
+      </header>
+      <div>
+        {placeholderOutcomes.map((outcomeLabel, index) => (
+          <ul key={outcomeLabel}>
+            <li>{outcomeLabel}</li>
+            <li>
+              <SportsOutcome {...data[SPREAD][index]} title={undefined} />
+            </li>
+            <li>
+              <SportsOutcome {...data[MONEY_LINE][index]} title={undefined} />
+            </li>
+            <li>
+              <SportsOutcome {...data[OVER_UNDER][index]} title={undefined} />
+            </li>
+          </ul>
+        ))}
+      </div>
+    </section>
+  );
+};
 
 export const MultiMarketTable = ({ comboMarketData }) => {
   return (
@@ -1178,7 +1223,7 @@ export const SportsMarketContainer = ({
   );
 };
 
-export const prepareSportsGroup = (sportsGroup) => {
+export const prepareSportsGroup = sportsGroup => {
   const { id, type, markets } = sportsGroup;
   const { FUTURES, DAILY, COMBO } = SPORTS_GROUP_TYPES;
   let marketGroups = [];
@@ -1226,6 +1271,14 @@ export const prepareSportsGroup = (sportsGroup) => {
     case COMBO: {
       // TODO: Implement combos once we get more info from getters, for now skip
       const { additionalMarkets, topComboMarkets } = testCombo(sportsGroup);
+      // console.log(sportsGroup);
+      marketGroups.push(
+        <ComboMarketContainer
+          data={topComboMarkets}
+          sportsGroup={sportsGroup}
+          key={sportsGroup.id}
+        />
+      );
       additionalMarkets.forEach(data => {
         const { market } = data[0];
         const startOpen = marketGroups.length === 0;
@@ -1239,7 +1292,7 @@ export const prepareSportsGroup = (sportsGroup) => {
             startOpen={startOpen}
             title={market.sportsBook.title}
           />
-        )
+        );
       });
       break;
     }
