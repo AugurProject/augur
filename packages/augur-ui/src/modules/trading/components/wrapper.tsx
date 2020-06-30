@@ -620,7 +620,6 @@ class Wrapper extends Component<WrapperProps, WrapperState> {
               updateTradeNumShares={this.updateTradeNumShares}
               clearOrderConfirmation={this.clearOrderConfirmation}
               initialLiquidity={initialLiquidity}
-              showTip={showTip}
             />
           )}
         </div>

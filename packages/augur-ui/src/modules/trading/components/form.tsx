@@ -104,7 +104,6 @@ interface FromProps {
   gasPrice: number;
   getGasConfirmEstimate: Function;
   endTime: number;
-  showTip: boolean;
 }
 
 interface TestResults {
@@ -840,7 +839,6 @@ class Form extends Component<FromProps, FormState> {
       orderPriceEntered,
       orderAmountEntered,
       selectedNav,
-      showTip,
     } = this.props;
     const s = this.state;
 
@@ -1136,6 +1134,7 @@ class Form extends Component<FromProps, FormState> {
               })}
             >
               <SquareDropdown
+                openTop
                 defaultValue={s.advancedOption}
                 options={advancedOptions}
                 onChange={value => {
@@ -1184,8 +1183,8 @@ class Form extends Component<FromProps, FormState> {
                       />
                     )}
                     <SquareDropdown
+                      openTop
                       defaultValue={s.expirationDateOption}
-                      openTop={!(showTip && !initialLiquidity)}
                       options={[
                         {
                           label: 'Days',
