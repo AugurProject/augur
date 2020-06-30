@@ -9,6 +9,7 @@ import { Betslip } from 'modules/trading/store/betslip';
 export const convertPositionToBet = (position, marketInfo) => {
   return {
     ...position,
+    outcomeId: position.outcome,
     amountWon: '0',
     amountFilled: '0',
     price: position.averagePrice,

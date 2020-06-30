@@ -168,15 +168,24 @@ export function BetslipReducer(state, action) {
           orders: [],
         };
       }
-      matchedItems[marketId].orders.push({
-        ...order,
-        amountFilled: order.wager,
-        amountWon: '0',
-        dateUpdated: updatedTime,
-        status: FILLED,
-      });
-      updatedState.matched.count++;
-      fromList && updatedState[fromList].count--;
+      const match = matchedItems[marketId].orders.findIndex(lOrder => lOrder.outcomeId === order.outcomeId && lOrder.price === order.price);
+      if (match > -1) {
+        matchedItems[marketId].orders[match] = {
+          ...matchedItems[marketId].orders[match],
+          status: FILLED,
+          dateUpdated: updatedTime,
+        }
+      } else {
+        matchedItems[marketId].orders.push({
+          ...order,
+          amountFilled: order.wager,
+          amountWon: '0',
+          dateUpdated: updatedTime,
+          status: FILLED,
+        });
+        updatedState.matched.count++;
+        fromList && updatedState[fromList].count--;
+      }
       break;
     }
     case ADD_MULTIPLE_MATCHED: {
