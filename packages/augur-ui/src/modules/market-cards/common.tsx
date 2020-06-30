@@ -672,6 +672,8 @@ export const ComboMarketContainer = ({ data, sportsGroup }: ComboMarketContainer
     OVER_UNDER,
   } = SPORTS_GROUP_MARKET_TYPES;
   const { placeholderOutcomes } = sportsGroup.markets[0].sportsBook;
+  if (!placeholderOutcomes) return <section>Something went wrong with loading this combo market container...</section>;
+
   return (
     <section
       className={classNames(
