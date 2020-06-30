@@ -667,12 +667,12 @@ function getTemplateExchangeClosingWithBuffer(
 ) {
   // one hour time buffer after lastest exchange closing is built in.
   const OneHourBuffer = 1;
-  const closingDateTime = moment.utc(dayTimestamp * 1000);
-  closingDateTime.utc().set({
+  const closingDateTime = moment.unix(dayTimestamp);
+  closingDateTime.set({
     hour: hour - offset + OneHourBuffer,
     minute: minutes,
   });
-  return closingDateTime.utc().unix();
+  return closingDateTime.unix();
 }
 
 function closingDateDependenciesCheck(

@@ -191,7 +191,8 @@ export function buildformattedDate(
 }
 
 export function timestampComponents(timestamp: number, offset: number = 0, timezone: string = null): Partial<DateTimeComponents> {
-  const date = moment.utc(timestamp * 1000).add(offset, 'hours');
+  // using local mode with moment, manually adjusting for offset
+  const date = moment.unix(timestamp).add(offset, 'hours');
   let meridiem = 'AM';
   let hour = date.hours()
   if (hour == 0) {
@@ -217,6 +218,14 @@ export function getUtcStartOfDayFromLocal(timestamp: number): number {
     .startOf('day')
     .unix();
     return value;
+}
+
+export function convertUTCUnixToFormattedDate(integer: number = 0) {
+  const localOffset: number = (new Date().getTimezoneOffset() / 60) * -1;
+  const value = moment
+    .unix(integer)
+    .add(localOffset, 'hours')
+  return formatDate(value.toDate());
 }
 
 export function convertUnixToFormattedDate(integer: number = 0) {
