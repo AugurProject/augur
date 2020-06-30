@@ -490,7 +490,7 @@ export const SportsOutcome = ({
     disabled = false;
     action = () =>
       addBet(
-        market.Id,
+        market.id,
         market.description,
         OddToUse,
         outcomeLabel,

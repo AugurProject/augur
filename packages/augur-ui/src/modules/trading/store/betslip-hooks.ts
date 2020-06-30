@@ -80,11 +80,19 @@ export function BetslipReducer(state, action) {
       break;
     }
     case ADD_BET: {
-      const { marketId, description, outcome, odds, wager, outcomeId, price } = action;
+      const {
+        marketId,
+        description,
+        outcome,
+        odds,
+        wager,
+        outcomeId,
+        price,
+      } = action;
       if (!betslipItems[marketId]) {
         betslipItems[marketId] = {
           description,
-          orders: []
+          orders: [],
         };
       }
       betslipItems[marketId].orders.push({
@@ -230,7 +238,7 @@ export function BetslipReducer(state, action) {
     case MODIFY_BET: {
       const { marketId, orderId, order } = action;
       const toWin = getNewToWin(order.odds, order.wager);
-      betslipItems[marketId].orders[orderId] = {...order, toWin };
+      betslipItems[marketId].orders[orderId] = { ...order, toWin };
       break;
     }
     case CANCEL_BET: {
@@ -261,26 +269,26 @@ export function BetslipReducer(state, action) {
   return updatedState;
 }
 
-export const placeBet = async (marketId, order) =>  {
+export const placeBet = async (marketId, order) => {
   const { marketInfos } = Markets.get();
   const market = marketInfos[marketId];
   // todo: need to add user shares, approval check, pending queue
   await placeTrade(
-          0,
-          marketId,
-          market.numOutcomes,
-          order.outcomeId,
-          false,
-          market.numTicks,
-          market.minPrice,
-          market.maxPrice,
-          order.wager,
-          order.price,
-          0,
-          '0',
-          undefined
-        );
-}
+    0,
+    marketId,
+    market.numOutcomes,
+    order.outcomeId,
+    false,
+    market.numTicks,
+    market.minPrice,
+    market.maxPrice,
+    order.wager,
+    order.price,
+    0,
+    '0',
+    undefined
+  );
+};
 export const useBetslip = (defaultState = MOCK_BETSLIP_STATE) => {
   const [state, dispatch] = useReducer(BetslipReducer, defaultState);
   return {
@@ -295,19 +303,32 @@ export const useBetslip = (defaultState = MOCK_BETSLIP_STATE) => {
           dispatch({ type: TOGGLE_SUBHEADER });
       },
       toggleStep: () => dispatch({ type: TOGGLE_STEP }),
-      addBet: (marketId, description, odds, outcome, wager = "0", outcomeId, price = "0") => {
-        dispatch({ type: ADD_BET, marketId, description, odds, outcome, wager, outcomeId, price });
-      },
-      sendBet: (marketId, orderId, description, order) => {
-        dispatch({ type: SEND_BET, marketId, orderId, description, order });
-      },
+      addBet: (
+        marketId,
+        description,
+        odds,
+        outcome,
+        wager = '0',
+        outcomeId,
+        price = '0'
+      ) =>
+        dispatch({
+          type: ADD_BET,
+          marketId,
+          description,
+          odds,
+          outcome,
+          wager,
+          outcomeId,
+          price,
+        }),
+      sendBet: (marketId, orderId, description, order) =>
+        dispatch({ type: SEND_BET, marketId, orderId, description, order }),
       modifyBet: (marketId, orderId, order) =>
         dispatch({ type: MODIFY_BET, marketId, orderId, order }),
       cancelBet: (marketId, order) =>
         dispatch({ type: CANCEL_BET, marketId, order }),
-      sendAllBets: () => {
-        dispatch({ type: SEND_ALL_BETS })
-      },
+      sendAllBets: () => dispatch({ type: SEND_ALL_BETS }),
       cancelAllBets: () => dispatch({ type: CANCEL_ALL_BETS }),
       retry: (marketId, orderId) =>
         dispatch({ type: RETRY, marketId, orderId }),
