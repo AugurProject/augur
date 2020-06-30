@@ -107,6 +107,7 @@ import deepClone from 'utils/deep-clone';
 import {
   buildformattedDate,
   convertUnixToFormattedDate,
+  convertUTCUnixToFormattedDate,
 } from 'utils/format-date';
 import type {
   TemplateInput,
@@ -701,8 +702,6 @@ export default class Form extends React.Component<FormProps, FormState> {
       if (name === 'updateEventExpiration') {
         this.onError('setEndTime', '');
         setEndTime = value.setEndTime || newMarket.setEndTime;
-        endTimeFormatted = convertUnixToFormattedDate(setEndTime);
-      } else {
         endTimeFormatted = buildformattedDate(
           setEndTime,
           hour,

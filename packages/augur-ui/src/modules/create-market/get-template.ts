@@ -5,6 +5,7 @@ import {
   SCALAR_OUTCOMES,
   YES_NO,
   YES_NO_OUTCOMES,
+  INVALID_OUTCOME_LABEL
 } from 'modules/common/constants';
 import {
   CategoricalMarketIcon,
@@ -23,8 +24,6 @@ import {
   REQUIRED,
   CHOICE,
 } from '@augurproject/sdk-lite'
-import { YesNoMarketIcon, CategoricalMarketIcon, ScalarMarketIcon } from 'modules/common/icons';
-import { YES_NO, CATEGORICAL, SCALAR, YES_NO_OUTCOMES, SCALAR_OUTCOMES, INVALID_OUTCOME_LABEL } from 'modules/common/constants';
 import { NameValuePair } from 'modules/common/selection';
 import {
   MARKET_SUB_TEMPLATES,
@@ -402,7 +401,11 @@ export function getEventExpirationForExchange(
       timeOffset.minutes,
       timeOffset.offset
     );
-    return timestampComponents(closingDateTime, timeOffset.offset, timeOffset.timezone);
+    // offset has already been applied but needs to be passed out
+    return {
+      ...timestampComponents(closingDateTime, 0, timeOffset.timezone),
+      offset: timeOffset.offset
+    };
   }
   return null;
 }
