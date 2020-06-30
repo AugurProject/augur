@@ -939,78 +939,29 @@
 		}
 	}
 
-	.SubMarketCollapsible {
-		flex-flow: column nowrap;
-		flex: 1;
-		border: @size-1 solid var(--color-outline);
-		border-radius: @border-radius-default;
+	.MultiOutcomeMarketRow {
+		display: flex;
+		flex-flow: row wrap;
+		justify-content: space-between;
 
-		&.Collapsed {
-			> div:first-of-type {
-				border-radius: @border-radius-default;
-				border-bottom: none;
+		> article {
+			.OutcomeArticle;
 
-				> button > svg {
-					transform: none;
-				}
-			}
-
-			> div:last-of-type {
-				display: none;
-			}
-		}
-
-		> div:first-of-type {
-			display: flex;
-			background: var(--color-table-header);
-			border-top-right-radius: @border-radius-default;
-			border-top-left-radius: @border-radius-default;
-			border-bottom: @size-1 solid var(--color-outline);
-			max-height: @size-30;
-			height: @size-30;
-			padding: 0 @size-12;
-
-			> button {
-				align-items: center;
-				display: flex;
+			> div {
 				flex: 1;
-				height: 100%;
-				justify-content: space-between;
+			}
 
-				> h6 {
-					.text-10-semi-bold;
-	
-					color: var(--color-secondary-text);
-					text-transform: uppercase;
-				}
+			flex: .34;
+			margin-right: @size-8;
 
-				> svg {
-					height: @size-6;
-					width: @size-10;
-					transform: rotate(.5turn);
-
-					> path {
-						fill: var(--color-primary-text);
-					}
-				}
+			&:last-of-type {
+				margin-right: 0;
 			}
 		}
 
-		> div:last-of-type {
-			padding: @size-8;
-			display: flex;
-			flex-flow: row wrap;
-			align-items: center;
-			justify-content: space-between;
-
+		&.FourOutcomes {
 			> article {
-				.OutcomeArticle;
-
-				flex: .325;
-			}
-
-			> section {
-				width: 100%;
+				flex: 0.25;
 			}
 		}
 	}
@@ -1134,7 +1085,7 @@
 				border-radius: @border-radius-default;
 				border-bottom: none;
 
-				> button > svg {
+				> button:not([class*="FavoriteButton"]) > svg {
 					transform: none;
 				}
 			}
@@ -1155,6 +1106,36 @@
 			height: @size-30;
 			padding: 0 @size-12;
 
+			> ul {
+				align-items: center;
+				display: flex;
+				flex-flow: row nowrap;
+				height: @size-30;
+				width: 100%;
+				flex: 1;
+
+				> li:first-of-type {
+					flex: 1;
+					margin-left: 0;
+				}
+
+				> li {
+					.text-10-semi-bold;
+					color: var(--color-secondary-text);
+					flex: 0.2;
+					text-align: center;
+					text-transform: uppercase;
+					margin-left: @size-8;
+				}
+			}
+
+			> h6 {
+				.text-10-semi-bold;
+
+				color: var(--color-secondary-text);
+				text-transform: uppercase;
+			}
+
 			> span[class*="ProgressLabel"] {
 				flex-flow: row nowrap;
 				flex: 1;
@@ -1162,7 +1143,11 @@
 				height: 100%;
 
 				> span { 
-					margin: 0; 
+					margin: 0;
+
+					&:last-of-type {
+						margin-left: @size-4;
+					}
 				}
 			}
 
@@ -1171,10 +1156,13 @@
 				margin-left: @size-12;
 			}
 
-			> button {
+			> button[class*="FavoriteButton"] {
+				margin-left: @size-12;
+			}
+
+			> button:not([class*="FavoriteButton"]) {
 				align-items: center;
 				display: flex;
-				// flex: 1;
 				margin-left: auto;
 				width: @size-24;
 				height: 100%;
@@ -1200,14 +1188,44 @@
 			align-items: center;
 			justify-content: space-between;
 
-			> article {
-				.OutcomeArticle;
-
-				flex: .325;
-			}
-
 			> section {
 				width: 100%;
+			}
+		}
+
+		&.ComboContainer {
+			> div {
+				display: flex;
+				flex-flow: column nowrap;
+				background: var(--color-page-background);
+				padding: 0;
+
+				> ul {
+					align-items: center;
+					display: flex;
+					flex-flow: row nowrap;
+					flex: 1;
+					padding: @size-8;
+					width: 100%;
+					
+					&:not(:last-of-type) {
+						border-bottom: @size-1 solid var(--color-outline);
+					}
+
+					> li:first-of-type {
+						.text-14-bold;
+
+						align-self: baseline;
+						color: var(--color-primary-text);
+						flex: 1;
+						margin-left: 0;
+					}
+
+					> li {
+						flex: 0.2;
+						margin-left: @size-8;
+					}
+				}
 			}
 		}
 	}

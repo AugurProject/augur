@@ -4,6 +4,7 @@ import {
   TopRow,
   getCategoriesWithClick,
   SportsGroupMarkets,
+  reduceToUniquePools,
 } from 'modules/market-cards/common';
 import { DISPUTING, MARKETS } from 'modules/routes/constants/views';
 import makePath from 'modules/routes/helpers/make-path';
@@ -51,12 +52,12 @@ export const SportsMarketCard = ({
   }
   // TODO: do this better when i have any idea of how this will work...
   // for now just grab the first market for major stats.
-  const { type, markets, marketTypes } = sportsGroup;
+  const { type, markets } = sportsGroup;
   const market = markets[0];
   const { categories, reportingState, endTimeFormatted } = market;
-  const numExtraWagers = type === COMBO ? marketTypes.length - 3 : marketTypes.length - 1;
+  const displayableMarkets = markets.reduce(reduceToUniquePools, []);
+  const numExtraWagers = type === COMBO ? displayableMarkets.length - 3 : displayableMarkets.length - 1;
   const showMoreButtonVisible = numExtraWagers > 0;
-
   const headerType =
     location.pathname === makePath(DISPUTING)
       ? HEADER_TYPE.H2
