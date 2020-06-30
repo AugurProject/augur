@@ -928,7 +928,7 @@ export const InputFactory = (props: InputFactoryProps) => {
               hour: comps.hour,
               minute: comps.minute,
               meridiem: comps.meridiem,
-              offset: 0,
+              offset: comps.offset,
               offsetName: comps.timezone,
               timezone: comps.timezone,
             });
@@ -1024,7 +1024,7 @@ export const InputFactory = (props: InputFactoryProps) => {
                   hour: comps.hour,
                   minute: comps.minute,
                   meridiem: comps.meridiem,
-                  offset: 0,
+                  offset: comps.offset || 0,
                   offsetName: comps.timezone,
                   timezone: comps.timezone,
                 });

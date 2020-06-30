@@ -107,7 +107,6 @@ import deepClone from 'utils/deep-clone';
 import {
   buildformattedDate,
   convertUnixToFormattedDate,
-  convertUTCUnixToFormattedDate,
 } from 'utils/format-date';
 import type {
   TemplateInput,

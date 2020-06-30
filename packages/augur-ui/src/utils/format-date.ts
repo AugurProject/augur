@@ -219,15 +219,6 @@ export function getUtcStartOfDayFromLocal(timestamp: number): number {
     return value;
 }
 
-export function convertUTCUnixToFormattedDate(timestamp: number = 0) {
-  const localOffset: number = (new Date().getTimezoneOffset() / 60);
-  const date = moment
-    .unix(timestamp)
-    .add(localOffset, 'hours')
-    .toDate();
-  return formatDate(date);
-}
-
 export function convertUnixToFormattedDate(integer: number = 0) {
   return formatDate(moment.unix(integer).toDate());
 }
