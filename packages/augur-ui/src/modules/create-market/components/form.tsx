@@ -697,7 +697,14 @@ export default class Form extends React.Component<FormProps, FormState> {
         offsetName = value.offsetName;
         timezone = value.timezone;
       }
-      let endTimeFormatted = null;
+      let endTimeFormatted = buildformattedDate(
+        setEndTime,
+        hour,
+        minute,
+        meridiem,
+        offsetName,
+        offset
+      );
       if (name === 'updateEventExpiration') {
         this.onError('setEndTime', '');
         setEndTime = value.setEndTime || newMarket.setEndTime;

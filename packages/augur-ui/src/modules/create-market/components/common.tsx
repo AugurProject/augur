@@ -910,8 +910,7 @@ export const InputFactory = (props: InputFactoryProps) => {
       />
     );
   } else if (
-    input.type === TemplateInputType.DATEYEAR ||
-    input.type === TemplateInputType.DATESTART
+    input.type === TemplateInputType.DATEYEAR
   ) {
     return (
       <DatePickerSelector
@@ -950,7 +949,7 @@ export const InputFactory = (props: InputFactoryProps) => {
         placeholder={input.placeholder}
         setEndTime={input.setEndTime}
         isBefore={
-          input.type === TemplateInputType.DATESTART &&
+          input.type === TemplateInputType.DATEYEAR &&
           startOfTomorrow(currentTimestamp)
         }
         isAfter={isAfter}

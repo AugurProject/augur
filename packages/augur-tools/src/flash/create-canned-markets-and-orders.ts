@@ -5,7 +5,7 @@ import { GenericAugurInterfaces } from '@augurproject/core';
 import { numTicksToTickSize, convertDisplayAmountToOnChainAmount, convertDisplayPriceToOnChainPrice, QUINTILLION } from '@augurproject/sdk';
 
 import { ContractAPI } from '../libs/contract-api';
-import { cannedMarkets, CannedMarket, templatedCannedMarkets, templatedCannedBettingMarkets } from './data/canned-markets';
+import { cannedMarkets, CannedMarket, templatedCannedMarkets, templatedCannedBettingMarkets, testBadTemplateMarkets } from './data/canned-markets';
 import { _1_ETH } from '../constants';
 
 export type Market = GenericAugurInterfaces.Market<BigNumber>;
@@ -167,6 +167,15 @@ export async function createTemplatedMarkets(person: ContractAPI, faucet=true): 
 export async function createTemplatedBettingMarkets(person: ContractAPI, faucet=true): Promise<CreatedCannedMarket[]> {
   const markets = [];
   for (const can of templatedCannedBettingMarkets()) {
+    const market = await createCannedMarket(person, can, faucet);
+    markets.push(market);
+  }
+  return markets;
+}
+
+export async function createBadTemplatedMarkets(person: ContractAPI, faucet=true): Promise<CreatedCannedMarket[]> {
+  const markets = [];
+  for (const can of testBadTemplateMarkets()) {
     const market = await createCannedMarket(person, can, faucet);
     markets.push(market);
   }
