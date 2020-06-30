@@ -642,8 +642,8 @@ export const MARKET_CREATION_COPY = {
   [MARKET_COPY_LIST.EVENT_EXPIRATION]: {
     subheader: [
       'This is the time at which Augur users can start reporting on the outcome of the market. Since Augur does not have any centralized operator, it uses a system of incentivized communal reporting (the Augur oracle) to deem what outcome occurred.',
-      'Event Expiration date and time should be set an appropriate time at which the outcome of the market question will be known. If the outcome is not known by this time, then the market will almost certainly resolve Invalid.',
-      'Provide a sufficient cushion of time between the event in question and Event Expiration to help ensure that the outcome will be known by this point. For example, if creating a market on the outcome of a sporting event, set Event Expiration to at least several hours after the game will most likely end to accommodate for potential delays due to weather and other factors.',
+      'The Event Expiration date and time should be set at an appropriate time at which the outcome of the market question will be known. If the outcome is not known by this time, then the market will almost certainly resolve Invalid.',
+      'Provide a sufficient cushion of time between the event in question and Event Expiration to help ensure that the outcome will be known by this point. For example, if creating a market on the outcome of a sporting event, set the Event Expiration to at least several hours after the game will end to accommodate for potential delays due to weather and other factors.',
     ],
   },
   [MARKET_COPY_LIST.MARKET_QUESTION]: {

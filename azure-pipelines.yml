@@ -93,7 +93,7 @@ jobs:
         eq(dependencies.PreFlightCheck.outputs['setVars.JOB_TRIGGER_SDK'], 'true')
       )
     variables:
-      FAKE_TIME: false
+      NORMAL_TIME: true
       PRODUCTION: false
     pool: 'Default'
     workspace:
@@ -349,11 +349,11 @@ jobs:
         dev-pop-geth-v2:
           IMAGE_NAME: dev-pop-geth-v2
           NETWORK_ID: 102
-          FAKE_TIME: true
+          NORMAL_TIME: false
         dev-pop-normtime-geth-v2:
           IMAGE_NAME: dev-pop-normtime-geth-v2
           NETWORK_ID: 103
-          FAKE_TIME: false
+          NORMAL_TIME: true
     variables:
       ZEROX_RPC_ENABLED: false
       ZEROX_MESH_ENABLED: false
@@ -364,7 +364,7 @@ jobs:
           set -exuo pipefail
           export DOCKER_BUILDKIT=1
           docker system prune -f
-          docker build --progress=plain --no-cache=true -f packages/augur-tools/docker-builder/Dockerfile --build-arg fake_time=$(FAKE_TIME) --build-arg network_id=$(NETWORK_ID) -t $(IMAGE_NAME) .
+          docker build --progress=plain --no-cache=true -f packages/augur-tools/docker-builder/Dockerfile --build-arg normal_time=$(NORMAL_TIME) --build-arg network_id=$(NETWORK_ID) -t $(IMAGE_NAME) .
         displayName: 'build $(IMAGE_NAME) image'
       - task: Docker@1
         displayName: docker login
@@ -479,7 +479,7 @@ jobs:
           aws --region=us-east-1 ecs update-service  --service augur-ipfs --cluster kovan-v2-ecs --force-new-deployment
           docker run -d --name augur-ipfs augurproject/augur-ipfs:v2
           sleep 10
-          IPFS_HASH=`docker exec augur-ipfs ipfs add -r -Q /export`
+          IPFS_HASH=`docker exec augur-ipfs ipfs add -r -Q -n --pin=false /export`
           echo "IPFS hash: $IPFS_HASH"
           docker stop augur-ipfs
           python3 -m venv venv && \
@@ -620,14 +620,13 @@ jobs:
       - bash: |
           set -euo pipefail
           ipfs init > /dev/null 2>&1
-          IPFS_HASH=$(ipfs add -r -Q packages/augur-ui/build)
+          IPFS_HASH=$(ipfs add -r -Q -n --pin=false packages/augur-ui/build)
           echo nothing > $IPFS_HASH.ipfs
         displayName: ipfs hash of build dir
       - task: CopyFiles@2
         inputs:
           #sourceFolder: # Optional
           contents: |
-            augur.zip
             *.ipfs
           targetFolder: $(Build.ArtifactStagingDirectory)
           cleanTargetFolder: true

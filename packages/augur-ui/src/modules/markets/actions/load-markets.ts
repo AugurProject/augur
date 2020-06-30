@@ -1,23 +1,26 @@
-import { augurSdk } from 'services/augursdk';
+import type { Getters } from '@augurproject/sdk';
+import { GetMarketsSortBy, MarketReportingState } from '@augurproject/sdk-lite';
+import { AppState } from 'appStore';
 import {
+  FILTER_ALL,
   MARKET_CLOSED,
   MARKET_REPORTING,
   MARKET_SORT_PARAMS,
   MAX_FEE_100_PERCENT,
   MAX_SPREAD_ALL_SPREADS,
   REPORTING_STATE,
-  FILTER_ALL,
 } from 'modules/common/constants';
-import * as _ from 'lodash';
-import { ThunkAction } from 'redux-thunk';
-import { AppState } from 'appStore';
-import type { Getters } from '@augurproject/sdk';
-import { GetMarketsSortBy, MarketReportingState } from '@augurproject/sdk-lite'
-import { addUpdateMarketInfos, UpdateMarketsAction, } from 'modules/markets/actions/update-markets-data';
-import { getOneWeekInFutureTimestamp } from 'utils/format-date';
+import {
+  addUpdateMarketInfos,
+  UpdateMarketsAction,
+} from 'modules/markets/actions/update-markets-data';
 import { updateReportingList } from 'modules/reporting/actions/update-reporting-list';
 import { LoadReportingMarketsOptions } from 'modules/types';
 import { Action } from 'redux';
+import { ThunkAction } from 'redux-thunk';
+import { augurSdk } from 'services/augursdk';
+import { augurSdkLite } from 'services/augursdklite';
+import { getOneWeekInFutureTimestamp } from 'utils/format-date';
 
 interface SortOptions {
   sortBy?: GetMarketsSortBy;
@@ -291,11 +294,11 @@ const loadReportingMarkets = (
   if (cb) cb(null, marketList);
 };
 
-const hotLoadMarket = _.throttle(marketId => {
+const hotLoadMarket = marketId => {
   console.log('Hot Loading Market', marketId);
-  const augur = augurSdk.get();
-  return augur.hotloadMarket(marketId);
-}, 1000, { loading: true });
+  const augurLite = augurSdkLite.get();
+  return augurLite.hotloadMarket(marketId);
+};
 
 export const hotloadMarket = (marketId) => {
   return hotLoadMarket(marketId);

@@ -156,7 +156,7 @@ export class Augur<TProvider extends Provider = Provider> {
     this.gsn = new GSN(this.provider, this);
     this.uniswap = new Uniswap(this);
 
-    if (this.config.trackBestOffer) {
+    if (this.config.ui?.trackBestOffer) {
       this.bestOffer = new BestOffer(this);
     }
     if (enableFlexSearch && !this.syncableFlexSearch) {

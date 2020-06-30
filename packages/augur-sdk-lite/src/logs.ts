@@ -421,6 +421,7 @@ export interface MarketData extends Log {
   groupTitle?: string;
   groupEstDatetime?: string;
   liquidityPool?: string;
+  groupPlaceholderOutcomes?: string[];
 }
 
 export interface DisputeDoc extends Log {

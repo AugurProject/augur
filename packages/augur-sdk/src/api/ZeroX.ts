@@ -564,7 +564,15 @@ export class ZeroX {
 
   async batchCancelOrders(orders, signatures) {
     if (!this.client) throw new Error('To cancel ZeroX orders, make sure your Augur Client instance was initialized with it enabled.');
-    const maxProtocolFeeInDai = new BigNumber(10).pow(18); // TODO: Calc the real max based on order length, protocol fee and gas price
+
+    const gasPrice = await this.client.getGasPrice();
+    const exchangeFeeMultiplier = await this.client.contracts.zeroXExchange.protocolFeeMultiplier_();
+    const protocolFee = gasPrice.multipliedBy(exchangeFeeMultiplier).multipliedBy(orders.length);
+    const walletEthBalance = await this.client.getEthBalance(await this.client.getAccount());
+    const remainingToPay = protocolFee.gt(walletEthBalance) ? protocolFee.minus(walletEthBalance) : new BigNumber(0);
+    let maxProtocolFeeInDai = remainingToPay.multipliedBy(this.client.dependencies.maxExchangeRate).div(QUINTILLION);
+    maxProtocolFeeInDai = maxProtocolFeeInDai.multipliedBy(MAX_PROTOCOL_FEE_MULTIPLIER).decimalPlaces(0);
+
     return this.client.contracts.ZeroXTrade.cancelOrders(orders, signatures, maxProtocolFeeInDai);
   }
 

@@ -1,8 +1,8 @@
 # populated geth docker file
 FROM augurproject/dev-node-geth:v1.9.9 as geth
 
-ARG fake_time=false
-ENV FAKE_TIME=$fake_time
+ARG normal_time=true
+ENV NORMAL_TIME=$normal_time
 
 ARG network_id=101
 ARG period_time=5

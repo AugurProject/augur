@@ -96,7 +96,7 @@ const TopNav = ({
                         action={() => migrateV1Rep()}
                         queueName={TRANSACTIONS}
                         queueId={MIGRATE_FROM_LEG_REP_TOKEN}
-                        secondaryButton
+                        primaryButton
                       />
                   </div>
                   <span>

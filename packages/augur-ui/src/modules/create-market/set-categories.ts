@@ -1248,8 +1248,8 @@ export const setCategories: SortedGroup[] = [
         label: 'Stocks/ETFs',
         subGroup: [
           {
-            value: 'APPL',
-            label: 'APPL',
+            value: 'AAPL',
+            label: 'AAPL',
           },
           {
             value: 'BA',

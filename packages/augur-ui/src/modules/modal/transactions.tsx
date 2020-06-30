@@ -101,10 +101,6 @@ const actionOptions = [
     value: 'CANCEL',
   },
   {
-    label: 'Claim Market Creator Fees',
-    value: 'CLAIM_MARKET_CREATOR_FEES',
-  },
-  {
     label: 'Claim Participation Tokens',
     value: 'CLAIM_PARTICIPATION_TOKENS',
   },
@@ -267,6 +263,7 @@ export const Transactions: React.FC<TransactionsProps> = props => {
         setFilteredTransactions(filteredTransactions);
       }
     );
+    setPage(1);
   };
 
   const resetSearch = () => {

@@ -4,6 +4,8 @@ import OpenOrder from 'modules/portfolio/containers/open-order';
 import OpenOrdersHeader from 'modules/portfolio/components/common/open-orders-header';
 import OrderMarketRow from 'modules/portfolio/components/common/order-market-row';
 import { MarketData, UIOrder } from 'modules/types';
+import { CancelTextButton } from 'modules/common/buttons';
+import Styles from 'modules/market/components/market-orders-positions-table/open-orders-table.styles.less';
 
 const sortByOptions = [
   {
@@ -26,15 +28,19 @@ interface OpenOrdersProps {
   toggle?: () => void;
   extend?: boolean;
   hide?: boolean;
+  cancelAllOpenOrders: (orders: UIOrder[]) => void;
 }
 
 interface OpenOrdersState {
   viewByMarkets: boolean;
 }
 
-export default class OpenOrders extends Component<OpenOrdersProps, OpenOrdersState> {
+export default class OpenOrders extends Component<
+  OpenOrdersProps,
+  OpenOrdersState
+> {
   state = {
-    viewByMarkets: true
+    viewByMarkets: true,
   };
 
   constructor(props) {
@@ -68,18 +74,26 @@ export default class OpenOrders extends Component<OpenOrdersProps, OpenOrdersSta
         market={marketsObj[data.id]}
       />
     ) : (
-        <OpenOrder
-          key={'openOrder_' + data.id}
-          marketId={data.id}
-          openOrder={ordersObj[data.id]}
-          isSingle
-        />
-      );
+      <OpenOrder
+        key={'openOrder_' + data.id}
+        marketId={data.id}
+        openOrder={ordersObj[data.id]}
+        isSingle
+      />
+    );
   }
 
   render() {
-    const { markets, openOrders, toggle, extend, hide } = this.props;
+    const {
+      markets,
+      openOrders,
+      toggle,
+      extend,
+      hide,
+      cancelAllOpenOrders,
+    } = this.props;
     const { viewByMarkets } = this.state;
+    const hasPending = Boolean(openOrders.find(order => order.pending));
 
     return (
       <FilterSwitchBox
@@ -96,6 +110,17 @@ export default class OpenOrders extends Component<OpenOrdersProps, OpenOrdersSta
         toggle={toggle}
         extend={extend}
         hide={hide}
+        footer={
+          openOrders.length > 0 ? (
+            <div className={Styles.PortfolioFooter}>
+              <CancelTextButton
+                action={() => cancelAllOpenOrders(openOrders)}
+                text="Cancel All"
+                disabled={hasPending}
+              />
+            </div>
+          ) : null
+        }
       />
     );
   }

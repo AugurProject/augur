@@ -1018,7 +1018,9 @@ function formatParticipationTokensRedeemedLogs(
         new BigNumber(attoParticipationTokens)
       ).toString(),
       timestamp: new BigNumber(timestamp).toNumber(),
-      total: new BigNumber(feePayoutShare).toString(),
+      total: convertAttoValueToDisplayValue(
+        new BigNumber(feePayoutShare)
+      ).toString(),
       transactionHash,
     });
   }

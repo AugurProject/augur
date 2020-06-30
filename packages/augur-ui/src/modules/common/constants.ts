@@ -158,7 +158,6 @@ export const ADD_FUNDS_SWAP = '3';
 
 // # Connect Constants
 export const ACCOUNT_TYPES = {
-  PORTIS: 'Portis',
   FORTMATIC: 'Fortmatic',
   TORUS: 'Torus',
   LEDGER: 'Ledger',
@@ -174,8 +173,6 @@ export const WALLET_TYPE = {
 };
 
 export const SIGNIN_LOADING_TEXT = 'Sit tight - loading your account.';
-export const SIGNIN_LOADING_TEXT_PORTIS =
-  'Connecting to our partners at Portis to log you in to your secure account.';
 export const SIGNIN_LOADING_TEXT_FORTMATIC =
   'Connecting to our partners at Fortmatic to log you in to your secure account.';
 export const SIGNIN_LOADING_TEXT_TORUS =
@@ -198,7 +195,7 @@ export const ERROR_TYPES = {
   },
   UNSUPPORTED_NETWORK: {
     header: 'Unsupported Network',
-    subheader: 'Portis is only available on mainnet/kovan/localhost',
+    subheader: 'Only available on mainnet/kovan/localhost',
   },
 };
 
@@ -624,6 +621,7 @@ export const MODAL_INITIALIZE_ACCOUNT = 'MODAL_INITIALIZE_ACCOUNT';
 export const MODAL_CLAIM_MARKETS_PROCEEDS = 'MODAL_CLAIM_MARKETS_PROCEEDS';
 export const MODAL_FINALIZE_MARKET = 'MODAL_FINALIZE_MARKET';
 export const MODAL_DISCARD = 'MODAL_DISCARD';
+export const MODAL_FROZEN_FUNDS = 'MODAL_FROZEN_FUNDS';
 export const DISCLAIMER_SEEN = 'disclaimerSeen';
 export const GSN_WALLET_SEEN = 'gsnWalletInfoSeen';
 export const MARKET_REVIEW_SEEN = 'marketReviewSeen';
@@ -1023,7 +1021,6 @@ export const COLUMN_TYPES = {
 // Login method variables
 export const TREZOR_MANIFEST_EMAIL = 'team@augur.net';
 export const TREZOR_MANIFEST_APPURL = 'https://dev.augur.net';
-export const PORTIS_API_KEY = 'ede221f9-710f-44c9-a429-ed28bbb54376';
 export const FORTMATIC_API_KEY = 'pk_live_8001A50CCA35D8CB';
 export const FORTMATIC_API_TEST_KEY = 'pk_test_5185BE42CA372148';
 

@@ -178,7 +178,7 @@ const ConnectDropdown = (props: ConnectDropdownProps) => {
               any of these fees.
             </p>
             <p>
-              If your account balance exceeds $40, 0.04 ETH equivilant in DAI
+              If your account balance exceeds $40, 0.04 ETH equivalent in DAI
               will be held in your Fee reserve to cover transaction fees, which
               results in cheaper transaction fees.
             </p>
@@ -203,11 +203,6 @@ const ConnectDropdown = (props: ConnectDropdownProps) => {
   );
 
   const walletProviders = [
-    {
-      accountType: ACCOUNT_TYPES.PORTIS,
-      action: () => accountMeta.openWallet(),
-      disabled: !accountMeta.openWallet,
-    },
     {
       accountType: ACCOUNT_TYPES.FORTMATIC,
       action: () => accountMeta.openWallet(),
@@ -291,7 +286,7 @@ const ConnectDropdown = (props: ConnectDropdownProps) => {
                 </div>
                 <SecondaryButton
                   action={() => wallet.action()}
-                  text='OPEN'
+                  text='Open'
                   icon={Open}
                   disabled={wallet.disabled}
                 />
@@ -316,7 +311,7 @@ const ConnectDropdown = (props: ConnectDropdownProps) => {
           </div>
           <SecondaryButton
             action={() => gasModal()}
-            text='EDIT'
+            text='Edit'
             icon={Pencil}
           />
         </div>}
@@ -337,7 +332,7 @@ const ConnectDropdown = (props: ConnectDropdownProps) => {
             onClick={() => copyClicked()}
             className={isCopied ? Styles.ShowConfirmaiton : null}
           >
-            {ClipboardCopy} Copy
+            Copy {ClipboardCopy}
           </button>
         </div>
 

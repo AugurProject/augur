@@ -30,8 +30,13 @@ export const SocialMediaButtons = ({
     return false;
   };
 
+
+  const sanitizeURLs = (marketDescription) => {
+    return marketDescription.replace(/(\w+)\.([a-zA-Z]{2,9})/, '$1 . $2');
+  }
+
   const showTwitterShare = (encodedMarketUrl, encodedMarketDescription) => {
-    const url = `https://twitter.com/intent/tweet?text=${encodedMarketDescription}&url=${encodedMarketUrl}&${AFFILIATE_NAME}=${address}`;
+    const url = `https://twitter.com/intent/tweet?text=${sanitizeURLs(encodedMarketDescription)}&url=${encodedMarketUrl}&${AFFILIATE_NAME}=${address}`;
     window.open(url, '', 'width=600,height=300');
     return false;
   };

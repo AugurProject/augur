@@ -435,7 +435,7 @@ export class Markets {
     // Get Market docs for all markets with the specified filters
     const numMarketDocs = usedReportingStates
     ? await marketsCollection
-        .and(item => !params.includeWarpSyncMarkets && !item.isWarpSync)
+        .and(item => !params.includeWarpSyncMarkets ? !item.isWarpSync : true)
         .count()
     : await db.Markets.count();
 
@@ -1305,7 +1305,8 @@ async function getMarketsInfo(
         header: marketData.groupHeader,
         title: marketData.groupTitle,
         estTimestamp: marketData.groupEstDatetime,
-        liquidityPool: marketData.liquidityPool
+        liquidityPool: marketData.liquidityPool,
+        placeholderOutcomes: marketData.groupPlaceholderOutcomes,
       }
     };
   });
