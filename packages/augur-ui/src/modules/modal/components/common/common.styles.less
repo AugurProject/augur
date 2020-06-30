@@ -59,11 +59,21 @@
   }
 
   .ModalParticipation {
-    > div:last-of-type {
+    > div:not(:first-of-type) {
       padding-top: @size-16;
     }
 
-    padding: @size-24
+    > div:last-of-type {
+      display: flex;
+      flex-direction: row-reverse;
+      justify-content: center;
+
+      > button:first-of-type {
+        margin-left: @size-16;
+      }
+    }
+
+    padding: @size-24 @size-24 0 @size-24;
   }
 
   @media @breakpoint-mobile {

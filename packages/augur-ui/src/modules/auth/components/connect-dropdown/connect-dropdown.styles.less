@@ -125,14 +125,23 @@
   background: @color-table-header;
   border-bottom: @size-1 solid @color-dark-grey;
   flex-flow: column;
+  padding: @size-4 @size-16 0;
 
   > div:first-of-type {
     border-bottom: unset;
     height: @size-32;
-    padding: 0 @size-14;
+    padding: 0;
 
     > div {
       flex-grow: 2;
+    }
+  }
+
+  > div:last-of-type {
+    grid-template-columns: @size-24 auto @size-16;
+
+    > svg {
+      margin: 0 @size-12 0 0;
     }
   }
 }
@@ -178,7 +187,7 @@
     border: @size-1 solid @color-secondary-action-outline;
     color: @color-primary-text;
     display: flex;
-    flex-direction: row-reverse;
+    flex-direction: row;
     padding: @size-5 @size-6;
 
     > svg {

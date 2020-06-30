@@ -33,6 +33,7 @@ export enum GetMarketsSortBy {
   lastTradedTimestamp = 'lastTradedTimestamp',
   disputeRound = 'disputeRound',
   totalRepStakedInMarket = 'totalRepStakedInMarket',
+  numberOfTrades = 'numberOfTrades',
 }
 
 export enum MarketReportingStateByNum {
