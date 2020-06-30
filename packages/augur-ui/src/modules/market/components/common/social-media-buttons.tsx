@@ -30,10 +30,21 @@ export const SocialMediaButtons = ({
     return false;
   };
 
+  const sanitizeURLs = marketDescription => {
+    const tlds = ['.com', '.co', '.biz', '.net', '.org', '.gov', '.edu'];
+    let description = marketDescription.replace(
+      /(www)\.([a-zA-Z]{2,9})/,
+      '$1 . $2'
+    );
 
-  const sanitizeURLs = (marketDescription) => {
-    return marketDescription.replace(/(\w+)\.([a-zA-Z]{2,9})/, '$1 . $2');
-  }
+    tlds.forEach(tld => {
+      const replace = `([a-zA-Z]{2,9})\\${tld}`;
+      const re = new RegExp(replace);
+      description = description.replace(re, `$1 ${tld}`);
+    });
+
+    return description;
+  };
 
   const showTwitterShare = (encodedMarketUrl, encodedMarketDescription) => {
     const url = `https://twitter.com/intent/tweet?text=${sanitizeURLs(encodedMarketDescription)}&url=${encodedMarketUrl}&${AFFILIATE_NAME}=${address}`;
