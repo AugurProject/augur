@@ -966,82 +966,6 @@
 		}
 	}
 
-	.SubMarketCollapsible {
-		flex-flow: column nowrap;
-		flex: 1;
-		border: @size-1 solid var(--color-outline);
-		border-radius: @border-radius-default;
-
-		&.Collapsed {
-			> div:first-of-type {
-				border-radius: @border-radius-default;
-				border-bottom: none;
-
-				> button > svg {
-					transform: none;
-				}
-			}
-
-			> div:last-of-type {
-				display: none;
-			}
-		}
-
-		> div:first-of-type {
-			display: flex;
-			background: var(--color-table-header);
-			border-top-right-radius: @border-radius-default;
-			border-top-left-radius: @border-radius-default;
-			border-bottom: @size-1 solid var(--color-outline);
-			max-height: @size-30;
-			height: @size-30;
-			padding: 0 @size-12;
-
-			> button {
-				align-items: center;
-				display: flex;
-				flex: 1;
-				height: 100%;
-				justify-content: space-between;
-
-				> h6 {
-					.text-10-semi-bold;
-	
-					color: var(--color-secondary-text);
-					text-transform: uppercase;
-				}
-
-				> svg {
-					height: @size-6;
-					width: @size-10;
-					transform: rotate(.5turn);
-
-					> path {
-						fill: var(--color-primary-text);
-					}
-				}
-			}
-		}
-
-		> div:last-of-type {
-			padding: @size-8;
-			display: flex;
-			flex-flow: row wrap;
-			align-items: center;
-			justify-content: space-between;
-
-			> article {
-				.OutcomeArticle;
-
-				flex: .325;
-			}
-
-			> section {
-				width: 100%;
-			}
-		}
-	}
-
 	.MultiOutcomeMarketTable {
 		border: @size-1 solid var(--color-outline);
 		border-radius: @border-radius-default;
@@ -1161,7 +1085,7 @@
 				border-radius: @border-radius-default;
 				border-bottom: none;
 
-				> button > svg {
+				> button:not([class*="FavoriteButton"]) > svg {
 					transform: none;
 				}
 			}
