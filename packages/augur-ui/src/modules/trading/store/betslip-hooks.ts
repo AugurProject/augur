@@ -172,7 +172,6 @@ export function BetslipReducer(state, action) {
       if (match > -1) {
         matchedItems[marketId].orders[match] = {
           ...matchedItems[marketId].orders[match],
-          status: FILLED,
           dateUpdated: updatedTime,
         }
       } else {
@@ -181,7 +180,6 @@ export function BetslipReducer(state, action) {
           amountFilled: order.wager,
           amountWon: '0',
           dateUpdated: updatedTime,
-          status: FILLED,
         });
         updatedState.matched.count++;
         fromList && updatedState[fromList].count--;
