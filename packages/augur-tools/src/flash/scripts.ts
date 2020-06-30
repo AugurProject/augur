@@ -36,6 +36,7 @@ import {
   createCannedMarkets,
   createTemplatedBettingMarkets,
   createTemplatedMarkets,
+  createBadTemplatedMarkets,
 } from './create-canned-markets-and-orders';
 import {
   createCatZeroXOrders,
@@ -501,6 +502,18 @@ export function addScripts(flash: FlashSession) {
       await user.faucetCashUpTo(million, million);
       await user.approveIfNecessary();
       await createTemplatedBettingMarkets(user, false);
+    },
+  });
+
+  flash.addScript({
+    name: 'create-bad-template-markets',
+    async call(this: FlashSession) {
+      const user = await this.createUser(this.getAccount(), this.config);
+      const million = QUINTILLION.multipliedBy(1e7);
+      await user.faucetRepUpTo(million, million);
+      await user.faucetCashUpTo(million, million);
+      await user.approveIfNecessary();
+      await createBadTemplatedMarkets(user, false);
     },
   });
 

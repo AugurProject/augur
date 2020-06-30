@@ -24,8 +24,8 @@ import {
   buildMarketDescription,
   createTemplateOutcomes,
   createTemplateValueList,
-  getEventExpirationForExchange,
   substituteUserOutcome,
+  getEventExpirationForExchangeDayInQuestion,
 } from 'modules/create-market/get-template';
 import PreviewMarketTitle
   from 'modules/market/components/common/PreviewMarketTitle';
@@ -47,6 +47,7 @@ import {
   minMarketEndTimeDay,
   startOfTomorrow,
   timestampComponents,
+  getUtcStartOfDayFromLocal,
 } from 'utils/format-date';
 import type {
   TemplateInput,
@@ -66,6 +67,7 @@ import {
   SelectEventNoticeText,
   MARKET_COPY_LIST,
   FRIDAY_DAY_OF_WEEK,
+  END_TIME,
 } from 'modules/create-market/constants';
 import { SECONDS_IN_A_DAY } from '@augurproject/sdk-lite';
 
@@ -447,8 +449,8 @@ export const DatePickerSelector = (props: DatePickerSelectorProps) => {
       displayFormat="MMM D, YYYY"
       id="input-date"
       onDateChange={(date: Moment) => {
-        if (!date) return onChange('setEndTime', '');
-        onChange(date.startOf('day').unix());
+        if (!date) return onChange(END_TIME, '');
+        onChange(getUtcStartOfDayFromLocal(date.unix()));
       }}
       isOutsideRange={day =>
         (onlyAllowFriday && day.weekday() !== FRIDAY_DAY_OF_WEEK) ||
@@ -519,8 +521,8 @@ export const DateTimeSelector = (props: DateTimeSelectorProps) => {
           id="input-date"
           readOnly={disabled !== undefined && disabled}
           onDateChange={(date: Moment) => {
-            if (!date) return onChange('setEndTime', '');
-            onChange('setEndTime', date.startOf('day').unix());
+            if (!date) return onChange(END_TIME, '');
+            onChange(END_TIME, getUtcStartOfDayFromLocal(date.unix()));
           }}
           isOutsideRange={day =>
             day.isBefore(minMarketEndTimeDay(currentTimestamp)) ||
@@ -529,7 +531,7 @@ export const DateTimeSelector = (props: DateTimeSelectorProps) => {
           numberOfMonths={1}
           onFocusChange={({ focused }) => {
             if (setEndTime === null) {
-              onChange('setEndTime', currentTimestamp);
+              onChange(END_TIME, getUtcStartOfDayFromLocal(currentTimestamp));
             }
             setDateFocused(() => focused);
           }}
@@ -908,28 +910,24 @@ export const InputFactory = (props: InputFactoryProps) => {
       />
     );
   } else if (
-    input.type === TemplateInputType.DATEYEAR ||
-    input.type === TemplateInputType.DATESTART
+    input.type === TemplateInputType.DATEYEAR
   ) {
     return (
       <DatePickerSelector
         onChange={value => {
-          const startOfDay = moment
-          .unix(value)
-          .startOf('day')
-          .unix();
+          const startOfDay = getUtcStartOfDayFromLocal(value);
           input.setEndTime = startOfDay;
           const stringValue = convertUnixToFormattedDate(Number(startOfDay))
             .formattedSimpleData;
           updateData(stringValue);
-          const comps = getEventExpirationForExchange(inputs);
+          const comps = getEventExpirationForExchangeDayInQuestion(inputs);
           if (comps) {
             onChange('updateEventExpiration', {
               setEndTime: comps.setEndTime,
               hour: comps.hour,
               minute: comps.minute,
               meridiem: comps.meridiem,
-              offset: 0,
+              offset: comps.offset,
               offsetName: comps.timezone,
               timezone: comps.timezone,
             });
@@ -951,7 +949,7 @@ export const InputFactory = (props: InputFactoryProps) => {
         placeholder={input.placeholder}
         setEndTime={input.setEndTime}
         isBefore={
-          input.type === TemplateInputType.DATESTART &&
+          input.type === TemplateInputType.DATEYEAR &&
           startOfTomorrow(currentTimestamp)
         }
         isAfter={isAfter}
@@ -1018,14 +1016,14 @@ export const InputFactory = (props: InputFactoryProps) => {
               target.type === TemplateInputType.DATEYEAR_CLOSING
             ) {
               target.userInputObject = target.inputTimeOffset[value];
-              const comps = getEventExpirationForExchange(inputs);
+              const comps = getEventExpirationForExchangeDayInQuestion(inputs);
               if (comps) {
                 onChange('updateEventExpiration', {
                   setEndTime: comps.setEndTime,
                   hour: comps.hour,
                   minute: comps.minute,
                   meridiem: comps.meridiem,
-                  offset: 0,
+                  offset: comps.offset || 0,
                   offsetName: comps.timezone,
                   timezone: comps.timezone,
                 });
@@ -1044,7 +1042,7 @@ export const InputFactory = (props: InputFactoryProps) => {
               }
               if (year && month && year !== '' && month !== '') {
                 const newEndTime = moment().utc().month(month).year(year).add(1, 'M').endOf('month').unix();
-                const comps = timestampComponents(newEndTime, 0);
+                const comps = timestampComponents(newEndTime);
                 onChange('updateEventExpiration', {
                   setEndTime: comps.setEndTime,
                   hour: comps.hour,
@@ -1108,7 +1106,7 @@ export const SimpleTimeSelector = (props: EstimatedStartSelectorProps) => {
             setOffsetName(offsetName);
             break;
           case 'setEndTime':
-            setEndTime(value);
+            setEndTime(getUtcStartOfDayFromLocal(value));
             break;
           case 'timeSelector':
             if (value.hour) setHour(value.hour);
@@ -1212,7 +1210,7 @@ export const EstimatedStartSelector = (props: EstimatedStartSelectorProps) => {
       else {
         const addHours = input.hoursAfterEst;
         userInput = String(endTimeFormatted.timestamp);
-        const newEndTime = (addHours * 60 * 60) + endTimeFormatted.timestamp
+        const newEndTime = moment.unix(endTimeFormatted.timestamp).add(Number(addHours), 'hours').unix();
         const comps = timestampComponents(newEndTime, offset);
         onChange('updateEventExpiration', {
           setEndTime: comps.setEndTime,
@@ -1271,7 +1269,7 @@ export const EstimatedStartSelector = (props: EstimatedStartSelectorProps) => {
               setOffsetName(offsetName);
               break;
             case 'setEndTime':
-              setEndTime(value);
+              setEndTime(getUtcStartOfDayFromLocal(value));
               break;
             case 'timeSelector':
               if (value.hour) setHour(value.hour);

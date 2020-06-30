@@ -49,7 +49,7 @@ const mergeProps = (sP: any, dP: any, oP: any) => ({
     },
     {
       content:
-        'Adding more than 40 Dai ($) allows for 0.04 ETH will be converted for your Fee reserve resulting in cheaper transaction fees.',
+        'Adding more than 40 Dai ($) will store a portion of this equivalent to 0.04 ETH in your Fee reserve resulting in cheaper transaction fees.',
     },
     {
       content: 'Your Fee reserve can easily be cashed out at anytime.',

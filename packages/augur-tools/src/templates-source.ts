@@ -6635,7 +6635,7 @@ export const TEMPLATES = {
                     type: TemplateInputType.DROPDOWN,
                     placeholder: `Year Range`,
                     validationType: ValidationType.YEAR_YEAR_RANGE,
-                    values: LIST_VALUES.YEAR_RANGE,
+                    values: LIST_VALUES.YEARS,
                   },
                   {
                     id: 2,
@@ -7915,7 +7915,7 @@ export const TEMPLATES = {
               },
               {
                 id: 1,
-                type: TemplateInputType.DATESTART,
+                type: TemplateInputType.DATEYEAR,
                 daysAfterDateStart: 2,
                 placeholder: `Day of Year`,
               },
@@ -8377,7 +8377,6 @@ export const TEMPLATES = {
               {
                 id: 2,
                 type: TemplateInputType.DATETIME,
-                groupKey: START_TIME,
                 placeholder: `Specific Datetime`,
                 label: `Specific Datetime`,
                 sublabel: `Specify date time for event`,
@@ -9099,7 +9098,7 @@ export const TEMPLATES = {
                   },
                   {
                     id: 3,
-                    type: TemplateInputType.DATESTART,
+                    type: TemplateInputType.DATEYEAR,
                     daysAfterDateStart: 2,
                     placeholder: `Day of Year`,
                   },
@@ -9138,7 +9137,7 @@ export const TEMPLATES = {
                   },
                   {
                     id: 2,
-                    type: TemplateInputType.DATESTART,
+                    type: TemplateInputType.DATEYEAR,
                     daysAfterDateStart: 2,
                     placeholder: `Day of Year`,
                   },
@@ -9198,7 +9197,7 @@ export const TEMPLATES = {
                   },
                   {
                     id: 3,
-                    type: TemplateInputType.DATESTART,
+                    type: TemplateInputType.DATEYEAR,
                     daysAfterDateStart: 2,
                     placeholder: `Day of Year`,
                   },
@@ -9237,7 +9236,7 @@ export const TEMPLATES = {
                   },
                   {
                     id: 2,
-                    type: TemplateInputType.DATESTART,
+                    type: TemplateInputType.DATEYEAR,
                     daysAfterDateStart: 2,
                     placeholder: `Day of Year`,
                   },
@@ -9297,7 +9296,7 @@ export const TEMPLATES = {
               },
               {
                 id: 2,
-                type: TemplateInputType.DATESTART,
+                type: TemplateInputType.DATEYEAR,
                 daysAfterDateStart: 1,
                 placeholder: `Day of Year`,
               },
@@ -9345,7 +9344,7 @@ export const TEMPLATES = {
               },
               {
                 id: 2,
-                type: TemplateInputType.DATESTART,
+                type: TemplateInputType.DATEYEAR,
                 placeholder: `Day of Year`,
               },
               {
@@ -9394,7 +9393,7 @@ export const TEMPLATES = {
               },
               {
                 id: 1,
-                type: TemplateInputType.DATESTART,
+                type: TemplateInputType.DATEYEAR,
                 daysAfterDateStart: 1,
                 placeholder: `Day of Year`,
               },
@@ -9446,7 +9445,7 @@ export const TEMPLATES = {
               },
               {
                 id: 2,
-                type: TemplateInputType.DATESTART,
+                type: TemplateInputType.DATEYEAR,
                 daysAfterDateStart: 1,
                 placeholder: `Day of Year`,
               },
@@ -9494,7 +9493,7 @@ export const TEMPLATES = {
               },
               {
                 id: 2,
-                type: TemplateInputType.DATESTART,
+                type: TemplateInputType.DATEYEAR,
                 placeholder: `Day of Year`,
               },
               {
@@ -9543,7 +9542,7 @@ export const TEMPLATES = {
               },
               {
                 id: 1,
-                type: TemplateInputType.DATESTART,
+                type: TemplateInputType.DATEYEAR,
                 daysAfterDateStart: 1,
                 placeholder: `Day of Year`,
               },
@@ -9595,7 +9594,7 @@ export const TEMPLATES = {
               },
               {
                 id: 2,
-                type: TemplateInputType.DATESTART,
+                type: TemplateInputType.DATEYEAR,
                 daysAfterDateStart: 1,
                 placeholder: `Day of Year`,
               },
@@ -9643,13 +9642,13 @@ export const TEMPLATES = {
               },
               {
                 id: 2,
-                type: TemplateInputType.DATESTART,
+                type: TemplateInputType.DATEYEAR,
                 placeholder: `Day of Year`,
               },
               {
                 id: 3,
                 dateAfterId: 2,
-                type: TemplateInputType.DATESTART,
+                type: TemplateInputType.DATEYEAR,
                 daysAfterDateStart: 1,
                 placeholder: `Day of Year`,
               },
@@ -9692,7 +9691,7 @@ export const TEMPLATES = {
               },
               {
                 id: 1,
-                type: TemplateInputType.DATESTART,
+                type: TemplateInputType.DATEYEAR,
                 daysAfterDateStart: 1,
                 placeholder: `Day of Year`,
               },
@@ -9751,7 +9750,7 @@ export const TEMPLATES = {
           },
           {
             id: 3,
-            type: TemplateInputType.DATESTART,
+            type: TemplateInputType.DATEYEAR,
             daysAfterDateStart: 2,
             placeholder: `Day of Year`,
           },
@@ -9774,7 +9773,7 @@ export const TEMPLATES = {
         inputs: [
           {
             id: 0,
-            type: TemplateInputType.DATESTART,
+            type: TemplateInputType.DATEYEAR,
             daysAfterDateStart: 2,
             placeholder: `Day of Year`,
           },
@@ -9807,7 +9806,7 @@ export const TEMPLATES = {
           },
           {
             id: 3,
-            type: TemplateInputType.DATESTART,
+            type: TemplateInputType.DATEYEAR,
             daysAfterDateStart: 2,
             placeholder: `Day of Year`,
           },
@@ -9836,7 +9835,7 @@ export const TEMPLATES = {
           },
           {
             id: 1,
-            type: TemplateInputType.DATESTART,
+            type: TemplateInputType.DATEYEAR,
             daysAfterDateStart: 2,
             placeholder: `Day of Year`,
           },
