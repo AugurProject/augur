@@ -35,6 +35,7 @@ import {
   TXEventName,
   TXStatus,
   UniverseForkedLog,
+  LiquidityPoolUpdated,
 } from '@augurproject/sdk-lite';
 import { logger } from '@augurproject/utils';
 import { addUpdateTransaction } from 'modules/events/actions/add-update-transaction';
@@ -67,13 +68,11 @@ import {
   MODAL_ERROR,
   PUBLICTRADE,
   WALLET_STATUS_VALUES,
+  SUBMIT_REPORT,
+  THEMES,
 } from 'modules/common/constants';
 import { getCategoryStats } from 'modules/create-market/actions/get-category-stats';
 import { loadMarketsInfo } from 'modules/markets/actions/load-markets-info';
-import {
-  removeMarket,
-  updateMarketsData,
-} from 'modules/markets/actions/update-markets-data';
 import { loadAccountOpenOrders } from 'modules/orders/actions/load-account-open-orders';
 import {
   constructPendingOrderid,
@@ -105,6 +104,7 @@ import { AppStatus } from 'modules/app/store/app-status';
 import { Markets } from 'modules/markets/store/markets';
 import { PendingOrders } from 'modules/app/store/pending-orders';
 import { loadGasPriceInfo } from 'modules/app/actions/load-gas-price-info';
+import { loadUniverseDetails } from 'modules/universe/actions/load-universe-details';
 
 const handleAlert = (log: any, name: string, toast: boolean) => {
   const {
@@ -341,7 +341,7 @@ export const handleWarpSyncHashUpdatedLog = (log: { hash: string }) => {
 };
 
 export const handleTokensTransferredLog = (
-  logs: Logs.TokensTransferredLog[]
+  logs: TokensTransferredLog[]
 ) => {
   const {
     loginAccount: { address },
@@ -355,7 +355,7 @@ export const handleTokensTransferredLog = (
 };
 
 export const handleTokenBalanceChangedLog = (
-  logs: Logs.TokenBalanceChangedLog[]
+  logs: TokenBalanceChangedLog[]
 ) => {
   const {
     loginAccount: { address },
@@ -371,7 +371,7 @@ export const handleTokenBalanceChangedLog = (
 };
 
 export const handleBulkOrdersLog = (data: {
-  logs: Logs.ParsedOrderEventLog[];
+  logs: ParsedOrderEventLog[];
 }) => {
   logger.info('Bulk Order Events', data?.logs?.length);
   const { zeroXStatus } = AppStatus.get();
@@ -397,9 +397,9 @@ export const handleBulkOrdersLog = (data: {
 };
 
 export const handleLiquidityPoolUpdatedLog = (
-  data: Logs.LiquidityPoolUpdated
+  data: LiquidityPoolUpdated
 ) => {
-  console.log(data);
+  console.log("HandleLiquidityPoolUpdatedLog:", data);
 };
 
 export const handleOrderLog = (log: any) => {
@@ -419,7 +419,7 @@ export const handleOrderLog = (log: any) => {
   return null;
 };
 
-export const handleOrderCreatedLog = (log: Logs.ParsedOrderEventLog) => {
+export const handleOrderCreatedLog = (log: ParsedOrderEventLog) => {
   const {
     isLogged,
     loginAccount: { mixedCaseAddress },
@@ -446,7 +446,7 @@ export const handleOrderCreatedLog = (log: Logs.ParsedOrderEventLog) => {
 const handleOrderCanceledLogs = logs =>
   logs.map(log => handleOrderCanceledLog(log));
 
-export const handleOrderCanceledLog = (log: Logs.ParsedOrderEventLog) => {
+export const handleOrderCanceledLog = (log: ParsedOrderEventLog) => {
   const {
     loginAccount: { mixedCaseAddress },
     isLogged,
@@ -476,7 +476,7 @@ const handleNewBlockFilledOrdersLog = logs => {
   checkUpdateUserPositions(unqMarketIds);
 };
 
-export const handleOrderFilledLog = (log: Logs.ParsedOrderEventLog) => {
+export const handleOrderFilledLog = (log: ParsedOrderEventLog) => {
   const {
     isLogged,
     loginAccount: { address },
@@ -491,10 +491,14 @@ export const handleOrderFilledLog = (log: Logs.ParsedOrderEventLog) => {
     if (log.orderFiller) handleAlert(log, PUBLICFILLORDER, true);
     removePendingOrder(log.tradeGroupId, marketId);
   }
+  const { theme } = AppStatus.get();
+  if (theme === THEMES.SPORTS) {
+    throttleLoadMarketOrders(marketId);
+  }
 };
 
 export const handleTradingProceedsClaimedLog = (
-  log: Logs.TradingProceedsClaimedLog
+  log: TradingProceedsClaimedLog
 ) => {
   const {
     loginAccount: { address },
@@ -513,7 +517,7 @@ export const handleTradingProceedsClaimedLog = (
 
 // ---- initial reporting ----- //
 export const handleInitialReportSubmittedLog = (
-  logs: Logs.InitialReportSubmittedLog[]
+  logs: InitialReportSubmittedLog[]
 ) => {
   const {
     loginAccount: { address },
@@ -531,7 +535,7 @@ export const handleInitialReportSubmittedLog = (
 };
 
 export const handleInitialReporterRedeemedLog = (
-  logs: Logs.InitialReporterRedeemedLog[]
+  logs: InitialReporterRedeemedLog[]
 ) => {
   const {
     loginAccount: { address },
@@ -565,7 +569,7 @@ export const handleInitialReporterTransferredLog = (logs: any) => {
 // ---- ------------ ----- //
 
 export const handleProfitLossChangedLog = (
-  logs: Logs.ProfitLossChangedLog[]
+  logs: ProfitLossChangedLog[]
 ) => {
   const {
     loginAccount: { address },
@@ -575,7 +579,7 @@ export const handleProfitLossChangedLog = (
 };
 
 export const handleParticipationTokensRedeemedLog = (
-  logs: Logs.ParticipationTokensRedeemedLog[]
+  logs: ParticipationTokensRedeemedLog[]
 ) => {
   const {
     loginAccount: { address },
@@ -588,7 +592,7 @@ export const handleParticipationTokensRedeemedLog = (
 };
 
 export const handleReportingParticipantDisavowedLog = (
-  logs: Logs.ReportingParticipantDisavowedLog[]
+  logs: ReportingParticipantDisavowedLog[]
 ) => {
   const {
     loginAccount: { address },
@@ -614,14 +618,14 @@ export const handleMarketTransferredLog = (logs: any) => {
   Markets.actions.updateMarketsData(null, loadMarketsInfo(marketIds));
 };
 
-export const handleUniverseForkedLog = (log: Logs.UniverseForkedLog) => {
+export const handleUniverseForkedLog = (log: UniverseForkedLog) => {
   console.log('handleUniverseForkedLog');
   const { forkingMarket } = log;
   loadUniverseForkingInfo(forkingMarket);
   if (isOnDisputingPage()) reloadDisputingPage([]);
 };
 
-export const handleMarketFinalizedLog = (logs: Logs.MarketFinalizedLog[]) => {
+export const handleMarketFinalizedLog = (logs: MarketFinalizedLog[]) => {
   const {
     universe: { forkingInfo },
   } = AppStatus.get();
@@ -638,19 +642,19 @@ export const handleMarketFinalizedLog = (logs: Logs.MarketFinalizedLog[]) => {
 
 // ---- disputing ----- //
 export const handleDisputeCrowdsourcerCreatedLog = (
-  logs: Logs.DisputeCrowdsourcerCreatedLog[]
+  logs: DisputeCrowdsourcerCreatedLog[]
 ) => {
   if (isOnDisputingPage()) reloadDisputingPage([]);
 };
 
 export const handleDisputeCrowdsourcerCompletedLog = (
-  logs: Logs.DisputeCrowdsourcerCompletedLog[]
+  logs: DisputeCrowdsourcerCompletedLog[]
 ) => {
   if (isOnDisputingPage()) reloadDisputingPage([]);
 };
 
 export const handleDisputeCrowdsourcerContributionLog = (
-  logs: Logs.DisputeCrowdsourcerContributionLog[]
+  logs: DisputeCrowdsourcerContributionLog[]
 ) => {
   const {
     loginAccount: { address },
@@ -667,7 +671,7 @@ export const handleDisputeCrowdsourcerContributionLog = (
 };
 
 export const handleDisputeCrowdsourcerRedeemedLog = (
-  logs: Logs.DisputeCrowdsourcerRedeemedLog[]
+  logs: DisputeCrowdsourcerRedeemedLog[]
 ) => {
   const {
     loginAccount: { address },
@@ -682,7 +686,7 @@ export const handleDisputeCrowdsourcerRedeemedLog = (
 // ---- ------------ ----- //
 
 export const handleDisputeWindowCreatedLog = (
-  logs: Logs.DisputeWindowCreatedLog[]
+  logs: DisputeWindowCreatedLog[]
 ) => {
   if (logs.length > 0) {
     loadDisputeWindow();
@@ -691,7 +695,7 @@ export const handleDisputeWindowCreatedLog = (
   }
 };
 
-export const handleTokensMintedLog = (logs: Logs.TokensMinted[]) => {
+export const handleTokensMintedLog = (logs: TokensMinted[]) => {
   const {
     loginAccount: { address: userAddress },
     universe: { id: universeId, forkingInfo },
@@ -699,19 +703,19 @@ export const handleTokensMintedLog = (logs: Logs.TokensMinted[]) => {
   } = AppStatus.get();
   const isForking = !!forkingInfo;
   let isParticipationTokens = !!logs.find(
-    l => l.tokenType === Logs.TokenType.ParticipationToken
+    l => l.tokenType === TokenType.ParticipationToken
   );
   logs
     .filter(log => isSameAddress(log.target, userAddress))
     .map(log => {
-      if (log.tokenType === Logs.TokenType.ParticipationToken) {
+      if (log.tokenType === TokenType.ParticipationToken) {
         removePendingTransaction(BUYPARTICIPATIONTOKENS);
         loadAccountReportingHistory();
       }
-      if (log.tokenType === Logs.TokenType.ReputationToken && isForking) {
+      if (log.tokenType === TokenType.ReputationToken && isForking) {
         loadUniverseDetails(universeId, userAddress);
       }
-      if (log.tokenType === Logs.TokenType.ReputationToken && !isForking) {
+      if (log.tokenType === TokenType.ReputationToken && !isForking) {
         const timestamp = currentAugurTimestamp * 1000;
         updateAlert(
           log.blockHash,

@@ -291,7 +291,7 @@ export const useBetslip = (defaultState = MOCK_BETSLIP_STATE) => {
         wager = '0',
         outcomeId,
         price = '0'
-      ) => {
+      ) =>
         dispatch({
           type: ADD_BET,
           marketId,
@@ -301,18 +301,14 @@ export const useBetslip = (defaultState = MOCK_BETSLIP_STATE) => {
           wager,
           outcomeId,
           price,
-        });
-      },
-      sendBet: (marketId, orderId, description, order) => {
-        dispatch({ type: SEND_BET, marketId, orderId, description, order });
-      },
+        }),
+      sendBet: (marketId, orderId, description, order) =>
+        dispatch({ type: SEND_BET, marketId, orderId, description, order }),
       modifyBet: (marketId, orderId, order) =>
         dispatch({ type: MODIFY_BET, marketId, orderId, order }),
       cancelBet: (marketId, order) =>
         dispatch({ type: CANCEL_BET, marketId, order }),
-      sendAllBets: () => {
-        dispatch({ type: SEND_ALL_BETS });
-      },
+      sendAllBets: () => dispatch({ type: SEND_ALL_BETS }),
       cancelAllBets: () => dispatch({ type: CANCEL_ALL_BETS }),
       retry: (marketId, orderId) =>
         dispatch({ type: RETRY, marketId, orderId }),
