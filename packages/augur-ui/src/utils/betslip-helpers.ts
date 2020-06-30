@@ -29,7 +29,7 @@ const { FILLED, FAILED } = BET_STATUS;
 export const placeBet = async (marketId, order, orderId) => {
   const { marketInfos } = Markets.get();
   const market = marketInfos[marketId];
-  // todo: need to add user shares, pending queue
+  // todo: need to add user shares
   await placeTrade(
     0,
     marketId,
