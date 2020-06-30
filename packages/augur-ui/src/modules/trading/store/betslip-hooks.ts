@@ -33,9 +33,9 @@ const {
   ADD_MULTIPLE_MATCHED,
 } = BETSLIP_ACTIONS;
 const { BETSLIP, MY_BETS, MATCHED, UNMATCHED } = BETSLIP_SELECTED;
-const { UNSENT, PENDING, CLOSED } = BET_STATUS;
+const { UNSENT, PENDING, CLOSED, FILLED } = BET_STATUS;
 
-export const calculateBetslipTotals = betslip => {
+export const calculateBetslipTotals = (betslip) => {
   let totalWager = ZERO;
   let potential = ZERO;
   let fees = ZERO;
@@ -80,11 +80,19 @@ export function BetslipReducer(state, action) {
       break;
     }
     case ADD_BET: {
-      const { marketId, description, outcome, odds, wager, outcomeId, price } = action;
+      const {
+        marketId,
+        description,
+        outcome,
+        odds,
+        wager,
+        outcomeId,
+        price,
+      } = action;
       if (!betslipItems[marketId]) {
         betslipItems[marketId] = {
           description,
-          orders: []
+          orders: [],
         };
       }
       betslipItems[marketId].orders.push({
@@ -138,7 +146,7 @@ export function BetslipReducer(state, action) {
             orders: [],
           };
         }
-        orders.forEach(order => {
+        orders.forEach((order) => {
           placeBet(marketId, order);
           matchedItems[marketId].orders.push({
             ...order,
@@ -166,10 +174,10 @@ export function BetslipReducer(state, action) {
         amountFilled: order.wager,
         amountWon: '0',
         dateUpdated: updatedTime,
-        status: PENDING,
+        status: FILLED,
       });
       updatedState.matched.count++;
-      updatedState[fromList].count--;
+      fromList && updatedState[fromList].count--;
       break;
     }
     case ADD_MULTIPLE_MATCHED: {
@@ -180,7 +188,7 @@ export function BetslipReducer(state, action) {
           orders: [],
         };
       }
-      orders.forEach(order => {
+      orders.forEach((order) => {
         matchedItems[marketId].orders.push({
           ...order,
           amountFilled: order.wager,
@@ -230,7 +238,7 @@ export function BetslipReducer(state, action) {
     case MODIFY_BET: {
       const { marketId, orderId, order } = action;
       const toWin = getNewToWin(order.odds, order.wager);
-      betslipItems[marketId].orders[orderId] = {...order, toWin };
+      betslipItems[marketId].orders[orderId] = { ...order, toWin };
       break;
     }
     case CANCEL_BET: {
@@ -261,42 +269,59 @@ export function BetslipReducer(state, action) {
   return updatedState;
 }
 
-export const placeBet = async (marketId, order) =>  {
+export const placeBet = async (marketId, order) => {
   const { marketInfos } = Markets.get();
   const market = marketInfos[marketId];
   // todo: need to add user shares, approval check, pending queue
   await placeTrade(
-          0,
-          marketId,
-          market.numOutcomes,
-          order.outcomeId,
-          false,
-          market.numTicks,
-          market.minPrice,
-          market.maxPrice,
-          order.wager,
-          order.price,
-          0,
-          '0',
-          undefined
-        );
-}
+    0,
+    marketId,
+    market.numOutcomes,
+    order.outcomeId,
+    false,
+    market.numTicks,
+    market.minPrice,
+    market.maxPrice,
+    order.wager,
+    order.price,
+    0,
+    '0',
+    undefined
+  );
+};
 export const useBetslip = (defaultState = MOCK_BETSLIP_STATE) => {
   const [state, dispatch] = useReducer(BetslipReducer, defaultState);
   return {
     ...state,
     actions: {
-      toggleHeader: selected => {
+      toggleHeader: (selected) => {
         if (selected !== state.selected.header)
           dispatch({ type: TOGGLE_HEADER });
       },
-      toggleSubHeader: selected => {
+      toggleSubHeader: (selected) => {
         if (selected !== state.selected.subHeader)
           dispatch({ type: TOGGLE_SUBHEADER });
       },
       toggleStep: () => dispatch({ type: TOGGLE_STEP }),
-      addBet: (marketId, description, odds, outcome, wager = "0", outcomeId, price = "0") => {
-        dispatch({ type: ADD_BET, marketId, description, odds, outcome, wager, outcomeId, price });
+      addBet: (
+        marketId,
+        description,
+        odds,
+        outcome,
+        wager = '0',
+        outcomeId,
+        price = '0'
+      ) => {
+        dispatch({
+          type: ADD_BET,
+          marketId,
+          description,
+          odds,
+          outcome,
+          wager,
+          outcomeId,
+          price,
+        });
       },
       sendBet: (marketId, orderId, description, order) => {
         dispatch({ type: SEND_BET, marketId, orderId, description, order });
@@ -306,7 +331,7 @@ export const useBetslip = (defaultState = MOCK_BETSLIP_STATE) => {
       cancelBet: (marketId, order) =>
         dispatch({ type: CANCEL_BET, marketId, order }),
       sendAllBets: () => {
-        dispatch({ type: SEND_ALL_BETS })
+        dispatch({ type: SEND_ALL_BETS });
       },
       cancelAllBets: () => dispatch({ type: CANCEL_ALL_BETS }),
       retry: (marketId, orderId) =>
@@ -315,6 +340,8 @@ export const useBetslip = (defaultState = MOCK_BETSLIP_STATE) => {
         dispatch({ type: CASH_OUT, marketId, orderId }),
       updateMatched: (marketId, orderId, updates) =>
         dispatch({ type: UPDATE_MATCHED, marketId, orderId, updates }),
+      addMatched: (fromList, marketId, description, order) =>
+        dispatch({ type: ADD_MATCHED, fromList, marketId, description, order }),
       trash: (marketId, orderId) =>
         dispatch({ type: TRASH, marketId, orderId }),
       cancelAllUnmatched: () => dispatch({ type: CANCEL_ALL_UNMATCHED }),
