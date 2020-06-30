@@ -1,17 +1,17 @@
-import { createBigNumber } from "utils/create-big-number";
-import { BUY, SELL, ZERO } from "modules/common/constants";
-import { convertUnixToFormattedDate } from "utils/format-date";
-import { findUserOpenOrders } from "modules/orders/selectors/user-open-orders";
-import { isSameAddress } from "utils/isSameAddress";
-import { formatDai } from "utils/format-number";
-import { AppStatus } from "modules/app/store/app-status";
-import { Markets } from "modules/markets/store/markets";
+import { createBigNumber } from 'utils/create-big-number';
+import { BUY, SELL, ZERO } from 'modules/common/constants';
+import { convertUnixToFormattedDate } from 'utils/format-date';
+import { isSameAddress } from 'utils/isSameAddress';
+import { formatDai } from 'utils/format-number';
+import getUserOpenOrders from 'modules/orders/selectors/user-open-orders';
+import { Markets } from 'modules/markets/store/markets';
+import { AppStatus } from 'modules/app/store/app-status';
 
 function findOrders(
   tradesCreatedOrFilledByThisAccount,
   accountId,
   marketInfos,
-  openOrders,
+  openOrders
 ) {
   // Each input tradesCreatedOrFilledByThisAccount will be associated with exactly
   // one order. But if tradesCreatedOrFilledByThisAccount includes self-filled trades
@@ -26,15 +26,13 @@ function findOrders(
   // fake order is never reused, it's only used for the single self-filled trade.
   const tradesIncludingSelfTrades = tradesCreatedOrFilledByThisAccount.concat(
     tradesCreatedOrFilledByThisAccount
-      .filter((trade) => isSameAddress(trade.creator, trade.filler))
-      .map((selfFilledTrade) =>
+      .filter(trade => isSameAddress(trade.creator, trade.filler))
+      .map(selfFilledTrade =>
         Object.assign({}, selfFilledTrade, {
-          orderId: `${selfFilledTrade.transactionHash}-${
-            selfFilledTrade.logIndex
-          }-fake-order-for-self-filled-trade`, // fake order id (must be unique per trade) for the fake order that will be used only for this single self-filled trade
+          orderId: `${selfFilledTrade.transactionHash}-${selfFilledTrade.logIndex}-fake-order-for-self-filled-trade`, // fake order id (must be unique per trade) for the fake order that will be used only for this single self-filled trade
           type: selfFilledTrade.type === BUY ? SELL : BUY, // flip BUY/SELL to show other side of self-filled trade
-        }),
-      ),
+        })
+      )
   );
 
   const orders = tradesIncludingSelfTrades.reduce(
@@ -52,22 +50,26 @@ function findOrders(
         marketId,
         logIndex,
         tradeGroupId: orderTradeGroupId,
-      },
+      }
     ) => {
-      const foundOrder = order.find(({ id, tradeGroupId, type }) => id === orderId || (tradeGroupId === orderTradeGroupId && type == orderType));
+      const foundOrder = order.find(
+        ({ id, tradeGroupId, type }) =>
+          id === orderId ||
+          (tradeGroupId === orderTradeGroupId && type == orderType)
+      );
       const amountBN = createBigNumber(amount);
       const priceBN = createBigNumber(price);
 
       let originalQuantity = amountBN;
       if (isSameAddress(creator, accountId) && !foundOrder) {
         const matchingOpenOrder = openOrders.find(
-          (openOrder) => openOrder.id === orderId,
+          openOrder => openOrder.id === orderId
         );
         originalQuantity =
           (matchingOpenOrder &&
             matchingOpenOrder.unmatchedShares &&
             createBigNumber(
-              matchingOpenOrder.unmatchedShares.fullPrecision,
+              matchingOpenOrder.unmatchedShares.fullPrecision
             ).plus(amountBN)) ||
           amountBN;
       }
@@ -92,16 +94,19 @@ function findOrders(
         });
 
         foundOrder.originalQuantity = foundOrder.originalQuantity.plus(
-          amountBN,
+          amountBN
         );
         // amount has been format-number'ed
         foundOrder.amount = createBigNumber(foundOrder.amount).plus(amountBN);
-        foundOrder.price = formatDai(foundOrder.trades
-          .reduce(
-            (p, t) => p.plus(createBigNumber(t.price).times(t.amount)),
-            ZERO
-          )
-          .div(foundOrder.amount).toFixed(8)).formattedValue;
+        foundOrder.price = formatDai(
+          foundOrder.trades
+            .reduce(
+              (p, t) => p.plus(createBigNumber(t.price).times(t.amount)),
+              ZERO
+            )
+            .div(foundOrder.amount)
+            .toFixed(8)
+        ).formattedValue;
         foundOrder.trades
           .sort((a, b) => b.logIndex - a.logIndex)
           .sort((a, b) => b.timestamp.timestamp - a.timestamp.timestamp);
@@ -145,29 +150,31 @@ function findOrders(
         .sort((a, b) => b.logIndex - a.logIndex)
         .sort((a, b) => b.timestamp.timestamp - a.timestamp.timestamp);
     },
-    [],
+    []
   );
 
   return orders;
 }
 
-
 export default function(marketId) {
   if (!marketId) return [];
-  return findUserFilledOrders(marketId);
+  return selectUserFilledOrders(marketId);
 }
 
-export const findUserFilledOrders = (marketId) => {
-  const { loginAccount: { address, mixedCaseAddress: accountId }, filledOrders } = AppStatus.get();
+export const selectUserFilledOrders = marketId => {
+  const {
+    loginAccount: { address, mixedCaseAddress: accountId },
+    filledOrders,
+  } = AppStatus.get();
   const { marketInfos } = Markets.get();
-  const marketInfo = marketInfos[marketId];
-  const openOrders = findUserOpenOrders(marketId);
-  const userFilledOrders = filledOrders[address] || [];
+  const openOrders = getUserOpenOrders(marketId);
+  const userFilledOrders = filledOrders || [];
   const filledMarketOrders = userFilledOrders[marketId];
+
   if (
     !filledMarketOrders ||
     filledMarketOrders.length < 1 ||
-    marketInfo === undefined
+    marketInfos[marketId] === undefined
   ) {
     return [];
   }
@@ -175,12 +182,12 @@ export const findUserFilledOrders = (marketId) => {
   const orders = findOrders(
     filledMarketOrders,
     accountId,
-    marketInfo,
-    openOrders,
+    marketInfos[marketId],
+    openOrders
   );
   orders
     .sort((a, b) => b.logIndex - a.logIndex)
     .sort((a, b) => b.timestamp.timestamp - a.timestamp.timestamp);
 
   return orders || [];
-}
+};

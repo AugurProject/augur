@@ -20,7 +20,7 @@ import {
 } from 'modules/pending-queue/actions/pending-queue-management';
 import { TXEventName } from '@augurproject/sdk-lite';
 import { selectMarket } from 'modules/markets/selectors/market';
-import { findUserFilledOrders } from 'modules/orders/selectors/filled-orders';
+import { selectUserFilledOrders } from 'modules/orders/selectors/filled-orders';
 import getUserOpenOrders from 'modules/orders/selectors/user-open-orders';
 import { cancelAllOpenOrders } from 'modules/orders/actions/cancel-order';
 
@@ -54,7 +54,7 @@ const MarketOrdersPositionsTable: React.FC<MarketOrdersPositionsTableProps> = ({
   const marketSelected = market || selectMarket(marketId);
   let openOrders = getUserOpenOrders(marketSelected.id);
   let filledOrders = marketSelected.id
-    ? findUserFilledOrders(marketSelected.id)
+    ? selectUserFilledOrders(marketSelected.id)
     : [];
   const hasPending = Boolean(openOrders.find(order => order.pending));
 

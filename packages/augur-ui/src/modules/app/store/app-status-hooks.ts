@@ -476,7 +476,7 @@ export function AppStatusReducer(state, action) {
     case UPDATE_USER_FILLED_ORDERS: {
       updatedState[FILLED_ORDERS] = {
         ...updatedState[FILLED_ORDERS],
-        [action.account]: { ...action.userFilledOrders },
+        ...action.userFilledOrders,
       };
       break;
     }
