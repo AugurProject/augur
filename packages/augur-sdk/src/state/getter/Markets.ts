@@ -1107,6 +1107,21 @@ function getPeriodStartTime(
   );
 }
 
+async function getOrderFilledLogsByMarket(
+  db: DB,
+  markets: MarketData[],
+): Promise<{}> {
+  const marketIds = _.map(markets, 'market');
+  const orderFilledLogs = await db.ParsedOrderEvent.where('market')
+    .anyOfIgnoreCase(marketIds)
+    .and(item => {
+      return item.eventType === OrderEventType.Fill;
+    })
+    .toArray();
+
+  return _.groupBy(orderFilledLogs, 'market');
+}
+
 async function getMarketsInfo(
   db: DB,
   markets: MarketData[],
