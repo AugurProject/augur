@@ -31,7 +31,7 @@ export const SocialMediaButtons = ({
   };
 
   const sanitizeURLs = marketDescription => {
-    return description.replace(
+    return marketDescription.replace(
       /(([a-zA-Z\-_]+)\.)+?\/?/g,
       "$2(dot)"
     ).replace(/\(dot\)(\s|$)/, ".$1");
