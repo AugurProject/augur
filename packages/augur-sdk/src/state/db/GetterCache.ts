@@ -10,7 +10,7 @@ import { DB } from './DB';
 export class GetterCache extends AbstractTable {
     private augur: Augur;
 
-    private timeToLive = 5 * 60 * 60; // 5 minute cache life. Done as a catch all protective measure
+    private timeToLive = 5 * 60 * 60 * 1000; // 5 minute cache life. Done as a catch all protective measure
 
     // Mapping from event name to getters which should be cleared when such an event is received
     eventMapForCacheClearing = {
@@ -104,8 +104,8 @@ export class GetterCache extends AbstractTable {
 
     async checkExpired(): Promise<void> {
         const timestamp = Date.now();
-        const cutoff = timestamp + this.timeToLive;
-        await this.table.where("timestamp").above(cutoff).delete();
+        const cutoff = timestamp - this.timeToLive;
+        await this.table.where("timestamp").below(cutoff).delete();
     }
 
     subscribeToCacheClearingEvents() {

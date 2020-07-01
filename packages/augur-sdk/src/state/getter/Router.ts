@@ -95,17 +95,17 @@ export class Router {
   }
 
   async executeRoute(name: string, params: any): Promise<any> {
-    let timerName = `getter: ${name} called at ${Date.now()}`;
+    const timerName = `getter: ${name} called at ${Date.now()}`;
 
     logger.time(LoggerLevels.debug, timerName);
-    if (name !== 'getMostRecentWarpSync') {
+    if (name !== 'getMostRecentWarpSync' && process.env.NODE_ENV !== 'test') {
       const cachedResult = await (await this.db).getterCache.getCachedResponse(name, params);
       if (cachedResult !== null) {
-        timerName = "CACHE HIT " + timerName;
+        console.log(`CACHE HIT: ${name}`); 
         logger.timeEnd(LoggerLevels.debug, timerName);
         return cachedResult.response;
       } else {
-        timerName = "CACHE MISS " + timerName;
+        console.log(`CACHE MISS: ${name}`); 
       }
     }
 
@@ -137,7 +137,7 @@ export class Router {
     const db = await this.db;
     const result = await getter.func(this.augur, db, decodedParams.value);
 
-    if (name !== "getMostRecentWarpSync") {
+    if (name !== "getMostRecentWarpSync" && process.env.NODE_ENV !== 'test') {
       await (await this.db).getterCache.cacheResponse(name, params, result);
     }
 
