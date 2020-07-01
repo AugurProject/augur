@@ -16,7 +16,6 @@ export const GlobalChat = ({
   return (
     <div
       className={classNames({
-        [Styles.ThreeBoxChat]: whichChatPlugin === '3box',
         [Styles.OrbitChat]: whichChatPlugin === 'orbit',
       })}
     >

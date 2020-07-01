@@ -14,7 +14,6 @@ export const ModalGlobalChat = ({
 }: ModalGlobalChatProps) => (
   <div
     className={classNames({
-      [Styles.ModalThreeBoxChat]: whichChatPlugin === '3box',
       [Styles.ModalOrbitChat]: whichChatPlugin === 'orbit',
     })}
   >
