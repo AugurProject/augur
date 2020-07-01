@@ -165,7 +165,10 @@ export default class FeesLiquidity extends React.Component<
       validations,
     } = newMarket;
 
-    const marketTradingFee = !isNaN(settlementFee) ? s.reportingFeePercent.value + Number(settlementFee) : settlementFee;
+    const marketTradingFee =
+      !isNaN(settlementFee) && settlementFee !== 0
+        ? s.reportingFeePercent.value + Number(settlementFee)
+        : settlementFee;
     return (
       <div
         className={Styles.FeesLiquidity}
