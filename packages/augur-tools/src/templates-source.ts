@@ -316,9 +316,9 @@ export const TEMPLATES = {
           },
           {
             marketType: CATEGORICAL,
-            question: `MMA: [0] vs. [1], How will fight end?`,
-            example: `MMA UFC: Donald Cerrone vs. Conor McGregor, How will fight end?\nEstimated schedule start time: Jan 18, 2020 8:20 pm EST`,
-            title: `How will fight end`,
+            question: `MMA: [0] vs. [1], How will the fight end?`,
+            example: `MMA UFC: Donald Cerrone vs. Conor McGregor, How will the fight end?\nEstimated schedule start time: Jan 18, 2020 8:20 pm EST`,
+            title: `How will the fight end`,
             header: `[0] vs. [1]`,
             groupName: groupTypes.ADDITIONAL,
             inputs: [
@@ -693,9 +693,9 @@ export const TEMPLATES = {
           },
           {
             marketType: CATEGORICAL,
-            question: `Boxing: [0] vs. [1], How will fight end?`,
-            example: `Boxing: Robert Helenius vs. Adam Kownacki, How will fight end?\nEstimated schedule start time: Jan 18, 2020 8:20 pm EST`,
-            title: `How will fight end`,
+            question: `Boxing: [0] vs. [1], How will the fight end?`,
+            example: `Boxing: Robert Helenius vs. Adam Kownacki, How will the fight end?\nEstimated schedule start time: Jan 18, 2020 8:20 pm EST`,
+            title: `How will the fight end`,
             header: `[0] vs. [1]`,
             groupName: groupTypes.ADDITIONAL,
             inputs: [
