@@ -278,6 +278,7 @@ export function BetslipReducer(state, action) {
 
 export const useBetslip = (defaultState = MOCK_BETSLIP_STATE) => {
   const [state, dispatch] = useReducer(BetslipReducer, defaultState);
+  window.betslip = state;
   return {
     ...state,
     actions: {

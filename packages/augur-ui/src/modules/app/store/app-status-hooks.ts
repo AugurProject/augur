@@ -663,6 +663,7 @@ export function AppStatusReducer(state, action) {
 export const useAppStatus = (defaultState = DEFAULT_APP_STATUS) => {
   const [state, dispatch] = useReducer(AppStatusReducer, defaultState);
   setHTMLTheme(state.theme);
+  window.appStatus = state;
   return {
     ...state,
     actions: {

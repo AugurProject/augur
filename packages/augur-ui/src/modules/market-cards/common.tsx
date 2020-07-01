@@ -466,12 +466,14 @@ export const SportsOutcome = ({
   market,
 }: SportsOutcomeProps) => {
   // TODO: replace orderbooks with best liquidity books in future keying on liquidityPool
-  const { orderBooks } = useMarketsStore();
+  const { orderBooks, liquidityPools } = useMarketsStore();
   const {
      addBet
   } = Betslip.actions;
   const orderBook = orderBooks[market.id]?.orderBook;
   const bestAsk = orderBook && orderBook[outcomeId]?.asks[0];
+  const newBestAsk = liquidityPools[market?.sportsBook?.liquidityPool][outcomeId];
+  console.log("SportsOutcome", market.sportsbook, newBestAsk);
   let topLabel = null;
   let disabled = true;
   let label = '-';
