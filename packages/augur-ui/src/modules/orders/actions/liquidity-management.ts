@@ -1,6 +1,6 @@
-import { createBigNumber } from 'utils/create-big-number';
+import { BigNumber, createBigNumber } from 'utils/create-big-number';
 
-import { BUY, MAX_BULK_ORDER_COUNT, ZERO } from 'modules/common/constants';
+import { BUY, MAX_BULK_ORDER_COUNT, PUBLICTRADE, ZERO } from 'modules/common/constants';
 import { LiquidityOrder, CreateLiquidityOrders } from 'modules/types';
 import { ThunkDispatch } from 'redux-thunk';
 import { Action } from 'redux';
@@ -12,9 +12,14 @@ import {
   approveToTrade,
   placeTrade,
 } from 'modules/contracts/actions/contractCalls';
+import {
+  convertDisplayAmountToOnChainAmount,
+  convertDisplayPriceToOnChainPrice,
+} from "@augurproject/utils"
 import type { Getters } from '@augurproject/sdk';
 import { TXEventName } from '@augurproject/sdk-lite';
 import { setLiquidityOrderStatus } from 'modules/events/actions/liquidity-transactions';
+import { updateAlert } from 'modules/alerts/actions/alerts';
 export const UPDATE_LIQUIDITY_ORDER = 'UPDATE_LIQUIDITY_ORDER';
 export const ADD_MARKET_LIQUIDITY_ORDERS = 'ADD_MARKET_LIQUIDITY_ORDERS';
 export const REMOVE_LIQUIDITY_ORDER = 'REMOVE_LIQUIDITY_ORDER';
@@ -154,7 +159,7 @@ export const sendLiquidityOrder = (options: any) => async (
   getState: () => AppState
 ) => {
   const { order, bnAllowance, marketId } = options;
-  const { appStatus, marketInfos } = getState();
+  const { appStatus, marketInfos, blockchain } = getState();
   const market = marketInfos[marketId];
   const isZeroX = appStatus.zeroXEnabled;
   const { orderEstimate } = order;
@@ -174,11 +179,11 @@ export const sendLiquidityOrder = (options: any) => async (
   if (bnAllowance.lte(0) || bnAllowance.lte(createBigNumber(orderEstimate))) {
     await approveToTrade();
     isZeroX
-      ? createZeroXLiquidityOrders(market, [options.order], dispatch)
+      ? createZeroXLiquidityOrders(market, [options.order], blockchain.currentAugurTimestamp, dispatch)
       : sendOrder(options);
   } else {
     isZeroX
-      ? createZeroXLiquidityOrders(market, [options.order], dispatch)
+      ? createZeroXLiquidityOrders(market, [options.order], blockchain.currentAugurTimestamp, dispatch)
       : sendOrder(options);
   }
 };
@@ -206,7 +211,7 @@ export const startOrderSending = (options: CreateLiquidityOrders) => async (
   getState: () => AppState
 ) => {
   const { marketId, chunkOrders } = options;
-  const { appStatus, loginAccount, marketInfos, pendingLiquidityOrders } = getState();
+  const { appStatus, loginAccount, marketInfos, pendingLiquidityOrders, blockchain } = getState();
 
   // If GSN is enabled no need to call the below since this will be handled by the proxy contract during initalization
   if (!appStatus.gsnEnabled && loginAccount.allowance.lte(ZERO)) await approveToTrade();
@@ -219,7 +224,7 @@ export const startOrderSending = (options: CreateLiquidityOrders) => async (
   });
 
   if (!chunkOrders) {
-    await createZeroXLiquidityOrders(market, orders, dispatch);
+    await createZeroXLiquidityOrders(market, orders, blockchain.currentAugurTimestamp, dispatch);
   } else {
     // MAX_BULK_ORDER_COUNT number of orders in each creation bulk group
     let i = 0;
@@ -228,7 +233,7 @@ export const startOrderSending = (options: CreateLiquidityOrders) => async (
       groups.push(orders.slice(i, i + MAX_BULK_ORDER_COUNT));
     }
     try {
-      groups.map(group => createZeroXLiquidityOrders(market, group, dispatch));
+      groups.map(group => createZeroXLiquidityOrders(market, group, blockchain.currentAugurTimestamp, dispatch));
     } catch (e) {
       console.error(e);
     }
@@ -238,6 +243,7 @@ export const startOrderSending = (options: CreateLiquidityOrders) => async (
 const createZeroXLiquidityOrders = async (
   market: Getters.Markets.MarketInfo,
   orders: LiquidityOrder[],
+  timestamp: any,
   dispatch
 ) => {
   try {
@@ -275,6 +281,28 @@ const createZeroXLiquidityOrders = async (
         undefined
       )
         .then(() => {
+          const alert = {
+            eventType: o.type,
+            market: market.id,
+            name: PUBLICTRADE,
+            status: TXEventName.Success,
+            timestamp: timestamp * 1000,
+            params: {
+              outcome: '0x0'.concat(String(o.outcomeId)),
+              price: convertDisplayPriceToOnChainPrice(
+                createBigNumber(o.price),
+                createBigNumber(market.minPrice),
+                createBigNumber(market.tickSize)
+              ),
+              orderType: o.type === BUY ? 0 : 1,
+              amount: convertDisplayAmountToOnChainAmount(
+                createBigNumber(o.shares),
+                createBigNumber(market.tickSize)
+              ),
+              marketId: market.id,
+            },
+          };
+          dispatch(updateAlert(undefined, alert, false));
           dispatch(
             deleteSuccessfulLiquidityOrder({
               txParamHash: market.transactionHash,
