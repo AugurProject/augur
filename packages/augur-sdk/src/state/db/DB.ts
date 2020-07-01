@@ -411,8 +411,6 @@ export class DB {
    * Syncs generic events and user-specific events with blockchain and updates MetaDB info.
    */
   async sync(highestAvailableBlockNumber?: number): Promise<void> {
-    this.dexieDB['Rollback'].clear();
-
     const dbSyncPromises = [];
     if (!highestAvailableBlockNumber) {
       highestAvailableBlockNumber = await this.augur.provider.getBlockNumber();
