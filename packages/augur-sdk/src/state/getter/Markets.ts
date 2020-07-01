@@ -52,6 +52,7 @@ import {
 import { Getter } from './Router';
 import { sortOptions } from './types';
 import { flattenZeroXOrders } from './ZeroXOrdersGetters';
+import { cloneDeep } from 'lodash';
 
 const MaxLiquiditySpreadValue = {
   '100': null,
@@ -316,6 +317,7 @@ export class Markets {
     ) {
       throw new Error('Unknown universe: ' + params.universe);
     }
+    params = cloneDeep(params);
 
     params.includeWarpSyncMarkets =
       typeof params.includeWarpSyncMarkets === 'undefined'

@@ -155,7 +155,6 @@ export class BlockAndLogStreamerSyncStrategy extends AbstractSyncStrategy
   }
 
   processBlockAdded = async (block: Block) => {
-    console.time("processBlockAdded");
     this.currentSuspectBlocks.push(block);
 
     const suspectBlockNumbers = this.currentSuspectBlocks.map(b => {
@@ -198,7 +197,6 @@ export class BlockAndLogStreamerSyncStrategy extends AbstractSyncStrategy
 
       await this.onLogsAdded(currentBlockNumber, this.parseLogs(logsToEmit));
     }
-    console.timeEnd("processBlockAdded");
   };
 
   onBlockRemoved = async (block: Block) => {
