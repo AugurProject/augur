@@ -1,7 +1,7 @@
 import React, { useMemo, useState } from 'react';
 import classNames from 'classnames';
 
-import Styles, { myBets } from 'modules/portfolio/components/portfolio-view/my-bets.styles.less';
+import Styles from 'modules/portfolio/components/portfolio-view/my-bets.styles.less';
 import {
   ExternalLinkButton,
   PrimaryButton,
@@ -23,7 +23,7 @@ import {
   MARKET_OPEN,
   MARKET_REPORTING,
   MARKET_CLOSED,
-  FUTURES,
+  SPORTS_GROUP_TYPES,
 } from 'modules/common/constants';
 import { MARKETS } from 'modules/routes/constants/views';
 import { FilterNotice } from 'modules/common/filter-notice';
@@ -70,12 +70,11 @@ export function processRows(
       marketId: key
     };
   });
-  console.log(myBetsArray);
   let futureRows = myBetsArray.filter(market => {
-    return market?.sportsBook?.groupType === FUTURES;
+    return market?.sportsBook?.groupType === SPORTS_GROUP_TYPES.FUTURES;
   });
   let gamesRows = myBetsArray.filter(market => {
-    return market?.sportsBook?.groupType === GAMES;
+    return market?.sportsBook?.groupType !== SPORTS_GROUP_TYPES.FUTURES;
   });
   let rows = futureRows;
 
