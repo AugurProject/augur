@@ -274,7 +274,6 @@ export enum TemplateInputType {
   TEXT = 'TEXT', // simple text input in market question
   DATEYEAR = 'DATEYEAR', // date picker in market question
   DATETIME = 'DATETIME', // date time with timezone picker
-  DATESTART = 'DATESTART', // market end time can not be before the start of this day
   ESTDATETIME = 'ESTDATETIME', // estimated scheduled start time date time picker with timezone
   DATEYEAR_CLOSING = 'DATEYEAR_CLOSING', // expiration time can not be before this offset on DATEYEAR in market question
   DROPDOWN = 'DROPDOWN', // dropdown list, found in market question
@@ -319,7 +318,6 @@ export const ValidationTemplateInputType = {
   [TemplateInputType.SUBSTITUTE_USER_OUTCOME]: `[0-9]+`,
   [TemplateInputType.DATETIME]: `(January|February|March|April|May|June|July|August|September|October|November|December){1} ([0]?[1-9]|[1-2][0-9]|3[0-1]), 20[0-9]{2} [0]?[1-9]|2[0-3]:[0-5][0-9] (AM|PM) \\(UTC 0\\)`,
   [TemplateInputType.DATEYEAR]: `(January|February|March|April|May|June|July|August|September|October|November|December){1} ([0]?[1-9]|[1-2][0-9]|3[0-1]), 20[0-9]{2}`,
-  [TemplateInputType.DATESTART]: `(January|February|March|April|May|June|July|August|September|October|November|December){1} ([0]?[1-9]|[1-2][0-9]|3[0-1]), 20[0-9]{2}`,
 };
 
 export let TEMPLATE_VALIDATIONS = {};
@@ -470,13 +468,14 @@ function daysRequiredAfterStartDate(
   daysAfterStartDate: number,
   endTime: number
 ) {
-  const input = inputs.find((i) => i.type === TemplateInputType.DATESTART);
+  const input = inputs.find((i) => i.type === TemplateInputType.DATEYEAR);
   if (!input || !daysAfterStartDate) return true;
   // add number of hours to estimated start timestamp then compare to market event expiration
   const secondsAfterStartDate = SECONDS_IN_A_DAY.multipliedBy(
     daysAfterStartDate
   ).toNumber();
-  return Number(input.timestamp) + secondsAfterStartDate >= Number(endTime);
+  const dayTimestamp = getDateYearTimestamp(input.value)
+  return dayTimestamp + secondsAfterStartDate >= Number(endTime);
 }
 
 function daysRequiredAfterMonthDate(
@@ -516,17 +515,20 @@ function isDateInQuestionValid(
   const filteredInputs = inputs.filter((i) =>
     [
       String(TemplateInputType.DATEYEAR),
-      String(TemplateInputType.DATESTART),
       String(TemplateInputType.DATETIME),
       String(TemplateInputType.ESTDATETIME),
     ].includes(i.type)
   );
   if (!filteredInputs || filteredInputs.length === 0) return true;
   return filteredInputs.reduce((p, input) => {
-    if (!input.timestamp) return false;
+    const timestamp =
+      input.type === TemplateInputType.DATEYEAR
+        ? getDateYearTimestamp(input.value)
+        : Number(input.timestamp);
+    if (!timestamp) return false;
     if (
-      Number(input.timestamp) > Number(endTime) ||
-      Number(creationTime) > Number(input.timestamp)
+      Number(timestamp) > Number(endTime) ||
+      Number(creationTime) > Number(timestamp)
     ) {
       return false;
     }
@@ -549,13 +551,13 @@ function IsOnOrAfterWednesdayAfterOpeningOnOpeningFriday(
   if (!afterTuesday && !onFridayOpening) return true;
   if (
     onFridayOpening &&
-    moment.unix(Number(onFridayOpening.timestamp)).weekday() !==
+    moment.unix(getDateYearTimestamp(onFridayOpening.value)).weekday() !==
       FRIDAY_DAY_OF_WEEK
   ) {
     return false;
   } else {
     const wednesdayDatetime = getTemplateWednesdayAfterOpeningDay(
-      Number(afterTuesday.timestamp)
+      getDateYearTimestamp(afterTuesday.value)
     );
     return wednesdayDatetime <= endTime;
   }
@@ -645,22 +647,27 @@ export function getTemplateWednesdayAfterOpeningDay(openingDay: number) {
   return wednesdayOfNextWeekOpeningDay.unix();
 }
 
-export function getTemplateExchangeClosingWithBuffer(
-  dayTimestamp: number,
+function getDateYearTimestamp(dayFormat: string): number {
+  const dayTimestamp = moment(dayFormat, 'MMMM D, YYYY', true);
+  if(!dayTimestamp.isValid()) return 0;
+  return dayTimestamp.startOf('day').unix();
+}
+
+export function getExchangeClosingWithBufferGivenDay(
+  dayFormat: string,
   hour: number,
   minutes: number,
   offset: number,
 ) {
   // one hour time buffer after lastest exchange closing is built in.
   const OneHourBuffer = 1;
-  const closingDateTime = moment.unix(dayTimestamp).startOf('day');
-  // get local offset mul -1 b/c of how date returns timezone offset
-  const localOffset: number = (new Date().getTimezoneOffset() / 60) * -1;
-  closingDateTime.set({
-    hour: hour - offset + localOffset + OneHourBuffer,
+  const startOfDay = moment.unix(getDateYearTimestamp(dayFormat));
+  if(!startOfDay.isValid()) return 0;
+  startOfDay.set({
+    hour: hour - offset + OneHourBuffer,
     minute: minutes,
   });
-  return closingDateTime.utc().unix();
+  return startOfDay.unix();
 }
 
 function closingDateDependenciesCheck(
@@ -674,12 +681,12 @@ function closingDateDependenciesCheck(
   const result = deps.reduce((p, d) => {
     const dateYearSource = inputs.find((i) => i.id === d.inputDateYearId);
     const exchangeValue = inputs.find((i) => i.id === d.inputSourceId);
-    if (!dateYearSource || !exchangeValue || !dateYearSource.timestamp)
+    if (!dateYearSource || !exchangeValue || !dateYearSource.value)
       return false;
     const timeOffset = d.inputTimeOffset[exchangeValue.value] as TimeOffset;
     if (timeOffset) {
-      const closingDateTime = getTemplateExchangeClosingWithBuffer(
-        Number(dateYearSource.timestamp),
+      const closingDateTime = getExchangeClosingWithBufferGivenDay(
+        dateYearSource.value,
         timeOffset.hour,
         timeOffset.minutes,
         timeOffset.offset
@@ -938,7 +945,7 @@ export const isTemplateMarket = (
       return false;
     }
 
-    // check DATEYEAR, DATESTART, ... isn't after market creation date and endTime isn't before
+    // check DATEYEAR, ... isn't after market creation date and endTime isn't before
     if (
       !isDateInQuestionValid(
         template.inputs,

@@ -11,7 +11,7 @@ const templateValidations = [
   {
     skip: false,
     title: 'Will bob be federally charged by June 23, 2020 11:59PM ET?',
-    templateInfo: '{"hash":"0xad72cd4fb3a7811b65974abf5090088b4b5607075548d013645ac6857897c954","question":"Will [0] be federally charged by [1] 11:59PM ET?","inputs":[{"id":0,"value":"bob","type":"TEXT","timestamp":null},{"id":1,"value":"June 23, 2020","type":"DATESTART","timestamp":1592888400}]}',
+    templateInfo: '{"hash":"0xad72cd4fb3a7811b65974abf5090088b4b5607075548d013645ac6857897c954","question":"Will [0] be federally charged by [1] 11:59PM ET?","inputs":[{"id":0,"value":"bob","type":"TEXT","timestamp":null},{"id":1,"value":"June 23, 2020","type":"DATEYEAR","timestamp":1592888400}]}',
     endTime: '1593061200',
     creationTime: '1592844948',
     resolutionRules: 'Person named shall be indicted or otherwise formally charged with a U.S. federal crime, as publicly confirmed on or before date by 11:59PM eastern time (ET) in market question by an authorized representative of the charging agency(ies) or judicial venue(s).',

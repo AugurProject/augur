@@ -35,7 +35,7 @@ export function submitNewMarket(
     const { loginAccount, appStatus } = getState();
 
     market.orderBook = sortOrders(market.orderBook);
-    market.endTime = market.endTimeFormatted.timestamp;
+    market.endTime = market.endTimeFormatted?.timestamp || market.endTime;
     market.designatedReporterAddress =
       market.designatedReporterAddress === ''
         ? loginAccount.address
@@ -79,8 +79,7 @@ export function submitNewMarket(
                       !!i.userInputObject)
                       ? (i.userInputObject as UserInputDateTime)
                           .endTimeFormatted.timestamp
-                      : ((i.type === TemplateInputType.DATESTART ||
-                          i.type === TemplateInputType.DATEYEAR) &&
+                      : ((i.type === TemplateInputType.DATEYEAR) &&
                           i.setEndTime) ||
                         null,
                 },
