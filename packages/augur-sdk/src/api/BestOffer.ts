@@ -1,4 +1,4 @@
-import { ParsedOrderEventLog, OrderTypeHex, SubscriptionEventName } from '@augurproject/sdk-lite';
+import { ParsedOrderEventLog, OrderTypeHex, SubscriptionEventName, OrderEventType } from '@augurproject/sdk-lite';
 import {
   convertOnChainPriceToDisplayPrice,
   convertOnChainAmountToDisplayAmount,
@@ -58,15 +58,21 @@ export class BestOffer {
     });
     Promise.all(
       _.map(flatten, async order => {
+        const isTrade = order.eventType === OrderEventType.Fill;
         const poolBestPrice = await this.augur.getMarketOutcomeBestOffer({
           marketId: order.market,
           outcome: order.outcome,
         });
+        const hasBestOffer = poolBestPrice && _.keys(poolBestPrice).length > 0;
+        const bestPrice = hasBestOffer && poolBestPrice[_.first(_.keys(poolBestPrice))][order.outcome].price;
+        // if outcome order is null, then no offers, send null for that outcome
+        if (!poolBestPrice[_.first(_.keys(poolBestPrice))][order.outcome]) {
+          return poolBestPrice;
+        }
         if (
-          poolBestPrice && _.keys(poolBestPrice).length > 0 &&
-          new BigNumber(
-            poolBestPrice[_.first(_.keys(poolBestPrice))][order.outcome].price
-          ).eq(new BigNumber(order.price))
+          (hasBestOffer &&
+          new BigNumber(bestPrice).lte(new BigNumber(order.price))) ||
+          (isTrade && new BigNumber(bestPrice).gte(new BigNumber(order.price)))
         ) {
           return poolBestPrice;
         }
@@ -103,7 +109,9 @@ export class BestOffer {
     }, {});
   };
 
-  convertOrderToDisplayValues = order => ({
+  convertOrderToDisplayValues = order => {
+    if (!order) return order;
+    return {
     ...order,
     price: String(
       convertOnChainPriceToDisplayPrice(
@@ -118,7 +126,7 @@ export class BestOffer {
         CAT_TICK_SIZE
       ).toFixed()
     ),
-  });
+  }};
 
   getBestPricePerOutcomeInMarket = (onlyOffers: ParsedOrderEventLog[]) => {
     const marketIds: _.Dictionary<ParsedOrderEventLog[]> = _.groupBy(

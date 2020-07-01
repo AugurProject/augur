@@ -269,7 +269,7 @@ export const DEFAULT_SDK_CONFIGURATION: SDKConfiguration = {
   },
   ui: {
     showReloadModal: true,
-    trackBestOffer: false,
+    trackBestOffer: true,
     fallbackProvider: "torus",
     liteProvider: "jsonrpc"
   }
