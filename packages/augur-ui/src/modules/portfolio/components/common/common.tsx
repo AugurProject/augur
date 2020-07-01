@@ -49,8 +49,12 @@ export const Game = ({ row, type }: GameProps) => (
     </div>
     <div>
       <BetsHeader />
-      {Object.values(row.outcomes).map(outcome => (
-        <BetRow key={outcome.outcome} outcome={outcome} showExtraRow={type !== FUTURES} />
+      {Object.values(row.orders).map(order => (
+        <BetRow
+          key={order.outcomeId}
+          outcome={order}
+          showExtraRow={type !== FUTURES}
+        />
       ))}
     </div>
   </div>
@@ -83,7 +87,7 @@ export const BetRow = ({ outcome, showExtraRow, isEvent }: BetRowProps) => (
           <div>
             <span>{outcome.outcome}</span>
             <span>{outcome.odds}</span>
-            {showExtraRow &&
+            {showExtraRow && (
               <span>
                 {isEvent && <TemplateShield market={outcome} />}
                 {outcome.highRisk && (
@@ -91,7 +95,7 @@ export const BetRow = ({ outcome, showExtraRow, isEvent }: BetRowProps) => (
                 )}
                 <span>{isEvent ? outcome.description : outcome.betType}</span>
               </span>
-            }
+            )}
           </div>
           <LinearPropertyLabel
             highlight
@@ -111,10 +115,7 @@ export const BetRow = ({ outcome, showExtraRow, isEvent }: BetRowProps) => (
             highlight
             key="date"
             label="Date"
-            value={
-              convertUnixToFormattedDate(outcome.betDate)
-                .formattedLocalShortDate
-            }
+            value={outcome.updatedDate.formattedLocalShortDate}
             useFull={true}
           />
           <CashoutButton action={null} outcome={outcome} />

@@ -23,18 +23,33 @@ import {
   MARKET_OPEN,
   MARKET_REPORTING,
   MARKET_CLOSED,
+  SPORTS_GROUP_TYPES,
 } from 'modules/common/constants';
 import { MARKETS } from 'modules/routes/constants/views';
 import { FilterNotice } from 'modules/common/filter-notice';
 import { EmptyMagnifyingGlass } from 'modules/common/icons';
 import { Game, Outcomes } from '../common/common';
 import { useMyBetsStore } from 'modules/portfolio/store/my-bets';
-import {
-  MOCK_GAMES_DATA,
-  MOCK_FUTURES_DATA,
-  MOCK_OUTCOMES_DATA,
-} from 'modules/portfolio/store/constants';
 import { FilterSearchPure } from 'modules/filter-sort/filter-search';
+import { AppStatus } from 'modules/app/store/app-status';
+import { useMarketsStore } from 'modules/markets/store/markets';
+import { useBetslipStore } from 'modules/trading/store/betslip';
+import { getOutcomeNameWithOutcome } from 'utils/get-outcome';
+
+export const outcomesData = (myBets) => myBets.reduce(
+  (p, game) => [
+    ...p,
+    ...Object.values(game.orders).map(outcome => {
+      return {
+        ...game,
+        outcomes: null,
+        ...outcome,
+        outcomeName: getOutcomeNameWithOutcome(game, outcome.outcomeId, false, false)
+      };
+    }),
+  ],
+  []
+);
 
 export function processRows(
   viewBy,
@@ -42,15 +57,32 @@ export function processRows(
   betDate,
   selectedMarketCardType,
   selectedMarketStateType,
-  search
+  search,
+  myBets,
+  marketInfos
 ) {
-  let rows = MOCK_GAMES_DATA;
-  // todo: filter/search
+  let myBetsArray = Object.keys(myBets).map(function(key) {
+    const marketInfo = marketInfos[key];
+
+    return {
+      ...myBets[key],
+      ...marketInfo,
+      marketId: key
+    };
+  });
+  let futureRows = myBetsArray.filter(market => {
+    return market?.sportsBook?.groupType === SPORTS_GROUP_TYPES.FUTURES;
+  });
+  let gamesRows = myBetsArray.filter(market => {
+    return market?.sportsBook?.groupType !== SPORTS_GROUP_TYPES.FUTURES;
+  });
+  let rows = futureRows;
+
   if (MY_BETS_VIEW_BY[viewBy].label === EVENT) {
     rows =
       SPORTS_MARKET_TYPES[selectedMarketCardType].label === GAMES
-        ? MOCK_GAMES_DATA
-        : MOCK_FUTURES_DATA;
+        ? gamesRows
+        : futureRows;
     rows = rows
       .filter(data => {
         const { reportingState } = data;
@@ -76,22 +108,24 @@ export function processRows(
       )
       .sort((a, b) => b.startTime - a.startTime);
   } else {
-    rows = MOCK_OUTCOMES_DATA.filter(data =>
+    rows = outcomesData(myBetsArray).filter(data =>
       MARKET_STATE_TYPES[selectedMarketStateType].label === RESOLVED
         ? data.reportingState === REPORTING_STATE.FINALIZED
         : data.reportingState !== REPORTING_STATE.FINALIZED
     );
 
+    const {
+      blockchain: { currentAugurTimestamp },
+    } = AppStatus.get();
     rows = rows
       .filter(data => {
         const interval = MY_BETS_BET_DATE[betDate].periodInterval;
-        // todo: switch to use currentTimestamp
-        return Date.now() / 1000 - data.betDate < interval;
+        return currentAugurTimestamp / 1000 - data.dateUpdated.timestamp < interval;
       })
       .filter(
-        data => data.outcome.toLowerCase().indexOf(search.toLowerCase()) >= 0
+        data => data.outcomeName.toLowerCase().indexOf(search.toLowerCase()) >= 0
       )
-      .sort((a, b) => b.betDate - a.betDate);
+      .sort((a, b) => b.dateUpdated.timestamp - a.dateUpdated.timestamp);
   }
   return rows;
 }
@@ -113,6 +147,9 @@ export const MyBets = () => {
 
   const [search, setSearch] = useState('');
 
+  const { matched } = useBetslipStore();
+  const { marketInfos } = useMarketsStore();
+
   const rows = useMemo(
     () =>
       processRows(
@@ -121,7 +158,9 @@ export const MyBets = () => {
         betDate,
         selectedMarketCardType,
         selectedMarketStateType,
-        search
+        search,
+        matched.items,
+        marketInfos
       ),
     [
       viewBy,
@@ -130,6 +169,7 @@ export const MyBets = () => {
       selectedMarketCardType,
       selectedMarketStateType,
       search,
+      matched.items
     ]
   );
 

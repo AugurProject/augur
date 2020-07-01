@@ -7,8 +7,22 @@ const MyBetsContext = React.createContext({
   actions: STUBBED_MY_BETS_ACTIONS,
 });
 
+export const MyBets = {
+  actionsSet: false,
+  get: () => ({ ...DEFAULT_MY_BETS_STATE }),
+  actions: STUBBED_MY_BETS_ACTIONS,
+};
+
 export const MyBetsProvider = ({ children }) => {
   const state = useMyBets();
+
+  if (!MyBets.actionsSet) {
+    MyBets.actions = state.actions;
+    MyBets.actionsSet = true;
+  }
+  const readableState = { ...state };
+  delete readableState.actions;
+  MyBets.get = () => readableState;
 
   return (
     <MyBetsContext.Provider value={state}>
