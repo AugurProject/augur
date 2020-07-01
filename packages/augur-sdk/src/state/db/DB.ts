@@ -55,6 +55,7 @@ import { SyncableDB } from './SyncableDB';
 import { SyncStatus } from './SyncStatus';
 import { WarpSyncCheckpointsDB } from './WarpSyncCheckpointsDB';
 import { StoredOrder, ZeroXOrders } from './ZeroXOrders';
+import { GetterCache } from './GetterCache';
 
 interface Schemas {
   [table: string]: string;
@@ -70,6 +71,7 @@ export class DB {
   marketDatabase: MarketDB;
   private parsedOrderEventDatabase: ParsedOrderEventDB;
   private zeroXOrders: ZeroXOrders;
+  getterCache: GetterCache;
   syncStatus: SyncStatus;
   warpCheckpoints: WarpSyncCheckpointsDB;
 
@@ -216,6 +218,7 @@ export class DB {
 
     this.syncStatus = new SyncStatus(this.networkId, this.uploadBlockNumber, this);
     this.warpCheckpoints = new WarpSyncCheckpointsDB(this.networkId, this);
+    this.getterCache = GetterCache.create(this, this.networkId, this.augur);
 
     // Create SyncableDBs for generic event types & UserSyncableDBs for user-specific event types
     for (const genericEventDBDescription of this.genericEventDBDescriptions) {
@@ -315,6 +318,7 @@ export class DB {
     for (const db of Object.values(this.syncableDatabases)) {
       await db.delete();
     }
+    this.getterCache.delete();
 
     this.syncableDatabases = {};
 
@@ -322,6 +326,7 @@ export class DB {
     this.currentOrdersDatabase = undefined;
     this.marketDatabase = undefined;
     this.parsedOrderEventDatabase = undefined;
+    this.getterCache = undefined;
 
     this.dexieDB.close();
   }
@@ -356,6 +361,7 @@ export class DB {
     schemas['Rollback'] = ',[tableName+rollbackBlockNumber]';
     schemas['WarpSync'] = '[begin.number+end.number],end.number';
     schemas['WarpSyncCheckpoints'] = '++_id,begin.number,end.number';
+    schemas['GetterCache'] = '[name+params],name,timestamp';
     return schemas;
   }
 
