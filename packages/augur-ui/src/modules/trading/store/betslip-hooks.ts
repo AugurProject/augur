@@ -1,6 +1,6 @@
 import { useReducer } from 'react';
 import { formatDate } from 'utils/format-date';
-import { getNewToWin, convertToPrice } from 'utils/get-odds';
+import { getNewToWin } from 'utils/get-odds';
 
 import { ZERO } from 'modules/common/constants';
 import {
@@ -10,8 +10,7 @@ import {
   MOCK_BETSLIP_STATE,
   BETSLIP_ACTIONS,
 } from 'modules/trading/store/constants';
-import { Markets } from 'modules/markets/store/markets';
-import { placeTrade } from 'modules/contracts/actions/contractCalls';
+import { placeBet } from 'utils/betslip-helpers';
 
 const {
   CASH_OUT,
@@ -33,9 +32,9 @@ const {
   ADD_MULTIPLE_MATCHED,
 } = BETSLIP_ACTIONS;
 const { BETSLIP, MY_BETS, MATCHED, UNMATCHED } = BETSLIP_SELECTED;
-const { UNSENT, PENDING, CLOSED } = BET_STATUS;
+const { UNSENT, PENDING, CLOSED, FILLED } = BET_STATUS;
 
-export const calculateBetslipTotals = betslip => {
+export const calculateBetslipTotals = (betslip) => {
   let totalWager = ZERO;
   let potential = ZERO;
   let fees = ZERO;
@@ -146,8 +145,8 @@ export function BetslipReducer(state, action) {
             orders: [],
           };
         }
-        orders.forEach(order => {
-          placeBet(marketId, order);
+        orders.forEach((order) => {
+          placeBet(marketId, order, matchedItems[marketId].orders.length);
           matchedItems[marketId].orders.push({
             ...order,
             amountFilled: order.wager,
@@ -169,15 +168,22 @@ export function BetslipReducer(state, action) {
           orders: [],
         };
       }
-      matchedItems[marketId].orders.push({
-        ...order,
-        amountFilled: order.wager,
-        amountWon: '0',
-        dateUpdated: updatedTime,
-        status: PENDING,
-      });
-      updatedState.matched.count++;
-      updatedState[fromList].count--;
+      const match = matchedItems[marketId].orders.findIndex(lOrder => lOrder.outcomeId === order.outcomeId && lOrder.price === order.price);
+      if (match > -1) {
+        matchedItems[marketId].orders[match] = {
+          ...matchedItems[marketId].orders[match],
+          dateUpdated: updatedTime,
+        }
+      } else {
+        matchedItems[marketId].orders.push({
+          ...order,
+          amountFilled: order.wager,
+          amountWon: '0',
+          dateUpdated: updatedTime,
+        });
+        updatedState.matched.count++;
+        fromList && updatedState[fromList].count--;
+      }
       break;
     }
     case ADD_MULTIPLE_MATCHED: {
@@ -188,7 +194,7 @@ export function BetslipReducer(state, action) {
           orders: [],
         };
       }
-      orders.forEach(order => {
+      orders.forEach((order) => {
         matchedItems[marketId].orders.push({
           ...order,
           amountFilled: order.wager,
@@ -207,6 +213,7 @@ export function BetslipReducer(state, action) {
       const order = matchedItems[marketId].orders[orderId];
       order.status = PENDING;
       order.amountFilled = order.wager;
+      placeBet(marketId, order, orderId);
       break;
     }
     case CASH_OUT: {
@@ -269,36 +276,16 @@ export function BetslipReducer(state, action) {
   return updatedState;
 }
 
-export const placeBet = async (marketId, order) => {
-  const { marketInfos } = Markets.get();
-  const market = marketInfos[marketId];
-  // todo: need to add user shares, approval check, pending queue
-  await placeTrade(
-    0,
-    marketId,
-    market.numOutcomes,
-    order.outcomeId,
-    false,
-    market.numTicks,
-    market.minPrice,
-    market.maxPrice,
-    order.wager,
-    order.price,
-    0,
-    '0',
-    undefined
-  );
-};
 export const useBetslip = (defaultState = MOCK_BETSLIP_STATE) => {
   const [state, dispatch] = useReducer(BetslipReducer, defaultState);
   return {
     ...state,
     actions: {
-      toggleHeader: selected => {
+      toggleHeader: (selected) => {
         if (selected !== state.selected.header)
           dispatch({ type: TOGGLE_HEADER });
       },
-      toggleSubHeader: selected => {
+      toggleSubHeader: (selected) => {
         if (selected !== state.selected.subHeader)
           dispatch({ type: TOGGLE_SUBHEADER });
       },
@@ -336,6 +323,8 @@ export const useBetslip = (defaultState = MOCK_BETSLIP_STATE) => {
         dispatch({ type: CASH_OUT, marketId, orderId }),
       updateMatched: (marketId, orderId, updates) =>
         dispatch({ type: UPDATE_MATCHED, marketId, orderId, updates }),
+      addMatched: (fromList, marketId, description, order) =>
+        dispatch({ type: ADD_MATCHED, fromList, marketId, description, order }),
       trash: (marketId, orderId) =>
         dispatch({ type: TRASH, marketId, orderId }),
       cancelAllUnmatched: () => dispatch({ type: CANCEL_ALL_UNMATCHED }),

@@ -450,6 +450,7 @@ export const BetslipFooter = () => {
                 toggleStep();
               } else {
                 toggleHeader(BETSLIP_SELECTED.MY_BETS);
+                toggleStep();
                 sendAllBets();
               }
             }}

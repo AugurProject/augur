@@ -245,6 +245,7 @@ export const STUBBED_BETSLIP_ACTIONS = {
   retry: (marketId, orderId) => {},
   cashOut: (marketId, orderId) => {},
   updateMatched: (marketId, orderId, updates) => {},
+  addMatched: (fromList, marketId, description, order) => {},
   trash: (marketId, orderId) => {},
   cancelAllUnmatched: () => {},
   updateUnmatched: (marketId, orderId, updates) => {},

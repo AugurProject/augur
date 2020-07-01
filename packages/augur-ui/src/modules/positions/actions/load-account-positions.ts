@@ -7,6 +7,9 @@ import type { Getters } from '@augurproject/sdk';
 import { AppStatus } from 'modules/app/store/app-status';
 import { isSameAddress } from 'utils/isSameAddress';
 import { Markets } from 'modules/markets/store/markets';
+import { Betslip } from 'modules/trading/store/betslip';
+import { createBigNumber } from 'utils/create-big-number';
+import { convertPositionToBet } from 'utils/betslip-helpers';
 
 export const checkUpdateUserPositions = (marketIds: string[]) => {
   const { accountPositions, loginAccount: { address } } = AppStatus.get();
@@ -68,8 +71,11 @@ export const userPositionProcessing = (
       ),
     ])
   );
+  const { marketInfos } = Markets.get();
+
   userPositionsMarketIds.forEach((marketId: string) => {
     const marketPositionData: AccountPosition = {};
+    const marketInfo = marketInfos[marketId];
     const marketPositions = positions.tradingPositions.filter(
       (position: any) => position.marketId === marketId
     );
@@ -110,5 +116,11 @@ export const userPositionProcessing = (
       positionData: marketPositionData,
     };
     AppStatus.actions.updateAccountPositions(positionData);
+
+    Object.values(positionData.positionData[marketId].tradingPositions).map(position => {
+      if (marketInfo.sportsBook && createBigNumber(position.netPosition).gte('0')) {
+        Betslip.actions.addMatched(false, marketId, marketInfo.description, convertPositionToBet(position, marketInfo));
+        }      
+      });
   });
 };
