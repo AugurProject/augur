@@ -316,9 +316,9 @@ export const TEMPLATES = {
           },
           {
             marketType: CATEGORICAL,
-            question: `MMA: [0] vs. [1], How will fight end?`,
-            example: `MMA UFC: Donald Cerrone vs. Conor McGregor, How will fight end?\nEstimated schedule start time: Jan 18, 2020 8:20 pm EST`,
-            title: `How will fight end`,
+            question: `MMA: [0] vs. [1], How will the fight end?`,
+            example: `MMA UFC: Donald Cerrone vs. Conor McGregor, How will the fight end?\nEstimated schedule start time: Jan 18, 2020 8:20 pm EST`,
+            title: `How will the fight end`,
             header: `[0] vs. [1]`,
             groupName: groupTypes.ADDITIONAL,
             inputs: [
@@ -693,9 +693,9 @@ export const TEMPLATES = {
           },
           {
             marketType: CATEGORICAL,
-            question: `Boxing: [0] vs. [1], How will fight end?`,
-            example: `Boxing: Robert Helenius vs. Adam Kownacki, How will fight end?\nEstimated schedule start time: Jan 18, 2020 8:20 pm EST`,
-            title: `How will fight end`,
+            question: `Boxing: [0] vs. [1], How will the fight end?`,
+            example: `Boxing: Robert Helenius vs. Adam Kownacki, How will the fight end?\nEstimated schedule start time: Jan 18, 2020 8:20 pm EST`,
+            title: `How will the fight end`,
             header: `[0] vs. [1]`,
             groupName: groupTypes.ADDITIONAL,
             inputs: [
@@ -6756,7 +6756,7 @@ export const TEMPLATES = {
               {
                 marketType: YES_NO,
                 question: `NFL: Will [0] win the [1] [2] award?`,
-                example: `NFL: Will Patrick Mahomes win the 2019-20 MVP award?`,
+                example: `NFL: Will Patrick Mahomes win the 2020 MVP award?`,
                 inputs: [
                   {
                     id: 0,
@@ -6766,7 +6766,7 @@ export const TEMPLATES = {
                   {
                     id: 1,
                     type: TemplateInputType.DROPDOWN,
-                    placeholder: `Year Range`,
+                    placeholder: `Year`,
                     validationType: ValidationType.YEAR_YEAR_RANGE,
                     values: LIST_VALUES.YEARS,
                   },
@@ -7088,7 +7088,7 @@ export const TEMPLATES = {
               {
                 marketType: CATEGORICAL,
                 question: `Which NFL player will win the [0] season [1] award?`,
-                example: `Which NFL player will win the 2019-20 season Most Valuable Player award?`,
+                example: `Which NFL player will win the 2020 season Most Valuable Player award?`,
                 header: `[0] season [1] award winner`,
                 groupName: groupTypes.FUTURES,
                 inputs: [
@@ -7098,7 +7098,7 @@ export const TEMPLATES = {
                     placeholder: `Year`,
                     groupKey: YEAR,
                     validationType: ValidationType.YEAR_YEAR_RANGE,
-                    values: LIST_VALUES.YEAR_RANGE,
+                    values: LIST_VALUES.YEARS,
                   },
                   {
                     id: 1,
