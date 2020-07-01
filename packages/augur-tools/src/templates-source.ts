@@ -7098,7 +7098,7 @@ export const TEMPLATES = {
                     placeholder: `Year`,
                     groupKey: YEAR,
                     validationType: ValidationType.YEAR_YEAR_RANGE,
-                    values: LIST_VALUES.YEAR_RANGE,
+                    values: LIST_VALUES.YEARS,
                   },
                   {
                     id: 1,
