@@ -6756,7 +6756,7 @@ export const TEMPLATES = {
               {
                 marketType: YES_NO,
                 question: `NFL: Will [0] win the [1] [2] award?`,
-                example: `NFL: Will Patrick Mahomes win the 2019-20 MVP award?`,
+                example: `NFL: Will Patrick Mahomes win the 2020 MVP award?`,
                 inputs: [
                   {
                     id: 0,
@@ -7088,7 +7088,7 @@ export const TEMPLATES = {
               {
                 marketType: CATEGORICAL,
                 question: `Which NFL player will win the [0] season [1] award?`,
-                example: `Which NFL player will win the 2019-20 season Most Valuable Player award?`,
+                example: `Which NFL player will win the 2020 season Most Valuable Player award?`,
                 header: `[0] season [1] award winner`,
                 groupName: groupTypes.FUTURES,
                 inputs: [
