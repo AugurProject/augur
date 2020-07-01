@@ -14,7 +14,7 @@ import {
   MODAL_LOADING,
   NULL_ADDRESS,
 } from 'modules/common/constants';
-import { TXEventName } from '@augurproject/sdk';
+import { TXEventName } from '@augurproject/sdk-lite';
 import { addUpdatePendingTransaction } from 'modules/pending-queue/actions/pending-queue-management';
 import { addAlert } from 'modules/alerts/actions/alerts';
 import { AppStatus } from 'modules/app/store/app-status';
