@@ -62,11 +62,15 @@ export class BestOffer {
           marketId: order.market,
           outcome: order.outcome,
         });
+        // if outcome order is null, then no offers, send null for that outcome
+        if (!poolBestPrice[_.first(_.keys(poolBestPrice))][order.outcome]) {
+          return poolBestPrice;
+        }
         if (
           poolBestPrice && _.keys(poolBestPrice).length > 0 &&
           new BigNumber(
             poolBestPrice[_.first(_.keys(poolBestPrice))][order.outcome].price
-          ).eq(new BigNumber(order.price))
+          ).lte(new BigNumber(order.price))
         ) {
           return poolBestPrice;
         }
@@ -103,7 +107,9 @@ export class BestOffer {
     }, {});
   };
 
-  convertOrderToDisplayValues = order => ({
+  convertOrderToDisplayValues = order => {
+    if (!order) return order;
+    return {
     ...order,
     price: String(
       convertOnChainPriceToDisplayPrice(
@@ -118,7 +124,7 @@ export class BestOffer {
         CAT_TICK_SIZE
       ).toFixed()
     ),
-  });
+  }};
 
   getBestPricePerOutcomeInMarket = (onlyOffers: ParsedOrderEventLog[]) => {
     const marketIds: _.Dictionary<ParsedOrderEventLog[]> = _.groupBy(

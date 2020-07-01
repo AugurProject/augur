@@ -292,7 +292,6 @@ export const ModalAugurP2P = () => {
   const gotoOnboardingStep = step =>
     setModal({ type: getOnboardingStep(step) });
   const testBet = () => setModal({ type: MODAL_TEST_BET });
-  const createFundedGsnWallet = () => createFundedGsnWallet();
   return (
     <Onboarding
       icon={null}
