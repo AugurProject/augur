@@ -104,6 +104,7 @@ interface FromProps {
   gasPrice: number;
   getGasConfirmEstimate: Function;
   endTime: number;
+  isMobile: boolean;
 }
 
 interface TestResults {
@@ -1134,7 +1135,7 @@ class Form extends Component<FromProps, FormState> {
               })}
             >
               <SquareDropdown
-                openTop
+                openTop={this.props.isMobile}
                 defaultValue={s.advancedOption}
                 options={advancedOptions}
                 onChange={value => {
@@ -1183,7 +1184,7 @@ class Form extends Component<FromProps, FormState> {
                       />
                     )}
                     <SquareDropdown
-                      openTop
+                      openTop={this.props.isMobile}
                       defaultValue={s.expirationDateOption}
                       options={[
                         {
