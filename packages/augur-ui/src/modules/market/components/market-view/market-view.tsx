@@ -238,7 +238,6 @@ export default class MarketView extends Component<
     }
 
     if (this.props.canHotload && !tradingTutorial && marketId) {
-      // This will only be called once on the 'canHotLoad' prop change.
       loadHotMarket(marketId);
     }
 
