@@ -17,6 +17,7 @@ import { getGasInDai, ethToDaiFromAttoRate } from 'modules/app/actions/get-ethTo
 import getPrecision from 'utils/get-number-precision';
 
 import Styles from 'modules/modal/modal.styles.less';
+import titleCase from 'utils/title-case';
 
 interface TransferFormProps {
   closeAction: Function;
@@ -44,6 +45,7 @@ interface TransferFormProps {
   signerAddress?: string;
   transactionLabel: string;
   signingEthBalance: string;
+  tokenName: string;
 }
 
 function sanitizeArg(arg) {
@@ -64,6 +66,7 @@ export const TransferForm = ({
   useSigner,
   transactionLabel,
   signingEthBalance,
+  tokenName,
 }: TransferFormProps) => {
   const [currency, setCurrency] = useState(DAI);
   const [signerPays, setSignerPays] = useState(true);
@@ -71,6 +74,25 @@ export const TransferForm = ({
   const [gasCosts, setGasCosts] = useState(
     createBigNumber(getGasInDai(fallBackGasCosts[DAI.toLowerCase()]).value)
   );
+  const getOptions = () => {
+    const tokenOptions = {
+      [DAI]: {
+        label: DAI,
+        value: DAI,
+      },
+      [REP]: {
+        label: REP,
+        value: REP,
+      },
+      [ETH]: {
+        label: ETH,
+        value: ETH,
+      },
+    };
+    if (useSigner && !tokenName) return [tokenOptions[DAI]];
+    if (useSigner && tokenName) return [tokenOptions[tokenName]];
+    return [tokenOptions[DAI], tokenOptions[ETH], tokenOptions[REP]];
+  };
   const [state, setState] = useState({
     address: useSigner ? account : '',
     gasEstimateInDai: getGasInDai(fallBackGasCosts[DAI.toLowerCase()]),
@@ -78,24 +100,7 @@ export const TransferForm = ({
       address: '',
       amount: '',
     },
-    options: useSigner ?
-    [{
-      label: DAI,
-      value: DAI,
-    }] :
-    [{
-      label: DAI,
-      value: DAI,
-    },
-    {
-      label: ETH,
-      value: ETH,
-    },
-    {
-      label: REP,
-      value: REP,
-    },
-  ]
+    options: getOptions()
   });
 
   async function getGasCost(currency) {
@@ -122,6 +127,10 @@ export const TransferForm = ({
   useEffect(() => {
     getGasCost(currency);
   }, [currency]);
+
+  useEffect(() => {
+    setCurrency(state.options[0].value);
+  }, []);
 
   const handleMax = () => {
     const balance = useSigner
@@ -267,8 +276,8 @@ export const TransferForm = ({
             <CloseButton action={() => closeAction()} />
           </div>
           <div>
-            <h1>Transfer {useSigner ? 'my Dai' : 'funds'}</h1>
-            <h2>Transfer {useSigner ? 'Dai to your Trading account' : 'funds to another address'}</h2>
+            <h1>Transfer {useSigner ? `my ${titleCase(tokenName)}` : 'funds'}</h1>
+            <h2>Transfer {useSigner ? `${titleCase(tokenName)} to your Trading account` : 'funds to another address'}</h2>
           </div>
         </header>
 

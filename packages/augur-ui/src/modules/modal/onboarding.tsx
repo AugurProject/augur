@@ -10,7 +10,7 @@ import {
   Stepper,
 } from 'modules/modal/common';
 import AccountStatusTracker from 'modules/modal/containers/account-status-tracker';
-import TransferMyDai from 'modules/modal/containers/transfer-my-dai';
+import TransferMyTokens from 'modules/modal/containers/transfer-my-tokens';
 import { LinkContent } from 'modules/types';
 import classNames from 'classnames';
 import { ONBOARDING_MAX_STEPS, TRANSACTIONS, CREATEAUGURWALLET } from 'modules/common/constants';
@@ -92,7 +92,7 @@ export const Onboarding = ({
           {smallHeader && <SmallSubheader text={smallHeader} />}
           {mediumHeader && <MediumSubheader text={mediumHeader} />}
           {linkContent && <LinkContentSection linkContent={linkContent} />}
-          {showTransferMyDai && <TransferMyDai callBack={() => showAugurP2PModal()}/>}
+          {showTransferMyDai && <TransferMyTokens callBack={() => showAugurP2PModal()}/>}
         </main>
 
         <div className={Styles.OnboardingNav}>{NavControls}</div>

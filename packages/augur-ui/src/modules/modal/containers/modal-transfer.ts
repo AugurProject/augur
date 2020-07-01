@@ -61,6 +61,7 @@ const mergeProps = (sP: any, dP: any, oP: any) => ({
   account: sP.account,
   gasPrice: sP.gasPrice,
   useSigner: sP.modal?.useSigner ? true : false,
+  tokenName: sP.modal?.tokenName,
   closeAction: () => {
     if (sP.modal.cb) {
       sP.modal.cb();
