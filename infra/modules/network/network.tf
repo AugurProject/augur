@@ -50,6 +50,8 @@ module "alb_security_group" {
 
 data aws_acm_certificate "default" {
   domain = "*.${var.domain}"
+  statuses = ["ISSUED"]
+  most_recent = true
 }
 
 module "alb" {
