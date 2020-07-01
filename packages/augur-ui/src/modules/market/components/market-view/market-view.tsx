@@ -237,7 +237,7 @@ export default class MarketView extends Component<
       this.setState({ selectedOutcomeId: this.props.outcomeId });
     }
 
-    if (this.props.canHotload && prevProps.canHotload !== this.props.canHotload  && !tradingTutorial && marketId) {
+    if (this.props.canHotload && !tradingTutorial && marketId) {
       // This will only be called once on the 'canHotLoad' prop change.
       loadHotMarket(marketId);
     }
