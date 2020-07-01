@@ -233,14 +233,7 @@ export const startOrderSending = (options: CreateLiquidityOrders) => async (
       groups.push(orders.slice(i, i + MAX_BULK_ORDER_COUNT));
     }
     try {
-      groups.map(group => createZeroXLiquidityOrders(market, group, blockchain.currentAugurTimestamp, dispatch).then(result => {
-        console.log('zzzzz######zzzzzz');
-        console.log('orders', orders);
-        console.log('groups', groups);
-        console.log('group', group);
-        console.log('market', market);
-        console.log('zzzzz######zzzzzz');
-      }));
+      groups.map(group => createZeroXLiquidityOrders(market, group, blockchain.currentAugurTimestamp, dispatch));
     } catch (e) {
       console.error(e);
     }
