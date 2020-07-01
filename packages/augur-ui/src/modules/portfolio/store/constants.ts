@@ -1,12 +1,10 @@
 import {
-  REPORTING_STATE,
   SPORTS_MARKET_TYPES,
   MY_BETS_VIEW_BY,
   MY_BETS_MARKET_STATUS,
   MY_BETS_BET_DATE,
   MARKET_STATE_TYPES,
 } from 'modules/common/constants';
-import { BET_STATUS, BET_TYPE } from 'modules/trading/store/constants';
 
 export const VIEW_BY = 'viewBy';
 export const ROWS = 'rows';
