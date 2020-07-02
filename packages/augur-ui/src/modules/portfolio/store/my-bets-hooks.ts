@@ -1,19 +1,9 @@
 import { useReducer } from 'react';
 
 import {
-  MY_BETS_VIEW_BY,
-  EVENT,
-  SPORTS_MARKET_TYPES,
-  GAMES,
-} from 'modules/common/constants';
-import {
   MY_BETS_ACTIONS,
   VIEW_BY,
-  ROWS,
-  MOCK_GAMES_DATA,
-  MOCK_OUTCOMES_DATA,
   SELECTED_MARKET_CARD_TYPE,
-  MOCK_FUTURES_DATA,
   SELECTED_MARKET_STATE_TYPE,
   BET_DATE,
   MARKET_STATUS,

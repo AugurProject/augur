@@ -58,7 +58,7 @@ export class BestOffer {
     });
     Promise.all(
       _.map(flatten, async order => {
-        const isTrade = order.eventType === OrderEventType.Fill;
+        const orderAdded = order.eventType === OrderEventType.Create;
         const poolBestPrice = await this.augur.getMarketOutcomeBestOffer({
           marketId: order.market,
           outcome: order.outcome,
@@ -70,9 +70,8 @@ export class BestOffer {
           return poolBestPrice;
         }
         if (
-          (hasBestOffer &&
-          new BigNumber(bestPrice).lte(new BigNumber(order.price))) ||
-          (isTrade && new BigNumber(bestPrice).gte(new BigNumber(order.price)))
+          (orderAdded && hasBestOffer && new BigNumber(bestPrice).lte(new BigNumber(order.price))) ||
+          (!orderAdded && new BigNumber(bestPrice).gte(new BigNumber(order.price)))
         ) {
           return poolBestPrice;
         }

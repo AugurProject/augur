@@ -79,8 +79,7 @@ export const MyBetsRow = ({
     {
       key: 'betDate',
       columnType: COLUMN_TYPES.TEXT,
-      text: convertUnixToFormattedDate(outcome && outcome.betDate)
-        .formattedLocalShortDate,
+      text: outcome.dateUpdated.formattedLocalShortDate,
       keyId: 'outcome-betDate-' + outcome.outcome,
     },
     {
