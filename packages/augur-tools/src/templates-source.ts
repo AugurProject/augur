@@ -3,7 +3,6 @@ import {
   BASKETBALL_EVENT_DEP_TEAMS,
   CRYPTO_BTC_CURRENCY_MARKETS,
   CRYPTO_ETH_CURRENCY_MARKETS,
-  CRYPTO_LTC_CURRENCY_MARKETS,
   ENTERTAINMENT_EVENT_DEP_TEAMS,
   FIN_EXCHANGES_CLOSING_OFFSETS,
   FIN_EXCHANGES_CURRENCIES,
@@ -23,6 +22,7 @@ import {
   SOCCER_GENDER_EVENTS,
   SOCCER_CUSTOM_GENDER_EVENTS,
   SOCCER_CUSTOM_DEP_YEARS,
+  CRYPTO_TOKEN_CURRENCY_MARKETS,
 } from './templates-lists';
 import {
   AMERICAN_FOOTBALL,
@@ -47,7 +47,7 @@ import {
   HORSE_RACING,
   INDEXES,
   LEAGUE_NAME,
-  LITECOIN,
+  AUGUR,
   LPGA,
   MEDICAL,
   MENS_LEAGUES,
@@ -82,6 +82,12 @@ import {
   TWITTER,
   INSTAGRAM,
   ENTITY,
+  MAKER,
+  COMPOUND,
+  BALANCER,
+  ZEROX,
+  CHAINLINK,
+  ADDITIONAL_TOKENS,
 } from '@augurproject/sdk-lite';
 
 import { TemplateInputType, TEXT_PLACEHOLDERS, ValidationType } from './templates-template';
@@ -9749,20 +9755,626 @@ export const TEMPLATES = {
           },
         ],
       },
-      [LITECOIN]: {
+      [AUGUR]: {
+        templates: [
+          {
+            marketType: YES_NO,
+            question: `Will the price of REP/USD open at or above [0] on [1], according to TradingView.com "REPUSD (crypto - Coinbase)"?`,
+            example: `Will the price of REP/USD open at or above 25 on December 31, 2020, according to TradingView.com "REPUSD (crypto - Coinbase)"?`,
+            inputs: [
+              {
+                id: 0,
+                type: TemplateInputType.TEXT,
+                placeholder: `Value #`,
+                validationType: ValidationType.NUMBER,
+              },
+              {
+                id: 1,
+                type: TemplateInputType.DATEYEAR,
+                daysAfterDateStart: 1,
+                placeholder: `Day of Year`,
+              },
+            ],
+            resolutionRules: {
+              [REQUIRED]: [
+                {
+                  text: `Use ticker symbol search for token pair (ie REPUSD), find exchange that corresponds to market question. Navigate to Full-featured daily chart, Opening price is determined on the date in the market question on tradingview.com.`,
+                },
+                {
+                  text: `Opening price can also be found on tradingview using the hourly chart for the date in the market question at UTC (0) 00:00`,
+                },
+                {
+                  text: `If the trading pair market isn't available on tradingview.com, refer to the actual exchange. For example, if Coinbase's tradingview.com data feed is unavailable, find the opening price on Coinbase's exchange by using the hourly candlestick chart adjusting for local timezone offset. In order to find equivalent 00:00 UTC-0 hourly candlestick for December 16th, go to hourly candelstick for 00:00 December 16th, then count backwards or forwards the number of candlesticks depending on local time zone offset. If local timezone offset is UTC -5 move back 5 candlesticks to find the Open Price for 19:00 December 15th hourly candlestick.`,
+                },
+              ],
+            },
+          },
+          {
+            marketType: YES_NO,
+            question: `Will the price of REP/USD, exceed [0] anytime between the open of [1] and close of [2], according to TradingView.com "REPUSD (crypto - Coinbase)"?`,
+            example: `Will the price of REP/USD exceed 25 anytime between the open of September 1, 2020 and close of December 31, 2020, according to TradingView.com "REPUSD (crypto - Coinbase)"?`,
+            inputs: [
+              {
+                id: 0,
+                type: TemplateInputType.TEXT,
+                placeholder: `Value #`,
+                validationType: ValidationType.NUMBER,
+              },
+              {
+                id: 1,
+                type: TemplateInputType.DATEYEAR,
+                placeholder: `Day of Year`,
+              },
+              {
+                id: 2,
+                dateAfterId: 2,
+                type: TemplateInputType.DATEYEAR,
+                daysAfterDateStart: 1,
+                placeholder: `Day of Year`,
+              },
+            ],
+            resolutionRules: {
+              [REQUIRED]: [
+                {
+                  text: `Use ticker symbol search for token pair (ie REPUSD), find exchange that corresponds to market question. Navigate to Full-featured daily chart, Opening price is determined on the date in the market question on tradingview.com.`,
+                },
+                {
+                  text: `Opening price can also be found on tradingview using the hourly chart for the date in the market question at UTC (0) 00:00`,
+                },
+                {
+                  text: `If the trading pair market isn't available on tradingview.com, refer to the actual exchange. For example, if Coinbase's tradingview.com data feed is unavailable, find the opening price on Coinbase's exchange by using the hourly candlestick chart adjusting for local timezone offset. In order to find equivalent 00:00 UTC-0 hourly candlestick for December 16th, go to hourly candelstick for 00:00 December 16th, then count backwards or forwards the number of candlesticks depending on local time zone offset. If local timezone offset is UTC -5 move back 5 candlesticks to find the Open Price for 19:00 December 15th hourly candlestick.`,
+                },
+              ],
+            },
+          },
+          {
+            marketType: SCALAR,
+            question: `What price will REP/USD open at on [0], according to TradingView.com "REPUSD (crypto - Coinbase)"?`,
+            example: `What price will REP/USD open at on December 31, 2020, according to TradingView.com for "REPUSD (crypto - Coinbase)"?`,
+            denomination: 'Price',
+            inputs: [
+             {
+                id: 0,
+                type: TemplateInputType.DATEYEAR,
+                daysAfterDateStart: 1,
+                placeholder: `Day of Year`,
+              },
+            ],
+            resolutionRules: {
+              [REQUIRED]: [
+                {
+                  text: `Use ticker symbol search for token pair (ie REPUSD), find exchange that corresponds to market question. Navigate to Full-featured daily chart, Opening price is determined on the date in the market question on tradingview.com.`,
+                },
+                {
+                  text: `Opening price can also be found on tradingview using the hourly chart for the date in the market question at UTC (0) 00:00`,
+                },
+                {
+                  text: `If the trading pair market isn't available on tradingview.com, refer to the actual exchange. For example, if Coinbase's tradingview.com data feed is unavailable, find the opening price on Coinbase's exchange by using the hourly candlestick chart adjusting for local timezone offset. In order to find equivalent 00:00 UTC-0 hourly candlestick for December 16th, go to hourly candelstick for 00:00 December 16th, then count backwards or forwards the number of candlesticks depending on local time zone offset. If local timezone offset is UTC -5 move back 5 candlesticks to find the Open Price for 19:00 December 15th hourly candlestick.`,
+                },
+              ],
+            },
+          },
+        ],
+      },
+      [MAKER]: {
+        templates: [
+          {
+            marketType: YES_NO,
+            question: `Will the price of MKR/USD open at or above [0] on [1], according to TradingView.com "MKRUSD (crypto - Coinbase)"?`,
+            example: `Will the price of MKR/USD open at or above 500 on December 31, 2020, according to TradingView.com "MKRUSD (crypto - Coinbase)"?`,
+            inputs: [
+              {
+                id: 0,
+                type: TemplateInputType.TEXT,
+                placeholder: `Value #`,
+                validationType: ValidationType.NUMBER,
+              },
+              {
+                id: 1,
+                type: TemplateInputType.DATEYEAR,
+                daysAfterDateStart: 1,
+                placeholder: `Day of Year`,
+              },
+            ],
+            resolutionRules: {
+              [REQUIRED]: [
+                {
+                  text: `Use ticker symbol search for token pair (ie MKRUSD), find exchange that corresponds to market question. Navigate to Full-featured daily chart, Opening price is determined on the date in the market question on tradingview.com.`,
+                },
+                {
+                  text: `Opening price can also be found on tradingview using the hourly chart for the date in the market question at UTC (0) 00:00`,
+                },
+                {
+                  text: `If the trading pair market isn't available on tradingview.com, refer to the actual exchange. For example, if Coinbase's tradingview.com data feed is unavailable, find the opening price on Coinbase's exchange by using the hourly candlestick chart adjusting for local timezone offset. In order to find equivalent 00:00 UTC-0 hourly candlestick for December 16th, go to hourly candelstick for 00:00 December 16th, then count backwards or forwards the number of candlesticks depending on local time zone offset. If local timezone offset is UTC -5 move back 5 candlesticks to find the Open Price for 19:00 December 15th hourly candlestick.`,
+                },
+              ],
+            },
+          },
+          {
+            marketType: YES_NO,
+            question: `Will the price of MKR/USD, exceed [0] anytime between the open of [1] and close of [2], according to TradingView.com "MKRUSD (crypto - Coinbase)"?`,
+            example: `Will the price of MKR/USD exceed 500 anytime between the open of September 1, 2020 and close of December 31, 2020, according to TradingView.com "MKRUSD (crypto - Coinbase)"?`,
+            inputs: [
+              {
+                id: 0,
+                type: TemplateInputType.TEXT,
+                placeholder: `Value #`,
+                validationType: ValidationType.NUMBER,
+              },
+              {
+                id: 1,
+                type: TemplateInputType.DATEYEAR,
+                placeholder: `Day of Year`,
+              },
+              {
+                id: 2,
+                dateAfterId: 2,
+                type: TemplateInputType.DATEYEAR,
+                daysAfterDateStart: 1,
+                placeholder: `Day of Year`,
+              },
+            ],
+            resolutionRules: {
+              [REQUIRED]: [
+                {
+                  text: `Use ticker symbol search for token pair (ie MKRUSD), find exchange that corresponds to market question. Navigate to Full-featured daily chart, Opening price is determined on the date in the market question on tradingview.com.`,
+                },
+                {
+                  text: `Opening price can also be found on tradingview using the hourly chart for the date in the market question at UTC (0) 00:00`,
+                },
+                {
+                  text: `If the trading pair market isn't available on tradingview.com, refer to the actual exchange. For example, if Coinbase's tradingview.com data feed is unavailable, find the opening price on Coinbase's exchange by using the hourly candlestick chart adjusting for local timezone offset. In order to find equivalent 00:00 UTC-0 hourly candlestick for December 16th, go to hourly candelstick for 00:00 December 16th, then count backwards or forwards the number of candlesticks depending on local time zone offset. If local timezone offset is UTC -5 move back 5 candlesticks to find the Open Price for 19:00 December 15th hourly candlestick.`,
+                },
+              ],
+            },
+          },
+          {
+            marketType: SCALAR,
+            question: `What price will MKR/USD open at on [0], according to TradingView.com "MKRUSD (crypto - Coinbase)"?`,
+            example: `What price will MKR/USD open at on December 31, 2020, according to TradingView.com for "MKRUSD (crypto - Coinbase)"?`,
+            denomination: 'Price',
+            inputs: [
+             {
+                id: 0,
+                type: TemplateInputType.DATEYEAR,
+                daysAfterDateStart: 1,
+                placeholder: `Day of Year`,
+              },
+            ],
+            resolutionRules: {
+              [REQUIRED]: [
+                {
+                  text: `Use ticker symbol search for token pair (ie MKRUSD), find exchange that corresponds to market question. Navigate to Full-featured daily chart, Opening price is determined on the date in the market question on tradingview.com.`,
+                },
+                {
+                  text: `Opening price can also be found on tradingview using the hourly chart for the date in the market question at UTC (0) 00:00`,
+                },
+                {
+                  text: `If the trading pair market isn't available on tradingview.com, refer to the actual exchange. For example, if Coinbase's tradingview.com data feed is unavailable, find the opening price on Coinbase's exchange by using the hourly candlestick chart adjusting for local timezone offset. In order to find equivalent 00:00 UTC-0 hourly candlestick for December 16th, go to hourly candelstick for 00:00 December 16th, then count backwards or forwards the number of candlesticks depending on local time zone offset. If local timezone offset is UTC -5 move back 5 candlesticks to find the Open Price for 19:00 December 15th hourly candlestick.`,
+                },
+              ],
+            },
+          },
+        ],
+      },
+      [COMPOUND]: {
+        templates: [
+          {
+            marketType: YES_NO,
+            question: `Will the price of COMP/USD open at or above [0] on [1], according to TradingView.com "COMPUSD (crypto - Coinbase)"?`,
+            example: `Will the price of COMP/USD open at or above 220 on December 31, 2020, according to TradingView.com "COMPUSD (crypto - Coinbase)"?`,
+            inputs: [
+              {
+                id: 0,
+                type: TemplateInputType.TEXT,
+                placeholder: `Value #`,
+                validationType: ValidationType.NUMBER,
+              },
+              {
+                id: 1,
+                type: TemplateInputType.DATEYEAR,
+                daysAfterDateStart: 1,
+                placeholder: `Day of Year`,
+              },
+            ],
+            resolutionRules: {
+              [REQUIRED]: [
+                {
+                  text: `Use ticker symbol search for token pair (ie COMPUSD), find exchange that corresponds to market question. Navigate to Full-featured daily chart, Opening price is determined on the date in the market question on tradingview.com.`,
+                },
+                {
+                  text: `Opening price can also be found on tradingview using the hourly chart for the date in the market question at UTC (0) 00:00`,
+                },
+                {
+                  text: `If the trading pair market isn't available on tradingview.com, refer to the actual exchange. For example, if Coinbase's tradingview.com data feed is unavailable, find the opening price on Coinbase's exchange by using the hourly candlestick chart adjusting for local timezone offset. In order to find equivalent 00:00 UTC-0 hourly candlestick for December 16th, go to hourly candelstick for 00:00 December 16th, then count backwards or forwards the number of candlesticks depending on local time zone offset. If local timezone offset is UTC -5 move back 5 candlesticks to find the Open Price for 19:00 December 15th hourly candlestick.`,
+                },
+              ],
+            },
+          },
+          {
+            marketType: YES_NO,
+            question: `Will the price of COMP/USD, exceed [0] anytime between the open of [1] and close of [2], according to TradingView.com "COMPUSD (crypto - Coinbase)"?`,
+            example: `Will the price of COMP/USD exceed 220 anytime between the open of September 1, 2020 and close of December 31, 2020, according to TradingView.com "COMPUSD (crypto - Coinbase)"?`,
+            inputs: [
+              {
+                id: 0,
+                type: TemplateInputType.TEXT,
+                placeholder: `Value #`,
+                validationType: ValidationType.NUMBER,
+              },
+              {
+                id: 1,
+                type: TemplateInputType.DATEYEAR,
+                placeholder: `Day of Year`,
+              },
+              {
+                id: 2,
+                dateAfterId: 2,
+                type: TemplateInputType.DATEYEAR,
+                daysAfterDateStart: 1,
+                placeholder: `Day of Year`,
+              },
+            ],
+            resolutionRules: {
+              [REQUIRED]: [
+                {
+                  text: `Use ticker symbol search for token pair (ie COMPUSD), find exchange that corresponds to market question. Navigate to Full-featured daily chart, Opening price is determined on the date in the market question on tradingview.com.`,
+                },
+                {
+                  text: `Opening price can also be found on tradingview using the hourly chart for the date in the market question at UTC (0) 00:00`,
+                },
+                {
+                  text: `If the trading pair market isn't available on tradingview.com, refer to the actual exchange. For example, if Coinbase's tradingview.com data feed is unavailable, find the opening price on Coinbase's exchange by using the hourly candlestick chart adjusting for local timezone offset. In order to find equivalent 00:00 UTC-0 hourly candlestick for December 16th, go to hourly candelstick for 00:00 December 16th, then count backwards or forwards the number of candlesticks depending on local time zone offset. If local timezone offset is UTC -5 move back 5 candlesticks to find the Open Price for 19:00 December 15th hourly candlestick.`,
+                },
+              ],
+            },
+          },
+          {
+            marketType: SCALAR,
+            question: `What price will COMP/USD open at on [0], according to TradingView.com "COMPUSD (crypto - Coinbase)"?`,
+            example: `What price will COMP/USD open at on December 31, 2020, according to TradingView.com for "COMPUSD (crypto - Coinbase)"?`,
+            denomination: 'Price',
+            inputs: [
+             {
+                id: 0,
+                type: TemplateInputType.DATEYEAR,
+                daysAfterDateStart: 1,
+                placeholder: `Day of Year`,
+              },
+            ],
+            resolutionRules: {
+              [REQUIRED]: [
+                {
+                  text: `Use ticker symbol search for token pair (ie COMPUSD), find exchange that corresponds to market question. Navigate to Full-featured daily chart, Opening price is determined on the date in the market question on tradingview.com.`,
+                },
+                {
+                  text: `Opening price can also be found on tradingview using the hourly chart for the date in the market question at UTC (0) 00:00`,
+                },
+                {
+                  text: `If the trading pair market isn't available on tradingview.com, refer to the actual exchange. For example, if Coinbase's tradingview.com data feed is unavailable, find the opening price on Coinbase's exchange by using the hourly candlestick chart adjusting for local timezone offset. In order to find equivalent 00:00 UTC-0 hourly candlestick for December 16th, go to hourly candelstick for 00:00 December 16th, then count backwards or forwards the number of candlesticks depending on local time zone offset. If local timezone offset is UTC -5 move back 5 candlesticks to find the Open Price for 19:00 December 15th hourly candlestick.`,
+                },
+              ],
+            },
+          },
+        ],
+      },
+      [BALANCER]: {
+        templates: [
+          {
+            marketType: YES_NO,
+            question: `Will the price of BAL/USD open at or above [0] on [1], according to TradingView.com "BALUSD (crypto - FTX)"?`,
+            example: `Will the price of BAL/USD open at or above 12 on December 31, 2020, according to TradingView.com "BALUSD (crypto - FTX)"?`,
+            inputs: [
+              {
+                id: 0,
+                type: TemplateInputType.TEXT,
+                placeholder: `Value #`,
+                validationType: ValidationType.NUMBER,
+              },
+              {
+                id: 1,
+                type: TemplateInputType.DATEYEAR,
+                daysAfterDateStart: 1,
+                placeholder: `Day of Year`,
+              },
+            ],
+            resolutionRules: {
+              [REQUIRED]: [
+                {
+                  text: `Use ticker symbol search for token pair (ie BALUSD), find exchange that corresponds to market question. Navigate to Full-featured daily chart, Opening price is determined on the date in the market question on tradingview.com.`,
+                },
+                {
+                  text: `Opening price can also be found on tradingview using the hourly chart for the date in the market question at UTC (0) 00:00`,
+                },
+                {
+                  text: `If the trading pair market isn't available on tradingview.com, refer to the actual exchange. For example, if FTX's tradingview.com data feed is unavailable, find the opening price on FTX's exchange by using the hourly candlestick chart adjusting for local timezone offset. In order to find equivalent 00:00 UTC-0 hourly candlestick for December 16th, go to hourly candelstick for 00:00 December 16th, then count backwards or forwards the number of candlesticks depending on local time zone offset. If local timezone offset is UTC -5 move back 5 candlesticks to find the Open Price for 19:00 December 15th hourly candlestick.`,
+                },
+              ],
+            },
+          },
+          {
+            marketType: YES_NO,
+            question: `Will the price of BAL/USD, exceed [0] anytime between the open of [1] and close of [2], according to TradingView.com "BALUSD (crypto - FTX)"?`,
+            example: `Will the price of BAL/USD exceed 12 anytime between the open of September 1, 2020 and close of December 31, 2020, according to TradingView.com "BALUSD (crypto - FTX)"?`,
+            inputs: [
+              {
+                id: 0,
+                type: TemplateInputType.TEXT,
+                placeholder: `Value #`,
+                validationType: ValidationType.NUMBER,
+              },
+              {
+                id: 1,
+                type: TemplateInputType.DATEYEAR,
+                placeholder: `Day of Year`,
+              },
+              {
+                id: 2,
+                dateAfterId: 2,
+                type: TemplateInputType.DATEYEAR,
+                daysAfterDateStart: 1,
+                placeholder: `Day of Year`,
+              },
+            ],
+            resolutionRules: {
+              [REQUIRED]: [
+                {
+                  text: `Use ticker symbol search for token pair (ie BALUSD), find exchange that corresponds to market question. Navigate to Full-featured daily chart, Opening price is determined on the date in the market question on tradingview.com.`,
+                },
+                {
+                  text: `Opening price can also be found on tradingview using the hourly chart for the date in the market question at UTC (0) 00:00`,
+                },
+                {
+                  text: `If the trading pair market isn't available on tradingview.com, refer to the actual exchange. For example, if FTX's tradingview.com data feed is unavailable, find the opening price on FTX's exchange by using the hourly candlestick chart adjusting for local timezone offset. In order to find equivalent 00:00 UTC-0 hourly candlestick for December 16th, go to hourly candelstick for 00:00 December 16th, then count backwards or forwards the number of candlesticks depending on local time zone offset. If local timezone offset is UTC -5 move back 5 candlesticks to find the Open Price for 19:00 December 15th hourly candlestick.`,
+                },
+              ],
+            },
+          },
+          {
+            marketType: SCALAR,
+            question: `What price will BAL/USD open at on [0], according to TradingView.com "BALUSD (crypto - FTX)"?`,
+            example: `What price will BAL/USD open at on December 31, 2020, according to TradingView.com for "BALUSD (crypto - FTX)"?`,
+            denomination: 'Price',
+            inputs: [
+             {
+                id: 0,
+                type: TemplateInputType.DATEYEAR,
+                daysAfterDateStart: 1,
+                placeholder: `Day of Year`,
+              },
+            ],
+            resolutionRules: {
+              [REQUIRED]: [
+                {
+                  text: `Use ticker symbol search for token pair (ie BALUSD), find exchange that corresponds to market question. Navigate to Full-featured daily chart, Opening price is determined on the date in the market question on tradingview.com.`,
+                },
+                {
+                  text: `Opening price can also be found on tradingview using the hourly chart for the date in the market question at UTC (0) 00:00`,
+                },
+                {
+                  text: `If the trading pair market isn't available on tradingview.com, refer to the actual exchange. For example, if FTX's tradingview.com data feed is unavailable, find the opening price on FTX's exchange by using the hourly candlestick chart adjusting for local timezone offset. In order to find equivalent 00:00 UTC-0 hourly candlestick for December 16th, go to hourly candelstick for 00:00 December 16th, then count backwards or forwards the number of candlesticks depending on local time zone offset. If local timezone offset is UTC -5 move back 5 candlesticks to find the Open Price for 19:00 December 15th hourly candlestick.`,
+                },
+              ],
+            },
+          },
+        ],
+      },
+      [ZEROX]: {
+        templates: [
+          {
+            marketType: YES_NO,
+            question: `Will the price of ZRX/USD open at or above [0] on [1], according to TradingView.com "ZRXUSD (crypto - Coinbase)"?`,
+            example: `Will the price of ZRX/USD open at or above 0.35 on December 31, 2020, according to TradingView.com "ZRXUSD (crypto - Coinbase)"?`,
+            inputs: [
+              {
+                id: 0,
+                type: TemplateInputType.TEXT,
+                placeholder: `Value #`,
+                validationType: ValidationType.NUMBER,
+              },
+              {
+                id: 1,
+                type: TemplateInputType.DATEYEAR,
+                daysAfterDateStart: 1,
+                placeholder: `Day of Year`,
+              },
+            ],
+            resolutionRules: {
+              [REQUIRED]: [
+                {
+                  text: `Use ticker symbol search for token pair (ie ZRXUSD), find exchange that corresponds to market question. Navigate to Full-featured daily chart, Opening price is determined on the date in the market question on tradingview.com.`,
+                },
+                {
+                  text: `Opening price can also be found on tradingview using the hourly chart for the date in the market question at UTC (0) 00:00`,
+                },
+                {
+                  text: `If the trading pair market isn't available on tradingview.com, refer to the actual exchange. For example, if Coinbase's tradingview.com data feed is unavailable, find the opening price on Coinbase's exchange by using the hourly candlestick chart adjusting for local timezone offset. In order to find equivalent 00:00 UTC-0 hourly candlestick for December 16th, go to hourly candelstick for 00:00 December 16th, then count backwards or forwards the number of candlesticks depending on local time zone offset. If local timezone offset is UTC -5 move back 5 candlesticks to find the Open Price for 19:00 December 15th hourly candlestick.`,
+                },
+              ],
+            },
+          },
+          {
+            marketType: YES_NO,
+            question: `Will the price of ZRX/USD, exceed [0] anytime between the open of [1] and close of [2], according to TradingView.com "ZRXUSD (crypto - Coinbase)"?`,
+            example: `Will the price of ZRX/USD exceed 0.35 anytime between the open of September 1, 2020 and close of December 31, 2020, according to TradingView.com "ZRXUSD (crypto - Coinbase)"?`,
+            inputs: [
+              {
+                id: 0,
+                type: TemplateInputType.TEXT,
+                placeholder: `Value #`,
+                validationType: ValidationType.NUMBER,
+              },
+              {
+                id: 1,
+                type: TemplateInputType.DATEYEAR,
+                placeholder: `Day of Year`,
+              },
+              {
+                id: 2,
+                dateAfterId: 2,
+                type: TemplateInputType.DATEYEAR,
+                daysAfterDateStart: 1,
+                placeholder: `Day of Year`,
+              },
+            ],
+            resolutionRules: {
+              [REQUIRED]: [
+                {
+                  text: `Use ticker symbol search for token pair (ie ZRXUSD), find exchange that corresponds to market question. Navigate to Full-featured daily chart, Opening price is determined on the date in the market question on tradingview.com.`,
+                },
+                {
+                  text: `Opening price can also be found on tradingview using the hourly chart for the date in the market question at UTC (0) 00:00`,
+                },
+                {
+                  text: `If the trading pair market isn't available on tradingview.com, refer to the actual exchange. For example, if Coinbase's tradingview.com data feed is unavailable, find the opening price on Coinbase's exchange by using the hourly candlestick chart adjusting for local timezone offset. In order to find equivalent 00:00 UTC-0 hourly candlestick for December 16th, go to hourly candelstick for 00:00 December 16th, then count backwards or forwards the number of candlesticks depending on local time zone offset. If local timezone offset is UTC -5 move back 5 candlesticks to find the Open Price for 19:00 December 15th hourly candlestick.`,
+                },
+              ],
+            },
+          },
+          {
+            marketType: SCALAR,
+            question: `What price will ZRX/USD open at on [0], according to TradingView.com "ZRXUSD (crypto - Coinbase)"?`,
+            example: `What price will ZRX/USD open at on December 31, 2020, according to TradingView.com for "ZRXUSD (crypto - Coinbase)"?`,
+            denomination: 'Price',
+            inputs: [
+             {
+                id: 0,
+                type: TemplateInputType.DATEYEAR,
+                daysAfterDateStart: 1,
+                placeholder: `Day of Year`,
+              },
+            ],
+            resolutionRules: {
+              [REQUIRED]: [
+                {
+                  text: `Use ticker symbol search for token pair (ie ZRXUSD), find exchange that corresponds to market question. Navigate to Full-featured daily chart, Opening price is determined on the date in the market question on tradingview.com.`,
+                },
+                {
+                  text: `Opening price can also be found on tradingview using the hourly chart for the date in the market question at UTC (0) 00:00`,
+                },
+                {
+                  text: `If the trading pair market isn't available on tradingview.com, refer to the actual exchange. For example, if Coinbase's tradingview.com data feed is unavailable, find the opening price on Coinbase's exchange by using the hourly candlestick chart adjusting for local timezone offset. In order to find equivalent 00:00 UTC-0 hourly candlestick for December 16th, go to hourly candelstick for 00:00 December 16th, then count backwards or forwards the number of candlesticks depending on local time zone offset. If local timezone offset is UTC -5 move back 5 candlesticks to find the Open Price for 19:00 December 15th hourly candlestick.`,
+                },
+              ],
+            },
+          },
+        ],
+      },
+      [CHAINLINK]: {
+        templates: [
+          {
+            marketType: YES_NO,
+            question: `Will the price of LINK/USD open at or above [0] on [1], according to TradingView.com "LINKUSD (crypto - Coinbase)"?`,
+            example: `Will the price of LINK/USD open at or above 4.50 on December 31, 2020, according to TradingView.com "LINKUSD (crypto - Coinbase)"?`,
+            inputs: [
+              {
+                id: 0,
+                type: TemplateInputType.TEXT,
+                placeholder: `Value #`,
+                validationType: ValidationType.NUMBER,
+              },
+              {
+                id: 1,
+                type: TemplateInputType.DATEYEAR,
+                daysAfterDateStart: 1,
+                placeholder: `Day of Year`,
+              },
+            ],
+            resolutionRules: {
+              [REQUIRED]: [
+                {
+                  text: `Use ticker symbol search for token pair (ie LINKUSD), find exchange that corresponds to market question. Navigate to Full-featured daily chart, Opening price is determined on the date in the market question on tradingview.com.`,
+                },
+                {
+                  text: `Opening price can also be found on tradingview using the hourly chart for the date in the market question at UTC (0) 00:00`,
+                },
+                {
+                  text: `If the trading pair market isn't available on tradingview.com, refer to the actual exchange. For example, if Coinbase's tradingview.com data feed is unavailable, find the opening price on Coinbase's exchange by using the hourly candlestick chart adjusting for local timezone offset. In order to find equivalent 00:00 UTC-0 hourly candlestick for December 16th, go to hourly candelstick for 00:00 December 16th, then count backwards or forwards the number of candlesticks depending on local time zone offset. If local timezone offset is UTC -5 move back 5 candlesticks to find the Open Price for 19:00 December 15th hourly candlestick.`,
+                },
+              ],
+            },
+          },
+          {
+            marketType: YES_NO,
+            question: `Will the price of LINK/USD, exceed [0] anytime between the open of [1] and close of [2], according to TradingView.com "LINKUSD (crypto - Coinbase)"?`,
+            example: `Will the price of LINK/USD exceed 4.50 anytime between the open of September 1, 2020 and close of December 31, 2020, according to TradingView.com "LINKUSD (crypto - Coinbase)"?`,
+            inputs: [
+              {
+                id: 0,
+                type: TemplateInputType.TEXT,
+                placeholder: `Value #`,
+                validationType: ValidationType.NUMBER,
+              },
+              {
+                id: 1,
+                type: TemplateInputType.DATEYEAR,
+                placeholder: `Day of Year`,
+              },
+              {
+                id: 2,
+                dateAfterId: 2,
+                type: TemplateInputType.DATEYEAR,
+                daysAfterDateStart: 1,
+                placeholder: `Day of Year`,
+              },
+            ],
+            resolutionRules: {
+              [REQUIRED]: [
+                {
+                  text: `Use ticker symbol search for token pair (ie LINKUSD), find exchange that corresponds to market question. Navigate to Full-featured daily chart, Opening price is determined on the date in the market question on tradingview.com.`,
+                },
+                {
+                  text: `Opening price can also be found on tradingview using the hourly chart for the date in the market question at UTC (0) 00:00`,
+                },
+                {
+                  text: `If the trading pair market isn't available on tradingview.com, refer to the actual exchange. For example, if Coinbase's tradingview.com data feed is unavailable, find the opening price on Coinbase's exchange by using the hourly candlestick chart adjusting for local timezone offset. In order to find equivalent 00:00 UTC-0 hourly candlestick for December 16th, go to hourly candelstick for 00:00 December 16th, then count backwards or forwards the number of candlesticks depending on local time zone offset. If local timezone offset is UTC -5 move back 5 candlesticks to find the Open Price for 19:00 December 15th hourly candlestick.`,
+                },
+              ],
+            },
+          },
+          {
+            marketType: SCALAR,
+            question: `What price will LINK/USD open at on [0], according to TradingView.com "LINKUSD (crypto - Coinbase)"?`,
+            example: `What price will LINK/USD open at on December 31, 2020, according to TradingView.com for "LINKUSD (crypto - Coinbase)"?`,
+            denomination: 'Price',
+            inputs: [
+             {
+                id: 0,
+                type: TemplateInputType.DATEYEAR,
+                daysAfterDateStart: 1,
+                placeholder: `Day of Year`,
+              },
+            ],
+            resolutionRules: {
+              [REQUIRED]: [
+                {
+                  text: `Use ticker symbol search for token pair (ie LINKUSD), find exchange that corresponds to market question. Navigate to Full-featured daily chart, Opening price is determined on the date in the market question on tradingview.com.`,
+                },
+                {
+                  text: `Opening price can also be found on tradingview using the hourly chart for the date in the market question at UTC (0) 00:00`,
+                },
+                {
+                  text: `If the trading pair market isn't available on tradingview.com, refer to the actual exchange. For example, if Coinbase's tradingview.com data feed is unavailable, find the opening price on Coinbase's exchange by using the hourly candlestick chart adjusting for local timezone offset. In order to find equivalent 00:00 UTC-0 hourly candlestick for December 16th, go to hourly candelstick for 00:00 December 16th, then count backwards or forwards the number of candlesticks depending on local time zone offset. If local timezone offset is UTC -5 move back 5 candlesticks to find the Open Price for 19:00 December 15th hourly candlestick.`,
+                },
+              ],
+            },
+          },
+        ],
+      },
+      [ADDITIONAL_TOKENS]: {
         templates: [
           {
             marketType: YES_NO,
             question: `Will the price of [0] open at or above [1] on [2], according to TradingView.com "[3]"?`,
-            example: `Will the price of LTC/USD open at or above 8000 on December 31, 2020, according to TradingView.com "LTCUSD (crypto - Coinbase)"?`,
+            example: `Will the price of DASH/USD open at or above 80 on December 31, 2020, according to TradingView.com "DASHUSD (crypto - Coinbase)"?`,
             inputs: [
               {
                 id: 0,
                 type: TemplateInputType.DROPDOWN_QUESTION_DEP,
                 placeholder: `Token Pair`,
                 inputDestIds: [3],
-                values: LIST_VALUES.LTC_CURRENCY_PAIRS,
-                inputDestValues: CRYPTO_LTC_CURRENCY_MARKETS,
+                values: LIST_VALUES.TOKEN_CURRENCY_PAIRS,
+                inputDestValues: CRYPTO_TOKEN_CURRENCY_MARKETS,
               },
               {
                 id: 1,
@@ -9788,7 +10400,7 @@ export const TEMPLATES = {
             resolutionRules: {
               [REQUIRED]: [
                 {
-                  text: `Use ticker symbol search for token pair (ie LTCUSD), find exchange that corresponds to market question. Navigate to Full-featured daily chart, Opening price is determined on the date in the market question on tradingview.com.`,
+                  text: `Use ticker symbol search for token pair (ie ETHUSD), find exchange that corresponds to market question. Navigate to Full-featured daily chart, Opening price is determined on the date in the market question on tradingview.com.`,
                 },
                 {
                   text: `Opening price can also be found on tradingview using the hourly chart for the date in the market question at UTC (0) 00:00`,
@@ -9802,15 +10414,15 @@ export const TEMPLATES = {
           {
             marketType: YES_NO,
             question: `Will the price of [0], exceed [1] anytime between the open of [2] and close of [3], according to TradingView.com "[4]"?`,
-            example: `Will the price of LTC/USD exceed 8000 anytime between the open of September 1, 2020 and close of December 31, 2020, according to TradingView.com "LTCUSD (crypto - Coinbase)"?`,
+            example: `Will the price of DASH/USD exceed 80 anytime between the open of September 1, 2020 and close of December 31, 2020, according to TradingView.com "DASHUSD (crypto - Coinbase)"?`,
             inputs: [
               {
                 id: 0,
                 type: TemplateInputType.DROPDOWN_QUESTION_DEP,
                 placeholder: `Token Pair`,
                 inputDestIds: [4],
-                values: LIST_VALUES.LTC_CURRENCY_PAIRS,
-                inputDestValues: CRYPTO_LTC_CURRENCY_MARKETS,
+                values: LIST_VALUES.TOKEN_CURRENCY_PAIRS,
+                inputDestValues: CRYPTO_TOKEN_CURRENCY_MARKETS,
               },
               {
                 id: 1,
@@ -9842,7 +10454,7 @@ export const TEMPLATES = {
             resolutionRules: {
               [REQUIRED]: [
                 {
-                  text: `Use ticker symbol search for token pair (ie LTCUSD), find exchange that corresponds to market question. Navigate to Full-featured daily chart, Opening price is determined on the date in the market question on tradingview.com.`,
+                  text: `Use ticker symbol search for token pair (ie ETHUSD), find exchange that corresponds to market question. Navigate to Full-featured daily chart, Opening price is determined on the date in the market question on tradingview.com.`,
                 },
                 {
                   text: `Opening price can also be found on tradingview using the hourly chart for the date in the market question at UTC (0) 00:00`,
@@ -9856,7 +10468,7 @@ export const TEMPLATES = {
           {
             marketType: SCALAR,
             question: `What price will [0] open at on [1], according to TradingView.com "[2]"?`,
-            example: `What price will LTC/USD open at on December 31, 2020, according to TradingView.com for "LTCUSD (crypto - Coinbase)"?`,
+            example: `What price will DASH/USD open at on December 31, 2020, according to TradingView.com for "DASHUSD (crypto - Coinbase)"?`,
             denomination: 'Price',
             inputs: [
               {
@@ -9864,8 +10476,8 @@ export const TEMPLATES = {
                 type: TemplateInputType.DROPDOWN_QUESTION_DEP,
                 placeholder: `Token Pair`,
                 inputDestIds: [2],
-                values: LIST_VALUES.LTC_CURRENCY_PAIRS,
-                inputDestValues: CRYPTO_LTC_CURRENCY_MARKETS,
+                values: LIST_VALUES.TOKEN_CURRENCY_PAIRS,
+                inputDestValues: CRYPTO_TOKEN_CURRENCY_MARKETS,
               },
               {
                 id: 1,
@@ -9885,7 +10497,7 @@ export const TEMPLATES = {
             resolutionRules: {
               [REQUIRED]: [
                 {
-                  text: `Use ticker symbol search for token pair (ie LTCUSD), find exchange that corresponds to market question. Navigate to Full-featured daily chart, Opening price is determined on the date in the market question on tradingview.com.`,
+                  text: `Use ticker symbol search for token pair (ie ETHUSD), find exchange that corresponds to market question. Navigate to Full-featured daily chart, Opening price is determined on the date in the market question on tradingview.com.`,
                 },
                 {
                   text: `Opening price can also be found on tradingview using the hourly chart for the date in the market question at UTC (0) 00:00`,
@@ -9896,8 +10508,8 @@ export const TEMPLATES = {
               ],
             },
           },
-        ],
-      },
+        ]
+      }
     },
   },
   [MEDICAL]: {

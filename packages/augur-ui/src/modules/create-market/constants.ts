@@ -39,7 +39,13 @@ import {
   INDEXES,
   BITCOIN,
   ETHEREUM,
-  LITECOIN,
+  COMPOUND,
+  BALANCER,
+  AUGUR,
+  MAKER,
+  ZEROX,
+  CHAINLINK,
+  ADDITIONAL_TOKENS,
   BOXING,
   MMA,
   CAR_RACING,
@@ -193,9 +199,6 @@ export const MARKET_TYPE_NAME = {
   [SCALAR]: 'Scalar',
   [CATEGORICAL]: 'Categorical',
 };
-
-// Market Subtemplates
-export const AUGUR = 'Augur';
 
 const defaultDescription = '-  |  -';
 export interface MarketCardTemplate {
@@ -407,6 +410,7 @@ export const MARKET_SUB_TEMPLATES = {
       value: BITCOIN,
       header: BITCOIN,
       description: defaultDescription,
+      inverseFill: true,
       icon: icons.BTC,
     },
     {
@@ -416,16 +420,52 @@ export const MARKET_SUB_TEMPLATES = {
       icon: icons.ETH,
     },
     {
-      value: LITECOIN,
-      header: LITECOIN,
+      value: MAKER,
+      header: MAKER,
       description: defaultDescription,
-      icon: icons.LTC,
+      inverseFill: true,
+      icon: icons.MKR,
     },
     {
       value: AUGUR,
       header: AUGUR,
       description: defaultDescription,
       icon: icons.REP,
+    },
+    {
+      value: COMPOUND,
+      header: COMPOUND,
+      description: defaultDescription,
+      inverseFill: true,
+      icon: icons.COMP,
+    },
+    {
+      value: BALANCER,
+      header: BALANCER,
+      description: defaultDescription,
+      inverseFill: true,
+      icon: icons.BAL,
+    },
+    {
+      value: ZEROX,
+      header: ZEROX,
+      description: defaultDescription,
+      inverseFill: true,
+      icon: icons.ZRX,
+    },
+    {
+      value: CHAINLINK,
+      header: CHAINLINK,
+      description: defaultDescription,
+      inverseFill: true,
+      icon: icons.LINK,
+    },
+    {
+      value: ADDITIONAL_TOKENS,
+      header: ADDITIONAL_TOKENS,
+      description: defaultDescription,
+      inverseFill: true,
+      icon: icons.TOKENS,
     },
   ],
 };
