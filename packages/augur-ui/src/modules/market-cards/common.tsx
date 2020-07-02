@@ -1416,8 +1416,8 @@ export const TradingSideSection = ({
 
 export function getCategoriesWithClick(categories) {
   const path = { pathname: makePath(MARKETS) };
-  const categoriesLowerCased = categories.map(item => item.toLowerCase());
-  const categoriesWithClick = categoriesLowerCased
+  const categoriesLowerCased = categories && categories.map(item => item.toLowerCase());
+  const categoriesWithClick = categoriesLowerCased && categoriesLowerCased
     .filter(Boolean)
     .map((label, idx) => ({
       label,
