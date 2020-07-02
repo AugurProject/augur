@@ -49,7 +49,7 @@ export class EthersProvider extends ethers.providers.BaseProvider
   gasEstimateIncreasePercentage: BigNumber | null = new BigNumber(10);
   private contractMapping: ContractMapping = {};
   private performQueue: AsyncQueue<PerformQueueTask>;
-  readonly provider: ethers.providers.JsonRpcProvider;
+  provider: ethers.providers.JsonRpcProvider;
 
   private _overrideGasPrice: ethers.utils.BigNumber | null = null;
   get overrideGasPrice() {
@@ -175,6 +175,10 @@ export class EthersProvider extends ethers.providers.BaseProvider
   onNewBlock(blockNumber: number): void {
     this._mostRecentLatestBlockHeaders = null;
     this._callCache = new Map<any, Promise<any>>();
+  }
+
+  setProvider(provider: ethers.providers.JsonRpcProvider): void {
+    this.provider = provider;
   }
 
   async providerSend(method: string, params: any): Promise<any> {

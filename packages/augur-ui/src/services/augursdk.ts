@@ -64,7 +64,7 @@ export class SDK {
     this.client.dependencies.setFingerprint(getFingerprint());
 
     if (!isEmpty(account)) {
-      this.syncUserData(account, signer, this.networkId, this.config.gsn && this.config.gsn.enabled).catch((error) => {
+      this.syncUserData(account, provider, signer, this.networkId, this.config.gsn && this.config.gsn.enabled).catch((error) => {
         console.log('Wallet create error during create: ', error);
       });
     }
@@ -77,6 +77,7 @@ export class SDK {
 
   async syncUserData(
     account: string,
+    provider: JsonRpcProvider,
     signer: EthersSigner,
     expectedNetworkId: NetworkId,
     useGSN: boolean,
@@ -94,6 +95,7 @@ export class SDK {
     }
 
     this.client.signer = signer;
+    this.client.setProvider(provider);
 
     if (useGSN && account) {
       // TODO: In Dev this may be annoying as you can't faucet cash if these are on and you havent ever done a tx with the GSN relay

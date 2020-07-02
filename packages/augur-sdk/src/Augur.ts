@@ -18,7 +18,7 @@ import {
 import { logger, LoggerLevels } from '@augurproject/utils';
 import axios from 'axios';
 import { BigNumber } from 'bignumber.js';
-import { TransactionResponse } from 'ethers/providers';
+import { TransactionResponse, JsonRpcProvider } from 'ethers/providers';
 import { Arrayish } from 'ethers/utils';
 import { getAddress } from 'ethers/utils/address';
 import { ContractEvents } from './api/ContractEvents';
@@ -440,6 +440,10 @@ export class Augur<TProvider extends Provider = Provider> {
 
   set signer(signer: EthersSigner) {
     this.dependencies.setSigner(signer);
+  }
+
+  setProvider(provider: JsonRpcProvider) {
+    this.provider.setProvider(provider);
   }
 
   getTradingHistory = (
