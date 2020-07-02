@@ -83,16 +83,19 @@ export class Liquidity {
     const marketFee = new BigNumber(params.feePerCashInAttoCash).dividedBy(
       QUINTILLION
     );
+    const gasPrice = (await this.augur.getGasPrice()).div(10**9);
+    // if gasPrice greater than 15gwei use 5% value, less than 15gwei use 3% value
+    const gasCostMultiplier = gasPrice.gte(15) ? 5 : 3;
     const feeMultiplier = new BigNumber(1)
       .minus(new BigNumber(1).div(params.reportingFeeDivisor))
       .minus(marketFee);
     // filter out orders based on current gas trade cost
     Object.keys(params.orderBook).map(outcomeId => {
       Object.keys(params.orderBook[outcomeId]).forEach(orderType => {
-          // Cut out orders where gas costs > 5% of the trade
+          // Cut out orders where gas costs > max gasCost multiplier of the trade
           params.orderBook[outcomeId][orderType] = _.filter(params.orderBook[outcomeId][orderType], (order) => {
             const gasCost = new BigNumber(order.amount).multipliedBy(params.numTicks).div(MAX_TRADE_GAS_PERCENTAGE_DIVISOR);
-            const maxGasCost = gasCost.multipliedBy(5); // 5%
+            const maxGasCost = gasCost.multipliedBy(gasCostMultiplier);
             return maxGasCost.gte(params.estimatedTradeGasCostInAttoDai);
           }
         );
