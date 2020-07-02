@@ -110,18 +110,18 @@ export class GetterCache extends AbstractTable {
 
     subscribeToCacheClearingEvents() {
         _.forEach(this.eventMapForCacheClearing, (getters: string[], eventName: string) => {
-            this.augur.events.on(eventName, () => {this.clearCaches(getters)});
+            this.augur.on(eventName, () => {this.clearCaches(getters)});
         })
     }
 
     subscribeToNewBlocks() {
-        this.augur.events.on(SubscriptionEventName.NewBlock, this.checkExpired);
+        this.augur.on(SubscriptionEventName.NewBlock, this.checkExpired);
     }
 
     async delete() {
         this.augur.events.off(SubscriptionEventName.NewBlock, this.checkExpired);
         _.forEach(this.eventMapForCacheClearing, (getters: string[], eventName: string) => {
-            this.augur.events.off(eventName, () => {this.clearCaches(getters)});
+            this.augur.off(eventName);
         })
     }
 }

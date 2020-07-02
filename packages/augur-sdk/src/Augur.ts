@@ -88,12 +88,12 @@ export class Augur<TProvider extends Provider = Provider> {
 
   private _sdkReady = false;
 
-  private txSuccessCallback: TXStatusCallback;
   private txAwaitingSigningCallback: TXStatusCallback;
   private txPendingCallback: TXStatusCallback;
   private txFailureCallback: TXStatusCallback;
   private txFeeTooLowCallback: TXStatusCallback;
   private txRelayerDownCallback: TXStatusCallback;
+  private txSuccessCallbacks: TXStatusCallback[]; 
 
   get zeroX(): ZeroX {
     return this._zeroX;
@@ -162,6 +162,7 @@ export class Augur<TProvider extends Provider = Provider> {
     if (enableFlexSearch && !this.syncableFlexSearch) {
       this.syncableFlexSearch = new SyncableFlexSearch();
     }
+    this.txSuccessCallbacks = [];
 
     this.registerTransactionStatusEvents();
   }
@@ -382,7 +383,7 @@ export class Augur<TProvider extends Provider = Provider> {
     } else if (eventName === TXEventName.Pending) {
       this.txPendingCallback = callback;
     } else if (eventName === TXEventName.Success) {
-      this.txSuccessCallback = callback;
+      this.txSuccessCallbacks.push(callback);
     } else if (eventName === TXEventName.Failure) {
       this.txFailureCallback = callback;
     } else if (eventName === TXEventName.FeeTooLow) {
@@ -402,13 +403,19 @@ export class Augur<TProvider extends Provider = Provider> {
     } else if (eventName === TXEventName.Pending) {
       this.txPendingCallback = null;
     } else if (eventName === TXEventName.Success) {
-      this.txSuccessCallback = null;
+      this.txSuccessCallbacks = [];
     } else if (eventName === TXEventName.Failure) {
       this.txFailureCallback = null;
     } else if (eventName === TXEventName.FeeTooLow) {
       this.txFeeTooLowCallback = null;
     } else if (eventName === TXEventName.RelayerDown) {
       this.txRelayerDownCallback = null;
+    }
+  }
+
+  txSuccessCallback = (...args: TXStatus[]): void => {
+    for (const cb of this.txSuccessCallbacks) {
+      cb(...args);
     }
   }
 
