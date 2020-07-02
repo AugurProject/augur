@@ -15,6 +15,7 @@ import OutcomeTradingIndicator from "modules/market/components/common/outcome-tr
 import { DateFormattedObject, FormattedNumber } from 'modules/types';
 import { TXEventName } from '@augurproject/sdk-lite';
 import { XIcon } from 'modules/common/icons';
+import MarketLink from 'modules/market/components/market-link/market-link';
 
 const { COLUMN_TYPES } = constants;
 
@@ -48,6 +49,7 @@ export interface Properties {
   showFullPrecision?: boolean;
   showDenomination?: boolean;
   templateShield?: boolean;
+  marketId?: string;
 }
 
 function selectColumn(columnType: string, properties: Properties) {
@@ -80,7 +82,8 @@ function selectColumn(columnType: string, properties: Properties) {
     useFull,
     showFullPrecision,
     showDenomination,
-    templateShield
+    templateShield,
+    marketId
   } = properties;
 
   switch (columnType) {
@@ -94,7 +97,7 @@ function selectColumn(columnType: string, properties: Properties) {
           {showExtraNumber && highRisk && (
             <RedFlag market={{ mostLikelyInvalid: true, id: 0 }} />
           )}
-          {showExtraNumber && templateShield && <a>{value}</a>}
+          {showExtraNumber && templateShield && <MarketLink id={marketId}>{value}</MarketLink>}
           {showExtraNumber && !templateShield && <span>{value}</span>}
         </>
       );
