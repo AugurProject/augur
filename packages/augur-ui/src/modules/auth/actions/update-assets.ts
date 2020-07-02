@@ -86,7 +86,7 @@ function updateBalances(
     const daiNonSafe = initialLogin ? String(amounts[6]) : balances.signerBalances.dai;
     const repNonSafe = initialLogin
       ? String(createBigNumber(String(amounts[7])).dividedBy(ETHER))
-      : balances.signerBalances.dai;
+      : balances.signerBalances.rep;
     const legacyRep = String(createBigNumber(String(legacyAttoRep)).dividedBy(ETHER));
     const legacyRepNonSafe = initialLogin
       ? String(createBigNumber(String(legacyAttoRepNonSafe)).dividedBy(ETHER))

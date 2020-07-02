@@ -17,11 +17,12 @@ import {
   TEMPLATE_VALIDATIONS,
   RETIRED_TEMPLATES,
   TemplateInputType,
-  getExchangeClosingWithBufferGivenDay
+  getExchangeClosingWithBufferGivenDay,
 } from '@augurproject/templates';
 import {
   REQUIRED,
   CHOICE,
+  CRYPTO,
 } from '@augurproject/sdk-lite'
 import { NameValuePair } from 'modules/common/selection';
 import {
@@ -40,6 +41,8 @@ const MarketTypeIcons = {
   [CATEGORICAL]: CategoricalMarketIcon,
   [SCALAR]: ScalarMarketIcon,
 };
+
+const NO_SORT_CATEGORIES = [CRYPTO];
 
 export const getTemplateRadioCardsMarketTypes = (categories: Categories) => {
   if (!categories || !categories.primary) return MARKET_TYPE_TEMPLATES;
@@ -129,16 +132,18 @@ export const addCategoryStats = (
 
 export const getTemplateCategories = (categories: Categories): string[] => {
   let emptyCats = [];
+  let noSort = NO_SORT_CATEGORIES.includes(categories.primary);
   if (!categories || !categories.primary) return Object.keys(TEMPLATES).sort();
   const primaryCat = TEMPLATES[categories.primary];
   if (!primaryCat) return emptyCats;
   if (!categories.secondary)
-    return primaryCat.children ? Object.keys(primaryCat.children).sort() : [];
+    return primaryCat.children ? noSort ? Object.keys(primaryCat.children) : Object.keys(primaryCat.children).sort() : [];
+  noSort = NO_SORT_CATEGORIES.includes(categories.secondary);
   const secondaryCat = primaryCat.children
     ? primaryCat.children[categories.secondary]
     : emptyCats;
   if (!secondaryCat) return emptyCats;
-  return secondaryCat.children ? Object.keys(secondaryCat.children).sort() : [];
+  return secondaryCat.children ? noSort ? Object.keys(secondaryCat.children) : Object.keys(secondaryCat.children).sort() : [];
 };
 
 export const getTemplateCategoriesByMarketType = (

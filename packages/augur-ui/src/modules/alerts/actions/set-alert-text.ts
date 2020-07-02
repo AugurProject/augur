@@ -141,7 +141,7 @@ export default function setAlertText(alert: any, callback: Function) {
             if (marketInfo === null) return;
             alert.description = marketInfo.description;
 
-            const { orderType, price, outcomeDescription } = getInfo(
+            const { orderType, outcomeDescription } = getInfo(
               alert.params,
               alert.status,
               marketInfo
@@ -152,9 +152,9 @@ export default function setAlertText(alert: any, callback: Function) {
                   alert.params.amount,
                   createBigNumber(marketInfo.tickSize)
                 );
-            alert.details = `${orderType}  ${
+            alert.details = `${orderType} ${
               formatShares(quantity).formatted
-            } of ${outcomeDescription} @ ${formatDai(price).formatted}`;
+            } of ${outcomeDescription} @ ${alert.params.avgPrice.formatted}`;
           })
         );
         break;

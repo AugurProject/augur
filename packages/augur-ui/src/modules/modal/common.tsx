@@ -32,6 +32,7 @@ import { toChecksumAddress } from 'ethereumjs-util';
 import TooltipStyles from 'modules/common/tooltip.styles.less';
 import ReactTooltip from 'react-tooltip';
 import { BigNumber } from 'utils/create-big-number';
+import titleCase from 'utils/title-case';
 
 export interface TitleProps {
   title: string;
@@ -407,17 +408,18 @@ export const Stepper = ({ currentStep, maxSteps, changeCurrentStep = null }: Ste
 
 interface TransferMyDaiProps {
   walletType: string;
-  daiAmount: FormattedNumber;
+  tokenAmount: FormattedNumber;
   showTransferModal: Function;
   isCondensed: boolean;
+  tokenName: string;
 }
 
-export const TransferMyDai = ({ walletType, daiAmount, showTransferModal, isCondensed = false}: TransferMyDaiProps) => {
+export const TransferMyTokens = ({ walletType, tokenAmount, showTransferModal, tokenName, isCondensed = false}: TransferMyDaiProps) => {
   if (isCondensed) {
     return (
       <div className={Styles.TransferMyDaiCondensed}>
         <div>
-          <span>{daiAmount.formattedValue} DAI</span>
+          <span>{tokenAmount.formattedValue} {tokenName}</span>
           <span>in {walletType} wallet</span>
         </div>
         <SecondaryButton
@@ -429,14 +431,14 @@ export const TransferMyDai = ({ walletType, daiAmount, showTransferModal, isCond
   }
 
   return (
-    <div className={Styles.TransferMyDai}>
+    <div className={Styles.TransferMyTokens}>
       <div>
-        <span>{daiAmount.formattedValue} Dai in your {walletType} wallet</span>
+        <span>{tokenAmount.formattedValue} {titleCase(tokenName)} in your {walletType} wallet</span>
         <span>Transfer any amount to your trading account.</span>
       </div>
       <PrimaryButton
         action={() => showTransferModal()}
-        text={'Transfer my Dai'}
+        text={`Transfer my ${titleCase(tokenName)}`}
       />
     </div>
   );
