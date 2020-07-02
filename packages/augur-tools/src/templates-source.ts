@@ -104,8 +104,8 @@ export const TEMPLATES = {
         templates: [
           {
             marketType: CATEGORICAL,
-            question: `MMA: [0] vs. [1], Who will win?`,
-            example: `MMA: Donald Cerrone vs. Conor McGregor, Who will win?\nEstimated schedule start time: Jan 18, 2020 8:20 pm EST`,
+            question: `MMA: [0] vs. [1]; Who will win?`,
+            example: `MMA: Donald Cerrone vs. Conor McGregor; Who will win?\nEstimated schedule start time: Jan 18, 2020 8:20 pm EST`,
             header: `[0] vs. [1]`,
             title: `Money Line`,
             groupName: groupTypes.MONEY_LINE,
@@ -157,8 +157,8 @@ export const TEMPLATES = {
           },
           {
             marketType: CATEGORICAL,
-            question: `MMA: [0] vs. [1] (O/U), [2].5 Rounds?`,
-            example: `MMA: Donald Cerrone vs. Conor McGregor (O/U), 1.5 Rounds?\nEstimated schedule start time: Jan 18, 2020 8:20 pm EST`,
+            question: `MMA (O/U): [0] vs. [1]; Over/Under [2].5 Rounds?`,
+            example: `MMA (O/U): Donald Cerrone vs. Conor McGregor; Over/Under 1.5 Rounds?\nEstimated schedule start time: Jan 18, 2020 8:20 pm EST`,
             title: `Over/Under [2].5 Rounds`,
             header: `[0] vs. [1]`,
             groupName: groupTypes.OVER_UNDER,
@@ -224,8 +224,8 @@ export const TEMPLATES = {
           },
           {
             marketType: CATEGORICAL,
-            question: `MMA: [0] vs. [1], Method of victory?`,
-            example: `MMA: Donald Cerrone vs. Conor McGregor, Method of victory?\nEstimated schedule start time: Jan 18, 2020 8:20 pm EST`,
+            question: `MMA: [0] vs. [1]; Method of victory?`,
+            example: `MMA: Donald Cerrone vs. Conor McGregor; Method of victory?\nEstimated schedule start time: Jan 18, 2020 8:20 pm EST`,
             title: `Method of victory`,
             header: `[0] vs. [1]`,
             groupName: groupTypes.ADDITIONAL,
@@ -316,8 +316,8 @@ export const TEMPLATES = {
           },
           {
             marketType: CATEGORICAL,
-            question: `MMA: [0] vs. [1], How will the fight end?`,
-            example: `MMA UFC: Donald Cerrone vs. Conor McGregor, How will the fight end?\nEstimated schedule start time: Jan 18, 2020 8:20 pm EST`,
+            question: `MMA: [0] vs. [1]; How will the fight end?`,
+            example: `MMA UFC: Donald Cerrone vs. Conor McGregor; How will the fight end?\nEstimated schedule start time: Jan 18, 2020 8:20 pm EST`,
             title: `How will the fight end`,
             header: `[0] vs. [1]`,
             groupName: groupTypes.ADDITIONAL,
@@ -393,8 +393,8 @@ export const TEMPLATES = {
           },
           {
             marketType: CATEGORICAL,
-            question: `MMA: [0] vs. [1], What round will the fight end?`,
-            example: `MMA: Donald Cerrone vs. Conor McGregor, What round will the fight end?\nEstimated schedule start time: Jan 18, 2020 8:20 pm EST`,
+            question: `MMA: [0] vs. [1]; What round will the fight end?`,
+            example: `MMA: Donald Cerrone vs. Conor McGregor; What round will the fight end?\nEstimated schedule start time: Jan 18, 2020 8:20 pm EST`,
             title: `What round will the fight end`,
             header: `[0] vs. [1]`,
             groupName: groupTypes.ADDITIONAL,
@@ -480,8 +480,8 @@ export const TEMPLATES = {
         templates: [
           {
             marketType: CATEGORICAL,
-            question: `Boxing: [0] vs. [1], Who will win?`,
-            example: `Boxing: Robert Helenius vs. Adam Kownacki, Who will win?\nEstimated schedule start time: Feb 10, 2020 8:20 pm EST`,
+            question: `Boxing: [0] vs. [1]; Who will win?`,
+            example: `Boxing: Robert Helenius vs. Adam Kownacki; Who will win?\nEstimated schedule start time: Feb 10, 2020 8:20 pm EST`,
             header: `[0] vs. [1]`,
             title: `Money Line`,
             groupName: groupTypes.MONEY_LINE,
@@ -533,8 +533,8 @@ export const TEMPLATES = {
           },
           {
             marketType: CATEGORICAL,
-            question: `Boxing: [0] vs. [1] (O/U), [3].5 Rounds?`,
-            example: `Boxing: Robert Helenius vs. Adam Kownacki (O/U), 5.5 Rounds?\nEstimated schedule start time: Jan 18, 2020 8:20 pm EST`,
+            question: `Boxing (O/U): [0] vs. [1]; Over/Under [3].5 Rounds?`,
+            example: `Boxing (O/U): Robert Helenius vs. Adam Kownacki; Over/Under 5.5 Rounds?\nEstimated schedule start time: Jan 18, 2020 8:20 pm EST`,
             title: `Over/Under [3].5 Rounds`,
             header: `[0] vs. [1]`,
             groupName: groupTypes.OVER_UNDER,
@@ -601,8 +601,8 @@ export const TEMPLATES = {
           },
           {
             marketType: CATEGORICAL,
-            question: `Boxing: [0] vs. [1], Method of victory?`,
-            example: `Boxing: Robert Helenius vs. Adam Kownacki, Method of victory?\nEstimated schedule start time: Jan 18, 2020 8:20 pm EST`,
+            question: `Boxing: [0] vs. [1]; Method of victory?`,
+            example: `Boxing: Robert Helenius vs. Adam Kownacki; Method of victory?\nEstimated schedule start time: Jan 18, 2020 8:20 pm EST`,
             title: `Method of victory`,
             header: `[0] vs. [1]`,
             groupName: groupTypes.ADDITIONAL,
@@ -693,8 +693,8 @@ export const TEMPLATES = {
           },
           {
             marketType: CATEGORICAL,
-            question: `Boxing: [0] vs. [1], How will the fight end?`,
-            example: `Boxing: Robert Helenius vs. Adam Kownacki, How will the fight end?\nEstimated schedule start time: Jan 18, 2020 8:20 pm EST`,
+            question: `Boxing: [0] vs. [1]; How will the fight end?`,
+            example: `Boxing: Robert Helenius vs. Adam Kownacki; How will the fight end?\nEstimated schedule start time: Jan 18, 2020 8:20 pm EST`,
             title: `How will the fight end`,
             header: `[0] vs. [1]`,
             groupName: groupTypes.ADDITIONAL,
@@ -764,8 +764,8 @@ export const TEMPLATES = {
           },
           {
             marketType: CATEGORICAL,
-            question: `Boxing: [0] vs. [1], What round will the fight end?`,
-            example: `Boxing: Robert Helenius vs. Adam Kownacki, What round will the fight end?\nEstimated schedule start time: Jan 18, 2020 8:20 pm EST`,
+            question: `Boxing: [0] vs. [1]; What round will the fight end?`,
+            example: `Boxing: Robert Helenius vs. Adam Kownacki; What round will the fight end?\nEstimated schedule start time: Jan 18, 2020 8:20 pm EST`,
             title: `What round will the fight end`,
             header: `[0] vs. [1]`,
             groupName: groupTypes.ADDITIONAL,
