@@ -3,7 +3,7 @@ import {
   BASKETBALL_EVENT_DEP_TEAMS,
   CRYPTO_BTC_CURRENCY_MARKETS,
   CRYPTO_ETH_CURRENCY_MARKETS,
-  CRYPTO_LTC_CURRENCY_MARKETS,
+  CRYPTO_REP_CURRENCY_MARKETS,
   ENTERTAINMENT_EVENT_DEP_TEAMS,
   FIN_EXCHANGES_CLOSING_OFFSETS,
   FIN_EXCHANGES_CURRENCIES,
@@ -47,7 +47,7 @@ import {
   HORSE_RACING,
   INDEXES,
   LEAGUE_NAME,
-  LITECOIN,
+  AUGUR,
   LPGA,
   MEDICAL,
   MENS_LEAGUES,
@@ -9749,20 +9749,20 @@ export const TEMPLATES = {
           },
         ],
       },
-      [LITECOIN]: {
+      [AUGUR]: {
         templates: [
           {
             marketType: YES_NO,
             question: `Will the price of [0] open at or above [1] on [2], according to TradingView.com "[3]"?`,
-            example: `Will the price of LTC/USD open at or above 8000 on December 31, 2020, according to TradingView.com "LTCUSD (crypto - Coinbase)"?`,
+            example: `Will the price of REP/USD open at or above 25 on December 31, 2020, according to TradingView.com "REPUSD (crypto - Coinbase)"?`,
             inputs: [
               {
                 id: 0,
                 type: TemplateInputType.DROPDOWN_QUESTION_DEP,
                 placeholder: `Token Pair`,
                 inputDestIds: [3],
-                values: LIST_VALUES.LTC_CURRENCY_PAIRS,
-                inputDestValues: CRYPTO_LTC_CURRENCY_MARKETS,
+                values: LIST_VALUES.REP_CURRENCY_PAIRS,
+                inputDestValues: CRYPTO_REP_CURRENCY_MARKETS,
               },
               {
                 id: 1,
@@ -9788,7 +9788,7 @@ export const TEMPLATES = {
             resolutionRules: {
               [REQUIRED]: [
                 {
-                  text: `Use ticker symbol search for token pair (ie LTCUSD), find exchange that corresponds to market question. Navigate to Full-featured daily chart, Opening price is determined on the date in the market question on tradingview.com.`,
+                  text: `Use ticker symbol search for token pair (ie REPUSD), find exchange that corresponds to market question. Navigate to Full-featured daily chart, Opening price is determined on the date in the market question on tradingview.com.`,
                 },
                 {
                   text: `Opening price can also be found on tradingview using the hourly chart for the date in the market question at UTC (0) 00:00`,
@@ -9802,15 +9802,15 @@ export const TEMPLATES = {
           {
             marketType: YES_NO,
             question: `Will the price of [0], exceed [1] anytime between the open of [2] and close of [3], according to TradingView.com "[4]"?`,
-            example: `Will the price of LTC/USD exceed 8000 anytime between the open of September 1, 2020 and close of December 31, 2020, according to TradingView.com "LTCUSD (crypto - Coinbase)"?`,
+            example: `Will the price of REP/USD exceed 25 anytime between the open of September 1, 2020 and close of December 31, 2020, according to TradingView.com "REPUSD (crypto - Coinbase)"?`,
             inputs: [
               {
                 id: 0,
                 type: TemplateInputType.DROPDOWN_QUESTION_DEP,
                 placeholder: `Token Pair`,
                 inputDestIds: [4],
-                values: LIST_VALUES.LTC_CURRENCY_PAIRS,
-                inputDestValues: CRYPTO_LTC_CURRENCY_MARKETS,
+                values: LIST_VALUES.REP_CURRENCY_PAIRS,
+                inputDestValues: CRYPTO_REP_CURRENCY_MARKETS,
               },
               {
                 id: 1,
@@ -9842,7 +9842,7 @@ export const TEMPLATES = {
             resolutionRules: {
               [REQUIRED]: [
                 {
-                  text: `Use ticker symbol search for token pair (ie LTCUSD), find exchange that corresponds to market question. Navigate to Full-featured daily chart, Opening price is determined on the date in the market question on tradingview.com.`,
+                  text: `Use ticker symbol search for token pair (ie REPUSD), find exchange that corresponds to market question. Navigate to Full-featured daily chart, Opening price is determined on the date in the market question on tradingview.com.`,
                 },
                 {
                   text: `Opening price can also be found on tradingview using the hourly chart for the date in the market question at UTC (0) 00:00`,
@@ -9856,7 +9856,7 @@ export const TEMPLATES = {
           {
             marketType: SCALAR,
             question: `What price will [0] open at on [1], according to TradingView.com "[2]"?`,
-            example: `What price will LTC/USD open at on December 31, 2020, according to TradingView.com for "LTCUSD (crypto - Coinbase)"?`,
+            example: `What price will REP/USD open at on December 31, 2020, according to TradingView.com for "REPUSD (crypto - Coinbase)"?`,
             denomination: 'Price',
             inputs: [
               {
@@ -9864,8 +9864,8 @@ export const TEMPLATES = {
                 type: TemplateInputType.DROPDOWN_QUESTION_DEP,
                 placeholder: `Token Pair`,
                 inputDestIds: [2],
-                values: LIST_VALUES.LTC_CURRENCY_PAIRS,
-                inputDestValues: CRYPTO_LTC_CURRENCY_MARKETS,
+                values: LIST_VALUES.REP_CURRENCY_PAIRS,
+                inputDestValues: CRYPTO_REP_CURRENCY_MARKETS,
               },
               {
                 id: 1,
@@ -9885,7 +9885,7 @@ export const TEMPLATES = {
             resolutionRules: {
               [REQUIRED]: [
                 {
-                  text: `Use ticker symbol search for token pair (ie LTCUSD), find exchange that corresponds to market question. Navigate to Full-featured daily chart, Opening price is determined on the date in the market question on tradingview.com.`,
+                  text: `Use ticker symbol search for token pair (ie REPUSD), find exchange that corresponds to market question. Navigate to Full-featured daily chart, Opening price is determined on the date in the market question on tradingview.com.`,
                 },
                 {
                   text: `Opening price can also be found on tradingview using the hourly chart for the date in the market question at UTC (0) 00:00`,

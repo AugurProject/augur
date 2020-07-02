@@ -57,6 +57,7 @@ export const INDEXES = 'Indexes';
 export const BITCOIN = 'Bitcoin';
 export const ETHEREUM = 'Ethereum';
 export const LITECOIN = 'Litecoin';
+export const AUGUR = 'Augur';
 export const BTC = 'BTC';
 export const ETH = 'ETH';
 export const LTC = 'LTC';

@@ -40,6 +40,7 @@ import {
   BITCOIN,
   ETHEREUM,
   LITECOIN,
+  AUGUR,
   BOXING,
   MMA,
   CAR_RACING,
@@ -193,9 +194,6 @@ export const MARKET_TYPE_NAME = {
   [SCALAR]: 'Scalar',
   [CATEGORICAL]: 'Categorical',
 };
-
-// Market Subtemplates
-export const AUGUR = 'Augur';
 
 const defaultDescription = '-  |  -';
 export interface MarketCardTemplate {
