@@ -239,6 +239,7 @@ export interface RadioCardProps extends BaseRadioButtonProp {
   onChange?: Function;
   icon?: JSX.Element;
   useIconColors?: boolean;
+  inverseFill?: boolean;
 }
 
 interface RadioGroupProps {
@@ -1264,11 +1265,13 @@ const RadioCard = ({
   checked,
   icon,
   useIconColors = false,
+  inverseFill = false,
 }: RadioCardProps) => (
   <div
     className={classNames(Styles.RadioCard, {
       [Styles.RadioCardActive]: checked,
       [Styles.CustomIcon]: icon && !useIconColors,
+      [Styles.InverseFill]: icon && inverseFill
     })}
     role="button"
     onClick={e => onChange(value)}
