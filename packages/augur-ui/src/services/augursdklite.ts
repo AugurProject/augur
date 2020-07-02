@@ -12,7 +12,7 @@ export class SDKLite {
     networkId: NetworkId,
     ): Promise<AugurLite> {
 
-    this.client = new AugurLite(provider, addresses, );
+    this.client = new AugurLite(provider, addresses, networkId);
     return this.client;
   }
 
