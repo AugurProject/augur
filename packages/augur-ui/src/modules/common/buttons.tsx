@@ -8,6 +8,7 @@ import {
   THEMES,
   ZERO,
   MOBILE_MENU_STATES,
+  FILLED,
 } from 'modules/common/constants';
 import {
   StarIcon,
@@ -40,8 +41,8 @@ import ChevronFlip from 'modules/common/chevron-flip';
 import { Link } from 'react-router-dom';
 
 import { removePendingData } from 'modules/pending-queue/actions/pending-queue-management';
-import { BET_STATUS } from 'modules/trading/store/constants';
 import { createBigNumber } from 'utils/create-big-number';
+import { formatDai } from 'utils/format-number';
 
 export interface DefaultButtonProps {
   id?: string;
@@ -655,32 +656,38 @@ interface CashoutButtonProps {
 }
 
 export const CashoutButton = ({
-  action,
-  outcome: { amountWon, status },
+  bet
 }: CashoutButtonProps) => {
+  let cashoutDisabled = true;
+  let cashoutText = 'cashout not available';
   let didWin = false;
   let loss = false;
-  let text = 'CASHOUT: $00.00';
-  const won = createBigNumber(amountWon);
+  const won = createBigNumber(bet.amountWon);
   if (!won.eq(ZERO)) {
     didWin = true;
     if (won.lt(ZERO)) {
       loss = true;
     }
-    text = `${loss ? 'LOSS' : 'WIN'}: $${Math.abs(amountWon)}`;
+    cashoutText = `${loss ? 'LOSS' : 'WIN'}: $${Math.abs(bet.amountWon)}`;
+  }
+  switch (bet.status) {
+    case FILLED:
+      cashoutText = `Cashout ${formatDai(bet.amountFilled).full}`;
+      cashoutDisabled = false;
+      break;
+    default:
+      break;
   }
   return (
-    <button
-      disabled={status === BET_STATUS.CLOSED}
+    <button 
+      onClick={() => bet.cashOut()} 
       className={classNames(Styles.CashoutButton, {
         [Styles.Won]: didWin && !loss,
         [Styles.Loss]: loss,
-      })}
-      onClick={e => {
-        action && action(e);
-      }}
+      })} 
+      disabled={cashoutDisabled}
     >
-      {status === BET_STATUS.CLOSED ? 'Cashout not available' : text}
+      {cashoutText}
     </button>
   );
 };

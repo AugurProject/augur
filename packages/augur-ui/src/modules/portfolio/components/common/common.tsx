@@ -120,7 +120,7 @@ export const BetRow = ({ outcome, showExtraRow, isEvent }: BetRowProps) => (
             value={outcome.updatedDate.formattedLocalShortDate}
             useFull={true}
           />
-          <CashoutButton action={null} outcome={outcome} />
+          <CashoutButton bet={outcome} />
         </div>
       ) : (
         <MyBetsRow
