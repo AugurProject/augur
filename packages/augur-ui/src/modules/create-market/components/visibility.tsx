@@ -278,7 +278,7 @@ export default class Visibility extends Component<
           {!hasLiquidity && (
             <SmallSubheaders
               header="How to pass spread filter check"
-              subheader={validationMessage}
+              subheader={(!hasLiquidity && validations.hasBuys && validations.hasSells) ? "Increase quantity size to both sides to Pass." : validationMessage}
             />
           )}
 
@@ -295,7 +295,7 @@ export default class Visibility extends Component<
 
           <SmallSubheaders
             header="how to improve market ranking"
-            subheader={(!hasLiquidity && validations.hasBuys && validations.hasSells) ? "Increase quantity to both sides to Pass default spread filter." : "Add both Buy and Sell orders to an outcome, increase quantity to increase ranking."}
+            subheader={"Add both Buy and Sell orders to an outcome, increase quantity to increase ranking."}
           />
         </div>
       </ContentBlock>
