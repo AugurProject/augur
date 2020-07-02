@@ -410,6 +410,7 @@ export const MARKET_SUB_TEMPLATES = {
       value: BITCOIN,
       header: BITCOIN,
       description: defaultDescription,
+      inverseFill: true,
       icon: icons.BTC,
     },
     {
