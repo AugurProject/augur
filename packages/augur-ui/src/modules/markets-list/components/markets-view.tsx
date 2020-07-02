@@ -269,9 +269,7 @@ const MarketsView = () => {
               ? sportsShowPagination
               : showPagination,
           });
-          filterSortedMarkets.forEach((marketId) =>
-            updateOrderBook(marketId, null, loadMarketOrderBook(marketId))
-          );
+          // TODO: put liquidity getter here if we are in sportsbook.
           updateMarketsList({ isSearching: false, meta: result.meta });
         }
       }
