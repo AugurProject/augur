@@ -4,38 +4,40 @@ import { readFile } from 'async-file';
 import { stringTo32ByteHex, resolveAll, sleep } from './HelperFunctions';
 import { CompilerOutput } from 'solc';
 import {
-  Augur,
-  AugurTrading,
-  Universe,
-  ReputationToken,
-  LegacyReputationToken,
-  TimeControlled,
-  ShareToken,
-  Trade,
-  CreateOrder,
-  CancelOrder,
-  FillOrder,
-  Orders,
-  Cash,
-  ProfitLoss,
-  SimulateTrade,
-  ZeroXTrade,
-  WarpSync,
-  AugurWalletRegistry,
-  AugurWalletRegistryV2,
-  AugurWalletFactory,
-  RepOracle,
-  AuditFunds,
-  // 0x
-  Exchange,
-  ERC1155Proxy,
-  ERC20Proxy,
-  MultiAssetProxy,
-  // Uniswap
-  UniswapV2Factory,
-  UniswapV2Pair,
-  WETH9
-} from './ContractInterfaces';
+    Augur,
+    AugurTrading,
+    Universe,
+    ReputationToken,
+    LegacyReputationToken,
+    TimeControlled,
+    ShareToken,
+    Trade,
+    CreateOrder,
+    CancelOrder,
+    FillOrder,
+    Orders,
+    Cash,
+    USDC,
+    USDT,
+    ProfitLoss,
+    SimulateTrade,
+    ZeroXTrade,
+    WarpSync,
+    AugurWalletRegistry,
+    AugurWalletRegistryV2,
+    AugurWalletFactory,
+    RepOracle,
+    AuditFunds,
+    // 0x
+    Exchange,
+    ERC1155Proxy,
+    ERC20Proxy,
+    MultiAssetProxy,
+    // Uniswap
+    UniswapV2Factory,
+    UniswapV2Pair,
+    WETH9, TestNetReputationToken, UniswapV2Router01
+} from "./ContractInterfaces";
 import { Contracts, ContractData } from './Contracts';
 import { Dependencies } from './GenericContractInterfaces';
 import { NetworkId } from '@augurproject/utils';
@@ -154,6 +156,7 @@ Deploying to: ${env}
             }
         } else {
             await this.uploadTestDaiContracts();
+            await this.uploadTestUSDxContracts();
         }
 
         // 0x Exchange
@@ -226,6 +229,10 @@ Deploying to: ${env}
             await this.migrateFromLegacyRep();
         }
 
+        console.log('Initializing warp sync market');
+        const warpSync = new WarpSync(this.dependencies, this.getContractAddress('WarpSync'));
+        await warpSync.initializeUniverse(this.universe.address);
+
         // Handle some things that make testing less erorr prone that will need to occur naturally in production
         if (!this.configuration.deploy.isProduction) {
             const cash = new Cash(this.dependencies, this.getContractAddress('Cash'));
@@ -234,24 +241,18 @@ Deploying to: ${env}
             const authority = this.getContractAddress('Augur');
             await cash.approve(authority, new BigNumber(2).pow(256).minus(new BigNumber(1)));
 
-            console.log('Add ETH exchange liquidity');
-            const weth = new WETH9(this.dependencies, this.getContractAddress('WETH9'));
-            const uniswapV2Factory = new UniswapV2Factory(this.dependencies, this.getContractAddress('UniswapV2Factory'));
-            const ethExchangeAddress = await uniswapV2Factory.getPair_(weth.address, cash.address);
-            const ethExchange = new UniswapV2Pair(this.dependencies, ethExchangeAddress);
-            const cashAmount = new BigNumber(4000 * 1e18) // 4000 Dai
-            const ethAmount = new BigNumber(20 * 1e18) // 20 ETH
-            await weth.deposit({attachedEth: ethAmount});
-            console.log('Cash faucet');
-            await cash.faucet(cashAmount);
-            console.log('eth exchange mint');
-            const address = await this.dependencies.getDefaultAddress();
-            console.log('Cash xfer to exchange');
-            await cash.transfer(ethExchange.address, cashAmount);
-            console.log('Weth xfer to exchange');
-            await weth.transfer(ethExchange.address, ethAmount);
-            console.log('Exchange mint');
-            await ethExchange.mint(address);
+            console.log('Add ETH-Cash exchange liquidity');
+            await this.setupEthExchange(cash);
+
+            console.log('Add REP-Cash exchange liquidity');
+            const repAddress = await this.universe!.getReputationToken_();
+            await this.setupTokenExchange(new TestNetReputationToken(this.dependencies, repAddress), cash);
+
+            console.log('Add USDC-Cash exchange liquidity');
+            await this.setupTokenExchange(new USDC(this.dependencies, this.getContractAddress('USDC')), cash);
+
+            console.log('Add USDT-Cash exchange liquidity');
+            await this.setupTokenExchange(new USDT(this.dependencies, this.getContractAddress('USDT')), cash);
         }
 
         console.log('Writing artifacts');
@@ -266,6 +267,46 @@ Deploying to: ${env}
         return await this.generateCompleteAddressMapping();
     }
 
+    private async setupEthExchange<C extends Cash|TestNetReputationToken>(token: C) {
+        const address = await this.dependencies.getDefaultAddress();
+        const weth = new WETH9(this.dependencies, this.getContractAddress('WETH9'));
+        const uniswapV2Factory = new UniswapV2Factory(this.dependencies, this.getContractAddress('UniswapV2Factory'));
+        const ethExchangeAddress = await uniswapV2Factory.getPair_(weth.address, token.address);
+        const ethExchange = new UniswapV2Pair(this.dependencies, ethExchangeAddress);
+        const cashAmount = new BigNumber(4000 * 1e18); // 4000 Dai
+        const ethAmount = new BigNumber(20 * 1e18); // 20 ETH
+        await weth.deposit({attachedEth: ethAmount});
+        await token.faucet(cashAmount);
+        await token.transfer(ethExchange.address, cashAmount);
+        await weth.transfer(ethExchange.address, ethAmount);
+        await ethExchange.mint(address);
+    }
+
+    private async setupTokenExchange<C1 extends Cash|TestNetReputationToken, C2 extends Cash|TestNetReputationToken>(token1: C1, token2: C2) {
+        const address = await this.dependencies.getDefaultAddress();
+        const uniswapAddress = this.getContractAddress('UniswapV2Router01');
+        const uniswap = new UniswapV2Router01(this.dependencies, uniswapAddress);
+        const token1Amount = new BigNumber(100e18);
+        const token2Amount = new BigNumber(10e18);
+
+        await token1.faucet(token1Amount);
+        await token2.faucet(token2Amount);
+        await token1.approve(uniswapAddress, new BigNumber(2 ** 255));
+        await token2.approve(uniswapAddress, new BigNumber(2 ** 255));
+
+        console.log('Adding liquidity');
+        await uniswap.addLiquidity(
+            token1.address,
+            token2.address,
+            token1Amount,
+            token2Amount,
+            new BigNumber(0),
+            new BigNumber(0),
+            address,
+            new BigNumber((new Date()).valueOf() + 3600000),
+        );
+    }
+
     private async generateCompleteAddressMapping(): Promise<ContractAddresses> {
         // This type assertion means that `mapping` can possibly NOT adhere to the ContractAddresses interface.
         const mapping = {} as ContractAddresses;
@@ -276,6 +317,8 @@ Deploying to: ${env}
         mapping['Augur'] = this.contracts.get('Augur').address!;
         mapping['LegacyReputationToken'] = this.contracts.get('LegacyReputationToken').address!;
         mapping['Cash'] = this.getContractAddress('Cash');
+        mapping['USDC'] = this.getContractAddress('USDC');
+        mapping['USDT'] = this.getContractAddress('USDT');
         mapping['BuyParticipationTokens'] = this.contracts.get('BuyParticipationTokens').address!;
         mapping['RedeemStake'] = this.contracts.get('RedeemStake').address!;
         mapping['AugurTrading'] = this.contracts.get('AugurTrading').address!;
@@ -285,6 +328,8 @@ Deploying to: ${env}
         mapping['UniswapV2Router01'] = this.contracts.get('UniswapV2Router01').address!;
         const uniswapV2Factory = new UniswapV2Factory(this.dependencies, this.getContractAddress('UniswapV2Factory'));
         mapping['EthExchange'] = await uniswapV2Factory.getPair_(this.getContractAddress('WETH9'), this.getContractAddress('Cash'));
+        mapping['USDCExchange'] = await uniswapV2Factory.getPair_(this.getContractAddress('USDC'), this.getContractAddress('Cash'));
+        mapping['USDTExchange'] = await uniswapV2Factory.getPair_(this.getContractAddress('USDT'), this.getContractAddress('Cash'));
         mapping['AuditFunds'] = this.contracts.get('AuditFunds').address!;
 
         mapping['OICash'] = this.contracts.get('OICash').address!;
@@ -326,7 +371,7 @@ Deploying to: ${env}
             if (contract.contractName === 'Exchange') continue;
 
             if (contract.contractName !== 'Map' && contract.relativeFilePath.startsWith('libraries/')) continue;
-            if (['Cash', 'TestNetDaiVat', 'TestNetDaiPot', 'TestNetDaiJoin'].includes(contract.contractName)) continue;
+            if (['Cash', 'USDC', 'USDT', 'TestNetDaiVat', 'TestNetDaiPot', 'TestNetDaiJoin'].includes(contract.contractName)) continue;
             if (['IAugur', 'IDisputeCrowdsourcer', 'IDisputeWindow', 'IUniverse', 'IMarket', 'IReportingParticipant', 'IReputationToken', 'IOrders', 'IShareToken', 'Order', 'IV2ReputationToken', 'IInitialReporter'].includes(contract.contractName)) continue;
             if (contract.address === undefined) throw new Error(`${contract.contractName} not uploaded.`);
 
@@ -401,6 +446,18 @@ Deploying to: ${env}
         await cash.initialize(this.augur!.address);
     }
 
+    private async uploadTestUSDxContracts(): Promise<void> {
+        const usdcContract = await this.contracts.get('USDC');
+        usdcContract.address = await this.uploadAndAddToAugur(usdcContract, 'USDC', []);
+        const usdc = new USDC(this.dependencies, usdcContract.address);
+        await usdc.initialize(this.augur!.address);
+
+        const usdtContract = await this.contracts.get('USDT');
+        usdtContract.address = await this.uploadAndAddToAugur(usdtContract, 'USDT', []);
+        const usdt = new USDT(this.dependencies, usdtContract.address);
+        await usdt.initialize(this.augur!.address);
+    }
+
     async uploadLegacyRep(): Promise<string> {
         const contract = await this.contracts.get('LegacyReputationToken');
         contract.address = await this.uploadAndAddToAugur(contract, 'LegacyReputationToken');
@@ -470,7 +527,7 @@ Deploying to: ${env}
     }
 
     private async uploadGSNV2Contracts(): Promise<string> {
-        console.log(`Uploading GSN V2 contracts`);
+        console.log('Uploading GSN V2 contracts');
         const penalizerContract = await this.contracts.get('Penalizer');
         penalizerContract.address = await this.uploadAndAddToAugur(penalizerContract, 'Penalizer');
         const stakeManagerContract = await this.contracts.get('StakeManager');
@@ -513,6 +570,8 @@ Deploying to: ${env}
         if (contract.relativeFilePath.startsWith('gsn/')) return;
         if (contractName === 'LegacyReputationToken') return;
         if (contractName === 'Cash') return;
+        if (contractName === 'USDC') return;
+        if (contractName === 'USDT') return;
         if (contractName === 'CashFaucet') return;
         if (contractName === 'CashFaucetProxy') return;
         if (contractName === 'AugurWalletFactory') return;
@@ -531,7 +590,7 @@ Deploying to: ${env}
           'ZRXToken',
         ].includes(contractName)) return;
         if (contractName !== 'Map' && contract.relativeFilePath.startsWith('libraries/')) return;
-        if (['Cash', 'TestNetDaiVat', 'TestNetDaiPot', 'TestNetDaiJoin'].includes(contract.contractName)) return;
+        if (['Cash', 'USDC', 'USDT', 'TestNetDaiVat', 'TestNetDaiPot', 'TestNetDaiJoin'].includes(contract.contractName)) return;
         if (['IAugur', 'IDisputeCrowdsourcer', 'IDisputeWindow', 'IUniverse', 'IMarket', 'IReportingParticipant', 'IReputationToken', 'IOrders', 'IShareToken', 'Order', 'IV2ReputationToken', 'IInitialReporter', 'ICashFaucet'].includes(contract.contractName)) return;
         console.log(`Uploading new version of contract for ${contractName}`);
         contract.address = await this.uploadAndAddToAugur(contract, contractName, []);
@@ -762,6 +821,8 @@ Deploying to: ${env}
         mapping['Augur'] = this.contracts.get('Augur').address!;
         mapping['LegacyReputationToken'] = this.contracts.get('LegacyReputationToken').address!;
         mapping['Cash'] = this.getContractAddress('Cash');
+        mapping['USDC'] = this.getContractAddress('USDC');
+        mapping['USDT'] = this.getContractAddress('USDT');
         if (!this.configuration.deploy.isProduction) mapping['CashFaucet'] = this.getCashFaucetAddress();
         mapping['BuyParticipationTokens'] = this.contracts.get('BuyParticipationTokens').address!;
         mapping['RedeemStake'] = this.contracts.get('RedeemStake').address!;

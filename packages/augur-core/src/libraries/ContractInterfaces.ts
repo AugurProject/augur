@@ -51,6 +51,10 @@ export class Time extends c.Time<BigNumber> {
 }
 export class TimeControlled extends c.TimeControlled<BigNumber> {
 }
+export class USDC extends c.USDC<BigNumber> {
+}
+export class USDT extends c.USDT<BigNumber> {
+}
 export class WarpSync extends c.WarpSync<BigNumber> {
 }
 export class AugurWalletFactory extends c.AugurWalletFactory<BigNumber> {
