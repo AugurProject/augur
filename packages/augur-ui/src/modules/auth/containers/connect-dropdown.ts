@@ -45,6 +45,7 @@ const mapStateToProps = (state: AppState) => {
     ethToDaiRate: state.appStatus.ethToDaiRate,
     reserveEthAmount,
     showTransferMyDai: state.loginAccount.balances.signerBalances.dai !== "0",
+    showTransferMyRep: state.loginAccount.balances.signerBalances.rep !== "0",
   };
 };
 

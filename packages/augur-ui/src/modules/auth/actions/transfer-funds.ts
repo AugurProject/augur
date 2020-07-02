@@ -79,7 +79,8 @@ export const transferFunds = (
         }
       }
     } finally {
-      dispatch(updateAssets(true));
+      // give a little time
+      setTimeout(() => dispatch(updateAssets(true)), 1000);
     }
   };
 };
