@@ -635,7 +635,7 @@ export const templatedCannedMarkets = (): CannedMarket[] => {
 
   const bbTemplates = TEMPLATES[SPORTS].children[BASKETBALL].children[NBA]
     .templates as Template[];
-  const bbTemplate: Template = bbTemplates[11];
+  const bbTemplate: Template = bbTemplates.find(m => m.marketType === 'Scalar');
   const bbExpDate = moment()
     .add(2, 'weeks')
     .add(8, 'hours');
@@ -748,10 +748,12 @@ const calcFuturesHockeyMarket = (): CannedMarket[] => {
   const templates = hockeyTemplates.filter(t => t.groupName === groupTypes.FUTURES);
   const inputValues = [
     [LIST_VALUES.YEAR_RANGE[0], LIST_VALUES.HOCKEY_EVENT[0]],
-    [LIST_VALUES.YEAR_RANGE[0], LIST_VALUES.HOCKEY_AWARD[0]]
+    ['Bob Smith'],
+    [LIST_VALUES.YEAR_RANGE[0], LIST_VALUES.HOCKEY_AWARD[2]],
   ];
   const outcomes = [
     [...LIST_VALUES.NHL_TEAMS.slice(0,5), 'Other (Field)'],
+    [...LIST_VALUES.NHL_TEAMS.slice(0,5), 'Other (Field)', 'Unsigned'],
     ['Joe Pavelski', 'Jonathan Toews', 'Carey Price', 'Erik Karlsson', 'Drew Doughty', 'Other (Field)'],
   ]
   return templates.map((template, index) => ({
