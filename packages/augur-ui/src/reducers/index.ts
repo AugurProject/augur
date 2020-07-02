@@ -14,7 +14,6 @@ import loginAccount from 'modules/auth/reducers/login-account';
 import drafts from 'modules/create-market/reducers/drafts';
 import filterSortOptions
   from 'modules/filter-sort/reducers/filter-sort-options';
-import initialized3box from 'modules/global-chat/reducers/initialized-3box';
 import marketsList from 'modules/markets-list/reducers/markets-list';
 import favorites from 'modules/markets/reducers/favorites';
 import marketInfos from 'modules/markets/reducers/market-infos';
@@ -46,7 +45,6 @@ import {
   FilledOrders,
   FilterSortOptions,
   GasPriceInfo,
-  Initialized3box,
   LiquidityOrders,
   LoginAccount,
   MarketInfos,
@@ -92,8 +90,7 @@ export function createReducer() {
     marketsList,
     reportingListState,
     analytics,
-    orderBooks,
-    initialized3box
+    orderBooks
   };
 }
 
@@ -129,5 +126,4 @@ export interface AppStateInterface {
   reportingListState: ReportingListState;
   analytics: Analytics;
   orderBooks: OrderBooks;
-  initialized3box: Initialized3box;
 }

@@ -623,7 +623,7 @@ class Wrapper extends Component<WrapperProps, WrapperState> {
             />
           )}
         </div>
-        { showConfirm && (
+        {showConfirm && (
             <Confirm
               initialLiquidity={initialLiquidity}
               numOutcomes={market.numOutcomes}

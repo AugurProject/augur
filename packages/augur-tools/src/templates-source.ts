@@ -316,9 +316,9 @@ export const TEMPLATES = {
           },
           {
             marketType: CATEGORICAL,
-            question: `MMA: [0] vs. [1], How will fight end?`,
-            example: `MMA UFC: Donald Cerrone vs. Conor McGregor, How will fight end?\nEstimated schedule start time: Jan 18, 2020 8:20 pm EST`,
-            title: `How will fight end`,
+            question: `MMA: [0] vs. [1], How will the fight end?`,
+            example: `MMA UFC: Donald Cerrone vs. Conor McGregor, How will the fight end?\nEstimated schedule start time: Jan 18, 2020 8:20 pm EST`,
+            title: `How will the fight end`,
             header: `[0] vs. [1]`,
             groupName: groupTypes.ADDITIONAL,
             inputs: [
@@ -693,9 +693,9 @@ export const TEMPLATES = {
           },
           {
             marketType: CATEGORICAL,
-            question: `Boxing: [0] vs. [1], How will fight end?`,
-            example: `Boxing: Robert Helenius vs. Adam Kownacki, How will fight end?\nEstimated schedule start time: Jan 18, 2020 8:20 pm EST`,
-            title: `How will fight end`,
+            question: `Boxing: [0] vs. [1], How will the fight end?`,
+            example: `Boxing: Robert Helenius vs. Adam Kownacki, How will the fight end?\nEstimated schedule start time: Jan 18, 2020 8:20 pm EST`,
+            title: `How will the fight end`,
             header: `[0] vs. [1]`,
             groupName: groupTypes.ADDITIONAL,
             inputs: [
@@ -1932,6 +1932,50 @@ export const TEMPLATES = {
                 },
                 {
                   text: `If the league suspends play and starts up again at a later date, and the winner of the event named in market is determined after the Market’s Event Expiration begins, this market should resolve as 'Invalid'.`,
+                },
+              ],
+            },
+          },
+          {
+            marketType: CATEGORICAL,
+            question: `Which NHL team will [0] sign with?`,
+            example: `Which NHL team will Mike Hoffman sign with?`,
+            header: `[0] will sign with`,
+            groupName: groupTypes.FUTURES,
+            inputs: [
+              {
+                id: 0,
+                type: TemplateInputType.TEXT,
+                placeholder: `Player`,
+                groupKey: TEAM_A,
+              },
+              {
+                id: 1,
+                type: TemplateInputType.ADDED_OUTCOME,
+                placeholder: `Other (Field)`,
+              },
+              {
+                id: 2,
+                type: TemplateInputType.ADDED_OUTCOME,
+                placeholder: `Unsigned`,
+              },
+              {
+                id: 3,
+                type: TemplateInputType.USER_DROPDOWN_OUTCOME,
+                placeholder: `Select Team`,
+                values: LIST_VALUES.NHL_TEAMS,
+              },
+            ],
+            resolutionRules: {
+              [REQUIRED]: [
+                {
+                  text: `Player named must have signed a contract on or before the markets Event Expiration`,
+                },
+                {
+                  text: `If the player signs with a team not named in the outcomes, 'Other (Field)' should be determined the winning outcome`,
+                },
+                {
+                  text: `If the player is not officially signed by the markets Event Expiration 'Unsigned' should be determined the winning outcome`,
                 },
               ],
             },
@@ -3896,6 +3940,51 @@ export const TEMPLATES = {
               },
               {
                 marketType: CATEGORICAL,
+                question: `Which NBA team will [0] sign with?`,
+                example: `Which NBA team will Anthony Davis sign with?`,
+                header: `[0] will sign with`,
+                groupName: groupTypes.FUTURES,
+                inputs: [
+                  {
+                    id: 0,
+                    type: TemplateInputType.TEXT,
+                    placeholder: `Player`,
+                    groupKey: TEAM_A,
+                  },
+                  {
+                    id: 1,
+                    type: TemplateInputType.ADDED_OUTCOME,
+                    placeholder: `Other (Field)`,
+                  },
+                  {
+                    id: 2,
+                    type: TemplateInputType.ADDED_OUTCOME,
+                    placeholder: `Unsigned`,
+                  },
+                  {
+                    id: 3,
+                    type:
+                      TemplateInputType.USER_DROPDOWN_OUTCOME,
+                    placeholder: `Select Team`,
+                    values: LIST_VALUES.NBA_TEAMS,
+                  },
+                ],
+                resolutionRules: {
+                  [REQUIRED]: [
+                    {
+                      text: `Player named must have signed a contract on or before the markets Event Expiration`,
+                    },
+                    {
+                      text: `If the player signs with a team not named in the outcomes, 'Other (Field)' should be determined the winning outcome`,
+                    },
+                    {
+                      text: `If the player is not officially signed by the markets Event Expiration 'Unsigned' should be determined the winning outcome`,
+                    },
+                  ],
+                },
+              },
+              {
+                marketType: CATEGORICAL,
                 question: `Which NBA player will win the [0] [1] award?`,
                 example: `Which NBA player will win the 2019-20 Most Valuable Player award?`,
                 header: `NBA: [0] [1] winner`,
@@ -5607,6 +5696,50 @@ export const TEMPLATES = {
           },
           {
             marketType: CATEGORICAL,
+            question: `Which MLB team will [0] sign with?`,
+            example: `Which MLB team will Gerrit Cole sign with?`,
+            header: `[0] will sign with`,
+            groupName: groupTypes.FUTURES,
+            inputs: [
+              {
+                id: 0,
+                type: TemplateInputType.TEXT,
+                placeholder: `Player`,
+                groupKey: TEAM_A,
+              },
+              {
+                id: 1,
+                type: TemplateInputType.ADDED_OUTCOME,
+                placeholder: `Other (Field)`,
+              },
+              {
+                id: 2,
+                type: TemplateInputType.ADDED_OUTCOME,
+                placeholder: `Unsigned`,
+              },
+              {
+                id: 3,
+                type: TemplateInputType.USER_DROPDOWN_OUTCOME,
+                placeholder: `Select Team`,
+                values: LIST_VALUES.MLB_TEAMS,
+              },
+            ],
+            resolutionRules: {
+              [REQUIRED]: [
+                {
+                  text: `Player named must have signed a contract on or before the markets Event Expiration`,
+                },
+                {
+                  text: `If the player signs with a team not named in the outcomes, 'Other (Field)' should be determined the winning outcome`,
+                },
+                {
+                  text: `If the player is not officially signed by the markets Event Expiration 'Unsigned' should be determined the winning outcome`,
+                },
+              ],
+            },
+          },
+          {
+            marketType: CATEGORICAL,
             question: `MLB: Which player will win the [0] [1]?`,
             example: `MLB: Which Player will win the 2019 American League Cy Young award?`,
             header: `[0] [1] winner`,
@@ -6623,7 +6756,7 @@ export const TEMPLATES = {
               {
                 marketType: YES_NO,
                 question: `NFL: Will [0] win the [1] [2] award?`,
-                example: `NFL: Will Patrick Mahomes win the 2019-20 MVP award?`,
+                example: `NFL: Will Patrick Mahomes win the 2020 MVP award?`,
                 inputs: [
                   {
                     id: 0,
@@ -6909,8 +7042,53 @@ export const TEMPLATES = {
               },
               {
                 marketType: CATEGORICAL,
+                question: `Which NFL team will [0] sign with?`,
+                example: `Which NFL team will Jadeveon Clowney sign with?`,
+                header: `[0] will sign with`,
+                groupName: groupTypes.FUTURES,
+                inputs: [
+                  {
+                    id: 0,
+                    type: TemplateInputType.TEXT,
+                    placeholder: `Player`,
+                    groupKey: TEAM_A,
+                  },
+                  {
+                    id: 1,
+                    type: TemplateInputType.ADDED_OUTCOME,
+                    placeholder: `Other (Field)`,
+                  },
+                  {
+                    id: 2,
+                    type: TemplateInputType.ADDED_OUTCOME,
+                    placeholder: `Unsigned`,
+                  },
+                  {
+                    id: 3,
+                    type:
+                      TemplateInputType.USER_DROPDOWN_OUTCOME,
+                    placeholder: `Select Team`,
+                    values: LIST_VALUES.NFL_TEAMS,
+                  },
+                ],
+                resolutionRules: {
+                  [REQUIRED]: [
+                    {
+                      text: `Player named must have signed a contract on or before the markets Event Expiration`,
+                    },
+                    {
+                      text: `If the player signs with a team not named in the outcomes, 'Other (Field)' should be determined the winning outcome`,
+                    },
+                    {
+                      text: `If the player is not officially signed by the markets Event Expiration 'Unsigned' should be determined the winning outcome`,
+                    },
+                  ],
+                },
+              },
+              {
+                marketType: CATEGORICAL,
                 question: `Which NFL player will win the [0] season [1] award?`,
-                example: `Which NFL player will win the 2019-20 season Most Valuable Player award?`,
+                example: `Which NFL player will win the 2020 season Most Valuable Player award?`,
                 header: `[0] season [1] award winner`,
                 groupName: groupTypes.FUTURES,
                 inputs: [
@@ -6920,7 +7098,7 @@ export const TEMPLATES = {
                     placeholder: `Year`,
                     groupKey: YEAR,
                     validationType: ValidationType.YEAR_YEAR_RANGE,
-                    values: LIST_VALUES.YEAR_RANGE,
+                    values: LIST_VALUES.YEARS,
                   },
                   {
                     id: 1,

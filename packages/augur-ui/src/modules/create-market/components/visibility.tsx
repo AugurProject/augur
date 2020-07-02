@@ -252,7 +252,7 @@ export default class Visibility extends Component<
   }
 
   render() {
-    const { marketRank, totalMarkets, validationMessage, hasLiquidity } = this.state;
+    const { marketRank, totalMarkets, validationMessage, hasLiquidity, validations } = this.state;
     const rankUpdate = totalMarkets - marketRank;
     const rankingString = `+${rankUpdate} ranking`;
 
@@ -267,7 +267,7 @@ export default class Visibility extends Component<
             link
             copyType={MARKET_COPY_LIST.VISIBILITY}
             header="Market visibility"
-            subheader="To ensure your market is visible to users you must pass the spread filter check. To improve the ranking or visiblity of your market, ensure you add good liquidity to each outcome."
+            subheader="To ensure your market is visible to users you must pass the spread filter check. To improve the ranking or visiblity of your market, ensure you add sizeable liquidity to each outcome."
           />
           <SmallSubheadersTooltip
             header="default Spread filter check"
@@ -295,7 +295,7 @@ export default class Visibility extends Component<
 
           <SmallSubheaders
             header="how to improve market ranking"
-            subheader="Add both Buy and Sell orders to an outcome, increase quantity to increase ranking."
+            subheader={(!hasLiquidity && validations.hasBuys && validations.hasSells) ? "Increase quantity to both sides to Pass default spread filter." : "Add both Buy and Sell orders to an outcome, increase quantity to increase ranking."}
           />
         </div>
       </ContentBlock>

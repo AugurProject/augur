@@ -13,7 +13,7 @@ import { augurSdk } from 'services/augursdk';
 
 const mapStateToProps = (state: AppState, ownProps) => {
   const { loginAccount, appStatus, blockchain } = state;
-  const { zeroXEnabled: Ox_ENABLED } = appStatus;
+  const { zeroXEnabled: Ox_ENABLED, isMobile } = appStatus;
 
   const getGasConfirmEstimate = async () => {
     const augur = augurSdk.get();
@@ -51,7 +51,8 @@ const mapStateToProps = (state: AppState, ownProps) => {
     endTime: ownProps.market.endTime || ownProps.market.setEndTime,
     gasPrice: gasPriceInWei,
     orderBook: outcomeOrderBook,
-    getGasConfirmEstimate
+    getGasConfirmEstimate,
+    isMobile
   };
 };
 

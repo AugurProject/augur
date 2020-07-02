@@ -16,7 +16,7 @@ import QuadBox from "modules/portfolio/components/common/quad-box";
 import Visibility from "modules/create-market/containers/visibility";
 
 import Styles from "modules/create-market/fees-liquidity.styles.less";
-import { OutcomeFormatted, NewMarket, FormattedNumberOptions, FormattedNumber } from "modules/types";
+import { OutcomeFormatted, NewMarket, FormattedNumber } from "modules/types";
 import { MARKET_COPY_LIST } from "modules/create-market/constants";
 import { formatOrderBook } from "modules/create-market/helpers/format-order-book";
 import { DefaultOrderPropertiesMap } from "modules/market/components/market-view/market-view";
@@ -165,7 +165,10 @@ export default class FeesLiquidity extends React.Component<
       validations,
     } = newMarket;
 
-    const marketTradingFee = settlementFee ? s.reportingFeePercent.value + Number(settlementFee) : 0;
+    const marketTradingFee =
+      !isNaN(settlementFee) && settlementFee !== 0
+        ? s.reportingFeePercent.value + Number(settlementFee)
+        : settlementFee;
     return (
       <div
         className={Styles.FeesLiquidity}
