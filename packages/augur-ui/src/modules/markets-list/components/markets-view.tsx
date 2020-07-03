@@ -59,6 +59,8 @@ interface MarketsViewProps {
   setMarketsListSearchInPlace: Function;
   marketListViewed: Function;
   marketsInReportingState: MarketData[];
+  hotLoadMarketList: Function;
+  canHotload: boolean;
 }
 
 interface MarketsViewState {
@@ -103,19 +105,21 @@ export default class MarketsView extends Component<
 
   componentDidUpdate(prevProps, prevState) {
     const {
+      canHotload,
       search,
       marketFilter,
       marketSort,
       maxFee,
       selectedCategories,
       maxLiquiditySpread,
+      hotLoadMarketList,
       includeInvalidMarkets,
       isConnected,
       isLogged,
       templateFilter,
       marketTypeFilter,
       marketListViewed,
-      marketsInReportingState
+      setLoadMarketsPending
     } = this.props;
     const { marketCount, offset } = this.state;
 
@@ -151,7 +155,18 @@ export default class MarketsView extends Component<
       return this.updateFilteredMarkets();
     }
 
-    const filtersHaveChanged = this.haveFiltersChanged({
+    if(!isConnected && canHotload !== prevProps.canHotload && canHotload ) {
+      hotLoadMarketList((marketsInfo) => {
+        this.setState({
+          filterSortedMarkets: marketsInfo.map((market) => market.id),
+          marketCount: marketsInfo.length,
+          limit: marketsInfo.length,
+        });
+        setLoadMarketsPending(false);
+      });
+    }
+
+      const filtersHaveChanged = this.haveFiltersChanged({
       search,
       marketFilter,
       marketSort,
