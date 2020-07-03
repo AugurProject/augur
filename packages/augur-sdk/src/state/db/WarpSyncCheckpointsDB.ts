@@ -10,13 +10,27 @@ export interface IpfsInfo {
   Size: 0;
 }
 
+export interface WarpCheckpointBlock {
+  hash: string;
+  parentHash: string;
+  number: number;
+  timestamp: number;
+  nonce: string;
+  difficulty: number;
+  gasLimit: string;
+  gasUsed: string;
+  miner: string;
+  extraData: string;
+  transactions: Array<string>;
+}
+
 export interface WarpCheckpointDocument {
   _id: string;
   _rev?: string;
   hash: string;
   market: Address;
   endTimestamp: number;
-  end?: Block;
+  end?: WarpCheckpointBlock;
 }
 
 export class WarpSyncCheckpointsDB extends AbstractTable {
@@ -33,8 +47,12 @@ export class WarpSyncCheckpointsDB extends AbstractTable {
   }
 
   async createInitialCheckpoint(initialBlock: Block, market: Market) {
+    const beginBlock = Object.assign({}, initialBlock, {
+      gasLimit: initialBlock.gasLimit.toHexString(),
+      gasUsed: initialBlock.gasUsed.toHexString(),
+    })
     return this.upsertDocument(initialBlock.number, {
-      begin: initialBlock,
+      begin: beginBlock,
       endTimestamp: (await market.getEndTime_()).toNumber(),
       market: market.address,
     });
@@ -42,10 +60,14 @@ export class WarpSyncCheckpointsDB extends AbstractTable {
 
   async createCheckpoint(end: Block, hash: string) {
     const mostRecentCheckpoint = await this.getMostRecentCheckpoint();
+    const endBlock = Object.assign({}, end, {
+      gasLimit: end.gasLimit.toHexString(),
+      gasUsed: end.gasUsed.toHexString(),
+    })
 
     // These might be served by a dexie transaction.
     await this.upsertDocument(mostRecentCheckpoint._id, {
-      end,
+      end: endBlock,
       hash,
     });
   }
