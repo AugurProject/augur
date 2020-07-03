@@ -746,12 +746,11 @@ export class Markets {
     const expirationTime = flattenZeroXOrders(orders)
       .reduce(
         (p, o) =>
-          o.expirationTimeSeconds && (o.expirationTimeSeconds.lt(p) || p.eq(0))
+          o.expirationTimeSeconds && (o.expirationTimeSeconds < p || p === 0)
             ? o.expirationTimeSeconds
             : p,
-        new BigNumber(0)
+        0
       )
-      .toNumber();
 
     return {
       marketId: params.marketId,
