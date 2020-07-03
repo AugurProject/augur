@@ -465,11 +465,8 @@ export const SportsOutcome = ({
   outcomeLabel,
   market,
 }: SportsOutcomeProps) => {
-  // TODO: replace orderbooks with best liquidity books in future keying on liquidityPool
   const { liquidityPools } = useMarketsStore();
-  const {
-     addBet
-  } = Betslip.actions;
+  const { addBet } = Betslip.actions;
   const poolId = market.sportsBook.liquidityPool;
   const bestAsk = liquidityPools[poolId] && liquidityPools[poolId][outcomeId];
   let topLabel = null;
@@ -546,8 +543,7 @@ export const reduceToUniquePools = (acc, market) => {
   if (
     !acc.find(
       curMarkets =>
-        curMarkets.sportsBook.liquidityPool ===
-        market.sportsBook.liquidityPool
+        curMarkets.sportsBook.liquidityPool === market.sportsBook.liquidityPool
     )
   ) {
     acc.push(market);
@@ -555,14 +551,36 @@ export const reduceToUniquePools = (acc, market) => {
   return acc;
 };
 
+export const sortByLiquidityRank = (
+  { sportsBook: { liquidityRank: rankA } },
+  { sportsBook: { liquidityRank: rankB } }
+) => Number(rankA) - Number(rankB);
+
+const sortByPriorityGroupType = (markets, groupType) =>
+  markets.sort(
+    (
+      { sportsBook: { groupType: typeA, liquidityRank: rankA } },
+      { sportsBook: { groupType: typeB, liquidityRank: rankB } }
+    ) => {
+      // for now we only care about sorting moneyline to the top
+      if (typeA === groupType && typeB !== groupType) {
+        return -1;
+      } else if (typeB === groupType && typeA !== groupType) {
+        return +1;
+      } else {
+        if (typeB === typeA) {
+          return rankA - rankB;
+        }
+        return 0;
+      }
+    }
+  );
+
 const filterSortByGroupType = (markets, groupType) =>
   markets
     .filter(market => market.sportsBook.groupType === groupType)
     .reduce(reduceToUniquePools, [])
-    .sort(
-      (a, b) =>
-        Number(a.sportsBook.liquidityRank) - Number(b.sportsBook.liquidityRank)
-    );
+    .sort(sortByLiquidityRank);
 
 const prepareCombo = sportsGroup => {
   const {
@@ -597,9 +615,14 @@ const prepareCombo = sportsGroup => {
     .concat(spreadMarketsExtra)
     .concat(overUnderMarketsExtra)
     .map(market => createOutcomesData(market));
+  const numMarkets =
+    topComboMarkets[SPREAD].length +
+    topComboMarkets[MONEY_LINE].length +
+    topComboMarkets[OVER_UNDER].length;
   return {
     topComboMarkets,
     additionalMarkets,
+    numMarkets
   };
 };
 
@@ -663,16 +686,20 @@ export interface ComboMarketContainerProps {
     OVER_UNDER: Array<any>;
   };
   sportsGroup: any;
-};
+}
 
-export const ComboMarketContainer = ({ data, sportsGroup }: ComboMarketContainerProps) => {
-  const {
-    SPREAD,
-    MONEY_LINE,
-    OVER_UNDER,
-  } = SPORTS_GROUP_MARKET_TYPES;
+export const ComboMarketContainer = ({
+  data,
+  sportsGroup,
+}: ComboMarketContainerProps) => {
+  const { SPREAD, MONEY_LINE, OVER_UNDER } = SPORTS_GROUP_MARKET_TYPES;
   const { placeholderOutcomes } = sportsGroup.markets[0].sportsBook;
-  if (!placeholderOutcomes) return <section>Something went wrong with loading this combo market container...</section>;
+  if (!placeholderOutcomes)
+    return (
+      <section>
+        Something went wrong with loading this combo market container...
+      </section>
+    );
 
   return (
     <section
@@ -818,79 +845,59 @@ export const SportsGroupMarkets = ({ sportsGroup }) => {
 };
 
 export const prepareSportsGroup = sportsGroup => {
-  const { type, markets } = sportsGroup;
-  const { FUTURES, DAILY, COMBO } = SPORTS_GROUP_TYPES;
+  const { markets } = sportsGroup;
+  const { COMBO } = SPORTS_GROUP_TYPES;
+  const { MONEY_LINE } = SPORTS_GROUP_MARKET_TYPES;
+  const {
+    additionalMarkets,
+    topComboMarkets,
+    numMarkets,
+  } = prepareCombo(sportsGroup);
   let marketGroups = [];
-  switch (type) {
-    case FUTURES:
-    case DAILY: {
-      // TODO: Pull out sorting and come up with a solid way to do it for all 3 sportsgroups
-      const { MONEY_LINE } = SPORTS_GROUP_MARKET_TYPES;
-      const sortedMarkets = Array.from(markets);
-      sortedMarkets.sort(
-        (
-          { sportsBook: { groupType: typeA, liquidityRank: rankA } },
-          { sportsBook: { groupType: typeB, liquidityRank: rankB } }
-        ) => {
-          // for now we only care about sorting moneyline to the top
-          if (typeA === MONEY_LINE && typeB !== MONEY_LINE) {
-            return -1;
-          } else if (typeB === MONEY_LINE && typeA !== MONEY_LINE) {
-            return +1;
-          } else {
-            if (typeB === typeA) {
-              return rankA - rankB;
-            }
-            return 0;
-          }
-        }
-      );
-      sortedMarkets.forEach(market => {
-        const data = createOutcomesData(market);
-        const startOpen = marketGroups.length === 0;
-        marketGroups.push(
-          <SportsMarketContainer
-            key={market.id}
-            data={data}
-            marketId={market.id}
-            market={market}
-            sportsGroup={sportsGroup}
-            startOpen={startOpen}
-            title={market.sportsBook.title}
-          />
-        );
-      });
-      break;
-    }
-    case COMBO: {
-      const { additionalMarkets, topComboMarkets } = prepareCombo(sportsGroup);
-      marketGroups.push(
-        <ComboMarketContainer
-          data={topComboMarkets}
-          sportsGroup={sportsGroup}
-          key={sportsGroup.id}
-        />
-      );
-      additionalMarkets.forEach(data => {
-        const { market } = data[0];
-        const startOpen = marketGroups.length === 0;
-        marketGroups.push(
-          <SportsMarketContainer
-            key={market.id}
-            data={data}
-            marketId={market.id}
-            market={market}
-            sportsGroup={sportsGroup}
-            startOpen={startOpen}
-            title={market.sportsBook.title}
-          />
-        );
-      });
-      break;
-    }
-    default:
-      break;
+  let sortedMarkets = sortByPriorityGroupType(markets, MONEY_LINE).reduce(
+    reduceToUniquePools,
+    []
+  );
+  if (numMarkets > 0) {
+    sortedMarkets = sortedMarkets.filter(market => !market.sportsBook.groupType.includes(COMBO));
+    marketGroups.push(
+      <ComboMarketContainer
+        data={topComboMarkets}
+        sportsGroup={sportsGroup}
+        key={sportsGroup.id}
+      />
+    );
   }
+  additionalMarkets.forEach(data => {
+    const { market } = data[0];
+    const startOpen = marketGroups.length === 0;
+    marketGroups.push(
+      <SportsMarketContainer
+        key={market.id}
+        data={data}
+        marketId={market.id}
+        market={market}
+        sportsGroup={sportsGroup}
+        startOpen={startOpen}
+        title={market.sportsBook.title}
+      />
+    );
+  });
+  sortedMarkets.forEach(market => {
+    const data = createOutcomesData(market);
+    const startOpen = marketGroups.length === 0;
+    marketGroups.push(
+      <SportsMarketContainer
+        key={market.id}
+        data={data}
+        marketId={market.id}
+        market={market}
+        sportsGroup={sportsGroup}
+        startOpen={startOpen}
+        title={market.sportsBook.title}
+      />
+    );
+  });
   return marketGroups;
 };
 
