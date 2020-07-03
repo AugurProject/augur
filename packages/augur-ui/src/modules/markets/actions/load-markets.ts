@@ -91,7 +91,7 @@ export const loadMarketsByFilter = (
   const sort: SortOptions = {};
   switch (filterOptions.sort) {
     case MARKET_SORT_PARAMS.FEES_GENERATED: {
-      // Sort By Fees Generated:
+      // Sort By Most Traded:
       sort.sortBy = GetMarketsSortBy.numberOfTrades;
       sort.isSortDescending = true;
       break;
