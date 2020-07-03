@@ -729,7 +729,7 @@ export class CategoryMultiSelect extends Component<
         )}
         {(showTertiaryDropdown || customTertiary) && (
           <DropdownInputGroup
-            defaultValue={selected[2]}
+            defaultValue={selected[2] || tertiaryOptions.length > 0 ? tertiaryOptions[0].label : null}
             staticLabel="Sub Category"
             onChangeDropdown={choice => this.onChangeDropdown(choice, 2)}
             options={tertiaryOptions}
