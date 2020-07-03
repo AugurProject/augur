@@ -972,11 +972,19 @@ export const InputFactory = (props: InputFactoryProps) => {
     input.type === TemplateInputType.USER_DESCRIPTION_DROPDOWN_OUTCOME ||
     input.type === TemplateInputType.DROPDOWN_QUESTION_DEP
   ) {
+    const valueOptions = createTemplateValueList(input.values);
+    // auto set category if there is only one item in value list
+    if (valueOptions.length === 1 && input.categoryDestId !== undefined && !categories[input.categoryDestId]) {
+      const value = valueOptions[0].label;
+      categories[input.categoryDestId] = value;
+      onChange('categories', categories);
+      updateData(value);
+    }
     return (
       <FormDropdown
-        options={createTemplateValueList(input.values)}
+        options={valueOptions}
         sort={!input.noSort}
-        defaultValue={input.userInput === '' ? null : input.userInput}
+        defaultValue={input.userInput === '' ? valueOptions?.length === 1 ? valueOptions[0].label : null : input.userInput}
         disabled={input.values.length === 0}
         staticLabel={
           input.values.length === 0 ? input.defaultLabel : input.placeholder
