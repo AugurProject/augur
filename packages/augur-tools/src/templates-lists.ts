@@ -3123,7 +3123,7 @@ export const LIST_VALUES = {
   ],
   BTC_CURRENCY_PAIRS: ['BTC/USD', 'BTC/USDT', 'BTC/EUR'],
   ETH_CURRENCY_PAIRS: ['ETH/USD', 'ETH/USDT', 'ETH/EUR'],
-  TOKEN_CURRENCY_PAIRS: ['ATOM/USD', 'ALGO/USD', 'BCH/USD', 'DAI/USD', 'DASH/USD', 'EOS/USD', 'ETC/USD', 'KNC/USD', 'LTC/USD', 'OMG/USD', 'OXT/USD', 'XLM/USD', 'XRP/USD', 'XTZ/USD'],
+  TOKEN_CURRENCY_PAIRS: ['ATOM/USD', 'ALGO/USD', 'BCH/USD', 'DAI/USD', 'DASH/USD', 'EOS/USD', 'ZEC/USD', 'ETC/USD', 'KNC/USD', 'LTC/USD', 'OMG/USD', 'OXT/USD', 'XLM/USD', 'XRP/USD', 'XTZ/USD'],
   AMOUNT_UNITS: ['Thousand', 'Million', 'Billion'],
   SOCCER_CUSTOM_FUTURES_EVENTS: [
     'FIFA World Cup',
@@ -3674,6 +3674,7 @@ export const CRYPTO_TOKEN_CURRENCY_MARKETS = {
   'XLM/USD': ['XLMUSD (crypto - Coinbase)'],
   'XRP/USD': ['XRPUSD (crypto - Coinbase)'],
   'XTZ/USD': ['XTZUSD (crypto - Coinbase)'],
+  'ZEC/USD': ['ZECUSD (crypto - Coinbase)'],
 }
 
 export const ENTERTAINMENT_EVENT_DEP_TEAMS = {
