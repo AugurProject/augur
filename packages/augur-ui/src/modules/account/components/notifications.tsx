@@ -214,9 +214,10 @@ function getButtonAction(
 
   let buttonAction;
   const {
-    id: notificationId,
-    market: { id: marketId },
+    id: notificationId
   } = notification;
+  let marketId = notification?.market?.id;
+  
   switch (notification.type) {
     case NOTIFICATION_TYPES.resolvedMarketsOpenOrders:
       buttonAction = () => {

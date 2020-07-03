@@ -279,6 +279,7 @@ export const MyBets = () => {
           rows.map(row => (
             <Game
               row={row}
+              key={row.marketId}
               type={SPORTS_MARKET_TYPES[selectedMarketCardType].label}
             />
           ))}

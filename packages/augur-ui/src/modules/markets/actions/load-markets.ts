@@ -23,6 +23,7 @@ import { augurSdkLite } from 'services/augursdklite';
 import { AppStatus } from 'modules/app/store/app-status';
 import { Markets } from '../store/markets';
 import { handleMarketsUpdatedLog } from 'modules/events/actions/log-handlers';
+import { getOneWeekInFutureTimestamp } from 'utils/format-date';
 
 export const organizeReportingStates = reportingState => {
   let reportingStates: string[] = [];

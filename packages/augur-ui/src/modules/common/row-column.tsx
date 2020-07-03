@@ -165,7 +165,7 @@ function selectColumn(columnType: string, properties: Properties) {
     case COLUMN_TYPES.CASHOUT_BUTTON: 
       return (
         <span>
-          <CashoutButton action={null} outcome={outcome}/>
+          <CashoutButton bet={outcome}/>
         </span>
       );
     case COLUMN_TYPES.CANCEL_TEXT_BUTTON:
