@@ -20,7 +20,7 @@ import {
   updateLoginAccount,
 } from 'modules/account/actions/login-account';
 import {
-  updateFilterSortOptions,
+  updateFilterSortOption,
 } from 'modules/filter-sort/actions/update-filter-sort-options';
 
 export const loadAccountDataFromLocalStorage = (
@@ -43,7 +43,7 @@ export const loadAccountDataFromLocalStorage = (
 
       if (settings) {
         dispatch(updateLoginAccount({ settings: { ...settings } }));
-        Object.keys(settings).map(key => settings[key] && dispatch(updateFilterSortOptions(key, settings[key])));
+        Object.keys(settings).map(key => settings[key] && dispatch(updateFilterSortOption(key, settings[key])));
       }
 
       if (readNotifications) {

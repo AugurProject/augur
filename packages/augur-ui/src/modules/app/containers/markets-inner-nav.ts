@@ -6,7 +6,7 @@ import {
   updateSelectedCategories,
 } from 'modules/markets-list/actions/update-markets-list';
 import {
-  updateFilterSortOptions,
+  updateFilterSortOption,
   MARKET_SORT,
   MARKET_MAX_FEES,
   MARKET_MAX_SPREAD,
@@ -30,8 +30,8 @@ const mapDispatchToProps = dispatch => ({
   updateSelectedCategories: categories =>
     dispatch(updateSelectedCategories(categories)),
   updateMobileMenuState: data => dispatch(updateMobileMenuState(data)),
-  updateFilterSortOptions: (name, value) =>
-    dispatch(updateFilterSortOptions(name, value)),
+  updateFilterSortOption: (name, value) =>
+    dispatch(updateFilterSortOption(name, value)),
 });
 
 const mergeProps = (sP, dP, oP) => {

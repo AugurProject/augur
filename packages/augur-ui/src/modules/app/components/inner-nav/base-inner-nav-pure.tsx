@@ -28,7 +28,7 @@ interface BaseInnerNavPureProps {
   updateSelectedCategories: Function;
   history: History;
   location: Location;
-  updateFilterSortOptions: Function;
+  updateFilterSortOption: Function;
 }
 
 const BaseInnerNavPure = ({
@@ -38,7 +38,7 @@ const BaseInnerNavPure = ({
   filterSortOptions,
   updateLoginAccount,
   updateSelectedCategories,
-  updateFilterSortOptions,
+  updateFilterSortOption,
   location,
   history,
 }: BaseInnerNavPureProps) => {
@@ -118,13 +118,13 @@ const BaseInnerNavPure = ({
 
       changedFilters.forEach(({ value, filterType }) => {
         newSettings[filterType] = value;
-        updateFilterSortOptions(filterType, value);
+        updateFilterSortOption(filterType, value);
       });
 
       updateLoginAccount(newSettings);
     }
 
-    sortOptions && updateFilterSortOptions(MARKET_SORT, sortOptions);
+    sortOptions && updateFilterSortOption(MARKET_SORT, sortOptions);
   };
 
   useEffect(() => {
@@ -167,11 +167,11 @@ const BaseInnerNavPure = ({
             onClick={() => {
               if (showMainMenu) {
                 updateSelectedCategories(originalSelectedCategories);
-                updateFilterSortOptions(MARKET_SORT, originalFilterSortOptions.marketSort);
-                updateFilterSortOptions(MARKET_MAX_FEES, originalFilterSortOptions.maxFee);
-                updateFilterSortOptions(MARKET_MAX_SPREAD, originalFilterSortOptions.maxLiquiditySpread);
-                updateFilterSortOptions(MARKET_SHOW_INVALID, originalFilterSortOptions.includeInvalidMarkets);
-                updateFilterSortOptions(TEMPLATE_FILTER, originalFilterSortOptions.templateFilter);
+                updateFilterSortOption(MARKET_SORT, originalFilterSortOptions.sortBy);
+                updateFilterSortOption(MARKET_MAX_FEES, originalFilterSortOptions.maxFee);
+                updateFilterSortOption(MARKET_MAX_SPREAD, originalFilterSortOptions.maxLiquiditySpread);
+                updateFilterSortOption(MARKET_SHOW_INVALID, originalFilterSortOptions.includeInvalidMarkets);
+                updateFilterSortOption(TEMPLATE_FILTER, originalFilterSortOptions.templateFilter);
                 updateMultipleQueries(getFilters(true), location, history);
               }
 

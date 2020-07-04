@@ -4,13 +4,13 @@ import {
   MARKET_CARD_FORMATS,
   MAX_FEE_100_PERCENT,
   MAX_SPREAD_ALL_SPREADS,
-  FILTER_ALL,
 } from 'modules/common/constants';
 import { handleMarketsUpdatedLog } from 'modules/events/actions/log-handlers';
 import {
   MARKET_FILTER,
   MARKET_MAX_FEES,
   MARKET_MAX_SPREAD,
+  updateFilterSortOption,
   updateFilterSortOptions,
 } from 'modules/filter-sort/actions/update-filter-sort-options';
 import { updateLoginAccountSettings } from 'modules/markets-list/actions/update-login-account-settings';
@@ -77,7 +77,7 @@ const mapStateToProps = (state: AppState, { location }) => {
       : 0,
     includeInvalidMarkets: state.filterSortOptions.includeInvalidMarkets,
     selectedCategories: state.marketsList.selectedCategories,
-    marketSort: state.filterSortOptions.marketSort,
+    sortBy: state.filterSortOptions.sortBy,
     marketFilter: state.filterSortOptions.marketFilter,
     marketCardFormat,
     showInvalidMarketsBannerHideOrShow: (state.loginAccount.settings || {})
@@ -87,6 +87,8 @@ const mapStateToProps = (state: AppState, { location }) => {
     ).showInvalidMarketsBannerFeesOrLiquiditySpread,
     templateFilter: state.filterSortOptions.templateFilter,
     marketTypeFilter: state.filterSortOptions.marketTypeFilter,
+    marketLimit: state.filterSortOptions.limit,
+    marketOffset: state.filterSortOptions.offset,
   };
 };
 
@@ -104,13 +106,13 @@ const mapDispatchToProps = (
     cb: NodeStyleCallback
   ) => dispatch(loadMarketsByFilter(filter, cb)),
   removeFeeFilter: () =>
-    dispatch(updateFilterSortOptions(MARKET_MAX_FEES, MAX_FEE_100_PERCENT)),
+    dispatch(updateFilterSortOption(MARKET_MAX_FEES, MAX_FEE_100_PERCENT)),
   removeLiquiditySpreadFilter: () =>
     dispatch(
-      updateFilterSortOptions(MARKET_MAX_SPREAD, MAX_SPREAD_ALL_SPREADS)
+      updateFilterSortOption(MARKET_MAX_SPREAD, MAX_SPREAD_ALL_SPREADS)
     ),
   updateMarketsFilter: filterOption =>
-    dispatch(updateFilterSortOptions(MARKET_FILTER, filterOption)),
+    dispatch(updateFilterSortOption(MARKET_FILTER, filterOption)),
   updateMarketsListCardFormat: format =>
     dispatch(updateMarketsListCardFormat(format)),
   updateMobileMenuState: data => dispatch(updateMobileMenuState(data)),
@@ -118,12 +120,13 @@ const mapDispatchToProps = (
     dispatch(updateLoginAccountSettings(settings)),
   setMarketsListSearchInPlace: isSearchInPlace =>
     dispatch(setMarketsListSearchInPlace(isSearchInPlace)),
+  updateFilterSortOptions: filterOptions => dispatch(updateFilterSortOptions(filterOptions)),
   marketListViewed: (
     search,
     selectedCategories,
     maxLiquiditySpread,
     marketFilter,
-    marketSort,
+    sortBy,
     maxFee,
     templateFilter,
     marketTypeFilter,
@@ -137,7 +140,7 @@ const mapDispatchToProps = (
         selectedCategories,
         maxLiquiditySpread,
         marketFilter,
-        marketSort,
+        sortBy,
         maxFee,
         templateFilter,
         marketTypeFilter,

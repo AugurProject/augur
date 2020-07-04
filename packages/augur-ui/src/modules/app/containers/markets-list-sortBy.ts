@@ -1,22 +1,22 @@
 import { connect } from 'react-redux';
 import { compose } from 'redux';
 import {
-  updateFilterSortOptions,
+  updateFilterSortOption,
   MARKET_SORT,
 } from 'modules/filter-sort/actions/update-filter-sort-options';
 import MarketsListSortBy from '../components/inner-nav/markets-list-sortBy';
 
 const mapStateToProps = (state) => {
-  const { marketSort } = state.filterSortOptions;
+  const { sortBy } = state.filterSortOptions;
   return {
-    marketSort,
+    sortBy,
     isSearching: state.marketsList.isSearching,
     isMobile: state.appStatus.isMobile,
   };
 };
 
 const mapDispatchToProps = dispatch => ({
-  updateMarketsSortBy: (sortBy) => dispatch(updateFilterSortOptions(MARKET_SORT, sortBy)),
+  updateMarketsSortBy: (sortBy) => dispatch(updateFilterSortOption(MARKET_SORT, sortBy)),
 });
 
 const MarketsListSortByContainer = compose(

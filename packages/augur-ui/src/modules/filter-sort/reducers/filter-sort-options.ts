@@ -1,6 +1,6 @@
 import { RESET_STATE } from 'modules/app/actions/reset-state';
 import {
-  UPDATE_FILTER_SORT_OPTIONS,
+  UPDATE_FILTER_SORT_OPTION,
   MARKET_FILTER,
   MARKET_SORT,
   MARKET_MAX_FEES,
@@ -10,6 +10,7 @@ import {
   MARKET_TYPE_FILTER,
   MARKET_LIMIT,
   MARKET_OFFSET,
+  UPDATE_FILTER_SORT_OPTIONS,
 } from 'modules/filter-sort/actions/update-filter-sort-options';
 import {
   MAX_FEE_02_PERCENT,
@@ -28,7 +29,7 @@ import { FilterSortOptions, BaseAction, INVALID_OPTIONS } from 'modules/types';
 
 const DEFAULT_STATE: FilterSortOptions = {
   [MARKET_FILTER]: MARKET_OPEN,
-  [MARKET_SORT]: MARKET_SORT_PARAMS.FEES_GENERATED,
+  [MARKET_SORT]: MARKET_SORT_PARAMS.MOST_TRADED,
   [MARKET_MAX_FEES]: MAX_FEE_02_PERCENT,
   [MARKET_MAX_SPREAD]: MAX_SPREAD_ALL_SPREADS,
   [MARKET_SHOW_INVALID]: INVALID_OPTIONS.Hide,
@@ -46,7 +47,7 @@ export default function(
   { type, data }: BaseAction
 ): FilterSortOptions {
   switch (type) {
-    case UPDATE_FILTER_SORT_OPTIONS: {
+    case UPDATE_FILTER_SORT_OPTION: {
       const { optionKey, optionValue } = data;
       if (KEYS.includes(optionKey))
         return {
@@ -54,6 +55,13 @@ export default function(
           [optionKey]: optionValue,
         };
       return filterSortOptions;
+    }
+    case UPDATE_FILTER_SORT_OPTIONS: {
+      const { filterOptions } = data;
+      return {
+        ...filterSortOptions,
+        ...filterOptions
+      };
     }
     case RESET_STATE:
       return DEFAULT_STATE;

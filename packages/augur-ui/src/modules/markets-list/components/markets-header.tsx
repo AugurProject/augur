@@ -3,7 +3,6 @@ import classNames from 'classnames';
 import { Location, History } from 'history';
 import FilterSearch from 'modules/filter-sort/containers/filter-search';
 import parseQuery from 'modules/routes/helpers/parse-query';
-import { MARKETS } from 'modules/routes/constants/views';
 import {
   CATEGORY_PARAM_NAME,
   MOBILE_MENU_STATES,

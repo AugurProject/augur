@@ -537,7 +537,7 @@ export enum INVALID_OPTIONS {
 
 export interface FilterSortOptions {
   marketFilter: string;
-  marketSort: string;
+  sortBy: string;
   maxFee: string;
   maxLiquiditySpread: string;
   includeInvalidMarkets: INVALID_OPTIONS;
@@ -666,7 +666,7 @@ export interface LoginAccountSettings {
   spread?: boolean;
   marketTypeFilter?: boolean;
   showInvalid?: boolean;
-  marketSort?: string;
+  sortBy?: string;
   limit?: number;
   offset?: number;
 }

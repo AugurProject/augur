@@ -2,7 +2,7 @@ import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import { compose } from 'redux';
 import {
-  updateFilterSortOptions,
+  updateFilterSortOption,
 } from 'modules/filter-sort/actions/update-filter-sort-options';
 import MarketsListFilters from '../components/inner-nav/markets-list-filters';
 import { AppState } from 'appStore';
@@ -21,6 +21,9 @@ const mapStateToProps = ({
     includeInvalidMarkets,
     templateFilter,
     marketTypeFilter,
+    sortBy,
+    limit,
+    offset,
   } = filterSortOptions;
   return {
     maxFee,
@@ -31,6 +34,9 @@ const mapStateToProps = ({
     marketTypeFilter: marketTypeFilter,
     settings: loginAccount.settings || {},
     isMobile: appStatus.isMobile,
+    sortBy,
+    marketLimit: limit,
+    marketOffset: offset,
   };
 };
 
@@ -39,8 +45,8 @@ const mapDispatchToProps = dispatch => ({
     dispatch(updateLoginAccount({ settings }));
   },
   updateSelectedCategories: (category) => dispatch(updateSelectedCategories(category)),
-  updateFilterSortOptions: (name, value) =>
-    dispatch(updateFilterSortOptions(name, value)),
+  updateFilterSortOption: (name, value) =>
+    dispatch(updateFilterSortOption(name, value)),
 });
 
 const mergeProps = (sP, dP, oP) => {
@@ -48,8 +54,8 @@ const mergeProps = (sP, dP, oP) => {
     ...sP,
     ...oP,
     updateSelectedCategories: (category) => dP.updateSelectedCategories(category),
-    updateFilterSortOptions: (name, value) => {
-      dP.updateFilterSortOptions(name, value);
+    updateFilterSortOption: (name, value) => {
+      dP.updateFilterSortOption(name, value);
       dP.updateLoginAccount(Object.assign({}, sP.settings, { [name]: value }));
     }
   };

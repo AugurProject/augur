@@ -32,7 +32,7 @@ export const switchUniverse = (
         maxFee: filterSortOptions.maxFee,
         maxLiquiditySpread: filterSortOptions.maxLiquiditySpread,
         includeInvalidMarkets: false,
-        sort: filterSortOptions.marketSort,
+        sort: filterSortOptions.sortBy,
         marketFilter: filterSortOptions.marketFilter,
         categories: [],
         search: '',
