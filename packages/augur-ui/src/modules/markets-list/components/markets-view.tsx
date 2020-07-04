@@ -160,7 +160,7 @@ export default class MarketsView extends Component<
         this.setState({
           filterSortedMarkets: marketsInfo.map((market) => market.id),
           marketCount: marketsInfo.length,
-          limit: marketsInfo.length,
+          limit: marketsInfo.length || PAGINATION_COUNT,
         });
         setLoadMarketsPending(false);
       });
