@@ -26,3 +26,5 @@ package-lock.json
 temp*.file
 data/
 *.sqlite
+
+venv/
