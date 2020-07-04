@@ -237,9 +237,17 @@ export default class MarketView extends Component<
       this.setState({ selectedOutcomeId: this.props.outcomeId });
     }
 
-    if (this.props.canHotload && prevProps.canHotload !== this.props.canHotload  && !tradingTutorial && marketId) {
+    if (
+      typeof this.props.marketId !== 'undefined' &&
+      typeof this.props.canHotload !== 'undefined' &&
+      !tradingTutorial &&
+      // We can hotload now.
+      (prevProps.canHotload === this.props.canHotload ||
+        // The market id changed.
+        prevProps.marketId !== this.props.marketId)
+    ) {
       // This will only be called once on the 'canHotLoad' prop change.
-      loadHotMarket(marketId);
+      loadHotMarket(this.props.marketId);
     }
 
     if (tradingTutorial) {
@@ -264,9 +272,9 @@ export default class MarketView extends Component<
     }
 
     if ((isConnected !== this.props.isConnected) && !!marketId && !tradingTutorial && !preview) {
-      this.props.loadMarketOrderBook(marketId);
+      this.props.loadMarketOrderBook(this.props.marketId);
       this.props.loadMarketsInfo(this.props.marketId);
-      this.props.loadMarketTradingHistory(marketId);
+      this.props.loadMarketTradingHistory(this.props.marketId);
     }
     if (!this.props.isMarketLoading) {
       if (closeMarketLoadingModalOnly) closeMarketLoadingModalOnly(this.props.modalShowing);

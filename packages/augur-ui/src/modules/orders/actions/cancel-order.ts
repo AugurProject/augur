@@ -1,10 +1,7 @@
 import { TXEventName } from '@augurproject/sdk-lite';
 import { addAlert } from 'modules/alerts/actions/alerts';
-import { CANCELORDER } from 'modules/common/constants';
-import {
-  cancelZeroXOpenBatchOrders,
-  cancelZeroXOpenOrder,
-} from 'modules/contracts/actions/contractCalls';
+import { BUY, CANCELORDER } from 'modules/common/constants';
+import { cancelZeroXOpenBatchOrders, cancelZeroXOpenOrder, } from 'modules/contracts/actions/contractCalls';
 import { addCanceledOrder } from 'modules/pending-queue/actions/pending-queue-management';
 import { Action } from 'redux';
 import { ThunkDispatch } from 'redux-thunk';
@@ -17,23 +14,22 @@ export const cancelAllOpenOrders = orders => async (
   let orderHashes = orders.map(order => order.id);
 
   try {
-    orders.forEach(order => {
-      sendCancelAlert(order, dispatch);
-    });
     if (orderHashes.length > BATCH_CANCEL_MAX) {
-      var i = 0;
-      while(i < orderHashes.length) {
-        var orderHashesToCancel = orderHashes.slice(i, Math.min(i + BATCH_CANCEL_MAX, orderHashes.length));
+      let i = 0;
+      while (i < orderHashes.length) {
+        let orderHashesToCancel = orderHashes.slice(i, Math.min(i + BATCH_CANCEL_MAX, orderHashes.length));
         dispatch(setCancelOrderStatus(orderHashesToCancel));
         await cancelZeroXOpenBatchOrders(orderHashesToCancel);
         i += BATCH_CANCEL_MAX;
       }
     }
     else {
-      dispatch(setCancelOrderStatus(orderHashes))
+      dispatch(setCancelOrderStatus(orderHashes));
       await cancelZeroXOpenBatchOrders(orderHashes);
     }
-
+    orders.forEach(order => {
+      sendCancelAlert(order, dispatch);
+    });
   } catch (error) {
     console.error('Error canceling batch orders', error);
     dispatch(setCancelOrderStatus(orders.map(o => o.id), TXEventName.Failure));
@@ -46,9 +42,9 @@ export const cancelOrder = order => async (
 ) => {
   try {
     const { id } = order;
-    sendCancelAlert(order, dispatch);
     dispatch(setCancelOrderStatus([id]));
     await cancelZeroXOpenOrder(id);
+    sendCancelAlert(order, dispatch);
   } catch (error) {
     console.error('Error canceling order', error);
     throw error;
@@ -63,9 +59,12 @@ const sendCancelAlert = (order, dispatch) => {
       id,
       uniqueId: id,
       name: CANCELORDER,
-      status: '',
+      status: TXEventName.Success,
+      description: order.marketDescription,
       params: {
         ...order,
+        outcome: '0x0'.concat(String(order.outcomeId)),
+        orderType: order.type === BUY ? 0 : 1,
       },
     })
   );
@@ -73,4 +72,4 @@ const sendCancelAlert = (order, dispatch) => {
 
 const setCancelOrderStatus = (ids: string[], status: string = TXEventName.Pending) => dispatch => {
   ids.map(id => dispatch(addCanceledOrder(id, status, null)))
-}
+};

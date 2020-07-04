@@ -1007,7 +1007,7 @@ function formatParticipationTokensRedeemedLogs(
 
     formattedLogs.push({
       action: Action.CLAIM_PARTICIPATION_TOKENS,
-      coin: Coin.DAI,
+      coin: Coin.REP,
       details: 'Claimed reporting fees from participation tokens',
       fee: '0',
       marketDescription: '',

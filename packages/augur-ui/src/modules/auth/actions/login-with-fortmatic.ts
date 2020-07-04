@@ -41,6 +41,7 @@ export const loginWithFortmatic = (withEmail = false) => async (
         mixedCaseAddress: account,
         meta: {
           address: account,
+          provider,
           signer: provider.getSigner(),
           openWallet: () => fm.user.settings(),
           accountType: ACCOUNT_TYPES.FORTMATIC,

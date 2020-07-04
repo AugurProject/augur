@@ -82,9 +82,9 @@ describe('State API :: get-platform-activity-stats :: ', () => {
       marketsCreated: 3,
       numberOfTrades: 9,
     });
-    expect(stats.amountStaked.toFixed()).toEqual('900611959375000000000512');
-    expect(stats.openInterest.toFixed()).toEqual('2040000000000000');
-    expect(stats.volume.toFixed()).toEqual('0.006093');
+    expect(stats.amountStaked).toEqual('900611959375000000000512');
+    expect(stats.openInterest).toEqual('2040000000000000');
+    expect(stats.volume).toEqual('0.006093');
   });
 });
 

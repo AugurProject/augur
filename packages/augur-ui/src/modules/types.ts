@@ -16,6 +16,7 @@ import type { Getters, PayoutNumeratorValue } from '@augurproject/sdk';
 import type { TransactionMetadataParams, EthersSigner } from '@augurproject/contract-dependencies-ethers';
 import type { BigNumber } from 'utils/create-big-number';
 import type { Template } from '@augurproject/templates';
+import { JsonRpcProvider } from "ethers/providers";
 
 export enum SizeTypes {
   SMALL = 'small',
@@ -648,6 +649,7 @@ export interface LoginAccountMeta {
   accountType: string;
   address: string;
   signer: any | EthersSigner;
+  provider: JsonRpcProvider;
   isWeb3: boolean;
   profileImage?: string;
   email?: string;
@@ -851,11 +853,4 @@ export interface CategoryList {
       ];
     }
   ];
-}
-
-export interface Initialized3box {
-  address: string;
-  box: any;
-  profile: object;
-  openComments: boolean;
 }

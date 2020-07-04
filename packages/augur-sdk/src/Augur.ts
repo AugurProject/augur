@@ -1,6 +1,3 @@
-import { EventEmitter } from 'events';
-import type { SDKConfiguration } from '@augurproject/utils';
-import { NetworkId } from '@augurproject/utils';
 import {
   EthersSigner,
   TransactionStatus,
@@ -8,19 +5,22 @@ import {
 } from '@augurproject/contract-dependencies-ethers';
 import { ContractInterfaces } from '@augurproject/core';
 import {
-  NETWORK_IDS,
   isSubscriptionEventName,
+  NETWORK_IDS,
   NULL_ADDRESS,
   SubscriptionEventName,
   TXEventName,
   TXStatus,
 } from '@augurproject/sdk-lite';
-import { logger, LoggerLevels } from '@augurproject/utils';
+import type { SDKConfiguration } from '@augurproject/utils';
+import { logger, LoggerLevels, NetworkId } from '@augurproject/utils';
 import axios from 'axios';
 import { BigNumber } from 'bignumber.js';
-import { TransactionResponse } from 'ethers/providers';
+import { TransactionResponse, JsonRpcProvider } from 'ethers/providers';
 import { Arrayish } from 'ethers/utils';
 import { getAddress } from 'ethers/utils/address';
+import { EventEmitter } from 'events';
+import { BestOffer } from './api/BestOffer';
 import { ContractEvents } from './api/ContractEvents';
 import { Contracts } from './api/Contracts';
 import { GSN } from './api/GSN';
@@ -37,11 +37,6 @@ import {
   CreateYesNoMarketParams,
   Market,
 } from './api/Market';
-import {
-  BestOffer,
-  GetBestOffersParams,
-  BestOffersOrders
-} from './api/BestOffer';
 import { OnChainTrade } from './api/OnChainTrade';
 import { PlaceTradeDisplayParams, SimulateTradeData, Trade } from './api/Trade';
 import { Uniswap } from './api/Uniswap';
@@ -53,11 +48,12 @@ import {
   SingleThreadConnector,
 } from './connector';
 import { Provider } from './ethereum/Provider';
-import { EventNameEmitter, Callback, TXStatusCallback } from './events';
+import { Callback, EventNameEmitter, TXStatusCallback } from './events';
 import { ContractDependenciesGSN } from './lib/contract-deps';
 import { SyncableFlexSearch } from './state/db/SyncableFlexSearch';
 import { Accounts } from './state/getter/Accounts';
 import { Liquidity as LiquidityGetter } from './state/getter/Liquidity';
+import { LiquidityPool } from './state/getter/LiquidityPool';
 import { Markets } from './state/getter/Markets';
 import { OnChainTrading } from './state/getter/OnChainTrading';
 import { Platform } from './state/getter/Platform';
@@ -66,7 +62,7 @@ import { Universe } from './state/getter/Universe';
 import { Users } from './state/getter/Users';
 import { WarpSyncGetter } from './state/getter/WarpSyncGetter';
 import { ZeroXOrdersGetters } from './state/getter/ZeroXOrdersGetters';
-import { LiquidityPool } from './state/getter/LiquidityPool';
+import { WarpController } from './warp/WarpController';
 
 export class Augur<TProvider extends Provider = Provider> {
   syncableFlexSearch: SyncableFlexSearch;
@@ -88,12 +84,18 @@ export class Augur<TProvider extends Provider = Provider> {
 
   private _sdkReady = false;
 
-  private txSuccessCallback: TXStatusCallback;
   private txAwaitingSigningCallback: TXStatusCallback;
   private txPendingCallback: TXStatusCallback;
   private txFailureCallback: TXStatusCallback;
   private txFeeTooLowCallback: TXStatusCallback;
   private txRelayerDownCallback: TXStatusCallback;
+  private txSuccessCallbacks: TXStatusCallback[]; 
+
+  private _warpController: WarpController;
+
+  set warpController(_warpController: WarpController) {
+    this._warpController = _warpController;
+  }
 
   get zeroX(): ZeroX {
     return this._zeroX;
@@ -162,6 +164,7 @@ export class Augur<TProvider extends Provider = Provider> {
     if (enableFlexSearch && !this.syncableFlexSearch) {
       this.syncableFlexSearch = new SyncableFlexSearch();
     }
+    this.txSuccessCallbacks = [];
 
     this.registerTransactionStatusEvents();
   }
@@ -382,7 +385,7 @@ export class Augur<TProvider extends Provider = Provider> {
     } else if (eventName === TXEventName.Pending) {
       this.txPendingCallback = callback;
     } else if (eventName === TXEventName.Success) {
-      this.txSuccessCallback = callback;
+      this.txSuccessCallbacks.push(callback);
     } else if (eventName === TXEventName.Failure) {
       this.txFailureCallback = callback;
     } else if (eventName === TXEventName.FeeTooLow) {
@@ -402,13 +405,19 @@ export class Augur<TProvider extends Provider = Provider> {
     } else if (eventName === TXEventName.Pending) {
       this.txPendingCallback = null;
     } else if (eventName === TXEventName.Success) {
-      this.txSuccessCallback = null;
+      this.txSuccessCallbacks = [];
     } else if (eventName === TXEventName.Failure) {
       this.txFailureCallback = null;
     } else if (eventName === TXEventName.FeeTooLow) {
       this.txFeeTooLowCallback = null;
     } else if (eventName === TXEventName.RelayerDown) {
       this.txRelayerDownCallback = null;
+    }
+  }
+
+  txSuccessCallback = (...args: TXStatus[]): void => {
+    for (const cb of this.txSuccessCallbacks) {
+      cb(...args);
     }
   }
 
@@ -440,6 +449,10 @@ export class Augur<TProvider extends Provider = Provider> {
 
   set signer(signer: EthersSigner) {
     this.dependencies.setSigner(signer);
+  }
+
+  setProvider(provider: JsonRpcProvider) {
+    this.provider.setProvider(provider);
   }
 
   getTradingHistory = (
@@ -595,6 +608,10 @@ export class Augur<TProvider extends Provider = Provider> {
     params: PlaceTradeDisplayParams
   ): Promise<SimulateTradeData> {
     return this.trade.simulateTrade(params);
+  }
+
+  async pinHashByGatewayUrl(url:string) {
+    if(this._warpController) this._warpController.pinHashByGatewayUrl(url);
   }
 
   async placeTrade(params: PlaceTradeDisplayParams): Promise<boolean> {

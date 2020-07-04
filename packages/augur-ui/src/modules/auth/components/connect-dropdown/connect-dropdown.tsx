@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import ReactTooltip from 'react-tooltip';
 import Clipboard from 'clipboard';
 import classNames from 'classnames';
-import { ACCOUNT_TYPES, NEW_ORDER_GAS_ESTIMATE, ETH, DAI, FEE_RESERVES_LABEL } from 'modules/common/constants';
+import { ACCOUNT_TYPES, NEW_ORDER_GAS_ESTIMATE, ETH, DAI, FEE_RESERVES_LABEL, REP } from 'modules/common/constants';
 import {
   DaiLogoIcon,
   EthIcon,
@@ -20,7 +20,7 @@ import ModalMetaMaskFinder from 'modules/modal/components/common/modal-metamask-
 import { AFFILIATE_NAME } from 'modules/routes/constants/param-names';
 import { displayGasInDai, ethToDai } from 'modules/app/actions/get-ethToDai-rate';
 import { createBigNumber, BigNumber } from 'utils/create-big-number';
-import TransferMyDai from 'modules/modal/containers/transfer-my-dai';
+import TransferMyTokens from 'modules/modal/containers/transfer-my-tokens';
 
 import TooltipStyles from 'modules/common/tooltip.styles.less';
 import Styles from 'modules/auth/components/connect-dropdown/connect-dropdown.styles.less';
@@ -52,6 +52,7 @@ interface ConnectDropdownProps {
   loginAccountAddress: string;
   reserveEthAmount: FormattedNumber;
   showTransferMyDai: boolean;
+  showTransferMyRep: boolean;
 }
 
 const ConnectDropdown = (props: ConnectDropdownProps) => {
@@ -74,6 +75,7 @@ const ConnectDropdown = (props: ConnectDropdownProps) => {
     loginAccountAddress,
     reserveEthAmount,
     showTransferMyDai,
+    showTransferMyRep,
   } = props;
 
   const [showMetaMaskHelper, setShowMetaMaskHelper] = useState(false);
@@ -244,7 +246,8 @@ const ConnectDropdown = (props: ConnectDropdownProps) => {
           <PrimaryButton action={() => showAddFundsModal()} text='Add Funds' />
         </div>
 
-        {showTransferMyDai && <TransferMyDai condensed={true} />}
+        {showTransferMyDai && <TransferMyTokens condensed={true} tokenName={DAI} />}
+        {showTransferMyRep && <TransferMyTokens condensed={true} tokenName={REP} />}
 
         {accountFunds
           .filter(fundType => !fundType.disabled)

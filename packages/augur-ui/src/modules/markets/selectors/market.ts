@@ -50,7 +50,8 @@ export const selectSortedMarketOutcomes = (marketType, outcomes: OutcomeFormatte
     return sortedOutcomes.reverse();
   }
   // Move invalid to the end
-  sortedOutcomes.push(sortedOutcomes.shift());
+  if(sortedOutcomes.length > 0) sortedOutcomes.push(sortedOutcomes.shift());
+
   return sortedOutcomes;
 };
 

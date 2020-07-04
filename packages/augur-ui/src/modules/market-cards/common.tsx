@@ -1,9 +1,9 @@
 import type { Getters } from '@augurproject/sdk';
+import { MarketReportingState } from '@augurproject/sdk-lite';
 import classNames from 'classnames';
 import { ProcessingButton } from 'modules/common/buttons';
 import {
   INVALID_OUTCOME_ID,
-  INVALID_OUTCOME_NAME,
   INVALID_OUTCOME_LABEL,
   SCALAR,
   SCALAR_DOWN_ID,
@@ -363,7 +363,7 @@ export const OutcomeGroup = (props: OutcomeGroupProps) => {
           />
         </>
       )}
-      {(props.marketType !== SCALAR || inDispute) &&
+      {((props.marketType !== SCALAR || inDispute) && props.reportingState !== MarketReportingState.Unknown) &&
         outcomesShow.map(
           (outcome: OutcomeFormatted, index: number) =>
             ((!props.expanded && index < showOutcomeNumber) ||

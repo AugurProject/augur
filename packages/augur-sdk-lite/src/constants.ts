@@ -49,6 +49,8 @@ export enum MarketReportingStateByNum {
 }
 
 export enum MarketReportingState {
+  // This only applies to hot loaded markets.
+  Unknown = 'Unknown',
   PreReporting = 'PreReporting',
   DesignatedReporting = 'DesignatedReporting',
   OpenReporting = 'OpenReporting',

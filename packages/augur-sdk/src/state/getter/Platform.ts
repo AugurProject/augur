@@ -25,13 +25,13 @@ export interface PlatformActivityStatsResult {
   // OrderEvent table for fill events (eventType == 3) where they are the orderCreator or orderFiller address
   // if multiple fills in the same tx count as one trade then also counting just the unique tradeGroupId from those
   numberOfTrades: number;
-  openInterest: BigNumber;
+  openInterest: string;
 
   // MarketCreated logs
   marketsCreated: number;
 
-  volume: BigNumber;
-  amountStaked: BigNumber;
+  volume: string;
+  amountStaked: string;
   disputedMarkets: number;
 }
 
@@ -144,9 +144,9 @@ async function getTradeCount(
 async function getOpenInterest(
   universe: string,
   augur: Augur
-): Promise<BigNumber> {
+): Promise<string> {
   const universeContract = augur.contracts.universeFromAddress(universe);
-  return universeContract.getOpenInterestInAttoCash_();
+  return (await universeContract.getOpenInterestInAttoCash_()).toFixed();
 }
 
 async function getMarketCount(
@@ -169,7 +169,7 @@ async function getVolume(
   startTime: number,
   endTime: number,
   db: DB
-): Promise<BigNumber> {
+): Promise<string> {
   // TODO this is not an accurate measurement of volume in a time period if thats what this is supposed to be
   const marketsLogs = await db.Markets.where('timestamp')
     .between(formatTimestamp(startTime), formatTimestamp(endTime), true, true)
@@ -182,7 +182,7 @@ async function getVolume(
     new BigNumber(0)
   );
 
-  return convertAttoValueToDisplayValue(volume);
+  return convertAttoValueToDisplayValue(volume).toFixed();
 }
 
 async function getAmountStaked(
@@ -190,7 +190,7 @@ async function getAmountStaked(
   startTime: number,
   endTime: number,
   db: DB
-): Promise<BigNumber> {
+): Promise<string> {
   const initialReportLogs = await db.InitialReportSubmitted.where('timestamp')
     .between(formatTimestamp(startTime), formatTimestamp(endTime), true, true)
     .and(log => {
@@ -208,7 +208,7 @@ async function getAmountStaked(
   return [
     ...initialReportLogs.map(log => new BigNumber(log.amountStaked)),
     ...disputeContributionLogs.map(log => new BigNumber(log.amountStaked)),
-  ].reduce((previous, current) => previous.plus(current), new BigNumber(0));
+  ].reduce((previous, current) => previous.plus(current), new BigNumber(0)).toFixed();
 }
 
 async function getDisputedMarkets(

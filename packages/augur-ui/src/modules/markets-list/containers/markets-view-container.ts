@@ -1,41 +1,43 @@
-import { connect } from 'react-redux';
-import { withRouter } from 'react-router-dom';
+import { AppState } from 'appStore';
+import { updateMobileMenuState } from 'modules/app/actions/update-sidebar-status';
+import {
+  MARKET_CARD_FORMATS,
+  MAX_FEE_100_PERCENT,
+  MAX_SPREAD_ALL_SPREADS,
+} from 'modules/common/constants';
+import { handleMarketsUpdatedLog } from 'modules/events/actions/log-handlers';
+import {
+  MARKET_FILTER,
+  MARKET_MAX_FEES,
+  MARKET_MAX_SPREAD,
+  updateFilterSortOptions,
+} from 'modules/filter-sort/actions/update-filter-sort-options';
+import { updateLoginAccountSettings } from 'modules/markets-list/actions/update-login-account-settings';
 
 import MarketsView from 'modules/markets-list/components/markets-view';
-import { toggleFavorite } from 'modules/markets/actions/update-favorites';
-import { loadMarketsInfoIfNotLoaded } from 'modules/markets/actions/load-markets-info';
-import { selectMarkets } from 'modules/markets/selectors/markets-all';
-import { getSelectedTagsAndCategoriesFromLocation } from 'modules/markets/helpers/get-selected-tags-and-categories-from-location';
 import {
   loadMarketsByFilter,
   LoadMarketsFilterOptions,
   organizeReportingStates,
 } from 'modules/markets/actions/load-markets';
+import { loadMarketsInfoIfNotLoaded } from 'modules/markets/actions/load-markets-info';
+import { toggleFavorite } from 'modules/markets/actions/update-favorites';
+import { getSelectedTagsAndCategoriesFromLocation } from 'modules/markets/helpers/get-selected-tags-and-categories-from-location';
 import { buildSearchString } from 'modules/markets/selectors/build-search-string';
-import { AppState } from 'appStore';
-import { ThunkDispatch } from 'redux-thunk';
-import { Action } from 'redux';
+import { selectMarkets } from 'modules/markets/selectors/markets-all';
 import { NodeStyleCallback } from 'modules/types';
+import { connect } from 'react-redux';
+import { withRouter } from 'react-router-dom';
+import { Action } from 'redux';
+import { ThunkDispatch } from 'redux-thunk';
+import { marketListViewed } from 'services/analytics/helpers';
+import { augurSdkLite } from 'services/augursdklite';
 import {
   setLoadMarketsPending,
-  updateMarketsListMeta,
-  updateMarketsListCardFormat,
   setMarketsListSearchInPlace,
+  updateMarketsListCardFormat,
+  updateMarketsListMeta,
 } from '../actions/update-markets-list';
-import {
-  MAX_SPREAD_ALL_SPREADS,
-  MAX_FEE_100_PERCENT,
-  MARKET_CARD_FORMATS
-} from 'modules/common/constants';
-import {
-  updateFilterSortOptions,
-  MARKET_FILTER,
-  MARKET_MAX_FEES,
-  MARKET_MAX_SPREAD,
-} from 'modules/filter-sort/actions/update-filter-sort-options';
-import { updateMobileMenuState } from 'modules/app/actions/update-sidebar-status';
-import { updateLoginAccountSettings } from 'modules/markets-list/actions/update-login-account-settings';
-import { marketListViewed } from 'services/analytics/helpers';
 
 const findMarketsInReportingState = (markets, reportingState) => {
   const reportingStates: String[] = organizeReportingStates(reportingState);
@@ -57,6 +59,7 @@ const mapStateToProps = (state: AppState, { location }) => {
     : MARKET_CARD_FORMATS.CLASSIC;
 
   return {
+    canHotload: state.connection.canHotload,
     isConnected: state.connection.isConnected && state.universe.id != null,
     isLogged: state.authStatus.isLogged,
     restoredAccount: state.authStatus.restoredAccount,
@@ -142,6 +145,11 @@ const mapDispatchToProps = (
         pageNumber
       )
     ),
+  hotLoadMarketList: async (cb) => {
+    const marketsInfo = await augurSdkLite.get().getMarketCreatedLogs();
+    dispatch(handleMarketsUpdatedLog({ marketsInfo }));
+    cb(marketsInfo);
+  }
 });
 
 const Markets = withRouter(

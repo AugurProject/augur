@@ -66,6 +66,7 @@ export const updateSdk = (
     dispatch(loadAccountDataFromLocalStorage(newAccount.address));
     await augurSdk.syncUserData(
       newAccount.mixedCaseAddress,
+      newAccount.meta.provider,
       newAccount.meta.signer,
       networkId,
       useGSN
