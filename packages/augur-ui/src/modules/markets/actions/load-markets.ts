@@ -139,7 +139,7 @@ export const loadMarketsByFilter = (
     }
   }
 
-  const paginationOffset = filterOptions.offset ? filterOptions.offset - 1 : 0;
+  const paginationOffset = filterOptions.offset ? Number(filterOptions.offset) - 1 : 0;
 
   let params = {
     universe: universe.id,
@@ -147,8 +147,8 @@ export const loadMarketsByFilter = (
     search: filterOptions.search ? filterOptions.search : '',
     maxFee: filterOptions.maxFee,
     includeInvalidMarkets: filterOptions.includeInvalidMarkets,
-    limit: filterOptions.limit,
-    offset: paginationOffset * filterOptions.limit,
+    limit: Number(filterOptions.limit),
+    offset: paginationOffset * Number(filterOptions.limit),
     reportingStates,
     maxLiquiditySpread: filterOptions.maxLiquiditySpread as Getters.Markets.MaxLiquiditySpread,
     ...sort,
