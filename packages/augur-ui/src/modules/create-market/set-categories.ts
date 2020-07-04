@@ -1213,7 +1213,8 @@ export const setCategories: SortedGroup[] = [
         value: 'US Politics',
         label: 'US Politics',
         subGroup: [
-          { value: 'Presidential', label: 'Presidential' },
+          { value: 'President', label: 'President' },
+          { value: 'Vice-President', label: 'Vice-President'},
           { value: 'Impeachment', label: 'Impeachment' },
           { value: 'Supreme Court', label: 'Supreme Court' },
           { value: 'House', label: 'House' },
