@@ -8,6 +8,8 @@ import {
   MARKET_MAX_SPREAD,
   MARKET_SHOW_INVALID,
   MARKET_TYPE_FILTER,
+  MARKET_LIMIT,
+  MARKET_OFFSET,
 } from 'modules/filter-sort/actions/update-filter-sort-options';
 import {
   MAX_FEE_02_PERCENT,
@@ -17,7 +19,11 @@ import {
   MAX_SPREAD_ALL_SPREADS,
   TEMPLATE_FILTER,
   FILTER_ALL,
+  PAGINATION_COUNT,
+  DEFAULT_MARKET_OFFSET,
 } from 'modules/common/constants';
+import { TemplateFilters,
+} from '@augurproject/sdk-lite';
 import { FilterSortOptions, BaseAction, INVALID_OPTIONS } from 'modules/types';
 
 const DEFAULT_STATE: FilterSortOptions = {
@@ -28,7 +34,9 @@ const DEFAULT_STATE: FilterSortOptions = {
   [MARKET_SHOW_INVALID]: INVALID_OPTIONS.Hide,
   [MARKET_TYPE_FILTER]: FILTER_ALL,
   [TRANSACTION_PERIOD]: DAY,
-  [TEMPLATE_FILTER]: "templateOnly"
+  [TEMPLATE_FILTER]: TemplateFilters.templateOnly,
+  [MARKET_LIMIT]: PAGINATION_COUNT,
+  [MARKET_OFFSET]: DEFAULT_MARKET_OFFSET,
 };
 
 const KEYS = Object.keys(DEFAULT_STATE);

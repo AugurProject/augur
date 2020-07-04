@@ -12,6 +12,8 @@ import {
   MARKET_MAX_SPREAD,
   MARKET_SHOW_INVALID,
   TEMPLATE_FILTER,
+  MARKET_LIMIT,
+  MARKET_OFFSET,
 } from 'modules/filter-sort/actions/update-filter-sort-options';
 import { updateLoginAccount } from 'modules/account/actions/login-account';
 
@@ -28,16 +30,8 @@ const mapDispatchToProps = dispatch => ({
   updateSelectedCategories: categories =>
     dispatch(updateSelectedCategories(categories)),
   updateMobileMenuState: data => dispatch(updateMobileMenuState(data)),
-  updateMarketsSortBy: sortBy =>
-    dispatch(updateFilterSortOptions(MARKET_SORT, sortBy)),
-  updateMaxFee: maxFee =>
-    dispatch(updateFilterSortOptions(MARKET_MAX_FEES, maxFee)),
-  updateMaxSpread: maxLiquiditySpread =>
-    dispatch(updateFilterSortOptions(MARKET_MAX_SPREAD, maxLiquiditySpread)),
-  updateShowInvalid: showInvalid =>
-    dispatch(updateFilterSortOptions(MARKET_SHOW_INVALID, showInvalid)),
-  updateTemplateFilter: templateFilter =>
-    dispatch(updateFilterSortOptions(TEMPLATE_FILTER, templateFilter)),
+  updateFilterSortOptions: (name, value) =>
+    dispatch(updateFilterSortOptions(name, value)),
 });
 
 const mergeProps = (sP, dP, oP) => {

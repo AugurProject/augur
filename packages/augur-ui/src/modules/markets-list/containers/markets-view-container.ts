@@ -4,6 +4,7 @@ import {
   MARKET_CARD_FORMATS,
   MAX_FEE_100_PERCENT,
   MAX_SPREAD_ALL_SPREADS,
+  FILTER_ALL,
 } from 'modules/common/constants';
 import { handleMarketsUpdatedLog } from 'modules/events/actions/log-handlers';
 import {
@@ -85,7 +86,7 @@ const mapStateToProps = (state: AppState, { location }) => {
       state.loginAccount.settings || {}
     ).showInvalidMarketsBannerFeesOrLiquiditySpread,
     templateFilter: state.filterSortOptions.templateFilter,
-    marketTypeFilter: state.filterSortOptions.marketTypeFilter
+    marketTypeFilter: state.filterSortOptions.marketTypeFilter,
   };
 };
 

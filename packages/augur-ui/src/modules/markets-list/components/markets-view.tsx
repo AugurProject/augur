@@ -4,6 +4,8 @@ import {
   HELP_CENTER_INVALID_MARKETS,
   MAX_FEE_100_PERCENT,
   TYPE_TRADE,
+  PAGINATION_COUNT,
+  DEFAULT_MARKET_OFFSET,
 } from 'modules/common/constants';
 import { FilterNotice } from 'modules/common/filter-notice';
 import MarketCardFormatSwitcher
@@ -19,8 +21,6 @@ import { MARKETS_VIEW_HEAD_TAGS } from 'modules/seo/helmet-configs';
 import { HelmetTag } from 'modules/seo/helmet-tag';
 import { MarketData } from 'modules/types';
 import React, { Component } from 'react';
-
-const PAGINATION_COUNT = 10;
 
 interface MarketsViewProps {
   isLogged: boolean;
@@ -88,7 +88,7 @@ export default class MarketsView extends Component<
       filterSortedMarkets: [],
       marketCount: 0,
       limit: PAGINATION_COUNT,
-      offset: 1,
+      offset: DEFAULT_MARKET_OFFSET,
       showPagination: false,
     };
 

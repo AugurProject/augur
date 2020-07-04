@@ -21,11 +21,7 @@ import {
 } from 'modules/account/actions/login-account';
 import {
   updateFilterSortOptions,
-  MARKET_MAX_FEES,
-  MARKET_MAX_SPREAD,
-  MARKET_SHOW_INVALID,
 } from 'modules/filter-sort/actions/update-filter-sort-options';
-import { TEMPLATE_FILTER } from 'modules/common/constants';
 
 export const loadAccountDataFromLocalStorage = (
   address: string
@@ -47,23 +43,7 @@ export const loadAccountDataFromLocalStorage = (
 
       if (settings) {
         dispatch(updateLoginAccount({ settings: { ...settings } }));
-        const { maxFee, spread, showInvalid, templateFilter } = settings;
-        if (maxFee) {
-          dispatch(updateFilterSortOptions(MARKET_MAX_FEES, settings.maxFee));
-        }
-        if (spread) {
-          dispatch(updateFilterSortOptions(MARKET_MAX_SPREAD, settings.spread));
-        }
-        if (showInvalid) {
-          dispatch(
-            updateFilterSortOptions(MARKET_SHOW_INVALID, settings.showInvalid)
-          );
-        }
-        if (templateFilter) {
-          dispatch(
-            updateFilterSortOptions(TEMPLATE_FILTER, settings.templateFilter)
-          );
-        }
+        Object.keys(settings).map(key => settings[key] && dispatch(updateFilterSortOptions(key, settings[key])));
       }
 
       if (readNotifications) {

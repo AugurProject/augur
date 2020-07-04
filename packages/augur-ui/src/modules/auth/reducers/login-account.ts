@@ -43,6 +43,9 @@ const DEFAULT_STATE: LoginAccount = {
     spread: null,
     showInvalid: null,
     marketTypeFilter: null,
+    marketSort: null,
+    limit: null,
+    offset: null,
   },
   timeframeData: {
     positions: 0,

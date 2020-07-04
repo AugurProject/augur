@@ -238,6 +238,8 @@ export const feeFilters = [
 ];
 
 export const FILTER_ALL = TemplateFilters.all;
+export const PAGINATION_COUNT = 10;
+export const DEFAULT_MARKET_OFFSET = 1;
 export const templateFilterValues = [
   { header: 'All', value: FILTER_ALL },
   {

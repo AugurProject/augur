@@ -22,6 +22,7 @@ import parseQuery from 'modules/routes/helpers/parse-query';
 import updateQuery from 'modules/routes/helpers/update-query';
 import { INVALID_OPTIONS, LoginAccountSettings } from 'modules/types';
 import ChevronFlip from 'modules/common/chevron-flip';
+import { MARKET_MAX_FEES, MARKET_MAX_SPREAD, MARKET_SHOW_INVALID, MARKET_TYPE_FILTER } from 'modules/filter-sort/actions/update-filter-sort-options';
 
 interface MarketsListFiltersProps {
   maxFee: string;
@@ -30,10 +31,6 @@ interface MarketsListFiltersProps {
   allTemplateFilter: string;
   marketTypeFilter: string;
   isSearching: boolean;
-  updateMaxFee: Function;
-  updateMaxSpread: Function;
-  updateShowInvalid: Function;
-  updateTemplateFilter: Function;
   history: History;
   location: Location;
   setMaxFeeFilter: Function;
@@ -44,7 +41,7 @@ interface MarketsListFiltersProps {
   isMobile: boolean;
   updateSelectedCategories: Function;
   setMarketTypeFilter: Function;
-  updateMarketTypeFilter: Function
+  updateFilterSortOptions: Function;
 }
 
 const MarketsListFilters = ({
@@ -54,11 +51,6 @@ const MarketsListFilters = ({
   allTemplateFilter,
   marketTypeFilter,
   isSearching,
-  updateMaxFee,
-  updateMaxSpread,
-  updateMarketTypeFilter,
-  updateShowInvalid,
-  updateTemplateFilter,
   history,
   location,
   setMaxFeeFilter,
@@ -69,6 +61,7 @@ const MarketsListFilters = ({
   settings,
   isMobile,
   updateSelectedCategories,
+  updateFilterSortOptions,
 }: MarketsListFiltersProps) => {
   useEffect(() => {
     const filterOptionsFromQuery = parseQuery(location.search);
@@ -91,19 +84,19 @@ const MarketsListFilters = ({
       settings.marketTypeFilter;
 
     if (newMaxFee && newMaxFee !== maxFee) {
-      updateMaxFee(newMaxFee);
+      updateFilterSortOptions(MARKET_MAX_FEES, newMaxFee);
     }
     if (newSpread && newSpread !== maxLiquiditySpread) {
-      updateMaxSpread(newSpread);
+      updateFilterSortOptions(MARKET_MAX_SPREAD, newSpread);
     }
     if (newTemplateFilter && newTemplateFilter !== allTemplateFilter) {
-      updateTemplateFilter(newTemplateFilter);
+      updateFilterSortOptions(TEMPLATE_FILTER, newTemplateFilter);
     }
     if (newMarketTypeFilter && newMarketTypeFilter !== marketTypeFilter) {
-      updateMarketTypeFilter(newMarketTypeFilter);
+      updateFilterSortOptions(MARKET_TYPE_FILTER, newMarketTypeFilter);
     }
     if (newShowInvalid && newShowInvalid !== includeInvalidMarkets) {
-      updateShowInvalid(newShowInvalid);
+      updateFilterSortOptions(MARKET_SHOW_INVALID, newShowInvalid);
     }
     categories
       ? updateSelectedCategories(categories.split(','))
@@ -121,24 +114,7 @@ const MarketsListFilters = ({
       location,
       history
     );
-
-    switch (whichFilterToUpdate) {
-      case TEMPLATE_FILTER:
-        updateTemplateFilter(value);
-        break;
-      case MAXFEE_PARAM_NAME:
-        updateMaxFee(value);
-        break;
-      case SPREAD_PARAM_NAME:
-        updateMaxSpread(value);
-        break;
-      case MARKET_TYPE_PARAM_NAME:
-        updateMarketTypeFilter(value);
-        break;
-      case SHOW_INVALID_MARKETS_PARAM_NAME:
-        updateShowInvalid(value);
-        break;
-    }
+    updateFilterSortOptions(whichFilterToUpdate, value);
   };
 
   return (

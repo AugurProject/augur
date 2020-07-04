@@ -544,6 +544,8 @@ export interface FilterSortOptions {
   transactionPeriod: string;
   templateFilter: string;
   marketTypeFilter: string;
+  limit: number;
+  offset: number;
 }
 
 export interface Favorite {
@@ -664,6 +666,9 @@ export interface LoginAccountSettings {
   spread?: boolean;
   marketTypeFilter?: boolean;
   showInvalid?: boolean;
+  marketSort?: string;
+  limit?: number;
+  offset?: number;
 }
 
 export interface LoginAccount {
