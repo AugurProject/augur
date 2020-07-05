@@ -113,9 +113,9 @@ export default class MarketsList extends Component<
           <div className={PaginationStyles.PaginationContainer}>
             <Pagination
               showPagination={showPagination}
-              page={offset}
+              page={Number(offset)}
               itemCount={marketCount}
-              itemsPerPage={limit}
+              itemsPerPage={Number(limit)}
               updateLimit={updateLimit}
               maxLimit={marketCount}
               action={setOffset}

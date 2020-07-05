@@ -24,11 +24,10 @@ interface BaseInnerNavPureProps {
   updateMobileMenuState: Function;
   selectedCategories: String[];
   filterSortOptions: FilterSortOptions;
-  updateLoginAccount: Function;
   updateSelectedCategories: Function;
   history: History;
   location: Location;
-  updateFilterSortOption: Function;
+  updateFilterSortOptionsSettings: Function;
 }
 
 const BaseInnerNavPure = ({
@@ -36,9 +35,8 @@ const BaseInnerNavPure = ({
   updateMobileMenuState,
   selectedCategories,
   filterSortOptions,
-  updateLoginAccount,
   updateSelectedCategories,
-  updateFilterSortOption,
+  updateFilterSortOptionsSettings,
   location,
   history,
 }: BaseInnerNavPureProps) => {
@@ -118,13 +116,11 @@ const BaseInnerNavPure = ({
 
       changedFilters.forEach(({ value, filterType }) => {
         newSettings[filterType] = value;
-        updateFilterSortOption(filterType, value);
+        updateFilterSortOptionsSettings({[filterType]: value});
       });
-
-      updateLoginAccount(newSettings);
     }
 
-    sortOptions && updateFilterSortOption(MARKET_SORT, sortOptions);
+    sortOptions && updateFilterSortOptionsSettings({[MARKET_SORT]: sortOptions});
   };
 
   useEffect(() => {
@@ -167,11 +163,13 @@ const BaseInnerNavPure = ({
             onClick={() => {
               if (showMainMenu) {
                 updateSelectedCategories(originalSelectedCategories);
-                updateFilterSortOption(MARKET_SORT, originalFilterSortOptions.sortBy);
-                updateFilterSortOption(MARKET_MAX_FEES, originalFilterSortOptions.maxFee);
-                updateFilterSortOption(MARKET_MAX_SPREAD, originalFilterSortOptions.maxLiquiditySpread);
-                updateFilterSortOption(MARKET_SHOW_INVALID, originalFilterSortOptions.includeInvalidMarkets);
-                updateFilterSortOption(TEMPLATE_FILTER, originalFilterSortOptions.templateFilter);
+                updateFilterSortOptionsSettings({
+                  [MARKET_SORT]: originalFilterSortOptions.sortBy,
+                  [MARKET_MAX_FEES]: originalFilterSortOptions.maxFee,
+                  [MARKET_MAX_SPREAD]: originalFilterSortOptions.maxLiquiditySpread,
+                  [MARKET_SHOW_INVALID]: originalFilterSortOptions.includeInvalidMarkets,
+                  [TEMPLATE_FILTER]: originalFilterSortOptions.templateFilter,
+                });
                 updateMultipleQueries(getFilters(true), location, history);
               }
 

@@ -1,6 +1,5 @@
 import { RESET_STATE } from 'modules/app/actions/reset-state';
 import {
-  UPDATE_FILTER_SORT_OPTION,
   MARKET_FILTER,
   MARKET_SORT,
   MARKET_MAX_FEES,
@@ -47,15 +46,6 @@ export default function(
   { type, data }: BaseAction
 ): FilterSortOptions {
   switch (type) {
-    case UPDATE_FILTER_SORT_OPTION: {
-      const { optionKey, optionValue } = data;
-      if (KEYS.includes(optionKey))
-        return {
-          ...filterSortOptions,
-          [optionKey]: optionValue,
-        };
-      return filterSortOptions;
-    }
     case UPDATE_FILTER_SORT_OPTIONS: {
       const { filterOptions } = data;
       return {

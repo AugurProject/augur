@@ -665,6 +665,7 @@ export interface LoginAccountSettings {
   maxFee?: boolean;
   spread?: boolean;
   marketTypeFilter?: boolean;
+  marketFilter?: string;
   showInvalid?: boolean;
   sortBy?: string;
   limit?: number;

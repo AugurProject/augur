@@ -6,14 +6,7 @@ import {
   updateSelectedCategories,
 } from 'modules/markets-list/actions/update-markets-list';
 import {
-  updateFilterSortOption,
-  MARKET_SORT,
-  MARKET_MAX_FEES,
-  MARKET_MAX_SPREAD,
-  MARKET_SHOW_INVALID,
-  TEMPLATE_FILTER,
-  MARKET_LIMIT,
-  MARKET_OFFSET,
+  updateFilterSortOptionsSettings,
 } from 'modules/filter-sort/actions/update-filter-sort-options';
 import { updateLoginAccount } from 'modules/account/actions/login-account';
 
@@ -21,33 +14,20 @@ const mapStateToProps = ({ marketsList, filterSortOptions, loginAccount }) => {
   return {
     selectedCategories: marketsList.selectedCategories,
     filterSortOptions: filterSortOptions,
-    settings: loginAccount.settings,
   };
 };
 
 const mapDispatchToProps = dispatch => ({
-  updateLoginAccount: settings => dispatch(updateLoginAccount({ settings })),
   updateSelectedCategories: categories =>
     dispatch(updateSelectedCategories(categories)),
   updateMobileMenuState: data => dispatch(updateMobileMenuState(data)),
-  updateFilterSortOption: (name, value) =>
-    dispatch(updateFilterSortOption(name, value)),
+  updateFilterSortOptionsSettings: filterOptions => updateFilterSortOptionsSettings(filterOptions),
 });
-
-const mergeProps = (sP, dP, oP) => {
-  return {
-    ...sP,
-    ...dP,
-    ...oP,
-    updateLoginAccount: settings => dP.updateLoginAccount(Object.assign({}, sP.settings, settings)),
-  }
-};
 
 const MarketsInnerNavContainer = compose(
   connect(
     mapStateToProps,
     mapDispatchToProps,
-    mergeProps
   )
 )(BaseInnerNavPure);
 

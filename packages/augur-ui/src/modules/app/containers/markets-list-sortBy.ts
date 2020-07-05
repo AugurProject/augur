@@ -1,7 +1,7 @@
 import { connect } from 'react-redux';
 import { compose } from 'redux';
 import {
-  updateFilterSortOption,
+  updateFilterSortOptionsSettings,
   MARKET_SORT,
 } from 'modules/filter-sort/actions/update-filter-sort-options';
 import MarketsListSortBy from '../components/inner-nav/markets-list-sortBy';
@@ -16,7 +16,7 @@ const mapStateToProps = (state) => {
 };
 
 const mapDispatchToProps = dispatch => ({
-  updateMarketsSortBy: (sortBy) => dispatch(updateFilterSortOption(MARKET_SORT, sortBy)),
+  updateMarketsSortBy: (sortBy) => dispatch(updateFilterSortOptionsSettings({ [MARKET_SORT]: sortBy })),
 });
 
 const MarketsListSortByContainer = compose(

@@ -10,8 +10,7 @@ import {
   MARKET_FILTER,
   MARKET_MAX_FEES,
   MARKET_MAX_SPREAD,
-  updateFilterSortOption,
-  updateFilterSortOptions,
+  updateFilterSortOptionsSettings,
 } from 'modules/filter-sort/actions/update-filter-sort-options';
 import { updateLoginAccountSettings } from 'modules/markets-list/actions/update-login-account-settings';
 
@@ -106,13 +105,13 @@ const mapDispatchToProps = (
     cb: NodeStyleCallback
   ) => dispatch(loadMarketsByFilter(filter, cb)),
   removeFeeFilter: () =>
-    dispatch(updateFilterSortOption(MARKET_MAX_FEES, MAX_FEE_100_PERCENT)),
+    dispatch(updateFilterSortOptionsSettings({ [MARKET_MAX_FEES]: MAX_FEE_100_PERCENT })),
   removeLiquiditySpreadFilter: () =>
     dispatch(
-      updateFilterSortOption(MARKET_MAX_SPREAD, MAX_SPREAD_ALL_SPREADS)
+      updateFilterSortOptionsSettings({ [MARKET_MAX_SPREAD]: MAX_SPREAD_ALL_SPREADS })
     ),
   updateMarketsFilter: filterOption =>
-    dispatch(updateFilterSortOption(MARKET_FILTER, filterOption)),
+    dispatch(updateFilterSortOptionsSettings({ [MARKET_FILTER]: filterOption })),
   updateMarketsListCardFormat: format =>
     dispatch(updateMarketsListCardFormat(format)),
   updateMobileMenuState: data => dispatch(updateMobileMenuState(data)),
@@ -120,7 +119,7 @@ const mapDispatchToProps = (
     dispatch(updateLoginAccountSettings(settings)),
   setMarketsListSearchInPlace: isSearchInPlace =>
     dispatch(setMarketsListSearchInPlace(isSearchInPlace)),
-  updateFilterSortOptions: filterOptions => dispatch(updateFilterSortOptions(filterOptions)),
+  updateFilterSortOptions: filterOptions => dispatch(updateFilterSortOptionsSettings(filterOptions)),
   marketListViewed: (
     search,
     selectedCategories,

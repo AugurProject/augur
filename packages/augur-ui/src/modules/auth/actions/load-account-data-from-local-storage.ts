@@ -17,10 +17,9 @@ import { loadMarketsInfoIfNotLoaded } from 'modules/markets/actions/load-markets
 import { loadAnalytics } from 'modules/app/actions/analytics-management';
 import {
   saveAffiliateAddress,
-  updateLoginAccount,
 } from 'modules/account/actions/login-account';
 import {
-  updateFilterSortOption,
+  updateFilterSortOptionsSettings,
 } from 'modules/filter-sort/actions/update-filter-sort-options';
 
 export const loadAccountDataFromLocalStorage = (
@@ -42,8 +41,11 @@ export const loadAccountDataFromLocalStorage = (
       const { settings } = storedAccountData;
 
       if (settings) {
-        dispatch(updateLoginAccount({ settings: { ...settings } }));
-        Object.keys(settings).map(key => settings[key] && dispatch(updateFilterSortOption(key, settings[key])));
+        const filterOptions = Object.keys(settings).reduce(
+          (p, key) => (settings[key] ? { ...p, [key]: settings[key] } : p),
+          {}
+        );
+        dispatch(updateFilterSortOptionsSettings(filterOptions));
       }
 
       if (readNotifications) {
