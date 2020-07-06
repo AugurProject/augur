@@ -1,13 +1,14 @@
 import React from 'react';
 import { useHistory, useLocation } from 'react-router';
-import { SORT_OPTIONS } from 'modules/common/constants';
+import { SORT_OPTIONS, DEFAULT_MARKET_OFFSET } from 'modules/common/constants';
 import Styles from 'modules/filter-sort/filter-dropdowns.styles.less';
 import parseQuery from 'modules/routes/helpers/parse-query';
 import makeQuery from 'modules/routes/helpers/make-query';
 import { PAGINATION_PARAM_NAME } from 'modules/routes/constants/param-names';
 import { SquareDropdown } from 'modules/common/selection';
 import { useAppStatusStore } from 'modules/app/store/app-status';
-import { MARKET_SORT } from 'modules/app/store/constants';
+import { MARKET_SORT, MARKET_OFFSET } from 'modules/app/store/constants';
+import updateMultipleQueries from 'modules/routes/helpers/update-multiple-queries';
 
 const sortOptions = SORT_OPTIONS.map(option => {
   return {
@@ -18,7 +19,7 @@ const sortOptions = SORT_OPTIONS.map(option => {
 
 export const FilterSearch = () => {
   const {
-    filterSortOptions: { marketSort: defaultSort },
+    filterSortOptions: { sortBy: defaultSort },
     actions: { updateFilterSortOptions },
   } = useAppStatusStore();
   const history = useHistory();
@@ -40,7 +41,15 @@ export const FilterSearch = () => {
         options={sortOptions}
         onChange={sortOption => {
           goToPageOne();
-          updateFilterSortOptions({ [MARKET_SORT]: sortOption })
+          updateMultipleQueries(
+            [
+              { filterType: MARKET_SORT, value: sortOption },
+              { filterType: MARKET_OFFSET, value: DEFAULT_MARKET_OFFSET },
+            ],
+            location,
+            history
+          );
+          updateFilterSortOptions({ [MARKET_SORT]: sortOption, [MARKET_OFFSET]: DEFAULT_MARKET_OFFSET })
         }}
         stretchOutOnMobile
       />

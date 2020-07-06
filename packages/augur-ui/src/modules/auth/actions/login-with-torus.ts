@@ -43,6 +43,7 @@ export const loginWithTorus = () => {
             email: null,
             profileImage: null,
             openWallet: (goto = 'home') => torus.showWallet(goto),
+            provider,
             signer: provider.getSigner(),
             accountType: ACCOUNT_TYPES.TORUS,
             isWeb3,
@@ -56,17 +57,16 @@ export const loginWithTorus = () => {
             .querySelector('#torusWidget')
             .setAttribute('style', 'display:none');
         }
-      } catch (error) {
+    } catch (error) {
+      if (document.querySelector('#torusWidget')) {
         document.querySelector('#torusWidget').remove();
-        // On error, we need to cleanup the second instance of the torus iframes
-        const torusIframe = document.querySelectorAll('#torusIframe');
-        if (torusIframe.length > 0 && torusIframe[1]) {
-          torusIframe[1].remove();
-        }
-
-        throw error;
       }
-
+      // On error, we need to cleanup the second instance of the torus iframes
+      const torusIframe = document.querySelectorAll('#torusIframe');
+      if (torusIframe.length > 0 && torusIframe[1]) {
+        torusIframe[1].remove();
+      }
+    }
       try {
         const userInfo = await torus.getUserInfo(
           'Augur would like to use this information to improve your user experience.'

@@ -49,6 +49,7 @@ import ReactTooltip from 'react-tooltip';
 import { BigNumber } from 'utils/create-big-number';
 import { useAppStatusStore } from 'modules/app/store/app-status';
 import { formatDai } from 'utils/format-number';
+import titleCase from 'utils/title-case';
 
 export interface TitleProps {
   title: string;
@@ -288,12 +289,16 @@ export const Title = (props: TitleProps) => (
   </header>
 );
 
-export const Description = ({description}: DescriptionProps) => {
-  return description.join(' ').toString().split('\n').map((descriptionText: string) => (
-    <p key={descriptionText.slice(20).replace(/\s+/g, '-')}>
-      {descriptionText}
-    </p>
-  ));
+export const Description = ({ description }: DescriptionProps) => {
+  return description
+    .join(' ')
+    .toString()
+    .split('\n')
+    .map((descriptionText: string) => (
+      <p key={descriptionText.slice(20).replace(/\s+/g, '-')}>
+        {descriptionText}
+      </p>
+    ));
 };
 
 export const DescriptionWithLink = (props: DescriptionWithLinkProps) => {
@@ -421,12 +426,7 @@ export const Stepper = ({
   </div>
 );
 
-interface TransferMyDaiProps {
-  condensed: boolean;
-  callBack: Function;
-}
-
-export const TransferMyDai = ({ condensed, callBack }: TransferMyDaiProps) => {
+export const TransferMyTokens = ({ condensed, tokenName, callback }) => {
   const {
     actions: { setModal },
     loginAccount: {
@@ -437,6 +437,12 @@ export const TransferMyDai = ({ condensed, callBack }: TransferMyDaiProps) => {
     },
     walletStatus,
   } = useAppStatusStore();
+  const tokenAmount =
+    tokenName === DAI
+      ? loginAccount?.balances?.signerBalances?.dai
+      : tokenName === REP
+      ? loginAccount?.balances?.signerBalances?.rep
+      : 0;
   const isCondensed = condensed || false;
   const daiAmount = formatDai(dai || 0);
   const showTransferModal = () => {
@@ -450,12 +456,13 @@ export const TransferMyDai = ({ condensed, callBack }: TransferMyDaiProps) => {
       },
     });
   };
-
   if (isCondensed) {
     return (
       <div className={Styles.TransferMyDaiCondensed}>
         <div>
-          <span>{daiAmount.formattedValue} DAI</span>
+          <span>
+            {tokenAmount.formattedValue} {tokenName}
+          </span>
           <span>in {walletType} wallet</span>
         </div>
         <SecondaryButton
@@ -467,16 +474,17 @@ export const TransferMyDai = ({ condensed, callBack }: TransferMyDaiProps) => {
   }
 
   return (
-    <div className={Styles.TransferMyDai}>
+    <div className={Styles.TransferMyTokens}>
       <div>
         <span>
-          {daiAmount.formattedValue} Dai in your {walletType} wallet
+          {tokenAmount.formattedValue} {titleCase(tokenName)} in your{' '}
+          {walletType} wallet
         </span>
         <span>Transfer any amount to your trading account.</span>
       </div>
       <PrimaryButton
         action={() => showTransferModal()}
-        text={'Transfer my Dai'}
+        text={`Transfer my ${titleCase(tokenName)}`}
       />
     </div>
   );
@@ -604,9 +612,10 @@ export const Breakdown = (props: BreakdownProps) => (
     })}
   >
     {props.title && <h4>{props.title}</h4>}
-    {props.rows && props.rows.map((row: LinearPropertyLabelProps) => (
-      <LinearPropertyLabel {...row} key={row.label} />
-    ))}
+    {props.rows &&
+      props.rows.map((row: LinearPropertyLabelProps) => (
+        <LinearPropertyLabel {...row} key={row.label} />
+      ))}
     {props.footer && (
       <LinearPropertyLabel {...props.footer} key={props.footer.label} />
     )}

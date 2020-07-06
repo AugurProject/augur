@@ -5,6 +5,7 @@ import {
   SCALAR_OUTCOMES,
   YES_NO,
   YES_NO_OUTCOMES,
+  INVALID_OUTCOME_LABEL
 } from 'modules/common/constants';
 import {
   CategoricalMarketIcon,
@@ -15,16 +16,14 @@ import {
   TEMPLATES,
   TEMPLATE_VALIDATIONS,
   RETIRED_TEMPLATES,
-  getTemplateExchangeClosingWithBuffer,
   TemplateInputType,
-  TimeOffset
+  getExchangeClosingWithBufferGivenDay,
 } from '@augurproject/templates';
 import {
   REQUIRED,
   CHOICE,
+  CRYPTO,
 } from '@augurproject/sdk-lite'
-import { YesNoMarketIcon, CategoricalMarketIcon, ScalarMarketIcon } from 'modules/common/icons';
-import { YES_NO, CATEGORICAL, SCALAR, YES_NO_OUTCOMES, SCALAR_OUTCOMES, INVALID_OUTCOME_LABEL } from 'modules/common/constants';
 import { NameValuePair } from 'modules/common/selection';
 import {
   MARKET_SUB_TEMPLATES,
@@ -42,6 +41,8 @@ const MarketTypeIcons = {
   [CATEGORICAL]: CategoricalMarketIcon,
   [SCALAR]: ScalarMarketIcon,
 };
+
+const NO_SORT_CATEGORIES = [CRYPTO];
 
 export const getTemplateRadioCardsMarketTypes = (categories: Categories) => {
   if (!categories || !categories.primary) return MARKET_TYPE_TEMPLATES;
@@ -131,16 +132,18 @@ export const addCategoryStats = (
 
 export const getTemplateCategories = (categories: Categories): string[] => {
   let emptyCats = [];
+  let noSort = NO_SORT_CATEGORIES.includes(categories.primary);
   if (!categories || !categories.primary) return Object.keys(TEMPLATES).sort();
   const primaryCat = TEMPLATES[categories.primary];
   if (!primaryCat) return emptyCats;
   if (!categories.secondary)
-    return primaryCat.children ? Object.keys(primaryCat.children).sort() : [];
+    return primaryCat.children ? noSort ? Object.keys(primaryCat.children) : Object.keys(primaryCat.children).sort() : [];
+  noSort = NO_SORT_CATEGORIES.includes(categories.secondary);
   const secondaryCat = primaryCat.children
     ? primaryCat.children[categories.secondary]
     : emptyCats;
   if (!secondaryCat) return emptyCats;
-  return secondaryCat.children ? Object.keys(secondaryCat.children).sort() : [];
+  return secondaryCat.children ? noSort ? Object.keys(secondaryCat.children) : Object.keys(secondaryCat.children).sort() : [];
 };
 
 export const getTemplateCategoriesByMarketType = (
@@ -386,7 +389,7 @@ export function createTemplateValueList(values: string[]): NameValuePair[] {
   return values.map(v => ({ value: v, label: v }));
 }
 
-export function getEventExpirationForExchange(
+export function getEventExpirationForExchangeDayInQuestion(
   inputs
 ): Partial<DateTimeComponents> {
   const closing = inputs.find(
@@ -395,14 +398,18 @@ export function getEventExpirationForExchange(
   if (!closing) return null;
   const dateYearSource = inputs.find(i => i.id === closing.inputDateYearId);
   const timeOffset = closing.userInputObject as TimeOffset;
-  if (dateYearSource && dateYearSource.setEndTime && timeOffset) {
-    const closingDateTime = getTemplateExchangeClosingWithBuffer(
-      dateYearSource.setEndTime,
+  if (dateYearSource && dateYearSource.userInput && timeOffset) {
+    const closingDateTime = getExchangeClosingWithBufferGivenDay(
+      dateYearSource.userInput,
       timeOffset.hour,
       timeOffset.minutes,
       timeOffset.offset
     );
-    return timestampComponents(closingDateTime, timeOffset.offset, timeOffset.timezone);
+    // offset has already been applied but needs to be passed out
+    return {
+      ...timestampComponents(closingDateTime, timeOffset.offset, timeOffset.timezone),
+      offset: timeOffset.offset
+    };
   }
   return null;
 }

@@ -313,7 +313,9 @@ describe('Warp Sync markets', () => {
             number: john.config.uploadBlockNumber,
           }),
           endTimestamp,
-          end,
+          end: expect.objectContaining({
+            number: end.number,
+          }),
           hash: expect.any(String),
           market: market.address,
         }),
@@ -353,7 +355,9 @@ describe('Warp Sync markets', () => {
             number: john.config.uploadBlockNumber,
           }),
           endTimestamp,
-          end,
+          end: expect.objectContaining({
+            number: end.number,
+          }),
           hash: expect.any(String),
           market: market.address,
         }),
@@ -388,7 +392,9 @@ describe('Warp Sync markets', () => {
             number: john.config.uploadBlockNumber,
           }),
           endTimestamp,
-          end,
+          end: expect.objectContaining({
+            number: end.number,
+          }),
           hash: expect.any(String),
           market: market.address,
         }),

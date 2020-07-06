@@ -540,7 +540,7 @@ describe('State API :: Accounts :: ', () => {
     expect(accountTransactionHistory).toMatchObject([
       {
         action: 'CLAIM_PARTICIPATION_TOKENS',
-        coin: 'DAI',
+        coin: 'REP',
         details: 'Claimed reporting fees from participation tokens',
         fee: '0',
         marketDescription: '',

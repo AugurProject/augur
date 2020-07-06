@@ -14,6 +14,8 @@ import {
   TIME_FORMATS,
   MARKET_CARD_FORMATS,
   FILTER_ALL,
+  PAGINATION_COUNT,
+  DEFAULT_MARKET_OFFSET,
 } from 'modules/common/constants';
 import { MARKETS } from 'modules/routes/constants/views';
 import {
@@ -153,6 +155,8 @@ export const DEFAULT_LOGIN_ACCOUNT_STATE: LoginAccount = {
     maxFee: MAX_FEE_02_PERCENT,
     maxLiquiditySpread: MAX_SPREAD_ALL_SPREADS,
     includeInvalidMarkets: INVALID_OPTIONS.Hide,
+    marketFilter: null,
+    sortBy: null,
   },
   timeframeData: {
     positions: 0,
@@ -210,13 +214,15 @@ const DEFAULT_UNIVERSE_STATE: Universe = {
   },
 };
 export const MARKET_FILTER = 'marketFilter';
-export const MARKET_SORT = 'marketSort';
+export const MARKET_SORT = 'sortBy';
 export const MARKET_MAX_FEES = 'maxFee';
 export const MARKET_MAX_SPREAD = 'maxLiquiditySpread';
 export const MARKET_SHOW_INVALID = 'includeInvalidMarkets';
 export const MARKET_TYPE_FILTER = 'marketTypeFilter';
 export const TRANSACTION_PERIOD = 'transactionPeriod';
 export const TEMPLATE_FILTER = 'templateFilter';
+export const MARKET_LIMIT = 'limit';
+export const MARKET_OFFSET = 'offset';
 const DEFAULT_FILTER_SORT_OPTIONS: FilterSortOptions = {
   [MARKET_FILTER]: MARKET_OPEN,
   [MARKET_SORT]: MARKET_SORT_PARAMS.RECENTLY_TRADED,
@@ -226,6 +232,8 @@ const DEFAULT_FILTER_SORT_OPTIONS: FilterSortOptions = {
   [MARKET_TYPE_FILTER]: FILTER_ALL,
   [TRANSACTION_PERIOD]: DAY,
   [TEMPLATE_FILTER]: TemplateFilters.templateOnly,
+  [MARKET_LIMIT]: PAGINATION_COUNT,
+  [MARKET_OFFSET]: DEFAULT_MARKET_OFFSET,
 };
 
 const DEFAULT_MARKETS_LIST_STATE: MarketsList = {

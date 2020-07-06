@@ -1,6 +1,6 @@
 import { SortedGroup } from 'modules/types';
 import { CUSTOM } from 'modules/common/constants';
-import { BITCOIN, USD, USDT, EUR, ETHEREUM, LITECOIN } from '@augurproject/sdk-lite';
+import { BITCOIN, USD, USDT, EUR, ETHEREUM, AUGUR, CHAINLINK, MAKER, ZEROX, BALANCER, COMPOUND } from '@augurproject/sdk-lite';
 
 export const setCategories: SortedGroup[] = [
   {
@@ -1213,7 +1213,8 @@ export const setCategories: SortedGroup[] = [
         value: 'US Politics',
         label: 'US Politics',
         subGroup: [
-          { value: 'Presidential', label: 'Presidential' },
+          { value: 'President', label: 'President' },
+          { value: 'Vice-President', label: 'Vice-President'},
           { value: 'Impeachment', label: 'Impeachment' },
           { value: 'Supreme Court', label: 'Supreme Court' },
           { value: 'House', label: 'House' },
@@ -1487,18 +1488,52 @@ export const setCategories: SortedGroup[] = [
         ],
       },
       {
-        value: LITECOIN,
-        label: LITECOIN,
+        value: AUGUR,
+        label: AUGUR,
         subGroup: [
-          { value: USD, label: USD },
-          { value: USDT, label: USDT },
-          { value: EUR, label: EUR },
+          { value: `REPUSD (crypto - Coinbase)`, label: 'REPUSD (crypto - Coinbase)' },
           { value: CUSTOM, label: CUSTOM },
         ],
       },
       {
-        value: 'REP',
-        label: 'REP',
+        value: MAKER,
+        label: MAKER,
+        subGroup: [
+          { value: `MKRUSD (crypto - Coinbase)`, label: 'MKRUSD (crypto - Coinbase)' },
+          { value: CUSTOM, label: CUSTOM },
+        ],
+      },
+      {
+        value: COMPOUND,
+        label: COMPOUND,
+        subGroup: [
+          { value: `COMPUSD (crypto - Coinbase)`, label: 'COMPUSD (crypto - Coinbase)' },
+          { value: CUSTOM, label: CUSTOM },
+        ],
+      },
+      {
+        value: BALANCER,
+        label: BALANCER,
+        subGroup: [
+          { value: `BALUSD (crypto - Coinbase)`, label: 'BALUSD (crypto - Coinbase)' },
+          { value: CUSTOM, label: CUSTOM },
+        ],
+      },
+      {
+        value: ZEROX,
+        label: ZEROX,
+        subGroup: [
+          { value: `ZRXUSD (crypto - Coinbase)`, label: 'ZRXUSD (crypto - Coinbase)' },
+          { value: CUSTOM, label: CUSTOM },
+        ],
+      },
+      {
+        value: CHAINLINK,
+        label: CHAINLINK,
+        subGroup: [
+          { value: `LINKUSD (crypto - Coinbase)`, label: 'LINKUSD (crypto - Coinbase)' },
+          { value: CUSTOM, label: CUSTOM },
+        ],
       },
       { value: CUSTOM, label: CUSTOM },
     ],

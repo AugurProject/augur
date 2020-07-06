@@ -278,7 +278,7 @@ export function checkForUserInputFilled(
       (input.type === TemplateInputType.TEXT ||
         input.type === TemplateInputType.USER_DESCRIPTION_OUTCOME ||
         input.type === TemplateInputType.USER_DESCRIPTION_DROPDOWN_OUTCOME ||
-        input.type === TemplateInputType.DATESTART ||
+        input.type === TemplateInputType.DATEYEAR ||
         input.type === TemplateInputType.DROPDOWN ||
         input.type === TemplateInputType.DROPDOWN_QUESTION_DEP ||
         input.type === TemplateInputType.DENOMINATION_DROPDOWN) &&
@@ -321,7 +321,7 @@ export function checkForUserInputFilled(
           : 'Year(s) is outside of market timeframe';
       }
       return '';
-    } else if (input.type === TemplateInputType.DATESTART) {
+    } else if (input.type === TemplateInputType.DATEYEAR) {
       if (input.setEndTime === null) {
         return 'Choose a date';
       } else if (

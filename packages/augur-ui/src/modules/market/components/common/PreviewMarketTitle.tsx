@@ -1,6 +1,6 @@
 import React from 'react';
 import { buildMarketDescription } from 'modules/create-market/get-template';
-import { convertUnixToFormattedDate } from 'utils/format-date';
+import { convertUTCUnixToFormattedDate } from 'utils/format-date';
 import type {
   TemplateInput,
   Template,
@@ -14,8 +14,6 @@ import { NewMarket } from 'modules/types';
 interface PreviewMarketTitleProps {
   market: NewMarket;
 }
-
-const wrapMarketName = (marketName: string) => <span>{`"${marketName}"`}</span>;
 
 const PreviewMarketTitle: React.FC<PreviewMarketTitleProps> = ({ market }) =>
   market.template ? (
@@ -37,7 +35,7 @@ const MarketTemplateTitle: React.FC<MarketTemplateTitleProps> = ({
   const convertedInputs: TemplateInput[] = template.inputs.map(i => {
     let userInput = i.userInput;
     if (i.type === TemplateInputType.ESTDATETIME) {
-      userInput = convertUnixToFormattedDate(Number(i.userInput))
+      userInput = convertUTCUnixToFormattedDate(Number(i.userInput))
         .formattedLocalShortDateTimeWithTimezone;
     }
 

@@ -100,6 +100,7 @@ const login = (account: string) => {
     mixedCaseAddress: address,
     meta: {
       address,
+      provider,
       signer: provider.getSigner(),
       email: null,
       profileImage: null,

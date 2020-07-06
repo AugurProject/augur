@@ -79,7 +79,7 @@ export const transferFunds = (
         }
       }
     } finally {
-      updateAssets(true);
+      setTimeout(() => updateAssets(true), 1000);
     }
   };
 };

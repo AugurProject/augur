@@ -45,6 +45,7 @@ import {
   transferFunds,
 } from 'modules/auth/actions/transfer-funds';
 import { getTransactionLabel } from 'modules/auth/helpers/get-gas-price';
+import titleCase from 'utils/title-case';
 
 function sanitizeArg(arg) {
   return arg == null || arg === '' ? '' : arg;
@@ -99,6 +100,25 @@ export const TransferForm = () => {
   const [gasCosts, setGasCosts] = useState(
     createBigNumber(getGasInDai(fallBackGasCosts[DAI.toLowerCase()]).value)
   );
+  const getOptions = () => {
+    const tokenOptions = {
+      [DAI]: {
+        label: DAI,
+        value: DAI,
+      },
+      [REP]: {
+        label: REP,
+        value: REP,
+      },
+      [ETH]: {
+        label: ETH,
+        value: ETH,
+      },
+    };
+    if (useSigner && !tokenName) return [tokenOptions[DAI]];
+    if (useSigner && tokenName) return [tokenOptions[tokenName]];
+    return [tokenOptions[DAI], tokenOptions[ETH], tokenOptions[REP]];
+  };
   const [state, setState] = useState({
     address: useSigner ? account : '',
     gasEstimateInDai: getGasInDai(fallBackGasCosts[DAI.toLowerCase()]),
@@ -106,27 +126,7 @@ export const TransferForm = () => {
       address: '',
       amount: '',
     },
-    options: useSigner
-      ? [
-          {
-            label: DAI,
-            value: DAI,
-          },
-        ]
-      : [
-          {
-            label: DAI,
-            value: DAI,
-          },
-          {
-            label: ETH,
-            value: ETH,
-          },
-          {
-            label: REP,
-            value: REP,
-          },
-        ],
+    options: getOptions()
   });
 
   async function getGasCost(currency) {
@@ -161,6 +161,10 @@ export const TransferForm = () => {
   useEffect(() => {
     getGasCost(currency);
   }, [currency]);
+
+  useEffect(() => {
+    setCurrency(state.options[0].value);
+  }, []);
 
   const handleMax = () => {
     const balance = useSigner
@@ -344,6 +348,23 @@ export const TransferForm = () => {
             />
           </div>
           <div>
+            <h1>Transfer {useSigner ? `my ${titleCase(tokenName)}` : 'funds'}</h1>
+            <h2>Transfer {useSigner ? `${titleCase(tokenName)} to your Trading account` : 'funds to another address'}</h2>
+          </div>
+        </div>
+        <main>
+          <div className={Styles.GroupedForm}>
+            <div>
+              <label htmlFor='recipient'>Recipient address</label>
+              <TextInput
+                type='text'
+                value={address}
+                placeholder='0x...'
+                disabled={useSigner}
+                onChange={addressChange}
+                errorMessage={errors.address.length > 0 ? errors.address : ''}
+              />
+            </div>
             <div>
               <label htmlFor="currency">Currency</label>
               <span>Available: {balance}</span>
@@ -372,7 +393,7 @@ export const TransferForm = () => {
               }
             />
           </div>
-        </div>
+        </main>
         <Breakdown rows={breakdown} />
       </main>
       <div className={Styles.ButtonsRow}>

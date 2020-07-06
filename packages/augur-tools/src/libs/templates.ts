@@ -1,6 +1,5 @@
 import { TemplateInput } from '@augurproject/templates';
 import { REQUIRED } from '@augurproject/sdk-lite';
-import { formatBytes32String } from 'ethers/utils';
 
 export const fillInString = (str: string, inputs: TemplateInput[], values) => {
   return inputs.reduce((acc, input) => {
