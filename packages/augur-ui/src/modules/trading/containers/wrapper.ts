@@ -36,7 +36,7 @@ const getMarketPath = id => {
 };
 
 const mapStateToProps = (state: AppState, ownProps) => {
-  const { authStatus, loginAccount, appStatus, accountPositions, userOpenOrders, blockchain, newMarket } = state;
+  const { authStatus, loginAccount, appStatus, accountPositions, userOpenOrders, blockchain, newMarket, env } = state;
   const marketId = ownProps.market.id;
   const hasHistory = !!accountPositions[marketId] || !!userOpenOrders[marketId];
   const {
@@ -62,6 +62,7 @@ const mapStateToProps = (state: AppState, ownProps) => {
     availableDai,
     gsnUnavailable: isGSNUnavailable(state),
     endTime: ownProps.initialLiquidity ? newMarket.setEndTime : ownProps.market.endTime,
+    disableTrading: env?.ui?.reportingOnly,
   };
 };
 

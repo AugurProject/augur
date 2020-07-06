@@ -62,6 +62,7 @@ interface WrapperProps {
   gsnUnavailable: boolean;
   initializeGsnWallet: Function;
   endTime: number;
+  disableTrading?: boolean;
 }
 
 interface WrapperState {
@@ -456,6 +457,7 @@ class Wrapper extends Component<WrapperProps, WrapperState> {
       gsnUnavailable,
       initializeGsnWallet,
       gsnWalletInfoSeen,
+      disableTrading,
     } = this.props;
     let {
       marketType,
@@ -518,7 +520,7 @@ class Wrapper extends Component<WrapperProps, WrapperState> {
           }
         }}
         disabled={
-          !trade || !trade.limitPrice || (gsnUnavailable && isOpenOrder) || insufficientFunds || (postOnlyOrder && trade.numFills > 0)
+          !trade || !trade.limitPrice || (gsnUnavailable && isOpenOrder) || insufficientFunds || (postOnlyOrder && trade.numFills > 0 || (disableTrading))
         }
       />
     );

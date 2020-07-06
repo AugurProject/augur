@@ -161,6 +161,7 @@ class Confirm extends Component<ConfirmProps, ConfirmState> {
       selectedOutcomeId,
       sweepStatus,
       postOnlyOrder,
+      disableTrading,
     } = props || this.props;
 
     const {
@@ -322,6 +323,14 @@ class Confirm extends Component<ConfirmProps, ConfirmState> {
         header: 'POST ONLY ORDER',
         type: ERROR,
         message: `Can not match existing order.`,
+      };
+    }
+
+    if (disableTrading && !tradingTutorial) {
+      messages = {
+        header: 'Reporting Only',
+        type: WARNING,
+        message: 'Trading is disabled',
       };
     }
 

@@ -110,6 +110,7 @@
     "averageBlocktime": 2000,
     "liteProvider": "jsonrpc",
     "trackBestOffer": false,
+    "reportingOnly": false,
     "fallbackProvider": "torus"
   },
   "averageBlocktime": 2000

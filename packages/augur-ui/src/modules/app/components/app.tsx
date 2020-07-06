@@ -107,6 +107,8 @@ interface AppProps {
   whichChatPlugin: string;
   appStatus: AppStatus;
   ethReserveInDai: FormattedNumber;
+  disableMarketCreation: boolean;
+  env: SDKConfiguration;
 }
 
 export default class AppView extends Component<AppProps> {
@@ -222,6 +224,7 @@ export default class AppView extends Component<AppProps> {
       updateMobileMenuState,
       sidebarStatus,
       modal,
+      disableMarketCreation,
     } = this.props;
     if (isMobile !== prevProps.isMobile) {
       updateMobileMenuState(MOBILE_MENU_STATES.CLOSED);
@@ -229,7 +232,9 @@ export default class AppView extends Component<AppProps> {
     if (universe.forkingInfo !== prevProps.universe.forkingInfo) {
       this.sideNavMenuData[5].disabled = !!universe.forkingInfo;
     }
-
+    if (disableMarketCreation !== prevProps.disableMarketCreation) {
+      this.sideNavMenuData[5].disabled = disableMarketCreation;
+    }
     if (location !== prevProps.location) {
       const nextBasePath = parsePath(location.pathname)[0];
       const lastBasePath = parsePath(prevProps.location.pathname)[0];
@@ -405,6 +410,7 @@ export default class AppView extends Component<AppProps> {
       isMobile,
       appStatus,
       ethReserveInDai,
+      disableMarketCreation,
     } = this.props;
     this.sideNavMenuData[1].showAlert =
       notifications.filter(item => item.isNew).length > 0;
@@ -498,6 +504,7 @@ export default class AppView extends Component<AppProps> {
                 createFundedGsnWallet={createFundedGsnWallet}
                 whichChatPlugin={whichChatPlugin}
                 ethReserveInDai={ethReserveInDai}
+                disableMarketCreation={disableMarketCreation}
               />
 
               {/* HIDDEN ON MOBILE */}
@@ -510,6 +517,7 @@ export default class AppView extends Component<AppProps> {
                 walletBalances={walletBalances}
                 updateModal={updateModal}
                 ethReserveInDai={ethReserveInDai}
+                disableMarketCreation={disableMarketCreation}
               />
             </section>
             {!isMobile && <StatusErrorMessage />}
