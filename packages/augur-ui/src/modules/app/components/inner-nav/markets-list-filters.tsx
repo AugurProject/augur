@@ -47,19 +47,20 @@ const MarketsListFilters = ({
     isMobile,
     marketsList: { isSearching },
     loginAccount: { settings },
-    filterSortOptions: {
-      maxFee,
-      maxLiquiditySpread,
-      includeInvalidMarkets,
-      templateFilter: allTemplateFilter,
-      marketTypeFilter,
-      limit,
-      sortBy,
-      offset,
-      marketFilter,
-    },
+    filterSortOptions,
     actions: { updateFilterSortOptions, updateMarketsList },
   } = useAppStatusStore();
+  const {
+    maxFee,
+    maxLiquiditySpread,
+    includeInvalidMarkets,
+    templateFilter: allTemplateFilter,
+    marketTypeFilter,
+    limit,
+    sortBy,
+    offset,
+    marketFilter,
+  } = filterSortOptions;
   const [showFilters, setShowFilters] = useState(false);
 
   useEffect(() => {
