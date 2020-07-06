@@ -100,7 +100,7 @@ const CoreProperties: React.FC<CorePropertiesProps> = ({
                 value={
                   market.settlementFeePercent
                     ? formatPercent(market.settlementFeePercent.formattedValue).full
-                    : formatPercent(Number(market.settlementFee) * 100).full
+                    : formatPercent(Number(market.settlementFee)).full
                 }
                 hint={
                   <>
