@@ -55,7 +55,10 @@ const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({
 
 const mergeProps = (sP, dP, oP) => {
   return {
-    fundType: sP.modal.fundType,
+    tokenToAdd: sP.modal.tokenToAdd,
+    initialAddFundsFlow: sP.modal.initialAddFundsFlow,
+    initialSwapToken: sP.modal.initialSwapToken,
+    useSigner: sP.modal.useSigner,
     addFundsTorus: dP.addFundsTorus,
     addFundsFortmatic: dP.addFundsFortmatic,
     analyticsEvent: () => dP.track(ADD_FUNDS, {}),
@@ -65,7 +68,6 @@ const mergeProps = (sP, dP, oP) => {
       }
       dP.closeModal();
     },
-    showTransfer: sP.modal.showTransfer || false,
     ...oP,
     ...sP,
   };
