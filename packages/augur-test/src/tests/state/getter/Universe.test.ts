@@ -276,7 +276,7 @@ describe('State API :: Universe :: ', () => {
       usersRep: johnRep.toFixed(),
       totalRepSupply: totalRep.toFixed(),
       totalOpenInterest: '0',
-      numberOfMarkets: 0,
+      numberOfMarkets: 1, // includes warp sync market
       children: [],
     });
     expect(universeChildren.creationTimestamp).toBeGreaterThan(0);
