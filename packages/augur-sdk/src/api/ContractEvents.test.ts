@@ -1,4 +1,4 @@
-import { Block, BlockTag } from 'ethers/providers';
+import { Block, BlockTag, JsonRpcProvider } from 'ethers/providers';
 import { ContractEvents } from './ContractEvents';
 import { NetworkId } from '@augurproject/utils';
 import { Filter, Log, LogValues, Provider } from '..';
@@ -25,7 +25,8 @@ function makeProviderMock(opts?: any): Provider {
     encodeContractFunction: (contractName: string, functionName: string, funcParams: any[]): string => '0x0',
     parseLogValues: (contractName: string, log: Log): LogValues => logValues,
     getBalance: (address: string) => balance,
-    sendAsync: (payload: JSONRPCRequestPayload) => Promise.resolve(null)
+    sendAsync: (payload: JSONRPCRequestPayload) => Promise.resolve(null),
+    setProvider: (provider: JsonRpcProvider): void => { },
   };
 }
 

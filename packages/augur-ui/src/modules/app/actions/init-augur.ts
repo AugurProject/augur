@@ -24,6 +24,7 @@ import {
   MODAL_NETWORK_MISMATCH,
   NETWORK_NAMES,
   SIGNIN_SIGN_WALLET,
+  MODAL_REPORTING_ONLY,
 } from 'modules/common/constants';
 import { listenForStartUpEvents } from 'modules/events/actions/listen-to-updates';
 import { windowRef } from 'utils/window-ref';
@@ -136,7 +137,7 @@ export const connectAugur = async (
   isInitialConnection = false,
   callback: NodeStyleCallback = logError
 ) => {
-  const { modal, loginAccount } = AppStatus.get();
+  const { loginAccount } = AppStatus.get();
   const windowApp = windowRef as WindowApp;
 
   const loggedInUser = getLoggedInUserFromLocalStorage();
@@ -233,6 +234,13 @@ export const connectAugur = async (
     }
   }
 
+  if (config?.ui?.reportingOnly) {
+    const { setModal } = AppStatus.actions;
+    setModal({
+      type: MODAL_REPORTING_ONLY
+    });
+  }  
+
   let universeId = config.addresses?.Universe || Augur.contracts.universe.address;
   if (
     windowApp.localStorage &&
@@ -249,11 +257,6 @@ export const connectAugur = async (
     universeId = !storedUniverseId ? universeId : storedUniverseId;
   }
   AppStatus.actions.updateUniverse({ id: universeId });
-  // If the network disconnected modal is being shown, but we are now
-  // connected -- hide it.
-  if (modal?.type === MODAL_NETWORK_DISCONNECTED) {
-    AppStatus.actions.closeModal();
-  }
 
   if (isInitialConnection) {
     loadAccountIfStored();
@@ -265,6 +268,8 @@ export const connectAugur = async (
 
   await augurSdk.connect();
 
+  // IPFS pin the UI hash.
+  augurSdk.client.pinHashByGatewayUrl(windowApp.location.href);
   callback(null);
 };
 

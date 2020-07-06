@@ -874,7 +874,7 @@ const EtherscanLinkTSX = ({
   const networkId = getNetworkId();
 
   if (!networkId) {
-    return null;
+    return {};
   }
 
   const networkLink = {
@@ -883,6 +883,7 @@ const EtherscanLinkTSX = ({
     4: 'https://rinkeby.etherscan.io/tx/',
     19: 'http://scan.thundercore.com/tx/',
     42: 'https://kovan.etherscan.io/tx/',
+    103: 'https://localHasNoEtherscanLink/tx/',
   };
 
   const baseUrl = networkLink[networkId];

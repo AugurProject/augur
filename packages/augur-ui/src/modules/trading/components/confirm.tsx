@@ -305,6 +305,14 @@ export const Confirm = ({
       };
     }
 
+    if (disableTrading && !tradingTutorial) {
+      messages = {
+        header: 'Reporting Only',
+        type: WARNING,
+        message: 'Trading is disabled',
+      };
+    }
+
     return messages;
   };
   const messages = constructMessages();

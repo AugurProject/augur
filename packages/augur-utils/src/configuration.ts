@@ -99,8 +99,8 @@ export interface SDKConfiguration {
     certificateKeyFile?: string;
   },
   plugins?: {
-    chat?: '3box'|'orbit',
-    comments?: '3box'|'facebook',
+    chat?: 'orbit',
+    comments?: 'facebook',
   },
   flash?: {
     useGSN?: boolean,
@@ -110,6 +110,7 @@ export interface SDKConfiguration {
   ui?: {
     showReloadModal?: boolean,
     trackBestOffer?: boolean,
+    reportingOnly?: boolean,
     fallbackProvider?: "jsonrpc" | "torus",
     liteProvider?: "jsonrpc" | "default"
   }
@@ -270,6 +271,7 @@ export const DEFAULT_SDK_CONFIGURATION: SDKConfiguration = {
   ui: {
     showReloadModal: true,
     trackBestOffer: true,
+    reportingOnly: false,
     fallbackProvider: "torus",
     liteProvider: "jsonrpc"
   }

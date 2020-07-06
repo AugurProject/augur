@@ -239,6 +239,7 @@ export interface RadioCardProps extends BaseRadioButtonProp {
   onChange?: Function;
   icon?: JSX.Element;
   useIconColors?: boolean;
+  inverseFill?: boolean;
 }
 
 interface RadioGroupProps {
@@ -395,7 +396,7 @@ export const determineVisible = (
   selected: string[]
 ) => {
   const showSecondaryDropdown = values[0] !== '' && secondaryOptions.length > 0;
-  const showTertiaryDropdown = tertiaryOptions.length > 0 && values[1] !== '';
+  const showTertiaryDropdown = tertiaryOptions.length > 0 && values[1] !== '' && !values[2];
   const customPrimary =
     selected[0] === CUSTOM ||
     (selected[0] &&
@@ -411,7 +412,7 @@ export const determineVisible = (
     (selected[2] &&
       !disabledTertiary &&
       !tertiaryOptions.map(option => option.value).includes(selected[2])) ||
-    (!showTertiaryDropdown && values[1] !== '');
+    (!showTertiaryDropdown && values[1] !== '') || values[2];
   return {
     showSecondaryDropdown,
     showTertiaryDropdown,
@@ -509,6 +510,7 @@ export const DropdownInputGroup = ({
         onChange={onChangeInput}
         errorMessage={!showDropdown ? errorMessage : ''}
         onAutoCompleteListSelected={null}
+        disabled={disabled}
       />
     )}
     {removable && !disabled && value !== '' && !showText && (
@@ -729,7 +731,7 @@ export class CategoryMultiSelect extends Component<
         )}
         {(showTertiaryDropdown || customTertiary) && (
           <DropdownInputGroup
-            defaultValue={selected[2]}
+            defaultValue={selected[2] || (!disableTertiaryCategory && tertiaryOptions.length > 0) ? (tertiaryOptions[0]?.label || tertiaryOptions[0]) : null}
             staticLabel="Sub Category"
             onChangeDropdown={choice => this.onChangeDropdown(choice, 2)}
             options={tertiaryOptions}
@@ -1271,11 +1273,13 @@ const RadioCard = ({
   checked,
   icon,
   useIconColors = false,
+  inverseFill = false,
 }: RadioCardProps) => (
   <div
     className={classNames(Styles.RadioCard, {
       [Styles.RadioCardActive]: checked,
       [Styles.CustomIcon]: icon && !useIconColors,
+      [Styles.InverseFill]: icon && inverseFill
     })}
     role="button"
     onClick={e => onChange(value)}

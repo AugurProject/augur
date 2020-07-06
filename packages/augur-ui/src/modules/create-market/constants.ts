@@ -8,6 +8,7 @@ import {
   AFFILIATE_FEE_DEFAULT,
   ZERO,
   ONE,
+  SETTLEMENT_FEE_PERCENT_DEFAULT,
 } from 'modules/common/constants';
 import { NewMarket } from 'modules/types';
 import * as icons from 'modules/common/icons';
@@ -39,7 +40,13 @@ import {
   INDEXES,
   BITCOIN,
   ETHEREUM,
-  LITECOIN,
+  COMPOUND,
+  BALANCER,
+  AUGUR,
+  MAKER,
+  ZEROX,
+  CHAINLINK,
+  ADDITIONAL_TOKENS,
   BOXING,
   MMA,
   CAR_RACING,
@@ -47,6 +54,7 @@ import {
   TV_MOVIES,
   SOCIAL_MEDIA,
 } from '@augurproject/sdk-lite';
+import { formatPercent } from 'utils/format-number';
 
 
 // Button Types
@@ -106,6 +114,11 @@ export const EMPTY_STATE: NewMarket = {
   categories: ['', '', ''],
   navCategories: ['', '', ''],
   settlementFee: SETTLEMENT_FEE_DEFAULT,
+  settlementFeePercent: formatPercent(SETTLEMENT_FEE_PERCENT_DEFAULT, {
+    positiveSign: false,
+    decimals: 4,
+    decimalsRounded: 4,
+  }),
   affiliateFee: AFFILIATE_FEE_DEFAULT,
   orderBook: {}, // for submit orders
   orderBookSorted: {}, // for order book table
@@ -193,9 +206,6 @@ export const MARKET_TYPE_NAME = {
   [SCALAR]: 'Scalar',
   [CATEGORICAL]: 'Categorical',
 };
-
-// Market Subtemplates
-export const AUGUR = 'Augur';
 
 const defaultDescription = '-  |  -';
 export interface MarketCardTemplate {
@@ -407,6 +417,7 @@ export const MARKET_SUB_TEMPLATES = {
       value: BITCOIN,
       header: BITCOIN,
       description: defaultDescription,
+      inverseFill: true,
       icon: icons.BTC,
     },
     {
@@ -416,16 +427,52 @@ export const MARKET_SUB_TEMPLATES = {
       icon: icons.ETH,
     },
     {
-      value: LITECOIN,
-      header: LITECOIN,
+      value: MAKER,
+      header: MAKER,
       description: defaultDescription,
-      icon: icons.LTC,
+      inverseFill: true,
+      icon: icons.MKR,
     },
     {
       value: AUGUR,
       header: AUGUR,
       description: defaultDescription,
       icon: icons.REP,
+    },
+    {
+      value: COMPOUND,
+      header: COMPOUND,
+      description: defaultDescription,
+      inverseFill: true,
+      icon: icons.COMP,
+    },
+    {
+      value: BALANCER,
+      header: BALANCER,
+      description: defaultDescription,
+      inverseFill: true,
+      icon: icons.BAL,
+    },
+    {
+      value: ZEROX,
+      header: ZEROX,
+      description: defaultDescription,
+      inverseFill: true,
+      icon: icons.ZRX,
+    },
+    {
+      value: CHAINLINK,
+      header: CHAINLINK,
+      description: defaultDescription,
+      inverseFill: true,
+      icon: icons.LINK,
+    },
+    {
+      value: ADDITIONAL_TOKENS,
+      header: ADDITIONAL_TOKENS,
+      description: defaultDescription,
+      inverseFill: true,
+      icon: icons.TOKENS,
     },
   ],
 };

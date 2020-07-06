@@ -88,7 +88,7 @@ export const FormDetails = ({ onChange, onError, isTemplate}: FormDetailsProps) 
     if (estInput) {
       resolutionTimeSubheader = `This templated market has a predefined event expiration date time, which is ${estInput.hoursAfterEst} hours after estimated schedule start time.`
     }
-    const dateStart = template.inputs.find(i => i.type === TemplateInputType.DATESTART);
+    const dateStart = template.inputs.find(i => i.type === TemplateInputType.DATEYEAR);
     if (dateStart && dateStart.daysAfterDateStart) {
       resolutionTimeSubheader = `This templated market has a predefined event expiration date, which is ${dateStart.daysAfterDateStart} days after start date in market question.`
     }
@@ -101,6 +101,7 @@ export const FormDetails = ({ onChange, onError, isTemplate}: FormDetailsProps) 
       resolutionTimeSubheader = `This templated market has a predefined event expiration date and time, which is based on the exchange in the market question.`
     }
   }
+
   return (
     <div
       className={classNames(Styles.FormDetails, {

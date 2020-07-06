@@ -14,7 +14,7 @@ import {
   Title,
   DescriptionMessage,
   AlertMessageProps,
-  Breakdown,
+  Breakdown, ButtonsRow,
 } from '../common';
 import { displayGasInDai } from 'modules/app/actions/get-ethToDai-rate';
 import { InitializeWalletModalNotice } from 'modules/common/labels';
@@ -149,6 +149,15 @@ export const ModalParticipate = () => {
     },
   ];
 
+  const buttons = [{
+    text: 'Buy',
+    action: () => submitForm(),
+    disabled: !isValid,
+  }, {
+    text: 'Cancel',
+    action: () => closeModal(),
+  }];
+
   return (
     <section className={Styles.ModalContainer}>
       <Title title={title} closeAction={() => closeModal()} />
@@ -163,6 +172,7 @@ export const ModalParticipate = () => {
         />
         <Breakdown rows={items} />
         <InitializeWalletModalNotice />
+        <ButtonsRow buttons={buttons}/>
       </div>
       <div className={Styles.ActionButtons}>
         <button className={Styles.Secondary} onClick={() => closeModal()}>

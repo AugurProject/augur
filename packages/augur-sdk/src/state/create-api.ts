@@ -1,8 +1,7 @@
-import { SDKConfiguration } from '@augurproject/sdk-lite';
 import { EthersSigner } from '@augurproject/contract-dependencies-ethers';
 import { EthersProvider } from '@augurproject/ethersjs-provider';
 import { SubscriptionEventName } from '@augurproject/sdk-lite';
-import { logger, LoggerLevels } from '@augurproject/utils';
+import { logger, LoggerLevels, SDKConfiguration } from '@augurproject/utils';
 import { BigNumber } from 'bignumber.js';
 import { SupportedProvider } from 'ethereum-types';
 import { JsonRpcProvider } from 'ethers/providers';
@@ -39,6 +38,9 @@ export function buildSyncStrategies(client:Augur, db:Promise<DB>, provider: Ethe
     const currentBlock = await provider.getBlock('latest');
     const warpController = new WarpController((await db), client, provider,
       uploadBlockNumber);
+
+    client.warpController = warpController;
+
     const warpSyncStrategy = new WarpSyncStrategy(warpController,
       logFilterAggregator.onLogsAdded, await db, provider);
 
