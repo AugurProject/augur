@@ -37,8 +37,7 @@ const addFundsFortmatic = async (amount, crypto, address) => {
 };
 
 const addFundsTorus = async (amount, address) => {
-  await window.torus.initiateTopup('wyre', {
-    selectedCurrency: 'USD',
+  await torus.showWallet('topup', {
     selectedAddress: address,
     fiatValue: amount.toNumber(),
     selectedCryptoCurrency: 'DAI',

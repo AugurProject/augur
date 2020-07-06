@@ -64,7 +64,9 @@ export const loginWithTorus = () => async (
       }
 
     } catch (error) {
-      document.querySelector('#torusWidget').remove();
+      if (document.querySelector('#torusWidget')) {
+        document.querySelector('#torusWidget').remove();
+      }
       // On error, we need to cleanup the second instance of the torus iframes
       const torusIframe = document.querySelectorAll('#torusIframe');
       if (torusIframe.length > 0 && torusIframe[1]) {
