@@ -8,7 +8,7 @@ import { MODAL_INITIALIZE_ACCOUNT, CREATEAUGURWALLET, TRANSACTIONS } from 'modul
 import { removePendingTransaction } from 'modules/pending-queue/actions/pending-queue-management';
 
 const mapStateToProps = (state: AppState, ownProps) => {
-  const { authStatus, loginAccount, appStatus, newMarket } = state;
+  const { authStatus, loginAccount, appStatus, newMarket, env } = state;
   const {
     gsnEnabled: GsnEnabled,
     walletStatus: walletStatus,
@@ -33,6 +33,7 @@ const mapStateToProps = (state: AppState, ownProps) => {
     GsnEnabled,
     walletStatus,
     sweepStatus,
+    disableTrading: env?.ui?.reportingOnly,
   };
 };
 
