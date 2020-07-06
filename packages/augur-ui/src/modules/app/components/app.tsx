@@ -504,7 +504,6 @@ export default class AppView extends Component<AppProps> {
                 createFundedGsnWallet={createFundedGsnWallet}
                 whichChatPlugin={whichChatPlugin}
                 ethReserveInDai={ethReserveInDai}
-                disableMarketCreation={disableMarketCreation}
               />
 
               {/* HIDDEN ON MOBILE */}
