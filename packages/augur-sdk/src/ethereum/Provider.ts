@@ -1,5 +1,5 @@
 import { Abi } from "ethereum";
-import { Block, BlockTag } from "ethers/providers";
+import { Block, BlockTag, JsonRpcProvider } from "ethers/providers";
 import { Filter, Log, LogValues } from "@augurproject/types";
 import { NetworkId } from "@augurproject/utils";
 import { ethers } from "ethers";
@@ -17,4 +17,5 @@ export interface Provider {
   parseLogValues(contractName: string, log: Log): LogValues;
   getBalance(address: string): Promise<ethers.utils.BigNumber>;
   sendAsync(payload: JSONRPCRequestPayload, callback: JSONRPCErrorCallback): void;
+  setProvider(provider: JsonRpcProvider);
 }

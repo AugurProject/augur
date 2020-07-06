@@ -52,6 +52,7 @@ import {
 import { Getter } from './Router';
 import { sortOptions } from './types';
 import { flattenZeroXOrders } from './ZeroXOrdersGetters';
+import { cloneDeep } from 'lodash';
 
 const MaxLiquiditySpreadValue = {
   '100': null,
@@ -316,6 +317,7 @@ export class Markets {
     ) {
       throw new Error('Unknown universe: ' + params.universe);
     }
+    params = cloneDeep(params);
 
     params.includeWarpSyncMarkets =
       typeof params.includeWarpSyncMarkets === 'undefined'
@@ -702,12 +704,11 @@ export class Markets {
     const expirationTime = flattenZeroXOrders(orders)
       .reduce(
         (p, o) =>
-          o.expirationTimeSeconds && (o.expirationTimeSeconds.lt(p) || p.eq(0))
+          o.expirationTimeSeconds && (o.expirationTimeSeconds < p || p === 0)
             ? o.expirationTimeSeconds
             : p,
-        new BigNumber(0)
+        0
       )
-      .toNumber();
 
     return {
       marketId: params.marketId,
@@ -1063,6 +1064,21 @@ function getPeriodStartTime(
     (secondsSinceGlobalStart % period) +
     globalStarttime
   );
+}
+
+async function getOrderFilledLogsByMarket(
+  db: DB,
+  markets: MarketData[],
+): Promise<{}> {
+  const marketIds = _.map(markets, 'market');
+  const orderFilledLogs = await db.ParsedOrderEvent.where('market')
+    .anyOfIgnoreCase(marketIds)
+    .and(item => {
+      return item.eventType === OrderEventType.Fill;
+    })
+    .toArray();
+
+  return _.groupBy(orderFilledLogs, 'market');
 }
 
 async function getMarketsInfo(

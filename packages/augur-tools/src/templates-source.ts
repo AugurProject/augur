@@ -3,7 +3,6 @@ import {
   BASKETBALL_EVENT_DEP_TEAMS,
   CRYPTO_BTC_CURRENCY_MARKETS,
   CRYPTO_ETH_CURRENCY_MARKETS,
-  CRYPTO_LTC_CURRENCY_MARKETS,
   ENTERTAINMENT_EVENT_DEP_TEAMS,
   FIN_EXCHANGES_CLOSING_OFFSETS,
   FIN_EXCHANGES_CURRENCIES,
@@ -23,6 +22,7 @@ import {
   SOCCER_GENDER_EVENTS,
   SOCCER_CUSTOM_GENDER_EVENTS,
   SOCCER_CUSTOM_DEP_YEARS,
+  CRYPTO_TOKEN_CURRENCY_MARKETS,
 } from './templates-lists';
 import {
   AMERICAN_FOOTBALL,
@@ -47,7 +47,7 @@ import {
   HORSE_RACING,
   INDEXES,
   LEAGUE_NAME,
-  LITECOIN,
+  AUGUR,
   LPGA,
   MEDICAL,
   MENS_LEAGUES,
@@ -82,6 +82,12 @@ import {
   TWITTER,
   INSTAGRAM,
   ENTITY,
+  MAKER,
+  COMPOUND,
+  BALANCER,
+  ZEROX,
+  CHAINLINK,
+  ADDITIONAL_TOKENS,
 } from '@augurproject/sdk-lite';
 
 import { TemplateInputType, TEXT_PLACEHOLDERS, ValidationType } from './templates-template';
@@ -104,8 +110,8 @@ export const TEMPLATES = {
         templates: [
           {
             marketType: CATEGORICAL,
-            question: `MMA: [0] vs. [1], Who will win?`,
-            example: `MMA: Donald Cerrone vs. Conor McGregor, Who will win?\nEstimated schedule start time: Jan 18, 2020 8:20 pm EST`,
+            question: `MMA: [0] vs. [1]; Who will win?`,
+            example: `MMA: Donald Cerrone vs. Conor McGregor; Who will win?\nEstimated schedule start time: Jan 18, 2020 8:20 pm EST`,
             header: `[0] vs. [1]`,
             title: `Money Line`,
             groupName: groupTypes.MONEY_LINE,
@@ -157,8 +163,8 @@ export const TEMPLATES = {
           },
           {
             marketType: CATEGORICAL,
-            question: `MMA: [0] vs. [1] (O/U), [2].5 Rounds?`,
-            example: `MMA: Donald Cerrone vs. Conor McGregor (O/U), 1.5 Rounds?\nEstimated schedule start time: Jan 18, 2020 8:20 pm EST`,
+            question: `MMA (O/U): [0] vs. [1]; Over/Under [2].5 Rounds?`,
+            example: `MMA (O/U): Donald Cerrone vs. Conor McGregor; Over/Under 1.5 Rounds?\nEstimated schedule start time: Jan 18, 2020 8:20 pm EST`,
             title: `Over/Under [2].5 Rounds`,
             header: `[0] vs. [1]`,
             groupName: groupTypes.OVER_UNDER,
@@ -224,8 +230,8 @@ export const TEMPLATES = {
           },
           {
             marketType: CATEGORICAL,
-            question: `MMA: [0] vs. [1], Method of victory?`,
-            example: `MMA: Donald Cerrone vs. Conor McGregor, Method of victory?\nEstimated schedule start time: Jan 18, 2020 8:20 pm EST`,
+            question: `MMA: [0] vs. [1]; Method of victory?`,
+            example: `MMA: Donald Cerrone vs. Conor McGregor; Method of victory?\nEstimated schedule start time: Jan 18, 2020 8:20 pm EST`,
             title: `Method of victory`,
             header: `[0] vs. [1]`,
             groupName: groupTypes.ADDITIONAL,
@@ -316,9 +322,9 @@ export const TEMPLATES = {
           },
           {
             marketType: CATEGORICAL,
-            question: `MMA: [0] vs. [1], How will fight end?`,
-            example: `MMA UFC: Donald Cerrone vs. Conor McGregor, How will fight end?\nEstimated schedule start time: Jan 18, 2020 8:20 pm EST`,
-            title: `How will fight end`,
+            question: `MMA: [0] vs. [1]; How will the fight end?`,
+            example: `MMA UFC: Donald Cerrone vs. Conor McGregor; How will the fight end?\nEstimated schedule start time: Jan 18, 2020 8:20 pm EST`,
+            title: `How will the fight end`,
             header: `[0] vs. [1]`,
             groupName: groupTypes.ADDITIONAL,
             inputs: [
@@ -393,8 +399,8 @@ export const TEMPLATES = {
           },
           {
             marketType: CATEGORICAL,
-            question: `MMA: [0] vs. [1], What round will the fight end?`,
-            example: `MMA: Donald Cerrone vs. Conor McGregor, What round will the fight end?\nEstimated schedule start time: Jan 18, 2020 8:20 pm EST`,
+            question: `MMA: [0] vs. [1]; What round will the fight end?`,
+            example: `MMA: Donald Cerrone vs. Conor McGregor; What round will the fight end?\nEstimated schedule start time: Jan 18, 2020 8:20 pm EST`,
             title: `What round will the fight end`,
             header: `[0] vs. [1]`,
             groupName: groupTypes.ADDITIONAL,
@@ -480,8 +486,8 @@ export const TEMPLATES = {
         templates: [
           {
             marketType: CATEGORICAL,
-            question: `Boxing: [0] vs. [1], Who will win?`,
-            example: `Boxing: Robert Helenius vs. Adam Kownacki, Who will win?\nEstimated schedule start time: Feb 10, 2020 8:20 pm EST`,
+            question: `Boxing: [0] vs. [1]; Who will win?`,
+            example: `Boxing: Robert Helenius vs. Adam Kownacki; Who will win?\nEstimated schedule start time: Feb 10, 2020 8:20 pm EST`,
             header: `[0] vs. [1]`,
             title: `Money Line`,
             groupName: groupTypes.MONEY_LINE,
@@ -533,8 +539,8 @@ export const TEMPLATES = {
           },
           {
             marketType: CATEGORICAL,
-            question: `Boxing: [0] vs. [1] (O/U), [3].5 Rounds?`,
-            example: `Boxing: Robert Helenius vs. Adam Kownacki (O/U), 5.5 Rounds?\nEstimated schedule start time: Jan 18, 2020 8:20 pm EST`,
+            question: `Boxing (O/U): [0] vs. [1]; Over/Under [3].5 Rounds?`,
+            example: `Boxing (O/U): Robert Helenius vs. Adam Kownacki; Over/Under 5.5 Rounds?\nEstimated schedule start time: Jan 18, 2020 8:20 pm EST`,
             title: `Over/Under [3].5 Rounds`,
             header: `[0] vs. [1]`,
             groupName: groupTypes.OVER_UNDER,
@@ -601,8 +607,8 @@ export const TEMPLATES = {
           },
           {
             marketType: CATEGORICAL,
-            question: `Boxing: [0] vs. [1], Method of victory?`,
-            example: `Boxing: Robert Helenius vs. Adam Kownacki, Method of victory?\nEstimated schedule start time: Jan 18, 2020 8:20 pm EST`,
+            question: `Boxing: [0] vs. [1]; Method of victory?`,
+            example: `Boxing: Robert Helenius vs. Adam Kownacki; Method of victory?\nEstimated schedule start time: Jan 18, 2020 8:20 pm EST`,
             title: `Method of victory`,
             header: `[0] vs. [1]`,
             groupName: groupTypes.ADDITIONAL,
@@ -693,9 +699,9 @@ export const TEMPLATES = {
           },
           {
             marketType: CATEGORICAL,
-            question: `Boxing: [0] vs. [1], How will fight end?`,
-            example: `Boxing: Robert Helenius vs. Adam Kownacki, How will fight end?\nEstimated schedule start time: Jan 18, 2020 8:20 pm EST`,
-            title: `How will fight end`,
+            question: `Boxing: [0] vs. [1]; How will the fight end?`,
+            example: `Boxing: Robert Helenius vs. Adam Kownacki; How will the fight end?\nEstimated schedule start time: Jan 18, 2020 8:20 pm EST`,
+            title: `How will the fight end`,
             header: `[0] vs. [1]`,
             groupName: groupTypes.ADDITIONAL,
             inputs: [
@@ -764,8 +770,8 @@ export const TEMPLATES = {
           },
           {
             marketType: CATEGORICAL,
-            question: `Boxing: [0] vs. [1], What round will the fight end?`,
-            example: `Boxing: Robert Helenius vs. Adam Kownacki, What round will the fight end?\nEstimated schedule start time: Jan 18, 2020 8:20 pm EST`,
+            question: `Boxing: [0] vs. [1]; What round will the fight end?`,
+            example: `Boxing: Robert Helenius vs. Adam Kownacki; What round will the fight end?\nEstimated schedule start time: Jan 18, 2020 8:20 pm EST`,
             title: `What round will the fight end`,
             header: `[0] vs. [1]`,
             groupName: groupTypes.ADDITIONAL,
@@ -1904,7 +1910,6 @@ export const TEMPLATES = {
                 placeholder: `Event`,
                 groupKey: EVENT,
                 values: LIST_VALUES.HOCKEY_EVENT,
-                categoryDestId: 2,
               },
               {
                 id: 2,
@@ -1932,6 +1937,50 @@ export const TEMPLATES = {
                 },
                 {
                   text: `If the league suspends play and starts up again at a later date, and the winner of the event named in market is determined after the Market’s Event Expiration begins, this market should resolve as 'Invalid'.`,
+                },
+              ],
+            },
+          },
+          {
+            marketType: CATEGORICAL,
+            question: `Which NHL team will [0] sign with?`,
+            example: `Which NHL team will Mike Hoffman sign with?`,
+            header: `[0] will sign with`,
+            groupName: groupTypes.FUTURES,
+            inputs: [
+              {
+                id: 0,
+                type: TemplateInputType.TEXT,
+                placeholder: `Player`,
+                groupKey: TEAM_A,
+              },
+              {
+                id: 1,
+                type: TemplateInputType.ADDED_OUTCOME,
+                placeholder: `Other (Field)`,
+              },
+              {
+                id: 2,
+                type: TemplateInputType.ADDED_OUTCOME,
+                placeholder: `Unsigned`,
+              },
+              {
+                id: 3,
+                type: TemplateInputType.USER_DROPDOWN_OUTCOME,
+                placeholder: `Select Team`,
+                values: LIST_VALUES.NHL_TEAMS,
+              },
+            ],
+            resolutionRules: {
+              [REQUIRED]: [
+                {
+                  text: `Player named must have signed a contract on or before the markets Event Expiration`,
+                },
+                {
+                  text: `If the player signs with a team not named in the outcomes, 'Other (Field)' should be determined the winning outcome`,
+                },
+                {
+                  text: `If the player is not officially signed by the markets Event Expiration 'Unsigned' should be determined the winning outcome`,
                 },
               ],
             },
@@ -3861,7 +3910,6 @@ export const TEMPLATES = {
                     placeholder: `Event`,
                     groupKey: EVENT,
                     values: LIST_VALUES.BASKETBALL_EVENT,
-                    categoryDestId: 2,
                   },
                   {
                     id: 2,
@@ -3890,6 +3938,51 @@ export const TEMPLATES = {
                     },
                     {
                       text: `If the league suspends play and starts up again at a later date, and the winner of the event named in the market is determined after the Market’s Event Expiration begins, this market should resolve as 'Invalid'.`,
+                    },
+                  ],
+                },
+              },
+              {
+                marketType: CATEGORICAL,
+                question: `Which NBA team will [0] sign with?`,
+                example: `Which NBA team will Anthony Davis sign with?`,
+                header: `[0] will sign with`,
+                groupName: groupTypes.FUTURES,
+                inputs: [
+                  {
+                    id: 0,
+                    type: TemplateInputType.TEXT,
+                    placeholder: `Player`,
+                    groupKey: TEAM_A,
+                  },
+                  {
+                    id: 1,
+                    type: TemplateInputType.ADDED_OUTCOME,
+                    placeholder: `Other (Field)`,
+                  },
+                  {
+                    id: 2,
+                    type: TemplateInputType.ADDED_OUTCOME,
+                    placeholder: `Unsigned`,
+                  },
+                  {
+                    id: 3,
+                    type:
+                      TemplateInputType.USER_DROPDOWN_OUTCOME,
+                    placeholder: `Select Team`,
+                    values: LIST_VALUES.NBA_TEAMS,
+                  },
+                ],
+                resolutionRules: {
+                  [REQUIRED]: [
+                    {
+                      text: `Player named must have signed a contract on or before the markets Event Expiration`,
+                    },
+                    {
+                      text: `If the player signs with a team not named in the outcomes, 'Other (Field)' should be determined the winning outcome`,
+                    },
+                    {
+                      text: `If the player is not officially signed by the markets Event Expiration 'Unsigned' should be determined the winning outcome`,
                     },
                   ],
                 },
@@ -5607,6 +5700,50 @@ export const TEMPLATES = {
           },
           {
             marketType: CATEGORICAL,
+            question: `Which MLB team will [0] sign with?`,
+            example: `Which MLB team will Gerrit Cole sign with?`,
+            header: `[0] will sign with`,
+            groupName: groupTypes.FUTURES,
+            inputs: [
+              {
+                id: 0,
+                type: TemplateInputType.TEXT,
+                placeholder: `Player`,
+                groupKey: TEAM_A,
+              },
+              {
+                id: 1,
+                type: TemplateInputType.ADDED_OUTCOME,
+                placeholder: `Other (Field)`,
+              },
+              {
+                id: 2,
+                type: TemplateInputType.ADDED_OUTCOME,
+                placeholder: `Unsigned`,
+              },
+              {
+                id: 3,
+                type: TemplateInputType.USER_DROPDOWN_OUTCOME,
+                placeholder: `Select Team`,
+                values: LIST_VALUES.MLB_TEAMS,
+              },
+            ],
+            resolutionRules: {
+              [REQUIRED]: [
+                {
+                  text: `Player named must have signed a contract on or before the markets Event Expiration`,
+                },
+                {
+                  text: `If the player signs with a team not named in the outcomes, 'Other (Field)' should be determined the winning outcome`,
+                },
+                {
+                  text: `If the player is not officially signed by the markets Event Expiration 'Unsigned' should be determined the winning outcome`,
+                },
+              ],
+            },
+          },
+          {
+            marketType: CATEGORICAL,
             question: `MLB: Which player will win the [0] [1]?`,
             example: `MLB: Which Player will win the 2019 American League Cy Young award?`,
             header: `[0] [1] winner`,
@@ -6013,6 +6150,7 @@ export const TEMPLATES = {
                     id: 0,
                     type: TemplateInputType.DROPDOWN,
                     values: LIST_VALUES.OLYMPIC_MEDALS,
+                    categoryDestId: 2,
                     placeholder: `Medal type`,
                   },
                   {
@@ -6262,6 +6400,7 @@ export const TEMPLATES = {
                     type: TemplateInputType.DROPDOWN,
                     values: LIST_VALUES.OLYMPIC_MEDALS,
                     placeholder: `Medal type`,
+                    categoryDestId: 2,
                     groupKey: EVENT,
                   },
                   {
@@ -6364,6 +6503,7 @@ export const TEMPLATES = {
                     id: 0,
                     type: TemplateInputType.DROPDOWN,
                     values: LIST_VALUES.OLYMPIC_MEDALS,
+                    categoryDestId: 2,
                     placeholder: `Medal type`,
                   },
                   {
@@ -6623,7 +6763,7 @@ export const TEMPLATES = {
               {
                 marketType: YES_NO,
                 question: `NFL: Will [0] win the [1] [2] award?`,
-                example: `NFL: Will Patrick Mahomes win the 2019-20 MVP award?`,
+                example: `NFL: Will Patrick Mahomes win the 2020 MVP award?`,
                 inputs: [
                   {
                     id: 0,
@@ -6633,9 +6773,9 @@ export const TEMPLATES = {
                   {
                     id: 1,
                     type: TemplateInputType.DROPDOWN,
-                    placeholder: `Year Range`,
+                    placeholder: `Year`,
                     validationType: ValidationType.YEAR_YEAR_RANGE,
-                    values: LIST_VALUES.YEAR_RANGE,
+                    values: LIST_VALUES.YEARS,
                   },
                   {
                     id: 2,
@@ -6874,7 +7014,6 @@ export const TEMPLATES = {
                     placeholder: `Event`,
                     groupKey: EVENT,
                     values: LIST_VALUES.FOOTBALL_EVENT,
-                    categoryDestId: 2,
                   },
                   {
                     id: 2,
@@ -6909,8 +7048,53 @@ export const TEMPLATES = {
               },
               {
                 marketType: CATEGORICAL,
+                question: `Which NFL team will [0] sign with?`,
+                example: `Which NFL team will Jadeveon Clowney sign with?`,
+                header: `[0] will sign with`,
+                groupName: groupTypes.FUTURES,
+                inputs: [
+                  {
+                    id: 0,
+                    type: TemplateInputType.TEXT,
+                    placeholder: `Player`,
+                    groupKey: TEAM_A,
+                  },
+                  {
+                    id: 1,
+                    type: TemplateInputType.ADDED_OUTCOME,
+                    placeholder: `Other (Field)`,
+                  },
+                  {
+                    id: 2,
+                    type: TemplateInputType.ADDED_OUTCOME,
+                    placeholder: `Unsigned`,
+                  },
+                  {
+                    id: 3,
+                    type:
+                      TemplateInputType.USER_DROPDOWN_OUTCOME,
+                    placeholder: `Select Team`,
+                    values: LIST_VALUES.NFL_TEAMS,
+                  },
+                ],
+                resolutionRules: {
+                  [REQUIRED]: [
+                    {
+                      text: `Player named must have signed a contract on or before the markets Event Expiration`,
+                    },
+                    {
+                      text: `If the player signs with a team not named in the outcomes, 'Other (Field)' should be determined the winning outcome`,
+                    },
+                    {
+                      text: `If the player is not officially signed by the markets Event Expiration 'Unsigned' should be determined the winning outcome`,
+                    },
+                  ],
+                },
+              },
+              {
+                marketType: CATEGORICAL,
                 question: `Which NFL player will win the [0] season [1] award?`,
-                example: `Which NFL player will win the 2019-20 season Most Valuable Player award?`,
+                example: `Which NFL player will win the 2020 season Most Valuable Player award?`,
                 header: `[0] season [1] award winner`,
                 groupName: groupTypes.FUTURES,
                 inputs: [
@@ -6920,7 +7104,7 @@ export const TEMPLATES = {
                     placeholder: `Year`,
                     groupKey: YEAR,
                     validationType: ValidationType.YEAR_YEAR_RANGE,
-                    values: LIST_VALUES.YEAR_RANGE,
+                    values: LIST_VALUES.YEARS,
                   },
                   {
                     id: 1,
@@ -7065,7 +7249,6 @@ export const TEMPLATES = {
                     placeholder: `position`,
                     groupKey: EVENT,
                     values: LIST_VALUES.NFL_DRAFT_POSITIONS,
-                    categoryDestId: 2,
                   },
                   {
                     id: 2,
@@ -7628,7 +7811,6 @@ export const TEMPLATES = {
                     placeholder: `Event`,
                     groupKey: EVENT,
                     values: LIST_VALUES.NCAA_FOOTBALL_EVENT,
-                    categoryDestId: 2,
                   },
                   {
                     id: 2,
@@ -7798,6 +7980,7 @@ export const TEMPLATES = {
                 type: TemplateInputType.DROPDOWN,
                 placeholder: `Party`,
                 values: LIST_VALUES.POL_PARTY,
+                categoryDestId: 2,
               },
             ],
             resolutionRules: {
@@ -7826,6 +8009,7 @@ export const TEMPLATES = {
                 type: TemplateInputType.DROPDOWN,
                 placeholder: `Office`,
                 values: LIST_VALUES.OFFICES,
+                categoryDestId: 2,
               },
               {
                 id: 2,
@@ -7915,7 +8099,7 @@ export const TEMPLATES = {
               },
               {
                 id: 1,
-                type: TemplateInputType.DATESTART,
+                type: TemplateInputType.DATEYEAR,
                 daysAfterDateStart: 2,
                 placeholder: `Day of Year`,
               },
@@ -8030,6 +8214,7 @@ export const TEMPLATES = {
                 placeholder: `Office`,
                 groupKey: EVENT,
                 values: LIST_VALUES.PRES_OFFICES,
+                categoryDestId: 2,
               },
               {
                 id: 3,
@@ -8061,6 +8246,7 @@ export const TEMPLATES = {
                 placeholder: `State`,
                 groupKey: ENTITY,
                 values: LIST_VALUES.US_STATES,
+                categoryDestId: 2,
               },
               {
                 id: 1,
@@ -8100,6 +8286,7 @@ export const TEMPLATES = {
                 placeholder: `Office`,
                 groupKey: ENTITY,
                 values: LIST_VALUES.POL_HOUSE_SENATE_OFFICE,
+                categoryDestId: 2,
               },
               {
                 id: 1,
@@ -8164,6 +8351,7 @@ export const TEMPLATES = {
                 placeholder: `Party`,
                 groupKey: ENTITY,
                 values: LIST_VALUES.POL_PARTY,
+                categoryDestId: 2,
               },
               {
                 id: 3,
@@ -8218,6 +8406,7 @@ export const TEMPLATES = {
                 placeholder: `Party`,
                 groupKey: ENTITY,
                 values: LIST_VALUES.POL_PARTY,
+                categoryDestId: 2,
               },
               {
                 id: 3,
@@ -8262,6 +8451,7 @@ export const TEMPLATES = {
                 id: 1,
                 type: TemplateInputType.DROPDOWN,
                 placeholder: `Position`,
+                categoryDestId: 2,
                 values: LIST_VALUES.POL_POSITION,
               },
               {
@@ -8366,6 +8556,7 @@ export const TEMPLATES = {
                 placeholder: `Position`,
                 groupKey: ENTITY,
                 values: LIST_VALUES.POL_POSITION,
+                categoryDestId: 2,
               },
               {
                 id: 1,
@@ -8377,7 +8568,6 @@ export const TEMPLATES = {
               {
                 id: 2,
                 type: TemplateInputType.DATETIME,
-                groupKey: START_TIME,
                 placeholder: `Specific Datetime`,
                 label: `Specific Datetime`,
                 sublabel: `Specify date time for event`,
@@ -8824,7 +9014,7 @@ export const TEMPLATES = {
                 type: TemplateInputType.DROPDOWN,
                 placeholder: `Event`,
                 values: LIST_VALUES.ENTERTAINMENT_EVENT,
-                categoryDestId: 1,
+                categoryDestId: 2,
               },
             ],
             resolutionRules: {
@@ -8877,7 +9067,7 @@ export const TEMPLATES = {
                 inputDestIds: [1],
                 values: LIST_VALUES.ENTERTAINMENT_EVENT,
                 inputDestValues: ENTERTAINMENT_EVENT_DEP_TEAMS,
-                categoryDestId: 1,
+                categoryDestId: 2,
               },
             ],
             resolutionRules: {
@@ -8912,7 +9102,7 @@ export const TEMPLATES = {
                 type: TemplateInputType.DROPDOWN,
                 placeholder: `Event`,
                 values: LIST_VALUES.ENTERTAINMENT_EVENT,
-                categoryDestId: 1,
+                categoryDestId: 2,
               },
               {
                 id: 2,
@@ -8966,7 +9156,7 @@ export const TEMPLATES = {
                 inputDestIds: [0],
                 values: LIST_VALUES.ENTERTAINMENT_EVENT,
                 inputDestValues: ENTERTAINMENT_EVENT_DEP_TEAMS,
-                categoryDestId: 1,
+                categoryDestId: 2,
               },
               {
                 id: 3,
@@ -9099,7 +9289,7 @@ export const TEMPLATES = {
                   },
                   {
                     id: 3,
-                    type: TemplateInputType.DATESTART,
+                    type: TemplateInputType.DATEYEAR,
                     daysAfterDateStart: 2,
                     placeholder: `Day of Year`,
                   },
@@ -9138,7 +9328,7 @@ export const TEMPLATES = {
                   },
                   {
                     id: 2,
-                    type: TemplateInputType.DATESTART,
+                    type: TemplateInputType.DATEYEAR,
                     daysAfterDateStart: 2,
                     placeholder: `Day of Year`,
                   },
@@ -9198,7 +9388,7 @@ export const TEMPLATES = {
                   },
                   {
                     id: 3,
-                    type: TemplateInputType.DATESTART,
+                    type: TemplateInputType.DATEYEAR,
                     daysAfterDateStart: 2,
                     placeholder: `Day of Year`,
                   },
@@ -9237,7 +9427,7 @@ export const TEMPLATES = {
                   },
                   {
                     id: 2,
-                    type: TemplateInputType.DATESTART,
+                    type: TemplateInputType.DATEYEAR,
                     daysAfterDateStart: 2,
                     placeholder: `Day of Year`,
                   },
@@ -9297,7 +9487,7 @@ export const TEMPLATES = {
               },
               {
                 id: 2,
-                type: TemplateInputType.DATESTART,
+                type: TemplateInputType.DATEYEAR,
                 daysAfterDateStart: 1,
                 placeholder: `Day of Year`,
               },
@@ -9345,7 +9535,7 @@ export const TEMPLATES = {
               },
               {
                 id: 2,
-                type: TemplateInputType.DATESTART,
+                type: TemplateInputType.DATEYEAR,
                 placeholder: `Day of Year`,
               },
               {
@@ -9394,7 +9584,7 @@ export const TEMPLATES = {
               },
               {
                 id: 1,
-                type: TemplateInputType.DATESTART,
+                type: TemplateInputType.DATEYEAR,
                 daysAfterDateStart: 1,
                 placeholder: `Day of Year`,
               },
@@ -9446,7 +9636,7 @@ export const TEMPLATES = {
               },
               {
                 id: 2,
-                type: TemplateInputType.DATESTART,
+                type: TemplateInputType.DATEYEAR,
                 daysAfterDateStart: 1,
                 placeholder: `Day of Year`,
               },
@@ -9494,7 +9684,7 @@ export const TEMPLATES = {
               },
               {
                 id: 2,
-                type: TemplateInputType.DATESTART,
+                type: TemplateInputType.DATEYEAR,
                 placeholder: `Day of Year`,
               },
               {
@@ -9543,7 +9733,7 @@ export const TEMPLATES = {
               },
               {
                 id: 1,
-                type: TemplateInputType.DATESTART,
+                type: TemplateInputType.DATEYEAR,
                 daysAfterDateStart: 1,
                 placeholder: `Day of Year`,
               },
@@ -9572,20 +9762,626 @@ export const TEMPLATES = {
           },
         ],
       },
-      [LITECOIN]: {
+      [AUGUR]: {
+        templates: [
+          {
+            marketType: YES_NO,
+            question: `Will the price of REP/USD open at or above [0] on [1], according to TradingView.com "REPUSD (crypto - Coinbase)"?`,
+            example: `Will the price of REP/USD open at or above 25 on December 31, 2020, according to TradingView.com "REPUSD (crypto - Coinbase)"?`,
+            inputs: [
+              {
+                id: 0,
+                type: TemplateInputType.TEXT,
+                placeholder: `Value #`,
+                validationType: ValidationType.NUMBER,
+              },
+              {
+                id: 1,
+                type: TemplateInputType.DATEYEAR,
+                daysAfterDateStart: 1,
+                placeholder: `Day of Year`,
+              },
+            ],
+            resolutionRules: {
+              [REQUIRED]: [
+                {
+                  text: `Use ticker symbol search for token pair (ie REPUSD), find exchange that corresponds to market question. Navigate to Full-featured daily chart, Opening price is determined on the date in the market question on tradingview.com.`,
+                },
+                {
+                  text: `Opening price can also be found on tradingview using the hourly chart for the date in the market question at UTC (0) 00:00`,
+                },
+                {
+                  text: `If the trading pair market isn't available on tradingview.com, refer to the actual exchange. For example, if Coinbase's tradingview.com data feed is unavailable, find the opening price on Coinbase's exchange by using the hourly candlestick chart adjusting for local timezone offset. In order to find equivalent 00:00 UTC-0 hourly candlestick for December 16th, go to hourly candelstick for 00:00 December 16th, then count backwards or forwards the number of candlesticks depending on local time zone offset. If local timezone offset is UTC -5 move back 5 candlesticks to find the Open Price for 19:00 December 15th hourly candlestick.`,
+                },
+              ],
+            },
+          },
+          {
+            marketType: YES_NO,
+            question: `Will the price of REP/USD, exceed [0] anytime between the open of [1] and close of [2], according to TradingView.com "REPUSD (crypto - Coinbase)"?`,
+            example: `Will the price of REP/USD exceed 25 anytime between the open of September 1, 2020 and close of December 31, 2020, according to TradingView.com "REPUSD (crypto - Coinbase)"?`,
+            inputs: [
+              {
+                id: 0,
+                type: TemplateInputType.TEXT,
+                placeholder: `Value #`,
+                validationType: ValidationType.NUMBER,
+              },
+              {
+                id: 1,
+                type: TemplateInputType.DATEYEAR,
+                placeholder: `Day of Year`,
+              },
+              {
+                id: 2,
+                dateAfterId: 2,
+                type: TemplateInputType.DATEYEAR,
+                daysAfterDateStart: 1,
+                placeholder: `Day of Year`,
+              },
+            ],
+            resolutionRules: {
+              [REQUIRED]: [
+                {
+                  text: `Use ticker symbol search for token pair (ie REPUSD), find exchange that corresponds to market question. Navigate to Full-featured daily chart, Opening price is determined on the date in the market question on tradingview.com.`,
+                },
+                {
+                  text: `Opening price can also be found on tradingview using the hourly chart for the date in the market question at UTC (0) 00:00`,
+                },
+                {
+                  text: `If the trading pair market isn't available on tradingview.com, refer to the actual exchange. For example, if Coinbase's tradingview.com data feed is unavailable, find the opening price on Coinbase's exchange by using the hourly candlestick chart adjusting for local timezone offset. In order to find equivalent 00:00 UTC-0 hourly candlestick for December 16th, go to hourly candelstick for 00:00 December 16th, then count backwards or forwards the number of candlesticks depending on local time zone offset. If local timezone offset is UTC -5 move back 5 candlesticks to find the Open Price for 19:00 December 15th hourly candlestick.`,
+                },
+              ],
+            },
+          },
+          {
+            marketType: SCALAR,
+            question: `What price will REP/USD open at on [0], according to TradingView.com "REPUSD (crypto - Coinbase)"?`,
+            example: `What price will REP/USD open at on December 31, 2020, according to TradingView.com for "REPUSD (crypto - Coinbase)"?`,
+            denomination: 'Price',
+            inputs: [
+             {
+                id: 0,
+                type: TemplateInputType.DATEYEAR,
+                daysAfterDateStart: 1,
+                placeholder: `Day of Year`,
+              },
+            ],
+            resolutionRules: {
+              [REQUIRED]: [
+                {
+                  text: `Use ticker symbol search for token pair (ie REPUSD), find exchange that corresponds to market question. Navigate to Full-featured daily chart, Opening price is determined on the date in the market question on tradingview.com.`,
+                },
+                {
+                  text: `Opening price can also be found on tradingview using the hourly chart for the date in the market question at UTC (0) 00:00`,
+                },
+                {
+                  text: `If the trading pair market isn't available on tradingview.com, refer to the actual exchange. For example, if Coinbase's tradingview.com data feed is unavailable, find the opening price on Coinbase's exchange by using the hourly candlestick chart adjusting for local timezone offset. In order to find equivalent 00:00 UTC-0 hourly candlestick for December 16th, go to hourly candelstick for 00:00 December 16th, then count backwards or forwards the number of candlesticks depending on local time zone offset. If local timezone offset is UTC -5 move back 5 candlesticks to find the Open Price for 19:00 December 15th hourly candlestick.`,
+                },
+              ],
+            },
+          },
+        ],
+      },
+      [MAKER]: {
+        templates: [
+          {
+            marketType: YES_NO,
+            question: `Will the price of MKR/USD open at or above [0] on [1], according to TradingView.com "MKRUSD (crypto - Coinbase)"?`,
+            example: `Will the price of MKR/USD open at or above 500 on December 31, 2020, according to TradingView.com "MKRUSD (crypto - Coinbase)"?`,
+            inputs: [
+              {
+                id: 0,
+                type: TemplateInputType.TEXT,
+                placeholder: `Value #`,
+                validationType: ValidationType.NUMBER,
+              },
+              {
+                id: 1,
+                type: TemplateInputType.DATEYEAR,
+                daysAfterDateStart: 1,
+                placeholder: `Day of Year`,
+              },
+            ],
+            resolutionRules: {
+              [REQUIRED]: [
+                {
+                  text: `Use ticker symbol search for token pair (ie MKRUSD), find exchange that corresponds to market question. Navigate to Full-featured daily chart, Opening price is determined on the date in the market question on tradingview.com.`,
+                },
+                {
+                  text: `Opening price can also be found on tradingview using the hourly chart for the date in the market question at UTC (0) 00:00`,
+                },
+                {
+                  text: `If the trading pair market isn't available on tradingview.com, refer to the actual exchange. For example, if Coinbase's tradingview.com data feed is unavailable, find the opening price on Coinbase's exchange by using the hourly candlestick chart adjusting for local timezone offset. In order to find equivalent 00:00 UTC-0 hourly candlestick for December 16th, go to hourly candelstick for 00:00 December 16th, then count backwards or forwards the number of candlesticks depending on local time zone offset. If local timezone offset is UTC -5 move back 5 candlesticks to find the Open Price for 19:00 December 15th hourly candlestick.`,
+                },
+              ],
+            },
+          },
+          {
+            marketType: YES_NO,
+            question: `Will the price of MKR/USD, exceed [0] anytime between the open of [1] and close of [2], according to TradingView.com "MKRUSD (crypto - Coinbase)"?`,
+            example: `Will the price of MKR/USD exceed 500 anytime between the open of September 1, 2020 and close of December 31, 2020, according to TradingView.com "MKRUSD (crypto - Coinbase)"?`,
+            inputs: [
+              {
+                id: 0,
+                type: TemplateInputType.TEXT,
+                placeholder: `Value #`,
+                validationType: ValidationType.NUMBER,
+              },
+              {
+                id: 1,
+                type: TemplateInputType.DATEYEAR,
+                placeholder: `Day of Year`,
+              },
+              {
+                id: 2,
+                dateAfterId: 2,
+                type: TemplateInputType.DATEYEAR,
+                daysAfterDateStart: 1,
+                placeholder: `Day of Year`,
+              },
+            ],
+            resolutionRules: {
+              [REQUIRED]: [
+                {
+                  text: `Use ticker symbol search for token pair (ie MKRUSD), find exchange that corresponds to market question. Navigate to Full-featured daily chart, Opening price is determined on the date in the market question on tradingview.com.`,
+                },
+                {
+                  text: `Opening price can also be found on tradingview using the hourly chart for the date in the market question at UTC (0) 00:00`,
+                },
+                {
+                  text: `If the trading pair market isn't available on tradingview.com, refer to the actual exchange. For example, if Coinbase's tradingview.com data feed is unavailable, find the opening price on Coinbase's exchange by using the hourly candlestick chart adjusting for local timezone offset. In order to find equivalent 00:00 UTC-0 hourly candlestick for December 16th, go to hourly candelstick for 00:00 December 16th, then count backwards or forwards the number of candlesticks depending on local time zone offset. If local timezone offset is UTC -5 move back 5 candlesticks to find the Open Price for 19:00 December 15th hourly candlestick.`,
+                },
+              ],
+            },
+          },
+          {
+            marketType: SCALAR,
+            question: `What price will MKR/USD open at on [0], according to TradingView.com "MKRUSD (crypto - Coinbase)"?`,
+            example: `What price will MKR/USD open at on December 31, 2020, according to TradingView.com for "MKRUSD (crypto - Coinbase)"?`,
+            denomination: 'Price',
+            inputs: [
+             {
+                id: 0,
+                type: TemplateInputType.DATEYEAR,
+                daysAfterDateStart: 1,
+                placeholder: `Day of Year`,
+              },
+            ],
+            resolutionRules: {
+              [REQUIRED]: [
+                {
+                  text: `Use ticker symbol search for token pair (ie MKRUSD), find exchange that corresponds to market question. Navigate to Full-featured daily chart, Opening price is determined on the date in the market question on tradingview.com.`,
+                },
+                {
+                  text: `Opening price can also be found on tradingview using the hourly chart for the date in the market question at UTC (0) 00:00`,
+                },
+                {
+                  text: `If the trading pair market isn't available on tradingview.com, refer to the actual exchange. For example, if Coinbase's tradingview.com data feed is unavailable, find the opening price on Coinbase's exchange by using the hourly candlestick chart adjusting for local timezone offset. In order to find equivalent 00:00 UTC-0 hourly candlestick for December 16th, go to hourly candelstick for 00:00 December 16th, then count backwards or forwards the number of candlesticks depending on local time zone offset. If local timezone offset is UTC -5 move back 5 candlesticks to find the Open Price for 19:00 December 15th hourly candlestick.`,
+                },
+              ],
+            },
+          },
+        ],
+      },
+      [COMPOUND]: {
+        templates: [
+          {
+            marketType: YES_NO,
+            question: `Will the price of COMP/USD open at or above [0] on [1], according to TradingView.com "COMPUSD (crypto - Coinbase)"?`,
+            example: `Will the price of COMP/USD open at or above 220 on December 31, 2020, according to TradingView.com "COMPUSD (crypto - Coinbase)"?`,
+            inputs: [
+              {
+                id: 0,
+                type: TemplateInputType.TEXT,
+                placeholder: `Value #`,
+                validationType: ValidationType.NUMBER,
+              },
+              {
+                id: 1,
+                type: TemplateInputType.DATEYEAR,
+                daysAfterDateStart: 1,
+                placeholder: `Day of Year`,
+              },
+            ],
+            resolutionRules: {
+              [REQUIRED]: [
+                {
+                  text: `Use ticker symbol search for token pair (ie COMPUSD), find exchange that corresponds to market question. Navigate to Full-featured daily chart, Opening price is determined on the date in the market question on tradingview.com.`,
+                },
+                {
+                  text: `Opening price can also be found on tradingview using the hourly chart for the date in the market question at UTC (0) 00:00`,
+                },
+                {
+                  text: `If the trading pair market isn't available on tradingview.com, refer to the actual exchange. For example, if Coinbase's tradingview.com data feed is unavailable, find the opening price on Coinbase's exchange by using the hourly candlestick chart adjusting for local timezone offset. In order to find equivalent 00:00 UTC-0 hourly candlestick for December 16th, go to hourly candelstick for 00:00 December 16th, then count backwards or forwards the number of candlesticks depending on local time zone offset. If local timezone offset is UTC -5 move back 5 candlesticks to find the Open Price for 19:00 December 15th hourly candlestick.`,
+                },
+              ],
+            },
+          },
+          {
+            marketType: YES_NO,
+            question: `Will the price of COMP/USD, exceed [0] anytime between the open of [1] and close of [2], according to TradingView.com "COMPUSD (crypto - Coinbase)"?`,
+            example: `Will the price of COMP/USD exceed 220 anytime between the open of September 1, 2020 and close of December 31, 2020, according to TradingView.com "COMPUSD (crypto - Coinbase)"?`,
+            inputs: [
+              {
+                id: 0,
+                type: TemplateInputType.TEXT,
+                placeholder: `Value #`,
+                validationType: ValidationType.NUMBER,
+              },
+              {
+                id: 1,
+                type: TemplateInputType.DATEYEAR,
+                placeholder: `Day of Year`,
+              },
+              {
+                id: 2,
+                dateAfterId: 2,
+                type: TemplateInputType.DATEYEAR,
+                daysAfterDateStart: 1,
+                placeholder: `Day of Year`,
+              },
+            ],
+            resolutionRules: {
+              [REQUIRED]: [
+                {
+                  text: `Use ticker symbol search for token pair (ie COMPUSD), find exchange that corresponds to market question. Navigate to Full-featured daily chart, Opening price is determined on the date in the market question on tradingview.com.`,
+                },
+                {
+                  text: `Opening price can also be found on tradingview using the hourly chart for the date in the market question at UTC (0) 00:00`,
+                },
+                {
+                  text: `If the trading pair market isn't available on tradingview.com, refer to the actual exchange. For example, if Coinbase's tradingview.com data feed is unavailable, find the opening price on Coinbase's exchange by using the hourly candlestick chart adjusting for local timezone offset. In order to find equivalent 00:00 UTC-0 hourly candlestick for December 16th, go to hourly candelstick for 00:00 December 16th, then count backwards or forwards the number of candlesticks depending on local time zone offset. If local timezone offset is UTC -5 move back 5 candlesticks to find the Open Price for 19:00 December 15th hourly candlestick.`,
+                },
+              ],
+            },
+          },
+          {
+            marketType: SCALAR,
+            question: `What price will COMP/USD open at on [0], according to TradingView.com "COMPUSD (crypto - Coinbase)"?`,
+            example: `What price will COMP/USD open at on December 31, 2020, according to TradingView.com for "COMPUSD (crypto - Coinbase)"?`,
+            denomination: 'Price',
+            inputs: [
+             {
+                id: 0,
+                type: TemplateInputType.DATEYEAR,
+                daysAfterDateStart: 1,
+                placeholder: `Day of Year`,
+              },
+            ],
+            resolutionRules: {
+              [REQUIRED]: [
+                {
+                  text: `Use ticker symbol search for token pair (ie COMPUSD), find exchange that corresponds to market question. Navigate to Full-featured daily chart, Opening price is determined on the date in the market question on tradingview.com.`,
+                },
+                {
+                  text: `Opening price can also be found on tradingview using the hourly chart for the date in the market question at UTC (0) 00:00`,
+                },
+                {
+                  text: `If the trading pair market isn't available on tradingview.com, refer to the actual exchange. For example, if Coinbase's tradingview.com data feed is unavailable, find the opening price on Coinbase's exchange by using the hourly candlestick chart adjusting for local timezone offset. In order to find equivalent 00:00 UTC-0 hourly candlestick for December 16th, go to hourly candelstick for 00:00 December 16th, then count backwards or forwards the number of candlesticks depending on local time zone offset. If local timezone offset is UTC -5 move back 5 candlesticks to find the Open Price for 19:00 December 15th hourly candlestick.`,
+                },
+              ],
+            },
+          },
+        ],
+      },
+      [BALANCER]: {
+        templates: [
+          {
+            marketType: YES_NO,
+            question: `Will the price of BAL/USD open at or above [0] on [1], according to TradingView.com "BALUSD (crypto - FTX)"?`,
+            example: `Will the price of BAL/USD open at or above 12 on December 31, 2020, according to TradingView.com "BALUSD (crypto - FTX)"?`,
+            inputs: [
+              {
+                id: 0,
+                type: TemplateInputType.TEXT,
+                placeholder: `Value #`,
+                validationType: ValidationType.NUMBER,
+              },
+              {
+                id: 1,
+                type: TemplateInputType.DATEYEAR,
+                daysAfterDateStart: 1,
+                placeholder: `Day of Year`,
+              },
+            ],
+            resolutionRules: {
+              [REQUIRED]: [
+                {
+                  text: `Use ticker symbol search for token pair (ie BALUSD), find exchange that corresponds to market question. Navigate to Full-featured daily chart, Opening price is determined on the date in the market question on tradingview.com.`,
+                },
+                {
+                  text: `Opening price can also be found on tradingview using the hourly chart for the date in the market question at UTC (0) 00:00`,
+                },
+                {
+                  text: `If the trading pair market isn't available on tradingview.com, refer to the actual exchange. For example, if FTX's tradingview.com data feed is unavailable, find the opening price on FTX's exchange by using the hourly candlestick chart adjusting for local timezone offset. In order to find equivalent 00:00 UTC-0 hourly candlestick for December 16th, go to hourly candelstick for 00:00 December 16th, then count backwards or forwards the number of candlesticks depending on local time zone offset. If local timezone offset is UTC -5 move back 5 candlesticks to find the Open Price for 19:00 December 15th hourly candlestick.`,
+                },
+              ],
+            },
+          },
+          {
+            marketType: YES_NO,
+            question: `Will the price of BAL/USD, exceed [0] anytime between the open of [1] and close of [2], according to TradingView.com "BALUSD (crypto - FTX)"?`,
+            example: `Will the price of BAL/USD exceed 12 anytime between the open of September 1, 2020 and close of December 31, 2020, according to TradingView.com "BALUSD (crypto - FTX)"?`,
+            inputs: [
+              {
+                id: 0,
+                type: TemplateInputType.TEXT,
+                placeholder: `Value #`,
+                validationType: ValidationType.NUMBER,
+              },
+              {
+                id: 1,
+                type: TemplateInputType.DATEYEAR,
+                placeholder: `Day of Year`,
+              },
+              {
+                id: 2,
+                dateAfterId: 2,
+                type: TemplateInputType.DATEYEAR,
+                daysAfterDateStart: 1,
+                placeholder: `Day of Year`,
+              },
+            ],
+            resolutionRules: {
+              [REQUIRED]: [
+                {
+                  text: `Use ticker symbol search for token pair (ie BALUSD), find exchange that corresponds to market question. Navigate to Full-featured daily chart, Opening price is determined on the date in the market question on tradingview.com.`,
+                },
+                {
+                  text: `Opening price can also be found on tradingview using the hourly chart for the date in the market question at UTC (0) 00:00`,
+                },
+                {
+                  text: `If the trading pair market isn't available on tradingview.com, refer to the actual exchange. For example, if FTX's tradingview.com data feed is unavailable, find the opening price on FTX's exchange by using the hourly candlestick chart adjusting for local timezone offset. In order to find equivalent 00:00 UTC-0 hourly candlestick for December 16th, go to hourly candelstick for 00:00 December 16th, then count backwards or forwards the number of candlesticks depending on local time zone offset. If local timezone offset is UTC -5 move back 5 candlesticks to find the Open Price for 19:00 December 15th hourly candlestick.`,
+                },
+              ],
+            },
+          },
+          {
+            marketType: SCALAR,
+            question: `What price will BAL/USD open at on [0], according to TradingView.com "BALUSD (crypto - FTX)"?`,
+            example: `What price will BAL/USD open at on December 31, 2020, according to TradingView.com for "BALUSD (crypto - FTX)"?`,
+            denomination: 'Price',
+            inputs: [
+             {
+                id: 0,
+                type: TemplateInputType.DATEYEAR,
+                daysAfterDateStart: 1,
+                placeholder: `Day of Year`,
+              },
+            ],
+            resolutionRules: {
+              [REQUIRED]: [
+                {
+                  text: `Use ticker symbol search for token pair (ie BALUSD), find exchange that corresponds to market question. Navigate to Full-featured daily chart, Opening price is determined on the date in the market question on tradingview.com.`,
+                },
+                {
+                  text: `Opening price can also be found on tradingview using the hourly chart for the date in the market question at UTC (0) 00:00`,
+                },
+                {
+                  text: `If the trading pair market isn't available on tradingview.com, refer to the actual exchange. For example, if FTX's tradingview.com data feed is unavailable, find the opening price on FTX's exchange by using the hourly candlestick chart adjusting for local timezone offset. In order to find equivalent 00:00 UTC-0 hourly candlestick for December 16th, go to hourly candelstick for 00:00 December 16th, then count backwards or forwards the number of candlesticks depending on local time zone offset. If local timezone offset is UTC -5 move back 5 candlesticks to find the Open Price for 19:00 December 15th hourly candlestick.`,
+                },
+              ],
+            },
+          },
+        ],
+      },
+      [ZEROX]: {
+        templates: [
+          {
+            marketType: YES_NO,
+            question: `Will the price of ZRX/USD open at or above [0] on [1], according to TradingView.com "ZRXUSD (crypto - Coinbase)"?`,
+            example: `Will the price of ZRX/USD open at or above 0.35 on December 31, 2020, according to TradingView.com "ZRXUSD (crypto - Coinbase)"?`,
+            inputs: [
+              {
+                id: 0,
+                type: TemplateInputType.TEXT,
+                placeholder: `Value #`,
+                validationType: ValidationType.NUMBER,
+              },
+              {
+                id: 1,
+                type: TemplateInputType.DATEYEAR,
+                daysAfterDateStart: 1,
+                placeholder: `Day of Year`,
+              },
+            ],
+            resolutionRules: {
+              [REQUIRED]: [
+                {
+                  text: `Use ticker symbol search for token pair (ie ZRXUSD), find exchange that corresponds to market question. Navigate to Full-featured daily chart, Opening price is determined on the date in the market question on tradingview.com.`,
+                },
+                {
+                  text: `Opening price can also be found on tradingview using the hourly chart for the date in the market question at UTC (0) 00:00`,
+                },
+                {
+                  text: `If the trading pair market isn't available on tradingview.com, refer to the actual exchange. For example, if Coinbase's tradingview.com data feed is unavailable, find the opening price on Coinbase's exchange by using the hourly candlestick chart adjusting for local timezone offset. In order to find equivalent 00:00 UTC-0 hourly candlestick for December 16th, go to hourly candelstick for 00:00 December 16th, then count backwards or forwards the number of candlesticks depending on local time zone offset. If local timezone offset is UTC -5 move back 5 candlesticks to find the Open Price for 19:00 December 15th hourly candlestick.`,
+                },
+              ],
+            },
+          },
+          {
+            marketType: YES_NO,
+            question: `Will the price of ZRX/USD, exceed [0] anytime between the open of [1] and close of [2], according to TradingView.com "ZRXUSD (crypto - Coinbase)"?`,
+            example: `Will the price of ZRX/USD exceed 0.35 anytime between the open of September 1, 2020 and close of December 31, 2020, according to TradingView.com "ZRXUSD (crypto - Coinbase)"?`,
+            inputs: [
+              {
+                id: 0,
+                type: TemplateInputType.TEXT,
+                placeholder: `Value #`,
+                validationType: ValidationType.NUMBER,
+              },
+              {
+                id: 1,
+                type: TemplateInputType.DATEYEAR,
+                placeholder: `Day of Year`,
+              },
+              {
+                id: 2,
+                dateAfterId: 2,
+                type: TemplateInputType.DATEYEAR,
+                daysAfterDateStart: 1,
+                placeholder: `Day of Year`,
+              },
+            ],
+            resolutionRules: {
+              [REQUIRED]: [
+                {
+                  text: `Use ticker symbol search for token pair (ie ZRXUSD), find exchange that corresponds to market question. Navigate to Full-featured daily chart, Opening price is determined on the date in the market question on tradingview.com.`,
+                },
+                {
+                  text: `Opening price can also be found on tradingview using the hourly chart for the date in the market question at UTC (0) 00:00`,
+                },
+                {
+                  text: `If the trading pair market isn't available on tradingview.com, refer to the actual exchange. For example, if Coinbase's tradingview.com data feed is unavailable, find the opening price on Coinbase's exchange by using the hourly candlestick chart adjusting for local timezone offset. In order to find equivalent 00:00 UTC-0 hourly candlestick for December 16th, go to hourly candelstick for 00:00 December 16th, then count backwards or forwards the number of candlesticks depending on local time zone offset. If local timezone offset is UTC -5 move back 5 candlesticks to find the Open Price for 19:00 December 15th hourly candlestick.`,
+                },
+              ],
+            },
+          },
+          {
+            marketType: SCALAR,
+            question: `What price will ZRX/USD open at on [0], according to TradingView.com "ZRXUSD (crypto - Coinbase)"?`,
+            example: `What price will ZRX/USD open at on December 31, 2020, according to TradingView.com for "ZRXUSD (crypto - Coinbase)"?`,
+            denomination: 'Price',
+            inputs: [
+             {
+                id: 0,
+                type: TemplateInputType.DATEYEAR,
+                daysAfterDateStart: 1,
+                placeholder: `Day of Year`,
+              },
+            ],
+            resolutionRules: {
+              [REQUIRED]: [
+                {
+                  text: `Use ticker symbol search for token pair (ie ZRXUSD), find exchange that corresponds to market question. Navigate to Full-featured daily chart, Opening price is determined on the date in the market question on tradingview.com.`,
+                },
+                {
+                  text: `Opening price can also be found on tradingview using the hourly chart for the date in the market question at UTC (0) 00:00`,
+                },
+                {
+                  text: `If the trading pair market isn't available on tradingview.com, refer to the actual exchange. For example, if Coinbase's tradingview.com data feed is unavailable, find the opening price on Coinbase's exchange by using the hourly candlestick chart adjusting for local timezone offset. In order to find equivalent 00:00 UTC-0 hourly candlestick for December 16th, go to hourly candelstick for 00:00 December 16th, then count backwards or forwards the number of candlesticks depending on local time zone offset. If local timezone offset is UTC -5 move back 5 candlesticks to find the Open Price for 19:00 December 15th hourly candlestick.`,
+                },
+              ],
+            },
+          },
+        ],
+      },
+      [CHAINLINK]: {
+        templates: [
+          {
+            marketType: YES_NO,
+            question: `Will the price of LINK/USD open at or above [0] on [1], according to TradingView.com "LINKUSD (crypto - Coinbase)"?`,
+            example: `Will the price of LINK/USD open at or above 4.50 on December 31, 2020, according to TradingView.com "LINKUSD (crypto - Coinbase)"?`,
+            inputs: [
+              {
+                id: 0,
+                type: TemplateInputType.TEXT,
+                placeholder: `Value #`,
+                validationType: ValidationType.NUMBER,
+              },
+              {
+                id: 1,
+                type: TemplateInputType.DATEYEAR,
+                daysAfterDateStart: 1,
+                placeholder: `Day of Year`,
+              },
+            ],
+            resolutionRules: {
+              [REQUIRED]: [
+                {
+                  text: `Use ticker symbol search for token pair (ie LINKUSD), find exchange that corresponds to market question. Navigate to Full-featured daily chart, Opening price is determined on the date in the market question on tradingview.com.`,
+                },
+                {
+                  text: `Opening price can also be found on tradingview using the hourly chart for the date in the market question at UTC (0) 00:00`,
+                },
+                {
+                  text: `If the trading pair market isn't available on tradingview.com, refer to the actual exchange. For example, if Coinbase's tradingview.com data feed is unavailable, find the opening price on Coinbase's exchange by using the hourly candlestick chart adjusting for local timezone offset. In order to find equivalent 00:00 UTC-0 hourly candlestick for December 16th, go to hourly candelstick for 00:00 December 16th, then count backwards or forwards the number of candlesticks depending on local time zone offset. If local timezone offset is UTC -5 move back 5 candlesticks to find the Open Price for 19:00 December 15th hourly candlestick.`,
+                },
+              ],
+            },
+          },
+          {
+            marketType: YES_NO,
+            question: `Will the price of LINK/USD, exceed [0] anytime between the open of [1] and close of [2], according to TradingView.com "LINKUSD (crypto - Coinbase)"?`,
+            example: `Will the price of LINK/USD exceed 4.50 anytime between the open of September 1, 2020 and close of December 31, 2020, according to TradingView.com "LINKUSD (crypto - Coinbase)"?`,
+            inputs: [
+              {
+                id: 0,
+                type: TemplateInputType.TEXT,
+                placeholder: `Value #`,
+                validationType: ValidationType.NUMBER,
+              },
+              {
+                id: 1,
+                type: TemplateInputType.DATEYEAR,
+                placeholder: `Day of Year`,
+              },
+              {
+                id: 2,
+                dateAfterId: 2,
+                type: TemplateInputType.DATEYEAR,
+                daysAfterDateStart: 1,
+                placeholder: `Day of Year`,
+              },
+            ],
+            resolutionRules: {
+              [REQUIRED]: [
+                {
+                  text: `Use ticker symbol search for token pair (ie LINKUSD), find exchange that corresponds to market question. Navigate to Full-featured daily chart, Opening price is determined on the date in the market question on tradingview.com.`,
+                },
+                {
+                  text: `Opening price can also be found on tradingview using the hourly chart for the date in the market question at UTC (0) 00:00`,
+                },
+                {
+                  text: `If the trading pair market isn't available on tradingview.com, refer to the actual exchange. For example, if Coinbase's tradingview.com data feed is unavailable, find the opening price on Coinbase's exchange by using the hourly candlestick chart adjusting for local timezone offset. In order to find equivalent 00:00 UTC-0 hourly candlestick for December 16th, go to hourly candelstick for 00:00 December 16th, then count backwards or forwards the number of candlesticks depending on local time zone offset. If local timezone offset is UTC -5 move back 5 candlesticks to find the Open Price for 19:00 December 15th hourly candlestick.`,
+                },
+              ],
+            },
+          },
+          {
+            marketType: SCALAR,
+            question: `What price will LINK/USD open at on [0], according to TradingView.com "LINKUSD (crypto - Coinbase)"?`,
+            example: `What price will LINK/USD open at on December 31, 2020, according to TradingView.com for "LINKUSD (crypto - Coinbase)"?`,
+            denomination: 'Price',
+            inputs: [
+             {
+                id: 0,
+                type: TemplateInputType.DATEYEAR,
+                daysAfterDateStart: 1,
+                placeholder: `Day of Year`,
+              },
+            ],
+            resolutionRules: {
+              [REQUIRED]: [
+                {
+                  text: `Use ticker symbol search for token pair (ie LINKUSD), find exchange that corresponds to market question. Navigate to Full-featured daily chart, Opening price is determined on the date in the market question on tradingview.com.`,
+                },
+                {
+                  text: `Opening price can also be found on tradingview using the hourly chart for the date in the market question at UTC (0) 00:00`,
+                },
+                {
+                  text: `If the trading pair market isn't available on tradingview.com, refer to the actual exchange. For example, if Coinbase's tradingview.com data feed is unavailable, find the opening price on Coinbase's exchange by using the hourly candlestick chart adjusting for local timezone offset. In order to find equivalent 00:00 UTC-0 hourly candlestick for December 16th, go to hourly candelstick for 00:00 December 16th, then count backwards or forwards the number of candlesticks depending on local time zone offset. If local timezone offset is UTC -5 move back 5 candlesticks to find the Open Price for 19:00 December 15th hourly candlestick.`,
+                },
+              ],
+            },
+          },
+        ],
+      },
+      [ADDITIONAL_TOKENS]: {
         templates: [
           {
             marketType: YES_NO,
             question: `Will the price of [0] open at or above [1] on [2], according to TradingView.com "[3]"?`,
-            example: `Will the price of LTC/USD open at or above 8000 on December 31, 2020, according to TradingView.com "LTCUSD (crypto - Coinbase)"?`,
+            example: `Will the price of DASH/USD open at or above 80 on December 31, 2020, according to TradingView.com "DASHUSD (crypto - Coinbase)"?`,
             inputs: [
               {
                 id: 0,
                 type: TemplateInputType.DROPDOWN_QUESTION_DEP,
                 placeholder: `Token Pair`,
                 inputDestIds: [3],
-                values: LIST_VALUES.LTC_CURRENCY_PAIRS,
-                inputDestValues: CRYPTO_LTC_CURRENCY_MARKETS,
+                values: LIST_VALUES.TOKEN_CURRENCY_PAIRS,
+                inputDestValues: CRYPTO_TOKEN_CURRENCY_MARKETS,
               },
               {
                 id: 1,
@@ -9595,7 +10391,7 @@ export const TEMPLATES = {
               },
               {
                 id: 2,
-                type: TemplateInputType.DATESTART,
+                type: TemplateInputType.DATEYEAR,
                 daysAfterDateStart: 1,
                 placeholder: `Day of Year`,
               },
@@ -9611,7 +10407,7 @@ export const TEMPLATES = {
             resolutionRules: {
               [REQUIRED]: [
                 {
-                  text: `Use ticker symbol search for token pair (ie LTCUSD), find exchange that corresponds to market question. Navigate to Full-featured daily chart, Opening price is determined on the date in the market question on tradingview.com.`,
+                  text: `Use ticker symbol search for token pair (ie ETHUSD), find exchange that corresponds to market question. Navigate to Full-featured daily chart, Opening price is determined on the date in the market question on tradingview.com.`,
                 },
                 {
                   text: `Opening price can also be found on tradingview using the hourly chart for the date in the market question at UTC (0) 00:00`,
@@ -9625,15 +10421,15 @@ export const TEMPLATES = {
           {
             marketType: YES_NO,
             question: `Will the price of [0], exceed [1] anytime between the open of [2] and close of [3], according to TradingView.com "[4]"?`,
-            example: `Will the price of LTC/USD exceed 8000 anytime between the open of September 1, 2020 and close of December 31, 2020, according to TradingView.com "LTCUSD (crypto - Coinbase)"?`,
+            example: `Will the price of DASH/USD exceed 80 anytime between the open of September 1, 2020 and close of December 31, 2020, according to TradingView.com "DASHUSD (crypto - Coinbase)"?`,
             inputs: [
               {
                 id: 0,
                 type: TemplateInputType.DROPDOWN_QUESTION_DEP,
                 placeholder: `Token Pair`,
                 inputDestIds: [4],
-                values: LIST_VALUES.LTC_CURRENCY_PAIRS,
-                inputDestValues: CRYPTO_LTC_CURRENCY_MARKETS,
+                values: LIST_VALUES.TOKEN_CURRENCY_PAIRS,
+                inputDestValues: CRYPTO_TOKEN_CURRENCY_MARKETS,
               },
               {
                 id: 1,
@@ -9643,13 +10439,13 @@ export const TEMPLATES = {
               },
               {
                 id: 2,
-                type: TemplateInputType.DATESTART,
+                type: TemplateInputType.DATEYEAR,
                 placeholder: `Day of Year`,
               },
               {
                 id: 3,
                 dateAfterId: 2,
-                type: TemplateInputType.DATESTART,
+                type: TemplateInputType.DATEYEAR,
                 daysAfterDateStart: 1,
                 placeholder: `Day of Year`,
               },
@@ -9665,7 +10461,7 @@ export const TEMPLATES = {
             resolutionRules: {
               [REQUIRED]: [
                 {
-                  text: `Use ticker symbol search for token pair (ie LTCUSD), find exchange that corresponds to market question. Navigate to Full-featured daily chart, Opening price is determined on the date in the market question on tradingview.com.`,
+                  text: `Use ticker symbol search for token pair (ie ETHUSD), find exchange that corresponds to market question. Navigate to Full-featured daily chart, Opening price is determined on the date in the market question on tradingview.com.`,
                 },
                 {
                   text: `Opening price can also be found on tradingview using the hourly chart for the date in the market question at UTC (0) 00:00`,
@@ -9679,7 +10475,7 @@ export const TEMPLATES = {
           {
             marketType: SCALAR,
             question: `What price will [0] open at on [1], according to TradingView.com "[2]"?`,
-            example: `What price will LTC/USD open at on December 31, 2020, according to TradingView.com for "LTCUSD (crypto - Coinbase)"?`,
+            example: `What price will DASH/USD open at on December 31, 2020, according to TradingView.com for "DASHUSD (crypto - Coinbase)"?`,
             denomination: 'Price',
             inputs: [
               {
@@ -9687,12 +10483,12 @@ export const TEMPLATES = {
                 type: TemplateInputType.DROPDOWN_QUESTION_DEP,
                 placeholder: `Token Pair`,
                 inputDestIds: [2],
-                values: LIST_VALUES.LTC_CURRENCY_PAIRS,
-                inputDestValues: CRYPTO_LTC_CURRENCY_MARKETS,
+                values: LIST_VALUES.TOKEN_CURRENCY_PAIRS,
+                inputDestValues: CRYPTO_TOKEN_CURRENCY_MARKETS,
               },
               {
                 id: 1,
-                type: TemplateInputType.DATESTART,
+                type: TemplateInputType.DATEYEAR,
                 daysAfterDateStart: 1,
                 placeholder: `Day of Year`,
               },
@@ -9708,7 +10504,7 @@ export const TEMPLATES = {
             resolutionRules: {
               [REQUIRED]: [
                 {
-                  text: `Use ticker symbol search for token pair (ie LTCUSD), find exchange that corresponds to market question. Navigate to Full-featured daily chart, Opening price is determined on the date in the market question on tradingview.com.`,
+                  text: `Use ticker symbol search for token pair (ie ETHUSD), find exchange that corresponds to market question. Navigate to Full-featured daily chart, Opening price is determined on the date in the market question on tradingview.com.`,
                 },
                 {
                   text: `Opening price can also be found on tradingview using the hourly chart for the date in the market question at UTC (0) 00:00`,
@@ -9719,8 +10515,8 @@ export const TEMPLATES = {
               ],
             },
           },
-        ],
-      },
+        ]
+      }
     },
   },
   [MEDICAL]: {
@@ -9751,7 +10547,7 @@ export const TEMPLATES = {
           },
           {
             id: 3,
-            type: TemplateInputType.DATESTART,
+            type: TemplateInputType.DATEYEAR,
             daysAfterDateStart: 2,
             placeholder: `Day of Year`,
           },
@@ -9774,7 +10570,7 @@ export const TEMPLATES = {
         inputs: [
           {
             id: 0,
-            type: TemplateInputType.DATESTART,
+            type: TemplateInputType.DATEYEAR,
             daysAfterDateStart: 2,
             placeholder: `Day of Year`,
           },
@@ -9807,7 +10603,7 @@ export const TEMPLATES = {
           },
           {
             id: 3,
-            type: TemplateInputType.DATESTART,
+            type: TemplateInputType.DATEYEAR,
             daysAfterDateStart: 2,
             placeholder: `Day of Year`,
           },
@@ -9836,7 +10632,7 @@ export const TEMPLATES = {
           },
           {
             id: 1,
-            type: TemplateInputType.DATESTART,
+            type: TemplateInputType.DATEYEAR,
             daysAfterDateStart: 2,
             placeholder: `Day of Year`,
           },

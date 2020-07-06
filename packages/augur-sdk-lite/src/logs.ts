@@ -412,6 +412,7 @@ export interface MarketData extends Log {
   feePercent: number;
   finalized: boolean;
   lastTradedTimestamp: UnixTimestamp;
+  numberOfTrades: number;
   isWarpSync: boolean;
   groupHash?: string;
   groupType?: string;

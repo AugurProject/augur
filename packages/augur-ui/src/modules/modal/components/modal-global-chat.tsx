@@ -1,4 +1,4 @@
-import React, { lazy, Suspense } from 'react';
+import React from 'react';
 import { Close } from 'modules/common/icons';
 import Styles from 'modules/modal/modal.styles.less';
 import classNames from 'classnames';

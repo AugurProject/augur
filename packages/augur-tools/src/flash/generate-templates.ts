@@ -192,7 +192,7 @@ function getHoursAfterEstimatedStartTime(inputs: TemplateInput[]): number {
 
 function getHoursAfterStartdate(inputs: TemplateInput[]): number {
   return (inputs
-    .find(i => i.type === TemplateInputType.DATESTART) || {}).daysAfterDateStart;
+    .find(i => i.type === TemplateInputType.DATEYEAR) || {}).daysAfterDateStart;
 }
 
 function listToRegEx(values: string[]) {

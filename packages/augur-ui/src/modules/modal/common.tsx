@@ -47,8 +47,12 @@ import { toChecksumAddress } from 'ethereumjs-util';
 import TooltipStyles from 'modules/common/tooltip.styles.less';
 import ReactTooltip from 'react-tooltip';
 import { BigNumber } from 'utils/create-big-number';
+<<<<<<< HEAD
 import { useAppStatusStore } from 'modules/app/store/app-status';
 import { formatDai } from 'utils/format-number';
+=======
+import titleCase from 'utils/title-case';
+>>>>>>> master
 
 export interface TitleProps {
   title: string;
@@ -422,6 +426,7 @@ export const Stepper = ({
 );
 
 interface TransferMyDaiProps {
+<<<<<<< HEAD
   condensed: boolean;
   callBack: Function;
 }
@@ -451,11 +456,21 @@ export const TransferMyDai = ({ condensed, callBack }: TransferMyDaiProps) => {
     });
   };
 
+=======
+  walletType: string;
+  tokenAmount: FormattedNumber;
+  showTransferModal: Function;
+  isCondensed: boolean;
+  tokenName: string;
+}
+
+export const TransferMyTokens = ({ walletType, tokenAmount, showTransferModal, tokenName, isCondensed = false}: TransferMyDaiProps) => {
+>>>>>>> master
   if (isCondensed) {
     return (
       <div className={Styles.TransferMyDaiCondensed}>
         <div>
-          <span>{daiAmount.formattedValue} DAI</span>
+          <span>{tokenAmount.formattedValue} {tokenName}</span>
           <span>in {walletType} wallet</span>
         </div>
         <SecondaryButton
@@ -467,16 +482,20 @@ export const TransferMyDai = ({ condensed, callBack }: TransferMyDaiProps) => {
   }
 
   return (
-    <div className={Styles.TransferMyDai}>
+    <div className={Styles.TransferMyTokens}>
       <div>
+<<<<<<< HEAD
         <span>
           {daiAmount.formattedValue} Dai in your {walletType} wallet
         </span>
+=======
+        <span>{tokenAmount.formattedValue} {titleCase(tokenName)} in your {walletType} wallet</span>
+>>>>>>> master
         <span>Transfer any amount to your trading account.</span>
       </div>
       <PrimaryButton
         action={() => showTransferModal()}
-        text={'Transfer my Dai'}
+        text={`Transfer my ${titleCase(tokenName)}`}
       />
     </div>
   );

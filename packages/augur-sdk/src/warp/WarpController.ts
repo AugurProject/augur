@@ -18,6 +18,7 @@ import { DB } from '../state/db/DB';
 import { IpfsInfo } from '../state/db/WarpSyncCheckpointsDB';
 import { Markets } from '../state/getter/Markets';
 import { Checkpoints } from './Checkpoints';
+import { BigNumber } from 'ethers/utils';
 
 export const WARPSYNC_VERSION = '1';
 const FILE_FETCH_TIMEOUT = 10000; // 10 seconds
@@ -169,9 +170,13 @@ export class WarpController {
           break;
 
         case MarketReportingState.Finalized:
+          const endBlock = Object.assign({}, mostRecentCheckpoint.end, {
+            gasLimit: new BigNumber(mostRecentCheckpoint.end.gasLimit),
+            gasUsed: new BigNumber(mostRecentCheckpoint.end.gasUsed),
+          })
           const [begin, end] = await this.checkpoints.calculateBoundary(
             mostRecentCheckpoint.endTimestamp,
-            mostRecentCheckpoint.end
+            endBlock
           );
 
           const newWarpSyncMarket = await this.augur.warpSync.getWarpSyncMarket(

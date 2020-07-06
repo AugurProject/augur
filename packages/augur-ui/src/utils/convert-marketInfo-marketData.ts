@@ -12,7 +12,6 @@ import {
   SCALAR_UP_ID,
   INVALID_OUTCOME_LABEL,
 } from 'modules/common/constants';
-import { INVALID_OUTCOME } from 'modules/create-market/constants';
 import {
   ConsensusFormatted,
   MarketData,
@@ -20,7 +19,7 @@ import {
 } from 'modules/types';
 import { createBigNumber } from './create-big-number';
 import deepClone from './deep-clone';
-import { convertUnixToFormattedDate, getDurationBetween } from './format-date';
+import { getDurationBetween, convertUTCUnixToFormattedDate } from './format-date';
 import {
   formatAttoRep,
   formatDai,
@@ -30,7 +29,6 @@ import {
 } from './format-number';
 import { getOutcomeNameWithOutcome } from './get-outcome';
 import { keyBy } from './key-by';
-import moment = require('moment');
 
 export function convertMarketInfoToMarketData(
   marketInfo: Getters.Markets.MarketInfo,
@@ -47,12 +45,12 @@ export function convertMarketInfoToMarketData(
     maxPriceBigNumber: createBigNumber(marketInfo.maxPrice),
     outcomesFormatted: processOutcomes(marketInfo),
     marketStatus: getMarketStatus(marketInfo.reportingState),
-    endTimeFormatted: convertUnixToFormattedDate(marketInfo.endTime),
-    creationTimeFormatted: convertUnixToFormattedDate(marketInfo.creationTime),
+    endTimeFormatted: convertUTCUnixToFormattedDate(marketInfo.endTime),
+    creationTimeFormatted: convertUTCUnixToFormattedDate(marketInfo.creationTime),
     categories: marketInfo.categories,
     isArchived: archivedDuration && (Math.abs(archivedDuration.asDays()) >= ARCHIVED_MARKET_LENGTH),
     finalizationTimeFormatted: marketInfo.finalizationTime
-      ? convertUnixToFormattedDate(marketInfo.finalizationTime)
+      ? convertUTCUnixToFormattedDate(marketInfo.finalizationTime)
       : null,
     consensusFormatted: processConsensus(marketInfo),
     defaultSelectedOutcomeId: getDefaultOutcomeSelected(marketInfo.marketType),

@@ -14,7 +14,7 @@ interface MarketsListSortByProps {
 const MarketsListSortBy = ({ setFilterSortState }: MarketsListSortByProps) => {
   const {
     isMobile,
-    filterSortOptions: { marketSort },
+    filterSortOptions: { sortBy },
     marketsList: { isSearching },
     actions: { updateFilterSortOptions },
   } = useAppStatusStore();

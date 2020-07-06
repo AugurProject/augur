@@ -69,6 +69,7 @@
   "ui": {
     "showReloadModal": true,
     "trackBestOffer": true,
+    "reportingOnly": false,
     "fallbackProvider": "torus"
   }
 }

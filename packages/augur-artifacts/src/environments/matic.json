@@ -114,5 +114,6 @@
   "logLevel": 0,
   "showReloadModal": true,
   "averageBlocktime": 2000,
-  "trackBestOffer": false
+  "trackBestOffer": false,
+  "reportingOnly": false
 }

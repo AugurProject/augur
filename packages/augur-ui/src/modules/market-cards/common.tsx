@@ -1,5 +1,6 @@
 import React, { useEffect, useState, Fragment } from 'react';
 import ReactTooltip from 'react-tooltip';
+import { MarketReportingState } from '@augurproject/sdk-lite';
 import classNames from 'classnames';
 import Clipboard from 'clipboard';
 
@@ -1004,7 +1005,7 @@ export const OutcomeGroup = ({
           )}
         </>
       )}
-      {(!isScalar || inDispute) &&
+      {(!isScalar || inDispute) && reportingState !== MarketReportingState.Unknown) &&
         outcomesShow.map(
           (outcome: OutcomeFormatted, index: number) =>
             ((!expanded && index < showOutcomeNumber) ||

@@ -7,6 +7,7 @@ import {
   NEW_ORDER_GAS_ESTIMATE,
   ETH,
   DAI,
+  REP,
   NULL_ADDRESS,
   MODAL_ADD_FUNDS,
   MODAL_GAS_PRICE,
@@ -88,6 +89,7 @@ const ConnectDropdown = () => {
     actions: { setModal },
   } = useAppStatusStore();
   const showTransferMyDai = balances.signerBalances.dai !== "0";
+  const showTransferMyRep = balances.signerBalances.rep !== "0";
   const { gasPriceTime, gasPriceSpeed, userDefinedGasPrice } = useGasInfo();
   const parentUniverseId = parentUniId !== NULL_ADDRESS ? parentUniId : null;
   let gasCostTrade;
@@ -190,7 +192,7 @@ const ConnectDropdown = () => {
               any of these fees.
             </p>
             <p>
-              If your account balance exceeds $40, 0.04 ETH equivilant in DAI
+              If your account balance exceeds $40, 0.04 ETH equivalent in DAI
               will be held in your Fee reserve to cover transaction fees, which
               results in cheaper transaction fees.
             </p>
@@ -268,7 +270,8 @@ const ConnectDropdown = () => {
           />
         </div>
 
-        {showTransferMyDai && <TransferMyDai condensed={true} />}
+        {showTransferMyDai && <TransferMyTokens condensed={true} tokenName={DAI} />}
+        {showTransferMyRep && <TransferMyTokens condensed={true} tokenName={REP} />}
 
         {accountFunds
           .filter(fundType => !fundType.disabled)
@@ -309,7 +312,7 @@ const ConnectDropdown = () => {
                 </div>
                 <SecondaryButton
                   action={() => wallet.action()}
-                  text="OPEN"
+                  text="Open"
                   title="Open"
                   icon={Open}
                   disabled={wallet.disabled}
@@ -334,7 +337,7 @@ const ConnectDropdown = () => {
             </div>
             <SecondaryButton
               action={() => setModal({ type: MODAL_GAS_PRICE })}
-              text="EDIT"
+              text="Edit"
               title="Edit"
               icon={Pencil}
             />
