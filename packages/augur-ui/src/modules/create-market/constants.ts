@@ -8,6 +8,7 @@ import {
   AFFILIATE_FEE_DEFAULT,
   ZERO,
   ONE,
+  SETTLEMENT_FEE_PERCENT_DEFAULT,
 } from 'modules/common/constants';
 import { NewMarket } from 'modules/types';
 import * as icons from 'modules/common/icons';
@@ -53,6 +54,7 @@ import {
   TV_MOVIES,
   SOCIAL_MEDIA,
 } from '@augurproject/sdk-lite';
+import { formatPercent } from 'utils/format-number';
 
 
 // Button Types
@@ -112,6 +114,11 @@ export const EMPTY_STATE: NewMarket = {
   categories: ['', '', ''],
   navCategories: ['', '', ''],
   settlementFee: SETTLEMENT_FEE_DEFAULT,
+  settlementFeePercent: formatPercent(SETTLEMENT_FEE_PERCENT_DEFAULT, {
+    positiveSign: false,
+    decimals: 4,
+    decimalsRounded: 4,
+  }),
   affiliateFee: AFFILIATE_FEE_DEFAULT,
   orderBook: {}, // for submit orders
   orderBookSorted: {}, // for order book table
