@@ -92,8 +92,8 @@ const BaseInnerNavPure = () => {
     setMobileMenuState(MOBILE_MENU_STATES.CLOSED);
 
     const filterUpdates = {};
-    if (filterSortState.marketSort) {
-      filterUpdates[MARKET_SORT] = filterSortState.marketSort;
+    if (filterSortState.sortBy) {
+      filterUpdates[MARKET_SORT] = filterSortState.sortBy;
     }
     if (changedFilters.length > 0) {
       updateMultipleQueries(changedFilters, location, history);

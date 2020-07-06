@@ -3121,23 +3121,9 @@ export const LIST_VALUES = {
     'ETHEUR (crypto - Coinbase)',
     'ETHEUR (crypto - Bitfinex)',
   ],
-  LTC_USD_TRADING_VIEW_EXCHANGES: [
-    'LTCUSD (crypto - Coinbase)',
-    'LTCUSD (crypto - Bitfinex)',
-    'LTCUSD (crypto - Bittrex)',
-  ],
-  LTC_USDT_TRADING_VIEW_EXCHANGES: [
-    'LTCUSDT (crypto - Bittrex)',
-    'LTCUSDT (crypto - Huobi)',
-    'LTCUSDT (crypto - Binance)',
-  ],
-  LTC_EUR_TRADING_VIEW_EXCHANGES: [
-    'LTCEUR (crypto - Coinbase)',
-    'LTCEUR (crypto - Kraken)',
-  ],
   BTC_CURRENCY_PAIRS: ['BTC/USD', 'BTC/USDT', 'BTC/EUR'],
   ETH_CURRENCY_PAIRS: ['ETH/USD', 'ETH/USDT', 'ETH/EUR'],
-  LTC_CURRENCY_PAIRS: ['LTC/USD', 'LTC/USDT', 'LTC/EUR'],
+  TOKEN_CURRENCY_PAIRS: ['ATOM/USD', 'ALGO/USD', 'BCH/USD', 'DAI/USD', 'DASH/USD', 'EOS/USD', 'ETC/USD', 'KNC/USD', 'LTC/USD', 'OMG/USD', 'OXT/USD', 'XLM/USD', 'XRP/USD', 'XTZ/USD', 'ZEC/USDC'],
   AMOUNT_UNITS: ['Thousand', 'Million', 'Billion'],
   SOCCER_CUSTOM_FUTURES_EVENTS: [
     'FIFA World Cup',
@@ -3673,11 +3659,23 @@ export const CRYPTO_ETH_CURRENCY_MARKETS = {
   'ETH/EUR': LIST_VALUES.ETH_EUR_TRADING_VIEW_EXCHANGES,
 };
 
-export const CRYPTO_LTC_CURRENCY_MARKETS = {
-  'LTC/USD': LIST_VALUES.LTC_USD_TRADING_VIEW_EXCHANGES,
-  'LTC/USDT': LIST_VALUES.LTC_USDT_TRADING_VIEW_EXCHANGES,
-  'LTC/EUR': LIST_VALUES.LTC_EUR_TRADING_VIEW_EXCHANGES,
-};
+export const CRYPTO_TOKEN_CURRENCY_MARKETS = {
+  'ATOM/USD': ['ATOMUSD (crypto - Coinbase)'],
+  'ALGO/USD': ['ALGOUSD (crypto - Coinbase)'],
+  'BCH/USD': ['BCHUSD (crypto - Coinbase)'],
+  'DAI/USD': ['DAIUSD (crypto - Coinbase)'],
+  'DASH/USD': ['DASHUSD (crypto - Coinbase)'],
+  'EOS/USD': ['EOSUSD (crypto - Coinbase)'],
+  'ETC/USD': ['ETCUSD (crypto - Coinbase)'],
+  'KNC/USD': ['KNCUSD (crypto - Coinbase)'],
+  'LTC/USD': ['LTCUSD (crypto - Coinbase)'],
+  'OMG/USD': ['OMGUSD (crypto - Coinbase)'],
+  'OXT/USD': ['OXTUSD (crypto - Coinbase)'],
+  'XLM/USD': ['XLMUSD (crypto - Coinbase)'],
+  'XRP/USD': ['XRPUSD (crypto - Coinbase)'],
+  'XTZ/USD': ['XTZUSD (crypto - Coinbase)'],
+  'ZEC/USDC': ['ZECUSD (crypto - Coinbase)'],
+}
 
 export const ENTERTAINMENT_EVENT_DEP_TEAMS = {
   'Academy Awards': LIST_VALUES.ENT_ACAD_AWARDS,

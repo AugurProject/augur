@@ -1,6 +1,6 @@
-import { createBigNumber } from 'utils/create-big-number';
+import { BigNumber, createBigNumber } from 'utils/create-big-number';
 
-import { BUY, MAX_BULK_ORDER_COUNT, ZERO } from 'modules/common/constants';
+import { BUY, MAX_BULK_ORDER_COUNT, PUBLICTRADE, ZERO } from 'modules/common/constants';
 import { LiquidityOrder, CreateLiquidityOrders } from 'modules/types';
 import {
   createLiquidityOrder,
@@ -8,11 +8,17 @@ import {
   approveToTrade,
   placeTrade,
 } from 'modules/contracts/actions/contractCalls';
-import { Getters, TXEventName } from '@augurproject/sdk';
+import type { Getters } from '@augurproject/sdk';
+import { TXEventName } from '@augurproject/sdk-lite';
 import { processLiquidityOrder } from 'modules/events/actions/liquidity-transactions';
+import {
+  convertDisplayAmountToOnChainAmount,
+  convertDisplayPriceToOnChainPrice,
+} from "@augurproject/utils"
 import { AppStatus } from 'modules/app/store/app-status';
 import { Markets } from 'modules/markets/store/markets';
 import { PendingOrders } from 'modules/app/store/pending-orders';
+import { updateAlert } from 'modules/alerts/actions/alerts';
 // liquidity should be an orderbook, example with yesNo:
 // { 1: [{ type, quantity, price, orderEstimate }, ...], ... }
 
@@ -99,7 +105,7 @@ const sendOrder = async options => {
 };
 
 export const startOrderSending = async ({
-  marketId,
+  marketId
 }: CreateLiquidityOrders) => {
   const { marketInfos } = Markets.get();
   const { pendingLiquidityOrders } = PendingOrders.get();
@@ -134,8 +140,9 @@ export const startOrderSending = async ({
 
 const createZeroXLiquidityOrders = async (
   market: Getters.Markets.MarketInfo,
-  orders: LiquidityOrder[],
+  orders: LiquidityOrder[]
 ) => {
+  const { blockchain: { currentAugurTimestamp: timestamp }} = AppStatus.get();
   try {
     const fingerprint = undefined; // TODO: get this from state
     let i = 0;
@@ -176,6 +183,28 @@ const createZeroXLiquidityOrders = async (
         undefined
       )
         .then(() => {
+          const alert = {
+            eventType: o.type,
+            market: market.id,
+            name: PUBLICTRADE,
+            status: TXEventName.Success,
+            timestamp: timestamp * 1000,
+            params: {
+              outcome: '0x0'.concat(String(o.outcomeId)),
+              price: convertDisplayPriceToOnChainPrice(
+                createBigNumber(o.price),
+                createBigNumber(market.minPrice),
+                createBigNumber(market.tickSize)
+              ),
+              orderType: o.type === BUY ? 0 : 1,
+              amount: convertDisplayAmountToOnChainAmount(
+                createBigNumber(o.shares),
+                createBigNumber(market.tickSize)
+              ),
+              marketId: market.id,
+            },
+          };
+          updateAlert(undefined, alert, false);
           PendingOrders.actions.updateSuccessfulLiquidity({
             txParamHash: market.transactionHash,
             outcomeId: o.outcomeId,

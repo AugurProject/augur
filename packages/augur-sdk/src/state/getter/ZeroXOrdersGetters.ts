@@ -17,10 +17,10 @@ import { getMarkets} from './OnChainTrading';
 import { Getter } from './Router';
 
 export interface ZeroXOrder extends Order {
-  expirationTimeSeconds: BigNumber;
-  makerAssetAmount: BigNumber;
-  takerAssetAmount: BigNumber;
-  salt: BigNumber;
+  expirationTimeSeconds: number;
+  makerAssetAmount: string;
+  takerAssetAmount: string;
+  salt: string;
   makerAssetData: string;
   takerAssetData: string;
   signature: string;
@@ -172,7 +172,7 @@ export class ZeroXOrdersGetters {
     const expirationCutoffTimestamp = now + expirationCutoffSeconds;
     orders = orders.filter(
       order =>
-        order.zeroXOrder.expirationTimeSeconds.toNumber() >
+        order.zeroXOrder.expirationTimeSeconds >
         expirationCutoffTimestamp
     );
     // Shape orders into market-order-type tree.
@@ -237,15 +237,15 @@ export class ZeroXOrdersGetters {
       price,
       amount,
       amountFilled,
-      expirationTimeSeconds: new BigNumber(
+      expirationTimeSeconds: parseInt(
         storedOrder.signedOrder.expirationTimeSeconds
       ),
       fullPrecisionPrice: price,
       fullPrecisionAmount: amount,
       originalFullPrecisionAmount: '0',
-      makerAssetAmount: new BigNumber(storedOrder.signedOrder.makerAssetAmount),
-      takerAssetAmount: new BigNumber(storedOrder.signedOrder.takerAssetAmount),
-      salt: new BigNumber(storedOrder.signedOrder.salt),
+      makerAssetAmount: storedOrder.signedOrder.makerAssetAmount,
+      takerAssetAmount: storedOrder.signedOrder.takerAssetAmount,
+      salt: storedOrder.signedOrder.salt,
       makerAssetData: storedOrder.signedOrder.makerAssetData,
       takerAssetData: storedOrder.signedOrder.takerAssetData,
       signature: storedOrder.signedOrder.signature,

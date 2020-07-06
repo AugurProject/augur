@@ -16,6 +16,7 @@ import Styles from 'modules/create-market/fees-liquidity.styles.less';
 import { OutcomeFormatted } from 'modules/types';
 import { MARKET_COPY_LIST } from 'modules/create-market/constants';
 import { formatOrderBook } from 'modules/create-market/helpers/format-order-book';
+import { DefaultOrderPropertiesMap } from "modules/market/components/market-view/market-view";
 import { getReportingFeePercentage } from 'modules/contracts/actions/contractCalls';
 import { formatPercent } from 'utils/format-number';
 import { useAppStatusStore } from 'modules/app/store/app-status';
@@ -87,6 +88,12 @@ export const FeesLiquidity = ({ onChange }: FeesLiquidityProps) => {
     value === '0'
       ? onChange('settlementFee', 0)
       : onChange('settlementFee', creatorFee);
+    
+    onChange('settlementFeePercent', formatPercent((fee + creatorFee), {
+      positiveSign: false,
+      decimals: 4,
+      decimalsRounded: 4,
+    }))
   };
 
   const renderRows = data => {
@@ -111,9 +118,10 @@ export const FeesLiquidity = ({ onChange }: FeesLiquidityProps) => {
     );
   };
 
-  const marketTradingFee = settlementFee
+  const marketTradingFee =
+  !isNaN(settlementFee) && settlementFee !== 0
     ? reportingFeePercent.value + Number(settlementFee)
-    : 0;
+    : settlementFee;
 
   return (
     <div className={Styles.FeesLiquidity}>

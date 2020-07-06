@@ -8,6 +8,8 @@ import {
   THEMES,
   ZERO,
   MOBILE_MENU_STATES,
+  FILLED,
+  REPORTING_STATE,
 } from 'modules/common/constants';
 import {
   StarIcon,
@@ -30,7 +32,7 @@ import {
 } from 'modules/common/icons';
 import { useAppStatusStore, AppStatus } from 'modules/app/store/app-status';
 import classNames from 'classnames';
-import { getNetworkId } from 'modules/contracts/actions/contractCalls';
+import { getNetworkId, placeTrade } from 'modules/contracts/actions/contractCalls';
 import Styles from 'modules/common/buttons.styles.less';
 import { MARKET_TEMPLATES } from 'modules/create-market/constants';
 import type { Getters } from '@augurproject/sdk';
@@ -40,8 +42,10 @@ import ChevronFlip from 'modules/common/chevron-flip';
 import { Link } from 'react-router-dom';
 
 import { removePendingData } from 'modules/pending-queue/actions/pending-queue-management';
-import { BET_STATUS } from 'modules/trading/store/constants';
 import { createBigNumber } from 'utils/create-big-number';
+import { formatDai } from 'utils/format-number';
+import { useMarketsStore } from 'modules/markets/store/markets';
+import { startClaimingMarketsProceeds } from 'modules/positions/actions/claim-markets-proceeds';
 
 export interface DefaultButtonProps {
   id?: string;
@@ -650,37 +654,78 @@ export const ExternalLinkText = (props: ExternalLinkTextProps) => (
 );
 
 interface CashoutButtonProps {
-  action: Function;
-  outcome: Object;
+  bet: Object;
 }
 
 export const CashoutButton = ({
-  action,
-  outcome: { amountWon, status },
+  bet
 }: CashoutButtonProps) => {
+  let cashoutDisabled = true;
+  let cashoutText = 'cashout not available';
   let didWin = false;
   let loss = false;
-  let text = 'CASHOUT: $00.00';
-  const won = createBigNumber(amountWon);
+  let won = createBigNumber(bet.amountWon);
+  let cashout = () => bet.cashout();
+
+  const { 
+      accountPositions: positions,
+      loginAccount: { address: account },
+  } = useAppStatusStore();
+  const { marketInfos } = useMarketsStore();
+  const market = marketInfos[bet.marketId];
+  if (positions[bet.marketId]) {
+    const marketPosition = positions[bet.marketId];
+    if (createBigNumber(
+          marketPosition.tradingPositionsPerMarket.unclaimedProceeds
+        ).gt(ZERO)
+      ) {
+        const claimable = createBigNumber(
+          marketPosition.tradingPositionsPerMarket.unclaimedProceeds
+        );
+        cashoutText = `Cashout ${formatDai(claimable).full}`;
+        cashoutDisabled = false;
+        cashout = () => startClaimingMarketsProceeds([bet.marketId], account, () => {})
+      } else if (market.reportingState !== REPORTING_STATE.AWAITING_FINALIZATION && market.reportingState !== REPORTING_STATE.FINALIZED) {
+        cashoutText = `Cashout ${formatDai(bet.unrealizedCost).full}`;
+        cashoutDisabled = false;
+    
+        cashout = () => (
+          async () => { 
+            await placeTrade(
+              0,
+              bet.marketId,
+              market.numOutcomes,
+              bet.outcomeId,
+              false,
+              market.numTicks,
+              market.minPrice,
+              market.maxPrice,
+              bet.wager,
+              bet.price,
+              0,
+              '0',
+              undefined
+            );
+        })();
+      }
+  } 
   if (!won.eq(ZERO)) {
     didWin = true;
     if (won.lt(ZERO)) {
       loss = true;
     }
-    text = `${loss ? 'LOSS' : 'WIN'}: $${Math.abs(amountWon)}`;
+    cashoutText = `${loss ? 'LOSS' : 'WIN'}: $${Math.abs(bet.amountWon)}`;
   }
   return (
-    <button
-      disabled={status === BET_STATUS.CLOSED}
+    <button 
+      onClick={() => cashout()} 
       className={classNames(Styles.CashoutButton, {
         [Styles.Won]: didWin && !loss,
         [Styles.Loss]: loss,
-      })}
-      onClick={e => {
-        action && action(e);
-      }}
+      })} 
+      disabled={cashoutDisabled}
     >
-      {status === BET_STATUS.CLOSED ? 'Cashout not available' : text}
+      {cashoutText}
     </button>
   );
 };
@@ -829,7 +874,7 @@ const EtherscanLinkTSX = ({
   const networkId = getNetworkId();
 
   if (!networkId) {
-    return null;
+    return {};
   }
 
   const networkLink = {
@@ -838,6 +883,7 @@ const EtherscanLinkTSX = ({
     4: 'https://rinkeby.etherscan.io/tx/',
     19: 'http://scan.thundercore.com/tx/',
     42: 'https://kovan.etherscan.io/tx/',
+    103: 'https://localHasNoEtherscanLink/tx/',
   };
 
   const baseUrl = networkLink[networkId];

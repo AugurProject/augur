@@ -57,6 +57,7 @@ export const MyBetsRow = ({
       highRisk: outcome.highRisk,
       templateShield: isEvent,
       outcome: outcome,
+      marketId: outcome.marketId,
     },
     {
       key: 'wager',

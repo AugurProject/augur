@@ -44,16 +44,13 @@
     "sitemap": "node src/modules/sitemap/react-sitemap.js"
   },
   "dependencies": {
-    "3box": "1.18.1",
-    "3box-chatbox-react": "0.1.11",
-    "3box-comments-react": "2.0.3",
     "3id-blockchain-utils": "0.3.3",
     "@0x/order-utils": "10.2.4",
     "@analytics/segment": "0.4.0",
     "@augurproject/sdk": "2.0.0-alpha.2",
     "@augurproject/sdk-lite": "2.0.0-alpha.2",
     "@augurproject/utils": "2.0.0-alpha.2",
-    "@toruslabs/torus-embed": "1.3.4",
+    "@toruslabs/torus-embed": "1.7.1",
     "analytics": "0.3.0",
     "bignumber.js": "9.0.0",
     "classnames": "2.2.6",

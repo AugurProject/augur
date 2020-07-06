@@ -32,8 +32,7 @@ import Styles from 'modules/modal/common.styles.less';
 import { useAppStatusStore } from 'modules/app/store/app-status';
 import { track, MODAL_VIEWED } from 'services/analytics/helpers';
 import { ModalAccountCreated } from 'modules/modal/onboarding-modals';
-import { ModalCreateMarket, ModalDaiFaucet, ModalCreationHelp, ModalFinalize, ModalDiscard, ModalDrQuickGuide, ModalHelp, ModalRepFaucet, ModalSignTransaction, ModalMarketLoading, ModalOdds, ModalInvalidMarketRules, ModalNetworkMismatch, ModalNetworkDisabled, ModalMigrateMarket, ModalWalletError, ModalInitializeAccounts } from '../message-modals';
-import { ModalGlobalChat } from './modal-global-chat';
+import { ModalCreateMarket, ModalDaiFaucet, ModalCreationHelp, ModalFinalize, ModalDiscard, ModalDrQuickGuide, ModalHelp, ModalRepFaucet, ModalSignTransaction, ModalMarketLoading, ModalOdds, ModalInvalidMarketRules, ModalNetworkMismatch, ModalNetworkDisabled, ModalMigrateMarket, ModalWalletError, ModalInitializeAccounts, ReportingOnly } from '../message-modals';
 
 const ESCAPE_KEYCODE = 27;
 
@@ -124,8 +123,6 @@ function selectModal(type, props, closeModal, modal) {
       return <ModalTutorialOutro {...modal} />;
     case TYPES.MODAL_TUTORIAL_INTRO:
       return <ModalTutorialIntro {...modal} />;
-    case TYPES.MODAL_GLOBAL_CHAT:
-      return <ModalGlobalChat />;
     case TYPES.MODAL_ACCOUNT_CREATED:
       return <ModalAccountCreated />
     case TYPES.MODAL_AUGUR_USES_DAI:
@@ -140,6 +137,8 @@ function selectModal(type, props, closeModal, modal) {
       return <ModalInitializeAccounts />;
     case TYPES.MODAL_FROZEN_FUNDS:
       return <ModalFrozenFunds />;
+    case TYPES.MODAL_REPORTING_ONLY:
+        return <ReportingOnly />;
     default:
       return <div />;
   }

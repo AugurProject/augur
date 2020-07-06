@@ -4,7 +4,6 @@ import React, { useRef, useState, useEffect } from 'react';
 import classNames from 'classnames';
 import { useLocation, useHistory } from 'react-router';
 import Media from 'react-media';
-import { augurSdkLite } from 'services/augursdklite';
 import { MarketHeader } from 'modules/market/components/market-header/market-header';
 import MarketOrdersPositionsTable from 'modules/market/components/market-orders-positions-table/market-orders-positions-table';
 import MarketOutcomesList from "modules/market/components/market-outcomes-list/market-outcomes-list";

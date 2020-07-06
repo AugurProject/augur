@@ -12,9 +12,10 @@ import {
   CREATE_MARKET_FORM_PARAM_NAME,
 } from './routes/constants/param-names';
 import { Getters, PayoutNumeratorValue } from '@augurproject/sdk';
-import { TransactionMetadataParams, EthersSigner } from '@augurproject/contract-dependencies-ethers';
-import { BigNumber } from 'utils/create-big-number';
-import { Template } from '@augurproject/artifacts';
+import type { TransactionMetadataParams, EthersSigner } from '@augurproject/contract-dependencies-ethers';
+import type { BigNumber } from 'utils/create-big-number';
+import type { Template } from '@augurproject/templates';
+import { JsonRpcProvider } from "ethers/providers";
 
 export enum SizeTypes {
   SMALL = 'small',
@@ -413,6 +414,7 @@ export interface NewMarket {
   navCategories: string[];
   categories: string[];
   settlementFee: number;
+  settlementFeePercent: FormattedNumber;
   affiliateFee: number;
   orderBook: { [outcome: number]: LiquidityOrder[] };
   orderBookSorted: { [outcome: number]: LiquidityOrder[] };
@@ -545,13 +547,15 @@ export enum INVALID_OPTIONS {
 
 export interface FilterSortOptions {
   marketFilter: string;
-  marketSort: string;
+  sortBy: string;
   maxFee: string;
   maxLiquiditySpread: string;
   includeInvalidMarkets: INVALID_OPTIONS;
   transactionPeriod: string;
   templateFilter: string;
   marketTypeFilter: string;
+  limit: number;
+  offset: number;
 }
 
 export interface Favorite {
@@ -642,6 +646,7 @@ export interface LoginAccountMeta {
   accountType: string;
   address: string;
   signer: any | EthersSigner;
+  provider: JsonRpcProvider;
   isWeb3: boolean;
   profileImage?: string;
   email?: string;
@@ -657,7 +662,11 @@ export interface LoginAccountSettings {
   includeInvalidMarkets?: string;
   spread?: boolean;
   marketTypeFilter?: boolean;
+  marketFilter?: string;
   showInvalid?: boolean;
+  sortBy?: string;
+  limit?: number;
+  offset?: number;
 }
 
 export interface LoginAccount {
@@ -842,11 +851,4 @@ export interface CategoryList {
       ];
     }
   ];
-}
-
-export interface Initialized3box {
-  address: string;
-  box: any;
-  profile: object;
-  openComments: boolean;
 }

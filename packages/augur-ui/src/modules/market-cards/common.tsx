@@ -1,5 +1,6 @@
 import React, { useEffect, useState, Fragment } from 'react';
 import ReactTooltip from 'react-tooltip';
+import { MarketReportingState } from '@augurproject/sdk-lite';
 import classNames from 'classnames';
 import Clipboard from 'clipboard';
 
@@ -1011,14 +1012,14 @@ export const OutcomeGroup = ({
           )}
         </>
       )}
-      {(!isScalar || inDispute) &&
+      {(!isScalar || inDispute) && reportingState !== MarketReportingState.Unknown &&
         outcomesShow.map(
           (outcome: OutcomeFormatted, index: number) =>
             ((!expanded && index < showOutcomeNumber) ||
               expanded ||
               marketType === YES_NO) &&
             (inDispute &&
-            !!stakes.find(stake => parseFloat(stake.outcome) === outcome.id) ? (
+            !!stakes.find(stake => parseFloat(stake.outcome) === outcome.id)) ? (
               <Fragment key={id + outcome.id + index}>
                 {marketType === SCALAR && index === 1 && expanded && (
                   <ScalarBlankDisputeOutcome
@@ -1061,7 +1062,7 @@ export const OutcomeGroup = ({
                 isTrading={isTrading}
               />
             ))
-        )}
+        }
       {isScalar && inDispute && !expanded && (
         <ScalarBlankDisputeOutcome
           denomination={scalarDenomination}
@@ -1423,8 +1424,8 @@ export const TradingSideSection = ({
 
 export function getCategoriesWithClick(categories) {
   const path = { pathname: makePath(MARKETS) };
-  const categoriesLowerCased = categories.map(item => item.toLowerCase());
-  const categoriesWithClick = categoriesLowerCased
+  const categoriesLowerCased = categories && categories.map(item => item.toLowerCase());
+  const categoriesWithClick = categoriesLowerCased && categoriesLowerCased
     .filter(Boolean)
     .map((label, idx) => ({
       label,

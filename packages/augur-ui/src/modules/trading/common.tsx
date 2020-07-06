@@ -7,6 +7,7 @@ import {
   SecondaryButton,
   PrimaryButton,
   ExternalLinkButton,
+  CashoutButton,
 } from 'modules/common/buttons';
 import {
   Ticket,
@@ -151,7 +152,9 @@ export const SportsBet = ({ bet }) => {
 };
 
 export const SportsMyBet = ({
-  bet: {
+  bet
+}) => {
+  const {
     outcome,
     odds,
     wager,
@@ -163,8 +166,7 @@ export const SportsMyBet = ({
     amountFilled,
     toWin,
     dateUpdated,
-  },
-}) => {
+  } = bet;
   const [isRecentUpdate, setIsRecentUpdate] = useState(true);
   useEffect(() => {
     setIsRecentUpdate(true);
@@ -196,15 +198,11 @@ export const SportsMyBet = ({
   let message = null;
   let messageAction = null;
   let wagerToShow = wager;
-  let cashoutDisabled = true;
-  let cashoutText = 'cashout not available';
   let iconAction = () => console.log('setup actions');
   switch (status) {
     case FILLED:
       icon = isRecentUpdate ? CheckMark : null;
       classToApply = isRecentUpdate ? Styles.NEWFILL : Styles.FILLED;
-      cashoutText = `Cashout ${formatDai(amountFilled).full}`;
-      cashoutDisabled = false;
       break;
     case PARTIALLY_FILLED:
       icon = null;
@@ -258,9 +256,7 @@ export const SportsMyBet = ({
         </span>
       )}
       <ExternalLinkButton URL={null} label="view tx" />
-      <button onClick={() => cashOut()} disabled={cashoutDisabled}>
-        {cashoutText}
-      </button>
+      <CashoutButton bet={bet}/>
     </div>
   );
 };

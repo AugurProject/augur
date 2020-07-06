@@ -14,7 +14,7 @@ interface MarketsListSortByProps {
 const MarketsListSortBy = ({ setFilterSortState }: MarketsListSortByProps) => {
   const {
     isMobile,
-    filterSortOptions: { marketSort },
+    filterSortOptions: { sortBy },
     marketsList: { isSearching },
     actions: { updateFilterSortOptions },
   } = useAppStatusStore();
@@ -31,7 +31,7 @@ const MarketsListSortBy = ({ setFilterSortState }: MarketsListSortByProps) => {
         </div>
         <RadioBarGroup
           radioButtons={SORT_OPTIONS}
-          defaultSelected={marketSort}
+          defaultSelected={sortBy}
           light
           onChange={(value: string) =>
             isMobile

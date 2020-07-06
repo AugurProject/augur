@@ -15,6 +15,7 @@ import Styles from 'modules/portfolio/components/common/common.styles.less';
 import { FUTURES, TABLET_MAX } from 'modules/common/constants';
 import Media from 'react-media';
 import { CashoutButton } from 'modules/common/buttons';
+import MarketLink from 'modules/market/components/market-link/market-link';
 
 export const BetsHeader = () => (
   <ul className={Styles.BetsHeader}>
@@ -30,7 +31,6 @@ export interface GameProps {
   row: Object;
   type: string;
 }
-
 export const Game = ({ row, type }: GameProps) => (
   <div className={Styles.Game}>
     <div>
@@ -45,7 +45,9 @@ export const Game = ({ row, type }: GameProps) => (
         customLabel="Estimated Event Start Time"
         endTimeFormatted={convertUnixToFormattedDate(row.startTime)}
       />
-      <span>{row.description}</span>
+      <MarketLink id={row.id}>
+        <span>{row.description}</span>
+      </MarketLink>
     </div>
     <div>
       <BetsHeader />
@@ -118,7 +120,7 @@ export const BetRow = ({ outcome, showExtraRow, isEvent }: BetRowProps) => (
             value={outcome.updatedDate.formattedLocalShortDate}
             useFull={true}
           />
-          <CashoutButton action={null} outcome={outcome} />
+          <CashoutButton bet={outcome} />
         </div>
       ) : (
         <MyBetsRow

@@ -468,6 +468,7 @@ export class MarketDB extends DerivedDB {
     log['disputeRound'] = '0x00';
     log['totalRepStakedInMarket'] = '0x00';
     log['hasRecentlyDepletedLiquidity'] = 0;
+    log['numberOfTrades'] = 0;
     log['liquidity'] = {
       0: '000000000000000000000000000000',
       10: '000000000000000000000000000000',
