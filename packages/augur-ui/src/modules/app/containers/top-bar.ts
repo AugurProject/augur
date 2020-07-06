@@ -7,7 +7,7 @@ import { selectInfoAlertsAndSeenCount } from 'modules/alerts/selectors/alerts';
 import { AppState } from 'appStore';
 import { ThunkDispatch } from 'redux-thunk';
 import { updateModal } from 'modules/modal/actions/update-modal';
-import { MODAL_LOGIN, MODAL_SIGNUP, MODAL_HELP, WALLET_STATUS_VALUES, MODAL_ADD_FUNDS, MODAL_AUGUR_P2P, MODAL_BUY_DAI } from 'modules/common/constants';
+import { MODAL_LOGIN, MODAL_SIGNUP, MODAL_HELP, WALLET_STATUS_VALUES, MODAL_AUGUR_P2P, MODAL_BUY_DAI } from 'modules/common/constants';
 import { Action } from 'redux';
 import { getEthReserveInDai } from 'modules/auth/selectors/get-eth-reserve';
 

@@ -640,6 +640,7 @@ export const MODAL_LOADING = 'MODAL_LOADING';
 export const MODAL_ACCOUNT_CREATED = 'MODAL_ACCOUNT_CREATED';
 export const MODAL_ERROR = 'MODAL_ERROR';
 export const MODAL_HELP = 'MODAL_HELP';
+export const MODAL_REPORTING_ONLY = 'MODAL_REPORTING_ONLY';
 
 // transactions parameter names
 export const TX_ORDER_ID = 'orderId';
@@ -951,6 +952,7 @@ export const UNSIGNED_ORDERS = 'unsignedOrders';
 export const PROCEEDS_TO_CLAIM = 'proceedsToClaim';
 export const MARKET_IS_MOST_LIKELY_INVALID = 'marketIsMostLikelyInvalid';
 export const FINALIZE_MARKET = 'finalizeMarket';
+export const REPORTING_ONLY = 'Reporting Only';
 
 export const NOTIFICATION_TYPES = {
   [OPEN_ORDERS_RESOLVED_MARKET]: OPEN_ORDERS_RESOLVED_MARKET,
@@ -1290,6 +1292,7 @@ export const TRADING_TUTORIAL_OUTCOMES = [
   },
 ];
 
+export const REPORTING_ONLY_DESC = 'This is a reporting only version of Augur. Trading is disabled.';
 export const DISPUTING_GUIDE = {
   title: 'DISPUTING QUICK GUIDE',
   content: [

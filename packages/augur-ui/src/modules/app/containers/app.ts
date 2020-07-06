@@ -37,7 +37,7 @@ import { selectCoreStats } from "modules/account/selectors/core-stats";
 import { getEthReserveInDai } from "modules/auth/selectors/get-eth-reserve";
 
 const mapStateToProps = (state: AppState) => {
-  const { appStatus, loginAccount, pendingQueue } = state;
+  const { appStatus, loginAccount, pendingQueue, env } = state;
   const { balances } = loginAccount;
   const walletStatus = appStatus[WALLET_STATUS];
   const { alerts } = selectInfoAlertsAndSeenCount(state);
@@ -75,7 +75,8 @@ const mapStateToProps = (state: AppState) => {
     showMigrateRepButton,
     whichChatPlugin: state.env.plugins?.chat,
     appStatus: state.appStatus,
-    ethReserveInDai
+    ethReserveInDai,
+    disableMarketCreation: env?.ui?.reportingOnly,
   }
 };
 
