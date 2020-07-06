@@ -1,3 +1,5 @@
+import React from 'react';
+
 import { Proceeds } from 'modules/modal/proceeds';
 import { useAppStatusStore } from 'modules/app/store/app-status';
 import {
@@ -37,7 +39,6 @@ import {
   formatGasCostToEther,
 } from 'utils/format-number';
 import { displayGasInDai } from 'modules/app/actions/get-ethToDai-rate';
-import { React } from 'react';
 import { addPendingData } from 'modules/pending-queue/actions/pending-queue-management';
 import { disavowMarket } from 'modules/contracts/actions/contractCalls';
 import { TXEventName } from '@augurproject/sdk/src';
@@ -399,12 +400,7 @@ export const ModalClaimMarketsProceeds = () => {
           status: pending && pending.status,
           properties: [
             {
-              label: labelWithTooltip({
-                labelText: 'Proceeds after market fees',
-                key: 'proceeds-after-market-fees',
-                tipText:
-                  'This number is the return of Frozen Funds for any position(s) held in addition to any profit or loss accrued in this market.',
-              }),
+              label: 'Proceeds after market fees',
               value: unclaimedProceeds.full,
             },
           ],
@@ -438,7 +434,7 @@ export const ModalClaimMarketsProceeds = () => {
       modal.cb();
     }
     closeModal();
-    return {};
+    return null;
   }
 
   const breakdown = showBreakdown
