@@ -85,6 +85,12 @@ export default class FeesLiquidity extends React.Component<
       this.props.onChange("settlementFee", 0)
     :
       this.props.onChange("settlementFee", creatorFee)
+
+    this.props.onChange('settlementFeePercent', formatPercent((fee + creatorFee), {
+      positiveSign: false,
+      decimals: 4,
+      decimalsRounded: 4,
+    }));
   }
 
   updateSelectedOrderProperties = (selectedOrderProperties) => {

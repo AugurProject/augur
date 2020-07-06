@@ -405,6 +405,7 @@ export interface NewMarket {
   navCategories: string[];
   categories: string[];
   settlementFee: number;
+  settlementFeePercent: FormattedNumber;
   affiliateFee: number;
   orderBook: { [outcome: number]: LiquidityOrder[] };
   orderBookSorted: { [outcome: number]: LiquidityOrder[] };
