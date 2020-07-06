@@ -509,6 +509,10 @@ class Wrapper extends Component<WrapperProps, WrapperState> {
           } else if (tradingTutorial) {
             tutorialNext();
             this.clearOrderForm();
+          } else {
+            gsnUnavailable && !gsnWalletInfoSeen
+              ? initializeGsnWallet(() => this.placeMarketTrade(market, selectedOutcome, this.state))
+              : this.placeMarketTrade(market, selectedOutcome, this.state);
           }
         }}
         disabled={
