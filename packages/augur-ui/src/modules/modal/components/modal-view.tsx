@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 
 import classNames from 'classnames';
-<<<<<<< HEAD
 import ModalReporting from 'modules/modal/reporting';
 import { TransferForm as ModalWithdraw } from 'modules/modal/transfer-form';
 import { ModalCashOut } from 'modules/modal/cash-out-form';
@@ -27,73 +26,13 @@ import { ModalTutorialIntro } from 'modules/modal/onboarding-modals';
 import { Scalar as ModalScalar } from 'modules/modal/scalar';
 import { useHistory } from 'react-router';
 import { ModalFrozenFunds } from 'modules/modal/components/modal-frozen-funds';
-=======
-import ModalSignTransaction from 'modules/modal/containers/modal-sign-transaction';
-import ModalReporting from 'modules/modal/containers/modal-reporting';
-import ModalConfirm from 'modules/modal/components/modal-confirm';
-import ModalReview from 'modules/modal/components/modal-review';
-import ModalRepFaucet from 'modules/modal/containers/modal-rep-faucet';
-import ModalGsnFaucet from 'modules/modal/containers/modal-gsn-faucet';
-import ModalCreateMarket from 'modules/modal/containers/modal-create-market';
-import ModalDaiFaucet from 'modules/modal/containers/modal-dai-faucet';
-import ModalCreationHelp from 'modules/modal/containers/modal-creation-help';
-import ModalDeposit from 'modules/modal/containers/modal-deposit';
-import ModalWithdraw from 'modules/modal/containers/modal-transfer';
-import ModalCashOut from 'modules/modal/containers/modal-cash-out';
-import ModalMigrateRep from 'modules/modal/containers/modal-migrate-rep';
-import ModalNetworkDisabled from 'modules/modal/containers/modal-network-disabled';
-import ModalTransactions from 'modules/modal/containers/modal-transactions';
-import ModalUnsignedOrders from 'modules/modal/containers/modal-unsigned-orders';
-import ModalNetworkMismatch from 'modules/modal/containers/modal-mismatch';
-import ModalNetworkDisconnected from 'modules/modal/containers/modal-network-disconnected';
-import ModalApproval from 'modules/modal/containers/modal-approval';
-import ModalFinalize from 'modules/modal/containers/modal-finalize';
-import ModalBuyDai from 'modules/modal/containers/modal-buy-dai';
-import ModalDiscard from 'modules/modal/containers/modal-discard';
-import ModalMarketReview from 'modules/modal/containers/modal-market-review';
-import ModalClaimFees from 'modules/modal/containers/modal-claim-fees';
-import ModalParticipate from 'modules/modal/containers/modal-participate';
-import ModalNetworkConnect from 'modules/modal/containers/modal-network-connect';
-import ModalDisclaimer from 'modules/modal/containers/modal-disclaimer';
-import ModalGasPrice from 'modules/modal/containers/modal-gas-price';
-import ModalClaimMarketsProceeds from 'modules/modal/containers/modal-claim-markets-proceeds';
-import ModalOpenOrders from 'modules/modal/containers/modal-open-orders';
-import ModalMarketLoading from 'modules/modal/containers/modal-market-loading';
-import ModalContent from 'modules/modal/containers/modal-content';
-import ModalCategories from 'modules/modal/containers/modal-categories';
-import ModalMarketType from 'modules/modal/containers/modal-market-type';
-import ModalDrQuickGuide from 'modules/modal/containers/modal-dr-quick-guide';
-import ModalMigrateMarket from 'modules/modal/containers/modal-migrate-market';
-import ModalAddFunds from 'modules/modal/containers/modal-add-funds';
-import ModalSignin from 'modules/modal/containers/modal-signin';
-import ModalHardwareWallet from 'modules/modal/containers/modal-hardware-wallet';
-import ModalLoading from 'modules/modal/containers/modal-loading';
-import ModalUniverseSelector from 'modules/modal/containers/modal-universe-selector';
-import ModalTestBet from 'modules/modal/containers/modal-test-bet';
-import ModalAugurP2P from 'modules/modal/containers/modal-p2p-trading';
-import ModalGlobalChat from 'modules/modal/containers/modal-global-chat';
-import ModalAccountCreated from 'modules/modal/containers/modal-account-created';
-import ModalWalletError from 'modules/modal/containers/modal-wallet-error';
-import ModalAugurUsesDai from 'modules/modal/containers/modal-augur-uses-dai';
-import ModalTutorialOutro from 'modules/modal/containers/modal-tutorial-outro';
-import ModalTutorialIntro from 'modules/modal/containers/modal-tutorial-intro';
-import ModalScalar from 'modules/modal/containers/modal-scalar';
-import ModalInvalidMarketRules from 'modules/modal/containers/modal-invalid-market-rules';
-import ModalInitializeAccounts from 'modules/modal/containers/modal-initialize-account';
-import ModalHelp from 'modules/modal/containers/modal-help';
-import ModalMarketNotFound from 'modules/modal/containers/modal-market-not-found';
-import FrozenFundsBreakdown from 'modules/modal/containers/modal-frozen-funds-breakdown';
-import ReportingOnly from 'modules/modal/containers/modal-reporting-only';
-
->>>>>>> master
 import * as TYPES from 'modules/common/constants';
 
 import Styles from 'modules/modal/common.styles.less';
 import { useAppStatusStore } from 'modules/app/store/app-status';
 import { track, MODAL_VIEWED } from 'services/analytics/helpers';
 import { ModalAccountCreated } from 'modules/modal/onboarding-modals';
-import { ModalCreateMarket, ModalDaiFaucet, ModalCreationHelp, ModalFinalize, ModalDiscard, ModalDrQuickGuide, ModalHelp, ModalRepFaucet, ModalSignTransaction, ModalMarketLoading, ModalOdds, ModalInvalidMarketRules, ModalNetworkMismatch, ModalNetworkDisabled, ModalMigrateMarket, ModalWalletError, ModalInitializeAccounts } from '../message-modals';
-import { ModalGlobalChat } from './modal-global-chat';
+import { ModalCreateMarket, ModalDaiFaucet, ModalCreationHelp, ModalFinalize, ModalDiscard, ModalDrQuickGuide, ModalHelp, ModalRepFaucet, ModalSignTransaction, ModalMarketLoading, ModalOdds, ModalInvalidMarketRules, ModalNetworkMismatch, ModalNetworkDisabled, ModalMigrateMarket, ModalWalletError, ModalInitializeAccounts, ReportingOnly } from '../message-modals';
 
 const ESCAPE_KEYCODE = 27;
 
@@ -184,8 +123,6 @@ function selectModal(type, props, closeModal, modal) {
       return <ModalTutorialOutro {...modal} />;
     case TYPES.MODAL_TUTORIAL_INTRO:
       return <ModalTutorialIntro {...modal} />;
-    case TYPES.MODAL_GLOBAL_CHAT:
-      return <ModalGlobalChat />;
     case TYPES.MODAL_ACCOUNT_CREATED:
       return <ModalAccountCreated />
     case TYPES.MODAL_AUGUR_USES_DAI:
@@ -199,13 +136,9 @@ function selectModal(type, props, closeModal, modal) {
     case TYPES.MODAL_INITIALIZE_ACCOUNT:
       return <ModalInitializeAccounts />;
     case TYPES.MODAL_FROZEN_FUNDS:
-<<<<<<< HEAD
       return <ModalFrozenFunds />;
-=======
-      return <FrozenFundsBreakdown />;
     case TYPES.MODAL_REPORTING_ONLY:
         return <ReportingOnly />;
->>>>>>> master
     default:
       return <div />;
   }

@@ -35,7 +35,6 @@ import {
 import getPrecision from 'utils/get-number-precision';
 
 import Styles from 'modules/modal/modal.styles.less';
-<<<<<<< HEAD
 import { useAppStatusStore } from 'modules/app/store/app-status';
 import { totalTradingBalance } from 'modules/auth/helpers/login-account';
 import {
@@ -46,38 +45,7 @@ import {
   transferFunds,
 } from 'modules/auth/actions/transfer-funds';
 import { getTransactionLabel } from 'modules/auth/helpers/get-gas-price';
-=======
 import titleCase from 'utils/title-case';
-
-interface TransferFormProps {
-  closeAction: Function;
-  transferFunds: Function;
-  transferFundsGasEstimate: Function;
-  fallBackGasCosts: {
-    eth: number;
-    rep: number;
-    dai: number;
-  };
-  balances: {
-    eth: number;
-    rep: number;
-    dai: number;
-    signerBalances: {
-      eth: number;
-      dai: number;
-      rep: number;
-    }
-  };
-  account: string;
-  GsnEnabled: boolean;
-  gasPrice: number;
-  useSigner?: boolean;
-  signerAddress?: string;
-  transactionLabel: string;
-  signingEthBalance: string;
-  tokenName: string;
-}
->>>>>>> master
 
 function sanitizeArg(arg) {
   return arg == null || arg === '' ? '' : arg;
@@ -86,7 +54,6 @@ function sanitizeArg(arg) {
 const RELAYER_DAI_CUSION = 0.25;
 const TURN_OFF_TOP_OFF_PERCENTAGE = 0.9;
 
-<<<<<<< HEAD
 export const TransferForm = () => {
   const {
     loginAccount: { address: account, balances },
@@ -127,21 +94,6 @@ export const TransferForm = () => {
     useSigner: boolean,
     useTopOff: boolean
   ) => transferFunds(amount, asset, to, useSigner, useTopOff);
-=======
-export const TransferForm = ({
-  closeAction,
-  transferFunds,
-  transferFundsGasEstimate,
-  fallBackGasCosts,
-  balances,
-  account,
-  gasPrice,
-  useSigner,
-  transactionLabel,
-  signingEthBalance,
-  tokenName,
-}: TransferFormProps) => {
->>>>>>> master
   const [currency, setCurrency] = useState(DAI);
   const [signerPays, setSignerPays] = useState(true);
   const [amount, setAmount] = useState('');
@@ -174,31 +126,7 @@ export const TransferForm = ({
       address: '',
       amount: '',
     },
-<<<<<<< HEAD
-    options: useSigner
-      ? [
-          {
-            label: DAI,
-            value: DAI,
-          },
-        ]
-      : [
-          {
-            label: DAI,
-            value: DAI,
-          },
-          {
-            label: ETH,
-            value: ETH,
-          },
-          {
-            label: REP,
-            value: REP,
-          },
-        ],
-=======
     options: getOptions()
->>>>>>> master
   });
 
   async function getGasCost(currency) {
@@ -420,13 +348,10 @@ export const TransferForm = ({
             />
           </div>
           <div>
-<<<<<<< HEAD
-=======
             <h1>Transfer {useSigner ? `my ${titleCase(tokenName)}` : 'funds'}</h1>
             <h2>Transfer {useSigner ? `${titleCase(tokenName)} to your Trading account` : 'funds to another address'}</h2>
           </div>
-        </header>
-
+        </div>
         <main>
           <div className={Styles.GroupedForm}>
             <div>
@@ -440,7 +365,6 @@ export const TransferForm = ({
                 errorMessage={errors.address.length > 0 ? errors.address : ''}
               />
             </div>
->>>>>>> master
             <div>
               <label htmlFor="currency">Currency</label>
               <span>Available: {balance}</span>
@@ -469,7 +393,7 @@ export const TransferForm = ({
               }
             />
           </div>
-        </div>
+        </main>
         <Breakdown rows={breakdown} />
       </main>
       <div className={Styles.ButtonsRow}>

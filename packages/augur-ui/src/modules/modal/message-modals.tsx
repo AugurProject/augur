@@ -3,7 +3,11 @@ import React from 'react';
 import { useAppStatusStore } from 'modules/app/store/app-status';
 import { submitNewMarket } from 'modules/markets/actions/submit-new-market';
 import { MARKET_CREATION_COPY } from 'modules/create-market/constants';
-import { getDai, getRep, getGasPrice } from 'modules/contracts/actions/contractCalls';
+import {
+  getDai,
+  getRep,
+  getGasPrice,
+} from 'modules/contracts/actions/contractCalls';
 import {
   REPORTING_GUIDE,
   DISPUTING_GUIDE,
@@ -12,12 +16,17 @@ import {
   MODAL_ADD_FUNDS,
   MIGRATE_MARKET_GAS_ESTIMATE,
   GSN_WALLET_SEEN,
+  REPORTING_ONLY_DESC,
 } from 'modules/common/constants';
 import { selectMarket } from 'modules/markets/selectors/market';
 import { sendFinalizeMarket } from 'modules/markets/actions/finalize-market';
 import isMetaMask from 'modules/auth/helpers/is-meta-mask';
 import { Message } from './message';
-import { formatGasCostToEther, formatAttoEth, formatDai } from 'utils/format-number';
+import {
+  formatGasCostToEther,
+  formatAttoEth,
+  formatDai,
+} from 'utils/format-number';
 import { DISMISSABLE_NOTICE_BUTTON_TYPES } from 'modules/reporting/common';
 import { FormattedNumber } from 'modules/types';
 import { createFundedGsnWallet } from 'modules/auth/actions/update-sdk';
@@ -250,6 +259,29 @@ export const ModalHelp = () => {
       closeAction={() => {
         closeModal();
       }}
+    />
+  );
+};
+
+export const ReportingOnly = () => {
+  const {
+    actions: { closeModal },
+  } = useAppStatusStore();
+
+  return (
+    <Message
+      description={[REPORTING_ONLY_DESC]}
+      closeAction={() => {
+        closeModal();
+      }}
+      buttons={[
+        {
+          text: 'Close',
+          action: () => {
+            closeModal();
+          },
+        },
+      ]}
     />
   );
 };

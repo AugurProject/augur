@@ -1005,14 +1005,14 @@ export const OutcomeGroup = ({
           )}
         </>
       )}
-      {(!isScalar || inDispute) && reportingState !== MarketReportingState.Unknown) &&
+      {(!isScalar || inDispute) && reportingState !== MarketReportingState.Unknown &&
         outcomesShow.map(
           (outcome: OutcomeFormatted, index: number) =>
             ((!expanded && index < showOutcomeNumber) ||
               expanded ||
               marketType === YES_NO) &&
             (inDispute &&
-            !!stakes.find(stake => parseFloat(stake.outcome) === outcome.id) ? (
+            !!stakes.find(stake => parseFloat(stake.outcome) === outcome.id)) ? (
               <Fragment key={id + outcome.id + index}>
                 {marketType === SCALAR && index === 1 && expanded && (
                   <ScalarBlankDisputeOutcome
@@ -1055,7 +1055,7 @@ export const OutcomeGroup = ({
                 isTrading={isTrading}
               />
             ))
-        )}
+        }
       {isScalar && inDispute && !expanded && (
         <ScalarBlankDisputeOutcome
           denomination={scalarDenomination}
