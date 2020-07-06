@@ -140,7 +140,7 @@ class Wrapper extends Component<WrapperProps, WrapperState> {
   }
 
   componentDidMount() {
-    const { selectedOrderProperties } = this.props;
+    const { selectedOrderProperties, disclaimerSeen, disclaimerModal, tradingTutorial, initialLiquidity } = this.props;
 
     this.updateTradeTotalCost(
       {
@@ -151,6 +151,12 @@ class Wrapper extends Component<WrapperProps, WrapperState> {
       },
       true
     );
+
+    if (!disclaimerSeen && !tradingTutorial && !initialLiquidity) {
+      disclaimerModal({
+        onApprove: () => { }
+      });
+    }
   }
 
   componentDidUpdate(prevProps) {
@@ -503,20 +509,6 @@ class Wrapper extends Component<WrapperProps, WrapperState> {
           } else if (tradingTutorial) {
             tutorialNext();
             this.clearOrderForm();
-          } else {
-            if (disclaimerSeen) {
-              gsnUnavailable && !gsnWalletInfoSeen
-                ? initializeGsnWallet(() => this.placeMarketTrade(market, selectedOutcome, this.state))
-                : this.placeMarketTrade(market, selectedOutcome, this.state);
-
-            } else {
-              disclaimerModal({
-                onApprove: () =>
-                  gsnUnavailable && !gsnWalletInfoSeen
-                  ? initializeGsnWallet(() => this.placeMarketTrade(market, selectedOutcome, this.state))
-                  : this.placeMarketTrade(market, selectedOutcome, this.state)
-              });
-            }
           }
         }}
         disabled={
