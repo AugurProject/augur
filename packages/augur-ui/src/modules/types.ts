@@ -537,13 +537,15 @@ export enum INVALID_OPTIONS {
 
 export interface FilterSortOptions {
   marketFilter: string;
-  marketSort: string;
+  sortBy: string;
   maxFee: string;
   maxLiquiditySpread: string;
   includeInvalidMarkets: INVALID_OPTIONS;
   transactionPeriod: string;
   templateFilter: string;
   marketTypeFilter: string;
+  limit: number;
+  offset: number;
 }
 
 export interface Favorite {
@@ -663,7 +665,11 @@ export interface LoginAccountSettings {
   maxFee?: boolean;
   spread?: boolean;
   marketTypeFilter?: boolean;
+  marketFilter?: string;
   showInvalid?: boolean;
+  sortBy?: string;
+  limit?: number;
+  offset?: number;
 }
 
 export interface LoginAccount {

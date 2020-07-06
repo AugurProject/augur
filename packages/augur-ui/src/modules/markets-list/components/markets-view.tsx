@@ -4,6 +4,8 @@ import {
   HELP_CENTER_INVALID_MARKETS,
   MAX_FEE_100_PERCENT,
   TYPE_TRADE,
+  PAGINATION_COUNT,
+  DEFAULT_MARKET_OFFSET,
 } from 'modules/common/constants';
 import { FilterNotice } from 'modules/common/filter-notice';
 import MarketCardFormatSwitcher
@@ -19,8 +21,7 @@ import { MARKETS_VIEW_HEAD_TAGS } from 'modules/seo/helmet-configs';
 import { HelmetTag } from 'modules/seo/helmet-tag';
 import { MarketData } from 'modules/types';
 import React, { Component } from 'react';
-
-const PAGINATION_COUNT = 10;
+import { MARKET_LIMIT, MARKET_OFFSET } from 'modules/filter-sort/actions/update-filter-sort-options';
 
 interface MarketsViewProps {
   isLogged: boolean;
@@ -36,10 +37,12 @@ interface MarketsViewProps {
   search?: string;
   maxFee: string;
   maxLiquiditySpread: string;
+  marketLimit: number;
+  marketOffset: number;
   isSearching: boolean;
   includeInvalidMarkets: string;
   universe?: string;
-  marketSort: string;
+  sortBy: string;
   setLoadMarketsPending: Function;
   updateMarketsListMeta: Function;
   selectedCategories: string[];
@@ -61,13 +64,12 @@ interface MarketsViewProps {
   marketsInReportingState: MarketData[];
   hotLoadMarketList: Function;
   canHotload: boolean;
+  updateFilterSortOptions: Function;
 }
 
 interface MarketsViewState {
   filterSortedMarkets: string[];
   marketCount: number;
-  limit: number;
-  offset: number;
   showPagination: boolean;
 }
 
@@ -87,8 +89,6 @@ export default class MarketsView extends Component<
     this.state = {
       filterSortedMarkets: [],
       marketCount: 0,
-      limit: PAGINATION_COUNT,
-      offset: 1,
       showPagination: false,
     };
 
@@ -108,7 +108,7 @@ export default class MarketsView extends Component<
       canHotload,
       search,
       marketFilter,
-      marketSort,
+      sortBy,
       maxFee,
       selectedCategories,
       maxLiquiditySpread,
@@ -118,36 +118,39 @@ export default class MarketsView extends Component<
       isLogged,
       templateFilter,
       marketTypeFilter,
+      marketLimit,
+      marketOffset,
       marketListViewed,
       setLoadMarketsPending
     } = this.props;
-    const { marketCount, offset } = this.state;
+    const { marketCount } = this.state;
 
     if (
-      offset !== prevState.offset ||
       marketCount !== prevState.marketCount ||
       (search !== prevProps.search ||
         selectedCategories !== prevProps.selectedCategories ||
         maxLiquiditySpread !== prevProps.maxLiquiditySpread ||
         marketFilter !== prevProps.marketFilter ||
-        marketSort !== prevProps.marketSort ||
+        sortBy !== prevProps.sortBy ||
         maxFee !== prevProps.maxFee ||
         templateFilter !== prevProps.templateFilter ||
         marketTypeFilter !== prevProps.marketTypeFilter ||
-        includeInvalidMarkets !== prevProps.includeInvalidMarkets)
+        includeInvalidMarkets !== prevProps.includeInvalidMarkets ||
+        marketLimit !== prevProps.marketLimit ||
+        marketOffset !== prevProps.marketOffset)
     ) {
       marketListViewed(
         search,
         selectedCategories,
         maxLiquiditySpread,
         marketFilter,
-        marketSort,
+        sortBy,
         maxFee,
         templateFilter,
         marketTypeFilter,
         includeInvalidMarkets,
         this.state.marketCount,
-        this.state.offset
+        marketOffset,
       );
     }
 
@@ -160,7 +163,6 @@ export default class MarketsView extends Component<
         this.setState({
           filterSortedMarkets: marketsInfo.map((market) => market.id),
           marketCount: marketsInfo.length,
-          limit: marketsInfo.length || PAGINATION_COUNT,
         });
         setLoadMarketsPending(false);
       });
@@ -169,69 +171,65 @@ export default class MarketsView extends Component<
       const filtersHaveChanged = this.haveFiltersChanged({
       search,
       marketFilter,
-      marketSort,
+      sortBy,
       maxFee,
       selectedCategories,
       maxLiquiditySpread,
       includeInvalidMarkets,
       templateFilter,
       marketTypeFilter,
+      marketLimit,
+      marketOffset,
       prevProps,
     });
 
     if (
       isConnected && (
       filtersHaveChanged) || (isLogged !== prevProps.isLogged && filtersHaveChanged)
-      ) {
-      this.setState(
-        {
-          offset: 1,
-        },
-        () => {
-          this.updateFilteredMarkets();
-        }
-      );
-    }
+      ) this.updateFilteredMarkets();
   }
 
   haveFiltersChanged({
     search,
     marketFilter,
-    marketSort,
+    sortBy,
     maxFee,
     selectedCategories,
     maxLiquiditySpread,
     includeInvalidMarkets,
     templateFilter,
     marketTypeFilter,
+    marketLimit,
+    marketOffset,
     prevProps}) {
     return search !== prevProps.search
       || String(selectedCategories) !== String(prevProps.selectedCategories)
       || maxLiquiditySpread !== prevProps.maxLiquiditySpread
       || marketFilter !== prevProps.marketFilter
-      || marketSort !== prevProps.marketSort
+      || sortBy !== prevProps.sortBy
       || maxFee !== prevProps.maxFee
       || templateFilter !== prevProps.templateFilter
       || marketTypeFilter !== prevProps.marketTypeFilter
       || includeInvalidMarkets !== prevProps.includeInvalidMarkets
+      || marketLimit !== prevProps.marketLimit
+      || marketOffset !== prevProps.marketOffset
   }
 
   updateLimit(limit) {
-    this.setState(
-      {
-        limit,
-        offset: 1,
-      },
-      () => {
-        this.updateFilteredMarkets();
-      }
-    );
+    const { updateFilterSortOptions } = this.props;
+    updateFilterSortOptions({
+      [MARKET_LIMIT]: limit,
+      [MARKET_OFFSET]: DEFAULT_MARKET_OFFSET,
+    });
+    this.updateFilteredMarkets();
   }
 
   setPageNumber(offset) {
-    this.setState({ offset }, () => {
-      this.updateFilteredMarkets();
+    const { updateFilterSortOptions } = this.props;
+    updateFilterSortOptions({
+      [MARKET_OFFSET]: offset,
     });
+    this.updateFilteredMarkets();
   }
 
   updateFilteredMarkets = () => {
@@ -242,12 +240,13 @@ export default class MarketsView extends Component<
       maxLiquiditySpread,
       includeInvalidMarkets,
       marketFilter,
-      marketSort,
+      sortBy,
       templateFilter,
       marketTypeFilter,
+      marketLimit,
+      marketOffset,
     } = this.props;
 
-    const { limit, offset } = this.state;
     window.scrollTo(0, 1);
 
     this.props.setLoadMarketsPending(true);
@@ -258,10 +257,10 @@ export default class MarketsView extends Component<
         categories: selectedCategories ? selectedCategories : [],
         search,
         filter: marketFilter,
-        sort: marketSort,
+        sort: sortBy,
         maxFee,
-        limit,
-        offset,
+        limit: marketLimit,
+        offset: marketOffset,
         maxLiquiditySpread,
         includeInvalidMarkets: includeInvalidMarkets === 'show',
         templateFilter,
@@ -273,7 +272,7 @@ export default class MarketsView extends Component<
           // categories is also on results
           const filterSortedMarkets = result.markets.map(m => m.id);
           const marketCount = result.meta.marketCount;
-          const showPagination = marketCount > limit;
+          const showPagination = marketCount > marketLimit;
           this.setState({
             filterSortedMarkets,
             marketCount,
@@ -302,18 +301,18 @@ export default class MarketsView extends Component<
       updateLoginAccountSettings,
       updateMarketsFilter,
       marketFilter,
-      marketSort,
+      sortBy,
       isSearching,
       showInvalidMarketsBannerFeesOrLiquiditySpread,
       showInvalidMarketsBannerHideOrShow,
       isLogged,
       restoredAccount,
+      marketLimit,
+      marketOffset,
     } = this.props;
     const {
       filterSortedMarkets,
       marketCount,
-      limit,
-      offset,
       showPagination,
     } = this.state;
 
@@ -331,7 +330,7 @@ export default class MarketsView extends Component<
           location={location}
           isSearchingMarkets={isSearching}
           filter={marketFilter}
-          sort={marketSort}
+          sort={sortBy}
           history={history}
           selectedCategory={selectedCategories}
           search={search}
@@ -409,9 +408,9 @@ export default class MarketsView extends Component<
           loadMarketsInfoIfNotLoaded={loadMarketsInfoIfNotLoaded}
           linkType={TYPE_TRADE}
           isMobile={isMobile}
-          limit={limit}
+          limit={marketLimit}
           updateLimit={this.updateLimit}
-          offset={offset}
+          offset={marketOffset}
           setOffset={this.setPageNumber}
           isSearchingMarkets={isSearching}
           marketCardFormat={marketCardFormat}

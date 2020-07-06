@@ -238,6 +238,8 @@ export const feeFilters = [
 ];
 
 export const FILTER_ALL = TemplateFilters.all;
+export const PAGINATION_COUNT = 10;
+export const DEFAULT_MARKET_OFFSET = 1;
 export const templateFilterValues = [
   { header: 'All', value: FILTER_ALL },
   {
@@ -309,7 +311,7 @@ export enum MARKET_SORT_PARAMS {
   RECENTLY_TRADED = 'recentlyTraded',
   OPEN_INTEREST = 'openInterest',
   LIQUIDITY = 'liquidity',
-  FEES_GENERATED = 'feesGenerated',
+  MOST_TRADED = 'mostTraded',
 }
 
 export const SORT_OPTIONS = [
@@ -319,7 +321,7 @@ export const SORT_OPTIONS = [
   { value: MARKET_SORT_PARAMS.CREATION_TIME, header: 'Recently created' },
   { value: MARKET_SORT_PARAMS.END_DATE, header: 'Ending soon ' },
   { value: MARKET_SORT_PARAMS.RECENTLY_TRADED, header: 'Recently Traded' },
-  { value: MARKET_SORT_PARAMS.FEES_GENERATED, header: 'Most Traded' },
+  { value: MARKET_SORT_PARAMS.MOST_TRADED, header: 'Most Traded' },
 ];
 
 export enum MARKET_CARD_FORMATS {
