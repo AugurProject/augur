@@ -269,9 +269,9 @@ const ConnectDropdown = () => {
             text="Add Funds"
           />
         </div>
-
+{/* 
         {showTransferMyDai && <TransferMyTokens condensed={true} tokenName={DAI} />}
-        {showTransferMyRep && <TransferMyTokens condensed={true} tokenName={REP} />}
+        {showTransferMyRep && <TransferMyTokens condensed={true} tokenName={REP} />} */}
 
         {accountFunds
           .filter(fundType => !fundType.disabled)
