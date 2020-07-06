@@ -9,7 +9,7 @@ import { SortByIcon } from 'modules/common/icons';
 import { RadioBarGroup } from 'modules/common/form';
 
 interface MarketsListFiltersProps {
-  marketSort: string;
+  sortBy: string;
   isSearching: boolean;
   updateMarketsSortBy: Function;
   setSortOptions: Function;
@@ -17,7 +17,7 @@ interface MarketsListFiltersProps {
 }
 
 const MarketsListFilters = ({
-  marketSort,
+  sortBy,
   isSearching,
   updateMarketsSortBy,
   setSortOptions,
@@ -35,7 +35,7 @@ const MarketsListFilters = ({
       </div>
       <RadioBarGroup
         radioButtons={SORT_OPTIONS}
-        defaultSelected={marketSort}
+        defaultSelected={sortBy}
         onChange={(value: string) => isMobile ? setSortOptions(value) : updateMarketsSortBy(value)}
       />
     </div>

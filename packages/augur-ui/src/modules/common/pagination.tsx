@@ -80,9 +80,9 @@ const renderPageButtons = (
   action: Function
 ) => (
   <>
-    {pagesArray.map((page: PagesArrayObject) => (
+    {pagesArray.map((page: PagesArrayObject, index) => (
       <button
-        key={`${page.page}`}
+        key={`${page.page}${index}`}
         className={classNames({ [Styles.Active]: page.active })}
         onClick={() => action(page.page)}
         disabled={page.page === null}

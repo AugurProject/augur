@@ -6,7 +6,6 @@ import {
   REPORTING_STATE,
 } from 'modules/common/constants';
 import { selectMarkets } from 'modules/markets/selectors/markets-all';
-import marketsList from '../reducers/markets-list';
 
 export const selectPopularCategories = createSelector(
   selectMarketsListsState,
