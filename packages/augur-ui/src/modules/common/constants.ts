@@ -56,6 +56,8 @@ export const MALFORMED_OUTCOME = 'malformed outcome';
 export const ETH = 'ETH';
 export const REP = 'REP';
 export const DAI = 'DAI';
+export const USDT = 'USDT';
+export const USDC = 'USDC';
 
 export const TRADING_TUTORIAL = 'TRADING_TUTORIAL';
 export const INVALID_BEST_BID_ALERT_VALUE = createBigNumber('.1');
