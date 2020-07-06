@@ -7,12 +7,6 @@ import { setSelectedUniverse } from './selected-universe-management';
 import { getNetworkId } from 'modules/contracts/actions/contractCalls';
 import { loadMarketsInfoIfNotLoaded } from 'modules/markets/actions/load-markets-info';
 import { loadAnalytics } from 'modules/app/actions/analytics-management';
-import {
-  MARKET_MAX_FEES,
-  MARKET_MAX_SPREAD,
-  MARKET_SHOW_INVALID,
-} from 'modules/app/store/constants';
-import { TEMPLATE_FILTER } from 'modules/common/constants';
 import { AppStatus } from 'modules/app/store/app-status';
 import isAddress from 'modules/auth/helpers/is-address';
 
@@ -42,13 +36,13 @@ export const loadAccountDataFromLocalStorage = (
       const { settings } = storedAccountData;
 
       if (settings) {
-        const { maxFee, maxLiquiditySpread, includeInvalidMarkets, templateFilter } = settings;
+        const filterOptions = Object.keys(settings).reduce(
+          (p, key) => (settings[key] ? { ...p, [key]: settings[key] } : p),
+          {}
+        );
         updateFilterSortOptions({
           ...filterSortOptions,
-          maxFee,
-          maxLiquiditySpread,
-          includeInvalidMarkets,
-          templateFilter,
+          ...filterOptions,
         });
       }
 

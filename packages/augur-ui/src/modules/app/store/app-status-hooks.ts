@@ -293,6 +293,8 @@ export function AppStatusReducer(state, action) {
           ...updatedState[LOGIN_ACCOUNT].settings,
           ...action.filterSortOptions
         };
+        delete updatedState[LOGIN_ACCOUNT].settings.limit;
+        delete updatedState[LOGIN_ACCOUNT].settings.offset;
       }
       break;
     }

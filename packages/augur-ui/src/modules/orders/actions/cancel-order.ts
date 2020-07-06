@@ -1,13 +1,7 @@
 import { TXEventName } from '@augurproject/sdk-lite';
 import { addAlert } from 'modules/alerts/actions/alerts';
 import { CANCELORDER } from 'modules/common/constants';
-import {
-  cancelZeroXOpenBatchOrders,
-  cancelZeroXOpenOrder,
-} from 'modules/contracts/actions/contractCalls';
-import { CANCELORDER } from 'modules/common/constants';
-import { addAlert } from 'modules/alerts/actions/alerts';
-import { TXEventName } from '@augurproject/sdk';
+import { cancelZeroXOpenBatchOrders, cancelZeroXOpenOrder, } from 'modules/contracts/actions/contractCalls';
 import { addCanceledOrder } from 'modules/pending-queue/actions/pending-queue-management';
 
 const BATCH_CANCEL_MAX = 4;
@@ -16,9 +10,6 @@ export const cancelAllOpenOrders = async orders => {
   let orderHashes = orders.map(order => order.id);
 
   try {
-    orders.forEach(order => {
-      sendCancelAlert(order);
-    });
     if (orderHashes.length > BATCH_CANCEL_MAX) {
       var i = 0;
       while(i < orderHashes.length) {
@@ -32,7 +23,9 @@ export const cancelAllOpenOrders = async orders => {
       setCancelOrderStatus(orderHashes)
       await cancelZeroXOpenBatchOrders(orderHashes);
     }
-
+    orders.forEach(order => {
+      sendCancelAlert(order);
+    });
   } catch (error) {
     console.error('Error canceling batch orders', error);
     setCancelOrderStatus(orders.map(o => o.id), TXEventName.Failure);
@@ -43,9 +36,9 @@ export const cancelAllOpenOrders = async orders => {
 export const cancelOrder = async order => {
   try {
     const { id } = order;
-    sendCancelAlert(order);
     setCancelOrderStatus([id]);
     await cancelZeroXOpenOrder(id);
+    sendCancelAlert(order);
   } catch (error) {
     console.error('Error canceling order', error);
     throw error;

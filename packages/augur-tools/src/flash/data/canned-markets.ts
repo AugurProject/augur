@@ -591,14 +591,13 @@ export const templatedCannedMarkets = (): CannedMarket[] => {
   const cryptoTemplates = TEMPLATES[CRYPTO].children[ETHEREUM]
     .templates as Template[];
   const cryptoTemplate: Template = cryptoTemplates[2];
-  const cryptoExpDate = moment().add(1, 'weeks');
+  const cryptoExpDate = moment().add(1, 'weeks').startOf('day');
   const cryptoInputValues = [
     'ETH/USD',
     cryptoExpDate.format('MMMM DD, YYYY'),
     'ETHUSD (crypto - Bittrex)',
   ];
   let cryptoInputs = getFilledInputs(cryptoTemplate, cryptoInputValues);
-  cryptoInputs[1].timestamp = cryptoExpDate.unix();
   markets.push({
     marketType: 'scalar',
     endTime: cryptoExpDate.add(1, 'days').unix(),
@@ -636,7 +635,7 @@ export const templatedCannedMarkets = (): CannedMarket[] => {
 
   const bbTemplates = TEMPLATES[SPORTS].children[BASKETBALL].children[NBA]
     .templates as Template[];
-  const bbTemplate: Template = bbTemplates[11];
+  const bbTemplate: Template = bbTemplates.find(m => m.marketType === 'Scalar');
   const bbExpDate = moment()
     .add(2, 'weeks')
     .add(8, 'hours');
@@ -749,10 +748,12 @@ const calcFuturesHockeyMarket = (): CannedMarket[] => {
   const templates = hockeyTemplates.filter(t => t.groupName === groupTypes.FUTURES);
   const inputValues = [
     [LIST_VALUES.YEAR_RANGE[0], LIST_VALUES.HOCKEY_EVENT[0]],
-    [LIST_VALUES.YEAR_RANGE[0], LIST_VALUES.HOCKEY_AWARD[0]]
+    ['Bob Smith'],
+    [LIST_VALUES.YEAR_RANGE[0], LIST_VALUES.HOCKEY_AWARD[2]],
   ];
   const outcomes = [
     [...LIST_VALUES.NHL_TEAMS.slice(0,5), 'Other (Field)'],
+    [...LIST_VALUES.NHL_TEAMS.slice(0,5), 'Other (Field)', 'Unsigned'],
     ['Joe Pavelski', 'Jonathan Toews', 'Carey Price', 'Erik Karlsson', 'Drew Doughty', 'Other (Field)'],
   ]
   return templates.map((template, index) => ({
@@ -935,3 +936,73 @@ export const templatedCannedBettingMarkets = (): CannedMarket[] => {
   const soccerMarkets = calcSoccerMarkets();
   return massageMarkets(markets.concat(hockeyFutures).concat(mmaMarkets).concat(soccerMarkets));
 };
+
+const badFinancialMarket = (): CannedMarket[] => {
+  const finTemplates = TEMPLATES[FINANCE].children[INDEXES]
+    .templates as Template[];
+  const finTemplate: Template = finTemplates[0];
+  const wed = 3;
+  const finExpDate = moment().day(wed).add(1, 'weeks').add(6, 'hours');
+  const date = finExpDate.format('YYYY DD, MMMM');
+  const finInputValues = ['Dow Jones Industrial Average', '5', date];
+  let finInputs = getFilledInputs(finTemplate, finInputValues);
+  finInputs[2].timestamp = finExpDate.unix() - 10000;
+  return [
+    {
+      marketType: 'yesNo',
+      endTime: finExpDate.add(1, 'days').unix(),
+      affiliateFeeDivisor: 0,
+      creatorFeeDecimal: '0.015',
+      extraInfo: {
+        categories: [FINANCE, INDEXES, 'Dow Jones Industrial Average'],
+        description: fillInQuestion(finTemplate, finInputValues),
+        longDescription: getLongDescription(finTemplate),
+        tags: [],
+        template: {
+          hash: finTemplate.hash,
+          question: finTemplate.question,
+          inputs: finInputs,
+        },
+      },
+      orderBook: yesNoOrderBook,
+    },
+  ];
+};
+
+const badCryptoMarket = (): CannedMarket[] => {
+  const cryptoTemplates = TEMPLATES[CRYPTO].children[ETHEREUM]
+    .templates as Template[];
+  const cryptoTemplate: Template = cryptoTemplates[2];
+  const cryptoExpDate = moment().add(1, 'weeks');
+  const cryptoInputValues = [
+    'ETH/USD',
+    cryptoExpDate.format('MMMM DD, YYYY'),
+    'ETHUSD (crypto - Bittrex)',
+  ];
+  let cryptoInputs = getFilledInputs(cryptoTemplate, cryptoInputValues);
+  return [{
+    marketType: 'scalar',
+    endTime: cryptoExpDate.add(1, 'days').unix(),
+    minPrice: '120',
+    maxPrice: '200',
+    tickSize: '0.01',
+    affiliateFeeDivisor: 0,
+    creatorFeeDecimal: '0.01',
+    extraInfo: {
+      categories: [CRYPTO, ETHEREUM, 'ETHUSD (crypto - Bittrex)'],
+      description: fillInQuestion(cryptoTemplate, cryptoInputValues),
+      tags: [],
+      longDescription: getLongDescription(cryptoTemplate),
+      template: {
+        hash: cryptoTemplate.hash,
+        question: cryptoTemplate.question,
+        inputs: cryptoInputs,
+      },
+    },
+    orderBook: {},
+  }];
+}
+export const testBadTemplateMarkets = (): CannedMarket[] => {
+  const markets = badFinancialMarket();
+  return markets.concat(badCryptoMarket());
+}

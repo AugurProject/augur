@@ -22,7 +22,7 @@ export const switchUniverse = async (
     filterSortOptions: {
       maxFee,
       maxLiquiditySpread,
-      marketSort: sort,
+      sortBy: sort,
       marketFilter,
     },
   } = AppStatus.get();

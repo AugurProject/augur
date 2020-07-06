@@ -74,6 +74,12 @@ export const loadMarketsByFilter = async (
   );
   const sort = {};
   switch (filterOptions.sort) {
+    case MARKET_SORT_PARAMS.MOST_TRADED: {
+      // Sort By Most Traded:
+      sort.sortBy = GetMarketsSortBy.numberOfTrades;
+      sort.isSortDescending = true;
+      break;
+    }
     case MARKET_SORT_PARAMS.RECENTLY_TRADED: {
       // Sort By Recently Traded:
       sort.sortBy = GetMarketsSortBy.lastTradedTimestamp;
@@ -131,8 +137,8 @@ export const loadMarketsByFilter = async (
     search: filterOptions.search ? filterOptions.search : '',
     maxFee: filterOptions.maxFee,
     includeInvalidMarkets: filterOptions.includeInvalidMarkets,
-    limit: filterOptions.limit,
-    offset: paginationOffset * filterOptions.limit,
+    limit: Number(filterOptions.limit),
+    offset: paginationOffset * Number(filterOptions.limit),
     reportingStates,
     maxLiquiditySpread: filterOptions.maxLiquiditySpread as Getters.Markets.MaxLiquiditySpread,
     ...sort,

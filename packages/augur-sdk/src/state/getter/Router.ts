@@ -4,6 +4,7 @@ import { DB } from '../db/DB';
 import { PathReporter } from 'io-ts/lib/PathReporter';
 import { AddressFormatReviver } from '../../state/AddressFormatReviver';
 import { AsyncQueue, queue } from 'async';
+import * as _ from 'lodash';
 
 import * as t from 'io-ts';
 
@@ -73,6 +74,7 @@ export class Router {
   constructor(augur: Augur, db: Promise<DB>) {
     this.augur = augur;
     this.db = db;
+
     this.requestQueue = queue(
       async (task: RequestQueueTask) => {
         return this.executeRoute(task.name, task.params);
@@ -93,6 +95,20 @@ export class Router {
   }
 
   async executeRoute(name: string, params: any): Promise<any> {
+    const timerName = `getter: ${name} called at ${Date.now()}`;
+
+    logger.time(LoggerLevels.debug, timerName);
+    if (name !== 'getMostRecentWarpSync' && process.env.NODE_ENV !== 'test') {
+      const cachedResult = await (await this.db).getterCache.getCachedResponse(name, params);
+      if (cachedResult !== null) {
+        console.log(`CACHE HIT: ${name}`); 
+        logger.timeEnd(LoggerLevels.debug, timerName);
+        return cachedResult.response;
+      } else {
+        console.log(`CACHE MISS: ${name}`); 
+      }
+    }
+
     const getter = Router.routings.get(name);
 
     if (!getter) {
@@ -119,10 +135,12 @@ export class Router {
     }
 
     const db = await this.db;
-    const timerName = `getter: ${name} called at ${Date.now()}`;
-
-    logger.time(LoggerLevels.debug, timerName);
     const result = await getter.func(this.augur, db, decodedParams.value);
+
+    if (name !== "getMostRecentWarpSync" && process.env.NODE_ENV !== 'test') {
+      await (await this.db).getterCache.cacheResponse(name, params, result);
+    }
+
     logger.timeEnd(LoggerLevels.debug, timerName);
     return result;
   }

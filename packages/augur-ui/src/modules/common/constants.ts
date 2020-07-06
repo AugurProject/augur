@@ -285,6 +285,8 @@ export const feeFilters = [
 ];
 
 export const FILTER_ALL = TemplateFilters.all;
+export const PAGINATION_COUNT = 10;
+export const DEFAULT_MARKET_OFFSET = 1;
 export const templateFilterValues = [
   { header: 'All', value: FILTER_ALL },
   {
@@ -356,6 +358,7 @@ export enum MARKET_SORT_PARAMS {
   RECENTLY_TRADED = 'recentlyTraded',
   OPEN_INTEREST = 'openInterest',
   LIQUIDITY = 'liquidity',
+  MOST_TRADED = 'mostTraded',
 }
 
 export const SORT_OPTIONS = [
@@ -365,6 +368,7 @@ export const SORT_OPTIONS = [
   { value: MARKET_SORT_PARAMS.CREATION_TIME, header: 'Recently created' },
   { value: MARKET_SORT_PARAMS.END_DATE, header: 'Ending soon ' },
   { value: MARKET_SORT_PARAMS.RECENTLY_TRADED, header: 'Recently Traded' },
+  { value: MARKET_SORT_PARAMS.MOST_TRADED, header: 'Most Traded' },
 ];
 
 export enum MARKET_CARD_FORMATS {
@@ -511,6 +515,7 @@ export const DESIGNATED_REPORTER_SPECIFIC = 'DESIGNATED_REPORTER_SPECIFIC';
 export const INITIAL_LIQUIDITY_DEFAULT = 500;
 export const INITIAL_LIQUIDITY_MIN = 250;
 export const SETTLEMENT_FEE_DEFAULT = 0;
+export const SETTLEMENT_FEE_PERCENT_DEFAULT = 0.01; // default for dispaly only
 export const SETTLEMENT_FEE_MIN = 0;
 export const SETTLEMENT_FEE_MAX = 12.5;
 export const AFFILIATE_FEE_DEFAULT = 0;
@@ -673,6 +678,7 @@ export const MODAL_ACCOUNT_CREATED = 'MODAL_ACCOUNT_CREATED';
 export const MODAL_ERROR = 'MODAL_ERROR';
 export const MODAL_HELP = 'MODAL_HELP';
 export const MODAL_ODDS = 'MODAL_ODDS';
+export const MODAL_REPORTING_ONLY = 'MODAL_REPORTING_ONLY';
 
 // transactions parameter names
 export const TX_ORDER_ID = 'orderId';
@@ -990,6 +996,7 @@ export const UNSIGNED_ORDERS = 'unsignedOrders';
 export const PROCEEDS_TO_CLAIM = 'proceedsToClaim';
 export const MARKET_IS_MOST_LIKELY_INVALID = 'marketIsMostLikelyInvalid';
 export const FINALIZE_MARKET = 'finalizeMarket';
+export const REPORTING_ONLY = 'Reporting Only';
 
 export const NOTIFICATION_TYPES = {
   [OPEN_ORDERS_RESOLVED_MARKET]: OPEN_ORDERS_RESOLVED_MARKET,
@@ -1367,6 +1374,7 @@ export const TRADING_TUTORIAL_OUTCOMES = [
   },
 ];
 
+export const REPORTING_ONLY_DESC = 'This is a reporting only version of Augur. Trading is disabled.';
 export const DISPUTING_GUIDE = {
   title: 'DISPUTING QUICK GUIDE',
   content: [

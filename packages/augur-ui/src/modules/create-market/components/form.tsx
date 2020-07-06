@@ -750,12 +750,17 @@ export const Form = ({ isTemplate, updatePage }) => {
         offsetName = value.offsetName;
         timezone = value.timezone;
       }
-      let endTimeFormatted = null;
+      let endTimeFormatted = buildformattedDate(
+        setEndTime,
+        hour,
+        minute,
+        meridiem,
+        offsetName,
+        offset
+      );
       if (name === 'updateEventExpiration') {
         onError('setEndTime', '');
         setEndTime = value.setEndTime || newMarket.setEndTime;
-        endTimeFormatted = convertUnixToFormattedDate(setEndTime);
-      } else {
         endTimeFormatted = buildformattedDate(
           setEndTime,
           hour,
