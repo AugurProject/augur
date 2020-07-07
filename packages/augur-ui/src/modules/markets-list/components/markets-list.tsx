@@ -116,7 +116,6 @@ export const MarketsList = ({
       );
   } else if (theme === THEMES.SPORTS) {
     testFilteredMarkets.map(sportsGroup => {
-      // console.log(sportsGroup);
       marketCards.push(
         <SportsMarketCard
           sportsGroup={sportsGroup}

@@ -65,6 +65,8 @@ export const SportsMarketCard = ({
       ? HEADER_TYPE.H3
       : undefined;
 
+  const moreWagersText = `More Wagers (${numExtraWagers})`;
+
   return (
     <div
       className={classNames(Styles.SportsMarketCard, {
@@ -90,7 +92,7 @@ export const SportsMarketCard = ({
       />
       {showMoreButtonVisible && (
         <button onClick={() => setShowMore(!showMore)}>
-          {ThickChevron} {`${showMore ? 'Show Less' : 'More Wagers'} (${numExtraWagers})`}
+          {ThickChevron} {`${showMore ? 'Show Less' : moreWagersText}`}
         </button>
       )}
     </div>

@@ -961,16 +961,17 @@ export const OutcomeGroup = ({
     }
   } else {
     if (!expanded && outcomesFormatted.length > showOutcomeNumber) {
-      outcomesCopy.splice(showOutcomeNumber - 1, 0);
+      outcomesCopy.splice(showOutcomeNumber - 1);
     } else if (marketType === YES_NO) {
-      outcomesCopy.reverse().splice(outcomesCopy.length, 0);
+      outcomesCopy.reverse().splice(outcomesCopy.length);
     } else {
-      outcomesCopy.splice(outcomesCopy.length, 0);
+      outcomesCopy.splice(outcomesCopy.length);
     }
   }
   if (isTrading) {
     outcomesCopy.splice(outcomesCopy.length, 0, removedInvalid);
   }
+
   const outcomesShow = inDispute ? disputingOutcomes : outcomesCopy;
 
   return (

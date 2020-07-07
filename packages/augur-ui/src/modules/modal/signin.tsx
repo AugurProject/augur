@@ -119,15 +119,15 @@ export const SignIn = ({ isLogin }) => {
       // type: ACCOUNT_TYPES.PORTIS,
       icon: EmailLogin,
       text: `${LOGIN_OR_SIGNUP} with Email`,
-      subText: `Powered by ${ACCOUNT_TYPES.FORMATIC}`,
+      subText: `Powered by ${ACCOUNT_TYPES.FORTMATIC}`,
       hidden: false,
       primary: true,
       action: async () => {
-        loadingModal(SIGNIN_LOADING_TEXT_FORMATIC, () => login());
+        loadingModal(SIGNIN_LOADING_TEXT_FORTMATIC, () => login());
         try {
           await connectFortmatic(true);
         } catch (error) {
-          onError(error, ACCOUNT_TYPES.FORMATIC);
+          onError(error, ACCOUNT_TYPES.FORTMATIC);
         }
       },
     },
