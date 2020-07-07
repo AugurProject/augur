@@ -81,6 +81,7 @@ export const Confirm = ({
   postOnlyOrder,
 }: ConfirmProps) => {
   const {
+    env: { ui: { reportingOnly: disableTrading } },
     newMarket,
     pendingQueue,
     loginAccount: {
