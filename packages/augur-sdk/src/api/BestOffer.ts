@@ -66,7 +66,7 @@ export class BestOffer {
         const hasBestOffer = poolBestPrice && _.keys(poolBestPrice).length > 0;
         const bestPrice = hasBestOffer && poolBestPrice[_.first(_.keys(poolBestPrice))][order.outcome].price;
         // if outcome order is null, then no offers, send null for that outcome
-        if (!poolBestPrice[_.first(_.keys(poolBestPrice))][order.outcome]) {
+        if (!poolBestPrice || !poolBestPrice[_.first(_.keys(poolBestPrice))][order.outcome]) {
           return poolBestPrice;
         }
         if (
