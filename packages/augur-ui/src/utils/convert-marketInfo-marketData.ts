@@ -97,6 +97,7 @@ export function getDefaultOutcomeSelected(marketType: string) {
 function getMarketStatus(reportingState: string) {
   let marketStatus = MARKET_OPEN;
   switch (reportingState) {
+    case REPORTING_STATE.UNKNOWN:
     case REPORTING_STATE.PRE_REPORTING:
       marketStatus = MARKET_OPEN;
       break;
