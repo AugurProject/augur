@@ -5,58 +5,52 @@ import { isEmpty } from 'utils/is-empty';
 import { selectMarket } from 'modules/markets/selectors/market';
 import { loadMarketsInfoIfNotLoaded } from 'modules/markets/actions/load-markets-info';
 import { getOutcomeNameWithOutcome } from 'utils/get-outcome';
+import { formatAttoDai, formatDai, formatRep, formatShares, } from 'utils/format-number';
 import {
-  formatAttoDai,
-  formatRep,
-  formatShares,
-  formatDai,
-} from 'utils/format-number';
-import {
+  calculatePayoutNumeratorsValue,
+  convertAttoValueToDisplayValue,
+  convertDisplayValuetoAttoValue,
   convertOnChainAmountToDisplayAmount,
   convertOnChainPriceToDisplayPrice,
   convertPayoutNumeratorsToStrings,
-  convertDisplayValuetoAttoValue,
   numTicksToTickSize,
-  convertAttoValueToDisplayValue,
-  calculatePayoutNumeratorsValue,
 } from '@augurproject/utils';
+import { TXEventName } from '@augurproject/sdk-lite';
 import {
-  TXEventName
-} from '@augurproject/sdk-lite';
-import {
+  APPROVE,
   BUY,
-  SELL,
-  TEN_TO_THE_EIGHTEENTH_POWER,
-  MALFORMED_OUTCOME,
-  CANCELORDER,
-  CLAIMTRADINGPROCEEDS,
+  BUY_INDEX,
   BUYPARTICIPATIONTOKENS,
-  REDEEMSTAKE,
+  CANCELORDER,
+  CANCELORDERS,
+  CLAIMTRADINGPROCEEDS,
+  CONTRIBUTE,
+  CREATECATEGORICALMARKET,
+  CREATEMARKET,
+  CREATESCALARMARKET,
+  CREATEYESNOMARKET,
+  DOINITIALREPORT,
+  DOINITIALREPORTWARPSYNC,
+  HEX_BUY,
+  MALFORMED_OUTCOME,
+  MIGRATE_FROM_LEG_REP_TOKEN,
+  ONE,
   PUBLICFILLBESTORDER,
   PUBLICFILLBESTORDERWITHLIMIT,
   PUBLICFILLORDER,
-  CONTRIBUTE,
-  DOINITIALREPORT,
   PUBLICTRADE,
   PUBLICTRADEWITHLIMIT,
-  CREATEMARKET,
-  CREATECATEGORICALMARKET,
-  CREATESCALARMARKET,
-  CREATEYESNOMARKET,
-  APPROVE,
-  BUY_INDEX,
-  HEX_BUY,
+  REDEEMSTAKE,
+  SELL,
   SELL_INDEX,
+  TEN_TO_THE_EIGHTEENTH_POWER,
   ZERO,
-  ONE,
-  MIGRATE_FROM_LEG_REP_TOKEN,
-  DOINITIALREPORTWARPSYNC,
 } from 'modules/common/constants';
 import { AppState } from 'appStore';
 import { Action } from 'redux';
 import { ThunkDispatch } from 'redux-thunk';
 import { MarketData } from 'modules/types';
-import { createBigNumber, BigNumber } from 'utils/create-big-number';
+import { BigNumber, createBigNumber } from 'utils/create-big-number';
 import { convertUnixToFormattedDate } from 'utils/format-date';
 import getPrecision from 'utils/get-number-precision';
 
@@ -130,16 +124,12 @@ export default function setAlertText(alert: any, callback: Function) {
     if (!marketId) return;
     switch (alert.name.toUpperCase()) {
       // CancelOrder
-      case CANCELORDER: {
-        alert.title = 'Order Cancelled';
+      case CANCELORDER:
+      case CANCELORDERS: {
         dispatch(
           loadMarketsInfoIfNotLoaded([marketId], () => {
-            if (alert.status !== TXEventName.Success) {
-              return;
-            }
             const marketInfo = selectMarket(marketId);
             if (marketInfo === null) return;
-            alert.description = marketInfo.description;
 
             const { orderType, outcomeDescription } = getInfo(
               alert.params,
@@ -149,14 +139,18 @@ export default function setAlertText(alert: any, callback: Function) {
             const quantity = alert.params.unmatchedShares
               ? alert.params.unmatchedShares.value
               : convertOnChainAmountToDisplayAmount(
-                  alert.params.amount,
-                  createBigNumber(marketInfo.tickSize)
-                );
+                alert.params.amount,
+                createBigNumber(marketInfo.tickSize)
+              );
+
+            alert.title = alert.status === TXEventName.Success ? 'Order Cancelled' : 'Cancelling Order';
+            alert.description = marketInfo.description;
             alert.details = `${orderType} ${
               formatShares(quantity).formatted
             } of ${outcomeDescription} @ ${alert.params.avgPrice.formatted}`;
           })
         );
+        console.log('dispatched', alert);
         break;
       }
 

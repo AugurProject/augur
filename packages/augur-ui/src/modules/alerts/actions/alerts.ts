@@ -1,19 +1,20 @@
 import store, { AppState } from 'appStore';
 import setAlertText from 'modules/alerts/actions/set-alert-text';
 import {
+  CANCELORDERS,
   CLAIMTRADINGPROCEEDS,
   CONTRIBUTE,
   DOINITIALREPORT,
+  ETH_RESERVE_INCREASE,
   INFO,
+  NULL_ADDRESS,
   PUBLICFILLORDER,
   PUBLICTRADE,
   REDEEMSTAKE,
-  ZERO,
   SUCCESS,
-  ETH_RESERVE_INCREASE,
-  NULL_ADDRESS,
+  ZERO,
 } from 'modules/common/constants';
-import { getNetworkId, getEthForDaiRate } from 'modules/contracts/actions/contractCalls';
+import { getEthForDaiRate, getNetworkId, } from 'modules/contracts/actions/contractCalls';
 import { Action } from 'redux';
 import { ThunkDispatch } from 'redux-thunk';
 import { BigNumber, createBigNumber } from 'utils/create-big-number';
@@ -62,7 +63,7 @@ export function removeAlert(id: string, name: string) {
 
 export function updateExistingAlert(id, alert) {
   return (dispatch, getState) => {
-    const callback = alert => {
+    const callback = (alert) => {
       const fullAlert = {
         type: UPDATE_EXISTING_ALERT,
         data: {
@@ -109,42 +110,58 @@ export function updateAlert(
       const { alerts } = store.getState() as AppState;
       const alertName = alert.name.toUpperCase();
       alert.id = id;
-      alert.uniqueId =
-        alertName === PUBLICTRADE || alertName === PUBLICFILLORDER ? createUniqueOrderId(alert) : id;
+      alert.uniqueId = alert.uniqueId || id;
 
-      if (alertName === CLAIMTRADINGPROCEEDS) {
-        alert.uniqueId = createAlternateUniqueOrderId(alert);
-        if (createBigNumber(alert.params.numPayoutTokens).eq(ZERO)) {
-          return;
+      switch (alertName) {
+        case PUBLICTRADE:
+        case PUBLICFILLORDER: {
+          alert.uniqueId = createUniqueOrderId(alert);
+          break;
+        }
+        case CANCELORDERS: {
+          alert.id = alert.params?.id || id;
+          console.log('entered cancelorders inside alerts.ts', alert);
+          break;
+        }
+        case CLAIMTRADINGPROCEEDS: {
+          alert.uniqueId = createAlternateUniqueOrderId(alert);
+          if (createBigNumber(alert.params.numPayoutTokens).eq(ZERO)) {
+            return;
+          }
+          break;
+        }
+        case DOINITIALREPORT: {
+          if (!dontMakeNewAlerts) {
+            dispatch(
+              updateAlert(id, {
+                ...alert,
+                params: {
+                  ...alert.params,
+                  preFilled: true,
+                },
+                name: CONTRIBUTE,
+              })
+            );
+          }
+          break;
         }
       }
 
-      if (alertName === DOINITIALREPORT && !dontMakeNewAlerts) {
-        dispatch(
-          updateAlert(id, {
-            ...alert,
-            params: {
-              ...alert.params,
-              preFilled: true,
-            },
-            name: CONTRIBUTE,
-          })
-        );
-      }
+      let foundAlert =
+        alertName === REDEEMSTAKE
+          ? alerts.find(
+              (findAlert) =>
+                findAlert.id === alert.id &&
+                findAlert.name.toUpperCase() === REDEEMSTAKE
+            )
+          : alerts.find(
+              (findAlert) =>
+                findAlert.uniqueId === alert.uniqueId &&
+                findAlert.name.toUpperCase() === alert.name.toUpperCase()
+            );
 
-      let foundAlert = alerts.find(
-        findAlert =>
-          findAlert.uniqueId === alert.uniqueId &&
-          findAlert.name.toUpperCase() === alert.name.toUpperCase()
-      );
-      if (alertName === REDEEMSTAKE) {
-        foundAlert = alerts.find(
-          findAlert =>
-            findAlert.id === alert.id &&
-            findAlert.name.toUpperCase() === REDEEMSTAKE
-        );
-      }
       if (foundAlert) {
+        console.log('foundalert', foundAlert);
         dispatch(removeAlert(alert.uniqueId, alert.name));
         dispatch(
           addAlert({
@@ -154,7 +171,12 @@ export function updateAlert(
             params: {
               ...foundAlert.params,
               ...alert.params,
-              repReceived: alert.params.repReceived && foundAlert.params.repReceived && createBigNumber(alert.params.repReceived).plus(createBigNumber(foundAlert.params.repReceived))
+              repReceived:
+                alert.params.repReceived &&
+                foundAlert.params.repReceived &&
+                createBigNumber(alert.params.repReceived).plus(
+                  createBigNumber(foundAlert.params.repReceived)
+                ),
             },
           })
         );

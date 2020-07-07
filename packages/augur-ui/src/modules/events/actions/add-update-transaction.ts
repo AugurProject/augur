@@ -1,52 +1,48 @@
 import { AppState } from 'appStore';
 import {
+  ADDLIQUIDITY,
+  APPROVE,
+  BATCHCANCELORDERS,
+  BUYPARTICIPATIONTOKENS,
   CANCELORDER,
   CANCELORDERS,
-  BATCHCANCELORDERS,
-  TX_ORDER_ID,
-  CREATEMARKET,
+  CATEGORICAL,
+  CLAIMMARKETSPROCEEDS,
+  CONTRIBUTE,
+  CREATE_MARKET,
+  CREATEAUGURWALLET,
   CREATECATEGORICALMARKET,
+  CREATEMARKET,
   CREATESCALARMARKET,
   CREATEYESNOMARKET,
-  CREATE_MARKET,
-  CATEGORICAL,
-  SCALAR,
-  YES_NO,
-  PUBLICFILLORDER,
-  CREATEAUGURWALLET,
-  WITHDRAWALLFUNDSASDAI,
-  ADDLIQUIDITY,
-  SWAPEXACTTOKENSFORTOKENS,
-  SWAPETHFOREXACTTOKENS,
-  SENDETHER,
-  BUYPARTICIPATIONTOKENS,
-  TRANSFER,
-  MODAL_ERROR,
-  MIGRATE_FROM_LEG_REP_TOKEN,
-  REDEEMSTAKE,
-  MIGRATEOUTBYPAYOUT,
-  TRADINGPROCEEDSCLAIMED,
-  CLAIMMARKETSPROCEEDS,
-  FORKANDREDEEM,
-  FINALIZE,
   DOINITIALREPORT,
-  CONTRIBUTE,
-  APPROVE,
+  FINALIZE,
+  FORKANDREDEEM,
+  MIGRATE_FROM_LEG_REP_TOKEN,
+  MIGRATEOUTBYPAYOUT,
+  MODAL_ERROR,
+  PUBLICFILLORDER,
+  REDEEMSTAKE,
+  SCALAR,
+  SENDETHER,
+  SWAPETHFOREXACTTOKENS,
+  SWAPEXACTTOKENSFORTOKENS,
+  TRADINGPROCEEDSCLAIMED,
+  TRANSFER,
+  TX_ORDER_ID,
+  WITHDRAWALLFUNDSASDAI,
+  YES_NO,
 } from 'modules/common/constants';
 import { CreateMarketData } from 'modules/types';
 import { ThunkDispatch } from 'redux-thunk';
 import { Action } from 'redux';
+import { Events, parseZeroXMakerAssetData, TXEventName } from '@augurproject/sdk-lite';
 import {
-  Events,
-  TXEventName,
-  parseZeroXMakerAssetData
-} from '@augurproject/sdk-lite';
-import {
+  addCanceledOrder,
   addPendingData,
   addUpdatePendingTransaction,
-  addCanceledOrder,
-  updatePendingReportHash,
   updatePendingDisputeHash,
+  updatePendingReportHash,
 } from 'modules/pending-queue/actions/pending-queue-management';
 import { convertUnixToFormattedDate } from 'utils/format-date';
 import { TransactionMetadataParams } from '@augurproject/contract-dependencies-ethers';
@@ -292,10 +288,8 @@ export const addUpdateTransaction = (txStatus: Events.TXStatus) => async (
       }
       case CANCELORDERS: {
         const orders = (transaction.params && transaction.params._orders) || [];
-        orders.map(order =>
-          dispatch(addCanceledOrder(order.orderId, eventName, hash))
-        );
-        orders.map(order =>
+        orders.map(order => {
+          dispatch(addCanceledOrder(order.orderId, eventName, hash));
           dispatch(
             addPendingData(
               parseZeroXMakerAssetData(order.makerAssetData).market,
@@ -303,8 +297,20 @@ export const addUpdateTransaction = (txStatus: Events.TXStatus) => async (
               eventName,
               hash
             )
-          )
-        );
+          );
+          if (eventName === TXEventName.Success) {
+            const alert = {
+              params: {
+                id: hash,
+              },
+              status: TXEventName.Success,
+              name: CANCELORDERS,
+            };
+            console.log('success wohooo', alert);
+
+            dispatch(updateAlert(order.uniqueId, alert));
+          }
+        });
         break;
       }
       case DOINITIALREPORT: {
