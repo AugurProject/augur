@@ -150,7 +150,6 @@ export default function setAlertText(alert: any, callback: Function) {
             } of ${outcomeDescription} @ ${alert.params.avgPrice.formatted}`;
           })
         );
-        console.log('dispatched', alert);
         break;
       }
 

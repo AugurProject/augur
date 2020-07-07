@@ -60,12 +60,11 @@ export const cancelOrder = order => async (
 };
 
 const sendCancelAlert = (order, dispatch) => {
-  const { blockchain } = store.getState();
-  const { avgPrice, id, marketDescription, name, outcomeId, type, unmatchedShares } = order;
+  const { id, marketDescription, outcomeId, type } = order;
   const buyOrSell = type === BUY ? 0 : 1;
   const alert = {
-    id,
-    uniqueId: `${id}_${blockchain.currentAugurTimestamp}_${buyOrSell}_${unmatchedShares.formatted}_${avgPrice.formatted}_${name}`,
+    id: id,
+    uniqueId: id,
     name: CANCELORDERS,
     status: TXEventName.Pending,
     description: marketDescription,
@@ -75,7 +74,6 @@ const sendCancelAlert = (order, dispatch) => {
       orderType: buyOrSell,
     },
   };
-
   dispatch(addAlert(alert));
 };
 

@@ -119,8 +119,7 @@ export function updateAlert(
           break;
         }
         case CANCELORDERS: {
-          alert.id = alert.params?.id || id;
-          console.log('entered cancelorders inside alerts.ts', alert);
+          alert.id = alert.params?.hash || id;
           break;
         }
         case CLAIMTRADINGPROCEEDS: {
@@ -161,7 +160,6 @@ export function updateAlert(
             );
 
       if (foundAlert) {
-        console.log('foundalert', foundAlert);
         dispatch(removeAlert(alert.uniqueId, alert.name));
         dispatch(
           addAlert({

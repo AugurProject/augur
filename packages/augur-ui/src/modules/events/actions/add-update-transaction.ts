@@ -301,14 +301,13 @@ export const addUpdateTransaction = (txStatus: Events.TXStatus) => async (
           if (eventName === TXEventName.Success) {
             const alert = {
               params: {
-                id: hash,
+                hash,
               },
               status: TXEventName.Success,
               name: CANCELORDERS,
             };
-            console.log('success wohooo', alert);
 
-            dispatch(updateAlert(order.uniqueId, alert));
+            dispatch(updateAlert(order.orderId, alert));
           }
         });
         break;
