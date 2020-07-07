@@ -184,8 +184,8 @@ export default class FeesLiquidity extends React.Component<
             link
             smallSubheader
             copyType={MARKET_COPY_LIST.CREATOR_FEE}
-            header="Market trading fee"
-            subheader={`Market Trading fee is made up of market creator fee and reporting fee combined. Currently the reporting fee is ${s.reportingFeePercent.formatted}%. Set market trading fee to 2% or less in order for your market to show up to traders, by default.`}
+            header="Market OI fee"
+            subheader={`Market OI fee is made up of market creator fee and reporting fee combined. Currently the reporting fee is ${s.reportingFeePercent.formatted}%. Set Market OI Fee to 2% or less in order for your market to show up to traders, by default.`}
           />
           <LargeSubheaders
             smallSubheader

@@ -96,7 +96,7 @@ const CoreProperties: React.FC<CorePropertiesProps> = ({
                 }
               />
               <PropertyLabel
-                label="Market Trading Fee"
+                label="Market OI Fee"
                 value={
                   market.settlementFeePercent
                     ? formatPercent(market.settlementFeePercent.formattedValue).full
@@ -104,9 +104,9 @@ const CoreProperties: React.FC<CorePropertiesProps> = ({
                 }
                 hint={
                   <>
-                    <h4>Market Trading Fee</h4>
+                    <h4>Market OI Fee</h4>
                     <p>
-                      The market trading fee is a combination of the Market
+                      The Market OI Fee is a combination of the Market
                       Creator Fee (
                       <b>
                         {
