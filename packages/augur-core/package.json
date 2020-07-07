@@ -73,7 +73,8 @@
     "@augurproject/solidity-docgen": "0.2.0-alpha.3",
     "bignumber.js": "9.0.0",
     "ethers": "4.0.47",
-    "path": "0.12.7"
+    "path": "0.12.7",
+    "truffle": "^5.1.33"
   },
   "devDependencies": {
     "@augurproject/solidity-typescript-generator": "1.1.13",
