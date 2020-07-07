@@ -354,6 +354,7 @@ export const REPORTING_STATE = {
   FINALIZED: MarketReportingState.Finalized,
   FORKING: MarketReportingState.Forking,
   AWAITING_FORK_MIGRATION: MarketReportingState.AwaitingForkMigration,
+  UNKNOWN: MarketReportingState.Unknown,
 };
 
 // TODO: this no longer exists and can be removed during refactor of claiming winnings
