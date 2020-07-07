@@ -62,7 +62,7 @@ export const AddFunds = ({
   const BUY_MIN = 20;
   const BUY_MAX = 250;
 
-  const usingOnRampSupportedWallet =
+  const usingOnRampSupportedWallet = accountMeta &&
     accountMeta.accountType === ACCOUNT_TYPES.TORUS ||
     accountMeta.accountType === ACCOUNT_TYPES.FORTMATIC;
 
