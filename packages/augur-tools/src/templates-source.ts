@@ -1910,7 +1910,6 @@ export const TEMPLATES = {
                 placeholder: `Event`,
                 groupKey: EVENT,
                 values: LIST_VALUES.HOCKEY_EVENT,
-                categoryDestId: 2,
               },
               {
                 id: 2,
@@ -3911,7 +3910,6 @@ export const TEMPLATES = {
                     placeholder: `Event`,
                     groupKey: EVENT,
                     values: LIST_VALUES.BASKETBALL_EVENT,
-                    categoryDestId: 2,
                   },
                   {
                     id: 2,
@@ -6152,6 +6150,7 @@ export const TEMPLATES = {
                     id: 0,
                     type: TemplateInputType.DROPDOWN,
                     values: LIST_VALUES.OLYMPIC_MEDALS,
+                    categoryDestId: 2,
                     placeholder: `Medal type`,
                   },
                   {
@@ -6401,6 +6400,7 @@ export const TEMPLATES = {
                     type: TemplateInputType.DROPDOWN,
                     values: LIST_VALUES.OLYMPIC_MEDALS,
                     placeholder: `Medal type`,
+                    categoryDestId: 2,
                     groupKey: EVENT,
                   },
                   {
@@ -6503,6 +6503,7 @@ export const TEMPLATES = {
                     id: 0,
                     type: TemplateInputType.DROPDOWN,
                     values: LIST_VALUES.OLYMPIC_MEDALS,
+                    categoryDestId: 2,
                     placeholder: `Medal type`,
                   },
                   {
@@ -7013,7 +7014,6 @@ export const TEMPLATES = {
                     placeholder: `Event`,
                     groupKey: EVENT,
                     values: LIST_VALUES.FOOTBALL_EVENT,
-                    categoryDestId: 2,
                   },
                   {
                     id: 2,
@@ -7249,7 +7249,6 @@ export const TEMPLATES = {
                     placeholder: `position`,
                     groupKey: EVENT,
                     values: LIST_VALUES.NFL_DRAFT_POSITIONS,
-                    categoryDestId: 2,
                   },
                   {
                     id: 2,
@@ -7812,7 +7811,6 @@ export const TEMPLATES = {
                     placeholder: `Event`,
                     groupKey: EVENT,
                     values: LIST_VALUES.NCAA_FOOTBALL_EVENT,
-                    categoryDestId: 2,
                   },
                   {
                     id: 2,
@@ -7982,6 +7980,7 @@ export const TEMPLATES = {
                 type: TemplateInputType.DROPDOWN,
                 placeholder: `Party`,
                 values: LIST_VALUES.POL_PARTY,
+                categoryDestId: 2,
               },
             ],
             resolutionRules: {
@@ -8010,6 +8009,7 @@ export const TEMPLATES = {
                 type: TemplateInputType.DROPDOWN,
                 placeholder: `Office`,
                 values: LIST_VALUES.OFFICES,
+                categoryDestId: 2,
               },
               {
                 id: 2,
@@ -8214,6 +8214,7 @@ export const TEMPLATES = {
                 placeholder: `Office`,
                 groupKey: EVENT,
                 values: LIST_VALUES.PRES_OFFICES,
+                categoryDestId: 2,
               },
               {
                 id: 3,
@@ -8245,6 +8246,7 @@ export const TEMPLATES = {
                 placeholder: `State`,
                 groupKey: ENTITY,
                 values: LIST_VALUES.US_STATES,
+                categoryDestId: 2,
               },
               {
                 id: 1,
@@ -8284,6 +8286,7 @@ export const TEMPLATES = {
                 placeholder: `Office`,
                 groupKey: ENTITY,
                 values: LIST_VALUES.POL_HOUSE_SENATE_OFFICE,
+                categoryDestId: 2,
               },
               {
                 id: 1,
@@ -8348,6 +8351,7 @@ export const TEMPLATES = {
                 placeholder: `Party`,
                 groupKey: ENTITY,
                 values: LIST_VALUES.POL_PARTY,
+                categoryDestId: 2,
               },
               {
                 id: 3,
@@ -8402,6 +8406,7 @@ export const TEMPLATES = {
                 placeholder: `Party`,
                 groupKey: ENTITY,
                 values: LIST_VALUES.POL_PARTY,
+                categoryDestId: 2,
               },
               {
                 id: 3,
@@ -8446,6 +8451,7 @@ export const TEMPLATES = {
                 id: 1,
                 type: TemplateInputType.DROPDOWN,
                 placeholder: `Position`,
+                categoryDestId: 2,
                 values: LIST_VALUES.POL_POSITION,
               },
               {
@@ -8550,6 +8556,7 @@ export const TEMPLATES = {
                 placeholder: `Position`,
                 groupKey: ENTITY,
                 values: LIST_VALUES.POL_POSITION,
+                categoryDestId: 2,
               },
               {
                 id: 1,
@@ -8787,7 +8794,7 @@ export const TEMPLATES = {
               },
               {
                 id: 5,
-                dateAfterId: 3,
+                dateAfterId: 4,
                 type: TemplateInputType.DATEYEAR,
                 placeholder: `End Day of Year`,
                 validationType: ValidationType.NOWEEKEND_HOLIDAYS,
@@ -9007,7 +9014,7 @@ export const TEMPLATES = {
                 type: TemplateInputType.DROPDOWN,
                 placeholder: `Event`,
                 values: LIST_VALUES.ENTERTAINMENT_EVENT,
-                categoryDestId: 1,
+                categoryDestId: 2,
               },
             ],
             resolutionRules: {
@@ -9060,7 +9067,7 @@ export const TEMPLATES = {
                 inputDestIds: [1],
                 values: LIST_VALUES.ENTERTAINMENT_EVENT,
                 inputDestValues: ENTERTAINMENT_EVENT_DEP_TEAMS,
-                categoryDestId: 1,
+                categoryDestId: 2,
               },
             ],
             resolutionRules: {
@@ -9095,7 +9102,7 @@ export const TEMPLATES = {
                 type: TemplateInputType.DROPDOWN,
                 placeholder: `Event`,
                 values: LIST_VALUES.ENTERTAINMENT_EVENT,
-                categoryDestId: 1,
+                categoryDestId: 2,
               },
               {
                 id: 2,
@@ -9149,7 +9156,7 @@ export const TEMPLATES = {
                 inputDestIds: [0],
                 values: LIST_VALUES.ENTERTAINMENT_EVENT,
                 inputDestValues: ENTERTAINMENT_EVENT_DEP_TEAMS,
-                categoryDestId: 1,
+                categoryDestId: 2,
               },
               {
                 id: 3,
@@ -9807,7 +9814,7 @@ export const TEMPLATES = {
               },
               {
                 id: 2,
-                dateAfterId: 2,
+                dateAfterId: 1,
                 type: TemplateInputType.DATEYEAR,
                 daysAfterDateStart: 1,
                 placeholder: `Day of Year`,
@@ -9908,7 +9915,7 @@ export const TEMPLATES = {
               },
               {
                 id: 2,
-                dateAfterId: 2,
+                dateAfterId: 1,
                 type: TemplateInputType.DATEYEAR,
                 daysAfterDateStart: 1,
                 placeholder: `Day of Year`,
@@ -10009,7 +10016,7 @@ export const TEMPLATES = {
               },
               {
                 id: 2,
-                dateAfterId: 2,
+                dateAfterId: 1,
                 type: TemplateInputType.DATEYEAR,
                 daysAfterDateStart: 1,
                 placeholder: `Day of Year`,
@@ -10110,7 +10117,7 @@ export const TEMPLATES = {
               },
               {
                 id: 2,
-                dateAfterId: 2,
+                dateAfterId: 1,
                 type: TemplateInputType.DATEYEAR,
                 daysAfterDateStart: 1,
                 placeholder: `Day of Year`,
@@ -10211,7 +10218,7 @@ export const TEMPLATES = {
               },
               {
                 id: 2,
-                dateAfterId: 2,
+                dateAfterId: 1,
                 type: TemplateInputType.DATEYEAR,
                 daysAfterDateStart: 1,
                 placeholder: `Day of Year`,
@@ -10312,7 +10319,7 @@ export const TEMPLATES = {
               },
               {
                 id: 2,
-                dateAfterId: 2,
+                dateAfterId: 1,
                 type: TemplateInputType.DATEYEAR,
                 daysAfterDateStart: 1,
                 placeholder: `Day of Year`,

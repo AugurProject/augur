@@ -20,8 +20,9 @@ import ReactTooltip from 'react-tooltip';
 import TooltipStyles from 'modules/common/tooltip.styles.less';
 import parseQuery from 'modules/routes/helpers/parse-query';
 import updateQuery from 'modules/routes/helpers/update-query';
-import { INVALID_OPTIONS, LoginAccountSettings } from 'modules/types';
+import { INVALID_OPTIONS, LoginAccountSettings, FilterSortOptions } from 'modules/types';
 import ChevronFlip from 'modules/common/chevron-flip';
+import { MARKET_MAX_FEES, MARKET_MAX_SPREAD, MARKET_SHOW_INVALID, MARKET_TYPE_FILTER, MARKET_SORT, MARKET_LIMIT, MARKET_OFFSET, MARKET_FILTER } from 'modules/filter-sort/actions/update-filter-sort-options';
 
 interface MarketsListFiltersProps {
   maxFee: string;
@@ -30,10 +31,6 @@ interface MarketsListFiltersProps {
   allTemplateFilter: string;
   marketTypeFilter: string;
   isSearching: boolean;
-  updateMaxFee: Function;
-  updateMaxSpread: Function;
-  updateShowInvalid: Function;
-  updateTemplateFilter: Function;
   history: History;
   location: Location;
   setMaxFeeFilter: Function;
@@ -44,21 +41,16 @@ interface MarketsListFiltersProps {
   isMobile: boolean;
   updateSelectedCategories: Function;
   setMarketTypeFilter: Function;
-  updateMarketTypeFilter: Function
+  updateFilterSortOptionsSettings: Function;
+  sortBy: string,
+  marketLimit: number,
+  marketOffset: number,
+  marketFilter: string,
+  filterSortOptions: FilterSortOptions,
 }
 
 const MarketsListFilters = ({
-  maxFee,
-  maxLiquiditySpread,
-  includeInvalidMarkets,
-  allTemplateFilter,
-  marketTypeFilter,
   isSearching,
-  updateMaxFee,
-  updateMaxSpread,
-  updateMarketTypeFilter,
-  updateShowInvalid,
-  updateTemplateFilter,
   history,
   location,
   setMaxFeeFilter,
@@ -66,53 +58,69 @@ const MarketsListFilters = ({
   setMarketTypeFilter,
   setShowInvalidFilter,
   setTemplateOrCustomFilter,
-  settings,
   isMobile,
   updateSelectedCategories,
+  updateFilterSortOptionsSettings,
+  filterSortOptions
 }: MarketsListFiltersProps) => {
   useEffect(() => {
     const filterOptionsFromQuery = parseQuery(location.search);
 
     const newMaxFee =
-      filterOptionsFromQuery.maxFee ||
-      settings.maxFee;
+      filterOptionsFromQuery.maxFee;
     const newSpread =
-      filterOptionsFromQuery.spread ||
-      settings.spread;
+      filterOptionsFromQuery.spread;
     const newTemplateFilter =
-      filterOptionsFromQuery.templateFilter ||
-      settings.templateFilter;
+      filterOptionsFromQuery.templateFilter;
+    const newMarketFilter =
+      filterOptionsFromQuery.marketFilter;
     const newShowInvalid =
-      filterOptionsFromQuery.showInvalid ||
-      settings.showInvalid;
+      filterOptionsFromQuery.showInvalid;
     const categories =
       filterOptionsFromQuery.category;
-    const newMarketTypeFilter = filterOptionsFromQuery.type ||
-      settings.marketTypeFilter;
+    const newMarketTypeFilter = filterOptionsFromQuery.type;
+    const newMarketSort = filterOptionsFromQuery.sort;
+    const newMarketLimit = filterOptionsFromQuery.limit;
+    const newMarketOffset = filterOptionsFromQuery.offset
 
-    if (newMaxFee && newMaxFee !== maxFee) {
-      updateMaxFee(newMaxFee);
+    let filterOptions = {}
+    if (newMaxFee && newMaxFee !== filterSortOptions.maxFee) {
+      filterOptions={...filterOptions, [MARKET_MAX_FEES]: newMaxFee};
     }
-    if (newSpread && newSpread !== maxLiquiditySpread) {
-      updateMaxSpread(newSpread);
+    if (newSpread && newSpread !== filterSortOptions.maxLiquiditySpread) {
+      filterOptions={...filterOptions, [MARKET_MAX_SPREAD]: newSpread};
     }
-    if (newTemplateFilter && newTemplateFilter !== allTemplateFilter) {
-      updateTemplateFilter(newTemplateFilter);
+    if (newTemplateFilter && newTemplateFilter !== filterSortOptions.templateFilter) {
+      filterOptions={...filterOptions, [TEMPLATE_FILTER]: newTemplateFilter};
     }
-    if (newMarketTypeFilter && newMarketTypeFilter !== marketTypeFilter) {
-      updateMarketTypeFilter(newMarketTypeFilter);
+    if (newMarketTypeFilter && newMarketTypeFilter !== filterSortOptions.marketTypeFilter) {
+      filterOptions={...filterOptions, [MARKET_TYPE_FILTER]: newMarketTypeFilter};
     }
-    if (newShowInvalid && newShowInvalid !== includeInvalidMarkets) {
-      updateShowInvalid(newShowInvalid);
+    if (newShowInvalid && newShowInvalid !== filterSortOptions.includeInvalidMarkets) {
+      filterOptions={...filterOptions, [MARKET_SHOW_INVALID]: newShowInvalid};
     }
+    if (newMarketLimit && newMarketLimit !== filterSortOptions.limit) {
+      filterOptions={...filterOptions, [MARKET_LIMIT]: newMarketLimit};
+    }
+    if (newMarketSort && newMarketSort !== filterSortOptions.sortBy) {
+      filterOptions={...filterOptions, [MARKET_SORT]: newMarketSort};
+    }
+    if (newMarketOffset && newMarketOffset !== filterSortOptions.offset) {
+      filterOptions={...filterOptions, [MARKET_OFFSET]: newMarketOffset};
+    }
+    if (newMarketFilter && newMarketFilter !== filterSortOptions.marketFilter) {
+      filterOptions={...filterOptions, [MARKET_FILTER]: newMarketFilter};
+    }
+    if(Object.keys(filterOptions).length) updateFilterSortOptionsSettings(filterOptions);
+
     categories
       ? updateSelectedCategories(categories.split(','))
       : updateSelectedCategories([]);
-  }, [location.search, settings]);
+  }, [location.search]);
 
   const [showFilters, setShowFilters] = useState(false);
 
-  if (!maxLiquiditySpread) return null;
+  if (!filterSortOptions.maxLiquiditySpread) return null;
 
   const updateFilter = (value: string, whichFilterToUpdate: string) => {
     updateQuery(
@@ -121,24 +129,7 @@ const MarketsListFilters = ({
       location,
       history
     );
-
-    switch (whichFilterToUpdate) {
-      case TEMPLATE_FILTER:
-        updateTemplateFilter(value);
-        break;
-      case MAXFEE_PARAM_NAME:
-        updateMaxFee(value);
-        break;
-      case SPREAD_PARAM_NAME:
-        updateMaxSpread(value);
-        break;
-      case MARKET_TYPE_PARAM_NAME:
-        updateMarketTypeFilter(value);
-        break;
-      case SHOW_INVALID_MARKETS_PARAM_NAME:
-        updateShowInvalid(value);
-        break;
-    }
+    updateFilterSortOptionsSettings({[whichFilterToUpdate]: value});
   };
 
   return (
@@ -167,7 +158,7 @@ const MarketsListFilters = ({
 
             <RadioBarGroup
               radioButtons={templateFilterValues}
-              defaultSelected={allTemplateFilter}
+              defaultSelected={filterSortOptions.templateFilter}
               onChange={(value: string) => isMobile ? setTemplateOrCustomFilter(value) : updateFilter(value, TEMPLATE_FILTER)}
             />
 
@@ -181,7 +172,7 @@ const MarketsListFilters = ({
 
             <RadioBarGroup
               radioButtons={feeFilters}
-              defaultSelected={maxFee}
+              defaultSelected={filterSortOptions.maxFee}
               onChange={(value: string) => isMobile ? setMaxFeeFilter(value) : updateFilter(value, MAXFEE_PARAM_NAME)}
             />
 
@@ -195,7 +186,7 @@ const MarketsListFilters = ({
 
             <RadioBarGroup
               radioButtons={spreadFilters}
-              defaultSelected={maxLiquiditySpread}
+              defaultSelected={filterSortOptions.maxLiquiditySpread}
               onChange={(value: string) => isMobile ? setMaxSpreadFilter(value) : updateFilter(value, SPREAD_PARAM_NAME)}
             />
 
@@ -209,7 +200,7 @@ const MarketsListFilters = ({
 
             <RadioBarGroup
               radioButtons={marketTypeFilterValues}
-              defaultSelected={marketTypeFilter}
+              defaultSelected={filterSortOptions.marketTypeFilter}
               onChange={(value: string) => isMobile ? setMarketTypeFilter(value) : updateFilter(value, MARKET_TYPE_PARAM_NAME)}
             />
 
@@ -224,7 +215,7 @@ const MarketsListFilters = ({
 
             <RadioBarGroup
               radioButtons={invalidFilters}
-              defaultSelected={String(includeInvalidMarkets)}
+              defaultSelected={String(filterSortOptions.includeInvalidMarkets)}
               onChange={(value: string) => isMobile ? setShowInvalidFilter(value) : updateFilter(value, SHOW_INVALID_MARKETS_PARAM_NAME)}
             />
           </>

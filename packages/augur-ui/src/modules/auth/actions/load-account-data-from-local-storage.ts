@@ -17,15 +17,10 @@ import { loadMarketsInfoIfNotLoaded } from 'modules/markets/actions/load-markets
 import { loadAnalytics } from 'modules/app/actions/analytics-management';
 import {
   saveAffiliateAddress,
-  updateLoginAccount,
 } from 'modules/account/actions/login-account';
 import {
-  updateFilterSortOptions,
-  MARKET_MAX_FEES,
-  MARKET_MAX_SPREAD,
-  MARKET_SHOW_INVALID,
+  updateFilterSortOptionsSettings,
 } from 'modules/filter-sort/actions/update-filter-sort-options';
-import { TEMPLATE_FILTER } from 'modules/common/constants';
 
 export const loadAccountDataFromLocalStorage = (
   address: string
@@ -46,24 +41,11 @@ export const loadAccountDataFromLocalStorage = (
       const { settings } = storedAccountData;
 
       if (settings) {
-        dispatch(updateLoginAccount({ settings: { ...settings } }));
-        const { maxFee, spread, showInvalid, templateFilter } = settings;
-        if (maxFee) {
-          dispatch(updateFilterSortOptions(MARKET_MAX_FEES, settings.maxFee));
-        }
-        if (spread) {
-          dispatch(updateFilterSortOptions(MARKET_MAX_SPREAD, settings.spread));
-        }
-        if (showInvalid) {
-          dispatch(
-            updateFilterSortOptions(MARKET_SHOW_INVALID, settings.showInvalid)
-          );
-        }
-        if (templateFilter) {
-          dispatch(
-            updateFilterSortOptions(TEMPLATE_FILTER, settings.templateFilter)
-          );
-        }
+        const filterOptions = Object.keys(settings).reduce(
+          (p, key) => (settings[key] ? { ...p, [key]: settings[key] } : p),
+          {}
+        );
+        dispatch(updateFilterSortOptionsSettings(filterOptions));
       }
 
       if (readNotifications) {

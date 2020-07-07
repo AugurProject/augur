@@ -33,6 +33,7 @@ interface TopNavProps {
   walletBalances: AccountBalances;
   updateModal: Function;
   ethReserveInDai: FormattedNumber;
+  disableMarketCreation: boolean;
 }
 
 const SPREAD_INDEX = 3;
@@ -45,6 +46,7 @@ const TopNav = ({
   showMigrateRepButton = false,
   walletBalances,
   ethReserveInDai,
+  disableMarketCreation,
 }: TopNavProps) => {
   const isCurrentItem = item => {
     if (item.route === 'markets' && currentBasePath === 'market') return true;
@@ -65,7 +67,7 @@ const TopNav = ({
               <li className={Styles.CreateButton} key={item.title}>
                 <Link to={item.route || !item.disabled ? makePath(item.route) : null}>
                   <SecondaryButton
-                    disabled={item.disabled}
+                    disabled={item.disabled || disableMarketCreation}
                     text={'Create Market'}
                     action={() => null}
                   />

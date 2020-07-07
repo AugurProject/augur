@@ -28,6 +28,7 @@ import {
   MODAL_NETWORK_MISMATCH,
   NETWORK_NAMES,
   SIGNIN_SIGN_WALLET,
+  MODAL_REPORTING_ONLY,
 } from 'modules/common/constants';
 import { getNetworkId } from 'modules/contracts/actions/contractCalls';
 import { listenForStartUpEvents } from 'modules/events/actions/listen-to-updates';
@@ -260,6 +261,12 @@ export function connectAugur(
       } else {
         return callback('SDK could not be created', { config });
       }
+    }
+
+    if (config?.ui?.reportingOnly) {
+      dispatch(updateModal({
+        type: MODAL_REPORTING_ONLY
+      }))
     }
 
     let universeId =

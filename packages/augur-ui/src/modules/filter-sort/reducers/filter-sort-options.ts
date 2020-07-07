@@ -1,6 +1,5 @@
 import { RESET_STATE } from 'modules/app/actions/reset-state';
 import {
-  UPDATE_FILTER_SORT_OPTIONS,
   MARKET_FILTER,
   MARKET_SORT,
   MARKET_MAX_FEES,
@@ -8,6 +7,9 @@ import {
   MARKET_MAX_SPREAD,
   MARKET_SHOW_INVALID,
   MARKET_TYPE_FILTER,
+  MARKET_LIMIT,
+  MARKET_OFFSET,
+  UPDATE_FILTER_SORT_OPTIONS,
 } from 'modules/filter-sort/actions/update-filter-sort-options';
 import {
   MAX_FEE_02_PERCENT,
@@ -17,18 +19,24 @@ import {
   MAX_SPREAD_ALL_SPREADS,
   TEMPLATE_FILTER,
   FILTER_ALL,
+  PAGINATION_COUNT,
+  DEFAULT_MARKET_OFFSET,
 } from 'modules/common/constants';
+import { TemplateFilters,
+} from '@augurproject/sdk-lite';
 import { FilterSortOptions, BaseAction, INVALID_OPTIONS } from 'modules/types';
 
 const DEFAULT_STATE: FilterSortOptions = {
   [MARKET_FILTER]: MARKET_OPEN,
-  [MARKET_SORT]: MARKET_SORT_PARAMS.FEES_GENERATED,
+  [MARKET_SORT]: MARKET_SORT_PARAMS.MOST_TRADED,
   [MARKET_MAX_FEES]: MAX_FEE_02_PERCENT,
   [MARKET_MAX_SPREAD]: MAX_SPREAD_ALL_SPREADS,
   [MARKET_SHOW_INVALID]: INVALID_OPTIONS.Hide,
   [MARKET_TYPE_FILTER]: FILTER_ALL,
   [TRANSACTION_PERIOD]: DAY,
-  [TEMPLATE_FILTER]: "templateOnly"
+  [TEMPLATE_FILTER]: TemplateFilters.templateOnly,
+  [MARKET_LIMIT]: PAGINATION_COUNT,
+  [MARKET_OFFSET]: DEFAULT_MARKET_OFFSET,
 };
 
 const KEYS = Object.keys(DEFAULT_STATE);
@@ -39,13 +47,11 @@ export default function(
 ): FilterSortOptions {
   switch (type) {
     case UPDATE_FILTER_SORT_OPTIONS: {
-      const { optionKey, optionValue } = data;
-      if (KEYS.includes(optionKey))
-        return {
-          ...filterSortOptions,
-          [optionKey]: optionValue,
-        };
-      return filterSortOptions;
+      const { filterOptions } = data;
+      return {
+        ...filterSortOptions,
+        ...filterOptions
+      };
     }
     case RESET_STATE:
       return DEFAULT_STATE;

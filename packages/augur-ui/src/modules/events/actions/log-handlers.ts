@@ -361,6 +361,7 @@ export const handleMarketCreatedLog = (logs: any) => (
           });
         })
       );
+      dispatch(getCategoryStats());
     }
   });
   if (userLogs.length > 0) {

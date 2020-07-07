@@ -62,6 +62,7 @@ interface WrapperProps {
   gsnUnavailable: boolean;
   initializeGsnWallet: Function;
   endTime: number;
+  disableTrading?: boolean;
 }
 
 interface WrapperState {
@@ -139,7 +140,7 @@ class Wrapper extends Component<WrapperProps, WrapperState> {
   }
 
   componentDidMount() {
-    const { selectedOrderProperties } = this.props;
+    const { selectedOrderProperties, disclaimerSeen, disclaimerModal, tradingTutorial, initialLiquidity } = this.props;
 
     this.updateTradeTotalCost(
       {
@@ -150,6 +151,10 @@ class Wrapper extends Component<WrapperProps, WrapperState> {
       },
       true
     );
+
+    if (!disclaimerSeen && !tradingTutorial && !initialLiquidity) {
+      disclaimerModal();
+    }
   }
 
   componentDidUpdate(prevProps) {
@@ -456,6 +461,7 @@ class Wrapper extends Component<WrapperProps, WrapperState> {
       gsnUnavailable,
       initializeGsnWallet,
       gsnWalletInfoSeen,
+      disableTrading,
     } = this.props;
     let {
       marketType,
@@ -502,23 +508,13 @@ class Wrapper extends Component<WrapperProps, WrapperState> {
             tutorialNext();
             this.clearOrderForm();
           } else {
-            if (disclaimerSeen) {
-              gsnUnavailable && !gsnWalletInfoSeen
-                ? initializeGsnWallet(() => this.placeMarketTrade(market, selectedOutcome, this.state))
-                : this.placeMarketTrade(market, selectedOutcome, this.state);
-
-            } else {
-              disclaimerModal({
-                onApprove: () =>
-                  gsnUnavailable && !gsnWalletInfoSeen
-                  ? initializeGsnWallet(() => this.placeMarketTrade(market, selectedOutcome, this.state))
-                  : this.placeMarketTrade(market, selectedOutcome, this.state)
-              });
-            }
+            gsnUnavailable && !gsnWalletInfoSeen
+              ? initializeGsnWallet(() => this.placeMarketTrade(market, selectedOutcome, this.state))
+              : this.placeMarketTrade(market, selectedOutcome, this.state);
           }
         }}
         disabled={
-          !trade || !trade.limitPrice || (gsnUnavailable && isOpenOrder) || insufficientFunds || (postOnlyOrder && trade.numFills > 0)
+          !trade || !trade.limitPrice || (gsnUnavailable && isOpenOrder) || insufficientFunds || (postOnlyOrder && trade.numFills > 0 || (disableTrading))
         }
       />
     );

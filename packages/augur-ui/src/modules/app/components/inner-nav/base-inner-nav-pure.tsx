@@ -17,21 +17,17 @@ import { PrimaryButton } from 'modules/common/buttons';
 import Styles from 'modules/app/components/inner-nav/inner-nav.styles.less';
 import { FilterSortOptions } from 'modules/types';
 import updateMultipleQueries from 'modules/routes/helpers/update-multiple-queries';
+import { MARKET_SORT, MARKET_MAX_FEES, MARKET_MAX_SPREAD, MARKET_SHOW_INVALID } from 'modules/filter-sort/actions/update-filter-sort-options';
 
 interface BaseInnerNavPureProps {
   mobileMenuState: number;
   updateMobileMenuState: Function;
   selectedCategories: String[];
   filterSortOptions: FilterSortOptions;
-  updateLoginAccount: Function;
-  updateMarketsSortBy: Function;
-  updateMaxFee: Function;
-  updateMaxSpread: Function;
-  updateShowInvalid: Function;
-  updateTemplateFilter: Function;
   updateSelectedCategories: Function;
   history: History;
   location: Location;
+  updateFilterSortOptionsSettings: Function;
 }
 
 const BaseInnerNavPure = ({
@@ -39,13 +35,8 @@ const BaseInnerNavPure = ({
   updateMobileMenuState,
   selectedCategories,
   filterSortOptions,
-  updateLoginAccount,
-  updateMarketsSortBy,
-  updateMaxFee,
-  updateMaxSpread,
-  updateShowInvalid,
-  updateTemplateFilter,
   updateSelectedCategories,
+  updateFilterSortOptionsSettings,
   location,
   history,
 }: BaseInnerNavPureProps) => {
@@ -125,27 +116,11 @@ const BaseInnerNavPure = ({
 
       changedFilters.forEach(({ value, filterType }) => {
         newSettings[filterType] = value;
-
-        switch (filterType) {
-          case TEMPLATE_FILTER:
-            updateTemplateFilter(value);
-            break;
-          case MAXFEE_PARAM_NAME:
-            updateMaxFee(value);
-            break;
-          case SPREAD_PARAM_NAME:
-            updateMaxSpread(value);
-            break;
-          case SHOW_INVALID_MARKETS_PARAM_NAME:
-            updateShowInvalid(value);
-            break;
-        }
+        updateFilterSortOptionsSettings({[filterType]: value});
       });
-
-      updateLoginAccount(newSettings);
     }
 
-    sortOptions && updateMarketsSortBy(sortOptions);
+    sortOptions && updateFilterSortOptionsSettings({[MARKET_SORT]: sortOptions});
   };
 
   useEffect(() => {
@@ -188,14 +163,13 @@ const BaseInnerNavPure = ({
             onClick={() => {
               if (showMainMenu) {
                 updateSelectedCategories(originalSelectedCategories);
-                updateMarketsSortBy(originalFilterSortOptions.marketSort);
-                updateMaxFee(originalFilterSortOptions.maxFee);
-                updateMaxSpread(originalFilterSortOptions.maxLiquiditySpread);
-                updateShowInvalid(
-                  originalFilterSortOptions.includeInvalidMarkets
-                );
-                updateTemplateFilter(originalFilterSortOptions.templateFilter);
-
+                updateFilterSortOptionsSettings({
+                  [MARKET_SORT]: originalFilterSortOptions.sortBy,
+                  [MARKET_MAX_FEES]: originalFilterSortOptions.maxFee,
+                  [MARKET_MAX_SPREAD]: originalFilterSortOptions.maxLiquiditySpread,
+                  [MARKET_SHOW_INVALID]: originalFilterSortOptions.includeInvalidMarkets,
+                  [TEMPLATE_FILTER]: originalFilterSortOptions.templateFilter,
+                });
                 updateMultipleQueries(getFilters(true), location, history);
               }
 

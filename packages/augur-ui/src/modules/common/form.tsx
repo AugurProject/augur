@@ -395,7 +395,7 @@ export const determineVisible = (
   selected: string[]
 ) => {
   const showSecondaryDropdown = values[0] !== '' && secondaryOptions.length > 0;
-  const showTertiaryDropdown = tertiaryOptions.length > 0 && values[1] !== '';
+  const showTertiaryDropdown = tertiaryOptions.length > 0 && values[1] !== '' && !values[2];
   const customPrimary =
     selected[0] === CUSTOM ||
     (selected[0] &&
@@ -411,7 +411,7 @@ export const determineVisible = (
     (selected[2] &&
       !disabledTertiary &&
       !tertiaryOptions.map(option => option.value).includes(selected[2])) ||
-    (!showTertiaryDropdown && values[1] !== '');
+    (!showTertiaryDropdown && values[1] !== '') || values[2];
   return {
     showSecondaryDropdown,
     showTertiaryDropdown,
@@ -509,6 +509,7 @@ export const DropdownInputGroup = ({
         onChange={onChangeInput}
         errorMessage={!showDropdown ? errorMessage : ''}
         onAutoCompleteListSelected={null}
+        disabled={disabled}
       />
     )}
     {removable && !disabled && value !== '' && !showText && (
@@ -684,7 +685,8 @@ export class CategoryMultiSelect extends Component<
       disableTertiaryCategory,
       selected
     );
-
+    const tertiaryDefault = selected[2] || (!disableTertiaryCategory && tertiaryOptions.length > 0) ? (tertiaryOptions[0]?.label || tertiaryOptions[0]) : null;
+    if (tertiaryDefault && !selected[2]) this.onChangeDropdown(tertiaryDefault, 2)
     return (
       <ul
         className={classNames(Styles.CategoryMultiSelect, {
@@ -729,7 +731,7 @@ export class CategoryMultiSelect extends Component<
         )}
         {(showTertiaryDropdown || customTertiary) && (
           <DropdownInputGroup
-            defaultValue={selected[2] || tertiaryOptions.length > 0 ? (tertiaryOptions[0]?.label || tertiaryOptions[0]) : null}
+            defaultValue={tertiaryDefault}
             staticLabel="Sub Category"
             onChangeDropdown={choice => this.onChangeDropdown(choice, 2)}
             options={tertiaryOptions}

@@ -77,8 +77,8 @@ const mergeProps = (sP: any, dP: any, oP: any) => {
   const onError = (error, accountType) => {
     console.error(`ERROR:${accountType}`, error);
 
-    const isFortmaticCancelError =  accountType === ACCOUNT_TYPES.FORTMATIC &&  error.message.indexOf('User denied account access') !== -1;
-    const isTorusExitCancelError = accountType === ACCOUNT_TYPES.TORUS &&  error.indexOf('user closed popup') !== -1;
+    const isFortmaticCancelError =  accountType === ACCOUNT_TYPES.FORTMATIC && error?.message.indexOf('User denied account access') !== -1;
+    const isTorusExitCancelError = accountType === ACCOUNT_TYPES.TORUS && error?.message.indexOf('user closed popup') !== -1;
 
     // If the error we get back from the wallet SDK is "User denied access", aka Cancel/Close wallet window, we should just close the modal
     if (isTorusExitCancelError || isFortmaticCancelError) {
