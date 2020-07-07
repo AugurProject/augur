@@ -229,7 +229,6 @@ export default class MarketsView extends Component<
     updateFilterSortOptions({
       [MARKET_OFFSET]: offset,
     });
-    this.updateFilteredMarkets();
   }
 
   updateFilteredMarkets = () => {
