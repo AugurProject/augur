@@ -83,20 +83,7 @@ describe('Warp Sync markets', () => {
     mary = null;
   });
 
-  // @TODO This test has to be at the beginning of the file or it fails indicating something isn't being properly cleaned up.
-  describe('uninitialized universe', () => {
-    test('should have an empty checkpoint db', async () => {
-      await expect(john.db.warpCheckpoints.table.toArray()).resolves.toEqual(
-        []
-      );
-    });
-  });
-
   describe('initialized market', () => {
-    beforeEach(async () => {
-      await john.augur.warpSync.initializeUniverse(seed.addresses.Universe);
-    });
-
     describe('with reported and finalized market', () => {
       beforeEach(async () => {
         await john.faucetCash(new BigNumber(1e18)); // faucet enough cash for the various fill orders
@@ -250,7 +237,6 @@ describe('Warp Sync markets', () => {
     let market: Market;
 
     beforeEach(async () => {
-      await john.initializeUniverse();
       await john.sync();
 
       market = await john.getWarpSyncMarket();

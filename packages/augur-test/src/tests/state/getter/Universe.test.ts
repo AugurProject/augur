@@ -298,7 +298,7 @@ describe('State API :: Universe :: ', () => {
       usersRep: bobRep.toFixed(), // aka zero
       totalRepSupply: totalRep.toFixed(),
       totalOpenInterest: '0',
-      numberOfMarkets: 0,
+      numberOfMarkets: 1, // includes warp sync market
       children: [],
     });
     expect(universeChildren.creationTimestamp).toBeGreaterThan(0);
@@ -323,7 +323,7 @@ describe('State API :: Universe :: ', () => {
       usersRep: johnRep.toFixed(),
       totalRepSupply: totalRep.toFixed(),
       totalOpenInterest: '0',
-      numberOfMarkets: 1,
+      numberOfMarkets: 2, // includes warp sync market
       children: [],
     });
     expect(universeChildren.creationTimestamp).toBeGreaterThan(0);
@@ -368,7 +368,7 @@ describe('State API :: Universe :: ', () => {
       usersRep: '0', // all all migrated out
       totalRepSupply: totalRep.toFixed(),
       totalOpenInterest: '0',
-      numberOfMarkets: 1,
+      numberOfMarkets: 2, // includes warp sync market
       parentUniverseId: NULL_ADDRESS,
       children: [
         {
