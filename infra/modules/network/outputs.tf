@@ -31,3 +31,7 @@ output "zerox_rpc_tg_arn" {
 output "alb_url" {
   value = module.alb.this_lb_dns_name
 }
+
+output "certificate_arn" {
+  value = data.aws_acm_certificate.default.arn
+}
