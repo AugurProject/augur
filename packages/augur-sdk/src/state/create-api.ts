@@ -39,6 +39,12 @@ export function buildSyncStrategies(client:Augur, db:Promise<DB>, provider: Ethe
     const warpController = new WarpController((await db), client, provider,
       uploadBlockNumber);
 
+    const marketCreatedCB = async (blockNumber, logs) => {
+      client.events.emit(SubscriptionEventName.MarketsUpdated, logs);
+    };
+
+    logFilterAggregator.listenForEvent('MarketCreated', marketCreatedCB);
+
     client.warpController = warpController;
 
     const warpSyncStrategy = new WarpSyncStrategy(warpController,
@@ -74,6 +80,8 @@ export function buildSyncStrategies(client:Augur, db:Promise<DB>, provider: Ethe
     client.events.emit(SubscriptionEventName.SDKReady, {
       eventName: SubscriptionEventName.SDKReady,
     });
+    logFilterAggregator.unlistenForEvent('MarketCreated', marketCreatedCB);
+
     logger.info('Syncing Complete - SDK Ready');
 
     blockAndLogStreamerSyncStrategy.listenForBlockRemoved(logFilterAggregator.onBlockRemoved);
