@@ -94,8 +94,10 @@ export class AugurLite {
     });
   }
 
-  async getMarketCreatedLogs() {
-    const { warpSyncHash } = await this.warpSync.getLastWarpSyncData(this.addresses.Universe);
+  async getMarketCreatedLogs(onlyOpenMarkets = false) {
+    const { warpSyncHash } = await this.warpSync.getLastWarpSyncData(
+      this.addresses.Universe
+    );
 
     // The Market has not been reported on.
     if (warpSyncHash === 'QmNLei78zWmzUdbeRB3CiUfAizWUrbeeZh5K1rhAQKCh51')
@@ -103,27 +105,33 @@ export class AugurLite {
 
     try {
       const { logs } = await this.getIPFSFile(warpSyncHash);
-      return logs.filter((log) => log.name === 'MarketCreated').map(({extraInfo, ...rest }) => ({
-        id: rest.market,
-        categories: [],
-        ...rest,
-        ...JSON.parse(extraInfo),
-        extraInfo: JSON.parse(extraInfo),
-        reportingState: MarketReportingState.Unknown,
-        disputeInfo: {
-          disputeRound: new BigNumber('0x0',
-            16
-          ).toFixed(),
-          disputeWindow: {
-            startTime: null,
-            endTime: rest.endTime,
+      const { timestamp } = await this.provider.getBlock('latest');
+      return logs
+        .filter((log) => log.name === 'MarketCreated')
+        .filter(
+          onlyOpenMarkets
+            ? (log) => Number(log.endTime) > timestamp
+            : () => true
+        )
+        .map(({ extraInfo, ...rest }) => ({
+          id: rest.market,
+          categories: [],
+          ...rest,
+          ...JSON.parse(extraInfo),
+          extraInfo: JSON.parse(extraInfo),
+          reportingState: MarketReportingState.Unknown,
+          disputeInfo: {
+            disputeRound: new BigNumber('0x0', 16).toFixed(),
+            disputeWindow: {
+              startTime: null,
+              endTime: rest.endTime,
+            },
+            stakes: [],
           },
+          disputePacingOn: false,
           stakes: [],
-        },
-        disputePacingOn: false,
-        stakes: []
-      }));
-    } catch(e) {
+        }));
+    } catch (e) {
       logger.error(e);
       return [];
     }

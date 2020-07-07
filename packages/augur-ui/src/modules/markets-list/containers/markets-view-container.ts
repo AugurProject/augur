@@ -32,6 +32,7 @@ import { Action } from 'redux';
 import { ThunkDispatch } from 'redux-thunk';
 import { marketListViewed } from 'services/analytics/helpers';
 import { augurSdkLite } from 'services/augursdklite';
+import { isGoogleBot } from 'utils/is-google-bot';
 import {
   setLoadMarketsPending,
   setMarketsListSearchInPlace,
@@ -149,7 +150,7 @@ const mapDispatchToProps = (
     // We don't want to fire call back.
     if(await augurSdkLite.get().doesDBAlreadyExist()) return;
 
-    const marketsInfo = await augurSdkLite.get().getMarketCreatedLogs();
+    const marketsInfo = await augurSdkLite.get().getMarketCreatedLogs(isGoogleBot());
     dispatch(handleMarketsUpdatedLog({ marketsInfo }));
     cb(marketsInfo);
   }
