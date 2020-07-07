@@ -14,8 +14,8 @@ trigger:
   batch: false
   branches:
     include:
-      - master
-      - demo
+      - dev
+      - staging
       - release/*
       - azure/*
       - refs/tags/*
@@ -499,12 +499,12 @@ jobs:
           containerRegistryType: Container Registry
           dockerRegistryEndpoint: dockerhub-augurproject
 
-  - job: demo_build
+  - job: staging_build
     condition: |
       and
       (
           succeeded(),
-          eq(variables['Build.SourceBranch'], 'refs/heads/demo')
+          eq(variables['Build.SourceBranch'], 'refs/heads/staging')
       )
     pool:
       vmImage: $(VM_IMAGE)
@@ -519,10 +519,9 @@ jobs:
         displayName: yarn build
       - bash: |
           set -euo pipefail
-          export ETHEREUM_NETWORK=demo
+          export ETHEREUM_NETWORK=staging
           ( cd packages/orbit-web && ./node_modules/.bin/webpack)
           ( cd packages/augur-ui && ./node_modules/.bin/webpack)
-          #yarn workspace @augurproject/ui build:kovan
         displayName: ui build
         env:
           NODE_OPTIONS: "--max_old_space_size=6144"
@@ -531,22 +530,22 @@ jobs:
           python3 -m venv venv && \
           source venv/bin/activate && \
           python3 -m pip install --no-cache-dir awscli
-          aws s3 sync packages/augur-ui/build/ s3://demo.augur.net/ --metadata-directive REPLACE --metadata '{"Cache-Control": "max-age=31536000,public"}'
-          aws s3 cp s3://demo.augur.net/index.html s3://demo.augur.net/index.html --metadata-directive REPLACE --metadata '{"Cache-Control": "max-age=60,public"}'
-          aws s3 cp s3://demo.augur.net/zerox.wasm s3://demo.augur.net/zerox.wasm --metadata-directive REPLACE --metadata '{"Cache-Control": "max-age=31536000,public"}' --content-type "application/wasm"
-          aws cloudfront create-invalidation --distribution-id E2U7CL01QG2FRF --paths "/index.html"
+          aws s3 sync packages/augur-ui/build/ s3://staging.augur.net/ --metadata-directive REPLACE --metadata '{"Cache-Control": "max-age=31536000,public"}'
+          aws s3 cp s3://staging.augur.net/index.html s3://demo.augur.net/index.html --metadata-directive REPLACE --metadata '{"Cache-Control": "max-age=60,public"}'
+          aws s3 cp s3://staging.augur.net/zerox.wasm s3://demo.augur.net/zerox.wasm --metadata-directive REPLACE --metadata '{"Cache-Control": "max-age=31536000,public"}' --content-type "application/wasm"
+          aws cloudfront create-invalidation --distribution-id E1YMEWOQQXCVVM --paths "/index.html"
         displayName: 'push build to S3'
         env:
           AWS_ACCESS_KEY_ID: $(AWS_KEY_ID)
           AWS_SECRET_ACCESS_KEY: $(AWS_SECRET_KEY)
 
 
-  - job: master_build
+  - job: dev_build
     condition: |
       and
       (
           succeeded(),
-          eq(variables['Build.SourceBranch'], 'refs/heads/master')
+          eq(variables['Build.SourceBranch'], 'refs/heads/dev')
       )
     pool:
       vmImage: $(VM_IMAGE)
@@ -561,10 +560,9 @@ jobs:
         displayName: yarn build
       - bash: |
           set -euo pipefail
-          export ETHEREUM_NETWORK=kovan
+          export ETHEREUM_NETWORK=staging
           ( cd packages/orbit-web && ./node_modules/.bin/webpack)
           ( cd packages/augur-ui && ./node_modules/.bin/webpack)
-          #yarn workspace @augurproject/ui build:kovan
         displayName: ui build
         env:
           NODE_OPTIONS: "--max_old_space_size=6144"
@@ -573,10 +571,10 @@ jobs:
           python3 -m venv venv && \
           source venv/bin/activate && \
           python3 -m pip install --no-cache-dir awscli
-          aws s3 sync packages/augur-ui/build/ s3://v2.augur.net/ --metadata-directive REPLACE --metadata '{"Cache-Control": "max-age=31536000,public"}'
-          aws s3 cp s3://v2.augur.net/index.html s3://v2.augur.net/index.html --metadata-directive REPLACE --metadata '{"Cache-Control": "max-age=60,public"}'
-          aws s3 cp s3://v2.augur.net/zerox.wasm s3://v2.augur.net/zerox.wasm --metadata-directive REPLACE --metadata '{"Cache-Control": "max-age=31536000,public"}' --content-type "application/wasm"
-          aws cloudfront create-invalidation --distribution-id E3RQRY8KA1PEUL --paths "/index.html"
+          aws s3 sync packages/augur-ui/build/ s3://dev.augur.net/ --metadata-directive REPLACE --metadata '{"Cache-Control": "max-age=31536000,public"}'
+          aws s3 cp s3://dev.augur.net/index.html s3://dev.augur.net/index.html --metadata-directive REPLACE --metadata '{"Cache-Control": "max-age=60,public"}'
+          aws s3 cp s3://dev.augur.net/zerox.wasm s3://dev.augur.net/zerox.wasm --metadata-directive REPLACE --metadata '{"Cache-Control": "max-age=31536000,public"}' --content-type "application/wasm"
+          aws cloudfront create-invalidation --distribution-id E2K6239JF3WYG6 --paths "/index.html"
         displayName: 'push build to S3'
         env:
           AWS_ACCESS_KEY_ID: $(AWS_KEY_ID)
@@ -605,7 +603,6 @@ jobs:
           export ETHEREUM_NETWORK=kovan
           ( cd packages/orbit-web && ./node_modules/.bin/webpack)
           ( cd packages/augur-ui && ./node_modules/.bin/webpack)
-          #yarn workspace @augurproject/ui build
           ( cd packages/augur-ui/build && zip -r ../../../augur.zip *)
         displayName: ui build
         env:
