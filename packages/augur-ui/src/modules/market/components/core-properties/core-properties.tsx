@@ -122,7 +122,7 @@ const CoreProperties: React.FC<CorePropertiesProps> = ({
                             .full
                         }
                       </b>
-                      )
+                      ): which occurs when shares are closed
                     </p>
                   </>
                 }
