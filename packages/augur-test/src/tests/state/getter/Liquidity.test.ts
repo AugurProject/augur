@@ -151,7 +151,7 @@ describe('State API :: Liquidity', () => {
         liquidityRankingParams
       );
       await expect(liquidityRanking.marketRank).toEqual(0);
-      await expect(liquidityRanking.totalMarkets).toEqual(2);
+      await expect(liquidityRanking.totalMarkets).toEqual(3); // includes warp sync market
       await expect(liquidityRanking.hasLiquidity).toEqual(false);
 
       // Place lesser liquidity. Ranks second place
@@ -176,7 +176,7 @@ describe('State API :: Liquidity', () => {
         liquidityRankingParams
       );
       await expect(liquidityRanking.marketRank).toEqual(2);
-      await expect(liquidityRanking.totalMarkets).toEqual(2);
+      await expect(liquidityRanking.totalMarkets).toEqual(3); // includes warp sync market
       await expect(liquidityRanking.hasLiquidity).toEqual(true);
 
       // Place higher liquidity. Ranks first place
@@ -201,7 +201,7 @@ describe('State API :: Liquidity', () => {
         liquidityRankingParams
       );
       await expect(liquidityRanking.marketRank).toEqual(1);
-      await expect(liquidityRanking.totalMarkets).toEqual(2);
+      await expect(liquidityRanking.totalMarkets).toEqual(3); // includes warp sync market
       await expect(liquidityRanking.hasLiquidity).toEqual(true);
     });
   });

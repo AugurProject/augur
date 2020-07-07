@@ -246,7 +246,7 @@ Deploying to: ${env}
 
             console.log('Add REP-Cash exchange liquidity');
             const repAddress = await this.universe!.getReputationToken_();
-            await this.setupTokenExchange(new TestNetReputationToken(this.dependencies, repAddress), cash);
+            await this.setupTokenExchange(cash, new TestNetReputationToken(this.dependencies, repAddress));
 
             console.log('Add USDC-Cash exchange liquidity');
             await this.setupTokenExchange(new USDC(this.dependencies, this.getContractAddress('USDC')), cash);
