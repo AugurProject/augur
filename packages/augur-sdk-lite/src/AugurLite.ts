@@ -43,6 +43,28 @@ export class AugurLite {
     this.addresses = addresses;
   }
 
+  async doesDBAlreadyExist() {
+    const dbName = `augur-${this.networkId}`;
+    const openDBRequest = indexedDB.open(dbName);
+    return new Promise<boolean>((resolve, reject) => {
+      // Give up if we have an error.
+      openDBRequest.onerror = () => {
+        reject(false);
+      };
+
+      openDBRequest.onsuccess = () => {
+        const tableExists = openDBRequest.result.objectStoreNames.contains(
+          'WarpSyncCheckpoints'
+        );
+        openDBRequest.result.close();
+
+        // Having an empty db lying around confuses Dexie.
+        if (!tableExists) indexedDB.deleteDatabase(dbName);
+        resolve(tableExists);
+      };
+    });
+  }
+
   async hotloadMarket(marketId: string): Promise<HotLoadMarketInfo> {
     return this.hotLoading.getMarketData({
       market: marketId,
@@ -76,7 +98,8 @@ export class AugurLite {
     const { warpSyncHash } = await this.warpSync.getLastWarpSyncData(this.addresses.Universe);
 
     // The Market has not been reported on.
-    if(warpSyncHash === 'QmNLei78zWmzUdbeRB3CiUfAizWUrbeeZh5K1rhAQKCh51') return [];
+    if (warpSyncHash === 'QmNLei78zWmzUdbeRB3CiUfAizWUrbeeZh5K1rhAQKCh51')
+      return [];
 
     try {
       const { logs } = await this.getIPFSFile(warpSyncHash);

@@ -146,6 +146,9 @@ const mapDispatchToProps = (
       )
     ),
   hotLoadMarketList: async (cb) => {
+    // We don't want to fire call back.
+    if(await augurSdkLite.get().doesDBAlreadyExist()) return;
+
     const marketsInfo = await augurSdkLite.get().getMarketCreatedLogs();
     dispatch(handleMarketsUpdatedLog({ marketsInfo }));
     cb(marketsInfo);
