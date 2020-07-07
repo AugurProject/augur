@@ -82,7 +82,7 @@ describe('State API :: get-platform-activity-stats :: ', () => {
       marketsCreated: 4, // includes initial warp sync market
       numberOfTrades: 9,
     });
-    expect(stats.amountStaked).toEqual('900619485601043701171200');
+    expect(stats.amountStaked).toEqual('900612735601043701171200');
     expect(stats.openInterest).toEqual('2040000000000000');
     expect(stats.volume).toEqual('0.006093');
   });
