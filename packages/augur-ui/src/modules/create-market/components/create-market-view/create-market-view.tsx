@@ -36,6 +36,8 @@ interface CreateMarketViewProps extends RouteComponentProps<{}> {
   meta: LoginAccountMeta;
   availableEth?: number;
   availableRep?: number;
+  disclaimerSeen: boolean;
+  disclaimerModal: Function;
 }
 
 interface CreateMarketViewState {
@@ -67,6 +69,8 @@ export default class CreateMarketView extends React.Component<
 
   componentDidMount() {
     window.scrollTo(0, 0);
+    const { disclaimerSeen, disclaimerModal } = this.props;
+    if (!disclaimerSeen) disclaimerModal();
   }
 
   render() {

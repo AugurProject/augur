@@ -51,6 +51,7 @@ import {
   ONE,
   MIGRATE_FROM_LEG_REP_TOKEN,
   DOINITIALREPORTWARPSYNC,
+  SCALAR,
 } from 'modules/common/constants';
 import { AppState } from 'appStore';
 import { Action } from 'redux';
@@ -468,6 +469,7 @@ export default function setAlertText(alert: any, callback: Function) {
               alert.params,
               alert.status,
               marketInfo,
+              marketInfo.marketType !== SCALAR
             );
 
             alert.details = `${orderType}  ${

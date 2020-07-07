@@ -149,7 +149,7 @@ const ModalDisclaimer = ({ closeModal, onApprove }: ModalDisclaimerProps) => {
               isDisabled: !didScroll || !didCheck,
               action: () => {
                 closeModal();
-                onApprove();
+                if (onApprove) onApprove();
               },
             },
           ]}

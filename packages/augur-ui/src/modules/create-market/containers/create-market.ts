@@ -11,6 +11,9 @@ import { selectCurrentTimestamp } from "appStore/select-state";
 import { estimateSubmitNewMarket } from "modules/markets/actions/estimate-submit-new-market";
 import getValue from "utils/get-value";
 import { getGasPrice } from "modules/auth/selectors/get-gas-price";
+import getValueFromlocalStorage from "utils/get-local-storage-value";
+import { DISCLAIMER_SEEN, MODAL_DISCLAIMER } from "modules/common/constants";
+import { updateModal } from "modules/modal/actions/update-modal";
 
 const mapStateToProps = state => ({
   categoryStats: state.categoryStats,
@@ -21,7 +24,8 @@ const mapStateToProps = state => ({
   newMarket: state.newMarket,
   isMobileSmall: state.appStatus.isMobileSmall,
   currentTimestamp: selectCurrentTimestamp(state),
-  gasPrice: getGasPrice(state)
+  gasPrice: getGasPrice(state),
+  disclaimerSeen: getValueFromlocalStorage(DISCLAIMER_SEEN),
 });
 
 const mapDispatchToProps = dispatch => ({
@@ -32,6 +36,12 @@ const mapDispatchToProps = dispatch => ({
     dispatch(submitNewMarket(data, cb)),
   estimateSubmitNewMarket: (data, callback) =>
     dispatch(estimateSubmitNewMarket(data, callback)),
+  disclaimerModal: () =>
+    dispatch(
+      updateModal({
+        type: MODAL_DISCLAIMER,
+      })
+    ),
 });
 
 const CreateMarket = withRouter(

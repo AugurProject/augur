@@ -229,7 +229,6 @@ export default class MarketsView extends Component<
     updateFilterSortOptions({
       [MARKET_OFFSET]: offset,
     });
-    this.updateFilteredMarkets();
   }
 
   updateFilteredMarkets = () => {
@@ -247,7 +246,7 @@ export default class MarketsView extends Component<
       marketOffset,
     } = this.props;
 
-    window.scrollTo(0, 1);
+    this.componentWrapper.parentNode.scrollTop = 0;
 
     this.props.setLoadMarketsPending(true);
     this.props.setMarketsListSearchInPlace(Boolean(search));

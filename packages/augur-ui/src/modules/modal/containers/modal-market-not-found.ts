@@ -22,7 +22,7 @@ const mergeProps = (sP, dP, oP) => {
     description: [
       "Please check the market address and try again",
     ],
-    closeAction: null,
+    closeAction: () => dP.closeModal(),
     buttons: [
       {
         text: "Go to Markets",
