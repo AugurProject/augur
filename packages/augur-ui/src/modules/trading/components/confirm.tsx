@@ -69,7 +69,8 @@ interface ConfirmProps {
   selectedOutcome: OutcomeFormatted;
   tradingTutorial?: boolean;
   initialLiquidity?: boolean;
-  postOnlyOrder
+  postOnlyOrder?: boolean;
+  disableTrading?: boolean;
 }
 
 export const Confirm = ({
@@ -79,6 +80,7 @@ export const Confirm = ({
   tradingTutorial,
   initialLiquidity,
   postOnlyOrder,
+  disableTrading = false,
 }: ConfirmProps) => {
   const {
     env: { ui: { reportingOnly: disableTrading } },
