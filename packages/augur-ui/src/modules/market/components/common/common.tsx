@@ -1,7 +1,8 @@
-import { MarketData } from 'modules/types';
+import { MarketData, QueryEndpoints } from 'modules/types';
 import { useHistory } from 'react-router';
 import * as React from 'react';
 import * as classNames from 'classnames';
+import { CATEGORY_PARAM_NAME } from 'modules/common/constants';
 import { LeftChevron, CopyAlternateIcon } from 'modules/common/icons';
 import {
   MarketTypeLabel,
@@ -11,6 +12,7 @@ import {
 } from 'modules/common/labels';
 import { TemplateShield } from 'modules/common/labels';
 import SocialMediaButtons from 'modules/market/components/common/social-media-buttons';
+import makeQuery from 'modules/routes/helpers/make-query';
 import { AFFILIATE_NAME } from 'modules/routes/constants/param-names';
 import { marketLinkCopied, MARKET_PAGE } from 'services/analytics/helpers';
 import { FavoritesButton } from 'modules/common/buttons';
@@ -20,11 +22,8 @@ import { useAppStatusStore } from 'modules/app/store/app-status';
 
 interface HeadingBarProps {
   market: MarketData;
-  history: History;
   expandedDetails?: boolean;
-  gotoFilter: Function;
   showCopied?: boolean;
-  userAccount?: string;
   setShowCopied?: Function;
   showReportingLabel?: boolean;
 }
@@ -32,9 +31,7 @@ interface HeadingBarProps {
 export const HeadingBar = ({
   market,
   expandedDetails,
-  gotoFilter,
   showCopied,
-  userAccount,
   setShowCopied,
   showReportingLabel,
 }: HeadingBarProps) => {
@@ -45,9 +42,12 @@ export const HeadingBar = ({
     categories,
     reportingState,
     marketStatus,
-    disputeInfo
+    disputeInfo,
   } = market;
-  const { isLogged } = useAppStatusStore();
+  const {
+    isLogged,
+    loginAccount: { address: userAccount },
+  } = useAppStatusStore();
   const history = useHistory();
   const isScalar = marketType === SCALAR;
 
@@ -55,7 +55,14 @@ export const HeadingBar = ({
     arr.filter(Boolean).map(label => ({
       label,
       onClick: () => {
-        gotoFilter('category', label);
+        const query: QueryEndpoints = {
+          [CATEGORY_PARAM_NAME]: label,
+        };
+
+        history.push({
+          pathname: 'markets',
+          search: makeQuery(query),
+        });
       },
     }));
 
@@ -81,10 +88,7 @@ export const HeadingBar = ({
       <RedFlag market={market} />
       {market.isTemplate && <TemplateShield market={market} />}
       <WordTrail items={[...categoriesWithClick]} />
-      <SocialMediaButtons
-        marketAddress={id}
-        marketDescription={description}
-      />
+      <SocialMediaButtons marketAddress={id} marketDescription={description} />
       <div
         id="copy_marketURL"
         title="Copy Market link"
@@ -99,11 +103,7 @@ export const HeadingBar = ({
         {showCopied && <div>Copied</div>}
       </div>
       {isLogged && (
-        <FavoritesButton
-          marketId={id}
-          hideText
-          disabled={!isLogged}
-        />
+        <FavoritesButton marketId={id} hideText disabled={!isLogged} />
       )}
     </div>
   );
@@ -115,11 +115,7 @@ interface InfoTicketProps {
   icon: JSX.Element;
 }
 
-export const InfoTicket = ({
-  value,
-  subheader,
-  icon
-}: InfoTicketProps) => {
+export const InfoTicket = ({ value, subheader, icon }: InfoTicketProps) => {
   return (
     <div className={Styles.InfoTicket}>
       {icon}
@@ -127,4 +123,4 @@ export const InfoTicket = ({
       <span>{subheader}</span>
     </div>
   );
-}
+};

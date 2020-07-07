@@ -3,7 +3,6 @@ import { useLocation, useHistory } from 'react-router';
 import MarketsHeader from 'modules/markets-list/components/markets-header';
 import {
   MarketsList,
-  determineSportsbookType,
   groupSportsMarkets,
 } from 'modules/markets-list/components/markets-list';
 import Styles from 'modules/markets-list/components/markets-view.styles.less';
@@ -18,7 +17,6 @@ import {
   THEMES,
   CATEGORY_PARAM_NAME,
   MARKET_CARD_FORMATS,
-  SPORTS_GROUP_TYPES,
 } from 'modules/common/constants';
 import { Getters } from '@augurproject/sdk';
 import classNames from 'classnames';
@@ -30,7 +28,6 @@ import { useAppStatusStore } from 'modules/app/store/app-status';
 import { FilterButton } from 'modules/common/buttons';
 import parseQuery from 'modules/routes/helpers/parse-query';
 import { useMarketsStore } from 'modules/markets/store/markets';
-import { loadMarketOrderBook } from 'modules/orders/helpers/load-market-orderbook';
 import { getMarkets } from 'modules/markets/selectors/markets-all';
 import { getSelectedTagsAndCategoriesFromLocation } from 'modules/markets/helpers/get-selected-tags-and-categories-from-location';
 import { buildSearchString } from 'modules/markets/selectors/build-search-string';
@@ -269,9 +266,7 @@ const MarketsView = () => {
               ? sportsShowPagination
               : showPagination,
           });
-          filterSortedMarkets.forEach((marketId) =>
-            updateOrderBook(marketId, null, loadMarketOrderBook(marketId))
-          );
+          // TODO: put liquidity getter here if we are in sportsbook.
           updateMarketsList({ isSearching: false, meta: result.meta });
         }
       }

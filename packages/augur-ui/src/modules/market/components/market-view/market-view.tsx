@@ -251,7 +251,7 @@ const MarketView = ({
       !preview &&
       zeroXstatus === ZEROX_STATUSES.SYNCED
     ) {
-      updateMarketsData(null, loadMarketsInfo(marketId));
+      updateMarketsData(null, loadMarketsInfo([marketId]));
       updateOrderBook(marketId, null, loadMarketOrderBook(marketId));
       bulkMarketTradingHistory(null, loadMarketTradingHistory(marketId));
     }

@@ -211,6 +211,7 @@ export function PendingOrdersReducer(state, action) {
 
 export const usePendingOrders = (defaultState = DEFAULT_PENDING_ORDERS) => {
   const [state, dispatch] = useReducer(PendingOrdersReducer, defaultState);
+  window.pendingOrders = state;
   return {
     ...state,
     actions: {

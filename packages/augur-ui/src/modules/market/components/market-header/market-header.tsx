@@ -11,10 +11,7 @@ import { MarketHeaderBar } from 'modules/market/components/market-header/market-
 import { BigNumber } from 'bignumber.js';
 import Styles from 'modules/market/components/market-header/market-header.styles.less';
 import CoreProperties from 'modules/market/components/core-properties/core-properties';
-import makeQuery from 'modules/routes/helpers/make-query';
 import {
-  CATEGORY_PARAM_NAME,
-  TAGS_PARAM_NAME,
   SCALAR,
   PROBABLE_INVALID_MARKET,
   HEADER_TYPE,
@@ -23,7 +20,7 @@ import {
 } from 'modules/common/constants';
 import { MarketHeaderReporting } from 'modules/market/components/market-header/market-header-reporting';
 import ToggleHeightStyles from 'utils/toggle-height.styles.less';
-import { MarketData, QueryEndpoints, TextObject } from 'modules/types';
+import { MarketData, TextObject } from 'modules/types';
 import { TutorialPopUp } from 'modules/market/components/common/tutorial-pop-up';
 import MarketTitle from 'modules/market/components/common/market-title';
 import PreviewMarketTitle from 'modules/market/components/common/PreviewMarketTitle';
@@ -88,7 +85,7 @@ export const MarketHeader = ({
     designatedReporter,
     id,
     consensusFormatted: consensus,
-    mostLikelyInvalid
+    mostLikelyInvalid,
   } = marketSelected;
 
   if (
@@ -107,7 +104,7 @@ export const MarketHeader = ({
   const minPrice = minPriceBigNumber || ZERO;
 
   const [showProperties, setShowProperties] = useState(
-    reportingState === REPORTING_STATE.PRE_REPORTING ? false : true,
+    reportingState === REPORTING_STATE.PRE_REPORTING ? false : true
   );
   const [headerCollapsed, setHeaderCollapsed] = useState(false);
   const [showCopied, setShowCopied] = useState(false);
@@ -116,64 +113,34 @@ export const MarketHeader = ({
   const [detailsHeight, setDetailsHeight] = useState(0);
 
   useEffect(() => {
-    if (showCopied)
-      setTimeout(() => setShowCopied(false), 4000);
+    if (showCopied) setTimeout(() => setShowCopied(false), 4000);
   }, [showCopied]);
 
   useEffect(() => {
-    updateDetailsHeight();
+    if (detailsContainer) {
+      setDetailsHeight(detailsContainer.current.scrollHeight);
+    }
 
     const clickHandlerFnc = e => {
-      const ClickedOnExpandedContent = e && e
-        .composedPath()
-        .find(
-          ({ className }) =>
-            className === 'string' &&
-            className.includes('market-header-styles_ExpandedContent')
-        );
-      if (!ClickedOnExpandedContent) toggleReadMore(true);
+      const ClickedOnExpandedContent =
+        e &&
+        e
+          .composedPath()
+          .find(
+            ({ className }) =>
+              className === 'string' &&
+              className.includes('market-header-styles_ExpandedContent')
+          );
+      if (!ClickedOnExpandedContent && detailsContainer.current)
+        setShowReadMore(false);
     };
-    window.addEventListener('click', clickHandlerFnc);
     setClickHandler(clickHandlerFnc);
+    window.addEventListener('click', clickHandlerFnc);
 
     return () => {
       window.removeEventListener('click', clickHandler);
     };
   }, []);
-
-  function updateDetailsHeight() {
-    if (detailsContainer) {
-      setDetailsHeight(detailsContainer.current.scrollHeight);
-    }
-  }
-
-  function toggleReadMore(closeOnly: boolean = false) {
-    if (closeOnly) {
-      setShowReadMore(false);
-    } else {
-      setShowReadMore(!showReadMore);
-    }
-  }
-
-  function toggleShowProperties() {
-    setShowProperties(!showProperties);
-  }
-
-  function gotoFilter(type, value) {
-    const query: QueryEndpoints =
-      type === 'category'
-        ? {
-            [CATEGORY_PARAM_NAME]: value,
-          }
-        : {
-            [TAGS_PARAM_NAME]: value,
-          };
-
-    history.push({
-      pathname: 'markets',
-      search: makeQuery(query),
-    });
-  }
 
   const detailsTooLong =
     marketSelected.details && detailsHeight > OVERFLOW_DETAILS_LENGTH;
@@ -212,9 +179,6 @@ export const MarketHeader = ({
             <HeadingBar
               market={marketSelected}
               expandedDetails={expandedDetails}
-              history={history}
-              gotoFilter={gotoFilter}
-              userAccount={userAccount}
               showCopied={showCopied}
               setShowCopied={() => setShowCopied(true)}
             />
@@ -228,11 +192,7 @@ export const MarketHeader = ({
               {preview ? (
                 <PreviewMarketTitle market={marketSelected} />
               ) : (
-                <MarketTitle
-                  id={id}
-                  noLink
-                  headerType={HEADER_TYPE.H1}
-                />
+                <MarketTitle id={id} noLink headerType={HEADER_TYPE.H1} />
               )}
               {mostLikelyInvalid ? (
                 <div className={Styles.ResolvingInvalid}>
@@ -258,7 +218,7 @@ export const MarketHeader = ({
                         })}
                         onClick={e => {
                           e.stopPropagation();
-                          toggleReadMore();
+                          setShowReadMore(!showReadMore);
                         }}
                       >
                         {!showReadMore ? ChevronDown : ChevronUp}
@@ -303,7 +263,7 @@ export const MarketHeader = ({
                 <button
                   onClick={e => {
                     e.stopPropagation();
-                    toggleShowProperties();
+                    setShowProperties(!showProperties);
                   }}
                 >
                   {!showProperties ? ChevronDown : ChevronUp}
@@ -335,11 +295,7 @@ export const MarketHeader = ({
             {LeftChevron} <span>Back</span>
           </button>
         )}
-        <button
-          onClick={() =>
-            setHeaderCollapsed(!headerCollapsed)
-          }
-        >
+        <button onClick={() => setHeaderCollapsed(!headerCollapsed)}>
           {headerCollapsed && (
             <>
               <h1>{description}</h1>
