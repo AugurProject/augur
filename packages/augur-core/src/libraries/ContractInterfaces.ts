@@ -123,7 +123,7 @@ export class UniswapV2Factory extends c.UniswapV2Factory<BigNumber> {
 }
 export class UniswapV2Pair extends c.UniswapV2Pair<BigNumber> {
 }
-export class UniswapV2Router01 extends c.UniswapV2Router01<BigNumber> {
+export class UniswapV2Router02 extends c.UniswapV2Router02<BigNumber> {
 }
 export class AuditFunds extends c.AuditFunds<BigNumber> {
 }
