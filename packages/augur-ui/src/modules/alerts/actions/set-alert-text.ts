@@ -5,7 +5,12 @@ import { isEmpty } from 'utils/is-empty';
 import { selectMarket } from 'modules/markets/selectors/market';
 import { loadMarketsInfoIfNotLoaded } from 'modules/markets/actions/load-markets-info';
 import { getOutcomeNameWithOutcome } from 'utils/get-outcome';
-import { formatAttoDai, formatDai, formatRep, formatShares, } from 'utils/format-number';
+import {
+  formatAttoDai,
+  formatDai,
+  formatRep,
+  formatShares,
+} from 'utils/format-number';
 import {
   calculatePayoutNumeratorsValue,
   convertAttoValueToDisplayValue,
@@ -57,7 +62,12 @@ import getPrecision from 'utils/get-number-precision';
 function toCapitalizeCase(label) {
   return label.charAt(0).toUpperCase() + label.slice(1);
 }
-export function getInfo(params: any, status: string, marketInfo: MarketData, isOrder: boolean = true) {
+export function getInfo(
+  params: any,
+  status: string,
+  marketInfo: MarketData,
+  isOrder: boolean = true
+) {
   const outcome = new BigNumber(params.outcome || params._outcome).toString();
   const outcomeDescription = getOutcomeNameWithOutcome(marketInfo, outcome);
   let orderType =
@@ -94,7 +104,9 @@ export function getInfo(params: any, status: string, marketInfo: MarketData, isO
     tickSize
   ).toString();
 
-  const priceFormatted = formatDai(price, {decimals: getPrecision(String(tickSize), 2)})
+  const priceFormatted = formatDai(price, {
+    decimals: getPrecision(String(tickSize), 2),
+  });
 
   return {
     priceFormatted,
@@ -139,11 +151,14 @@ export default function setAlertText(alert: any, callback: Function) {
             const quantity = alert.params.unmatchedShares
               ? alert.params.unmatchedShares.value
               : convertOnChainAmountToDisplayAmount(
-                alert.params.amount,
-                createBigNumber(marketInfo.tickSize)
-              );
+                  alert.params.amount,
+                  createBigNumber(marketInfo.tickSize)
+                );
 
-            alert.title = alert.status === TXEventName.Success ? 'Order Cancelled' : 'Cancelling Order';
+            alert.title =
+              alert.status === TXEventName.Success
+                ? 'Order Cancelled'
+                : 'Cancelling Order';
             alert.description = marketInfo.description;
             alert.details = `${orderType} ${
               formatShares(quantity).formatted
@@ -165,7 +180,7 @@ export default function setAlertText(alert: any, callback: Function) {
             alert.details = `$${
               formatAttoDai(amount, { zeroStyled: false }).formatted
             } claimed`;
-            alert.id = alert.params.transactionHash
+            alert.id = alert.params.transactionHash;
           })
         );
         break;
@@ -431,7 +446,9 @@ export default function setAlertText(alert: any, callback: Function) {
                 marketInfo.numTicks,
                 marketInfo.marketType,
                 alert.params.payoutNumerators ||
-                  convertPayoutNumeratorsToStrings(alert.params._payoutNumerators)
+                  convertPayoutNumeratorsToStrings(
+                    alert.params._payoutNumerators
+                  )
               );
               const outcomeDescription = payoutNumeratorResultObject.malformed
                 ? MALFORMED_OUTCOME
@@ -457,11 +474,13 @@ export default function setAlertText(alert: any, callback: Function) {
             const marketInfo = selectMarket(marketId);
             if (marketInfo === null) return;
             alert.description = marketInfo.description;
-            const { orderType, amount, price, outcomeDescription, priceFormatted } = getInfo(
-              alert.params,
-              alert.status,
-              marketInfo,
-            );
+            const {
+              orderType,
+              amount,
+              price,
+              outcomeDescription,
+              priceFormatted,
+            } = getInfo(alert.params, alert.status, marketInfo);
 
             alert.details = `${orderType}  ${
               formatShares(amount).formatted

@@ -14,7 +14,10 @@ import {
   SUCCESS,
   ZERO,
 } from 'modules/common/constants';
-import { getEthForDaiRate, getNetworkId, } from 'modules/contracts/actions/contractCalls';
+import {
+  getEthForDaiRate,
+  getNetworkId,
+} from 'modules/contracts/actions/contractCalls';
 import { Action } from 'redux';
 import { ThunkDispatch } from 'redux-thunk';
 import { BigNumber, createBigNumber } from 'utils/create-big-number';

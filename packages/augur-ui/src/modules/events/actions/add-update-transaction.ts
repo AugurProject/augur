@@ -36,7 +36,11 @@ import {
 import { CreateMarketData } from 'modules/types';
 import { ThunkDispatch } from 'redux-thunk';
 import { Action } from 'redux';
-import { Events, parseZeroXMakerAssetData, TXEventName } from '@augurproject/sdk-lite';
+import {
+  Events,
+  parseZeroXMakerAssetData,
+  TXEventName,
+} from '@augurproject/sdk-lite';
 import {
   addCanceledOrder,
   addPendingData,
@@ -105,9 +109,11 @@ export const addUpdateTransaction = (txStatus: Events.TXStatus) => async (
     }
 
     if (eventName === TXEventName.RelayerDown) {
-      const hasEth = (await loginAccount.meta.signer.provider.getBalance(
-        loginAccount.meta.signer._address
-      )).gt(0);
+      const hasEth = (
+        await loginAccount.meta.signer.provider.getBalance(
+          loginAccount.meta.signer._address
+        )
+      ).gt(0);
 
       dispatch(
         updateModal({
@@ -178,14 +184,14 @@ export const addUpdateTransaction = (txStatus: Events.TXStatus) => async (
     switch (methodCall) {
       case REDEEMSTAKE: {
         const params = transaction.params;
-        params._reportingParticipants.map(participant =>
+        params._reportingParticipants.map((participant) =>
           dispatch(
             addPendingData(participant, REDEEMSTAKE, eventName, hash, {
               ...transaction,
             })
           )
         );
-        params._disputeWindows.map(window =>
+        params._disputeWindows.map((window) =>
           dispatch(
             addPendingData(window, REDEEMSTAKE, eventName, hash, {
               ...transaction,
@@ -281,14 +287,14 @@ export const addUpdateTransaction = (txStatus: Events.TXStatus) => async (
       }
       case BATCHCANCELORDERS: {
         const orders = (transaction.params && transaction.params.orders) || [];
-        orders.map(order =>
+        orders.map((order) =>
           dispatch(addCanceledOrder(order.orderId, eventName, hash))
         );
         break;
       }
       case CANCELORDERS: {
         const orders = (transaction.params && transaction.params._orders) || [];
-        orders.map(order => {
+        orders.map((order) => {
           dispatch(addCanceledOrder(order.orderId, eventName, hash));
           dispatch(
             addPendingData(

@@ -1,15 +1,17 @@
-import store from 'appStore';
 import { TXEventName } from '@augurproject/sdk-lite';
 import { addAlert } from 'modules/alerts/actions/alerts';
 import { BUY, CANCELORDERS } from 'modules/common/constants';
-import { cancelZeroXOpenBatchOrders, cancelZeroXOpenOrder, } from 'modules/contracts/actions/contractCalls';
+import {
+  cancelZeroXOpenBatchOrders,
+  cancelZeroXOpenOrder,
+} from 'modules/contracts/actions/contractCalls';
 import { addCanceledOrder } from 'modules/pending-queue/actions/pending-queue-management';
 import { Action } from 'redux';
 import { ThunkDispatch } from 'redux-thunk';
 
 const BATCH_CANCEL_MAX = 4;
 
-export const cancelAllOpenOrders = orders => async (
+export const cancelAllOpenOrders = (orders) => async (
   dispatch: ThunkDispatch<void, any, Action>
 ) => {
   let orderHashes = orders.map((order) => order.id);
@@ -45,7 +47,7 @@ export const cancelAllOpenOrders = orders => async (
   }
 };
 
-export const cancelOrder = order => async (
+export const cancelOrder = (order) => async (
   dispatch: ThunkDispatch<void, any, Action>
 ) => {
   try {
