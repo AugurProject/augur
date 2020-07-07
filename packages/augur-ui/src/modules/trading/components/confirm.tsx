@@ -443,7 +443,7 @@ class Confirm extends Component<ConfirmProps, ConfirmState> {
                 Shares @ ${limitPrice}`}
             </div>
             <LinearPropertyLabel
-              label="Market Trading Fee"
+              label="Market OI Fee"
               value={orderShareTradingFee}
               showDenomination={true}
             />
