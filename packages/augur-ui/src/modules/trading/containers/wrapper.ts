@@ -73,11 +73,10 @@ const mapDispatchToProps = (dispatch, ownProps) => ({
     dispatch(updateTradeCost({ marketId, outcomeId, ...order, callback })),
   updateTradeShares: (marketId, outcomeId, order, callback) =>
     dispatch(updateTradeShares({ marketId, outcomeId, ...order, callback })),
-  disclaimerModal: modal =>
+  disclaimerModal: () =>
     dispatch(
       updateModal({
         type: MODAL_DISCLAIMER,
-        ...modal,
       })
     ),
   addFundsModal: () => dispatch(updateModal({ type: MODAL_ADD_FUNDS })),

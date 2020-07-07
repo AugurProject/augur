@@ -153,9 +153,7 @@ class Wrapper extends Component<WrapperProps, WrapperState> {
     );
 
     if (!disclaimerSeen && !tradingTutorial && !initialLiquidity) {
-      disclaimerModal({
-        onApprove: () => { }
-      });
+      disclaimerModal();
     }
   }
 
