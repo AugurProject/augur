@@ -68,7 +68,7 @@ export default class ModalNetworkDisconnected extends Component<ModalNetworkDisc
     }
     // assemble the text based on disconnections
     const titleText = `Reconnecting${nodeTitleText}`;
-    const descriptionText = 'Please wait while we try to reconnect you, or update your node addresses ';
+    const descriptionText = 'Please wait while being reconnected, or update your node addresses ';
 
     return (
       <section className={commonStyles.ModalContainer}>
