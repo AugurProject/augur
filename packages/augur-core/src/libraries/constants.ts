@@ -92,6 +92,9 @@ export const EXTERNAL_CONTRACTS = [
     'DaiJoin',
     'DaiPot',
     'DaiVat',
+    // USDx
+    'USDC',
+    'USDT',
     // Uniswap
     'UniswapV2Factory',
     'UniswapV2Pair',
@@ -113,6 +116,9 @@ export const REGISTERED_EXTERNAL_CONTRACTS = [
     'DaiJoin',
     'DaiPot',
     'DaiVat',
+    // USDx
+    'USDC',
+    'USDT',
     // Uniswap
     "UniswapV2Factory",
     // GSN
