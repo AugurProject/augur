@@ -5,14 +5,18 @@ import {
   convertDisplayAmountToOnChainAmount,
   convertDisplayPriceToOnChainPrice,
   convertOnChainPriceToDisplayPrice,
+  createClient,
+  createServer,
   NativePlaceTradeDisplayParams,
   QUINTILLION,
-  startServer,
   stringTo32ByteHex,
 } from '@augurproject/sdk';
-import { NumOutcomes } from '@augurproject/sdk-lite';
+import {
+  MarketList,
+  NumOutcomes,
+  SubscriptionEventName,
+} from '@augurproject/sdk-lite';
 import { SingleThreadConnector } from '@augurproject/sdk/build/connector';
-import { MarketList } from '@augurproject/sdk-lite';
 import { flattenZeroXOrders } from '@augurproject/sdk/build/state/getter/ZeroXOrdersGetters';
 import {
   createApp,
@@ -28,21 +32,30 @@ import { BigNumber } from 'bignumber.js';
 import { spawn, spawnSync } from 'child_process';
 import { ethers } from 'ethers';
 import { formatBytes32String } from 'ethers/utils';
+import * as fs from 'fs';
 import moment from 'moment';
-import { ContractAPI, deployContracts, startGanacheServer } from '..';
+import * as path from 'path';
+import {
+  ACCOUNTS,
+  ContractAPI,
+  deployContracts,
+  makeSigner,
+  providerFromConfig,
+  startGanacheServer,
+} from '..';
 import { _1_ETH, BASE_MNEMONIC } from '../constants';
 import { runChaosMonkey } from './chaos-monkey';
 import {
+  createBadTemplatedMarkets,
   createCannedMarkets,
   createTemplatedBettingMarkets,
   createTemplatedMarkets,
-  createBadTemplatedMarkets,
 } from './create-canned-markets-and-orders';
 import {
   createCatZeroXOrders,
   createScalarZeroXOrders,
-  createYesNoZeroXOrders,
   createSingleCatZeroXOrder,
+  createYesNoZeroXOrders,
 } from './create-orders';
 import { dispute } from './dispute';
 import { FlashArguments, FlashSession } from './flash';
@@ -70,6 +83,7 @@ import {
   waitForSigint,
   waitForSync,
 } from './util';
+
 const compilerOutput = require('@augurproject/artifacts/build/contracts.json');
 
 export function addScripts(flash: FlashSession) {
@@ -2075,8 +2089,17 @@ export function addScripts(flash: FlashSession) {
         description: 'Report the generated warp sync hash to the market when end time elapses. Requires `--warpSync` option be specified',
         flag: true,
       },
+      {
+        name: 'showHashAndDie',
+        abbr: 'd',
+        description: 'Print out current warp sync hash and exit.',
+        flag: true
+      }
     ],
     async call(this: FlashSession, args: FlashArguments) {
+      const autoReport = Boolean(args.autoReport);
+      const showHashAndDie = Boolean(args.showHashAndDie);
+
       this.pushConfig({
         zeroX: {
           rpc: { enabled: true },
@@ -2084,10 +2107,57 @@ export function addScripts(flash: FlashSession) {
         },
         warpSync: {
           createCheckpoints: Boolean(args.useWarpSync),
-          autoReport: Boolean(args.autoReport) && Boolean(this.config?.deploy?.privateKey),
+          autoReport,
         }
       });
-      const api = await startServer(this.config);
+
+      // Create a wallet, print out private key and display public key.
+      let client;
+      const connector = new SingleThreadConnector();
+
+      if(!autoReport) {
+        client = await createClient(this.config, connector, undefined, undefined, true);
+      } else if(this.accounts === ACCOUNTS) {
+        console.log('Creating wallet.');
+        const wallet = ethers.Wallet.createRandom();
+
+        const keyfilePath = path.resolve(`./${wallet.address}.key`);
+        fs.writeFileSync(keyfilePath, wallet.privateKey, 'utf8');
+
+        console.log(`Transfer ETH the ${wallet.address} to auto-report on warp market.\nPrivate key written to ${keyfilePath}\n`);
+
+        client = await createClient(this.config, connector, wallet, undefined, true);
+      } else {
+        // User provided an account.
+        const provider = await providerFromConfig(this.config);
+        const connector = new SingleThreadConnector();
+        const signer = await makeSigner(this.accounts[0], provider);
+
+        client = await createClient(this.config, connector, signer, undefined);
+      }
+
+      const { api, sync } = await createServer(this.config, client);
+      connector.api = api;
+
+      sync();
+
+      api.augur.events.on(
+        SubscriptionEventName.WarpSyncHashUpdated,
+        async () =>  {
+          const { state, hash } = await api.augur.getWarpSyncStatus();
+          console.log(`\n\nUpdated Warp Sync Info:\nState:\t${state}\nHash:\t${hash}`)
+        }
+      );
+
+      if(showHashAndDie) {
+        api.augur.events.on(SubscriptionEventName.NewBlock, async () => {
+          const { state, hash } = await api.augur.getWarpSyncStatus();
+          console.log(`\n\nCurrent Warp Sync Info:\nState:\t${state}\nHash:\t${hash}`)
+          process.exit(0);
+        });
+      }
+
+
       const app = createApp(api);
 
       const httpServer = this.config.server?.startHTTP && runHttpServer(app, this.config);

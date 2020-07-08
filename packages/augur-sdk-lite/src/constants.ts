@@ -297,3 +297,4 @@ export interface ZeroXOrders {
   [marketId: string]: OutcomeOrders;
 }
 
+export const NullWarpSyncHash = 'QmNLei78zWmzUdbeRB3CiUfAizWUrbeeZh5K1rhAQKCh51';
