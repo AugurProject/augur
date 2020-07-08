@@ -20,6 +20,11 @@ trigger:
       - azure/*
       - refs/tags/*
 
+pr:
+  branches:
+    include:
+      - '*'
+
 jobs:
   - job: PreFlightCheck
     displayName: 'Pre-Flight Check'
