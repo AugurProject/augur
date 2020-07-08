@@ -1,3 +1,5 @@
+NOTE: THE DEFAULT BRANCH IS NOW CALLED `dev`
+-------
 # Augur
 
 [![](https://img.shields.io/discord/378030344374583298.svg)](https://invite.augur.net) [![](https://img.shields.io/badge/contributions-welcome-orange.svg)](https://github.com/AugurProject/augur/issues) [![](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](https://github.com/AugurProject/augur/pulls) [![](https://img.shields.io/github/contributors/AugurProject/augur.svg)](https://github.com/AugurProject/augur-app/graphs/contributors)
