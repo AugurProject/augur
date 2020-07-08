@@ -130,7 +130,7 @@ export const Gas = (props: GasProps) => {
         <p>
           Selecting a faster transaction fee will result in your transaction
           being processed quicker. For more important transactions such as
-          securing a sell order before anyone else takes it, we recommend a
+          securing a sell order before anyone else, it is recommend to use a
           faster transaction fee.
         </p>
         <div>

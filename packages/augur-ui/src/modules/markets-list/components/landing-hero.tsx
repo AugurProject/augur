@@ -11,7 +11,7 @@ export const LandingHero = ({showSignup}: LandingHeroProps) => {
   return (
     <section className={Styles.LandingHero}>
       <div>
-        <h1>The world’s most accessible, no-limit betting exchange</h1>
+        <h1>Augur v2<br /><span>Your global, no-limit betting platform</span></h1>
         <span>
           Bet how much you want, on sports, finance, world events and more.
         </span>
@@ -29,8 +29,8 @@ export const LandingHero = ({showSignup}: LandingHeroProps) => {
       </div>
       <div>
         <img src="images/hero-primary.png" />
-        <img src="images/hero-secondary.png" />
-        <img src="images/hero-bitcoin.png" />
+        <img src="images/hero-secondary-bitcoin.png" />
+        <img src="images/hero-tertiary.png" />
       </div>
     </section>
   );
