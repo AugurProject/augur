@@ -15,7 +15,7 @@ trigger:
   branches:
     include:
       - dev
-      - staging
+      - v2
       - release/*
       - azure/*
       - refs/tags/*
@@ -31,7 +31,7 @@ jobs:
           set -euo pipefail
           echo "Build Source Branch: $(Build.SourceBranchName)"
           echo "commit message: $(Build.SourceVersionMessage)"
-          if [[ "$(Build.SourceBranchName)" == "dev" || "$(Build.SourceBranchName)" == "staging" ]]; then
+          if [[ "$(Build.SourceBranchName)" == "dev" || "$(Build.SourceBranchName)" == "v2" ]]; then
             GIT_COMMAND='git log -m -1 --name-only --pretty="format:" $(Build.SourceVersion)'
           else
             GIT_COMMAND='git diff --name-only origin/dev..HEAD'
@@ -89,7 +89,7 @@ jobs:
         succeeded(),
         not(eq(variables['Build.sourceBranch'], 'refs/heads/dev')),
         not(eq(variables['Build.sourceBranch'], 'refs/heads/demo')),
-        not(eq(variables['Build.sourceBranch'], 'refs/heads/staging')),
+        not(eq(variables['Build.sourceBranch'], 'refs/heads/v2')),
         not(eq(variables['Build.sourceBranch'], 'refs/tags')),
         eq(dependencies.PreFlightCheck.outputs['setVars.JOB_TRIGGER_SDK'], 'true')
       )
@@ -339,7 +339,7 @@ jobs:
         in(dependencies.ContractSanityCheck.result, 'Succeeded', 'Skipped'),
         not(eq(variables['Build.sourceBranch'], 'refs/heads/dev')),
         not(eq(variables['Build.sourceBranch'], 'refs/heads/demo')),
-        not(eq(variables['Build.sourceBranch'], 'refs/heads/staging')),
+        not(eq(variables['Build.sourceBranch'], 'refs/heads/v2')),
         not(eq(variables['Build.sourceBranch'], 'refs/tags'))
       )
     pool: 'Default'
@@ -406,7 +406,7 @@ jobs:
         in(dependencies.Docker_populated_geth_images.result, 'Succeeded', 'Skipped'),
         not(eq(variables['Build.sourceBranch'], 'refs/heads/dev')),
         not(eq(variables['Build.sourceBranch'], 'refs/heads/demo')),
-        not(eq(variables['Build.sourceBranch'], 'refs/heads/staging')),
+        not(eq(variables['Build.sourceBranch'], 'refs/heads/v2')),
         not(eq(variables['Build.sourceBranch'], 'refs/tags'))
       )
     pool:
@@ -434,7 +434,7 @@ jobs:
       and
       (
           succeeded(),
-          eq(variables['Build.SourceBranch'], 'refs/heads/staging')
+          eq(variables['Build.SourceBranch'], 'refs/heads/v2')
       )
     pool:
       vmImage: $(VM_IMAGE)
@@ -461,9 +461,9 @@ jobs:
           source venv/bin/activate && \
           python3 -m pip install --no-cache-dir awscli
           aws s3 sync packages/augur-ui/build/ s3://staging.augur.net/ --metadata-directive REPLACE --metadata '{"Cache-Control": "max-age=31536000,public"}'
-          aws s3 cp s3://staging.augur.net/index.html s3://demo.augur.net/index.html --metadata-directive REPLACE --metadata '{"Cache-Control": "max-age=60,public"}'
-          aws s3 cp s3://staging.augur.net/zerox.wasm s3://demo.augur.net/zerox.wasm --metadata-directive REPLACE --metadata '{"Cache-Control": "max-age=31536000,public"}' --content-type "application/wasm"
-          aws cloudfront create-invalidation --distribution-id E1YMEWOQQXCVVM --paths "/index.html"
+          aws s3 cp s3://staging.augur.net/index.html s3://staging.augur.net/index.html --metadata-directive REPLACE --metadata '{"Cache-Control": "max-age=60,public"}'
+          aws s3 cp s3://staging.augur.net/zerox.wasm s3://staging.augur.net/zerox.wasm --metadata-directive REPLACE --metadata '{"Cache-Control": "max-age=31536000,public"}' --content-type "application/wasm"
+          aws cloudfront create-invalidation --distribution-id E3RQRY8KA1PEUL --paths "/index.html"
         displayName: 'push build to S3'
         env:
           AWS_ACCESS_KEY_ID: $(AWS_KEY_ID)
