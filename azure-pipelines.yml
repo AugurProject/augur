@@ -8,7 +8,7 @@ variables:
   SOLC_MD5: 884dbc8c8ed01cc34799a6ffab11bc3a
   VM_IMAGE: 'ubuntu-18.04'
   YARN_REGISTRY: https://pkgs.dev.azure.com/augurproject/_packaging/npmPackages/npm/registry/
-  System.debug: false
+  System.debug: true
 
 trigger:
   batch: false
