@@ -434,12 +434,7 @@ export class Markets {
       marketsCollection = db.Markets.toCollection();
     }
 
-    // Get Market docs for all markets with the specified filters
-    const numMarketDocs = usedReportingStates
-    ? await marketsCollection
-        .and(item => !params.includeWarpSyncMarkets ? !item.isWarpSync : true)
-        .count()
-    : await db.Markets.count();
+    let filteredOutCount = 0;
 
     // Prepare filter values before loop
     let feePercent = 0;
@@ -477,23 +472,27 @@ export class Markets {
     let marketData = await marketsCollection
       .and(market => {
         if (params.universe && market.universe !== params.universe) {
+          filteredOutCount += 1;
           return false;
         }
 
         // Apply reporting states if we did the original query without using that index
         if (!usedReportingStates && params.reportingStates) {
           if (!params.reportingStates.includes(market.reportingState)) {
+            filteredOutCount += 1;
             return false;
           }
         }
         // Apply creator if we did the original query without using that index
         if (!useCreator && params.creator) {
           if (params.creator !== market.marketCreator) {
+            filteredOutCount += 1;
             return false;
           }
         }
         // Apply max end time
         if (params.maxEndTime && market.endTime >= params.maxEndTime) {
+          filteredOutCount += 1;
           return false;
         }
         // Apply template filter
@@ -502,12 +501,14 @@ export class Markets {
             params.templateFilter === TemplateFilters.templateOnly &&
             !market.isTemplate
           ) {
+            filteredOutCount += 1;
             return false;
           }
           if (
             params.templateFilter === TemplateFilters.customOnly &&
             market.isTemplate
           ) {
+            filteredOutCount += 1;
             return false;
           }
           if (
@@ -585,7 +586,7 @@ export class Markets {
 
     return params.templateFilter === TemplateFilters.sportsBook
       ? await processSportsbookMarketData(augur, db, marketData, reportingFeeDivisor, params)
-      : await processTradingMarketData(augur, db, marketData, numMarketDocs, reportingFeeDivisor, params);
+      : await processTradingMarketData(augur, db, marketData, filteredOutCount, reportingFeeDivisor, params);
   }
 
   @Getter('getMarketOrderBookParams')
@@ -1354,12 +1355,10 @@ async function processTradingMarketData(
   augur: Augur,
   db: DB,
   marketData: MarketData[],
-  numMarketDocs: number,
+  filteredOutCount: number,
   reportingFeeDivisor: BigNumber,
   params: t.TypeOf<typeof Markets.getMarketsParams>,
 ): Promise<MarketList> {
-
-const filteredOutCount = numMarketDocs - marketData.length;
 
 const meta = {
   filteredOutCount,
