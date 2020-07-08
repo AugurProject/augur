@@ -139,38 +139,18 @@ const ModalDisclaimer = () => {
             I have read and understood the above.
           </label>
         </div>
-<<<<<<< HEAD
         <div className={Styles.ActionButtons}>
           <button
             className={Styles.Primary}
             disabled={!didScroll || !didCheck}
             onClick={() => {
-              const localStorageRef =
-                typeof window !== 'undefined' && window.localStorage;
-              if (localStorageRef && localStorageRef.setItem) {
-                localStorageRef.setItem(DISCLAIMER_SEEN, 'true');
-              }
               closeModal();
-              onApprove();
+              if (onApprove) onApprove();
             }}
           >
             I agee and accept the above
           </button>
         </div>
-=======
-        <ModalActions
-          buttons={[
-            {
-              label: 'I agree and accept the above',
-              isDisabled: !didScroll || !didCheck,
-              action: () => {
-                closeModal();
-                if (onApprove) onApprove();
-              },
-            },
-          ]}
-        />
->>>>>>> v2
       </div>
       <div
         onClick={() => {

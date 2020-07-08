@@ -24,33 +24,19 @@ import { LoginAccount } from 'modules/types';
 import { Swap } from 'modules/swap/components/swap';
 import { PillSelection } from 'modules/common/selection';
 import { BigNumber, createBigNumber } from 'utils/create-big-number';
-<<<<<<< HEAD
 import { useAppStatusStore } from 'modules/app/store/app-status';
-import { SDKConfiguration } from '@augurproject/artifacts';
-=======
 import type { SDKConfiguration } from '@augurproject/artifacts';
->>>>>>> v2
 
 import Styles from 'modules/modal/modal.styles.less';
 
 interface AddFundsProps {
-<<<<<<< HEAD
-  autoSelect?: boolean;
-  fundType: string;
-=======
   autoSelect: boolean;
-  closeAction: Function;
   tokenToAdd: string;
-  loginAccount: LoginAccount;
   ETH_RATE: BigNumber;
   REP_RATE: BigNumber;
   config: SDKConfiguration;
-  addFundsTorus: Function;
-  addFundsFortmatic: Function;
-  useSigner?: boolean;
   initialAddFundsFlow?: string;
   initialSwapToken?: string;
->>>>>>> v2
 }
 
 const addFundsFortmatic = async (amount, crypto, address) => {
@@ -72,24 +58,11 @@ const addFundsTorus = async (amount, address) => {
 
 export const AddFunds = ({
   autoSelect = false,
-<<<<<<< HEAD
-  fundType = DAI,
-=======
-  closeAction,
   tokenToAdd = DAI,
-  loginAccount,
-  ETH_RATE,
-  REP_RATE,
-  config,
-  addFundsTorus,
-  addFundsFortmatic,
-  useSigner = false,
-  initialAddFundsFlow = null,
-  initialSwapToken = null,
->>>>>>> v2
 }: AddFundsProps) => {
   const { loginAccount, modal, actions: {closeModal} } = useAppStatusStore();
   const isRelayDown = false;
+  const { useSigner, initialSwapToken, initialAddFundsFlow } = modal;
   const showTransfer = modal.showTransfer || false;
 
     //analyticsEvent: () => dP.track(ADD_FUNDS, {}),
@@ -111,6 +84,7 @@ export const AddFunds = ({
   const REP_RATE = createBigNumber(1).dividedBy(
     repToDaiRate?.value || createBigNumber(1)
   );
+  
   const address = loginAccount.address;
   const accountMeta = loginAccount.meta;
   const BUY_MIN = 20;
@@ -119,22 +93,6 @@ export const AddFunds = ({
   const usingOnRampSupportedWallet = accountMeta &&
     accountMeta.accountType === ACCOUNT_TYPES.TORUS ||
     accountMeta.accountType === ACCOUNT_TYPES.FORTMATIC;
-
-<<<<<<< HEAD
-  if (accountMeta.accountType === ACCOUNT_TYPES.TORUS) {
-    BUY_MIN = 20;
-    BUY_MAX = 250;
-  } else if (accountMeta.accountType === ACCOUNT_TYPES.FORTMATIC) {
-    BUY_MIN = 50;
-    BUY_MAX = 250;
-  } else {
-    BUY_MIN = 20;
-    BUY_MAX = 250;
-  }
-=======
-  const [amountToBuy, setAmountToBuy] = useState(createBigNumber(0));
-  const [isAmountValid, setIsAmountValid] = useState(false);
->>>>>>> v2
 
   const validateAndSet = amount => {
     const amountToBuy = createBigNumber(amount);
@@ -145,19 +103,6 @@ export const AddFunds = ({
     }
     setAmountToBuy(amountToBuy);
   };
-<<<<<<< HEAD
-
-  const toggleSwapPool = selection => {
-    if (selection === 0) {
-      setSwapSelected(true);
-      setPoolSelected(false);
-    } else if (selection === 1) {
-      setSwapSelected(false);
-      setPoolSelected(true);
-    }
-  };
-=======
->>>>>>> v2
 
   const fundTypeLabel = tokenToAdd === DAI ?  'Dai ($)' : tokenToAdd;
 
@@ -268,46 +213,27 @@ export const AddFunds = ({
                   defaultSelection={SWAP_ID}
                 />
               </div>
-<<<<<<< HEAD
-              {swapSelected && (
+              {poolSelected && (
                 <Swap
                   address={loginAccount.address}
                   balances={loginAccount.balances}
-                  toToken={fundTypeToUse === REP ? REP : DAI}
-                  fromToken={fundTypeToUse === REP ? DAI : REP}
+                  toToken={tokenToAdd}
+                  fromToken={initialSwapToken ? initialSwapToken : null}
                   ETH_RATE={ETH_RATE}
                   REP_RATE={REP_RATE}
                   config={config}
+                  useSigner={useSigner}
                 />
               )}
-=======
-
-              <Swap
-                address={loginAccount.address}
-                balances={loginAccount.balances}
-                toToken={tokenToAdd}
-                fromToken={initialSwapToken ? initialSwapToken : null}
-                ETH_RATE={ETH_RATE}
-                REP_RATE={REP_RATE}
-                config={config}
-                useSigner={useSigner}
-              />
->>>>>>> v2
             </>
           )}
 
           {selectedOption === ADD_FUNDS_CREDIT_CARD && (
             <CreditCard
               accountMeta={accountMeta}
-<<<<<<< HEAD
-              walletAddress={walletAddress}
+              walletAddress={address}
               addFundsTorus={() => addFundsTorus}
               addFundsFortmatic={() => addFundsFortmatic}
-=======
-              walletAddress={address}
-              addFundsTorus={addFundsTorus}
-              addFundsFortmatic={addFundsFortmatic}
->>>>>>> v2
               fundTypeLabel={fundTypeLabel}
               fundTypeToUse={tokenToAdd}
               validateAndSet={validateAndSet}

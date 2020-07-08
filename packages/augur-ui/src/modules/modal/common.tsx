@@ -489,12 +489,6 @@ export const TransferMyTokens = ({ condensed, tokenName, callback }) => {
     </div>
   );
 };
-
-<<<<<<< HEAD
-export const AccountStatusTracker = () => {
-  const { walletStatus } = useAppStatusStore();
-  let accountStatusTracker = ON_BORDING_STATUS_STEP.ONE;
-=======
 interface ConvertToDaiProps {
   walletType: string;
   balance: FormattedNumber;
@@ -532,7 +526,9 @@ export const ConvertToDai = ({ walletType, balance, showAddFundsModal, isCondens
     </div>
   );
 }
->>>>>>> v2
+export const AccountStatusTracker = () => {
+  const { walletStatus } = useAppStatusStore();
+  let accountStatusTracker = ON_BORDING_STATUS_STEP.ONE;
 
   if (walletStatus === WALLET_STATUS_VALUES.FUNDED_NEED_CREATE) {
     accountStatusTracker = ON_BORDING_STATUS_STEP.TWO;
@@ -979,21 +975,6 @@ export const CreditCard = ({
       </div>
     )}
 
-<<<<<<< HEAD
-    {accountMeta.accountType === ACCOUNT_TYPES.PORTIS && (
-      <a
-        href="https://wallet.portis.io/buy/"
-        target="_blank"
-        rel="noopener noreferrer"
-      >
-        <PrimaryButton
-          action={() => null}
-          text={`Buy with ${accountMeta.accountType}`}
-        />
-      </a>
-    )}
-=======
->>>>>>> v2
     {accountMeta.accountType === ACCOUNT_TYPES.TORUS && (
       <PrimaryButton
         disabled={!isAmountValid}
