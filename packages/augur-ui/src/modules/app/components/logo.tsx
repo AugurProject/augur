@@ -17,7 +17,6 @@ interface LogoState {
 
 export const NewLogo = () => (
   <section className={Styles.v2Logo}>
-    {v2AugurLogo}
     {AugurTextLogo}
   </section>
 );
