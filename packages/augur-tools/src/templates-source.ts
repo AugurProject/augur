@@ -8794,7 +8794,7 @@ export const TEMPLATES = {
               },
               {
                 id: 5,
-                dateAfterId: 3,
+                dateAfterId: 4,
                 type: TemplateInputType.DATEYEAR,
                 placeholder: `End Day of Year`,
                 validationType: ValidationType.NOWEEKEND_HOLIDAYS,
@@ -9814,7 +9814,7 @@ export const TEMPLATES = {
               },
               {
                 id: 2,
-                dateAfterId: 2,
+                dateAfterId: 1,
                 type: TemplateInputType.DATEYEAR,
                 daysAfterDateStart: 1,
                 placeholder: `Day of Year`,
@@ -9915,7 +9915,7 @@ export const TEMPLATES = {
               },
               {
                 id: 2,
-                dateAfterId: 2,
+                dateAfterId: 1,
                 type: TemplateInputType.DATEYEAR,
                 daysAfterDateStart: 1,
                 placeholder: `Day of Year`,
@@ -10016,7 +10016,7 @@ export const TEMPLATES = {
               },
               {
                 id: 2,
-                dateAfterId: 2,
+                dateAfterId: 1,
                 type: TemplateInputType.DATEYEAR,
                 daysAfterDateStart: 1,
                 placeholder: `Day of Year`,
@@ -10117,7 +10117,7 @@ export const TEMPLATES = {
               },
               {
                 id: 2,
-                dateAfterId: 2,
+                dateAfterId: 1,
                 type: TemplateInputType.DATEYEAR,
                 daysAfterDateStart: 1,
                 placeholder: `Day of Year`,
@@ -10218,7 +10218,7 @@ export const TEMPLATES = {
               },
               {
                 id: 2,
-                dateAfterId: 2,
+                dateAfterId: 1,
                 type: TemplateInputType.DATEYEAR,
                 daysAfterDateStart: 1,
                 placeholder: `Day of Year`,
@@ -10319,7 +10319,7 @@ export const TEMPLATES = {
               },
               {
                 id: 2,
-                dateAfterId: 2,
+                dateAfterId: 1,
                 type: TemplateInputType.DATEYEAR,
                 daysAfterDateStart: 1,
                 placeholder: `Day of Year`,

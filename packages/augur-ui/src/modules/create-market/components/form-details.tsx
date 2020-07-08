@@ -108,7 +108,7 @@ export default class FormDetails extends React.Component<
       if (estInput) {
         resolutionTimeSubheader = `This templated market has a predefined event expiration date time, which is ${estInput.hoursAfterEst} hours after estimated schedule start time.`
       }
-      const dateStart = template.inputs.find(i => i.type === TemplateInputType.DATEYEAR);
+      const dateStart = template.inputs.find(i => i.type === TemplateInputType.DATEYEAR && i.daysAfterDateStart);
       if (dateStart && dateStart.daysAfterDateStart) {
         resolutionTimeSubheader = `This templated market has a predefined event expiration date, which is ${dateStart.daysAfterDateStart} days after start date in market question.`
       }

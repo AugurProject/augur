@@ -29,7 +29,7 @@ const mapStateToProps = (state: AppState) => {
 };
 
 const mapDispatchToProps = dispatch => ({
-  showAddFundsModal: (fundType = DAI) => dispatch(updateModal({ type: MODAL_ADD_FUNDS, fundType })),
+  showAddFundsModal: (tokenToAdd = DAI) => dispatch(updateModal({ type: MODAL_ADD_FUNDS, tokenToAdd })),
   updateNewMarket: data => dispatch(updateNewMarket(data)),
   submitNewMarket: (data, cb) => dispatch(submitNewMarket(data, cb)),
   estimateSubmitNewMarket: (data, callback) =>

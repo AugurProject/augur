@@ -168,7 +168,7 @@ function getUserOpenOrders(
       type: orderType === BUY_INDEX ? BUY : SELL,
       marketId,
       outcomeId,
-      creationTime: convertSaltToFormattedDate(order.salt),
+      creationTime: convertSaltToFormattedDate(Number(order.salt)),
       expiry: convertUnixToFormattedDate(order.expirationTimeSeconds),
       pending:
         !!orderCancellation[order.orderId] &&

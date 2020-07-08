@@ -56,6 +56,8 @@ export const MALFORMED_OUTCOME = 'malformed outcome';
 export const ETH = 'ETH';
 export const REP = 'REP';
 export const DAI = 'DAI';
+export const USDT = 'USDT';
+export const USDC = 'USDC';
 
 export const TRADING_TUTORIAL = 'TRADING_TUTORIAL';
 export const INVALID_BEST_BID_ALERT_VALUE = createBigNumber('.1');
@@ -356,6 +358,7 @@ export const REPORTING_STATE = {
   FINALIZED: MarketReportingState.Finalized,
   FORKING: MarketReportingState.Forking,
   AWAITING_FORK_MIGRATION: MarketReportingState.AwaitingForkMigration,
+  UNKNOWN: MarketReportingState.Unknown,
 };
 
 // TODO: this no longer exists and can be removed during refactor of claiming winnings
@@ -467,6 +470,7 @@ export const DESIGNATED_REPORTER_SPECIFIC = 'DESIGNATED_REPORTER_SPECIFIC';
 export const INITIAL_LIQUIDITY_DEFAULT = 500;
 export const INITIAL_LIQUIDITY_MIN = 250;
 export const SETTLEMENT_FEE_DEFAULT = 0;
+export const SETTLEMENT_FEE_PERCENT_DEFAULT = 0.01; // default for dispaly only
 export const SETTLEMENT_FEE_MIN = 0;
 export const SETTLEMENT_FEE_MAX = 12.5;
 export const AFFILIATE_FEE_DEFAULT = 0;

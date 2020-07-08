@@ -34,7 +34,7 @@ const mergeProps = (sP: any, dP: any, oP: any) => ({
   linkContent: [
     {
       content:
-        'Dai is a pegged currency that mirrors the value of the US dollar. This means that ‘1 Dai’ is equivalent to ‘1 USD’. We refer to Dai using the $ symbol.',
+        'Dai is a pegged currency that mirrors the value of the US dollar. This means that ‘1 Dai’ is equivalent to ‘1 USD’. Dai is referred to with $ symbol.',
     },
     {
       content: 'Learn more about DAI',

@@ -46,6 +46,7 @@ import {
   PUBLICTRADE,
   PUBLICTRADEWITHLIMIT,
   REDEEMSTAKE,
+  SCALAR,
   SELL,
   SELL_INDEX,
   TEN_TO_THE_EIGHTEENTH_POWER,
@@ -480,7 +481,12 @@ export default function setAlertText(alert: any, callback: Function) {
               price,
               outcomeDescription,
               priceFormatted,
-            } = getInfo(alert.params, alert.status, marketInfo);
+            } = getInfo(
+              alert.params,
+              alert.status,
+              marketInfo,
+              marketInfo.marketType !== SCALAR
+            );
 
             alert.details = `${orderType}  ${
               formatShares(amount).formatted

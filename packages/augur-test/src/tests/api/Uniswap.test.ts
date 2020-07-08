@@ -22,6 +22,7 @@ test('Uniswap :: Token Exchange', async () => {
   const uniswap = john.augur.uniswap;
 
   const approvalAmount = (new BigNumber(2)).pow(255);
+  // These amounts are intended to be the same as in deployment
   const cashAmount = new BigNumber(100 * 10**18);
   const repAmount = new BigNumber(10 * 10**18);
 
@@ -30,13 +31,9 @@ test('Uniswap :: Token Exchange', async () => {
   await cash.approve(john.augur.contracts.uniswap.address, approvalAmount);
   await rep.approve(john.augur.contracts.uniswap.address, approvalAmount);
 
-  // Add Liquidity
-  await uniswap.addLiquidity(cash.address, rep.address, cashAmount, repAmount, new BigNumber(0), new BigNumber(0));
-
-  // Confirm Exchange Rate
+  // Check the exchange rate from when liquidity was added in deployment
   const exchangeRate = await uniswap.getExchangeRate(rep.address, cash.address);
-  const expectedExchangeRate = repAmount.div(cashAmount);
-
+  const expectedExchangeRate = repAmount.div(cashAmount).toString();
   await expect(exchangeRate.toString()).toEqual(expectedExchangeRate.toString());
 
   // Buy Exactly .1 REP
@@ -46,8 +43,8 @@ test('Uniswap :: Token Exchange', async () => {
   await uniswap.swapTokensForExactTokens(cash.address, rep.address, maxDAI, exactRep);
 
   // Buy some REP with exactly 1 Dai
-  const exactDAI = new BigNumber(10**18)
-  const minRep = new BigNumber(.95 * 10**17)
-  await cash.faucet(exactDAI)
+  const exactDAI = new BigNumber(10**18);
+  const minRep = new BigNumber(.95 * 10**17);
+  await cash.faucet(exactDAI);
   await uniswap.swapExactTokensForTokens(cash.address, rep.address, exactDAI, minRep);
 });

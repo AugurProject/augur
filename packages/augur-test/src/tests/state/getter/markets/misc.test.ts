@@ -118,7 +118,7 @@ describe('State API :: Markets :: ', () => {
   describe('warp sync markets', () => {
     let expectedMarkets;
     beforeEach(async () => {
-      await john.initializeUniverseForWarpSync();
+      // Note: no need to initialize warp sync market since deploy does so
 
       // This hash won't do anything because it is the IPFS for '0'. Which is an uninitialized warp sync market.
       const someHash = 'QmNLei78zWmzUdbeRB3CiUfAizWUrbeeZh5K1rhAQKCh51';

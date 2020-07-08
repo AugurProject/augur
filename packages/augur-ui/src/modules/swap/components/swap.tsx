@@ -41,6 +41,13 @@ interface SwapProps {
   REP_RATE: BigNumber;
   config: SDKConfiguration,
   address: string;
+  useSigner: boolean;
+}
+
+const tokenIconImageMap = {
+  eth: ETHIcon,
+  rep: REPIcon,
+  dai: DaiLogoIcon,
 }
 
 export const Swap = ({
@@ -51,20 +58,61 @@ export const Swap = ({
   REP_RATE,
   config,
   address,
+  useSigner = false,
 }: SwapProps) => {
 
-  const hasEth = createBigNumber(balances.eth).gt(ZERO);
+  const VALID_TOKENS = [DAI, REP, ETH];
+  let hasEth;
+  let hasRep;
+  let hasDai;
+
+  let toTokenBalance = balances[toToken.toLowerCase()] || 0;
+  if (useSigner) {
+    toTokenBalance = balances.signerBalances[toToken.toLowerCase()] || 0;
+
+    hasEth = createBigNumber(balances.signerBalances.eth).gt(ZERO);
+    hasRep = createBigNumber(balances.signerBalances.rep).gt(ZERO);
+    hasDai = createBigNumber(balances.signerBalances.dai).gt(ZERO);
+  } else {
+    hasEth = createBigNumber(balances.eth).gt(ZERO);
+    hasRep = createBigNumber(balances.rep).gt(ZERO);
+    hasDai = createBigNumber(balances.dai).gt(ZERO);
+  }
+
+  let tokenSwapTypes = [];
+
+  if (hasEth) {
+    tokenSwapTypes = tokenSwapTypes.concat(ETH);
+  }
+
+  if (hasRep) {
+    tokenSwapTypes = tokenSwapTypes.concat(REP);
+  }
+
+  if (hasDai) {
+    tokenSwapTypes = tokenSwapTypes.concat(DAI);
+  }
+
+  // remove the token that is being swaapped for
+  tokenSwapTypes = tokenSwapTypes.filter(token => token !== toToken);
+
+  if (tokenSwapTypes.length === 0) {
+    tokenSwapTypes = VALID_TOKENS.filter(token => token !== toToken);
+  }
+
   let formattedInputAmount: FormattedNumber;
   let outputAmount: FormattedNumber = formatEther(0);
 
-  const [inputAmount, setInputAmount] = useState(createBigNumber(0.0));
-  const [fromTokenType, setFromTokenType] = useState(fromToken);
-  const [errorMessage, setErrorMessage] = useState(null);
 
-  if (![DAI, REP, ETH].includes(fromTokenType)) {
-    throw Error('unsupported uniswap token');
+  const getBalanceForToken = (token) => {
+    let balance = 0;
+    if (useSigner) {
+      balance = balances.signerBalances[token.toLowerCase()] || 0;
+    } else {
+      balance = balances[token.toLowerCase()] || 0;
+    }
+    return balance;
   }
-
 
   const setAmountToSwap = (
     amount: BigNumber,
@@ -72,9 +120,9 @@ export const Swap = ({
   ) => {
     setErrorMessage('');
     if (amount.lt(0) || isNaN(amount.toNumber())) {
-      setInputAmount(createBigNumber(0));
+      clearForm();
     } else if (amount.gt(formattedInputAmount)) {
-      setInputAmount(formattedInputAmount);
+      clearForm();
     } else {
       setInputAmount(amount);
     }
@@ -120,31 +168,26 @@ export const Swap = ({
 
   const handleSetToken = () => {
     setErrorMessage('');
-    if (fromToken === REP) {
-      if (fromTokenType === REP) {
-        setFromTokenType(hasEth ? ETH : REP);
-      } else {
-        setFromTokenType(REP);
-      }
-    } else if (fromToken === DAI) {
-      if (fromTokenType === DAI) {
-        setFromTokenType(hasEth ? ETH : DAI);
-      } else {
-        setFromTokenType(DAI);
-      }
-    }
+    const nextToken = currentTokenIndex === tokenSwapTypes.length - 1 ? 0 : currentTokenIndex + 1;
+    setCurrentTokenIndex(nextToken);
+    setFromTokenType(tokenSwapTypes[nextToken]);
+    updateBalance(getBalanceForToken(tokenSwapTypes[nextToken]));
     clearForm()
   }
 
-  if (fromTokenType === DAI) {
-    formattedInputAmount = formatEther(Number(balances.dai) || 0);
-  } else if (fromTokenType === REP) {
-    formattedInputAmount = formatEther(Number(balances.rep) || 0);
-  } else if (fromTokenType === ETH) {
-    formattedInputAmount = formatEther(Number(balances.eth) || 0);
+  const [inputAmount, setInputAmount] = useState(createBigNumber(0.0));
+  const [fromTokenType, setFromTokenType] = useState(fromToken ? fromToken : tokenSwapTypes[0]);
+  const [balance, updateBalance] = useState(getBalanceForToken(fromTokenType));
+  const [errorMessage, setErrorMessage] = useState(null);
+  const [currentTokenIndex, setCurrentTokenIndex] = useState(0);
+
+  if (!VALID_TOKENS.includes(fromTokenType)) {
+    throw Error('unsupported uniswap token');
   }
 
-  if (inputAmount.lt(0)) {
+  formattedInputAmount = formatEther(Number(balance) || 0);
+
+  if (!inputAmount.lt || inputAmount.lt(0)) {
     outputAmount = formatEther(0);
   } else {
     if (toToken === REP) {
@@ -173,15 +216,9 @@ export const Swap = ({
           amount={formatEther(inputAmount)}
           token={fromTokenType}
           label={'Input'}
-          showChevron={hasEth}
+          showChevron={tokenSwapTypes.length > 1}
           balance={formattedInputAmount}
-          logo={
-            fromTokenType === DAI
-              ? DaiLogoIcon
-              : fromTokenType === REP
-              ? REPIcon
-              : ETHIcon
-          }
+          logo={tokenIconImageMap[fromTokenType.toLowerCase()] || ETHIcon}
           setAmount={setAmountToSwap}
           setMaxAmount={setInputAmount}
           setToken={() => handleSetToken()}
@@ -193,12 +230,8 @@ export const Swap = ({
           amount={outputAmount}
           token={toToken}
           label={'Output (estimated)'}
-          balance={
-            toToken === REP
-              ? formatEther(balances.rep)
-              : formatEther(balances.dai)
-          }
-          logo={toToken === REP ? REPIcon : DaiLogoIcon}
+          balance={formatEther(toTokenBalance)}
+          logo={tokenIconImageMap[toToken.toLowerCase()] || ETHIcon}
         />
       </>
       <Rate
@@ -210,7 +243,7 @@ export const Swap = ({
 
       <div>
         <ProcessingButton
-          text={'Trade'}
+          text={'Convert'}
           action={() => makeTrade()}
           queueName={TRANSACTIONS}
           queueId={fromTokenType === ETH ? SWAPETHFOREXACTTOKENS : SWAPEXACTTOKENSFORTOKENS}

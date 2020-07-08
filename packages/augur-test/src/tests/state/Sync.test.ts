@@ -5,7 +5,6 @@ import {
   makeGanacheProvider,
 } from '@augurproject/tools/build';
 import { TestEthersProvider } from '@augurproject/tools/build/libs/TestEthersProvider';
-import { makeProvider } from '../../libs';
 import uuid = require('uuid');
 
 describe('Syncing', () => {
@@ -42,7 +41,7 @@ describe('Syncing', () => {
     await oldJohn.sync(metadata.blockNumberBeforeDeploy);
 
     await expect(oldJohn.db.UniverseCreated.toArray()).resolves.toHaveLength(1);
-    await expect(oldJohn.db.MarketCreated.toArray()).resolves.toHaveLength(5);
+    await expect(oldJohn.db.MarketCreated.toArray()).resolves.toHaveLength(6); // includes warp sync market
 
     const newJohn = await TestContractAPI.userWrapper(
       ACCOUNTS[0],
@@ -70,6 +69,6 @@ describe('Syncing', () => {
     );
 
     await expect(newJohn.db.UniverseCreated.toArray()).resolves.toHaveLength(1);
-    await expect(newJohn.db.MarketCreated.toArray()).resolves.toHaveLength(0);
+    await expect(newJohn.db.MarketCreated.toArray()).resolves.toHaveLength(1); // includes warp sync market
   });
 });
