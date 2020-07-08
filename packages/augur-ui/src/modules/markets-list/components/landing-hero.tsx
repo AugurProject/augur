@@ -29,7 +29,7 @@ export const LandingHero = ({showSignup}: LandingHeroProps) => {
       </div>
       <div>
         <img src="images/hero-primary.png" />
-        <img src="images/hero-secondary.png" />
+        <img src="images/hero-secondary-bitcoin.png" />
         <img src="images/hero-tertiary.png" />
       </div>
     </section>
