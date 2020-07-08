@@ -1071,6 +1071,7 @@ export const POPULAR_CATEGORIES = [
   'entertainment',
   'finance',
   'crypto',
+  'medical'
 ];
 
 export const POPULAR_CATEGORIES_ICONS = {
