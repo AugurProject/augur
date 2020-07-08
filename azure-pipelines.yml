@@ -19,6 +19,10 @@ trigger:
       - release/*
       - azure/*
       - refs/tags/*
+pr:
+  branches:
+    include:
+      - '*'
 
 jobs:
   - job: PreFlightCheck
