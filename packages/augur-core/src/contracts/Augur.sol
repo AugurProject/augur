@@ -20,7 +20,6 @@ import 'ROOT/libraries/ContractExists.sol';
 import 'ROOT/ITime.sol';
 import 'ROOT/reporting/IAffiliates.sol';
 import 'ROOT/ICash.sol';
-import 'ROOT/external/IDaiVat.sol';
 
 
 // Centralized approval authority and event emissions
@@ -103,7 +102,6 @@ contract Augur is IAugur, IAugurCreationDataGetter {
     uint256 private constant MAX_NUM_TICKS = 2 ** 256 - 2;
 
     ICash public cash;
-    IDaiVat public vat;
 
     modifier onlyUploader() {
         require(msg.sender == uploader);
@@ -126,8 +124,6 @@ contract Augur is IAugur, IAugurCreationDataGetter {
             trustedSender[_address] = true;
         } else if (_key == "Time") {
             time = ITime(_address);
-        } else if (_key == "DaiVat") {
-            vat = IDaiVat(_address);
         } else if (_key == "Cash") {
             cash = ICash(_address);
         }

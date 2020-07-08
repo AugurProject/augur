@@ -29,7 +29,6 @@ export class Contracts {
   ZeroXTrade: ContractInterfaces.ZeroXTrade;
   buyParticipationTokens: ContractInterfaces.BuyParticipationTokens;
   redeemStake: ContractInterfaces.RedeemStake;
-  cashFaucet: ContractInterfaces.CashFaucet;
   hotLoading: ContractInterfaces.HotLoading;
   zeroXExchange: ContractInterfaces.Exchange;
   affiliates: ContractInterfaces.Affiliates;
@@ -102,10 +101,6 @@ export class Contracts {
     this.redeemStake = new ContractInterfaces.RedeemStake(
       dependencies,
       addresses.RedeemStake
-    );
-    this.cashFaucet = new ContractInterfaces.CashFaucet(
-      dependencies,
-      addresses.CashFaucet
     );
     this.hotLoading = new ContractInterfaces.HotLoading(
       dependencies,
