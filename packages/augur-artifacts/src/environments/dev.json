@@ -80,6 +80,7 @@
     "chat": "orbit"
   },
   "ui": {
+    "trackBestOffer": true,
     "showReloadModal": true,
     "averageBlocktime": 2000,
     "liteProvider": "jsonrpc"
