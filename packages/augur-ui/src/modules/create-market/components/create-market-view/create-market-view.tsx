@@ -12,14 +12,21 @@ import makePath from 'modules/routes/helpers/make-path';
 import { CREATE_MARKET } from 'modules/routes/constants/views';
 import { CREATE_MARKET_VIEW_HEAD_TAGS } from 'modules/seo/helmet-configs';
 import { HelmetTag } from 'modules/seo/helmet-tag';
+import { useAppStatusStore } from 'modules/app/store/app-status';
+import getValueFromlocalStorage from 'utils/get-local-storage-value';
+import { DISCLAIMER_SEEN, MODAL_DISCLAIMER } from 'modules/common/constants';
 
 export const CreateMarketView = () => {
+  const { actions: { setModal } } = useAppStatusStore();
   const history = useHistory();
   const location = useLocation();
 
   useEffect(() => {
     window.scrollTo(0, 0);
+    const disclaimerSeen = !!getValueFromlocalStorage(DISCLAIMER_SEEN);
+    if (!disclaimerSeen) setModal({ type: MODAL_DISCLAIMER });
   }, [true]);
+
   const page = parseQuery(location.search)[CREATE_MARKET_FORM_PARAM_NAME] || LANDING;
 
   function updatePage(nextPage) {

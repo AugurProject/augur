@@ -489,7 +489,43 @@ export const TransferMyTokens = ({ condensed, tokenName, callback }) => {
     </div>
   );
 };
+interface ConvertToDaiProps {
+  walletType: string;
+  balance: FormattedNumber;
+  showAddFundsModal: Function;
+  isCondensed: boolean;
+  tokenName: string;
+}
 
+export const ConvertToDai = ({ walletType, balance, showAddFundsModal, isCondensed = false, tokenName}: ConvertToDaiProps) => {
+  if (isCondensed) {
+    return (
+      <div className={Styles.TransferMyDaiCondensed}>
+        <div>
+          <span>{balance.formattedValue} {tokenName}</span>
+          <span>in {walletType} wallet</span>
+        </div>
+        <SecondaryButton
+          action={() => showAddFundsModal()}
+          text={'Convert to Dai'}
+        />
+      </div>
+    );
+  }
+
+  return (
+    <div className={Styles.TransferMyDai}>
+      <div>
+        <span>{balance.formattedValue} {tokenName} in your {walletType} wallet</span>
+        <span>Convert any amount of this to Dai.</span>
+      </div>
+      <PrimaryButton
+        action={() => showAddFundsModal()}
+        text={'Convert to Dai'}
+      />
+    </div>
+  );
+}
 export const AccountStatusTracker = () => {
   const { walletStatus } = useAppStatusStore();
   let accountStatusTracker = ON_BORDING_STATUS_STEP.ONE;
@@ -939,18 +975,6 @@ export const CreditCard = ({
       </div>
     )}
 
-    {accountMeta.accountType === ACCOUNT_TYPES.PORTIS && (
-      <a
-        href="https://wallet.portis.io/buy/"
-        target="_blank"
-        rel="noopener noreferrer"
-      >
-        <PrimaryButton
-          action={() => null}
-          text={`Buy with ${accountMeta.accountType}`}
-        />
-      </a>
-    )}
     {accountMeta.accountType === ACCOUNT_TYPES.TORUS && (
       <PrimaryButton
         disabled={!isAmountValid}
@@ -975,7 +999,6 @@ export const CreditCard = ({
     )}
     <h4>
       {[
-        ACCOUNT_TYPES.PORTIS,
         ACCOUNT_TYPES.TORUS,
         ACCOUNT_TYPES.FORTMATIC,
       ].includes(accountMeta.accountType) && (
@@ -993,14 +1016,12 @@ interface CoinbaseProps {
   walletAddress: string;
   fundTypeLabel: string;
   fundTypeToUse: string;
-  accountLabel: string;
 }
 
 export const Coinbase = ({
   fundTypeToUse,
   fundTypeLabel,
   walletAddress,
-  accountLabel,
 }: CoinbaseProps) => (
   <>
     <h1>Coinbase</h1>
@@ -1028,10 +1049,10 @@ export const Coinbase = ({
       </li>
       <li>Buy the cryptocurrency {fundTypeLabel}</li>
       <li>
-        Send the {fundTypeLabel} to your {accountLabel} account
+        Send the {fundTypeLabel} to your trading account
       </li>
     </ol>
-    <h3>{accountLabel} account</h3>
+    <h3>trading account</h3>
     <AccountAddressDisplay
       copyable
       address={toChecksumAddress(walletAddress)}
@@ -1049,20 +1070,18 @@ interface TransferProps {
   walletAddress: string;
   fundTypeLabel: string;
   fundTypeToUse: string;
-  accountLabel: string;
 }
 
 export const Transfer = ({
   fundTypeToUse,
   fundTypeLabel,
   walletAddress,
-  accountLabel,
 }: TransferProps) => (
   <>
     <h1>Transfer</h1>
     <h2>
-      Send {fundTypeToUse === ETH ? fundTypeLabel : 'funds'} to your{' '}
-      {accountLabel} account
+      Send funds to your{' '}
+      trading account
     </h2>
     <ol>
       <li>
@@ -1080,10 +1099,10 @@ export const Transfer = ({
         </a>
       </li>
       <li>
-        Transfer the {fundTypeLabel} to your {accountLabel} account
+        Transfer the {fundTypeLabel} to your trading account
       </li>
     </ol>
-    <h3>{accountLabel} account</h3>
+    <h3>trading account</h3>
     <AccountAddressDisplay
       copyable
       address={toChecksumAddress(walletAddress)}

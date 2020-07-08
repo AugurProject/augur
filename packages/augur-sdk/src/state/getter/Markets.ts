@@ -434,12 +434,7 @@ export class Markets {
       marketsCollection = db.Markets.toCollection();
     }
 
-    // Get Market docs for all markets with the specified filters
-    const numMarketDocs = usedReportingStates
-    ? await marketsCollection
-        .and(item => !params.includeWarpSyncMarkets ? !item.isWarpSync : true)
-        .count()
-    : await db.Markets.count();
+    let filteredOutCount = 0;
 
     // Prepare filter values before loop
     let feePercent = 0;
@@ -477,68 +472,86 @@ export class Markets {
     let marketData = await marketsCollection
       .and(market => {
         if (params.universe && market.universe !== params.universe) {
+          filteredOutCount += 1;
           return false;
         }
 
         // Apply reporting states if we did the original query without using that index
         if (!usedReportingStates && params.reportingStates) {
-          if (!params.reportingStates.includes(market.reportingState))
+          if (!params.reportingStates.includes(market.reportingState)) {
+            filteredOutCount += 1;
             return false;
+          }
         }
         // Apply creator if we did the original query without using that index
         if (!useCreator && params.creator) {
-          if (params.creator !== market.marketCreator) return false;
+          if (params.creator !== market.marketCreator) {
+            filteredOutCount += 1;
+            return false;
+          }
         }
         // Apply max end time
-        if (params.maxEndTime && market.endTime >= params.maxEndTime)
+        if (params.maxEndTime && market.endTime >= params.maxEndTime) {
+          filteredOutCount += 1;
           return false;
+        }
         // Apply template filter
         if (params.templateFilter) {
           if (
             params.templateFilter === TemplateFilters.templateOnly &&
             !market.isTemplate
-          )
+          ) {
+            filteredOutCount += 1;
             return false;
+          }
           if (
             params.templateFilter === TemplateFilters.customOnly &&
             market.isTemplate
-          )
+          ) {
+            filteredOutCount += 1;
             return false;
+          }
           if (
               params.templateFilter === TemplateFilters.sportsBook &&
               !market.groupHash
-            )
+            ) {
               return false;
+            }
         }
         // Apply market type
         if (params.marketTypeFilter) {
           if (
             params.marketTypeFilter === MarketTypeName.YesNo &&
             market.marketType !== MarketType.YesNo
-          )
+          ) {
             return false;
+          }
           if (
             params.marketTypeFilter === MarketTypeName.Categorical &&
             market.marketType !== MarketType.Categorical
-          )
+          ) {
             return false;
+          }
           if (
             params.marketTypeFilter === MarketTypeName.Scalar &&
             market.marketType !== MarketType.Scalar
-          )
+          ) {
             return false;
+          }
         }
         // Apply designatedReporter
         if (
           params.designatedReporter &&
           market.designatedReporter !== params.designatedReporter
-        )
+        ) {
           return false;
+        }
         // Apply max Fee
         if (params.maxFee && market.feePercent > feePercent) return false;
         // Apply invalid filter
-        if (params.includeInvalidMarkets !== true && market.invalidFilter)
+        if (params.includeInvalidMarkets !== true && market.invalidFilter) {
           return false;
+        }
         // Liquidity filtering
         if (params.maxLiquiditySpread) {
           if (params.maxLiquiditySpread === MaxLiquiditySpread.ZeroPercent) {
@@ -552,10 +565,12 @@ export class Markets {
             if (
               market.liquidity[params.maxLiquiditySpread] ===
               '000000000000000000000000000000'
-            )
+            ) {
               return false;
-            if (market.invalidFilter && market.hasRecentlyDepletedLiquidity)
+            }
+            if (market.invalidFilter && market.hasRecentlyDepletedLiquidity) {
               return false;
+            }
           }
         }
 
@@ -571,7 +586,7 @@ export class Markets {
 
     return params.templateFilter === TemplateFilters.sportsBook
       ? await processSportsbookMarketData(augur, db, marketData, reportingFeeDivisor, params)
-      : await processTradingMarketData(augur, db, marketData, numMarketDocs, reportingFeeDivisor, params);
+      : await processTradingMarketData(augur, db, marketData, filteredOutCount, reportingFeeDivisor, params);
   }
 
   @Getter('getMarketOrderBookParams')
@@ -1340,12 +1355,10 @@ async function processTradingMarketData(
   augur: Augur,
   db: DB,
   marketData: MarketData[],
-  numMarketDocs: number,
+  filteredOutCount: number,
   reportingFeeDivisor: BigNumber,
   params: t.TypeOf<typeof Markets.getMarketsParams>,
 ): Promise<MarketList> {
-
-const filteredOutCount = numMarketDocs - marketData.length;
 
 const meta = {
   filteredOutCount,

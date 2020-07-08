@@ -1,21 +1,21 @@
 import * as path from 'path';
 
 export class CompilerConfiguration {
-    public readonly contractSourceRoot: string;
-    public readonly outputRoot: string;
-    public readonly genericContractInterfacesOutputPath: string;
-    public readonly contractInterfacesOutputPath: string;
-    public readonly abiOutputPath: string;
-    public readonly contractOutputPath: string;
-    public readonly fullContractOutputPath: string;
-    public readonly enableSdb: boolean;
-    public readonly useFlattener: boolean;
+    readonly contractSourceRoot: string;
+    readonly outputRoot: string;
+    readonly genericContractInterfacesOutputPath: string;
+    readonly contractInterfacesOutputPath: string;
+    readonly abiOutputPath: string;
+    readonly contractOutputPath: string;
+    readonly fullContractOutputPath: string;
+    readonly enableSdb: boolean;
+    readonly useFlattener: boolean;
 
-    public constructor(
+    constructor(
         contractSourceRoot: string,
         outputRoot: string,
-        enableSdb: boolean = false,
-        useFlattener: boolean = false
+        enableSdb = false,
+        useFlattener = false
     ) {
         const contractInterfacesFileName = 'ContractInterfaces.ts';
 
@@ -43,7 +43,7 @@ export class CompilerConfiguration {
         this.useFlattener = useFlattener;
     }
 
-    public static create(): CompilerConfiguration {
+    static create(): CompilerConfiguration {
         const contractSourceRoot =
             typeof process.env.INPUT_PATH === 'undefined'
                 ? path.join(__dirname, '../../src/contracts/')
@@ -51,7 +51,7 @@ export class CompilerConfiguration {
         const outputRoot =
             typeof process.env.OUTPUT_PATH === 'undefined'
                 ? path.join(__dirname, '../../output/contracts/')
-                : path.normalize(<string>process.env.OUTPUT_PATH);
+                : path.normalize(process.env.OUTPUT_PATH as string);
         const useFlattener =
             typeof process.env.TESTRPC === 'undefined'
                 ? true

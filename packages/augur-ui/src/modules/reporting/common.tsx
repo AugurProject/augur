@@ -20,6 +20,7 @@ import {
   MODAL_INITIALIZE_ACCOUNT,
   WALLET_STATUS_VALUES,
   MODAL_ADD_FUNDS,
+  ADD_FUNDS_SWAP,
   MODAL_REPORTING,
   GSN_WALLET_SEEN,
   MODAL_PARTICIPATE,
@@ -1176,8 +1177,14 @@ export const UserRepDisplay = () => {
             repProfitLossPercentageFormatted={repProfitLossPercentageFormatted}
           />
           <PrimaryButton
-            action={() => setModal({ type: MODAL_ADD_FUNDS, fundType: REP })}
-            text={'Get REP'}
+            action={() =>
+              setModal({
+                type: MODAL_ADD_FUNDS,
+                tokenToAdd: REP,
+                initialAddFundsFlow: ADD_FUNDS_SWAP,
+              })
+            }
+            text="Get REP"
             id="get-rep"
           />
         </div>

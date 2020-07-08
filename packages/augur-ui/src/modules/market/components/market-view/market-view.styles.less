@@ -306,10 +306,8 @@ section[class*="OutcomesList"] {
 .FillsTutorial,
 .PositionsTutorial {
   position: relative;
+  z-index: @mask-illuminate;
 
-  > div:first-of-type {
-    z-index: @mask-illuminate;
-  }
 
   > section:last-of-type {
     top: 0;

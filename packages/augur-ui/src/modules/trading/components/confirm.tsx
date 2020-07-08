@@ -393,7 +393,7 @@ export const Confirm = ({
               Shares @ ${limitPrice}`}
           </div>
           <LinearPropertyLabel
-            label="Market Trading Fee"
+            label="Market OI Fee"
             value={orderShareTradingFee}
             showDenomination={true}
           />
@@ -402,7 +402,7 @@ export const Confirm = ({
               isError={createBigNumber(gasCostDai.value).gt(
                 createBigNumber(orderShareProfit.value)
               )}
-              gasCostDai={postOnlyOrder ? `0.00` : gasCostDai}
+              gasCostDai={gasCostDai}
             />
           )}
           <LinearPropertyLabel

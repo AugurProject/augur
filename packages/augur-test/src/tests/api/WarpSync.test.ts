@@ -17,7 +17,7 @@ describe('WarpSync', () => {
       provider.getConfig()
     );
     await john.approve();
-    await john.initializeUniverseForWarpSync();
+    // Note: no need to initialize warp sync market for universe because the deploy does so.
   });
 
   test('Warp Sync :: getWarpSyncMarket', async () => {

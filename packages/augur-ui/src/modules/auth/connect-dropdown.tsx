@@ -277,7 +277,7 @@ const ConnectDropdown = () => {
           .filter(fundType => !fundType.disabled)
           .map((fundType, idx) => (
             <div key={idx} className={Styles.AccountFunds}>
-              {fundType.logo} {fundType.name} {fundType.toolTip ? fundType.toolTip : null}
+              {fundType.logo} {fundType.name}
               <div>
                   {fundType.value} {fundType.name}
               </div>

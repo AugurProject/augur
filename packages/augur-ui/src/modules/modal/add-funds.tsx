@@ -17,18 +17,26 @@ import {
   ADD_FUNDS_COINBASE,
   ADD_FUNDS_CREDIT_CARD,
   ADD_FUNDS_TRANSFER,
+  USDC,
+  USDT,
 } from 'modules/common/constants';
 import { LoginAccount } from 'modules/types';
-import Styles from 'modules/modal/modal.styles.less';
 import { Swap } from 'modules/swap/components/swap';
 import { PillSelection } from 'modules/common/selection';
 import { BigNumber, createBigNumber } from 'utils/create-big-number';
 import { useAppStatusStore } from 'modules/app/store/app-status';
-import { SDKConfiguration } from '@augurproject/artifacts';
+import type { SDKConfiguration } from '@augurproject/artifacts';
+
+import Styles from 'modules/modal/modal.styles.less';
 
 interface AddFundsProps {
-  autoSelect?: boolean;
-  fundType: string;
+  autoSelect: boolean;
+  tokenToAdd: string;
+  ETH_RATE: BigNumber;
+  REP_RATE: BigNumber;
+  config: SDKConfiguration;
+  initialAddFundsFlow?: string;
+  initialSwapToken?: string;
 }
 
 const addFundsFortmatic = async (amount, crypto, address) => {
@@ -50,10 +58,11 @@ const addFundsTorus = async (amount, address) => {
 
 export const AddFunds = ({
   autoSelect = false,
-  fundType = DAI,
+  tokenToAdd = DAI,
 }: AddFundsProps) => {
   const { loginAccount, modal, actions: {closeModal} } = useAppStatusStore();
   const isRelayDown = false;
+  const { useSigner, initialSwapToken, initialAddFundsFlow } = modal;
   const showTransfer = modal.showTransfer || false;
 
     //analyticsEvent: () => dP.track(ADD_FUNDS, {}),
@@ -75,26 +84,15 @@ export const AddFunds = ({
   const REP_RATE = createBigNumber(1).dividedBy(
     repToDaiRate?.value || createBigNumber(1)
   );
+  
   const address = loginAccount.address;
   const accountMeta = loginAccount.meta;
-  let BUY_MIN = 0;
-  let BUY_MAX = 0;
+  const BUY_MIN = 20;
+  const BUY_MAX = 250;
 
-  const usingOnRampSupportedWallet =
+  const usingOnRampSupportedWallet = accountMeta &&
     accountMeta.accountType === ACCOUNT_TYPES.TORUS ||
-    accountMeta.accountType === ACCOUNT_TYPES.PORTIS ||
     accountMeta.accountType === ACCOUNT_TYPES.FORTMATIC;
-
-  if (accountMeta.accountType === ACCOUNT_TYPES.TORUS) {
-    BUY_MIN = 20;
-    BUY_MAX = 250;
-  } else if (accountMeta.accountType === ACCOUNT_TYPES.FORTMATIC) {
-    BUY_MIN = 50;
-    BUY_MAX = 250;
-  } else {
-    BUY_MIN = 20;
-    BUY_MAX = 250;
-  }
 
   const validateAndSet = amount => {
     const amountToBuy = createBigNumber(amount);
@@ -106,74 +104,31 @@ export const AddFunds = ({
     setAmountToBuy(amountToBuy);
   };
 
-  const toggleSwapPool = selection => {
-    if (selection === 0) {
-      setSwapSelected(true);
-      setPoolSelected(false);
-    } else if (selection === 1) {
-      setSwapSelected(false);
-      setPoolSelected(true);
-    }
-  };
-
-  const accountLabel =
-    isRelayDown && fundType === DAI ? `[${accountMeta.accountType}]` : 'trading';
-  const fundTypeToUse = isRelayDown && fundType === DAI ? ETH : fundType;
-  const fundTypeLabel =
-    fundTypeToUse === ETH ? 'ETH' : fundTypeToUse === DAI ? 'Dai ($)' : 'REP';
-
-  let autoSelectValue = ADD_FUNDS_COINBASE; // Coinbase default selected
-  if (fundTypeToUse === REP) {
-    // IF Add Funds REP flow, show swap as default selected
-    autoSelectValue = ADD_FUNDS_SWAP;
-  } else if (usingOnRampSupportedWallet && fundTypeToUse === DAI) {
-    // IF Add Funds DAI flow and using a onramp supported wallet show CreditCard as default selected
-    autoSelectValue = ADD_FUNDS_CREDIT_CARD;
-  }
-
-  if (showTransfer) {
-    autoSelectValue = ADD_FUNDS_TRANSFER;
-  }
+  const fundTypeLabel = tokenToAdd === DAI ?  'Dai ($)' : tokenToAdd;
 
   const [selectedOption, setSelectedOption] = useState(
-    autoSelect ? autoSelectValue : null
+    initialAddFundsFlow ? initialAddFundsFlow : usingOnRampSupportedWallet && tokenToAdd === DAI ? ADD_FUNDS_CREDIT_CARD : ADD_FUNDS_COINBASE
   );
-  const [swapSelected, setSwapSelected] = useState(true);
-
-  // When Adding ETH through Add Funds we use the signer address since we need that account to have ETH to cover gas during outages
-  const walletAddress =
-    isRelayDown && fundType === DAI && accountMeta.signer
-      ? accountMeta.signer._address
-      : address;
 
   const FUND_OTPIONS = [
     {
       header: 'Credit/debit card',
-      description: `Add ${
-        fundTypeToUse === ETH ? 'ETH' : 'Funds'
-      } instantly using a credit/debit card`,
+      description: 'Add funds instantly using a credit/debit card',
       value: ADD_FUNDS_CREDIT_CARD,
     },
     {
       header: 'Coinbase',
-      description: `Send ${
-        fundTypeToUse === ETH ? 'ETH' : 'Funds'
-      } from a Coinbase account`,
+      description: 'Send funds from a Coinbase account ',
       value: ADD_FUNDS_COINBASE,
     },
     {
       header: 'Transfer',
-      description: `Send ${
-        fundTypeToUse === ETH ? 'ETH' : 'Funds'
-      } to your ${accountLabel} account`,
+      description: 'Send funds to your trading account',
       value: ADD_FUNDS_TRANSFER,
     },
     {
       header: 'Convert',
-      description:
-        fundTypeToUse === DAI
-          ? 'Trade ETH or REP for DAI'
-          : 'Trade ETH or DAI for REP',
+      description: `Trade another token currency for ${tokenToAdd === DAI ? 'DAI ($)' : tokenToAdd}`,
       value: ADD_FUNDS_SWAP,
     },
   ];
@@ -181,18 +136,23 @@ export const AddFunds = ({
   let addFundsOptions = [...FUND_OTPIONS];
 
   // Only show CreditCard option for onRamp wallets using the Add DAI flow
-  if (fundTypeToUse !== DAI || !usingOnRampSupportedWallet) {
+  if (tokenToAdd !== DAI || !usingOnRampSupportedWallet) {
     addFundsOptions = addFundsOptions.slice(1, addFundsOptions.length);
   }
 
   // If Add REP flow show SWAP at the top
-  if (fundTypeToUse === REP) {
+  if (tokenToAdd === REP) {
     addFundsOptions = addFundsOptions.filter(
       option => option.value !== ADD_FUNDS_SWAP
     );
     addFundsOptions.unshift(
       FUND_OTPIONS.find(option => option.value === ADD_FUNDS_SWAP)
     );
+  }
+
+  if (initialSwapToken === USDC || initialSwapToken === USDT) {
+    // Convert USDT/USDC to dai flow, only show SWAP payament flow to avoid confusion
+    addFundsOptions = [FUND_OTPIONS[ADD_FUNDS_SWAP]];
   }
 
   const SWAP_ID = 0;
@@ -212,7 +172,7 @@ export const AddFunds = ({
           <CloseButton action={() => closeAction()} />
         </div>
         <div>
-          <h1>{fundTypeToUse === REP ? 'Get REP' : 'Add Funds'}</h1>
+          <h1>{tokenToAdd === REP ? 'Get REP' : 'Add Funds'}</h1>
           <h2>Choose a method</h2>
           <RadioTwoLineBarGroup
             radioButtons={addFundsOptions}
@@ -222,7 +182,7 @@ export const AddFunds = ({
               setSelectedOption(() => value && value.toString());
             }}
           />
-          {fundTypeToUse !== ETH && <FundsHelp fundType={fundTypeToUse} />}
+          {tokenToAdd !== ETH && <FundsHelp fundType={tokenToAdd} />}
         </div>
       </div>
       <div>
@@ -242,27 +202,27 @@ export const AddFunds = ({
             <>
               <h1>Convert</h1>
               <h2>
-                {fundTypeToUse === REP
+                {tokenToAdd === REP
                   ? 'Trade a currency for REP'
-                  : 'Trade ETH or REP for DAI'}
+                  : 'Trade ETH or REP for DAI ($) and vice versa'}
               </h2>
 
               <div className={Styles.AddFundsSwap}>
                 <PillSelection
                   options={pillOptions}
-                  onChange={selection => toggleSwapPool(selection)}
                   defaultSelection={SWAP_ID}
                 />
               </div>
-              {swapSelected && (
+              {poolSelected && (
                 <Swap
                   address={loginAccount.address}
                   balances={loginAccount.balances}
-                  toToken={fundTypeToUse === REP ? REP : DAI}
-                  fromToken={fundTypeToUse === REP ? DAI : REP}
+                  toToken={tokenToAdd}
+                  fromToken={initialSwapToken ? initialSwapToken : null}
                   ETH_RATE={ETH_RATE}
                   REP_RATE={REP_RATE}
                   config={config}
+                  useSigner={useSigner}
                 />
               )}
             </>
@@ -271,11 +231,11 @@ export const AddFunds = ({
           {selectedOption === ADD_FUNDS_CREDIT_CARD && (
             <CreditCard
               accountMeta={accountMeta}
-              walletAddress={walletAddress}
+              walletAddress={address}
               addFundsTorus={() => addFundsTorus}
               addFundsFortmatic={() => addFundsFortmatic}
               fundTypeLabel={fundTypeLabel}
-              fundTypeToUse={fundTypeToUse}
+              fundTypeToUse={tokenToAdd}
               validateAndSet={validateAndSet}
               BUY_MIN={BUY_MIN}
               BUY_MAX={BUY_MAX}
@@ -285,23 +245,21 @@ export const AddFunds = ({
           )}
           {selectedOption === ADD_FUNDS_COINBASE && (
             <Coinbase
-              fundTypeToUse={fundTypeToUse}
+              fundTypeToUse={tokenToAdd}
               fundTypeLabel={fundTypeLabel}
-              walletAddress={walletAddress}
-              accountLabel={accountLabel}
+              walletAddress={address}
             />
           )}
           {selectedOption === ADD_FUNDS_TRANSFER && (
             <Transfer
-              fundTypeToUse={fundTypeToUse}
+              fundTypeToUse={tokenToAdd}
               fundTypeLabel={fundTypeLabel}
-              walletAddress={walletAddress}
-              accountLabel={accountLabel}
+              walletAddress={address}
             />
           )}
         </div>
-        {fundTypeToUse !== ETH && selectedOption !== ADD_FUNDS_SWAP && (
-          <FundsHelp fundType={fundTypeToUse} />
+        {tokenToAdd !== ETH && selectedOption !== ADD_FUNDS_SWAP && (
+          <FundsHelp fundType={tokenToAdd} />
         )}
         <div>
           <button onClick={() => closeAction()}>Done</button>

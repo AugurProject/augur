@@ -1977,9 +1977,9 @@ export function addScripts(flash: FlashSession) {
       const dev = Boolean(args.dev);
       const normalTime = !Boolean(args.fake);
       const detach = Boolean(args.detach);
-      const runGeth = !Boolean(args.doNotRunGeth);
       const createMarkets = !Boolean(args.doNotCreateMarkets);
       const runGanache = Boolean(args.ganache);
+      const runGeth = !Boolean(args.doNotRunGeth) && !runGanache;
 
       spawnSync('docker', ['pull', '0xorg/mesh:latest']);
 
@@ -1991,7 +1991,7 @@ export function addScripts(flash: FlashSession) {
 
       let env;
       try {
-        if (runGeth && !runGanache) {
+        if (runGeth) {
           if (dev) {
             spawnSync('yarn', ['workspace', '@augurproject/tools', 'docker:geth:detached']);
           } else {
@@ -2001,7 +2001,7 @@ export function addScripts(flash: FlashSession) {
           console.log('Waiting for Geth to start up');
           await sleep(10000); // give geth some time to start
           await refreshSDKConfig(); // only grabs new local.json for non-dev
-        } else if(runGanache) {
+        } else if (runGanache) {
           await startGanacheServer(this.accounts);
         }
 
