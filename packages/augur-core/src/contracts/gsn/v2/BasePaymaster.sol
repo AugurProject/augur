@@ -6,6 +6,7 @@ import "ROOT/gsn/v2/interfaces/ISignatureVerifier.sol";
 import "ROOT/gsn/v2/interfaces/IPaymaster.sol";
 import "ROOT/gsn/v2/interfaces/IRelayHub.sol";
 import "ROOT/gsn/v2/interfaces/IForwarder.sol";
+import "ROOT/gsn/v2/utils/GsnEip712Library.sol";
 
 /**
  * Abstract base class to be inherited by a concrete Paymaster
@@ -18,6 +19,8 @@ contract BasePaymaster is IPaymaster {
 
     IRelayHub internal relayHub;
     IForwarder internal trustedForwarder;
+
+    bytes32 public domainSeparator;
 
     function getHubAddr() public view returns (address) {
         return address(relayHub);
@@ -41,15 +44,17 @@ contract BasePaymaster is IPaymaster {
         );
     }
 
+    // this method must be called from acceptRelayedCall to validate that the forwarder
+    // is approved by the paymaster as well and that the request is verified.
     function _verifySignature(
-        ISignatureVerifier.RelayRequest memory relayRequest,
+        GsnTypes.RelayRequest memory relayRequest,
         bytes memory signature
     )
     public
     view
     {
         require(address(trustedForwarder) == relayRequest.relayData.forwarder, "Forwarder is not trusted");
-        trustedForwarder.verify(relayRequest, signature);
+        GsnEip712Library.verify(relayRequest, signature);
     }
 
     /*
