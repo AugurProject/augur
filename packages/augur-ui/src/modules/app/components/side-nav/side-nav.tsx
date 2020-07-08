@@ -23,6 +23,8 @@ import {
   TRANSACTIONS,
 } from 'modules/common/constants';
 import { Stats } from '../top-bar';
+import { MARKETS } from 'modules/routes/constants/views';
+import Logo from 'modules/app/components/logo';
 
 interface SideNavProps {
   defaultMobileClick: Function;
@@ -105,12 +107,17 @@ const SideNav = ({
             })}
           >
             {isHelpMenuOpen && <HelpMenuList />}
-            {isLogged && (
-              <PrimaryButton
-                action={() => updateModal({ type: MODAL_ADD_FUNDS })}
-                text="Add Funds"
-              />
-            )}
+              <div>
+                <Link to={makePath(MARKETS)}>
+                  <Logo />
+                </Link>
+                {isLogged && (
+                  <PrimaryButton
+                    action={() => updateModal({ type: MODAL_ADD_FUNDS })}
+                    text="Add Funds"
+                  />
+                )}
+              </div>
             {accessFilteredMenu.map((item, idx) => (
               <li
                 key={idx}
