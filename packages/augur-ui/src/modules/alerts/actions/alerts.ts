@@ -1,23 +1,20 @@
 import store, { AppState } from 'appStore';
 import setAlertText from 'modules/alerts/actions/set-alert-text';
 import {
-  CANCELORDERS,
   CLAIMTRADINGPROCEEDS,
   CONTRIBUTE,
   DOINITIALREPORT,
-  ETH_RESERVE_INCREASE,
   INFO,
-  NULL_ADDRESS,
   PUBLICFILLORDER,
   PUBLICTRADE,
   REDEEMSTAKE,
-  SUCCESS,
   ZERO,
+  SUCCESS,
+  ETH_RESERVE_INCREASE,
+  NULL_ADDRESS,
+  CANCELORDERS,
 } from 'modules/common/constants';
-import {
-  getEthForDaiRate,
-  getNetworkId,
-} from 'modules/contracts/actions/contractCalls';
+import { getNetworkId, getEthForDaiRate } from 'modules/contracts/actions/contractCalls';
 import { Action } from 'redux';
 import { ThunkDispatch } from 'redux-thunk';
 import { BigNumber, createBigNumber } from 'utils/create-big-number';
@@ -66,7 +63,7 @@ export function removeAlert(id: string, name: string) {
 
 export function updateExistingAlert(id, alert) {
   return (dispatch, getState) => {
-    const callback = (alert) => {
+    const callback = alert => {
       const fullAlert = {
         type: UPDATE_EXISTING_ALERT,
         data: {

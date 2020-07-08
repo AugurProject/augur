@@ -1,52 +1,52 @@
 import { AppState } from 'appStore';
 import {
-  ADDLIQUIDITY,
-  APPROVE,
-  BATCHCANCELORDERS,
-  BUYPARTICIPATIONTOKENS,
   CANCELORDER,
   CANCELORDERS,
-  CATEGORICAL,
-  CLAIMMARKETSPROCEEDS,
-  CONTRIBUTE,
-  CREATE_MARKET,
-  CREATEAUGURWALLET,
-  CREATECATEGORICALMARKET,
+  BATCHCANCELORDERS,
+  TX_ORDER_ID,
   CREATEMARKET,
+  CREATECATEGORICALMARKET,
   CREATESCALARMARKET,
   CREATEYESNOMARKET,
-  DOINITIALREPORT,
-  FINALIZE,
-  FORKANDREDEEM,
-  MIGRATE_FROM_LEG_REP_TOKEN,
-  MIGRATEOUTBYPAYOUT,
-  MODAL_ERROR,
-  PUBLICFILLORDER,
-  REDEEMSTAKE,
+  CREATE_MARKET,
+  CATEGORICAL,
   SCALAR,
-  SENDETHER,
-  SWAPETHFOREXACTTOKENS,
-  SWAPEXACTTOKENSFORTOKENS,
-  TRADINGPROCEEDSCLAIMED,
-  TRANSFER,
-  TX_ORDER_ID,
-  WITHDRAWALLFUNDSASDAI,
   YES_NO,
+  PUBLICFILLORDER,
+  CREATEAUGURWALLET,
+  WITHDRAWALLFUNDSASDAI,
+  ADDLIQUIDITY,
+  SWAPEXACTTOKENSFORTOKENS,
+  SWAPETHFOREXACTTOKENS,
+  SENDETHER,
+  BUYPARTICIPATIONTOKENS,
+  TRANSFER,
+  MODAL_ERROR,
+  MIGRATE_FROM_LEG_REP_TOKEN,
+  REDEEMSTAKE,
+  MIGRATEOUTBYPAYOUT,
+  TRADINGPROCEEDSCLAIMED,
+  CLAIMMARKETSPROCEEDS,
+  FORKANDREDEEM,
+  FINALIZE,
+  DOINITIALREPORT,
+  CONTRIBUTE,
+  APPROVE,
 } from 'modules/common/constants';
 import { CreateMarketData } from 'modules/types';
 import { ThunkDispatch } from 'redux-thunk';
 import { Action } from 'redux';
 import {
   Events,
-  parseZeroXMakerAssetData,
   TXEventName,
+  parseZeroXMakerAssetData
 } from '@augurproject/sdk-lite';
 import {
-  addCanceledOrder,
   addPendingData,
   addUpdatePendingTransaction,
-  updatePendingDisputeHash,
+  addCanceledOrder,
   updatePendingReportHash,
+  updatePendingDisputeHash,
 } from 'modules/pending-queue/actions/pending-queue-management';
 import { convertUnixToFormattedDate } from 'utils/format-date';
 import { TransactionMetadataParams } from '@augurproject/contract-dependencies-ethers';
@@ -109,11 +109,9 @@ export const addUpdateTransaction = (txStatus: Events.TXStatus) => async (
     }
 
     if (eventName === TXEventName.RelayerDown) {
-      const hasEth = (
-        await loginAccount.meta.signer.provider.getBalance(
-          loginAccount.meta.signer._address
-        )
-      ).gt(0);
+      const hasEth = (await loginAccount.meta.signer.provider.getBalance(
+        loginAccount.meta.signer._address
+      )).gt(0);
 
       dispatch(
         updateModal({
@@ -184,14 +182,14 @@ export const addUpdateTransaction = (txStatus: Events.TXStatus) => async (
     switch (methodCall) {
       case REDEEMSTAKE: {
         const params = transaction.params;
-        params._reportingParticipants.map((participant) =>
+        params._reportingParticipants.map(participant =>
           dispatch(
             addPendingData(participant, REDEEMSTAKE, eventName, hash, {
               ...transaction,
             })
           )
         );
-        params._disputeWindows.map((window) =>
+        params._disputeWindows.map(window =>
           dispatch(
             addPendingData(window, REDEEMSTAKE, eventName, hash, {
               ...transaction,
@@ -287,14 +285,14 @@ export const addUpdateTransaction = (txStatus: Events.TXStatus) => async (
       }
       case BATCHCANCELORDERS: {
         const orders = (transaction.params && transaction.params.orders) || [];
-        orders.map((order) =>
+        orders.map(order =>
           dispatch(addCanceledOrder(order.orderId, eventName, hash))
         );
         break;
       }
       case CANCELORDERS: {
         const orders = (transaction.params && transaction.params._orders) || [];
-        orders.map((order) => {
+        orders.map(order => {
           dispatch(addCanceledOrder(order.orderId, eventName, hash));
           dispatch(
             addPendingData(

@@ -1,20 +1,17 @@
 import { TXEventName } from '@augurproject/sdk-lite';
 import { addAlert } from 'modules/alerts/actions/alerts';
 import { BUY, CANCELORDERS } from 'modules/common/constants';
-import {
-  cancelZeroXOpenBatchOrders,
-  cancelZeroXOpenOrder,
-} from 'modules/contracts/actions/contractCalls';
+import { cancelZeroXOpenBatchOrders, cancelZeroXOpenOrder, } from 'modules/contracts/actions/contractCalls';
 import { addCanceledOrder } from 'modules/pending-queue/actions/pending-queue-management';
 import { Action } from 'redux';
 import { ThunkDispatch } from 'redux-thunk';
 
 const BATCH_CANCEL_MAX = 4;
 
-export const cancelAllOpenOrders = (orders) => async (
+export const cancelAllOpenOrders = orders => async (
   dispatch: ThunkDispatch<void, any, Action>
 ) => {
-  let orderHashes = orders.map((order) => order.id);
+  let orderHashes = orders.map(order => order.id);
 
   try {
     orders.forEach((order) => {
@@ -23,10 +20,7 @@ export const cancelAllOpenOrders = (orders) => async (
     if (orderHashes.length > BATCH_CANCEL_MAX) {
       let i = 0;
       while (i < orderHashes.length) {
-        let orderHashesToCancel = orderHashes.slice(
-          i,
-          Math.min(i + BATCH_CANCEL_MAX, orderHashes.length)
-        );
+        let orderHashesToCancel = orderHashes.slice(i, Math.min(i + BATCH_CANCEL_MAX, orderHashes.length));
         dispatch(setCancelOrderStatus(orderHashesToCancel));
         await cancelZeroXOpenBatchOrders(orderHashesToCancel);
         i += BATCH_CANCEL_MAX;
@@ -37,17 +31,12 @@ export const cancelAllOpenOrders = (orders) => async (
     }
   } catch (error) {
     console.error('Error canceling batch orders', error);
-    dispatch(
-      setCancelOrderStatus(
-        orders.map((o) => o.id),
-        TXEventName.Failure
-      )
-    );
+    dispatch(setCancelOrderStatus(orders.map(o => o.id), TXEventName.Failure));
     throw error;
   }
 };
 
-export const cancelOrder = (order) => async (
+export const cancelOrder = order => async (
   dispatch: ThunkDispatch<void, any, Action>
 ) => {
   try {
@@ -79,9 +68,6 @@ const sendCancelAlert = (order, dispatch) => {
   dispatch(addAlert(alert));
 };
 
-const setCancelOrderStatus = (
-  ids: string[],
-  status: string = TXEventName.Pending
-) => (dispatch) => {
-  ids.map((id) => dispatch(addCanceledOrder(id, status, null)));
+const setCancelOrderStatus = (ids: string[], status: string = TXEventName.Pending) => dispatch => {
+  ids.map(id => dispatch(addCanceledOrder(id, status, null)))
 };

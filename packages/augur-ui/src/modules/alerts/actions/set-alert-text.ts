@@ -7,68 +7,65 @@ import { loadMarketsInfoIfNotLoaded } from 'modules/markets/actions/load-markets
 import { getOutcomeNameWithOutcome } from 'utils/get-outcome';
 import {
   formatAttoDai,
-  formatDai,
   formatRep,
   formatShares,
+  formatDai,
 } from 'utils/format-number';
 import {
-  calculatePayoutNumeratorsValue,
-  convertAttoValueToDisplayValue,
-  convertDisplayValuetoAttoValue,
   convertOnChainAmountToDisplayAmount,
   convertOnChainPriceToDisplayPrice,
   convertPayoutNumeratorsToStrings,
+  convertDisplayValuetoAttoValue,
   numTicksToTickSize,
+  convertAttoValueToDisplayValue,
+  calculatePayoutNumeratorsValue,
 } from '@augurproject/utils';
-import { TXEventName } from '@augurproject/sdk-lite';
 import {
-  APPROVE,
+  TXEventName
+} from '@augurproject/sdk-lite';
+import {
   BUY,
-  BUY_INDEX,
-  BUYPARTICIPATIONTOKENS,
+  SELL,
+  TEN_TO_THE_EIGHTEENTH_POWER,
+  MALFORMED_OUTCOME,
   CANCELORDER,
   CANCELORDERS,
   CLAIMTRADINGPROCEEDS,
-  CONTRIBUTE,
-  CREATECATEGORICALMARKET,
-  CREATEMARKET,
-  CREATESCALARMARKET,
-  CREATEYESNOMARKET,
-  DOINITIALREPORT,
-  DOINITIALREPORTWARPSYNC,
-  HEX_BUY,
-  MALFORMED_OUTCOME,
-  MIGRATE_FROM_LEG_REP_TOKEN,
-  ONE,
+  BUYPARTICIPATIONTOKENS,
+  REDEEMSTAKE,
   PUBLICFILLBESTORDER,
   PUBLICFILLBESTORDERWITHLIMIT,
   PUBLICFILLORDER,
+  CONTRIBUTE,
+  DOINITIALREPORT,
   PUBLICTRADE,
   PUBLICTRADEWITHLIMIT,
-  REDEEMSTAKE,
-  SCALAR,
-  SELL,
+  CREATEMARKET,
+  CREATECATEGORICALMARKET,
+  CREATESCALARMARKET,
+  CREATEYESNOMARKET,
+  APPROVE,
+  BUY_INDEX,
+  HEX_BUY,
   SELL_INDEX,
-  TEN_TO_THE_EIGHTEENTH_POWER,
   ZERO,
+  ONE,
+  MIGRATE_FROM_LEG_REP_TOKEN,
+  DOINITIALREPORTWARPSYNC,
+  SCALAR,
 } from 'modules/common/constants';
 import { AppState } from 'appStore';
 import { Action } from 'redux';
 import { ThunkDispatch } from 'redux-thunk';
 import { MarketData } from 'modules/types';
-import { BigNumber, createBigNumber } from 'utils/create-big-number';
+import { createBigNumber, BigNumber } from 'utils/create-big-number';
 import { convertUnixToFormattedDate } from 'utils/format-date';
 import getPrecision from 'utils/get-number-precision';
 
 function toCapitalizeCase(label) {
   return label.charAt(0).toUpperCase() + label.slice(1);
 }
-export function getInfo(
-  params: any,
-  status: string,
-  marketInfo: MarketData,
-  isOrder: boolean = true
-) {
+export function getInfo(params: any, status: string, marketInfo: MarketData, isOrder: boolean = true) {
   const outcome = new BigNumber(params.outcome || params._outcome).toString();
   const outcomeDescription = getOutcomeNameWithOutcome(marketInfo, outcome);
   let orderType =
@@ -105,9 +102,7 @@ export function getInfo(
     tickSize
   ).toString();
 
-  const priceFormatted = formatDai(price, {
-    decimals: getPrecision(String(tickSize), 2),
-  });
+  const priceFormatted = formatDai(price, {decimals: getPrecision(String(tickSize), 2)})
 
   return {
     priceFormatted,
@@ -447,9 +442,7 @@ export default function setAlertText(alert: any, callback: Function) {
                 marketInfo.numTicks,
                 marketInfo.marketType,
                 alert.params.payoutNumerators ||
-                  convertPayoutNumeratorsToStrings(
-                    alert.params._payoutNumerators
-                  )
+                  convertPayoutNumeratorsToStrings(alert.params._payoutNumerators)
               );
               const outcomeDescription = payoutNumeratorResultObject.malformed
                 ? MALFORMED_OUTCOME
@@ -478,7 +471,6 @@ export default function setAlertText(alert: any, callback: Function) {
             const {
               orderType,
               amount,
-              price,
               outcomeDescription,
               priceFormatted,
             } = getInfo(
