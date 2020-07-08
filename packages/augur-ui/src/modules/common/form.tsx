@@ -686,7 +686,8 @@ export class CategoryMultiSelect extends Component<
       disableTertiaryCategory,
       selected
     );
-
+    const tertiaryDefault = selected[2] || (!disableTertiaryCategory && tertiaryOptions.length > 0) ? (tertiaryOptions[0]?.label || tertiaryOptions[0]) : null;
+    if (tertiaryDefault && !selected[2]) this.onChangeDropdown(tertiaryDefault, 2)
     return (
       <ul
         className={classNames(Styles.CategoryMultiSelect, {
@@ -731,7 +732,7 @@ export class CategoryMultiSelect extends Component<
         )}
         {(showTertiaryDropdown || customTertiary) && (
           <DropdownInputGroup
-            defaultValue={selected[2] || (!disableTertiaryCategory && tertiaryOptions.length > 0) ? (tertiaryOptions[0]?.label || tertiaryOptions[0]) : null}
+            defaultValue={tertiaryDefault}
             staticLabel="Sub Category"
             onChangeDropdown={choice => this.onChangeDropdown(choice, 2)}
             options={tertiaryOptions}

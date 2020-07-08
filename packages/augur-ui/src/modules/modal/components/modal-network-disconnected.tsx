@@ -24,6 +24,7 @@ const ModalNetworkDisconnected = () => {
   const descriptionText =
     'Please wait while we try to reconnect you, or update your node addresses ';
 
+<<<<<<< HEAD
   return (
     <section className={commonStyles.ModalContainer}>
       {showEnvForm && (
@@ -38,6 +39,29 @@ const ModalNetworkDisconnected = () => {
       {!showEnvForm && (
         <>
           <h1>{titleText}</h1>
+=======
+  render() {
+    const { modal } = this.props;
+    const { showEnvForm } = this.state;
+    const connectionStatus = getValue(this.props, 'modal.connection');
+    let nodeTitleText = '';
+    let nodeDescriptionText = '';
+    if (
+      !connectionStatus.isConnected
+    ) {
+      // ethereumNode disconnected only
+      nodeTitleText = ' to Ethereum Node';
+      nodeDescriptionText = ' from your Ethereum Node';
+    }
+    // assemble the text based on disconnections
+    const titleText = `Reconnecting${nodeTitleText}`;
+    const descriptionText = 'Please wait while being reconnected, or update your node addresses ';
+
+    return (
+      <section className={commonStyles.ModalContainer}>
+        {!showEnvForm && <h1>{titleText}</h1>}
+        {!showEnvForm && (
+>>>>>>> v2
           <p>
             {`You have been disconnected${nodeDescriptionText}.`}
             <br />

@@ -199,7 +199,7 @@ const Wrapper = ({
 
   useEffect(() => {
     if (selectedOrderProperties.orderQuantity !== '' && selectedOrderProperties.orderPrice !== '' && state.orderDaiEstimate === '' && !state.trade.limitPrice && !state.trade.numShares) {
-      // if SelectedOrderProps aren't empty but we haven't estimated dai and have no price or numShares for trade then we need to calculate that.
+      // if SelectedOrderProps aren't empty but no estimated dai and have no price or numShares for trade, then recalculate.
       updateTradeTotalCost(selectedOrderProperties);
     }
   }, [selectedOrderProperties.orderQuantity, selectedOrderProperties.orderPrice])

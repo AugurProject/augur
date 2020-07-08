@@ -15,6 +15,8 @@ export class Contracts {
   augurTrading: ContractInterfaces.AugurTrading;
   universe: ContractInterfaces.Universe;
   cash: ContractInterfaces.Cash;
+  usdc: ContractInterfaces.USDC;
+  usdt: ContractInterfaces.USDT;
   orders: ContractInterfaces.Orders;
   createOrder: ContractInterfaces.CreateOrder;
   cancelOrder: ContractInterfaces.CancelOrder;
@@ -61,6 +63,8 @@ export class Contracts {
       addresses.Universe
     );
     this.cash = new ContractInterfaces.Cash(dependencies, addresses.Cash);
+    this.usdc = new ContractInterfaces.USDC(dependencies, addresses.USDC);
+    this.usdt = new ContractInterfaces.USDT(dependencies, addresses.USDT);
     this.orders = new ContractInterfaces.Orders(dependencies, addresses.Orders);
     this.createOrder = new ContractInterfaces.CreateOrder(
       dependencies,

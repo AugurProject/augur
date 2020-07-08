@@ -77,12 +77,12 @@ describe('State API :: get-platform-activity-stats :: ', () => {
     });
 
     expect(stats).toMatchObject({
-      activeUsers: 2,
+      activeUsers: 3, // john, mary, and the warp sync market creator
       disputedMarkets: 1,
-      marketsCreated: 3,
+      marketsCreated: 4, // includes initial warp sync market
       numberOfTrades: 9,
     });
-    expect(stats.amountStaked).toEqual('900611959375000000000512');
+    expect(stats.amountStaked).toEqual('900612735601043701171200');
     expect(stats.openInterest).toEqual('2040000000000000');
     expect(stats.volume).toEqual('0.006093');
   });

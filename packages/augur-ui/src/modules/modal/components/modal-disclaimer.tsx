@@ -139,6 +139,7 @@ const ModalDisclaimer = () => {
             I have read and understood the above.
           </label>
         </div>
+<<<<<<< HEAD
         <div className={Styles.ActionButtons}>
           <button
             className={Styles.Primary}
@@ -156,6 +157,20 @@ const ModalDisclaimer = () => {
             I agee and accept the above
           </button>
         </div>
+=======
+        <ModalActions
+          buttons={[
+            {
+              label: 'I agree and accept the above',
+              isDisabled: !didScroll || !didCheck,
+              action: () => {
+                closeModal();
+                if (onApprove) onApprove();
+              },
+            },
+          ]}
+        />
+>>>>>>> v2
       </div>
       <div
         onClick={() => {

@@ -1008,6 +1008,7 @@ export const MarketStatusLabel = ({
   let warpSync = false;
   let text: string;
   switch (reportingState) {
+    case REPORTING_STATE.UNKNOWN:
     case REPORTING_STATE.PRE_REPORTING:
       open = true;
       text = constants.MARKET_STATUS_MESSAGES.OPEN;

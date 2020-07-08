@@ -51,6 +51,7 @@ import {
   ONE,
   MIGRATE_FROM_LEG_REP_TOKEN,
   DOINITIALREPORTWARPSYNC,
+  SCALAR,
 } from 'modules/common/constants';
 import { MarketData } from 'modules/types';
 import { createBigNumber, BigNumber } from 'utils/create-big-number';
