@@ -118,7 +118,7 @@ export const TransferForm = ({
     const signerPays = (createBigNumber(signingEthBalance).minus(gasInEth)).gte(ZERO);
     setSignerPays(signerPays);
     setGasCosts(createBigNumber(gasCosts))
-    const estInDai = ethToDaiFromAttoRate(Number(createBigNumber(gasInEth)));
+    const estInDai = getGasInDai(Number(createBigNumber(gasCosts)));
     // TODO: figure out exact DAI amount needed to convert to eth.
     const gasEstimateInDai = signerPays ? estInDai : formatDai(createBigNumber(estInDai.value).plus(RELAYER_DAI_CUSION));
     setState({...state, gasEstimateInDai});

@@ -342,13 +342,13 @@ export async function finalizeMarket(marketId: string) {
 
 export function getDai() {
   const { contracts } = augurSdk.get();
-  return contracts.cashFaucet.faucet(new BigNumber('1000000000000000000000'));
+  return contracts.cash.faucet(new BigNumber('1000000000000000000000'));
 }
 
 export function fundGsnWallet() {
   const amount = new BigNumber('1000000000000000000000');
   const { contracts } = augurSdk.get();
-  contracts.cashFaucet.faucet(amount);
+  contracts.cash.faucet(amount);
 }
 
 export async function withdrawAllFunds(destination: string): Promise<void> {

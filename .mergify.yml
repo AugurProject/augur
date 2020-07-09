@@ -1,14 +1,28 @@
 pull_request_rules:
-  - name: automatic merge on CI success and review
+  - name: Automatic merge to v2
     conditions:
       - "#approved-reviews-by>=1"
       - "#review-requested=0"
       - "#changes-requested-reviews-by=0"
       - status-success=AugurProject.augur
-      - base=master
+      - base=v2
       - label!=work-in-progress
       - label!=status/wip
     actions:
       merge:
         method: merge
         strict: smart
+        
+pull_request_rules:
+  - name: Automatic Merge to dev
+    conditions:
+      - "#approved-reviews-by>=1"
+      - "#review-requested=0"
+      - "#changes-requested-reviews-by=0"
+      - status-success=AugurProject.augur
+      - base=dev
+      - label!=work-in-progress
+      - label!=status/wip
+    actions:
+      merge:
+        method: merge
