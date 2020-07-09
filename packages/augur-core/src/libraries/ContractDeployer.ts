@@ -36,7 +36,7 @@ import {
     // Uniswap
     UniswapV2Factory,
     UniswapV2Pair,
-    WETH9, TestNetReputationToken, UniswapV2Router01
+    WETH9, TestNetReputationToken, UniswapV2Router02
 } from "./ContractInterfaces";
 import { Contracts, ContractData } from './Contracts';
 import { Dependencies } from './GenericContractInterfaces';
@@ -248,8 +248,8 @@ Deploying to: ${env}
 
     private async setupTokenExchange<C1 extends Cash|TestNetReputationToken, C2 extends Cash|TestNetReputationToken>(token1: C1, token2: C2) {
         const address = await this.dependencies.getDefaultAddress();
-        const uniswapAddress = this.getContractAddress('UniswapV2Router01');
-        const uniswap = new UniswapV2Router01(this.dependencies, uniswapAddress);
+        const uniswapAddress = this.getContractAddress('UniswapV2Router02');
+        const uniswap = new UniswapV2Router02(this.dependencies, uniswapAddress);
         const token1Amount = new BigNumber(100e18);
         const token2Amount = new BigNumber(10e18);
 
