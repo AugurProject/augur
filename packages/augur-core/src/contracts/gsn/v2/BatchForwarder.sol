@@ -6,15 +6,12 @@ import "ROOT/gsn/v2/Forwarder.sol";
 import "ROOT/gsn/v2/BaseRelayRecipient.sol";
 import "ROOT/gsn/v2/utils/GsnUtils.sol";
 
+
 /**
  * batch forwarder support calling a method sendBatch in the forwarder itself.
  * NOTE: the "target" of the request should be the BatcherForwarder itself
  */
 contract BatchForwarder is Forwarder, BaseRelayRecipient {
-
-    function versionForwarder() external view returns (string memory){
-        return "2.0.0-alpha.1+opengsn.batched.iforwarder";
-    }
 
     string public versionRecipient = "2.0.0-alpha.1+opengsn.batched.irelayrecipient";
 

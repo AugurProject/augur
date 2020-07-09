@@ -11725,6 +11725,25 @@
 			"type": "event"
 		},
 		{
+			"anonymous": false,
+			"inputs": [
+				{
+					"indexed": true,
+					"internalType": "bytes32",
+					"name": "typeHash",
+					"type": "bytes32"
+				},
+				{
+					"indexed": false,
+					"internalType": "string",
+					"name": "typeStr",
+					"type": "string"
+				}
+			],
+			"name": "RequestTypeRegistered",
+			"type": "event"
+		},
+		{
 			"payable": true,
 			"stateMutability": "payable",
 			"type": "fallback"
@@ -11732,42 +11751,12 @@
 		{
 			"constant": true,
 			"inputs": [],
-			"name": "CALLDATA_TYPEHASH",
+			"name": "GENERIC_PARAMS",
 			"outputs": [
 				{
-					"internalType": "bytes32",
+					"internalType": "string",
 					"name": "",
-					"type": "bytes32"
-				}
-			],
-			"payable": false,
-			"stateMutability": "view",
-			"type": "function"
-		},
-		{
-			"constant": true,
-			"inputs": [],
-			"name": "RELAYDATA_TYPEHASH",
-			"outputs": [
-				{
-					"internalType": "bytes32",
-					"name": "",
-					"type": "bytes32"
-				}
-			],
-			"payable": false,
-			"stateMutability": "view",
-			"type": "function"
-		},
-		{
-			"constant": true,
-			"inputs": [],
-			"name": "RELAY_REQUEST_TYPEHASH",
-			"outputs": [
-				{
-					"internalType": "bytes32",
-					"name": "",
-					"type": "bytes32"
+					"type": "string"
 				}
 			],
 			"payable": false,
@@ -11796,21 +11785,100 @@
 					"components": [
 						{
 							"internalType": "address",
-							"name": "target",
+							"name": "from",
 							"type": "address"
 						},
 						{
-							"internalType": "bytes",
-							"name": "encodedFunction",
-							"type": "bytes"
+							"internalType": "address",
+							"name": "to",
+							"type": "address"
 						},
+						{
+							"internalType": "uint256",
+							"name": "value",
+							"type": "uint256"
+						},
+						{
+							"internalType": "uint256",
+							"name": "gas",
+							"type": "uint256"
+						},
+						{
+							"internalType": "uint256",
+							"name": "nonce",
+							"type": "uint256"
+						},
+						{
+							"internalType": "bytes",
+							"name": "data",
+							"type": "bytes"
+						}
+					],
+					"internalType": "struct IForwarder.ForwardRequest",
+					"name": "req",
+					"type": "tuple"
+				},
+				{
+					"internalType": "bytes",
+					"name": "suffixData",
+					"type": "bytes"
+				},
+				{
+					"internalType": "bytes",
+					"name": "sig",
+					"type": "bytes"
+				}
+			],
+			"name": "_verifySig",
+			"outputs": [],
+			"payable": false,
+			"stateMutability": "pure",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [
+				{
+					"components": [
 						{
 							"components": [
 								{
+									"internalType": "address",
+									"name": "from",
+									"type": "address"
+								},
+								{
+									"internalType": "address",
+									"name": "to",
+									"type": "address"
+								},
+								{
 									"internalType": "uint256",
-									"name": "gasLimit",
+									"name": "value",
 									"type": "uint256"
 								},
+								{
+									"internalType": "uint256",
+									"name": "gas",
+									"type": "uint256"
+								},
+								{
+									"internalType": "uint256",
+									"name": "nonce",
+									"type": "uint256"
+								},
+								{
+									"internalType": "bytes",
+									"name": "data",
+									"type": "bytes"
+								}
+							],
+							"internalType": "struct IForwarder.ForwardRequest",
+							"name": "request",
+							"type": "tuple"
+						},
+						{
+							"components": [
 								{
 									"internalType": "uint256",
 									"name": "gasPrice",
@@ -11825,23 +11893,6 @@
 									"internalType": "uint256",
 									"name": "baseRelayFee",
 									"type": "uint256"
-								}
-							],
-							"internalType": "struct ISignatureVerifier.GasData",
-							"name": "gasData",
-							"type": "tuple"
-						},
-						{
-							"components": [
-								{
-									"internalType": "address",
-									"name": "senderAddress",
-									"type": "address"
-								},
-								{
-									"internalType": "uint256",
-									"name": "senderNonce",
-									"type": "uint256"
 								},
 								{
 									"internalType": "address",
@@ -11854,17 +11905,27 @@
 									"type": "address"
 								},
 								{
+									"internalType": "bytes",
+									"name": "paymasterData",
+									"type": "bytes"
+								},
+								{
+									"internalType": "uint256",
+									"name": "clientId",
+									"type": "uint256"
+								},
+								{
 									"internalType": "address",
 									"name": "forwarder",
 									"type": "address"
 								}
 							],
-							"internalType": "struct ISignatureVerifier.RelayData",
+							"internalType": "struct GsnTypes.RelayData",
 							"name": "relayData",
 							"type": "tuple"
 						}
 					],
-					"internalType": "struct ISignatureVerifier.RelayRequest",
+					"internalType": "struct GsnTypes.RelayRequest",
 					"name": "relayRequest",
 					"type": "tuple"
 				},
@@ -11969,6 +12030,84 @@
 			],
 			"payable": false,
 			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": false,
+			"inputs": [
+				{
+					"components": [
+						{
+							"internalType": "address",
+							"name": "from",
+							"type": "address"
+						},
+						{
+							"internalType": "address",
+							"name": "to",
+							"type": "address"
+						},
+						{
+							"internalType": "uint256",
+							"name": "value",
+							"type": "uint256"
+						},
+						{
+							"internalType": "uint256",
+							"name": "gas",
+							"type": "uint256"
+						},
+						{
+							"internalType": "uint256",
+							"name": "nonce",
+							"type": "uint256"
+						},
+						{
+							"internalType": "bytes",
+							"name": "data",
+							"type": "bytes"
+						}
+					],
+					"internalType": "struct IForwarder.ForwardRequest",
+					"name": "req",
+					"type": "tuple"
+				},
+				{
+					"internalType": "bytes32",
+					"name": "domainSeparator",
+					"type": "bytes32"
+				},
+				{
+					"internalType": "bytes32",
+					"name": "requestTypeHash",
+					"type": "bytes32"
+				},
+				{
+					"internalType": "bytes",
+					"name": "suffixData",
+					"type": "bytes"
+				},
+				{
+					"internalType": "bytes",
+					"name": "sig",
+					"type": "bytes"
+				}
+			],
+			"name": "execute",
+			"outputs": [
+				{
+					"internalType": "bool",
+					"name": "success",
+					"type": "bool"
+				},
+				{
+					"internalType": "bytes",
+					"name": "ret",
+					"type": "bytes"
+				}
+			],
+			"payable": true,
+			"stateMutability": "payable",
 			"type": "function"
 		},
 		{
@@ -12213,22 +12352,44 @@
 				{
 					"components": [
 						{
-							"internalType": "address",
-							"name": "target",
-							"type": "address"
-						},
-						{
-							"internalType": "bytes",
-							"name": "encodedFunction",
-							"type": "bytes"
+							"components": [
+								{
+									"internalType": "address",
+									"name": "from",
+									"type": "address"
+								},
+								{
+									"internalType": "address",
+									"name": "to",
+									"type": "address"
+								},
+								{
+									"internalType": "uint256",
+									"name": "value",
+									"type": "uint256"
+								},
+								{
+									"internalType": "uint256",
+									"name": "gas",
+									"type": "uint256"
+								},
+								{
+									"internalType": "uint256",
+									"name": "nonce",
+									"type": "uint256"
+								},
+								{
+									"internalType": "bytes",
+									"name": "data",
+									"type": "bytes"
+								}
+							],
+							"internalType": "struct IForwarder.ForwardRequest",
+							"name": "request",
+							"type": "tuple"
 						},
 						{
 							"components": [
-								{
-									"internalType": "uint256",
-									"name": "gasLimit",
-									"type": "uint256"
-								},
 								{
 									"internalType": "uint256",
 									"name": "gasPrice",
@@ -12243,23 +12404,6 @@
 									"internalType": "uint256",
 									"name": "baseRelayFee",
 									"type": "uint256"
-								}
-							],
-							"internalType": "struct ISignatureVerifier.GasData",
-							"name": "gasData",
-							"type": "tuple"
-						},
-						{
-							"components": [
-								{
-									"internalType": "address",
-									"name": "senderAddress",
-									"type": "address"
-								},
-								{
-									"internalType": "uint256",
-									"name": "senderNonce",
-									"type": "uint256"
 								},
 								{
 									"internalType": "address",
@@ -12272,18 +12416,28 @@
 									"type": "address"
 								},
 								{
+									"internalType": "bytes",
+									"name": "paymasterData",
+									"type": "bytes"
+								},
+								{
+									"internalType": "uint256",
+									"name": "clientId",
+									"type": "uint256"
+								},
+								{
 									"internalType": "address",
 									"name": "forwarder",
 									"type": "address"
 								}
 							],
-							"internalType": "struct ISignatureVerifier.RelayData",
+							"internalType": "struct GsnTypes.RelayData",
 							"name": "relayData",
 							"type": "tuple"
 						}
 					],
-					"internalType": "struct ISignatureVerifier.RelayRequest",
-					"name": "relayRequest",
+					"internalType": "struct GsnTypes.RelayRequest",
+					"name": "req",
 					"type": "tuple"
 				}
 			],
@@ -12296,7 +12450,7 @@
 				}
 			],
 			"payable": false,
-			"stateMutability": "view",
+			"stateMutability": "pure",
 			"type": "function"
 		},
 		{
@@ -12394,11 +12548,6 @@
 					"components": [
 						{
 							"internalType": "uint256",
-							"name": "gasLimit",
-							"type": "uint256"
-						},
-						{
-							"internalType": "uint256",
 							"name": "gasPrice",
 							"type": "uint256"
 						},
@@ -12411,10 +12560,35 @@
 							"internalType": "uint256",
 							"name": "baseRelayFee",
 							"type": "uint256"
+						},
+						{
+							"internalType": "address",
+							"name": "relayWorker",
+							"type": "address"
+						},
+						{
+							"internalType": "address",
+							"name": "paymaster",
+							"type": "address"
+						},
+						{
+							"internalType": "bytes",
+							"name": "paymasterData",
+							"type": "bytes"
+						},
+						{
+							"internalType": "uint256",
+							"name": "clientId",
+							"type": "uint256"
+						},
+						{
+							"internalType": "address",
+							"name": "forwarder",
+							"type": "address"
 						}
 					],
-					"internalType": "struct ISignatureVerifier.GasData",
-					"name": "gasData",
+					"internalType": "struct GsnTypes.RelayData",
+					"name": "relayData",
 					"type": "tuple"
 				}
 			],
@@ -12452,6 +12626,26 @@
 			"type": "function"
 		},
 		{
+			"constant": false,
+			"inputs": [
+				{
+					"internalType": "string",
+					"name": "typeName",
+					"type": "string"
+				},
+				{
+					"internalType": "string",
+					"name": "typeSuffix",
+					"type": "string"
+				}
+			],
+			"name": "registerRequestType",
+			"outputs": [],
+			"payable": false,
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
 			"constant": true,
 			"inputs": [],
 			"name": "token0IsCash",
@@ -12470,80 +12664,67 @@
 			"constant": true,
 			"inputs": [
 				{
+					"internalType": "bytes32",
+					"name": "",
+					"type": "bytes32"
+				}
+			],
+			"name": "typeHashes",
+			"outputs": [
+				{
+					"internalType": "bool",
+					"name": "",
+					"type": "bool"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [
+				{
 					"components": [
 						{
 							"internalType": "address",
-							"name": "target",
+							"name": "from",
 							"type": "address"
 						},
 						{
+							"internalType": "address",
+							"name": "to",
+							"type": "address"
+						},
+						{
+							"internalType": "uint256",
+							"name": "value",
+							"type": "uint256"
+						},
+						{
+							"internalType": "uint256",
+							"name": "gas",
+							"type": "uint256"
+						},
+						{
+							"internalType": "uint256",
+							"name": "nonce",
+							"type": "uint256"
+						},
+						{
 							"internalType": "bytes",
-							"name": "encodedFunction",
+							"name": "data",
 							"type": "bytes"
-						},
-						{
-							"components": [
-								{
-									"internalType": "uint256",
-									"name": "gasLimit",
-									"type": "uint256"
-								},
-								{
-									"internalType": "uint256",
-									"name": "gasPrice",
-									"type": "uint256"
-								},
-								{
-									"internalType": "uint256",
-									"name": "pctRelayFee",
-									"type": "uint256"
-								},
-								{
-									"internalType": "uint256",
-									"name": "baseRelayFee",
-									"type": "uint256"
-								}
-							],
-							"internalType": "struct ISignatureVerifier.GasData",
-							"name": "gasData",
-							"type": "tuple"
-						},
-						{
-							"components": [
-								{
-									"internalType": "address",
-									"name": "senderAddress",
-									"type": "address"
-								},
-								{
-									"internalType": "uint256",
-									"name": "senderNonce",
-									"type": "uint256"
-								},
-								{
-									"internalType": "address",
-									"name": "relayWorker",
-									"type": "address"
-								},
-								{
-									"internalType": "address",
-									"name": "paymaster",
-									"type": "address"
-								},
-								{
-									"internalType": "address",
-									"name": "forwarder",
-									"type": "address"
-								}
-							],
-							"internalType": "struct ISignatureVerifier.RelayData",
-							"name": "relayData",
-							"type": "tuple"
 						}
 					],
-					"internalType": "struct ISignatureVerifier.RelayRequest",
+					"internalType": "struct IForwarder.ForwardRequest",
 					"name": "req",
 					"type": "tuple"
+				},
+				{
+					"internalType": "bytes",
+					"name": "suffixData",
+					"type": "bytes"
 				},
 				{
 					"internalType": "bytes",
@@ -12558,130 +12739,9 @@
 			"type": "function"
 		},
 		{
-			"constant": false,
-			"inputs": [
-				{
-					"components": [
-						{
-							"internalType": "address",
-							"name": "target",
-							"type": "address"
-						},
-						{
-							"internalType": "bytes",
-							"name": "encodedFunction",
-							"type": "bytes"
-						},
-						{
-							"components": [
-								{
-									"internalType": "uint256",
-									"name": "gasLimit",
-									"type": "uint256"
-								},
-								{
-									"internalType": "uint256",
-									"name": "gasPrice",
-									"type": "uint256"
-								},
-								{
-									"internalType": "uint256",
-									"name": "pctRelayFee",
-									"type": "uint256"
-								},
-								{
-									"internalType": "uint256",
-									"name": "baseRelayFee",
-									"type": "uint256"
-								}
-							],
-							"internalType": "struct ISignatureVerifier.GasData",
-							"name": "gasData",
-							"type": "tuple"
-						},
-						{
-							"components": [
-								{
-									"internalType": "address",
-									"name": "senderAddress",
-									"type": "address"
-								},
-								{
-									"internalType": "uint256",
-									"name": "senderNonce",
-									"type": "uint256"
-								},
-								{
-									"internalType": "address",
-									"name": "relayWorker",
-									"type": "address"
-								},
-								{
-									"internalType": "address",
-									"name": "paymaster",
-									"type": "address"
-								},
-								{
-									"internalType": "address",
-									"name": "forwarder",
-									"type": "address"
-								}
-							],
-							"internalType": "struct ISignatureVerifier.RelayData",
-							"name": "relayData",
-							"type": "tuple"
-						}
-					],
-					"internalType": "struct ISignatureVerifier.RelayRequest",
-					"name": "req",
-					"type": "tuple"
-				},
-				{
-					"internalType": "bytes",
-					"name": "sig",
-					"type": "bytes"
-				}
-			],
-			"name": "verifyAndCall",
-			"outputs": [],
-			"payable": false,
-			"stateMutability": "nonpayable",
-			"type": "function"
-		},
-		{
-			"constant": true,
-			"inputs": [],
-			"name": "versionForwarder",
-			"outputs": [
-				{
-					"internalType": "string",
-					"name": "",
-					"type": "string"
-				}
-			],
-			"payable": false,
-			"stateMutability": "view",
-			"type": "function"
-		},
-		{
 			"constant": true,
 			"inputs": [],
 			"name": "versionRecipient",
-			"outputs": [
-				{
-					"internalType": "string",
-					"name": "",
-					"type": "string"
-				}
-			],
-			"payable": false,
-			"stateMutability": "view",
-			"type": "function"
-		},
-		{
-			"constant": true,
-			"inputs": [],
-			"name": "versionSM",
 			"outputs": [
 				{
 					"internalType": "string",
@@ -18679,11 +18739,6 @@
 					"components": [
 						{
 							"internalType": "uint256",
-							"name": "gasLimit",
-							"type": "uint256"
-						},
-						{
-							"internalType": "uint256",
 							"name": "gasPrice",
 							"type": "uint256"
 						},
@@ -18696,10 +18751,35 @@
 							"internalType": "uint256",
 							"name": "baseRelayFee",
 							"type": "uint256"
+						},
+						{
+							"internalType": "address",
+							"name": "relayWorker",
+							"type": "address"
+						},
+						{
+							"internalType": "address",
+							"name": "paymaster",
+							"type": "address"
+						},
+						{
+							"internalType": "bytes",
+							"name": "paymasterData",
+							"type": "bytes"
+						},
+						{
+							"internalType": "uint256",
+							"name": "clientId",
+							"type": "uint256"
+						},
+						{
+							"internalType": "address",
+							"name": "forwarder",
+							"type": "address"
 						}
 					],
-					"internalType": "struct ISignatureVerifier.GasData",
-					"name": "gasData",
+					"internalType": "struct GsnTypes.RelayData",
+					"name": "relayData",
 					"type": "tuple"
 				}
 			],
@@ -18721,22 +18801,44 @@
 				{
 					"components": [
 						{
-							"internalType": "address",
-							"name": "target",
-							"type": "address"
-						},
-						{
-							"internalType": "bytes",
-							"name": "encodedFunction",
-							"type": "bytes"
+							"components": [
+								{
+									"internalType": "address",
+									"name": "from",
+									"type": "address"
+								},
+								{
+									"internalType": "address",
+									"name": "to",
+									"type": "address"
+								},
+								{
+									"internalType": "uint256",
+									"name": "value",
+									"type": "uint256"
+								},
+								{
+									"internalType": "uint256",
+									"name": "gas",
+									"type": "uint256"
+								},
+								{
+									"internalType": "uint256",
+									"name": "nonce",
+									"type": "uint256"
+								},
+								{
+									"internalType": "bytes",
+									"name": "data",
+									"type": "bytes"
+								}
+							],
+							"internalType": "struct IForwarder.ForwardRequest",
+							"name": "request",
+							"type": "tuple"
 						},
 						{
 							"components": [
-								{
-									"internalType": "uint256",
-									"name": "gasLimit",
-									"type": "uint256"
-								},
 								{
 									"internalType": "uint256",
 									"name": "gasPrice",
@@ -18751,23 +18853,6 @@
 									"internalType": "uint256",
 									"name": "baseRelayFee",
 									"type": "uint256"
-								}
-							],
-							"internalType": "struct ISignatureVerifier.GasData",
-							"name": "gasData",
-							"type": "tuple"
-						},
-						{
-							"components": [
-								{
-									"internalType": "address",
-									"name": "senderAddress",
-									"type": "address"
-								},
-								{
-									"internalType": "uint256",
-									"name": "senderNonce",
-									"type": "uint256"
 								},
 								{
 									"internalType": "address",
@@ -18780,17 +18865,27 @@
 									"type": "address"
 								},
 								{
+									"internalType": "bytes",
+									"name": "paymasterData",
+									"type": "bytes"
+								},
+								{
+									"internalType": "uint256",
+									"name": "clientId",
+									"type": "uint256"
+								},
+								{
 									"internalType": "address",
 									"name": "forwarder",
 									"type": "address"
 								}
 							],
-							"internalType": "struct ISignatureVerifier.RelayData",
+							"internalType": "struct GsnTypes.RelayData",
 							"name": "relayData",
 							"type": "tuple"
 						}
 					],
-					"internalType": "struct ISignatureVerifier.RelayRequest",
+					"internalType": "struct GsnTypes.RelayRequest",
 					"name": "relayRequest",
 					"type": "tuple"
 				},
@@ -18900,22 +18995,44 @@
 				{
 					"components": [
 						{
-							"internalType": "address",
-							"name": "target",
-							"type": "address"
-						},
-						{
-							"internalType": "bytes",
-							"name": "encodedFunction",
-							"type": "bytes"
+							"components": [
+								{
+									"internalType": "address",
+									"name": "from",
+									"type": "address"
+								},
+								{
+									"internalType": "address",
+									"name": "to",
+									"type": "address"
+								},
+								{
+									"internalType": "uint256",
+									"name": "value",
+									"type": "uint256"
+								},
+								{
+									"internalType": "uint256",
+									"name": "gas",
+									"type": "uint256"
+								},
+								{
+									"internalType": "uint256",
+									"name": "nonce",
+									"type": "uint256"
+								},
+								{
+									"internalType": "bytes",
+									"name": "data",
+									"type": "bytes"
+								}
+							],
+							"internalType": "struct IForwarder.ForwardRequest",
+							"name": "request",
+							"type": "tuple"
 						},
 						{
 							"components": [
-								{
-									"internalType": "uint256",
-									"name": "gasLimit",
-									"type": "uint256"
-								},
 								{
 									"internalType": "uint256",
 									"name": "gasPrice",
@@ -18930,23 +19047,6 @@
 									"internalType": "uint256",
 									"name": "baseRelayFee",
 									"type": "uint256"
-								}
-							],
-							"internalType": "struct ISignatureVerifier.GasData",
-							"name": "gasData",
-							"type": "tuple"
-						},
-						{
-							"components": [
-								{
-									"internalType": "address",
-									"name": "senderAddress",
-									"type": "address"
-								},
-								{
-									"internalType": "uint256",
-									"name": "senderNonce",
-									"type": "uint256"
 								},
 								{
 									"internalType": "address",
@@ -18959,17 +19059,27 @@
 									"type": "address"
 								},
 								{
+									"internalType": "bytes",
+									"name": "paymasterData",
+									"type": "bytes"
+								},
+								{
+									"internalType": "uint256",
+									"name": "clientId",
+									"type": "uint256"
+								},
+								{
 									"internalType": "address",
 									"name": "forwarder",
 									"type": "address"
 								}
 							],
-							"internalType": "struct ISignatureVerifier.RelayData",
+							"internalType": "struct GsnTypes.RelayData",
 							"name": "relayData",
 							"type": "tuple"
 						}
 					],
-					"internalType": "struct ISignatureVerifier.RelayRequest",
+					"internalType": "struct GsnTypes.RelayRequest",
 					"name": "relayRequest",
 					"type": "tuple"
 				},
@@ -19089,22 +19199,44 @@
 				{
 					"components": [
 						{
-							"internalType": "address",
-							"name": "target",
-							"type": "address"
-						},
-						{
-							"internalType": "bytes",
-							"name": "encodedFunction",
-							"type": "bytes"
+							"components": [
+								{
+									"internalType": "address",
+									"name": "from",
+									"type": "address"
+								},
+								{
+									"internalType": "address",
+									"name": "to",
+									"type": "address"
+								},
+								{
+									"internalType": "uint256",
+									"name": "value",
+									"type": "uint256"
+								},
+								{
+									"internalType": "uint256",
+									"name": "gas",
+									"type": "uint256"
+								},
+								{
+									"internalType": "uint256",
+									"name": "nonce",
+									"type": "uint256"
+								},
+								{
+									"internalType": "bytes",
+									"name": "data",
+									"type": "bytes"
+								}
+							],
+							"internalType": "struct IForwarder.ForwardRequest",
+							"name": "request",
+							"type": "tuple"
 						},
 						{
 							"components": [
-								{
-									"internalType": "uint256",
-									"name": "gasLimit",
-									"type": "uint256"
-								},
 								{
 									"internalType": "uint256",
 									"name": "gasPrice",
@@ -19119,23 +19251,6 @@
 									"internalType": "uint256",
 									"name": "baseRelayFee",
 									"type": "uint256"
-								}
-							],
-							"internalType": "struct ISignatureVerifier.GasData",
-							"name": "gasData",
-							"type": "tuple"
-						},
-						{
-							"components": [
-								{
-									"internalType": "address",
-									"name": "senderAddress",
-									"type": "address"
-								},
-								{
-									"internalType": "uint256",
-									"name": "senderNonce",
-									"type": "uint256"
 								},
 								{
 									"internalType": "address",
@@ -19148,17 +19263,27 @@
 									"type": "address"
 								},
 								{
+									"internalType": "bytes",
+									"name": "paymasterData",
+									"type": "bytes"
+								},
+								{
+									"internalType": "uint256",
+									"name": "clientId",
+									"type": "uint256"
+								},
+								{
 									"internalType": "address",
 									"name": "forwarder",
 									"type": "address"
 								}
 							],
-							"internalType": "struct ISignatureVerifier.RelayData",
+							"internalType": "struct GsnTypes.RelayData",
 							"name": "relayData",
 							"type": "tuple"
 						}
 					],
-					"internalType": "struct ISignatureVerifier.RelayRequest",
+					"internalType": "struct GsnTypes.RelayRequest",
 					"name": "relayRequest",
 					"type": "tuple"
 				},
@@ -19444,6 +19569,21 @@
 			"inputs": [
 				{
 					"internalType": "address",
+					"name": "relayHub",
+					"type": "address"
+				}
+			],
+			"name": "authorizeHubByManager",
+			"outputs": [],
+			"payable": false,
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"constant": false,
+			"inputs": [
+				{
+					"internalType": "address",
 					"name": "relayManager",
 					"type": "address"
 				},
@@ -19453,7 +19593,7 @@
 					"type": "address"
 				}
 			],
-			"name": "authorizeHub",
+			"name": "authorizeHubByOwner",
 			"outputs": [],
 			"payable": false,
 			"stateMutability": "nonpayable",
@@ -19645,6 +19785,21 @@
 			"inputs": [
 				{
 					"internalType": "address",
+					"name": "relayHub",
+					"type": "address"
+				}
+			],
+			"name": "unauthorizeHubByManager",
+			"outputs": [],
+			"payable": false,
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"constant": false,
+			"inputs": [
+				{
+					"internalType": "address",
 					"name": "relayManager",
 					"type": "address"
 				},
@@ -19654,7 +19809,7 @@
 					"type": "address"
 				}
 			],
-			"name": "unauthorizeHub",
+			"name": "unauthorizeHubByOwner",
 			"outputs": [],
 			"payable": false,
 			"stateMutability": "nonpayable",
