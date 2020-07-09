@@ -11,7 +11,7 @@ APPROVAL_AMOUNT = 2**255
 
 def test_uniswap_router(contractsFixture, cash, reputationToken):
     weth = contractsFixture.contracts["WETH9"]
-    uniswap = contractsFixture.contracts["UniswapV2Router01"]
+    uniswap = contractsFixture.contracts["UniswapV2Router02"]
 
     account = contractsFixture.accounts[0]
     deadline = contractsFixture.eth_tester.backend.chain.header.timestamp + 1000000

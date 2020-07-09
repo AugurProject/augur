@@ -137,8 +137,8 @@ Deploying to: ${env}
             if (!externalAddresses.UniswapV2Factory) throw new Error('Must provide UniswapV2Factory');
             console.log(`Registering UniswapV2Factory Contract at ${externalAddresses.UniswapV2Factory}`);
             await this.augur!.registerContract(stringTo32ByteHex('UniswapV2Factory'), externalAddresses.UniswapV2Factory);
-            console.log(`Registering UniswapV2Router01 Contract at ${externalAddresses.UniswapV2Router01}`);
-            await this.augur!.registerContract(stringTo32ByteHex('UniswapV2Router01'), externalAddresses.UniswapV2Router01);
+            console.log(`Registering UniswapV2Router02 Contract at ${externalAddresses.UniswapV2Router02}`);
+            await this.augur!.registerContract(stringTo32ByteHex('UniswapV2Router02'), externalAddresses.UniswapV2Router02);
         } else {
             await this.uploadUniswapContracts();
         }
@@ -289,7 +289,7 @@ Deploying to: ${env}
         mapping['Exchange'] = this.contracts.get('Exchange').address!;
 
         mapping['UniswapV2Factory'] = this.contracts.get('UniswapV2Factory').address!;
-        mapping['UniswapV2Router01'] = this.contracts.get('UniswapV2Router01').address!;
+        mapping['UniswapV2Router02'] = this.contracts.get('UniswapV2Router02').address!;
         const uniswapV2Factory = new UniswapV2Factory(this.dependencies, this.getContractAddress('UniswapV2Factory'));
         mapping['EthExchange'] = await uniswapV2Factory.getPair_(this.getContractAddress('WETH9'), this.getContractAddress('Cash'));
         mapping['USDCExchange'] = await uniswapV2Factory.getPair_(this.getContractAddress('USDC'), this.getContractAddress('Cash'));
@@ -464,8 +464,8 @@ Deploying to: ${env}
     private async uploadUniswapContracts() : Promise<string> {
       const uniswapV2FactoryContract = await this.contracts.get('UniswapV2Factory');
       uniswapV2FactoryContract.address = await this.uploadAndAddToAugur(uniswapV2FactoryContract, 'UniswapV2Factory', ["0x0000000000000000000000000000000000000000"]);
-      const uniswapRouterContract = await this.contracts.get('UniswapV2Router01');
-      uniswapRouterContract.address = await this.uploadAndAddToAugur(uniswapRouterContract, 'UniswapV2Router01', [this.getContractAddress("WETH9"), uniswapV2FactoryContract.address]);
+      const uniswapRouterContract = await this.contracts.get('UniswapV2Router02');
+      uniswapRouterContract.address = await this.uploadAndAddToAugur(uniswapRouterContract, 'UniswapV2Router02', [uniswapV2FactoryContract.address, this.getContractAddress("WETH9")]);
       return uniswapV2FactoryContract.address;
     }
 
@@ -767,7 +767,7 @@ Deploying to: ${env}
         mapping['AugurWalletRegistry'] = this.contracts.get('AugurWalletRegistry').address!;
         mapping['AugurWalletRegistryV2'] = this.contracts.get('AugurWalletRegistryV2').address!;
         mapping['UniswapV2Factory'] = this.contracts.get('UniswapV2Factory').address!;
-        mapping['UniswapV2Router01'] = this.contracts.get('UniswapV2Router01').address!;
+        mapping['UniswapV2Router02'] = this.contracts.get('UniswapV2Router02').address!;
         mapping['RelayHubV2'] = this.contracts.get('RelayHubV2').address!;
         const uniswapV2Factory = new UniswapV2Factory(this.dependencies, this.getContractAddress('UniswapV2Factory'));
         mapping['EthExchange'] = await uniswapV2Factory.getPair_(this.getContractAddress('WETH9'), this.getContractAddress('Cash'));

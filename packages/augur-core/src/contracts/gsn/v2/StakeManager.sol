@@ -53,16 +53,40 @@ contract StakeManager is IStakeManager {
         emit StakeWithdrawn(relayManager, msg.sender, amount);
     }
 
-    function authorizeHub(address relayManager, address relayHub) external {
+    modifier ownerOnly (address relayManager) {
         StakeInfo storage info = stakes[relayManager];
         require(info.owner == msg.sender, "not owner");
+        _;
+    }
+
+    modifier managerOnly () {
+        StakeInfo storage info = stakes[msg.sender];
+        require(info.owner != address(0), "not manager");
+        _;
+    }
+
+    function authorizeHubByOwner(address relayManager, address relayHub) external ownerOnly(relayManager) {
+        _authorizeHub(relayManager, relayHub);
+    }
+
+    function authorizeHubByManager(address relayHub) external managerOnly {
+        _authorizeHub(msg.sender, relayHub);
+    }
+
+    function _authorizeHub(address relayManager, address relayHub) internal {
         authorizedHubs[relayManager][relayHub].removalBlock = uint(-1);
         emit HubAuthorized(relayManager, relayHub);
     }
 
-    function unauthorizeHub(address relayManager, address relayHub) external {
-        StakeInfo storage info = stakes[relayManager];
-        require(info.owner == msg.sender, "not owner");
+    function unauthorizeHubByOwner(address relayManager, address relayHub) external ownerOnly(relayManager) {
+        _unauthorizeHub(relayManager, relayHub);
+    }
+
+    function unauthorizeHubByManager(address relayHub) external managerOnly {
+        _unauthorizeHub(msg.sender, relayHub);
+    }
+
+    function _unauthorizeHub(address relayManager, address relayHub) internal {
         RelayHubInfo storage hubInfo = authorizedHubs[relayManager][relayHub];
         require(hubInfo.removalBlock == uint(-1), "hub not authorized");
         uint256 removalBlock = block.number + stakes[relayManager].unstakeDelay;
