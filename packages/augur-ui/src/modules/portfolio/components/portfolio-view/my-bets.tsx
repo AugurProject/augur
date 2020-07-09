@@ -1,0 +1,290 @@
+import React, { useMemo, useState } from 'react';
+import classNames from 'classnames';
+
+import Styles from 'modules/portfolio/components/portfolio-view/my-bets.styles.less';
+import {
+  ExternalLinkButton,
+  PrimaryButton,
+  FilterButton,
+} from 'modules/common/buttons';
+import { PillSelection, SquareDropdown } from 'modules/common/selection';
+import { HelmetTag } from 'modules/seo/helmet-tag';
+import { PORTFOLIO_VIEW_HEAD_TAGS } from 'modules/seo/helmet-configs';
+import {
+  SPORTS_MARKET_TYPES,
+  MY_BETS_VIEW_BY,
+  MY_BETS_MARKET_STATUS,
+  MY_BETS_BET_DATE,
+  EVENT,
+  MARKET_STATE_TYPES,
+  GAMES,
+  RESOLVED,
+  REPORTING_STATE,
+  MARKET_OPEN,
+  MARKET_REPORTING,
+  MARKET_CLOSED,
+  SPORTS_GROUP_TYPES,
+} from 'modules/common/constants';
+import { MARKETS } from 'modules/routes/constants/views';
+import { FilterNotice } from 'modules/common/filter-notice';
+import { EmptyMagnifyingGlass } from 'modules/common/icons';
+import { Game, Outcomes } from '../common/common';
+import { useMyBetsStore } from 'modules/portfolio/store/my-bets';
+import { FilterSearchPure } from 'modules/filter-sort/filter-search';
+import { AppStatus } from 'modules/app/store/app-status';
+import { useMarketsStore } from 'modules/markets/store/markets';
+import { useBetslipStore } from 'modules/trading/store/betslip';
+import { getOutcomeNameWithOutcome } from 'utils/get-outcome';
+
+export const outcomesData = (myBets) => myBets.reduce(
+  (p, game) => [
+    ...p,
+    ...Object.values(game.orders).map(outcome => {
+      return {
+        ...game,
+        outcomes: null,
+        ...outcome,
+        outcomeName: getOutcomeNameWithOutcome(game, outcome.outcomeId, false, false)
+      };
+    }),
+  ],
+  []
+);
+
+export function processRows(
+  viewBy,
+  marketStatus,
+  betDate,
+  selectedMarketCardType,
+  selectedMarketStateType,
+  search,
+  myBets,
+  marketInfos
+) {
+  let myBetsArray = Object.keys(myBets).map(function(key) {
+    const marketInfo = marketInfos[key];
+
+    return {
+      ...myBets[key],
+      ...marketInfo,
+      marketId: key
+    };
+  });
+  let futureRows = myBetsArray.filter(market => {
+    return market?.sportsBook?.groupType === SPORTS_GROUP_TYPES.FUTURES;
+  });
+  let gamesRows = myBetsArray.filter(market => {
+    return market?.sportsBook?.groupType !== SPORTS_GROUP_TYPES.FUTURES;
+  });
+  let rows = futureRows;
+
+  if (MY_BETS_VIEW_BY[viewBy].label === EVENT) {
+    rows =
+      SPORTS_MARKET_TYPES[selectedMarketCardType].label === GAMES
+        ? gamesRows
+        : futureRows;
+    rows = rows
+      .filter(data => {
+        const { reportingState } = data;
+        const marketStatusLabel = MY_BETS_MARKET_STATUS[marketStatus].label;
+        if (marketStatusLabel === MARKET_OPEN) {
+          return reportingState === REPORTING_STATE.PRE_REPORTING;
+        } else if (marketStatusLabel === MARKET_REPORTING) {
+          return (
+            reportingState === REPORTING_STATE.DESIGNATED_REPORTING ||
+            reportingState === REPORTING_STATE.OPEN_REPORTING ||
+            reportingState === REPORTING_STATE.AWAITING_NEXT_WINDOW ||
+            reportingState === REPORTING_STATE.CROWDSOURCING_DISPUTE
+          );
+        } else if (marketStatusLabel === MARKET_CLOSED) {
+          return reportingState === REPORTING_STATE.FINALIZED;
+        } else {
+          return true;
+        }
+      })
+      .filter(
+        data =>
+          data.description.toLowerCase().indexOf(search.toLowerCase()) >= 0
+      )
+      .sort((a, b) => b.startTime - a.startTime);
+  } else {
+    rows = outcomesData(myBetsArray).filter(data =>
+      MARKET_STATE_TYPES[selectedMarketStateType].label === RESOLVED
+        ? data.reportingState === REPORTING_STATE.FINALIZED
+        : data.reportingState !== REPORTING_STATE.FINALIZED
+    );
+
+    const {
+      blockchain: { currentAugurTimestamp },
+    } = AppStatus.get();
+    rows = rows
+      .filter(data => {
+        const interval = MY_BETS_BET_DATE[betDate].periodInterval;
+        return currentAugurTimestamp / 1000 - data.dateUpdated.timestamp < interval;
+      })
+      .filter(
+        data => data.outcomeName.toLowerCase().indexOf(search.toLowerCase()) >= 0
+      )
+      .sort((a, b) => b.dateUpdated.timestamp - a.dateUpdated.timestamp);
+  }
+  return rows;
+}
+export const MyBets = () => {
+  const {
+    viewBy,
+    marketStatus,
+    betDate,
+    selectedMarketCardType,
+    selectedMarketStateType,
+    actions: {
+      setViewBy,
+      setMarketStatus,
+      setBetDate,
+      setSelectedMarketCardType,
+      setSelectedMarketStateType,
+    },
+  } = useMyBetsStore();
+
+  const [search, setSearch] = useState('');
+
+  const { matched } = useBetslipStore();
+  const { marketInfos } = useMarketsStore();
+
+  const rows = useMemo(
+    () =>
+      processRows(
+        viewBy,
+        marketStatus,
+        betDate,
+        selectedMarketCardType,
+        selectedMarketStateType,
+        search,
+        matched.items,
+        marketInfos
+      ),
+    [
+      viewBy,
+      marketStatus,
+      betDate,
+      selectedMarketCardType,
+      selectedMarketStateType,
+      search,
+      matched.items
+    ]
+  );
+
+  const showEvents = MY_BETS_VIEW_BY[viewBy].label === EVENT;
+
+  return (
+    <div className={classNames(Styles.MyBets)}>
+      <HelmetTag {...PORTFOLIO_VIEW_HEAD_TAGS} />
+      <div>
+        <div>
+          <span>My Bets</span>
+          <span>To view your unmatched bets, go to Trading.</span>
+          <ExternalLinkButton
+            condensedStyle
+            customLink={{
+              pathname: MARKETS,
+            }}
+            label="go to trading"
+          />
+        </div>
+        <FilterNotice
+          showDismissButton={false}
+          show
+          color="active"
+          content={
+            <div className={Styles.ClaimWinnings}>
+              <span>
+                You have <b>$200.00</b> in winnings to claim.
+              </span>
+              <PrimaryButton text="Claim Bets" action={null} />
+            </div>
+          }
+        />
+        <div>
+          <span>
+            View by
+            <SquareDropdown
+              options={MY_BETS_VIEW_BY}
+              defaultValue={viewBy}
+              onChange={viewBy => {
+                setViewBy(viewBy);
+              }}
+              minimalStyle
+            />
+          </span>
+          {showEvents && (
+            <span>
+              Market Status:
+              <SquareDropdown
+                options={MY_BETS_MARKET_STATUS}
+                defaultValue={marketStatus}
+                onChange={marketStatus => setMarketStatus(marketStatus)}
+                minimalStyle
+              />
+            </span>
+          )}
+          {!showEvents && (
+            <span>
+              Bet Date:
+              <SquareDropdown
+                options={MY_BETS_BET_DATE}
+                defaultValue={betDate}
+                onChange={betDate => setBetDate(betDate)}
+                minimalStyle
+              />
+            </span>
+          )}
+        </div>
+        {showEvents && (
+          <PillSelection
+            options={SPORTS_MARKET_TYPES}
+            defaultSelection={selectedMarketCardType}
+            large
+            onChange={selectedMarketCardType =>
+              setSelectedMarketCardType(selectedMarketCardType)
+            }
+          />
+        )}
+        {!showEvents && (
+          <PillSelection
+            options={MARKET_STATE_TYPES}
+            defaultSelection={selectedMarketStateType}
+            large
+            onChange={selectedMarketStateType =>
+              setSelectedMarketStateType(selectedMarketStateType)
+            }
+          />
+        )}
+        <FilterSearchPure
+          placeholder="Search markets & outcomes..."
+          search={search}
+          onChange={search => setSearch(search)}
+        />
+        <FilterButton title="Filters" />
+      </div>
+      <div>
+        {rows.length === 0 && (
+          <section>
+            {EmptyMagnifyingGlass}
+            <span>No events found</span>
+            <span>
+              Try a different date range. <b>Clear Filter</b>
+            </span>
+          </section>
+        )}
+        {showEvents &&
+          rows.map(row => (
+            <Game
+              row={row}
+              key={row.marketId}
+              type={SPORTS_MARKET_TYPES[selectedMarketCardType].label}
+            />
+          ))}
+        {rows.length > 0 && !showEvents && <Outcomes rows={rows} />}
+      </div>
+    </div>
+  );
+};

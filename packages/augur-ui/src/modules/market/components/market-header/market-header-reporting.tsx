@@ -1,3 +1,5 @@
+import React from 'react';
+import ReactTooltip from 'react-tooltip';
 import type { Getters } from '@augurproject/sdk';
 import classNames from 'classnames';
 import { ProcessingButton } from 'modules/common/buttons';
@@ -12,47 +14,87 @@ import {
   SUBMIT_DISPUTE,
   SUBMIT_REPORT,
   TRANSACTIONS,
+  CLAIMMARKETSPROCEEDS,
+  FINALIZE,
+  MODAL_REPORTING,
+  MODAL_CLAIM_MARKETS_PROCEEDS,
+  DESIGNATED_REPORTER_SELF,
+  ZERO,
 } from 'modules/common/constants';
 import TooltipStyles from 'modules/common/tooltip.styles.less';
 import { finalizeMarket } from 'modules/contracts/actions/contractCalls';
+import { useAppStatusStore } from 'modules/app/store/app-status';
+import { selectMarket } from 'modules/markets/selectors/market';
+import { isSameAddress } from 'utils/isSameAddress';
+import { createBigNumber } from 'utils/create-big-number';
 import Styles
   from 'modules/market/components/market-header/market-header-reporting.styles.less';
 import { MarketData } from 'modules/types';
-import React from 'react';
-import ReactTooltip from 'react-tooltip';
+
 import { getOutcomeNameWithOutcome } from 'utils/get-outcome';
 
 interface MarketHeaderReportingProps {
   market: MarketData;
-  tentativeWinner?: Getters.Markets.StakeDetails;
-  canClaimProceeds?: boolean;
-  isLogged?: boolean;
-  isDesignatedReporter?: boolean;
-  claimMarketsProceeds: Function;
-  showReportingModal: Function;
-  isForking?: boolean;
-  isForkingMarket?: boolean;
-  isLoggedIn?: boolean;
+  preview: boolean;
+  marketId: string;
 }
 
 export const MarketHeaderReporting = ({
   market,
-  isDesignatedReporter,
-  claimMarketsProceeds,
-  tentativeWinner,
-  isLogged,
-  canClaimProceeds,
-  showReportingModal,
-  isForking,
-  isForkingMarket,
-  isLoggedIn
+  marketId,
+  preview,
 }: MarketHeaderReportingProps) => {
-  const { reportingState, id, consensusFormatted } = market;
-  let content = null;
-  const slowDisputing =
-    market.disputeInfo && market.disputeInfo.disputePacingOn;
+  const {
+    actions: { setModal },
+    accountPositions,
+    loginAccount: { address },
+    universe: { forkingInfo },
+    blockchain: { currentAugurTimestamp },
+  } = useAppStatusStore();
+  let { isLogged } = useAppStatusStore();
+  const marketSelected = market || selectMarket(marketId);
+  const disputeInfoStakes =
+    marketSelected.disputeInfo && marketSelected.disputeInfo.stakes;
 
-  if (consensusFormatted && (consensusFormatted.winningOutcome || consensusFormatted.invalid)) {
+  const isForking = !!forkingInfo;
+  const isForkingMarket =
+    forkingInfo && forkingInfo.forkingMarket === marketSelected.id;
+  isLogged = isLogged && !forkingInfo;
+  const isLoggedIn = isLogged;
+
+  const {
+    disputeInfo,
+    reportingState,
+    id,
+    consensusFormatted,
+    designatedReporter,
+    designatedReporterType
+  } = marketSelected;
+
+  const isDesignatedReporter = preview
+    ? designatedReporterType === DESIGNATED_REPORTER_SELF
+    : isSameAddress(designatedReporter, address);
+  const tentativeWinner =
+    (disputeInfoStakes &&
+      disputeInfoStakes.find(stake => stake.tentativeWinning)) ||
+    {};
+  const canClaimProceeds =
+    accountPositions[marketId] &&
+    accountPositions[marketId].tradingPositionsPerMarket &&
+    createBigNumber(
+      accountPositions[marketSelected.marketId].tradingPositionsPerMarket
+        .unclaimedProceeds
+    ).gt(ZERO)
+      ? true
+      : false;
+
+  let content = null;
+  const slowDisputing = disputeInfo?.disputePacingOn;
+
+  if (
+    consensusFormatted &&
+    (consensusFormatted.winningOutcome || consensusFormatted.invalid)
+  ) {
     content = (
       <div className={classNames(Styles.Content, Styles.Set)}>
         <div>
@@ -66,22 +108,28 @@ export const MarketHeaderReporting = ({
         {canClaimProceeds && (
           <ProcessingButton
             text={PROCEEDS_TO_CLAIM_TITLE}
-            action={() => claimMarketsProceeds([id])}
+            action={() =>
+              setModal({
+                type: MODAL_CLAIM_MARKETS_PROCEEDS,
+                marketIds: [id],
+              })
+            }
             disabled={!isLogged || !canClaimProceeds}
             queueName={CLAIMMARKETSPROCEEDS}
             queueId={id}
           />
         )}
-        {reportingState === REPORTING_STATE.AWAITING_FINALIZATION && isForkingMarket && (
-          <ProcessingButton
-            queueName={TRANSACTIONS}
-            queueId={FINALIZE}
-            small
-            disabled={!isLoggedIn}
-            text={'Finalize Market'}
-            action={() => finalizeMarket(id)}
-          />
-        )}
+        {reportingState === REPORTING_STATE.AWAITING_FINALIZATION &&
+          isForkingMarket && (
+            <ProcessingButton
+              queueName={TRANSACTIONS}
+              queueId={FINALIZE}
+              small
+              disabled={!isLoggedIn}
+              text={'Finalize Market'}
+              action={() => finalizeMarket(id)}
+            />
+          )}
       </div>
     );
   } else if (
@@ -102,7 +150,7 @@ export const MarketHeaderReporting = ({
                     : market.marketType === SCALAR
                     ? tentativeWinner.outcome
                     : getOutcomeNameWithOutcome(
-                        market,
+                        marketSelected,
                         tentativeWinner.outcome,
                         tentativeWinner.isInvalidOutcome
                       ))}
@@ -118,7 +166,12 @@ export const MarketHeaderReporting = ({
             text={
               slowDisputing ? 'Dispute Outcome' : 'Support or Dispute Outcome'
             }
-            action={() => showReportingModal()}
+            action={() =>
+              setModal({
+                type: MODAL_REPORTING,
+                market: marketSelected,
+              })
+            }
           />
         )}
       </div>
@@ -130,22 +183,24 @@ export const MarketHeaderReporting = ({
   ) {
     content = (
       <div
-        className={classNames(
-          Styles.Content,
-          Styles.Report
-        )}
+        className={classNames(Styles.Content, Styles.Report)}
         data-tip
         data-for={'tooltip--reporting' + id}
         data-iscapture={true}
       >
         <ProcessingButton
-          text='Report'
-          action={() => showReportingModal()}
+          text="Report"
+          action={() =>
+            setModal({
+              type: MODAL_REPORTING,
+              market: marketSelected,
+            })
+          }
           disabled={!isLogged}
           queueName={SUBMIT_REPORT}
           queueId={id}
         />
-         {(isForking) && (
+        {isForking && (
           <ReactTooltip
             id={'tooltip--reporting' + id}
             className={TooltipStyles.Tooltip}

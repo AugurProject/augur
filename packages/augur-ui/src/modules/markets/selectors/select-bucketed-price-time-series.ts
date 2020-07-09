@@ -1,54 +1,46 @@
 import { createBigNumber } from 'utils/create-big-number';
-import createCachedSelector from 're-reselect';
-import store from 'appStore';
 import { ZERO } from 'modules/common/constants';
 import {
   convertUnixToFormattedDate,
   roundTimestampToPastDayMidnight,
 } from 'utils/format-date';
-import {
-  selectMarketInfosState,
-  selectCurrentTimestamp,
-  selectMarketTradingHistoryState,
-} from 'appStore/select-state';
 import { selectPriceTimeSeries } from 'modules/markets/selectors/price-time-series';
-
-function selectMarketsDataStateMarket(state, marketId) {
-  return selectMarketInfosState(state)[marketId];
-}
-
-function selectMarketTradingHistoryStateMarket(state, marketId) {
-  return selectMarketTradingHistoryState(state)[marketId];
-}
+import { AppStatus } from 'modules/app/store/app-status';
+import { Markets } from '../store/markets';
 
 export default function(marketId) {
-  return bucketedPriceTimeSeries(store.getState(), marketId);
+  return bucketedPriceTimeSeries(marketId);
 }
 
-export const bucketedPriceTimeSeries = createCachedSelector(
-  selectCurrentTimestamp,
-  selectMarketsDataStateMarket,
-  selectMarketTradingHistoryStateMarket,
-  (currentTimestamp, marketData, marketTradeHistory) => {
-    if (marketData === null || !marketData.creationTime) return {};
+export const bucketedPriceTimeSeries = marketId => {
+  const { marketInfos, marketTradingHistory } = Markets.get();
+  const marketData = marketInfos[marketId];
+  const marketTradeHistory = marketTradingHistory[marketId];
+  if (marketData === null || !marketData.creationTime) return {};
+  const {
+    blockchain: { currentAugurTimestamp },
+  } = AppStatus.get();
+  const creationTime = convertUnixToFormattedDate(
+    marketData.creationTime
+  ).value.getTime();
 
-    const creationTime = convertUnixToFormattedDate(
-      marketData.creationTime
-    ).value.getTime();
+  const outcomes =
+    Object.keys(marketData.outcomes).map(oId => ({
+      ...marketData.outcomes[oId],
+      priceTimeSeries: selectPriceTimeSeries(
+        marketData.outcomes[oId],
+        marketTradeHistory
+      ),
+    })) || [];
+  const currentTime = currentAugurTimestamp * 1000 || Date.now();
 
-    const outcomes =
-      Object.keys(marketData.outcomes).map(oId => ({
-        ...marketData.outcomes[oId],
-        priceTimeSeries: selectPriceTimeSeries(
-          marketData.outcomes[oId],
-          marketTradeHistory
-        ),
-      })) || [];
-    const currentTime = currentTimestamp || Date.now();
-
-    return bucketedPriceTimeSeriesInternal(creationTime, currentTime, outcomes, marketData.minPrice);
-  }
-)((state, marketId) => marketId);
+  return bucketedPriceTimeSeriesInternal(
+    creationTime,
+    currentTime,
+    outcomes,
+    marketData.minPrice
+  );
+};
 
 const bucketedPriceTimeSeriesInternal = (
   creationTime,
@@ -83,22 +75,24 @@ const bucketedPriceTimeSeriesInternal = (
 
   timeBuckets.push(currentTimestamp);
   const priceTimeSeries = outcomes.reduce((p, o) => {
-    const lastTrade = o.priceTimeSeries.length > 0 && o.priceTimeSeries[o.priceTimeSeries.length -1];
+    const lastTrade =
+      o.priceTimeSeries.length > 0 &&
+      o.priceTimeSeries[o.priceTimeSeries.length - 1];
     const priceTimeSeries = [
       {
         price: minPrice,
-        amount: "0",
+        amount: '0',
         logIndex: 0,
-        timestamp: creationTime
+        timestamp: creationTime,
       },
       ...o.priceTimeSeries,
       {
         price: lastTrade ? lastTrade.price : minPrice,
-        amount: "0",
+        amount: '0',
         logIndex: 0,
-        timestamp: currentTimestamp
-      }
-    ]
+        timestamp: currentTimestamp,
+      },
+    ];
     p[o.id] = splitTradesByTimeBucket(priceTimeSeries, timeBuckets);
     return p;
   }, {});

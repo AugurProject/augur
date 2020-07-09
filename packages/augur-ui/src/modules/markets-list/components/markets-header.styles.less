@@ -13,11 +13,7 @@
     display: none;
   }
 
-  @media @breakpoint-tablet {
-    padding-top: @size-16;
-  }
-
-  @media @breakpoint-mobile {
+  @media @breakpoint-mobile-tablet {
     padding: @size-12 0 0 0;
 
     > div {
@@ -36,13 +32,13 @@
   }
 
   > div > div > div > div {
-    @media @breakpoint-mobile {
+    @media @breakpoint-mobile-tablet {
       display: none;
     }
   }
 
   > div:first-of-type {
-    @media @breakpoint-mobile {
+    @media @breakpoint-mobile-tablet {
       align-items: center;
       display: flex;
       flex-direction: row;
@@ -60,24 +56,7 @@
       display: none;
     }
 
-    @media @breakpoint-tablet {
-      display: grid;
-
-      > div:last-of-type {
-        display: flex;
-        justify-content: flex-end;
-      }
-
-      > article {
-        order: -1;
-        grid-column: 1 / span 2;
-        width: 100%;
-        max-width: unset;
-        margin-bottom: @size-16;
-      }
-    }
-
-    @media @breakpoint-mobile {
+    @media @breakpoint-mobile-tablet {
       align-items: center;
       flex-direction: row;
       margin-bottom: 0;
@@ -86,35 +65,22 @@
     > h2 {
       .text-22-bold;
 
-      color: @color-primary-text;
+      color: var(--color-primary-text);
       margin-bottom: 0;
       text-transform: capitalize;
 
-      @media @breakpoint-mobile {
+      @media @breakpoint-mobile-tablet {
         .text-18-bold;
         order: 0;
         margin-bottom: @size-10;
       }
     }
 
-    @media @breakpoint-tablet {
-      flex-direction: column;
-      align-items: flex-start;
-      margin-bottom: 0;
-    }
-
     > article {
       max-width: @search-bar-width;
       min-width: @search-bar-width;
 
-      @media @breakpoint-tablet {
-        max-width: unset;
-        width: 100%;
-        margin-bottom: 10px;
-        order: -1;
-      }
-
-      @media @breakpoint-mobile {
+      @media @breakpoint-mobile-tablet {
         display: none;
       }
     }
@@ -123,7 +89,7 @@
       display: none;
       align-items: center;
 
-      @media @breakpoint-mobile {
+      @media @breakpoint-mobile-tablet {
         display: flex;
         margin-bottom: @size-10;
       }
@@ -135,7 +101,7 @@
     flex: 1;
     height: @size-44;
 
-    @media @breakpoint-mobile {
+    @media @breakpoint-mobile-tablet {
       order: 0;
       height: @size-32;
     }

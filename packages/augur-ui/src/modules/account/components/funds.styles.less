@@ -1,7 +1,7 @@
 @import (reference) '~assets/styles/shared';
 
 .Funds {
-  background: @color-table-header;
+  background: var(--color-table-header);
   border-radius: @border-radius-default;
   padding: @size-16;
   text-transform: uppercase;
@@ -14,7 +14,7 @@
   > h4 {
     .mono-12-bold;
 
-    color: @color-secondary-text;
+    color: var(--color-secondary-text);
     margin-bottom: @size-8;
   }
 
@@ -30,8 +30,8 @@
 
   > div[class*="LinearPropertyLabel"] {
     align-items: baseline;
-    min-width: 269px;
-    max-width: 80%;
+    min-width: @size-269;
+    width: 80%;
     margin-left: auto;
     margin-right: auto;
 
@@ -42,13 +42,69 @@
     }
 
     > span:first-of-type {
-      color: @color-secondary-text;
+      color: var(--color-secondary-text);
+    }
+
+    > svg > line {
+      stroke: var(--color-dark-text);
     }
 
     > span {
       .mono-12-medium;
 
-      color: @color-primary-text;
+      color: var(--color-primary-text);
+    }
+  }
+}
+
+:root[theme="BETTING"],
+:root[theme="SPORTS"] {
+  .Funds {
+    background: transparent;
+    padding: @size-24 @size-16 @size-8;
+    background: var(--color-module-background);
+
+    @media @breakpoint-mobile-mid {
+      background: var(--color-module-background);
+      padding: @size-24 0 @size-8;
+    }
+
+    > h4 {
+      .mono-12-semi-bold;
+
+      margin-bottom: @size-11;
+    }
+
+    > div:first-of-type {
+      padding-bottom: @size-6;
+
+      > div {
+        .mono-12-semi-bold;
+      }
+    }
+
+    > div:nth-of-type(2) {
+      .mono-24-bold;
+
+      @media @breakpoint-mobile-mid {
+        margin-bottom: @size-18;
+      }
+    }
+
+    > div[class*="LinearPropertyLabel"] {
+      > span:first-of-type {
+        .mono-10-semi-bold;
+      }
+
+      @media @breakpoint-mobile-mid {
+        width: unset;
+        margin-left: @size-12;
+        margin-right: @size-12;
+      }  
+
+      > span {
+        .mono-12;  
+      }
     }
   }
 }

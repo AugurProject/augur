@@ -3,7 +3,7 @@ import classNames from "classnames";
 
 import Styles from "modules/common/chevron-flip.styles";
 
-const ChevronFlipIcon = (className = "", fillColor = "#A7A2B2") => (
+const ChevronFlipIcon = (className = "", noHardStroke = false) => (
   <svg className={className} viewBox="0 0 16 16">
     <g
       stroke="none"
@@ -23,7 +23,7 @@ const ChevronFlipIcon = (className = "", fillColor = "#A7A2B2") => (
   </svg>
 );
 
-const ChevronFlipFilledIcon = (className = "", fillColor = "#FFF") => (
+const ChevronFlipFilledIcon = (className = "", fillColor = "#FFF", noHardStroke = false) => (
   <svg
     className={className}
     width="10"
@@ -33,7 +33,7 @@ const ChevronFlipFilledIcon = (className = "", fillColor = "#FFF") => (
   >
     <path
       d="M9 1L5 5L1 1"
-      stroke={fillColor}
+      stroke={noHardStroke ? undefined : fillColor}
       strokeWidth="2"
       strokeMiterlimit="10"
       strokeLinecap="round"
@@ -46,6 +46,7 @@ interface ChevronFlipProps {
   className?: string;
   pointDown?: boolean;
   stroke?: string;
+  noHardStroke?: boolean;
   big?: boolean;
   filledInIcon?: boolean;
   quick?: boolean;
@@ -64,6 +65,7 @@ const ChevronFlip: React.FC<ChevronFlipProps> = ({
   stroke,
   hover,
   containerClassName,
+  noHardStroke = false,
 }) => (
     <span className={containerClassName}>
       {filledInIcon
@@ -75,7 +77,8 @@ const ChevronFlip: React.FC<ChevronFlipProps> = ({
             [Styles.instant]: instant,
             [Styles.hover]: hover
           }),
-          stroke
+          stroke,
+          noHardStroke
         )
         : ChevronFlipIcon(
           classNames(Styles.ChevronFlip, className, {
@@ -85,7 +88,8 @@ const ChevronFlip: React.FC<ChevronFlipProps> = ({
             [Styles.instant]: instant,
             [Styles.hover]: hover
           }),
-          stroke
+          stroke,
+          noHardStroke
         )}
     </span>
   );

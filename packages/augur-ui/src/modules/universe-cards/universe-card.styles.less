@@ -1,8 +1,8 @@
 @import (reference) '~assets/styles/shared';
 
 .UniverseCard {
-  background-color: @color-module-background;
-  border: 0.0625rem solid @color-dark-grey;
+  background-color: var(--color-module-background);
+  border: 0.0625rem solid var(--color-dark-grey);
   padding: @size-19 @size-24;
   margin-bottom: @size-12;
   max-width: 21.875rem;
@@ -12,14 +12,14 @@
 
     border: 1px solid transparent;
     clear: both;
-    color: @color-positive;
+    color: var(--color-positive);
     display: inline-block;
     line-height: @size-11;
     padding: 0 1px;
     position: relative;
     border-radius: @border-radius-default;
     text-transform: uppercase;
-    background: fade(@color-open, 15%);
+    background: var(--color-open-15);
     margin-bottom: @size-19;
   }
 
@@ -27,7 +27,7 @@
     > h1 {
       .mono-9-bold;
 
-      color: @color-secondary-text;
+      color: var(--color-secondary-text);
       margin-bottom: @size-4;
       text-transform: uppercase;
     }
@@ -36,14 +36,14 @@
   > div:first-of-type {
     .text-18-bold;
 
-    color: @color-primary-text;
+    color: var(--color-primary-text);
     margin-bottom: @size-19;
   }
 
   > div:nth-of-type(2) {
     .text-10-bold;
 
-    color: @color-primary-text;
+    color: var(--color-primary-text);
     margin-bottom: @size-19;
   }
 

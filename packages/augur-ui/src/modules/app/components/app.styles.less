@@ -7,14 +7,17 @@ html,
 }
 
 body {
-  background: @color-page-background;
+  background: var(--color-page-background);
 
   // See Issue #3504
   top: 0 !important;
   position: initial !important;
 
-  @media @breakpoint-mobile {
+  @media @breakpoint-mobile-tablet {
     --is-mobile: true;
+  }
+
+  @media @breakpoint-mobile-tablet {
     overflow-y: auto;
   }
 
@@ -36,7 +39,7 @@ h6 {
   height: 100%;
 }
 
-.App--blur {
+.AppBlur {
   filter: blur(@size-2);
 }
 
@@ -48,7 +51,7 @@ h6 {
   height: 100vh;
   overflow: hidden;
 
-  @media @breakpoint-mobile {
+  @media @breakpoint-mobile-tablet {
     /* topbar mobile height */
     grid-template-rows: @top-bar-height-mobile auto;
     display: block;
@@ -64,16 +67,16 @@ h6 {
 
 .TutorialBanner {
   z-index: @mask-illuminate;
-  background: @color-secondary-action;
+  background: var(--color-secondary-action);
   display: flex;
   justify-content: center;
   align-items: center;
-  border-bottom: @size-1 solid @color-secondary-action-outline;
+  border-bottom: @size-1 solid var(--color-secondary-action-outline);
 
   > span {
     .text-12-bold;
 
-    color: @color-primary-text;
+    color: var(--color-primary-text);
     flex: 1;
     text-align: center;
   }
@@ -85,7 +88,7 @@ h6 {
       margin-right: @size-16;
 
       > path {
-        stroke: @color-primary-text;
+        stroke: var(--color-primary-text);
       }
     }
   }
@@ -101,11 +104,11 @@ h6 {
   z-index: @mask-modal;
 }
 
-.Main__wrap {
+.Wrap {
   display: grid;
   overflow: hidden;
 
-  @media @breakpoint-mobile {
+  @media @breakpoint-mobile-tablet {
     grid-template-columns: none;
     grid-template-rows: 0 auto;
     margin-left: 0;
@@ -135,28 +138,28 @@ h6 {
   }
 }
 
-.Main__wrapMarkets {
+.WrapMarkets {
   grid-template-columns: minmax(auto, @size-250) auto;
 
-  @media @breakpoint-mobile {
+  @media @breakpoint-mobile-tablet {
     grid-template-columns: none;
     grid-template-rows: 0 auto;
     margin-left: 0;
 
     &.TopBarOpen {
-      background: @color-dark-grey;
+      background: var(--color-dark-grey);
     }
   }
 }
 
-.Main__content {
+.Content {
   height: calc(~"100vh - @{multi-top-bar-height}");
   -webkit-overflow-scrolling: touch;
   overflow-x: hidden;
   overflow-y: auto;
 
-  @media @breakpoint-mobile {
-    height: 100%;
+  @media @breakpoint-mobile-tablet {
+    height: fit-content;
     width: 100vw;
     padding-bottom: @size-6;
 
@@ -174,16 +177,16 @@ h6 {
 
     path {
       &:nth-child(odd) {
-        fill: @color-secondary-text;
+        fill: var(--color-secondary-text);
         stroke: none;
       }
 
       &:nth-child(even) {
-        stroke: @color-secondary-text;
+        stroke: var(--color-secondary-text);
       }
     }
 
-    @media @breakpoint-mobile {
+    @media @breakpoint-mobile-tablet {
       display: flex;
       justify-content: center;
       margin-top: @size-10;
@@ -199,16 +202,46 @@ h6 {
     @media @breakpoint-mobile-tablet {
       overflow-y: hidden;
     }
+  }
+}
+
+:root[theme="BETTING"],
+:root[theme="SPORTS"] {
+  .Content {
+    display: flex;
+    justify-content: space-between;
 
     @media @breakpoint-mobile {
-      overflow-y: hidden;
+      > div:nth-of-type(2) {
+        width: 100%;
+        background: var(--color-page-background);
+
+        > h1 {
+          .text-24-bold;
+
+          color: var(--color-primary-text);
+          margin: @size-40 @size-12 @size-20;
+        }
+      }
     }
+
+    @media @breakpoint-mobile-tablet {
+      display: block;
+      background: var(--color-page-background);
+    }
+  }
+
+  .HideBetslip > aside {
+    display: none;
   }
 }
 
 .SideBar {
-  background: @color-module-background;
-  border-right: @size-1 solid @color-dark-grey;
+  background: var(--color-module-background);
+
+  @media @breakpoint-mobile-tablet {
+    padding-top: 0;
+  }
 
   > div:first-of-type {
     left: 0;
@@ -224,12 +257,11 @@ h6 {
 }
 
 
-.SideBar__mobile-bars {
+.MobileBars {
   top: 0;
   left: 0;
-  border-bottom: @size-1 solid @color-module-background;
+  border-bottom: @size-1 solid var(--color-module-background);
   display: none;
-  height: @side-bar-top-menu-height-mobile;
   outline: none;
   padding: @size-16;
   position: fixed;
@@ -243,9 +275,13 @@ h6 {
   svg {
     height: 100%;
     width: 100%;
+
+    g > path {
+      stroke: var(--color-brand-secondary);
+    }
   }
 
-  @media @breakpoint-mobile {
+  @media @breakpoint-mobile-tablet {
     display: flex;
     align-items: center;
     justify-content: center;
@@ -258,31 +294,30 @@ h6 {
   }
 }
 
-svg.SideBar__mobile-bars-unseen {
-  bottom: 1.4rem;
-  position: relative;
-  right: 0.35rem;
-}
-
 .TopBar {
   z-index: @mask-above;
+}
 
-  @media @breakpoint-mobile {
-    height: @top-bar-height-mobile;
+:root[theme="BETTING"],
+:root[theme="SPORTS"] {
+  .TopBar {
+    @media @breakpoint-mobile {
+      height: @size-64;
+    }
   }
 }
 
-.TopBar__floatAbove {
+.FloatAbove {
   z-index: @mask-above;
 
-  @media @breakpoint-mobile {
+  @media @breakpoint-mobile-tablet {
     position: fixed;
     top: 0;
     width: 100%;
     z-index: @mask-modal;
 
     &.SideNavOpen {
-      background: @color-dark-grey;
+      background: var(--color-dark-grey);
       opacity: 0.9;
       > header {
         > div:last-of-type {

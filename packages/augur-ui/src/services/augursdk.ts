@@ -121,12 +121,12 @@ export class SDK {
     throw new Error('API must be initialized before use.');
   }
 
-  subscribe(dispatch): void {
+  subscribe(): void {
     if (this.isSubscribed) return;
     try {
       this.isSubscribed = true;
       console.log('Subscribing to Augur events');
-      dispatch(listenToUpdates(this.get()));
+      listenToUpdates(this.get());
     } catch (e) {
       this.isSubscribed = false;
     }

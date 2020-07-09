@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import classNames from 'classnames';
 
 import { QuestionIcon } from 'modules/common/icons';
@@ -16,13 +16,7 @@ import { MARKET } from 'modules/routes/constants/views';
 import makeQuery from 'modules/routes/helpers/make-query';
 import { MARKET_ID_PARAM_NAME } from 'modules/routes/constants/param-names';
 
-interface HelpResourcesProps {
-  isHelpMenuOpen: boolean;
-  updateHelpMenuState: Function;
-  updateConnectionTray: Function;
-  isMobile: boolean;
-  helpModal: Function;
-}
+import { useAppStatusStore } from 'modules/app/store/app-status';
 
 const HELP_LINKS = [
   {
@@ -63,21 +57,21 @@ const HELP_LINKS = [
 
 export const HelpMenuList = () => {
   return (
-    <span className={classNames(Styles.HelpMenuList)}>
+    <ul className={classNames(Styles.HelpMenuList)}>
       <li>popular help resources</li>
-      {HELP_LINKS.filter(helpLink => helpLink.label !== 'view trading tutorial').map((helpLink, index) => (
-        <li key={'helpLink_' + index} className={helpLink.className}>
+      {HELP_LINKS.filter(({ label }) => label !== 'view trading tutorial').map(({ className, link, label, customLink, showNonLink, lightLink }, index) => (
+        <li key={'helpLink_' + index} className={className}>
           <ExternalLinkButton
             light
-            URL={helpLink.link}
-            label={helpLink.label}
-            customLink={helpLink.customLink}
-            showNonLink={helpLink.showNonLink}
-            lightLink={helpLink.lightLink}
+            URL={link}
+            label={label}
+            customLink={customLink}
+            showNonLink={showNonLink}
+            lightLink={lightLink}
           />
         </li>
       ))}
-    </span>
+    </ul>
   );
 };
 
@@ -89,19 +83,20 @@ export const HelpMenu = ({ closeHelpMenu }: HelpMenuProps) => {
   return (
     <div className={classNames(Styles.HelpMenu)}>
       <span>popular help resources</span>
-      {HELP_LINKS.map((helpLink, index) => (
-        <span key={'helpLink_' + index} className={helpLink.className}>
-          <ExternalLinkButton
-            light
-            URL={helpLink.link}
-            label={helpLink.label}
-            customLink={helpLink.customLink}
-            showNonLink={helpLink.showNonLink}
-            lightLink={helpLink.lightLink}
-            callback={closeHelpMenu}
-          />
-        </span>
-      ))}
+      {HELP_LINKS.map(
+        ({ className, link, label, customLink, showNonLink }, index) => (
+          <span key={'helpLink_' + index} className={className}>
+            <ExternalLinkButton
+              light
+              URL={link}
+              label={label}
+              customLink={customLink}
+              showNonLink={showNonLink}
+              callback={closeHelpMenu}
+            />
+          </span>
+        )
+      )}
     </div>
   );
 };
@@ -129,19 +124,8 @@ export const HelpIcon = ({
   );
 };
 
-export const HelpResources = ({
-  isHelpMenuOpen,
-  updateHelpMenuState,
-  updateConnectionTray,
-  isMobile,
-  helpModal
-}: HelpResourcesProps) => {
-  useEffect(() => {
-    if (isHelpMenuOpen) {
-      updateConnectionTray(false);
-    }
-  }, [isHelpMenuOpen]);
-
+export const HelpResources = () => {
+  const { isHelpMenuOpen, actions: { setIsHelpMenuOpen } } = useAppStatusStore();
   return (
     <div
       className={classNames(Styles.HelpResources, {
@@ -150,11 +134,11 @@ export const HelpResources = ({
       onClick={event => event.stopPropagation()}
     >
       <HelpIcon
-        updateHelpMenuState={isMobile ? helpModal : updateHelpMenuState}
+        updateHelpMenuState={setIsHelpMenuOpen}
         isHelpMenuOpen={isHelpMenuOpen}
       />
       {isHelpMenuOpen && (
-        <HelpMenu closeHelpMenu={() => updateHelpMenuState(false)} />
+        <HelpMenu closeHelpMenu={() => setIsHelpMenuOpen(false)} />
       )}
     </div>
   );

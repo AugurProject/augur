@@ -151,6 +151,7 @@ export const Pagination = ({
 
       {showLimitChanger && (
         <SquareDropdown
+          large
           defaultValue={itemsPerPage}
           options={getLimitOptions(itemCount, maxLimit)}
           onChange={updateLimit}

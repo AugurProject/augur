@@ -1,7 +1,7 @@
 @import (reference) "~assets/styles/shared";
 
 .Form {
-	color: @color-primary-text;
+	color: var(--color-primary-text);
 	display: flex;
     align-items: center;
     flex-direction: column;
@@ -45,7 +45,7 @@
         padding: 0;
 
     	> div {
-            background: @color-table-header;
+            background: var(--color-table-header);
             display: flex;
             flex-direction: column;
             flex: 1;
@@ -54,6 +54,7 @@
             overflow-y: auto;
 
             > span {
+                background: var(--color-dark-grey);
                 width: 100%;
                 margin-top: 0;
             }

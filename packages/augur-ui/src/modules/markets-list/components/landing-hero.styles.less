@@ -4,7 +4,8 @@
   position: relative;
   display: flex;
   margin-top: @size-28;
-  background-color: @color-dark-grey;
+  padding: @size-40 72px;
+  background: var(--color-dark-grey);
   border-radius: @border-radius-default;
   height: 304px;
   background-image: url('../../../assets/images/hero-background.png');
@@ -34,11 +35,11 @@
     > h1 {
       .text-30-bold;
 
-      color: @color-primary-text;
+      color: var(--color-primary-text);
       margin-bottom: 0;
 
       > span {
-        color: @color-brand;
+        color: var(--color-brand);
       }
     }
 
@@ -46,8 +47,8 @@
       .text-14;
 
       line-height: 140%;
-      color: @color-primary-text;
-      margin: @size-16 0 @size-28;
+      color: var(--color-primary-text);
+      margin: @size-20 0;
     }
 
     > div {

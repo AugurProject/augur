@@ -11,8 +11,7 @@ import {
   OUTCOME_ID_PARAM_NAME,
   CREATE_MARKET_FORM_PARAM_NAME,
 } from './routes/constants/param-names';
-import { AnyAction } from 'redux';
-import type { Getters, PayoutNumeratorValue } from '@augurproject/sdk';
+import { Getters, PayoutNumeratorValue } from '@augurproject/sdk';
 import type { TransactionMetadataParams, EthersSigner } from '@augurproject/contract-dependencies-ethers';
 import type { BigNumber } from 'utils/create-big-number';
 import type { Template } from '@augurproject/templates';
@@ -145,6 +144,16 @@ export interface ForkingInfo {
   winningChildUniverseId?: string;
 }
 export interface Universe extends Getters.Universe.UniverseDetails {
+  outcomeName?: string;
+  creationTimestamp: number;
+  usersRep: string;
+  totalRepSupply: string;
+  totalOpenInterest: string;
+  numberOfMarkets: number;
+  warpSyncHash?: string;
+  children: null | Array<Getters.Universe.UniverseDetails>;
+  parentUniverseId: null | string;
+  id: null | string;
   disputeWindow: Getters.Universe.DisputeWindow;
   forkingInfo?: ForkingInfo;
   forkEndTime?: string;
@@ -210,7 +219,7 @@ export interface PendingQueue {
     };
   };
 }
-export interface PendingOrders {
+export interface PendingOrdersType {
   [marketId: string]: UIOrder[];
 }
 
@@ -568,12 +577,6 @@ export interface Endpoints {
   ethereumNodeWS: string;
 }
 
-export interface Connection {
-  isConnected: boolean;
-  isReconnectionPaused: boolean;
-  canHotload: boolean;
-}
-
 export interface Category {
   categoryName: string;
   nonFinalizedOpenInterest: string;
@@ -590,20 +593,11 @@ export interface Blockchain {
 }
 
 export interface AppStatus {
-  isMobile?: boolean;
-  isMobileSmall?: boolean;
   isHelpMenuOpen: boolean;
   ethToDaiRate: FormattedNumber;
   repToDaiRate: FormattedNumber;
   gsnEnabled: boolean;
-  zeroXEnabled: boolean;
   walletStatus: string;
-}
-
-export interface AuthStatus {
-  isLogged?: boolean;
-  restoredAccount?: boolean;
-  isConnectionTrayOpen?: boolean;
 }
 
 export interface AccountPositionAction {
@@ -662,8 +656,10 @@ export interface LoginAccountMeta {
 export interface LoginAccountSettings {
   showInvalidMarketsBannerFeesOrLiquiditySpread?: boolean;
   showInvalidMarketsBannerHideOrShow?: boolean;
-  templateFilter?: boolean;
-  maxFee?: boolean;
+  templateFilter?: string;
+  maxFee?: string;
+  maxLiquiditySpread?: INVALID_OPTIONS;
+  includeInvalidMarkets?: string;
   spread?: boolean;
   marketTypeFilter?: boolean;
   marketFilter?: string;
@@ -723,11 +719,6 @@ export type NodeStyleCallback = (
 ) => void;
 
 export type DataCallback = (result?: any) => void;
-
-export interface BaseAction extends AnyAction {
-  type: string;
-  data?: any;
-}
 
 export interface EthereumWallet {
   appId: string;

@@ -1,7 +1,7 @@
 @import (reference) '~assets/styles/shared';
 
 .AccountView {
-  margin: @size-8 @size-12;
+  margin: @size-8 auto;
   min-height: calc(~'100vh - @{multi-top-bar-height}');
   display: grid;
   grid-gap: @size-8 @size-12;
@@ -9,6 +9,7 @@
   grid-template-rows: @size-40 44vh 44vh @size-40 @size-40;
 
   @media @breakpoint-mobile {
+    margin: @size-8 @size-12;
     min-height: unset;
     display: flex;
     flex-direction: column;
@@ -77,7 +78,7 @@
     }
 
     > div[class*='Headers'] {
-      background: @color-dark-grey;
+      background: var(--color-dark-grey);
       min-height: @size-40;
 
       > ul {
@@ -92,6 +93,14 @@
 
     @media @breakpoint-tablet {
       grid-row: unset;
+    }
+  }
+
+  > div:nth-of-type(5) {
+    div[class*='BoxHeader'] {
+      > div:first-of-type > div:last-of-type {
+        display: none;
+      }
     }
   }
 
@@ -133,6 +142,186 @@
       grid-row: 1;
       max-height: @size-40;
       overflow-y: hidden;
+    }
+  }
+}
+
+:root[theme="BETTING"],
+:root[theme="SPORTS"] {
+  .AccountView {
+    margin: @size-22 @size-32 @size-82;
+    display: grid;
+    grid-auto-rows: @size-160 @size-10 auto;
+    grid-gap: @size-24;
+    grid-template-columns: repeat(auto-fill, minmax(30%, 1fr));
+    grid-template-rows: auto;
+    min-height: unset;
+    width: 100%;
+
+    > div {
+      min-height: unset;
+      background: var(--color-module-background);
+      border: @size-1 solid var(--color-outline);
+      border-radius: @border-radius-rounded;
+      margin: 0;
+
+      div[class*='BoxHeader'] {
+        background: var(--color-table-header-50);
+        border-radius: @border-radius-rounded;
+
+        > div:first-of-type {
+          background: transparent;
+          max-height: @size-56;
+          min-height: @size-56;
+          padding: 0 @size-12;
+
+          > div:first-of-type {
+            .text-16-bold;
+
+            text-transform: capitalize;
+          }
+
+          > div:last-of-type {
+            div[class*='SearchBar'] {
+              padding-right: @size-8;
+            }
+
+            div[class*='isFocused'] {
+              max-width: @size-178;
+              margin-left: auto;
+              border: @size-1 solid var(--color-dark-text);
+
+              > input {
+                .text-14;
+
+                color: var(--color-primary-text);
+              }
+
+              > button > svg > path {
+                stroke: var(--color-primary-text);
+              }
+            }
+          }
+        }
+      }
+
+      > div:last-of-type {
+        border-bottom-left-radius: @border-radius-rounded;
+        border-bottom-right-radius: @border-radius-rounded;
+      }
+    }
+
+    > h1 {
+      .text-24-bold;
+
+      color: var(--color-primary-text);
+      margin: @size-10 0 @size-16 0;
+      grid-column: 1 / span 3;
+      grid-row: 1;
+    }
+
+    > div:first-of-type {
+      grid-column: ~"1/2";
+      grid-row: ~"2/6";
+      max-height: @size-600;
+    }
+
+    > div:nth-of-type(2) {
+      grid-column: ~"1/2";
+      grid-row: ~"6/12";
+    }
+
+    > div:nth-of-type(3) {
+      grid-column: ~"2/3";
+      grid-row: ~"2/11";
+      min-height: @size-778;
+      max-height: @size-778;
+    }
+
+    > div:nth-of-type(4) {
+      grid-column: ~"2/3";
+      grid-row: ~"11/17";
+      min-height: @size-540;
+      max-height: @size-540;
+    }
+
+    > div:nth-of-type(5) {
+      grid-column: ~"3/4";
+      grid-row: ~"2/3";
+      min-height: @size-160;
+      max-height: @size-160;
+
+      div[class*='BoxHeader'] {
+        > div:first-of-type > div:last-of-type {
+          display: initial;
+        }
+      }
+    }
+
+    > div:nth-of-type(6) {
+      grid-column: ~"3/4";
+      grid-row: ~"3/10";
+    }
+
+    > div:nth-of-type(7) {
+      grid-column: ~"3/4";
+      grid-row: ~"10/15";
+    }
+
+    > footer {
+      grid-column: 1 / span 3;
+      grid-row: 18;
+    }
+
+    @media @breakpoint-tablet {
+      grid-template-columns: repeat(2, 1fr);
+      width: unset;
+      margin-bottom: 0;
+
+      > h1 {
+        grid-column: 1 / span 2;
+        grid-row: 1;
+      }
+
+      > div:first-of-type {
+        grid-column: ~"1/2";
+        grid-row: ~"2/6";
+      }
+
+      > div:nth-of-type(2) {
+        grid-column: ~"1/2";
+        grid-row: ~"6/13";
+      }
+
+      > div:nth-of-type(3) {
+        grid-column: ~"2/3";
+        grid-row: ~"3/12";
+      }
+
+      > div:nth-of-type(4) {
+        grid-column: ~"2/3";
+        grid-row: ~"12/18";
+      }
+
+      > div:nth-of-type(5) {
+        grid-column: ~"2/3";
+        grid-row: ~"2/3";
+      }
+
+      > div:nth-of-type(6) {
+        grid-column: ~"1/2";
+        grid-row: ~"13/20";
+      }
+
+      > div:nth-of-type(7) {
+        grid-column: ~"2/3";
+        grid-row: ~"18/23";
+      }
+
+      > footer {
+        grid-column: 1 / span 2;
+        grid-row: 24;
+      }
     }
   }
 }

@@ -1,24 +1,20 @@
 import React from 'react';
 import { FacebookComments } from 'modules/market/components/common/comments/facebook-comments';
 import Styles from 'modules/market/components/market-view/market-view.styles.less';
+import { useAppStatusStore } from 'modules/app/store/app-status';
+import { getNetworkId } from 'modules/contracts/actions/contractCalls';
 
-interface MarketCommentsProps {
-  colorScheme: string;
-  marketId: string;
-  networkId: string;
-  numPosts: number;
-  whichCommentPlugin: string;
-  isLogged: boolean;
-}
+const DEFAULT_NUM_POSTS = 10;
 
 export const MarketComments = ({
-  colorScheme,
   marketId,
-  networkId,
-  numPosts,
-  whichCommentPlugin,
-  isLogged,
-}: MarketCommentsProps) => {
+  colorScheme = 'dark',
+  numPosts = DEFAULT_NUM_POSTS,
+}) => {
+  let { isLogged, env } = useAppStatusStore();
+  const networkId = getNetworkId();
+  const whichCommentPlugin = env.plugins?.comments;
+
   return isLogged ? (
     <section className={Styles.Comments}>
       {whichCommentPlugin === 'facebook' && (

@@ -1,7 +1,7 @@
 @import (reference) "~assets/styles/shared";
 
 .OutcomeCandlestick {
-  background: @color-module-background;
+  background: var(--color-module-background);
   display: flex;
   flex: 1 100%;
   flex-direction: column;
@@ -100,10 +100,10 @@
   }
 
   > span {
-    color: @color-primary-text;
+    color: var(--color-primary-text);
 
     > span:first-of-type {
-      color: @color-inactive-text;
+      color: var(--color-inactive-text);
       padding-right: @size-8;
     }
 

@@ -37,12 +37,14 @@ const getOptions = () => ({
     spacing: [10, 14, 0, 14],
     height: 245,
     width: null,
+    animation: false,
   },
   credits: {
     enabled: false,
   },
   plotOptions: {
     areaspline: {
+      animation: false,
       threshold: null,
       dataGrouping: {
         units: [['hour', [1]], ['day', [1]]],

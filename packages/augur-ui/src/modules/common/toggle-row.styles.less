@@ -1,7 +1,7 @@
 @import (reference) '~assets/styles/shared';
 
 .ToggleRow {
-  background-color: @color-module-background;
+  background-color: var(--color-module-background);
   display: flex;
   flex-direction: column;
 
@@ -23,7 +23,7 @@
 }
 
 div.RowActive {
-  background-color: @color-active-background;
+  background-color: var(--color-active-background);
   border-bottom: 0;
   border-bottom-left-radius: 0;
   border-bottom-right-radius: 0;
@@ -40,12 +40,12 @@ div.RowActive {
   justify-content: flex-start;
 
   > svg > path {
-    stroke: @color-secondary-text;
+    stroke: var(--color-secondary-text);
   }
 
   &:hover {
     > svg > path {
-      stroke: @color-primary-text;
+      stroke: var(--color-primary-text);
     }
   }
 }
@@ -58,7 +58,7 @@ div.RowActive {
   }
 
   &:hover {
-    background-color: @color-table-header;
+    background-color: var(--color-table-header);
   }
 }
 
@@ -66,7 +66,7 @@ div.RowActive {
   .Row .Arrow {
     > svg {
       > path {
-        stroke: @color-inactive-text;
+        stroke: var(--color-inactive-text);
       }
     }
   }
@@ -74,7 +74,7 @@ div.RowActive {
   .RowActive .Arrow {
     > svg {
       > path {
-        stroke: @color-primary-text;
+        stroke: var(--color-primary-text);
       }
     }
   }

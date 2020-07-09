@@ -1,3 +1,4 @@
+import React from 'react';
 import { TXEventName } from '@augurproject/sdk-lite';
 import classNames from 'classnames';
 import { SubmitTextButton } from 'modules/common/buttons';
@@ -11,11 +12,15 @@ import {
 } from 'modules/common/labels';
 
 import ToggleRow from 'modules/common/toggle-row';
-import MarketTitle from 'modules/market/containers/market-title';
+import { MarketStatusLabel, TemplateShield, MarketTypeLabel, LiquidityDepletedLabel, Archived } from 'modules/common/labels';
+import { SCALAR, SIGN_SEND_ORDERS, MODAL_UNSIGNED_ORDERS } from 'modules/common/constants';
+import MarketTitle from 'modules/market/components/common/market-title';
+import { TXEventName } from '@augurproject/sdk';
+import { SubmitTextButton } from 'modules/common/buttons';
 
 import Styles from 'modules/portfolio/components/common/market-row.styles.less';
 import { MarketData } from 'modules/types';
-import React, { ReactNode } from 'react';
+import { useAppStatusStore } from 'modules/app/store/app-status';
 
 export interface TimeObject {
   formattedUtcShortDate: string;
@@ -32,7 +37,6 @@ export interface MarketRowProps {
   noToggle?: boolean;
   showPending?: boolean;
   addedClass?: string | object;
-  unsignedOrdersModal?: Function;
   showLiquidityDepleted?: boolean;
 }
 
@@ -44,9 +48,11 @@ const MarketRow = ({
   noToggle,
   showPending,
   addedClass,
-  unsignedOrdersModal,
   showLiquidityDepleted
 }: MarketRowProps) => {
+  const {
+    actions: {setModal}
+  } = useAppStatusStore();
   const content = (
     <div
       className={classNames(Styles.MarketRowContent, addedClass, {
@@ -73,6 +79,7 @@ const MarketRow = ({
             />
             {market.marketType === SCALAR && <MarketTypeLabel marketType={market.marketType} />}
             {showLiquidityDepleted && <LiquidityDepletedLabel market={market} />}
+            <span>{rightContent}</span>
           </div>
         )}
         {!market.pending && <MarketTitle id={market.id} />}
@@ -89,11 +96,15 @@ const MarketRow = ({
             <span>
               You have pending initial liquidity.
               <SubmitTextButton
-                action={() => unsignedOrdersModal(market.marketId)}
+                action={() => setModal({
+                  type: MODAL_UNSIGNED_ORDERS,
+                  marketId: market.marketId,
+                })}
                 text={SIGN_SEND_ORDERS}
               />
             </span>
           )}
+        <span>{rightContent}</span>
       </div>
       <span
         className={classNames({

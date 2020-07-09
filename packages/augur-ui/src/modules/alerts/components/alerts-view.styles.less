@@ -1,16 +1,15 @@
 @import (reference) '~assets/styles/shared';
 
-// Used in Betting UI
 .AlertsView {
   background-color: transparent;
   border-top: 0;
-  color: @color-primary-text;
+  color: var(--color-primary-text);
   display: flex;
   flex-direction: column;
   max-height: 470px;
   position: relative;
   text-align: left;
-  width: 360px;
+  width: @size-360;
   z-index: @mask-above;
 
   @media @breakpoint-mobile {
@@ -32,13 +31,17 @@
 }
 
 .dark {
-  background-color: @color-dark-grey;
+  background-color: var(--color-dark-grey);
 }
 
 .parent {
   position: absolute;
   right: 0;
   top: @top-bar-height;
+
+  @media @breakpoint-mobile-tablet {
+    top: @top-bar-height-mobile;
+  }
 
   @media @breakpoint-mobile {
     bottom: 0;
@@ -65,10 +68,6 @@
   top: @size-16;
   width: @size-16;
 
-  > svg > g > g {
-    stroke: #F6F6F8;
-  }
-
   @media @breakpoint-mobile {
     display: block;
   }
@@ -78,32 +77,36 @@
   .text-16;
 
   align-self: center;
-  color: @color-secondary-text;
+  color: var(--color-secondary-text);
   margin-top: @size-8;
   padding: @size-30;
   text-align: center;
   width: 100%;
-  border: 1px solid @color-secondary-action-outline;
+  border: @size-1 solid var(--color-secondary-action-outline);
 }
 
 .dismissContainer {
   align-items: flex-end;
 
-  background: @color-primary-text;
+  background: var(--color-primary-text);
   border-radius: @size-3;
   display: flex;
   justify-content: flex-end;
   margin-top: auto;
   padding: @size-6 @size-12;
 
+  > span {
+    display: none;
+  }
+
   > button {
     .mono-9;
 
     align-self: flex-end;
-    background: @color-secondary-action;
-    border: 1px solid @color-secondary-action-outline;
+    background: var(--color-secondary-action);
+    border: @size-1 solid var(--color-secondary-action-outline);
     border-radius: @size-3;
-    color: @color-secondary-text;
+    color: var(--color-secondary-text);
     cursor: pointer;
     display: flex;
     justify-content: center;
@@ -111,11 +114,64 @@
     text-transform: uppercase;
 
     &:hover {
-      color: @color-primary-text;
+      color: var(--color-primary-text);
     }
 
     &:focus {
       outline: none;
     }
   }
+}
+
+:root[theme="BETTING"],
+:root[theme="SPORTS"] {
+  .AlertsView {
+    flex-direction: column-reverse;
+    background: var(--color-module-background);
+  }
+
+  .parent {
+    right: @size-195;
+    box-shadow: @size-2 @size-2 @size-5 var(--color-secondary-text-50);
+    border-radius: 0 0 @border-radius-default @border-radius-default;
+  }
+
+  .box {
+    > article:first-of-type {
+      margin-top: @size-8;
+    }
+
+    > article:last-of-type {
+      margin-bottom: @size-8;
+    }
+  }
+
+  .dismissContainer {
+    background-color: var(--color-page-background);
+    border-bottom: @size-1 solid var(--color-dark-grey);
+    border-radius: 0;
+    justify-content: space-between;
+
+    > span {
+      .mono-12-semi-bold;
+
+      display: initial;
+      color: var(--color-primary-text);
+      text-transform: uppercase;
+      margin: auto 0;
+    }
+
+    > button {
+      .mono-12-semi-bold;
+
+      color: var(--color-primary-text);
+      text-transform: capitalize;
+      background-color: var(--color-page-background);
+      border: none;
+      text-decoration: underline;
+      text-decoration-color: var(--color-primary-text);
+      text-decoration-style: dashed;
+    }
+  }
+
 }

@@ -5,7 +5,7 @@
   .mono-10-medium;
 
   align-items: baseline;
-  color: @color-secondary-text;
+  color: var(--color-secondary-text);
   display: flex;
   flex-flow: column nowrap;
   white-space: nowrap;
@@ -24,7 +24,7 @@
   > span:last-of-type {
     .mono-12-medium;
 
-    color: @color-primary-text;
+    color: var(--color-primary-text);
     text-align: left;
     width: 100%;
     margin-top: @size-3;
@@ -34,19 +34,19 @@
 
   &.FirstBreakpoint {
     > span:last-of-type {
-      color: @color-reporting;
+      color: var(--color-reporting);
     }
   }
 
   &.SecondBreakpoint {
     > span:last-of-type {
-      color: @color-resolved;
+      color: var(--color-resolved);
     }
   }
 
   &.Finished {
     > span:last-of-type {
-      color: @color-secondary-text;
+      color: var(--color-secondary-text);
     }
   }
 
@@ -62,7 +62,7 @@
 }
 
 .TimeLabel {
-  color: @color-primary-text;
+  color: var(--color-primary-text);
   display: flex;
   flex-flow: column nowrap;
   height: 2.875rem;
@@ -71,7 +71,7 @@
   > span:first-of-type {
     .mono-12;
 
-    color: @color-inactive-text;
+    color: var(--color-inactive-text);
     text-transform: capitalize;
   }
 
@@ -99,7 +99,7 @@
   width: 100%;
 
   > span:first-of-type {
-    background: @color-primary-action;
+    background: var(--color-primary-action);
     height: 1px;
     position: relative;
     top: 0;
@@ -107,7 +107,7 @@
   }
 
   > span:last-of-type {
-    background: @color-inactive-text;
+    background: var(--color-inactive-text);
     height: 1px;
     position: relative;
     top: 0;
@@ -133,8 +133,8 @@
 }
 
 .WindowProgress {
-  background: @color-module-background;
-  border: 1px solid @color-dark-grey;
+  background: var(--color-module-background);
+  border: 1px solid var(--color-dark-grey);
   border-radius: @border-radius-default;
   height: @size-178;
   padding: @size-24;
@@ -151,11 +151,11 @@
   }
 
   > span {
-    border: 1px solid @color-dark-grey;
+    border: 1px solid var(--color-dark-grey);
     height: @size-12;
 
     > span:first-of-type {
-      background: @color-reporting;
+      background: var(--color-reporting);
       height: @size-10;
       position: relative;
       top: 0;
@@ -163,7 +163,7 @@
     }
 
     > span:last-of-type {
-      background: @color-dark-grey;
+      background: var(--color-dark-grey);
       height: @size-10;
       position: relative;
       top: 0;
@@ -192,13 +192,13 @@
   > h4 {
     .mono-10;
 
-    color: @color-secondary-text;
+    color: var(--color-secondary-text);
     text-align: center;
     margin-bottom: @size-12;
     text-transform: uppercase;
 
     &:first-of-type {
-      color: @color-primary-text;
+      color: var(--color-primary-text);
       text-align: left;
 
       @media @breakpoint-max-desktop-min {
@@ -210,8 +210,15 @@
   > p {
     .mono-10;
 
-    color: @color-reporting;
+    color: var(--color-reporting);
     text-align: center;
+
+    &:first-of-type {
+      .text-12;
+
+      color: var(--color-secondary-text);
+      text-align: left;
+    }
 
     @media @breakpoint-max-desktop-min {
       .mono-9;
@@ -243,13 +250,13 @@
     > li {
       .mono-9;
 
-      color: @color-primary-text;
+      color: var(--color-primary-text);
       text-align: center;
       width: fit-content;
 
       &:before {
         content: '';
-        border-left: 1px solid @color-dark-grey;
+        border-left: 1px solid var(--color-dark-grey);
         height: @size-8;
         position: relative;
         bottom: @size-12;
@@ -279,7 +286,7 @@
           content: '';
           position: relative;
           height: @size-8;
-          border-right: 1px solid @color-dark-grey;
+          border-right: 1px solid var(--color-dark-grey);
           bottom: 102%;
         }
       }
@@ -311,18 +318,18 @@
 .reported {
   .mono-10;
 
-  color: @color-inactive-text;
+  color: var(--color-inactive-text);
   text-transform: uppercase;
 }
 
 .open {
-  color: @color-inactive-text;
+  color: var(--color-inactive-text);
 }
 
 .reported {
-  color: @color-primary-action;
+  color: var(--color-primary-action);
 
   > div:first-of-type {
-    color: @color-inactive-text;
+    color: var(--color-inactive-text);
   }
 }

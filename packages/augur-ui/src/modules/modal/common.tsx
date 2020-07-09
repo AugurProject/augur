@@ -25,13 +25,30 @@ import {
   LinearPropertyLabelProps,
 } from 'modules/common/labels';
 import Styles from 'modules/modal/modal.styles.less';
-import { PENDING, SUCCESS, DAI, FAILURE, ACCOUNT_TYPES, ETH, HELP_CENTER_ADD_FUNDS, HELP_CENTER_LEARN_ABOUT_ADDRESS, ON_BORDING_STATUS_STEP } from 'modules/common/constants';
+import {
+  PENDING,
+  SUCCESS,
+  DAI,
+  FAILURE,
+  ACCOUNT_TYPES,
+  ETH,
+  HELP_CENTER_ADD_FUNDS,
+  HELP_CENTER_LEARN_ABOUT_ADDRESS,
+  ON_BORDING_STATUS_STEP,
+  WALLET_STATUS_VALUES,
+  MODAL_TRANSFER,
+} from 'modules/common/constants';
 import { LinkContent, LoginAccount, FormattedNumber } from 'modules/types';
-import { DismissableNotice, DISMISSABLE_NOTICE_BUTTON_TYPES } from 'modules/reporting/common';
+import {
+  DismissableNotice,
+  DISMISSABLE_NOTICE_BUTTON_TYPES,
+} from 'modules/reporting/common';
 import { toChecksumAddress } from 'ethereumjs-util';
 import TooltipStyles from 'modules/common/tooltip.styles.less';
 import ReactTooltip from 'react-tooltip';
 import { BigNumber } from 'utils/create-big-number';
+import { useAppStatusStore } from 'modules/app/store/app-status';
+import { formatDai } from 'utils/format-number';
 import titleCase from 'utils/title-case';
 
 export interface TitleProps {
@@ -95,15 +112,6 @@ export interface BreakdownProps {
 
 export interface MarketTitleProps {
   title: string;
-}
-
-export interface SelectableTableRow {
-  columns: Array<string | number>;
-  action: Function;
-}
-
-export interface SelectableTableProps {
-  tableData: Array<SelectableTableRow>;
 }
 
 export interface ActionRow {
@@ -221,7 +229,6 @@ export class CategorySelection extends Component<
           default={selectedCategory}
           label="Select sub-category"
           options={categoriesList}
-          isMobileSmall={false}
           onChange={subCategory => {
             if (subCategory === 'Other') {
               this.setState({ showText: true });
@@ -271,38 +278,45 @@ export const Title = (props: TitleProps) => (
   <header
     className={classNames(Styles.TitleHeader, {
       [Styles.Bright]: props.bright,
-      [Styles.ShortBorder]: props.subheader
+      [Styles.ShortBorder]: props.subheader,
     })}
   >
     <h1>{props.title}</h1>
-    {props.subheader &&
-      <h2>{props.subheader}</h2>
-    }
+    {props.subheader && <h2>{props.subheader}</h2>}
     {props.closeAction && (
       <button onClick={() => props.closeAction()}>{XIcon}</button>
     )}
   </header>
 );
 
-export const Description = ({description}: DescriptionProps) => {
-  return description.join(' ').toString().split('\n').map((descriptionText: string) => (
-    <p key={descriptionText.slice(20).replace(/\s+/g, '-')}>
-      {descriptionText}
-    </p>
-  ));
+export const Description = ({ description }: DescriptionProps) => {
+  return description
+    .join(' ')
+    .toString()
+    .split('\n')
+    .map((descriptionText: string) => (
+      <p key={descriptionText.slice(20).replace(/\s+/g, '-')}>
+        {descriptionText}
+      </p>
+    ));
 };
 
 export const DescriptionWithLink = (props: DescriptionWithLinkProps) => {
-  const description = props.description.toString().split('\n').map((descriptionText: string) => (
-    <p key={descriptionText.slice(20).replace(/\s+/g, '-')}>
-      {descriptionText}
-    </p>
-  ));
+  const description = props.description
+    .toString()
+    .split('\n')
+    .map((descriptionText: string) => (
+      <p key={descriptionText.slice(20).replace(/\s+/g, '-')}>
+        {descriptionText}
+      </p>
+    ));
 
   return (
     <div className={Styles.DescriptionWithLink}>
       {description}
-      <a href={props.link} target="_blank">{props.label}</a>
+      <a href={props.link} target="_blank">
+        {props.label}
+      </a>
     </div>
   );
 };
@@ -371,7 +385,9 @@ export interface LinkContentSectionProps {
   linkContent: LinkContent[];
 }
 
-export const LinkContentSection = ({ linkContent }: LinkContentSectionProps) => (
+export const LinkContentSection = ({
+  linkContent,
+}: LinkContentSectionProps) => (
   <div className={Styles.LinkContentSection}>
     {linkContent.map((content, idx) => (
       <div key={idx}>
@@ -387,39 +403,66 @@ export const LinkContentSection = ({ linkContent }: LinkContentSectionProps) => 
 );
 
 interface StepperProps {
-  currentStep: number,
-  maxSteps: number,
+  currentStep: number;
+  maxSteps: number;
   changeCurrentStep?: Function;
 }
 
-export const Stepper = ({ currentStep, maxSteps, changeCurrentStep = null }: StepperProps) => (
+export const Stepper = ({
+  currentStep,
+  maxSteps,
+  changeCurrentStep = null,
+}: StepperProps) => (
   <div className={Styles.Stepper}>
-  {[...Array(maxSteps).keys()]
-    .map(key => key + 1)
-    .map((step, idx) => (
-    <span
-      key={idx}
-      onClick={() => changeCurrentStep && changeCurrentStep(step)}
-      className={currentStep === step ? Styles.Current : null}
-    ></span>
-  ))}
-</div>
+    {[...Array(maxSteps).keys()]
+      .map(key => key + 1)
+      .map((step, idx) => (
+        <span
+          key={idx}
+          onClick={() => changeCurrentStep && changeCurrentStep(step)}
+          className={currentStep === step ? Styles.Current : null}
+        ></span>
+      ))}
+  </div>
 );
 
-interface TransferMyDaiProps {
-  walletType: string;
-  tokenAmount: FormattedNumber;
-  showTransferModal: Function;
-  isCondensed: boolean;
-  tokenName: string;
-}
-
-export const TransferMyTokens = ({ walletType, tokenAmount, showTransferModal, tokenName, isCondensed = false}: TransferMyDaiProps) => {
+export const TransferMyTokens = ({ condensed, tokenName, callback }) => {
+  const {
+    actions: { setModal },
+    loginAccount: {
+      meta: { accountType: walletType },
+      balances: {
+        signerBalances: { dai },
+      },
+    },
+    walletStatus,
+  } = useAppStatusStore();
+  const tokenAmount =
+    tokenName === DAI
+      ? loginAccount?.balances?.signerBalances?.dai
+      : tokenName === REP
+      ? loginAccount?.balances?.signerBalances?.rep
+      : 0;
+  const isCondensed = condensed || false;
+  const daiAmount = formatDai(dai || 0);
+  const showTransferModal = () => {
+    setModal({
+      type: MODAL_TRANSFER,
+      useSigner: true,
+      cb: () => {
+        if (callBack) {
+          setTimeout(() => callBack());
+        }
+      },
+    });
+  };
   if (isCondensed) {
     return (
       <div className={Styles.TransferMyDaiCondensed}>
         <div>
-          <span>{tokenAmount.formattedValue} {tokenName}</span>
+          <span>
+            {tokenAmount.formattedValue} {tokenName}
+          </span>
           <span>in {walletType} wallet</span>
         </div>
         <SecondaryButton
@@ -433,7 +476,10 @@ export const TransferMyTokens = ({ walletType, tokenAmount, showTransferModal, t
   return (
     <div className={Styles.TransferMyTokens}>
       <div>
-        <span>{tokenAmount.formattedValue} {titleCase(tokenName)} in your {walletType} wallet</span>
+        <span>
+          {tokenAmount.formattedValue} {titleCase(tokenName)} in your{' '}
+          {walletType} wallet
+        </span>
         <span>Transfer any amount to your trading account.</span>
       </div>
       <PrimaryButton
@@ -442,8 +488,7 @@ export const TransferMyTokens = ({ walletType, tokenAmount, showTransferModal, t
       />
     </div>
   );
-}
-
+};
 interface ConvertToDaiProps {
   walletType: string;
   balance: FormattedNumber;
@@ -481,41 +526,58 @@ export const ConvertToDai = ({ walletType, balance, showAddFundsModal, isCondens
     </div>
   );
 }
+export const AccountStatusTracker = () => {
+  const { walletStatus } = useAppStatusStore();
+  let accountStatusTracker = ON_BORDING_STATUS_STEP.ONE;
 
-interface AccountStatusTrackerProps {
-  accountStatusTracker: number;
-}
+  if (walletStatus === WALLET_STATUS_VALUES.FUNDED_NEED_CREATE) {
+    accountStatusTracker = ON_BORDING_STATUS_STEP.TWO;
+  } else if (walletStatus === WALLET_STATUS_VALUES.CREATED) {
+    accountStatusTracker = ON_BORDING_STATUS_STEP.THREE;
+  }
 
-export const AccountStatusTracker = ({ accountStatusTracker } :AccountStatusTrackerProps) => (
-  <div className={Styles.AccountStatusTracker}>
-    <div>
-      <div className={classNames(Styles.AccountStep, {
-        [Styles.AccountStepCompleted]: accountStatusTracker >= ON_BORDING_STATUS_STEP.ONE
-      })}>
-        {accountStatusTracker >= ON_BORDING_STATUS_STEP.ONE && OnboardingCheckIcon}
+  return (
+    <div className={Styles.AccountStatusTracker}>
+      <div>
+        <div
+          className={classNames(Styles.AccountStep, {
+            [Styles.AccountStepCompleted]:
+              accountStatusTracker >= ON_BORDING_STATUS_STEP.ONE,
+          })}
+        >
+          {accountStatusTracker >= ON_BORDING_STATUS_STEP.ONE &&
+            OnboardingCheckIcon}
+        </div>
+        <div className={Styles.line} />
+        <div
+          className={classNames(Styles.AccountStep, {
+            [Styles.AccountStepCompleted]:
+              accountStatusTracker >= ON_BORDING_STATUS_STEP.TWO,
+          })}
+        >
+          {accountStatusTracker >= ON_BORDING_STATUS_STEP.TWO &&
+            OnboardingCheckIcon}
+        </div>
+        <div className={Styles.line} />
+        <div
+          className={classNames(Styles.AccountStep, {
+            [Styles.AccountStepCompleted]:
+              accountStatusTracker === ON_BORDING_STATUS_STEP.THREE,
+          })}
+        >
+          {accountStatusTracker === ON_BORDING_STATUS_STEP.THREE &&
+            OnboardingCheckIcon}
+        </div>
       </div>
-      <div className={Styles.line}/>
-      <div className={classNames(Styles.AccountStep, {
-        [Styles.AccountStepCompleted]: accountStatusTracker >= ON_BORDING_STATUS_STEP.TWO
-      })}>
-        {accountStatusTracker >= ON_BORDING_STATUS_STEP.TWO && OnboardingCheckIcon}
-      </div>
-      <div className={Styles.line}/>
-      <div className={classNames(Styles.AccountStep, {
-        [Styles.AccountStepCompleted]: accountStatusTracker === ON_BORDING_STATUS_STEP.THREE
-      })}>
-        {accountStatusTracker === ON_BORDING_STATUS_STEP.THREE && OnboardingCheckIcon}
+
+      <div>
+        <div>Create log-in</div>
+        <div>Add funds</div>
+        <div>Activate account</div>
       </div>
     </div>
-
-    <div>
-      <div>Create log-in</div>
-      <div>Add funds</div>
-      <div>Activate account</div>
-    </div>
-
-  </div>
-);
+  );
+};
 
 export const DaiGraphic = () => (
   <div className={Styles.DaiGraphic}>
@@ -536,16 +598,27 @@ export interface DaiEthSelectorProps {
   handleClick: Function;
 }
 
-export const DaiEthSelector = ({ handleClick, daiSelected}: DaiEthSelectorProps) => (
+export const DaiEthSelector = ({
+  handleClick,
+  daiSelected,
+}: DaiEthSelectorProps) => (
   <div className={Styles.DaiEthSelector}>
-    <div onClick={() => handleClick(true)} className={classNames({ [Styles.selected]: daiSelected })}>{DaiLogoIcon} DAI</div>
-    <div onClick={() => handleClick(false)} className={classNames({ [Styles.selected]: !daiSelected })}>{EthIcon} ETH</div>
+    <div
+      onClick={() => handleClick(true)}
+      className={classNames({ [Styles.selected]: daiSelected })}
+    >
+      {DaiLogoIcon} DAI
+    </div>
+    <div
+      onClick={() => handleClick(false)}
+      className={classNames({ [Styles.selected]: !daiSelected })}
+    >
+      {EthIcon} ETH
+    </div>
   </div>
 );
 
-export const TestBet = (
-  <img height='141px' src='images/test-bet.png' />
-);
+export const TestBet = <img height="141px" src="images/test-bet.png" />;
 
 export const AlertMessage = (props: AlertMessageProps) => (
   <div className={Styles.AlertMessage}>
@@ -567,18 +640,6 @@ export const CallToAction = (props: CallToActionProps) => (
   <h3>{props.callToAction}</h3>
 );
 
-export const SelectableTable = (props: SelectableTableProps) => (
-  <div className={Styles.SelectableTable}>
-    {props.tableData.map((row: SelectableTableRow) => (
-      <button key={`row_${row.columns[0]}`} onClick={() => row.action()}>
-        {row.columns.map((columnText: string | number) => (
-          <span key={`col_${columnText}`}>{columnText}</span>
-        ))}
-      </button>
-    ))}
-  </div>
-);
-
 export const Breakdown = (props: BreakdownProps) => (
   <div
     className={classNames({
@@ -587,9 +648,10 @@ export const Breakdown = (props: BreakdownProps) => (
     })}
   >
     {props.title && <h4>{props.title}</h4>}
-    {props.rows && props.rows.map((row: LinearPropertyLabelProps) => (
-      <LinearPropertyLabel {...row} key={row.label} />
-    ))}
+    {props.rows &&
+      props.rows.map((row: LinearPropertyLabelProps) => (
+        <LinearPropertyLabel {...row} key={row.label} />
+      ))}
     {props.footer && (
       <LinearPropertyLabel {...props.footer} key={props.footer.label} />
     )}
@@ -604,10 +666,7 @@ export const ActionRows = ({ rows }: ActionRowsProps) => {
         estimates => {
           const newRows = [...rows];
           estimates.map((estimate, index) => {
-            newRows[index].properties = [
-              ...rows[index].properties,
-              estimate,
-            ];
+            newRows[index].properties = [...rows[index].properties, estimate];
           });
           setEstimatedRows(newRows);
         }
@@ -616,40 +675,44 @@ export const ActionRows = ({ rows }: ActionRowsProps) => {
     return () => clearTimeout(timer);
   }, []);
 
-  return (
-    estimatedRows.map((row: ActionRow) => (
-      <section key={row.title} className={Styles.ActionRow}>
-        <section>
-          <MarketTitle title={row.title} />
-          <div>
-            {row.properties.map(property => (
-              <React.Fragment key={row.title + ' ' + property.label}>
-                <LinearPropertyLabel
-                  label={property.label}
-                  value={property.value}
-                />
-                {property.addExtraSpace && <span />}
-              </React.Fragment>
-            ))}
-          </div>
-        </section>
+  return estimatedRows.map((row: ActionRow) => (
+    <section key={row.title} className={Styles.ActionRow}>
+      <section>
+        <MarketTitle title={row.title} />
         <div>
-          {row.action &&
-            <ProcessingButton
-              text={row.text}
-              queueName={row.queueName}
-              queueId={row.queueId}
-              action={row.action}
-              submitTextButtton={true}
-            />
-          }
+          {row.properties.map(property => (
+            <React.Fragment key={row.title + ' ' + property.label}>
+              <LinearPropertyLabel
+                label={property.label}
+                value={property.value}
+              />
+              {property.addExtraSpace && <span />}
+            </React.Fragment>
+          ))}
         </div>
-        {row.notice && <DismissableNotice title={row.notice} description={''} show={true} buttonType={DISMISSABLE_NOTICE_BUTTON_TYPES.NONE} />}
       </section>
-    ))
-  )
-}
-
+      <div>
+        {row.action && (
+          <ProcessingButton
+            text={row.text}
+            queueName={row.queueName}
+            queueId={row.queueId}
+            action={row.action}
+            submitTextButtton={true}
+          />
+        )}
+      </div>
+      {row.notice && (
+        <DismissableNotice
+          title={row.notice}
+          description={''}
+          show={true}
+          buttonType={DISMISSABLE_NOTICE_BUTTON_TYPES.NONE}
+        />
+      )}
+    </section>
+  ));
+};
 
 export const ReadableAddress = (props: ReadableAddressProps) => (
   <div className={Styles.ReadableAddress}>
@@ -714,14 +777,14 @@ export const AccountAddressDisplay = ({ address, copyable }) => {
     timeoutId = setTimeout(() => {
       setIsCopied(false);
     }, 2000);
-  }
+  };
 
   useEffect(() => {
     new Clipboard('#copy_address');
 
     return function() {
       clearTimeout(timeoutId);
-    }
+    };
   }, []);
 
   return (
@@ -730,7 +793,7 @@ export const AccountAddressDisplay = ({ address, copyable }) => {
       {copyable && (
         <>
           <button
-            id='copy_address'
+            id="copy_address"
             data-clipboard-text={address}
             onClick={() => copyClicked()}
             className={isCopied ? Styles.ShowConfirmaiton : null}
@@ -741,7 +804,7 @@ export const AccountAddressDisplay = ({ address, copyable }) => {
       )}
     </span>
   );
-}
+};
 
 interface FundsHelpProps {
   fundType: string;
@@ -751,8 +814,12 @@ export const FundsHelp = ({ fundType = DAI }: FundsHelpProps) => (
   <div className={Styles.FundsHelp}>
     <p>Need help?</p>
     <div>
-      <span>Learn how to buy {fundType === DAI ? `Dai ($)` : fundType} {fundType === DAI ? generateDaiTooltip() : ''} and  send it to your trading account.</span>
-      <ExternalLinkButton URL={HELP_CENTER_ADD_FUNDS} label='Learn More' />
+      <span>
+        Learn how to buy {fundType === DAI ? `Dai ($)` : fundType}{' '}
+        {fundType === DAI ? generateDaiTooltip() : ''} and send it to your
+        trading account.
+      </span>
+      <ExternalLinkButton URL={HELP_CENTER_ADD_FUNDS} label="Learn More" />
     </div>
   </div>
 );
@@ -861,12 +928,11 @@ export class CheckboxCTA extends Component<CheckboxCTAProps, CheckboxCTAState> {
   }
 }
 
-
 interface CreditCardProps {
   accountMeta: LoginAccount['meta'];
   walletAddress: string;
-  addFundsTorus: Function,
-  addFundsFortmatic: Function,
+  addFundsTorus: Function;
+  addFundsFortmatic: Function;
   fundTypeLabel: string;
   fundTypeToUse: string;
   validateAndSet: Function;
@@ -875,7 +941,6 @@ interface CreditCardProps {
   amountToBuy: BigNumber;
   isAmountValid: boolean;
 }
-
 
 export const CreditCard = ({
   accountMeta,
@@ -899,7 +964,7 @@ export const CreditCard = ({
 
     <h3>Amount</h3>
     <TextInput
-      placeholder='0'
+      placeholder="0"
       onChange={value => validateAndSet(Number(value))}
       value={String(amountToBuy)}
       innerLabel={fundTypeToUse === DAI ? 'USD' : fundTypeToUse}
@@ -913,7 +978,9 @@ export const CreditCard = ({
     {accountMeta.accountType === ACCOUNT_TYPES.TORUS && (
       <PrimaryButton
         disabled={!isAmountValid}
-        action={() => addFundsTorus(amountToBuy, toChecksumAddress(walletAddress))}
+        action={() =>
+          addFundsTorus(amountToBuy, toChecksumAddress(walletAddress))
+        }
         text={`Buy with ${accountMeta.accountType}`}
       />
     )}
@@ -937,8 +1004,8 @@ export const CreditCard = ({
       ].includes(accountMeta.accountType) && (
         <div>
           Buy {fundTypeLabel} with our secure payments partner,{' '}
-          {accountMeta.accountType}. Funds will appear in your User account
-          when payment finalizes.
+          {accountMeta.accountType}. Funds will appear in your User account when
+          payment finalizes.
         </div>
       )}
     </h4>
@@ -950,7 +1017,6 @@ interface CoinbaseProps {
   fundTypeLabel: string;
   fundTypeToUse: string;
 }
-
 
 export const Coinbase = ({
   fundTypeToUse,
@@ -973,7 +1039,11 @@ export const Coinbase = ({
     <ol>
       <li>
         Login to your account at{' '}
-        <a href='https://www.coinbase.com' target='_blank' rel="noopener noreferrer">
+        <a
+          href="https://www.coinbase.com"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
           www.coinbase.com
         </a>
       </li>
@@ -1024,7 +1094,7 @@ export const Transfer = ({
           fundTypeLabel
         )}{' '}
         using an app or exchange (see our list of{' '}
-        <a target='_blank' href={HELP_CENTER_ADD_FUNDS}>
+        <a target="_blank" href={HELP_CENTER_ADD_FUNDS}>
           popular ways to buy {fundTypeLabel})
         </a>
       </li>
@@ -1054,17 +1124,17 @@ export const generateDaiTooltip = (
       <label
         className={classNames(TooltipStyles.TooltipHint)}
         data-tip
-        data-for='tooltip--confirm'
+        data-for="tooltip--confirm"
         data-iscapture={true}
       >
         {helpIcon}
       </label>
       <ReactTooltip
-        id='tooltip--confirm'
+        id="tooltip--confirm"
         className={TooltipStyles.Tooltip}
-        effect='solid'
-        place='top'
-        type='light'
+        effect="solid"
+        place="top"
+        type="light"
         event="mouseover mouseenter"
         eventOff="mouseleave mouseout scroll mousewheel blur"
       >

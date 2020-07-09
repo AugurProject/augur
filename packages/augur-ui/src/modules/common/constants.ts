@@ -61,6 +61,53 @@ export const USDC = 'USDC';
 
 export const TRADING_TUTORIAL = 'TRADING_TUTORIAL';
 export const INVALID_BEST_BID_ALERT_VALUE = createBigNumber('.1');
+
+export const THEMES = {
+  BETTING: 'BETTING',
+  TRADING: 'TRADING',
+  SPORTS: 'SPORTS',
+};
+
+export const ODDS_TYPE = {
+  DECIMAL: 'Decimal',
+  FRACTIONAL: 'Fractional',
+  AMERICAN: 'American',
+  PERCENT: 'Percent',
+};
+
+export const TIME_FORMATS = {
+  TWENTY_FOUR: '24h',
+  AM_PM: 'AM / PM',
+};
+
+export const SPORTS_GROUP_TYPES = {
+  DAILY: 'DAILY',
+  FUTURES: 'FUTURES',
+  COMBO: 'COMBO',
+};
+
+export const SPORTS_GROUP_MARKET_TYPES = {
+  MONEY_LINE: "MONEY_LINE",
+  OVER_UNDER: "OVER_UNDER",
+  SPREAD: "SPREAD",
+  ADDITIONAL: "ADDITIONAL",
+  COMBO_MONEY_LINE: "COMBO_MONEY_LINE",
+  COMBO_OVER_UNDER: "COMBO_OVER_UNDER",
+  COMBO_SPREAD: "COMBO_SPREAD",
+  FUTURES: "FUTURES",
+};
+// DAILY
+//   MONEY_LINE,
+//   OVER_UNDER,
+//   SPREAD,
+//   ADDITIONAL,
+// COMBO
+//   COMBO_MONEY_LINE,
+//   COMBO_OVER_UNDER,
+//   COMBO_SPREAD,
+// FUTURES
+//   FUTURES,
+
 export const SCALAR_INVALID_BEST_BID_ALERT_VALUE = createBigNumber('10');
 // # Network Constants
 export const MILLIS_PER_BLOCK = 12000;
@@ -407,6 +454,7 @@ export const CATEGORY_PARAM_NAME = 'category';
 export const MAXFEE_PARAM_NAME = 'maxFee';
 export const SPREAD_PARAM_NAME = 'spread';
 export const MARKET_TYPE_PARAM_NAME = 'type'
+export const MARKET_TYPE_FILTER = 'marketTypeFilter';
 export const SHOW_INVALID_MARKETS_PARAM_NAME = 'showInvalid';
 export const TEMPLATE_FILTER = 'templateFilter';
 
@@ -585,28 +633,18 @@ export const ONBOARDING_MAX_STEPS = 5;
 export const MODAL_LEDGER = 'MODAL_LEDGER';
 export const MODAL_TREZOR = 'MODAL_TREZOR';
 export const MODAL_REPORTING = 'MODAL_REPORTING';
-export const MODAL_CONTENT = 'MODAL_CONTENT';
-export const MODAL_CATEGORIES = 'MODAL_CATEGORIES';
-export const MODAL_MARKET_TYPE = 'MODAL_MARKET_TYPE';
 export const MODAL_NETWORK_MISMATCH = 'MODAL_NETWORK_MISMATCH';
 export const MODAL_NETWORK_CONNECT = 'MODAL_NETWORK_CONNECT';
 export const MODAL_NETWORK_DISCONNECTED = 'MODAL_NETWORK_DISCONNECTED';
-export const MODAL_ACCOUNT_APPROVAL = 'MODAL_ACCOUNT_APPROVAL';
-export const MODAL_CLAIM_REPORTING_FEES_FORKED_MARKET =
-  'MODAL_CLAIM_REPORTING_FEES_FORKED_MARKET';
 export const MODAL_CLAIM_FEES = 'MODAL_CLAIM_FEES';
 export const MODAL_PARTICIPATE = 'MODAL_PARTICIPATE';
 export const MODAL_NETWORK_DISABLED = 'MODAL_NETWORK_DISABLED';
 export const MODAL_DISCLAIMER = 'MODAL_DISCLAIMER';
-export const MODAL_CONFIRM = 'MODAL_CONFIRM';
-export const MODAL_REVIEW = 'MODAL_REVIEW';
 export const MODAL_GAS_PRICE = 'MODAL_GAS_PRICE';
 export const MODAL_REP_FAUCET = 'MODAL_REP_FAUCET';
-export const MODAL_GSN_FAUCET = 'MODAL_GSN_FAUCET';
 export const MODAL_CREATE_MARKET = 'MODAL_CREATE_MARKET';
 export const MODAL_DAI_FAUCET = 'MODAL_DAI_FAUCET';
 export const MODAL_CREATION_HELP = 'MODAL_CREATION_HELP';
-export const MODAL_DEPOSIT = 'MODAL_DEPOSIT';
 export const MODAL_TRANSFER = 'MODAL_TRANSFER';
 export const MODAL_CASHOUT = 'MODAL_CASHOUT';
 export const MODAL_MIGRATE_REP = 'MODAL_MIGRATE_REP';
@@ -631,10 +669,8 @@ export const MODAL_FROZEN_FUNDS = 'MODAL_FROZEN_FUNDS';
 export const DISCLAIMER_SEEN = 'disclaimerSeen';
 export const GSN_WALLET_SEEN = 'gsnWalletInfoSeen';
 export const MARKET_REVIEW_SEEN = 'marketReviewSeen';
-export const MODAL_MARKET_REVIEW = 'MODAL_MARKET_REVIEW';
 export const MODAL_OPEN_ORDERS = 'MODAL_OPEN_ORDERS';
 export const MODAL_MARKET_LOADING = 'MODAL_MARKET_LOADING';
-export const MODAL_MARKET_NOT_FOUND = 'MODAL_MARKET_NOT_FOUND';
 export const MODAL_DR_QUICK_GUIDE = 'MODAL_DR_QUICK_GUIDE';
 export const MODAL_MIGRATE_MARKET = 'MODAL_MIGRATE_MARKET';
 export const MODAL_LOGIN = 'MODAL_LOGIN';
@@ -644,6 +680,7 @@ export const MODAL_LOADING = 'MODAL_LOADING';
 export const MODAL_ACCOUNT_CREATED = 'MODAL_ACCOUNT_CREATED';
 export const MODAL_ERROR = 'MODAL_ERROR';
 export const MODAL_HELP = 'MODAL_HELP';
+export const MODAL_ODDS = 'MODAL_ODDS';
 export const MODAL_REPORTING_ONLY = 'MODAL_REPORTING_ONLY';
 
 // transactions parameter names
@@ -775,12 +812,18 @@ export const WARNING = 'warning';
 export const ERROR = 'error';
 export const UP = 'up';
 export const DOWN = 'down';
+export const BETTING_LAY = 'BETTING_LAY';
+export const BETTING_BACK = 'BETTING_BACK';
 export const NONE = 'none';
+export const NEGATIVE_ONE = createBigNumber(-1, 10);
 export const ZERO = createBigNumber(0);
 export const ONE = createBigNumber(1, 10);
 export const TWO = createBigNumber(2, 10);
-export const TEN = createBigNumber(10, 10);
 export const FIVE = createBigNumber(5, 10);
+export const TEN = createBigNumber(10, 10);
+export const TWENTY_FIVE = createBigNumber(25, 10);
+export const FIFTY = createBigNumber(50, 10);
+export const HUNDRED = createBigNumber(100, 10);
 export const TEN_TO_THE_EIGHTEENTH_POWER = TEN.exponentiatedBy(18);
 export const MIN_QUANTITY = createBigNumber('0.01');
 export const DISPUTE_GAS_COST = createBigNumber(480000);
@@ -983,6 +1026,42 @@ export const TIMEFRAME_OPTIONS = [
   { label: TIMEFRAMES.MONTH, periodInterval: 2592000, id: 2 },
 ];
 
+export const GAMES = 'Games';
+export const FUTURES = 'Futures';
+
+export const SPORTS_MARKET_TYPES = [
+  {
+    header: GAMES,
+    label: GAMES,
+    id: 0,
+    value: 0,
+  },
+  {
+    header: FUTURES,
+    label: FUTURES,
+    id: 1,
+    value: 1,
+  }
+];
+
+export const ACTIVE = 'Active';
+export const RESOLVED = 'Resolved';
+
+export const MARKET_STATE_TYPES = [
+  {
+    header: ACTIVE,
+    label: ACTIVE,
+    id: 0,
+    value: 0,
+  },
+  {
+    header: RESOLVED,
+    label: RESOLVED,
+    id: 1,
+    value: 1
+  }
+];
+
 // Pending Queue Types
 export const CLAIM_STAKE_FEES = 'CLAIM_STAKE_FEES';
 export const CLAIM_MARKETS_PROCEEDS = 'CLAIM_MARKETS_PROCEEDS';
@@ -1015,6 +1094,7 @@ export const VALUE = 'VALUE';
 export const CANCEL_TEXT_BUTTON = 'CANCEL_TEXT_BUTTON';
 export const MOVEMENT_LABEL = 'MOVEMENT_LABEL';
 export const INVALID_LABEL = 'INVALID_LABEL';
+export const CASHOUT_BUTTON = 'CASHOUT_BUTTON';
 
 export const COLUMN_TYPES = {
   [TEXT]: TEXT,
@@ -1024,6 +1104,7 @@ export const COLUMN_TYPES = {
   [CANCEL_TEXT_BUTTON]: CANCEL_TEXT_BUTTON,
   [MOVEMENT_LABEL]: MOVEMENT_LABEL,
   [PLAIN]: PLAIN,
+  [CASHOUT_BUTTON]: CASHOUT_BUTTON
 };
 
 // Login method variables
@@ -1459,3 +1540,65 @@ export enum HEADER_TYPE {
 }
 
 export const LOGGED_IN_USER_LOCAL_STORAGE_KEY = 'loggedInUser';
+
+export const EVENT = 'Event';
+export const OUTCOMES = 'Outcomes';
+
+export const MY_BETS_VIEW_BY = [
+  {
+    header: EVENT,
+    label: EVENT,
+    value: 0,
+    id: 0,
+  },
+  {
+    header: OUTCOMES,
+    label: OUTCOMES,
+    value: 1,
+    id: 1,
+  },
+];
+
+export const MY_BETS_MARKET_STATUS = [
+  {
+    header: ALL_MARKETS,
+    label: ALL_MARKETS,
+    value: 0,
+  },
+  {
+    header: MARKET_OPEN,
+    label: MARKET_OPEN,
+    value: 1,
+  },
+  {
+    header: MARKET_REPORTING,
+    label: MARKET_REPORTING,
+    value: 2,
+  },
+  {
+    header: MARKET_CLOSED,
+    label: MARKET_CLOSED,
+    value: 3,
+  },
+];
+
+export const MY_BETS_BET_DATE = [
+  {
+    header: 'Last 30 days',
+    label: 'Last 30 days',
+    periodInterval: 2592000,
+    value: 0,
+  },
+  {
+    header: 'Last 7 days',
+    label: 'Last 7 days',
+    periodInterval: 604800,
+    value: 1,
+  },
+  {
+    header: 'Last 24 hours',
+    label: 'Last 24 hours',
+    periodInterval: 86400,
+    value: 2,
+  },
+];

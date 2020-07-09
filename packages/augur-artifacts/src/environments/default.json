@@ -68,7 +68,7 @@
   "averageBlocktime": 2000,
   "ui": {
     "showReloadModal": true,
-    "trackBestOffer": false,
+    "trackBestOffer": true,
     "reportingOnly": false,
     "fallbackProvider": "torus"
   }

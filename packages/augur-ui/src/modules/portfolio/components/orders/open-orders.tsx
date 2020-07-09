@@ -1,9 +1,10 @@
-import React, { Component } from 'react';
-import FilterSwitchBox from 'modules/portfolio/containers/filter-switch-box';
-import OpenOrder from 'modules/portfolio/containers/open-order';
+import React, { useState } from 'react';
+import FilterSwitchBox from 'modules/portfolio/components/common/filter-switch-box';
+import { OpenOrder } from 'modules/common/table-rows';
 import OpenOrdersHeader from 'modules/portfolio/components/common/open-orders-header';
 import OrderMarketRow from 'modules/portfolio/components/common/order-market-row';
 import { MarketData, UIOrder } from 'modules/types';
+import selectMarketsOpenOrders from 'modules/portfolio/selectors/select-markets-open-orders';
 import { CancelTextButton } from 'modules/common/buttons';
 import Styles from 'modules/market/components/market-orders-positions-table/open-orders-table.styles.less';
 
@@ -21,10 +22,6 @@ const sortByOptions = [
 ];
 
 interface OpenOrdersProps {
-  markets: MarketData[];
-  openOrders: UIOrder[];
-  marketsObj: { [marketId: string]: MarketData };
-  ordersObj: { [orderId: string]: UIOrder };
   toggle?: () => void;
   extend?: boolean;
   hide?: boolean;
@@ -35,36 +32,28 @@ interface OpenOrdersState {
   viewByMarkets: boolean;
 }
 
-export default class OpenOrders extends Component<
-  OpenOrdersProps,
-  OpenOrdersState
-> {
-  state = {
-    viewByMarkets: true,
-  };
+const OpenOrders = ({
+  toggle, extend, hide,
+}: OpenOrdersProps) => {
 
-  constructor(props) {
-    super(props);
+  const [viewByMarkets, setViewByMarkets] = useState(true);
 
-    this.filterComp = this.filterComp.bind(this);
-    this.switchView = this.switchView.bind(this);
-    this.renderRows = this.renderRows.bind(this);
-  }
+  const {
+    markets,
+    marketsObj,
+    ordersObj,
+    openOrders
+  } = selectMarketsOpenOrders();
 
-  filterComp(input, data) {
+  function filterComp(input, data) {
     return data.description.toLowerCase().indexOf(input.toLowerCase()) >= 0;
   }
 
-  switchView() {
-    this.setState({
-      viewByMarkets: !this.state.viewByMarkets,
-    });
+  function switchView() {
+    setViewByMarkets(!viewByMarkets);
   }
 
-  renderRows(data) {
-    const { marketsObj, ordersObj } = this.props;
-    const { viewByMarkets } = this.state;
-
+  function renderRows(data) {
     const marketView = marketsObj[data.id] && viewByMarkets;
     const orderView = ordersObj[data.id];
     if (!marketView && !orderView) return null;
@@ -83,30 +72,19 @@ export default class OpenOrders extends Component<
     );
   }
 
-  render() {
-    const {
-      markets,
-      openOrders,
-      toggle,
-      extend,
-      hide,
-      cancelAllOpenOrders,
-    } = this.props;
-    const { viewByMarkets } = this.state;
-    const hasPending = Boolean(openOrders.find(order => order.pending));
-
-    return (
-      <FilterSwitchBox
+  const hasPending = Boolean(openOrders.find(order => order.pending));
+  return (
+    <FilterSwitchBox
         title="Open Orders"
         showFilterSearch
         filterLabel="open orders"
         sortByOptions={sortByOptions}
         sortByStyles={{ minWidth: '13.6875rem' }}
         data={viewByMarkets ? markets : openOrders}
-        filterComp={this.filterComp}
-        switchView={this.switchView}
+        filterComp={filterComp}
+        switchView={switchView}
         bottomBarContent={<OpenOrdersHeader />}
-        renderRows={this.renderRows}
+        renderRows={renderRows}
         toggle={toggle}
         extend={extend}
         hide={hide}
@@ -122,6 +100,7 @@ export default class OpenOrders extends Component<
           ) : null
         }
       />
-    );
-  }
-}
+  );
+};
+
+export default OpenOrders;

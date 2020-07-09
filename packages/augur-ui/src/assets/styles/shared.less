@@ -17,7 +17,7 @@ html {
 }
 
 body {
-  color: @color-dark-grey;
+  color: var(--color-dark-grey);
   font-family: @Inter;
   font-size: @size-16;
   font-style: normal;
@@ -26,7 +26,7 @@ body {
 }
 
 label {
-  color: @color-primary-text;
+  color: var(--color-primary-text);
   display: block;
   margin-bottom: @size-10;
 
@@ -37,25 +37,25 @@ label {
 
 input,
 textarea {
-  background-color: @color-dark-grey;
+  background-color: var(--color-dark-grey);
   border: @size-1 solid transparent;
-  color: @color-primary-text;
+  color: var(--color-primary-text);
   display: block;
   font-family: @Inter;
   padding: @size-12 @size-16;
   width: 100%;
 
   &:focus {
-    border: @size-1 solid @color-secondary-action-outline;
+    border: @size-1 solid var(--color-secondary-action-outline);
   }
 
   &:disabled {
-    background-color: @color-inactive-text;
+    background-color: var(--color-inactive-text);
     cursor: default;
   }
 
   &::placeholder {
-    color: @color-secondary-text;
+    color: var(--color-secondary-text);
     font-family: @Inter;
   }
 }
@@ -66,7 +66,7 @@ textarea {
   }
 
   ::-webkit-scrollbar-thumb {
-    background: @color-secondary-action-outline;
+    background: var(--color-secondary-action-outline);
     border-radius: @border-radius-full-round;
   }
 }

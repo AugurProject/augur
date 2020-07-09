@@ -1,18 +1,17 @@
 import React, { useEffect } from 'react';
 import { analytics } from './analytics';
 import { RouteComponentProps } from 'react-router-dom';
-
-interface ComponentProps extends RouteComponentProps {
-  page: Function
-}
+import { page } from 'services/analytics/helpers';
+import { useLocation } from 'react-router';
 
 const withPageAnalytic = <P extends unknown>(
   WrappedComponent: React.ComponentType<P>
 ) => {
-  return (props: ComponentProps & P) => {
+  return (props: P) => {
+    const location = useLocation();
     useEffect(() => {
-      props.page(props.location.pathname, {});
-    }, [props.location.pathname]);
+      page(location.pathname, {});
+    }, [location.pathname]);
 
     return <WrappedComponent {...props} />;
   };

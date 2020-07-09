@@ -1,0 +1,18 @@
+@import (reference) "~assets/styles/shared";
+
+.FilterDropdowns {
+  align-items: center;
+  display: flex;
+  flex-flow: row nowrap;
+
+  > div {
+    min-width: @size-250;
+
+    > button {
+      > span::before {
+        content: 'Sort By:';
+        padding-right: @size-4;
+      }
+    }
+  }
+}

@@ -1,9 +1,9 @@
 @import (reference) '~assets/styles/shared';
 
 .MarketCard {
-  background: @color-module-background;
+  background: var(--color-module-background);
   border-radius: @border-radius-default;
-  border: 1px solid @color-dark-grey;
+  border: @size-1 solid var(--color-dark-grey);
   margin: @size-4 0;
   display: grid;
   grid-template-columns: 102px auto;
@@ -26,7 +26,7 @@
   > span,
   > h2,
   > h3 {
-    border-left: 1px solid @color-dark-grey;
+    border-left: @size-1 solid var(--color-dark-grey);
     padding-left: @size-12;
   }
 
@@ -45,148 +45,23 @@
       text-align: left;
     }
 
-    > div.hoverIconTray {
-      display: none;
-
-      > div:nth-of-type(3),
-      > div:nth-of-type(4) {
-        svg {
-          fill: none;
-
-          > circle {
-            fill: none;
-            stroke: @color-secondary-action-outline;
-          }
-
-          > path {
-            fill: @color-primary-text;
-          }
-        }
-      }
-    }
-
     > div:nth-child(even) {
       margin-top: @size-8;
       padding-bottom: 0;
     }
   }
 
-  > div.TopRow {
-    display: flex;
-    align-items: center;
-    grid-column: 2 / span 1;
-
-    > div:first-of-type,
-    > div:nth-of-type(2) {
-      display: none;
-      align-items: center;
-      margin-right: @size-8;
-
-      > label:not(:first-child),
-      > span:not(:first-child) {
-        margin-left: @size-8;
-      }
-    }
-
-    > div:nth-of-type(2) {
-      > label {
-        margin-bottom: 0;
-      }
-    }
-
-    &.HasCircularIcons {
-      > div:nth-of-type(2) {
-        display: flex;
-      }
-    }
-
-    &.HasScalarOrInReportingLabels {
-      > div:first-of-type {
-        display: flex;
-      }
-    }
-
-    > span {
-      margin-right: @size-12;
-      flex-flow: row nowrap;
-
-      > span:first-of-type {
-        margin-right: @size-4;
-      }
-    }
-
-    > div[class*='CategoryTagTrail'] {
-      display: flex;
-      flex: 1;
-    }
-
-    > button {
-      margin-right: @size-10;
-    }
-
-    > div[class*='DotSelection'] {
-      > div > div:first-of-type > svg {
-        stroke: none;
-        height: @size-16;
-        margin-right: @size-8;
-        width: @size-16;
-
-        > path:first-of-type {
-          fill: @color-facebook;
-        }
-
-        > path:last-of-type {
-          fill: @color-outcome-seven;
-        }
-      }
-
-      > div > div:nth-of-type(2) > svg {
-        stroke: none;
-        height: @size-16;
-        margin-right: @size-8;
-        width: @size-16;
-
-        > path:first-of-type {
-          fill: @color-twitter;
-        }
-
-        > path:last-of-type {
-          fill: @color-outcome-seven;
-        }
-
-      }
-
-      > div > div:nth-of-type(3), > div > div:nth-of-type(4) {
-        & > svg {
-          fill: @color-primary-text;
-          stroke-width: 0.5;
-          stroke: @color-primary-text;
-          height: @size-16;
-          margin-right: @size-8;
-          width: @size-16;
-        }
-      }
-      > button {
-        margin-right: 0 !important;
-
-        &:hover {
-          text-decoration: underline;
-        }
-      }
-    }
-  }
-
-  > div:last-of-type {
+  > div.InfoIcons {
+    align-items: flex-end;
     display: flex;
     grid-row: 4 / span 1;
     grid-column: 1;
     padding-bottom: @size-8;
-    border-right: 1px solid @color-dark-grey;
-    margin-right: -1px;
-    align-items: flex-end;
+    border-right: @size-1 solid var(--color-dark-grey);
+    margin-right: -@size-1;
 
-    > div:not(:first-of-type) {
-      margin-left: @size-4;
+    > div {
+      margin-right: @size-4;
     }
 
     > div:nth-of-type(3),
@@ -196,11 +71,11 @@
 
         > circle {
           fill: none;
-          stroke: @color-secondary-action-outline;
+          stroke: var(--color-secondary-action-outline);
         }
 
         > path {
-          fill: @color-primary-text;
+          fill: var(--color-primary-text);
         }
       }
     }
@@ -212,7 +87,7 @@
     .text-16-bold;
 
     align-self: center;
-    color: @color-primary-text;
+    color: var(--color-primary-text);
     grid-column: 2;
     padding-bottom: @size-16;
     padding-top: @size-4;
@@ -228,7 +103,7 @@
     }
   }
 
-  > div:nth-last-of-type(2) {
+  > div[class*="OutcomeGroup"] {
     display: grid;
     grid-column: 2;
   }
@@ -237,7 +112,7 @@
     .mono-10-medium;
 
     align-self: flex-start;
-    color: @color-primary-text;
+    color: var(--color-primary-text);
     display: flex;
     text-transform: uppercase;
     grid-column: 2;
@@ -254,17 +129,17 @@
 
   @keyframes colorchange {
     0% {
-      background-color: fade(@color-secondary-action-outline, 70);
+      background-color: var(--color-secondary-action-outline-70);
     }
 
     100% {
-      background-color: fade(@color-secondary-action-outline, 100);
+      background-color: var(--color-secondary-action-outline);
     }
   }
 
   &.Loading {
     display: grid;
-    grid-template-columns: 82px auto 96px;
+    grid-template-columns: @size-82 auto @size-96;
     grid-row-gap: @size-19;
     grid-column-gap: @size-12;
     padding: @size-12;
@@ -273,7 +148,7 @@
       animation: colorchange 0.5s infinite;
       animation-direction: alternate-reverse;
 
-      background: @color-secondary-action-outline;
+      background: var(--color-secondary-action-outline);
       height: @size-12;
     }
 
@@ -288,12 +163,12 @@
     }
 
     > div:nth-of-type(3) {
-      max-width: 96px;
+      max-width: @size-96;
       margin: 0;
     }
 
     > div:nth-of-type(4) {
-      max-width: 82px;
+      max-width: @size-82;
     }
 
     > div:nth-of-type(5) {
@@ -306,7 +181,7 @@
 
     > div:nth-of-type(7) {
       max-width: 70px;
-      padding-bottom: 1px;
+      padding-bottom: @size-1;
       grid-row: 3 / span 1;
     }
   }
@@ -317,7 +192,7 @@
       grid-row: 3 / span 1;
     }
 
-    > div:nth-last-of-type(2) {
+    > div[class*="OutcomeGroup"] {
       padding-bottom: @size-8;
       grid-column: 2;
     }
@@ -370,7 +245,7 @@
     }
 
     > button {
-      border-left: 1px solid @color-dark-grey;
+      border-left: @size-1 solid var(--color-dark-grey);
     }
 
     &.Nonexpanding {
@@ -433,13 +308,13 @@
     }
 
     &.Nonexpanding {
-      > div:nth-last-of-type(2) {
+      > div[class*="OutcomeGroup"] {
         grid-column: 1 / span 2;
         margin-bottom: 0;
       }
     }
 
-    > div:nth-last-of-type(2) {
+    > div[class*="OutcomeGroup"] {
       column-gap: 0;
     }
 
@@ -481,7 +356,7 @@
     }
 
     > div:nth-of-type(2),
-    > div:nth-last-of-type(2),
+    > div[class*="OutcomeGroup"],
     > span,
     > h2,
     > h3,
@@ -491,7 +366,7 @@
       grid-column: 1 / span 2;
     }
 
-    > div:nth-last-of-type(2) {
+    > div[class*="OutcomeGroup"] {
       grid-column: 1 / span 2;
       margin-bottom: @size-10;
 
@@ -520,15 +395,6 @@
       order: 10;
       padding: 0;
 
-      > div.hoverIconTray {
-        display: flex;
-        flex-flow: row nowrap;
-
-        > div:not(:last-of-type) {
-          margin-right: @size-8;
-        }
-      }
-
       > div[class*="LabelValue"]:nth-of-type(2) {
         display: none;
       }
@@ -541,45 +407,155 @@
         }
       }
     }
+  }
 
-    > div.TopRow {
-      display: grid;
-      grid-template-columns: auto 1fr @size-16 @size-16;
-      grid-template-rows: auto;
-      grid-gap: @size-8;
-      margin-top: 0;
-      margin-bottom: @size-12;
+  > div[class*="OutcomeGroup"] {
+    margin-bottom: 0;
+  }
 
+  > button:last-of-type {
+    height: 100%;
+    padding: @size-12;
+
+    > span > svg > path {
+      stroke: var(--color-primary-text);
+    }
+
+    @media @breakpoint-mobile {
+      border: @size-1 solid var(--color-secondary-action-outline);
+      border-radius: @border-radius-default;
+      height: @size-32;
+      justify-content: center;
+      margin-top: @size-8;
+      margin-bottom: 0;
+    }
+
+    @media @breakpoint-mobile-tablet {
+      grid-row: unset;
+      margin-bottom: 0;
+      margin-top: @size-8;
+    }
+  }
+}
+
+:root[theme="BETTING"],
+:root[theme="SPORTS"] {
+  .MarketCard {
+    grid-template-columns: 1fr 0.15fr;
+    grid-template-rows: @size-20 1fr 0fr 0fr;
+    grid-gap: @size-8;
+    padding: @size-12;
+    margin: @size-8 0;
+
+    @media @breakpoint-mobile-tablet {
+      grid-template-rows: 0fr 0fr 0fr 0fr;
+    }
+
+    &.Scalar {
+      grid-template-rows: @size-20 1fr 1fr 0fr 0fr;
+
+      @media @breakpoint-mobile-tablet {
+        grid-template-rows: 0fr 0fr 0fr 0fr 0fr;
+      }
+
+      > h3 {
+        grid-column: span 2;
+        grid-row: 2;
+      }
+
+      > div[class*="OutcomeGroup"] {
+        grid-column: span 2;
+        grid-row: 3;
+      }
+
+      > div.InfoIcons {
+        grid-row: 4;
+      }
+    }
+
+    > div:first-of-type {
+      display: none;
+    }
+
+    > h3 {
+      border: 0;
+      grid-column: 1;
+      grid-row: 2;
+      padding: 0;
+    }
+
+    > div[class*="OutcomeGroup"] {
+      border: 0;
+      grid-column: 2;
+      grid-row: 2 / span 2;
+      padding: 0;
+    }
+
+    > div.InfoIcons {
+      padding: 0;
+      grid-column: 1;
+      grid-row: 3;
+    }
+    
+    &.template {
       > div[class*="CategoryTagTrail"] {
-        grid-row: 1;
+        margin-left: 0;
         grid-column: 1;
-        display: flex;
+        grid-row: 2;
+      }
+    }
 
-        > div {
-          align-items: flex-end;
-          display: flex;
-          margin-right: @size-8;
-        }
+    &.nonOpenTemplate {
+      > div[class*="CategoryTagTrail"] {
+        grid-row: 3;
+      }
+    }
+
+    > div > svg {
+      > circle {
+        fill: var(--color-table-header);
       }
 
-      div:nth-last-child(2) {
-        margin-right: 0;
+      > path {
+        fill: var(--color-secondary-text);
       }
+    }
 
-      > button {
-        margin-right: 0;
-        grid-row: 1;
-        grid-column: 3;
-      }
+    > div:first-of-type {
+      order: 4;
+    }
 
-      > div:last-of-type {
-        grid-row: 1;
-        grid-column: 4;
-      }
+    > div:nth-of-type(2) {
+      order: 3;
+    }
 
-      > span[class*="MarketStatus"] {
-        width: -moz-fit-content;
-        width: fit-content;
+    > div:nth-of-type(3) {
+      order: 1;
+    }
+
+    > div:nth-of-type(4) {
+      order: 2;
+    }
+
+    > button {
+      margin: 0;
+      grid-column: 2;
+      grid-row: -1;
+      justify-content: flex-end;
+      padding: 0;
+    }
+
+    > span {
+      grid-column: 1;
+      grid-row: -1;
+      flex-flow: row nowrap;
+      border: 0;
+      padding: 0;
+
+      > span:first-of-type {
+        .text-12;
+
+        color: var(--color-secondary-text);
       }
 
       > span[class*="MarketTypeLabel"] {
@@ -588,8 +564,10 @@
         width: fit-content;
       }
 
-      > span[class*="ProgressLabel"] {
-        display: none;
+      > span:last-of-type {
+        .text-12-bold;
+
+        color: var(--color-primary-text);
       }
 
       &.HasCircularIcons {
@@ -643,30 +621,78 @@
         }
       }
     }
-  }
 
-  > div:nth-last-of-type(2) {
-    margin-bottom: 0;
-  }
-
-  > button:last-of-type {
-    margin: @size-12 0;
-
-    @media @breakpoint-mobile {
-      border: @size-1 solid @color-secondary-action-outline;
-      border-radius: @border-radius-default;
-      height: @size-32;
-      justify-content: center;
-      align-items: center;
-      margin-top: @size-8;
-      margin-bottom: 0;
+    > div:last-of-type {
+      border: 0;
     }
+  }
+}
+
+:root[theme="SPORTS"] {
+  .MarketCard {
+    grid-template-rows: auto;
 
     @media @breakpoint-mobile-tablet {
-      grid-row: unset;
-      margin-bottom: 0;
-      margin-top: @size-8;
+      grid-template-rows: auto;
+    }
 
+    &.Scalar {
+      grid-template-rows: auto;
+    }
+
+    > div.InfoIcons {
+      display: none;
+    }
+
+    > h3 {
+      grid-column: 1 / 2;
+    }
+
+    > section[class*="MultiMarketTable"] {
+      grid-column: span 2;
+      grid-row: 3;
+    }
+
+    > section[class*="SubMarketCollapsible"] {
+      grid-column: span 2;
+      display: none;
+    }
+
+    > span {
+      grid-row: auto;
+    }
+
+    > button:last-of-type {
+      grid-row: auto;
+      grid-column: 2;
+      display: flex;
+      flex-flow: row nowrap;
+      align-items: center;
+
+      > svg {
+        width: @size-10;
+        height: @size-6;
+        margin-right: @size-4;
+
+        > path {
+          fill: var(--color-primary-text);
+        }
+      }
+    }
+
+    &.ShowMore {
+      > section[class*="SubMarketCollapsible"] {
+        display: flex;
+      }
+
+      > button:last-of-type > svg {
+        transform: rotate(.5turn);
+      }
+    }
+
+    > section[class*="MultiOutcomeMarketTable"],
+    > section[class*="MultiOutcomeMarketGrid"] {
+      grid-column: span 2;
     }
   }
 }
