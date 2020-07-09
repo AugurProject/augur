@@ -159,20 +159,19 @@ export function buildformattedDate(
   offset: number
 ): TimezoneDateObject {
 
-  const endTime = moment
+  let adjHour = hour;
+  const day = moment
     .unix(timestamp)
-    .startOf('day');
+    .startOf('day').format('MMMM DD, YYYY');
 
-  endTime.set({
-    hour: hour,
-    minute: minute,
-  });
-
-  if ((meridiem === '' || meridiem === 'AM') && endTime.hours() >= 12) {
-    endTime.hours(endTime.hours() - 12);
-  } else if (meridiem && meridiem === 'PM' && endTime.hours() < 12) {
-    endTime.hours(endTime.hours() + 12);
+  if (meridiem && meridiem === 'PM' && hour < 12) {
+    adjHour = hour + 12;
   }
+
+  // MMMM DD, YYYY h:mm A;
+  const datetimeFormat = `${day} ${adjHour}:${minute} ${meridiem}`;
+  const endTime = moment.utc(datetimeFormat, LONG_FORMAT);
+
   const abbr = getTimezoneAbbr(endTime.toDate(), timezone);
   const timezoneFormat = endTime.format(LONG_FORMAT);
   const formattedLocalShortDateTimeWithTimezone = `${timezoneFormat} (${abbr})`;
