@@ -1186,4 +1186,57 @@
 			text-transform: uppercase;
 		}
 	}
+
+	div.OutcomeGroupFooter {
+		height: @size-40;
+		flex-flow: row-reverse nowrap;
+		padding: 0;
+
+		> span > a {
+			.text-10-semi-bold;
+
+			color: var(--color-primary-text);
+			text-transform: uppercase;
+			display: flex;
+			flex-flow: row nowrap;
+			align-items: center;
+			justify-content: center;
+			padding: 0 @size-16;
+
+			> svg {
+				height: @size-4;
+				width: @size-8;
+				transform: rotate(-90deg);
+				margin-right: @size-8;
+
+				> path {
+					fill: var(--color-primary-text);
+				}
+			}
+		}
+
+		> p {
+			.text-14;
+	
+			align-items: center;
+			border-top: @size-1 solid var(--color-outline);
+			color: var(--color-primary-text);
+			display: flex;
+			flex-flow: row nowrap;
+			flex: 1;
+			margin: 0;
+			height: 100%;
+			font-style: italic;
+			padding: 0 @size-8;
+
+			> svg {
+				height: @size-24;
+				width: @size-24;
+			}
+
+			> b {
+				margin: 0 @size-4;
+			}
+		}
+	}
 }

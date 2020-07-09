@@ -52,6 +52,7 @@ import {
   PositionIcon,
   WinningMedal,
   ThickChevron,
+  FingersCrossed,
 } from 'modules/common/icons';
 import { isSameAddress } from 'utils/isSameAddress';
 import {
@@ -469,7 +470,8 @@ export const SportsOutcome = ({
   const { liquidityPools } = useMarketsStore();
   const { addBet } = Betslip.actions;
   const poolId = market?.sportsBook?.liquidityPool;
-  const bestAsk = poolId && liquidityPools[poolId] && liquidityPools[poolId][outcomeId];
+  const bestAsk =
+    poolId && liquidityPools[poolId] && liquidityPools[poolId][outcomeId];
   let topLabel = null;
   let disabled = true;
   let label = '-';
@@ -477,14 +479,16 @@ export const SportsOutcome = ({
   let action = () => {};
   if (bestAsk) {
     const { shares, price } = bestAsk;
-    subLabel = formatDai(calculateTotalOrderValue(
-      shares,
-      price,
-      BUY,
-      createBigNumber(market.minPrice),
-      createBigNumber(market.maxPrice),
-      market.marketType
-    )).full;
+    subLabel = formatDai(
+      calculateTotalOrderValue(
+        shares,
+        price,
+        BUY,
+        createBigNumber(market.minPrice),
+        createBigNumber(market.maxPrice),
+        market.marketType
+      )
+    ).full;
     const odds = convertToOdds({
       price,
       min: market.minPriceBigNumber,
@@ -522,6 +526,36 @@ export const SportsOutcome = ({
       <span>{subLabel}</span>
     </div>
   );
+};
+
+export const OutcomeGroupFooter = ({
+  market: { id, outcomesFormatted, volumeFormatted },
+  showLeader = false,
+}) => {
+  let content;
+  if (showLeader) {
+    let leadingOutcome = outcomesFormatted[0];
+    outcomesFormatted.forEach(outcome => {
+      if (outcome.lastPrice.value > leadingOutcome.lastPrice.value) {
+        leadingOutcome = outcome;
+      }
+    });
+    content =
+      volumeFormatted.value > 0 ? (
+        <p>
+          {FingersCrossed}
+          <b>{leadingOutcome.description}</b>
+          {`is the favorite with ${volumeFormatted.full} wagered on this market`}
+        </p>
+      ) : (
+        <p>This market doesn't have trades yet.</p>
+      );
+  } else {
+    content = (
+      <MarketLink id={id}>{ThickChevron} View Market Details</MarketLink>
+    );
+  }
+  return <div className={Styles.OutcomeGroupFooter}>{content}</div>;
 };
 
 const createOutcomesData = market => {
@@ -632,7 +666,7 @@ const prepareCombo = sportsGroup => {
   return {
     topComboMarkets,
     additionalMarkets,
-    numMarkets
+    numMarkets,
   };
 };
 
@@ -703,7 +737,11 @@ export const ComboMarketContainer = ({
   sportsGroup,
 }: ComboMarketContainerProps) => {
   const { SPREAD, MONEY_LINE, OVER_UNDER } = SPORTS_GROUP_MARKET_TYPES;
-  const { placeholderOutcomes } = sportsGroup.markets[0].sportsBook;
+  const {
+    sportsBook: { placeholderOutcomes },
+  } = sportsGroup.markets.find(
+    market => !!market?.sportsBook?.placeholderOutcomes
+  );
   if (!placeholderOutcomes)
     return (
       <section>
@@ -763,7 +801,7 @@ export const SportsMarketContainer = ({
   title = '',
   startOpen = false,
 }) => {
-  const { FUTURES, COMBO, DAILY } = SPORTS_GROUP_TYPES;
+  const { FUTURES } = SPORTS_GROUP_TYPES;
   const { isLogged } = useAppStatusStore();
   const [isCollapsed, setIsCollapsed] = useState(!startOpen);
   useEffect(() => {
@@ -775,8 +813,8 @@ export const SportsMarketContainer = ({
 
   let innerContent = null;
   let headingContent = <h6>{title}</h6>;
-  const numOutcomesToShow = data.length;
-  if (numOutcomesToShow > 4) {
+  const isGrid = data.length > 4;
+  if (isGrid) {
     innerContent = <MultiOutcomeMarketGrid key={marketId} data={data} />;
   } else {
     innerContent = <MultiOutcomeMarketRow key={marketId} data={data} />;
@@ -834,6 +872,7 @@ export const SportsMarketContainer = ({
         </button>
       </header>
       <div>{innerContent}</div>
+      {isGrid && <OutcomeGroupFooter market={market} />}
     </section>
   );
 };
@@ -858,18 +897,18 @@ export const prepareSportsGroup = sportsGroup => {
   const { markets } = sportsGroup;
   const { COMBO } = SPORTS_GROUP_TYPES;
   const { MONEY_LINE } = SPORTS_GROUP_MARKET_TYPES;
-  const {
-    additionalMarkets,
-    topComboMarkets,
-    numMarkets,
-  } = prepareCombo(sportsGroup);
+  const { additionalMarkets, topComboMarkets, numMarkets } = prepareCombo(
+    sportsGroup
+  );
   let marketGroups = [];
   let sortedMarkets = sortByPriorityGroupType(markets, MONEY_LINE).reduce(
     reduceToUniquePools,
     []
   );
   if (numMarkets > 0) {
-    sortedMarkets = sortedMarkets.filter(market => !market.sportsBook.groupType.includes(COMBO));
+    sortedMarkets = sortedMarkets.filter(
+      market => !market.sportsBook.groupType.includes(COMBO)
+    );
     marketGroups.push(
       <ComboMarketContainer
         data={topComboMarkets}
@@ -1022,57 +1061,57 @@ export const OutcomeGroup = ({
           )}
         </>
       )}
-      {(!isScalar || inDispute) && reportingState !== MarketReportingState.Unknown &&
-        outcomesShow.map(
-          (outcome: OutcomeFormatted, index: number) =>
-            ((!expanded && index < showOutcomeNumber) ||
-              expanded ||
-              marketType === YES_NO) &&
-            (inDispute &&
-            !!stakes.find(stake => parseFloat(stake.outcome) === outcome.id)) ? (
-              <Fragment key={id + outcome.id + index}>
-                {marketType === SCALAR && index === 1 && expanded && (
-                  <ScalarBlankDisputeOutcome
-                    denomination={scalarDenomination}
-                    canDispute={canDispute}
-                    market={market}
-                    otherOutcomes={outcomesShow.map(o => String(o.id))}
-                  />
-                )}
-                <DisputeOutcome
-                  key={outcome.id}
-                  marketId={id}
-                  description={outcome.description}
-                  invalid={outcome.isInvalid}
-                  index={index > 2 ? index : index + 1}
-                  stake={stakes.find(
-                    stake =>
-                      parseFloat(stake.outcome) === outcome.id &&
-                      stake.isInvalidOutcome === outcome.isInvalid
-                  )}
-                  id={outcome.id}
+      {(!isScalar || inDispute) &&
+        reportingState !== MarketReportingState.Unknown &&
+        outcomesShow.map((outcome: OutcomeFormatted, index: number) =>
+          ((!expanded && index < showOutcomeNumber) ||
+            expanded ||
+            marketType === YES_NO) &&
+          inDispute &&
+          !!stakes.find(stake => parseFloat(stake.outcome) === outcome.id) ? (
+            <Fragment key={id + outcome.id + index}>
+              {marketType === SCALAR && index === 1 && expanded && (
+                <ScalarBlankDisputeOutcome
+                  denomination={scalarDenomination}
                   canDispute={canDispute}
-                  canSupport={canSupport}
-                  isWarpSync={isWarpSync}
-                  forkingMarket={forkingMarket}
+                  market={market}
+                  otherOutcomes={outcomesShow.map(o => String(o.id))}
                 />
-              </Fragment>
-            ) : (
-              <Outcome
+              )}
+              <DisputeOutcome
                 key={outcome.id}
+                marketId={id}
                 description={outcome.description}
-                lastPricePercent={outcome.lastPricePercent}
                 invalid={outcome.isInvalid}
                 index={index > 2 ? index : index + 1}
-                min={minPriceBigNumber}
-                max={maxPriceBigNumber}
-                isScalar={isScalar}
-                marketId={id}
-                outcomeId={String(outcome.id)}
-                isTrading={isTrading}
+                stake={stakes.find(
+                  stake =>
+                    parseFloat(stake.outcome) === outcome.id &&
+                    stake.isInvalidOutcome === outcome.isInvalid
+                )}
+                id={outcome.id}
+                canDispute={canDispute}
+                canSupport={canSupport}
+                isWarpSync={isWarpSync}
+                forkingMarket={forkingMarket}
               />
-            ))
-        }
+            </Fragment>
+          ) : (
+            <Outcome
+              key={outcome.id}
+              description={outcome.description}
+              lastPricePercent={outcome.lastPricePercent}
+              invalid={outcome.isInvalid}
+              index={index > 2 ? index : index + 1}
+              min={minPriceBigNumber}
+              max={maxPriceBigNumber}
+              isScalar={isScalar}
+              marketId={id}
+              outcomeId={String(outcome.id)}
+              isTrading={isTrading}
+            />
+          )
+        )}
       {isScalar && inDispute && !expanded && (
         <ScalarBlankDisputeOutcome
           denomination={scalarDenomination}
@@ -1434,10 +1473,11 @@ export const TradingSideSection = ({
 
 export function getCategoriesWithClick(categories) {
   const path = { pathname: makePath(MARKETS) };
-  const categoriesLowerCased = categories && categories.map(item => item.toLowerCase());
-  const categoriesWithClick = categoriesLowerCased && categoriesLowerCased
-    .filter(Boolean)
-    .map((label, idx) => ({
+  const categoriesLowerCased =
+    categories && categories.map(item => item.toLowerCase());
+  const categoriesWithClick =
+    categoriesLowerCased &&
+    categoriesLowerCased.filter(Boolean).map((label, idx) => ({
       label,
       onClick: toggleCategory(
         categoriesLowerCased.slice(0, idx + 1).toString(),
