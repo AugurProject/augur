@@ -89,7 +89,7 @@ export class Augur<TProvider extends Provider = Provider> {
   private txFailureCallback: TXStatusCallback;
   private txFeeTooLowCallback: TXStatusCallback;
   private txRelayerDownCallback: TXStatusCallback;
-  private txSuccessCallbacks: TXStatusCallback[]; 
+  private txSuccessCallbacks: TXStatusCallback[];
 
   private _warpController: WarpController;
 
@@ -602,6 +602,12 @@ export class Augur<TProvider extends Provider = Provider> {
     params: Parameters<typeof LiquidityPool.getMarketOutcomeBestOffer>[2]
   ): ReturnType<typeof LiquidityPool.getMarketOutcomeBestOffer> => {
     return this.bindTo(LiquidityPool.getMarketOutcomeBestOffer)(params);
+  };
+
+  getMarketsLiquidityPools = (
+    params: Parameters<typeof LiquidityPool.getMarketsLiquidityPools>[2]
+  ): ReturnType<typeof LiquidityPool.getMarketsLiquidityPools> => {
+    return this.bindTo(LiquidityPool.getMarketsLiquidityPools)(params);
   };
 
   async simulateTrade(

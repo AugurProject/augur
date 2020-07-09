@@ -1712,6 +1712,7 @@ export const TEMPLATES = {
             question: `NHL: Which team will win: [0] vs. [1]?`,
             example: `NHL: Which Team will win: NY Rangers vs. NJ Devils?\nEstimated schedule start time: Sept 19, 2019 8:20 pm EST`,
             header: `[0] vs. [1]`,
+            outcomes: ['[0]','[1]','No Contest'],
             groupName: groupTypes.COMBO_MONEY_LINE,
             inputs: [
               {
@@ -3721,6 +3722,7 @@ export const TEMPLATES = {
                 question: `NBA: Which team will win: [0] vs. [1]?`,
                 example: `NBA: Which Team will win: Brooklyn Nets vs. NY Knicks?\nEstimated schedule start time: Sept 19, 2019 8:20 pm EST`,
                 header: `[0] vs. [1]`,
+                outcomes: ['[0]','[1]','No Contest'],
                 groupName: groupTypes.COMBO_MONEY_LINE,
                 inputs: [
                   {
@@ -4499,6 +4501,7 @@ export const TEMPLATES = {
                 question: `WNBA: Which team will win: [0] vs. [1]?`,
                 example: `WNBA: Which Team will win: Phoenix Mercury vs. Seattle Storm?\nEstimated schedule start time: Sept 19, 2019 8:20 pm EST`,
                 header: `[0] vs. [1]`,
+                outcomes: ['[0]','[1]','No Contest'],
                 groupName: groupTypes.COMBO_MONEY_LINE,
                 inputs: [
                   {
@@ -5089,6 +5092,7 @@ export const TEMPLATES = {
                 question: `NCAA [0] BB: Which team will win: [1] vs. [2]?`,
                 example: `NCAA Men's BB: Which Team will win: Duke vs. Kentucky?\nEstimated schedule start time: Sept 19, 2019 8:20 pm EST`,
                 header: `[1] vs. [2]`,
+                outcomes: ['[1]','[2]','No Contest'],
                 groupName: groupTypes.COMBO_MONEY_LINE,
                 inputs: [
                   {
@@ -5459,6 +5463,7 @@ export const TEMPLATES = {
             question: `MLB: Which team will win: [0] vs. [1]?`,
             example: `MLB: Which Team will win: Yankees vs. Red Sox?\nEstimated schedule start time: Sept 19, 2019 8:20 pm EST`,
             header: `[0] vs. [1]`,
+            outcomes: ['[0]','[1]','No Contest'],
             groupName: groupTypes.COMBO_MONEY_LINE,
             inputs: [
               {
@@ -6801,6 +6806,7 @@ export const TEMPLATES = {
                 question: `[0]: Which NFL Team will win: [1] vs. [2]?`,
                 example: ` Week 1: Which NFL Team will win: NY Giants vs. New England Patriots?\nEstimated schedule start time: Sept 19, 2019 1:00 pm EST`,
                 header: `[1] vs. [2]`,
+                outcomes: ['[1]','[2]','No Contest'],
                 groupName: groupTypes.COMBO_MONEY_LINE,
                 inputs: [
                   {
@@ -7598,6 +7604,7 @@ export const TEMPLATES = {
                 question: `NCAA FB [0]: Which College Football Team will win: [1] vs. [2]?`,
                 example: `NCAA FB Week 1: Which College Football Team will win: Alabama vs. Michigan?\nEstimated schedule start time: Sept 19, 2019 1:00 pm EST`,
                 header: `[1] vs. [2]`,
+                outcomes: ['[1]','[2]','No Contest'],
                 groupName: groupTypes.COMBO_MONEY_LINE,
                 inputs: [
                   {
