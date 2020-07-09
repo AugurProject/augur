@@ -21,7 +21,8 @@ export class GetterCache extends AbstractTable {
             "getMarketsInfo",
             "getPlatformActivityStats",
             "getTotalOnChainFrozenFunds",
-            "getCategories"
+            "getCategories",
+            "getCategoryStats"
         ],
         [TXEventName.Success]: [
             "getAccountRepStakeSummary",
@@ -42,6 +43,7 @@ export class GetterCache extends AbstractTable {
             "getTotalOnChainFrozenFunds",
             "getZeroXOrder",
             "getZeroXOrders",
+            "getTradingHistory"
         ],
         [SubscriptionEventName.UniverseCreated]: [
             "getUniverseChildren"
