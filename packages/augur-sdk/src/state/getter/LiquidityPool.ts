@@ -59,19 +59,21 @@ export class LiquidityPool {
       .toArray();
     if (!allMarketsInPools || !allMarketsInPools.length) return null;
     const allPools = _.groupBy(allMarketsInPools, 'liquidityPool');
-
-    const pools = _.reduce(
-      _.keys(allPools),
-      async (pools, liquidityPoolId) => ({
+    let pools = {};
+    for (let i = 0; i < _.keys(allPools).length; i++) {
+      const liquidityPoolId = _.keys(allPools)[i];
+      const marketIds = _.map(allPools[liquidityPoolId], 'market');
+      const numOutcomes = _.first(allPools[liquidityPoolId])?.outcomes?.length;
+      const pool = await LiquidityPool.getLiquidityPoolBestOffers(
+        db,
+        marketIds,
+        numOutcomes
+      );
+      pools = {
         ...pools,
-        [liquidityPoolId]: await LiquidityPool.getLiquidityPoolBestOffers(
-          db,
-          _.map(allPools[liquidityPoolId], 'market'),
-          _.first(allPools[liquidityPoolId])?.outcomes?.length
-        ),
-      }),
-      {}
-    );
+        [liquidityPoolId]: pool,
+      };
+    }
     return pools;
   }
 
@@ -90,48 +92,21 @@ export class LiquidityPool {
       .toArray();
     const groupedOutcomeUnsorted = _.groupBy(unsortedOffers, 'outcome');
 
-    const pool = _.reduce(
+    return _.reduce(
       outcomeIds,
       (pool, outcome) => {
         const outcomeOrders = groupedOutcomeUnsorted[outcome];
-        if (!outcomeOrders) return { ...pool, [Number(new BigNumber(outcome))]: null };
+        if (!outcomeOrders)
+          return { ...pool, [Number(new BigNumber(outcome))]: null };
         const bucketsByPrice = _.groupBy(
           groupedOutcomeUnsorted[outcome],
           (order) => order.price
         );
-
-        const lastSortedOrder = Object.keys(bucketsByPrice).sort((a, b) =>
-          new BigNumber(b).minus(a).toNumber()
-        );
-
-        const sortedOrders = lastSortedOrder.map((k) => bucketsByPrice[k]);
-        for (let i = 0, size = sortedOrders.length; i < size; i++) {
-          sortedOrders[i].sort(
-            (a, b) => parseFloat(b.amount) - parseFloat(a.amount)
-          );
-        }
-
-        const sortedOrderValues = _.values(sortedOrders);
-        const size =
-          sortedOrderValues && sortedOrderValues.length
-            ? _.last(sortedOrderValues).reduce(
-                (size, orders) => new BigNumber(orders.amount).plus(size),
-                new BigNumber(0)
-              )
-            : 0;
-
-        const bestPrice =
-          lastSortedOrder && lastSortedOrder.length
-            ? LiquidityPool.convertOrderToDisplayValues({
-                price: _.last(lastSortedOrder),
-                shares: String(size),
-              })
-            : null;
+        const bestPrice = LiquidityPool.getOutcomesBestOffer(bucketsByPrice);
         return { ...pool, [Number(new BigNumber(outcome))]: bestPrice };
       },
       {}
     );
-    return pool;
   }
 
   @Getter('GetMarketOutcomeBestOfferParams')
@@ -160,34 +135,7 @@ export class LiquidityPool {
       .toArray();
 
     const bucketsByPrice = _.groupBy(unsortedOffers, (order) => order.price);
-
-    const lastSortedOrder = Object.keys(bucketsByPrice).sort((a, b) =>
-      new BigNumber(b).minus(a).toNumber()
-    );
-
-    const sortedOrders = lastSortedOrder.map((k) => bucketsByPrice[k]);
-    for (let i = 0, size = sortedOrders.length; i < size; i++) {
-      sortedOrders[i].sort(
-        (a, b) => parseFloat(b.amount) - parseFloat(a.amount)
-      );
-    }
-
-    const sortedOrderValues = _.values(sortedOrders);
-    const size =
-      sortedOrderValues && sortedOrderValues.length
-        ? _.last(sortedOrderValues).reduce(
-            (size, orders) => new BigNumber(orders.amount).plus(size),
-            new BigNumber(0)
-          )
-        : 0;
-
-    const bestPrice =
-      lastSortedOrder && lastSortedOrder.length
-        ? LiquidityPool.convertOrderToDisplayValues({
-            price: _.last(lastSortedOrder),
-            shares: String(size),
-          })
-        : null;
+    const bestPrice = LiquidityPool.getOutcomesBestOffer(bucketsByPrice);
     return {
       [liquidityPoolId]: {
         [Number(new BigNumber(outcome))]: bestPrice,
@@ -212,7 +160,34 @@ export class LiquidityPool {
     return allPools;
   }
 
-  static getBestOffer = (orders) => {};
+  static getOutcomesBestOffer = (bucketsByPrice) => {
+    const lastSortedOrder = Object.keys(bucketsByPrice).sort((a, b) =>
+      new BigNumber(b).minus(a).toNumber()
+    );
+
+    const sortedOrders = lastSortedOrder.map((k) => bucketsByPrice[k]);
+    for (let i = 0, size = sortedOrders.length; i < size; i++) {
+      sortedOrders[i].sort(
+        (a, b) => parseFloat(b.amount) - parseFloat(a.amount)
+      );
+    }
+
+    const sortedOrderValues = _.values(sortedOrders);
+    const size =
+      sortedOrderValues && sortedOrderValues.length
+        ? _.last(sortedOrderValues).reduce(
+            (size, orders) => new BigNumber(orders.amount).plus(size),
+            new BigNumber(0)
+          )
+        : 0;
+
+    return lastSortedOrder && lastSortedOrder.length
+      ? LiquidityPool.convertOrderToDisplayValues({
+          price: _.last(lastSortedOrder),
+          shares: String(size),
+        })
+      : null;
+  };
 
   static convertOrderToDisplayValues = (order) => {
     if (!order) return order;
