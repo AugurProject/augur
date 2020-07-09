@@ -192,20 +192,11 @@ export function buildformattedDate(
 export function timestampComponents(timestamp: number, offset: number = 0, timezone: string = null): Partial<DateTimeComponents> {
   // using local mode with moment, manually adjusting for offset
   const date = moment.unix(timestamp).add(offset, 'hours');
-  let meridiem = 'AM';
-  let hour = date.hours()
-  if (hour == 0) {
-    hour = 12; // moment uses 0 for 24 (12 am)
-    meridiem = 'AM';
-  } else if (hour >= 12) {
-    hour = hour > 12 ? hour - 12 : hour;
-    meridiem = 'PM'
-  }
   return {
     setEndTime: timestamp,
-    hour: String(hour),
-    minute: `0${date.minutes()}`.slice(-2),
-    meridiem,
+    hour: String(date.utc().format('h')),
+    minute: String(date.utc().format('m')),
+    meridiem: String(date.utc().format('A')),
     timezone
   }
 }
