@@ -17,11 +17,6 @@ export const getEthToDaiRate = (
   }
 };
 
-export const ethToDaiFromAttoRate = (ethAmount: number): FormattedNumber => {
-  const attoEthToDaiRate: BigNumber = getEthForDaiRate();
-  return ethToDai(createBigNumber(ethAmount), attoEthToDaiRate.div(10 ** 18));
-};
-
 export const ethToDai = (ethAmount: number, ethToDaiRate: BigNumber): FormattedNumber => {
   if (!ethToDaiRate) return formatDai(0);
   return formatDai(ethToDaiRate.times(ethAmount));
