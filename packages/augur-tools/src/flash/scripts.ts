@@ -1971,6 +1971,7 @@ export function addScripts(flash: FlashSession) {
         name: 'do-not-create-markets',
         abbr: 'M',
         description: 'Do not create markets. Only applies when --dev is specified.',
+        flag: true,
       },
     ],
     async call(this: FlashSession, args: FlashArguments) {
@@ -2013,8 +2014,10 @@ export function addScripts(flash: FlashSession) {
           await deployContracts(this.network, this.provider, this.getAccount(), compilerOutput, this.config);
           await refreshSDKConfig(); // need to grab local.json since it wasn't created/updated until deploy
           this.config = buildConfig('local');
-          const user = await this.createUser(this.getAccount(), this.config);
-          await createCannedMarkets(user);
+          if (createMarkets) {
+            const user = await this.createUser(this.getAccount(), this.config);
+            await createCannedMarkets(user);
+          }
         }
 
         console.log('Building');

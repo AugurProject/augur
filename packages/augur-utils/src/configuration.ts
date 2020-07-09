@@ -142,7 +142,6 @@ export interface ContractAddresses {
   ProxyFactory?: string;
   BuyParticipationTokens?: string;
   RedeemStake?: string;
-  CashFaucet?: string;
   GnosisSafeRegistry?: string;
   HotLoading?: string;
   ZeroXTrade?: string;
@@ -177,12 +176,6 @@ export interface ExternalAddresses {
   Cash?: string;
   USDC?: string;
   USDT?: string;
-  DaiVat?: string;
-  DaiPot?: string;
-  DaiJoin?: string;
-  MCDCol?: string,
-  MCDColJoin?: string,
-  MCDFaucet?: string,
   WETH9?: string;
   Exchange?: string;
   UniswapV2Factory?: string;

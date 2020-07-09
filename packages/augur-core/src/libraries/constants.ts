@@ -62,14 +62,9 @@ export const TRADING_CONTRACTS = [
 ];
 
 export const TEST_CONTRACTS = [
-    'CashFaucet',
     'TimeControlled',
     'TestNetReputationTokenFactory',
     'TestNetReputationToken',
-    // Maker
-    'TestNetDaiJoin',
-    'TestNetDaiPot',
-    'TestNetDaiVat',
 ];
 
 export const EXTERNAL_CONTRACTS = [
@@ -89,9 +84,6 @@ export const EXTERNAL_CONTRACTS = [
     'ZRXToken',
     // Maker
     'Cash',
-    'DaiJoin',
-    'DaiPot',
-    'DaiVat',
     // USDx
     'USDC',
     'USDT',
@@ -113,9 +105,6 @@ export const REGISTERED_EXTERNAL_CONTRACTS = [
     'WETH9',
     // Maker
     'Cash',
-    'DaiJoin',
-    'DaiPot',
-    'DaiVat',
     // USDx
     'USDC',
     'USDT',

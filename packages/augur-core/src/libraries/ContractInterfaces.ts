@@ -35,15 +35,7 @@ export class AugurWalletRegistryV2 extends c.AugurWalletRegistryV2<BigNumber> {
 }
 export class Cash extends c.Cash<BigNumber> {
 }
-export class CashFaucet extends c.CashFaucet<BigNumber> {
-}
 export class LegacyReputationToken extends c.LegacyReputationToken<BigNumber> {
-}
-export class TestNetDaiJoin extends c.TestNetDaiJoin<BigNumber> {
-}
-export class TestNetDaiPot extends c.TestNetDaiPot<BigNumber> {
-}
-export class TestNetDaiVat extends c.TestNetDaiVat<BigNumber> {
 }
 export class TestNetReputationToken extends c.TestNetReputationToken<BigNumber> {
 }
