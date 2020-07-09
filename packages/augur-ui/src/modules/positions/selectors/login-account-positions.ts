@@ -1,19 +1,17 @@
-import { createSelector } from 'reselect';
-
-import store from 'appStore';
-import { selectAccountPositionsState, selectMarketInfosState } from 'appStore/select-state';
 import { selectMarket } from 'modules/markets/selectors/market';
 import { selectMarketPositionsSummary } from 'modules/markets/selectors/select-market-position-summary';
 import { selectUserMarketPositions } from 'modules/markets/selectors/select-user-market-positions';
 import { MarketData } from 'modules/types';
+import { Markets } from 'modules/markets/store/markets';
+import { AppStatus } from 'modules/app/store/app-status';
 
 export default function() {
-  const markets: MarketData[] = selectLoginAccountPositionsMarkets(store.getState());
+  const markets: MarketData[] = selectLoginAccountPositionsMarkets();
 
   const marketsWithPositions = markets.map(market => ({
     ...market,
-    userPositions: selectUserMarketPositions(store.getState(), market.id),
-    myPositionsSummary: selectMarketPositionsSummary(store.getState(), market.id)
+    userPositions: selectUserMarketPositions(market.id),
+    myPositionsSummary: selectMarketPositionsSummary(market.id),
   }));
 
   return {
@@ -22,15 +20,13 @@ export default function() {
 }
 
 // need to add marketInfos in case positions load before markets
-export const selectLoginAccountPositionsMarkets = createSelector(
-  selectAccountPositionsState,
-  selectMarketInfosState,
-  (positions, markets) => {
-    return Object.keys(positions)
-      .reduce((p, marketId) => {
-        if (!Object.keys(markets).includes(marketId)) return p;
-        const market = selectMarket(marketId)
-        return market ? [...p, market] : p
-    }, [])
-  }
-);
+export const selectLoginAccountPositionsMarkets = () => {
+  const { accountPositions } = AppStatus.get();
+  const { marketInfos } = Markets.get();
+
+  return Object.keys(accountPositions).reduce((p, marketId) => {
+    if (!Object.keys(marketInfos).includes(marketId)) return p;
+    const market = selectMarket(marketId);
+    return market ? [...p, market] : p;
+  }, []);
+};

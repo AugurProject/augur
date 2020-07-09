@@ -1,50 +1,35 @@
-import { TXEventName } from '@augurproject/sdk-lite';
-import { AppState } from 'appStore';
-import { getInfo } from 'modules/alerts/actions/set-alert-text';
+import { analytics } from './analytics';
+import { createBigNumber } from 'utils/create-big-number';
+import { Analytic } from 'modules/types';
+import { isLocalHost } from 'utils/is-localhost';
 import { BUY_INDEX, SELL_INDEX } from 'modules/common/constants';
 import { loadMarketsInfoIfNotLoaded } from 'modules/markets/actions/load-markets-info';
 import { selectMarket } from 'modules/markets/selectors/market';
-import { Analytic } from 'modules/types';
-import { Action } from 'redux';
-import { ThunkAction, ThunkDispatch } from 'redux-thunk';
-import { createBigNumber } from 'utils/create-big-number';
-import { isLocalHost } from 'utils/is-localhost';
-import { analytics } from './analytics';
+import { getInfo } from 'modules/alerts/actions/set-alert-text';
+import { TXEventName } from '@augurproject/sdk-lite';
+import { AppStatus } from 'modules/app/store/app-status';
 
-export const page = (eventName, payload): ThunkAction<any, any, any, any> => (
-  dispatch: ThunkDispatch<void, any, Action>,
-  getState: () => AppState
-) => {
-  dispatch(track(eventName, payload, ANALYTIC_EVENT_TYPES.PAGE));
+export const page = (eventName, payload) => {
+  track(eventName, payload, ANALYTIC_EVENT_TYPES.PAGE);
 };
 
-export const track = (
-  eventName,
-  payload,
-  type?
-): ThunkAction<any, any, any, any> => (
-  dispatch: ThunkDispatch<void, any, Action>,
-  getState: () => AppState
-) => {
-  const { blockchain } = getState();
+export const track = (eventName, payload, type?) => {
+  const {
+    blockchain: { currentAugurTimestamp: addedTimestamp },
+  } = AppStatus.get();
   const analytic = {
     eventName,
     payload: {
       ...payload,
-      addedTimestamp: blockchain.currentAugurTimestamp,
+      addedTimestamp,
     },
     type: type || ANALYTIC_EVENT_TYPES.TRACK,
   };
 
-  dispatch(sendAnalytic(analytic));
+  sendAnalytic(analytic);
 };
 
-export const sendAnalytic = (
-  analytic: Analytic
-): ThunkAction<any, any, any, any> => (
-  dispatch: ThunkDispatch<void, any, Action>,
-  getState: () => AppState
-) => {
+export const sendAnalytic = (analytic: Analytic) => {
   try {
     if (!isLocalHost()) {
       if (analytic.type === ANALYTIC_EVENT_TYPES.TRACK) {
@@ -64,115 +49,83 @@ export const sendAnalytic = (
   }
 };
 
-export const addedDaiEvent = (dai: string): ThunkAction<any, any, any, any> => (
-  dispatch: ThunkDispatch<void, any, Action>,
-  getState: () => AppState
-) => {
-  const { loginAccount } = getState();
-  if (
-    loginAccount.balances.dai &&
-    createBigNumber(loginAccount.balances.dai).gt(createBigNumber(dai))
-  ) {
-    dispatch(track(ADDED_DAI, {}, null));
+export const addedDaiEvent = (dai: string) => {
+  const {
+    loginAccount: { balances },
+  } = AppStatus.get();
+  if (balances.dai && createBigNumber(balances.dai).gt(createBigNumber(dai))) {
+    track(ADDED_DAI, {}, null);
   }
 };
 
 export const marketLinkCopied = (
   marketId: string,
   location: string
-): ThunkAction<any, any, any, any> => (
-  dispatch: ThunkDispatch<void, any, Action>,
-  getState: () => AppState
-) => {
-  dispatch(
-    track(MARKET_LINK_COPIED, { location: location, marketId: marketId }, null)
-  );
-};
+) => track(MARKET_LINK_COPIED, { location: location, marketId: marketId }, null);
+
 
 export const sendFacebookShare = (
   marketAddress: string,
   marketDescription: string
-): ThunkAction<any, any, any, any> => (
-  dispatch: ThunkDispatch<void, any, Action>,
-  getState: () => AppState
 ) => {
-  const { address } = getState().loginAccount;
-  dispatch(
-    track(MARKET_SHARED, {
-      source: MARKET_PAGE,
-      service: 'facebook',
-      marketId: marketAddress,
-      marketDescription: marketDescription,
-      affiliate: address
-    })
-  );
+  const {
+    loginAccount: { address: affiliate },
+  } = AppStatus.get();
+  track(MARKET_SHARED, {
+    source: MARKET_PAGE,
+    service: 'facebook',
+    marketId: marketAddress,
+    marketDescription: marketDescription,
+    affiliate,
+  });
 };
 
 export const sendTwitterShare = (
   marketAddress: string,
   marketDescription: string
-): ThunkAction<any, any, any, any> => (
-  dispatch: ThunkDispatch<void, any, Action>,
-  getState: () => AppState
 ) => {
-  const { address } = getState().loginAccount;
-  dispatch(
-    track(MARKET_SHARED, {
-      source: MARKET_PAGE,
-      service: 'twitter',
-      marketId: marketAddress,
-      marketDescription: marketDescription,
-      affiliate: address
-    })
-  );
+  const {
+    loginAccount: { address: affiliate },
+  } = AppStatus.get();
+  track(MARKET_SHARED, {
+    source: MARKET_PAGE,
+    service: 'twitter',
+    marketId: marketAddress,
+    marketDescription: marketDescription,
+    affiliate,
+  });
 };
 
 export const marketCreationStarted = (
   templateName: string,
   isTemplate: boolean
-): ThunkAction<any, any, any, any> => (
-  dispatch: ThunkDispatch<void, any, Action>,
-  getState: () => AppState
-) => {
-  dispatch(
-    track(MARKET_CREATION_STARTED, {
-      templateName,
-      isTemplate,
-    })
-  );
-};
+) =>
+  track(MARKET_CREATION_STARTED, {
+    templateName,
+    isTemplate,
+  });
 
 export const marketCreationSaved = (
   templateName: string,
   isTemplate: boolean
-): ThunkAction<any, any, any, any> => (
-  dispatch: ThunkDispatch<void, any, Action>,
-  getState: () => AppState
 ) => {
-  dispatch(
-    track(MARKET_CREATION_SAVED, {
-      templateName,
-      isTemplate,
-    })
-  );
+  track(MARKET_CREATION_SAVED, {
+    templateName,
+    isTemplate,
+  });
 };
 
 export const marketCreationCreated = (
   marketId: string,
   extraInfo: string
-): ThunkAction<any, any, any, any> => (
-  dispatch: ThunkDispatch<void, any, Action>,
-  getState: () => AppState
 ) => {
   const info = JSON.parse(extraInfo);
-  dispatch(
-    track(MARKET_CREATION_CREATED, {
-      marketId,
-      isTemplate: info.template !== null,
-      templateHash: info.template && info.template.hash,
-      templateName: info.template && info.template.question,
-    })
-  );
+  track(MARKET_CREATION_CREATED, {
+    marketId,
+    isTemplate: info.template !== null,
+    templateHash: info.template?.hash,
+    templateName: info.template?.question,
+  });
 };
 
 export const marketListViewed = (
@@ -187,121 +140,88 @@ export const marketListViewed = (
   includeInvalidMarkets,
   resultCount,
   pageNumber
-): ThunkAction<any, any, any, any> => (
-  dispatch: ThunkDispatch<void, any, Action>,
-  getState: () => AppState
 ) => {
-  dispatch(
-    track(MARKET_LIST_VIEWED, {
-      search,
-      selectedCategories,
-      maxLiquiditySpread,
-      marketFilter,
-      sortBy,
-      maxFee,
-      templateFilter,
-      marketTypeFilter,
-      includeInvalidMarkets,
-      resultCount,
-      pageNumber,
-    })
-  );
+  track(MARKET_LIST_VIEWED, {
+    search,
+    selectedCategories,
+    maxLiquiditySpread,
+    marketFilter,
+    sortBy,
+    maxFee,
+    templateFilter,
+    includeInvalidMarkets,
+    resultCount,
+    pageNumber,
+  });
 };
 
 export const orderAmountEntered = (
   type: string,
   marketId: string
-): ThunkAction<any, any, any, any> => (
-  dispatch: ThunkDispatch<void, any, Action>,
-  getState: () => AppState
 ) => {
-  dispatch(
-    track(ORDER_AMOUNT_ENTERED, {
-      marketId,
-      type,
-    })
-  );
+  track(ORDER_AMOUNT_ENTERED, {
+    marketId,
+    type,
+  });
 };
 
 export const orderPriceEntered = (
   type: string,
   marketId: string
-): ThunkAction<any, any, any, any> => (
-  dispatch: ThunkDispatch<void, any, Action>,
-  getState: () => AppState
 ) => {
-  dispatch(
-    track(ORDER_PRICE_ENTERED, {
-      marketId,
-      type,
-    })
-  );
+  track(ORDER_PRICE_ENTERED, {
+    marketId,
+    type,
+  });
 };
 
 export const orderSubmitted = (
   type: string,
   marketId: string
-): ThunkAction<any, any, any, any> => (
-  dispatch: ThunkDispatch<void, any, Action>,
-  getState: () => AppState
 ) => {
-  dispatch(
-    track(ORDER_SUBMITTED, {
-      marketId,
-      type,
-    })
-  );
+  track(ORDER_SUBMITTED, {
+    marketId,
+    type,
+  });
 };
 
 export const orderCreated = (
   marketId,
   order
-): ThunkAction<any, any, any, any> => (
-  dispatch: ThunkDispatch<void, any, Action>,
-  getState: () => AppState
 ) => {
-  dispatch(
-    track(ORDER_CREATED, {
-      marketId,
-      order: order,
-    })
-  );
+  track(ORDER_CREATED, {
+    marketId,
+    order: order,
+  });
 };
 
 export const orderFilled = (
   marketId,
   log,
   isCreator
-): ThunkAction<any, any, any, any> => (
-  dispatch: ThunkDispatch<void, any, Action>,
-  getState: () => AppState
 ) => {
-  dispatch(
-    loadMarketsInfoIfNotLoaded([marketId], () => {
-      const marketInfo = selectMarket(marketId);
-      if (marketInfo === null) return;
+  loadMarketsInfoIfNotLoaded([marketId], () => {
+    const marketInfo = selectMarket(marketId);
+    if (marketInfo === null) return;
 
-      let updatedOrderType = log.orderType;
-      if (!isCreator) {
-        updatedOrderType = log.orderType === BUY_INDEX ? SELL_INDEX : BUY_INDEX;
-      }
+    let updatedOrderType = log.orderType;
+    if (!isCreator) {
+      updatedOrderType = log.orderType === BUY_INDEX ? SELL_INDEX : BUY_INDEX;
+    }
 
-      const params = {
-        ...log,
-        orderType: updatedOrderType,
-        amount: log.amountFilled,
-      };
-      const orderInfo = getInfo(params, TXEventName.Success, marketInfo);
+    const params = {
+      ...log,
+      orderType: updatedOrderType,
+      amount: log.amountFilled,
+    };
+    const orderInfo = getInfo(params, TXEventName.Success, marketInfo);
 
-      dispatch(
-        track(ORDER_FILLED, {
-          marketId,
-          order: orderInfo,
-          isCreator,
-        })
-      );
-    })
-  );
+    track(ORDER_FILLED, {
+      marketId,
+      order: orderInfo,
+      isCreator,
+    });
+  });
 };
 
 // Basic analytic event types

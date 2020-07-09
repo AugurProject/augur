@@ -1,83 +1,93 @@
-import React from "react";
+import React from 'react';
 
-import { Drafts, Draft } from "modules/types";
-import { formatDate } from "utils/format-date";
-import QuadBox from "modules/portfolio/components/common/quad-box";
-import { SCRATCH, TEMPLATE } from "modules/create-market/constants";
+import { Draft } from 'modules/types';
+import { formatDate } from 'utils/format-date';
+import QuadBox from 'modules/portfolio/components/common/quad-box';
+import { SCRATCH, TEMPLATE } from 'modules/create-market/constants';
 
-import Styles from "modules/create-market/saved-drafts.styles.less";
-import { CancelTextButton } from "modules/common/buttons";
+import Styles from 'modules/create-market/saved-drafts.styles.less';
+import { CancelTextButton } from 'modules/common/buttons';
+import { useAppStatusStore } from 'modules/app/store/app-status';
+import { createBigNumber } from 'utils/create-big-number';
+import { ZERO, ONE } from 'modules/common/constants';
 
 interface SavedDraftsProps {
-  drafts: Drafts;
-  updateNewMarket: Function;
-  address: string;
   updatePage: Function;
-  removeDraft: Function;
 }
 
 interface DraftRowProps {
   draft?: Draft;
-  updateNewMarket: Function;
   updatePage: Function;
-  removeDraft: Function
 }
 
-const DraftRow: React.FC<DraftRowProps> = (props) => {
-  const date = formatDate(new Date(props.draft.updated * 1000)).formattedLocalShortWithUtcOffset;
+const DraftRow: React.FC<DraftRowProps> = ({
+  draft,
+  updatePage,
+}) => {
+  const { actions: { updateNewMarket, removeDraft } } = useAppStatusStore();
+  const date = formatDate(new Date(draft.updated * 1000))
+    .formattedLocalShortWithUtcOffset;
   return (
     <div className={Styles.DraftRow}>
       <button
         onClick={() => {
-          props.updateNewMarket(props.draft);
-          props.updatePage(props.draft.template ? TEMPLATE : SCRATCH);
+          const data = draft;
+          // convert strings to BigNumber for BigNumber fields
+          data.initialLiquidityDai = data.initialLiquidityDai
+            ? createBigNumber(data.initialLiquidityDai)
+            : ZERO;
+          data.initialLiquidityGas = data.initialLiquidityGas
+            ? createBigNumber(data.initialLiquidityGas)
+            : ZERO;
+          data.maxPriceBigNumber = data.maxPriceBigNumber
+            ? createBigNumber(data.maxPriceBigNumber)
+            : ONE;
+          data.minPriceBigNumber = data.minPriceBigNumber
+            ? createBigNumber(data.minPriceBigNumber)
+            : ZERO;
+          updateNewMarket(data);
+          updatePage(draft.template ? TEMPLATE : SCRATCH);
         }}
       >
-        <span>{props.draft.description}</span>
+        <span>{draft.description}</span>
         <span>Saved: {date.toString()}</span>
       </button>
-      <CancelTextButton text={'Delete'} action={() => props.removeDraft(props.draft.uniqueId)} />
+      <CancelTextButton
+        text={'Delete'}
+        action={() => removeDraft(draft.uniqueId)}
+      />
     </div>
   );
 };
 
+const SavedDrafts = ({
+  updatePage,
+}: SavedDraftsProps) => {
+  const { drafts } = useAppStatusStore();
+  if (!Object.keys(drafts).length) return null;
 
-export default class SavedDrafts extends React.Component<
-  SavedDraftsProps,
-  {}
-  > {
-  render() {
-    const {
-      updatePage,
-      drafts,
-      removeDraft,
-      updateNewMarket
-    } = this.props;
+  const draftsSorted = Object.keys(drafts).sort(function(a, b) {
+    return drafts[b].updated - drafts[a].updated;
+  });
 
-    if (!Object.keys(drafts).length) return null;
+  return (
+    <QuadBox
+      title={'Saved drafts'}
+      extraTitlePadding
+      normalOnMobile
+      content={
+        <div className={Styles.SavedDrafts}>
+          {draftsSorted.map(key => (
+            <DraftRow
+              key={key}
+              draft={drafts[key]}
+              updatePage={updatePage}
+            />
+          ))}
+        </div>
+      }
+    />
+  );
+};
 
-    const draftsSorted = Object.keys(drafts).sort(function (a, b) {
-      return drafts[b].updated - drafts[a].updated
-    });
-
-    return (
-      <QuadBox
-        title={"Saved drafts"}
-        extraTitlePadding
-        normalOnMobile
-        content={
-          <div className={Styles.SavedDrafts}>
-            {draftsSorted.map(key =>
-              <DraftRow
-                key={key}
-                draft={drafts[key]}
-                removeDraft={removeDraft}
-                updateNewMarket={updateNewMarket}
-                updatePage={updatePage} />
-            )}
-          </div>
-        }
-      />
-    );
-  }
-}
+export default SavedDrafts;

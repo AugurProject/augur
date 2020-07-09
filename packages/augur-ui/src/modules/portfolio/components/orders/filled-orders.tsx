@@ -1,11 +1,11 @@
-import React, { Component } from 'react';
+import React, { useState } from 'react';
 
-import FilterSwitchBox from 'modules/portfolio/containers/filter-switch-box';
+import FilterSwitchBox from 'modules/portfolio/components/common/filter-switch-box';
 import OrderMarketRow from 'modules/portfolio/components/common/order-market-row';
-import FilledOrder from 'modules/portfolio/containers/filled-order';
+import { FilledOrder } from "modules/common/table-rows";
 
 import FilledOrdersHeader from 'modules/portfolio/components/common/filled-orders-header';
-import { MarketData, Order } from 'modules/types';
+import selectMarketsFilledOrders from 'modules/portfolio/selectors/select-markets-filled-orders';
 
 const sortByOptions = [
   {
@@ -21,10 +21,6 @@ const sortByOptions = [
 ];
 
 interface FilledOrdersProps {
-  markets: Array<MarketData>;
-  filledOrders: Array<Order>;
-  marketsObj: MarketData;
-  ordersObj: Order;
   toggle: Function;
   extend: boolean;
   hide: boolean;
@@ -34,24 +30,17 @@ interface FilledOrdersState {
   viewByMarkets: boolean;
 }
 
-export default class FilledOrders extends Component<
-  FilledOrdersProps,
-  FilledOrdersState
-> {
-  constructor(props) {
-    super(props);
+const FilledOrders = ({ toggle, extend, hide }: FilledOrdersProps) => {
+  const [viewByMarkets, setViewByMarkets] = useState(true);
+  const {
+    markets,
+    marketsObj,
+    ordersObj,
+    filledOrders,
+  } = selectMarketsFilledOrders();
 
-    this.state = {
-      viewByMarkets: true,
-    };
-
-    this.filterComp = this.filterComp.bind(this);
-    this.switchView = this.switchView.bind(this);
-    this.renderRows = this.renderRows.bind(this);
-  }
-
-  filterComp(input, data) {
-    if (this.state.viewByMarkets) {
+  function filterComp(input, data) {
+    if (viewByMarkets) {
       return data.description.toLowerCase().indexOf(input.toLowerCase()) >= 0;
     }
     return (
@@ -60,15 +49,11 @@ export default class FilledOrders extends Component<
     );
   }
 
-  switchView() {
-    this.setState({
-      viewByMarkets: !this.state.viewByMarkets,
-    });
+  function switchView() {
+    setViewByMarkets(!viewByMarkets);
   }
 
-  renderRows(data) {
-    const { ordersObj, marketsObj } = this.props;
-    const { viewByMarkets } = this.state;
+  function renderRows(data) {
     const marketView = marketsObj[data.id] && viewByMarkets;
     const orderView = ordersObj[data.id];
 
@@ -88,28 +73,23 @@ export default class FilledOrders extends Component<
       />
     );
   }
-
-  render() {
-    const { markets, filledOrders, toggle, extend, hide } = this.props;
-    const { viewByMarkets } = this.state;
-
-    return (
-      // @ts-ignore
-      <FilterSwitchBox
-        title="Filled Orders"
-        filterLabel="filled orders"
-        showFilterSearch
-        sortByOptions={sortByOptions}
-        sortByStyles={{ minWidth: '13.6875rem' }}
-        data={viewByMarkets ? markets : filledOrders}
-        filterComp={this.filterComp}
-        switchView={this.switchView}
-        bottomBarContent={<FilledOrdersHeader />}
-        renderRows={this.renderRows}
-        toggle={toggle}
-        extend={extend}
-        hide={hide}
-      />
-    );
-  }
-}
+  return (
+    // @ts-ignore
+    <FilterSwitchBox
+      title="Filled Orders"
+      filterLabel="filled orders"
+      showFilterSearch
+      sortByOptions={sortByOptions}
+      sortByStyles={{ minWidth: '13.6875rem' }}
+      data={viewByMarkets ? markets : filledOrders}
+      filterComp={filterComp}
+      switchView={switchView}
+      bottomBarContent={<FilledOrdersHeader />}
+      renderRows={renderRows}
+      toggle={toggle}
+      extend={extend}
+      hide={hide}
+    />
+  );
+};
+export default FilledOrders;

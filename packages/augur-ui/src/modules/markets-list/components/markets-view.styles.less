@@ -1,16 +1,17 @@
 @import (reference) '~assets/styles/shared';
 
 .MarketsView {
+  flex: 1;
   max-width: 1200px;
   margin: auto;
   padding: 0 @size-16;
 
-  @media @breakpoint-mobile {
+  @media @breakpoint-mobile-tablet {
     margin: 0 @size-14;
     padding: 0;
   }
 
-  > div:first-of-type {
+  > section:not([class*='LandingHero']) {
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -23,7 +24,7 @@
       margin: @size-4 @size-24 @size-4 0;
     }
 
-    @media @breakpoint-mobile {
+    @media @breakpoint-mobile-tablet {
       align-items: baseline;
       margin: 0;
 
@@ -39,38 +40,102 @@
   }
 }
 
+:root[theme="BETTING"],
+:root[theme="SPORTS"] {
+  .MarketsView {
+    > section:not([class*='LandingHero']) {
+      // this is the sportsbook/betting-ui topsection
+      align-items: center;
+      display: grid;
+      grid-gap: 0 @size-8;
+      grid-template-columns: auto 1fr minmax(270px, 1fr);
+      margin-top: @size-32;
+      margin-bottom: @size-24;
+
+      > h2 {
+        .text-20-bold;
+
+        color: var(--color-primary-text);
+      }
+
+      > button {
+        display: none;
+      }
+
+      > div {
+        justify-self: flex-end;
+        grid-column: 2;
+        margin-right: @size-16;
+
+        > div {
+          border: none;
+          background: transparent;
+          margin: auto 0;
+          min-width: unset;
+
+          > button {
+            padding: 0;
+            background: transparent;
+  
+            > span {
+              .text-14;
+  
+              color: var(--color-primary-text);
+              text-transform: none;
+              border-right: none;
+              padding: 0 @size-8 0 0;
+              text-decoration-line: underline;
+              text-decoration-style: dashed;
+              text-decoration-color: var(--color-primary-text);
+            }
+
+            > span::before {
+              display: none;
+            }
+
+            &::before {
+              .text-14;
+
+              color: var(--color-secondary-text);
+              content: 'Sort By:';
+              padding-right: @size-4;
+              text-transform: none;
+            }
+  
+            > svg {
+              margin: 0;
+  
+              > path {
+                fill: var(--color-primary-text);
+              }
+            }
+          }
+        }
+      }
+
+      @media @breakpoint-mobile-tablet {
+        grid-template-columns: 1fr auto;
+
+        > h2 {
+          grid-column: 1 / span 2;
+          margin-bottom: @size-8;
+        }
+        
+        > button {
+          display: flex;
+        }
+      }
+    }
+
+    div[class*='Search'] {
+      height: @size-38;
+    }
+  }
+}
+
 .Disabled {
   > div {
     pointer-events: none;
     opacity: 0.5;
-  }
-}
-
-
-@media @breakpoint-tablet {
-  .MarketsView {
-    > div:first-of-type {
-      display: grid;
-      grid-template-columns: auto 1fr;
-      margin-top: 0;
-
-      > div:first-of-type {
-        margin-top: @size-8;
-      }
-
-      > div:nth-of-type(2) {
-        justify-content: flex-end;
-        align-items: center;
-        margin-right: 0;
-
-        > span {
-          display: flex;
-        }
-      }
-
-      > div:last-of-type {
-        display: none;
-      }
-    }
   }
 }

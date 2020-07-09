@@ -1,6 +1,6 @@
 const compilerOutput = require('@augurproject/artifacts/build/contracts.json');
 import { EthersProvider } from '@augurproject/ethersjs-provider';
-import { SDKConfiguration } from '@augurproject/utils';
+import { SDKConfiguration } from '@augurproject/sdk-lite';
 import * as fs from 'async-file';
 import { MemDown } from 'memdown';
 import {

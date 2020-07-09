@@ -35,8 +35,6 @@ module.exports = {
       'react-dates/initialize',
       'react',
       'react-dom',
-      'redux',
-      'redux-thunk',
       'react-datetime',
       `${PATHS.APP}/main`,
     ],

@@ -1,0 +1,243 @@
+@import (reference) '~assets/styles/shared';
+
+.Betslip {
+  display: none;
+}
+
+:root[theme="BETTING"],
+:root[theme="SPORTS"] {
+  .Betslip {
+    display: flex;
+    flex-flow: column nowrap;
+    align-items: center;
+    justify-content: flex-start;
+    padding: @size-32;
+
+    > div {
+      display: none;
+    }
+
+    @media @breakpoint-mobile-tablet {
+      background: var(--color-module-background);
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      right: 0;
+      left: 0;
+      z-index: @mask-above;
+      padding: 0;
+      flex-flow: row nowrap;
+      align-items: flex-start;
+      justify-content: flex-end;
+      z-index: @mask-toast;
+
+      > div {
+        align-items: flex-end;
+        background: var(--color-primary-text-80);
+        display: flex;
+        flex-flow: column;
+        height: 100%;
+        width: 100%;
+
+        > button:first-of-type {
+          .text-12-bold;
+
+          align-content: center;
+          align-items: center;
+          color: var(--color-module-background);
+          background: transparent;
+          cursor: pointer;
+          display: flex;
+          flex-flow: row nowrap;
+          height: @size-36;
+          justify-content: center;
+          text-transform: uppercase;
+          transform: rotate(-0.25turn) translate(-@size-125, @size-36);
+          width: @size-106;
+
+          > svg {
+            height: @size-8;
+            width: @size-10;
+            margin-left: @size-8;
+            // transform: rotate(180deg);
+
+            > path {
+              fill: var(--color-module-background);
+            }
+          }
+        }
+
+        > button:last-of-type {
+          display: none;
+        }
+      }
+
+      &.Minimized {
+        background: transparent;
+        padding: @size-32 0;
+        max-width: @size-36;
+        left: unset;
+        top: @size-32;
+        z-index: @above-all-content;
+        position: fixed;
+
+        > div {
+          width: @size-36;
+          height: @size-106;
+          display: block;
+
+          > button:first-of-type {
+            background: var(--color-primary-text);
+            transform: rotate(-0.25turn) translate(-@size-17, -@size-17);
+            transform-origin: bottom;
+            width: @size-106;
+
+            > svg {
+              transform: rotate(0.5turn);
+            }
+          }
+
+          > button:last-of-type {
+            display: none;
+          }
+        }
+
+        > section {
+          display: none;
+        }
+      }
+    }
+
+    @media @breakpoint-mobile {
+      flex-direction: column;
+
+      > div {
+        align-items: normal;
+        height: unset;
+
+        > button:first-of-type {
+          width: unset;
+          transform: unset;
+        }
+
+        > button:last-of-type {
+          display: none;
+        }
+      }
+
+      &.Minimized {
+        padding: @size-8;
+        right: 0;
+        left: 0;
+        max-width: unset;
+        top: unset;
+
+        > div {
+          background: unset;
+          height: unset;
+          width: 100%;
+          display: flex;
+          
+          > button:first-of-type {
+            display: none;
+          }
+
+          > button:last-of-type {
+            display: flex;
+          }
+        }
+      }
+    }     
+  }
+
+  .Container {
+    max-width: @size-326;
+    min-width: @size-326;
+    width: @size-326;
+    border: @size-1 solid var(--color-secondary-action-outline);
+    border-radius: @border-radius-rounded;
+    box-shadow: 0 0 @size-4 var(--color-primary-text-15);
+
+    @media @breakpoint-mobile {
+      height: 100%;
+      border: 0;
+      border-radius: 0;
+      width: 100%;
+      max-width: unset;
+      min-width: unset;
+    }
+  }
+
+  .MainSection {
+    background: var(--color-module-background);
+    border-bottom-left-radius: @border-radius-rounded;
+    border-bottom-right-radius: @border-radius-rounded;
+    min-height: @size-350;
+  }
+
+  .BetslipEmpty {
+    align-items: center;
+    display: flex;
+    flex-flow: column nowrap;
+    justify-content: center;
+
+    > div {
+      border-radius: 100%;
+      width: @size-80;
+      height: @size-80;
+      background: var(--color-page-background);
+      margin-bottom: @size-16;
+      display: flex;
+
+      align-items: center;
+      justify-content: center;
+
+      > svg {
+        width: @size-48;
+        height: @size-48;
+
+        > g > path {
+          fill: var(--color-secondary-text);
+        }
+      }
+    }
+
+    > h3 {
+      .text-14-bold;
+
+      color: var(--color-primary-text);
+      margin-bottom: @size-4;
+    }
+
+    > h4 {
+      .text-14;
+
+      color: var(--color-primary-text);
+      margin-bottom: @size-12;
+    }
+  }
+
+  .BetslipList {
+    align-items: center;
+    display: flex;
+    flex-flow: column nowrap;
+    justify-content: center;
+
+    @media @breakpoint-mobile {
+      height: 100%;
+
+      > section {
+        display: block;
+        max-height: unset;
+
+        > div {
+          max-width: unset;
+        }
+
+        > div:first-of-type {
+          margin-top: @size-8;
+        }
+      }
+    }
+  }
+}

@@ -11,7 +11,7 @@
   padding: @size-12 @size-12 0;
 
     > li {
-      color: @color-primary-text;
+      color: var(--color-primary-text);
       display: flex;
       flex-flow: column nowrap;
       width: 100%;
@@ -23,7 +23,7 @@
       > div.TradingFormInputContainer {
         max-height: @size-32;
         min-height: @size-32;
-        background-color: @color-dark-grey;
+        background-color: var(--color-dark-grey);
 
         > span {
           .mono-10-semi-bold;
@@ -39,7 +39,7 @@
           max-height: @size-30;
           min-height: @size-30;
           padding: 0 @size-12;
-          background-color: @color-dark-grey;
+          background-color: var(--color-dark-grey);
         }
       }
 
@@ -49,7 +49,7 @@
         > label {
           .mono-10-medium;
 
-          color: @color-secondary-text;
+          color: var(--color-secondary-text);
         }
       }
 
@@ -87,7 +87,7 @@
           padding: @size-3 @size-6;
 
           &:hover {
-            background: @color-secondary-hover;
+            background: var(--color-secondary-hover);
           }
         }
 
@@ -103,7 +103,7 @@
         > label {
           .mono-10-bold;
 
-          color: @color-primary-text;
+          color: var(--color-primary-text);
           margin-bottom: 0;
           padding: 0;
           margin-left: @size-22;
@@ -138,10 +138,10 @@
           padding: @size-3 @size-6;
 
           &:hover {
-            background: @color-secondary-hover;
+            background: var(--color-secondary-hover);
 
             > svg > path {
-              stroke: @color-primary-text;
+              stroke: var(--color-primary-text);
             }
           }
         }
@@ -158,7 +158,7 @@
         > span {
           .mono-10-medium;
 
-          color: @color-primary-text;
+          color: var(--color-primary-text);
           grid-row: 2;
           grid-column: 1 / span 3;
           text-align: right;
@@ -167,7 +167,7 @@
         > span.tipText {
           .mono-10-medium;
 
-          color: @color-secondary-text;
+          color: var(--color-secondary-text);
           text-align: left;
         }
 
@@ -175,7 +175,7 @@
           max-width: 100%;
 
           > button {
-            background: @color-secondary-action;
+            background: var(--color-secondary-action);
 
             > span {
               padding: @size-6 @size-8 @size-6 0;
@@ -200,7 +200,7 @@
         > div:nth-of-type(2):not([class*="Normal"]) {
           display: inline-flex;
           grid-column: 3;
-          justify-self: end;
+          justify-self: flex-end;
 
           // Day input
           > div[class*="TextInput"] {
@@ -213,14 +213,14 @@
               height: @size-24;
               margin-right: @size-4;
               padding: 0 @size-8;
-              border: @size-1 solid @color-secondary-action;
+              border: @size-1 solid var(--color-secondary-action);
 
               &:hover {
-                border: @size-1 solid @color-secondary-action-outline;
+                border: @size-1 solid var(--color-secondary-action-outline);
               }
 
               &:focus-within {
-                border: @size-1 solid @color-secondary-action-outline;
+                border: @size-1 solid var(--color-secondary-action-outline);
               }
             }
           }
@@ -258,15 +258,15 @@
                   height: @size-22;
                   width: 100%;
                   cursor: pointer;
-                  color: @color-primary-text;
-                  background: @color-secondary-action;
-                  border: @size-1 solid @color-secondary-action-outline;
+                  color: var(--color-primary-text);
+                  background: var(--color-secondary-action);
+                  border: @size-1 solid var(--color-secondary-action-outline);
 
                   &:hover {
-                    background: @color-secondary-hover;
+                    border: @size-1 solid var(--color-secondary-action-outline);
                   }
                   &:focus {
-                    background: @color-secondary-hover;
+                    border: @size-1 solid var(--color-secondary-action-outline);
                   }
                 }
               }
@@ -280,16 +280,17 @@
                 .mono-10-bold;
 
                 height: @size-22;
-                color: @color-primary-text;
-                background: @color-secondary-action;
-                border: @size-1 solid @color-secondary-action-outline;
+                color: var(--color-primary-text);
+                background: var(--color-secondary-action);
+                border: @size-1 solid var(--color-secondary-action-outline);
                 padding: @size-2;
 
                 &:hover {
-                  background: @color-secondary-hover;
+                  border: @size-1 solid var(--color-secondary-action-outline);
                 }
                 &:focus {
-                  background: @color-secondary-hover;
+                  border: @size-1 solid var(--color-secondary-action-outline);
+                  background: var(--color-secondary-hover);
                 }
               }
             }
@@ -303,15 +304,15 @@
 
                 height: @size-22;
                 width: 100%;
-                color: @color-primary-text;
-                background: @color-secondary-action;
-                border: @size-1 solid @color-secondary-action-outline;
+                color: var(--color-primary-text);
+                background: var(--color-secondary-action);
+                border: @size-1 solid var(--color-secondary-action-outline);
 
                 &:hover {
-                  background: @color-secondary-hover;
+                  border: @size-1 solid var(--color-secondary-action-outline);
                 }
                 &:focus {
-                  background: @color-secondary-hover;
+                  border: @size-1 solid var(--color-secondary-action-outline);
                 }
               }
             }
@@ -320,7 +321,7 @@
       }
 
       > label {
-        color: @color-inactive-text;
+        color: var(--color-inactive-text);
         margin-bottom: 0;
         padding-bottom: @size-4;
         width: 100%;
@@ -328,7 +329,7 @@
         &.smallLabel {
           .mono-10-medium;
 
-          color: @color-primary-text;
+          color: var(--color-primary-text);
           padding-top: @size-12;
           text-transform: none;
 
@@ -338,16 +339,16 @@
 
             > circle {
               opacity: 1;
-              stroke: @color-primary-text;
+              stroke: var(--color-primary-text);
               fill: none;
             }
 
             > rect {
-              fill: @color-primary-text;
+              fill: var(--color-primary-text);
             }
 
             > path {
-              fill: @color-primary-text;
+              fill: var(--color-primary-text);
             }
           }
         }
@@ -361,16 +362,16 @@
 
             > circle {
               opacity: 1;
-              stroke: @color-primary-text;
+              stroke: var(--color-primary-text);
               fill: none;
             }
 
             > rect {
-              fill: @color-primary-text;
+              fill: var(--color-primary-text);
             }
 
             > path {
-              fill: @color-primary-text;
+              fill: var(--color-primary-text);
             }
           }
         }
@@ -379,9 +380,48 @@
   }
 }
 
+:root[theme="BETTING"],
+:root[theme="SPORTS"] {
+  .TradingForm {
+    > ul {
+      > li {
+        > div.TradingFormInputContainer {
+          background-color: var(--color-secondary-action);
+
+          > input {
+            background-color: var(--color-secondary-action);
+          }
+        }
+
+        &.AdvancedShown {
+          > div:nth-of-type(2):not([class*="Normal"]) {
+
+            // Day input
+            > div[class*="TextInput"] {
+            
+              > div > input {
+                border: @size-1 solid var(--color-dark-grey);
+  
+                &:hover {
+                  border: @size-1 solid var(--color-dark-text);
+                }
+  
+                &:focus-within {
+                  border: @size-1 solid var(--color-dark-text);
+                }
+              }
+            }
+          }
+        }
+
+      }
+    }
+  }
+}
+
 .ErrorContainer {
-  background: fade(@color-error, 20%);
-  border: 1px solid @color-error;
+  background: var(--color-error-20);
+  border: 1px solid var(--color-error);
   border-radius: 3px;
   box-sizing: border-box;
   display: block;
@@ -395,7 +435,7 @@
   .mono-10-bold;
 
   align-items: center;
-  color: @color-primary-text;
+  color: var(--color-primary-text);
   margin-bottom: @size-4;
   text-transform: uppercase;
   display: grid;
@@ -413,17 +453,17 @@
     width: @size-12;
 
     > circle {
-      fill: fade(@color-error, 20%);
+      fill: var(--color-error-20);
       opacity: 0.5;
-      stroke: @color-error;
+      stroke: var(--color-error);
     }
 
     > rect {
-      fill: @color-error;
+      fill: var(--color-error);
     }
 
     > path {
-      fill: @color-error;
+      fill: var(--color-error);
     }
   }
 }
@@ -434,7 +474,7 @@
   > span:nth-of-type(2) {
     .text-11;
 
-    color: @color-primary-text;
+    color: var(--color-primary-text);
     grid-column: 2;
     text-transform: none;
   }
@@ -446,10 +486,10 @@
 
     > button {
       width: 100%;
-      border: 1px solid @color-primary-text;
+      border: 1px solid var(--color-primary-text);
 
       &:hover {
-        background: fade(@color-primary-text, .15);
+        background: var(--color-primary-text-15);
       }
 
       &:first-of-type {
@@ -470,15 +510,15 @@
 .Yes {
   .text-14-medium;
 
-  background-color: @color-secondary-action;
-  border: 1px solid @color-secondary-action-outline;
+  background-color: var(--color-secondary-action);
+  border: 1px solid var(--color-secondary-action-outline);
   border-radius: @border-radius-default;
   padding: @size-10 @size-10 @size-10 @size-16;
 
   > span {
     .mono-11;
 
-    color: @color-inactive-text;
+    color: var(--color-inactive-text);
     text-transform: uppercase;
   }
 }
@@ -496,35 +536,35 @@
   .mono-11;
 
   align-items: center;
-  background-color: @color-secondary-action;
-  border: @size-1 solid @color-secondary-action;
+  background-color: var(--color-secondary-action);
+  border: @size-1 solid var(--color-secondary-action);
   display: flex;
   flex-direction: row;
   border-radius: @border-radius-default;
 
   > input[type="number"] {
-    background-color: @color-secondary-action;
+    background-color: var(--color-secondary-action);
     border-width: 0;
-    color: @color-primary-text;
+    color: var(--color-primary-text);
 
     &::placeholder {
-      color: fade(@color-primary-text, 20%);
+      color: var(--color-primary-text-20);
     }
   }
 
   &.error {
-    border: @size-1 solid fade(@color-error, 50%);
+    border: @size-1 solid var(--color-error-50);
 
     &:focus-within,
     &:focus {
-      border: @size-1 solid fade(@color-error, 50%);
+      border: @size-1 solid var(--color-error-50);
     }
   }
 
   > span {
     .mono-10;
 
-    color: @color-secondary-text;
+    color: var(--color-secondary-text);
     overflow: hidden;
     padding: @size-10 @size-12;
     text-align: right;
@@ -542,19 +582,34 @@
   }
 
   > label {
-    color: @color-inactive-text;
+    color: var(--color-inactive-text);
     font-size: @size-12;
   }
 
   &:hover {
-    border: @size-1 solid @color-secondary-action-outline;
+    border: @size-1 solid var(--color-secondary-action-outline);
   }
 
   &:focus-within {
-    border: @size-1 solid @color-secondary-action-outline;
+    border: @size-1 solid var(--color-secondary-action-outline);
 
     > input {
       border: 0;
+    }
+  }
+}
+
+:root[theme="BETTING"],
+:root[theme="SPORTS"] {
+  .TradingFormInputContainer {
+    border: @size-1 solid var(--color-dark-grey);
+
+    &:hover {
+      border: @size-1 solid var(--color-dark-text);
+    }
+
+    &:focus-within {
+      border: @size-1 solid var(--color-dark-text);
     }
   }
 }
@@ -587,8 +642,8 @@
       width: @size-16;
 
       > circle {
-        stroke: @color-secondary-action-outline;
-        fill: @color-secondary-action;
+        stroke: var(--color-secondary-action-outline);
+        fill: var(--color-secondary-action);
       }
     }
   }

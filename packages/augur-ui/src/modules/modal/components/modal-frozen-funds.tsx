@@ -1,20 +1,13 @@
 import React, { useEffect, useState } from 'react';
-
-import { Breakdown, Title, ButtonsRow } from 'modules/modal/common';
+import { augurSdk } from 'services/augursdk';
+import { SecondaryButton } from 'modules/common/buttons';
+import { Breakdown, Title } from 'modules/modal/common';
 import Styles from 'modules/modal/modal.styles.less';
 import { formatDai } from 'utils/format-number';
 import type { Getters } from '@augurproject/sdk';
 import { LinearPropertyLabel } from 'modules/common/labels';
-import MarketTitle from 'modules/market/containers/market-title';
-
-interface ModalFrozenFundsProps {
-  closeAction: Function;
-  getUserFrozenFundsBreakdown: Function;
-  markets: {
-    [marketIds: string]: string;
-  };
-}
-
+import MarketTitle from 'modules/market/components/common/market-title';
+import { useAppStatusStore } from 'modules/app/store/app-status';
 const FROZEN_FUNDS_KEYS = ['openOrders', 'positions', 'createdMarkets'];
 const TITLES = {
   [FROZEN_FUNDS_KEYS[0]]: `Open Orders`,
@@ -28,16 +21,18 @@ const TOTAL_TITLES = {
   [FROZEN_FUNDS_KEYS[2]]: `Total Frozen Funds of Validity Bonds`,
 };
 
-export const ModalFrozenFunds = ({
-  closeAction,
-  getUserFrozenFundsBreakdown,
-}: ModalFrozenFundsProps) => {
+export const ModalFrozenFunds = () => {
+  const { universe: { id: universe }, loginAccount: { address: account }, actions: { closeModal }} = useAppStatusStore();
   const [breakdowns, setBreakdowns] = useState([]);
   const [total, setTotal] = useState(formatDai('0'));
 
   async function getBreakdown() {
     try {
-      const breakdown: Getters.Users.FrozenFundsBreakdown = await getUserFrozenFundsBreakdown();
+      const breakdown: Getters.Users.FrozenFundsBreakdown = await (async () => {
+        const Augur = augurSdk.get();
+        return await Augur.getUserFrozenFundsBreakdown({ universe, account });
+      })();
+      // const breakdown: Getters.Users.FrozenFundsBreakdown = await getUserFrozenFundsBreakdown();
       setTotal(formatDai(breakdown.total));
       if (breakdown.total === '0') return;
       const updateBreakdowns = FROZEN_FUNDS_KEYS.reduce((p, key) => {
@@ -80,7 +75,7 @@ export const ModalFrozenFunds = ({
 
   return (
     <div className={Styles.FrozenFundsBreakdown}>
-      <Title title="Frozen Funds" closeAction={closeAction} />
+      <Title title="Frozen Funds" closeAction={() => closeModal()} />
       <main>
         <section>
           {breakdowns.map(bk => (
@@ -97,7 +92,7 @@ export const ModalFrozenFunds = ({
           ))}
 
           <Breakdown
-            title={'Total'}
+            title="Total"
             footer={{
               label: 'Total Frozen Funds',
               showDenomination: true,
@@ -107,14 +102,9 @@ export const ModalFrozenFunds = ({
           />
         </section>
       </main>
-      <ButtonsRow
-        buttons={[
-          {
-            text: 'Cancel',
-            action: closeAction,
-          },
-        ]}
-      />
+      <div className={Styles.ButtonsRow}>
+        <SecondaryButton text="Cancel" action={() => closeModal()} />
+      </div>
     </div>
   );
 };

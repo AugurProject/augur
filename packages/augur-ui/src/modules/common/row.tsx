@@ -24,6 +24,7 @@ export interface StyleOptions {
   colorId?: string;
   active?: Boolean;
   isInvalid?: Boolean;
+  myBetRow?: Boolean;
 }
 
 export interface RowProps {
@@ -51,6 +52,7 @@ const RowContent = (props: RowProps) => {
     outcome,
     colorId,
     initialLiquidity,
+    myBetRow
   } = styleOptions;
 
   return (<ul
@@ -109,7 +111,8 @@ const Row = (props: RowProps) => {
     isFirst,
     outcome,
     active,
-    initialLiquidity
+    initialLiquidity,
+    myBetRow
   } = styleOptions;
 
   const rowContent = (
@@ -129,7 +132,8 @@ const Row = (props: RowProps) => {
           {
             [Styles.Row4Parent]: outcome,
             [Styles.DarkRow]: initialLiquidity,
-            [Styles.BottomBorder]: !initialLiquidity
+            [Styles.BottomBorder]: !initialLiquidity,
+            [Styles.MyBetRow]: myBetRow
           }
         )}
        >

@@ -13,7 +13,7 @@
 .RepBalances {
   align-items: center;
   border-radius: @border-radius-default;
-  background: @color-table-header;
+  background: var(--color-table-header);
   display: grid;
   grid-template-columns: 1fr @size-30 1fr;
   grid-template-rows: @size-64;
@@ -33,8 +33,73 @@
   > svg {
     height: @size-30;
     width: @size-30;
+
     > path {
-      fill: @color-primary-text;
+      fill: var(--color-brand-secondary);
+
+      &:first-of-type {
+        fill: var(--color-brand);
+      }
     }
   }
+}
+
+:root[theme="BETTING"],
+:root[theme="SPORTS"] {
+  .AccountOverview {
+    margin: 0;
+    grid-gap: 0;
+  }
+
+  .RepBalances {
+    padding: 0 @size-12 @size-8;
+
+    background: transparent;
+    min-width: @size-269;
+    width: 80%;
+    margin-left: auto;
+    margin-right: auto;
+
+    > div {
+      margin: 0;
+
+      > span:first-of-type {
+        .mono-10-semi-bold;
+
+        text-transform: uppercase;
+      }
+
+      > span:nth-of-type(2) {
+        .mono-14;
+        margin-top: @size-4;
+      }
+    }
+
+    > div:first-of-type {
+      span {
+        text-align: left;
+      }
+    }
+
+    > div:nth-of-type(2) {
+      span {
+        text-align: right;
+      }
+    }
+
+    > svg > path {
+      fill: var(--color-brand-secondary-flip);
+
+      &:first-of-type {
+        fill: var(--color-brand);
+      }
+    }
+
+    @media @breakpoint-mobile-mid {
+      padding: 0 0 @size-8;
+      width: unset;
+      margin-left: @size-12;
+      margin-right: @size-12;
+    }
+  } 
 }

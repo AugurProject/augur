@@ -13,13 +13,13 @@
   > div.ShowGlobalChat {
     display: block;
     line-height: 0; // This removes the iframe's extra padding
-    border: @size-1 solid @color-secondary-action-outline;
+    border: @size-1 solid var(--color-secondary-action-outline);
     border-radius: @size-3;
     overflow: hidden;
   }
 
   > button[class*="SecondaryButton"] {
-    background: fade(@color-dark-grey, 50);
+    background: var(--color-dark-grey-50);
   }
 
   // Closed global chat window
@@ -27,13 +27,13 @@
     .mono-9-bold;
 
     align-items: center;
-    background: @color-module-background;
-    color: @color-primary-text;
+    background: var(--color-module-background);
+    color: var(--color-primary-text);
     display: flex;
     text-transform: uppercase;
 
     > svg {
-      fill: @color-primary-text;
+      fill: var(--color-primary-text);
       height: @size-7;
       margin-left: @size-8;
       transform: rotate(180deg);
@@ -43,19 +43,19 @@
 
   // Open global chat window
   > div {
-    background-color: @color-module-background;
+    background-color: var(--color-module-background);
 
     // Header section
     > div:first-of-type {
       align-items: center;
-      background-color: @color-dark-grey;
-      border-bottom: 1px solid @color-dark-grey;
+      background-color: var(--color-dark-grey);
+      border-bottom: @size-1 solid var(--color-dark-grey);
       display: flex;
       flex-direction: row;
       padding: @size-7 @size-8;
 
       > span {
-        color: @color-primary-text;
+        color: var(--color-primary-text);
         margin: 0 0;
         text-transform: uppercase;
       }
@@ -70,9 +70,9 @@
       > span:nth-of-type(2) {
         .mono-9;
 
-        background: fade(@color-open, 15%);
+        background: var(--color-open-15);
         border-radius: 0.1875rem;
-        color: @color-open;
+        color: var(--color-open);
         padding: 0 1px;
       }
 
@@ -81,11 +81,11 @@
 
         > svg {
           height: @size-8;
-          fill: @color-primary-text;
+          fill: var(--color-primary-text);
           margin: 0;
           width: @size-8;
           position: relative;
-          bottom: 2px;
+          bottom: @size-2;
         }
       }
     }
@@ -99,16 +99,21 @@
 }
 
 .ThreeBoxChat {
-  background: @color-dark-grey;
+  background: var(--color-dark-grey);
   bottom: 0;
   position: fixed;
   right: 0;
   z-index: @mask-modal;
 
-  > button {
+  > button[class='buttons-styles_SecondaryButton']:first-of-type {
+    background-color: var(--color-page-background);
     position: fixed;
     right: @size-25;
     bottom: @size-8;
+
+    &:disabled {
+      opacity: 1;
+    }
   }
 
   div[class*='sc-launcher'],
@@ -118,27 +123,34 @@
   div[class*='sc-popup-window--cointainer'],
   input[class*='sc-popup-window--search'],
   form[class*='sc-user-input active'] {
-    background-color: @color-dark-grey;
+    background-color: var(--color-dark-grey);
   }
 
   div[class*='sc-message-list'],
   div[class*='onlineList'],
   div[class*='closeOnlineList'] {
-    background-color: @color-active-background;
+    background-color: var(--color-active-background);
   }
 
   div[class*='onlineList'],
   input[class*='sc-popup-window--search'],
   form[class*='sc-user-input active'],
   input[class*='sc-popup-window--search'],
-  form[class*='sc-user-input'] > textarea{
-    color: @color-primary-text;
+  form[class*='sc-user-input'] > textarea,
+  p[class*='sc-header--team-name_membersOnline'],
+  a[class*='sc-header-updateProfile'] {
+    color: var(--color-primary-text);
   }
 
   button[class*='sc-user-input--emoji-icon-wrapper'] path,
   button[class*='sc-user-input--emoji-icon-wrapper'] circle,
-  svg[class*='sc-user-input--send-icon'] path {
-    fill: @color-primary-text;
+  svg[class*='sc-user-input--send-icon'] path,
+  svg[class*='sc-header--img default'] g {
+    fill: var(--color-primary-text);
+  }
+
+  button[class*='sc-user-input--send-icon-wrapper'] {
+    margin: 0;
   }
 
   button[class*='sc-user-input--send-icon-wrapper'] {
@@ -154,7 +166,7 @@
   }
 
   div[class*='sc-chat-window'] {
-    border: @size-1 solid @color-secondary-action-outline;
+    border: @size-1 solid var(--color-secondary-action-outline);
     border-radius: @size-3;
     height: 300px;
     overflow: hidden;
@@ -175,7 +187,7 @@
   }
 
   div[class*='sc-header--close-button'] path {
-    stroke: @color-primary-text;
+    stroke: var(--color-primary-text);
   }
 
   input[class*='sc-popup-window--search'] {
@@ -193,8 +205,8 @@
   div[class*='sc-message--text'] {
     .text-12;
 
-    background-color: @color-dark-grey !important;
-    color: @color-primary-text !important;
+    background-color: var(--color-dark-grey) !important;
+    color: var(--color-primary-text) !important;
   }
 
   div[class*='sc-header--team-name'] {
@@ -212,6 +224,18 @@
 
   h3[class*='sc-header--team-name_text'] {
     .text-16-bold;
+
+    color: var(--color-primary-text);
+  }
+}
+
+:root[theme='BETTING'],
+:root[theme='SPORTS'] {
+  .GlobalChat {
+    div[class*='sc-popup-window--cointainer'],
+    div[class*='sc-popup-window--cointainer'] input {
+      background-color: #fff;
+    }
   }
 
   div[class*="sc-popup-window--cointainer"] {
@@ -220,7 +244,7 @@
     right: -@size-18;
 
     &:after {
-      background-color: @color-dark-grey;
+      background-color: var(--color-dark-grey);
       right: @size-12;
     }
   }

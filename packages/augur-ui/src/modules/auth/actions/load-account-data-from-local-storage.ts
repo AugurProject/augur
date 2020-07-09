@@ -1,41 +1,36 @@
-import { loadFavoritesMarkets } from 'modules/markets/actions/update-favorites';
-import { loadDrafts } from 'modules/create-market/actions/update-drafts';
 import { updateAlert } from 'modules/alerts/actions/alerts';
 import { loadPendingLiquidityOrders } from 'modules/orders/actions/liquidity-management';
-import { updateReadNotifications } from 'modules/notifications/actions/update-notifications';
 import { loadPendingOrdersTransactions } from 'modules/orders/actions/pending-orders-management';
-import { updateGasPriceInfo } from 'modules/app/actions/update-gas-price-info';
-import { updateUniverse } from 'modules/universe/actions/update-universe';
 import { isNewFavoritesStyle } from 'modules/markets/helpers/favorites-processor';
 import { loadPendingQueue } from 'modules/pending-queue/actions/pending-queue-management';
 import { setSelectedUniverse } from './selected-universe-management';
-import { ThunkDispatch, ThunkAction } from 'redux-thunk';
-import { Action } from 'redux';
-import { AppState } from 'appStore';
 import { getNetworkId } from 'modules/contracts/actions/contractCalls';
 import { loadMarketsInfoIfNotLoaded } from 'modules/markets/actions/load-markets-info';
 import { loadAnalytics } from 'modules/app/actions/analytics-management';
-import {
-  saveAffiliateAddress,
-} from 'modules/account/actions/login-account';
-import {
-  updateFilterSortOptionsSettings,
-} from 'modules/filter-sort/actions/update-filter-sort-options';
+import { AppStatus } from 'modules/app/store/app-status';
+import isAddress from 'modules/auth/helpers/is-address';
 
 export const loadAccountDataFromLocalStorage = (
   address: string
-): ThunkAction<any, any, any, any> => (
-  dispatch: ThunkDispatch<void, any, Action>,
-  getState: () => AppState
 ) => {
   const localStorageRef = typeof window !== 'undefined' && window.localStorage;
-  const { universe } = getState();
+  const { universe, filterSortOptions } = AppStatus.get();
+
   if (localStorageRef && localStorageRef.getItem && address) {
     const storedAccountData = JSON.parse(localStorageRef.getItem(address));
     if (storedAccountData) {
+      const {
+        updateFilterSortOptions,
+        updateUniverse,
+        updateLoginAccount,
+        loadFavorites,
+        updateGasPriceInfo,
+        updateNotifications,
+        loadDrafts,
+      } = AppStatus.actions;
       const { selectedUniverse } = storedAccountData;
       const { favorites } = storedAccountData;
-      const { readNotifications } = storedAccountData;
+      const { notifiations } = storedAccountData;
       const { pendingQueue } = storedAccountData;
       const { affiliate } = storedAccountData;
       const { settings } = storedAccountData;
@@ -45,21 +40,27 @@ export const loadAccountDataFromLocalStorage = (
           (p, key) => (settings[key] ? { ...p, [key]: settings[key] } : p),
           {}
         );
-        dispatch(updateFilterSortOptionsSettings(filterOptions));
+        updateFilterSortOptions({
+          ...filterSortOptions,
+          ...filterOptions,
+        });
       }
 
-      if (readNotifications) {
-        dispatch(updateReadNotifications(readNotifications));
+      if (!!affiliate && isAddress(affiliate))
+        updateLoginAccount({ affiliate });
+
+      if (notifiations) {
+        updateNotifications(notifiations);
       }
       const networkId = getNetworkId();
       const selectedUniverseId = selectedUniverse[networkId];
       if (selectedUniverseId) {
         if (universe.id !== selectedUniverseId) {
-          dispatch(updateUniverse({ id: selectedUniverseId }));
+          updateUniverse({ id: selectedUniverseId });
         }
       } else {
         // we have a no selectedUniveres for this account, default to default universe for this network.
-        dispatch(setSelectedUniverse());
+        setSelectedUniverse();
       }
       if (
         favorites &&
@@ -67,7 +68,7 @@ export const loadAccountDataFromLocalStorage = (
         favorites[networkId] &&
         favorites[networkId][universe.id]
       ) {
-        dispatch(loadFavoritesMarkets(favorites[networkId][universe.id]));
+        loadFavorites(favorites[networkId][universe.id]);
       }
       const {
         alerts,
@@ -78,7 +79,7 @@ export const loadAccountDataFromLocalStorage = (
         analytics,
       } = storedAccountData;
       if (drafts) {
-        dispatch(loadDrafts(drafts));
+        loadDrafts(drafts);
       }
       if (alerts) {
         // get all market ids and load markets then process alerts
@@ -87,36 +88,32 @@ export const loadAccountDataFromLocalStorage = (
             alerts.reduce((p, alert) => {
               const marketId =
                 alert.marketId ||
-                ((alert.params && alert.params.market) || alert.params._market);
+                (alert.params && alert.params.market) ||
+                alert.params._market;
               return marketId ? [...p, marketId] : p;
             }, [])
           )
         ) as string[];
-        dispatch(
-          loadMarketsInfoIfNotLoaded(marketIds, () => {
-            alerts.map(n => dispatch(updateAlert(n.id, n, true)));
-          })
-        );
+        loadMarketsInfoIfNotLoaded(marketIds, () => {
+          alerts.map(n => updateAlert(n.id, n, true));
+        });
       }
-      if (affiliate) dispatch(saveAffiliateAddress(affiliate));
       if (pendingLiquidityOrders) {
-        dispatch(loadPendingLiquidityOrders(pendingLiquidityOrders));
+        loadPendingLiquidityOrders(pendingLiquidityOrders);
       }
       if (analytics) {
-        dispatch(loadAnalytics(analytics, 0));
+        loadAnalytics(analytics, 0);
       }
       if (pendingOrders && Object.keys(pendingOrders).length > 0) {
-        dispatch(loadPendingOrdersTransactions(pendingOrders));
+        loadPendingOrdersTransactions(pendingOrders);
       }
       if (pendingQueue) {
-        dispatch(loadPendingQueue(pendingQueue));
+        loadPendingQueue(pendingQueue);
       }
       if (gasPriceInfo && gasPriceInfo.userDefinedGasPrice) {
-        dispatch(
-          updateGasPriceInfo({
-            userDefinedGasPrice: gasPriceInfo.userDefinedGasPrice,
-          })
-        );
+        updateGasPriceInfo({
+          userDefinedGasPrice: gasPriceInfo.userDefinedGasPrice,
+        });
       }
     }
   }

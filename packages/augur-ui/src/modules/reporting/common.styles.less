@@ -2,8 +2,8 @@
 
 .DismissableNotice {
   align-items: center;
-  background: @color-dismissable-notice-background;
-  border: 1px solid @color-outcome-two;
+  background: var(--color-dismissable-notice-background);
+  border: 1px solid var(--color-outcome-two);
   border-left-width: @size-4;
   border-radius: @border-radius-default;
   display: flex;
@@ -15,7 +15,7 @@
   > div > div:first-of-type {
     .text-11-semi-bold;
 
-    color: @color-secondary-action;
+    color: var(--color-secondary-action);
     display: flex;
     line-height: @size-12;
   }
@@ -25,7 +25,7 @@
 
     display: flex;
     line-height: @size-13;
-    color: @color-secondary-action;
+    color: var(--color-secondary-action);
   }
 
   > span:first-of-type {
@@ -36,12 +36,12 @@
     svg {
       height: @size-16;
       width: @size-16;
-      fill: @color-primary-action;
+      fill: var(--color-primary-action);
     }
 
     circle {
-      fill: @color-dismissable-notice-background;
-      stroke: @color-outcome-two;
+      fill: var(--color-dismissable-notice-background);
+      stroke: var(--color-outcome-two);
       stroke-width: 1.34px;
     }
   }
@@ -49,7 +49,7 @@
   > div > span:last-of-type {
     .mono-10-bold;
 
-    color: @color-module-background;
+    color: var(--color-module-background);
     text-transform: uppercase;
   }
 
@@ -68,7 +68,7 @@
       height: @size-10;
 
       > path {
-        stroke: @color-module-background;
+        stroke: var(--color-module-background);
         stroke-width: 1.34px;
       }
     }
@@ -76,9 +76,9 @@
 }
 
 .PreFilledStake {
-  background: @color-module-background;
+  background: var(--color-module-background);
   border-radius: @size-8;
-  border: 1px solid @color-dark-grey;
+  border: 1px solid var(--color-dark-grey);
   display: flex;
   padding: @size-20;
   flex-direction: column;
@@ -86,13 +86,13 @@
   >span:first-of-type {
     .text-14;
 
-    color: @color-primary-text;
+    color: var(--color-primary-text);
   }
 
   > span:nth-of-type(2) {
     .text-12;
 
-    color: @color-secondary-text;
+    color: var(--color-secondary-text);
     margin-bottom: @size-12;
     margin-top: @size-8;
   }
@@ -100,7 +100,7 @@
   > span:nth-of-type(3) {
     .text-14-medium;
 
-    color: @color-primary-text;
+    color: var(--color-primary-text);
     margin-bottom: @size-10;
     margin-top: @size-16;
   }
@@ -127,9 +127,9 @@
 }
 
 .ReportingPercent {
-  background: @color-dark-grey;
+  background: var(--color-dark-grey);
   height: @size-12;
-  border: @size-1 solid @color-module-background;
+  border: @size-1 solid var(--color-module-background);
   border-radius: 100px;
   display: flex;
 
@@ -137,22 +137,22 @@
     height: @size-10;
 
     &:first-of-type {
-      background: fade(@color-negative, 50);
+      background: var(--color-negative-50);
       border-top-left-radius: 100px;
       border-bottom-left-radius: 100px;
     }
 
     &:nth-of-type(2) {
-      background: @color-negative;
+      background: var(--color-negative);
     }
 
     &:nth-of-type(3) {
       background: repeating-linear-gradient(
         -45deg,
-        @color-negative,
-        @color-negative @size-1,
-        @color-dark-grey @size-2,
-        @color-dark-grey @size-4
+        var(--color-negative),
+        var(--color-negative) @size-1,
+        var(--color-dark-grey) @size-2,
+        var(--color-dark-grey) @size-4
       );
     }
 
@@ -163,7 +163,7 @@
   }
 
   &.invalid {
-    background-color: fade(@color-outcome-invalid, 50);
+    background-color: var(--color-outcome-invalid-50);
   }
 
   &.Round {
@@ -188,7 +188,7 @@ div.ReportingSubheaders {
   > span {
     .mono-10;
 
-    color: @color-secondary-text;
+    color: var(--color-secondary-text);
     display: flex;
     margin-bottom: @size-4;
     text-transform: uppercase;
@@ -201,13 +201,13 @@ div.ReportingSubheaders {
         width: @size-12;
 
         > circle {
-          fill: @color-secondary-action;
-          stroke: @color-secondary-action-outline;
+          fill: var(--color-secondary-action);
+          stroke: var(--color-secondary-action-outline);
           stroke-width: 1.5;
         }
 
         > path {
-          fill: @color-inactive-text;
+          fill: var(--color-inactive-text);
         }
       }
     }
@@ -216,12 +216,12 @@ div.ReportingSubheaders {
   > p {
     .mono-14;
 
-    color: @color-primary-text;
+    color: var(--color-primary-text);
     line-height: @size-16;
     margin: 0;
 
     > span > span {
-      color: @color-secondary-text;
+      color: var(--color-secondary-text);
       margin-left: @size-4;
     }
   }
@@ -245,13 +245,38 @@ div.ReportingSubheaders {
   }
 }
 
+
+:root[theme="BETTING"],
+:root[theme="SPORTS"] {
+  div.ReportingSubheaders {
+    
+      > span {
+        .text-12-medium;
+
+        color: var(--color-secondary-text);
+
+        > label {
+          margin-bottom: 0;
+        }
+      }
+
+      > p > span {
+        .text-16;
+
+        color: var(--color-primary-text);
+        margin-top: @size-4;
+        line-height: 140%;
+      }
+  }
+}
+
 .ReportingModalButton {
   .text-14;
 
-  background-color: @color-secondary-action;
-  border: 1px solid @color-secondary-action-outline;
+  background-color: var(--color-secondary-action);
+  border: 1px solid var(--color-secondary-action-outline);
   border-radius: @size-3;
-  color: @color-primary-text;
+  color: var(--color-primary-text);
   display: flex;
   justify-content: center;
   padding: @size-10 @size-16;
@@ -270,9 +295,9 @@ div.ReportingSubheaders {
 .UserRepDisplay {
   .mono-10;
 
-  background-color: @color-module-background;
-  border: 1px solid @color-dark-grey;
-  color: @color-secondary-text;
+  background-color: var(--color-module-background);
+  border: 1px solid var(--color-dark-grey);
+  color: var(--color-secondary-text);
   display: flex;
   flex-direction: column;
   max-width: 466px;
@@ -283,9 +308,9 @@ div.ReportingSubheaders {
   > p {
     .text-18;
 
-    background: fade(@color-dark-grey, 80%);
+    background: var(--color-dark-grey-80);
     bottom: 0;
-    color: @color-primary-text;
+    color: var(--color-primary-text);
     left: 0;
     margin: @size-4;
     position: absolute;
@@ -320,7 +345,7 @@ div.ReportingSubheaders {
     }
 
     &:nth-of-type(3) {
-      border-bottom: 1px solid @color-dark-grey;
+      border-bottom: 1px solid var(--color-dark-grey);
       left: 0;
       width: 100%;
     }
@@ -450,7 +475,7 @@ div.ReportingSubheaders {
     > span:first-of-type {
       .mono-10;
 
-      color: @color-secondary-text;
+      color: var(--color-secondary-text);
       line-height: @size-12;
       text-transform: uppercase;
     }
@@ -458,11 +483,11 @@ div.ReportingSubheaders {
     > span:nth-of-type(2) {
       .mono-12;
 
-      color: @color-secondary-text;
+      color: var(--color-secondary-text);
       line-height: @size-14;
 
       > span:first-of-type {
-        color: @color-primary-text;
+        color: var(--color-primary-text);
         margin-left: @size-4;
       }
     }
@@ -472,6 +497,8 @@ div.ReportingSubheaders {
 .ScalarOutcomesView {
   display: flex;
   align-items: center;
+  color: var(--color-primary-text);
+  margin-top: @size-8;
 
   > div:first-of-type {
     margin-top: 0;
@@ -481,7 +508,7 @@ div.ReportingSubheaders {
   > h2 {
     .mono-11;
 
-    color: @color-primary-text;
+    color: var(--color-primary-text);
     margin-left: @size-8;
   }
 }
@@ -490,7 +517,7 @@ div.ReportingSubheaders {
   > span:first-of-type {
     .text-14-medium;
 
-    color: @color-primary-text;
+    color: var(--color-primary-text);
     display: flex;
     margin-bottom: @size-12;
     margin-top: @size-16;
@@ -502,7 +529,7 @@ div.ReportingSubheaders {
   }
 
   > section {
-    color: fade(@color-secondary-text, 30);
+    color: --color-secondary-text-30;
     display: flex;
     margin-top: @size-8;
 
@@ -538,7 +565,7 @@ div.ReportingSubheaders {
   > span {
     .text-14-medium;
 
-    color: @color-primary-text;
+    color: var(--color-primary-text);
     margin-bottom: @size-12;
     display: flex;
   }
@@ -546,14 +573,14 @@ div.ReportingSubheaders {
   .ShowTotals {
     .text-10-medium;
 
-    color: @color-primary-text;
+    color: var(--color-primary-text);
     display: flex;
     flex-direction: column;
 
     > span:first-of-type {
       .text-14-medium;
 
-      color: @color-primary-text;
+      color: var(--color-primary-text);
       margin-top: @size-16;
       margin-bottom: @size-16;
     }
@@ -561,7 +588,7 @@ div.ReportingSubheaders {
     > span:nth-of-type(2) {
       .text-12;
 
-      color: @color-secondary-text;
+      color: var(--color-secondary-text);
       margin-bottom: @size-12;
     }
   }
@@ -608,8 +635,8 @@ div.ReportingSubheaders {
 }
 
 .ReportingBondsViewCheckbox {
-  background-color: @color-table-header;
-  border: 1px solid @color-secondary-action-outline;
+  background-color: var(--color-table-header);
+  border: 1px solid var(--color-secondary-action-outline);
   padding: @size-16;
   margin: @size-16 0;
 
@@ -624,9 +651,9 @@ div.ReportingSubheaders {
 
 .ReportingCard {
   align-items: center;
-  background: @color-module-background;
+  background: var(--color-module-background);
   border-radius: @size-3;
-  border: @size-1 solid @color-dark-grey;
+  border: @size-1 solid var(--color-dark-grey);
   display: grid;
   grid-template-columns: auto auto;
   padding: @size-12 @size-24;
@@ -641,7 +668,7 @@ div.ReportingSubheaders {
   > h2 {
     .text-16-bold;
 
-    color: @color-primary-text;
+    color: var(--color-primary-text);
 
     > a {
       word-break: break-word;
@@ -694,19 +721,19 @@ div.ReportingSubheaders {
 }
 
 .ReportingList {
-  border: @size-1 solid @color-dark-grey;
-  background-color: @color-module-background;
+  border: @size-1 solid var(--color-dark-grey);
+  background-color: var(--color-module-background);
   margin-bottom: @size-16;
 
   > span,
   > h1 {
     .text-12-medium;
 
-    color: @color-primary-text;
+    color: var(--color-primary-text);
     display: flex;
     padding: @size-12 @size-16;
     text-transform: uppercase;
-    background-color: @color-dark-grey;
+    background-color: var(--color-dark-grey);
     margin-bottom: 0;
   }
 
@@ -718,7 +745,7 @@ div.ReportingSubheaders {
     > span {
       .text-12;
 
-      color: @color-secondary-text;
+      color: var(--color-secondary-text);
 
       &:first-of-type {
         padding: @size-12 @size-24 0;
@@ -750,8 +777,8 @@ div.ReportingSubheaders {
 }
 
 .ParticipationTokensView {
-  background: @color-module-background;
-  border: 1px solid @color-dark-grey;
+  background: var(--color-module-background);
+  border: 1px solid var(--color-dark-grey);
   border-radius: @size-3;
   max-width: 482px;
   padding: @size-32 @size-24;
@@ -764,13 +791,13 @@ div.ReportingSubheaders {
   > h4 {
     .mono-10;
 
-    color: @color-primary-text;
+    color: var(--color-primary-text);
     margin-bottom: @size-12;
     text-transform: uppercase;
   }
 
   > section {
-    background-color: @color-dark-grey;
+    background-color: var(--color-dark-grey);
     height: 1px;
     margin: @size-24 0;
     width: @size-40;
@@ -779,7 +806,7 @@ div.ReportingSubheaders {
   > span {
     .text-12;
 
-    color: @color-secondary-text;
+    color: var(--color-secondary-text);
     display: block;
     line-height: 140%;
     margin-bottom: @size-20;
@@ -790,7 +817,7 @@ div.ReportingSubheaders {
 
     > span:last-of-type {
       white-space: nowrap;
-      color: @color-primary-action;
+      color: var(--color-primary-action);
       margin-left: @size-4;
     }
   }

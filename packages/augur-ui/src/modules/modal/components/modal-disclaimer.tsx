@@ -1,20 +1,17 @@
 import React, { useState, useRef } from 'react';
 
-import ModalActions from 'modules/modal/components/common/modal-actions';
 import { Checkbox } from 'modules/common/form';
 import classNames from 'classnames';
 import { OpenArrow } from 'modules/common/icons';
+import { DISCLAIMER_SEEN } from 'modules/common/constants';
 
-import Styles from 'modules/modal/components/common/common.styles.less';
+import Styles from 'modules/modal/common.styles.less';
+import { useAppStatusStore } from 'modules/app/store/app-status';
 
 const EST_HEIGHT_PERCENT = 0.98;
 
-interface ModalDisclaimerProps {
-  closeModal: Function;
-  onApprove: Function;
-}
-
-const ModalDisclaimer = ({ closeModal, onApprove }: ModalDisclaimerProps) => {
+const ModalDisclaimer = () => {
+  const { modal: { onApprove }, actions: { closeModal } } = useAppStatusStore();
   const [didScroll, setDidScroll] = useState(false);
   const [didCheck, setDidCheck] = useState(false);
   const containerText = useRef(null);
@@ -142,18 +139,18 @@ const ModalDisclaimer = ({ closeModal, onApprove }: ModalDisclaimerProps) => {
             I have read and understood the above.
           </label>
         </div>
-        <ModalActions
-          buttons={[
-            {
-              label: 'I agree and accept the above',
-              isDisabled: !didScroll || !didCheck,
-              action: () => {
-                closeModal();
-                if (onApprove) onApprove();
-              },
-            },
-          ]}
-        />
+        <div className={Styles.ActionButtons}>
+          <button
+            className={Styles.Primary}
+            disabled={!didScroll || !didCheck}
+            onClick={() => {
+              closeModal();
+              if (onApprove) onApprove();
+            }}
+          >
+            I agee and accept the above
+          </button>
+        </div>
       </div>
       <div
         onClick={() => {

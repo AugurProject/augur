@@ -1,10 +1,13 @@
-import React, { Component } from "react";
+import React, { useState } from "react";
 
-import FilterBox from "modules/portfolio/containers/filter-box";
+import memoize from "memoizee";
+import FilterBox from 'modules/portfolio/components/common/filter-box';
 import { CompactButton } from "modules/common/buttons";
 import { MovementLabel, ValueLabel } from "modules/common/labels";
-import PositionsTable from "modules/market/containers/positions-table";
+import { PositionsTable } from "modules/portfolio/components/common/market-positions-table";
 import { END_TIME } from "modules/common/constants";
+import getLoginAccountPositions from "modules/positions/selectors/login-account-positions";
+import getMarketsPositionsRecentlyTraded from "modules/portfolio/selectors/select-markets-positions-recently-traded";
 
 import Styles from "modules/portfolio/components/common/quad.styles.less";
 import { MarketData, SizeTypes } from "modules/types";
@@ -64,29 +67,30 @@ interface PositionsProps {
   extend: boolean;
 }
 
-interface PositionsState {
-  showCurrentValue: boolean;
-}
+const getPositionsMarkets = memoize(
+  (marketsPositionsRecentlyTraded, positions) =>
+    Array.from(new Set([...positions.markets])).map((m) => ({
+      ...m,
+      recentlyTraded: marketsPositionsRecentlyTraded[m.id],
+    })),
+  { max: 1 },
+);
 
-export default class Positions extends Component<PositionsProps, PositionsState> {
-  state = {
-    showCurrentValue: false,
-  };
+const Positions = ({
+  toggle,
+  hide,
+  extend, 
+}: PositionsProps) => {
+  const [showCurrentValue, setCurrentValue] = useState(false);
+  const positions = getLoginAccountPositions();
+  const timestamps = getMarketsPositionsRecentlyTraded();
+  const markets = getPositionsMarkets(timestamps, positions);
 
-  constructor(props) {
-    super(props);
-
-
-    this.updateRightContentValue = this.updateRightContentValue.bind(this);
-    this.renderRightContent = this.renderRightContent.bind(this);
+  function updateRightContentValue() {
+    setCurrentValue(!showCurrentValue);
   }
 
-  updateRightContentValue() {
-    this.setState({ showCurrentValue: !this.state.showCurrentValue });
-  }
-
-  renderRightContent(market) {
-    const { showCurrentValue } = this.state;
+  function renderRightContent(market) {
     const { currentValue, totalReturns } = market.myPositionsSummary;
     return showCurrentValue ? (
       <ValueLabel value={currentValue} useFull />
@@ -105,10 +109,6 @@ export default class Positions extends Component<PositionsProps, PositionsState>
       );
   }
 
-  render() {
-    const { markets, toggle, hide, extend } = this.props;
-    const { showCurrentValue } = this.state;
-
     return (
       <FilterBox
         sortByStyles={{ minWidth: "10.8125rem" }}
@@ -122,10 +122,10 @@ export default class Positions extends Component<PositionsProps, PositionsState>
         bottomRightContent={
           <CompactButton
             text={showCurrentValue ? "Current Value" : "Total Returns"}
-            action={this.updateRightContentValue}
+            action={updateRightContentValue}
           />
         }
-        renderRightContent={this.renderRightContent}
+        renderRightContent={renderRightContent}
         renderToggleContent={renderToggleContent}
         filterLabel="positions"
         pickVariables={[
@@ -138,5 +138,8 @@ export default class Positions extends Component<PositionsProps, PositionsState>
         ]}
       />
     );
-  }
-}
+};
+
+export default Positions;
+
+

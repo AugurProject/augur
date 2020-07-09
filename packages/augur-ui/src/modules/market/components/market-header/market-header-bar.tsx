@@ -11,7 +11,6 @@ export interface MarketHeaderBarProps {
   reportingState: string;
   disputeInfo: Getters.Markets.DisputeInfo;
   endTimeFormatted: DateFormattedObject;
-  currentAugurTimestamp: number;
   market: MarketData;
 }
 
@@ -37,7 +36,6 @@ export const MarketHeaderBar = ({
   reportingState,
   disputeInfo,
   endTimeFormatted,
-  currentAugurTimestamp,
   market
 }: MarketHeaderBarProps) => (
   <section className={Styles.HeaderBar}>
@@ -49,7 +47,6 @@ export const MarketHeaderBar = ({
     {showProgress(reportingState) && (
       <MarketProgress
         reportingState={reportingState}
-        currentTime={currentAugurTimestamp}
         endTimeFormatted={endTimeFormatted}
         reportingWindowEndTime={disputeInfo && disputeInfo.disputeWindow && disputeInfo.disputeWindow.endTime}
       />

@@ -1,58 +1,55 @@
-import React from "react";
-import { RouteComponentProps } from "react-router-dom";
-import { orderBy } from "lodash";
+import React, { useState } from 'react';
+import { useHistory } from 'react-router';
+import { orderBy } from 'lodash';
+import QuadBox from 'modules/portfolio/components/common/quad-box';
+import EmptyDisplay from 'modules/portfolio/components/common/empty-display';
+import makePath from 'modules/routes/helpers/make-path';
+import makeQuery from 'modules/routes/helpers/make-query';
 
-import QuadBox from "modules/portfolio/components/common/quad-box";
-import EmptyDisplay from "modules/portfolio/components/common/empty-display";
-import makePath from "modules/routes/helpers/make-path";
-import makeQuery from "modules/routes/helpers/make-query";
-
-import { NotificationCard } from "modules/account/components/notification-card";
-import { PillLabel } from "modules/common/labels";
-import { MARKET } from "modules/routes/constants/views";
+import { NotificationCard } from 'modules/account/components/notification-card';
+import { PillLabel } from 'modules/common/labels';
+import { MARKET } from 'modules/routes/constants/views';
 import {
   MARKET_ID_PARAM_NAME,
-  RETURN_PARAM_NAME,
-} from "modules/routes/constants/param-names";
+} from 'modules/routes/constants/param-names';
 import {
   OpenOrdersResolvedMarketsTemplate,
   ReportEndingSoonTemplate,
   DisputeTemplate,
   ClaimReportingFeesTemplate,
   UnsignedOrdersTemplate,
-  ProceedsToClaimTemplate, MostLikelyInvalidMarketsTemplate, FinalizeWarpSyncMarketTemplate,
-} from "modules/account/components/notifications-templates";
+  ProceedsToClaimTemplate,
+  MostLikelyInvalidMarketsTemplate,
+  FinalizeWarpSyncMarketTemplate,
+} from 'modules/account/components/notifications-templates';
 
-import { Notification, DateFormattedObject, QueryEndpoints } from "modules/types";
+import {
+  Notification,
+  DateFormattedObject,
+  QueryEndpoints,
+} from 'modules/types';
 
 import {
   NOTIFICATION_TYPES,
   NOTIFICATIONS_TITLE,
   NOTIFICATIONS_LABEL,
   NEW,
-} from "modules/common/constants";
+  MODAL_OPEN_ORDERS,
+  MODAL_REPORTING,
+  MODAL_UNSIGNED_ORDERS,
+  MODAL_CLAIM_FEES,
+  MODAL_CLAIM_MARKETS_PROCEEDS,
+  MODAL_FINALIZE_MARKET,
+} from 'modules/common/constants';
 
-import Styles from "modules/account/components/notification.styles.less";
+import { MessagesIcon } from 'modules/common/icons';
+import Styles from 'modules/account/components/notification.styles.less';
+import { useAppStatusStore } from 'modules/app/store/app-status';
+import { selectMarket } from 'modules/markets/selectors/market';
+import { getNotifications } from 'modules/notifications/selectors/notification-state';
 
-export interface NotificationsProps extends RouteComponentProps {
-  notifications: Notification[];
-  updateReadNotifications: Function;
-  getReportingFees: Function;
-  currentAugurTimestamp: DateFormattedObject;
-  disputingWindowEndTime: DateFormattedObject;
-  finalizeMarketModal: Function;
-  dispute: Function;
-  showReportingModal: Function;
-  claimMarketsProceeds: Function;
-  claimReportingFees: Function;
-  unsignedOrdersModal: Function;
-  openOrdersModal: Function;
-  toggle: Function;
-  finalize: Function;
-}
-
-export interface NotificationsState {
-  disabledNotifications: any;
+export interface NotificationsProps {
+  toggle?: Function;
 }
 
 const notificationsWithCountdown = [
@@ -61,152 +58,15 @@ const notificationsWithCountdown = [
   NOTIFICATION_TYPES.proceedsToClaim,
 ];
 
-class Notifications extends React.Component<
-  NotificationsProps,
-  NotificationsState
-> {
-  state: NotificationsState = {
-    disabledNotifications: {},
-  };
-
-  getButtonAction(notification: Notification) {
-    let buttonAction;
-    const { location, history } = this.props;
-
-    switch (notification.type) {
-      case NOTIFICATION_TYPES.resolvedMarketsOpenOrders:
-        buttonAction = () => {
-          this.markAsRead(notification);
-          this.disableNotification(notification.id, true);
-          if (notification.market) {
-            this.props.openOrdersModal(notification.market.id, () =>
-              this.disableNotification(notification.id, false)
-            );
-          }
-        };
-        break;
-
-      case NOTIFICATION_TYPES.reportOnMarkets:
-        buttonAction = () => {
-          this.markAsRead(notification);
-          this.props.showReportingModal(notification.market.id);
-        };
-        break;
-
-      case NOTIFICATION_TYPES.marketsInDispute:
-        buttonAction = () => {
-          this.markAsRead(notification);
-          const queryLink = {
-            [MARKET_ID_PARAM_NAME]: notification.market && notification.market.id,
-            [RETURN_PARAM_NAME]: location.hash,
-          };
-          this.props.dispute(notification.market.id);
-        };
-        break;
-
-      case NOTIFICATION_TYPES.unsignedOrders:
-        buttonAction = () => {
-          this.markAsRead(notification);
-          if (notification.market) {
-            this.props.unsignedOrdersModal(notification.market.id, () => {
-              const queryLink: QueryEndpoints = {
-                [MARKET_ID_PARAM_NAME]: notification.market && notification.market.id,
-              };
-              history.push({
-                pathname: makePath(MARKET, null),
-                search: makeQuery(queryLink),
-              });
-            });
-          }
-        };
-        break;
-
-      case NOTIFICATION_TYPES.claimReportingFees:
-        buttonAction = () => {
-          this.markAsRead(notification);
-          this.props.claimReportingFees(notification.claimReportingFees);
-        };
-        break;
-
-      case NOTIFICATION_TYPES.proceedsToClaim:
-        buttonAction = () => {
-          this.markAsRead(notification);
-          this.disableNotification(notification.id, true);
-          this.props.claimMarketsProceeds(notification.markets, () =>
-            this.disableNotification(notification.id, false)
-          );
-        };
-        break;
-
-      case NOTIFICATION_TYPES.marketIsMostLikelyInvalid:
-        buttonAction = () => {
-          this.markAsRead(notification);
-          const queryLink: QueryEndpoints = {
-            [MARKET_ID_PARAM_NAME]: notification.market && notification.market.id,
-          };
-          history.push({
-            pathname: makePath(MARKET, null),
-            search: makeQuery(queryLink),
-          });
-        };
-        break;
-
-      case NOTIFICATION_TYPES.finalizeMarket:
-          buttonAction = () => {
-            this.markAsRead(notification);
-            this.disableNotification(notification.id, true);
-            this.props.finalize(notification.market.id, () =>
-              this.disableNotification(notification.id, false)
-            );
-          };
-          break;
-
-      default:
-        buttonAction = () => {
-          this.markAsRead(notification);
-        };
-        break;
-    }
-
-    return {
-      ...notification,
-      buttonAction,
-    };
-  }
-
-  disableNotification(id: string, disabled: boolean) {
-    this.setState({
-      disabledNotifications: {
-        ...this.state.disabledNotifications,
-        [id]: disabled,
-      }
-    });
-  }
-
-  markAsRead({ id }: Notification) {
-    const newState = this.props.notifications.map(
-      (notification: Notification | null) => {
-        if (notification && notification.id === id) {
-          notification.isNew = false;
-        }
-
-        return notification;
-      }
-    );
-
-    this.props.updateReadNotifications(newState);
-  }
-
-  render() {
-    const { currentAugurTimestamp, disputingWindowEndTime, toggle } = this.props;
-    const notifications = this.props.notifications.map((notification) =>
-      this.getButtonAction(notification)
-    );
-    const notificationCount = notifications.length;
-    const newNotificationCount = notifications.filter((item) => item.isNew)
-      .length;
-
-    const rows = orderBy(notifications, 'isNew', ['desc']).filter(notification => !notification.hideNotification).map((notification) => {
+function getRows(
+  notifications,
+  currentTime,
+  disputingWindowEndTime,
+  disabledNotifications
+) {
+  return orderBy(notifications, 'isNew', ['desc'])
+    .filter(notification => !notification.hideNotification)
+    .map(notification => {
       const {
         id,
         isImportant,
@@ -230,7 +90,7 @@ class Notifications extends React.Component<
         totalProceeds,
         markets,
         market,
-        currentTime: currentAugurTimestamp,
+        currentTime,
         disputingWindowEndTime,
         buttonAction,
         buttonLabel,
@@ -248,12 +108,11 @@ class Notifications extends React.Component<
         title,
         buttonLabel,
         buttonAction,
-        hideCheckbox
+        hideCheckbox,
       };
 
       const isDisabled: boolean =
-        this.state.disabledNotifications[id] &&
-        this.state.disabledNotifications[id] === true;
+        disabledNotifications[id] && disabledNotifications[id] === true;
       const hasCounter = market && notificationsWithCountdown.includes(type);
       return (
         <NotificationCard
@@ -261,83 +120,276 @@ class Notifications extends React.Component<
           noCounter={!hasCounter}
           {...notificationCardProps}
         >
-          {type === NOTIFICATION_TYPES.resolvedMarketsOpenOrders ? (
-            <OpenOrdersResolvedMarketsTemplate
-              isDisabled={isDisabled}
-              {...templateProps}
-            />
-          ) as any : null}
-          {type === NOTIFICATION_TYPES.reportOnMarkets ? (
-            <ReportEndingSoonTemplate
-              isDisabled={isDisabled}
-              {...templateProps}
-            />
-          ) as any : null}
-          {type === NOTIFICATION_TYPES.marketsInDispute ? (
-            <DisputeTemplate isDisabled={isDisabled} {...templateProps} />
-          ) as any : null}
-          {type === NOTIFICATION_TYPES.unsignedOrders ? (
-            <UnsignedOrdersTemplate
-              isDisabled={isDisabled}
-              {...templateProps}
-            />
-          ) as any : null}
-          {type === NOTIFICATION_TYPES.claimReportingFees ? (
-            <ClaimReportingFeesTemplate
-              isDisabled={isDisabled}
-              {...templateProps}
-            />
-          ) as any : null}
-          {type === NOTIFICATION_TYPES.proceedsToClaim ? (
-            <ProceedsToClaimTemplate
-              isDisabled={isDisabled}
-              {...templateProps}
-            />
-          ) as any : null}
-          {type === NOTIFICATION_TYPES.marketIsMostLikelyInvalid ? (
-            <MostLikelyInvalidMarketsTemplate
-              isDisabled={isDisabled}
-              {...templateProps}
-            />
-          ) as any : null}
-          {type === NOTIFICATION_TYPES.finalizeMarket ? (
-            <FinalizeWarpSyncMarketTemplate
-              isDisabled={isDisabled}
-              {...templateProps}
-            />
-          ) as any : null}
+          {type === NOTIFICATION_TYPES.resolvedMarketsOpenOrders
+            ? ((
+                <OpenOrdersResolvedMarketsTemplate
+                  isDisabled={isDisabled}
+                  {...templateProps}
+                />
+              ) as any)
+            : null}
+          {type === NOTIFICATION_TYPES.reportOnMarkets
+            ? ((
+                <ReportEndingSoonTemplate
+                  isDisabled={isDisabled}
+                  {...templateProps}
+                />
+              ) as any)
+            : null}
+          {type === NOTIFICATION_TYPES.marketsInDispute
+            ? ((
+                <DisputeTemplate isDisabled={isDisabled} {...templateProps} />
+              ) as any)
+            : null}
+          {type === NOTIFICATION_TYPES.unsignedOrders
+            ? ((
+                <UnsignedOrdersTemplate
+                  isDisabled={isDisabled}
+                  {...templateProps}
+                />
+              ) as any)
+            : null}
+          {type === NOTIFICATION_TYPES.claimReportingFees
+            ? ((
+                <ClaimReportingFeesTemplate
+                  isDisabled={isDisabled}
+                  {...templateProps}
+                />
+              ) as any)
+            : null}
+          {type === NOTIFICATION_TYPES.proceedsToClaim
+            ? ((
+                <ProceedsToClaimTemplate
+                  isDisabled={isDisabled}
+                  {...templateProps}
+                />
+              ) as any)
+            : null}
+          {type === NOTIFICATION_TYPES.marketIsMostLikelyInvalid
+            ? ((
+                <MostLikelyInvalidMarketsTemplate
+                  isDisabled={isDisabled}
+                  {...templateProps}
+                />
+              ) as any)
+            : null}
+          {type === NOTIFICATION_TYPES.finalizeMarket
+            ? ((
+                <FinalizeWarpSyncMarketTemplate
+                  isDisabled={isDisabled}
+                  {...templateProps}
+                />
+              ) as any)
+            : null}
         </NotificationCard>
       );
     });
-
-    const labelContent = (
-      <div className={Styles.NewTopLabel}>
-        {newNotificationCount > 0 && (
-          <PillLabel label={`${newNotificationCount} ${NEW}`} hideOnMobile />
-        )}
-      </div>
-    );
-
-    return (
-      <QuadBox
-        title={NOTIFICATIONS_TITLE}
-        rightContent={labelContent}
-        toggle={toggle}
-        customClass={notificationCount !== 0 && Styles.DarkBackgroundMobile}
-        content={
-          notificationCount === 0 ? (
-            <EmptyDisplay
-              selectedTab=""
-              filterLabel={NOTIFICATIONS_LABEL}
-              search=""
-            />
-          ) : (
-            rows
-          )
-        }
-      />
-    );
-  }
 }
+
+function getButtonAction(
+  notification: Notification,
+  history,
+  stateNotifications,
+  updateNotifications,
+  setModal,
+  disabledNotifications,
+  setDisabledNotifications,
+) {
+  function disableNotification(id, disabled) {
+    setDisabledNotifications({ ...disabledNotifications, [id]: disabled });
+  }
+
+  function markAsRead({ id }: Notification) {
+    const newState = stateNotifications.map(
+      (notification: Notification | null) => {
+        if (notification && notification.id === id) {
+          notification.isNew = false;
+        }
+
+        return notification;
+      }
+    );
+    updateNotifications(newState);
+  }
+
+  let buttonAction;
+  const {
+    id: notificationId
+  } = notification;
+  let marketId = notification?.market?.id;
+  
+  switch (notification.type) {
+    case NOTIFICATION_TYPES.resolvedMarketsOpenOrders:
+      buttonAction = () => {
+        markAsRead(notification);
+        disableNotification(notificationId, true);
+        if (notification.market) {
+          setModal({
+            type: MODAL_OPEN_ORDERS,
+            marketId,
+            cb: () => disableNotification(notificationId, false),
+          });
+        }
+      };
+      break;
+
+    case NOTIFICATION_TYPES.reportOnMarkets:
+      buttonAction = () => {
+        markAsRead(notification);
+        const market = selectMarket(marketId);
+        setModal({
+          type: MODAL_REPORTING,
+          market,
+        });
+      };
+      break;
+
+    case NOTIFICATION_TYPES.marketsInDispute:
+      buttonAction = () => {
+        markAsRead(notification);
+        const market = selectMarket(marketId);
+        setModal({
+          type: MODAL_REPORTING,
+          market,
+        });
+      };
+      break;
+
+    case NOTIFICATION_TYPES.unsignedOrders:
+      buttonAction = () => {
+        markAsRead(notification);
+        if (notification.market) {
+          setModal({
+            type: MODAL_UNSIGNED_ORDERS,
+            marketId,
+            cb: () => {
+              const queryLink: QueryEndpoints = {
+                [MARKET_ID_PARAM_NAME]: marketId,
+              };
+              history.push({
+                pathname: makePath(MARKET, null),
+                search: makeQuery(queryLink),
+              });
+            },
+          });
+        }
+      };
+      break;
+
+    case NOTIFICATION_TYPES.claimReportingFees:
+      buttonAction = () => {
+        markAsRead(notification);
+        setModal({
+          type: MODAL_CLAIM_FEES,
+          ...notification.claimReportingFees,
+        });
+      };
+      break;
+
+    case NOTIFICATION_TYPES.proceedsToClaim:
+      buttonAction = () => {
+        markAsRead(notification);
+        disableNotification(notification.id, true);
+        setModal({
+          type: MODAL_CLAIM_MARKETS_PROCEEDS,
+          marketIds: notification.markets,
+          cb: () => disableNotification(notificationId, false),
+        });
+      };
+      break;
+
+    case NOTIFICATION_TYPES.marketIsMostLikelyInvalid:
+      buttonAction = () => {
+        markAsRead(notification);
+        const queryLink: QueryEndpoints = {
+          [MARKET_ID_PARAM_NAME]: marketId,
+        };
+        history.push({
+          pathname: makePath(MARKET, null),
+          search: makeQuery(queryLink),
+        });
+      };
+      break;
+
+    case NOTIFICATION_TYPES.finalizeMarket:
+      buttonAction = () => {
+        markAsRead(notification);
+        disableNotification(notificationId, true);
+        setModal({
+          type: MODAL_FINALIZE_MARKET,
+          cb: () => disableNotification(notificationId, false),
+          marketId,
+        });
+      };
+      break;
+
+    default:
+      buttonAction = () => {
+        markAsRead(notification);
+      };
+      break;
+  }
+
+  return {
+    ...notification,
+    buttonAction,
+  };
+}
+
+const Notifications = ({ toggle }: NotificationsProps) => {
+  const [disabledNotifications, setDisabledNotifications] = useState({});
+  const {
+    universe: { disputeWindow },
+    blockchain: { currentAugurTimestamp: currentTime },
+    actions: { setModal, updateNotifications },
+  } = useAppStatusStore();
+  const history = useHistory();
+  const selectedNotifications = getNotifications();
+  const notifications = selectedNotifications.map(notification =>
+    getButtonAction(
+      notification,
+      history,
+      selectedNotifications,
+      updateNotifications,
+      setModal,
+      disabledNotifications,
+      setDisabledNotifications,
+    )
+  );
+  const notificationCount = notifications.length;
+  const newNotificationCount = notifications.filter(item => item.isNew).length;
+
+  const labelContent = (
+    <div className={Styles.NewTopLabel}>
+      {newNotificationCount > 0 && (
+        <PillLabel label={`${newNotificationCount} ${NEW}`} hideOnMobile />
+      )}
+    </div>
+  );
+  const rows = getRows(notifications, currentTime, (disputeWindow?.endTime ||
+  0), disabledNotifications);
+
+  return (
+    <QuadBox
+      title={NOTIFICATIONS_TITLE}
+      rightContent={labelContent}
+      toggle={toggle}
+      customClass={notificationCount !== 0 && Styles.DarkBackgroundMobile}
+      content={
+        notificationCount === 0 ? (
+          <EmptyDisplay
+            selectedTab=""
+            filterLabel={NOTIFICATIONS_LABEL}
+            search=""
+            title={NOTIFICATIONS_TITLE}
+            icon={MessagesIcon}
+          />
+        ) : (
+          rows
+        )
+      }
+    />
+  );
+};
 
 export default Notifications;

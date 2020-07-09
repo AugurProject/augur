@@ -5,12 +5,7 @@ import {
   MODAL_ERROR,
   PUBLICTRADE,
   ZEROX_STATUSES,
-  BUY_INDEX,
-  SELL,
 } from 'modules/common/constants';
-import { AppState } from 'appStore';
-import { ThunkDispatch } from 'redux-thunk';
-import { Action } from 'redux';
 import {
   placeTrade,
   approveToTrade,
@@ -28,23 +23,26 @@ import {
 } from 'modules/orders/actions/pending-orders-management';
 import { convertUnixToFormattedDate } from 'utils/format-date';
 import { getOutcomeNameWithOutcome } from 'utils/get-outcome';
-import { updateModal } from 'modules/modal/actions/update-modal';
-import { Ox_STATUS } from 'modules/app/actions/update-app-status';
+import { AppStatus } from 'modules/app/store/app-status';
+import { Markets } from 'modules/markets/store/markets';
 import { updateAlert } from 'modules/alerts/actions/alerts';
 
-export const placeMarketTrade = ({
+export const placeMarketTrade = async ({
   marketId,
   outcomeId,
   tradeInProgress,
   doNotCreateOrders,
-}: any) => async (
-  dispatch: ThunkDispatch<void, any, Action>,
-  getState: () => AppState
-) => {
+}: any) => {
   if (!marketId) return null;
-  const { marketInfos, loginAccount, blockchain, appStatus } = getState();
+  const { marketInfos } = Markets.get();
   // numFills is 0 and zerox mesh client has error auto fail processing order label
-  const autoFailOrder = appStatus[Ox_STATUS] === ZEROX_STATUSES.ERROR;
+  const {
+    loginAccount: { allowance },
+    zeroXStatus,
+    gsnEnabled,
+    blockchain: { currentAugurTimestamp },
+  } = AppStatus.get();
+  const autoFailOrder = zeroXStatus === ZEROX_STATUSES.ERROR;
   const market: Getters.Markets.MarketInfo = marketInfos[marketId];
   if (!tradeInProgress || !market || outcomeId == null) {
     return console.error(
@@ -55,8 +53,8 @@ export const placeMarketTrade = ({
   // If GSN is enabled no need to call the below since this will be handled by the proxy contract during initalization
   let needsApproval = false;
 
-  if (!appStatus.gsnEnabled) {
-    needsApproval = createBigNumber(loginAccount.allowance).lt(
+  if (!gsnEnabled) {
+    needsApproval = createBigNumber(allowance).lt(
       tradeInProgress.totalCost.value
     );
   }
@@ -80,30 +78,26 @@ export const placeMarketTrade = ({
     minPrice,
     String(orderType),
   );
-  dispatch(
-    addPendingOrder(
-      {
-        ...tradeInProgress,
-        type: tradeInProgress.side,
-        name: getOutcomeNameWithOutcome(
-          market,
-          outcomeId.toString(),
-          outcomeId === INVALID_OUTCOME_ID
-        ),
-        pending: true,
-        fullPrecisionPrice: tradeInProgress.limitPrice,
-        id: tradeGroupId,
-        amount: tradeInProgress.numShares,
-        status:
-          autoFailOrder && tradeInProgress.numFills === 0
-            ? TXEventName.Failure
-            : TXEventName.Pending,
-        creationTime: convertUnixToFormattedDate(
-          blockchain.currentAugurTimestamp
-        ),
-      },
-      market.id
-    )
+  addPendingOrder(
+    {
+      ...tradeInProgress,
+      type: tradeInProgress.side,
+      name: getOutcomeNameWithOutcome(
+        market,
+        outcomeId.toString(),
+        outcomeId === INVALID_OUTCOME_ID
+      ),
+      pending: true,
+      fullPrecisionPrice: tradeInProgress.limitPrice,
+      id: tradeGroupId,
+      amount: tradeInProgress.numShares,
+      status:
+        autoFailOrder && tradeInProgress.numFills === 0
+          ? TXEventName.Failure
+          : TXEventName.Pending,
+      creationTime: convertUnixToFormattedDate(currentAugurTimestamp),
+    },
+    market.id
   );
 
   placeTrade(
@@ -128,7 +122,7 @@ export const placeMarketTrade = ({
           market: marketId,
           name: PUBLICTRADE,
           status: TXEventName.Success,
-          timestamp: blockchain.currentAugurTimestamp * 1000,
+          timestamp: AppStatus.get().blockchain.currentAugurTimestamp * 1000,
           params: {
             outcome: '0x0'.concat(outcomeId),
             price: convertDisplayPriceToOnChainPrice(
@@ -144,24 +138,21 @@ export const placeMarketTrade = ({
             marketId,
           },
         };
-        dispatch(updateAlert(undefined, alert, false));
+        updateAlert(undefined, alert, false);
       }
     })
     .catch(err => {
       console.log(err);
-      dispatch(
-        updateModal({
-          type: MODAL_ERROR,
-          error: err.message ? err.message : JSON.stringify(err),
-        })
-      );
-      dispatch(
-        updatePendingOrderStatus(
-          tradeGroupId,
-          marketId,
-          TXEventName.Failure,
-          null
-        )
+      const { setModal } = AppStatus.actions;
+      setModal({
+        type: MODAL_ERROR,
+        error: err.message ? err.message : JSON.stringify(err),
+      });
+      updatePendingOrderStatus(
+        tradeGroupId,
+        marketId,
+        TXEventName.Failure,
+        null
       );
     });
 };

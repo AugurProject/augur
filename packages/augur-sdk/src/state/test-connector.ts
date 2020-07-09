@@ -1,7 +1,7 @@
 // An example how to use Augur to retrieve data
 //
 //
-import { NetworkId, SDKConfiguration } from '@augurproject/utils';
+import { NetworkId, SDKConfiguration } from '@augurproject/sdk-lite';
 import {
   MarketCreated,
   NewBlock,

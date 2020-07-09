@@ -1,12 +1,15 @@
-import React, { Component } from 'react';
-
+import React from 'react';
 import FilterSwitchBox from 'modules/portfolio/components/common/filter-switch-box';
-import MarketRow from 'modules/portfolio/containers/market-row';
+import MarketRow from 'modules/portfolio/components/common/market-row';
 import { MovementLabel } from 'modules/common/labels';
+import { ActiveMarketsIcon } from 'modules/common/icons';
 import { SizeTypes, FormattedNumber, MarketData } from 'modules/types';
+import { THEMES } from 'modules/common/constants';
+import { formatNumber } from 'utils/format-number';
+import { useAppStatusStore } from 'modules/app/store/app-status';
+import getLoginAccountPositionsMarkets from 'modules/positions/selectors/login-account-positions-markets';
 
 import Styles from 'modules/account/components/open-markets.styles.less';
-import { formatNumber } from 'utils/format-number';
 
 function filterComp(input: any, market: any) {
   return market && market.description
@@ -15,19 +18,30 @@ function filterComp(input: any, market: any) {
 }
 
 interface OpenMarketsProps {
-  markets: MarketData[];
-  marketsObj: object;
-  totalPercentage: FormattedNumber;
   toggle: Function;
 }
 
-const OpenMarkets = ({
-  markets,
-  marketsObj,
-  totalPercentage,
-  toggle,
-}: OpenMarketsProps) => {
-  const renderRows = (market: Partial<MarketData>) => {
+interface LoginAcccountPositionsMarketsInfo {
+  markets: MarketData[];
+  marketsObj: object;
+  totalPercentage: FormattedNumber;
+}
+
+const OpenMarkets = ({ toggle }: OpenMarketsProps) => {
+  const {
+    markets,
+    marketsObj,
+    totalPercentage,
+  }: LoginAcccountPositionsMarketsInfo = getLoginAccountPositionsMarkets();
+  const { theme } = useAppStatusStore();
+  const isTrading = theme === THEMES.TRADING;
+
+  let customClass = Styles.OpenMarkets;
+  if (!isTrading && markets.length === 0) {
+    customClass = Styles.OpenMarketsEmptyDisplay;
+  }
+
+  function renderRows(market: Partial<MarketData>) {
     const positionValueChange =
       (marketsObj[market.id] &&
         marketsObj[market.id].myPositionsSummary &&
@@ -70,7 +84,7 @@ const OpenMarkets = ({
         }
       />
     );
-  };
+  }
 
   return (
     <FilterSwitchBox
@@ -78,7 +92,7 @@ const OpenMarkets = ({
       title="My Active Markets"
       showFilterSearch
       data={markets}
-      customClass={Styles.OpenMarkets}
+      customClass={customClass}
       filterComp={filterComp}
       noBackgroundBottom
       toggle={toggle}
@@ -97,6 +111,11 @@ const OpenMarkets = ({
       }
       noSwitch
       renderRows={renderRows}
+      emptyDisplayTitle={isTrading ? null : 'No Active Markets'}
+      emptyDisplayText={
+        isTrading ? null : "You don't have any active markets yet!"
+      }
+      emptyDisplayIcon={ActiveMarketsIcon}
     />
   );
 };

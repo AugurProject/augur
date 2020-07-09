@@ -4,7 +4,7 @@
 .SideNav {
   display: none;
 
-  @media @breakpoint-mobile {
+  @media @breakpoint-mobile-tablet {
     display: flex;
     flex-flow: column nowrap;
     height: 100vh;
@@ -17,19 +17,37 @@
 
     > div:first-of-type {
       z-index: @above-all-content;
+      display: grid;
+      grid-template-columns: auto 1fr auto;
+
+      > button {
+        padding: @size-12;
+
+        > svg {
+          width: @size-12;
+          height: @size-12;
+
+          > g {
+            stroke: var(--color-outcome-seven);
+          }
+        }
+      }
 
       > div:first-of-type {
-        border-right: 1px solid @color-module-background;
+        justify-content: flex-end;
+        border-right: @size-1 solid var(--color-module-background);
       }
 
       > div:last-of-type {
+        display: flex;
         padding: @size-6 @size-12 @size-6 @size-16;
+        flex-direction: column;
       }
     }
 
     > div {
       // Background for close icon and help icon when AccountFunds is closed.
-      background: @color-dark-grey;
+      background: var(--color-dark-grey);
       display: flex;
       justify-content: flex-end;
 
@@ -39,8 +57,8 @@
 
         > div:first-of-type {
           // Background for close icon and help icon when AccountFunds is opened.
-          background: @color-dark-grey;
-          border-bottom: @size-1 solid @color-dark-grey;
+          background: var(--color-dark-grey);
+          border-bottom: @size-1 solid var(--color-dark-grey);
           display: flex;
           justify-content: flex-end;
           width: 100%;
@@ -53,6 +71,7 @@
           display: flex;
           justify-content: flex-end;
           width: 100%;
+          padding-bottom: 0;
         }
       }
     }
@@ -80,35 +99,23 @@
     max-width: @size-16;
 
     > circle {
-      fill: @color-secondary-action;
-      stroke: @color-secondary-text;
+      fill: var(--color-secondary-action);
+      stroke: var(--color-secondary-action-outline);
     }
 
     > path {
-      fill: @color-secondary-text;
-    }
-  }
-
-  &:hover {
-    > svg {
-      > circle {
-        stroke: @color-primary-text;
-      }
-
-      > path {
-        fill: @color-primary-text;
-      }
+      fill: var(--color-primary-text);
     }
   }
 }
 
-.SideNav__container {
-  background: @color-module-background;
+.Container {
+  background: var(--color-module-background);
   position: absolute;
   left: 0;
-  width: 100%;
   height: 100vh;
   overflow: auto;
+  width: 100%;
 
   > div {
     display: flex;
@@ -116,75 +123,117 @@
     flex-grow: 1;
     min-height: min-content;
     overflow: auto;
-  }
 
-  > div > ul {
-    background: @color-active-background;
-    height: calc(100vh - @top-bar-height-mobile);
-    margin-top: @side-bar-top-menu-height-mobile;
-    padding-bottom: @top-bar-height-mobile;
-
-    > button {
-      display: flex;
-      margin-top: @size-10;
-      margin-right: @size-16;
-      align-items: center;
-      margin-left: auto;
-    }
-
-    &.accountDetailsOpen {
-      margin-top: 0;
-    }
-
-    > li {
-      &.disabled {
-        pointer-events: none;
-        opacity: 0.25;
-      }
-
-      &.selected {
-        a {
-          padding: @size-21 @size-16 @size-14;
-        }
-
-        span {
-          .text-12-semi-bold;
-
-          border-bottom: @size-2 solid @color-primary-action;
-          padding-bottom: @size-5;
-          color: @color-primary-text;
-          width: fit-content;
-        }
-
-        svg {
-          margin-bottom: @size-12;
-        }
-      }
-
-      a,
-      button {
+    > ul {
+      > button {
         display: flex;
-        padding: @size-21 @size-16;
+        margin: @size-10 @size-16;
         align-items: center;
+        width: 90%;
+        justify-content: center;
+        
+      }
+    }
 
-        > span {
-          .text-12-semi-bold;
+    > ul:first-child,
+    > div:first-child,
+    > span:first-child {
+      margin-top: @side-bar-top-menu-height-mobile;
+    }
 
-          align-items: center;
-          color: @color-secondary-text;
-          display: flex;
-          text-transform: uppercase;
+    > ul:last-of-type {
+      background: var(--color-page-background);
+      height: calc(100vh - @top-bar-height-mobile);
+      padding-bottom: @top-bar-height-mobile;
+
+      > li {
+        &.selected {
+          a {
+            padding: @size-21 @size-16 @size-14;
+          }
+
+          span {
+            .text-12-semi-bold;
+  
+            border-bottom: @size-2 solid var(--color-primary-action);
+            padding-bottom: @size-5;
+            color: var(--color-primary-text);
+            width: fit-content;
+          }
+
+          svg {
+            margin-bottom: @size-12;
+          }
         }
+  
+        a {
+          display: flex;
+          padding: @size-21 @size-16;
+          align-items: center;
+  
+          > span {
+            .text-12-semi-bold;
+  
+            align-items: center;
+            color: var(--color-inactive-text);
+            display: flex;
+            text-transform: uppercase;
+          }
+  
+          > svg {
+            height: @size-4;
+            width: @size-4;
+            fill: none;
+            margin-left: @size-4;
+            margin-bottom: @size-4;
+    
+            > circle {
+              fill: var(--color-focused);
+            }
+          }
+        }
+      }
+    }
+
+    > footer {
+      align-items: center;
+      background: var(--color-module-background);
+      bottom: 0px;
+      display: flex;
+      height: @top-bar-height-mobile;
+      justify-content: flex-start;
+      padding: 0 @size-16;
+      position: fixed;
+      width: 100%;
+
+      > button {
+        .text-12-bold;
+
+        color: var(--color-primary-text);
+        display: flex;
+        margin-left: auto;
 
         > svg {
-          height: @size-4;
-          width: @size-4;
-          fill: none;
-          margin-left: @size-4;
-          margin-bottom: @size-4;
+          height: @size-16;
+          width: @size-16;
+          margin-left: @size-8;
 
-          > circle {
-            fill: @color-outcome-five;
+          > g {
+            fill: var(--color-primary-text);
+          }
+        }
+      }
+
+      > .GlobalChat > button {
+        display: flex;
+        flex-flow: row nowrap;
+        align-items: flex-end;
+
+        > svg {
+          margin-right: @size-4;
+  
+          > path {
+            fill: var(--color-primary-text);
           }
         }
       }
@@ -193,31 +242,125 @@
         padding: @size-8 @size-12;
       }
     }
-
-    > div {
-      margin-left: @size-16;
-    }
   }
+}
 
-  > div > footer {
-    align-items: center;
-    background: @color-active-background;
-    bottom: 0;
-    display: flex;
-    height: @top-bar-height-mobile;
-    justify-content: flex-start;
-    padding: 0 @size-18 @size-16;
-    position: fixed;
-    width: 100%;
-
+:root[theme="BETTING"],
+:root[theme="SPORTS"] {
+  .SideNav {
+    > div:first-of-type > div:last-of-type {
+      display: none;
+    }
+    
     > div {
-      > span {
-        padding: 0;
+      background: var(--color-primary-text);
+    }
+
+    @media @breakpoint-mobile-tablet {
+      > div:first-of-type {
+        justify-content: space-between;
+        padding: @size-8 0;
+        padding-right: @size-14;
+        align-items: center;
+
+        > button {
+          color: var(--color-secondary-action);
+
+          > svg {
+            > path {
+              fill: var(--color-secondary-action);
+            }
+          }
+        }
       }
     }
+  }
+  .Container {
+    background: var(--color-primary-text);
 
-    > button {
-      margin-left: auto;
+    > div {
+      > ul:last-of-type {
+        background: var(--color-primary-text);
+        display: grid;
+        grid-template-columns: 1fr;
+        grid-template-rows: 0fr 0fr 0fr 0fr 0fr;
+
+        > li {
+          &.selected {
+
+            span {
+              color: var(--color-module-background);
+            }
+          }
+        }
+
+        > li:first-of-type {
+          order: 1;
+        }
+
+        > li:nth-of-type(2) {
+          order: 3;
+        }
+
+        > li:nth-of-type(3) {
+          order: 2;
+        }
+
+        > li:nth-of-type(4),
+        > li:nth-of-type(5),
+        > li:nth-of-type(6) {
+          display: none;
+        }
+      }
+
+      > footer {
+        background: var(--color-primary-text);
+        border-top: @size-1 solid var(--color-secondary-text-50);
+        padding: 0;
+
+        > div:nth-of-type(2) {
+          > button {
+            border-left: 0;
+            border-right: @size-1 solid var(--color-secondary-text-50);
+          }
+        }
+        > button {
+          color: var(--color-module-background);
+          border: 0;
+          background: none;
+          border-radius: @border-radius-default;
+          padding: @size-8 @size-16;
+          margin-left: @size-16;
+          margin-right: auto;
+          flex-flow: row-reverse nowrap;
+  
+          > svg {
+            margin-left: 0;
+            margin-right: @size-8;
+            fill: var(--color-module-background);
+
+            > g > path {
+              fill: var(--color-module-background);
+            }
+          }
+        }
+  
+        > .GlobalChat {
+          > button {
+            color: var(--color-module-background);
+            background: var(--color-primary-text);
+            border: @size-1 solid var(--color-dark-grey);
+
+            > svg {
+              fill: var(--color-module-background);
+
+              path {
+                fill: var(--color-module-background);
+              }
+            }
+          }
+        }
+      }
     }
   }
 }

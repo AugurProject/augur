@@ -21,7 +21,7 @@ import {
   MarketList,
   TemplateFilters,
 } from '@augurproject/sdk-lite';
-import { SDKConfiguration } from '@augurproject/utils';
+import { SDKConfiguration } from '@augurproject/sdk-lite';
 import { BigNumber } from 'bignumber.js';
 import { formatBytes32String } from 'ethers/utils';
 import moment from 'moment';

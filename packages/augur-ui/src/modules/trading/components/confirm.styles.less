@@ -24,14 +24,14 @@
       text-transform: none;
 
       &:first-of-type {
-        color: @color-secondary-text;
+        color: var(--color-secondary-text);
       }
     }
   }
 
   > svg {
     > line {
-      stroke: @color-secondary-text;
+      stroke: var(--color-secondary-text);
     }
   }
 }
@@ -44,7 +44,7 @@
 .properties {
   .mono-10-bold;
 
-  color: @color-secondary-text;
+  color: var(--color-secondary-text);
   display: flex;
   flex-direction: row;
 }
@@ -58,20 +58,20 @@
   .text-12-medium;
 
   text-transform: capitalize;
-  color: @color-primary-text;
+  color: var(--color-primary-text);
   margin: @size-8 0 @size-10;
 
   &.short {
-    color: @color-negative;
+    color: var(--color-negative);
   }
 
   &.long {
-    color: @color-positive;
+    color: var(--color-positive);
   }
 }
 
 .Tooltip {
-  color: @color-secondary-text;
+  color: var(--color-secondary-text);
   margin-left: @size-4;
 }
 
@@ -85,22 +85,22 @@
 
     > circle {
       fill: none;
-      stroke: @color-secondary-text;
+      stroke: var(--color-secondary-text);
     }
 
     > path {
-      fill: @color-secondary-text;
+      fill: var(--color-secondary-text);
     }
   }
 }
 
 .MessageContainer {
-  background: @color-dismissable-notice-background;
-  border-bottom: @size-2 solid @color-primary-action;
-  border-left: @size-4 solid @color-primary-action;
+  background: var(--color-dismissable-notice-background);
+  border-bottom: @size-2 solid var(--color-primary-action);
+  border-left: @size-4 solid var(--color-primary-action);
   border-radius: @border-radius-default;
-  border-right: @size-2 solid @color-primary-action;
-  border-top: @size-2 solid @color-primary-action;
+  border-right: @size-2 solid var(--color-primary-action);
+  border-top: @size-2 solid var(--color-primary-action);
   display: grid;
   grid-template-columns: @size-16 1fr min-content;
   grid-template-rows: auto;
@@ -109,30 +109,30 @@
   padding: @size-5;
 
   &.Error {
-    background: fade(@color-error, 20%);
-    border-bottom: @size-2 solid @color-error;
-    border-left: @size-4 solid @color-error;
-    border-right: @size-2 solid @color-error;
-    border-top: @size-2 solid @color-error;
+    background: var(--color-error-20);
+    border-bottom: @size-2 solid var(--color-error);
+    border-left: @size-4 solid var(--color-error);
+    border-right: @size-2 solid var(--color-error);
+    border-top: @size-2 solid var(--color-error);
    
 
     > svg {
       > circle {
-        stroke: @color-error;
+        stroke: var(--color-error);
       }
 
       > rect,
       > path {
-        fill: @color-error;
+        fill: var(--color-error);
       }
     }
 
     > span {
-      color: @color-primary-text;
+      color: var(--color-primary-text);
     }
 
     > div {
-      color: @color-primary-text;
+      color: var(--color-primary-text);
     }
   }
 
@@ -145,14 +145,14 @@
     width: @size-12;
 
     > path {
-      fill: @color-primary-action;
+      fill: var(--color-primary-action);
     }
   }
 
   > span {
     .mono-10-bold;
 
-    color: @color-table-header;
+    color: var(--color-table-header);
     grid-column: 2;
     grid-row: 1;
   }
@@ -160,37 +160,37 @@
   > div {
     .text-10-medium;
 
-    color: @color-table-header;
+    color: var(--color-table-header);
     grid-column: 2;
     grid-row: 2;
 
     > button {
       background: unset;
       border: unset;
-      color: @color-primary-action;
+      color: var(--color-primary-action);
 
       > svg {
         > path:first-of-type {
-          fill: @color-primary-action;
+          fill: var(--color-primary-action);
         }
 
         > path:last-of-type {
-          stroke: @color-primary-action;
+          stroke: var(--color-primary-action);
         }
       }
 
       &:hover {
         > a {
-          color: @color-primary-action;
+          color: var(--color-primary-action);
         }
 
         > svg {
           > path:first-of-type {
-            fill: @color-primary-action;
+            fill: var(--color-primary-action);
           }
 
           > path:last-of-type {
-            stroke: @color-primary-action;
+            stroke: var(--color-primary-action);
           }
         }
       }
@@ -205,13 +205,13 @@
       width: @size-10;
 
       > path {
-        stroke: @color-table-header;
+        stroke: var(--color-table-header);
       }
     }
   }
 
   > button[class*='Failed'] {
-    background: fade(@color-error, 50%);
+    background: var(--color-error-50);
   }
 }
 
@@ -227,14 +227,14 @@
 
   .details > li > span,
   .details > li > span:first-child {
-    color: @color-secondary-text;
+    color: var(--color-secondary-text);
   }
 
   .header {
     padding: @size-24 @size-32 @size-24;
 
     > h2 {
-      color: @color-secondary-text;
+      color: var(--color-secondary-text);
     }
   }
 
@@ -258,6 +258,6 @@
 
   .details > li > span,
   .details > li > span:first-child {
-    color: @color-secondary-text;
+    color: var(--color-secondary-text);
   }
 }

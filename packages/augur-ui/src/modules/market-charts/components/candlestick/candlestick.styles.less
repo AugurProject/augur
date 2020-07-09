@@ -7,30 +7,30 @@
       g.highcharts-button {
         > rect.highcharts-button-box {
           fill: transparent;
-          stroke: @color-primary-text;
+          stroke: var(--color-primary-text);
         }
         > text > tspan,
         > text {
-          fill: @color-primary-text;
+          fill: var(--color-primary-text);
         }
       }
 
       .highcharts-background {
-        fill: @color-module-background;
+        fill: var(--color-module-background);
       }
 
       g.highcharts-axis-labels > text > tspan {
         .mono-9;
 
-        color: @color-primary-text;
-        fill: @color-primary-text;
+        color: var(--color-primary-text);
+        fill: var(--color-primary-text);
       }
 
       .highcharts-yaxis-labels,
       .highcharts-label {
         .mono-10-bold;
 
-        fill: @color-primary-text;
+        fill: var(--color-primary-text);
       }
 
       .highcharts-no-data {
@@ -38,7 +38,7 @@
       }
 
       .highcharts-label-box {
-        fill: @color-module-background;
+        fill: var(--color-module-background);
         font-weight: bold;
 
         > text > tspan:last-child {
@@ -47,11 +47,11 @@
       }
 
       .highcharts-tick {
-        stroke: @color-inactive-text;
+        stroke: var(--color-inactive-text);
       }
 
       .highcharts-axis-line {
-        stroke: @color-inactive-text;
+        stroke: var(--color-inactive-text);
         transform: scaleX(1.15);
       }
 
@@ -61,14 +61,14 @@
       }
 
       .highcharts-xaxis-grid > .highcharts-grid-line {
-        stroke: fade(@color-secondary-action-outline, 25);
+        stroke: var(--color-secondary-action-outline-25);
       }
 
       .highcharts-yaxis-grid {
         .dashline-long;
 
         .highcharts-grid-line {
-          stroke: fade(@color-primary-text, 40%);
+          stroke: var(--color-primary-text-40);
           transform: scaleX(1.15);
         }
       }
@@ -80,13 +80,13 @@
       .highcharts-crosshair-label.highcharts-crosshair-label > .highcharts-label-box {
         .mono-9;
 
-        stroke: @color-primary-text;
+        stroke: var(--color-primary-text);
       }
 
       .highcharts-crosshair-label {
         .mono-10;
 
-        background-color: @color-module-background;
+        background-color: var(--color-module-background);
         padding: @size-8;
         z-index: @above-all-content;
       }
@@ -98,7 +98,7 @@
       g.highcharts-yaxis-labels > g.highcharts-crosshair-label > text {
         .mono-10;
 
-        fill: @color-primary-text;
+        fill: var(--color-primary-text);
         transform: translateX(38px);
       }
 
@@ -109,7 +109,7 @@
       g.highcharts-xaxis-labels > g.highcharts-crosshair-label > text {
         .mono-9;
 
-        fill: @color-primary-text;
+        fill: var(--color-primary-text);
         transform: translateY(4px);
       }
 
@@ -118,27 +118,27 @@
       }
 
       .highcharts-plot-band {
-        fill: @color-inactive-text;
+        fill: var(--color-inactive-text);
         z-index: @default-behind;
       }
 
       .highcharts-point-down {
-        color: @color-negative;
-        fill: @color-negative;
-        stroke: @color-negative;
+        color: var(--color-negative);
+        fill: var(--color-negative);
+        stroke: var(--color-negative);
       }
 
       .highcharts-point-up {
-        color: @color-positive;
+        color: var(--color-positive);
         fill: none;
-        stroke: @color-positive;
+        stroke: var(--color-positive);
       }
 
       .highcharts-color-3.highcharts-point-up,
       .highcharts-color-3.highcharts-point-down {
-        color: @color-secondary-action-outline;
-        fill: @color-secondary-action-outline;
-        stroke: @color-secondary-action-outline;
+        color: var(--color-secondary-action-outline);
+        fill: var(--color-secondary-action-outline);
+        stroke: var(--color-secondary-action-outline);
       }
 
       path.highcharts-crosshair-thin:nth-of-type(2) {

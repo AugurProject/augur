@@ -2,7 +2,7 @@ import React, { useState, useRef } from 'react';
 import { PERIODS, VOLUME_DAI_SHARES, DAI } from 'modules/common/constants';
 import { SquareDropdown, StaticLabelDropdown } from 'modules/common/selection';
 import Styles from 'modules/market-charts/components/candlestick/outcome-candlestick.styles.less';
-import CandlestickHighchart from 'modules/market-charts/containers/candlestick-highchart';
+import CandlestickHighchart from "modules/market-charts/components/candlestick/candlestick-highchart";
 import { CandlestickOchl } from 'modules/market-charts/components/candlestick/candlestick-ochl';
 import { BigNumber } from 'bignumber.js';
 

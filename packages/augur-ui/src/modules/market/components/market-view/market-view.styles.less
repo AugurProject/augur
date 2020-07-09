@@ -1,15 +1,11 @@
 @import (reference) '~assets/styles/shared';
 
 .MarketViewBorders {
-  border: @size-1 solid @color-dark-grey;
+  border: @size-1 solid var(--color-dark-grey);
   border-radius: @size-1;
 }
 
 .MarketView {
-  display: flex;
-  flex-direction: column;
-  flex-grow: 1;
-
   &.Inactive {
     pointer-events: none;
     min-width: 100%;
@@ -17,7 +13,8 @@
   }
 
   > span:first-of-type {
-    background: fade(@color-dark-grey, 50%);
+    background: var(--color-dark-grey);
+    opacity: 0.5;
     top: 0;
     bottom: 0;
     left: 0;
@@ -36,7 +33,7 @@
     width: @size-4;
 
     > path {
-      stroke: @color-primary-text;
+      stroke: var(--color-primary-text);
     }
   }
 }
@@ -59,7 +56,7 @@
   grid-template-rows: 0fr 0fr 0fr 0fr 50vh;
 
   div[class*="module-tabs-style_Headers"] {
-    background: @color-dark-grey;
+    background: var(--color-dark-grey);
 
     > button[class*="buttons-styles_ToggleExtendButton"] {
       margin-left: 0;
@@ -129,7 +126,7 @@ section[class*="OutcomesList"] {
   }
 
   > h3 {
-    color: @color-primary-text;
+    color: var(--color-primary-text);
   }
 }
 
@@ -358,16 +355,16 @@ section[class*="OutcomesList"] {
 }
 
 .PriceHistory {
-  background-color: @color-module-background;
-  border: 1px solid @color-dark-grey;
+  background-color: var(--color-module-background);
+  border: 1px solid var(--color-dark-grey);
   border-radius: 1px;
 
   > h3 {
     .text-16;
 
-    background-color: @color-module-background;
-    border-bottom: 1px solid @color-dark-grey;
-    color: @color-primary-text;
+    background-color: var(--color-module-background);
+    border-bottom: 1px solid var(--color-dark-grey);
+    color: var(--color-primary-text);
     padding: 1.125rem 1rem;
   }
 }
@@ -425,13 +422,13 @@ section[class*="OutcomesList"] {
     div[class="comment_content_context_main_user_info_username"] {
       .text-16-bold;
 
-      color: @color-primary-text;
+      color: var(--color-primary-text);
     }
 
     div[class="comment_content_context_main_user_info_address"] {
       .text-14;
 
-      color: @color-secondary-text;
+      color: var(--color-secondary-text);
       padding-bottom: 0;
     }
 
@@ -442,13 +439,13 @@ section[class*="OutcomesList"] {
     div[class="comment_content_context_time"] {
       .text-10;
 
-      color: @color-secondary-text;
+      color: var(--color-secondary-text);
     }
 
     div[class="comment_content_text"] {
       .text-14;
 
-      color: @color-primary-text;
+      color: var(--color-primary-text);
     }
 
     div[class*="sc-user-input--picker-wrapper"] {
@@ -461,11 +458,11 @@ section[class*="OutcomesList"] {
     svg[class*="sc-user-input--emoji-icon"] path,
     svg[class*="sc-user-input--emoji-icon"] circle,
     svg[class="comment_content_context_main_user_delete_button_icon"] path {
-      fill: @color-primary-text;
+      fill: var(--color-primary-text);
       opacity: 1;
 
       @media all and (max-width: 600px) {
-        fill: @color-dark-text;
+        fill: var(--color-dark-text);
         opacity: 1;
       }
     }
@@ -473,23 +470,23 @@ section[class*="OutcomesList"] {
     div[class*="sc-user-input--picker-wrapper inlinePicker"]:hover {
       path,
       circle {
-        fill: @color-dark-text;
+        fill: var(--color-dark-text);
       }
     }
 
     svg[class="comment_control_mobile_icon"] circle {
-      fill: @color-secondary-text;
+      fill: var(--color-secondary-text);
       opacity: 1;
     }
 
     button[class*="vote_btn"]:hover {
       svg[class*="upvote"] {
-        fill: @color-upvote;
+        fill: var(--color-upvote);
         opacity: 1;
       }
 
       svg[class*="downvote"] {
-        fill: @color-downvote;
+        fill: var(--color-downvote);
         opacity: 1;
       }
     }
@@ -503,7 +500,7 @@ section[class*="OutcomesList"] {
 
       &:hover {
         svg {
-          fill: @color-dark-text;
+          fill: var(--color-dark-text);
         }
       }
     }
@@ -514,12 +511,12 @@ section[class*="OutcomesList"] {
 
     div[class*="sc-user-input--picker-wrapper"]:hover {
       svg {
-        fill: @color-dark-text;
+        fill: var(--color-dark-text);
       }
     }
 
     input[class="sc-popup-window--search"] {
-      color: @color-primary-text;
+      color: var(--color-primary-text);
       background-color: #fff;
 
       &:focus {
@@ -529,20 +526,20 @@ section[class*="OutcomesList"] {
 
     div[class="reactions"] div[class="emoji-bar"] div[class*="emoji-item"] {
       background-color: transparent;
-      color: @color-upvote;
+      color: var(--color-upvote);
 
       &[class*="has_reacted"] {
-        background-color: fade(@color-upvote, 20%);
+        background-color: var(--color-upvote-20);
       }
     }
 
     div[class="comment_vote"] {
       div[class*="positive"] {
-        color: @color-upvote;
+        color: var(--color-upvote);
       }
 
       div[class*="negative"] {
-        color: @color-downvote;
+        color: var(--color-downvote);
       }
 
       button[class*="vote_btn"] {
@@ -551,23 +548,23 @@ section[class*="OutcomesList"] {
         }
 
         svg[class*="vote_icon upvote voted"] {
-          fill: @color-upvote;
+          fill: var(--color-upvote);
         }
 
         svg[class*="vote_icon downvote voted"] {
-          fill: @color-downvote;
+          fill: var(--color-downvote);
         }
       }
     }
 
     div[class*="isDeletedComment"] {
-      background-color: @color-module-background;
-      border-color: @color-module-background;
+      background-color: var(--color-module-background);
+      border-color: var(--color-module-background);
 
       p {
         .text-14;
 
-        color: @color-primary-text;
+        color: var(--color-primary-text);
       }
     }
 
@@ -575,13 +572,13 @@ section[class*="OutcomesList"] {
       margin: @size-40 auto;
 
       > span {
-        color: @color-secondary-text;
+        color: var(--color-secondary-text);
 
         svg {
           width: auto;
 
           path {
-            fill: @color-secondary-text;
+            fill: var(--color-secondary-text);
           }
         }
       }
@@ -594,9 +591,9 @@ section[class*="OutcomesList"] {
         .text-14-bold;
 
         background-color: transparent;
-        border: @size-1 solid @color-secondary-text;
+        border: @size-1 solid var(--color-secondary-text);
         border-radius: @size-3;
-        color: @color-primary-text;
+        color: var(--color-primary-text);
         padding: @size-12 auto;
         width: 100%;
       }
@@ -615,10 +612,10 @@ div.OutcomeNameDisplay {
   .text-12;
 
   align-items: center;
-  background: @color-dark-grey;
-  border: 1px solid @color-secondary-action-outline;
+  background: var(--color-dark-grey);
+  border: 1px solid var(--color-secondary-action-outline);
   border-radius: @border-radius-default;
-  color: @color-primary-text;
+  color: var(--color-primary-text);
   display: flex;
   flex-flow: row nowrap;
   height: @size-40;
@@ -630,7 +627,7 @@ div.OutcomeNameDisplay {
   .OutcomeSelectionArea {
     padding: @size-12;
     width: 100%;
-    background: @color-module-background;
+    background: var(--color-module-background);
     position: fixed;
     z-index: @mask-above;
     left: 0;
@@ -639,7 +636,7 @@ div.OutcomeNameDisplay {
     > h1 {
       .text-14-bold;
 
-      color: @color-primary-text;
+      color: var(--color-primary-text);
       margin-bottom: @size-8;
     }
   }
@@ -649,7 +646,7 @@ div.OutcomeNameDisplay {
 
     > div,
     > section {
-      border: 1px solid @color-dark-grey;
+      border: 1px solid var(--color-dark-grey);
       border-radius: 1px;
     }
   }
@@ -662,19 +659,19 @@ div.OutcomeNameDisplay {
     > h1 {
       .text-14-bold;
 
-      color: @color-primary-text;
+      color: var(--color-primary-text);
       display: block;
       margin: 0;
       padding: @size-12;
-      background: @color-module-background;
-      border: 1px solid @color-dark-grey;
+      background: var(--color-module-background);
+      border: 1px solid var(--color-dark-grey);
       border-radius: 1px;
       word-break: break-word;
     }
 
     > div:last-of-type {
       margin-top: 0;
-      border: 1px solid @color-dark-grey;
+      border: 1px solid var(--color-dark-grey);
       border-radius: 1px;
     }
   }
@@ -682,13 +679,13 @@ div.OutcomeNameDisplay {
   .Orders {
     max-height: 50vh;
     margin-bottom: 0;
-    border-bottom: 1px solid @color-dark-grey;
-    border-left: 1px solid @color-dark-grey;
-    border-right: 1px solid @color-dark-grey;
+    border-bottom: 1px solid var(--color-dark-grey);
+    border-left: 1px solid var(--color-dark-grey);
+    border-right: 1px solid var(--color-dark-grey);
   }
 
   .History {
-    background: @color-module-background;
+    background: var(--color-module-background);
     margin-bottom: 0;
     max-height: unset;
   }
@@ -710,15 +707,31 @@ div.OutcomeNameDisplay {
 
     text-transform: uppercase;
     padding: @size-12 @size-16;
-    background: @color-dark-grey;
+    background: var(--color-dark-grey);
   }
 
   .Comments {
     padding: @size-40 @size-12 @size-12;
     grid-template-columns: 1fr;
 
+    > span {
+      background: var(--color-dark-grey);
+      display: block;
+      height: @size-2;
+      margin: 0 @size-12 @size-8;
+    }
+
     > div, > button {
       grid-column: 1;
+    }
+  }
+}
+
+:root[theme="BETTING"],
+:root[theme="SPORTS"] {
+  .Comments {
+    div[class*="input"] textarea {
+      background-color: #fff;
     }
   }
 }

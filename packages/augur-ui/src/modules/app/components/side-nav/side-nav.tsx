@@ -1,83 +1,70 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import ReactTooltip from 'react-tooltip';
 import { Link } from 'react-router-dom';
 import classNames from 'classnames';
 
+import { ThemeSwitch } from 'modules/app/components/theme-switch';
 import makePath from 'modules/routes/helpers/make-path';
-import ConnectDropdown from 'modules/auth/containers/connect-dropdown';
-import { Dot, helpIcon } from 'modules/common/icons';
-import { AccountBalances, CoreStats, NavMenuItem, FormattedNumber } from 'modules/types';
+import ConnectDropdown from 'modules/auth/connect-dropdown';
+import { Dot, helpIcon, MobileNavCloseIcon, LogoutIcon, AddIcon } from 'modules/common/icons';
+import { NavMenuItem } from 'modules/types';
 import Styles from 'modules/app/components/side-nav/side-nav.styles.less';
-import { HelpIcon, HelpMenuList } from 'modules/app/components/help-resources';
+import { HelpIcon } from 'modules/app/components/help-resources';
 import {
-  ChatButton,
-  PrimaryButton,
-  ProcessingButton,
   SecondaryButton,
+  ProcessingButton,
+  PrimaryButton,
 } from 'modules/common/buttons';
 import TooltipStyles from 'modules/common/tooltip.styles.less';
+import { helpIcon, Chevron, Dot } from 'modules/common/icons';
+import { useAppStatusStore } from 'modules/app/store/app-status';
 import {
   MIGRATE_FROM_LEG_REP_TOKEN,
-  MODAL_ADD_FUNDS,
-  MODAL_HELP,
   TRANSACTIONS,
+  MODAL_HELP,
+  MODAL_ADD_FUNDS,
+  THEMES,
+  MODAL_GLOBAL_CHAT,
+  MODAL_MIGRATE_REP,
+  MOBILE_MENU_STATES,
 } from 'modules/common/constants';
-import { Stats } from '../top-bar';
+import { Stats } from 'modules/app/components/top-bar';
+import { NewLogo } from 'modules/app/components/logo';
+import { OddsMenu } from 'modules/app/components/odds-menu';
+import { logout } from 'modules/auth/actions/logout';
 
 interface SideNavProps {
-  defaultMobileClick: Function;
   isLogged: boolean;
   menuData: NavMenuItem[];
-  currentBasePath: string;
-  isConnectionTrayOpen: boolean;
-  logout: Function;
   showNav: boolean;
-  showGlobalChat: Function;
-  migrateV1Rep: Function;
-  showMigrateRepButton: boolean;
-  walletBalances: AccountBalances;
-  isHelpMenuOpen: boolean;
-  updateHelpMenuState: Function;
-  updateConnectionTray: Function;
-  updateModal: Function;
-  createFundedGsnWallet: Function;
-  restoredAccount: boolean;
-  stats: CoreStats;
-  whichChatPlugin: string;
-  isMobile: string;
-  ethReserveInDai: FormattedNumber;
 }
 
 const SideNav = ({
   isLogged,
-  defaultMobileClick,
   menuData,
-  isConnectionTrayOpen,
-  currentBasePath,
   showNav,
-  showGlobalChat,
-  migrateV1Rep,
-  showMigrateRepButton,
-  walletBalances,
-  isHelpMenuOpen,
-  updateHelpMenuState,
-  updateConnectionTray,
-  updateModal,
-  stats,
-  restoredAccount,
-  whichChatPlugin,
-  isMobile,
-  ethReserveInDai,
 }: SideNavProps) => {
-  useEffect(() => {
-    if (isHelpMenuOpen) {
-      updateConnectionTray(false);
-    }
-  }, [isHelpMenuOpen]);
-
+  const {
+    pendingQueue,
+    loginAccount: { balances },
+    env,
+    currentBasePath,
+    isHelpMenuOpen,
+    isConnectionTrayOpen,
+    theme,
+    mobileMenuState,
+    actions: { setIsHelpMenuOpen, setModal, setMobileMenuState, closeAppMenus },
+  } = useAppStatusStore();
+  const pending =
+    pendingQueue[TRANSACTIONS] &&
+    pendingQueue[TRANSACTIONS][MIGRATE_FROM_LEG_REP_TOKEN];
+  const showMigrateRepButton =
+    !!balances.legacyRep || !!balances.legacyRepNonSafe || !!pending;
+  const whichChatPlugin = env.plugins?.chat;
   const accessFilteredMenu = menuData.filter(
     item => !(item.requireLogin && !isLogged)
   );
+  const isTrading = theme === THEMES.TRADING;
   return (
     <aside
       className={classNames(Styles.SideNav, {
@@ -85,26 +72,47 @@ const SideNav = ({
       })}
     >
       <div>
-        <Stats
-          isLogged={isLogged}
-          stats={stats}
-          restoredAccount={restoredAccount}
-          isMobile={true}
-          ethReserveInDai={ethReserveInDai}
-        />
-      </div>
-      <div className={Styles.SideNav__container}>
-        <div>
-          {isConnectionTrayOpen && <ConnectDropdown />}
-          <ul
-            className={classNames({
-              [Styles.accountDetailsOpen]: isConnectionTrayOpen,
-            })}
-          >
-            {isHelpMenuOpen && <HelpMenuList />}
+      <button
+          type="button"
+          onClick={() => {
+            closeAppMenus();
+            setMobileMenuState(mobileMenuState - 1);
+          }}
+        >
+          <MobileNavCloseIcon />
+        </button>
+        {isTrading && (
+          <>
+            {isLogged && (
+              <HelpIcon
+                isHelpMenuOpen={isHelpMenuOpen}
+                updateHelpMenuState={() => setModal({ type: MODAL_HELP })}
+              />
+            )}
+            <Stats />
+          </>
+        )}
+        {!isTrading && (
+          <>
+            <NewLogo />
             {isLogged && (
               <PrimaryButton
-                action={() => updateModal({ type: MODAL_ADD_FUNDS })}
+                action={() => setModal({ type: MODAL_ADD_FUNDS })}
+                text="Add Funds"
+                icon={AddIcon}
+              />
+            )}
+          </>
+        )}
+      </div>
+      <div className={Styles.Container}>
+        <div>
+          {isConnectionTrayOpen && <ConnectDropdown />}
+          <ThemeSwitch />
+          <ul className={Styles.MainMenu}>
+            {isLogged && isTrading && (
+              <SecondaryButton
+                action={() => setModal({ type: MODAL_ADD_FUNDS })}
                 text="Add Funds"
               />
             )}
@@ -118,7 +126,10 @@ const SideNav = ({
               >
                 <Link
                   to={item.route ? makePath(item.route) : null}
-                  onClick={() => defaultMobileClick()}
+                  onClick={() => {
+                    setIsHelpMenuOpen(false);
+                    setMobileMenuState(MOBILE_MENU_STATES.CLOSED);
+                  }}
                 >
                   {item.button ? (
                     <SecondaryButton text={item.title} action={null} />
@@ -135,7 +146,7 @@ const SideNav = ({
                 <span className={Styles.SideNavMigrateRep}>
                   <ProcessingButton
                     text={'Migrate V1 to V2 REP'}
-                    action={() => migrateV1Rep()}
+                    action={() => setModal({ type: MODAL_MIGRATE_REP })}
                     queueName={TRANSACTIONS}
                     queueId={MIGRATE_FROM_LEG_REP_TOKEN}
                     primaryButton
@@ -159,7 +170,7 @@ const SideNav = ({
                   >
                     <p>
                       {
-                        Number(walletBalances.legacyRep)
+                        Number(balances.legacyRep)
                           ? 'You have V1 REP in your trading account. Migrate it to V2 REP to use it in Augur V2.'
                           : 'You have V1 REP in your wallet. Migrate it to V2 REP to use it in Augur V2.'
                       }
@@ -169,23 +180,40 @@ const SideNav = ({
               )}
             </div>
           </ul>
-          <footer>
-            {isLogged && (
+          {isLogged && isTrading && (
+            <footer>
+              {whichChatPlugin &&
+                <div className={Styles.GlobalChat}>
+                  <SecondaryButton
+                    action={() => setModal({ type: MODAL_GLOBAL_CHAT })}
+                    text="Global Chat"
+                    icon={Chevron}
+                  />
+                </div>
+              }
+              <button onClick={() => logout()}>
+                Logout {LogoutIcon}
+              </button>
+            </footer>
+          )}
+          {isLogged && !isTrading && (
+            <footer>
               <HelpIcon
                 isHelpMenuOpen={isHelpMenuOpen}
-                updateHelpMenuState={() => {
-                  if (isMobile) {
-                    updateModal({ type: MODAL_HELP });
-                  } else {
-                    updateHelpMenuState();
-                  }
-                }}
+                updateHelpMenuState={() => setModal({ type: MODAL_HELP })}
               />
-            )}
-            {((isLogged && whichChatPlugin) || whichChatPlugin === 'orbit') && (
-                <ChatButton action={showGlobalChat} />
-              )}
-          </footer>
+              <OddsMenu />
+              {whichChatPlugin &&
+                <div className={Styles.GlobalChat}>
+                  <SecondaryButton
+                    action={() => setModal({ type: MODAL_GLOBAL_CHAT })}
+                    text="Global Chat"
+                    icon={Chevron}
+                  />
+                </div>
+              }
+            </footer>
+          )}
         </div>
       </div>
     </aside>
