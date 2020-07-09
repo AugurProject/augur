@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import classNames from 'classnames';
+import { useLocation, useHistory } from 'react-router';
 import {
   feeFilters,
   invalidFilters,
@@ -8,6 +9,7 @@ import {
   SPREAD_PARAM_NAME,
   spreadFilters,
   TEMPLATE_FILTER,
+  MARKET_TYPE_FILTER,
   templateFilterValues,
   marketTypeFilterValues,
   INVALID_OUTCOME_LABEL,
@@ -20,116 +22,112 @@ import ReactTooltip from 'react-tooltip';
 import TooltipStyles from 'modules/common/tooltip.styles.less';
 import parseQuery from 'modules/routes/helpers/parse-query';
 import updateQuery from 'modules/routes/helpers/update-query';
-import { INVALID_OPTIONS, LoginAccountSettings, FilterSortOptions } from 'modules/types';
 import ChevronFlip from 'modules/common/chevron-flip';
-import { MARKET_MAX_FEES, MARKET_MAX_SPREAD, MARKET_SHOW_INVALID, MARKET_TYPE_FILTER, MARKET_SORT, MARKET_LIMIT, MARKET_OFFSET, MARKET_FILTER } from 'modules/filter-sort/actions/update-filter-sort-options';
+import { useAppStatusStore } from 'modules/app/store/app-status';
+import {
+  MARKET_SHOW_INVALID,
+  MARKET_MAX_FEES,
+  MARKET_MAX_SPREAD,
+  MARKET_LIMIT,
+  MARKET_SORT,
+  MARKET_OFFSET,
+  MARKET_FILTER,
+} from 'modules/app/store/constants';
 
 interface MarketsListFiltersProps {
-  maxFee: string;
-  maxLiquiditySpread: string;
-  includeInvalidMarkets: INVALID_OPTIONS;
-  allTemplateFilter: string;
-  marketTypeFilter: string;
-  isSearching: boolean;
-  history: History;
-  location: Location;
-  setMaxFeeFilter: Function;
-  setMaxSpreadFilter: Function;
-  setShowInvalidFilter: Function;
-  setTemplateOrCustomFilter: Function;
-  settings: LoginAccountSettings;
-  isMobile: boolean;
-  updateSelectedCategories: Function;
-  setMarketTypeFilter: Function;
-  updateFilterSortOptionsSettings: Function;
-  sortBy: string,
-  marketLimit: number,
-  marketOffset: number,
-  marketFilter: string,
-  filterSortOptions: FilterSortOptions,
+  setFilterSortState: Function;
 }
 
 const MarketsListFilters = ({
-  isSearching,
-  history,
-  location,
-  setMaxFeeFilter,
-  setMaxSpreadFilter,
-  setMarketTypeFilter,
-  setShowInvalidFilter,
-  setTemplateOrCustomFilter,
-  isMobile,
-  updateSelectedCategories,
-  updateFilterSortOptionsSettings,
-  filterSortOptions
+  setFilterSortState,
 }: MarketsListFiltersProps) => {
+  const history = useHistory();
+  const location = useLocation();
+  const {
+    isMobile,
+    marketsList: { isSearching },
+    loginAccount: { settings },
+    filterSortOptions,
+    actions: { updateFilterSortOptions, updateMarketsList },
+  } = useAppStatusStore();
+  const {
+    maxFee,
+    maxLiquiditySpread,
+    includeInvalidMarkets,
+    templateFilter: allTemplateFilter,
+    marketTypeFilter,
+    limit,
+    sortBy,
+    offset,
+    marketFilter,
+  } = filterSortOptions;
+  const [showFilters, setShowFilters] = useState(false);
+
   useEffect(() => {
     const filterOptionsFromQuery = parseQuery(location.search);
 
-    const newMaxFee =
-      filterOptionsFromQuery.maxFee;
-    const newSpread =
-      filterOptionsFromQuery.spread;
-    const newTemplateFilter =
-      filterOptionsFromQuery.templateFilter;
-    const newMarketFilter =
-      filterOptionsFromQuery.marketFilter;
-    const newShowInvalid =
-      filterOptionsFromQuery.showInvalid;
-    const categories =
-      filterOptionsFromQuery.category;
+    const newMaxFee = filterOptionsFromQuery.maxFee;
+    const newSpread = filterOptionsFromQuery.spread;
+    const newTemplateFilter = filterOptionsFromQuery.templateFilter;
+    const newMarketFilter = filterOptionsFromQuery.marketFilter;
+    const newShowInvalid = filterOptionsFromQuery.showInvalid;
+    const categories = filterOptionsFromQuery.category;
     const newMarketTypeFilter = filterOptionsFromQuery.type;
     const newMarketSort = filterOptionsFromQuery.sort;
     const newMarketLimit = filterOptionsFromQuery.limit;
-    const newMarketOffset = filterOptionsFromQuery.offset
+    const newMarketOffset = filterOptionsFromQuery.offset;
 
-    let filterOptions = {}
-    if (newMaxFee && newMaxFee !== filterSortOptions.maxFee) {
-      filterOptions={...filterOptions, [MARKET_MAX_FEES]: newMaxFee};
+    let filterUpdates = {};
+    if (newMaxFee && newMaxFee !== maxFee) {
+      filterUpdates[MARKET_MAX_FEES] = newMaxFee;
     }
-    if (newSpread && newSpread !== filterSortOptions.maxLiquiditySpread) {
-      filterOptions={...filterOptions, [MARKET_MAX_SPREAD]: newSpread};
+    if (newSpread && newSpread !== maxLiquiditySpread) {
+      filterUpdates[MARKET_MAX_SPREAD] = newSpread;
     }
-    if (newTemplateFilter && newTemplateFilter !== filterSortOptions.templateFilter) {
-      filterOptions={...filterOptions, [TEMPLATE_FILTER]: newTemplateFilter};
+    if (newTemplateFilter && newTemplateFilter !== allTemplateFilter) {
+      filterUpdates[TEMPLATE_FILTER] = newTemplateFilter;
     }
-    if (newMarketTypeFilter && newMarketTypeFilter !== filterSortOptions.marketTypeFilter) {
-      filterOptions={...filterOptions, [MARKET_TYPE_FILTER]: newMarketTypeFilter};
+    if (newMarketTypeFilter && newMarketTypeFilter !== marketTypeFilter) {
+      filterUpdates[MARKET_TYPE_FILTER] = newMarketTypeFilter;
     }
-    if (newShowInvalid && newShowInvalid !== filterSortOptions.includeInvalidMarkets) {
-      filterOptions={...filterOptions, [MARKET_SHOW_INVALID]: newShowInvalid};
+    if (newShowInvalid && newShowInvalid !== includeInvalidMarkets) {
+      filterUpdates[MARKET_SHOW_INVALID] = newShowInvalid;
     }
-    if (newMarketLimit && newMarketLimit !== filterSortOptions.limit) {
-      filterOptions={...filterOptions, [MARKET_LIMIT]: newMarketLimit};
+    if (newMarketLimit && newMarketLimit !== limit) {
+      filterUpdates[MARKET_LIMIT] = newMarketLimit;
     }
-    if (newMarketSort && newMarketSort !== filterSortOptions.sortBy) {
-      filterOptions={...filterOptions, [MARKET_SORT]: newMarketSort};
+    if (newMarketSort && newMarketSort !== sortBy) {
+      filterUpdates[MARKET_SORT] = newMarketSort;
     }
-    if (newMarketOffset && newMarketOffset !== filterSortOptions.offset) {
-      filterOptions={...filterOptions, [MARKET_OFFSET]: newMarketOffset};
+    if (newMarketOffset && newMarketOffset !== offset) {
+      filterUpdates[MARKET_OFFSET] = newMarketOffset;
     }
-    if (newMarketFilter && newMarketFilter !== filterSortOptions.marketFilter) {
-      filterOptions={...filterOptions, [MARKET_FILTER]: newMarketFilter};
+    if (newMarketFilter && newMarketFilter !== marketFilter) {
+      filterUpdates[MARKET_FILTER] = newMarketFilter;
     }
-    if(Object.keys(filterOptions).length) updateFilterSortOptionsSettings(filterOptions);
-
-    categories
-      ? updateSelectedCategories(categories.split(','))
-      : updateSelectedCategories([]);
-  }, [location.search]);
-
-  const [showFilters, setShowFilters] = useState(false);
+    if (Object.keys(filterUpdates).length > 0) {
+      updateFilterSortOptions(filterUpdates);
+      setFilterSortState(filterUpdates);
+    }
+    const categoriesUpdate = categories ? categories.split(',') : [];
+    updateMarketsList({
+      selectedCategories: categoriesUpdate || [],
+      selectedCategory: categoriesUpdate.length
+        ? categoriesUpdate[categoriesUpdate.length - 1]
+        : null,
+    });
+  }, [
+    location.search,
+    settings.maxFee,
+    settings.maxLiquiditySpread,
+    settings.templateFilter,
+    settings.includeInvalidMarkets,
+  ]);
 
   if (!filterSortOptions.maxLiquiditySpread) return null;
 
   const updateFilter = (value: string, whichFilterToUpdate: string) => {
-    updateQuery(
-      whichFilterToUpdate,
-      value,
-      location,
-      history
-    );
-    updateFilterSortOptionsSettings({[whichFilterToUpdate]: value});
+    updateQuery(whichFilterToUpdate, value, location, history);
   };
 
   return (
@@ -144,7 +142,7 @@ const MarketsListFilters = ({
           Filters
           <ChevronFlip
             pointDown={showFilters}
-            stroke="#D7DDE0"
+            noHardStroke
             filledInIcon
             quick
           />
@@ -157,9 +155,14 @@ const MarketsListFilters = ({
             </div>
 
             <RadioBarGroup
+              light
               radioButtons={templateFilterValues}
-              defaultSelected={filterSortOptions.templateFilter}
-              onChange={(value: string) => isMobile ? setTemplateOrCustomFilter(value) : updateFilter(value, TEMPLATE_FILTER)}
+              defaultSelected={allTemplateFilter}
+              onChange={(value: string) =>
+                isMobile
+                  ? setFilterSortState({ [TEMPLATE_FILTER]: value })
+                  : updateFilter(value, TEMPLATE_FILTER)
+              }
             />
 
             <div className={Styles.Filter}>
@@ -172,8 +175,13 @@ const MarketsListFilters = ({
 
             <RadioBarGroup
               radioButtons={feeFilters}
-              defaultSelected={filterSortOptions.maxFee}
-              onChange={(value: string) => isMobile ? setMaxFeeFilter(value) : updateFilter(value, MAXFEE_PARAM_NAME)}
+              light
+              defaultSelected={maxFee}
+              onChange={(value: string) =>
+                isMobile
+                  ? setFilterSortState({ [MARKET_MAX_FEES]: value })
+                  : updateFilter(value, MAXFEE_PARAM_NAME)
+              }
             />
 
             <div className={Styles.Filter}>
@@ -186,24 +194,29 @@ const MarketsListFilters = ({
 
             <RadioBarGroup
               radioButtons={spreadFilters}
-              defaultSelected={filterSortOptions.maxLiquiditySpread}
-              onChange={(value: string) => isMobile ? setMaxSpreadFilter(value) : updateFilter(value, SPREAD_PARAM_NAME)}
+              light
+              defaultSelected={maxLiquiditySpread}
+              onChange={(value: string) =>
+                isMobile
+                  ? setFilterSortState({ [MARKET_MAX_SPREAD]: value })
+                  : updateFilter(value, SPREAD_PARAM_NAME)
+              }
             />
 
             <div className={Styles.Filter}>
               <span>Market Type</span>
-              {generateTooltip(
-                'Filters markets based on market type',
-                'type'
-              )}
+              {generateTooltip('Filters markets based on market type', 'type')}
             </div>
 
             <RadioBarGroup
               radioButtons={marketTypeFilterValues}
               defaultSelected={filterSortOptions.marketTypeFilter}
-              onChange={(value: string) => isMobile ? setMarketTypeFilter(value) : updateFilter(value, MARKET_TYPE_PARAM_NAME)}
+              onChange={(value: string) =>
+                isMobile
+                  ? setMarketTypeFilter(value)
+                  : updateFilter(value, MARKET_TYPE_PARAM_NAME)
+              }
             />
-
 
             <div className={Styles.Filter}>
               <span>Invalid Markets</span>
@@ -215,8 +228,13 @@ const MarketsListFilters = ({
 
             <RadioBarGroup
               radioButtons={invalidFilters}
-              defaultSelected={String(filterSortOptions.includeInvalidMarkets)}
-              onChange={(value: string) => isMobile ? setShowInvalidFilter(value) : updateFilter(value, SHOW_INVALID_MARKETS_PARAM_NAME)}
+              light
+              defaultSelected={String(includeInvalidMarkets)}
+              onChange={(value: string) =>
+                isMobile
+                  ? setFilterSortState({ [MARKET_SHOW_INVALID]: value })
+                  : updateFilter(value, SHOW_INVALID_MARKETS_PARAM_NAME)
+              }
             />
           </>
         )}

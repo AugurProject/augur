@@ -10,16 +10,27 @@ import {
   SELL,
   SCALAR,
   MIN_ORDER_LIFESPAN,
+  INVALID_OUTCOME_ID,
 } from 'modules/common/constants';
 import { CancelTextButton } from 'modules/common/buttons';
 import Styles from 'modules/market-charts/components/order-book/order-book.styles.less';
 import {
   QuantityOutcomeOrderBook,
   QuantityOrderBookOrder,
+  MarketData,
 } from 'modules/types';
 import { createBigNumber } from 'utils/create-big-number';
 import { formatDai, formatMarketShares } from 'utils/format-number';
 import { NUMBER_OF_SECONDS_IN_A_DAY } from 'utils/format-date';
+import { useMarketsStore } from 'modules/markets/store/markets';
+import { loadMarketOrderBook } from 'modules/orders/helpers/load-market-orderbook';
+import { selectMarket } from 'modules/markets/selectors/market';
+import { useAppStatusStore } from 'modules/app/store/app-status';
+import {
+  orderAndAssignCumulativeShares,
+  calcOrderbookPercentages,
+} from 'modules/markets/helpers/order-and-assign-cumulative-shares';
+import { isEmpty } from 'utils/is-empty';
 
 interface OrderBookSideProps {
   orderBook: QuantityOutcomeOrderBook;
@@ -51,8 +62,11 @@ interface OrderBookProps {
   usePercent: boolean;
   expirationTime: number;
   currentTimeInSeconds: number;
-  loadMarketOrderBook: Function;
   status: string;
+  marketId: string;
+  market: MarketData;
+  selectedOutcomeId: string;
+  initialLiquidity: Boolean;
 }
 
 const OrderBookSide = ({
@@ -80,8 +94,7 @@ const OrderBookSide = ({
     side.current && orderBookOrders.length * 20 >= side.current.clientHeight;
 
   useEffect(() => {
-    side.current.scrollTop =
-      type === BIDS ? 0 : side.current.scrollHeight;
+    side.current.scrollTop = type === BIDS ? 0 : side.current.scrollHeight;
   }, [orderBook[type], side.current.clientHeight]);
 
   return (
@@ -139,7 +152,8 @@ const OrderBookSide = ({
             hoveredSide === BIDS &&
             i < hoveredOrderIndex);
         const isHovered = i === hoveredOrderIndex && hoveredSide === type;
-        const mySize = formatMarketShares(marketType, order.mySize).formattedValue;
+        const mySize = formatMarketShares(marketType, order.mySize)
+          .formattedValue;
         return (
           <div
             key={order.cumulativeShares + i}
@@ -170,15 +184,16 @@ const OrderBookSide = ({
               showEmptyDash={true}
               showDenomination={false}
             />
-            {isScalar && !usePercent ?
-              <HoverValueLabel value={formatDai(order.price)}/> :
-              <span>{usePercent ? order.percent : createBigNumber(order.price).toFixed(pricePrecision)}</span>
-            }
-            <span>
-              {hasSize
-                ? mySize
-                : '—'}
-            </span>
+            {isScalar && !usePercent ? (
+              <HoverValueLabel value={formatDai(order.price)} />
+            ) : (
+              <span>
+                {usePercent
+                  ? order.percent
+                  : createBigNumber(order.price).toFixed(pricePrecision)}
+              </span>
+            )}
+            <span>{hasSize ? mySize : '—'}</span>
           </div>
         );
       })}
@@ -187,30 +202,92 @@ const OrderBookSide = ({
 };
 
 const OrderBook = ({
-  orderBook,
   updateSelectedOrderProperties,
-  hasOrders,
   fixedPrecision = 2,
   pricePrecision = 2,
   toggle,
   hide = false,
-  marketType,
   showButtons,
   orderbookLoading,
-  usePercent,
-  expirationTime,
-  currentTimeInSeconds,
-  loadMarketOrderBook,
-  status,
+  marketId,
+  orderBook,
+  market,
+  selectedOutcomeId,
+  initialLiquidity,
 }: OrderBookProps) => {
-  const [hoverState, setHoverState] = useState({ hoveredOrderIndex: null, hoveredSide: null });
-  const setHovers = (hoveredOrderIndex: number, hoveredSide: string) => setHoverState({ hoveredOrderIndex, hoveredSide });
+  const {
+    orderBooks,
+    actions: { updateOrderBook },
+  } = useMarketsStore();
+  const {
+    zeroXStatus,
+    blockchain: { currentAugurTimestamp },
+  } = useAppStatusStore();
+  const marketSelected = market || selectMarket(marketId);
+  const selectedOutcomeIdSelected =
+    selectedOutcomeId !== undefined && selectedOutcomeId !== null
+      ? selectedOutcomeId
+      : marketSelected.defaultSelectedOutcomeId;
+  let orderBookSelected = (orderBooks && orderBooks[marketSelected.id]) || {
+    expirationTime: 0,
+  };
+  const outcomeOrderBook = orderBook || {};
+  const usePercent =
+    marketSelected.marketType === SCALAR &&
+    orderBookSelected === INVALID_OUTCOME_ID;
+
+  const outcome = (marketSelected.outcomesFormatted || []).find(
+    outcome => outcome.id === selectedOutcomeIdSelected
+  );
+
+  let processedOrderbook = orderAndAssignCumulativeShares(outcomeOrderBook);
+
+  if (usePercent) {
+    // calc percentages in orderbook
+    processedOrderbook = calcOrderbookPercentages(
+      processedOrderbook,
+      marketSelected.minPrice,
+      marketSelected.maxPrice
+    );
+  }
+
+  const expirationTime =
+    initialLiquidity || !!!orderBookSelected
+      ? 0
+      : orderBookSelected.expirationTime;
+  const currentTimeInSeconds = currentAugurTimestamp;
+  const hasOrders =
+    !isEmpty(processedOrderbook[BIDS]) || !isEmpty(processedOrderbook[ASKS]);
+  const status = zeroXStatus;
+
+  const { marketType } = marketSelected;
+
+  const [hoverState, setHoverState] = useState({
+    hoveredOrderIndex: null,
+    hoveredSide: null,
+  });
+  const setHovers = (hoveredOrderIndex: number, hoveredSide: string) =>
+    setHoverState({ hoveredOrderIndex, hoveredSide });
+
+  const loadMarketOrderbook = () => {
+    updateOrderBook(
+      marketSelected.marketId,
+      null,
+      loadMarketOrderBook(marketSelected.marketId)
+    );
+  };
 
   useEffect(() => {
     const expirationMaxSeconds =
       expirationTime - currentTimeInSeconds - MIN_ORDER_LIFESPAN;
-    if (expirationMaxSeconds > 0 && expirationMaxSeconds < NUMBER_OF_SECONDS_IN_A_DAY) {
-      const timer = setTimeout(() => loadMarketOrderBook(), expirationMaxSeconds * 1000);
+    if (
+      expirationMaxSeconds > 0 &&
+      expirationMaxSeconds < NUMBER_OF_SECONDS_IN_A_DAY
+    ) {
+      const timer = setTimeout(
+        () => loadMarketOrderbook(),
+        expirationMaxSeconds * 1000
+      );
       return () => clearTimeout(timer);
     }
     return () => {};
@@ -228,7 +305,7 @@ const OrderBook = ({
       <OrderBookSide
         fixedPrecision={fixedPrecision}
         pricePrecision={pricePrecision}
-        orderBook={orderBook}
+        orderBook={processedOrderbook}
         updateSelectedOrderProperties={updateSelectedOrderProperties}
         marketType={marketType}
         setHovers={setHovers}
@@ -244,9 +321,9 @@ const OrderBook = ({
           {hasOrders &&
             `spread: ${
               orderBook.spread
-                ? `${!usePercent ? '$' : ''}${createBigNumber(orderBook.spread).toFixed(
-                    pricePrecision
-                  )} ${usePercent ? '%' : ''}`
+                ? `${!usePercent ? '$' : ''}${createBigNumber(
+                    orderBook.spread
+                  ).toFixed(pricePrecision)} ${usePercent ? '%' : ''}`
                 : '—'
             }`}
         </div>
@@ -254,7 +331,7 @@ const OrderBook = ({
       <OrderBookSide
         fixedPrecision={fixedPrecision}
         pricePrecision={pricePrecision}
-        orderBook={orderBook}
+        orderBook={processedOrderbook}
         updateSelectedOrderProperties={updateSelectedOrderProperties}
         marketType={marketType}
         setHovers={setHovers}
@@ -270,4 +347,3 @@ const OrderBook = ({
 };
 
 export default OrderBook;
-

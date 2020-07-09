@@ -4,7 +4,7 @@
   display: flex;
   flex: 1;
   flex-direction: column;
-  border-top: 1px solid @color-dark-grey;
+  border-top: 1px solid var(--color-dark-grey);
 
   > div:first-of-type {
     display: flex;
@@ -44,11 +44,11 @@
       padding: @size-12 @size-16;
 
       &.ShowExtraDetails {
-        background: @color-module-background;
-        border-bottom: 1px solid @color-dark-grey;
-        border-left: 1px solid @color-dark-grey;
-        border-right: 1px solid @color-dark-grey;
-        box-shadow: 0 @size-8 @size-8 @color-dark-grey;
+        background: var(--color-module-background);
+        border-bottom: 1px solid var(--color-dark-grey);
+        border-left: 1px solid var(--color-dark-grey);
+        border-right: 1px solid var(--color-dark-grey);
+        box-shadow: 0 @size-8 @size-8 var(--color-dark-grey);
         position: absolute;
         z-index: @mask-above;
 
@@ -77,8 +77,8 @@
 
           span:nth-of-type(2) {
             .mono-12-medium;
-
-            color: @color-primary-text;
+      
+            color: var(--color-primary-text);
           }
 
           span:nth-of-type(3) {
@@ -94,8 +94,8 @@
   @media @breakpoint-mobile {
     > div:first-of-type {
       flex-flow: column nowrap;
-      border-top: 1px solid @color-dark-grey;
-
+      border-top: 1px solid var(--color-dark-grey);
+      
       > div:first-of-type {
         grid-template-rows: auto auto;
         margin: @size-12;
@@ -136,15 +136,15 @@
 }
 
 .TimeSection {
-  background: @color-module-background;
-  border-left: 1px solid @color-dark-grey;
+  background: var(--color-module-background);
+  border-left: 1px solid var(--color-dark-grey);
   max-width: 240px;
   padding: @size-12;
 
   @media @breakpoint-mobile {
     min-width: unset;
     border-left: 0;
-    border-top: 1px solid @color-dark-grey;
+    border-top: 1px solid var(--color-dark-grey);
     width: 100%;
     max-width: unset;
     display: flex;
@@ -172,7 +172,7 @@
     span:nth-of-type(2) {
       .mono-12-medium;
 
-      color: @color-primary-text;
+      color: var(--color-primary-text);
       margin-bottom: @size-2;
     }
 
@@ -183,5 +183,5 @@
 }
 
 .ScalarBox {
-  border-top: 1px solid @color-dark-grey;
+  border-top: 1px solid var(--color-dark-grey);
 }

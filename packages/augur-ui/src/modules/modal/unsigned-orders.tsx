@@ -1,5 +1,5 @@
 /* eslint react/prop-types: 0 */
-import React, { useState } from 'react';
+import React from 'react';
 
 import {
   CancelTextButton,
@@ -17,13 +17,14 @@ import {
 import {
   LinearPropertyLabelProps, PendingLabel, BulkTxLabel, ModalLabelNotice,
 } from "modules/common/labels";
-import { BUY } from "modules/common/constants";
-import { formatShares, formatDai, formatMarketShares } from "utils/format-number";
+import { BUY, MAX_BULK_ORDER_COUNT } from "modules/common/constants";
+import { formatDai, formatMarketShares } from "utils/format-number";
 import Styles from "modules/modal/modal.styles.less";
 import OpenOrdersTable from "modules/market/components/market-orders-positions-table/open-orders-table";
 import { LiquidityOrder } from "modules/types";
-import { TXEventName } from "@augurproject/sdk-lite";
+import { TXEventName } from "@augurproject/sdk";
 import { DISMISSABLE_NOTICE_BUTTON_TYPES } from "modules/reporting/common";
+import { useAppStatusStore } from 'modules/app/store/app-status';
 
 interface UnsignedOrdersProps {
   closeAction: Function;
@@ -47,23 +48,16 @@ interface UnsignedOrdersProps {
   sendLiquidityOrder: Function;
   removeLiquidityOrder: Function;
   scalarDenomination: string;
-  submitAllTxCount: number;
+  numberOfTransactions: number;
   openOrders: boolean;
   insufficientFunds: boolean;
+  orders: any;
+  zeroXEnabled?: boolean;
 }
 
-const orderRow = (order: LiquidityOrder, props: UnsignedOrdersProps) => {
-  const {
-    outcomeId,
-    outcomeName,
-    type,
-    quantity,
-    price,
-    orderEstimate,
-    index,
-    status,
-  } = order;
-  const {
+const orderRow = (
+  order: LiquidityOrder, 
+  {
     removeLiquidityOrder,
     sendLiquidityOrder,
     marketType,
@@ -71,12 +65,13 @@ const orderRow = (order: LiquidityOrder, props: UnsignedOrdersProps) => {
     maxPrice,
     minPrice,
     outcomes,
-    needsApproval,
     bnAllowance,
     loginAccount,
     transactionHash,
     marketId,
-  } = props;
+    zeroXEnabled,
+  }: UnsignedOrdersProps) => {
+  const { outcomeId, outcomeName, type, quantity, price, orderEstimate, index, status } = order;
   const buttons = [
     {
       text: 'cancel',
@@ -91,6 +86,7 @@ const orderRow = (order: LiquidityOrder, props: UnsignedOrdersProps) => {
       text: 'submit',
       action: () =>
         sendLiquidityOrder({
+          zeroXEnabled,
           marketId,
           marketType,
           order,
@@ -138,76 +134,86 @@ const orderRow = (order: LiquidityOrder, props: UnsignedOrdersProps) => {
   );
 };
 
-export const UnsignedOrders = (props: UnsignedOrdersProps) => {
-  const [processing, setProcessing] = useState(false);
-
-  const actionForSubmitAllButton = async () => {
-    setProcessing(true);
-    await props.buttons[0].action();
-    setProcessing(false);
-  };
-
-  const newButtons = [
-    {
-      ...props.buttons[0],
-      text: processing ? 'Processing...' : props.buttons[0].text,
-      disabled: props.buttons[0].disabled || processing,
-      action: actionForSubmitAllButton,
-    },
-    {
-      ...props.buttons[1],
-    },
-  ];
-
+export const UnsignedOrders = ({
+  removeLiquidityOrder,
+  sendLiquidityOrder,
+  marketType,
+  numTicks,
+  maxPrice,
+  minPrice,
+  outcomes,
+  bnAllowance,
+  loginAccount,
+  transactionHash,
+  marketId,
+  title,
+  closeAction,
+  liquidity,
+  openOrders,
+  orders,
+  breakdown,
+  numberOfTransactions,
+  needsApproval,
+  insufficientFunds,
+  buttons,
+  marketTitle,
+  header,
+  description,
+}: UnsignedOrdersProps) => {
+  const { zeroXEnabled } = useAppStatusStore();
+  const submitAllTxCount = !zeroXEnabled ? Math.ceil(
+    numberOfTransactions / MAX_BULK_ORDER_COUNT
+  ) : numberOfTransactions;
   return (
     <div className={Styles.Orders}>
-      <Title title={props.title} closeAction={props.closeAction} />
+      <Title title={title} closeAction={closeAction} />
       <main>
         {/*
-        // @ts-ignore */}
-        <Description description={props.description} />
-        <MarketTitle title={props.marketTitle} />
-        {props.header && (
+          // @ts-ignore */}
+        <Description description={description} />
+        <MarketTitle title={marketTitle} />
+        {header && (
           <div className={Styles.Orders__header}>
-            {props.header.map((headerLabel: string, index) => (
-              <span key={headerLabel + index}>{headerLabel}</span>
+            {header.map((headerLabel: string, index) => (
+              <span key={headerLabel+index}>{headerLabel}</span>
             ))}
           </div>
         )}
-        {props.outcomes && (
+        {outcomes && (
           <section>
-            {props.outcomes.map((outcome: string) =>
-              props.liquidity[outcome].map((order: LiquidityOrder) =>
-                orderRow(order, props)
+            {outcomes.map((outcome: string) =>
+              (liquidity[outcome] || []).map((order: LiquidityOrder) =>
+                orderRow(order, {
+                  removeLiquidityOrder,
+                  sendLiquidityOrder,
+                  marketType,
+                  numTicks,
+                  maxPrice,
+                  minPrice,
+                  outcomes,
+                  bnAllowance,
+                  loginAccount,
+                  transactionHash,
+                  marketId,
+                  zeroXEnabled,
+                })
               )
             )}
           </section>
         )}
-        {props.openOrders && (
+        {openOrders && (
           // @ts-ignore
-          <OpenOrdersTable
-            relative
-            openOrders={props.orders}
-            marketId={props.marketId}
-          />
+          <OpenOrdersTable relative openOrders={orders} marketId={marketId} />
         )}
-        {props.breakdown && <Breakdown rows={props.breakdown} short />}
+        {breakdown && <Breakdown rows={breakdown} short />}
       </main>
-      <BulkTxLabel
-        buttonName={'Submit All'}
-        count={props.submitAllTxCount}
-        needsApproval={props.needsApproval}
-      />
-      {props.insufficientFunds && (
-        <ModalLabelNotice
-          show
-          buttonType={DISMISSABLE_NOTICE_BUTTON_TYPES.NONE}
-          title={`You do not have enough DAI to place ${
-            props.submitAllTxCount > 1 ? 'these orders' : 'this order'
-          }`}
-        />
-      )}
-      <ButtonsRow buttons={newButtons} />
+      <BulkTxLabel buttonName={"Submit All"} count={submitAllTxCount} needsApproval={needsApproval}/>
+      {insufficientFunds && <ModalLabelNotice
+        show
+        buttonType={DISMISSABLE_NOTICE_BUTTON_TYPES.NONE}
+        title={`You do not have enough DAI to place ${submitAllTxCount > 1 ? 'these orders' : 'this order'}`}
+      />}
+      <ButtonsRow buttons={buttons} />
     </div>
   );
-};
+}

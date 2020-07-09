@@ -1,23 +1,23 @@
 @import (reference) '~assets/styles/shared';
 
 .TopNav {
-  background: @color-table-header;
+  background: var(--color-table-header);
   display: flex;
   flex-flow: column nowrap;
 
-  @media @breakpoint-mobile {
+  @media @breakpoint-mobile-tablet {
     display: none;
   }
 
   > ul {
     display: flex;
     align-items: center;
-    border-bottom: 1px solid @color-dark-grey;
+    border-bottom: @size-1 solid var(--color-dark-grey);
     max-height: 37px;
     min-height: 37px;
 
     > li {
-      border-bottom: 2px solid transparent;
+      border-bottom: @size-2 solid transparent;
       height: 100%;
       max-height: 37px;
       min-height: 37px;
@@ -37,7 +37,7 @@
         > a > span {
           .text-12-medium;
 
-          color: @color-secondary-text;
+          color: var(--color-secondary-text);
         }
       }
     }
@@ -45,7 +45,7 @@
     > li:hover {
       &:not(.CreatetButton) {
         span {
-          color: @color-primary-text;
+          color: var(--color-primary-text);
         }
       }
     }
@@ -59,7 +59,7 @@
         .text-12-semi-bold;
 
         align-self: center;
-        color: @color-primary-text;
+        color: var(--color-secondary-text);
         text-transform: uppercase;
       }
 
@@ -71,20 +71,20 @@
         margin-bottom: @size-4;
 
         > circle {
-          fill: @color-outcome-five;
+          fill: var(--color-focused);
         }
       }
     }
 
     .Selected {
-      border-bottom: 2px solid @color-primary-action;
+      border-bottom: @size-2 solid var(--color-primary-action);
 
       > a {
         text-decoration: none;
       }
 
       > a > span {
-        color: @color-primary-text;
+        color: var(--color-primary-text);
       }
     }
 
@@ -116,16 +116,16 @@
 
       path {
         &:nth-child(odd) {
-          fill: @color-secondary-text;
+          fill: var(--color-secondary-text);
           stroke: none;
         }
 
         &:nth-child(even) {
-          stroke: @color-secondary-text;
+          stroke: var(--color-secondary-text);
         }
       }
 
-      @media @breakpoint-mobile {
+      @media @breakpoint-mobile-tablet {
         display: none;
       }
     }
@@ -136,10 +136,10 @@ button.AddFunds {
   .mono-10-bold;
 
   align-items: center;
-  background: fade(@color-brand, 20%);
-  border: @size-1 solid @color-brand;
+  background: var(--color-brand-20);
+  border: @size-1 solid var(--color-brand);
   border-radius: @border-radius-default;
-  color: @color-primary-text;
+  color: var(--color-primary-text);
   display: flex;
   justify-content: center;
   min-height: @size-22;
@@ -159,17 +159,81 @@ button.AddFunds {
     margin-left: @size-4;
 
     > circle {
-      fill: @color-brand;
+      fill: var(--color-brand);
     }
 
     > rect {
-      fill: @color-brand;
+      fill: var(--color-brand);
       height: 1px;
       width: @size-8;
     }
   }
 }
 
+:root[theme="BETTING"],
+:root[theme="SPORTS"] {
+  .TopNav {
+    background: var(--color-primary-text);
+
+    > ul {
+      border-bottom: @size-1 solid var(--color-primary-text);
+      border-top: @size-1 solid var(--color-secondary-text-50);
+
+      > li:nth-of-type(2) {
+        order: 3;
+      }
+
+      > li:nth-of-type(3) {
+        order: 2;
+      }
+
+      > li.FillSpace,
+      > li.AlternateStyle,
+      > li.MigrateRepItem,
+      > li.CreateButton,
+      > li.CreatAccountButton {
+        display: none;
+      }
+
+
+      > li:hover {
+        &:not(.CreateButton) {
+
+          &:not(.Selected) {
+            border-bottom: @size-2 solid var(--color-module-background);
+          }
+          span {
+            color: var(--color-module-background);
+          }
+        }
+      }
+
+      > li a {
+        > span {
+          color: var(--color-dark-text);
+        }
+  
+        > svg > circle {
+          fill: var(--color-focused);
+        }
+      }
+
+      .Selected {
+        border-bottom: @size-2 solid var(--color-primary-action);
+
+        > a > span {
+          color: var(--color-module-background);
+        }
+      }
+
+      > .BettingUI {
+        > button > a {
+          color: var(--color-module-background);
+        }
+      }
+    }
+  }
+}
 .FillSpace {
   flex: 1;
 }
@@ -179,7 +243,7 @@ button.AddFunds {
   visibility: hidden;
   width: 0;
 
-  @media @breakpoint-mobile {
+  @media @breakpoint-mobile-tablet {
     display: none;
   }
 }

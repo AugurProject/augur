@@ -1,21 +1,16 @@
-import { createSelector } from "reselect";
-import store from "appStore";
-import { getLastTradeTimestamp } from "modules/portfolio/helpers/get-last-trade-timestamp";
-import {
-  selectMarketTradingHistoryState,
-  selectAccountPositionsState,
-} from "appStore/select-state";
+import { getLastTradeTimestamp } from 'modules/portfolio/helpers/get-last-trade-timestamp';
+import { Markets } from 'modules/markets/store/markets';
+import { AppStatus } from 'modules/app/store/app-status';
 
 export default function() {
-  return marketsPositionsRecentlyTraded(store.getState());
+  return marketsPositionsRecentlyTraded();
 }
 
-export const marketsPositionsRecentlyTraded = createSelector(
-  selectAccountPositionsState,
-  selectMarketTradingHistoryState,
-  (positions, marketTradeHistory) =>
-    Object.keys(positions).reduce(
-      (p, m) => ({ ...p, [m]: getLastTradeTimestamp(marketTradeHistory[m]) }),
-      {},
-    ),
-);
+export const marketsPositionsRecentlyTraded = () => {
+  const { accountPositions } = AppStatus.get();
+  const { marketTradingHistory } = Markets.get();
+  return Object.keys(accountPositions).reduce(
+    (p, m) => ({ ...p, [m]: getLastTradeTimestamp(marketTradingHistory[m]) }),
+    {}
+  );
+};

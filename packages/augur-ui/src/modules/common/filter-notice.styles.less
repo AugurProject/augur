@@ -11,8 +11,8 @@
     display: flex;
     align-items: center;
     justify-content: flex-start;
-    border: 1px solid @color-secondary-action-outline;
-    border-radius: @size-6;
+    border: @size-1 solid var(--color-secondary-action-outline);
+    border-radius: @border-radius-rounded;
     padding: @size-8 @size-16;
     width: 100%;
 
@@ -24,10 +24,10 @@
     > span:last-of-type {
       .text-12;
 
-      color: @color-secondary-text;
+      color: var(--color-secondary-text);
 
       > a {
-        color: @color-primary-action;
+        color: var(--color-primary-action);
       }
     }
 
@@ -43,22 +43,22 @@
         width: @size-10;
 
         > path {
-          stroke: @color-secondary-action-outline
+          stroke: var(--color-secondary-action-outline)
         }
       }
     }
   }
 }
 
-.invalid {
+.active {
   svg {
     height: @size-19;
     width: @size-19;
-    fill: @color-outcome-invalid;
+    fill: var(--color-open);
   }
 
   rect, path {
-    fill: @color-inactive-text;
+    fill: var(--color-open);
   }
 }
 
@@ -66,10 +66,74 @@
   svg {
     height: @size-19;
     width: @size-19;
-    fill: @color-primary-text;
+    fill: var(--color-primary-text);
   }
 
   rect, path {
-    fill: @color-secondary-action;
+    fill: var(--color-secondary-action);
+  }
+}
+
+
+:root[theme="BETTING"],
+:root[theme="SPORTS"] {
+  .filterNotice {
+    > div {
+      border: @size-1 solid var(--color-error);
+      border-radius: @border-radius-default;
+      padding: @size-12 @size-16 @size-12 @size-6;
+      background: var(--color-module-background);
+
+      > span:first-of-type {
+        margin: 0 @size-6 0 0;
+      }
+
+      > span:last-of-type {
+        .text-12;
+
+        color: var(--color-primary-text);
+
+        > a {
+          .text-12-semi-bold;
+
+          color: var(--color-primary-text);
+
+          text-decoration-line: underline;
+          text-decoration-style: dotted;
+          text-decoration-color: var(--color-primary-text);
+        }
+      }
+    }
+
+    &.active {
+      > div {
+        border: @size-1 solid var(--color-open);
+        padding: @size-4 @size-4 @size-4 @size-12;
+      }
+    }
+  }
+
+  .active {
+    svg {
+      height: @size-20;
+      width: @size-20;
+      fill: var(--color-open);
+    }
+  
+    rect, path {
+      fill: var(--color-secondary-action);
+    }
+  }
+
+  .primary {
+    svg {
+      height: @size-20;
+      width: @size-20;
+      fill: var(--color-error);
+    }
+  
+    rect, path {
+      fill: var(--color-secondary-action);
+    }
   }
 }

@@ -1,11 +1,10 @@
 @import (reference) '~assets/styles/shared';
 
 .Quad {
-  // background: @color-table-header;
-  background: @color-module-background;
-  border: 1px solid @color-dark-grey;
+  background: var(--color-module-background);
+  border: @size-1 solid var(--color-dark-grey);
   border-radius: @border-radius-default;
-  color: @color-primary-text;
+  color: var(--color-primary-text);
   flex: 1;
   min-height: 50%;
 
@@ -16,7 +15,7 @@
   }
 
   > div:last-of-type {
-    background: @color-module-background;
+    background: var(--color-module-background);
     flex: 1;
     overflow: auto;
     overflow-y: overlay;
@@ -41,14 +40,14 @@
   }
 
   &.HideToggle {
-    max-height: 43px;
+    max-height: @size-43;
     min-height: unset;
     overflow-y: hidden;
     flex: 0;
   }
 
   &.Extend {
-    min-height: calc(100% - 43px);
+    min-height: calc(100% - @size-43);
   }
 }
 
@@ -58,8 +57,8 @@
 
 @media @breakpoint-mobile {
   .NormalOnMobile {
-    background: @color-module-background;
-    border: 1px solid @color-dark-grey;
+    background: var(--color-module-background);
+    border: @size-1 solid var(--color-dark-grey);
   }
 
   .ShowOnMobile {
@@ -77,7 +76,64 @@
 
 .MarketBox {
   @media @breakpoint-mobile {
-    border: 1px solid @color-dark-grey;
+    border: @size-1 solid var(--color-dark-grey);
     margin-top: @size-8;
+
+    > div[class*='MarketRow']:last-of-type {
+      border-bottom: none;
+    }
+  }
+}
+
+.Count {
+  display: none;
+}
+
+:root[theme="BETTING"],
+:root[theme="SPORTS"] {
+  .Quad {
+    border: none;
+    background: var(--color-page-background);
+    border-bottom-left-radius: @border-radius-rounded;
+    border-bottom-right-radius: @border-radius-rounded;
+
+    @media @breakpoint-mobile {
+      margin: @size-16 @size-16 0;
+      background: var(--color-module-background);
+      border: @size-1 solid var(--color-dark-grey);
+      border-radius: @border-radius-rounded;
+    }
+
+    > div:last-of-type {
+      @media @breakpoint-mobile {
+        padding: 0;
+        max-height: unset;
+        min-height: unset;
+        border-bottom-left-radius: @border-radius-rounded;
+        border-bottom-right-radius: @border-radius-rounded;
+      }
+    }
+  }
+
+
+  .MarketBox {
+    @media @breakpoint-mobile {
+      border: none;
+      margin-top: 0;
+    }
+  }
+
+  .Count {
+    .text-12;
+
+    display: flex;
+    align-items: center; 
+    justify-content: center;
+    width: @size-19;
+    height: @size-21;
+    color: var(--color-secondary-text);
+    border: @size-1 solid var(--color-outline);
+    border-radius: @border-radius-default;
+    background: var(--color-module-background);
   }
 }

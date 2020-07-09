@@ -1,26 +1,19 @@
-import { AppState } from 'appStore';
-import { Action } from 'redux';
-import { ThunkDispatch, ThunkAction } from 'redux-thunk';
 import { getEthForDaiRate } from 'modules/contracts/actions/contractCalls';
-import {
-  updateAppStatus,
-  ETH_TO_DAI_RATE,
-} from 'modules/app/actions/update-app-status';
 import { NodeStyleCallback, FormattedNumber } from 'modules/types';
 import logError from 'utils/log-error';
 import { formatAttoDai, formatDai } from 'utils/format-number';
 import { augurSdk } from 'services/augursdk';
 import { BigNumber, createBigNumber } from 'utils/create-big-number';
+import { AppStatus } from 'modules/app/store/app-status';
 
 export const getEthToDaiRate = (
   callback: NodeStyleCallback = logError
-): ThunkAction<any, any, any, any> => (
-  dispatch: ThunkDispatch<void, any, Action>,
-  getState: () => AppState
 ) => {
+  const { ethToDaiRate: currentEthToDaiRate } = AppStatus.get();  
   const ethToDaiRate = getEthForDaiRate();
-  if (ethToDaiRate) {
-    dispatch(updateAppStatus(ETH_TO_DAI_RATE, formatAttoDai(ethToDaiRate)));
+  const formattedRate = formatAttoDai(ethToDaiRate);
+  if (formattedRate.value !== currentEthToDaiRate?.value) {
+    AppStatus.actions.setEthToDaiRate(formatAttoDai(ethToDaiRate));
   }
 };
 

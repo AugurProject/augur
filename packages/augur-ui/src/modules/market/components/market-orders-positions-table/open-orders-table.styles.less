@@ -5,7 +5,7 @@
 }
 
 div.Table {
-  color: @color-primary-text;
+  color: var(--color-primary-text);
   display: flex;
   flex-direction: column;
   flex-grow: 1;
@@ -43,7 +43,7 @@ div.TableHeight {
 .Empty {
   .text-10-medium;
 
-  background-color: @color-module-background;
+  background-color: var(--color-module-background);
   text-transform: capitalize;
   min-height: 100px;
   justify-content: center;
@@ -56,7 +56,7 @@ div.TableHeight {
 }
 
 .PortfolioFooter {
-  border-top: 1px solid @color-dark-grey;
+  border-top: 1px solid var(--color-dark-grey);
   display: flex;
   justify-content: flex-end;
   min-height: @size-32;
@@ -64,7 +64,7 @@ div.TableHeight {
 }
 
 .Footer {
-  border-top: 1px solid @color-dark-grey;
+  border-top: 1px solid var(--color-dark-grey);
   display: flex;
   justify-content: flex-end;
   min-height: @size-32;
@@ -83,7 +83,7 @@ div.HideOutcomes {
 
 @media @breakpoint-mobile {
   .Footer {
-    background: @color-dark-grey;
+    background: var(--color-dark-grey);
     margin-top: 2px;
     position: relative;
   }

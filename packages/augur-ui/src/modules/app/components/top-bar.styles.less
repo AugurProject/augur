@@ -1,13 +1,19 @@
 @import (reference) '~assets/styles/shared';
 
-// Used in Betting UI
 .TopBar {
   align-items: center;
-  background: @color-dark-grey;
+  background: var(--color-dark-grey);
   display: flex;
   font-size: @size-14;
   height: 100%;
   justify-content: flex-end;
+
+  @media @breakpoint-mobile-tablet {
+    height: @top-bar-height-mobile;
+    > ul[class*="ThemeSwitch"] {
+      display: none;
+    }
+  }
 
   // LOGIN/SIGNUP ACCOUNT / ALERTS
   > div:last-of-type {
@@ -17,24 +23,23 @@
     justify-content: flex-end;
     height: 100%;
 
-    @media @breakpoint-mobile {
+    @media @breakpoint-mobile-tablet {
       padding: 0;
       max-width: 40%;
     }
 
+    > button > svg {
+      width: @size-34;
+      height: @size-24;
+    }
+
     > button[class*="SecondaryButton"] {
-      margin: 0 @size-16;
+      margin-left: @size-24;
+      margin-right: @size-12;
     }
 
     > button[class*="PrimaryButton"] {
-      margin-right: @size-16;
-
-    }
-  }
-
-  @media @breakpoint-mobile {
-    > div[class*='statsContainer'] {
-      display: none;
+      margin-right: @size-24;
     }
   }
 }
@@ -53,18 +58,17 @@
 }
 
 .Logo {
-  border-right: 1px solid @color-module-background;
+  border-right: @size-1 solid var(--color-module-background);
   padding: 0 @size-20 0 @size-16;
+  display: flex;
+  align-items: center;
+  height: 100%;
 
   div {
     width: @size-24;
-
-    @media @breakpoint-mobile {
-      width: @size-40;
-    }
   }
 
-  @media @breakpoint-mobile {
+  @media @breakpoint-mobile-tablet {
     display: none;
   }
 }
@@ -74,33 +78,29 @@
   display: flex;
   height: 100%;
 
+  @media @breakpoint-mobile-tablet {
+    display: none;
+  }
+
   > div:first-of-type {
     display: flex;
     flex-direction: column;
     height: 100%;
     width: min-content;
     padding: @size-6 @size-20;
-
-    @media @breakpoint-mobile {
-      padding: 0;
-    }
-
+    
     > span:first-of-type {
       display: flex;
       justify-content: center;
       align-items: center;
 
       span label {
-        margin-top: -10px;
-        transform: translateY(10px);
+        margin-top: -@size-10;
+        transform: translateY(@size-10);
       }
 
       span div {
-        margin-top: 10px;
-
-        @media @breakpoint-mobile {
-          margin-top: 0;
-        }
+        margin-top: @size-10;
       }
     }
 
@@ -112,7 +112,7 @@
       > span {
         .mono-10-medium;
 
-        color: @color-secondary-text;
+        color: var(--color-secondary-text);
       }
 
       > svg {
@@ -121,33 +121,25 @@
 
       > span:first-of-type {
         margin-right: @size-30;
-
-        @media @breakpoint-mobile {
-          margin-right: @size-23;
-        }
       }
 
       > span:nth-of-type(2),
       > span:last-of-type {
         .mono-11-medium;
 
-        color: @color-primary-text;
+        color: var(--color-primary-text);
       }
     }
 
     > div:last-of-type {
       display: none;
-
-      @media @breakpoint-mobile {
-        display: flex;
-      }
     }
   }
 
   // P/I
   > div:last-of-type {
     align-items: flex-start;
-    border: @size-1 solid @color-dark-grey;
+    border: @size-1 solid var(--color-dark-grey);
     border-bottom: 0;
     border-top: 0;
     display: flex;
@@ -159,8 +151,8 @@
     > span {
       .mono-10-medium;
 
-      color: @color-secondary-text;
-      margin-bottom: 2px;
+      color: var(--color-secondary-text);
+      margin-bottom: @size-2;
       text-transform: uppercase;
       white-space: nowrap;
     }
@@ -170,35 +162,65 @@
 
       > div {
         .mono-11-medium;
+
+        color: var(--color-positive);
       }
     }
 
-    @media @breakpoint-mobile {
-      display: none;
+    @media @breakpoint-mobile-tablet {
+      align-items: normal;
+      flex-direction: row;
+      justify-content: center; 
+      padding: 0 @size-20;
+      flex: 1;
+      justify-content: space-between;
+      width: 100%;
     }
   }
 }
 
 .alerts {
-  color: @color-primary-text;
+  align-items: center;
+  color: var(--color-primary-text);
   cursor: pointer;
   display: flex;
   height: 100%;
-  justify-content: flex-end;
-  padding: @size-16 @size-16 @size-16 @size-24;
-  width: unset;
+  justify-content: center;
+  width: @size-56;
+  border-right: @size-1 solid var(--color-module-background);
 
   > svg {
-    width: @size-34;
+    margin-left: @size-8;
+
+    path {
+      fill: var(--color-brand-secondary);
+    }
+
+    > rect {
+      fill: var(--color-error);
+      stroke: var(--color-brand-secondary-flip);
+    }
+
+    > text {
+      .text-9-bold;
+
+      fill: var(--color-brand-secondary);
+      font-size: @size-8; // special case.
+    }
   }
 
-  @media @breakpoint-mobile {
-    border-left: 1px solid @color-module-background;
-    padding: @size-12 @size-10 @size-12 @size-18;
+  &.Empty {
+    > svg {
+      margin-left: @size-16;
+    }
+  }
+
+  @media @breakpoint-mobile-tablet {
+    border-left: @size-1 solid var(--color-module-background);
   }
 
   &:hover {
-    background-color: @color-module-background;
+    background-color: var(--color-module-background);
   }
 
   &:focus {
@@ -210,14 +232,109 @@
   cursor: default;
 
   &:hover {
-    background-color: @color-module-background;
+    background-color: var(--color-module-background);
   }
 
-  @media @breakpoint-mobile {
+  @media @breakpoint-mobile-tablet {
     display: none;
   }
 }
 
 .alertsDark {
-  background-color: @color-module-background;
+  background-color: var(--color-module-background);
+}
+
+:root[theme="BETTING"],
+:root[theme="SPORTS"] {
+  .TopBar {
+    background: var(--color-primary-text);
+
+    > div:last-of-type {
+      > button[class*="SecondaryButton"] {
+        border: @size-1 solid var(--color-secondary-action);
+        color: var(--color-secondary-action);
+        background: transparent;
+  
+        &:hover {
+          border: @size-1 solid var(--color-secondary-action);
+          background: var(--color-secondary-action);
+          color: var(--color-primary-text);
+        }
+      }
+  
+      > button[class*="PrimaryButton"] {
+        color: var(--color-module-background);
+
+        &:hover {
+          border: @size-1 solid var(--color-secondary-action);
+          background: var(--color-secondary-action);
+          color: var(--color-primary-text);
+        }
+      }
+    }
+  }
+
+  .Logo {
+    border-right: @size-1 solid var(--color-secondary-text-50);
+  }
+
+  .statsContainer {
+    display: none;
+  }
+
+  .alerts {
+    border-top: @size-3 solid transparent;
+    border-right: @size-1 solid var(--color-secondary-text-50);
+    border-left: @size-1 solid var(--color-secondary-text-50);
+    order: 3;
+
+    > svg {
+      margin-left: @size-8;
+
+      > path {
+        fill: var(--color-module-background);
+      }
+
+      > rect {
+        fill: var(--color-resolved);
+        stroke: var(--color-primary-text);
+      }
+    }
+
+    &.Empty {
+      > svg {
+        margin-left: @size-16;
+      }
+    }
+  
+    &:hover {
+      border-top: @size-3 solid var(--color-primary-action);
+      background: var(--color-secondary-text-25);
+    }
+  }
+
+  .alertsDark,
+  .alertsDark:hover {
+    border-top: @size-3 solid var(--color-primary-action);
+    background: var(--color-page-background);
+
+    > svg {
+      > path {
+        fill: var(--color-primary-text);
+      }
+
+      > rect {
+        stroke: var(--color-page-background);
+      }
+    }
+  }
+
+  .alertsDark {
+    border-right: @size-1 solid var(--color-page-background);
+    border-left: @size-1 solid var(--color-page-background);
+  }
+
+  .AccountActivation {
+    display: none;
+  }
 }

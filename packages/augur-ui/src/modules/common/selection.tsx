@@ -1,7 +1,7 @@
-import React, { Component, useState } from 'react';
+import React, { Component, useState, useEffect } from 'react';
 import classNames from 'classnames';
 import Styles from 'modules/common/selection.styles';
-import { ThickChevron, Chevron, ShareIcon } from 'modules/common/icons';
+import { ThickChevron, Chevron, ShareIcon, SlimArrow } from 'modules/common/icons';
 import ReactTooltip from 'react-tooltip';
 import TooltipStyles from 'modules/common/tooltip.styles.less';
 import { MARKET_TEMPLATES } from 'modules/create-market/constants';
@@ -24,12 +24,12 @@ export interface DropdownProps {
   stretchOutOnMobile?: boolean;
   sortByStyles?: object;
   openTop?: boolean;
-  highlight?: boolean;
   stretchOut?: boolean;
   activeClassName?: string;
   showColor?: boolean;
   disabled?: boolean;
   sort?: boolean;
+  minimalStyle?: boolean
 }
 
 interface DropdownState {
@@ -51,9 +51,22 @@ interface PillSelectionProps {
   options: SelectionOption[];
   onChange(value: number): void;
   defaultSelection: number;
+  large?: boolean;
 }
 
 interface PillSelectionState {
+  selected: number;
+}
+
+interface TabProps {
+  options: SelectionOption[];
+  onChange(value: number): void;
+  defaultSelection: number;
+  large?: boolean;
+  small?: boolean;
+}
+
+interface TabState {
   selected: number;
 }
 
@@ -193,6 +206,7 @@ class Dropdown extends Component<DropdownProps, DropdownState> {
       id,
       showColor,
       disabled,
+      minimalStyle
     } = this.props;
     const { selected, showList, isDisabled, sortedList } = this.state;
     return (
@@ -207,6 +221,7 @@ class Dropdown extends Component<DropdownProps, DropdownState> {
           [`${activeClassName}`]: showList,
           [Styles.showColor]: showColor,
           [Styles.Disabled]: disabled,
+          [Styles.Minimal]: minimalStyle,
           [`${Styles[`showColor-${selected ? selected.value + 1 : 1}`]}`]:
             selected && showColor,
         })}
@@ -229,7 +244,7 @@ class Dropdown extends Component<DropdownProps, DropdownState> {
           <span ref={ref => (this.labelRef = ref)}>
             {selected ? selected.label : staticLabel}
           </span>
-          {ThickChevron}
+          {minimalStyle ? SlimArrow : ThickChevron}
         </button>
         <div>
           <div
@@ -317,7 +332,6 @@ export class StaticLabelDropdown extends Dropdown {
       large,
       staticLabel,
       staticMenuLabel,
-      highlight,
     } = this.props;
     const { selected, showList } = this.state;
     if (!selected) {
@@ -384,7 +398,50 @@ export const PillSelection = ({
   options,
   onChange,
   defaultSelection = 0,
+  large
 }: PillSelectionProps) => {
+  const [selected, setSelected] = useState(defaultSelection);
+
+  useEffect(() => {
+    setSelected(defaultSelection);
+  }, [defaultSelection]);
+
+  const buttonSelect = (option: SelectionOption) => {
+    if (option.id !== selected) {
+      setSelected(option.id);
+      onChange(option.id);
+    }
+  };
+  
+  const renderButton = (option: SelectionOption): React.ReactNode => (
+    <li
+      className={classNames({
+        [Styles.Selected]: selected === option.id
+      })}
+      key={option.label}
+    >
+      <button onClick={() => buttonSelect(option)}>
+        {option.label} {option.subLabel && <span>{option.subLabel}</span>}
+      </button>
+    </li>
+  );
+
+  return (
+    <ul className={classNames(Styles.PillSelection, {[Styles.LargePillSelection]: large})}>
+      {options.map(
+        (option: SelectionOption): React.ReactNode => renderButton(option)
+      )}
+    </ul>
+  );
+};
+
+export const Tab = ({
+  options,
+  onChange,
+  defaultSelection = 0,
+  large,
+  small
+}: TabProps) => {
   const [selected, setSelected] = useState(defaultSelection);
   const buttonSelect = (option: SelectionOption) => {
     if (option.id !== selected) {
@@ -396,24 +453,29 @@ export const PillSelection = ({
   const renderButton = (option: SelectionOption): React.ReactNode => (
     <li
       className={classNames({
-        [Styles.Selected]: selected === option.id,
+        [Styles.Selected]: selected === option.id
       })}
       key={option.label}
     >
       <button onClick={() => buttonSelect(option)}>
-        {option.label} {option.subLabel && <span>{option.subLabel}</span>}
+        {option.label}
       </button>
     </li>
   );
 
   return (
-    <ul className={Styles.PillSelection}>
+    <ul 
+      className={classNames(Styles.Tab, {
+        [Styles.TabLarge]: large,
+        [Styles.TabSmall]: small,
+      })}>
       {options.map(
-        (option: SelectionOption): React.ReactNode => renderButton(option)
+        (option: SelectionOption): React.ReactNode =>
+          renderButton(option)
       )}
     </ul>
   );
-};
+}
 
 export class DotSelection extends Component<
   DotSelectionProps,

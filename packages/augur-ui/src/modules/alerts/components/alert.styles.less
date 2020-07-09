@@ -1,7 +1,7 @@
 @import (reference) '~assets/styles/shared';
 
 .Alert {
-  background-color: fade(@color-primary-text, 90%);
+  background-color: var(--color-primary-text-90);
   display: flex;
   flex-direction: row;
   overflow: hidden;
@@ -10,8 +10,8 @@
   text-overflow: ellipsis;
   white-space: nowrap;
   margin-bottom: @size-1;
-  border: 1px solid @color-secondary-action-outline;
-  border-radius: @size-3;
+  border: @size-1 solid var(--color-secondary-action-outline);
+  border-radius: @border-radius-default;
 
   &:last-of-type {
     border-bottom: 0;
@@ -35,26 +35,26 @@
 .Timestamp {
   .text-9;
 
-  color:@color-inactive-text;
+  color:var(--color-inactive-text);
 }
 
 .Seen {
-  background-color: fade(@color-primary-text, 90%);
+  background-color: var(--color-primary-text-90);
 
   > div {
     > div:first-of-type > div,
     > div:nth-of-type(2) > span {
-      color: @color-inactive-text;
+      color: var(--color-inactive-text);
     }
   }
 }
 
 .Failure {
-  background-color: fade(@color-alternate-error, 90%);
+  background-color: var(--color-alternate-error);
   > div:first-of-type {
     > div:first-of-type {
       > div:first-of-type {
-        color: @color-resolved;
+        color: var(--color-resolved);
       }
     }
   }
@@ -83,7 +83,7 @@
 .Title {
   .text-10;
 
-  color: @color-dark-grey;
+  color: var(--color-dark-grey);
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -94,14 +94,14 @@
 .Status {
   .mono-9-bold;
 
-  color: @color-dark-grey;
+  color: var(--color-dark-grey);
   text-transform: uppercase;
 }
 
 .EtherLink {
-  color: @color-primary-text;
-  font-size: @size-10;
-  font-weight: 500;
+  .text-10-medium;
+
+  color: var(--color-primary-text);
   text-decoration: underline;
 }
 
@@ -129,9 +129,9 @@
 
   > svg {
     width: @size-8;
-    height: size-8;
+    height: @size-8;
     > path {
-      fill: @color-inactive-text;
+      fill: var(--color-inactive-text);
     }
   }
 }
@@ -139,7 +139,7 @@
 .Description {
   .text-9;
 
-  color: @color-inactive-text;
+  color: var(--color-inactive-text);
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -154,7 +154,102 @@
 }
 
 .Time {
-  color: @color-primary-text;
+  color: var(--color-primary-text);
   font-size: @size-10;
   margin-right: @size-4;
+}
+
+:root[theme='BETTING'],
+:root[theme='SPORTS'] {
+  .Alert {
+    background-color: var(--color-module-background);
+    padding: @size-8;
+    border: @size-1 solid var(--color-dark-grey);
+    border-radius: @border-radius-rounded;
+    margin: @size-4 @size-8;
+  }
+
+  .Timestamp {
+    .text-10;
+
+    color:var(--color-secondary-text);
+    margin-top: @size-12;
+  }
+
+  .Seen {
+    border: @size-1 solid var(--color-secondary-action-outline);
+  }
+
+  .Failure {
+    border: @size-1 solid var(--color-alternate-error);
+    > div:first-of-type {
+      > div:first-of-type {
+        > div:first-of-type {
+          color: var(--color-primary-text);
+        }
+      }
+    }
+  }
+
+  .Row {
+    &:not(:first-of-type) {
+      margin-top: 0;
+    }
+  }
+
+  .Title {
+    .text-12;
+
+    color: var(--color-primary-text);
+    margin: @size-5 0 0;
+  }
+
+  .Status {
+    .mono-12-semi-bold;
+  
+    color: var(--color-primary-text);
+  }
+
+  .EtherLink {
+    .text-10-semi-bold;
+  
+    color: var(--color-primary-text);
+    text-decoration: none;
+    margin-top: @size-6;
+
+    > div {
+      background: transparent;
+      border: none;
+
+      > span {
+        .text-10-semi-bold;
+
+        > a {
+          flex-direction: row-reverse;
+          color: var(--color-primary-text);
+
+          > svg {
+            margin: 0 @size-6 0 0;
+            height: @size-12;
+            width: @size-12;
+
+            > path {
+              fill: var(--color-primary-text);
+            }
+          }
+        }
+      }
+    }
+  }
+
+  .Close {
+    margin-top: auto;
+    margin-bottom: auto;
+  }
+
+  .Description {
+    .mono-12-semi-bold;
+
+    color: var(--color-primary-text);
+  }
 }

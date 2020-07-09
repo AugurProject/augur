@@ -100,11 +100,13 @@ export class LiquidityPool {
       sortedOrders[i].sort((a, b) => parseFloat(b.amount) - parseFloat(a.amount));
     }
 
-    const size = _.last(_.values(sortedOrders)).reduce(
+    const sortedOrderValues = _.values(sortedOrders);
+    const size = (sortedOrderValues && sortedOrderValues.length) ? _.last(sortedOrderValues).reduce(
       (size, orders) => new BigNumber(orders.amount).plus(size),
       new BigNumber(0)
-    );
-    const bestPrice = { price: _.last(lastSortedOrder), shares: String(size) };
+    ) : 0;
+
+    const bestPrice = (lastSortedOrder && lastSortedOrder.length) ? { price: _.last(lastSortedOrder), shares: String(size) } : null;
     return {
       [liquidityPoolId]: {
         [outcome]: bestPrice,

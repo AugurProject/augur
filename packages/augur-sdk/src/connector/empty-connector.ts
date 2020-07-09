@@ -1,4 +1,4 @@
-import { SDKConfiguration } from '@augurproject/utils';
+import { SDKConfiguration } from '@augurproject/sdk-lite';
 import { SubscriptionEventName } from '@augurproject/sdk-lite';
 import { Callback } from '../events';
 import { BaseConnector } from './base-connector';

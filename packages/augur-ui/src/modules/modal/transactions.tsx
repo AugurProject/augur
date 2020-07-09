@@ -26,13 +26,9 @@ import {
   DismissableNotice,
   DISMISSABLE_NOTICE_BUTTON_TYPES,
 } from 'modules/reporting/common';
-
-interface TransactionsProps {
-  closeAction: Function;
-  title: string;
-  currentTimestamp: any;
-  getTransactionsHistory: Function;
-}
+import { useAppStatusStore } from 'modules/app/store/app-status';
+import { augurSdk } from 'services/augursdk';
+import { Getters } from "@augurproject/sdk";
 
 interface TransactionInfo {
   transactionHash: string;
@@ -149,7 +145,38 @@ const paginationOptions = [
   },
 ];
 
-export const Transactions: React.FC<TransactionsProps> = props => {
+export const Transactions = () => {
+  const {
+    loginAccount: { address: account },
+    universe: { id: universe },
+    modal,
+    blockchain: { currentAugurTimestamp: now },
+    actions: { closeModal }
+  } = useAppStatusStore();
+
+  const title = "Transactions History";
+  const closeAction = () => closeModal();
+  const currentTimestamp = now;
+  const getTransactionsHistory = async (
+    startTime: number,
+    endTime: number,
+    coin: string,
+    action: string,
+    cb: Function,
+  ) => {
+    const Augur = augurSdk.get();
+    const result = await Augur.getAccountTransactionHistory({
+        universe: universe,
+        account: account,
+        coin: coin as Getters.Accounts.Coin,
+        action: action as Getters.Accounts.Action,
+        earliestTransactionTime: startTime,
+        latestTransactionTime: endTime,
+      });
+      // TODO: verify this when working on account summary
+      cb(result);
+  };
+
   //Default states
   const [coin, setCoin] = useState<string>('ALL');
   const [action, setAction] = useState<string>('ALL');
@@ -159,10 +186,10 @@ export const Transactions: React.FC<TransactionsProps> = props => {
   const [quantitySort, setQuantitySort] = useState<string>(NEUTRAL);
   //Component states
   const [startDate, setStartDate] = useState<Moment>(
-    moment(props.currentTimestamp * 1000).subtract(6, 'M')
+    moment(currentTimestamp * 1000).subtract(6, 'M')
   );
   const [endDate, setEndDate] = useState<Moment>(
-    moment(props.currentTimestamp * 1000)
+    moment(currentTimestamp * 1000)
   );
   const [startFocused, setStartFocused] = useState<boolean>(false);
   const [endFocused, setEndFocused] = useState<boolean>(false);
@@ -247,7 +274,6 @@ export const Transactions: React.FC<TransactionsProps> = props => {
   };
 
   const triggerSearch = () => {
-    const { getTransactionsHistory } = props;
     getTransactionsHistory(
       startDate.unix().valueOf(),
       endDate.unix().valueOf(),
@@ -352,7 +378,6 @@ export const Transactions: React.FC<TransactionsProps> = props => {
     ];
   };
 
-  const { title, closeAction, currentTimestamp } = props;
   const pageInfo = {
     page,
     itemsPerPage,

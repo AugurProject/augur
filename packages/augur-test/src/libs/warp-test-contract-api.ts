@@ -1,5 +1,5 @@
 import { SubscriptionEventName } from '@augurproject/sdk-lite';
-import { SDKConfiguration } from '@augurproject/utils';
+import { SDKConfiguration } from '@augurproject/sdk-lite';
 import { EthersProvider } from '@augurproject/ethersjs-provider';
 import {
   Augur,

@@ -1,7 +1,7 @@
 @import (reference) '~assets/styles/shared';
 
 .OrderBook {
-  background-color: @color-module-background;
+  background-color: var(--color-module-background);
   display: flex;
   flex-direction: column;
   height: 100%;
@@ -36,7 +36,7 @@
     justify-content: flex-end;
 
     > div:not(.NoOrders) > span:nth-of-type(2) {
-      color: @color-negative;
+      color: var(--color-negative);
     }
   }
 
@@ -54,7 +54,7 @@
     }
 
     &:not(.NoOrders)::before {
-      background-color: @color-positive;
+      background-color: var(--color-positive);
       content: '';
       grid-column: 1 / span 1;
       grid-row: 1 / span 1;
@@ -71,12 +71,12 @@
       margin-top: 0;
 
       &::before {
-        background-color: @color-negative;
+        background-color: var(--color-negative);
       }
     }
 
     &.Hover {
-      background-color: @color-module-background-action-focus;
+      background-color: var(--color-module-background-action-focus);
 
       &::before {
         width: @size-6;
@@ -93,18 +93,18 @@
 
       &:first-of-type {
         grid-column: 1 / span 1;
-        color: @color-primary-text;
+        color: var(--color-primary-text);
         margin-left: @size-40;
       }
 
       &:nth-of-type(2) {
         grid-column: 2 / span 1;
-        color: @color-positive;
+        color: var(--color-positive);
         text-align: center;
       }
 
       &:last-of-type {
-        color: @color-secondary-text;
+        color: var(--color-secondary-text);
         grid-column: 3 / span 1;
         padding-right: @size-20;
       }
@@ -116,14 +116,14 @@
       max-width: @size-38;
 
       > div {
-        background-color: fade(@color-positive, 50%);
+        background-color: var(--color-positive-50);
         cursor: pointer;
         pointer-events: none;
         z-index: @default-z-index;
         height: 100%;
 
         &.Neg {
-          background-color: fade(@color-negative, 50%);
+          background-color: var(--color-negative-50);
         }
       }
     }
@@ -135,7 +135,7 @@ div.NoOrders {
 
   align-items: center;
   align-self: center;
-  color: @color-inactive-text;
+  color: var(--color-inactive-text);
   display: flex;
   justify-content: center;
   height: 100%;
@@ -145,20 +145,20 @@ div.NoOrders {
 }
 
 .EncompassedHover {
-  background-color: @color-module-background-action-focus;
+  background-color: var(--color-module-background-action-focus);
 }
 
 .NoSize {
-  color: @color-inactive-text;
+  color: var(--color-inactive-text);
 }
 
 .Midmarket {
   .mono-10-medium;
 
-  border-bottom: 1px solid @color-dark-grey;
-  border-top: 1px solid @color-dark-grey;
-  background: @color-table-header;
-  color: @color-secondary-text;
+  border-bottom: 1px solid var(--color-dark-grey);
+  border-top: 1px solid var(--color-dark-grey);
+  background: var(--color-table-header);
+  color: var(--color-secondary-text);
   text-transform: capitalize;
   height: @size-24;
   max-height: @size-24;

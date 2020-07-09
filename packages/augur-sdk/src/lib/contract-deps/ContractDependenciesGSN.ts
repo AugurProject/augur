@@ -1,4 +1,4 @@
-import type { SDKConfiguration } from '@augurproject/utils';
+import type { SDKConfiguration } from '@augurproject/sdk-lite';
 import { abi } from '@augurproject/artifacts';
 import {
   ContractDependenciesEthers,

@@ -2,7 +2,7 @@
 
 .Filters {
   display: flex;
-  border-top: @size-1 solid @color-active-background;
+  border-top: @size-1 solid var(--color-active-background);
   flex-direction: column;
   margin: @size-16 0 @size-48;
   overflow: auto;
@@ -15,64 +15,35 @@
 }
 
 .FiltersGroup {
-  > div {
+  // Filters header
+
+  > div[class*='RadioBarGroup'] {
     margin: @size-13 @size-32 0;
-
-    > div {
-      grid-template-columns: @size-32 auto @size-16;
-      border: none;
-      height: auto;
-      margin: 0 0 @size-12 0;
-      cursor: pointer;
-      background: @color-module-background;
-
-      @media @breakpoint-mobile {
-        grid-template-columns: @size-34 auto @size-16;
-        height: @size-32;
-      }
-
-      > h5,
-      > span {
-        .text-12-medium;
-
-        color: @color-secondary-text;
-        text-transform: capitalize;
-
-        @media @breakpoint-mobile {
-          .text-14-medium;
-        }
-      }
-
-      // radio icon
-      > svg {
-        margin: 0;
-        height: @size-20;
-      }
-
-      &:hover {
-        border: none;
-      }
-    }
-
-    > div:last-of-type {
-      margin: 0 0 @size-16 0;
-    }
 
     @media @breakpoint-mobile {
       margin: @size-13 @size-24 0;
-    }
+     }
   }
 
-  // Filters header
   > div:first-of-type {
     .text-12-bold;
 
-    text-transform: uppercase;
-    color: @color-primary-text;
-    margin: @size-24 @size-32 @size-19 @size-32;
-    display: flex;
     align-items: center;
+    color: var(--color-primary-text);
     cursor: pointer;
+    display: flex;
+    margin: @size-24 @size-32 @size-19 @size-32;
+    text-transform: uppercase;
+
+    > span {
+      display: flex;
+      margin-left: @size-8;
+
+      > svg > path {
+        // chevron flip
+        stroke: var(--color-primary-text);
+      }
+    }
 
     > span {
       display: flex;
@@ -83,6 +54,10 @@
       margin: 0 @size-15 0 @size-3;
       width: @size-16;
       height: @size-16;
+
+      > g > path {
+        fill: var(--color-primary-text);
+      }
     }
 
     @media @breakpoint-mobile {
@@ -96,12 +71,13 @@
 .Filter {
   align-items: center;
   display: flex;
+  margin: @size-13 @size-32 0;
 
   > span:first-of-type {
     .text-12-bold;
 
     text-transform: uppercase;
-    color:@color-primary-text;
+    color: var(--color-primary-text);
 
     @media @breakpoint-mobile {
       .text-14-bold;
@@ -121,7 +97,7 @@
   > svg {
     height: @size-12;
     width: @size-12;
-    fill: @color-secondary-text;
+    fill: var(--color-secondary-text);
 
     @media @breakpoint-mobile {
       margin-bottom: @size-1;
@@ -136,4 +112,66 @@
 .Searching {
   pointer-events: none;
   opacity: 0.5;
+}
+
+:root[theme="BETTING"],
+:root[theme="SPORTS"] {
+  .Filters {
+    margin: 0;
+  }
+
+  .FiltersGroup {
+    margin: 0 @size-32 0;
+    border-bottom: @size-1 solid var(--color-secondary-action-outline);
+
+    @media @breakpoint-mobile-tablet {
+      border-bottom: 0;
+    }
+  
+    > div[class*='RadioBarGroup'] {
+      margin: @size-13 0 0;
+    }
+
+    // Filters header
+    > div:first-of-type {
+      .text-14-bold;
+
+      margin: @size-22 0 @size-27;
+
+      > svg {
+        margin: 0 @size-8 0 0;
+
+        > g > path {
+          fill: var(--color-primary-text);
+        }
+      }
+
+      > span {
+        margin-left: auto;
+        margin-right: @size-8;
+      }
+    }
+  }
+
+  .Filter {
+    margin-left: 0;
+    margin-right: 0;
+
+    > span:first-of-type {
+      .mono-10-medium;
+    }
+  }
+
+  .Filter_TooltipHint {
+    > svg {
+      height: @size-16;
+      width: @size-16;
+    }
+  }
+}
+
+:root[theme="SPORTS"] {
+  .Filters {
+    display: none;
+  }
 }

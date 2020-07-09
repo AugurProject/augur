@@ -15,6 +15,9 @@ import Styles from 'modules/market/components/common/market-common.styles.less';
 import classNames from 'classnames';
 import TooltipStyles from 'modules/common/tooltip.styles.less';
 import ReactTooltip from 'react-tooltip';
+import { selectMarket } from 'modules/markets/selectors/market';
+import { useAppStatusStore } from 'modules/app/store/app-status';
+import { THEMES } from 'modules/common/constants';
 
 interface MarketTitleProps {
   id: string;
@@ -29,23 +32,37 @@ interface MarketTitleProps {
 const wrapMarketName = (marketName: string) => <span>{`"${marketName}"`}</span>;
 
 const MarketTitle: React.FC<MarketTitleProps> = ({
-  description,
   id,
   isWrapped,
-  isTemplate,
-  template,
   noLink,
   headerType,
-}) =>
-  isTemplate ? (
-    <MarketLink className={Styles.MarketTemplateTitle} id={noLink ? null : id} headerType={headerType}>
-      <MarketTemplateTitle template={template} />
+}) => {
+  const { theme } = useAppStatusStore();
+  const marketId = id;
+  const market = selectMarket(marketId);
+  if (!market) return <div />;
+
+  const description = market.description || '';
+  const isTemplate = market.isTemplate;
+  const template = market.template;
+
+  const marketHeader =
+    theme === THEMES.SPORTS ? market.sportsBook.header : description;
+
+  return isTemplate && theme !== THEMES.SPORTS ? (
+    <MarketLink
+      className={Styles.MarketTemplateTitle}
+      id={noLink ? null : id}
+      headerType={headerType}
+    >
+      <MarketTemplateTitle template={template} market={market} />
     </MarketLink>
   ) : (
     <MarketLink id={noLink ? null : id} headerType={headerType}>
-      {isWrapped ? wrapMarketName(description) : description}
+      {isWrapped ? wrapMarketName(marketHeader) : marketHeader}
     </MarketLink>
   );
+};
 
 export default MarketTitle;
 
@@ -151,7 +168,7 @@ const MarketTemplateTitle: React.FC<MarketTemplateTitleProps> = ({
       {estDateTime && (
         <>
           {question}
-          <br/>
+          <br />
           Estimated scheduled start time: {estDateTime.userInput}
         </>
       )}

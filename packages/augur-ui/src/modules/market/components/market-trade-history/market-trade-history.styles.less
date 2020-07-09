@@ -18,7 +18,7 @@
 
       align-items: center;
       align-self: center;
-      color: @color-inactive-text;
+      color: var(--color-inactive-text);
       display: flex;
       justify-content: center;
       height: 100%;
@@ -53,13 +53,13 @@
   flex-flow: column nowrap;
 
   &:not(:first-of-type) {
-    border-top: 2px solid @color-dark-grey;
+    border-top: 2px solid var(--color-dark-grey);
   }
 
   > span {
     .mono-10-bold;
 
-    color: fade(@color-secondary-text, 75%);
+    color: --color-secondary-text-75;
     height: 100%;
     max-height: @size-20;
     min-height: @size-20;
@@ -76,7 +76,7 @@
     max-height: @size-20;
     min-height: @size-20;
     margin-bottom: 1px;
-    border-left: 1px solid @color-positive;
+    border-left: 1px solid var(--color-positive);
     width: 100%;
     display: grid;
     grid-template-columns: 1fr 1fr 1fr;
@@ -84,22 +84,22 @@
     grid-gap: 0 @size-16;
 
     &.Sell {
-      border-left: 1px solid @color-negative;
+      border-left: 1px solid var(--color-negative);
 
       > li:nth-of-type(2) {
-        color: @color-negative;
+        color: var(--color-negative);
       }
     }
 
     > li:first-of-type {
-      color: @color-primary-text;
-      margin-left: @size-32;
+      color: var(--color-primary-text);
+      margin-left: auto;
       text-align: right;
     }
 
     > li:nth-of-type(2) {
-      color: @color-positive;
-      text-align: center;
+      color: var(--color-positive);
+      text-align: right;
       align-items: center;
       display: flex;
       justify-content: center;
@@ -110,7 +110,7 @@
     }
 
     > li:last-of-type {
-      color: fade(@color-secondary-text, 80%);
+      color: --color-secondary-text-80;
       text-align: right;
       padding-right: @size-16;
     }
@@ -125,13 +125,13 @@
 }
 
 .Up {
-  border-bottom-color: fade(@color-secondary-text, 50%);
+  border-bottom-color: --color-secondary-text-50;
   border-width: 0 @size-4 @size-5;
   top: -@size-8;
 }
 
 .Down {
-  border-top-color: fade(@color-secondary-text, 50%);
+  border-top-color: --color-secondary-text-50;
   border-width: @size-5 @size-4 0;
   top: @size-9
 }

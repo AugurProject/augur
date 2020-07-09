@@ -1,5 +1,4 @@
-import React, { useEffect, useState } from 'react';
-import { connect } from 'react-redux';
+import React, { useEffect, useState, useRef } from 'react';
 import classNames from 'classnames';
 import * as constants from 'modules/common/constants';
 import Styles from 'modules/common/labels.styles.less';
@@ -17,7 +16,7 @@ import {
   ArchivedIcon,
   ExclamationCircle,
   FilledCheckbox,
-  EmptyCheckbox
+  EmptyCheckbox,
 } from 'modules/common/icons';
 import ReactTooltip from 'react-tooltip';
 import TooltipStyles from 'modules/common/tooltip.styles.less';
@@ -36,13 +35,26 @@ import {
   REPORTING_STATE,
   DISCORD_LINK,
   ACCOUNT_TYPES,
+  THEMES,
   CLOSED_SHORT,
+  MODAL_INVALID_MARKET_RULES,
   GWEI_CONVERSION,
   AUTO_ETH_REPLENISH,
 } from 'modules/common/constants';
+import { useAppStatusStore, AppStatus } from 'modules/app/store/app-status';
 import { ViewTransactionDetailsButton } from 'modules/common/buttons';
-import { formatNumber, formatBlank, formatGasCostToEther, formatAttoEth } from 'utils/format-number';
-import { DateFormattedObject, FormattedNumber, SizeTypes, MarketData } from 'modules/types';
+import {
+  formatNumber,
+  formatBlank,
+  formatGasCostToEther,
+  formatAttoEth,
+} from 'utils/format-number';
+import {
+  DateFormattedObject,
+  FormattedNumber,
+  SizeTypes,
+  MarketData,
+} from 'modules/types';
 import type { Getters } from '@augurproject/sdk';
 import { TXEventName } from '@augurproject/sdk-lite';
 import {
@@ -50,18 +62,22 @@ import {
   DismissableNotice,
   DismissableNoticeProps,
 } from 'modules/reporting/common';
+import {
+  AugurMarketsContent,
+  EventDetailsContent,
+} from 'modules/create-market/constants';
+import {
+  ExplainerBlock,
+  MultipleExplainerBlock,
+} from 'modules/create-market/components/common';
 import { hasTemplateTextInputs } from '@augurproject/templates';
-import { AugurMarketsContent, EventDetailsContent } from 'modules/create-market/constants';
-import { MultipleExplainerBlock } from 'modules/create-market/components/common';
 import { getDurationBetween } from 'utils/format-date';
 import { useTimer } from 'modules/common/progress';
 import { isGSNUnavailable } from 'modules/app/selectors/is-gsn-unavailable';
-import { AppState } from 'appStore';
-import { Ox_STATUS } from 'modules/app/actions/update-app-status';
 import { ethToDai } from 'modules/app/actions/get-ethToDai-rate';
 import { getEthForDaiRate } from 'modules/contracts/actions/contractCalls';
-import { getEthReserve } from 'modules/auth/selectors/get-eth-reserve';
-import { getTransactionLabel } from 'modules/auth/selectors/get-gas-price';
+import { getEthReserve } from 'modules/auth/helpers/get-eth-reserve';
+import { getTransactionLabel } from 'modules/auth/helpers/get-gas-price';
 import { augurSdk } from 'services/augursdk';
 
 export interface MarketTypeProps {
@@ -111,6 +127,7 @@ export interface PropertyLabelProps {
   label: string;
   value: string;
   hint?: React.ReactNode;
+  large?: boolean;
 }
 
 export interface LinearPropertyLabelProps {
@@ -247,6 +264,7 @@ interface TimeLabelProps {
   time: DateFormattedObject;
   showLocal?: boolean;
   hint?: React.ReactNode;
+  large?: boolean;
 }
 
 interface CountdownLabelProps {
@@ -278,22 +296,23 @@ interface RedFlagProps {
 }
 
 export const RedFlag = ({ market }: RedFlagProps) => {
+  const { theme } = useAppStatusStore();
   return market.mostLikelyInvalid ? (
     <>
       <label
-        className={TooltipStyles.TooltipHint}
+        className={classNames(TooltipStyles.TooltipHint, Styles.RedFlag)}
         data-tip
         data-for={`tooltip-${market.id}-redFlag`}
         data-iscapture={true}
       >
-        {RedFlagIcon}
+        {theme !== THEMES.TRADING ? `High Risk` : RedFlagIcon}
       </label>
       <ReactTooltip
         id={`tooltip-${market.id}-redFlag`}
         className={TooltipStyles.Tooltip}
         effect="solid"
         place="right"
-        type="light"
+        type={theme === THEMES.TRADING ? 'light' : null}
         event="mouseover mouseenter"
         eventOff="mouseleave mouseout scroll mousewheel blur"
       >
@@ -308,12 +327,19 @@ interface TemplateShieldProps {
 }
 
 export const TemplateShield = ({ market }: TemplateShieldProps) => {
+  const { theme } = useAppStatusStore();
   if (!market.isTemplate) return null;
-  const yellowShield = hasTemplateTextInputs(market.template.hash, market.marketType === CATEGORICAL);
+  const yellowShield = hasTemplateTextInputs(
+    market.template.hash,
+    market.marketType === CATEGORICAL
+  );
   return (
     <>
       <label
-        className={TooltipStyles.TooltipHint}
+        className={classNames(TooltipStyles.TooltipHint, {
+          [Styles.YellowTemplate]: yellowShield,
+          [Styles.Template]: !yellowShield,
+        })}
         data-tip
         data-for={`tooltip-${market.id}-templateShield`}
         data-iscapture={true}
@@ -325,7 +351,7 @@ export const TemplateShield = ({ market }: TemplateShieldProps) => {
         className={TooltipStyles.Tooltip}
         effect="solid"
         place="right"
-        type="light"
+        type={theme === THEMES.TRADING ? 'light' : null}
         event="mouseover mouseenter"
         eventOff="mouseleave mouseout scroll mousewheel blur"
       >
@@ -397,8 +423,14 @@ export const DataArchivedLabel = ({ label }: DataArchivedProps) => {
   );
 };
 
-export const TimeLabel = ({ label, time, showLocal, hint }: TimeLabelProps) => (
-  <div className={Styles.TimeLabel}>
+export const TimeLabel = ({
+  label,
+  time,
+  showLocal,
+  hint,
+  large,
+}: TimeLabelProps) => (
+  <div className={classNames(Styles.TimeLabel, { [Styles.Large]: large })}>
     <span>
       {label}
       {hint && (
@@ -503,7 +535,7 @@ export function formatExpandedValue(
 export function formatDecimalValue(
   value,
   showDenomination,
-  usePercent = false,
+  usePercent = false
 ) {
   const { fullPrecision, roundedFormatted, denomination } = value;
   const fullWithoutDecimals = fullPrecision.split('.');
@@ -514,10 +546,11 @@ export function formatDecimalValue(
     postfix: '',
     frontFacingLabel: roundedFormatted,
     denominationLabel,
-    showHover: !!fullWithoutDecimals[1] && !createBigNumber(roundedFormatted).eq(createBigNumber(fullPrecision))
+    showHover:
+      !!fullWithoutDecimals[1] &&
+      !createBigNumber(roundedFormatted).eq(createBigNumber(fullPrecision)),
   };
 }
-
 
 export const SizableValueLabel = (props: SizableValueLabelProps) => (
   <span
@@ -527,9 +560,7 @@ export const SizableValueLabel = (props: SizableValueLabelProps) => (
       [Styles.Highlight]: props.highlight,
     })}
   >
-    <ValueLabel
-      {...props}
-    />
+    <ValueLabel {...props} />
   </span>
 );
 
@@ -537,10 +568,7 @@ export const ValueLabel = (props: ValueLabelProps) => {
   if (!props.value || props.value === null)
     return props.showEmptyDash ? <span>&#8213;</span> : <span />;
 
-  let expandedValues = formatExpandedValue(
-    props.value,
-    props.showDenomination
-  );
+  let expandedValues = formatExpandedValue(props.value, props.showDenomination);
 
   if (props.showFullPrecision) {
     expandedValues = formatDecimalValue(
@@ -555,7 +583,7 @@ export const ValueLabel = (props: ValueLabelProps) => {
     postfix,
     frontFacingLabel,
     denominationLabel,
-    showHover
+    showHover,
   } = expandedValues;
 
   return (
@@ -573,7 +601,9 @@ export const ValueLabel = (props: ValueLabelProps) => {
         {props.usePercent
           ? props.value.percent
           : props.useFull && props.value.full}
-        {!props.useFull && !props.usePercent && <span>{denominationLabel}</span>}
+        {!props.useFull && !props.usePercent && (
+          <span>{denominationLabel}</span>
+        )}
         {!props.useFull && !props.usePercent && `${frontFacingLabel}${postfix}`}
       </label>
       {(postfix.length !== 0 || showHover) && !props.usePercent && (
@@ -587,77 +617,57 @@ export const ValueLabel = (props: ValueLabelProps) => {
           eventOff="mouseleave mouseout scroll mousewheel blur"
         >
           {props.useFull && props.value.full}
-          {!props.useFull && !props.usePercent && `${denominationLabel}${fullPrecision}`}
+          {!props.useFull &&
+            !props.usePercent &&
+            `${denominationLabel}${fullPrecision}`}
         </ReactTooltip>
       )}
     </span>
   );
 };
 
-export class TextLabel extends React.Component<TextLabelProps, TextLabelState> {
-  labelRef: any = null;
-  state: TextLabelState = {
-    scrollWidth: null,
-    clientWidth: null,
-    isDisabled: true,
-  };
+export const TextLabel = ({ text, keyId }: TextLabelProps) => {
+  const [state, setState] = useState({
+    scrollWidth: 0,
+    clientWidth: 0,
+    isDisalbed: true,
+  });
+  const labelRef = useRef({
+    current: { clientWidth: 0, scrollWidth: 0 },
+  });
+  useEffect(() => {
+    const { scrollWidth, clientWidth } = labelRef.current;
+    setState({ ...state, clientWidth, scrollWidth });
+  }, [labelRef.current.clientWidth, labelRef.current.scrollWidth, text]);
+  const { theme } = useAppStatusStore();
+  const { isDisabled } = state;
 
-  measure() {
-    const { clientWidth, scrollWidth } = this.labelRef;
-
-    this.setState({
-      scrollWidth,
-      clientWidth,
-      isDisabled: !(scrollWidth > clientWidth),
-    });
-  }
-
-  componentDidMount() {
-    this.measure();
-  }
-
-  componentDidUpdate() {
-    this.measure();
-  }
-
-  shouldComponentUpdate(nextProps: any, nextState: any) {
-    return (
-      this.state.scrollWidth !== nextState.scrollWidth ||
-      this.state.clientWidth !== nextState.clientWidth ||
-      this.props.text !== nextProps.text
-    );
-  }
-  render() {
-    const { text, keyId } = this.props;
-    const { isDisabled } = this.state;
-
-    return (
-      <span className={Styles.TextLabel}>
-        <label
-          ref={ref => (this.labelRef = ref)}
-          data-tip
-          data-for={`${keyId}-${text ? text.replace(/\s+/g, '-') : ''}`}
-          data-iscapture={true}
+  return (
+    <span className={Styles.TextLabel}>
+      <label
+        ref={labelRef}
+        data-tip
+        data-for={`${keyId}-${text ? text.replace(/\s+/g, '-') : ''}`}
+        data-iscapture={true}
+      >
+        {text}
+      </label>
+      {!isDisabled && (
+        <ReactTooltip
+          id={`${keyId}-${text ? text.replace(/\s+/g, '-') : ''}`}
+          className={TooltipStyles.Tooltip}
+          effect="solid"
+          place="top"
+          type={theme === THEMES.TRADING ? 'light' : null}
+          event="mouseover mouseenter"
+          eventOff="mouseleave mouseout scroll mousewheel blur"
         >
           {text}
-        </label>
-        {!isDisabled && (
-          <ReactTooltip
-            id={`${keyId}-${text.replace(/\s+/g, '-')}`}
-            className={TooltipStyles.Tooltip}
-            effect="solid"
-            place="top"
-            type="light"
-            event="mouseover mouseenter"
-            eventOff="mouseleave mouseout scroll mousewheel blur"
-          >
-            {text}
-          </ReactTooltip>
-        )}
-      </span>
-    );
-  }
-}
+        </ReactTooltip>
+      )}
+    </span>
+  );
+};
 
 export class HoverValueLabel extends React.Component<
   ValueLabelProps,
@@ -670,11 +680,13 @@ export class HoverValueLabel extends React.Component<
     const { value, showDenomination, useFull } = this.props;
     if (!value || value === null) return <span />;
 
-    const expandedValues = formatDecimalValue(
-      value,
-      showDenomination
-    );
-    const { fullPrecision, postfix, frontFacingLabel, showHover } = expandedValues;
+    const expandedValues = formatDecimalValue(value, showDenomination);
+    const {
+      fullPrecision,
+      postfix,
+      frontFacingLabel,
+      showHover,
+    } = expandedValues;
 
     const frontFacingLabelSplit = frontFacingLabel.toString().split('.');
     const firstHalf = frontFacingLabelSplit[0];
@@ -735,13 +747,22 @@ export class HoverValueLabel extends React.Component<
 export const InvalidLabel = ({
   text,
   keyId,
-  openInvalidMarketRulesModal,
   tooltipPositioning,
 }: InvalidLabelProps) => {
+  const {
+    theme,
+    actions: { setModal },
+  } = useAppStatusStore();
+  const {
+    explainerBlockTitle: title,
+    explainerBlockSubtexts: subtexts,
+    useBullets,
+  } = EventDetailsContent();
+
   const openModal = event => {
     event.preventDefault();
     event.stopPropagation();
-    openInvalidMarketRulesModal();
+    setModal({ type: MODAL_INVALID_MARKET_RULES });
   };
 
   return (
@@ -763,16 +784,16 @@ export const InvalidLabel = ({
         )}
         effect="solid"
         place={tooltipPositioning || 'left'}
-        type="dark"
+        type={theme === THEMES.TRADING ? 'dark' : null}
         event="mouseover mouseenter"
         eventOff="mouseleave mouseout scroll mousewheel blur"
       >
         <MultipleExplainerBlock
           contents={[
             {
-              title: EventDetailsContent().explainerBlockTitle,
-              subtexts: EventDetailsContent().explainerBlockSubtexts,
-              useBullets: EventDetailsContent().useBullets,
+              title,
+              subtexts,
+              useBullets,
             },
             {
               title: AugurMarketsContent().explainerBlockTitle,
@@ -786,22 +807,27 @@ export const InvalidLabel = ({
   );
 };
 
-export const PropertyLabel = (props: PropertyLabelProps) => (
-  <div className={Styles.PropertyLabel}>
+export const PropertyLabel = ({
+  large,
+  label,
+  hint,
+  value,
+}: PropertyLabelProps) => (
+  <div className={classNames(Styles.PropertyLabel, { [Styles.Large]: large })}>
     <span>
-      {props.label}
-      {props.hint && (
+      {label}
+      {hint && (
         <>
           <label
             className={TooltipStyles.TooltipHint}
             data-tip
-            data-for={`tooltip-${props.label.replace(' ', '-')}`}
+            data-for={`tooltip-${label.replace(' ', '-')}`}
             data-iscapture={true}
           >
             {QuestionIcon}
           </label>
           <ReactTooltip
-            id={`tooltip-${props.label.replace(' ', '-')}`}
+            id={`tooltip-${label.replace(' ', '-')}`}
             className={TooltipStyles.Tooltip}
             effect="solid"
             place="right"
@@ -809,41 +835,39 @@ export const PropertyLabel = (props: PropertyLabelProps) => (
             event="mouseover mouseenter"
             eventOff="mouseleave mouseout scroll mousewheel blur"
           >
-            {props.hint}
+            {hint}
           </ReactTooltip>
         </>
       )}
     </span>
-    <span>{props.value}</span>
+    <span>{value}</span>
   </div>
 );
 
 interface TransactionFeeLabelProps {
-  label: string;
   gasCostDai: FormattedNumber;
   isError: boolean;
 }
 
-const mapStateToPropsTransactionFeeLabel = (state: AppState) => ({
-  label: getTransactionLabel(state)
-});
-
-export const TransactionFeeLabelCmp = ({
-  label,
+export const TransactionFeeLabel = ({
   gasCostDai,
-}: TransactionFeeLabelProps) => (
-  <LinearPropertyLabel
-    label={label}
-    value={gasCostDai}
-    showDenomination={true}
-  />
-);
+}: TransactionFeeLabelProps) => {
+  const label = getTransactionLabel();
+  return (
+    <LinearPropertyLabel
+      label={label}
+      value={gasCostDai}
+      showDenomination={true}
+    />
+  );
+};
 
-export const TransactionFeeLabelToolTipCmp = ({
-  label,
+export const TransactionFeeLabelToolTip = ({
   isError,
-  gasCostDai
-}: TransactionFeeLabelProps) => (
+  gasCostDai,
+}: TransactionFeeLabelProps) => {
+  const label = getTransactionLabel();
+  return (
     <LinearPropertyLabelUnderlineTooltip
       label={label}
       value={gasCostDai}
@@ -853,15 +877,8 @@ export const TransactionFeeLabelToolTipCmp = ({
       id={'transaction_fee'}
       tipText={`Est. TX Fee is not included in profit and loss`}
     />
-)
-
-export const TransactionFeeLabel = connect(
-  mapStateToPropsTransactionFeeLabel
-)(TransactionFeeLabelCmp);
-
-export const TransactionFeeLabelToolTip = connect(
-  mapStateToPropsTransactionFeeLabel
-)(TransactionFeeLabelToolTipCmp);
+  );
+};
 
 export const LinearPropertyLabel = ({
   highlight,
@@ -950,7 +967,11 @@ interface LiquidityDepletedLabelProps {
 export const LiquidityDepletedLabel = ({
   market,
 }: LiquidityDepletedLabelProps) => {
-  if (market.passDefaultLiquiditySpread || market.hasPendingLiquidityOrders || market.marketStatus === constants.MARKET_CLOSED)
+  if (
+    market.passDefaultLiquiditySpread ||
+    market.hasPendingLiquidityOrders ||
+    market.marketStatus === constants.MARKET_CLOSED
+  )
     return null;
   return (
     <span
@@ -976,8 +997,11 @@ export const LiquidityDepletedLabel = ({
   );
 };
 
-export const MarketStatusLabel = (props: MarketStatusProps) => {
-  const { reportingState, mini, isWarpSync } = props;
+export const MarketStatusLabel = ({
+  reportingState,
+  mini,
+  isWarpSync,
+}: MarketStatusProps) => {
   let open = false;
   let resolved = false;
   let reporting = false;
@@ -1065,7 +1089,10 @@ export const InReportingLabel = (props: InReportingLabelProps) => {
       className={classNames(
         Styles.MarketStatus,
         Styles.MarketStatus_reporting,
-        { [Styles.MarketStatus_warpSync]: isWarpSync, [Styles.MarketStatus_forking]: isForkingMarket }
+        {
+          [Styles.MarketStatus_warpSync]: isWarpSync,
+          [Styles.MarketStatus_forking]: isForkingMarket,
+        }
       )}
     >
       {isForkingMarket && ExclamationCircle}
@@ -1113,9 +1140,7 @@ export const PendingLabel = ({ status }: PendingLabelProps) => (
         </ReactTooltip>
       </>
     )}
-    {status === TXEventName.Failure && (
-      <span>Failed</span>
-    )}
+    {status === TXEventName.Failure && <span>Failed</span>}
   </span>
 );
 
@@ -1267,7 +1292,10 @@ export const PositionTypeLabel = (props: PositionTypeLabelProps) => {
   return (
     <span
       className={classNames(Styles.PositionTypeLabel, {
-        [Styles.Sell]: props.type === SHORT || props.type === SELL || props.type === CLOSED_SHORT,
+        [Styles.Sell]:
+          props.type === SHORT ||
+          props.type === SELL ||
+          props.type === CLOSED_SHORT,
         [Styles.Closed]: props.type === CLOSED,
       })}
     >
@@ -1333,25 +1361,28 @@ interface StatusDotTooltipProps {
   title: string;
 }
 
-export const StatusDotTooltip = (props: StatusDotTooltipProps) => (
+export const StatusDotTooltip = ({
+  status,
+  tooltip,
+  title,
+}: StatusDotTooltipProps) => (
   <>
-    {props.status && (
+    {status && (
       <div className={classNames(Styles.StatusDotTooltip)}>
         <span
           data-tip
-          data-for={`tooltip-${props.status}`}
+          data-for={`tooltip-${status}`}
           data-iscapture={true}
           className={classNames({
-            [Styles.Ready]: props.status === constants.ZEROX_STATUSES.SYNCED,
+            [Styles.Ready]: status === constants.ZEROX_STATUSES.SYNCED,
             [Styles.Lag]:
-              props.status !== constants.ZEROX_STATUSES.SYNCED &&
-              props.status !== constants.ZEROX_STATUSES.ERROR,
-            [Styles.Error]: props.status === constants.ZEROX_STATUSES.ERROR,
+              status !== constants.ZEROX_STATUSES.SYNCED &&
+              status !== constants.ZEROX_STATUSES.ERROR,
+            [Styles.Error]: status === constants.ZEROX_STATUSES.ERROR,
           })}
-        >
-        </span>
+        ></span>
         <ReactTooltip
-          id={`tooltip-${props.status}`}
+          id={`tooltip-${status}`}
           className={TooltipStyles.Tooltip}
           effect="solid"
           place="top"
@@ -1359,20 +1390,17 @@ export const StatusDotTooltip = (props: StatusDotTooltipProps) => (
           event="mouseover mouseenter"
           eventOff="mouseleave mouseout scroll mousewheel blur"
         >
-          {props.tooltip}
+          {tooltip}
         </ReactTooltip>
-        {props.title}
+        {title}
       </div>
     )}
-    {!props.status && props.title}
+    {!status && title}
   </>
 );
 
-const mapStateToPropsStatusMessage = (state: AppState) => ({
-    status: state.appStatus[Ox_STATUS]
-});
-
-export const StatusErrorMessageCmp = ({ status }) => {
+export const StatusErrorMessage = () => {
+  const { zeroXStatus: status } = useAppStatusStore();
   if (status !== constants.ZEROX_STATUSES.ERROR) return null;
   return (
     <div className={classNames(Styles.StatusErrorMessage)}>
@@ -1384,14 +1412,10 @@ export const StatusErrorMessageCmp = ({ status }) => {
   );
 };
 
-export const StatusErrorMessage = connect(
-  mapStateToPropsStatusMessage
-)(StatusErrorMessageCmp);
-
-
-interface LinearPropertyLabelUnderlineTooltipProps extends LinearPropertyLabelProps {
-  tipText: string,
-  id: string,
+interface LinearPropertyLabelUnderlineTooltipProps
+  extends LinearPropertyLabelProps {
+  tipText: string;
+  id: string;
 }
 
 export const LinearPropertyLabelUnderlineTooltip = ({
@@ -1420,17 +1444,17 @@ export const LinearPropertyLabelUnderlineTooltip = ({
       {value && value.formatted
         ? `${showDenomination || useFull ? value.full : value.roundedFormatted}`
         : value}
-        <ReactTooltip
-          id={`underlinetooltip-${id}`}
-          className={TooltipStyles.Tooltip}
-          effect="solid"
-          place="right"
-          type="light"
-          event="mouseover mouseenter"
-          eventOff="mouseleave mouseout scroll mousewheel blur"
-        >
-          {tipText}
-        </ReactTooltip>
+      <ReactTooltip
+        id={`underlinetooltip-${id}`}
+        className={TooltipStyles.Tooltip}
+        effect="solid"
+        place="right"
+        type="light"
+        event="mouseover mouseenter"
+        eventOff="mouseleave mouseout scroll mousewheel blur"
+      >
+        {tipText}
+      </ReactTooltip>
     </span>
   </div>
 );
@@ -1519,41 +1543,46 @@ export const ModalLabelNotice = (props: DismissableNoticeProps) => (
   </div>
 );
 
-const mapStateToPropsInitWalletModal = (state: AppState) => ({
-  gsnUnavailable: isGSNUnavailable(state),
-});
+export const InitializeWalletModalNotice = () => {
+  const gsnUnavailable = isGSNUnavailable();
 
-const InitializeWalletModalNoticeCmp = ({ gsnUnavailable }) => (
-  <>
-    {gsnUnavailable && (
-      <div className={classNames(Styles.ModalMessageLabelInitWallet)}>
-        <DismissableNotice
-          show
-          buttonType={DISMISSABLE_NOTICE_BUTTON_TYPES.NONE}
-          title={`The fee displayed is higher than normal because it includes a one time only account activation.`}
-        />
-      </div>
-    )}
-  </>
-);
+  return (
+    <>
+      {gsnUnavailable && (
+        <div className={classNames(Styles.ModalMessageLabelInitWallet)}>
+          <DismissableNotice
+            show
+            buttonType={DISMISSABLE_NOTICE_BUTTON_TYPES.NONE}
+            title={`The fee displayed is higher than normal because it includes a one time only account activation.`}
+          />
+        </div>
+      )}
+    </>
+  );
+};
 
-export const InitializeWalletModalNotice = connect(
-  mapStateToPropsInitWalletModal
-)(InitializeWalletModalNoticeCmp);
+interface EthReseveProps {
+  gasLimit: FormattedNumber;
+}
 
-
-const mapStateToPropsEthReserve = (state: AppState, ownProps) => {
-  const gasLimit = ownProps.gasLimit;
-  const aboveCutoff = createBigNumber(state.loginAccount.balances.dai).isGreaterThan(createBigNumber(state.env.gsn.minDaiForSignerETHBalanceInDAI))
+export const EthReserveNotice = ({ gasLimit }: EthReseveProps) => {
+  const {
+    gasPriceInfo,
+    loginAccount: {
+      balances: { dai },
+    },
+    env,
+  } = AppStatus.get();
+  const aboveCutoff = createBigNumber(dai).isGreaterThan(
+    createBigNumber(env.gsn.minDaiForSignerETHBalanceInDAI)
+  );
+  let show = true;
   if (aboveCutoff) {
-    return {
-      show: false
-    }
+    show = false;
   }
 
-  const ethInReserve = getEthReserve(state);
-  const gasPrice =
-    state.gasPriceInfo.userDefinedGasPrice || state.gasPriceInfo.average;
+  const ethInReserve = getEthReserve();
+  const gasPrice = gasPriceInfo.userDefinedGasPrice || gasPriceInfo.average;
   const estTransactionFee = createBigNumber(
     formatGasCostToEther(
       gasLimit,
@@ -1562,59 +1591,59 @@ const mapStateToPropsEthReserve = (state: AppState, ownProps) => {
     )
   );
 
-  const show = createBigNumber(estTransactionFee)
+  show = createBigNumber(estTransactionFee)
     .minus(createBigNumber(ethInReserve.value))
     .gt(0);
 
   let reserve = formatBlank();
   if (show) {
     const attoEthToDaiRate: BigNumber = getEthForDaiRate();
-    const attoEthReserve = formatAttoEth(
-      state.env.gsn.desiredSignerBalanceInETH
-    ).value;
+    const attoEthReserve = formatAttoEth(env.gsn.desiredSignerBalanceInETH)
+      .value;
     const diffReserve = createBigNumber(attoEthReserve).minus(
       createBigNumber(ethInReserve.value).div(10 ** 18)
     );
     reserve = ethToDai(
-      diffReserve.lte(0)
-        ? attoEthReserve
-        : diffReserve,
+      diffReserve.lte(0) ? attoEthReserve : diffReserve,
       createBigNumber(attoEthToDaiRate || 0)
     );
   }
-  return {
-    show,
-    reserve,
-  };
+  return (
+    <>
+      {show && (
+        <div className={classNames(Styles.EthReserveNotice)}>
+          <DismissableNotice
+            show
+            buttonType={DISMISSABLE_NOTICE_BUTTON_TYPES.NONE}
+            title={`Replenish Fee reserves`}
+            description={`$${reserve.formatted} DAI will be added to your Fee reserves`}
+          />
+        </div>
+      )}
+    </>
+  );
 };
 
-interface EthReseveProps {
-  show: boolean,
-  reserve: FormattedNumber,
-}
-
-const EthReserveNoticeCmp = ({ show, reserve }: EthReseveProps) => (
-  <>
-    {show && (
-      <div className={classNames(Styles.EthReserveNotice)}>
-        <DismissableNotice
-          show
-          buttonType={DISMISSABLE_NOTICE_BUTTON_TYPES.NONE}
-          title={`Replenish Fee reserves`}
-          description={`$${reserve.formatted} DAI will be added to your Fee reserves`}
-        />
-      </div>
-    )}
-  </>
-);
-
-export const EthReserveNotice = connect(
-  mapStateToPropsEthReserve
-)(EthReserveNoticeCmp);
-
-export const EthReserveAutomaticTopOffCmp = ({ show }) => {
+export const EthReserveAutomaticTopOff = () => {
+  const {
+    loginAccount: { balances },
+    env: { gsn },
+  } = useAppStatusStore();
+  // top off buffer is used to determine to show automatic top off checkbox
+  const topoffBuffer = createBigNumber(1.2);
+  const tradingAccountDai = createBigNumber(balances.dai);
+  const signerEth = createBigNumber(balances.signerBalances.eth);
+  const aboveCutoff = tradingAccountDai.gt(
+    createBigNumber(gsn.minDaiForSignerETHBalanceInDAI)
+  );
+  const aboveTopOff = signerEth.gt(
+    createBigNumber(gsn.desiredSignerBalanceInETH).times(topoffBuffer)
+  );
+  const show = aboveCutoff && !aboveTopOff;
   // using useState b/c lag in setting/getting property from sdk.
-  const [checked, setChecked] = useState(augurSdk?.client?.getUseDesiredEthBalance());
+  const [checked, setChecked] = useState(
+    augurSdk?.client?.getUseDesiredEthBalance()
+  );
   if (!show) return null;
   return (
     <div
@@ -1635,30 +1664,14 @@ export const EthReserveAutomaticTopOffCmp = ({ show }) => {
   );
 };
 
-const mapStateToPropsEthReserveTopOff = (state: AppState) => {
-  // top off buffer is used to determine to show automatic top off checkbox
-  const topoffBuffer = createBigNumber(1.2);
-  const tradingAccountDai = createBigNumber(state.loginAccount.balances.dai);
-  const signerEth = createBigNumber(state.loginAccount.balances.signerBalances.eth);
-  const aboveCutoff = tradingAccountDai.gt(createBigNumber(state.env.gsn.minDaiForSignerETHBalanceInDAI));
-  const aboveTopOff = signerEth.gt(createBigNumber(state.env.gsn.desiredSignerBalanceInETH).times(topoffBuffer));
-  return {
-    show: aboveCutoff && !aboveTopOff
-  }
-}
-
-export const EthReserveAutomaticTopOff = connect(
-  mapStateToPropsEthReserveTopOff
-)(EthReserveAutomaticTopOffCmp);
-
 export const AutoCancelOrdersNotice = () => (
-    <div className={classNames(Styles.ModalMessageAutoCancel)}>
-      <DismissableNotice
-        show
-        buttonType={DISMISSABLE_NOTICE_BUTTON_TYPES.NONE}
-        title={`When cashing out, all open orders will automatically be cancelled, positions are left unchanged.`}
-      />
-    </div>
+  <div className={classNames(Styles.ModalMessageAutoCancel)}>
+    <DismissableNotice
+      show
+      buttonType={DISMISSABLE_NOTICE_BUTTON_TYPES.NONE}
+      title={`When cashing out, all open orders will automatically be cancelled, positions are left unchanged.`}
+    />
+  </div>
 );
 
 export const ValueDenomination: React.FC<ValueDenominationProps> = ({
@@ -1768,4 +1781,3 @@ export const AddFundsHelp = props => (
     </li>
   </ol>
 );
-

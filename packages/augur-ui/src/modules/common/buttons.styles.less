@@ -13,20 +13,20 @@
   }
 
   &.Confirmed {
-    color: @color-primary-text;
-    background: fade(@color-positive, 20%);
-    border: 1px solid @color-positive;
+    color: var(--color-primary-text);
+    background: var(--color-positive-20);
+    border: 1px solid var(--color-positive);
     border-radius: @border-radius-default;
     &:hover:enabled {
-      background: fade(@color-positive, 20%);
+      background: var(--color-positive-20);
     }
 
     &:focus:enabled {
-      background: fade(@color-positive, 20%);
+      background: var(--color-positive-20);
     }
 
     &:active:enabled {
-      background: fade(@color-positive, 20%);
+      background: var(--color-positive-20);
     }
     > svg {
       width: @size-8;
@@ -34,26 +34,26 @@
       margin-left: @size-8;
 
       > path {
-        stroke: @color-primary-text;
+        stroke: var(--color-primary-text);
       }
     }
   }
 
   &.Failed {
-    color: @color-primary-text;
-    background: fade(@color-error, 20%);
-    border: 1px solid @color-error;
+    color: var(--color-primary-text);
+    background: var(--color-error-20);
+    border: 1px solid var(--color-error);
     border-radius: @border-radius-default;
     &:hover:enabled {
-      background: fade(@color-error, 20%);
+      background: var(--color-error-20);
     }
 
     &:focus:enabled {
-      background: fade(@color-error, 20%);
+      background: var(--color-error-20);
     }
 
     &:active:enabled {
-      background: fade(@color-error, 20%);
+      background: var(--color-error-20);
     }
     > svg {
       width: @size-8;
@@ -61,7 +61,7 @@
       margin-left: @size-8;
 
       > path {
-        stroke: @color-primary-text;
+        stroke: var(--color-primary-text);
       }
     }
   }
@@ -70,25 +70,84 @@
 .PrimaryButton {
   .Button;
 
-  background: @color-primary-action;
-  color: @color-dark-grey;
+  background: var(--color-primary-action);
+  color: var(--color-dark-grey);
   max-height: @button-height-default;
   padding: @size-8 @size-12;
 
   &:not(:disabled):hover {
-    background: fade(@color-primary-action, 90%);
+    background: var(--color-primary-action-90);
   }
 
   &:not(:disabled):focus {
-    background: fade(@color-primary-action, 80%);
+    background: var(--color-primary-action-80);
   }
 
   &:not(:disabled):active {
-    background: fade(@color-primary-action, 70%);
+    background: var(--color-primary-action-70);
   }
 
   &:disabled {
-    background: fade(@color-primary-action, 40%);
+    background: var(--color-primary-action-40);
+  }
+}
+
+:root[theme='BETTING'],
+:root[theme='SPORTS'] {
+  .BackButton {
+    height: @size-16;
+    background: var(--color-module-background);
+    border: @size-1 solid var(--color-dark-text);
+    border-radius: @border-radius-soft;
+    margin-right: @size-8;
+    display: flex;
+    justify-content: center;
+
+    > svg {
+      height: @size-6;
+      width: @size-8;
+      display: flex;
+    }
+
+    > span {
+      display: none;
+    }
+  }
+
+  .PrimaryButton {
+    align-items: center;
+    background: var(--color-primary-action-15);
+    border: @size-1 solid var(--color-primary-action);
+    color: var(--color-primary-text);
+    display: flex;
+    flex-flow: row-reverse nowrap;
+    justify-content: center;
+    max-height: @size-44;
+    height: @size-44;
+    padding: 0 @size-24;
+
+    &:not(:disabled):hover {
+      background: var(--color-primary-action-40);
+    }
+
+    &:not(:disabled):focus {
+      background: var(--color-primary-action-15);
+      border: @size-1 solid var(--color-focused);
+    }
+
+    &:not(:disabled):active {
+      background: var(--color-primary-action-40);
+    }
+
+    &:disabled {
+      background: var(--color-primary-action-15);
+      border: @size-1 solid var(--color-primary-action-40);
+      opacity: 0.25;
+    }
+  }
+
+  .FilterButton {
+    text-transform: uppercase;
   }
 }
 
@@ -102,7 +161,7 @@
     width: @size-16;
 
     > path {
-      stroke: @color-secondary-text;
+      stroke: var(--color-secondary-text);
     }
   }
 }
@@ -112,7 +171,7 @@
 
   text-transform: uppercase;
   display: flex;
-  color: @color-primary-text;
+  color: var(--color-primary-text);
   display: flex;
   align-items: center;
 
@@ -122,7 +181,7 @@
     margin-right: @size-5;
 
     > path {
-      fill: @color-primary-text;
+      fill: var(--color-primary-text);
     }
   }
 }
@@ -130,8 +189,8 @@
 .PrimarySignInButton {
   .Button;
 
-  background: @color-primary-action;
-  color: @color-dark-grey;
+  background: var(--color-primary-action);
+  color: var(--color-dark-grey);
   padding: @size-12 @size-24;
 
   > div:first-of-type {
@@ -140,37 +199,48 @@
     justify-content: flex-start;
   }
 
+  > div > div:first-of-type {
+    > svg {
+      width: @size-20;
+      height: @size-20;
+
+      > path {
+        stroke: var(--color-primary-text);
+      }
+    }
+  }
+
   > div > div:nth-of-type(2) {
     margin-left: @size-21;
 
     > div:first-of-type {
       .text-14-bold;
 
-      color: @color-primary-text;
+      color: var(--color-primary-text);
       margin-bottom: @size-4;
     }
 
     > div:last-of-type {
       .text-10;
 
-      color: @color-primary-text;
+      color: var(--color-primary-text);
     }
   }
 
   &:not(:disabled):hover {
-    background: fade(@color-primary-action, 90%);
+    background: var(--color-primary-action-90);
   }
 
   &:not(:disabled):focus {
-    background: fade(@color-primary-action, 80%);
+    background: var(--color-primary-action-80);
   }
 
   &:not(:disabled):active {
-    background: fade(@color-primary-action, 70%);
+    background: var(--color-primary-action-70);
   }
 
   &:disabled {
-    background: fade(@color-primary-action, 40%);
+    background: var(--color-primary-action-40);
   }
 }
 
@@ -178,8 +248,8 @@
   .Button;
 
   background: transparent;
-  border: @size-1 solid @color-secondary-action-outline;
-  color: @color-primary-text;
+  border: @size-1 solid var(--color-secondary-action-outline);
+  color: var(--color-primary-text);
   padding: @size-12 @size-24;
 
   > div:first-of-type {
@@ -188,37 +258,48 @@
     justify-content: flex-start;
   }
 
+  > div > div:first-of-type {
+    > svg {
+      width: @size-18;
+      height: @size-18;
+
+      > path {
+        fill: var(--color-primary-text);
+      }
+    }
+  }
+
   > div > div:nth-of-type(2) {
     margin-left: @size-21;
 
     > div:first-of-type {
       .text-14-bold;
 
-      color: @color-primary-text;
+      color: var(--color-primary-text);
       margin-bottom: @size-4;
     }
 
     > div:last-of-type {
       .text-10;
 
-      color: @color-secondary-text;
+      color: var(--color-secondary-text);
     }
   }
 
   &:disabled {
-    background: @color-inactive-text;
+    background: var(--color-inactive-text);
   }
 
   &:hover:enabled {
-    background: fade(@color-primary-action, 5%);
+    background: var(--color-primary-action-5);
   }
 
   &:focus:enabled {
-    background: fade(@color-primary-action, 10%);
+    background: var(--color-primary-action-10);
   }
 
   &:active:enabled {
-    background: fade(@color-primary-action, 15%);
+    background: var(--color-primary-action-15);
   }
 
   &.Small {
@@ -231,27 +312,27 @@
 .SecondaryButton {
   .Button;
 
-  background: @color-module-background;
-  border: @size-1 solid @color-secondary-action-outline;
-  color: @color-primary-text;
+  background: transparent;
+  border: @size-1 solid var(--color-secondary-action-outline);
+  color: var(--color-primary-text);
   max-height: @button-height-default;
   padding: @size-8 @size-12;
 
   &:disabled {
-    background: fade(@color-secondary-hover, 25%);
-    color: fade(@color-primary-text, 25%);
+    background: var(--color-secondary-hover-25);
+    color: var(--color-primary-text-25);
   }
 
   &:hover:enabled {
-    background: lighten(@color-module-background, 5%);
+    background: var(--color-primary-action-5);
   }
 
   &:focus:enabled {
-    background: lighten(@color-module-background, 10%);
+    background: var(--color-primary-action-10);
   }
 
   &:active:enabled {
-    background: lighten(@color-module-background, 15%);
+    background: var(--color-primary-action-15);
   }
 
   &.Small {
@@ -265,9 +346,46 @@
     width: @size-12;
 
     > rect {
-      fill: @color-primary-text;
+      fill: var(--color-primary-text);
       height: 1px;
       width: @size-8;
+    }
+  }
+}
+
+:root[theme='BETTING'],
+:root[theme='SPORTS'] {
+  .SecondaryButton {
+    align-items: center;
+    background: var(--color-secondary-action);
+    border: @size-1 solid var(--color-primary-text);
+    color: var(--color-primary-text);
+    display: flex;
+    flex-flow: row-reverse nowrap;
+    justify-content: center;
+    max-height: none;
+    padding: 0 @size-24;
+    height: @size-44;
+
+    &:not(:disabled):hover {
+      background: var(--color-primary-text);
+      color: var(--color-secondary-action);
+    }
+
+    &:not(:disabled):focus,
+    &:not(:disabled):focus:hover {
+      background: var(--color-secondary-action);
+      color: var(--color-primary-text);
+      border: @size-2 solid var(--color-focused);
+    }
+
+    &:not(:disabled):active {
+      background: var(--color-primary-text);
+      color: var(--color-secondary-action);
+    }
+
+    &:disabled {
+      opacity: 0.25;
     }
   }
 }
@@ -276,23 +394,23 @@
   .Button;
   .mono-12-semi-bold;
 
-  background: fade(@color-positive, 10%);
-  border-color: @color-positive;
+  background: var(--color-positive-10);
+  border-color: var(--color-positive);
   border-width: @size-2;
-  color: @color-positive;
+  color: var(--color-positive);
   height: @button-height-default;
   max-height: @button-height-default;
   text-transform: uppercase;
   width: 100%;
 
   &:disabled {
-    background: fade(@color-positive, 5%);
-    border-color: fade(@color-positive, 10%);
-    color: fade(@color-positive, 20%);
+    background: var(--color-positive-5);
+    border-color: var(--color-positive-10);
+    color: var(--color-positive-20);
   }
 
   &:hover:enabled {
-    background: fade(@color-positive, 20%);
+    background: var(--color-positive-20);
   }
 }
 
@@ -306,7 +424,7 @@
     height: @size-12;
 
     > path {
-      stroke: @color-secondary-text;
+      stroke: var(--color-secondary-text);
     }
   }
 
@@ -315,7 +433,7 @@
 
     > svg {
       > path {
-        stroke: @color-primary-text;
+        stroke: var(--color-primary-text);
       }
     }
   }
@@ -329,23 +447,23 @@
   .Button;
   .mono-12-semi-bold;
 
-  background: fade(@color-negative, 10%);
-  border-color: @color-negative;
+  background: var(--color-negative-10);
+  border-color: var(--color-negative);
   border-width: @size-2;
-  color: @color-negative;
+  color: var(--color-negative);
   height: @button-height-default;
   max-height: @button-height-default;
   text-transform: uppercase;
   width: 100%;
 
   &:disabled {
-    background: fade(@color-negative, 5%);
-    border-color: fade(@color-negative, 10%);
-    color: fade(@color-negative, 20%);
+    background: var(--color-negative-5);
+    border-color: var(--color-negative-10);
+    color: var(--color-negative-20);
   }
 
   &:hover:enabled {
-    background: fade(@color-negative, 20%);
+    background: var(--color-negative-20);
   }
 }
 
@@ -357,21 +475,21 @@
   display: flex;
   flex-direction: row;
   text-transform: uppercase;
-  color: @color-primary-text;
-  background: @color-secondary-action;
+  color: var(--color-primary-text);
+  background: var(--color-secondary-action);
   cursor: pointer;
-  border: @size-1 solid @color-secondary-action-outline;
+  border: @size-1 solid var(--color-secondary-action-outline);
   border-radius: @border-radius-default;
 
   > svg {
     width: @size-10;
     height: @size-10;
-    fill: @color-primary-text;
+    fill: var(--color-primary-text);
     margin-left: @size-4;
     transform: rotate(180deg);
 
     path {
-      fill: @color-primary-text;
+      fill: var(--color-primary-text);
     }
   }
 }
@@ -380,7 +498,7 @@
   .text-12;
 
   align-items: center;
-  color: @color-primary-text;
+  color: var(--color-primary-text);
   cursor: @button-cursor;
   display: flex;
   flex-flow: row nowrap;
@@ -391,27 +509,27 @@
   }
 
   > svg > path {
-    fill: @color-secondary-text;
+    fill: var(--color-secondary-text);
     fill-opacity: 0.1;
-    stroke: @color-secondary-text;
+    stroke: var(--color-secondary-text);
   }
 
   &:disabled {
-    color: fade(@color-primary-text, 20%);
+    color: var(--color-primary-text-20);
     cursor: @button-cursor-disabled;
 
     > svg > path {
       fill-opacity: 0.1;
-      stroke: fade(@color-primary-text, 20%);
+      stroke: var(--color-primary-text-20);
       stroke-opacity: 0.3;
     }
   }
 
   &:hover:enabled {
     > svg > path {
-      fill: @color-primary-action;
+      fill: var(--color-primary-action);
       fill-opacity: 0.1;
-      stroke: @color-primary-action;
+      stroke: var(--color-primary-action);
     }
   }
 }
@@ -420,16 +538,16 @@
   .FavoriteButton;
 
   > svg > path {
-    fill: @color-primary-action;
+    fill: var(--color-primary-action);
     fill-opacity: 1;
-    stroke: @color-primary-action;
+    stroke: var(--color-primary-action);
   }
 
   &:hover:enabled {
     > svg > path {
-      fill: @color-primary-action;
+      fill: var(--color-primary-action);
       fill-opacity: 0.5;
-      stroke: @color-primary-action;
+      stroke: var(--color-primary-action);
     }
   }
 }
@@ -441,21 +559,56 @@
   }
 }
 
+:root[theme='BETTING'],
+:root[theme='SPORTS'] {
+  .FavoriteButton {
+    > svg > path {
+      fill: var(--color-dark-text);
+      fill-opacity: 0.5;
+      stroke: none;
+    }
+
+    &:hover:enabled {
+      > svg > path {
+        fill: var(--color-primary-text);
+        fill-opacity: 1;
+        stroke: none;
+      }
+    }
+  }
+
+  .FavoriteButton_Favorite {
+    > svg > path {
+      fill: var(--color-reporting);
+      fill-opacity: 1;
+      stroke: none;
+    }
+
+    &:hover:enabled {
+      > svg > path {
+        fill: var(--color-reporting);
+        fill-opacity: 1;
+        stroke: none;
+      }
+    }
+  }
+}
+
 .CompactButton {
   .Button;
   .mono-9-bold;
 
   border: @border-default;
-  background: @color-secondary-action;
-  border-color: @color-secondary-action-outline;
+  background: var(--color-secondary-action);
+  border-color: var(--color-secondary-action-outline);
   border-radius: @size-3;
-  color: @color-primary-text;
+  color: var(--color-primary-text);
   line-height: @size-10;
   padding: @size-2 @size-4;
   text-transform: uppercase;
 
   &:hover:enabled {
-    color: @color-dismissable-notice-background;
+    color: var(--color-dismissable-notice-background);
   }
 }
 
@@ -467,10 +620,10 @@
   display: flex;
   flex-flow: row nowrap;
   text-transform: uppercase;
-  background: @color-secondary-action;
-  border: @size-1 solid @color-secondary-action-outline;
+  background: var(--color-secondary-action);
+  border: @size-1 solid var(--color-secondary-action-outline);
   border-radius: @size-3;
-  color: @color-primary-text;
+  color: var(--color-primary-text);
   padding: @size-4 @size-6;
   white-space: nowrap;
 
@@ -479,7 +632,7 @@
   }
 
   &:disabled {
-    color: fade(@color-primary-text, 20%);
+    color: var(--color-primary-text-20);
   }
 
   > svg {
@@ -488,7 +641,7 @@
     width: @size-8;
 
     > path {
-      stroke: @color-secondary-text;
+      stroke: var(--color-secondary-text);
     }
   }
 
@@ -497,20 +650,20 @@
   }
 
   &:hover {
-    color: @color-primary-text;
+    color: var(--color-primary-text);
 
     > svg > path {
-      stroke: @color-primary-text;
+      stroke: var(--color-primary-text);
     }
   }
 
   @media @breakpoint-mobile {
     &:disabled {
-      color: @color-inactive-text;
+      color: var(--color-inactive-text);
       opacity: 0.5;
 
       > svg > path {
-        stroke: @color-inactive-text;
+        stroke: var(--color-inactive-text);
       }
     }
   }
@@ -520,7 +673,7 @@
   .mono-10;
 
   align-items: center;
-  color: @color-primary-action;
+  color: var(--color-primary-action);
   display: flex;
   flex-flow: row nowrap;
   line-height: @size-10;
@@ -535,20 +688,19 @@
   }
 
   &:disabled {
-    color: fade(@color-primary-text, 20%);
+    color: var(--color-primary-text-20);
 
     &:hover {
-      color: fade(@color-primary-text, 20%);
-      font-weight: normal;
+      color: var(--color-primary-text-20);
     }
   }
 
   &.Failed {
-    color: @color-error;
+    color: var(--color-error);
   }
 
   &.Confirmed {
-    color: @color-positive;
+    color: var(--color-positive);
   }
 }
 
@@ -563,13 +715,13 @@
     width: @size-10;
 
     > path {
-      fill: @color-inactive-text;
+      fill: var(--color-inactive-text);
     }
   }
 
   &:hover {
     > svg > path {
-      fill: @color-primary-text;
+      fill: var(--color-primary-text);
     }
   }
 }
@@ -578,10 +730,10 @@
   .Button;
 
   align-content: center;
-  // background: @color-secondary-action;
+  // background: var(--color-secondary-action);
   background: transparent;
-  border: @size-1 solid @color-secondary-action-outline;
-  color: @color-primary-text;
+  border: @size-1 solid var(--color-secondary-action-outline);
+  color: var(--color-primary-text);
   display: flex;
   flex-flow: row nowrap;
   justify-content: center;
@@ -596,36 +748,36 @@
     width: @size-16;
 
     > path {
-      fill: @color-primary-text;
+      fill: var(--color-primary-text);
     }
   }
 
   &:disabled {
-    background: @color-inactive-text;
-    border-color: @color-inactive-text;
-    color: @color-inactive-text;
+    background: var(--color-inactive-text);
+    border-color: var(--color-inactive-text);
+    color: var(--color-inactive-text);
 
     > svg {
       > path {
-        stroke: @color-inactive-text;
+        stroke: var(--color-inactive-text);
       }
 
       > rect {
-        fill: @color-inactive-text;
+        fill: var(--color-inactive-text);
       }
     }
   }
 
   &:hover:enabled {
-    background: @color-secondary-hover;
+    background: var(--color-secondary-hover);
   }
 
   &:focus:enabled {
-    background: @color-secondary-hover;
+    background: var(--color-secondary-hover);
   }
 
   &:active:enabled {
-    background: @color-secondary-hover;
+    background: var(--color-secondary-hover);
   }
 }
 
@@ -638,13 +790,13 @@
 
     > path {
       &:nth-child(even) {
-        fill: @color-primary-text;
+        fill: var(--color-primary-text);
         stroke: none;
       }
 
       &:nth-child(odd) {
         fill: none;
-        stroke: @color-primary-text;
+        stroke: var(--color-primary-text);
       }
     }
   }
@@ -653,11 +805,11 @@
     > svg {
       > path {
         &:nth-child(even) {
-          fill: @color-inactive-text;
+          fill: var(--color-inactive-text);
         }
 
         &:nth-child(odd) {
-          stroke: @color-inactive-text;
+          stroke: var(--color-inactive-text);
         }
       }
     }
@@ -677,7 +829,7 @@
 
     > path {
       &:nth-child(odd) {
-        fill: @color-primary-text;
+        fill: var(--color-primary-text);
         stroke: none;
       }
     }
@@ -686,7 +838,7 @@
   &:disabled {
     > svg > path {
       &:nth-child(odd) {
-        fill: @color-inactive-text;
+        fill: var(--color-inactive-text);
         stroke: none;
       }
     }
@@ -695,18 +847,18 @@
 
 .DAIFaucetButton {
   > svg > path {
-    fill: @color-primary-text;
+    fill: var(--color-primary-text);
   }
 }
 
 .ViewTransactionDetailsButton {
   .mono-9-bold;
 
-  background: @color-secondary-action;
-  border: @size-1 solid @color-secondary-action-outline;
+  background: var(--color-secondary-action);
+  border: @size-1 solid var(--color-secondary-action-outline);
   border-radius: @border-radius-default;
   align-items: center;
-  color: @color-primary-text;
+  color: var(--color-primary-text);
   cursor: pointer;
   display: flex;
   justify-content: center;
@@ -725,32 +877,32 @@
     width: @size-10;
 
     > path:nth-child(odd) {
-      fill: @color-secondary-text;
+      fill: var(--color-secondary-text);
     }
 
     > path:nth-child(even) {
-      stroke: @color-secondary-text;
+      stroke: var(--color-secondary-text);
     }
   }
 
   > span > a {
-    color: @color-primary-text;
+    color: var(--color-primary-text);
     white-space: nowrap;
   }
 
   &:hover {
     > svg {
       > path:nth-child(odd) {
-        fill: @color-primary-text;
+        fill: var(--color-primary-text);
       }
 
       > path:nth-child(even) {
-        stroke: @color-primary-text;
+        stroke: var(--color-primary-text);
       }
     }
 
     > span > a {
-      color: @color-primary-text;
+      color: var(--color-primary-text);
     }
   }
 
@@ -761,17 +913,17 @@
 
     > span > span,
     > span > a {
-      color: @color-secondary-text;
+      color: var(--color-secondary-text);
       text-decoration: none;
     }
 
     > svg {
       > path {
         &:nth-child(even) {
-          stroke: @color-secondary-text;
+          stroke: var(--color-secondary-text);
         }
         &:nth-child(odd) {
-          fill: @color-secondary-text;
+          fill: var(--color-secondary-text);
         }
       }
     }
@@ -785,35 +937,46 @@
     .text-12;
   }
 
-  color: @color-primary-text;
+  color: var(--color-primary-text);
   display: inline-flex;
 
   > a {
-    color: @color-primary-text;
+    color: var(--color-primary-text);
   }
 
   > svg {
     height: @size-12;
     margin-left: @size-4;
     margin-top: @size-2;
+
+    > path {
+      &:nth-child(odd) {
+        fill: var(--color-secondary-text);
+        stroke: none;
+      }
+
+      &:nth-child(even) {
+        stroke: var(--color-secondary-text);
+      }
+    }
   }
 }
 
 .ExternalLinkButton {
   .ViewTransactionDetailsButton;
 
-  color: @color-primary-action;
+  color: var(--color-primary-action);
   display: inline-flex;
 
   > a {
-    color: @color-primary-action;
+    color: var(--color-primary-action);
   }
 
   &:hover {
-    color: @color-primary-text;
+    color: var(--color-primary-text);
 
     > a {
-      color: @color-primary-text;
+      color: var(--color-primary-text);
     }
   }
 
@@ -824,31 +987,129 @@
 
     > path {
       &:nth-child(odd) {
-        fill: @color-primary-action;
+        fill: var(--color-primary-action);
         stroke: none;
       }
 
       &:nth-child(even) {
-        stroke: @color-primary-action;
+        stroke: var(--color-primary-action);
       }
     }
   }
 
   &.LightAlternate {
-    color: @color-outcome-seven;
+    color: var(--color-outcome-seven);
 
     > a {
-      color: @color-outcome-seven;
+      color: var(--color-outcome-seven);
     }
 
     > svg > path {
       &:nth-child(odd) {
-        fill: @color-outcome-seven;
+        fill: var(--color-outcome-seven);
         stroke: none;
       }
 
       &:nth-child(even) {
-        stroke: @color-outcome-seven;
+        stroke: var(--color-outcome-seven);
+      }
+    }
+  }
+}
+
+:root[theme='BETTING'],
+:root[theme='SPORTS'] {
+  .ExternalLinkButton {
+    color: var(--color-text-secondary);
+    flex-flow: row-reverse nowrap;
+    justify-content: flex-end;
+
+    > a {
+      .text-14;
+
+      color: var(--color-text-secondary);
+      text-transform: capitalize;
+    }
+
+    &:hover {
+      color: var(--color-primary-text);
+
+      > a {
+        color: var(--color-primary-text);
+      }
+    }
+
+    > svg {
+      margin-left: 0;
+      margin-right: @size-10;
+      height: @size-12;
+      width: @size-12;
+
+      > path {
+        &:nth-child(odd) {
+          fill: var(--color-primary-text);
+          stroke: none;
+        }
+
+        &:nth-child(even) {
+          stroke: var(--color-primary-text);
+        }
+      }
+    }
+
+    &.LightAlternate {
+      color: var(--color-secondary-text);
+
+      > a {
+        color: var(--color-secondary-text);
+      }
+
+      &:hover {
+        color: var(--color-primary-text);
+
+        > a {
+          color: var(--color-primary-text);
+        }
+      }
+
+      > svg > path {
+        &:nth-child(odd) {
+          fill: var(--color-primary-text);
+          stroke: none;
+        }
+
+        &:nth-child(even) {
+          stroke: var(--color-primary-text);
+        }
+      }
+    }
+
+    &.CondensedStyle {
+      border: 0;
+      background: transparent;
+
+      > a {
+        .text-10-medium;
+
+        color: var(--color-primary-text);
+        text-transform: uppercase;
+      }
+
+      > svg {
+        margin-right: @size-6;
+        width: @size-12;
+        height: @size-12;
+
+        > path {
+          &:nth-child(odd) {
+            fill: var(--color-primary-text);
+            stroke: none;
+          }
+
+          &:nth-child(even) {
+            stroke: var(--color-primary-text);
+          }
+        }
       }
     }
   }
@@ -858,11 +1119,11 @@
   .Button;
 
   align-items: center;
-  background: @color-secondary-action;
-  border-color: @color-secondary-action-outline;
+  background: var(--color-secondary-action);
+  border-color: var(--color-secondary-action-outline);
   display: flex;
   height: @size-32;
-  padding: @size-8;
+  justify-content: center;
   width: @size-32;
 
   > svg {
@@ -871,22 +1132,43 @@
     width: @size-16;
 
     > path {
-      stroke: @color-inactive-text;
+      stroke: var(--color-inactive-text);
       fill: none;
     }
   }
 
-  &:hover {
+  &:hover > svg > path {
+    stroke: var(--color-primary-text);
+  }
+}
+
+:root[theme='BETTING'],
+:root[theme='SPORTS'] {
+  .DirectionButton {
+    // background: var(--color-module-background);
+    background: transparent;
+    border-color: var(--color-dark-text);
+
     > svg > path {
-      stroke: @color-primary-text;
+      stroke: var(--color-primary-text);
+    }
+
+    &:hover:enabled {
+      border-color: var(--color-pimary-text);
+    }
+
+    &:focus {
+      border: @size-2 solid var(--color-focused);
+    }
+
+    &:disabled {
+      opacity: 0.25;
     }
   }
 }
 
-.left {
-  > svg {
-    transform: rotate(180deg);
-  }
+.left > svg {
+  transform: rotate(180deg);
 }
 
 .ExportButton {
@@ -906,11 +1188,11 @@
     margin: 0 @size-1 0 @size-8;
 
     > path {
-      stroke: @color-primary-text;
+      stroke: var(--color-primary-text);
     }
 
     > rect {
-      fill: @color-primary-text;
+      fill: var(--color-primary-text);
     }
   }
 }
@@ -927,10 +1209,10 @@
     width: @size-8;
 
     > path {
-      fill: @color-secondary-text;
+      fill: var(--color-secondary-text);
 
       &:hover {
-        fill: @color-primary-text;
+        fill: var(--color-primary-text);
       }
     }
   }
@@ -938,13 +1220,50 @@
 
 .Descending {
   > svg > path:first-of-type {
-    fill: @color-primary-text;
+    fill: var(--color-primary-text);
   }
 }
 
-.Ascending {
-  > svg > path:last-of-type {
-    fill: @color-primary-text;
+.Ascending > svg > path:last-of-type {
+  fill: var(--color-primary-text);
+}
+
+.CashoutButton {
+  .text-10-medium;
+
+  color: var(--color-primary-text);
+  background: var(--color-module-background);  
+  border: @size-1 solid var(--color-dark-text);
+  border-radius: @border-radius-default;
+  padding: @size-6 @size-4;
+  text-transform: uppercase;
+
+  &:hover {
+    background: var(--color-page-background);
+    border: @size-1 solid var(--color-primary-text);
+  }
+
+  &:focus {
+    background: var(--color-module-background);  
+    border: @size-2 solid var(--color-focused);
+  }
+
+  &:disabled {
+    border: @size-1 solid var(--color-dark-text);
+    color: var(--color-primary-text);
+    opacity: .5;
+  }
+
+  &.Won {
+    background: var(--color-open-15);
+    color: var(--color-primary-text);
+    border: 0;
+  }
+
+  &.Loss {
+    background: var(--color-resolved-15);
+    color: var(--color-primary-text);
+    border: 0;
   }
 }
 
@@ -953,9 +1272,9 @@
   .text-12-bold;
 
   align-items: center;
-  border: @size-1 solid @color-secondary-action-outline;
+  border: @size-1 solid var(--color-secondary-action-outline);
   border-radius: @border-radius-default;
-  color: @color-primary-text;
+  color: var(--color-primary-text);
   display: flex;
   flex-flow: row nowrap;
   justify-content: center;
@@ -968,7 +1287,7 @@
     margin-left: @size-9;
 
     > path {
-      fill: @color-primary-text;
+      fill: var(--color-primary-text);
     }
   }
 }
@@ -992,10 +1311,10 @@
     .text-16-bold;
 
     align-items: center;
-    background: @color-secondary-action;
-    border: @size-1 solid @color-secondary-action-outline;
+    background: var(--color-secondary-action);
+    border: @size-1 solid var(--color-secondary-action-outline);
     border-radius: @size-3;
-    color: @color-primary-text;
+    color: var(--color-primary-text);
     cursor: pointer;
     display: flex;
     flex-direction: column;
@@ -1011,7 +1330,7 @@
         width: @size-42;
 
         > path {
-          stroke: @color-primary-text;
+          stroke: var(--color-primary-text);
         }
       }
     }
@@ -1023,12 +1342,12 @@
     > div:nth-of-type(3) {
       .text-14;
 
-      color: @color-secondary-text;
+      color: var(--color-secondary-text);
 
       &.loading {
         animation: colorchange 0.5s infinite;
         animation-direction: alternate-reverse;
-        background-color: @color-secondary-action-outline;
+        background-color: var(--color-secondary-action-outline);
         height: @size-16;
         width: @size-80;
       }
@@ -1036,12 +1355,81 @@
   }
 }
 
+.BettingButton {
+  .Button;
+
+  align-items: center;
+  background: transparent;
+  color: var(--color-primary-text);
+  display: flex;
+  flex-flow: column nowrap;
+  justify-content: center;
+  min-height: @size-36;
+  min-width: @size-60;
+
+  > div:first-of-type {
+    .text-12-bold;
+
+    color: var(--color-primary-text);
+    text-align: center;
+  }
+
+  > div:last-of-type {
+    .text-12;
+
+    color: var(--color-primary-text);
+    text-align: center;
+  }
+
+  &.Back {
+    border: @size-1 solid var(--color-positive);
+    background: var(--color-positive-15);
+
+    &:disabled {
+      opacity: 0.15;
+    }
+
+    &:hover:enabled {
+      background: var(--color-positive-40);
+    }
+
+    &:focus:enabled {
+      border: @size-2 solid var(--color-focused);
+    }
+
+    &:active:enabled {
+      background: var(--color-positive-40);
+    }
+  }
+
+  &.Lay {
+    border: @size-1 solid var(--color-negative);
+    background: var(--color-negative-15);
+
+    &:disabled {
+      opacity: 0.15;
+    }
+
+    &:hover:enabled {
+      background: var(--color-negative-40);
+    }
+
+    &:focus:enabled {
+      border: @size-2 solid var(--color-focused);
+    }
+
+    &:active:enabled {
+      background: var(--color-negative-40);
+    }
+  }
+}
+
 @keyframes colorchange {
   0% {
-    background-color: fade(@color-secondary-action-outline, 70);
+    background-color: var(--color-secondary-action-outline-70);
   }
 
   100% {
-    background-color: fade(@color-secondary-action-outline, 100);
+    background-color: var(--color-secondary-action-outline);
   }
 }

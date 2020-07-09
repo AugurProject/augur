@@ -41,6 +41,11 @@ import {
 import Styles from 'modules/modal/modal.styles.less';
 import { HelpMenu } from 'modules/app/components/help-resources';
 import * as classNames from 'classnames';
+import { OptionsMenus } from 'modules/app/components/odds-menu';
+import {
+  DismissableNotice,
+  DismissableNoticeProps,
+} from 'modules/reporting/common';
 
 interface MessageProps {
   closeAction: Function;
@@ -65,6 +70,9 @@ interface MessageProps {
   walletType?: string;
   showAddFundsModal?: Function;
   showHelp?: Boolean;
+  showOdds?: Boolean;
+  migrateMarket?: Boolean;
+  dismissableNotice?: DismissableNoticeProps;
 }
 
 export const Message = ({
@@ -90,8 +98,16 @@ export const Message = ({
   walletType,
   showAddFundsModal,
   showHelp,
+  showOdds,
+  migrateMarket,
+  dismissableNotice,
 }: MessageProps) => (
-  <div className={classNames(Styles.Message, { [Styles.Help]: showHelp })}>
+  <div
+    className={classNames(Styles.Message, {
+      [Styles.Help]: showHelp || showOdds,
+      [Styles.ModalMigrateMarket]: migrateMarket,
+    })}
+  >
     <Title title={title} closeAction={closeAction} />
     <main>
       {alertMessage && <AlertMessage {...alertMessage} />}
@@ -101,6 +117,7 @@ export const Message = ({
       {description && <Description description={description} />}
       {descriptionWithLink && <DescriptionWithLink {...descriptionWithLink} />}
       {showHelp && <HelpMenu />}
+      {showOdds && <OptionsMenus />}
       {showAddFundsHelp && (
         <AddFundsHelp
           showAddFundsModal={showAddFundsModal}
@@ -134,6 +151,7 @@ export const Message = ({
           ]}
         />
       )}
+      {dismissableNotice && <DismissableNotice {...dismissableNotice} />}
     </main>
     {buttons.length > 0 && <ButtonsRow buttons={buttons} />}
   </div>

@@ -1,6 +1,7 @@
 import React from 'react';
 import Styles from 'modules/common/filter-notice.styles.less';
 import {ExclamationCircle, XIcon} from 'modules/common/icons';
+import classNames from 'classnames';
 
 interface Settings {
   propertyName: string;
@@ -16,22 +17,29 @@ interface FilterNoticeProps {
   updateLoginAccountSettings?: Function;
 }
 
-export const FilterNotice = (props: FilterNoticeProps) => {
-  const showNotice = () => props.showDismissButton ? props.settings.propertyValue && props.show : props.show;
+export const FilterNotice = ({
+  showDismissButton,
+  show,
+  color,
+  content,
+  updateLoginAccountSettings,
+  settings
+}: FilterNoticeProps) => {
+  const showNotice = () => showDismissButton ? settings.propertyValue && show : show;
 
   return (
-    <div className={Styles.filterNotice}>
+    <div className={classNames(Styles.filterNotice,{[Styles.active]: color === 'active'})}>
       {showNotice() ? (
         <div>
-          <span className={props.color === 'invalid' ? Styles.invalid : Styles.primary}>
+          <span className={color === 'active' ? Styles.active : Styles.primary}>
             {ExclamationCircle}
           </span>
-          {props.content}
+          {content}
           {
-            props.showDismissButton &&
+            showDismissButton &&
             <button
               type='button'
-              onClick={() => props.updateLoginAccountSettings({[props.settings.propertyName]: false})}
+              onClick={() => updateLoginAccountSettings({[settings.propertyName]: false})}
             >
               {XIcon}
             </button>

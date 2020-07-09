@@ -3,80 +3,64 @@
 // Used in Betting UI
 .HelpIcon {
   z-index: @above-all-content-above;
+
   > span {
-    padding: @size-18;
+    padding: @size-15 @size-17 @size-18;
     display: flex;
     cursor: pointer;
-    border: @size-1 solid @color-dark-grey;
-    border-bottom: 0;
     max-height: @size-56;
+    border-top: @size-3 solid transparent;
+    border-left: @size-1 solid var(--color-module-background);
+    border-right: @size-1 solid var(--color-module-background);
 
     > svg {
       width: @size-20;
       height: @size-20;
 
       > circle {
-        fill: @color-primary-text;
+        fill: var(--color-primary-text);
       }
 
       > path {
-        fill: @color-dark-grey;
+        fill: var(--color-dark-grey);
       }
     }
 
     &:hover {
-      border: @size-1 solid @color-module-background;
-      border-bottom: 0;
-      background: @color-module-background;
+      background: var(--color-module-background);
     }
 
-    @media @breakpoint-mobile {
-      border: none;
-      max-height: @top-bar-height-mobile;
+    @media @breakpoint-mobile-tablet {
       padding: @size-12;
+      max-height: unset;
+      border-right: 0;
       align-items: center;
 
       &:hover {
-        border: none;
-        background: @color-page-background;
+        background: var(--color-page-background);
       }
     }
   }
 
   &.Open {
     > span {
-      border-bottom: 0;
-      background: @color-module-background;
+      background: var(--color-module-background);
       z-index: @above-all-content;
-
-      @media @breakpoint-mobile {
-        border-top: 0;
-      }
     }
   }
 }
 
 .HelpMenuList {
-  position: absolute;
-  background: @color-module-background;
-  border: @size-1 solid @color-secondary-action-outline;
-  border-radius: @border-radius-default;
-  width: @size-210;
-  top: 100%;
-  right: -@size-1;
-  margin-top: -@size-1;
-  border-top-right-radius: 0;
-  border-top-left-radius: 0;
+  background: var(--color-module-background);
+  width: 100%;
   display: flex;
   flex-direction: column;
 
-  > li {
-      > button {
-      width: 100%;
-      justify-content: left;
-      background: none;
-      border: none;
-    }
+  > li > button {
+    width: 100%;
+    justify-content: left;
+    background: none;
+    border: none;
   }
 
   > li:first-of-type {
@@ -84,14 +68,14 @@
 
     text-transform: uppercase;
     padding: @size-22 @size-16;
-    color: @color-primary-text;
-    background: @color-module-background;
+    color: var(--color-primary-text);
+    background: var(--color-module-background);
   }
 
   > li:not(:first-of-type) {
     padding: @size-13 @size-16;
-    background: @color-table-header;
-    border-top: @size-1 solid @color-dark-grey;
+    background: var(--color-table-header);
+    border-top: @size-1 solid var(--color-dark-grey);
 
     &.hideOnTablet {
       @media @breakpoint-smallish-desktop {
@@ -106,19 +90,6 @@
   }
 
   @media @breakpoint-mobile {
-    bottom: unset;
-    margin-bottom: -@size-1;
-    border-bottom-right-radius: 0;
-    border-bottom-left-radius: 0;
-    position: absolute;
-    right: 0px;
-    top: @size-72;
-    display: contents;
-
-    > li:not(:first-of-type) {
-      border-bottom: @size-1 solid @color-dark-grey;
-    }
-
     > li:last-of-type {
       border-top-left-radius: @border-radius-default;
       border-top-right-radius: @border-radius-default;
@@ -128,13 +99,11 @@
 
 .HelpMenu {
   position: absolute;
-  background: @color-module-background;
-  border: @size-1 solid @color-secondary-action-outline;
+  background: var(--color-module-background);
   border-radius: @border-radius-default;
   width: @size-210;
   top: 100%;
-  right: -@size-2;
-  margin-top: -@size-1;
+  right: 0;
   border-top-right-radius: 0;
   border-top-left-radius: 0;
   display: flex;
@@ -160,14 +129,14 @@
 
     text-transform: uppercase;
     padding: @size-22 @size-16;
-    color: @color-primary-text;
-    background: @color-module-background;
+    color: var(--color-primary-text);
+    background: var(--color-module-background);
   }
 
   > span:not(:first-of-type) {
     padding: @size-13 @size-16;
-    background: @color-table-header;
-    border-top: @size-1 solid @color-dark-grey;
+    background: var(--color-table-header);
+    border-top: @size-1 solid var(--color-dark-grey);
 
     &.hideOnTablet {
       @media @breakpoint-smallish-desktop {
@@ -178,7 +147,7 @@
 
   > span:nth-of-type(3),
   > span:nth-last-of-type(2) {
-    border-top-color: @color-secondary-action-outline;
+    border-top-color: var(--color-secondary-action-outline);
   }
 
   > span:last-of-type {
@@ -196,7 +165,7 @@
     top: @size-72;
 
     > span:not(:first-of-type) {
-      border-bottom: @size-1 solid @color-dark-grey;
+      border-bottom: @size-1 solid var(--color-dark-grey);
     }
 
     > span:last-of-type {
@@ -207,8 +176,7 @@
 }
 
 .HelpResources {
-  border-right: @size-1 solid @color-module-background;
-  color: @color-primary-text;
+  color: var(--color-primary-text);
   display: flex;
   flex: 1;
   max-height: @size-56;
@@ -219,5 +187,105 @@
   @media @breakpoint-mobile {
     max-height: @top-bar-height-mobile;
     max-width: @top-bar-height-mobile;
+  }
+}
+
+:root[theme="BETTING"],
+:root[theme="SPORTS"] {
+  .HelpResources {
+    order: 1;
+  }
+
+  .HelpIcon {
+    > span {
+      border-left: @size-1 solid var(--color-secondary-text-50);
+      border-right: @size-1 solid var(--color-secondary-text-50);
+
+      &:hover {
+        border-top: @size-3 solid var(--color-primary-action);
+        background: var(--color-secondary-text-25);
+      }
+
+      > svg {
+        > circle {
+          fill: var(--color-module-background);
+        }
+
+        > path {
+          fill: var(--color-primary-text);
+        }
+      }
+    }
+
+    &.Open {
+      > span {
+        border-top: @size-3 solid var(--color-primary-action);
+        border-left: @size-1 solid var(--color-page-background);
+        border-right: @size-1 solid var(--color-page-background);
+        background: var(--color-page-background);
+
+        > svg {
+          > circle {
+            fill: var(--color-primary-text);
+          }
+  
+          > path {
+            fill: var(--color-module-background);
+          }
+        }
+      }
+    }
+  }
+  
+  .HelpMenu {
+    box-shadow: @size-2 @size-2 @size-5 var(--color-secondary-text-50);
+    background: var(--color-table-header);
+
+    > span:first-of-type {
+      background: var(--color-page-background);
+      border-bottom: @size-1 solid var(--color-dark-grey);
+    }
+
+    > span:not(:first-of-type) {
+      padding: @size-13 0;
+      margin: 0 @size-16;
+    }
+
+    > span:nth-of-type(2) {
+      display: none;
+      border-top: 0;
+    }
+
+    > span:nth-of-type(3) {
+      border-top: 0;
+    }
+
+    @media @breakpoint-mobile {
+      > span:not(:first-of-type) {
+        border-bottom: 0;
+      }
+    }
+  }
+
+  .HelpMenuList {
+    > li:first-of-type {
+      .text-12-semi-bold;
+
+      background: var(--color-page-background);
+      border-bottom: @size-1 solid var(--color-dark-grey);
+    }
+
+    > li:not(:first-of-type) {
+      padding: @size-13 0;
+      margin: 0 @size-16;
+    }
+
+    > li:nth-of-type(2) {
+      display: none;
+    }
+
+    > li:nth-of-type(3) {
+      border-top: 0;
+    }
   }
 }

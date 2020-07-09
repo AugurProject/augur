@@ -1,7 +1,7 @@
 @import (reference) '~assets/styles/shared';
 
 .FilledOrders {
-  background-color: @color-active-background;
+  background-color: var(--color-active-background);
   cursor: default;
   display: flex;
   flex-direction: column;
@@ -20,7 +20,7 @@
       > a {
         .text-11-medium;
 
-        color: @color-primary-text;
+        color: var(--color-primary-text);
 
         &:hover {
           text-decoration: underline;
@@ -36,7 +36,7 @@
     > ul:first-of-type {
       .mono-10-bold;
 
-      color: @color-secondary-text;
+      color: var(--color-secondary-text);
       justify-content: flex-end;
       padding: @size-6 @size-16;
       text-transform: uppercase;
@@ -60,7 +60,7 @@
     }
 
     > ul:not(:first-of-type) {
-      border-top: 1px solid @color-dark-grey;
+      border-top: 1px solid var(--color-dark-grey);
       justify-content: flex-end;
       margin: 0 @size-16;
 
@@ -68,7 +68,7 @@
         .mono-10-medium;
 
         align-items: center;
-        color: @color-primary-text;
+        color: var(--color-primary-text);
         display: flex;
         justify-content: flex-end;
         padding: @size-4 0;
@@ -103,7 +103,7 @@
         display: block;
         padding-bottom: @size-10;
         padding-top: @size-10;
-        border-bottom: @size-1 solid @color-dark-grey;
+        border-bottom: @size-1 solid var(--color-dark-grey);
 
         &:last-of-type {
           border-bottom: 0;
@@ -118,13 +118,13 @@
       > span {
         .text-11-medium;
 
-        color: @color-primary-text;
+        color: var(--color-primary-text);
         padding: @size-4 0 @size-2;
 
         > a > span {
           .text-11;
 
-          color: @color-inactive-text;
+          color: var(--color-inactive-text);
         }
       }
     }
