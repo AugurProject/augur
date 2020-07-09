@@ -32,13 +32,12 @@ import {
   formatGasCostToEther,
   formatShares,
   formatNumber,
-  formatEther,
 } from 'utils/format-number';
 import { BigNumber, createBigNumber } from 'utils/create-big-number';
 import { LinearPropertyLabel, EthReserveNotice, TransactionFeeLabelToolTip, EthReserveAutomaticTopOff } from 'modules/common/labels';
 import { Trade } from 'modules/types';
 import { ExternalLinkButton, ProcessingButton } from 'modules/common/buttons';
-import { ethToDaiFromAttoRate } from 'modules/app/actions/get-ethToDai-rate';
+import { getGasInDai } from 'modules/app/actions/get-ethToDai-rate';
 import { TXEventName } from '@augurproject/sdk-lite';
 
 interface MessageButton {
@@ -185,7 +184,7 @@ class Confirm extends Component<ConfirmProps, ConfirmState> {
     let gasCostDai = 0;
 
     if (GsnEnabled) {
-      gasCostDai = ethToDaiFromAttoRate(gasCostInEth).value;
+      gasCostDai = getGasInDai(Number(createBigNumber(gasLimit)));
     }
 
     if (marketType === SCALAR && selectedOutcomeId === INVALID_OUTCOME_ID) {
@@ -386,7 +385,7 @@ class Confirm extends Component<ConfirmProps, ConfirmState> {
     : ZERO;
 
     if (GsnEnabled) {
-      gasCostDai = ethToDaiFromAttoRate(gasCostInEth);
+      gasCostDai = getGasInDai(Number(createBigNumber(gasLimit)));
     }
 
     const limitPricePercentage = (side === BUY
