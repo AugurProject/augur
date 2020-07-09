@@ -154,7 +154,7 @@ export interface ContractAddresses {
   OICash?: string;
   UniswapV2Factory?: string;
   EthExchange?: string;
-  UniswapV2Router01?: string;
+  UniswapV2Router02?: string;
   AuditFunds?: string;
   RelayHubV2?: string;
   AugurWalletRegistryV2?: string;
@@ -186,7 +186,7 @@ export interface ExternalAddresses {
   WETH9?: string;
   Exchange?: string;
   UniswapV2Factory?: string;
-  UniswapV2Router01?: string;
+  UniswapV2Router02?: string;
   RelayHubV2?: string;
 }
 
