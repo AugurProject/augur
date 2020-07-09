@@ -81,7 +81,6 @@ def test_redeem_shares_in_yesNo_market(kitchenSinkFixture, universe, cash, marke
         'fees': 101,
     }
 
-    daiVat = kitchenSinkFixture.contracts['DaiVat']
     disputeWindow = universe.getOrCreateNextDisputeWindow(False)
     originalDisputeWindowBalance = cash.balanceOf(disputeWindow)
     originalMarketCreatorBalance = cash.balanceOf(market.getOwner())
@@ -92,7 +91,7 @@ def test_redeem_shares_in_yesNo_market(kitchenSinkFixture, universe, cash, marke
     # redeem shares with a2
     shareToken.claimTradingProceeds(market.address, kitchenSinkFixture.accounts[2], longTo32Bytes(11))
 
-    newDisputeWindowBalance = cash.balanceOf(disputeWindow) + daiVat.dai(disputeWindow) / 10**27
+    newDisputeWindowBalance = cash.balanceOf(disputeWindow)
     assert newDisputeWindowBalance == expectedReporterFees + originalDisputeWindowBalance
 
     newMarketCreatorBalanceFromFees = cash.balanceOf(market.getOwner())

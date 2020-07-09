@@ -51,7 +51,7 @@ contract AugurWalletRegistryV2 is Initializable, BaseRelayRecipient, Forwarder {
     uint256 private constant POST_RELAY_GAS_COST = 200000;
 
     // Gas stipends for acceptRelayedCall, preRelayedCall and postRelayedCall
-    uint256 constant private ACCEPT_RELAYED_CALL_GAS_LIMIT = 50000;
+    uint256 constant private ACCEPT_RELAYED_CALL_GAS_LIMIT = 75000;
     uint256 constant private PRE_RELAYED_CALL_GAS_LIMIT = 5000;
     uint256 constant private POST_RELAYED_CALL_GAS_LIMIT = 200000;
 
@@ -95,14 +95,15 @@ contract AugurWalletRegistryV2 is Initializable, BaseRelayRecipient, Forwarder {
         return address(relayHub);
     }
 
-    function acceptRelayedCall(ISignatureVerifier.RelayRequest calldata relayRequest, bytes calldata signature, bytes calldata approvalData, uint256 maxPossibleGas) external view returns (bytes memory context) {
+    function acceptRelayedCall(GsnTypes.RelayRequest memory relayRequest, bytes memory signature, bytes memory approvalData, uint256 maxPossibleGas) public view returns (bytes memory context) {
         (approvalData);
+        GsnEip712Library.verify(relayRequest, signature);
         // executeWalletTransaction is the only encodedFunction that can succesfully be called through the relayHub
-        uint256 _payment = getPaymentFromEncodedFunction(relayRequest.encodedFunction);
+        uint256 _payment = getPaymentFromEncodedFunction(relayRequest.request.data);
         (uint112 _reserve0, uint112 _reserve1, uint32 _blockTimestampLast) = ethExchange.getReserves();
         uint256 _maxDaiNeeded = getAmountIn(maxPossibleGas, token0IsCash ? _reserve0 : _reserve1, token0IsCash ? _reserve1 : _reserve0);
         require(_payment > _maxDaiNeeded, "Transaction cost too high");
-        address _walletAddress = getCreate2WalletAddress(relayRequest.relayData.senderAddress);
+        address _walletAddress = getCreate2WalletAddress(relayRequest.request.from);
         require(_payment <= cash.balanceOf(_walletAddress), "Insufficient balance");
         return abi.encode(_walletAddress, _payment);
     }
@@ -117,11 +118,11 @@ contract AugurWalletRegistryV2 is Initializable, BaseRelayRecipient, Forwarder {
         return true;
     }
 
-    function postRelayedCall(bytes calldata context, bool success, bytes32 preRetVal, uint256 gasUseWithoutPost, ISignatureVerifier.GasData calldata gasData) external relayHubOnly returns (bool) {
+    function postRelayedCall(bytes calldata context, bool success, bytes32 preRetVal, uint256 gasUseWithoutPost, GsnTypes.RelayData calldata relayData) external relayHubOnly returns (bool) {
         (success, preRetVal);
         (address _walletAddress, uint256 _payment) = abi.decode(context, (address, uint256));
 
-        uint256 _ethActualCharge = relayHub.calculateCharge(gasUseWithoutPost + POST_RELAY_GAS_COST, gasData);
+        uint256 _ethActualCharge = relayHub.calculateCharge(gasUseWithoutPost + POST_RELAY_GAS_COST, relayData);
         (uint112 _reserve0, uint112 _reserve1, uint32 _blockTimestampLast) = ethExchange.getReserves();
         uint256 _tokenActualCharge = getAmountIn(_ethActualCharge, token0IsCash ? _reserve0 : _reserve1, token0IsCash ? _reserve1 : _reserve0);
 

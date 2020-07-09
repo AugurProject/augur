@@ -43,7 +43,6 @@ def execute(fixture, snapshot, universe, market, orderType, orderSize, orderPric
     createOrder = fixture.contracts['CreateOrder']
     fillOrder = fixture.contracts['FillOrder']
     shareToken = fixture.contracts['ShareToken']
-    shareToken = fixture.contracts['ShareToken']
 
     account1 = fixture.accounts[1]
     account2 = fixture.accounts[2]
@@ -76,18 +75,16 @@ def execute(fixture, snapshot, universe, market, orderType, orderSize, orderPric
     acquireLongShares(orderOutcome, fillerLongShares, fillOrder.address, sender = fillerKey)
     acquireShortShareSet(orderOutcome, fillerShortShares, fillOrder.address, sender = fillerKey)
 
-    # Move time and sweep interest
+    # Move time
     assert fixture.contracts['Time'].incrementTimestamp(50000)
-    assert universe.sweepInterest()
 
     # Fill order
     fixture.contracts['Cash'].faucet(fillerTokens, sender=fillerKey)
     remaining = fillOrder.publicFillOrder(orderId, orderSize, longTo32Bytes(42), longTo32Bytes(11), sender = fillerKey)
     assert not remaining
 
-    # Move time and sweep interest
+    # Move time
     assert fixture.contracts['Time'].incrementTimestamp(50000)
-    assert universe.sweepInterest()
 
     # Assert final state of positions
     assert fixture.contracts['Cash'].balanceOf(creatorAddress) == int(expectedMakerTokens)

@@ -11,41 +11,27 @@ def test_periodicals(kitchenSinkFixture, market, universe, cash, reputationToken
     day = 24 * 60 * 60
     timeTravel(kitchenSinkFixture, day)
 
-    # Sweep interest
-    lastSweep = universe.lastSweep()
-    assert universe.runPeriodicals()
-    assert universe.lastSweep() > lastSweep
-
-    # Now that interest has swept the next call will poke the rep oracle
+    # The call will poke the rep oracle
     lastOraclePoke = repOracle.getLastUpdateTimestamp(reputationToken.address)
     assert universe.runPeriodicals()
     assert repOracle.getLastUpdateTimestamp(reputationToken.address) > lastOraclePoke
 
-    # The next call will no-op as we have both swept interest and poke the oracle recently
+    # The next call will no-op
     lastOraclePoke = repOracle.getLastUpdateTimestamp(reputationToken.address)
-    lastSweep = universe.lastSweep()
     assert universe.runPeriodicals()
-    assert universe.lastSweep() == lastSweep
     assert repOracle.getLastUpdateTimestamp(reputationToken.address) == lastOraclePoke
 
     # Move time forward
     timeTravel(kitchenSinkFixture, day)
 
-    # Sweep interest
-    lastSweep = universe.lastSweep()
-    assert universe.runPeriodicals()
-    assert universe.lastSweep() > lastSweep
-
-    # Now that interest has swept the next call will poke the rep oracle
+    # The next call will poke the rep oracle
     lastOraclePoke = repOracle.getLastUpdateTimestamp(reputationToken.address)
     assert universe.runPeriodicals()
     assert repOracle.getLastUpdateTimestamp(reputationToken.address) > lastOraclePoke
 
-    # The next call will no-op as we have both swept interest and poke the oracle recently
+    # The next call will no-op
     lastOraclePoke = repOracle.getLastUpdateTimestamp(reputationToken.address)
-    lastSweep = universe.lastSweep()
     assert universe.runPeriodicals()
-    assert universe.lastSweep() == lastSweep
     assert repOracle.getLastUpdateTimestamp(reputationToken.address) == lastOraclePoke
 
 def timeTravel(contractsFixture, timePassed):
