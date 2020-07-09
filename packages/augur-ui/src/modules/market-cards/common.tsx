@@ -533,6 +533,7 @@ export const OutcomeGroupFooter = ({
   showLeader = false,
 }) => {
   let content;
+  // if ShowLeader passed, info on leading outcome and total volume put in footer.
   if (showLeader) {
     let leadingOutcome = outcomesFormatted[0];
     outcomesFormatted.forEach(outcome => {
@@ -540,6 +541,7 @@ export const OutcomeGroupFooter = ({
         leadingOutcome = outcome;
       }
     });
+    // if no volume, there can't be a leading outcome.
     content =
       volumeFormatted.value > 0 ? (
         <p>
@@ -547,15 +549,21 @@ export const OutcomeGroupFooter = ({
           <b>{leadingOutcome.description}</b>
           {`is the favorite with ${volumeFormatted.full} wagered on this market`}
         </p>
-      ) : (
-        <p>This market doesn't have trades yet.</p>
-      );
+      ) : null;
   } else {
     content = (
       <MarketLink id={id}>{ThickChevron} View Market Details</MarketLink>
     );
   }
-  return <div className={Styles.OutcomeGroupFooter}>{content}</div>;
+  return (
+    <div
+      className={classNames(Styles.OutcomeGroupFooter, {
+        [Styles.NoLeader]: content === null,
+      })}
+    >
+      {content}
+    </div>
+  );
 };
 
 const createOutcomesData = market => {
