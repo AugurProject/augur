@@ -19,6 +19,7 @@ import {
   SUBMIT_DISPUTE,
   YES_NO,
   ZERO,
+  BUY,
   INVALID_OUTCOME_LABEL,
   SUBMIT_DISPUTE,
   SCALAR_DOWN_ID,
@@ -60,7 +61,7 @@ import {
   OutcomeFormatted,
   MarketInfos,
 } from 'modules/types';
-
+import { calculateTotalOrderValue } from 'modules/trades/helpers/calc-order-profit-loss-percents';
 import { BigNumber, createBigNumber } from 'utils/create-big-number';
 import { formatAttoRep, formatDai, formatNumber } from 'utils/format-number';
 import { Getters } from '@augurproject/sdk';
@@ -461,7 +462,6 @@ interface SportsOutcomeProps {
 
 export const SportsOutcome = ({
   title = undefined,
-  volume,
   outcomeId,
   outcomeLabel,
   market,
@@ -473,9 +473,18 @@ export const SportsOutcome = ({
   let topLabel = null;
   let disabled = true;
   let label = '-';
+  let subLabel = '';
   let action = () => {};
   if (bestAsk) {
     const { shares, price } = bestAsk;
+    subLabel = formatDai(calculateTotalOrderValue(
+      shares,
+      price,
+      BUY,
+      createBigNumber(market.minPrice),
+      createBigNumber(market.maxPrice),
+      market.marketType
+    )).full;
     const odds = convertToOdds({
       price,
       min: market.minPriceBigNumber,
@@ -510,7 +519,7 @@ export const SportsOutcome = ({
         {topLabel && <span>{topLabel}</span>}
         <span>{label}</span>
       </button>
-      <span>{volume}</span>
+      <span>{subLabel}</span>
     </div>
   );
 };
