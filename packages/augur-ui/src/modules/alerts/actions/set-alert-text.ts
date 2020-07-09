@@ -29,6 +29,7 @@ import {
   TEN_TO_THE_EIGHTEENTH_POWER,
   MALFORMED_OUTCOME,
   CANCELORDER,
+  CANCELORDERS,
   CLAIMTRADINGPROCEEDS,
   BUYPARTICIPATIONTOKENS,
   REDEEMSTAKE,
@@ -131,16 +132,12 @@ export default function setAlertText(alert: any, callback: Function) {
     if (!marketId) return;
     switch (alert.name.toUpperCase()) {
       // CancelOrder
-      case CANCELORDER: {
-        alert.title = 'Order Cancelled';
+      case CANCELORDER:
+      case CANCELORDERS: {
         dispatch(
           loadMarketsInfoIfNotLoaded([marketId], () => {
-            if (alert.status !== TXEventName.Success) {
-              return;
-            }
             const marketInfo = selectMarket(marketId);
             if (marketInfo === null) return;
-            alert.description = marketInfo.description;
 
             const { orderType, outcomeDescription } = getInfo(
               alert.params,
@@ -153,6 +150,12 @@ export default function setAlertText(alert: any, callback: Function) {
                   alert.params.amount,
                   createBigNumber(marketInfo.tickSize)
                 );
+
+            alert.title =
+              alert.status === TXEventName.Success
+                ? 'Order Cancelled'
+                : 'Cancelling Order';
+            alert.description = marketInfo.description;
             alert.details = `${orderType} ${
               formatShares(quantity).formatted
             } of ${outcomeDescription} @ ${alert.params.avgPrice.formatted}`;
@@ -173,7 +176,7 @@ export default function setAlertText(alert: any, callback: Function) {
             alert.details = `$${
               formatAttoDai(amount, { zeroStyled: false }).formatted
             } claimed`;
-            alert.id = alert.params.transactionHash
+            alert.id = alert.params.transactionHash;
           })
         );
         break;
@@ -465,7 +468,12 @@ export default function setAlertText(alert: any, callback: Function) {
             const marketInfo = selectMarket(marketId);
             if (marketInfo === null) return;
             alert.description = marketInfo.description;
-            const { orderType, amount, price, outcomeDescription, priceFormatted } = getInfo(
+            const {
+              orderType,
+              amount,
+              outcomeDescription,
+              priceFormatted,
+            } = getInfo(
               alert.params,
               alert.status,
               marketInfo,
