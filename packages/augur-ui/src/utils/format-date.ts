@@ -159,13 +159,13 @@ export function buildformattedDate(
   offset: number
 ): TimezoneDateObject {
 
-  let adjHour = hour;
+  let adjHour = Number(hour);
   const day = moment
     .unix(timestamp)
     .startOf('day').format('MMMM DD, YYYY');
 
-  if (meridiem && meridiem === 'PM' && hour < 12) {
-    adjHour = hour + 12;
+  if (meridiem && meridiem === 'PM' && adjHour < 12) {
+    adjHour = adjHour + 12;
   }
 
   // MMMM DD, YYYY h:mm A;
@@ -217,14 +217,6 @@ export function getUtcStartOfDayFromLocal(timestamp: number): number {
     .startOf('day')
     .unix();
     return value;
-}
-
-export function convertUTCUnixToFormattedDate(integer: number = 0) {
-  const localOffset: number = (new Date().getTimezoneOffset() / 60) * -1;
-  const value = moment
-    .unix(integer)
-    .add(localOffset, 'hours')
-  return formatDate(value.toDate());
 }
 
 export function convertUnixToFormattedDate(integer: number = 0) {
