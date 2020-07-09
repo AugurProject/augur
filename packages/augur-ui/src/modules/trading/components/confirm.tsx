@@ -69,7 +69,7 @@ interface ConfirmProps {
   selectedOutcome: OutcomeFormatted;
   tradingTutorial?: boolean;
   initialLiquidity?: boolean;
-  postOnlyOrder
+  postOnlyOrder?: boolean;
 }
 
 export const Confirm = ({
