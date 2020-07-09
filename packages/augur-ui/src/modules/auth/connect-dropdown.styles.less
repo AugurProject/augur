@@ -73,6 +73,13 @@
     background: var(--color-table-header);
   }
 
+  > svg {
+    fill: var(--color-primary-text);
+    height: @size-16;
+    margin-right: @size-8;
+    width: @size-16;
+  }
+
   > div:first-of-type {
     .mono-11-bold;
 
@@ -98,19 +105,15 @@
         }
       }
     }
-
-    > svg {
-      fill: var(--color-primary-text);
-      height: @size-16;
-      margin-right: @size-8;
-      width: @size-16;
-    }
   }
 
   > div:last-of-type {
     .mono-11-bold;
 
+    display: flex;
     color: var(--color-primary-text);
+    flex: 2;
+    justify-content: flex-end;
 
     @media @breakpoint-mobile-tablet {
       .mono-12-medium;
@@ -126,6 +129,32 @@
 
         color: var(--color-secondary-text);
       }
+    }
+  }
+}
+
+.EthReserves {
+  background: var(--color-table-header);
+  border-bottom: @size-1 solid var(--color-dark-grey);
+  flex-flow: column;
+  padding: @size-4 @size-16 0;
+
+  > div:first-of-type {
+    border-bottom: unset;
+    height: @size-32;
+    padding: 0;
+
+    > div {
+      flex-grow: 2;
+      display: grid;
+    }
+  }
+
+  > div:last-of-type {
+    grid-template-columns: @size-24 auto @size-16;
+
+    > svg {
+      margin: 0 @size-12 0 0;
     }
   }
 }
@@ -274,7 +303,7 @@
     width: 100%;
 
     > button {
-      width: @size-85;
+      width: 100%;
     }
   }
 }
@@ -291,8 +320,8 @@
   width: 100%;
 
   > svg {
-    height: @size-16;
-    width: @size-16;
+    height: @size-8;
+    width: @size-8;
     margin-left: @size-6;
 
     > g {
@@ -343,7 +372,7 @@
 
     > button {
       flex-flow: row nowrap;
-  
+
       > svg {
         margin-right: 0;
         margin-left: @size-4;

@@ -31,12 +31,6 @@ import Styles from 'modules/modal/modal.styles.less';
 
 interface AddFundsProps {
   autoSelect: boolean;
-  tokenToAdd: string;
-  ETH_RATE: BigNumber;
-  REP_RATE: BigNumber;
-  config: SDKConfiguration;
-  initialAddFundsFlow?: string;
-  initialSwapToken?: string;
 }
 
 const addFundsFortmatic = async (amount, crypto, address) => {
@@ -48,8 +42,7 @@ const addFundsFortmatic = async (amount, crypto, address) => {
 };
 
 const addFundsTorus = async (amount, address) => {
-  await window.torus.initiateTopup('wyre', {
-    selectedCurrency: 'USD',
+  await torus.showWallet('topup', {
     selectedAddress: address,
     fiatValue: amount.toNumber(),
     selectedCryptoCurrency: 'DAI',
@@ -58,41 +51,40 @@ const addFundsTorus = async (amount, address) => {
 
 export const AddFunds = ({
   autoSelect = false,
-  tokenToAdd = DAI,
 }: AddFundsProps) => {
+  const BUY_MIN = 20;
+  const BUY_MAX = 250;
   const { loginAccount, modal, actions: {closeModal} } = useAppStatusStore();
-  const isRelayDown = false;
-  const { useSigner, initialSwapToken, initialAddFundsFlow } = modal;
-  const showTransfer = modal.showTransfer || false;
+  const { env: config, ethToDaiRate, repToDaiRate } = useAppStatusStore();
 
-    //analyticsEvent: () => dP.track(ADD_FUNDS, {}),
   const closeAction = () => {
     if (modal.cb) {
       modal.cb();
     }
     closeModal();
   };
-    
 
-  const [amountToBuy, setAmountToBuy] = useState(createBigNumber(0));
-  const [isAmountValid, setIsAmountValid] = useState(false);
-  const [poolSelected, setPoolSelected] = useState(false);
-  const { env: config, ethToDaiRate, repToDaiRate } = useAppStatusStore();
   const ETH_RATE = createBigNumber(1).dividedBy(
     ethToDaiRate?.value || createBigNumber(1)
   );
   const REP_RATE = createBigNumber(1).dividedBy(
     repToDaiRate?.value || createBigNumber(1)
   );
-  
+
+  const { useSigner = false,  initialAddFundsFlow = null, initialSwapToken= null, tokenToAdd = DAI } = modal;
   const address = loginAccount.address;
   const accountMeta = loginAccount.meta;
-  const BUY_MIN = 20;
-  const BUY_MAX = 250;
+
+  if (!loginAccount) {
+        return null;
+  }
 
   const usingOnRampSupportedWallet = accountMeta &&
     accountMeta.accountType === ACCOUNT_TYPES.TORUS ||
     accountMeta.accountType === ACCOUNT_TYPES.FORTMATIC;
+
+  const [amountToBuy, setAmountToBuy] = useState(createBigNumber(0));
+  const [isAmountValid, setIsAmountValid] = useState(false);
 
   const validateAndSet = amount => {
     const amountToBuy = createBigNumber(amount);
@@ -148,11 +140,6 @@ export const AddFunds = ({
     addFundsOptions.unshift(
       FUND_OTPIONS.find(option => option.value === ADD_FUNDS_SWAP)
     );
-  }
-
-  if (initialSwapToken === USDC || initialSwapToken === USDT) {
-    // Convert USDT/USDC to dai flow, only show SWAP payament flow to avoid confusion
-    addFundsOptions = [FUND_OTPIONS[ADD_FUNDS_SWAP]];
   }
 
   const SWAP_ID = 0;
@@ -213,18 +200,17 @@ export const AddFunds = ({
                   defaultSelection={SWAP_ID}
                 />
               </div>
-              {poolSelected && (
-                <Swap
-                  address={loginAccount.address}
-                  balances={loginAccount.balances}
-                  toToken={tokenToAdd}
-                  fromToken={initialSwapToken ? initialSwapToken : null}
-                  ETH_RATE={ETH_RATE}
-                  REP_RATE={REP_RATE}
-                  config={config}
-                  useSigner={useSigner}
-                />
-              )}
+
+              <Swap
+                address={loginAccount.address}
+                balances={loginAccount.balances}
+                toToken={tokenToAdd}
+                fromToken={initialSwapToken ? initialSwapToken : null}
+                ETH_RATE={ETH_RATE}
+                REP_RATE={REP_RATE}
+                config={config}
+                useSigner={useSigner}
+              />
             </>
           )}
 
@@ -232,8 +218,8 @@ export const AddFunds = ({
             <CreditCard
               accountMeta={accountMeta}
               walletAddress={address}
-              addFundsTorus={() => addFundsTorus}
-              addFundsFortmatic={() => addFundsFortmatic}
+              addFundsTorus={addFundsTorus}
+              addFundsFortmatic={addFundsFortmatic}
               fundTypeLabel={fundTypeLabel}
               fundTypeToUse={tokenToAdd}
               validateAndSet={validateAndSet}

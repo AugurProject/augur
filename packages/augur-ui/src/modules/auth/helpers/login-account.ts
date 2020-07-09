@@ -115,9 +115,9 @@ export const getCoreStats = (isLogged, loginAccount) => {
 };
 
 export const getEthReserve = () => {
-  const { loginAccount: { balances } } = AppStatus.get();
-  const ethNonSafeBN = createBigNumber(balances.ethNonSafe);
-  let desiredSignerEthBalance = createBigNumber(formatAttoEth(Number(DESIRED_SIGNER_ETH_BALANCE)).value);
+  const { env, loginAccount: { balances } } = AppStatus.get();
+  const ethNonSafeBN = createBigNumber(balances.signerBalances.eth || 0);
+  let desiredSignerEthBalance = createBigNumber(formatAttoEth(Number(env.gsn.desiredSignerBalanceInETH * 10**18)).value);
   if (ethNonSafeBN.lt(desiredSignerEthBalance)) desiredSignerEthBalance = ethNonSafeBN;
   const reserveEthAmount: FormattedNumber = formatEther(desiredSignerEthBalance, {
     zeroStyled: false,

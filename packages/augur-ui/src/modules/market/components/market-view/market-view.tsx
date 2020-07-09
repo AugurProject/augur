@@ -8,6 +8,7 @@ import { MarketHeader } from 'modules/market/components/market-header/market-hea
 import MarketOrdersPositionsTable from 'modules/market/components/market-orders-positions-table/market-orders-positions-table';
 import MarketOutcomesList from "modules/market/components/market-outcomes-list/market-outcomes-list";
 import TradingForm from 'modules/trading/components/trading-form';
+import { TutorialPopUp } from 'modules/market/components/common/tutorial-pop-up';
 import MarketChartsPane from "modules/market-charts/components/market-charts-pane/market-charts-pane";
 import parseMarketTitle from 'modules/markets/helpers/parse-market-title';
 import MarketTradeHistory from 'modules/market/components/market-trade-history/market-trade-history';
