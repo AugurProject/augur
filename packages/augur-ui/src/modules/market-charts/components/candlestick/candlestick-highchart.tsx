@@ -5,6 +5,7 @@ import NoDataToDisplay from 'highcharts/modules/no-data-to-display';
 import Styles from 'modules/market-charts/components/candlestick/candlestick.styles.less';
 import { PERIOD_RANGES, DAI } from 'modules/common/constants';
 import { PriceTimeSeriesData } from 'modules/types';
+import { AppStatus } from 'modules/app/store/app-status';
 
 NoDataToDisplay(Highcharts);
 
@@ -16,7 +17,6 @@ interface HighChartsWrapperProps {
   marketMax: BigNumber;
   marketMin: BigNumber;
   volumeType: string;
-  currentTimeInSeconds: number;
   isArchived?: boolean;
 }
 
@@ -97,7 +97,8 @@ export default class CandlestickHighchart extends Component<
     selectedPeriod: number,
     volumeType: string
   ) {
-    const { marketMax, marketMin, pricePrecision, currentTimeInSeconds, isArchived } = this.props;
+    const currentTimeInSeconds = AppStatus.get().blockchain.currentAugurTimestamp
+    const { marketMax, marketMin, pricePrecision, isArchived } = this.props;
     const candlestick = [];
     const volume = [];
     const priceBuckets = [];

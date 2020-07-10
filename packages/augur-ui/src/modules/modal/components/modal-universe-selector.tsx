@@ -1,24 +1,19 @@
 import React from 'react';
 
 import { CloseButton } from 'modules/common/buttons';
-import type { UniverseDetails } from '@augurproject/sdk';
-import UniverseCard from 'modules/universe-cards/containers/universe-card';
+import type { UniverseDetails } from '@augurproject/sdk/src/state/getter/Universe';
+import UniverseCard from 'modules/universe-cards/components/universe-card';
 
 import Styles from 'modules/modal/modal.styles.less';
+import { useAppStatusStore } from 'modules/app/store/app-status';
 
-interface ModalUniverseSelectorProps {
-  universeDetails: UniverseDetails,
-  closeAction: Function;
-}
+export const ModalUniverseSelector = () => {
+  const { universe: universeDetails, modal, actions: { closeModal } } = useAppStatusStore();
 
-export const ModalUniverseSelector = ({
-  universeDetails,
-  closeAction
-}: ModalUniverseSelectorProps) => {
-  return(
+  return (
     <div className={Styles.ModalUniverseSelector}>
       <div>
-        <CloseButton action={() => closeAction()} />
+        <CloseButton action={() => closeModal()} />
         <h1>Augur Universe Picker</h1>
       </div>
       <p>A Universe in Augur is a collection of markets. Universes can have children and a parent.</p>

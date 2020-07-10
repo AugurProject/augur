@@ -1,6 +1,4 @@
 import { UIOrder } from 'modules/types';
-import { ThunkDispatch } from 'redux-thunk';
-import { Action } from 'redux';
 import { isTransactionConfirmed } from 'modules/contracts/actions/contractCalls';
 import {
   convertDisplayAmountToOnChainAmount,
@@ -9,7 +7,8 @@ import {
 import { createBigNumber } from 'utils/create-big-number';
 import { TransactionMetadataParams } from '@augurproject/contract-dependencies-ethers';
 import { generateTxParameterId } from 'utils/generate-tx-parameter-id';
-import { AppState } from 'appStore';
+import { PendingOrders } from 'modules/app/store/pending-orders';
+import { AppStatus } from 'modules/app/store/app-status';
 
 export const ADD_PENDING_ORDER = 'ADD_PENDING_ORDER';
 export const REMOVE_PENDING_ORDER = 'REMOVE_PENDING_ORDER';
@@ -18,11 +17,9 @@ export const UPDATE_PENDING_ORDER = 'UPDATE_PENDING_ORDER';
 export const addPendingOrder = (pendingOrder: UIOrder, marketId: string) =>
   addPendingOrderWithBlockNumber(pendingOrder, marketId);
 
-export const removePendingOrder = (id: string, marketId: string) => ({
-  type: REMOVE_PENDING_ORDER,
-  data: { id, marketId },
-});
-
+export const removePendingOrder = (id: string, marketId: string) => {
+  PendingOrders.actions.removePendingOrder(marketId, id);
+}
 export const updatePendingOrderStatus = (
   id: string,
   marketId: string,
@@ -33,17 +30,12 @@ export const updatePendingOrderStatus = (
 export const addPendingOrderWithBlockNumber = (
   pendingOrder: UIOrder,
   marketId: string
-) => (dispatch: ThunkDispatch<void, any, Action>, getState: () => AppState) => {
-  const { blockchain } = getState();
-  pendingOrder.blockNumber = blockchain.currentBlockNumber;
-
-  dispatch({
-    type: ADD_PENDING_ORDER,
-    data: {
-      pendingOrder,
-      marketId,
-    },
-  });
+) => {
+  const {
+    blockchain: { currentBlockNumber },
+  } = AppStatus.get();
+  pendingOrder.blockNumber = currentBlockNumber;
+  PendingOrders.actions.updatePendingOrder(marketId, pendingOrder);
 };
 
 const updatePendingOrderStatusWithBlockNumber = (
@@ -51,19 +43,20 @@ const updatePendingOrderStatusWithBlockNumber = (
   marketId: string,
   status: string,
   hash: string
-) => (dispatch: ThunkDispatch<void, any, Action>, getState: () => AppState) => {
-  const { blockchain } = getState();
-  const blockNumber = blockchain.currentBlockNumber;
-
-  dispatch({
-    type: UPDATE_PENDING_ORDER,
-    data: { id, marketId, status, hash, blockNumber },
+) => {
+  const {
+    blockchain: { currentBlockNumber },
+  } = AppStatus.get();
+  const blockNumber = currentBlockNumber;
+  PendingOrders.actions.updatePendingOrder(marketId, {
+    id,
+    status,
+    hash,
+    blockNumber,
   });
 };
 
-export const loadPendingOrdersTransactions = (pendingOrders: UIOrder[]) => (
-  dispatch: ThunkDispatch<void, any, Action>
-) => {
+export const loadPendingOrdersTransactions = (pendingOrders: UIOrder[]) => {
   if (!pendingOrders || Object.keys(pendingOrders).length === 0) return;
   Object.keys(pendingOrders).map(async marketId => {
     const orders = pendingOrders[marketId];
@@ -72,8 +65,8 @@ export const loadPendingOrdersTransactions = (pendingOrders: UIOrder[]) => (
       if (!o.hash) return;
       const confirmed = await isTransactionConfirmed(o.hash);
       confirmed
-        ? dispatch(removePendingOrder(o.id, marketId))
-        : dispatch(addPendingOrder(o, marketId));
+        ? removePendingOrder(o.id, marketId)
+        : addPendingOrder(o, marketId);
     });
   });
 };

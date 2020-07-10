@@ -10,7 +10,7 @@ import {
   CLOSED_LONG,
   CLOSED_SHORT,
 } from 'modules/common/constants';
-import { formatDai, formatPercent, formatShares, formatNone, formatMarketShares } from 'utils/format-number';
+import { formatDai, formatPercent, formatNone, formatMarketShares } from 'utils/format-number';
 
 export const positionSummary = memoize(
   (adjustedPosition, outcome, marketType, reportingState, isFullLoss) => {

@@ -9,8 +9,8 @@ import {
   LinkContentSection,
   Stepper,
 } from 'modules/modal/common';
-import AccountStatusTracker from 'modules/modal/containers/account-status-tracker';
-import TransferMyTokens from 'modules/modal/containers/transfer-my-tokens';
+import { AccountStatusTracker } from 'modules/modal/common';
+import { TransferMyTokens } from 'modules/modal/common';
 import { LinkContent } from 'modules/types';
 import classNames from 'classnames';
 import { ONBOARDING_MAX_STEPS, TRANSACTIONS, CREATEAUGURWALLET, DAI } from 'modules/common/constants';

@@ -15,7 +15,7 @@ import {
   MarketProgress,
 } from 'modules/common/progress';
 import { getWarpSyncRepReward } from 'modules/contracts/actions/contractCalls';
-import MarketTitle from 'modules/market/containers/market-title';
+import MarketTitle from 'modules/market/components/common/market-title';
 import {
   DateFormattedObject,
   MarketData,
@@ -23,6 +23,18 @@ import {
 } from 'modules/types';
 import React, { useEffect, useState } from 'react';
 import { formatDai } from 'utils/format-number';
+import Styles from 'modules/account/components/notification.styles.less';
+import {
+  DISPUTE_ENDS,
+  MARKET_IN_DISPUTE,
+  MARKET_STATUS_MESSAGES,
+  NOTIFICATION_TYPES,
+  REPORTING_ENDS,
+} from 'modules/common/constants';
+import MarketTitle from 'modules/market/components/common/market-title';
+import { MarketReportingState } from '@augurproject/sdk/build';
+import classNames from 'classnames';
+import { getWarpSyncRepReward } from 'modules/contracts/actions/contractCalls';
 
 interface BaseProps {
   market: MarketData;

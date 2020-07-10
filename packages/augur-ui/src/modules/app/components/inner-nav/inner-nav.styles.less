@@ -2,10 +2,66 @@
 
 // Used in Betting UI
 .InnerNav {
-  height: calc(~"100vh - @{multi-top-bar-height}");
+  height: calc(~'100vh - @{multi-top-bar-height}');
   overflow: auto;
   position: relative;
-  background: @color-module-background;
+  background: var(--color-module-background);
+}
+
+.MyBets {
+  height: unset;
+  background-color: var(--color-module-background);
+
+  @media @breakpoint-mobile-tablet {
+    padding-bottom: 0;
+
+    > ul {
+      margin-top: 50px;
+      height: 100%;
+      background: var(--color-module-background);
+      overflow-x: hidden;
+      overflow-y: auto;
+      width: 100%;
+      z-index: @above-all-content;
+      -webkit-overflow-scrolling: touch;
+      display: flex;
+      flex-direction: column;
+
+      > div {
+        background-color: var(--color-page-background);
+        border-bottom: @size-1 solid var(--color-dark-grey);
+        padding: @size-24 @size-12;
+        flex: 1;
+
+        > span {
+          .text-10-medium;
+  
+          color: var(--color-primary-text);
+          margin-bottom: @size-16;
+          display: flex;
+  
+          &:not(:first-of-type) {
+            margin-top: @size-12;
+          }
+        }
+  
+        > div {
+          flex: unset;
+        }
+  
+        > ul {
+          > li {
+            flex: 1;
+          }
+        }
+  
+      }
+
+      > button {
+        margin: @size-24 @size-12;
+      }
+    }
+  }
 }
 
 .InnerNav__menu {
@@ -23,14 +79,14 @@
   transition: opacity 0.3s ease-in-out, height 0.3s ease-in-out;
 
   *:hover {
-    background: @color-secondary-action-outline;
+    background: var(--color-secondary-action-outline);
   }
 
   a,
   button {
     background: none;
     border: none;
-    color: @color-primary-text;
+    color: var(--color-primary-text);
     cursor: pointer;
     display: block;
     font-size: 0.75rem;
@@ -68,11 +124,11 @@
 }
 
 .InnerNav__menu-item--selected {
-  background: @color-secondary-action-outline;
+  background: var(--color-secondary-action-outline);
 }
 
 .InnerNav__menu-item--seperator {
-  border-top: 1px solid @color-module-background;
+  border-top: 1px solid var(--color-module-background);
   display: flex;
   height: 0;
   margin: @size-12 @size-11 0;
@@ -84,15 +140,15 @@
 }
 
 .InnerNav__menu--main {
-  background: @color-module-background;
-  border-right: 1px solid @color-module-background;
+  background: var(--color-module-background);
+  border-right: 1px solid var(--color-module-background);
   position: relative;
   z-index: @mask;
 }
 
 .InnerNav__menu--submenu {
-  background: @color-module-background;
-  border-left: 0.0625rem solid @color-module-background;
+  background: var(--color-module-background);
+  border-left: 0.0625rem solid var(--color-module-background);
   left: 0;
   position: absolute;
   top: 0;
@@ -101,16 +157,34 @@
 
   > .InnerNav__menu-item {
     *:hover {
-      background: @color-secondary-action-outline;
+      background: var(--color-secondary-action-outline);
     }
   }
 
   > .InnerNav__menu-item--selected {
-    background: @color-secondary-action-outline;
+    background: var(--color-secondary-action-outline);
   }
 }
 
-@media @breakpoint-mobile {
+:root[theme='BETTING'],
+:root[theme='SPORTS'] {
+
+  .InnerNav, 
+  .InnerNav__menu--main {
+    background: none;
+
+    @media @breakpoint-mobile-tablet {
+      background: var(--color-module-background);
+    }
+  }
+
+
+  .InnerNav__menu--main {
+    border-right: 0;
+  }
+}
+
+@media @breakpoint-mobile-tablet {
   .InnerNav {
     left: -100%;
     margin-bottom: 1rem;
@@ -137,9 +211,9 @@
         .text-16-bold;
 
         align-items: center;
-        background: @color-dark-grey;
-        border-bottom: 1px solid @color-dark-grey;
-        color: @color-primary-text;
+        background: var(--color-module-background);
+        border-bottom: 1px solid var(--color-dark-grey);
+        color: var(--color-primary-text);
         display: flex;
         flex-flow: row nowrap;
         height: 50px;
@@ -161,14 +235,14 @@
         }
 
         > button > svg > path {
-          stroke: @color-primary-text;
+          stroke: var(--color-primary-text);
         }
       }
 
       // Apply button
       > div:nth-of-type(2) {
-        background: @color-table-header;
-        padding: @size-24;
+        background: var(--color-table-header);
+        padding: @size-9 @size-24;
         position: fixed;
         left: 0;
         right: 0;
@@ -208,7 +282,7 @@
   .InnerNav__menu-item--selected:hover {
     a,
     button {
-      background: @color-secondary-action-outline;
+      background: var(--color-secondary-action-outline);
     }
   }
 

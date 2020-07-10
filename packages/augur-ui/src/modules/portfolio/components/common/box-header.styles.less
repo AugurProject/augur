@@ -3,8 +3,8 @@
 .BoxHeader {
   > div:first-of-type {
     align-items: center;
-    background: @color-dark-grey;
-    border-bottom: 1px solid @color-dark-grey;
+    background: var(--color-dark-grey);
+    border-bottom: @size-1 solid var(--color-dark-grey);
     display: flex;
     flex-direction: row;
     padding: 0 @size-10 0 @size-16;
@@ -72,8 +72,8 @@
 
 .BoxHeader > div:nth-of-type(2),
 .Title {
-  background: @color-table-header;
-  border-bottom: 1px solid @color-dark-grey;
+  background: var(--color-table-header);
+  border-bottom: @size-1 solid var(--color-dark-grey);
   align-items: center;
   display: flex;
   flex-direction: row;
@@ -85,7 +85,7 @@
 .Title {
   .text-12-medium;
 
-  background-color: @color-dark-grey;
+  background-color: var(--color-dark-grey);
   text-transform: uppercase;
 }
 
@@ -106,8 +106,8 @@
 }
 
 .BottomContent {
-  background: @color-table-header;
-  border: 1px solid @color-dark-grey;
+  background: var(--color-table-header);
+  border: 1px solid var(--color-dark-grey);
   margin-top: @size-16;
 }
 
@@ -148,7 +148,7 @@
     height: @size-22;
 
     > path {
-      fill: @color-secondary-text;
+      fill: var(--color-secondary-text);
     }
   }
 }
@@ -180,5 +180,54 @@
 
   .HideOnMobile {
     display: none;
+  }
+}
+
+:root[theme='BETTING'],
+:root[theme='SPORTS'] {
+  .BoxHeader {
+    > div:first-of-type {
+      background: transparent;
+      max-height: @size-56;
+      min-height: @size-56;
+      padding: 0 @size-12;
+
+      > div:first-of-type {
+        .text-16-bold;
+
+        margin-right: @size-8;
+        text-transform: capitalize;
+      }
+
+      > div:last-of-type {
+        div[class*='SearchBar'] {
+          > svg > g {
+            fill: var(--color-primary-text-50);
+          }
+        }
+
+        div[class*='isFocused'] {
+          max-width: @size-178;
+          margin-left: auto;
+          border: @size-1 solid var(--color-dark-text);
+
+          > input {
+            .text-14;
+
+            color: var(--color-primary-text);
+          }
+
+          > button > svg > path {
+            stroke: var(--color-primary-text);
+          }
+        }
+      }
+    }
+  }
+
+  .BoxHeader > div:nth-of-type(2),
+  .Title {
+    background: var(--color-module-background);
+    height: @size-40;
   }
 }

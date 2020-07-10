@@ -1,10 +1,8 @@
 import { IPFSWorkerProxy } from 'services/ipfs';
-import store from 'appStore';
 import {
-  addAnalytic,
-  removeAnalytic,
   SEND_DELAY_SECONDS,
 } from 'modules/app/actions/analytics-management';
+import { AppStatus } from 'modules/app/store/app-status';
 
 declare global {
   interface Window {
@@ -22,6 +20,7 @@ const ipfsPlugin = (userConfig: {
   ethereumNetwork: string;
   senderAccount: string;
 }) => {
+  const { addAnalytic, removeAnalytic } = AppStatus.actions;
   return {
     name: 'ipfs-plugin',
     config: {},
@@ -33,21 +32,22 @@ const ipfsPlugin = (userConfig: {
     page: ({payload}) => {
       removeMetaCallbackOnPayload(payload);
       const analyticId = `${payload.properties.hash}-${payload.meta.timestamp}`;
-      store.dispatch(addAnalytic(payload, analyticId));
+      
+      addAnalytic(analyticId, payload);
 
       setTimeout(() => {
         IPFSWorkerProxy.sendMessage(payload, 'augur-analytics');
-        store.dispatch(removeAnalytic(analyticId));
+        removeAnalytic(analyticId);
       }, SEND_DELAY_SECONDS * 1000);
     },
     track: ({ payload }) => {
       removeMetaCallbackOnPayload(payload);
       const analyticId = `${payload.event}-${payload.meta.timestamp}`;
-      store.dispatch(addAnalytic(payload, analyticId));
+      addAnalytic(analyticId, payload);
 
       setTimeout(() => {
         IPFSWorkerProxy.sendMessage(payload, 'augur-analytics');
-        store.dispatch(removeAnalytic(analyticId));
+        removeAnalytic(analyticId);
       }, SEND_DELAY_SECONDS * 1000);
     },
     identify: ({ payload }) => {

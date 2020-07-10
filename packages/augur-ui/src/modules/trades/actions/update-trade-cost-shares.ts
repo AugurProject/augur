@@ -2,10 +2,7 @@ import { createBigNumber } from 'utils/create-big-number';
 import { BUY, ZERO, ZEROX_GAS_FEE, BUY_INDEX } from 'modules/common/constants';
 import logError from 'utils/log-error';
 import { generateTrade } from 'modules/trades/helpers/generate-trade';
-import { AppState } from 'appStore';
-import { ThunkDispatch } from 'redux-thunk';
-import { Action } from 'redux';
-import { BigNumber } from "bignumber.js";
+import { BigNumber } from 'bignumber.js';
 import { NodeStyleCallback, AccountPosition } from 'modules/types';
 import {
   simulateTrade,
@@ -13,9 +10,11 @@ import {
 } from 'modules/contracts/actions/contractCalls';
 import type { Getters, SimulateTradeData } from '@augurproject/sdk';
 import { checkAccountAllowance } from 'modules/auth/actions/approve-account';
+import { AppStatus } from 'modules/app/store/app-status';
+import { Markets } from 'modules/markets/store/markets';
 
 // Updates user's trade. Only defined (i.e. !== null) parameters are updated
-export function updateTradeCost({
+export const updateTradeCost = ({
   marketId,
   outcomeId,
   side,
@@ -23,69 +22,66 @@ export function updateTradeCost({
   limitPrice,
   selfTrade,
   callback = logError,
-}: any) {
-  return (
-    dispatch: ThunkDispatch<void, any, Action>,
-    getState: () => AppState
-  ) => {
-    if (!side || !numShares || !limitPrice) {
-      return callback('side or numShare or limitPrice is not provided');
-    }
+}: any) => {
+  if (!side || !numShares || !limitPrice) {
+    return callback('side or numShare or limitPrice is not provided');
+  }
 
-    const { marketInfos, accountPositions, loginAccount } = getState();
-
-    dispatch(checkAccountAllowance());
-    const market = marketInfos[marketId];
-    const newTradeDetails = {
-      side,
-      numShares,
-      limitPrice,
-      totalFee: '0',
-      totalCost: '0',
-      selfTrade,
-    };
-
-    return runSimulateTrade(
-      newTradeDetails,
-      market,
-      marketId,
-      outcomeId,
-      accountPositions,
-      loginAccount.address,
-      callback
-    );
+  const {
+    accountPositions,
+    loginAccount: { address },
+  } = AppStatus.get();
+  const { marketInfos } = Markets.get();
+  checkAccountAllowance();
+  const market = marketInfos[marketId];
+  const newTradeDetails = {
+    side,
+    numShares,
+    limitPrice,
+    totalFee: '0',
+    totalCost: '0',
+    selfTrade,
   };
-}
 
-export function updateTradeShares({
+  return runSimulateTrade(
+    newTradeDetails,
+    market,
+    marketId,
+    outcomeId,
+    accountPositions,
+    address,
+    callback
+  );
+};
+
+export const updateTradeShares = ({
   marketId,
   outcomeId,
   side,
   maxCost,
   limitPrice,
   callback = logError,
-}: any) {
-  return (
-    dispatch: ThunkDispatch<void, any, Action>,
-    getState: () => AppState
-  ) => {
-    if (!side || !maxCost || !limitPrice) {
-      return callback('side or numShare or limitPrice is not provided');
-    }
+}: any) => {
+  if (!side || !maxCost || !limitPrice) {
+    return callback('side or numShare or limitPrice is not provided');
+  }
 
-    const { marketInfos, accountPositions, loginAccount } = getState();
+  const {
+    accountPositions,
+    loginAccount: { address },
+  } = AppStatus.get();
+  const { marketInfos } = Markets.get();
+  checkAccountAllowance();
+  const market = marketInfos[marketId];
+  const newTradeDetails: any = {
+    side,
+    maxCost,
+    limitPrice,
+    totalFee: '0',
+    totalCost: '0',
+  };
 
-    dispatch(checkAccountAllowance());
-    const market = marketInfos[marketId];
-    const newTradeDetails: any = {
-      side,
-      maxCost,
-      limitPrice,
-      totalFee: '0',
-      totalCost: '0',
-    };
-
-    /*
+  /*
     market -5 => 10
     Ultimate values we want: quantity 10, price 0, maxCost 50/100 (long/short)
 
@@ -101,34 +97,33 @@ export function updateTradeShares({
     MaxCostShort /(range - scaledPrice) = quantityShort => 100 / (15 - 5) = 10
     */
 
-    // calculate num shares
-    const marketMaxPrice = createBigNumber(market.maxPrice);
-    const marketMinPrice = createBigNumber(market.minPrice);
-    const marketRange = marketMaxPrice.minus(market.minPrice);
-    const scaledPrice = createBigNumber(limitPrice).plus(marketMinPrice.abs());
+  // calculate num shares
+  const marketMaxPrice = createBigNumber(market.maxPrice);
+  const marketMinPrice = createBigNumber(market.minPrice);
+  const marketRange = marketMaxPrice.minus(market.minPrice);
+  const scaledPrice = createBigNumber(limitPrice).plus(marketMinPrice.abs());
 
-    let newShares = createBigNumber(maxCost).dividedBy(
-      marketRange.minus(scaledPrice)
-    );
-    if (side === BUY) {
-      newShares = createBigNumber(maxCost).dividedBy(scaledPrice);
-    }
+  let newShares = createBigNumber(maxCost).dividedBy(
+    marketRange.minus(scaledPrice)
+  );
+  if (side === BUY) {
+    newShares = createBigNumber(maxCost).dividedBy(scaledPrice);
+  }
 
-    newTradeDetails.numShares = createBigNumber(newShares.toFixed(4));
+  newTradeDetails.numShares = createBigNumber(newShares.toFixed(4));
 
-    return runSimulateTrade(
-      newTradeDetails,
-      market,
-      marketId,
-      outcomeId,
-      accountPositions,
-      loginAccount.address,
-      callback
-    );
-  };
-}
+  return runSimulateTrade(
+    newTradeDetails,
+    market,
+    marketId,
+    outcomeId,
+    accountPositions,
+    address,
+    callback
+  );
+};
 
-async function runSimulateTrade(
+const runSimulateTrade = async (
   newTradeDetails: any,
   market: Getters.Markets.MarketInfo,
   marketId: string,
@@ -136,7 +131,7 @@ async function runSimulateTrade(
   accountPositions: AccountPosition,
   takerAddress: string,
   callback: NodeStyleCallback
-) {
+) => {
   let sharesFilledAvgPrice = '';
   let reversal = null;
   const positions = (accountPositions[marketId] || {}).tradingPositions;
@@ -166,19 +161,25 @@ async function runSimulateTrade(
   const orderType: 0 | 1 = newTradeDetails.side === BUY ? 0 : 1;
   const doNotCreateOrders = false; // TODO: this needs to be passed from order form
 
-  let userShares = (orderType !== BUY_INDEX) ? createBigNumber(marketOutcomeShares[outcomeId] || 0) : ZERO;
+  let userShares =
+    orderType !== BUY_INDEX
+      ? createBigNumber(marketOutcomeShares[outcomeId] || 0)
+      : ZERO;
   if (!!reversal && orderType === BUY_INDEX) {
     // ignore trading outcome shares and find min across all other outcome shares.
     const userSharesBalancesRemoveOutcome = Object.keys(
       marketOutcomeShares
     ).reduce(
       (p, o) =>
-        String(outcomeId) === o ? p : [...p, new BigNumber(marketOutcomeShares[o])],
+        String(outcomeId) === o
+          ? p
+          : [...p, new BigNumber(marketOutcomeShares[o])],
       []
     );
-    userShares = userSharesBalancesRemoveOutcome.length > 0 ? BigNumber.min(
-      ...userSharesBalancesRemoveOutcome
-    ) : ZERO;
+    userShares =
+      userSharesBalancesRemoveOutcome.length > 0
+        ? BigNumber.min(...userSharesBalancesRemoveOutcome)
+        : ZERO;
   }
 
   const simulateTradeValue: SimulateTradeData = await simulateTrade(
@@ -194,7 +195,7 @@ async function runSimulateTrade(
     newTradeDetails.numShares,
     newTradeDetails.limitPrice,
     userShares,
-    takerAddress,
+    takerAddress
   );
 
   let gasLimit: BigNumber = createBigNumber(0);
@@ -202,7 +203,9 @@ async function runSimulateTrade(
   const totalFee = createBigNumber(simulateTradeValue.settlementFees, 10);
   newTradeDetails.totalFee = totalFee.toFixed();
   // note: tokensDepleted, dai needed for trade
-  newTradeDetails.totalCost = simulateTradeValue.sharesFilled.minus(simulateTradeValue.tokensDepleted);
+  newTradeDetails.totalCost = simulateTradeValue.sharesFilled.minus(
+    simulateTradeValue.tokensDepleted
+  );
   newTradeDetails.costInDai = simulateTradeValue.tokensDepleted;
   // note: shareCost, shares you spent on the trade
   newTradeDetails.shareCost = simulateTradeValue.sharesDepleted;
@@ -227,7 +230,7 @@ async function runSimulateTrade(
       newTradeDetails.numShares,
       newTradeDetails.limitPrice,
       userShares,
-      takerAddress,
+      takerAddress
     );
 
     // Plus ZeroX Fee (150k Gas)
@@ -253,4 +256,4 @@ async function runSimulateTrade(
   const order = generateTrade(market, tradeInfo);
 
   if (callback) callback(null, { ...order, gasLimit });
-}
+};

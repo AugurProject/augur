@@ -10,32 +10,32 @@
   display: flex;
   flex-flow: row nowrap;
   padding-left: @size-16;
-  color: @color-secondary-text;
+  color: var(--color-secondary-text);
   width: auto;
 
   > span {
     .text-10;
 
-    color: @color-secondary-text;
-    margin-right: 0.25rem;
+    color: var(--color-secondary-text);
+    margin-right: @size-4;
     white-space: nowrap;
   }
 
   > svg {
-    height: 1rem;
-    width: 1rem;
+    height: @size-16;
+    width: @size-16;
 
     > g {
-      fill: @color-primary-text;
+      fill: var(--color-primary-text);
     }
   }
 
   > input {
     background: transparent;
     border: 0;
-    color: @color-primary-text;
+    color: var(--color-primary-text);
     display: none;
-    line-height: 1rem;
+    line-height: @size-16;
     padding: 0;
 
     &:focus {
@@ -43,7 +43,7 @@
     }
 
     &::placeholder {
-      color: @color-secondary-text;
+      color: var(--color-secondary-text);
     }
   }
 
@@ -68,8 +68,8 @@
 }
 
 .isFocused {
-  background: @color-module-background;
-  border: 1px solid @color-secondary-action-outline;
+  background: var(--color-module-background);
+  border: @size-1 solid var(--color-secondary-action-outline);
   border-radius: @border-radius-default;
   width: 100%;
   margin-left: 0;
@@ -95,7 +95,7 @@
       height: @size-10;
 
       > path {
-        stroke: @color-inactive-text;
+        stroke: var(--color-inactive-text);
       }
     }
   }
@@ -104,15 +104,15 @@
     .SearchBar {
       flex: 1;
       justify-content: flex-end;
-      padding-right: 6px;
+      padding-right: @size-6;
       width: 100%;
 
       > div {
         .mono-12;
 
-        color: @color-secondary-text;
+        color: var(--color-secondary-text);
         display: flex;
-        margin-right: 0.5rem;
+        margin-right: @size-8;
       }
     }
 
@@ -131,7 +131,7 @@
 
     .ContainerFocused {
       > button {
-        padding-right: 1rem;
+        padding-right: @size-16;
       }
     }
   }

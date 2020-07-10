@@ -2,12 +2,13 @@ import React from 'react';
 
 import Styles from 'modules/markets-list/components/landing-hero.styles.less';
 import { PrimaryButton, ExternalLinkButton } from 'modules/common/buttons';
+import { MODAL_SIGNUP } from 'modules/common/constants';
+import { useAppStatusStore } from 'modules/app/store/app-status';
 
-export interface LandingHeroProps {
-  showSignup: Function;
-}
-
-export const LandingHero = ({showSignup}: LandingHeroProps) => {
+export const LandingHero = () => {
+  const {
+    actions: { setModal },
+  } = useAppStatusStore();
   return (
     <section className={Styles.LandingHero}>
       <div>
@@ -18,12 +19,12 @@ export const LandingHero = ({showSignup}: LandingHeroProps) => {
         <div>
           <PrimaryButton
             text="Sign up to start trading"
-            action={showSignup}
+            action={() => setModal({ type: MODAL_SIGNUP })}
           />
           <ExternalLinkButton
             light
-            URL={'http://www.augur.net'}
-            label={'Learn more on augur.net'}
+            URL="http://www.augur.net"
+            label="Learn more on augur.net"
           />
         </div>
       </div>

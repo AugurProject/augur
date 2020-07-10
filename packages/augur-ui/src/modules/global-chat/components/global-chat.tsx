@@ -1,17 +1,17 @@
 import React, { useState } from 'react';
 import Styles from 'modules/global-chat/components/global-chat.styles.less';
 import { SecondaryButton } from 'modules/common/buttons';
-import { Close, ThickChevron } from 'modules/common/icons';
+import { useAppStatusStore } from 'modules/app/store/app-status';
+import { ThickChevron, Close } from 'modules/common/icons';
 import classNames from 'classnames';
 
-export interface GlobalChatProps {
-  whichChatPlugin: string;
-}
-
-export const GlobalChat = ({
-  whichChatPlugin,
-}: GlobalChatProps) => {
+export const GlobalChat = () => {
+  let { loginAccount, env, initialized3box } = useAppStatusStore();
   const [show, setShow] = useState(false);
+  const signer = loginAccount.meta?.signer;
+
+  const whichChatPlugin = env.plugins?.chat;
+  initialized3box = signer ? initialized3box : false;
 
   return (
     <div

@@ -1,8 +1,8 @@
 @import (reference) '~assets/styles/shared';
 
 .OrderMarket {
-  background: @color-module-background;
-  border-bottom: 2px solid @color-dark-grey;
+  background: var(--color-module-background);
+  border-bottom: 2px solid var(--color-dark-grey);
 
   &:not(:last-of-type) {
     margin-bottom: @size-2;
@@ -11,7 +11,7 @@
   > div:first-of-type {
     .text-12-medium;
 
-    color: @color-primary-text;
+    color: var(--color-primary-text);
     margin-bottom: @size-12;
     padding: @size-12 @size-16 0;
 
@@ -29,7 +29,7 @@
   .OrderMarket {
     margin-bottom: @size-8;
     margin-top: 0;
-    border: 1px solid @color-dark-grey;
+    border: 1px solid var(--color-dark-grey);
 
     &:not(:last-of-type) {
       margin-bottom: @size-8;

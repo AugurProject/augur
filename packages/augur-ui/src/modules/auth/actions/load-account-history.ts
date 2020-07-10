@@ -1,5 +1,4 @@
 import type { Getters } from '@augurproject/sdk';
-import { AppState } from 'appStore';
 import { updateLoginAccount } from 'modules/account/actions/login-account';
 import { loadDisputeWindow } from 'modules/auth/actions/load-dispute-window';
 import {
@@ -9,48 +8,49 @@ import {
 } from 'modules/markets/actions/market-trading-history-management';
 import { updateMarketsData } from 'modules/markets/actions/update-markets-data';
 import { userPositionProcessing } from 'modules/positions/actions/load-account-positions';
-import { clearTransactions } from 'modules/transactions/actions/update-transactions-data';
-import { Action } from 'redux';
-import { ThunkAction, ThunkDispatch } from 'redux-thunk';
+import { loadDisputeWindow } from 'modules/auth/actions/load-dispute-window';
 import { augurSdk } from 'services/augursdk';
+import { Getters } from '@augurproject/sdk';
+import { AppStatus } from 'modules/app/store/app-status';
+import { Markets } from 'modules/markets/store/markets';
 
-export const loadAccountHistory = (): ThunkAction<any, any, any, any> => (
-  dispatch: ThunkDispatch<void, any, Action>,
-  getState: () => AppState
-) => {
-  dispatch(clearTransactions());
-  loadTransactions(dispatch, getState());
+export const loadAccountHistory = () => {
+  loadTransactions();
 };
 
-async function loadTransactions(
-  dispatch: ThunkDispatch<void, any, Action>,
-  appState: AppState
-) {
-  const { universe, loginAccount } = appState;
-  const { mixedCaseAddress } = loginAccount;
-  dispatch(loadDisputeWindow()); // need to load dispute window for user to claim reporting fees
-
+async function loadTransactions() {
+  loadDisputeWindow(); // need to load dispute window for user to claim reporting fees
+  const {
+    loginAccount: { mixedCaseAddress },
+    universe,
+  } = AppStatus.get();
+  const { updateLoginAccount, refreshUserOpenOrders, updateUserFilledOrders } = AppStatus.actions;
+  const { updateMarketsData, bulkMarketTradingHistory } = Markets.actions;
   const Augur = augurSdk.get();
-  const userData: Getters.Users.UserAccountDataResult = await Augur.getUserAccountData({universe: universe.id, account: mixedCaseAddress})
-  dispatch(updateUserFilledOrders(mixedCaseAddress, userData.userTradeHistory));
-  dispatch(bulkMarketTradingHistory(userData.marketTradeHistory));
+  const userData: Getters.Users.UserAccountDataResult = await Augur.getUserAccountData(
+    { universe: universe.id, account: mixedCaseAddress }
+  );
+  updateUserFilledOrders(mixedCaseAddress, userData.userTradeHistory);
+  bulkMarketTradingHistory(userData.userTradeHistory, null);
 
-  const marketsDataById = userData.marketsInfo.reduce((acc, marketData) => ({
-    [marketData.id]: marketData,
-    ...acc,
-  }), {});
+  const marketsDataById = userData.marketsInfo.reduce(
+    (acc, marketData) => ({
+      [marketData.id]: marketData,
+      ...acc,
+    }),
+    {}
+  );
 
-  dispatch(updateMarketsData(marketsDataById));
-  dispatch(updateLoginAccount({ reporting: userData.userStakedRep }));
-  if (userData.userOpenOrders) dispatch(refreshUserOpenOrders(userData.userOpenOrders.orders));
-  if (userData.userPositions) dispatch(userPositionProcessing(userData.userPositions));
-  if (userData.userPositionTotals) dispatch(updateLoginAccount(userData.userPositionTotals));
-
+  updateMarketsData(marketsDataById);
   if (userData.userOpenOrders)
-    dispatch(
-      updateLoginAccount({
-        totalOpenOrdersFrozenFunds:
-          userData.userOpenOrders.totalOpenOrdersFrozenFunds,
-      })
-    );
+    refreshUserOpenOrders(userData.userOpenOrders.orders);
+  if (userData.userPositions)
+    userPositionProcessing(userData.userPositions);
+
+  updateLoginAccount({
+    reporting: userData.userStakedRep,
+    totalOpenOrdersFrozenFunds:
+      userData.userOpenOrders.totalOpenOrdersFrozenFunds,
+    ...userData.userPositionTotals,
+  });
 }

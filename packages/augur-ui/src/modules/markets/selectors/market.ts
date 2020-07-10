@@ -1,5 +1,4 @@
 import type { Getters } from '@augurproject/sdk';
-import store, { AppState } from 'appStore';
 import {
   selectCurrentTimestamp,
   selectMarketInfosState,
@@ -12,36 +11,27 @@ import {
   ZERO,
 } from 'modules/common/constants';
 import { MarketData, OutcomeFormatted } from 'modules/types';
-import { createSelector } from 'reselect';
 import { convertMarketInfoToMarketData } from 'utils/convert-marketInfo-marketData';
+import { Getters } from '@augurproject/sdk';
 import { createBigNumber } from 'utils/create-big-number';
-import { formatNumber } from 'utils/format-number';
-
-function selectMarketsDataStateMarket(state, marketId) {
-  return selectMarketInfosState(state)[marketId];
-}
+import { AppStatus } from 'modules/app/store/app-status';
+import { Markets } from 'modules/markets/store/markets';
 
 export const selectMarket = (marketId): MarketData | null => {
-  const state = store.getState() as AppState;
-  const marketInfo = selectMarketInfosState(state);
+  const { marketInfos } = Markets.get();
+  const { blockchain: { currentAugurTimestamp } } = AppStatus.get();
 
   if (
     !marketId ||
-    !marketInfo ||
-    !marketInfo[marketId] ||
-    !marketInfo[marketId].id
+    !marketInfos ||
+    !marketInfos[marketId] ||
+    !marketInfos[marketId].id
   ) {
     return null;
   }
 
-  return assembleMarket(state, marketId);
+  return convertMarketInfoToMarketData(marketInfos[marketId], currentAugurTimestamp * 1000);
 };
-
-const assembleMarket = createSelector(
-  selectMarketsDataStateMarket,
-  selectCurrentTimestamp,
-  (marketData, currentTimestamp): MarketData => convertMarketInfoToMarketData(marketData, currentTimestamp)
-);
 
 export const selectSortedMarketOutcomes = (marketType, outcomes: OutcomeFormatted[]) => {
   const sortedOutcomes = [...outcomes];

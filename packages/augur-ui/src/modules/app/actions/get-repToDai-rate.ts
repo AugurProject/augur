@@ -1,17 +1,10 @@
-import { Action } from 'redux';
-import { ThunkDispatch, ThunkAction } from 'redux-thunk';
 import { getRepRate } from 'modules/contracts/actions/contractCalls';
-import {
-  updateAppStatus,
-  REP_TO_DAI_RATE,
-} from 'modules/app/actions/update-app-status';
 import { formatDai } from 'utils/format-number';
+import { AppStatus } from 'modules/app/store/app-status';
 
-export const getRepToDaiRate = (): ThunkAction<any, any, any, any> => async (
-  dispatch: ThunkDispatch<void, any, Action>
-) => {
+export const getRepToDaiRate = async () => {
   const repToDaiRate = await getRepRate();
   if (repToDaiRate) {
-    dispatch(updateAppStatus(REP_TO_DAI_RATE, formatDai(repToDaiRate)));
+    AppStatus.actions.setRepToDaiRate(formatDai(repToDaiRate));
   }
 };

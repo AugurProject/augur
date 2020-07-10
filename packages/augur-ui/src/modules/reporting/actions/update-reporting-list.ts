@@ -6,21 +6,7 @@ import {
   loadOpenReportingMarkets,
   loadUpcomingDesignatedReportingMarkets,
 } from 'modules/markets/actions/load-markets';
-import { LoadReportingMarketsOptions } from 'modules/types';
-
-export const UPDATE_REPORTING_LIST = 'UPDATE_REPORTING_LIST';
-
-export function updateReportingList(
-  reportingState: string,
-  marketIds: string[],
-  params: Partial<LoadReportingMarketsOptions>,
-  isLoading: boolean
-) {
-  return {
-    type: UPDATE_REPORTING_LIST,
-    data: { params, marketIds, reportingState, isLoading },
-  };
-}
+import { Markets } from 'modules/markets/store/markets';
 
 const loadPerReportingState = {
   disputing: {
@@ -34,28 +20,20 @@ const loadPerReportingState = {
   },
 };
 
-export const reloadReportingPage = (marketIds: string[]) => (
-  dispatch,
-  getState
-) => {
-  if (!getState) return;
+export const reloadReportingPage = (marketIds: string[]) => {
   const states = Object.keys(loadPerReportingState.reporting);
   states.map(reportingState => {
-    if (!getState().reportingListState[reportingState]) return;
-    const params = getState().reportingListState[reportingState].params;
-    dispatch(loadPerReportingState.reporting[reportingState](params));
+    if (!Markets.get().reportingListState[reportingState]) return;
+    const params = Markets.get().reportingListState[reportingState].params;
+    loadPerReportingState.reporting[reportingState](params);
   });
 };
 
-export const reloadDisputingPage = (marketIds: string[]) => (
-  dispatch,
-  getState
-) => {
-  if (!getState) return;
+export const reloadDisputingPage = (marketIds: string[]) => {
   const states = Object.keys(loadPerReportingState.disputing);
   states.map(reportingState => {
-    if (!getState().reportingListState[reportingState]) return;
-    const params = getState().reportingListState[reportingState].params;
-    dispatch(loadPerReportingState.disputing[reportingState](params));
+    if (!Markets.get().reportingListState[reportingState]) return;
+    const params = Markets.get().reportingListState[reportingState].params;
+    loadPerReportingState.disputing[reportingState](params);
   });
 };

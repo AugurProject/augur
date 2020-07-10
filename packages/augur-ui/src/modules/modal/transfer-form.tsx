@@ -1,7 +1,18 @@
 import React, { useEffect, useState } from 'react';
 
 import { Breakdown } from 'modules/modal/common';
-import { DAI, ETH, REP, ZERO, GWEI_CONVERSION, MAX_DECIMALS, TRANSACTIONS, TRANSFER, SENDETHER } from 'modules/common/constants';
+import {
+  DAI,
+  ETH,
+  REP,
+  ZERO,
+  GWEI_CONVERSION,
+  MAX_DECIMALS,
+  TRANSACTIONS,
+  TRANSFER,
+  SENDETHER,
+  WALLET_STATUS_VALUES,
+} from 'modules/common/constants';
 import {
   formatEther,
   formatRep,
@@ -12,41 +23,29 @@ import isAddress from 'modules/auth/helpers/is-address';
 import { createBigNumber, BigNumber } from 'utils/create-big-number';
 import convertExponentialToDecimal from 'utils/convert-exponential';
 import { FormDropdown, TextInput } from 'modules/common/form';
-import { CloseButton, SecondaryButton, ProcessingButton } from 'modules/common/buttons';
-import { getGasInDai, ethToDaiFromAttoRate } from 'modules/app/actions/get-ethToDai-rate';
+import {
+  CloseButton,
+  SecondaryButton,
+  ProcessingButton,
+} from 'modules/common/buttons';
+import {
+  getGasInDai,
+  ethToDaiFromAttoRate,
+} from 'modules/app/actions/get-ethToDai-rate';
 import getPrecision from 'utils/get-number-precision';
 
 import Styles from 'modules/modal/modal.styles.less';
+import { useAppStatusStore } from 'modules/app/store/app-status';
+import { totalTradingBalance } from 'modules/auth/helpers/login-account';
+import {
+  TRANSFER_ETH_GAS_COST,
+  TRANSFER_REP_GAS_COST,
+  TRANSFER_DAI_GAS_COST,
+  transferFundsGasEstimate,
+  transferFunds,
+} from 'modules/auth/actions/transfer-funds';
+import { getTransactionLabel } from 'modules/auth/helpers/get-gas-price';
 import titleCase from 'utils/title-case';
-
-interface TransferFormProps {
-  closeAction: Function;
-  transferFunds: Function;
-  transferFundsGasEstimate: Function;
-  fallBackGasCosts: {
-    eth: number;
-    rep: number;
-    dai: number;
-  };
-  balances: {
-    eth: number;
-    rep: number;
-    dai: number;
-    signerBalances: {
-      eth: number;
-      dai: number;
-      rep: number;
-    }
-  };
-  account: string;
-  GsnEnabled: boolean;
-  gasPrice: number;
-  useSigner?: boolean;
-  signerAddress?: string;
-  transactionLabel: string;
-  signingEthBalance: string;
-  tokenName: string;
-}
 
 function sanitizeArg(arg) {
   return arg == null || arg === '' ? '' : arg;
@@ -55,19 +54,46 @@ function sanitizeArg(arg) {
 const RELAYER_DAI_CUSION = 0.25;
 const TURN_OFF_TOP_OFF_PERCENTAGE = 0.9;
 
-export const TransferForm = ({
-  closeAction,
-  transferFunds,
-  transferFundsGasEstimate,
-  fallBackGasCosts,
-  balances,
-  account,
-  gasPrice,
-  useSigner,
-  transactionLabel,
-  signingEthBalance,
-  tokenName,
-}: TransferFormProps) => {
+export const TransferForm = () => {
+  const {
+    loginAccount: { address: account, balances },
+    modal,
+    gasPriceInfo,
+    walletStatus,
+    ethToDaiRate,
+    gsnEnabled,
+    actions: { closeModal },
+  } = useAppStatusStore();
+  balances.dai = String(totalTradingBalance());
+  const gasPrice = gasPriceInfo.userDefinedGasPrice || gasPriceInfo.average;
+  const signingEthBalance = balances.signerBalances.eth;
+  const GsnEnabled =
+    gsnEnabled && walletStatus === WALLET_STATUS_VALUES.CREATED;
+  const fallBackGasCosts = {
+    eth: TRANSFER_ETH_GAS_COST,
+    rep: TRANSFER_REP_GAS_COST,
+    dai: TRANSFER_DAI_GAS_COST,
+  };
+  const transactionLabel = getTransactionLabel();
+  const useSigner = modal?.useSigner ? true : false;
+  const closeAction = () => {
+    if (modal.cb) {
+      modal.cb();
+    }
+    closeModal();
+  };
+  const transferFundsGasEstimate = (
+    amount: string,
+    asset: string,
+    to: string
+  ) => transferFundsGasEstimate(amount, asset, to);
+  const transferFunds = (
+    amount: string,
+    asset: string,
+    to: string,
+    useSigner: boolean,
+    useTopOff: boolean
+  ) => transferFunds(amount, asset, to, useSigner, useTopOff);
   const [currency, setCurrency] = useState(DAI);
   const [signerPays, setSignerPays] = useState(true);
   const [amount, setAmount] = useState('');
@@ -114,14 +140,22 @@ export const TransferForm = ({
     } catch (error) {
       console.error('can not get gas estimate', error);
     }
-    const gasInEth = formatGasCostToEther(gasCosts, { decimals: 4}, createBigNumber(GWEI_CONVERSION).times(gasPrice));
-    const signerPays = (createBigNumber(signingEthBalance).minus(gasInEth)).gte(ZERO);
+    const gasInEth = formatGasCostToEther(
+      gasCosts,
+      { decimals: 4 },
+      createBigNumber(GWEI_CONVERSION).times(gasPrice)
+    );
+    const signerPays = createBigNumber(signingEthBalance)
+      .minus(gasInEth)
+      .gte(ZERO);
     setSignerPays(signerPays);
     setGasCosts(createBigNumber(gasCosts))
     const estInDai = getGasInDai(Number(createBigNumber(gasCosts)));
     // TODO: figure out exact DAI amount needed to convert to eth.
-    const gasEstimateInDai = signerPays ? estInDai : formatDai(createBigNumber(estInDai.value).plus(RELAYER_DAI_CUSION));
-    setState({...state, gasEstimateInDai});
+    const gasEstimateInDai = signerPays
+      ? estInDai
+      : formatDai(createBigNumber(estInDai.value).plus(RELAYER_DAI_CUSION));
+    setState({ ...state, gasEstimateInDai });
   }
 
   useEffect(() => {
@@ -139,7 +173,9 @@ export const TransferForm = ({
 
     let newAmount = convertExponentialToDecimal(sanitizeArg(balance));
     if (!useSigner && !signerPays && currency === DAI) {
-      newAmount = createBigNumber(newAmount).minus(createBigNumber(gasEstimateInDai.value));;
+      newAmount = createBigNumber(newAmount).minus(
+        createBigNumber(gasEstimateInDai.value)
+      );
     }
     amountChange(newAmount);
   };
@@ -150,34 +186,47 @@ export const TransferForm = ({
     let newAmount = amount;
     const balance = balances.signerBalances[currency.toLowerCase()];
     const eth = balances.signerBalances.eth;
-    let amountMinusGas = createBigNumber(eth).minus(createBigNumber(gasInEth))
+    let amountMinusGas = createBigNumber(eth).minus(createBigNumber(gasInEth));
     if (currency === ETH) {
       newAmount = createBigNumber(amount);
       if (createBigNumber(eth).eq(newAmount)) {
-        newAmount = createBigNumber(eth).minus(createBigNumber(gasInEth))
+        newAmount = createBigNumber(eth).minus(createBigNumber(gasInEth));
       }
     }
     setErrorMessage(newAmount, updatedErrors, balance, amountMinusGas);
-  }
+  };
 
   const amountChange = (amount: string) => {
     const { errors: updatedErrors } = state;
-    let newAmount = convertExponentialToDecimal(sanitizeArg(amount)) || "0";
+    let newAmount = convertExponentialToDecimal(sanitizeArg(amount)) || '0';
 
-    const gasInEth = formatGasCostToEther(gasCosts, { decimals: 4}, createBigNumber(GWEI_CONVERSION).multipliedBy(gasPrice));
+    const gasInEth = formatGasCostToEther(
+      gasCosts,
+      { decimals: 4 },
+      createBigNumber(GWEI_CONVERSION).multipliedBy(gasPrice)
+    );
 
     if (useSigner) return amountChangeFromSigner(newAmount, gasInEth);
 
     const balance = balances[currency.toLowerCase()];
-    let amountMinusGas = createBigNumber(balances.signerBalances.eth).minus(createBigNumber(gasInEth))
+    let amountMinusGas = createBigNumber(balances.signerBalances.eth).minus(
+      createBigNumber(gasInEth)
+    );
     if (!signerPays && currency === DAI) {
-      amountMinusGas = createBigNumber(balances.dai).minus(createBigNumber(gasEstimateInDai.value));
+      amountMinusGas = createBigNumber(balances.dai).minus(
+        createBigNumber(gasEstimateInDai.value)
+      );
     }
 
     setErrorMessage(newAmount, updatedErrors, balance, amountMinusGas);
   };
 
-  const setErrorMessage = (newAmount, updatedErrors, balance, amountMinusGas: BigNumber) => {
+  const setErrorMessage = (
+    newAmount,
+    updatedErrors,
+    balance,
+    amountMinusGas: BigNumber
+  ) => {
     updatedErrors.amount = '';
     const bnNewAmount = createBigNumber(newAmount || '0');
     // validation...
@@ -195,11 +244,7 @@ export const TransferForm = ({
       updatedErrors.amount = "Quantity isn't a number.";
     }
 
-    if (
-      bnNewAmount.gt(
-        createBigNumber(balance)
-      )
-    ) {
+    if (bnNewAmount.gt(createBigNumber(balance))) {
       updatedErrors.amount = 'Quantity is greater than available funds.';
     }
 
@@ -207,7 +252,11 @@ export const TransferForm = ({
       updatedErrors.amount = 'Quantity must be greater than zero.';
     }
 
-    if ((!useSigner && !signerPays) && (amountMinusGas.lt(ZERO) || createBigNumber(newAmount).gt(amountMinusGas))) {
+    if (
+      !useSigner &&
+      !signerPays &&
+      (amountMinusGas.lt(ZERO) || createBigNumber(newAmount).gt(amountMinusGas))
+    ) {
       updatedErrors.amount = `Not enough DAI available to pay transaction fee. ${
         formatDai(amountMinusGas.abs(), { roundDown: true }).roundedFormatted
       } is min`;
@@ -223,8 +272,7 @@ export const TransferForm = ({
 
     setState({ ...state, errors: updatedErrors });
     setAmount(String(newAmount));
-  }
-
+  };
 
   const addressChange = (address: string) => {
     const { errors: updatedErrors } = state;
@@ -239,48 +287,71 @@ export const TransferForm = ({
     setState({ ...state, address, errors: updatedErrors });
   };
 
-    const { address, errors, gasEstimateInDai } = state;
-    const { amount: errAmount, address: errAddress } = errors;
-    const isValid =
-      errAmount === '' && errAddress === '' && amount.length && address.length;
+  const { address, errors, gasEstimateInDai } = state;
+  const { amount: errAmount, address: errAddress } = errors;
+  const isValid =
+    errAmount === '' && errAddress === '' && amount.length && address.length;
 
-    let formattedAmount = formatEther(amount || 0);
+  let formattedAmount = formatEther(amount || 0);
 
-    if (currency === DAI) {
-      formattedAmount = formatDai(amount || 0);
-    } else if (currency === REP) {
-      formattedAmount = formatRep(amount || 0);
-    }
+  if (currency === DAI) {
+    formattedAmount = formatDai(amount || 0);
+  } else if (currency === REP) {
+    formattedAmount = formatRep(amount || 0);
+  }
 
-    const balance = useSigner
-      ? balances.signerBalances[currency.toLowerCase()]
-      : balances[currency.toLowerCase()];
+  const balance = useSigner
+    ? balances.signerBalances[currency.toLowerCase()]
+    : balances[currency.toLowerCase()];
 
-    const breakdown = [
-      {
-        label: 'Send',
-        value: formattedAmount,
-        showDenomination: true,
-      },
-      {
-        label: transactionLabel,
-        value: gasEstimateInDai,
-        showDenomination: true,
-      },
-    ];
+  const breakdown = [
+    {
+      label: 'Send',
+      value: formattedAmount,
+      showDenomination: true,
+    },
+    {
+      label: transactionLabel,
+      value: gasEstimateInDai,
+      showDenomination: true,
+    },
+  ];
 
-    return (
-      <div className={Styles.WithdrawForm}>
-        <header>
+  return (
+    <div className={Styles.WithdrawForm}>
+      <header>
+        <div>
+          <CloseButton action={() => closeAction()} />
+        </div>
+        <div>
+          <h1>Transfer {useSigner ? 'my Dai' : 'funds'}</h1>
+          <h2>
+            Transfer{' '}
+            {useSigner
+              ? 'Dai to your Trading account'
+              : 'funds to another address'}
+          </h2>
+        </div>
+      </header>
+
+      <main>
+        <div className={Styles.GroupedForm}>
           <div>
-            <CloseButton action={() => closeAction()} />
+            <label htmlFor="recipient">Recipient address</label>
+            <TextInput
+              type="text"
+              value={address}
+              placeholder="0x..."
+              disabled={useSigner}
+              onChange={addressChange}
+              errorMessage={errors.address.length > 0 ? errors.address : ''}
+            />
           </div>
           <div>
             <h1>Transfer {useSigner ? `my ${titleCase(tokenName)}` : 'funds'}</h1>
             <h2>Transfer {useSigner ? `${titleCase(tokenName)} to your Trading account` : 'funds to another address'}</h2>
           </div>
-        </header>
-
+        </div>
         <main>
           <div className={Styles.GroupedForm}>
             <div>
@@ -295,62 +366,65 @@ export const TransferForm = ({
               />
             </div>
             <div>
-              <div>
-                <label htmlFor='currency'>Currency</label>
-                <span>Available: {balance}</span>
-              </div>
-              <FormDropdown
-                id='currency'
-                options={state.options}
-                defaultValue={currency}
-                disabled={!(state.options.length > 1)}
-                onChange={currency => {
-                  setCurrency(currency)
-                  setAmount('')
-                }}
-              />
+              <label htmlFor="currency">Currency</label>
+              <span>Available: {balance}</span>
             </div>
-            <div>
-              <label htmlFor='amount'>Amount</label>
-              <button onClick={handleMax}>MAX</button>
-              <TextInput
-                type='number'
-                value={amount}
-                placeholder='0.00'
-                onChange={amountChange}
-                errorMessage={
-                  errors.amount && errors.amount.length > 0 ? errors.amount : ''
-                }
-              />
-            </div>
+            <FormDropdown
+              id="currency"
+              options={state.options}
+              defaultValue={currency}
+              disabled={!(state.options.length > 1)}
+              onChange={currency => {
+                setCurrency(currency);
+                setAmount('');
+              }}
+            />
           </div>
-          <Breakdown rows={breakdown} />
-        </main>
-        <div className={Styles.ButtonsRow}>
-          <ProcessingButton
-            small
-            text={'Send'}
-            action={() => {
-              let useTopOff = true;
-              if (currency === DAI) {
-                // if 90% or more of user's DAI is being transferred disable topping off fee reserve
-                const percentage = createBigNumber(balances.dai).div(createBigNumber(formattedAmount.fullPrecision));
-                if (percentage.gt(createBigNumber(TURN_OFF_TOP_OFF_PERCENTAGE))) {
-                  useTopOff = false;
-                }
+          <div>
+            <label htmlFor="amount">Amount</label>
+            <button onClick={handleMax}>MAX</button>
+            <TextInput
+              type="number"
+              value={amount}
+              placeholder="0.00"
+              onChange={amountChange}
+              errorMessage={
+                errors.amount && errors.amount.length > 0 ? errors.amount : ''
               }
-              transferFunds(formattedAmount.fullPrecision, currency, address, useSigner, useTopOff)}
+            />
+          </div>
+        </main>
+        <Breakdown rows={breakdown} />
+      </main>
+      <div className={Styles.ButtonsRow}>
+        <ProcessingButton
+          small
+          text="Send"
+          action={() => {
+            let useTopOff = true;
+            if (currency === DAI) {
+              // if 90% or more of user's DAI is being transferred disable topping off fee reserve
+              const percentage = createBigNumber(balances.dai).div(
+                createBigNumber(formattedAmount.fullPrecision)
+              );
+              if (percentage.gt(createBigNumber(TURN_OFF_TOP_OFF_PERCENTAGE))) {
+                useTopOff = false;
+              }
             }
-            queueName={TRANSACTIONS}
-            queueId={currency === ETH ? SENDETHER : TRANSFER}
-            disabled={!isValid}
-          />
-          <SecondaryButton
-            text={'Cancel'}
-            action={closeAction}
-          />
-        </div>
+            transferFunds(
+              formattedAmount.fullPrecision,
+              currency,
+              address,
+              useSigner,
+              useTopOff
+            );
+          }}
+          queueName={TRANSACTIONS}
+          queueId={currency === ETH ? SENDETHER : TRANSFER}
+          disabled={!isValid}
+        />
+        <SecondaryButton text="Cancel" action={closeAction} />
       </div>
-    );
-
-}
+    </div>
+  );
+};

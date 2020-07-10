@@ -1,8 +1,8 @@
 @import (reference) '~assets/styles/shared';
 
 .Headers {
-  background: @color-table-header;
-  border-bottom: 1px solid @color-dark-grey;
+  background: var(--color-table-header);
+  border-bottom: @size-1 solid var(--color-dark-grey);
   display: flex;
   overflow-x: auto;
   min-height: @size-32;
@@ -13,19 +13,19 @@
     width: @size-40;
 
     > li {
-      color: @color-secondary-text;
+      color: var(--color-secondary-text);
       margin: 0 @size-8;
       border-bottom: @size-2 solid transparent;
 
       &.ActiveTab {
-        color: @color-primary-text;
+        color: var(--color-primary-text);
 
         @media @breakpoint-mobile {
-          border-bottom: @size-2 solid @color-primary-action;
+          border-bottom: @size-2 solid var(--color-primary-action);
         }
 
         .IsNew::before {
-          background: @color-outcome-five;
+          background: var(--color-focused);
           border-radius: @border-radius-default;
           content: ' ';
           height: @size-4;
@@ -37,7 +37,7 @@
       }
 
       &:hover {
-        color: @color-primary-text;
+        color: var(--color-primary-text);
       }
 
       > button {
@@ -83,7 +83,7 @@
 }
 
 .IsNew::before {
-  background: @color-outcome-five;
+  background: var(--color-focused);
   border-radius: @border-radius-default;
   content: ' ';
   height: @size-4;
@@ -138,7 +138,7 @@
 }
 
 .FillWidth {
-  background-color: @color-dark-grey;
+  background-color: var(--color-dark-grey);
 
   > li {
     .text-14;
@@ -157,7 +157,7 @@
 }
 
 .Fill {
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  border-bottom: @size-1 solid rgba(255, 255, 255, 0.1);
   left: 0;
   right: 0;
   z-index: @above-all-content;
@@ -178,7 +178,7 @@
 }
 
 .ActiveSpanFill {
-  border-bottom: 1px solid @color-primary-text;
+  border-bottom: @size-1 solid var(--color-primary-text);
 }
 
 .NoBorder {
@@ -209,4 +209,42 @@
 .ActiveNoBorder {
   border: 0;
   position: relative;
+}
+
+:root[theme="BETTING"],
+:root[theme="SPORTS"] {
+  .Headers {
+    > ul {
+      > li {
+        @media @breakpoint-mobile {
+          margin: 0
+        }
+        
+        &.ActiveTab {
+          @media @breakpoint-mobile {
+            border-bottom: @size-2 solid var(--color-primary-text);
+          }
+        }
+
+        > button {
+          @media @breakpoint-mobile {
+            .mono-12-bold;
+
+            padding: 0 @size-14;
+          }
+        }
+      }
+    }
+
+    @media @breakpoint-mobile {
+      height: @size-39;
+      max-height: @size-39;
+    }
+  }
+
+  .NoBorder {
+    @media @breakpoint-mobile {
+      background-color: var(--color-page-background);
+    }
+  }
 }

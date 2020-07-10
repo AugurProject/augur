@@ -2,7 +2,7 @@
 
 .OverviewChart {
   align-items: center;
-  background: @color-table-header;
+  background: var(--color-table-header);
   display: flex;
   flex-direction: column;
   padding: @size-16 0;
@@ -13,21 +13,56 @@
   > h3 {
     .mono-12-semi-bold;
 
-    color: @color-secondary-text;
+    color: var(--color-secondary-text);
     padding-bottom: @size-8;
     text-transform: uppercase;
+  }
+
+  > h4 {
+    .mono-14-bold;
+
+    color: var(--color-primary-text);
+    margin: @size-4 0;
   }
 
   > span {
     .text-12;
 
-    color: @color-inactive-text;
+    color: var(--color-inactive-text);
     padding: @size-16 0 @size-8;
   }
 
   @media @breakpoint-mobile-mid {
     flex: 1;
     justify-content: flex-end;
+  }
+}
+
+:root[theme="BETTING"],
+:root[theme="SPORTS"] {
+  .OverviewChart {
+    background: var(--color-page-background);
+    padding: @size-8 0 @size-27 0;
+
+    > h3 {
+      padding-bottom: @size-11;
+    }
+
+    > div {
+      .mono-12-semi-bold;
+    }
+
+    > h4 {
+      .mono-20-bold;
+
+      margin: @size-6 0;
+    }
+
+    @media @breakpoint-mobile-mid {
+      > h4 {
+        .mono-24-bold;
+      }
+    }
   }
 }
 
@@ -47,14 +82,14 @@
       g.highcharts-yaxis-labels > text {
         .mono-9-bold;
         // y axis labels
-        fill: @color-primary-text;
+        fill: var(--color-primary-text);
       }
 
       g.highcharts-xaxis-labels > text > tspan,
       g.highcharts-xaxis-labels > text {
         .mono-9-bold;
         // x axis labels
-        fill: @color-primary-text;
+        fill: var(--color-primary-text);
         text-transform: uppercase;
       }
 
@@ -62,7 +97,7 @@
       .highcharts-label {
         .mono-10-medium;
 
-        fill: @color-primary-text;
+        fill: var(--color-primary-text);
       }
 
       .highcharts-no-data {
@@ -70,7 +105,7 @@
       }
 
       .highcharts-label-box {
-        fill: @color-secondary-text;
+        fill: var(--color-secondary-text);
         font-weight: bold;
 
         > text > tspan:last-child {
@@ -80,7 +115,7 @@
 
       .highcharts-tick,
       .highcharts-axis-line {
-        stroke: fade(@color-primary-text, 40%);
+        stroke: var(--color-primary-text-40);
       }
 
       .highcharts-xaxis-grid,
@@ -93,7 +128,7 @@
         .dashline-long;
 
         .highcharts-grid-line {
-          stroke: fade(@color-primary-text, 40%);
+          stroke: var(--color-primary-text-40);
         }
       }
 
@@ -102,7 +137,7 @@
       }
 
       .highcharts-crosshair-label.highcharts-crosshair-label > .highcharts-label-box {
-        stroke: @color-primary-text;
+        stroke: var(--color-primary-text);
       }
 
       .eth-label {
@@ -114,19 +149,19 @@
       }
 
       .highcharts-area-series.highcharts-color-0 > path.highcharts-graph {
-        stroke: @color-primary-action;
+        stroke: var(--color-primary-action);
       }
 
       .highcharts-area-series.highcharts-halo.highcharts-color-0 {
-        fill: @color-primary-action;
-        stroke: @color-primary-action;
+        fill: var(--color-primary-action);
+        stroke: var(--color-primary-action);
       }
 
       .highcharts-area-series.highcharts-series-hover,
       .highcharts-area-series.highcharts-color-0.highcharts-tracker > path,
       .highcharts-area-series > .highcharts-area {
-        fill: @color-primary-action;
-        stroke: @color-primary-action;
+        fill: var(--color-primary-action);
+        stroke: var(--color-primary-action);
       }
     }
   }

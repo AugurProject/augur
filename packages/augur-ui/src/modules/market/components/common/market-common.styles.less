@@ -1,7 +1,7 @@
 @import (reference) '~assets/styles/shared';
 
 .MarketTemplateTitle {
-  color: @color-primary-text;
+  color: var(--color-primary-text);
   display: flex;
   flex-direction: column;
   font-weight: bold;
@@ -19,7 +19,7 @@
   &:after {
     position: absolute;
     height: 2px;
-    background: @color-highlight-template-text;
+    background: var(--color-highlight-template-text);
     content: ' ';
     width: 100%;
     left: 0;

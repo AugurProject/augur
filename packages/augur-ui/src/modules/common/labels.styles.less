@@ -8,14 +8,14 @@
   > span {
     .mono-9-bold;
 
-    color: @color-secondary-text;
+    color: var(--color-secondary-text);
     line-height: @size-14;
     line-height: 160%;
   }
 
   > span:first-of-type {
     display: flex;
-    align-items: end;
+    align-items: center;
 
     > label {
       display: inline-block;
@@ -29,11 +29,11 @@
 
         > circle {
           fill: none;
-          stroke: @color-secondary-text;
+          stroke: var(--color-secondary-text);
         }
 
         > path {
-          fill: @color-secondary-text;
+          fill: var(--color-secondary-text);
         }
       }
     }
@@ -42,7 +42,7 @@
   > span:nth-of-type(2) {
     .mono-11;
 
-    color: @color-primary-text;
+    color: var(--color-primary-text);
     line-height: 160%;
   }
 
@@ -66,11 +66,11 @@
   z-index: @default-z-index;
 
   &.DarkDash {
-    color: @color-secondary-text;
+    color: var(--color-secondary-text);
   }
 
   &.Alert {
-    color: @color-error;
+    color: var(--color-error);
   }
 
   > label {
@@ -79,7 +79,7 @@
     margin: 0;
 
     > span {
-      color: @color-primary-text;
+      color: var(--color-primary-text);
     }
   }
 }
@@ -94,7 +94,7 @@
   }
 
   &.Highlight {
-    color: @color-primary-text;
+    color: var(--color-primary-text);
   }
 }
 
@@ -123,7 +123,7 @@
 }
 
 .InvalidLabel {
-  color: @color-outcome-invalid;
+  color: var(--color-outcome-invalid);
   display: flex;
 
   > label {
@@ -136,12 +136,12 @@
       width: @size-12;
 
       > circle {
-        stroke: @color-secondary-text;
+        stroke: var(--color-secondary-text);
         fill: none;
       }
 
       > path {
-        fill: @color-secondary-text;
+        fill: var(--color-secondary-text);
       }
     }
   }
@@ -150,7 +150,7 @@
 .CountdownLabel {
   .text-12-medium;
 
-  color: @color-secondary-text;
+  color: var(--color-secondary-text);
   margin-right: @size-12;
 }
 
@@ -184,8 +184,8 @@
   > span:first-of-type {
     .text-10-medium;
 
-    align-items: end;
-    color: @color-secondary-text;
+    align-items: flex-end;
+    color: var(--color-secondary-text);
     display: flex;
     flex-flow: row nowrap;
     text-transform: capitalize;
@@ -203,11 +203,11 @@
 
         > circle {
           fill: none;
-          stroke: @color-secondary-text;
+          stroke: var(--color-secondary-text);
         }
 
         > path {
-          fill: @color-secondary-text;
+          fill: var(--color-secondary-text);
         }
       }
     }
@@ -216,8 +216,35 @@
   > span:last-of-type {
     .mono-12-medium;
 
-    color: @color-primary-text;
+    color: var(--color-primary-text);
     line-height: 160%;
+  }
+}
+
+.PropertyLabel,
+.TimeLabel {
+  &.Large {
+    > span:first-of-type {
+      .text-12-medium;
+
+      text-transform: uppercase;
+    }
+
+    > span:nth-of-type(2) {
+      .text-20-bold;
+    }
+
+    > span:nth-of-type(3) {
+      .text-12;
+    }
+  }
+}
+
+.TimeLabel {
+  &.Large {
+    > span:nth-of-type(2) {
+      .text-16-bold;
+    }
   }
 }
 
@@ -260,7 +287,7 @@
         height: @size-16;
 
         > path {
-          fill: @color-primary-action;
+          fill: var(--color-primary-action);
         }
       }
     }
@@ -286,7 +313,7 @@
     .text-10-medium;
 
     align-items: center;
-    color: @color-secondary-text;
+    color: var(--color-secondary-text);
     flex-flow: row nowrap;
     text-transform: uppercase;
 
@@ -307,7 +334,7 @@
     min-width: 0.625rem;
 
     > line {
-      stroke: fade(@color-primary-text, 40%);
+      stroke: var(--color-primary-text-40);
     }
   }
 
@@ -315,17 +342,17 @@
   > span:last-of-type {
     .mono-12-medium;
 
-    color: @color-primary-text;
+    color: var(--color-primary-text);
     padding-left: @size-8;
 
     &.isHighlighted {
-      color: @color-reporting;
+      color: var(--color-reporting);
     }
     &.isAccented {
-      color: @color-error;
+      color: var(--color-error);
     }
     &.isSecondary {
-      color: @color-secondary-text;
+      color: var(--color-secondary-text);
     }
     &.underline {
       cursor: pointer;
@@ -344,7 +371,7 @@
     > span:first-of-type {
       .mono-10-bold;
 
-      color: @color-secondary-text;
+      color: var(--color-secondary-text);
     }
   }
 
@@ -352,7 +379,7 @@
     > span:first-of-type {
       .mono-10;
 
-      color: @color-primary-text;
+      color: var(--color-primary-text);
     }
 
     > span:nth-of-type(2),
@@ -361,7 +388,7 @@
     > span:last-of-type > label {
       .mono-12-bold;
 
-      color: @color-primary-text;
+      color: var(--color-primary-text);
     }
   }
 
@@ -376,25 +403,51 @@
       > span:last-of-type {
         .mono-10;
 
-        color: @color-primary-text;
+        color: var(--color-primary-text);
       }
     }
 
     > span:first-of-type {
       .mono-10-medium;
 
-      color: @color-secondary-text;
+      color: var(--color-secondary-text);
     }
 
     > span:nth-of-type(2),
     > span:last-of-type {
       .mono-12-medium;
 
-      color: @color-primary-text;
+      color: var(--color-primary-text);
     }
 
     > span:nth-of-type(2) {
       display: block;
+    }
+  }
+}
+
+:root[theme='BETTING'],
+:root[theme='SPORTS'] {
+  .LinearPropertyLabel {
+    > svg > line {
+      stroke: var(--color-dark-text);
+    }
+
+    &.Highlight {
+      > span:first-of-type {
+        .mono-10-semi-bold;
+
+        color: var(--color-secondary-text);
+      }
+
+      > span:nth-of-type(2),
+      > span:last-of-type,
+      > span:nth-of-type(2) > label,
+      > span:last-of-type > label {
+        .mono-12;
+
+        color: var(--color-primary-text);
+      }
     }
   }
 }
@@ -416,19 +469,19 @@ div.LinearPropertyViewTransaction {
     > span:first-of-type {
       .mono-12-semi-bold;
 
-      color: @color-secondary-text;
+      color: var(--color-secondary-text);
     }
 
     > span:nth-of-type(2) {
       .mono-default;
 
-      color: @color-primary-text;
+      color: var(--color-primary-text);
     }
 
     > span:last-of-type {
       .mono-default;
 
-      color: @color-secondary-text;
+      color: var(--color-secondary-text);
       position: relative;
       top: @size-3;
     }
@@ -441,7 +494,7 @@ div.LinearPropertyViewTransaction {
   > span {
     .mono-14-medium;
 
-    color: @color-primary-text;
+    color: var(--color-primary-text);
     flex: 0 auto;
     text-transform: uppercase;
 
@@ -453,7 +506,7 @@ div.LinearPropertyViewTransaction {
   > span:first-of-type {
     .text-12;
 
-    color: @color-inactive-text;
+    color: var(--color-inactive-text);
     flex: 1 100%;
     font-weight: @weight-medium;
     margin-bottom: @size-4;
@@ -485,10 +538,10 @@ div.LinearPropertyViewTransaction {
 .MarketTypeLabel {
   .mono-10-medium;
 
-  background: fade(@color-secondary-text, 30%);
+  background: --color-secondary-text-30;
   border-radius: @border-radius-default;
   border: 1px solid transparent;
-  color: @color-primary-text;
+  color: var(--color-primary-text);
   line-height: @size-11;
   max-width: fit-content;
   padding: 0 @size-4;
@@ -498,10 +551,10 @@ div.LinearPropertyViewTransaction {
   flex-flow: row nowrap;
   align-items: center;
 
-  &.MarketScalarLabel {
+  &.MarketScalarLabel {   
+    background: var(--color-scalar-20);
+    color: var(--color-scalar);
     display: inline-block;
-    background: fade(@color-scalar, 20%);
-    color: @color-scalar;
 
     > svg {
       fill: none;
@@ -510,13 +563,37 @@ div.LinearPropertyViewTransaction {
       width: @size-20;
 
       > rect {
-        fill: @color-scalar;
+        fill: var(--color-scalar);
         height: 1.5px;
         width: @size-20;
       }
 
       > path {
-        fill: @color-scalar;
+        fill: var(--color-scalar);
+      }
+    }
+  }
+}
+
+:root[theme='BETTING'],
+:root[theme='SPORTS'] {
+  .MarketTypeLabel {
+    &.MarketScalarLabel {
+      .mono-10-semi-bold;
+
+      background: var(--color-module-background);
+      color: var(--color-secondary-text);
+      border: @size-1 solid var(--color-outline);
+      border-radius: @border-radius-default;
+      height: @size-20;
+      padding: 0px @size-7;
+
+      display: flex;
+      flex-direction: row-reverse;
+
+      > svg {
+        margin-left: 0px;
+        margin-right: @size-4;
       }
     }
   }
@@ -526,7 +603,7 @@ div.LinearPropertyViewTransaction {
   .mono-9-bold;
 
   border: @size-1 solid transparent;
-  color: @color-primary-text;
+  color: var(--color-primary-text);
   line-height: @size-11;
   padding: 0 @size-2;
   border-radius: @border-radius-default;
@@ -535,28 +612,53 @@ div.LinearPropertyViewTransaction {
 }
 
 .MarketStatus_open {
-  background: fade(@color-open, 15%);
-  color: @color-open;
+  background: var(--color-open-15);
+  color: var(--color-open);
 }
 
 .MarketStatus_reporting {
-  background: fade(@color-reporting, 15%);
-  color: @color-reporting;
+  background: var(--color-reporting-15);
+  color: var(--color-reporting);
 }
 
 .MarketStatus_resolved {
-  background: fade(@color-resolved, 15%);
-  color: @color-resolved;
+  background: var(--color-resolved-15);
+  color: var(--color-resolved);
 }
 
 .MarketStatus_warpSync {
-  background: fade(@color-primary-action, 20%);
-  color: @color-primary-action;
+  background: var(--color-primary-action-20);
+  color: var(--color-primary-action);
+}
+
+:root[theme='BETTING'],
+:root[theme='SPORTS'] {
+  .MarketStatus {
+    .mono-10-semi-bold;
+
+    border: none;
+    line-height: @size-12;
+    padding: @size-4 @size-5;
+  }
+
+  .MarketStatus_open {
+    color: var(--color-secondary-text);
+  }
+
+  .MarketStatus_reporting {
+    background: var(--color-reporting-15);
+    color: var(--color-secondary-text);
+  }
+
+  .MarketStatus_resolved {
+    background: var(--color-dark-text);
+    color: var(--color-module-background);
+  }
 }
 
 .MarketStatus_forking {
-  background: fade(@color-error, 20%);
-  color: @color-error;
+  background: var(--color-error-20);
+  color: var(--color-error);
   display: flex;
 
   > svg {
@@ -565,7 +667,7 @@ div.LinearPropertyViewTransaction {
     margin-right: @size-4;
 
     > circle {
-      fill: @color-error;
+      fill: var(--color-error);
     }
   }
 }
@@ -573,7 +675,7 @@ div.LinearPropertyViewTransaction {
 .Archived {
   &:hover {
     > svg > g > path {
-      stroke: @color-primary-text;
+      stroke: var(--color-primary-text);
     }
   }
 }
@@ -582,10 +684,10 @@ div.LinearPropertyViewTransaction {
   .text-9-medium;
 
   margin-left: @size-10;
-  color: @color-outcome-five;
-  background: fade(@color-outcome-five, 15%);
+  color: var(--color-outcome-five);
+  background: var(--color-outcome-five-15);
   border-radius: @border-radius-default;
-  padding: 1px 2px;
+  padding: @size-1 @size-2;
 }
 
 .InReporting_reportingDetails {
@@ -595,7 +697,7 @@ div.LinearPropertyViewTransaction {
     margin: 0 @size-4;
 
     > path {
-      fill: @color-reporting;
+      fill: var(--color-reporting);
     }
   }
 }
@@ -605,7 +707,7 @@ div.LinearPropertyViewTransaction {
     > span:first-of-type {
       .mono-10;
 
-      color: @color-inactive-text;
+      color: var(--color-inactive-text);
       line-height: normal;
       text-align: center;
       text-transform: uppercase;
@@ -614,7 +716,7 @@ div.LinearPropertyViewTransaction {
     > span:last-of-type {
       .mono-12;
 
-      color: @color-primary-text;
+      color: var(--color-primary-text);
       line-height: normal;
     }
   }
@@ -637,9 +739,9 @@ div.LinearPropertyViewTransaction {
     .mono-9;
 
     align-items: center;
-    background: @color-secondary-action-outline;
+    background: var(--color-secondary-action-outline);
     border-radius: @border-radius-rounded;
-    color: @color-primary-text;
+    color: var(--color-primary-text);
     display: flex;
     flex-flow: row nowrap;
     height: @size-16;
@@ -657,7 +759,7 @@ div.LinearPropertyViewTransaction {
     > span {
       .mono-10-medium;
 
-      background: @color-error;
+      background: var(--color-error);
     }
   }
 }
@@ -671,23 +773,23 @@ span.PendingLabel {
 .ConfirmedLabel {
   .PendingLabel;
 
-  background: fade(@color-open, 40%);
+  background: var(--color-open-40);
 
   > svg {
-    fill: @color-primary-text;
+    fill: var(--color-primary-text);
     height: @size-10;
     margin-left: 0.3125rem;
     width: @size-10;
 
     > path {
-      fill: @color-primary-text;
+      fill: var(--color-primary-text);
     }
   }
 }
 
 .MovementLabel {
   align-items: center;
-  color: @color-primary-text;
+  color: var(--color-primary-text);
   display: flex;
   justify-content: flex-end;
 }
@@ -706,15 +808,15 @@ span.PendingLabel {
   }
 
   &_positive {
-    color: @color-positive;
+    color: var(--color-positive);
   }
 
   &_negative {
-    color: @color-negative;
+    color: var(--color-negative);
   }
 
   &_neutral {
-    color: @color-secondary-text;
+    color: var(--color-secondary-text);
   }
 }
 
@@ -728,11 +830,17 @@ span.PendingLabel {
   }
 
   &_small {
-    transform: scale(0.8);
+    > svg {
+      height: @size-7;
+      width: @size-12;
+    }
   }
 
   &_normal {
-    transform: scale(0.9);
+    > svg {
+      height: @size-8;
+      width: @size-13;
+    }
   }
 
   &_large {
@@ -741,11 +849,11 @@ span.PendingLabel {
 
   &_positive {
     > svg > path:nth-child(1) {
-      fill: @color-positive;
+      fill: var(--color-positive);
     }
 
     > svg > path:nth-child(2) {
-      stroke: @color-positive;
+      stroke: var(--color-positive);
     }
   }
 
@@ -755,11 +863,11 @@ span.PendingLabel {
     }
 
     > svg > path:nth-child(1) {
-      fill: @color-negative;
+      fill: var(--color-negative);
     }
 
     > svg > path:nth-child(2) {
-      stroke: @color-negative;
+      stroke: var(--color-negative);
     }
   }
 }
@@ -769,9 +877,9 @@ span.PendingLabel {
 
   align-items: center;
   background: transparent;
-  border: 1px solid @color-outline;
+  border: @size-1 solid var(--color-outline);
   border-radius: @border-radius-default;
-  color: @color-outline;
+  color: var(--color-outline);
   display: flex;
   justify-content: center;
   height: @size-18;
@@ -792,12 +900,12 @@ span.PendingLabel {
 .PositionTypeLabel {
   .mono-9-bold;
 
-  color: @color-positive;
+  color: var(--color-positive);
   font-weight: bold;
   text-transform: uppercase;
 
   &.Sell {
-    color: @color-negative;
+    color: var(--color-negative);
   }
 
   &.Closed {
@@ -836,7 +944,7 @@ span.PendingLabel {
 .WordTrailButton {
   .mono-9-bold;
 
-  color: @color-secondary-text;
+  color: var(--color-secondary-text);
   text-transform: uppercase;
   white-space: nowrap;
 
@@ -860,7 +968,7 @@ span.PendingLabel {
   > label {
     .text-12;
 
-    color: @color-secondary-text;
+    color: var(--color-secondary-text);
     display: flex;
     align-items: center;
 
@@ -870,11 +978,11 @@ span.PendingLabel {
       width: @size-12;
 
       > circle {
-        stroke: @color-secondary-text;
+        stroke: var(--color-secondary-text);
       }
 
       > path {
-        fill: @color-secondary-text;
+        fill: var(--color-secondary-text);
       }
     }
   }
@@ -926,14 +1034,14 @@ span.PendingLabel {
   .text-12-semi-bold;
 
   align-items: center;
-  color: @color-secondary-text;
+  color: var(--color-secondary-text);
   cursor: pointer;
   display: flex;
   justify-content: flex-start;
   padding: @size-9 0;
   text-transform: uppercase;
 
-  @media @breakpoint-mobile{
+  @media @breakpoint-mobile {
     padding-top: @size-6;
   }
 
@@ -942,7 +1050,7 @@ span.PendingLabel {
   }
 
   &:hover {
-    color: @color-primary-text;
+    color: var(--color-primary-text);
   }
 
   &.loading {
@@ -954,8 +1062,12 @@ span.PendingLabel {
         width: @size-10;
         animation: spin 2s linear infinite;
 
+        LinearGradient > stop {
+          stop-color: var(--color-primary-text);
+        }
+
         path {
-          stroke: @color-secondary-text;
+          stroke: var(--color-secondary-text);
         }
       }
     }
@@ -964,20 +1076,20 @@ span.PendingLabel {
   &.selected {
     .text-12-semi-bold;
 
-    color: @color-primary-text;
+    color: var(--color-primary-text);
     padding: @size-9 0 @size-7 0;
-    border-bottom: @size-2 solid @color-primary-text;
+    border-bottom: @size-2 solid var(--color-primary-text);
 
     &.open {
-      border-color: @color-open;
+      border-color: var(--color-open);
     }
 
     &.inReporting {
-      border-color: @color-reporting;
+      border-color: var(--color-reporting);
     }
 
     &.resolved {
-      border-color: @color-resolved;
+      border-color: var(--color-resolved);
     }
 
     > div:nth-child(even) {
@@ -987,7 +1099,7 @@ span.PendingLabel {
 
     > div:last-of-type {
       > span svg path {
-        stroke: @color-primary-text;
+        stroke: var(--color-primary-text);
       }
     }
   }
@@ -1002,19 +1114,169 @@ span.PendingLabel {
 .discordLink {
   .text-14-paragraph;
 
-  color: @color-primary-text;
+  color: var(--color-primary-text);
 
   @media @breakpoint-mobile {
     .text-12-paragraph;
   }
 
   > a {
-    color: @color-primary-action;
+    color: var(--color-primary-action);
+  }
+}
+
+.RedFlag {
+  > svg {
+    height: @size-16;
+    width: @size-16;
+
+    > circle {
+      fill: var(--color-secondary-action);
+      stroke: var(--color-secondary-action-outline);
+    }
+
+    > g {
+      > path:first-of-type {
+        fill: var(--color-error);
+        stroke: none;
+      }
+
+      > path {
+        stroke: var(--color-error);
+      }
+    }
+
+    ClipPath > rect {
+      fill: var(--color-brand-secondary);
+    }
+  }
+}
+
+.Template {
+  > svg {
+    height: @size-16;
+    width: @size-16;
+
+    > circle {
+      fill: var(--color-secondary-action);
+      stroke: var(--color-secondary-action-outline);
+    }
+
+    > g {
+      > path:first-of-type {
+        fill: var(--color-tenative-winner);
+        stroke: none;
+      }
+
+      > path {
+        fill: var(--color-module-background);
+        stroke: var(--color-module-background);
+      }
+    }
+
+    ClipPath > rect {
+      fill: var(--color-brand-secondary);
+    }
+  }
+}
+
+.YellowTemplate {
+  .Template;
+
+  > svg {
+    > g {
+      > path:first-of-type {
+        fill: var(--color-highlight-template-text);
+      }
+
+      > path {
+        fill: var(--color-secondary-action);
+        stroke: var(--color-secondary-action);
+      }
+    }
+  }
+}
+
+:root[theme='BETTING'],
+:root[theme='SPORTS'] {
+  .YellowTemplate > svg > g > path:first-of-type {
+    fill: var(--color-scalar);
+  }
+
+  label.RedFlag {
+    .text-10-semi-bold;
+
+    align-items: center;
+    border-radius: @size-4;
+    background: var(--color-resolved-10);
+    color: var(--color-resolved);
+    display: flex;
+    padding: @size-4;
+    text-transform: uppercase;
+  }
+
+  .MarketLabel {
+    &.loading {
+      > div:last-of-type {
+        > span svg {
+          LinearGradient > stop {
+            stop-color: var(--color-reporting);
+          }
+
+          path {
+            stroke: var(--color-reporting);
+          }
+        }
+      }
+    }
+  }
+
+  .MovementLabel_Text {
+    &_positive {
+      color: var(--color-open);
+    }
+
+    &_negative {
+      color: var(--color-resolved);
+    }
+
+    &_neutral {
+      color: var(--color-secondary-text);
+    }
+  }
+
+  .MovementLabel_Icon {
+    &_normal {
+      > svg {
+        height: @size-7;
+        width: @size-12;
+      }
+    }
+
+    &_positive {
+      > svg > path:nth-child(1) {
+        fill: var(--color-open);
+      }
+
+      > svg > path:nth-child(2) {
+        stroke: var(--color-open);
+      }
+    }
+
+    &_negative {
+      > svg > path:nth-child(1) {
+        fill: var(--color-resolved);
+      }
+
+      > svg > path:nth-child(2) {
+        stroke: var(--color-resolved);
+      }
+    }
   }
 }
 
 .LabelWithTooltip {
-  > span > label[class*="TooltipHint"] {
+  > span > label[class*='TooltipHint'] {
     display: inline-block;
     margin-bottom: 0;
   }
@@ -1038,44 +1300,36 @@ span.PendingLabel {
     width: @size-8;
 
     &.Ready {
-      background: @color-open;
+      background: var(--color-open);
     }
     &.Lag {
-      background: @color-reporting;
+      background: var(--color-reporting);
       cursor: pointer;
     }
     &.Error {
-      background: @color-error;
+      background: var(--color-error);
       cursor: pointer;
     }
   }
 }
 
-
 .StatusErrorMessage {
   display: flex;
   justify-content: center;
   padding: @size-5 0;
-  left: 0;
-  right: 0;
-  z-index: @mask;
-  background: @color-module-background-action-focus;
-
-  @media @breakpoint-mobile {
-    position: fixed;
-  }
+  order: 0;
 
   > span {
     .text-10-bold;
 
     display: flex;
-    background: fade(@color-error, 20%);
-    border-bottom: @size-2 solid @color-error;
-    border-left: @size-4 solid @color-error;
-    border-right: @size-2 solid @color-error;
-    border-top: @size-2 solid @color-error;
+    background: var(--color-error-20);
+    border-bottom: @size-2 solid var(--color-error);
+    border-left: @size-4 solid var(--color-error);
+    border-right: @size-2 solid var(--color-error);
+    border-top: @size-2 solid var(--color-error);
     border-radius: 3px;
-    color: @color-primary-text;
+    color: var(--color-primary-text);
     padding: 0.5rem 0;
     width: 21.125rem;
     text-transform: uppercase;
@@ -1094,12 +1348,12 @@ span.PendingLabel {
       width: @size-12;
 
       > circle {
-        stroke: @color-error;
+        stroke: var(--color-error);
       }
 
       > rect,
       > path {
-        fill: @color-error;
+        fill: var(--color-error);
       }
     }
   }
@@ -1117,7 +1371,7 @@ span.PendingLabel {
   .text-10;
 
   align-items: center;
-  color: @color-primary-text;
+  color: var(--color-primary-text);
   display: grid;
   grid-template-rows: auto;
   grid-template-columns: @size-40 auto @size-16;
@@ -1129,18 +1383,18 @@ span.PendingLabel {
     width: @size-20;
 
     > rect {
-      stroke: @color-secondary-action-outline;
+      stroke: var(--color-secondary-action-outline);
     }
 
     > path {
-      stroke: @color-primary-text;
+      stroke: var(--color-primary-text);
     }
   }
 }
 
 .CheckboxChecked {
   > svg > rect {
-    fill: @color-secondary-action;
+    fill: var(--color-secondary-action);
     fill-opacity: 0.3;
   }
 }

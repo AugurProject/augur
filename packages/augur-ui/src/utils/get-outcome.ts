@@ -9,19 +9,13 @@ import {
   INVALID_OUTCOME_LABEL
 } from 'modules/common/constants';
 import { MarketData } from 'modules/types';
-import { INVALID_OUTCOME } from 'modules/create-market/constants';
-import type { MarketInfo } from '@augurproject/sdk';
-import type { Getters } from '@augurproject/sdk';
 
 const getOutcomeName = (
-  market: MarketData | Getters.Markets.MarketInfo,
+  { marketType, scalarDenomination, outcomes }: MarketData,
   outcomeId: number,
   isInvalid: boolean = false,
   showScalarOutcome: boolean = false
 ): string => {
-  // default to handle app loading
-  if (!market) return YES_NO_YES_OUTCOME_NAME;
-  const { marketType } = market;
   // default to handle app loading
   if (!marketType) return YES_NO_YES_OUTCOME_NAME;
 
@@ -35,20 +29,20 @@ const getOutcomeName = (
       return YES_NO_YES_OUTCOME_NAME;
     }
     case CATEGORICAL: {
-      let description = market.outcomes.find(
+      let description = outcomes.find(
         mOutcome => mOutcome.id === outcomeId
       ).description;
       return description || 'N/A';
     }
     default: {
-      const denomination = market.scalarDenomination || 'N/A';
+      const denomination = scalarDenomination || 'N/A';
       return showScalarOutcome ? `${outcomeId} ${denomination}` : denomination;
     }
   }
 };
 
 export const getOutcomeNameWithOutcome = (
-  market: MarketData | MarketInfo,
+  market: MarketData,
   outcomeId: string,
   isInvalid: boolean = false,
   showScalarOutcome: boolean = false

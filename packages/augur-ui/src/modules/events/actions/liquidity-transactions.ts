@@ -3,26 +3,22 @@ import type { Getters } from "@augurproject/sdk";
 import type { TxStatus } from "@augurproject/sdk-lite"
 import { convertOnChainPriceToDisplayPrice } from "@augurproject/utils"
 import { TX_OUTCOMES, TX_PRICES, TX_TYPES, ZERO, BUY, SELL } from "modules/common/constants";
-import { deleteSuccessfulLiquidityOrder, updateLiquidityOrderStatus } from "modules/orders/actions/liquidity-management";
-import { ThunkDispatch } from "redux-thunk";
-import { Action } from "redux";
+import { PendingOrders } from "modules/app/store/pending-orders";
 
 export function deleteMultipleLiquidityOrders(
   tx: Events.TXStatus,
   market: Getters.Markets.MarketInfo,
-  dispatch
 ) {
   const payloads = processMultipleLiquidityOrders(tx, market)
-  payloads.map(payload => dispatch(deleteSuccessfulLiquidityOrder(payload)));
+  payloads.map(payload => PendingOrders.actions.updateSuccessfulLiquidity(payload));
 }
 
 export function setLiquidityMultipleOrdersStatus(
   tx: Events.TXStatus,
   market: Getters.Markets.MarketInfo,
-  dispatch
 ) {
-  const payloads = processMultipleLiquidityOrders(tx, market)
-  payloads.map(payload => dispatch(updateLiquidityOrderStatus(payload)));
+  const payloads = processMultipleLiquidityOrders(tx, market);
+  payloads.map(payload => PendingOrders.actions.updateLiquidityStatus(payload));
 }
 
 export function processMultipleLiquidityOrders(
@@ -56,20 +52,6 @@ interface Tx {
   orderType: string,
   orderPrice: string
 }
-
-export const setLiquidityOrderStatus = (
-  tx: Tx,
-  market: Getters.Markets.MarketInfo
-) => (dispatch: ThunkDispatch<void, any, Action>) => {
-  const properties = processLiquidityOrder(tx, market);
-  return dispatch(
-    updateLiquidityOrderStatus({
-      txParamHash: properties.transactionHash,
-      ...properties,
-      eventName: tx.eventName,
-    })
-  );
-};
 
 export function processLiquidityOrder(
   tx: Tx,

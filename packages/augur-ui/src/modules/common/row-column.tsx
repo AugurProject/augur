@@ -5,14 +5,17 @@ import {
   PositionTypeLabel,
   TextLabel,
   ValueLabel,
-  CountdownLabel
+  CountdownLabel,
+  RedFlag,
+  TemplateShield,
+  InvalidLabel,
 } from 'modules/common/labels';
-import InvalidLabel from 'modules/common/containers/labels';
-import { CancelTextButton } from 'modules/common/buttons';
-import MarketOutcomeTradingIndicator from 'modules/market/containers/market-outcome-trading-indicator';
-import { DateFormattedObject } from 'modules/types';
+import { CancelTextButton, CashoutButton } from 'modules/common/buttons';
+import OutcomeTradingIndicator from "modules/market/components/common/outcome-trading-indicator/outcome-trading-indicator";
+import { DateFormattedObject, FormattedNumber } from 'modules/types';
 import { TXEventName } from '@augurproject/sdk-lite';
 import { XIcon } from 'modules/common/icons';
+import MarketLink from 'modules/market/components/market-link/market-link';
 
 const { COLUMN_TYPES } = constants;
 
@@ -28,7 +31,7 @@ export interface Properties {
   showBrackets?: string;
   showPlusMinus?: string;
   showColors?: boolean;
-  value?: string;
+  value?: string | FormattedNumber;
   size?: string;
   showEmptyDash?: boolean;
   addIndicator?: boolean;
@@ -41,62 +44,111 @@ export interface Properties {
   expiry?: DateFormattedObject;
   currentTimestamp?: Number;
   usePercent?: boolean;
+  highRisk?: boolean;
+  useFull?: boolean;
+  showFullPrecision?: boolean;
+  showDenomination?: boolean;
+  templateShield?: boolean;
+  marketId?: string;
 }
 
 function selectColumn(columnType: string, properties: Properties) {
+  const {
+    text,
+    keyId,
+    type,
+    pastTense,
+    pending,
+    disabled,
+    action,
+    showPercent,
+    showBrackets,
+    showPlusMinus,
+    showColors,
+    value,
+    size,
+    showEmptyDash,
+    addIndicator,
+    alert,
+    outcome,
+    location,
+    showExtraNumber,
+    status,
+    showCountdown,
+    expiry,
+    currentTimestamp,
+    usePercent,
+    highRisk,
+    useFull,
+    showFullPrecision,
+    showDenomination,
+    templateShield,
+    marketId
+  } = properties;
+
   switch (columnType) {
     case COLUMN_TYPES.TEXT:
       return (
         <>
-          <TextLabel text={properties.text} keyId={properties.keyId} />
-          {properties.showExtraNumber && <span>{properties.value}</span>}
+          <TextLabel text={text} keyId={keyId} />
+          {templateShield &&
+            <TemplateShield market={outcome} />
+          }
+          {showExtraNumber && highRisk && (
+            <RedFlag market={{ mostLikelyInvalid: true, id: 0 }} />
+          )}
+          {showExtraNumber && templateShield && <MarketLink id={marketId}>{value}</MarketLink>}
+          {showExtraNumber && !templateShield && <span>{value}</span>}
         </>
       );
     case COLUMN_TYPES.POSITION_TYPE:
       return (
         <>
-          {properties.showCountdown &&
-            <CountdownLabel currentTimestamp={properties.currentTimestamp} expiry={properties.expiry} />
-          }
+          {showCountdown && (
+            <CountdownLabel
+              currentTimestamp={currentTimestamp}
+              expiry={expiry}
+            />
+          )}
           <PositionTypeLabel
-            type={properties.type}
-            pastTense={properties.pastTense}
+            type={type}
+            pastTense={pastTense}
           />
         </>
       );
     case COLUMN_TYPES.VALUE:
       return (
-        (properties.value || properties.showEmptyDash) && (
+        (value || showEmptyDash) && (
           <>
-            {properties.addIndicator && (
-              <MarketOutcomeTradingIndicator
-                outcome={properties.outcome}
-                location={properties.location}
+            {addIndicator && (
+              <OutcomeTradingIndicator
+                outcome={outcome}
+                location={location}
               />
             )}
-            {properties.action && (
-              <button onClick={properties.action}>
+            {action && (
+              <button onClick={action}>
                 <ValueLabel
-                  value={properties.value}
-                  keyId={properties.keyId}
-                  showEmptyDash={properties.showEmptyDash}
-                  useFull={properties.useFull}
-                  usePercent={properties.usePercent}
-                  showFullPrecision={properties.showFullPrecision}
-                  alert={properties.alert}
+                  value={value}
+                  keyId={keyId}
+                  showEmptyDash={showEmptyDash}
+                  useFull={useFull}
+                  usePercent={usePercent}
+                  showFullPrecision={showFullPrecision}
+                  alert={alert}
                 />
               </button>
             )}
-            {!properties.action && (
+            {!action && (
               <ValueLabel
-                value={properties.value}
-                keyId={properties.keyId}
-                showEmptyDash={properties.showEmptyDash}
-                useFull={properties.useFull}
-                showFullPrecision={properties.showFullPrecision}
-                usePercent={properties.usePercent}
-                showDenomination={properties.showDenomination}
-                alert={properties.alert}
+                value={value}
+                keyId={keyId}
+                showEmptyDash={showEmptyDash}
+                useFull={useFull}
+                showFullPrecision={showFullPrecision}
+                usePercent={usePercent}
+                showDenomination={showDenomination}
+                alert={alert}
               />
             )}
           </>
@@ -104,46 +156,63 @@ function selectColumn(columnType: string, properties: Properties) {
       );
     case COLUMN_TYPES.INVALID_LABEL:
       return (
-        <InvalidLabel text={properties.text} keyId={properties.keyId} tooltipPositioning='right' />
+        <InvalidLabel
+          text={text}
+          keyId={keyId}
+          tooltipPositioning="right"
+        />
+      );
+    case COLUMN_TYPES.CASHOUT_BUTTON: 
+      return (
+        <span>
+          <CashoutButton bet={outcome}/>
+        </span>
       );
     case COLUMN_TYPES.CANCEL_TEXT_BUTTON:
-      const confirmed = properties.status === TXEventName.Success;
-      const failed = properties.status === TXEventName.Failure;
-      const buttonText = confirmed ? 'Confirmed' : failed ? 'Failed' : 'Processing ...';
+      const confirmed = status === TXEventName.Success;
+      const failed = status === TXEventName.Failure;
+      const buttonText = confirmed
+        ? 'Confirmed'
+        : failed
+        ? 'Failed'
+        : 'Processing ...';
       const isDisabled = !failed && !confirmed;
       const icon = failed || confirmed ? XIcon : null;
-      return properties.pending ? (
+      return pending ? (
         <span>
           <CancelTextButton
             confirmed={confirmed}
             failed={failed}
             icon={icon}
             text={buttonText}
-            action={properties.action}
+            action={action}
             disabled={isDisabled}
           />
         </span>
       ) : (
         <>
-          {properties.showCountdown &&
-            <CountdownLabel currentTimestamp={properties.currentTimestamp} expiry={properties.expiry} />
-          }
+          {showCountdown && (
+            <CountdownLabel
+              currentTimestamp={currentTimestamp}
+              expiry={expiry}
+            />
+          )}
           <CancelTextButton
-            disabled={properties.disabled}
-            text={properties.text}
-            action={properties.action}
+            disabled={disabled}
+            text={text}
+            action={action}
           />
         </>
       );
     case COLUMN_TYPES.PLAIN:
-      return properties.value;
+      return value;
     case COLUMN_TYPES.MOVEMENT_LABEL:
       return (
         <MovementLabel
-          useFull={properties.useFull}
-          showBrackets={properties.showBrackets}
-          showPlusMinus={properties.showPlusMinus}
-          value={properties.value}
+          useFull={useFull}
+          showBrackets={showBrackets}
+          showPlusMinus={showPlusMinus}
+          value={value}
         />
       );
     default:

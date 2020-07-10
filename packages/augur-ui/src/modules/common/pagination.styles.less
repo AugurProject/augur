@@ -13,6 +13,11 @@
     }
   }
 
+  button {
+    background: transparent;
+    height: @size-30;
+  }
+
   button > span {
     padding-right: @size-8;
   }
@@ -45,7 +50,7 @@
   section > span {
     .mono-14;
 
-    color: @color-primary-text;
+    color: var(--color-primary-text);
     display: none;
     margin: auto;
     white-space: nowrap;
@@ -53,7 +58,7 @@
   section > button {
     .mono-14;
 
-    color: @color-primary-text;
+    color: var(--color-primary-text);
     height: @size-32;
     margin: 0 @size-4 0 0;
     width: @size-32;
@@ -93,17 +98,17 @@
 }
 
 .Active {
-  color: @color-primary-text;
+  color: var(--color-primary-text);
   font-weight: bold;
 
   &::after {
-    background: @color-primary-text;
+    background: var(--color-primary-text);
     border-radius: @border-radius-default;
     content: " ";
     display: block;
-    height: 2px;
+    height: @size-2;
     margin: 0 auto;
-    width: 1rem;
+    width: @size-16;
   }
 }
 
@@ -111,5 +116,103 @@
   align-items: center;
   display: flex;
   justify-content: center;
-  margin: 2rem 2rem;
+  margin: @size-32;
+}
+
+
+:root[theme="BETTING"],
+:root[theme="SPORTS"] {
+  .Pagination {
+    section > button {
+      .mono-12-semi-bold;
+
+      line-height: @size-30;
+      height: @size-40;
+      margin: 0 @size-4 0 0;
+      width: @size-17;
+    }
+
+    section > button:first-of-type {
+      width: @size-40;
+      margin: 0 @size-21 0 0;
+    }
+
+    section > button:last-of-type {
+      width: @size-40;
+      margin: 0 0 0 @size-17;
+    }
+
+    section > button:not(:first-of-type):not(:last-of-type) {
+      &::after {
+        background: transparent;
+        content: " ";
+        display: block;
+        height: @size-2;
+        margin: 0 auto;
+        width: @size-9;
+      }
+
+      &:hover::after {
+        background: var(--color-primary-text);
+      }
+
+      &.Active::after {
+        background: var(--color-primary-action);
+      }
+    }
+
+    // Show items per page
+    > div {
+      margin-left: @size-16;
+      height: @size-40;
+      border: none;
+
+      > button {
+        background: transparent;
+        height: 100%;
+        padding: 0 0 0 @size-12;
+
+        > span {
+          .mono-14;
+
+          color: var(--color-primary-text);
+          text-transform: capitalize;
+          border-right: none;
+
+          &::before {
+            .mono-14;
+
+            color: var(--color-secondary-text);
+          }
+
+          &::after {
+            .mono-14;
+
+            content: 'per page';
+            text-transform: lowercase;
+            padding-left: @size-4;
+            color: var(--color-primary-text);
+          }
+        }
+
+        > svg {
+          margin: 0;
+          > path {
+            fill: var(--color-primary-text);
+          }
+        }
+      }
+
+      > div {
+        width: 100%;
+        border-radius: @border-radius-default;
+        box-shadow: 0 0 @size-4 var(--color-primary-text-15);
+
+        > div:first-of-type {
+          margin: 0;
+          border: @size-1 solid var(--color-secondary-action-outline);
+        }
+      }
+    }
+  }
 }

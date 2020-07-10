@@ -1,43 +1,32 @@
-import type { Getters } from '@augurproject/sdk';
-import { AppState } from 'appStore';
-import { updateLoginAccount } from 'modules/account/actions/login-account';
-import { NodeStyleCallback } from 'modules/types';
-import { Action } from 'redux';
-import { ThunkDispatch } from 'redux-thunk';
-import { augurSdk } from 'services/augursdk';
 import logError from 'utils/log-error';
+import { NodeStyleCallback } from 'modules/types';
+import { augurSdk } from 'services/augursdk';
+import { Getters } from '@augurproject/sdk';
+import { AppStatus } from 'modules/app/store/app-status';
 
-export const updateTimeframeData = (
+export const updateTimeframeData = async (
   options: { startTime: number },
   callback: NodeStyleCallback = logError
-) => async (
-  dispatch: ThunkDispatch<void, any, Action>,
-  getState: () => AppState
 ): Promise<void> => {
-  const { universe, loginAccount, blockchain } = getState();
-  if (loginAccount.address == null || universe.id == null)
-    return callback(null);
+  const {
+    loginAccount,
+    universe: { id },
+    blockchain: { currentAugurTimestamp },
+  } = AppStatus.get();
+  if (loginAccount.address == null || id == null) return callback(null);
 
   const augur = augurSdk.get();
   const stats: Getters.Users.AccountTimeRangedStatsResult = await augur.getAccountTimeRangedStats(
     {
-      universe: universe.id,
+      universe: id,
       account: loginAccount.address,
       startTime: options.startTime ? options.startTime : 0,
-      endTime: blockchain.currentAugurTimestamp
+      endTime: currentAugurTimestamp,
     }
   );
-
-  dispatch(
-    updateLoginAccount({
-      timeframeData: {
-        positions: stats.positions,
-        numberOfTrades: stats.numberOfTrades,
-        marketsTraded: stats.marketsTraded,
-        marketsCreated: stats.marketsCreated,
-        successfulDisputes: stats.successfulDisputes,
-        redeemedPositions: stats.redeemedPositions,
-      },
-    })
-  );
+  AppStatus.actions.updateLoginAccount({
+    timeframeData: {
+      ...stats,
+    },
+  });
 };

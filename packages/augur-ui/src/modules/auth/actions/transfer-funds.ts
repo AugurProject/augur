@@ -24,7 +24,7 @@ export const transferFunds = (
   useSigner = false,
   useTopoff = true
 ) => {
-  return async dispatch => {
+  return async () => {
     const to = formatEthereumAddress(toAddress);
     const sendFunds = async currency => {
       switch (currency) {
@@ -79,8 +79,7 @@ export const transferFunds = (
         }
       }
     } finally {
-      // give a little time
-      setTimeout(() => dispatch(updateAssets(true)), 1000);
+      setTimeout(() => updateAssets(true), 1000);
     }
   };
 };
@@ -107,11 +106,11 @@ export function transferFundsGasEstimate(
 }
 
 export const withdrawTransfer = destination => {
-  return async dispatch => {
+  return async () => {
     try {
       await withdrawAllFunds(destination);
     } finally {
-      dispatch(updateAssets(true));
+      updateAssets(true);
     }
   };
 };

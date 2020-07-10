@@ -6,36 +6,35 @@ import {
   TOTAL_FROZEN_FUNDS,
   TOTAL_ACCOUNT_VALUE_IN_DAI,
 } from 'modules/common/constants';
-import { FormattedNumber } from 'modules/types';
-
+import { MODAL_FROZEN_FUNDS } from 'modules/common/constants';
 import Styles from 'modules/account/components/funds.styles.less';
+import { useAppStatusStore } from 'modules/app/store/app-status';
+import { formatPercent, formatDai } from 'utils/format-number';
+import {
+  getAccountFunds,
+} from "modules/auth/helpers/login-account";
 
-export interface FundsProps {
-  totalFrozenFunds: FormattedNumber;
-  totalAvailableTradingBalance: FormattedNumber;
-  totalAccountValue: FormattedNumber;
-  frozenFundsModal: Function;
-}
-
-const Funds = ({
-  totalFrozenFunds,
-  totalAvailableTradingBalance,
-  totalAccountValue,
-  frozenFundsModal,
-}: FundsProps) => {
+const Funds = () => {
+  const { loginAccount, actions: { setModal } } = useAppStatusStore();
+  const {
+    totalFrozenFunds,
+    totalAvailableTradingBalance,
+    totalAccountValue,
+  } = getAccountFunds(loginAccount);
+  const { tradingPositionsTotal } = loginAccount;
   return (
     <section className={Styles.Funds}>
       <h4>{TOTAL_ACCOUNT_VALUE_IN_DAI}</h4>
-      <div>{totalAccountValue.full}</div>
+      <div>{formatDai(totalAccountValue, { removeComma: true }).full}</div>
       <LinearPropertyLabel
-        value={totalAvailableTradingBalance.full}
+        value={formatDai(totalAvailableTradingBalance, { removeComma: true }).full}
         label={AVAILABLE_TRADING_BALANCE}
       />
       <LinearPropertyLabel
-        value={totalFrozenFunds.full}
+        value={formatDai(totalFrozenFunds, { removeComma: true }).full}
         underline
         label={TOTAL_FROZEN_FUNDS}
-        onValueClick={frozenFundsModal}
+        onValueClick={() => setModal({ type: MODAL_FROZEN_FUNDS })}
       />
     </section>
   );

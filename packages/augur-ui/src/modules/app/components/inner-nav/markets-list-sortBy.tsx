@@ -1,45 +1,46 @@
 import React from 'react';
 import classNames from 'classnames';
-import {
-  MARKET_SORT_PARAMS,
-  SORT_OPTIONS,
-} from 'modules/common/constants';
+import { SORT_OPTIONS } from 'modules/common/constants';
 import Styles from 'modules/app/components/inner-nav/markets-list-sortBy.styles.less';
 import { SortByIcon } from 'modules/common/icons';
 import { RadioBarGroup } from 'modules/common/form';
+import { useAppStatusStore } from 'modules/app/store/app-status';
+import { MARKET_SORT } from 'modules/app/store/constants';
 
-interface MarketsListFiltersProps {
-  sortBy: string;
-  isSearching: boolean;
-  updateMarketsSortBy: Function;
-  setSortOptions: Function;
-  isMobile: boolean;
+interface MarketsListSortByProps {
+  setFilterSortState: Function;
 }
 
-const MarketsListFilters = ({
-  sortBy,
-  isSearching,
-  updateMarketsSortBy,
-  setSortOptions,
-  isMobile,
-}: MarketsListFiltersProps) => (
-  <div className={Styles.Filters}>
-    <div
-      className={classNames(Styles.FiltersGroup, {
-        [Styles.Searching]: isSearching,
-      })}
-    >
-      <div>
-        {SortByIcon}
-        Sort By
+const MarketsListSortBy = ({ setFilterSortState }: MarketsListSortByProps) => {
+  const {
+    isMobile,
+    filterSortOptions: { sortBy },
+    marketsList: { isSearching },
+    actions: { updateFilterSortOptions },
+  } = useAppStatusStore();
+  return (
+    <div className={Styles.Filters}>
+      <div
+        className={classNames(Styles.FiltersGroup, {
+          [Styles.Searching]: isSearching,
+        })}
+      >
+        <div>
+          {SortByIcon}
+          Sort By
+        </div>
+        <RadioBarGroup
+          radioButtons={SORT_OPTIONS}
+          defaultSelected={sortBy}
+          light
+          onChange={(value: string) =>
+            isMobile
+              ? setFilterSortState({ [MARKET_SORT]: value })
+              : updateFilterSortOptions({ [MARKET_SORT]: value })
+          }
+        />
       </div>
-      <RadioBarGroup
-        radioButtons={SORT_OPTIONS}
-        defaultSelected={sortBy}
-        onChange={(value: string) => isMobile ? setSortOptions(value) : updateMarketsSortBy(value)}
-      />
     </div>
-  </div>
-);
-
-export default MarketsListFilters;
+  );
+};
+export default MarketsListSortBy;
