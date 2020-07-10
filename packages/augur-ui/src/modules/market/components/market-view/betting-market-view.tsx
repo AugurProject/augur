@@ -1,4 +1,5 @@
 import React from 'react';
+import { useLocation } from 'react-router';
 import parseQuery from 'modules/routes/helpers/parse-query';
 import { MARKET_ID_PARAM_NAME } from 'modules/routes/constants/param-names';
 import { getAddress } from 'ethers/utils/address';
@@ -15,15 +16,12 @@ import {
 } from 'modules/common/icons';
 import { OutcomeGroup } from 'modules/market-cards/common';
 
-interface BettingMarketViewProps {
-  location: Location;
-}
-
-const BettingMarketView = ({ location }: BettingMarketViewProps) => {
+const BettingMarketView = () => {
+  const location = useLocation();
   const queryId = parseQuery(location.search)[MARKET_ID_PARAM_NAME];
   const marketId = getAddress(queryId);
   const market = selectMarket(marketId);
-
+  // console.log(market);
   if (!market) {
     return <div/>;
   }
@@ -33,13 +31,14 @@ const BettingMarketView = ({ location }: BettingMarketViewProps) => {
     settlementFeePercent,
     creationTimeFormatted,
     description, 
-    details
+    details,
+    settlementFee
   } = market;
 
   return (
     <div className={Styles.BettingMarketView}>
       <div>
-        <HeadingBar market={market} showReportingLabel history={history} />
+        <HeadingBar market={market} showReportingLabel />
         <span>{description}</span>
         <div>
           <PropertyLabel
