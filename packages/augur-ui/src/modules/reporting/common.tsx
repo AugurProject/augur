@@ -91,6 +91,7 @@ export interface DismissableNoticeProps {
   show: boolean;
   queueName?: string;
   queueId?: string;
+  error?: boolean;
 }
 
 export const DismissableNotice = (props: DismissableNoticeProps) => {
@@ -99,7 +100,9 @@ export const DismissableNotice = (props: DismissableNoticeProps) => {
   return (
     <>
       {show ? (
-        <div className={classNames(Styles.DismissableNotice, props.className)}>
+        <div className={classNames(Styles.DismissableNotice, props.className, {
+            [Styles.Error]: props.error,
+         })}>
           <span>{InformationIcon}</span>
           <div>
             <div>{props.title}</div>
