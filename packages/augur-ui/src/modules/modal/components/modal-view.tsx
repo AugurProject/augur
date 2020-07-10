@@ -59,7 +59,7 @@ function selectModal(type, props, closeModal, modal) {
           <ModalAddFunds />
 
           {/* DESKTOP */}
-          <ModalAddFunds {...props} autoSelect />
+          <ModalAddFunds autoSelect />
         </>
       );
     case TYPES.MODAL_DAI_FAUCET:
