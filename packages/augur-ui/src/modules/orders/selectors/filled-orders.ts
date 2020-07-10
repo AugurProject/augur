@@ -116,7 +116,7 @@ function findOrders(
         if (!isSameAddress(creator, accountId)) {
           foundOrder.originalQuantity = foundOrder.amount;
         }
-      } else {
+      } else if (outcomeValue !== undefined) {
         order.push({
           id: orderId,
           timestamp: timestampFormatted,
