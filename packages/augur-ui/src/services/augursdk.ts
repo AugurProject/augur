@@ -109,7 +109,7 @@ export class SDK {
   }
 
   async destroy() {
-    unListenToEvents(this.client);
+    if (this.client) unListenToEvents(this.client);
     this.isSubscribed = false;
     this.client = null;
   }

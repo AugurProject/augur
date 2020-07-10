@@ -28,6 +28,10 @@ export class SDKLite {
     if (this.client) return true;
     return false;
   }
+
+  destroy(): void {
+    if (this.client) this.client = null;
+  }
 }
 
 export const augurSdkLite = new SDKLite();

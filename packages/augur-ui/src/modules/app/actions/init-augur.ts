@@ -80,12 +80,29 @@ async function loadAccountIfStored() {
   }
 }
 
+async function web3CorrectNetwork(config) {
+  if(windowRef.web3) {
+    const web3Provider = new Web3Provider('ethereum' in window ? windowRef.ethereum : windowRef.web3.currentProvider);
+    const web3NetworkId = web3Provider && web3Provider._web3Provider.networkVersion || web3Provider._network && web3Provider._network.chainId;
+    if (web3NetworkId && config.networkId !== web3NetworkId) {
+      // bring up modal, how ever modals are popped up. TODO
+        /* pop up modal Method({
+          type: MODAL_NETWORK_MISMATCH,
+          expectedNetwork: NETWORK_NAMES[Number(config.networkId)],
+        })
+        */
+      return false;
+    }
+    return true;
+  }
+  return false;
+}
 
 async function createDefaultProvider(config: SDKConfiguration) {
   if (config.networkId && isDevNetworkId(config.networkId)) {
     // In DEV, use local ethereum node
     return new JsonRpcProvider(config.ethereum.http);
-  } else if (windowRef.web3) {
+  } else if (windowRef.web3 && web3CorrectNetwork(config)) {
     // Use the provider on window if it exists, otherwise use torus provider
     return getWeb3Provider(windowRef);
   } else if (config.ui?.fallbackProvider === "jsonrpc" && config.ethereum.http) {
@@ -169,7 +186,23 @@ export const connectAugur = async (
       AppStatus.actions.setRestoredAccount(true);
       AppStatus.actions.updateLoginAccount(accountObject);
       break;
-  }
+    }
+
+
+    // Optimize for the case where we can just use a JSON endpoint.
+    // If things aren't configured for that we'll create the default
+    // provider which may be slow.
+    let provider = config.ui?.liteProvider === "jsonrpc" ?
+      new JsonRpcProvider(config.ethereum.http) :
+      await createDefaultProvider(config);
+
+    await augurSdkLite.makeLiteClient(
+      provider,
+      config.addresses,
+      config.networkId
+    );
+
+   // TODO: turn on hotloading dispatch(updateCanHotload(true)); // Hotload now!
 
   // Disable mesh/gsn for googleBot
   if (isGoogleBot()) {
@@ -204,7 +237,7 @@ export const connectAugur = async (
     config.networkId
   );
   AppStatus.actions.setCanHotload(true); // Hotload now!
-  // End init here for Googlebot 
+  // End init here for Googlebot
   // TODO: Market list do something with hotload
   if(isGoogleBot()) {
     callback(null);
@@ -239,7 +272,7 @@ export const connectAugur = async (
     setModal({
       type: MODAL_REPORTING_ONLY
     });
-  }  
+  }
 
   let universeId = config.addresses?.Universe || Augur.contracts.universe.address;
   if (
