@@ -53,6 +53,7 @@ import {
   WinningMedal,
   ThickChevron,
   FingersCrossed,
+  QuestionIcon,
 } from 'modules/common/icons';
 import { isSameAddress } from 'utils/isSameAddress';
 import {
@@ -903,7 +904,7 @@ export const SportsGroupMarkets = ({ sportsGroup }) => {
 
 export const prepareSportsGroup = sportsGroup => {
   const { markets } = sportsGroup;
-  const { COMBO } = SPORTS_GROUP_TYPES;
+  const { COMBO, FUTURES } = SPORTS_GROUP_TYPES;
   const { MONEY_LINE } = SPORTS_GROUP_MARKET_TYPES;
   const { additionalMarkets, topComboMarkets, numMarkets } = prepareCombo(
     sportsGroup
@@ -940,9 +941,23 @@ export const prepareSportsGroup = sportsGroup => {
       />
     );
   });
-  sortedMarkets.forEach(market => {
+  sortedMarkets.forEach((market, index, array) => {
     const data = createOutcomesData(market);
     const startOpen = marketGroups.length === 0;
+    if (index === 1 && sportsGroup.type === FUTURES) {
+      const extraMarkets = array.length - marketGroups.length;
+      marketGroups.push(
+        <div
+          className={Styles.FuturesDivider}
+          key={`futuresDivider-${sportsGroup.id}`}
+        >
+          {`There are ${extraMarkets} more market${
+            extraMarkets > 1 ? 's' : ''
+          } related to this future event with different expiration date:`}
+          {QuestionIcon}
+        </div>
+      );
+    }
     marketGroups.push(
       <SportsMarketContainer
         key={market.id}

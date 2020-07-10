@@ -1243,4 +1243,32 @@
 			}
 		}
 	}
+
+	div.FuturesDivider {
+		.text-14;
+
+		align-items: center;
+		color: var(--color-primary-text);
+		display: flex;
+		flex-flow: row nowrap;
+		grid-column: span 2;
+		height: @size-20;
+
+
+		> svg {
+			height: @size-14;
+			width: @size-14;
+			margin-left: @size-4;
+
+			> circle {
+				stroke: var(--color-dark-text);
+				fill: none;
+			}
+
+			> path {
+				fill: var(--color-dark-text);
+				stroke: none;
+			}
+		}
+	}
 }

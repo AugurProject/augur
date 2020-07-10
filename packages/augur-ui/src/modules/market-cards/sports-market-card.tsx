@@ -36,10 +36,13 @@ const { COMBO, FUTURES, DAILY } = SPORTS_GROUP_TYPES;
 const { MONEY_LINE } = SPORTS_GROUP_MARKET_TYPES;
 
 const determineStartState = ({ type, marketTypes }) => {
-    if (type !== DAILY) return false;
-    const hasMoneyLineMarket = marketTypes.find(uniqueType => uniqueType.includes(MONEY_LINE));
-    return !hasMoneyLineMarket;
-}
+  if (type === FUTURES) return true;
+  if (type !== DAILY) return false;
+  const hasMoneyLineMarket = marketTypes.find(uniqueType =>
+    uniqueType.includes(MONEY_LINE)
+  );
+  return !hasMoneyLineMarket;
+};
 
 export const SportsMarketCard = ({
   sportsGroup,
@@ -53,11 +56,15 @@ export const SportsMarketCard = ({
   // TODO: do this better when i have any idea of how this will work...
   // for now just grab the first market for major stats.
   const { type, markets } = sportsGroup;
+  const isFutures = type === FUTURES;
   const market = markets[0];
   const { categories, reportingState, endTimeFormatted } = market;
   const displayableMarkets = markets.reduce(reduceToUniquePools, []);
-  const numExtraWagers = type === COMBO ? displayableMarkets.length - 3 : displayableMarkets.length - 1;
-  const showMoreButtonVisible = numExtraWagers > 0;
+  const numExtraWagers =
+    type === COMBO
+      ? displayableMarkets.length - 3
+      : displayableMarkets.length - 1;
+  const showMoreButtonVisible = !isFutures && numExtraWagers > 0;
   const headerType =
     location.pathname === makePath(DISPUTING)
       ? HEADER_TYPE.H2
@@ -79,17 +86,19 @@ export const SportsMarketCard = ({
       />
       <MarketTitle id={market.id} headerType={headerType} />
       <SportsGroupMarkets sportsGroup={sportsGroup} />
-      <CountdownProgress
-        label={
-          type === FUTURES ? 'Event Expiration Date' : 'Estimated Start Time'
-        }
-        time={
-          type === FUTURES
-            ? endTimeFormatted
-            : formatTime(market.sportsBook.estTimestamp)
-        }
-        reportingState={reportingState}
-      />
+      {!isFutures && (
+        <CountdownProgress
+          label={
+            type === FUTURES ? 'Event Expiration Date' : 'Estimated Start Time'
+          }
+          time={
+            type === FUTURES
+              ? endTimeFormatted
+              : formatTime(market.sportsBook.estTimestamp)
+          }
+          reportingState={reportingState}
+        />
+      )}
       {showMoreButtonVisible && (
         <button onClick={() => setShowMore(!showMore)}>
           {ThickChevron} {`${showMore ? 'Show Less' : moreWagersText}`}
