@@ -9,6 +9,11 @@ Augur is a protocol, freely available for anyone to use however they please. Aug
 
 For more information about the Augur protocol, [check out the FAQ.](https://www.augur.net/faq/)
 
+## Branches
+
+* [dev](https://github.com/AugurProject/augur/tree/dev) -- The *default* branch is for future updates. *THIS BRANCH IS UNSTABLE*
+* [v2](https://github.com/AugurProject/augur/tree/v2) -- This branch is being stabilized for v2 launch. If you're looking at integrating with Augur start here.
+
 ## Development Guides
 
 Clone Augur's Monorepo.
