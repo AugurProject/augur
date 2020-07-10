@@ -46,6 +46,7 @@ interface SideNavProps {
   whichChatPlugin: string;
   isMobile: string;
   ethReserveInDai: FormattedNumber;
+  tradingAccountCreated: boolean;
 }
 
 const SideNav = ({
@@ -68,6 +69,7 @@ const SideNav = ({
   whichChatPlugin,
   isMobile,
   ethReserveInDai,
+  tradingAccountCreated,
 }: SideNavProps) => {
   useEffect(() => {
     if (isHelpMenuOpen) {
@@ -91,6 +93,7 @@ const SideNav = ({
           restoredAccount={restoredAccount}
           isMobile={true}
           ethReserveInDai={ethReserveInDai}
+          tradingAccountCreated={tradingAccountCreated}
         />
       </div>
       <div className={Styles.SideNav__container}>
