@@ -161,20 +161,19 @@ export function buildformattedDate(
   offset: number
 ): TimezoneDateObject {
 
-  const endTime = moment
+  let adjHour = Number(hour);
+  const day = moment
     .unix(timestamp)
-    .startOf('day');
+    .startOf('day').format('MMMM DD, YYYY');
 
-  endTime.set({
-    hour: hour,
-    minute: minute,
-  });
-
-  if ((meridiem === '' || meridiem === 'AM') && endTime.hours() >= 12) {
-    endTime.hours(endTime.hours() - 12);
-  } else if (meridiem && meridiem === 'PM' && endTime.hours() < 12) {
-    endTime.hours(endTime.hours() + 12);
+  if (meridiem && meridiem === 'PM' && adjHour < 12) {
+    adjHour = adjHour + 12;
   }
+
+  // MMMM DD, YYYY h:mm A;
+  const datetimeFormat = `${day} ${adjHour}:${minute} ${meridiem}`;
+  const endTime = moment.utc(datetimeFormat, LONG_FORMAT);
+
   const abbr = getTimezoneAbbr(endTime.toDate(), timezone);
   const timezoneFormat = endTime.format(LONG_FORMAT);
   const formattedLocalShortDateTimeWithTimezone = `${timezoneFormat} (${abbr})`;
@@ -195,20 +194,11 @@ export function buildformattedDate(
 export function timestampComponents(timestamp: number, offset: number = 0, timezone: string = null): Partial<DateTimeComponents> {
   // using local mode with moment, manually adjusting for offset
   const date = moment.unix(timestamp).add(offset, 'hours');
-  let meridiem = 'AM';
-  let hour = date.hours()
-  if (hour == 0) {
-    hour = 12; // moment uses 0 for 24 (12 am)
-    meridiem = 'AM';
-  } else if (hour >= 12) {
-    hour = hour > 12 ? hour - 12 : hour;
-    meridiem = 'PM'
-  }
   return {
     setEndTime: timestamp,
-    hour: String(hour),
-    minute: `0${date.minutes()}`.slice(-2),
-    meridiem,
+    hour: String(date.utc().format('h')),
+    minute: String(date.utc().format('m')),
+    meridiem: String(date.utc().format('A')),
     timezone
   }
 }
@@ -220,14 +210,6 @@ export function getUtcStartOfDayFromLocal(timestamp: number): number {
     .startOf('day')
     .unix();
     return value;
-}
-
-export function convertUTCUnixToFormattedDate(integer: number = 0) {
-  const localOffset: number = (new Date().getTimezoneOffset() / 60) * -1;
-  const value = moment
-    .unix(integer)
-    .add(localOffset, 'hours')
-  return formatDate(value.toDate());
 }
 
 export function convertUnixToFormattedDate(integer: number = 0) {
