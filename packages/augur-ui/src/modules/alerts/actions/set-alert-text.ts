@@ -100,7 +100,7 @@ export function getInfo(params: any, status: string, marketInfo: MarketData, isO
     tickSize
   ).toString();
 
-  const priceFormatted = formatDai(price, {decimals: getPrecision(String(tickSize), 2)})
+  const priceFormatted = formatDai(price, {decimals: getPrecision(String(tickSize), 2)});
 
   return {
     priceFormatted,
@@ -135,7 +135,8 @@ export default function setAlertText(alert: any, callback: Function) {
         const { orderType, outcomeDescription } = getInfo(
           alert.params,
           alert.status,
-          marketInfo
+          marketInfo,
+          marketInfo.marketType !== SCALAR
         );
         const quantity = alert.params.unmatchedShares
           ? alert.params.unmatchedShares.value
@@ -285,7 +286,8 @@ export default function setAlertText(alert: any, callback: Function) {
           const { orderType, amount, price, outcomeDescription } = getInfo(
             params,
             alert.status,
-            marketInfo
+            marketInfo,
+            marketInfo.marketType !== SCALAR
           );
           alert.details = `${orderType} ${
             formatShares(amount).formatted
@@ -328,7 +330,8 @@ export default function setAlertText(alert: any, callback: Function) {
           const { orderType, amount, price, outcomeDescription } = getInfo(
             params,
             alert.status,
-            marketInfo
+            marketInfo,
+            marketInfo.marketType !== SCALAR
           );
           alert.details = `${orderType}  ${formatShares(amount).formatted} ${
             originalQuantity
@@ -448,7 +451,8 @@ export default function setAlertText(alert: any, callback: Function) {
         const { orderType, amount, price, outcomeDescription } = getInfo(
           alert.params,
           alert.status,
-          marketInfo
+          marketInfo,
+          marketInfo.marketType !== SCALAR
         );
 
         alert.details = `${orderType}  ${

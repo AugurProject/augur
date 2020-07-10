@@ -11,7 +11,7 @@ export const cancelAllOpenOrders = async orders => {
 
   try {
     orders.forEach((order) => {
-      sendCancelAlert(order, dispatch);
+      sendCancelAlert(order);
     });
     if (orderHashes.length > BATCH_CANCEL_MAX) {
       var i = 0;
