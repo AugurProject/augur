@@ -32,13 +32,12 @@ import Styles from 'modules/swap/components/index.styles.less';
 import { ProcessingButton } from 'modules/common/buttons';
 import type { SDKConfiguration } from '@augurproject/artifacts';
 import { augurSdk } from 'services/augursdk';
+import { useAppStatusStore } from 'modules/app/store/app-status';
 
 interface SwapProps {
   balances: AccountBalances;
   toToken: string;
   fromToken: string;
-  ETH_RATE: BigNumber;
-  REP_RATE: BigNumber;
   config: SDKConfiguration,
   address: string;
   useSigner: boolean;
@@ -54,9 +53,6 @@ export const Swap = ({
   balances,
   fromToken,
   toToken,
-  ETH_RATE,
-  REP_RATE,
-  config,
   address,
   useSigner = false,
 }: SwapProps) => {
@@ -65,6 +61,19 @@ export const Swap = ({
   let hasEth;
   let hasRep;
   let hasDai;
+
+  const {
+    ethToDaiRate,
+    repToDaiRate,
+    env: config,
+  } = useAppStatusStore();
+
+  const ETH_RATE = createBigNumber(1).dividedBy(
+    ethToDaiRate?.value || createBigNumber(1)
+  );
+  const REP_RATE = createBigNumber(1).dividedBy(
+    repToDaiRate?.value || createBigNumber(1)
+  );
 
   let toTokenBalance = balances[toToken.toLowerCase()] || 0;
   if (useSigner) {

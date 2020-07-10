@@ -17,15 +17,11 @@ import {
   ADD_FUNDS_COINBASE,
   ADD_FUNDS_CREDIT_CARD,
   ADD_FUNDS_TRANSFER,
-  USDC,
-  USDT,
 } from 'modules/common/constants';
-import { LoginAccount } from 'modules/types';
 import { Swap } from 'modules/swap/components/swap';
 import { PillSelection } from 'modules/common/selection';
-import { BigNumber, createBigNumber } from 'utils/create-big-number';
+import { createBigNumber } from 'utils/create-big-number';
 import { useAppStatusStore } from 'modules/app/store/app-status';
-import type { SDKConfiguration } from '@augurproject/artifacts';
 
 import Styles from 'modules/modal/modal.styles.less';
 
@@ -33,74 +29,46 @@ interface AddFundsProps {
   autoSelect: boolean;
 }
 
-const addFundsFortmatic = async (amount, crypto, address) => {
-  await fm.user.deposit({
-    amount: amount.toNumber(),
-    crypto,
-    address,
-  });
-};
-
-const addFundsTorus = async (amount, address) => {
-  await torus.showWallet('topup', {
-    selectedAddress: address,
-    fiatValue: amount.toNumber(),
-    selectedCryptoCurrency: 'DAI',
-  });
-};
-
 export const AddFunds = ({
   autoSelect = false,
 }: AddFundsProps) => {
-  const BUY_MIN = 20;
-  const BUY_MAX = 250;
-  const { loginAccount, modal, actions: {closeModal} } = useAppStatusStore();
-  const { env: config, ethToDaiRate, repToDaiRate } = useAppStatusStore();
 
-  const closeAction = () => {
+  const {
+    loginAccount: {
+      address,
+      meta: accountMeta,
+      balances,
+    },
+    modal: {
+      useSigner = false,
+      initialAddFundsFlow = null,
+      initialSwapToken= null,
+      tokenToAdd = DAI
+    },
+    modal,
+    actions: { closeModal },
+  } = useAppStatusStore();
+
+  const usingOnRampSupportedWallet = accountMeta &&
+    accountMeta.accountType === ACCOUNT_TYPES.TORUS ||
+    accountMeta.accountType === ACCOUNT_TYPES.FORTMATIC;
+
+  const [selectedOption, setSelectedOption] = useState(
+    initialAddFundsFlow ? initialAddFundsFlow : usingOnRampSupportedWallet && tokenToAdd === DAI ? ADD_FUNDS_CREDIT_CARD : ADD_FUNDS_COINBASE
+  );
+
+      const closeAction = () => {
     if (modal.cb) {
       modal.cb();
     }
     closeModal();
   };
 
-  const ETH_RATE = createBigNumber(1).dividedBy(
-    ethToDaiRate?.value || createBigNumber(1)
-  );
-  const REP_RATE = createBigNumber(1).dividedBy(
-    repToDaiRate?.value || createBigNumber(1)
-  );
-
-  const { useSigner = false,  initialAddFundsFlow = null, initialSwapToken= null, tokenToAdd = DAI } = modal;
-  const address = loginAccount.address;
-  const accountMeta = loginAccount.meta;
-
-  if (!loginAccount) {
+  if (!address) {
         return null;
   }
 
-  const usingOnRampSupportedWallet = accountMeta &&
-    accountMeta.accountType === ACCOUNT_TYPES.TORUS ||
-    accountMeta.accountType === ACCOUNT_TYPES.FORTMATIC;
-
-  const [amountToBuy, setAmountToBuy] = useState(createBigNumber(0));
-  const [isAmountValid, setIsAmountValid] = useState(false);
-
-  const validateAndSet = amount => {
-    const amountToBuy = createBigNumber(amount);
-    if (amountToBuy.gte(BUY_MIN) && amountToBuy.lte(BUY_MAX)) {
-      setIsAmountValid(true);
-    } else {
-      setIsAmountValid(false);
-    }
-    setAmountToBuy(amountToBuy);
-  };
-
   const fundTypeLabel = tokenToAdd === DAI ?  'Dai ($)' : tokenToAdd;
-
-  const [selectedOption, setSelectedOption] = useState(
-    initialAddFundsFlow ? initialAddFundsFlow : usingOnRampSupportedWallet && tokenToAdd === DAI ? ADD_FUNDS_CREDIT_CARD : ADD_FUNDS_COINBASE
-  );
 
   const FUND_OTPIONS = [
     {
@@ -202,13 +170,10 @@ export const AddFunds = ({
               </div>
 
               <Swap
-                address={loginAccount.address}
-                balances={loginAccount.balances}
+                address={address}
+                balances={balances}
                 toToken={tokenToAdd}
                 fromToken={initialSwapToken ? initialSwapToken : null}
-                ETH_RATE={ETH_RATE}
-                REP_RATE={REP_RATE}
-                config={config}
                 useSigner={useSigner}
               />
             </>
@@ -216,17 +181,8 @@ export const AddFunds = ({
 
           {selectedOption === ADD_FUNDS_CREDIT_CARD && (
             <CreditCard
-              accountMeta={accountMeta}
-              walletAddress={address}
-              addFundsTorus={addFundsTorus}
-              addFundsFortmatic={addFundsFortmatic}
               fundTypeLabel={fundTypeLabel}
               fundTypeToUse={tokenToAdd}
-              validateAndSet={validateAndSet}
-              BUY_MIN={BUY_MIN}
-              BUY_MAX={BUY_MAX}
-              amountToBuy={amountToBuy}
-              isAmountValid={isAmountValid}
             />
           )}
           {selectedOption === ADD_FUNDS_COINBASE && (
