@@ -51,6 +51,7 @@ import { useAppStatusStore } from 'modules/app/store/app-status';
 import { formatDai } from 'utils/format-number';
 import titleCase from 'utils/title-case';
 import { windowRef } from 'utils/window-ref';
+import { checkIfMainnet } from 'modules/app/actions/check-if-mainnet';
 
 export interface TitleProps {
   title: string;
@@ -771,7 +772,13 @@ export const DepositInfo = (props: DepositInfoProps) => (
 
 export const AccountAddressDisplay = ({ address, copyable }) => {
   const [isCopied, setIsCopied] = useState(false);
+  const [isTestnet, setIsTestnet] = useState(false);
   let timeoutId = null;
+
+  const getIsTestnet = () => {
+    const isMainnet = checkIfMainnet();
+    setIsTestnet(!isMainnet);
+  }
 
   const copyClicked = () => {
     setIsCopied(true);
@@ -782,6 +789,7 @@ export const AccountAddressDisplay = ({ address, copyable }) => {
 
   useEffect(() => {
     new Clipboard('#copy_address');
+    getIsTestnet();
 
     return function() {
       clearTimeout(timeoutId);
@@ -789,21 +797,24 @@ export const AccountAddressDisplay = ({ address, copyable }) => {
   }, []);
 
   return (
-    <span className={Styles.AccountAddressDisplay}>
-      <div>{address ? address : '-'}</div>
-      {copyable && (
-        <>
-          <button
-            id="copy_address"
-            data-clipboard-text={address}
-            onClick={() => copyClicked()}
-            className={isCopied ? Styles.ShowConfirmaiton : null}
-          >
-            Copy
-          </button>
-        </>
-      )}
-    </span>
+    <>
+      <span className={Styles.AccountAddressDisplay}>
+        <div>{address ? address : '-'}</div>
+        {copyable && (
+          <>
+            <button
+              id='copy_address'
+              data-clipboard-text={address}
+              onClick={() => copyClicked()}
+              className={isCopied ? Styles.ShowConfirmaiton : null}
+            >
+              Copy
+            </button>
+          </>
+        )}
+      </span>
+      {isTestnet && <DismissableNotice error title="Warning: This is a Testnet" description="Do not send mainnet tokens to this address, they will be lost forever" show={true} buttonType={DISMISSABLE_NOTICE_BUTTON_TYPES.NONE} />}
+    </>
   );
 };
 

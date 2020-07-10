@@ -46,6 +46,29 @@
     }
   }
 
+  &.Error {
+    background: fade(@color-error, 20%);
+    border-bottom: @size-2 solid @color-error;
+    border-left: @size-4 solid @color-error;
+    border-right: @size-2 solid @color-error;
+    border-top: @size-2 solid @color-error;
+
+    > span {
+      > svg {
+        fill: @color-error;
+      }
+
+      > circle {
+        fill: @color-error;
+        stroke: @color-error;
+      }
+    }
+
+    > div > div {
+      color: @color-primary-text;
+    }
+  }
+
   > div > span:last-of-type {
     .mono-10-bold;
 

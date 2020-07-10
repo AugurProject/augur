@@ -2156,7 +2156,6 @@ export const ResolutionRules = ({
       )}
       {resolutionRules[REQUIRED] && resolutionRules[REQUIRED].length > 0 && (
         <>
-          <span>Added Resolution details:</span>
           <div className={Styles.AddResolutionRules}>
             {resolutionRules[REQUIRED].map((rule, index) => (
               <div key={index}>{rule.text}</div>
