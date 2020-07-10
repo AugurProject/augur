@@ -88,9 +88,10 @@ Deploying to: ${env}
 
     async deploy(env: string): Promise<ContractAddresses> {
         const blockNumber = await this.getBlockNumber();
+        const walletFactoryAddress = await this.uploadAugurWalletFactory();
         this.augur = await this.uploadAugur();
         this.augurTrading = await this.uploadAugurTrading();
-        await this.uploadAugurWalletFactory();
+        this.registerContract("AugurWalletFactory", walletFactoryAddress);
         await this.uploadAllContracts();
 
         const externalAddresses = this.configuration.deploy.externalAddresses;
@@ -347,10 +348,11 @@ Deploying to: ${env}
         return contract.address;
     };
 
-    private async uploadAugurWalletFactory(): Promise<void> {
+    private async uploadAugurWalletFactory(): Promise<string> {
         console.log('Uploading Augur Wallet Factory...');
         const contract = await this.contracts.get('AugurWalletFactory');
-        contract.address = await this.uploadAndAddToAugur(contract, "AugurWalletFactory");
+        contract.address = await this.construct(contract, []);
+        return contract.address;
     }
 
     private async uploadAugur(): Promise<Augur> {
@@ -550,12 +552,16 @@ Deploying to: ${env}
             }
         }
         const address = await this.construct(contract, constructorArgs);
+        await this.registerContract(registrationContractName, address);
+        return address;
+    }
+
+    private async registerContract(registrationContractName: string, address: string): Promise<void> {
         if (TRADING_CONTRACTS.includes(registrationContractName)) {
             await this.augurTrading!.registerContract(stringTo32ByteHex(registrationContractName), address);
         } else {
             await this.augur!.registerContract(stringTo32ByteHex(registrationContractName), address);
         }
-        return address;
     }
 
     private async construct(contract: ContractData, constructorArgs: string[]): Promise<string> {
