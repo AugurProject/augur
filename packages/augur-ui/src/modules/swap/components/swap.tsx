@@ -32,17 +32,7 @@ import Styles from 'modules/swap/components/index.styles.less';
 import { ProcessingButton } from 'modules/common/buttons';
 import type { SDKConfiguration } from '@augurproject/artifacts';
 import { augurSdk } from 'services/augursdk';
-
-interface SwapProps {
-  balances: AccountBalances;
-  toToken: string;
-  fromToken: string;
-  ETH_RATE: BigNumber;
-  REP_RATE: BigNumber;
-  config: SDKConfiguration,
-  address: string;
-  useSigner: boolean;
-}
+import { useAppStatusStore } from 'modules/app/store/app-status';
 
 const tokenIconImageMap = {
   eth: ETHIcon,
@@ -50,25 +40,37 @@ const tokenIconImageMap = {
   dai: DaiLogoIcon,
 }
 
-export const Swap = ({
-  balances,
-  fromToken,
-  toToken,
-  ETH_RATE,
-  REP_RATE,
-  config,
-  address,
-  useSigner = false,
-}: SwapProps) => {
-
+export const Swap = () => {
   const VALID_TOKENS = [DAI, REP, ETH];
   let hasEth;
   let hasRep;
   let hasDai;
 
-  let toTokenBalance = balances[toToken.toLowerCase()] || 0;
+  const {
+    ethToDaiRate,
+    repToDaiRate,
+    env: config,
+    loginAccount: {
+      address,
+      balances,
+    },
+    modal: {
+      useSigner = false,
+      initialSwapToken= null,
+      tokenToAdd = DAI
+    },
+  } = useAppStatusStore();
+
+  const ETH_RATE = createBigNumber(1).dividedBy(
+    ethToDaiRate?.value || createBigNumber(1)
+  );
+  const REP_RATE = createBigNumber(1).dividedBy(
+    repToDaiRate?.value || createBigNumber(1)
+  );
+
+  let toTokenBalance = balances[tokenToAdd.toLowerCase()] || 0;
   if (useSigner) {
-    toTokenBalance = balances.signerBalances[toToken.toLowerCase()] || 0;
+    toTokenBalance = balances.signerBalances[tokenToAdd.toLowerCase()] || 0;
 
     hasEth = createBigNumber(balances.signerBalances.eth).gt(ZERO);
     hasRep = createBigNumber(balances.signerBalances.rep).gt(ZERO);
@@ -94,10 +96,10 @@ export const Swap = ({
   }
 
   // remove the token that is being swaapped for
-  tokenSwapTypes = tokenSwapTypes.filter(token => token !== toToken);
+  tokenSwapTypes = tokenSwapTypes.filter(token => token !== tokenToAdd);
 
   if (tokenSwapTypes.length === 0) {
-    tokenSwapTypes = VALID_TOKENS.filter(token => token !== toToken);
+    tokenSwapTypes = VALID_TOKENS.filter(token => token !== tokenToAdd);
   }
 
   let formattedInputAmount: FormattedNumber;
@@ -151,9 +153,9 @@ export const Swap = ({
         clearForm();
       } else if (fromTokenType === ETH) {
         await checkSetApprovalAmount(address, contracts.weth);
-        if (toToken === DAI) {
+        if (tokenToAdd === DAI) {
           await uniswapEthForDai(input, output, exchangeRateBufferMultiplier);
-        } else if (toToken === REP) {
+        } else if (tokenToAdd === REP) {
           await uniswapEthForRep(input, output, exchangeRateBufferMultiplier);
         }
         clearForm();
@@ -176,7 +178,7 @@ export const Swap = ({
   }
 
   const [inputAmount, setInputAmount] = useState(createBigNumber(0.0));
-  const [fromTokenType, setFromTokenType] = useState(fromToken ? fromToken : tokenSwapTypes[0]);
+  const [fromTokenType, setFromTokenType] = useState(initialSwapToken ? initialSwapToken : tokenSwapTypes[0]);
   const [balance, updateBalance] = useState(getBalanceForToken(fromTokenType));
   const [errorMessage, setErrorMessage] = useState(null);
   const [currentTokenIndex, setCurrentTokenIndex] = useState(0);
@@ -190,7 +192,7 @@ export const Swap = ({
   if (!inputAmount.lt || inputAmount.lt(0)) {
     outputAmount = formatEther(0);
   } else {
-    if (toToken === REP) {
+    if (tokenToAdd === REP) {
       if (fromTokenType === DAI) {
         outputAmount = formatEther(inputAmount.dividedBy(REP_RATE));
       } else if (fromTokenType === ETH) {
@@ -198,7 +200,7 @@ export const Swap = ({
         const inputValueInDai = ethToDai.multipliedBy(inputAmount);
         outputAmount = formatEther(inputValueInDai.dividedBy(REP_RATE));
       }
-    } else if (toToken === DAI) {
+    } else if (tokenToAdd === DAI) {
       if (fromTokenType === REP) {
         outputAmount = formatEther(REP_RATE.multipliedBy(inputAmount));
       } else if (fromTokenType === ETH) {
@@ -228,15 +230,15 @@ export const Swap = ({
 
         <SwapRow
           amount={outputAmount}
-          token={toToken}
+          token={tokenToAdd}
           label={'Output (estimated)'}
           balance={formatEther(toTokenBalance)}
-          logo={tokenIconImageMap[toToken.toLowerCase()] || ETHIcon}
+          logo={tokenIconImageMap[tokenToAdd.toLowerCase()] || ETHIcon}
         />
       </>
       <Rate
         baseToken={fromTokenType}
-        swapForToken={toToken}
+        swapForToken={tokenToAdd}
         repRate={REP_RATE}
         ethRate={ETH_RATE}
       />

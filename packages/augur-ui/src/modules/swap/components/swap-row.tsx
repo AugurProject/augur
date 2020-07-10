@@ -62,7 +62,7 @@ export const SwapRow = ({
       )}
       <div>
         <div onClick={setToken ? () => setToken() : null}>
-          {logo} {token} {showChevron && <ChevronDown />}
+          {logo} {token} {showChevron && ChevronDown}
         </div>
       </div>
     </div>

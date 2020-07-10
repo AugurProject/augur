@@ -263,7 +263,7 @@ const ConnectDropdown = () => {
         </div>
 
         <div className={Styles.AddFunds}>
-          <div>Your account</div>
+          <div>Trading account</div>
           <PrimaryButton
             action={() => setModal({ type: MODAL_ADD_FUNDS })}
             text="Add Funds"

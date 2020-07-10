@@ -7,6 +7,7 @@ import {
   ALL_TIME_PROFIT_AND_LOSS_REP,
   REPORTING_STATE,
   SCALAR,
+  REP,
   DISPUTE_GAS_COST,
   INITAL_REPORT_GAS_COST,
   HEADER_TYPE,
@@ -58,7 +59,7 @@ import {
   formatAttoDai,
 } from 'utils/format-number';
 import { MarketProgress } from 'modules/common/progress';
-import { InfoIcon, InformationIcon, XIcon, REP } from 'modules/common/icons';
+import { InfoIcon, InformationIcon, XIcon } from 'modules/common/icons';
 import ChevronFlip from 'modules/common/chevron-flip';
 import FormStyles from 'modules/common/form.styles.less';
 import TooltipStyles from 'modules/common/tooltip.styles.less';

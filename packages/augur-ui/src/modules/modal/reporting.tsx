@@ -103,7 +103,7 @@ const ModalReporting = ({
     closeModal();
   };
 
-  const getRepModal = () => setModal({ type: MODAL_ADD_FUNDS, fundType: REP });
+  const getRepModal = () => setModal({ type: MODAL_ADD_FUNDS, tokenToAdd: REP });
 
   const [state, setState] = useState({
     checked: selectedOutcome ? selectedOutcome.toString() : null,
