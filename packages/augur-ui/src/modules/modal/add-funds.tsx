@@ -20,7 +20,6 @@ import {
 } from 'modules/common/constants';
 import { Swap } from 'modules/swap/components/swap';
 import { PillSelection } from 'modules/common/selection';
-import { createBigNumber } from 'utils/create-big-number';
 import { useAppStatusStore } from 'modules/app/store/app-status';
 
 import Styles from 'modules/modal/modal.styles.less';
@@ -40,9 +39,7 @@ export const AddFunds = ({
       balances,
     },
     modal: {
-      useSigner = false,
       initialAddFundsFlow = null,
-      initialSwapToken= null,
       tokenToAdd = DAI
     },
     modal,
@@ -169,13 +166,7 @@ export const AddFunds = ({
                 />
               </div>
 
-              <Swap
-                address={address}
-                balances={balances}
-                toToken={tokenToAdd}
-                fromToken={initialSwapToken ? initialSwapToken : null}
-                useSigner={useSigner}
-              />
+              <Swap/>
             </>
           )}
 
@@ -189,14 +180,12 @@ export const AddFunds = ({
             <Coinbase
               fundTypeToUse={tokenToAdd}
               fundTypeLabel={fundTypeLabel}
-              walletAddress={address}
             />
           )}
           {selectedOption === ADD_FUNDS_TRANSFER && (
             <Transfer
               fundTypeToUse={tokenToAdd}
               fundTypeLabel={fundTypeLabel}
-              walletAddress={address}
             />
           )}
         </div>
