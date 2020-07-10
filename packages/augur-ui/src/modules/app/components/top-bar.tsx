@@ -24,9 +24,10 @@ interface StatsProps {
   stats: CoreStats;
   isMobile?: boolean;
   ethReserveInDai: FormattedNumber;
+  tradingAccountCreated: boolean;
 }
 
-export const Stats = ({ ethReserveInDai, isLogged, restoredAccount, stats, isMobile = false }: StatsProps) => {
+export const Stats = ({ ethReserveInDai, isLogged, restoredAccount, stats, isMobile = false, tradingAccountCreated }: StatsProps) => {
   if (!stats) return null;
   const { availableFunds, frozenFunds, totalFunds, realizedPL } = stats;
 
@@ -37,12 +38,15 @@ export const Stats = ({ ethReserveInDai, isLogged, restoredAccount, stats, isMob
           <div>
             <LinearPropertyLabel {...availableFunds} highlightAlternateBolded />
             <LinearPropertyLabel {...frozenFunds} highlightAlternateBolded />
-            <LinearPropertyLabelUnderlineTooltip
-              {...totalFunds}
-              highlightAlternateBolded
-              id={isMobile ? 'totalFundsMobile' : 'totalFunds_top_bar'}
-              tipText={`${TOTAL_FUNDS_TOOLTIP} of $${ethReserveInDai.formatted} DAI`}
-            />
+            {tradingAccountCreated ?
+              <LinearPropertyLabelUnderlineTooltip
+                {...totalFunds}
+                highlightAlternateBolded
+                id={isMobile ? 'totalFundsMobile' : 'totalFunds_top_bar'}
+                tipText={`${TOTAL_FUNDS_TOOLTIP} of $${ethReserveInDai.formatted} DAI`}
+              /> :
+              <LinearPropertyLabel {...totalFunds} highlightAlternateBolded />
+            }
             <div>
               <span>{realizedPL.label}</span>
               <MovementLabel value={realizedPL.value} useFull />
@@ -108,6 +112,7 @@ const TopBar: React.FC<TopBarProps> = ({
         stats={stats}
         restoredAccount={restoredAccount}
         ethReserveInDai={ethReserveInDai}
+        tradingAccountCreated={!showActivationButton && !showAddFundsButton }
       />
       <div>
         {(showActivationButton || showAddFundsButton) &&

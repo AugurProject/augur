@@ -6,10 +6,12 @@ import { ThunkDispatch } from "redux-thunk";
 import { Action } from "redux";
 import { selectCurrentTimestampInSeconds } from 'appStore/select-state';
 import { updateTimeframeData } from 'modules/account/actions/update-timeframe-data';
+import { WALLET_STATUS_VALUES } from "modules/common/constants";
 
 const mapStateToProps = (state: AppState) => ({
   timeframeData: state.loginAccount.timeframeData,
   currentAugurTimestamp: selectCurrentTimestampInSeconds(state),
+  tradingAccountActivated: state.appStatus.walletStatus === WALLET_STATUS_VALUES.CREATED
 });
 
 const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({
