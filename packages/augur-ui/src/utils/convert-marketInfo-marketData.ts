@@ -19,7 +19,7 @@ import {
 } from 'modules/types';
 import { createBigNumber } from './create-big-number';
 import deepClone from './deep-clone';
-import { getDurationBetween, convertUTCUnixToFormattedDate } from './format-date';
+import { getDurationBetween, convertUnixToFormattedDate } from './format-date';
 import {
   formatAttoRep,
   formatDai,
@@ -45,12 +45,12 @@ export function convertMarketInfoToMarketData(
     maxPriceBigNumber: createBigNumber(marketInfo.maxPrice),
     outcomesFormatted: processOutcomes(marketInfo),
     marketStatus: getMarketStatus(marketInfo.reportingState),
-    endTimeFormatted: convertUTCUnixToFormattedDate(marketInfo.endTime),
-    creationTimeFormatted: convertUTCUnixToFormattedDate(marketInfo.creationTime),
+    endTimeFormatted: convertUnixToFormattedDate(marketInfo.endTime),
+    creationTimeFormatted: convertUnixToFormattedDate(marketInfo.creationTime),
     categories: marketInfo.categories,
     isArchived: archivedDuration && (Math.abs(archivedDuration.asDays()) >= ARCHIVED_MARKET_LENGTH),
     finalizationTimeFormatted: marketInfo.finalizationTime
-      ? convertUTCUnixToFormattedDate(marketInfo.finalizationTime)
+      ? convertUnixToFormattedDate(marketInfo.finalizationTime)
       : null,
     consensusFormatted: processConsensus(marketInfo),
     defaultSelectedOutcomeId: getDefaultOutcomeSelected(marketInfo.marketType),
