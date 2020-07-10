@@ -7,7 +7,6 @@ from constants import YES, NO
 
 def test_openInterestCash(contractsFixture, augur, universe, cash, market):
     constants = contractsFixture.contracts["Constants"]
-    daiVat = contractsFixture.contracts["DaiVat"]
     openInterestCashAddress = universe.openInterestCash()
     openInterestCash = contractsFixture.applySignature("OICash", openInterestCashAddress)
 
@@ -50,8 +49,8 @@ def test_openInterestCash(contractsFixture, augur, universe, cash, market):
 
     assert openInterestCash.withdraw(depositAmount)
 
-    newAccountBalance = cash.balanceOf(account1) + daiVat.dai(account1) / 10**27
-    newWindowBalance = cash.balanceOf(disputeWindowAddress) + daiVat.dai(disputeWindowAddress) / 10**27
+    newAccountBalance = cash.balanceOf(account1)
+    newWindowBalance = cash.balanceOf(disputeWindowAddress)
 
     assert newAccountBalance == originalAccountBalance + expectedPayout
     assert newWindowBalance == originalWindowBalance + expectedFees

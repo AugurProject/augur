@@ -268,15 +268,26 @@ export const addUpdateTransaction = async (txStatus: Events.TXStatus) => {
       }
       case CANCELORDERS: {
         const orders = (transaction.params && transaction.params._orders) || [];
-        orders.map(order => addCanceledOrder(order.orderId, eventName, hash));
-        orders.map(order =>
+        orders.map(order => {
+          addCanceledOrder(order.orderId, eventName, hash);
           addPendingData(
             parseZeroXMakerAssetData(order.makerAssetData).market,
             CANCELORDERS,
             eventName,
             hash
-          )
-        );
+          );
+          if (eventName === TXEventName.Success) {
+            const alert = {
+              params: {
+                hash,
+              },
+              status: TXEventName.Success,
+              name: CANCELORDERS,
+            };
+
+            updateAlert(order.orderId, alert);
+          }
+        });
         break;
       }
       case DOINITIALREPORT: {

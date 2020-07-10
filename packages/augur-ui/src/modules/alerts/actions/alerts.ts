@@ -11,6 +11,7 @@ import {
   SUCCESS,
   ETH_RESERVE_INCREASE,
   NULL_ADDRESS,
+  CANCELORDERS,
 } from 'modules/common/constants';
 import {
   getNetworkId,
@@ -70,41 +71,74 @@ export function updateAlert(
     const { alerts } = AppStatus.get();
     const alertName = alert.name.toUpperCase();
     alert.id = id;
-    alert.uniqueId =
-      alertName === PUBLICTRADE || alertName === PUBLICFILLORDER
-        ? createUniqueOrderId(alert)
-        : id;
+    alert.uniqueId = alert.uniqueId || id;
 
-    if (alertName === CLAIMTRADINGPROCEEDS) {
-      alert.uniqueId = createAlternateUniqueOrderId(alert);
-      if (createBigNumber(alert.params.numPayoutTokens).eq(ZERO)) {
-        return;
+    switch (alertName) {
+      case PUBLICTRADE:
+      case PUBLICFILLORDER: {
+        alert.uniqueId = createUniqueOrderId(alert);
+        break;
+      }
+      case CANCELORDERS: {
+        alert.id = alert.params?.hash || id;
+        break;
+      }
+      case CLAIMTRADINGPROCEEDS: {
+        alert.uniqueId = createAlternateUniqueOrderId(alert);
+        if (createBigNumber(alert.params.numPayoutTokens).eq(ZERO)) {
+          return;
+        }
+        break;
+      }
+      case DOINITIALREPORT: {
+        if (!dontMakeNewAlerts) {
+          updateAlert(id, {
+            ...alert,
+            params: {
+              ...alert.params,
+              preFilled: true,
+            },
+            name: CONTRIBUTE,
+          });
+        }
+        break;
       }
     }
 
-    if (alertName === DOINITIALREPORT && !dontMakeNewAlerts) {
-      updateAlert(id, {
-        ...alert,
-        params: {
-          ...alert.params,
-          preFilled: true,
-        },
-        name: CONTRIBUTE,
-      });
-    }
+    let foundAlert =
+      alertName === REDEEMSTAKE
+        ? alerts.find(
+            (findAlert) =>
+              findAlert.id === alert.id &&
+              findAlert.name.toUpperCase() === REDEEMSTAKE
+          )
+        : alerts.find(
+            (findAlert) =>
+              findAlert.uniqueId === alert.uniqueId &&
+              findAlert.name.toUpperCase() === alert.name.toUpperCase()
+          );
 
-    let foundAlert = alerts.find(
-      findAlert =>
-        findAlert.uniqueId === alert.uniqueId &&
-        findAlert.name.toUpperCase() === alert.name.toUpperCase()
-    );
-    if (alertName === REDEEMSTAKE) {
-      foundAlert = alerts.find(
-        findAlert =>
-          findAlert.id === alert.id &&
-          findAlert.name.toUpperCase() === REDEEMSTAKE
-      );
+    if (foundAlert) {
+      AppStatus.actions.removeAlert(alert.uniqueId, alert.name);
+      addAlert({
+        ...foundAlert,
+        ...alert,
+        name: foundAlert.name !== '' ? foundAlert.name : alert.name,
+        params: {
+          ...foundAlert.params,
+          ...alert.params,
+          repReceived:
+            alert.params.repReceived &&
+            foundAlert.params.repReceived &&
+            createBigNumber(alert.params.repReceived).plus(
+              createBigNumber(foundAlert.params.repReceived)
+            ),
+        },
+      });
+    } else {
+      addAlert(alert);
     }
+    
     if (foundAlert) {
       AppStatus.actions.removeAlert(alert.uniqueId, alert.name);
       addAlert({

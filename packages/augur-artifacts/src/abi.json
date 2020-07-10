@@ -10749,21 +10749,6 @@
 			"payable": false,
 			"stateMutability": "view",
 			"type": "function"
-		},
-		{
-			"constant": true,
-			"inputs": [],
-			"name": "vat",
-			"outputs": [
-				{
-					"internalType": "contract IDaiVat",
-					"name": "",
-					"type": "address"
-				}
-			],
-			"payable": false,
-			"stateMutability": "view",
-			"type": "function"
 		}
 	],
 	"AugurWallet": [
@@ -11725,6 +11710,25 @@
 			"type": "event"
 		},
 		{
+			"anonymous": false,
+			"inputs": [
+				{
+					"indexed": true,
+					"internalType": "bytes32",
+					"name": "typeHash",
+					"type": "bytes32"
+				},
+				{
+					"indexed": false,
+					"internalType": "string",
+					"name": "typeStr",
+					"type": "string"
+				}
+			],
+			"name": "RequestTypeRegistered",
+			"type": "event"
+		},
+		{
 			"payable": true,
 			"stateMutability": "payable",
 			"type": "fallback"
@@ -11732,42 +11736,12 @@
 		{
 			"constant": true,
 			"inputs": [],
-			"name": "CALLDATA_TYPEHASH",
+			"name": "GENERIC_PARAMS",
 			"outputs": [
 				{
-					"internalType": "bytes32",
+					"internalType": "string",
 					"name": "",
-					"type": "bytes32"
-				}
-			],
-			"payable": false,
-			"stateMutability": "view",
-			"type": "function"
-		},
-		{
-			"constant": true,
-			"inputs": [],
-			"name": "RELAYDATA_TYPEHASH",
-			"outputs": [
-				{
-					"internalType": "bytes32",
-					"name": "",
-					"type": "bytes32"
-				}
-			],
-			"payable": false,
-			"stateMutability": "view",
-			"type": "function"
-		},
-		{
-			"constant": true,
-			"inputs": [],
-			"name": "RELAY_REQUEST_TYPEHASH",
-			"outputs": [
-				{
-					"internalType": "bytes32",
-					"name": "",
-					"type": "bytes32"
+					"type": "string"
 				}
 			],
 			"payable": false,
@@ -11796,21 +11770,100 @@
 					"components": [
 						{
 							"internalType": "address",
-							"name": "target",
+							"name": "from",
 							"type": "address"
 						},
 						{
-							"internalType": "bytes",
-							"name": "encodedFunction",
-							"type": "bytes"
+							"internalType": "address",
+							"name": "to",
+							"type": "address"
 						},
+						{
+							"internalType": "uint256",
+							"name": "value",
+							"type": "uint256"
+						},
+						{
+							"internalType": "uint256",
+							"name": "gas",
+							"type": "uint256"
+						},
+						{
+							"internalType": "uint256",
+							"name": "nonce",
+							"type": "uint256"
+						},
+						{
+							"internalType": "bytes",
+							"name": "data",
+							"type": "bytes"
+						}
+					],
+					"internalType": "struct IForwarder.ForwardRequest",
+					"name": "req",
+					"type": "tuple"
+				},
+				{
+					"internalType": "bytes",
+					"name": "suffixData",
+					"type": "bytes"
+				},
+				{
+					"internalType": "bytes",
+					"name": "sig",
+					"type": "bytes"
+				}
+			],
+			"name": "_verifySig",
+			"outputs": [],
+			"payable": false,
+			"stateMutability": "pure",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [
+				{
+					"components": [
 						{
 							"components": [
 								{
+									"internalType": "address",
+									"name": "from",
+									"type": "address"
+								},
+								{
+									"internalType": "address",
+									"name": "to",
+									"type": "address"
+								},
+								{
 									"internalType": "uint256",
-									"name": "gasLimit",
+									"name": "value",
 									"type": "uint256"
 								},
+								{
+									"internalType": "uint256",
+									"name": "gas",
+									"type": "uint256"
+								},
+								{
+									"internalType": "uint256",
+									"name": "nonce",
+									"type": "uint256"
+								},
+								{
+									"internalType": "bytes",
+									"name": "data",
+									"type": "bytes"
+								}
+							],
+							"internalType": "struct IForwarder.ForwardRequest",
+							"name": "request",
+							"type": "tuple"
+						},
+						{
+							"components": [
 								{
 									"internalType": "uint256",
 									"name": "gasPrice",
@@ -11825,23 +11878,6 @@
 									"internalType": "uint256",
 									"name": "baseRelayFee",
 									"type": "uint256"
-								}
-							],
-							"internalType": "struct ISignatureVerifier.GasData",
-							"name": "gasData",
-							"type": "tuple"
-						},
-						{
-							"components": [
-								{
-									"internalType": "address",
-									"name": "senderAddress",
-									"type": "address"
-								},
-								{
-									"internalType": "uint256",
-									"name": "senderNonce",
-									"type": "uint256"
 								},
 								{
 									"internalType": "address",
@@ -11854,17 +11890,27 @@
 									"type": "address"
 								},
 								{
+									"internalType": "bytes",
+									"name": "paymasterData",
+									"type": "bytes"
+								},
+								{
+									"internalType": "uint256",
+									"name": "clientId",
+									"type": "uint256"
+								},
+								{
 									"internalType": "address",
 									"name": "forwarder",
 									"type": "address"
 								}
 							],
-							"internalType": "struct ISignatureVerifier.RelayData",
+							"internalType": "struct GsnTypes.RelayData",
 							"name": "relayData",
 							"type": "tuple"
 						}
 					],
-					"internalType": "struct ISignatureVerifier.RelayRequest",
+					"internalType": "struct GsnTypes.RelayRequest",
 					"name": "relayRequest",
 					"type": "tuple"
 				},
@@ -11969,6 +12015,84 @@
 			],
 			"payable": false,
 			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": false,
+			"inputs": [
+				{
+					"components": [
+						{
+							"internalType": "address",
+							"name": "from",
+							"type": "address"
+						},
+						{
+							"internalType": "address",
+							"name": "to",
+							"type": "address"
+						},
+						{
+							"internalType": "uint256",
+							"name": "value",
+							"type": "uint256"
+						},
+						{
+							"internalType": "uint256",
+							"name": "gas",
+							"type": "uint256"
+						},
+						{
+							"internalType": "uint256",
+							"name": "nonce",
+							"type": "uint256"
+						},
+						{
+							"internalType": "bytes",
+							"name": "data",
+							"type": "bytes"
+						}
+					],
+					"internalType": "struct IForwarder.ForwardRequest",
+					"name": "req",
+					"type": "tuple"
+				},
+				{
+					"internalType": "bytes32",
+					"name": "domainSeparator",
+					"type": "bytes32"
+				},
+				{
+					"internalType": "bytes32",
+					"name": "requestTypeHash",
+					"type": "bytes32"
+				},
+				{
+					"internalType": "bytes",
+					"name": "suffixData",
+					"type": "bytes"
+				},
+				{
+					"internalType": "bytes",
+					"name": "sig",
+					"type": "bytes"
+				}
+			],
+			"name": "execute",
+			"outputs": [
+				{
+					"internalType": "bool",
+					"name": "success",
+					"type": "bool"
+				},
+				{
+					"internalType": "bytes",
+					"name": "ret",
+					"type": "bytes"
+				}
+			],
+			"payable": true,
+			"stateMutability": "payable",
 			"type": "function"
 		},
 		{
@@ -12213,22 +12337,44 @@
 				{
 					"components": [
 						{
-							"internalType": "address",
-							"name": "target",
-							"type": "address"
-						},
-						{
-							"internalType": "bytes",
-							"name": "encodedFunction",
-							"type": "bytes"
+							"components": [
+								{
+									"internalType": "address",
+									"name": "from",
+									"type": "address"
+								},
+								{
+									"internalType": "address",
+									"name": "to",
+									"type": "address"
+								},
+								{
+									"internalType": "uint256",
+									"name": "value",
+									"type": "uint256"
+								},
+								{
+									"internalType": "uint256",
+									"name": "gas",
+									"type": "uint256"
+								},
+								{
+									"internalType": "uint256",
+									"name": "nonce",
+									"type": "uint256"
+								},
+								{
+									"internalType": "bytes",
+									"name": "data",
+									"type": "bytes"
+								}
+							],
+							"internalType": "struct IForwarder.ForwardRequest",
+							"name": "request",
+							"type": "tuple"
 						},
 						{
 							"components": [
-								{
-									"internalType": "uint256",
-									"name": "gasLimit",
-									"type": "uint256"
-								},
 								{
 									"internalType": "uint256",
 									"name": "gasPrice",
@@ -12243,23 +12389,6 @@
 									"internalType": "uint256",
 									"name": "baseRelayFee",
 									"type": "uint256"
-								}
-							],
-							"internalType": "struct ISignatureVerifier.GasData",
-							"name": "gasData",
-							"type": "tuple"
-						},
-						{
-							"components": [
-								{
-									"internalType": "address",
-									"name": "senderAddress",
-									"type": "address"
-								},
-								{
-									"internalType": "uint256",
-									"name": "senderNonce",
-									"type": "uint256"
 								},
 								{
 									"internalType": "address",
@@ -12272,18 +12401,28 @@
 									"type": "address"
 								},
 								{
+									"internalType": "bytes",
+									"name": "paymasterData",
+									"type": "bytes"
+								},
+								{
+									"internalType": "uint256",
+									"name": "clientId",
+									"type": "uint256"
+								},
+								{
 									"internalType": "address",
 									"name": "forwarder",
 									"type": "address"
 								}
 							],
-							"internalType": "struct ISignatureVerifier.RelayData",
+							"internalType": "struct GsnTypes.RelayData",
 							"name": "relayData",
 							"type": "tuple"
 						}
 					],
-					"internalType": "struct ISignatureVerifier.RelayRequest",
-					"name": "relayRequest",
+					"internalType": "struct GsnTypes.RelayRequest",
+					"name": "req",
 					"type": "tuple"
 				}
 			],
@@ -12296,7 +12435,7 @@
 				}
 			],
 			"payable": false,
-			"stateMutability": "view",
+			"stateMutability": "pure",
 			"type": "function"
 		},
 		{
@@ -12394,11 +12533,6 @@
 					"components": [
 						{
 							"internalType": "uint256",
-							"name": "gasLimit",
-							"type": "uint256"
-						},
-						{
-							"internalType": "uint256",
 							"name": "gasPrice",
 							"type": "uint256"
 						},
@@ -12411,10 +12545,35 @@
 							"internalType": "uint256",
 							"name": "baseRelayFee",
 							"type": "uint256"
+						},
+						{
+							"internalType": "address",
+							"name": "relayWorker",
+							"type": "address"
+						},
+						{
+							"internalType": "address",
+							"name": "paymaster",
+							"type": "address"
+						},
+						{
+							"internalType": "bytes",
+							"name": "paymasterData",
+							"type": "bytes"
+						},
+						{
+							"internalType": "uint256",
+							"name": "clientId",
+							"type": "uint256"
+						},
+						{
+							"internalType": "address",
+							"name": "forwarder",
+							"type": "address"
 						}
 					],
-					"internalType": "struct ISignatureVerifier.GasData",
-					"name": "gasData",
+					"internalType": "struct GsnTypes.RelayData",
+					"name": "relayData",
 					"type": "tuple"
 				}
 			],
@@ -12452,6 +12611,26 @@
 			"type": "function"
 		},
 		{
+			"constant": false,
+			"inputs": [
+				{
+					"internalType": "string",
+					"name": "typeName",
+					"type": "string"
+				},
+				{
+					"internalType": "string",
+					"name": "typeSuffix",
+					"type": "string"
+				}
+			],
+			"name": "registerRequestType",
+			"outputs": [],
+			"payable": false,
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
 			"constant": true,
 			"inputs": [],
 			"name": "token0IsCash",
@@ -12470,80 +12649,67 @@
 			"constant": true,
 			"inputs": [
 				{
+					"internalType": "bytes32",
+					"name": "",
+					"type": "bytes32"
+				}
+			],
+			"name": "typeHashes",
+			"outputs": [
+				{
+					"internalType": "bool",
+					"name": "",
+					"type": "bool"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [
+				{
 					"components": [
 						{
 							"internalType": "address",
-							"name": "target",
+							"name": "from",
 							"type": "address"
 						},
 						{
+							"internalType": "address",
+							"name": "to",
+							"type": "address"
+						},
+						{
+							"internalType": "uint256",
+							"name": "value",
+							"type": "uint256"
+						},
+						{
+							"internalType": "uint256",
+							"name": "gas",
+							"type": "uint256"
+						},
+						{
+							"internalType": "uint256",
+							"name": "nonce",
+							"type": "uint256"
+						},
+						{
 							"internalType": "bytes",
-							"name": "encodedFunction",
+							"name": "data",
 							"type": "bytes"
-						},
-						{
-							"components": [
-								{
-									"internalType": "uint256",
-									"name": "gasLimit",
-									"type": "uint256"
-								},
-								{
-									"internalType": "uint256",
-									"name": "gasPrice",
-									"type": "uint256"
-								},
-								{
-									"internalType": "uint256",
-									"name": "pctRelayFee",
-									"type": "uint256"
-								},
-								{
-									"internalType": "uint256",
-									"name": "baseRelayFee",
-									"type": "uint256"
-								}
-							],
-							"internalType": "struct ISignatureVerifier.GasData",
-							"name": "gasData",
-							"type": "tuple"
-						},
-						{
-							"components": [
-								{
-									"internalType": "address",
-									"name": "senderAddress",
-									"type": "address"
-								},
-								{
-									"internalType": "uint256",
-									"name": "senderNonce",
-									"type": "uint256"
-								},
-								{
-									"internalType": "address",
-									"name": "relayWorker",
-									"type": "address"
-								},
-								{
-									"internalType": "address",
-									"name": "paymaster",
-									"type": "address"
-								},
-								{
-									"internalType": "address",
-									"name": "forwarder",
-									"type": "address"
-								}
-							],
-							"internalType": "struct ISignatureVerifier.RelayData",
-							"name": "relayData",
-							"type": "tuple"
 						}
 					],
-					"internalType": "struct ISignatureVerifier.RelayRequest",
+					"internalType": "struct IForwarder.ForwardRequest",
 					"name": "req",
 					"type": "tuple"
+				},
+				{
+					"internalType": "bytes",
+					"name": "suffixData",
+					"type": "bytes"
 				},
 				{
 					"internalType": "bytes",
@@ -12558,130 +12724,9 @@
 			"type": "function"
 		},
 		{
-			"constant": false,
-			"inputs": [
-				{
-					"components": [
-						{
-							"internalType": "address",
-							"name": "target",
-							"type": "address"
-						},
-						{
-							"internalType": "bytes",
-							"name": "encodedFunction",
-							"type": "bytes"
-						},
-						{
-							"components": [
-								{
-									"internalType": "uint256",
-									"name": "gasLimit",
-									"type": "uint256"
-								},
-								{
-									"internalType": "uint256",
-									"name": "gasPrice",
-									"type": "uint256"
-								},
-								{
-									"internalType": "uint256",
-									"name": "pctRelayFee",
-									"type": "uint256"
-								},
-								{
-									"internalType": "uint256",
-									"name": "baseRelayFee",
-									"type": "uint256"
-								}
-							],
-							"internalType": "struct ISignatureVerifier.GasData",
-							"name": "gasData",
-							"type": "tuple"
-						},
-						{
-							"components": [
-								{
-									"internalType": "address",
-									"name": "senderAddress",
-									"type": "address"
-								},
-								{
-									"internalType": "uint256",
-									"name": "senderNonce",
-									"type": "uint256"
-								},
-								{
-									"internalType": "address",
-									"name": "relayWorker",
-									"type": "address"
-								},
-								{
-									"internalType": "address",
-									"name": "paymaster",
-									"type": "address"
-								},
-								{
-									"internalType": "address",
-									"name": "forwarder",
-									"type": "address"
-								}
-							],
-							"internalType": "struct ISignatureVerifier.RelayData",
-							"name": "relayData",
-							"type": "tuple"
-						}
-					],
-					"internalType": "struct ISignatureVerifier.RelayRequest",
-					"name": "req",
-					"type": "tuple"
-				},
-				{
-					"internalType": "bytes",
-					"name": "sig",
-					"type": "bytes"
-				}
-			],
-			"name": "verifyAndCall",
-			"outputs": [],
-			"payable": false,
-			"stateMutability": "nonpayable",
-			"type": "function"
-		},
-		{
-			"constant": true,
-			"inputs": [],
-			"name": "versionForwarder",
-			"outputs": [
-				{
-					"internalType": "string",
-					"name": "",
-					"type": "string"
-				}
-			],
-			"payable": false,
-			"stateMutability": "view",
-			"type": "function"
-		},
-		{
 			"constant": true,
 			"inputs": [],
 			"name": "versionRecipient",
-			"outputs": [
-				{
-					"internalType": "string",
-					"name": "",
-					"type": "string"
-				}
-			],
-			"payable": false,
-			"stateMutability": "view",
-			"type": "function"
-		},
-		{
-			"constant": true,
-			"inputs": [],
-			"name": "versionSM",
 			"outputs": [
 				{
 					"internalType": "string",
@@ -12726,44 +12771,6 @@
 				{
 					"indexed": true,
 					"internalType": "address",
-					"name": "target",
-					"type": "address"
-				},
-				{
-					"indexed": false,
-					"internalType": "uint256",
-					"name": "value",
-					"type": "uint256"
-				}
-			],
-			"name": "Burn",
-			"type": "event"
-		},
-		{
-			"anonymous": false,
-			"inputs": [
-				{
-					"indexed": true,
-					"internalType": "address",
-					"name": "target",
-					"type": "address"
-				},
-				{
-					"indexed": false,
-					"internalType": "uint256",
-					"name": "value",
-					"type": "uint256"
-				}
-			],
-			"name": "Mint",
-			"type": "event"
-		},
-		{
-			"anonymous": false,
-			"inputs": [
-				{
-					"indexed": true,
-					"internalType": "address",
 					"name": "from",
 					"type": "address"
 				},
@@ -12785,23 +12792,19 @@
 		},
 		{
 			"constant": true,
-			"inputs": [],
-			"name": "ETERNAL_APPROVAL_VALUE",
-			"outputs": [
+			"inputs": [
 				{
-					"internalType": "uint256",
-					"name": "",
-					"type": "uint256"
+					"internalType": "address",
+					"name": "_owner",
+					"type": "address"
+				},
+				{
+					"internalType": "address",
+					"name": "_spender",
+					"type": "address"
 				}
 			],
-			"payable": false,
-			"stateMutability": "view",
-			"type": "function"
-		},
-		{
-			"constant": true,
-			"inputs": [],
-			"name": "RAY",
+			"name": "allowance",
 			"outputs": [
 				{
 					"internalType": "uint256",
@@ -12818,16 +12821,16 @@
 			"inputs": [
 				{
 					"internalType": "address",
-					"name": "_owner",
+					"name": "",
 					"type": "address"
 				},
 				{
 					"internalType": "address",
-					"name": "_spender",
+					"name": "",
 					"type": "address"
 				}
 			],
-			"name": "allowance",
+			"name": "allowances",
 			"outputs": [
 				{
 					"internalType": "uint256",
@@ -12870,7 +12873,7 @@
 			"inputs": [
 				{
 					"internalType": "address",
-					"name": "_owner",
+					"name": "_account",
 					"type": "address"
 				}
 			],
@@ -12888,28 +12891,19 @@
 		},
 		{
 			"constant": true,
-			"inputs": [],
-			"name": "daiJoin",
-			"outputs": [
+			"inputs": [
 				{
-					"internalType": "contract IDaiJoin",
+					"internalType": "address",
 					"name": "",
 					"type": "address"
 				}
 			],
-			"payable": false,
-			"stateMutability": "view",
-			"type": "function"
-		},
-		{
-			"constant": true,
-			"inputs": [],
-			"name": "daiVat",
+			"name": "balances",
 			"outputs": [
 				{
-					"internalType": "contract IDaiVat",
+					"internalType": "uint256",
 					"name": "",
-					"type": "address"
+					"type": "uint256"
 				}
 			],
 			"payable": false,
@@ -12945,7 +12939,7 @@
 					"type": "uint256"
 				}
 			],
-			"name": "decreaseApproval",
+			"name": "decreaseAllowance",
 			"outputs": [
 				{
 					"internalType": "bool",
@@ -13007,80 +13001,7 @@
 					"type": "uint256"
 				}
 			],
-			"name": "increaseApproval",
-			"outputs": [
-				{
-					"internalType": "bool",
-					"name": "",
-					"type": "bool"
-				}
-			],
-			"payable": false,
-			"stateMutability": "nonpayable",
-			"type": "function"
-		},
-		{
-			"constant": false,
-			"inputs": [
-				{
-					"internalType": "contract IAugur",
-					"name": "_augur",
-					"type": "address"
-				}
-			],
-			"name": "initialize",
-			"outputs": [
-				{
-					"internalType": "bool",
-					"name": "",
-					"type": "bool"
-				}
-			],
-			"payable": false,
-			"stateMutability": "nonpayable",
-			"type": "function"
-		},
-		{
-			"constant": false,
-			"inputs": [
-				{
-					"internalType": "address",
-					"name": "usr",
-					"type": "address"
-				},
-				{
-					"internalType": "uint256",
-					"name": "wad",
-					"type": "uint256"
-				}
-			],
-			"name": "joinBurn",
-			"outputs": [
-				{
-					"internalType": "bool",
-					"name": "",
-					"type": "bool"
-				}
-			],
-			"payable": false,
-			"stateMutability": "nonpayable",
-			"type": "function"
-		},
-		{
-			"constant": false,
-			"inputs": [
-				{
-					"internalType": "address",
-					"name": "usr",
-					"type": "address"
-				},
-				{
-					"internalType": "uint256",
-					"name": "wad",
-					"type": "uint256"
-				}
-			],
-			"name": "joinMint",
+			"name": "increaseAllowance",
 			"outputs": [
 				{
 					"internalType": "bool",
@@ -13142,7 +13063,7 @@
 			"inputs": [
 				{
 					"internalType": "address",
-					"name": "_to",
+					"name": "_recipient",
 					"type": "address"
 				},
 				{
@@ -13168,12 +13089,12 @@
 			"inputs": [
 				{
 					"internalType": "address",
-					"name": "_from",
+					"name": "_sender",
 					"type": "address"
 				},
 				{
 					"internalType": "address",
-					"name": "_to",
+					"name": "_recipient",
 					"type": "address"
 				},
 				{
@@ -13192,167 +13113,6 @@
 			],
 			"payable": false,
 			"stateMutability": "nonpayable",
-			"type": "function"
-		},
-		{
-			"constant": true,
-			"inputs": [
-				{
-					"internalType": "address",
-					"name": "",
-					"type": "address"
-				}
-			],
-			"name": "wards",
-			"outputs": [
-				{
-					"internalType": "uint256",
-					"name": "",
-					"type": "uint256"
-				}
-			],
-			"payable": false,
-			"stateMutability": "view",
-			"type": "function"
-		}
-	],
-	"CashFaucet": [
-		{
-			"inputs": [
-				{
-					"internalType": "contract IAugur",
-					"name": "_augur",
-					"type": "address"
-				}
-			],
-			"payable": false,
-			"stateMutability": "nonpayable",
-			"type": "constructor"
-		},
-		{
-			"constant": true,
-			"inputs": [],
-			"name": "col",
-			"outputs": [
-				{
-					"internalType": "contract IERC20",
-					"name": "",
-					"type": "address"
-				}
-			],
-			"payable": false,
-			"stateMutability": "view",
-			"type": "function"
-		},
-		{
-			"constant": true,
-			"inputs": [],
-			"name": "colIlk",
-			"outputs": [
-				{
-					"internalType": "bytes32",
-					"name": "",
-					"type": "bytes32"
-				}
-			],
-			"payable": false,
-			"stateMutability": "view",
-			"type": "function"
-		},
-		{
-			"constant": true,
-			"inputs": [],
-			"name": "colJoin",
-			"outputs": [
-				{
-					"internalType": "contract IDaiJoin",
-					"name": "",
-					"type": "address"
-				}
-			],
-			"payable": false,
-			"stateMutability": "view",
-			"type": "function"
-		},
-		{
-			"constant": true,
-			"inputs": [],
-			"name": "dai",
-			"outputs": [
-				{
-					"internalType": "contract IERC20",
-					"name": "",
-					"type": "address"
-				}
-			],
-			"payable": false,
-			"stateMutability": "view",
-			"type": "function"
-		},
-		{
-			"constant": true,
-			"inputs": [],
-			"name": "daiJoin",
-			"outputs": [
-				{
-					"internalType": "contract IDaiJoin",
-					"name": "",
-					"type": "address"
-				}
-			],
-			"payable": false,
-			"stateMutability": "view",
-			"type": "function"
-		},
-		{
-			"constant": false,
-			"inputs": [
-				{
-					"internalType": "uint256",
-					"name": "",
-					"type": "uint256"
-				}
-			],
-			"name": "faucet",
-			"outputs": [
-				{
-					"internalType": "bool",
-					"name": "",
-					"type": "bool"
-				}
-			],
-			"payable": false,
-			"stateMutability": "nonpayable",
-			"type": "function"
-		},
-		{
-			"constant": true,
-			"inputs": [],
-			"name": "mcdFaucet",
-			"outputs": [
-				{
-					"internalType": "contract IDaiFaucet",
-					"name": "",
-					"type": "address"
-				}
-			],
-			"payable": false,
-			"stateMutability": "view",
-			"type": "function"
-		},
-		{
-			"constant": true,
-			"inputs": [],
-			"name": "vat",
-			"outputs": [
-				{
-					"internalType": "contract IDaiVat",
-					"name": "",
-					"type": "address"
-				}
-			],
-			"payable": false,
-			"stateMutability": "view",
 			"type": "function"
 		}
 	],
@@ -14215,569 +13975,6 @@
 					"type": "bool"
 				}
 			],
-			"payable": false,
-			"stateMutability": "nonpayable",
-			"type": "function"
-		}
-	],
-	"TestNetDaiJoin": [
-		{
-			"inputs": [
-				{
-					"internalType": "address",
-					"name": "vat_",
-					"type": "address"
-				},
-				{
-					"internalType": "address",
-					"name": "dai_",
-					"type": "address"
-				}
-			],
-			"payable": false,
-			"stateMutability": "nonpayable",
-			"type": "constructor"
-		},
-		{
-			"constant": false,
-			"inputs": [],
-			"name": "cage",
-			"outputs": [],
-			"payable": false,
-			"stateMutability": "nonpayable",
-			"type": "function"
-		},
-		{
-			"constant": true,
-			"inputs": [],
-			"name": "dai",
-			"outputs": [
-				{
-					"internalType": "contract ICash",
-					"name": "",
-					"type": "address"
-				}
-			],
-			"payable": false,
-			"stateMutability": "view",
-			"type": "function"
-		},
-		{
-			"constant": false,
-			"inputs": [
-				{
-					"internalType": "address",
-					"name": "usr",
-					"type": "address"
-				},
-				{
-					"internalType": "uint256",
-					"name": "wad",
-					"type": "uint256"
-				}
-			],
-			"name": "exit",
-			"outputs": [],
-			"payable": false,
-			"stateMutability": "nonpayable",
-			"type": "function"
-		},
-		{
-			"constant": false,
-			"inputs": [
-				{
-					"internalType": "address",
-					"name": "urn",
-					"type": "address"
-				},
-				{
-					"internalType": "uint256",
-					"name": "wad",
-					"type": "uint256"
-				}
-			],
-			"name": "join",
-			"outputs": [],
-			"payable": false,
-			"stateMutability": "nonpayable",
-			"type": "function"
-		},
-		{
-			"constant": true,
-			"inputs": [],
-			"name": "live",
-			"outputs": [
-				{
-					"internalType": "uint256",
-					"name": "",
-					"type": "uint256"
-				}
-			],
-			"payable": false,
-			"stateMutability": "view",
-			"type": "function"
-		},
-		{
-			"constant": true,
-			"inputs": [],
-			"name": "vat",
-			"outputs": [
-				{
-					"internalType": "contract IDaiVat",
-					"name": "",
-					"type": "address"
-				}
-			],
-			"payable": false,
-			"stateMutability": "view",
-			"type": "function"
-		}
-	],
-	"TestNetDaiPot": [
-		{
-			"inputs": [
-				{
-					"internalType": "address",
-					"name": "vat_",
-					"type": "address"
-				},
-				{
-					"internalType": "contract ITime",
-					"name": "_time",
-					"type": "address"
-				}
-			],
-			"payable": false,
-			"stateMutability": "nonpayable",
-			"type": "constructor"
-		},
-		{
-			"constant": true,
-			"inputs": [],
-			"name": "Pie",
-			"outputs": [
-				{
-					"internalType": "uint256",
-					"name": "",
-					"type": "uint256"
-				}
-			],
-			"payable": false,
-			"stateMutability": "view",
-			"type": "function"
-		},
-		{
-			"constant": true,
-			"inputs": [],
-			"name": "chi",
-			"outputs": [
-				{
-					"internalType": "uint256",
-					"name": "",
-					"type": "uint256"
-				}
-			],
-			"payable": false,
-			"stateMutability": "view",
-			"type": "function"
-		},
-		{
-			"constant": false,
-			"inputs": [],
-			"name": "drip",
-			"outputs": [
-				{
-					"internalType": "uint256",
-					"name": "",
-					"type": "uint256"
-				}
-			],
-			"payable": false,
-			"stateMutability": "nonpayable",
-			"type": "function"
-		},
-		{
-			"constant": true,
-			"inputs": [],
-			"name": "dsr",
-			"outputs": [
-				{
-					"internalType": "uint256",
-					"name": "",
-					"type": "uint256"
-				}
-			],
-			"payable": false,
-			"stateMutability": "view",
-			"type": "function"
-		},
-		{
-			"constant": false,
-			"inputs": [
-				{
-					"internalType": "uint256",
-					"name": "wad",
-					"type": "uint256"
-				}
-			],
-			"name": "exit",
-			"outputs": [],
-			"payable": false,
-			"stateMutability": "nonpayable",
-			"type": "function"
-		},
-		{
-			"constant": false,
-			"inputs": [
-				{
-					"internalType": "uint256",
-					"name": "wad",
-					"type": "uint256"
-				}
-			],
-			"name": "join",
-			"outputs": [],
-			"payable": false,
-			"stateMutability": "nonpayable",
-			"type": "function"
-		},
-		{
-			"constant": true,
-			"inputs": [
-				{
-					"internalType": "address",
-					"name": "",
-					"type": "address"
-				}
-			],
-			"name": "pie",
-			"outputs": [
-				{
-					"internalType": "uint256",
-					"name": "",
-					"type": "uint256"
-				}
-			],
-			"payable": false,
-			"stateMutability": "view",
-			"type": "function"
-		},
-		{
-			"constant": true,
-			"inputs": [],
-			"name": "rho",
-			"outputs": [
-				{
-					"internalType": "uint256",
-					"name": "",
-					"type": "uint256"
-				}
-			],
-			"payable": false,
-			"stateMutability": "view",
-			"type": "function"
-		},
-		{
-			"constant": false,
-			"inputs": [
-				{
-					"internalType": "uint256",
-					"name": "_dsr",
-					"type": "uint256"
-				}
-			],
-			"name": "setDSR",
-			"outputs": [
-				{
-					"internalType": "bool",
-					"name": "",
-					"type": "bool"
-				}
-			],
-			"payable": false,
-			"stateMutability": "nonpayable",
-			"type": "function"
-		},
-		{
-			"constant": true,
-			"inputs": [],
-			"name": "time",
-			"outputs": [
-				{
-					"internalType": "contract ITime",
-					"name": "",
-					"type": "address"
-				}
-			],
-			"payable": false,
-			"stateMutability": "view",
-			"type": "function"
-		},
-		{
-			"constant": true,
-			"inputs": [],
-			"name": "vat",
-			"outputs": [
-				{
-					"internalType": "contract IDaiVat",
-					"name": "",
-					"type": "address"
-				}
-			],
-			"payable": false,
-			"stateMutability": "view",
-			"type": "function"
-		}
-	],
-	"TestNetDaiVat": [
-		{
-			"constant": false,
-			"inputs": [],
-			"name": "cage",
-			"outputs": [],
-			"payable": false,
-			"stateMutability": "nonpayable",
-			"type": "function"
-		},
-		{
-			"constant": true,
-			"inputs": [
-				{
-					"internalType": "address",
-					"name": "",
-					"type": "address"
-				},
-				{
-					"internalType": "address",
-					"name": "",
-					"type": "address"
-				}
-			],
-			"name": "can",
-			"outputs": [
-				{
-					"internalType": "uint256",
-					"name": "",
-					"type": "uint256"
-				}
-			],
-			"payable": false,
-			"stateMutability": "view",
-			"type": "function"
-		},
-		{
-			"constant": true,
-			"inputs": [
-				{
-					"internalType": "address",
-					"name": "",
-					"type": "address"
-				}
-			],
-			"name": "dai",
-			"outputs": [
-				{
-					"internalType": "uint256",
-					"name": "",
-					"type": "uint256"
-				}
-			],
-			"payable": false,
-			"stateMutability": "view",
-			"type": "function"
-		},
-		{
-			"constant": false,
-			"inputs": [
-				{
-					"internalType": "address",
-					"name": "_target",
-					"type": "address"
-				},
-				{
-					"internalType": "uint256",
-					"name": "_amount",
-					"type": "uint256"
-				}
-			],
-			"name": "faucet",
-			"outputs": [],
-			"payable": false,
-			"stateMutability": "nonpayable",
-			"type": "function"
-		},
-		{
-			"constant": false,
-			"inputs": [
-				{
-					"internalType": "bytes32",
-					"name": "i",
-					"type": "bytes32"
-				},
-				{
-					"internalType": "address",
-					"name": "u",
-					"type": "address"
-				},
-				{
-					"internalType": "address",
-					"name": "v",
-					"type": "address"
-				},
-				{
-					"internalType": "address",
-					"name": "w",
-					"type": "address"
-				},
-				{
-					"internalType": "int256",
-					"name": "dink",
-					"type": "int256"
-				},
-				{
-					"internalType": "int256",
-					"name": "dart",
-					"type": "int256"
-				}
-			],
-			"name": "frob",
-			"outputs": [],
-			"payable": false,
-			"stateMutability": "nonpayable",
-			"type": "function"
-		},
-		{
-			"constant": false,
-			"inputs": [
-				{
-					"internalType": "address",
-					"name": "usr",
-					"type": "address"
-				}
-			],
-			"name": "hope",
-			"outputs": [],
-			"payable": false,
-			"stateMutability": "nonpayable",
-			"type": "function"
-		},
-		{
-			"constant": true,
-			"inputs": [
-				{
-					"internalType": "bytes32",
-					"name": "",
-					"type": "bytes32"
-				}
-			],
-			"name": "ilks",
-			"outputs": [
-				{
-					"internalType": "uint256",
-					"name": "Art",
-					"type": "uint256"
-				},
-				{
-					"internalType": "uint256",
-					"name": "rate",
-					"type": "uint256"
-				},
-				{
-					"internalType": "uint256",
-					"name": "spot",
-					"type": "uint256"
-				},
-				{
-					"internalType": "uint256",
-					"name": "line",
-					"type": "uint256"
-				},
-				{
-					"internalType": "uint256",
-					"name": "dust",
-					"type": "uint256"
-				}
-			],
-			"payable": false,
-			"stateMutability": "view",
-			"type": "function"
-		},
-		{
-			"constant": true,
-			"inputs": [],
-			"name": "live",
-			"outputs": [
-				{
-					"internalType": "uint256",
-					"name": "",
-					"type": "uint256"
-				}
-			],
-			"payable": false,
-			"stateMutability": "view",
-			"type": "function"
-		},
-		{
-			"constant": false,
-			"inputs": [
-				{
-					"internalType": "address",
-					"name": "src",
-					"type": "address"
-				},
-				{
-					"internalType": "address",
-					"name": "dst",
-					"type": "address"
-				},
-				{
-					"internalType": "uint256",
-					"name": "rad",
-					"type": "uint256"
-				}
-			],
-			"name": "move",
-			"outputs": [],
-			"payable": false,
-			"stateMutability": "nonpayable",
-			"type": "function"
-		},
-		{
-			"constant": false,
-			"inputs": [
-				{
-					"internalType": "address",
-					"name": "usr",
-					"type": "address"
-				}
-			],
-			"name": "nope",
-			"outputs": [],
-			"payable": false,
-			"stateMutability": "nonpayable",
-			"type": "function"
-		},
-		{
-			"constant": false,
-			"inputs": [
-				{
-					"internalType": "address",
-					"name": "",
-					"type": "address"
-				},
-				{
-					"internalType": "address",
-					"name": "v",
-					"type": "address"
-				},
-				{
-					"internalType": "uint256",
-					"name": "rad",
-					"type": "uint256"
-				}
-			],
-			"name": "suck",
-			"outputs": [],
 			"payable": false,
 			"stateMutability": "nonpayable",
 			"type": "function"
@@ -15741,44 +14938,6 @@
 				{
 					"indexed": true,
 					"internalType": "address",
-					"name": "target",
-					"type": "address"
-				},
-				{
-					"indexed": false,
-					"internalType": "uint256",
-					"name": "value",
-					"type": "uint256"
-				}
-			],
-			"name": "Burn",
-			"type": "event"
-		},
-		{
-			"anonymous": false,
-			"inputs": [
-				{
-					"indexed": true,
-					"internalType": "address",
-					"name": "target",
-					"type": "address"
-				},
-				{
-					"indexed": false,
-					"internalType": "uint256",
-					"name": "value",
-					"type": "uint256"
-				}
-			],
-			"name": "Mint",
-			"type": "event"
-		},
-		{
-			"anonymous": false,
-			"inputs": [
-				{
-					"indexed": true,
-					"internalType": "address",
 					"name": "from",
 					"type": "address"
 				},
@@ -15800,23 +14959,19 @@
 		},
 		{
 			"constant": true,
-			"inputs": [],
-			"name": "ETERNAL_APPROVAL_VALUE",
-			"outputs": [
+			"inputs": [
 				{
-					"internalType": "uint256",
-					"name": "",
-					"type": "uint256"
+					"internalType": "address",
+					"name": "_owner",
+					"type": "address"
+				},
+				{
+					"internalType": "address",
+					"name": "_spender",
+					"type": "address"
 				}
 			],
-			"payable": false,
-			"stateMutability": "view",
-			"type": "function"
-		},
-		{
-			"constant": true,
-			"inputs": [],
-			"name": "RAY",
+			"name": "allowance",
 			"outputs": [
 				{
 					"internalType": "uint256",
@@ -15833,16 +14988,16 @@
 			"inputs": [
 				{
 					"internalType": "address",
-					"name": "_owner",
+					"name": "",
 					"type": "address"
 				},
 				{
 					"internalType": "address",
-					"name": "_spender",
+					"name": "",
 					"type": "address"
 				}
 			],
-			"name": "allowance",
+			"name": "allowances",
 			"outputs": [
 				{
 					"internalType": "uint256",
@@ -15885,7 +15040,7 @@
 			"inputs": [
 				{
 					"internalType": "address",
-					"name": "_owner",
+					"name": "_account",
 					"type": "address"
 				}
 			],
@@ -15903,28 +15058,19 @@
 		},
 		{
 			"constant": true,
-			"inputs": [],
-			"name": "daiJoin",
-			"outputs": [
+			"inputs": [
 				{
-					"internalType": "contract IDaiJoin",
+					"internalType": "address",
 					"name": "",
 					"type": "address"
 				}
 			],
-			"payable": false,
-			"stateMutability": "view",
-			"type": "function"
-		},
-		{
-			"constant": true,
-			"inputs": [],
-			"name": "daiVat",
+			"name": "balances",
 			"outputs": [
 				{
-					"internalType": "contract IDaiVat",
+					"internalType": "uint256",
 					"name": "",
-					"type": "address"
+					"type": "uint256"
 				}
 			],
 			"payable": false,
@@ -15960,7 +15106,7 @@
 					"type": "uint256"
 				}
 			],
-			"name": "decreaseApproval",
+			"name": "decreaseAllowance",
 			"outputs": [
 				{
 					"internalType": "bool",
@@ -16022,80 +15168,7 @@
 					"type": "uint256"
 				}
 			],
-			"name": "increaseApproval",
-			"outputs": [
-				{
-					"internalType": "bool",
-					"name": "",
-					"type": "bool"
-				}
-			],
-			"payable": false,
-			"stateMutability": "nonpayable",
-			"type": "function"
-		},
-		{
-			"constant": false,
-			"inputs": [
-				{
-					"internalType": "contract IAugur",
-					"name": "_augur",
-					"type": "address"
-				}
-			],
-			"name": "initialize",
-			"outputs": [
-				{
-					"internalType": "bool",
-					"name": "",
-					"type": "bool"
-				}
-			],
-			"payable": false,
-			"stateMutability": "nonpayable",
-			"type": "function"
-		},
-		{
-			"constant": false,
-			"inputs": [
-				{
-					"internalType": "address",
-					"name": "usr",
-					"type": "address"
-				},
-				{
-					"internalType": "uint256",
-					"name": "wad",
-					"type": "uint256"
-				}
-			],
-			"name": "joinBurn",
-			"outputs": [
-				{
-					"internalType": "bool",
-					"name": "",
-					"type": "bool"
-				}
-			],
-			"payable": false,
-			"stateMutability": "nonpayable",
-			"type": "function"
-		},
-		{
-			"constant": false,
-			"inputs": [
-				{
-					"internalType": "address",
-					"name": "usr",
-					"type": "address"
-				},
-				{
-					"internalType": "uint256",
-					"name": "wad",
-					"type": "uint256"
-				}
-			],
-			"name": "joinMint",
+			"name": "increaseAllowance",
 			"outputs": [
 				{
 					"internalType": "bool",
@@ -16157,7 +15230,7 @@
 			"inputs": [
 				{
 					"internalType": "address",
-					"name": "_to",
+					"name": "_recipient",
 					"type": "address"
 				},
 				{
@@ -16183,12 +15256,12 @@
 			"inputs": [
 				{
 					"internalType": "address",
-					"name": "_from",
+					"name": "_sender",
 					"type": "address"
 				},
 				{
 					"internalType": "address",
-					"name": "_to",
+					"name": "_recipient",
 					"type": "address"
 				},
 				{
@@ -16207,27 +15280,6 @@
 			],
 			"payable": false,
 			"stateMutability": "nonpayable",
-			"type": "function"
-		},
-		{
-			"constant": true,
-			"inputs": [
-				{
-					"internalType": "address",
-					"name": "",
-					"type": "address"
-				}
-			],
-			"name": "wards",
-			"outputs": [
-				{
-					"internalType": "uint256",
-					"name": "",
-					"type": "uint256"
-				}
-			],
-			"payable": false,
-			"stateMutability": "view",
 			"type": "function"
 		}
 	],
@@ -16263,44 +15315,6 @@
 				{
 					"indexed": true,
 					"internalType": "address",
-					"name": "target",
-					"type": "address"
-				},
-				{
-					"indexed": false,
-					"internalType": "uint256",
-					"name": "value",
-					"type": "uint256"
-				}
-			],
-			"name": "Burn",
-			"type": "event"
-		},
-		{
-			"anonymous": false,
-			"inputs": [
-				{
-					"indexed": true,
-					"internalType": "address",
-					"name": "target",
-					"type": "address"
-				},
-				{
-					"indexed": false,
-					"internalType": "uint256",
-					"name": "value",
-					"type": "uint256"
-				}
-			],
-			"name": "Mint",
-			"type": "event"
-		},
-		{
-			"anonymous": false,
-			"inputs": [
-				{
-					"indexed": true,
-					"internalType": "address",
 					"name": "from",
 					"type": "address"
 				},
@@ -16322,23 +15336,19 @@
 		},
 		{
 			"constant": true,
-			"inputs": [],
-			"name": "ETERNAL_APPROVAL_VALUE",
-			"outputs": [
+			"inputs": [
 				{
-					"internalType": "uint256",
-					"name": "",
-					"type": "uint256"
+					"internalType": "address",
+					"name": "_owner",
+					"type": "address"
+				},
+				{
+					"internalType": "address",
+					"name": "_spender",
+					"type": "address"
 				}
 			],
-			"payable": false,
-			"stateMutability": "view",
-			"type": "function"
-		},
-		{
-			"constant": true,
-			"inputs": [],
-			"name": "RAY",
+			"name": "allowance",
 			"outputs": [
 				{
 					"internalType": "uint256",
@@ -16355,16 +15365,16 @@
 			"inputs": [
 				{
 					"internalType": "address",
-					"name": "_owner",
+					"name": "",
 					"type": "address"
 				},
 				{
 					"internalType": "address",
-					"name": "_spender",
+					"name": "",
 					"type": "address"
 				}
 			],
-			"name": "allowance",
+			"name": "allowances",
 			"outputs": [
 				{
 					"internalType": "uint256",
@@ -16407,7 +15417,7 @@
 			"inputs": [
 				{
 					"internalType": "address",
-					"name": "_owner",
+					"name": "_account",
 					"type": "address"
 				}
 			],
@@ -16425,28 +15435,19 @@
 		},
 		{
 			"constant": true,
-			"inputs": [],
-			"name": "daiJoin",
-			"outputs": [
+			"inputs": [
 				{
-					"internalType": "contract IDaiJoin",
+					"internalType": "address",
 					"name": "",
 					"type": "address"
 				}
 			],
-			"payable": false,
-			"stateMutability": "view",
-			"type": "function"
-		},
-		{
-			"constant": true,
-			"inputs": [],
-			"name": "daiVat",
+			"name": "balances",
 			"outputs": [
 				{
-					"internalType": "contract IDaiVat",
+					"internalType": "uint256",
 					"name": "",
-					"type": "address"
+					"type": "uint256"
 				}
 			],
 			"payable": false,
@@ -16482,7 +15483,7 @@
 					"type": "uint256"
 				}
 			],
-			"name": "decreaseApproval",
+			"name": "decreaseAllowance",
 			"outputs": [
 				{
 					"internalType": "bool",
@@ -16544,80 +15545,7 @@
 					"type": "uint256"
 				}
 			],
-			"name": "increaseApproval",
-			"outputs": [
-				{
-					"internalType": "bool",
-					"name": "",
-					"type": "bool"
-				}
-			],
-			"payable": false,
-			"stateMutability": "nonpayable",
-			"type": "function"
-		},
-		{
-			"constant": false,
-			"inputs": [
-				{
-					"internalType": "contract IAugur",
-					"name": "_augur",
-					"type": "address"
-				}
-			],
-			"name": "initialize",
-			"outputs": [
-				{
-					"internalType": "bool",
-					"name": "",
-					"type": "bool"
-				}
-			],
-			"payable": false,
-			"stateMutability": "nonpayable",
-			"type": "function"
-		},
-		{
-			"constant": false,
-			"inputs": [
-				{
-					"internalType": "address",
-					"name": "usr",
-					"type": "address"
-				},
-				{
-					"internalType": "uint256",
-					"name": "wad",
-					"type": "uint256"
-				}
-			],
-			"name": "joinBurn",
-			"outputs": [
-				{
-					"internalType": "bool",
-					"name": "",
-					"type": "bool"
-				}
-			],
-			"payable": false,
-			"stateMutability": "nonpayable",
-			"type": "function"
-		},
-		{
-			"constant": false,
-			"inputs": [
-				{
-					"internalType": "address",
-					"name": "usr",
-					"type": "address"
-				},
-				{
-					"internalType": "uint256",
-					"name": "wad",
-					"type": "uint256"
-				}
-			],
-			"name": "joinMint",
+			"name": "increaseAllowance",
 			"outputs": [
 				{
 					"internalType": "bool",
@@ -16679,7 +15607,7 @@
 			"inputs": [
 				{
 					"internalType": "address",
-					"name": "_to",
+					"name": "_recipient",
 					"type": "address"
 				},
 				{
@@ -16705,12 +15633,12 @@
 			"inputs": [
 				{
 					"internalType": "address",
-					"name": "_from",
+					"name": "_sender",
 					"type": "address"
 				},
 				{
 					"internalType": "address",
-					"name": "_to",
+					"name": "_recipient",
 					"type": "address"
 				},
 				{
@@ -16729,27 +15657,6 @@
 			],
 			"payable": false,
 			"stateMutability": "nonpayable",
-			"type": "function"
-		},
-		{
-			"constant": true,
-			"inputs": [
-				{
-					"internalType": "address",
-					"name": "",
-					"type": "address"
-				}
-			],
-			"name": "wards",
-			"outputs": [
-				{
-					"internalType": "uint256",
-					"name": "",
-					"type": "uint256"
-				}
-			],
-			"payable": false,
-			"stateMutability": "view",
 			"type": "function"
 		}
 	],
@@ -16917,21 +15824,6 @@
 			"outputs": [],
 			"payable": false,
 			"stateMutability": "nonpayable",
-			"type": "function"
-		},
-		{
-			"constant": true,
-			"inputs": [],
-			"name": "lastSweepTime",
-			"outputs": [
-				{
-					"internalType": "uint256",
-					"name": "",
-					"type": "uint256"
-				}
-			],
-			"payable": false,
-			"stateMutability": "view",
 			"type": "function"
 		},
 		{
@@ -18679,11 +17571,6 @@
 					"components": [
 						{
 							"internalType": "uint256",
-							"name": "gasLimit",
-							"type": "uint256"
-						},
-						{
-							"internalType": "uint256",
 							"name": "gasPrice",
 							"type": "uint256"
 						},
@@ -18696,10 +17583,35 @@
 							"internalType": "uint256",
 							"name": "baseRelayFee",
 							"type": "uint256"
+						},
+						{
+							"internalType": "address",
+							"name": "relayWorker",
+							"type": "address"
+						},
+						{
+							"internalType": "address",
+							"name": "paymaster",
+							"type": "address"
+						},
+						{
+							"internalType": "bytes",
+							"name": "paymasterData",
+							"type": "bytes"
+						},
+						{
+							"internalType": "uint256",
+							"name": "clientId",
+							"type": "uint256"
+						},
+						{
+							"internalType": "address",
+							"name": "forwarder",
+							"type": "address"
 						}
 					],
-					"internalType": "struct ISignatureVerifier.GasData",
-					"name": "gasData",
+					"internalType": "struct GsnTypes.RelayData",
+					"name": "relayData",
 					"type": "tuple"
 				}
 			],
@@ -18721,22 +17633,44 @@
 				{
 					"components": [
 						{
-							"internalType": "address",
-							"name": "target",
-							"type": "address"
-						},
-						{
-							"internalType": "bytes",
-							"name": "encodedFunction",
-							"type": "bytes"
+							"components": [
+								{
+									"internalType": "address",
+									"name": "from",
+									"type": "address"
+								},
+								{
+									"internalType": "address",
+									"name": "to",
+									"type": "address"
+								},
+								{
+									"internalType": "uint256",
+									"name": "value",
+									"type": "uint256"
+								},
+								{
+									"internalType": "uint256",
+									"name": "gas",
+									"type": "uint256"
+								},
+								{
+									"internalType": "uint256",
+									"name": "nonce",
+									"type": "uint256"
+								},
+								{
+									"internalType": "bytes",
+									"name": "data",
+									"type": "bytes"
+								}
+							],
+							"internalType": "struct IForwarder.ForwardRequest",
+							"name": "request",
+							"type": "tuple"
 						},
 						{
 							"components": [
-								{
-									"internalType": "uint256",
-									"name": "gasLimit",
-									"type": "uint256"
-								},
 								{
 									"internalType": "uint256",
 									"name": "gasPrice",
@@ -18751,23 +17685,6 @@
 									"internalType": "uint256",
 									"name": "baseRelayFee",
 									"type": "uint256"
-								}
-							],
-							"internalType": "struct ISignatureVerifier.GasData",
-							"name": "gasData",
-							"type": "tuple"
-						},
-						{
-							"components": [
-								{
-									"internalType": "address",
-									"name": "senderAddress",
-									"type": "address"
-								},
-								{
-									"internalType": "uint256",
-									"name": "senderNonce",
-									"type": "uint256"
 								},
 								{
 									"internalType": "address",
@@ -18780,17 +17697,27 @@
 									"type": "address"
 								},
 								{
+									"internalType": "bytes",
+									"name": "paymasterData",
+									"type": "bytes"
+								},
+								{
+									"internalType": "uint256",
+									"name": "clientId",
+									"type": "uint256"
+								},
+								{
 									"internalType": "address",
 									"name": "forwarder",
 									"type": "address"
 								}
 							],
-							"internalType": "struct ISignatureVerifier.RelayData",
+							"internalType": "struct GsnTypes.RelayData",
 							"name": "relayData",
 							"type": "tuple"
 						}
 					],
-					"internalType": "struct ISignatureVerifier.RelayRequest",
+					"internalType": "struct GsnTypes.RelayRequest",
 					"name": "relayRequest",
 					"type": "tuple"
 				},
@@ -18900,22 +17827,44 @@
 				{
 					"components": [
 						{
-							"internalType": "address",
-							"name": "target",
-							"type": "address"
-						},
-						{
-							"internalType": "bytes",
-							"name": "encodedFunction",
-							"type": "bytes"
+							"components": [
+								{
+									"internalType": "address",
+									"name": "from",
+									"type": "address"
+								},
+								{
+									"internalType": "address",
+									"name": "to",
+									"type": "address"
+								},
+								{
+									"internalType": "uint256",
+									"name": "value",
+									"type": "uint256"
+								},
+								{
+									"internalType": "uint256",
+									"name": "gas",
+									"type": "uint256"
+								},
+								{
+									"internalType": "uint256",
+									"name": "nonce",
+									"type": "uint256"
+								},
+								{
+									"internalType": "bytes",
+									"name": "data",
+									"type": "bytes"
+								}
+							],
+							"internalType": "struct IForwarder.ForwardRequest",
+							"name": "request",
+							"type": "tuple"
 						},
 						{
 							"components": [
-								{
-									"internalType": "uint256",
-									"name": "gasLimit",
-									"type": "uint256"
-								},
 								{
 									"internalType": "uint256",
 									"name": "gasPrice",
@@ -18930,23 +17879,6 @@
 									"internalType": "uint256",
 									"name": "baseRelayFee",
 									"type": "uint256"
-								}
-							],
-							"internalType": "struct ISignatureVerifier.GasData",
-							"name": "gasData",
-							"type": "tuple"
-						},
-						{
-							"components": [
-								{
-									"internalType": "address",
-									"name": "senderAddress",
-									"type": "address"
-								},
-								{
-									"internalType": "uint256",
-									"name": "senderNonce",
-									"type": "uint256"
 								},
 								{
 									"internalType": "address",
@@ -18959,17 +17891,27 @@
 									"type": "address"
 								},
 								{
+									"internalType": "bytes",
+									"name": "paymasterData",
+									"type": "bytes"
+								},
+								{
+									"internalType": "uint256",
+									"name": "clientId",
+									"type": "uint256"
+								},
+								{
 									"internalType": "address",
 									"name": "forwarder",
 									"type": "address"
 								}
 							],
-							"internalType": "struct ISignatureVerifier.RelayData",
+							"internalType": "struct GsnTypes.RelayData",
 							"name": "relayData",
 							"type": "tuple"
 						}
 					],
-					"internalType": "struct ISignatureVerifier.RelayRequest",
+					"internalType": "struct GsnTypes.RelayRequest",
 					"name": "relayRequest",
 					"type": "tuple"
 				},
@@ -19089,22 +18031,44 @@
 				{
 					"components": [
 						{
-							"internalType": "address",
-							"name": "target",
-							"type": "address"
-						},
-						{
-							"internalType": "bytes",
-							"name": "encodedFunction",
-							"type": "bytes"
+							"components": [
+								{
+									"internalType": "address",
+									"name": "from",
+									"type": "address"
+								},
+								{
+									"internalType": "address",
+									"name": "to",
+									"type": "address"
+								},
+								{
+									"internalType": "uint256",
+									"name": "value",
+									"type": "uint256"
+								},
+								{
+									"internalType": "uint256",
+									"name": "gas",
+									"type": "uint256"
+								},
+								{
+									"internalType": "uint256",
+									"name": "nonce",
+									"type": "uint256"
+								},
+								{
+									"internalType": "bytes",
+									"name": "data",
+									"type": "bytes"
+								}
+							],
+							"internalType": "struct IForwarder.ForwardRequest",
+							"name": "request",
+							"type": "tuple"
 						},
 						{
 							"components": [
-								{
-									"internalType": "uint256",
-									"name": "gasLimit",
-									"type": "uint256"
-								},
 								{
 									"internalType": "uint256",
 									"name": "gasPrice",
@@ -19119,23 +18083,6 @@
 									"internalType": "uint256",
 									"name": "baseRelayFee",
 									"type": "uint256"
-								}
-							],
-							"internalType": "struct ISignatureVerifier.GasData",
-							"name": "gasData",
-							"type": "tuple"
-						},
-						{
-							"components": [
-								{
-									"internalType": "address",
-									"name": "senderAddress",
-									"type": "address"
-								},
-								{
-									"internalType": "uint256",
-									"name": "senderNonce",
-									"type": "uint256"
 								},
 								{
 									"internalType": "address",
@@ -19148,17 +18095,27 @@
 									"type": "address"
 								},
 								{
+									"internalType": "bytes",
+									"name": "paymasterData",
+									"type": "bytes"
+								},
+								{
+									"internalType": "uint256",
+									"name": "clientId",
+									"type": "uint256"
+								},
+								{
 									"internalType": "address",
 									"name": "forwarder",
 									"type": "address"
 								}
 							],
-							"internalType": "struct ISignatureVerifier.RelayData",
+							"internalType": "struct GsnTypes.RelayData",
 							"name": "relayData",
 							"type": "tuple"
 						}
 					],
-					"internalType": "struct ISignatureVerifier.RelayRequest",
+					"internalType": "struct GsnTypes.RelayRequest",
 					"name": "relayRequest",
 					"type": "tuple"
 				},
@@ -19444,6 +18401,21 @@
 			"inputs": [
 				{
 					"internalType": "address",
+					"name": "relayHub",
+					"type": "address"
+				}
+			],
+			"name": "authorizeHubByManager",
+			"outputs": [],
+			"payable": false,
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"constant": false,
+			"inputs": [
+				{
+					"internalType": "address",
 					"name": "relayManager",
 					"type": "address"
 				},
@@ -19453,7 +18425,7 @@
 					"type": "address"
 				}
 			],
-			"name": "authorizeHub",
+			"name": "authorizeHubByOwner",
 			"outputs": [],
 			"payable": false,
 			"stateMutability": "nonpayable",
@@ -19645,6 +18617,21 @@
 			"inputs": [
 				{
 					"internalType": "address",
+					"name": "relayHub",
+					"type": "address"
+				}
+			],
+			"name": "unauthorizeHubByManager",
+			"outputs": [],
+			"payable": false,
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"constant": false,
+			"inputs": [
+				{
+					"internalType": "address",
 					"name": "relayManager",
 					"type": "address"
 				},
@@ -19654,7 +18641,7 @@
 					"type": "address"
 				}
 			],
-			"name": "unauthorizeHub",
+			"name": "unauthorizeHubByOwner",
 			"outputs": [],
 			"payable": false,
 			"stateMutability": "nonpayable",
@@ -25760,21 +24747,6 @@
 		{
 			"constant": true,
 			"inputs": [],
-			"name": "RAY",
-			"outputs": [
-				{
-					"internalType": "uint256",
-					"name": "",
-					"type": "uint256"
-				}
-			],
-			"payable": false,
-			"stateMutability": "view",
-			"type": "function"
-		},
-		{
-			"constant": true,
-			"inputs": [],
 			"name": "augur",
 			"outputs": [
 				{
@@ -25985,51 +24957,6 @@
 					"internalType": "uint256",
 					"name": "",
 					"type": "uint256"
-				}
-			],
-			"payable": false,
-			"stateMutability": "view",
-			"type": "function"
-		},
-		{
-			"constant": true,
-			"inputs": [],
-			"name": "daiJoin",
-			"outputs": [
-				{
-					"internalType": "contract IDaiJoin",
-					"name": "",
-					"type": "address"
-				}
-			],
-			"payable": false,
-			"stateMutability": "view",
-			"type": "function"
-		},
-		{
-			"constant": true,
-			"inputs": [],
-			"name": "daiPot",
-			"outputs": [
-				{
-					"internalType": "contract IDaiPot",
-					"name": "",
-					"type": "address"
-				}
-			],
-			"payable": false,
-			"stateMutability": "view",
-			"type": "function"
-		},
-		{
-			"constant": true,
-			"inputs": [],
-			"name": "daiVat",
-			"outputs": [
-				{
-					"internalType": "contract IDaiVat",
-					"name": "",
-					"type": "address"
 				}
 			],
 			"payable": false,
@@ -26979,21 +25906,6 @@
 		},
 		{
 			"constant": true,
-			"inputs": [],
-			"name": "lastSweep",
-			"outputs": [
-				{
-					"internalType": "uint256",
-					"name": "",
-					"type": "uint256"
-				}
-			],
-			"payable": false,
-			"stateMutability": "view",
-			"type": "function"
-		},
-		{
-			"constant": true,
 			"inputs": [
 				{
 					"internalType": "address",
@@ -27255,21 +26167,6 @@
 			],
 			"payable": false,
 			"stateMutability": "view",
-			"type": "function"
-		},
-		{
-			"constant": false,
-			"inputs": [],
-			"name": "sweepInterest",
-			"outputs": [
-				{
-					"internalType": "bool",
-					"name": "",
-					"type": "bool"
-				}
-			],
-			"payable": false,
-			"stateMutability": "nonpayable",
 			"type": "function"
 		},
 		{
@@ -33709,17 +32606,17 @@
 			"type": "function"
 		}
 	],
-	"UniswapV2Router01": [
+	"UniswapV2Router02": [
 		{
 			"inputs": [
 				{
 					"internalType": "address",
-					"name": "_WETH",
+					"name": "_factory",
 					"type": "address"
 				},
 				{
-					"internalType": "contract IUniswapV2Factory",
-					"name": "_factory",
+					"internalType": "address",
+					"name": "_WETH",
 					"type": "address"
 				}
 			],
@@ -33738,7 +32635,7 @@
 			"name": "WETH",
 			"outputs": [
 				{
-					"internalType": "contract IWETH",
+					"internalType": "address",
 					"name": "",
 					"type": "address"
 				}
@@ -33871,37 +32768,11 @@
 		},
 		{
 			"constant": true,
-			"inputs": [
-				{
-					"internalType": "address",
-					"name": "tokenA",
-					"type": "address"
-				},
-				{
-					"internalType": "address",
-					"name": "tokenB",
-					"type": "address"
-				}
-			],
-			"name": "exchangeFor",
-			"outputs": [
-				{
-					"internalType": "address",
-					"name": "exchange",
-					"type": "address"
-				}
-			],
-			"payable": false,
-			"stateMutability": "view",
-			"type": "function"
-		},
-		{
-			"constant": true,
 			"inputs": [],
 			"name": "factory",
 			"outputs": [
 				{
-					"internalType": "contract IUniswapV2Factory",
+					"internalType": "address",
 					"name": "",
 					"type": "address"
 				}
@@ -34018,32 +32889,6 @@
 					"internalType": "uint256[]",
 					"name": "amounts",
 					"type": "uint256[]"
-				}
-			],
-			"payable": false,
-			"stateMutability": "view",
-			"type": "function"
-		},
-		{
-			"constant": true,
-			"inputs": [
-				{
-					"internalType": "address",
-					"name": "tokenA",
-					"type": "address"
-				},
-				{
-					"internalType": "address",
-					"name": "tokenB",
-					"type": "address"
-				}
-			],
-			"name": "pairFor",
-			"outputs": [
-				{
-					"internalType": "address",
-					"name": "pair",
-					"type": "address"
 				}
 			],
 			"payable": false,
@@ -34220,6 +33065,52 @@
 					"internalType": "uint256",
 					"name": "deadline",
 					"type": "uint256"
+				}
+			],
+			"name": "removeLiquidityETHSupportingFeeOnTransferTokens",
+			"outputs": [
+				{
+					"internalType": "uint256",
+					"name": "amountETH",
+					"type": "uint256"
+				}
+			],
+			"payable": false,
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"constant": false,
+			"inputs": [
+				{
+					"internalType": "address",
+					"name": "token",
+					"type": "address"
+				},
+				{
+					"internalType": "uint256",
+					"name": "liquidity",
+					"type": "uint256"
+				},
+				{
+					"internalType": "uint256",
+					"name": "amountTokenMin",
+					"type": "uint256"
+				},
+				{
+					"internalType": "uint256",
+					"name": "amountETHMin",
+					"type": "uint256"
+				},
+				{
+					"internalType": "address",
+					"name": "to",
+					"type": "address"
+				},
+				{
+					"internalType": "uint256",
+					"name": "deadline",
+					"type": "uint256"
 				},
 				{
 					"internalType": "bool",
@@ -34249,6 +33140,72 @@
 					"name": "amountToken",
 					"type": "uint256"
 				},
+				{
+					"internalType": "uint256",
+					"name": "amountETH",
+					"type": "uint256"
+				}
+			],
+			"payable": false,
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"constant": false,
+			"inputs": [
+				{
+					"internalType": "address",
+					"name": "token",
+					"type": "address"
+				},
+				{
+					"internalType": "uint256",
+					"name": "liquidity",
+					"type": "uint256"
+				},
+				{
+					"internalType": "uint256",
+					"name": "amountTokenMin",
+					"type": "uint256"
+				},
+				{
+					"internalType": "uint256",
+					"name": "amountETHMin",
+					"type": "uint256"
+				},
+				{
+					"internalType": "address",
+					"name": "to",
+					"type": "address"
+				},
+				{
+					"internalType": "uint256",
+					"name": "deadline",
+					"type": "uint256"
+				},
+				{
+					"internalType": "bool",
+					"name": "approveMax",
+					"type": "bool"
+				},
+				{
+					"internalType": "uint8",
+					"name": "v",
+					"type": "uint8"
+				},
+				{
+					"internalType": "bytes32",
+					"name": "r",
+					"type": "bytes32"
+				},
+				{
+					"internalType": "bytes32",
+					"name": "s",
+					"type": "bytes32"
+				}
+			],
+			"name": "removeLiquidityETHWithPermitSupportingFeeOnTransferTokens",
+			"outputs": [
 				{
 					"internalType": "uint256",
 					"name": "amountETH",
@@ -34412,6 +33369,36 @@
 			"inputs": [
 				{
 					"internalType": "uint256",
+					"name": "amountOutMin",
+					"type": "uint256"
+				},
+				{
+					"internalType": "address[]",
+					"name": "path",
+					"type": "address[]"
+				},
+				{
+					"internalType": "address",
+					"name": "to",
+					"type": "address"
+				},
+				{
+					"internalType": "uint256",
+					"name": "deadline",
+					"type": "uint256"
+				}
+			],
+			"name": "swapExactETHForTokensSupportingFeeOnTransferTokens",
+			"outputs": [],
+			"payable": true,
+			"stateMutability": "payable",
+			"type": "function"
+		},
+		{
+			"constant": false,
+			"inputs": [
+				{
+					"internalType": "uint256",
 					"name": "amountIn",
 					"type": "uint256"
 				},
@@ -34477,6 +33464,41 @@
 					"type": "uint256"
 				}
 			],
+			"name": "swapExactTokensForETHSupportingFeeOnTransferTokens",
+			"outputs": [],
+			"payable": false,
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"constant": false,
+			"inputs": [
+				{
+					"internalType": "uint256",
+					"name": "amountIn",
+					"type": "uint256"
+				},
+				{
+					"internalType": "uint256",
+					"name": "amountOutMin",
+					"type": "uint256"
+				},
+				{
+					"internalType": "address[]",
+					"name": "path",
+					"type": "address[]"
+				},
+				{
+					"internalType": "address",
+					"name": "to",
+					"type": "address"
+				},
+				{
+					"internalType": "uint256",
+					"name": "deadline",
+					"type": "uint256"
+				}
+			],
 			"name": "swapExactTokensForTokens",
 			"outputs": [
 				{
@@ -34485,6 +33507,41 @@
 					"type": "uint256[]"
 				}
 			],
+			"payable": false,
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"constant": false,
+			"inputs": [
+				{
+					"internalType": "uint256",
+					"name": "amountIn",
+					"type": "uint256"
+				},
+				{
+					"internalType": "uint256",
+					"name": "amountOutMin",
+					"type": "uint256"
+				},
+				{
+					"internalType": "address[]",
+					"name": "path",
+					"type": "address[]"
+				},
+				{
+					"internalType": "address",
+					"name": "to",
+					"type": "address"
+				},
+				{
+					"internalType": "uint256",
+					"name": "deadline",
+					"type": "uint256"
+				}
+			],
+			"name": "swapExactTokensForTokensSupportingFeeOnTransferTokens",
+			"outputs": [],
 			"payable": false,
 			"stateMutability": "nonpayable",
 			"type": "function"

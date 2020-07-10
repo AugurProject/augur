@@ -13,7 +13,7 @@ import { AccountStatusTracker } from 'modules/modal/common';
 import { TransferMyTokens } from 'modules/modal/common';
 import { LinkContent } from 'modules/types';
 import classNames from 'classnames';
-import { ONBOARDING_MAX_STEPS, TRANSACTIONS, CREATEAUGURWALLET } from 'modules/common/constants';
+import { ONBOARDING_MAX_STEPS, TRANSACTIONS, CREATEAUGURWALLET, DAI } from 'modules/common/constants';
 import { LeftChevron } from 'modules/common/icons';
 
 import Styles from 'modules/modal/modal.styles.less';
@@ -92,7 +92,7 @@ export const Onboarding = ({
           {smallHeader && <SmallSubheader text={smallHeader} />}
           {mediumHeader && <MediumSubheader text={mediumHeader} />}
           {linkContent && <LinkContentSection linkContent={linkContent} />}
-          {showTransferMyDai && <TransferMyTokens callBack={() => showAugurP2PModal()}/>}
+          {showTransferMyDai && <TransferMyTokens tokenName={DAI} callBack={() => showAugurP2PModal()}/>}
         </main>
 
         <div className={Styles.OnboardingNav}>{NavControls}</div>

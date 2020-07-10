@@ -29,7 +29,6 @@ export class Contracts {
   ZeroXTrade: ContractInterfaces.ZeroXTrade;
   buyParticipationTokens: ContractInterfaces.BuyParticipationTokens;
   redeemStake: ContractInterfaces.RedeemStake;
-  cashFaucet: ContractInterfaces.CashFaucet;
   hotLoading: ContractInterfaces.HotLoading;
   zeroXExchange: ContractInterfaces.Exchange;
   affiliates: ContractInterfaces.Affiliates;
@@ -41,7 +40,7 @@ export class Contracts {
   augurWalletRegistry: ContractInterfaces.AugurWalletRegistry;
   relayHub: ContractInterfaces.RelayHub;
   weth: ContractInterfaces.WETH9;
-  uniswap: ContractInterfaces.UniswapV2Router01;
+  uniswap: ContractInterfaces.UniswapV2Router02;
   auditFunds: ContractInterfaces.AuditFunds;
 
   reputationToken: SomeRepToken | null = null;
@@ -103,10 +102,6 @@ export class Contracts {
       dependencies,
       addresses.RedeemStake
     );
-    this.cashFaucet = new ContractInterfaces.CashFaucet(
-      dependencies,
-      addresses.CashFaucet
-    );
     this.hotLoading = new ContractInterfaces.HotLoading(
       dependencies,
       addresses.HotLoading
@@ -148,9 +143,9 @@ export class Contracts {
       RELAY_HUB_ADDRESS
     );
     this.weth = new ContractInterfaces.WETH9(dependencies, addresses.WETH9);
-    this.uniswap = new ContractInterfaces.UniswapV2Router01(
+    this.uniswap = new ContractInterfaces.UniswapV2Router02(
       dependencies,
-      addresses.UniswapV2Router01
+      addresses.UniswapV2Router02
     );
     this.auditFunds = new ContractInterfaces.AuditFunds(
       dependencies,

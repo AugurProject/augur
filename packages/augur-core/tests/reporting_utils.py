@@ -135,7 +135,6 @@ def generateFees(fixture, universe, market):
     account1 = fixture.accounts[1]
     shareToken = fixture.contracts['ShareToken']
     cash = fixture.contracts['Cash']
-    daiVat = fixture.contracts['DaiVat']
     disputeWindow = universe.getOrCreateNextDisputeWindow(False)
     oldFeesBalance = cash.balanceOf(disputeWindow)
 
@@ -147,7 +146,7 @@ def generateFees(fixture, universe, market):
     initialMarketCreatorFees = market.marketCreatorFeesAttoCash()
     shareToken.publicSellCompleteSets(market.address, 1000, sender=account1)
     assert marketCreatorFees == market.marketCreatorFeesAttoCash() - initialMarketCreatorFees, "The market creator didn't get correct share of fees from complete set sale"
-    newFeesBalance = cash.balanceOf(disputeWindow) + daiVat.dai(disputeWindow) / 10**27
+    newFeesBalance = cash.balanceOf(disputeWindow)
     reporterFees = cost / universe.getOrCacheReportingFeeDivisor()
     feesGenerated = newFeesBalance - oldFeesBalance
     assert feesGenerated == reporterFees, "Cash balance of dispute window differs by: " + str(feesGenerated - reporterFees)

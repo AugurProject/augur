@@ -792,123 +792,123 @@ title: Uniswap
 
 
 
-### `IUniswapV2Router01`
+### `IUniswapV2Router02`
 
 
 
-<div class="contract-index"><span class="contract-index-title">Functions</span><ul><li><a href="#IUniswapV2Router01.factory()"><code class="function-signature">factory()</code></a></li><li><a href="#IUniswapV2Router01.quote(uint256,uint256,uint256)"><code class="function-signature">quote(uint256 amountA, uint256 reserveA, uint256 reserveB)</code></a></li><li><a href="#IUniswapV2Router01.getAmountOut(uint256,uint256,uint256)"><code class="function-signature">getAmountOut(uint256 amountIn, uint256 reserveIn, uint256 reserveOut)</code></a></li><li><a href="#IUniswapV2Router01.getAmountIn(uint256,uint256,uint256)"><code class="function-signature">getAmountIn(uint256 amountOut, uint256 reserveIn, uint256 reserveOut)</code></a></li><li><a href="#IUniswapV2Router01.getAmountsOut(uint256,address[])"><code class="function-signature">getAmountsOut(uint256 amountIn, address[] path)</code></a></li><li><a href="#IUniswapV2Router01.getAmountsIn(uint256,address[])"><code class="function-signature">getAmountsIn(uint256 amountOut, address[] path)</code></a></li><li><a href="#IUniswapV2Router01.WETH()"><code class="function-signature">WETH()</code></a></li><li><a href="#IUniswapV2Router01.addLiquidity(address,address,uint256,uint256,uint256,uint256,address,uint256)"><code class="function-signature">addLiquidity(address tokenA, address tokenB, uint256 amountADesired, uint256 amountBDesired, uint256 amountAMin, uint256 amountBMin, address to, uint256 deadline)</code></a></li><li><a href="#IUniswapV2Router01.addLiquidityETH(address,uint256,uint256,uint256,address,uint256)"><code class="function-signature">addLiquidityETH(address token, uint256 amountTokenDesired, uint256 amountTokenMin, uint256 amountETHMin, address to, uint256 deadline)</code></a></li><li><a href="#IUniswapV2Router01.removeLiquidity(address,address,uint256,uint256,uint256,address,uint256)"><code class="function-signature">removeLiquidity(address tokenA, address tokenB, uint256 liquidity, uint256 amountAMin, uint256 amountBMin, address to, uint256 deadline)</code></a></li><li><a href="#IUniswapV2Router01.removeLiquidityETH(address,uint256,uint256,uint256,address,uint256)"><code class="function-signature">removeLiquidityETH(address token, uint256 liquidity, uint256 amountTokenMin, uint256 amountETHMin, address to, uint256 deadline)</code></a></li><li><a href="#IUniswapV2Router01.removeLiquidityWithPermit(address,address,uint256,uint256,uint256,address,uint256,bool,uint8,bytes32,bytes32)"><code class="function-signature">removeLiquidityWithPermit(address tokenA, address tokenB, uint256 liquidity, uint256 amountAMin, uint256 amountBMin, address to, uint256 deadline, bool approveMax, uint8 v, bytes32 r, bytes32 s)</code></a></li><li><a href="#IUniswapV2Router01.removeLiquidityETHWithPermit(address,uint256,uint256,uint256,address,uint256,bool,uint8,bytes32,bytes32)"><code class="function-signature">removeLiquidityETHWithPermit(address token, uint256 liquidity, uint256 amountTokenMin, uint256 amountETHMin, address to, uint256 deadline, bool approveMax, uint8 v, bytes32 r, bytes32 s)</code></a></li><li><a href="#IUniswapV2Router01.swapExactTokensForTokens(uint256,uint256,address[],address,uint256)"><code class="function-signature">swapExactTokensForTokens(uint256 amountIn, uint256 amountOutMin, address[] path, address to, uint256 deadline)</code></a></li><li><a href="#IUniswapV2Router01.swapTokensForExactTokens(uint256,uint256,address[],address,uint256)"><code class="function-signature">swapTokensForExactTokens(uint256 amountOut, uint256 amountInMax, address[] path, address to, uint256 deadline)</code></a></li><li><a href="#IUniswapV2Router01.swapExactETHForTokens(uint256,address[],address,uint256)"><code class="function-signature">swapExactETHForTokens(uint256 amountOutMin, address[] path, address to, uint256 deadline)</code></a></li><li><a href="#IUniswapV2Router01.swapTokensForExactETH(uint256,uint256,address[],address,uint256)"><code class="function-signature">swapTokensForExactETH(uint256 amountOut, uint256 amountInMax, address[] path, address to, uint256 deadline)</code></a></li><li><a href="#IUniswapV2Router01.swapExactTokensForETH(uint256,uint256,address[],address,uint256)"><code class="function-signature">swapExactTokensForETH(uint256 amountIn, uint256 amountOutMin, address[] path, address to, uint256 deadline)</code></a></li><li><a href="#IUniswapV2Router01.swapETHForExactTokens(uint256,address[],address,uint256)"><code class="function-signature">swapETHForExactTokens(uint256 amountOut, address[] path, address to, uint256 deadline)</code></a></li></ul></div>
+<div class="contract-index"><span class="contract-index-title">Functions</span><ul><li><a href="#IUniswapV2Router02.factory()"><code class="function-signature">factory()</code></a></li><li><a href="#IUniswapV2Router02.quote(uint256,uint256,uint256)"><code class="function-signature">quote(uint256 amountA, uint256 reserveA, uint256 reserveB)</code></a></li><li><a href="#IUniswapV2Router02.getAmountOut(uint256,uint256,uint256)"><code class="function-signature">getAmountOut(uint256 amountIn, uint256 reserveIn, uint256 reserveOut)</code></a></li><li><a href="#IUniswapV2Router02.getAmountIn(uint256,uint256,uint256)"><code class="function-signature">getAmountIn(uint256 amountOut, uint256 reserveIn, uint256 reserveOut)</code></a></li><li><a href="#IUniswapV2Router02.getAmountsOut(uint256,address[])"><code class="function-signature">getAmountsOut(uint256 amountIn, address[] path)</code></a></li><li><a href="#IUniswapV2Router02.getAmountsIn(uint256,address[])"><code class="function-signature">getAmountsIn(uint256 amountOut, address[] path)</code></a></li><li><a href="#IUniswapV2Router02.WETH()"><code class="function-signature">WETH()</code></a></li><li><a href="#IUniswapV2Router02.addLiquidity(address,address,uint256,uint256,uint256,uint256,address,uint256)"><code class="function-signature">addLiquidity(address tokenA, address tokenB, uint256 amountADesired, uint256 amountBDesired, uint256 amountAMin, uint256 amountBMin, address to, uint256 deadline)</code></a></li><li><a href="#IUniswapV2Router02.addLiquidityETH(address,uint256,uint256,uint256,address,uint256)"><code class="function-signature">addLiquidityETH(address token, uint256 amountTokenDesired, uint256 amountTokenMin, uint256 amountETHMin, address to, uint256 deadline)</code></a></li><li><a href="#IUniswapV2Router02.removeLiquidity(address,address,uint256,uint256,uint256,address,uint256)"><code class="function-signature">removeLiquidity(address tokenA, address tokenB, uint256 liquidity, uint256 amountAMin, uint256 amountBMin, address to, uint256 deadline)</code></a></li><li><a href="#IUniswapV2Router02.removeLiquidityETH(address,uint256,uint256,uint256,address,uint256)"><code class="function-signature">removeLiquidityETH(address token, uint256 liquidity, uint256 amountTokenMin, uint256 amountETHMin, address to, uint256 deadline)</code></a></li><li><a href="#IUniswapV2Router02.removeLiquidityWithPermit(address,address,uint256,uint256,uint256,address,uint256,bool,uint8,bytes32,bytes32)"><code class="function-signature">removeLiquidityWithPermit(address tokenA, address tokenB, uint256 liquidity, uint256 amountAMin, uint256 amountBMin, address to, uint256 deadline, bool approveMax, uint8 v, bytes32 r, bytes32 s)</code></a></li><li><a href="#IUniswapV2Router02.removeLiquidityETHWithPermit(address,uint256,uint256,uint256,address,uint256,bool,uint8,bytes32,bytes32)"><code class="function-signature">removeLiquidityETHWithPermit(address token, uint256 liquidity, uint256 amountTokenMin, uint256 amountETHMin, address to, uint256 deadline, bool approveMax, uint8 v, bytes32 r, bytes32 s)</code></a></li><li><a href="#IUniswapV2Router02.swapExactTokensForTokens(uint256,uint256,address[],address,uint256)"><code class="function-signature">swapExactTokensForTokens(uint256 amountIn, uint256 amountOutMin, address[] path, address to, uint256 deadline)</code></a></li><li><a href="#IUniswapV2Router02.swapTokensForExactTokens(uint256,uint256,address[],address,uint256)"><code class="function-signature">swapTokensForExactTokens(uint256 amountOut, uint256 amountInMax, address[] path, address to, uint256 deadline)</code></a></li><li><a href="#IUniswapV2Router02.swapExactETHForTokens(uint256,address[],address,uint256)"><code class="function-signature">swapExactETHForTokens(uint256 amountOutMin, address[] path, address to, uint256 deadline)</code></a></li><li><a href="#IUniswapV2Router02.swapTokensForExactETH(uint256,uint256,address[],address,uint256)"><code class="function-signature">swapTokensForExactETH(uint256 amountOut, uint256 amountInMax, address[] path, address to, uint256 deadline)</code></a></li><li><a href="#IUniswapV2Router02.swapExactTokensForETH(uint256,uint256,address[],address,uint256)"><code class="function-signature">swapExactTokensForETH(uint256 amountIn, uint256 amountOutMin, address[] path, address to, uint256 deadline)</code></a></li><li><a href="#IUniswapV2Router02.swapETHForExactTokens(uint256,address[],address,uint256)"><code class="function-signature">swapETHForExactTokens(uint256 amountOut, address[] path, address to, uint256 deadline)</code></a></li></ul></div>
 
 
 
-<h4><a class="anchor" aria-hidden="true" id="IUniswapV2Router01.factory()"></a><code class="function-signature">factory() <span class="return-arrow">→</span> <span class="return-type">address</span></code><span class="function-visibility">external</span></h4>
+<h4><a class="anchor" aria-hidden="true" id="IUniswapV2Router02.factory()"></a><code class="function-signature">factory() <span class="return-arrow">→</span> <span class="return-type">address</span></code><span class="function-visibility">external</span></h4>
 
 
 
 
 
-<h4><a class="anchor" aria-hidden="true" id="IUniswapV2Router01.quote(uint256,uint256,uint256)"></a><code class="function-signature">quote(uint256 amountA, uint256 reserveA, uint256 reserveB) <span class="return-arrow">→</span> <span class="return-type">uint256</span></code><span class="function-visibility">external</span></h4>
+<h4><a class="anchor" aria-hidden="true" id="IUniswapV2Router02.quote(uint256,uint256,uint256)"></a><code class="function-signature">quote(uint256 amountA, uint256 reserveA, uint256 reserveB) <span class="return-arrow">→</span> <span class="return-type">uint256</span></code><span class="function-visibility">external</span></h4>
 
 
 
 
 
-<h4><a class="anchor" aria-hidden="true" id="IUniswapV2Router01.getAmountOut(uint256,uint256,uint256)"></a><code class="function-signature">getAmountOut(uint256 amountIn, uint256 reserveIn, uint256 reserveOut) <span class="return-arrow">→</span> <span class="return-type">uint256</span></code><span class="function-visibility">external</span></h4>
+<h4><a class="anchor" aria-hidden="true" id="IUniswapV2Router02.getAmountOut(uint256,uint256,uint256)"></a><code class="function-signature">getAmountOut(uint256 amountIn, uint256 reserveIn, uint256 reserveOut) <span class="return-arrow">→</span> <span class="return-type">uint256</span></code><span class="function-visibility">external</span></h4>
 
 
 
 
 
-<h4><a class="anchor" aria-hidden="true" id="IUniswapV2Router01.getAmountIn(uint256,uint256,uint256)"></a><code class="function-signature">getAmountIn(uint256 amountOut, uint256 reserveIn, uint256 reserveOut) <span class="return-arrow">→</span> <span class="return-type">uint256</span></code><span class="function-visibility">external</span></h4>
+<h4><a class="anchor" aria-hidden="true" id="IUniswapV2Router02.getAmountIn(uint256,uint256,uint256)"></a><code class="function-signature">getAmountIn(uint256 amountOut, uint256 reserveIn, uint256 reserveOut) <span class="return-arrow">→</span> <span class="return-type">uint256</span></code><span class="function-visibility">external</span></h4>
 
 
 
 
 
-<h4><a class="anchor" aria-hidden="true" id="IUniswapV2Router01.getAmountsOut(uint256,address[])"></a><code class="function-signature">getAmountsOut(uint256 amountIn, address[] path) <span class="return-arrow">→</span> <span class="return-type">uint256[]</span></code><span class="function-visibility">external</span></h4>
+<h4><a class="anchor" aria-hidden="true" id="IUniswapV2Router02.getAmountsOut(uint256,address[])"></a><code class="function-signature">getAmountsOut(uint256 amountIn, address[] path) <span class="return-arrow">→</span> <span class="return-type">uint256[]</span></code><span class="function-visibility">external</span></h4>
 
 
 
 
 
-<h4><a class="anchor" aria-hidden="true" id="IUniswapV2Router01.getAmountsIn(uint256,address[])"></a><code class="function-signature">getAmountsIn(uint256 amountOut, address[] path) <span class="return-arrow">→</span> <span class="return-type">uint256[]</span></code><span class="function-visibility">external</span></h4>
+<h4><a class="anchor" aria-hidden="true" id="IUniswapV2Router02.getAmountsIn(uint256,address[])"></a><code class="function-signature">getAmountsIn(uint256 amountOut, address[] path) <span class="return-arrow">→</span> <span class="return-type">uint256[]</span></code><span class="function-visibility">external</span></h4>
 
 
 
 
 
-<h4><a class="anchor" aria-hidden="true" id="IUniswapV2Router01.WETH()"></a><code class="function-signature">WETH() <span class="return-arrow">→</span> <span class="return-type">address</span></code><span class="function-visibility">external</span></h4>
+<h4><a class="anchor" aria-hidden="true" id="IUniswapV2Router02.WETH()"></a><code class="function-signature">WETH() <span class="return-arrow">→</span> <span class="return-type">address</span></code><span class="function-visibility">external</span></h4>
 
 
 
 
 
-<h4><a class="anchor" aria-hidden="true" id="IUniswapV2Router01.addLiquidity(address,address,uint256,uint256,uint256,uint256,address,uint256)"></a><code class="function-signature">addLiquidity(address tokenA, address tokenB, uint256 amountADesired, uint256 amountBDesired, uint256 amountAMin, uint256 amountBMin, address to, uint256 deadline) <span class="return-arrow">→</span> <span class="return-type">uint256,uint256,uint256</span></code><span class="function-visibility">external</span></h4>
+<h4><a class="anchor" aria-hidden="true" id="IUniswapV2Router02.addLiquidity(address,address,uint256,uint256,uint256,uint256,address,uint256)"></a><code class="function-signature">addLiquidity(address tokenA, address tokenB, uint256 amountADesired, uint256 amountBDesired, uint256 amountAMin, uint256 amountBMin, address to, uint256 deadline) <span class="return-arrow">→</span> <span class="return-type">uint256,uint256,uint256</span></code><span class="function-visibility">external</span></h4>
 
 
 
 
 
-<h4><a class="anchor" aria-hidden="true" id="IUniswapV2Router01.addLiquidityETH(address,uint256,uint256,uint256,address,uint256)"></a><code class="function-signature">addLiquidityETH(address token, uint256 amountTokenDesired, uint256 amountTokenMin, uint256 amountETHMin, address to, uint256 deadline) <span class="return-arrow">→</span> <span class="return-type">uint256,uint256,uint256</span></code><span class="function-visibility">external</span></h4>
+<h4><a class="anchor" aria-hidden="true" id="IUniswapV2Router02.addLiquidityETH(address,uint256,uint256,uint256,address,uint256)"></a><code class="function-signature">addLiquidityETH(address token, uint256 amountTokenDesired, uint256 amountTokenMin, uint256 amountETHMin, address to, uint256 deadline) <span class="return-arrow">→</span> <span class="return-type">uint256,uint256,uint256</span></code><span class="function-visibility">external</span></h4>
 
 
 
 
 
-<h4><a class="anchor" aria-hidden="true" id="IUniswapV2Router01.removeLiquidity(address,address,uint256,uint256,uint256,address,uint256)"></a><code class="function-signature">removeLiquidity(address tokenA, address tokenB, uint256 liquidity, uint256 amountAMin, uint256 amountBMin, address to, uint256 deadline) <span class="return-arrow">→</span> <span class="return-type">uint256,uint256</span></code><span class="function-visibility">external</span></h4>
+<h4><a class="anchor" aria-hidden="true" id="IUniswapV2Router02.removeLiquidity(address,address,uint256,uint256,uint256,address,uint256)"></a><code class="function-signature">removeLiquidity(address tokenA, address tokenB, uint256 liquidity, uint256 amountAMin, uint256 amountBMin, address to, uint256 deadline) <span class="return-arrow">→</span> <span class="return-type">uint256,uint256</span></code><span class="function-visibility">external</span></h4>
 
 
 
 
 
-<h4><a class="anchor" aria-hidden="true" id="IUniswapV2Router01.removeLiquidityETH(address,uint256,uint256,uint256,address,uint256)"></a><code class="function-signature">removeLiquidityETH(address token, uint256 liquidity, uint256 amountTokenMin, uint256 amountETHMin, address to, uint256 deadline) <span class="return-arrow">→</span> <span class="return-type">uint256,uint256</span></code><span class="function-visibility">external</span></h4>
+<h4><a class="anchor" aria-hidden="true" id="IUniswapV2Router02.removeLiquidityETH(address,uint256,uint256,uint256,address,uint256)"></a><code class="function-signature">removeLiquidityETH(address token, uint256 liquidity, uint256 amountTokenMin, uint256 amountETHMin, address to, uint256 deadline) <span class="return-arrow">→</span> <span class="return-type">uint256,uint256</span></code><span class="function-visibility">external</span></h4>
 
 
 
 
 
-<h4><a class="anchor" aria-hidden="true" id="IUniswapV2Router01.removeLiquidityWithPermit(address,address,uint256,uint256,uint256,address,uint256,bool,uint8,bytes32,bytes32)"></a><code class="function-signature">removeLiquidityWithPermit(address tokenA, address tokenB, uint256 liquidity, uint256 amountAMin, uint256 amountBMin, address to, uint256 deadline, bool approveMax, uint8 v, bytes32 r, bytes32 s) <span class="return-arrow">→</span> <span class="return-type">uint256,uint256</span></code><span class="function-visibility">external</span></h4>
+<h4><a class="anchor" aria-hidden="true" id="IUniswapV2Router02.removeLiquidityWithPermit(address,address,uint256,uint256,uint256,address,uint256,bool,uint8,bytes32,bytes32)"></a><code class="function-signature">removeLiquidityWithPermit(address tokenA, address tokenB, uint256 liquidity, uint256 amountAMin, uint256 amountBMin, address to, uint256 deadline, bool approveMax, uint8 v, bytes32 r, bytes32 s) <span class="return-arrow">→</span> <span class="return-type">uint256,uint256</span></code><span class="function-visibility">external</span></h4>
 
 
 
 
 
-<h4><a class="anchor" aria-hidden="true" id="IUniswapV2Router01.removeLiquidityETHWithPermit(address,uint256,uint256,uint256,address,uint256,bool,uint8,bytes32,bytes32)"></a><code class="function-signature">removeLiquidityETHWithPermit(address token, uint256 liquidity, uint256 amountTokenMin, uint256 amountETHMin, address to, uint256 deadline, bool approveMax, uint8 v, bytes32 r, bytes32 s) <span class="return-arrow">→</span> <span class="return-type">uint256,uint256</span></code><span class="function-visibility">external</span></h4>
+<h4><a class="anchor" aria-hidden="true" id="IUniswapV2Router02.removeLiquidityETHWithPermit(address,uint256,uint256,uint256,address,uint256,bool,uint8,bytes32,bytes32)"></a><code class="function-signature">removeLiquidityETHWithPermit(address token, uint256 liquidity, uint256 amountTokenMin, uint256 amountETHMin, address to, uint256 deadline, bool approveMax, uint8 v, bytes32 r, bytes32 s) <span class="return-arrow">→</span> <span class="return-type">uint256,uint256</span></code><span class="function-visibility">external</span></h4>
 
 
 
 
 
-<h4><a class="anchor" aria-hidden="true" id="IUniswapV2Router01.swapExactTokensForTokens(uint256,uint256,address[],address,uint256)"></a><code class="function-signature">swapExactTokensForTokens(uint256 amountIn, uint256 amountOutMin, address[] path, address to, uint256 deadline) <span class="return-arrow">→</span> <span class="return-type">uint256[]</span></code><span class="function-visibility">external</span></h4>
+<h4><a class="anchor" aria-hidden="true" id="IUniswapV2Router02.swapExactTokensForTokens(uint256,uint256,address[],address,uint256)"></a><code class="function-signature">swapExactTokensForTokens(uint256 amountIn, uint256 amountOutMin, address[] path, address to, uint256 deadline) <span class="return-arrow">→</span> <span class="return-type">uint256[]</span></code><span class="function-visibility">external</span></h4>
 
 
 
 
 
-<h4><a class="anchor" aria-hidden="true" id="IUniswapV2Router01.swapTokensForExactTokens(uint256,uint256,address[],address,uint256)"></a><code class="function-signature">swapTokensForExactTokens(uint256 amountOut, uint256 amountInMax, address[] path, address to, uint256 deadline) <span class="return-arrow">→</span> <span class="return-type">uint256[]</span></code><span class="function-visibility">external</span></h4>
+<h4><a class="anchor" aria-hidden="true" id="IUniswapV2Router02.swapTokensForExactTokens(uint256,uint256,address[],address,uint256)"></a><code class="function-signature">swapTokensForExactTokens(uint256 amountOut, uint256 amountInMax, address[] path, address to, uint256 deadline) <span class="return-arrow">→</span> <span class="return-type">uint256[]</span></code><span class="function-visibility">external</span></h4>
 
 
 
 
 
-<h4><a class="anchor" aria-hidden="true" id="IUniswapV2Router01.swapExactETHForTokens(uint256,address[],address,uint256)"></a><code class="function-signature">swapExactETHForTokens(uint256 amountOutMin, address[] path, address to, uint256 deadline) <span class="return-arrow">→</span> <span class="return-type">uint256[]</span></code><span class="function-visibility">external</span></h4>
+<h4><a class="anchor" aria-hidden="true" id="IUniswapV2Router02.swapExactETHForTokens(uint256,address[],address,uint256)"></a><code class="function-signature">swapExactETHForTokens(uint256 amountOutMin, address[] path, address to, uint256 deadline) <span class="return-arrow">→</span> <span class="return-type">uint256[]</span></code><span class="function-visibility">external</span></h4>
 
 
 
 
 
-<h4><a class="anchor" aria-hidden="true" id="IUniswapV2Router01.swapTokensForExactETH(uint256,uint256,address[],address,uint256)"></a><code class="function-signature">swapTokensForExactETH(uint256 amountOut, uint256 amountInMax, address[] path, address to, uint256 deadline) <span class="return-arrow">→</span> <span class="return-type">uint256[]</span></code><span class="function-visibility">external</span></h4>
+<h4><a class="anchor" aria-hidden="true" id="IUniswapV2Router02.swapTokensForExactETH(uint256,uint256,address[],address,uint256)"></a><code class="function-signature">swapTokensForExactETH(uint256 amountOut, uint256 amountInMax, address[] path, address to, uint256 deadline) <span class="return-arrow">→</span> <span class="return-type">uint256[]</span></code><span class="function-visibility">external</span></h4>
 
 
 
 
 
-<h4><a class="anchor" aria-hidden="true" id="IUniswapV2Router01.swapExactTokensForETH(uint256,uint256,address[],address,uint256)"></a><code class="function-signature">swapExactTokensForETH(uint256 amountIn, uint256 amountOutMin, address[] path, address to, uint256 deadline) <span class="return-arrow">→</span> <span class="return-type">uint256[]</span></code><span class="function-visibility">external</span></h4>
+<h4><a class="anchor" aria-hidden="true" id="IUniswapV2Router02.swapExactTokensForETH(uint256,uint256,address[],address,uint256)"></a><code class="function-signature">swapExactTokensForETH(uint256 amountIn, uint256 amountOutMin, address[] path, address to, uint256 deadline) <span class="return-arrow">→</span> <span class="return-type">uint256[]</span></code><span class="function-visibility">external</span></h4>
 
 
 
 
 
-<h4><a class="anchor" aria-hidden="true" id="IUniswapV2Router01.swapETHForExactTokens(uint256,address[],address,uint256)"></a><code class="function-signature">swapETHForExactTokens(uint256 amountOut, address[] path, address to, uint256 deadline) <span class="return-arrow">→</span> <span class="return-type">uint256[]</span></code><span class="function-visibility">external</span></h4>
+<h4><a class="anchor" aria-hidden="true" id="IUniswapV2Router02.swapETHForExactTokens(uint256,address[],address,uint256)"></a><code class="function-signature">swapETHForExactTokens(uint256 amountOut, address[] path, address to, uint256 deadline) <span class="return-arrow">→</span> <span class="return-type">uint256[]</span></code><span class="function-visibility">external</span></h4>
 
 
 
@@ -950,11 +950,45 @@ title: Uniswap
 
 
 
+### `TransferHelper`
+
+
+
+<div class="contract-index"><span class="contract-index-title">Functions</span><ul><li><a href="#TransferHelper.safeApprove(address,address,uint256)"><code class="function-signature">safeApprove(address token, address to, uint256 value)</code></a></li><li><a href="#TransferHelper.safeTransfer(address,address,uint256)"><code class="function-signature">safeTransfer(address token, address to, uint256 value)</code></a></li><li><a href="#TransferHelper.safeTransferFrom(address,address,address,uint256)"><code class="function-signature">safeTransferFrom(address token, address from, address to, uint256 value)</code></a></li><li><a href="#TransferHelper.safeTransferETH(address,uint256)"><code class="function-signature">safeTransferETH(address to, uint256 value)</code></a></li></ul></div>
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="TransferHelper.safeApprove(address,address,uint256)"></a><code class="function-signature">safeApprove(address token, address to, uint256 value)</code><span class="function-visibility">internal</span></h4>
+
+
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="TransferHelper.safeTransfer(address,address,uint256)"></a><code class="function-signature">safeTransfer(address token, address to, uint256 value)</code><span class="function-visibility">internal</span></h4>
+
+
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="TransferHelper.safeTransferFrom(address,address,address,uint256)"></a><code class="function-signature">safeTransferFrom(address token, address from, address to, uint256 value)</code><span class="function-visibility">internal</span></h4>
+
+
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="TransferHelper.safeTransferETH(address,uint256)"></a><code class="function-signature">safeTransferETH(address to, uint256 value)</code><span class="function-visibility">internal</span></h4>
+
+
+
+
+
+
+
 ### `UniswapV2Library`
 
 
 
-<div class="contract-index"><span class="contract-index-title">Functions</span><ul><li><a href="#UniswapV2Library.sortTokens(address,address)"><code class="function-signature">sortTokens(address tokenA, address tokenB)</code></a></li><li><a href="#UniswapV2Library.exchangeFor(address,address)"><code class="function-signature">exchangeFor(address tokenA, address tokenB)</code></a></li><li><a href="#UniswapV2Library.getReserves(address,address)"><code class="function-signature">getReserves(address tokenA, address tokenB)</code></a></li><li><a href="#UniswapV2Library.quote(uint256,uint256,uint256)"><code class="function-signature">quote(uint256 amountA, uint256 reserveA, uint256 reserveB)</code></a></li><li><a href="#UniswapV2Library.getAmountOut(uint256,uint256,uint256)"><code class="function-signature">getAmountOut(uint256 amountIn, uint256 reserveIn, uint256 reserveOut)</code></a></li><li><a href="#UniswapV2Library.getAmountIn(uint256,uint256,uint256)"><code class="function-signature">getAmountIn(uint256 amountOut, uint256 reserveIn, uint256 reserveOut)</code></a></li><li><a href="#UniswapV2Library.getAmountsOut(uint256,address[])"><code class="function-signature">getAmountsOut(uint256 amountIn, address[] path)</code></a></li><li><a href="#UniswapV2Library.getAmountsIn(uint256,address[])"><code class="function-signature">getAmountsIn(uint256 amountOut, address[] path)</code></a></li><li class="inherited"><a href="uniswap#IUniswapV2Library.factory()"><code class="function-signature">factory()</code></a></li></ul></div>
+<div class="contract-index"><span class="contract-index-title">Functions</span><ul><li><a href="#UniswapV2Library.sortTokens(address,address)"><code class="function-signature">sortTokens(address tokenA, address tokenB)</code></a></li><li><a href="#UniswapV2Library.pairFor(address,address,address)"><code class="function-signature">pairFor(address factory, address tokenA, address tokenB)</code></a></li><li><a href="#UniswapV2Library.getReserves(address,address,address)"><code class="function-signature">getReserves(address factory, address tokenA, address tokenB)</code></a></li><li><a href="#UniswapV2Library.quote(uint256,uint256,uint256)"><code class="function-signature">quote(uint256 amountA, uint256 reserveA, uint256 reserveB)</code></a></li><li><a href="#UniswapV2Library.getAmountOut(uint256,uint256,uint256)"><code class="function-signature">getAmountOut(uint256 amountIn, uint256 reserveIn, uint256 reserveOut)</code></a></li><li><a href="#UniswapV2Library.getAmountIn(uint256,uint256,uint256)"><code class="function-signature">getAmountIn(uint256 amountOut, uint256 reserveIn, uint256 reserveOut)</code></a></li><li><a href="#UniswapV2Library.getAmountsOut(address,uint256,address[])"><code class="function-signature">getAmountsOut(address factory, uint256 amountIn, address[] path)</code></a></li><li><a href="#UniswapV2Library.getAmountsIn(address,uint256,address[])"><code class="function-signature">getAmountsIn(address factory, uint256 amountOut, address[] path)</code></a></li></ul></div>
 
 
 
@@ -964,43 +998,43 @@ title: Uniswap
 
 
 
-<h4><a class="anchor" aria-hidden="true" id="UniswapV2Library.exchangeFor(address,address)"></a><code class="function-signature">exchangeFor(address tokenA, address tokenB) <span class="return-arrow">→</span> <span class="return-type">address</span></code><span class="function-visibility">public</span></h4>
+<h4><a class="anchor" aria-hidden="true" id="UniswapV2Library.pairFor(address,address,address)"></a><code class="function-signature">pairFor(address factory, address tokenA, address tokenB) <span class="return-arrow">→</span> <span class="return-type">address</span></code><span class="function-visibility">internal</span></h4>
 
 
 
 
 
-<h4><a class="anchor" aria-hidden="true" id="UniswapV2Library.getReserves(address,address)"></a><code class="function-signature">getReserves(address tokenA, address tokenB) <span class="return-arrow">→</span> <span class="return-type">uint256,uint256</span></code><span class="function-visibility">internal</span></h4>
+<h4><a class="anchor" aria-hidden="true" id="UniswapV2Library.getReserves(address,address,address)"></a><code class="function-signature">getReserves(address factory, address tokenA, address tokenB) <span class="return-arrow">→</span> <span class="return-type">uint256,uint256</span></code><span class="function-visibility">internal</span></h4>
 
 
 
 
 
-<h4><a class="anchor" aria-hidden="true" id="UniswapV2Library.quote(uint256,uint256,uint256)"></a><code class="function-signature">quote(uint256 amountA, uint256 reserveA, uint256 reserveB) <span class="return-arrow">→</span> <span class="return-type">uint256</span></code><span class="function-visibility">public</span></h4>
+<h4><a class="anchor" aria-hidden="true" id="UniswapV2Library.quote(uint256,uint256,uint256)"></a><code class="function-signature">quote(uint256 amountA, uint256 reserveA, uint256 reserveB) <span class="return-arrow">→</span> <span class="return-type">uint256</span></code><span class="function-visibility">internal</span></h4>
 
 
 
 
 
-<h4><a class="anchor" aria-hidden="true" id="UniswapV2Library.getAmountOut(uint256,uint256,uint256)"></a><code class="function-signature">getAmountOut(uint256 amountIn, uint256 reserveIn, uint256 reserveOut) <span class="return-arrow">→</span> <span class="return-type">uint256</span></code><span class="function-visibility">public</span></h4>
+<h4><a class="anchor" aria-hidden="true" id="UniswapV2Library.getAmountOut(uint256,uint256,uint256)"></a><code class="function-signature">getAmountOut(uint256 amountIn, uint256 reserveIn, uint256 reserveOut) <span class="return-arrow">→</span> <span class="return-type">uint256</span></code><span class="function-visibility">internal</span></h4>
 
 
 
 
 
-<h4><a class="anchor" aria-hidden="true" id="UniswapV2Library.getAmountIn(uint256,uint256,uint256)"></a><code class="function-signature">getAmountIn(uint256 amountOut, uint256 reserveIn, uint256 reserveOut) <span class="return-arrow">→</span> <span class="return-type">uint256</span></code><span class="function-visibility">public</span></h4>
+<h4><a class="anchor" aria-hidden="true" id="UniswapV2Library.getAmountIn(uint256,uint256,uint256)"></a><code class="function-signature">getAmountIn(uint256 amountOut, uint256 reserveIn, uint256 reserveOut) <span class="return-arrow">→</span> <span class="return-type">uint256</span></code><span class="function-visibility">internal</span></h4>
 
 
 
 
 
-<h4><a class="anchor" aria-hidden="true" id="UniswapV2Library.getAmountsOut(uint256,address[])"></a><code class="function-signature">getAmountsOut(uint256 amountIn, address[] path) <span class="return-arrow">→</span> <span class="return-type">uint256[]</span></code><span class="function-visibility">public</span></h4>
+<h4><a class="anchor" aria-hidden="true" id="UniswapV2Library.getAmountsOut(address,uint256,address[])"></a><code class="function-signature">getAmountsOut(address factory, uint256 amountIn, address[] path) <span class="return-arrow">→</span> <span class="return-type">uint256[]</span></code><span class="function-visibility">internal</span></h4>
 
 
 
 
 
-<h4><a class="anchor" aria-hidden="true" id="UniswapV2Library.getAmountsIn(uint256,address[])"></a><code class="function-signature">getAmountsIn(uint256 amountOut, address[] path) <span class="return-arrow">→</span> <span class="return-type">uint256[]</span></code><span class="function-visibility">public</span></h4>
+<h4><a class="anchor" aria-hidden="true" id="UniswapV2Library.getAmountsIn(address,uint256,address[])"></a><code class="function-signature">getAmountsIn(address factory, uint256 amountOut, address[] path) <span class="return-arrow">→</span> <span class="return-type">uint256[]</span></code><span class="function-visibility">internal</span></h4>
 
 
 
@@ -1008,99 +1042,171 @@ title: Uniswap
 
 
 
-### `UniswapV2Router01`
+### `UniswapV2Router02`
 
 
 
-<div class="contract-index"><span class="contract-index-title">Functions</span><ul><li><a href="#UniswapV2Router01.constructor(address,contract IUniswapV2Factory)"><code class="function-signature">constructor(address _WETH, contract IUniswapV2Factory _factory)</code></a></li><li><a href="#UniswapV2Router01.fallback()"><code class="function-signature">fallback()</code></a></li><li><a href="#UniswapV2Router01.pairFor(address,address)"><code class="function-signature">pairFor(address tokenA, address tokenB)</code></a></li><li><a href="#UniswapV2Router01.addLiquidity(address,address,uint256,uint256,uint256,uint256,address,uint256)"><code class="function-signature">addLiquidity(address tokenA, address tokenB, uint256 amountADesired, uint256 amountBDesired, uint256 amountAMin, uint256 amountBMin, address to, uint256 deadline)</code></a></li><li><a href="#UniswapV2Router01.addLiquidityETH(address,uint256,uint256,uint256,address,uint256)"><code class="function-signature">addLiquidityETH(address token, uint256 amountTokenDesired, uint256 amountTokenMin, uint256 amountETHMin, address to, uint256 deadline)</code></a></li><li><a href="#UniswapV2Router01.removeLiquidity(address,address,uint256,uint256,uint256,address,uint256)"><code class="function-signature">removeLiquidity(address tokenA, address tokenB, uint256 liquidity, uint256 amountAMin, uint256 amountBMin, address to, uint256 deadline)</code></a></li><li><a href="#UniswapV2Router01.removeLiquidityETH(address,uint256,uint256,uint256,address,uint256)"><code class="function-signature">removeLiquidityETH(address token, uint256 liquidity, uint256 amountTokenMin, uint256 amountETHMin, address to, uint256 deadline)</code></a></li><li><a href="#UniswapV2Router01.removeLiquidityWithPermit(address,address,uint256,uint256,uint256,address,uint256,bool,uint8,bytes32,bytes32)"><code class="function-signature">removeLiquidityWithPermit(address tokenA, address tokenB, uint256 liquidity, uint256 amountAMin, uint256 amountBMin, address to, uint256 deadline, bool approveMax, uint8 v, bytes32 r, bytes32 s)</code></a></li><li><a href="#UniswapV2Router01.removeLiquidityETHWithPermit(address,uint256,uint256,uint256,address,uint256,bool,uint8,bytes32,bytes32)"><code class="function-signature">removeLiquidityETHWithPermit(address token, uint256 liquidity, uint256 amountTokenMin, uint256 amountETHMin, address to, uint256 deadline, bool approveMax, uint8 v, bytes32 r, bytes32 s)</code></a></li><li><a href="#UniswapV2Router01.swapExactTokensForTokens(uint256,uint256,address[],address,uint256)"><code class="function-signature">swapExactTokensForTokens(uint256 amountIn, uint256 amountOutMin, address[] path, address to, uint256 deadline)</code></a></li><li><a href="#UniswapV2Router01.swapTokensForExactTokens(uint256,uint256,address[],address,uint256)"><code class="function-signature">swapTokensForExactTokens(uint256 amountOut, uint256 amountInMax, address[] path, address to, uint256 deadline)</code></a></li><li><a href="#UniswapV2Router01.swapExactETHForTokens(uint256,address[],address,uint256)"><code class="function-signature">swapExactETHForTokens(uint256 amountOutMin, address[] path, address to, uint256 deadline)</code></a></li><li><a href="#UniswapV2Router01.swapTokensForExactETH(uint256,uint256,address[],address,uint256)"><code class="function-signature">swapTokensForExactETH(uint256 amountOut, uint256 amountInMax, address[] path, address to, uint256 deadline)</code></a></li><li><a href="#UniswapV2Router01.swapExactTokensForETH(uint256,uint256,address[],address,uint256)"><code class="function-signature">swapExactTokensForETH(uint256 amountIn, uint256 amountOutMin, address[] path, address to, uint256 deadline)</code></a></li><li><a href="#UniswapV2Router01.swapETHForExactTokens(uint256,address[],address,uint256)"><code class="function-signature">swapETHForExactTokens(uint256 amountOut, address[] path, address to, uint256 deadline)</code></a></li><li class="inherited"><a href="uniswap#UniswapV2Library.sortTokens(address,address)"><code class="function-signature">sortTokens(address tokenA, address tokenB)</code></a></li><li class="inherited"><a href="uniswap#UniswapV2Library.exchangeFor(address,address)"><code class="function-signature">exchangeFor(address tokenA, address tokenB)</code></a></li><li class="inherited"><a href="uniswap#UniswapV2Library.getReserves(address,address)"><code class="function-signature">getReserves(address tokenA, address tokenB)</code></a></li><li class="inherited"><a href="uniswap#UniswapV2Library.quote(uint256,uint256,uint256)"><code class="function-signature">quote(uint256 amountA, uint256 reserveA, uint256 reserveB)</code></a></li><li class="inherited"><a href="uniswap#UniswapV2Library.getAmountOut(uint256,uint256,uint256)"><code class="function-signature">getAmountOut(uint256 amountIn, uint256 reserveIn, uint256 reserveOut)</code></a></li><li class="inherited"><a href="uniswap#UniswapV2Library.getAmountIn(uint256,uint256,uint256)"><code class="function-signature">getAmountIn(uint256 amountOut, uint256 reserveIn, uint256 reserveOut)</code></a></li><li class="inherited"><a href="uniswap#UniswapV2Library.getAmountsOut(uint256,address[])"><code class="function-signature">getAmountsOut(uint256 amountIn, address[] path)</code></a></li><li class="inherited"><a href="uniswap#UniswapV2Library.getAmountsIn(uint256,address[])"><code class="function-signature">getAmountsIn(uint256 amountOut, address[] path)</code></a></li><li class="inherited"><a href="uniswap#IUniswapV2Library.factory()"><code class="function-signature">factory()</code></a></li><li class="inherited"><a href="uniswap#IUniswapV2Router01.WETH()"><code class="function-signature">WETH()</code></a></li></ul></div>
+<div class="contract-index"><span class="contract-index-title">Functions</span><ul><li><a href="#UniswapV2Router02.constructor(address,address)"><code class="function-signature">constructor(address _factory, address _WETH)</code></a></li><li><a href="#UniswapV2Router02.fallback()"><code class="function-signature">fallback()</code></a></li><li><a href="#UniswapV2Router02._addLiquidity(address,address,uint256,uint256,uint256,uint256)"><code class="function-signature">_addLiquidity(address tokenA, address tokenB, uint256 amountADesired, uint256 amountBDesired, uint256 amountAMin, uint256 amountBMin)</code></a></li><li><a href="#UniswapV2Router02.addLiquidity(address,address,uint256,uint256,uint256,uint256,address,uint256)"><code class="function-signature">addLiquidity(address tokenA, address tokenB, uint256 amountADesired, uint256 amountBDesired, uint256 amountAMin, uint256 amountBMin, address to, uint256 deadline)</code></a></li><li><a href="#UniswapV2Router02.addLiquidityETH(address,uint256,uint256,uint256,address,uint256)"><code class="function-signature">addLiquidityETH(address token, uint256 amountTokenDesired, uint256 amountTokenMin, uint256 amountETHMin, address to, uint256 deadline)</code></a></li><li><a href="#UniswapV2Router02.removeLiquidity(address,address,uint256,uint256,uint256,address,uint256)"><code class="function-signature">removeLiquidity(address tokenA, address tokenB, uint256 liquidity, uint256 amountAMin, uint256 amountBMin, address to, uint256 deadline)</code></a></li><li><a href="#UniswapV2Router02.removeLiquidityETH(address,uint256,uint256,uint256,address,uint256)"><code class="function-signature">removeLiquidityETH(address token, uint256 liquidity, uint256 amountTokenMin, uint256 amountETHMin, address to, uint256 deadline)</code></a></li><li><a href="#UniswapV2Router02.removeLiquidityWithPermit(address,address,uint256,uint256,uint256,address,uint256,bool,uint8,bytes32,bytes32)"><code class="function-signature">removeLiquidityWithPermit(address tokenA, address tokenB, uint256 liquidity, uint256 amountAMin, uint256 amountBMin, address to, uint256 deadline, bool approveMax, uint8 v, bytes32 r, bytes32 s)</code></a></li><li><a href="#UniswapV2Router02.removeLiquidityETHWithPermit(address,uint256,uint256,uint256,address,uint256,bool,uint8,bytes32,bytes32)"><code class="function-signature">removeLiquidityETHWithPermit(address token, uint256 liquidity, uint256 amountTokenMin, uint256 amountETHMin, address to, uint256 deadline, bool approveMax, uint8 v, bytes32 r, bytes32 s)</code></a></li><li><a href="#UniswapV2Router02.removeLiquidityETHSupportingFeeOnTransferTokens(address,uint256,uint256,uint256,address,uint256)"><code class="function-signature">removeLiquidityETHSupportingFeeOnTransferTokens(address token, uint256 liquidity, uint256 amountTokenMin, uint256 amountETHMin, address to, uint256 deadline)</code></a></li><li><a href="#UniswapV2Router02.removeLiquidityETHWithPermitSupportingFeeOnTransferTokens(address,uint256,uint256,uint256,address,uint256,bool,uint8,bytes32,bytes32)"><code class="function-signature">removeLiquidityETHWithPermitSupportingFeeOnTransferTokens(address token, uint256 liquidity, uint256 amountTokenMin, uint256 amountETHMin, address to, uint256 deadline, bool approveMax, uint8 v, bytes32 r, bytes32 s)</code></a></li><li><a href="#UniswapV2Router02._swap(uint256[],address[],address)"><code class="function-signature">_swap(uint256[] amounts, address[] path, address _to)</code></a></li><li><a href="#UniswapV2Router02.swapExactTokensForTokens(uint256,uint256,address[],address,uint256)"><code class="function-signature">swapExactTokensForTokens(uint256 amountIn, uint256 amountOutMin, address[] path, address to, uint256 deadline)</code></a></li><li><a href="#UniswapV2Router02.swapTokensForExactTokens(uint256,uint256,address[],address,uint256)"><code class="function-signature">swapTokensForExactTokens(uint256 amountOut, uint256 amountInMax, address[] path, address to, uint256 deadline)</code></a></li><li><a href="#UniswapV2Router02.swapExactETHForTokens(uint256,address[],address,uint256)"><code class="function-signature">swapExactETHForTokens(uint256 amountOutMin, address[] path, address to, uint256 deadline)</code></a></li><li><a href="#UniswapV2Router02.swapTokensForExactETH(uint256,uint256,address[],address,uint256)"><code class="function-signature">swapTokensForExactETH(uint256 amountOut, uint256 amountInMax, address[] path, address to, uint256 deadline)</code></a></li><li><a href="#UniswapV2Router02.swapExactTokensForETH(uint256,uint256,address[],address,uint256)"><code class="function-signature">swapExactTokensForETH(uint256 amountIn, uint256 amountOutMin, address[] path, address to, uint256 deadline)</code></a></li><li><a href="#UniswapV2Router02.swapETHForExactTokens(uint256,address[],address,uint256)"><code class="function-signature">swapETHForExactTokens(uint256 amountOut, address[] path, address to, uint256 deadline)</code></a></li><li><a href="#UniswapV2Router02._swapSupportingFeeOnTransferTokens(address[],address)"><code class="function-signature">_swapSupportingFeeOnTransferTokens(address[] path, address _to)</code></a></li><li><a href="#UniswapV2Router02.swapExactTokensForTokensSupportingFeeOnTransferTokens(uint256,uint256,address[],address,uint256)"><code class="function-signature">swapExactTokensForTokensSupportingFeeOnTransferTokens(uint256 amountIn, uint256 amountOutMin, address[] path, address to, uint256 deadline)</code></a></li><li><a href="#UniswapV2Router02.swapExactETHForTokensSupportingFeeOnTransferTokens(uint256,address[],address,uint256)"><code class="function-signature">swapExactETHForTokensSupportingFeeOnTransferTokens(uint256 amountOutMin, address[] path, address to, uint256 deadline)</code></a></li><li><a href="#UniswapV2Router02.swapExactTokensForETHSupportingFeeOnTransferTokens(uint256,uint256,address[],address,uint256)"><code class="function-signature">swapExactTokensForETHSupportingFeeOnTransferTokens(uint256 amountIn, uint256 amountOutMin, address[] path, address to, uint256 deadline)</code></a></li><li><a href="#UniswapV2Router02.quote(uint256,uint256,uint256)"><code class="function-signature">quote(uint256 amountA, uint256 reserveA, uint256 reserveB)</code></a></li><li><a href="#UniswapV2Router02.getAmountOut(uint256,uint256,uint256)"><code class="function-signature">getAmountOut(uint256 amountIn, uint256 reserveIn, uint256 reserveOut)</code></a></li><li><a href="#UniswapV2Router02.getAmountIn(uint256,uint256,uint256)"><code class="function-signature">getAmountIn(uint256 amountOut, uint256 reserveIn, uint256 reserveOut)</code></a></li><li><a href="#UniswapV2Router02.getAmountsOut(uint256,address[])"><code class="function-signature">getAmountsOut(uint256 amountIn, address[] path)</code></a></li><li><a href="#UniswapV2Router02.getAmountsIn(uint256,address[])"><code class="function-signature">getAmountsIn(uint256 amountOut, address[] path)</code></a></li><li class="inherited"><a href="uniswap#IUniswapV2Router02.factory()"><code class="function-signature">factory()</code></a></li><li class="inherited"><a href="uniswap#IUniswapV2Router02.WETH()"><code class="function-signature">WETH()</code></a></li></ul></div>
 
 
 
-<h4><a class="anchor" aria-hidden="true" id="UniswapV2Router01.constructor(address,contract IUniswapV2Factory)"></a><code class="function-signature">constructor(address _WETH, contract IUniswapV2Factory _factory)</code><span class="function-visibility">public</span></h4>
+<h4><a class="anchor" aria-hidden="true" id="UniswapV2Router02.constructor(address,address)"></a><code class="function-signature">constructor(address _factory, address _WETH)</code><span class="function-visibility">public</span></h4>
 
 
 
 
 
-<h4><a class="anchor" aria-hidden="true" id="UniswapV2Router01.fallback()"></a><code class="function-signature">fallback()</code><span class="function-visibility">external</span></h4>
+<h4><a class="anchor" aria-hidden="true" id="UniswapV2Router02.fallback()"></a><code class="function-signature">fallback()</code><span class="function-visibility">external</span></h4>
 
 
 
 
 
-<h4><a class="anchor" aria-hidden="true" id="UniswapV2Router01.pairFor(address,address)"></a><code class="function-signature">pairFor(address tokenA, address tokenB) <span class="return-arrow">→</span> <span class="return-type">address</span></code><span class="function-visibility">public</span></h4>
+<h4><a class="anchor" aria-hidden="true" id="UniswapV2Router02._addLiquidity(address,address,uint256,uint256,uint256,uint256)"></a><code class="function-signature">_addLiquidity(address tokenA, address tokenB, uint256 amountADesired, uint256 amountBDesired, uint256 amountAMin, uint256 amountBMin) <span class="return-arrow">→</span> <span class="return-type">uint256,uint256</span></code><span class="function-visibility">internal</span></h4>
 
 
 
 
 
-<h4><a class="anchor" aria-hidden="true" id="UniswapV2Router01.addLiquidity(address,address,uint256,uint256,uint256,uint256,address,uint256)"></a><code class="function-signature">addLiquidity(address tokenA, address tokenB, uint256 amountADesired, uint256 amountBDesired, uint256 amountAMin, uint256 amountBMin, address to, uint256 deadline) <span class="return-arrow">→</span> <span class="return-type">uint256,uint256,uint256</span></code><span class="function-visibility">external</span></h4>
+<h4><a class="anchor" aria-hidden="true" id="UniswapV2Router02.addLiquidity(address,address,uint256,uint256,uint256,uint256,address,uint256)"></a><code class="function-signature">addLiquidity(address tokenA, address tokenB, uint256 amountADesired, uint256 amountBDesired, uint256 amountAMin, uint256 amountBMin, address to, uint256 deadline) <span class="return-arrow">→</span> <span class="return-type">uint256,uint256,uint256</span></code><span class="function-visibility">external</span></h4>
 
 
 
 
 
-<h4><a class="anchor" aria-hidden="true" id="UniswapV2Router01.addLiquidityETH(address,uint256,uint256,uint256,address,uint256)"></a><code class="function-signature">addLiquidityETH(address token, uint256 amountTokenDesired, uint256 amountTokenMin, uint256 amountETHMin, address to, uint256 deadline) <span class="return-arrow">→</span> <span class="return-type">uint256,uint256,uint256</span></code><span class="function-visibility">external</span></h4>
+<h4><a class="anchor" aria-hidden="true" id="UniswapV2Router02.addLiquidityETH(address,uint256,uint256,uint256,address,uint256)"></a><code class="function-signature">addLiquidityETH(address token, uint256 amountTokenDesired, uint256 amountTokenMin, uint256 amountETHMin, address to, uint256 deadline) <span class="return-arrow">→</span> <span class="return-type">uint256,uint256,uint256</span></code><span class="function-visibility">external</span></h4>
 
 
 
 
 
-<h4><a class="anchor" aria-hidden="true" id="UniswapV2Router01.removeLiquidity(address,address,uint256,uint256,uint256,address,uint256)"></a><code class="function-signature">removeLiquidity(address tokenA, address tokenB, uint256 liquidity, uint256 amountAMin, uint256 amountBMin, address to, uint256 deadline) <span class="return-arrow">→</span> <span class="return-type">uint256,uint256</span></code><span class="function-visibility">public</span></h4>
+<h4><a class="anchor" aria-hidden="true" id="UniswapV2Router02.removeLiquidity(address,address,uint256,uint256,uint256,address,uint256)"></a><code class="function-signature">removeLiquidity(address tokenA, address tokenB, uint256 liquidity, uint256 amountAMin, uint256 amountBMin, address to, uint256 deadline) <span class="return-arrow">→</span> <span class="return-type">uint256,uint256</span></code><span class="function-visibility">public</span></h4>
 
 
 
 
 
-<h4><a class="anchor" aria-hidden="true" id="UniswapV2Router01.removeLiquidityETH(address,uint256,uint256,uint256,address,uint256)"></a><code class="function-signature">removeLiquidityETH(address token, uint256 liquidity, uint256 amountTokenMin, uint256 amountETHMin, address to, uint256 deadline) <span class="return-arrow">→</span> <span class="return-type">uint256,uint256</span></code><span class="function-visibility">public</span></h4>
+<h4><a class="anchor" aria-hidden="true" id="UniswapV2Router02.removeLiquidityETH(address,uint256,uint256,uint256,address,uint256)"></a><code class="function-signature">removeLiquidityETH(address token, uint256 liquidity, uint256 amountTokenMin, uint256 amountETHMin, address to, uint256 deadline) <span class="return-arrow">→</span> <span class="return-type">uint256,uint256</span></code><span class="function-visibility">public</span></h4>
 
 
 
 
 
-<h4><a class="anchor" aria-hidden="true" id="UniswapV2Router01.removeLiquidityWithPermit(address,address,uint256,uint256,uint256,address,uint256,bool,uint8,bytes32,bytes32)"></a><code class="function-signature">removeLiquidityWithPermit(address tokenA, address tokenB, uint256 liquidity, uint256 amountAMin, uint256 amountBMin, address to, uint256 deadline, bool approveMax, uint8 v, bytes32 r, bytes32 s) <span class="return-arrow">→</span> <span class="return-type">uint256,uint256</span></code><span class="function-visibility">external</span></h4>
+<h4><a class="anchor" aria-hidden="true" id="UniswapV2Router02.removeLiquidityWithPermit(address,address,uint256,uint256,uint256,address,uint256,bool,uint8,bytes32,bytes32)"></a><code class="function-signature">removeLiquidityWithPermit(address tokenA, address tokenB, uint256 liquidity, uint256 amountAMin, uint256 amountBMin, address to, uint256 deadline, bool approveMax, uint8 v, bytes32 r, bytes32 s) <span class="return-arrow">→</span> <span class="return-type">uint256,uint256</span></code><span class="function-visibility">external</span></h4>
 
 
 
 
 
-<h4><a class="anchor" aria-hidden="true" id="UniswapV2Router01.removeLiquidityETHWithPermit(address,uint256,uint256,uint256,address,uint256,bool,uint8,bytes32,bytes32)"></a><code class="function-signature">removeLiquidityETHWithPermit(address token, uint256 liquidity, uint256 amountTokenMin, uint256 amountETHMin, address to, uint256 deadline, bool approveMax, uint8 v, bytes32 r, bytes32 s) <span class="return-arrow">→</span> <span class="return-type">uint256,uint256</span></code><span class="function-visibility">external</span></h4>
+<h4><a class="anchor" aria-hidden="true" id="UniswapV2Router02.removeLiquidityETHWithPermit(address,uint256,uint256,uint256,address,uint256,bool,uint8,bytes32,bytes32)"></a><code class="function-signature">removeLiquidityETHWithPermit(address token, uint256 liquidity, uint256 amountTokenMin, uint256 amountETHMin, address to, uint256 deadline, bool approveMax, uint8 v, bytes32 r, bytes32 s) <span class="return-arrow">→</span> <span class="return-type">uint256,uint256</span></code><span class="function-visibility">external</span></h4>
 
 
 
 
 
-<h4><a class="anchor" aria-hidden="true" id="UniswapV2Router01.swapExactTokensForTokens(uint256,uint256,address[],address,uint256)"></a><code class="function-signature">swapExactTokensForTokens(uint256 amountIn, uint256 amountOutMin, address[] path, address to, uint256 deadline) <span class="return-arrow">→</span> <span class="return-type">uint256[]</span></code><span class="function-visibility">external</span></h4>
+<h4><a class="anchor" aria-hidden="true" id="UniswapV2Router02.removeLiquidityETHSupportingFeeOnTransferTokens(address,uint256,uint256,uint256,address,uint256)"></a><code class="function-signature">removeLiquidityETHSupportingFeeOnTransferTokens(address token, uint256 liquidity, uint256 amountTokenMin, uint256 amountETHMin, address to, uint256 deadline) <span class="return-arrow">→</span> <span class="return-type">uint256</span></code><span class="function-visibility">public</span></h4>
 
 
 
 
 
-<h4><a class="anchor" aria-hidden="true" id="UniswapV2Router01.swapTokensForExactTokens(uint256,uint256,address[],address,uint256)"></a><code class="function-signature">swapTokensForExactTokens(uint256 amountOut, uint256 amountInMax, address[] path, address to, uint256 deadline) <span class="return-arrow">→</span> <span class="return-type">uint256[]</span></code><span class="function-visibility">external</span></h4>
+<h4><a class="anchor" aria-hidden="true" id="UniswapV2Router02.removeLiquidityETHWithPermitSupportingFeeOnTransferTokens(address,uint256,uint256,uint256,address,uint256,bool,uint8,bytes32,bytes32)"></a><code class="function-signature">removeLiquidityETHWithPermitSupportingFeeOnTransferTokens(address token, uint256 liquidity, uint256 amountTokenMin, uint256 amountETHMin, address to, uint256 deadline, bool approveMax, uint8 v, bytes32 r, bytes32 s) <span class="return-arrow">→</span> <span class="return-type">uint256</span></code><span class="function-visibility">external</span></h4>
 
 
 
 
 
-<h4><a class="anchor" aria-hidden="true" id="UniswapV2Router01.swapExactETHForTokens(uint256,address[],address,uint256)"></a><code class="function-signature">swapExactETHForTokens(uint256 amountOutMin, address[] path, address to, uint256 deadline) <span class="return-arrow">→</span> <span class="return-type">uint256[]</span></code><span class="function-visibility">external</span></h4>
+<h4><a class="anchor" aria-hidden="true" id="UniswapV2Router02._swap(uint256[],address[],address)"></a><code class="function-signature">_swap(uint256[] amounts, address[] path, address _to)</code><span class="function-visibility">internal</span></h4>
 
 
 
 
 
-<h4><a class="anchor" aria-hidden="true" id="UniswapV2Router01.swapTokensForExactETH(uint256,uint256,address[],address,uint256)"></a><code class="function-signature">swapTokensForExactETH(uint256 amountOut, uint256 amountInMax, address[] path, address to, uint256 deadline) <span class="return-arrow">→</span> <span class="return-type">uint256[]</span></code><span class="function-visibility">external</span></h4>
+<h4><a class="anchor" aria-hidden="true" id="UniswapV2Router02.swapExactTokensForTokens(uint256,uint256,address[],address,uint256)"></a><code class="function-signature">swapExactTokensForTokens(uint256 amountIn, uint256 amountOutMin, address[] path, address to, uint256 deadline) <span class="return-arrow">→</span> <span class="return-type">uint256[]</span></code><span class="function-visibility">external</span></h4>
 
 
 
 
 
-<h4><a class="anchor" aria-hidden="true" id="UniswapV2Router01.swapExactTokensForETH(uint256,uint256,address[],address,uint256)"></a><code class="function-signature">swapExactTokensForETH(uint256 amountIn, uint256 amountOutMin, address[] path, address to, uint256 deadline) <span class="return-arrow">→</span> <span class="return-type">uint256[]</span></code><span class="function-visibility">external</span></h4>
+<h4><a class="anchor" aria-hidden="true" id="UniswapV2Router02.swapTokensForExactTokens(uint256,uint256,address[],address,uint256)"></a><code class="function-signature">swapTokensForExactTokens(uint256 amountOut, uint256 amountInMax, address[] path, address to, uint256 deadline) <span class="return-arrow">→</span> <span class="return-type">uint256[]</span></code><span class="function-visibility">external</span></h4>
 
 
 
 
 
-<h4><a class="anchor" aria-hidden="true" id="UniswapV2Router01.swapETHForExactTokens(uint256,address[],address,uint256)"></a><code class="function-signature">swapETHForExactTokens(uint256 amountOut, address[] path, address to, uint256 deadline) <span class="return-arrow">→</span> <span class="return-type">uint256[]</span></code><span class="function-visibility">external</span></h4>
+<h4><a class="anchor" aria-hidden="true" id="UniswapV2Router02.swapExactETHForTokens(uint256,address[],address,uint256)"></a><code class="function-signature">swapExactETHForTokens(uint256 amountOutMin, address[] path, address to, uint256 deadline) <span class="return-arrow">→</span> <span class="return-type">uint256[]</span></code><span class="function-visibility">external</span></h4>
+
+
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="UniswapV2Router02.swapTokensForExactETH(uint256,uint256,address[],address,uint256)"></a><code class="function-signature">swapTokensForExactETH(uint256 amountOut, uint256 amountInMax, address[] path, address to, uint256 deadline) <span class="return-arrow">→</span> <span class="return-type">uint256[]</span></code><span class="function-visibility">external</span></h4>
+
+
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="UniswapV2Router02.swapExactTokensForETH(uint256,uint256,address[],address,uint256)"></a><code class="function-signature">swapExactTokensForETH(uint256 amountIn, uint256 amountOutMin, address[] path, address to, uint256 deadline) <span class="return-arrow">→</span> <span class="return-type">uint256[]</span></code><span class="function-visibility">external</span></h4>
+
+
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="UniswapV2Router02.swapETHForExactTokens(uint256,address[],address,uint256)"></a><code class="function-signature">swapETHForExactTokens(uint256 amountOut, address[] path, address to, uint256 deadline) <span class="return-arrow">→</span> <span class="return-type">uint256[]</span></code><span class="function-visibility">external</span></h4>
+
+
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="UniswapV2Router02._swapSupportingFeeOnTransferTokens(address[],address)"></a><code class="function-signature">_swapSupportingFeeOnTransferTokens(address[] path, address _to)</code><span class="function-visibility">internal</span></h4>
+
+
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="UniswapV2Router02.swapExactTokensForTokensSupportingFeeOnTransferTokens(uint256,uint256,address[],address,uint256)"></a><code class="function-signature">swapExactTokensForTokensSupportingFeeOnTransferTokens(uint256 amountIn, uint256 amountOutMin, address[] path, address to, uint256 deadline)</code><span class="function-visibility">external</span></h4>
+
+
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="UniswapV2Router02.swapExactETHForTokensSupportingFeeOnTransferTokens(uint256,address[],address,uint256)"></a><code class="function-signature">swapExactETHForTokensSupportingFeeOnTransferTokens(uint256 amountOutMin, address[] path, address to, uint256 deadline)</code><span class="function-visibility">external</span></h4>
+
+
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="UniswapV2Router02.swapExactTokensForETHSupportingFeeOnTransferTokens(uint256,uint256,address[],address,uint256)"></a><code class="function-signature">swapExactTokensForETHSupportingFeeOnTransferTokens(uint256 amountIn, uint256 amountOutMin, address[] path, address to, uint256 deadline)</code><span class="function-visibility">external</span></h4>
+
+
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="UniswapV2Router02.quote(uint256,uint256,uint256)"></a><code class="function-signature">quote(uint256 amountA, uint256 reserveA, uint256 reserveB) <span class="return-arrow">→</span> <span class="return-type">uint256</span></code><span class="function-visibility">public</span></h4>
+
+
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="UniswapV2Router02.getAmountOut(uint256,uint256,uint256)"></a><code class="function-signature">getAmountOut(uint256 amountIn, uint256 reserveIn, uint256 reserveOut) <span class="return-arrow">→</span> <span class="return-type">uint256</span></code><span class="function-visibility">public</span></h4>
+
+
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="UniswapV2Router02.getAmountIn(uint256,uint256,uint256)"></a><code class="function-signature">getAmountIn(uint256 amountOut, uint256 reserveIn, uint256 reserveOut) <span class="return-arrow">→</span> <span class="return-type">uint256</span></code><span class="function-visibility">public</span></h4>
+
+
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="UniswapV2Router02.getAmountsOut(uint256,address[])"></a><code class="function-signature">getAmountsOut(uint256 amountIn, address[] path) <span class="return-arrow">→</span> <span class="return-type">uint256[]</span></code><span class="function-visibility">public</span></h4>
+
+
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="UniswapV2Router02.getAmountsIn(uint256,address[])"></a><code class="function-signature">getAmountsIn(uint256 amountOut, address[] path) <span class="return-arrow">→</span> <span class="return-type">uint256[]</span></code><span class="function-visibility">public</span></h4>
 
 
 

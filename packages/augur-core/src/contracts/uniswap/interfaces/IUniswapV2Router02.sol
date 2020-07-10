@@ -1,6 +1,6 @@
 pragma solidity 0.5.15;
 
-interface IUniswapV2Router01 {
+interface IUniswapV2Router02 {
     function factory() external pure returns (address);
 
     function quote(uint amountA, uint reserveA, uint reserveB) external pure returns (uint amountB);

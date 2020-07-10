@@ -20,7 +20,7 @@ def test_augur_wallet_registry(contractsFixture, augur, universe, cash, reputati
     # Register a relay
     unstakeDelay = 2 * 7 * 24 * 60 * 60
     stakeManager.stakeForAddress(relayer, unstakeDelay, value=2*10**18, sender=relayOwner)
-    stakeManager.authorizeHub(relayer, relayHub.address, sender=relayOwner)
+    stakeManager.authorizeHubByOwner(relayer, relayHub.address, sender=relayOwner)
     relayHub.addRelayWorkers([relayer], sender=relayer)
     relayHub.registerRelayServer(0, 10, "url", sender=relayer)
 
@@ -69,16 +69,19 @@ def test_augur_wallet_registry(contractsFixture, augur, universe, cash, reputati
     baseFee = 0
 
     relayRequest = (
-        augurWalletRegistry.address,
-        augurWalletRepFaucetData,
-        (gasLimit,
-        gasPrice,
-        additionalFee,
-        baseFee),
         (account,
+        augurWalletRegistry.address,
+        0,
+        gasLimit,
         nonce,
+        augurWalletRepFaucetData),
+        (gasPrice,
+        additionalFee,
+        baseFee,
         relayer,
         augurWalletRegistry.address,
+        "",
+        0,
         augurWalletRegistry.address)
     )
 
@@ -131,16 +134,19 @@ def test_augur_wallet_registry(contractsFixture, augur, universe, cash, reputati
     nonce += 1
 
     relayRequest = (
-        augurWalletRegistry.address,
-        augurWalletCreateMarketData,
-        (gasLimit,
-        gasPrice,
-        additionalFee,
-        baseFee),
         (account,
+        augurWalletRegistry.address,
+        0,
+        gasLimit,
         nonce,
+        augurWalletCreateMarketData),
+        (gasPrice,
+        additionalFee,
+        baseFee,
         relayer,
         augurWalletRegistry.address,
+        "",
+        0,
         augurWalletRegistry.address)
     )
 
@@ -186,16 +192,19 @@ def test_augur_wallet_registry(contractsFixture, augur, universe, cash, reputati
     nonce += 1
 
     relayRequest = (
-        augurWalletRegistry.address,
-        augurWalletSendEthData,
-        (gasLimit,
-        gasPrice,
-        additionalFee,
-        baseFee),
         (account,
+        augurWalletRegistry.address,
+        0,
+        gasLimit,
         nonce,
+        augurWalletSendEthData),
+        (gasPrice,
+        additionalFee,
+        baseFee,
         relayer,
         augurWalletRegistry.address,
+        "",
+        0,
         augurWalletRegistry.address)
     )
 
@@ -240,7 +249,7 @@ def test_augur_wallet_registry_auto_create(contractsFixture, augur, universe, ca
     # Register a relay
     unstakeDelay = 2 * 7 * 24 * 60 * 60
     stakeManager.stakeForAddress(relayer, unstakeDelay, value=2*10**18, sender=relayOwner)
-    stakeManager.authorizeHub(relayer, relayHub.address, sender=relayOwner)
+    stakeManager.authorizeHubByOwner(relayer, relayHub.address, sender=relayOwner)
     relayHub.addRelayWorkers([relayer], sender=relayer)
     relayHub.registerRelayServer(0, 10, "url", sender=relayer)
 
@@ -285,16 +294,19 @@ def test_augur_wallet_registry_auto_create(contractsFixture, augur, universe, ca
     baseFee = 0
 
     relayRequest = (
-        augurWalletRegistry.address,
-        augurWalletRepFaucetData,
-        (gasLimit,
-        gasPrice,
-        additionalFee,
-        baseFee),
         (account,
+        augurWalletRegistry.address,
+        0,
+        gasLimit,
         nonce,
+        augurWalletRepFaucetData),
+        (gasPrice,
+        additionalFee,
+        baseFee,
         relayer,
         augurWalletRegistry.address,
+        "",
+        0,
         augurWalletRegistry.address)
     )
 
@@ -334,7 +346,7 @@ def test_augur_wallet_registry_fund_signer(contractsFixture, augur, universe, ca
     # Register a relay
     unstakeDelay = 2 * 7 * 24 * 60 * 60
     stakeManager.stakeForAddress(relayer, unstakeDelay, value=2*10**18, sender=relayOwner)
-    stakeManager.authorizeHub(relayer, relayHub.address, sender=relayOwner)
+    stakeManager.authorizeHubByOwner(relayer, relayHub.address, sender=relayOwner)
     relayHub.addRelayWorkers([relayer], sender=relayer)
     relayHub.registerRelayServer(0, 10, "url", sender=relayer)
 
@@ -374,16 +386,19 @@ def test_augur_wallet_registry_fund_signer(contractsFixture, augur, universe, ca
     baseFee = 0
 
     relayRequest = (
-        augurWalletRegistry.address,
-        augurWalletRepFaucetData,
-        (gasLimit,
-        gasPrice,
-        additionalFee,
-        baseFee),
         (account,
+        augurWalletRegistry.address,
+        0,
+        gasLimit,
         nonce,
+        augurWalletRepFaucetData),
+        (gasPrice,
+        additionalFee,
+        baseFee,
         relayer,
         augurWalletRegistry.address,
+        "",
+        0,
         augurWalletRegistry.address)
     )
 

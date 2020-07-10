@@ -29,6 +29,7 @@ import {
   TEN_TO_THE_EIGHTEENTH_POWER,
   MALFORMED_OUTCOME,
   CANCELORDER,
+  CANCELORDERS,
   CLAIMTRADINGPROCEEDS,
   BUYPARTICIPATIONTOKENS,
   REDEEMSTAKE,
@@ -99,7 +100,7 @@ export function getInfo(params: any, status: string, marketInfo: MarketData, isO
     tickSize
   ).toString();
 
-  const priceFormatted = formatDai(price, {decimals: getPrecision(String(tickSize), 2)})
+  const priceFormatted = formatDai(price, {decimals: getPrecision(String(tickSize), 2)});
 
   return {
     priceFormatted,
@@ -125,20 +126,17 @@ export default function setAlertText(alert: any, callback: Function) {
   if (!marketId) return;
   switch (alert.name.toUpperCase()) {
     // CancelOrder
-    case CANCELORDER: {
-      alert.title = 'Order Cancelled';
+    case CANCELORDER:
+    case CANCELORDERS: {
       loadMarketsInfoIfNotLoaded([marketId], () => {
-        if (alert.status !== TXEventName.Success) {
-          return;
-        }
         const marketInfo = selectMarket(marketId);
         if (marketInfo === null) return;
-        alert.description = marketInfo.description;
 
-        const { orderType, price, outcomeDescription } = getInfo(
+        const { orderType, outcomeDescription } = getInfo(
           alert.params,
           alert.status,
-          marketInfo
+          marketInfo,
+          marketInfo.marketType !== SCALAR
         );
         const quantity = alert.params.unmatchedShares
           ? alert.params.unmatchedShares.value
@@ -146,9 +144,15 @@ export default function setAlertText(alert: any, callback: Function) {
               alert.params.amount,
               createBigNumber(marketInfo.tickSize)
             );
-        alert.details = `${orderType}  ${
+
+        alert.title =
+          alert.status === TXEventName.Success
+            ? 'Order Cancelled'
+            : 'Cancelling Order';
+        alert.description = marketInfo.description;
+        alert.details = `${orderType} ${
           formatShares(quantity).formatted
-        } of ${outcomeDescription} @ ${formatDai(price).formatted}`;
+        } of ${outcomeDescription} @ ${alert.params.avgPrice.formatted}`;
       });
       break;
     }
@@ -166,7 +170,7 @@ export default function setAlertText(alert: any, callback: Function) {
         } claimed`;
         alert.id = alert.params.transactionHash;
       });
-      break;
+    break;
 
     // FeeWindow & Universe
     case BUY:
@@ -282,7 +286,8 @@ export default function setAlertText(alert: any, callback: Function) {
           const { orderType, amount, price, outcomeDescription } = getInfo(
             params,
             alert.status,
-            marketInfo
+            marketInfo,
+            marketInfo.marketType !== SCALAR
           );
           alert.details = `${orderType} ${
             formatShares(amount).formatted
@@ -325,7 +330,8 @@ export default function setAlertText(alert: any, callback: Function) {
           const { orderType, amount, price, outcomeDescription } = getInfo(
             params,
             alert.status,
-            marketInfo
+            marketInfo,
+            marketInfo.marketType !== SCALAR
           );
           alert.details = `${orderType}  ${formatShares(amount).formatted} ${
             originalQuantity
@@ -445,7 +451,8 @@ export default function setAlertText(alert: any, callback: Function) {
         const { orderType, amount, price, outcomeDescription } = getInfo(
           alert.params,
           alert.status,
-          marketInfo
+          marketInfo,
+          marketInfo.marketType !== SCALAR
         );
 
         alert.details = `${orderType}  ${

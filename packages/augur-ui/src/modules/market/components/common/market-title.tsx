@@ -1,7 +1,7 @@
 import React from 'react';
 import MarketLink from 'modules/market/components/market-link/market-link';
 import { buildMarketDescription } from 'modules/create-market/get-template';
-import { convertUTCUnixToFormattedDate } from 'utils/format-date';
+import { convertUnixToFormattedDate } from 'utils/format-date';
 import type {
   TemplateInput,
   ExtraInfoTemplate,
@@ -78,7 +78,7 @@ const MarketTemplateTitle: React.FC<MarketTemplateTitleProps> = ({
     userInput:
       i.type === TemplateInputType.ESTDATETIME ||
       i.type === TemplateInputType.DATETIME
-        ? convertUTCUnixToFormattedDate(Number(i.timestamp))
+        ? convertUnixToFormattedDate(Number(i.timestamp))
             .formattedLocalShortDateTimeWithTimezone
         : i.value,
     id: i.id,

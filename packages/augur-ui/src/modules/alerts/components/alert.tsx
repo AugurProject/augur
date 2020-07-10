@@ -70,7 +70,7 @@ const Alert = ({
             <>
               <span className={Styles.Timestamp}>
                 {
-                  convertUnixToFormattedDate(timestampInMilliseconds / 1000)
+                  timestampInMilliseconds && convertUnixToFormattedDate(timestampInMilliseconds / 1000)
                     .formattedLocalShortWithUtcOffset
                 }
               </span>
