@@ -12,8 +12,6 @@ pull_request_rules:
       merge:
         method: merge
         strict: smart
-        
-pull_request_rules:
   - name: Automatic Merge to dev
     conditions:
       - "#approved-reviews-by>=1"
