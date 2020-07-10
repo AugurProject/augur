@@ -111,8 +111,8 @@
     "showReloadModal": true,
     "averageBlocktime": 2000,
     "liteProvider": "jsonrpc",
-    "trackBestOffer": true,
-    "reportingOnly": true,
+    "trackBestOffer": false,
+    "reportingOnly": false,
     "fallbackProvider": "torus"
   },
   "averageBlocktime": 2000
