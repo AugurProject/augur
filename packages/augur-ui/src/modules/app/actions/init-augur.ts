@@ -25,7 +25,6 @@ import {
   NETWORK_NAMES,
   SIGNIN_SIGN_WALLET,
   MODAL_REPORTING_ONLY,
-  NETWORK_IDS,
 } from 'modules/common/constants';
 import { listenForStartUpEvents } from 'modules/events/actions/listen-to-updates';
 import { windowRef } from 'utils/window-ref';
