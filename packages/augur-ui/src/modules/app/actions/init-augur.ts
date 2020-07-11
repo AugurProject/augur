@@ -117,7 +117,7 @@ async function createDefaultProvider(config: SDKConfiguration) {
   if (config.networkId && isDevNetworkId(config.networkId)) {
     // In DEV, use local ethereum node
     return new JsonRpcProvider(config.ethereum.http);
-  } else if (windowRef.web3) {
+  } else if (windowRef.web3 || windowRef.ethereum) {
     // Use the provider on window if it exists, otherwise use torus provider
     return getWeb3Provider(windowRef);
   } else if (config.ui?.fallbackProvider === "jsonrpc" && config.ethereum.http) {
