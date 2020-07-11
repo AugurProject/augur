@@ -29,6 +29,7 @@ import {
   NETWORK_NAMES,
   SIGNIN_SIGN_WALLET,
   MODAL_REPORTING_ONLY,
+  NETWORK_IDS,
 } from 'modules/common/constants';
 import { getNetworkId } from 'modules/contracts/actions/contractCalls';
 import { listenForStartUpEvents } from 'modules/events/actions/listen-to-updates';
@@ -50,6 +51,8 @@ import logError from 'utils/log-error';
 import { showIndexedDbSize } from 'utils/show-indexed-db-size';
 import { tryToPersistStorage } from 'utils/storage-manager';
 import { windowRef } from 'utils/window-ref';
+import { createBigNumber } from 'utils/create-big-number';
+import detectEthereumProvider from '@metamask/detect-provider'
 
 const NETWORK_ID_POLL_INTERVAL_DURATION = 10000;
 
@@ -97,14 +100,17 @@ async function loadAccountIfStored(dispatch: ThunkDispatch<void, any, Action>) {
   }
 }
 
-const isNetworkMismatch = config => {
-  if (!windowRef.ethereum && !windowRef.web3) return false;
-  const web3Provider = getWeb3Provider(windowRef);
-  const web3NetworkId =
-    web3Provider?._web3Provider?.networkVersion ||
-    windowRef.web3?.currentProvider?.networkVersion ||
-    web3Provider?._network?.chainId;
-  return web3NetworkId && config.networkId !== web3NetworkId ? false : true;
+const isNetworkMismatch = async config => {
+  const provider = await detectEthereumProvider();
+  if (!provider) return false;
+  let chainId = windowRef.ethereum.chainId;
+  if (!chainId) {
+    await provider.enable();
+    chainId = windowRef.ethereum.chainId;
+  }
+
+  const web3NetworkId = String(createBigNumber(chainId));
+  return config.networkId !== web3NetworkId;
 }
 
 async function createDefaultProvider(config: SDKConfiguration) {
@@ -226,14 +232,14 @@ export function connectAugur(
       })
     }
 
-    if (!isNetworkMismatch(config)) {
-        if (callback) callback(null);
-        return dispatch(
-          updateModal({
-            type: MODAL_NETWORK_MISMATCH,
-            expectedNetwork: NETWORK_NAMES[Number(config.networkId)],
-          })
-        );
+    if ((windowRef.ethereum || windowRef.web3) && await isNetworkMismatch(config)) {
+      if (callback) callback(null);
+      return dispatch(
+        updateModal({
+          type: MODAL_NETWORK_MISMATCH,
+          expectedNetwork: NETWORK_NAMES[Number(config.networkId)],
+        })
+      );
     }
 
     // Optimize for the case where we can just use a JSON endpoint.
@@ -270,18 +276,7 @@ export function connectAugur(
       Augur = await augurSdk.makeClient(provider, config);
     } catch (e) {
       console.error(e);
-      if (provider._network && config.networkId !== provider._network.chainId) {
-        augurSdk.destroy();
-        augurSdkLite.destroy();
-        return dispatch(
-          updateModal({
-            type: MODAL_NETWORK_MISMATCH,
-            expectedNetwork: NETWORK_NAMES[Number(config.networkId)],
-          })
-        );
-      } else {
-        return callback('SDK could not be created', { config });
-      }
+      return callback(`SDK could not be created, see console for more information`, { config });
     }
 
     if (config?.ui?.reportingOnly) {

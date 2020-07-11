@@ -16,6 +16,7 @@ import {
   MODAL_NETWORK_CONNECT,
   TRADING_TUTORIAL,
   ZEROX_STATUSES,
+  MODAL_ERROR,
 } from 'modules/common/constants';
 
 import {
@@ -180,11 +181,11 @@ export default class AppView extends Component<AppProps> {
         ethereumNodeWs,
         sdkEndpoint,
       },
-      (err: any, res: any) => {
-        if (err) {
+      (error: any, res: any) => {
+        if (error) {
           updateModal({
-            type: MODAL_NETWORK_CONNECT,
-            isInitialConnection: true,
+            type: MODAL_ERROR,
+            error,
             config: res.config,
           });
         }
