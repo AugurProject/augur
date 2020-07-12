@@ -1129,7 +1129,7 @@ export const TEMPLATES = {
                     type: TemplateInputType.DROPDOWN,
                     placeholder: `Year`,
                     validationType: ValidationType.YEAR_YEAR_RANGE,
-                    values: LIST_VALUES.YEARS,
+                    values: ['2022', '2024', '2026'],
                   },
                 ],
                 resolutionRules: {
@@ -1206,7 +1206,7 @@ export const TEMPLATES = {
                     placeholder: `Year`,
                     groupKey: YEAR,
                     validationType: ValidationType.YEAR_YEAR_RANGE,
-                    values: LIST_VALUES.YEARS,
+                    values: ['2022', '2024', '2026'],
                   },
                   {
                     id: 1,
@@ -1338,7 +1338,7 @@ export const TEMPLATES = {
                     type: TemplateInputType.DROPDOWN,
                     placeholder: `Year`,
                     validationType: ValidationType.YEAR_YEAR_RANGE,
-                    values: LIST_VALUES.YEARS,
+                    values: ['2021', '2023', '2025'],
                   },
                 ],
                 resolutionRules: {
@@ -1415,7 +1415,7 @@ export const TEMPLATES = {
                     placeholder: `Year`,
                     groupKey: YEAR,
                     validationType: ValidationType.YEAR_YEAR_RANGE,
-                    values: LIST_VALUES.YEARS,
+                    values: ['2021', '2023', '2025'],
                   },
                   {
                     id: 1,
@@ -7810,7 +7810,7 @@ export const TEMPLATES = {
                     placeholder: `Year`,
                     groupKey: YEAR,
                     validationType: ValidationType.YEAR_YEAR_RANGE,
-                    values: LIST_VALUES.YEARS,
+                    values: LIST_VALUES.YEARS_21,
                   },
                   {
                     id: 1,
