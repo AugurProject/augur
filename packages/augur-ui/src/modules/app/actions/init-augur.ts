@@ -50,6 +50,8 @@ import logError from 'utils/log-error';
 import { showIndexedDbSize } from 'utils/show-indexed-db-size';
 import { tryToPersistStorage } from 'utils/storage-manager';
 import { windowRef } from 'utils/window-ref';
+import { createBigNumber } from 'utils/create-big-number';
+import detectEthereumProvider from '@metamask/detect-provider'
 
 const NETWORK_ID_POLL_INTERVAL_DURATION = 10000;
 
@@ -97,12 +99,24 @@ async function loadAccountIfStored(dispatch: ThunkDispatch<void, any, Action>) {
   }
 }
 
+const isNetworkMismatch = async config => {
+  const provider = await detectEthereumProvider();
+  if (!provider) return false;
+  let chainId = windowRef.ethereum.chainId;
+  if (!chainId) {
+    await provider.enable();
+    chainId = windowRef.ethereum.chainId;
+  }
+
+  const web3NetworkId = String(createBigNumber(chainId));
+  return config.networkId !== web3NetworkId;
+}
 
 async function createDefaultProvider(config: SDKConfiguration) {
   if (config.networkId && isDevNetworkId(config.networkId)) {
     // In DEV, use local ethereum node
     return new JsonRpcProvider(config.ethereum.http);
-  } else if (windowRef.web3) {
+  } else if (windowRef.web3 || windowRef.ethereum) {
     // Use the provider on window if it exists, otherwise use torus provider
     return getWeb3Provider(windowRef);
   } else if (config.ui?.fallbackProvider === "jsonrpc" && config.ethereum.http) {
@@ -217,6 +231,16 @@ export function connectAugur(
       })
     }
 
+    if ((windowRef.ethereum || windowRef.web3) && await isNetworkMismatch(config)) {
+      if (callback) callback(null);
+      return dispatch(
+        updateModal({
+          type: MODAL_NETWORK_MISMATCH,
+          expectedNetwork: NETWORK_NAMES[Number(config.networkId)],
+        })
+      );
+    }
+
     // Optimize for the case where we can just use a JSON endpoint.
     // If things aren't configured for that we'll create the default
     // provider which may be slow.
@@ -251,16 +275,7 @@ export function connectAugur(
       Augur = await augurSdk.makeClient(provider, config);
     } catch (e) {
       console.error(e);
-      if (provider._network && config.networkId !== provider._network.chainId) {
-        return dispatch(
-          updateModal({
-            type: MODAL_NETWORK_MISMATCH,
-            expectedNetwork: NETWORK_NAMES[Number(config.networkId)],
-          })
-        );
-      } else {
-        return callback('SDK could not be created', { config });
-      }
+      return callback(`SDK could not be created, see console for more information`, { config });
     }
 
     if (config?.ui?.reportingOnly) {
