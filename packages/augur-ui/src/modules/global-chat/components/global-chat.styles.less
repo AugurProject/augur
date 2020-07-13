@@ -112,28 +112,16 @@
       text-transform: uppercase;
       flex-flow: row nowrap;
 
-      &:hover:enabled {
-        background: var(--color-primary-text-90);
-        color: var(--color-module-background);
-      }
-
-      &:focus:enabled {
-        background: var(--color-primary-text-80);
-        color: var(--color-module-background);
-      }
-
-      &:active:enabled {
-        background: var(--color-primary-text-80);
-        color: var(--color-module-background);
-      }
-
-      &:focus:hover:enabled {
-        background: var(--color-primary-text-90);
-        color: var(--color-module-background);
-      }
-
+      &:hover:enabled,
+      &:focus:hover:enabled,
       &:active:hover:enabled {
         background: var(--color-primary-text-90);
+        color: var(--color-module-background);
+      }
+
+      &:focus:enabled,
+      &:active:enabled {
+        background: var(--color-primary-text-80);
         color: var(--color-module-background);
       }
 
