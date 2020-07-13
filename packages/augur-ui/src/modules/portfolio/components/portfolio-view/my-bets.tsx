@@ -174,7 +174,6 @@ export const MyBets = () => {
   );
 
   const showEvents = MY_BETS_VIEW_BY[viewBy].label === EVENT;
-
   return (
     <div className={classNames(Styles.MyBets)}>
       <HelmetTag {...PORTFOLIO_VIEW_HEAD_TAGS} />

@@ -54,7 +54,7 @@ export const Game = ({ row, type }: GameProps) => (
       {Object.values(row.orders).map(order => (
         <BetRow
           key={order.outcomeId}
-          outcome={order}
+          outcome={{ sportsBook: row.sportsBook, ...order }}
           showExtraRow={type !== FUTURES}
         />
       ))}
@@ -95,7 +95,9 @@ export const BetRow = ({ outcome, showExtraRow, isEvent }: BetRowProps) => (
                 {outcome.highRisk && (
                   <RedFlag market={{ mostLikelyInvalid: true, id: 0 }} />
                 )}
-                <span>{isEvent ? outcome.description : outcome.betType}</span>
+                <span>
+                  {isEvent ? outcome.description : outcome.sportsBook.title}
+                </span>
               </span>
             )}
           </div>
@@ -110,14 +112,14 @@ export const BetRow = ({ outcome, showExtraRow, isEvent }: BetRowProps) => (
             highlight
             key="toWin"
             label="To win"
-            value={outcome.toWin}
+            value={outcome.unrealized}
             useFull={true}
           />
           <LinearPropertyLabel
             highlight
             key="date"
             label="Date"
-            value={outcome.updatedDate.formattedLocalShortDate}
+            value={outcome.updatedDate.formattedLocalShortWithUtcOffsetWithoutSeconds}
             useFull={true}
           />
           <CashoutButton bet={outcome} />
