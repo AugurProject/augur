@@ -108,8 +108,7 @@ module.exports = {
             '*': [ 'abi', 'devdoc', 'userdoc', 'evm.bytecode.object', 'evm.methodIdentifiers' ]
           }
         }
-      },
-      sources: {},
+      }
     }
   }
 };
