@@ -6840,17 +6840,20 @@ export const TEMPLATES = {
                   {
                     id: 4,
                     type: TemplateInputType.ADDED_OUTCOME,
-                    placeholder: `Tie/No Contest`,
+                    placeholder: `No Contest`,
                   },
                 ],
                 resolutionRules: {
                   [REQUIRED]: [
                     { text: `Include Regulation and Overtime` },
                     {
-                      text: `At least 55 minutes of play must have elapsed for the game to be deemed official. If less than 55 minutes of play have been completed, there is no official winner of the game and the market should resolve as "Tie/No Contest"`,
+                      text: `At least 55 minutes of play must have elapsed for the game to be deemed official. If less than 55 minutes of play have been completed, there is no official winner of the game and the market should resolve as 'No Contest'`,
                     },
                     {
-                      text: `If the game is not played market should resolve as "Tie/No Contest"`,
+                      text: `If the game is not played market should resolve as 'No Contest'`,
+                    },
+                    {
+                      text: `If the game ends in a tie, the market should resolve as 'No Contest'`,
                     },
                   ],
                 },
