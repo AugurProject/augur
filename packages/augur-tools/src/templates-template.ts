@@ -752,7 +752,7 @@ export function getGroupHashInfo({
     ? inputs[group.groupLineId].value
     : undefined;
   const estTimestamp = group?.estInputId
-    ? inputs[group.estInputId].timestamp
+    ? inputs.find((i) => String(i.id) === String(group.estInputId))?.timestamp
     : undefined;
   const header = group.header
     ? populateTemplateTitle(group.header, inputs, true)
