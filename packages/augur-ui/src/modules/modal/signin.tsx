@@ -28,7 +28,6 @@ import {
   SIGNIN_SIGN_WALLET,
 } from 'modules/common/constants';
 import { loginWithInjectedWeb3 } from 'modules/auth/actions/login-with-injected-web3';
-import { loginWithPortis } from 'modules/auth/actions/login-with-portis';
 import { loginWithTorus } from 'modules/auth/actions/login-with-torus';
 import { loginWithFortmatic } from 'modules/auth/actions/login-with-fortmatic';
 import { windowRef } from 'utils/window-ref';
@@ -235,7 +234,7 @@ export const SignIn = ({ isLogin }) => {
 
       <footer>
         <div>
-          Want to use a hardware wallet?{' '}
+          Want to use a hardware wallet?
           <span onClick={() => hardwareWalletModal(isLogin)}>Learn more</span>
         </div>
       </footer>

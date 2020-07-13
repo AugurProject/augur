@@ -46,10 +46,11 @@ import {
 import { toChecksumAddress } from 'ethereumjs-util';
 import TooltipStyles from 'modules/common/tooltip.styles.less';
 import ReactTooltip from 'react-tooltip';
-import { BigNumber } from 'utils/create-big-number';
+import { BigNumber, createBigNumber } from 'utils/create-big-number';
 import { useAppStatusStore } from 'modules/app/store/app-status';
 import { formatDai } from 'utils/format-number';
 import titleCase from 'utils/title-case';
+import { windowRef } from 'utils/window-ref';
 
 export interface TitleProps {
   title: string;
@@ -929,91 +930,114 @@ export class CheckboxCTA extends Component<CheckboxCTAProps, CheckboxCTAState> {
 }
 
 interface CreditCardProps {
-  accountMeta: LoginAccount['meta'];
-  walletAddress: string;
-  addFundsTorus: Function;
-  addFundsFortmatic: Function;
   fundTypeLabel: string;
   fundTypeToUse: string;
-  validateAndSet: Function;
-  BUY_MIN: number;
-  BUY_MAX: number;
-  amountToBuy: BigNumber;
-  isAmountValid: boolean;
 }
 
 export const CreditCard = ({
-  accountMeta,
-  walletAddress,
-  addFundsTorus,
-  addFundsFortmatic,
   fundTypeLabel,
   fundTypeToUse,
-  validateAndSet,
-  BUY_MIN,
-  BUY_MAX,
-  amountToBuy,
-  isAmountValid,
-}: CreditCardProps) => (
-  <>
-    <h1>Credit/debit card</h1>
-    <h2>
-      Add {fundTypeLabel} {fundTypeToUse === DAI ? generateDaiTooltip() : null}{' '}
-      instantly
-    </h2>
+}: CreditCardProps) => {
+  const {
+    loginAccount: {
+      address: walletAddress,
+      meta: accountMeta,
+    },
+  } = useAppStatusStore();
 
-    <h3>Amount</h3>
-    <TextInput
-      placeholder="0"
-      onChange={value => validateAndSet(Number(value))}
-      value={String(amountToBuy)}
-      innerLabel={fundTypeToUse === DAI ? 'USD' : fundTypeToUse}
-    />
-    {amountToBuy.gt(0) && !isAmountValid && (
-      <div className={Styles.AddFundsError}>
-        Sorry, amount must be between ${BUY_MIN} and ${BUY_MAX}.
-      </div>
-    )}
+  const BUY_MIN = 20;
+  const BUY_MAX = 250;
 
-    {accountMeta.accountType === ACCOUNT_TYPES.TORUS && (
-      <PrimaryButton
-        disabled={!isAmountValid}
-        action={() =>
-          addFundsTorus(amountToBuy, toChecksumAddress(walletAddress))
-        }
-        text={`Buy with ${accountMeta.accountType}`}
+  const [amountToBuy, setAmountToBuy] = useState(createBigNumber(0));
+  const [isAmountValid, setIsAmountValid] = useState(false);
+
+
+  const validateAndSet = amount => {
+    const amountToBuy = createBigNumber(amount);
+    if (amountToBuy.gte(BUY_MIN) && amountToBuy.lte(BUY_MAX)) {
+      setIsAmountValid(true);
+    } else {
+      setIsAmountValid(false);
+    }
+    setAmountToBuy(amountToBuy);
+  };
+
+  const addFundsFortmatic = async (amount, crypto, address) => {
+    await windowRef.fm.user.deposit({
+      amount: amount.toNumber(),
+      crypto,
+      address,
+    });
+  };
+
+  const addFundsTorus = async (amount, address) => {
+    await windowRef.torus.showWallet('topup', {
+      selectedAddress: address,
+      fiatValue: amount.toNumber(),
+      selectedCryptoCurrency: 'DAI',
+    });
+  };
+
+  return (
+    <>
+      <h1>Credit/debit card</h1>
+      <h2>
+        Add {fundTypeLabel} {fundTypeToUse === DAI ? generateDaiTooltip() : null}{' '}
+        instantly
+      </h2>
+
+      <h3>Amount</h3>
+      <TextInput
+        placeholder="0"
+        onChange={value => validateAndSet(Number(value))}
+        value={String(amountToBuy)}
+        innerLabel={fundTypeToUse === DAI ? 'USD' : fundTypeToUse}
       />
-    )}
-    {accountMeta.accountType === ACCOUNT_TYPES.FORTMATIC && (
-      <PrimaryButton
-        disabled={!isAmountValid}
-        action={() =>
-          addFundsFortmatic(
-            amountToBuy,
-            fundTypeToUse,
-            toChecksumAddress(walletAddress)
-          )
-        }
-        text={`Buy with ${accountMeta.accountType}`}
-      />
-    )}
-    <h4>
-      {[
-        ACCOUNT_TYPES.TORUS,
-        ACCOUNT_TYPES.FORTMATIC,
-      ].includes(accountMeta.accountType) && (
-        <div>
-          Buy {fundTypeLabel} with our secure payments partner,{' '}
-          {accountMeta.accountType}. Funds will appear in your User account when
-          payment finalizes.
+      {amountToBuy.gt(0) && !isAmountValid && (
+        <div className={Styles.AddFundsError}>
+          Sorry, amount must be between ${BUY_MIN} and ${BUY_MAX}.
         </div>
       )}
-    </h4>
-  </>
-);
+
+      {accountMeta.accountType === ACCOUNT_TYPES.TORUS && (
+        <PrimaryButton
+          disabled={!isAmountValid}
+          action={() =>
+            addFundsTorus(amountToBuy, toChecksumAddress(walletAddress))
+          }
+          text={`Buy with ${accountMeta.accountType}`}
+        />
+      )}
+      {accountMeta.accountType === ACCOUNT_TYPES.FORTMATIC && (
+        <PrimaryButton
+          disabled={!isAmountValid}
+          action={() =>
+            addFundsFortmatic(
+              amountToBuy,
+              fundTypeToUse,
+              toChecksumAddress(walletAddress)
+            )
+          }
+          text={`Buy with ${accountMeta.accountType}`}
+        />
+      )}
+      <h4>
+        {[
+          ACCOUNT_TYPES.TORUS,
+          ACCOUNT_TYPES.FORTMATIC,
+        ].includes(accountMeta.accountType) && (
+          <div>
+            Buy {fundTypeLabel} with our secure payments partner,{' '}
+            {accountMeta.accountType}. Funds will appear in your User account when
+            payment finalizes.
+          </div>
+        )}
+      </h4>
+    </>
+  );
+}
 
 interface CoinbaseProps {
-  walletAddress: string;
   fundTypeLabel: string;
   fundTypeToUse: string;
 }
@@ -1021,71 +1045,18 @@ interface CoinbaseProps {
 export const Coinbase = ({
   fundTypeToUse,
   fundTypeLabel,
-  walletAddress,
-}: CoinbaseProps) => (
-  <>
-    <h1>Coinbase</h1>
-    <h2>
-      Add{' '}
-      {fundTypeToUse === DAI ? (
-        <>
-          {fundTypeLabel} {generateDaiTooltip()}
-        </>
-      ) : (
-        fundTypeLabel
-      )}{' '}
-      using a Coinbase account
-    </h2>
-    <ol>
-      <li>
-        Login to your account at{' '}
-        <a
-          href="https://www.coinbase.com"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          www.coinbase.com
-        </a>
-      </li>
-      <li>Buy the cryptocurrency {fundTypeLabel}</li>
-      <li>
-        Send the {fundTypeLabel} to your trading account
-      </li>
-    </ol>
-    <h3>trading account</h3>
-    <AccountAddressDisplay
-      copyable
-      address={toChecksumAddress(walletAddress)}
-    />
-    {fundTypeToUse !== ETH && (
-      <ExternalLinkButton
-        URL={HELP_CENTER_LEARN_ABOUT_ADDRESS}
-        label={'Learn about your address'}
-      />
-    )}
-  </>
-);
+}: CoinbaseProps) => {
+  const {
+    loginAccount: {
+      address: walletAddress,
+    },
+  } = useAppStatusStore();
 
-interface TransferProps {
-  walletAddress: string;
-  fundTypeLabel: string;
-  fundTypeToUse: string;
-}
-
-export const Transfer = ({
-  fundTypeToUse,
-  fundTypeLabel,
-  walletAddress,
-}: TransferProps) => (
-  <>
-    <h1>Transfer</h1>
-    <h2>
-      Send funds to your{' '}
-      trading account
-    </h2>
-    <ol>
-      <li>
-        Buy{' '}
+  return (
+    <>
+      <h1>Coinbase</h1>
+      <h2>
+        Add{' '}
         {fundTypeToUse === DAI ? (
           <>
             {fundTypeLabel} {generateDaiTooltip()}
@@ -1093,28 +1064,94 @@ export const Transfer = ({
         ) : (
           fundTypeLabel
         )}{' '}
-        using an app or exchange (see our list of{' '}
-        <a target="_blank" href={HELP_CENTER_ADD_FUNDS}>
-          popular ways to buy {fundTypeLabel})
-        </a>
-      </li>
-      <li>
-        Transfer the {fundTypeLabel} to your trading account
-      </li>
-    </ol>
-    <h3>trading account</h3>
-    <AccountAddressDisplay
-      copyable
-      address={toChecksumAddress(walletAddress)}
-    />
-    {fundTypeToUse !== ETH && (
-      <ExternalLinkButton
-        URL={HELP_CENTER_LEARN_ABOUT_ADDRESS}
-        label={'Learn about your address'}
+        using a Coinbase account
+      </h2>
+      <ol>
+        <li>
+          Login to your account at{' '}
+          <a
+            href="https://www.coinbase.com"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            www.coinbase.com
+          </a>
+        </li>
+        <li>Buy the cryptocurrency {fundTypeLabel}</li>
+        <li>
+          Send the {fundTypeLabel} to your trading account
+        </li>
+      </ol>
+      <h3>trading account</h3>
+      <AccountAddressDisplay
+        copyable
+        address={toChecksumAddress(walletAddress)}
       />
-    )}
-  </>
-);
+      {fundTypeToUse !== ETH && (
+        <ExternalLinkButton
+          URL={HELP_CENTER_LEARN_ABOUT_ADDRESS}
+          label={'Learn about your address'}
+        />
+      )}
+    </>
+  );
+}
+
+interface TransferProps {
+  fundTypeLabel: string;
+  fundTypeToUse: string;
+}
+
+export const Transfer = ({
+  fundTypeToUse,
+  fundTypeLabel,
+}: TransferProps) => {
+  const {
+    loginAccount: {
+      address: walletAddress,
+    },
+  } = useAppStatusStore();
+
+  return (
+    <>
+      <h1>Transfer</h1>
+      <h2>
+        Send funds to your{' '}
+        trading account
+      </h2>
+      <ol>
+        <li>
+          Buy{' '}
+          {fundTypeToUse === DAI ? (
+            <>
+              {fundTypeLabel} {generateDaiTooltip()}
+            </>
+          ) : (
+            fundTypeLabel
+          )}{' '}
+          using an app or exchange (see our list of{' '}
+          <a target="_blank" href={HELP_CENTER_ADD_FUNDS}>
+            popular ways to buy {fundTypeLabel})
+          </a>
+        </li>
+        <li>
+          Transfer the {fundTypeLabel} to your trading account
+        </li>
+      </ol>
+      <h3>trading account</h3>
+      <AccountAddressDisplay
+        copyable
+        address={toChecksumAddress(walletAddress)}
+      />
+      {fundTypeToUse !== ETH && (
+        <ExternalLinkButton
+          URL={HELP_CENTER_LEARN_ABOUT_ADDRESS}
+          label={'Learn about your address'}
+        />
+      )}
+    </>
+  );
+}
 
 export const generateDaiTooltip = (
   tipText = 'Augur requires deposits in DAI ($), a currency pegged 1 to 1 to the US Dollar.'
