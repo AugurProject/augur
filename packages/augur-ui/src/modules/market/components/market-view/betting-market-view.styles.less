@@ -40,5 +40,19 @@
         display: flex;
         justify-content: space-between;
         margin: @size-40 0;
+        flex-direction: column;
+
+        > div:not(:first-of-type) {
+            margin-top: @size-24;
+        }
+    }
+
+    > div:nth-of-type(4) {
+        display: flex;
+        margin-bottom: @size-30;
+
+        > div:not(:first-of-type) {
+            margin-left: @size-26;
+        }
     }
 }
