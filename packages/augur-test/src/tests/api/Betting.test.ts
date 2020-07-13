@@ -56,7 +56,7 @@ describe('Betting', () => {
     const endTime = currentTime.plus(SECONDS_IN_A_DAY);
     const teamA = 'Arizona Cardinals';
     const teamB = 'Atlanta Falcons';
-    const tieNoWinner = 'Tie/No Contest';
+    const tieNoWinner = 'No Contest';
 
     const inputs = ['Week 1', teamA, teamB, String(endTime)] as const;
 
