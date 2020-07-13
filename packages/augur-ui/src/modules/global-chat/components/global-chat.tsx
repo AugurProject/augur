@@ -6,12 +6,10 @@ import { ThickChevron, Close } from 'modules/common/icons';
 import classNames from 'classnames';
 
 export const GlobalChat = () => {
-  let { loginAccount, env, initialized3box } = useAppStatusStore();
+  let { env } = useAppStatusStore();
   const [show, setShow] = useState(false);
-  const signer = loginAccount.meta?.signer;
 
   const whichChatPlugin = env.plugins?.chat;
-  initialized3box = signer ? initialized3box : false;
 
   return (
     <div
