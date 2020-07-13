@@ -40,6 +40,7 @@ import { showIndexedDbSize } from 'utils/show-indexed-db-size';
 import { tryToPersistStorage } from 'utils/storage-manager';
 import { createBigNumber } from 'utils/create-big-number';
 import detectEthereumProvider from '@metamask/detect-provider'
+import { isPrivateNetwork } from 'modules/app/actions/is-private-network.ts';
 
 
 const NETWORK_ID_POLL_INTERVAL_DURATION = 10000;
@@ -93,7 +94,10 @@ const isNetworkMismatch = async config => {
   }
 
   const web3NetworkId = String(createBigNumber(chainId));
-  return config.networkId !== web3NetworkId;
+  const privateNetwork = isPrivateNetwork(config.networkId);
+  return privateNetwork ?
+    web3NetworkId !== "NaN" : // MM returns NaN for local networks
+    config.networkId !== web3NetworkId;
 }
 
 async function createDefaultProvider(config: SDKConfiguration) {
