@@ -51,10 +51,10 @@ export const Game = ({ row, type }: GameProps) => (
     </div>
     <div>
       <BetsHeader />
-      {Object.values(row.orders).map(order => (
+      {Object.values(row.orders).map((order, orderId) => (
         <BetRow
           key={order.outcomeId}
-          outcome={{ sportsBook: row.sportsBook, ...order }}
+          outcome={{ sportsBook: row.sportsBook, orderId: orderId, ...order }}
           showExtraRow={type !== FUTURES}
         />
       ))}
@@ -69,8 +69,8 @@ export interface OutcomesProps {
 export const Outcomes = ({ rows }: OutcomesProps) => (
   <div className={Styles.Outcomes}>
     <BetsHeader />
-    {rows.map(row => (
-      <BetRow key={row.outcome} outcome={row} showExtraRow isEvent />
+    {rows.map((row, orderId) => (
+      <BetRow key={row.outcome} outcome={{sportsBook: row.sportsBook, orderId: orderId, ...row}} showExtraRow isEvent />
     ))}
   </div>
 );
@@ -96,7 +96,7 @@ export const BetRow = ({ outcome, showExtraRow, isEvent }: BetRowProps) => (
                   <RedFlag market={{ mostLikelyInvalid: true, id: 0 }} />
                 )}
                 <span>
-                  {isEvent ? outcome.description : outcome.sportsBook.title}
+                  {isEvent ? outcome.description : outcome.sportsBook?.title}
                 </span>
               </span>
             )}
@@ -119,7 +119,7 @@ export const BetRow = ({ outcome, showExtraRow, isEvent }: BetRowProps) => (
             highlight
             key="date"
             label="Date"
-            value={outcome.updatedDate.formattedLocalShortWithUtcOffsetWithoutSeconds}
+            value={outcome.dateUpdated.formattedLocalShortWithUtcOffsetWithoutSeconds}
             useFull={true}
           />
           <CashoutButton bet={outcome} />

@@ -166,6 +166,7 @@ export const SportsMyBet = ({
     amountFilled,
     toWin,
     dateUpdated,
+    orderId
   } = bet;
   const [isRecentUpdate, setIsRecentUpdate] = useState(true);
   useEffect(() => {

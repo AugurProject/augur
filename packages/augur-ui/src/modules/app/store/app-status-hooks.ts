@@ -728,14 +728,14 @@ export const useAppStatus = (defaultState = DEFAULT_APP_STATUS) => {
       updateAlert: (id, alert) => dispatch({ type: UPDATE_ALERT, alert, id }),
       removeAlert: (id, name) => dispatch({ type: REMOVE_ALERT, id, name }),
       clearAlerts: level => dispatch({ type: CLEAR_ALERTS, level }),
-      addPendingData: ({
+      addPendingData: (
         pendingId,
         queueName,
         status,
         blockNumber,
         hash,
         info,
-      }) =>
+      ) =>
         dispatch({
           type: ADD_PENDING_DATA,
           pendingId,

@@ -68,7 +68,8 @@ export const MarketHeaderReporting = ({
     id,
     consensusFormatted,
     designatedReporter,
-    designatedReporterType
+    designatedReporterType,
+    marketType
   } = marketSelected;
 
   const isDesignatedReporter = preview
@@ -147,7 +148,7 @@ export const MarketHeaderReporting = ({
                 {tentativeWinner &&
                   (tentativeWinner.isInvalidOutcome
                     ? INVALID_OUTCOME_LABEL
-                    : market.marketType === SCALAR
+                    : marketType === SCALAR
                     ? tentativeWinner.outcome
                     : getOutcomeNameWithOutcome(
                         marketSelected,
