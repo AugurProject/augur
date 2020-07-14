@@ -84,6 +84,12 @@ export const convertInputs = (inputs) => {
   }));
 }
 
+export const findStartTime = (convertedInputs) => {
+  return convertedInputs.find(
+    i => i.type === TemplateInputType.ESTDATETIME
+  );
+};
+
 const MarketTemplateTitle: React.FC<MarketTemplateTitleProps> = ({
   template,
 }) => {

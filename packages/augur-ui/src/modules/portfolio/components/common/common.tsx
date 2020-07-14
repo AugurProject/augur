@@ -7,7 +7,7 @@ import {
 } from 'modules/common/labels';
 import { CategoryTagTrail } from 'modules/common/labels';
 import { getCategoriesWithClick } from 'modules/market-cards/common';
-import { MarketProgress } from 'modules/common/progress';
+import { MarketProgress, CountdownProgress } from 'modules/common/progress';
 import { convertUnixToFormattedDate } from 'utils/format-date';
 import { MyBetsRow } from 'modules/common/table-rows';
 
@@ -40,11 +40,13 @@ export const Game = ({ row, type }: GameProps) => (
         disputeInfo={null}
       />
       <CategoryTagTrail categories={getCategoriesWithClick(row.categories)} />
-      <MarketProgress
-        alignRight
-        customLabel="Estimated Event Start Time"
-        endTimeFormatted={convertUnixToFormattedDate(row.startTime)}
-      />
+      {row.startTime ? 
+        <CountdownProgress
+          alignRight
+          label="Estimated Event Start Time"
+          value={row.startTime}
+        />
+      : <span/>}
       <MarketLink id={row.id}>
         <span>{row.description}</span>
       </MarketLink>

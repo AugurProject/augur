@@ -15,6 +15,7 @@ export interface CountdownProgressProps {
   finalColorBreakpoint?: number;
   alignRight?: boolean;
   reportingState?: string;
+  value?: string;
 }
 
 export interface TimeLabelProps {
@@ -204,6 +205,7 @@ export const CountdownProgress = ({
   finalColorBreakpoint,
   alignRight,
   reportingState,
+  value
 }: CountdownProgressProps) => {
   const currentTime = useTimer();
 
@@ -256,7 +258,7 @@ export const CountdownProgress = ({
       })}
     >
       <span>{label}</span>
-      <span>{valueString}</span>
+      <span>{value || valueString}</span>
     </span>
   );
 };
