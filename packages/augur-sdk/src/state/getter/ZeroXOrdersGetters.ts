@@ -318,6 +318,7 @@ function filterMarketOutcomeOrders(outcomeOrders: OutcomeOrders, allowedAccount:
   ({ ...aggs, [Number(outcomeId)]: removeCrossedOrdersInOutcome(outcomeOrders[Number(outcomeId)], allowedAccount) }), {});
   return values;
 }
+
 export function removeCrossedOrdersInOutcome(orders: OrderTypeOrders, allowedAccount: string): OrderTypeOrders {
   if (_.keys(orders).length < 2) return orders;
   if (_.keys(orders[OrderType.Ask]).length === 0) return orders;
@@ -331,12 +332,12 @@ export function removeCrossedOrdersInOutcome(orders: OrderTypeOrders, allowedAcc
   // if same size remove oldest crossed orders
   // leave account orders if crossed
   getAccountFilteredOrderIds(
-    _.intersectionWith(asks, bids, compareAskCrossedOrders),
+    _.intersectionWith(asks, bids, compareAskPriceCrossedOrders),
     allowedAccount
   ).map(id => delete orders[OrderType.Ask][id]);
 
   getAccountFilteredOrderIds(
-    _.intersectionWith(bids, asks, compareBidCrossedOrders),
+    _.intersectionWith(bids, asks, compareBidPriceCrossedOrders),
     allowedAccount
   ).map(id => delete orders[OrderType.Bid][id]);
 
@@ -349,18 +350,28 @@ function getAccountFilteredOrderIds(orders: ZeroXOrder[], account: string): stri
     []
   ).map((o: ZeroXOrder) => o.orderId);
 }
-function compareAskCrossedOrders(ask: ZeroXOrder, bid: ZeroXOrder): boolean {
-  if (parseFloat(ask.price) > parseFloat(bid.price)) return false;
-  if (parseFloat(ask.amount) > parseFloat(bid.amount)) return false;
-  if (parseInt(ask.salt) > parseInt(bid.salt)) return false;
-  return true;
+
+function compareAskPriceCrossedOrders(ask: ZeroXOrder, bid: ZeroXOrder): boolean {
+  if (parseFloat(ask.price) < parseFloat(bid.price)) return true;
+  return compareCrossedOrdersAmountSalt(ask, bid, true);
 }
 
-function compareBidCrossedOrders(bid: ZeroXOrder, ask: ZeroXOrder): boolean {
-  if (parseFloat(bid.price) < parseFloat(ask.price)) return false;
-  if (parseFloat(bid.amount) > parseFloat(ask.amount)) return false;
-  if (parseInt(bid.salt) > parseInt(ask.salt)) return false;
-  return true;
+function compareBidPriceCrossedOrders(bid: ZeroXOrder, ask: ZeroXOrder): boolean {
+  if (parseFloat(bid.price) > parseFloat(ask.price)) return true;
+  return compareCrossedOrdersAmountSalt(bid, ask, false);
+}
+
+function compareCrossedOrdersAmountSalt(order1: ZeroXOrder, order2: ZeroXOrder, sameTtlRemove): boolean {
+  const order1Price = parseFloat(order1.price);
+  const orer2Price = parseFloat(order2.price);
+  const order1Amount = parseFloat(order1.amount);
+  const order2Amount = parseFloat(order2.amount);
+  const order1ttl = order1.expirationTimeSeconds;
+  const order2ttl = order2.expirationTimeSeconds;
+  if (order1Price === orer2Price && order1Amount < order2Amount) return true;
+  if (order1Price === orer2Price && order1Amount === order2Amount && order1ttl > order2ttl) return true;
+  if (order1Price === orer2Price && order1Amount === order2Amount && order1ttl === order2ttl && sameTtlRemove) return true;
+  return false;
 }
 
 function compareOrdersPrice(a, b) {
