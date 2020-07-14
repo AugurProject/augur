@@ -177,6 +177,7 @@ export function BetslipReducer(state, action) {
       } else {
         matchedItems[marketId].orders.push({
           ...order,
+          orderId: matchedItems[marketId].orders.length,
           amountFilled: order.wager,
           amountWon: '0',
           dateUpdated: updatedTime,

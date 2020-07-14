@@ -51,10 +51,10 @@ export const Game = ({ row, type }: GameProps) => (
     </div>
     <div>
       <BetsHeader />
-      {Object.values(row.orders).map((order, orderId) => (
+      {Object.values(row.orders).map(order => (
         <BetRow
           key={order.outcomeId}
-          outcome={{ sportsBook: row.sportsBook, orderId: orderId, ...order }}
+          outcome={order}
           showExtraRow={type !== FUTURES}
         />
       ))}
@@ -69,8 +69,8 @@ export interface OutcomesProps {
 export const Outcomes = ({ rows }: OutcomesProps) => (
   <div className={Styles.Outcomes}>
     <BetsHeader />
-    {rows.map((row, orderId) => (
-      <BetRow key={row.outcome} outcome={{sportsBook: row.sportsBook, orderId: orderId, ...row}} showExtraRow isEvent />
+    {rows.map(row => (
+      <BetRow key={row.outcome} outcome={row} showExtraRow isEvent />
     ))}
   </div>
 );
@@ -112,7 +112,7 @@ export const BetRow = ({ outcome, showExtraRow, isEvent }: BetRowProps) => (
             highlight
             key="toWin"
             label="To win"
-            value={outcome.unrealized}
+            value={outcome.toWin}
             useFull={true}
           />
           <LinearPropertyLabel

@@ -1,19 +1,21 @@
 import { convertToOdds } from './get-odds';
-import { ASKS, ODDS_TYPE } from 'modules/common/constants';
+import { ASKS, ODDS_TYPE, ONE } from 'modules/common/constants';
 import { getOutcomeNameWithOutcome } from './get-outcome';
 import { BET_STATUS } from 'modules/trading/store/constants';
 import { Markets } from 'modules/markets/store/markets';
 import { placeTrade } from 'modules/contracts/actions/contractCalls';
 import { Betslip } from 'modules/trading/store/betslip';
+import { createBigNumber } from './create-big-number';
 
 export const convertPositionToBet = (position, marketInfo) => {
   return {
     ...position,
     outcomeId: position.outcome,
+    sportsBook: marketInfo.sportsBook,
     amountWon: '0',
     amountFilled: '0',
     price: position.averagePrice,
-    toWin: '0',
+    toWin: ONE.minus(createBigNumber(position.averagePrice)).times(createBigNumber(position.rawPosition)).toString(),
     odds: convertToOdds({
       price: position.averagePrice,
       min: marketInfo.min,

@@ -74,7 +74,7 @@ export const MyBetsRow = ({
     {
       key: 'toWin',
       columnType: COLUMN_TYPES.VALUE,
-      value: formatNumber(outcome && outcome.unrealized),
+      value: formatDai(outcome && outcome.toWin),
       keyId: 'outcome-toWin-' + outcome.outcome,
     },
     {
