@@ -14,25 +14,37 @@ import {
   BetsIcon,
   PositionIcon,
 } from 'modules/common/icons';
-import { OutcomeGroup } from 'modules/market-cards/common';
+import { SportsGroupMarkets } from 'modules/market-cards/common';
+import { getSportsGroupsFromSportsIDs } from 'modules/markets-list/components/markets-list';
+import { getMarkets } from 'modules/markets/selectors/markets-all';
+import { loadMarketsInfo } from 'modules/markets/actions/load-markets-info';
+import { useMarketsStore } from 'modules/markets/store/markets';
 
 const BettingMarketView = () => {
+  const { actions: { updateMarketsData } } = useMarketsStore();
   const location = useLocation();
   const queryId = parseQuery(location.search)[MARKET_ID_PARAM_NAME];
   const marketId = getAddress(queryId);
   const market = selectMarket(marketId);
-  // console.log(market);
+  const markets = getMarkets();
+  let sportsGroup = null;
+  if (market.sportsBook) {
+    sportsGroup = getSportsGroupsFromSportsIDs([market.sportsBook.groupId], markets)[0];
+  } else {
+    updateMarketsData(null, loadMarketsInfo([marketId]));
+  }
+
   if (!market) {
-    return <div/>;
+    return <div />;
   }
 
   const {
     endTimeFormatted,
     settlementFeePercent,
     creationTimeFormatted,
-    description, 
+    description,
     details,
-    settlementFee
+    settlementFee,
   } = market;
 
   return (
@@ -66,10 +78,7 @@ const BettingMarketView = () => {
           />
         </div>
       </div>
-      <OutcomeGroup
-        market={market}
-        canDispute={false}
-      />
+      {sportsGroup && <SportsGroupMarkets sportsGroup={sportsGroup} />}
       <div>
         <Subheaders
           header="creation date"
@@ -81,7 +90,9 @@ const BettingMarketView = () => {
           info
           tooltipText="event expiration date"
         />
-        {details?.length > 0 && <Subheaders header="resolution rules" subheader={details} />}
+        {details?.length > 0 && (
+          <Subheaders header="resolution rules" subheader={details} />
+        )}
       </div>
       <div>
         <InfoTicket
