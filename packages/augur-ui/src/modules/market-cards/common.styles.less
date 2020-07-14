@@ -992,6 +992,47 @@
 			}
 		}
 
+		&.ComboContainer {
+			> div {
+				display: flex;
+				flex-flow: column nowrap;
+				background: var(--color-page-background);
+				padding: 0;
+	
+				> ul {
+					align-items: center;
+					display: flex;
+					flex-flow: row nowrap;
+					flex: 1;
+					padding: @size-8;
+					width: 100%;
+	
+					&:last-of-type {
+						border-bottom-right-radius: @border-radius-default;
+						border-bottom-left-radius: @border-radius-default;
+					}
+					
+					&:not(:last-of-type) {
+						border-bottom: @size-1 solid var(--color-outline);
+					}
+	
+					> li:first-of-type {
+						.text-14-bold;
+	
+						align-self: baseline;
+						color: var(--color-primary-text);
+						flex: 1;
+						margin-left: 0;
+					}
+	
+					> li {
+						flex: 0.2;
+						margin-left: @size-8;
+					}
+				}
+			}
+		}
+
 		> header {
 			align-items: center;
 			display: flex;
@@ -1090,50 +1131,6 @@
 
 			> section {
 				width: 100%;
-			}
-		}
-	}
-
-
-	.ComboContainer {
-		.SportsMarketContainer;
-
-		> div {
-			display: flex;
-			flex-flow: column nowrap;
-			background: var(--color-page-background);
-			padding: 0;
-
-			> ul {
-				align-items: center;
-				display: flex;
-				flex-flow: row nowrap;
-				flex: 1;
-				padding: @size-8;
-				width: 100%;
-
-				&:last-of-type {
-					border-bottom-right-radius: @border-radius-default;
-					border-bottom-left-radius: @border-radius-default;
-				}
-				
-				&:not(:last-of-type) {
-					border-bottom: @size-1 solid var(--color-outline);
-				}
-
-				> li:first-of-type {
-					.text-14-bold;
-
-					align-self: baseline;
-					color: var(--color-primary-text);
-					flex: 1;
-					margin-left: 0;
-				}
-
-				> li {
-					flex: 0.2;
-					margin-left: @size-8;
-				}
 			}
 		}
 	}

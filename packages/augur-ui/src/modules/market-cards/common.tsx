@@ -765,7 +765,8 @@ export const ComboMarketContainer = ({
   return (
     <section
       className={classNames(
-        Styles.ComboContainer
+        Styles.ComboContainer,
+        Styles.SportsMarketContainer
       )}
     >
       <header>
