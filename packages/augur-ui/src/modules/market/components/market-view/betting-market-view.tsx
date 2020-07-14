@@ -19,6 +19,10 @@ import { getSportsGroupsFromSportsIDs } from 'modules/markets-list/components/ma
 import { getMarkets } from 'modules/markets/selectors/markets-all';
 import { loadMarketsInfo } from 'modules/markets/actions/load-markets-info';
 import { useMarketsStore } from 'modules/markets/store/markets';
+import { MARKET } from 'modules/routes/constants/views';
+import parsePath from 'modules/routes/helpers/parse-path';
+
+export const isMarketView = location => parsePath(location.pathname)[0] === MARKET;
 
 const BettingMarketView = () => {
   const { actions: { updateMarketsData } } = useMarketsStore();

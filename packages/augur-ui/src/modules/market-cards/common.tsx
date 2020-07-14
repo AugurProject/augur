@@ -1,4 +1,5 @@
 import React, { useEffect, useState, Fragment } from 'react';
+import { useLocation } from 'react-router';
 import ReactTooltip from 'react-tooltip';
 import { MarketReportingState } from '@augurproject/sdk-lite';
 import classNames from 'classnames';
@@ -89,6 +90,7 @@ import toggleCategory from 'modules/routes/helpers/toggle-category';
 import { useMarketsStore } from 'modules/markets/store/markets';
 import { hasStakeInMarket } from 'modules/account/helpers/common';
 import { CountdownProgress } from 'modules/common/progress';
+import { isMarketView } from 'modules/market/components/market-view/betting-market-view';
 
 export interface PercentProps {
   percent: number;
@@ -533,9 +535,11 @@ export const OutcomeGroupFooter = ({
   market: { id, outcomesFormatted, volumeFormatted },
   showLeader = false,
 }) => {
+  const location = useLocation();
+  const isGroupPage = isMarketView(location);
   let content;
   // if ShowLeader passed, info on leading outcome and total volume put in footer.
-  if (showLeader) {
+  if (showLeader || isGroupPage) {
     let leadingOutcome = outcomesFormatted[0];
     outcomesFormatted.forEach(outcome => {
       if (outcome.lastPrice.value > leadingOutcome.lastPrice.value) {
@@ -761,7 +765,6 @@ export const ComboMarketContainer = ({
   return (
     <section
       className={classNames(
-        Styles.SportsMarketContainer,
         Styles.ComboContainer
       )}
     >
@@ -865,8 +868,7 @@ export const SportsMarketContainer = ({
   return (
     <section
       className={classNames(Styles.SportsMarketContainer, {
-        [Styles.Collapsed]: isCollapsed,
-        [Styles.Futures]: sportsGroup.type === FUTURES,
+        [Styles.Collapsed]: isCollapsed
       })}
     >
       <header>
