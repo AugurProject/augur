@@ -812,6 +812,7 @@ export const SportsMarketContainer = ({
   market,
   title = '',
   startOpen = false,
+  noHeader = false,
 }) => {
   const { FUTURES } = SPORTS_GROUP_TYPES;
   const { isLogged } = useAppStatusStore();
@@ -868,7 +869,8 @@ export const SportsMarketContainer = ({
   return (
     <section
       className={classNames(Styles.SportsMarketContainer, {
-        [Styles.Collapsed]: isCollapsed
+        [Styles.Collapsed]: isCollapsed,
+        [Styles.NoHeader]: noHeader
       })}
     >
       <header>
@@ -897,14 +899,16 @@ export interface SportsGroupMarketsProps {
 }
 
 export const SportsGroupMarkets = ({ sportsGroup }) => {
-  const marketGroups = prepareSportsGroup(sportsGroup);
+  const location = useLocation();
+  const isGroupPage = isMarketView(location);
+  const marketGroups = prepareSportsGroup(sportsGroup, isGroupPage);
   if (marketGroups.length > 0) {
     return <>{marketGroups.map(item => item)}</>;
   }
   return <section />;
 };
 
-export const prepareSportsGroup = sportsGroup => {
+export const prepareSportsGroup = (sportsGroup, isGroupPage = false) => {
   const { markets } = sportsGroup;
   const { COMBO, FUTURES } = SPORTS_GROUP_TYPES;
   const { MONEY_LINE } = SPORTS_GROUP_MARKET_TYPES;
@@ -968,6 +972,7 @@ export const prepareSportsGroup = sportsGroup => {
         market={market}
         sportsGroup={sportsGroup}
         startOpen={startOpen}
+        noHeader={isGroupPage && startOpen}
         title={market.sportsBook.title}
       />
     );
