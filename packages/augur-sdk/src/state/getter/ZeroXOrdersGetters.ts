@@ -35,13 +35,17 @@ export interface ZeroXOrder extends Order {
 }
 
 export interface ZeroXOrders {
-  [marketId: string]: {
-    [outcome: number]: {
-      [orderType: string]: {
-        [orderId: string]: ZeroXOrder;
-      };
-    };
-  };
+  [marketId: string]: OutcomeOrders;
+}
+
+interface OutcomeOrders {
+  [outcome: number]: OrderTypeOrders;
+};
+
+interface OrderTypeOrders {
+  [orderType: string]: {
+    [orderId: string]: ZeroXOrder;
+  }
 }
 
 export const ZeroXOrdersParams = t.partial({
@@ -144,7 +148,7 @@ export class ZeroXOrdersGetters {
         ? params.expirationCutoffSeconds
         : 0,
     );
-    return params.ignoreCrossOrders ? removeCrossedOrders(book) : book;
+    return params.ignoreCrossOrders ? ignoreCrossedOrders(book, params.account) : book;
   }
 
   static mapStoredToZeroXOrders(
@@ -295,18 +299,7 @@ export function collapseZeroXOrders(orders): ZeroXOrder[] {
   return collapsed;
 }
 
-interface OutcomeOrders {
-  [outcomeId: string]: {
-    [orderType: string]: {
-      [orderId: string]: ZeroXOrder;
-    }
-  }
-};
-interface OrderTypeOrders {
-  [orderType: string]: {
-    [orderId: string]: ZeroXOrder;
-  }
-}
+
 /*
   [marketId: string]: {
     [outcome: number]: {
@@ -316,19 +309,62 @@ interface OrderTypeOrders {
     };
   };
 */
-function removeCrossedOrders(books: ZeroXOrders): ZeroXOrders {
-  const filteredBooks = _.reduce(_.keys(books), (aggs, marketId) => ({...aggs, [marketId]: filterMarketOutcomeOrders(books[marketId]) }), {})
+function ignoreCrossedOrders(books: ZeroXOrders, allowedAccount: string): ZeroXOrders {
+  const filteredBooks = _.reduce(_.keys(books), (aggs, marketId) => ({...aggs, [marketId]: filterMarketOutcomeOrders(books[marketId], allowedAccount) }), {})
   return filteredBooks;
 }
-function filterMarketOutcomeOrders(outcomeOrders: OutcomeOrders): OutcomeOrders {
+function filterMarketOutcomeOrders(outcomeOrders: OutcomeOrders, allowedAccount: string): OutcomeOrders {
   const values = _.reduce(_.keys(outcomeOrders), (aggs, outcomeId) =>
-  ({ ...aggs, [Number(outcomeId)]: removeOutcomeCrossedOrders(outcomeOrders[Number(outcomeId)]) }), {});
+  ({ ...aggs, [Number(outcomeId)]: removeCrossedOrdersInOutcome(outcomeOrders[Number(outcomeId)], allowedAccount) }), {});
   return values;
 }
-function removeOutcomeCrossedOrders(orders: OrderTypeOrders): OrderTypeOrders {
+export function removeCrossedOrdersInOutcome(orders: OrderTypeOrders, allowedAccount: string): OrderTypeOrders {
   if (_.keys(orders).length < 2) return orders;
-  const asks = OrderType.Ask;
-  const bids = OrderType.Bid;
+  if (_.keys(orders[OrderType.Ask]).length === 0) return orders;
+  if (_.keys(orders[OrderType.Bid]).length === 0) return orders;
+
+  // pre sort for faster comparisons, not totally sure this is needed
+  const asks = _.values(orders[OrderType.Ask]).sort(compareOrdersPrice);
+  const bids = _.values(orders[OrderType.Bid]).sort(compareOrdersPrice);
+
+  // get crossed sizes and remove smallest sized crossed orders
+  // if same size remove oldest crossed orders
+  // leave account orders if crossed
+  getAccountFilteredOrderIds(
+    _.intersectionWith(asks, bids, compareAskCrossedOrders),
+    allowedAccount
+  ).map(id => delete orders[OrderType.Ask][id]);
+
+  getAccountFilteredOrderIds(
+    _.intersectionWith(bids, asks, compareBidCrossedOrders),
+    allowedAccount
+  ).map(id => delete orders[OrderType.Bid][id]);
 
   return orders;
+}
+
+function getAccountFilteredOrderIds(orders: ZeroXOrder[], account: string): string[] {
+  return orders.reduce(
+    (p, o) => (o.makerAddress === account ? p : [...p, o]),
+    []
+  ).map((o: ZeroXOrder) => o.orderId);
+}
+function compareAskCrossedOrders(ask: ZeroXOrder, bid: ZeroXOrder): boolean {
+  if (parseFloat(ask.price) > parseFloat(bid.price)) return false;
+  if (parseFloat(ask.amount) > parseFloat(bid.amount)) return false;
+  if (parseInt(ask.salt) > parseInt(bid.salt)) return false;
+  return true;
+}
+
+function compareBidCrossedOrders(bid: ZeroXOrder, ask: ZeroXOrder): boolean {
+  if (parseFloat(bid.price) < parseFloat(ask.price)) return false;
+  if (parseFloat(bid.amount) > parseFloat(ask.amount)) return false;
+  if (parseInt(bid.salt) > parseInt(ask.salt)) return false;
+  return true;
+}
+
+function compareOrdersPrice(a, b) {
+  if (parseFloat(a.price) > parseFloat(b.price)) return 1;
+  if (parseFloat(b.price) > parseFloat(a.price)) return -1;
+  return 0;
 }
