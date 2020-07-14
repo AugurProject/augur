@@ -242,9 +242,9 @@ export default class MarketView extends Component<
       typeof this.props.canHotload !== 'undefined' &&
       !tradingTutorial &&
       // We can hotload now.
-      (prevProps.canHotload === this.props.canHotload ||
+      ((prevProps.canHotload === this.props.canHotload ||
         // The market id changed.
-        prevProps.marketId !== this.props.marketId)
+        prevProps.marketId !== this.props.marketId) && this.props.canHotload && this.props.marketId)
     ) {
       // This will only be called once on the 'canHotLoad' prop change.
       loadHotMarket(this.props.marketId);
