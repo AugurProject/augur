@@ -115,6 +115,7 @@ export class Markets {
       account: t.string,
       onChain: t.boolean, // if false or not present, use 0x orderbook
       expirationCutoffSeconds: t.number,
+      ignoreCrossOrders: t.boolean,
     }),
   ]);
 
@@ -609,6 +610,7 @@ export class Markets {
         marketId: params.marketId,
         orderState: OrderState.OPEN,
         expirationCutoffSeconds: params.expirationCutoffSeconds,
+        ignoreCrossOrders: params.ignoreCrossOrders,
       });
     }
 

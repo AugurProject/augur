@@ -61,6 +61,7 @@ export const OrdersParams = t.partial({
   account: t.string,
   orderState: t.string,
   expirationCutoffSeconds: t.number,
+  ignoreCrossOrders: t.boolean,
 });
 
 export const OrderType = t.keyof({

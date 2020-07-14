@@ -14,8 +14,8 @@ export const loadMarketOrderBook = (
   const augur = augurSdk.get();
   const expirationCutoffSeconds = await augur.getGasConfirmEstimate();
   let params = account
-    ? { marketId, account, expirationCutoffSeconds }
-    : { marketId };
+    ? { marketId, account, expirationCutoffSeconds, ignoreCrossOrders: true }
+    : { marketId, ignoreCrossOrders: true };
   const Augur = augurSdk.get();
   const marketOrderBook = await Augur.getMarketOrderBook(params);
   callback(null, marketOrderBook);

@@ -1,4 +1,4 @@
-import { MarketData } from '@augurproject/sdk-lite';
+import { MarketData, OrderType } from '@augurproject/sdk-lite';
 import { Order, OrderState } from '@augurproject/sdk-lite/build';
 import { BigNumber } from 'bignumber.js';
 import Dexie from 'dexie';
@@ -53,6 +53,7 @@ export const ZeroXOrdersParams = t.partial({
   matchPrice: t.string,
   ignoreOrders: t.array(t.string),
   expirationCutoffSeconds: t.number,
+  ignoreCrossOrders: t.boolean,
 });
 
 export const ZeroXOrderParams = t.type({
@@ -135,22 +136,22 @@ export class ZeroXOrdersGetters {
       []
     );
     const markets = await getMarkets(marketIds, db, false);
-
-    return ZeroXOrdersGetters.mapStoredToZeroXOrders(
+    const book = ZeroXOrdersGetters.mapStoredToZeroXOrders(
       markets,
       storedOrders,
       params.ignoreOrders || [],
       typeof params.expirationCutoffSeconds === 'number'
         ? params.expirationCutoffSeconds
-        : 0
+        : 0,
     );
+    return params.ignoreCrossOrders ? removeCrossedOrders(book) : book;
   }
 
   static mapStoredToZeroXOrders(
     markets: _.Dictionary<MarketData>,
     storedOrders: StoredOrder[],
     ignoredOrderIds: string[],
-    expirationCutoffSeconds: number
+    expirationCutoffSeconds: number,
   ): ZeroXOrders {
     let orders = storedOrders.map(storedOrder => {
       return {
@@ -292,4 +293,42 @@ export function collapseZeroXOrders(orders): ZeroXOrder[] {
     });
   });
   return collapsed;
+}
+
+interface OutcomeOrders {
+  [outcomeId: string]: {
+    [orderType: string]: {
+      [orderId: string]: ZeroXOrder;
+    }
+  }
+};
+interface OrderTypeOrders {
+  [orderType: string]: {
+    [orderId: string]: ZeroXOrder;
+  }
+}
+/*
+  [marketId: string]: {
+    [outcome: number]: {
+      [orderType: string]: {
+        [orderId: string]: ZeroXOrder;
+      };
+    };
+  };
+*/
+function removeCrossedOrders(books: ZeroXOrders): ZeroXOrders {
+  const filteredBooks = _.reduce(_.keys(books), (aggs, marketId) => ({...aggs, [marketId]: filterMarketOutcomeOrders(books[marketId]) }), {})
+  return filteredBooks;
+}
+function filterMarketOutcomeOrders(outcomeOrders: OutcomeOrders): OutcomeOrders {
+  const values = _.reduce(_.keys(outcomeOrders), (aggs, outcomeId) =>
+  ({ ...aggs, [Number(outcomeId)]: removeOutcomeCrossedOrders(outcomeOrders[Number(outcomeId)]) }), {});
+  return values;
+}
+function removeOutcomeCrossedOrders(orders: OrderTypeOrders): OrderTypeOrders {
+  if (_.keys(orders).length < 2) return orders;
+  const asks = OrderType.Ask;
+  const bids = OrderType.Bid;
+
+  return orders;
 }
