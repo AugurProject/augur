@@ -1,5 +1,5 @@
 import { Market } from '@augurproject/core/build/libraries/ContractInterfaces';
-import { ZeroXPlaceTradeDisplayParams } from '@augurproject/sdk';
+import { ZeroXPlaceTradeDisplayParams, Augur, EmptyConnector } from '@augurproject/sdk';
 import { MarketInfo } from '@augurproject/sdk-lite';
 import { flattenZeroXOrders } from '@augurproject/sdk/build/state/getter/ZeroXOrdersGetters';
 import {
@@ -10,7 +10,7 @@ import {
 import { BigNumber } from 'bignumber.js';
 import { formatBytes32String } from 'ethers/utils';
 import { ContractAPI } from '..';
-import { Account } from '../constants';
+import { Account, BASE_MNEMONIC } from "../constants";
 import { HDWallet } from '../libs/blockchain';
 import { stringTo32ByteHex } from '../libs/Utils';
 import { createTightOrderBookConfig } from './order-firehose';
@@ -24,27 +24,58 @@ import {
   sleep,
   waitForFunding,
 } from './util';
+import { BaseConnector } from '@augurproject/sdk/build/connector';
 
 export const FINNEY = new BigNumber(1e16);
 
-export async function setupUsers(accounts: Account[], ethSource: ContractAPI, funding: BigNumber, baseConfig: SDKConfiguration, serial=false) {
-  return mapPromises(accounts.map((account) => () => setupUser(account, ethSource, funding, baseConfig)), serial);
+
+export const perfSetup = async (ethSource: ContractAPI, marketMakerCount: number, traderCount:number, serial: boolean, config: SDKConfiguration) => {
+  const accountCreator = new AccountCreator(BASE_MNEMONIC);
+  const marketMakerAccounts = accountCreator.marketMakers(marketMakerCount);
+  const traderAccounts = accountCreator.traders(traderCount);
+
+  let users:ContractAPI[] = [];
+  if (marketMakerCount > 0) {
+    const makers: ContractAPI[] = await setupUsers(marketMakerAccounts, ethSource, new BigNumber(FINNEY).times(40), config, undefined, serial);
+    users = [...users, ...makers];
+
+    const markets: Market[] = await setupMarkets(makers, serial);
+    console.log('Created markets:', markets.map((market) => market.address).join(','))
+  }
+  if (traderCount > 0) {
+    const takers: ContractAPI[] = await setupUsers(traderAccounts, ethSource, new BigNumber(FINNEY).times(5), config, undefined, serial);
+    users = [...users, ...takers];
+
+    console.log('Created traders:');
+    traderAccounts.forEach((trader, index) => {
+      console.log(`#${index}: ${trader.privateKey} -> ${trader.address}`);
+    })
+  }
+
+  return users;
+};
+
+
+export async function setupUsers(accounts: Account[], ethSource: ContractAPI, funding: BigNumber, baseConfig: SDKConfiguration, connector?: BaseConnector, serial=false) {
+  return mapPromises(accounts.map((account) => () => setupUser(account, ethSource, funding, baseConfig, connector)), serial);
 }
 
-export async function setupUser(account: Account, ethSource: ContractAPI, funding: BigNumber, baseConfig: SDKConfiguration): Promise<ContractAPI> {
+export async function setupUser(account: Account, ethSource: ContractAPI, funding: BigNumber, baseConfig: SDKConfiguration, connector?: BaseConnector): Promise<ContractAPI> {
   console.log(`Setting up account ${account.address}`);
   const { config } = setupPerfConfigAndZeroX(baseConfig);
-  await ethSource.augur.sendETH(account.address, funding);
-  const user = await ContractAPI.userWrapper(account, ethSource.provider, config);
-  await waitForFunding(user)
+  if (funding.gt(0)) {
+    await ethSource.augur.sendETH(account.address, funding);
+  }
+  const user = await ContractAPI.userWrapper(account, ethSource.provider, config, connector || new EmptyConnector());
+  await waitForFunding(user);
 
   if (config.flash?.useGSN) {
-    console.log(`GSN enabled for ${account.address}`)
+    console.log(`GSN enabled for ${account.address}`);
     await user.getOrCreateWallet();
     user.setUseWallet(true);
     user.setUseRelay(true);
   } else if (!config.flash?.skipApproval) {
-    console.log(`Approving cash/etc transfers for ${account.address}`)
+    console.log(`Approving cash/etc transfers for ${account.address}`);
     await user.approveIfNecessary();
   }
 
@@ -187,6 +218,17 @@ export async function getAllMarkets(user: ContractAPI, makerAccounts: Account[])
   })).markets;
   const makerAddresses = makerAccounts.map((account) => account.address.toLowerCase());
   return marketInfos.filter((market) => makerAddresses.indexOf(market.author.toLowerCase()) !== -1);
+}
+
+export async function getMarket(augur: Augur, address: string): Promise<MarketInfo> {
+  const marketInfos: MarketInfo[] = await augur.getMarketsInfo({
+    marketIds: [address]
+  });
+  if (marketInfos.length === 1) {
+    return marketInfos[0];
+  } else {
+    return null; // no such market or somehow duplicates
+  }
 }
 
 export class AccountCreator {

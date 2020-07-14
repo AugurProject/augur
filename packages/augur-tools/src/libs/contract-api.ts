@@ -74,17 +74,23 @@ export class ContractAPI {
 
   async approve(wei = MAX_APPROVAL): Promise<void> {
     const authority = this.augur.config.addresses.Augur;
+    console.log('Approving cash for Augur authority');
     await this.augur.contracts.cash.approve(authority, wei);
 
     const fillOrder = this.augur.config.addresses.FillOrder;
+    console.log('Approving cash for FillOrder');
     await this.augur.contracts.cash.approve(fillOrder, wei);
+    console.log('Approving share token for FillOrder');
     await this.augur.contracts.shareToken.setApprovalForAll(fillOrder, true);
 
     const createOrder = this.augur.config.addresses.CreateOrder;
+    console.log('Approving cash for CreateOrder');
     await this.augur.contracts.cash.approve(createOrder, wei);
+    console.log('Approving share token for CreateOrder');
     await this.augur.contracts.shareToken.setApprovalForAll(createOrder, true);
 
     const zeroXTrade = this.augur.config.addresses.ZeroXTrade;
+    console.log('Approving cash for ZeroXTrade');
     await this.augur.contracts.cash.approve(zeroXTrade, wei);
   }
 
@@ -97,7 +103,11 @@ export class ContractAPI {
   async approveIfNecessary(wei = MAX_APPROVAL): Promise<void> {
     const current = await this.getCashAllowance();
     if (current.lt(wei)) {
+      console.log('Approving because it is necessary');
       await this.approve(wei);
+      console.log('Approved!');
+    } else {
+      console.log('Not approving because it is unnecessary');
     }
   }
 

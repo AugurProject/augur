@@ -10,11 +10,16 @@ import {
   NativePlaceTradeDisplayParams,
   QUINTILLION,
   stringTo32ByteHex,
+  ZeroXPlaceTradeDisplayParams,
 } from '@augurproject/sdk';
 import {
   MarketList,
   NumOutcomes,
   SubscriptionEventName,
+  MarketInfo,
+  OutcomeNumber,
+  TradeDirection,
+  OrderType,
 } from '@augurproject/sdk-lite';
 import { SingleThreadConnector } from '@augurproject/sdk/build/connector';
 import { flattenZeroXOrders } from '@augurproject/sdk/build/state/getter/ZeroXOrdersGetters';
@@ -27,7 +32,7 @@ import {
   runWsServer,
   runWssServer,
 } from '@augurproject/sdk/build/state/WebsocketEndpoint';
-import { printConfig, sanitizeConfig } from '@augurproject/utils';
+import { printConfig, sanitizeConfig, repeat } from '@augurproject/utils';
 import { BigNumber } from 'bignumber.js';
 import { spawn, spawnSync } from 'child_process';
 import { ethers } from 'ethers';
@@ -66,7 +71,6 @@ import { generateTemplateValidations } from './generate-templates';
 import { getMarketIds } from './get-market-ids';
 import { orderFirehose } from './order-firehose';
 import { simpleOrderbookShaper } from './orderbook-shaper';
-import { perfSetup } from './perf-setup';
 import {
   AccountCreator,
   createOrders,
@@ -76,11 +80,15 @@ import {
   setupPerfConfigAndZeroX,
   takeOrder,
   takeOrders,
+  FINNEY,
+  getMarket,
+  setupUser,
+  perfSetup, setupUsers
 } from './performance';
 import { showTemplateByHash, validateMarketTemplate } from './template-utils';
 import {
   formatAddress,
-  getOrCreateMarket,
+  getOrCreateMarket, mapPromises,
   sleep,
   waitForSigint,
   waitForSync,
@@ -653,7 +661,7 @@ export function addScripts(flash: FlashSession) {
       }
       if (cat) {
         const numOutcomes = Number(args.numOutcomes);
-        if (numOutcomes === undefined) throw new Error(`numOutcomes is required for categorical market`);
+        if (numOutcomes === undefined) throw new Error('numOutcomes is required for categorical market');
         await createCatZeroXOrders(user, market, skipFaucetOrApproval, numOutcomes);
       }
       if (scalar) {
@@ -661,7 +669,7 @@ export function addScripts(flash: FlashSession) {
         const numTicks = new BigNumber(args.numTicks as string);
         const maxPrice = new BigNumber(args.maxPrice as string);
         const minPrice = new BigNumber(args.minPrice as string);
-        if (numTicks === undefined || maxPrice === undefined || minPrice === undefined) throw new Error(`numTicks, maxPrice and minPrice are required for scalar market`);
+        if (numTicks === undefined || maxPrice === undefined || minPrice === undefined) throw new Error('numTicks, maxPrice and minPrice are required for scalar market');
         await createScalarZeroXOrders(user, market, skipFaucetOrApproval, onInvalid, numTicks, minPrice, maxPrice);
       }
     },
@@ -863,7 +871,7 @@ export function addScripts(flash: FlashSession) {
       });
       const user = await this.createUser(this.getAccount(), this.config);
       await sleep(90000); // wait for 0x orders
-      await waitForSync(user);
+      await waitForSync(user.augur);
       const result = await user.augur.getMarketOrderBook({ marketId });
       console.log(JSON.stringify(result), null, 2);
     }
@@ -884,7 +892,7 @@ export function addScripts(flash: FlashSession) {
         flash: { syncSDK: true },
         zeroX: { rpc: { enabled: true }},
       }));
-      await waitForSync(user);
+      await waitForSync(user.augur);
       const timestamp = await user.getTimestamp();
       const ids: string[] = [];
       for (let i = 0; i < numMarkets; i++) {
@@ -936,7 +944,7 @@ export function addScripts(flash: FlashSession) {
         flash: { syncSDK: true },
         zeroX: { rpc: { enabled: true }},
       }));
-      await waitForSync(user);
+      await waitForSync(user.augur);
 
       await simpleOrderbookShaper(user, await user.getMarketInfo(marketIds), interval, orderSize, expiration);
     },
@@ -1010,7 +1018,7 @@ export function addScripts(flash: FlashSession) {
         flash: { syncSDK: true },
         zeroX: { rpc: { enabled: true }},
       }));
-      await waitForSync(user);
+      await waitForSync(user.augur);
 
       await orderFirehose(
         await user.getMarketInfo(marketIds),
@@ -1219,7 +1227,7 @@ export function addScripts(flash: FlashSession) {
       });
       const user = await this.createUser(this.getAccount(), this.config);
       await sleep(90000); // wait for 0x orders to be available
-      await waitForSync(user);
+      await waitForSync(user.augur);
 
       if (!skipFaucet) {
         console.log('fauceting ...');
@@ -1797,7 +1805,7 @@ export function addScripts(flash: FlashSession) {
       },
     ],
     async call(this: FlashSession, args: FlashArguments) {
-      const amount = args.amount ? String(args.amount) : "10";
+      const amount = args.amount ? String(args.amount) : '10';
       const user = await this.createUser(this.getAccount(), this.config);
       const attoAmount = new BigNumber(amount).times(_1_ETH);
       return user.simpleBuyParticipationTokens(attoAmount);
@@ -1873,7 +1881,7 @@ export function addScripts(flash: FlashSession) {
     async call(this: FlashSession) {
       if (this.noProvider()) return;
       const user = await this.createUser(this.getAccount(), this.deriveConfig({flash:{syncSDK: true}}));
-      await waitForSync(user);
+      await waitForSync(user.augur);
       const universes = await (await (user.augur.connector as SingleThreadConnector).api.db).UniverseCreated.toArray();
       console.log('Universes:');
       universes.forEach((universe) => {
@@ -1927,8 +1935,8 @@ export function addScripts(flash: FlashSession) {
     async call(this: FlashSession, args: FlashArguments) {
       const justIds = Boolean(args.justIds);
       if (this.noProvider()) return;
-      const user = await this.createUser(this.getAccount(), this.deriveConfig({ flash: { syncSDK: true }}));
-      await waitForSync(user);
+      const user = await this.createUser(this.getAccount(), this.deriveConfig({ flash: { syncSDK: true, useGSN: false, skipApproval: true }}));
+      await waitForSync(user.augur);
       const markets: MarketList = await user.getMarkets();
 
       if (justIds) {
@@ -2399,7 +2407,7 @@ export function addScripts(flash: FlashSession) {
         gsn: { enabled: false },
         zeroX: { rpc: { enabled: true }},
       }));
-      await waitForSync(user);
+      await waitForSync(user.augur);
       const marketInfo = (await user.getMarketInfo(marketAddress))[0];
 
       console.log('Waiting for 0x orders to arrive');
@@ -2466,10 +2474,11 @@ export function addScripts(flash: FlashSession) {
       },
     ],
     async call(this: FlashSession, args: FlashArguments): Promise<void> {
-      const makerCount = Number(args.marketMakers || 10);
-      const traderCount = Number(args.traders || 200);
-      const zeroxBatchSize = Number(args.zeroxBatchSize || 25);
+      const makerCount = Number(args.marketMakers as string || 10);
+      const traderCount = Number(args.traders as string || 200);
+      const zeroxBatchSize = Number(args.zeroxBatchSize as string || 25);
       const expiration = new BigNumber(args.expiration as string || 60*60);
+
       const { config } = setupPerfConfigAndZeroX(this.config, true);
       const ethSource = await this.createUser(this.getAccount(), config);
       const accountCreator = new AccountCreator(BASE_MNEMONIC);
@@ -2477,13 +2486,15 @@ export function addScripts(flash: FlashSession) {
       const makerAccounts = accountCreator.marketMakers(makerCount);
       const traders = await ContractAPI.wrapUsers(traderAccounts, ethSource.provider, config);
 
-      await waitForSync(ethSource);
+      await waitForSync(ethSource.augur);
       const markets = await getAllMarkets(ethSource, makerAccounts);
       const shapers = setupOrderBookShapers(markets, 10, expiration);
       const orders = await setupOrders(ethSource, shapers);
 
+      const t0 = Number(new Date());
       await createOrders(traders, orders, zeroxBatchSize);
-      console.log(`Created ${orders.length} orders`);
+      const t1 = Number(new Date());
+      console.log(`Created ${orders.length} orders after ${t1 - t0}ms`);
     }
   });
 
@@ -2537,7 +2548,7 @@ export function addScripts(flash: FlashSession) {
       const connector = ethSource.augur.connector
       const traders = await ContractAPI.wrapUsers(traderAccounts, ethSource.provider, config, connector);
 
-      await waitForSync(ethSource);
+      await waitForSync(ethSource.augur);
       console.log('Waiting for 0x orders to arrive');
       await sleep(waitTimeForZeroX);
       const markets = await getAllMarkets(ethSource, makerAccounts);
@@ -2569,13 +2580,14 @@ export function addScripts(flash: FlashSession) {
       console.log('Market Makers:');
       makerAccounts.forEach((maker) => {
         console.log(`${maker.privateKey} -> ${maker.address}`);
-      })
+      });
       console.log();
       console.log('Traders:');
       traderAccounts.forEach((trader) => {
         console.log(`${trader.privateKey} -> ${trader.address}`);
       })
     }});
+
   flash.addScript({
     name: 'run-chaos-monkey',
     options: [
@@ -2640,4 +2652,406 @@ export function addScripts(flash: FlashSession) {
         console.log(`MARKET IDS: ${JSON.stringify(marketIds)}`);
       },
     });
+
+  flash.addScript({
+    name: 'perf-make-order-history',
+    options: [
+      {
+        name: 'market',
+        abbr: 'm',
+        description: 'address of market to trade on',
+        required: true,
+      },
+      {
+        name: 'outcome',
+        abbr: 'o',
+        description: 'which outcome to trade upon (number 0-7)',
+        required: true,
+      },
+      {
+        name: 'amount',
+        abbr: 'a',
+        description: 'how many orders to take',
+        required: true,
+      },
+      {
+        name: 'price',
+        abbr: 'p',
+        description: 'price per share; denominated in DAI',
+        required: true,
+      },
+    ],
+    async call(this: FlashSession, args: FlashArguments): Promise<void> {
+      const market = args.market as string;
+      const outcome = Number(args.outcome) as OutcomeNumber;
+      const amount = Number(args.amount as string);
+      const price = new BigNumber(args.price as string);
+
+      const config = this.deriveConfig({
+        zeroX: { rpc: { enabled: true }, mesh: { enabled: false }},
+        flash: { useGSN: false, syncSDK: true },
+      });
+      const ethSource = await this.createUser(this.getAccount(), config);
+      const connector = ethSource.augur.connector;
+      const accountCreator = new AccountCreator(BASE_MNEMONIC);
+      const traders = accountCreator.traders(2);
+      const maker = await setupUser(traders[0], ethSource, FINNEY, config, connector);
+      const taker = await setupUser(traders[1], ethSource, FINNEY.times(1000), config, connector);
+      console.log(`Maker: ${maker.account.address}`);
+      console.log(`Taker: ${taker.account.address}`);
+
+      const NUM_SHARES = 10;
+
+      const now = await maker.getTimestamp();
+      const oneWeek = new BigNumber(60 * 60 * 24 * 7);
+
+      const cashForMaker = price.times(amount).times(NUM_SHARES).times(1e18);
+      const cashForTaker = price.times(amount).times(NUM_SHARES).times(1e18).times(2); // extra for fees
+      console.log(`Fauceting DAI for maker: ${cashForMaker.toFixed()}`);
+      console.log(`Fauceting DAI for taker: ${cashForTaker.toFixed()}`);
+      await maker.faucetCash(cashForMaker);
+      await taker.faucetCash(cashForTaker);
+
+      await maker.approve();
+      await taker.approve();
+
+      await waitForSync(ethSource.augur);
+      const marketInfo = await getMarket(ethSource.augur, market);
+
+      const totalShares = new BigNumber(amount * NUM_SHARES);
+      const order = buildOrder(marketInfo, outcome, now, oneWeek, totalShares, price, OrderType.Bid);
+      await maker.placeZeroXOrders([order]);
+
+      await sleep(10000); // give 0x plenty of time to propagate the order
+
+      let t = Number(new Date());
+      for (let i = 0; i < amount; i++) {
+        const taken = await taker.augur.placeTrade(buildTakerOrder(marketInfo, outcome, now, new BigNumber(10), price, OrderType.Ask));
+        const t2 = Number(new Date());
+        console.log(`ORDER: ${i}: ${taken ? 'taken' : 'not-taken'} ${t2 - t}ms`);
+        t = t2;
+      }
+    }});
+
+  flash.addScript({
+    name: 'perf-make-orders-fast',
+    options: [
+      {
+        name: 'market',
+        abbr: 'm',
+        description: 'address of market to trade on',
+        required: true,
+      },
+      {
+        name: 'outcome',
+        abbr: 'o',
+        description: 'which outcome to trade upon (number 0-7); default=1',
+      },
+      {
+        name: 'amount',
+        abbr: 'a',
+        description: 'how many orders to make; default=100',
+      },
+      {
+        name: 'price',
+        abbr: 'p',
+        description: 'price per share; denominated in DAI; default=0.5',
+      },
+      {
+        name: 'expiration',
+        abbr: 'e',
+        description: 'how many seconds the orders should last; default=3600 (one hour)',
+      },
+      {
+        name: 'shares',
+        abbr: 's',
+        description: 'how many shares per order; must be a multiple of 10; default=10',
+      },
+      {
+        name: 'batchsize',
+        abbr: 'b',
+        description: 'how many orders to add at once; should be evenly divisble by --amount; default=1',
+      },
+    ],
+    async call(this: FlashSession, args: FlashArguments): Promise<void> {
+      const market = args.market as string;
+      const outcome = Number(args.outcome) as OutcomeNumber || 1;
+      const amount = new BigNumber(args.amount as string || 100);
+      const price = new BigNumber(args.price as string || 0.5);
+      const expiration = new BigNumber(args.expiration as string || 3600);
+      const shares = new BigNumber(args.shares as string || 10);
+      const batchsize = Number(args.batchsize as string) || 1;
+
+      const { config } = setupPerfConfigAndZeroX(this.config, true);
+      const ethSource = await this.createUser(this.getAccount(), config);
+      const connector = ethSource.augur.connector;
+      const accountCreator = new AccountCreator(BASE_MNEMONIC);
+      const traders = accountCreator.traders(2);
+      const maker = await setupUser(traders[0], ethSource, FINNEY, config, connector);
+      console.log(`Maker: ${maker.account.address}`);
+
+      const now = await maker.getTimestamp();
+
+      const cashForMaker = price.times(amount).times(shares).times(1e18);
+      console.log(`Fauceting DAI for maker: ${cashForMaker.toFixed()}`);
+      await maker.faucetCash(cashForMaker);
+      await maker.approve();
+
+      await waitForSync(ethSource.augur);
+      const marketInfo = await getMarket(ethSource.augur, market);
+
+      const promises = [];
+      const startTime = Number(new Date());
+      for (let i = 0; i < amount.div(batchsize).toNumber(); i++) {
+        // let t = Number(new Date());
+        const order = buildOrder(marketInfo, outcome, now, expiration, shares, price, OrderType.Bid);
+        const orders = repeat(order, batchsize);
+        promises.push(maker.placeZeroXOrders(orders));
+        // const t2 = Number(new Date());
+        // console.log(`ORDER: batch #${i} took ${t2 - t}ms`);
+        // t = t2;
+      }
+      await Promise.all(promises);
+      console.log(`Creates ${amount} orders in ${Number(new Date()) - startTime}ms`);
+    }});
+
+  flash.addScript({
+    name: 'setup-user',
+    description: 'Approves user for trading without the user wallet',
+    async call(this: FlashSession): Promise<void> {
+      const { config } = setupPerfConfigAndZeroX(this.config, false);
+      const user = await this.createUser(this.getAccount(), config);
+      console.log(`Setup user ${user.account.address}`);
+    }});
+
+  flash.addScript({
+    name: 'mainnet-perf-make-orders',
+    options: [
+      {
+        name: 'market',
+        abbr: 'm',
+        description: 'address of market to trade on',
+        required: true,
+      },
+      {
+        name: 'outcome',
+        abbr: 'o',
+        description: 'which outcome to trade upon (number 0-7); default=1',
+      },
+      {
+        name: 'amount',
+        abbr: 'a',
+        description: 'how many orders to make; default=100',
+      },
+      {
+        name: 'price',
+        abbr: 'p',
+        description: 'price per share; denominated in DAI; default=0.5',
+      },
+      {
+        name: 'expiration',
+        abbr: 'e',
+        description: 'how many seconds the orders should last; default=3600 (one hour)',
+      },
+      {
+        name: 'shares',
+        abbr: 's',
+        description: 'how many shares per order; must be a multiple of 10; default=10',
+      },
+      {
+        name: 'batchsize',
+        abbr: 'b',
+        description: 'how many orders to add at once; should be evenly divisible by --amount; default=1',
+      },
+      {
+        name: 'mode',
+        abbr: 'M',
+        description: 'create orders in "parallel", "serial", or "timed" (serial w/ second intervals). default=timed',
+      },
+    ],
+    async call(this: FlashSession, args: FlashArguments): Promise<void> {
+      const market = args.market as string;
+      const outcome = Number(args.outcome) as OutcomeNumber || 1;
+      const amount = new BigNumber(args.amount as string || 100);
+      const price = new BigNumber(args.price as string || 0.5);
+      const expiration = new BigNumber(args.expiration as string || 3600);
+      const shares = new BigNumber(args.shares as string || 10);
+      const batchsize = Number(args.batchsize as string) || 1;
+      const mode = args.mode as string || 'timed';
+
+      const { config } = setupPerfConfigAndZeroX(this.config, true);
+      const maker = await this.createUser(this.getAccount(), config);
+      console.log(`Maker: ${maker.account.address}`);
+      console.log(`Total orders to create: ${amount.toFixed()}`);
+      console.log(`Total shares to create: ${amount.times(shares).toFixed()}`);
+
+      await waitForSync(maker.augur);
+      const marketInfo = await getMarket(maker.augur, market);
+
+      const now = await maker.getTimestamp();
+      const order = buildOrder(marketInfo, outcome, now, expiration, shares, price, OrderType.Bid);
+      const numberOfBatches = amount.div(batchsize).toNumber();
+      const batch = repeat(order, numberOfBatches);
+
+      const startTime = Number(new Date());
+
+      if (mode === 'parallel') {
+        await Promise.all(repeat(null, numberOfBatches).map(() => maker.placeZeroXOrders(batch)));
+      } else if (mode === 'serial') {
+        for (let i = 0; i < numberOfBatches; i++) {
+          await maker.placeZeroXOrders(batch);
+          console.log(`Batch ${i} created`);
+        }
+      } else if (mode === 'timed') {
+        for (let i = 0; i < numberOfBatches; i++) {
+          await maker.placeZeroXOrders(batch);
+          console.log(`Batch ${i} created`);
+          await sleep(1000);
+        }
+      } else {
+        throw Error(`Invalid mode: "${mode}".`);
+      }
+
+      console.log(`Created ${amount} orders in ${Number(new Date()) - startTime}ms`);
+    }});
+
+  flash.addScript({
+    name: 'perf-make-order-histories',
+    options: [
+      {
+        name: 'market',
+        abbr: 'm',
+        description: 'address of market to trade on',
+        required: true,
+      },
+      {
+        name: 'outcome',
+        abbr: 'o',
+        description: 'which outcome to trade upon (number 0-7); default=1',
+      },
+      {
+        name: 'amount',
+        abbr: 'a',
+        description: 'how many orders to take; default=10',
+      },
+      {
+        name: 'price',
+        abbr: 'p',
+        description: 'price per share; denominated in DAI; default=0.50',
+      },
+      {
+        name: 'shares',
+        abbr: 'n',
+        description: 'number of shares per taken order; default=10',
+      },
+      {
+        name: 'takers',
+        abbr: 't',
+        description: 'how many users to give history to. defaults to 1',
+      },
+      {
+        name: 'serial',
+        abbr: 's',
+        description: 'execute transactions in serial instead of parallel',
+        flag: true,
+      },
+    ],
+    async call(this: FlashSession, args: FlashArguments): Promise<void> {
+      const market = args.market as string;
+      const outcome = Number(args.outcome || 1) as OutcomeNumber;
+      const amount = Number(args.amount as string || 10);
+      const price = new BigNumber(args.price as string || 0.50);
+      const shares = new BigNumber(args.shares as string || 10);
+      const takersCount = Number(args.traders || 1);
+      const serial = args.serial as boolean;
+
+      const config = this.deriveConfig({
+        zeroX: { rpc: { enabled: true }, mesh: { enabled: false }},
+        flash: { useGSN: false, syncSDK: true },
+      });
+      const ethSource = await this.createUser(this.getAccount(), config);
+      const connector = ethSource.augur.connector;
+      const accountCreator = new AccountCreator(BASE_MNEMONIC);
+      const takersAccounts = accountCreator.traders(1 + takersCount);
+      const maker = await setupUser(takersAccounts.pop(), ethSource, FINNEY, config, connector);
+      const takers = await setupUsers(takersAccounts, ethSource, FINNEY.times(1000), config, connector, serial);
+      const totalShares = shares.times(amount).times(takersCount);
+      console.log(`Maker: ${maker.account.address}`);
+
+      const now = await maker.getTimestamp();
+      const oneWeek = new BigNumber(60 * 60 * 24 * 7);
+
+      const cashForMaker = price.times(amount).times(shares).times(1e18).times(takersCount);
+      const cashForTaker = price.times(amount).times(shares).times(1e18).times(2); // extra for fees
+      console.log(`Fauceting DAI for maker: ${cashForMaker.toFixed()}`);
+      await maker.faucetCash(cashForMaker);
+      await maker.approve();
+
+      console.log(`Fauceting DAI for each taker: ${cashForTaker.toFixed()}`);
+      await mapPromises(takers.map((taker) => async () => {
+        console.log(`Taker: ${taker.account.address}`);
+        await taker.faucetCash(cashForTaker);
+        await taker.approve();
+      }), serial);
+
+      await waitForSync(ethSource.augur);
+      const marketInfo = await getMarket(ethSource.augur, market);
+
+      if (marketInfo === null) throw Error(`Market does not exist: ${market}`);
+
+      const makerOrder = buildOrder(marketInfo, outcome, now, oneWeek, totalShares, price, OrderType.Bid);
+      await maker.placeZeroXOrders([makerOrder]);
+      await sleep(10000); // give 0x plenty of time to propagate the orders
+
+      const takerOrder = buildTakerOrder(marketInfo, outcome, now, new BigNumber(10), price, OrderType.Ask);
+      await mapPromises(takers.map((taker) => async () => {
+        let t = Number(new Date());
+        for (let i = 0; i < amount; i++) {
+          const taken = await taker.augur.placeTrade(takerOrder);
+          const t2 = Number(new Date());
+          console.log(`ORDER: ${taker.account.address} #${i} ${taken ? 'taken' : 'not-taken'} ${t2 - t}ms`);
+          t = t2;
+        }
+      }), serial);
+    }});
 }
+
+
+// TODO put somewhere else
+export function buildOrder(marketInfo: MarketInfo, outcome: OutcomeNumber, now: BigNumber, expiration: BigNumber, amount: BigNumber, price: BigNumber, direction: TradeDirection): ZeroXPlaceTradeDisplayParams {
+  return {
+    expirationTime: now.plus(expiration),
+    displayMinPrice: new BigNumber(marketInfo.minPrice),
+    displayMaxPrice: new BigNumber(marketInfo.maxPrice),
+    displayAmount: amount,
+    displayPrice: price,
+    displayShares: new BigNumber(0),
+    direction,
+    market: marketInfo.id,
+    numTicks: new BigNumber(marketInfo.numTicks),
+    numOutcomes: marketInfo.numOutcomes,
+    outcome,
+    tradeGroupId: formatBytes32String('marketbot-id'),
+    fingerprint: formatBytes32String('marketbot-fp'),
+    doNotCreateOrders: false,
+  };
+}
+export function buildTakerOrder(marketInfo: MarketInfo, outcome: OutcomeNumber, now: BigNumber, amount: BigNumber, price: BigNumber, direction: TradeDirection): ZeroXPlaceTradeDisplayParams {
+  return {
+    expirationTime: now.plus(31557600), // shouldn't matter - not used
+    displayMinPrice: new BigNumber(marketInfo.minPrice),
+    displayMaxPrice: new BigNumber(marketInfo.maxPrice),
+    displayAmount: amount,
+    displayPrice: price,
+    displayShares: new BigNumber(0),
+    direction,
+    market: marketInfo.id,
+    numTicks: new BigNumber(marketInfo.numTicks),
+    numOutcomes: marketInfo.numOutcomes,
+    outcome,
+    tradeGroupId: formatBytes32String('marketbot-id'),
+    fingerprint: formatBytes32String('marketbot-fp'),
+    doNotCreateOrders: true,
+  };
+}
+

@@ -1,6 +1,7 @@
 import readline from 'readline';
 import { ContractAPI } from '..';
 import { RLP, keccak256 } from 'ethers/utils';
+import { Augur } from '@augurproject/sdk';
 
 export function waitForSigint(): Promise<void> {
   process.removeAllListeners('SIGINT');
@@ -42,13 +43,13 @@ export function waitForFunding(user: ContractAPI, count = 60*7, intervalMS = 100
   }, count, intervalMS)
 }
 
-export function waitForSync(user: ContractAPI, count = 90, intervalMS = 1000): Promise<void> {
+export function waitForSync(augur: Augur, count = 90, intervalMS = 1000): Promise<void> {
   let i = 1;
 
   return waitFor(async (): Promise<boolean> => {
     console.log(`Awaiting SDKReady #${i}/${count}`);
     i++;
-    return user.augur.sdkReady;
+    return augur.sdkReady;
   }, count, intervalMS)
 }
 
@@ -143,7 +144,7 @@ export async function getOrCreateMarket(user: ContractAPI, marketId?: string|boo
   return marketId
 }
 
-export function generateAddress(creator: string, nonce: number): string { 
+export function generateAddress(creator: string, nonce: number): string {
   const rlpData = RLP.encode([creator, `0x${nonce.toString(16)}`]);
   let contractAddress = keccak256(rlpData);
   return `0x${contractAddress.substring(26)}`;
