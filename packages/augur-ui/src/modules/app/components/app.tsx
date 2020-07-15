@@ -19,7 +19,6 @@ import { useAppStatusStore } from 'modules/app/store/app-status';
 import { initAugur } from 'modules/app/actions/init-augur';
 
 import { MobileNavHamburgerIcon, XIcon } from 'modules/common/icons';
-import parsePath from 'modules/routes/helpers/parse-path';
 import {
   ACCOUNT_SUMMARY,
   CREATE_MARKET,
@@ -28,13 +27,9 @@ import {
   MARKETS,
   MY_POSITIONS,
   REPORTING,
-  MARKET,
 } from 'modules/routes/constants/views';
 import makePath from 'modules/routes/helpers/make-path';
 import parsePath from 'modules/routes/helpers/parse-path';
-import parseQuery, { parseLocation } from 'modules/routes/helpers/parse-query';
-import { APP_HEAD_TAGS } from 'modules/seo/helmet-configs';
-import { HelmetTag } from 'modules/seo/helmet-tag';
 import {
   MODAL_NETWORK_CONNECT,
   MOBILE_MENU_STATES,
@@ -49,23 +44,18 @@ import {
   MARKET_ID_PARAM_NAME,
   AFFILIATE_NAME,
 } from 'modules/routes/constants/param-names';
-import makePath from 'modules/routes/helpers/make-path';
 import { ExternalLinkText } from 'modules/common/buttons';
 import { HelmetTag } from 'modules/seo/helmet-tag';
 import { APP_HEAD_TAGS } from 'modules/seo/helmet-configs';
-import { SDKConfiguration } from '@augurproject/artifacts';
 import { MyBetsInnerNav } from 'modules/portfolio/components/common/my-bets-inner-nav';
 import { MyBetsProvider } from 'modules/portfolio/store/my-bets';
 import { StatusErrorMessage } from 'modules/common/labels';
 import { MarketsProvider } from 'modules/markets/store/markets';
-import isGlobalWeb3 from 'modules/auth/helpers/is-global-web3';
 import isAddress from 'modules/auth/helpers/is-address';
 import { getNotifications } from 'modules/notifications/selectors/notification-state';
 import { withRouter } from 'react-router-dom';
 import { RewriteUrlParams } from '../hocs/rewrite-url-params/index';
 import { windowRef } from 'utils/window-ref';
-
-//         all logic related to sidebar(s) need to be housed w/in a separate component
 
 interface AppProps {
   config: SDKConfiguration;

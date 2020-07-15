@@ -3,7 +3,11 @@
 
 .BettingMarketView {
     width: 100%;
-    padding: @size-32 @size-40 @size-32  @size-32 ;
+    padding: @size-32 @size-40 @size-32  @size-32;
+
+    > section[class*="SportsMarketContainer"] {
+        margin-bottom: @size-8;
+    }
 
     > div:first-of-type {
         display: flex;

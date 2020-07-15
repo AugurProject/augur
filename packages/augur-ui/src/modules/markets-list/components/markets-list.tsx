@@ -6,6 +6,7 @@ import {
   MARKET_CARD_FORMATS,
   THEMES,
   SPORTS_GROUP_TYPES,
+  ZERO,
 } from 'modules/common/constants';
 import MarketCard from 'modules/market-cards/market-card';
 import SportsMarketCard from 'modules/market-cards/sports-market-card';
@@ -50,6 +51,7 @@ export const groupSportsMarkets = (filteredMarkets, markets) =>
       const uniqueType = `${market.sportsBook.groupType}-${market.sportsBook.title}`;
       if (existingGroup) {
         existingGroup.markets.push(market);
+        existingGroup.totalVolume = existingGroup.totalVolume.plus(market.volume);
         if (!existingGroup.marketTypes.includes(uniqueType)) {
           existingGroup.marketTypes.push(uniqueType);
         }
@@ -60,6 +62,7 @@ export const groupSportsMarkets = (filteredMarkets, markets) =>
           id: groupId,
           marketTypes: [uniqueType],
           markets: [market],
+          totalVolume: ZERO.plus(market.volume),
         });
       }
     }
@@ -68,6 +71,7 @@ export const groupSportsMarkets = (filteredMarkets, markets) =>
 
 export const getSportsGroupsFromSportsIDs = (filteredSportsGroupIds, markets) => 
   filteredSportsGroupIds.reduce((accumulator, sportsGroupId) => {
+    let totalVolume = ZERO;
     const sportsGroupMarkets = markets.filter(market => market.sportsBook.groupId === sportsGroupId);
     if (!sportsGroupMarkets[0]) {
       return accumulator;
@@ -75,12 +79,13 @@ export const getSportsGroupsFromSportsIDs = (filteredSportsGroupIds, markets) =>
     const type = determineSportsbookType(sportsGroupMarkets[0]);
     const marketTypes = [];
     sportsGroupMarkets.forEach(market => {
+      totalVolume = totalVolume.plus(market.volume);
       const uniqueType = `${market.sportsBook.groupType}-${market.sportsBook.title}`;
       if (!marketTypes.includes(uniqueType)) {
         marketTypes.push(uniqueType);
       }
     })
-    accumulator.push({ id: sportsGroupId, markets: sportsGroupMarkets, type, marketTypes });
+    accumulator.push({ id: sportsGroupId, markets: sportsGroupMarkets, type, marketTypes, totalVolume });
     return accumulator;
   }, []);
   

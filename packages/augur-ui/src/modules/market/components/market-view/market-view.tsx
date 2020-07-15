@@ -277,7 +277,7 @@ const MarketView = ({
   useEffect(() => {
     // This will only be called once on the 'canHotLoad' prop change.
     if (canHotload && !tradingTutorial && marketId && !market) hotLoadMarket(marketId, history);
-  }, [canHotload]);
+  }, [canHotload, marketId]);
 
   useEffect(() => {
     if (outcomeId !== prevProps.current.outcomeId && outcomeId !== null) {
