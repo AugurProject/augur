@@ -311,7 +311,7 @@ class Confirm extends Component<ConfirmProps, ConfirmState> {
         },
       };
     }
-
+/*
     if (
       !isNaN(numTrades) &&
       numTrades > 0 &&
@@ -324,7 +324,7 @@ class Confirm extends Component<ConfirmProps, ConfirmState> {
         message: `Can not match existing order.`,
       };
     }
-
+*/
     if (disableTrading && !tradingTutorial) {
       messages = {
         header: 'Reporting Only',
@@ -447,10 +447,15 @@ class Confirm extends Component<ConfirmProps, ConfirmState> {
               showDenomination={true}
             />
             {gasCostDai.roundedValue.gt(0) > 0 &&
-              numFills > 0 && (
+              numFills > 0 && !postOnlyOrder && (
               <TransactionFeeLabelToolTip
                 isError={createBigNumber(gasCostDai.value).gt(createBigNumber(orderShareProfit.value))}
                 gasCostDai={gasCostDai}
+              />
+            )}
+            {postOnlyOrder && (
+              <TransactionFeeLabelToolTip
+                gasCostDai={`0.00`}
               />
             )}
             <LinearPropertyLabel

@@ -123,7 +123,6 @@ describe('Cross orderbook', () => {
 
     test('CrossOrderBook: ignore one crossed ask order smaller size ', async () => {
       const marketId = 'marketId';
-      const crossedOrder = 'order0'
       const testOutcomeOrders: ZeroXOrders = {
         [marketId]: {
           1: {
@@ -131,7 +130,7 @@ describe('Cross orderbook', () => {
               [`order3`]: createOrder(maker, `order3`, `0.52`, 100, 1111),
               [`order2`]: createOrder(maker, `order2`, `0.42`, 100, 1111),
               [`order1`]: createOrder(maker, `order1`, `0.41`, 100, 1111),
-              [crossedOrder]: createOrder(maker, crossedOrder, `0.38`, 10, 1111),
+              [`order0`]: createOrder(maker, `order0`, `0.38`, 10, 1111),
             },
             [String(OrderType.Bid)]: {
               [`order4`]: createOrder(maker, `order4`, `0.39`, 100, 1111),
@@ -143,7 +142,7 @@ describe('Cross orderbook', () => {
       const newBook = ignoreCrossedOrders(testOutcomeOrders, account2);
       expect(_.keys(newBook[marketId][1][String(OrderType.Bid)])).toHaveLength(2);
       expect(_.keys(newBook[marketId][1][String(OrderType.Ask)])).toHaveLength(3);
-      expect(_.keys(newBook[marketId][1][String(OrderType.Ask)]).includes(crossedOrder)).toBe(false);
+      expect(_.keys(newBook[marketId][1][String(OrderType.Ask)]).includes(`order0`)).toBe(false);
     });
 
 
@@ -332,6 +331,54 @@ describe('Cross orderbook', () => {
       expect(_.keys(newBook[marketId][1][String(OrderType.Ask)])).toHaveLength(6);
       expect(_.keys(newBook[marketId][1][String(OrderType.Bid)])).toHaveLength(1);
     });
+
+
+    test('CrossOrderBook: crossed asks/bids users crossed orders same bid and ask price', async () => {
+      const marketId = 'marketId';
+      const testOutcomeOrders: ZeroXOrders = {
+        [marketId]: {
+          1: {
+            [String(OrderType.Ask)]: {
+              [`order2`]: createOrder(maker, `order2`, `0.38`, 100, 1114),
+              [`order1`]: createOrder(maker, `order1`, `0.38`, 100, 1113),
+              [`order0`]: createOrder(account2, `order0`, `0.37`, 100, 1112),
+            },
+            [String(OrderType.Bid)]: {
+              [`order9`]: createOrder(account2, `order9`, `0.37`, 10, 2222),
+              [`order81`]: createOrder(maker, `order81`, `0.35`, 100, 9999),
+              [`order82`]: createOrder(maker, `order82`, `0.31`, 100, 9999),
+            },
+          },
+        },
+      };
+      const newBook = ignoreCrossedOrders(testOutcomeOrders, account2);
+      expect(newBook).toMatchObject(testOutcomeOrders);
+    });
+
+
+    test('CrossOrderBook: crossed users asks/bids no removals', async () => {
+      const marketId = 'marketId';
+      const testOutcomeOrders: ZeroXOrders = {
+        [marketId]: {
+          1: {
+            [String(OrderType.Ask)]: {
+              [`order2`]: createOrder(maker, `order2`, `0.38`, 100, 1114),
+              [`order1`]: createOrder(maker, `order1`, `0.38`, 100, 1113),
+              [`order0`]: createOrder(account2, `order0`, `0.37`, 100, 1112),
+              [`ordera`]: createOrder(maker, `ordera`, `0.36`, 100, 1112),
+            },
+            [String(OrderType.Bid)]: {
+              [`order9`]: createOrder(account2, `order9`, `0.37`, 10, 2222),
+              [`order81`]: createOrder(maker, `order81`, `0.35`, 100, 9999),
+              [`order82`]: createOrder(maker, `order82`, `0.31`, 100, 9999),
+            },
+          },
+        },
+      };
+      const newBook = ignoreCrossedOrders(testOutcomeOrders, account2);
+      expect(newBook).toMatchObject(testOutcomeOrders);
+    });
+
 
   });
 });
