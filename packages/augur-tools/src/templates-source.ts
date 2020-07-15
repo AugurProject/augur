@@ -39,7 +39,7 @@ import {
   ETHEREUM,
   EURO_TOUR,
   EVENT,
-  FINANCE,
+  ECONOMICS,
   GENDER,
   GOLF,
   groupTypes,
@@ -8609,7 +8609,7 @@ export const TEMPLATES = {
       },
     },
   },
-  [FINANCE]: {
+  [ECONOMICS]: {
     children: {
       [STATISTICS]: {
         templates: [

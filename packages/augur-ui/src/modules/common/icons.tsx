@@ -1439,7 +1439,7 @@ export const Politics = (
   </svg>
 );
 
-export const Finance = (
+export const Economics = (
   <svg viewBox="0 0 48 48" fill="none">
     <path
       d="M46.5 1.5H1.5V46.5H46.5V1.5Z"
@@ -2382,7 +2382,7 @@ export const CategoryCrypto = (
   </svg>
 );
 
-export const CategoryFinance = (
+export const CategoryEconomics = (
   <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
     <path
       d="M10.25 6L9 6L7.5 3.5L5 8.5L3.5 6L1.75 6"

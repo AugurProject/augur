@@ -16,7 +16,7 @@ import { Popcorn } from 'modules/common/icons';
 import {
   SPORTS,
   POLITICS,
-  FINANCE,
+  ECONOMICS,
   ENTERTAINMENT,
   CRYPTO,
   MEDICAL,
@@ -230,10 +230,10 @@ export const MARKET_TEMPLATES = [
     icon: icons.Politics,
   },
   {
-    value: FINANCE,
-    header: FINANCE,
+    value: ECONOMICS,
+    header: ECONOMICS,
     description: defaultDescription,
-    icon: icons.Finance,
+    icon: icons.Economics,
   },
   {
     value: ENTERTAINMENT,
@@ -372,7 +372,7 @@ export const MARKET_SUB_TEMPLATES = {
       icon: icons.World,
     },
   ],
-  [FINANCE]: [
+  [ECONOMICS]: [
     {
       value: STOCKS,
       header: STOCKS,
