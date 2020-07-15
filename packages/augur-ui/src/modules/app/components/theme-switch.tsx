@@ -17,14 +17,14 @@ export const ThemeSwitch = () => {
           Trading
         </button>
       </li>
-      <li>
+      {/* <li>
         <button
           className={classNames({ [Styles.Active]: theme === THEMES.BETTING })}
           onClick={() => setTheme(THEMES.BETTING)}
         >
           Betting Exchange
         </button>
-      </li>
+      </li> */}
       <li>
         <button
           className={classNames({ [Styles.Active]: theme === THEMES.SPORTS })}
