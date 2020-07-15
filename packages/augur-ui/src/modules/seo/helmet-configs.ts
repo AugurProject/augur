@@ -63,7 +63,7 @@ export const CREATE_MARKET_VIEW_HEAD_TAGS = {
 };
 
 const MARKETS_VIEW_TITLE = 'The world’s most accessible, no-limit betting exchange';
-const MARKETS_VIEW_DESCRIPTION = 'Bet and trade on user-created markets, from weather to crypto to finance. No limits on the amount you can bet or what you can bet on. Lowest fees and the best odds.';
+const MARKETS_VIEW_DESCRIPTION = 'Bet and trade on user-created markets, from weather to crypto to economics. No limits on the amount you can bet or what you can bet on. Lowest fees and the best odds.';
 
 export const MARKETS_VIEW_HEAD_TAGS = {
   ...COMMON_HEAD_TAGS,

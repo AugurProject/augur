@@ -6,8 +6,6 @@ import Clipboard from 'clipboard';
 import { Checkbox, TextInput, InputDropdown } from 'modules/common/form';
 import {
   XIcon,
-  LargeDollarIcon,
-  LargeDaiIcon,
   DaiLogoIcon,
   EthIcon,
   helpIcon,
@@ -515,20 +513,6 @@ export const AccountStatusTracker = ({ accountStatusTracker } :AccountStatusTrac
       <div>Activate account</div>
     </div>
 
-  </div>
-);
-
-export const DaiGraphic = () => (
-  <div className={Styles.DaiGraphic}>
-    <div>
-      {LargeDaiIcon}
-      <span>1 dai</span>
-    </div>
-    <span>=</span>
-    <div>
-      {LargeDollarIcon}
-      <span>1 USD</span>
-    </div>
   </div>
 );
 
