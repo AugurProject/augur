@@ -27,6 +27,7 @@ import {
   TwoArrowsOutline,
   XIcon,
   BackIcon,
+  ThickChevron,
   AlternateDaiLogoIcon,
   Chevron,
   ThickChevron,
@@ -668,7 +669,7 @@ export const CashoutButton = ({
   let won = createBigNumber(bet.amountWon);
   let cashout = () => bet.cashout();
 
-  const { 
+  const {
       accountPositions: positions,
       loginAccount: { address: account },
       pendingQueue,
@@ -693,7 +694,7 @@ export const CashoutButton = ({
       } else if (market.reportingState !== REPORTING_STATE.AWAITING_FINALIZATION && market.reportingState !== REPORTING_STATE.FINALIZED) {
         cashoutText = `Cashout ${formatDai(bet.unrealizedCost).full}`;
         cashoutDisabled = false;
-    
+
         cashout = () => (
           async () =>
             await placeTrade(
@@ -713,7 +714,7 @@ export const CashoutButton = ({
             )
         )();
       }
-  } 
+  }
   if (!won.eq(ZERO)) {
     didWin = true;
     if (won.lt(ZERO)) {
@@ -723,25 +724,25 @@ export const CashoutButton = ({
   }
 
   return (
-    <> 
-      {pending ? 
-        <ProcessingButton 
+    <>
+      {pending ?
+        <ProcessingButton
           queueName={CASHOUT}
           queueId={queueId}
           cancelButton
         />
         :
-        <button 
+        <button
           onClick={() => {
             addPendingData(queueId, CASHOUT, TXEventName.Pending, '', {});
-            cashout().catch(err => 
+            cashout().catch(err =>
               addPendingData(queueId, CASHOUT, TXEventName.Failure, '', {})
             )
           }}
           className={classNames(Styles.CashoutButton, {
             [Styles.Won]: didWin && !loss,
             [Styles.Loss]: loss,
-          })} 
+          })}
           disabled={cashoutDisabled}
         >
           {cashoutText}

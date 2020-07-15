@@ -2,7 +2,7 @@ import {
   CategorySports,
   CategoryPolitics,
   CategoryEntertainment,
-  CategoryFinance,
+  CategoryEconomics,
   CategoryCrypto,
 } from 'modules/common/icons';
 import { DEFAULT_DERIVATION_PATH } from 'modules/auth/helpers/derivation-path';
@@ -1155,7 +1155,7 @@ export const POPULAR_CATEGORIES = [
   'sports',
   'politics',
   'entertainment',
-  'finance',
+  'economics',
   'crypto',
   'medical'
 ];
@@ -1164,7 +1164,7 @@ export const POPULAR_CATEGORIES_ICONS = {
   sports: CategorySports,
   politics: CategoryPolitics,
   entertainment: CategoryEntertainment,
-  finance: CategoryFinance,
+  economics: CategoryEconomics,
   crypto: CategoryCrypto,
 };
 

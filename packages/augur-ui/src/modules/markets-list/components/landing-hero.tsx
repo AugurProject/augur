@@ -14,7 +14,7 @@ export const LandingHero = () => {
       <div>
         <h1>Augur v2<br /><span>Your global, no-limit betting platform</span></h1>
         <span>
-          Bet how much you want, on sports, finance, world events and more.
+          Bet how much you want, on sports, economics, world events and more.
         </span>
         <div>
           <PrimaryButton

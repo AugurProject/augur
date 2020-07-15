@@ -501,8 +501,9 @@ function daysRequiredAfterMonthDate(
     .year(Number(yearInput.value))
     .add(1, 'M')
     .endOf('month')
+    .seconds(0)
     .unix();
-  if (newEndTime !== Number(endTime)) {
+  if (newEndTime > Number(endTime)) {
     return false;
   } else return true;
 }
