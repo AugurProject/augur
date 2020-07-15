@@ -1,6 +1,7 @@
 import { TransactionMetadata } from '@augurproject/contract-dependencies-ethers';
 import { BigNumber } from 'bignumber.js';
 import { utils as ethersUtils } from 'ethers';
+import { Order } from '.';
 
 export {
   ZERO,
@@ -253,3 +254,36 @@ export interface TXStatus {
   hash?: string;
   reason?: string;
 }
+
+export interface OrderTypeOrders {
+  [orderType: string]: {
+    [orderId: string]: ZeroXOrder;
+  }
+}
+
+export interface OutcomeOrders {
+  [outcome: number]: OrderTypeOrders;
+};
+
+export interface ZeroXOrder extends Order {
+  expirationTimeSeconds: number;
+  makerAssetAmount: string;
+  takerAssetAmount: string;
+  salt: string;
+  makerAssetData: string;
+  takerAssetData: string;
+  signature: string;
+  makerFeeAssetData: string;
+  takerFeeAssetData: string;
+  feeRecipientAddress: string;
+  takerAddress: string;
+  makerAddress: string;
+  senderAddress: string;
+  makerFee: string;
+  takerFee: string;
+}
+
+export interface ZeroXOrders {
+  [marketId: string]: OutcomeOrders;
+}
+

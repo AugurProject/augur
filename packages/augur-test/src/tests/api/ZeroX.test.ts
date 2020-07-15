@@ -2,7 +2,6 @@ import { WSClient } from '@0x/mesh-rpc-client';
 import { SDKConfiguration } from '@augurproject/utils';
 import { sleep } from '@augurproject/core/build/libraries/HelperFunctions';
 import { Connectors } from '@augurproject/sdk';
-import { ZeroXOrders } from '@augurproject/sdk/build/state/getter/ZeroXOrdersGetters';
 import {
   ACCOUNTS,
   defaultSeedPath,
@@ -17,6 +16,7 @@ import * as _ from 'lodash';
 import { enableZeroX, makeProvider } from '../../libs';
 import { MockBrowserMesh } from '../../libs/MockBrowserMesh';
 import { MockMeshServer, stopServer } from '../../libs/MockMeshServer';
+import { ZeroXOrders } from '@augurproject/sdk-lite/build';
 
 describe('Augur API :: ZeroX :: ', () => {
   let john: TestContractAPI;

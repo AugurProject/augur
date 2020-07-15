@@ -1,5 +1,4 @@
-import { MarketData, OrderType } from '@augurproject/sdk-lite';
-import { Order, OrderState } from '@augurproject/sdk-lite/build';
+import { MarketData, ZeroXOrder, ZeroXOrders, OrderState, ignoreCrossedOrders } from '@augurproject/sdk-lite';
 import { BigNumber } from 'bignumber.js';
 import Dexie from 'dexie';
 import { getAddress } from 'ethers/utils/address';
@@ -16,37 +15,6 @@ import { StoredOrder } from '../db/ZeroXOrders';
 import { getMarkets} from './OnChainTrading';
 import { Getter } from './Router';
 
-export interface ZeroXOrder extends Order {
-  expirationTimeSeconds: number;
-  makerAssetAmount: string;
-  takerAssetAmount: string;
-  salt: string;
-  makerAssetData: string;
-  takerAssetData: string;
-  signature: string;
-  makerFeeAssetData: string;
-  takerFeeAssetData: string;
-  feeRecipientAddress: string;
-  takerAddress: string;
-  makerAddress: string;
-  senderAddress: string;
-  makerFee: string;
-  takerFee: string;
-}
-
-export interface ZeroXOrders {
-  [marketId: string]: OutcomeOrders;
-}
-
-interface OutcomeOrders {
-  [outcome: number]: OrderTypeOrders;
-};
-
-interface OrderTypeOrders {
-  [orderType: string]: {
-    [orderId: string]: ZeroXOrder;
-  }
-}
 
 export const ZeroXOrdersParams = t.partial({
   marketId: t.string,
@@ -299,83 +267,3 @@ export function collapseZeroXOrders(orders): ZeroXOrder[] {
   return collapsed;
 }
 
-
-/*
-  [marketId: string]: {
-    [outcome: number]: {
-      [orderType: string]: {
-        [orderId: string]: ZeroXOrder;
-      };
-    };
-  };
-*/
-function ignoreCrossedOrders(books: ZeroXOrders, allowedAccount: string): ZeroXOrders {
-  const filteredBooks = _.reduce(_.keys(books), (aggs, marketId) => ({...aggs, [marketId]: filterMarketOutcomeOrders(books[marketId], allowedAccount) }), {})
-  return filteredBooks;
-}
-function filterMarketOutcomeOrders(outcomeOrders: OutcomeOrders, allowedAccount: string): OutcomeOrders {
-  const values = _.reduce(_.keys(outcomeOrders), (aggs, outcomeId) =>
-  ({ ...aggs, [Number(outcomeId)]: removeCrossedOrdersInOutcome(outcomeOrders[Number(outcomeId)], allowedAccount) }), {});
-  return values;
-}
-
-export function removeCrossedOrdersInOutcome(orders: OrderTypeOrders, allowedAccount: string): OrderTypeOrders {
-  if (_.keys(orders).length < 2) return orders;
-  if (_.keys(orders[OrderType.Ask]).length === 0) return orders;
-  if (_.keys(orders[OrderType.Bid]).length === 0) return orders;
-
-  // pre sort for faster comparisons, not totally sure this is needed
-  const asks = _.values(orders[OrderType.Ask]).sort(compareOrdersPrice);
-  const bids = _.values(orders[OrderType.Bid]).sort(compareOrdersPrice);
-
-  // get crossed sizes and remove smallest sized crossed orders
-  // if same size remove oldest crossed orders
-  // leave account orders if crossed
-  getAccountFilteredOrderIds(
-    _.intersectionWith(asks, bids, compareAskPriceCrossedOrders),
-    allowedAccount
-  ).map(id => delete orders[OrderType.Ask][id]);
-
-  getAccountFilteredOrderIds(
-    _.intersectionWith(bids, asks, compareBidPriceCrossedOrders),
-    allowedAccount
-  ).map(id => delete orders[OrderType.Bid][id]);
-
-  return orders;
-}
-
-function getAccountFilteredOrderIds(orders: ZeroXOrder[], account: string): string[] {
-  return orders.reduce(
-    (p, o) => (o.makerAddress === account ? p : [...p, o]),
-    []
-  ).map((o: ZeroXOrder) => o.orderId);
-}
-
-function compareAskPriceCrossedOrders(ask: ZeroXOrder, bid: ZeroXOrder): boolean {
-  if (parseFloat(ask.price) < parseFloat(bid.price)) return true;
-  return compareCrossedOrdersAmountSalt(ask, bid, true);
-}
-
-function compareBidPriceCrossedOrders(bid: ZeroXOrder, ask: ZeroXOrder): boolean {
-  if (parseFloat(bid.price) > parseFloat(ask.price)) return true;
-  return compareCrossedOrdersAmountSalt(bid, ask, false);
-}
-
-function compareCrossedOrdersAmountSalt(order1: ZeroXOrder, order2: ZeroXOrder, sameTtlRemove): boolean {
-  const order1Price = parseFloat(order1.price);
-  const orer2Price = parseFloat(order2.price);
-  const order1Amount = parseFloat(order1.amount);
-  const order2Amount = parseFloat(order2.amount);
-  const order1ttl = order1.expirationTimeSeconds;
-  const order2ttl = order2.expirationTimeSeconds;
-  if (order1Price === orer2Price && order1Amount < order2Amount) return true;
-  if (order1Price === orer2Price && order1Amount === order2Amount && order1ttl > order2ttl) return true;
-  if (order1Price === orer2Price && order1Amount === order2Amount && order1ttl === order2ttl && sameTtlRemove) return true;
-  return false;
-}
-
-function compareOrdersPrice(a, b) {
-  if (parseFloat(a.price) > parseFloat(b.price)) return 1;
-  if (parseFloat(b.price) > parseFloat(a.price)) return -1;
-  return 0;
-}
