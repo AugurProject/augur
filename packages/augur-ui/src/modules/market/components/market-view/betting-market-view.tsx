@@ -50,12 +50,12 @@ const BettingMarketView = () => {
     details,
     settlementFee,
   } = market;
-
+  const header = market.sportsBook ? market.sportsBook.header : description;
   return (
     <div className={Styles.BettingMarketView}>
       <div>
         <HeadingBar market={market} showReportingLabel />
-        <span>{description}</span>
+        <span>{header}</span>
         <div>
           <PropertyLabel
             label="matched"

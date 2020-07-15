@@ -962,6 +962,7 @@
 
 			color: var(--color-primary-text);
 			text-align: center;
+			min-height: @size-12;
 		}
 	}
 
@@ -989,6 +990,12 @@
 		&.NoHeader {
 			> header {
 				display: none;
+			}
+		}
+
+		&.GroupPage {
+			> div:first-of-type {
+				background: var(--color-module-background);
 			}
 		}
 

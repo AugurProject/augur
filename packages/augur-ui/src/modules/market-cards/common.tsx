@@ -743,11 +743,13 @@ export interface ComboMarketContainerProps {
     OVER_UNDER: Array<any>;
   };
   sportsGroup: any;
+  isGroupPage: boolean;
 }
 
 export const ComboMarketContainer = ({
   data,
   sportsGroup,
+  isGroupPage = false
 }: ComboMarketContainerProps) => {
   const { SPREAD, MONEY_LINE, OVER_UNDER } = SPORTS_GROUP_MARKET_TYPES;
   const {
@@ -766,7 +768,10 @@ export const ComboMarketContainer = ({
     <section
       className={classNames(
         Styles.ComboContainer,
-        Styles.SportsMarketContainer
+        Styles.SportsMarketContainer,
+        {
+          [Styles.GroupPage]: isGroupPage
+        }
       )}
     >
       <header>
@@ -930,6 +935,7 @@ export const prepareSportsGroup = (sportsGroup, isGroupPage = false) => {
         data={topComboMarkets}
         sportsGroup={sportsGroup}
         key={sportsGroup.id}
+        isGroupPage={isGroupPage}
       />
     );
   }
@@ -944,6 +950,7 @@ export const prepareSportsGroup = (sportsGroup, isGroupPage = false) => {
         market={market}
         sportsGroup={sportsGroup}
         startOpen={startOpen}
+        noHeader={isGroupPage && startOpen}
         title={market.sportsBook.title}
       />
     );
