@@ -51,6 +51,7 @@ export const groupSportsMarkets = (filteredMarkets, markets) =>
       const uniqueType = `${market.sportsBook.groupType}-${market.sportsBook.title}`;
       if (existingGroup) {
         existingGroup.markets.push(market);
+        existingGroup.totalVolume = existingGroup.totalVolume.plus(market.volume);
         if (!existingGroup.marketTypes.includes(uniqueType)) {
           existingGroup.marketTypes.push(uniqueType);
         }
@@ -61,6 +62,7 @@ export const groupSportsMarkets = (filteredMarkets, markets) =>
           id: groupId,
           marketTypes: [uniqueType],
           markets: [market],
+          totalVolume: ZERO.plus(market.volume),
         });
       }
     }
