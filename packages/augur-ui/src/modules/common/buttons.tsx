@@ -667,7 +667,7 @@ export const CashoutButton = ({
   let won = createBigNumber(bet.amountWon);
   let cashout = () => bet.cashout();
 
-  const { 
+  const {
       accountPositions: positions,
       loginAccount: { address: account },
   } = useAppStatusStore();
@@ -688,9 +688,9 @@ export const CashoutButton = ({
       } else if (market.reportingState !== REPORTING_STATE.AWAITING_FINALIZATION && market.reportingState !== REPORTING_STATE.FINALIZED) {
         cashoutText = `Cashout ${formatDai(bet.unrealizedCost).full}`;
         cashoutDisabled = false;
-    
+
         cashout = () => (
-          async () => { 
+          async () => {
             await placeTrade(
               0,
               bet.marketId,
@@ -708,7 +708,7 @@ export const CashoutButton = ({
             );
         })();
       }
-  } 
+  }
   if (!won.eq(ZERO)) {
     didWin = true;
     if (won.lt(ZERO)) {
@@ -717,12 +717,12 @@ export const CashoutButton = ({
     cashoutText = `${loss ? 'LOSS' : 'WIN'}: $${Math.abs(bet.amountWon)}`;
   }
   return (
-    <button 
-      onClick={() => cashout()} 
+    <button
+      onClick={() => cashout()}
       className={classNames(Styles.CashoutButton, {
         [Styles.Won]: didWin && !loss,
         [Styles.Loss]: loss,
-      })} 
+      })}
       disabled={cashoutDisabled}
     >
       {cashoutText}

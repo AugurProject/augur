@@ -137,7 +137,7 @@
           height: unset;
           width: 100%;
           display: flex;
-          
+
           > button:first-of-type {
             display: none;
           }
@@ -147,7 +147,7 @@
           }
         }
       }
-    }     
+    }
   }
 
   .Container {
@@ -238,6 +238,26 @@
           margin-top: @size-8;
         }
       }
+    }
+  }
+
+  .SideImages {
+    max-width: @size-326;
+    min-width: @size-326;
+    width: @size-326;
+
+    > a {
+      display: block;
+      height: 200px;
+      margin-top: @size-24;
+
+      > img {
+        width: 100%;
+      }
+    }
+
+    @media @breakpoint-max-desktop-min {
+      display: none;
     }
   }
 }
