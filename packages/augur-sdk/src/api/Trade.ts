@@ -23,6 +23,7 @@ export interface SimulateTradeData extends ZeroXSimulateTradeData {
 
 export interface PlaceTradeDisplayParams extends NativePlaceTradeDisplayParams {
   expirationTime?: BigNumber;
+  postOnly?: boolean;
 }
 
 export interface PlaceTradeParams extends NativePlaceTradeChainParams {

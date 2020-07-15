@@ -234,8 +234,6 @@ class Wrapper extends Component<WrapperProps, WrapperState> {
           orderDaiEstimate: '',
           orderEscrowdDai: '',
           gasCostEst: '',
-          doNotCreateOrders: false,
-          postOnlyOrder: false,
           expirationDate,
           trade,
         }
@@ -396,7 +394,8 @@ class Wrapper extends Component<WrapperProps, WrapperState> {
       market.id,
       selectedOutcome.id,
       trade,
-      s.doNotCreateOrders
+      s.doNotCreateOrders,
+      s.postOnlyOrder
     );
     this.clearOrderForm();
   }
@@ -444,8 +443,6 @@ class Wrapper extends Component<WrapperProps, WrapperState> {
       selectedOutcome,
       gasPrice,
       updateSelectedOutcome,
-      disclaimerSeen,
-      disclaimerModal,
       updateLiquidity,
       initialLiquidity,
       tradingTutorial,
@@ -514,7 +511,7 @@ class Wrapper extends Component<WrapperProps, WrapperState> {
           }
         }}
         disabled={
-          !trade || !trade.limitPrice || (gsnUnavailable && isOpenOrder) || insufficientFunds || (postOnlyOrder && trade.numFills > 0 || (disableTrading))
+          !trade || !trade.limitPrice || (gsnUnavailable && isOpenOrder) || insufficientFunds || (/*postOnlyOrder && trade.numFills > 0 ||*/ (disableTrading))
         }
       />
     );

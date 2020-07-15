@@ -37,6 +37,7 @@ export const placeMarketTrade = ({
   outcomeId,
   tradeInProgress,
   doNotCreateOrders,
+  postOnly,
 }: any) => async (
   dispatch: ThunkDispatch<void, any, Action>,
   getState: () => AppState
@@ -119,7 +120,8 @@ export const placeMarketTrade = ({
     displayPrice,
     userShares,
     expirationTime,
-    tradeGroupId
+    tradeGroupId,
+    postOnly,
   )
     .then(result => {
       if (tradeInProgress.numFills === 0) {

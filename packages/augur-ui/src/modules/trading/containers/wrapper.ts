@@ -99,6 +99,7 @@ const mapDispatchToProps = (dispatch, ownProps) => ({
     outcomeId,
     tradeInProgress,
     doNotCreateOrders,
+    postOnly,
   ) =>
     dispatch(
       placeMarketTrade({
@@ -106,6 +107,7 @@ const mapDispatchToProps = (dispatch, ownProps) => ({
         outcomeId,
         tradeInProgress,
         doNotCreateOrders,
+        postOnly
       })
     ),
     orderSubmitted: (type, marketId) => dispatch(orderSubmitted(type, marketId))
