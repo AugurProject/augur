@@ -111,7 +111,7 @@ const BettingMarketView = () => {
         />
         <InfoTicket
           icon={PositionIcon}
-          value="$146.54"
+          value={formatDai(sportsGroup?.totalVolume || '0').full}
           subheader="Is the amount traded on this market"
         />
       </div>
