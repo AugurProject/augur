@@ -105,9 +105,6 @@ export const REGISTERED_EXTERNAL_CONTRACTS = [
     'WETH9',
     // Maker
     'Cash',
-    // USDx
-    'USDC',
-    'USDT',
     // Uniswap
     "UniswapV2Factory",
     // GSN

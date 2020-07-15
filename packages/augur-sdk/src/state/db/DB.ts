@@ -300,7 +300,7 @@ export class DB {
       const currentUniverseCreateLogCount = await this.UniverseCreated.where(
         'childUniverse'
       )
-        .equals(this.augur.contracts.universe.address)
+        .equalsIgnoreCase(this.augur.contracts.universe.address)
         .count();
 
       if (currentUniverseCreateLogCount === 0) {
