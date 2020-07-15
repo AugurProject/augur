@@ -6,6 +6,7 @@ import {
   OrderEventType,
   Orders,
   ParsedOrderEventLog,
+  ZeroXOrders,
 } from '@augurproject/sdk-lite';
 import { OrderState } from '@augurproject/sdk-lite';
 import { BigNumber } from 'bignumber.js';
@@ -22,7 +23,7 @@ import {
 import { DB } from '../db/DB';
 import { Getter } from './Router';
 import { sortOptions } from './types';
-import { ZeroXOrders, ZeroXOrdersGetters } from './ZeroXOrdersGetters';
+import { ZeroXOrdersGetters } from './ZeroXOrdersGetters';
 
 const ZERO = new BigNumber(0);
 
@@ -61,6 +62,7 @@ export const OrdersParams = t.partial({
   account: t.string,
   orderState: t.string,
   expirationCutoffSeconds: t.number,
+  ignoreCrossOrders: t.boolean,
 });
 
 export const OrderType = t.keyof({

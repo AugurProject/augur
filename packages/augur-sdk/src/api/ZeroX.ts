@@ -78,6 +78,7 @@ export interface ZeroXPlaceTradeDisplayParams
 
 export interface ZeroXPlaceTradeParams extends NativePlaceTradeChainParams {
   expirationTime: BigNumber;
+  ignoreCrossOrders?: boolean;
 }
 
 export interface ZeroXOrder {
@@ -302,7 +303,7 @@ export class ZeroX {
 
     const account = await this.client.getAccount();
 
-    const { orders, signatures, orderIds, loopLimit, gasLimit } = await this.getMatchingOrders(
+    const { orders, signatures, orderIds, loopLimit } = await this.getMatchingOrders(
       params,
       ignoreOrders
     );
@@ -673,6 +674,7 @@ export class ZeroX {
       orderType,
       matchPrice: `0x${price.padStart(20, '0')}`,
       ignoreOrders,
+      ignoreCrossOrders: params.ignoreCrossOrders,
     });
 
     if (_.size(zeroXOrders) < 1) {

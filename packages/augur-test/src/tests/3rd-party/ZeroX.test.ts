@@ -4,10 +4,6 @@ import { SDKConfiguration } from '@augurproject/utils';
 import { sleep } from '@augurproject/core/build/libraries/HelperFunctions';
 import { EthersProvider } from '@augurproject/ethersjs-provider';
 import { Connectors } from '@augurproject/sdk';
-import {
-  ZeroXOrder,
-  ZeroXOrders,
-} from '@augurproject/sdk/build/state/getter/ZeroXOrdersGetters';
 import { ACCOUNTS } from '@augurproject/tools';
 import { TestContractAPI } from '@augurproject/tools';
 import { stringTo32ByteHex } from '@augurproject/tools/build/libs/Utils';
@@ -15,6 +11,7 @@ import { BigNumber } from 'bignumber.js';
 import { JsonRpcProvider } from 'ethers/providers';
 import { formatBytes32String } from 'ethers/utils';
 import * as _ from 'lodash';
+import { ZeroXOrders, ZeroXOrder } from '@augurproject/sdk-lite';
 
 describe('3rd Party :: ZeroX :: ', () => {
   let john: TestContractAPI;

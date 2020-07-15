@@ -10,8 +10,9 @@ import {
   OrderEventType,
   ParsedOrderEventLog,
   ProfitLossChangedLog,
+  ZeroXOrders,
+  Order,
 } from '@augurproject/sdk-lite';
-import { Order } from '@augurproject/sdk-lite/build';
 import {
   DisputeCrowdsourcerRedeemed,
   OrderEvent,
@@ -41,7 +42,7 @@ import {
 } from './OnChainTrading';
 import { Getter } from './Router';
 import { sortOptions } from './types';
-import { ZeroXOrders, collapseZeroXOrders } from './ZeroXOrdersGetters';
+import { collapseZeroXOrders } from './ZeroXOrdersGetters';
 
 const ONE_DAY = 1;
 const DAYS_IN_MONTH = 30;
