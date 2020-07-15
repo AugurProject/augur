@@ -67,6 +67,9 @@ export function formatDate(d, timezone: string = null): DateFormattedObject {
     : date.toLocaleTimeString('en-us', { timeZoneName: 'short' });
   const timezoneName: string = `(${timezoneLocal.split(' ')[2]})`;
 
+  const local24hrTimeWithoutSeconds: number[] = [date.getHours(), date.getMinutes()];
+  const localTimeTwelveWithoutSeconds: string[] =  timeFormat === TIME_FORMATS.AM_PM ? getTwelveHourTime(local24hrTimeWithoutSeconds) : convertTwoDigitValues(local24hrTimeWithoutSeconds);
+  
   const hourlyTime = timeFormat === TIME_FORMATS.AM_PM ? `${utcTimeTwelve.join(':')} ${utcAMPM} (UTC 0)` : `${convertTwoDigitValues(utcTime).join(
     ':'
   )} (UTC 0)`;
@@ -84,6 +87,11 @@ export function formatDate(d, timezone: string = null): DateFormattedObject {
     formattedLocalShortWithUtcOffset: `${
       shortMonths[date.getMonth()]
     } ${date.getDate()}, ${date.getFullYear()} ${localTimeTwelve.join(
+      ':'
+    )} ${localAMPM} (UTC ${localOffsetFormatted})`,
+    formattedLocalShortWithUtcOffsetWithoutSeconds: `${
+      shortMonths[date.getMonth()]
+    } ${date.getDate()}, ${date.getFullYear()} ${localTimeTwelveWithoutSeconds.join(
       ':'
     )} ${localAMPM} (UTC ${localOffsetFormatted})`,
     timestamp: date.getTime() / 1000,

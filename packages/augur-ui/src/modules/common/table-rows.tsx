@@ -53,7 +53,7 @@ export const MyBetsRow = ({
       text: outcome.outcome,
       keyId: outcome.outcome,
       showExtraNumber: showExtraRow,
-      value: isEvent ? outcome.description : outcome.betType,
+      value: isEvent ? outcome.description : outcome.sportsBook?.title,
       highRisk: outcome.highRisk,
       templateShield: isEvent,
       outcome: outcome,
@@ -74,13 +74,13 @@ export const MyBetsRow = ({
     {
       key: 'toWin',
       columnType: COLUMN_TYPES.VALUE,
-      value: formatNumber(outcome && outcome.toWin),
+      value: formatDai(outcome && outcome.toWin),
       keyId: 'outcome-toWin-' + outcome.outcome,
     },
     {
       key: 'betDate',
       columnType: COLUMN_TYPES.TEXT,
-      text: outcome.dateUpdated.formattedLocalShortDate,
+      text: outcome.dateUpdated.formattedLocalShortWithUtcOffsetWithoutSeconds,
       keyId: 'outcome-betDate-' + outcome.outcome,
     },
     {

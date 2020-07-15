@@ -70,11 +70,8 @@ interface MarketTemplateTitleProps {
   template: ExtraInfoTemplate;
 }
 
-const MarketTemplateTitle: React.FC<MarketTemplateTitleProps> = ({
-  template,
-}) => {
-  if (!template || !template.inputs) return null;
-  const convertedInputs: TemplateInput[] = template.inputs.map(i => ({
+export const convertInputs = (inputs) => {
+  return inputs.map(i => ({
     userInput:
       i.type === TemplateInputType.ESTDATETIME ||
       i.type === TemplateInputType.DATETIME
@@ -85,6 +82,19 @@ const MarketTemplateTitle: React.FC<MarketTemplateTitleProps> = ({
     type: i.type as TemplateInputType,
     placeholder: '',
   }));
+}
+
+export const findStartTime = (convertedInputs) => {
+  return convertedInputs.find(
+    i => i.type === TemplateInputType.ESTDATETIME
+  );
+};
+
+const MarketTemplateTitle: React.FC<MarketTemplateTitleProps> = ({
+  template,
+}) => {
+  if (!template || !template.inputs) return null;
+  const convertedInputs = convertInputs(template.inputs);
   let question = buildMarketDescription(template.question, convertedInputs);
   const estDateTime = convertedInputs.find(
     i => i.type === TemplateInputType.ESTDATETIME
