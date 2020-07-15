@@ -470,6 +470,7 @@ export const SportsOutcome = ({
   outcomeLabel,
   market,
 }: SportsOutcomeProps) => {
+  const { oddsType } = useAppStatusStore();
   const { liquidityPools } = useMarketsStore();
   const { addBet } = Betslip.actions;
   const poolId = market?.sportsBook?.liquidityPool;
@@ -498,9 +499,9 @@ export const SportsOutcome = ({
       max: market.maxPriceBigNumber,
       type: ASKS,
     });
-    const OddToUse = odds[ODDS_TYPE.AMERICAN];
+    const OddToUse = odds[oddsType || ODDS_TYPE.AMERICAN];
     topLabel = determineTopLabel(market.sportsBook, outcomeId, outcomeLabel);
-    label = String(OddToUse);
+    label = `${OddToUse}${oddsType === ODDS_TYPE.PERCENT ? '%' : ''}`;
     disabled = false;
     action = () =>
       addBet(
@@ -749,7 +750,7 @@ export interface ComboMarketContainerProps {
 export const ComboMarketContainer = ({
   data,
   sportsGroup,
-  isGroupPage = false
+  isGroupPage = false,
 }: ComboMarketContainerProps) => {
   const { SPREAD, MONEY_LINE, OVER_UNDER } = SPORTS_GROUP_MARKET_TYPES;
   const {
@@ -770,7 +771,7 @@ export const ComboMarketContainer = ({
         Styles.ComboContainer,
         Styles.SportsMarketContainer,
         {
-          [Styles.GroupPage]: isGroupPage
+          [Styles.GroupPage]: isGroupPage,
         }
       )}
     >
@@ -876,7 +877,7 @@ export const SportsMarketContainer = ({
     <section
       className={classNames(Styles.SportsMarketContainer, {
         [Styles.Collapsed]: isCollapsed,
-        [Styles.NoHeader]: noHeader
+        [Styles.NoHeader]: noHeader,
       })}
     >
       <header>
@@ -942,6 +943,13 @@ export const prepareSportsGroup = (sportsGroup, isGroupPage = false) => {
   additionalMarkets.forEach(data => {
     const { market } = data[0];
     const startOpen = marketGroups.length === 0;
+    if (isGroupPage && marketGroups.length === 1) {
+      marketGroups.push(
+        <section key="relatedMarketsDivider" className={Styles.RelatedMarketsDivider}>
+          <h6>Related Markets</h6>
+        </section>
+      );
+    }
     marketGroups.push(
       <SportsMarketContainer
         key={market.id}
@@ -958,7 +966,7 @@ export const prepareSportsGroup = (sportsGroup, isGroupPage = false) => {
   sortedMarkets.forEach((market, index, array) => {
     const data = createOutcomesData(market);
     const startOpen = marketGroups.length === 0;
-    if (index === 1 && sportsGroup.type === FUTURES) {
+    if (index === 1 && sportsGroup.type === FUTURES && !isGroupPage) {
       const extraMarkets = array.length - marketGroups.length;
       marketGroups.push(
         <div
@@ -970,6 +978,12 @@ export const prepareSportsGroup = (sportsGroup, isGroupPage = false) => {
           } related to this future event with different expiration date:`}
           {QuestionIcon}
         </div>
+      );
+    } else if (isGroupPage && index === 1) {
+      marketGroups.push(
+        <section key="relatedMarketsDivider" className={Styles.RelatedMarketsDivider}>
+          <h6>Related Markets</h6>
+        </section>
       );
     }
     marketGroups.push(
