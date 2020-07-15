@@ -1,7 +1,7 @@
 import { TransactionMetadata } from '@augurproject/contract-dependencies-ethers';
 import { BigNumber } from 'bignumber.js';
 import { utils as ethersUtils } from 'ethers';
-import { Order } from '.';
+import { Order } from './onChainTrading';
 
 export {
   ZERO,
