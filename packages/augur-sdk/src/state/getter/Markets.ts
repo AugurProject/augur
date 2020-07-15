@@ -661,6 +661,7 @@ export class Markets {
         orderState: OrderState.OPEN,
         expirationCutoffSeconds: params.expirationCutoffSeconds,
         ignoreCrossOrders: params.ignoreCrossOrders,
+        account: params.account,
       });
     }
 

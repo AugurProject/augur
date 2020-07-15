@@ -137,10 +137,10 @@ function removeCrossedOrdersInOutcome(
   if (Object.keys(orders[OrderType.Bid]).length === 0) return orders;
 
   let asks = [
-    ...Object.values(orders[OrderType.Ask]).sort(sortOrdersAscending),
+    ...Object.values(orders[OrderType.Ask]).filter(o => o.makerAddress !== allowedAccount).sort(sortOrdersAscending),
   ];
   let bids = [
-    ...Object.values(orders[OrderType.Bid]).sort(sortOrdersDecending),
+    ...Object.values(orders[OrderType.Bid]).filter(o => o.makerAddress !== allowedAccount).sort(sortOrdersDecending),
   ];
   let hasCrossOrders = hasCrossedOrders(asks, bids);
   if (!hasCrossOrders) return orders;
@@ -168,12 +168,8 @@ function removeCrossedOrdersInOutcome(
     hasCrossOrders = hasCrossedOrders(crossedAsks, crossedBids);
   }
 
-  getAccountFilteredOrderIds(ignoreOrders, allowedAccount).map(
-    (id) => delete orders[OrderType.Ask][id]
-  );
-  getAccountFilteredOrderIds(ignoreOrders, allowedAccount).map(
-    (id) => delete orders[OrderType.Bid][id]
-  );
+  ignoreOrders.map((o: ZeroXOrder) => delete orders[OrderType.Ask][o.orderId]);
+  ignoreOrders.map((o: ZeroXOrder) => delete orders[OrderType.Bid][o.orderId]);
 
   return orders;
 }
@@ -247,15 +243,6 @@ function hasCrossBestOrders(ask, bid): boolean {
     parseFloat(ask.price) <= parseFloat(bid.price) ||
     parseFloat(bid.price) >= parseFloat(ask.price)
   );
-}
-
-function getAccountFilteredOrderIds(
-  orders: ZeroXOrder[],
-  account: string
-): string[] {
-  return orders
-    .reduce((p, o) => (o.makerAddress === account ? p : [...p, o]), [])
-    .map((o: ZeroXOrder) => o.orderId);
 }
 
 function sortOrdersAscending(order1: ZeroXOrder, order2: ZeroXOrder): number {
