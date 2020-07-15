@@ -9,6 +9,9 @@ ipfs-publish: ipfs ipfs-envvars build-ui python-deps
 ipfs-pin: ipfs build-ui
 	ipfs add -r --pin=true packages/augur-ui/build
 
+ipfs-hash: ipfs build-ui
+	ipfs add -r -Q -n --pin=false packages/augur-ui/build
+
 build-typescript: download-packages
 	yarn build
 
