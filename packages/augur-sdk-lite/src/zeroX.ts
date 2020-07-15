@@ -101,21 +101,20 @@ export function ignoreCrossedOrders(
   books: ZeroXOrders,
   allowedAccount: string
 ): ZeroXOrders {
-  const filteredBooks = Object.keys(books).reduce(
+  return Object.keys(books).reduce(
     (aggs, marketId) => ({
       ...aggs,
       [marketId]: filterMarketOutcomeOrders(books[marketId], allowedAccount),
     }),
     {}
   );
-  return filteredBooks;
 }
 
 function filterMarketOutcomeOrders(
   outcomeOrders: OutcomeOrders,
   allowedAccount: string
 ): OutcomeOrders {
-  const values = Object.keys(outcomeOrders).reduce(
+  return Object.keys(outcomeOrders).reduce(
     (aggs, outcomeId) => ({
       ...aggs,
       [Number(outcomeId)]: removeCrossedOrdersInOutcome(
@@ -125,7 +124,6 @@ function filterMarketOutcomeOrders(
     }),
     {}
   );
-  return values;
 }
 
 function removeCrossedOrdersInOutcome(
