@@ -92,7 +92,7 @@ export const BetRow = ({ outcome, showExtraRow, isEvent }: BetRowProps) => (
         <div className={Styles.BetRowMobile}>
           <div>
             <span>{outcome.outcome}</span>
-            <span>{convertToOdds(outcome.normalizedPrice).fullPrecision}</span>
+            <span>{convertToOdds(outcome.normalizedPrice).full}</span>
             {showExtraRow && (
               <span>
                 {isEvent && <TemplateShield market={outcome} />}

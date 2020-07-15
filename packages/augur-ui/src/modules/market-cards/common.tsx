@@ -499,7 +499,7 @@ export const SportsOutcome = ({
       max: market.maxPriceBigNumber,
       type: ASKS,
     });
-    const OddToUse = convertToOdds(normalizedPrice).fullPrecision;
+    const OddToUse = convertToOdds(normalizedPrice).full;
     topLabel = determineTopLabel(market.sportsBook, outcomeId, outcomeLabel);
     label = `${OddToUse}${oddsType === ODDS_TYPE.PERCENT ? '%' : ''}`;
     disabled = false;

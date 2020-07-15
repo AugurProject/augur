@@ -72,7 +72,7 @@ export const MyBetsRow = ({
     {
       key: 'odds',
       columnType: isFractional ? COLUMN_TYPES.TEXT : COLUMN_TYPES.VALUE,
-      text: convertToOdds(outcome && outcome.normalizedPrice).fullPrecision,
+      text: convertToOdds(outcome && outcome.normalizedPrice).full,
       value: isFractional ? null : convertToOdds(outcome && outcome.normalizedPrice),
       keyId: 'outcome-odds-' + outcome.outcome,
     },

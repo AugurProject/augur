@@ -2,7 +2,7 @@ import moment from 'moment';
 import { DateFormattedObject, TimezoneDateObject, DateTimeComponents } from 'modules/types';
 import { createBigNumber } from './create-big-number';
 import { ZERO, DAYS_AFTER_END_TIME_ORDER_EXPIRATION, TIME_FORMATS, THEMES } from 'modules/common/constants';
-import { useAppStatusStore } from 'modules/app/store/app-status';
+import { AppStatus } from 'modules/app/store/app-status';
 
 const months = [
   'January',
@@ -39,7 +39,7 @@ const HOURS_IN_A_DAY = 24;
 const MINUTES_IN_A_HOUR = 60;
 
 export function formatDate(d, timezone: string = null): DateFormattedObject {
-  const { timeFormat, theme } = useAppStatusStore();
+  const { timeFormat, theme } = AppStatus.get();
   const isNotBetting = theme === THEMES.TRADING;
   const useTwelveHourTime = timeFormat === TIME_FORMATS.AM_PM || isNotBetting;
   const date: Date = d instanceof Date ? d : new Date(0);

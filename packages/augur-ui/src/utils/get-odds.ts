@@ -7,7 +7,7 @@ import {
   HUNDRED,
 } from 'modules/common/constants';
 import { createBigNumber, BigNumber } from 'utils/create-big-number';
-import { useAppStatusStore } from 'modules/app/store/app-status';
+import { AppStatus } from 'modules/app/store/app-status';
 import { formatNumber } from './format-number';
 
 const { DECIMAL, FRACTIONAL, AMERICAN, PERCENT } = ODDS_TYPE;
@@ -58,7 +58,7 @@ interface ConvertToNormalizedPriceType {
 }
 
 export const convertToOdds = (normalizedPrice, toDecimals = 4) => {
-  const { oddsType } = useAppStatusStore();
+  const { oddsType } = AppStatus.get();
   const odds = getOddsObject(createBigNumber(normalizedPrice), toDecimals)[
     oddsType
   ];

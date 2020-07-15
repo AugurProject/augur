@@ -116,7 +116,7 @@ export const SportsBet = ({ bet }) => {
     >
       <header>
         <span>{outcome}</span>
-        <span>{convertToOdds(normalizedPrice).fullPrecision}</span>
+        <span>{convertToOdds(normalizedPrice).full}</span>
         <button onClick={() => cancelBet()}>
           {Trash} {isReview && 'Cancel'}
         </button>
@@ -124,7 +124,7 @@ export const SportsBet = ({ bet }) => {
       {isReview ? (
         <>
           <LinearPropertyLabel label="wager" value={formatDai(wager)} useFull />
-          <LinearPropertyLabel label="odds" value={convertToOdds(normalizedPrice).fullPrecision} />
+          <LinearPropertyLabel label="odds" value={convertToOdds(normalizedPrice).full} />
           <LinearPropertyLabel
             label="to win"
             value={formatDai(toWin)}
