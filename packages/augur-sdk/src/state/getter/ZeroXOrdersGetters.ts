@@ -80,13 +80,13 @@ export class ZeroXOrdersGetters {
           [params.marketId, Dexie.maxKey, Dexie.maxKey]
         )
         .and(order => {
-          return !account || order.orderCreator === account;
+          return !accountOnly || order.orderCreator === account;
         })
         .toArray();
     } else {
       storedOrders = await db.ZeroXOrders.where('[market+outcome+orderType]')
         .equals([params.marketId, outcome, orderType])
-        .and(order => !account || order.orderCreator === account)
+        .and(order => !accountOnly || order.orderCreator === account)
         .toArray();
     }
 
