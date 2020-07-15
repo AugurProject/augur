@@ -249,7 +249,7 @@ export const SportsMyBet = ({
       <LinearPropertyLabel label="to win" value={formatDai(toWin)} useFull />
       <LinearPropertyLabel
         label="Date"
-        value={dateUpdated.formattedLocalShortWithUtcOffset}
+        value={dateUpdated.formattedUtc}
       />
       {!!message && (
         <span>

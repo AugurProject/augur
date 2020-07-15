@@ -1,8 +1,8 @@
 import moment from 'moment';
 import { DateFormattedObject, TimezoneDateObject, DateTimeComponents } from 'modules/types';
 import { createBigNumber } from './create-big-number';
-import { ZERO, DAYS_AFTER_END_TIME_ORDER_EXPIRATION, TIME_FORMATS } from 'modules/common/constants';
-import { AppStatus } from 'modules/app/store/app-status';
+import { ZERO, DAYS_AFTER_END_TIME_ORDER_EXPIRATION, TIME_FORMATS, THEMES } from 'modules/common/constants';
+import { useAppStatusStore } from 'modules/app/store/app-status';
 
 const months = [
   'January',
@@ -39,12 +39,14 @@ const HOURS_IN_A_DAY = 24;
 const MINUTES_IN_A_HOUR = 60;
 
 export function formatDate(d, timezone: string = null): DateFormattedObject {
-  const { timeFormat } = AppStatus.get();
+  const { timeFormat, theme } = useAppStatusStore();
+  const isNotBetting = theme !== THEMES.BETTING;
+  const useTwelveHourTime = timeFormat === TIME_FORMATS.AM_PM || isNotBetting;
   const date: Date = d instanceof Date ? d : new Date(0);
 
   // UTC Time Formatting
   const utcTime: number[] = [date.getUTCHours(), date.getUTCMinutes()];
-  const utcTimeTwelve: string[] =  timeFormat === TIME_FORMATS.AM_PM ? getTwelveHourTime(utcTime) : convertTwoDigitValues(utcTime);
+  const utcTimeTwelve: string[] =  useTwelveHourTime ? getTwelveHourTime(utcTime) : convertTwoDigitValues(utcTime);
   const utcTimeWithSeconds: string[] = [
     ('0' + date.getUTCHours()).slice(-2),
     ('0' + date.getUTCMinutes()).slice(-2),
@@ -55,7 +57,7 @@ export function formatDate(d, timezone: string = null): DateFormattedObject {
   // Locat Time Formatting
   const local24hrTimeWithSeconds: number[] = [date.getHours(), date.getMinutes(), date.getSeconds()];
   const localAMPM: string = ampm(local24hrTimeWithSeconds[0].toString());
-  const localTimeTwelve: string[] =  timeFormat === TIME_FORMATS.AM_PM ? getTwelveHourTime(local24hrTimeWithSeconds) : convertTwoDigitValues(local24hrTimeWithSeconds);
+  const localTimeTwelve: string[] = useTwelveHourTime ? getTwelveHourTime(local24hrTimeWithSeconds) : convertTwoDigitValues(local24hrTimeWithSeconds);
   const localOffset: number = (date.getTimezoneOffset() / 60) * -1;
   const localOffsetFormatted: string =
     localOffset > 0 ? `+${localOffset}` : localOffset.toString();
@@ -68,9 +70,9 @@ export function formatDate(d, timezone: string = null): DateFormattedObject {
   const timezoneName: string = `(${timezoneLocal.split(' ')[2]})`;
 
   const local24hrTimeWithoutSeconds: number[] = [date.getHours(), date.getMinutes()];
-  const localTimeTwelveWithoutSeconds: string[] =  timeFormat === TIME_FORMATS.AM_PM ? getTwelveHourTime(local24hrTimeWithoutSeconds) : convertTwoDigitValues(local24hrTimeWithoutSeconds);
+  const localTimeTwelveWithoutSeconds: string[] =  useTwelveHourTime ? getTwelveHourTime(local24hrTimeWithoutSeconds) : convertTwoDigitValues(local24hrTimeWithoutSeconds);
   
-  const hourlyTime = timeFormat === TIME_FORMATS.AM_PM ? `${utcTimeTwelve.join(':')} ${utcAMPM} (UTC 0)` : `${convertTwoDigitValues(utcTime).join(
+  const hourlyTime = useTwelveHourTime ? `${utcTimeTwelve.join(':')} ${utcAMPM} (UTC 0)` : `${convertTwoDigitValues(utcTime).join(
     ':'
   )} (UTC 0)`;
 

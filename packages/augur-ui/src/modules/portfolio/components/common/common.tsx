@@ -123,7 +123,7 @@ export const BetRow = ({ outcome, showExtraRow, isEvent }: BetRowProps) => (
             highlight
             key="date"
             label="Date"
-            value={outcome.dateUpdated.formattedLocalShortWithUtcOffsetWithoutSeconds}
+            value={outcome.dateUpdated.formattedUtc}
             useFull={true}
           />
           <CashoutButton bet={outcome} />
