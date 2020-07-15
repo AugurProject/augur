@@ -674,7 +674,7 @@ export const CashoutButton = ({
       pendingQueue,
       actions: { addPendingData }
   } = useAppStatusStore();
-  const queueId = bet.marketId+'_'+bet.orderId;
+  const queueId = `${bet.marketId}_${bet.orderId}`;
   const pending = pendingQueue[CASHOUT] && pendingQueue[CASHOUT][queueId];
   const { marketInfos } = useMarketsStore();
   const market = marketInfos[bet.marketId];
