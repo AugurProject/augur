@@ -24,6 +24,7 @@ import { BET_STATUS, BETSLIP_SELECTED } from 'modules/trading/store/constants';
 import { formatDai } from 'utils/format-number';
 
 import Styles from 'modules/trading/common.styles';
+import { convertToOdds } from 'utils/get-odds';
 
 export interface EmptyStateProps {
   selectedTab: number;
@@ -108,14 +109,14 @@ export const SportsMarketMyBets = ({ market }) => {
 export const SportsBet = ({ bet }) => {
   const { step } = useBetslipStore();
   const isReview = step === 1;
-  const { outcome, odds, wager, toWin, modifyBet, cancelBet } = bet;
+  const { outcome, normalizedPrice, wager, toWin, modifyBet, cancelBet } = bet;
   return (
     <div
       className={classNames(Styles.SportsBet, { [Styles.Review]: isReview })}
     >
       <header>
         <span>{outcome}</span>
-        <span>{odds}</span>
+        <span>{convertToOdds(normalizedPrice).fullPrecision}</span>
         <button onClick={() => cancelBet()}>
           {Trash} {isReview && 'Cancel'}
         </button>
@@ -123,7 +124,7 @@ export const SportsBet = ({ bet }) => {
       {isReview ? (
         <>
           <LinearPropertyLabel label="wager" value={formatDai(wager)} useFull />
-          <LinearPropertyLabel label="odds" value={odds} />
+          <LinearPropertyLabel label="odds" value={convertToOdds(normalizedPrice).fullPrecision} />
           <LinearPropertyLabel
             label="to win"
             value={formatDai(toWin)}

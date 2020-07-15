@@ -16,6 +16,8 @@ import { FUTURES, TABLET_MAX } from 'modules/common/constants';
 import Media from 'react-media';
 import { CashoutButton } from 'modules/common/buttons';
 import MarketLink from 'modules/market/components/market-link/market-link';
+import { convertToOdds } from 'utils/get-odds';
+import { formatNumber } from 'utils/format-number';
 
 export const BetsHeader = () => (
   <ul className={Styles.BetsHeader}>
@@ -90,7 +92,7 @@ export const BetRow = ({ outcome, showExtraRow, isEvent }: BetRowProps) => (
         <div className={Styles.BetRowMobile}>
           <div>
             <span>{outcome.outcome}</span>
-            <span>{outcome.odds}</span>
+            <span>{convertToOdds(outcome.normalizedPrice).fullPrecision}</span>
             {showExtraRow && (
               <span>
                 {isEvent && <TemplateShield market={outcome} />}

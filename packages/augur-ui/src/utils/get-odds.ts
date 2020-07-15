@@ -7,6 +7,8 @@ import {
   HUNDRED,
 } from 'modules/common/constants';
 import { createBigNumber, BigNumber } from 'utils/create-big-number';
+import { useAppStatusStore } from 'modules/app/store/app-status';
+import { formatNumber } from './format-number';
 
 const { DECIMAL, FRACTIONAL, AMERICAN, PERCENT } = ODDS_TYPE;
 
@@ -47,7 +49,7 @@ export const test = (examples = mockExamples) => {
   examples.forEach(example => console.log(convertToOdds({ ...example })));
 };
 
-interface ConvertToOddsType {
+interface ConvertToNormalizedPriceType {
   price: number | string | BigNumber;
   min?: number | string | BigNumber;
   max?: number | string | BigNumber;
@@ -55,13 +57,22 @@ interface ConvertToOddsType {
   toDecimals?: number;
 }
 
-export const convertToOdds = ({
+export const convertToOdds = (normalizedPrice, toDecimals = 4) => {
+  const { oddsType } = useAppStatusStore();
+  const odds = getOddsObject(createBigNumber(normalizedPrice), toDecimals)[
+    oddsType
+  ];
+  return oddsType === FRACTIONAL
+    ? { fullPrecision: odds }
+    : formatNumber(odds, { decimals: 2, decimalsRounded: 2 });
+};
+
+export const convertToNormalizedPrice = ({
   price,
   min = 0,
   max = 1,
   type = BID,
-  toDecimals = 4,
-}: ConvertToOddsType) => {
+}: ConvertToNormalizedPriceType) => {
   const bnPrice = createBigNumber(price);
   const bnMin = createBigNumber(min);
   const bnMax = createBigNumber(max);
@@ -69,7 +80,7 @@ export const convertToOdds = ({
   normalizedPrice =
     type === BID ? normalizedPrice : createBigNumber(1).minus(normalizedPrice);
 
-  return getOddsObject(normalizedPrice, toDecimals);
+  return normalizedPrice;
 };
 
 export const getNewToWin = (odds, wager, toDecimals = 2) => {
@@ -78,8 +89,10 @@ export const getNewToWin = (odds, wager, toDecimals = 2) => {
   return bnWager.times(fractional).toFixed(toDecimals);
 };
 
-const getOddsObject = (normalizedValue: BigNumber, toDecimals = 4) => {
-  const percentage: BigNumber = convertToPercentage(normalizedValue);
+export const getOddsObject = (normalizedValue: BigNumber, toDecimals = 4) => {
+  const percentage: BigNumber = convertToPercentage(
+    createBigNumber(normalizedValue)
+  );
   const decimal: BigNumber = convertToDecimal(percentage);
   const fractional: string = convertToFractional(decimal, toDecimals);
   const american: BigNumber = convertToAmerican(percentage);
@@ -114,9 +127,11 @@ const convertToAmerican = (percentage: BigNumber) =>
     ? convertToPositiveAmerican(percentage)
     : convertToNegativeAmerican(percentage);
 
-const convertAmericanToFractional = (americanOdds) => {
+const convertAmericanToFractional = americanOdds => {
   const bnAmerican = createBigNumber(americanOdds);
-  return bnAmerican.isNegative() ? (HUNDRED.times(-1)).dividedBy(bnAmerican) : bnAmerican.dividedBy(HUNDRED);
+  return bnAmerican.isNegative()
+    ? HUNDRED.times(-1).dividedBy(bnAmerican)
+    : bnAmerican.dividedBy(HUNDRED);
 };
 
 // Percentage = normalized price times 100, e.g. a normalized price of .85 = .85 * 100 = 85.
@@ -129,4 +144,3 @@ const convertAmericanToFractional = (americanOdds) => {
 // Positive odds - (100 divided by (the percentage divided by 100)) minus 100 e.g. a probability of 10% = (100 / (10 / 100)) - 100 = 900.
 
 // Negative odds - The probability divided by (1 minus (the probability divided by 100)) then multiply by -1 to convert into a negative e.g. a probability of 20% = (20 / (1 - (20/100))) * -1 = -25.
-
