@@ -214,8 +214,6 @@ const Wrapper = ({
           orderDaiEstimate: '',
           orderEscrowdDai: '',
           gasCostEst: '',
-          doNotCreateOrders: false,
-          postOnlyOrder: false,
           expirationDate,
           trade: tradeUpdate,
         }
@@ -249,6 +247,7 @@ const Wrapper = ({
       outcomeId: selectedOutcome.id,
       tradeInProgress,
       doNotCreateOrders: s.doNotCreateOrders,
+      postOnly: s.postOnlyOrder,
     });
     clearOrderForm();
   }
@@ -381,7 +380,9 @@ const Wrapper = ({
               orderEscrowdDai: newOrder.costInDai.formatted,
               trade: newOrder,
               gasCostEst: formattedGasCost,
+              postOnlyOrder: state.postOnlyOrder,
             });
+
           },
         })
       )

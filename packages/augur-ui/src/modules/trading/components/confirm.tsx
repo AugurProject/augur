@@ -292,7 +292,7 @@ export const Confirm = ({
         },
       };
     }
-
+/*
     if (
       !isNaN(numTrades) &&
       numTrades > 0 &&
@@ -305,7 +305,7 @@ export const Confirm = ({
         message: `Can not match existing order.`,
       };
     }
-
+*/
     if (disableTrading && !tradingTutorial) {
       messages = {
         header: 'Reporting Only',
