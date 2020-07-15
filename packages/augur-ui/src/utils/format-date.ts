@@ -40,7 +40,7 @@ const MINUTES_IN_A_HOUR = 60;
 
 export function formatDate(d, timezone: string = null): DateFormattedObject {
   const { timeFormat, theme } = useAppStatusStore();
-  const isNotBetting = theme !== THEMES.BETTING;
+  const isNotBetting = theme === THEMES.TRADING;
   const useTwelveHourTime = timeFormat === TIME_FORMATS.AM_PM || isNotBetting;
   const date: Date = d instanceof Date ? d : new Date(0);
 
