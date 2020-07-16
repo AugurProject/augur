@@ -127,23 +127,6 @@ export class LiquidityPool {
       )
       .toArray();
 
-    const bucketsByPrice = _.groupBy(unsortedOffers, order => order.price);
-
-    const lastSortedOrder = Object.keys(bucketsByPrice).sort((a, b) =>
-      new BigNumber(b).minus(a).toNumber()
-    );
-
-    const sortedOrders = lastSortedOrder.map(k => bucketsByPrice[k]);
-    for (let i = 0, size = sortedOrders.length; i < size; i++) {
-      sortedOrders[i].sort((a, b) => parseFloat(b.amount) - parseFloat(a.amount));
-    }
-
-    const sortedOrderValues = _.values(sortedOrders);
-    const size = (sortedOrderValues && sortedOrderValues.length) ? _.last(sortedOrderValues).reduce(
-      (size, orders) => new BigNumber(orders.amount).plus(size),
-      new BigNumber(0)
-    ) : 0;
-
     const bucketsByPrice = _.groupBy(unsortedOffers, (order) => order.price);
     const bestPrice = LiquidityPool.getOutcomesBestOffer(bucketsByPrice);
 
