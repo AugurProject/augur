@@ -97,6 +97,7 @@ Deploying to: ${env}
         const externalAddresses = this.configuration.deploy.externalAddresses;
 
         // Legacy REP
+
         if (this.configuration.deploy.isProduction || externalAddresses.LegacyReputationToken) {
             if (!externalAddresses.LegacyReputationToken) throw new Error('Must provide LegacyReputationToken');
             console.log(`Registering Legacy Rep Contract at ${externalAddresses.LegacyReputationToken}`);
@@ -170,7 +171,7 @@ Deploying to: ${env}
         if (this.configuration.deploy.isProduction || externalAddresses.RelayHubV2) {
             if (!externalAddresses.RelayHubV2) throw new Error('Must provide RelayHubV2');
             console.log(`Registering RelayHubV2 Contract at ${externalAddresses.RelayHubV2}`);
-            await this.augur!.registerContract(stringTo32ByteHex('RelayHubV2'), externalAddresses.RelayHubV2);
+            await this.augurTrading!.registerContract(stringTo32ByteHex('RelayHubV2'), externalAddresses.RelayHubV2);
         } else {
             await this.uploadGSNV2Contracts();
         }
@@ -196,12 +197,13 @@ Deploying to: ${env}
             await this.migrateFromLegacyRep();
         }
 
-        console.log('Initializing warp sync market');
-        const warpSync = new WarpSync(this.dependencies, this.getContractAddress('WarpSync'));
-        await warpSync.initializeUniverse(this.universe.address);
 
         // Handle some things that make testing less erorr prone that will need to occur naturally in production
         if (!this.configuration.deploy.isProduction) {
+            console.log('Initializing warp sync market');
+            const warpSync = new WarpSync(this.dependencies, this.getContractAddress('WarpSync'));
+            await warpSync.initializeUniverse(this.universe.address);
+            
             const cash = new Cash(this.dependencies, this.getContractAddress('Cash'));
 
             console.log('Approving Augur');
@@ -284,8 +286,10 @@ Deploying to: ${env}
         mapping['Augur'] = this.contracts.get('Augur').address!;
         mapping['LegacyReputationToken'] = this.contracts.get('LegacyReputationToken').address!;
         mapping['Cash'] = this.getContractAddress('Cash');
-        mapping['USDC'] = this.getContractAddress('USDC');
-        mapping['USDT'] = this.getContractAddress('USDT');
+        const USDCAddress = this.configuration.deploy.externalAddresses.USDC || this.getContractAddress('USDC');
+        const USDTAddress = this.configuration.deploy.externalAddresses.USDT || this.getContractAddress('USDT');
+        mapping['USDC'] = USDCAddress;
+        mapping['USDT'] = USDTAddress;
         mapping['BuyParticipationTokens'] = this.contracts.get('BuyParticipationTokens').address!;
         mapping['RedeemStake'] = this.contracts.get('RedeemStake').address!;
         mapping['AugurTrading'] = this.contracts.get('AugurTrading').address!;
@@ -295,8 +299,8 @@ Deploying to: ${env}
         mapping['UniswapV2Router02'] = this.contracts.get('UniswapV2Router02').address!;
         const uniswapV2Factory = new UniswapV2Factory(this.dependencies, this.getContractAddress('UniswapV2Factory'));
         mapping['EthExchange'] = await uniswapV2Factory.getPair_(this.getContractAddress('WETH9'), this.getContractAddress('Cash'));
-        mapping['USDCExchange'] = await uniswapV2Factory.getPair_(this.getContractAddress('USDC'), this.getContractAddress('Cash'));
-        mapping['USDTExchange'] = await uniswapV2Factory.getPair_(this.getContractAddress('USDT'), this.getContractAddress('Cash'));
+        mapping['USDCExchange'] = await uniswapV2Factory.getPair_(USDCAddress, this.getContractAddress('Cash'));
+        mapping['USDTExchange'] = await uniswapV2Factory.getPair_(USDTAddress, this.getContractAddress('Cash'));
         mapping['AuditFunds'] = this.contracts.get('AuditFunds').address!;
 
         mapping['OICash'] = this.contracts.get('OICash').address!;
@@ -795,8 +799,10 @@ Deploying to: ${env}
         mapping['Augur'] = this.contracts.get('Augur').address!;
         mapping['LegacyReputationToken'] = this.contracts.get('LegacyReputationToken').address!;
         mapping['Cash'] = this.getContractAddress('Cash');
-        mapping['USDC'] = this.getContractAddress('USDC');
-        mapping['USDT'] = this.getContractAddress('USDT');
+        const USDCAddress = this.configuration.deploy.externalAddresses.USDC || this.getContractAddress('USDC');
+        const USDTAddress = this.configuration.deploy.externalAddresses.USDT || this.getContractAddress('USDT');
+        mapping['USDC'] = USDCAddress;
+        mapping['USDT'] = USDTAddress;
         mapping['BuyParticipationTokens'] = this.contracts.get('BuyParticipationTokens').address!;
         mapping['RedeemStake'] = this.contracts.get('RedeemStake').address!;
         mapping['WarpSync'] = this.contracts.get('WarpSync').address!;
