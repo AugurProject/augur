@@ -18,8 +18,8 @@ import { CashoutButton, PrimaryButton } from 'modules/common/buttons';
 import MarketLink from 'modules/market/components/market-link/market-link';
 import { convertToOdds } from 'utils/get-odds';
 import { formatDai } from 'utils/format-number';
-import { Betslip } from 'modules/trading/store/betslip';
-import { AppStatus } from 'modules/app/store/app-status';
+import { useBetslipStore } from 'modules/trading/store/betslip';
+import { useAppStatusStore } from 'modules/app/store/app-status';
 import { createBigNumber } from 'utils/create-big-number';
 import { startClaimingMarketsProceeds } from 'modules/positions/actions/claim-markets-proceeds';
 import { FilterNotice } from 'modules/common/filter-notice';
@@ -35,11 +35,11 @@ export const BetsHeader = () => (
 );
 
 export const ClaimWinnings = () => {
-  const { matched } = Betslip.get();
+  const { matched } = useBetslipStore();
   const {
     accountPositions: positions,
     loginAccount: { address: account },
-  } = AppStatus.get();
+  } = useAppStatusStore();
 
   let totalProceeds = ZERO;
   let claimableMarkets = [];
