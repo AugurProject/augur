@@ -18,7 +18,7 @@ import {
   ZERO,
 } from 'modules/common/constants';
 import Media from 'react-media';
-import { CashoutButton, ProcessingButton } from 'modules/common/buttons';
+import { CashoutButton, PrimaryButton } from 'modules/common/buttons';
 import MarketLink from 'modules/market/components/market-link/market-link';
 import { convertToOdds } from 'utils/get-odds';
 import { formatDai } from 'utils/format-number';
@@ -72,11 +72,8 @@ export const ClaimWinnings = () => {
       <span>
         You have <b>{formatDai(totalProceeds).full}</b> in winnings to claim.
       </span>
-      <ProcessingButton
+      <PrimaryButton
         text="Claim Bets"
-        queueName={TRANSACTIONS}
-        queueId={CLAIM_BETTING_PROCEEDS}
-        primaryButton
         action={() =>
           startClaimingMarketsProceeds(claimableMarkets, account, () => {})
         }
