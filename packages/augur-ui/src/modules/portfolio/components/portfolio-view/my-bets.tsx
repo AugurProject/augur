@@ -35,6 +35,7 @@ import { AppStatus } from 'modules/app/store/app-status';
 import { useMarketsStore } from 'modules/markets/store/markets';
 import { useBetslipStore } from 'modules/trading/store/betslip';
 import { getOutcomeNameWithOutcome } from 'utils/get-outcome';
+import { convertInputs, findStartTime } from 'modules/market/components/common/market-title';
 
 export const outcomesData = (myBets) => myBets.reduce(
   (p, game) => [
@@ -64,9 +65,12 @@ export function processRows(
   let myBetsArray = Object.keys(myBets).map(function(key) {
     const marketInfo = marketInfos[key];
 
+    const convertedInputs = marketInfo?.template && convertInputs(marketInfo.template.inputs);
+    const estDateTime = convertedInputs && findStartTime(convertedInputs);
     return {
       ...myBets[key],
       ...marketInfo,
+      startTime: estDateTime?.userInput,
       marketId: key
     };
   });
@@ -174,7 +178,6 @@ export const MyBets = () => {
   );
 
   const showEvents = MY_BETS_VIEW_BY[viewBy].label === EVENT;
-
   return (
     <div className={classNames(Styles.MyBets)}>
       <HelmetTag {...PORTFOLIO_VIEW_HEAD_TAGS} />

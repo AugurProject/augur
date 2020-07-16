@@ -962,6 +962,19 @@
 
 			color: var(--color-primary-text);
 			text-align: center;
+			min-height: @size-12;
+		}
+	}
+
+	.RelatedMarketsDivider {
+		margin-bottom: @size-8;
+		margin-top: @size-16;
+
+		> h6 {
+			.text-12-semi-bold;
+			
+			color: var(--color-primary-text);
+			text-transform: uppercase;
 		}
 	}
 
@@ -983,6 +996,59 @@
 			
 			> div {
 				display: none;
+			}
+		}
+
+		&.NoHeader {
+			> header {
+				display: none;
+			}
+		}
+
+		&.GroupPage {
+			> div:first-of-type {
+				background: var(--color-module-background);
+			}
+		}
+
+		&.ComboContainer {
+			> div {
+				display: flex;
+				flex-flow: column nowrap;
+				background: var(--color-page-background);
+				padding: 0;
+	
+				> ul {
+					align-items: center;
+					display: flex;
+					flex-flow: row nowrap;
+					flex: 1;
+					padding: @size-8;
+					width: 100%;
+	
+					&:last-of-type {
+						border-bottom-right-radius: @border-radius-default;
+						border-bottom-left-radius: @border-radius-default;
+					}
+					
+					&:not(:last-of-type) {
+						border-bottom: @size-1 solid var(--color-outline);
+					}
+	
+					> li:first-of-type {
+						.text-14-bold;
+	
+						align-self: baseline;
+						color: var(--color-primary-text);
+						flex: 1;
+						margin-left: 0;
+					}
+	
+					> li {
+						flex: 0.2;
+						margin-left: @size-8;
+					}
+				}
 			}
 		}
 
@@ -1073,6 +1139,9 @@
 		}
 
 		> div {
+			border-bottom-right-radius: @border-radius-default;
+			border-bottom-left-radius: @border-radius-default;
+			background: var(--color-module-background);
 			padding: @size-8;
 			display: flex;
 			flex-flow: row wrap;
@@ -1081,42 +1150,6 @@
 
 			> section {
 				width: 100%;
-			}
-		}
-
-		&.ComboContainer {
-			> div {
-				display: flex;
-				flex-flow: column nowrap;
-				background: var(--color-page-background);
-				padding: 0;
-
-				> ul {
-					align-items: center;
-					display: flex;
-					flex-flow: row nowrap;
-					flex: 1;
-					padding: @size-8;
-					width: 100%;
-					
-					&:not(:last-of-type) {
-						border-bottom: @size-1 solid var(--color-outline);
-					}
-
-					> li:first-of-type {
-						.text-14-bold;
-
-						align-self: baseline;
-						color: var(--color-primary-text);
-						flex: 1;
-						margin-left: 0;
-					}
-
-					> li {
-						flex: 0.2;
-						margin-left: @size-8;
-					}
-				}
 			}
 		}
 	}

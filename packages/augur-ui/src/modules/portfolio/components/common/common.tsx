@@ -7,7 +7,7 @@ import {
 } from 'modules/common/labels';
 import { CategoryTagTrail } from 'modules/common/labels';
 import { getCategoriesWithClick } from 'modules/market-cards/common';
-import { MarketProgress } from 'modules/common/progress';
+import { MarketProgress, CountdownProgress } from 'modules/common/progress';
 import { convertUnixToFormattedDate } from 'utils/format-date';
 import { MyBetsRow } from 'modules/common/table-rows';
 
@@ -16,6 +16,8 @@ import { FUTURES, TABLET_MAX } from 'modules/common/constants';
 import Media from 'react-media';
 import { CashoutButton } from 'modules/common/buttons';
 import MarketLink from 'modules/market/components/market-link/market-link';
+import { convertToOdds } from 'utils/get-odds';
+import { formatNumber } from 'utils/format-number';
 
 export const BetsHeader = () => (
   <ul className={Styles.BetsHeader}>
@@ -40,11 +42,13 @@ export const Game = ({ row, type }: GameProps) => (
         disputeInfo={null}
       />
       <CategoryTagTrail categories={getCategoriesWithClick(row.categories)} />
-      <MarketProgress
-        alignRight
-        customLabel="Estimated Event Start Time"
-        endTimeFormatted={convertUnixToFormattedDate(row.startTime)}
-      />
+      {row.startTime ? 
+        <CountdownProgress
+          alignRight
+          label="Estimated Event Start Time"
+          value={row.startTime}
+        />
+      : <span/>}
       <MarketLink id={row.id}>
         <span>{row.description}</span>
       </MarketLink>
@@ -88,14 +92,16 @@ export const BetRow = ({ outcome, showExtraRow, isEvent }: BetRowProps) => (
         <div className={Styles.BetRowMobile}>
           <div>
             <span>{outcome.outcome}</span>
-            <span>{outcome.odds}</span>
+            <span>{convertToOdds(outcome.normalizedPrice).full}</span>
             {showExtraRow && (
               <span>
                 {isEvent && <TemplateShield market={outcome} />}
                 {outcome.highRisk && (
                   <RedFlag market={{ mostLikelyInvalid: true, id: 0 }} />
                 )}
-                <span>{isEvent ? outcome.description : outcome.betType}</span>
+                <span>
+                  {isEvent ? outcome.description : outcome.sportsBook?.title}
+                </span>
               </span>
             )}
           </div>
@@ -117,7 +123,7 @@ export const BetRow = ({ outcome, showExtraRow, isEvent }: BetRowProps) => (
             highlight
             key="date"
             label="Date"
-            value={outcome.updatedDate.formattedLocalShortDate}
+            value={outcome.dateUpdated.formattedUtc}
             useFull={true}
           />
           <CashoutButton bet={outcome} />

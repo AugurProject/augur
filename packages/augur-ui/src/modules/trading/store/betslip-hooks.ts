@@ -1,8 +1,8 @@
 import { useReducer } from 'react';
 import { formatDate } from 'utils/format-date';
-import { getNewToWin } from 'utils/get-odds';
+import { getNewToWin, getOddsObject } from 'utils/get-odds';
 
-import { ZERO } from 'modules/common/constants';
+import { ZERO, ODDS_TYPE } from 'modules/common/constants';
 import {
   BET_STATUS,
   BETSLIP_SELECTED,
@@ -10,7 +10,7 @@ import {
   MOCK_BETSLIP_STATE,
   BETSLIP_ACTIONS,
 } from 'modules/trading/store/constants';
-import { placeBet } from 'utils/betslip-helpers';
+import { placeBet, convertToWin } from 'utils/betslip-helpers';
 
 const {
   CASH_OUT,
@@ -83,7 +83,7 @@ export function BetslipReducer(state, action) {
         marketId,
         description,
         outcome,
-        odds,
+        normalizedPrice,
         wager,
         outcomeId,
         price,
@@ -96,11 +96,11 @@ export function BetslipReducer(state, action) {
       }
       betslipItems[marketId].orders.push({
         outcome,
-        odds,
+        normalizedPrice,
         wager,
         outcomeId,
         price,
-        toWin: '0',
+        toWin: convertToWin(price, wager),
         amountFilled: '0',
         amountWon: '0',
         status: UNSENT,
@@ -177,6 +177,7 @@ export function BetslipReducer(state, action) {
       } else {
         matchedItems[marketId].orders.push({
           ...order,
+          orderId: matchedItems[marketId].orders.length,
           amountFilled: order.wager,
           amountWon: '0',
           dateUpdated: updatedTime,
@@ -244,7 +245,7 @@ export function BetslipReducer(state, action) {
     }
     case MODIFY_BET: {
       const { marketId, orderId, order } = action;
-      const toWin = getNewToWin(order.odds, order.wager);
+      const toWin = getNewToWin(getOddsObject(order.normalizedPrice)[ODDS_TYPE.AMERICAN], order.wager);
       betslipItems[marketId].orders[orderId] = { ...order, toWin };
       break;
     }
@@ -294,7 +295,7 @@ export const useBetslip = (defaultState = MOCK_BETSLIP_STATE) => {
       addBet: (
         marketId,
         description,
-        odds,
+        normalizedPrice,
         outcome,
         wager = '0',
         outcomeId,
@@ -304,7 +305,7 @@ export const useBetslip = (defaultState = MOCK_BETSLIP_STATE) => {
           type: ADD_BET,
           marketId,
           description,
-          odds,
+          normalizedPrice,
           outcome,
           wager,
           outcomeId,

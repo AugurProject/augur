@@ -113,7 +113,7 @@
 .BetsHeader {
     display: grid;
     grid-template-columns: 2fr repeat(5, 1fr);
-
+    
     &:first-of-type {
         .text-10-medium;
 
@@ -122,6 +122,7 @@
         border-top: @size-1 solid var(--color-dark-grey);
         padding: @size-14 0 @size-14 @size-16;
         text-transform: uppercase;
+        grid-gap: @size-24;
 
         > li {
             &:not(:first-child) {

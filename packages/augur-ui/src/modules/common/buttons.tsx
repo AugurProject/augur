@@ -10,6 +10,7 @@ import {
   MOBILE_MENU_STATES,
   FILLED,
   REPORTING_STATE,
+  CASHOUT,
 } from 'modules/common/constants';
 import {
   StarIcon,
@@ -229,19 +230,19 @@ export const ProcessingButton = (props: DefaultButtonProps) => {
   }
 
   disabled = props.disabled || disabled;
-  let isDisabled = props.disabled;
+  let isDisabled = disabled;
   let icon = props.icon;
   let buttonText = props.text;
   let buttonAction = props.action;
   if (
-    props.status === TXEventName.Pending ||
-    props.status === TXEventName.AwaitingSigning
+    status === TXEventName.Pending ||
+    status === TXEventName.AwaitingSigning
   ) {
     buttonText = 'Processing...';
     isDisabled = true;
   }
-  const failed = props.status === TXEventName.Failure;
-  const confirmed = props.status === TXEventName.Success;
+  const failed = status === TXEventName.Failure;
+  const confirmed = status === TXEventName.Success;
   if (failed) buttonText = 'Failed';
   if (confirmed) {
     buttonText = 'Confirmed';
@@ -670,7 +671,11 @@ export const CashoutButton = ({
   const {
       accountPositions: positions,
       loginAccount: { address: account },
+      pendingQueue,
+      actions: { addPendingData }
   } = useAppStatusStore();
+  const queueId = `${bet.marketId}_${bet.orderId}`;
+  const pending = pendingQueue[CASHOUT] && pendingQueue[CASHOUT][queueId];
   const { marketInfos } = useMarketsStore();
   const market = marketInfos[bet.marketId];
   if (positions[bet.marketId]) {
@@ -684,13 +689,13 @@ export const CashoutButton = ({
         );
         cashoutText = `Cashout ${formatDai(claimable).full}`;
         cashoutDisabled = false;
-        cashout = () => startClaimingMarketsProceeds([bet.marketId], account, () => {})
+        cashout = () => startClaimingMarketsProceeds([bet.marketId], account, () => {});
       } else if (market.reportingState !== REPORTING_STATE.AWAITING_FINALIZATION && market.reportingState !== REPORTING_STATE.FINALIZED) {
         cashoutText = `Cashout ${formatDai(bet.unrealizedCost).full}`;
         cashoutDisabled = false;
 
         cashout = () => (
-          async () => {
+          async () =>
             await placeTrade(
               0,
               bet.marketId,
@@ -705,8 +710,8 @@ export const CashoutButton = ({
               0,
               '0',
               undefined
-            );
-        })();
+            )
+        )();
       }
   }
   if (!won.eq(ZERO)) {
@@ -716,17 +721,33 @@ export const CashoutButton = ({
     }
     cashoutText = `${loss ? 'LOSS' : 'WIN'}: $${Math.abs(bet.amountWon)}`;
   }
+
   return (
-    <button
-      onClick={() => cashout()}
-      className={classNames(Styles.CashoutButton, {
-        [Styles.Won]: didWin && !loss,
-        [Styles.Loss]: loss,
-      })}
-      disabled={cashoutDisabled}
-    >
-      {cashoutText}
-    </button>
+    <> 
+      {pending ? 
+        <ProcessingButton 
+          queueName={CASHOUT}
+          queueId={queueId}
+          cancelButton
+        />
+        :
+        <button 
+          onClick={() => {
+            addPendingData(queueId, CASHOUT, TXEventName.Pending, '', {});
+            cashout().catch(err => 
+              addPendingData(queueId, CASHOUT, TXEventName.Failure, '', {})
+            )
+          }}
+          className={classNames(Styles.CashoutButton, {
+            [Styles.Won]: didWin && !loss,
+            [Styles.Loss]: loss,
+          })} 
+          disabled={cashoutDisabled}
+        >
+          {cashoutText}
+        </button>
+      }
+    </>
   );
 };
 

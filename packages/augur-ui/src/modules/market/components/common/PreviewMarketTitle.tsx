@@ -10,6 +10,7 @@ import {
 } from '@augurproject/templates';
 import Styles from 'modules/market/components/common/market-common.styles.less';
 import { NewMarket } from 'modules/types';
+import { findStartTime, convertInputs } from './market-title';
 
 interface PreviewMarketTitleProps {
   market: NewMarket;
@@ -32,25 +33,9 @@ const MarketTemplateTitle: React.FC<MarketTemplateTitleProps> = ({
   template,
 }) => {
   if (!template || !template.inputs) return null;
-  const convertedInputs: TemplateInput[] = template.inputs.map(i => {
-    let userInput = i.userInput;
-    if (i.type === TemplateInputType.ESTDATETIME) {
-      userInput = convertUnixToFormattedDate(Number(i.userInput))
-        .formattedLocalShortDateTimeWithTimezone;
-    }
-
-    return {
-      userInput,
-      id: i.id,
-      type: i.type as TemplateInputType,
-      placeholder: '',
-    };
-  });
+  const convertedInputs = convertInputs(template.inputs);
   const question = buildMarketDescription(template.question, convertedInputs);
-  const estDateTime = convertedInputs.find(
-    i => i.type === TemplateInputType.ESTDATETIME
-  );
-
+  const estDateTime = findStartTime(convertedInputs);
   return (
     <div className={Styles.MarketTemplateTitle}>
       <span>{question}</span>

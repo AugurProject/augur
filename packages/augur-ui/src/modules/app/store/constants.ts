@@ -388,14 +388,14 @@ export const STUBBED_APP_STATUS_ACTIONS = {
   updateAlert: (id, alert) => {},
   removeAlert: (id, name) => {},
   clearAlerts: level => {},
-  addPendingData: ({
+  addPendingData: (
     pendingId,
     queueName,
     status,
     blockNumber,
     hash,
     info,
-  }) => {},
+  ) => {},
   addPendingDataByHash: ({
     oldHash,
     newHash,
