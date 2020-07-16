@@ -100,27 +100,35 @@ async function loadAccountIfStored(dispatch: ThunkDispatch<void, any, Action>) {
   }
 }
 
-const isNetworkMismatch = async config => {
+const isNetworkMismatch = async (config, dispatch): boolean => {
   const provider = await detectEthereumProvider();
-  if (!provider) return false;
   let chainId = windowRef.ethereum.chainId;
   if (!chainId) {
-    await provider.enable();
+    const result = await provider.enable();
     chainId = windowRef.ethereum.chainId;
   }
-
   const web3NetworkId = String(createBigNumber(chainId));
   const privateNetwork = isPrivateNetwork(config.networkId);
-  return privateNetwork ?
+  const isMisMatched  = privateNetwork ?
     web3NetworkId !== "NaN" : // MM returns NaN for local networks
     config.networkId !== web3NetworkId;
+
+  if (isMisMatched) {
+    dispatch(
+      updateModal({
+        type: MODAL_NETWORK_MISMATCH,
+        expectedNetwork: NETWORK_NAMES[Number(config.networkId)],
+      })
+    );
+  }
+  return isMisMatched;
 }
 
-async function createDefaultProvider(config: SDKConfiguration) {
+async function createDefaultProvider(config: SDKConfiguration, canUseWeb3) {
   if (config.networkId && isDevNetworkId(config.networkId)) {
     // In DEV, use local ethereum node
     return new JsonRpcProvider(config.ethereum.http);
-  } else if (windowRef.web3 || windowRef.ethereum) {
+  } else if ((windowRef.web3 || windowRef.ethereum) && canUseWeb3) {
     // Use the provider on window if it exists, otherwise use torus provider
     return getWeb3Provider(windowRef);
   } else if (config.ui?.fallbackProvider === "jsonrpc" && config.ethereum.http) {
@@ -235,14 +243,13 @@ export function connectAugur(
       })
     }
 
-    if ((windowRef.ethereum || windowRef.web3) && await isNetworkMismatch(config)) {
-      if (callback) callback(null);
-      return dispatch(
-        updateModal({
-          type: MODAL_NETWORK_MISMATCH,
-          expectedNetwork: NETWORK_NAMES[Number(config.networkId)],
-        })
-      );
+    let useWeb3 = false;
+    if (windowRef.ethereum || windowRef.web3) {
+      try {
+        useWeb3 = await isNetworkMismatch(config, dispatch);
+      } catch(e) {
+        console.error('Error with web3 provider, moving on');
+      }
     }
 
     // Optimize for the case where we can just use a JSON endpoint.
@@ -250,7 +257,7 @@ export function connectAugur(
     // provider which may be slow.
     let provider = config.ui?.liteProvider === "jsonrpc" ?
       new JsonRpcProvider(config.ethereum.http) :
-      await createDefaultProvider(config);
+      await createDefaultProvider(config, useWeb3);
 
     await augurSdkLite.makeLiteClient(
       provider,
@@ -271,7 +278,7 @@ export function connectAugur(
     // we can re-use it if we already have made the same one. If not
     // we need to make the default provider from the config.
     if (config.ui?.fallbackProvider !== config.ui?.liteProvider) {
-      provider = await createDefaultProvider(config);
+      provider = await createDefaultProvider(config, false);
     }
 
     let Augur = null;
