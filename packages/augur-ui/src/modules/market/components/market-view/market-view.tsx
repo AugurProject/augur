@@ -740,6 +740,7 @@ export default class MarketView extends Component<
                         selectedOrderProperties={selectedOrderProperties}
                         selectedOutcomeId={outcomeId}
                         updateSelectedOutcome={this.updateSelectedOutcome}
+                        orderBook={outcomeOrderBook}
                         updateSelectedOrderProperties={
                           this.updateSelectedOrderProperties
                         }
@@ -884,6 +885,7 @@ export default class MarketView extends Component<
                       selectedOrderProperties={selectedOrderProperties}
                       selectedOutcomeId={outcomeId}
                       updateSelectedOutcome={this.updateSelectedOutcome}
+                      orderBook={outcomeOrderBook}
                       updateSelectedOrderProperties={
                         this.updateSelectedOrderProperties
                       }
