@@ -238,8 +238,6 @@ class Wrapper extends Component<WrapperProps, WrapperState> {
           orderEscrowdDai: '',
           gasCostEst: '',
           expirationDate,
-          postOnlyOrder: false,
-          doNotCreateOrders: false,
           trade,
           allowPostOnlyOrder: true,
         }
