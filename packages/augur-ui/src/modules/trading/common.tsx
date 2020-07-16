@@ -25,6 +25,7 @@ import { formatDai } from 'utils/format-number';
 
 import Styles from 'modules/trading/common.styles';
 import { convertToOdds } from 'utils/get-odds';
+import { formatDate } from 'utils/format-date';
 
 export interface EmptyStateProps {
   selectedTab: number;
@@ -249,7 +250,7 @@ export const SportsMyBet = ({
       <LinearPropertyLabel label="to win" value={formatDai(toWin)} useFull />
       <LinearPropertyLabel
         label="Date"
-        value={dateUpdated.formattedUtc}
+        value={formatDate(dateUpdated).formattedUtc}
       />
       {!!message && (
         <span>

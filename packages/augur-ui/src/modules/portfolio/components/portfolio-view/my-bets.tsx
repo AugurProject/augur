@@ -124,12 +124,12 @@ export function processRows(
     rows = rows
       .filter(data => {
         const interval = MY_BETS_BET_DATE[betDate].periodInterval;
-        return currentAugurTimestamp / 1000 - data.dateUpdated.timestamp < interval;
+        return currentAugurTimestamp / 1000 - data.dateUpdated < interval;
       })
       .filter(
         data => data.outcomeName.toLowerCase().indexOf(search.toLowerCase()) >= 0
       )
-      .sort((a, b) => b.dateUpdated.timestamp - a.dateUpdated.timestamp);
+      .sort((a, b) => b.dateUpdated - a.dateUpdated);
   }
   return rows;
 }

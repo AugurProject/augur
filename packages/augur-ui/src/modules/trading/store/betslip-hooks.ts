@@ -11,6 +11,7 @@ import {
   BETSLIP_ACTIONS,
 } from 'modules/trading/store/constants';
 import { placeBet, convertToWin } from 'utils/betslip-helpers';
+import { AppStatus } from 'modules/app/store/app-status';
 
 const {
   CASH_OUT,
@@ -59,7 +60,8 @@ export function BetslipReducer(state, action) {
   const updatedState = { ...state };
   const betslipItems = updatedState.betslip.items;
   const matchedItems = updatedState.matched.items;
-  const updatedTime = formatDate(new Date());
+  const { blockchain: { currentAugurTimestamp }} = AppStatus.get();
+  const updatedTime = currentAugurTimestamp;
   switch (action.type) {
     case TOGGLE_HEADER: {
       const currentHeader = updatedState.selected.header;
@@ -172,7 +174,6 @@ export function BetslipReducer(state, action) {
       if (match > -1) {
         matchedItems[marketId].orders[match] = {
           ...matchedItems[marketId].orders[match],
-          dateUpdated: updatedTime,
         }
       } else {
         matchedItems[marketId].orders.push({
@@ -180,7 +181,6 @@ export function BetslipReducer(state, action) {
           orderId: matchedItems[marketId].orders.length,
           amountFilled: order.wager,
           amountWon: '0',
-          dateUpdated: updatedTime,
         });
         updatedState.matched.count++;
         fromList && updatedState[fromList].count--;
