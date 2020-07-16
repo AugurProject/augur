@@ -76,6 +76,7 @@ interface ConfirmProps {
   updateWalletStatus: Function;
   sweepStatus: string;
   postOnlyOrder: boolean;
+  allowPostOnlyOrder: boolean;
 }
 
 interface ConfirmState {
@@ -112,6 +113,7 @@ class Confirm extends Component<ConfirmProps, ConfirmState> {
       walletStatus,
       sweepStatus,
       postOnlyOrder,
+      allowPostOnlyOrder,
     } = this.props;
     if (
       JSON.stringify({
@@ -136,7 +138,8 @@ class Confirm extends Component<ConfirmProps, ConfirmState> {
       ) ||
       !createBigNumber(prevProps.availableDai).eq(
         createBigNumber(availableDai)
-      )
+      ) ||
+      allowPostOnlyOrder !== prevProps.allowPostOnlyOrder
     ) {
       this.setState({
         messages: this.constructMessages(this.props),
@@ -161,6 +164,7 @@ class Confirm extends Component<ConfirmProps, ConfirmState> {
       sweepStatus,
       postOnlyOrder,
       disableTrading,
+      allowPostOnlyOrder,
     } = props || this.props;
 
     const {
@@ -311,12 +315,9 @@ class Confirm extends Component<ConfirmProps, ConfirmState> {
         },
       };
     }
-/*
+
     if (
-      !isNaN(numTrades) &&
-      numTrades > 0 &&
-      postOnlyOrder &&
-      !tradingTutorial
+      !allowPostOnlyOrder && !tradingTutorial
     ) {
       messages = {
         header: 'POST ONLY ORDER',
@@ -324,7 +325,7 @@ class Confirm extends Component<ConfirmProps, ConfirmState> {
         message: `Can not match existing order.`,
       };
     }
-*/
+
     if (disableTrading && !tradingTutorial) {
       messages = {
         header: 'Reporting Only',
