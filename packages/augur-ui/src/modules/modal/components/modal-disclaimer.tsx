@@ -144,8 +144,13 @@ const ModalDisclaimer = () => {
             className={Styles.Primary}
             disabled={!didScroll || !didCheck}
             onClick={() => {
-              closeModal();
               if (onApprove) onApprove();
+              const localStorageRef =
+                typeof window !== 'undefined' && window.localStorage;
+              if (localStorageRef && localStorageRef.setItem) {
+                localStorageRef.setItem(DISCLAIMER_SEEN, 'true');
+              }
+              closeModal();
             }}
           >
             I agee and accept the above

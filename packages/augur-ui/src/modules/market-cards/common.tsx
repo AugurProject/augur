@@ -470,7 +470,6 @@ export const SportsOutcome = ({
   outcomeLabel,
   market,
 }: SportsOutcomeProps) => {
-  const { oddsType } = useAppStatusStore();
   const { liquidityPools } = useMarketsStore();
   const { addBet } = Betslip.actions;
   const poolId = market?.sportsBook?.liquidityPool;
@@ -499,9 +498,9 @@ export const SportsOutcome = ({
       max: market.maxPriceBigNumber,
       type: ASKS,
     });
-    const OddToUse = convertToOdds(normalizedPrice).full;
+    const OddToUse = convertToOdds(normalizedPrice);
     topLabel = determineTopLabel(market.sportsBook, outcomeId, outcomeLabel);
-    label = `${OddToUse}${oddsType === ODDS_TYPE.PERCENT ? '%' : ''}`;
+    label = OddToUse.full;
     disabled = false;
     action = () =>
       addBet(
