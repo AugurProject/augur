@@ -50,7 +50,7 @@
     "@augurproject/sdk": "2.0.0-alpha.2",
     "@augurproject/sdk-lite": "2.0.0-alpha.2",
     "@augurproject/utils": "2.0.0-alpha.2",
-    "@metamask/detect-provider": "^1.1.0",
+    "@metamask/detect-provider": "1.1.0",
     "@toruslabs/torus-embed": "1.7.1",
     "analytics": "0.3.0",
     "bignumber.js": "9.0.0",
