@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { SelectedOrderProperties } from 'modules/trading/components/wrapper';
 import Wrapper from 'modules/trading/containers/wrapper';
 import Styles from 'modules/trading/components/trading-form.styles.less';
-import { MarketData, OutcomeFormatted, NewMarket } from 'modules/types';
+import { MarketData, OutcomeFormatted, NewMarket, IndividualOutcomeOrderBook } from 'modules/types';
 
 interface TradingFormProps {
   market: MarketData | NewMarket;
@@ -14,6 +14,7 @@ interface TradingFormProps {
   initialLiquidity?: boolean;
   tradingTutorial?: boolean;
   tutorialNext?: Function;
+  orderBook: IndividualOutcomeOrderBook;
 }
 
 interface TradingFormState {
@@ -63,6 +64,7 @@ class TradingForm extends Component<TradingFormProps, TradingFormState> {
       tradingTutorial,
       tutorialNext,
       updateSelectedOrderProperties,
+      orderBook,
     } = this.props;
     const { selectedOutcome } = this.state;
 
@@ -78,6 +80,7 @@ class TradingForm extends Component<TradingFormProps, TradingFormState> {
           initialLiquidity={initialLiquidity}
           tradingTutorial={tradingTutorial}
           tutorialNext={tutorialNext}
+          orderBook={orderBook}
         />
       </section>
     );
