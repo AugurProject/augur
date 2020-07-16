@@ -172,7 +172,7 @@ def test_basic_trading(contractsFixture, cash, market, universe):
     with TokenDelta(cash, -fix(10, 60), contractsFixture.accounts[0], "Tester 0 cash not taken"):
         with TokenDelta(cash, -fix(10, 40), contractsFixture.accounts[1], "Tester 1 cash not taken"):
             with PrintGasUsed(contractsFixture, "ZeroXTrade.trade", 0):
-                amountRemaining = ZeroXTrade.trade(fillAmount, fingerprint, tradeGroupId, 0, 10, orders, signatures, sender=contractsFixture.accounts[1], value=150000)
+                amountRemaining = ZeroXTrade.trade(fillAmount, fingerprint, tradeGroupId, 0, 1, orders, signatures, sender=contractsFixture.accounts[1], value=150000)
                 assert amountRemaining == 0
 
     yesShareTokenBalance = shareToken.balanceOfMarketOutcome(market.address, YES, contractsFixture.accounts[0])
@@ -187,7 +187,7 @@ def test_basic_trading(contractsFixture, cash, market, universe):
     initialETHBalance = contractsFixture.ethBalance(contractsFixture.accounts[2])
     protocolFee = 150000
     sent = 10 * 10**7
-    amountRemaining = ZeroXTrade.trade(fillAmount + 10**17, fingerprint, tradeGroupId, 0, 10, orders, signatures, sender=contractsFixture.accounts[2], value=sent)
+    amountRemaining = ZeroXTrade.trade(fillAmount + 10**17, fingerprint, tradeGroupId, 0, 1, orders, signatures, sender=contractsFixture.accounts[2], value=sent)
     assert amountRemaining == 10**17
     newEthBalance = contractsFixture.ethBalance(contractsFixture.accounts[2])
     assert initialETHBalance - newEthBalance < 10**7
@@ -195,7 +195,7 @@ def test_basic_trading(contractsFixture, cash, market, universe):
     # The order is completely filled so further attempts to take it will result in a no-op
     assert cash.faucet(fix(10, 60))
     assert cash.faucet(fix(10, 40), sender=contractsFixture.accounts[1])
-    assert ZeroXTrade.trade(fillAmount, fingerprint, tradeGroupId, 0, 10, orders, signatures, sender=contractsFixture.accounts[1], value=150000) == fillAmount
+    assert ZeroXTrade.trade(fillAmount, fingerprint, tradeGroupId, 0, 1, orders, signatures, sender=contractsFixture.accounts[1], value=150000) == fillAmount
 
     assert yesShareTokenBalance == fix(10)
     assert noShareTokenBalance == fix(10)
@@ -353,6 +353,59 @@ def test_two_bids_on_books_buy_both(contractsFixture, cash, market):
 
     assert shareToken.balanceOfMarketOutcome(market.address, YES, contractsFixture.accounts[1]) == fix(4)
     assert shareToken.balanceOfMarketOutcome(market.address, YES, contractsFixture.accounts[3]) == fix(1)
+    assert shareToken.balanceOfMarketOutcome(market.address, NO, contractsFixture.accounts[2]) == fix(5)
+
+def test_three_bids_on_books_buy_first_2_cover_protocol_fee(contractsFixture, cash, market):
+    ZeroXTrade = contractsFixture.contracts['ZeroXTrade']
+    zeroXExchange = contractsFixture.contracts["ZeroXExchange"]
+    shareToken = contractsFixture.contracts["ShareToken"]
+    expirationTime = contractsFixture.contracts['Time'].getTimestamp() + 10000
+    ethExchange = contractsFixture.applySignature("UniswapV2Pair", ZeroXTrade.ethExchange())
+    weth = contractsFixture.contracts["WETH9"]
+    zeroXExchange.setProtocolFeeMultiplier(150000)
+    salt = 5
+    tradeGroupID = longTo32Bytes(42)
+
+    # create signed order 1
+    cash.faucet(fix('4', '60'), sender=contractsFixture.accounts[1])
+    rawZeroXOrderData1, orderHash1 = ZeroXTrade.createZeroXOrder(BID, fix(4), 60, market.address, YES, expirationTime, salt, sender=contractsFixture.accounts[1])
+    signature1 = signOrder(orderHash1, contractsFixture.privateKeys[1])
+
+    # create signed order 2
+    cash.faucet(fix('1', '60'), sender=contractsFixture.accounts[3])
+    rawZeroXOrderData2, orderHash2 = ZeroXTrade.createZeroXOrder(BID, fix(1), 60, market.address, YES, expirationTime, salt, sender=contractsFixture.accounts[3])
+    signature2 = signOrder(orderHash2, contractsFixture.privateKeys[3])
+
+    # create signed order 3
+    cash.faucet(fix('1', '60'), sender=contractsFixture.accounts[4])
+    rawZeroXOrderData3, orderHash3 = ZeroXTrade.createZeroXOrder(BID, fix(1), 60, market.address, YES, expirationTime, salt, sender=contractsFixture.accounts[4])
+    signature3 = signOrder(orderHash3, contractsFixture.privateKeys[4])
+
+    orders = [rawZeroXOrderData1, rawZeroXOrderData2, rawZeroXOrderData3]
+    signatures = [signature1, signature2, signature3]
+
+    # We'll provide some liquidity to the uniswap eth/cash exchange
+    cashAmount = 1000 * 10**18
+    ethAmount = 10 * 10**18
+    weth.deposit(ethAmount, value=ethAmount)
+    cash.faucet(cashAmount)
+    cash.transfer(ethExchange.address, cashAmount)
+    weth.transfer(ethExchange.address, ethAmount)
+    ethExchange.mint(contractsFixture.accounts[2])
+
+    # Calculate the expected protocol fee cost and add that as a limit
+    cost = ZeroXTrade.estimateProtocolFeeCostInCash(2, 1)
+    cash.faucet(cost, sender=contractsFixture.accounts[2])
+
+    # fill signed orders
+    cash.faucet(fix('6', '40'), sender=contractsFixture.accounts[2])
+    with TokenDelta(cash, -fix(4, 60), contractsFixture.accounts[1], "Creator cash not taken"):
+        with TokenDelta(cash, -fix(1, 60), contractsFixture.accounts[3], "Creator cash not taken"):
+            assert ZeroXTrade.trade(fix(5), longTo32Bytes(11), tradeGroupID, cost, 2, orders, signatures, sender=contractsFixture.accounts[2]) == 0
+
+    assert shareToken.balanceOfMarketOutcome(market.address, YES, contractsFixture.accounts[1]) == fix(4)
+    assert shareToken.balanceOfMarketOutcome(market.address, YES, contractsFixture.accounts[3]) == fix(1)
+    assert shareToken.balanceOfMarketOutcome(market.address, YES, contractsFixture.accounts[4]) == fix(0)
     assert shareToken.balanceOfMarketOutcome(market.address, NO, contractsFixture.accounts[2]) == fix(5)
 
 def test_two_bids_on_books_buy_full_and_partial(contractsFixture, cash, market, universe):
@@ -998,7 +1051,7 @@ def test_protocol_fee_coverage(contractsFixture, cash, market):
 
     # Initially we will fail the tx bc we have neither provided liquidity to the ETH exchange nor authorized a non zero purchase in the function args
     with raises(TransactionFailed):
-        assert ZeroXTrade.trade(fix(5), longTo32Bytes(11), tradeGroupID, 0, 10, orders, signatures, sender=account) == 0
+        assert ZeroXTrade.trade(fix(5), longTo32Bytes(11), tradeGroupID, 0, 2, orders, signatures, sender=account) == 0
 
     # We'll provide some liquidity to the exchange
     cashAmount = 1000 * 10**18
@@ -1011,13 +1064,13 @@ def test_protocol_fee_coverage(contractsFixture, cash, market):
 
     # We still fail since we have not approved any purchase of ETH using our DAI
     with raises(TransactionFailed):
-        assert ZeroXTrade.trade(fix(5), longTo32Bytes(11), tradeGroupID, 0, 10, orders, signatures, sender=account) == 0
+        assert ZeroXTrade.trade(fix(5), longTo32Bytes(11), tradeGroupID, 0, 2, orders, signatures, sender=account) == 0
 
     # Calculate the expected cost and add that as a limit
     cost = ZeroXTrade.estimateProtocolFeeCostInCash(len(orders), 1)
     cash.faucet(cost, sender=account)
 
-    assert ZeroXTrade.trade(fix(5), longTo32Bytes(11), tradeGroupID, cost, 10, orders, signatures, sender=account) == 0
+    assert ZeroXTrade.trade(fix(5), longTo32Bytes(11), tradeGroupID, cost, 2, orders, signatures, sender=account) == 0
 
     assert shareToken.balanceOfMarketOutcome(market.address, YES, contractsFixture.accounts[1]) == fix(4)
     assert shareToken.balanceOfMarketOutcome(market.address, YES, contractsFixture.accounts[3]) == fix(1)

@@ -20,7 +20,7 @@
     "build:documentation": "yarn solidity-docgen -s ./output/contracts/contracts_full.json -o ../../docs/contracts",
     "test:unit": "python3 -m pytest -vv",
     "test:unit:all": "python3 -m pytest tests -vv",
-    "test:integration": "jest --detectOpenHandles --verbose=true",
+    "test:integration": "jest --forceExit --detectOpenHandles --verbose=true",
     "test:coverage": "node --max-old-space-size=12288 src/tools/generateCoverageReport.js",
     "deploy:net": "bash src/support/deploy/run.sh direct",
     "deploy:local": "npm run deploy:net -- environment",
