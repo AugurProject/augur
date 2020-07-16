@@ -668,7 +668,7 @@ export const CashoutButton = ({
   let won = createBigNumber(bet.amountWon);
   let cashout = () => bet.cashout();
 
-  const { 
+  const {
       accountPositions: positions,
       loginAccount: { address: account },
       pendingQueue,
@@ -693,7 +693,7 @@ export const CashoutButton = ({
       } else if (market.reportingState !== REPORTING_STATE.AWAITING_FINALIZATION && market.reportingState !== REPORTING_STATE.FINALIZED) {
         cashoutText = `Cashout ${formatDai(bet.unrealizedCost).full}`;
         cashoutDisabled = false;
-    
+
         cashout = () => (
           async () =>
             await placeTrade(
@@ -713,7 +713,7 @@ export const CashoutButton = ({
             )
         )();
       }
-  } 
+  }
   if (!won.eq(ZERO)) {
     didWin = true;
     if (won.lt(ZERO)) {
