@@ -1,0 +1,97 @@
+@import (reference) '~assets/styles/shared';
+
+.SliderContainer {
+  border-radius: @border-radius-rounded;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  position: relative;
+
+  > button {
+    position: absolute;
+    z-index: @above-all-content-above;
+    top: 50%;
+    transform: translateY(-50%);
+
+    > svg {
+      width: @size-24;
+      height: @size-24;
+      stroke: var(--color-secondary-action);
+    }
+
+    &.LeftArrow {
+      left: @size-16;
+    }
+
+    &.RightArrow {
+      right: @size-16;
+    }
+  }
+}
+
+.SliderInfoOverlay {
+  > div {
+    height: 100%;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    color: var(--color-secondary-action);
+    padding: 0 @size-64;
+
+    > h2 {
+      .text-36-medium;
+
+      text-align: center;
+      margin-bottom: @size-43;
+      white-space: pre-wrap;
+
+      @media @breakpoint-mobile {
+        .text-24-medium;
+      }
+    }
+
+    &.LeftAligned {
+      align-items: flex-start;
+
+      > h2 {
+        text-align: left;
+      }
+    }
+
+    &.RightAligned {
+      align-items: flex-end;
+
+      > h2 {
+        text-align: right;
+      }
+    }
+  }
+}
+
+.Slider {
+  display: flex;
+  flex-direction: row;
+  position: relative;
+  width: 100%;
+  height: 100%;
+  background-size: 100%;
+  background-position: center center;
+  background-repeat: no-repeat;
+
+  > div {
+    min-width: 100%;
+
+    .SliderInfoOverlay;
+  }
+}
+
+:root[theme='BETTING'],
+:root[theme='SPORTS'] {
+  .Slider {
+    > div > div > a > button {
+      color: var(--color-secondary-action);
+    }
+  }
+}
