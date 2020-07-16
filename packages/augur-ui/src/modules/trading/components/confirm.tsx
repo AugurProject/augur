@@ -184,7 +184,7 @@ class Confirm extends Component<ConfirmProps, ConfirmState> {
     let gasCostDai = 0;
 
     if (GsnEnabled) {
-      gasCostDai = getGasInDai(Number(createBigNumber(gasLimit)));
+      gasCostDai = getGasInDai(Number(createBigNumber(gasLimit))).fullPrecision;
     }
 
     if (marketType === SCALAR && selectedOutcomeId === INVALID_OUTCOME_ID) {
