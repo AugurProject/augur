@@ -636,6 +636,18 @@ export const LeftChevron = (
   </svg>
 );
 
+export const LeftArrow = (
+  <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M14.7084 6.70825L9.29175 11.7083L14.7084 16.7083" stroke="white" stroke-width="2" stroke-linecap="round"/>
+  </svg>
+);
+
+export const RightArrow = (
+  <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M9.2915 16.7083L14.7082 11.7083L9.2915 6.70825" stroke="white" stroke-width="2" stroke-linecap="round"/>
+  </svg>
+);
+
 export const SortIcon = (
   <svg viewBox="0 0 6 8">
     <path d="M3 8L5.59808 5H0.401924L3 8Z" />

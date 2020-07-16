@@ -1,5 +1,5 @@
-import { convertToOdds, convertToNormalizedPrice } from './get-odds';
-import { ASKS, ODDS_TYPE, ONE } from 'modules/common/constants';
+import { convertToNormalizedPrice } from './get-odds';
+import { ASKS, ONE } from 'modules/common/constants';
 import { getOutcomeNameWithOutcome } from './get-outcome';
 import { BET_STATUS } from 'modules/trading/store/constants';
 import { Markets } from 'modules/markets/store/markets';
@@ -28,6 +28,7 @@ export const convertPositionToBet = (position, marketInfo) => {
     }),
     outcome: getOutcomeNameWithOutcome(marketInfo, position.outcome),
     wager: position.rawPosition,
+    dateUpdated: position.timestamp,
   };
 };
 
