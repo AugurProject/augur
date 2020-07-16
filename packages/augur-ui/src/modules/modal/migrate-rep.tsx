@@ -113,20 +113,6 @@ export const MigrateRep = ({
     </>
   );
 
-  const mainWalletContent = (
-    <>
-      <h3>Trading account</h3>
-      <AccountAddressDisplay
-        copyable
-        address={toChecksumAddress(tradingAccount)}
-      />
-      <ExternalLinkButton
-        URL={HELP_CENTER_LEARN_ABOUT_ADDRESS}
-        label={'Learn about your address'}
-      />
-    </>
-  );
-
   return (
     <div className={Styles.MigrateRep}>
       <Title title={'Migrate V1 REP'} closeAction={closeAction} />
