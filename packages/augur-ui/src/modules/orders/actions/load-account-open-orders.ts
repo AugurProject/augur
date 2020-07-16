@@ -10,6 +10,7 @@ export const loadAccountOpenOrders = () => async (
   getState: () => AppState
 ) => {
   const { universe, loginAccount } = getState();
+  if (!loginAccount.mixedCaseAddress) return;
   const Augur = augurSdk.get();
   const userOpenOrders = await Augur.getUserOpenOrders({
     universe: universe.id,

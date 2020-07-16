@@ -38,10 +38,10 @@ export const loadMarketOrderBook = (
   const augur = augurSdk.get();
   const expirationCutoffSeconds = await augur.getGasConfirmEstimate();
   let params = loginAccount.address
-    ? { marketId, account: loginAccount.address, expirationCutoffSeconds }
-    : { marketId };
+    ? { account: loginAccount.address, expirationCutoffSeconds }
+    : { };
   const Augur = augurSdk.get();
-  const marketOrderBook = await Augur.getMarketOrderBook(params);
+  const marketOrderBook = await Augur.getMarketOrderBook({ ...params, marketId, ignoreCrossOrders: true });
   dispatch(updateOrderBook(marketId, marketOrderBook));
   callback(null, marketOrderBook);
 };
