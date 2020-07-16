@@ -14,7 +14,7 @@ import { MyBetsRow } from 'modules/common/table-rows';
 import Styles from 'modules/portfolio/components/common/common.styles.less';
 import { FUTURES, TABLET_MAX, ZERO } from 'modules/common/constants';
 import Media from 'react-media';
-import { CashoutButton, ProcessingButton, PrimaryButton } from 'modules/common/buttons';
+import { CashoutButton, PrimaryButton } from 'modules/common/buttons';
 import MarketLink from 'modules/market/components/market-link/market-link';
 import { convertToOdds } from 'utils/get-odds';
 import { formatDai } from 'utils/format-number';
