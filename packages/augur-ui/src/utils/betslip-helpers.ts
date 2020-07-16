@@ -1,4 +1,4 @@
-import { convertToOdds } from './get-odds';
+import { convertToOdds, convertToNormalizedPrice } from './get-odds';
 import { ASKS, ODDS_TYPE, ONE } from 'modules/common/constants';
 import { getOutcomeNameWithOutcome } from './get-outcome';
 import { BET_STATUS } from 'modules/trading/store/constants';
@@ -6,6 +6,10 @@ import { Markets } from 'modules/markets/store/markets';
 import { placeTrade } from 'modules/contracts/actions/contractCalls';
 import { Betslip } from 'modules/trading/store/betslip';
 import { createBigNumber } from './create-big-number';
+
+export const convertToWin = (price, quantity) => {
+  return ONE.minus(createBigNumber(price)).times(createBigNumber(quantity)).toString();
+}
 
 export const convertPositionToBet = (position, marketInfo) => {
   return {
@@ -15,13 +19,13 @@ export const convertPositionToBet = (position, marketInfo) => {
     amountWon: '0',
     amountFilled: '0',
     price: position.averagePrice,
-    toWin: ONE.minus(createBigNumber(position.averagePrice)).times(createBigNumber(position.rawPosition)).toString(),
-    odds: convertToOdds({
+    toWin: convertToWin(position.averagePrice, position.rawPosition),
+    normalizedPrice: convertToNormalizedPrice({
       price: position.averagePrice,
       min: marketInfo.min,
       max: marketInfo.max,
       type: ASKS,
-    })[ODDS_TYPE.AMERICAN],
+    }),
     outcome: getOutcomeNameWithOutcome(marketInfo, position.outcome),
     wager: position.rawPosition,
   };

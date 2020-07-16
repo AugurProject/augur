@@ -38,7 +38,7 @@ import {
   SPORTS_GROUP_TYPES,
   SPORTS_GROUP_MARKET_TYPES,
 } from 'modules/common/constants';
-import { convertToOdds } from 'utils/get-odds';
+import { convertToOdds, convertToNormalizedPrice } from 'utils/get-odds';
 import { MARKET_LIST_CARD, marketLinkCopied } from 'services/analytics/helpers';
 import { useAppStatusStore } from 'modules/app/store/app-status';
 import TooltipStyles from 'modules/common/tooltip.styles.less';
@@ -493,13 +493,13 @@ export const SportsOutcome = ({
         market.marketType
       )
     ).full;
-    const odds = convertToOdds({
+    const normalizedPrice = convertToNormalizedPrice({
       price,
       min: market.minPriceBigNumber,
       max: market.maxPriceBigNumber,
       type: ASKS,
     });
-    const OddToUse = odds[oddsType || ODDS_TYPE.AMERICAN];
+    const OddToUse = convertToOdds(normalizedPrice).full;
     topLabel = determineTopLabel(market.sportsBook, outcomeId, outcomeLabel);
     label = `${OddToUse}${oddsType === ODDS_TYPE.PERCENT ? '%' : ''}`;
     disabled = false;
@@ -507,7 +507,7 @@ export const SportsOutcome = ({
       addBet(
         market.id,
         market.description,
-        OddToUse,
+        normalizedPrice,
         outcomeLabel,
         shares,
         outcomeId,

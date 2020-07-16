@@ -15,6 +15,7 @@ import {
   OPEN,
   INVALID_OUTCOME_NAME,
   SHORT,
+  ODDS_TYPE,
 } from './constants';
 import {
   formatNumber,
@@ -34,6 +35,7 @@ import { TXEventName } from '@augurproject/sdk-lite';
 import { removeCanceledOrder } from 'modules/pending-queue/actions/pending-queue-management';
 import { removePendingOrder } from 'modules/orders/actions/pending-orders-management';
 import { Properties } from './row-column';
+import { convertToOdds } from 'utils/get-odds';
 
 interface MyBetsRowProps {
   outcome: Object;
@@ -46,6 +48,8 @@ export const MyBetsRow = ({
   showExtraRow,
   isEvent,
 }: MyBetsRowProps) => {
+  const { oddsType } = useAppStatusStore();
+  const isFractional = oddsType === ODDS_TYPE.FRACTIONAL;
   const columnProperties = [
     {
       key: 'outcomeName',
@@ -67,8 +71,9 @@ export const MyBetsRow = ({
     },
     {
       key: 'odds',
-      columnType: COLUMN_TYPES.VALUE,
-      value: formatNumber(outcome && outcome.odds),
+      columnType: isFractional ? COLUMN_TYPES.TEXT : COLUMN_TYPES.VALUE,
+      text: convertToOdds(outcome && outcome.normalizedPrice).full,
+      value: isFractional ? null : convertToOdds(outcome && outcome.normalizedPrice),
       keyId: 'outcome-odds-' + outcome.outcome,
     },
     {
@@ -80,7 +85,7 @@ export const MyBetsRow = ({
     {
       key: 'betDate',
       columnType: COLUMN_TYPES.TEXT,
-      text: outcome.dateUpdated.formattedLocalShortWithUtcOffsetWithoutSeconds,
+      text: outcome.dateUpdated.formattedUtc,
       keyId: 'outcome-betDate-' + outcome.outcome,
     },
     {
