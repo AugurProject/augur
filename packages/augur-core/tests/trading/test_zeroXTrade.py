@@ -355,7 +355,7 @@ def test_two_bids_on_books_buy_both(contractsFixture, cash, market):
     assert shareToken.balanceOfMarketOutcome(market.address, YES, contractsFixture.accounts[3]) == fix(1)
     assert shareToken.balanceOfMarketOutcome(market.address, NO, contractsFixture.accounts[2]) == fix(5)
 
-def test_three_bids_on_books_buy_all_cover_protocol_fee(contractsFixture, cash, market):
+def test_three_bids_on_books_buy_first_2_cover_protocol_fee(contractsFixture, cash, market):
     ZeroXTrade = contractsFixture.contracts['ZeroXTrade']
     zeroXExchange = contractsFixture.contracts["ZeroXExchange"]
     shareToken = contractsFixture.contracts["ShareToken"]
@@ -394,20 +394,19 @@ def test_three_bids_on_books_buy_all_cover_protocol_fee(contractsFixture, cash, 
     ethExchange.mint(contractsFixture.accounts[2])
 
     # Calculate the expected protocol fee cost and add that as a limit
-    cost = ZeroXTrade.estimateProtocolFeeCostInCash(len(orders), 1)
+    cost = ZeroXTrade.estimateProtocolFeeCostInCash(2, 1)
     cash.faucet(cost, sender=contractsFixture.accounts[2])
 
     # fill signed orders
     cash.faucet(fix('6', '40'), sender=contractsFixture.accounts[2])
     with TokenDelta(cash, -fix(4, 60), contractsFixture.accounts[1], "Creator cash not taken"):
         with TokenDelta(cash, -fix(1, 60), contractsFixture.accounts[3], "Creator cash not taken"):
-            with TokenDelta(cash, -fix(1, 60), contractsFixture.accounts[4], "Creator cash not taken"):
-                assert ZeroXTrade.trade(fix(6), longTo32Bytes(11), tradeGroupID, cost, 10, orders, signatures, sender=contractsFixture.accounts[2]) == 0
+            assert ZeroXTrade.trade(fix(5), longTo32Bytes(11), tradeGroupID, cost, 2, orders, signatures, sender=contractsFixture.accounts[2]) == 0
 
     assert shareToken.balanceOfMarketOutcome(market.address, YES, contractsFixture.accounts[1]) == fix(4)
     assert shareToken.balanceOfMarketOutcome(market.address, YES, contractsFixture.accounts[3]) == fix(1)
-    assert shareToken.balanceOfMarketOutcome(market.address, YES, contractsFixture.accounts[4]) == fix(1)
-    assert shareToken.balanceOfMarketOutcome(market.address, NO, contractsFixture.accounts[2]) == fix(6)
+    assert shareToken.balanceOfMarketOutcome(market.address, YES, contractsFixture.accounts[4]) == fix(0)
+    assert shareToken.balanceOfMarketOutcome(market.address, NO, contractsFixture.accounts[2]) == fix(5)
 
 def test_two_bids_on_books_buy_full_and_partial(contractsFixture, cash, market, universe):
     ZeroXTrade = contractsFixture.contracts['ZeroXTrade']
