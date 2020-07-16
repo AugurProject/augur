@@ -36,9 +36,9 @@ const images = [{
 
 export const LandingHero = () => {
   const {
+    theme,
     actions: { setModal },
   } = useAppStatusStore();
-  const { theme } = useAppStatusStore();
 
   return (
     <>
