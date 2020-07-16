@@ -35,7 +35,7 @@ import { getNetwork } from 'utils/get-network-name';
 import { isEmpty } from 'utils/is-empty';
 import { isGoogleBot } from 'utils/is-google-bot';
 import { isMobileSafari } from 'utils/is-safari';
-import { AppStatus } from 'modules/app/store/app-status';
+import { AppStatus, useAppStatusStore } from 'modules/app/store/app-status';
 import { showIndexedDbSize } from 'utils/show-indexed-db-size';
 import { tryToPersistStorage } from 'utils/storage-manager';
 import { createBigNumber } from 'utils/create-big-number';
@@ -203,12 +203,12 @@ export const connectAugur = async (
 
   if ((windowRef.ethereum || windowRef.web3) && await isNetworkMismatch(config)) {
     if (callback) callback(null);
-    return dispatch(
-      updateModal({
+    // not sure if it's too early to use app status store
+    const { actions: { setModal }} = useAppStatusStore();
+    return setModal({
         type: MODAL_NETWORK_MISMATCH,
         expectedNetwork: NETWORK_NAMES[Number(config.networkId)],
-      })
-    );
+      });
   }
 
   if (isMobileSafari()) {
