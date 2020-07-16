@@ -8,7 +8,7 @@ import {
 } from 'modules/common/constants';
 import { createBigNumber, BigNumber } from 'utils/create-big-number';
 import { AppStatus } from 'modules/app/store/app-status';
-import { formatNumber } from './format-number';
+import { formatNumber, formatPercent, formatFractional } from './format-number';
 
 const { DECIMAL, FRACTIONAL, AMERICAN, PERCENT } = ODDS_TYPE;
 
@@ -59,12 +59,8 @@ interface ConvertToNormalizedPriceType {
 
 export const convertToOdds = (normalizedPrice, toDecimals = 4) => {
   const { oddsType } = AppStatus.get();
-  const odds = getOddsObject(createBigNumber(normalizedPrice), toDecimals)[
-    oddsType
-  ];
-  return oddsType === FRACTIONAL
-    ? { fullPrecision: odds }
-    : formatNumber(odds, { decimals: 2, decimalsRounded: 2 });
+  const odds = getOddsObject(createBigNumber(normalizedPrice), toDecimals);
+  return odds[oddsType];
 };
 
 export const convertToNormalizedPrice = ({
@@ -94,35 +90,37 @@ export const getOddsObject = (normalizedValue: BigNumber, toDecimals = 4) => {
     createBigNumber(normalizedValue)
   );
   const decimal: BigNumber = convertToDecimal(percentage);
-  const fractional: string = convertToFractional(decimal, toDecimals);
+  const fractional: BigNumber = convertToFractional(decimal);
   const american: BigNumber = convertToAmerican(percentage);
 
   return {
-    [DECIMAL]: Number(decimal.toFixed(toDecimals, 4)),
-    [FRACTIONAL]: fractional,
-    [AMERICAN]: Number(american.toFixed(0)),
-    [PERCENT]: Number(percentage.toFixed(2, 4)),
+    [DECIMAL]: formatNumber(decimal, {
+      decimals: toDecimals,
+    }),
+    [FRACTIONAL]: formatFractional(fractional),
+    [AMERICAN]: formatNumber(american),
+    [PERCENT]: formatPercent(percentage, { decimalsRounded: 2 }),
   };
 };
 
-const convertToPercentage = (normalizedValue: BigNumber) =>
+const convertToPercentage = (normalizedValue: BigNumber): BigNumber =>
   normalizedValue.times(HUNDRED);
 
-const convertToDecimal = (percentage: BigNumber) =>
+const convertToDecimal = (percentage: BigNumber): BigNumber =>
   ONE.dividedBy(percentage.dividedBy(HUNDRED));
 
-const convertToFractional = (decimal: BigNumber, toDecimals = 4) =>
-  `${Number(decimal.minus(ONE).toFixed(toDecimals, 4))}/1`;
+const convertToFractional = (decimal: BigNumber): BigNumber =>
+  decimal.minus(ONE);
 
-const convertToPositiveAmerican = (percentage: BigNumber) =>
+const convertToPositiveAmerican = (percentage: BigNumber): BigNumber =>
   HUNDRED.dividedBy(percentage.dividedBy(HUNDRED)).minus(HUNDRED);
 
-const convertToNegativeAmerican = (percentage: BigNumber) =>
+const convertToNegativeAmerican = (percentage: BigNumber): BigNumber =>
   percentage
     .dividedBy(ONE.minus(percentage.dividedBy(HUNDRED)))
     .times(NEGATIVE_ONE);
 
-const convertToAmerican = (percentage: BigNumber) =>
+const convertToAmerican = (percentage: BigNumber): BigNumber =>
   percentage.gte(FIFTY)
     ? convertToPositiveAmerican(percentage)
     : convertToNegativeAmerican(percentage);

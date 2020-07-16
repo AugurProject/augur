@@ -118,6 +118,22 @@ export function formatPercent(
   });
 }
 
+export function formatFractional(
+  num: NumStrBigNumber,
+  opts: FormattedNumberOptions = {}
+): FormattedNumber {
+  return formatNumber(num, {
+    decimals: 4,
+    decimalsRounded: 0,
+    denomination: v => `${v}/1`,
+    positiveSign: false,
+    zeroStyled: false,
+    blankZero: false,
+    bigUnitPostfix: false,
+    ...opts,
+  });
+}
+
 export function formatShares(
   num: NumStrBigNumber,
   opts: FormattedNumberOptions = {}
@@ -282,7 +298,7 @@ export function optionsBlank(): FormattedNumberOptions {
   return {
     decimals: 0,
     decimalsRounded: 0,
-    denomination: v => '',
+    denomination: v => `${v}`,
     roundUp: false,
     roundDown: false,
     positiveSign: false,
@@ -432,7 +448,7 @@ export function formatNumber(
 
   decimals = decimals || 0;
   decimalsRounded = decimalsRounded || 0;
-  denomination = denomination || (v => '');
+  denomination = denomination || (v => `${v}`);
   positiveSign = !!positiveSign;
   roundUp = !!roundUp;
   roundDown = !!roundDown;
