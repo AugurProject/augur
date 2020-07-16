@@ -97,8 +97,8 @@ module "task-0x-mesh-rpc" {
   source            = "git::https://github.com/cloudposse/terraform-aws-ecs-container-definition.git?ref=tags/0.23.0"
   container_name    = local.rpc_name
   container_image   = "0xorg/mesh:9.4.0"
-  container_memory  = 2048
-  container_cpu     = 1024
+  container_memory  = 8192
+  container_cpu     = 4096
   port_mappings     = [
     {
       hostPort : local.zerox_ports.rpc_http
@@ -246,8 +246,8 @@ module "service-0x-rpc" {
   network_mode                   = "awsvpc"
   assign_public_ip               = true
   vpc_id                         = var.vpc_id
-  task_memory                    = 2048
-  task_cpu                       = 1024
+  task_memory                    = 8192
+  task_cpu                       = 4096
   security_group_ids             = [
     var.vpc_sg,
     module.zeroX-security-group.this_security_group_id
