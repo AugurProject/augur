@@ -20,8 +20,9 @@
     
             color: var(--color-primary-text);
             display: grid;
-            grid-template-columns: auto auto;
-
+            grid-template-columns: auto 1fr;
+            grid-column: 1 / span 2;
+            
             > span:nth-of-type(1) {
                 grid-column: 1 / span 2;
             }
