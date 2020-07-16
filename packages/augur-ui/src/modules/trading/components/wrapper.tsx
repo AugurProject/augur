@@ -63,6 +63,7 @@ interface WrapperProps {
   initializeGsnWallet: Function;
   endTime: number;
   disableTrading?: boolean;
+  canPostOrder: Function;
 }
 
 interface WrapperState {
@@ -77,6 +78,7 @@ interface WrapperState {
   expirationDate: Moment;
   trade: any;
   simulateQueue: any[];
+  allowPostOnlyOrder: boolean;
 }
 
 class Wrapper extends Component<WrapperProps, WrapperState> {
@@ -126,7 +128,8 @@ class Wrapper extends Component<WrapperProps, WrapperState> {
       postOnlyOrder: false,
       expirationDate: props.selectedOrderProperties.expirationDate || null,
       trade: Wrapper.getDefaultTrade(props),
-      simulateQueue: []
+      simulateQueue: [],
+      allowPostOnlyOrder: true,
     };
 
     this.updateState = this.updateState.bind(this);
@@ -236,6 +239,7 @@ class Wrapper extends Component<WrapperProps, WrapperState> {
           gasCostEst: '',
           expirationDate,
           trade,
+          allowPostOnlyOrder: true,
         }
       : { trade };
     this.setState(updatedState, () => this.updateParentOrderValues());
@@ -259,6 +263,20 @@ class Wrapper extends Component<WrapperProps, WrapperState> {
       this.updateParentOrderValues();
       if (callback) callback();
     });
+  }
+
+  checkCanPostOnly = (price, side) => {
+    const { canPostOrder } = this.props;
+    if (this.state.postOnlyOrder) {
+      const allowPostOnlyOrder = canPostOrder(price, side);
+      if (allowPostOnlyOrder !== this.state.allowPostOnlyOrder) {
+        this.setState({
+          allowPostOnlyOrder
+        });
+      }
+      return allowPostOnlyOrder;
+    }
+    return true;
   }
 
   async queueStimulateTrade(order, useValues, selectedNav) {
@@ -311,9 +329,11 @@ class Wrapper extends Component<WrapperProps, WrapperState> {
         });
       }
     )));
-    await Promise.all(this.state.simulateQueue).then(results =>
-      this.setState(results[results.length - 1])
-    );
+    await Promise.all(this.state.simulateQueue).then(results => {
+      const order = results[results.length - 1];
+      this.setState(order);
+      this.checkCanPostOnly(order.trade.limitPrice, order.trade.side);
+    });
   }
   async updateTradeTotalCost(order, fromOrderBook = false) {
     const {
@@ -356,7 +376,6 @@ class Wrapper extends Component<WrapperProps, WrapperState> {
         side: order.selectedNav,
         selectedNav,
       };
-
       this.setState({
         ...useValues,
         orderDaiEstimate: totalCost ? formattedValue.roundedValue : '',
@@ -378,6 +397,7 @@ class Wrapper extends Component<WrapperProps, WrapperState> {
           orderQuantity: order.orderQuantity
         })
       }
+      this.checkCanPostOnly(order.orderPrice, selectedNav);
     }
   }
 
@@ -484,6 +504,7 @@ class Wrapper extends Component<WrapperProps, WrapperState> {
       expirationDate,
       trade,
       postOnlyOrder,
+      allowPostOnlyOrder,
     } = this.state;
     const insufficientFunds =
       trade &&
@@ -511,7 +532,7 @@ class Wrapper extends Component<WrapperProps, WrapperState> {
           }
         }}
         disabled={
-          !trade || !trade.limitPrice || (gsnUnavailable && isOpenOrder) || insufficientFunds || (/*postOnlyOrder && trade.numFills > 0 ||*/ (disableTrading))
+          !trade || !trade.limitPrice || (gsnUnavailable && isOpenOrder) || insufficientFunds || disableTrading || !allowPostOnlyOrder
         }
       />
     );
@@ -633,6 +654,7 @@ class Wrapper extends Component<WrapperProps, WrapperState> {
               tradingTutorial={tradingTutorial}
               GsnEnabled={GsnEnabled}
               gsnUnavailable={gsnUnavailable}
+              allowPostOnlyOrder={allowPostOnlyOrder}
             />
           )}
         <div>{actionButton}</div>

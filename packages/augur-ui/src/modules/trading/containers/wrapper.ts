@@ -25,6 +25,7 @@ import { AppState } from 'appStore';
 import { totalTradingBalance } from 'modules/auth/selectors/login-account';
 import { isGSNUnavailable } from 'modules/app/selectors/is-gsn-unavailable';
 import getValueFromlocalStorage from 'utils/get-local-storage-value';
+import { canPostOrder } from 'modules/trades/actions/can-post-order';
 
 const getMarketPath = id => {
   return {
@@ -63,6 +64,7 @@ const mapStateToProps = (state: AppState, ownProps) => {
     gsnUnavailable: isGSNUnavailable(state),
     endTime: ownProps.initialLiquidity ? newMarket.setEndTime : ownProps.market.endTime,
     disableTrading: env?.ui?.reportingOnly,
+    orderBook: ownProps.orderBook,
   };
 };
 
@@ -110,7 +112,8 @@ const mapDispatchToProps = (dispatch, ownProps) => ({
         postOnly
       })
     ),
-    orderSubmitted: (type, marketId) => dispatch(orderSubmitted(type, marketId))
+    orderSubmitted: (type, marketId) => dispatch(orderSubmitted(type, marketId)),
+    canPostOrder: (price, side, orderBook) => canPostOrder(price, side, orderBook),
 });
 
 const mergeProps = (sP, dP, oP) => {
@@ -123,6 +126,7 @@ const mergeProps = (sP, dP, oP) => {
     ...dP,
     disclaimerSeen: !!disclaimerSeen,
     gsnWalletInfoSeen: !!gsnWalletInfoSeen,
+    canPostOrder: (price, side) => dP.canPostOrder(price, side, sP.orderBook),
   };
 };
 
