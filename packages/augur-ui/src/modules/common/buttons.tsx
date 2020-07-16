@@ -33,7 +33,7 @@ import {
 } from 'modules/common/icons';
 import { useAppStatusStore, AppStatus } from 'modules/app/store/app-status';
 import classNames from 'classnames';
-import { getNetworkId, placeTrade } from 'modules/contracts/actions/contractCalls';
+import { getNetworkId, placeTrade, claimMarketsProceeds } from 'modules/contracts/actions/contractCalls';
 import Styles from 'modules/common/buttons.styles.less';
 import { MARKET_TEMPLATES } from 'modules/create-market/constants';
 import type { Getters } from '@augurproject/sdk';
@@ -689,13 +689,24 @@ export const CashoutButton = ({
         );
         cashoutText = `Cashout ${formatDai(claimable).full}`;
         cashoutDisabled = false;
-        cashout = () => startClaimingMarketsProceeds([bet.marketId], account, () => {});
+        cashout = () => {
+          addPendingData(queueId, CASHOUT, TXEventName.Pending, '', {}, null);
+          (async () => 
+            await claimMarketsProceeds(
+              [bet.marketId], 
+              account
+            ).catch(error =>
+              addPendingData(queueId, CASHOUT, TXEventName.Failure, '', {}, null)
+              )
+          )();
+        }
       } else if (market.reportingState !== REPORTING_STATE.AWAITING_FINALIZATION && market.reportingState !== REPORTING_STATE.FINALIZED) {
         cashoutText = `Cashout ${formatDai(bet.unrealizedCost).full}`;
         cashoutDisabled = false;
     
-        cashout = () => (
-          async () =>
+        cashout = () => {
+          addPendingData(queueId, CASHOUT, TXEventName.Pending, '', {});
+          (async () =>
             await placeTrade(
               0,
               bet.marketId,
@@ -710,9 +721,10 @@ export const CashoutButton = ({
               0,
               '0',
               undefined
-            )
+            ).catch(error => addPendingData(queueId, CASHOUT, TXEventName.Failure, '', {}))
         )();
       }
+    }
   } 
   if (!won.eq(ZERO)) {
     didWin = true;
@@ -732,12 +744,7 @@ export const CashoutButton = ({
         />
         :
         <button 
-          onClick={() => {
-            addPendingData(queueId, CASHOUT, TXEventName.Pending, '', {});
-            cashout().catch(err => 
-              addPendingData(queueId, CASHOUT, TXEventName.Failure, '', {})
-            )
-          }}
+          onClick={() => cashout()}
           className={classNames(Styles.CashoutButton, {
             [Styles.Won]: didWin && !loss,
             [Styles.Loss]: loss,
