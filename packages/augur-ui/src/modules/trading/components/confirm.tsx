@@ -70,6 +70,7 @@ interface ConfirmProps {
   tradingTutorial?: boolean;
   initialLiquidity?: boolean;
   postOnlyOrder?: boolean;
+  allowPostOnlyOrder?: boolean,
 }
 
 export const Confirm = ({
@@ -97,6 +98,7 @@ export const Confirm = ({
   if (initialLiquidity) {
     availableDai = availableDai.minus(newMarket.initialLiquidityDai);
   }
+
   const sweepStatus = pendingQueue[TRANSACTIONS]?.[CREATEAUGURWALLET]?.status;
   const gasPrice = gasPriceInfo.userDefinedGasPrice || gasPriceInfo.average;
   const availableEth = createBigNumber(eth);
@@ -292,12 +294,9 @@ export const Confirm = ({
         },
       };
     }
-/*
+
     if (
-      !isNaN(numTrades) &&
-      numTrades > 0 &&
-      postOnlyOrder &&
-      !tradingTutorial
+      !allowPostOnlyOrder && !tradingTutorial
     ) {
       messages = {
         header: 'POST ONLY ORDER',
@@ -305,7 +304,7 @@ export const Confirm = ({
         message: `Can not match existing order.`,
       };
     }
-*/
+
     if (disableTrading && !tradingTutorial) {
       messages = {
         header: 'Reporting Only',

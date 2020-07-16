@@ -758,6 +758,7 @@ const MarketView = ({
                       selectedOrderProperties={selectedOrderProperties}
                       selectedOutcomeId={outcomeIdSet}
                       updateSelectedOutcome={updateSelectedOutcome}
+                      orderBook={outcomeOrderBook}
                       updateSelectedOrderProperties={
                         updateSelectedOrderProperties
                       }

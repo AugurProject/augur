@@ -43,6 +43,7 @@ import { MARKET } from 'modules/routes/constants/views';
 import makeQuery from 'modules/routes/helpers/make-query';
 import { MARKET_ID_PARAM_NAME } from 'modules/routes/constants/param-names';
 import { FORM_INPUT_TYPES as INPUT_TYPES } from 'modules/trading/store/constants';
+import { canPostOrder } from 'modules/trades/actions/can-post-order';
 
 export interface SelectedOrderProperties {
   orderPrice: string;
@@ -157,6 +158,7 @@ const Wrapper = ({
   updateLiquidity,
   tradingTutorial,
   tutorialNext,
+  orderBook,
 }) => {
   const {
     newMarket,
@@ -170,6 +172,7 @@ const Wrapper = ({
     restoredAccount,
     blockchain: { currentAugurTimestamp: currentTimestamp },
     actions: { setModal },
+    env: { ui: { reportingOnly: disableTrading } },
   } = useAppStatusStore();
   const [state, setState] = useState({
     orderDaiEstimate: '',
@@ -180,6 +183,7 @@ const Wrapper = ({
     expirationDate: selectedOrderProperties.expirationDate || null,
     trade: getDefaultTrade({ market, selectedOutcome }),
     simulateQueue: [],
+    allowPostOnlyOrder: true,
   });
   const marketId = market.id;
   const endTime = initialLiquidity ? newMarket.setEndTime : market.endTime;
@@ -216,6 +220,8 @@ const Wrapper = ({
           gasCostEst: '',
           expirationDate,
           trade: tradeUpdate,
+          postOnlyOrder: false,
+          allowPostOnlyOrder: true,
         }
       : { trade: tradeUpdate };
     setState({ ...state, ...updatedState });
@@ -250,6 +256,20 @@ const Wrapper = ({
       postOnly: s.postOnlyOrder,
     });
     clearOrderForm();
+  }
+
+  function checkCanPostOnly(price, side) {
+    if (state.postOnlyOrder) {
+      const allowPostOnlyOrder = canPostOrder(price, side, orderBook);
+      if (allowPostOnlyOrder !== state.allowPostOnlyOrder) {
+        setState({
+          ...state,
+          allowPostOnlyOrder
+        });
+      }
+      return allowPostOnlyOrder;
+    }
+    return true;
   }
 
   function updateTradeNumShares(order) {
@@ -287,6 +307,7 @@ const Wrapper = ({
           trade: newOrder,
           gasCostEst: formattedGasCost,
         });
+        checkCanPostOnly(order.trade.limitPrice, order.trade.side);
       },
     });
   }
@@ -335,6 +356,7 @@ const Wrapper = ({
     } else {
       if (order.orderPrice) {
         await queueStimulateTrade(order, useValues);
+        checkCanPostOnly(order.orderPrice, order.selectedNav);
       }
     }
   }
@@ -446,7 +468,7 @@ const Wrapper = ({
         disabled={
           !trade?.limitPrice ||
           (gsnUnavailable && isOpenOrder) ||
-          insufficientFunds || (state.postOnlyOrder && trade.numFills > 0)
+          insufficientFunds || (state.postOnlyOrder && trade.numFills > 0) || !state.allowPostOnlyOrder || disableTrading
         }
       />
     );
@@ -549,6 +571,7 @@ const Wrapper = ({
           postOnlyOrder={state.postOnlyOrder}
           initialLiquidity={initialLiquidity}
           tradingTutorial={tradingTutorial}
+          allowPostOnlyOrder={allowPostOnlyOrder}
         />
       )}
       <div>{actionButton}</div>

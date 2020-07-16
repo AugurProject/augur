@@ -2,7 +2,7 @@ import React, { useMemo } from 'react';
 import { SelectedOrderProperties } from 'modules/trading/components/wrapper';
 import Wrapper from 'modules/trading/components/wrapper';
 import Styles from 'modules/trading/components/trading-form.styles.less';
-import { MarketData, NewMarket } from 'modules/types';
+import { MarketData, OutcomeFormatted, NewMarket, IndividualOutcomeOrderBook } from 'modules/types';
 
 interface TradingFormProps {
   selectedOutcomeId: number;
@@ -14,6 +14,7 @@ interface TradingFormProps {
   tutorialNext?: Function;
   initialLiquidity?: boolean;
   tradingTutorial?: boolean;
+  orderBook: IndividualOutcomeOrderBook;
 }
 
 const TradingForm = ({
