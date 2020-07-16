@@ -26,7 +26,6 @@ import {
   SPORTS_GROUP_TYPES,
 } from 'modules/common/constants';
 import { MARKETS } from 'modules/routes/constants/views';
-import { FilterNotice } from 'modules/common/filter-notice';
 import { EmptyMagnifyingGlass } from 'modules/common/icons';
 import { Game, Outcomes, ClaimWinnings } from '../common/common';
 import { useMyBetsStore } from 'modules/portfolio/store/my-bets';
@@ -193,12 +192,7 @@ export const MyBets = () => {
             label="go to trading"
           />
         </div>
-        <FilterNotice
-          showDismissButton={false}
-          show
-          color="active"
-          content={<ClaimWinnings />}
-        />
+        <ClaimWinnings />
         <div>
           <span>
             View by

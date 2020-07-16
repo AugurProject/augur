@@ -12,13 +12,9 @@ import { convertUnixToFormattedDate } from 'utils/format-date';
 import { MyBetsRow } from 'modules/common/table-rows';
 
 import Styles from 'modules/portfolio/components/common/common.styles.less';
-import {
-  FUTURES,
-  TABLET_MAX,
-  ZERO,
-} from 'modules/common/constants';
+import { FUTURES, TABLET_MAX, ZERO } from 'modules/common/constants';
 import Media from 'react-media';
-import { CashoutButton, ProcessingButton } from 'modules/common/buttons';
+import { CashoutButton, ProcessingButton, PrimaryButton } from 'modules/common/buttons';
 import MarketLink from 'modules/market/components/market-link/market-link';
 import { convertToOdds } from 'utils/get-odds';
 import { formatDai } from 'utils/format-number';
@@ -26,6 +22,7 @@ import { Betslip } from 'modules/trading/store/betslip';
 import { AppStatus } from 'modules/app/store/app-status';
 import { createBigNumber } from 'utils/create-big-number';
 import { startClaimingMarketsProceeds } from 'modules/positions/actions/claim-markets-proceeds';
+import { FilterNotice } from 'modules/common/filter-notice';
 
 export const BetsHeader = () => (
   <ul className={Styles.BetsHeader}>
@@ -68,20 +65,25 @@ export const ClaimWinnings = () => {
   if (totalProceeds.lte(ZERO)) return <div />;
 
   return (
-    <div className={Styles.ClaimWinnings}>
-      <span>
-        You have <b>{formatDai(totalProceeds).full}</b> in winnings to claim.
-      </span>
-      <ProcessingButton
-        text="Claim Bets"
-        queueName={TRANSACTIONS}
-        queueId={CLAIM_BETTING_PROCEEDS}
-        primaryButton
-        action={() =>
-          startClaimingMarketsProceeds(claimableMarkets, account, () => {})
-        }
-      />
-    </div>
+    <FilterNotice
+      showDismissButton={false}
+      show
+      color="active"
+      content={
+        <div className={Styles.ClaimWinnings}>
+          <span>
+            You have <b>{formatDai(totalProceeds).full}</b> in winnings to
+            claim.
+          </span>
+          <PrimaryButton
+            text="Claim Bets"
+            action={() =>
+              startClaimingMarketsProceeds(claimableMarkets, account, () => {})
+            }
+          />
+        </div>
+      }
+    />
   );
 };
 
