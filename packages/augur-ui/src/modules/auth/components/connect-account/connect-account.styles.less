@@ -147,6 +147,12 @@
       color: @color-primary-text;
       margin-top: @size-2;
 
+      @media @breakpoint-tablet {
+        max-width: 60px;
+        text-overflow: ellipsis;
+        overflow: hidden;
+      }
+
       @media @breakpoint-mobile {
         .text-10-bold;
 
