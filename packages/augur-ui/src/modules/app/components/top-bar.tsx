@@ -125,7 +125,7 @@ const TopBar: React.FC<TopBarProps> = ({
                   activateWalletModal();
                 }
               }}
-              text={'Complete account\nactivation'}
+              text={'Complete account activation'}
             />
           </div>
         }
