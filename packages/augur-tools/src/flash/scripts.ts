@@ -32,7 +32,9 @@ import { BigNumber } from 'bignumber.js';
 import { spawn, spawnSync } from 'child_process';
 import { ethers } from 'ethers';
 import { formatBytes32String } from 'ethers/utils';
+
 import * as fs from 'fs';
+import * as IPFS from 'ipfs';
 import moment from 'moment';
 import * as path from 'path';
 import {
@@ -2070,6 +2072,19 @@ export function addScripts(flash: FlashSession) {
           await spawn('docker-compose', ['-f', 'docker-compose.yml', 'down'], {env, stdio: 'inherit'});
         }
       }
+    }
+  });
+
+  flash.addScript({
+    name: 'ipfs-pin-ui',
+    async call(this: FlashSession, args: FlashArguments) {
+      const ipfs = await IPFS.create({});
+
+      // Assume build exists.
+      const result = await ipfs.addFromFs('../augur-ui/build', { recursive: true });
+
+      console.log('Running IPFS daemon. Type ctrl-c to quit:\n');
+      await waitForSigint();
     }
   });
 
