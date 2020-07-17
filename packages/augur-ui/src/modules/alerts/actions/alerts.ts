@@ -235,7 +235,7 @@ export const addEthIncreaseAlert = (
         uniqueId: String(timestamp),
         toast: true,
         description: `Your ETH balance has increased by $${amount.formatted} DAI`,
-        title: 'Fee reserves replenished',
+        title: 'Fee reserve replenished',
         status: SUCCESS,
         timestamp,
         params: {

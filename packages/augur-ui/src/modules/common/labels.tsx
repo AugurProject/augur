@@ -1600,8 +1600,8 @@ const EthReserveNoticeCmp = ({ show, reserve }: EthReseveProps) => (
         <DismissableNotice
           show
           buttonType={DISMISSABLE_NOTICE_BUTTON_TYPES.NONE}
-          title={`Replenish Fee reserves`}
-          description={`$${reserve.formatted} DAI will be added to your Fee reserves`}
+          title={`Replenish Fee reserve`}
+          description={`$${reserve.formatted} DAI will be added to your Fee reserve`}
         />
       </div>
     )}
