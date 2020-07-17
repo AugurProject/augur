@@ -8,34 +8,34 @@ from trading.test_claimTradingProceeds import acquireLongShares, finalizeMarket
 from reporting_utils import proceedToNextRound, proceedToFork, finalize, proceedToDesignatedReporting
 from old_eth_utils import ecsign, sha3, normalize_key, int_to_32bytearray, bytearray_to_bytestr, zpad
 
-#pytestmark = mark.skip(reason="Just for testing gas cost")
+pytestmark = mark.skip(reason="Just for testing gas cost")
 
 
 FILL_ORDER_TAKE_SHARES   =   [
-    668022,
-    674250,
-    680470,
-    686708,
-    692927,
-    699176,
+    692736,
+    698964,
+    705196,
+    711422,
+    717657,
+    723894,
 ]
 
 FILL_ORDER_BOTH_ETH    =   [
-    935219,
-    996763,
-    1058302,
-    1119834,
-    1181369,
-    1242902,
+    922754,
+    984220,
+    1045693,
+    1107159,
+    1168632,
+    1230111,
 ]
 
 FILL_ORDER_DOUBLE_REVERSE_POSITION    =   [
-    830219,
-    861763,
-    893302,
-    924822,
-    956369,
-    987902,
+    817754,
+    849220,
+    880693,
+    912159,
+    943632,
+    975111,
 ]
 
 @mark.parametrize('numOutcomes', range(2,8))
