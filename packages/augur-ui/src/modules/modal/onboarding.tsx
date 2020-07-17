@@ -90,7 +90,7 @@ export const Onboarding = ({
   );
 
   // since all onboarding modals are treated the same, processing content to add lazy loaded gas estimation
-  const modLinkContent = linkContent.map(lc => ({
+  const modLinkContent = linkContent && linkContent.map(lc => ({
     link: lc.link,
     content: lc.content.replace(
       `be a transaction fee`,
