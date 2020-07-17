@@ -226,6 +226,7 @@ export const OTHER_ISSUE = 'OTHER_ISSUE';
 
 // # ZeroX Fee
 export const ZEROX_GAS_FEE = 150000;
+export const ACCOUNT_ACTIVATION_GAS_COST = 1935828;
 
 // # Market Max Fees
 export const MAX_FEE_100_PERCENT = '1';
