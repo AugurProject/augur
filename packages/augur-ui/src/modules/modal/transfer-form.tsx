@@ -333,7 +333,7 @@ export const TransferForm = ({
             action={() => {
               let useTopOff = true;
               if (currency === DAI) {
-                // if 90% or more of user's DAI is being transferred disable topping off fee reserve
+                // if 90% or more of user's DAI is being transferred disable topping off Fee reserve
                 const percentage = createBigNumber(balances.dai).div(createBigNumber(formattedAmount.fullPrecision));
                 if (percentage.gt(createBigNumber(TURN_OFF_TOP_OFF_PERCENTAGE))) {
                   useTopOff = false;
