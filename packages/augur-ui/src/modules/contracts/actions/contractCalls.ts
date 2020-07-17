@@ -34,6 +34,7 @@ import {
   TEN_TO_THE_EIGHTEENTH_POWER,
   ZERO,
   NETWORK_IDS,
+  ACCOUNT_ACTIVATION_GAS_COST,
 } from 'modules/common/constants';
 import { constructMarketParams } from 'modules/create-market/helpers/construct-market-params';
 import {
@@ -1155,5 +1156,15 @@ export async function migrateRepToUniverse(migration: doReportDisputeAddStake) {
     );
   } catch (e) {
     console.error('Could not migrate REP to universe', e);
+  }
+}
+
+export async function runPeriodicals_estimateGas() {
+  try {
+    const { contracts } = augurSdk.get();
+    const gas = await contracts.universe.runPeriodicals_estimateGas();
+    return gas;
+  } catch (e) {
+    return ACCOUNT_ACTIVATION_GAS_COST;
   }
 }

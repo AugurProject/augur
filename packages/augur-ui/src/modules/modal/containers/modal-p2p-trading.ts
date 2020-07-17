@@ -20,6 +20,7 @@ import { AUGUR_IS_P2P, track } from 'services/analytics/helpers';
 import { createFundedGsnWallet } from 'modules/auth/actions/update-sdk';
 import { createBigNumber } from 'utils/create-big-number';
 import { formatDai } from 'utils/format-number';
+import { getGasPrice } from "modules/auth/selectors/get-gas-price";
 
 const DAI_HIGH_VALUE_AMOUNT = 40;
 const RESERVE_IN_ETH = 0.04;
@@ -55,6 +56,7 @@ const mapStateToProps = (state: AppState) => {
     highBalance: balances.dai > daiHighValueAmount,
     reserveInDai,
     daiHighValueAmount,
+    gasPrice: getGasPrice(state),
   };
 };
 
@@ -67,6 +69,7 @@ const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({
 });
 
 const mergeProps = (sP: any, dP: any, oP: any) => ({
+  gasPrice: sP.gasPrice,
   icon: null,
   largeHeader: 'Augur runs on a peer-to-peer network',
   showAccountStatus: true,
@@ -88,7 +91,7 @@ const mergeProps = (sP: any, dP: any, oP: any) => ({
         'This network requires transaction fees to operate which are paid in ETH. This goes entirely to the network and Augur doesn’t collect any of these fees.',
     },
     {
-      content: `Account activation is required before making your first transaction.There will be a small transaction fee to activate your account. ${
+      content: `Account activation is required before making your first transaction. There will be a transaction fee to activate your account. ${
         sP.highBalance
           ? `$${sP.reserveInDai.formattedValue} worth of ETH, from your total funds will be held in your Fee reserve to cover further transactions.`
           : `If your account balance exceeds $${sP.daiHighValueAmount}, a portion of this equivalent to 0.04ETH will be held in your Fee reserve to cover further transactions.`
