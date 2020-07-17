@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 
 import { DefaultButtonProps, ProcessingButton } from 'modules/common/buttons';
 import {
@@ -13,10 +13,13 @@ import AccountStatusTracker from 'modules/modal/containers/account-status-tracke
 import TransferMyTokens from 'modules/modal/containers/transfer-my-tokens';
 import { LinkContent } from 'modules/types';
 import classNames from 'classnames';
-import { ONBOARDING_MAX_STEPS, TRANSACTIONS, CREATEAUGURWALLET, DAI } from 'modules/common/constants';
+import { ONBOARDING_MAX_STEPS, TRANSACTIONS, CREATEAUGURWALLET, DAI, GWEI_CONVERSION } from 'modules/common/constants';
 import { LeftChevron } from 'modules/common/icons';
 
 import Styles from 'modules/modal/modal.styles.less';
+import { runPeriodicals_estimateGas } from 'modules/contracts/actions/contractCalls';
+import { createBigNumber } from 'utils/create-big-number';
+import { getGasInDai } from 'modules/app/actions/get-ethToDai-rate';
 
 interface OnboardingProps {
   closeAction: Function;
@@ -35,6 +38,7 @@ interface OnboardingProps {
   showActivationButton?: boolean;
   createFundedGsnWallet?: Function;
   showAugurP2PModal?: Function;
+  gasPrice: number;
 }
 
 export const Onboarding = ({
@@ -53,10 +57,18 @@ export const Onboarding = ({
   showAugurP2PModal,
   showActivationButton,
   createFundedGsnWallet,
+  gasPrice,
 }: OnboardingProps) => {
+  const [activationEstimate, setActivationEstimate] = useState('-');
+  async function getEstimateActivationWallet() {
+    const gas = await runPeriodicals_estimateGas();
+    const gasInDai = getGasInDai(Number(createBigNumber(gas)), gasPrice);
+    setActivationEstimate(gasInDai.formatted);
+  }
   useEffect(() => {
     analyticsEvent && analyticsEvent();
-  });
+    getEstimateActivationWallet();
+  }, []);
 
   const NavControls = (
     <>
@@ -77,6 +89,15 @@ export const Onboarding = ({
     </>
   );
 
+  // since all onboarding modals are treated the same, processing content to add lazy loaded gas estimation
+  const modLinkContent = linkContent && linkContent.map(lc => ({
+    link: lc.link,
+    content: lc.content.replace(
+      `be a transaction fee`,
+      `be a $${activationEstimate} fee`
+    ),
+  }));
+
   return (
     <div
       className={classNames(Styles.Onboarding, {
@@ -91,7 +112,7 @@ export const Onboarding = ({
           {largeHeader && <LargeSubheader text={largeHeader} />}
           {smallHeader && <SmallSubheader text={smallHeader} />}
           {mediumHeader && <MediumSubheader text={mediumHeader} />}
-          {linkContent && <LinkContentSection linkContent={linkContent} />}
+          {linkContent && <LinkContentSection linkContent={modLinkContent} />}
           {showTransferMyDai && <TransferMyTokens tokenName={DAI} callBack={() => showAugurP2PModal()}/>}
         </main>
 
