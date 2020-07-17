@@ -46,6 +46,29 @@
     }
   }
 
+  &.Error {
+    background: var(--color-error-20);
+    border-bottom: @size-2 solid var(--color-error);;
+    border-left: @size-4 solid var(--color-error);;
+    border-right: @size-2 solid var(--color-error);;
+    border-top: @size-2 solid var(--color-error);;
+
+    > span {
+      > svg {
+        fill: var(--color-error);;
+      }
+
+      > circle {
+        fill: var(--color-error);;
+        stroke: var(--color-error);;
+      }
+    }
+
+    > div > div {
+      color: var(--color-primary-text);
+    }
+  }
+
   > div > span:last-of-type {
     .mono-10-bold;
 
@@ -249,7 +272,7 @@ div.ReportingSubheaders {
 :root[theme="BETTING"],
 :root[theme="SPORTS"] {
   div.ReportingSubheaders {
-    
+
       > span {
         .text-12-medium;
 

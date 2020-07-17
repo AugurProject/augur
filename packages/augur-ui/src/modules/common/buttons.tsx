@@ -27,6 +27,7 @@ import {
   TwoArrowsOutline,
   XIcon,
   BackIcon,
+  ThickChevron,
   AlternateDaiLogoIcon,
   Chevron,
   ThickChevron,
@@ -723,25 +724,25 @@ export const CashoutButton = ({
   }
 
   return (
-    <> 
-      {pending ? 
-        <ProcessingButton 
+    <>
+      {pending ?
+        <ProcessingButton
           queueName={CASHOUT}
           queueId={queueId}
           cancelButton
         />
         :
-        <button 
+        <button
           onClick={() => {
             addPendingData(queueId, CASHOUT, TXEventName.Pending, '', {});
-            cashout().catch(err => 
+            cashout().catch(err =>
               addPendingData(queueId, CASHOUT, TXEventName.Failure, '', {})
             )
           }}
           className={classNames(Styles.CashoutButton, {
             [Styles.Won]: didWin && !loss,
             [Styles.Loss]: loss,
-          })} 
+          })}
           disabled={cashoutDisabled}
         >
           {cashoutText}

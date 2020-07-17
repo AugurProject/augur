@@ -3,7 +3,7 @@ import {
   BASKETBALL,
   CRYPTO,
   ETHEREUM,
-  FINANCE,
+  ECONOMICS,
   GOLF,
   INDEXES,
   MENS_LEAGUES,
@@ -383,7 +383,7 @@ export const templatedCannedMarkets = (): CannedMarket[] => {
     orderBook: yesNoOrderBook,
   });
 
-  const finTemplates = TEMPLATES[FINANCE].children[INDEXES]
+  const finTemplates = TEMPLATES[ECONOMICS].children[INDEXES]
     .templates as Template[];
   const finTemplate: Template = finTemplates[0];
   const wed = 3;
@@ -401,7 +401,7 @@ export const templatedCannedMarkets = (): CannedMarket[] => {
     affiliateFeeDivisor: 0,
     creatorFeeDecimal: '0.015',
     extraInfo: {
-      categories: [FINANCE, INDEXES, 'Dow Jones Industrial Average'],
+      categories: [ECONOMICS, INDEXES, 'Dow Jones Industrial Average'],
       description: fillInQuestion(finTemplate, finInputValues),
       longDescription: getLongDescription(finTemplate),
       template: {
@@ -938,7 +938,7 @@ export const templatedCannedBettingMarkets = (): CannedMarket[] => {
 };
 
 const badFinancialMarket = (): CannedMarket[] => {
-  const finTemplates = TEMPLATES[FINANCE].children[INDEXES]
+  const finTemplates = TEMPLATES[ECONOMICS].children[INDEXES]
     .templates as Template[];
   const finTemplate: Template = finTemplates[0];
   const wed = 3;
@@ -954,7 +954,7 @@ const badFinancialMarket = (): CannedMarket[] => {
       affiliateFeeDivisor: 0,
       creatorFeeDecimal: '0.015',
       extraInfo: {
-        categories: [FINANCE, INDEXES, 'Dow Jones Industrial Average'],
+        categories: [ECONOMICS, INDEXES, 'Dow Jones Industrial Average'],
         description: fillInQuestion(finTemplate, finInputValues),
         longDescription: getLongDescription(finTemplate),
         tags: [],

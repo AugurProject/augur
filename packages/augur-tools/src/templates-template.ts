@@ -501,8 +501,9 @@ function daysRequiredAfterMonthDate(
     .year(Number(yearInput.value))
     .add(1, 'M')
     .endOf('month')
+    .seconds(0)
     .unix();
-  if (newEndTime !== Number(endTime)) {
+  if (newEndTime > Number(endTime)) {
     return false;
   } else return true;
 }
@@ -752,7 +753,7 @@ export function getGroupHashInfo({
     ? inputs[group.groupLineId].value
     : undefined;
   const estTimestamp = group?.estInputId
-    ? inputs[group.estInputId].timestamp
+    ? inputs.find((i) => String(i.id) === String(group.estInputId))?.timestamp
     : undefined;
   const header = group.header
     ? populateTemplateTitle(group.header, inputs, true)

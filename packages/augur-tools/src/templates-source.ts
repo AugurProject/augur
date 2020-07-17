@@ -39,7 +39,7 @@ import {
   ETHEREUM,
   EURO_TOUR,
   EVENT,
-  FINANCE,
+  ECONOMICS,
   GENDER,
   GOLF,
   groupTypes,
@@ -1129,7 +1129,7 @@ export const TEMPLATES = {
                     type: TemplateInputType.DROPDOWN,
                     placeholder: `Year`,
                     validationType: ValidationType.YEAR_YEAR_RANGE,
-                    values: LIST_VALUES.YEARS,
+                    values: ['2022', '2024', '2026'],
                   },
                 ],
                 resolutionRules: {
@@ -1206,7 +1206,7 @@ export const TEMPLATES = {
                     placeholder: `Year`,
                     groupKey: YEAR,
                     validationType: ValidationType.YEAR_YEAR_RANGE,
-                    values: LIST_VALUES.YEARS,
+                    values: ['2022', '2024', '2026'],
                   },
                   {
                     id: 1,
@@ -1338,7 +1338,7 @@ export const TEMPLATES = {
                     type: TemplateInputType.DROPDOWN,
                     placeholder: `Year`,
                     validationType: ValidationType.YEAR_YEAR_RANGE,
-                    values: LIST_VALUES.YEARS,
+                    values: ['2021', '2023', '2025'],
                   },
                 ],
                 resolutionRules: {
@@ -1415,7 +1415,7 @@ export const TEMPLATES = {
                     placeholder: `Year`,
                     groupKey: YEAR,
                     validationType: ValidationType.YEAR_YEAR_RANGE,
-                    values: LIST_VALUES.YEARS,
+                    values: ['2021', '2023', '2025'],
                   },
                   {
                     id: 1,
@@ -1712,6 +1712,7 @@ export const TEMPLATES = {
             question: `NHL: Which team will win: [0] vs. [1]?`,
             example: `NHL: Which Team will win: NY Rangers vs. NJ Devils?\nEstimated schedule start time: Sept 19, 2019 8:20 pm EST`,
             header: `[0] vs. [1]`,
+            outcomes: ['[0]','[1]','No Contest'],
             groupName: groupTypes.COMBO_MONEY_LINE,
             inputs: [
               {
@@ -3721,6 +3722,7 @@ export const TEMPLATES = {
                 question: `NBA: Which team will win: [0] vs. [1]?`,
                 example: `NBA: Which Team will win: Brooklyn Nets vs. NY Knicks?\nEstimated schedule start time: Sept 19, 2019 8:20 pm EST`,
                 header: `[0] vs. [1]`,
+                outcomes: ['[0]','[1]','No Contest'],
                 groupName: groupTypes.COMBO_MONEY_LINE,
                 inputs: [
                   {
@@ -4499,6 +4501,7 @@ export const TEMPLATES = {
                 question: `WNBA: Which team will win: [0] vs. [1]?`,
                 example: `WNBA: Which Team will win: Phoenix Mercury vs. Seattle Storm?\nEstimated schedule start time: Sept 19, 2019 8:20 pm EST`,
                 header: `[0] vs. [1]`,
+                outcomes: ['[0]','[1]','No Contest'],
                 groupName: groupTypes.COMBO_MONEY_LINE,
                 inputs: [
                   {
@@ -5089,6 +5092,7 @@ export const TEMPLATES = {
                 question: `NCAA [0] BB: Which team will win: [1] vs. [2]?`,
                 example: `NCAA Men's BB: Which Team will win: Duke vs. Kentucky?\nEstimated schedule start time: Sept 19, 2019 8:20 pm EST`,
                 header: `[1] vs. [2]`,
+                outcomes: ['[1]','[2]','No Contest'],
                 groupName: groupTypes.COMBO_MONEY_LINE,
                 inputs: [
                   {
@@ -5459,6 +5463,7 @@ export const TEMPLATES = {
             question: `MLB: Which team will win: [0] vs. [1]?`,
             example: `MLB: Which Team will win: Yankees vs. Red Sox?\nEstimated schedule start time: Sept 19, 2019 8:20 pm EST`,
             header: `[0] vs. [1]`,
+            outcomes: ['[0]','[1]','No Contest'],
             groupName: groupTypes.COMBO_MONEY_LINE,
             inputs: [
               {
@@ -6801,6 +6806,7 @@ export const TEMPLATES = {
                 question: `[0]: Which NFL Team will win: [1] vs. [2]?`,
                 example: ` Week 1: Which NFL Team will win: NY Giants vs. New England Patriots?\nEstimated schedule start time: Sept 19, 2019 1:00 pm EST`,
                 header: `[1] vs. [2]`,
+                outcomes: ['[1]','[2]','No Contest'],
                 groupName: groupTypes.COMBO_MONEY_LINE,
                 inputs: [
                   {
@@ -6834,17 +6840,20 @@ export const TEMPLATES = {
                   {
                     id: 4,
                     type: TemplateInputType.ADDED_OUTCOME,
-                    placeholder: `Tie/No Contest`,
+                    placeholder: `No Contest`,
                   },
                 ],
                 resolutionRules: {
                   [REQUIRED]: [
                     { text: `Include Regulation and Overtime` },
                     {
-                      text: `At least 55 minutes of play must have elapsed for the game to be deemed official. If less than 55 minutes of play have been completed, there is no official winner of the game and the market should resolve as "Tie/No Contest"`,
+                      text: `At least 55 minutes of play must have elapsed for the game to be deemed official. If less than 55 minutes of play have been completed, there is no official winner of the game and the market should resolve as 'No Contest'`,
                     },
                     {
-                      text: `If the game is not played market should resolve as "Tie/No Contest"`,
+                      text: `If the game is not played market should resolve as 'No Contest'`,
+                    },
+                    {
+                      text: `If the game ends in a tie, the market should resolve as 'No Contest'`,
                     },
                   ],
                 },
@@ -7598,6 +7607,7 @@ export const TEMPLATES = {
                 question: `NCAA FB [0]: Which College Football Team will win: [1] vs. [2]?`,
                 example: `NCAA FB Week 1: Which College Football Team will win: Alabama vs. Michigan?\nEstimated schedule start time: Sept 19, 2019 1:00 pm EST`,
                 header: `[1] vs. [2]`,
+                outcomes: ['[1]','[2]','No Contest'],
                 groupName: groupTypes.COMBO_MONEY_LINE,
                 inputs: [
                   {
@@ -7803,7 +7813,7 @@ export const TEMPLATES = {
                     placeholder: `Year`,
                     groupKey: YEAR,
                     validationType: ValidationType.YEAR_YEAR_RANGE,
-                    values: LIST_VALUES.YEARS,
+                    values: LIST_VALUES.YEARS_21,
                   },
                   {
                     id: 1,
@@ -8599,7 +8609,7 @@ export const TEMPLATES = {
       },
     },
   },
-  [FINANCE]: {
+  [ECONOMICS]: {
     children: {
       [STATISTICS]: {
         templates: [

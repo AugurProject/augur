@@ -243,7 +243,6 @@ const processingPendingQueue = (
       [] as PendingItem[]
     )
     .forEach(async queueItem => {
-      console.log(queueItem.blockNumber, 'threshold', thresholdBlockNumber);
       const confirmations = queueItem.hash
         ? await transactionConfirmations(queueItem.hash)
         : undefined;

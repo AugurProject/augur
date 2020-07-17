@@ -30,7 +30,6 @@ import {
 } from 'modules/common/buttons';
 import {
   getGasInDai,
-  ethToDaiFromAttoRate,
 } from 'modules/app/actions/get-ethToDai-rate';
 import getPrecision from 'utils/get-number-precision';
 

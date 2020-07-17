@@ -43,7 +43,7 @@ import {
   EthReserveAutomaticTopOff,
 } from 'modules/common/labels';
 import { ExternalLinkButton, ProcessingButton } from 'modules/common/buttons';
-import { ethToDaiFromAttoRate } from 'modules/app/actions/get-ethToDai-rate';
+import { getGasInDai } from 'modules/app/actions/get-ethToDai-rate';
 import { TXEventName } from '@augurproject/sdk-lite';
 import { removePendingTransaction } from 'modules/pending-queue/actions/pending-queue-management';
 import { useAppStatusStore } from 'modules/app/store/app-status';
@@ -70,6 +70,7 @@ interface ConfirmProps {
   tradingTutorial?: boolean;
   initialLiquidity?: boolean;
   postOnlyOrder?: boolean;
+  allowPostOnlyOrder?: boolean,
 }
 
 export const Confirm = ({
@@ -97,6 +98,7 @@ export const Confirm = ({
   if (initialLiquidity) {
     availableDai = availableDai.minus(newMarket.initialLiquidityDai);
   }
+
   const sweepStatus = pendingQueue[TRANSACTIONS]?.[CREATEAUGURWALLET]?.status;
   const gasPrice = gasPriceInfo.userDefinedGasPrice || gasPriceInfo.average;
   const availableEth = createBigNumber(eth);
@@ -147,10 +149,10 @@ export const Confirm = ({
         )
       : ZERO;
 
-    let gasCostDai = 0;
+    let gasCostDai: number = 0;
 
     if (gsnEnabled) {
-      gasCostDai = ethToDaiFromAttoRate(gasCostInEth).value;
+      gasCostDai = getGasInDai(Number(createBigNumber(gasLimit))).fullPrecision;
     }
 
     if (marketType === SCALAR && selectedOutcomeId === INVALID_OUTCOME_ID) {
@@ -294,10 +296,7 @@ export const Confirm = ({
     }
 
     if (
-      !isNaN(numTrades) &&
-      numTrades > 0 &&
-      postOnlyOrder &&
-      !tradingTutorial
+      !allowPostOnlyOrder && !tradingTutorial
     ) {
       messages = {
         header: 'POST ONLY ORDER',
@@ -336,9 +335,9 @@ export const Confirm = ({
       )
     : ZERO;
 
-  if (gsnEnabled) {
-    gasCostDai = ethToDaiFromAttoRate(gasCostInEth);
-  }
+    if (gsnEnabled) {
+      gasCostDai = getGasInDai(Number(createBigNumber(gasLimit)));
+    }
 
   const limitPricePercentage = (side === BUY
     ? createBigNumber(limitPrice)
@@ -347,6 +346,7 @@ export const Confirm = ({
     .dividedBy(marketRange)
     .times(100)
     .toFixed(0);
+
 
   let tooltip = `You believe ${outcomeName} has a ${greaterLess}
                       than ${limitPricePercentage}% chance to occur.`;

@@ -2993,6 +2993,11 @@
     npmlog "^4.1.2"
     write-file-atomic "^2.3.0"
 
+"@metamask/detect-provider@1.1.0":
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/@metamask/detect-provider/-/detect-provider-1.1.0.tgz#3200883de5d739bd0f7edfd1c9bb2bd01011ea49"
+  integrity sha512-7klN00NjDWPNUG4m5chX7LwUgnQ/L1r1m2+5VNx4zJsbD7oXsqQtkFyGwXe3msYUIvuRFeyH2kK94zeNEidxpw==
+
 "@mrmlnc/readdir-enhanced@^2.2.1":
   version "2.2.1"
   resolved "https://registry.yarnpkg.com/@mrmlnc/readdir-enhanced/-/readdir-enhanced-2.2.1.tgz#524af240d1a360527b730475ecfa1344aa540dde"

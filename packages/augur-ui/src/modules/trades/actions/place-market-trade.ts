@@ -32,6 +32,7 @@ export const placeMarketTrade = async ({
   outcomeId,
   tradeInProgress,
   doNotCreateOrders,
+  postOnly,
 }: any) => {
   if (!marketId) return null;
   const { marketInfos } = Markets.get();
@@ -113,7 +114,8 @@ export const placeMarketTrade = async ({
     displayPrice,
     userShares,
     expirationTime,
-    tradeGroupId
+    tradeGroupId,
+    postOnly,
   )
     .then(result => {
       if (tradeInProgress.numFills === 0) {

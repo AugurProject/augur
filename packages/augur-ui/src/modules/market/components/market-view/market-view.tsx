@@ -169,12 +169,12 @@ const MarketView = ({
     if (!tradingTutorial && !isPreview) {
       orderBook = (orderBooks[marketId] || {}).orderBook;
     }
-  
+
     daysPassed =
       market &&
       market.creationTime &&
       getMarketAgeInDays(market.creationTime, currentAugurTimestamp);
-    
+
     modalShowing = modal.type;
     preview = tradingTutorial || isPreview;
     sortedOutcomes = selectSortedMarketOutcomes(
@@ -228,7 +228,7 @@ const MarketView = ({
     selectedOutcomeId === null || selectedOutcomeId === undefined
       ? market && market.defaultSelectedOutcomeId
       : selectedOutcomeId;
-  
+
   const prevProps = useRef();
 
   useEffect(() => {
@@ -758,6 +758,7 @@ const MarketView = ({
                       selectedOrderProperties={selectedOrderProperties}
                       selectedOutcomeId={outcomeIdSet}
                       updateSelectedOutcome={updateSelectedOutcome}
+                      orderBook={outcomeOrderBook}
                       updateSelectedOrderProperties={
                         updateSelectedOrderProperties
                       }

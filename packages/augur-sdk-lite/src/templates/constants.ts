@@ -24,7 +24,7 @@ export const CHOICE = 'CHOICE';
 // Market templates
 export const SPORTS = 'Sports';
 export const POLITICS = 'Politics';
-export const FINANCE = 'Finance';
+export const ECONOMICS = 'Economics';
 export const ENTERTAINMENT = 'Entertainment';
 export const CRYPTO = 'Crypto';
 export const MEDICAL = 'Medical';

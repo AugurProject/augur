@@ -1,5 +1,4 @@
-import { MarketData } from '@augurproject/sdk-lite';
-import { Order, OrderState } from '@augurproject/sdk-lite/build';
+import { MarketData, ZeroXOrder, ZeroXOrders, OrderState, ignoreCrossedOrders } from '@augurproject/sdk-lite';
 import { BigNumber } from 'bignumber.js';
 import Dexie from 'dexie';
 import { getAddress } from 'ethers/utils/address';
@@ -16,33 +15,6 @@ import { StoredOrder } from '../db/ZeroXOrders';
 import { getMarkets} from './OnChainTrading';
 import { Getter } from './Router';
 
-export interface ZeroXOrder extends Order {
-  expirationTimeSeconds: number;
-  makerAssetAmount: string;
-  takerAssetAmount: string;
-  salt: string;
-  makerAssetData: string;
-  takerAssetData: string;
-  signature: string;
-  makerFeeAssetData: string;
-  takerFeeAssetData: string;
-  feeRecipientAddress: string;
-  takerAddress: string;
-  makerAddress: string;
-  senderAddress: string;
-  makerFee: string;
-  takerFee: string;
-}
-
-export interface ZeroXOrders {
-  [marketId: string]: {
-    [outcome: number]: {
-      [orderType: string]: {
-        [orderId: string]: ZeroXOrder;
-      };
-    };
-  };
-}
 
 export const ZeroXOrdersParams = t.partial({
   marketId: t.string,
@@ -53,6 +25,7 @@ export const ZeroXOrdersParams = t.partial({
   matchPrice: t.string,
   ignoreOrders: t.array(t.string),
   expirationCutoffSeconds: t.number,
+  ignoreCrossOrders: t.boolean,
 });
 
 export const ZeroXOrderParams = t.type({
@@ -89,13 +62,14 @@ export class ZeroXOrdersGetters {
         "'getOrders' requires 'marketId' or 'account' param be provided"
       );
     }
-
+    const ignoreCrossOrders = params.ignoreCrossOrders
     const outcome = params.outcome ? `0x0${params.outcome.toString()}` : null;
     const orderType = params.orderType ? `0x0${params.orderType}` : null;
     const account = params.account ? getAddress(params.account) : null;
+    const accountOnly = account && !ignoreCrossOrders;
 
     let storedOrders: StoredOrder[];
-    if (!params.marketId && account) {
+    if (!params.marketId && accountOnly) {
       storedOrders = await db.ZeroXOrders.where({
         orderCreator: account,
       }).toArray();
@@ -106,13 +80,13 @@ export class ZeroXOrdersGetters {
           [params.marketId, Dexie.maxKey, Dexie.maxKey]
         )
         .and(order => {
-          return !account || order.orderCreator === account;
+          return !accountOnly || order.orderCreator === account;
         })
         .toArray();
     } else {
       storedOrders = await db.ZeroXOrders.where('[market+outcome+orderType]')
         .equals([params.marketId, outcome, orderType])
-        .and(order => !account || order.orderCreator === account)
+        .and(order => !accountOnly || order.orderCreator === account)
         .toArray();
     }
 
@@ -135,22 +109,22 @@ export class ZeroXOrdersGetters {
       []
     );
     const markets = await getMarkets(marketIds, db, false);
-
-    return ZeroXOrdersGetters.mapStoredToZeroXOrders(
+    const book = ZeroXOrdersGetters.mapStoredToZeroXOrders(
       markets,
       storedOrders,
       params.ignoreOrders || [],
       typeof params.expirationCutoffSeconds === 'number'
         ? params.expirationCutoffSeconds
-        : 0
+        : 0,
     );
+    return ignoreCrossOrders ? ignoreCrossedOrders(book, account) : book;
   }
 
   static mapStoredToZeroXOrders(
     markets: _.Dictionary<MarketData>,
     storedOrders: StoredOrder[],
     ignoredOrderIds: string[],
-    expirationCutoffSeconds: number
+    expirationCutoffSeconds: number,
   ): ZeroXOrders {
     let orders = storedOrders.map(storedOrder => {
       return {
@@ -293,3 +267,4 @@ export function collapseZeroXOrders(orders): ZeroXOrder[] {
   });
   return collapsed;
 }
+
