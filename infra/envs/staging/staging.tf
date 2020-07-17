@@ -1,6 +1,4 @@
-# v2.tf
-
-# demo.tf
+# staging.tf
 
 provider "aws" {
   region = var.region
