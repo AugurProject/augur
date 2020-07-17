@@ -93,7 +93,14 @@ export class EthersProvider extends ethers.providers.BaseProvider
       ) => {
         const _this = this;
         retry(
-          { times, interval },
+          { times,
+            interval: function(retryCount) {
+              return interval * Math.pow(2, retryCount);
+            },
+            errorFilter: function(err) {
+              return err.message.includes("Rate limit") || err.message.includes("429");
+            }
+          },
           async () => {
             let result: Promise<any>;
             const itemString = JSON.stringify(item);
