@@ -38,7 +38,6 @@ export class MarketInvalidBids {
           SubscriptionEventName.MarketInvalidBids,
           marketInvalidBidsUpdated
         );
-        console.log(marketInvalidBidsUpdated);
       }
     });
   }
