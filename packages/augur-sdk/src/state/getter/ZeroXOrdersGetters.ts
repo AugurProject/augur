@@ -124,32 +124,6 @@ export class ZeroXOrdersGetters {
     return ignoreCrossOrders ? ignoreCrossedOrders(book, account) : book;
   }
 
-  @Getter('GetMarketInvalidBestBidParams')
-  static async getMarketInvalidBids(
-    augur: Augur,
-    db: DB,
-    params: t.TypeOf<typeof ZeroXOrdersGetters.GetMarketInvalidBestBidParams>
-  ): Promise<ZeroXOrders> {
-    if (!params.marketId) {
-      throw new Error(
-        "'getMarketInvalidBids' requires 'marketId'"
-      );
-    }
-
-    const markets = await getMarkets([params.marketId], db, false);
-    const storedOrders = await db.ZeroXOrders.where('[market+outcome+orderType]')
-      .equals([params.marketId, `0x00`, `0x00`])
-      .toArray();
-    if (storedOrders.length === 0) return { [params.marketId]: { 0: { }}};
-    const book = ZeroXOrdersGetters.mapStoredToZeroXOrders(
-      markets,
-      storedOrders,
-      [],
-      0,
-    );
-    return book;
-  }
-
   static mapStoredToZeroXOrders(
     markets: _.Dictionary<MarketData>,
     storedOrders: StoredOrder[],
