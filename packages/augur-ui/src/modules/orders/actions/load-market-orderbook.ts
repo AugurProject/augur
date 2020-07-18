@@ -5,6 +5,7 @@ import { Action } from 'redux';
 import { ThunkDispatch } from 'redux-thunk';
 import { augurSdk } from 'services/augursdk';
 import logError from 'utils/log-error';
+import { BIDS } from 'modules/common/constants';
 
 export const UPDATE_ORDER_BOOK = 'UPDATE_ORDER_BOOK';
 export const CLEAR_ORDER_BOOK = 'CLEAR_ORDER_BOOK';
@@ -57,3 +58,13 @@ export const loadMarketOrderBook = (
   dispatch(updateOrderBook(marketId, marketOrderBook));
   callback(null, marketOrderBook);
 };
+
+export const getBestInvalidBid = (marketId, orderBooks) => {
+  const marketOrderbook = orderBooks[marketId];
+  if (!marketOrderbook || !marketOrderbook.orderBook) return null;
+  const invalidOutcome = marketOrderbook.orderBook[0];
+  if (!invalidOutcome) return null;
+  const bids = invalidOutcome[BIDS];
+  if (!bids || bids.length === 0) return null;
+  return bids[0].price
+}

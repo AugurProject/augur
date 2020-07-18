@@ -468,7 +468,6 @@ export const handleBulkOrdersLog = (data: { logs: ParsedOrderEventLog[] }) => (
 export const handleMarketInvalidBidsLog = ({ data }: MarketOrderBook) => (
   dispatch: ThunkDispatch<void, any, Action>
 ) => {
-  console.log(data);
   if (data && data.length > 0) {
     data.map(book => {
       const { marketId, orderBook } = book;
