@@ -32,9 +32,13 @@ export const ZeroXOrderParams = t.type({
   orderHash: t.string,
 });
 
+export const MarketInvalidBestBidParams = t.type({
+  marketId: t.string,
+})
 export class ZeroXOrdersGetters {
   static GetZeroXOrdersParams = ZeroXOrdersParams;
   static GetZeroXOrderParams = ZeroXOrderParams;
+  static GetMarketInvalidBestBidParams = MarketInvalidBestBidParams;
 
   @Getter('GetZeroXOrderParams')
   static async getZeroXOrder(
@@ -63,8 +67,8 @@ export class ZeroXOrdersGetters {
       );
     }
     const ignoreCrossOrders = params.ignoreCrossOrders
-    const outcome = params.outcome ? `0x0${params.outcome.toString()}` : null;
-    const orderType = params.orderType ? `0x0${params.orderType}` : null;
+    const outcome = params.outcome !== undefined ? `0x0${params.outcome.toString()}` : null;
+    const orderType = params.orderType !== undefined ? `0x0${params.orderType}` : null;
     const account = params.account ? getAddress(params.account) : null;
     const accountOnly = account && !ignoreCrossOrders;
 
@@ -118,6 +122,32 @@ export class ZeroXOrdersGetters {
         : 0,
     );
     return ignoreCrossOrders ? ignoreCrossedOrders(book, account) : book;
+  }
+
+  @Getter('GetMarketInvalidBestBidParams')
+  static async getMarketInvalidBids(
+    augur: Augur,
+    db: DB,
+    params: t.TypeOf<typeof ZeroXOrdersGetters.GetMarketInvalidBestBidParams>
+  ): Promise<ZeroXOrders> {
+    if (!params.marketId) {
+      throw new Error(
+        "'getMarketInvalidBids' requires 'marketId'"
+      );
+    }
+
+    const markets = await getMarkets([params.marketId], db, false);
+    const storedOrders = await db.ZeroXOrders.where('[market+outcome+orderType]')
+      .equals([params.marketId, `0x00`, `0x00`])
+      .toArray();
+    if (storedOrders.length === 0) return { [params.marketId]: { 0: { }}};
+    const book = ZeroXOrdersGetters.mapStoredToZeroXOrders(
+      markets,
+      storedOrders,
+      [],
+      0,
+    );
+    return book;
   }
 
   static mapStoredToZeroXOrders(
