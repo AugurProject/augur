@@ -14,11 +14,11 @@ export class MarketInvalidBids {
 
     this.augur.events.on(
       SubscriptionEventName.BulkOrderEvent,
-      (orderEvents) => this.determineBestInvalidBidForMarket(orderEvents)
+      (orderEvents) => this.getMarketInvalidBids(orderEvents)
     );
   }
 
-  determineBestInvalidBidForMarket(orders: { logs: ParsedOrderEventLog[] }) {
+  getMarketInvalidBids(orders: { logs: ParsedOrderEventLog[] }) {
     const onlyInvalidBids = orders.logs.filter(
       (o) => String(o.orderType) === OrderTypeHex.Bid && o.outcome === `0x00`
     );
