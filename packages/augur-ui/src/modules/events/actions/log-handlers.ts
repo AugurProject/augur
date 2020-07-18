@@ -22,6 +22,7 @@ import {
   TXEventName,
   TXStatus,
   UniverseForkedLog,
+  MarketOrderBook,
 } from '@augurproject/sdk-lite';
 import { logger } from '@augurproject/utils';
 import { AppState } from 'appStore';
@@ -463,6 +464,10 @@ export const handleBulkOrdersLog = (data: { logs: ParsedOrderEventLog[] }) => (
     dispatch(checkUpdateUserPositions(unqMarketIds));
   }
 };
+
+export const handleMarketInvalidBidsLog = (data: MarketOrderBook) => {
+  console.log(data);
+}
 
 export const handleLiquidityPoolUpdatedLog = (data: Logs.LiquidityPoolUpdated) => {
   console.log(data);

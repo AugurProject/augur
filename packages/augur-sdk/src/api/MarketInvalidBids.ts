@@ -26,9 +26,9 @@ export class MarketInvalidBids {
     const marketIds = Array.from(new Set(markets));
     Promise.all(
       _.map(marketIds, async (marketId) => {
-        return await this.augur.getZeroXOrders({
+        return await this.augur.getMarketOrderBook({
           marketId,
-          outcome: 0,
+          outcomeId: 0,
           orderType: '0',
         });
       })

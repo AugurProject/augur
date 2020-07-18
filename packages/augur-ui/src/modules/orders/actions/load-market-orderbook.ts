@@ -8,6 +8,7 @@ import logError from 'utils/log-error';
 
 export const UPDATE_ORDER_BOOK = 'UPDATE_ORDER_BOOK';
 export const CLEAR_ORDER_BOOK = 'CLEAR_ORDER_BOOK';
+export const UPDATE_INVALID_BIDS = 'UPDATE_INVALID_BIDS';
 
 export const updateOrderBook = (
   marketId: string,
@@ -19,6 +20,17 @@ export const updateOrderBook = (
     orderBook,
   },
 });
+
+export const updateMarketInvalidBids = (
+  marketId: string,
+  orderBook: Getters.Markets.MarketOrderBook
+) => ({
+  type: UPDATE_INVALID_BIDS,
+  data: {
+    marketId,
+    orderBook,
+  },
+})
 
 export const clearOrderBook = () => ({
   type: CLEAR_ORDER_BOOK,
