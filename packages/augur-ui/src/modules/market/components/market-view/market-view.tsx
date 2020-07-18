@@ -93,7 +93,6 @@ interface MarketViewProps {
   account: string;
   orderBook?: Getters.Markets.OutcomeOrderBook | OutcomeTestTradingOrder;
   loadMarketOrderBook: Function;
-  clearOrderBook: Function;
   zeroXstatus: string;
   hasZeroXError: boolean;
   marketNotFound: boolean;
@@ -297,11 +296,6 @@ export default class MarketView extends Component<
     if (marketNotFound !== prevProps.marketNotFound && marketNotFound) {
       showMarketNotFound(history);
     }
-  }
-
-  componentWillUnmount() {
-    const { clearOrderBook } = this.props;
-    if (clearOrderBook) this.props.clearOrderBook();
   }
 
   tradingTutorialWidthCheck() {

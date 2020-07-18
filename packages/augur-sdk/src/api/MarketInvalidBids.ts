@@ -36,7 +36,7 @@ export class MarketInvalidBids {
       if (_.keys(marketInvalidBidsUpdated).length > 0) {
         this.augur.events.emit(
           SubscriptionEventName.MarketInvalidBids,
-          marketInvalidBidsUpdated
+          { data: marketInvalidBidsUpdated }
         );
       }
     });
