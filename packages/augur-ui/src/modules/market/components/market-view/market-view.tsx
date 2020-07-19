@@ -551,7 +551,7 @@ export default class MarketView extends Component<
           avgPrice: formatDai(TUTORIAL_PRICE),
           outcomeName: TRADING_TUTORIAL_OUTCOMES[outcomeId].description,
           unmatchedShares: formatShares(TUTORIAL_QUANTITY),
-          tokensEscrowed: formatShares(0),
+          tokensEscrowed: formatDai(TUTORIAL_PRICE * TUTORIAL_QUANTITY),
           sharesEscrowed: formatShares(0),
           creationTime: 0,
         },
