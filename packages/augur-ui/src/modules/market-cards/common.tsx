@@ -1,6 +1,7 @@
 import type { Getters } from '@augurproject/sdk';
 import { MarketReportingState } from '@augurproject/sdk-lite';
 import classNames from 'classnames';
+import { connect } from 'react-redux';
 import { ProcessingButton } from 'modules/common/buttons';
 import {
   INVALID_OUTCOME_ID,
@@ -33,8 +34,10 @@ import {
 import React, { Fragment } from 'react';
 import ReactTooltip from 'react-tooltip';
 import { BigNumber, createBigNumber } from 'utils/create-big-number';
-import { formatAttoRep, formatDai, formatNumber } from 'utils/format-number';
+import { formatAttoRep, formatDai, formatNumber, formatNone } from 'utils/format-number';
 import { getOutcomeNameWithOutcome } from 'utils/get-outcome';
+import { AppState } from 'appStore';
+import { getBestInvalidBid } from 'modules/orders/actions/load-market-orderbook';
 
 export interface PercentProps {
   percent: number;
@@ -58,7 +61,7 @@ export interface OutcomeProps {
   outcomeId: string;
 }
 
-export const Outcome = (props: OutcomeProps) => {
+export const OutcomeCmp = (props: OutcomeProps) => {
   const percent = props.lastPricePercent
     ? calculatePosition(props.min, props.max, props.lastPricePercent)
     : 0;
@@ -92,6 +95,28 @@ export const Outcome = (props: OutcomeProps) => {
     </MarketLink>
   );
 };
+
+const mapStateToPropsOutcome = (state: AppState, ownProps) => {
+  let lastPricePercent = ownProps.lastPricePercent;
+  if (ownProps.invalid) {
+    const price = getBestInvalidBid(ownProps.marketId, state.orderBooks);
+    lastPricePercent = price ? formatNumber(price, {
+        decimals: 2,
+        decimalsRounded: 1,
+        positiveSign: false,
+        zeroStyled: true,
+      })
+      : formatNone();
+  }
+  return {
+    ...ownProps,
+    lastPricePercent,
+  }
+};
+
+export const Outcome = connect(
+  mapStateToPropsOutcome
+)(OutcomeCmp);
 
 export interface DisputeOutcomeProps {
   description: string;
