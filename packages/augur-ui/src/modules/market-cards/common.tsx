@@ -34,7 +34,7 @@ import {
 import React, { Fragment } from 'react';
 import ReactTooltip from 'react-tooltip';
 import { BigNumber, createBigNumber } from 'utils/create-big-number';
-import { formatAttoRep, formatDai, formatNumber, formatNone } from 'utils/format-number';
+import { formatAttoRep, formatDai, formatNumber } from 'utils/format-number';
 import { getOutcomeNameWithOutcome } from 'utils/get-outcome';
 import { AppState } from 'appStore';
 import { getBestInvalidBid } from 'modules/orders/actions/load-market-orderbook';
@@ -64,7 +64,7 @@ export interface OutcomeProps {
 export const OutcomeCmp = (props: OutcomeProps) => {
   const percent = props.lastPricePercent
     ? calculatePosition(props.min, props.max, props.lastPricePercent)
-    : 0;
+    : '-';
   return (
     <MarketLink id={props.marketId} outcomeId={props.outcomeId.toString()}>
       <div
@@ -82,15 +82,15 @@ export const OutcomeCmp = (props: OutcomeProps) => {
           ) : (
             <span>{props.description}</span>
           )}
-          <span className={classNames({ [Styles.Zero]: percent === 0,
+          <span className={classNames({ [Styles.Zero]: percent === '-',
           [Styles.InvalidPrice]: props.invalid
             && percent >= INVALID_ALERT_PERCENTAGE.toNumber()})}>
-            {percent === 0
-              ? `0.00${props.isScalar ? '' : '%'}`
+            {(percent === '-')
+              ? `${percent} ${props.isScalar ? '' : '%'}`
               : `${formatDai(percent).formatted}%`}
           </span>
         </div>
-        <Percent percent={percent} />
+        <Percent percent={props.lastPricePercent ? percent : 0} />
       </div>
     </MarketLink>
   );
@@ -101,12 +101,12 @@ const mapStateToPropsOutcome = (state: AppState, ownProps) => {
   if (ownProps.invalid) {
     const price = getBestInvalidBid(ownProps.marketId, state.orderBooks);
     lastPricePercent = price ? formatNumber(price, {
-        decimals: 2,
-        decimalsRounded: 1,
-        positiveSign: false,
-        zeroStyled: true,
-      })
-      : formatNone();
+      decimals: 2,
+      decimalsRounded: 1,
+      positiveSign: false,
+      zeroStyled: true,
+    })
+  : null;
   }
   return {
     ...ownProps,
