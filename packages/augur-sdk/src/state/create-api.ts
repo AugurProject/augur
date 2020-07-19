@@ -103,7 +103,7 @@ export async function createClient(
   if (provider) {
     ethersProvider = provider
   } else if (config.ethereum?.http) {
-    ethersProvider = new EthersProvider( new JsonRpcProvider(config.ethereum.http), 10, 0, 40);
+    ethersProvider = new EthersProvider( new JsonRpcProvider(config.ethereum.http), 5, 50, 10);
   } else {
     throw Error('No ethereum http endpoint provided');
   }

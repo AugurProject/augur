@@ -7,10 +7,6 @@ import {
 import { Augur } from '../Augur';
 import { BigNumber } from 'bignumber.js';
 import * as _ from 'lodash';
-import {
-  MarketLiquidityPool,
-  LiquidityPool,
-} from '../state/getter/LiquidityPool';
 
 export interface LiquidityPoolUpdated {
   [liquidityPoolId: string]: {

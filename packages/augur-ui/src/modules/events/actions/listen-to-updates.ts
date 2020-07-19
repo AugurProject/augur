@@ -19,6 +19,7 @@ import {
   handleZeroStatusUpdated,
   handleBulkOrdersLog,
   handleLiquidityPoolUpdatedLog,
+  handleMarketInvalidBidsLog,
 } from 'modules/events/actions/log-handlers';
 import { wrapLogHandler } from 'modules/events/actions/wrap-log-handler';
 import { Action } from 'redux';
@@ -45,6 +46,7 @@ const START_UP_EVENTS = {
     () => handleZeroStatusUpdated(ZEROX_STATUSES.SYNCED)
   ),
   [SubscriptionEventName.BulkOrderEvent]: wrapLogHandler(handleBulkOrdersLog),
+  [SubscriptionEventName.MarketInvalidBids]: wrapLogHandler(handleMarketInvalidBidsLog),
   [SubscriptionEventName.LiquidityPoolUpdated]: wrapLogHandler(handleLiquidityPoolUpdatedLog),
 };
 

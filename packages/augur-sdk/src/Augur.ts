@@ -63,6 +63,7 @@ import { Users } from './state/getter/Users';
 import { WarpSyncGetter } from './state/getter/WarpSyncGetter';
 import { ZeroXOrdersGetters } from './state/getter/ZeroXOrdersGetters';
 import { WarpController } from './warp/WarpController';
+import { MarketInvalidBids } from './api/MarketInvalidBids';
 
 export class Augur<TProvider extends Provider = Provider> {
   syncableFlexSearch: SyncableFlexSearch;
@@ -80,6 +81,7 @@ export class Augur<TProvider extends Provider = Provider> {
   readonly liquidity: Liquidity;
   readonly hotLoading: HotLoading;
   readonly bestOffer: BestOffer;
+  readonly marketInvalidBids: MarketInvalidBids;
   readonly events: EventEmitter;
 
   private _sdkReady = false;
@@ -160,6 +162,9 @@ export class Augur<TProvider extends Provider = Provider> {
 
     if (this.config.ui?.trackBestOffer) {
       this.bestOffer = new BestOffer(this);
+    }
+    if (this.config.ui?.trackMarketInvalidBids) {
+      this.marketInvalidBids = new MarketInvalidBids(this);
     }
     if (enableFlexSearch && !this.syncableFlexSearch) {
       this.syncableFlexSearch = new SyncableFlexSearch();
