@@ -145,6 +145,7 @@ export enum SubscriptionEventName {
   WarpSyncHashUpdated = 'WarpSyncHashUpdated',
   LiquidityPoolUpdated = 'LiquidityPoolUpdated',
   DBUpdatedZeroXOrders = 'DB:updated:ZeroXOrders',
+  MarketInvalidBids = 'MarketInvalidBids',
 }
 
 export const NETWORK_IDS = {

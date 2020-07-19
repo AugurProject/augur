@@ -114,6 +114,7 @@ export class Markets {
       outcomeId: t.union([outcomeIdType, t.array(outcomeIdType)]),
       account: t.string,
       onChain: t.boolean, // if false or not present, use 0x orderbook
+      orderType: t.string,
       expirationCutoffSeconds: t.number,
       ignoreCrossOrders: t.boolean,
     }),
@@ -661,6 +662,8 @@ export class Markets {
         orderState: OrderState.OPEN,
         expirationCutoffSeconds: params.expirationCutoffSeconds,
         ignoreCrossOrders: params.ignoreCrossOrders,
+        orderType: params.orderType,
+        outcome: params.outcomeId as 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7,
         account: params.account,
       });
     }
