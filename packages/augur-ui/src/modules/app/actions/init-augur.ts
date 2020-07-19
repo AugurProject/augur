@@ -239,12 +239,10 @@ export function connectAugur(
     }
 
     let useWeb3 = false;
-    if (windowRef.ethereum || windowRef.web3) {
+    const we3Provider = await detectEthereumProvider();
+    if (we3Provider) {
       try {
-        const provider = await detectEthereumProvider();
-        if (provider) {
-          useWeb3 = await isNetworkMismatch(config, dispatch);
-        }
+        useWeb3 = await isNetworkMismatch(config, dispatch);
       } catch(e) {
         console.error('Error with web3 provider, moving on');
       }
