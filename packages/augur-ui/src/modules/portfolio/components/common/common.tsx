@@ -12,12 +12,17 @@ import { convertUnixToFormattedDate } from 'utils/format-date';
 import { MyBetsRow } from 'modules/common/table-rows';
 
 import Styles from 'modules/portfolio/components/common/common.styles.less';
-import { FUTURES, TABLET_MAX } from 'modules/common/constants';
+import { FUTURES, TABLET_MAX, ZERO } from 'modules/common/constants';
 import Media from 'react-media';
-import { CashoutButton } from 'modules/common/buttons';
+import { CashoutButton, PrimaryButton } from 'modules/common/buttons';
 import MarketLink from 'modules/market/components/market-link/market-link';
 import { convertToOdds } from 'utils/get-odds';
-import { formatNumber } from 'utils/format-number';
+import { formatDai } from 'utils/format-number';
+import { useBetslipStore } from 'modules/trading/store/betslip';
+import { useAppStatusStore } from 'modules/app/store/app-status';
+import { createBigNumber } from 'utils/create-big-number';
+import { startClaimingMarketsProceeds } from 'modules/positions/actions/claim-markets-proceeds';
+import { FilterNotice } from 'modules/common/filter-notice';
 
 export const BetsHeader = () => (
   <ul className={Styles.BetsHeader}>
@@ -28,6 +33,59 @@ export const BetsHeader = () => (
     <li>Bet date</li>
   </ul>
 );
+
+export const ClaimWinnings = () => {
+  const { matched } = useBetslipStore();
+  const {
+    accountPositions: positions,
+    loginAccount: { address: account },
+  } = useAppStatusStore();
+
+  let totalProceeds = ZERO;
+  let claimableMarkets = [];
+
+  Object.keys(matched.items).map(marketId => {
+    let marketIsClaimable = false;
+    const market = matched.items[marketId];
+    market.orders.map(bet => {
+      if (positions[bet.marketId]) {
+        const marketPosition = positions[bet.marketId];
+        const unclaimedProceeds = createBigNumber(
+          marketPosition.tradingPositionsPerMarket.unclaimedProceeds
+        );
+        if (unclaimedProceeds.gt(ZERO)) {
+          totalProceeds = totalProceeds.plus(unclaimedProceeds);
+          marketIsClaimable = true;
+        }
+      }
+    });
+    if (marketIsClaimable) claimableMarkets.push(marketId);
+  });
+
+  if (totalProceeds.lte(ZERO)) return <div />;
+
+  return (
+    <FilterNotice
+      showDismissButton={false}
+      show
+      color="active"
+      content={
+        <div className={Styles.ClaimWinnings}>
+          <span>
+            You have <b>{formatDai(totalProceeds).full}</b> in winnings to
+            claim.
+          </span>
+          <PrimaryButton
+            text="Claim Bets"
+            action={() =>
+              startClaimingMarketsProceeds(claimableMarkets, account, () => {})
+            }
+          />
+        </div>
+      }
+    />
+  );
+};
 
 export interface GameProps {
   row: Object;
@@ -42,13 +100,15 @@ export const Game = ({ row, type }: GameProps) => (
         disputeInfo={null}
       />
       <CategoryTagTrail categories={getCategoriesWithClick(row.categories)} />
-      {row.startTime ? 
+      {row.startTime ? (
         <CountdownProgress
           alignRight
           label="Estimated Event Start Time"
           value={row.startTime}
         />
-      : <span/>}
+      ) : (
+        <span />
+      )}
       <MarketLink id={row.id}>
         <span>{row.description}</span>
       </MarketLink>

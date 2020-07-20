@@ -26,9 +26,8 @@ import {
   SPORTS_GROUP_TYPES,
 } from 'modules/common/constants';
 import { MARKETS } from 'modules/routes/constants/views';
-import { FilterNotice } from 'modules/common/filter-notice';
 import { EmptyMagnifyingGlass } from 'modules/common/icons';
-import { Game, Outcomes } from '../common/common';
+import { Game, Outcomes, ClaimWinnings } from '../common/common';
 import { useMyBetsStore } from 'modules/portfolio/store/my-bets';
 import { FilterSearchPure } from 'modules/filter-sort/filter-search';
 import { AppStatus } from 'modules/app/store/app-status';
@@ -193,19 +192,7 @@ export const MyBets = () => {
             label="go to trading"
           />
         </div>
-        <FilterNotice
-          showDismissButton={false}
-          show
-          color="active"
-          content={
-            <div className={Styles.ClaimWinnings}>
-              <span>
-                You have <b>$200.00</b> in winnings to claim.
-              </span>
-              <PrimaryButton text="Claim Bets" action={null} />
-            </div>
-          }
-        />
+        <ClaimWinnings />
         <div>
           <span>
             View by
