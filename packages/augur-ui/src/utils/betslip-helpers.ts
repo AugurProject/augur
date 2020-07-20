@@ -57,7 +57,6 @@ export const placeBet = async (marketId, order, orderId) => {
     .then(() => {
       Betslip.actions.updateMatched(marketId, orderId, {
         ...order,
-        dateUpdated: formatDate(Date.now()).timestamp,
         status: FILLED,
       });
     })

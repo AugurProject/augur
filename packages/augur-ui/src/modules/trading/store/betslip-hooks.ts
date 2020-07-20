@@ -229,8 +229,9 @@ export function BetslipReducer(state, action) {
       const { marketId, orderId, updates } = action;
       matchedItems[marketId].orders[orderId] = {
         ...matchedItems[marketId].orders[orderId],
-        dateUpdated: updatedTime,
         ...updates,
+        dateUpdated: updatedTime,
+        timestampUpdated: Date.now() / 1000,
       };
       break;
     }
@@ -315,8 +316,8 @@ export const useBetslip = (defaultState = MOCK_BETSLIP_STATE) => {
         dispatch({ type: SEND_BET, marketId, orderId, description, order }),
       modifyBet: (marketId, orderId, order) =>
         dispatch({ type: MODIFY_BET, marketId, orderId, order }),
-      cancelBet: (marketId, order) =>
-        dispatch({ type: CANCEL_BET, marketId, order }),
+      cancelBet: (marketId, orderId) =>
+        dispatch({ type: CANCEL_BET, marketId, orderId }),
       sendAllBets: () => dispatch({ type: SEND_ALL_BETS }),
       cancelAllBets: () => dispatch({ type: CANCEL_ALL_BETS }),
       retry: (marketId, orderId) =>

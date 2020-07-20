@@ -166,15 +166,16 @@ export const SportsMyBet = ({
     amountFilled,
     toWin,
     dateUpdated,
+    timestampUpdated
   } = bet;
   const [isRecentUpdate, setIsRecentUpdate] = useState(true);
   useEffect(() => {
     setIsRecentUpdate(true);
-  }, [dateUpdated]);
+  }, [timestampUpdated]);
 
   useEffect(() => {
     const currentTime = new Date().getTime() / 1000;
-    const seconds = Math.round(currentTime - dateUpdated.timestamp);
+    const seconds = Math.round(currentTime - timestampUpdated);
     const milliSeconds = seconds * 1000;
     if (isRecentUpdate && status === BET_STATUS.FILLED && seconds < 20) {
       setTimeout(() => {

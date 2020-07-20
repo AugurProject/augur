@@ -691,7 +691,7 @@ export const CashoutButton = ({
         cashoutText = `Cashout ${formatDai(claimable).full}`;
         cashoutDisabled = false;
         cashout = () => startClaimingMarketsProceeds([bet.marketId], account, () => {});
-      } else if (market.reportingState !== REPORTING_STATE.AWAITING_FINALIZATION && market.reportingState !== REPORTING_STATE.FINALIZED) {
+      } else if (market?.reportingState !== REPORTING_STATE.AWAITING_FINALIZATION && market?.reportingState !== REPORTING_STATE.FINALIZED) {
         cashoutText = `Cashout ${formatDai(bet.unrealizedCost).full}`;
         cashoutDisabled = false;
 
