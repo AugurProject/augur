@@ -11,6 +11,7 @@ import {
   FILLED,
   REPORTING_STATE,
   CASHOUT,
+  MODAL_CASHOUT_BET,
 } from 'modules/common/constants';
 import {
   StarIcon,
@@ -34,7 +35,7 @@ import {
 } from 'modules/common/icons';
 import { useAppStatusStore, AppStatus } from 'modules/app/store/app-status';
 import classNames from 'classnames';
-import { getNetworkId, placeTrade } from 'modules/contracts/actions/contractCalls';
+import { getNetworkId, placeTrade, claimMarketsProceeds } from 'modules/contracts/actions/contractCalls';
 import Styles from 'modules/common/buttons.styles.less';
 import { MARKET_TEMPLATES } from 'modules/create-market/constants';
 import type { Getters } from '@augurproject/sdk';
@@ -673,7 +674,7 @@ export const CashoutButton = ({
       accountPositions: positions,
       loginAccount: { address: account },
       pendingQueue,
-      actions: { addPendingData }
+      actions: { addPendingData, updateModal }
   } = useAppStatusStore();
   const queueId = `${bet.marketId}_${bet.orderId}`;
   const pending = pendingQueue[CASHOUT] && pendingQueue[CASHOUT][queueId];
@@ -690,31 +691,50 @@ export const CashoutButton = ({
         );
         cashoutText = `Cashout ${formatDai(claimable).full}`;
         cashoutDisabled = false;
-        cashout = () => startClaimingMarketsProceeds([bet.marketId], account, () => {});
+        cashout = () => {
+          addPendingData(queueId, CASHOUT, TXEventName.Pending, '', {}, null);
+          (async () => 
+            await claimMarketsProceeds(
+              [bet.marketId], 
+              account
+            ).catch(error =>
+              addPendingData(queueId, CASHOUT, TXEventName.Failure, '', {}, null)
+              )
+          )();
+        }
       } else if (market?.reportingState !== REPORTING_STATE.AWAITING_FINALIZATION && market?.reportingState !== REPORTING_STATE.FINALIZED) {
         cashoutText = `Cashout ${formatDai(bet.unrealizedCost).full}`;
         cashoutDisabled = false;
-
-        cashout = () => (
-          async () =>
-            await placeTrade(
-              0,
-              bet.marketId,
-              market.numOutcomes,
-              bet.outcomeId,
-              false,
-              market.numTicks,
-              market.minPrice,
-              market.maxPrice,
-              bet.wager,
-              bet.price,
-              0,
-              '0',
-              undefined
-            )
-        )();
+    
+        cashout = () => {
+          updateModal({
+            type: MODAL_CASHOUT_BET, 
+            stake: bet.wager, 
+            cashOut: bet.unrealizedCost,
+            profit: '0',
+            cb: () => {
+              addPendingData(queueId, CASHOUT, TXEventName.Pending, '', {});
+              (async () =>
+                await placeTrade(
+                  0,
+                  bet.marketId,
+                  market.numOutcomes,
+                  bet.outcomeId,
+                  false,
+                  market.numTicks,
+                  market.minPrice,
+                  market.maxPrice,
+                  bet.wager,
+                  bet.price,
+                  0,
+                  '0',
+                  undefined
+                ).catch(error => addPendingData(queueId, CASHOUT, TXEventName.Failure, '', {}))
+            )();
+          }});
       }
-  }
+    }
+  } 
   if (!won.eq(ZERO)) {
     didWin = true;
     if (won.lt(ZERO)) {
@@ -732,13 +752,8 @@ export const CashoutButton = ({
           cancelButton
         />
         :
-        <button
-          onClick={() => {
-            addPendingData(queueId, CASHOUT, TXEventName.Pending, '', {});
-            cashout().catch(err =>
-              addPendingData(queueId, CASHOUT, TXEventName.Failure, '', {})
-            )
-          }}
+        <button 
+          onClick={() => cashout()}
           className={classNames(Styles.CashoutButton, {
             [Styles.Won]: didWin && !loss,
             [Styles.Loss]: loss,

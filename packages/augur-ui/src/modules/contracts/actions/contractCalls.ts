@@ -1076,7 +1076,7 @@ export async function claimMarketsProceeds(
   fingerprint: string = formatBytes32String('11'),
 ) {
   const augur = augurSdk.get();
-  augur.contracts.augurTrading.claimMarketsProceeds(
+  return augur.contracts.augurTrading.claimMarketsProceeds(
     markets,
     shareHolder,
     fingerprint

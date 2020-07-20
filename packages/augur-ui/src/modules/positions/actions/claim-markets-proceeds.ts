@@ -19,6 +19,7 @@ export const startClaimingMarketsProceeds = (
   if (!account || !marketIds || !marketIds.length)
     return callback(null);
 
+
   let i = 0;
   const groups = [];
   for (i; i < marketIds.length; i += MAX_BULK_CLAIM_MARKETS_PROCEEDS_COUNT) {
@@ -30,6 +31,7 @@ export const startClaimingMarketsProceeds = (
     groups.map(group => claimMarketsProceeds(group, account));
   } catch (e) {
     console.error(e);
+    return e;
   }
 };
 
