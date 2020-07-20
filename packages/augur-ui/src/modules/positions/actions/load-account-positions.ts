@@ -10,6 +10,7 @@ import { Markets } from 'modules/markets/store/markets';
 import { Betslip } from 'modules/trading/store/betslip';
 import { createBigNumber } from 'utils/create-big-number';
 import { convertPositionToBet } from 'utils/betslip-helpers';
+import { ZERO } from 'modules/common/constants';
 
 export const checkUpdateUserPositions = (marketIds: string[]) => {
   const { accountPositions, loginAccount: { address } } = AppStatus.get();
@@ -118,7 +119,7 @@ export const userPositionProcessing = (
     AppStatus.actions.updateAccountPositions(positionData);
 
     Object.values(positionData.positionData[marketId].tradingPositions).map(position => {
-      if (marketInfo?.sportsBook && createBigNumber(position.netPosition).gte('0')) {
+      if (marketInfo?.sportsBook && createBigNumber(position.netPosition).gte(ZERO)) {
         Betslip.actions.addMatched(false, marketId, marketInfo.description, convertPositionToBet(position, marketInfo));
         }      
       });

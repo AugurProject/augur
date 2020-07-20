@@ -6,6 +6,7 @@ import { Markets } from 'modules/markets/store/markets';
 import { placeTrade } from 'modules/contracts/actions/contractCalls';
 import { Betslip } from 'modules/trading/store/betslip';
 import { createBigNumber } from './create-big-number';
+import { formatDate } from './format-date';
 
 export const convertToWin = (price, quantity) => {
   return ONE.minus(createBigNumber(price)).times(createBigNumber(quantity)).toString();
@@ -56,6 +57,7 @@ export const placeBet = async (marketId, order, orderId) => {
     .then(() => {
       Betslip.actions.updateMatched(marketId, orderId, {
         ...order,
+        dateUpdated: formatDate(Date.now()).timestamp,
         status: FILLED,
       });
     })

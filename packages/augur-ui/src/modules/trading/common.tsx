@@ -25,7 +25,7 @@ import { formatDai } from 'utils/format-number';
 
 import Styles from 'modules/trading/common.styles';
 import { convertToOdds } from 'utils/get-odds';
-import { formatDate } from 'utils/format-date';
+import { convertUnixToFormattedDate } from 'utils/format-date';
 
 export interface EmptyStateProps {
   selectedTab: number;
@@ -172,8 +172,21 @@ export const SportsMyBet = ({
     setIsRecentUpdate(true);
   }, [dateUpdated]);
 
+  useEffect(() => {
+    const currentTime = new Date().getTime() / 1000;
+    const seconds = Math.round(currentTime - dateUpdated.timestamp);
+    const milliSeconds = seconds * 1000;
+    if (isRecentUpdate && status === BET_STATUS.FILLED && seconds < 20) {
+      setTimeout(() => {
+        setIsRecentUpdate(false);
+      }, 20000 - milliSeconds);
+    } else {
+      setIsRecentUpdate(false);
+    }
+  }, [isRecentUpdate]);
+
   const { PENDING, FILLED, PARTIALLY_FILLED, FAILED } = BET_STATUS;
-  let icon = Trash;
+  let icon = null;
   let classToApply = Styles.NEWFILL;
   let message = null;
   let messageAction = null;
@@ -197,6 +210,7 @@ export const SportsMyBet = ({
       classToApply = Styles.PENDING;
       break;
     case FAILED:
+      icon = Trash;
       classToApply = Styles.FAILED;
       iconAction = () => trash();
       message = `Order failed when processing. `;
@@ -227,7 +241,7 @@ export const SportsMyBet = ({
       <LinearPropertyLabel label="to win" value={formatDai(toWin)} useFull />
       <LinearPropertyLabel
         label="Date"
-        value={formatDate(dateUpdated).formattedUtc}
+        value={convertUnixToFormattedDate(dateUpdated).formattedUtc}
       />
       {!!message && (
         <span>
@@ -235,8 +249,12 @@ export const SportsMyBet = ({
           {!!messageAction && messageAction}
         </span>
       )}
-      <ExternalLinkButton URL={null} label="view tx" />
-      <CashoutButton bet={bet}/>
+      {status !== PENDING && status !== FAILED &&
+        <>
+          <ExternalLinkButton URL={null} label="view tx" />
+          <CashoutButton bet={bet}/>
+        </>
+      }
     </div>
   );
 };

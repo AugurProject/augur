@@ -229,8 +229,8 @@ export function BetslipReducer(state, action) {
       const { marketId, orderId, updates } = action;
       matchedItems[marketId].orders[orderId] = {
         ...matchedItems[marketId].orders[orderId],
-        ...updates,
         dateUpdated: updatedTime,
+        ...updates,
       };
       break;
     }

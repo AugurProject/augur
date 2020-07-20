@@ -26,6 +26,7 @@ import {
   formatGasCostToEther,
   formatAttoEth,
   formatDai,
+  formatNumber,
 } from 'utils/format-number';
 import { DISMISSABLE_NOTICE_BUTTON_TYPES } from 'modules/reporting/common';
 import { FormattedNumber } from 'modules/types';
@@ -601,6 +602,54 @@ export const ModalInitializeAccounts = () => {
               },
             ]
       }
+    />
+  );
+};
+
+export const ModalCashoutBet = () => {
+  const {
+    modal,
+    actions: { closeModal },
+  } = useAppStatusStore();
+
+  return (
+    <Message
+      title={'Are you sure you want to cash out?'}
+      description={'If the odds or orderbook change during submission, the amount may be rejected. '}
+      closeAction={() => {
+        closeModal();
+      }}
+      breakdown={[
+        {
+          label: 'Stake',
+          value: formatNumber(modal.stake).full,
+        },
+        {
+          label: 'Cash out',
+          value: formatDai(modal.cashOut).full,
+        },
+        {
+          label: 'Profit',
+          value: formatDai(modal.profit).full,
+        },
+      ]}
+      buttons={[
+        {
+          text: 'Cancel',
+          action: () => {
+            closeModal();
+          },
+        },
+        {
+          text: 'Confirm',
+          action: () => {
+            if (modal.cb) {
+              modal.cb();
+            }
+            closeModal();
+          },
+        },
+      ]}
     />
   );
 };
