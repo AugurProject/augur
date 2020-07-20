@@ -16,7 +16,7 @@ import type { SDKConfiguration } from '@augurproject/utils';
 import { logger, LoggerLevels, NetworkId } from '@augurproject/utils';
 import axios from 'axios';
 import { BigNumber } from 'bignumber.js';
-import { TransactionResponse, JsonRpcProvider } from 'ethers/providers';
+import { JsonRpcProvider, TransactionResponse } from 'ethers/providers';
 import { Arrayish } from 'ethers/utils';
 import { getAddress } from 'ethers/utils/address';
 import { EventEmitter } from 'events';
@@ -510,6 +510,12 @@ export class Augur<TProvider extends Provider = Provider> {
     typeof WarpSyncGetter.getMostRecentWarpSync
   > => {
     return this.bindTo(WarpSyncGetter.getMostRecentWarpSync)(undefined);
+  };
+
+  getWarpSyncStatus = (): ReturnType<
+    typeof WarpSyncGetter.getWarpSyncStatus
+  > => {
+    return this.bindTo(WarpSyncGetter.getWarpSyncStatus)(undefined);
   };
 
   getPayoutFromWarpSyncHash = (hash: string): Promise<BigNumber[]> => {

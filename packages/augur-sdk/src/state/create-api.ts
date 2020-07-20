@@ -225,7 +225,6 @@ export async function startServerFromClient(config: SDKConfiguration, client?: A
 export async function startServer(config: SDKConfiguration): Promise<API> {
   const { api, sync } = await createServer(config, undefined);
 
-  // TODO should this await?
   sync();
 
   return api;
