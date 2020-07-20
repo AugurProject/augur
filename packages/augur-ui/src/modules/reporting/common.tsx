@@ -116,6 +116,7 @@ export const DismissableNotice = ({
   className,
   show: showProp,
   queueName,
+  error,
   queueId,
 }: DismissableNoticeProps) => {
   const [show, setShow] = useState(showProp);
@@ -123,8 +124,8 @@ export const DismissableNotice = ({
   return (
     <>
       {show ? (
-        <div className={classNames(Styles.DismissableNotice, props.className, {
-            [Styles.Error]: props.error,
+        <div className={classNames(Styles.DismissableNotice, className, {
+            [Styles.Error]: error,
          })}>
           <span>{InformationIcon}</span>
           <div>
