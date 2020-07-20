@@ -91,6 +91,7 @@ import { useMarketsStore } from 'modules/markets/store/markets';
 import { hasStakeInMarket } from 'modules/account/helpers/common';
 import { CountdownProgress } from 'modules/common/progress';
 import { isMarketView } from 'modules/market/components/market-view/betting-market-view';
+import { BETSLIP_SELECTED } from 'modules/trading/store/constants';
 
 export interface PercentProps {
   percent: number;
@@ -471,10 +472,16 @@ export const SportsOutcome = ({
   market,
 }: SportsOutcomeProps) => {
   const { liquidityPools } = useMarketsStore();
-  const { addBet } = Betslip.actions;
+  const { addBet, toggleHeader } = Betslip.actions;
   const poolId = market?.sportsBook?.liquidityPool;
-  const bestAsk =
-    poolId && liquidityPools[poolId] && liquidityPools[poolId][outcomeId];
+  let bestAsk = null;
+  if (poolId) {
+    Object.values(liquidityPools).map(pool => {
+      if (pool[poolId] && pool[poolId][outcomeId]) {
+        bestAsk = pool[poolId][outcomeId];
+      }
+    })
+  }
   let topLabel = null;
   let disabled = true;
   let label = '-';
@@ -502,7 +509,8 @@ export const SportsOutcome = ({
     topLabel = determineTopLabel(market.sportsBook, outcomeId, outcomeLabel);
     label = OddToUse.full;
     disabled = false;
-    action = () =>
+    action = () => {
+      toggleHeader(BETSLIP_SELECTED.BETSLIP);
       addBet(
         market.id,
         market.description,
@@ -512,6 +520,7 @@ export const SportsOutcome = ({
         outcomeId,
         price
       );
+    }
   }
   return (
     <div className={Styles.SportsOutcome}>

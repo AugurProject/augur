@@ -158,43 +158,20 @@ export const SportsMyBet = ({
 }) => {
   const {
     outcome,
-    odds,
+    normalizedPrice,
     wager,
     retry,
-    cashOut,
-    update,
     trash,
     status,
     amountFilled,
     toWin,
     dateUpdated,
-    orderId
   } = bet;
   const [isRecentUpdate, setIsRecentUpdate] = useState(true);
   useEffect(() => {
     setIsRecentUpdate(true);
   }, [dateUpdated]);
 
-  useEffect(() => {
-    const currentTime = new Date().getTime() / 1000;
-    const seconds = Math.round(currentTime - dateUpdated.timestamp);
-    const milliSeconds = seconds * 1000;
-    if (isRecentUpdate && status === BET_STATUS.FILLED && seconds < 20) {
-      setTimeout(() => {
-        setIsRecentUpdate(false);
-      }, 20000 - milliSeconds);
-    } else {
-      setIsRecentUpdate(false);
-    }
-  }, [isRecentUpdate]);
-
-  useEffect(() => {
-    if (status === BET_STATUS.PENDING) {
-      setTimeout(() => {
-        update({ status: BET_STATUS.FILLED });
-      }, 20000);
-    }
-  });
   const { PENDING, FILLED, PARTIALLY_FILLED, FAILED } = BET_STATUS;
   let icon = Trash;
   let classToApply = Styles.NEWFILL;
@@ -234,7 +211,7 @@ export const SportsMyBet = ({
     >
       <header>
         <span>{outcome}</span>
-        <span>{odds}</span>
+        <span>{convertToOdds(normalizedPrice).full}</span>
         <button
           className={classNames(classToApply)}
           onClick={() => iconAction()}
