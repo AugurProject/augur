@@ -33,7 +33,7 @@
 
       > div {
         align-items: flex-end;
-        background: var(--color-primary-text-80);
+        background: var(--color-primary-text);
         display: flex;
         flex-flow: column;
         height: 100%;
@@ -148,6 +148,18 @@
         }
       }
     }
+
+    @media @breakpoint-tablet {
+      background: transparent; 
+
+      > div {
+        background: var(--color-primary-text-80);
+
+        > button {
+          background: var(--color-primary-text);
+        }
+      }
+    }
   }
 
   .Container {
@@ -166,6 +178,13 @@
       max-width: unset;
       min-width: unset;
     }
+
+    @media @breakpoint-tablet {
+      height: 100%;
+      border-radius: 0;
+      border: 0;
+      border-left: @size-1 solid var(--color-primary-text);
+    }
   }
 
   .MainSection {
@@ -173,6 +192,10 @@
     border-bottom-left-radius: @border-radius-rounded;
     border-bottom-right-radius: @border-radius-rounded;
     min-height: @size-350;
+
+    @media @breakpoint-tablet {
+      height: 100%;
+    }
   }
 
   .BetslipEmpty {
@@ -238,6 +261,10 @@
           margin-top: @size-8;
         }
       }
+    }
+
+    @media @breakpoint-tablet {
+      justify-content: flex-start;
     }
   }
 
