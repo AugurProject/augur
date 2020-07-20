@@ -33,6 +33,7 @@ import { useAppStatusStore } from 'modules/app/store/app-status';
 import { track, MODAL_VIEWED } from 'services/analytics/helpers';
 import { ModalAccountCreated } from 'modules/modal/onboarding-modals';
 import { ModalCreateMarket, ModalDaiFaucet, ModalCreationHelp, ModalFinalize, ModalDiscard, ModalDrQuickGuide, ModalHelp, ModalRepFaucet, ModalSignTransaction, ModalMarketLoading, ModalOdds, ModalInvalidMarketRules, ModalNetworkMismatch, ModalNetworkDisabled, ModalMigrateMarket, ModalWalletError, ModalInitializeAccounts, ReportingOnly } from '../message-modals';
+import { HardwareWallet } from 'modules/modal/hardware-wallet';
 
 const ESCAPE_KEYCODE = 27;
 
@@ -62,6 +63,8 @@ function selectModal(type, props, closeModal, modal) {
           <ModalAddFunds autoSelect />
         </>
       );
+    case TYPES.MODAL_HARDWARE_WALLET:
+      return <HardwareWallet />
     case TYPES.MODAL_DAI_FAUCET:
       return <ModalDaiFaucet />;
     case TYPES.MODAL_CREATION_HELP:

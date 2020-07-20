@@ -434,8 +434,9 @@ const Wrapper = ({
             });
             clearOrderForm();
           } else if (tradingTutorial) {
-            tutorialNext();
-            clearOrderForm();
+            setTimeout(() => {
+              tutorialNext();
+            });
           } else {
             if (disclaimerSeen) {
               if (noGSN) {
@@ -571,7 +572,7 @@ const Wrapper = ({
           postOnlyOrder={state.postOnlyOrder}
           initialLiquidity={initialLiquidity}
           tradingTutorial={tradingTutorial}
-          allowPostOnlyOrder={allowPostOnlyOrder}
+          allowPostOnlyOrder={state.allowPostOnlyOrder}
         />
       )}
       <div>{actionButton}</div>
