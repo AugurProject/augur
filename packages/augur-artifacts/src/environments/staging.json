@@ -141,6 +141,7 @@
     "averageBlocktime": 2000,
     "liteProvider": "jsonrpc",
     "trackBestOffer": false,
+    "trackMarketInvalidBids": true,
     "reportingOnly": false,
     "fallbackProvider": "torus"
   },

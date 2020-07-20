@@ -32,9 +32,13 @@ export const ZeroXOrderParams = t.type({
   orderHash: t.string,
 });
 
+export const MarketInvalidBestBidParams = t.type({
+  marketId: t.string,
+})
 export class ZeroXOrdersGetters {
   static GetZeroXOrdersParams = ZeroXOrdersParams;
   static GetZeroXOrderParams = ZeroXOrderParams;
+  static GetMarketInvalidBestBidParams = MarketInvalidBestBidParams;
 
   @Getter('GetZeroXOrderParams')
   static async getZeroXOrder(
@@ -63,8 +67,8 @@ export class ZeroXOrdersGetters {
       );
     }
     const ignoreCrossOrders = params.ignoreCrossOrders
-    const outcome = params.outcome ? `0x0${params.outcome.toString()}` : null;
-    const orderType = params.orderType ? `0x0${params.orderType}` : null;
+    const outcome = params.outcome !== undefined ? `0x0${params.outcome.toString()}` : null;
+    const orderType = params.orderType !== undefined ? `0x0${params.orderType}` : null;
     const account = params.account ? getAddress(params.account) : null;
     const accountOnly = account && !ignoreCrossOrders;
 

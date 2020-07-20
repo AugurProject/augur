@@ -30,7 +30,6 @@ import {
 import { closeModal } from 'modules/modal/actions/close-modal';
 import { updateModal } from 'modules/modal/actions/update-modal';
 import {
-  clearOrderBook,
   loadMarketOrderBook,
 } from 'modules/orders/actions/load-market-orderbook';
 import {
@@ -162,7 +161,6 @@ const mapDispatchToProps = (dispatch, ownProps) => ({
   hotloadMarket: marketId => hotloadMarket(marketId),
   loadMarketsInfo: marketId => dispatch(loadMarketsInfo([marketId])),
   loadMarketOrderBook: marketId => dispatch(loadMarketOrderBook(marketId)),
-  clearOrderBook: () => dispatch(clearOrderBook()),
   updateModal: modal => dispatch(updateModal(modal)),
   loadMarketTradingHistory: marketId =>
     dispatch(loadMarketTradingHistory(marketId)),

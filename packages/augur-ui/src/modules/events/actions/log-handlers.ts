@@ -22,6 +22,7 @@ import {
   TXEventName,
   TXStatus,
   UniverseForkedLog,
+  MarketOrderBook,
 } from '@augurproject/sdk-lite';
 import { logger } from '@augurproject/utils';
 import { AppState } from 'appStore';
@@ -75,7 +76,7 @@ import {
 } from 'modules/markets/actions/update-markets-data';
 import { updateModal } from 'modules/modal/actions/update-modal';
 import { loadAccountOpenOrders } from 'modules/orders/actions/load-account-open-orders';
-import { loadMarketOrderBook } from 'modules/orders/actions/load-market-orderbook';
+import { loadMarketOrderBook, updateMarketInvalidBids } from 'modules/orders/actions/load-market-orderbook';
 import {
   constructPendingOrderid,
   removePendingOrder,
@@ -461,6 +462,19 @@ export const handleBulkOrdersLog = (data: { logs: ParsedOrderEventLog[] }) => (
       }
     });
     dispatch(checkUpdateUserPositions(unqMarketIds));
+  }
+};
+
+export const handleMarketInvalidBidsLog = ({ data }: MarketOrderBook) => (
+  dispatch: ThunkDispatch<void, any, Action>
+) => {
+  if (data && data.length > 0) {
+    data.map(book => {
+      const { marketId, orderBook } = book;
+      if (!isCurrentMarket(marketId)) {
+        dispatch(updateMarketInvalidBids(marketId, orderBook));
+      }
+    });
   }
 };
 
