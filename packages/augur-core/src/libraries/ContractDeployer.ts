@@ -88,9 +88,10 @@ Deploying to: ${env}
 
     async deploy(env: string): Promise<ContractAddresses> {
         const blockNumber = await this.getBlockNumber();
+        const walletFactoryAddress = await this.uploadAugurWalletFactory();
         this.augur = await this.uploadAugur();
         this.augurTrading = await this.uploadAugurTrading();
-        await this.uploadAugurWalletFactory();
+        this.registerContract("AugurWalletFactory", walletFactoryAddress);
         await this.uploadAllContracts();
 
         const externalAddresses = this.configuration.deploy.externalAddresses;
@@ -178,6 +179,7 @@ Deploying to: ${env}
         await this.doTradingApprovals();
 
         if (!this.configuration.deploy.normalTime) {
+            console.log('Resetting time controlled');
             await this.resetTimeControlled();
         }
 
@@ -186,6 +188,7 @@ Deploying to: ${env}
             await this.initializeLegacyRep();
         }
 
+        console.log('Creating genesis universe');
         this.universe = await this.createGenesisUniverse();
 
         if (!externalAddresses.LegacyReputationToken) {
@@ -347,10 +350,11 @@ Deploying to: ${env}
         return contract.address;
     };
 
-    private async uploadAugurWalletFactory(): Promise<void> {
+    private async uploadAugurWalletFactory(): Promise<string> {
         console.log('Uploading Augur Wallet Factory...');
         const contract = await this.contracts.get('AugurWalletFactory');
-        contract.address = await this.uploadAndAddToAugur(contract, "AugurWalletFactory");
+        contract.address = await this.construct(contract, []);
+        return contract.address;
     }
 
     private async uploadAugur(): Promise<Augur> {
@@ -550,12 +554,16 @@ Deploying to: ${env}
             }
         }
         const address = await this.construct(contract, constructorArgs);
+        await this.registerContract(registrationContractName, address);
+        return address;
+    }
+
+    private async registerContract(registrationContractName: string, address: string): Promise<void> {
         if (TRADING_CONTRACTS.includes(registrationContractName)) {
             await this.augurTrading!.registerContract(stringTo32ByteHex(registrationContractName), address);
         } else {
             await this.augur!.registerContract(stringTo32ByteHex(registrationContractName), address);
         }
-        return address;
     }
 
     private async construct(contract: ContractData, constructorArgs: string[]): Promise<string> {
@@ -574,107 +582,137 @@ Deploying to: ${env}
             async () => {
                 const contract = new ShareToken(this.dependencies, await this.getContractAddress('ShareToken'));
                 if (await contract.getInitialized_()) {
-                    return true;
+                    return;
                 }
-                return contract.initialize(this.augur!.address);
+                console.log('Initializing ShareToken contract');
+                await contract.initialize(this.augur!.address);
+                console.log('Initialized ShareToken contract');
             },
             async () => {
                 const contract = new CreateOrder(this.dependencies, await this.getContractAddress('CreateOrder'));
                 if (await contract.getInitialized_()) {
-                    return true;
+                    return;
                 }
-                return contract.initialize(this.augur!.address, this.augurTrading!.address);
+                console.log('Initializing CreateOrder contract');
+                await contract.initialize(this.augur!.address, this.augurTrading!.address);
+                console.log('Initialized CreateOrder contract');
             },
             async () => {
                 const contract = new FillOrder(this.dependencies, await this.getContractAddress('FillOrder'));
                 if (await contract.getInitialized_()) {
-                    return true;
+                    return;
                 }
-                return contract.initialize(this.augur!.address, this.augurTrading!.address);
+                console.log('Initializing FillOrder contract');
+                await contract.initialize(this.augur!.address, this.augurTrading!.address);
+                console.log('Initialized FillOrder contract');
             },
             async () => {
                 const contract = new CancelOrder(this.dependencies, await this.getContractAddress('CancelOrder'));
                 if (await contract.getInitialized_()) {
-                    return true;
+                    return;
                 }
-                return contract.initialize(this.augur!.address, this.augurTrading!.address);
+                console.log('Initializing CancelOrder contract');
+                await contract.initialize(this.augur!.address, this.augurTrading!.address);
+                console.log('Initialized CancelOrder contract');
             },
             async () => {
                 const contract = new Trade(this.dependencies, await this.getContractAddress('Trade'));
                 if (await contract.getInitialized_()) {
-                    return true;
+                    return;
                 }
-                return contract.initialize(this.augur!.address, this.augurTrading!.address);
+                console.log('Initializing Trade contract');
+                await contract.initialize(this.augur!.address, this.augurTrading!.address);
+                console.log('Initialized Trade contract');
             },
             async () => {
                 const contract = new Orders(this.dependencies, await this.getContractAddress('Orders'));
                 if (await contract.getInitialized_()) {
-                    return true;
+                    return;
                 }
-                return contract.initialize(this.augur!.address, this.augurTrading!.address);
+                console.log('Initializing Orders contract');
+                await contract.initialize(this.augur!.address, this.augurTrading!.address);
+                console.log('Initialized Orders contract');
             },
             async () => {
                 const contract = new ProfitLoss(this.dependencies, await this.getContractAddress('ProfitLoss'));
                 if (await contract.getInitialized_()) {
-                    return true;
+                    return;
                 }
-                return contract.initialize(this.augur!.address, this.augurTrading!.address);
+                console.log('Initializing ProfitLoss contract');
+                await contract.initialize(this.augur!.address, this.augurTrading!.address);
+                console.log('Initialized ProfitLoss contract');
             },
             async () => {
                 const contract = new SimulateTrade(this.dependencies, await this.getContractAddress('SimulateTrade'));
                 if (await contract.getInitialized_()) {
-                    return true;
+                    return;
                 }
-                return contract.initialize(this.augur!.address, this.augurTrading!.address);
+                console.log('Initializing SimulateTrade contract');
+                await contract.initialize(this.augur!.address, this.augurTrading!.address);
+                console.log('Initialized SimulateTrade contract');
             },
             async () => {
                 const contract = new ZeroXTrade(this.dependencies, await this.getContractAddress('ZeroXTrade'));
                 if (await contract.getInitialized_()) {
-                    return true;
+                    return;
                 }
-                return contract.initialize(this.augur!.address, this.augurTrading!.address);
+                console.log('Initializing ZeroXTrade contract');
+                await contract.initialize(this.augur!.address, this.augurTrading!.address);
+                console.log('Initialized ZeroXTrade contract');
             },
             async () => {
                 const contract = new WarpSync(this.dependencies, await this.getContractAddress('WarpSync'));
                 if (await contract.getInitialized_()) {
-                    return true;
+                    return;
                 }
-                return contract.initialize(this.augur!.address);
+                console.log('Initializing WarpSync contract');
+                await contract.initialize(this.augur!.address);
+                console.log('Initialized WarpSync contract');
             },
             async () => {
                 const contract = new RepOracle(this.dependencies, await this.getContractAddress('RepOracle'));
                 if (await contract.getInitialized_()) {
-                    return true;
+                    return;
                 }
-                return contract.initialize(this.augur!.address);
+                console.log('Initializing RepOracle contract');
+                await contract.initialize(this.augur!.address);
+                console.log('Initialized RepOracle contract');
             },
             async () => {
                 const contract = new AuditFunds(this.dependencies, await this.getContractAddress('AuditFunds'));
                 if (await contract.getInitialized_()) {
-                    return true;
+                    return;
                 }
-                return contract.initialize(this.augur!.address);
+                console.log('Initializing AuditFunds contract');
+                await contract.initialize(this.augur!.address);
+                console.log('Initialized AuditFunds contract');
             },
             async () => {
                 const contract = new AugurWalletRegistry(this.dependencies, await this.getContractAddress('AugurWalletRegistry'));
                 if (await contract.getInitialized_()) {
-                    return true;
+                    return;
                 }
-                return contract.initialize(this.augur!.address, this.augurTrading!.address, { attachedEth:  new BigNumber(2.5e17) });
+                console.log('Initializing AugurWalletRegistry contract');
+                await contract.initialize(this.augur!.address, this.augurTrading!.address, { attachedEth:  new BigNumber(2.5e17) });
+                console.log('Initialized AugurWalletRegistry contract');
             },
             async () => {
                 const contract = new AugurWalletRegistryV2(this.dependencies, await this.getContractAddress('AugurWalletRegistryV2'));
                 if (await contract.getInitialized_()) {
-                    return true;
+                    return;
                 }
-                return contract.initialize(this.augur!.address, this.augurTrading!.address, { attachedEth:  new BigNumber(2.5e17) });
+                console.log('Initializing AugurWalletRegistryV2 contract');
+                await contract.initialize(this.augur!.address, this.augurTrading!.address, { attachedEth:  new BigNumber(2.5e17) });
+                console.log('Initialized AugurWalletRegistryV2 contract');
             },
             async () => {
                 const contract = new AugurWalletFactory(this.dependencies, await this.getContractAddress('AugurWalletFactory'));
                 if (await contract.getInitialized_()) {
-                    return true;
+                    return;
                 }
-                return contract.initialize(this.augur!.address, this.augurTrading!.address);
+                console.log('Initializing AugurWalletFactory contract');
+                await contract.initialize(this.augur!.address, this.augurTrading!.address);
+                console.log('Initialized AugurWalletFactory contract');
             },
         ];
 
@@ -682,7 +720,9 @@ Deploying to: ${env}
             readiedPromises.push(async () => {
                 const timeContract = await this.getContractAddress('TimeControlled');
                 const time = new TimeControlled(this.dependencies, timeContract);
-                return time.initialize(this.augur!.address);
+                console.log('Initializing TimeControlled contract');
+                await time.initialize(this.augur!.address);
+                console.log('Initialized TimeControlled contract');
             })
         }
 
@@ -696,6 +736,7 @@ Deploying to: ${env}
     }
 
     private async doTradingApprovals(): Promise<void> {
+        console.log('Doing trade approvals...');
         const augurTradingContract = await this.getContractAddress('AugurTrading');
         const augurTrading = new AugurTrading(this.dependencies, augurTradingContract);
         await augurTrading.doApprovals();

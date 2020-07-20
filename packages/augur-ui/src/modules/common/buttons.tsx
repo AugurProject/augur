@@ -27,6 +27,7 @@ import {
   TwoArrowsOutline,
   XIcon,
   BackIcon,
+  ThickChevron,
   AlternateDaiLogoIcon,
   Chevron,
   ThickChevron,
@@ -668,7 +669,7 @@ export const CashoutButton = ({
   let won = createBigNumber(bet.amountWon);
   let cashout = () => bet.cashout();
 
-  const { 
+  const {
       accountPositions: positions,
       loginAccount: { address: account },
       pendingQueue,
@@ -735,9 +736,9 @@ export const CashoutButton = ({
   }
 
   return (
-    <> 
-      {pending ? 
-        <ProcessingButton 
+    <>
+      {pending ?
+        <ProcessingButton
           queueName={CASHOUT}
           queueId={queueId}
           cancelButton
@@ -748,7 +749,7 @@ export const CashoutButton = ({
           className={classNames(Styles.CashoutButton, {
             [Styles.Won]: didWin && !loss,
             [Styles.Loss]: loss,
-          })} 
+          })}
           disabled={cashoutDisabled}
         >
           {cashoutText}

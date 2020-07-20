@@ -35,6 +35,7 @@ import {
   MOBILE_MENU_STATES,
   TRADING_TUTORIAL,
   THEMES,
+  MODAL_ERROR,
 } from 'modules/common/constants';
 import Styles from 'modules/app/components/app.styles.less';
 import MarketsInnerNav from 'modules/app/components/inner-nav/base-inner-nav-pure';
@@ -189,11 +190,11 @@ const AppView = ({
         ethereumNodeWs,
         sdkEndpoint,
       },
-      (err: any, res: any) => {
-        if (err) {
+      (error: any, res: any) => {
+        if (error) {
           setModal({
-            type: MODAL_NETWORK_CONNECT,
-            isInitialConnection: true,
+            type: MODAL_ERROR,
+            error,
             config: res.config,
           });
         }

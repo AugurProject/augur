@@ -2,21 +2,25 @@ import React from 'react';
 
 import { ExternalLinkText } from 'modules/common/buttons';
 import { Close, BackArrow } from 'modules/common/icons';
-import { LOGIN } from 'modules/common/constants';
+import { MODAL_LOGIN, MODAL_SIGNUP } from 'modules/common/constants';
+import { useAppStatusStore } from 'modules/app/store/app-status';
 
 import Styles from 'modules/modal/modal.styles.less';
 
-export const HardwareWallet = ({
-  closeModal,
-  loginModal,
-  signupModal,
-  loginOrSignup,
-}) => {
+export const HardwareWallet = () => {
+  const {
+    modal,
+    actions: { closeModal, setModal },
+  } = useAppStatusStore();
+
+  const loginModal = () => setModal({ type: MODAL_LOGIN });
+  const signupModal = () => setModal({ type: MODAL_SIGNUP });
+
   return (
     <div className={Styles.HardwareWallet}>
       <div
         onClick={
-          loginOrSignup === LOGIN ? () => loginModal() : () => signupModal()
+          modal.isLogin ? () => loginModal() : () => signupModal()
         }
       >
         {BackArrow} {'Back'}

@@ -24,18 +24,22 @@ import {
 } from 'modules/common/constants';
 import { useAppStatusStore } from 'modules/app/store/app-status';
 import { MODAL_LOGIN, MODAL_SIGNUP } from 'modules/common/constants';
-import { getCoreStats } from 'modules/auth/helpers/login-account';
 import { getInfoAlertsAndSeenCount } from 'modules/alerts/helpers/alerts';
 import { getEthReserveInDai } from 'modules/auth/helpers/get-eth-reserve';
 
-export const Stats = () => {
-  const {
-    isMobile,
-    loginAccount,
-    isLogged,
-    restoredAccount,
-  } = useAppStatusStore();
-  const stats = getCoreStats(isLogged, loginAccount);
+import HelpResources from 'modules/app/containers/help-resources';
+
+import Styles from 'modules/app/components/top-bar.styles.less';
+
+interface StatsProps {
+  isLogged: boolean;
+  restoredAccount: boolean;
+  stats: CoreStats;
+  isMobile?: boolean;
+  tradingAccountCreated: boolean;
+}
+
+export const Stats = ({ isLogged, restoredAccount, stats, isMobile = false, tradingAccountCreated }: StatsProps) => {
   if (!stats) return null;
   const { availableFunds, frozenFunds, totalFunds, realizedPL } = stats;
   const ethReserveInDai = getEthReserveInDai();
@@ -46,12 +50,15 @@ export const Stats = () => {
           <div>
             <LinearPropertyLabel {...availableFunds} highlightAlternateBolded />
             <LinearPropertyLabel {...frozenFunds} highlightAlternateBolded />
-            <LinearPropertyLabelUnderlineTooltip
-              {...totalFunds}
-              highlightAlternateBolded
-              id={isMobile ? 'totalFundsMobile' : 'totalFunds_top_bar'}
-              tipText={`${TOTAL_FUNDS_TOOLTIP} of $${ethReserveInDai.formatted} DAI`}
-            />
+            {tradingAccountCreated ?
+              <LinearPropertyLabelUnderlineTooltip
+                {...totalFunds}
+                highlightAlternateBolded
+                id={isMobile ? 'totalFundsMobile' : 'totalFunds_top_bar'}
+                tipText={`${TOTAL_FUNDS_TOOLTIP} of $${ethReserveInDai.formatted} DAI`}
+              /> :
+              <LinearPropertyLabel {...totalFunds} highlightAlternateBolded />
+            }
             <div>
               <span>{realizedPL.label}</span>
               <MovementLabel value={realizedPL.value} useFull />
@@ -93,6 +100,7 @@ const TopBar = () => {
       </div>
       <ThemeSwitch />
       {LoggedOrRestored && <Stats />}
+
       <div>
         {(showActivationButton || showAddFundsButton) && (
           <div className={Styles.AccountActivation}>

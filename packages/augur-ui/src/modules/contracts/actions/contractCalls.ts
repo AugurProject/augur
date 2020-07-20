@@ -959,6 +959,7 @@ export async function placeTrade(
   displayShares: BigNumber | string,
   expirationTime?: BigNumber,
   tradeGroupId?: string,
+  postOnly?: boolean,
   fingerprint: string = getFingerprint(),
 ): Promise<boolean> {
   const Augur = augurSdk.get();
@@ -977,6 +978,7 @@ export async function placeTrade(
     displayPrice: createBigNumber(displayPrice),
     displayShares: createBigNumber(displayShares),
     expirationTime,
+    postOnly,
   };
   return Augur.placeTrade(params);
 }

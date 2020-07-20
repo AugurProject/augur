@@ -43,19 +43,21 @@ export class GetterCache extends AbstractTable {
             "getTotalOnChainFrozenFunds",
             "getZeroXOrder",
             "getZeroXOrders",
-            "getTradingHistory"
+            "getMarketsLiquidityPools",
+            "getMarketOutcomeBestOffer"
         ],
         [SubscriptionEventName.UniverseCreated]: [
             "getUniverseChildren"
         ],
         [SubscriptionEventName.OrderEvent]: [
             "getProfitLoss",
-            "getProfitLossSummary"
+            "getProfitLossSummary",
+            "getTradingHistory",
         ],
         [SubscriptionEventName.ProfitLossChanged]: [
             "getUserTradingPositions",
             "getProfitLoss",
-            "getProfitLossSummary"
+            "getProfitLossSummary",
         ]
     }
 

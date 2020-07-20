@@ -2,7 +2,7 @@ import {
   CategorySports,
   CategoryPolitics,
   CategoryEntertainment,
-  CategoryFinance,
+  CategoryEconomics,
   CategoryCrypto,
 } from 'modules/common/icons';
 import { DEFAULT_DERIVATION_PATH } from 'modules/auth/helpers/derivation-path';
@@ -120,7 +120,11 @@ export const NETWORK_NAMES = {
   3: 'Ropsten',
   4: 'Rinkeby',
   42: 'Kovan',
-  123456: 'Private',
+  123456: 'Local',
+  101: 'Local',
+  102: 'Local',
+  103: 'Local',
+  104: 'Local',
 };
 
 // network name to id map
@@ -1151,7 +1155,7 @@ export const POPULAR_CATEGORIES = [
   'sports',
   'politics',
   'entertainment',
-  'finance',
+  'economics',
   'crypto',
   'medical'
 ];
@@ -1160,7 +1164,7 @@ export const POPULAR_CATEGORIES_ICONS = {
   sports: CategorySports,
   politics: CategoryPolitics,
   entertainment: CategoryEntertainment,
-  finance: CategoryFinance,
+  economics: CategoryEconomics,
   crypto: CategoryCrypto,
 };
 

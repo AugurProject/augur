@@ -35,9 +35,13 @@ import { getNetwork } from 'utils/get-network-name';
 import { isEmpty } from 'utils/is-empty';
 import { isGoogleBot } from 'utils/is-google-bot';
 import { isMobileSafari } from 'utils/is-safari';
-import { AppStatus } from 'modules/app/store/app-status';
+import { AppStatus, useAppStatusStore } from 'modules/app/store/app-status';
 import { showIndexedDbSize } from 'utils/show-indexed-db-size';
 import { tryToPersistStorage } from 'utils/storage-manager';
+import { createBigNumber } from 'utils/create-big-number';
+import detectEthereumProvider from '@metamask/detect-provider'
+import { isPrivateNetwork } from 'modules/app/actions/is-private-network.ts';
+
 
 const NETWORK_ID_POLL_INTERVAL_DURATION = 10000;
 
@@ -80,12 +84,27 @@ async function loadAccountIfStored() {
   }
 }
 
+const isNetworkMismatch = async config => {
+  const provider = await detectEthereumProvider();
+  if (!provider) return false;
+  let chainId = windowRef.ethereum.chainId;
+  if (!chainId) {
+    await provider.enable();
+    chainId = windowRef.ethereum.chainId;
+  }
+
+  const web3NetworkId = String(createBigNumber(chainId));
+  const privateNetwork = isPrivateNetwork(config.networkId);
+  return privateNetwork ?
+    web3NetworkId !== "NaN" : // MM returns NaN for local networks
+    config.networkId !== web3NetworkId;
+}
 
 async function createDefaultProvider(config: SDKConfiguration) {
   if (config.networkId && isDevNetworkId(config.networkId)) {
     // In DEV, use local ethereum node
     return new JsonRpcProvider(config.ethereum.http);
-  } else if (windowRef.web3) {
+  } else if (windowRef.web3 || windowRef.ethereum) {
     // Use the provider on window if it exists, otherwise use torus provider
     return getWeb3Provider(windowRef);
   } else if (config.ui?.fallbackProvider === "jsonrpc" && config.ethereum.http) {
@@ -169,7 +188,7 @@ export const connectAugur = async (
       AppStatus.actions.setRestoredAccount(true);
       AppStatus.actions.updateLoginAccount(accountObject);
       break;
-  }
+    }
 
   // Disable mesh/gsn for googleBot
   if (isGoogleBot()) {
@@ -180,6 +199,16 @@ export const connectAugur = async (
         createCheckpoints: false
       }
     })
+  }
+
+  if ((windowRef.ethereum || windowRef.web3) && await isNetworkMismatch(config)) {
+    if (callback) callback(null);
+    // not sure if it's too early to use app status store
+    const { actions: { setModal }} = useAppStatusStore();
+    return setModal({
+        type: MODAL_NETWORK_MISMATCH,
+        expectedNetwork: NETWORK_NAMES[Number(config.networkId)],
+      });
   }
 
   if (isMobileSafari()) {
@@ -204,7 +233,7 @@ export const connectAugur = async (
     config.networkId
   );
   AppStatus.actions.setCanHotload(true); // Hotload now!
-  // End init here for Googlebot 
+  // End init here for Googlebot
   // TODO: Market list do something with hotload
   if(isGoogleBot()) {
     callback(null);
@@ -218,28 +247,21 @@ export const connectAugur = async (
     provider = await createDefaultProvider(config);
   }
 
-  let Augur = null;
-  try {
-    Augur = await augurSdk.makeClient(provider, config);
-  } catch (e) {
-    console.error(e);
-    if (provider._network && config.networkId !== provider._network.chainId) {
-      const { setModal } = AppStatus.actions;
-      return setModal({
-        type: MODAL_NETWORK_MISMATCH,
-        expectedNetwork: NETWORK_NAMES[Number(config.networkId)],
-      });
-    } else {
-      return callback('SDK could not be created', { config });
+    let Augur = null;
+    try {
+      Augur = await augurSdk.makeClient(provider, config);
+    } catch (e) {
+      console.error(e);
+      return callback(`SDK could not be created, see console for more information`, { config });
     }
-  }
+
 
   if (config?.ui?.reportingOnly) {
     const { setModal } = AppStatus.actions;
     setModal({
       type: MODAL_REPORTING_ONLY
     });
-  }  
+  }
 
   let universeId = config.addresses?.Universe || Augur.contracts.universe.address;
   if (
