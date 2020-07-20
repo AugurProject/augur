@@ -615,7 +615,7 @@ export const ModalCashoutBet = () => {
   return (
     <Message
       title={'Are you sure you want to cash out?'}
-      description={'If the odds or orderbook change during submission, the amount may be rejected. '}
+      description={['If the odds or orderbook change during submission, the amount may be rejected. ']}
       closeAction={() => {
         closeModal();
       }}
@@ -635,17 +635,17 @@ export const ModalCashoutBet = () => {
       ]}
       buttons={[
         {
-          text: 'Cancel',
-          action: () => {
-            closeModal();
-          },
-        },
-        {
           text: 'Confirm',
           action: () => {
             if (modal.cb) {
               modal.cb();
             }
+            closeModal();
+          },
+        },
+        {
+          text: 'Cancel',
+          action: () => {
             closeModal();
           },
         },

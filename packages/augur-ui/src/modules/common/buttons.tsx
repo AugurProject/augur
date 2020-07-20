@@ -674,7 +674,7 @@ export const CashoutButton = ({
       accountPositions: positions,
       loginAccount: { address: account },
       pendingQueue,
-      actions: { addPendingData, updateModal }
+      actions: { addPendingData, setModal }
   } = useAppStatusStore();
   const queueId = `${bet.marketId}_${bet.orderId}`;
   const pending = pendingQueue[CASHOUT] && pendingQueue[CASHOUT][queueId];
@@ -707,7 +707,7 @@ export const CashoutButton = ({
         cashoutDisabled = false;
     
         cashout = () => {
-          updateModal({
+          setModal({
             type: MODAL_CASHOUT_BET, 
             stake: bet.wager, 
             cashOut: bet.unrealizedCost,
