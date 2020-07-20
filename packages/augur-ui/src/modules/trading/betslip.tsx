@@ -19,8 +19,11 @@ import Styles from 'modules/trading/betslip.styles';
 import { PrimaryButton } from 'modules/common/buttons';
 
 export const Betslip = () => {
-  const [minimized, setMinimized] = useState(true);
-  const { theme } = useAppStatusStore();
+  const {
+    theme,
+    betslipMinimized,
+    actions: { setBetslipMinimized },
+  } = useAppStatusStore();
   const {
     selected: { header, subHeader },
     betslip: { count: betslipCount, items: betslipItems },
@@ -50,20 +53,21 @@ export const Betslip = () => {
   return (
     <aside
       className={classNames(Styles.Betslip, {
-        [Styles.Minimized]: minimized,
+        [Styles.Minimized]: betslipMinimized,
       })}
     >
       <div>
-        <button onClick={() => setMinimized(!minimized)}>
+        <button onClick={() => setBetslipMinimized(!betslipMinimized)}>
           Betslip ({betslipCount}) {ThickChevron}
         </button>
-        <PrimaryButton text={`Betslip (${betslipCount})`} action={() => setMinimized(!minimized)} />
+        <PrimaryButton
+          text={`Betslip (${betslipCount})`}
+          action={() => setBetslipMinimized(!betslipMinimized)}
+        />
       </div>
       <section className={Styles.Container}>
         <BetslipHeader myBetsCount={myBetsCount} />
-        {isMyBets && (
-          <MyBetsSubheader />
-        )}
+        {isMyBets && <MyBetsSubheader />}
         <section
           className={classNames(Styles.MainSection, {
             [Styles.BetslipEmpty]: isSelectedEmpty,
@@ -82,10 +86,16 @@ export const Betslip = () => {
       </section>
       <section className={Styles.SideImages}>
         <a href="" target="_blank" rel="noopener noreferrer">
-          <img src={BannerSportsbook} alt="The image shows an American Football player running. The banner says '+1000 markets' and there is a button entitled 'Explore Sportsbook'."/>
+          <img
+            src={BannerSportsbook}
+            alt="The image shows an American Football player running. The banner says '+1000 markets' and there is a button entitled 'Explore Sportsbook'."
+          />
         </a>
         <a href="" target="_blank" rel="noopener noreferrer">
-          <img src={BannerTrading} alt="The image shows Augur's Trading user interface and it says 'Trade Now!'."/>
+          <img
+            src={BannerTrading}
+            alt="The image shows Augur's Trading user interface and it says 'Trade Now!'."
+          />
         </a>
       </section>
     </aside>

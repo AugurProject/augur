@@ -14,7 +14,7 @@ import AlertsContainer from 'modules/alerts/components/alerts-view';
 import ToastsContainer from 'modules/alerts/components/toasts-view';
 
 import { Betslip } from 'modules/trading/betslip';
-import { BetslipProvider } from 'modules/trading/store/betslip';
+import { BetslipProvider, useBetslipStore } from 'modules/trading/store/betslip';
 import { useAppStatusStore } from 'modules/app/store/app-status';
 import { initAugur } from 'modules/app/actions/init-augur';
 
@@ -127,6 +127,7 @@ const AppView = ({
     modal,
     env,
     isMobile,
+    betslipMinimized,
     actions: {
       setIsMobile,
       setMobileMenuState,
@@ -231,12 +232,12 @@ const AppView = ({
       setMobileMenuState(MOBILE_MENU_STATES.CLOSED);
     }
     setCurrentBasePath(currentPath);
-    if (mobileMenuState === MOBILE_MENU_STATES.FIRSTMENU_OPEN) {
+    if (mobileMenuState === MOBILE_MENU_STATES.FIRSTMENU_OPEN || !betslipMinimized) {
       document.body.classList.add('App--noScroll');
     } else {
       document.body.classList.remove('App--noScroll');
     }
-  }, [mobileMenuState, isMobile, currentPath]);
+  }, [mobileMenuState, isMobile, currentPath, betslipMinimized]);
 
   function mainSectionClickHandler(e: any, testSideNav = true) {
     if (
