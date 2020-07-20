@@ -1135,6 +1135,7 @@ div.ButtonsRow:last-of-type {
       > span {
         color: var(--color-primary-action);
         cursor: pointer;
+        margin-left: @size-4;
       }
     }
 
@@ -1267,14 +1268,12 @@ div.ButtonsRow:last-of-type {
     }
   }
 
-  > button {
+  > button[class*='ExternalLinkText'] {
     > a {
       .text-10;
 
-      color: var(--color-primary-text);
-      margin: 0 0 @size-8 0;
-      min-height: 52px;
-      text-align: left;
+      color: var(--color-primary-action);
+      text-transform: uppercase;
     }
 
     > svg {

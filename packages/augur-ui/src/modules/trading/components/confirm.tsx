@@ -80,6 +80,7 @@ export const Confirm = ({
   tradingTutorial,
   initialLiquidity,
   postOnlyOrder,
+  allowPostOnlyOrder,
 }: ConfirmProps) => {
   const {
     env: { ui: { reportingOnly: disableTrading } },
