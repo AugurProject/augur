@@ -59,15 +59,18 @@ export const selectResolvedMarketsOpenOrders = createSelector(
 );
 
 export const selectMostLikelyInvalidMarkets = createSelector(
+  selectMarketInfosState,
   selectUserMarketOpenOrders,
-  openOrders => {
+  selectAccountPositionsState,
+  (markets, openOrders, positions) => {
+    let marketIds = Object.keys(positions);
     return Object.keys(openOrders)
       .map(id => selectMarket(id))
       .filter(
         market =>
           market && market.mostLikelyInvalid
       )
-      .filter(market => userOpenOrders(market.id).length > 0)
+      .filter(market => (userOpenOrders(market.id).length > 0 || marketIds.includes(market.id)))
       .map(getRequiredMarketData);
   }
 );

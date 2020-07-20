@@ -179,14 +179,12 @@ function ignoreOrdersBasedOnSizeTtl(
 ): void {
   if (asks.length === 0 || bids.length === 0) return;
   const { bestAsk, bestBid } = getBestOrders(asks, bids);
-  console.log(bestAsk.orderId, bestAsk.amount, bestBid.orderId, bestBid.amount);
   let ignoreOrder = new BigNumber(bestAsk.amount).lt(
     new BigNumber(bestBid.amount)
   )
     ? bestAsk
     : bestBid;
 
-  console.log('ignore this order', ignoreOrder.orderId);
   if (bestAsk.amount === bestBid.amount) {
     if (bestAsk.expirationTimeSeconds === bestBid.expirationTimeSeconds) {
       ignoreOrder =
@@ -200,9 +198,7 @@ function ignoreOrdersBasedOnSizeTtl(
           : bestBid;
     }
   }
-  console.log('adding to ignore list', ignoreOrder.orderId);
   ignore.push(ignoreOrder);
-  console.log('ignore', ignore.map(o => o.orderId));
 }
 
 function getCrossedOrders(
