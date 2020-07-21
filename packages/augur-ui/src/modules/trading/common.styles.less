@@ -533,18 +533,11 @@
         }
       }
     }
-    }
-
-    
-}
-
-:root[theme="SPORTS"] {
-  .MyBetsSubheader {
-    display: none;
   }
 }
 
 .SideImages {
+  display: none;
   max-width: @size-326;
   min-width: @size-326;
   width: @size-326;
@@ -559,11 +552,23 @@
     }
   }
 
-  &.Hide {
-    display: none;
-  }
-
   @media @breakpoint-max-desktop-min {
     display: none;
   }
 }
+
+:root[theme="SPORTS"] {
+  .MyBetsSubheader {
+    display: none;
+  }
+
+  .SideImages {
+    display: block;
+
+    &.Hide {
+      display:  none;
+    }
+  }
+}
+
+
