@@ -11,7 +11,6 @@
     flex-flow: column nowrap;
     align-items: center;
     justify-content: flex-start;
-    padding: @size-32;
 
     > div {
       display: none;
@@ -184,6 +183,9 @@
       border-radius: 0;
       border: 0;
       border-left: @size-1 solid var(--color-primary-text);
+      display: flex;
+      flex-direction: column;
+      flex: 1;
     }
   }
 
@@ -265,26 +267,6 @@
 
     @media @breakpoint-tablet {
       justify-content: flex-start;
-    }
-  }
-
-  .SideImages {
-    max-width: @size-326;
-    min-width: @size-326;
-    width: @size-326;
-
-    > a {
-      display: block;
-      height: 200px;
-      margin-top: @size-24;
-
-      > img {
-        width: 100%;
-      }
-    }
-
-    @media @breakpoint-max-desktop-min {
-      display: none;
     }
   }
 }

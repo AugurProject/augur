@@ -106,7 +106,7 @@
 
     @media @breakpoint-tablet {
       display: block;
-      max-height: calc(100vh - 140px);
+      max-height: unset;
 
       > div {
         margin-bottom: @size-8;
@@ -540,6 +540,30 @@
 
 :root[theme="SPORTS"] {
   .MyBetsSubheader {
+    display: none;
+  }
+}
+
+.SideImages {
+  max-width: @size-326;
+  min-width: @size-326;
+  width: @size-326;
+
+  > a {
+    display: block;
+    height: 200px;
+    margin-top: @size-24;
+
+    > img {
+      width: 100%;
+    }
+  }
+
+  &.Hide {
+    display: none;
+  }
+
+  @media @breakpoint-max-desktop-min {
     display: none;
   }
 }
