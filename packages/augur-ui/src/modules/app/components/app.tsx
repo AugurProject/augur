@@ -14,7 +14,7 @@ import AlertsContainer from 'modules/alerts/components/alerts-view';
 import ToastsContainer from 'modules/alerts/components/toasts-view';
 
 import { Betslip } from 'modules/trading/betslip';
-import { BetslipProvider, useBetslipStore } from 'modules/trading/store/betslip';
+import { BetslipProvider } from 'modules/trading/store/betslip';
 import { useAppStatusStore } from 'modules/app/store/app-status';
 import { initAugur } from 'modules/app/actions/init-augur';
 

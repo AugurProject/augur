@@ -472,15 +472,11 @@ export const SportsOutcome = ({
   market,
 }: SportsOutcomeProps) => {
   const { liquidityPools } = useMarketsStore();
-  const { addBet, toggleHeader } = Betslip.actions;
+  const { addBet } = Betslip.actions;
   const poolId = market?.sportsBook?.liquidityPool;
   let bestAsk = null;
-  if (poolId) {
-    Object.values(liquidityPools).map(pool => {
-      if (pool[poolId] && pool[poolId][outcomeId]) {
-        bestAsk = pool[poolId][outcomeId];
-      }
-    })
+  if (poolId && liquidityPools[poolId] && liquidityPools[poolId][outcomeId]) {
+    bestAsk = liquidityPools[poolId][outcomeId];
   }
   let topLabel = null;
   let disabled = true;
@@ -510,7 +506,6 @@ export const SportsOutcome = ({
     label = OddToUse.full;
     disabled = false;
     action = () => {
-      toggleHeader(BETSLIP_SELECTED.BETSLIP);
       addBet(
         market.id,
         market.description,

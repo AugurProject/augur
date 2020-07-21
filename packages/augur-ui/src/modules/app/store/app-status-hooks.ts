@@ -156,6 +156,7 @@ export function AppStatusReducer(state, action) {
   switch (action.type) {
     case SET_THEME: {
       updatedState[THEME] = action.theme;
+      updatedState.betslipMinimized = true;
       break;
     }
     case SET_ODDS: {

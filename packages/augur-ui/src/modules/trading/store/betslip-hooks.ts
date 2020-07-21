@@ -109,6 +109,7 @@ export function BetslipReducer(state, action) {
         status: UNSENT,
         dateUpdated: null,
       });
+      updatedState.selected.header = BETSLIP;
       updatedState.betslip.count++;
       break;
     }

@@ -612,9 +612,16 @@ export const ModalCashoutBet = () => {
     actions: { closeModal },
   } = useAppStatusStore();
 
+  const {
+    stake, 
+    cashOut,
+    profit,
+    cb
+  } = modal;
+
   return (
     <Message
-      title={'Are you sure you want to cash out?'}
+      title='Are you sure you want to cash out?'
       description={['If the odds or orderbook change during submission, the amount may be rejected. ']}
       closeAction={() => {
         closeModal();
@@ -622,23 +629,23 @@ export const ModalCashoutBet = () => {
       breakdown={[
         {
           label: 'Stake',
-          value: formatNumber(modal.stake).full,
+          value: formatNumber(stake).full,
         },
         {
           label: 'Cash out',
-          value: formatDai(modal.cashOut).full,
+          value: formatDai(cashOut).full,
         },
         {
           label: 'Profit',
-          value: formatDai(modal.profit).full,
+          value: formatDai(profit).full,
         },
       ]}
       buttons={[
         {
           text: 'Confirm',
           action: () => {
-            if (modal.cb) {
-              modal.cb();
+            if (cb) {
+              cb();
             }
             closeModal();
           },
