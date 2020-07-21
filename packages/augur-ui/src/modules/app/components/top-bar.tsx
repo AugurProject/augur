@@ -30,19 +30,27 @@ import { getEthReserveInDai } from 'modules/auth/helpers/get-eth-reserve';
 import HelpResources from 'modules/app/containers/help-resources';
 
 import Styles from 'modules/app/components/top-bar.styles.less';
+import { getCoreStats } from 'modules/auth/helpers/login-account';
 
-interface StatsProps {
-  isLogged: boolean;
-  restoredAccount: boolean;
-  stats: CoreStats;
-  isMobile?: boolean;
-  tradingAccountCreated: boolean;
-}
+export const Stats = () => {
+  const {
+    isLogged, 
+    restoredAccount,
+    isMobile,
+    loginAccount,
+    walletStatus
+  } = useAppStatusStore();
 
-export const Stats = ({ isLogged, restoredAccount, stats, isMobile = false, tradingAccountCreated }: StatsProps) => {
+  const showAddFundsButton =
+    isLogged && walletStatus === WALLET_STATUS_VALUES.WAITING_FOR_FUNDING;
+  const showActivationButton =
+    isLogged && walletStatus === WALLET_STATUS_VALUES.FUNDED_NEED_CREATE;
+  const tradingAccountCreated = !showActivationButton && !showAddFundsButton;
+  const stats = getCoreStats(isLogged, loginAccount);
   if (!stats) return null;
   const { availableFunds, frozenFunds, totalFunds, realizedPL } = stats;
   const ethReserveInDai = getEthReserveInDai();
+  
   return (
     <>
       {(isLogged || restoredAccount) && (
