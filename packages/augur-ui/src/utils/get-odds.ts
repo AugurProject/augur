@@ -79,6 +79,11 @@ export const convertToNormalizedPrice = ({
   return normalizedPrice;
 };
 
+export const convertToWin = (normalizedPrice, quantity, toDecimals = 2) => {
+  const odds = getOddsObject(normalizedPrice)[ODDS_TYPE.AMERICAN].value;
+  return getNewToWin(odds, quantity, toDecimals);
+}
+
 export const getNewToWin = (odds, wager, toDecimals = 2) => {
   const fractional = convertAmericanToFractional(odds);
   const bnWager = createBigNumber(wager);

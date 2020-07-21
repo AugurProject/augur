@@ -1,6 +1,6 @@
 import { useReducer } from 'react';
 import { formatDate } from 'utils/format-date';
-import { getNewToWin, getOddsObject } from 'utils/get-odds';
+import { getNewToWin, getOddsObject, convertToWin } from 'utils/get-odds';
 
 import { ZERO, ODDS_TYPE } from 'modules/common/constants';
 import {
@@ -10,7 +10,7 @@ import {
   MOCK_BETSLIP_STATE,
   BETSLIP_ACTIONS,
 } from 'modules/trading/store/constants';
-import { placeBet, convertToWin } from 'utils/betslip-helpers';
+import { placeBet } from 'utils/betslip-helpers';
 import { AppStatus } from 'modules/app/store/app-status';
 
 const {
@@ -31,12 +31,12 @@ const {
   TOGGLE_SUBHEADER,
   ADD_MATCHED,
   ADD_MULTIPLE_MATCHED,
-  SET_MINIMIZED
+  SET_MINIMIZED,
 } = BETSLIP_ACTIONS;
 const { BETSLIP, MY_BETS, MATCHED, UNMATCHED } = BETSLIP_SELECTED;
 const { UNSENT, PENDING, CLOSED, FILLED } = BET_STATUS;
 
-export const calculateBetslipTotals = (betslip) => {
+export const calculateBetslipTotals = betslip => {
   let totalWager = ZERO;
   let potential = ZERO;
   let fees = ZERO;
@@ -61,7 +61,9 @@ export function BetslipReducer(state, action) {
   const updatedState = { ...state };
   const betslipItems = updatedState.betslip.items;
   const matchedItems = updatedState.matched.items;
-  const { blockchain: { currentAugurTimestamp }} = AppStatus.get();
+  const {
+    blockchain: { currentAugurTimestamp },
+  } = AppStatus.get();
   const updatedTime = currentAugurTimestamp;
   switch (action.type) {
     case TOGGLE_HEADER: {
@@ -91,11 +93,23 @@ export function BetslipReducer(state, action) {
         outcomeId,
         price,
       } = action;
+      updatedState.selected.header = BETSLIP;
+      updatedState.step = 0;
       if (!betslipItems[marketId]) {
         betslipItems[marketId] = {
           description,
           orders: [],
         };
+      } else {
+        const matchingBet = betslipItems[marketId].orders.find(
+          order =>
+            order.outcomeId === outcomeId &&
+            order.price === price &&
+            order.wager === wager
+        );
+        if (matchingBet) {
+          break;
+        }
       }
       betslipItems[marketId].orders.push({
         outcome,
@@ -103,13 +117,12 @@ export function BetslipReducer(state, action) {
         wager,
         outcomeId,
         price,
-        toWin: convertToWin(price, wager),
+        toWin: convertToWin(normalizedPrice, wager),
         amountFilled: '0',
         amountWon: '0',
         status: UNSENT,
         dateUpdated: null,
       });
-      updatedState.selected.header = BETSLIP;
       updatedState.betslip.count++;
       break;
     }
@@ -149,7 +162,7 @@ export function BetslipReducer(state, action) {
             orders: [],
           };
         }
-        orders.forEach((order) => {
+        orders.forEach(order => {
           placeBet(marketId, order, matchedItems[marketId].orders.length);
           matchedItems[marketId].orders.push({
             ...order,
@@ -172,11 +185,14 @@ export function BetslipReducer(state, action) {
           orders: [],
         };
       }
-      const match = matchedItems[marketId].orders.findIndex(lOrder => lOrder.outcomeId === order.outcomeId && lOrder.price === order.price);
+      const match = matchedItems[marketId].orders.findIndex(
+        lOrder =>
+          lOrder.outcomeId === order.outcomeId && lOrder.price === order.price
+      );
       if (match > -1) {
         matchedItems[marketId].orders[match] = {
           ...matchedItems[marketId].orders[match],
-        }
+        };
       } else {
         matchedItems[marketId].orders.push({
           ...order,
@@ -197,7 +213,7 @@ export function BetslipReducer(state, action) {
           orders: [],
         };
       }
-      orders.forEach((order) => {
+      orders.forEach(order => {
         matchedItems[marketId].orders.push({
           ...order,
           amountFilled: order.wager,
@@ -248,7 +264,10 @@ export function BetslipReducer(state, action) {
     }
     case MODIFY_BET: {
       const { marketId, orderId, order } = action;
-      const toWin = getNewToWin(getOddsObject(order.normalizedPrice)[ODDS_TYPE.AMERICAN], order.wager);
+      const toWin = getNewToWin(
+        getOddsObject(order.normalizedPrice)[ODDS_TYPE.AMERICAN].value,
+        order.wager
+      );
       betslipItems[marketId].orders[orderId] = { ...order, toWin };
       break;
     }
@@ -286,11 +305,11 @@ export const useBetslip = (defaultState = MOCK_BETSLIP_STATE) => {
   return {
     ...state,
     actions: {
-      toggleHeader: (selected) => {
+      toggleHeader: selected => {
         if (selected !== state.selected.header)
           dispatch({ type: TOGGLE_HEADER });
       },
-      toggleSubHeader: (selected) => {
+      toggleSubHeader: selected => {
         if (selected !== state.selected.subHeader)
           dispatch({ type: TOGGLE_SUBHEADER });
       },
