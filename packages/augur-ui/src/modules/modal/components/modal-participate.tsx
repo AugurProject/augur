@@ -174,18 +174,6 @@ export const ModalParticipate = () => {
         <InitializeWalletModalNotice />
         <ButtonsRow buttons={buttons}/>
       </div>
-      <div className={Styles.ActionButtons}>
-        <button className={Styles.Secondary} onClick={() => closeModal()}>
-          cancel
-        </button>
-        <button
-          className={Styles.Primary}
-          disabled={!isValid}
-          onClick={() => submitForm()}
-        >
-          buy
-        </button>
-      </div>
     </section>
   );
 };
