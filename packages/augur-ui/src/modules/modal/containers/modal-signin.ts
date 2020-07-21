@@ -143,7 +143,7 @@ const mergeProps = (sP: any, dP: any, oP: any) => {
       icon: PhoneLogin,
       text: `${LOGIN_OR_SIGNUP} with Phone Number`,
       subText: `Powered by ${ACCOUNT_TYPES.FORTMATIC}`,
-      hidden: false,
+      hidden: true,
       action: async () => {
         dP.loadingModal(SIGNIN_LOADING_TEXT_FORTMATIC, () => login());
         try {
