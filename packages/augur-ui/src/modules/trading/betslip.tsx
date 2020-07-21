@@ -85,7 +85,7 @@ export const Betslip = () => {
           ) : (
             <>
               <BetslipList marketItems={marketItems} />
-              {oddsChanged &&
+              {oddsChanged && !isMyBets &&
                 <span>
                   Highlighted odds changed since you selected them.
                 </span>
