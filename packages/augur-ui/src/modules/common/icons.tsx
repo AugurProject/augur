@@ -2507,41 +2507,30 @@ export const CategoryPolitics = (
 );
 
 export const CategoryMedical = (
-  <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
+  <svg viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
     <path
-      d="M9.25 6.75C9.25 4.95 7.8 3.5 6 3.5C4.2 3.5 2.75 4.95 2.75 6.75"
+      d="M3.5 0.5H12.5"
+      stroke="white"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+    />
+    <path
+      d="M5.5 2.5V5.5C4.43913 5.5 3.42172 5.92143 2.67157 6.67157C1.92143 7.42172 1.5 8.43913 1.5 9.5V14.5C1.5 14.7652 1.60536 15.0196 1.79289 15.2071C1.98043 15.3946 2.23478 15.5 2.5 15.5H13.5C13.7652 15.5 14.0196 15.3946 14.2071 15.2071C14.3946 15.0196 14.5 14.7652 14.5 14.5V9.5C14.5 8.43913 14.0786 7.42172 13.3284 6.67157C12.5783 5.92143 11.5609 5.5 10.5 5.5V2.5"
+      stroke="white"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+    />
+    <path
+      d="M8 7.5V12.5"
       stroke="#2AE7A8"
-      strokeMiterlimit="10"
+      stroke-linecap="round"
+      stroke-linejoin="round"
     />
     <path
-      d="M6 3.5L6 1.75"
-      stroke="white"
-      strokeMiterlimit="10"
-      strokeLinecap="square"
-    />
-    <path
-      d="M11.5 10.25L0.5 10.25"
-      stroke="white"
-      strokeMiterlimit="10"
-      strokeLinecap="square"
-    />
-    <path
-      d="M2.5 10.25L2.5 4.25L0.5 4.25L0.500001 10.25"
-      stroke="white"
-      strokeMiterlimit="10"
-      strokeLinecap="square"
-    />
-    <path
-      d="M9.5 10.25L9.5 4.25L11.5 4.25L11.5 10.25"
-      stroke="white"
-      strokeMiterlimit="10"
-      strokeLinecap="square"
-    />
-    <path
-      d="M9.5 6.75L2.5 6.75"
-      stroke="white"
-      strokeMiterlimit="10"
-      strokeLinecap="square"
+      d="M5.5 10H10.5"
+      stroke="#2AE7A8"
+      stroke-linecap="round"
+      stroke-linejoin="round"
     />
   </svg>
 );
