@@ -1,62 +1,61 @@
 @import (reference) '~assets/styles/shared';
 
-
 .BettingMarketView {
-    width: 100%;
-    padding: @size-32 @size-40 @size-32  @size-32;
+  width: 100%;
+  padding: @size-32 @size-40 @size-32 @size-32;
 
-    > section[class*="SportsMarketContainer"] {
-        margin-bottom: @size-8;
-    }
+  > section[class*='SportsMarketContainer'] {
+    margin-bottom: @size-8;
+  }
 
-    > div:first-of-type {
-        display: flex;
-        flex-direction: column;
-        margin-bottom: @size-40;
-        
-        > span {
-            .text-30-bold;
+  > div:first-of-type {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: @size-24;
 
-            color: var(--color-primary-text);
-            margin: @size-24 0;
-        }
+    > span {
+      .text-30-bold;
 
-        > div:nth-of-type(2) {
-            display: flex;
-            justify-content: space-between;
-            max-width: 70%;
-
-            > div:last-of-type {
-                flex-direction: column;
-            }
-        }
+      color: var(--color-primary-text);
+      margin: @size-24 0;
     }
 
     > div:nth-of-type(2) {
-        margin-top: @size-40;
+      display: flex;
+      justify-content: space-between;
+      max-width: 70%;
 
-        > div {
-            margin-bottom: @size-12;
-        }
-    }
-
-    > div:nth-of-type(3) {
-        display: flex;
-        justify-content: space-between;
-        margin: @size-40 0;
+      > div:last-of-type {
         flex-direction: column;
-
-        > div:not(:first-of-type) {
-            margin-top: @size-24;
-        }
+      }
     }
+  }
 
-    > div:nth-of-type(4) {
-        display: flex;
-        margin-bottom: @size-30;
+  > div:nth-of-type(2) {
+    margin-top: @size-40;
 
-        > div:not(:first-of-type) {
-            margin-left: @size-26;
-        }
+    > div {
+      margin-bottom: @size-12;
     }
+  }
+
+  > div:nth-of-type(3) {
+    display: flex;
+    justify-content: space-between;
+    margin: @size-40 0;
+    flex-direction: column;
+
+    > div:not(:first-of-type) {
+      margin-top: @size-24;
+    }
+  }
+
+  > div:nth-of-type(4) {
+    display: flex;
+    margin-bottom: @size-30;
+
+    > div:not(:first-of-type) {
+      margin-left: @size-26;
+    }
+  }
 }

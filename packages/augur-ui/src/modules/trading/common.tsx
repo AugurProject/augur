@@ -477,12 +477,12 @@ export const BetslipFooter = () => {
 };
 
 export const SideImages = () => {
-  const { betslipMinimized } = useAppStatusStore();
+  const { betslipMinimized, isLogged } = useAppStatusStore();
 
   return (
     <section
       className={classNames(Styles.SideImages, {
-        [Styles.Hide]: !betslipMinimized,
+        [Styles.Hide]: isLogged || !betslipMinimized,
       })}
     >
       <a href="" target="_blank" rel="noopener noreferrer">
