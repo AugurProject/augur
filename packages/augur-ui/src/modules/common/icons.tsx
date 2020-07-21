@@ -2506,6 +2506,46 @@ export const CategoryPolitics = (
   </svg>
 );
 
+export const CategoryMedical = (
+  <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
+    <path
+      d="M9.25 6.75C9.25 4.95 7.8 3.5 6 3.5C4.2 3.5 2.75 4.95 2.75 6.75"
+      stroke="#2AE7A8"
+      strokeMiterlimit="10"
+    />
+    <path
+      d="M6 3.5L6 1.75"
+      stroke="white"
+      strokeMiterlimit="10"
+      strokeLinecap="square"
+    />
+    <path
+      d="M11.5 10.25L0.5 10.25"
+      stroke="white"
+      strokeMiterlimit="10"
+      strokeLinecap="square"
+    />
+    <path
+      d="M2.5 10.25L2.5 4.25L0.5 4.25L0.500001 10.25"
+      stroke="white"
+      strokeMiterlimit="10"
+      strokeLinecap="square"
+    />
+    <path
+      d="M9.5 10.25L9.5 4.25L11.5 4.25L11.5 10.25"
+      stroke="white"
+      strokeMiterlimit="10"
+      strokeLinecap="square"
+    />
+    <path
+      d="M9.5 6.75L2.5 6.75"
+      stroke="white"
+      strokeMiterlimit="10"
+      strokeLinecap="square"
+    />
+  </svg>
+);
+
 export const MMA = (
   <svg
     width="40"
