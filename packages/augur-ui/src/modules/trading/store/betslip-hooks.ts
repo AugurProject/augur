@@ -31,6 +31,7 @@ const {
   TOGGLE_SUBHEADER,
   ADD_MATCHED,
   ADD_MULTIPLE_MATCHED,
+  SET_MINIMIZED
 } = BETSLIP_ACTIONS;
 const { BETSLIP, MY_BETS, MATCHED, UNMATCHED } = BETSLIP_SELECTED;
 const { UNSENT, PENDING, CLOSED, FILLED } = BET_STATUS;
@@ -108,6 +109,7 @@ export function BetslipReducer(state, action) {
         status: UNSENT,
         dateUpdated: null,
       });
+      updatedState.selected.header = BETSLIP;
       updatedState.betslip.count++;
       break;
     }
@@ -231,6 +233,7 @@ export function BetslipReducer(state, action) {
         ...matchedItems[marketId].orders[orderId],
         ...updates,
         dateUpdated: updatedTime,
+        timestampUpdated: Date.now() / 1000,
       };
       break;
     }
@@ -315,8 +318,8 @@ export const useBetslip = (defaultState = MOCK_BETSLIP_STATE) => {
         dispatch({ type: SEND_BET, marketId, orderId, description, order }),
       modifyBet: (marketId, orderId, order) =>
         dispatch({ type: MODIFY_BET, marketId, orderId, order }),
-      cancelBet: (marketId, order) =>
-        dispatch({ type: CANCEL_BET, marketId, order }),
+      cancelBet: (marketId, orderId) =>
+        dispatch({ type: CANCEL_BET, marketId, orderId }),
       sendAllBets: () => dispatch({ type: SEND_ALL_BETS }),
       cancelAllBets: () => dispatch({ type: CANCEL_ALL_BETS }),
       retry: (marketId, orderId) =>

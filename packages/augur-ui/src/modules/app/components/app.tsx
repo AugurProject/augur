@@ -127,6 +127,7 @@ const AppView = ({
     modal,
     env,
     isMobile,
+    betslipMinimized,
     actions: {
       setIsMobile,
       setMobileMenuState,
@@ -230,13 +231,16 @@ const AppView = ({
       // make sure to close sidenav if we aren't in mobile view.
       setMobileMenuState(MOBILE_MENU_STATES.CLOSED);
     }
+    if (!betslipMinimized) {
+      window.scrollTo(0, 0);
+    }
     setCurrentBasePath(currentPath);
-    if (mobileMenuState === MOBILE_MENU_STATES.FIRSTMENU_OPEN) {
+    if (mobileMenuState === MOBILE_MENU_STATES.FIRSTMENU_OPEN || !betslipMinimized) {
       document.body.classList.add('App--noScroll');
     } else {
       document.body.classList.remove('App--noScroll');
     }
-  }, [mobileMenuState, isMobile, currentPath]);
+  }, [mobileMenuState, isMobile, currentPath, betslipMinimized]);
 
   function mainSectionClickHandler(e: any, testSideNav = true) {
     if (

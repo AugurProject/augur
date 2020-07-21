@@ -11,6 +11,7 @@ import {
   FILLED,
   REPORTING_STATE,
   CASHOUT,
+  MODAL_CASHOUT_BET,
 } from 'modules/common/constants';
 import {
   StarIcon,
@@ -673,7 +674,7 @@ export const CashoutButton = ({
       accountPositions: positions,
       loginAccount: { address: account },
       pendingQueue,
-      actions: { addPendingData }
+      actions: { addPendingData, setModal }
   } = useAppStatusStore();
   const queueId = `${bet.marketId}_${bet.orderId}`;
   const pending = pendingQueue[CASHOUT] && pendingQueue[CASHOUT][queueId];
@@ -701,29 +702,36 @@ export const CashoutButton = ({
               )
           )();
         }
-      } else if (market.reportingState !== REPORTING_STATE.AWAITING_FINALIZATION && market.reportingState !== REPORTING_STATE.FINALIZED) {
+      } else if (market?.reportingState !== REPORTING_STATE.AWAITING_FINALIZATION && market?.reportingState !== REPORTING_STATE.FINALIZED) {
         cashoutText = `Cashout ${formatDai(bet.unrealizedCost).full}`;
         cashoutDisabled = false;
     
         cashout = () => {
-          addPendingData(queueId, CASHOUT, TXEventName.Pending, '', {});
-          (async () =>
-            await placeTrade(
-              0,
-              bet.marketId,
-              market.numOutcomes,
-              bet.outcomeId,
-              false,
-              market.numTicks,
-              market.minPrice,
-              market.maxPrice,
-              bet.wager,
-              bet.price,
-              0,
-              '0',
-              undefined
-            ).catch(error => addPendingData(queueId, CASHOUT, TXEventName.Failure, '', {}))
-        )();
+          setModal({
+            type: MODAL_CASHOUT_BET, 
+            stake: bet.wager, 
+            cashOut: bet.unrealizedCost,
+            profit: '0',
+            cb: () => {
+              addPendingData(queueId, CASHOUT, TXEventName.Pending, '', {});
+              (async () =>
+                await placeTrade(
+                  0,
+                  bet.marketId,
+                  market.numOutcomes,
+                  bet.outcomeId,
+                  false,
+                  market.numTicks,
+                  market.minPrice,
+                  market.maxPrice,
+                  bet.wager,
+                  bet.price,
+                  0,
+                  '0',
+                  undefined
+                ).catch(error => addPendingData(queueId, CASHOUT, TXEventName.Failure, '', {}))
+            )();
+          }});
       }
     }
   } 

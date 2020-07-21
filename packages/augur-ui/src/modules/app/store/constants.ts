@@ -285,9 +285,11 @@ export const DEFAULT_APP_STATUS = {
   [DRAFTS]: {},
   [NEW_MARKET]: { ...EMPTY_STATE },
   [MARKETS_LIST]: DEFAULT_MARKETS_LIST_STATE,
+  betslipMinimized: true,
 };
 
 export const APP_STATUS_ACTIONS = {
+  
   SET_THEME: 'SET_THEME',
   SET_ODDS: 'SET_ODDS',
   SET_TIME_FORMAT: 'SET_TIME_FORMAT',
@@ -345,9 +347,11 @@ export const APP_STATUS_ACTIONS = {
   UPDATE_NEW_MARKET: 'UPDATE_NEW_MARKET',
   CLEAR_NEW_MARKET: 'CLEAR_NEW_MARKET',
   UPDATE_MARKETS_LIST: 'UPDATE_MARKETS_LIST',
+  SET_BETSLIP_MINIMIZED: 'SET_BETSLIP_MINIMIZED'
 };
 
 export const STUBBED_APP_STATUS_ACTIONS = {
+  setBetslipMinimized: (betslipMinimized) => {},
   setTheme: theme => {},
   setOdds: odds => {},
   setTimeFormat: timeFormat => {},

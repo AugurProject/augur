@@ -25,7 +25,7 @@ import { formatDai } from 'utils/format-number';
 
 import Styles from 'modules/trading/common.styles';
 import { convertToOdds } from 'utils/get-odds';
-import { formatDate } from 'utils/format-date';
+import { convertUnixToFormattedDate } from 'utils/format-date';
 
 export interface EmptyStateProps {
   selectedTab: number;
@@ -158,26 +158,24 @@ export const SportsMyBet = ({
 }) => {
   const {
     outcome,
-    odds,
+    normalizedPrice,
     wager,
     retry,
-    cashOut,
-    update,
     trash,
     status,
     amountFilled,
     toWin,
     dateUpdated,
-    orderId
+    timestampUpdated
   } = bet;
   const [isRecentUpdate, setIsRecentUpdate] = useState(true);
   useEffect(() => {
     setIsRecentUpdate(true);
-  }, [dateUpdated]);
+  }, [timestampUpdated]);
 
   useEffect(() => {
     const currentTime = new Date().getTime() / 1000;
-    const seconds = Math.round(currentTime - dateUpdated.timestamp);
+    const seconds = Math.round(currentTime - timestampUpdated);
     const milliSeconds = seconds * 1000;
     if (isRecentUpdate && status === BET_STATUS.FILLED && seconds < 20) {
       setTimeout(() => {
@@ -188,15 +186,8 @@ export const SportsMyBet = ({
     }
   }, [isRecentUpdate]);
 
-  useEffect(() => {
-    if (status === BET_STATUS.PENDING) {
-      setTimeout(() => {
-        update({ status: BET_STATUS.FILLED });
-      }, 20000);
-    }
-  });
   const { PENDING, FILLED, PARTIALLY_FILLED, FAILED } = BET_STATUS;
-  let icon = Trash;
+  let icon = null;
   let classToApply = Styles.NEWFILL;
   let message = null;
   let messageAction = null;
@@ -220,6 +211,7 @@ export const SportsMyBet = ({
       classToApply = Styles.PENDING;
       break;
     case FAILED:
+      icon = Trash;
       classToApply = Styles.FAILED;
       iconAction = () => trash();
       message = `Order failed when processing. `;
@@ -234,7 +226,7 @@ export const SportsMyBet = ({
     >
       <header>
         <span>{outcome}</span>
-        <span>{odds}</span>
+        <span>{convertToOdds(normalizedPrice).full}</span>
         <button
           className={classNames(classToApply)}
           onClick={() => iconAction()}
@@ -250,7 +242,7 @@ export const SportsMyBet = ({
       <LinearPropertyLabel label="to win" value={formatDai(toWin)} useFull />
       <LinearPropertyLabel
         label="Date"
-        value={formatDate(dateUpdated).formattedUtc}
+        value={convertUnixToFormattedDate(dateUpdated).formattedUtc}
       />
       {!!message && (
         <span>
@@ -258,8 +250,12 @@ export const SportsMyBet = ({
           {!!messageAction && messageAction}
         </span>
       )}
-      <ExternalLinkButton URL={null} label="view tx" />
-      <CashoutButton bet={bet}/>
+      {status !== PENDING && status !== FAILED &&
+        <>
+          <ExternalLinkButton URL={null} label="view tx" />
+          <CashoutButton bet={bet}/>
+        </>
+      }
     </div>
   );
 };

@@ -108,6 +108,7 @@ const {
   UPDATE_NEW_MARKET,
   CLEAR_NEW_MARKET,
   UPDATE_MARKETS_LIST,
+  SET_BETSLIP_MINIMIZED
 } = APP_STATUS_ACTIONS;
 
 const setHTMLTheme = theme =>
@@ -155,6 +156,7 @@ export function AppStatusReducer(state, action) {
   switch (action.type) {
     case SET_THEME: {
       updatedState[THEME] = action.theme;
+      updatedState.betslipMinimized = true;
       break;
     }
     case SET_ODDS: {
@@ -405,6 +407,11 @@ export function AppStatusReducer(state, action) {
       updatedState[ALERTS] = updatedState[ALERTS].filter(
         it => it.level !== action.level
       );
+      break;
+    }
+
+    case SET_BETSLIP_MINIMIZED: {
+      updatedState.betslipMinimized = action.betslipMinimized;
       break;
     }
     case ADD_PENDING_DATA: {
@@ -760,6 +767,7 @@ export const useAppStatus = (defaultState = DEFAULT_APP_STATUS) => {
           blockNumber,
           queueName,
         }),
+      setBetslipMinimized: (betslipMinimized) => dispatch({ type: SET_BETSLIP_MINIMIZED, betslipMinimized }),
       removePendingData: ({ pendingId, queueName, hash }) =>
         dispatch({ type: REMOVE_PENDING_DATA, pendingId, queueName, hash }),
       refreshUserOpenOrders: userOpenOrders =>

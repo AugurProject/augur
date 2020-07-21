@@ -18,7 +18,7 @@
     height: @size-48;
     justify-content: space-around;
   
-    @media @breakpoint-mobile-tablet {
+    @media @breakpoint-mobile {
       display: none;
     }
   
@@ -103,6 +103,15 @@
     > div:last-of-type {
       margin-bottom: @size-8;
     }
+
+    @media @breakpoint-tablet {
+      display: block;
+      max-height: calc(100vh - 140px);
+
+      > div {
+        margin-bottom: @size-8;
+      }
+    }
   }
 
   .SportsMarketBets {
@@ -111,6 +120,10 @@
     display: flex;
     flex-flow: column nowrap;
     max-width: @size-298;
+
+    @media @breakpoint-mobile {
+      margin-top: @size-8;
+    }
 
     > h4 {
       .text-10-bold;
