@@ -53,11 +53,7 @@ const MarketOutcomesList = ({
           {toggle && <ToggleExtendButton toggle={toggle} />}
         </h3>
       )}
-      <div
-        className={classNames(SharedStyles.Table, SharedStyles.Outcomes, {
-          [SharedStyles.HideOutcomes]: hideOutcomes,
-        })}
-      >
+      <div className={classNames(SharedStyles.Table, SharedStyles.Outcomes)}>
         <ul
           className={classNames(
             HeaderStyles.DataTableHeader,
