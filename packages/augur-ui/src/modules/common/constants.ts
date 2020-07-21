@@ -4,6 +4,7 @@ import {
   CategoryEntertainment,
   CategoryEconomics,
   CategoryCrypto,
+  CategoryMedical,
 } from 'modules/common/icons';
 import { DEFAULT_DERIVATION_PATH } from 'modules/auth/helpers/derivation-path';
 import * as d3 from 'd3-time';
@@ -1085,6 +1086,7 @@ export const POPULAR_CATEGORIES_ICONS = {
   entertainment: CategoryEntertainment,
   economics: CategoryEconomics,
   crypto: CategoryCrypto,
+  medical: CategoryMedical,
 };
 
 export const CATEGORIES_MAX = 8;
