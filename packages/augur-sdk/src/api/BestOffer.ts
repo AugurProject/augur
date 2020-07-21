@@ -88,9 +88,13 @@ export class BestOffer {
       })
     ).then((liquiditPoolsUpdated) => {
       if (_.keys(liquiditPoolsUpdated).length > 0) {
+        const poolsToSend = liquiditPoolsUpdated.reduce((acc, poolObj) => {
+          const update = { ...acc, ...poolObj };
+          return update;
+        }, {});
         this.augur.events.emit(
           SubscriptionEventName.LiquidityPoolUpdated,
-          liquiditPoolsUpdated
+          poolsToSend
         );
       }
     });
