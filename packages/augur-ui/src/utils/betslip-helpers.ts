@@ -10,8 +10,7 @@ export const convertPositionToBet = (position, marketInfo) => {
   const normalizedPrice = convertToNormalizedPrice({
     price: position.averagePrice,
     min: marketInfo.min,
-    max: marketInfo.max,
-    type: ASKS,
+    max: marketInfo.max
   });
   return {
     ...position,

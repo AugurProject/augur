@@ -184,6 +184,14 @@
       }
     }
 
+    &.RecentlyUpdated {
+      > header {
+        > span:last-of-type {
+          background: var(--color-reporting-30);
+        }
+      }
+    }
+
     > header {
       display: grid;
       grid-column: span 2;
@@ -545,6 +553,7 @@
 }
 
 .SideImages {
+  display: none;
   max-width: @size-326;
   min-width: @size-326;
   width: @size-326;
@@ -568,9 +577,16 @@
   }
 }
 
+:root[theme="SPORTS"] {
+  .SideImages {
+    display: block;
+  }
+}
+
 .error {
   .text-12;
 
   color: var(--color-error);
   grid-column: 1 / span 2;
+  white-space: nowrap;
 }

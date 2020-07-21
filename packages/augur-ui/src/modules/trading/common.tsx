@@ -120,7 +120,7 @@ export const SportsMarketMyBets = ({ market }) => {
 export const SportsBet = ({ bet }) => {
   const { step } = useBetslipStore();
   const isReview = step === 1;
-  const { outcome, normalizedPrice, wager, toWin, modifyBet, cancelBet } = bet;
+  const { outcome, normalizedPrice, wager, toWin, modifyBet, cancelBet, recentlyUpdated } = bet;
   const [errorMessage, setErrorMessage] = useState('');
   const { liquidityPools } = useMarketsStore();
   const checkWager = (wager) => {
@@ -137,7 +137,7 @@ export const SportsBet = ({ bet }) => {
   }
   return (
     <div
-      className={classNames(Styles.SportsBet, { [Styles.Review]: isReview })}
+      className={classNames(Styles.SportsBet, { [Styles.Review]: isReview, [Styles.RecentlyUpdated]: recentlyUpdated })}
     >
       <header>
         <span>{outcome}</span>
@@ -152,6 +152,7 @@ export const SportsBet = ({ bet }) => {
           <LinearPropertyLabel
             label="odds"
             value={convertToOdds(normalizedPrice).full}
+            recentlyUpdated={recentlyUpdated}
           />
           <LinearPropertyLabel
             label="to win"

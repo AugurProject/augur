@@ -495,8 +495,7 @@ export const SportsOutcome = ({
     const normalizedPrice = convertToNormalizedPrice({
       price,
       min: market.minPriceBigNumber,
-      max: market.maxPriceBigNumber,
-      type: ASKS,
+      max: market.maxPriceBigNumber
     });
     const OddToUse = convertToOdds(normalizedPrice);
     topLabel = determineTopLabel(market.sportsBook, outcomeId, outcomeLabel);

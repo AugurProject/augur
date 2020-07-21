@@ -12,7 +12,6 @@ import {
 } from 'modules/trading/store/constants';
 import { placeBet } from 'utils/betslip-helpers';
 import { AppStatus } from 'modules/app/store/app-status';
-import { createBigNumber } from 'utils/create-big-number';
 
 const {
   CASH_OUT,
@@ -32,7 +31,6 @@ const {
   TOGGLE_SUBHEADER,
   ADD_MATCHED,
   ADD_MULTIPLE_MATCHED,
-  SET_MINIMIZED,
 } = BETSLIP_ACTIONS;
 const { BETSLIP, MY_BETS, MATCHED, UNMATCHED } = BETSLIP_SELECTED;
 const { UNSENT, PENDING, CLOSED, FILLED } = BET_STATUS;

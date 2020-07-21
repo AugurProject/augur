@@ -15,6 +15,7 @@ import { useBetslipStore } from 'modules/trading/store/betslip';
 
 import Styles from 'modules/trading/betslip.styles';
 import { PrimaryButton } from 'modules/common/buttons';
+import { recentlyUpdated } from './common.styles.less';
 
 export const Betslip = () => {
   const {
@@ -48,6 +49,13 @@ export const Betslip = () => {
   const marketItems = isMyBets
     ? Object.entries(isUnmatched ? unmatchedItems : matchedItems)
     : Object.entries(betslipItems);
+  let oddsChanged = false;
+  Object.values(betslipItems).map(market => {
+    const recentlyUpdated = market?.orders.filter(item => item.recentlyUpdated);
+    if (recentlyUpdated.length > 0) {
+      oddsChanged = true;
+    }
+  });
   return (
     <aside
       className={classNames(Styles.Betslip, {
@@ -77,6 +85,11 @@ export const Betslip = () => {
           ) : (
             <>
               <BetslipList marketItems={marketItems} />
+              {oddsChanged &&
+                <span>
+                  Highlighted odds changed since you selected them.
+                </span>
+              }
               <BetslipFooter />
             </>
           )}
