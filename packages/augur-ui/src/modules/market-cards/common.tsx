@@ -474,10 +474,7 @@ export const SportsOutcome = ({
   const { liquidityPools } = useMarketsStore();
   const { addBet } = Betslip.actions;
   const poolId = market?.sportsBook?.liquidityPool;
-  let bestAsk = null;
-  if (poolId && liquidityPools[poolId] && liquidityPools[poolId][outcomeId]) {
-    bestAsk = liquidityPools[poolId][outcomeId];
-  }
+  const bestAsk = poolId && liquidityPools[poolId] && liquidityPools[poolId][outcomeId];
   let topLabel = null;
   let disabled = true;
   let label = '-';
