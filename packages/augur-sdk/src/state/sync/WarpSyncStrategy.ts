@@ -1,7 +1,7 @@
-import { logger } from '@augurproject/utils';
 import { EthersProvider } from '@augurproject/ethersjs-provider';
-import { SECONDS_IN_A_DAY } from '@augurproject/sdk-lite';
+import { NullWarpSyncHash, SECONDS_IN_A_DAY } from '@augurproject/sdk-lite';
 import { Log } from '@augurproject/types';
+import { logger } from '@augurproject/utils';
 import { Block } from 'ethers/providers';
 import _ from 'lodash';
 import { WarpController } from '../../warp/WarpController';
@@ -30,7 +30,7 @@ export class WarpSyncStrategy {
     // This is the warp hash for the value '0' which means there isn't yet a finalized hash.
     if (
       ipfsRootHash &&
-      ipfsRootHash !== 'QmNLei78zWmzUdbeRB3CiUfAizWUrbeeZh5K1rhAQKCh51'
+      ipfsRootHash !== NullWarpSyncHash
     ) {
       return this.loadCheckpoints(ipfsRootHash, currentBlock);
     } else {

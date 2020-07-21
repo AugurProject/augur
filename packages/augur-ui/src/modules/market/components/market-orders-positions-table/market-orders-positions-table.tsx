@@ -46,7 +46,7 @@ const MarketOrdersPositionsTable: React.FC<MarketOrdersPositionsTableProps> = ({
     >
       <ModulePane label="Open Orders">
         <OpenOrdersTable openOrders={openOrders} marketId={market.marketId} />
-        {openOrders.length > 0 && (
+        {openOrders.length > 0 && openOrders.filter(openOrder => !openOrder.pending).length > 0 && (
           <div className={Styles.Footer}>
             <CancelTextButton
               action={() => cancelAllOpenOrders(openOrders)}

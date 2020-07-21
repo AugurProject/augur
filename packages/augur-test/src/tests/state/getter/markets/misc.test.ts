@@ -2,6 +2,7 @@ import {
   MarketList,
   MarketOrderBook,
   MarketReportingState,
+  NullWarpSyncHash,
   ORDER_TYPES,
   SECONDS_IN_A_DAY,
 } from '@augurproject/sdk-lite';
@@ -121,7 +122,7 @@ describe('State API :: Markets :: ', () => {
       // Note: no need to initialize warp sync market since deploy does so
 
       // This hash won't do anything because it is the IPFS for '0'. Which is an uninitialized warp sync market.
-      const someHash = 'QmNLei78zWmzUdbeRB3CiUfAizWUrbeeZh5K1rhAQKCh51';
+      const someHash = NullWarpSyncHash;
       expectedMarkets = [
         await john.createReasonableYesNoMarket(),
         await john.reportAndFinalizeWarpSyncMarket(someHash),

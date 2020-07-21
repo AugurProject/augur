@@ -4,7 +4,7 @@ import { ethers } from 'ethers';
 import LZString from 'lz-string';
 import { HotLoading, HotLoadMarketInfo } from './api/HotLoading';
 import { WarpSync } from './api/WarpSync';
-import { MarketReportingState } from './constants';
+import { MarketReportingState, NullWarpSyncHash } from './constants';
 import { MarketCreatedLog } from './logs';
 
 interface NamedMarketCreatedLog extends MarketCreatedLog {
@@ -100,7 +100,7 @@ export class AugurLite {
     );
 
     // The Market has not been reported on.
-    if (warpSyncHash === 'QmNLei78zWmzUdbeRB3CiUfAizWUrbeeZh5K1rhAQKCh51')
+    if (warpSyncHash === NullWarpSyncHash)
       return [];
 
     try {
