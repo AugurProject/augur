@@ -13,6 +13,7 @@ import { getEthToDaiRate } from 'modules/app/actions/get-ethToDai-rate';
 import { getRepToDaiRate } from 'modules/app/actions/get-repToDai-rate';
 import { getTradePageMarketId } from "modules/trades/helpers/get-trade-page-market-id";
 import { loadMarketOrderBook } from 'modules/orders/actions/load-market-orderbook';
+import { loadGasPriceInfo } from 'modules/app/actions/load-gas-price-info';
 
 export const loadAccountData = (
   callback: NodeStyleCallback = logError
@@ -41,7 +42,8 @@ export const loadAccountData = (
     dispatch(loadUniverseDetails(universe.id, address));
     dispatch(getEthToDaiRate());
     dispatch(getRepToDaiRate());
-    dispatch(registerUserDefinedGasPriceFunction(gasPriceInfo.userDefinedGasPrice, gasPriceInfo.average));
+    dispatch(loadGasPriceInfo());
+    gasPriceInfo.userDefinedGasPrice && dispatch(registerUserDefinedGasPriceFunction(gasPriceInfo.userDefinedGasPrice, gasPriceInfo.average));
     const marketId = getTradePageMarketId();
     if (marketId) {
       dispatch(loadMarketOrderBook(marketId));
