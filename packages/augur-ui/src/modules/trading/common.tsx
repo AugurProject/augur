@@ -3,6 +3,8 @@ import classNames from 'classnames';
 import { Link } from 'react-router-dom';
 import makePath from 'modules/routes/helpers/make-path';
 
+import BannerSportsbook from '../../assets/images/banner-sportsbook.png';
+import BannerTrading from '../../assets/images/banner-trading.png';
 import {
   SecondaryButton,
   PrimaryButton,
@@ -26,6 +28,7 @@ import { formatDai } from 'utils/format-number';
 import Styles from 'modules/trading/common.styles';
 import { convertToOdds } from 'utils/get-odds';
 import { convertUnixToFormattedDate } from 'utils/format-date';
+import { useAppStatusStore } from 'modules/app/store/app-status';
 
 export interface EmptyStateProps {
   selectedTab: number;
@@ -125,7 +128,10 @@ export const SportsBet = ({ bet }) => {
       {isReview ? (
         <>
           <LinearPropertyLabel label="wager" value={formatDai(wager)} useFull />
-          <LinearPropertyLabel label="odds" value={convertToOdds(normalizedPrice).full} />
+          <LinearPropertyLabel
+            label="odds"
+            value={convertToOdds(normalizedPrice).full}
+          />
           <LinearPropertyLabel
             label="to win"
             value={formatDai(toWin)}
@@ -153,9 +159,7 @@ export const SportsBet = ({ bet }) => {
   );
 };
 
-export const SportsMyBet = ({
-  bet
-}) => {
+export const SportsMyBet = ({ bet }) => {
   const {
     outcome,
     normalizedPrice,
@@ -166,7 +170,7 @@ export const SportsMyBet = ({
     amountFilled,
     toWin,
     dateUpdated,
-    timestampUpdated
+    timestampUpdated,
   } = bet;
   const [isRecentUpdate, setIsRecentUpdate] = useState(true);
   useEffect(() => {
@@ -250,12 +254,12 @@ export const SportsMyBet = ({
           {!!messageAction && messageAction}
         </span>
       )}
-      {status !== PENDING && status !== FAILED &&
+      {status !== PENDING && status !== FAILED && (
         <>
           <ExternalLinkButton URL={null} label="view tx" />
-          <CashoutButton bet={bet}/>
+          <CashoutButton bet={bet} />
         </>
-      }
+      )}
     </div>
   );
 };
@@ -389,7 +393,13 @@ export const BetslipFooter = () => {
   const {
     selected: { header, subHeader },
     betslip,
-    actions: { toggleStep, sendAllBets, cancelAllBets, cancelAllUnmatched, toggleHeader },
+    actions: {
+      toggleStep,
+      sendAllBets,
+      cancelAllBets,
+      cancelAllUnmatched,
+      toggleHeader,
+    },
     step,
   } = useBetslipStore();
   const { wager, potential, fees } = calculateBetslipTotals(betslip);
@@ -463,5 +473,30 @@ export const BetslipFooter = () => {
         </>
       )}
     </footer>
+  );
+};
+
+export const SideImages = () => {
+  const { betslipMinimized } = useAppStatusStore();
+
+  return (
+    <section
+      className={classNames(Styles.SideImages, {
+        [Styles.Hide]: !betslipMinimized,
+      })}
+    >
+      <a href="" target="_blank" rel="noopener noreferrer">
+        <img
+          src={BannerSportsbook}
+          alt="The image shows an American Football player running. The banner says '+1000 markets' and there is a button entitled 'Explore Sportsbook'."
+        />
+      </a>
+      <a href="" target="_blank" rel="noopener noreferrer">
+        <img
+          src={BannerTrading}
+          alt="The image shows Augur's Trading user interface and it says 'Trade Now!'."
+        />
+      </a>
+    </section>
   );
 };

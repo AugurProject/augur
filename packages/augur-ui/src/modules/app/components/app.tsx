@@ -57,6 +57,7 @@ import { getNotifications } from 'modules/notifications/selectors/notification-s
 import { withRouter } from 'react-router-dom';
 import { RewriteUrlParams } from '../hocs/rewrite-url-params/index';
 import { windowRef } from 'utils/window-ref';
+import { SideImages } from 'modules/trading/common';
 
 interface AppProps {
   config: SDKConfiguration;
@@ -419,7 +420,10 @@ const MainAppContent = ({
         <MarketsProvider>
           <ForkingBanner />
           <Routes isLogged={isLogged || restoredAccount} />
-          <Betslip />
+          <div className={Styles.Betslip}>
+            <Betslip />
+            <SideImages />
+          </div>
           <StatusErrorMessage />
         </MarketsProvider>
       </BetslipProvider>

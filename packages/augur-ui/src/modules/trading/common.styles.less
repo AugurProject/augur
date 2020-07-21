@@ -543,3 +543,27 @@
     display: none;
   }
 }
+
+.SideImages {
+  max-width: @size-326;
+  min-width: @size-326;
+  width: @size-326;
+
+  > a {
+    display: block;
+    height: 200px;
+    margin-top: @size-24;
+
+    > img {
+      width: 100%;
+    }
+  }
+
+  &.Hide {
+    display: none;
+  }
+
+  @media @breakpoint-max-desktop-min {
+    display: none;
+  }
+}

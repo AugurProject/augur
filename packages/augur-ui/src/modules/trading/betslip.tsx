@@ -12,8 +12,6 @@ import { useAppStatusStore } from 'modules/app/store/app-status';
 import { THEMES } from 'modules/common/constants';
 import { BETSLIP_SELECTED } from 'modules/trading/store/constants';
 import { useBetslipStore } from 'modules/trading/store/betslip';
-import BannerSportsbook from '../../assets/images/banner-sportsbook.png';
-import BannerTrading from '../../assets/images/banner-trading.png';
 
 import Styles from 'modules/trading/betslip.styles';
 import { PrimaryButton } from 'modules/common/buttons';
@@ -83,20 +81,6 @@ export const Betslip = () => {
             </>
           )}
         </section>
-      </section>
-      <section className={Styles.SideImages}>
-        <a href="" target="_blank" rel="noopener noreferrer">
-          <img
-            src={BannerSportsbook}
-            alt="The image shows an American Football player running. The banner says '+1000 markets' and there is a button entitled 'Explore Sportsbook'."
-          />
-        </a>
-        <a href="" target="_blank" rel="noopener noreferrer">
-          <img
-            src={BannerTrading}
-            alt="The image shows Augur's Trading user interface and it says 'Trade Now!'."
-          />
-        </a>
       </section>
     </aside>
   );
