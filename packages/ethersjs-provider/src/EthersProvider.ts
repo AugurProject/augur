@@ -98,7 +98,9 @@ export class EthersProvider extends ethers.providers.BaseProvider
               return interval * Math.pow(2, retryCount);
             },
             errorFilter: function(err) {
-              return err.message.includes("Rate limit") || err.message.includes("429");
+              return err.message.includes("Rate limit") ||
+                     err['code'] === -32000 ||
+                     err.message.includes("429");
             }
           },
           async () => {
