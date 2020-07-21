@@ -1,4 +1,4 @@
-import { convertToNormalizedPrice, convertToWin } from './get-odds';
+import { convertToNormalizedPrice, convertToWin, getWager } from './get-odds';
 import { ASKS } from 'modules/common/constants';
 import { getOutcomeNameWithOutcome } from './get-outcome';
 import { BET_STATUS } from 'modules/trading/store/constants';
@@ -23,7 +23,8 @@ export const convertPositionToBet = (position, marketInfo) => {
     toWin: convertToWin(normalizedPrice, position.rawPosition),
     normalizedPrice,
     outcome: getOutcomeNameWithOutcome(marketInfo, position.outcome),
-    wager: position.rawPosition,
+    shares: position.rawPosition,
+    wager: getWager(position.rawPosition, position.averagePrice),
     dateUpdated: position.timestamp,
   };
 };

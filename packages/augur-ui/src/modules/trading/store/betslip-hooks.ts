@@ -1,6 +1,6 @@
 import { useReducer } from 'react';
 import { formatDate } from 'utils/format-date';
-import { getNewToWin, getOddsObject, convertToWin } from 'utils/get-odds';
+import { getNewToWin, getOddsObject, convertToWin, getWager } from 'utils/get-odds';
 
 import { ZERO, ODDS_TYPE } from 'modules/common/constants';
 import {
@@ -12,6 +12,7 @@ import {
 } from 'modules/trading/store/constants';
 import { placeBet } from 'utils/betslip-helpers';
 import { AppStatus } from 'modules/app/store/app-status';
+import { createBigNumber } from 'utils/create-big-number';
 
 const {
   CASH_OUT,
@@ -89,7 +90,7 @@ export function BetslipReducer(state, action) {
         description,
         outcome,
         normalizedPrice,
-        wager,
+        shares,
         outcomeId,
         price,
       } = action;
@@ -105,16 +106,18 @@ export function BetslipReducer(state, action) {
           order =>
             order.outcomeId === outcomeId &&
             order.price === price &&
-            order.wager === wager
+            order.shares === shares
         );
         if (matchingBet) {
           break;
         }
       }
+      const wager = getWager(shares, price);
       betslipItems[marketId].orders.push({
         outcome,
         normalizedPrice,
         wager,
+        shares,
         outcomeId,
         price,
         toWin: convertToWin(normalizedPrice, wager),
@@ -319,7 +322,7 @@ export const useBetslip = (defaultState = MOCK_BETSLIP_STATE) => {
         description,
         normalizedPrice,
         outcome,
-        wager = '0',
+        shares = '0',
         outcomeId,
         price = '0'
       ) =>
@@ -329,7 +332,7 @@ export const useBetslip = (defaultState = MOCK_BETSLIP_STATE) => {
           description,
           normalizedPrice,
           outcome,
-          wager,
+          shares,
           outcomeId,
           price,
         }),

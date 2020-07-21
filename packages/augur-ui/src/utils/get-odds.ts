@@ -90,6 +90,9 @@ export const getNewToWin = (odds, wager, toDecimals = 2) => {
   return bnWager.times(fractional).toFixed(toDecimals);
 };
 
+export const getWager = (shares, price) => {
+  return createBigNumber(shares).times(createBigNumber(price)).toString();
+}
 export const getOddsObject = (normalizedValue: BigNumber, toDecimals = 4) => {
   const percentage: BigNumber = convertToPercentage(
     createBigNumber(normalizedValue)
