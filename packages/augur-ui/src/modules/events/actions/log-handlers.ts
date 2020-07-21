@@ -397,7 +397,7 @@ export const handleBulkOrdersLog = (data: {
 export const handleLiquidityPoolUpdatedLog = (
   data: LiquidityPoolUpdated
 ) => {
-  //console.log("HandleLiquidityPoolUpdatedLog:", data);
+  // console.log("HandleLiquidityPoolUpdatedLog:", data);
   delete data.eventName;
   Markets.actions.updateLiquidityPools(data);
 };

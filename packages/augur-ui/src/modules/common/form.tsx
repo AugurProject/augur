@@ -1563,7 +1563,7 @@ export class TimeSelector extends React.Component<TimeSelectorProps, {}> {
         key={`timeSelector${uniqueKey}`}
         className={classNames(Styles.TimeSelector, {
           [Styles.Condensed]: condensedStyle,
-          [Styles.Default]: !hour || !minute || !meridiem,
+          [Styles.DefaultStyle]: !hour || !minute || !meridiem,
           [Styles.OpenTop]: openTop,
           [Styles.Disabled]: disabled,
         })}
