@@ -19,11 +19,15 @@ import { BlockAndLogStreamerSyncStrategy } from './sync/BlockAndLogStreamerSyncS
 import { BulkSyncStrategy } from './sync/BulkSyncStrategy';
 import { WarpSyncStrategy } from './sync/WarpSyncStrategy';
 
-export function buildSyncStrategies(client:Augur, db:Promise<DB>, provider: EthersProvider, logFilterAggregator: LogFilterAggregator, config: SDKConfiguration) {
+export async function buildSyncStrategies(client:Augur, db:Promise<DB>, provider: EthersProvider, logFilterAggregator: LogFilterAggregator, config: SDKConfiguration) {
+  const warpController = new WarpController((await db), client, provider,
+    config.uploadBlockNumber);
+
+  client.warpController = warpController;
   return async () => {
+    const contractAddresses = client.contractEvents.getAugurContractAddresses();
     const uploadBlockNumber = config.uploadBlockNumber;
     const currentBlockNumber = await provider.getBlockNumber();
-    const contractAddresses = client.contractEvents.getAugurContractAddresses();
 
     const bulkSyncStrategy = new BulkSyncStrategy(provider.getLogs,
       contractAddresses, logFilterAggregator.onLogsAdded,
@@ -36,8 +40,6 @@ export function buildSyncStrategies(client:Augur, db:Promise<DB>, provider: Ethe
     );
 
     const currentBlock = await provider.getBlock('latest');
-    const warpController = new WarpController((await db), client, provider,
-      uploadBlockNumber);
 
     const marketCreatedCB = async (blockNumber, logs) => {
       client.events.emit(SubscriptionEventName.MarketsUpdated, logs);
@@ -199,7 +201,7 @@ export async function createServer(config: SDKConfiguration, client?: Augur): Pr
       });
   }
 
-  const sync = buildSyncStrategies(client, db, ethersProvider, logFilterAggregator, config);
+  const sync = await buildSyncStrategies(client, db, ethersProvider, logFilterAggregator, config);
 
   const controller = new Controller(client, db, logFilterAggregator);
   const api = new API(client, db);

@@ -2081,7 +2081,7 @@ export function addScripts(flash: FlashSession) {
       const ipfs = await IPFS.create({});
 
       // Assume build exists.
-      const result = await ipfs.addFromFs('../augur-ui/build', { recursive: true });
+      await ipfs.addFromFs('../augur-ui/build', { recursive: true });
 
       console.log('Running IPFS daemon. Type ctrl-c to quit:\n');
       await waitForSigint();
@@ -2109,11 +2109,22 @@ export function addScripts(flash: FlashSession) {
         abbr: 'd',
         description: 'Print out current warp sync hash and exit.',
         flag: true
+      },
+      {
+        name: 'pinUI [path]',
+        abbr: 'p',
+        description: 'Pin IPFS hash of the ui. Requires -w flag to be set. Defaults to "../augur-ui/build"',
+        flag: true
       }
     ],
     async call(this: FlashSession, args: FlashArguments) {
       const autoReport = Boolean(args.autoReport);
       const showHashAndDie = Boolean(args.showHashAndDie);
+      const useWarpSync = Boolean(args.warpSync);
+
+      let pinUIPath;
+      if(args.pinUI === true) pinUIPath = '../augur-ui/build'
+      else if(args.pinUI !== undefined) pinUIPath = args.pinUI;
 
       this.pushConfig({
         zeroX: {
@@ -2121,7 +2132,7 @@ export function addScripts(flash: FlashSession) {
           mesh: { enabled: false },
         },
         warpSync: {
-          createCheckpoints: Boolean(args.useWarpSync),
+          createCheckpoints: useWarpSync,
           autoReport,
         }
       });
@@ -2153,6 +2164,18 @@ export function addScripts(flash: FlashSession) {
 
       const { api, sync } = await createServer(this.config, client);
       connector.api = api;
+
+      if(pinUIPath && useWarpSync) {
+
+
+        const ipfs = await api.augur.warpController.ipfs;
+
+        // Assume build exists.
+        const result = await ipfs.addFromFs(pinUIPath, { recursive: true });
+        const { hash } = result.pop()
+
+        console.log(`Pinning UI build at path ${pinUIPath} with hash ${hash}`);
+      }
 
       sync();
 
