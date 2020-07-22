@@ -76,7 +76,8 @@ export const MigrateRep = ({
     createBigNumber(gasEstimateInEth)
   );
 
-  const gasInDai = getGasInDai(gasLimit).value;
+  const gasPriceInWei = createBigNumber(GWEI_CONVERSION).multipliedBy(gasPrice);
+  const gasInDai = getGasInDai(gasLimit, gasPriceInWei).value;
   const hasEnoughDaiForGas = createBigNumber(walletBalances.dai).gte(
     createBigNumber(gasInDai)
   );
