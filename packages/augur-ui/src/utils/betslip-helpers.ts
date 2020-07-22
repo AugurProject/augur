@@ -12,6 +12,7 @@ export const convertPositionToBet = (position, marketInfo) => {
     min: marketInfo.min,
     max: marketInfo.max
   });
+  const wager = getWager(position.rawPosition, position.averagePrice);
   return {
     ...position,
     outcomeId: position.outcome,
@@ -19,11 +20,11 @@ export const convertPositionToBet = (position, marketInfo) => {
     amountWon: '0',
     amountFilled: '0',
     price: position.averagePrice,
-    toWin: convertToWin(normalizedPrice, position.rawPosition),
+    toWin: convertToWin(normalizedPrice, wager),
     normalizedPrice,
     outcome: getOutcomeNameWithOutcome(marketInfo, position.outcome),
     shares: position.rawPosition,
-    wager: getWager(position.rawPosition, position.averagePrice),
+    wager,
     dateUpdated: position.timestamp,
   };
 };
