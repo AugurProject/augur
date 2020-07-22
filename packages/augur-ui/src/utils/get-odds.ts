@@ -79,12 +79,14 @@ export const convertToNormalizedPrice = ({
   return normalizedPrice;
 };
 
-export const getNewToWin = (odds, wager, toDecimals = 2) => {
-  const fractional = convertAmericanToFractional(odds);
-  const bnWager = createBigNumber(wager);
-  return bnWager.times(fractional).toFixed(toDecimals);
+export const convertToWin = (normalizedPrice, shares, toDecimals = 2) => {
+  const bnShares = createBigNumber(shares);
+  return bnShares.times(createBigNumber(normalizedPrice)).toFixed(toDecimals);
 };
 
+export const getWager = (shares, price) => {
+  return createBigNumber(shares).times(createBigNumber(price)).toString();
+}
 export const getOddsObject = (normalizedValue: BigNumber, toDecimals = 4) => {
   const percentage: BigNumber = convertToPercentage(
     createBigNumber(normalizedValue)

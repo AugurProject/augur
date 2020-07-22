@@ -5,6 +5,9 @@ import {
   DEFAULT_MARKETS_STATE,
 } from 'modules/markets/store/constants';
 import immutableDelete from 'immutable-delete';
+import { useBetslipStore } from 'modules/trading/store/betslip';
+import { createBigNumber } from 'utils/create-big-number';
+import { getWager, convertToNormalizedPrice, convertToWin } from 'utils/get-odds';
 
 const {
   UPDATE_ORDER_BOOK,
@@ -31,6 +34,7 @@ function processMarketsData(newMarketsData, existingMarketsData) {
 
 export function MarketsReducer(state, action) {
   const updatedState = { ...state };
+  const { betslip, actions: { modifyBet } } = useBetslipStore();
   switch (action.type) {
     case UPDATE_ORDER_BOOK: {
       const { marketId, orderBook } = action;
@@ -88,13 +92,38 @@ export function MarketsReducer(state, action) {
       break;
     }
     case UPDATE_LIQUIDITY_POOLS: {
-      const poolIds = Object.keys(action.liquidityPools);
-      console.log('UPDATE_LIQUIDITY_POOLS', updatedState.liquidityPools, action.liquidityPools);
+      const updatedPools = action.liquidityPools;
+      const poolIds = Object.keys(updatedPools);
+      console.log('UPDATE_LIQUIDITY_POOLS', updatedState.liquidityPools, updatedPools);
       poolIds.forEach(poolId => {
         updatedState.liquidityPools[poolId] = {
           ...updatedState.liquidityPools[poolId],
-          ...action.liquidityPools[poolId],
-        } ;
+          ...updatedPools[poolId],
+        };
+      });
+      // Update betslip
+      Object.keys(betslip.items).map(marketId => {
+        const orders = betslip.items[marketId].orders;
+        orders.map((order, orderId) => {
+          const updatedOrder = updatedPools[marketId] && updatedPools[marketId][order.outcomeId];
+          if (updatedOrder && !(createBigNumber(updatedOrder.price).eq(createBigNumber(order.price)))) {
+            const marketInfo = updatedState.marketInfos[marketId];
+            const normalizedPrice = convertToNormalizedPrice({price: updatedOrder.price, min: marketInfo.min, max: marketInfo.max});
+            const wager = getWager(order.shares, updatedOrder.price);
+            modifyBet(
+              marketId, 
+              orderId, 
+              {
+                ...order, 
+                price: updatedOrder.price, 
+                wager, 
+                normalizedPrice, 
+                toWin: convertToWin(normalizedPrice, order.shares), 
+                recentlyUpdated: true
+              }
+            );
+          }
+        });
       });
       break;
     }
