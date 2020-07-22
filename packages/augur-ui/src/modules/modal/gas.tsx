@@ -78,7 +78,6 @@ export const Gas = (props: GasProps) => {
 
   const updateAmount = (newAmount: number) => {
     let amt = newAmount;
-    if (newAmount) amt = Math.round(Math.abs(Number(amt)));
     setAmount(amt);
     setShowLowAlert(!amt || amt < props.safeLow);
   };

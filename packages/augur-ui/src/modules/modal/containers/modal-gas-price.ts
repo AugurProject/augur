@@ -17,7 +17,7 @@ const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({
   closeAction: () => dispatch(closeModal()),
   saveAction: (userDefinedGasPrice: number, average: number) => {
     dispatch(updateGasPriceInfo({ userDefinedGasPrice }));
-    dispatch(registerUserDefinedGasPriceFunction(userDefinedGasPrice, average));
+    userDefinedGasPrice && dispatch(registerUserDefinedGasPriceFunction(userDefinedGasPrice, average));
     dispatch(closeModal());
   },
 });
