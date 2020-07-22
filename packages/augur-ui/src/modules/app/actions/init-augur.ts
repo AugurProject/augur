@@ -105,7 +105,7 @@ const isNetworkMismatch = async (config, dispatch): boolean => {
   const web3NetworkId = String(createBigNumber(chainId));
   const privateNetwork = isPrivateNetwork(config.networkId);
   const isMisMatched  = privateNetwork ?
-    web3NetworkId !== "NaN" : // MM returns NaN for local networks
+    !(isPrivateNetwork(web3NetworkId) || web3NetworkId === 'NaN') : // MM can return NaN for local networks
     config.networkId !== web3NetworkId;
 
   if (isMisMatched) {
