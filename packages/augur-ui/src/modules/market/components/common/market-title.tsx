@@ -72,6 +72,7 @@ interface MarketTemplateTitleProps {
 
 export const convertInputs = (inputs) => {
   return inputs.map(i => ({
+    timestamp: i.timestamp,
     userInput:
       i.type === TemplateInputType.ESTDATETIME ||
       i.type === TemplateInputType.DATETIME

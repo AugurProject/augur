@@ -261,8 +261,7 @@ interface ValueDenominationProps {
 
 interface TimeLabelProps {
   label: string;
-  time: DateFormattedObject;
-  showLocal?: boolean;
+  time: string;
   hint?: React.ReactNode;
   large?: boolean;
 }
@@ -426,7 +425,6 @@ export const DataArchivedLabel = ({ label }: DataArchivedProps) => {
 export const TimeLabel = ({
   label,
   time,
-  showLocal,
   hint,
   large,
 }: TimeLabelProps) => (
@@ -457,10 +455,7 @@ export const TimeLabel = ({
         </>
       )}
     </span>
-    <span>{time && time.formattedShortUtc}</span>
-    {showLocal && (
-      <span>{time && time.formattedLocalShortDateTimeWithTimezone}</span>
-    )}
+    <span>{time}</span>
   </div>
 );
 
