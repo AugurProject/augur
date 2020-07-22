@@ -186,10 +186,10 @@ class Confirm extends Component<ConfirmProps, ConfirmState> {
       ? createBigNumber(formatGasCostToEther(gasLimit, { decimalsRounded: 4 }, createBigNumber(GWEI_CONVERSION).multipliedBy(gasPrice)))
       : ZERO;
 
-    let gasCostDai = 0;
+    let gasCostDai = formatNumber(0);
 
     if (GsnEnabled) {
-      gasCostDai = getGasInDai(Number(createBigNumber(gasLimit))).fullPrecision;
+      gasCostDai = getGasInDai(Number(createBigNumber(gasLimit)), createBigNumber(GWEI_CONVERSION).multipliedBy(gasPrice));
     }
 
     if (marketType === SCALAR && selectedOutcomeId === INVALID_OUTCOME_ID) {
@@ -238,12 +238,12 @@ class Confirm extends Component<ConfirmProps, ConfirmState> {
       !tradingTutorial &&
       GsnEnabled &&
       totalCost &&
-      createBigNumber(gasCostDai).gte(createBigNumber(availableDai))
+      createBigNumber(gasCostDai.value).gte(createBigNumber(availableDai))
     ) {
       messages = {
         header: 'Insufficient DAI',
         type: ERROR,
-        message: `You do not have enough funds to place this order. ${gasCostDai} DAI required for gas.`,
+        message: `You do not have enough funds to place this order. $${gasCostDai.formatted} DAI required for gas.`,
       };
     }
 
@@ -251,9 +251,9 @@ class Confirm extends Component<ConfirmProps, ConfirmState> {
       !isNaN(numTrades) &&
       numTrades > 0 &&
       ((potentialDaiProfit && potentialDaiProfit.value !== 0 &&
-        createBigNumber(gasCostDai).gt(potentialDaiProfit.value)) ||
+        createBigNumber(gasCostDai.value).gt(potentialDaiProfit.value)) ||
         (orderShareProfit && orderShareProfit.value !== 0 &&
-          createBigNumber(gasCostDai).gt(orderShareProfit.value))) &&
+          createBigNumber(gasCostDai.value).gt(orderShareProfit.value))) &&
       !tradingTutorial
     ) {
       messages = {
@@ -383,12 +383,8 @@ class Confirm extends Component<ConfirmProps, ConfirmState> {
 
     let gasCostDai = formatNumber(0);
 
-    const gasCostInEth = gasLimit
-    ? createBigNumber(formatGasCostToEther(gasLimit, { decimalsRounded: 4 }, createBigNumber(GWEI_CONVERSION).multipliedBy(gasPrice)))
-    : ZERO;
-
     if (GsnEnabled) {
-      gasCostDai = getGasInDai(Number(createBigNumber(gasLimit)));
+      gasCostDai = getGasInDai(Number(createBigNumber(gasLimit)), createBigNumber(GWEI_CONVERSION).multipliedBy(gasPrice));
     }
 
     const limitPricePercentage = (side === BUY
