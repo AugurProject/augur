@@ -118,7 +118,7 @@ export function BetslipReducer(state, action) {
         shares,
         outcomeId,
         price,
-        toWin: convertToWin(normalizedPrice, wager),
+        toWin: convertToWin(normalizedPrice, shares),
         amountFilled: '0',
         amountWon: '0',
         status: UNSENT,
@@ -267,7 +267,7 @@ export function BetslipReducer(state, action) {
       const { marketId, orderId, order } = action;
       const toWin = convertToWin(
         order.normalizedPrice,
-        order.wager
+        order.shares
       );
       betslipItems[marketId].orders[orderId] = { ...order, toWin };
       break;

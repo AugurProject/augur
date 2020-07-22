@@ -79,9 +79,9 @@ export const convertToNormalizedPrice = ({
   return normalizedPrice;
 };
 
-export const convertToWin = (normalizedPrice, wager, toDecimals = 2) => {
-  const bnWager = createBigNumber(wager);
-  return bnWager.times(createBigNumber(normalizedPrice)).toFixed(toDecimals);
+export const convertToWin = (normalizedPrice, shares, toDecimals = 2) => {
+  const bnShares = createBigNumber(shares);
+  return bnShares.times(createBigNumber(normalizedPrice)).toFixed(toDecimals);
 };
 
 export const getWager = (shares, price) => {
