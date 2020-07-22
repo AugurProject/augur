@@ -35,6 +35,7 @@ import {
   ZERO,
   NETWORK_IDS,
   ACCOUNT_ACTIVATION_GAS_COST,
+  DISPUTE_GAS_COST,
 } from 'modules/common/constants';
 import { constructMarketParams } from 'modules/create-market/helpers/construct-market-params';
 import {
@@ -670,11 +671,16 @@ export async function contribute_estimateGas(dispute: doReportDisputeAddStake) {
   const market = getMarket(dispute.marketId);
   if (!market) return false;
   const payoutNumerators = await getPayoutNumerators(dispute);
-  return market.contribute_estimateGas(
-    payoutNumerators,
-    createBigNumber(dispute.attoRepAmount),
-    dispute.description
-  );
+  try {
+    return await market.contribute_estimateGas(
+      payoutNumerators,
+      createBigNumber(dispute.attoRepAmount),
+      dispute.description
+    );
+  } catch (e) {
+    console.error('estimate gas for dispute failed using default');
+    return DISPUTE_GAS_COST;
+  }
 }
 
 export async function contribute(dispute: doReportDisputeAddStake) {
