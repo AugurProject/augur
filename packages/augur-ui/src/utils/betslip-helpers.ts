@@ -1,17 +1,18 @@
-import { convertToNormalizedPrice } from './get-odds';
-import { ASKS, ONE } from 'modules/common/constants';
+import { convertToNormalizedPrice, convertToWin, getWager } from './get-odds';
+import { ASKS } from 'modules/common/constants';
 import { getOutcomeNameWithOutcome } from './get-outcome';
 import { BET_STATUS } from 'modules/trading/store/constants';
 import { Markets } from 'modules/markets/store/markets';
 import { placeTrade } from 'modules/contracts/actions/contractCalls';
 import { Betslip } from 'modules/trading/store/betslip';
-import { createBigNumber } from './create-big-number';
-
-export const convertToWin = (price, quantity) => {
-  return ONE.minus(createBigNumber(price)).times(createBigNumber(quantity)).toString();
-}
 
 export const convertPositionToBet = (position, marketInfo) => {
+  const normalizedPrice = convertToNormalizedPrice({
+    price: position.averagePrice,
+    min: marketInfo.min,
+    max: marketInfo.max
+  });
+  const wager = getWager(position.rawPosition, position.averagePrice);
   return {
     ...position,
     outcomeId: position.outcome,
@@ -19,15 +20,11 @@ export const convertPositionToBet = (position, marketInfo) => {
     amountWon: '0',
     amountFilled: '0',
     price: position.averagePrice,
-    toWin: convertToWin(position.averagePrice, position.rawPosition),
-    normalizedPrice: convertToNormalizedPrice({
-      price: position.averagePrice,
-      min: marketInfo.min,
-      max: marketInfo.max,
-      type: ASKS,
-    }),
+    toWin: convertToWin(normalizedPrice, position.rawPosition),
+    normalizedPrice,
     outcome: getOutcomeNameWithOutcome(marketInfo, position.outcome),
-    wager: position.rawPosition,
+    shares: position.rawPosition,
+    wager,
     dateUpdated: position.timestamp,
   };
 };

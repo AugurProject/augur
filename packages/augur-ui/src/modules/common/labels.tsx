@@ -894,12 +894,14 @@ export const LinearPropertyLabel = ({
   onValueClick,
   regularCase,
   secondary,
+  recentlyUpdated
 }: LinearPropertyLabelProps) => (
   <div
     className={classNames(Styles.LinearPropertyLabel, {
       [Styles.Highlight]: highlight,
       [Styles.HighlightAlternateBolded]: highlightAlternateBolded,
       [Styles.HighlightFirst]: highlightFirst,
+      [Styles.RecentlyUpdated]: recentlyUpdated
     })}
   >
     <span

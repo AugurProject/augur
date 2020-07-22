@@ -26,9 +26,12 @@ import { BET_STATUS, BETSLIP_SELECTED } from 'modules/trading/store/constants';
 import { formatDai } from 'utils/format-number';
 
 import Styles from 'modules/trading/common.styles';
-import { convertToOdds } from 'utils/get-odds';
+import { convertToOdds, getWager } from 'utils/get-odds';
 import { convertUnixToFormattedDate } from 'utils/format-date';
 import { useAppStatusStore } from 'modules/app/store/app-status';
+import { useMarketsStore } from 'modules/markets/store/markets';
+import { createBigNumber } from 'utils/create-big-number';
+import { marketView } from 'modules/market/components/market-view/market-view.styles.less';
 
 export interface EmptyStateProps {
   selectedTab: number;
@@ -60,10 +63,14 @@ export const SportsMarketBets = ({ market }) => {
   const {
     actions: { modifyBet, cancelBet },
   } = useBetslipStore();
+  const {
+    marketInfos
+  } = useMarketsStore();
   const { description, orders } = market[1];
   const bets = orders.map((order, orderId) => ({
     ...order,
     orderId,
+    poolId: marketInfos[marketId]?.sportsBook?.liquidityPool,
     modifyBet: orderUpdate =>
       modifyBet(marketId, orderId, { ...order, ...orderUpdate }),
     cancelBet: () => cancelBet(marketId, orderId),
@@ -113,10 +120,24 @@ export const SportsMarketMyBets = ({ market }) => {
 export const SportsBet = ({ bet }) => {
   const { step } = useBetslipStore();
   const isReview = step === 1;
-  const { outcome, normalizedPrice, wager, toWin, modifyBet, cancelBet } = bet;
+  const { outcome, normalizedPrice, wager, toWin, modifyBet, cancelBet, recentlyUpdated } = bet;
+  const [errorMessage, setErrorMessage] = useState('');
+  const { liquidityPools } = useMarketsStore();
+  const checkWager = (wager) => {
+    const liquidity = liquidityPools[bet.poolId][bet.outcomeId];
+    if (liquidity) {
+      const totalWager = getWager(liquidity.shares, liquidity.price);
+      if (createBigNumber(totalWager).lt(createBigNumber(wager))) {
+        setErrorMessage('Your bet exceeds the max available for this odds');
+        return true;
+      }
+    }
+    setErrorMessage('');
+    return false;
+  }
   return (
     <div
-      className={classNames(Styles.SportsBet, { [Styles.Review]: isReview })}
+      className={classNames(Styles.SportsBet, { [Styles.Review]: isReview, [Styles.RecentlyUpdated]: recentlyUpdated })}
     >
       <header>
         <span>{outcome}</span>
@@ -131,6 +152,7 @@ export const SportsBet = ({ bet }) => {
           <LinearPropertyLabel
             label="odds"
             value={convertToOdds(normalizedPrice).full}
+            recentlyUpdated={recentlyUpdated}
           />
           <LinearPropertyLabel
             label="to win"
@@ -145,6 +167,7 @@ export const SportsBet = ({ bet }) => {
             value={wager}
             valueKey="wager"
             modifyBet={modifyBet}
+            errorCheck={checkWager}
           />
           <BetslipInput
             label="To Win"
@@ -155,6 +178,7 @@ export const SportsBet = ({ bet }) => {
           />
         </>
       )}
+      <span className={Styles.error}>{errorMessage}</span>
     </div>
   );
 };
@@ -271,6 +295,7 @@ export const BetslipInput = ({
   modifyBet,
   disabled = false,
   noEdit = false,
+  errorCheck,
 }) => {
   const [curVal, setCurVal] = useState(formatDai(value).full);
   const [invalid, setInvalid] = useState(false);
@@ -301,7 +326,7 @@ export const BetslipInput = ({
           modifyBet({ [valueKey]: updatedValue });
           // make sure to add the $ to the updated view
           setCurVal(formatDai(updatedValue).full);
-          setInvalid(false);
+          setInvalid(errorCheck(updatedValue));
         }}
         disabled={disabled || noEdit}
       />
