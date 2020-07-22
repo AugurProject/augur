@@ -541,14 +541,6 @@
         }
       }
     }
-    }
-
-    
-}
-
-:root[theme="SPORTS"] {
-  .MyBetsSubheader {
-    display: none;
   }
 }
 
@@ -568,18 +560,22 @@
     }
   }
 
-  &.Hide {
-    display: none;
-  }
-
   @media @breakpoint-max-desktop-min {
     display: none;
   }
 }
 
 :root[theme="SPORTS"] {
+  .MyBetsSubheader {
+    display: none;
+  }
+
   .SideImages {
     display: block;
+
+    &.Hide {
+      display:  none;
+    }
   }
 }
 

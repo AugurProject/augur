@@ -66,7 +66,7 @@ export const Slider = ({images}: SliderProps) => {
     <div className={Styles.SliderContainer}>
       <div className={Styles.Slider} style={{transition: `transform ${transition}s ease`, transform: `translateX(${-activeSlide * 100}%)`}}>
         {images.map(({alignment, image, text, button}) => (
-          <div style={{backgroundImage: `url(${image})`}}>
+          <div key={`${text}`} style={{backgroundImage: `url(${image})`}}>
             <div className={classNames({
               [Styles.LeftAligned]: alignment === 'left',
               [Styles.RightAligned]: alignment === 'right',
