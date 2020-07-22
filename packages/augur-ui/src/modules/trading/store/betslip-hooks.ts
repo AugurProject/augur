@@ -1,6 +1,6 @@
 import { useReducer } from 'react';
 import { formatDate } from 'utils/format-date';
-import { getNewToWin, getOddsObject, convertToWin, getWager } from 'utils/get-odds';
+import { convertToWin, getOddsObject, getWager } from 'utils/get-odds';
 
 import { ZERO, ODDS_TYPE } from 'modules/common/constants';
 import {
@@ -265,8 +265,8 @@ export function BetslipReducer(state, action) {
     }
     case MODIFY_BET: {
       const { marketId, orderId, order } = action;
-      const toWin = getNewToWin(
-        getOddsObject(order.normalizedPrice)[ODDS_TYPE.AMERICAN].value,
+      const toWin = convertToWin(
+        order.normalizedPrice,
         order.wager
       );
       betslipItems[marketId].orders[orderId] = { ...order, toWin };
