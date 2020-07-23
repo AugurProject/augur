@@ -101,6 +101,7 @@ export const simulateBetslipTrade = (marketId, order, orderId) => {
     Betslip.actions.modifyBet(marketId, orderId, {
       ...order,
       selfTrade: simulateTradeData.selfTrade,
+      errorMessage: simulateTradeData.selfTrade ? 'Consuming own order' : ''
     });
   })();
 }

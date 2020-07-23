@@ -280,16 +280,13 @@ export function BetslipReducer(state, action) {
         order.shares
       );
       betslipItems[marketId].orders[orderId] = { ...order, toWin };
+      updatedState.placeBetsDisabled = checkForDisablingPlaceBets(betslipItems);
       break;
     }
     case MODIFY_BET_ERROR_MESSAGE: {
       const { marketId, orderId, errorMessage } = action;
       betslipItems[marketId].orders[orderId] = { ...betslipItems[marketId].orders[orderId], errorMessage: errorMessage };
-      if (errorMessage && errorMessage !== '') {
-        updatedState.placeBetsDisabled = true;
-      } else {
-        updatedState.placeBetsDisabled = checkForDisablingPlaceBets(betslipItems);
-      }
+      updatedState.placeBetsDisabled = checkForDisablingPlaceBets(betslipItems);
       break;
     }
     case CANCEL_BET: {

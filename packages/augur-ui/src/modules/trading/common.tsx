@@ -124,11 +124,6 @@ export const SportsBet = ({ bet }) => {
   const isReview = step === 1;
   const { outcome, normalizedPrice, wager, toWin, modifyBet, modifyBetErrorMessage, cancelBet, recentlyUpdated, errorMessage } = bet;
   const { liquidityPools } = useMarketsStore();
-  useEffect(() => {
-    if (bet.selfTrade) {
-      modifyBetErrorMessage('Consuming own order');
-    }
-  }, [bet.selfTrade]);
   const checkWager = (wager) => {
     if (wager === '' || isNaN(Number(wager))) {
       modifyBetErrorMessage('Enter a valid number');
