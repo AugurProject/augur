@@ -52,4 +52,4 @@ read_options(){
 print_menu;
 AUGUR_ENV=$(read_options);
 
-docker run -e ETH_NODE_URL=${ETH_NODE_URL:-$DEFAULT_ETH_NODE_URL} -e AUGUR_ENV=$AUGUR_ENV augurproject/sdk;
+docker run -e ETH_NODE_URL=${ETH_NODE_URL:-$DEFAULT_ETH_NODE_URL} -e AUGUR_ENV=$AUGUR_ENV augurproject/augur:runner;
