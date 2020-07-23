@@ -10,7 +10,7 @@ import {
 } from 'utils/format-number';
 import {
   GWEI_CONVERSION,
-  NEW_ORDER_GAS_ESTIMATE,
+  TRADE_ORDER_GAS_MODAL_ESTIMATE,
 } from 'modules/common/constants';
 import { createBigNumber } from 'utils/create-big-number';
 import classNames from 'classnames';
@@ -36,7 +36,7 @@ interface GasState {
 export const getEthTradeCost = (gasPrice: number) => {
   return formatEtherEstimate(
     formatGasCostToEther(
-      NEW_ORDER_GAS_ESTIMATE,
+      TRADE_ORDER_GAS_MODAL_ESTIMATE,
       { decimalsRounded: 4 },
       createBigNumber(GWEI_CONVERSION).multipliedBy(gasPrice)
     )
@@ -122,7 +122,7 @@ export const Gas = (props: GasProps) => {
     },
   ];
 
-  const gasCostTrade = displayGasInDai(NEW_ORDER_GAS_ESTIMATE, amount * 10**9);
+  const gasCostTrade = displayGasInDai(TRADE_ORDER_GAS_MODAL_ESTIMATE, amount * 10**9);
   return (
     <div onClick={event => event.stopPropagation()} className={Styles.Gas}>
       <Title title='Transaction Fee' closeAction={closeAction} />
@@ -147,7 +147,7 @@ export const Gas = (props: GasProps) => {
                 <span>{data.avgTime}</span>
               </div>
               <div>
-              <span>{displayGasInDai(NEW_ORDER_GAS_ESTIMATE, data.gwei * 10**9)}</span>
+              <span>{displayGasInDai(TRADE_ORDER_GAS_MODAL_ESTIMATE, data.gwei * 10**9)}</span>
                 <span> / Trade</span>
               </div>
             </div>
