@@ -43,13 +43,12 @@ export const ModalCreateMarket = () => {
   return (
     <Message
       title={'Final confirmation'}
-      subheader={{
+      subheaders={[{
         header: 'Are you sure you want to proceeed?',
         subheaders: [
           'Once you create the market you can’t make any changes to the market or resolution details. Ensure that all market details are accurate before proceeding.',
         ],
-      }}
-      subheader_2={{
+      }, {
         header: 'Ready to proceed? Here’s what happens next, you will:',
         numbered: true,
         subheaders: [
@@ -57,7 +56,7 @@ export const ModalCreateMarket = () => {
           'Receive an alert when the market has been processed',
           'Receive a notification in your Account Summary to submit any initial liquidity previously entered',
         ],
-      }}
+      }]}
       closeAction={() => closeModal()}
       buttons={[
         {
@@ -187,10 +186,17 @@ export const ModalDrQuickGuide = () => {
   const guide =
     modal.whichGuide === 'reporting' ? REPORTING_GUIDE : DISPUTING_GUIDE;
 
+  const subheaders = guide.content.map(content => {
+    return {
+      header: content.header,
+      subheaders: content.paragraphs
+    }
+  });
+
   return (
     <Message
       title={guide.title}
-      description={guide.content}
+      subheaders={subheaders}
       closeAction={() => {
         closeModal();
       }}

@@ -62,8 +62,7 @@ interface MessageProps {
   depositInfo?: DepositInfoProps;
   marketReview?: MarketReviewProps;
   checkbox?: CheckboxCTAProps;
-  subheader?: string;
-  subheader_2?: string;
+  subheaders?: object[];
   showDiscordLink?: boolean;
   invalidMarketRules?: boolean;
   showAddFundsHelp?: boolean;
@@ -90,8 +89,8 @@ export const Message = ({
   checkbox,
   content,
   buttons = [],
+  subheaders,
   subheader,
-  subheader_2,
   showDiscordLink,
   invalidMarketRules,
   showAddFundsHelp = false,
@@ -127,8 +126,13 @@ export const Message = ({
       {showDiscordLink && (
         <DiscordLink label="Please try again. If the issue persists please report it on " />
       )}
-      {subheader && <Subheader subheaderContent={subheader} />}
-      {subheader_2 && <Subheader subheaderContent={subheader_2} />}
+
+      {subheaders && (
+        subheaders.map(subheader => {
+          return <Subheader subheaderContent={subheader} />;
+        })
+      )}
+
       {breakdown && <Breakdown rows={breakdown} />}
       {readableAddress && <ReadableAddress {...readableAddress} />}
       {depositInfo && <DepositInfo {...depositInfo} />}
