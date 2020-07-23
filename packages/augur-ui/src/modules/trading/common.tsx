@@ -61,11 +61,9 @@ export const EmptyState = () => {
 export const SportsMarketBets = ({ market }) => {
   const marketId = market[0];
   const {
-    actions: { modifyBet, cancelBet },
+    actions: { modifyBet, cancelBet, modifyBetErrorMessage },
   } = useBetslipStore();
-  const {
-    marketInfos
-  } = useMarketsStore();
+  const { marketInfos } = useMarketsStore();
   const { description, orders } = market[1];
   const bets = orders.map((order, orderId) => ({
     ...order,
@@ -73,6 +71,8 @@ export const SportsMarketBets = ({ market }) => {
     poolId: marketInfos[marketId]?.sportsBook?.liquidityPool,
     modifyBet: orderUpdate =>
       modifyBet(marketId, orderId, { ...order, ...orderUpdate }),
+    modifyBetErrorMessage: errorMessage =>
+      modifyBetErrorMessage(marketId, orderId, errorMessage),
     cancelBet: () => cancelBet(marketId, orderId),
   }));
   return (
@@ -118,26 +118,48 @@ export const SportsMarketMyBets = ({ market }) => {
 };
 
 export const SportsBet = ({ bet }) => {
-  const { step } = useBetslipStore();
+  const {
+    step,
+    actions: { setDisablePlaceBets },
+  } = useBetslipStore();
   const isReview = step === 1;
-  const { outcome, normalizedPrice, wager, toWin, modifyBet, cancelBet, recentlyUpdated } = bet;
-  const [errorMessage, setErrorMessage] = useState('');
+  const {
+    outcome,
+    normalizedPrice,
+    wager,
+    toWin,
+    modifyBet,
+    modifyBetErrorMessage,
+    cancelBet,
+    recentlyUpdated,
+    errorMessage,
+    selfTrade,
+  } = bet;
   const { liquidityPools } = useMarketsStore();
-  const checkWager = (wager) => {
+  const checkWager = wager => {
+    if (wager === '' || isNaN(Number(wager))) {
+      modifyBetErrorMessage('Enter a valid number');
+      return true;
+    }
     const liquidity = liquidityPools[bet.poolId][bet.outcomeId];
     if (liquidity) {
       const totalWager = getWager(liquidity.shares, liquidity.price);
       if (createBigNumber(totalWager).lt(createBigNumber(wager))) {
-        setErrorMessage('Your bet exceeds the max available for this odds');
+        modifyBetErrorMessage(
+          'Your bet exceeds the max available for this odds'
+        );
         return true;
       }
     }
-    setErrorMessage('');
+    modifyBetErrorMessage('');
     return false;
-  }
+  };
   return (
     <div
-      className={classNames(Styles.SportsBet, { [Styles.Review]: isReview, [Styles.RecentlyUpdated]: recentlyUpdated })}
+      className={classNames(Styles.SportsBet, {
+        [Styles.Review]: isReview,
+        [Styles.RecentlyUpdated]: recentlyUpdated,
+      })}
     >
       <header>
         <span>{outcome}</span>
@@ -168,6 +190,7 @@ export const SportsBet = ({ bet }) => {
             valueKey="wager"
             modifyBet={modifyBet}
             errorCheck={checkWager}
+            noEdit={selfTrade}
           />
           <BetslipInput
             label="To Win"
@@ -299,12 +322,6 @@ export const BetslipInput = ({
 }) => {
   const [curVal, setCurVal] = useState(formatDai(value).full);
   const [invalid, setInvalid] = useState(false);
-  useEffect(() => {
-    const cleanCurVal = curVal.replace('$', '');
-    if (cleanCurVal !== value) {
-      setCurVal(formatDai(value).full);
-    }
-  }, [value]);
   return (
     <div
       className={classNames(Styles.BetslipInput, {
@@ -317,16 +334,16 @@ export const BetslipInput = ({
         onChange={e => {
           const newVal = e.target.value.replace('$', '');
           setCurVal(newVal);
-          setInvalid(isNaN(Number(newVal)));
+          setInvalid(errorCheck(newVal));
         }}
         value={curVal}
         onBlur={() => {
-          // if the value isn't a valid number, we revert to what it was.
-          const updatedValue = isNaN(Number(curVal)) ? value : curVal;
-          modifyBet({ [valueKey]: updatedValue });
-          // make sure to add the $ to the updated view
-          setCurVal(formatDai(updatedValue).full);
-          setInvalid(errorCheck(updatedValue));
+          const checkError = errorCheck(curVal);
+          setInvalid(checkError);
+          if (!checkError) {
+            modifyBet({ [valueKey]: curVal });
+          }
+          setCurVal(isNaN(Number(curVal)) ? curVal : formatDai(curVal).full);
         }}
         disabled={disabled || noEdit}
       />
@@ -426,6 +443,7 @@ export const BetslipFooter = () => {
       toggleHeader,
     },
     step,
+    placeBetsDisabled,
   } = useBetslipStore();
   const { wager, potential, fees } = calculateBetslipTotals(betslip);
   const bet = formatDai(wager).full;
@@ -456,7 +474,7 @@ export const BetslipFooter = () => {
               />
             </div>
           )}
-          {!isReview && (
+          {!isReview && !placeBetsDisabled && (
             <span>
               {`You're Betting `}
               <b>{bet}</b>
@@ -475,6 +493,7 @@ export const BetslipFooter = () => {
           />
           <PrimaryButton
             text={!isReview ? 'Place Bets' : 'Confirm Bets'}
+            disabled={placeBetsDisabled}
             action={() => {
               if (!isReview) {
                 toggleStep();
