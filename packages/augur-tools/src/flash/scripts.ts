@@ -2077,7 +2077,7 @@ export function addScripts(flash: FlashSession) {
             console.log('Stopping geth');
             await spawnSync('docker', ['kill', 'geth'], { stdio: 'inherit' });
           }
-          console.log('Stopping dockers');
+          console.log('Stopping dockers. Will throw "variable not set" errors in geth did not start.');
           await spawn('docker-compose', ['-f', 'docker-compose.yml', 'down'], {env, stdio: 'inherit'});
         }
       }

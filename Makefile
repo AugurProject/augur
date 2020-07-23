@@ -31,7 +31,7 @@ build-contracts: build-typescript venv
 	deactivate
 
 docker-all: build-typescript
-	yarn docker:all
+	yarn docker:all $(ARGS)
 
 download-packages: yarn
 	yarn
