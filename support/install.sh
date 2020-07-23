@@ -6,12 +6,12 @@ DEFAULT_ETH_NODE_URL="http://localhost:8545";
 echo "$BUFFER_TEXT\n  Welcome friend of Augur$BUFFER_TEXT";
 
 # Check docker is present
-if ! command -v docker &> /dev/null
+if [ -x "$(command -v docker)" ]
 then
-  echo "You need Docker installed and configured in order to run the augur services. See: https://docs.docker.com/get-docker/ for instrusctions.\n";
-  exit 1;
-else
   echo "Your system already has access to Docker, you're good to go!\n";
+else
+  echo "You need Docker installed and configured in order to run the augur services. See: https://docs.docker.com/get-docker/ for instructions.\n";
+  exit 1;
 fi
 
 docker info > /dev/null 2>&1;
