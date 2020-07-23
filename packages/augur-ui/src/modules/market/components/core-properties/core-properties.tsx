@@ -51,8 +51,7 @@ const CoreProperties: React.FC<CorePropertiesProps> = ({
           {reportingBarShowing && (
             <TimeLabel
               label="Event Expiration"
-              time={market.endTimeFormatted}
-              showLocal
+              time={market.endTimeFormatted.formattedShortUtc}
               hint={
                 <>
                   <h4>{EVENT_EXPIRATION_TOOLTIP.header}</h4>
@@ -73,7 +72,7 @@ const CoreProperties: React.FC<CorePropertiesProps> = ({
               />
               <TimeLabel
                 label="Date Created"
-                time={market.creationTimeFormatted}
+                time={market.creationTimeFormatted.formattedShortUtc}
               />
             </>
           )}
@@ -150,12 +149,11 @@ const CoreProperties: React.FC<CorePropertiesProps> = ({
           <div className={Styles.TimeSection}>
             <TimeLabel
               label="Date Created"
-              time={market.creationTimeFormatted}
+              time={market.creationTimeFormatted.formattedShortUtc}
             />
             <TimeLabel
               label="Event Expiration"
-              time={market.endTimeFormatted}
-              showLocal
+              time={market.endTimeFormatted.formattedLocalShortDateTimeWithTimezone}
               hint={
                 <>
                   <h4>{EVENT_EXPIRATION_TOOLTIP.header}</h4>

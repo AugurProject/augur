@@ -69,7 +69,7 @@ export function processRows(
     return {
       ...myBets[key],
       ...marketInfo,
-      startTime: estDateTime?.userInput,
+      startTime: estDateTime?.timestamp,
       marketId: key
     };
   });

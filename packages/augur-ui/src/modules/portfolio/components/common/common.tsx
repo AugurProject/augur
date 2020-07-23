@@ -104,7 +104,7 @@ export const Game = ({ row, type }: GameProps) => (
         <CountdownProgress
           alignRight
           label="Estimated Event Start Time"
-          value={row.startTime}
+          value={convertUnixToFormattedDate(row.startTime).formattedUtc}
         />
       ) : (
         <span />

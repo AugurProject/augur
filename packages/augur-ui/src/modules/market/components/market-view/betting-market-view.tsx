@@ -21,11 +21,16 @@ import { loadMarketsInfo } from 'modules/markets/actions/load-markets-info';
 import { useMarketsStore } from 'modules/markets/store/markets';
 import { MARKET } from 'modules/routes/constants/views';
 import parsePath from 'modules/routes/helpers/parse-path';
+import { convertInputs, findStartTime } from '../common/market-title';
+import { convertUnixToFormattedDate } from 'utils/format-date';
 
-export const isMarketView = location => parsePath(location.pathname)[0] === MARKET;
+export const isMarketView = location =>
+  parsePath(location.pathname)[0] === MARKET;
 
 const BettingMarketView = () => {
-  const { actions: { updateMarketsData } } = useMarketsStore();
+  const {
+    actions: { updateMarketsData },
+  } = useMarketsStore();
   const location = useLocation();
   const queryId = parseQuery(location.search)[MARKET_ID_PARAM_NAME];
   const marketId = getAddress(queryId);
@@ -33,7 +38,10 @@ const BettingMarketView = () => {
   const markets = getMarkets();
   let sportsGroup = null;
   if (market.sportsBook) {
-    sportsGroup = getSportsGroupsFromSportsIDs([market.sportsBook.groupId], markets)[0];
+    sportsGroup = getSportsGroupsFromSportsIDs(
+      [market.sportsBook.groupId],
+      markets
+    )[0];
   } else {
     updateMarketsData(null, loadMarketsInfo([marketId]));
   }
@@ -49,8 +57,14 @@ const BettingMarketView = () => {
     description,
     details,
     settlementFee,
+    template,
+    sportsBook,
   } = market;
-  const header = market.sportsBook ? market.sportsBook.header : description;
+  const header = sportsBook ? sportsBook.header : description;
+  const convertedInputs = template && convertInputs(template.inputs);
+  const estDateTime = convertedInputs && findStartTime(convertedInputs);
+  const startTimeFormatted =
+    estDateTime && convertUnixToFormattedDate(estDateTime.timestamp);
   return (
     <div className={Styles.BettingMarketView}>
       <div>
@@ -73,13 +87,16 @@ const BettingMarketView = () => {
                 : formatPercent(Number(settlementFee) * 100).full
             }
           />
-          <TimeLabel
-            label="Estimated Start Time"
-            time={endTimeFormatted}
-            showLocal
-            large
-            hint={<h4>Estimated Start Time</h4>}
-          />
+          {startTimeFormatted ? (
+            <TimeLabel
+              label="Estimated Start Time"
+              time={startTimeFormatted.formattedUtc}
+              large
+              hint={<h4>Estimated Start Time</h4>}
+            />
+          ) : (
+            <div />
+          )}
         </div>
       </div>
       {sportsGroup && <SportsGroupMarkets sportsGroup={sportsGroup} />}
