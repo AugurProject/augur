@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 
 import { Breakdown } from 'modules/modal/common';
-import { formatDai, formatGasCostToEther } from 'utils/format-number';
+import { formatDai, formatGasCostToEther, formatNumber } from 'utils/format-number';
 import isAddress from 'modules/auth/helpers/is-address';
 import Styles from 'modules/modal/modal.styles.less';
 import { createBigNumber } from 'utils/create-big-number';
@@ -22,7 +22,7 @@ import {
   FEE_RESERVES_LABEL,
   GWEI_CONVERSION,
 } from 'modules/common/constants';
-import { AutoCancelOrdersNotice } from 'modules/common/labels';
+import { AutoCancelOrdersNotice, InsufficientFundsNotice } from 'modules/common/labels';
 
 interface CashOutFormProps {
   closeAction: Function;
@@ -30,7 +30,6 @@ interface CashOutFormProps {
   transferFunds: Function;
   withdrawAllFundsEstimateGas: Function;
   transferFundsGasEstimate: Function;
-  account: string;
   GsnEnabled: boolean;
   ethToDaiRate: FormattedNumber;
   gasPrice: number;
@@ -51,7 +50,6 @@ export const CashOutForm = ({
   transferFunds,
   withdrawAllFundsEstimateGas,
   transferFundsGasEstimate,
-  account,
   gasPrice,
   totalOpenOrderFundsFormatted,
   availableFundsFormatted,
@@ -62,11 +60,14 @@ export const CashOutForm = ({
   signerEth,
 }: CashOutFormProps) => {
   const [gasCosts, setGasCosts] = useState(
-    createBigNumber(TRANSFER_DAI_GAS_COST)
+    createBigNumber(0)
   );
   const [address, setAddress] = useState('');
   const [errors, setErrors] = useState('');
   const [signerPays, setSignerPays] = useState(true);
+  const [gasInDai, setGasInDai] = useState(formatNumber(0));
+  const [amountDai, setAmountDai] = useState(formatDai(0));
+  const [insufficientFunds, setInsufficientFunds] = useState(false);
 
   async function getGasCost(account) {
     let gas = gasCosts;
@@ -82,20 +83,39 @@ export const CashOutForm = ({
     }
     setSignerPays(signerPays);
     if (signerPays) {
-      return setGasCosts(createBigNumber(gas));
+      setGasInDai(getGasInDai(
+        createBigNumber(gas), createBigNumber(GWEI_CONVERSION).times(createBigNumber(gasPrice))
+      ));
+      setAmountDai(formatDai(totalDai));
+      return setGasCosts(gas);
     }
-    const testHalfDaiAmount = String(createBigNumber(totalDai).div(2));
-    const relayerGasCosts = await transferFundsGasEstimate(
-      testHalfDaiAmount,
-      account
-    );
-    setGasCosts(createBigNumber(relayerGasCosts));
+    estimateTransfer(account);
   }
 
-  useEffect(() => {
-    getGasCost(account);
-  }, []);
-
+  const estimateTransfer = async (account) => {
+    const testHalfDaiAmount = String(createBigNumber(totalDai).div(2));
+    let gas = TRANSFER_DAI_GAS_COST;
+    try {
+      gas = await transferFundsGasEstimate(
+        testHalfDaiAmount,
+        account
+      );
+    } catch (e) {
+      // user doesn't have enough DAI to pay relayer cost.
+    }
+    const gasInDaiEstimate = getGasInDai(
+      createBigNumber(gas), createBigNumber(GWEI_CONVERSION).times(createBigNumber(gasPrice))
+    );
+    const daiAmount = formatDai(
+      createBigNumber(totalDai).minus(createBigNumber(gasInDaiEstimate.value))
+    );
+    if (createBigNumber(daiAmount.value).lt(0)) {
+      setInsufficientFunds(true);
+    }
+    setGasInDai(gasInDaiEstimate);
+    setAmountDai(daiAmount);
+    setGasCosts(createBigNumber(gas));
+  }
   const action = (address, signerPays, amount) => {
     return signerPays
       ? withdrawAllFunds(address)
@@ -113,16 +133,10 @@ export const CashOutForm = ({
     }
     setAddress(address);
     setErrors(updatedErrors);
+    if (!updatedErrors) {
+      getGasCost(address);
+    }
   };
-
-  const gasInDai = getGasInDai(
-    createBigNumber(gasCosts).times(createBigNumber(gasPrice))
-  );
-  const formattedTotalMinusGasInDai = signerPays
-    ? formatDai(totalDai)
-    : formatDai(
-        createBigNumber(totalDai).minus(createBigNumber(gasInDai.value))
-      );
 
   const breakdown = [
     {
@@ -164,14 +178,14 @@ export const CashOutForm = ({
 
   breakdown.push({
     label: 'Total',
-    value: totalDaiFormatted,
+    value: signerPays ? totalDaiFormatted : amountDai,
     showDenomination: true,
   });
 
   const isValid =
     errors.length === 0 &&
     address.length > 0 &&
-    formattedTotalMinusGasInDai.value > 0;
+    amountDai.value > 0;
 
   return (
     <div className={Styles.WithdrawForm}>
@@ -200,6 +214,7 @@ export const CashOutForm = ({
         </div>
         <Breakdown rows={breakdown} />
         {totalOpenOrderFundsFormatted.value > 0 && <AutoCancelOrdersNotice />}
+        {insufficientFunds && <InsufficientFundsNotice />}
       </main>
       <div>
         <ProcessingButton
@@ -208,7 +223,7 @@ export const CashOutForm = ({
             action(
               address,
               signerPays,
-              formattedTotalMinusGasInDai.fullPrecision
+              amountDai.fullPrecision
             )
           }
           queueName={TRANSACTIONS}
