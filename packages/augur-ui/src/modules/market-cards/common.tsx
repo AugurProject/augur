@@ -1522,7 +1522,7 @@ export const TradingSideSection = ({
   );
 };
 
-export function getCategoriesWithClick(categories) {
+export function getCategoriesWithClick(categories, history) {
   const path = { pathname: makePath(MARKETS) };
   const categoriesLowerCased =
     categories && categories.map(item => item.toLowerCase());

@@ -5,14 +5,14 @@ import { MARKET_ID_PARAM_NAME } from 'modules/routes/constants/param-names';
 import { getAddress } from 'ethers/utils/address';
 import { selectMarket } from 'modules/markets/selectors/market';
 import Styles from 'modules/market/components/market-view/betting-market-view.styles.less';
-import { HeadingBar, InfoTicket } from '../common/common';
+import { HeadingBar, InfoTicket } from 'modules/market/components/common/common';
 import { PropertyLabel, TimeLabel } from 'modules/common/labels';
 import { formatPercent, formatDai } from 'utils/format-number';
 import { Subheaders } from 'modules/reporting/common';
 import {
-  StarIconSportsBetting,
   BetsIcon,
-  PositionIcon,
+  BettorsIcon,
+  DaiLogoIcon
 } from 'modules/common/icons';
 import { SportsGroupMarkets } from 'modules/market-cards/common';
 import { getSportsGroupsFromSportsIDs } from 'modules/markets-list/components/markets-list';
@@ -95,7 +95,12 @@ const BettingMarketView = () => {
               hint={<h4>Estimated Start Time</h4>}
             />
           ) : (
-            <div />
+            <TimeLabel
+              label="Event Expiration Date"
+              time={endTimeFormatted.formattedUtc}
+              large
+              hint={<h4>Event Expiration Date</h4>}
+            />
           )}
         </div>
       </div>
@@ -117,19 +122,19 @@ const BettingMarketView = () => {
       </div>
       <div>
         <InfoTicket
-          icon={StarIconSportsBetting}
+          icon={BettorsIcon}
           value="43"
-          subheader="People tagged this market as favorite"
+          subheader="Number of bettors on this event"
         />
         <InfoTicket
           icon={BetsIcon}
           value="148"
-          subheader="Bets were placed on this market"
+          subheader="Bets were placed on this event"
         />
         <InfoTicket
-          icon={PositionIcon}
+          icon={DaiLogoIcon}
           value={formatDai(sportsGroup?.totalVolume || '0').full}
-          subheader="Is the amount traded on this market"
+          subheader="Is the amount traded on this event"
         />
       </div>
     </div>

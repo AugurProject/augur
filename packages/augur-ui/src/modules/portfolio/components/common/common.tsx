@@ -1,4 +1,5 @@
 import React from 'react';
+import { useHistory } from 'react-router';
 import {
   TemplateShield,
   InReportingLabel,
@@ -91,41 +92,45 @@ export interface GameProps {
   row: Object;
   type: string;
 }
-export const Game = ({ row, type }: GameProps) => (
-  <div className={Styles.Game}>
-    <div>
-      <TemplateShield market={row} />
-      <InReportingLabel
-        reportingState={row.reportingState}
-        disputeInfo={null}
-      />
-      <CategoryTagTrail categories={getCategoriesWithClick(row.categories)} />
-      {row.startTime ? (
-        <CountdownProgress
-          alignRight
-          label="Estimated Event Start Time"
-          value={convertUnixToFormattedDate(row.startTime).formattedUtc}
+export const Game = ({ row, type }: GameProps) => {
+  const history = useHistory();
+  return (
+    <div className={Styles.Game}>
+      <div>
+        <TemplateShield market={row} />
+        <InReportingLabel
+          reportingState={row.reportingState}
+          disputeInfo={null}
         />
-      ) : (
-        <span />
-      )}
-      <MarketLink id={row.id}>
-        <span>{row.description}</span>
-      </MarketLink>
-    </div>
-    <div>
-      <BetsHeader />
-      {Object.values(row.orders).map(order => (
-        <BetRow
-          key={order.outcomeId}
-          outcome={order}
-          showExtraRow={type !== FUTURES}
+        <CategoryTagTrail
+          categories={getCategoriesWithClick(row.categories, history)}
         />
-      ))}
+        {row.startTime ? (
+          <CountdownProgress
+            alignRight
+            label="Estimated Event Start Time"
+            value={convertUnixToFormattedDate(row.startTime).formattedUtc}
+          />
+        ) : (
+          <span />
+        )}
+        <MarketLink id={row.id}>
+          <span>{row.description}</span>
+        </MarketLink>
+      </div>
+      <div>
+        <BetsHeader />
+        {Object.values(row.orders).map(order => (
+          <BetRow
+            key={order.outcomeId}
+            outcome={order}
+            showExtraRow={type !== FUTURES}
+          />
+        ))}
+      </div>
     </div>
-  </div>
-);
-
+  );
+};
 export interface OutcomesProps {
   rows: Object[];
 }

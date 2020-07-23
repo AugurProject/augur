@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import classNames from 'classnames';
+import { useLocation, useHistory } from 'react-router';
+
 import {
   TopRow,
   getCategoriesWithClick,
@@ -17,7 +19,6 @@ import { CountdownProgress, formatTime } from 'modules/common/progress';
 import Styles from 'modules/market-cards/sports-market-card.styles.less';
 import MarketTitle from 'modules/market/components/common/market-title';
 import { ThickChevron } from 'modules/common/icons';
-import { useLocation } from 'react-router';
 import { LoadingCard } from 'modules/market-cards/market-card';
 import { MarketInfos } from 'modules/types';
 
@@ -50,6 +51,7 @@ export const SportsMarketCard = ({
 }: SportsMarketCardProps) => {
   const [showMore, setShowMore] = useState(determineStartState(sportsGroup));
   const location = useLocation();
+  const history = useHistory();
   if (loading) {
     return <LoadingCard />;
   }
@@ -82,7 +84,7 @@ export const SportsMarketCard = ({
     >
       <TopRow
         market={market}
-        categoriesWithClick={getCategoriesWithClick(categories)}
+        categoriesWithClick={getCategoriesWithClick(categories, history)}
       />
       <MarketTitle id={market.id} headerType={headerType} />
       <SportsGroupMarkets sportsGroup={sportsGroup} />
