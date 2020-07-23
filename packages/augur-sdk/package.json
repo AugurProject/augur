@@ -24,7 +24,8 @@
     "start-kovan": "ETHEREUM_HTTP=https://kovan.augur.net/ethereum-http yarn start",
     "build:documentation": "yarn typedoc --theme markdown --disableOutputCheck --ignoreCompilerErrors --out ../../docs/sdk ./src",
     "check": "gts check",
-    "fix": "gts fix"
+    "fix": "gts fix",
+    "prepare": "tsc -b"
   },
   "repository": {
     "type": "git",

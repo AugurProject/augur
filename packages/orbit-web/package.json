@@ -10,7 +10,8 @@
     "lint:fix": "eslint --fix src/ test/",
     "start": "webpack-dev-server --mode=development",
     "test-server": "http-server ./dist -s -p 8088",
-    "test": "npm run lint && jest --runInBand"
+    "test": "npm run lint && jest --runInBand",
+    "prepare": "webpack --mode=production"
   },
   "repository": {
     "type": "git",

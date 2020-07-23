@@ -14,7 +14,7 @@
     "build": "tsc -b",
     "watch": "tsc -w",
     "nuke": "rm -f package-lock.json; rm -f yarn.lock; rm -rf node_modules; yarn clean",
-    "prepare": "tsc",
+    "prepare": "tsc -b",
     "prepush": "yarn lint"
   },
   "repository": {

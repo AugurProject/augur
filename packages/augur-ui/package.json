@@ -41,7 +41,8 @@
     "docker:spin-up": "npm run docker:pull && npm run docker:start",
     "git:push:protected": "PUSH_PROTECTED_BRANCHES=true git push",
     "prepush": "yarn test && node scripts/pre-push.js",
-    "sitemap": "node src/modules/sitemap/react-sitemap.js"
+    "sitemap": "node src/modules/sitemap/react-sitemap.js",
+    "prepare": "tsc -b"
   },
   "dependencies": {
     "3id-blockchain-utils": "0.3.3",

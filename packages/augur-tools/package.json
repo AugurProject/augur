@@ -25,7 +25,8 @@
     "deploy:merge": "scripts/deploy-merge-addresses.py",
     "flash": "ts-node ./src/flash/cli",
     "blockstream-console": "ts-node ./src/blockstream-console.ts",
-    "run:gsn": "oz-gsn run-relayer"
+    "run:gsn": "oz-gsn run-relayer",
+    "prepare": "tsc -b"
   },
   "repository": {
     "type": "git",
