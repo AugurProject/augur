@@ -1,6 +1,6 @@
 {
   "name": "orbit-web",
-  "version": "2.0.0-alpha.2",
+  "version": "2.0.1-alpha.0",
   "description": "Orbit Chat",
   "main": "src/components/index.js",
   "scripts": {
@@ -94,12 +94,12 @@
     "react-hot-loader": "4.12.13",
     "sass-loader": "8.0.0",
     "style-loader": "1.0.0",
+    "typescript": "3.8.3",
     "url-loader": "2.1.0",
     "webpack": "4.40.2",
     "webpack-babel-env-deps": "1.5.0",
     "webpack-cli": "3.3.9",
     "webpack-dev-server": "3.8.1",
-    "worker-loader": "2.0.0",
-    "typescript": "3.8.3"
+    "worker-loader": "2.0.0"
   }
 }
