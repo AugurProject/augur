@@ -87,14 +87,14 @@ const addPendingDataWithBlockNumber = (
   const {
     blockchain: { currentBlockNumber: blockNumber },
   } = AppStatus.get();
-  AppStatus.actions.addPendingData({
+  AppStatus.actions.addPendingData(
     pendingId,
     queueName,
     status,
+    blockNumber,
     hash,
     info,
-    blockNumber,
-  });
+  );
 };
 
 const updatePendingDataHash = (
