@@ -41,6 +41,7 @@ export interface SDKConfiguration {
     rpcConcurrency: number
   },
   gas?: {
+    override?: boolean,
     limit?: number,
     price?: number
   },
@@ -210,6 +211,7 @@ export const DEFAULT_SDK_CONFIGURATION: SDKConfiguration = {
     rpcConcurrency: 40
   },
   gas: {
+    override: false,
     price: 1e9,
     limit: 95e5
   },
