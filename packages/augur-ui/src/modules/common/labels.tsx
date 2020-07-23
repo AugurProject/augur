@@ -1660,6 +1660,15 @@ export const AutoCancelOrdersNotice = () => (
       />
     </div>
 );
+export const InsufficientFundsNotice = () => (
+  <div className={classNames(Styles.ModalMessageAutoCancel)}>
+    <DismissableNotice
+      show
+      buttonType={DISMISSABLE_NOTICE_BUTTON_TYPES.NONE}
+      title={`Account does not have enough funds to pay transaction fee, either add DAI or increase Fee reserve to cash out.`}
+    />
+  </div>
+);
 
 export const ValueDenomination: React.FC<ValueDenominationProps> = ({
   className,
