@@ -11,5 +11,8 @@
   },
   "scripts": {
     "build": "tsc -b"
+  },
+  "devDependencies": {
+    "typescript": "3.8.3"
   }
 }
