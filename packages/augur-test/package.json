@@ -53,5 +53,8 @@
   "resolutions": {
     "**/sha3": "2.0.1",
     "**/memdown": "4.1.0"
+  },
+  "publishConfig": {
+    "access": "public"
   }
 }

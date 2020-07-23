@@ -35,5 +35,8 @@
   },
   "buildDependencies": [
     "typescript"
-  ]
+  ],
+  "publishConfig": {
+    "access": "public"
+  }
 }
