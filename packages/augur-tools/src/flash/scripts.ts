@@ -2076,6 +2076,31 @@ export function addScripts(flash: FlashSession) {
   });
 
   flash.addScript({
+    name: 'generate-wallet',
+    options: [
+      {
+        name: 'keyfileOutputLocation',
+        description: 'Generate a wallet if one does not exist in the current location.',
+        required: true,
+      },
+    ],
+    async call(this: FlashSession, args: FlashArguments) {
+      const outputPath = path.resolve(`${args.keyfileOutputLocation}`);
+
+      if(fs.existsSync(outputPath)) {
+        console.log(`Keyfile already exists at path ${outputPath}. Nothing to do.`)
+      } else {
+        console.log('Creating wallet.');
+        const wallet = ethers.Wallet.createRandom();
+
+        fs.writeFileSync(outputPath, wallet.privateKey, 'utf8');
+
+        console.log(`Genertated wallet with address ${wallet.address}.\nPrivate key written to ${outputPath}\n`);
+      }
+    }
+  });
+
+  flash.addScript({
     name: 'ipfs-pin-ui',
     async call(this: FlashSession, args: FlashArguments) {
       const ipfs = await IPFS.create({});
