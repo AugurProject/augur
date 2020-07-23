@@ -51,6 +51,6 @@ read_options(){
 }
 
 print_menu;
-AUGUR_ENV=$(read_options);
+ETHEREUM_NETWORK=$(read_options);
 
-docker run -e ETH_NODE_URL=${ETH_NODE_URL:-$DEFAULT_ETH_NODE_URL} -e AUGUR_ENV=$AUGUR_ENV augurproject/augur:runner;
+docker run -e ETH_NODE_URL=${ETH_NODE_URL:-$DEFAULT_ETH_NODE_URL} -e ETHEREUM_NETWORK=$ETHEREUM_NETWORK -v $(pwd):/keys augurproject/augur:runner;
