@@ -34,7 +34,9 @@ export const updateSdk = (
   useGSN: boolean
 ) => async (
   dispatch: ThunkDispatch<void, any, Action>,
+  getState: () => AppState,
 ) => {
+  const { env } = getState();
   if (!loginAccount || !loginAccount.address || !loginAccount.meta) return;
   if (!augurSdk.get()) return;
 
@@ -69,7 +71,8 @@ export const updateSdk = (
       newAccount.meta.provider,
       newAccount.meta.signer,
       networkId,
-      useGSN
+      useGSN,
+      env?.ui?.primaryProvider,
     );
 
     dispatch(updateLoginAccount(newAccount));

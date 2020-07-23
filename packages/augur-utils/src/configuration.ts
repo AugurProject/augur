@@ -113,7 +113,8 @@ export interface SDKConfiguration {
     trackMarketInvalidBids?: boolean,
     reportingOnly?: boolean,
     fallbackProvider?: "jsonrpc" | "torus",
-    liteProvider?: "jsonrpc" | "default"
+    liteProvider?: "jsonrpc" | "default",
+    primaryProvider?: "jsonrpc" | "wallet"
   }
 };
 
@@ -272,7 +273,8 @@ export const DEFAULT_SDK_CONFIGURATION: SDKConfiguration = {
     trackMarketInvalidBids: true,
     reportingOnly: false,
     fallbackProvider: "torus",
-    liteProvider: "jsonrpc"
+    liteProvider: "jsonrpc",
+    primaryProvider: "wallet"
   }
 };
 
