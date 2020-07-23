@@ -115,12 +115,10 @@ interface InfoTicketProps {
   icon: JSX.Element;
 }
 
-export const InfoTicket = ({ value, subheader, icon }: InfoTicketProps) => {
-  return (
-    <div className={Styles.InfoTicket}>
-      {icon}
-      <span>{value}</span>
-      <span>{subheader}</span>
-    </div>
-  );
-};
+export const InfoTicket = ({ value, subheader, icon }: InfoTicketProps) => (
+  <div className={Styles.InfoTicket}>
+    {icon}
+    <span>{value}</span>
+    <span>{subheader}</span>
+  </div>
+);

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import classNames from 'classnames';
-import { useLocation } from 'react-router';
+import { useLocation, useHistory } from 'react-router';
 
 import {
   OutcomeGroup,
@@ -64,6 +64,7 @@ export const MarketCard = ({
   const [showMore, setShowMore] = useState(false);
   const { theme, isLogged } = useAppStatusStore();
   const location = useLocation();
+  const history = useHistory();
 
   if (loading) {
     return <LoadingCard />;
@@ -125,7 +126,7 @@ export const MarketCard = ({
         <TradingSideSection market={market} condensed={condensed} />
         <TopRow
           market={market}
-          categoriesWithClick={getCategoriesWithClick(categories)}
+          categoriesWithClick={getCategoriesWithClick(categories, history)}
         />
         <MarketTitle id={id} headerType={headerType} />
         {!condensed && !marketResolved ? (

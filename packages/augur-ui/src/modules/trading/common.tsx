@@ -12,7 +12,7 @@ import {
   CashoutButton,
 } from 'modules/common/buttons';
 import {
-  Ticket,
+  BetsIcon,
   Trash,
   ThickChevron,
   CheckMark,
@@ -43,7 +43,7 @@ export const EmptyState = () => {
   } = useBetslipStore();
   return (
     <>
-      <div>{Ticket}</div>
+      <div>{BetsIcon}</div>
       <h3>
         {header === BETSLIP_SELECTED.BETSLIP
           ? `Betslip is empty`
