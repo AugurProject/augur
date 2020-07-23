@@ -100,7 +100,7 @@ export const getOddsObject = (normalizedValue: BigNumber, toDecimals = 4) => {
       decimals: toDecimals,
     }),
     [FRACTIONAL]: formatFractional(fractional),
-    [AMERICAN]: formatNumber(american),
+    [AMERICAN]: formatNumber(american, { positiveSign: true }),
     [PERCENT]: formatPercent(percentage, { decimalsRounded: 2 }),
   };
 };

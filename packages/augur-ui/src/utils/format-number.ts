@@ -549,7 +549,7 @@ export function formatNumber(
   }
 
   if (positiveSign && !bigUnitPostfix) {
-    if (o.formattedValue || 0 >= 0) {
+    if (o.formattedValue && o.formattedValue > 0) {
       o.formatted = `+${o.formatted}`;
       o.minimized = `+${o.minimized}`;
     }
