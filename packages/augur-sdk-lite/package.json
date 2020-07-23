@@ -48,5 +48,8 @@
   ],
   "resolutions": {
     "**/sha3": "2.0.1"
+  },
+  "publishConfig": {
+    "access": "public"
   }
 }
