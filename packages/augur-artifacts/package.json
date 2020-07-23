@@ -15,5 +15,8 @@
   "dependencies": {
     "deepmerge": "4.2.2",
     "require-all": "3.0.0"
+  },
+  "devDependencies": {
+    "typescript": "3.8.3"
   }
 }

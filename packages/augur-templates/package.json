@@ -15,5 +15,8 @@
     "ethers": "4.0.47",
     "moment": "2.26.0",
     "@augurproject/sdk-lite": "2.0.0-alpha.2"
+  },
+  "devDependencies": {
+    "typescript": "3.8.3"
   }
 }
