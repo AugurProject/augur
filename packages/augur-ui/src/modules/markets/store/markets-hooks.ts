@@ -5,7 +5,7 @@ import {
   DEFAULT_MARKETS_STATE,
 } from 'modules/markets/store/constants';
 import immutableDelete from 'immutable-delete';
-import { useBetslipStore } from 'modules/trading/store/betslip';
+import { Betslip } from 'modules/trading/store/betslip';
 import { createBigNumber } from 'utils/create-big-number';
 import { getWager, convertToNormalizedPrice, convertToWin } from 'utils/get-odds';
 
@@ -34,7 +34,8 @@ function processMarketsData(newMarketsData, existingMarketsData) {
 
 export function MarketsReducer(state, action) {
   const updatedState = { ...state };
-  const { betslip, actions: { modifyBet } } = useBetslipStore();
+  const { betslip } = Betslip.get();
+  const { modifyBet } = Betslip.actions;
   switch (action.type) {
     case UPDATE_ORDER_BOOK: {
       const { marketId, orderBook } = action;
