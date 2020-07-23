@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import ReactTooltip from 'react-tooltip';
 import Clipboard from 'clipboard';
 import classNames from 'classnames';
-import { ACCOUNT_TYPES, NEW_ORDER_GAS_ESTIMATE, ETH, DAI, FEE_RESERVES_LABEL, REP } from 'modules/common/constants';
+import { ACCOUNT_TYPES, TRADE_ORDER_GAS_MODAL_ESTIMATE, ETH, DAI, FEE_RESERVES_LABEL, REP } from 'modules/common/constants';
 import {
   DaiLogoIcon,
   EthIcon,
@@ -84,7 +84,7 @@ const ConnectDropdown = (props: ConnectDropdownProps) => {
   let gasCostTrade;
 
   if (GsnEnabled && ethToDaiRate) {
-    gasCostTrade = displayGasInDai(NEW_ORDER_GAS_ESTIMATE, userDefinedGasPrice * 10**9);
+    gasCostTrade = displayGasInDai(TRADE_ORDER_GAS_MODAL_ESTIMATE, userDefinedGasPrice * 10**9);
   }
 
   if (!isLogged && !restoredAccount) return null;

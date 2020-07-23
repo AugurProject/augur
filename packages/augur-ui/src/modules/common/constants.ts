@@ -793,6 +793,7 @@ export const DISPUTE_GAS_COST = createBigNumber(480000);
 export const INITAL_REPORT_GAS_COST = createBigNumber(1094412);
 export const V1_REP_MIGRATE_ESTIMATE = createBigNumber(303000);
 export const NEW_ORDER_GAS_ESTIMATE = createBigNumber(675334);
+export const TRADE_ORDER_GAS_MODAL_ESTIMATE = createBigNumber(1100000);
 export const NEW_MARKET_GAS_ESTIMATE = createBigNumber(2000000);
 export const MIGRATE_MARKET_GAS_ESTIMATE = createBigNumber(3000000); // TODO: Get actual gas estimate for migrating a market
 export const CLAIM_MARKETS_PROCEEDS_GAS_ESTIMATE = createBigNumber(600000); // Gas cost for claiming proceeds from a categorical market with 8 outcomes (worst-case gas cost)
