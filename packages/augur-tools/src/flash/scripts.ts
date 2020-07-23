@@ -2982,11 +2982,11 @@ export function addScripts(flash: FlashSession) {
       const oneWeek = new BigNumber(60 * 60 * 24 * 7);
 
       const cashForMaker = price.times(amount).times(shares).times(1e18).times(takersCount);
-      const cashForTaker = price.times(amount).times(shares).times(1e18).times(2); // extra for fees
       console.log(`Fauceting DAI for maker: ${cashForMaker.toFixed()}`);
       await maker.faucetCash(cashForMaker);
       await maker.approve();
 
+      const cashForTaker = price.times(amount).times(shares).times(1e18).times(2); // extra for fees
       console.log(`Fauceting DAI for each taker: ${cashForTaker.toFixed()}`);
       await mapPromises(takers.map((taker) => async () => {
         console.log(`Taker: ${taker.account.address}`);
@@ -3003,7 +3003,8 @@ export function addScripts(flash: FlashSession) {
       await maker.placeZeroXOrders([makerOrder]);
       await sleep(10000); // give 0x plenty of time to propagate the orders
 
-      const takerOrder = buildTakerOrder(marketInfo, outcome, now, new BigNumber(10), price, OrderType.Ask);
+      console.log('Beginning to take the order bit by bit');
+      const takerOrder = buildTakerOrder(marketInfo, outcome, now, shares, price, OrderType.Ask);
       await mapPromises(takers.map((taker) => async () => {
         let t = Number(new Date());
         for (let i = 0; i < amount; i++) {
