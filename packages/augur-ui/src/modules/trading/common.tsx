@@ -63,9 +63,7 @@ export const SportsMarketBets = ({ market }) => {
   const {
     actions: { modifyBet, cancelBet, modifyBetErrorMessage },
   } = useBetslipStore();
-  const {
-    marketInfos
-  } = useMarketsStore();
+  const { marketInfos } = useMarketsStore();
   const { description, orders } = market[1];
   const bets = orders.map((order, orderId) => ({
     ...order,
@@ -120,11 +118,25 @@ export const SportsMarketMyBets = ({ market }) => {
 };
 
 export const SportsBet = ({ bet }) => {
-  const { step, actions: {setDisablePlaceBets} } = useBetslipStore();
+  const {
+    step,
+    actions: { setDisablePlaceBets },
+  } = useBetslipStore();
   const isReview = step === 1;
-  const { outcome, normalizedPrice, wager, toWin, modifyBet, modifyBetErrorMessage, cancelBet, recentlyUpdated, errorMessage } = bet;
+  const {
+    outcome,
+    normalizedPrice,
+    wager,
+    toWin,
+    modifyBet,
+    modifyBetErrorMessage,
+    cancelBet,
+    recentlyUpdated,
+    errorMessage,
+    selfTrade,
+  } = bet;
   const { liquidityPools } = useMarketsStore();
-  const checkWager = (wager) => {
+  const checkWager = wager => {
     if (wager === '' || isNaN(Number(wager))) {
       modifyBetErrorMessage('Enter a valid number');
       return true;
@@ -133,16 +145,21 @@ export const SportsBet = ({ bet }) => {
     if (liquidity) {
       const totalWager = getWager(liquidity.shares, liquidity.price);
       if (createBigNumber(totalWager).lt(createBigNumber(wager))) {
-        modifyBetErrorMessage('Your bet exceeds the max available for this odds');
+        modifyBetErrorMessage(
+          'Your bet exceeds the max available for this odds'
+        );
         return true;
       }
     }
     modifyBetErrorMessage('');
     return false;
-  }
+  };
   return (
     <div
-      className={classNames(Styles.SportsBet, { [Styles.Review]: isReview, [Styles.RecentlyUpdated]: recentlyUpdated })}
+      className={classNames(Styles.SportsBet, {
+        [Styles.Review]: isReview,
+        [Styles.RecentlyUpdated]: recentlyUpdated,
+      })}
     >
       <header>
         <span>{outcome}</span>
@@ -173,6 +190,7 @@ export const SportsBet = ({ bet }) => {
             valueKey="wager"
             modifyBet={modifyBet}
             errorCheck={checkWager}
+            noEdit={selfTrade}
           />
           <BetslipInput
             label="To Win"
@@ -425,7 +443,7 @@ export const BetslipFooter = () => {
       toggleHeader,
     },
     step,
-    placeBetsDisabled
+    placeBetsDisabled,
   } = useBetslipStore();
   const { wager, potential, fees } = calculateBetslipTotals(betslip);
   const bet = formatDai(wager).full;
