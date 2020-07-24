@@ -461,7 +461,7 @@ export const ConvertToDai = ({ walletType, balance, showAddFundsModal, isCondens
         </div>
         <SecondaryButton
           action={() => showAddFundsModal()}
-          text={'Convert to Dai'}
+          text={'Convert to DAI'}
         />
       </div>
     );
@@ -471,11 +471,11 @@ export const ConvertToDai = ({ walletType, balance, showAddFundsModal, isCondens
     <div className={Styles.TransferMyDai}>
       <div>
         <span>{balance.formattedValue} {tokenName} in your {walletType} wallet</span>
-        <span>Convert any amount of this to Dai.</span>
+        <span>Convert any amount of this to DAI.</span>
       </div>
       <PrimaryButton
         action={() => showAddFundsModal()}
-        text={'Convert to Dai'}
+        text={'Convert to DAI'}
       />
     </div>
   );
@@ -746,7 +746,7 @@ export const FundsHelp = ({ fundType = DAI }: FundsHelpProps) => (
   <div className={Styles.FundsHelp}>
     <p>Need help?</p>
     <div>
-      <span>Learn how to buy {fundType === DAI ? `Dai ($)` : fundType} {fundType === DAI ? generateDaiTooltip() : ''} and  send it to your trading account.</span>
+      <span>Learn how to buy {fundType === DAI ? `DAI ($)` : fundType} {fundType === DAI ? generateDaiTooltip() : ''} and  send it to your trading account.</span>
       <ExternalLinkButton URL={HELP_CENTER_ADD_FUNDS} label='Learn More' />
     </div>
   </div>
@@ -1018,9 +1018,9 @@ export const Transfer = ({
         ) : (
           fundTypeLabel
         )}{' '}
-        using an app or exchange (see our list of{' '}
+        using an app or exchange - see our list of{' '}
         <a target='_blank' href={HELP_CENTER_ADD_FUNDS}>
-          popular ways to buy {fundTypeLabel})
+          popular ways to buy {fundTypeLabel}
         </a>
       </li>
       <li>

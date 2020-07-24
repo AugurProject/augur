@@ -347,7 +347,7 @@ export const SEARCH_FILTER_PLACHOLDER_MOBILE = 'Search';
 // Recently Traded
 // End Date (soonest first)
 // Creation Date (most recent first)
-// Fee (lowest first)
+// fee (lowest first)
 // The user should be able to filter by market state:
 
 // Open (PRE_REPORTING)
@@ -827,7 +827,7 @@ export const SUBMITTED = 'submitted';
 export const INTERRUPTED = 'interrupted';
 
 // transcation fee
-export const USE_ETH_RESERVE = 'Est. TX Fee (paid by Fee reserve)';
+export const USE_ETH_RESERVE = 'Est. TX fee (paid by fee reserve)';
 export const NOT_USE_ETH_RESERVE = 'Est. TX Fee';
 export const FEE_RESERVES_LABEL = 'Fee reserve';
 // Market Creation
@@ -940,7 +940,7 @@ export const SYNC_MESSAGE_BLOCKSBEHIND =
   'Market data such as price and orderbooks may be considerably out of date.';
 export const SYNC_BEHIND = 'Blocks behind';
 export const SYNC_PROCESSED = 'Blocks Processed';
-export const AUTO_ETH_REPLENISH = `Automatically replenish Fee reserve`;
+export const AUTO_ETH_REPLENISH = `Automatically replenish fee reserve`;
 
 // Account Summary - Notifications
 export const NOTIFICATIONS_TITLE = 'Notifications';
@@ -1122,7 +1122,7 @@ export const TRADING_TUTORIAL_COPY = {
     subheader: [
       {
         text:
-          "First, lets start by looking over the market details. Be sure to check that the question isn't subjective or ambiguous, and that the Resolution Source abides by the community guidelines and, if a Resolution Source is used, the source's URL or full name is in the Market Question.",
+          "First, let's start by looking over the market details. Be sure to check that the question isn't subjective or ambiguous, and that the resolution source abides by the community guidelines.",
       },
     ],
   },
@@ -1143,7 +1143,7 @@ export const TRADING_TUTORIAL_COPY = {
           "Let's practice buying shares, or going 'long' on an outcome. First, make sure the 'buy shares' tab is selected.",
       },
       {
-        text: "To learn more about selling shares, or going 'short,' see our",
+        text: "To learn more about selling shares, or going 'short,' see the trading guide.",
         linkText: 'guide.',
         link: HELP_CENTER_HOW_DO_I_SHORT_AN_OUTCOME,
       },
@@ -1157,7 +1157,7 @@ export const TRADING_TUTORIAL_COPY = {
           'Select the outcome you believe will be correct or appreciate in price.',
       },
       {
-        text: 'To learn why invalid is an outcome, see our',
+        text: 'To learn more about invalid outcomes, see the invalid market guide.',
         linkText: 'guide.',
         link: HELP_CENTER_INVALID_MARKETS,
       },
@@ -1168,7 +1168,7 @@ export const TRADING_TUTORIAL_COPY = {
     subheader: [
       {
         text:
-          'Enter the amount of shares you wish to buy. Remember each share is priced between $0.01 - $0.99',
+          'Enter the amount of shares you wish to buy. Remember each share is priced between $0.01 - $0.99.',
       },
       {
         text: 'Please enter a quantity of 100.',
@@ -1181,11 +1181,11 @@ export const TRADING_TUTORIAL_COPY = {
     subheader: [
       {
         text:
-          'The Limit Price is the price you’re willing to buy or sell per share. This value is between $0.01 and $0.99, which can also be thought of as a probabilty in percentage terms.',
+          'The limit price is the price you’re willing to buy or sell per share.',
       },
       {
         text:
-          'For example predicting that there is a 40% chance of this outcome occurring, you would buy $0.40 per share. If your prediction is right, you stand to make a profit of $0.60 per share.',
+          'For example, to predict that there is a 40% chance of this outcome occurring you would buy shares at $0.40. If your prediction is correct, you will make a profit of $0.60 per share.',
       },
       {
         text: 'Enter a limit price of $0.40.',
@@ -1197,11 +1197,11 @@ export const TRADING_TUTORIAL_COPY = {
     title: 'Total Order Value',
     subheader: [
       {
-        text: 'This shows the amount of money required to make this trade.',
+        text: 'This is the total cost required for you to make this trade.',
       },
       {
         text:
-          'You can change this value to control the total cost of your order, and the quantity will adjust to compensate for the new total order value. So if you want to bet $40, enter 40 in here.',
+          'You can change this value to control the total cost of your order and the quantity will adjust to compensate for the new total order value. If you want to bet $40, enter 40 in here.',
       },
     ],
   },
@@ -1223,11 +1223,11 @@ export const TRADING_TUTORIAL_COPY = {
     subheader: [
       {
         text:
-          'Alternatively, you can select an available order from the order book to automatically fill into your order ticket.',
+          'Alternatively, you can select an available order from the order book to automatically fill your order ticket.',
       },
       {
         text:
-          'The orders in red are sell orders (offers); the quantities shown are available to buy at the listed prices. The orders in green (bids) are orders from users who wish to buy shares. The quantities show how much you can sell to them at the listed prices.',
+          'Orders in red are sell orders (offers), the quantities shown are available to buy at the listed prices. Orders in green are buy orders (bids), and the quantities shown are available to sell into at the listed prices.',
       },
     ],
   },
@@ -1247,7 +1247,7 @@ export const TRADING_TUTORIAL_COPY = {
       },
       {
         text:
-          'As you can see our order just disappeared from open orders because it was filled. Click next to see it in my fills.',
+          'As you can see, our order just disappeared from open orders because it was filled. Click next to see it in my fills.',
       },
     ],
   },
@@ -1256,7 +1256,7 @@ export const TRADING_TUTORIAL_COPY = {
     subheader: [
       {
         text:
-          "Once an order is partially or completley filled, you'll get a notification in the top right. 'My Fills' are where you can track all filled or partially-filled orders.",
+          "Once an order is partially or completley filled, you'll get a notification in the top right. The my fills tab is where you can track all filled or partially-filled orders.",
       },
     ],
   },
@@ -1265,7 +1265,7 @@ export const TRADING_TUTORIAL_COPY = {
     subheader: [
       {
         text:
-          'Tracks your overall exposure in the current market. This includes your overall position, the average price you put on that position, potential profit and loss (unrealized P/L) and any realized gains or losses (realized P/L).',
+          'The positions tab tracks your overall exposure in the current market. This includes your overall position, the average price you have on that position, potential profit and loss (unrealized P/L) and any realized gains or losses (realized P/L).',
       },
     ],
   },
@@ -1274,11 +1274,11 @@ export const TRADING_TUTORIAL_COPY = {
 export const GWEI_CONVERSION = 1000000000;
 
 export const EVENT_EXPIRATION_TOOLTIP = {
-  header: 'Event expiration',
+  header: 'Event Expiration',
   content: 'This date time indicates when the settlement process begins.',
 };
 export const TOTAL_FUNDS_TOOLTIP =
-  'Your total funds does not include the Fee reserve';
+  'Your total funds does not include the fee reserve';
 export const TUTORIAL_OUTCOME = 1;
 export const TUTORIAL_QUANTITY = 100;
 export const TUTORIAL_PRICE = 0.4;

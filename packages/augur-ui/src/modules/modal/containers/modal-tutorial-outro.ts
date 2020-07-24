@@ -8,6 +8,7 @@ import { Action } from 'redux';
 import makePath from 'modules/routes/helpers/make-path';
 import { MARKETS } from 'modules/routes/constants/views';
 import { FINISHED_TEST_TRADE, track } from 'services/analytics/helpers';
+import { TestBet } from 'modules/modal/common';
 
 const mapStateToProps = (state: AppState) => ({});
 
@@ -17,6 +18,7 @@ const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({
 });
 
 const mergeProps = (sP: any, dP: any, oP: any) => ({
+  icon: TestBet,
   largeHeader: 'Congratulations on making your first test trade!',
   condensed: true,
   analyticsEvent: () => dP.track(FINISHED_TEST_TRADE, {}),

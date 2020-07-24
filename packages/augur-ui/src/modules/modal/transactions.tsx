@@ -461,7 +461,7 @@ export const Transactions: React.FC<TransactionsProps> = props => {
         <DismissableNotice
           show
           buttonType={DISMISSABLE_NOTICE_BUTTON_TYPES.CLOSE}
-          title="Augur only saves the data for 60 days after a market is finalized"
+          title="The export tool only shows transactions for 60 days after the markets finalization."
         />
       </section>
       <div>

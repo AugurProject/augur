@@ -851,7 +851,7 @@ export const TransactionFeeLabelToolTipCmp = ({
       highlight
       accentValue={isError}
       id={'transaction_fee'}
-      tipText={`Est. TX Fee is not included in profit and loss`}
+      tipText={`Est. TX fee is not included in profit and loss`}
     />
 )
 
@@ -1600,8 +1600,8 @@ const EthReserveNoticeCmp = ({ show, reserve }: EthReseveProps) => (
         <DismissableNotice
           show
           buttonType={DISMISSABLE_NOTICE_BUTTON_TYPES.NONE}
-          title={`Replenish Fee reserve`}
-          description={`$${reserve.formatted} DAI will be added to your Fee reserve`}
+          title={`Replenish fee reserve`}
+          description={`$${reserve.formatted} DAI will be added to your fee reserve`}
         />
       </div>
     )}
@@ -1665,7 +1665,7 @@ export const InsufficientFundsNotice = () => (
     <DismissableNotice
       show
       buttonType={DISMISSABLE_NOTICE_BUTTON_TYPES.NONE}
-      title={`Account does not have enough funds to pay transaction fee, either add DAI or increase Fee reserve to cash out.`}
+      title={`Account does not have enough funds to pay transaction fee, either add DAI or increase fee reserve to cash out.`}
     />
   </div>
 );
@@ -1764,7 +1764,7 @@ export const AddFundsHelp = props => (
       Add ETH to your {props.walletType} trading account.{' '}
       {props.walletType === ACCOUNT_TYPES.WEB3WALLET
         ? ''
-        : `${props.walletType} are our secure account and payment partners. ${props.walletType} will enable you to process the transaction fee without requiring Dai.`}{' '}
+        : `${props.walletType} are our secure account and payment partners. ${props.walletType} will enable you to process the transaction fee without requiring DAI.`}{' '}
       {props.walletType === ACCOUNT_TYPES.WEB3WALLET ? null : (
         <span onClick={() => props.showAddFundsModal()}>
           Add ETH to your {props.walletType} trading account

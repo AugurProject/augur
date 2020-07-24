@@ -23,7 +23,6 @@ import { formatDai } from 'utils/format-number';
 import { getGasPrice } from "modules/auth/selectors/get-gas-price";
 
 const DAI_HIGH_VALUE_AMOUNT = 40;
-const RESERVE_IN_ETH = 0.04;
 
 export const getOnboardingStep = (step: number): string => {
   if (step === 1) {
@@ -43,11 +42,10 @@ const mapStateToProps = (state: AppState) => {
   const balances = state.loginAccount.balances;
   const daiHighValueAmount =
     state.env.gsn?.minDaiForSignerETHBalanceInDAI || DAI_HIGH_VALUE_AMOUNT;
-  const ethInReserveAmount =
-    state.env.gsn?.desiredSignerBalanceInETH || RESERVE_IN_ETH;
+  const desiredSignerBalanceInETH = state.env.gsn.desiredSignerBalanceInETH;
   const ethRate = state.appStatus.ethToDaiRate?.value || 0;
   const reserveInDai = formatDai(
-    createBigNumber(ethInReserveAmount).multipliedBy(ethRate)
+    createBigNumber(desiredSignerBalanceInETH).multipliedBy(ethRate)
   );
 
   return {
@@ -57,6 +55,7 @@ const mapStateToProps = (state: AppState) => {
     reserveInDai,
     daiHighValueAmount,
     gasPrice: getGasPrice(state),
+    desiredSignerBalanceInETH,
   };
 };
 
@@ -88,20 +87,20 @@ const mergeProps = (sP: any, dP: any, oP: any) => ({
   linkContent: [
     {
       content:
-        'This network requires transaction fees to operate which are paid in ETH. This goes entirely to the network and Augur doesn’t collect any of these fees.',
+        'This network requires transaction fees to operate which are paid in ETH. This goes entirely to the network and its participants, the Augur protocol doesn’t collect any fees.',
     },
     {
-      content: `Account activation is required before making your first transaction. There will be a transaction fee to activate your account. ${
+      content: `Account activation is required before making your first transaction. There will be a transaction fee to activate your account. This fee can vary based on the gas price. ${
         sP.highBalance
-          ? `$${sP.reserveInDai.formattedValue} worth of ETH, from your total funds will be held in your Fee reserve to cover further transactions.`
-          : `If your account balance exceeds $${sP.daiHighValueAmount}, a portion of this equivalent to 0.04ETH will be held in your Fee reserve to cover further transactions.`
+          ? `$${sP.reserveInDai.formattedValue} worth of ETH, from your total funds will be held in your fee reserve to cover further transactions.`
+          : `If your account balance exceeds $${sP.daiHighValueAmount}, a portion of this (equivalent to ${sP.desiredSignerBalanceInETH} ETH) will be held in your fee reserve to cover further transactions.`
       }`,
     },
     {
-      content: `So long as your available account balance remains over $${sP.daiHighValueAmount} Dai, your Fee reserve will replenish automatically.`,
+      content: `As long as your available account balance remains over $${sP.daiHighValueAmount} DAI, your fee reserve will replenish automatically.`,
     },
     {
-      content: 'Your Fee reserve can easily be cashed out at anytime.',
+      content: 'Your fee reserve can easily be cashed out at anytime.',
     },
     {
       content: 'LEARN MORE',

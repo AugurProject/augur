@@ -230,7 +230,7 @@ async function runSimulateTrade(
       takerAddress,
     );
 
-    // Plus ZeroX Fee (150k Gas)
+    // Plus ZeroX fee (150k Gas)
     gasLimit = gasLimit.plus(ZEROX_GAS_FEE);
   }
   // ignore share cost when user is shorting or longing another outcome

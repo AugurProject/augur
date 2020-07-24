@@ -204,7 +204,7 @@ export const addEthIncreaseAlert = (
   if (oldEthBalance === null) return null;
 
   const daiCutoff = getState().env.gsn.minDaiForSignerETHBalanceInDAI;
-  // user dai balance too low to have Fee reserve
+  // user dai balance too low to have fee reserve
   if (createBigNumber(daiBalance).lte(daiCutoff)) return null;
 
   const maxEthReserve = createBigNumber(
@@ -213,10 +213,10 @@ export const addEthIncreaseAlert = (
   const aboveCutoff = createBigNumber(oldEthBalance).isGreaterThan(
     createBigNumber(maxEthReserve)
   );
-  // user already has Fee reserve topped off
+  // user already has fee reserve topped off
   if (aboveCutoff) return null;
 
-  // ETH increase can only be up to max Fee reserve
+  // ETH increase can only be up to max fee reserve
   const toppedOffValue = BigNumber.min(maxEthReserve, newEthBalance);
   const increase = createBigNumber(toppedOffValue).minus(
     createBigNumber(oldEthBalance)
@@ -228,7 +228,7 @@ export const addEthIncreaseAlert = (
       createBigNumber(attoEthToDaiRate.div(10 ** 18) || 0)
     );
     const timestamp = getState().blockchain.currentAugurTimestamp * 1000;
-    console.log('adding Fee reserve increase alert');
+    console.log('adding fee reserve increase alert');
     dispatch(
       addAlert({
         name: ETH_RESERVE_INCREASE,

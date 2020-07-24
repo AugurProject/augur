@@ -904,7 +904,7 @@ export const ReportingRadioBarGroup = ({
         <span>
           {!isDisputing
             ? "Select Invalid if you believe this market's outcome was ambiguous or unverifiable."
-            : 'If you believe this market to be invalid, you can help fill the dispute bond of the official Invalid outcome below to make Invalid the new Tentative Outcome. Please check the resolution details above carefully.'}
+            : 'If you believe this market to be invalid, you can help fill the dispute bond of the official Invalid outcome below to make Invalid the new Tentative Outcome. Please check the resolution details  above carefully.'}
         </span>
       )}
       {radioButtons.map(

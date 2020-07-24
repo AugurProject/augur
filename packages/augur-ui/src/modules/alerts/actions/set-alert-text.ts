@@ -504,8 +504,8 @@ export default function setAlertText(alert: any, callback: Function) {
 
       // These transaction names are overloaded across multiple contracts
       case APPROVE:
-        alert.title = 'Dai approval';
-        alert.description = 'You are approved to use Dai on Augur';
+        alert.title = 'DAI approval';
+        alert.description = 'You are approved to use DAI on Augur';
         break;
 
       case MIGRATE_FROM_LEG_REP_TOKEN:

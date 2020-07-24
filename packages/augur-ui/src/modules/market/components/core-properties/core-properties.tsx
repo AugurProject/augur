@@ -106,8 +106,8 @@ const CoreProperties: React.FC<CorePropertiesProps> = ({
                   <>
                     <h4>Market OI Fee</h4>
                     <p>
-                      The Market OI Fee is a combination of the Market
-                      Creator Fee (
+                      The Market OI fee is a combination of the Market
+                      Creator fee (
                       <b>
                         {
                           formatPercent(
@@ -115,7 +115,7 @@ const CoreProperties: React.FC<CorePropertiesProps> = ({
                           ).full
                         }
                       </b>
-                      ) and the Reporting Fee (
+                      ) and the Reporting fee (
                       <b>
                         {
                           formatPercent(Number(market.reportingFeeRate) * 100)

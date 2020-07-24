@@ -94,7 +94,7 @@ export const Onboarding = ({
     link: lc.link,
     content: lc.content.replace(
       `be a transaction fee`,
-      `be a $${activationEstimate} fee`
+      `be a $${activationEstimate} transaction fee`
     ),
   }));
 
