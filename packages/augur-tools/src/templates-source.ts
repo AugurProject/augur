@@ -7960,7 +7960,7 @@ export const TEMPLATES = {
             resolutionRules: {
               [REQUIRED]: [
                 {
-                  text: `The winning candidate will have at least 270 electoral votes to win the presidential election.`,
+                  text: `The winning candidate will have at least 270 electoral votes to win the presidential election. In the case of a tie, the House of Representatives will decide the winner`,
                 },
                 {
                   text: `This market is intended to be about a Single Candidate, if this is not the case, this market should settle as 'Invalid'.`,
@@ -8059,7 +8059,7 @@ export const TEMPLATES = {
             resolutionRules: {
               [REQUIRED]: [
                 {
-                  text: `The winning candidate will have at least 270 electoral votes to win the presidential election.`,
+                  text: `The winning candidate will have at least 270 electoral votes to win the presidential election. In the case of a tie, the House of Representatives will decide the winner`,
                 },
                 {
                   text:
@@ -8156,7 +8156,7 @@ export const TEMPLATES = {
             resolutionRules: {
               [REQUIRED]: [
                 {
-                  text: `The winning party will win the majority of 270 electoral votes.`,
+                  text: `The winning party will win the majority of 270 electoral votes. In the case of a tie, the House of Representatives will decide the winner`,
                 },
                 {
                   text: `If the winner is not listed as a market outcome, the market should resolve as 'Other (Field)'`,
@@ -8188,7 +8188,7 @@ export const TEMPLATES = {
             resolutionRules: {
               [REQUIRED]: [
                 {
-                  text: `The winning candidate will have at least 270 electoral votes to win the presidential election.`,
+                  text: `The winning candidate will have at least 270 electoral votes to win the presidential election. In the case of a tie, the House of Representatives will decide the winner`,
                 },
                 {
                   text: `If the winner is not listed as a market outcome, the market should resolve as 'Other (Field)'`,
