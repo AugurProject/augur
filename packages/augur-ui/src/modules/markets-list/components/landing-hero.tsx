@@ -9,20 +9,20 @@ import Image from '../../../assets/images/landing-slider-img.png';
 import classNames from 'classnames';
 
 const images = [{
-  alignment: 'center',
+  alignment: 'left',
   image: Image,
   text: 'No Limits. Lower Fees.\nBet on anything you want.',
   button: {
     text: 'Sign up to start betting',
-    link: 'https://google.com/'
+    link: 'https://demo.augur.net/'
   }
 }, {
-  alignment: 'left',
+  alignment: 'center',
   image: Image,
   text: 'No Limits. Lower Fees.\nBet on anything you want. 2',
   button: {
     text: 'Sign up to start betting',
-    link: 'https://google.com/'
+    link: 'https://demo.augur.net/'
   }
 }, {
   alignment: 'right',
@@ -30,7 +30,7 @@ const images = [{
   text: 'No Limits. Lower Fees.\nBet on anything you want. 3',
   button: {
     text: 'Sign up to start betting',
-    link: 'https://google.com/'
+    link: 'https://demo.augur.net/'
   }
 }];
 
