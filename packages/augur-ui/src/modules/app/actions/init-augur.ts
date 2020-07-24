@@ -354,6 +354,8 @@ export function initAugur(
 
     if (ethereumNodeHttp) {
       config.ethereum.http = ethereumNodeHttp;
+      config.ui.fallbackProvider = 'jsonrpc';
+      config.ui.primaryProvider = 'jsonrpc';
     }
 
     if (sdkEndpoint) {

@@ -71,6 +71,7 @@
     "trackBestOffer": false,
     "trackMarketInvalidBids": true,
     "reportingOnly": false,
-    "fallbackProvider": "torus"
+    "fallbackProvider": "torus",
+    "primaryProvider" : "wallet"
   }
 }
