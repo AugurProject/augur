@@ -185,12 +185,12 @@ export default class FeesLiquidity extends React.Component<
             smallSubheader
             copyType={MARKET_COPY_LIST.CREATOR_FEE}
             header="Market OI fee"
-            subheader={`Market OI fee is made up of market creator fee and reporting fee combined. Currently the reporting fee is ${s.reportingFeePercent.formatted}%. Set Market OI Fee to 2% or less in order for your market to show up to traders, by default.`}
+            subheader={`Market OI fee is made up of market creator fee and reporting fee combined. Currently the reporting fee is ${s.reportingFeePercent.formatted}%. Set Market OI fee to 2% or less in order for your market to show up to traders, by default.`}
           />
           <LargeSubheaders
             smallSubheader
             header=""
-            subheader={`The Market Creator Fee is the percentage amount the market creator receives whenever market shares are settled, either during trading or upon market resolution. This fee will be ${s.creatorFeePercent.formatted}%.`}
+            subheader={`The Market Creator fee is the percentage amount the market creator receives whenever market shares are settled, either during trading or upon market resolution. This fee will be ${s.creatorFeePercent.formatted}%.`}
           />
           <TextInput
             value={String(marketTradingFee)}

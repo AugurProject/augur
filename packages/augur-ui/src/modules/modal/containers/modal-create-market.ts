@@ -25,7 +25,7 @@ const mergeProps = (sP: any, dP: any, oP: any) => ({
   title: "Final confirmation",
   subheader: {
     header: "Are you sure you want to proceeed?",
-    subheaders: ["Once you create the market you can’t make any changes to the market or resolution details. Ensure that all market details are accurate before proceeding."]
+    subheaders: ["Once you create the market you can’t make any changes to the market or resolution details . Ensure that all market details are accurate before proceeding."]
   },
   subheader_2: {
     header: "Ready to proceed? Here’s what happens next, you will:",

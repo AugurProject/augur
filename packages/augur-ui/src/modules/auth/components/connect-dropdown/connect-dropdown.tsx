@@ -181,15 +181,15 @@ const ConnectDropdown = (props: ConnectDropdownProps) => {
             </p>
             <p>
               If your account balance exceeds $40, 0.04 ETH equivalent in DAI
-              will be held in your Fee reserve to cover transaction fees, which
+              will be held in your fee reserve to cover transaction fees, which
               results in cheaper transaction fees.
             </p>
             <p>
-              As long as your available account balance remains over $40 Dai,
-              your Fee reserve will automatically be replenished.
+              As long as your available account balance remains over $40 DAI,
+              your fee reserve will automatically be replenished.
             </p>
             <p>
-              Your Fee reserve can easily be cashed out at anytime using the
+              Your fee reserve can easily be cashed out at anytime using the
               withdraw button in the transactions section of your account
               summary.
             </p>

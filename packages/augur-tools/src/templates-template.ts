@@ -1099,7 +1099,7 @@ export const isTemplateMarket = (
     const marketResolutionRules = hashResolutionRules(longDescription);
     if (marketResolutionRules !== validation.templateValidationResRules) {
       errors.push(
-        'hash of resolution details is different than validation resolution rules hash'
+        'hash of resolution details  is different than validation resolution rules hash'
       );
       return false;
     }
