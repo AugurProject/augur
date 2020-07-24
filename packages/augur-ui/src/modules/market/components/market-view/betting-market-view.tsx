@@ -65,7 +65,6 @@ const BettingMarketView = () => {
   const estDateTime = convertedInputs && findStartTime(convertedInputs);
   const startTimeFormatted =
     estDateTime && convertUnixToFormattedDate(estDateTime.timestamp);
-  console.log(startTimeFormatted, endTimeFormatted);
   return (
     <div className={Styles.BettingMarketView}>
       <div>

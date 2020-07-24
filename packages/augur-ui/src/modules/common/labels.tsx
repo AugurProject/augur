@@ -471,8 +471,7 @@ export const FullTimeLabel = ({
   time,
   hint,
   large,
-}: FullTimeLabelProps) => {
-  return (
+}: FullTimeLabelProps) => (
     <div className={classNames(Styles.FullTimeLabel, { [Styles.Large]: large })}>
       <span>
         {label}
@@ -503,8 +502,7 @@ export const FullTimeLabel = ({
       <span>{time.formattedUtc}</span>
       <span>{time.formattedLocalShortWithUtcOffsetWithoutSeconds}</span>
     </div>
-  );
-};
+);
 
 export const DashlineNormal = () => (
   <svg width="100%" height="1">
