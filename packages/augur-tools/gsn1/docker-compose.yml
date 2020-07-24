@@ -14,17 +14,11 @@ services:
       HOST: ${HOST}
 
   gsn:
-    image: opengsn/jsrelay:${JSRELAY}
+    image: tabookey/gsn-dev-server:v0.4.1
     restart: always
     ports:
       - '8090:80' #needed for debugging without https frontend
     volumes:
       - ./gsndata:/app/data    #can be left out, to keep private-key inside the docker
-    environment:
-      Url: https://${HOST}
-      Port: 80
-      EthereumNodeUrl: ${NODE_URL}
-      RelayHubAddress: ${RELAY_HUB}
-      GasPricePercent: ${GAS_PRICE_PERCENT}
-      BaseFee: ${BASE_FEE}
-      PercentFee: ${PERCENT_FEE}
+    entrypoint: ["./RelayHttpServer", "-RelayHubAddress", "${RELAY_HUB}", "-Workdir", "$root/build/server", "-GasPricePercent", "${GAS_PRICE_PERCENT}", "-EthereumNodeUrl", "${NODE_URL}"]
+
