@@ -827,7 +827,7 @@ export const SUBMITTED = 'submitted';
 export const INTERRUPTED = 'interrupted';
 
 // transcation fee
-export const USE_ETH_RESERVE = 'Est. TX fee (paid by fee reserve)';
+export const USE_ETH_RESERVE = 'Est. tx fee (paid by fee reserve)';
 export const NOT_USE_ETH_RESERVE = 'Est. TX Fee';
 export const FEE_RESERVES_LABEL = 'Fee reserve';
 // Market Creation
