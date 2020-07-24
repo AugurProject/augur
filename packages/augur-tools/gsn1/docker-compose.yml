@@ -20,5 +20,5 @@ services:
       - '8090:8090' #needed for debugging without https frontend
     volumes:
       - ./gsndata:/data
-    entrypoint: ["./RelayHttpServer", "-RelayHubAddress", "${RELAY_HUB}", "-Workdir", "/data", "-GasPricePercent", "${GAS_PRICE_PERCENT}", "-EthereumNodeUrl", "${NODE_URL}"]
+    entrypoint: ["./RelayHttpServer", "-RelayHubAddress", "${RELAY_HUB}", "-Workdir", "/data", "-GasPricePercent", "${GAS_PRICE_PERCENT}", "-EthereumNodeUrl", "${NODE_URL}", "-Url", "https://${HOST}", "-Fee", "${FEE}"]
 
