@@ -17,8 +17,8 @@ services:
     image: tabookey/gsn-dev-server:v0.4.1
     restart: always
     ports:
-      - '8090:80' #needed for debugging without https frontend
+      - '8090:8090' #needed for debugging without https frontend
     volumes:
-      - ./gsndata:/app/data    #can be left out, to keep private-key inside the docker
-    entrypoint: ["./RelayHttpServer", "-RelayHubAddress", "${RELAY_HUB}", "-Workdir", "$root/build/server", "-GasPricePercent", "${GAS_PRICE_PERCENT}", "-EthereumNodeUrl", "${NODE_URL}"]
+      - ./gsndata:/data
+    entrypoint: ["./RelayHttpServer", "-RelayHubAddress", "${RELAY_HUB}", "-Workdir", "/data", "-GasPricePercent", "${GAS_PRICE_PERCENT}", "-EthereumNodeUrl", "${NODE_URL}"]
 
