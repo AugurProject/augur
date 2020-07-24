@@ -1187,7 +1187,7 @@ export const TEMPLATES = {
                         'Includes regulation, any play-offs and sudden death',
                     },
                     {
-                      text: `If winner is not listed as a market outcome, market should resolve as 'Other (Field)'`,
+                      text: `If the winner is not listed as a market outcome, the market should resolve as 'Other (Field)'`,
                     },
                   ],
                 },
@@ -1396,7 +1396,7 @@ export const TEMPLATES = {
                         'Includes regulation, any play-offs and sudden death',
                     },
                     {
-                      text: `If winner is not listed as a market outcome, market should resolve as 'Other (Field)'`,
+                      text: `If the winner is not listed as a market outcome, the market should resolve as 'Other (Field)'`,
                     },
                   ],
                 },
@@ -1581,7 +1581,7 @@ export const TEMPLATES = {
                         'Includes regulation, any play-offs and sudden death',
                     },
                     {
-                      text: `If winner is not listed as a market outcome, market should resolve as 'Other (Field)'`,
+                      text: `If the winner is not listed as a market outcome, the market should resolve as 'Other (Field)'`,
                     },
                   ],
                 },
@@ -1928,7 +1928,7 @@ export const TEMPLATES = {
             resolutionRules: {
               [REQUIRED]: [
                 {
-                  text: `If winner is not listed as a market outcome, market should resolve as 'Other (Field)'`,
+                  text: `If the winner is not listed as a market outcome, the market should resolve as 'Other (Field)'`,
                 },
                 {
                   text: `If the season is officially cancelled and the event named in market is not played, this market should resolve as 'Invalid'`,
@@ -2017,7 +2017,7 @@ export const TEMPLATES = {
             resolutionRules: {
               [REQUIRED]: [
                 {
-                  text: `If winner is not listed as a market outcome, market should resolve as 'Other (Field)'`,
+                  text: `If the winner is not listed as a market outcome, the market should resolve as 'Other (Field)'`,
                 },
                 {
                   text: `If the award in the market question is not awarded for any reason by event expiration, this market should resolve as 'Invalid'`,
@@ -2266,7 +2266,7 @@ export const TEMPLATES = {
                       text: `If a player is disqualified or withdraws before the match is complete, the player moving forward to the next round should be declared the winner`,
                     },
                     {
-                      text: `If winner is not listed as a market outcome, market should resolve as 'Other (Field)'`,
+                      text: `If the winner is not listed as a market outcome, the market should resolve as 'Other (Field)'`,
                     },
                     {
                       text: `If a Tournament or Event is cancelled or postponed and will not be completed before the market's Event Expiration time, the market should resolve as 'No Contest'`,
@@ -2628,7 +2628,7 @@ export const TEMPLATES = {
                       text: `If either pairing is disqualified or withdraws before the match is complete, the player moving forward to the next round should be declared the winner`,
                     },
                     {
-                      text: `If winner is not listed as a market outcome, market should resolve as 'Other (Field)'`,
+                      text: `If the winner is not listed as a market outcome, the market should resolve as 'Other (Field)'`,
                     },
                     {
                       text: `This market each outcome is a two player team (pairing), if this is not the case, this market should settle as 'Invalid.'`,
@@ -3199,7 +3199,7 @@ export const TEMPLATES = {
                 resolutionRules: {
                   [REQUIRED]: [
                     {
-                      text: `If winner is not listed as a market outcome, market should resolve as 'Other (Field)'.`,
+                      text: `If the winner is not listed as a market outcome, the market should resolve as 'Other (Field)'.`,
                     },
                     {
                       text: `If the season is officially cancelled and the league/event in the market question is not played, this market should resolve as 'Invalid'.`,
@@ -3504,7 +3504,7 @@ export const TEMPLATES = {
                 resolutionRules: {
                   [REQUIRED]: [
                     {
-                      text: `If winner is not listed as a market outcome, market should resolve as 'Other (Field)'.`,
+                      text: `If the winner is not listed as a market outcome, the market should resolve as 'Other (Field)'.`,
                     },
                     {
                       text: `If the season is officially cancelled and the league/event in the market question is not played, this market should resolve as 'Invalid'.`,
@@ -3930,7 +3930,7 @@ export const TEMPLATES = {
                 resolutionRules: {
                   [REQUIRED]: [
                     {
-                      text: `If winner is not listed as a market outcome, market should resolve as 'Other (Field)'`,
+                      text: `If the winner is not listed as a market outcome, the market should resolve as 'Other (Field)'`,
                     },
                     {
                       text: `If the season is officially cancelled and event named in the market is not played, this market should resolve as 'Invalid'`,
@@ -4023,7 +4023,7 @@ export const TEMPLATES = {
                       text: `In the event of an award is given to more than 1 player. The player who averaged the most points per game (determined to the first decimal place, meaning a player averaging 36.1 points per game would win over the player averaging 36 points per game) for the regular the season will be the tie breaker. In the event of an additional tie, The regular season Field Goal % will be the final tie breaker.`,
                     },
                     {
-                      text: `If winner is not listed as a market outcome, market should resolve as 'Other (Field)'`,
+                      text: `If the winner is not listed as a market outcome, the market should resolve as 'Other (Field)'`,
                     },
                     {
                       text: `If the award in the market question is not awarded for any reason, by the start of event expiration, this market should resolve as 'Invalid'`,
@@ -4077,7 +4077,7 @@ export const TEMPLATES = {
                       text: `For most made 3-pointers, the player with the highest 3 point %, should be used as the tie breaker.`,
                     },
                     {
-                      text: `If winner is not listed as a market outcome, market should resolve as 'Other (Field)'`,
+                      text: `If the winner is not listed as a market outcome, the market should resolve as 'Other (Field)'`,
                     },
                     {
                       text: `If the season is officially cancelled, the statistic at the time the league officially stopped should be used to determine the resolution of the market.`,
@@ -4182,7 +4182,7 @@ export const TEMPLATES = {
                       text: `Outcomes are determined by the player selected at the time of the "Pick". Trades which occur after a player is selected do not impact the results. For example, to determine the winner of the first pick in the draft...If a player was selected with the first pick in the draft and was then traded to the team with the 3rd pick. The original player selected first would be the winning outcome.`,
                     },
                     {
-                      text: `If winner is not listed as a market outcome, market should resolve as 'Other (Field)'`,
+                      text: `If the winner is not listed as a market outcome, the market should resolve as 'Other (Field)'`,
                     },
                     {
                       text: `If the event in the market question is not determined for any reason, by event expiration, this market should resolve as "Invalid".`,
@@ -4231,7 +4231,7 @@ export const TEMPLATES = {
                       text: `Outcomes are determined by the player selected at the time of the "Pick". Trades which occur after a player is selected do not impact the results. For example, to determine the winner of the first pick in the draft...If a player was selected with the first pick in the draft and was then traded to the team with the 3rd pick. The original player selected first would be the winning outcome.`,
                     },
                     {
-                      text: `If winner is not listed as a market outcome, market should resolve as 'Other (Field)'`,
+                      text: `If the winner is not listed as a market outcome, the market should resolve as 'Other (Field)'`,
                     },
                     {
                       text: `If the event in the market question is not determined for any reason, by event expiration, this market should resolve as "Invalid".`,
@@ -4698,7 +4698,7 @@ export const TEMPLATES = {
                 resolutionRules: {
                   [REQUIRED]: [
                     {
-                      text: `If winner is not listed as a market outcome, market should resolve as 'Other (Field)'`,
+                      text: `If the winner is not listed as a market outcome, the market should resolve as 'Other (Field)'`,
                     },
                     {
                       text: `If the season is officially cancelled and no Championship is played, this market should resolve as 'Invalid'`,
@@ -4746,7 +4746,7 @@ export const TEMPLATES = {
                       text: `In the event of an award is given to more than 1 player. The player who averaged the most points per game (determined to the first decimal place, meaning a player averaging 36.1 points per game would win over the player averaging 36 points per game) for the regular the season will be the tie breaker. In the event of an additional tie, The regular season Field Goal % will be the final tie breaker.`,
                     },
                     {
-                      text: `If winner is not listed as a market outcome, market should resolve as 'Other (Field)'`,
+                      text: `If the winner is not listed as a market outcome, the market should resolve as 'Other (Field)'`,
                     },
                     {
                       text: `If the award in the market question is not awarded for any reason by event expiration, this market should resolve as 'Invalid'`,
@@ -4800,7 +4800,7 @@ export const TEMPLATES = {
                       text: `For most made 3-pointers, the player with the highest 3 point %, should be used as the tie breaker.`,
                     },
                     {
-                      text: `If winner is not listed as a market outcome, market should resolve as 'Other (Field)'`,
+                      text: `If the winner is not listed as a market outcome, the market should resolve as 'Other (Field)'`,
                     },
                     {
                       text: `If the season is officially cancelled, the statistic at the time the league officially stopped should be used to determine the resolution of the market.`,
@@ -5337,7 +5337,7 @@ export const TEMPLATES = {
                       text: `The winner is determined by the team who wins their conference tournament championship game`,
                     },
                     {
-                      text: `If winner is not listed as a market outcome, market should resolve as 'Other (Field)'`,
+                      text: `If the winner is not listed as a market outcome, the market should resolve as 'Other (Field)'`,
                     },
                     {
                       text: `If the season is officially cancelled and the event in the market is not played, this market should resolve as 'Invalid'`,
@@ -5395,7 +5395,7 @@ export const TEMPLATES = {
                 resolutionRules: {
                   [REQUIRED]: [
                     {
-                      text: `If winner is not listed as a market outcome, market should resolve as 'Other (Field)'`,
+                      text: `If the winner is not listed as a market outcome, the market should resolve as 'Other (Field)'`,
                     },
                     {
                       text: `If the season is officially cancelled and no Championship is played, this market should resolve as 'Invalid'`,
@@ -5689,7 +5689,7 @@ export const TEMPLATES = {
             resolutionRules: {
               [REQUIRED]: [
                 {
-                  text: `If winner is not listed as a market outcome, market should resolve as 'Other (Field)'`,
+                  text: `If the winner is not listed as a market outcome, the market should resolve as 'Other (Field)'`,
                 },
                 {
                   text: `If the season is officially cancelled and the event in the market is not played, this market should resolve as 'Invalid'`,
@@ -5778,7 +5778,7 @@ export const TEMPLATES = {
             resolutionRules: {
               [REQUIRED]: [
                 {
-                  text: `If winner is not listed as a market outcome, market should resolve as 'Other (Field)'`,
+                  text: `If the winner is not listed as a market outcome, the market should resolve as 'Other (Field)'`,
                 },
                 {
                   text: `If the award in the market question is not awarded for any reason by event expiration, this market should resolve as 'Invalid'`,
@@ -7041,7 +7041,7 @@ export const TEMPLATES = {
                 resolutionRules: {
                   [REQUIRED]: [
                     {
-                      text: `If winner is not listed as a market outcome, market should resolve as 'Other (Field)'`,
+                      text: `If the winner is not listed as a market outcome, the market should resolve as 'Other (Field)'`,
                     },
                     {
                       text: `If the season is officially cancelled and the event in the market is not played, this market should resolve as 'Invalid'`,
@@ -7131,7 +7131,7 @@ export const TEMPLATES = {
                 resolutionRules: {
                   [REQUIRED]: [
                     {
-                      text: `If winner is not listed as a market outcome, market should resolve as 'Other (Field)'`,
+                      text: `If the winner is not listed as a market outcome, the market should resolve as 'Other (Field)'`,
                     },
                     {
                       text: `If the award in the market question is not awarded for any reason by event expiration, this market should resolve as 'Invalid'`,
@@ -7229,7 +7229,7 @@ export const TEMPLATES = {
                       text: `Outcomes are determined by the player selected at the time of the "Pick". Trades which occur after a player is selected do not impact the results. For example, to determine the winner of the first pick in the draft...If a player was selected with the first pick in the draft and was then traded to the team with the 3rd pick. The original player selected first would be the winning outcome.`,
                     },
                     {
-                      text: `If winner is not listed as a market outcome, market should resolve as 'Other (Field)'`,
+                      text: `If the winner is not listed as a market outcome, the market should resolve as 'Other (Field)'`,
                     },
                     {
                       text: `If the event in the market question is not determined for any reason, by event expiration, this market should resolve as "Invalid".`,
@@ -7278,7 +7278,7 @@ export const TEMPLATES = {
                       text: `Outcomes are determined by the player selected at the time of the "Pick". Trades which occur after a player is selected do not impact the results. For example, to determine the winner of the first pick in the draft...If a player was selected with the first pick in the draft and was then traded to the team with the 3rd pick. The original player selected first would be the winning outcome.`,
                     },
                     {
-                      text: `If winner is not listed as a market outcome, market should resolve as 'Other (Field)'`,
+                      text: `If the winner is not listed as a market outcome, the market should resolve as 'Other (Field)'`,
                     },
                     {
                       text: `If the event in the market question is not determined for any reason, by event expiration, this market should resolve as "Invalid".`,
@@ -7327,7 +7327,7 @@ export const TEMPLATES = {
                       text: `Outcomes are determined by the player selected at the time of the "Pick". Trades which occur after a player is selected do not impact the results. For example, to determine the winner of the first pick in the draft...If a player was selected with the first pick in the draft and was then traded to the team with the 3rd pick. The original player selected first would be the winning outcome.`,
                     },
                     {
-                      text: `If winner is not listed as a market outcome, market should resolve as 'Other (Field)'`,
+                      text: `If the winner is not listed as a market outcome, the market should resolve as 'Other (Field)'`,
                     },
                     {
                       text: `If the event in the market question is not determined for any reason, by event expiration, this market should resolve as "Invalid".`,
@@ -7837,7 +7837,7 @@ export const TEMPLATES = {
                 resolutionRules: {
                   [REQUIRED]: [
                     {
-                      text: `If winner is not listed as a market outcome, market should resolve as 'Other (Field)'`,
+                      text: `If the winner is not listed as a market outcome, the market should resolve as 'Other (Field)'`,
                     },
                     {
                       text: `If the season is officially cancelled and no Championship is played, this market should resolve as 'Invalid'`,
@@ -7875,7 +7875,7 @@ export const TEMPLATES = {
                 resolutionRules: {
                   [REQUIRED]: [
                     {
-                      text: `If winner is not listed as a market outcome, market should resolve as 'Other (Field)'`,
+                      text: `If the winner is not listed as a market outcome, the market should resolve as 'Other (Field)'`,
                     },
                     {
                       text: `If the award in the market question is not awarded for any reason by event expiration, this market should resolve as 'Invalid'`,
@@ -8159,7 +8159,7 @@ export const TEMPLATES = {
                   text: `The winning party will win the majority of 270 electoral votes.`,
                 },
                 {
-                  text: `If winner is not listed as a market outcome, market should resolve as 'Other (Field)'`,
+                  text: `If the winner is not listed as a market outcome, the market should resolve as 'Other (Field)'`,
                 },
               ],
             },
@@ -8191,7 +8191,7 @@ export const TEMPLATES = {
                   text: `The winning candidate will have at least 270 electoral votes to win the presidential election.`,
                 },
                 {
-                  text: `If winner is not listed as a market outcome, market should resolve as 'Other (Field)'`,
+                  text: `If the winner is not listed as a market outcome, the market should resolve as 'Other (Field)'`,
                 },
               ],
             },
@@ -8238,7 +8238,7 @@ export const TEMPLATES = {
                   text: `The candidate who receives a majority of the party's delegates wins their party's nomination.`,
                 },
                 {
-                  text: `If winner is not listed as a market outcome, market should resolve as 'Other (Field)'`,
+                  text: `If the winner is not listed as a market outcome, the market should resolve as 'Other (Field)'`,
                 },
               ],
             },
@@ -8338,7 +8338,7 @@ export const TEMPLATES = {
                   text: `The winning outcome is the party which is expected to control the majority of seats according to the results of the election, not determined by the current controlling party at event expiration if the new congress's session hasn't started yet.`,
                 },
                 {
-                  text: `If winner is not listed as a market outcome, market should resolve as 'Other (Field)'`,
+                  text: `If the winner is not listed as a market outcome, the market should resolve as 'Other (Field)'`,
                 },
               ],
             },
@@ -8393,7 +8393,7 @@ export const TEMPLATES = {
                   text: `The winner of the primary is the candidate recognized and/or announced by the state`,
                 },
                 {
-                  text: `If winner is not listed as a market outcome, market should resolve as 'Other (Field)'`,
+                  text: `If the winner is not listed as a market outcome, the market should resolve as 'Other (Field)'`,
                 },
               ],
             },
@@ -8448,7 +8448,7 @@ export const TEMPLATES = {
                   text: `The winner of the caucus is the candidate recognized and/or announced by the political party`,
                 },
                 {
-                  text: `If winner is not listed as a market outcome, market should resolve as 'Other (Field)'`,
+                  text: `If the winner is not listed as a market outcome, the market should resolve as 'Other (Field)'`,
                 },
               ],
             },
@@ -8604,7 +8604,7 @@ export const TEMPLATES = {
                   text: `If location/country does not have the stated position in market, market should resolve as "Invalid"`,
                 },
                 {
-                  text: `If winner is not listed as a market outcome, market should resolve as 'Other (Field)'`,
+                  text: `If the winner is not listed as a market outcome, the market should resolve as 'Other (Field)'`,
                 },
                 {
                   text: `If the country named in the market question has multiple people with the same title, the market should resolve as 'Invalid'`,
@@ -9142,7 +9142,7 @@ export const TEMPLATES = {
                     'The market should resolve as "multiple hosts" if more than one of the possible outcomes hosts the event. If only one of the potential outcomes hosts with multiple people, then the individual outcome would be the winner.',
                 },
                 {
-                  text: `If winner is not listed as a market outcome, market should resolve as 'Other (Field)'`,
+                  text: `If the winner is not listed as a market outcome, the market should resolve as 'Other (Field)'`,
                 },
                 {
                   text: ` If the event does not take place or if the results of the event do not occur by the Event Expiration time, this market should resolve as "Invalid"`,
@@ -9187,7 +9187,7 @@ export const TEMPLATES = {
             resolutionRules: {
               [REQUIRED]: [
                 {
-                  text: `If winner is not listed as a market outcome, market should resolve as 'Other (Field)'`,
+                  text: `If the winner is not listed as a market outcome, the market should resolve as 'Other (Field)'`,
                 },
                 {
                   text: ` If the event does not take place or if the results of the event do not occur by the Event Expiration time, this market should resolve as "Invalid"`,
