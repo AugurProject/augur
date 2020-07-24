@@ -123,10 +123,10 @@ async function createDefaultProvider(config: SDKConfiguration, canUseWeb3) {
   if (config.networkId && isDevNetworkId(config.networkId)) {
     // In DEV, use local ethereum node
     return new JsonRpcProvider(config.ethereum.http);
-  } else if ((windowRef.web3 || windowRef.ethereum) && canUseWeb3) {
+  } else if ((windowRef.web3 || windowRef.ethereum) && canUseWeb3 && config.ui.primaryProvider === 'wallet') {
     // Use the provider on window if it exists, otherwise use torus provider
     return getWeb3Provider(windowRef);
-  } else if (config.ui?.fallbackProvider === "jsonrpc" && config.ethereum.http) {
+  } else if ((config.ui.primaryProvider === 'jsonrpc' || config.ui?.fallbackProvider === "jsonrpc") && config.ethereum.http) {
     return new JsonRpcProvider(config.ethereum.http);
   } else {
     // Use torus provider
