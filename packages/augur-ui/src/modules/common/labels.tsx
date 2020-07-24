@@ -851,7 +851,7 @@ export const TransactionFeeLabelToolTipCmp = ({
       highlight
       accentValue={isError}
       id={'transaction_fee'}
-      tipText={`Est. TX fee is not included in profit and loss`}
+      tipText={`Est. tx fee is not included in profit and loss`}
     />
 )
 
