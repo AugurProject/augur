@@ -8268,6 +8268,16 @@ export const TEMPLATES = {
               },
               {
                 id: 2,
+                type: TemplateInputType.SUBSTITUTE_USER_OUTCOME,
+                placeholder: `Democratic Party`,
+              },
+              {
+                id: 3,
+                type: TemplateInputType.SUBSTITUTE_USER_OUTCOME,
+                placeholder: `Republican Party`,
+              },
+              {
+                id: 4,
                 type: TemplateInputType.ADDED_OUTCOME,
                 placeholder: `Other (Field)`,
               },
@@ -8275,10 +8285,10 @@ export const TEMPLATES = {
             resolutionRules: {
               [REQUIRED]: [
                 {
-                  text: `The winning outcome is the party which controls the majority of seats, according to the results of the election, not determined by the current controlling party at event expiration.`,
+                  text: `Outcome is determined by the winning party of the popular vote of the state's election.`,
                 },
                 {
-                  text: `If winner is not listed as a market outcome, market should resolve as 'Other (Field)'`,
+                  text: `If the winner is not listed as a market outcome, the market should resolve as 'Other (Field)'`,
                 },
               ],
             },
@@ -8325,7 +8335,7 @@ export const TEMPLATES = {
             resolutionRules: {
               [REQUIRED]: [
                 {
-                  text: `The winning outcome is the party which controls the majority of seats, following the results of the election, not determined by the current controlling party at event expiration`,
+                  text: `The winning outcome is the party which is expected to control the majority of seats according to the results of the election, not determined by the current controlling party at event expiration if the new congress's session hasn't started yet.`,
                 },
                 {
                   text: `If winner is not listed as a market outcome, market should resolve as 'Other (Field)'`,
