@@ -10,6 +10,8 @@ services:
       - ./Caddyfile:/etc/caddy/Caddyfile
       - ./caddy_data:/data
     restart: always
+    environment:
+      HOST: ${HOST}
 
   gsn:
     image: opengsn/jsrelay:${JSRELAY}
