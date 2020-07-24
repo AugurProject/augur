@@ -120,7 +120,7 @@ export function addScripts(flash: FlashSession) {
       const serial = !Boolean(args.parallel);
       if (this.noProvider()) return;
 
-      this.pushConfig({ deploy: { serial }});
+      this.pushConfig({ deploy: { serial }, flash: { gasMultiplier: 1.1 }});
       console.log('Deploying: ', sanitizeConfig(this.config).deploy);
 
       await deployContracts(
@@ -1309,7 +1309,7 @@ export function addScripts(flash: FlashSession) {
       const createMarkets = Boolean(args.createMarkets);
       const traderCount = Number(args.traders || 0);
 
-      this.pushConfig({ deploy: { serial, normalTime: false }});
+      this.pushConfig({ deploy: { serial, normalTime: false }, flash: { gasMultiplier: 1.1 }});
       const { addresses } = await deployContracts(this.network, this.provider, this.getAccount(), compilerOutput, this.config);
       this.pushConfig({ addresses });
 
@@ -1351,7 +1351,7 @@ export function addScripts(flash: FlashSession) {
       const createMarkets = Boolean(args.createMarkets);
       const traderCount = Number(args.traders || 0);
 
-      this.pushConfig({ deploy: { serial, normalTime: true }});
+      this.pushConfig({ deploy: { serial, normalTime: true }, flash: { gasMultiplier: 1.1 }});
       const { addresses } = await deployContracts(this.network, this.provider, this.getAccount(), compilerOutput, this.config);
       this.pushConfig({ addresses });
 

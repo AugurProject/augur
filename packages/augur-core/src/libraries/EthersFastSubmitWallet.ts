@@ -3,14 +3,17 @@ import { ethers } from 'ethers';
 export class EthersFastSubmitWallet extends ethers.Wallet {
   private nonce = 0;
   private gasPrice = 35e9;
+  private gasMultiplier = 1.0;
 
   static async create(
     privateKey: ethers.utils.Arrayish,
-    provider: ethers.providers.Provider
+    provider: ethers.providers.Provider,
+    gasMultiplier = 1.0,
   ): Promise<EthersFastSubmitWallet> {
     const wallet = new EthersFastSubmitWallet(privateKey, provider);
     const nonce = await provider.getTransactionCount(wallet.address, 'pending');
     wallet.setNonce(nonce);
+    wallet.gasMultiplier = gasMultiplier;
     wallet.startGasPriceCheck();
     return wallet;
   }
@@ -21,7 +24,7 @@ export class EthersFastSubmitWallet extends ethers.Wallet {
 
   async startGasPriceCheck(): Promise<void> {
     const gasPrice = await this.provider.getGasPrice();
-    this.gasPrice = Math.round(gasPrice.toNumber() * 1.1);
+    this.gasPrice = Math.round(gasPrice.toNumber() * this.gasMultiplier);
     setTimeout(this.startGasPriceCheck.bind(this), 15000);
   }
 

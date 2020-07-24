@@ -124,7 +124,7 @@ export class FlashSession {
   ): Promise<ContractAPI> {
     const provider = await providerFromConfig(config);
     const connector = new Connectors.SingleThreadConnector();
-    const signer = await makeSigner(account, provider);
+    const signer = await makeSigner(account, provider, config?.flash?.gasMultiplier || 1.0);
     const client = await createClient(config, connector, signer, provider);
     const user = new ContractAPI(client, provider, account);
 

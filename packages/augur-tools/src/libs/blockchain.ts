@@ -36,8 +36,8 @@ export async function deployContracts(
   return { addresses };
 }
 
-export async function makeSigner(account: Account, provider: EthersProvider) {
-  return EthersFastSubmitWallet.create(account.privateKey, provider);
+export async function makeSigner(account: Account, provider: EthersProvider, gasMultipler = 1.0) {
+  return EthersFastSubmitWallet.create(account.privateKey, provider, gasMultipler);
 }
 
 export function makeDependencies(

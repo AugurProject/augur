@@ -107,6 +107,7 @@ export interface SDKConfiguration {
     useGSN?: boolean,
     syncSDK?: boolean,
     skipApproval?: boolean,
+    gasMultiplier?: number, // multiply gas price by this
   },
   ui?: {
     showReloadModal?: boolean,
