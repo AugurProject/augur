@@ -266,6 +266,13 @@ interface TimeLabelProps {
   large?: boolean;
 }
 
+interface FullTimeLabelProps {
+  label: string;
+  time: DateFormattedObject;
+  hint?: React.ReactNode;
+  large?: boolean;
+}
+
 interface CountdownLabelProps {
   expiry: DateFormattedObject;
 }
@@ -327,7 +334,8 @@ interface TemplateShieldProps {
 
 export const TemplateShield = ({ market }: TemplateShieldProps) => {
   const { theme } = useAppStatusStore();
-  if (!market.isTemplate) return null;
+  const isTrading = theme === THEMES.TRADING;
+  if (!market.isTemplate || !isTrading) return null;
   const yellowShield = hasTemplateTextInputs(
     market.template.hash,
     market.marketType === CATEGORICAL
@@ -350,7 +358,7 @@ export const TemplateShield = ({ market }: TemplateShieldProps) => {
         className={TooltipStyles.Tooltip}
         effect="solid"
         place="right"
-        type={theme === THEMES.TRADING ? 'light' : null}
+        type='light'
         event="mouseover mouseenter"
         eventOff="mouseleave mouseout scroll mousewheel blur"
       >
@@ -457,6 +465,44 @@ export const TimeLabel = ({
     </span>
     <span>{time}</span>
   </div>
+);
+
+export const FullTimeLabel = ({
+  label,
+  time,
+  hint,
+  large,
+}: FullTimeLabelProps) => (
+    <div className={classNames(Styles.FullTimeLabel, { [Styles.Large]: large })}>
+      <span>
+        {label}
+        {hint && (
+          <>
+            <label
+              className={TooltipStyles.TooltipHint}
+              data-tip
+              data-for={`tooltip-${label.replace(' ', '-')}`}
+              data-iscapture={true}
+            >
+              {QuestionIcon}
+            </label>
+            <ReactTooltip
+              id={`tooltip-${label.replace(' ', '-')}`}
+              className={TooltipStyles.Tooltip}
+              effect="solid"
+              place="right"
+              type="light"
+              event="mouseover mouseenter"
+              eventOff="mouseleave mouseout scroll mousewheel blur"
+            >
+              {hint}
+            </ReactTooltip>
+          </>
+        )}
+      </span>
+      <span>{time.formattedUtc}</span>
+      <span>{time.formattedLocalShortWithUtcOffsetWithoutSeconds}</span>
+    </div>
 );
 
 export const DashlineNormal = () => (

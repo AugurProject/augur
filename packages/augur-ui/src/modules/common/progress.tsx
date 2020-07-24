@@ -18,11 +18,6 @@ export interface CountdownProgressProps {
   value?: string;
 }
 
-export interface TimeLabelProps {
-  time: DateFormattedObject;
-  label?: string;
-}
-
 export interface TimeProgressBarProps {
   startTime: DateFormattedObject;
   endTime: DateFormattedObject;
@@ -259,21 +254,6 @@ export const CountdownProgress = ({
     >
       <span>{label}</span>
       <span>{value || valueString}</span>
-    </span>
-  );
-};
-
-export const TimeLabel = (props: TimeLabelProps) => {
-  const { label, time } = props;
-  let formattedTime: DateFormattedObject = time;
-  if (typeof time !== 'object') {
-    formattedTime = format.convertUnixToFormattedDate(time);
-  }
-  return (
-    <span className={Styles.TimeLabel}>
-      {label && <span>{label}</span>}
-      <span>{formattedTime.formattedUtcShortDate}</span>
-      <span>{formattedTime.clockTimeUtc}</span>
     </span>
   );
 };

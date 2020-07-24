@@ -58,22 +58,23 @@ export interface TimezoneDateObject {
 }
 
 export interface DateFormattedObject {
-  value: Date;
-  formattedUtcShortTime: string;
-  formattedShortTime: string;
+  clockTimeLocal: string;
+  clockTimeUtc: string;
   formattedLocalShortDate: string;
-  formattedLocalShortWithUtcOffset: string;
   formattedLocalShortDateSecondary: string;
+  formattedLocalShortDateTimeNoTimezone: string;
+  formattedLocalShortDateTimeWithTimezone: string;
+  formattedLocalShortWithUtcOffset: string;
+  formattedLocalShortWithUtcOffsetWithoutSeconds: string;
+  formattedShortTime: string;
+  formattedShortUtc: string;
+  formattedSimpleData: string;
+  formattedUtc: string;
+  formattedUtcShortDate: string;
+  formattedUtcShortTime: string;
   timestamp: number;
   utcLocalOffset: number;
-  clockTimeLocal: string;
-  formattedLocalShortDateTimeWithTimezone: string;
-  formattedLocalShortDateTimeNoTimezone: string;
-  formattedSimpleData: string;
-  formattedUtcShortDate: string;
-  clockTimeUtc: string;
-  formattedUtc: string;
-  formattedShortUtc: string;
+  value: Date;
 }
 
 export interface ValueLabelPair {
