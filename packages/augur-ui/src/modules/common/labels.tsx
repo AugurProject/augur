@@ -266,6 +266,13 @@ interface TimeLabelProps {
   large?: boolean;
 }
 
+interface FullTimeLabelProps {
+  label: string;
+  time: DateFormattedObject;
+  hint?: React.ReactNode;
+  large?: boolean;
+}
+
 interface CountdownLabelProps {
   expiry: DateFormattedObject;
 }
@@ -458,6 +465,46 @@ export const TimeLabel = ({
     <span>{time}</span>
   </div>
 );
+
+export const FullTimeLabel = ({
+  label,
+  time,
+  hint,
+  large,
+}: FullTimeLabelProps) => {
+  return (
+    <div className={classNames(Styles.FullTimeLabel, { [Styles.Large]: large })}>
+      <span>
+        {label}
+        {hint && (
+          <>
+            <label
+              className={TooltipStyles.TooltipHint}
+              data-tip
+              data-for={`tooltip-${label.replace(' ', '-')}`}
+              data-iscapture={true}
+            >
+              {QuestionIcon}
+            </label>
+            <ReactTooltip
+              id={`tooltip-${label.replace(' ', '-')}`}
+              className={TooltipStyles.Tooltip}
+              effect="solid"
+              place="right"
+              type="light"
+              event="mouseover mouseenter"
+              eventOff="mouseleave mouseout scroll mousewheel blur"
+            >
+              {hint}
+            </ReactTooltip>
+          </>
+        )}
+      </span>
+      <span>{time.formattedUtc}</span>
+      <span>{time.formattedLocalShortWithUtcOffsetWithoutSeconds}</span>
+    </div>
+  );
+};
 
 export const DashlineNormal = () => (
   <svg width="100%" height="1">

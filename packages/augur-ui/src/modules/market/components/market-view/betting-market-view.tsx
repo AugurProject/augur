@@ -6,7 +6,7 @@ import { getAddress } from 'ethers/utils/address';
 import { selectMarket } from 'modules/markets/selectors/market';
 import Styles from 'modules/market/components/market-view/betting-market-view.styles.less';
 import { HeadingBar, InfoTicket } from 'modules/market/components/common/common';
-import { PropertyLabel, TimeLabel } from 'modules/common/labels';
+import { PropertyLabel, FullTimeLabel } from 'modules/common/labels';
 import { formatPercent, formatDai } from 'utils/format-number';
 import { Subheaders } from 'modules/reporting/common';
 import {
@@ -65,6 +65,7 @@ const BettingMarketView = () => {
   const estDateTime = convertedInputs && findStartTime(convertedInputs);
   const startTimeFormatted =
     estDateTime && convertUnixToFormattedDate(estDateTime.timestamp);
+  console.log(startTimeFormatted, endTimeFormatted);
   return (
     <div className={Styles.BettingMarketView}>
       <div>
@@ -88,16 +89,16 @@ const BettingMarketView = () => {
             }
           />
           {startTimeFormatted ? (
-            <TimeLabel
+            <FullTimeLabel
               label="Estimated Start Time"
-              time={startTimeFormatted.formattedUtc}
+              time={startTimeFormatted}
               large
               hint={<h4>Estimated Start Time</h4>}
             />
           ) : (
-            <TimeLabel
+            <FullTimeLabel
               label="Event Expiration Date"
-              time={endTimeFormatted.formattedUtc}
+              time={endTimeFormatted}
               large
               hint={<h4>Event Expiration Date</h4>}
             />
