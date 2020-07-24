@@ -1,0 +1,28 @@
+version: '3.7'
+
+services:
+  https-portal:
+    image: caddy:2.1.1-alpine
+    ports:
+      - '80:80'
+      - '443:443'
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile
+      - ./caddy_data:/data
+    restart: always
+
+  gsn:
+    image: opengsn/jsrelay:${JSRELAY}
+    restart: always
+    ports:
+      - '8090:80' #needed for debugging without https frontend
+    volumes:
+      - ./gsndata:/app/data    #can be left out, to keep private-key inside the docker
+    environment:
+      Url: https://${HOST}
+      Port: 80
+      EthereumNodeUrl: ${NODE_URL}
+      RelayHubAddress: ${RELAY_HUB}
+      GasPricePercent: ${GAS_PRICE_PERCENT}
+      BaseFee: ${BASE_FEE}
+      PercentFee: ${PERCENT_FEE}
