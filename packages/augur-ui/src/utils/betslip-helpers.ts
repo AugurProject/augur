@@ -45,7 +45,7 @@ export const placeBet = async (marketId, order, orderId) => {
     market.numTicks,
     market.minPrice,
     market.maxPrice,
-    order.wager,
+    order.shares,
     order.price,
     0,
     '0',
