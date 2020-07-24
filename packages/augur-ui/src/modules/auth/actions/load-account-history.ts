@@ -1,5 +1,12 @@
 import type { Getters } from '@augurproject/sdk';
+import { updateLoginAccount } from 'modules/account/actions/login-account';
 import { loadDisputeWindow } from 'modules/auth/actions/load-dispute-window';
+import {
+  bulkMarketTradingHistory,
+  refreshUserOpenOrders,
+  updateUserFilledOrders,
+} from 'modules/markets/actions/market-trading-history-management';
+import { updateMarketsData } from 'modules/markets/actions/update-markets-data';
 import { userPositionProcessing } from 'modules/positions/actions/load-account-positions';
 import { loadDisputeWindow } from 'modules/auth/actions/load-dispute-window';
 import { augurSdk } from 'services/augursdk';
