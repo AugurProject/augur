@@ -2962,7 +2962,7 @@ export function addScripts(flash: FlashSession) {
       const amount = Number(args.amount as string || 10);
       const price = new BigNumber(args.price as string || 0.50);
       const shares = new BigNumber(args.shares as string || 10);
-      const takersCount = Number(args.traders || 1);
+      const takersCount = Number(args.takers || 1);
       const serial = args.serial as boolean;
 
       const config = this.deriveConfig({
