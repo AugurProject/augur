@@ -4,9 +4,6 @@ import {
 } from 'modules/types';
 import { augurSdk } from 'services/augursdk';
 
-export const UPDATE_USER_FILLED_ORDERS = 'UPDATE_USER_FILLED_ORDERS';
-export const REFRESH_USER_OPEN_ORDERS = 'REFRESH_USER_OPEN_ORDERS';
-
 export const loadMarketTradingHistory = (
   marketId: string,
   callback: NodeStyleCallback = logError
@@ -19,3 +16,14 @@ export const loadMarketTradingHistory = (
   return {keyedMarketTradingHistory: tradingHistory}
 };
 
+export const bulkLoadMarketTradingHistory = async(
+  marketIds: Array<string>,
+  callback: NodeStyleCallback = logError
+) => {
+  if (!marketIds || marketIds.length === 0) return callback(null);
+  const Augur = augurSdk.get();
+  const tradingHistory = await Augur.getTradingHistory({ marketIds });
+  if (tradingHistory == null) return callback(null);
+  callback(null, tradingHistory);
+  return {keyedMarketTradingHistory: tradingHistory}
+};

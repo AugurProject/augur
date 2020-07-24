@@ -334,7 +334,8 @@ interface TemplateShieldProps {
 
 export const TemplateShield = ({ market }: TemplateShieldProps) => {
   const { theme } = useAppStatusStore();
-  if (!market.isTemplate) return null;
+  const isTrading = theme === THEMES.TRADING;
+  if (!market.isTemplate || !isTrading) return null;
   const yellowShield = hasTemplateTextInputs(
     market.template.hash,
     market.marketType === CATEGORICAL
@@ -357,7 +358,7 @@ export const TemplateShield = ({ market }: TemplateShieldProps) => {
         className={TooltipStyles.Tooltip}
         effect="solid"
         place="right"
-        type={theme === THEMES.TRADING ? 'light' : null}
+        type='light'
         event="mouseover mouseenter"
         eventOff="mouseleave mouseout scroll mousewheel blur"
       >

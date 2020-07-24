@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useRef } from 'react';
 import { useLocation } from 'react-router';
 import parseQuery from 'modules/routes/helpers/parse-query';
 import { MARKET_ID_PARAM_NAME } from 'modules/routes/constants/param-names';
@@ -23,27 +23,64 @@ import { MARKET } from 'modules/routes/constants/views';
 import parsePath from 'modules/routes/helpers/parse-path';
 import { convertInputs, findStartTime } from '../common/market-title';
 import { convertUnixToFormattedDate } from 'utils/format-date';
+import { bulkLoadMarketTradingHistory } from 'modules/markets/actions/market-trading-history-management';
+import { useEffect } from 'react';
 
 export const isMarketView = location =>
   parsePath(location.pathname)[0] === MARKET;
 
 const BettingMarketView = () => {
   const {
-    actions: { updateMarketsData },
+    marketTradingHistory,
+    actions: { updateMarketsData, bulkMarketTradingHistory },
   } = useMarketsStore();
   const location = useLocation();
+  const totalBets = useRef(0);
+  const totalBettors = useRef(0);
+  const uniqueAddresses = useRef([]);
+  const sportsGroup = useRef(null);
+  const marketIds = useRef([]);
+  const sportsGroupTradeHistory = useRef([]);
+  const [loadHistory, setLoadHistory] = useState(false);
   const queryId = parseQuery(location.search)[MARKET_ID_PARAM_NAME];
   const marketId = getAddress(queryId);
   const market = selectMarket(marketId);
   const markets = getMarkets();
-  let sportsGroup = null;
-  if (market.sportsBook) {
-    sportsGroup = getSportsGroupsFromSportsIDs(
+
+  if (market.sportsBook && sportsGroup.current === null) {
+    sportsGroup.current = getSportsGroupsFromSportsIDs(
       [market.sportsBook.groupId],
       markets
     )[0];
+    marketIds.current = sportsGroup.current.markets.map(market => market.id);
+    if (!loadHistory && marketIds.current.length > 0) {
+      bulkLoadMarketTradingHistory(marketIds.current, (err, tradeHistory) => {
+        bulkMarketTradingHistory(tradeHistory)
+      });
+      setLoadHistory(true);
+    }
   } else {
     updateMarketsData(null, loadMarketsInfo([marketId]));
+  }
+  sportsGroupTradeHistory.current = marketIds.current.map(marketId => {
+    if (marketTradingHistory[marketId]) return marketTradingHistory[marketId];
+  });
+  sportsGroupTradeHistory.current = sportsGroupTradeHistory.current.filter(item => !!item);
+  if (sportsGroupTradeHistory.current.length > 0) {
+    let tradeCount = 0;
+    sportsGroupTradeHistory.current.forEach(MarketTradeHistoryArray => {
+      tradeCount = tradeCount + MarketTradeHistoryArray.length;
+      MarketTradeHistoryArray.forEach(({ creator, filler }) => {
+        if (!uniqueAddresses.current.includes(creator)) {
+          uniqueAddresses.current.push(creator);
+        }
+        if (!uniqueAddresses.current.includes(filler)) {
+          uniqueAddresses.current.push(filler);
+        }
+      })
+    });
+    totalBets.current = tradeCount;
+    totalBettors.current = uniqueAddresses.current.length;
   }
 
   if (!market) {
@@ -104,7 +141,7 @@ const BettingMarketView = () => {
           )}
         </div>
       </div>
-      {sportsGroup && <SportsGroupMarkets sportsGroup={sportsGroup} />}
+      {sportsGroup.current && <SportsGroupMarkets sportsGroup={sportsGroup.current} />}
       <div>
         <Subheaders
           header="creation date"
@@ -117,23 +154,23 @@ const BettingMarketView = () => {
           tooltipText="event expiration date"
         />
         {details?.length > 0 && (
-          <Subheaders header="resolution rules" subheader={details} />
+          <Subheaders header="rules" subheader={details} />
         )}
       </div>
       <div>
         <InfoTicket
           icon={BettorsIcon}
-          value="43"
+          value={String(totalBettors.current)}
           subheader="Number of bettors on this event"
         />
         <InfoTicket
           icon={BetsIcon}
-          value="148"
+          value={String(totalBets.current)}
           subheader="Bets were placed on this event"
         />
         <InfoTicket
           icon={DaiLogoIcon}
-          value={formatDai(sportsGroup?.totalVolume || '0').full}
+          value={formatDai(sportsGroup.current?.totalVolume || '0').full}
           subheader="Is the amount traded on this event"
         />
       </div>
