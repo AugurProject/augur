@@ -1,7 +1,6 @@
 # when updating node version, make sure link to yarn in /opt is still the correct version
 ARG NODE_VERSION=10.16
 FROM node:${NODE_VERSION}-alpine as base
-ENV NODE_OPTIONS='--max-old-space-size=6144'
 
 RUN apk add --no-cache \
         bash \
