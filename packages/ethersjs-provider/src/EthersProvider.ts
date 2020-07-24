@@ -1,10 +1,9 @@
-import { NetworkId } from '@augurproject/utils';
 import {
   EthersProvider as EProvider,
   Transaction,
 } from '@augurproject/contract-dependencies-ethers';
 import { Log, LogValues } from '@augurproject/types';
-import { logger, LoggerLevels } from '@augurproject/utils';
+import { logger, LoggerLevels, NetworkId } from '@augurproject/utils';
 import { AsyncQueue, queue, retry } from 'async';
 import { BigNumber } from 'bignumber.js';
 import { Abi } from 'ethereum';
@@ -22,7 +21,7 @@ declare global {
 
 Array.prototype.toLowerCase = function () {
   return this.map((item) => item.toLowerCase());
-}
+};
 
 interface MultiAddressFilter {
   blockhash?: string;
@@ -93,30 +92,35 @@ export class EthersProvider extends ethers.providers.BaseProvider
       ) => {
         const _this = this;
         retry(
-          { times,
-            interval: function(retryCount) {
+          {
+            times,
+            interval: function (retryCount) {
               return interval * Math.pow(2, retryCount);
             },
-            errorFilter: function(err) {
-              return err.message.includes("Rate limit") ||
-                     err['code'] === -32000 ||
-                     err.message.includes("429");
-            }
+            errorFilter: function (err) {
+              return (
+                err.message.includes('Rate limit') ||
+                err['code'] === -32000 ||
+                err.message.includes('429')
+              );
+            },
           },
           async () => {
             let result: Promise<any>;
             const itemString = JSON.stringify(item);
-            if ((item.message === "call" ||
-                 item.message === "getBalance" ||
-                 (item.message === "getBlock" && item.params.blockTag !== 'latest')
-                ) &&
-                process.env.NODE_ENV !== 'test' &&
-                this._callCache.has(itemString)) {
+            if (
+              (item.message === 'call' ||
+                item.message === 'getBalance' ||
+                (item.message === 'getBlock' &&
+                  item.params.blockTag !== 'latest')) &&
+              process.env.NODE_ENV !== 'test' &&
+              this._callCache.has(itemString)
+            ) {
               this.cacheCount.increment(item.message);
               return this._callCache.get(itemString);
             }
             if (item.message === 'send') {
-              if (typeof item.params.params === "undefined") {
+              if (typeof item.params.params === 'undefined') {
                 item.params.params = [];
               }
               const {
@@ -138,16 +142,20 @@ export class EthersProvider extends ethers.providers.BaseProvider
                   );
                 } else {
                   this.callCount.decrement(method);
-                  this.cacheCount.increment("eth_getBlockByNumber");
+                  this.cacheCount.increment('eth_getBlockByNumber');
                 }
                 return _this._mostRecentLatestBlockHeaders;
               }
-              result = _this.providerSend(item.params.method, item.params.params);
+              result = _this.providerSend(
+                item.params.method,
+                item.params.params
+              );
             } else {
               const { blockTag, includeTransactions } = item.params;
               this.callCount.increment(item.message);
               if (
-                (item.message === 'getBlockNumber' || item.message === "getBlock") &&
+                (item.message === 'getBlockNumber' ||
+                  item.message === 'getBlock') &&
                 blockTag === 'latest' &&
                 !!includeTransactions === false &&
                 _this.polling &&
@@ -166,10 +174,13 @@ export class EthersProvider extends ethers.providers.BaseProvider
               }
               result = _this.providerPerform(item.message, item.params);
             }
-            if ((item.message === "call" ||
-                item.message === "getBalance" ||
-                (item.message === "getBlock" && item.params.blockTag !== 'latest')) &&
-                process.env.NODE_ENV !== 'test') {
+            if (
+              (item.message === 'call' ||
+                item.message === 'getBalance' ||
+                (item.message === 'getBlock' &&
+                  item.params.blockTag !== 'latest')) &&
+              process.env.NODE_ENV !== 'test'
+            ) {
               this._callCache.set(itemString, result);
             }
             return result;
@@ -278,7 +289,7 @@ export class EthersProvider extends ethers.providers.BaseProvider
         `Contract name ${contractName} did not have function ${functionName}`
       );
     }
-    const ethersParams = _.map(funcParams, param => {
+    const ethersParams = _.map(funcParams, (param) => {
       if (isInstanceOfBigNumber(param)) {
         return new ethers.utils.BigNumber(param.toFixed());
       } else if (
@@ -288,7 +299,7 @@ export class EthersProvider extends ethers.providers.BaseProvider
       ) {
         return _.map(
           param,
-          value => new ethers.utils.BigNumber(value.toFixed())
+          (value) => new ethers.utils.BigNumber(value.toFixed())
         );
       }
       return param;
@@ -299,7 +310,7 @@ export class EthersProvider extends ethers.providers.BaseProvider
   parseLogValues(contractName: string, log: Log): LogValues {
     const contractInterface = this.getContractInterface(contractName);
     const parsedLog = contractInterface.fastParseLog(log);
-    const omittedValues = _.map(_.range(parsedLog.values.length), n =>
+    const omittedValues = _.map(_.range(parsedLog.values.length), (n) =>
       n.toString()
     );
     omittedValues.push('length');
@@ -310,7 +321,7 @@ export class EthersProvider extends ethers.providers.BaseProvider
         if (val._hex) {
           return val._hex;
         } else if (Array.isArray(val)) {
-          val = _.map(val, innerVal => {
+          val = _.map(val, (innerVal) => {
             if (innerVal._hex) {
               return innerVal._hex;
             }
@@ -366,15 +377,54 @@ export class EthersProvider extends ethers.providers.BaseProvider
     } catch (e) {
       // Check if infura log limit error.
       // See https://infura.io/docs/ethereum/json-rpc/eth_getLogs.
-      if (e.code !== -32005) {
-        throw e;
+      if (e.code === -32005) return this.getSplitLogs(filter, 2);
+
+      // -32600 is an invalid request... hence the message check.
+      if (
+        e.code === -32600 &&
+        e.responseText.includes(
+          'Requested block range for eth_getLogs is greater than the limit of 1000 blocks.'
+        )
+      ) {
+        return this.getLogsWithLimitedBlockRange(filter);
       }
 
-      return this.getSplitLogs(filter, 2);
+      throw e;
     }
   }
 
-  getSplitLogs = async (filter: MultiAddressFilter, desiredDepth: number): Promise<ethers.providers.Log[]> => {
+  getLogsWithLimitedBlockRange = async (
+    filter: MultiAddressFilter,
+    blockRangeLimit = 1000
+  ): Promise<ethers.providers.Log[]> => {
+    const fromBlock = Number(filter.fromBlock);
+    const toBlock = Number(filter.toBlock);
+
+    let currentBlock = fromBlock;
+    let logs = [];
+    while(currentBlock < toBlock) {
+      const nextEndBlock = Math.min(currentBlock + blockRangeLimit, toBlock);
+      logs = [
+        ...logs,
+        ...await this.getMultiAddressLogs({
+          ...filter,
+          fromBlock: currentBlock,
+          toBlock: nextEndBlock
+        })
+      ];
+
+      console.log(currentBlock, nextEndBlock);
+
+      currentBlock = nextEndBlock + 1;
+    }
+
+    return logs;
+  };
+
+  getSplitLogs = async (
+    filter: MultiAddressFilter,
+    desiredDepth: number
+  ): Promise<ethers.providers.Log[]> => {
     // bisect the block window.
     const midBlock = Math.floor(
       (Number(filter.toBlock) + Number(filter.fromBlock)) / 2
@@ -405,12 +455,12 @@ export class EthersProvider extends ethers.providers.BaseProvider
     return [
       ...(await this.getSplitLogs(firstFilter, desiredDepth)),
       ...(await this.getSplitLogs(secondFilter, desiredDepth)),
-    ]
-  }
+    ];
+  };
 
   getLogs = async (filter: MultiAddressFilter): Promise<Log[]> => {
     const logs = await this._getLogs(filter);
-    return logs.map<Log>(log => ({
+    return logs.map<Log>((log) => ({
       name: '',
       transactionHash: '',
       blockNumber: 0,
