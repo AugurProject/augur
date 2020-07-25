@@ -195,14 +195,14 @@ export function formatDai(
   opts: FormattedNumberOptions = {}
 ): FormattedNumber {
   return formatNumber(num, {
-    decimals: 2,
-    decimalsRounded: 2,
+    decimals: 3,
+    decimalsRounded: 3,
     denomination: v => {
       const isNegative = Number(v) < 0;
       const val = isNegative
         ? createBigNumber(v)
             .abs()
-            .toFixed(2)
+            .toFixed(3)
         : v;
       return `${isNegative ? '-' : ''}$${val}`;
     },
@@ -338,15 +338,15 @@ export function formatAttoRep(
 
 export function formatAttoDai(num: NumStrBigNumber, optsInc: FormattedNumberOptions = optionsBlank()): FormattedNumber {
   const opts = Object.assign(optionsBlank(), {
-    decimals: 2,
-    decimalsRounded: 2,
+    decimals: 3,
+    decimalsRounded: 3,
     ...optsInc,
     denomination: v => {
       const isNegative = Number(v) < 0;
       const val = isNegative
         ? createBigNumber(v)
             .abs()
-            .toFixed(2)
+            .toFixed(3)
         : v;
       return `${isNegative ? '-' : ''}$${val}`;
     },
