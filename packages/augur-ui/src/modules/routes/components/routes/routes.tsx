@@ -59,10 +59,10 @@ const Routes = p => {
         path={makePath(VIEWS.TRANSACTIONS)}
         component={COMPONENTS.Account}
       />
-      <AuthenticatedRoute
+      {!p.disableMarketCreation && <AuthenticatedRoute
         path={makePath(VIEWS.CREATE_MARKET)}
         component={COMPONENTS.CreateMarket}
-      />
+      />}
       <Route
         path={makePath(VIEWS.DISPUTING)}
         component={COMPONENTS.Disputing}
