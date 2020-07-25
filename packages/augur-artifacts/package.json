@@ -14,6 +14,7 @@
     "build/**"
   ],
   "dependencies": {
+    "@augurproject/utils": "2.0.0-alpha.2",
     "deepmerge": "4.2.2",
     "require-all": "3.0.0"
   },

@@ -1,8 +1,6 @@
-.git
 *.log
 packages/*/venv
 **/*.pyc
 node_modules
 packages/**/node_modules
 packages/**/build
-

@@ -7,6 +7,7 @@ import {
 import { Log as SerializedLog } from '@augurproject/types';
 import Dexie from 'dexie';
 import { Block } from 'ethers/providers';
+import { BigNumber } from 'ethers/utils';
 import * as IPFS from 'ipfs';
 import * as Unixfs from 'ipfs-unixfs';
 import { DAGNode } from 'ipld-dag-pb';
@@ -18,7 +19,6 @@ import { DB } from '../state/db/DB';
 import { IpfsInfo } from '../state/db/WarpSyncCheckpointsDB';
 import { Markets } from '../state/getter/Markets';
 import { Checkpoints } from './Checkpoints';
-import { BigNumber } from 'ethers/utils';
 
 export const WARPSYNC_VERSION = '1';
 const FILE_FETCH_TIMEOUT = 10000; // 10 seconds
@@ -103,7 +103,7 @@ export interface CheckpointInterface {
 export class WarpController {
   private static DEFAULT_NODE_TYPE = { format: 'dag-pb', hashAlg: 'sha2-256' };
   checkpoints: Checkpoints;
-  private ipfs: Promise<IPFS>;
+  ipfs: Promise<IPFS>;
 
   constructor(
     private db: DB,

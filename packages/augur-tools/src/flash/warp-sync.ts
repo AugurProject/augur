@@ -1,4 +1,4 @@
-import { NullWarpSyncHash } from '@augurproject/sdk-lite/build';
+import { NullWarpSyncHash } from '@augurproject/sdk-lite';
 import { BigNumber } from 'bignumber.js';
 import { FlashArguments, FlashSession } from './flash';
 

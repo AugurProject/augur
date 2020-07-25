@@ -37,6 +37,7 @@ import {
   CreateYesNoMarketParams,
   Market,
 } from './api/Market';
+import { MarketInvalidBids } from './api/MarketInvalidBids';
 import { OnChainTrade } from './api/OnChainTrade';
 import { PlaceTradeDisplayParams, SimulateTradeData, Trade } from './api/Trade';
 import { Uniswap } from './api/Uniswap';
@@ -63,7 +64,6 @@ import { Users } from './state/getter/Users';
 import { WarpSyncGetter } from './state/getter/WarpSyncGetter';
 import { ZeroXOrdersGetters } from './state/getter/ZeroXOrdersGetters';
 import { WarpController } from './warp/WarpController';
-import { MarketInvalidBids } from './api/MarketInvalidBids';
 
 export class Augur<TProvider extends Provider = Provider> {
   syncableFlexSearch: SyncableFlexSearch;
@@ -97,6 +97,10 @@ export class Augur<TProvider extends Provider = Provider> {
 
   set warpController(_warpController: WarpController) {
     this._warpController = _warpController;
+  }
+
+  get warpController() {
+    return this._warpController;
   }
 
   get zeroX(): ZeroX {
