@@ -28,7 +28,9 @@
     "exchangeRateBufferMultiplier": 1.05
   },
   "gsn": {
-    "enabled": true
+    "enabled": true,
+    "minDaiForSignerETHBalanceInDAI": 40,
+    "desiredSignerBalanceInETH": 0.16
   },
   "zeroX": {
     "rpc": {
