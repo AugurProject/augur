@@ -63,7 +63,7 @@ contract Universe is IUniverse {
 
     uint256 constant public INITIAL_WINDOW_ID_BUFFER = 365 days * 10 ** 8;
     uint256 constant public DEFAULT_NUM_OUTCOMES = 2;
-    uint256 constant public DEFAULT_NUM_TICKS = 100;
+    uint256 constant public DEFAULT_NUM_TICKS = 1000;
 
     uint256 public totalBalance;
     ICash public cash;
