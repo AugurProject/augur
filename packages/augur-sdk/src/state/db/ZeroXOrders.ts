@@ -7,7 +7,7 @@ import {
   OrderData,
   parseAssetData
 } from '@augurproject/sdk-lite';
-import { logger, LoggerLevels } from '@augurproject/utils';
+import { logger, LoggerLevels, DEFAULT_TRADE_INTERVAL } from '@augurproject/utils';
 import { getAddress } from 'ethers/utils/address';
 import * as _ from 'lodash';
 import { Augur } from '../../Augur';
@@ -23,7 +23,6 @@ import { SyncStatus } from './SyncStatus';
 
 const EXPECTED_ASSET_DATA_LENGTH = 2122;
 
-const DEFAULT_TRADE_INTERVAL = new BigNumber(10**17);
 
 export interface Document extends BaseDocument {
   blockNumber: number;
