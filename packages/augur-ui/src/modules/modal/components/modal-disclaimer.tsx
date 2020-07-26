@@ -27,6 +27,9 @@ const ModalDisclaimer = () => {
     <section className={Styles.ModalDisclaimer}>
       <h1>Disclaimer</h1>
       <div ref={containerText} onScroll={() => checkScroll()}>
+        <p> 
+          <b> Welcome to the Augur Client. </b>
+        </p>
         <p>
           Augur is a decentralized oracle and peer to peer protocol for user-created 
           prediction markets. Augur is free, public, open source software and a
