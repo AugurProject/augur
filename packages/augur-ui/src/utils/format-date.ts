@@ -195,7 +195,7 @@ export function timestampComponents(timestamp: number, offset: number = 0, timez
   return {
     setEndTime: timestamp,
     hour: String(date.utc().format('h')),
-    minute: String(date.utc().format('m')),
+    minute: String(date.utc().format('mm')),
     meridiem: String(date.utc().format('A')),
     timezone
   }

@@ -56,25 +56,8 @@ export const calcOrderProfitLossPercents = (
   const totalShareValue = longETH.plus(shortETH);
   const winningSettlementCost = totalShareValue.times(bnSettlementFee);
 
-  const maxTotalTradeCostNoFee = side === BUY ? longETH : shortETH;
-
-  const longETHPercentNoFee = shortETH
-    .dividedBy(maxTotalTradeCostNoFee)
-    .times(100);
-  const shortETHPercentNoFee = longETH
-    .dividedBy(maxTotalTradeCostNoFee)
-    .times(100);
-
   const longETHpotentialProfit = longETH;
   const shortETHpotentialProfit = shortETH;
-  const totalETHValueWinnable = side === BUY ? longETH : shortETH;
-
-  const longETHPercentProfit = longETHpotentialProfit
-    .dividedBy(totalETHValueWinnable)
-    .times(100);
-  const shortETHPercentProfit = shortETHpotentialProfit
-    .dividedBy(totalETHValueWinnable)
-    .times(100);
 
   const potentialDaiProfit =
     side === BUY ? shortETHpotentialProfit : longETHpotentialProfit;
@@ -139,7 +122,7 @@ export const calcOrderShareProfitLoss = (
   const shortETH = sharePriceShort.times(shareCost).times(marketRange);
 
   const winningSettlementCost = (side === BUY ? shortETH : longETH).times(settlementFee);
-  
+
   let longETHpotentialProfit = longETH.minus(winningSettlementCost);
   let shortETHpotentialProfit = shortETH.minus(winningSettlementCost);
 
