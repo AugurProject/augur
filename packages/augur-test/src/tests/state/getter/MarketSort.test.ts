@@ -322,10 +322,10 @@ describe('State API :: Market Sorts', () => {
       await john.db.marketDatabase.syncOrderBooks([market4.address]);
       marketData = await john.db.Markets.get(market4.address);
       await expect(marketData.liquidity).toEqual({
-        '10': '000000004995000000000000000000',
-        '100': '000000009580000000000000000000',
-        '15': '000000004995000000000000000000',
-        '20': '000000004995000000000000000000',
+        '10': '000000000580000000000000000000',
+        '100': '000000000580000000000000000000',
+        '15': '000000000580000000000000000000',
+        '20': '000000000580000000000000000000',
       });
       await expect(marketData.invalidFilter).toEqual(0);
 
