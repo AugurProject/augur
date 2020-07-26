@@ -75,7 +75,7 @@ export default class MarketTradeHistory extends Component<
                         {isScalar ? (
                           <HoverValueLabel value={formatDai(priceTime.price)} />
                         ) : (
-                          priceTime.price.toFixed(2)
+                          priceTime.price.toFixed(3)
                         )}
                         <span
                           className={classNames({
