@@ -2701,7 +2701,7 @@ export function addScripts(flash: FlashSession) {
       {
         name: 'unstakeDelay',
         abbr: 'd',
-        description: 'no idea TODO',
+        description: 'seconds to wait before removing stake. default=604800 (1 week)',
       },
       {
         name: 'relayHub',
@@ -2711,7 +2711,7 @@ export function addScripts(flash: FlashSession) {
     ],
     async call(this: FlashSession, args: FlashArguments) {
       const address = args.relayHub as string || UNIVERSAL_RELAY_HUB_ADDRESS;
-      const unstakeDelay = new BigNumber(args.unstakeDelay as string || 9001);
+      const unstakeDelay = new BigNumber(args.unstakeDelay as string || 604800);
       const ethAmount = Number(args.ethAmount) || 1;
       const attachedEth = new BigNumber(ethAmount).times(_1_ETH);
 
