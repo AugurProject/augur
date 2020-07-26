@@ -2668,7 +2668,7 @@ export function addScripts(flash: FlashSession) {
     });
 
   flash.addScript({
-    name: 'deposit-relay',
+    name: 'gsn-fund-relay',
     options: [
       {
         name: 'ethAmount',
@@ -2691,7 +2691,7 @@ export function addScripts(flash: FlashSession) {
   });
 
   flash.addScript({
-    name: 'stake',
+    name: 'gsn-stake-relay',
     options: [
       {
         name: 'ethAmount',
