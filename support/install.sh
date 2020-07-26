@@ -104,7 +104,7 @@ fi
 if [ -f ./augur/docker-compose.yml ]; then
   printf "[!]: ${PWD}/augur/docker-compose.yml - Already exists, delete and re-run to upgrade\n"
 else
-  curl -FSsa $DOCKER_COMPOSE_FILE_URL -o ./augur/docker-compose.yml && \
+  curl -fSsa $DOCKER_COMPOSE_FILE_URL -o ./augur/docker-compose.yml && \
   printf "[x]: ${PWD}/augur/docker-compose.yml- Downloaded\n"
 fi
 
