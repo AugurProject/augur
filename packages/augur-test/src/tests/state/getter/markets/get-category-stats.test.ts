@@ -36,7 +36,7 @@ describe('State API :: Markets :: Categories', () => {
     );
 
     const numShares = new BigNumber(1e21);
-    const price = new BigNumber(22);
+    const price = new BigNumber(220);
 
     await john.faucetCash(new BigNumber(1e25)); // faucet enough cash for orders
     await mary.faucetCash(new BigNumber(1e25)); // faucet enough cash for orders
@@ -106,21 +106,21 @@ describe('State API :: Markets :: Categories', () => {
       common: {
         category: 'common',
         numberOfMarkets: 2,
-        volume: '110000.00',
-        openInterest: '90000.00',
+        volume: '1100000.00',
+        openInterest: '900000.00',
         categories: {
           'yesno 1 secondary': {
             category: 'yesno 1 secondary',
             numberOfMarkets: 1,
-            volume: '60000.00',
-            openInterest: '40000.00',
+            volume: '600000.00',
+            openInterest: '400000.00',
             categories: {},
           },
           'scalar 1 secondary': {
             category: 'scalar 1 secondary',
             numberOfMarkets: 1,
-            volume: '50000.00',
-            openInterest: '50000.00',
+            volume: '500000.00',
+            openInterest: '500000.00',
             categories: {},
           },
         },

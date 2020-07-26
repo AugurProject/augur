@@ -96,7 +96,7 @@ describe('State API :: Accounts :: ', () => {
     const outcome1 = new BigNumber(1);
     const outcome2 = new BigNumber(2);
     const numShares = new BigNumber(10).pow(18);
-    const price = new BigNumber(22);
+    const price = new BigNumber(220);
     await john.placeOrder(
       johnYesNoMarket.address,
       bid,
@@ -192,7 +192,7 @@ describe('State API :: Accounts :: ', () => {
 
     // Fill orders
     const cost = numShares
-      .times(78)
+      .times(780)
       .div(10)
       .times(1e18);
     await mary.fillOrder(

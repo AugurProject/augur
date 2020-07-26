@@ -31,7 +31,7 @@ test('Hot Loading :: Get Market Data', async () => {
   await expect(eventData.reportingState).toEqual('PreReporting');
   await expect(eventData.volume).toEqual('0');
   await expect(eventData.openInterest).toEqual('0');
-  await expect(eventData.numTicks).toEqual('100');
+  await expect(eventData.numTicks).toEqual('1000');
   await expect(eventData.marketCreatorFeeRate).toEqual('0.01');
   await expect(eventData.reportingFeeRate).toEqual('0.0001');
   await expect(eventData.settlementFee).toEqual('0.0101');

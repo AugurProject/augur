@@ -88,12 +88,12 @@ def test_binary_and_claim(taker, contractsFixture, cash, market, universe):
 
     assert profitLoss.getNetPosition(market.address, account1, YES) == 0
     assert profitLoss.getAvgPrice(market.address, account1, YES) == 0
-    assert roughlyEqual(profitLoss.getRealizedProfit(market.address, account1, YES), -389.3321 * 10**36)
+    assert roughlyEqual(profitLoss.getRealizedProfit(market.address, account1, YES), -3893.321 * 10**36)
     assert profitLoss.getFrozenFunds(market.address, account1, YES) == 0
 
     assert profitLoss.getNetPosition(market.address, account2, YES) == 0
     assert profitLoss.getAvgPrice(market.address, account2, YES) == 0
-    assert roughlyEqual(profitLoss.getRealizedProfit(market.address, account2, YES), 369.1321 * 10**36)
+    assert roughlyEqual(profitLoss.getRealizedProfit(market.address, account2, YES), 3691.321 * 10**36)
     assert profitLoss.getFrozenFunds(market.address, account2, YES) == 0
 
 @mark.parametrize('taker', [

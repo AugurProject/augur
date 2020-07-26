@@ -41,8 +41,8 @@ describe('State API :: get-platform-activity-stats :: ', () => {
     const bid = new BigNumber(0);
     const outcome2 = new BigNumber(2);
     const numShares = new BigNumber(10).pow(12);
-    const price = new BigNumber(22);
-    const cost = numShares.times(78).div(10);
+    const price = new BigNumber(220);
+    const cost = numShares.times(780).div(10);
 
     await john.faucetCash(new BigNumber(1e18));
     await mary.faucetCash(new BigNumber(1e18));
@@ -83,8 +83,8 @@ describe('State API :: get-platform-activity-stats :: ', () => {
       numberOfTrades: 9,
     });
     expect(stats.amountStaked).toEqual('900612735601043701171200');
-    expect(stats.openInterest).toEqual('2040000000000000');
-    expect(stats.volume).toEqual('0.006093');
+    expect(stats.openInterest).toEqual('2400000000000000');
+    expect(stats.volume).toEqual('0.00693');
   });
 });
 

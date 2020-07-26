@@ -153,7 +153,7 @@ describe('State API :: Trading :: ', () => {
     const bid = new BigNumber(0);
     const outcome = new BigNumber(0);
     const numShares = new BigNumber(10000000000000);
-    const price = new BigNumber(22);
+    const price = new BigNumber(220);
     await john.placeOrder(
       market.address,
       bid,

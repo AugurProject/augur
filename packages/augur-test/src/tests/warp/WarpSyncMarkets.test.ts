@@ -470,7 +470,7 @@ describe('Warp Sync markets', () => {
 
       const yesPayoutSet = [
         new BigNumber(0),
-        new BigNumber(100),
+        new BigNumber(1000),
         new BigNumber(0),
       ];
       await john.doInitialReport(market, yesPayoutSet);
