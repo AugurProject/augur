@@ -195,8 +195,8 @@ export function formatOutcomePercentage(
   opts: FormattedNumberOptions = {}
 ): FormattedNumber {
   return formatNumber(num, {
-    decimals: 2,
-    decimalsRounded: 2,
+    decimals: 1,
+    decimalsRounded: 1,
     denomination: v => {
       return `${v}%`;
     },
