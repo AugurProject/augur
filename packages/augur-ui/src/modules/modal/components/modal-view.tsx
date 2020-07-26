@@ -189,7 +189,7 @@ function selectModal(type, props, closeModal, modal) {
     case TYPES.MODAL_FROZEN_FUNDS:
       return <FrozenFundsBreakdown />;
     case TYPES.MODAL_REPORTING_ONLY:
-      return <ModalDisclaimer {...modal} isReadonly={true} />;
+      return <ModalDisclaimer {...modal} isReportingOnly={true} />;
     default:
       return <div />;
   }

@@ -12,10 +12,10 @@ const EST_HEIGHT_PERCENT = 0.98;
 interface ModalDisclaimerProps {
   closeModal: Function;
   onApprove: Function;
-  isReadonly: boolean;
+  isReportingOnly: boolean;
 }
 
-const ModalDisclaimer = ({ closeModal, onApprove, isReadonly }: ModalDisclaimerProps) => {
+const ModalDisclaimer = ({ closeModal, onApprove, isReportingOnly }: ModalDisclaimerProps) => {
   const [didScroll, setDidScroll] = useState(false);
   const [didCheck, setDidCheck] = useState(false);
   const containerText = useRef(null);
@@ -32,7 +32,7 @@ const ModalDisclaimer = ({ closeModal, onApprove, isReadonly }: ModalDisclaimerP
       <h1>Disclaimer</h1>
       <div ref={containerText} onScroll={() => checkScroll()}>
       <p>
-          <b>{isReadonly ? "Welcome to the Augur Reporting & Browsing Client" : "Welcome to the Augur Client"}</b>
+          <b>{isReportingOnly ? "Welcome to the Augur Reporting & Browsing Client" : "Welcome to the Augur Client"}</b>
         </p>
         <p>
         Augur is a decentralized oracle and peer to peer protocol for user-created
