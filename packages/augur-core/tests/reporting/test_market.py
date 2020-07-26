@@ -28,7 +28,7 @@ def test_market_creation(contractsFixture, augur, universe, market):
 
     assert market.getUniverse() == universe.address
     assert market.getNumberOfOutcomes() == 3
-    assert numTicks == 100
+    assert numTicks == 1000
     assert market.getReputationToken() == universe.getReputationToken()
     assert market.getWinningPayoutDistributionHash() == stringToBytes("")
     assert market.getInitialized()

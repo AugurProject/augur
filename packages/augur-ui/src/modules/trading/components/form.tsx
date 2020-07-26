@@ -31,6 +31,7 @@ import {
   tickSizeToNumTickWithDisplayPrices,
   convertDisplayAmountToOnChainAmount,
   QUINTILLION,
+  DEFAULT_TRADE_INTERVAL
 } from '@augurproject/utils';
 import {
   CancelTextButton,
@@ -41,8 +42,6 @@ import { EXPIRATION_DATE_OPTIONS, convertUnixToFormattedDate, calcOrderExpiratio
 import { SimpleTimeSelector } from 'modules/create-market/components/common';
 import { calcPercentageFromPrice, calcPriceFromPercentage } from 'utils/format-number';
 import Media from 'react-media';
-
-const DEFAULT_TRADE_INTERVAL = new BigNumber(10 ** 17);
 
 enum ADVANCED_OPTIONS {
   EXPIRATION = '1',

@@ -13,12 +13,12 @@ import { makeProvider } from '../../../libs';
 const CHUNK_SIZE = 100000;
 
 const invalidPayoutSet = [
-  new BigNumber(100),
+  new BigNumber(1000),
   new BigNumber(0),
   new BigNumber(0),
 ];
-const noPayoutSet = [new BigNumber(0), new BigNumber(100), new BigNumber(0)];
-const yesPayoutSet = [new BigNumber(0), new BigNumber(0), new BigNumber(100)];
+const noPayoutSet = [new BigNumber(0), new BigNumber(1000), new BigNumber(0)];
+const yesPayoutSet = [new BigNumber(0), new BigNumber(0), new BigNumber(1000)];
 
 describe('State API :: Markets :: ', () => {
   let john: TestContractAPI;

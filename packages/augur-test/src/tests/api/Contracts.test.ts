@@ -133,6 +133,6 @@ test('Contract :: Universe :: Create Market', async () => {
   const marketAddress = marketCreatedEvent.parameters.market;
   const market = contracts.marketFromAddress(marketAddress);
 
-  const numticks = new BigNumber(100);
+  const numticks = new BigNumber(1000);
   await expect(await market.getNumTicks_()).toEqual(numticks);
 });

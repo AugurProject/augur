@@ -58,14 +58,14 @@ export interface OrderBook {
 }
 
 export const singleOutcomeAsks: AskBid[] = [
-  { shares: '100.00', price: '0.31' },
-  { shares: '200.00', price: '0.35' },
-  { shares: '300.00', price: '0.40' },
+  { shares: '100.00', price: '0.311' },
+  { shares: '200.00', price: '0.351' },
+  { shares: '300.00', price: '0.401' },
 ];
 export const singleOutcomeBids: AskBid[] = [
-  { shares: '100.00', price: '0.30' },
-  { shares: '200.00', price: '0.25' },
-  { shares: '300.00', price: '0.19' },
+  { shares: '100.00', price: '0.301' },
+  { shares: '200.00', price: '0.251' },
+  { shares: '300.00', price: '0.191' },
 ];
 const yesNoOrderBook: OrderBook = {
   1: {

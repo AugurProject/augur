@@ -13,7 +13,7 @@ const mapStateToProps = (state: AppState, ownProps) => {
   // default values for create market preview
   const minPrice = market ? market.minPrice : 0;
   const maxPrice = market ? market.maxPrice : 1;
-  const tickSize = market ? market.tickSize : 100;
+  const tickSize = market ? market.tickSize : 0.001;
   const marketType = market ? market.marketType : YES_NO; // default to yes no. has to be something
 
   const usePercent = ownProps.outcome && ownProps.outcome.id === INVALID_OUTCOME_ID && market.marketType === SCALAR;

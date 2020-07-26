@@ -63,12 +63,12 @@ describe('State API :: Markets :: ', () => {
     // Report on a market with Bob
     await john.setTimestamp(endTime.plus(24 * 60 * 60 * 2));
 
-    let payoutSet = [new BigNumber(0), new BigNumber(100), new BigNumber(0)];
+    let payoutSet = [new BigNumber(0), new BigNumber(1000), new BigNumber(0)];
     await bob.doInitialReport(yesNoMarket2, payoutSet);
 
     payoutSet = [
       new BigNumber(0),
-      new BigNumber(100),
+      new BigNumber(1000),
       new BigNumber(0),
       new BigNumber(0),
     ];
@@ -78,7 +78,7 @@ describe('State API :: Markets :: ', () => {
     payoutSet = [
       new BigNumber(0),
       new BigNumber(0),
-      new BigNumber(100),
+      new BigNumber(1000),
       new BigNumber(0),
     ];
     await bob.faucetRep(new BigNumber(1));
@@ -87,8 +87,8 @@ describe('State API :: Markets :: ', () => {
     // Trade on a market with Bob
     const bid = new BigNumber(0);
     const outcome = new BigNumber(0);
-    const numShares = new BigNumber(10000000000000);
-    const price = new BigNumber(22);
+    const numShares = new BigNumber(1000000000000);
+    const price = new BigNumber(220);
     await bob.placeOrder(
       categoricalMarket2.address,
       bid,
@@ -197,8 +197,8 @@ describe('State API :: Markets :: ', () => {
   });
 
   describe(':getMarketOrderBook', () => {
-    const numShares = new BigNumber(10000000000000);
-    const price = new BigNumber(22);
+    const numShares = new BigNumber(1000000000000);
+    const price = new BigNumber(220);
 
     let blockProvider: TestEthersProvider;
 
@@ -412,7 +412,7 @@ describe('State API :: Markets :: ', () => {
                 mySize: '0.003',
               },
               {
-                price: '0.23',
+                price: '0.221',
                 shares: '0.002',
                 cumulativeShares: '0.005',
                 mySize: '0.002',
@@ -426,7 +426,7 @@ describe('State API :: Markets :: ', () => {
                 mySize: '0.003',
               },
               {
-                price: '0.21',
+                price: '0.219',
                 shares: '0.002',
                 cumulativeShares: '0.005',
                 mySize: '0.002',
@@ -443,7 +443,7 @@ describe('State API :: Markets :: ', () => {
                 mySize: '0.003',
               },
               {
-                price: '0.23',
+                price: '0.221',
                 shares: '0.002',
                 cumulativeShares: '0.005',
                 mySize: '0.002',
@@ -457,7 +457,7 @@ describe('State API :: Markets :: ', () => {
                 mySize: '0.003',
               },
               {
-                price: '0.21',
+                price: '0.219',
                 shares: '0.002',
                 cumulativeShares: '0.005',
                 mySize: '0.002',

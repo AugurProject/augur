@@ -340,7 +340,7 @@ export class ContractAPI {
     await this.placeZeroXTrade({
       direction,
       market,
-      numTicks: new BigNumber(100),
+      numTicks: new BigNumber(1000),
       numOutcomes: 3,
       outcome,
       tradeGroupId: formatBytes32String('42'),

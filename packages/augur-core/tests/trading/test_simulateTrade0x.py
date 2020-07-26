@@ -25,7 +25,7 @@ def test_simple_simulate(contractsFixture, cash, market, universe):
     direction = BID
     outcome = YES
     amount = fix(1)
-    price = 60
+    price = 600
     ignoreShares = False
     fillOnly = False
     fillerPrice = market.getNumTicks() - price
@@ -62,7 +62,7 @@ def test_simple_trades_and_fees(long, contractsFixture, cash, market, universe):
     direction = LONG if long else SHORT
     outcome = YES
     amount = fix(1)
-    price = 40
+    price = 400
     fillOnly = False
     numTicks = market.getNumTicks()
     longPrice = price
@@ -163,7 +163,7 @@ def test_partial_fill(contractsFixture, cash, market, universe):
     direction = LONG
     outcome = YES
     amount = fix(1)
-    price = 40
+    price = 400
     salt = 5
     tradeGroupID = longTo32Bytes(42)
     fillOnly = False    
@@ -221,7 +221,7 @@ def test_kyc_token(contractsFixture, cash, market, universe):
     direction = LONG
     outcome = YES
     amount = fix(1)
-    price = 40
+    price = 400
     salt = 5
     tradeGroupID = longTo32Bytes(42)
     fillOnly = False    
@@ -248,7 +248,7 @@ def test_self_trade(contractsFixture, cash, market, universe):
     direction = LONG
     outcome = YES
     amount = fix(1)
-    price = 40
+    price = 400
     salt = 5
     tradeGroupID = longTo32Bytes(42)
     fillOnly = True    
@@ -275,7 +275,7 @@ def test_fill_only(contractsFixture, cash, market, universe):
     direction = LONG
     outcome = YES
     amount = fix(1)
-    price = 40
+    price = 400
     salt = 5
     tradeGroupID = longTo32Bytes(42)
     fillOnly = True    
@@ -303,7 +303,7 @@ def test_fees(contractsFixture, cash, market, universe):
     direction = SHORT
     outcome = YES
     amount = fix(1)
-    price = 40
+    price = 400
     salt = 5
     tradeGroupID = longTo32Bytes(42)
     fillOnly = False    
