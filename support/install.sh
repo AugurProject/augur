@@ -36,7 +36,7 @@ fi
 
 docker info > /dev/null 2>&1;
 if [ $? != 0 ]; then
-  printf "[!]: Docker Daemon - Not running!\n~~> Follow the instructions from the docker install guide on making sure your docker daemon is running\n";
+  printf "[!]: Docker Daemon - Not running!\n~~> Follow the instructions from the docker install guide on making sure your docker daemon is running or download docker desktop and double click to install\n";
   exit 1;
 else
   printf "[x]: Docker Daemon - Running!\n";
@@ -85,8 +85,6 @@ else
   export ETHEREUM_HTTP=$DEFAULT_ETH_NODE_URL
 fi
 
-START_SERVICES="augur"
-
 cat <<HERE
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -127,10 +125,10 @@ cat <<HERE
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         Ready to start augur services
-
-This will take a while the code is built locally.
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-HERE
+This may take some time...
 
+HERE
+START_SERVICES="augur"
 read -n 1 -s -r -p "Press any key to continue"
-cd augur && docker-compose -f docker-compose.yml --env-file ./augur/.env up ${START_SERVICES}
+cd augur && docker-compose up ${START_SERVICES}
