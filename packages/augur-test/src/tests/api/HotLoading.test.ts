@@ -27,7 +27,7 @@ test('Hot Loading :: Get Market Data', async () => {
   await expect(eventData.author).toEqual(john.account.address);
   await expect(eventData.designatedReporter).toEqual(john.account.address);
   await expect(eventData.marketType).toEqual('YesNo');
-  await expect(eventData.tickSize).toEqual('0.01');
+  await expect(eventData.tickSize).toEqual('0.001');
   await expect(eventData.reportingState).toEqual('PreReporting');
   await expect(eventData.volume).toEqual('0');
   await expect(eventData.openInterest).toEqual('0');
