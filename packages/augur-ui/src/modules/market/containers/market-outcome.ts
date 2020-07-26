@@ -31,6 +31,7 @@ const mapStateToProps = (state: AppState, ownProps) => {
 const mapDispatchToProps = () => ({});
 
 const mergeProps = (sP: any, dP: any, oP: any) => {
+  const useFull = sP.marketType !== SCALAR || (sP.marketType === SCALAR && String(sP.tickSize).length < 5);
   const outcome = oP.outcome;
   const outcomeName = outcome.description;
   const orderBook = sP.orderBook;
@@ -104,7 +105,7 @@ const mergeProps = (sP: any, dP: any, oP: any) => {
       key: "topBidPrice",
       columnType: COLUMN_TYPES.VALUE,
       value: topBidPrice,
-      useFull: true,
+      useFull,
       showEmptyDash: true,
       usePercent: !!topBidPrice.percent,
       alert: showInvalidAlert,
@@ -123,7 +124,7 @@ const mergeProps = (sP: any, dP: any, oP: any) => {
       key: "topAskPrice",
       columnType: COLUMN_TYPES.VALUE,
       value: topAskPrice,
-      useFull: true,
+      useFull,
       showEmptyDash: true,
       usePercent: !!topAskPrice.percent,
       action: (e) => {
@@ -148,7 +149,7 @@ const mergeProps = (sP: any, dP: any, oP: any) => {
       columnType: COLUMN_TYPES.VALUE,
       value: lastPrice,
       usePercent: !!lastPrice.percent,
-      useFull: true,
+      useFull,
       addIndicator: true,
       outcome,
       location: "tradingPage",
