@@ -133,4 +133,4 @@ This will take a while the code is built locally.
 HERE
 
 read -n 1 -s -r -p "Press any key to continue"
-docker-compose -f ./augur/docker-compose.yml --env-file ./augur/.env up ${START_SERVICES}
+cd augur && docker-compose -f ./augur/docker-compose.yml --env-file ./augur/.env up ${START_SERVICES}

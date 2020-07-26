@@ -8,7 +8,7 @@ services:
       - 80:80
       - 443:443
     volumes:
-      - ./augur/caddy:/data
+      - ./caddy:/data
     entrypoint: ["caddy", "reverse-proxy", "--from", "${GSN_HOSTNAME}", "--to", "http://gsn:8090"]
 
   gsn:
@@ -17,7 +17,7 @@ services:
     ports:
       - 8090:8090 #needed for debugging without https frontend
     volumes:
-      - ./augur/gsn:/data
+      - ./gsn:/data
     entrypoint: ["./RelayHttpServer", "-RelayHubAddress", "${GSN_RELAY_HUB}", "-Workdir", "/data", "-GasPricePercent", "${GSN_GAS_PRICE_PERCENT}", "-EthereumNodeUrl", "${ETHEREUM_HTTP}", "-Url", "https://${GSN_HOSTNAME}", "-Fee", "${GSN_FEE}", "-Port", "${GSN_PORT}"]
 
   augur:
@@ -26,7 +26,7 @@ services:
     ports:
       - 9003:9003
     volumes:
-      - ./augur/keys:/keys
+      - ./keys:/keys
     environment:
       AUGUR_ENV: ${AUGUR_ENV}
       ETH_NODE_URL: ${ETHEREUM_HTTP}
