@@ -7,7 +7,7 @@ import Row from 'modules/common/row';
 import { ThunkDispatch } from 'redux-thunk';
 import { Action } from 'redux';
 import { TXEventName } from '@augurproject/sdk-lite';
-import { OPEN } from 'modules/common/constants';
+import { OPEN, SCALAR } from 'modules/common/constants';
 import { selectCancelingOrdersState } from 'appStore/select-state';
 import { removeCanceledOrder } from 'modules/pending-queue/actions/pending-queue-management';
 import { removePendingOrder } from 'modules/orders/actions/pending-orders-management';
@@ -23,6 +23,7 @@ const mapStateToProps = (state: AppState, ownProps) => {
   const minPrice = market ? market.minPrice : constants.DEFAULT_MIN_PRICE;
   const maxPrice = market ? market.maxPrice : constants.DEFAULT_MAX_PRICE;
   const marketType = market ? market.marketType : constants.YES_NO;
+  const tickSize = market ? market.tickSize : constants.PRICE_WIDTH_MIN;
   if (market) {
     const { outcomeId } = openOrder;
     usePercent = !!market && outcomeId === constants.INVALID_OUTCOME_ID && market.marketType === constants.SCALAR;
@@ -35,6 +36,7 @@ const mapStateToProps = (state: AppState, ownProps) => {
     marketType,
     minPrice,
     maxPrice,
+    tickSize
   }
 };
 
@@ -44,6 +46,7 @@ const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({
 });
 
 const mergeProps = (sP: any, dP: any, oP: any) => {
+  const useFull = sP.marketType !== SCALAR || (sP.marketType === SCALAR && String(sP.tickSize).length < 5);
   const marketId = oP.marketId;
   const openOrder = oP.openOrder;
   const tokensEscrowed = openOrder.tokensEscrowed;
@@ -90,22 +93,23 @@ const mergeProps = (sP: any, dP: any, oP: any) => {
       columnType: COLUMN_TYPES.VALUE,
       value: avgPrice,
       usePercent: !!avgPrice.percent,
-      useFull: sP.marketType === constants.SCALAR ? false : true,
-      showFullPrecision: sP.marketType === constants.SCALAR ? true : false,
-      showDenomination: sP.marketType === constants.SCALAR ? true : false,
+      useFull,
+      showFullPrecision: useFull,
+      showDenomination: useFull,
       keyId: 'openOrder-price-' + openOrder.id,
     },
     {
       key: 'tokensEscrowed',
       columnType: COLUMN_TYPES.VALUE,
       value: tokensEscrowed,
-      useFull: true,
+      useFull,
       showEmptyDash: true,
       keyId: 'openOrder-tokensEscrowed-' + openOrder.id,
     },
     {
       key: 'sharesEscrowed',
       columnType: COLUMN_TYPES.VALUE,
+      useFull,
       value: sharesEscrowed,
       showEmptyDash: true,
       keyId: 'openOrder-sharesEscrowed-' + openOrder.id,

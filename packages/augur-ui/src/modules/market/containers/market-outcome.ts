@@ -1,7 +1,7 @@
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import { AppState } from 'appStore';
-import { COLUMN_TYPES, INVALID_OUTCOME_ID, BUY, SELL, SCALAR, INVALID_BEST_BID_ALERT_VALUE, SCALAR_INVALID_BEST_BID_ALERT_VALUE, YES_NO } from 'modules/common/constants';
+import { COLUMN_TYPES, INVALID_OUTCOME_ID, BUY, SELL, SCALAR, INVALID_BEST_BID_ALERT_VALUE, SCALAR_INVALID_BEST_BID_ALERT_VALUE, YES_NO, PRICE_WIDTH_MIN, DEFAULT_MAX_PRICE, DEFAULT_MIN_PRICE } from 'modules/common/constants';
 import { selectMarketOutcomeBestBidAsk } from 'modules/markets/selectors/select-market-outcome-best-bid-ask';
 import Row from 'modules/common/row';
 import { formatOrderBook } from 'modules/create-market/helpers/format-order-book';
@@ -11,9 +11,9 @@ const mapStateToProps = (state: AppState, ownProps) => {
   const { marketInfos, newMarket } = state;
   const market = marketInfos[ownProps.marketId] ? marketInfos[ownProps.marketId] : newMarket ? newMarket : null;
   // default values for create market preview
-  const minPrice = market ? market.minPrice : 0;
-  const maxPrice = market ? market.maxPrice : 1;
-  const tickSize = market ? market.tickSize : 0.001;
+  const minPrice = market ? market.minPrice : DEFAULT_MIN_PRICE;
+  const maxPrice = market ? market.maxPrice : DEFAULT_MAX_PRICE;
+  const tickSize = market ? market.tickSize : PRICE_WIDTH_MIN;
   const marketType = market ? market.marketType : YES_NO; // default to yes no. has to be something
 
   const usePercent = ownProps.outcome && ownProps.outcome.id === INVALID_OUTCOME_ID && market.marketType === SCALAR;
@@ -31,6 +31,7 @@ const mapStateToProps = (state: AppState, ownProps) => {
 const mapDispatchToProps = () => ({});
 
 const mergeProps = (sP: any, dP: any, oP: any) => {
+  const useFull = sP.marketType !== SCALAR || (sP.marketType === SCALAR && String(sP.tickSize).length < 5);
   const outcome = oP.outcome;
   const outcomeName = outcome.description;
   const orderBook = sP.orderBook;
@@ -104,7 +105,7 @@ const mergeProps = (sP: any, dP: any, oP: any) => {
       key: "topBidPrice",
       columnType: COLUMN_TYPES.VALUE,
       value: topBidPrice,
-      useFull: true,
+      useFull,
       showEmptyDash: true,
       usePercent: !!topBidPrice.percent,
       alert: showInvalidAlert,
@@ -123,7 +124,7 @@ const mergeProps = (sP: any, dP: any, oP: any) => {
       key: "topAskPrice",
       columnType: COLUMN_TYPES.VALUE,
       value: topAskPrice,
-      useFull: true,
+      useFull,
       showEmptyDash: true,
       usePercent: !!topAskPrice.percent,
       action: (e) => {
@@ -148,7 +149,7 @@ const mergeProps = (sP: any, dP: any, oP: any) => {
       columnType: COLUMN_TYPES.VALUE,
       value: lastPrice,
       usePercent: !!lastPrice.percent,
-      useFull: true,
+      useFull,
       addIndicator: true,
       outcome,
       location: "tradingPage",
