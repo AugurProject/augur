@@ -578,7 +578,7 @@ export default class AppView extends Component<AppProps> {
                 )}
 
                 <ForkingBanner />
-                <Routes isLogged={isLogged || restoredAccount} />
+                <Routes isLogged={isLogged || restoredAccount} disableMarketCreation={disableMarketCreation}/>
               </section>
             </section>
           </section>

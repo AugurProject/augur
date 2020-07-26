@@ -143,7 +143,7 @@ class Wrapper extends Component<WrapperProps, WrapperState> {
   }
 
   componentDidMount() {
-    const { selectedOrderProperties, disclaimerSeen, disclaimerModal, tradingTutorial, initialLiquidity } = this.props;
+    const { selectedOrderProperties, disclaimerSeen, disclaimerModal, tradingTutorial, initialLiquidity, disableTrading } = this.props;
 
     this.updateTradeTotalCost(
       {
@@ -155,7 +155,7 @@ class Wrapper extends Component<WrapperProps, WrapperState> {
       true
     );
 
-    if (!disclaimerSeen && !tradingTutorial && !initialLiquidity) {
+    if (!disclaimerSeen && !tradingTutorial && !initialLiquidity && !disableTrading) {
       disclaimerModal();
     }
   }

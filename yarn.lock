@@ -69,7 +69,7 @@
     jsonschema "^1.2.0"
     lodash.values "^4.3.0"
 
-"@0x/mesh-browser-lite@10.0.0-unstable-3", "@0x/mesh-browser-lite@^9.4.0", "@0x/mesh-browser-lite@v10.0.0-unstable-3":
+"@0x/mesh-browser-lite@10.0.0-unstable-4", "@0x/mesh-browser-lite@^9.4.0", "@0x/mesh-browser-lite@v10.0.0-unstable-3":
   version "10.0.0-unstable-3"
   resolved "https://registry.yarnpkg.com/@0x/mesh-browser-lite/-/mesh-browser-lite-10.0.0-unstable-3.tgz#74432c794ca04161869934f186eba732066a2f18"
   integrity sha512-zoPWzzPcS6mJOsdssnoag3MWRFmkahidZXji0jo+pht4ixcSzrbEP8G8KUA/Q8Box2/ib/TbQ4hJC3+V4pI/8w==
@@ -23590,7 +23590,6 @@ scrypt.js@^0.3.0:
 
 scrypt@^6.0.2, "scrypt@https://github.com/AugurProject/blackhole.git":
   version "1.0.0"
-  uid f8230443bf4fc9d5921655e06ebe2755d84afbcd
   resolved "https://github.com/AugurProject/blackhole.git#f8230443bf4fc9d5921655e06ebe2755d84afbcd"
 
 scryptsy@2.1.0, scryptsy@^2.1.0:
