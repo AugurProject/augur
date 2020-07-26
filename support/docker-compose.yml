@@ -29,4 +29,5 @@ services:
       - ./keys:/keys
     environment:
       AUGUR_ENV: ${AUGUR_ENV}
+      ETHEREUM_NETWORK: ${AUGUR_ENV}
       ETH_NODE_URL: ${ETHEREUM_HTTP}
