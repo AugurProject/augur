@@ -34,7 +34,7 @@ import {
 import React, { Fragment } from 'react';
 import ReactTooltip from 'react-tooltip';
 import { BigNumber, createBigNumber } from 'utils/create-big-number';
-import { formatAttoRep, formatDai, formatNumber, formatNone } from 'utils/format-number';
+import { formatAttoRep, formatDai, formatNumber, formatNone, formatOutcomePercentage } from 'utils/format-number';
 import { getOutcomeNameWithOutcome } from 'utils/get-outcome';
 import { AppState } from 'appStore';
 import { getBestInvalidBid } from 'modules/orders/actions/load-market-orderbook';
@@ -87,7 +87,7 @@ export const OutcomeCmp = (props: OutcomeProps) => {
             && percent >= INVALID_ALERT_PERCENTAGE.toNumber()})}>
             {percent === 0
               ? `0.00${props.isScalar ? '' : '%'}`
-              : `${formatDai(percent).formatted}%`}
+              : `${formatOutcomePercentage(percent).formatted}%`}
           </span>
         </div>
         <Percent percent={percent} />

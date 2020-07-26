@@ -33,7 +33,7 @@ export async function createYesNoZeroXOrders(
       orders.push({
         direction: 0,
         market,
-        numTicks: new BigNumber(100),
+        numTicks: new BigNumber(1000),
         numOutcomes: 3,
         outcome,
         tradeGroupId,
@@ -53,7 +53,7 @@ export async function createYesNoZeroXOrders(
       orders.push({
         direction: 1,
         market,
-        numTicks: new BigNumber(100),
+        numTicks: new BigNumber(1000),
         numOutcomes: 3,
         outcome,
         tradeGroupId,
@@ -130,7 +130,7 @@ export async function createCatZeroXOrders(
       orders.push({
         direction: 0,
         market,
-        numTicks: new BigNumber(100),
+        numTicks: new BigNumber(1000),
         numOutcomes: numOutcomes,
         outcome,
         tradeGroupId,
@@ -150,7 +150,7 @@ export async function createCatZeroXOrders(
       orders.push({
         direction: 1,
         market,
-        numTicks: new BigNumber(100),
+        numTicks: new BigNumber(1000),
         numOutcomes: 3,
         outcome,
         tradeGroupId,
@@ -192,7 +192,7 @@ export async function createSingleCatZeroXOrder(
   orders.push({
     direction,
     market,
-    numTicks: new BigNumber(100),
+    numTicks: new BigNumber(1000),
     numOutcomes: numOutcomes,
     outcome,
     tradeGroupId,

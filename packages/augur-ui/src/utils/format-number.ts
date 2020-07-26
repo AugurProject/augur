@@ -190,7 +190,7 @@ export function formatBestPrice(
   });
 }
 
-export function formatDai(
+export function formatOutcomePercentage(
   num: NumStrBigNumber,
   opts: FormattedNumberOptions = {}
 ): FormattedNumber {
@@ -198,11 +198,29 @@ export function formatDai(
     decimals: 2,
     decimalsRounded: 2,
     denomination: v => {
+      return `${v}%`;
+    },
+    positiveSign: false,
+    zeroStyled: false,
+    blankZero: false,
+    bigUnitPostfix: false,
+    ...opts,
+  });
+}
+
+export function formatDai(
+  num: NumStrBigNumber,
+  opts: FormattedNumberOptions = {}
+): FormattedNumber {
+  return formatNumber(num, {
+    decimals: 3,
+    decimalsRounded: 3,
+    denomination: v => {
       const isNegative = Number(v) < 0;
       const val = isNegative
         ? createBigNumber(v)
             .abs()
-            .toFixed(2)
+            .toFixed(3)
         : v;
       return `${isNegative ? '-' : ''}$${val}`;
     },
@@ -338,15 +356,15 @@ export function formatAttoRep(
 
 export function formatAttoDai(num: NumStrBigNumber, optsInc: FormattedNumberOptions = optionsBlank()): FormattedNumber {
   const opts = Object.assign(optionsBlank(), {
-    decimals: 2,
-    decimalsRounded: 2,
+    decimals: 3,
+    decimalsRounded: 3,
     ...optsInc,
     denomination: v => {
       const isNegative = Number(v) < 0;
       const val = isNegative
         ? createBigNumber(v)
             .abs()
-            .toFixed(2)
+            .toFixed(3)
         : v;
       return `${isNegative ? '-' : ''}$${val}`;
     },

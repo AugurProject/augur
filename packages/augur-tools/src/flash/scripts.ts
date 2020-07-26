@@ -491,7 +491,7 @@ export function addScripts(flash: FlashSession) {
           if (numOutcomes.gt(new BigNumber(3))) {
             await createCatZeroXOrders(user, marketId, true, numOutcomes.toNumber() - 1);
           } else {
-            if (numTicks.eq(new BigNumber(100))) {
+            if (numTicks.eq(new BigNumber(1000))) {
               await createYesNoZeroXOrders(user, marketId, true);
             } else {
               try {
@@ -560,7 +560,7 @@ export function addScripts(flash: FlashSession) {
         if (numOutcomes.gt(new BigNumber(3))) {
           await createCatZeroXOrders(user, marketId, true, numOutcomes.toNumber() - 1);
         } else {
-          if (numTicks.eq(new BigNumber(100))) {
+          if (numTicks.eq(new BigNumber(1000))) {
             await createYesNoZeroXOrders(user, marketId, true);
           } else {
             try {
@@ -705,8 +705,8 @@ export function addScripts(flash: FlashSession) {
     async call(this: FlashSession, args: FlashArguments) {
       const market = String(args.marketId);
       const numOutcomes = Number(args.numOutcomes || 3);
-      const price = String(args.price || '0.4');
-      const shares = String(args.shares || '100');
+      const price = String(args.price || '0.411');
+      const shares = String(args.shares || '10');
       const outcome = Number(args.outcome || 1);
       const skipFaucetOrApproval = Boolean(args.skipFaucetOrApproval);
       const ask = 1;
@@ -1094,12 +1094,12 @@ export function addScripts(flash: FlashSession) {
 
       const onChainShares = convertDisplayAmountToOnChainAmount(
         new BigNumber(String(args.amount)),
-        new BigNumber(100)
+        new BigNumber(1000)
       );
       const onChainPrice = convertDisplayPriceToOnChainPrice(
         new BigNumber(String(Number(args.price).toFixed(2))),
         new BigNumber(0),
-        new BigNumber('0.01')
+        new BigNumber('0.001')
       );
 
       const nullOrderId = stringTo32ByteHex('');
@@ -1112,17 +1112,17 @@ export function addScripts(flash: FlashSession) {
         const onChainPrice = convertDisplayPriceToOnChainPrice(
           new BigNumber(String(Number(args.price).toFixed(2))),
           new BigNumber(0),
-          new BigNumber('0.01')
+          new BigNumber('0.001')
         );
         const price = convertOnChainPriceToDisplayPrice(
           onChainPrice,
           new BigNumber(0),
-          new BigNumber('0.01')
+          new BigNumber('0.001')
         );
         const params = {
           direction: type as 0 | 1,
           market: marketId,
-          numTicks: new BigNumber(100),
+          numTicks: new BigNumber(1000),
           numOutcomes: 3 as NumOutcomes,
           outcome: Number(args.outcome) as 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7,
           tradeGroupId,
