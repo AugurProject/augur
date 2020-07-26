@@ -45,7 +45,7 @@ const CoreProperties: React.FC<CorePropertiesProps> = ({
             value={
               market.volumeFormatted
                 ? market.volumeFormatted.full
-                : formatDai(0).full
+                : formatDai(0, { decimals: 0 }).full
             }
           />
           {reportingBarShowing && (
@@ -68,7 +68,7 @@ const CoreProperties: React.FC<CorePropertiesProps> = ({
                 value={
                   market.disputeInfo
                     ? formatAttoRep(market.disputeInfo.stakeCompletedTotal).full
-                    : formatRep(0).full
+                    : formatRep(0, { decimals: 0 }).full
                 }
               />
               <TimeLabel
@@ -84,7 +84,7 @@ const CoreProperties: React.FC<CorePropertiesProps> = ({
                 value={
                   market.openInterestFormatted
                     ? market.openInterestFormatted.full
-                    : formatDai(0).full
+                    : formatDai(0, { decimals: 0 }).full
                 }
               />
               <PropertyLabel
@@ -92,7 +92,7 @@ const CoreProperties: React.FC<CorePropertiesProps> = ({
                 value={
                   market.volumeFormatted
                     ? market.volumeFormatted.full
-                    : formatDai(0).full
+                    : formatDai(0, { decimals: 0 }).full
                 }
               />
               <PropertyLabel

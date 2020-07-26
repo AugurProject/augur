@@ -32,7 +32,7 @@ export const ethToDai = (ethAmount: number, ethToDaiRate: BigNumber): FormattedN
 export const getGasInDai = (amount: BigNumber, manualGasPrice?: number): FormattedNumber => {
   const augur = augurSdk.get();
   const gasInAttoDai = augur.convertGasEstimateToDaiCost(amount, manualGasPrice);
-  return formatDai(gasInAttoDai.dividedBy(10 ** 18));
+  return formatDai(gasInAttoDai.dividedBy(10 ** 18), { decimals: 2, decimalsRounded: 2});
 }
 
 export const displayGasInDai = (amount: BigNumber, manualGasPrice?: number): string => {

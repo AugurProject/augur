@@ -33,6 +33,7 @@ import {
   formatShares,
   formatNumber,
   formatDai,
+  formatDaiAbbr,
 } from 'utils/format-number';
 import { BigNumber, createBigNumber } from 'utils/create-big-number';
 import { LinearPropertyLabel, EthReserveNotice, TransactionFeeLabelToolTip, EthReserveAutomaticTopOff } from 'modules/common/labels';
@@ -381,7 +382,7 @@ class Confirm extends Component<ConfirmProps, ConfirmState> {
       .minus(createBigNumber(minPrice))
       .abs();
 
-    let gasCostDai = formatNumber(0);
+    let gasCostDai = formatDaiAbbr(0);
 
     if (GsnEnabled) {
       gasCostDai = getGasInDai(Number(createBigNumber(gasLimit)), createBigNumber(GWEI_CONVERSION).multipliedBy(gasPrice));
@@ -518,7 +519,7 @@ class Confirm extends Component<ConfirmProps, ConfirmState> {
             />
             <TransactionFeeLabelToolTip
               isError={!tradingTutorial && createBigNumber(gasCostDai.value).gt(createBigNumber(potentialDaiProfit.value))}
-              gasCostDai={(tradingTutorial || postOnlyOrder) ? formatDai(0) : gasCostDai}
+              gasCostDai={(tradingTutorial || postOnlyOrder) ? formatDaiAbbr(0) : gasCostDai}
             />
           </div>
         )}
