@@ -190,6 +190,24 @@ export function formatBestPrice(
   });
 }
 
+export function formatOutcomePercentage(
+  num: NumStrBigNumber,
+  opts: FormattedNumberOptions = {}
+): FormattedNumber {
+  return formatNumber(num, {
+    decimals: 2,
+    decimalsRounded: 2,
+    denomination: v => {
+      return `${v}%`;
+    },
+    positiveSign: false,
+    zeroStyled: false,
+    blankZero: false,
+    bigUnitPostfix: false,
+    ...opts,
+  });
+}
+
 export function formatDai(
   num: NumStrBigNumber,
   opts: FormattedNumberOptions = {}
