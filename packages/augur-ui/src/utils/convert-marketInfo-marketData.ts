@@ -73,10 +73,12 @@ export function convertMarketInfoToMarketData(
     openInterestFormatted: formatDai(marketInfo.openInterest, {
       positiveSign: false,
       decimals: 0,
+      decimalsRounded: 0,
     }),
     volumeFormatted: formatDai(marketInfo.volume, {
       positiveSign: false,
       decimals: 0,
+      decimalsRounded: 0,
     }),
     unclaimedCreatorFeesFormatted: formatDai('0'), // TODO: figure out where this comes from
     marketCreatorFeesCollectedFormatted: formatDai('0'), // TODO: figure out where this comes from

@@ -232,6 +232,17 @@ export function formatDai(
   });
 }
 
+export function formatDaiAbbr(
+  num: NumStrBigNumber,
+  opts: FormattedNumberOptions = {}
+): FormattedNumber {
+  return formatDai(num, {
+    decimals: 2,
+    decimalsRounded: 2,
+    ...opts,
+  });
+}
+
 export function formatRep(
   num: NumStrBigNumber,
   opts: FormattedNumberOptions = {}
