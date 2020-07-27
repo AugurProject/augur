@@ -197,7 +197,7 @@ export default class FormDetails extends React.Component<
                 subHeading={'What do you want people to predict?'}
                 listItems={[
                   'If entering a date and time in the market question , enter a date and time in the UTC-0 timezone.',
-                  'If the winning outcome will be determined using a specific source, you must enter the source URL or its full name in the market question .'
+                  'If the winning outcome will be determined using a specific resolution source, it is recommended to enter the source URL or its full name in the market question.'
                 ]}
               />
 
@@ -376,8 +376,8 @@ export default class FormDetails extends React.Component<
                 subHeading={'Describe what users need to know to determine the outcome of the event.'}
                 listItems={[
                   'If entering a date and time in resolution details , enter a date and time in the UTC-0 timezone.',
-                  'If using a resolution source in the resolution details  it must match and not contradict what is used in the market question .',
-                  'A backup resolution source can be listed in the resolution details  in addition to the primary resolution source, as long as the primary resolution source is used in the market question .'
+                  'If using a resolution source in the resolution details it must match and not contradict what is used in the market question.',
+                  'A backup resolution source can be listed in the resolution details in addition to the primary resolution source.'
                 ]}
               />
               <TextInput
