@@ -15,7 +15,6 @@ import { processFavorites } from 'modules/markets/helpers/favorites-processor';
 import { getNetworkId } from 'modules/contracts/actions/contractCalls';
 import { WindowApp } from 'modules/types';
 import { augurSdk } from 'services/augursdk';
-import { statusErrorMessage } from 'modules/common/labels.styles.less';
 
 // console log middleware
 const consoleLog = store => next => action => {
