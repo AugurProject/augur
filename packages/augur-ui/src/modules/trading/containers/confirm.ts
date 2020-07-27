@@ -33,7 +33,7 @@ const mapStateToProps = (state: AppState, ownProps) => {
     GsnEnabled,
     walletStatus,
     sweepStatus,
-    disableTrading: env?.ui?.reportingOnly,
+    disableTrading: process.env.REPORTING_ONLY,
   };
 };
 
