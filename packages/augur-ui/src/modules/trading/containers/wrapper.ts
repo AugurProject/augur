@@ -63,7 +63,7 @@ const mapStateToProps = (state: AppState, ownProps) => {
     availableDai,
     gsnUnavailable: isGSNUnavailable(state),
     endTime: ownProps.initialLiquidity ? newMarket.setEndTime : ownProps.market.endTime,
-    disableTrading: env?.ui?.reportingOnly,
+    disableTrading: process.env.REPORTING_ONLY,
     orderBook: ownProps.orderBook,
   };
 };

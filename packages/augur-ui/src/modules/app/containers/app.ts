@@ -76,7 +76,7 @@ const mapStateToProps = (state: AppState) => {
     whichChatPlugin: state.env.plugins?.chat,
     appStatus: state.appStatus,
     ethReserveInDai,
-    disableMarketCreation: env?.ui?.reportingOnly,
+    disableMarketCreation: process.env.REPORTING_ONLY,
   }
 };
 
