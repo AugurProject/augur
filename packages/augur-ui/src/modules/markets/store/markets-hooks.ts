@@ -109,7 +109,7 @@ export function MarketsReducer(state, action) {
           const updatedOrder = updatedPools[marketId] && updatedPools[marketId][order.outcomeId];
           if (updatedOrder && !(createBigNumber(updatedOrder.price).eq(createBigNumber(order.price)))) {
             const marketInfo = updatedState.marketInfos[marketId];
-            const normalizedPrice = convertToNormalizedPrice({price: updatedOrder.price, min: marketInfo.min, max: marketInfo.max});
+            const normalizedPrice = convertToNormalizedPrice({price: updatedOrder.price, min: marketInfo.minPrice, max: marketInfo.maxPrice});
             const wager = getWager(order.shares, updatedOrder.price);
             modifyBet(
               marketId, 
@@ -119,7 +119,7 @@ export function MarketsReducer(state, action) {
                 price: updatedOrder.price, 
                 wager, 
                 normalizedPrice, 
-                toWin: convertToWin(normalizedPrice, order.shares), 
+                toWin: convertToWin(marketInfo.maxPrice, order.shares), 
                 recentlyUpdated: true
               }
             );
