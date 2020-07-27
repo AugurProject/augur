@@ -1,5 +1,5 @@
 import { createSelector } from 'reselect';
-import { formatDai, formatNone } from 'utils/format-number';
+import { formatDai, formatNone, formatDaiAbbr } from 'utils/format-number';
 import { selectAccountFunds } from 'modules/auth/selectors/login-account';
 import { AuthStatus } from 'modules/types';
 import { selectAuthStatus } from 'appStore/select-state';
@@ -18,24 +18,30 @@ export const selectCoreStats = createSelector(
   (accountFunds: any, authStatus: AuthStatus) => {
     const availableFunds = {
       label: 'Available Funds',
-      value: formatDai(accountFunds.totalAvailableTradingBalance, {
+      value: formatDaiAbbr(accountFunds.totalAvailableTradingBalance, {
         removeComma: true,
       }),
       useFull: true,
     };
     const frozenFunds = {
       label: 'Frozen Funds',
-      value: formatDai(accountFunds.totalFrozenFunds, { removeComma: true }),
+      value: formatDaiAbbr(accountFunds.totalFrozenFunds, {
+        removeComma: true,
+      }),
       useFull: true,
     };
     const totalFunds = {
       label: 'Total Funds',
-      value: formatDai(accountFunds.totalAccountValue, { removeComma: true }),
+      value: formatDaiAbbr(accountFunds.totalAccountValue, {
+        removeComma: true,
+      }),
       useFull: true,
     };
     const realizedPL = {
       label: '30 Day P/L',
-      value: formatDai(accountFunds.totalRealizedPL, { removeComma: true }),
+      value: formatDaiAbbr(accountFunds.totalRealizedPL, {
+        removeComma: true,
+       }),
       useFull: true,
     };
     if (!authStatus.isLogged) {

@@ -7,7 +7,7 @@ import {
   calculateTotalOrderValue,
 } from 'modules/trades/helpers/calc-order-profit-loss-percents';
 import { createBigNumber } from 'utils/create-big-number';
-import { formatDai, formatMarketShares } from 'utils/format-number';
+import { formatDai, formatMarketShares, formatDaiAbbr } from 'utils/format-number';
 
 export const generateTrade = memoize(
   (market, outcomeTradeInProgress) => {
@@ -94,22 +94,22 @@ export const generateTrade = memoize(
         ? formatDaiValue(totalOrderValue)
         : null,
       orderShareProfit: orderShareProfitLoss
-        ? formatDaiValue(orderShareProfitLoss.potentialDaiProfit)
+        ? formatDaiAbbrValue(orderShareProfitLoss.potentialDaiProfit)
         : null,
       orderShareTradingFee: orderShareProfitLoss
-        ? formatDaiValue(orderShareProfitLoss.tradingFees)
+        ? formatDaiAbbrValue(orderShareProfitLoss.tradingFees)
         : null,
       potentialDaiProfit: preOrderProfitLoss
-        ? formatDaiValue(preOrderProfitLoss.potentialDaiProfit)
+        ? formatDaiAbbrValue(preOrderProfitLoss.potentialDaiProfit)
         : null,
       potentialDaiLoss: preOrderProfitLoss
-        ? formatDaiValue(preOrderProfitLoss.potentialDaiLoss)
+        ? formatDaiAbbrValue(preOrderProfitLoss.potentialDaiLoss)
         : null,
       tradingFees: preOrderProfitLoss
-        ? formatDaiValue(preOrderProfitLoss.tradingFees)
+        ? formatDaiAbbrValue(preOrderProfitLoss.tradingFees)
         : null,
-      totalFee: formatDaiValue(totalFee, { blankZero: true }),
-      totalFeePercent: formatDaiValue(feePercent, { blankZero: true }),
+      totalFee: formatDaiAbbrValue(totalFee, { blankZero: true }),
+      totalFeePercent: formatDaiAbbrValue(feePercent, { blankZero: true }),
       totalCost: formatDaiValue(totalCost.abs().toFixed(), {
         blankZero: false,
       }),
@@ -130,5 +130,14 @@ const formatDaiValue = (value, options = {}) =>
     Object.assign(
       { decimalsRounded: constants.UPPER_FIXED_PRECISION_BOUND },
       options,
+    ),
+  );
+
+  const formatDaiAbbrValue = (value, options = {}) =>
+  formatDaiAbbr(
+    value,
+    Object.assign(
+      { decimalsRounded: constants.UPPER_FIXED_PRECISION_BOUND },
+      options
     ),
   );

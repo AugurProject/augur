@@ -1,0 +1,33 @@
+version: '3.7'
+
+services:
+  caddy:
+    image: caddy:2.1.1-alpine
+    restart: always
+    ports:
+      - 80:80
+      - 443:443
+    volumes:
+      - ./caddy:/data
+    entrypoint: ["caddy", "reverse-proxy", "--from", "${GSN_HOSTNAME}", "--to", "http://gsn:8090"]
+
+  gsn:
+    image: tabookey/gsn-dev-server:v0.4.1
+    restart: always
+    ports:
+      - 8090:8090 #needed for debugging without https frontend
+    volumes:
+      - ./gsn:/data
+    entrypoint: ["./RelayHttpServer", "-RelayHubAddress", "${GSN_RELAY_HUB}", "-Workdir", "/data", "-GasPricePercent", "${GSN_GAS_PRICE_PERCENT}", "-EthereumNodeUrl", "${ETHEREUM_HTTP}", "-Url", "https://${GSN_HOSTNAME}", "-Fee", "${GSN_FEE}", "-Port", "${GSN_PORT}"]
+
+  augur:
+    image: augurproject/augur:runner
+    restart: always
+    ports:
+      - 9003:9003
+    volumes:
+      - ./keys:/keys
+    environment:
+      AUGUR_ENV: ${AUGUR_ENV}
+      ETHEREUM_NETWORK: ${AUGUR_ENV}
+      ETH_NODE_URL: ${ETHEREUM_HTTP}

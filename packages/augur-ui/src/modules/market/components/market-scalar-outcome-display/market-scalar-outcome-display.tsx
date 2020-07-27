@@ -18,7 +18,7 @@ export function calculatePosition(
   lastPrice: FormattedNumber | null
 ) {
   const range = max.minus(min);
-  const pricePercentage = createBigNumber(lastPrice ? lastPrice.value : 0)
+  const pricePercentage = createBigNumber(lastPrice?.value ? lastPrice.value : min)
     .minus(min)
     .dividedBy(range)
     .times(createBigNumber(100))

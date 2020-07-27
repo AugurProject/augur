@@ -1,5 +1,5 @@
 import { connect } from "react-redux";
-import { formatDai } from "utils/format-number";
+import { formatDaiAbbr } from "utils/format-number";
 import Activity from "modules/account/components/activity";
 import { updatePlatformTimeframeData } from "modules/account/actions/update-platform-timeframe-data";
 import { selectCurrentTimestampInSeconds } from "appStore/select-state";
@@ -11,7 +11,7 @@ const mapStateToProps = (state: AppState) => {
       state.universe.timeframeData &&
       state.universe.timeframeData.openInterest) ||
     0;
-  const openInterest = formatDai(value, { decimals: 2, removeComma: true });
+  const openInterest = formatDaiAbbr(value, { removeComma: true });
   return {
     openInterest,
     currentAugurTimestamp: selectCurrentTimestampInSeconds(state),

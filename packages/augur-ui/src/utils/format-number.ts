@@ -1,4 +1,4 @@
-import type { tickSizeToNumTickWithDisplayPrices } from '@augurproject/sdk';
+import { tickSizeToNumTickWithDisplayPrices } from '@augurproject/utils';
 import {
   encodeNumberAsBase10String,
   encodeNumberAsJSNumber,
@@ -195,8 +195,8 @@ export function formatOutcomePercentage(
   opts: FormattedNumberOptions = {}
 ): FormattedNumber {
   return formatNumber(num, {
-    decimals: 2,
-    decimalsRounded: 2,
+    decimals: 1,
+    decimalsRounded: 1,
     denomination: v => {
       return `${v}%`;
     },
@@ -228,6 +228,17 @@ export function formatDai(
     zeroStyled: false,
     blankZero: false,
     bigUnitPostfix: false,
+    ...opts,
+  });
+}
+
+export function formatDaiAbbr(
+  num: NumStrBigNumber,
+  opts: FormattedNumberOptions = {}
+): FormattedNumber {
+  return formatDai(num, {
+    decimals: 2,
+    decimalsRounded: 2,
     ...opts,
   });
 }
