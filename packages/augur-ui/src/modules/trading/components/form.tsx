@@ -324,10 +324,21 @@ const Form = ({
   );
 
   useEffect(() => {
+    let isMounted = true;
+    async function updateGasConfirmEstimate() {
+      try {
+        const confirmationTimeEstimation = await getGasConfirmEstimate();
+        if (isMounted) setState({ ...state, confirmationTimeEstimation });
+      } catch (error) {
+        if (isMounted) setState({ ...state, confirmationTimeEstimation: 0 });
+      }
+    }
     updateGasConfirmEstimate();
+    return () => isMounted = false;
   }, [gasPriceInWei]);
 
   useEffect(() => {
+    let isMounted = true;
     let percentage = '';
     if (
       market.marketType === SCALAR &&
@@ -340,17 +351,20 @@ const Form = ({
         calcPercentageFromPrice(orderPrice, String(minPrice), String(maxPrice))
       );
     }
-    setState({
-      ...state,
-      [INPUT_TYPES.PRICE]: orderPrice,
-      [INPUT_TYPES.QUANTITY]: orderQuantity,
-      [INPUT_TYPES.EST_DAI]: orderDaiEstimate,
-      [INPUT_TYPES.DO_NOT_CREATE_ORDERS]: doNotCreateOrders,
-      percentage,
-    });
-    if (percentage !== '') {
+    if (isMounted) {
+      setState({
+        ...state,
+        [INPUT_TYPES.PRICE]: orderPrice,
+        [INPUT_TYPES.QUANTITY]: orderQuantity,
+        [INPUT_TYPES.EST_DAI]: orderDaiEstimate,
+        [INPUT_TYPES.DO_NOT_CREATE_ORDERS]: doNotCreateOrders,
+        percentage,
+      });
+    }
+    if (percentage !== '' && isMounted) {
       updateAndValidate(INPUT_TYPES.PRICE, orderPrice);
     }
+    return () => isMounted = false;
   }, [orderPrice, orderQuantity, orderDaiEstimate, doNotCreateOrders]);
 
   useEffect(() => {
@@ -359,15 +373,6 @@ const Form = ({
       clearOrderConfirmation();
     }
   }, [validation.errorCount]);
-
-  async function updateGasConfirmEstimate() {
-    try {
-      const confirmationTimeEstimation = await getGasConfirmEstimate();
-      setState({ ...state, confirmationTimeEstimation });
-    } catch (error) {
-      setState({ ...state, confirmationTimeEstimation: 0 });
-    }
-  }
 
   function updateAndValidate(property: string, rawValue) {
     const newValues = { [property]: rawValue };
