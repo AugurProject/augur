@@ -60,7 +60,7 @@ export const HelmetTag = ({
 }: HelmetConfig) => {
   return (
     <Helmet
-      defaultTitle="Decentralized Prediction Markets"
+      defaultTitle="Your Global, No-Limit Betting Platform"
       titleTemplate="%s | Augur"
     >
       {title && <title>{title}</title>}
