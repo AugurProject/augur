@@ -218,16 +218,16 @@ case "$method" in
 "start")
   (
     cd augur &&\
-    docker-compose up augur
+    docker-compose up -d augur
   )
   ;;
 "start-gsn")
   (
     cd augur &&\
-    docker-compose up caddy gsn
+    docker-compose up -d caddy gsn
+    # TODO wait until gsn is up then give user instructions like where to send staking ETH
   )
   ;;
-
 "stop")
   (
     cd augur &&\
@@ -237,11 +237,19 @@ case "$method" in
 "restart")
   (
     cd augur &&\
-    docker-compose restart
+    docker-compose restart -d
   )
   ;;
 "upgrade")
-  printf "TODO\n";
+  printf "Pulls new docker images and restarts augur or gsn if they were run before.\n";
+  (
+    cd augur &&\
+    docker-compose stop &&\
+    docker pull caddy:2.1.1-alpine &&\
+    docker pull tabookey/gsn-dev-server:v0.4.1 &&\
+    docker pull augurproject/augur:runner &&\
+    docker-compose start -d
+  )
   ;;
 *)
   usage
@@ -257,26 +265,8 @@ cat <<HERE
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 HERE
 
-mkdir augur 2> /dev/null
-if [ $? -eq 0 ]; then
-  printf "[x]: ${PWD}/augur - Created\n"
-else
-  printf "[x]: ${PWD}/augur - Already exists, reusing\n"
-fi
-
-if [ -f ./augur/docker-compose.yml ]; then
-  printf "[!]: ${PWD}/augur/docker-compose.yml - Already exists, delete and re-run to upgrade\n"
-else
-  make_docker_compose &&\
-  printf "[x]: ${PWD}/augur/docker-compose.yml - Created\n"
-fi
-
-if [ -f ./augur/cli ]; then
-  printf "[!]: ${PWD}/augur/cli - Already exists, delete and re-run to upgrade\n"
-else
-  make_cli &&\
-  chmod +x ./augur/cli &&\
-  printf "[x]: ${PWD}/augur/cli - Created\n"
-fi
+mkdir augur 2>/dev/null
+make_docker_compose
+make_cli && chmod +x ./augur/cli
 
 ./augur/cli setup
