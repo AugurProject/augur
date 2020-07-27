@@ -1,7 +1,8 @@
 import { MarketData, QueryEndpoints } from 'modules/types';
 import { useHistory } from 'react-router';
-import * as React from 'react';
+import React, { useEffect } from 'react';
 import * as classNames from 'classnames';
+import Clipboard from 'clipboard';
 import { CATEGORY_PARAM_NAME } from 'modules/common/constants';
 import { LeftChevron, CopyAlternateIcon } from 'modules/common/icons';
 import {
@@ -49,6 +50,11 @@ export const HeadingBar = ({
     loginAccount: { address: userAccount },
   } = useAppStatusStore();
   const history = useHistory();
+
+  useEffect(() => {
+    new Clipboard('#copy_marketURL');
+  }, []);
+
   const isScalar = marketType === SCALAR;
 
   const process = arr =>
