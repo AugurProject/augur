@@ -320,10 +320,10 @@ export function connectAugur(
       pollForNetwork(dispatch, getState);
     }
 
+    await augurSdk.connect();
+
     // wire up start up events for sdk
     dispatch(listenForStartUpEvents(Augur));
-
-    await augurSdk.connect();
 
     // IPFS pin the UI hash.
     augurSdk.client.pinHashByGatewayUrl(windowApp.location.href);
