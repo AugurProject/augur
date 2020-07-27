@@ -243,12 +243,24 @@ case "$method" in
 "upgrade")
   printf "Pulls new docker images and restarts augur or gsn if they were run before.\n";
   (
-    cd augur &&\
-    docker-compose stop &&\
-    docker pull caddy:2.1.1-alpine &&\
-    docker pull tabookey/gsn-dev-server:v0.4.1 &&\
-    docker pull augurproject/augur:runner &&\
-    docker-compose start -d
+    cd augur || (echo 'augur directory does not exist'; exit 1)
+
+    augur_running=`docker ps|grep augur_augur_1`
+    gsn_running=`docker ps|grep augur_gsn_1`
+
+    docker-compose stop
+
+    docker pull caddy:2.1.1-alpine
+    docker pull tabookey/gsn-dev-server:v0.4.1
+    docker pull augurproject/augur:runner
+
+    if [ "$augur_running" == 0 ]; then
+      docker-compose up -d augur
+    fi
+
+    if [ "gsn_running" == 0 ]; then
+      docker-compose up -d caddy gsn
+    fi
   )
   ;;
 *)
