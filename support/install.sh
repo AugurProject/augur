@@ -2,6 +2,7 @@
 
 DEFAULT_ETH_NODE_URL="${ETHEREUM_HTTP:-http://localhost:8545}";
 DOCKER_COMPOSE_FILE_URL=https://raw.githubusercontent.com/AugurProject/augur/v2/support/docker-compose.yml
+CLI_FILE_URL=https://raw.githubusercontent.com/AugurProject/augur/v2/support/cli
 
 ####################################################
 # Configuration needed if the user wants to run GSN
@@ -103,7 +104,15 @@ if [ -f ./augur/docker-compose.yml ]; then
   printf "[!]: ${PWD}/augur/docker-compose.yml - Already exists, delete and re-run to upgrade\n"
 else
   curl -fSsa $DOCKER_COMPOSE_FILE_URL -o ./augur/docker-compose.yml && \
-  printf "[x]: ${PWD}/augur/docker-compose.yml- Downloaded\n"
+  printf "[x]: ${PWD}/augur/docker-compose.yml - Downloaded\n"
+fi
+
+if [ -f ./augur/cli ]; then
+  printf "[!]: ${PWD}/augur/cli - Already exists, delete and re-run to upgrade\n"
+else
+  curl -fSsa CLI_FILE_URL -o ./augur/cli && \
+  chmod +x ./augur/cli && \
+  printf "[x]: ${PWD}/augur/cli - Downloaded\n"
 fi
 
 
