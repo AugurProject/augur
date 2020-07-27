@@ -6,6 +6,7 @@ import {
   TwoArrowsOutline,
   LeftChevron,
   CopyAlternateIcon,
+  ExclamationCircle,
 } from 'modules/common/icons';
 import MarkdownRenderer from 'modules/common/markdown-renderer';
 import MarketHeaderBar from 'modules/market/containers/market-header-bar';
@@ -310,6 +311,7 @@ export default class MarketHeader extends Component<
                   [Styles.ExpandedContent]: expandedDetails,
                 })}
               >
+                {!market.isTemplate && <span className={Styles.CustomMarket}>{ExclamationCircle} CUSTOM MARKET - proceed with caution</span>}
                 {preview ? (
                   <PreviewMarketTitle market={market} />
                 ) : (
