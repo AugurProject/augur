@@ -6,7 +6,7 @@
     "http": "https://kovan.augur.net/ethereum-http",
     "rpcRetryCount": 5,
     "rpcRetryInterval": 0,
-    "rpcConcurrency": 40,
+    "rpcConcurrency": 8,
     "ws": "ws://localhost:8546"
   },
   "gas": {
