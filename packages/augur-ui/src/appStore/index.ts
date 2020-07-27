@@ -125,7 +125,7 @@ const store = createStore(combineReducers({ ...rootReducers }), middleware);
 export type AppState = AppStateInterface;
 
 // Keep a copy of the state on the window object for debugging.
-if (process.env.NODE_ENV !== 'reportingOnly') {
+if (process.env.NODE_ENV !== 'test') {
   Object.defineProperty(window, 'state', {
     get: store.getState,
     enumerable: true,
