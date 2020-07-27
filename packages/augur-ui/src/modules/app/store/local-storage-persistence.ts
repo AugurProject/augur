@@ -7,7 +7,7 @@ import { augurSdk } from "services/augursdk";
 import { processFavorites } from "modules/markets/helpers/favorites-processor";
 
 export const handleLocalStorage = () => {
-  const { drafts, analytics, alerts, notifications, favorites, loginAccount, isLogged, isConnected, env, gasPriceInfo, pendingQueue } = AppStatus.get();
+  const { drafts, analytics, alerts, notifications, favorites, loginAccount, isLogged, isConnected, env, gasPriceInfo, pendingQueue, theme, oddsType, timeFormat } = AppStatus.get();
   const { pendingOrders, pendingLiquidityOrders } = PendingOrders.get();
   if (
     !loginAccount?.address ||
@@ -61,7 +61,10 @@ export const handleLocalStorage = () => {
           ...storedAccountData.selectedUniverse,
         },
         settings,
-        affiliate
+        affiliate,
+        theme,
+        oddsType,
+        timeFormat
       })
     );
   }

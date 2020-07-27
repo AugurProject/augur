@@ -10,9 +10,7 @@ import { loadAnalytics } from 'modules/app/actions/analytics-management';
 import { AppStatus } from 'modules/app/store/app-status';
 import isAddress from 'modules/auth/helpers/is-address';
 
-export const loadAccountDataFromLocalStorage = (
-  address: string
-) => {
+export const loadAccountDataFromLocalStorage = (address: string) => {
   const localStorageRef = typeof window !== 'undefined' && window.localStorage;
   const { universe, filterSortOptions } = AppStatus.get();
 
@@ -27,13 +25,25 @@ export const loadAccountDataFromLocalStorage = (
         updateGasPriceInfo,
         updateNotifications,
         loadDrafts,
+        setOdds,
+        setTimeFormat,
       } = AppStatus.actions;
-      const { selectedUniverse } = storedAccountData;
-      const { favorites } = storedAccountData;
-      const { notifiations } = storedAccountData;
-      const { pendingQueue } = storedAccountData;
-      const { affiliate } = storedAccountData;
-      const { settings } = storedAccountData;
+      const {
+        oddsType,
+        timeFormat,
+        settings,
+        selectedUniverse,
+        favorites,
+        notifications,
+        pendingQueue,
+        affiliate,
+        alerts,
+        pendingLiquidityOrders,
+        pendingOrders,
+        gasPriceInfo,
+        drafts,
+        analytics,
+      } = storedAccountData;
 
       if (settings) {
         const filterOptions = Object.keys(settings).reduce(
@@ -49,8 +59,8 @@ export const loadAccountDataFromLocalStorage = (
       if (!!affiliate && isAddress(affiliate))
         updateLoginAccount({ affiliate });
 
-      if (notifiations) {
-        updateNotifications(notifiations);
+      if (notifications) {
+        updateNotifications(notifications);
       }
       const networkId = getNetworkId();
       const selectedUniverseId = selectedUniverse[networkId];
@@ -70,14 +80,6 @@ export const loadAccountDataFromLocalStorage = (
       ) {
         loadFavorites(favorites[networkId][universe.id]);
       }
-      const {
-        alerts,
-        pendingLiquidityOrders,
-        pendingOrders,
-        gasPriceInfo,
-        drafts,
-        analytics,
-      } = storedAccountData;
       if (drafts) {
         loadDrafts(drafts);
       }
@@ -115,6 +117,13 @@ export const loadAccountDataFromLocalStorage = (
           userDefinedGasPrice: gasPriceInfo.userDefinedGasPrice,
         });
       }
+      if (oddsType) {
+        setOdds(oddsType);
+      }
+      if (timeFormat) {
+        setTimeFormat(timeFormat);
+      }
+
     }
   }
 };

@@ -24,7 +24,6 @@ import parsePath from 'modules/routes/helpers/parse-path';
 import { convertInputs, findStartTime } from '../common/market-title';
 import { convertUnixToFormattedDate } from 'utils/format-date';
 import { bulkLoadMarketTradingHistory } from 'modules/markets/actions/market-trading-history-management';
-import { useEffect } from 'react';
 
 export const isMarketView = location =>
   parsePath(location.pathname)[0] === MARKET;
@@ -46,8 +45,9 @@ const BettingMarketView = () => {
   const marketId = getAddress(queryId);
   const market = selectMarket(marketId);
   const markets = getMarkets();
-
-  if (market.sportsBook && sportsGroup.current === null) {
+  if (!market.sportsBook) {
+    updateMarketsData(null, loadMarketsInfo([marketId]));
+  } else if (sportsGroup.current === null) {
     sportsGroup.current = getSportsGroupsFromSportsIDs(
       [market.sportsBook.groupId],
       markets
@@ -59,8 +59,6 @@ const BettingMarketView = () => {
       });
       setLoadHistory(true);
     }
-  } else {
-    updateMarketsData(null, loadMarketsInfo([marketId]));
   }
   sportsGroupTradeHistory.current = marketIds.current.map(marketId => {
     if (marketTradingHistory[marketId]) return marketTradingHistory[marketId];

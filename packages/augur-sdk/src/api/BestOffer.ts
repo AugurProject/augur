@@ -65,7 +65,7 @@ export class BestOffer {
           hasBestOffer &&
           poolBestPrice[_.first(_.keys(poolBestPrice))][
             Number(new BigNumber(order.outcome))
-          ].price;
+          ]?.price || null;
         // if outcome order is null, then no offers, send null for that outcome
         if (
           !poolBestPrice ||
