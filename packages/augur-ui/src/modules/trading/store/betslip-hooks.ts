@@ -89,6 +89,7 @@ export function BetslipReducer(state, action) {
       const {
         marketId,
         description,
+        max,
         outcome,
         normalizedPrice,
         shares,
@@ -121,7 +122,8 @@ export function BetslipReducer(state, action) {
         shares,
         outcomeId,
         price,
-        toWin: convertToWin(normalizedPrice, shares),
+        max,
+        toWin: convertToWin(max, shares),
         amountFilled: '0',
         amountWon: '0',
         status: UNSENT,
@@ -276,7 +278,7 @@ export function BetslipReducer(state, action) {
     case MODIFY_BET: {
       const { marketId, orderId, order } = action;
       const toWin = convertToWin(
-        order.normalizedPrice,
+        order.max,
         order.shares
       );
       betslipItems[marketId].orders[orderId] = { ...order, toWin };
@@ -337,6 +339,7 @@ export const useBetslip = (defaultState = MOCK_BETSLIP_STATE) => {
       addBet: (
         marketId,
         description,
+        max,
         normalizedPrice,
         outcome,
         shares = '0',
@@ -347,6 +350,7 @@ export const useBetslip = (defaultState = MOCK_BETSLIP_STATE) => {
           type: ADD_BET,
           marketId,
           description,
+          max,
           normalizedPrice,
           outcome,
           shares,

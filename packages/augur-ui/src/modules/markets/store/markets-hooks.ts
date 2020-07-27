@@ -119,7 +119,7 @@ export function MarketsReducer(state, action) {
                 price: updatedOrder.price, 
                 wager, 
                 normalizedPrice, 
-                toWin: convertToWin(normalizedPrice, order.shares), 
+                toWin: convertToWin(marketInfo.max, order.shares), 
                 recentlyUpdated: true
               }
             );

@@ -505,6 +505,7 @@ export const SportsOutcome = ({
       addBet(
         market.id,
         market.description,
+        market.max,
         normalizedPrice,
         outcomeLabel,
         shares,
