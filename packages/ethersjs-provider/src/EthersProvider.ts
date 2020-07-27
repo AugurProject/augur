@@ -382,7 +382,7 @@ export class EthersProvider extends ethers.providers.BaseProvider
       // -32600 is an invalid request... hence the message check.
       if (
         e.code === -32600 &&
-        e.responseText.includes(
+        e.responseText?.includes(
           'Requested block range for eth_getLogs is greater than the limit of 1000 blocks.'
         )
       ) {
