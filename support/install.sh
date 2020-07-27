@@ -269,8 +269,6 @@ if [ -f ./augur/docker-compose.yml ]; then
 else
   make_docker_compose &&\
   printf "[x]: ${PWD}/augur/docker-compose.yml - Created\n"
-#  curl -fSsa $DOCKER_COMPOSE_FILE_URL -o ./augur/docker-compose.yml && \
-#  printf "[x]: ${PWD}/augur/docker-compose.yml - Downloaded\n"
 fi
 
 if [ -f ./augur/cli ]; then
@@ -279,9 +277,6 @@ else
   make_cli &&\
   chmod +x ./augur/cli &&\
   printf "[x]: ${PWD}/augur/cli - Created\n"
-#  curl -fSsa $CLI_FILE_URL -o ./augur/cli && \
-#  chmod +x ./augur/cli && \
-#  printf "[x]: ${PWD}/augur/cli - Downloaded\n"
 fi
 
 ./augur/cli setup
