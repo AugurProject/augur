@@ -35,9 +35,7 @@ import {
   NCAA,
   US_POLITICS,
   WORLD,
-  STOCKS,
   STATISTICS,
-  INDEXES,
   BITCOIN,
   ETHEREUM,
   COMPOUND,
@@ -373,18 +371,6 @@ export const MARKET_SUB_TEMPLATES = {
     },
   ],
   [ECONOMICS]: [
-    {
-      value: STOCKS,
-      header: STOCKS,
-      description: defaultDescription,
-      icon: icons.Stocks,
-    },
-    {
-      value: INDEXES,
-      header: INDEXES,
-      description: defaultDescription,
-      icon: icons.Indexes,
-    },
     {
       value: STATISTICS,
       header: STATISTICS,
