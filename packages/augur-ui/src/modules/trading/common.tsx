@@ -32,6 +32,7 @@ import { useAppStatusStore } from 'modules/app/store/app-status';
 import { useMarketsStore } from 'modules/markets/store/markets';
 import { createBigNumber } from 'utils/create-big-number';
 import { marketView } from 'modules/market/components/market-view/market-view.styles.less';
+import { INSUFFICIENT_FUNDS_ERROR, MODAL_ADD_FUNDS } from 'modules/common/constants';
 
 export interface EmptyStateProps {
   selectedTab: number;
@@ -120,8 +121,10 @@ export const SportsMarketMyBets = ({ market }) => {
 export const SportsBet = ({ bet }) => {
   const {
     step,
-    actions: { setDisablePlaceBets },
   } = useBetslipStore();
+  const {
+    actions: { setModal} 
+  } = useAppStatusStore();
   const isReview = step === 1;
   const {
     outcome,
@@ -134,6 +137,7 @@ export const SportsBet = ({ bet }) => {
     recentlyUpdated,
     errorMessage,
     selfTrade,
+    insufficientFunds
   } = bet;
   const { liquidityPools } = useMarketsStore();
   const checkWager = wager => {
@@ -190,7 +194,7 @@ export const SportsBet = ({ bet }) => {
             valueKey="wager"
             modifyBet={modifyBet}
             errorCheck={checkWager}
-            noEdit={selfTrade}
+            noEdit={selfTrade || insufficientFunds}
           />
           <BetslipInput
             label="To Win"
@@ -201,7 +205,12 @@ export const SportsBet = ({ bet }) => {
           />
         </>
       )}
-      <span className={Styles.error}>{errorMessage}</span>
+      <span className={Styles.error}>
+        {errorMessage}
+        {errorMessage === INSUFFICIENT_FUNDS_ERROR && 
+          <button onClick={() => setModal({ type: MODAL_ADD_FUNDS })}>Add funds</button>
+        }
+      </span>
     </div>
   );
 };
