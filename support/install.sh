@@ -1,20 +1,64 @@
 #!/usr/bin/env bash
 
-DEFAULT_ETH_NODE_URL="${ETHEREUM_HTTP:-http://localhost:8545}";
 DOCKER_COMPOSE_FILE_URL=https://raw.githubusercontent.com/AugurProject/augur/v2/support/docker-compose.yml
 CLI_FILE_URL=https://raw.githubusercontent.com/AugurProject/augur/v2/support/cli
 
-####################################################
-# Configuration needed if the user wants to run GSN
-export GSN_HOSTNAME=configurable-hostname-for-gsn-server.com
-export GSN_PORT=8090
-export GSN_RELAY_HUB=0xD216153c06E857cD7f72665E0aF1d7D82172F494
-export GSN_GAS_PRICE_PERCENT=10
-export GSN_FEE=1
+make_docker_compose() {
+  cat << 'EOF' > "${PWD}/augur/docker-compose.yml"
+version: '3.7'
 
-cat <<HERE
+services:
+  caddy:
+    image: caddy:2.1.1-alpine
+    restart: always
+    ports:
+      - 80:80
+      - 443:443
+    volumes:
+      - ./caddy:/data
+    entrypoint: ["caddy", "reverse-proxy", "--from", "${GSN_HOSTNAME}", "--to", "http://gsn:8090"]
+
+  gsn:
+    image: tabookey/gsn-dev-server:v0.4.1
+    restart: always
+    ports:
+      - 8090:8090 #needed for debugging without https frontend
+    volumes:
+      - ./gsn:/data
+    entrypoint: ["./RelayHttpServer", "-RelayHubAddress", "${GSN_RELAY_HUB}", "-Workdir", "/data", "-GasPricePercent", "${GSN_GAS_PRICE_PERCENT}", "-EthereumNodeUrl", "${ETHEREUM_HTTP}", "-Url", "https://${GSN_HOSTNAME}", "-Fee", "${GSN_FEE}", "-Port", "${GSN_PORT}"]
+
+  augur:
+    image: augurproject/augur:runner
+    restart: always
+    ports:
+      - 9001:9001
+      - 9002:9002
+      - 9003:9003
+      - 9004:9004
+    volumes:
+      - ./keys:/keys
+    environment:
+      AUGUR_ENV: ${AUGUR_ENV}
+      ETHEREUM_NETWORK: ${AUGUR_ENV}
+      ETH_NODE_URL: ${ETHEREUM_HTTP}
+EOF
+}
+
+make_cli() {
+  cat << 'EOF' > "${PWD}/augur/cli"
+#!/usr/bin/env sh
+
+set -e;
+
+DEFAULT_ETH_NODE_URL="${ETHEREUM_HTTP:-http://localhost:8545}";
+
+method="$1"
+
+intro() {
+  cat <<HERE
+
 ##############################################################################
-                         Welcome, Friends of Augur
+                          Welcome, Friend of Augur
 
 This utility will help to set up the services which can interact with Augur on
 kovan, mainnet, and localhost.
@@ -22,34 +66,60 @@ kovan, mainnet, and localhost.
 This utility requires docker-ce and docker-compose, and once fully installed
 the services can be managed using docker-compose directly.
 
-Configuration will be written to the a directory on your filesystem.
+Configuration will be written to a directory on your filesystem.
 ##############################################################################
+
 HERE
+}
 
-# Check docker is present
-printf "Checking prerequisits...\n"
-if [ -x "$(command -v docker)" ]; then
-  printf "[x]: Docker - Installed\n"
-else
-  printf "[!]: Docker - not installed\n~~> You need Docker installed and configured in order to run the augur services. See: https://docs.docker.com/get-docker/ for instructions.\n\n";
-  exit 1;
-fi
+usage() {
+  cat <<HERE
+To setup scripts and start augur services:
+./augur/cli setup
 
-docker info > /dev/null 2>&1;
-if [ $? != 0 ]; then
-  printf "[!]: Docker Daemon - Not running!\n~~> Follow the instructions from the docker install guide on making sure your docker daemon is running or download docker desktop and double click to install\n";
-  exit 1;
-else
-  printf "[x]: Docker Daemon - Running!\n";
-fi
+To start augur services:
+./augur/cli start
 
-if [ -x "$(command -v docker-compose)" ]; then
-  printf "[x]: docker-compose - Installed\n"
-else
-  printf "[!]: docker-compose - Not installed\n~~> You must install docker-compose to run Augur services. See: https://docs.docker.com/compose/install/\n"
-  exit 1
-fi
-printf "Prerequisits check complete!\n\n"
+To start GSN
+./augur/cli start-gsn
+
+To stop services:
+./augur/cli stop
+
+To restart services:
+./augur/cli restart
+
+To upgrade this script:
+./augur/cli upgrade
+HERE
+}
+
+prereqs() {
+  # Check docker is present
+  printf "Checking prerequisites...\n"
+  if [ -x "$(command -v docker)" ]; then
+    printf "[x]: Docker - Installed\n"
+  else
+    printf "[!]: Docker - not installed\n~~> You need Docker installed and configured in order to run the augur services. See: https://docs.docker.com/get-docker/ for instructions.\n\n";
+    exit 1;
+  fi
+
+  docker info > /dev/null 2>&1;
+  if [ $? != 0 ]; then
+    printf "[!]: Docker Daemon - Not running!\n~~> Follow the instructions from the docker install guide on making sure your docker daemon is running or download docker desktop and double click to install\n";
+    exit 1;
+  else
+    printf "[x]: Docker Daemon - Running!\n";
+  fi
+
+  if [ -x "$(command -v docker-compose)" ]; then
+    printf "[x]: docker-compose - Installed\n"
+  else
+    printf "[!]: docker-compose - Not installed\n~~> You must install docker-compose to run Augur services. See: https://docs.docker.com/compose/install/\n"
+    exit 1
+  fi
+  printf "Prerequisites check complete!\n\n"
+}
 
 read_env(){
 	local choice
@@ -62,6 +132,15 @@ read_env(){
 		*) printf "v2"
 	esac
 }
+
+setup() {
+####################################################
+# Configuration needed if the user wants to run GSN
+export GSN_HOSTNAME=configurable-hostname-for-gsn-server.com
+export GSN_PORT=8090
+export GSN_RELAY_HUB=0xD216153c06E857cD7f72665E0aF1d7D82172F494
+export GSN_GAS_PRICE_PERCENT=10
+export GSN_FEE=1
 
 cat <<- HERE
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -76,7 +155,6 @@ export AUGUR_ENV=$(read_env)
 if [ "${AUGUR_ENV}" == "mainnet" ]; then
   # Get eth node url
   printf "$BUFFER_TEXT\nNOTE: You need to have access to an Ethereum Mainnet server.\nIf you don't have one or don't know what this is, \nregister one at https://infura.nio/register and past the Mainnet URL here.$BUFFER_TEXT\n";
-
   printf "Enter an ethereum RPC URL (default: $DEFAULT_ETH_NODE_URL): ";
   read ETH_NODE_URL;
   export ETHEREUM_HTTP=${ETH_NODE_URL:-$DEFAULT_ETH_NODE_URL}
@@ -89,32 +167,9 @@ fi
 cat <<HERE
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-          Configuring Augur runtime
+          Configuring Docker Environment
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 HERE
-
-mkdir augur 2> /dev/null
-if [ $? -eq 0 ]; then
-  printf "[x]: ${PWD}/augur - Created\n"
-else
-  printf "[x]: ${PWD}/augur - Already exists, reusing\n"
-fi
-
-if [ -f ./augur/docker-compose.yml ]; then
-  printf "[!]: ${PWD}/augur/docker-compose.yml - Already exists, delete and re-run to upgrade\n"
-else
-  curl -fSsa $DOCKER_COMPOSE_FILE_URL -o ./augur/docker-compose.yml && \
-  printf "[x]: ${PWD}/augur/docker-compose.yml - Downloaded\n"
-fi
-
-if [ -f ./augur/cli ]; then
-  printf "[!]: ${PWD}/augur/cli - Already exists, delete and re-run to upgrade\n"
-else
-  curl -fSsa CLI_FILE_URL -o ./augur/cli && \
-  chmod +x ./augur/cli && \
-  printf "[x]: ${PWD}/augur/cli - Downloaded\n"
-fi
-
 
 (
 cat <<HEREDOC
@@ -133,11 +188,100 @@ printf "[x]: ${PWD}/augur/.env - Configuration saved\n"
 cat <<HERE
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-        Ready to start augur services
+        Ready To Start Augur Services
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Will run `./augur/cli start`.
 This may take some time...
 
 HERE
-START_SERVICES="augur"
 read -n 1 -s -r -p "Press any key to continue"
-cd augur && docker-compose up ${START_SERVICES}
+echo
+$0 start
+}
+
+
+intro
+prereqs
+
+
+if [ -z "${method}" ]; then
+  usage
+  exit 1
+fi
+
+case "$method" in
+"setup")
+  (
+    setup
+  )
+  ;;
+"start")
+  (
+    cd augur &&\
+    docker-compose up augur
+  )
+  ;;
+"start-gsn")
+  (
+    cd augur &&\
+    docker-compose up caddy gsn
+  )
+  ;;
+
+"stop")
+  (
+    cd augur &&\
+    docker-compose stop
+  )
+  ;;
+"restart")
+  (
+    cd augur &&\
+    docker-compose restart
+  )
+  ;;
+"upgrade")
+  printf "TODO\n";
+  ;;
+*)
+  usage
+  exit 1
+esac
+EOF
+}
+
+cat <<HERE
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+          Configuring Augur runtime
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+HERE
+
+mkdir augur 2> /dev/null
+if [ $? -eq 0 ]; then
+  printf "[x]: ${PWD}/augur - Created\n"
+else
+  printf "[x]: ${PWD}/augur - Already exists, reusing\n"
+fi
+
+if [ -f ./augur/docker-compose.yml ]; then
+  printf "[!]: ${PWD}/augur/docker-compose.yml - Already exists, delete and re-run to upgrade\n"
+else
+  make_docker_compose &&\
+  printf "[x]: ${PWD}/augur/docker-compose.yml - Created\n"
+#  curl -fSsa $DOCKER_COMPOSE_FILE_URL -o ./augur/docker-compose.yml && \
+#  printf "[x]: ${PWD}/augur/docker-compose.yml - Downloaded\n"
+fi
+
+if [ -f ./augur/cli ]; then
+  printf "[!]: ${PWD}/augur/cli - Already exists, delete and re-run to upgrade\n"
+else
+  make_cli &&\
+  chmod +x ./augur/cli &&\
+  printf "[x]: ${PWD}/augur/cli - Created\n"
+#  curl -fSsa $CLI_FILE_URL -o ./augur/cli && \
+#  chmod +x ./augur/cli && \
+#  printf "[x]: ${PWD}/augur/cli - Downloaded\n"
+fi
+
+./augur/cli setup
