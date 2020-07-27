@@ -285,7 +285,7 @@ export function connectAugur(
       return callback(`SDK could not be created, see console for more information`, { config });
     }
 
-    if (config?.ui?.reportingOnly) {
+    if (process.env.REPORTING_ONLY) {
       dispatch(updateModal({
         type: MODAL_REPORTING_ONLY
       }))
