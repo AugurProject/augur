@@ -1609,3 +1609,5 @@ export const MY_BETS_BET_DATE = [
     value: 2,
   },
 ];
+
+export const INSUFFICIENT_FUNDS_ERROR = 'Insufficient funds';

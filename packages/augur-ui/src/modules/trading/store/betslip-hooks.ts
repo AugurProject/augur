@@ -10,9 +10,8 @@ import {
   MOCK_BETSLIP_STATE,
   BETSLIP_ACTIONS,
 } from 'modules/trading/store/constants';
-import { placeBet, simulateBetslipTrade, checkForDisablingPlaceBets } from 'utils/betslip-helpers';
+import { placeBet, simulateBetslipTrade, checkForDisablingPlaceBets, checkInsufficientFunds } from 'utils/betslip-helpers';
 import { AppStatus } from 'modules/app/store/app-status';
-import { checkForUserInputFilled } from 'modules/common/validations';
 
 const {
   CASH_OUT,
@@ -89,6 +88,7 @@ export function BetslipReducer(state, action) {
       const {
         marketId,
         description,
+        min,
         max,
         outcome,
         normalizedPrice,
@@ -115,6 +115,7 @@ export function BetslipReducer(state, action) {
         }
       }
       const wager = getWager(shares, price);
+      const insufficientFunds = checkInsufficientFunds(min, max, price, shares);
       let order = {
         outcome,
         normalizedPrice,
@@ -123,14 +124,17 @@ export function BetslipReducer(state, action) {
         outcomeId,
         price,
         max,
+        min,
         toWin: convertToWin(max, shares),
         amountFilled: '0',
         amountWon: '0',
         status: UNSENT,
         dateUpdated: null,
-        orderId: betslipItems[marketId].orders.length
+        orderId: betslipItems[marketId].orders.length,
+        insufficientFunds,
       };
       simulateBetslipTrade(marketId, order, order.orderId);
+      updatedState.placeBetsDisabled = checkForDisablingPlaceBets(betslipItems);
       betslipItems[marketId].orders.push(order);
       updatedState.betslip.count++;
       break;
@@ -340,6 +344,7 @@ export const useBetslip = (defaultState = MOCK_BETSLIP_STATE) => {
         marketId,
         description,
         max,
+        min,
         normalizedPrice,
         outcome,
         shares = '0',
@@ -351,6 +356,7 @@ export const useBetslip = (defaultState = MOCK_BETSLIP_STATE) => {
           marketId,
           description,
           max,
+          min,
           normalizedPrice,
           outcome,
           shares,

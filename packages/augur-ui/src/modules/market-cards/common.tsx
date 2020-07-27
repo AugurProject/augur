@@ -506,6 +506,7 @@ export const SportsOutcome = ({
         market.id,
         market.description,
         market.maxPrice,
+        market.minPrice,
         normalizedPrice,
         outcomeLabel,
         shares,
