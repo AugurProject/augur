@@ -54,6 +54,7 @@ export class SDK {
 
     if (this.config.sdk?.enabled) {
       this.connector = new Connectors.WebsocketConnector();
+      await this.connect();
     } else {
       this.connector = new Connectors.SingleThreadConnector();
     }

@@ -12,9 +12,10 @@ const EST_HEIGHT_PERCENT = 0.98;
 interface ModalDisclaimerProps {
   closeModal: Function;
   onApprove: Function;
+  isReportingOnly: boolean;
 }
 
-const ModalDisclaimer = ({ closeModal, onApprove }: ModalDisclaimerProps) => {
+const ModalDisclaimer = ({ closeModal, onApprove, isReportingOnly }: ModalDisclaimerProps) => {
   const [didScroll, setDidScroll] = useState(false);
   const [didCheck, setDidCheck] = useState(false);
   const containerText = useRef(null);
@@ -30,11 +31,14 @@ const ModalDisclaimer = ({ closeModal, onApprove }: ModalDisclaimerProps) => {
     <section className={Styles.ModalDisclaimer}>
       <h1>Disclaimer</h1>
       <div ref={containerText} onScroll={() => checkScroll()}>
+      <p>
+          <b>{isReportingOnly ? "Welcome to the Augur Reporting & Browsing Client" : "Welcome to the Augur Client"}</b>
+        </p>
         <p>
-          Augur is a decentralized oracle and peer to peer protocol for
+        Augur is a decentralized oracle and peer to peer protocol for user-created
           prediction markets. Augur is free, public, open source software and a
           set of smart contracts written in Solidity that can be deployed to the
-          Ethereum blockchain (the “<b>Augur Protocol</b>
+          Ethereum Blockchain, collectivley known as (the “<b>Augur Protocol</b>
           ”). Before using the Augur Protocol, please review the{' '}
           <a
             href='https://augur.net/faq'
@@ -56,7 +60,7 @@ const ModalDisclaimer = ({ closeModal, onApprove }: ModalDisclaimerProps) => {
         </p>
 
         <p>
-          The Forecast Foundation OU (the “<b>Foundation</b>
+        The Forecast Foundation OU (the “<b>Foundation</b>
           ”) is a not-for-profit entity. It does not own or lead Augur, but
           rather supports and develops the free, open-source protocol that is
           Augur. Portions of the Augur Protocol are made available under the GNU
@@ -66,18 +70,18 @@ const ModalDisclaimer = ({ closeModal, onApprove }: ModalDisclaimerProps) => {
           Foundation will not be liable for any liability or damages whatsoever
           associated with your use, inability to use, or your interaction with
           other users of, the Augur Protocol, including any direct, indirect,
-          incidental, special, exemplary or consequential damages, loss of
-          profits, Reputation (REP) tokens, Ether (ETH) tokens, any other
-          cryptocurrencies or data.
+          incidental, special, exemplary, punitive or consequential damages, loss of
+          profits, Dai (DAI) tokens, Reputation (REP) tokens, (REPv2) tokens, Ether (ETH) tokens,
+          and any other cryptocurrencies or anything of value, including fiat currency.
         </p>
 
         <p>
-          You acknowledge that the current version of the Augur Protocol is a
+        You acknowledge that the current version of the Augur Protocol is a
           beta version and as such has not been fully-tested and may not perform
-          as designed. On the Augur Protocol, Reputation (REP) and Ether (ETH)
+          as designed. On the Augur Protocol, Dai (DAI), Reputation (REP), Reputation V2 (REPv2), and Ether (ETH)
           may be used respectively for staking on outcomes and trading, and in
           the future, other tokens or cryptocurrencies may be used. While you
-          should always be thoughtful about the REP, ETH or other
+          should always be thoughtful about the DAI, REP, REPv2, ETH or other
           tokens/cryptocurrencies you stake and trade (and can lose) through the
           Augur Protocol, the concerns regarding loss of these tokens or
           cryptocurrencies is particularly acute with beta software that may not
@@ -86,7 +90,7 @@ const ModalDisclaimer = ({ closeModal, onApprove }: ModalDisclaimerProps) => {
           the FAQs or the Documentation. Your use of the Augur Protocol involves
           various risks, including, but not limited to losing
           tokens/cryptocurrencies due to invalidation. Careful due diligence
-          should be undertaken as to the amount of REP, ETH or other
+          should be undertaken as to the amount of DAI, REP, REPv2, ETH or other
           tokens/cryptocurrencies you stake and trade using the Augur Protocol
           in beta format with full understanding that any staking and trading of
           these tokens/cryptocurrencies could be subject to total loss. You
@@ -95,19 +99,19 @@ const ModalDisclaimer = ({ closeModal, onApprove }: ModalDisclaimerProps) => {
         </p>
 
         <p>
-          Although the Foundation has not sought to list REP on cryptocurrency
-          exchanges, it is aware that REP has been listed on certain exchanges
+        Although the Foundation has not sought to list REP or REPv2 on cryptocurrency
+          exchanges, it is aware that REP and REPv2 has been listed on certain exchanges
           and in the future it may be delisted on these exchanges and/or listed
           on others. The Foundation disavows any obligation with respect to the
-          listing of REP on exchanges and it disavows any responsibility with
-          respect to the value or trading of REP on exchanges. Persons trading
-          REP or otherwise engaged in activities involving REP on exchanges
+          listing of REP or REPv2 on exchanges and it disavows any responsibility with
+          respect to the value or trading of REP or REPv2 on exchanges. Persons trading
+          REP or REPv2 or otherwise engaged in activities involving REP or REPv2 on exchanges
           assume any and all risk, including that of total loss, associated with
           such activities.
         </p>
 
         <p>
-          You are solely responsible for compliance with all laws that may apply
+        You are solely responsible for compliance with all laws that may apply
           to your particular use of the Augur Protocol. Cryptocurrencies and
           blockchain technologies have been the subject of scrutiny by various
           regulatory bodies around the world. The Foundation makes no
@@ -116,7 +120,7 @@ const ModalDisclaimer = ({ closeModal, onApprove }: ModalDisclaimerProps) => {
           securities, to your use of the Augur Protocol. Indeed, depending on
           the jurisdiction and the contemplated use of the Augur Protocol
           (whether yours or another’s), that use may be considered illegal. You
-          agree that the Foundation is not responsible for determining whether
+          agree that the Forecast Foundation OU, PM Research LTD, or any other referrer is not responsible for determining whether
           or which laws may apply to your use of the Augur Protocol. You may
           modify the Augur Protocol under the terms of the applicable open
           source license to effectuate your compliance with any applicable laws.
