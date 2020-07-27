@@ -47,24 +47,19 @@ const BettingMarketView = () => {
   const markets = getMarkets();
 
   useEffect(() => {
-    console.log('use effect 1 -- make sure we have sportsBook');
-    if (!market.sportsBook) {
-      console.log('use effect 1 -- going to load sportsBook');
+    if (!market?.sportsBook) {
       updateMarketsData(null, loadMarketsInfo([marketId]));
     }
   }, []);
 
   useEffect(() => {
-    console.log('use effect 2 -- initial bulk trade history load');
     if (sportsGroup.current === null && market?.sportsBook?.groupId) {
-      console.log("use effect 2 -- code triggered");
       sportsGroup.current = getSportsGroupsFromSportsIDs(
         [market.sportsBook.groupId],
         markets
       )[0];
       marketIds.current = sportsGroup.current.markets.map(market => market.id);
       if (marketIds.current.length > 0) {
-        console.log('use effect 2 -- Actually bulk load history');
         bulkLoadMarketTradingHistory(marketIds.current, (err, tradeHistory) => {
           bulkMarketTradingHistory(tradeHistory)
         });
@@ -73,17 +68,15 @@ const BettingMarketView = () => {
   }, [market.sportsBook])
 
   useEffect(() => {
-    console.log("use effect 3 -- update trade history on history update -- updates totalBets, bettors, sportsGroupHistory, UniqueAddresses");
+    let tradeCount = 0;
     sportsGroupTradeHistory.current = marketIds.current.map(marketId => {
-      if (marketTradingHistory[marketId]) return marketTradingHistory[marketId];
+      if (marketTradingHistory[marketId]) {
+        tradeCount = tradeCount + marketTradingHistory[marketId].length;
+        return marketTradingHistory[marketId];
+      };
     }).filter(item => !!item);
-    console.log("use effect 3 -- part 1", sportsGroupTradeHistory.current);
-    // sportsGroupTradeHistory.current = sportsGroupTradeHistory.current;
-    if (sportsGroupTradeHistory.current.length > 0) {
-      console.log("use effect 3 -- sportsGroupTradeHistory length > 0")
-      let tradeCount = 0;
+    if (sportsGroupTradeHistory.current.length > 0 && tradeCount !== totalBets.current) {
       sportsGroupTradeHistory.current.forEach(MarketTradeHistoryArray => {
-        tradeCount = tradeCount + MarketTradeHistoryArray.length;
         MarketTradeHistoryArray.forEach(({ creator, filler }) => {
           if (!uniqueAddresses.current.includes(creator)) {
             uniqueAddresses.current.push(creator);
