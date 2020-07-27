@@ -10,8 +10,8 @@ import { AppStatus } from 'modules/app/store/app-status';
 export const convertPositionToBet = (position, marketInfo) => {
   const normalizedPrice = convertToNormalizedPrice({
     price: position.averagePrice,
-    min: marketInfo.min,
-    max: marketInfo.max
+    min: marketInfo.minPrice,
+    max: marketInfo.maxPrice
   });
   const wager = getWager(position.rawPosition, position.averagePrice);
   return {
@@ -21,8 +21,8 @@ export const convertPositionToBet = (position, marketInfo) => {
     amountWon: '0',
     amountFilled: '0',
     price: position.averagePrice,
-    max: marketInfo.max,
-    toWin: convertToWin(marketInfo.max, position.rawPosition),
+    max: marketInfo.maxPrice,
+    toWin: convertToWin(marketInfo.maxPrice, position.rawPosition),
     normalizedPrice,
     outcome: getOutcomeNameWithOutcome(marketInfo, position.outcome),
     shares: position.rawPosition,
