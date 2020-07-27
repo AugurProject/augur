@@ -20,11 +20,11 @@
  */
 
 export const COMMON_HEAD_TAGS = {
-  title: 'Decentralized Prediction Markets',
+  title: 'Your Global, No-Limit Betting Platform',
   description: 'Augur is a decentralized oracle and prediction market protocol built on the Ethereum blockchain. It allows you to forecast events and be rewarded for predicting them correctly.',
-  ogTitle: 'Decentralized Prediction Markets',
+  ogTitle: 'Your Global, No-Limit Betting Platform',
   ogDescription: 'Augur is a decentralized oracle and prediction market protocol built on the Ethereum blockchain. It allows you to forecast events and be rewarded for predicting them correctly.',
-  ogSiteName: 'Decentralized Prediction Markets',
+  ogSiteName: 'Your Global, No-Limit Betting Platform',
   ogUrl: 'http://augur.net',
   ogImage: 'images/apple-touch-icon-152x152.png',
   ogLocale: 'en_US',
@@ -39,7 +39,7 @@ export const COMMON_HEAD_TAGS = {
   ogImageHeight: '640',
   ogImageAlt: 'Augur logo in the color purple. The logo is a tetrahedron with lines coming out of the edges, forming a circle in the middle. It represents a bunch of disparate points of information [i.e the edges] swirling in to converge upon some truth.',
   twitterCardType: 'summary',
-  twitterTitle: 'Decentralized Prediction Markets',
+  twitterTitle: 'Your Global, No-Limit Betting Platform',
   twitterDescription: 'Augur is a decentralized prediction market built on the Ethereum blockchain. It allows you to forecast events and be rewarded for predicting them correctly.',
   twitterImage: 'images/apple-touch-icon-152x152.png',
   twitterImageAlt: 'Augur logo in the color purple. The logo is a tetrahedron with lines coming out of the edges, forming a circle in the middle. It represents a bunch of disparate points of information [i.e the edges] swirling in to converge upon some truth.',
