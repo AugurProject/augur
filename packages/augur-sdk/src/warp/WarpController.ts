@@ -328,7 +328,6 @@ export class WarpController {
       await (await this.ipfs).pin.add(url.pathname);
       return true;
     } catch (e) {
-      console.error(e);
       return false;
     }
   }
