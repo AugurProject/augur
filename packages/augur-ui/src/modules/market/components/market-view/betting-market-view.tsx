@@ -108,7 +108,7 @@ const BettingMarketView = () => {
         <div>
           <PropertyLabel
             label="matched"
-            value={formatDai(0).full}
+            value={formatDai(sportsGroup.current?.totalVolume || '0').full}
             hint={<h4>Matched</h4>}
             large
           />
