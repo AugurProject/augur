@@ -15,6 +15,7 @@ import { processFavorites } from 'modules/markets/helpers/favorites-processor';
 import { getNetworkId } from 'modules/contracts/actions/contractCalls';
 import { WindowApp } from 'modules/types';
 import { augurSdk } from 'services/augursdk';
+import { statusErrorMessage } from 'modules/common/labels.styles.less';
 
 // console log middleware
 const consoleLog = store => next => action => {
@@ -124,7 +125,7 @@ const store = createStore(combineReducers({ ...rootReducers }), middleware);
 export type AppState = AppStateInterface;
 
 // Keep a copy of the state on the window object for debugging.
-if (process.env.NODE_ENV !== 'test') {
+if (process.env.NODE_ENV !== 'reportingOnly') {
   Object.defineProperty(window, 'state', {
     get: store.getState,
     enumerable: true,
