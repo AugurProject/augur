@@ -18,10 +18,8 @@ import {
   convertDisplayValuetoAttoValue,
   numTicksToTickSize,
   convertAttoValueToDisplayValue,
+  TXEventName,
   calculatePayoutNumeratorsValue,
-} from '@augurproject/utils';
-import {
-  TXEventName
 } from '@augurproject/sdk-lite';
 import {
   BUY,

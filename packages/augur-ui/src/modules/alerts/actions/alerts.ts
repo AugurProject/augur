@@ -48,7 +48,8 @@ export function addAlert(alert: Partial<Alert>) {
       try {
         dispatch(setAlertText(alert, callback));
       } catch (error) {
-        callback(error, null);
+        console.error(error);
+        callback(null);
       }
     }
   };
