@@ -88,6 +88,8 @@ import {
 
 const compilerOutput = require('@augurproject/artifacts/build/contracts.json');
 
+const UNIVERSAL_RELAY_HUB_ADDRESS = '0xd216153c06e857cd7f72665e0af1d7d82172f494';
+
 export function addScripts(flash: FlashSession) {
   flash.addScript({
     name: 'show-config',
@@ -2327,30 +2329,6 @@ export function addScripts(flash: FlashSession) {
   });
 
   flash.addScript({
-    name: 'deposit-relay',
-    options: [
-      {
-        name: 'ethAmount',
-        abbr: 'e',
-        description: 'amount of ETH to provide to the exchange; typical max is 2 ether',
-      },
-      {
-        name: 'relayHub',
-        abbr: 'r',
-        description: 'address to relay hub',
-      },
-    ],
-    async call(this: FlashSession, args: FlashArguments) {
-      const UNIVERSAL_RELAY_HUB_ADDRESS = '0xd216153c06e857cd7f72665e0af1d7d82172f494';
-      const address = args.relayHub as string || UNIVERSAL_RELAY_HUB_ADDRESS;
-      const ethAmount = Number(args.ethAmount) || 1;
-      const wei = new BigNumber(ethAmount).times(_1_ETH);
-      const user = await this.createUser(this.getAccount(), this.config);
-      await user.depositRelay(address, wei);
-    },
-  });
-
-  flash.addScript({
     name: 'eth-balance',
     options: [
       {
@@ -2688,4 +2666,57 @@ export function addScripts(flash: FlashSession) {
         console.log(`MARKET IDS: ${JSON.stringify(marketIds)}`);
       },
     });
+
+  flash.addScript({
+    name: 'gsn-fund-relay',
+    options: [
+      {
+        name: 'ethAmount',
+        abbr: 'e',
+        description: 'amount of ETH to provide to the exchange; typical max is 2 ether',
+      },
+      {
+        name: 'relayHub',
+        abbr: 'r',
+        description: 'address to relay hub',
+      },
+    ],
+    async call(this: FlashSession, args: FlashArguments) {
+      const address = args.relayHub as string || UNIVERSAL_RELAY_HUB_ADDRESS;
+      const ethAmount = Number(args.ethAmount) || 1;
+      const wei = new BigNumber(ethAmount).times(_1_ETH);
+      const user = await this.createUser(this.getAccount(), this.config);
+      await user.depositRelay(address, wei);
+    },
+  });
+
+  flash.addScript({
+    name: 'gsn-stake-relay',
+    options: [
+      {
+        name: 'ethAmount',
+        abbr: 'e',
+        description: 'amount of ETH to provide to the exchange; typical max is 2 ether; default=1 ether',
+      },
+      {
+        name: 'unstakeDelay',
+        abbr: 'd',
+        description: 'seconds to wait before removing stake. default=604800 (1 week)',
+      },
+      {
+        name: 'relayHub',
+        abbr: 'r',
+        description: `address to relay hub; default is the universal addr: ${UNIVERSAL_RELAY_HUB_ADDRESS}`,
+      },
+    ],
+    async call(this: FlashSession, args: FlashArguments) {
+      const address = args.relayHub as string || UNIVERSAL_RELAY_HUB_ADDRESS;
+      const unstakeDelay = new BigNumber(args.unstakeDelay as string || 604800);
+      const ethAmount = Number(args.ethAmount) || 1;
+      const attachedEth = new BigNumber(ethAmount).times(_1_ETH);
+
+      const user = await this.createUser(this.getAccount(), this.config);
+      await user.augur.contracts.relayHub.stake(address, unstakeDelay, { attachedEth })
+    }
+  })
 }
