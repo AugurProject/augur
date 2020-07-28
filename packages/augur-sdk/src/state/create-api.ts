@@ -190,6 +190,14 @@ export async function createServer(config: SDKConfiguration, client?: Augur): Pr
   if(config.warpSync?.createCheckpoints && config.warpSync?.autoReport) {
     client.events.on(SubscriptionEventName.WarpSyncHashUpdated,
       async ({ hash }) => {
+        const result  = await client.getAccountEthBalance();
+        const balance = new BigNumber(result);
+
+        if (balance.eq(0)) {
+          console.log(`Please deposit eth to account ${await client.getAccount()} to autoreport`);
+          return;
+        }
+
         if (hash) {
           const market = await client.warpSync.getWarpSyncMarket(
             config.addresses.Universe);
