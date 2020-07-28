@@ -165,10 +165,10 @@ get_gsn_key() {
 get_trading_UI_hash() {
   helper() {
     base58_hash=$(docker logs $(docker ps|grep augur_augur_1|awk '{print $1}') 2>&1|grep -C0 'Pinning UI build at path'|awk '{print $10}')
-    if [ -z "base58_hash" ]
+    if [ -z "$base58_hash" ]
       then return 1
       else
-        echo base58_hash
+        echo $base58_hash
         docker logs $(docker ps|grep augur_augur_1|awk '{print $1}') 2>&1|grep -C0 'Pinning UI build at path'|awk '{print $12}'
         return 0
     fi
@@ -181,26 +181,11 @@ get_trading_UI_hash() {
 get_reporting_UI_hash() {
   helper() {
     base58_hash=$(docker logs $(docker ps|grep augur_augur_1|awk '{print $1}') 2>&1|grep -C0 'Pinning Reporting UI build at path'|awk '{print $11}')
-    if [ -z "base58_hash" ]
+    if [ -z "$base58_hash" ]
       then return 1
       else
-        echo base58_hash
+        echo $base58_hash
         docker logs $(docker ps|grep augur_augur_1|awk '{print $1}') 2>&1|grep -C0 'Pinning UI build at path'|awk '{print $13}'
-        return 0
-    fi
-  }
-  until helper
-    do sleep 1
-  done
-}
-
-get_current_warp_sync_hash() {
-  helper() {
-    hash=$(docker logs $(docker ps|grep augur_augur_1|awk '{print $1}') 2>&1|grep -C0 'Pinning Reporting UI build at path'|awk '{print $7}')
-    if [ -z "hash" ]
-      then return 1
-      else
-        echo hash
         return 0
     fi
   }
@@ -212,10 +197,25 @@ get_current_warp_sync_hash() {
 get_previous_warp_sync_hash() {
   helper() {
     hash=$(docker logs $(docker ps|grep augur_augur_1|awk '{print $1}') 2>&1|grep -C0 'Previous Warp Sync Hash'|awk '{print $5}')
-    if [ -z "hash" ]
+    if [ -z "$hash" ]
       then return 1
       else
-        echo hash
+        echo $hash
+        return 0
+    fi
+  }
+  until helper
+    do sleep 1
+  done
+}
+
+get_current_warp_sync_hash() {
+  helper() {
+    hash=$(docker logs $(docker ps|grep augur_augur_1|awk '{print $1}') 2>&1|grep -C0 'Current Warp Sync State'|awk '{print $7}')
+    if [ -z "$hash" ]
+      then return 1
+      else
+        echo $hash
         return 0
     fi
   }
@@ -320,9 +320,9 @@ case "$method" in
 
     printf "Augur Address: $augur_key\n"
     printf "Trading UI Hash: $trading_ui_hash\n"
-    printf "Reporting UI Hash: reporting_ui_hash\n"
-    printf "Previous Warp Sync Hash: previous_warp_sync_hash\n"
-    printf "Current Warp Sync Hash: current_warp_sync_hash\n"
+    printf "Reporting UI Hash: $reporting_ui_hash\n"
+    printf "Previous Warp Sync Hash: $previous_warp_sync_hash\n"
+    printf "Current Warp Sync Hash: $current_warp_sync_hash\n"
   )
   ;;
 "start-gsn")

@@ -2242,7 +2242,6 @@ export function addScripts(flash: FlashSession) {
         }
       );
 
-
       const app = createApp(api);
 
       const httpServer = this.config.server?.startHTTP && runHttpServer(app, this.config);

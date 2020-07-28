@@ -8,7 +8,7 @@ printf "\nBuilding client....\n\n";
 cd packages/augur-ui;
 
 REPORTING_ONLY=true ./node_modules/.bin/webpack;
-mv build reporting-only-build
+mv build reporting-only-build;
 
 ./node_modules/.bin/webpack; # builds into "build" dir
 
