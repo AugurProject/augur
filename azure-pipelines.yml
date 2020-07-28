@@ -439,7 +439,8 @@ jobs:
   - template: .azure-templates/ui-build-to-s3.yml
     parameters:
       name: deploy_v2_to_reporting
-      environment: reporting
+      environment: v2
+      reportingOnly: true
       deployBucketName: v2-reporting.augur.net
       triggerBranch: refs/heads/v2
       cloudfrontDistributionId: E34VY4MHHEDAH9

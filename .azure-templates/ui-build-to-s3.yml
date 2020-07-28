@@ -9,6 +9,10 @@ parameters:
     displayName: 'The branch name that will trigger this build and deploy (e.g. "dev")'
   - name: cloudfrontDistributionId
     displayName: 'The cloudfront distribution id in order to clear the cache on deploy (e.g. E2K6239JF3WYG6)'
+  - name: reportingOnly
+    displayName: 'Set to true if this is a reporting only build'
+    type: boolean
+    default: false
 
 jobs:
   - job: ${{ parameters.name }}
@@ -37,7 +41,9 @@ jobs:
         displayName: ui build
         env:
           NODE_OPTIONS: "--max_old_space_size=6144"
+          AUGUR_ENV: ${{ parameters.environment }}
           ETHEREUM_NETWORK: ${{ parameters.environment }}
+          REPORTING_ONLY: ${{ parameters.reportingOnly }}
       - script: |
           set -euo pipefail
           python3 -m venv venv && \
