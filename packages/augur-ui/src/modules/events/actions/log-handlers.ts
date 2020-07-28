@@ -254,8 +254,8 @@ export const handleSDKReadyEvent = () => (
 
   // custom market doesn't update after hotloading
   // force update.
-  if (isOnTradePage()) {
-    const marketId = getTradePageMarketId();
+  const marketId = getTradePageMarketId();
+  if (marketId) {
     dispatch(loadMarketsInfo([marketId]));
   }
 };
