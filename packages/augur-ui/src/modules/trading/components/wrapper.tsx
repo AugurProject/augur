@@ -23,6 +23,7 @@ import { calculateTotalOrderValue } from 'modules/trades/helpers/calc-order-prof
 import { formatDai } from 'utils/format-number';
 import { Moment } from 'moment';
 import { calcOrderExpirationTime } from 'utils/format-date';
+import debounce from 'utils/debounce';
 
 export interface SelectedOrderProperties {
   orderPrice: string;
@@ -279,62 +280,70 @@ class Wrapper extends Component<WrapperProps, WrapperState> {
     return true;
   }
 
-  async queueStimulateTrade(order, useValues, selectedNav) {
-    const {
-      updateTradeCost,
-      selectedOutcome,
-      market,
-      gasPrice,
-    } = this.props;
-    this.state.simulateQueue.push(
-    new Promise((resolve) => updateTradeCost(
-      market.id,
-      order.selectedOutcomeId ? order.selectedOutcomeId : selectedOutcome.id,
-      {
-        limitPrice: order.orderPrice,
-        side: order.selectedNav,
-        numShares: order.orderQuantity,
-        selfTrade: order.selfTrade,
-      },
-      (err, newOrder) => {
-        if (err) {
-          // just update properties for form
-          return resolve({
-            ...useValues,
-            orderDaiEstimate: '',
-            orderEscrowdDai: '',
-            gasCostEst: '',
-            selectedNav,
-          });
-        }
-        const newOrderDaiEstimate = formatDai(
-          createBigNumber(newOrder.totalOrderValue.fullPrecision),
-          {
-            roundDown: false,
-          }
-        ).roundedValue;
+  debounceUpdateTradeCost = debounce(
+    (order, useValues, selectedNav) => this.runUpdateTrade(order, useValues, selectedNav),
+    200,
+  );
 
-        const formattedGasCost = formatGasCostToEther(
-          newOrder.gasLimit,
-          { decimalsRounded: 4 },
-          String(gasPrice)
-        ).toString();
-        resolve({
-          ...useValues,
-          orderDaiEstimate: String(newOrderDaiEstimate),
-          orderEscrowdDai: newOrder.costInDai.formatted,
-          trade: newOrder,
-          gasCostEst: formattedGasCost,
-          selectedNav,
-        });
-      }
-    )));
-    await Promise.all(this.state.simulateQueue).then(results => {
-      const order = results[results.length - 1];
-      this.setState(order);
-      this.checkCanPostOnly(order.trade.limitPrice, order.trade.side);
-    });
+  runUpdateTrade = (order, useValues, selectedNav) => {
+      const {
+        updateTradeCost,
+        selectedOutcome,
+        market,
+        gasPrice,
+      } = this.props;
+      updateTradeCost(
+        market.id,
+        order.selectedOutcomeId ? order.selectedOutcomeId : selectedOutcome.id,
+        {
+          limitPrice: order.orderPrice,
+          side: order.selectedNav,
+          numShares: order.orderQuantity,
+          selfTrade: order.selfTrade,
+        },
+        (err, newOrder) => {
+          if (err) {
+            // just update properties for form
+            const order = {
+              ...useValues,
+              orderDaiEstimate: '',
+              orderEscrowdDai: '',
+              gasCostEst: '',
+              selectedNav,
+            };
+            this.setState(order);
+            this.checkCanPostOnly(order.trade.limitPrice, order.trade.side);
+          }
+          const newOrderDaiEstimate = formatDai(
+            createBigNumber(newOrder.totalOrderValue.fullPrecision),
+            {
+              roundDown: false,
+            }
+          ).roundedValue;
+
+          const formattedGasCost = formatGasCostToEther(
+            newOrder.gasLimit,
+            { decimalsRounded: 4 },
+            String(gasPrice)
+          ).toString();
+          const order = {
+            ...useValues,
+            orderDaiEstimate: String(newOrderDaiEstimate),
+            orderEscrowdDai: newOrder.costInDai.formatted,
+            trade: newOrder,
+            gasCostEst: formattedGasCost,
+            selectedNav,
+          };
+          this.setState(order);
+          this.checkCanPostOnly(order.trade.limitPrice, order.trade.side);
+        }
+      )
+    }
+
+  async queueStimulateTrade(order, useValues, selectedNav) {
+    this.debounceUpdateTradeCost(order, useValues, selectedNav);
   }
+
   async updateTradeTotalCost(order, fromOrderBook = false) {
     const {
       selectedOutcome,
