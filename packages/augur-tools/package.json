@@ -1,6 +1,6 @@
 {
   "name": "@augurproject/tools",
-  "version": "2.0.2-alpha.9",
+  "version": "2.0.2",
   "description": "Tools and dev dependencies",
   "author": "Augur Team <team@augur.net>",
   "license": "MIT",
@@ -40,10 +40,10 @@
   },
   "homepage": "https://github.com/augurproject/augur#readme",
   "dependencies": {
-    "@augurproject/artifacts": "^2.0.2-alpha.9",
-    "@augurproject/core": "^2.0.2-alpha.9",
-    "@augurproject/sdk": "^2.0.2-alpha.9",
-    "@augurproject/sdk-lite": "^2.0.2-alpha.9",
+    "@augurproject/artifacts": "^2.0.2",
+    "@augurproject/core": "^2.0.2",
+    "@augurproject/sdk": "^2.0.2",
+    "@augurproject/sdk-lite": "^2.0.2",
     "@augurproject/utils": "^2.0.2-alpha.9",
     "@openzeppelin/gsn-helpers": "0.2.3",
     "cid-tool": "0.4.0",
