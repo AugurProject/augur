@@ -16,4 +16,4 @@ cd -;
 
 yarn flash generate-wallet --keyfileOutputLocation /keys/priv.key
 echo
-yarn flash sdk-server --keyfile /keys/priv.key -p -a -w -a "${@:2}"
+yarn flash sdk-server --keyfile /keys/priv.key -p -r -w -a "${@:2}"
