@@ -101,6 +101,7 @@ import { isCurrentMarket } from 'modules/trades/helpers/is-current-market';
 import {
   isOnDisputingPage,
   isOnReportingPage,
+  isOnTradePage,
 } from 'modules/trades/helpers/is-on-page';
 import { MarketInfos } from 'modules/types';
 import { loadUniverseForkingInfo } from 'modules/universe/actions/load-forking-info';
@@ -112,6 +113,7 @@ import { marketCreationCreated, orderFilled } from 'services/analytics/helpers';
 import { augurSdk } from 'services/augursdk';
 import { isSameAddress } from 'utils/isSameAddress';
 import { wrapLogHandler } from './wrap-log-handler';
+import { getTradePageMarketId } from 'modules/trades/helpers/get-trade-page-market-id';
 
 const handleAlert = (
   log: any,
@@ -251,6 +253,13 @@ export const handleSDKReadyEvent = () => (
   dispatch(loadAccountData());
   dispatch(loadUniverseForkingInfo());
   dispatch(getCategoryStats());
+
+  // custom market doesn't update after hotloading
+  // force update.
+  if (isOnTradePage()) {
+    const marketId = getTradePageMarketId();
+    dispatch(loadMarketsInfo([marketId]));
+  }
 };
 
 export const handleNewBlockLog = (log: NewBlock) => async (
