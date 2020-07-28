@@ -12,8 +12,12 @@ import {
   TXEventName,
   TXStatus,
 } from '@augurproject/sdk-lite';
-import type { SDKConfiguration } from '@augurproject/utils';
-import { logger, LoggerLevels, NetworkId } from '@augurproject/utils';
+import {
+  logger,
+  LoggerLevels,
+  NetworkId,
+  SDKConfiguration,
+} from '@augurproject/utils';
 import axios from 'axios';
 import { BigNumber } from 'bignumber.js';
 import { JsonRpcProvider, TransactionResponse } from 'ethers/providers';
