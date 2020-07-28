@@ -1,6 +1,7 @@
 import { FormattedNumber } from 'modules/types';
 import { augurSdk } from 'services/augursdk';
 import { BigNumber } from 'utils/create-big-number';
+import { formatDaiPrice } from 'utils/format-number';
 
 export const ethToDai = (ethAmount: number, ethToDaiRate: BigNumber): FormattedNumber => {
   if (!ethToDaiRate) return formatDaiPrice(0);
