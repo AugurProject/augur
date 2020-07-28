@@ -2302,23 +2302,23 @@ InputDropdown.defaultProps = {
 export interface CategoryRowProps {
   hasChildren?: boolean;
   handleClick?: Function;
-  active?: boolean;
   category: string;
-  count: number;
+  count?: number;
   icon?: React.ReactNode;
 }
 
 export const CategoryRow = ({
   hasChildren = true,
   handleClick = noop,
-  active = false,
   category,
-  count,
+  count = 0,
   icon,
 }: CategoryRowProps) => { 
-  const { theme, marketsList: { isSearching: loading } } = useAppStatusStore();
+  const { theme, marketsList: { isSearching: loading, selectedCategory } } = useAppStatusStore();
   const history = useHistory();
   const bold = theme === THEMES.SPORTS && (category === SPORTSBOOK_CATEGORIES.SPORTS || category === SPORTSBOOK_CATEGORIES.POLITICS);
+  const isShortText = category && category.length <= 3;
+  const active = selectedCategory === category;
   return (
     <div
       onClick={() => {
@@ -2340,10 +2340,9 @@ export const CategoryRow = ({
     >
       <span>
         {icon}{' '}
-        {category && category.length <= 3 ? category.toUpperCase() : category}
+        {isShortText ? category.toUpperCase() : category}
       </span>
-      {loading && <span>{LoadingEllipse}</span>}
-      {!loading && <span>{count}</span>}
+      {loading ? <span>{LoadingEllipse}</span> : <span>{count}</span>}
     </div>
   );
 }

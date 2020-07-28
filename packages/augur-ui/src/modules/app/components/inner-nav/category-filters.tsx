@@ -181,7 +181,6 @@ const CategoryFilters = () => {
               category={item.category}
               handleClick={() => [item.category]}
               icon={item.icon}
-              count={null}
             />
           </div>
         );
@@ -256,7 +255,6 @@ const CategoryFilters = () => {
           category={selectedCategory}
           count={getSelectedCategoryCount()}
           handleClick={() => [selectedCategory]}
-          active
         />
       </div>
       {selectedCategory &&
