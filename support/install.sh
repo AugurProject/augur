@@ -318,11 +318,15 @@ case "$method" in
     previous_warp_sync_hash=`get_previous_warp_sync_hash`
     current_warp_sync_hash=`get_current_warp_sync_hash`
 
-    printf "Augur Address: $augur_key\n"
-    printf "Trading UI Hash: $trading_ui_hash\n"
-    printf "Reporting UI Hash: $reporting_ui_hash\n"
-    printf "Previous Warp Sync Hash: $previous_warp_sync_hash\n"
-    printf "Current Warp Sync Hash: $current_warp_sync_hash\n"
+    cat <<PRETTYBLOCK
+Augur Address: $augur_key
+Trading UI Hash: $trading_ui_hash
+Reporting UI Hash: $reporting_ui_hash
+Previous Warp Sync Hash: $previous_warp_sync_hash
+Current Warp Sync Hash: $current_warp_sync_hash
+
+Send some ether (recommended: 1 ETH) to your augur address $augur_key for auto-reporting the warp sync market
+PRETTYBLOCK
   )
   ;;
 "start-gsn")
@@ -332,9 +336,12 @@ case "$method" in
     docker-compose up -d augur
     gsn_key=`get_gsn_key`
     augur_key=`get_augur_key`
-    printf "Send 1 ETH to GSN relay address $gsn_key to cover gas costs for txs\n"
-    printf "Also send 1.1 ETH to your augur address $augur_key for when you stake\n"
-    printf "To stake to gsn, call '$0 stake-gsn'\n"
+
+    cat <<PRETTYBLOCK
+Send 1 ETH to GSN relay address $gsn_key to cover gas costs for txs
+Also send 1.1 ETH to your augur address $augur_key for when you stake
+To stake to gsn, call "$0 stake-gsn"
+PRETTYBLOCK
   )
   ;;
 "stake-gsn")
