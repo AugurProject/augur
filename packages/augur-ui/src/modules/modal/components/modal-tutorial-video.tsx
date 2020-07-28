@@ -11,7 +11,7 @@ const Video = ({ title, closeAction, buttons }) => (
     <div className="player-wrapper">
       <ReactPlayer
         className="react-player fixed-bottom"
-        url="videos/mobile.trading.small.mp4"
+        url="videos/mobile.trading.medium.mp4"
         width="100%"
         height="100%"
         controls={true}
