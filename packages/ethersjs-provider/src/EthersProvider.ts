@@ -382,9 +382,8 @@ export class EthersProvider extends ethers.providers.BaseProvider
       // -32600 is an invalid request... hence the message check.
       if (
         e.code === -32600 &&
-        e.responseText?.includes(
-          'Requested block range for eth_getLogs is greater than the limit of 1000 blocks.'
-        )
+        (e.message?.includes('Requested block range for eth_getLogs is greater than the limit of 1000 blocks.') ||
+         e.reponseText?.includes('Requested block range for eth_getLogs is greater than the limit of 1000 blocks.'))
       ) {
         return this.getLogsWithLimitedBlockRange(filter);
       }
@@ -412,8 +411,6 @@ export class EthersProvider extends ethers.providers.BaseProvider
           toBlock: nextEndBlock
         })
       ];
-
-      console.log(currentBlock, nextEndBlock);
 
       currentBlock = nextEndBlock + 1;
     }
