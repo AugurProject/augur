@@ -407,4 +407,4 @@ mkdir augur 2>/dev/null
 make_docker_compose
 make_cli && chmod +x ./augur/cli
 
-./augur/cli setup
+/usr/bin/env bash ./augur/cli setup
