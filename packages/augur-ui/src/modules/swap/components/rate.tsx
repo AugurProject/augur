@@ -1,7 +1,7 @@
 import React from 'react';
 import { DAI, REP, ETH, USDC, USDT } from 'modules/common/constants';
 import { BigNumber, createBigNumber } from 'utils/create-big-number';
-import { formatEther, formatRep, formatDaiPrice, formatDai } from 'utils/format-number';
+import { formatEther, formatRep, formatDai } from 'utils/format-number';
 
 import Styles from 'modules/swap/components/rate.styles.less';
 

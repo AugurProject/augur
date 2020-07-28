@@ -1,14 +1,12 @@
 import React, { useState, useEffect } from 'react';
 
-import { Title, AccountAddressDisplay } from 'modules/modal/common';
+import { Title } from 'modules/modal/common';
 import {
   formatRep,
   formatGasCostToEther,
   formatEther,
-  formatDaiPrice,
   formatDai,
 } from 'utils/format-number';
-import { toChecksumAddress } from 'ethereumjs-util';
 import { AccountBalances } from 'modules/types';
 import {
   ExternalLinkButton,
@@ -16,19 +14,16 @@ import {
   SecondaryButton,
 } from 'modules/common/buttons';
 import { TransactionFeeLabel } from 'modules/common/labels';
-import { InfoIcon } from 'modules/common/icons';
 import {
   displayGasInDai,
   getGasInDai,
 } from 'modules/app/actions/get-ethToDai-rate';
 import {
   V1_REP_MIGRATE_ESTIMATE,
-  HELP_CENTER_LEARN_ABOUT_ADDRESS,
   HELP_CENTER_MIGRATE_REP,
   GWEI_CONVERSION,
   TRANSACTIONS,
-  APPROVE,
-  MIGRATE_FROM_LEG_REP_TOKEN, CREATEAUGURWALLET,
+  MIGRATE_FROM_LEG_REP_TOKEN,
 } from 'modules/common/constants';
 
 import Styles from 'modules/modal/modal.styles.less';
