@@ -1,8 +1,5 @@
 #!/usr/bin/env bash
 
-DOCKER_COMPOSE_FILE_URL=https://raw.githubusercontent.com/AugurProject/augur/v2/support/docker-compose.yml
-CLI_FILE_URL=https://raw.githubusercontent.com/AugurProject/augur/v2/support/cli
-
 make_docker_compose() {
   cat << 'EOF' > "${PWD}/augur/docker-compose.yml"
 version: '3.7'
