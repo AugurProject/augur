@@ -29,8 +29,6 @@ import { AppState } from 'appStore';
 import * as _ from 'lodash';
 import { updateAlert } from 'modules/alerts/actions/alerts';
 import { loadAnalytics } from 'modules/app/actions/analytics-management';
-import { getEthToDaiRate } from 'modules/app/actions/get-ethToDai-rate';
-import { getRepToDaiRate } from 'modules/app/actions/get-repToDai-rate';
 import { loadGasPriceInfo } from 'modules/app/actions/load-gas-price-info';
 import {
   Ox_STATUS,
@@ -299,8 +297,6 @@ export const handleNewBlockLog = (log: NewBlock) => async (
     dispatch(findAndSetTransactionsTimeouts(log.highestAvailableBlockNumber));
   }
   // update ETH/REP rate and gasPrice each block
-  dispatch(getEthToDaiRate());
-  dispatch(getRepToDaiRate());
   dispatch(loadGasPriceInfo());
 
   if (log.logs && log.logs.length > 0) {
