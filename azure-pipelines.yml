@@ -474,8 +474,10 @@ jobs:
           set -euo pipefail
           export ETHEREUM_NETWORK=v2
           ( cd packages/orbit-web && ./node_modules/.bin/webpack)
+          ( cd packages/augur-ui && REPORTING_ONLY=true ./node_modules/.bin/webpack)
+          mv packages/augur-ui/build reporting-build
           ( cd packages/augur-ui && ./node_modules/.bin/webpack)
-          ( cd packages/augur-ui/build && zip -r ../../../augur.zip *)
+          mv packages/augur-ui/build trading-build
         displayName: ui build
         env:
           NODE_OPTIONS: "--max_old_space_size=6144"
@@ -489,19 +491,31 @@ jobs:
       - bash: |
           set -euo pipefail
           ipfs init > /dev/null 2>&1
-          IPFS_HASH=$(ipfs add -r -Q -n --pin=false packages/augur-ui/build)
-          echo nothing > $IPFS_HASH.ipfs
-        displayName: ipfs hash of build dir
+          IPFS_HASH_REPORTING_V0=$(ipfs add -r -Q -n --pin=false --cid-version=0 reporting-build)
+          IPFS_HASH_REPORTING_V1=$(ipfs add -r -Q -n --pin=false --cid-version=1 reporting-build)
+          IPFS_HASH_TRADING_V0=$(ipfs add -r -Q -n --pin=false --cid-version=0 trading-build)
+          IPFS_HASH_TRADING_V1=$(ipfs add -r -Q -n --pin=false --cid-version=1 trading-build)
+          (
+          cat <<-EOF
+          \# Augur V2 Release
+
+          \#\# IPFS Hashes
+          * Reporting UI
+            * CIDv0: ${IPFS_HASH_REPORTING_V0}
+            * CIDv1: ${IPFS_HASH_REPORTING_V1}
+          * Trading UI
+            * CIDv0: ${IPFS_HASH_TRADING_V0}
+            * CIDv1: ${IPFS_HASH_TRADING_V1}
+          ---
+          EOF
+          ) > release-notes.txt
+        displayName: Generate Release Notes
       - task: CopyFiles@2
         inputs:
-          #sourceFolder: # Optional
           contents: |
-            *.ipfs
+            *.txt
           targetFolder: $(Build.ArtifactStagingDirectory)
           cleanTargetFolder: true
-          #overWrite: false # Optional
-          #flattenFolders: false # Optional
-          #preserveTimestamp: false # Optional
       - task: GitHubRelease@1
         displayName: 'GitHub release (create)'
         inputs:
@@ -510,6 +524,7 @@ jobs:
           tag: '$(Build.SourceBranchName)'
           title: 'Augur $(Build.SourceBranchName)'
           assets: '$(Build.ArtifactStagingDirectory)/*'
-          releaseNotesSource: inline
+          releaseNotesSource: file
+          releaseNotesFile: release-notes.txt
           isDraft: true
           isPreRelease: true
