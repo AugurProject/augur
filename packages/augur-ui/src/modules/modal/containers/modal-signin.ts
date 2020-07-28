@@ -12,7 +12,6 @@ import {
   MODAL_SIGNUP,
   MODAL_LOADING,
   ACCOUNT_TYPES,
-  SIGNIN_LOADING_TEXT_PORTIS,
   SIGNIN_LOADING_TEXT,
   SIGNIN_LOADING_TEXT_TORUS,
   SIGNIN_LOADING_TEXT_FORTMATIC,
@@ -24,7 +23,6 @@ import {
   WALLET_STATUS_VALUES,
 } from 'modules/common/constants';
 import { loginWithInjectedWeb3 } from 'modules/auth/actions/login-with-injected-web3';
-import { loginWithPortis } from 'modules/auth/actions/login-with-portis';
 import { loginWithFortmatic } from 'modules/auth/actions/login-with-fortmatic';
 import { loginWithTorus } from 'modules/auth/actions/login-with-torus';
 import {
@@ -58,7 +56,6 @@ const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({
       })
     ),
   connectMetaMask: () => dispatch(loginWithInjectedWeb3()),
-  connectPortis: (showRegister) => dispatch(loginWithPortis(showRegister)),
   connectTorus: () =>
     dispatch(loginWithTorus()),
   connectFortmatic: (withEmail) =>
@@ -80,12 +77,11 @@ const mergeProps = (sP: any, dP: any, oP: any) => {
   const onError = (error, accountType) => {
     console.error(`ERROR:${accountType}`, error);
 
-    const isPortisCancelError = accountType === ACCOUNT_TYPES.PORTIS && error.message.indexOf('User denied login') !== -1;
     const isFortmaticCancelError =  accountType === ACCOUNT_TYPES.FORTMATIC && error?.message.indexOf('User denied account access') !== -1;
     const isTorusExitCancelError = accountType === ACCOUNT_TYPES.TORUS && error?.message.indexOf('user closed popup') !== -1;
 
     // If the error we get back from the wallet SDK is "User denied access", aka Cancel/Close wallet window, we should just close the modal
-    if (isTorusExitCancelError || isPortisCancelError || isFortmaticCancelError) {
+    if (isTorusExitCancelError || isFortmaticCancelError) {
       dP.closeModal();
       return;
     }
@@ -139,23 +135,6 @@ const mergeProps = (sP: any, dP: any, oP: any) => {
           await dP.connectTorus();
         } catch (error) {
           onError(error, ACCOUNT_TYPES.TORUS);
-        }
-      },
-    },
-    {
-      type: ACCOUNT_TYPES.PORTIS,
-      icon: EmailLogin,
-      text: `${LOGIN_OR_SIGNUP} with Email`,
-      subText: `Powered by ${ACCOUNT_TYPES.PORTIS}`,
-      hidden: false,
-      primary: false,
-      action: async () => {
-        dP.loadingModal(SIGNIN_LOADING_TEXT_PORTIS, () => login());
-        try {
-          const forceRegisterPage = oP.isLogin ? false : true;
-          await dP.connectPortis(forceRegisterPage);
-        } catch (error) {
-          onError(error, ACCOUNT_TYPES.PORTIS);
         }
       },
     },

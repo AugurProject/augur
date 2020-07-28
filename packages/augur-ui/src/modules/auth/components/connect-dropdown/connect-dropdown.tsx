@@ -10,8 +10,8 @@ import {
   LogoutIcon,
   Open,
   Pencil,
-  RepLogoIcon,
   ClipboardCopy,
+  AugurLogo,
 } from 'modules/common/icons';
 import { PrimaryButton, SecondaryButton } from 'modules/common/buttons';
 import { formatDaiPrice, formatEther, formatRep, formatDai } from 'utils/format-number';
@@ -158,7 +158,7 @@ const ConnectDropdown = (props: ConnectDropdownProps) => {
     },
     {
       name: 'REP',
-      logo: RepLogoIcon,
+      logo: AugurLogo,
       value: formatRep(balances.rep, {
         zeroStyled: false,
         decimalsRounded: 4,
@@ -205,11 +205,6 @@ const ConnectDropdown = (props: ConnectDropdownProps) => {
   );
 
   const walletProviders = [
-    {
-      accountType: ACCOUNT_TYPES.PORTIS,
-      action: () => accountMeta.openWallet(),
-      disabled: !accountMeta.openWallet,
-    },
     {
       accountType: ACCOUNT_TYPES.FORTMATIC,
       action: () => accountMeta.openWallet(),

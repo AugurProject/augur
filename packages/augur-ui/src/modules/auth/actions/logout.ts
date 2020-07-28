@@ -25,11 +25,6 @@ export function logout() {
     dispatch(updateMobileMenuState(0));
 
     // Clean up web3 wallets
-    if (windowRef.portis) {
-      await windowRef.portis.logout();
-      document.querySelector('.por_portis-container').remove();
-    }
-
     if (windowRef.torus) {
       await windowRef.torus.cleanUp();
     }
