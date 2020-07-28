@@ -107,7 +107,7 @@ async function loadAccountIfStored(dispatch: ThunkDispatch<void, any, Action>) {
   }
 }
 
-const isNetworkMismatch = async (config, dispatch): boolean => {
+const isCorrectNetwork = async (config, dispatch): boolean => {
   const chainId = await ethereum.request({ method: 'eth_chainId' });
   const web3NetworkId = String(createBigNumber(chainId));
   const privateNetwork = isPrivateNetwork(config.networkId);
@@ -243,7 +243,7 @@ export function connectAugur(
     const we3Provider = await detectEthereumProvider();
     if (we3Provider) {
       try {
-        useWeb3 = await isNetworkMismatch(config, dispatch);
+        useWeb3 = await isCorrectNetwork(config, dispatch);
       } catch(e) {
         console.error('Error with web3 provider, moving on');
       }
