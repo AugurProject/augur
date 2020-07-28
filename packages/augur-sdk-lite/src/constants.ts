@@ -1,6 +1,5 @@
 import { TransactionMetadata } from '@augurproject/contract-dependencies-ethers';
 import { BigNumber } from 'bignumber.js';
-import { utils as ethersUtils } from 'ethers';
 import { Order } from './onChainTrading';
 
 export {
@@ -13,7 +12,7 @@ export const NULL_ADDRESS = '0x0000000000000000000000000000000000000000';
 
 export const MALFORMED_OUTCOME = 'malformed outcome';
 
-export const ETHER = new ethersUtils.BigNumber(10).pow(18);
+export const ETHER = new BigNumber(10).pow(18);
 
 export const SECONDS_IN_AN_HOUR = new BigNumber(3600, 10);
 
@@ -235,6 +234,7 @@ export const ORDER_TYPES = {
 export const INVALID_OUTCOME = 0;
 export const MAX_TRADE_GAS_PERCENTAGE_DIVISOR = 100;
 export const DEFAULT_GAS_PRICE_IN_GWEI = 4;
+
 export const EULERS_NUMBER = 2.71828182845905;
 export const MINIMUM_INVALID_ORDER_VALUE_IN_ATTO_DAI = new BigNumber(
   10

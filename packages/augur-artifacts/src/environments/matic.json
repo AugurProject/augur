@@ -116,5 +116,4 @@
   "averageBlocktime": 2000,
   "trackBestOffer": false,
   "trackMarketInvalidBids": true,
-  "reportingOnly": false
 }
