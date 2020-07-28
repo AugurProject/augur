@@ -19,7 +19,7 @@ import {
 } from './utils';
 
 
-const relay_lookup_limit_blocks = 6000;
+const relay_lookup_limit_blocks = 1000;
 abi_decoder.addABI(relayHubAbi);
 
 // default timeout (in ms) for http requests
