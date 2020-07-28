@@ -31,3 +31,4 @@ export class SDKLite {
 }
 
 export const augurSdkLite = new SDKLite();
+window['augurSdkLite'] = augurSdkLite;
