@@ -206,11 +206,6 @@ const ConnectDropdown = (props: ConnectDropdownProps) => {
 
   const walletProviders = [
     {
-      accountType: ACCOUNT_TYPES.PORTIS,
-      action: () => accountMeta.openWallet(),
-      disabled: !accountMeta.openWallet,
-    },
-    {
       accountType: ACCOUNT_TYPES.FORTMATIC,
       action: () => accountMeta.openWallet(),
       disabled: !accountMeta.openWallet,
