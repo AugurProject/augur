@@ -32,7 +32,7 @@ import { useAppStatusStore } from 'modules/app/store/app-status';
 import { useMarketsStore } from 'modules/markets/store/markets';
 import { createBigNumber } from 'utils/create-big-number';
 import { marketView } from 'modules/market/components/market-view/market-view.styles.less';
-import { INSUFFICIENT_FUNDS_ERROR, MODAL_ADD_FUNDS } from 'modules/common/constants';
+import { INSUFFICIENT_FUNDS_ERROR, MODAL_ADD_FUNDS, MODAL_CANCEL_ALL_BETS } from 'modules/common/constants';
 
 export interface EmptyStateProps {
   selectedTab: number;
@@ -454,6 +454,9 @@ export const BetslipFooter = () => {
     step,
     placeBetsDisabled,
   } = useBetslipStore();
+  const {
+    actions: { setModal }
+  } = useAppStatusStore();
   const { wager, potential, fees } = calculateBetslipTotals(betslip);
   const bet = formatDai(wager).full;
   const win = formatDai(potential).full;
@@ -495,8 +498,10 @@ export const BetslipFooter = () => {
           <SecondaryButton
             text="Cancel Bets"
             action={() => {
-              cancelAllBets();
-              if (isReview) toggleStep();
+              setModal({type: MODAL_CANCEL_ALL_BETS, cb: () => {
+                cancelAllBets();
+                if (isReview) toggleStep();
+              }});
             }}
             icon={Trash}
           />
