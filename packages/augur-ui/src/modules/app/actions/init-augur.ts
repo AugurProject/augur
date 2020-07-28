@@ -17,7 +17,6 @@ import {
   loginWithInjectedWeb3,
 } from 'modules/auth/actions/login-with-injected-web3';
 import { loginWithTorus } from 'modules/auth/actions/login-with-torus';
-import { loginWithPortis } from 'modules/auth/actions/login-with-portis';
 import { logout } from 'modules/auth/actions/logout';
 import isGlobalWeb3 from 'modules/auth/helpers/is-global-web3';
 import {
@@ -90,9 +89,9 @@ async function loadAccountIfStored(dispatch: ThunkDispatch<void, any, Action>) {
         await dispatch(loginWithInjectedWeb3());
       }
 
-      if (loggedInAccountType === ACCOUNT_TYPES.PORTIS) {
-        await dispatch(loginWithPortis(false));
-      }
+      // if (loggedInAccountType === ACCOUNT_TYPES.PORTIS) {
+      //   await dispatch(loginWithPortis(false));
+      // }
 
       if (loggedInAccountType === ACCOUNT_TYPES.FORTMATIC) {
         await dispatch(loginWithFortmatic());
@@ -142,15 +141,21 @@ async function createDefaultProvider(config: SDKConfiguration, canUseWeb3) {
     // to conditionally load web3 into the DOM.
     //
     // Note: This also creates a split point in webpack
-    const { default: Portis } = await import( /*webpackChunkName: 'portis'*/ '@portis/web3');
+    const { default: Torus } = await import( /*webpackChunkName: 'torus'*/ '@toruslabs/torus-embed');
+    const torus = new Torus({});
 
-    const portisNetwork = getNetwork(config.networkId);
-    const portis = new Portis(
-      PORTIS_API_KEY,
-      portisNetwork,
-    );
+    const host = getNetwork(config.networkId);
+    await torus.init({
+      network: { host },
+      showTorusButton: false,
+    });
 
-    return new Web3Provider(portis.provider);
+    // Tor.us cleanup
+    const torusWidget = document.querySelector('#torusWidget');
+    if (torusWidget) {
+      torusWidget.remove();
+    }
+    return new Web3Provider(torus.provider);
   }
 }
 
