@@ -316,8 +316,10 @@ case "$method" in
 
     cat <<PRETTYBLOCK
 Augur Address: $augur_key
-Trading UI Hash: $trading_ui_hash (hash32: $trading_ui_hash32)
-Reporting UI Hash: $reporting_ui_hash (hash32: $reporting_ui_hash32)
+Trading UI Link: https://cloudflare-ipfs.com/ipfs/$trading_ui_hash
+Trading UI Link w/ subdomain: https://$trading_ui_hash32.ipfs.cf-ipfs.com
+Reporting UI Link: https://cloudflare-ipfs.com/ipfs/$reporting_ui_hash
+Reporting UI Link w/ subdomain: https://$reporting_ui_hash32.ipfs.cf-ipfs.com
 Previous Warp Sync Hash: $previous_warp_sync_hash
 Current Warp Sync Hash: $current_warp_sync_hash
 
