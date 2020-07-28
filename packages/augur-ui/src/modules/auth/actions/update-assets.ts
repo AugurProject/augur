@@ -10,9 +10,10 @@ import {
   updateAppStatus,
   ETH_TO_DAI_RATE,
   REP_TO_DAI_RATE,
+  WALLET_STATUS,
 } from 'modules/app/actions/update-app-status';
 import { createBigNumber } from 'utils/create-big-number';
-import { ETHER } from 'modules/common/constants';
+import { ETHER, WALLET_STATUS_VALUES, FIVE } from 'modules/common/constants';
 import { addEthIncreaseAlert } from 'modules/alerts/actions/alerts';
 import { formatAttoDai } from 'utils/format-number';
 
@@ -20,7 +21,7 @@ export const updateAssets = (): ThunkAction<any, any, any, any> => async (
   dispatch: ThunkDispatch<void, any, Action>,
   getState: () => AppState
 ) => {
-  const { loginAccount } = getState();
+  const { loginAccount, appStatus } = getState();
   const { meta } = loginAccount;
   const nonSafeWallet = await meta.signer?.getAddress();
 
@@ -70,5 +71,9 @@ export const updateAssets = (): ThunkAction<any, any, any, any> => async (
         },
       })
     );
+    let status = appStatus[WALLET_STATUS];
+    if (createBigNumber(dai).gt(FIVE) && (status !== WALLET_STATUS_VALUES.CREATED)) {
+      dispatch(updateAppStatus(WALLET_STATUS, WALLET_STATUS_VALUES.FUNDED_NEED_CREATE));
+    }
   }
 };
