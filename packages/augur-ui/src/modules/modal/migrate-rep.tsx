@@ -5,6 +5,7 @@ import {
   formatRep,
   formatGasCostToEther,
   formatEther,
+  formatDaiPrice,
   formatDai,
 } from 'utils/format-number';
 import { toChecksumAddress } from 'ethereumjs-util';

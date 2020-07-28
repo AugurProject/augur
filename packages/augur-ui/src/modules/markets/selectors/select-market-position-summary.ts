@@ -3,7 +3,7 @@ import {
   selectAccountPositionsState,
 } from 'appStore/select-state';
 import { MyPositionsSummary } from 'modules/types';
-import { formatDai, formatPercent } from 'utils/format-number';
+import { formatDaiPrice, formatPercent, formatDai } from 'utils/format-number';
 import { ZERO } from 'modules/common/constants';
 import { createBigNumber } from 'utils/create-big-number';
 

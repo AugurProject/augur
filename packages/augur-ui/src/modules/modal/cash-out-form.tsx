@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 
 import { Breakdown } from 'modules/modal/common';
-import { formatDai, formatGasCostToEther, formatNumber } from 'utils/format-number';
+import { formatDaiPrice, formatGasCostToEther, formatNumber, formatDai } from 'utils/format-number';
 import isAddress from 'modules/auth/helpers/is-address';
 import Styles from 'modules/modal/modal.styles.less';
 import { createBigNumber } from 'utils/create-big-number';

@@ -30,8 +30,9 @@ import { getCreateMarketBreakdown } from 'modules/contracts/actions/contractCall
 import {
   formatEtherEstimate,
   formatGasCostToEther,
-  formatDai,
+  formatDaiPrice,
   formatEther,
+  formatDai,
 } from 'utils/format-number';
 import { NewMarket, FormattedNumber } from 'modules/types';
 

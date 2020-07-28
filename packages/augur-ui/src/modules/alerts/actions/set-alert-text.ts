@@ -9,7 +9,7 @@ import {
   formatAttoDai,
   formatRep,
   formatShares,
-  formatDai,
+  formatDaiPrice,
 } from 'utils/format-number';
 import {
   convertOnChainAmountToDisplayAmount,
@@ -100,7 +100,7 @@ export function getInfo(params: any, status: string, marketInfo: MarketData, isO
     tickSize
   ).toString();
 
-  const priceFormatted = formatDai(price, {decimals: getPrecision(String(tickSize), 2)})
+  const priceFormatted = formatDaiPrice(price, {decimals: getPrecision(String(tickSize), 2)})
 
   return {
     priceFormatted,
@@ -250,7 +250,7 @@ export default function setAlertText(alert: any, callback: Function) {
           alert.details = `${toCapitalizeCase(alert.params.orderType)} ${
             formatShares(alert.params.amount).formatted
           } of ${alert.params.outcome} @ ${
-            formatDai(alert.params.price).formatted
+            formatDaiPrice(alert.params.price).formatted
           }`;
         } else {
           dispatch(
@@ -299,7 +299,7 @@ export default function setAlertText(alert: any, callback: Function) {
               );
               alert.details = `${orderType} ${
                 formatShares(amount).formatted
-              } of ${outcomeDescription} @ ${formatDai(price).formatted}`;
+              } of ${outcomeDescription} @ ${formatDaiPrice(price).formatted}`;
             })
           );
           dispatch(
@@ -349,7 +349,7 @@ export default function setAlertText(alert: any, callback: Function) {
                 originalQuantity
                   ? ` of ${formatShares(originalQuantity).formatted}`
                   : ''
-              } of ${outcomeDescription} @ ${formatDai(price).formatted}`;
+              } of ${outcomeDescription} @ ${formatDaiPrice(price).formatted}`;
             })
           );
         }

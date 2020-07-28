@@ -1,7 +1,7 @@
 import { connect } from "react-redux";
 
 import Funds from "modules/account/components/funds";
-import { formatDai } from "utils/format-number";
+import { formatDaiPrice, formatDai } from "utils/format-number";
 import {
   selectAccountFunds,
 } from "modules/auth/selectors/login-account";

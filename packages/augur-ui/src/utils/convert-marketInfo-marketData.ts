@@ -22,10 +22,11 @@ import deepClone from './deep-clone';
 import { getDurationBetween, convertUnixToFormattedDate } from './format-date';
 import {
   formatAttoRep,
-  formatDai,
+  formatDaiPrice,
   formatNone,
   formatNumber,
   formatPercent,
+  formatDai,
 } from './format-number';
 import { getOutcomeNameWithOutcome } from './get-outcome';
 import { keyBy } from './key-by';
@@ -165,7 +166,7 @@ function processOutcomes(
         })
       : formatNone(),
     lastPrice: !!outcome.price
-      ? formatDai(outcome.price || 0, {
+      ? formatDaiPrice(outcome.price || 0, {
           positiveSign: false,
         })
       : formatNone(),
