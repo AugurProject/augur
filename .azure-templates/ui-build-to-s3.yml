@@ -11,8 +11,8 @@ parameters:
     displayName: 'The cloudfront distribution id in order to clear the cache on deploy (e.g. E2K6239JF3WYG6)'
   - name: reportingOnly
     displayName: 'Set to true if this is a reporting only build'
-    type: boolean
-    default: false
+    type: string
+    default: 'false'
 
 jobs:
   - job: ${{ parameters.name }}
