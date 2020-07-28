@@ -133,13 +133,27 @@ read_env(){
 	esac
 }
 
+printingaugurkey() {
+  key=$(docker logs $(docker ps|grep augur_augur_1|awk '{print $1}') 2>/dev/null|grep -C0 'wallet with address'|awk '{print $5}')
+  if [ ! -z "$key" ]; then
+    printf "Done!\n\n"
+    printf "We generated an ethereum account for reporting to the warp sync market but you need to fund it with some ETH.\n"
+    printf "So please send 1 ETH to: $key\n"
+    printf "You can view your account's balance on etherscan: etherscan.io/address/$key\n"
+  fi
+}
+
 get_augur_key() {
   key=$(docker logs $(docker ps|grep augur_augur_1|awk '{print $1}') 2>/dev/null|grep -C0 'wallet with address'|awk '{print $5}')
   if [ ! -z "$key" ]; then
     printf "Done!\n\n"
-    printf "Send 1 ETH to this address: $key\n"
+    printf "We generated an ethereum account for reporting to the warp sync market but you need to fund it with some ETH.\n"
+    printf "So please send 1 ETH to: $key\n"
+    printf "You can view your account's balance on etherscan: etherscan.io/address/$key\n"
   fi
 }
+
+# Pinning UI build at path ../augur-ui/build with hash QmYKHvR9WmKnokvAoAw9ojqpX8FM3hVPfyNMurCisbhdUj
 
 setup() {
 ####################################################

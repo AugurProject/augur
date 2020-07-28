@@ -2143,6 +2143,12 @@ export function addScripts(flash: FlashSession) {
         abbr: 'p',
         description: 'Pin IPFS hash of the ui. Requires -w flag to be set. Defaults to "../augur-ui/build"',
         flag: true
+      },
+      {
+        name: 'pinReportingUI [path]',
+        abbr: 'r',
+        description: 'Pin IPFS hash of the reporting-only ui. Requires -w flag to be set. Defaults to "../augur-ui/reporting-only-build"',
+        flag: true
       }
     ],
     async call(this: FlashSession, args: FlashArguments) {
@@ -2150,9 +2156,13 @@ export function addScripts(flash: FlashSession) {
       const showHashAndDie = Boolean(args.showHashAndDie);
       const useWarpSync = Boolean(args.warpSync);
 
-      let pinUIPath;
-      if(args.pinUI === true) pinUIPath = '../augur-ui/build'
-      else if(args.pinUI !== undefined) pinUIPath = args.pinUI;
+      let pinUIPath: string;
+      if (args.pinUI === true) pinUIPath = '../augur-ui/build';
+      else if (args.pinUI !== undefined) pinUIPath = args.pinUI as string;
+
+      let pinReportingUIPath: string;
+      if (args.pinReportingUI === true) pinReportingUIPath = '../augur-ui/reporting-only-build';
+      else if (args.pinReportingUI !== undefined) pinReportingUIPath = args.pinReportingUI as string;
 
       this.pushConfig({
         zeroX: {
@@ -2192,14 +2202,21 @@ export function addScripts(flash: FlashSession) {
       const { api, sync } = await createServer(this.config, client);
       connector.api = api;
 
-      if(pinUIPath && useWarpSync) {
+      if (useWarpSync && (pinUIPath || pinReportingUIPath)) {
         const ipfs = await api.augur.warpController.ipfs;
 
-        // Assume build exists.
-        const result = await ipfs.addFromFs(pinUIPath, { recursive: true });
-        const { hash } = result.pop()
-
-        console.log(`Pinning UI build at path ${pinUIPath} with hash ${hash}`);
+        if (pinUIPath) {
+          // Assume build exists.
+          const result = await ipfs.addFromFs(pinUIPath, { recursive: true });
+          const { hash } = result.pop();
+          console.log(`Pinning UI build at path ${pinUIPath} with hash ${hash}`);
+        }
+        if (pinReportingUIPath) {
+          // Assume build exists.
+          const result = await ipfs.addFromFs(pinReportingUIPath, { recursive: true });
+          const { hash } = result.pop();
+          console.log(`Pinning Reporting UI build at path ${pinUIPath} with hash ${hash}`);
+        }
       }
 
       sync();
