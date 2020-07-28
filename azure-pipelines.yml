@@ -497,9 +497,9 @@ jobs:
           IPFS_HASH_TRADING_V1=$(ipfs add -r -Q -n --pin=false --cid-version=1 trading-build)
           (
           cat <<-EOF
-          \# Augur V2 Release
+          # Augur V2 Release
 
-          \#\# IPFS Hashes
+          ## IPFS Hashes
           * Reporting UI
             * CIDv0: ${IPFS_HASH_REPORTING_V0}
             * CIDv1: ${IPFS_HASH_REPORTING_V1}
@@ -513,7 +513,7 @@ jobs:
       - task: CopyFiles@2
         inputs:
           contents: |
-            *.txt
+            release-notes.txt
           targetFolder: $(Build.ArtifactStagingDirectory)
           cleanTargetFolder: true
       - task: GitHubRelease@1
@@ -523,8 +523,7 @@ jobs:
           tagSource: 'userSpecifiedTag'
           tag: '$(Build.SourceBranchName)'
           title: 'Augur $(Build.SourceBranchName)'
-          assets: '$(Build.ArtifactStagingDirectory)/*'
           releaseNotesSource: filePath
-          releaseNotesFile: release-notes.txt
+          releaseNotesFile: '$(Build.ArtifactStagingDirectory)/release-notes.txt'
           isDraft: true
           isPreRelease: true
