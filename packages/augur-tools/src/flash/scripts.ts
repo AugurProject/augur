@@ -2165,6 +2165,9 @@ export function addScripts(flash: FlashSession) {
       if (args.pinReportingUI === true) pinReportingUIPath = '../augur-ui/reporting-only-build';
       else if (args.pinReportingUI !== undefined) pinReportingUIPath = args.pinReportingUI as string;
 
+      console.log('MARINA', JSON.stringify(args, null, 2));
+      console.log('MARINA', 'pinUIPath', pinUIPath, 'pinReportingUIPath', pinReportingUIPath);
+
       this.pushConfig({
         zeroX: {
           rpc: { enabled: true },

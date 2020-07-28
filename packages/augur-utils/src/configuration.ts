@@ -111,7 +111,6 @@ export interface SDKConfiguration {
     showReloadModal?: boolean,
     trackBestOffer?: boolean,
     trackMarketInvalidBids?: boolean,
-    reportingOnly?: boolean,
     fallbackProvider?: "jsonrpc" | "torus",
     liteProvider?: "jsonrpc" | "default",
     primaryProvider?: "jsonrpc" | "wallet"
@@ -272,7 +271,6 @@ export const DEFAULT_SDK_CONFIGURATION: SDKConfiguration = {
     showReloadModal: true,
     trackBestOffer: false,
     trackMarketInvalidBids: true,
-    reportingOnly: false,
     fallbackProvider: "torus",
     liteProvider: "jsonrpc",
     primaryProvider: "wallet"
@@ -425,8 +423,6 @@ export function configFromEnvvars(): RecursivePartial<SDKConfiguration> {
   if (t(e.UPLOAD_BLOCK_NUMBER)) config = d(config, { uploadBlockNumber: Number(e.UPLOAD_BLOCK_NUMBER) });
 
   if (t(e.ADDRESSES)) config = d(config, { addresses: JSON.parse(e.ADDRESSES) });
-
-  if (t(e.REPORTING_ONLY)) config = d(config, { ui: { reportingOnly: bool(e.REPORTING_ONLY) }});
 
   return config;
 }
