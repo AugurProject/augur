@@ -150,7 +150,7 @@
   "showReloadModal": false,
   "averageBlocktime": 15000,
   "ui": {
-    "showReloadModal": true,
+    "showReloadModal": false,
     "trackBestOffer": false,
     "trackMarketInvalidBids": true,
     "reportingOnly": false,
