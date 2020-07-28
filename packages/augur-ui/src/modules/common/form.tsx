@@ -10,6 +10,8 @@ import {
   SCALAR,
   ZERO,
   INVALID_OUTCOME_LABEL,
+  SPORTSBOOK_CATEGORIES,
+  THEMES,
 } from 'modules/common/constants';
 
 import Styles from 'modules/common/form.styles.less';
@@ -2314,8 +2316,9 @@ export const CategoryRow = ({
   count,
   icon,
 }: CategoryRowProps) => { 
-  const { marketsList: { isSearching: loading } } = useAppStatusStore();
+  const { theme, marketsList: { isSearching: loading } } = useAppStatusStore();
   const history = useHistory();
+  const bold = theme === THEMES.SPORTS && (category === SPORTSBOOK_CATEGORIES.SPORTS || category === SPORTSBOOK_CATEGORIES.POLITICS);
   return (
     <div
       onClick={() => {
@@ -2332,6 +2335,7 @@ export const CategoryRow = ({
         [Styles.active]: active,
         [Styles.loading]: loading,
         [Styles.disabled]: !hasChildren,
+        [Styles.bold]: bold,
       })}
     >
       <span>

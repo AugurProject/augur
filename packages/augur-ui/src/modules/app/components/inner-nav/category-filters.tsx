@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
 import Styles from 'modules/app/components/inner-nav/category-filters.styles.less';
+import classNames from 'classnames';
 import { useHistory, useLocation } from 'react-router';
 import { MenuChevron, SearchIcon } from 'modules/common/icons';
 import { CategoryRow } from 'modules/common/form';
-import { CATEGORIES_MAX, CATEGORY_PARAM_NAME, THEMES } from 'modules/common/constants';
+import { CATEGORIES_MAX, CATEGORY_PARAM_NAME, THEMES, SPORTSBOOK_CATEGORIES } from 'modules/common/constants';
 import { MARKETS } from 'modules/routes/constants/views';
 import parseQuery from 'modules/routes/helpers/parse-query';
 import makeQuery from 'modules/routes/helpers/make-query';
@@ -14,8 +15,10 @@ import {
   selectAllOtherCategories,
 } from 'modules/markets-list/selectors/markets-list';
 
-const SPORTS = "sports";
-const POLITICS = "politics";
+const {
+  POLITICS,
+  SPORTS,
+} = SPORTSBOOK_CATEGORIES;
 
 const CategoryFilters = () => {
   const history = useHistory();
@@ -159,6 +162,14 @@ const CategoryFilters = () => {
     );
   };
 
+  const getSubRows = ({ children }) => {
+    const subRows = [];
+    for (const [key, value] of Object.entries(children)) {
+      subRows.push({ category: key, ...value });
+    }
+    return subRows.sort((a, b) => b.count - a.count);
+  }
+
   const renderPopularCategories = () => {
     const categoriesToRender = isSportsTheme ? popularCategories.filter(({ category }) => category === SPORTS || category === POLITICS) : popularCategories;
     let renderPopular = categoriesToRender.map((item, idx) => {
@@ -175,6 +186,10 @@ const CategoryFilters = () => {
           </div>
         );
       }
+      let subRows = [];
+      if (isSportsTheme && item.children) {
+        subRows = getSubRows(item);
+      }
 
       return (
         <div key={idx}>
@@ -187,6 +202,22 @@ const CategoryFilters = () => {
               pathToChildCategory(item.category, selectedCategories)
             }
           />
+          {isSportsTheme && subRows.length > 0 && (
+            <section>
+              {subRows.map((subItem, index) => (
+                <div key={`${item.category}-${index}`}>
+                  <CategoryRow
+                    category={subItem.category}
+                    count={subItem.count}
+                    hasChildren={subItem.count > 0}
+                    handleClick={() =>
+                      pathToChildCategory(subItem.category, [item.category])
+                    }
+                  />
+                </div>
+              ))}
+            </section>
+          )} 
         </div>
       );
     });
@@ -204,7 +235,9 @@ const CategoryFilters = () => {
   };
 
   const renderSelectedCategories = () => (
-    <div className={Styles.SelectedCategories}>
+    <div className={classNames(Styles.SelectedCategories, {
+      [Styles.SubCategories]: selectedCategories.length > 1,
+    })}>
       {selectedCategories
         .filter(categories => categories !== selectedCategory)
         .map((category, idx) => {
@@ -260,9 +293,10 @@ const CategoryFilters = () => {
       </div>
     </div>
   );
+  const sportsTitle = selectedCategory ? selectedCategory : 'Popular Markets';
   return (
     <div className={Styles.CategoryFilters}>
-      {isSportsTheme && <h3>Popular Markets</h3>}
+      {isSportsTheme && <h3>{sportsTitle}</h3>}
       {!hasSelectedCategories && renderPopularCategories()}
       {!hasSelectedCategories && categoryMetaData && renderAllCategories()}
 
