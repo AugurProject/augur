@@ -34,6 +34,7 @@ export const INTERNAL_CONTRACTS = [
     'RedeemStake',
     'RepSymbol',
     'AuditFunds',
+    'AccountLoader',
     // factories
     'DisputeCrowdsourcerFactory',
     'DisputeWindowFactory',
@@ -58,6 +59,7 @@ export const TRADING_CONTRACTS = [
     'AugurWalletRegistry',
     'AugurWalletRegistryV2',
     'RelayHubV2',
+    'AccountLoader',
     'WETH9'
 ];
 
@@ -164,7 +166,8 @@ export const INITIALIZED_CONTRACTS = [
     'AugurWalletFactory',
     'AugurWalletRegistry',
     'AugurWalletRegistryV2',
-    'RepOracle'
+    'RepOracle',
+    'AccountLoader'
 ];
 
 export const RELAY_HUB_ADDRESS = '0xD216153c06E857cD7f72665E0aF1d7D82172F494';

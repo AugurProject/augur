@@ -159,6 +159,7 @@ export interface ContractAddresses {
   AuditFunds?: string;
   RelayHubV2?: string;
   AugurWalletRegistryV2?: string;
+  AccountLoader?: string;
 
   // 0x
   //   The 0x contract names must be what 0x mesh expects.

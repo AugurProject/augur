@@ -28,6 +28,7 @@ import {
     AugurWalletFactory,
     RepOracle,
     AuditFunds,
+    AccountLoader,
     // 0x
     Exchange,
     ERC1155Proxy,
@@ -302,6 +303,7 @@ Deploying to: ${env}
         mapping['USDCExchange'] = await uniswapV2Factory.getPair_(USDCAddress, this.getContractAddress('Cash'));
         mapping['USDTExchange'] = await uniswapV2Factory.getPair_(USDTAddress, this.getContractAddress('Cash'));
         mapping['AuditFunds'] = this.contracts.get('AuditFunds').address!;
+        mapping['AccountLoader'] = this.contracts.get('AccountLoader').address!;
 
         mapping['OICash'] = this.contracts.get('OICash').address!;
         mapping['AugurWalletRegistry'] = this.contracts.get('AugurWalletRegistry').address!;
@@ -692,6 +694,15 @@ Deploying to: ${env}
                 console.log('Initialized AuditFunds contract');
             },
             async () => {
+                const contract = new AccountLoader(this.dependencies, await this.getContractAddress('AccountLoader'));
+                if (await contract.getInitialized_()) {
+                    return;
+                }
+                console.log('Initializing AccountLoader contract');
+                await contract.initialize(this.augur!.address, this.augurTrading!.address);
+                console.log('Initialized AccountLoader contract');
+            },
+            async () => {
                 const contract = new AugurWalletRegistry(this.dependencies, await this.getContractAddress('AugurWalletRegistry'));
                 if (await contract.getInitialized_()) {
                     return;
@@ -819,6 +830,7 @@ Deploying to: ${env}
         const uniswapV2Factory = new UniswapV2Factory(this.dependencies, this.getContractAddress('UniswapV2Factory'));
         mapping['EthExchange'] = await uniswapV2Factory.getPair_(this.getContractAddress('WETH9'), this.getContractAddress('Cash'));
         mapping['AuditFunds'] = this.contracts.get('AuditFunds').address!;
+        mapping['AccountLoader'] = this.contracts.get('AccountLoader').address!;
 
         // 0x
         mapping['ERC20Proxy'] = this.contracts.get('ERC20Proxy').address!;
