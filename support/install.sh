@@ -292,6 +292,9 @@ case "$method" in
     cd augur
     docker-compose up -d augur
     printf "Spinning up augur sdk server. Please wait, this'll take many minutes\n"
+    printf 'You can view the progress in a separate terminal with this command: '
+    printf "docker logs -f \$(docker ps|grep augur_augur_1|awk '{print \$1}')"
+    printf "\n\n"
 
     augur_key=`get_augur_key`
     previous_warp_sync_hash=`get_previous_warp_sync_hash`
@@ -321,7 +324,7 @@ PRETTYBLOCK
     augur_key=`get_augur_key`
 
     cat <<PRETTYBLOCK
-Go to https://www.opengsn.org/relay-hubs/0xd216153c06e857cd7f72665e0af1d7d82172f494/relay?relayAddress=$gsn_key
+Go to https://www.opengsn.org/relay-hubs/$GSN_RELAY_HUB/relay?relayAddress=$gsn_key
 That's your GSN relay. It needs ether to cover gas costs for txs. Recommended amount: 1 ETH.
 It also needs 1 ETH to stake.
 
