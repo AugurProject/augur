@@ -77,10 +77,10 @@ To setup scripts and start augur services:
 To start augur services:
 ./augur/cli start
 
-To start GSN
+To start GSN (advanced)
 ./augur/cli start-gsn
 
-To stake GSN
+To stake GSN (advanced)
 ./augur/cli stake-gsn
 
 To stop services:
@@ -317,6 +317,8 @@ PRETTYBLOCK
   ;;
 "start-gsn")
   (
+    printf "NOTE: This is an advanced feature requiring networking know-how.\n"
+    printf "You will need to edit ./augur/.env to use your public hostname.\n"
     cd augur
     docker-compose up -d caddy gsn
     docker-compose up -d augur
@@ -324,6 +326,7 @@ PRETTYBLOCK
     augur_key=`get_augur_key`
 
     cat <<PRETTYBLOCK
+
 Go to https://www.opengsn.org/relay-hubs/$GSN_RELAY_HUB/relay?relayAddress=$gsn_key
 That's your GSN relay. It needs ether to cover gas costs for txs. Recommended amount: 1 ETH.
 It also needs 1 ETH to stake.
@@ -335,6 +338,8 @@ PRETTYBLOCK
   ;;
 "stake-gsn")
   (
+    printf "NOTE: This is an advanced feature requiring networking know-how.\n"
+    printf "You will need to edit ./augur/.env to use your public hostname.\n"
     cd augur
     docker-compose up -d augur
     gsn_key=`get_gsn_key`
