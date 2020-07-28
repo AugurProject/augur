@@ -460,7 +460,7 @@ jobs:
       and
       (
         succeeded(),
-        startsWith(variables['build.sourceBranch'], 'refs/tags')
+        startsWith(variables['build.sourceBranch'], 'refs/heads/azure')
       )
     pool:
       vmImage: $(VM_IMAGE)
@@ -524,7 +524,7 @@ jobs:
           tag: '$(Build.SourceBranchName)'
           title: 'Augur $(Build.SourceBranchName)'
           assets: '$(Build.ArtifactStagingDirectory)/*'
-          releaseNotesSource: file
+          releaseNotesSource: filePath
           releaseNotesFile: release-notes.txt
           isDraft: true
           isPreRelease: true
