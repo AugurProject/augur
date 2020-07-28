@@ -2098,7 +2098,7 @@ export function addScripts(flash: FlashSession) {
 
         fs.writeFileSync(outputPath, wallet.privateKey, 'utf8');
 
-        console.log(`Genertated wallet with address ${wallet.address}.\nPrivate key written to ${outputPath}\n`);
+        console.log(`Generated wallet with address ${wallet.address} .\nPrivate key written to ${outputPath}\n`);
       }
     }
   });

@@ -11,4 +11,5 @@ cd packages/augur-ui;
 cd -;
 
 yarn flash generate-wallet --keyfileOutputLocation /keys/priv.key
+echo
 yarn flash sdk-server --keyfile /keys/priv.key -p -w -a "${@:2}"

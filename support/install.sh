@@ -190,7 +190,7 @@ cat <<HERE
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         Ready To Start Augur Services
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-Will run `./augur/cli start`.
+Will run "./augur/cli start".
 This may take some time...
 
 HERE
