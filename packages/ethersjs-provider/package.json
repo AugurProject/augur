@@ -28,7 +28,6 @@
   "dependencies": {
     "@augurproject/artifacts": "^2.0.2-alpha.5",
     "@augurproject/contract-dependencies-ethers": "^2.0.2-alpha.1",
-    "@augurproject/sdk": "^2.0.2-alpha.8",
     "@augurproject/types": "^2.0.2-alpha.1",
     "ethereum-types": "2.1.6",
     "ethers": "4.0.47"
