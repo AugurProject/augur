@@ -55,11 +55,13 @@ export const MigrateRep = ({
   const ethForGas = walletBalances.signerBalances.eth;
 
   useEffect(() => {
+    /*
     if (GsnEnabled) {
       convertV1ToV2Estimate().then(gasLimit => {
         setGasLimit(gasLimit);
       });
     }
+    */
   }, []);
 
   const gasEstimateInEth = formatGasCostToEther(
@@ -74,6 +76,7 @@ export const MigrateRep = ({
 
   const gasPriceInWei = createBigNumber(GWEI_CONVERSION).multipliedBy(gasPrice);
   const gasInDai = getGasInDai(gasLimit, gasPriceInWei).value;
+  console.log(`GAS LIMIT: ${gasLimit}`);
   const hasEnoughDaiForGas = createBigNumber(walletBalances.dai).gte(
     createBigNumber(gasInDai)
   );
