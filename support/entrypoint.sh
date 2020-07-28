@@ -16,4 +16,4 @@ cd -;
 
 yarn flash generate-wallet --keyfileOutputLocation /keys/priv.key
 echo
-yarn flash sdk-server --keyfile /keys/priv.key -p -r -w -a "${@:2}"
+ETHEREUM_HTTP=${ETH_NODE_URL} flash sdk-server --keyfile /keys/priv.key -p -r -w -a "${@:2}"
