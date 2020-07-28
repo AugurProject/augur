@@ -222,6 +222,16 @@
 :root[theme="BETTING"],
 :root[theme="SPORTS"] {
   .CategoryFilters {
+    margin: 0;
+    padding: @size-32 0 0 @size-30;
+    > h3 {
+      .text-24-bold;
+
+      color: var(--color-primary-text);
+      margin-bottom: @size-32;
+      text-transform: capitalize;
+    }
+
     > .CategoriesGroup:first-of-type {  
       > div {
         height: @size-21;
@@ -237,14 +247,16 @@
     > span {
       .mono-14-bold;
     }
+    margin: 0;
+    padding-bottom: 0;
+    border-bottom: 0;
+    // // margin-bottom: 0;
+    // // padding-bottom: @size-12;
+    // // border-bottom: @size-1 solid var(--color-secondary-action-outline);
 
-    margin-bottom: 0;
-    padding-bottom: @size-12;
-    border-bottom: @size-1 solid var(--color-secondary-action-outline);
-
-    @media @breakpoint-mobile-tablet {
-      border-bottom: 0;
-    }
+    // @media @breakpoint-mobile-tablet {
+    //   border-bottom: 0;
+    // }
   }
 
   .AllCategories {

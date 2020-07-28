@@ -1,6 +1,7 @@
 import { Getters } from '@augurproject/sdk';
 import classNames from 'classnames';
 import React, { useState, useEffect, Component } from 'react';
+import { useHistory } from 'react-router';
 import { SingleDatePicker } from 'react-dates';
 import ChevronFlip from 'modules/common/chevron-flip';
 import {
@@ -55,6 +56,7 @@ import {
 } from 'modules/types';
 import MarkdownRenderer from 'modules/common/markdown-renderer';
 import makeQuery from 'modules/routes/helpers/make-query';
+import { useAppStatusStore } from 'modules/app/store/app-status';
 
 interface CheckboxProps {
   id: string;
@@ -2296,51 +2298,51 @@ InputDropdown.defaultProps = {
 };
 
 export interface CategoryRowProps {
-  history: History;
   hasChildren?: boolean;
   handleClick?: Function;
   active?: boolean;
-  loading?: boolean;
   category: string;
   count: number;
   icon?: React.ReactNode;
 }
 
 export const CategoryRow = ({
-  history,
   hasChildren = true,
   handleClick = noop,
   active = false,
-  loading = false,
   category,
   count,
   icon,
-}: CategoryRowProps) => (
-  <div
-    onClick={() => {
-      const categories = handleClick();
-      const query: QueryEndpoints = {
-        [CATEGORY_PARAM_NAME]: categories,
-      };
-      history.push({
-        pathname: 'markets',
-        search: makeQuery(query),
-      });
-    }}
-    className={classNames(Styles.CategoryRow, {
-      [Styles.active]: active,
-      [Styles.loading]: loading,
-      [Styles.disabled]: !hasChildren,
-    })}
-  >
-    <span>
-      {icon}{' '}
-      {category && category.length <= 3 ? category.toUpperCase() : category}
-    </span>
-    {loading && <span>{LoadingEllipse}</span>}
-    {!loading && <span>{count}</span>}
-  </div>
-);
+}: CategoryRowProps) => { 
+  const { marketsList: { isSearching: loading } } = useAppStatusStore();
+  const history = useHistory();
+  return (
+    <div
+      onClick={() => {
+        const categories = handleClick();
+        const query: QueryEndpoints = {
+          [CATEGORY_PARAM_NAME]: categories,
+        };
+        history.push({
+          pathname: 'markets',
+          search: makeQuery(query),
+        });
+      }}
+      className={classNames(Styles.CategoryRow, {
+        [Styles.active]: active,
+        [Styles.loading]: loading,
+        [Styles.disabled]: !hasChildren,
+      })}
+    >
+      <span>
+        {icon}{' '}
+        {category && category.length <= 3 ? category.toUpperCase() : category}
+      </span>
+      {loading && <span>{LoadingEllipse}</span>}
+      {!loading && <span>{count}</span>}
+    </div>
+  );
+}
 
 export const MigrateRepInfo = () => (
   <section className={Styles.MigrateRepInfo}>

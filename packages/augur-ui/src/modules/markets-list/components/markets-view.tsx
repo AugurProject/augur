@@ -328,7 +328,6 @@ const MarketsView = () => {
       )}
       {!isTrading && (
         <section>
-          <h2>{headerTitle}</h2>
           <FilterDropDowns />
           <FilterSearch search={search} />
           <FilterButton />

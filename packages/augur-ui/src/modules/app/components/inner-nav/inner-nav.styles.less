@@ -167,10 +167,11 @@
 
 :root[theme='BETTING'],
 :root[theme='SPORTS'] {
-
   .InnerNav, 
   .InnerNav__menu--main {
     background: none;
+    display: flex;
+    flex-flow: column nowrap;
 
     @media @breakpoint-mobile-tablet {
       background: var(--color-module-background);
@@ -180,6 +181,7 @@
 
   .InnerNav__menu--main {
     border-right: 0;
+    flex: 1;
   }
 }
 
