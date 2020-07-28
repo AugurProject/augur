@@ -7,7 +7,6 @@ export * from './api/Contracts';
 export * from './api/HotLoading';
 export * from './api/GSN';
 export * from './api/WarpSync';
-export * from '@augurproject/types';
 export * from './utils';
 export * from './state';
 export * from './subscriptions';
