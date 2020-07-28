@@ -384,7 +384,7 @@ PRETTYBLOCK
 "stop")
   (
     cd augur &&\
-    docker-compose stop
+    docker-compose down
   )
   ;;
 "restart")
@@ -401,11 +401,8 @@ PRETTYBLOCK
     augur_running=`docker ps|grep augur_augur_1`
     gsn_running=`docker ps|grep augur_gsn_1`
 
-    docker-compose stop
-
-    docker pull caddy:2.1.1-alpine
-    docker pull tabookey/gsn-dev-server:v0.4.1
-    docker pull augurproject/augur:runner
+    docker-compose down
+    docker-compose pull
 
     if [ "$augur_running" == 0 ]; then
       docker-compose up -d augur
