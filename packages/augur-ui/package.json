@@ -1,6 +1,6 @@
 {
   "name": "@augurproject/ui",
-  "version": "2.0.2-alpha.1",
+  "version": "2.0.2-alpha.4",
   "description": "Augur UI",
   "author": "The Augur Developers <team@augur.net>",
   "license": "AAL",
@@ -90,6 +90,7 @@
     "react-helmet": "5.2.1",
     "react-html-parser": "2.0.2",
     "react-media": "1.10.0",
+    "react-player": "2.6.0",
     "react-redux": "5.1.1",
     "react-router-dom": "4.3.1",
     "react-router-sitemap": "1.2.0",
@@ -105,7 +106,7 @@
     "web3": "1.2.1"
   },
   "devDependencies": {
-    "@augurproject/tools": "^2.0.2-alpha.1",
+    "@augurproject/tools": "^2.0.2-alpha.4",
     "@babel/core": "7.9.0",
     "@babel/preset-env": "7.9.5",
     "@babel/preset-react": "7.9.4",
