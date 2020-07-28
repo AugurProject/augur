@@ -243,7 +243,7 @@ module.exports = {
         // Will need to be negated in the relevant conditionals.
         AUGUR_HOSTED: process.env.AUGUR_HOSTED || false,
         ENABLE_MAINNET: process.env.ENABLE_MAINNET || false,
-        REPORTING_ONLY: process.env.REPORTING_ONLY || false,
+        REPORTING_ONLY: JSON.stringify(process.env.REPORTING_ONLY || false),
 
         CONFIGURATION: serializeConfig(config)
       },
