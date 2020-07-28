@@ -398,7 +398,7 @@ export class EthersProvider extends ethers.providers.BaseProvider
     blockRangeLimit = 1000
   ): Promise<ethers.providers.Log[]> => {
     const fromBlock = Number(filter.fromBlock);
-    const toBlock = Number(filter.toBlock);
+    const toBlock = Number(filter.toBlock || await this.getBlockNumber());
 
     let currentBlock = fromBlock;
     let logs = [];
