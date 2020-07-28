@@ -14,6 +14,7 @@ import type {
 import {
   calculatePayoutNumeratorsArray,
   ExtraInfoTemplate,
+  AccountData
 } from '@augurproject/sdk-lite';
 import {
   convertDisplayAmountToOnChainAmount,
@@ -1173,4 +1174,12 @@ export async function runPeriodicals_estimateGas() {
   } catch (e) {
     return ACCOUNT_ACTIVATION_GAS_COST;
   }
+}
+
+export async function loadAccountData_exchangeRates(account: string) {
+  const { contracts } = augurSdk.get();
+  const sdk = await augurSdkLite.get();
+  const repToken = contracts.getReputationToken();
+  const values: AccountData = await sdk.loadAccountData(account, repToken.address);
+  return values;
 }
