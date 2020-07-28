@@ -78,6 +78,9 @@ To setup scripts and start augur services:
 To start augur services:
 ./augur/cli start
 
+To view logs:
+./augur/cli logs
+
 To start GSN (advanced)
 ./augur/cli start-gsn
 
@@ -300,8 +303,7 @@ case "$method" in
     cd augur
     docker-compose up -d augur
     printf "Spinning up augur sdk server. Please wait, this'll take many minutes\n"
-    printf 'You can view the progress in a separate terminal with this command: '
-    printf "docker logs -f \$(docker ps|grep augur_augur_1|awk '{print \$1}')"
+    printf 'You can view the progress in a separate terminal with this command: $0 logs'
     printf "\n\n"
 
     augur_key=`get_augur_key`
@@ -321,6 +323,12 @@ Current Warp Sync Hash: $current_warp_sync_hash
 
 Send some ether (recommended: 1 ETH) to your augur address $augur_key for auto-reporting the warp sync market
 PRETTYBLOCK
+  )
+  ;;
+"logs")
+  (
+    cd augur
+    docker-compose logs -f
   )
   ;;
 "start-gsn")
