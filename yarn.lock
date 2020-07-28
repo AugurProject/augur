@@ -7002,6 +7002,18 @@ ci-info@^2.0.0:
   resolved "https://registry.yarnpkg.com/ci-info/-/ci-info-2.0.0.tgz#67a9e964be31a51e15e5010d58e6f12834002f46"
   integrity sha512-5tK7EtrZ0N+OLFMthtqOj4fI2Jeb88C4CAZPu25LDVUgXJ0A3Js4PMGqrn0JU1W0Mh1/Z8wZzYPxqUrXeBboCQ==
 
+cid-tool@0.4.0:
+  version "0.4.0"
+  resolved "https://registry.yarnpkg.com/cid-tool/-/cid-tool-0.4.0.tgz#99205b46db1e526b8333137c449a4e0c686b0c05"
+  integrity sha512-nsH5JcmhdPTLuShxwJgIgo3qdVdk7w1pnNMcjalynvG8bfVSrcZfjKLALINMUgnoOOLIkFqkuYo8/K4YIo6SJw==
+  dependencies:
+    cids "~0.7.0"
+    explain-error "^1.0.4"
+    multibase "~0.6.0"
+    multihashes "~0.4.14"
+    split2 "^3.1.1"
+    yargs "^15.0.2"
+
 cid-tool@~0.3.0:
   version "0.3.0"
   resolved "https://registry.yarnpkg.com/cid-tool/-/cid-tool-0.3.0.tgz#d785ea8bd971ff0822a2a34fa55dc069504344c3"
