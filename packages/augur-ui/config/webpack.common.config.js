@@ -198,6 +198,10 @@ module.exports = {
         to: path.resolve(PATHS.BUILD, 'images'),
       },
       {
+        from: path.resolve(PATHS.APP, 'assets/videos'),
+        to: path.resolve(PATHS.BUILD, 'videos'),
+      },
+      {
         from: path.resolve(PATHS.APP, 'sitemap.xml'),
         to: PATHS.BUILD,
       },

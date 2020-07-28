@@ -2184,7 +2184,6 @@ export function addScripts(flash: FlashSession) {
       } else {
         // User provided an account.
         const provider = await providerFromConfig(this.config);
-        const connector = new SingleThreadConnector();
         const signer = await makeSigner(this.accounts[0], provider);
 
         client = await createClient(this.config, connector, signer, undefined);
@@ -2194,8 +2193,6 @@ export function addScripts(flash: FlashSession) {
       connector.api = api;
 
       if(pinUIPath && useWarpSync) {
-
-
         const ipfs = await api.augur.warpController.ipfs;
 
         // Assume build exists.

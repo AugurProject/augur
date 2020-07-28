@@ -651,6 +651,7 @@ export const MODAL_ACCOUNT_CREATED = 'MODAL_ACCOUNT_CREATED';
 export const MODAL_ERROR = 'MODAL_ERROR';
 export const MODAL_HELP = 'MODAL_HELP';
 export const MODAL_REPORTING_ONLY = 'MODAL_REPORTING_ONLY';
+export const MODAL_TUTORIA_VIDEO = 'MODAL_TUTORIA_VIDEO';
 
 // transactions parameter names
 export const TX_ORDER_ID = 'orderId';

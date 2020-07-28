@@ -242,7 +242,9 @@ async function runSimulateTrade(
   ) {
     newTradeDetails.shareCost = '0';
   }
-
+  if (reversal) {
+    newTradeDetails.shareCost = String(BigNumber.min(reversal.quantity, createBigNumber(newTradeDetails.numShares).abs()));
+  }
   const tradeInfo = {
     ...newTradeDetails,
     ...simulateTradeValue,

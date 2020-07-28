@@ -1,12 +1,15 @@
 {
   "name": "@augurproject/tools",
-  "version": "2.0.2-alpha.0",
+  "version": "2.0.2-alpha.4",
   "description": "Tools and dev dependencies",
   "author": "Augur Team <team@augur.net>",
   "license": "MIT",
   "main": "build",
   "directories": {
     "src": "src"
+  },
+  "bin": {
+    "flash": "./build/flash/cli.js"
   },
   "scripts": {
     "build": "tsc -b",
@@ -37,11 +40,11 @@
   },
   "homepage": "https://github.com/augurproject/augur#readme",
   "dependencies": {
-    "@augurproject/artifacts": "^2.0.2-alpha.0",
-    "@augurproject/core": "^2.0.2-alpha.0",
-    "@augurproject/sdk": "^2.0.2-alpha.0",
-    "@augurproject/sdk-lite": "^2.0.2-alpha.0",
-    "@augurproject/utils": "^2.0.2-alpha.0",
+    "@augurproject/artifacts": "^2.0.2-alpha.1",
+    "@augurproject/core": "^2.0.2-alpha.1",
+    "@augurproject/sdk": "^2.0.2-alpha.1",
+    "@augurproject/sdk-lite": "^2.0.2-alpha.1",
+    "@augurproject/utils": "^2.0.2-alpha.1",
     "@openzeppelin/gsn-helpers": "0.2.3",
     "commander": "4.1.0",
     "deepmerge": "4.2.2",
@@ -53,7 +56,7 @@
     "ethjs-provider-http": "0.1.6",
     "ethjs-query": "0.3.8",
     "ethjs-signer": "0.1.1",
-    "ganache-core": "2.9.1",
+    "ganache-core": "2.11.0-beta.0",
     "lodash": "4.17.19",
     "options-parser": "0.4.0",
     "readline-sync": "^1.4.10",
