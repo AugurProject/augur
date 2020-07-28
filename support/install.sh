@@ -372,11 +372,11 @@ PRETTYBLOCK
     docker-compose down
     docker-compose pull
 
-    if [ "$augur_running" == 0 ]; then
+    if [ ! -z "$augur_running" ]; then
       docker-compose up -d augur
     fi
 
-    if [ "gsn_running" == 0 ]; then
+    if [ ! -z "$gsn_running" ]; then
       docker-compose up -d caddy gsn
     fi
   )
