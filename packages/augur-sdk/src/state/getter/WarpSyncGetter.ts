@@ -33,7 +33,7 @@ export class WarpSyncGetter {
     params: t.TypeOf<typeof WarpSyncGetter.getWarpSyncStatusParams>
   ): Promise<WarpSyncStatusResponse> {
     const mostRecentCheckpoint = await db.warpCheckpoints.getMostRecentCheckpoint();
-    if(typeof mostRecentCheckpoint === 'undefined') {
+    if (typeof mostRecentCheckpoint === 'undefined') {
       return {
         state: MarketReportingState.Unknown,
         hash: NullWarpSyncHash
@@ -43,6 +43,13 @@ export class WarpSyncGetter {
     const [currentMarket] = await Markets.getMarketsInfo(augur, db, {
       marketIds: [mostRecentCheckpoint.market],
     });
+
+    if (typeof currentMarket === 'undefined') {
+      return {
+        state: MarketReportingState.Unknown,
+        hash: null
+      }
+    }
 
     switch (currentMarket.reportingState) {
       // Return previous reported hash.

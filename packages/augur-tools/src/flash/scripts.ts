@@ -2165,9 +2165,6 @@ export function addScripts(flash: FlashSession) {
       if (args.pinReportingUI === true) pinReportingUIPath = '../augur-ui/reporting-only-build';
       else if (args.pinReportingUI !== undefined) pinReportingUIPath = args.pinReportingUI as string;
 
-      console.log('MARINA', JSON.stringify(args, null, 2));
-      console.log('MARINA', 'pinUIPath', pinUIPath, 'pinReportingUIPath', pinReportingUIPath);
-
       this.pushConfig({
         zeroX: {
           mesh: { enabled: false },
@@ -2182,7 +2179,7 @@ export function addScripts(flash: FlashSession) {
       let client;
       const connector = new SingleThreadConnector();
 
-      if(!autoReport) {
+      if (!autoReport) {
         client = await createClient(this.config, connector, undefined, undefined, true);
       } else if(this.accounts === ACCOUNTS) {
         console.log('Creating wallet.');
