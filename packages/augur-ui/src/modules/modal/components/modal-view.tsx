@@ -56,6 +56,7 @@ import ModalInitializeAccounts from 'modules/modal/containers/modal-initialize-a
 import ModalHelp from 'modules/modal/containers/modal-help';
 import ModalMarketNotFound from 'modules/modal/containers/modal-market-not-found';
 import FrozenFundsBreakdown from 'modules/modal/containers/modal-frozen-funds-breakdown';
+import ModalTutorialVideo from 'modules/modal/components/modal-tutorial-video'
 
 import * as TYPES from 'modules/common/constants';
 
@@ -190,6 +191,8 @@ function selectModal(type, props, closeModal, modal) {
       return <FrozenFundsBreakdown />;
     case TYPES.MODAL_REPORTING_ONLY:
       return <ModalDisclaimer {...modal} isReportingOnly={true} />;
+    case TYPES.MODAL_TUTORIA_VIDEO:
+      return <ModalTutorialVideo />
     default:
       return <div />;
   }
