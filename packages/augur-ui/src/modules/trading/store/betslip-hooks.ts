@@ -9,9 +9,11 @@ import {
   EMPTY_BETSLIST,
   MOCK_BETSLIP_STATE,
   BETSLIP_ACTIONS,
+  DEFAULT_BETSLIP_STATE,
 } from 'modules/trading/store/constants';
 import { placeBet, simulateBetslipTrade, checkForDisablingPlaceBets, checkInsufficientFunds } from 'utils/betslip-helpers';
 import { AppStatus } from 'modules/app/store/app-status';
+import deepClone from 'utils/deep-clone';
 
 const {
   CASH_OUT,
@@ -32,7 +34,8 @@ const {
   ADD_MATCHED,
   ADD_MULTIPLE_MATCHED,
   SET_DISABLE_PLACE_BETS,
-  MODIFY_BET_ERROR_MESSAGE
+  MODIFY_BET_ERROR_MESSAGE,
+  CLEAR_BETSLIP
 } = BETSLIP_ACTIONS;
 const { BETSLIP, MY_BETS, MATCHED, UNMATCHED } = BETSLIP_SELECTED;
 const { UNSENT, PENDING, CLOSED, FILLED } = BET_STATUS;
@@ -59,7 +62,7 @@ export const calculateBetslipTotals = betslip => {
 };
 
 export function BetslipReducer(state, action) {
-  const updatedState = { ...state };
+  let updatedState = { ...state };
   const betslipItems = updatedState.betslip.items;
   const matchedItems = updatedState.matched.items;
   const {
@@ -311,6 +314,10 @@ export function BetslipReducer(state, action) {
       updatedState.betslip = { count: 0, items: {} };
       break;
     }
+    case CLEAR_BETSLIP: {
+      updatedState = deepClone(DEFAULT_BETSLIP_STATE);
+      break;
+    }
     case CANCEL_ALL_UNMATCHED: {
       // TODO: make this cancel all open orders
       delete updatedState.unmatched;
@@ -330,6 +337,7 @@ export const useBetslip = (defaultState = MOCK_BETSLIP_STATE) => {
   return {
     ...state,
     actions: {
+      clearBetslip: () => dispatch({ type: CLEAR_BETSLIP }),
       toggleHeader: selected => {
         if (selected !== state.selected.header)
           dispatch({ type: TOGGLE_HEADER });

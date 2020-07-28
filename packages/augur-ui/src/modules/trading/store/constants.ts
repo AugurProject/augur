@@ -84,6 +84,7 @@ export const BETSLIP_ACTIONS = {
   RETRY: 'RETRY',
   MODIFY_BET: 'MODIFY_BET',
   MODIFY_BET_ERROR_MESSAGE: 'MODIFY_BET_ERROR_MESSAGE',
+  CLEAR_BETSLIP: 'CLEAR_BETSLIP',
   UPDATE_UNMATCHED: 'UPDATE_UNMATCHED',
   UPDATE_MATCHED: 'UPDATE_MATCHED',
   SEND_BET: 'SEND',
@@ -102,6 +103,7 @@ export const BETSLIP_ACTIONS = {
 export const STUBBED_BETSLIP_ACTIONS = {
   setDisablePlaceBets: (placeBetsDisabled) => {},
   toggleHeader: selected => {},
+  clearBetslip: () => {},
   toggleSubHeader: selected => {},
   toggleStep: () => {},
   addBet: (marketId, description, max, min, normalizedPrice, outcome, shares, outcomeId, price) => {},

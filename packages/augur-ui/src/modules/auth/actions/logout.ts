@@ -5,6 +5,7 @@ import { augurSdk } from 'services/augursdk';
 
 import { AppStatus } from 'modules/app/store/app-status';
 import { PendingOrders } from 'modules/app/store/pending-orders';
+import { Betslip } from 'modules/trading/store/betslip';
 
 export const logout = async () => {
   const localStorageRef =
@@ -15,6 +16,7 @@ export const logout = async () => {
     localStorageRef.removeItem('loggedInUser');
   }
   AppStatus.actions.clearLoginAccount();
+  Betslip.actions.clearBetslip();
   PendingOrders.actions.clearLiquidity();
 
   // Clean up web3 wallets

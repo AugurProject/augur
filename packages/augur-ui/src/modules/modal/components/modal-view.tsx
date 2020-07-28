@@ -32,7 +32,7 @@ import Styles from 'modules/modal/common.styles.less';
 import { useAppStatusStore } from 'modules/app/store/app-status';
 import { track, MODAL_VIEWED } from 'services/analytics/helpers';
 import { ModalAccountCreated } from 'modules/modal/onboarding-modals';
-import { ModalCreateMarket, ModalDaiFaucet, ModalCreationHelp, ModalFinalize, ModalDiscard, ModalDrQuickGuide, ModalHelp, ModalRepFaucet, ModalSignTransaction, ModalMarketLoading, ModalOdds, ModalInvalidMarketRules, ModalNetworkMismatch, ModalNetworkDisabled, ModalMigrateMarket, ModalWalletError, ModalInitializeAccounts, ReportingOnly, ModalCashoutBet } from '../message-modals';
+import { ModalCreateMarket, ModalDaiFaucet, ModalCreationHelp, ModalFinalize, ModalDiscard, ModalDrQuickGuide, ModalHelp, ModalRepFaucet, ModalSignTransaction, ModalMarketLoading, ModalOdds, ModalInvalidMarketRules, ModalNetworkMismatch, ModalNetworkDisabled, ModalMigrateMarket, ModalWalletError, ModalInitializeAccounts, ReportingOnly, ModalCashoutBet, ModalCancelAllBets } from '../message-modals';
 import { HardwareWallet } from 'modules/modal/hardware-wallet';
 
 const ESCAPE_KEYCODE = 27;
@@ -73,6 +73,8 @@ function selectModal(type, props, closeModal, modal) {
       return <ModalWithdraw />;
     case TYPES.MODAL_CASHOUT_BET:
       return <ModalCashoutBet />;
+    case TYPES.MODAL_CANCEL_ALL_BETS:
+        return <ModalCancelAllBets />;
     case TYPES.MODAL_MIGRATE_REP:
       return <ModalMigrateRep />;
     case TYPES.MODAL_LEDGER:

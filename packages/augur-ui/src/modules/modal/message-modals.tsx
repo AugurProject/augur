@@ -666,3 +666,41 @@ export const ModalCashoutBet = () => {
     />
   );
 };
+
+export const ModalCancelAllBets = () => {
+  const {
+    modal,
+    actions: { closeModal },
+  } = useAppStatusStore();
+
+  const {
+    cb
+  } = modal;
+
+  return (
+    <Message
+      title='Are you sure you want to cancel all your unmatched bets?'
+      description={['Nobody matched your bets yet. Use this option if you want to get your money back, or wait a little longer. It can still be matched.']}
+      closeAction={() => {
+        closeModal();
+      }}
+      buttons={[
+        {
+          text: 'Cancel Bets',
+          action: () => {
+            if (cb) {
+              cb();
+            }
+            closeModal();
+          },
+        },
+        {
+          text: 'Keep Bets',
+          action: () => {
+            closeModal();
+          },
+        },
+      ]}
+    />
+  );
+};
