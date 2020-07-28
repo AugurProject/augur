@@ -46,7 +46,7 @@ EOF
 
 make_cli() {
   cat << 'EOF' > "${PWD}/augur/cli"
-#!/usr/bin/env sh
+#!/usr/bin/env bash
 
 set -e;
 
@@ -64,7 +64,7 @@ This utility will help to set up the services which can interact with Augur on
 kovan, mainnet, and localhost.
 
 This utility requires docker-ce and docker-compose, and once fully installed
-the services can be managed using docker-compose directly.
+the services can be managed using docker-compose directly. If you don't know what that means, you can also just google docker desktop and download that and run it.
 
 Configuration will be written to a directory on your filesystem.
 ##############################################################################
@@ -310,7 +310,7 @@ case "$method" in
   (
     cd augur
     docker-compose up -d augur
-    printf "Spinning up augur sdk server. Please wait...\n"
+    printf "Spinning up augur sdk server. Please wait, this'll take many minutes\n"
 
     augur_key=`get_augur_key`
     trading_ui_hash=`get_trading_UI_hash`
