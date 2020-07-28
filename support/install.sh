@@ -146,79 +146,6 @@ get_augur_key() {
   done
 }
 
-get_gsn_key() {
-  helper() {
-    key=$(docker logs $(docker ps|grep augur_gsn_1|awk '{print $1}') 2>&1|grep -C0 'relay server address:'|awk '{print $7}')
-    if [ -z "$key" ]
-      then return 1
-      else echo $key; return 0
-    fi
-  }
-  until helper
-    do sleep 1
-  done
-}
-
-get_trading_UI_hash() {
-  helper() {
-    base58_hash=$(docker logs $(docker ps|grep augur_augur_1|awk '{print $1}') 2>&1|grep -C0 'Pinning UI build at path'|awk '{print $10}')
-    if [ -z "$base58_hash" ]
-      then return 1
-      else
-        echo $base58_hash
-        return 0
-    fi
-  }
-  until helper
-    do sleep 1
-  done
-}
-
-get_trading_UI_hash32() {
-  helper() {
-    base32_hash=$(docker logs $(docker ps|grep augur_augur_1|awk '{print $1}') 2>&1|grep -C0 'Pinning UI build at path'|awk '{print $12}')
-    if [ -z "$base32_hash" ]
-      then return 1
-      else
-        echo $base32_hash
-        return 0
-    fi
-  }
-  until helper
-    do sleep 1
-  done
-}
-
-get_reporting_UI_hash() {
-  helper() {
-    base58_hash=$(docker logs $(docker ps|grep augur_augur_1|awk '{print $1}') 2>&1|grep -C0 'Pinning Reporting UI build at path'|awk '{print $11}')
-    if [ -z "$base58_hash" ]
-      then return 1
-      else
-        echo $base58_hash
-        return 0
-    fi
-  }
-  until helper
-    do sleep 1
-  done
-}
-
-get_reporting_UI_hash32() {
-  helper() {
-    base32_hash=$(docker logs $(docker ps|grep augur_augur_1|awk '{print $1}') 2>&1|grep -C0 'Pinning Reporting UI build at path'|awk '{print $13}')
-    if [ -z "$base32_hash" ]
-      then return 1
-      else
-        echo $base32_hash
-        return 0
-    fi
-  }
-  until helper
-    do sleep 1
-  done
-}
-
 get_previous_warp_sync_hash() {
   helper() {
     hash=$(docker logs $(docker ps|grep augur_augur_1|awk '{print $1}') 2>&1|grep -C0 'Previous Warp Sync Hash'|awk '{print $5}')
@@ -242,6 +169,35 @@ get_current_warp_sync_hash() {
       else
         echo $hash
         return 0
+    fi
+  }
+  until helper
+    do sleep 1
+  done
+}
+
+get_trading_UI_hash() {
+  docker logs $(docker ps|grep augur_augur_1|awk '{print $1}') 2>&1|grep -C0 'Pinning UI build at path'|awk '{print $10}'
+}
+
+get_trading_UI_hash32() {
+  docker logs $(docker ps|grep augur_augur_1|awk '{print $1}') 2>&1|grep -C0 'Pinning UI build at path'|awk '{print $12}'
+}
+
+get_reporting_UI_hash() {
+  docker logs $(docker ps|grep augur_augur_1|awk '{print $1}') 2>&1|grep -C0 'Pinning Reporting UI build at path'|awk '{print $11}'
+}
+
+get_reporting_UI_hash32() {
+  docker logs $(docker ps|grep augur_augur_1|awk '{print $1}') 2>&1|grep -C0 'Pinning Reporting UI build at path'|awk '{print $13}'
+}
+
+get_gsn_key() {
+  helper() {
+    key=$(docker logs $(docker ps|grep augur_gsn_1|awk '{print $1}') 2>&1|grep -C0 'relay server address:'|awk '{print $7}')
+    if [ -z "$key" ]
+      then return 1
+      else echo $key; return 0
     fi
   }
   until helper
@@ -338,17 +294,17 @@ case "$method" in
     printf "Spinning up augur sdk server. Please wait, this'll take many minutes\n"
 
     augur_key=`get_augur_key`
+    previous_warp_sync_hash=`get_previous_warp_sync_hash`
+    current_warp_sync_hash=`get_current_warp_sync_hash`
     trading_ui_hash=`get_trading_UI_hash`
     trading_ui_hash32=`get_trading_UI_hash32`
     reporting_ui_hash=`get_reporting_UI_hash`
     reporting_ui_hash32=`get_reporting_UI_hash32`
-    previous_warp_sync_hash=`get_previous_warp_sync_hash`
-    current_warp_sync_hash=`get_current_warp_sync_hash`
 
     cat <<PRETTYBLOCK
 Augur Address: $augur_key
 Trading UI Hash: $trading_ui_hash (hash32: $trading_ui_hash32)
-Reporting UI Hash: $reporting_ui_hash
+Reporting UI Hash: $reporting_ui_hash (hash32: $reporting_ui_hash32)
 Previous Warp Sync Hash: $previous_warp_sync_hash
 Current Warp Sync Hash: $current_warp_sync_hash
 
