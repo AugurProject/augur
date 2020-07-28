@@ -9,7 +9,7 @@
     "src": "src"
   },
   "bin": {
-    "flash": "./build/flash/index.js"
+    "flash": "./build/flash/cli.js"
   },
   "scripts": {
     "build": "tsc -b",
