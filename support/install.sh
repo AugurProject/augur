@@ -133,6 +133,14 @@ read_env(){
 	esac
 }
 
+get_augur_key() {
+  key=$(docker logs $(docker ps|grep augur_augur_1|awk '{print $1}') 2>/dev/null|grep -C0 'wallet with address'|awk '{print $5}')
+  if [ ! -z "$key" ]; then
+    printf "Done!\n\n"
+    printf "Send 1 ETH to this address: $key\n"
+  fi
+}
+
 setup() {
 ####################################################
 # Configuration needed if the user wants to run GSN
@@ -219,6 +227,10 @@ case "$method" in
   (
     cd augur &&\
     docker-compose up -d augur
+    printf "Spinning up augur sdk server. Please wait...\n"
+    until get_augur_key; do
+      sleep 1;
+    done;
   )
   ;;
 "start-gsn")
