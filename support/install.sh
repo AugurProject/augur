@@ -303,7 +303,7 @@ case "$method" in
     cd augur
     docker-compose up -d augur
     printf "Spinning up augur sdk server. Please wait, this'll take many minutes\n"
-    printf 'You can view the progress in a separate terminal with this command: $0 logs'
+    printf "You can view the progress in a separate terminal with this command: $0 logs"
     printf "\n\n"
 
     augur_key=`get_augur_key`
