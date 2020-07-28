@@ -95,7 +95,7 @@
     "**/bignumber.js": "9.0.0",
     "ethers": "4.0.47",
     "lodash": "4.17.15",
-    "@0x/mesh-browser-lite": "v10.0.0-unstable-5"
+    "@0x/mesh-browser-lite": "v10.0.0-unstable-6"
   },
   "dependencies": {
     "docusaurus-init": "1.12.0"
