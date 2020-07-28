@@ -11,14 +11,16 @@ import {
   MODAL_AUGUR_P2P,
   HELP_CENTER_ADD_FUNDS,
   MODAL_BUY_DAI,
+  FIVE,
 } from 'modules/common/constants';
 import { OnboardingPaymentIcon } from 'modules/common/icons';
 import { BUY_DAI, track } from 'services/analytics/helpers';
 import { getOnboardingStep } from './modal-p2p-trading';
+import { createBigNumber } from 'utils/create-big-number';
 
 const mapStateToProps = (state: AppState) => ({
   authStatus: state.authStatus,
-  signerHasDAI: state.loginAccount.balances.signerBalances.dai !== "0",
+  signerHasDAI: createBigNumber(state.loginAccount.balances.signerBalances.dai).gt(FIVE),
   desiredSignerBalanceInETH: state.env.gsn.desiredSignerBalanceInETH,
 });
 

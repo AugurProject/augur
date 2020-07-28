@@ -2,11 +2,12 @@ import { connect } from 'react-redux';
 import ConnectDropdown from 'modules/auth/components/connect-dropdown/connect-dropdown';
 import { logout } from 'modules/auth/actions/logout';
 import { updateModal } from 'modules/modal/actions/update-modal';
-import { MODAL_GAS_PRICE, GAS_SPEED_LABELS, GAS_TIME_LEFT_LABELS, MODAL_ADD_FUNDS, MODAL_UNIVERSE_SELECTOR } from 'modules/common/constants';
+import { MODAL_GAS_PRICE, GAS_SPEED_LABELS, GAS_TIME_LEFT_LABELS, MODAL_ADD_FUNDS, MODAL_UNIVERSE_SELECTOR, FIVE, ONE } from 'modules/common/constants';
 import { NULL_ADDRESS } from 'modules/common/constants';
 import { FormattedNumber } from 'modules/types';
 import { AppState } from 'appStore';
 import { getEthReserve } from 'modules/auth/selectors/get-eth-reserve';
+import { createBigNumber } from 'utils/create-big-number';
 
 const mapStateToProps = (state: AppState) => {
   const { fast, average, safeLow, userDefinedGasPrice } = state.gasPriceInfo;
@@ -44,8 +45,8 @@ const mapStateToProps = (state: AppState) => {
     GsnEnabled: state.appStatus.gsnEnabled,
     ethToDaiRate: state.appStatus.ethToDaiRate,
     reserveEthAmount,
-    showTransferMyDai: state.loginAccount.balances.signerBalances.dai !== "0",
-    showTransferMyRep: state.loginAccount.balances.signerBalances.rep !== "0",
+    showTransferMyDai: createBigNumber(state.loginAccount.balances.signerBalances.dai).gt(FIVE),
+    showTransferMyRep: createBigNumber(state.loginAccount.balances.signerBalances.rep).gt(ONE),
   };
 };
 
