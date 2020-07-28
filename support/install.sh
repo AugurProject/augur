@@ -83,6 +83,9 @@ To start augur services:
 To start GSN
 ./augur/cli start-gsn
 
+To stake GSN
+./augur/cli stake-gsn
+
 To stop services:
 ./augur/cli stop
 
@@ -133,27 +136,93 @@ read_env(){
 	esac
 }
 
-printingaugurkey() {
-  key=$(docker logs $(docker ps|grep augur_augur_1|awk '{print $1}') 2>/dev/null|grep -C0 'wallet with address'|awk '{print $5}')
-  if [ ! -z "$key" ]; then
-    printf "Done!\n\n"
-    printf "We generated an ethereum account for reporting to the warp sync market but you need to fund it with some ETH.\n"
-    printf "So please send 1 ETH to: $key\n"
-    printf "You can view your account's balance on etherscan: etherscan.io/address/$key\n"
-  fi
-}
-
 get_augur_key() {
-  key=$(docker logs $(docker ps|grep augur_augur_1|awk '{print $1}') 2>/dev/null|grep -C0 'wallet with address'|awk '{print $5}')
-  if [ ! -z "$key" ]; then
-    printf "Done!\n\n"
-    printf "We generated an ethereum account for reporting to the warp sync market but you need to fund it with some ETH.\n"
-    printf "So please send 1 ETH to: $key\n"
-    printf "You can view your account's balance on etherscan: etherscan.io/address/$key\n"
-  fi
+  helper() {
+    key=$(docker logs $(docker ps|grep augur_augur_1|awk '{print $1}') 2>&1|grep -C0 'wallet with address'|awk '{print $5}')
+    if [ -z "$key" ]
+      then return 1
+      else echo $key; return 0
+    fi
+  }
+  until helper
+    do sleep 1
+  done
 }
 
-# Pinning UI build at path ../augur-ui/build with hash QmYKHvR9WmKnokvAoAw9ojqpX8FM3hVPfyNMurCisbhdUj
+get_gsn_key() {
+  helper() {
+    key=$(docker logs $(docker ps|grep augur_gsn_1|awk '{print $1}') 2>&1|grep -C0 'relay server address:'|awk '{print $7}')
+    if [ -z "$key" ]
+      then return 1
+      else echo $key; return 0
+    fi
+  }
+  until helper
+    do sleep 1
+  done
+}
+
+get_trading_UI_hash() {
+  helper() {
+    base58_hash=$(docker logs $(docker ps|grep augur_augur_1|awk '{print $1}') 2>&1|grep -C0 'Pinning UI build at path'|awk '{print $10}')
+    if [ -z "base58_hash" ]
+      then return 1
+      else
+        echo base58_hash
+        docker logs $(docker ps|grep augur_augur_1|awk '{print $1}') 2>&1|grep -C0 'Pinning UI build at path'|awk '{print $12}'
+        return 0
+    fi
+  }
+  until helper
+    do sleep 1
+  done
+}
+
+get_reporting_UI_hash() {
+  helper() {
+    base58_hash=$(docker logs $(docker ps|grep augur_augur_1|awk '{print $1}') 2>&1|grep -C0 'Pinning Reporting UI build at path'|awk '{print $11}')
+    if [ -z "base58_hash" ]
+      then return 1
+      else
+        echo base58_hash
+        docker logs $(docker ps|grep augur_augur_1|awk '{print $1}') 2>&1|grep -C0 'Pinning UI build at path'|awk '{print $13}'
+        return 0
+    fi
+  }
+  until helper
+    do sleep 1
+  done
+}
+
+get_current_warp_sync_hash() {
+  helper() {
+    hash=$(docker logs $(docker ps|grep augur_augur_1|awk '{print $1}') 2>&1|grep -C0 'Pinning Reporting UI build at path'|awk '{print $7}')
+    if [ -z "hash" ]
+      then return 1
+      else
+        echo hash
+        return 0
+    fi
+  }
+  until helper
+    do sleep 1
+  done
+}
+
+get_previous_warp_sync_hash() {
+  helper() {
+    hash=$(docker logs $(docker ps|grep augur_augur_1|awk '{print $1}') 2>&1|grep -C0 'Previous Warp Sync Hash'|awk '{print $5}')
+    if [ -z "hash" ]
+      then return 1
+      else
+        echo hash
+        return 0
+    fi
+  }
+  until helper
+    do sleep 1
+  done
+}
 
 setup() {
 ####################################################
@@ -239,19 +308,42 @@ case "$method" in
   ;;
 "start")
   (
-    cd augur &&\
+    cd augur
     docker-compose up -d augur
     printf "Spinning up augur sdk server. Please wait...\n"
-    until get_augur_key; do
-      sleep 1;
-    done;
+
+    augur_key=`get_augur_key`
+    trading_ui_hash=`get_trading_UI_hash`
+    reporting_ui_hash=`get_reporting_UI_hash`
+    previous_warp_sync_hash=`get_previous_warp_sync_hash`
+    current_warp_sync_hash=`get_current_warp_sync_hash`
+
+    printf "Augur Address: $augur_key\n"
+    printf "Trading UI Hash: $trading_ui_hash\n"
+    printf "Reporting UI Hash: reporting_ui_hash\n"
+    printf "Previous Warp Sync Hash: previous_warp_sync_hash\n"
+    printf "Current Warp Sync Hash: current_warp_sync_hash\n"
   )
   ;;
 "start-gsn")
   (
-    cd augur &&\
+    cd augur
     docker-compose up -d caddy gsn
-    # TODO wait until gsn is up then give user instructions like where to send staking ETH
+    docker-compose up -d augur
+    gsn_key=`get_gsn_key`
+    augur_key=`get_augur_key`
+    printf "Send 1 ETH to GSN relay address $gsn_key to cover gas costs for txs\n"
+    printf "Also send 1.1 ETH to your augur address $augur_key for when you stake\n"
+    printf "To stake to gsn, call '$0 stake-gsn'\n"
+  )
+  ;;
+"stake-gsn")
+  (
+    cd augur
+    docker-compose up -d augur
+    gsn_key=`get_gsn_key`
+    printf "GSN Relayer Address: $gsn_key\n"
+    docker-compose exec augur yarn flash --keyfile /keys/priv.key --network mainnet gsn-stake-relay --relayAddress "$gsn_key" --ethAmount 1
   )
   ;;
 "stop")

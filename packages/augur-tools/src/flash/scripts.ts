@@ -32,6 +32,7 @@ import { BigNumber } from 'bignumber.js';
 import { spawn, spawnSync } from 'child_process';
 import { ethers } from 'ethers';
 import { formatBytes32String } from 'ethers/utils';
+import * as CIDTool from 'cid-tool';
 
 import * as fs from 'fs';
 import * as IPFS from 'ipfs';
@@ -2209,17 +2210,29 @@ export function addScripts(flash: FlashSession) {
           // Assume build exists.
           const result = await ipfs.addFromFs(pinUIPath, { recursive: true });
           const { hash } = result.pop();
-          console.log(`Pinning UI build at path ${pinUIPath} with hash ${hash}`);
+          const base32Hash = CIDTool.base32(hash);
+          console.log(`Pinning UI build at path ${pinUIPath} with CID1/base58 hash ${hash} (base32: ${base32Hash} )`);
         }
         if (pinReportingUIPath) {
           // Assume build exists.
           const result = await ipfs.addFromFs(pinReportingUIPath, { recursive: true });
           const { hash } = result.pop();
-          console.log(`Pinning Reporting UI build at path ${pinUIPath} with hash ${hash}`);
+          const base32Hash = CIDTool.base32(hash);
+          console.log(`Pinning Reporting UI build at path ${pinReportingUIPath} with CID1/base58 hash ${hash} (base32: ${base32Hash} )`);
         }
       }
 
       sync();
+
+      api.augur.events.once(SubscriptionEventName.NewBlock, async () => {
+        const { warpSyncHash } = await api.augur.warpSync.getLastWarpSyncData(api.augur.contracts.universe.address);
+        const { state, hash } = await api.augur.getWarpSyncStatus();
+        console.log(`\n\nPrevious Warp Sync Hash: ${warpSyncHash}`);
+        console.log(`Current Warp Sync State: ${state} Hash: ${hash}`);
+        if (showHashAndDie) {
+          process.exit(0);
+        }
+      });
 
       api.augur.events.on(
         SubscriptionEventName.WarpSyncHashUpdated,
@@ -2228,14 +2241,6 @@ export function addScripts(flash: FlashSession) {
           console.log(`\n\nUpdated Warp Sync Info:\nState:\t${state}\nHash:\t${hash}`)
         }
       );
-
-      if(showHashAndDie) {
-        api.augur.events.on(SubscriptionEventName.NewBlock, async () => {
-          const { state, hash } = await api.augur.getWarpSyncStatus();
-          console.log(`\n\nCurrent Warp Sync Info:\nState:\t${state}\nHash:\t${hash}`)
-          process.exit(0);
-        });
-      }
 
 
       const app = createApp(api);
@@ -2718,19 +2723,20 @@ export function addScripts(flash: FlashSession) {
         description: 'seconds to wait before removing stake. default=604800 (1 week)',
       },
       {
-        name: 'relayHub',
-        abbr: 'r',
-        description: `address to relay hub; default is the universal addr: ${UNIVERSAL_RELAY_HUB_ADDRESS}`,
+        name: 'relayAddress',
+        abbr: 'a',
+        description: 'relay address',
+        required: true,
       },
     ],
     async call(this: FlashSession, args: FlashArguments) {
-      const address = args.relayHub as string || UNIVERSAL_RELAY_HUB_ADDRESS;
+      const relayAddress = args.relayAddress as string;
       const unstakeDelay = new BigNumber(args.unstakeDelay as string || 604800);
       const ethAmount = Number(args.ethAmount) || 1;
       const attachedEth = new BigNumber(ethAmount).times(_1_ETH);
 
       const user = await this.createUser(this.getAccount(), this.config);
-      await user.augur.contracts.relayHub.stake(address, unstakeDelay, { attachedEth })
+      await user.augur.contracts.relayHub.stake(relayAddress, unstakeDelay, { attachedEth })
     }
   })
 }
