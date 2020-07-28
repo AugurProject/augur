@@ -43,6 +43,7 @@
     "@augurproject/artifacts": "^2.0.2-alpha.5",
     "@augurproject/contract-dependencies-ethers": "^2.0.2-alpha.1",
     "@augurproject/core": "^2.0.2-alpha.5",
+    "@augurproject/ethersjs-provider": "^2.0.2-alpha.5",
     "@augurproject/indexeddbshim": "6.1.1",
     "@augurproject/sdk-lite": "^2.0.2-alpha.5",
     "@augurproject/templates": "^2.0.2-alpha.5",
