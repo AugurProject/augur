@@ -2170,7 +2170,6 @@ export function addScripts(flash: FlashSession) {
 
       this.pushConfig({
         zeroX: {
-          rpc: { enabled: true },
           mesh: { enabled: false },
         },
         warpSync: {
