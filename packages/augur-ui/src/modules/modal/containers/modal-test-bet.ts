@@ -5,7 +5,7 @@ import { closeModal } from 'modules/modal/actions/close-modal';
 import { AppState } from 'appStore';
 import { ThunkDispatch } from 'redux-thunk';
 import { Action } from 'redux';
-import { TRADING_TUTORIAL } from 'modules/common/constants';
+import { TRADING_TUTORIAL, MODAL_TUTORIA_VIDEO } from 'modules/common/constants';
 import makePath from 'modules/routes/helpers/make-path';
 import { MARKET } from 'modules/routes/constants/views';
 import makeQuery from 'modules/routes/helpers/make-query';
@@ -29,6 +29,7 @@ const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({
   track: (eventName, payload) => dispatch(track(eventName, payload)),
   gotoOnboardingStep: step =>
     dispatch(updateModal({ type: getOnboardingStep(step) })),
+  gotoTutorialModal: () => dispatch(updateModal({ type: MODAL_TUTORIA_VIDEO }))
 });
 
 const mergeProps = (sP: any, dP: any, oP: any) => ({
@@ -52,16 +53,19 @@ const mergeProps = (sP: any, dP: any, oP: any) => ({
   buttons: [
     {
       text: sP.isTablet ? 'Watch video' : 'Place test bet',
-      disabled: sP.isTablet,
       action: () => {
-        oP.history.push({
-          pathname: makePath(MARKET),
-          search: makeQuery({
-            [MARKET_ID_PARAM_NAME]: TRADING_TUTORIAL,
-          }),
-        });
-        !sP.isTablet && dP.track(START_TEST_TRADE, {});
-        dP.closeModal();
+        if (!sP.isTablet) {
+          oP.history.push({
+            pathname: makePath(MARKET),
+            search: makeQuery({
+              [MARKET_ID_PARAM_NAME]: TRADING_TUTORIAL,
+            }),
+          });
+          dP.track(START_TEST_TRADE, {});
+        } else {
+          //dP.closeModal();
+          dP.gotoTutorialModal();
+        }
       },
     },
     {
