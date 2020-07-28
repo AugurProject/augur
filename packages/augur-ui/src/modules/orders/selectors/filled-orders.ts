@@ -10,7 +10,7 @@ import {
 import createCachedSelector from "re-reselect";
 import { selectUserOpenOrders } from "modules/orders/selectors/user-open-orders";
 import { isSameAddress } from "utils/isSameAddress";
-import { formatDai } from "utils/format-number";
+import { formatDaiPrice } from "utils/format-number";
 
 function findOrders(
   tradesCreatedOrFilledByThisAccount,
@@ -101,7 +101,7 @@ function findOrders(
         );
         // amount has been format-number'ed
         foundOrder.amount = createBigNumber(foundOrder.amount).plus(amountBN);
-        foundOrder.price = formatDai(foundOrder.trades
+        foundOrder.price = formatDaiPrice(foundOrder.trades
           .reduce(
             (p, t) => p.plus(createBigNumber(t.price).times(t.amount)),
             ZERO

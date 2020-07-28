@@ -5,7 +5,7 @@ import { AppState } from 'appStore';
 import { NodeStyleCallback } from 'modules/types';
 import { ThunkDispatch, ThunkAction } from 'redux-thunk';
 import { Action } from 'redux';
-import { formatDai } from 'utils/format-number';
+import { formatDaiPrice, formatDai } from 'utils/format-number';
 
 export function checkAccountAllowance(
   callback: NodeStyleCallback = logError

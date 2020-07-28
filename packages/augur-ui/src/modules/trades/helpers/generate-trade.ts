@@ -7,7 +7,7 @@ import {
   calculateTotalOrderValue,
 } from 'modules/trades/helpers/calc-order-profit-loss-percents';
 import { createBigNumber } from 'utils/create-big-number';
-import { formatDai, formatMarketShares, formatDaiAbbr } from 'utils/format-number';
+import { formatDaiPrice, formatMarketShares, formatDai } from 'utils/format-number';
 
 export const generateTrade = memoize(
   (market, outcomeTradeInProgress) => {
@@ -125,7 +125,7 @@ export const generateTrade = memoize(
 );
 
 const formatDaiValue = (value, options = {}) =>
-  formatDai(
+  formatDaiPrice(
     value,
     Object.assign(
       { decimalsRounded: constants.UPPER_FIXED_PRECISION_BOUND },
@@ -134,7 +134,7 @@ const formatDaiValue = (value, options = {}) =>
   );
 
   const formatDaiAbbrValue = (value, options = {}) =>
-  formatDaiAbbr(
+  formatDai(
     value,
     Object.assign(
       { decimalsRounded: constants.UPPER_FIXED_PRECISION_BOUND },

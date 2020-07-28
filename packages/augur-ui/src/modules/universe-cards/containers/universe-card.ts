@@ -3,7 +3,7 @@ import { withRouter } from 'react-router-dom';
 import { AppState } from 'appStore';
 import { UniverseCard } from 'modules/universe-cards/components/universe-card';
 import { switchUniverse } from 'modules/universe-cards/actions/switch-universe';
-import { formatDai, formatAttoRep } from 'utils/format-number';
+import { formatDaiPrice, formatAttoRep, formatDai } from 'utils/format-number';
 import { convertUnixToFormattedDate } from 'utils/format-date';
 
 const mapStateToProps = (state: AppState, ownProps) => {

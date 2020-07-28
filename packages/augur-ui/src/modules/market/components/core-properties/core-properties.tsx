@@ -7,7 +7,7 @@ import Styles from 'modules/market/components/core-properties/core-properties.st
 import { PropertyLabel, TimeLabel } from 'modules/common/labels';
 import {
   formatPercent,
-  formatDai,
+  formatDaiPrice,
   formatRep,
   formatAttoRep,
 } from 'utils/format-number';
@@ -45,7 +45,7 @@ const CoreProperties: React.FC<CorePropertiesProps> = ({
             value={
               market.volumeFormatted
                 ? market.volumeFormatted.full
-                : formatDai(0, { decimals: 0 }).full
+                : formatDaiPrice(0, { decimals: 0 }).full
             }
           />
           {reportingBarShowing && (
@@ -84,7 +84,7 @@ const CoreProperties: React.FC<CorePropertiesProps> = ({
                 value={
                   market.openInterestFormatted
                     ? market.openInterestFormatted.full
-                    : formatDai(0, { decimals: 0 }).full
+                    : formatDaiPrice(0, { decimals: 0 }).full
                 }
               />
               <PropertyLabel
@@ -92,7 +92,7 @@ const CoreProperties: React.FC<CorePropertiesProps> = ({
                 value={
                   market.volumeFormatted
                     ? market.volumeFormatted.full
-                    : formatDai(0, { decimals: 0 }).full
+                    : formatDaiPrice(0, { decimals: 0 }).full
                 }
               />
               <PropertyLabel

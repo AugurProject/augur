@@ -1,7 +1,7 @@
 import { connect } from 'react-redux';
 import { AppState } from 'appStore';
 import * as constants from 'modules/common/constants';
-import { formatDai, formatMarketShares } from 'utils/format-number';
+import { formatDaiPrice, formatMarketShares, formatDai } from 'utils/format-number';
 import Row from 'modules/common/row';
 import { ThunkDispatch } from 'redux-thunk';
 import { Action } from 'redux';

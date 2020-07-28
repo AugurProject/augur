@@ -8,7 +8,7 @@ import { Action } from 'redux';
 import { withdrawAllFundsEstimateGas } from 'modules/contracts/actions/contractCalls';
 import { FormattedNumber } from 'modules/types';
 import { getEthReserve } from 'modules/auth/selectors/get-eth-reserve';
-import { formatDai, formatEther } from 'utils/format-number';
+import { formatDaiPrice, formatEther, formatDai } from 'utils/format-number';
 import { selectAccountFunds } from 'modules/auth/selectors/login-account';
 import { ethToDai } from 'modules/app/actions/get-ethToDai-rate';
 import { createBigNumber } from 'utils/create-big-number';

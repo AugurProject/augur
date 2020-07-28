@@ -5,8 +5,9 @@ import { DAI, ETH, REP, ZERO, GWEI_CONVERSION, MAX_DECIMALS, TRANSACTIONS, TRANS
 import {
   formatEther,
   formatRep,
-  formatDai,
+  formatDaiPrice,
   formatGasCostToEther,
+  formatDai,
 } from 'utils/format-number';
 import isAddress from 'modules/auth/helpers/is-address';
 import { createBigNumber, BigNumber } from 'utils/create-big-number';

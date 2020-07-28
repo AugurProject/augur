@@ -22,7 +22,7 @@ import {
   convertSaltToFormattedDate,
   convertUnixToFormattedDate,
 } from 'utils/format-date';
-import { formatDai, formatMarketShares, formatNone } from 'utils/format-number';
+import { formatDaiPrice, formatMarketShares, formatNone } from 'utils/format-number';
 import getPrecision from 'utils/get-number-precision';
 
 function selectMarketsDataStateMarket(state, marketId) {
@@ -77,11 +77,11 @@ export const selectUserOpenOrders = createSelector(
       const formatted = pendingOrders.map(o => ({
         ...o,
         unmatchedShares: formatMarketShares(market.marketType, o.amount),
-        avgPrice: formatDai(o.fullPrecisionPrice, {
+        avgPrice: formatDaiPrice(o.fullPrecisionPrice, {
           decimals,
           decimalsRounded: decimals,
         }),
-        tokensEscrowed: formatDai(0, { zeroStyled: true }),
+        tokensEscrowed: formatDaiPrice(0, { zeroStyled: true }),
         sharesEscrowed: formatMarketShares(market.marketType, 0, {
           zeroStyled: true,
         }),
@@ -176,13 +176,13 @@ function getUserOpenOrders(
       status: order.orderState,
       orderCancellationStatus: orderCancellation[order.orderId],
       originalShares: formatNone(),
-      avgPrice: formatDai(order.fullPrecisionPrice, {
+      avgPrice: formatDaiPrice(order.fullPrecisionPrice, {
         decimals: getPrecision(String(tickSize), 2),
         decimalsRounded: getPrecision(String(tickSize), 2),
       }),
       matchedShares: formatNone(),
       unmatchedShares: formatMarketShares(marketType, order.amount),
-      tokensEscrowed: formatDai(order.tokensEscrowed),
+      tokensEscrowed: formatDaiPrice(order.tokensEscrowed),
       sharesEscrowed: formatMarketShares(marketType, order.sharesEscrowed),
       marketDescription,
       name,

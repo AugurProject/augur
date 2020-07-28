@@ -22,7 +22,7 @@ import {
   MarketReportClaimableContracts,
 } from 'modules/types';
 import React, { useEffect, useState } from 'react';
-import { formatDai } from 'utils/format-number';
+import { formatDaiPrice, formatDai } from 'utils/format-number';
 
 interface BaseProps {
   market: MarketData;

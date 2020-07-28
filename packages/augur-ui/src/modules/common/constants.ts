@@ -9,7 +9,7 @@ import {
 import { DEFAULT_DERIVATION_PATH } from 'modules/auth/helpers/derivation-path';
 import * as d3 from 'd3-time';
 import { createBigNumber } from 'utils/create-big-number';
-import { formatShares, formatDai } from 'utils/format-number';
+import { formatShares, formatDaiPrice } from 'utils/format-number';
 import {
   MarketReportingState,
   MarketTypeName,
@@ -1388,7 +1388,7 @@ export const REPORTING_GUIDE = {
 function createOrder(disappear, price, quantity, id, outcomeId, type) {
   return {
     disappear,
-    avgPrice: formatDai(price),
+    avgPrice: formatDaiPrice(price),
     cumulativeShares: quantity.toString(),
     id,
     mySize: '0',
@@ -1399,7 +1399,7 @@ function createOrder(disappear, price, quantity, id, outcomeId, type) {
     quantity: quantity.toString(),
     shares: quantity.toString(),
     sharesEscrowed: formatShares(quantity),
-    tokensEscrowed: formatDai(price),
+    tokensEscrowed: formatDaiPrice(price),
     type,
     unmatchedShares: formatShares(quantity),
   };

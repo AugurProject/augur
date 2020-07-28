@@ -21,7 +21,7 @@ import { withRouter } from 'react-router-dom';
 import { Action } from 'redux';
 import { ThunkDispatch } from 'redux-thunk';
 import { createBigNumber } from 'utils/create-big-number';
-import { formatDai, formatGasCostToEther } from 'utils/format-number';
+import { formatDaiPrice, formatGasCostToEther, formatDai } from 'utils/format-number';
 
 const mapStateToProps = (state: AppState) => {
   const market = selectMarket(state.modal.marketId);

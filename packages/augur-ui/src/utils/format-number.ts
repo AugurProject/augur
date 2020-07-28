@@ -208,13 +208,24 @@ export function formatOutcomePercentage(
   });
 }
 
+export function formatDaiPrice(
+  num: NumStrBigNumber,
+  opts: FormattedNumberOptions = {}
+): FormattedNumber {
+  return formatDai(num, {
+    decimals: 3,
+    decimalsRounded: 3,
+    ...opts,
+  });
+}
+
 export function formatDai(
   num: NumStrBigNumber,
   opts: FormattedNumberOptions = {}
 ): FormattedNumber {
   return formatNumber(num, {
-    decimals: 3,
-    decimalsRounded: 3,
+    decimals: 2,
+    decimalsRounded: 2,
     denomination: v => {
       const isNegative = Number(v) < 0;
       const val = isNegative
@@ -228,17 +239,6 @@ export function formatDai(
     zeroStyled: false,
     blankZero: false,
     bigUnitPostfix: false,
-    ...opts,
-  });
-}
-
-export function formatDaiAbbr(
-  num: NumStrBigNumber,
-  opts: FormattedNumberOptions = {}
-): FormattedNumber {
-  return formatDai(num, {
-    decimals: 2,
-    decimalsRounded: 2,
     ...opts,
   });
 }

@@ -14,7 +14,7 @@ import {
   ClipboardCopy,
 } from 'modules/common/icons';
 import { PrimaryButton, SecondaryButton } from 'modules/common/buttons';
-import { formatDai, formatEther, formatRep } from 'utils/format-number';
+import { formatDaiPrice, formatEther, formatRep, formatDai } from 'utils/format-number';
 import { AccountBalances, FormattedNumber } from 'modules/types';
 import ModalMetaMaskFinder from 'modules/modal/components/common/modal-metamask-finder';
 import { AFFILIATE_NAME } from 'modules/routes/constants/param-names';

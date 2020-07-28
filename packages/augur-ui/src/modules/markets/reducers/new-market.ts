@@ -12,7 +12,7 @@ import {
 } from 'modules/common/constants';
 import { createBigNumber } from 'utils/create-big-number';
 import { NewMarket, BaseAction, LiquidityOrder } from 'modules/types';
-import { formatShares, formatDai } from 'utils/format-number';
+import { formatShares, formatDaiPrice } from 'utils/format-number';
 import { EMPTY_STATE } from 'modules/create-market/constants';
 import deepClone from 'utils/deep-clone';
 
@@ -69,10 +69,10 @@ export default function(
           mySize: quantity,
           cumulativeShares: quantity,
           orderEstimate: createBigNumber(orderEstimate),
-          avgPrice: formatDai(price),
+          avgPrice: formatDaiPrice(price),
           unmatchedShares: formatShares(quantity),
           sharesEscrowed: formatShares(quantity),
-          tokensEscrowed: formatDai(createBigNumber(orderEstimate)),
+          tokensEscrowed: formatDaiPrice(createBigNumber(orderEstimate)),
           id: updatedOrders.length,
         } as any);
       }
