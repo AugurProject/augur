@@ -55,11 +55,13 @@ export const MigrateRep = ({
   const ethForGas = walletBalances.signerBalances.eth;
 
   useEffect(() => {
+    /*
     if (GsnEnabled) {
       convertV1ToV2Estimate().then(gasLimit => {
         setGasLimit(gasLimit);
       });
     }
+    */
   }, []);
 
   const gasEstimateInEth = formatGasCostToEther(
