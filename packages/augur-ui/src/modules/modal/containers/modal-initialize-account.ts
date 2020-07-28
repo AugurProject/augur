@@ -5,7 +5,7 @@ import { closeModal } from 'modules/modal/actions/close-modal';
 import { AppState } from 'appStore';
 import { createFundedGsnWallet } from 'modules/auth/actions/update-sdk';
 import { GSN_WALLET_SEEN } from 'modules/common/constants';
-import { formatAttoEth, formatDai } from 'utils/format-number';
+import { formatAttoEth, formatDaiPrice, formatDai } from 'utils/format-number';
 import { FormattedNumber } from 'modules/types';
 
 const mapStateToProps = (state: AppState) => {

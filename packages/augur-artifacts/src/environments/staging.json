@@ -142,7 +142,6 @@
     "liteProvider": "jsonrpc",
     "trackBestOffer": false,
     "trackMarketInvalidBids": true,
-    "reportingOnly": false,
     "fallbackProvider": "torus",
     "primaryProvider": "wallet"
   },

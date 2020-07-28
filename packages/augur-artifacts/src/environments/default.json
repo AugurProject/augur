@@ -70,7 +70,6 @@
     "showReloadModal": true,
     "trackBestOffer": false,
     "trackMarketInvalidBids": true,
-    "reportingOnly": false,
     "fallbackProvider": "torus",
     "primaryProvider" : "wallet"
   }

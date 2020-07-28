@@ -16,11 +16,12 @@ import {
   formatGasCostToEther,
   formatNumber,
   formatMarketShares,
+  formatDai,
 } from 'utils/format-number';
 import convertExponentialToDecimal from 'utils/convert-exponential';
 import { MarketData, OutcomeFormatted } from 'modules/types';
 import { calculateTotalOrderValue } from 'modules/trades/helpers/calc-order-profit-loss-percents';
-import { formatDai } from 'utils/format-number';
+import { formatDaiPrice } from 'utils/format-number';
 import { Moment } from 'moment';
 import { calcOrderExpirationTime } from 'utils/format-date';
 import debounce from 'utils/debounce';

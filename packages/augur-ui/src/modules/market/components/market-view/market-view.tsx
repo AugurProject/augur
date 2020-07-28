@@ -60,7 +60,7 @@ import Media from 'react-media';
 import { getDefaultOutcomeSelected } from 'utils/convert-marketInfo-marketData';
 import { createBigNumber } from 'utils/create-big-number';
 import { convertUnixToFormattedDate } from 'utils/format-date';
-import { formatDai, formatShares } from 'utils/format-number';
+import { formatDaiPrice, formatShares, formatDai } from 'utils/format-number';
 import { TutorialPopUp } from '../common/tutorial-pop-up';
 
 interface MarketViewProps {
@@ -548,10 +548,10 @@ export default class MarketView extends Component<
           pending: true,
           id: 'trading-tutorial-pending-order',
           type: BUY,
-          avgPrice: formatDai(TUTORIAL_PRICE),
+          avgPrice: formatDaiPrice(TUTORIAL_PRICE),
           outcomeName: TRADING_TUTORIAL_OUTCOMES[outcomeId].description,
           unmatchedShares: formatShares(TUTORIAL_QUANTITY),
-          tokensEscrowed: formatDai(TUTORIAL_PRICE * TUTORIAL_QUANTITY),
+          tokensEscrowed: formatDaiPrice(TUTORIAL_PRICE * TUTORIAL_QUANTITY),
           sharesEscrowed: formatShares(0),
           creationTime: 0,
         },
@@ -602,7 +602,7 @@ export default class MarketView extends Component<
           totalReturns: formatDai(TUTORIAL_QUANTITY),
           unrealizedNet: formatDai(TUTORIAL_QUANTITY),
           realizedNet: formatDai(TUTORIAL_QUANTITY),
-          purchasePrice: formatDai(TUTORIAL_PRICE),
+          purchasePrice: formatDaiPrice(TUTORIAL_PRICE),
         },
       ];
     }

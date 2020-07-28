@@ -111,7 +111,6 @@ export interface SDKConfiguration {
     showReloadModal?: boolean,
     trackBestOffer?: boolean,
     trackMarketInvalidBids?: boolean,
-    reportingOnly?: boolean,
     fallbackProvider?: "jsonrpc" | "torus",
     liteProvider?: "jsonrpc" | "default",
     primaryProvider?: "jsonrpc" | "wallet"
@@ -272,7 +271,6 @@ export const DEFAULT_SDK_CONFIGURATION: SDKConfiguration = {
     showReloadModal: true,
     trackBestOffer: false,
     trackMarketInvalidBids: true,
-    reportingOnly: false,
     fallbackProvider: "torus",
     liteProvider: "jsonrpc",
     primaryProvider: "wallet"

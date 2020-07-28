@@ -248,6 +248,11 @@ export class Augur<TProvider extends Provider = Provider> {
     return getAddress(account);
   }
 
+  async getAccountEthBalance() {
+    const account = await this.getAccount();
+    return this.getEthBalance(account);
+  }
+
   async sendETH(address: string, value: BigNumber): Promise<void> {
     const transaction = {
       to: address,
