@@ -426,6 +426,8 @@ export function configFromEnvvars(): RecursivePartial<SDKConfiguration> {
 
   if (t(e.ADDRESSES)) config = d(config, { addresses: JSON.parse(e.ADDRESSES) });
 
+  if (t(e.REPORTING_ONLY)) config = d(config, { ui: { reportingOnly: bool(e.REPORTING_ONLY) }});
+
   return config;
 }
 
