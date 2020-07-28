@@ -1,19 +1,30 @@
 import React, { useState } from 'react';
 import Styles from 'modules/app/components/inner-nav/category-filters.styles.less';
+import classNames from 'classnames';
 import { useHistory, useLocation } from 'react-router';
 import { MenuChevron, SearchIcon } from 'modules/common/icons';
 import { CategoryRow } from 'modules/common/form';
-import { CATEGORIES_MAX, CATEGORY_PARAM_NAME } from 'modules/common/constants';
+import { CATEGORIES_MAX, CATEGORY_PARAM_NAME, THEMES, SPORTSBOOK_CATEGORIES } from 'modules/common/constants';
+import { MARKETS } from 'modules/routes/constants/views';
 import parseQuery from 'modules/routes/helpers/parse-query';
 import makeQuery from 'modules/routes/helpers/make-query';
 import { QueryEndpoints } from 'modules/types';
 import { useAppStatusStore } from 'modules/app/store/app-status';
-import { selectPopularCategories, selectAllOtherCategories } from 'modules/markets-list/selectors/markets-list';
+import {
+  selectPopularCategories,
+  selectAllOtherCategories,
+} from 'modules/markets-list/selectors/markets-list';
+
+const {
+  POLITICS,
+  SPORTS,
+} = SPORTSBOOK_CATEGORIES;
 
 const CategoryFilters = () => {
   const history = useHistory();
   const location = useLocation();
   const {
+    theme,
     marketsList: {
       isSearching,
       meta: categoryMetaData,
@@ -24,6 +35,8 @@ const CategoryFilters = () => {
   const popularCategories = selectPopularCategories();
   const allOtherCategories = selectAllOtherCategories();
   const [showAllCategories, setShowAllCategories] = useState(false);
+  const isSportsTheme = theme === THEMES.SPORTS;
+
   const removeCategoryQuery = () => {
     let updatedSearch = parseQuery(location.search);
     delete updatedSearch[CATEGORY_PARAM_NAME];
@@ -64,7 +77,7 @@ const CategoryFilters = () => {
     };
 
     history.push({
-      pathname: 'markets',
+      pathname: MARKETS,
       search: makeQuery(query),
     });
   };
@@ -114,10 +127,8 @@ const CategoryFilters = () => {
       return (
         <div key={idx}>
           <CategoryRow
-            history={history}
             category={item.category}
             count={item.count}
-            loading={isSearching}
             hasChildren={item.count > 0}
             handleClick={() =>
               pathToChildCategory(item.category, selectedCategories)
@@ -151,28 +162,37 @@ const CategoryFilters = () => {
     );
   };
 
+  const getSubRows = ({ children }) => {
+    const subRows = [];
+    for (const [key, value] of Object.entries(children)) {
+      subRows.push({ category: key, ...value });
+    }
+    return subRows.sort((a, b) => b.count - a.count);
+  }
+
   const renderPopularCategories = () => {
-    let renderPopular = popularCategories.map((item, idx) => {
+    const categoriesToRender = isSportsTheme ? popularCategories.filter(({ category }) => category === SPORTS || category === POLITICS) : popularCategories;
+    let renderPopular = categoriesToRender.map((item, idx) => {
       if (isSearching) {
         // No meta data yet
         return (
           <div key={idx}>
             <CategoryRow
-              history={history}
               category={item.category}
               handleClick={() => [item.category]}
               icon={item.icon}
-              loading={true}
-              count={null}
             />
           </div>
         );
+      }
+      let subRows = [];
+      if (isSportsTheme && item.children) {
+        subRows = getSubRows(item);
       }
 
       return (
         <div key={idx}>
           <CategoryRow
-            history={history}
             category={item.category}
             icon={item.icon}
             count={item.count}
@@ -181,6 +201,22 @@ const CategoryFilters = () => {
               pathToChildCategory(item.category, selectedCategories)
             }
           />
+          {isSportsTheme && subRows.length > 0 && (
+            <section>
+              {subRows.map((subItem, index) => (
+                <div key={`${item.category}-${index}`}>
+                  <CategoryRow
+                    category={subItem.category}
+                    count={subItem.count}
+                    hasChildren={subItem.count > 0}
+                    handleClick={() =>
+                      pathToChildCategory(subItem.category, [item.category])
+                    }
+                  />
+                </div>
+              ))}
+            </section>
+          )} 
         </div>
       );
     });
@@ -188,71 +224,64 @@ const CategoryFilters = () => {
     if (popularCategories.length === 0) {
       renderPopular = <span>{SearchIcon} No categories found</span>;
     }
-
+    const header = isSportsTheme ? "Explore Categories" : "Popular Categories";
     return (
       <div className={Styles.CategoriesGroup}>
-        <span>Popular Categories</span>
+        <span>{header}</span>
         {renderPopular}
       </div>
     );
   };
 
-  const renderSelectedCategories = () => {
-    return (
-      <div className={Styles.SelectedCategories}>
-        {selectedCategories
-          .filter(categories => categories !== selectedCategory)
-          .map((category, idx) => {
-            return (
-              <div
-                key={idx}
-                onClick={() => gotoCategory(category, selectedCategories)}
-                className={Styles.backToCategory}
-              >
-                {MenuChevron} {category}
-              </div>
-            );
-          })}
-        <div className={Styles.SelectedCategory}>
-          <CategoryRow
-            history={history}
-            category={selectedCategory}
-            count={getSelectedCategoryCount()}
-            handleClick={() => [selectedCategory]}
-            active={true}
-            loading={isSearching}
-          />
-        </div>
-        {selectedCategory &&
-          getSelectedCategoryCategories().map((item, idx) => {
-            return (
-              <div key={idx}>
-                <CategoryRow
-                  history={history}
-                  category={item.category}
-                  count={item.count}
-                  loading={isSearching}
-                  handleClick={() =>
-                    pathToChildCategory(item.category, selectedCategories)
-                  }
-                  hasChildren={
-                    getCategoryChildrenCount([
-                      ...selectedCategories,
-                      item.category,
-                    ]) > 0
-                  }
-                />
-              </div>
-            );
-          })}
+  const renderSelectedCategories = () => (
+    <div className={classNames(Styles.SelectedCategories, {
+      [Styles.SubCategories]: selectedCategories.length > 1,
+    })}>
+      {selectedCategories
+        .filter(categories => categories !== selectedCategory)
+        .map((category, idx) => {
+          return (
+            <div
+              key={idx}
+              onClick={() => gotoCategory(category, selectedCategories)}
+              className={Styles.backToCategory}
+            >
+              {MenuChevron} {category}
+            </div>
+          );
+        })}
+      <div className={Styles.SelectedCategory}>
+        <CategoryRow
+          category={selectedCategory}
+          count={getSelectedCategoryCount()}
+          handleClick={() => [selectedCategory]}
+        />
       </div>
-    );
-  };
+      {selectedCategory &&
+        getSelectedCategoryCategories().map((item, idx) => {
+          return (
+            <div key={idx}>
+              <CategoryRow
+                category={item.category}
+                count={item.count}
+                handleClick={() =>
+                  pathToChildCategory(item.category, selectedCategories)
+                }
+                hasChildren={
+                  getCategoryChildrenCount([
+                    ...selectedCategories,
+                    item.category,
+                  ]) > 0
+                }
+              />
+            </div>
+          );
+        })}
+    </div>
+  );
 
-  const hasSelectedCategories =
-    selectedCategories && selectedCategories.length > 0;
-  const hasSelectedCategoriesCount =
-    selectedCategories && selectedCategories.length;
+  const hasSelectedCategoriesCount = selectedCategories?.length;
+  const hasSelectedCategories = hasSelectedCategoriesCount > 0 || false;
 
   const showAllCategoriesButton = (
     <div className={Styles.AllCategories}>
@@ -262,9 +291,10 @@ const CategoryFilters = () => {
       </div>
     </div>
   );
-
+  const sportsTitle = selectedCategory ? selectedCategory : 'Popular Markets';
   return (
     <div className={Styles.CategoryFilters}>
+      {isSportsTheme && <h3>{sportsTitle}</h3>}
       {!hasSelectedCategories && renderPopularCategories()}
       {!hasSelectedCategories && categoryMetaData && renderAllCategories()}
 

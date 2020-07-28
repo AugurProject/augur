@@ -2421,6 +2421,7 @@ div.error > div > div > div > div > input {
       color: var(--color-secondary-text);
 
       > svg {
+        display: none;
         width: @size-16;
         height: @size-16;
 
@@ -2441,9 +2442,24 @@ div.error > div > div > div > div > input {
       > span:last-of-type {
         > svg {
           LinearGradient > stop {
-            stop-color: var(--color-reporting);
+            stop-color: var(--color-secondary-text);
           }
         }
+      }
+    }
+
+    &.bold,
+    &.active {
+      > span:first-of-type {
+        .text-14-bold;
+
+        color: var(--color-primary-text);
+      }
+    }
+
+    &.active:not(.loading) {
+      > span:last-of-type {
+        border: @size-1 solid var(--color-primary-text);
       }
     }
   }

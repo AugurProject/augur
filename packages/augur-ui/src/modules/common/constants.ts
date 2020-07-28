@@ -462,6 +462,11 @@ export const MARKET_TYPE_FILTER = 'marketTypeFilter';
 export const SHOW_INVALID_MARKETS_PARAM_NAME = 'showInvalid';
 export const TEMPLATE_FILTER = 'templateFilter';
 
+export const SPORTSBOOK_CATEGORIES = {
+  POLITICS: 'politics',
+  SPORTS: 'sports',
+};
+
 // # Close Dialog Status
 export const CLOSE_DIALOG_CLOSING = 'CLOSE_DIALOG_CLOSING';
 export const CLOSE_DIALOG_PENDING = 'CLOSE_DIALOG_PENDING';
