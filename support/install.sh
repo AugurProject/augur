@@ -137,9 +137,16 @@ read_env(){
 get_augur_key() {
   helper() {
     key=$(docker logs $(docker ps|grep augur_augur_1|awk '{print $1}') 2>&1|grep -C0 'wallet with address'|awk '{print $5}')
-    if [ -z "$key" ]
-      then return 1
-      else echo $key; return 0
+    key_exists=$(docker logs $(docker ps|grep augur_augur_1|awk '{print $1}') 2>&1|grep -C0 'Keyfile already exists at path')
+    if [ ! -z "$key" ]; then
+      echo "$key"
+      echo "$key" > ./keys/addr.key
+      return 0
+    elif [ ! -z "$key_exists" ]; then
+      cat ./keys/addr.key
+      return 0
+    else
+      return 1
     fi
   }
   until helper
