@@ -482,6 +482,7 @@ export class MarketDB extends DerivedDB {
       100: '000000000000000000000000000000',
     };
     log['lastPassingLiquidityCheck'] = 0;
+    log['isTemplate'] = false;
     log['feeDivisor'] = new BigNumber(1)
       .dividedBy(
         new BigNumber(log['feePerCashInAttoCash'], 16).dividedBy(QUINTILLION)
