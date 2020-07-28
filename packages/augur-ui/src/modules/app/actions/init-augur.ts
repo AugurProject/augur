@@ -123,7 +123,7 @@ const isNetworkMismatch = async (config, dispatch): boolean => {
       })
     );
   }
-  return isMisMatched;
+  return !isMisMatched;
 }
 
 async function createDefaultProvider(config: SDKConfiguration, canUseWeb3) {
