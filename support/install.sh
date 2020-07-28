@@ -343,7 +343,8 @@ case "$method" in
     docker-compose up -d augur
     gsn_key=`get_gsn_key`
     printf "GSN Relayer Address: $gsn_key\n"
-    docker-compose exec augur yarn flash --keyfile /keys/priv.key --network mainnet gsn-stake-relay --relayAddress "$gsn_key" --ethAmount 1
+    export $(cat .env | xargs)
+    docker-compose exec augur yarn flash --keyfile /keys/priv.key --network $AUGUR_ENV gsn-stake-relay --relayAddress "$gsn_key" --ethAmount 1
   )
   ;;
 "stop")
