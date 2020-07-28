@@ -17,6 +17,7 @@ import {
   loginWithInjectedWeb3,
 } from 'modules/auth/actions/login-with-injected-web3';
 import { loginWithTorus } from 'modules/auth/actions/login-with-torus';
+import { loginWithPortis } from 'modules/auth/actions/login-with-portis';
 import { logout } from 'modules/auth/actions/logout';
 import isGlobalWeb3 from 'modules/auth/helpers/is-global-web3';
 import {
@@ -29,6 +30,7 @@ import {
   NETWORK_NAMES,
   SIGNIN_SIGN_WALLET,
   MODAL_REPORTING_ONLY,
+  PORTIS_API_KEY,
 } from 'modules/common/constants';
 import { getNetworkId } from 'modules/contracts/actions/contractCalls';
 import { listenForStartUpEvents } from 'modules/events/actions/listen-to-updates';
@@ -87,6 +89,11 @@ async function loadAccountIfStored(dispatch: ThunkDispatch<void, any, Action>) {
 
         await dispatch(loginWithInjectedWeb3());
       }
+
+      if (loggedInAccountType === ACCOUNT_TYPES.PORTIS) {
+        await dispatch(loginWithPortis(false));
+      }
+
       if (loggedInAccountType === ACCOUNT_TYPES.FORTMATIC) {
         await dispatch(loginWithFortmatic());
       }
@@ -100,7 +107,7 @@ async function loadAccountIfStored(dispatch: ThunkDispatch<void, any, Action>) {
   }
 }
 
-const isNetworkMismatch = async (config, dispatch): boolean => {
+const isCorrectNetwork = async (config, dispatch): boolean => {
   const chainId = await ethereum.request({ method: 'eth_chainId' });
   const web3NetworkId = String(createBigNumber(chainId));
   const privateNetwork = isPrivateNetwork(config.networkId);
@@ -116,7 +123,7 @@ const isNetworkMismatch = async (config, dispatch): boolean => {
       })
     );
   }
-  return isMisMatched;
+  return !isMisMatched;
 }
 
 async function createDefaultProvider(config: SDKConfiguration, canUseWeb3) {
@@ -129,27 +136,21 @@ async function createDefaultProvider(config: SDKConfiguration, canUseWeb3) {
   } else if ((config.ui.primaryProvider === 'jsonrpc' || config.ui?.fallbackProvider === "jsonrpc") && config.ethereum.http) {
     return new JsonRpcProvider(config.ethereum.http);
   } else {
-    // Use torus provider
+    // Use portis provider
 
     // Use import instead of import for wallet SDK packages
     // to conditionally load web3 into the DOM.
     //
     // Note: This also creates a split point in webpack
-    const { default: Torus } = await import( /*webpackChunkName: 'torus'*/ '@toruslabs/torus-embed');
-    const torus = new Torus({});
+    const { default: Portis } = await import( /*webpackChunkName: 'portis'*/ '@portis/web3');
 
-    const host = getNetwork(config.networkId);
-    await torus.init({
-      network: { host },
-      showTorusButton: false,
-    });
+    const portisNetwork = getNetwork(config.networkId);
+    const portis = new Portis(
+      PORTIS_API_KEY,
+      portisNetwork,
+    );
 
-    // Tor.us cleanup
-    const torusWidget = document.querySelector('#torusWidget');
-    if (torusWidget) {
-      torusWidget.remove();
-    }
-    return new Web3Provider(torus.provider);
+    return new Web3Provider(portis.provider);
   }
 }
 
@@ -242,7 +243,7 @@ export function connectAugur(
     const we3Provider = await detectEthereumProvider();
     if (we3Provider) {
       try {
-        useWeb3 = await isNetworkMismatch(config, dispatch);
+        useWeb3 = await isCorrectNetwork(config, dispatch);
       } catch(e) {
         console.error('Error with web3 provider, moving on');
       }
