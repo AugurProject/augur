@@ -321,9 +321,12 @@ PRETTYBLOCK
     augur_key=`get_augur_key`
 
     cat <<PRETTYBLOCK
-Send 1 ETH to GSN relay address $gsn_key to cover gas costs for txs
-Also send 1.1 ETH to your augur address $augur_key for when you stake
-To stake to gsn, call "$0 stake-gsn"
+Go to https://www.opengsn.org/relay-hubs/0xd216153c06e857cd7f72665e0af1d7d82172f494/relay?relayAddress=$gsn_key
+That's your GSN relay. It needs ether to cover gas costs for txs. Recommended amount: 1 ETH.
+It also needs 1 ETH to stake.
+
+If you'd prefer to do this via CLI then send the gas cost ether to your augur address $augur_key.
+Then stake gsn by calling "$0 stake-gsn"
 PRETTYBLOCK
   )
   ;;
