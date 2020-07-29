@@ -790,6 +790,7 @@ export const TEN = createBigNumber(10, 10);
 export const FIVE = createBigNumber(5, 10);
 export const TEN_TO_THE_EIGHTEENTH_POWER = TEN.exponentiatedBy(18);
 export const MIN_QUANTITY = createBigNumber('0.01');
+export const ACTIVATE_ACCOUNT_ESTIMATE = createBigNumber(1500000);
 export const DISPUTE_GAS_COST = createBigNumber(480000);
 export const INITAL_REPORT_GAS_COST = createBigNumber(1094412);
 export const V1_REP_MIGRATE_ESTIMATE = createBigNumber(303000);

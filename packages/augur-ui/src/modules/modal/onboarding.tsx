@@ -13,7 +13,7 @@ import AccountStatusTracker from 'modules/modal/containers/account-status-tracke
 import TransferMyTokens from 'modules/modal/containers/transfer-my-tokens';
 import { LinkContent } from 'modules/types';
 import classNames from 'classnames';
-import { ONBOARDING_MAX_STEPS, TRANSACTIONS, CREATEAUGURWALLET, DAI, GWEI_CONVERSION } from 'modules/common/constants';
+import { ONBOARDING_MAX_STEPS, TRANSACTIONS, CREATEAUGURWALLET, DAI, GWEI_CONVERSION, ACTIVATE_ACCOUNT_ESTIMATE } from 'modules/common/constants';
 import { LeftChevron } from 'modules/common/icons';
 
 import Styles from 'modules/modal/modal.styles.less';
@@ -61,7 +61,7 @@ export const Onboarding = ({
 }: OnboardingProps) => {
   const [activationEstimate, setActivationEstimate] = useState('-');
   async function getEstimateActivationWallet() {
-    const gas = await runPeriodicals_estimateGas();
+    const gas = ACTIVATE_ACCOUNT_ESTIMATE;
     const gasInDai = getGasInDai(Number(createBigNumber(gas)), gasPrice);
     setActivationEstimate(gasInDai.formatted);
   }
