@@ -88,7 +88,7 @@ export const updateAssets = (): ThunkAction<any, any, any, any> => async (
 
       // convert worst cost tx in dai
       const dai2EthConvert = createBigNumber(dai2Eth.value);
-      const desiredEthReserveInDai = feeReserveAmount.times(dai2EthConvert);
+      const desiredEthReserveInDai = desiredEthBalance.times(dai2EthConvert);
       const totalEstimatedMaxDai = dai2EthConvert.times((gasPriceWei.times(createBigNumber(6000000))).div(ETHER)); // Estimate of a very large tx with current gas price
       const totalWorstCaseDai = totalEstimatedMaxDai.plus(desiredEthReserveInDai);
 
