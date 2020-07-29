@@ -120,7 +120,7 @@ export const Swap = ({
   ) => {
     setErrorMessage('');
     if (amount.lt(0) || isNaN(amount.toNumber())) {
-      setErrorMessage('Check amount inputted to swap');
+      setErrorMessage('Check conversion amount');
     } else if (amount.gt(formattedInputAmount)) {
       setErrorMessage('Check amount is not greater than balance');
     } else {
