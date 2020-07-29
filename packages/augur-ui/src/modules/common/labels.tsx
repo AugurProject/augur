@@ -1510,6 +1510,7 @@ export const ApprovalTxButtonLabel = ({
   useEffect(() => {
     checkApprovals(account).then(result => {
       setIsApproved(result);
+      isApprovalCallback(result);
     });
   }, []);
 
@@ -1519,7 +1520,10 @@ export const ApprovalTxButtonLabel = ({
         <DismissableNotice
           show={true}
           description=""
-          buttonAction={(account) => doApprovals(account)}
+          buttonAction={(account) => doApprovals(account).then(() => {
+            setIsApproved(true);
+            isApprovalCallback(true);
+          })}
           buttonText={buttonName}
           queueName={constants.TRANSACTIONS}
           queueId={constants.APPROVE} // TODO: check that is actually is the correct queue id

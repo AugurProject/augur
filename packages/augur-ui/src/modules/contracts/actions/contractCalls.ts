@@ -809,11 +809,11 @@ export async function isApprovedMarketCreation(address) {
   return await isContractApproval(address, contracts.augur.address, contracts.cash);
 }
 
-export async function approveMarketCreation() {
+export async function approveMarketCreation(): Promise<void> {
   const { contracts } = augurSdk.get();
   const augurContract = contracts.augur.address;
   const APPROVAL_AMOUNT = new BigNumber(2**255);
-  contracts.cash.approve(augurContract, APPROVAL_AMOUNT);
+  return await contracts.cash.approve(augurContract, APPROVAL_AMOUNT);
 }
 
 export async function approveToTrade() {
