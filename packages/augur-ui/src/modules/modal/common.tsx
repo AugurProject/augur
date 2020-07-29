@@ -411,9 +411,10 @@ interface TransferMyDaiProps {
   showTransferModal: Function;
   isCondensed: boolean;
   tokenName: string;
+  autoClose?: boolean;
 }
 
-export const TransferMyTokens = ({ walletType, tokenAmount, showTransferModal, tokenName, isCondensed = false}: TransferMyDaiProps) => {
+export const TransferMyTokens = ({ walletType, tokenAmount, showTransferModal, tokenName, isCondensed = false, autoClose = false }: TransferMyDaiProps) => {
   if (isCondensed) {
     return (
       <div className={Styles.TransferMyDaiCondensed}>
@@ -436,7 +437,7 @@ export const TransferMyTokens = ({ walletType, tokenAmount, showTransferModal, t
         <span>Transfer any amount to your trading account.</span>
       </div>
       <PrimaryButton
-        action={() => showTransferModal()}
+        action={() => showTransferModal(autoClose)}
         text={`Transfer my ${titleCase(tokenName)}`}
       />
     </div>

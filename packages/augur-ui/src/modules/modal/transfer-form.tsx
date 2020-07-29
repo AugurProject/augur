@@ -47,6 +47,7 @@ interface TransferFormProps {
   transactionLabel: string;
   signingEthBalance: string;
   tokenName: string;
+  autoClose: boolean;
 }
 
 function sanitizeArg(arg) {
@@ -68,6 +69,7 @@ export const TransferForm = ({
   transactionLabel,
   signingEthBalance,
   tokenName,
+  autoClose,
 }: TransferFormProps) => {
   const [currency, setCurrency] = useState(DAI);
   const [signerPays, setSignerPays] = useState(true);
@@ -340,8 +342,9 @@ export const TransferForm = ({
                   useTopOff = false;
                 }
               }
-              transferFunds(formattedAmount.fullPrecision, currency, address, useSigner, useTopOff)}
-            }
+              transferFunds(formattedAmount.fullPrecision, currency, address, useSigner, useTopOff)
+              if (autoClose) closeAction();
+            }}
             queueName={TRANSACTIONS}
             queueId={currency === ETH ? SENDETHER : TRANSFER}
             disabled={!isValid}

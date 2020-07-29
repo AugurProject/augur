@@ -16,7 +16,6 @@ import { totalTradingBalance } from 'modules/auth/selectors/login-account';
 import { getTransactionLabel } from 'modules/auth/selectors/get-gas-price';
 import { WALLET_STATUS } from 'modules/app/actions/update-app-status';
 import { WALLET_STATUS_VALUES } from 'modules/common/constants';
-import { getEthReserve } from 'modules/auth/selectors/get-eth-reserve';
 
 const mapStateToProps = (state: AppState) => {
   const { loginAccount, appStatus, modal } = state;
@@ -39,7 +38,8 @@ const mapStateToProps = (state: AppState) => {
     rep: TRANSFER_REP_GAS_COST,
     dai: TRANSFER_DAI_GAS_COST,
   },
-  transactionLabel: getTransactionLabel(state)
+  transactionLabel: getTransactionLabel(state),
+  autoClose: modal?.autoClose,
 }
 };
 
@@ -53,6 +53,7 @@ const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({
 });
 
 const mergeProps = (sP: any, dP: any, oP: any) => ({
+  autoClose: sP.autoClose,
   signingEthBalance: sP.signingEthBalance,
   fallBackGasCosts: sP.fallBackGasCosts,
   GsnEnabled: sP.GsnEnabled,

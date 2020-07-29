@@ -208,7 +208,7 @@ const ProcessingButtonComponent = (props: DefaultButtonProps) => {
           icon={icon}
           text={buttonText}
           action={buttonAction}
-          disabled={isDisabled}
+          disabled={isDisabled || props.disabled}
         />
       )}
       {!props.secondaryButton && !props.cancelButton && !props.submitTextButtton && (
@@ -219,7 +219,7 @@ const ProcessingButtonComponent = (props: DefaultButtonProps) => {
           icon={icon}
           text={buttonText}
           action={buttonAction}
-          disabled={isDisabled}
+          disabled={isDisabled || props.disabled}
         />
       )}
       {props.submitTextButtton && (
@@ -229,7 +229,7 @@ const ProcessingButtonComponent = (props: DefaultButtonProps) => {
           failed={failed}
           text={buttonText}
           action={buttonAction}
-          disabled={isDisabled}
+          disabled={isDisabled || props.disabled}
         />
       )}
       {props.cancelButton && (
@@ -240,7 +240,7 @@ const ProcessingButtonComponent = (props: DefaultButtonProps) => {
           icon={icon}
           text={buttonText}
           action={buttonAction}
-          disabled={isDisabled}
+          disabled={isDisabled || props.disabled}
         />
       )}
     </>

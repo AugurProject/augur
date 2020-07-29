@@ -4,7 +4,7 @@ import { AppState } from 'appStore';
 import { ThunkDispatch } from 'redux-thunk';
 import { Action } from 'redux';
 import { TransferMyTokens } from 'modules/modal/common';
-import { formatDaiPrice, formatDai } from 'utils/format-number';
+import { formatDai } from 'utils/format-number';
 import { updateModal } from '../actions/update-modal';
 import {
   MODAL_BUY_DAI,
@@ -17,6 +17,7 @@ interface OwnProps {
   tokenName: string,
   condensed: boolean,
   callBack: Function,
+  autoClose?: boolean,
 }
 
 const mapStateToProps = (state: AppState, ownProps: OwnProps) => ({
@@ -32,9 +33,9 @@ const mapStateToProps = (state: AppState, ownProps: OwnProps) => ({
 
 const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({
   showBuyDaiModal: () => dispatch(updateModal({ type: MODAL_BUY_DAI })),
-  transferfunds: (callback, tokenName) =>
+  transferfunds: (callback, tokenName, autoClose) =>
     dispatch(
-      updateModal({ type: MODAL_TRANSFER, useSigner: true, cb: callback, tokenName })
+      updateModal({ type: MODAL_TRANSFER, useSigner: true, cb: callback, tokenName, autoClose })
     ),
 });
 
@@ -43,12 +44,13 @@ const mergeProps = (sP: any, dP: any, oP: OwnProps) => ({
   isCondensed: oP.condensed || false,
   tokenName: oP.tokenName ? oP.tokenName : DAI,
   tokenAmount: formatDai(sP.tokenAmount),
-  showTransferModal: () => {
+  autoClose: oP.autoClose,
+  showTransferModal: (autoClose) => {
     dP.transferfunds(() => {
       if (oP.callBack) {
         setTimeout(() => oP.callBack());
       }
-    }, oP.tokenName);
+    }, oP.tokenName, autoClose);
   },
 });
 

@@ -79,6 +79,7 @@ const mergeProps = (sP: any, dP: any, oP: any) => ({
       sP.pendingQueue[TRANSACTIONS] &&
       sP.pendingQueue[TRANSACTIONS][CREATEAUGURWALLET] &&
       sP.pendingQueue[TRANSACTIONS][CREATEAUGURWALLET].status === 'Success'),
+  disableActivatebutton: sP.walletStatus === WALLET_STATUS_VALUES.CREATED,
   analyticsEvent: () => dP.track(AUGUR_IS_P2P, {}),
   createFundedGsnWallet: () => dP.createFundedGsnWallet(),
   changeCurrentStep: step => {
