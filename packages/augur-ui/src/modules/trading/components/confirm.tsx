@@ -84,6 +84,7 @@ interface ConfirmProps {
   account: string;
   updateAccountApproval: Function;
   affiliate: string;
+  isLogged: boolean;
 }
 
 interface ConfirmState {
@@ -305,6 +306,7 @@ class Confirm extends Component<ConfirmProps, ConfirmState> {
       updateAccountApproval,
       tradingApproved,
       affiliate,
+      isLogged,
     } = this.props;
 
     const {
@@ -471,7 +473,7 @@ class Confirm extends Component<ConfirmProps, ConfirmState> {
             />
           </div>
         )}
-        { !tradingApproved &&
+        { !tradingApproved && isLogged && !tradingTutorial && !initialLiquidity &&
           <ApprovalTxButtonLabel
             className={Styles.ApprovalNotice}
             title={'Approve to trade'}
