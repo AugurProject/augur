@@ -16,6 +16,8 @@ import {
   FILTER_ALL,
   PAGINATION_COUNT,
   DEFAULT_MARKET_OFFSET,
+  GAMES,
+  FUTURES,
 } from 'modules/common/constants';
 import { MARKETS } from 'modules/routes/constants/views';
 import {
@@ -242,6 +244,7 @@ const DEFAULT_MARKETS_LIST_STATE: MarketsList = {
   selectedCategory: null,
   marketCardFormat: MARKET_CARD_FORMATS.CLASSIC,
   isSearchInPlace: false,
+  sportsGroupTypeFilter: GAMES,
 };
 
 export const DEFAULT_APP_STATUS = {
@@ -289,7 +292,6 @@ export const DEFAULT_APP_STATUS = {
 };
 
 export const APP_STATUS_ACTIONS = {
-  
   SET_THEME: 'SET_THEME',
   SET_ODDS: 'SET_ODDS',
   SET_TIME_FORMAT: 'SET_TIME_FORMAT',

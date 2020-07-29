@@ -97,7 +97,6 @@ export const MyBetsInnerNav = () => {
             defaultSelection={viewByLocal}
             large
             onChange={viewByLocal => setState({ ...state, viewByLocal })}
-
           />
           {showEvents && (
             <>
@@ -143,7 +142,7 @@ export const MyBetsInnerNav = () => {
         </div>
 
         <SecondaryButton
-          text={'Apply filters'}
+          text="Apply Filters"
           action={() => {
             setViewBy(viewByLocal);
             if (showEvents) {
