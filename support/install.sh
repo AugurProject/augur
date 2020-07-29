@@ -142,10 +142,10 @@ get_augur_key() {
     key_exists=$(docker logs $(docker ps|grep augur_augur_1|awk '{print $1}') 2>&1|grep -C0 'Keyfile already exists at path')
     if [ ! -z "$key" ]; then
       echo "$key"
-      echo "$key" > ./keys/addr.key
+      echo "$key" > ./addr.key
       return 0
     elif [ ! -z "$key_exists" ]; then
-      cat ./keys/addr.key
+      cat ./addr.key
       return 0
     else
       return 1
