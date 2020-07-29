@@ -681,7 +681,6 @@ export interface LoginAccount {
   totalOpenOrdersFrozenFunds?: string;
   tradingPositionsTotal?: UnrealizedRevenue;
   timeframeData?: TimeframeData;
-  allowance?: BigNumber;
   tradingApproved?: boolean;
   balances: AccountBalances;
   reporting: Getters.Accounts.AccountReportingHistory;

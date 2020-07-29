@@ -1495,6 +1495,7 @@ interface ApprovalTxButtonLabelProps {
   className?: string;
   account: string;
   isApprovalCallback: Function;
+  title: string;
 }
 export const ApprovalTxButtonLabel = ({
   checkApprovals,
@@ -1504,6 +1505,7 @@ export const ApprovalTxButtonLabel = ({
   className,
   account,
   isApprovalCallback,
+  title,
 }: ApprovalTxButtonLabelProps) => {
   const [isApproved, setIsApproved] = useState(false);
 
@@ -1519,7 +1521,7 @@ export const ApprovalTxButtonLabel = ({
       <div className={classNames(Styles.ModalMessageLabel, className)}>
         <DismissableNotice
           show={true}
-          description=""
+          title={title}
           buttonAction={(account) => doApprovals(account).then(() => {
             setIsApproved(true);
             isApprovalCallback(true);
@@ -1527,7 +1529,7 @@ export const ApprovalTxButtonLabel = ({
           buttonText={buttonName}
           queueName={constants.TRANSACTIONS}
           queueId={constants.APPROVE} // TODO: check that is actually is the correct queue id
-          title={`${buttonName} requires ${numApprovals} approval${numApprovals > 1 ? 's' : ''}`}
+          description={`${buttonName} requires ${numApprovals} approval${numApprovals > 1 ? 's' : ''}`}
           buttonType={DISMISSABLE_NOTICE_BUTTON_TYPES.BUTTON}
         />
       </div>

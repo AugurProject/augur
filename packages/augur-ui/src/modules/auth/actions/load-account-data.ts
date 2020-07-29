@@ -1,5 +1,5 @@
 import { loadAccountDataFromLocalStorage } from 'modules/auth/actions/load-account-data-from-local-storage';
-import { checkAccountAllowance } from 'modules/auth/actions/approve-account';
+import { checkAccountApproval } from 'modules/auth/actions/approve-account';
 import { loadAccountHistory } from 'modules/auth/actions/load-account-history';
 import { loadUniverseDetails } from 'modules/universe/actions/load-universe-details';
 import { windowRef } from 'utils/window-ref';
@@ -37,7 +37,7 @@ export const loadAccountData = (
 
     }
     dispatch(loadAccountHistory());
-    dispatch(checkAccountAllowance());
+    dispatch(checkAccountApproval());
     dispatch(loadUniverseDetails(universe.id, address));
     dispatch(updateAssets());
     dispatch(loadGasPriceInfo());

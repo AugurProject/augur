@@ -37,7 +37,7 @@ import {
 } from 'modules/app/actions/update-app-status';
 import { updateBlockchain } from 'modules/app/actions/update-blockchain';
 import { updateConnectionStatus } from 'modules/app/actions/update-connection';
-import { checkAccountAllowance } from 'modules/auth/actions/approve-account';
+import { checkAccountApproval } from 'modules/auth/actions/approve-account';
 import { loadAccountData } from 'modules/auth/actions/load-account-data';
 import { loadAccountReportingHistory } from 'modules/auth/actions/load-account-reporting';
 import { loadDisputeWindow } from 'modules/auth/actions/load-dispute-window';
@@ -290,7 +290,7 @@ export const handleNewBlockLog = (log: NewBlock) => async (
   // update assets each block
   if (getState().authStatus.isLogged) {
     dispatch(updateAssets());
-    dispatch(checkAccountAllowance());
+    dispatch(checkAccountApproval());
     dispatch(
       loadAnalytics(getState().analytics, blockchain.currentAugurTimestamp)
     );

@@ -51,6 +51,7 @@ interface UnsignedOrdersProps {
   openOrders: boolean;
   insufficientFunds: boolean;
   isApproved: boolean;
+  affiliate: string;
 }
 
 const orderRow = (order: LiquidityOrder, props: UnsignedOrdersProps) => {
@@ -196,10 +197,11 @@ export const UnsignedOrders = (props: UnsignedOrdersProps) => {
       </main>
       <ApprovalTxButtonLabel
         className={Styles.MultipleTransactions}
-        buttonName={'Approve to create orders'}
+        title={'Approve to create orders'}
+        buttonName={'Approve'}
         numApprovals={4}
         checkApprovals={isApprovedToTrade}
-        doApprovals={approveToTrade}
+        doApprovals={() => approveToTrade(props.affiliate)}
         account={props.loginAccount.address}
         isApprovalCallback={value => {
           value && setIsApproved(value);

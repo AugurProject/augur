@@ -30,7 +30,7 @@ const mergeProps = (sP: any, dP: any, oP: any) => ({
     {
       text: "Approve",
       action: () => {
-        dP.approveAccount(sP.modal.approveOnSent, sP.modal.approveCallback);
+        dP.approveAccount(sP.account?.affiliate);
         dP.closeModal();
       }
     }

@@ -36,6 +36,7 @@ const mapStateToProps = (state: AppState) => {
     loginAccount: state.loginAccount,
     chunkOrders: !state.appStatus.zeroXEnabled,
     availableDai,
+    affiliate: state.loginAccount?.affiliate,
   };
 };
 
@@ -104,9 +105,9 @@ const mergeProps = (sP, dP, oP) => {
     maxPrice,
     minPrice,
     transactionHash,
-    needsApproval,
     insufficientFunds,
     submitAllTxCount,
+    affiliate: sP.affiliate,
     breakdown: [
       {
         label: 'Total Cost (DAI)',
@@ -128,7 +129,6 @@ const mergeProps = (sP, dP, oP) => {
     removeLiquidityOrder: dP.removeLiquidityOrder,
     sendLiquidityOrder: dP.sendLiquidityOrder,
     loginAccount: sP.loginAccount,
-    bnAllowance,
     buttons: [
       {
         disabled: insufficientFunds,

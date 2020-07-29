@@ -25,6 +25,8 @@ import { formatDaiPrice } from 'utils/format-number';
 import { Moment } from 'moment';
 import { calcOrderExpirationTime } from 'utils/format-date';
 import debounce from 'utils/debounce';
+import { ApprovalTxButtonLabel } from 'modules/common/labels';
+import { isApprovedToTrade, approveToTrade } from 'modules/contracts/actions/contractCalls';
 
 export interface SelectedOrderProperties {
   orderPrice: string;
@@ -66,6 +68,7 @@ interface WrapperProps {
   endTime: number;
   disableTrading?: boolean;
   canPostOrder: Function;
+  tradingApproved: boolean;
 }
 
 interface WrapperState {
@@ -489,6 +492,7 @@ class Wrapper extends Component<WrapperProps, WrapperState> {
       initializeGsnWallet,
       gsnWalletInfoSeen,
       disableTrading,
+      tradingApproved,
     } = this.props;
     let {
       marketType,
@@ -542,7 +546,7 @@ class Wrapper extends Component<WrapperProps, WrapperState> {
           }
         }}
         disabled={
-          !trade || !trade.limitPrice || (gsnUnavailable && isOpenOrder) || insufficientFunds || disableTrading || !allowPostOnlyOrder
+          !trade || !trade.limitPrice || (gsnUnavailable && isOpenOrder) || insufficientFunds || disableTrading || !tradingApproved || !allowPostOnlyOrder
         }
       />
     );

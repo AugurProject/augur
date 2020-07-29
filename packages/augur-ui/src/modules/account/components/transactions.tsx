@@ -57,7 +57,6 @@ export const Transactions = ({
           <h4>Your funds</h4>
           <DepositButton action={addFunds} />
           <TransferButton action={transfer} />
-          <WithdrawButton action={cashOut} />
         </div>
         {showFaucets && (
           <div>

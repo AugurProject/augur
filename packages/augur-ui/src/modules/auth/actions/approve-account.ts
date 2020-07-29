@@ -6,7 +6,7 @@ import { NodeStyleCallback } from 'modules/types';
 import { ThunkDispatch, ThunkAction } from 'redux-thunk';
 import { Action } from 'redux';
 
-export function checkAccountAllowance(
+export function checkAccountApproval(
   callback: NodeStyleCallback = logError
 ): ThunkAction<any, any, any, any> {
   return async (

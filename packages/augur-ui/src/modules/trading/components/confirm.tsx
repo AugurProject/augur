@@ -36,10 +36,11 @@ import {
   formatDai,
 } from 'utils/format-number';
 import { BigNumber, createBigNumber } from 'utils/create-big-number';
-import { LinearPropertyLabel, TransactionFeeLabelToolTip } from 'modules/common/labels';
-import { Trade } from 'modules/types';
+import { LinearPropertyLabel, TransactionFeeLabelToolTip, ApprovalTxButtonLabel } from 'modules/common/labels';
+import { Trade, FormattedNumber } from 'modules/types';
 import { ExternalLinkButton, ProcessingButton, PrimaryButton } from 'modules/common/buttons';
 import { TXEventName } from '@augurproject/sdk-lite';
+import { isApprovedToTrade, approveToTrade } from 'modules/contracts/actions/contractCalls';
 
 interface MessageButton {
   action: Function;
@@ -56,7 +57,7 @@ interface Message {
 }
 
 interface ConfirmProps {
-  allowanceBigNumber: BigNumber;
+  tradingApproved: boolean;
   trade: Trade;
   gasPrice: number;
   gasLimit: number;
@@ -75,10 +76,14 @@ interface ConfirmProps {
   walletStatus: string;
   selectedOutcomeId: number;
   updateWalletStatus: Function;
-  showAddFundsModal: Funciton;
+  showAddFundsModal: Function;
   sweepStatus: string;
   postOnlyOrder: boolean;
   allowPostOnlyOrder: boolean;
+  ethToDaiRate: FormattedNumber;
+  account: string;
+  updateAccountApproval: Function;
+  affiliate: string;
 }
 
 interface ConfirmState {
@@ -145,7 +150,7 @@ class Confirm extends Component<ConfirmProps, ConfirmState> {
   constructMessages(props) {
     const {
       trade,
-      allowanceBigNumber,
+      tradingApproved,
       gasPrice,
       gasLimit,
       availableEth,
@@ -191,20 +196,6 @@ class Confirm extends Component<ConfirmProps, ConfirmState> {
         type: WARNING,
         message: `Percentages are determind by denomination range, rounding may occur. `,
         link: HELP_CENTER,
-      };
-    }
-
-    if (
-      !isNaN(numTrades) && numTrades > 1 &&
-      allowanceBigNumber &&
-      createBigNumber(potentialDaiLoss.value).gt(allowanceBigNumber) &&
-      !tradingTutorial
-    ) {
-      needsApproval = true;
-      messages = {
-        header: 'MULTIPLE TRANSACTIONS',
-        type: WARNING,
-        message: `This trade will take ${numTrades} Transactions and approvals.`,
       };
     }
 
@@ -310,6 +301,10 @@ class Confirm extends Component<ConfirmProps, ConfirmState> {
       availableDai,
       showAddFundsModal,
       ethToDaiRate,
+      account,
+      updateAccountApproval,
+      tradingApproved,
+      affiliate,
     } = this.props;
 
     const {
@@ -476,6 +471,21 @@ class Confirm extends Component<ConfirmProps, ConfirmState> {
             />
           </div>
         )}
+        { !tradingApproved &&
+          <ApprovalTxButtonLabel
+            className={Styles.ApprovalNotice}
+            title={'Approve to trade'}
+            buttonName={'Approve'}
+            numApprovals={4}
+            checkApprovals={isApprovedToTrade}
+            doApprovals={() => approveToTrade(affiliate)}
+            account={account}
+            isApprovalCallback={value => {
+              value && updateAccountApproval();
+            }}
+          />
+        }
+
         {messages && (
           <div
             className={classNames(Styles.MessageContainer, {

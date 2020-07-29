@@ -4,8 +4,9 @@ import { createBigNumber } from 'utils/create-big-number';
 import { AppState } from 'appStore';
 import { totalTradingBalance } from 'modules/auth/selectors/login-account';
 import { updateModal } from 'modules/modal/actions/update-modal';
-import { MODAL_INITIALIZE_ACCOUNT, CREATEAUGURWALLET, TRANSACTIONS, MODAL_ADD_FUNDS } from 'modules/common/constants';
+import { CREATEAUGURWALLET, TRANSACTIONS, MODAL_ADD_FUNDS } from 'modules/common/constants';
 import { removePendingTransaction } from 'modules/pending-queue/actions/pending-queue-management';
+import { checkAccountApproval } from 'modules/auth/actions/approve-account';
 
 const mapStateToProps = (state: AppState, ownProps) => {
   const { authStatus, loginAccount, appStatus, newMarket, env } = state;
@@ -28,10 +29,12 @@ const mapStateToProps = (state: AppState, ownProps) => {
     ethToDaiRate,
     hasFunds,
     isLogged: authStatus.isLogged,
-    allowanceBigNumber: loginAccount.allowance,
+    tradingApproved: loginAccount.tradingApproved,
+    account: loginAccount.address,
     walletStatus,
     sweepStatus,
     disableTrading: process.env.REPORTING_ONLY,
+    affiliate: loginAccount?.affiliate,
   };
 };
 
@@ -40,6 +43,7 @@ const mapDispatchToProps = (dispatch) => ({
     dispatch(removePendingTransaction(CREATEAUGURWALLET));
   },
   showAddFundsModal: () => dispatch(updateModal({ type: MODAL_ADD_FUNDS })),
+  updateAccountApproval: () => dispatch(checkAccountApproval())
 });
 
 const mergeProps = (sP, dP, oP) => {

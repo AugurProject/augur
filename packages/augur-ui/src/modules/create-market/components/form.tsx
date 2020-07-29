@@ -944,7 +944,8 @@ export default class Form extends React.Component<FormProps, FormState> {
               {secondButton === CREATE && (
                 <ApprovalTxButtonLabel
                   className={Styles.MultipleTransactions}
-                  buttonName={'Approve to market creation'}
+                  title={'Approve to market creation'}
+                  buttonName={'Approve'}
                   numApprovals={1}
                   checkApprovals={isApprovedMarketCreation}
                   doApprovals={approveMarketCreation}

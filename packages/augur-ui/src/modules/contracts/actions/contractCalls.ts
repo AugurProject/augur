@@ -827,13 +827,14 @@ export async function approveMarketCreation(): Promise<void> {
   return await contracts.cash.approve(augurContract, APPROVAL_AMOUNT);
 }
 
-export async function approveToTrade() {
+export async function approveToTrade(referalAddress = NULL_ADDRESS) {
   const { contracts } = augurSdk.get();
   const APPROVAL_AMOUNT = new BigNumber(2**255);
   return await Promise.all([
     contracts.cash.approve(contracts.ZeroXTrade.address, APPROVAL_AMOUNT),
     contracts.cash.approve(contracts.fillOrder.address, APPROVAL_AMOUNT),
     contracts.shareToken.setApprovalForAll(contracts.ZeroXTrade.address, true),
+    contracts.affiliates.setReferrer(referalAddress),
    ]);
 }
 

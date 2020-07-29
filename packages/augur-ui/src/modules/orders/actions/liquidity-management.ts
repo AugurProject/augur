@@ -20,6 +20,7 @@ import type { Getters } from '@augurproject/sdk';
 import { TXEventName } from '@augurproject/sdk-lite';
 import { setLiquidityOrderStatus } from 'modules/events/actions/liquidity-transactions';
 import { updateAlert } from 'modules/alerts/actions/alerts';
+import { checkAccountApproval } from 'modules/auth/actions/approve-account';
 export const UPDATE_LIQUIDITY_ORDER = 'UPDATE_LIQUIDITY_ORDER';
 export const ADD_MARKET_LIQUIDITY_ORDERS = 'ADD_MARKET_LIQUIDITY_ORDERS';
 export const REMOVE_LIQUIDITY_ORDER = 'REMOVE_LIQUIDITY_ORDER';
@@ -159,7 +160,7 @@ export const sendLiquidityOrder = (options: any) => async (
   getState: () => AppState
 ) => {
   const { order, bnAllowance, marketId } = options;
-  const { appStatus, marketInfos, blockchain } = getState();
+  const { appStatus, marketInfos, blockchain, loginAccount } = getState();
   const market = marketInfos[marketId];
   const isZeroX = appStatus.zeroXEnabled;
   const { orderEstimate } = order;
@@ -177,7 +178,7 @@ export const sendLiquidityOrder = (options: any) => async (
   );
 
   if (bnAllowance.lte(0) || bnAllowance.lte(createBigNumber(orderEstimate))) {
-    await approveToTrade();
+    await approveToTrade(loginAccount?.affiliate);
     isZeroX
       ? createZeroXLiquidityOrders(market, [options.order], blockchain.currentAugurTimestamp, dispatch)
       : sendOrder(options);
@@ -220,6 +221,7 @@ export const startOrderSending = (options: CreateLiquidityOrders) => async (
     orders = [...orders, ...liquidity[outcomeId]];
   });
 
+  dispatch(checkAccountApproval())
   if (!chunkOrders) {
     await createZeroXLiquidityOrders(market, orders, blockchain.currentAugurTimestamp, dispatch);
   } else {

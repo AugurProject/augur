@@ -31,7 +31,7 @@ import { getOutcomeNameWithOutcome } from 'utils/get-outcome';
 import { updateModal } from 'modules/modal/actions/update-modal';
 import { Ox_STATUS } from 'modules/app/actions/update-app-status';
 import { updateAlert } from 'modules/alerts/actions/alerts';
-import { checkAccountAllowance } from 'modules/auth/actions/approve-account';
+import { checkAccountApproval } from 'modules/auth/actions/approve-account';
 
 export const placeMarketTrade = ({
   marketId,
@@ -53,7 +53,7 @@ export const placeMarketTrade = ({
       `required parameters not found for market ${marketId} outcome ${outcomeId}`
     );
   }
-  dispatch(checkAccountAllowance());
+  dispatch(checkAccountApproval());
   // we need to make sure approvals went through before doing trade / the rest of this function
   const userShares = createBigNumber(tradeInProgress.shareCost || 0, 10);
   const { tickSize, minPrice } = market;

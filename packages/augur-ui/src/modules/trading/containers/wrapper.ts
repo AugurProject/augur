@@ -24,6 +24,7 @@ import { AppState } from 'appStore';
 import { totalTradingBalance } from 'modules/auth/selectors/login-account';
 import getValueFromlocalStorage from 'utils/get-local-storage-value';
 import { canPostOrder } from 'modules/trades/actions/can-post-order';
+import { checkAccountApproval } from 'modules/auth/actions/approve-account';
 
 const getMarketPath = id => {
   return {
@@ -55,7 +56,9 @@ const mapStateToProps = (state: AppState, ownProps) => {
     availableDai,
     endTime: ownProps.initialLiquidity ? newMarket.setEndTime : ownProps.market.endTime,
     disableTrading: process.env.REPORTING_ONLY,
+    tradingApproved: loginAccount.tradingApproved,
     orderBook: ownProps.orderBook,
+    account: loginAccount.address,
   };
 };
 
