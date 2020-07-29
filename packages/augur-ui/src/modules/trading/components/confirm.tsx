@@ -38,7 +38,7 @@ import {
 import { BigNumber, createBigNumber } from 'utils/create-big-number';
 import { LinearPropertyLabel, TransactionFeeLabelToolTip } from 'modules/common/labels';
 import { Trade } from 'modules/types';
-import { ExternalLinkButton, ProcessingButton } from 'modules/common/buttons';
+import { ExternalLinkButton, ProcessingButton, PrimaryButton } from 'modules/common/buttons';
 import { TXEventName } from '@augurproject/sdk-lite';
 
 interface MessageButton {
@@ -75,6 +75,7 @@ interface ConfirmProps {
   walletStatus: string;
   selectedOutcomeId: number;
   updateWalletStatus: Function;
+  showAddFundsModal: Funciton;
   sweepStatus: string;
   postOnlyOrder: boolean;
   allowPostOnlyOrder: boolean;
@@ -97,12 +98,6 @@ class Confirm extends Component<ConfirmProps, ConfirmState> {
 
     this.constructMessages = this.constructMessages.bind(this);
     this.clearErrorMessage = this.clearErrorMessage.bind(this);
-  }
-
-  componentDidMount() {
-    if (this.props.walletStatus === WALLET_STATUS_VALUES.CREATED && this.props.sweepStatus === TXEventName.Success) {
-      this.props.updateWalletStatus();
-    }
   }
 
   componentDidUpdate(prevProps) {
@@ -131,7 +126,6 @@ class Confirm extends Component<ConfirmProps, ConfirmState> {
           numFills: prevProps.trade.numFills,
           postOnlyOrder : prevProps.postOnlyOrder
         }) ||
-      walletStatus !== prevProps.walletStatus ||
       sweepStatus !== prevProps.sweepStatus ||
       gasPrice !== prevProps.gasPrice ||
       !createBigNumber(prevProps.availableEth).eq(
@@ -166,6 +160,8 @@ class Confirm extends Component<ConfirmProps, ConfirmState> {
       postOnlyOrder,
       disableTrading,
       allowPostOnlyOrder,
+      showAddFundsModal,
+      ethToDaiRate,
     } = props || this.props;
 
     const {
@@ -182,15 +178,12 @@ class Confirm extends Component<ConfirmProps, ConfirmState> {
     let needsApproval = false;
     let messages: Message | null = null;
 
+
     const gasCostInEth = gasLimit
       ? createBigNumber(formatGasCostToEther(gasLimit, { decimalsRounded: 4 }, createBigNumber(GWEI_CONVERSION).multipliedBy(gasPrice)))
       : ZERO;
 
-    let gasCostDai = formatNumber(0);
-
-    if (GsnEnabled) {
-      gasCostDai = createBigNumber(gasLimit).multipliedBy(createBigNumber(GWEI_CONVERSION)).multipliedBy(gasPrice);
-    }
+    const gasCostDai = formatDai(ethToDaiRate.value * gasCostInEth);
 
     if (marketType === SCALAR && selectedOutcomeId === INVALID_OUTCOME_ID) {
       messages = {
@@ -225,28 +218,6 @@ class Confirm extends Component<ConfirmProps, ConfirmState> {
       };
     }
 
-    if (selfTrade) {
-      messages = {
-        header: 'CONSUMING OWN ORDER',
-        type: WARNING,
-        message: 'You are trading against one of your existing orders',
-      };
-    }
-
-    // GAS error in DAI [Gsn]
-    if (
-      !tradingTutorial &&
-      GsnEnabled &&
-      totalCost &&
-      createBigNumber(gasCostDai.value).gte(createBigNumber(availableDai))
-    ) {
-      messages = {
-        header: 'Insufficient DAI',
-        type: ERROR,
-        message: `You do not have enough funds to place this order. $${gasCostDai.formatted} DAI required for gas.`,
-      };
-    }
-
     if (
       !isNaN(numTrades) &&
       numTrades > 0 &&
@@ -263,10 +234,24 @@ class Confirm extends Component<ConfirmProps, ConfirmState> {
       };
     }
 
-    // GAS error in ETH
+    if (selfTrade) {
+      messages = {
+        header: 'CONSUMING OWN ORDER',
+        type: WARNING,
+        message: 'You are trading against one of your existing orders',
+      };
+    }
+
+    if (disableTrading && !tradingTutorial) {
+      messages = {
+        header: 'Reporting Only',
+        type: WARNING,
+        message: 'Trading is disabled',
+      };
+    }
+
     if (
       !tradingTutorial &&
-      !GsnEnabled &&
       totalCost &&
       createBigNumber(gasCostInEth).gte(createBigNumber(availableEth))
     ) {
@@ -282,38 +267,12 @@ class Confirm extends Component<ConfirmProps, ConfirmState> {
       totalCost &&
       createBigNumber(potentialDaiLoss.fullPrecision).gt(
         createBigNumber(availableDai)
-      ) &&
-      !tradingTutorial
+      )
     ) {
       messages = {
         header: 'Insufficient DAI',
         type: ERROR,
         message: 'You do not have enough DAI to place this order',
-      };
-    }
-
-    // Show when GSN wallet activation is successful
-    if (walletStatus === WALLET_STATUS_VALUES.CREATED && sweepStatus === TXEventName.Success && !tradingTutorial && numFills === 0) {
-      messages = {
-        header: 'Confirmed',
-        type: WARNING,
-        message: 'You can now place your trade',
-        callback: () => {
-          this.props.updateWalletStatus();
-          this.clearErrorMessage();
-        }
-      };
-    }
-    // Show if OpenOrder and GSN wallet still needs to be activated
-    else if (walletStatus === WALLET_STATUS_VALUES.FUNDED_NEED_CREATE && !tradingTutorial && numFills === 0) {
-      messages = {
-        header: '',
-        type: WARNING,
-        message: 'Activation of your account is needed',
-        button: {
-          text: 'Activate Account',
-          action: () => initializeGsnWallet(),
-        },
       };
     }
 
@@ -324,14 +283,6 @@ class Confirm extends Component<ConfirmProps, ConfirmState> {
         header: 'POST ONLY ORDER',
         type: ERROR,
         message: `Can not match existing order.`,
-      };
-    }
-
-    if (disableTrading && !tradingTutorial) {
-      messages = {
-        header: 'Reporting Only',
-        type: WARNING,
-        message: 'Trading is disabled',
       };
     }
 
@@ -356,6 +307,9 @@ class Confirm extends Component<ConfirmProps, ConfirmState> {
       initialLiquidity,
       postOnlyOrder,
       tradingTutorial,
+      availableDai,
+      showAddFundsModal,
+      ethToDaiRate,
     } = this.props;
 
     const {
@@ -381,7 +335,11 @@ class Confirm extends Component<ConfirmProps, ConfirmState> {
       .minus(createBigNumber(minPrice))
       .abs();
 
-    let gasCostDai = formatDai(0);
+    const gasCostInEth = gasLimit
+      ? createBigNumber(formatGasCostToEther(gasLimit, { decimalsRounded: 4 }, createBigNumber(GWEI_CONVERSION).multipliedBy(gasPrice)))
+      : ZERO;
+
+    const gasCostDai = formatDai(ethToDaiRate.value * gasCostInEth);
 
     const limitPricePercentage = (side === BUY
       ? createBigNumber(limitPrice)
@@ -546,6 +504,10 @@ class Confirm extends Component<ConfirmProps, ConfirmState> {
             {messages.type !== ERROR && !messages.button && (
               <button onClick={messages.callback ? () => messages.callback() : this.clearErrorMessage}>{XIcon}</button>
             )}
+
+            {!tradingTutorial && totalCost && createBigNumber(potentialDaiLoss.fullPrecision).gt(createBigNumber(availableDai)) &&
+              <PrimaryButton action={() => showAddFundsModal()} text={'Add Funds'} />
+            }
           </div>
         )}
       </section>
