@@ -38,7 +38,6 @@ services:
       AUGUR_ENV: ${AUGUR_ENV}
       ETHEREUM_NETWORK: ${AUGUR_ENV}
       ETH_NODE_URL: ${ETHEREUM_HTTP}
-      ETHEREUM_HTTP: ${ETHEREUM_HTTP}
 EOF
 }
 
@@ -77,6 +76,9 @@ To setup scripts and start augur services:
 
 To start augur services:
 ./augur/cli start
+
+To view logs:
+./augur/cli logs
 
 To start GSN (advanced)
 ./augur/cli start-gsn
@@ -137,9 +139,16 @@ read_env(){
 get_augur_key() {
   helper() {
     key=$(docker logs $(docker ps|grep augur_augur_1|awk '{print $1}') 2>&1|grep -C0 'wallet with address'|awk '{print $5}')
-    if [ -z "$key" ]
-      then return 1
-      else echo $key; return 0
+    key_exists=$(docker logs $(docker ps|grep augur_augur_1|awk '{print $1}') 2>&1|grep -C0 'Keyfile already exists at path')
+    if [ ! -z "$key" ]; then
+      echo "$key"
+      echo "$key" > ./keys/addr.key
+      return 0
+    elif [ ! -z "$key_exists" ]; then
+      cat ./keys/addr.key
+      return 0
+    else
+      return 1
     fi
   }
   until helper
@@ -293,8 +302,7 @@ case "$method" in
     cd augur
     docker-compose up -d augur
     printf "Spinning up augur sdk server. Please wait, this'll take many minutes\n"
-    printf 'You can view the progress in a separate terminal with this command: '
-    printf "docker logs -f \$(docker ps|grep augur_augur_1|awk '{print \$1}')"
+    printf "You can view the progress in a separate terminal with this command: $0 logs"
     printf "\n\n"
 
     augur_key=`get_augur_key`
@@ -307,13 +315,21 @@ case "$method" in
 
     cat <<PRETTYBLOCK
 Augur Address: $augur_key
-Trading UI Hash: $trading_ui_hash (hash32: $trading_ui_hash32)
-Reporting UI Hash: $reporting_ui_hash (hash32: $reporting_ui_hash32)
+Trading UI Link: https://cloudflare-ipfs.com/ipfs/$trading_ui_hash
+Trading UI Link w/ subdomain: https://$trading_ui_hash32.ipfs.cf-ipfs.com
+Reporting UI Link: https://cloudflare-ipfs.com/ipfs/$reporting_ui_hash
+Reporting UI Link w/ subdomain: https://$reporting_ui_hash32.ipfs.cf-ipfs.com
 Previous Warp Sync Hash: $previous_warp_sync_hash
 Current Warp Sync Hash: $current_warp_sync_hash
 
 Send some ether (recommended: 1 ETH) to your augur address $augur_key for auto-reporting the warp sync market
 PRETTYBLOCK
+  )
+  ;;
+"logs")
+  (
+    cd augur
+    docker-compose logs -f
   )
   ;;
 "start-gsn")

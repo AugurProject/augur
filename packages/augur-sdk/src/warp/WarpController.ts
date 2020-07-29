@@ -5,6 +5,7 @@ import {
   SubscriptionEventName,
 } from '@augurproject/sdk-lite';
 import { Log as SerializedLog } from '@augurproject/types';
+import { logger } from '@augurproject/utils';
 import Dexie from 'dexie';
 import { Block } from 'ethers/providers';
 import { BigNumber } from 'ethers/utils';
@@ -325,7 +326,13 @@ export class WarpController {
   async pinHashByGatewayUrl(urlString: string) {
     const url = new URL(urlString);
     try {
-      await (await this.ipfs).pin.add(url.pathname);
+      const matches = /^(\w+)\.ipfs\..+$/.exec(url.hostname);
+      const thingToPin = (matches) ? matches[1] : url.pathname;
+
+      await (await this.ipfs).pin.add(thingToPin);
+
+      logger.info(`Client pinned with ipfs hash: ${thingToPin}`)
+
       return true;
     } catch (e) {
       return false;
