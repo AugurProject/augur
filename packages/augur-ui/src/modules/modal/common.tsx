@@ -424,7 +424,7 @@ export const TransferMyTokens = ({ walletType, tokenAmount, showTransferModal, t
         </div>
         <SecondaryButton
           action={() => showTransferModal()}
-          text={'Transfer to trading account'}
+          text={'Transfer to wallet address'}
         />
       </div>
     );
@@ -434,7 +434,7 @@ export const TransferMyTokens = ({ walletType, tokenAmount, showTransferModal, t
     <div className={Styles.TransferMyTokens}>
       <div>
         <span>{tokenAmount.formattedValue} {titleCase(tokenName)} in your {walletType} wallet</span>
-        <span>Transfer any amount to your trading account.</span>
+        <span>Transfer any amount to your wallet address.</span>
       </div>
       <PrimaryButton
         action={() => showTransferModal(autoClose)}
@@ -747,7 +747,7 @@ export const FundsHelp = ({ fundType = DAI }: FundsHelpProps) => (
   <div className={Styles.FundsHelp}>
     <p>Need help?</p>
     <div>
-      <span>Learn how to buy {fundType === DAI ? `DAI ($)` : fundType} {fundType === DAI ? generateDaiTooltip() : ''} and  send it to your trading account.</span>
+      <span>Learn how to buy {fundType === DAI ? `DAI ($)` : fundType} {fundType === DAI ? generateDaiTooltip() : ''} and  send it to your wallet address.</span>
       <ExternalLinkButton URL={HELP_CENTER_ADD_FUNDS} label='Learn More' />
     </div>
   </div>
@@ -975,20 +975,15 @@ export const Coinbase = ({
       </li>
       <li>Buy the cryptocurrency {fundTypeLabel}</li>
       <li>
-        Send the {fundTypeLabel} to your trading account
+        Send the {fundTypeLabel} to your wallet address
       </li>
     </ol>
-    <h3>trading account</h3>
+    <h3>wallet address</h3>
     <AccountAddressDisplay
       copyable
       address={toChecksumAddress(walletAddress)}
     />
-    {fundTypeToUse !== ETH && (
-      <ExternalLinkButton
-        URL={HELP_CENTER_LEARN_ABOUT_ADDRESS}
-        label={'Learn about your address'}
-      />
-    )}
+
   </>
 );
 
@@ -1007,7 +1002,7 @@ export const Transfer = ({
     <h1>Transfer</h1>
     <h2>
       Send funds to your{' '}
-      trading account
+      wallet address
     </h2>
     <ol>
       <li>
@@ -1025,20 +1020,14 @@ export const Transfer = ({
         </a>
       </li>
       <li>
-        Transfer the {fundTypeLabel} to your trading account
+        Transfer the {fundTypeLabel} to your wallet address
       </li>
     </ol>
-    <h3>trading account</h3>
+    <h3>wallet address</h3>
     <AccountAddressDisplay
       copyable
       address={toChecksumAddress(walletAddress)}
     />
-    {fundTypeToUse !== ETH && (
-      <ExternalLinkButton
-        URL={HELP_CENTER_LEARN_ABOUT_ADDRESS}
-        label={'Learn about your address'}
-      />
-    )}
   </>
 );
 

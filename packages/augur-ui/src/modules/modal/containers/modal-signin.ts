@@ -13,10 +13,11 @@ import {
   MODAL_LOADING,
   ACCOUNT_TYPES,
   SIGNIN_LOADING_TEXT,
+  SIGNIN_LOADING_TEXT_PORTIS,
   SIGNIN_LOADING_TEXT_TORUS,
   SIGNIN_LOADING_TEXT_FORTMATIC,
   SIGNIN_SIGN_WALLET,
-  MODAL_ACCOUNT_CREATED,
+  MODAL_TEST_BET,
   MODAL_ERROR,
   MODAL_HARDWARE_WALLET,
   HELP_CENTER_THIRD_PARTY_COOKIES,
@@ -24,6 +25,7 @@ import {
 } from 'modules/common/constants';
 import { loginWithInjectedWeb3 } from 'modules/auth/actions/login-with-injected-web3';
 import { loginWithFortmatic } from 'modules/auth/actions/login-with-fortmatic';
+import { loginWithPortis } from 'modules/auth/actions/login-with-portis';
 import { loginWithTorus } from 'modules/auth/actions/login-with-torus';
 import {
   EmailLogin,
@@ -44,7 +46,7 @@ const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({
   hardwareWalletModal: (isLogin) => dispatch(updateModal({ type: MODAL_HARDWARE_WALLET, isLogin })),
   signupModal: () => dispatch(updateModal({ type: MODAL_SIGNUP })),
   accountCreatedModal: () =>
-    dispatch(updateModal({ type: MODAL_ACCOUNT_CREATED })),
+    dispatch(updateModal({ type: MODAL_TEST_BET })),
   loadingModal: (message, callback, showMetaMaskHelper = false) =>
     dispatch(
       updateModal({
@@ -56,6 +58,7 @@ const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({
       })
     ),
   connectMetaMask: () => dispatch(loginWithInjectedWeb3()),
+  connectPortis: (showRegister) => dispatch(loginWithPortis(showRegister)),
   connectTorus: () =>
     dispatch(loginWithTorus()),
   connectFortmatic: (withEmail) =>
@@ -77,11 +80,12 @@ const mergeProps = (sP: any, dP: any, oP: any) => {
   const onError = (error, accountType) => {
     console.error(`ERROR:${accountType}`, error);
 
+    const isPortisCancelError = accountType === ACCOUNT_TYPES.PORTIS && error.message.indexOf('User denied login') !== -1;
     const isFortmaticCancelError =  accountType === ACCOUNT_TYPES.FORTMATIC && error?.message.indexOf('User denied account access') !== -1;
     const isTorusExitCancelError = accountType === ACCOUNT_TYPES.TORUS && error?.message.indexOf('user closed popup') !== -1;
 
     // If the error we get back from the wallet SDK is "User denied access", aka Cancel/Close wallet window, we should just close the modal
-    if (isTorusExitCancelError || isFortmaticCancelError) {
+    if (isTorusExitCancelError || isPortisCancelError || isFortmaticCancelError) {
       dP.closeModal();
       return;
     }
@@ -99,27 +103,24 @@ const mergeProps = (sP: any, dP: any, oP: any) => {
   const login = () => {
     setTimeout(() => {
       dP.closeModal();
-
-      if (LOGIN_OR_SIGNUP === 'Signup') {
-        // Kicks off onboarding
-        dP.accountCreatedModal();
-      }
     });
   };
 
   const connectMethods = [
     {
+      type: ACCOUNT_TYPES.PORTIS,
       icon: EmailLogin,
       text: `${LOGIN_OR_SIGNUP} with Email`,
-      subText: `Powered by ${ACCOUNT_TYPES.FORTMATIC}`,
+      subText: `Powered by ${ACCOUNT_TYPES.PORTIS}`,
       hidden: false,
       primary: true,
       action: async () => {
-        dP.loadingModal(SIGNIN_LOADING_TEXT_FORTMATIC, () => login());
+        dP.loadingModal(SIGNIN_LOADING_TEXT_PORTIS, () => login());
         try {
-          await dP.connectFortmatic(true);
+          const forceRegisterPage = oP.isLogin ? false : true;
+          await dP.connectPortis(forceRegisterPage);
         } catch (error) {
-          onError(error, ACCOUNT_TYPES.FORTMATIC);
+          onError(error, ACCOUNT_TYPES.PORTIS);
         }
       },
     },
@@ -135,21 +136,6 @@ const mergeProps = (sP: any, dP: any, oP: any) => {
           await dP.connectTorus();
         } catch (error) {
           onError(error, ACCOUNT_TYPES.TORUS);
-        }
-      },
-    },
-    {
-      type: ACCOUNT_TYPES.FORTMATIC,
-      icon: PhoneLogin,
-      text: `${LOGIN_OR_SIGNUP} with Phone Number`,
-      subText: `Powered by ${ACCOUNT_TYPES.FORTMATIC}`,
-      hidden: true,
-      action: async () => {
-        dP.loadingModal(SIGNIN_LOADING_TEXT_FORTMATIC, () => login());
-        try {
-          await dP.connectFortmatic(false);
-        } catch (error) {
-          onError(error, ACCOUNT_TYPES.FORTMATIC);
         }
       },
     },
@@ -170,6 +156,21 @@ const mergeProps = (sP: any, dP: any, oP: any) => {
           await dP.connectMetaMask();
         } catch (error) {
           onError(error, ACCOUNT_TYPES.WEB3WALLET);
+        }
+      },
+    },
+    {
+      type: ACCOUNT_TYPES.FORTMATIC,
+      icon: EmailLogin,
+      text: `${LOGIN_OR_SIGNUP} with Email`,
+      subText: `Powered by ${ACCOUNT_TYPES.FORTMATIC}`,
+      hidden: false,
+      action: async () => {
+        dP.loadingModal(SIGNIN_LOADING_TEXT_FORTMATIC, () => login());
+        try {
+          await dP.connectFortmatic(false);
+        } catch (error) {
+          onError(error, ACCOUNT_TYPES.FORTMATIC);
         }
       },
     },

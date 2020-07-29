@@ -111,12 +111,9 @@ const TopBar: React.FC<TopBarProps> = ({
           <HelpResources isMobile={isMobile} helpModal={helpModal} />
         )}
         {!isLogged && !restoredAccount && (
-          <SecondaryButton action={() => loginModal()} text={'Login'} />
+          <PrimaryButton action={() => loginModal()} text={'Connect'} />
         )}
-        {!isLogged && !restoredAccount && (
-          <PrimaryButton action={() => signupModal()} text={'Signup'} />
-        )}
-        {((isLogged || restoredAccount) && (isMobile && walletStatus === WALLET_STATUS_VALUES.CREATED || !isMobile)) && (
+        {((isLogged || restoredAccount) && (isMobile)) && (
           <button
             className={classNames(Styles.alerts, {
               [Styles.alertsDark]: alertsVisible,

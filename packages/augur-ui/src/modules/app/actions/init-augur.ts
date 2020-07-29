@@ -17,6 +17,7 @@ import {
   loginWithInjectedWeb3,
 } from 'modules/auth/actions/login-with-injected-web3';
 import { loginWithTorus } from 'modules/auth/actions/login-with-torus';
+import { loginWithPortis } from 'modules/auth/actions/login-with-portis';
 import { logout } from 'modules/auth/actions/logout';
 import isGlobalWeb3 from 'modules/auth/helpers/is-global-web3';
 import {
@@ -87,6 +88,11 @@ async function loadAccountIfStored(dispatch: ThunkDispatch<void, any, Action>) {
 
         await dispatch(loginWithInjectedWeb3());
       }
+
+      if (loggedInAccountType === ACCOUNT_TYPES.PORTIS) {
+        await dispatch(loginWithPortis(false));
+      }
+
       if (loggedInAccountType === ACCOUNT_TYPES.FORTMATIC) {
         await dispatch(loginWithFortmatic());
       }
