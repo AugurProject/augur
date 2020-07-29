@@ -296,7 +296,7 @@ PRETTYBLOCK
 "upgrade")
   printf "Pulls new docker images and restarts augur.\n";
   (
-    cd augur || (echo 'augur directory does not exist - run ./augur/cli setup'; exit 1)
+    cd augur || (echo "augur directory does not exist - run $0 setup"; exit 1)
 
     docker-compose down
     docker-compose pull
