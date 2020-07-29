@@ -300,7 +300,7 @@ PRETTYBLOCK
 
     docker-compose down
     docker-compose pull
-    docker-compose up -d augur
+    docker-compose up -d
   )
   ;;
 *)
@@ -317,8 +317,19 @@ cat <<HERE
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 HERE
 
-mkdir augur 2>/dev/null
+if [ -d augur ]; then
+  upgrade=true
+else
+  upgrade=false
+  mkdir augur
+fi
+
 make_docker_compose
 make_cli && chmod +x ./augur/cli
 
-/usr/bin/env bash ./augur/cli setup
+if [ $upgrade = true ]; then
+  /usr/bin/env bash ./augur/cli upgrade
+  /usr/bin/env bash ./augur/cli start
+else
+  /usr/bin/env bash ./augur/cli setup
+fi
