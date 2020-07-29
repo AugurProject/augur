@@ -81,6 +81,21 @@
     margin-left: auto;
   }
 
+  > button[class*="Failed"],
+  > button[class*="Failed"]:hover:enabled {
+    background: @color-error;
+  }
+
+  > button[class*="Confirmed"],
+  > button[class*="Confirmed"]:hover:enabled {
+    background: @color-positive;
+    color: @color-dark-grey;
+
+    path {
+      stroke: @color-dark-grey;
+    }
+  }
+
   > .close {
     background-color: transparent;
     line-height: @size-10;
