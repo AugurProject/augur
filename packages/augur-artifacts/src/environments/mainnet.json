@@ -1,7 +1,7 @@
 {
   "networkId": "1",
   "ethereum": {
-    "http": "https://eth-mainnet.alchemyapi.io/v2/Kd37_uEmJGwU6pYq6jrXaJXXi8u9IoOM",
+    "http": "https://mainnet.infura.io/v3/faa4639b090f46499f29d894da0551a0",
     "rpcRetryCount": 5,
     "rpcRetryInterval": 0,
     "rpcConcurrency": 40,
@@ -155,7 +155,7 @@
     "trackMarketInvalidBids": true,
     "reportingOnly": false,
     "fallbackProvider": "torus",
-    "liteProvider": "torus",
+    "liteProvider": "jsonrpc",
     "primaryProvider": "wallet"
   }
 }
