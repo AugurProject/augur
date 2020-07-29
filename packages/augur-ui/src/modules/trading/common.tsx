@@ -1,4 +1,4 @@
-import React, { useContext, useState, useEffect } from 'react';
+import React, { useContext, useState, useEffect, useRef } from 'react';
 import classNames from 'classnames';
 import { Link } from 'react-router-dom';
 import makePath from 'modules/routes/helpers/make-path';
@@ -329,8 +329,12 @@ export const BetslipInput = ({
   noEdit = false,
   errorCheck,
 }) => {
-  const [curVal, setCurVal] = useState(formatDai(value).full);
+  const betslipInput = useRef(null);
+  const [curVal, setCurVal] = useState(formatDai(value).formatted);
   const [invalid, setInvalid] = useState(false);
+  useEffect(() => {
+    betslipInput && betslipInput.current.focus();
+  }, []);
   return (
     <div
       className={classNames(Styles.BetslipInput, {
@@ -340,19 +344,20 @@ export const BetslipInput = ({
     >
       <span>{label}</span>
       <input
+        ref={betslipInput}
         onChange={e => {
-          const newVal = e.target.value.replace('$', '');
+          const newVal = e.target.value.replace('$', ''); 
           setCurVal(newVal);
           setInvalid(errorCheck(newVal));
         }}
-        value={curVal}
+        value={`$${curVal}`}
         onBlur={() => {
           const checkError = errorCheck(curVal);
           setInvalid(checkError);
           if (!checkError) {
             modifyBet({ [valueKey]: curVal });
           }
-          setCurVal(isNaN(Number(curVal)) ? curVal : formatDai(curVal).full);
+          setCurVal(isNaN(Number(curVal)) ? curVal : formatDai(curVal).formatted);
         }}
         disabled={disabled || noEdit}
       />
