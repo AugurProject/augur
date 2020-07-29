@@ -1639,7 +1639,7 @@ const mapStateToPropsEthReserveTopOff = (state: AppState) => {
   // top off buffer is used to determine to show automatic top off checkbox
   const topoffBuffer = createBigNumber(1.2);
   const tradingAccountDai = createBigNumber(state.loginAccount.balances.dai);
-  const signerEth = createBigNumber(state.loginAccount.balances.signerBalances.eth);
+  const signerEth = createBigNumber(state.loginAccount.balances.signerBalances.eth || 0);
   const aboveCutoff = tradingAccountDai.gt(createBigNumber(state.env.gsn.minDaiForSignerETHBalanceInDAI));
   const aboveTopOff = signerEth.gt(createBigNumber(state.env.gsn.desiredSignerBalanceInETH).times(topoffBuffer));
   return {
