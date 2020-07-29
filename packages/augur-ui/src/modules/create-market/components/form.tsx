@@ -13,7 +13,7 @@ import {
 } from 'modules/common/constants';
 
 import { Error, LocationDisplay } from 'modules/common/form';
-import { BulkTxLabel } from 'modules/common/labels';
+import { BulkTxLabel, ApprovalTxButtonLabel } from 'modules/common/labels';
 import {
   checkAddress,
   checkCategoriesArray,
@@ -116,6 +116,7 @@ import {
   ValidationType,
   getTemplateWednesdayAfterOpeningDay,
 } from '@augurproject/templates';
+import { isApprovedMarketCreation, approveMarketCreation } from 'modules/contracts/actions/contractCalls';
 
 interface FormProps {
   newMarket: NewMarket;
@@ -135,11 +136,9 @@ interface FormProps {
   marketCreationStarted: Function;
   marketCreationSaved: Function;
   maxMarketEndTime: number;
-  GsnEnabled: boolean;
   gsnUnavailable: boolean;
   gsnWalletInfoSeen: boolean;
   initializeGsnWallet: Function;
-  walletStatus: string;
 }
 
 interface FormState {
@@ -751,6 +750,7 @@ export default class Form extends React.Component<FormProps, FormState> {
   setDisableCreate = (disable: boolean) => {
     this.setState({ disableCreate: disable });
   };
+
   render() {
     const {
       newMarket,
@@ -758,16 +758,14 @@ export default class Form extends React.Component<FormProps, FormState> {
       updateNewMarket,
       openCreateMarketModal,
       history,
-      needsApproval,
       isTemplate,
       currentTimestamp,
-      GsnEnabled,
       gsnUnavailable,
       gsnWalletInfoSeen,
       initializeGsnWallet,
-      walletStatus,
+      meta,
     } = this.props;
-    const { contentPages } = this.state;
+    const { contentPages, disableCreate } = this.state;
 
     const { currentStep, validations, uniqueId, marketType } = newMarket;
 
@@ -784,8 +782,6 @@ export default class Form extends React.Component<FormProps, FormState> {
       useBullets,
     } = contentPages[currentStep];
 
-    const disableCreate =
-      walletStatus !== WALLET_STATUS_VALUES.CREATED || this.state.disableCreate;
     let savedDraft = drafts[uniqueId];
     if (savedDraft) savedDraft.validations = [];
     let comparableNewMarket = deepClone<NewMarket>(newMarket);
@@ -946,12 +942,15 @@ export default class Form extends React.Component<FormProps, FormState> {
                   subheader="You must complete all required fields highlighted above before you can continue"
                 />
               )}
-              {secondButton === CREATE && !GsnEnabled && (
-                <BulkTxLabel
+              {secondButton === CREATE && (
+                <ApprovalTxButtonLabel
                   className={Styles.MultipleTransactions}
-                  buttonName={'Create'}
-                  count={1}
-                  needsApproval={needsApproval}
+                  buttonName={'Approve to Create Market'}
+                  numApprovals={1}
+                  checkApprovals={isApprovedMarketCreation}
+                  doApprovals={approveMarketCreation}
+                  account={meta.address}
+                  isApprovalCallback={(value) => { value && this.setDisableCreate(value)}}
                 />
               )}
               <div>

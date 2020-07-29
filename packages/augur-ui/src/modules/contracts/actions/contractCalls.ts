@@ -785,12 +785,11 @@ export function createMarketRetry(market: CreateMarketData) {
   return createMarket(newMarket, true);
 }
 
-export async function isContractApproval(account, contract): Promise<boolean> {
-  const { contracts } = augurSdk.get();
+export async function isContractApproval(account, contract, approvalContract): Promise<boolean> {
   try {
     const APPROVAL_AMOUNT = new BigNumber(2**255);
-    const currentAllowance = await contract.allowance_(account, contracts.uniswap.address);
-    return currentAllowance.toNumber() === APPROVAL_AMOUNT;
+    const currentAllowance = await approvalContract.allowance_(account, contract);
+    return currentAllowance.gte(APPROVAL_AMOUNT);
   }
   catch(error) {
     throw error;
@@ -799,16 +798,15 @@ export async function isContractApproval(account, contract): Promise<boolean> {
 
 export async function isApprovedToTrade(address): Promise<boolean> {
   const { contracts } = augurSdk.get();
-  const cashContractApproval = await isContractApproval(address, contracts.cash.address);
-  const zeroXContractApproval = await isContractApproval(address, contracts.ZeroXTrade.address);
-  const fillContractApproval = await isContractApproval(address, contracts.fillOrder.address);
+  const cashContractApproval = await isContractApproval(address, contracts.ZeroXTrade.address, contracts.cash);
+  const fillContractApproval = await isContractApproval(address, contracts.fillOrder.address, contracts.cash);
+  const zeroXContractApproval = await isContractApproval(address, contracts.ZeroXTrade.address, contracts.shareToken);
   return fillContractApproval && cashContractApproval && zeroXContractApproval
 }
 
 export async function isApprovedMarketCreation(address) {
   const { contracts } = augurSdk.get();
-  const augurContract = contracts.augur.address;
-  return await isContractApproval(address, augurContract);
+  return await isContractApproval(address, contracts.augur.address, contracts.cash);
 }
 
 export async function approveMarketCreation() {

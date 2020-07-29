@@ -1486,6 +1486,51 @@ export const CategoryTagTrail = ({ categories }: CategoryTagTrailProps) => (
   </div>
 );
 
+
+interface ApprovalTxButtonLabelProps {
+  checkApprovals: Function;
+  doApprovals: Function;
+  numApprovals: number;
+  buttonName: string;
+  className?: string;
+  account: string;
+  isApprovalCallback: Function;
+}
+export const ApprovalTxButtonLabel = ({
+  checkApprovals,
+  doApprovals,
+  numApprovals,
+  buttonName,
+  className,
+  account,
+  isApprovalCallback,
+}: ApprovalTxButtonLabelProps) => {
+  const [isApproved, setIsApproved] = useState(false);
+
+  useEffect(() => {
+    checkApprovals(account).then(result => {
+      setIsApproved(result);
+    });
+  }, []);
+
+  return (
+    !isApproved ? (
+      <div className={classNames(Styles.ModalMessageLabel, className)}>
+        <DismissableNotice
+          show={true}
+          description=""
+          buttonAction={(account) => doApprovals(account)}
+          buttonText={buttonName}
+          queueName={constants.TRANSACTIONS}
+          queueId={constants.APPROVE} // TODO: check that is actually is the correct queue id
+          title={`${buttonName} requires ${numApprovals} approval${numApprovals > 1 ? 's' : ''}`}
+          buttonType={DISMISSABLE_NOTICE_BUTTON_TYPES.BUTTON}
+        />
+      </div>
+    ) : null
+  )
+}
+
 interface BulkTxLabelProps {
   count: number;
   needsApproval: boolean;
