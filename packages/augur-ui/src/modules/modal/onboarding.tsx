@@ -39,6 +39,7 @@ interface OnboardingProps {
   createFundedGsnWallet?: Function;
   showAugurP2PModal?: Function;
   gasPrice: number;
+  disableActivatebutton: boolean;
 }
 
 export const Onboarding = ({
@@ -57,6 +58,7 @@ export const Onboarding = ({
   showAugurP2PModal,
   showActivationButton,
   createFundedGsnWallet,
+  disableActivatebutton,
   gasPrice,
 }: OnboardingProps) => {
   const [activationEstimate, setActivationEstimate] = useState('-');
@@ -81,6 +83,7 @@ export const Onboarding = ({
             action={() => createFundedGsnWallet()}
             queueName={TRANSACTIONS}
             queueId={CREATEAUGURWALLET}
+            disabled={disableActivatebutton}
             customConfirmedButtonText={'Account Activated!'}
           />
         }
@@ -113,7 +116,7 @@ export const Onboarding = ({
           {smallHeader && <SmallSubheader text={smallHeader} />}
           {mediumHeader && <MediumSubheader text={mediumHeader} />}
           {linkContent && <LinkContentSection linkContent={modLinkContent} />}
-          {showTransferMyDai && <TransferMyTokens tokenName={DAI} callBack={() => showAugurP2PModal()}/>}
+          {showTransferMyDai && <TransferMyTokens tokenName={DAI} autoClose={true} callBack={() => showAugurP2PModal()}/>}
         </main>
 
         <div className={Styles.OnboardingNav}>{NavControls}</div>
