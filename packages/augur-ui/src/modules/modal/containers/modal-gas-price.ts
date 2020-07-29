@@ -11,6 +11,7 @@ import { Action } from 'redux';
 const mapStateToProps = (state: AppState) => ({
   modal: state.modal,
   ...state.gasPriceInfo,
+  ethToDaiRate: state.appStatus.ethToDaiRate,
 });
 
 const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({

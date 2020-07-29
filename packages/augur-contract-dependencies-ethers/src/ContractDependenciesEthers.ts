@@ -39,6 +39,8 @@ export interface EthersProvider {
   //sendAsync(payload: JSONRPCRequestPayload): Promise<any>;
 }
 
+const MIN_GAS_PRICE = new BigNumber(1e9); // Min: 1 Gwei
+
 export enum TransactionStatus {
   AWAITING_SIGNING,
   PENDING,
@@ -82,6 +84,14 @@ export class ContractDependenciesEthers implements Dependencies<BigNumber> {
 
   setSigner(signer: EthersSigner) {
     this.signer = signer;
+  }
+
+  setGasPrice(gasPrice: BigNumber): void {
+    if (gasPrice.lt(MIN_GAS_PRICE)) gasPrice = MIN_GAS_PRICE;
+    // @ts-ignore
+    this.provider.overrideGasPrice = new ethers.utils.BigNumber(
+      gasPrice.toNumber()
+    );
   }
 
   transactionToEthersTransaction(
@@ -259,6 +269,8 @@ export class ContractDependenciesEthers implements Dependencies<BigNumber> {
     txMetadata: TransactionMetadata
   ): Promise<ethers.providers.TransactionReceipt> {
     const gasLimit = tx.gasLimit || (await this.provider.estimateGas(tx));
+    const gasPrice = await this.provider.getGasPrice();
+    tx.gasPrice = gasPrice;
 
     // @BODY https://github.com/ethers-io/ethers.js/issues/321
     // the 'from field is required to estimate gas but will fail if present when the transaction is sent.

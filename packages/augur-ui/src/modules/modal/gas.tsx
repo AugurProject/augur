@@ -7,6 +7,7 @@ import ChevronFlip from 'modules/common/chevron-flip';
 import {
   formatGasCostToEther,
   formatEtherEstimate,
+  formatDai,
 } from 'utils/format-number';
 import {
   GWEI_CONVERSION,
@@ -16,6 +17,20 @@ import { createBigNumber } from 'utils/create-big-number';
 import classNames from 'classnames';
 import { displayGasInDai } from 'modules/app/actions/get-ethToDai-rate';
 import { DismissableNotice, DISMISSABLE_NOTICE_BUTTON_TYPES } from 'modules/reporting/common';
+
+export const getGasCost = (gasLimit, gasPrice, ethToDaiRate) => {
+  const gasCostInEth = createBigNumber(
+    formatGasCostToEther(
+      gasLimit,
+      { decimalsRounded: 4 },
+      createBigNumber(GWEI_CONVERSION).multipliedBy(gasPrice)
+    )
+  );
+  if (ethToDaiRate) {
+    return formatDai(ethToDaiRate.value * gasCostInEth);
+  }
+  return gasCostInEth;
+}
 
 interface GasProps {
   saveAction: Function;
@@ -51,7 +66,8 @@ export const Gas = (props: GasProps) => {
     average,
     fast,
     feeTooLow,
-    userDefinedGasPrice
+    userDefinedGasPrice,
+    ethToDaiRate,
   } = props;
   const doesGasPriceMatchPresets = (amount: number) => {
     return amount === fast || amount === average || amount === safeLow;
@@ -86,7 +102,7 @@ export const Gas = (props: GasProps) => {
   const buttons = [
     {
       text: 'Set Transaction Fee',
-      action: () => saveAction(amount === average ? null : amount, average),
+      action: () => saveAction(amount, average),
       disabled,
     },
     {
@@ -122,7 +138,7 @@ export const Gas = (props: GasProps) => {
     },
   ];
 
-  const gasCostTrade = displayGasInDai(TRADE_ORDER_GAS_MODAL_ESTIMATE, amount * 10**9);
+  const gasCostTrade = getGasCost(TRADE_ORDER_GAS_MODAL_ESTIMATE, amount, ethToDaiRate);
   return (
     <div onClick={event => event.stopPropagation()} className={Styles.Gas}>
       <Title title='Transaction Fee' closeAction={closeAction} />
@@ -147,7 +163,7 @@ export const Gas = (props: GasProps) => {
                 <span>{data.avgTime}</span>
               </div>
               <div>
-              <span>{displayGasInDai(TRADE_ORDER_GAS_MODAL_ESTIMATE, data.gwei * 10**9)}</span>
+              <span>${(getGasCost(TRADE_ORDER_GAS_MODAL_ESTIMATE, data.gwei, ethToDaiRate)).formattedValue}</span>
                 <span> / Trade</span>
               </div>
             </div>
@@ -180,7 +196,7 @@ export const Gas = (props: GasProps) => {
             </div>
             <div>
               <div>
-                <span>&lt; {gasCostTrade}</span>
+                <span>&lt; ${gasCostTrade.formattedValue}</span>
                 <span> / Trade</span>
               </div>
               <span>{amount ? getEthTradeCost(amount).formatted : '-'} ETH</span>

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import ReactTooltip from 'react-tooltip';
 import Clipboard from 'clipboard';
 import classNames from 'classnames';
-import { ACCOUNT_TYPES, TRADE_ORDER_GAS_MODAL_ESTIMATE, ETH, DAI, FEE_RESERVES_LABEL, REP } from 'modules/common/constants';
+import { ACCOUNT_TYPES, TRADE_ORDER_GAS_MODAL_ESTIMATE, GWEI_CONVERSION,ETH, DAI, FEE_RESERVES_LABEL, REP } from 'modules/common/constants';
 import {
   DaiLogoIcon,
   EthIcon,
@@ -14,11 +14,12 @@ import {
   AugurLogo,
 } from 'modules/common/icons';
 import { PrimaryButton, SecondaryButton } from 'modules/common/buttons';
-import { formatDaiPrice, formatEther, formatRep, formatDai } from 'utils/format-number';
+import { formatDaiPrice, formatEther, formatRep, formatDai, formatGasCostToEther } from 'utils/format-number';
 import { AccountBalances, FormattedNumber } from 'modules/types';
 import ModalMetaMaskFinder from 'modules/modal/components/common/modal-metamask-finder';
 import { AFFILIATE_NAME } from 'modules/routes/constants/param-names';
-import { displayGasInDai, ethToDai } from 'modules/app/actions/get-ethToDai-rate';
+import { displayGasInDai } from 'modules/app/actions/get-ethToDai-rate';
+import { getGasCost } from 'modules/modal/gas';
 import { createBigNumber, BigNumber } from 'utils/create-big-number';
 import TransferMyTokens from 'modules/modal/containers/transfer-my-tokens';
 
@@ -79,12 +80,7 @@ const ConnectDropdown = (props: ConnectDropdownProps) => {
 
   const [showMetaMaskHelper, setShowMetaMaskHelper] = useState(false);
   const [isCopied, setIsCopied] = useState(false);
-
-  let gasCostTrade;
-
-  if (GsnEnabled && ethToDaiRate) {
-    gasCostTrade = displayGasInDai(TRADE_ORDER_GAS_MODAL_ESTIMATE, userDefinedGasPrice * 10**9);
-  }
+  const gasCostDai = getGasCost(TRADE_ORDER_GAS_MODAL_ESTIMATE, userDefinedGasPrice, ethToDaiRate);
 
   if (!isLogged && !restoredAccount) return null;
 
@@ -261,7 +257,7 @@ const ConnectDropdown = (props: ConnectDropdownProps) => {
             );
           })}
 
-        {gasCostTrade && <div className={Styles.GasEdit}>
+        {gasCostDai.value && <div className={Styles.GasEdit}>
           <div>
             <div>
               <div>
@@ -272,7 +268,7 @@ const ConnectDropdown = (props: ConnectDropdownProps) => {
                 )}
               </div>
               <div>
-                {gasCostTrade} / Trade ({gasPriceSpeed} {gasPriceTime})
+                ${gasCostDai.formattedValue} / Trade ({gasPriceSpeed} {gasPriceTime})
               </div>
             </div>
           </div>
