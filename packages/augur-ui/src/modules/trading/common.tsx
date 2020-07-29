@@ -357,7 +357,7 @@ export const BetslipInput = ({
           if (!checkError) {
             modifyBet({ [valueKey]: curVal });
           }
-          setCurVal(isNaN(Number(curVal)) ? curVal : formatDai(curVal).formatted);
+          setCurVal(curVal);
         }}
         disabled={disabled || noEdit}
       />
