@@ -6,10 +6,12 @@ import { LinearPropertyLabel } from 'modules/common/labels';
 import Styles from 'modules/account/components/activity.styles.less';
 import { useAppStatusStore } from 'modules/app/store/app-status';
 import { formatDai } from 'utils/format-number';
+import { createBigNumber } from 'utils/create-big-number';
+import { convertAttoValueToDisplayValue } from '@augurproject/utils';
 
 const Activity = () => {
-  const { universe: { timeframeData }} = useAppStatusStore();
-  const value = timeframeData?.openInterest || 0;
+  const { universe: { timeframeData: { openInterest: totalOpenInterest } }} = useAppStatusStore();
+  const value = convertAttoValueToDisplayValue(createBigNumber(totalOpenInterest || 0));
   const openInterest = formatDai(value, { decimals: 2, removeComma: true });
   const [selected, setSelected] = useState(TIMEFRAME_OPTIONS[2].id);
   return (
@@ -20,7 +22,7 @@ const Activity = () => {
         key="openInterest"
         label="Open Interest"
         value={openInterest}
-        useFull={true}
+        useFull
       />
       <Stats
         timeframe={selected}

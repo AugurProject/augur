@@ -50,7 +50,7 @@
       align-items: center;
       display: grid;
       grid-gap: 0 @size-8;
-      grid-template-columns: 1fr minmax(270px, 1fr);
+      grid-template-columns: 0fr 1fr minmax(270px, 1fr);
       margin-top: @size-32;
       margin-bottom: @size-24;
 
@@ -58,9 +58,13 @@
         display: none;
       }
 
+      > ul {
+        grid-column: 1;
+      }
+
       > div {
         justify-self: flex-end;
-        grid-column: 1;
+        grid-column: 2;
         margin-right: @size-16;
 
         > div {

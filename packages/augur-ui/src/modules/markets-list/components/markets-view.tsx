@@ -17,7 +17,9 @@ import {
   THEMES,
   CATEGORY_PARAM_NAME,
   MARKET_CARD_FORMATS,
+  SPORTS_MARKET_TYPES,
 } from 'modules/common/constants';
+import { PillSelection } from 'modules/common/selection';
 import { Getters } from '@augurproject/sdk';
 import classNames from 'classnames';
 import { LandingHero } from 'modules/markets-list/components/landing-hero';
@@ -49,8 +51,8 @@ const PAGINATION_COUNT = 10;
 
 const findMarketsInReportingState = (markets, reportingState) => {
   const reportingStates: String[] = organizeReportingStates(reportingState);
-  return markets.filter((market) =>
-    reportingStates.find((state) => state === market.reportingState)
+  return markets.filter(market =>
+    reportingStates.find(state => state === market.reportingState)
   );
 };
 
@@ -88,7 +90,12 @@ const MarketsView = () => {
     selectedTagNames,
   } = getSelectedTagsAndCategoriesFromLocation(location);
   const {
-    marketsList: { isSearching, meta, selectedCategories },
+    marketsList: {
+      isSearching,
+      meta,
+      selectedCategories,
+      sportsGroupTypeFilter,
+    },
     loginAccount: {
       settings: {
         showInvalidMarketsBannerHideOrShow,
@@ -233,7 +240,7 @@ const MarketsView = () => {
         if (err) return console.log('Error loadMarketsFilter:', err);
         if (componentWrapper.current) {
           // categories is also on results
-          const filterSortedMarkets = result.markets.map((m) => m.id);
+          const filterSortedMarkets = result.markets.map(m => m.id);
           const marketCount = result.meta.marketCount;
           const showPagination = marketCount > limit;
           const isSportsBook = theme === THEMES.SPORTS;
@@ -242,19 +249,19 @@ const MarketsView = () => {
             result.markets
           );
           const sportsFilterSortedMarkets = sportsGroups.map(
-            (sportGroup) => sportGroup.id
+            sportGroup => sportGroup.id
           );
           const sportsGroupCount = sportsGroups.length;
           const sportsShowPagination = sportsGroupCount > limit;
           const marketInfos = result.markets
-          .filter(marketHasData => marketHasData)
-          .reduce((p, marketData) => {
-            if (marketData === null || marketData.id == null) return p;
-            return {
-              ...p,
-              [marketData.id]: marketData
-            };
-          }, {});
+            .filter(marketHasData => marketHasData)
+            .reduce((p, marketData) => {
+              if (marketData === null || marketData.id == null) return p;
+              return {
+                ...p,
+                [marketData.id]: marketData,
+              };
+            }, {});
           updateMarketsData(marketInfos);
           setState({
             ...state,
@@ -298,7 +305,7 @@ const MarketsView = () => {
       !displayFee ? '“Fee”' : '“Liquidity Spread”'
     } filter is set to “All”. This puts you at risk of trading on invalid markets.`;
   }
-  // console.log("Market View Markets", filterSortedMarkets);
+
   return (
     <section className={Styles.MarketsView} ref={componentWrapper}>
       <HelmetTag {...MARKETS_VIEW_HEAD_TAGS} />
@@ -315,7 +322,7 @@ const MarketsView = () => {
             <MarketTypeFilter
               isSearchingMarkets={isSearching}
               marketCount={marketCount}
-              updateMarketsFilter={(filterOption) =>
+              updateMarketsFilter={filterOption =>
                 updateFilterSortOptions({ [MARKET_FILTER]: filterOption })
               }
               marketFilter={marketFilter}
@@ -328,6 +335,19 @@ const MarketsView = () => {
       )}
       {!isTrading && (
         <section>
+          <PillSelection
+            options={SPORTS_MARKET_TYPES}
+            defaultSelection={0}
+            onChange={v => {
+              if (SPORTS_MARKET_TYPES[v].header !== sportsGroupTypeFilter) {
+                updateMarketsList({
+                  sportsGroupTypeFilter: SPORTS_MARKET_TYPES[v].header,
+                });
+              }
+            }}
+            large
+            hide={!(selectedCategories.length > 1)}
+          />
           <FilterDropDowns />
           <FilterSearch search={search} />
           <FilterButton />
@@ -355,7 +375,7 @@ const MarketsView = () => {
           <FilterNotice
             show={includeInvalidMarkets === 'show'}
             showDismissButton={true}
-            updateLoginAccountSettings={(settings) =>
+            updateLoginAccountSettings={settings =>
               updateLoginAccountSettings(settings)
             }
             settings={{
@@ -380,7 +400,7 @@ const MarketsView = () => {
           <FilterNotice
             show={!displayFee || !displayLiquiditySpread}
             showDismissButton={true}
-            updateLoginAccountSettings={(settings) =>
+            updateLoginAccountSettings={settings =>
               updateLoginAccountSettings(settings)
             }
             settings={{

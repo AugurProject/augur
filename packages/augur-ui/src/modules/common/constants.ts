@@ -86,6 +86,21 @@ export const SPORTS_GROUP_TYPES = {
   COMBO: 'COMBO',
 };
 
+export const SPORTS_MARKET_TYPES = [
+  {
+    header: SPORTS_GROUP_TYPES.DAILY,
+    label: "Daily",
+    id: 0,
+    value: 0,
+  },
+  {
+    header: SPORTS_GROUP_TYPES.FUTURES,
+    label: "Futures",
+    id: 1,
+    value: 1,
+  }
+];
+
 export const SPORTS_GROUP_MARKET_TYPES = {
   MONEY_LINE: "MONEY_LINE",
   OVER_UNDER: "OVER_UNDER",
@@ -1035,24 +1050,6 @@ export const TIMEFRAME_OPTIONS = [
   { label: TIMEFRAMES.DAY, periodInterval: 86400, id: 0 },
   { label: TIMEFRAMES.WEEK, periodInterval: 604800, id: 1 },
   { label: TIMEFRAMES.MONTH, periodInterval: 2592000, id: 2 },
-];
-
-export const GAMES = 'Games';
-export const FUTURES = 'Futures';
-
-export const SPORTS_MARKET_TYPES = [
-  {
-    header: GAMES,
-    label: GAMES,
-    id: 0,
-    value: 0,
-  },
-  {
-    header: FUTURES,
-    label: FUTURES,
-    id: 1,
-    value: 1,
-  }
 ];
 
 export const ACTIVE = 'Active';

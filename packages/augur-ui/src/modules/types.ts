@@ -501,6 +501,7 @@ export interface MarketsList {
   selectedCategory: string;
   marketCardFormat: string;
   isSearchInPlace: boolean;
+  sportsGroupTypeFilter: string;
 }
 
 export interface DefaultOrderProperties {

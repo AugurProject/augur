@@ -51,7 +51,9 @@ export const groupSportsMarkets = (filteredMarkets, markets) =>
       const uniqueType = `${market.sportsBook.groupType}-${market.sportsBook.title}`;
       if (existingGroup) {
         existingGroup.markets.push(market);
-        existingGroup.totalVolume = existingGroup.totalVolume.plus(market.volume);
+        existingGroup.totalVolume = existingGroup.totalVolume.plus(
+          market.volume
+        );
         if (!existingGroup.marketTypes.includes(uniqueType)) {
           existingGroup.marketTypes.push(uniqueType);
         }
@@ -69,10 +71,12 @@ export const groupSportsMarkets = (filteredMarkets, markets) =>
     return accumulator;
   }, []);
 
-export const getSportsGroupsFromSportsIDs = (filteredSportsGroupIds, markets) => 
+export const getSportsGroupsFromSportsIDs = (filteredSportsGroupIds, markets) =>
   filteredSportsGroupIds.reduce((accumulator, sportsGroupId) => {
     let totalVolume = ZERO;
-    const sportsGroupMarkets = markets.filter(market => market.sportsBook.groupId === sportsGroupId);
+    const sportsGroupMarkets = markets.filter(
+      market => market.sportsBook.groupId === sportsGroupId
+    );
     if (!sportsGroupMarkets[0]) {
       return accumulator;
     }
@@ -84,11 +88,16 @@ export const getSportsGroupsFromSportsIDs = (filteredSportsGroupIds, markets) =>
       if (!marketTypes.includes(uniqueType)) {
         marketTypes.push(uniqueType);
       }
-    })
-    accumulator.push({ id: sportsGroupId, markets: sportsGroupMarkets, type, marketTypes, totalVolume });
+    });
+    accumulator.push({
+      id: sportsGroupId,
+      markets: sportsGroupMarkets,
+      type,
+      marketTypes,
+      totalVolume,
+    });
     return accumulator;
   }, []);
-  
 
 export const MarketsList = ({
   filteredMarkets,
@@ -103,14 +112,26 @@ export const MarketsList = ({
 }: MarketsListProps) => {
   const {
     theme,
-    marketsList: { isSearching: isSearchingMarkets },
+    marketsList: {
+      isSearching: isSearchingMarkets,
+      selectedCategories,
+      sportsGroupTypeFilter,
+    },
   } = useAppStatusStore();
+  const isSportsTheme = theme === THEMES.SPORTS;
   const markets = getMarkets();
   let marketCards = [];
-  const testFilteredMarkets =
-    (theme === THEMES.SPORTS && filteredMarkets[0] && filteredMarkets[0].length > 42)
+  const isFilteredBySportsGroupTypeFilter = selectedCategories.length > 1;
+  let testFilteredMarkets =
+    isSportsTheme &&
+    filteredMarkets[0] &&
+    filteredMarkets[0].length > 42
       ? getSportsGroupsFromSportsIDs(filteredMarkets, markets)
       : groupSportsMarkets(filteredMarkets, markets);
+    
+  if (isFilteredBySportsGroupTypeFilter) {
+    testFilteredMarkets = testFilteredMarkets.filter(sportsGroup => sportsGroupTypeFilter === FUTURES ? sportsGroup.type === FUTURES : sportsGroup.type !== FUTURES);
+  }
 
   const loadingLimit = 10;
   if (isSearchingMarkets) {
@@ -119,7 +140,7 @@ export const MarketsList = ({
       .map((prop, index) =>
         marketCards.push(<LoadingMarketCard key={`${index}loading`} />)
       );
-  } else if (theme === THEMES.SPORTS) {
+  } else if (isSportsTheme) {
     testFilteredMarkets.map(sportsGroup => {
       marketCards.push(
         <SportsMarketCard
