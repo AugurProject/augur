@@ -23,6 +23,4 @@ VOLUME /keys
 
 RUN yarn && yarn build
 
-RUN cd packages/orbit-web; ./node_modules/.bin/webpack --mode=production; cd -;
-
 ENTRYPOINT /augur/support/entrypoint.sh
