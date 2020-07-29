@@ -72,7 +72,7 @@ export const updateAssets = (): ThunkAction<any, any, any, any> => async (
       })
     );
     let status = appStatus[WALLET_STATUS];
-    if (createBigNumber(dai).gt(FIVE) && (status !== WALLET_STATUS_VALUES.CREATED)) {
+    if (createBigNumber(dai).gte(FIVE) && (status !== WALLET_STATUS_VALUES.CREATED)) {
       dispatch(updateAppStatus(WALLET_STATUS, WALLET_STATUS_VALUES.FUNDED_NEED_CREATE));
     }
   }
