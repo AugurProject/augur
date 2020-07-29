@@ -35,8 +35,8 @@
   },
   "gsn": {
     "enabled": true,
-    "minDaiForSignerETHBalanceInDAI": 40,
-    "desiredSignerBalanceInETH": 0.16
+    "minDaiForSignerETHBalanceInDAI": 50,
+    "desiredSignerBalanceInETH": 0.1
   },
   "zeroX": {
     "rpc": {
