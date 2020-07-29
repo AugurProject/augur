@@ -784,10 +784,9 @@ export function createMarketRetry(market: CreateMarketData) {
 
   return createMarket(newMarket, true);
 }
-
+const APPROVAL_AMOUNT = new BigNumber(2**200);
 export async function isContractApproval(account, contract, approvalContract): Promise<boolean> {
   try {
-    const APPROVAL_AMOUNT = new BigNumber(2**255);
     const currentAllowance = await approvalContract.allowance_(account, contract);
     return currentAllowance.gte(APPROVAL_AMOUNT);
   }
@@ -813,13 +812,11 @@ export async function isApprovedMarketCreation(address) {
 export async function approveMarketCreation(): Promise<void> {
   const { contracts } = augurSdk.get();
   const augurContract = contracts.augur.address;
-  const APPROVAL_AMOUNT = new BigNumber(2**255);
   return await contracts.cash.approve(augurContract, APPROVAL_AMOUNT);
 }
 
 export async function approveToTrade(address, referalAddress = NULL_ADDRESS) {
   const { contracts } = augurSdk.get();
-  const APPROVAL_AMOUNT = new BigNumber(2**255);
   const approvals = [];
   approvals.push(contracts.affiliates.setReferrer(referalAddress));
   if (!(await isContractApproval(address, contracts.ZeroXTrade.address, contracts.cash))) {
