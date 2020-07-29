@@ -101,16 +101,20 @@
 :root[theme='BETTING'],
 :root[theme='SPORTS'] {
   .OrbitChat {
-    bottom: -@size-3;
+    bottom: 0;
+    right: @size-32;
 
     // Closed global chat window
     > button {
       background: var(--color-primary-text);
       border: 1px solid var(color-primary-text);
+      border-radius: @border-radius-default @border-radius-default 0 0;
       color: var(--color-module-background);
       display: flex;
       text-transform: uppercase;
       flex-flow: row nowrap;
+      font-size: @size-10;
+      height: @size-36;
 
       &:hover:enabled,
       &:focus:hover:enabled,
