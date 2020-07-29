@@ -91,11 +91,10 @@ export class GSN {
     // Check ETH balance
     const walletEthBalance = await this.augur.getEthBalance(walletAddress);
     // Transfer ETH if balance > 0
-    const ethTxCost = WITHDRAW_GAS_COST_MAX.multipliedBy(
-      (await this.augur.dependencies.provider.getGasPrice()).toString()
-    );
-    const ethAmount = new BigNumber(walletEthBalance).minus(ethTxCost);
-    this.augur.sendETH(destination, ethAmount);
+    const ethAmount = new BigNumber(walletEthBalance);
+    if (ethAmount.gt(0)) {
+      await this.augur.sendETH(destination, ethAmount);
+    }
   }
 
   async withdrawAllFundsEstimateGas(
