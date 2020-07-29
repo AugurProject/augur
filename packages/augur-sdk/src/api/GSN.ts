@@ -68,6 +68,20 @@ export class GSN {
     const walletAddress = await this.calculateWalletAddress(signerAddress);
     const wallet = this.augur.contracts.augurWalletFromAddress(walletAddress);
 
+    // Check if REP
+    // Transfer REP if balance > 0
+    const repBalance = await this.augur.contracts.reputationToken.balanceOf_(walletAddress);
+    if ((await repBalance).gt(0)) {
+      await this.augur.contracts.reputationToken.transfer(destination, repBalance);
+    }
+
+    // Check if Legacy REP
+    // Transfer Legacy REP if balance > 0
+    const legacyRepBalance = await this.augur.contracts.legacyReputationToken.balanceOf_(walletAddress);
+    if ((await legacyRepBalance).gt(0)) {
+      await this.augur.contracts.legacyReputationToken.transfer(destination, legacyRepBalance);
+    }
+
     const useWallet = this.augur.getUseWallet();
     const useRelay = this.augur.getUseRelay();
     const useEthreserve = this.augur.getUseDesiredEthBalance();
