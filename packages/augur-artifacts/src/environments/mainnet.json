@@ -155,7 +155,7 @@
     "trackMarketInvalidBids": true,
     "reportingOnly": false,
     "fallbackProvider": "torus",
-    "liteProvider": "jsonrpc",
+    "liteProvider": "torus",
     "primaryProvider": "wallet"
   }
 }
