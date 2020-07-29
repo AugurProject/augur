@@ -785,16 +785,46 @@ export function createMarketRetry(market: CreateMarketData) {
   return createMarket(newMarket, true);
 }
 
-export async function approveToTrade() {
+export async function isContractApproval(account, contract): Promise<boolean> {
+  const { contracts } = augurSdk.get();
+  try {
+    const APPROVAL_AMOUNT = new BigNumber(2**255);
+    const currentAllowance = await contract.allowance_(account, contracts.uniswap.address);
+    return currentAllowance.toNumber() === APPROVAL_AMOUNT;
+  }
+  catch(error) {
+    throw error;
+  }
+}
+
+export async function isApprovedToTrade(address): Promise<boolean> {
+  const { contracts } = augurSdk.get();
+  const cashContractApproval = await isContractApproval(address, contracts.cash.address);
+  const zeroXContractApproval = await isContractApproval(address, contracts.ZeroXTrade.address);
+  const fillContractApproval = await isContractApproval(address, contracts.fillOrder.address);
+  return fillContractApproval && cashContractApproval && zeroXContractApproval
+}
+
+export async function isApprovedMarketCreation(address) {
   const { contracts } = augurSdk.get();
   const augurContract = contracts.augur.address;
-  const allowance = new BigNumber(2).pow(256).minus(1);
+  return await isContractApproval(address, augurContract);
+}
+
+export async function approveMarketCreation() {
+  const { contracts } = augurSdk.get();
+  const augurContract = contracts.augur.address;
+  const APPROVAL_AMOUNT = new BigNumber(2**255);
+  contracts.cash.approve(augurContract, APPROVAL_AMOUNT);
+}
+
+export async function approveToTrade() {
+  const { contracts } = augurSdk.get();
+  const APPROVAL_AMOUNT = new BigNumber(2**255);
   await Promise.all([
-    contracts.cash.approve(augurContract, allowance),
-    contracts.shareToken.setApprovalForAll(contracts.fillOrder.address, true),
-    contracts.shareToken.setApprovalForAll(contracts.createOrder.address, true),
-    contracts.cash.approve(contracts.fillOrder.address, allowance),
-    contracts.cash.approve(contracts.createOrder.address, allowance),
+    contracts.cash.approve(contracts.ZeroXTrade.address, APPROVAL_AMOUNT),
+    contracts.cash.approve(contracts.fillOrder.address, APPROVAL_AMOUNT),
+    contracts.shareToken.setApprovalForAll(contracts.ZeroXTrade.address, true),
    ]);
 }
 
