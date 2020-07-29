@@ -17,7 +17,6 @@ import {
   MY_BETS_BET_DATE,
   EVENT,
   MARKET_STATE_TYPES,
-  GAMES,
   RESOLVED,
   REPORTING_STATE,
   MARKET_OPEN,
@@ -76,15 +75,15 @@ export function processRows(
   let futureRows = myBetsArray.filter(market => {
     return market?.sportsBook?.groupType === SPORTS_GROUP_TYPES.FUTURES;
   });
-  let gamesRows = myBetsArray.filter(market => {
+  let dailyRows = myBetsArray.filter(market => {
     return market?.sportsBook?.groupType !== SPORTS_GROUP_TYPES.FUTURES;
   });
   let rows = futureRows;
 
   if (MY_BETS_VIEW_BY[viewBy].label === EVENT) {
     rows =
-      SPORTS_MARKET_TYPES[selectedMarketCardType].label === GAMES
-        ? gamesRows
+      SPORTS_MARKET_TYPES[selectedMarketCardType].header === SPORTS_GROUP_TYPES.DAILY
+        ? dailyRows
         : futureRows;
     rows = rows
       .filter(data => {
@@ -270,7 +269,7 @@ export const MyBets = () => {
             <Game
               row={row}
               key={row.marketId}
-              type={SPORTS_MARKET_TYPES[selectedMarketCardType].label}
+              type={SPORTS_MARKET_TYPES[selectedMarketCardType].header}
             />
           ))}
         {rows.length > 0 && !showEvents && <Outcomes rows={rows} />}

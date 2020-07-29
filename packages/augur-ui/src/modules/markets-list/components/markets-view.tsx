@@ -339,9 +339,9 @@ const MarketsView = () => {
             options={SPORTS_MARKET_TYPES}
             defaultSelection={0}
             onChange={v => {
-              if (SPORTS_MARKET_TYPES[v].label !== sportsGroupTypeFilter) {
+              if (SPORTS_MARKET_TYPES[v].header !== sportsGroupTypeFilter) {
                 updateMarketsList({
-                  sportsGroupTypeFilter: SPORTS_MARKET_TYPES[v].label,
+                  sportsGroupTypeFilter: SPORTS_MARKET_TYPES[v].header,
                 });
               }
             }}

@@ -7,7 +7,6 @@ import {
   THEMES,
   SPORTS_GROUP_TYPES,
   ZERO,
-  GAMES,
 } from 'modules/common/constants';
 import MarketCard from 'modules/market-cards/market-card';
 import SportsMarketCard from 'modules/market-cards/sports-market-card';
@@ -119,18 +118,19 @@ export const MarketsList = ({
       sportsGroupTypeFilter,
     },
   } = useAppStatusStore();
+  const isSportsTheme = theme === THEMES.SPORTS;
   const markets = getMarkets();
   let marketCards = [];
   const isFilteredBySportsGroupTypeFilter = selectedCategories.length > 1;
   let testFilteredMarkets =
-    theme === THEMES.SPORTS &&
+    isSportsTheme &&
     filteredMarkets[0] &&
     filteredMarkets[0].length > 42
       ? getSportsGroupsFromSportsIDs(filteredMarkets, markets)
       : groupSportsMarkets(filteredMarkets, markets);
     
   if (isFilteredBySportsGroupTypeFilter) {
-    testFilteredMarkets = testFilteredMarkets.filter(sportsGroup => sportsGroupTypeFilter === GAMES ? sportsGroup.type !== FUTURES : sportsGroup.type === FUTURES);
+    testFilteredMarkets = testFilteredMarkets.filter(sportsGroup => sportsGroupTypeFilter === FUTURES ? sportsGroup.type === FUTURES : sportsGroup.type !== FUTURES);
   }
 
   const loadingLimit = 10;
@@ -140,7 +140,7 @@ export const MarketsList = ({
       .map((prop, index) =>
         marketCards.push(<LoadingMarketCard key={`${index}loading`} />)
       );
-  } else if (theme === THEMES.SPORTS) {
+  } else if (isSportsTheme) {
     testFilteredMarkets.map(sportsGroup => {
       marketCards.push(
         <SportsMarketCard
