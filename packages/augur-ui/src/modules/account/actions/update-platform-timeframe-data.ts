@@ -19,6 +19,6 @@ export const updatePlatformTimeframeData = async (
     }
   );
   AppStatus.actions.updateUniverse({
-    timeframeData: { ...stats },
+    timeframeData: stats,
   });
 };
