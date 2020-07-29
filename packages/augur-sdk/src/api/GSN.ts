@@ -59,56 +59,43 @@ export class GSN {
   }
 
   /**
-   * @desc Withdraws signer ETH (as DAI) and wallet DAI to a destination address
+   * @desc Withdraws wallet REP, DAI, and ETH to a destination address
    * @param {string} destination
    * @returns {Promise<void>}
    */
   async withdrawAllFunds(destination: string): Promise<void> {
     const signerAddress = await this.augur.dependencies.signer.getAddress();
     const walletAddress = await this.calculateWalletAddress(signerAddress);
-    const wallet = this.augur.contracts.augurWalletFromAddress(walletAddress);
 
     // Check if REP
-    // Transfer REP if balance > 0
     const repBalance = await this.augur.contracts.reputationToken.balanceOf_(walletAddress);
+    // Transfer REP if balance > 0
     if ((await repBalance).gt(0)) {
       await this.augur.contracts.reputationToken.transfer(destination, repBalance);
     }
 
     // Check if Legacy REP
-    // Transfer Legacy REP if balance > 0
     const legacyRepBalance = await this.augur.contracts.legacyReputationToken.balanceOf_(walletAddress);
+    // Transfer Legacy REP if balance > 0
     if ((await legacyRepBalance).gt(0)) {
       await this.augur.contracts.legacyReputationToken.transfer(destination, legacyRepBalance);
     }
 
-    const useWallet = this.augur.getUseWallet();
-    const useRelay = this.augur.getUseRelay();
-    const useEthreserve = this.augur.getUseDesiredEthBalance();
-    this.augur.setUseWallet(false);
-    this.augur.setUseRelay(false);
-    this.augur.setUseDesiredEthBalance(false);
+    // Check Dai balance
+    const daiBalance = await this.augur.contracts.cash.balanceOf_(walletAddress);
+    // Transfer DAI if balance > 0
+    if ((await daiBalance).gt(0)) {
+      await this.augur.contracts.cash.transfer(destination, daiBalance);
+    }
 
-    const ethBalance =
-      this.augur.config.gsn.desiredSignerBalanceInETH * 10 ** 18;
-    const signerEthBalance = await this.augur.getEthBalance(signerAddress);
-
-    const minExchangeRateInDai = this.augur.dependencies.ethToDaiRate
-      .multipliedBy(MIN_EXCHANGE_RATE_MULTIPLIER)
-      .decimalPlaces(0);
+    // Check ETH balance
+    const walletEthBalance = await this.augur.getEthBalance(walletAddress);
+    // Transfer ETH if balance > 0
     const ethTxCost = WITHDRAW_GAS_COST_MAX.multipliedBy(
       (await this.augur.dependencies.provider.getGasPrice()).toString()
     );
-    const ethAmount = new BigNumber(
-      BigNumber.min(ethBalance, signerEthBalance)
-    ).minus(ethTxCost);
-    await wallet.withdrawAllFundsAsDai(destination, minExchangeRateInDai, {
-      attachedEth: ethAmount,
-    });
-
-    this.augur.setUseWallet(useWallet);
-    this.augur.setUseRelay(useRelay);
-    this.augur.setUseDesiredEthBalance(useEthreserve);
+    const ethAmount = new BigNumber(walletEthBalance).minus(ethTxCost);
+    this.augur.sendETH(destination, ethAmount);
   }
 
   async withdrawAllFundsEstimateGas(
