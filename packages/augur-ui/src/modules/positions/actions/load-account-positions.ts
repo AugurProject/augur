@@ -119,7 +119,7 @@ export const userPositionProcessing = (
     AppStatus.actions.updateAccountPositions(positionData);
 
     Object.values(positionData.positionData[marketId].tradingPositions).map(position => {
-      if (marketInfo?.sportsBook && createBigNumber(position.netPosition).gte(ZERO)) {
+      if (marketInfo?.sportsBook && !position.priorPosition && createBigNumber(position.netPosition).gte(ZERO)) {
         Betslip.actions.addMatched(false, marketId, marketInfo.description, convertPositionToBet(position, marketInfo));
         }      
       });
