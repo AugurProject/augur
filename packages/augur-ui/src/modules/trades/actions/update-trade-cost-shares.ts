@@ -12,7 +12,6 @@ import {
   simulateTradeGasLimit,
 } from 'modules/contracts/actions/contractCalls';
 import type { Getters, SimulateTradeData } from '@augurproject/sdk';
-import { checkAccountAllowance } from 'modules/auth/actions/approve-account';
 
 // Updates user's trade. Only defined (i.e. !== null) parameters are updated
 export function updateTradeCost({
@@ -34,7 +33,6 @@ export function updateTradeCost({
 
     const { marketInfos, accountPositions, loginAccount } = getState();
 
-    dispatch(checkAccountAllowance());
     const market = marketInfos[marketId];
     const newTradeDetails = {
       side,
@@ -75,7 +73,6 @@ export function updateTradeShares({
 
     const { marketInfos, accountPositions, loginAccount } = getState();
 
-    dispatch(checkAccountAllowance());
     const market = marketInfos[marketId];
     const newTradeDetails: any = {
       side,

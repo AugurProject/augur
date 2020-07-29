@@ -69,8 +69,6 @@ const mergeProps = (sP, dP, oP) => {
     sP.gasPrice
   );
 
-  const bnAllowance = createBigNumber(sP.loginAccount.allowance, 10);
-  const needsApproval = bnAllowance.lte(ZERO);
   const submitAllTxCount = chunkOrders ? Math.ceil(
     numberOfTransactions / MAX_BULK_ORDER_COUNT
   ) : numberOfTransactions;

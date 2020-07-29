@@ -45,10 +45,6 @@ export function submitNewMarket(
     const sortOrderBook = hasOrders && sortOrders(market.orderBook);
     const hashId = getConstructedMarketId(market);
 
-    if (loginAccount.allowance.lte(ZERO)) {
-      await approveToTrade();
-    }
-
     if (!!hasOrders) {
       dispatch(
         addMarketLiquidityOrders({

@@ -211,9 +211,7 @@ export const startOrderSending = (options: CreateLiquidityOrders) => async (
   getState: () => AppState
 ) => {
   const { marketId, chunkOrders } = options;
-  const { appStatus, loginAccount, marketInfos, pendingLiquidityOrders, blockchain } = getState();
-
-  if (loginAccount.allowance.lte(ZERO)) await approveToTrade();
+  const { marketInfos, pendingLiquidityOrders, blockchain } = getState();
 
   const market = marketInfos[marketId];
   let orders = [];

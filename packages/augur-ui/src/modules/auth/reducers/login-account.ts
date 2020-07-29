@@ -29,9 +29,8 @@ const DEFAULT_STATE: LoginAccount = {
     disputing: null,
     participationTokens: null,
   },
-  allowance: ZERO,
+  tradingApproved: false,
   totalOpenOrdersFrozenFunds: '0',
-  allowanceFormatted: formatAttoDai(ZERO),
   tradingPositionsTotal: {
     unrealizedRevenue24hChangePercent: '0',
   },
@@ -68,7 +67,6 @@ export default function(
       };
     case SWITCH_UNIVERSE:
       delete loginAccount.reporting;
-      delete loginAccount.allowance;
       delete loginAccount.tradingPositionsTotal;
       return {
         ...loginAccount

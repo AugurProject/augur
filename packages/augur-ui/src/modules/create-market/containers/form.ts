@@ -26,7 +26,6 @@ const mapStateToProps = state => {
     newMarket: state.newMarket,
     currentTimestamp: getValue(state, "blockchain.currentAugurTimestamp"),
     drafts: state.drafts,
-    needsApproval: state.loginAccount.allowance.lte(ZERO),
     walletStatus: state.appStatus[WALLET_STATUS],
   }
 }
