@@ -15,15 +15,16 @@ import {
   Title,
 } from 'modules/modal/common';
 import {
-  LinearPropertyLabelProps, PendingLabel, BulkTxLabel, ModalLabelNotice,
+  LinearPropertyLabelProps, PendingLabel, BulkTxLabel, ModalLabelNotice, ApprovalTxButtonLabel,
 } from "modules/common/labels";
 import { BUY } from "modules/common/constants";
-import { formatShares, formatDaiPrice, formatMarketShares, formatDai } from "utils/format-number";
+import { formatMarketShares, formatDai } from "utils/format-number";
 import Styles from "modules/modal/modal.styles.less";
 import OpenOrdersTable from "modules/market/components/market-orders-positions-table/open-orders-table";
-import { LiquidityOrder } from "modules/types";
+import { LiquidityOrder, LoginAccount } from "modules/types";
 import { TXEventName } from "@augurproject/sdk-lite";
 import { DISMISSABLE_NOTICE_BUTTON_TYPES } from "modules/reporting/common";
+import { isApprovedToTrade, approveToTrade } from 'modules/contracts/actions/contractCalls';
 
 interface UnsignedOrdersProps {
   closeAction: Function;
@@ -31,9 +32,8 @@ interface UnsignedOrdersProps {
   buttons: Array<DefaultButtonProps>;
   description: DescriptionProps;
   breakdown: Array<LinearPropertyLabelProps>;
-  loginAccount: object;
+  loginAccount: LoginAccount;
   bnAllowance: object;
-  needsApproval: boolean;
   header: Array<string>;
   liquidity: object;
   marketTitle: string;
@@ -50,6 +50,7 @@ interface UnsignedOrdersProps {
   submitAllTxCount: number;
   openOrders: boolean;
   insufficientFunds: boolean;
+  isApproved: boolean;
 }
 
 const orderRow = (order: LiquidityOrder, props: UnsignedOrdersProps) => {
@@ -71,11 +72,11 @@ const orderRow = (order: LiquidityOrder, props: UnsignedOrdersProps) => {
     maxPrice,
     minPrice,
     outcomes,
-    needsApproval,
     bnAllowance,
     loginAccount,
     transactionHash,
     marketId,
+    isApproved,
   } = props;
   const buttons = [
     {
@@ -129,7 +130,7 @@ const orderRow = (order: LiquidityOrder, props: UnsignedOrdersProps) => {
             <SubmitTextButton
               key={Button.text}
               {...Button}
-              disabled={status && status !== TXEventName.Failure}
+              disabled={ !isApproved || (status && status !== TXEventName.Failure)}
             />
           );
         })}
@@ -140,7 +141,7 @@ const orderRow = (order: LiquidityOrder, props: UnsignedOrdersProps) => {
 
 export const UnsignedOrders = (props: UnsignedOrdersProps) => {
   const [processing, setProcessing] = useState(false);
-
+  const [isApproved , setIsApproved] = useState(false);
   const actionForSubmitAllButton = async () => {
     setProcessing(true);
     await props.buttons[0].action();
@@ -151,7 +152,7 @@ export const UnsignedOrders = (props: UnsignedOrdersProps) => {
     {
       ...props.buttons[0],
       text: processing ? 'Processing...' : props.buttons[0].text,
-      disabled: props.buttons[0].disabled || processing,
+      disabled: !isApproved || props.buttons[0].disabled || processing,
       action: actionForSubmitAllButton,
     },
     {
@@ -178,7 +179,7 @@ export const UnsignedOrders = (props: UnsignedOrdersProps) => {
           <section>
             {props.outcomes.map((outcome: string) =>
               props.liquidity[outcome].map((order: LiquidityOrder) =>
-                orderRow(order, props)
+                orderRow(order, {...props, isApproved })
               )
             )}
           </section>
@@ -193,10 +194,20 @@ export const UnsignedOrders = (props: UnsignedOrdersProps) => {
         )}
         {props.breakdown && <Breakdown rows={props.breakdown} short />}
       </main>
+      <ApprovalTxButtonLabel
+        className={Styles.MultipleTransactions}
+        buttonName={'Approve to create orders'}
+        numApprovals={4}
+        checkApprovals={isApprovedToTrade}
+        doApprovals={approveToTrade}
+        account={props.loginAccount.address}
+        isApprovalCallback={value => {
+          value && setIsApproved(value);
+        }}
+      />
       <BulkTxLabel
         buttonName={'Submit All'}
         count={props.submitAllTxCount}
-        needsApproval={props.needsApproval}
       />
       {props.insufficientFunds && (
         <ModalLabelNotice

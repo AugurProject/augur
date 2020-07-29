@@ -7,13 +7,12 @@ import {
   ONE,
   SCALAR,
   SCALAR_OUTCOMES,
-  WALLET_STATUS_VALUES,
   YES_NO_OUTCOMES,
   ZERO,
 } from 'modules/common/constants';
 
 import { Error, LocationDisplay } from 'modules/common/form';
-import { BulkTxLabel, ApprovalTxButtonLabel } from 'modules/common/labels';
+import { ApprovalTxButtonLabel } from 'modules/common/labels';
 import {
   checkAddress,
   checkCategoriesArray,
@@ -116,7 +115,7 @@ import {
   ValidationType,
   getTemplateWednesdayAfterOpeningDay,
 } from '@augurproject/templates';
-import { isApprovedMarketCreation, approveMarketCreation } from 'modules/contracts/actions/contractCalls';
+import { isApprovedMarketCreation, approveMarketCreation, isApprovedToTrade, approveToTrade } from 'modules/contracts/actions/contractCalls';
 
 interface FormProps {
   newMarket: NewMarket;
@@ -945,7 +944,7 @@ export default class Form extends React.Component<FormProps, FormState> {
               {secondButton === CREATE && (
                 <ApprovalTxButtonLabel
                   className={Styles.MultipleTransactions}
-                  buttonName={'Approve to Create Market'}
+                  buttonName={'Approve to market creation'}
                   numApprovals={1}
                   checkApprovals={isApprovedMarketCreation}
                   doApprovals={approveMarketCreation}

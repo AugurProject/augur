@@ -1537,13 +1537,13 @@ export const ApprovalTxButtonLabel = ({
 
 interface BulkTxLabelProps {
   count: number;
-  needsApproval: boolean;
+  needsApproval?: boolean;
   buttonName: string;
   className?: string;
 }
 export const BulkTxLabel = ({
   count,
-  needsApproval,
+  needsApproval = false,
   buttonName,
   className,
 }: BulkTxLabelProps) =>

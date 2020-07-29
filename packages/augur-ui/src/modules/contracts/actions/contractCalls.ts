@@ -796,17 +796,28 @@ export async function isContractApproval(account, contract, approvalContract): P
   }
 }
 
+export async function isApprovedAll(address): Promise<boolean> {
+  const isTradingApproved = await isApprovedToTrade(address);
+  const isMarketCreationApproved = await isApprovedMarketCreation(address);
+  return isTradingApproved && isMarketCreationApproved;
+}
+
 export async function isApprovedToTrade(address): Promise<boolean> {
   const { contracts } = augurSdk.get();
   const cashContractApproval = await isContractApproval(address, contracts.ZeroXTrade.address, contracts.cash);
   const fillContractApproval = await isContractApproval(address, contracts.fillOrder.address, contracts.cash);
-  const zeroXContractApproval = await isContractApproval(address, contracts.ZeroXTrade.address, contracts.shareToken);
+  const zeroXContractApproval = await contracts.shareToken.isApprovedForAll_(address, contracts.ZeroXTrade.address);
   return fillContractApproval && cashContractApproval && zeroXContractApproval
 }
 
 export async function isApprovedMarketCreation(address) {
   const { contracts } = augurSdk.get();
   return await isContractApproval(address, contracts.augur.address, contracts.cash);
+}
+
+export async function approveMarketCreationToTrade(): Promise<void> {
+    await approveMarketCreation();
+    await approveToTrade();
 }
 
 export async function approveMarketCreation(): Promise<void> {
@@ -819,7 +830,7 @@ export async function approveMarketCreation(): Promise<void> {
 export async function approveToTrade() {
   const { contracts } = augurSdk.get();
   const APPROVAL_AMOUNT = new BigNumber(2**255);
-  await Promise.all([
+  return await Promise.all([
     contracts.cash.approve(contracts.ZeroXTrade.address, APPROVAL_AMOUNT),
     contracts.cash.approve(contracts.fillOrder.address, APPROVAL_AMOUNT),
     contracts.shareToken.setApprovalForAll(contracts.ZeroXTrade.address, true),
