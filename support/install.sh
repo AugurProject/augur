@@ -5,25 +5,6 @@ make_docker_compose() {
 version: '3.7'
 
 services:
-  caddy:
-    image: caddy:2.1.1-alpine
-    restart: always
-    ports:
-      - 80:80
-      - 443:443
-    volumes:
-      - ./caddy:/data
-    entrypoint: ["caddy", "reverse-proxy", "--from", "${GSN_HOSTNAME}", "--to", "http://gsn:8090"]
-
-  gsn:
-    image: tabookey/gsn-dev-server:v0.4.1
-    restart: always
-    ports:
-      - 8090:8090 #needed for debugging without https frontend
-    volumes:
-      - ./gsn:/data
-    entrypoint: ["./RelayHttpServer", "-RelayHubAddress", "${GSN_RELAY_HUB}", "-Workdir", "/data", "-GasPricePercent", "${GSN_GAS_PRICE_PERCENT}", "-EthereumNodeUrl", "${ETHEREUM_HTTP}", "-Url", "https://${GSN_HOSTNAME}", "-Fee", "${GSN_FEE}", "-Port", "${GSN_PORT}"]
-
   augur:
     image: augurproject/augur:runner
     restart: always
@@ -79,12 +60,6 @@ To start augur services:
 
 To view logs:
 ./augur/cli logs
-
-To start GSN (advanced)
-./augur/cli start-gsn
-
-To stake GSN (advanced)
-./augur/cli stake-gsn
 
 To stop services:
 ./augur/cli stop
@@ -202,28 +177,7 @@ get_reporting_UI_hash32() {
   docker logs $(docker ps|grep augur_augur_1|awk '{print $1}') 2>&1|grep -C0 'Pinning Reporting UI build at path'|awk '{print $13}'
 }
 
-get_gsn_key() {
-  helper() {
-    key=$(docker logs $(docker ps|grep augur_gsn_1|awk '{print $1}') 2>&1|grep -C0 'relay server address:'|awk '{print $7}')
-    if [ -z "$key" ]
-      then return 1
-      else echo $key; return 0
-    fi
-  }
-  until helper
-    do sleep 1
-  done
-}
-
 setup() {
-####################################################
-# Configuration needed if the user wants to run GSN
-export GSN_HOSTNAME=configurable-hostname-for-gsn-server.com
-export GSN_PORT=8090
-export GSN_RELAY_HUB=0xD216153c06E857cD7f72665E0aF1d7D82172F494
-export GSN_GAS_PRICE_PERCENT=10
-export GSN_FEE=1
-
 cat <<- HERE
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
            Select Augur Environment
@@ -255,11 +209,6 @@ HERE
 
 (
 cat <<HEREDOC
-GSN_HOSTNAME=${GSN_HOSTNAME}
-GSN_PORT=${GSN_PORT}
-GSN_RELAY_HUB=${GSN_RELAY_HUB}
-GSN_GAS_PRICE_PERCENT=${GSN_GAS_PRICE_PERCENT}
-GSN_FEE=${GSN_FEE}
 ETHEREUM_HTTP=${ETHEREUM_HTTP}
 AUGUR_ENV=${AUGUR_ENV}
 HEREDOC
@@ -332,39 +281,6 @@ PRETTYBLOCK
     docker-compose logs -f
   )
   ;;
-"start-gsn")
-  (
-    printf "NOTE: This is an advanced feature requiring networking know-how.\n"
-    printf "You will need to edit ./augur/.env to use your public hostname.\n"
-    cd augur
-    docker-compose up -d caddy gsn
-    docker-compose up -d augur
-    gsn_key=`get_gsn_key`
-    augur_key=`get_augur_key`
-
-    cat <<PRETTYBLOCK
-
-Go to https://www.opengsn.org/relay-hubs/$GSN_RELAY_HUB/relay?relayAddress=$gsn_key
-That's your GSN relay. It needs ether to cover gas costs for txs. Recommended amount: 1 ETH.
-It also needs 1 ETH to stake.
-
-If you'd prefer to do this via CLI then send the gas cost ether to your augur address $augur_key.
-Then stake gsn by calling "$0 stake-gsn"
-PRETTYBLOCK
-  )
-  ;;
-"stake-gsn")
-  (
-    printf "NOTE: This is an advanced feature requiring networking know-how.\n"
-    printf "You will need to edit ./augur/.env to use your public hostname.\n"
-    cd augur
-    docker-compose up -d augur
-    gsn_key=`get_gsn_key`
-    printf "GSN Relayer Address: $gsn_key\n"
-    export $(cat .env | xargs)
-    docker-compose exec augur yarn flash --keyfile /keys/priv.key --network $AUGUR_ENV gsn-stake-relay --relayAddress "$gsn_key" --ethAmount 1
-  )
-  ;;
 "stop")
   (
     cd augur &&\
@@ -378,23 +294,13 @@ PRETTYBLOCK
   )
   ;;
 "upgrade")
-  printf "Pulls new docker images and restarts augur or gsn if they were run before.\n";
+  printf "Pulls new docker images and restarts augur.\n";
   (
-    cd augur || (echo 'augur directory does not exist'; exit 1)
-
-    augur_running=`docker ps|grep augur_augur_1`
-    gsn_running=`docker ps|grep augur_gsn_1`
+    cd augur || (echo 'augur directory does not exist - run ./augur/cli setup'; exit 1)
 
     docker-compose down
     docker-compose pull
-
-    if [ ! -z "$augur_running" ]; then
-      docker-compose up -d augur
-    fi
-
-    if [ ! -z "$gsn_running" ]; then
-      docker-compose up -d caddy gsn
-    fi
+    docker-compose up -d augur
   )
   ;;
 *)
