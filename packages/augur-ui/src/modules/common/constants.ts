@@ -1247,7 +1247,7 @@ export const TRADING_TUTORIAL_COPY = {
     subheader: [
       {
         text:
-          "Once an order is partially or completley filled, you'll get a notification in the top right. 'My Fills' are where you can track all filled or partially-filled orders.",
+          "Once an order is partially or completely filled, you'll get a notification in the top right. 'My Fills' are where you can track all filled or partially-filled orders.",
       },
     ],
   },
