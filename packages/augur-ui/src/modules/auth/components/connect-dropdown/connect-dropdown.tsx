@@ -166,6 +166,11 @@ const ConnectDropdown = (props: ConnectDropdownProps) => {
 
   const walletProviders = [
     {
+      accountType: ACCOUNT_TYPES.PORTIS,
+      action: () => accountMeta.openWallet(),
+      disabled: !accountMeta.openWallet,
+    },
+    {
       accountType: ACCOUNT_TYPES.FORTMATIC,
       action: () => accountMeta.openWallet(),
       disabled: !accountMeta.openWallet,
@@ -202,7 +207,7 @@ const ConnectDropdown = (props: ConnectDropdownProps) => {
         </div>
 
         <div className={Styles.AddFunds}>
-          <div>Trading account</div>
+          <div></div>
           <PrimaryButton action={() => showAddFundsModal()} text='Add Funds' />
         </div>
 
