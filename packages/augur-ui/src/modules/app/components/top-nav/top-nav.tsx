@@ -32,7 +32,6 @@ interface TopNavProps {
   showMigrateRepButton: boolean;
   walletBalances: AccountBalances;
   updateModal: Function;
-  ethReserveInDai: FormattedNumber;
   disableMarketCreation: boolean;
 }
 
@@ -45,7 +44,6 @@ const TopNav = ({
   migrateV1Rep,
   showMigrateRepButton = false,
   walletBalances,
-  ethReserveInDai,
   disableMarketCreation,
 }: TopNavProps) => {
   const isCurrentItem = item => {
@@ -86,7 +84,7 @@ const TopNav = ({
                   {...(formatNumber(0))}
                   highlightAlternateBolded
                   id={'totalFunds_top_nav'}
-                  tipText={`${TOTAL_FUNDS_TOOLTIP} of $${ethReserveInDai.formatted} DAI`}
+                  tipText={`${TOTAL_FUNDS_TOOLTIP} DAI`}
                 />
               </div>
 

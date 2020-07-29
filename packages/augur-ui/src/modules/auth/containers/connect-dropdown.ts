@@ -6,7 +6,6 @@ import { MODAL_GAS_PRICE, GAS_SPEED_LABELS, GAS_TIME_LEFT_LABELS, MODAL_ADD_FUND
 import { NULL_ADDRESS } from 'modules/common/constants';
 import { FormattedNumber } from 'modules/types';
 import { AppState } from 'appStore';
-import { getEthReserve } from 'modules/auth/selectors/get-eth-reserve';
 import { createBigNumber } from 'utils/create-big-number';
 
 const mapStateToProps = (state: AppState) => {
@@ -25,8 +24,6 @@ const mapStateToProps = (state: AppState) => {
     gasPriceSpeed = GAS_SPEED_LABELS.SLOW;
   }
 
-  const reserveEthAmount: FormattedNumber = getEthReserve(state);
-
   return {
     universeOutcomeName: state.universe.outcomeName ? state.universe.outcomeName : null,
     parentUniverseId: state.universe.parentUniverseId !== NULL_ADDRESS ? state.universe.parentUniverseId : null,
@@ -42,9 +39,7 @@ const mapStateToProps = (state: AppState) => {
       state.loginAccount &&
       state.loginAccount.meta,
     balances: state.loginAccount && state.loginAccount.balances,
-    GsnEnabled: state.appStatus.gsnEnabled,
     ethToDaiRate: state.appStatus.ethToDaiRate,
-    reserveEthAmount,
     showTransferMyDai: createBigNumber(state.loginAccount.balances.signerBalances.dai).gte(FIVE),
     showTransferMyRep: createBigNumber(state.loginAccount.balances.signerBalances.rep).gte(ONE),
   };

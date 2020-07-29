@@ -18,7 +18,6 @@ export default function findInsufficientFunds(
   availableDai,
   formattedInitialLiquidityGas,
   formattedInitialLiquidityDai,
-  GsnEnabled = false
 ): InsufficientFunds {
   const BNGasCost = createBigNumber(gasCost);
   const BNvalidityBond = createBigNumber(
@@ -28,7 +27,7 @@ export default function findInsufficientFunds(
   const BNLiqDai = createBigNumber(formattedInitialLiquidityDai);
   const BNtotalEthCost = BNLiqGas.plus(BNGasCost);
 
-  const insufficientEth = GsnEnabled ? false : createBigNumber(availableEth || 0).lt(BNtotalEthCost);
+  const insufficientEth = createBigNumber(availableEth || 0).lt(BNtotalEthCost);
 
   const BNdesignatedReportNoShowReputationBond = createBigNumber(
     formatRep(designatedReportNoShowReputationBond).fullPrecision

@@ -70,7 +70,6 @@ async function run() {
     .option('--key <key>', 'Private key to use, Overrides ETHEREUM_PRIVATE_KEY environment variable, if set.')
     .option('--keyfile <keyfile>', 'File containing private key to use. Overrides ETHEREUM_PRIVATE_KEY environment variable, if set.')
     .option('--network <network>', `Name of network to run on. Use "none" for commands that don't use a network. Environmental variable "ETHEREUM_PRIVATE_KEY" will take precedence if set.`, 'local')
-    .option('--use-gsn <useGsn>', 'Use GSN instead of making contract calls directly', 'false')
     .option('--skip-approval <skipApproval>', 'Do not approve', 'false')
     .option('--config <config>', 'JSON of configuration')
     .option('--configFile <configFile>', 'Path to configuration file');
@@ -100,7 +99,6 @@ async function run() {
 
         let specified: RecursivePartial<SDKConfiguration> = {
           flash: {
-            useGSN: Boolean(opts.useGsn?.toLowerCase() === 'true'),
             skipApproval: Boolean(opts.skipApproval?.toLowerCase() === 'true'),
           }
         };

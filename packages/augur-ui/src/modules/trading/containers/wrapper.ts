@@ -7,7 +7,6 @@ import {
   MODAL_LOGIN,
   MODAL_SIGNUP,
   MODAL_INITIALIZE_ACCOUNT,
-  GSN_WALLET_SEEN,
 } from 'modules/common/constants';
 import { updateModal } from 'modules/modal/actions/update-modal';
 import { getGasPrice } from 'modules/auth/selectors/get-gas-price';
@@ -23,7 +22,6 @@ import { MARKET_ID_PARAM_NAME } from 'modules/routes/constants/param-names';
 import { orderSubmitted } from 'services/analytics/helpers';
 import { AppState } from 'appStore';
 import { totalTradingBalance } from 'modules/auth/selectors/login-account';
-import { isGSNUnavailable } from 'modules/app/selectors/is-gsn-unavailable';
 import getValueFromlocalStorage from 'utils/get-local-storage-value';
 import { canPostOrder } from 'modules/trades/actions/can-post-order';
 
@@ -40,12 +38,7 @@ const mapStateToProps = (state: AppState, ownProps) => {
   const { authStatus, loginAccount, appStatus, accountPositions, userOpenOrders, blockchain, newMarket, env } = state;
   const marketId = ownProps.market.id;
   const hasHistory = !!accountPositions[marketId] || !!userOpenOrders[marketId];
-  const {
-    gsnEnabled: GsnEnabled,
-  } = appStatus;
-  const hasFunds = GsnEnabled
-    ? !!loginAccount.balances.dai
-    : !!loginAccount.balances.eth && !!loginAccount.balances.dai;
+  const hasFunds = !!loginAccount.balances.eth && !!loginAccount.balances.dai;
 
   let availableDai = totalTradingBalance(loginAccount)
   if (ownProps.initialLiquidity) {
@@ -58,10 +51,8 @@ const mapStateToProps = (state: AppState, ownProps) => {
     hasFunds,
     isLogged: authStatus.isLogged,
     restoredAccount: authStatus.restoredAccount,
-    GsnEnabled,
     currentTimestamp: blockchain.currentAugurTimestamp,
     availableDai,
-    gsnUnavailable: isGSNUnavailable(state),
     endTime: ownProps.initialLiquidity ? newMarket.setEndTime : ownProps.market.endTime,
     disableTrading: process.env.REPORTING_ONLY,
     orderBook: ownProps.orderBook,
@@ -69,7 +60,6 @@ const mapStateToProps = (state: AppState, ownProps) => {
 };
 
 const mapDispatchToProps = (dispatch, ownProps) => ({
-  initializeGsnWallet: (customAction = null) => dispatch(updateModal({ customAction, type: MODAL_INITIALIZE_ACCOUNT })),
   handleFilledOnly: trade => null,
   updateTradeCost: (marketId, outcomeId, order, callback) =>
     dispatch(updateTradeCost({ marketId, outcomeId, ...order, callback })),
@@ -118,14 +108,12 @@ const mapDispatchToProps = (dispatch, ownProps) => ({
 
 const mergeProps = (sP, dP, oP) => {
   const disclaimerSeen = getValueFromlocalStorage(DISCLAIMER_SEEN);
-  const gsnWalletInfoSeen = getValueFromlocalStorage(GSN_WALLET_SEEN);
 
   return {
     ...oP,
     ...sP,
     ...dP,
     disclaimerSeen: !!disclaimerSeen,
-    gsnWalletInfoSeen: !!gsnWalletInfoSeen,
     canPostOrder: (price, side) => dP.canPostOrder(price, side, sP.orderBook),
   };
 };

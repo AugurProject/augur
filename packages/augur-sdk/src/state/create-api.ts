@@ -1,4 +1,4 @@
-import { EthersSigner } from '@augurproject/contract-dependencies-ethers';
+import { EthersSigner, ContractDependenciesEthers } from '@augurproject/contract-dependencies-ethers';
 import { EthersProvider } from '@augurproject/ethersjs-provider';
 import { SubscriptionEventName } from '@augurproject/sdk-lite';
 import { logger, LoggerLevels, SDKConfiguration } from '@augurproject/utils';
@@ -9,7 +9,6 @@ import { ContractEvents } from '../api/ContractEvents';
 import { ZeroX } from '../api/ZeroX';
 import { Augur } from '../Augur';
 import { BaseConnector, EmptyConnector } from '../connector';
-import { ContractDependenciesGSN } from '../lib/contract-deps';
 import { WarpController } from '../warp/WarpController';
 import { Controller } from './Controller';
 import { DB } from './db/DB';
@@ -113,7 +112,7 @@ export async function createClient(
     throw Error('Config must include addresses');
   }
 
-  const contractDependencies = await ContractDependenciesGSN.create(ethersProvider, signer, config);
+  const contractDependencies = new ContractDependenciesEthers(ethersProvider, signer);
 
   let zeroX: ZeroX = null;
   if (config.zeroX) {

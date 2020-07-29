@@ -42,7 +42,6 @@ const mapStateToProps = (state: AppState) => {
   return {
     modal: state.modal,
     gasCost: CLAIM_FEES_GAS_COST.multipliedBy(gasPrice),
-    GsnEnabled: state.appStatus.gsnEnabled,
     pendingQueue: state.pendingQueue || [],
     claimReportingFees: selectReportingWinningsByMarket(state),
     forkingInfo: state.universe.forkingInfo,
@@ -104,9 +103,7 @@ const mergeProps = (sP: any, dP: any, oP: any) => {
         let action = () => dP.redeemStake(redeemStakeOptions);
         let estimateGas = async () => {
           const gas = await dP.redeemStakeGas(redeemStakeOptions);
-          const displayfee = sP.GsnEnabled
-            ? displayGasInDai(gas)
-            : formatEther(gas).formattedValue;
+          const displayfee = formatEther(gas).formattedValue;
           return {
             label: transactionLabel,
             value: String(displayfee),
@@ -213,7 +210,7 @@ const mergeProps = (sP: any, dP: any, oP: any) => {
           reportingParticipants: [],
         };
         const gas = await dP.redeemStakeGas(redeemStakeOptions);
-        const displayfee = sP.GsnEnabled ? displayGasInDai(gas) : formatEther(gas).formattedValue;
+        const displayfee = formatEther(gas).formattedValue;
         return {
           label: transactionLabel,
           value: String(displayfee),
@@ -285,7 +282,7 @@ const mergeProps = (sP: any, dP: any, oP: any) => {
     estimateGas: async () => {
       if (!!breakdown) {
         const gas = await dP.redeemStakeGas(allRedeemStakeOptions);
-        const displayfee = sP.GsnEnabled ? displayGasInDai(gas) : formatEther(gas).formattedValue;
+        const displayfee = formatEther(gas).formattedValue;
         return {
           label: transactionLabel,
           value: String(displayfee),

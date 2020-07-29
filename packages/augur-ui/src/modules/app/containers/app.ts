@@ -31,10 +31,8 @@ import { updateSelectedCategories } from "modules/markets-list/actions/update-ma
 import { updateAuthStatus, IS_CONNECTION_TRAY_OPEN } from "modules/auth/actions/auth-status";
 import { MODAL_GLOBAL_CHAT, MODAL_MIGRATE_REP, WALLET_STATUS_VALUES, TRANSACTIONS, MIGRATE_FROM_LEG_REP_TOKEN } from 'modules/common/constants';
 import { saveAffiliateAddress } from "modules/account/actions/login-account";
-import { createFundedGsnWallet } from "modules/auth/actions/update-sdk";
 import { AppState } from "appStore";
 import { selectCoreStats } from "modules/account/selectors/core-stats";
-import { getEthReserveInDai } from "modules/auth/selectors/get-eth-reserve";
 
 const mapStateToProps = (state: AppState) => {
   const { appStatus, loginAccount, pendingQueue, env } = state;
@@ -51,7 +49,6 @@ const mapStateToProps = (state: AppState) => {
     walletStatus === WALLET_STATUS_VALUES.FUNDED_NEED_CREATE;
   const showMigrateRepButton =
     balances.legacyRep !== "0" || balances.signerBalances.legacyRep !== "0" || !!pending;
-  const ethReserveInDai = getEthReserveInDai(state);
 
   return {
     notifications,
@@ -75,7 +72,6 @@ const mapStateToProps = (state: AppState) => {
     showMigrateRepButton,
     whichChatPlugin: state.env.plugins?.chat,
     appStatus: state.appStatus,
-    ethReserveInDai,
     disableMarketCreation: process.env.REPORTING_ONLY,
   }
 };
@@ -100,7 +96,6 @@ const mapDispatchToProps = dispatch => ({
   showGlobalChat: () => dispatch(updateModal({type: MODAL_GLOBAL_CHAT})),
   migrateV1Rep: () => dispatch(updateModal({ type: MODAL_MIGRATE_REP })),
   saveAffilateAddress: address => dispatch(saveAffiliateAddress(address)),
-  createFundedGsnWallet: () => dispatch(createFundedGsnWallet())
 });
 
 const AppContainer = compose(

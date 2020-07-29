@@ -30,7 +30,6 @@ const mapStateToProps = (state: AppState) => {
   modal,
   balances,
   signingEthBalance,
-  GsnEnabled: appStatus.gsnEnabled && walletStatus === WALLET_STATUS_VALUES.CREATED,
   ethToDaiRate: appStatus.ethToDaiRate,
   gasPrice,
   fallBackGasCosts: {
@@ -56,7 +55,6 @@ const mergeProps = (sP: any, dP: any, oP: any) => ({
   autoClose: sP.autoClose,
   signingEthBalance: sP.signingEthBalance,
   fallBackGasCosts: sP.fallBackGasCosts,
-  GsnEnabled: sP.GsnEnabled,
   ethToDaiRate: sP.ethToDaiRate,
   balances: sP.balances,
   account: sP.account,

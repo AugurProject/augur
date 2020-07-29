@@ -12,7 +12,6 @@ import {
 
 const mapStateToProps = (state: AppState) => ({
   modal: state.modal,
-  GsnEnabled: state.appStatus.gsnEnabled,
   gasPrice:
     state.gasPriceInfo.userDefinedGasPrice || state.gasPriceInfo.average,
   walletBalances: state.loginAccount.balances,

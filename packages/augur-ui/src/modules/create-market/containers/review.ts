@@ -23,7 +23,6 @@ const mapStateToProps = (state: AppState) => {
     availableDaiFormatted: formatDaiPrice(
       totalTradingBalance(loginAccount)
     ),
-    GsnEnabled: appStatus.gsnEnabled,
     ethToDaiRate: appStatus.ethToDaiRate,
   };
 };

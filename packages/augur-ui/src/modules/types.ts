@@ -595,7 +595,6 @@ export interface AppStatus {
   isHelpMenuOpen: boolean;
   ethToDaiRate: FormattedNumber;
   repToDaiRate: FormattedNumber;
-  gsnEnabled: boolean;
   zeroXEnabled: boolean;
   walletStatus: string;
 }

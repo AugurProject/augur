@@ -66,10 +66,6 @@ import {
 import { calculatePosition } from 'modules/market/components/market-scalar-outcome-display/market-scalar-outcome-display';
 import { getRepThresholdForPacing } from 'modules/contracts/actions/contractCalls';
 import MarketTitle from 'modules/market/containers/market-title';
-import {
-  displayGasInDai,
-  getGasInDai,
-} from 'modules/app/actions/get-ethToDai-rate';
 import { AppState } from 'appStore/index';
 import { isGSNUnavailable } from 'modules/app/selectors/is-gsn-unavailable';
 import { removePendingTransaction } from 'modules/pending-queue/actions/pending-queue-management';
@@ -692,7 +688,7 @@ export class DisputingBondsView extends Component<
           }
           value={formatRep(stakeValue || ZERO).formatted + ' REP'}
         />
-        <TransactionFeeLabel gasCostDai={displayGasInDai(gasEstimate)} />
+        <TransactionFeeLabel gasCostDai={gasEstimate} />
         <InitializeWalletModalNotice />
         <PrimaryButton
           text="Confirm"
@@ -913,7 +909,7 @@ export class ReportingBondsView extends Component<
       buttonDisabled = true;
     }
     let insufficientFunds = false;
-    if (userFunds.lt(createBigNumber(getGasInDai(gasEstimate).value))) {
+    if (userFunds.lt(createBigNumber(gasEstimate))) {
       buttonDisabled = true;
       insufficientFunds = true;
     }
@@ -982,7 +978,7 @@ export class ReportingBondsView extends Component<
           </div>
         )}
         <div>
-          <TransactionFeeLabel gasCostDai={displayGasInDai(gasEstimate)} />
+          <TransactionFeeLabel gasCostDai={gasEstimate} />
           {insufficientFunds && (
             <span className={FormStyles.ErrorText}>
               Insufficient Funds to complete transaction

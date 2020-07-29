@@ -156,7 +156,7 @@ export class MarketDB extends DerivedDB {
     }
 
     const reportingFeeDivisor = await this.augur.contracts.universe.getReportingFeeDivisor_();
-    const ETHInAttoDAI = this.augur.dependencies.ethToDaiRate;
+    const ETHInAttoDAI = await this.augur.getExchangeRate();
 
     const marketDataById = _.keyBy(marketsData, 'market');
     for (const marketId of ids) {

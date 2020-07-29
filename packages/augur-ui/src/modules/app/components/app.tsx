@@ -107,7 +107,6 @@ interface AppProps {
   showMigrateRepButton: boolean;
   whichChatPlugin: string;
   appStatus: AppStatus;
-  ethReserveInDai: FormattedNumber;
   disableMarketCreation: boolean;
   env: SDKConfiguration;
   showCreateAccountButton: boolean;
@@ -411,7 +410,6 @@ export default class AppView extends Component<AppProps> {
       whichChatPlugin,
       isMobile,
       appStatus,
-      ethReserveInDai,
       disableMarketCreation,
       showCreateAccountButton,
     } = this.props;
@@ -506,7 +504,6 @@ export default class AppView extends Component<AppProps> {
                 updateModal={updateModal}
                 createFundedGsnWallet={createFundedGsnWallet}
                 whichChatPlugin={whichChatPlugin}
-                ethReserveInDai={ethReserveInDai}
                 tradingAccountCreated={!showCreateAccountButton}
               />
 
@@ -519,7 +516,6 @@ export default class AppView extends Component<AppProps> {
                 showMigrateRepButton={showMigrateRepButton}
                 walletBalances={walletBalances}
                 updateModal={updateModal}
-                ethReserveInDai={ethReserveInDai}
                 disableMarketCreation={disableMarketCreation}
               />
             </section>

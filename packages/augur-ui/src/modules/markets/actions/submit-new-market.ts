@@ -45,9 +45,7 @@ export function submitNewMarket(
     const sortOrderBook = hasOrders && sortOrders(market.orderBook);
     const hashId = getConstructedMarketId(market);
 
-
-    // If GSN is enabled no need to call the below since this will be handled by the proxy contract during initalization
-    if (!appStatus.gsnEnabled && loginAccount.allowance.lte(ZERO)) {
+    if (loginAccount.allowance.lte(ZERO)) {
       await approveToTrade();
     }
 

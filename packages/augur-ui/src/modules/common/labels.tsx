@@ -59,8 +59,6 @@ import { isGSNUnavailable } from 'modules/app/selectors/is-gsn-unavailable';
 import { AppState } from 'appStore';
 import { Ox_STATUS } from 'modules/app/actions/update-app-status';
 import { ethToDai } from 'modules/app/actions/get-ethToDai-rate';
-import { getEthForDaiRate } from 'modules/contracts/actions/contractCalls';
-import { getEthReserve } from 'modules/auth/selectors/get-eth-reserve';
 import { getTransactionLabel } from 'modules/auth/selectors/get-gas-price';
 import { augurSdk } from 'services/augursdk';
 
@@ -1540,116 +1538,6 @@ const InitializeWalletModalNoticeCmp = ({ gsnUnavailable }) => (
 export const InitializeWalletModalNotice = connect(
   mapStateToPropsInitWalletModal
 )(InitializeWalletModalNoticeCmp);
-
-
-const mapStateToPropsEthReserve = (state: AppState, ownProps) => {
-  const gasLimit = ownProps.gasLimit;
-  const aboveCutoff = createBigNumber(state.loginAccount.balances.dai).isGreaterThan(createBigNumber(state.env.gsn.minDaiForSignerETHBalanceInDAI))
-  if (aboveCutoff) {
-    return {
-      show: false
-    }
-  }
-
-  const ethInReserve = getEthReserve(state);
-  const gasPrice =
-    state.gasPriceInfo.userDefinedGasPrice || state.gasPriceInfo.average;
-  const estTransactionFee = createBigNumber(
-    formatGasCostToEther(
-      gasLimit,
-      { decimalsRounded: 4 },
-      createBigNumber(GWEI_CONVERSION).multipliedBy(gasPrice)
-    )
-  );
-
-  const show = createBigNumber(estTransactionFee)
-    .minus(createBigNumber(ethInReserve.value))
-    .gt(0);
-
-  let reserve = formatBlank();
-  if (show) {
-    const attoEthToDaiRate: BigNumber = getEthForDaiRate();
-    const attoEthReserve = formatAttoEth(
-      state.env.gsn.desiredSignerBalanceInETH
-    ).value;
-    const diffReserve = createBigNumber(attoEthReserve).minus(
-      createBigNumber(ethInReserve.value).div(10 ** 18)
-    );
-    reserve = ethToDai(
-      diffReserve.lte(0)
-        ? attoEthReserve
-        : diffReserve,
-      createBigNumber(attoEthToDaiRate || 0)
-    );
-  }
-  return {
-    show,
-    reserve,
-  };
-};
-
-interface EthReseveProps {
-  show: boolean,
-  reserve: FormattedNumber,
-}
-
-const EthReserveNoticeCmp = ({ show, reserve }: EthReseveProps) => (
-  <>
-    {show && (
-      <div className={classNames(Styles.EthReserveNotice)}>
-        <DismissableNotice
-          show
-          buttonType={DISMISSABLE_NOTICE_BUTTON_TYPES.NONE}
-          title={`Replenish fee reserve`}
-          description={`$${reserve.formatted} DAI will be added to your fee reserve`}
-        />
-      </div>
-    )}
-  </>
-);
-
-export const EthReserveNotice = connect(
-  mapStateToPropsEthReserve
-)(EthReserveNoticeCmp);
-
-export const EthReserveAutomaticTopOffCmp = ({ show }) => {
-  // using useState b/c lag in setting/getting property from sdk.
-  const [checked, setChecked] = useState(augurSdk?.client?.getUseDesiredEthBalance());
-  if (!show) return null;
-  return (
-    <div
-      className={classNames(Styles.Checkbox, {
-        [Styles.CheckboxChecked]: checked,
-      })}
-      role="button"
-      onClick={e => {
-        if (checked !== null) {
-          augurSdk?.client?.setUseDesiredEthBalance(!checked);
-          setChecked(!checked);
-        }
-      }}
-    >
-      {checked ? FilledCheckbox : EmptyCheckbox}
-      {AUTO_ETH_REPLENISH}
-    </div>
-  );
-};
-
-const mapStateToPropsEthReserveTopOff = (state: AppState) => {
-  // top off buffer is used to determine to show automatic top off checkbox
-  const topoffBuffer = createBigNumber(1.2);
-  const tradingAccountDai = createBigNumber(state.loginAccount.balances.dai);
-  const signerEth = createBigNumber(state.loginAccount.balances.signerBalances.eth || 0);
-  const aboveCutoff = tradingAccountDai.gt(createBigNumber(state.env.gsn.minDaiForSignerETHBalanceInDAI));
-  const aboveTopOff = signerEth.gt(createBigNumber(state.env.gsn.desiredSignerBalanceInETH).times(topoffBuffer));
-  return {
-    show: aboveCutoff && !aboveTopOff
-  }
-}
-
-export const EthReserveAutomaticTopOff = connect(
-  mapStateToPropsEthReserveTopOff
-)(EthReserveAutomaticTopOffCmp);
 
 export const AutoCancelOrdersNotice = () => (
     <div className={classNames(Styles.ModalMessageAutoCancel)}>

@@ -3,38 +3,19 @@ import { withRouter } from 'react-router-dom';
 import { Message } from 'modules/modal/message';
 import { closeModal } from 'modules/modal/actions/close-modal';
 import { AppState } from 'appStore';
-import { createFundedGsnWallet } from 'modules/auth/actions/update-sdk';
-import { GSN_WALLET_SEEN } from 'modules/common/constants';
-import { formatAttoEth, formatDaiPrice, formatDai } from 'utils/format-number';
-import { FormattedNumber } from 'modules/types';
 
 const mapStateToProps = (state: AppState) => {
   const { appStatus, modal, env } = state;
-  const ethToDaiRate = appStatus.ethToDaiRate.roundedValue;
-  const desiredSignerEthBalance = formatAttoEth(
-    env.gsn.desiredSignerBalanceInETH * 10**18
-  ).value;
-  const reserveAmount: FormattedNumber = formatDai(
-    ethToDaiRate.multipliedBy(desiredSignerEthBalance)
-  );
 
   return {
     modal,
-    reserveAmount,
   };
 };
 
 const mapDispatchToProps = (dispatch: any) => ({
   closeModal: () => {
     dispatch(closeModal());
-
-    const localStorageRef =
-      typeof window !== 'undefined' && window.localStorage;
-    if (localStorageRef && localStorageRef.setItem) {
-      localStorageRef.setItem(GSN_WALLET_SEEN, 'true');
-    }
   },
-  createFundedGsnWallet: () => dispatch(createFundedGsnWallet()),
 });
 
 const mergeProps = (sP: any, dP: any, oP: any) => ({
@@ -59,7 +40,6 @@ const mergeProps = (sP: any, dP: any, oP: any) => ({
           text: 'Activate Account',
           action: () => {
             dP.closeModal();
-            dP.createFundedGsnWallet();
           },
         },
         {

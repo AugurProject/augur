@@ -23,9 +23,6 @@ export const getTransactionLabel = createSelector(
   selectLoginAccount,
   selectEnvState,
   (loginAccount, env) => {
-    const useEthReserve = createBigNumber(loginAccount.balances.dai).isGreaterThan(
-      createBigNumber(env.gsn.minDaiForSignerETHBalanceInDAI));
-    if (useEthReserve) return USE_ETH_RESERVE;
     return NOT_USE_ETH_RESERVE;
   }
 )

@@ -14,7 +14,7 @@ import {
   NULL_ADDRESS,
   CANCELORDERS,
 } from 'modules/common/constants';
-import { getNetworkId, getEthForDaiRate } from 'modules/contracts/actions/contractCalls';
+import { getNetworkId } from 'modules/contracts/actions/contractCalls';
 import { Action } from 'redux';
 import { ThunkDispatch } from 'redux-thunk';
 import { BigNumber, createBigNumber } from 'utils/create-big-number';
@@ -195,55 +195,3 @@ export function clearAlerts(alertLevel = INFO) {
     },
   };
 }
-
-export const addEthIncreaseAlert = (
-  daiBalance: string,
-  oldEthBalance: string,
-  newEthBalance: string
-) => (dispatch: ThunkDispatch<void, any, Action>, getState: () => AppState) => {
-  // eth balances hasn't be initialized to signing wallets eth balance
-  if (oldEthBalance === null) return null;
-
-  const daiCutoff = getState().env.gsn.minDaiForSignerETHBalanceInDAI;
-  // user dai balance too low to have fee reserve
-  if (createBigNumber(daiBalance).lte(daiCutoff)) return null;
-
-  const maxEthReserve = createBigNumber(
-    getState().env.gsn.desiredSignerBalanceInETH
-  );
-  const aboveCutoff = createBigNumber(oldEthBalance).isGreaterThan(
-    createBigNumber(maxEthReserve)
-  );
-  // user already has fee reserve topped off
-  if (aboveCutoff) return null;
-
-  // ETH increase can only be up to max fee reserve
-  const toppedOffValue = BigNumber.min(maxEthReserve, newEthBalance);
-  const increase = createBigNumber(toppedOffValue).minus(
-    createBigNumber(oldEthBalance)
-  );
-  if (increase.gt(0)) {
-    const attoEthToDaiRate: BigNumber = getEthForDaiRate();
-    const amount = ethToDai(
-      increase,
-      createBigNumber(attoEthToDaiRate.div(10 ** 18) || 0)
-    );
-    const timestamp = getState().blockchain.currentAugurTimestamp * 1000;
-    console.log('adding fee reserve increase alert');
-    dispatch(
-      addAlert({
-        name: ETH_RESERVE_INCREASE,
-        uniqueId: String(timestamp),
-        toast: true,
-        description: `Your ETH balance has increased by $${amount.formatted} DAI`,
-        title: 'Fee reserve replenished',
-        status: SUCCESS,
-        timestamp,
-        params: {
-          marketId: NULL_ADDRESS,
-        },
-      })
-    );
-  }
-  return null;
-};

@@ -47,7 +47,6 @@ interface SideNavProps {
   stats: CoreStats;
   whichChatPlugin: string;
   isMobile: string;
-  ethReserveInDai: FormattedNumber;
   tradingAccountCreated: boolean;
 }
 
@@ -70,7 +69,6 @@ const SideNav = ({
   restoredAccount,
   whichChatPlugin,
   isMobile,
-  ethReserveInDai,
   tradingAccountCreated,
 }: SideNavProps) => {
   useEffect(() => {
@@ -94,7 +92,6 @@ const SideNav = ({
           stats={stats}
           restoredAccount={restoredAccount}
           isMobile={true}
-          ethReserveInDai={ethReserveInDai}
           tradingAccountCreated={tradingAccountCreated}
         />
       </div>

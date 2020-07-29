@@ -17,9 +17,6 @@ import {
   CREATEAUGURWALLET,
 } from 'modules/common/constants';
 import { AUGUR_IS_P2P, track } from 'services/analytics/helpers';
-import { createFundedGsnWallet } from 'modules/auth/actions/update-sdk';
-import { createBigNumber } from 'utils/create-big-number';
-import { formatDai } from 'utils/format-number';
 import { getGasPrice } from "modules/auth/selectors/get-gas-price";
 
 const DAI_HIGH_VALUE_AMOUNT = 40;
@@ -40,29 +37,20 @@ export const getOnboardingStep = (step: number): string => {
 
 const mapStateToProps = (state: AppState) => {
   const balances = state.loginAccount.balances;
-  const daiHighValueAmount =
-    state.env.gsn?.minDaiForSignerETHBalanceInDAI || DAI_HIGH_VALUE_AMOUNT;
-  const desiredSignerBalanceInETH = state.env.gsn.desiredSignerBalanceInETH;
-  const ethRate = state.appStatus.ethToDaiRate?.value || 0;
-  const reserveInDai = formatDai(
-    createBigNumber(desiredSignerBalanceInETH).multipliedBy(ethRate)
-  );
+  const daiHighValueAmount = DAI_HIGH_VALUE_AMOUNT;
 
   return {
     walletStatus: state.appStatus.walletStatus,
     pendingQueue: state.pendingQueue,
     highBalance: balances.dai > daiHighValueAmount,
-    reserveInDai,
     daiHighValueAmount,
     gasPrice: getGasPrice(state),
-    desiredSignerBalanceInETH,
   };
 };
 
 const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({
   testBet: () => dispatch(updateModal({ type: MODAL_TEST_BET })),
   track: (eventName, payload) => dispatch(track(eventName, payload)),
-  createFundedGsnWallet: () => dispatch(createFundedGsnWallet()),
   gotoOnboardingStep: step =>
     dispatch(updateModal({ type: getOnboardingStep(step) })),
 });
@@ -81,7 +69,6 @@ const mergeProps = (sP: any, dP: any, oP: any) => ({
       sP.pendingQueue[TRANSACTIONS][CREATEAUGURWALLET].status === 'Success'),
   disableActivatebutton: sP.walletStatus === WALLET_STATUS_VALUES.CREATED,
   analyticsEvent: () => dP.track(AUGUR_IS_P2P, {}),
-  createFundedGsnWallet: () => dP.createFundedGsnWallet(),
   changeCurrentStep: step => {
     dP.gotoOnboardingStep(step);
   },
@@ -91,11 +78,7 @@ const mergeProps = (sP: any, dP: any, oP: any) => ({
         'This network requires transaction fees to operate which are paid in ETH. This goes entirely to the network and its participants, the Augur protocol doesn’t collect any fees.',
     },
     {
-      content: `Account activation is required before making your first transaction. There will be a transaction fee to activate your account. This fee can vary based on the gas price. ${
-        sP.highBalance
-          ? `$${sP.reserveInDai.formattedValue} worth of ETH, from your total funds will be held in your fee reserve to cover further transactions.`
-          : `If your account balance exceeds $${sP.daiHighValueAmount}, a portion of this (equivalent to ${sP.desiredSignerBalanceInETH} ETH) will be held in your fee reserve to cover further transactions.`
-      }`,
+      content: ``,
     },
     {
       content: `As long as your available account balance remains over $${sP.daiHighValueAmount} DAI, your fee reserve will replenish automatically.`,

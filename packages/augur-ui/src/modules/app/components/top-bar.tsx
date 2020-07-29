@@ -23,11 +23,10 @@ interface StatsProps {
   restoredAccount: boolean;
   stats: CoreStats;
   isMobile?: boolean;
-  ethReserveInDai: FormattedNumber;
   tradingAccountCreated: boolean;
 }
 
-export const Stats = ({ ethReserveInDai, isLogged, restoredAccount, stats, isMobile = false, tradingAccountCreated }: StatsProps) => {
+export const Stats = ({ isLogged, restoredAccount, stats, isMobile = false, tradingAccountCreated }: StatsProps) => {
   if (!stats) return null;
   const { availableFunds, frozenFunds, totalFunds, realizedPL } = stats;
 
@@ -43,7 +42,7 @@ export const Stats = ({ ethReserveInDai, isLogged, restoredAccount, stats, isMob
                 {...totalFunds}
                 highlightAlternateBolded
                 id={isMobile ? 'totalFundsMobile' : 'totalFunds_top_bar'}
-                tipText={`${TOTAL_FUNDS_TOOLTIP} of $${ethReserveInDai.formatted} DAI`}
+                tipText={`${TOTAL_FUNDS_TOOLTIP} DAI`}
               /> :
               <LinearPropertyLabel {...totalFunds} highlightAlternateBolded />
             }
@@ -72,7 +71,6 @@ interface TopBarProps {
   signupModal: Function;
   loginModal: Function;
   helpModal: Function;
-  ethReserveInDai: FormattedNumber;
   showAddFundsButton: boolean;
   showActivationButton: boolean;
   createFundedGsnWallet: Function;
@@ -92,7 +90,6 @@ const TopBar: React.FC<TopBarProps> = ({
   signupModal,
   loginModal,
   helpModal,
-  ethReserveInDai,
   showAddFundsButton,
   showActivationButton,
   buyDaiModal,
@@ -111,7 +108,6 @@ const TopBar: React.FC<TopBarProps> = ({
         isLogged={isLogged}
         stats={stats}
         restoredAccount={restoredAccount}
-        ethReserveInDai={ethReserveInDai}
         tradingAccountCreated={!showActivationButton && !showAddFundsButton }
       />
       <div>

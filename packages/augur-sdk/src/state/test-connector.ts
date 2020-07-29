@@ -22,9 +22,6 @@ console.log('Starting web worker');
         rpcRetryInterval: 0,
         rpcConcurrency: 40,
       },
-      gsn: {
-        enabled: true,
-      },
       syncing: {
         enabled: false,
       },

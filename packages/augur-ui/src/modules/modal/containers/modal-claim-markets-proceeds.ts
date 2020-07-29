@@ -44,7 +44,6 @@ const mapStateToProps = (state: AppState) => {
     totalFees:
     accountMarketClaimablePositions.totals.totalFees,
     accountMarketClaimablePositions,
-    GsnEnabled: state.appStatus.gsnEnabled,
     account: state.loginAccount.address,
     pendingQueue,
     transactionLabel: getTransactionLabel(state)
@@ -104,7 +103,7 @@ const mergeProps = (sP: any, dP: any, oP: any) => {
           action: showBreakdown ? () => dP.startClaimingMarketsProceeds([marketId], sP.account, () => {}) : null,
           estimateGas: async () => {
               const gas = await dP.estimateGas([marketId], sP.account);
-              const displayfee = sP.GsnEnabled ? displayGasInDai(gas) : formatEther(gas).formattedValue;
+              const displayfee = formatEther(gas).formattedValue;
               return {
                 label: transactionLabel,
                 value: String(displayfee),
@@ -149,7 +148,7 @@ const mergeProps = (sP: any, dP: any, oP: any) => {
     estimateGas: async () => {
       if (breakdown) {
         const gas = await dP.estimateGas(claimableMarkets.map(m => m.marketId), sP.account);
-        const displayfee = sP.GsnEnabled ? displayGasInDai(gas) : formatEther(gas).formattedValue;
+        const displayfee = formatEther(gas).formattedValue;
         return {
           label: transactionLabel,
           value: String(displayfee),

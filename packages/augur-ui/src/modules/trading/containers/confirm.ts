@@ -10,13 +10,10 @@ import { removePendingTransaction } from 'modules/pending-queue/actions/pending-
 const mapStateToProps = (state: AppState, ownProps) => {
   const { authStatus, loginAccount, appStatus, newMarket, env } = state;
   const {
-    gsnEnabled: GsnEnabled,
     walletStatus: walletStatus,
   } = appStatus;
 
-  const hasFunds = GsnEnabled
-    ? !!loginAccount.balances.dai
-    : !!loginAccount.balances.eth && !!loginAccount.balances.dai;
+  const hasFunds = !!loginAccount.balances.eth && !!loginAccount.balances.dai;
 
   let availableDai = totalTradingBalance(loginAccount)
   if (ownProps.initialLiquidity) {
@@ -30,7 +27,6 @@ const mapStateToProps = (state: AppState, ownProps) => {
     hasFunds,
     isLogged: authStatus.isLogged,
     allowanceBigNumber: loginAccount.allowance,
-    GsnEnabled,
     walletStatus,
     sweepStatus,
     disableTrading: process.env.REPORTING_ONLY,
@@ -38,7 +34,6 @@ const mapStateToProps = (state: AppState, ownProps) => {
 };
 
 const mapDispatchToProps = (dispatch) => ({
-  initializeGsnWallet: (customAction = null) => dispatch(updateModal({ customAction, type: MODAL_INITIALIZE_ACCOUNT })),
   updateWalletStatus: () => {
     dispatch(removePendingTransaction(CREATEAUGURWALLET));
   }

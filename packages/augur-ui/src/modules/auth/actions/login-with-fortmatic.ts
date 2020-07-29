@@ -12,7 +12,6 @@ export const loginWithFortmatic = (withEmail = false) => async (
   dispatch: ThunkDispatch<void, any, Action>,
   getState: () => AppState,
 ) => {
-  const useGSN = getState().env['gsn']?.enabled;
   const networkId: string = getState().env['networkId'];
   const supportedNetwork = getNetwork(networkId);
 
@@ -51,7 +50,7 @@ export const loginWithFortmatic = (withEmail = false) => async (
         },
       };
 
-      dispatch(updateSdk(accountObject, undefined, useGSN));
+      dispatch(updateSdk(accountObject, undefined));
     }
     catch (error) {
       throw error;

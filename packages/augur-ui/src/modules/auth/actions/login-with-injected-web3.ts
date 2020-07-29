@@ -100,7 +100,6 @@ const login = (account: string) => (
   dispatch: ThunkDispatch<void, any, Action>,
   getState: () => AppState
 ) => {
-  const useGSN = getState().env['gsn']?.enabled;
   const provider = getWeb3Provider(windowRef);
   const networkId = windowRef.web3?.currentProvider?.networkVersion || getState().env['networkId'];
   const address = toChecksumAddress(account);
@@ -118,7 +117,7 @@ const login = (account: string) => (
       isWeb3: true,
     },
   };
-  dispatch(updateSdk(accountObject, networkId, useGSN));
+  dispatch(updateSdk(accountObject, networkId));
 };
 
 

@@ -2040,11 +2040,7 @@ export function addScripts(flash: FlashSession) {
         }
 
         console.log('Building');
-        await spawnSync('yarn', ['build']); // so UI etc will have the correct addresses
-
-        // Run the GSN relay
-        console.log('Running GSN relayer');
-        spawn('yarn', ['run:gsn'], {stdio: 'inherit'});
+        await spawnSync('yarn', ['build']); // so UI etc will have the correct addresses        
 
         env = {
           ...process.env,
@@ -2441,7 +2437,6 @@ export function addScripts(flash: FlashSession) {
 
       const user = await this.createUser(this.getAccount(), this.deriveConfig({
         flash: { syncSDK: true },
-        gsn: { enabled: false },
         zeroX: { rpc: { enabled: true }},
       }));
       await waitForSync(user);
@@ -2685,58 +2680,4 @@ export function addScripts(flash: FlashSession) {
         console.log(`MARKET IDS: ${JSON.stringify(marketIds)}`);
       },
     });
-
-  flash.addScript({
-    name: 'gsn-fund-relay',
-    options: [
-      {
-        name: 'ethAmount',
-        abbr: 'e',
-        description: 'amount of ETH to provide to the exchange; typical max is 2 ether',
-      },
-      {
-        name: 'relayHub',
-        abbr: 'r',
-        description: 'address to relay hub',
-      },
-    ],
-    async call(this: FlashSession, args: FlashArguments) {
-      const address = args.relayHub as string || UNIVERSAL_RELAY_HUB_ADDRESS;
-      const ethAmount = Number(args.ethAmount) || 1;
-      const wei = new BigNumber(ethAmount).times(_1_ETH);
-      const user = await this.createUser(this.getAccount(), this.config);
-      await user.depositRelay(address, wei);
-    },
-  });
-
-  flash.addScript({
-    name: 'gsn-stake-relay',
-    options: [
-      {
-        name: 'ethAmount',
-        abbr: 'e',
-        description: 'amount of ETH to provide to the exchange; typical max is 2 ether; default=1 ether',
-      },
-      {
-        name: 'unstakeDelay',
-        abbr: 'd',
-        description: 'seconds to wait before removing stake. default=604800 (1 week)',
-      },
-      {
-        name: 'relayAddress',
-        abbr: 'a',
-        description: 'relay address',
-        required: true,
-      },
-    ],
-    async call(this: FlashSession, args: FlashArguments) {
-      const relayAddress = args.relayAddress as string;
-      const unstakeDelay = new BigNumber(args.unstakeDelay as string || 604800);
-      const ethAmount = Number(args.ethAmount) || 1;
-      const attachedEth = new BigNumber(ethAmount).times(_1_ETH);
-
-      const user = await this.createUser(this.getAccount(), this.config);
-      await user.augur.contracts.relayHub.stake(relayAddress, unstakeDelay, { attachedEth })
-    }
-  })
 }

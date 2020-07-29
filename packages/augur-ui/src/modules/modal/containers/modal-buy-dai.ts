@@ -21,7 +21,6 @@ import { createBigNumber } from 'utils/create-big-number';
 const mapStateToProps = (state: AppState) => ({
   authStatus: state.authStatus,
   signerHasDAI: createBigNumber(state.loginAccount.balances.signerBalances.dai).gte(FIVE),
-  desiredSignerBalanceInETH: state.env.gsn.desiredSignerBalanceInETH,
 });
 
 const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({

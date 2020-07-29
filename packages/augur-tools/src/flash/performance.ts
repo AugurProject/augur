@@ -38,12 +38,7 @@ export async function setupUser(account: Account, ethSource: ContractAPI, fundin
   const user = await ContractAPI.userWrapper(account, ethSource.provider, config);
   await waitForFunding(user)
 
-  if (config.flash?.useGSN) {
-    console.log(`GSN enabled for ${account.address}`)
-    await user.getOrCreateWallet();
-    user.setUseWallet(true);
-    user.setUseRelay(true);
-  } else if (!config.flash?.skipApproval) {
+  if (!config.flash?.skipApproval) {
     console.log(`Approving cash/etc transfers for ${account.address}`)
     await user.approveIfNecessary();
   }
@@ -62,7 +57,7 @@ export async function setupUser(account: Account, ethSource: ContractAPI, fundin
 export function setupPerfConfigAndZeroX(config: SDKConfiguration, syncSDK = false) {
   config = validConfigOrDie(mergeConfig(config, {
     zeroX: { rpc: { enabled: true }, mesh: { enabled: false }},
-    flash: { useGSN: false, syncSDK },
+    flash: { syncSDK },
   }));
   return { config };
 }

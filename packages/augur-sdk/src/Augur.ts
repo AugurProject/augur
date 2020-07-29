@@ -27,7 +27,6 @@ import { EventEmitter } from 'events';
 import { BestOffer } from './api/BestOffer';
 import { ContractEvents } from './api/ContractEvents';
 import { Contracts } from './api/Contracts';
-import { GSN } from './api/GSN';
 import {
   DisputeWindow,
   GetDisputeWindowParams,
@@ -54,7 +53,7 @@ import {
 } from './connector';
 import { Provider } from './ethereum/Provider';
 import { Callback, EventNameEmitter, TXStatusCallback } from './events';
-import { ContractDependenciesGSN } from './lib/contract-deps';
+import { ContractDependenciesEthers } from '@augurproject/contract-dependencies-ethers';
 import { SyncableFlexSearch } from './state/db/SyncableFlexSearch';
 import { Accounts } from './state/getter/Accounts';
 import { Liquidity as LiquidityGetter } from './state/getter/Liquidity';
@@ -78,7 +77,6 @@ export class Augur<TProvider extends Provider = Provider> {
   readonly trade: Trade;
   readonly market: Market;
   readonly warpSync: WarpSync;
-  readonly gsn: GSN;
   readonly uniswap: Uniswap;
 
   readonly universe: Universe;
@@ -87,6 +85,8 @@ export class Augur<TProvider extends Provider = Provider> {
   readonly bestOffer: BestOffer;
   readonly marketInvalidBids: MarketInvalidBids;
   readonly events: EventEmitter;
+
+  private ethExchangetoken0IsCash: Boolean;
 
   private _sdkReady = false;
 
@@ -125,7 +125,7 @@ export class Augur<TProvider extends Provider = Provider> {
 
   constructor(
     readonly provider: TProvider,
-    readonly dependencies: ContractDependenciesGSN,
+    readonly dependencies: ContractDependenciesEthers,
     public config: SDKConfiguration,
     public connector: BaseConnector = new EmptyConnector(),
     private _zeroX = null,
@@ -165,7 +165,6 @@ export class Augur<TProvider extends Provider = Provider> {
     this.hotLoading = new HotLoading(this);
     this.onChainTrade = new OnChainTrade(this);
     this.trade = new Trade(this);
-    this.gsn = new GSN(this.provider, this);
     this.uniswap = new Uniswap(this);
 
     if (this.config.ui?.trackBestOffer) {
@@ -177,6 +176,11 @@ export class Augur<TProvider extends Provider = Provider> {
     if (enableFlexSearch && !this.syncableFlexSearch) {
       this.syncableFlexSearch = new SyncableFlexSearch();
     }
+
+    this.ethExchangetoken0IsCash = new BigNumber(config.addresses.Cash.toLowerCase()).lt(
+      config.addresses.WETH9.toLowerCase()
+    );
+
     this.txSuccessCallbacks = [];
 
     this.registerTransactionStatusEvents();
@@ -184,7 +188,7 @@ export class Augur<TProvider extends Provider = Provider> {
 
   static async create<TProvider extends Provider = Provider>(
     provider: TProvider,
-    dependencies: ContractDependenciesGSN,
+    dependencies: ContractDependenciesEthers,
     config: SDKConfiguration,
     connector: BaseConnector = new SingleThreadConnector(),
     zeroX: ZeroX = null,
@@ -239,11 +243,7 @@ export class Augur<TProvider extends Provider = Provider> {
       return NULL_ADDRESS;
     }
     const signer = await this.dependencies.signer.getAddress();
-    if (this.dependencies.useWallet) {
-      account = await this.gsn.calculateWalletAddress(signer);
-    } else if (!account) {
-      account = signer;
-    }
+    account = signer;
     if (!account) return NULL_ADDRESS;
     return getAddress(account);
   }
@@ -260,34 +260,7 @@ export class Augur<TProvider extends Provider = Provider> {
       value,
       from: await this.dependencies.getDefaultAddress(),
     };
-    await this.dependencies.submitTransaction(transaction, {
-      name: 'Send Ether',
-      params: {},
-    });
-  }
-
-  setUseWallet(useSafe: boolean): void {
-    this.dependencies.setUseWallet(useSafe);
-  }
-
-  setUseRelay(useRelay: boolean): void {
-    this.dependencies.setUseRelay(useRelay);
-  }
-
-  setUseDesiredEthBalance(useDesiredEthBalance: boolean): void {
-    this.dependencies.setUseDesiredEthBalance(useDesiredEthBalance);
-  }
-
-  getUseWallet(): boolean {
-    return this.dependencies.useWallet;
-  }
-
-  getUseRelay(): boolean {
-    return this.dependencies.useRelay;
-  }
-
-  getUseDesiredEthBalance(): boolean {
-    return this.dependencies.useDesiredSignerETHBalance;
+    await this.dependencies.submitTransaction(transaction);
   }
 
   async getGasStation() {
@@ -342,15 +315,38 @@ export class Augur<TProvider extends Provider = Provider> {
     );
   }
 
-  convertGasEstimateToDaiCost(
+  async convertGasEstimateToDaiCost(
     gasEstimate: BigNumber,
     manualGasPrice?: number
-  ): BigNumber {
-    return this.dependencies.getDisplayCostInDaiForGasEstimate(
-      gasEstimate,
-      manualGasPrice
-    );
+  ): Promise<BigNumber> {
+    const gasPrice = manualGasPrice ? manualGasPrice : await this.getGasPrice();
+    const exchangeRate = await this.getExchangeRate();
+    return gasEstimate.multipliedBy(gasPrice).multipliedBy(exchangeRate);
   }
+
+  async getExchangeRate(max?: Boolean): Promise<BigNumber> {
+    const reservesData = await this.contracts.ethExchange.getReserves_();
+    const cashReserves: BigNumber = new BigNumber(
+      (this.ethExchangetoken0IsCash ? reservesData[0] : reservesData[1]).toString()
+    );
+    const ethReserves: BigNumber = new BigNumber(
+      (this.ethExchangetoken0IsCash ? reservesData[1] : reservesData[0]).toString()
+    );
+    const ethToDaiRate = cashReserves
+      .div(ethReserves)
+      .multipliedBy(10 ** 18)
+      .decimalPlaces(0);
+
+    if (max) {
+      return ethToDaiRate
+        .multipliedBy(this.config.uniswap.exchangeRateBufferMultiplier)
+        .decimalPlaces(0);
+    }
+
+    return ethToDaiRate;
+  }
+
+
 
   registerTransactionStatusCallback(
     key: string,

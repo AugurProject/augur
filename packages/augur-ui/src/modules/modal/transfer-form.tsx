@@ -14,7 +14,6 @@ import { createBigNumber, BigNumber } from 'utils/create-big-number';
 import convertExponentialToDecimal from 'utils/convert-exponential';
 import { FormDropdown, TextInput } from 'modules/common/form';
 import { CloseButton, SecondaryButton, ProcessingButton } from 'modules/common/buttons';
-import { getGasInDai } from 'modules/app/actions/get-ethToDai-rate';
 import getPrecision from 'utils/get-number-precision';
 
 import Styles from 'modules/modal/modal.styles.less';
@@ -75,7 +74,7 @@ export const TransferForm = ({
   const [signerPays, setSignerPays] = useState(true);
   const [amount, setAmount] = useState('');
   const [gasCosts, setGasCosts] = useState(
-    createBigNumber(getGasInDai(fallBackGasCosts[DAI.toLowerCase()]).value)
+    createBigNumber(fallBackGasCosts[DAI.toLowerCase()])
   );
   const getOptions = () => {
     const tokenOptions = {
@@ -98,7 +97,6 @@ export const TransferForm = ({
   };
   const [state, setState] = useState({
     address: useSigner ? account : '',
-    gasEstimateInDai: getGasInDai(fallBackGasCosts[DAI.toLowerCase()]),
     errors: {
       address: '',
       amount: '',
@@ -121,10 +119,7 @@ export const TransferForm = ({
     const signerPays = (createBigNumber(signingEthBalance).minus(gasInEth)).gte(ZERO);
     setSignerPays(signerPays);
     setGasCosts(createBigNumber(gasCosts))
-    const estInDai = getGasInDai(Number(createBigNumber(gasCosts)));
-    // TODO: figure out exact DAI amount needed to convert to eth.
-    const gasEstimateInDai = signerPays ? estInDai : formatDai(createBigNumber(estInDai.value).plus(RELAYER_DAI_CUSION));
-    setState({...state, gasEstimateInDai});
+    setState({...state});
   }
 
   useEffect(() => {
@@ -334,15 +329,7 @@ export const TransferForm = ({
             small
             text={'Send'}
             action={() => {
-              let useTopOff = true;
-              if (currency === DAI) {
-                // if 90% or more of user's DAI is being transferred disable topping off fee reserve
-                const percentage = createBigNumber(balances.dai).div(createBigNumber(formattedAmount.fullPrecision));
-                if (percentage.gt(createBigNumber(TURN_OFF_TOP_OFF_PERCENTAGE))) {
-                  useTopOff = false;
-                }
-              }
-              transferFunds(formattedAmount.fullPrecision, currency, address, useSigner, useTopOff)
+              transferFunds(formattedAmount.fullPrecision, currency, address)
               if (autoClose) closeAction();
             }}
             queueName={TRANSACTIONS}

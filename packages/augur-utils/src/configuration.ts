@@ -62,11 +62,6 @@ export interface SDKConfiguration {
   uniswap?: {
     exchangeRateBufferMultiplier: number;
   }
-  gsn?: {
-    enabled: boolean,
-    minDaiForSignerETHBalanceInDAI?: number,
-    desiredSignerBalanceInETH?: number,
-  },
   zeroX?: {
     rpc?: {
       enabled: boolean,
@@ -103,7 +98,6 @@ export interface SDKConfiguration {
     comments?: 'facebook',
   },
   flash?: {
-    useGSN?: boolean,
     syncSDK?: boolean,
     skipApproval?: boolean,
   },
@@ -231,11 +225,6 @@ export const DEFAULT_SDK_CONFIGURATION: SDKConfiguration = {
     // mainnet will be <= 1.005 but for dev we can get away with a wide spread
     exchangeRateBufferMultiplier: 1.075,
   },
-  gsn: {
-    enabled: true,
-    minDaiForSignerETHBalanceInDAI: 40,
-    desiredSignerBalanceInETH: .04,
-  },
   zeroX: {
     rpc: {
       enabled: false,
@@ -329,7 +318,6 @@ export function isValidConfig(suspect: RecursivePartial<SDKConfiguration>): susp
   if (suspect.uniswap && typeof suspect.uniswap.exchangeRateBufferMultiplier === 'undefined') {
     return fail('uniswap.exchangeRateBufferMultiplier');
   }
-  if (suspect.gsn && typeof suspect.gsn.enabled === 'undefined') return fail('gsn.enabled');
 
   if (suspect.zeroX) {
     if (suspect.zeroX.rpc) {
@@ -396,8 +384,6 @@ export function configFromEnvvars(): RecursivePartial<SDKConfiguration> {
   if (t(e.CONTRACT_INPUT_PATH)) config = d(config, { deploy: { contractInputPath: e.CONTRACT_INPUT_PATH }});
   if (t(e.WRITE_ARTIFACTS)) config = d(config, { deploy: { writeArtifacts: bool(e.WRITE_ARTIFACTS) }});
   if (t(e.DEPLOY_SERIAL)) config = d(config, { deploy: { serial: bool(e.DEPLOY_SERIAL) }});
-
-  if (t(e.GSN_ENABLED)) config = d(config, { gsn: { enabled: bool(e.GSN_ENABLED) }});
 
   if (t(e.UNISWAP_EXCHANGE_RATE_BUFFER_MULTIPLIER)) config = d(config, { uniswap: { exchangeRateBufferMultiplier: Number(e.UNISWAP_EXCHANGE_RATE_BUFFER_MULTIPLIER) }});
 

@@ -115,20 +115,11 @@ export async function convertV1ToV2Approve(useSigningWallet: boolean = false) {
     TEN_TO_THE_EIGHTEENTH_POWER
   );
   let response = null;
-  const useWallet = dependencies.useWallet;
-  const useRelay = dependencies.useRelay;
   try {
-    if (useSigningWallet) {
-      dependencies.setUseWallet(false);
-      dependencies.setUseRelay(false);
-    }
     const getReputationToken = await contracts.universe.getReputationToken_();
     response = await contracts.legacyReputationToken.approve(getReputationToken, allowance);
   } catch (e) {
     console.error(e);
-  } finally {
-    dependencies.setUseWallet(useWallet);
-    dependencies.setUseRelay(useRelay);
   }
   return response;
 }
@@ -136,26 +127,16 @@ export async function convertV1ToV2Approve(useSigningWallet: boolean = false) {
 export async function convertV1ToV2(useSigningWallet: boolean = false) {
   const { contracts, dependencies } = augurSdk.get();
   let response = false;
-  const useWallet = dependencies.useWallet;
-  const useRelay = dependencies.useRelay;
   try {
-    if (useSigningWallet) {
-      dependencies.setUseWallet(false);
-      dependencies.setUseRelay(false);
-    }
     response = await contracts.reputationToken.migrateFromLegacyReputationToken();
   } catch (e) {
     console.error(e);
-  } finally {
-    dependencies.setUseWallet(useWallet);
-    dependencies.setUseRelay(useRelay);
   }
   return response;
 }
 
 export async function convertV1ToV2_estimate(useSigningWallet: boolean = false) {
   const { contracts, dependencies } = augurSdk.get();
-  const useWallet = dependencies.useWallet;
   const allowance = createBigNumber(99999999999999999999).times(
     TEN_TO_THE_EIGHTEENTH_POWER
   );
@@ -164,8 +145,6 @@ export async function convertV1ToV2_estimate(useSigningWallet: boolean = false) 
   let migrationGas = ZERO;
 
   try {
-    if (useSigningWallet) dependencies.setUseWallet(false);
-
     const getReputationToken = await contracts.universe.getReputationToken_();
     approvalGas = await contracts.legacyReputationToken.approve_estimateGas(
       getReputationToken,
@@ -175,8 +154,6 @@ export async function convertV1ToV2_estimate(useSigningWallet: boolean = false) 
     migrationGas = await contracts.reputationToken.migrateFromLegacyReputationToken_estimateGas();
   } catch (e) {
     console.error(e);
-  } finally {
-    dependencies.setUseWallet(useWallet);
   }
 
   return approvalGas.plus(migrationGas);
@@ -348,37 +325,15 @@ export function getDai() {
   return contracts.cash.faucet(new BigNumber('1000000000000000000000'));
 }
 
-export function fundGsnWallet() {
-  const amount = new BigNumber('1000000000000000000000');
-  const { contracts } = augurSdk.get();
-  contracts.cash.faucet(amount);
-}
-
-export async function withdrawAllFunds(destination: string): Promise<void> {
-  const { gsn } = augurSdk.get();
-  await gsn.withdrawAllFunds(destination);
-}
-
-export async function withdrawAllFundsEstimateGas(destination: string): Promise<BigNumber> {
-  const { gsn } = augurSdk.get();
-  try {
-    return await gsn.withdrawAllFundsEstimateGas(destination);
-  } catch(error) {
-    console.error('withdrawAllFundsEstimateGas', error);
-    throw error;
-  }
-}
-
-
 export async function getRepRate(): Promise<BigNumber> {
   const { uniswap, contracts } = augurSdk.get();
   const rate = await uniswap.getExchangeRate(contracts.reputationToken.address, contracts.cash.address);
   return rate;
 }
 
-export function getEthForDaiRate(): BigNumber {
-  const { dependencies } = augurSdk.get();
-  const ethToDaiRate = dependencies.ethToDaiRate
+export async function getEthForDaiRate(): BigNumber {
+  const augur = augurSdk.get();
+  const ethToDaiRate = await augur.getExchangeRate();
   return ethToDaiRate;
 }
 

@@ -35,7 +35,6 @@ const mapStateToProps = (state: AppState) => {
     gasPrice,
     loginAccount: state.loginAccount,
     chunkOrders: !state.appStatus.zeroXEnabled,
-    GsnEnabled: state.appStatus.gsnEnabled,
     availableDai,
   };
 };
@@ -64,9 +63,7 @@ const mergeProps = (sP, dP, oP) => {
       });
   });
 
-  const gasCost = sP.GsnEnabled
-  ? NEW_ORDER_GAS_ESTIMATE.times(numberOfTransactions).multipliedBy(sP.gasPrice)
-  : formatGasCostToEther(
+  const gasCost = formatGasCostToEther(
     NEW_ORDER_GAS_ESTIMATE.times(numberOfTransactions).toFixed(),
     { decimalsRounded: 4 },
     sP.gasPrice

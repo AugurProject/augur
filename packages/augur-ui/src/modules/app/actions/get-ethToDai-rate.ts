@@ -8,14 +8,14 @@ export const ethToDai = (ethAmount: number, ethToDaiRate: BigNumber): FormattedN
   return formatDaiPrice(ethToDaiRate.times(ethAmount));
 };
 
-export const getGasInDai = (amount: BigNumber, manualGasPrice?: number): FormattedNumber => {
+export const getGasInDai = async (amount: BigNumber, manualGasPrice?: number): Promise<FormattedNumber> => {
   const augur = augurSdk.get();
-  const gasInAttoDai = augur.convertGasEstimateToDaiCost(amount, manualGasPrice);
+  const gasInAttoDai = await augur.convertGasEstimateToDaiCost(amount, manualGasPrice);
   return formatDaiPrice(gasInAttoDai.dividedBy(10 ** 18), { decimals: 2, decimalsRounded: 2});
 }
 
-export const displayGasInDai = (amount: BigNumber, manualGasPrice?: number): string => {
-  const gasInDai = getGasInDai(amount, manualGasPrice);
+export const displayGasInDai = async (amount: BigNumber, manualGasPrice?: number): Promise<string> => {
+  const gasInDai = await getGasInDai(amount, manualGasPrice);
   if (Number(gasInDai.roundedFormatted) === 0) {
     return '$0.01';
   }

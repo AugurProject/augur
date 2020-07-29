@@ -24,7 +24,6 @@ import TransferMyTokens from 'modules/modal/containers/transfer-my-tokens';
 
 import TooltipStyles from 'modules/common/tooltip.styles.less';
 import Styles from 'modules/auth/components/connect-dropdown/connect-dropdown.styles.less';
-import { EthReserveAutomaticTopOff } from 'modules/common/labels';
 
 interface ConnectDropdownProps {
   isLogged: boolean;
@@ -135,8 +134,6 @@ const ConnectDropdown = (props: ConnectDropdownProps) => {
     </span>
   );
 
-  const ethReserveInDai = (ethToDai(reserveEthAmount.value, createBigNumber(ethToDaiRate?.value || 0))).formattedValue;
-
   const accountFunds = [
     {
       value: formatDai(balances.dai, {
@@ -166,43 +163,6 @@ const ConnectDropdown = (props: ConnectDropdownProps) => {
       disabled: GsnEnabled ? balances.rep === "0" : false,
     },
   ];
-
-  const feeReserveFunds = (
-    <div className={Styles.EthReserves}>
-      <div className={Styles.AccountFunds}>
-        {FEE_RESERVES_LABEL}
-        {renderToolTip(
-          'tooltip--ethReserve',
-          <div>
-            <p>
-              Augur runs on a peer-to-peer network, transaction fees are paid in
-              ETH. These fees go entirely to the network. Augur doesn’t collect
-              any of these fees.
-            </p>
-            <p>
-              If your account balance exceeds $40, 0.04 ETH equivalent in DAI
-              will be held in your fee reserve to cover transaction fees, which
-              results in cheaper transaction fees.
-            </p>
-            <p>
-              As long as your available account balance remains over $40 DAI,
-              your fee reserve will automatically be replenished.
-            </p>
-            <p>
-              Your fee reserve can easily be cashed out at anytime using the
-              withdraw button in the transactions section of your account
-              summary.
-            </p>
-          </div>
-        )}
-        <div>
-          <span>{ethReserveInDai} DAI</span>
-          <span>{reserveEthAmount.formattedValue} ETH</span>
-        </div>
-      </div>
-      <EthReserveAutomaticTopOff />
-    </div>
-  );
 
   const walletProviders = [
     {
@@ -259,7 +219,6 @@ const ConnectDropdown = (props: ConnectDropdownProps) => {
               </div>
             </div>
           ))}
-        {reserveEthAmount.value !== 0 && feeReserveFunds}
         {walletProviders
           .filter(wallet => wallet.accountType === accountMeta.accountType)
           .map((wallet, idx) => {

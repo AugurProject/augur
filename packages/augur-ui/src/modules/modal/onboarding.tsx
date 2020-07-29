@@ -17,9 +17,6 @@ import { ONBOARDING_MAX_STEPS, TRANSACTIONS, CREATEAUGURWALLET, DAI, GWEI_CONVER
 import { LeftChevron } from 'modules/common/icons';
 
 import Styles from 'modules/modal/modal.styles.less';
-import { runPeriodicals_estimateGas } from 'modules/contracts/actions/contractCalls';
-import { createBigNumber } from 'utils/create-big-number';
-import { getGasInDai } from 'modules/app/actions/get-ethToDai-rate';
 
 interface OnboardingProps {
   closeAction: Function;
@@ -57,19 +54,12 @@ export const Onboarding = ({
   showTransferMyDai,
   showAugurP2PModal,
   showActivationButton,
-  createFundedGsnWallet,
   disableActivatebutton,
   gasPrice,
 }: OnboardingProps) => {
   const [activationEstimate, setActivationEstimate] = useState('-');
-  async function getEstimateActivationWallet() {
-    const gas = await runPeriodicals_estimateGas();
-    const gasInDai = getGasInDai(Number(createBigNumber(gas)), gasPrice);
-    setActivationEstimate(gasInDai.formatted);
-  }
   useEffect(() => {
     analyticsEvent && analyticsEvent();
-    getEstimateActivationWallet();
   }, []);
 
   const NavControls = (
@@ -80,7 +70,7 @@ export const Onboarding = ({
           <ProcessingButton
             small
             text={'Activate Account'}
-            action={() => createFundedGsnWallet()}
+            action={() => console.error("DELETE THIS") }
             queueName={TRANSACTIONS}
             queueId={CREATEAUGURWALLET}
             disabled={disableActivatebutton}

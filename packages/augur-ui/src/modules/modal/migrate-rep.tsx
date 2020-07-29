@@ -15,10 +15,6 @@ import {
 } from 'modules/common/buttons';
 import { TransactionFeeLabel } from 'modules/common/labels';
 import {
-  displayGasInDai,
-  getGasInDai,
-} from 'modules/app/actions/get-ethToDai-rate';
-import {
   V1_REP_MIGRATE_ESTIMATE,
   HELP_CENTER_MIGRATE_REP,
   GWEI_CONVERSION,
@@ -54,16 +50,6 @@ export const MigrateRep = ({
   const inTradingWallet = walletBalances.legacyRep !== '0';
   const ethForGas = walletBalances.signerBalances.eth;
 
-  useEffect(() => {
-    /*
-    if (GsnEnabled) {
-      convertV1ToV2Estimate().then(gasLimit => {
-        setGasLimit(gasLimit);
-      });
-    }
-    */
-  }, []);
-
   const gasEstimateInEth = formatGasCostToEther(
     gasLimit,
     { decimalsRounded: 4 },
@@ -72,12 +58,6 @@ export const MigrateRep = ({
 
   const hasEnoughEthForGas = createBigNumber(ethForGas).gte(
     createBigNumber(gasEstimateInEth)
-  );
-
-  const gasPriceInWei = createBigNumber(GWEI_CONVERSION).multipliedBy(gasPrice);
-  const gasInDai = getGasInDai(gasLimit, gasPriceInWei).value;
-  const hasEnoughDaiForGas = createBigNumber(walletBalances.dai).gte(
-    createBigNumber(gasInDai)
   );
 
   const safeWalletContent = (
@@ -91,17 +71,12 @@ export const MigrateRep = ({
         </span>
       </div>
       <div>
-        <TransactionFeeLabel gasCostDai={displayGasInDai(gasLimit)} />
+        <TransactionFeeLabel gasCostDai={gasEstimateInEth} />
       </div>
       {!hasEnoughEthForGas && inSigningWallet && (
         <span className={Styles.Error}>
           {formatEther(gasEstimateInEth).formatted} ETH is needed for
           transaction fee
-        </span>
-      )}
-      {!hasEnoughDaiForGas && !hasEnoughEthForGas && inTradingWallet && (
-        <span className={Styles.Error}>
-          ${formatDai(gasInDai).formatted} DAI is needed for transaction fee
         </span>
       )}
       <DismissableNotice

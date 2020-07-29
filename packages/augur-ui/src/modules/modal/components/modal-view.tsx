@@ -6,13 +6,11 @@ import ModalReporting from 'modules/modal/containers/modal-reporting';
 import ModalConfirm from 'modules/modal/components/modal-confirm';
 import ModalReview from 'modules/modal/components/modal-review';
 import ModalRepFaucet from 'modules/modal/containers/modal-rep-faucet';
-import ModalGsnFaucet from 'modules/modal/containers/modal-gsn-faucet';
 import ModalCreateMarket from 'modules/modal/containers/modal-create-market';
 import ModalDaiFaucet from 'modules/modal/containers/modal-dai-faucet';
 import ModalCreationHelp from 'modules/modal/containers/modal-creation-help';
 import ModalDeposit from 'modules/modal/containers/modal-deposit';
 import ModalWithdraw from 'modules/modal/containers/modal-transfer';
-import ModalCashOut from 'modules/modal/containers/modal-cash-out';
 import ModalMigrateRep from 'modules/modal/containers/modal-migrate-rep';
 import ModalNetworkDisabled from 'modules/modal/containers/modal-network-disabled';
 import ModalTransactions from 'modules/modal/containers/modal-transactions';
@@ -83,8 +81,6 @@ function selectModal(type, props, closeModal, modal) {
       return <ModalTransactions />;
     case TYPES.MODAL_REP_FAUCET:
       return <ModalRepFaucet />;
-    case TYPES.MODAL_GSN_FAUCET:
-      return <ModalGsnFaucet />;
     case TYPES.MODAL_CREATE_MARKET:
       return <ModalCreateMarket />;
     case TYPES.MODAL_ADD_FUNDS:
@@ -105,8 +101,6 @@ function selectModal(type, props, closeModal, modal) {
       return <ModalDeposit />;
     case TYPES.MODAL_TRANSFER:
       return <ModalWithdraw />;
-    case TYPES.MODAL_CASHOUT:
-      return <ModalCashOut />;
     case TYPES.MODAL_MIGRATE_REP:
       return <ModalMigrateRep />;
     case TYPES.MODAL_CONFIRM:

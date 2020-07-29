@@ -36,10 +36,9 @@ import {
   formatDai,
 } from 'utils/format-number';
 import { BigNumber, createBigNumber } from 'utils/create-big-number';
-import { LinearPropertyLabel, EthReserveNotice, TransactionFeeLabelToolTip, EthReserveAutomaticTopOff } from 'modules/common/labels';
+import { LinearPropertyLabel, TransactionFeeLabelToolTip } from 'modules/common/labels';
 import { Trade } from 'modules/types';
 import { ExternalLinkButton, ProcessingButton } from 'modules/common/buttons';
-import { getGasInDai } from 'modules/app/actions/get-ethToDai-rate';
 import { TXEventName } from '@augurproject/sdk-lite';
 
 interface MessageButton {
@@ -190,7 +189,7 @@ class Confirm extends Component<ConfirmProps, ConfirmState> {
     let gasCostDai = formatNumber(0);
 
     if (GsnEnabled) {
-      gasCostDai = getGasInDai(Number(createBigNumber(gasLimit)), createBigNumber(GWEI_CONVERSION).multipliedBy(gasPrice));
+      gasCostDai = createBigNumber(gasLimit).multipliedBy(createBigNumber(GWEI_CONVERSION)).multipliedBy(gasPrice);
     }
 
     if (marketType === SCALAR && selectedOutcomeId === INVALID_OUTCOME_ID) {
@@ -384,10 +383,6 @@ class Confirm extends Component<ConfirmProps, ConfirmState> {
 
     let gasCostDai = formatDai(0);
 
-    if (GsnEnabled) {
-      gasCostDai = getGasInDai(Number(createBigNumber(gasLimit)), createBigNumber(GWEI_CONVERSION).multipliedBy(gasPrice));
-    }
-
     const limitPricePercentage = (side === BUY
       ? createBigNumber(limitPrice)
       : createBigNumber(maxPrice).minus(createBigNumber(limitPrice))
@@ -523,7 +518,6 @@ class Confirm extends Component<ConfirmProps, ConfirmState> {
             />
           </div>
         )}
-        {numFills > 0 && !postOnlyOrder && <EthReserveAutomaticTopOff />}
         {messages && (
           <div
             className={classNames(Styles.MessageContainer, {
@@ -554,7 +548,6 @@ class Confirm extends Component<ConfirmProps, ConfirmState> {
             )}
           </div>
         )}
-        {!postOnlyOrder && <EthReserveNotice gasLimit={gasLimit} />}
       </section>
     );
   }

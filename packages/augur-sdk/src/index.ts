@@ -5,7 +5,6 @@ export * from './api/Trade';
 export * from './api/Market';
 export * from './api/Contracts';
 export * from './api/HotLoading';
-export * from './api/GSN';
 export * from './api/WarpSync';
 export * from './utils';
 export * from './state';

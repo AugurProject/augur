@@ -12,34 +12,26 @@ import {
   MODAL_DISCARD,
   MODAL_CREATE_MARKET,
   ZERO,
-  GSN_WALLET_SEEN,
-  MODAL_INITIALIZE_ACCOUNT
 } from "modules/common/constants";
 import { addDraft, updateDraft } from "modules/create-market/actions/update-drafts";
 import { updateModal } from "modules/modal/actions/update-modal";
 import { NodeStyleCallback } from "modules/types";
 import { marketCreationStarted, marketCreationSaved } from "services/analytics/helpers";
-import { isGSNUnavailable } from "modules/app/selectors/is-gsn-unavailable";
 import getValueFromlocalStorage from "utils/get-local-storage-value";
 import { WALLET_STATUS } from "modules/app/actions/update-app-status";
 
 const mapStateToProps = state => {
-  const gsnWalletInfoSeen = getValueFromlocalStorage(GSN_WALLET_SEEN);
 
   return {
     newMarket: state.newMarket,
     currentTimestamp: getValue(state, "blockchain.currentAugurTimestamp"),
     drafts: state.drafts,
     needsApproval: state.loginAccount.allowance.lte(ZERO),
-    GsnEnabled: state.appStatus.gsnEnabled,
-    gsnUnavailable: isGSNUnavailable(state),
-    gsnWalletInfoSeen,
     walletStatus: state.appStatus[WALLET_STATUS],
   }
 }
 
 const mapDispatchToProps = dispatch => ({
-  initializeGsnWallet: (customAction = null) => dispatch(updateModal({ customAction, type: MODAL_INITIALIZE_ACCOUNT })),
   updateNewMarket: data => dispatch(updateNewMarket(data)),
   removeAllOrdersFromNewMarket: () => dispatch(removeAllOrdersFromNewMarket()),
   submitNewMarket: (data, cb) =>

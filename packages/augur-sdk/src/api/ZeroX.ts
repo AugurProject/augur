@@ -340,7 +340,7 @@ export class ZeroX {
     const protocolFee = gasPrice.multipliedBy(exchangeFeeMultiplier).multipliedBy(new BigNumber(loopLimit));
     const walletEthBalance = await this.client.getEthBalance(account);
     const remainingToPay = protocolFee.gt(walletEthBalance) ? protocolFee.minus(walletEthBalance) : new BigNumber(0);
-    let maxProtocolFeeInDai = remainingToPay.multipliedBy(this.client.dependencies.maxExchangeRate).div(QUINTILLION);
+    let maxProtocolFeeInDai = remainingToPay.multipliedBy(await this.client.getExchangeRate(true)).div(QUINTILLION);
     maxProtocolFeeInDai = maxProtocolFeeInDai.multipliedBy(MAX_PROTOCOL_FEE_MULTIPLIER).decimalPlaces(0);
 
     const result: Event[] = await this.client.contracts.ZeroXTrade.trade(
@@ -467,7 +467,7 @@ export class ZeroX {
     const signature = await this.signOrder(
       order,
       hash,
-      this.client.getUseWallet()
+      false
     );
 
     return {
@@ -577,7 +577,7 @@ export class ZeroX {
     const protocolFee = gasPrice.multipliedBy(exchangeFeeMultiplier).multipliedBy(orders.length);
     const walletEthBalance = await this.client.getEthBalance(await this.client.getAccount());
     const remainingToPay = protocolFee.gt(walletEthBalance) ? protocolFee.minus(walletEthBalance) : new BigNumber(0);
-    let maxProtocolFeeInDai = remainingToPay.multipliedBy(this.client.dependencies.maxExchangeRate).div(QUINTILLION);
+    let maxProtocolFeeInDai = remainingToPay.multipliedBy(await this.client.getExchangeRate(true)).div(QUINTILLION);
     maxProtocolFeeInDai = maxProtocolFeeInDai.multipliedBy(MAX_PROTOCOL_FEE_MULTIPLIER).decimalPlaces(0);
 
     return this.client.contracts.ZeroXTrade.cancelOrders(orders, signatures, maxProtocolFeeInDai);
