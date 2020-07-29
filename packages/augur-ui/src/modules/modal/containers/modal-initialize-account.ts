@@ -63,7 +63,7 @@ const mergeProps = (sP: any, dP: any, oP: any) => ({
           },
         },
         {
-          text: 'Do it later',
+          text: 'Continue',
           action: () => {
             dP.closeModal();
           },
