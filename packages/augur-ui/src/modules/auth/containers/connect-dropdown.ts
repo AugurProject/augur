@@ -45,8 +45,8 @@ const mapStateToProps = (state: AppState) => {
     GsnEnabled: state.appStatus.gsnEnabled,
     ethToDaiRate: state.appStatus.ethToDaiRate,
     reserveEthAmount,
-    showTransferMyDai: createBigNumber(state.loginAccount.balances.signerBalances.dai).gt(FIVE),
-    showTransferMyRep: createBigNumber(state.loginAccount.balances.signerBalances.rep).gt(ONE),
+    showTransferMyDai: createBigNumber(state.loginAccount.balances.signerBalances.dai).gte(FIVE),
+    showTransferMyRep: createBigNumber(state.loginAccount.balances.signerBalances.rep).gte(ONE),
   };
 };
 
