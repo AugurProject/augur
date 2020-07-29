@@ -75,7 +75,6 @@ describe('State API :: Universe :: ', () => {
       marketIds: [market.address],
     }))[0];
 
-    console.log(`GOD DAMNIT ONE XXX`);
     await fork(john, market);
 
     const repTokenAddress = await john.augur.contracts.universe.getReputationToken_();
@@ -89,7 +88,6 @@ describe('State API :: Universe :: ', () => {
 
     await john.faucetRep(new BigNumber(1e21));
     await john.augur.contracts.universe.createChildUniverse(invalidNumerators);
-    console.log(`GOD DAMNIT`);
     await repToken.migrateOutByPayout(invalidNumerators, new BigNumber(1e21));
 
     await john.faucetRep(new BigNumber(1e21));
@@ -108,13 +106,13 @@ describe('State API :: Universe :: ', () => {
           outcomeName: 'Invalid',
           outcome: '0',
           amount: '1000000000000000000000',
-          payoutNumerators: ['100', '0', '0'],
+          payoutNumerators: ['1000', '0', '0'],
         },
         {
           outcomeName: 'No',
           outcome: '1',
           amount: '1000000000000000000000',
-          payoutNumerators: ['0', '100', '0'],
+          payoutNumerators: ['0', '1000', '0'],
         },
       ],
     });
@@ -170,13 +168,13 @@ describe('State API :: Universe :: ', () => {
           outcome: '0',
           isInvalid: true,
           amount: '1000000000000000000000',
-          payoutNumerators: ['100', '0', '0', '0', '0'],
+          payoutNumerators: ['1000', '0', '0', '0', '0'],
         },
         {
           outcomeName: 'foo',
           outcome: '1',
           amount: '1000000000000000000000',
-          payoutNumerators: ['0', '100', '0', '0', '0'],
+          payoutNumerators: ['0', '1000', '0', '0', '0'],
         },
       ],
     });

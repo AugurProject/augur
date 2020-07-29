@@ -34,6 +34,7 @@ export const INTERNAL_CONTRACTS = [
     'RedeemStake',
     'RepSymbol',
     'AuditFunds',
+    'AccountLoader',
     // factories
     'DisputeCrowdsourcerFactory',
     'DisputeWindowFactory',
@@ -58,18 +59,14 @@ export const TRADING_CONTRACTS = [
     'AugurWalletRegistry',
     'AugurWalletRegistryV2',
     'RelayHubV2',
+    'AccountLoader',
     'WETH9'
 ];
 
 export const TEST_CONTRACTS = [
-    'CashFaucet',
     'TimeControlled',
     'TestNetReputationTokenFactory',
     'TestNetReputationToken',
-    // Maker
-    'TestNetDaiJoin',
-    'TestNetDaiPot',
-    'TestNetDaiVat',
 ];
 
 export const EXTERNAL_CONTRACTS = [
@@ -89,16 +86,13 @@ export const EXTERNAL_CONTRACTS = [
     'ZRXToken',
     // Maker
     'Cash',
-    'DaiJoin',
-    'DaiPot',
-    'DaiVat',
     // USDx
     'USDC',
     'USDT',
     // Uniswap
     'UniswapV2Factory',
     'UniswapV2Pair',
-    'UniswapV2Router01',
+    'UniswapV2Router02',
     // GSN
     'RelayHub',
     'RelayHubV2',
@@ -113,12 +107,6 @@ export const REGISTERED_EXTERNAL_CONTRACTS = [
     'WETH9',
     // Maker
     'Cash',
-    'DaiJoin',
-    'DaiPot',
-    'DaiVat',
-    // USDx
-    'USDC',
-    'USDT',
     // Uniswap
     "UniswapV2Factory",
     // GSN
@@ -178,7 +166,8 @@ export const INITIALIZED_CONTRACTS = [
     'AugurWalletFactory',
     'AugurWalletRegistry',
     'AugurWalletRegistryV2',
-    'RepOracle'
+    'RepOracle',
+    'AccountLoader'
 ];
 
 export const RELAY_HUB_ADDRESS = '0xD216153c06E857cD7f72665E0aF1d7D82172F494';

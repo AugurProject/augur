@@ -31,6 +31,7 @@ import {
   tickSizeToNumTickWithDisplayPrices,
   convertDisplayAmountToOnChainAmount,
   QUINTILLION,
+  DEFAULT_TRADE_INTERVAL
 } from '@augurproject/utils';
 import {
   CancelTextButton,
@@ -41,8 +42,6 @@ import { EXPIRATION_DATE_OPTIONS, convertUnixToFormattedDate, calcOrderExpiratio
 import { SimpleTimeSelector } from 'modules/create-market/components/common';
 import { calcPercentageFromPrice, calcPriceFromPercentage } from 'utils/format-number';
 import Media from 'react-media';
-
-const DEFAULT_TRADE_INTERVAL = new BigNumber(10 ** 17);
 
 enum ADVANCED_OPTIONS {
   EXPIRATION = '1',
@@ -125,7 +124,6 @@ interface FormState {
   expirationDate?: Moment;
   percentage: string;
   confirmationTimeEstimation: number;
-  postOnlyOrderType: boolean
 }
 
 class Form extends Component<FromProps, FormState> {
@@ -775,7 +773,7 @@ class Form extends Component<FromProps, FormState> {
     );
   }
 
-  clearOrderFormProperties() {
+  clearOrderFormProperties(forceParent = true) {
     const { selectedNav, clearOrderForm } = this.props;
     const remainingTime = calcOrderExpirationTimeRemaining(this.props.endTime, this.props.currentTimestamp);
     const startState = {
@@ -803,7 +801,7 @@ class Form extends Component<FromProps, FormState> {
         isOrderValid: false,
         percentage: '',
       },
-      () => clearOrderForm()
+      () => forceParent && clearOrderForm()
     );
   }
 
@@ -842,7 +840,6 @@ class Form extends Component<FromProps, FormState> {
       selectedNav,
     } = this.props;
     const s = this.state;
-
     const tickSize = parseFloat(market.tickSize);
     const quantityStep = getPrecision(tickSize, .001);
     const max = maxPrice && maxPrice.toString();

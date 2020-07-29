@@ -340,7 +340,7 @@ export class ContractAPI {
     await this.placeZeroXTrade({
       direction,
       market,
-      numTicks: new BigNumber(100),
+      numTicks: new BigNumber(1000),
       numOutcomes: 3,
       outcome,
       tradeGroupId: formatBytes32String('42'),
@@ -889,7 +889,7 @@ export class ContractAPI {
   async faucetCash(attoCash: BigNumber, targetAddress?: string): Promise<void> {
     const userAddress = await this.augur.getAccount();
     const account = targetAddress || userAddress;
-    await this.augur.contracts.cashFaucet.faucet(attoCash);
+    await this.augur.contracts.cash.faucet(attoCash);
     if (account !== userAddress) {
       await this.augur.contracts.cash.transfer(account, attoCash);
     }

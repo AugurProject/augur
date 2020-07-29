@@ -3,106 +3,106 @@ pragma solidity 0.5.15;
 pragma experimental ABIEncoderV2;
 
 import "ROOT/gsn/v1/ECDSA.sol";
+import "ROOT/gsn/v2/interfaces/GsnTypes.sol";
 import "ROOT/gsn/v2/utils/GsnUtils.sol";
 import "ROOT/gsn/v2/interfaces/IForwarder.sol";
 import "ROOT/gsn/v2/interfaces/ISignatureVerifier.sol";
+import "ROOT/gsn/v2/utils/GsnEip712Library.sol";
 
 
 contract Forwarder is IForwarder {
 
     using ECDSA for bytes32;
 
-    // solhint-disable-next-line max-line-length
-    bytes32 public constant RELAY_REQUEST_TYPEHASH = keccak256("RelayRequest(address target,bytes encodedFunction,GasData gasData,RelayData relayData)GasData(uint256 gasLimit,uint256 gasPrice,uint256 pctRelayFee,uint256 baseRelayFee)RelayData(address senderAddress,uint256 senderNonce,address relayWorker,address paymaster,address forwarder)");
+    string public constant GENERIC_PARAMS = "address from,address to,uint256 value,uint256 gas,uint256 nonce,bytes data";
 
-    // solhint-disable-next-line max-line-length
-    bytes32 public constant CALLDATA_TYPEHASH = keccak256("GasData(uint256 gasLimit,uint256 gasPrice,uint256 pctRelayFee,uint256 baseRelayFee)");
-
-    // solhint-disable-next-line max-line-length
-    bytes32 public constant RELAYDATA_TYPEHASH = keccak256("RelayData(address senderAddress,uint256 senderNonce,address relayWorker,address paymaster,address forwarder)");
-
-
-    string public versionSM = "augur-forwarder";
-
-    function versionForwarder() external view returns (string memory) {
-        return "2.0.0-alpha.1+opengsn.forwarder.iforwarder";
-    }
+    mapping(bytes32 => bool) public typeHashes;
 
     // Nonces of senders, used to prevent replay attacks
     mapping(address => uint256) private nonces;
 
-    function getNonce(address from) external view returns (uint256) {
+    // solhint-disable-next-line no-empty-blocks
+    function() external payable {}
+
+    function getNonce(address from) public view returns (uint256) {
         return nonces[from];
     }
 
-    function verify(ISignatureVerifier.RelayRequest memory req, bytes memory sig) public view {
-        _verify(req, sig);
+    constructor() public {
+        string memory requestType = string(abi.encodePacked("ForwardRequest(", GENERIC_PARAMS, ")"));
+        registerRequestTypeInternal(requestType);
     }
 
-    function verifyAndCall(ISignatureVerifier.RelayRequest memory req, bytes memory sig)
-    public
-    {
-        _verify(req, sig);
+    function verify(
+        ForwardRequest memory req,
+        bytes memory suffixData,
+        bytes memory sig)
+    public view {
+        _verifyNonce(req);
+        _verifySig(req, suffixData, sig);
+    }
+
+    function execute(
+        ForwardRequest memory req,
+        bytes32 domainSeparator,
+        bytes32 requestTypeHash,
+        bytes memory suffixData,
+        bytes memory sig
+    )
+    public payable
+    returns (bool success, bytes memory ret) {
+        _verifyNonce(req);
+        _verifySig(req, suffixData, sig);
         _updateNonce(req);
 
         // solhint-disable-next-line avoid-low-level-calls
-        (bool success, bytes memory returnValue) = req.target.call.gas(req.gasData.gasLimit)(abi.encodePacked(req.encodedFunction, req.relayData.senderAddress));
-        // TODO: use assembly to prevent double-wrapping of the revert reason (part of GSN-37)
-        require(success, GsnUtils.getError(returnValue));
+        (success,ret) = req.to.call.gas(req.gas).value(req.value)(abi.encodePacked(req.data, req.from));
+        if ( address(this).balance > 0 ) {
+            //can't fail: req.from signed (off-chain) the request, so it must be an EOA...
+            address(uint160(req.from)).transfer(address(this).balance);
+        }
+        return (success,ret);
     }
 
-    function _verify(ISignatureVerifier.RelayRequest memory req, bytes memory sig) internal view {
-        _verifyNonce(req);
-        _verifySig(req, sig);
+    function _verifyNonce(ForwardRequest memory req) internal view {
+        require(nonces[req.from] == req.nonce, "nonce mismatch");
     }
 
-    function _verifyNonce(ISignatureVerifier.RelayRequest memory req) internal view {
-        require(nonces[req.relayData.senderAddress] == req.relayData.senderNonce, "nonce mismatch");
+    function _updateNonce(ForwardRequest memory req) internal {
+        nonces[req.from]++;
     }
 
-    function _updateNonce(ISignatureVerifier.RelayRequest memory req) internal {
-        nonces[req.relayData.senderAddress]++;
+    function registerRequestType(string calldata typeName, string calldata typeSuffix) external {
+        for (uint i = 0; i < bytes(typeName).length; i++) {
+            bytes1 c = bytes(typeName)[i];
+            require(c != "(" && c != ")", "invalid typename");
+        }
+
+        string memory requestType = string(abi.encodePacked(typeName, "(", GENERIC_PARAMS, ",", typeSuffix));
+        registerRequestTypeInternal(requestType);
     }
 
-    function hash(ISignatureVerifier.RelayRequest memory req) internal pure returns (bytes32) {
-        return keccak256(abi.encode(
-                RELAY_REQUEST_TYPEHASH,
-                    req.target,
-                    keccak256(req.encodedFunction),
-                    hash(req.gasData),
-                    hash(req.relayData)
-            ));
+    function registerRequestTypeInternal(string memory requestType) internal {
+        bytes32 requestTypehash = keccak256(bytes(requestType));
+        typeHashes[requestTypehash] = true;
+        emit RequestTypeRegistered(requestTypehash, string(requestType));
     }
 
-    function hash(ISignatureVerifier.GasData memory req) internal pure returns (bytes32) {
-        return keccak256(abi.encode(
-                CALLDATA_TYPEHASH,
-                req.gasLimit,
-                req.gasPrice,
-                req.pctRelayFee,
-                req.baseRelayFee
-            ));
+    event RequestTypeRegistered(bytes32 indexed typeHash, string typeStr);
+
+    function getRelayMessageHash(GsnTypes.RelayRequest memory req) public pure returns (bytes32) {
+        (IForwarder.ForwardRequest memory forwardRequest, bytes memory suffixData) = GsnEip712Library.splitRequest(req);
+        return _getEncoded(forwardRequest, suffixData);
     }
 
-    function hash(ISignatureVerifier.RelayData memory req) internal pure returns (bytes32) {
-        return keccak256(abi.encode(
-                RELAYDATA_TYPEHASH,
-                req.senderAddress,
-                req.senderNonce,
-                req.relayWorker,
-                req.paymaster,
-                req.forwarder
-            ));
-    }
-
-    function getRelayMessageHash(ISignatureVerifier.RelayRequest memory relayRequest) public view returns (bytes32) {
-        bytes memory packed = abi.encodePacked("rlx:", hash(relayRequest), address(this));
+    function _getEncoded(ForwardRequest memory relayRequest, bytes memory suffixData) internal pure returns (bytes32) {
+        bytes memory packed = abi.encodePacked("rlx:", GsnEip712Library.hash(relayRequest), suffixData);
         return keccak256(packed);
     }
 
-    function _verifySig(ISignatureVerifier.RelayRequest memory req, bytes memory sig) internal view {
-        bytes32 hashedMessage = getRelayMessageHash(req);
+    function _verifySig(ForwardRequest memory req, bytes memory suffixData, bytes memory sig) public pure {
+        bytes32 hashedMessage = _getEncoded(req, suffixData);
 
-        require(hashedMessage.toEthSignedMessageHash().recover(sig) == req.relayData.senderAddress, "Signature mismatch");
+        require(hashedMessage.toEthSignedMessageHash().recover(sig) == req.from, "Signature mismatch");
     }
 }

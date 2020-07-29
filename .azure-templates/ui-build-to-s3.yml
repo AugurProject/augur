@@ -1,0 +1,62 @@
+parameters:
+  - name: name
+    displayName: 'Job name'
+  - name: environment
+    displayName: 'The configuration used for this deploy (e.g. "dev")'
+  - name: deployBucketName
+    displayName: 'Environment domain used for this deploy (e.g. staging.augur.net)'
+  - name: triggerBranch
+    displayName: 'The branch name that will trigger this build and deploy (e.g. "dev")'
+  - name: cloudfrontDistributionId
+    displayName: 'The cloudfront distribution id in order to clear the cache on deploy (e.g. E2K6239JF3WYG6)'
+  - name: reportingOnly
+    displayName: 'Set to true if this is a reporting only build'
+    type: string
+    default: 'false'
+
+jobs:
+  - job: ${{ parameters.name }}
+    displayName: Deploy ${{ parameters.environment }} build to ${{ parameters.deployBucketName }}
+    condition: |
+      and
+      (
+          succeeded(),
+          eq(variables['Build.SourceBranch'], '${{ parameters.triggerBranch }}')
+      )
+    pool:
+      vmImage: $(VM_IMAGE)
+    steps:
+      - template: node-setup.yml
+      - task: UsePythonVersion@0
+        inputs:
+          versionSpec: '3.6'
+      - bash: |
+          set -euo pipefail
+          yarn build
+        displayName: yarn build
+      - bash: |
+          set -euo pipefail
+          echo "Building for ${AUGUR_ENV} w/ REPORTING_ONLY=${REPORTING_ONLY}"
+          ( cd packages/orbit-web && ./node_modules/.bin/webpack)
+          ( cd packages/augur-ui && ./node_modules/.bin/webpack)
+        displayName: ui build
+        env:
+          NODE_OPTIONS: "--max_old_space_size=6144"
+          AUGUR_ENV: ${{ parameters.environment }}
+          ETHEREUM_NETWORK: ${{ parameters.environment }}
+          REPORTING_ONLY: ${{ parameters.reportingOnly }}
+      - script: |
+          set -euo pipefail
+          python3 -m venv venv && \
+          source venv/bin/activate && \
+          python3 -m pip install --no-cache-dir awscli
+          aws s3 sync packages/augur-ui/build/ s3://${BUCKET_NAME}/ --metadata-directive REPLACE --metadata '{"Cache-Control": "max-age=31536000,public"}'
+          aws s3 cp s3://${BUCKET_NAME}/index.html s3://${BUCKET_NAME}/index.html --metadata-directive REPLACE --metadata '{"Cache-Control": "max-age=60,public"}'
+          aws s3 cp s3://${BUCKET_NAME}/zerox.wasm s3://${BUCKET_NAME}/zerox.wasm --metadata-directive REPLACE --metadata '{"Cache-Control": "max-age=31536000,public"}' --content-type "application/wasm"
+          aws cloudfront create-invalidation --distribution-id ${DISTRIBUTION_ID} --paths "/index.html"
+        displayName: 'push build to S3'
+        env:
+          AWS_ACCESS_KEY_ID: $(AWS_KEY_ID)
+          AWS_SECRET_ACCESS_KEY: $(AWS_SECRET_KEY)
+          BUCKET_NAME: ${{ parameters.deployBucketName }}
+          DISTRIBUTION_ID: ${{ parameters.cloudfrontDistributionId }}

@@ -5,14 +5,18 @@ import {
   convertDisplayAmountToOnChainAmount,
   convertDisplayPriceToOnChainPrice,
   convertOnChainPriceToDisplayPrice,
+  createClient,
+  createServer,
   NativePlaceTradeDisplayParams,
   QUINTILLION,
-  startServer,
   stringTo32ByteHex,
 } from '@augurproject/sdk';
-import { NumOutcomes } from '@augurproject/sdk-lite';
+import {
+  MarketList,
+  NumOutcomes,
+  SubscriptionEventName,
+} from '@augurproject/sdk-lite';
 import { SingleThreadConnector } from '@augurproject/sdk/build/connector';
-import { MarketList } from '@augurproject/sdk-lite';
 import { flattenZeroXOrders } from '@augurproject/sdk/build/state/getter/ZeroXOrdersGetters';
 import {
   createApp,
@@ -28,21 +32,33 @@ import { BigNumber } from 'bignumber.js';
 import { spawn, spawnSync } from 'child_process';
 import { ethers } from 'ethers';
 import { formatBytes32String } from 'ethers/utils';
+import * as CIDTool from 'cid-tool';
+
+import * as fs from 'fs';
+import * as IPFS from 'ipfs';
 import moment from 'moment';
-import { ContractAPI, deployContracts, startGanacheServer } from '..';
+import * as path from 'path';
+import {
+  ACCOUNTS,
+  ContractAPI,
+  deployContracts,
+  makeSigner,
+  providerFromConfig,
+  startGanacheServer,
+} from '..';
 import { _1_ETH, BASE_MNEMONIC } from '../constants';
 import { runChaosMonkey } from './chaos-monkey';
 import {
+  createBadTemplatedMarkets,
   createCannedMarkets,
   createTemplatedBettingMarkets,
   createTemplatedMarkets,
-  createBadTemplatedMarkets,
 } from './create-canned-markets-and-orders';
 import {
   createCatZeroXOrders,
   createScalarZeroXOrders,
-  createYesNoZeroXOrders,
   createSingleCatZeroXOrder,
+  createYesNoZeroXOrders,
 } from './create-orders';
 import { dispute } from './dispute';
 import { FlashArguments, FlashSession } from './flash';
@@ -70,7 +86,10 @@ import {
   waitForSigint,
   waitForSync,
 } from './util';
+
 const compilerOutput = require('@augurproject/artifacts/build/contracts.json');
+
+const UNIVERSAL_RELAY_HUB_ADDRESS = '0xd216153c06e857cd7f72665e0af1d7d82172f494';
 
 export function addScripts(flash: FlashSession) {
   flash.addScript({
@@ -475,7 +494,7 @@ export function addScripts(flash: FlashSession) {
           if (numOutcomes.gt(new BigNumber(3))) {
             await createCatZeroXOrders(user, marketId, true, numOutcomes.toNumber() - 1);
           } else {
-            if (numTicks.eq(new BigNumber(100))) {
+            if (numTicks.eq(new BigNumber(1000))) {
               await createYesNoZeroXOrders(user, marketId, true);
             } else {
               try {
@@ -544,7 +563,7 @@ export function addScripts(flash: FlashSession) {
         if (numOutcomes.gt(new BigNumber(3))) {
           await createCatZeroXOrders(user, marketId, true, numOutcomes.toNumber() - 1);
         } else {
-          if (numTicks.eq(new BigNumber(100))) {
+          if (numTicks.eq(new BigNumber(1000))) {
             await createYesNoZeroXOrders(user, marketId, true);
           } else {
             try {
@@ -689,8 +708,8 @@ export function addScripts(flash: FlashSession) {
     async call(this: FlashSession, args: FlashArguments) {
       const market = String(args.marketId);
       const numOutcomes = Number(args.numOutcomes || 3);
-      const price = String(args.price || '0.4');
-      const shares = String(args.shares || '100');
+      const price = String(args.price || '0.411');
+      const shares = String(args.shares || '10');
       const outcome = Number(args.outcome || 1);
       const skipFaucetOrApproval = Boolean(args.skipFaucetOrApproval);
       const ask = 1;
@@ -1078,12 +1097,12 @@ export function addScripts(flash: FlashSession) {
 
       const onChainShares = convertDisplayAmountToOnChainAmount(
         new BigNumber(String(args.amount)),
-        new BigNumber(100)
+        new BigNumber(1000)
       );
       const onChainPrice = convertDisplayPriceToOnChainPrice(
         new BigNumber(String(Number(args.price).toFixed(2))),
         new BigNumber(0),
-        new BigNumber('0.01')
+        new BigNumber('0.001')
       );
 
       const nullOrderId = stringTo32ByteHex('');
@@ -1096,17 +1115,17 @@ export function addScripts(flash: FlashSession) {
         const onChainPrice = convertDisplayPriceToOnChainPrice(
           new BigNumber(String(Number(args.price).toFixed(2))),
           new BigNumber(0),
-          new BigNumber('0.01')
+          new BigNumber('0.001')
         );
         const price = convertOnChainPriceToDisplayPrice(
           onChainPrice,
           new BigNumber(0),
-          new BigNumber('0.01')
+          new BigNumber('0.001')
         );
         const params = {
           direction: type as 0 | 1,
           market: marketId,
-          numTicks: new BigNumber(100),
+          numTicks: new BigNumber(1000),
           numOutcomes: 3 as NumOutcomes,
           outcome: Number(args.outcome) as 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7,
           tradeGroupId,
@@ -1971,6 +1990,7 @@ export function addScripts(flash: FlashSession) {
         name: 'do-not-create-markets',
         abbr: 'M',
         description: 'Do not create markets. Only applies when --dev is specified.',
+        flag: true,
       },
     ],
     async call(this: FlashSession, args: FlashArguments) {
@@ -2013,8 +2033,10 @@ export function addScripts(flash: FlashSession) {
           await deployContracts(this.network, this.provider, this.getAccount(), compilerOutput, this.config);
           await refreshSDKConfig(); // need to grab local.json since it wasn't created/updated until deploy
           this.config = buildConfig('local');
-          const user = await this.createUser(this.getAccount(), this.config);
-          await createCannedMarkets(user);
+          if (createMarkets) {
+            const user = await this.createUser(this.getAccount(), this.config);
+            await createCannedMarkets(user);
+          }
         }
 
         console.log('Building');
@@ -2026,6 +2048,7 @@ export function addScripts(flash: FlashSession) {
 
         env = {
           ...process.env,
+          ETHEREUM_RPC_HTTP: runGeth ? 'http://geth:8545' : this.config.ethereum.http,
           ETHEREUM_CHAIN_ID: this.config.networkId,
           CUSTOM_CONTRACT_ADDRESSES: JSON.stringify(this.config.addresses),
           ZEROX_CONTRACT_ADDRESS: formatAddress(this.config.addresses.ZeroXTrade, { lower: true, prefix: false }),
@@ -2057,6 +2080,44 @@ export function addScripts(flash: FlashSession) {
   });
 
   flash.addScript({
+    name: 'generate-wallet',
+    options: [
+      {
+        name: 'keyfileOutputLocation',
+        description: 'Generate a wallet if one does not exist in the current location.',
+        required: true,
+      },
+    ],
+    async call(this: FlashSession, args: FlashArguments) {
+      const outputPath = path.resolve(`${args.keyfileOutputLocation}`);
+
+      if(fs.existsSync(outputPath)) {
+        console.log(`Keyfile already exists at path ${outputPath}. Nothing to do.`)
+      } else {
+        console.log('Creating wallet.');
+        const wallet = ethers.Wallet.createRandom();
+
+        fs.writeFileSync(outputPath, wallet.privateKey, 'utf8');
+
+        console.log(`Generated wallet with address ${wallet.address} .\nPrivate key written to ${outputPath}\n`);
+      }
+    }
+  });
+
+  flash.addScript({
+    name: 'ipfs-pin-ui',
+    async call(this: FlashSession, args: FlashArguments) {
+      const ipfs = await IPFS.create({});
+
+      // Assume build exists.
+      await ipfs.addFromFs('../augur-ui/build', { recursive: true });
+
+      console.log('Running IPFS daemon. Type ctrl-c to quit:\n');
+      await waitForSigint();
+    }
+  });
+
+  flash.addScript({
     name: 'sdk-server',
     ignoreNetwork: true,
     options: [
@@ -2072,19 +2133,116 @@ export function addScripts(flash: FlashSession) {
         description: 'Report the generated warp sync hash to the market when end time elapses. Requires `--warpSync` option be specified',
         flag: true,
       },
+      {
+        name: 'showHashAndDie',
+        abbr: 'd',
+        description: 'Print out current warp sync hash and exit.',
+        flag: true
+      },
+      {
+        name: 'pinUI [path]',
+        abbr: 'p',
+        description: 'Pin IPFS hash of the ui. Requires -w flag to be set. Defaults to "../augur-ui/build"',
+        flag: true
+      },
+      {
+        name: 'pinReportingUI [path]',
+        abbr: 'r',
+        description: 'Pin IPFS hash of the reporting-only ui. Requires -w flag to be set. Defaults to "../augur-ui/reporting-only-build"',
+        flag: true
+      }
     ],
     async call(this: FlashSession, args: FlashArguments) {
+      const autoReport = Boolean(args.autoReport);
+      const showHashAndDie = Boolean(args.showHashAndDie);
+      const useWarpSync = Boolean(args.warpSync);
+
+      let pinUIPath: string;
+      if (args.pinUI === true) pinUIPath = '../augur-ui/build';
+      else if (args.pinUI !== undefined) pinUIPath = args.pinUI as string;
+
+      let pinReportingUIPath: string;
+      if (args.pinReportingUI === true) pinReportingUIPath = '../augur-ui/reporting-only-build';
+      else if (args.pinReportingUI !== undefined) pinReportingUIPath = args.pinReportingUI as string;
+
       this.pushConfig({
         zeroX: {
-          rpc: { enabled: true },
           mesh: { enabled: false },
         },
         warpSync: {
-          createCheckpoints: Boolean(args.useWarpSync),
-          autoReport: Boolean(args.autoReport) && Boolean(this.config?.deploy?.privateKey),
+          createCheckpoints: useWarpSync,
+          autoReport,
         }
       });
-      const api = await startServer(this.config);
+
+      // Create a wallet, print out private key and display public key.
+      let client;
+      const connector = new SingleThreadConnector();
+
+      if (!autoReport) {
+        client = await createClient(this.config, connector, undefined, undefined, true);
+      } else if(this.accounts === ACCOUNTS) {
+        console.log('Creating wallet.');
+        const wallet = ethers.Wallet.createRandom();
+
+        const keyfilePath = path.resolve(`./${wallet.address}.key`);
+        fs.writeFileSync(keyfilePath, wallet.privateKey, 'utf8');
+
+        console.log(`Transfer ETH the ${wallet.address} to auto-report on warp market.\nPrivate key written to ${keyfilePath}\n`);
+
+        client = await createClient(this.config, connector, wallet, undefined, true);
+      } else {
+        // User provided an account.
+        const provider = await providerFromConfig(this.config);
+        const signer = await makeSigner(this.accounts[0], provider);
+
+        client = await createClient(this.config, connector, signer, undefined);
+      }
+
+      const { api, sync } = await createServer(this.config, client);
+      connector.api = api;
+
+      if (useWarpSync && (pinUIPath || pinReportingUIPath)) {
+        const ipfs = await api.augur.warpController.ipfs;
+
+        if (pinUIPath) {
+          // Assume build exists.
+          const result = await ipfs.addFromFs(pinUIPath, { recursive: true });
+          const { hash } = result.pop();
+          const base32Hash = CIDTool.base32(hash);
+          console.log(`Pinning UI build at path ${pinUIPath} with CID1/base58 hash ${hash} (base32: ${base32Hash} )`);
+        }
+        if (pinReportingUIPath) {
+          // Assume build exists.
+          const result = await ipfs.addFromFs(pinReportingUIPath, { recursive: true });
+          const { hash } = result.pop();
+          const base32Hash = CIDTool.base32(hash);
+          console.log(`Pinning Reporting UI build at path ${pinReportingUIPath} with CID1/base58 hash ${hash} (base32: ${base32Hash} )`);
+        }
+      }
+
+      sync();
+
+      api.augur.events.once(SubscriptionEventName.NewBlock, async () => {
+        const { warpSyncHash } = await api.augur.warpSync.getLastWarpSyncData(api.augur.contracts.universe.address);
+        const warpSyncHash32 = warpSyncHash ? CIDTool.base32(warpSyncHash) : null;
+        const { state, hash } = await api.augur.getWarpSyncStatus();
+        const hash32 = hash ? CIDTool.base32(hash) : null;
+        console.log(`\n\nPrevious Warp Sync Hash: ${warpSyncHash} ( ${warpSyncHash32} )`);
+        console.log(`Current Warp Sync State: ${state} Hash: ${hash} ( ${hash32} )`);
+        if (showHashAndDie) {
+          process.exit(0);
+        }
+      });
+
+      api.augur.events.on(
+        SubscriptionEventName.WarpSyncHashUpdated,
+        async () =>  {
+          const { state, hash } = await api.augur.getWarpSyncStatus();
+          console.log(`\n\nUpdated Warp Sync Info:\nState:\t${state}\nHash:\t${hash}`)
+        }
+      );
+
       const app = createApp(api);
 
       const httpServer = this.config.server?.startHTTP && runHttpServer(app, this.config);
@@ -2186,30 +2344,6 @@ export function addScripts(flash: FlashSession) {
       const attoCash = new BigNumber(Number(args.cashAmount)).times(_1_ETH);
       const user = await this.createUser(this.getAccount(), this.config);
       await user.addEthExchangeLiquidity(attoCash, attoEth);
-    },
-  });
-
-  flash.addScript({
-    name: 'deposit-relay',
-    options: [
-      {
-        name: 'ethAmount',
-        abbr: 'e',
-        description: 'amount of ETH to provide to the exchange; typical max is 2 ether',
-      },
-      {
-        name: 'relayHub',
-        abbr: 'r',
-        description: 'address to relay hub',
-      },
-    ],
-    async call(this: FlashSession, args: FlashArguments) {
-      const UNIVERSAL_RELAY_HUB_ADDRESS = '0xd216153c06e857cd7f72665e0af1d7d82172f494';
-      const address = args.relayHub as string || UNIVERSAL_RELAY_HUB_ADDRESS;
-      const ethAmount = Number(args.ethAmount) || 1;
-      const wei = new BigNumber(ethAmount).times(_1_ETH);
-      const user = await this.createUser(this.getAccount(), this.config);
-      await user.depositRelay(address, wei);
     },
   });
 
@@ -2551,4 +2685,58 @@ export function addScripts(flash: FlashSession) {
         console.log(`MARKET IDS: ${JSON.stringify(marketIds)}`);
       },
     });
+
+  flash.addScript({
+    name: 'gsn-fund-relay',
+    options: [
+      {
+        name: 'ethAmount',
+        abbr: 'e',
+        description: 'amount of ETH to provide to the exchange; typical max is 2 ether',
+      },
+      {
+        name: 'relayHub',
+        abbr: 'r',
+        description: 'address to relay hub',
+      },
+    ],
+    async call(this: FlashSession, args: FlashArguments) {
+      const address = args.relayHub as string || UNIVERSAL_RELAY_HUB_ADDRESS;
+      const ethAmount = Number(args.ethAmount) || 1;
+      const wei = new BigNumber(ethAmount).times(_1_ETH);
+      const user = await this.createUser(this.getAccount(), this.config);
+      await user.depositRelay(address, wei);
+    },
+  });
+
+  flash.addScript({
+    name: 'gsn-stake-relay',
+    options: [
+      {
+        name: 'ethAmount',
+        abbr: 'e',
+        description: 'amount of ETH to provide to the exchange; typical max is 2 ether; default=1 ether',
+      },
+      {
+        name: 'unstakeDelay',
+        abbr: 'd',
+        description: 'seconds to wait before removing stake. default=604800 (1 week)',
+      },
+      {
+        name: 'relayAddress',
+        abbr: 'a',
+        description: 'relay address',
+        required: true,
+      },
+    ],
+    async call(this: FlashSession, args: FlashArguments) {
+      const relayAddress = args.relayAddress as string;
+      const unstakeDelay = new BigNumber(args.unstakeDelay as string || 604800);
+      const ethAmount = Number(args.ethAmount) || 1;
+      const attachedEth = new BigNumber(ethAmount).times(_1_ETH);
+
+      const user = await this.createUser(this.getAccount(), this.config);
+      await user.augur.contracts.relayHub.stake(relayAddress, unstakeDelay, { attachedEth })
+    }
+  })
 }

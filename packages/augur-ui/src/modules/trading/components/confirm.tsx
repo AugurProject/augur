@@ -32,13 +32,14 @@ import {
   formatGasCostToEther,
   formatShares,
   formatNumber,
-  formatEther,
+  formatDaiPrice,
+  formatDai,
 } from 'utils/format-number';
 import { BigNumber, createBigNumber } from 'utils/create-big-number';
 import { LinearPropertyLabel, EthReserveNotice, TransactionFeeLabelToolTip, EthReserveAutomaticTopOff } from 'modules/common/labels';
 import { Trade } from 'modules/types';
 import { ExternalLinkButton, ProcessingButton } from 'modules/common/buttons';
-import { ethToDaiFromAttoRate } from 'modules/app/actions/get-ethToDai-rate';
+import { getGasInDai } from 'modules/app/actions/get-ethToDai-rate';
 import { TXEventName } from '@augurproject/sdk-lite';
 
 interface MessageButton {
@@ -77,6 +78,7 @@ interface ConfirmProps {
   updateWalletStatus: Function;
   sweepStatus: string;
   postOnlyOrder: boolean;
+  allowPostOnlyOrder: boolean;
 }
 
 interface ConfirmState {
@@ -113,6 +115,7 @@ class Confirm extends Component<ConfirmProps, ConfirmState> {
       walletStatus,
       sweepStatus,
       postOnlyOrder,
+      allowPostOnlyOrder,
     } = this.props;
     if (
       JSON.stringify({
@@ -137,7 +140,8 @@ class Confirm extends Component<ConfirmProps, ConfirmState> {
       ) ||
       !createBigNumber(prevProps.availableDai).eq(
         createBigNumber(availableDai)
-      )
+      ) ||
+      allowPostOnlyOrder !== prevProps.allowPostOnlyOrder
     ) {
       this.setState({
         messages: this.constructMessages(this.props),
@@ -162,6 +166,7 @@ class Confirm extends Component<ConfirmProps, ConfirmState> {
       sweepStatus,
       postOnlyOrder,
       disableTrading,
+      allowPostOnlyOrder,
     } = props || this.props;
 
     const {
@@ -182,10 +187,10 @@ class Confirm extends Component<ConfirmProps, ConfirmState> {
       ? createBigNumber(formatGasCostToEther(gasLimit, { decimalsRounded: 4 }, createBigNumber(GWEI_CONVERSION).multipliedBy(gasPrice)))
       : ZERO;
 
-    let gasCostDai = 0;
+    let gasCostDai = formatNumber(0);
 
     if (GsnEnabled) {
-      gasCostDai = ethToDaiFromAttoRate(gasCostInEth).value;
+      gasCostDai = getGasInDai(Number(createBigNumber(gasLimit)), createBigNumber(GWEI_CONVERSION).multipliedBy(gasPrice));
     }
 
     if (marketType === SCALAR && selectedOutcomeId === INVALID_OUTCOME_ID) {
@@ -234,12 +239,12 @@ class Confirm extends Component<ConfirmProps, ConfirmState> {
       !tradingTutorial &&
       GsnEnabled &&
       totalCost &&
-      createBigNumber(gasCostDai).gte(createBigNumber(availableDai))
+      createBigNumber(gasCostDai.value).gte(createBigNumber(availableDai))
     ) {
       messages = {
         header: 'Insufficient DAI',
         type: ERROR,
-        message: `You do not have enough funds to place this order. ${gasCostDai} DAI required for gas.`,
+        message: `You do not have enough funds to place this order. $${gasCostDai.formatted} DAI required for gas.`,
       };
     }
 
@@ -247,15 +252,15 @@ class Confirm extends Component<ConfirmProps, ConfirmState> {
       !isNaN(numTrades) &&
       numTrades > 0 &&
       ((potentialDaiProfit && potentialDaiProfit.value !== 0 &&
-        createBigNumber(gasCostDai).gt(potentialDaiProfit.value)) ||
+        createBigNumber(gasCostDai.value).gt(potentialDaiProfit.value)) ||
         (orderShareProfit && orderShareProfit.value !== 0 &&
-          createBigNumber(gasCostDai).gt(orderShareProfit.value))) &&
+          createBigNumber(gasCostDai.value).gt(orderShareProfit.value))) &&
       !tradingTutorial
     ) {
       messages = {
         header: 'UNPROFITABLE TRADE',
         type: ERROR,
-        message: `Est. TX Fee is higher than profit`,
+        message: `Est. tx fee is higher than profit. TX fees will be dramatically reduced in v3.`,
       };
     }
 
@@ -314,10 +319,7 @@ class Confirm extends Component<ConfirmProps, ConfirmState> {
     }
 
     if (
-      !isNaN(numTrades) &&
-      numTrades > 0 &&
-      postOnlyOrder &&
-      !tradingTutorial
+      !allowPostOnlyOrder && !tradingTutorial
     ) {
       messages = {
         header: 'POST ONLY ORDER',
@@ -354,6 +356,7 @@ class Confirm extends Component<ConfirmProps, ConfirmState> {
       GsnEnabled,
       initialLiquidity,
       postOnlyOrder,
+      tradingTutorial,
     } = this.props;
 
     const {
@@ -379,14 +382,10 @@ class Confirm extends Component<ConfirmProps, ConfirmState> {
       .minus(createBigNumber(minPrice))
       .abs();
 
-    let gasCostDai = formatNumber(0);
-
-    const gasCostInEth = gasLimit
-    ? createBigNumber(formatGasCostToEther(gasLimit, { decimalsRounded: 4 }, createBigNumber(GWEI_CONVERSION).multipliedBy(gasPrice)))
-    : ZERO;
+    let gasCostDai = formatDai(0);
 
     if (GsnEnabled) {
-      gasCostDai = ethToDaiFromAttoRate(gasCostInEth);
+      gasCostDai = getGasInDai(Number(createBigNumber(gasLimit)), createBigNumber(GWEI_CONVERSION).multipliedBy(gasPrice));
     }
 
     const limitPricePercentage = (side === BUY
@@ -448,10 +447,15 @@ class Confirm extends Component<ConfirmProps, ConfirmState> {
               showDenomination={true}
             />
             {gasCostDai.roundedValue.gt(0) > 0 &&
-              numFills > 0 && (
+              numFills > 0 && !postOnlyOrder && (
               <TransactionFeeLabelToolTip
                 isError={createBigNumber(gasCostDai.value).gt(createBigNumber(orderShareProfit.value))}
                 gasCostDai={gasCostDai}
+              />
+            )}
+            {postOnlyOrder && (
+              <TransactionFeeLabelToolTip
+                gasCostDai={`0.00`}
               />
             )}
             <LinearPropertyLabel
@@ -514,8 +518,8 @@ class Confirm extends Component<ConfirmProps, ConfirmState> {
               showDenomination={true}
             />
             <TransactionFeeLabelToolTip
-              isError={createBigNumber(gasCostDai.value).gt(createBigNumber(potentialDaiProfit.value))}
-              gasCostDai={postOnlyOrder ? `0.00` : gasCostDai}
+              isError={!tradingTutorial && createBigNumber(gasCostDai.value).gt(createBigNumber(potentialDaiProfit.value))}
+              gasCostDai={(tradingTutorial || postOnlyOrder) ? formatDai(0) : gasCostDai}
             />
           </div>
         )}

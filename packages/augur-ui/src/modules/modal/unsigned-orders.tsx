@@ -18,7 +18,7 @@ import {
   LinearPropertyLabelProps, PendingLabel, BulkTxLabel, ModalLabelNotice,
 } from "modules/common/labels";
 import { BUY } from "modules/common/constants";
-import { formatShares, formatDai, formatMarketShares } from "utils/format-number";
+import { formatShares, formatDaiPrice, formatMarketShares, formatDai } from "utils/format-number";
 import Styles from "modules/modal/modal.styles.less";
 import OpenOrdersTable from "modules/market/components/market-orders-positions-table/open-orders-table";
 import { LiquidityOrder } from "modules/types";

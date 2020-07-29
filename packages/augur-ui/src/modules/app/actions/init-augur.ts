@@ -50,6 +50,9 @@ import logError from 'utils/log-error';
 import { showIndexedDbSize } from 'utils/show-indexed-db-size';
 import { tryToPersistStorage } from 'utils/storage-manager';
 import { windowRef } from 'utils/window-ref';
+import { createBigNumber } from 'utils/create-big-number';
+import detectEthereumProvider from '@metamask/detect-provider'
+import { isPrivateNetwork } from 'modules/app/actions/is-private-network.ts';
 
 const NETWORK_ID_POLL_INTERVAL_DURATION = 10000;
 
@@ -97,15 +100,33 @@ async function loadAccountIfStored(dispatch: ThunkDispatch<void, any, Action>) {
   }
 }
 
+const isNetworkMismatch = async (config, dispatch): boolean => {
+  const chainId = await ethereum.request({ method: 'eth_chainId' });
+  const web3NetworkId = String(createBigNumber(chainId));
+  const privateNetwork = isPrivateNetwork(config.networkId);
+  const isMisMatched  = privateNetwork ?
+    !(isPrivateNetwork(web3NetworkId) || web3NetworkId === 'NaN') : // MM can return NaN for local networks
+    config.networkId !== web3NetworkId;
 
-async function createDefaultProvider(config: SDKConfiguration) {
+  if (isMisMatched) {
+    dispatch(
+      updateModal({
+        type: MODAL_NETWORK_MISMATCH,
+        expectedNetwork: NETWORK_NAMES[Number(config.networkId)],
+      })
+    );
+  }
+  return isMisMatched;
+}
+
+async function createDefaultProvider(config: SDKConfiguration, canUseWeb3) {
   if (config.networkId && isDevNetworkId(config.networkId)) {
     // In DEV, use local ethereum node
     return new JsonRpcProvider(config.ethereum.http);
-  } else if (windowRef.web3) {
+  } else if ((windowRef.web3 || windowRef.ethereum) && canUseWeb3 && config.ui.primaryProvider === 'wallet') {
     // Use the provider on window if it exists, otherwise use torus provider
     return getWeb3Provider(windowRef);
-  } else if (config.ui?.fallbackProvider === "jsonrpc" && config.ethereum.http) {
+  } else if ((config.ui.primaryProvider === 'jsonrpc' || config.ui?.fallbackProvider === "jsonrpc") && config.ethereum.http) {
     return new JsonRpcProvider(config.ethereum.http);
   } else {
     // Use torus provider
@@ -217,12 +238,22 @@ export function connectAugur(
       })
     }
 
+    let useWeb3 = false;
+    const we3Provider = await detectEthereumProvider();
+    if (we3Provider) {
+      try {
+        useWeb3 = await isNetworkMismatch(config, dispatch);
+      } catch(e) {
+        console.error('Error with web3 provider, moving on');
+      }
+    }
+
     // Optimize for the case where we can just use a JSON endpoint.
     // If things aren't configured for that we'll create the default
     // provider which may be slow.
     let provider = config.ui?.liteProvider === "jsonrpc" ?
       new JsonRpcProvider(config.ethereum.http) :
-      await createDefaultProvider(config);
+      await createDefaultProvider(config, useWeb3);
 
     await augurSdkLite.makeLiteClient(
       provider,
@@ -243,7 +274,7 @@ export function connectAugur(
     // we can re-use it if we already have made the same one. If not
     // we need to make the default provider from the config.
     if (config.ui?.fallbackProvider !== config.ui?.liteProvider) {
-      provider = await createDefaultProvider(config);
+      provider = await createDefaultProvider(config, false);
     }
 
     let Augur = null;
@@ -251,19 +282,10 @@ export function connectAugur(
       Augur = await augurSdk.makeClient(provider, config);
     } catch (e) {
       console.error(e);
-      if (provider._network && config.networkId !== provider._network.chainId) {
-        return dispatch(
-          updateModal({
-            type: MODAL_NETWORK_MISMATCH,
-            expectedNetwork: NETWORK_NAMES[Number(config.networkId)],
-          })
-        );
-      } else {
-        return callback('SDK could not be created', { config });
-      }
+      return callback(`SDK could not be created, see console for more information`, { config });
     }
 
-    if (config?.ui?.reportingOnly) {
+    if (process.env.REPORTING_ONLY) {
       dispatch(updateModal({
         type: MODAL_REPORTING_ONLY
       }))
@@ -332,6 +354,8 @@ export function initAugur(
 
     if (ethereumNodeHttp) {
       config.ethereum.http = ethereumNodeHttp;
+      config.ui.fallbackProvider = 'jsonrpc';
+      config.ui.primaryProvider = 'jsonrpc';
     }
 
     if (sdkEndpoint) {

@@ -9,7 +9,7 @@ import {
   formatAttoDai,
   formatRep,
   formatShares,
-  formatDai,
+  formatDaiPrice,
 } from 'utils/format-number';
 import {
   convertOnChainAmountToDisplayAmount,
@@ -18,10 +18,8 @@ import {
   convertDisplayValuetoAttoValue,
   numTicksToTickSize,
   convertAttoValueToDisplayValue,
+  TXEventName,
   calculatePayoutNumeratorsValue,
-} from '@augurproject/utils';
-import {
-  TXEventName
 } from '@augurproject/sdk-lite';
 import {
   BUY,
@@ -29,6 +27,7 @@ import {
   TEN_TO_THE_EIGHTEENTH_POWER,
   MALFORMED_OUTCOME,
   CANCELORDER,
+  CANCELORDERS,
   CLAIMTRADINGPROCEEDS,
   BUYPARTICIPATIONTOKENS,
   REDEEMSTAKE,
@@ -101,7 +100,7 @@ export function getInfo(params: any, status: string, marketInfo: MarketData, isO
     tickSize
   ).toString();
 
-  const priceFormatted = formatDai(price, {decimals: getPrecision(String(tickSize), 2)})
+  const priceFormatted = formatDaiPrice(price, {decimals: getPrecision(String(tickSize), 2)})
 
   return {
     priceFormatted,
@@ -131,16 +130,12 @@ export default function setAlertText(alert: any, callback: Function) {
     if (!marketId) return;
     switch (alert.name.toUpperCase()) {
       // CancelOrder
-      case CANCELORDER: {
-        alert.title = 'Order Cancelled';
+      case CANCELORDER:
+      case CANCELORDERS: {
         dispatch(
           loadMarketsInfoIfNotLoaded([marketId], () => {
-            if (alert.status !== TXEventName.Success) {
-              return;
-            }
             const marketInfo = selectMarket(marketId);
             if (marketInfo === null) return;
-            alert.description = marketInfo.description;
 
             const { orderType, outcomeDescription } = getInfo(
               alert.params,
@@ -153,6 +148,12 @@ export default function setAlertText(alert: any, callback: Function) {
                   alert.params.amount,
                   createBigNumber(marketInfo.tickSize)
                 );
+
+            alert.title =
+              alert.status === TXEventName.Success
+                ? 'Order Cancelled'
+                : 'Cancelling Order';
+            alert.description = marketInfo.description;
             alert.details = `${orderType} ${
               formatShares(quantity).formatted
             } of ${outcomeDescription} @ ${alert.params.avgPrice.formatted}`;
@@ -173,7 +174,7 @@ export default function setAlertText(alert: any, callback: Function) {
             alert.details = `$${
               formatAttoDai(amount, { zeroStyled: false }).formatted
             } claimed`;
-            alert.id = alert.params.transactionHash
+            alert.id = alert.params.transactionHash;
           })
         );
         break;
@@ -249,7 +250,7 @@ export default function setAlertText(alert: any, callback: Function) {
           alert.details = `${toCapitalizeCase(alert.params.orderType)} ${
             formatShares(alert.params.amount).formatted
           } of ${alert.params.outcome} @ ${
-            formatDai(alert.params.price).formatted
+            formatDaiPrice(alert.params.price).formatted
           }`;
         } else {
           dispatch(
@@ -298,7 +299,7 @@ export default function setAlertText(alert: any, callback: Function) {
               );
               alert.details = `${orderType} ${
                 formatShares(amount).formatted
-              } of ${outcomeDescription} @ ${formatDai(price).formatted}`;
+              } of ${outcomeDescription} @ ${formatDaiPrice(price).formatted}`;
             })
           );
           dispatch(
@@ -348,7 +349,7 @@ export default function setAlertText(alert: any, callback: Function) {
                 originalQuantity
                   ? ` of ${formatShares(originalQuantity).formatted}`
                   : ''
-              } of ${outcomeDescription} @ ${formatDai(price).formatted}`;
+              } of ${outcomeDescription} @ ${formatDaiPrice(price).formatted}`;
             })
           );
         }
@@ -465,7 +466,12 @@ export default function setAlertText(alert: any, callback: Function) {
             const marketInfo = selectMarket(marketId);
             if (marketInfo === null) return;
             alert.description = marketInfo.description;
-            const { orderType, amount, price, outcomeDescription, priceFormatted } = getInfo(
+            const {
+              orderType,
+              amount,
+              outcomeDescription,
+              priceFormatted,
+            } = getInfo(
               alert.params,
               alert.status,
               marketInfo,
@@ -496,8 +502,8 @@ export default function setAlertText(alert: any, callback: Function) {
 
       // These transaction names are overloaded across multiple contracts
       case APPROVE:
-        alert.title = 'Dai approval';
-        alert.description = 'You are approved to use Dai on Augur';
+        alert.title = 'DAI approval';
+        alert.description = 'You are approved to use DAI on Augur';
         break;
 
       case MIGRATE_FROM_LEG_REP_TOKEN:

@@ -14,9 +14,6 @@ import 'ROOT/libraries/math/SafeMathUint256.sol';
 import 'ROOT/ICash.sol';
 import 'ROOT/reporting/IOICash.sol';
 import 'ROOT/reporting/IAffiliateValidator.sol';
-import 'ROOT/external/IDaiVat.sol';
-import 'ROOT/external/IDaiPot.sol';
-import 'ROOT/external/IDaiJoin.sol';
 import 'ROOT/utility/IFormulas.sol';
 import 'ROOT/IAugur.sol';
 import 'ROOT/reporting/IRepOracle.sol';
@@ -66,19 +63,12 @@ contract Universe is IUniverse {
 
     uint256 constant public INITIAL_WINDOW_ID_BUFFER = 365 days * 10 ** 8;
     uint256 constant public DEFAULT_NUM_OUTCOMES = 2;
-    uint256 constant public DEFAULT_NUM_TICKS = 100;
+    uint256 constant public DEFAULT_NUM_TICKS = 1000;
 
-    // DAI / DSR specific
     uint256 public totalBalance;
     ICash public cash;
-    IDaiVat public daiVat;
-    IDaiPot public daiPot;
-    IDaiJoin public daiJoin;
-    uint256 public lastSweep;
 
     IRepOracle public repOracle;
-
-    uint256 constant public RAY = 10 ** 27;
 
     constructor(IAugur _augur, IUniverse _parentUniverse, bytes32 _parentPayoutDistributionHash, uint256[] memory _payoutNumerators) public {
         augur = _augur;
@@ -95,14 +85,7 @@ contract Universe is IUniverse {
         updateForkValues();
         formulas = IFormulas(augur.lookup("Formulas"));
         cash = ICash(augur.lookup("Cash"));
-        daiVat = IDaiVat(augur.lookup("DaiVat"));
-        daiPot = IDaiPot(augur.lookup("DaiPot"));
-        daiJoin = IDaiJoin(augur.lookup("DaiJoin"));
         assertContractsNotZero();
-        daiVat.hope(address(daiPot));
-        daiVat.hope(address(daiJoin));
-        cash.approve(address(daiJoin), 2 ** 256 - 1);
-        daiVat.hope(address(augur));
     }
 
     function assertContractsNotZero() private view {
@@ -111,9 +94,6 @@ contract Universe is IUniverse {
         require(shareToken != IShareToken(0));
         require(formulas != IFormulas(0));
         require(cash != ICash(0));
-        require(daiVat != IDaiVat(0));
-        require(daiPot != IDaiPot(0));
-        require(daiJoin != IDaiJoin(0));
     }
 
     function fork() public returns (bool) {
@@ -657,39 +637,11 @@ contract Universe is IUniverse {
         return _newMarket;
     }
 
-    function saveDaiInDSR(uint256 _amount) private returns (bool) {
-        daiJoin.join(address(this), _amount);
-        uint256 _chi = daiPot.drip();
-        uint256 _sDaiAmount = _amount.mul(RAY) / _chi; // sDai may be lower than the full amount joined above. This means the VAT may have some dust and we'll be saving less than intended by a dust amount
-        daiPot.join(_sDaiAmount);
-        return true;
-    }
-
-    function withdrawDaiFromDSR(uint256 _amount) private returns (bool) {
-        uint256 _chi = daiPot.drip();
-        uint256 _sDaiAmount = _amount.mul(RAY) / _chi; // sDai may be lower than the amount needed to retrieve `amount` from the VAT. We cover for this rounding error below
-        if (_sDaiAmount.mul(_chi) < _amount.mul(RAY)) {
-            _sDaiAmount += 1;
-        }
-        _sDaiAmount = _sDaiAmount.min(daiPot.pie(address(this))); // Never try to draw more than the balance in the pot. If we have less than needed we _must_ have enough already in the VAT provided no negative interest was ever applied
-        withdrawSDaiFromDSR(_sDaiAmount);
-        return true;
-    }
-
-    function withdrawSDaiFromDSR(uint256 _sDaiAmount) private returns (bool) {
-        daiPot.exit(_sDaiAmount);
-        if (daiJoin.live() == 1) {
-            daiJoin.exit(address(this), daiVat.dai(address(this)).div(RAY));
-        }
-        return true;
-    }
-
     function deposit(address _sender, uint256 _amount, address _market) public returns (bool) {
         require(augur.isTrustedSender(msg.sender) || msg.sender == _sender || msg.sender == address(openInterestCash));
         augur.trustedCashTransfer(_sender, address(this), _amount);
         totalBalance = totalBalance.add(_amount);
         marketBalance[_market] = marketBalance[_market].add(_amount);
-        saveDaiInDSR(_amount);
         return true;
     }
 
@@ -700,36 +652,12 @@ contract Universe is IUniverse {
         require(augur.isTrustedSender(msg.sender) || augur.isKnownMarket(IMarket(msg.sender)) || msg.sender == address(openInterestCash));
         totalBalance = totalBalance.sub(_amount);
         marketBalance[_market] = marketBalance[_market].sub(_amount);
-        withdrawDaiFromDSR(_amount);
         require(cash.transfer(_recipient, _amount));
-        return true;
-    }
-
-    function sweepInterest() public returns (bool) {
-        lastSweep = block.timestamp;
-        uint256 _dsrBalance = daiPot.pie(address(this));
-        // Do nothing if we have no DSR savings
-        if (_dsrBalance == 0) {
-            return true;
-        }
-        uint256 _extraCash = 0;
-        uint256 _chi = daiPot.drip();
-        withdrawSDaiFromDSR(_dsrBalance); // Pull out all funds
-        saveDaiInDSR(totalBalance); // Put the required funds back in savings
-        _extraCash = cash.balanceOf(address(this));
-        // The amount in the DSR pot and VAT must cover our totalBalance of Dai
-        assert(daiPot.pie(address(this)).mul(_chi).add(daiVat.dai(address(this))) >= totalBalance.mul(RAY));
-        require(cash.transfer(address(getOrCreateNextDisputeWindow(false)), _extraCash));
         return true;
     }
 
     function runPeriodicals() external returns (bool) {
         uint256 _blockTimestamp = block.timestamp;
-        uint256 _timeSinceLastSweep = _blockTimestamp - lastSweep;
-        if (_timeSinceLastSweep > 1 days) {
-            sweepInterest();
-            return true;
-        }
         uint256 _timeSinceLastRepOracleUpdate = _blockTimestamp - repOracle.getLastUpdateTimestamp(address(reputationToken));
         if (_timeSinceLastRepOracleUpdate > 1 days) {
             repOracle.poke(address(reputationToken));

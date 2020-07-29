@@ -17,8 +17,7 @@ import {
     CancelOrder,
     LegacyReputationToken,
     DisputeCrowdsourcer,
-    TestNetReputationToken,
-    CashFaucet,
+    TestNetReputationToken
 } from '../libraries/ContractInterfaces';
 import { Dependencies } from '../libraries/GenericContractInterfaces';
 import { EthersFastSubmitWallet } from '../libraries/EthersFastSubmitWallet';
@@ -42,12 +41,6 @@ export class TestFixture {
         return new Cash(
             this.dependencies,
             this.contractDeployer.getContractAddress('Cash')
-        );
-    }
-    get cashFaucet() {
-        return new CashFaucet(
-            this.dependencies,
-            this.contractDeployer.getContractAddress('CashFaucet')
         );
     }
     get shareToken() {
@@ -130,7 +123,7 @@ export class TestFixture {
     }
 
     async faucet(attoCash: BigNumber): Promise<void> {
-        await this.cashFaucet.faucet(attoCash);
+        await this.cash.faucet(attoCash);
     }
 
     async faucetRep(attoRep: BigNumber): Promise<void> {
@@ -149,7 +142,7 @@ export class TestFixture {
         const marketCreationFee = await universe.getOrCacheValidityBond_();
 
         console.log('Creating Market');
-        await this.cashFaucet.faucet(marketCreationFee);
+        await this.cash.faucet(marketCreationFee);
         console.log('Getting Market Address');
         const marketAddress = await universe.createCategoricalMarket_(
             endTime,
@@ -217,7 +210,7 @@ export class TestFixture {
 
         const ethValue = numShares.multipliedBy(price);
 
-        await this.cashFaucet.faucet(ethValue);
+        await this.cash.faucet(ethValue);
         await createOrder.publicCreateOrder(
             type,
             numShares,
@@ -252,7 +245,7 @@ export class TestFixture {
         }
         const ethValue = numShares.multipliedBy(actualPrice);
 
-        await this.cashFaucet.faucet(ethValue);
+        await this.cash.faucet(ethValue);
 
         const bestPriceAmount = await trade.publicFillBestOrder_(
             type,
@@ -364,7 +357,7 @@ export class TestFixture {
         const numTicks = await market.getNumTicks_();
         const ethValue = amount.multipliedBy(numTicks);
 
-        await this.cashFaucet.faucet(ethValue);
+        await this.cash.faucet(ethValue);
         await shareToken.publicBuyCompleteSets(market.address, amount);
         return;
     }

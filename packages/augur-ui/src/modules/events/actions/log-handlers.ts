@@ -22,14 +22,13 @@ import {
   TXEventName,
   TXStatus,
   UniverseForkedLog,
+  MarketOrderBook,
 } from '@augurproject/sdk-lite';
 import { logger } from '@augurproject/utils';
 import { AppState } from 'appStore';
 import * as _ from 'lodash';
 import { updateAlert } from 'modules/alerts/actions/alerts';
 import { loadAnalytics } from 'modules/app/actions/analytics-management';
-import { getEthToDaiRate } from 'modules/app/actions/get-ethToDai-rate';
-import { getRepToDaiRate } from 'modules/app/actions/get-repToDai-rate';
 import { loadGasPriceInfo } from 'modules/app/actions/load-gas-price-info';
 import {
   Ox_STATUS,
@@ -75,7 +74,7 @@ import {
 } from 'modules/markets/actions/update-markets-data';
 import { updateModal } from 'modules/modal/actions/update-modal';
 import { loadAccountOpenOrders } from 'modules/orders/actions/load-account-open-orders';
-import { loadMarketOrderBook } from 'modules/orders/actions/load-market-orderbook';
+import { loadMarketOrderBook, updateMarketInvalidBids } from 'modules/orders/actions/load-market-orderbook';
 import {
   constructPendingOrderid,
   removePendingOrder,
@@ -100,6 +99,7 @@ import { isCurrentMarket } from 'modules/trades/helpers/is-current-market';
 import {
   isOnDisputingPage,
   isOnReportingPage,
+  isOnTradePage,
 } from 'modules/trades/helpers/is-on-page';
 import { MarketInfos } from 'modules/types';
 import { loadUniverseForkingInfo } from 'modules/universe/actions/load-forking-info';
@@ -111,6 +111,7 @@ import { marketCreationCreated, orderFilled } from 'services/analytics/helpers';
 import { augurSdk } from 'services/augursdk';
 import { isSameAddress } from 'utils/isSameAddress';
 import { wrapLogHandler } from './wrap-log-handler';
+import { getTradePageMarketId } from 'modules/trades/helpers/get-trade-page-market-id';
 
 const handleAlert = (
   log: any,
@@ -250,6 +251,13 @@ export const handleSDKReadyEvent = () => (
   dispatch(loadAccountData());
   dispatch(loadUniverseForkingInfo());
   dispatch(getCategoryStats());
+
+  // custom market doesn't update after hotloading
+  // force update.
+  const marketId = getTradePageMarketId();
+  if (marketId) {
+    dispatch(loadMarketsInfo([marketId]));
+  }
 };
 
 export const handleNewBlockLog = (log: NewBlock) => async (
@@ -289,8 +297,6 @@ export const handleNewBlockLog = (log: NewBlock) => async (
     dispatch(findAndSetTransactionsTimeouts(log.highestAvailableBlockNumber));
   }
   // update ETH/REP rate and gasPrice each block
-  dispatch(getEthToDaiRate());
-  dispatch(getRepToDaiRate());
   dispatch(loadGasPriceInfo());
 
   if (log.logs && log.logs.length > 0) {
@@ -461,6 +467,19 @@ export const handleBulkOrdersLog = (data: { logs: ParsedOrderEventLog[] }) => (
       }
     });
     dispatch(checkUpdateUserPositions(unqMarketIds));
+  }
+};
+
+export const handleMarketInvalidBidsLog = ({ data }: MarketOrderBook) => (
+  dispatch: ThunkDispatch<void, any, Action>
+) => {
+  if (data && data.length > 0) {
+    data.map(book => {
+      const { marketId, orderBook } = book;
+      if (!isCurrentMarket(marketId)) {
+        dispatch(updateMarketInvalidBids(marketId, orderBook));
+      }
+    });
   }
 };
 

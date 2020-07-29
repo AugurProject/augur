@@ -5,8 +5,10 @@ import {
   SubscriptionEventName,
 } from '@augurproject/sdk-lite';
 import { Log as SerializedLog } from '@augurproject/types';
+import { logger } from '@augurproject/utils';
 import Dexie from 'dexie';
 import { Block } from 'ethers/providers';
+import { BigNumber } from 'ethers/utils';
 import * as IPFS from 'ipfs';
 import * as Unixfs from 'ipfs-unixfs';
 import { DAGNode } from 'ipld-dag-pb';
@@ -18,7 +20,6 @@ import { DB } from '../state/db/DB';
 import { IpfsInfo } from '../state/db/WarpSyncCheckpointsDB';
 import { Markets } from '../state/getter/Markets';
 import { Checkpoints } from './Checkpoints';
-import { BigNumber } from 'ethers/utils';
 
 export const WARPSYNC_VERSION = '1';
 const FILE_FETCH_TIMEOUT = 10000; // 10 seconds
@@ -103,7 +104,7 @@ export interface CheckpointInterface {
 export class WarpController {
   private static DEFAULT_NODE_TYPE = { format: 'dag-pb', hashAlg: 'sha2-256' };
   checkpoints: Checkpoints;
-  private ipfs: Promise<IPFS>;
+  ipfs: Promise<IPFS>;
 
   constructor(
     private db: DB,
@@ -325,10 +326,15 @@ export class WarpController {
   async pinHashByGatewayUrl(urlString: string) {
     const url = new URL(urlString);
     try {
-      await (await this.ipfs).pin.add(url.pathname);
+      const matches = /^(\w+)\.ipfs\..+$/.exec(url.hostname);
+      const thingToPin = (matches) ? matches[1] : url.pathname;
+
+      await (await this.ipfs).pin.add(thingToPin);
+
+      logger.info(`Client pinned with ipfs hash: ${thingToPin}`)
+
       return true;
     } catch (e) {
-      console.error(e);
       return false;
     }
   }

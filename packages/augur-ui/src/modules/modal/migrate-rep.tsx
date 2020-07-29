@@ -1,13 +1,12 @@
 import React, { useState, useEffect } from 'react';
 
-import { Title, AccountAddressDisplay } from 'modules/modal/common';
+import { Title } from 'modules/modal/common';
 import {
   formatRep,
   formatGasCostToEther,
   formatEther,
   formatDai,
 } from 'utils/format-number';
-import { toChecksumAddress } from 'ethereumjs-util';
 import { AccountBalances } from 'modules/types';
 import {
   ExternalLinkButton,
@@ -15,19 +14,16 @@ import {
   SecondaryButton,
 } from 'modules/common/buttons';
 import { TransactionFeeLabel } from 'modules/common/labels';
-import { InfoIcon } from 'modules/common/icons';
 import {
   displayGasInDai,
   getGasInDai,
 } from 'modules/app/actions/get-ethToDai-rate';
 import {
   V1_REP_MIGRATE_ESTIMATE,
-  HELP_CENTER_LEARN_ABOUT_ADDRESS,
   HELP_CENTER_MIGRATE_REP,
   GWEI_CONVERSION,
   TRANSACTIONS,
-  APPROVE,
-  MIGRATE_FROM_LEG_REP_TOKEN, CREATEAUGURWALLET,
+  MIGRATE_FROM_LEG_REP_TOKEN,
 } from 'modules/common/constants';
 
 import Styles from 'modules/modal/modal.styles.less';
@@ -59,11 +55,13 @@ export const MigrateRep = ({
   const ethForGas = walletBalances.signerBalances.eth;
 
   useEffect(() => {
+    /*
     if (GsnEnabled) {
       convertV1ToV2Estimate().then(gasLimit => {
         setGasLimit(gasLimit);
       });
     }
+    */
   }, []);
 
   const gasEstimateInEth = formatGasCostToEther(
@@ -76,7 +74,8 @@ export const MigrateRep = ({
     createBigNumber(gasEstimateInEth)
   );
 
-  const gasInDai = getGasInDai(gasLimit).value;
+  const gasPriceInWei = createBigNumber(GWEI_CONVERSION).multipliedBy(gasPrice);
+  const gasInDai = getGasInDai(gasLimit, gasPriceInWei).value;
   const hasEnoughDaiForGas = createBigNumber(walletBalances.dai).gte(
     createBigNumber(gasInDai)
   );
@@ -113,32 +112,18 @@ export const MigrateRep = ({
     </>
   );
 
-  const mainWalletContent = (
-    <>
-      <h3>Trading account</h3>
-      <AccountAddressDisplay
-        copyable
-        address={toChecksumAddress(tradingAccount)}
-      />
-      <ExternalLinkButton
-        URL={HELP_CENTER_LEARN_ABOUT_ADDRESS}
-        label={'Learn about your address'}
-      />
-    </>
-  );
-
   return (
     <div className={Styles.MigrateRep}>
-      <Title title={'Migrate V1 REP'} closeAction={closeAction} />
+      <Title title={'Migrate REP'} closeAction={closeAction} />
 
       <main>
-        {!inSigningWallet && <h1>You have V1 REP in your trading account</h1>}
-        {inSigningWallet && <h1>You have V1 REP in your wallet</h1>}
+        {!inSigningWallet && <h1>You have REP in your trading account</h1>}
+        {inSigningWallet && <h1>You have REP in your wallet</h1>}
 
         <h2>
-          Migrate your V1 REP to V2 REP to use it in Augur V2. The quantity of
-          V1 REP shown below will migrate to an equal amount of V2 REP. For
-          example 100 V1 REP will migrate to 100 V2 REP.
+          Migrate your REP to REPv2 to use it in Augur v2. The quantity of
+          REP shown below will migrate to an equal amount of REPv2. For
+          example 100 REP will migrate to 100 REPv2.
           <ExternalLinkButton
             label="Learn more"
             URL={HELP_CENTER_MIGRATE_REP}

@@ -16,6 +16,7 @@ import {
   MODAL_NETWORK_CONNECT,
   TRADING_TUTORIAL,
   ZEROX_STATUSES,
+  MODAL_ERROR,
 } from 'modules/common/constants';
 
 import {
@@ -109,6 +110,7 @@ interface AppProps {
   ethReserveInDai: FormattedNumber;
   disableMarketCreation: boolean;
   env: SDKConfiguration;
+  showCreateAccountButton: boolean;
 }
 
 export default class AppView extends Component<AppProps> {
@@ -179,11 +181,11 @@ export default class AppView extends Component<AppProps> {
         ethereumNodeWs,
         sdkEndpoint,
       },
-      (err: any, res: any) => {
-        if (err) {
+      (error: any, res: any) => {
+        if (error) {
           updateModal({
-            type: MODAL_NETWORK_CONNECT,
-            isInitialConnection: true,
+            type: MODAL_ERROR,
+            error,
             config: res.config,
           });
         }
@@ -411,6 +413,7 @@ export default class AppView extends Component<AppProps> {
       appStatus,
       ethReserveInDai,
       disableMarketCreation,
+      showCreateAccountButton,
     } = this.props;
     this.sideNavMenuData[1].showAlert =
       notifications.filter(item => item.isNew).length > 0;
@@ -504,6 +507,7 @@ export default class AppView extends Component<AppProps> {
                 createFundedGsnWallet={createFundedGsnWallet}
                 whichChatPlugin={whichChatPlugin}
                 ethReserveInDai={ethReserveInDai}
+                tradingAccountCreated={!showCreateAccountButton}
               />
 
               {/* HIDDEN ON MOBILE */}
@@ -574,7 +578,7 @@ export default class AppView extends Component<AppProps> {
                 )}
 
                 <ForkingBanner />
-                <Routes isLogged={isLogged || restoredAccount} />
+                <Routes isLogged={isLogged || restoredAccount} disableMarketCreation={disableMarketCreation}/>
               </section>
             </section>
           </section>

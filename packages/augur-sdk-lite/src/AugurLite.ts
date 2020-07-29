@@ -3,8 +3,9 @@ import { BigNumber } from 'bignumber.js';
 import { ethers } from 'ethers';
 import LZString from 'lz-string';
 import { HotLoading, HotLoadMarketInfo } from './api/HotLoading';
+import { AccountLoader, AccountData } from './api/AccountLoader';
 import { WarpSync } from './api/WarpSync';
-import { MarketReportingState } from './constants';
+import { MarketReportingState, NullWarpSyncHash } from './constants';
 import { MarketCreatedLog } from './logs';
 
 interface NamedMarketCreatedLog extends MarketCreatedLog {
@@ -20,6 +21,7 @@ export interface CheckpointInterface {
 export interface Addresses {
   Universe: string;
   HotLoading: string;
+  AccountLoader: string;
   Augur: string;
   FillOrder: string;
   Orders: string;
@@ -31,6 +33,7 @@ const FILE_FETCH_TIMEOUT = 10000; // 10 seconds
 export class AugurLite {
   readonly hotLoading: HotLoading;
   readonly warpSync: WarpSync;
+  readonly accountLoader: AccountLoader;
 
   constructor(
     readonly provider: ethers.providers.Provider,
@@ -39,6 +42,7 @@ export class AugurLite {
   ) {
     this.provider = provider;
     this.hotLoading = new HotLoading(this.provider);
+    this.accountLoader = new AccountLoader(this.provider);
     this.warpSync = new WarpSync(this.provider, addresses.WarpSync);
     this.addresses = addresses;
   }
@@ -75,6 +79,14 @@ export class AugurLite {
     });
   }
 
+  async loadAccountData(account: string, reputationToken: string): Promise<AccountData> {
+    return this.accountLoader.getAccountData({
+      accountLoaderAddress: this.addresses.AccountLoader,
+      accountAddress: account,
+      reputationTokenAddress: reputationToken
+    });
+  }
+
   async getIPFSFile(ipfsPath: string) {
     const fileRetrievalFn = (ipfsPath: string) =>
       fetch(`https://cloudflare-ipfs.com/ipfs/${ipfsPath}/index `)
@@ -100,7 +112,7 @@ export class AugurLite {
     );
 
     // The Market has not been reported on.
-    if (warpSyncHash === 'QmNLei78zWmzUdbeRB3CiUfAizWUrbeeZh5K1rhAQKCh51')
+    if (warpSyncHash === NullWarpSyncHash)
       return [];
 
     try {

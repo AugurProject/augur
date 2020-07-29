@@ -7,7 +7,7 @@ import Styles from 'modules/market/components/core-properties/core-properties.st
 import { PropertyLabel, TimeLabel } from 'modules/common/labels';
 import {
   formatPercent,
-  formatDai,
+  formatDaiPrice,
   formatRep,
   formatAttoRep,
 } from 'utils/format-number';
@@ -45,7 +45,7 @@ const CoreProperties: React.FC<CorePropertiesProps> = ({
             value={
               market.volumeFormatted
                 ? market.volumeFormatted.full
-                : formatDai(0).full
+                : formatDaiPrice(0, { decimals: 0 }).full
             }
           />
           {reportingBarShowing && (
@@ -68,7 +68,7 @@ const CoreProperties: React.FC<CorePropertiesProps> = ({
                 value={
                   market.disputeInfo
                     ? formatAttoRep(market.disputeInfo.stakeCompletedTotal).full
-                    : formatRep(0).full
+                    : formatRep(0, { decimals: 0 }).full
                 }
               />
               <TimeLabel
@@ -84,7 +84,7 @@ const CoreProperties: React.FC<CorePropertiesProps> = ({
                 value={
                   market.openInterestFormatted
                     ? market.openInterestFormatted.full
-                    : formatDai(0).full
+                    : formatDaiPrice(0, { decimals: 0 }).full
                 }
               />
               <PropertyLabel
@@ -92,7 +92,7 @@ const CoreProperties: React.FC<CorePropertiesProps> = ({
                 value={
                   market.volumeFormatted
                     ? market.volumeFormatted.full
-                    : formatDai(0).full
+                    : formatDaiPrice(0, { decimals: 0 }).full
                 }
               />
               <PropertyLabel
@@ -106,8 +106,8 @@ const CoreProperties: React.FC<CorePropertiesProps> = ({
                   <>
                     <h4>Market OI Fee</h4>
                     <p>
-                      The Market OI Fee is a combination of the Market
-                      Creator Fee (
+                      The Market OI fee is a combination of the Market
+                      Creator fee (
                       <b>
                         {
                           formatPercent(
@@ -115,7 +115,7 @@ const CoreProperties: React.FC<CorePropertiesProps> = ({
                           ).full
                         }
                       </b>
-                      ) and the Reporting Fee (
+                      ) and the Reporting fee (
                       <b>
                         {
                           formatPercent(Number(market.reportingFeeRate) * 100)

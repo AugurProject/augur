@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 
 import { Breakdown, Title, ButtonsRow } from 'modules/modal/common';
 import Styles from 'modules/modal/modal.styles.less';
-import { formatDai } from 'utils/format-number';
+import { formatDaiPrice, formatDai } from 'utils/format-number';
 import type { Getters } from '@augurproject/sdk';
 import { LinearPropertyLabel } from 'modules/common/labels';
 import MarketTitle from 'modules/market/containers/market-title';

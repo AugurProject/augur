@@ -82,22 +82,22 @@ def test_trading(kitchenSinkFixture, augur, cash, market):
 
     tradeGroupID = longTo32Bytes(42)
 
-    creatorCost = fix('2', '60')
-    fillerCost = fix('2', '40')
+    creatorCost = fix('2', '600')
+    fillerCost = fix('2', '400')
 
     # create order
     with BuyWithCash(cash, creatorCost, kitchenSinkFixture.accounts[1], "complete set buy"):
-        orderID = createOrder.publicCreateOrder(BID, fix(2), 60, market.address, YES, longTo32Bytes(0), longTo32Bytes(0), tradeGroupID, nullAddress, sender = kitchenSinkFixture.accounts[1])
+        orderID = createOrder.publicCreateOrder(BID, fix(2), 600, market.address, YES, longTo32Bytes(0), longTo32Bytes(0), tradeGroupID, nullAddress, sender = kitchenSinkFixture.accounts[1])
     # take order
     with BuyWithCash(cash, fillerCost, kitchenSinkFixture.accounts[2], "fill order"):
-        assert trade.publicTrade(SHORT, market.address, YES, fix(2), 60, "0", "0", tradeGroupID, 6, longTo32Bytes(11), nullAddress, sender=kitchenSinkFixture.accounts[2])
+        assert trade.publicTrade(SHORT, market.address, YES, fix(2), 600, "0", "0", tradeGroupID, 6, longTo32Bytes(11), nullAddress, sender=kitchenSinkFixture.accounts[2])
 
     marketData = getMarketData(hotLoading, augur, market, fillOrder, orders)
 
-    assert marketData.volume == fix(2, 100)
-    assert marketData.openInterest == fix(2, 100)
-    assert marketData.lastTradedPrices == [0, 0, 60]
-    assert marketData.outcomeVolumes == [0, 0, fix(2, 100)]
+    assert marketData.volume == fix(2, 1000)
+    assert marketData.openInterest == fix(2, 1000)
+    assert marketData.lastTradedPrices == [0, 0, 600]
+    assert marketData.outcomeVolumes == [0, 0, fix(2, 1000)]
     
 
 def test_reporting(kitchenSinkFixture, augur, cash, market):

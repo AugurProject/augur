@@ -19,13 +19,14 @@ import {
 } from 'modules/types';
 import { createBigNumber } from './create-big-number';
 import deepClone from './deep-clone';
-import { getDurationBetween, convertUTCUnixToFormattedDate } from './format-date';
+import { getDurationBetween, convertUnixToFormattedDate } from './format-date';
 import {
   formatAttoRep,
-  formatDai,
+  formatDaiPrice,
   formatNone,
   formatNumber,
   formatPercent,
+  formatDai,
 } from './format-number';
 import { getOutcomeNameWithOutcome } from './get-outcome';
 import { keyBy } from './key-by';
@@ -45,12 +46,12 @@ export function convertMarketInfoToMarketData(
     maxPriceBigNumber: createBigNumber(marketInfo.maxPrice),
     outcomesFormatted: processOutcomes(marketInfo),
     marketStatus: getMarketStatus(marketInfo.reportingState),
-    endTimeFormatted: convertUTCUnixToFormattedDate(marketInfo.endTime),
-    creationTimeFormatted: convertUTCUnixToFormattedDate(marketInfo.creationTime),
+    endTimeFormatted: convertUnixToFormattedDate(marketInfo.endTime),
+    creationTimeFormatted: convertUnixToFormattedDate(marketInfo.creationTime),
     categories: marketInfo.categories,
     isArchived: archivedDuration && (Math.abs(archivedDuration.asDays()) >= ARCHIVED_MARKET_LENGTH),
     finalizationTimeFormatted: marketInfo.finalizationTime
-      ? convertUTCUnixToFormattedDate(marketInfo.finalizationTime)
+      ? convertUnixToFormattedDate(marketInfo.finalizationTime)
       : null,
     consensusFormatted: processConsensus(marketInfo),
     defaultSelectedOutcomeId: getDefaultOutcomeSelected(marketInfo.marketType),
@@ -72,9 +73,13 @@ export function convertMarketInfoToMarketData(
     }),
     openInterestFormatted: formatDai(marketInfo.openInterest, {
       positiveSign: false,
+      decimals: 0,
+      decimalsRounded: 0,
     }),
     volumeFormatted: formatDai(marketInfo.volume, {
       positiveSign: false,
+      decimals: 0,
+      decimalsRounded: 0,
     }),
     unclaimedCreatorFeesFormatted: formatDai('0'), // TODO: figure out where this comes from
     marketCreatorFeesCollectedFormatted: formatDai('0'), // TODO: figure out where this comes from
@@ -154,14 +159,14 @@ function processOutcomes(
     marketId: market.id,
     lastPricePercent: outcome.price
       ? formatNumber(outcome.price, {
-          decimals: 2,
+          decimals: 3,
           decimalsRounded: 1,
           positiveSign: false,
           zeroStyled: true,
         })
       : formatNone(),
     lastPrice: !!outcome.price
-      ? formatDai(outcome.price || 0, {
+      ? formatDaiPrice(outcome.price || 0, {
           positiveSign: false,
         })
       : formatNone(),

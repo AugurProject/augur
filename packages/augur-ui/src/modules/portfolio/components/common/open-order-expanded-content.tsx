@@ -42,12 +42,12 @@ const OpenOrderExpandedContent = (props: OpenOrderExpandedContentProps) => {
             <LinearPropertyLabel
               label="Total Cost ($)"
               highlightFirst
-              value={(tokensEscrowed && tokensEscrowed.full) || 0}
+              value={(tokensEscrowed && tokensEscrowed) || 0}
             />
             <LinearPropertyLabel
               label="Total Cost (Shares)"
               highlightFirst
-              value={(sharesEscrowed && sharesEscrowed.formatted) || 0}
+              value={sharesEscrowed || 0}
             />
             <LinearPropertyLabel
               highlightFirst

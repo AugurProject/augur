@@ -110,9 +110,10 @@ export interface SDKConfiguration {
   ui?: {
     showReloadModal?: boolean,
     trackBestOffer?: boolean,
-    reportingOnly?: boolean,
+    trackMarketInvalidBids?: boolean,
     fallbackProvider?: "jsonrpc" | "torus",
-    liteProvider?: "jsonrpc" | "default"
+    liteProvider?: "jsonrpc" | "default",
+    primaryProvider?: "jsonrpc" | "wallet"
   }
 };
 
@@ -142,7 +143,6 @@ export interface ContractAddresses {
   ProxyFactory?: string;
   BuyParticipationTokens?: string;
   RedeemStake?: string;
-  CashFaucet?: string;
   GnosisSafeRegistry?: string;
   HotLoading?: string;
   ZeroXTrade?: string;
@@ -154,10 +154,11 @@ export interface ContractAddresses {
   OICash?: string;
   UniswapV2Factory?: string;
   EthExchange?: string;
-  UniswapV2Router01?: string;
+  UniswapV2Router02?: string;
   AuditFunds?: string;
   RelayHubV2?: string;
   AugurWalletRegistryV2?: string;
+  AccountLoader?: string;
 
   // 0x
   //   The 0x contract names must be what 0x mesh expects.
@@ -177,16 +178,10 @@ export interface ExternalAddresses {
   Cash?: string;
   USDC?: string;
   USDT?: string;
-  DaiVat?: string;
-  DaiPot?: string;
-  DaiJoin?: string;
-  MCDCol?: string,
-  MCDColJoin?: string,
-  MCDFaucet?: string,
   WETH9?: string;
   Exchange?: string;
   UniswapV2Factory?: string;
-  UniswapV2Router01?: string;
+  UniswapV2Router02?: string;
   RelayHubV2?: string;
 }
 
@@ -275,9 +270,10 @@ export const DEFAULT_SDK_CONFIGURATION: SDKConfiguration = {
   ui: {
     showReloadModal: true,
     trackBestOffer: false,
-    reportingOnly: false,
+    trackMarketInvalidBids: true,
     fallbackProvider: "torus",
-    liteProvider: "jsonrpc"
+    liteProvider: "jsonrpc",
+    primaryProvider: "wallet"
   }
 };
 

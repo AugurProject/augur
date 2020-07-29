@@ -22,7 +22,7 @@ const mergeProps = (sP: any, dP: any, oP: any) => {
   // categoriesList is a dummy data for now, will need to be passed or come
   // from a helper/getter... currently setup to be passed from the updateModal
   // call.
-  const categoriesList = sP.modal.categoriesList || ["Politics", "Sports", "Crypto", "Finance", "Other"];
+  const categoriesList = sP.modal.categoriesList || ["Politics", "Sports", "Crypto", "Economics", "Medical", "Other"];
   return ({
     title: "CHOOSE A SUB-CATEGORY",
     categorySelection: {

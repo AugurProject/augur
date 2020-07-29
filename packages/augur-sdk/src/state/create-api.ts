@@ -19,11 +19,15 @@ import { BlockAndLogStreamerSyncStrategy } from './sync/BlockAndLogStreamerSyncS
 import { BulkSyncStrategy } from './sync/BulkSyncStrategy';
 import { WarpSyncStrategy } from './sync/WarpSyncStrategy';
 
-export function buildSyncStrategies(client:Augur, db:Promise<DB>, provider: EthersProvider, logFilterAggregator: LogFilterAggregator, config: SDKConfiguration) {
+export async function buildSyncStrategies(client:Augur, db:Promise<DB>, provider: EthersProvider, logFilterAggregator: LogFilterAggregator, config: SDKConfiguration) {
+  const warpController = new WarpController((await db), client, provider,
+    config.uploadBlockNumber);
+
+  client.warpController = warpController;
   return async () => {
+    const contractAddresses = client.contractEvents.getAugurContractAddresses();
     const uploadBlockNumber = config.uploadBlockNumber;
     const currentBlockNumber = await provider.getBlockNumber();
-    const contractAddresses = client.contractEvents.getAugurContractAddresses();
 
     const bulkSyncStrategy = new BulkSyncStrategy(provider.getLogs,
       contractAddresses, logFilterAggregator.onLogsAdded,
@@ -36,8 +40,6 @@ export function buildSyncStrategies(client:Augur, db:Promise<DB>, provider: Ethe
     );
 
     const currentBlock = await provider.getBlock('latest');
-    const warpController = new WarpController((await db), client, provider,
-      uploadBlockNumber);
 
     const marketCreatedCB = async (blockNumber, logs) => {
       client.events.emit(SubscriptionEventName.MarketsUpdated, logs);
@@ -103,7 +105,7 @@ export async function createClient(
   if (provider) {
     ethersProvider = provider
   } else if (config.ethereum?.http) {
-    ethersProvider = new EthersProvider( new JsonRpcProvider(config.ethereum.http), 10, 0, 40);
+    ethersProvider = new EthersProvider( new JsonRpcProvider(config.ethereum.http), 5, 50, 10);
   } else {
     throw Error('No ethereum http endpoint provided');
   }
@@ -188,6 +190,14 @@ export async function createServer(config: SDKConfiguration, client?: Augur): Pr
   if(config.warpSync?.createCheckpoints && config.warpSync?.autoReport) {
     client.events.on(SubscriptionEventName.WarpSyncHashUpdated,
       async ({ hash }) => {
+        const result  = await client.getAccountEthBalance();
+        const balance = new BigNumber(result);
+
+        if (balance.eq(0)) {
+          console.log(`Please deposit eth to account ${await client.getAccount()} to autoreport`);
+          return;
+        }
+
         if (hash) {
           const market = await client.warpSync.getWarpSyncMarket(
             config.addresses.Universe);
@@ -199,7 +209,7 @@ export async function createServer(config: SDKConfiguration, client?: Augur): Pr
       });
   }
 
-  const sync = buildSyncStrategies(client, db, ethersProvider, logFilterAggregator, config);
+  const sync = await buildSyncStrategies(client, db, ethersProvider, logFilterAggregator, config);
 
   const controller = new Controller(client, db, logFilterAggregator);
   const api = new API(client, db);
@@ -225,7 +235,6 @@ export async function startServerFromClient(config: SDKConfiguration, client?: A
 export async function startServer(config: SDKConfiguration): Promise<API> {
   const { api, sync } = await createServer(config, undefined);
 
-  // TODO should this await?
   sync();
 
   return api;

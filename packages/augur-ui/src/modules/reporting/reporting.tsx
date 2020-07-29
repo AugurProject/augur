@@ -38,7 +38,7 @@ export default class Reporting extends React.Component<ReportingProps> {
                   <ModulePane label="designated reporting">
                     <ReportingModalButton
                       highlightedText='Need Help?'
-                      text='View our Reporting Quick Guide'
+                      text='Reporting Quick Guide'
                       action={openReportingModal}
                     />
                     <UserRepDisplay />
@@ -46,30 +46,30 @@ export default class Reporting extends React.Component<ReportingProps> {
                       reportingType={REPORTING_STATE.DESIGNATED_REPORTING}
                       title={'Designated Reporting'}
                       showLoggedOut={showLoggedOut}
-                      loggedOutMessage='Connect a wallet to see your markets that are ready for Reporting.'
-                      emptyHeader='There are no markets available for you to Report on.'
-                      emptySubheader='Check your Upcoming Designated Reporting to see Markets that will soon be available for reporting.'
+                      loggedOutMessage='Connect a wallet to see your markets that are ready for reporting.'
+                      emptyHeader='There are no markets available for you to report on.'
+                      emptySubheader='Check your upcoming designated reporting to see markets that will soon be available for reporting.'
                     />
                     <ReportingList
                       reportingType={REPORTING_STATE.PRE_REPORTING}
                       title={'Upcoming Designated Reporting'}
                       showLoggedOut={showLoggedOut}
-                      loggedOutMessage='Connect a wallet to see your markets that will soon be ready to Report on.'
-                      emptyHeader='There are no markets coming up in the next week for you to Report on.'
-                      emptySubheader='Check your Upcoming Designated Reporting to see Markets that will soon be available to Report on.'
+                      loggedOutMessage='Connect a wallet to see your markets that will soon be ready to report on.'
+                      emptyHeader='There are no markets coming up in the next week for you to report on.'
+                      emptySubheader=''
                     />
                   </ModulePane>
                   <ModulePane label='Open reporting'>
                     <ReportingModalButton
                       highlightedText='Need Help?'
-                      text='View our Reporting Quick Guide'
+                      text='Reporting Quick Guide'
                       action={openReportingModal}
                     />
                     <ReportingList
                       reportingType={REPORTING_STATE.OPEN_REPORTING}
                       title={'Open Reporting'}
-                      emptyHeader='There are currently no markets in Open Reporting.'
-                      emptySubheader='Markets appear here if a Designated Reporter fails to show up.'
+                      emptyHeader='There are currently no markets in open reporting.'
+                      emptySubheader='Markets appear here if a designated reporter fails to show up.'
                     />
                   </ModulePane>
                 </ModuleTabs>
@@ -81,31 +81,31 @@ export default class Reporting extends React.Component<ReportingProps> {
                       reportingType={REPORTING_STATE.DESIGNATED_REPORTING}
                       title={'Designated Reporting'}
                       showLoggedOut={showLoggedOut}
-                      loggedOutMessage='Connect a wallet to see your markets that are ready for Reporting.'
-                      emptyHeader='There are no markets available for you to Report on.'
-                      emptySubheader='Check your Upcoming Designated Reporting to see Markets that will soon be available to Report on.'
+                      loggedOutMessage='Connect a wallet to see your markets that are ready for reporting.'
+                      emptyHeader='There are no markets available for you to report on.'
+                      emptySubheader='Check your upcoming designated reporting to see markets that will soon be available to report on.'
                     />
                     <ReportingList
                       reportingType={REPORTING_STATE.PRE_REPORTING}
                       title={'Upcoming Designated Reporting'}
                       showLoggedOut={showLoggedOut}
                       loggedOutMessage='Connect a wallet to see your markets that will soon be ready to Report on.'
-                      emptyHeader='There are no markets coming up in the next week for you to Report on.'
-                      emptySubheader='Check your Upcoming Designated Reporting to see Markets that will soon be available to Report on.'
+                      emptyHeader='There are no markets coming up in the next week for you to report on.'
+                      emptySubheader=''
                     />
                   </div>
                   <div>
                     <ReportingModalButton
                       highlightedText='Need Help?'
-                      text='View our Reporting Quick Guide'
+                      text='Reporting Quick Guide'
                       action={openReportingModal}
                     />
                     <UserRepDisplay />
                     <ReportingList
                       reportingType={REPORTING_STATE.OPEN_REPORTING}
                       title={'Open Reporting'}
-                      emptyHeader='There are currently no markets in Open Reporting.'
-                      emptySubheader='Markets appear here once if a Designated Reporter fails to show up.'
+                      emptyHeader='There are currently no markets in open reporting.'
+                      emptySubheader='Markets appear here once if a designated reporter fails to show up.'
                     />
                   </div>
                 </>
@@ -118,28 +118,28 @@ export default class Reporting extends React.Component<ReportingProps> {
                       title={'Designated Reporting'}
                       showLoggedOut={showLoggedOut}
                       loggedOutMessage='Connect a wallet to see your markets that are ready for Reporting.'
-                      emptyHeader='There are no markets available for you to Report on.'
-                      emptySubheader='Check your Upcoming Designated Reporting to see Markets that will soon be available to Report on.'
+                      emptyHeader='There are no markets available for you to report on.'
+                      emptySubheader='Check your upcoming designated reporting to see markets that will soon be available to report on.'
                     />
                     <ReportingList
                       reportingType={REPORTING_STATE.PRE_REPORTING}
                       title={'Upcoming Designated Reporting'}
                       showLoggedOut={showLoggedOut}
                       loggedOutMessage='Connect a wallet to see your markets that will soon be ready to Report on.'
-                      emptyHeader='There are no markets coming up in the next week for you to Report on.'
-                      emptySubheader='Check your Upcoming Designated Reporting to see Markets that will soon be available to Report on.'
+                      emptyHeader='There are no markets coming up in the next week for you to report on.'
+                      emptySubheader=''
                     />
                     <ReportingList
                       reportingType={REPORTING_STATE.OPEN_REPORTING}
                       title={'Open Reporting'}
-                      emptyHeader='There are currently no markets in Open Reporting.'
-                      emptySubheader='Markets appear here once if a Designated Reporter fails to show up.'
+                      emptyHeader='There are currently no markets in open reporting.'
+                      emptySubheader='Markets appear here once if a designated reporter fails to show up.'
                     />
                   </div>
                   <div>
                     <ReportingModalButton
                       highlightedText='Need Help?'
-                      text='View our Reporting Quick Guide'
+                      text='Reporting Quick Guide'
                       action={openReportingModal}
                     />
                     <UserRepDisplay />

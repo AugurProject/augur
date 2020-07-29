@@ -21,6 +21,7 @@ const PATHS = {
 };
 
 const AUGUR_ENV = process.env.AUGUR_ENV || process.env.ETHEREUM_NETWORK || 'local';
+const config = buildConfig(AUGUR_ENV);
 
 const gitRevisionPlugin = new GitRevisionPlugin({
   branch: true
@@ -197,6 +198,10 @@ module.exports = {
         to: path.resolve(PATHS.BUILD, 'images'),
       },
       {
+        from: path.resolve(PATHS.APP, 'assets/videos'),
+        to: path.resolve(PATHS.BUILD, 'videos'),
+      },
+      {
         from: path.resolve(PATHS.APP, 'sitemap.xml'),
         to: PATHS.BUILD,
       },
@@ -238,8 +243,9 @@ module.exports = {
         // Will need to be negated in the relevant conditionals.
         AUGUR_HOSTED: process.env.AUGUR_HOSTED || false,
         ENABLE_MAINNET: process.env.ENABLE_MAINNET || false,
+        REPORTING_ONLY: process.env.REPORTING_ONLY || false,
 
-        CONFIGURATION: serializeConfig(buildConfig(AUGUR_ENV))
+        CONFIGURATION: serializeConfig(config)
       },
     }),
   ],

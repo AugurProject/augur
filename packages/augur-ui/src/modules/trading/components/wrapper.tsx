@@ -16,13 +16,15 @@ import {
   formatGasCostToEther,
   formatNumber,
   formatMarketShares,
+  formatDai,
 } from 'utils/format-number';
 import convertExponentialToDecimal from 'utils/convert-exponential';
 import { MarketData, OutcomeFormatted } from 'modules/types';
 import { calculateTotalOrderValue } from 'modules/trades/helpers/calc-order-profit-loss-percents';
-import { formatDai } from 'utils/format-number';
+import { formatDaiPrice } from 'utils/format-number';
 import { Moment } from 'moment';
 import { calcOrderExpirationTime } from 'utils/format-date';
+import debounce from 'utils/debounce';
 
 export interface SelectedOrderProperties {
   orderPrice: string;
@@ -63,6 +65,7 @@ interface WrapperProps {
   initializeGsnWallet: Function;
   endTime: number;
   disableTrading?: boolean;
+  canPostOrder: Function;
 }
 
 interface WrapperState {
@@ -77,6 +80,7 @@ interface WrapperState {
   expirationDate: Moment;
   trade: any;
   simulateQueue: any[];
+  allowPostOnlyOrder: boolean;
 }
 
 class Wrapper extends Component<WrapperProps, WrapperState> {
@@ -126,7 +130,8 @@ class Wrapper extends Component<WrapperProps, WrapperState> {
       postOnlyOrder: false,
       expirationDate: props.selectedOrderProperties.expirationDate || null,
       trade: Wrapper.getDefaultTrade(props),
-      simulateQueue: []
+      simulateQueue: [],
+      allowPostOnlyOrder: true,
     };
 
     this.updateState = this.updateState.bind(this);
@@ -140,7 +145,7 @@ class Wrapper extends Component<WrapperProps, WrapperState> {
   }
 
   componentDidMount() {
-    const { selectedOrderProperties, disclaimerSeen, disclaimerModal, tradingTutorial, initialLiquidity } = this.props;
+    const { selectedOrderProperties, disclaimerSeen, disclaimerModal, tradingTutorial, initialLiquidity, disableTrading } = this.props;
 
     this.updateTradeTotalCost(
       {
@@ -152,7 +157,7 @@ class Wrapper extends Component<WrapperProps, WrapperState> {
       true
     );
 
-    if (!disclaimerSeen && !tradingTutorial && !initialLiquidity) {
+    if (!disclaimerSeen && !tradingTutorial && !initialLiquidity && !disableTrading) {
       disclaimerModal();
     }
   }
@@ -234,10 +239,9 @@ class Wrapper extends Component<WrapperProps, WrapperState> {
           orderDaiEstimate: '',
           orderEscrowdDai: '',
           gasCostEst: '',
-          doNotCreateOrders: false,
-          postOnlyOrder: false,
           expirationDate,
           trade,
+          allowPostOnlyOrder: true,
         }
       : { trade };
     this.setState(updatedState, () => this.updateParentOrderValues());
@@ -263,60 +267,84 @@ class Wrapper extends Component<WrapperProps, WrapperState> {
     });
   }
 
-  async queueStimulateTrade(order, useValues, selectedNav) {
-    const {
-      updateTradeCost,
-      selectedOutcome,
-      market,
-      gasPrice,
-    } = this.props;
-    this.state.simulateQueue.push(
-    new Promise((resolve) => updateTradeCost(
-      market.id,
-      order.selectedOutcomeId ? order.selectedOutcomeId : selectedOutcome.id,
-      {
-        limitPrice: order.orderPrice,
-        side: order.selectedNav,
-        numShares: order.orderQuantity,
-        selfTrade: order.selfTrade,
-      },
-      (err, newOrder) => {
-        if (err) {
-          // just update properties for form
-          return resolve({
-            ...useValues,
-            orderDaiEstimate: '',
-            orderEscrowdDai: '',
-            gasCostEst: '',
-            selectedNav,
-          });
-        }
-        const newOrderDaiEstimate = formatDai(
-          createBigNumber(newOrder.totalOrderValue.fullPrecision),
-          {
-            roundDown: false,
-          }
-        ).roundedValue;
-
-        const formattedGasCost = formatGasCostToEther(
-          newOrder.gasLimit,
-          { decimalsRounded: 4 },
-          String(gasPrice)
-        ).toString();
-        resolve({
-          ...useValues,
-          orderDaiEstimate: String(newOrderDaiEstimate),
-          orderEscrowdDai: newOrder.costInDai.formatted,
-          trade: newOrder,
-          gasCostEst: formattedGasCost,
-          selectedNav,
+  checkCanPostOnly = (price, side) => {
+    const { canPostOrder } = this.props;
+    if (this.state.postOnlyOrder) {
+      const allowPostOnlyOrder = canPostOrder(price, side);
+      if (allowPostOnlyOrder !== this.state.allowPostOnlyOrder) {
+        this.setState({
+          allowPostOnlyOrder
         });
       }
-    )));
-    await Promise.all(this.state.simulateQueue).then(results =>
-      this.setState(results[results.length - 1])
-    );
+      return allowPostOnlyOrder;
+    }
+    return true;
   }
+
+  debounceUpdateTradeCost = debounce(
+    (order, useValues, selectedNav) => this.runUpdateTrade(order, useValues, selectedNav),
+    200,
+  );
+
+  runUpdateTrade = (order, useValues, selectedNav) => {
+      const {
+        updateTradeCost,
+        selectedOutcome,
+        market,
+        gasPrice,
+      } = this.props;
+      updateTradeCost(
+        market.id,
+        order.selectedOutcomeId ? order.selectedOutcomeId : selectedOutcome.id,
+        {
+          limitPrice: order.orderPrice,
+          side: order.selectedNav,
+          numShares: order.orderQuantity,
+          selfTrade: order.selfTrade,
+        },
+        (err, newOrder) => {
+          if (err) {
+            // just update properties for form
+            const order = {
+              ...useValues,
+              orderDaiEstimate: '',
+              orderEscrowdDai: '',
+              gasCostEst: '',
+              selectedNav,
+            };
+            this.setState(order);
+            this.checkCanPostOnly(order.trade.limitPrice, order.trade.side);
+          }
+          const newOrderDaiEstimate = formatDai(
+            createBigNumber(newOrder.totalOrderValue.fullPrecision),
+            {
+              roundDown: false,
+            }
+          ).roundedValue;
+
+          const formattedGasCost = formatGasCostToEther(
+            newOrder.gasLimit,
+            { decimalsRounded: 4 },
+            String(gasPrice)
+          ).toString();
+          const order = {
+            ...useValues,
+            orderDaiEstimate: String(newOrderDaiEstimate),
+            orderEscrowdDai: newOrder.costInDai.formatted,
+            trade: newOrder,
+            gasCostEst: formattedGasCost,
+            selectedNav,
+          };
+          this.setState(order);
+          this.checkCanPostOnly(order.trade.limitPrice, order.trade.side);
+        }
+      )
+    }
+
+  async queueStimulateTrade(order, useValues, selectedNav) {
+    this.debounceUpdateTradeCost(order, useValues, selectedNav);
+  }
+
   async updateTradeTotalCost(order, fromOrderBook = false) {
     const {
       selectedOutcome,
@@ -350,15 +378,14 @@ class Wrapper extends Component<WrapperProps, WrapperState> {
         ...useValues,
         limitPrice: order.orderPrice,
         selectedOutcome: selectedOutcome.id,
-        totalCost: formatNumber(totalCost),
+        totalCost: formatDai(totalCost),
         numShares: order.orderQuantity,
         shareCost: formatNumber(0),
-        potentialDaiLoss: formatNumber(40),
-        potentialDaiProfit: formatNumber(60),
+        potentialDaiLoss: formatDai(40),
+        potentialDaiProfit: formatDai(60),
         side: order.selectedNav,
         selectedNav,
       };
-
       this.setState({
         ...useValues,
         orderDaiEstimate: totalCost ? formattedValue.roundedValue : '',
@@ -380,6 +407,7 @@ class Wrapper extends Component<WrapperProps, WrapperState> {
           orderQuantity: order.orderQuantity
         })
       }
+      this.checkCanPostOnly(order.orderPrice, selectedNav);
     }
   }
 
@@ -396,7 +424,8 @@ class Wrapper extends Component<WrapperProps, WrapperState> {
       market.id,
       selectedOutcome.id,
       trade,
-      s.doNotCreateOrders
+      s.doNotCreateOrders,
+      s.postOnlyOrder
     );
     this.clearOrderForm();
   }
@@ -444,8 +473,6 @@ class Wrapper extends Component<WrapperProps, WrapperState> {
       selectedOutcome,
       gasPrice,
       updateSelectedOutcome,
-      disclaimerSeen,
-      disclaimerModal,
       updateLiquidity,
       initialLiquidity,
       tradingTutorial,
@@ -487,6 +514,7 @@ class Wrapper extends Component<WrapperProps, WrapperState> {
       expirationDate,
       trade,
       postOnlyOrder,
+      allowPostOnlyOrder,
     } = this.state;
     const insufficientFunds =
       trade &&
@@ -514,11 +542,21 @@ class Wrapper extends Component<WrapperProps, WrapperState> {
           }
         }}
         disabled={
-          !trade || !trade.limitPrice || (gsnUnavailable && isOpenOrder) || insufficientFunds || (postOnlyOrder && trade.numFills > 0 || (disableTrading))
+          !trade || !trade.limitPrice || (gsnUnavailable && isOpenOrder) || insufficientFunds || disableTrading || !allowPostOnlyOrder
         }
       />
     );
     switch (true) {
+      case disableTrading:
+        actionButton = (
+          <PrimaryButton
+            id="reporting-ui"
+            disabled={true}
+            action={() => {}}
+            text="Trading Disabled in Reporting UI"
+          />
+        );
+      break;
       case !restoredAccount && !isLogged && !tradingTutorial:
         actionButton = (
           <PrimaryButton
@@ -636,6 +674,7 @@ class Wrapper extends Component<WrapperProps, WrapperState> {
               tradingTutorial={tradingTutorial}
               GsnEnabled={GsnEnabled}
               gsnUnavailable={gsnUnavailable}
+              allowPostOnlyOrder={allowPostOnlyOrder}
             />
           )}
         <div>{actionButton}</div>

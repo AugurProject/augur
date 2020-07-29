@@ -60,7 +60,7 @@ import Media from 'react-media';
 import { getDefaultOutcomeSelected } from 'utils/convert-marketInfo-marketData';
 import { createBigNumber } from 'utils/create-big-number';
 import { convertUnixToFormattedDate } from 'utils/format-date';
-import { formatDai, formatShares } from 'utils/format-number';
+import { formatDaiPrice, formatShares, formatDai } from 'utils/format-number';
 import { TutorialPopUp } from '../common/tutorial-pop-up';
 
 interface MarketViewProps {
@@ -93,7 +93,6 @@ interface MarketViewProps {
   account: string;
   orderBook?: Getters.Markets.OutcomeOrderBook | OutcomeTestTradingOrder;
   loadMarketOrderBook: Function;
-  clearOrderBook: Function;
   zeroXstatus: string;
   hasZeroXError: boolean;
   marketNotFound: boolean;
@@ -242,9 +241,9 @@ export default class MarketView extends Component<
       typeof this.props.canHotload !== 'undefined' &&
       !tradingTutorial &&
       // We can hotload now.
-      (prevProps.canHotload === this.props.canHotload ||
+      ((prevProps.canHotload === this.props.canHotload ||
         // The market id changed.
-        prevProps.marketId !== this.props.marketId)
+        prevProps.marketId !== this.props.marketId) && this.props.canHotload && this.props.marketId)
     ) {
       // This will only be called once on the 'canHotLoad' prop change.
       loadHotMarket(this.props.marketId);
@@ -297,11 +296,6 @@ export default class MarketView extends Component<
     if (marketNotFound !== prevProps.marketNotFound && marketNotFound) {
       showMarketNotFound(history);
     }
-  }
-
-  componentWillUnmount() {
-    const { clearOrderBook } = this.props;
-    if (clearOrderBook) this.props.clearOrderBook();
   }
 
   tradingTutorialWidthCheck() {
@@ -554,10 +548,10 @@ export default class MarketView extends Component<
           pending: true,
           id: 'trading-tutorial-pending-order',
           type: BUY,
-          avgPrice: formatDai(TUTORIAL_PRICE),
+          avgPrice: formatDaiPrice(TUTORIAL_PRICE),
           outcomeName: TRADING_TUTORIAL_OUTCOMES[outcomeId].description,
           unmatchedShares: formatShares(TUTORIAL_QUANTITY),
-          tokensEscrowed: formatShares(0),
+          tokensEscrowed: formatDaiPrice(TUTORIAL_PRICE * TUTORIAL_QUANTITY),
           sharesEscrowed: formatShares(0),
           creationTime: 0,
         },
@@ -608,7 +602,7 @@ export default class MarketView extends Component<
           totalReturns: formatDai(TUTORIAL_QUANTITY),
           unrealizedNet: formatDai(TUTORIAL_QUANTITY),
           realizedNet: formatDai(TUTORIAL_QUANTITY),
-          purchasePrice: formatDai(TUTORIAL_PRICE),
+          purchasePrice: formatDaiPrice(TUTORIAL_PRICE),
         },
       ];
     }
@@ -740,6 +734,7 @@ export default class MarketView extends Component<
                         selectedOrderProperties={selectedOrderProperties}
                         selectedOutcomeId={outcomeId}
                         updateSelectedOutcome={this.updateSelectedOutcome}
+                        orderBook={outcomeOrderBook}
                         updateSelectedOrderProperties={
                           this.updateSelectedOrderProperties
                         }
@@ -884,6 +879,7 @@ export default class MarketView extends Component<
                       selectedOrderProperties={selectedOrderProperties}
                       selectedOutcomeId={outcomeId}
                       updateSelectedOutcome={this.updateSelectedOutcome}
+                      orderBook={outcomeOrderBook}
                       updateSelectedOrderProperties={
                         this.updateSelectedOrderProperties
                       }

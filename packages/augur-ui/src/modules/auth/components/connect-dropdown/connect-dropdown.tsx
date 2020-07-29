@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import ReactTooltip from 'react-tooltip';
 import Clipboard from 'clipboard';
 import classNames from 'classnames';
-import { ACCOUNT_TYPES, NEW_ORDER_GAS_ESTIMATE, ETH, DAI, FEE_RESERVES_LABEL, REP } from 'modules/common/constants';
+import { ACCOUNT_TYPES, TRADE_ORDER_GAS_MODAL_ESTIMATE, ETH, DAI, FEE_RESERVES_LABEL, REP } from 'modules/common/constants';
 import {
   DaiLogoIcon,
   EthIcon,
@@ -10,11 +10,11 @@ import {
   LogoutIcon,
   Open,
   Pencil,
-  RepLogoIcon,
   ClipboardCopy,
+  AugurLogo,
 } from 'modules/common/icons';
 import { PrimaryButton, SecondaryButton } from 'modules/common/buttons';
-import { formatDai, formatEther, formatRep } from 'utils/format-number';
+import { formatDaiPrice, formatEther, formatRep, formatDai } from 'utils/format-number';
 import { AccountBalances, FormattedNumber } from 'modules/types';
 import ModalMetaMaskFinder from 'modules/modal/components/common/modal-metamask-finder';
 import { AFFILIATE_NAME } from 'modules/routes/constants/param-names';
@@ -84,7 +84,7 @@ const ConnectDropdown = (props: ConnectDropdownProps) => {
   let gasCostTrade;
 
   if (GsnEnabled && ethToDaiRate) {
-    gasCostTrade = displayGasInDai(NEW_ORDER_GAS_ESTIMATE, userDefinedGasPrice * 10**9);
+    gasCostTrade = displayGasInDai(TRADE_ORDER_GAS_MODAL_ESTIMATE, userDefinedGasPrice * 10**9);
   }
 
   if (!isLogged && !restoredAccount) return null;
@@ -158,7 +158,7 @@ const ConnectDropdown = (props: ConnectDropdownProps) => {
     },
     {
       name: 'REP',
-      logo: RepLogoIcon,
+      logo: AugurLogo,
       value: formatRep(balances.rep, {
         zeroStyled: false,
         decimalsRounded: 4,
@@ -181,15 +181,15 @@ const ConnectDropdown = (props: ConnectDropdownProps) => {
             </p>
             <p>
               If your account balance exceeds $40, 0.04 ETH equivalent in DAI
-              will be held in your Fee reserve to cover transaction fees, which
+              will be held in your fee reserve to cover transaction fees, which
               results in cheaper transaction fees.
             </p>
             <p>
-              As long as your available account balance remains over $40 Dai,
-              your Fee reserve will automatically be replenished.
+              As long as your available account balance remains over $40 DAI,
+              your fee reserve will automatically be replenished.
             </p>
             <p>
-              Your Fee reserve can easily be cashed out at anytime using the
+              Your fee reserve can easily be cashed out at anytime using the
               withdraw button in the transactions section of your account
               summary.
             </p>

@@ -79,7 +79,7 @@ export const AddFunds = ({
     setAmountToBuy(amountToBuy);
   };
 
-  const fundTypeLabel = tokenToAdd === DAI ?  'Dai ($)' : tokenToAdd;
+  const fundTypeLabel = tokenToAdd === DAI ?  'DAI ($)' : tokenToAdd;
 
   const [selectedOption, setSelectedOption] = useState(
     initialAddFundsFlow ? initialAddFundsFlow : usingOnRampSupportedWallet && tokenToAdd === DAI ? ADD_FUNDS_CREDIT_CARD : ADD_FUNDS_COINBASE

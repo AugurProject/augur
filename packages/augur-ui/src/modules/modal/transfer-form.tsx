@@ -5,15 +5,16 @@ import { DAI, ETH, REP, ZERO, GWEI_CONVERSION, MAX_DECIMALS, TRANSACTIONS, TRANS
 import {
   formatEther,
   formatRep,
-  formatDai,
+  formatDaiPrice,
   formatGasCostToEther,
+  formatDai,
 } from 'utils/format-number';
 import isAddress from 'modules/auth/helpers/is-address';
 import { createBigNumber, BigNumber } from 'utils/create-big-number';
 import convertExponentialToDecimal from 'utils/convert-exponential';
 import { FormDropdown, TextInput } from 'modules/common/form';
 import { CloseButton, SecondaryButton, ProcessingButton } from 'modules/common/buttons';
-import { getGasInDai, ethToDaiFromAttoRate } from 'modules/app/actions/get-ethToDai-rate';
+import { getGasInDai } from 'modules/app/actions/get-ethToDai-rate';
 import getPrecision from 'utils/get-number-precision';
 
 import Styles from 'modules/modal/modal.styles.less';
@@ -118,7 +119,7 @@ export const TransferForm = ({
     const signerPays = (createBigNumber(signingEthBalance).minus(gasInEth)).gte(ZERO);
     setSignerPays(signerPays);
     setGasCosts(createBigNumber(gasCosts))
-    const estInDai = ethToDaiFromAttoRate(Number(createBigNumber(gasInEth)));
+    const estInDai = getGasInDai(Number(createBigNumber(gasCosts)));
     // TODO: figure out exact DAI amount needed to convert to eth.
     const gasEstimateInDai = signerPays ? estInDai : formatDai(createBigNumber(estInDai.value).plus(RELAYER_DAI_CUSION));
     setState({...state, gasEstimateInDai});

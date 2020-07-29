@@ -1,7 +1,7 @@
 import React, { useEffect, useRef } from 'react';
 import Highcharts from 'highcharts/highstock';
 import Styles from 'modules/account/components/overview-chart.styles.less';
-import { formatDai } from 'utils/format-number';
+import { formatDaiPrice, formatDai } from 'utils/format-number';
 import { createBigNumber } from 'utils/create-big-number';
 
 const HIGHLIGHTED_LINE_WIDTH = 1;

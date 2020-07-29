@@ -110,8 +110,8 @@ export const withdrawTransfer = destination => {
   return async dispatch => {
     try {
       await withdrawAllFunds(destination);
-    } finally {
-      dispatch(updateAssets(true));
+    } catch (e) {
+      console.log('error withdraw/transfer', e);
     }
   };
 };

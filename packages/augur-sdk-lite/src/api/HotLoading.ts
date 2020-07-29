@@ -160,7 +160,7 @@ export class HotLoading {
       }
     }
 
-    const marketCreatorFeeRate = new BigNumber(1).dividedBy(feeDivisor._hex);
+    const marketCreatorFeeRate = new BigNumber(feeDivisor._hex).eq(0) ? new BigNumber(0) : new BigNumber(1).dividedBy(feeDivisor._hex);
     const reportingFeeRate = new BigNumber(1).dividedBy(
       reportingFeeDivisor._hex
     );

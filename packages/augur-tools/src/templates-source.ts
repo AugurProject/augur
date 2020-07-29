@@ -4,11 +4,6 @@ import {
   CRYPTO_BTC_CURRENCY_MARKETS,
   CRYPTO_ETH_CURRENCY_MARKETS,
   ENTERTAINMENT_EVENT_DEP_TEAMS,
-  FIN_EXCHANGES_CLOSING_OFFSETS,
-  FIN_EXCHANGES_CURRENCIES,
-  FIN_EXCHANGES_HOLIDAY_CLOSURES,
-  FIN_INDEXES_CLOSING_OFFSETS,
-  FIN_INDEXES_HOLIDAY_CLOSURES,
   FOOTBALL_EVENT_DEP_TEAMS,
   HOCKEY_EVENT_DEP_TEAMS,
   LIST_VALUES,
@@ -39,13 +34,12 @@ import {
   ETHEREUM,
   EURO_TOUR,
   EVENT,
-  FINANCE,
+  ECONOMICS,
   GENDER,
   GOLF,
   groupTypes,
   HOCKEY,
   HORSE_RACING,
-  INDEXES,
   LEAGUE_NAME,
   AUGUR,
   LPGA,
@@ -66,7 +60,6 @@ import {
   SPORTS,
   START_TIME,
   STATISTICS,
-  STOCKS,
   SUB_EVENT,
   SUMMER,
   TEAM_A,
@@ -1129,7 +1122,7 @@ export const TEMPLATES = {
                     type: TemplateInputType.DROPDOWN,
                     placeholder: `Year`,
                     validationType: ValidationType.YEAR_YEAR_RANGE,
-                    values: LIST_VALUES.YEARS,
+                    values: ['2022', '2024', '2026'],
                   },
                 ],
                 resolutionRules: {
@@ -1187,7 +1180,7 @@ export const TEMPLATES = {
                         'Includes regulation, any play-offs and sudden death',
                     },
                     {
-                      text: `If winner is not listed as a market outcome, market should resolve as 'Other (Field)'`,
+                      text: `If the winner is not listed as a market outcome, the market should resolve as 'Other (Field)'`,
                     },
                   ],
                 },
@@ -1206,7 +1199,7 @@ export const TEMPLATES = {
                     placeholder: `Year`,
                     groupKey: YEAR,
                     validationType: ValidationType.YEAR_YEAR_RANGE,
-                    values: LIST_VALUES.YEARS,
+                    values: ['2022', '2024', '2026'],
                   },
                   {
                     id: 1,
@@ -1338,7 +1331,7 @@ export const TEMPLATES = {
                     type: TemplateInputType.DROPDOWN,
                     placeholder: `Year`,
                     validationType: ValidationType.YEAR_YEAR_RANGE,
-                    values: LIST_VALUES.YEARS,
+                    values: ['2021', '2023', '2025'],
                   },
                 ],
                 resolutionRules: {
@@ -1396,7 +1389,7 @@ export const TEMPLATES = {
                         'Includes regulation, any play-offs and sudden death',
                     },
                     {
-                      text: `If winner is not listed as a market outcome, market should resolve as 'Other (Field)'`,
+                      text: `If the winner is not listed as a market outcome, the market should resolve as 'Other (Field)'`,
                     },
                   ],
                 },
@@ -1415,7 +1408,7 @@ export const TEMPLATES = {
                     placeholder: `Year`,
                     groupKey: YEAR,
                     validationType: ValidationType.YEAR_YEAR_RANGE,
-                    values: LIST_VALUES.YEARS,
+                    values: ['2021', '2023', '2025'],
                   },
                   {
                     id: 1,
@@ -1581,7 +1574,7 @@ export const TEMPLATES = {
                         'Includes regulation, any play-offs and sudden death',
                     },
                     {
-                      text: `If winner is not listed as a market outcome, market should resolve as 'Other (Field)'`,
+                      text: `If the winner is not listed as a market outcome, the market should resolve as 'Other (Field)'`,
                     },
                   ],
                 },
@@ -1712,6 +1705,7 @@ export const TEMPLATES = {
             question: `NHL: Which team will win: [0] vs. [1]?`,
             example: `NHL: Which Team will win: NY Rangers vs. NJ Devils?\nEstimated schedule start time: Sept 19, 2019 8:20 pm EST`,
             header: `[0] vs. [1]`,
+            outcomes: ['[0]','[1]','No Contest'],
             groupName: groupTypes.COMBO_MONEY_LINE,
             inputs: [
               {
@@ -1927,7 +1921,7 @@ export const TEMPLATES = {
             resolutionRules: {
               [REQUIRED]: [
                 {
-                  text: `If winner is not listed as a market outcome, market should resolve as 'Other (Field)'`,
+                  text: `If the winner is not listed as a market outcome, the market should resolve as 'Other (Field)'`,
                 },
                 {
                   text: `If the season is officially cancelled and the event named in market is not played, this market should resolve as 'Invalid'`,
@@ -2016,7 +2010,7 @@ export const TEMPLATES = {
             resolutionRules: {
               [REQUIRED]: [
                 {
-                  text: `If winner is not listed as a market outcome, market should resolve as 'Other (Field)'`,
+                  text: `If the winner is not listed as a market outcome, the market should resolve as 'Other (Field)'`,
                 },
                 {
                   text: `If the award in the market question is not awarded for any reason by event expiration, this market should resolve as 'Invalid'`,
@@ -2265,7 +2259,7 @@ export const TEMPLATES = {
                       text: `If a player is disqualified or withdraws before the match is complete, the player moving forward to the next round should be declared the winner`,
                     },
                     {
-                      text: `If winner is not listed as a market outcome, market should resolve as 'Other (Field)'`,
+                      text: `If the winner is not listed as a market outcome, the market should resolve as 'Other (Field)'`,
                     },
                     {
                       text: `If a Tournament or Event is cancelled or postponed and will not be completed before the market's Event Expiration time, the market should resolve as 'No Contest'`,
@@ -2627,7 +2621,7 @@ export const TEMPLATES = {
                       text: `If either pairing is disqualified or withdraws before the match is complete, the player moving forward to the next round should be declared the winner`,
                     },
                     {
-                      text: `If winner is not listed as a market outcome, market should resolve as 'Other (Field)'`,
+                      text: `If the winner is not listed as a market outcome, the market should resolve as 'Other (Field)'`,
                     },
                     {
                       text: `This market each outcome is a two player team (pairing), if this is not the case, this market should settle as 'Invalid.'`,
@@ -3198,7 +3192,7 @@ export const TEMPLATES = {
                 resolutionRules: {
                   [REQUIRED]: [
                     {
-                      text: `If winner is not listed as a market outcome, market should resolve as 'Other (Field)'.`,
+                      text: `If the winner is not listed as a market outcome, the market should resolve as 'Other (Field)'.`,
                     },
                     {
                       text: `If the season is officially cancelled and the league/event in the market question is not played, this market should resolve as 'Invalid'.`,
@@ -3503,7 +3497,7 @@ export const TEMPLATES = {
                 resolutionRules: {
                   [REQUIRED]: [
                     {
-                      text: `If winner is not listed as a market outcome, market should resolve as 'Other (Field)'.`,
+                      text: `If the winner is not listed as a market outcome, the market should resolve as 'Other (Field)'.`,
                     },
                     {
                       text: `If the season is officially cancelled and the league/event in the market question is not played, this market should resolve as 'Invalid'.`,
@@ -3721,6 +3715,7 @@ export const TEMPLATES = {
                 question: `NBA: Which team will win: [0] vs. [1]?`,
                 example: `NBA: Which Team will win: Brooklyn Nets vs. NY Knicks?\nEstimated schedule start time: Sept 19, 2019 8:20 pm EST`,
                 header: `[0] vs. [1]`,
+                outcomes: ['[0]','[1]','No Contest'],
                 groupName: groupTypes.COMBO_MONEY_LINE,
                 inputs: [
                   {
@@ -3928,7 +3923,7 @@ export const TEMPLATES = {
                 resolutionRules: {
                   [REQUIRED]: [
                     {
-                      text: `If winner is not listed as a market outcome, market should resolve as 'Other (Field)'`,
+                      text: `If the winner is not listed as a market outcome, the market should resolve as 'Other (Field)'`,
                     },
                     {
                       text: `If the season is officially cancelled and event named in the market is not played, this market should resolve as 'Invalid'`,
@@ -4021,7 +4016,7 @@ export const TEMPLATES = {
                       text: `In the event of an award is given to more than 1 player. The player who averaged the most points per game (determined to the first decimal place, meaning a player averaging 36.1 points per game would win over the player averaging 36 points per game) for the regular the season will be the tie breaker. In the event of an additional tie, The regular season Field Goal % will be the final tie breaker.`,
                     },
                     {
-                      text: `If winner is not listed as a market outcome, market should resolve as 'Other (Field)'`,
+                      text: `If the winner is not listed as a market outcome, the market should resolve as 'Other (Field)'`,
                     },
                     {
                       text: `If the award in the market question is not awarded for any reason, by the start of event expiration, this market should resolve as 'Invalid'`,
@@ -4075,7 +4070,7 @@ export const TEMPLATES = {
                       text: `For most made 3-pointers, the player with the highest 3 point %, should be used as the tie breaker.`,
                     },
                     {
-                      text: `If winner is not listed as a market outcome, market should resolve as 'Other (Field)'`,
+                      text: `If the winner is not listed as a market outcome, the market should resolve as 'Other (Field)'`,
                     },
                     {
                       text: `If the season is officially cancelled, the statistic at the time the league officially stopped should be used to determine the resolution of the market.`,
@@ -4180,7 +4175,7 @@ export const TEMPLATES = {
                       text: `Outcomes are determined by the player selected at the time of the "Pick". Trades which occur after a player is selected do not impact the results. For example, to determine the winner of the first pick in the draft...If a player was selected with the first pick in the draft and was then traded to the team with the 3rd pick. The original player selected first would be the winning outcome.`,
                     },
                     {
-                      text: `If winner is not listed as a market outcome, market should resolve as 'Other (Field)'`,
+                      text: `If the winner is not listed as a market outcome, the market should resolve as 'Other (Field)'`,
                     },
                     {
                       text: `If the event in the market question is not determined for any reason, by event expiration, this market should resolve as "Invalid".`,
@@ -4229,7 +4224,7 @@ export const TEMPLATES = {
                       text: `Outcomes are determined by the player selected at the time of the "Pick". Trades which occur after a player is selected do not impact the results. For example, to determine the winner of the first pick in the draft...If a player was selected with the first pick in the draft and was then traded to the team with the 3rd pick. The original player selected first would be the winning outcome.`,
                     },
                     {
-                      text: `If winner is not listed as a market outcome, market should resolve as 'Other (Field)'`,
+                      text: `If the winner is not listed as a market outcome, the market should resolve as 'Other (Field)'`,
                     },
                     {
                       text: `If the event in the market question is not determined for any reason, by event expiration, this market should resolve as "Invalid".`,
@@ -4499,6 +4494,7 @@ export const TEMPLATES = {
                 question: `WNBA: Which team will win: [0] vs. [1]?`,
                 example: `WNBA: Which Team will win: Phoenix Mercury vs. Seattle Storm?\nEstimated schedule start time: Sept 19, 2019 8:20 pm EST`,
                 header: `[0] vs. [1]`,
+                outcomes: ['[0]','[1]','No Contest'],
                 groupName: groupTypes.COMBO_MONEY_LINE,
                 inputs: [
                   {
@@ -4695,7 +4691,7 @@ export const TEMPLATES = {
                 resolutionRules: {
                   [REQUIRED]: [
                     {
-                      text: `If winner is not listed as a market outcome, market should resolve as 'Other (Field)'`,
+                      text: `If the winner is not listed as a market outcome, the market should resolve as 'Other (Field)'`,
                     },
                     {
                       text: `If the season is officially cancelled and no Championship is played, this market should resolve as 'Invalid'`,
@@ -4743,7 +4739,7 @@ export const TEMPLATES = {
                       text: `In the event of an award is given to more than 1 player. The player who averaged the most points per game (determined to the first decimal place, meaning a player averaging 36.1 points per game would win over the player averaging 36 points per game) for the regular the season will be the tie breaker. In the event of an additional tie, The regular season Field Goal % will be the final tie breaker.`,
                     },
                     {
-                      text: `If winner is not listed as a market outcome, market should resolve as 'Other (Field)'`,
+                      text: `If the winner is not listed as a market outcome, the market should resolve as 'Other (Field)'`,
                     },
                     {
                       text: `If the award in the market question is not awarded for any reason by event expiration, this market should resolve as 'Invalid'`,
@@ -4797,7 +4793,7 @@ export const TEMPLATES = {
                       text: `For most made 3-pointers, the player with the highest 3 point %, should be used as the tie breaker.`,
                     },
                     {
-                      text: `If winner is not listed as a market outcome, market should resolve as 'Other (Field)'`,
+                      text: `If the winner is not listed as a market outcome, the market should resolve as 'Other (Field)'`,
                     },
                     {
                       text: `If the season is officially cancelled, the statistic at the time the league officially stopped should be used to determine the resolution of the market.`,
@@ -5089,6 +5085,7 @@ export const TEMPLATES = {
                 question: `NCAA [0] BB: Which team will win: [1] vs. [2]?`,
                 example: `NCAA Men's BB: Which Team will win: Duke vs. Kentucky?\nEstimated schedule start time: Sept 19, 2019 8:20 pm EST`,
                 header: `[1] vs. [2]`,
+                outcomes: ['[1]','[2]','No Contest'],
                 groupName: groupTypes.COMBO_MONEY_LINE,
                 inputs: [
                   {
@@ -5333,7 +5330,7 @@ export const TEMPLATES = {
                       text: `The winner is determined by the team who wins their conference tournament championship game`,
                     },
                     {
-                      text: `If winner is not listed as a market outcome, market should resolve as 'Other (Field)'`,
+                      text: `If the winner is not listed as a market outcome, the market should resolve as 'Other (Field)'`,
                     },
                     {
                       text: `If the season is officially cancelled and the event in the market is not played, this market should resolve as 'Invalid'`,
@@ -5391,7 +5388,7 @@ export const TEMPLATES = {
                 resolutionRules: {
                   [REQUIRED]: [
                     {
-                      text: `If winner is not listed as a market outcome, market should resolve as 'Other (Field)'`,
+                      text: `If the winner is not listed as a market outcome, the market should resolve as 'Other (Field)'`,
                     },
                     {
                       text: `If the season is officially cancelled and no Championship is played, this market should resolve as 'Invalid'`,
@@ -5459,6 +5456,7 @@ export const TEMPLATES = {
             question: `MLB: Which team will win: [0] vs. [1]?`,
             example: `MLB: Which Team will win: Yankees vs. Red Sox?\nEstimated schedule start time: Sept 19, 2019 8:20 pm EST`,
             header: `[0] vs. [1]`,
+            outcomes: ['[0]','[1]','No Contest'],
             groupName: groupTypes.COMBO_MONEY_LINE,
             inputs: [
               {
@@ -5684,7 +5682,7 @@ export const TEMPLATES = {
             resolutionRules: {
               [REQUIRED]: [
                 {
-                  text: `If winner is not listed as a market outcome, market should resolve as 'Other (Field)'`,
+                  text: `If the winner is not listed as a market outcome, the market should resolve as 'Other (Field)'`,
                 },
                 {
                   text: `If the season is officially cancelled and the event in the market is not played, this market should resolve as 'Invalid'`,
@@ -5773,7 +5771,7 @@ export const TEMPLATES = {
             resolutionRules: {
               [REQUIRED]: [
                 {
-                  text: `If winner is not listed as a market outcome, market should resolve as 'Other (Field)'`,
+                  text: `If the winner is not listed as a market outcome, the market should resolve as 'Other (Field)'`,
                 },
                 {
                   text: `If the award in the market question is not awarded for any reason by event expiration, this market should resolve as 'Invalid'`,
@@ -6801,6 +6799,7 @@ export const TEMPLATES = {
                 question: `[0]: Which NFL Team will win: [1] vs. [2]?`,
                 example: ` Week 1: Which NFL Team will win: NY Giants vs. New England Patriots?\nEstimated schedule start time: Sept 19, 2019 1:00 pm EST`,
                 header: `[1] vs. [2]`,
+                outcomes: ['[1]','[2]','No Contest'],
                 groupName: groupTypes.COMBO_MONEY_LINE,
                 inputs: [
                   {
@@ -6834,17 +6833,20 @@ export const TEMPLATES = {
                   {
                     id: 4,
                     type: TemplateInputType.ADDED_OUTCOME,
-                    placeholder: `Tie/No Contest`,
+                    placeholder: `No Contest`,
                   },
                 ],
                 resolutionRules: {
                   [REQUIRED]: [
                     { text: `Include Regulation and Overtime` },
                     {
-                      text: `At least 55 minutes of play must have elapsed for the game to be deemed official. If less than 55 minutes of play have been completed, there is no official winner of the game and the market should resolve as "Tie/No Contest"`,
+                      text: `At least 55 minutes of play must have elapsed for the game to be deemed official. If less than 55 minutes of play have been completed, there is no official winner of the game and the market should resolve as 'No Contest'`,
                     },
                     {
-                      text: `If the game is not played market should resolve as "Tie/No Contest"`,
+                      text: `If the game is not played market should resolve as 'No Contest'`,
+                    },
+                    {
+                      text: `If the game ends in a tie, the market should resolve as 'No Contest'`,
                     },
                   ],
                 },
@@ -7032,7 +7034,7 @@ export const TEMPLATES = {
                 resolutionRules: {
                   [REQUIRED]: [
                     {
-                      text: `If winner is not listed as a market outcome, market should resolve as 'Other (Field)'`,
+                      text: `If the winner is not listed as a market outcome, the market should resolve as 'Other (Field)'`,
                     },
                     {
                       text: `If the season is officially cancelled and the event in the market is not played, this market should resolve as 'Invalid'`,
@@ -7122,7 +7124,7 @@ export const TEMPLATES = {
                 resolutionRules: {
                   [REQUIRED]: [
                     {
-                      text: `If winner is not listed as a market outcome, market should resolve as 'Other (Field)'`,
+                      text: `If the winner is not listed as a market outcome, the market should resolve as 'Other (Field)'`,
                     },
                     {
                       text: `If the award in the market question is not awarded for any reason by event expiration, this market should resolve as 'Invalid'`,
@@ -7220,7 +7222,7 @@ export const TEMPLATES = {
                       text: `Outcomes are determined by the player selected at the time of the "Pick". Trades which occur after a player is selected do not impact the results. For example, to determine the winner of the first pick in the draft...If a player was selected with the first pick in the draft and was then traded to the team with the 3rd pick. The original player selected first would be the winning outcome.`,
                     },
                     {
-                      text: `If winner is not listed as a market outcome, market should resolve as 'Other (Field)'`,
+                      text: `If the winner is not listed as a market outcome, the market should resolve as 'Other (Field)'`,
                     },
                     {
                       text: `If the event in the market question is not determined for any reason, by event expiration, this market should resolve as "Invalid".`,
@@ -7269,7 +7271,7 @@ export const TEMPLATES = {
                       text: `Outcomes are determined by the player selected at the time of the "Pick". Trades which occur after a player is selected do not impact the results. For example, to determine the winner of the first pick in the draft...If a player was selected with the first pick in the draft and was then traded to the team with the 3rd pick. The original player selected first would be the winning outcome.`,
                     },
                     {
-                      text: `If winner is not listed as a market outcome, market should resolve as 'Other (Field)'`,
+                      text: `If the winner is not listed as a market outcome, the market should resolve as 'Other (Field)'`,
                     },
                     {
                       text: `If the event in the market question is not determined for any reason, by event expiration, this market should resolve as "Invalid".`,
@@ -7318,7 +7320,7 @@ export const TEMPLATES = {
                       text: `Outcomes are determined by the player selected at the time of the "Pick". Trades which occur after a player is selected do not impact the results. For example, to determine the winner of the first pick in the draft...If a player was selected with the first pick in the draft and was then traded to the team with the 3rd pick. The original player selected first would be the winning outcome.`,
                     },
                     {
-                      text: `If winner is not listed as a market outcome, market should resolve as 'Other (Field)'`,
+                      text: `If the winner is not listed as a market outcome, the market should resolve as 'Other (Field)'`,
                     },
                     {
                       text: `If the event in the market question is not determined for any reason, by event expiration, this market should resolve as "Invalid".`,
@@ -7598,6 +7600,7 @@ export const TEMPLATES = {
                 question: `NCAA FB [0]: Which College Football Team will win: [1] vs. [2]?`,
                 example: `NCAA FB Week 1: Which College Football Team will win: Alabama vs. Michigan?\nEstimated schedule start time: Sept 19, 2019 1:00 pm EST`,
                 header: `[1] vs. [2]`,
+                outcomes: ['[1]','[2]','No Contest'],
                 groupName: groupTypes.COMBO_MONEY_LINE,
                 inputs: [
                   {
@@ -7803,7 +7806,7 @@ export const TEMPLATES = {
                     placeholder: `Year`,
                     groupKey: YEAR,
                     validationType: ValidationType.YEAR_YEAR_RANGE,
-                    values: LIST_VALUES.YEARS,
+                    values: LIST_VALUES.YEARS_21,
                   },
                   {
                     id: 1,
@@ -7827,7 +7830,7 @@ export const TEMPLATES = {
                 resolutionRules: {
                   [REQUIRED]: [
                     {
-                      text: `If winner is not listed as a market outcome, market should resolve as 'Other (Field)'`,
+                      text: `If the winner is not listed as a market outcome, the market should resolve as 'Other (Field)'`,
                     },
                     {
                       text: `If the season is officially cancelled and no Championship is played, this market should resolve as 'Invalid'`,
@@ -7865,7 +7868,7 @@ export const TEMPLATES = {
                 resolutionRules: {
                   [REQUIRED]: [
                     {
-                      text: `If winner is not listed as a market outcome, market should resolve as 'Other (Field)'`,
+                      text: `If the winner is not listed as a market outcome, the market should resolve as 'Other (Field)'`,
                     },
                     {
                       text: `If the award in the market question is not awarded for any reason by event expiration, this market should resolve as 'Invalid'`,
@@ -7950,7 +7953,7 @@ export const TEMPLATES = {
             resolutionRules: {
               [REQUIRED]: [
                 {
-                  text: `The winning candidate will have at least 270 electoral votes to win the presidential election.`,
+                  text: `A candidate that receives at least 270 votes in the Electoral College shall be considered the winner. In the event that no candidate receives 270 votes, the House of Representatives will decide the winner. In the event of further indecision or tie, it will be the candidate determined to be the winner under the US Constitution.`,
                 },
                 {
                   text: `This market is intended to be about a Single Candidate, if this is not the case, this market should settle as 'Invalid'.`,
@@ -8049,7 +8052,7 @@ export const TEMPLATES = {
             resolutionRules: {
               [REQUIRED]: [
                 {
-                  text: `The winning candidate will have at least 270 electoral votes to win the presidential election.`,
+                  text: `A candidate that receives at least 270 votes in the Electoral College shall be considered the winner. In the event that no candidate receives 270 votes, the House of Representatives will decide the winner. In the event of further indecision or tie, it will be the candidate determined to be the winner under the US Constitution.`,
                 },
                 {
                   text:
@@ -8146,10 +8149,10 @@ export const TEMPLATES = {
             resolutionRules: {
               [REQUIRED]: [
                 {
-                  text: `The winning party will win the majority of 270 electoral votes.`,
+                  text: `A candidate that receives at least 270 votes in the Electoral College shall be considered the winner. In the event that no candidate receives 270 votes, the House of Representatives will decide the winner. In the event of further indecision or tie, it will be the candidate determined to be the winner under the US Constitution.`,
                 },
                 {
-                  text: `If winner is not listed as a market outcome, market should resolve as 'Other (Field)'`,
+                  text: `If the winner is not listed as a market outcome, the market should resolve as 'Other (Field)'`,
                 },
               ],
             },
@@ -8178,10 +8181,10 @@ export const TEMPLATES = {
             resolutionRules: {
               [REQUIRED]: [
                 {
-                  text: `The winning candidate will have at least 270 electoral votes to win the presidential election.`,
+                  text: `A candidate that receives at least 270 votes in the Electoral College shall be considered the winner. In the event that no candidate receives 270 votes, the House of Representatives will decide the winner. In the event of further indecision or tie, it will be the candidate determined to be the winner under the US Constitution.`,
                 },
                 {
-                  text: `If winner is not listed as a market outcome, market should resolve as 'Other (Field)'`,
+                  text: `If the winner is not listed as a market outcome, the market should resolve as 'Other (Field)'`,
                 },
               ],
             },
@@ -8228,7 +8231,7 @@ export const TEMPLATES = {
                   text: `The candidate who receives a majority of the party's delegates wins their party's nomination.`,
                 },
                 {
-                  text: `If winner is not listed as a market outcome, market should resolve as 'Other (Field)'`,
+                  text: `If the winner is not listed as a market outcome, the market should resolve as 'Other (Field)'`,
                 },
               ],
             },
@@ -8258,6 +8261,16 @@ export const TEMPLATES = {
               },
               {
                 id: 2,
+                type: TemplateInputType.SUBSTITUTE_USER_OUTCOME,
+                placeholder: `Democratic Party`,
+              },
+              {
+                id: 3,
+                type: TemplateInputType.SUBSTITUTE_USER_OUTCOME,
+                placeholder: `Republican Party`,
+              },
+              {
+                id: 4,
                 type: TemplateInputType.ADDED_OUTCOME,
                 placeholder: `Other (Field)`,
               },
@@ -8265,10 +8278,10 @@ export const TEMPLATES = {
             resolutionRules: {
               [REQUIRED]: [
                 {
-                  text: `The winning outcome is the party which controls the majority of seats, according to the results of the election, not determined by the current controlling party at event expiration.`,
+                  text: `Outcome is determined by the winning party of the popular vote of the state's election.`,
                 },
                 {
-                  text: `If winner is not listed as a market outcome, market should resolve as 'Other (Field)'`,
+                  text: `If the winner is not listed as a market outcome, the market should resolve as 'Other (Field)'`,
                 },
               ],
             },
@@ -8315,10 +8328,10 @@ export const TEMPLATES = {
             resolutionRules: {
               [REQUIRED]: [
                 {
-                  text: `The winning outcome is the party which controls the majority of seats, following the results of the election, not determined by the current controlling party at event expiration`,
+                  text: `The winning outcome is the party which is expected to control the majority of seats according to the results of the election, not determined by the current controlling party at event expiration if the new congress's session hasn't started yet.`,
                 },
                 {
-                  text: `If winner is not listed as a market outcome, market should resolve as 'Other (Field)'`,
+                  text: `If the winner is not listed as a market outcome, the market should resolve as 'Other (Field)'`,
                 },
               ],
             },
@@ -8373,7 +8386,7 @@ export const TEMPLATES = {
                   text: `The winner of the primary is the candidate recognized and/or announced by the state`,
                 },
                 {
-                  text: `If winner is not listed as a market outcome, market should resolve as 'Other (Field)'`,
+                  text: `If the winner is not listed as a market outcome, the market should resolve as 'Other (Field)'`,
                 },
               ],
             },
@@ -8428,7 +8441,7 @@ export const TEMPLATES = {
                   text: `The winner of the caucus is the candidate recognized and/or announced by the political party`,
                 },
                 {
-                  text: `If winner is not listed as a market outcome, market should resolve as 'Other (Field)'`,
+                  text: `If the winner is not listed as a market outcome, the market should resolve as 'Other (Field)'`,
                 },
               ],
             },
@@ -8584,7 +8597,7 @@ export const TEMPLATES = {
                   text: `If location/country does not have the stated position in market, market should resolve as "Invalid"`,
                 },
                 {
-                  text: `If winner is not listed as a market outcome, market should resolve as 'Other (Field)'`,
+                  text: `If the winner is not listed as a market outcome, the market should resolve as 'Other (Field)'`,
                 },
                 {
                   text: `If the country named in the market question has multiple people with the same title, the market should resolve as 'Invalid'`,
@@ -8599,7 +8612,7 @@ export const TEMPLATES = {
       },
     },
   },
-  [FINANCE]: {
+  [ECONOMICS]: {
     children: {
       [STATISTICS]: {
         templates: [
@@ -8683,303 +8696,6 @@ export const TEMPLATES = {
               [REQUIRED]: [
                 {
                   text: `Settlement is found using the US Bureau Labor of Statistics website (https://www.bls.gov/). You can go directly to https://data.bls.gov/timeseries/LNS14000000 to find the market settlement number, go to the Year/Month stated in the market question in the chart.`,
-                },
-              ],
-            },
-          },
-        ],
-      },
-      [STOCKS]: {
-        templates: [
-          {
-            marketType: YES_NO,
-            question: `Will [0] ([1]) close on or above [2] on the [3] on [4]?`,
-            example: `Will Apple (AAPL) close on or above 200 on then Nasdaq (traded in USD) on September 1, 2020?`,
-            inputs: [
-              {
-                id: 0,
-                type: TemplateInputType.TEXT,
-                placeholder: TEXT_PLACEHOLDERS.INDIVIDUAL_STOCK_OR_ETF_NAME,
-              },
-              {
-                id: 1,
-                type: TemplateInputType.TEXT,
-                placeholder: TEXT_PLACEHOLDERS.INDIVIDUAL_STOCK_OR_ETF_SYMBOL,
-              },
-              {
-                id: 2,
-                type: TemplateInputType.TEXT,
-                placeholder: `Value #`,
-                validationType: ValidationType.NUMBER,
-              },
-              {
-                id: 3,
-                type: TemplateInputType.DROPDOWN,
-                placeholder: `Exchange`,
-                categoryDestId: 2,
-                values: LIST_VALUES.FIN_STOCK_EXCHANGES,
-              },
-              {
-                id: 4,
-                type: TemplateInputType.DATEYEAR,
-                placeholder: `Day of Year`,
-                validationType: ValidationType.NOWEEKEND_HOLIDAYS,
-              },
-              {
-                id: 5,
-                type: TemplateInputType.DATEYEAR_CLOSING,
-                placeholder: ``,
-                inputDateYearId: 4,
-                inputSourceId: 3,
-                inputTimeOffset: FIN_EXCHANGES_CLOSING_OFFSETS,
-                holidayClosures: FIN_EXCHANGES_HOLIDAY_CLOSURES,
-              },
-            ],
-            resolutionRules: {
-              [REQUIRED]: [
-                {
-                  text: `Closing date is determined by the location of the exchange, where the stock is traded`,
-                },
-                {
-                  text: `Trading denomination is determined by the exchange the stock is traded on`,
-                },
-                {
-                  text: `If trading day in market question is a weekend or holiday when exchange is not open this market should resolve as 'Invalid'`,
-                },
-                {
-                  text: `If stock trading name and ticker symbol is not used in the market question, the market should resolve as 'Invalid'`,
-                },
-                {
-                  text: `If the stock mentioned in the market question is not traded on the exchange, this market should resolve as 'Invalid'.`,
-                },
-                {
-                  text: `This market is intended to be about a Individual Stock or ETF Ticker Symbol, if this is not the case, this market should settle as 'Invalid'.`,
-                },
-              ],
-            },
-          },
-          {
-            marketType: YES_NO,
-            question: `Will [0] ([1]) exceed [2] on the [3], anytime between the opening on [4] and the close on [5]?`,
-            example: `Will Apple (AAPL) exceed 250 on the Nasdaq (traded in USD) anytime between the opening on June 1, 2020 and the close on September 1, 2020?`,
-            inputs: [
-              {
-                id: 0,
-                type: TemplateInputType.TEXT,
-                placeholder: TEXT_PLACEHOLDERS.INDIVIDUAL_STOCK_OR_ETF_NAME,
-              },
-              {
-                id: 1,
-                type: TemplateInputType.TEXT,
-                placeholder: TEXT_PLACEHOLDERS.INDIVIDUAL_STOCK_OR_ETF_SYMBOL,
-              },
-              {
-                id: 2,
-                type: TemplateInputType.TEXT,
-                placeholder: `Value #`,
-                validationType: ValidationType.NUMBER,
-              },
-              {
-                id: 3,
-                type: TemplateInputType.DROPDOWN,
-                placeholder: `Exchange`,
-                categoryDestId: 2,
-                values: LIST_VALUES.FIN_STOCK_EXCHANGES,
-              },
-              {
-                id: 4,
-                type: TemplateInputType.DATEYEAR,
-                placeholder: `Start Day of Year`,
-                validationType: ValidationType.NOWEEKEND_HOLIDAYS,
-              },
-              {
-                id: 5,
-                dateAfterId: 4,
-                type: TemplateInputType.DATEYEAR,
-                placeholder: `End Day of Year`,
-                validationType: ValidationType.NOWEEKEND_HOLIDAYS,
-              },
-              {
-                id: 6,
-                type: TemplateInputType.DATEYEAR_CLOSING,
-                placeholder: ``,
-                inputDateYearId: 5,
-                inputSourceId: 3,
-                inputTimeOffset: FIN_EXCHANGES_CLOSING_OFFSETS,
-                holidayClosures: FIN_EXCHANGES_HOLIDAY_CLOSURES,
-              },
-            ],
-            resolutionRules: {
-              [REQUIRED]: [
-                {
-                  text: `Trading dates are determined by the location of the exchange, where the stock is traded`,
-                },
-                {
-                  text: `Trading denomination is determined by the exchange the stock is traded on`,
-                },
-                {
-                  text: `If trading day in market question is a weekend or holiday when exchange is not open this market should resolve as 'Invalid'`,
-                },
-                {
-                  text: `If stock trading name and ticker symbol is not used in the market question, the market should resolve as 'Invalid'`,
-                },
-                {
-                  text: `If the stock mentioned in the market question is not traded on the exchange, this market should resolve as 'Invalid'.`,
-                },
-                {
-                  text: `This market is intended to be about a Individual Stock or ETF Name, if this is not the case, this market should settle as 'Invalid'.`,
-                },
-              ],
-            },
-          },
-          {
-            marketType: SCALAR,
-            question: `What will [0] ([1]) close at on the [2] on [3]?`,
-            example: `What will Apple (AAPL) close at on the Nasdaq (traded in USD) on December 31, 2019?`,
-            denomination: 'currency',
-            inputs: [
-              {
-                id: 0,
-                type: TemplateInputType.TEXT,
-                placeholder: TEXT_PLACEHOLDERS.INDIVIDUAL_STOCK_OR_ETF_NAME,
-              },
-              {
-                id: 1,
-                type: TemplateInputType.TEXT,
-                placeholder: TEXT_PLACEHOLDERS.INDIVIDUAL_STOCK_OR_ETF_SYMBOL,
-              },
-              {
-                id: 2,
-                type: TemplateInputType.DROPDOWN,
-                placeholder: `Exchange`,
-                categoryDestId: 2,
-                values: LIST_VALUES.FIN_STOCK_EXCHANGES,
-                denomination: FIN_EXCHANGES_CURRENCIES,
-              },
-              {
-                id: 3,
-                type: TemplateInputType.DATEYEAR,
-                placeholder: `Day of Year`,
-                validationType: ValidationType.NOWEEKEND_HOLIDAYS,
-              },
-              {
-                id: 4,
-                type: TemplateInputType.DATEYEAR_CLOSING,
-                placeholder: ``,
-                inputDateYearId: 3,
-                inputSourceId: 2,
-                inputTimeOffset: FIN_EXCHANGES_CLOSING_OFFSETS,
-                holidayClosures: FIN_EXCHANGES_HOLIDAY_CLOSURES,
-              },
-            ],
-            resolutionRules: {
-              [REQUIRED]: [
-                {
-                  text: `Closing date is determined by the location of the exchange, where the stock is traded`,
-                },
-                {
-                  text: `Trading denomination is determined by the exchange the stock is traded on`,
-                },
-                {
-                  text: `If trading day in market question is a weekend or holiday when exchange is not open this market should resolve as 'Invalid'`,
-                },
-                {
-                  text: `If stock trading name and ticker symbol is not used in the market question, the market should resolve as 'Invalid'`,
-                },
-                {
-                  text: `If the stock mentioned in the market question is not traded on the exchange, this market should resolve as 'Invalid'.`,
-                },
-                {
-                  text: `This market is intended to be about a Individual Stock or ETF Ticker Symbol, if this is not the case, this market should settle as 'Invalid'.`,
-                },
-              ],
-            },
-          },
-        ],
-      },
-      [INDEXES]: {
-        templates: [
-          {
-            marketType: YES_NO,
-            question: `Will the [0] close on or above [1] on [2]?`,
-            example: `Will the Dow Jones Industrial Average close on or above 28,000.00 on September 20, 2019?`,
-            inputs: [
-              {
-                id: 0,
-                type: TemplateInputType.DROPDOWN,
-                placeholder: `Index`,
-                values: LIST_VALUES.FIN_INDEXES,
-                categoryDestId: 2,
-              },
-              {
-                id: 1,
-                type: TemplateInputType.TEXT,
-                placeholder: `Value #`,
-                validationType: ValidationType.NUMBER,
-              },
-              {
-                id: 2,
-                type: TemplateInputType.DATEYEAR,
-                placeholder: `Day of Year`,
-                validationType: ValidationType.NOWEEKEND_HOLIDAYS,
-              },
-              {
-                id: 3,
-                type: TemplateInputType.DATEYEAR_CLOSING,
-                placeholder: ``,
-                inputDateYearId: 2,
-                inputSourceId: 0,
-                inputTimeOffset: FIN_INDEXES_CLOSING_OFFSETS,
-                holidayClosures: FIN_INDEXES_HOLIDAY_CLOSURES,
-              },
-            ],
-            resolutionRules: {
-              [REQUIRED]: [
-                {
-                  text: `Closing date is determined by the location of the exchange, where the underlying stocks for the index are traded`,
-                },
-                {
-                  text: `If trading day in market question is a weekend or holiday when exchange is not open this market should resolve as 'Invalid'`,
-                },
-              ],
-            },
-          },
-          {
-            marketType: SCALAR,
-            question: `What will the [0] close at on [2]?`,
-            example: `What will the S&P 500 close at on December 31, 2019?`,
-            denomination: 'value',
-            inputs: [
-              {
-                id: 0,
-                type: TemplateInputType.DROPDOWN,
-                placeholder: `Index`,
-                values: LIST_VALUES.FIN_INDEXES,
-                categoryDestId: 2,
-              },
-              {
-                id: 2,
-                type: TemplateInputType.DATEYEAR,
-                placeholder: `Day of Year`,
-                validationType: ValidationType.NOWEEKEND_HOLIDAYS,
-              },
-              {
-                id: 3,
-                type: TemplateInputType.DATEYEAR_CLOSING,
-                placeholder: ``,
-                inputDateYearId: 2,
-                inputSourceId: 0,
-                inputTimeOffset: FIN_INDEXES_CLOSING_OFFSETS,
-                holidayClosures: FIN_INDEXES_HOLIDAY_CLOSURES,
-              },
-            ],
-            resolutionRules: {
-              [REQUIRED]: [
-                {
-                  text: `Closing date is determined by the location of the exchange, where the underlying stocks for the index are traded`,
-                },
-                {
-                  text: `If trading day in market question is a weekend or holiday when exchange is not open this market should resolve as 'Invalid'`,
                 },
               ],
             },
@@ -9122,7 +8838,7 @@ export const TEMPLATES = {
                     'The market should resolve as "multiple hosts" if more than one of the possible outcomes hosts the event. If only one of the potential outcomes hosts with multiple people, then the individual outcome would be the winner.',
                 },
                 {
-                  text: `If winner is not listed as a market outcome, market should resolve as 'Other (Field)'`,
+                  text: `If the winner is not listed as a market outcome, the market should resolve as 'Other (Field)'`,
                 },
                 {
                   text: ` If the event does not take place or if the results of the event do not occur by the Event Expiration time, this market should resolve as "Invalid"`,
@@ -9167,7 +8883,7 @@ export const TEMPLATES = {
             resolutionRules: {
               [REQUIRED]: [
                 {
-                  text: `If winner is not listed as a market outcome, market should resolve as 'Other (Field)'`,
+                  text: `If the winner is not listed as a market outcome, the market should resolve as 'Other (Field)'`,
                 },
                 {
                   text: ` If the event does not take place or if the results of the event do not occur by the Event Expiration time, this market should resolve as "Invalid"`,

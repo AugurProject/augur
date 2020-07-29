@@ -1,12 +1,15 @@
 {
   "name": "@augurproject/tools",
-  "version": "2.0.0-alpha.2",
+  "version": "2.0.3",
   "description": "Tools and dev dependencies",
   "author": "Augur Team <team@augur.net>",
   "license": "MIT",
   "main": "build",
   "directories": {
     "src": "src"
+  },
+  "bin": {
+    "flash": "./build/flash/cli.js"
   },
   "scripts": {
     "build": "tsc -b",
@@ -25,7 +28,8 @@
     "deploy:merge": "scripts/deploy-merge-addresses.py",
     "flash": "ts-node ./src/flash/cli",
     "blockstream-console": "ts-node ./src/blockstream-console.ts",
-    "run:gsn": "oz-gsn run-relayer"
+    "run:gsn": "oz-gsn run-relayer",
+    "prepare": "tsc -b"
   },
   "repository": {
     "type": "git",
@@ -36,14 +40,16 @@
   },
   "homepage": "https://github.com/augurproject/augur#readme",
   "dependencies": {
-    "@augurproject/artifacts": "2.0.0-alpha.2",
-    "@augurproject/core": "2.0.0-alpha.2",
-    "@augurproject/sdk": "2.0.0-alpha.2",
-    "@augurproject/sdk-lite": "2.0.0-alpha.2",
-    "@augurproject/utils": "2.0.0-alpha.2",
+    "@augurproject/artifacts": "^2.0.3",
+    "@augurproject/core": "^2.0.3",
+    "@augurproject/sdk": "^2.0.3",
+    "@augurproject/sdk-lite": "^2.0.3",
+    "@augurproject/utils": "^2.0.3",
     "@openzeppelin/gsn-helpers": "0.2.3",
+    "cid-tool": "0.4.0",
     "commander": "4.1.0",
     "deepmerge": "4.2.2",
+    "ethereum-keyfile-recognizer": "1.0.2",
     "ethereumjs-blockstream": "7.0.0",
     "ethers": "4.0.47",
     "ethjs-abi": "0.2.1",
@@ -52,8 +58,10 @@
     "ethjs-query": "0.3.8",
     "ethjs-signer": "0.1.1",
     "ganache-core": "2.9.1",
-    "lodash": "4.17.15",
+    "ipfs": "0.40.0",
+    "lodash": "4.17.19",
     "options-parser": "0.4.0",
+    "readline-sync": "^1.4.10",
     "tsyringe": "3.2.0"
   },
   "devDependencies": {
@@ -61,9 +69,13 @@
     "levelup": "4.2.0",
     "memdown": "4.1.0",
     "options-parser": "0.4.0",
-    "ts-node": "7.0.1"
+    "ts-node": "7.0.1",
+    "typescript": "3.8.3"
   },
   "resolutions": {
     "**/memdown": "4.1.0"
+  },
+  "publishConfig": {
+    "access": "public"
   }
 }

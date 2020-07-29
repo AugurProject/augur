@@ -230,7 +230,7 @@ async function runSimulateTrade(
       takerAddress,
     );
 
-    // Plus ZeroX Fee (150k Gas)
+    // Plus ZeroX fee (150k Gas)
     gasLimit = gasLimit.plus(ZEROX_GAS_FEE);
   }
   // ignore share cost when user is shorting or longing another outcome
@@ -242,7 +242,9 @@ async function runSimulateTrade(
   ) {
     newTradeDetails.shareCost = '0';
   }
-
+  if (reversal) {
+    newTradeDetails.shareCost = String(BigNumber.min(reversal.quantity, createBigNumber(newTradeDetails.numShares).abs()));
+  }
   const tradeInfo = {
     ...newTradeDetails,
     ...simulateTradeValue,

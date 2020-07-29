@@ -1,6 +1,6 @@
 import { TXEventName } from '@augurproject/sdk-lite';
 import { addAlert } from 'modules/alerts/actions/alerts';
-import { BUY, CANCELORDER } from 'modules/common/constants';
+import { BUY, CANCELORDERS } from 'modules/common/constants';
 import { cancelZeroXOpenBatchOrders, cancelZeroXOpenOrder, } from 'modules/contracts/actions/contractCalls';
 import { addCanceledOrder } from 'modules/pending-queue/actions/pending-queue-management';
 import { Action } from 'redux';
@@ -14,6 +14,9 @@ export const cancelAllOpenOrders = orders => async (
   let orderHashes = orders.map(order => order.id);
 
   try {
+    orders.forEach((order) => {
+      sendCancelAlert(order, dispatch);
+    });
     if (orderHashes.length > BATCH_CANCEL_MAX) {
       let i = 0;
       while (i < orderHashes.length) {
@@ -22,14 +25,10 @@ export const cancelAllOpenOrders = orders => async (
         await cancelZeroXOpenBatchOrders(orderHashesToCancel);
         i += BATCH_CANCEL_MAX;
       }
-    }
-    else {
+    } else {
       dispatch(setCancelOrderStatus(orderHashes));
       await cancelZeroXOpenBatchOrders(orderHashes);
     }
-    orders.forEach(order => {
-      sendCancelAlert(order, dispatch);
-    });
   } catch (error) {
     console.error('Error canceling batch orders', error);
     dispatch(setCancelOrderStatus(orders.map(o => o.id), TXEventName.Failure));
@@ -43,8 +42,8 @@ export const cancelOrder = order => async (
   try {
     const { id } = order;
     dispatch(setCancelOrderStatus([id]));
-    await cancelZeroXOpenOrder(id);
     sendCancelAlert(order, dispatch);
+    await cancelZeroXOpenOrder(id);
   } catch (error) {
     console.error('Error canceling order', error);
     throw error;
@@ -52,22 +51,21 @@ export const cancelOrder = order => async (
 };
 
 const sendCancelAlert = (order, dispatch) => {
-  const { id } = order;
-
-  dispatch(
-    addAlert({
-      id,
-      uniqueId: id,
-      name: CANCELORDER,
-      status: TXEventName.Success,
-      description: order.marketDescription,
-      params: {
-        ...order,
-        outcome: '0x0'.concat(String(order.outcomeId)),
-        orderType: order.type === BUY ? 0 : 1,
-      },
-    })
-  );
+  const { id, marketDescription, outcomeId, type } = order;
+  const buyOrSell = type === BUY ? 0 : 1;
+  const alert = {
+    id: id,
+    uniqueId: id,
+    name: CANCELORDERS,
+    status: TXEventName.Pending,
+    description: marketDescription,
+    params: {
+      ...order,
+      outcome: '0x0'.concat(String(outcomeId)),
+      orderType: buyOrSell,
+    },
+  };
+  dispatch(addAlert(alert));
 };
 
 const setCancelOrderStatus = (ids: string[], status: string = TXEventName.Pending) => dispatch => {

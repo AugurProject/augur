@@ -65,7 +65,7 @@
     "gts": "1.1.0",
     "jest": "24.9.0",
     "jest-junit": "8.0.0",
-    "lerna": "3.16.4",
+    "lerna": "3.22.1",
     "listr": "0.14.3",
     "npm-run-all": "4.1.5",
     "prettier": "2.0.5",
@@ -96,7 +96,7 @@
     "**/scrypt": "https://github.com/AugurProject/blackhole.git",
     "ethers": "4.0.47",
     "lodash": "4.17.15",
-    "@0x/mesh-browser-lite": "v10.0.0-unstable-2"
+    "@0x/mesh-browser-lite": "v10.0.0-unstable-6"
   },
   "dependencies": {
     "docusaurus-init": "1.12.0"

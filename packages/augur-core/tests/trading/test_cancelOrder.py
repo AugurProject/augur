@@ -65,7 +65,7 @@ def test_cancelAsk(contractsFixture, cash, market):
     marketInitialCash = cash.balanceOf(market.address)
     marketInitialYesShares = shareToken.totalSupplyForMarketOutcome(market.address, YES)
     marketInitialNoShares = shareToken.totalSupplyForMarketOutcome(market.address, NO)
-    with BuyWithCash(cash, fix(100 - fxpPrice), contractsFixture.accounts[1], "create order"):
+    with BuyWithCash(cash, fix(1000 - fxpPrice), contractsFixture.accounts[1], "create order"):
         orderID = createOrder.publicCreateOrder(orderType, amount, fxpPrice, market.address, outcomeID, longTo32Bytes(0), longTo32Bytes(0), tradeGroupID, nullAddress, sender=contractsFixture.accounts[1])
     assert(orderID != bytearray(32)), "Order ID should be non-zero"
     assert orders.getOrderCreator(orderID), "Order should have an owner"

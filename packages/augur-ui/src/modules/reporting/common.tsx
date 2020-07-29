@@ -91,6 +91,7 @@ export interface DismissableNoticeProps {
   show: boolean;
   queueName?: string;
   queueId?: string;
+  error?: boolean;
 }
 
 export const DismissableNotice = (props: DismissableNoticeProps) => {
@@ -99,7 +100,9 @@ export const DismissableNotice = (props: DismissableNoticeProps) => {
   return (
     <>
       {show ? (
-        <div className={classNames(Styles.DismissableNotice, props.className)}>
+        <div className={classNames(Styles.DismissableNotice, props.className, {
+            [Styles.Error]: props.error,
+         })}>
           <span>{InformationIcon}</span>
           <div>
             <div>{props.title}</div>
@@ -1315,8 +1318,7 @@ export const ParticipationTokensView = (
       <h4>Participation Tokens</h4>
       <span>
         <span>Don’t see any reports that need disputing? </span>
-        You can earn a proportional share of the profits from this dispute
-        window.
+        You can earn a proportional share of the reporting fees from this dispute window.
         <span>
           <a
             href={HELP_CENTER_PARTICIPATION_TOKENS}
@@ -1365,9 +1367,7 @@ export const ParticipationTokensView = (
 
       <h4>Redeem Past Participation Tokens</h4>
       <span>
-        Redeem your past Participation Tokens and any returns from your share of
-        the Reporting Fees. All tokens and fees that are ready to be claimed are
-        shown below.
+      Redeem your past participation tokens and any returns from your portion of the reporting fees.
       </span>
       <Subheaders
         info
@@ -1383,7 +1383,7 @@ export const ParticipationTokensView = (
         subheader={participationTokensClaimableFees.formatted}
         secondSubheader="DAI"
         tooltipText={
-          "The total amount of unclaimed Dai you've earned through reporting"
+          "The total amount of unclaimed DAI you've earned through reporting"
         }
       />
       <ProcessingButton

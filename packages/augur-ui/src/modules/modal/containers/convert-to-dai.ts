@@ -4,7 +4,7 @@ import { AppState } from 'appStore';
 import { ThunkDispatch } from 'redux-thunk';
 import { Action } from 'redux';
 import { ConvertToDai } from 'modules/modal/common';
-import { formatDai } from 'utils/format-number';
+import { formatDaiPrice, formatDai } from 'utils/format-number';
 import { updateModal } from '../actions/update-modal';
 import {
   MODAL_BUY_DAI,

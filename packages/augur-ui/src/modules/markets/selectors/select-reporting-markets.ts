@@ -37,8 +37,24 @@ const selectReportingStateMarketIds = (state, reportingState) =>
 export const selectReportingMarkets = createSelector(
   selectMarketInfosState,
   selectReportingStateMarketIds,
-  (marketInfos, specificReportingList) =>
-    ((specificReportingList || {}).marketIds || []).map(
+  (marketInfos, specificReportingList) => {
+    let markets = ((specificReportingList || {}).marketIds || []).map(
       id => selectMarket(id) || []
-    )
+    );
+    // add warp sync market to designated reporting
+    if (
+      (specificReportingList?.params?.reportingStates || []).includes(
+        REPORTING_STATE.DESIGNATED_REPORTING
+      )
+    ) {
+      const warpSyncMarketId = Object.keys(marketInfos).find(
+        id =>
+          marketInfos[id].isWarpSync &&
+          marketInfos[id].reportingState ===
+            REPORTING_STATE.DESIGNATED_REPORTING
+      );
+      if (warpSyncMarketId) markets = [...markets, selectMarket(warpSyncMarketId)];
+    }
+    return markets;
+  }
 );

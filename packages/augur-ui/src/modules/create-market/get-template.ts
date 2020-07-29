@@ -34,7 +34,7 @@ import {
 import { DateTimeComponents, OutcomeFormatted } from 'modules/types';
 import deepClone from 'utils/deep-clone';
 import { timestampComponents } from 'utils/format-date';
-import { formatDai } from 'utils/format-number';
+import { formatDaiPrice, formatDai } from 'utils/format-number';
 
 const MarketTypeIcons = {
   [YES_NO]: YesNoMarketIcon,

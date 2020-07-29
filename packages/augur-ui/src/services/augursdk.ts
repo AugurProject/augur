@@ -81,6 +81,7 @@ export class SDK {
     signer: EthersSigner,
     expectedNetworkId: NetworkId,
     useGSN: boolean,
+    primaryProvider: string,
   ) {
     if (!this.client) {
       throw new Error('Trying to sync user data before Augur is initialized');
@@ -95,7 +96,9 @@ export class SDK {
     }
 
     this.client.signer = signer;
-    this.client.setProvider(provider);
+    if (primaryProvider === 'wallet') {
+      this.client.setProvider(provider);
+    }
 
     if (useGSN && account) {
       // TODO: In Dev this may be annoying as you can't faucet cash if these are on and you havent ever done a tx with the GSN relay
@@ -109,7 +112,7 @@ export class SDK {
   }
 
   async destroy() {
-    unListenToEvents(this.client);
+    if (this.client) unListenToEvents(this.client);
     this.isSubscribed = false;
     this.client = null;
   }

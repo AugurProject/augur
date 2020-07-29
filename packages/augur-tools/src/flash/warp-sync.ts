@@ -1,3 +1,4 @@
+import { NullWarpSyncHash } from '@augurproject/sdk-lite';
 import { BigNumber } from 'bignumber.js';
 import { FlashArguments, FlashSession } from './flash';
 
@@ -7,6 +8,21 @@ export function addWarpSyncScripts(flash: FlashSession) {
     async call(this: FlashSession) {
       const user = await this.createUser(this.getAccount(), this.config);
       await user.initWarpSync(user.augur.contracts.universe.address);
+    },
+  });
+
+  flash.addScript({
+    name: 'get-current-warp-sync-hash',
+    async call(this: FlashSession) {
+      const user = await this.createUser(this.getAccount(), this.config);
+      const { warpSyncHash } = await user.getLastWarpSyncData();
+
+      if(warpSyncHash === NullWarpSyncHash) {
+        console.log('WarpSync market is uninitialized.')
+        return;
+      }
+
+      console.log(`Current WarpSyncHash: ${warpSyncHash}\n`)
     },
   });
 

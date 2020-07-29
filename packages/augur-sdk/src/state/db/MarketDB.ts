@@ -199,8 +199,13 @@ export class MarketDB extends DerivedDB {
         ? marketData.outcomes.length + 1
         : 3;
     const estimatedTradeGasCost = WORST_CASE_FILL[numOutcomes];
+    const gasLevels = await augur.getGasStation();
+    let gasPriceInGwei = DEFAULT_GAS_PRICE_IN_GWEI;
+    if (gasLevels && gasLevels['standard']) {
+      gasPriceInGwei = Number(new BigNumber(gasLevels['standard']).dividedBy(10 ** 9));
+    }
     const estimatedGasCost = ETHInAttoDAI.multipliedBy(
-      DEFAULT_GAS_PRICE_IN_GWEI
+      gasPriceInGwei
     ).div(10 ** 9);
     const estimatedTradeGasCostInAttoDai = estimatedGasCost.multipliedBy(
       estimatedTradeGasCost
@@ -477,6 +482,7 @@ export class MarketDB extends DerivedDB {
       100: '000000000000000000000000000000',
     };
     log['lastPassingLiquidityCheck'] = 0;
+    log['isTemplate'] = false;
     log['feeDivisor'] = new BigNumber(1)
       .dividedBy(
         new BigNumber(log['feePerCashInAttoCash'], 16).dividedBy(QUINTILLION)

@@ -12,11 +12,15 @@ import {
   TXEventName,
   TXStatus,
 } from '@augurproject/sdk-lite';
-import type { SDKConfiguration } from '@augurproject/utils';
-import { logger, LoggerLevels, NetworkId } from '@augurproject/utils';
+import {
+  logger,
+  LoggerLevels,
+  NetworkId,
+  SDKConfiguration,
+} from '@augurproject/utils';
 import axios from 'axios';
 import { BigNumber } from 'bignumber.js';
-import { TransactionResponse, JsonRpcProvider } from 'ethers/providers';
+import { JsonRpcProvider, TransactionResponse } from 'ethers/providers';
 import { Arrayish } from 'ethers/utils';
 import { getAddress } from 'ethers/utils/address';
 import { EventEmitter } from 'events';
@@ -37,6 +41,7 @@ import {
   CreateYesNoMarketParams,
   Market,
 } from './api/Market';
+import { MarketInvalidBids } from './api/MarketInvalidBids';
 import { OnChainTrade } from './api/OnChainTrade';
 import { PlaceTradeDisplayParams, SimulateTradeData, Trade } from './api/Trade';
 import { Uniswap } from './api/Uniswap';
@@ -80,6 +85,7 @@ export class Augur<TProvider extends Provider = Provider> {
   readonly liquidity: Liquidity;
   readonly hotLoading: HotLoading;
   readonly bestOffer: BestOffer;
+  readonly marketInvalidBids: MarketInvalidBids;
   readonly events: EventEmitter;
 
   private _sdkReady = false;
@@ -89,12 +95,16 @@ export class Augur<TProvider extends Provider = Provider> {
   private txFailureCallback: TXStatusCallback;
   private txFeeTooLowCallback: TXStatusCallback;
   private txRelayerDownCallback: TXStatusCallback;
-  private txSuccessCallbacks: TXStatusCallback[]; 
+  private txSuccessCallbacks: TXStatusCallback[];
 
   private _warpController: WarpController;
 
   set warpController(_warpController: WarpController) {
     this._warpController = _warpController;
+  }
+
+  get warpController() {
+    return this._warpController;
   }
 
   get zeroX(): ZeroX {
@@ -160,6 +170,9 @@ export class Augur<TProvider extends Provider = Provider> {
 
     if (this.config.ui?.trackBestOffer) {
       this.bestOffer = new BestOffer(this);
+    }
+    if (this.config.ui?.trackMarketInvalidBids) {
+      this.marketInvalidBids = new MarketInvalidBids(this);
     }
     if (enableFlexSearch && !this.syncableFlexSearch) {
       this.syncableFlexSearch = new SyncableFlexSearch();
@@ -233,6 +246,11 @@ export class Augur<TProvider extends Provider = Provider> {
     }
     if (!account) return NULL_ADDRESS;
     return getAddress(account);
+  }
+
+  async getAccountEthBalance() {
+    const account = await this.getAccount();
+    return this.getEthBalance(account);
   }
 
   async sendETH(address: string, value: BigNumber): Promise<void> {
@@ -507,6 +525,12 @@ export class Augur<TProvider extends Provider = Provider> {
     return this.bindTo(WarpSyncGetter.getMostRecentWarpSync)(undefined);
   };
 
+  getWarpSyncStatus = (): ReturnType<
+    typeof WarpSyncGetter.getWarpSyncStatus
+  > => {
+    return this.bindTo(WarpSyncGetter.getWarpSyncStatus)(undefined);
+  };
+
   getPayoutFromWarpSyncHash = (hash: string): Promise<BigNumber[]> => {
     return this.warpSync.getPayoutFromWarpSyncHash(hash);
   };
@@ -602,6 +626,12 @@ export class Augur<TProvider extends Provider = Provider> {
     params: Parameters<typeof LiquidityPool.getMarketOutcomeBestOffer>[2]
   ): ReturnType<typeof LiquidityPool.getMarketOutcomeBestOffer> => {
     return this.bindTo(LiquidityPool.getMarketOutcomeBestOffer)(params);
+  };
+
+  getMarketsLiquidityPools = (
+    params: Parameters<typeof LiquidityPool.getMarketsLiquidityPools>[2]
+  ): ReturnType<typeof LiquidityPool.getMarketsLiquidityPools> => {
+    return this.bindTo(LiquidityPool.getMarketsLiquidityPools)(params);
   };
 
   async simulateTrade(

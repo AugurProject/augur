@@ -1,6 +1,7 @@
-import { Provider, Log, ParsedLog } from '..';
 import { abi } from '@augurproject/artifacts';
+import { Log, ParsedLog } from '@augurproject/types';
 import { Abi } from 'ethereum';
+import { Provider } from '..';
 
 export class ContractEvents {
   private readonly eventNameToContractName = {

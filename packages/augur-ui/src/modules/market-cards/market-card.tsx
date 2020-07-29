@@ -281,7 +281,7 @@ export default class MarketCard extends React.Component<
                 )}
               </>
             )}
-            {reportingState !== REPORTING_STATE.PRE_REPORTING && (
+            {reportingState !== REPORTING_STATE.PRE_REPORTING && reportingState !== REPORTING_STATE.UNKNOWN && (
               <LabelValue
                 condensed
                 label="Total Dispute Stake"

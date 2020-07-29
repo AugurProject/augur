@@ -35,15 +35,7 @@ export class AugurWalletRegistryV2 extends c.AugurWalletRegistryV2<BigNumber> {
 }
 export class Cash extends c.Cash<BigNumber> {
 }
-export class CashFaucet extends c.CashFaucet<BigNumber> {
-}
 export class LegacyReputationToken extends c.LegacyReputationToken<BigNumber> {
-}
-export class TestNetDaiJoin extends c.TestNetDaiJoin<BigNumber> {
-}
-export class TestNetDaiPot extends c.TestNetDaiPot<BigNumber> {
-}
-export class TestNetDaiVat extends c.TestNetDaiVat<BigNumber> {
 }
 export class TestNetReputationToken extends c.TestNetReputationToken<BigNumber> {
 }
@@ -127,7 +119,9 @@ export class UniswapV2Factory extends c.UniswapV2Factory<BigNumber> {
 }
 export class UniswapV2Pair extends c.UniswapV2Pair<BigNumber> {
 }
-export class UniswapV2Router01 extends c.UniswapV2Router01<BigNumber> {
+export class UniswapV2Router02 extends c.UniswapV2Router02<BigNumber> {
+}
+export class AccountLoader extends c.AccountLoader<BigNumber> {
 }
 export class AuditFunds extends c.AuditFunds<BigNumber> {
 }

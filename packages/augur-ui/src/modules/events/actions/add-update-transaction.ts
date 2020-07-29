@@ -77,7 +77,7 @@ const ADD_PENDING_QUEUE_METHOD_CALLS = [
 ];
 export const getRelayerDownErrorMessage = (walletType, hasEth) => {
   const errorMessage =
-    "We're currently experiencing a technical difficulty processing transaction fees in Dai. If possible please come back later to process this transaction";
+    "We're currently experiencing a technical difficulty processing transaction fees in DAI. If possible please come back later to process this transaction";
 
   if (hasEth) {
     return (
@@ -292,10 +292,8 @@ export const addUpdateTransaction = (txStatus: Events.TXStatus) => async (
       }
       case CANCELORDERS: {
         const orders = (transaction.params && transaction.params._orders) || [];
-        orders.map(order =>
-          dispatch(addCanceledOrder(order.orderId, eventName, hash))
-        );
-        orders.map(order =>
+        orders.map(order => {
+          dispatch(addCanceledOrder(order.orderId, eventName, hash));
           dispatch(
             addPendingData(
               parseZeroXMakerAssetData(order.makerAssetData).market,
@@ -303,8 +301,19 @@ export const addUpdateTransaction = (txStatus: Events.TXStatus) => async (
               eventName,
               hash
             )
-          )
-        );
+          );
+          if (eventName === TXEventName.Success) {
+            const alert = {
+              params: {
+                hash,
+              },
+              status: TXEventName.Success,
+              name: CANCELORDERS,
+            };
+
+            dispatch(updateAlert(order.orderId, alert));
+          }
+        });
         break;
       }
       case DOINITIALREPORT: {

@@ -14,6 +14,7 @@ import type {
 import {
   calculatePayoutNumeratorsArray,
   ExtraInfoTemplate,
+  AccountData
 } from '@augurproject/sdk-lite';
 import {
   convertDisplayAmountToOnChainAmount,
@@ -34,6 +35,8 @@ import {
   TEN_TO_THE_EIGHTEENTH_POWER,
   ZERO,
   NETWORK_IDS,
+  ACCOUNT_ACTIVATION_GAS_COST,
+  DISPUTE_GAS_COST,
 } from 'modules/common/constants';
 import { constructMarketParams } from 'modules/create-market/helpers/construct-market-params';
 import {
@@ -342,13 +345,13 @@ export async function finalizeMarket(marketId: string) {
 
 export function getDai() {
   const { contracts } = augurSdk.get();
-  return contracts.cashFaucet.faucet(new BigNumber('1000000000000000000000'));
+  return contracts.cash.faucet(new BigNumber('1000000000000000000000'));
 }
 
 export function fundGsnWallet() {
   const amount = new BigNumber('1000000000000000000000');
   const { contracts } = augurSdk.get();
-  contracts.cashFaucet.faucet(amount);
+  contracts.cash.faucet(amount);
 }
 
 export async function withdrawAllFunds(destination: string): Promise<void> {
@@ -669,11 +672,16 @@ export async function contribute_estimateGas(dispute: doReportDisputeAddStake) {
   const market = getMarket(dispute.marketId);
   if (!market) return false;
   const payoutNumerators = await getPayoutNumerators(dispute);
-  return market.contribute_estimateGas(
-    payoutNumerators,
-    createBigNumber(dispute.attoRepAmount),
-    dispute.description
-  );
+  try {
+    return await market.contribute_estimateGas(
+      payoutNumerators,
+      createBigNumber(dispute.attoRepAmount),
+      dispute.description
+    );
+  } catch (e) {
+    console.error('estimate gas for dispute failed using default');
+    return DISPUTE_GAS_COST;
+  }
 }
 
 export async function contribute(dispute: doReportDisputeAddStake) {
@@ -959,6 +967,7 @@ export async function placeTrade(
   displayShares: BigNumber | string,
   expirationTime?: BigNumber,
   tradeGroupId?: string,
+  postOnly?: boolean,
   fingerprint: string = getFingerprint(),
 ): Promise<boolean> {
   const Augur = augurSdk.get();
@@ -977,6 +986,7 @@ export async function placeTrade(
     displayPrice: createBigNumber(displayPrice),
     displayShares: createBigNumber(displayShares),
     expirationTime,
+    postOnly,
   };
   return Augur.placeTrade(params);
 }
@@ -1154,4 +1164,22 @@ export async function migrateRepToUniverse(migration: doReportDisputeAddStake) {
   } catch (e) {
     console.error('Could not migrate REP to universe', e);
   }
+}
+
+export async function runPeriodicals_estimateGas() {
+  try {
+    const { contracts } = augurSdk.get();
+    const gas = await contracts.universe.runPeriodicals_estimateGas();
+    return gas;
+  } catch (e) {
+    return ACCOUNT_ACTIVATION_GAS_COST;
+  }
+}
+
+export async function loadAccountData_exchangeRates(account: string) {
+  const { contracts } = augurSdk.get();
+  const sdk = await augurSdkLite.get();
+  const repToken = contracts.getReputationToken();
+  const values: AccountData = await sdk.loadAccountData(account, repToken.address);
+  return values;
 }

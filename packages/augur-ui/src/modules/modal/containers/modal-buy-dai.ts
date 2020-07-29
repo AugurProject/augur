@@ -11,14 +11,17 @@ import {
   MODAL_AUGUR_P2P,
   HELP_CENTER_ADD_FUNDS,
   MODAL_BUY_DAI,
+  FIVE,
 } from 'modules/common/constants';
 import { OnboardingPaymentIcon } from 'modules/common/icons';
 import { BUY_DAI, track } from 'services/analytics/helpers';
 import { getOnboardingStep } from './modal-p2p-trading';
+import { createBigNumber } from 'utils/create-big-number';
 
 const mapStateToProps = (state: AppState) => ({
   authStatus: state.authStatus,
-  signerHasDAI: state.loginAccount.balances.signerBalances.dai !== "0",
+  signerHasDAI: createBigNumber(state.loginAccount.balances.signerBalances.dai).gte(FIVE),
+  desiredSignerBalanceInETH: state.env.gsn.desiredSignerBalanceInETH,
 });
 
 const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({
@@ -33,7 +36,7 @@ const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({
 
 const mergeProps = (sP: any, dP: any, oP: any) => ({
   icon: sP.signerHasDAI ? null : OnboardingPaymentIcon,
-  largeHeader: 'Add Dai to your trading account',
+  largeHeader: 'Add DAI to your trading account',
   showAccountStatus: true,
   currentStep: 3,
   changeCurrentStep: step => {
@@ -45,14 +48,14 @@ const mergeProps = (sP: any, dP: any, oP: any) => ({
   linkContent: [
     {
       content:
-        'Buy Dai ($) directly or transfer Dai ($) to your trading account to start placing bets.',
+        'Buy DAI ($) directly or transfer DAI ($) to your trading account to start placing bets.',
     },
     {
       content:
-        'Adding more than 40 Dai ($) will store a portion of this equivalent to 0.04 ETH in your Fee reserve resulting in cheaper transaction fees.',
+        `Adding more than 40 DAI ($) will store a portion of this (equivalent to ${sP.desiredSignerBalanceInETH} ETH) in your fee reserve resulting in cheaper transaction fees.`,
     },
     {
-      content: 'Your Fee reserve can easily be cashed out at anytime.',
+      content: 'Your fee reserve can easily be cashed out at anytime.',
     },
     {
       content: 'LEARN MORE',
@@ -61,7 +64,7 @@ const mergeProps = (sP: any, dP: any, oP: any) => ({
   ],
   buttons: [
     {
-      text: 'Add Dai',
+      text: 'Add DAI',
       action: () => {
         dP.addFunds(() => setTimeout(() => dP.showAugurP2PModal()));
       },

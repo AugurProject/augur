@@ -21,13 +21,13 @@ def test_shares(kitchenSinkFixture, universe, cash, market, scalarMarket):
 
     # get YES shares with a1
     acquireLongShares(kitchenSinkFixture, cash, market, YES, 1, shareToken.address, sender = account)
-    finalizeMarket(kitchenSinkFixture, market, [0, 0, 10**2])
+    finalizeMarket(kitchenSinkFixture, market, [0, 0, 10**3])
 
     marketResult, done = auditFunds.getAvailableShareData(account, 0, 1)
     assert len(marketResult) == 1
     assert done == False
     assert marketResult[0][0] == market.address
-    assert marketResult[0][1] == 100
+    assert marketResult[0][1] == 1000
 
     scalarMarketResult, done = auditFunds.getAvailableShareData(account, 3, 1)
     assert len(scalarMarketResult) == 1
@@ -38,7 +38,7 @@ def test_shares(kitchenSinkFixture, universe, cash, market, scalarMarket):
     results, done = auditFunds.getAvailableShareData(account, 0, 10)
     assert done
     assert results[0][0] == market.address
-    assert results[0][1] == 100
+    assert results[0][1] == 1000
     assert results[3][0] == scalarMarket.address
     assert results[3][1] == 300000
 

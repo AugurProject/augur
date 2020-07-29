@@ -20,7 +20,6 @@ import 'ROOT/libraries/ContractExists.sol';
 import 'ROOT/ITime.sol';
 import 'ROOT/reporting/IAffiliates.sol';
 import 'ROOT/ICash.sol';
-import 'ROOT/external/IDaiVat.sol';
 
 
 // Centralized approval authority and event emissions
@@ -99,11 +98,10 @@ contract Augur is IAugur, IAugurCreationDataGetter {
 
     uint256 constant public TRADE_INTERVAL_VALUE = 10 ** 19; // Trade value of 10 DAI
     uint256 constant public MIN_TRADE_INTERVAL = 10**14; // We ignore "dust" portions of the min interval and for huge scalars have a larger min value
-    uint256 constant public DEFAULT_RECOMMENDED_TRADE_INTERVAL = 10**17;
+    uint256 constant public DEFAULT_RECOMMENDED_TRADE_INTERVAL = 10**16;
     uint256 private constant MAX_NUM_TICKS = 2 ** 256 - 2;
 
     ICash public cash;
-    IDaiVat public vat;
 
     modifier onlyUploader() {
         require(msg.sender == uploader);
@@ -126,8 +124,6 @@ contract Augur is IAugur, IAugurCreationDataGetter {
             trustedSender[_address] = true;
         } else if (_key == "Time") {
             time = ITime(_address);
-        } else if (_key == "DaiVat") {
-            vat = IDaiVat(_address);
         } else if (_key == "Cash") {
             cash = ICash(_address);
         }
@@ -288,7 +284,7 @@ contract Augur is IAugur, IAugurCreationDataGetter {
         marketCreationData[address(_market)].outcomes = _outcomes;
         marketCreationData[address(_market)].marketType = IMarket.MarketType.CATEGORICAL;
         marketCreationData[address(_market)].recommendedTradeInterval = DEFAULT_RECOMMENDED_TRADE_INTERVAL;
-        emit MarketCreated(_universe, _endTime, _extraInfo, _market, _marketCreator, _designatedReporter, _feePerCashInAttoCash, _prices, IMarket.MarketType.CATEGORICAL, 100, _outcomes, _universe.getOrCacheMarketRepBond(), getTimestamp());
+        emit MarketCreated(_universe, _endTime, _extraInfo, _market, _marketCreator, _designatedReporter, _feePerCashInAttoCash, _prices, IMarket.MarketType.CATEGORICAL, 1000, _outcomes, _universe.getOrCacheMarketRepBond(), getTimestamp());
         return true;
     }
 
@@ -302,7 +298,7 @@ contract Augur is IAugur, IAugurCreationDataGetter {
         marketCreationData[address(_market)].marketCreator = _marketCreator;
         marketCreationData[address(_market)].marketType = IMarket.MarketType.YES_NO;
         marketCreationData[address(_market)].recommendedTradeInterval = DEFAULT_RECOMMENDED_TRADE_INTERVAL;
-        emit MarketCreated(_universe, _endTime, _extraInfo, _market, _marketCreator, _designatedReporter, _feePerCashInAttoCash, _prices, IMarket.MarketType.YES_NO, 100, new bytes32[](0), _universe.getOrCacheMarketRepBond(), getTimestamp());
+        emit MarketCreated(_universe, _endTime, _extraInfo, _market, _marketCreator, _designatedReporter, _feePerCashInAttoCash, _prices, IMarket.MarketType.YES_NO, 1000, new bytes32[](0), _universe.getOrCacheMarketRepBond(), getTimestamp());
         return true;
     }
 

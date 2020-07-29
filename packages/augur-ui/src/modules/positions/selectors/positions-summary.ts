@@ -10,7 +10,7 @@ import {
   CLOSED_LONG,
   CLOSED_SHORT,
 } from 'modules/common/constants';
-import { formatDai, formatPercent, formatShares, formatNone, formatMarketShares } from 'utils/format-number';
+import { formatDaiPrice, formatPercent, formatShares, formatNone, formatMarketShares, formatDai } from 'utils/format-number';
 
 export const positionSummary = memoize(
   (adjustedPosition, outcome, marketType, reportingState, isFullLoss) => {
@@ -63,7 +63,7 @@ export const positionSummary = memoize(
       outcomeId,
       type,
       quantity: formatMarketShares(marketType, quantity),
-      purchasePrice: formatDai(avgPrice, { decimals: 3, decimalsRounded: 3 }),
+      purchasePrice: formatDaiPrice(avgPrice, { decimals: 3, decimalsRounded: 3 }),
       realizedNet: formatDai(realized),
       unrealizedNet: formatDai(unrealized),
       unrealized24Hr: formatDai(unrealized24),
@@ -80,7 +80,7 @@ export const positionSummary = memoize(
       ),
       totalCost: formatDai(totalCost),
       totalValue: formatDai(currentValue),
-      lastPrice: !!outcome.price ? formatDai(outcome.price) : formatNone(),
+      lastPrice: !!outcome.price ? formatDaiPrice(outcome.price) : formatNone(),
       totalReturns: formatDai(total || ZERO),
       valueChange: formatPercent(
         timesHundred(unrealizedRevenue24hChangePercent),

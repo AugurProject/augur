@@ -8,7 +8,6 @@ import 'ROOT/reporting/IReportingParticipant.sol';
 import 'ROOT/reporting/IDisputeCrowdsourcer.sol';
 import 'ROOT/reporting/IV2ReputationToken.sol';
 import 'ROOT/reporting/IAffiliateValidator.sol';
-import 'ROOT/external/IDaiVat.sol';
 import 'ROOT/reporting/IAffiliates.sol';
 import 'ROOT/factories/IDisputeCrowdsourcerFactory.sol';
 import 'ROOT/ICash.sol';

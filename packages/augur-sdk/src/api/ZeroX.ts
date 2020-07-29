@@ -17,6 +17,7 @@ import {
   SubscriptionEventName,
   TRADE_GAS_BUFFER,
   WORST_CASE_FILL,
+  NORMAL_FILL
 } from '@augurproject/sdk-lite';
 import { BigNumber } from 'bignumber.js';
 import { ethers } from 'ethers';
@@ -37,7 +38,7 @@ import {
   TradeTransactionLimits,
 } from './OnChainTrade';
 
-export const MAX_PROTOCOL_FEE_MULTIPLIER = 1.1;
+export const MAX_PROTOCOL_FEE_MULTIPLIER = 1.25;
 export enum Verbosity {
   Panic = 0,
   Fatal = 1,
@@ -78,6 +79,7 @@ export interface ZeroXPlaceTradeDisplayParams
 
 export interface ZeroXPlaceTradeParams extends NativePlaceTradeChainParams {
   expirationTime: BigNumber;
+  postOnly?: boolean;
 }
 
 export interface ZeroXOrder {
@@ -302,7 +304,12 @@ export class ZeroX {
 
     const account = await this.client.getAccount();
 
-    const { orders, signatures, orderIds, loopLimit, gasLimit } = await this.getMatchingOrders(
+    if (params.postOnly) {
+      await this.placeOnChainOrders([params]);
+      return true;
+    }
+
+    const { orders, signatures, orderIds, loopLimit } = await this.getMatchingOrders(
       params,
       ignoreOrders
     );
@@ -812,13 +819,13 @@ export class ZeroX {
     numOrders--;
     while (
       gasLimit
-        .plus(WORST_CASE_FILL[params.numOutcomes])
+        .plus(NORMAL_FILL[params.numOutcomes])
         .lt(MAX_GAS_LIMIT_FOR_TRADE) &&
       loopLimit.lt(MAX_FILLS_PER_TX) &&
       numOrders > 0
     ) {
       loopLimit = loopLimit.plus(1);
-      gasLimit = gasLimit.plus(WORST_CASE_FILL[params.numOutcomes]);
+      gasLimit = gasLimit.plus(NORMAL_FILL[params.numOutcomes]);
       numOrders--;
     }
     gasLimit = gasLimit.plus(TRADE_GAS_BUFFER);

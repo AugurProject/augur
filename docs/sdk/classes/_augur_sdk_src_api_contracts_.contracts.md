@@ -292,7 +292,7 @@ ___
 
 ###  uniswap
 
-• **uniswap**: *UniswapV2Router01*
+• **uniswap**: *UniswapV2Router02*
 
 *Defined in [packages/augur-sdk/src/api/Contracts.ts:38](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/api/Contracts.ts#L38)*
 

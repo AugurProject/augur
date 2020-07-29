@@ -93,54 +93,6 @@
   color: @color-primary-text;
 }
 
-.DaiGraphic {
-  margin: @size-42 0 @size-36;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  > div {
-    display: flex;
-    flex-direction: column;
-    > span {
-      .text-18-bold;
-
-      color: @color-primary-text;
-      margin-top: @size-14;
-      text-transform: uppercase;
-    }
-  }
-
-  > div:first-of-type {
-    > svg {
-      height: @size-64;
-      width: @size-64;
-
-      > path {
-        fill: @color-secondary-text;
-      }
-    }
-  }
-
-  > div:last-of-type {
-    > svg {
-      height: @size-64;
-      width: 52px;
-
-      > path {
-        fill: @color-secondary-text;
-      }
-    }
-  }
-
-  > span {
-    .text-28-bold;
-
-    color: @color-primary-text;
-    margin: 0 @size-32;
-  }
-}
-
 .LinkContentSection {
   .text-14;
 
@@ -3192,8 +3144,6 @@ div.ButtonsRow:last-of-type {
   max-width: 750px;
 
   > main {
-    display: flex;
-    flex-direction: column;
     padding: @size-16 0 0;
 
     > section {

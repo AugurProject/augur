@@ -8,7 +8,6 @@ import {
   RepBalance,
   TemplateShield,
 } from 'modules/common/labels';
-import { Subheaders } from 'modules/reporting/common';
 import {
   ReportingRadioBarGroup,
   ReportingRadioBarProps,
@@ -249,6 +248,7 @@ export default class ModalReporting extends Component<
       marketType,
       disputeInfo,
       isWarpSync,
+      noShowBondAmount
     } = market;
     const { isReporting } = this.state;
     let outcomeId = null;
@@ -264,7 +264,7 @@ export default class ModalReporting extends Component<
         this.state.inputScalarOutcome) : outcomeId;
       outcomeId = estimateGas ? minPrice : !!this.state.inputScalarOutcome ? inputted : this.state.checked;
     }
-    const ONE_REP = '1000000000000000000';
+
     const report = {
       marketId,
       maxPrice,
@@ -274,7 +274,7 @@ export default class ModalReporting extends Component<
       marketType,
       description: '',
       attoRepAmount: estimateGas
-        ? ONE_REP
+        ? noShowBondAmount
         : this.state.inputtedReportingStake.inputToAttoRep,
       outcomeId,
       isInvalid: isSelectedOutcomeInvalid,

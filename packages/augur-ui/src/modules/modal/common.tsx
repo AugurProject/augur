@@ -6,8 +6,6 @@ import Clipboard from 'clipboard';
 import { Checkbox, TextInput, InputDropdown } from 'modules/common/form';
 import {
   XIcon,
-  LargeDollarIcon,
-  LargeDaiIcon,
   DaiLogoIcon,
   EthIcon,
   helpIcon,
@@ -33,6 +31,7 @@ import TooltipStyles from 'modules/common/tooltip.styles.less';
 import ReactTooltip from 'react-tooltip';
 import { BigNumber } from 'utils/create-big-number';
 import titleCase from 'utils/title-case';
+import { checkIfMainnet } from 'modules/app/actions/check-if-mainnet';
 
 export interface TitleProps {
   title: string;
@@ -462,7 +461,7 @@ export const ConvertToDai = ({ walletType, balance, showAddFundsModal, isCondens
         </div>
         <SecondaryButton
           action={() => showAddFundsModal()}
-          text={'Convert to Dai'}
+          text={'Convert to DAI'}
         />
       </div>
     );
@@ -472,11 +471,11 @@ export const ConvertToDai = ({ walletType, balance, showAddFundsModal, isCondens
     <div className={Styles.TransferMyDai}>
       <div>
         <span>{balance.formattedValue} {tokenName} in your {walletType} wallet</span>
-        <span>Convert any amount of this to Dai.</span>
+        <span>Convert any amount of this to DAI.</span>
       </div>
       <PrimaryButton
         action={() => showAddFundsModal()}
-        text={'Convert to Dai'}
+        text={'Convert to DAI'}
       />
     </div>
   );
@@ -514,20 +513,6 @@ export const AccountStatusTracker = ({ accountStatusTracker } :AccountStatusTrac
       <div>Activate account</div>
     </div>
 
-  </div>
-);
-
-export const DaiGraphic = () => (
-  <div className={Styles.DaiGraphic}>
-    <div>
-      {LargeDaiIcon}
-      <span>1 dai</span>
-    </div>
-    <span>=</span>
-    <div>
-      {LargeDollarIcon}
-      <span>1 USD</span>
-    </div>
   </div>
 );
 
@@ -707,7 +692,13 @@ export const DepositInfo = (props: DepositInfoProps) => (
 
 export const AccountAddressDisplay = ({ address, copyable }) => {
   const [isCopied, setIsCopied] = useState(false);
+  const [isTestnet, setIsTestnet] = useState(false);
   let timeoutId = null;
+
+  const getIsTestnet = () => {
+    const isMainnet = checkIfMainnet();
+    setIsTestnet(!isMainnet);
+  }
 
   const copyClicked = () => {
     setIsCopied(true);
@@ -718,6 +709,7 @@ export const AccountAddressDisplay = ({ address, copyable }) => {
 
   useEffect(() => {
     new Clipboard('#copy_address');
+    getIsTestnet();
 
     return function() {
       clearTimeout(timeoutId);
@@ -725,21 +717,24 @@ export const AccountAddressDisplay = ({ address, copyable }) => {
   }, []);
 
   return (
-    <span className={Styles.AccountAddressDisplay}>
-      <div>{address ? address : '-'}</div>
-      {copyable && (
-        <>
-          <button
-            id='copy_address'
-            data-clipboard-text={address}
-            onClick={() => copyClicked()}
-            className={isCopied ? Styles.ShowConfirmaiton : null}
-          >
-            Copy
-          </button>
-        </>
-      )}
-    </span>
+    <>
+      <span className={Styles.AccountAddressDisplay}>
+        <div>{address ? address : '-'}</div>
+        {copyable && (
+          <>
+            <button
+              id='copy_address'
+              data-clipboard-text={address}
+              onClick={() => copyClicked()}
+              className={isCopied ? Styles.ShowConfirmaiton : null}
+            >
+              Copy
+            </button>
+          </>
+        )}
+      </span>
+      {isTestnet && <DismissableNotice error title="Warning: This is a Testnet" description="Do not send mainnet tokens to this address, they will be lost forever" show={true} buttonType={DISMISSABLE_NOTICE_BUTTON_TYPES.NONE} />}
+    </>
   );
 }
 
@@ -751,7 +746,7 @@ export const FundsHelp = ({ fundType = DAI }: FundsHelpProps) => (
   <div className={Styles.FundsHelp}>
     <p>Need help?</p>
     <div>
-      <span>Learn how to buy {fundType === DAI ? `Dai ($)` : fundType} {fundType === DAI ? generateDaiTooltip() : ''} and  send it to your trading account.</span>
+      <span>Learn how to buy {fundType === DAI ? `DAI ($)` : fundType} {fundType === DAI ? generateDaiTooltip() : ''} and  send it to your trading account.</span>
       <ExternalLinkButton URL={HELP_CENTER_ADD_FUNDS} label='Learn More' />
     </div>
   </div>
@@ -1023,9 +1018,9 @@ export const Transfer = ({
         ) : (
           fundTypeLabel
         )}{' '}
-        using an app or exchange (see our list of{' '}
+        using an app or exchange - see our list of{' '}
         <a target='_blank' href={HELP_CENTER_ADD_FUNDS}>
-          popular ways to buy {fundTypeLabel})
+          popular ways to buy {fundTypeLabel}
         </a>
       </li>
       <li>

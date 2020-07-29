@@ -1,4 +1,4 @@
-import type { tickSizeToNumTickWithDisplayPrices } from '@augurproject/sdk';
+import { tickSizeToNumTickWithDisplayPrices } from '@augurproject/utils';
 import {
   encodeNumberAsBase10String,
   encodeNumberAsJSNumber,
@@ -190,6 +190,35 @@ export function formatBestPrice(
   });
 }
 
+export function formatOutcomePercentage(
+  num: NumStrBigNumber,
+  opts: FormattedNumberOptions = {}
+): FormattedNumber {
+  return formatNumber(num, {
+    decimals: 1,
+    decimalsRounded: 1,
+    denomination: v => {
+      return `${v}%`;
+    },
+    positiveSign: false,
+    zeroStyled: false,
+    blankZero: false,
+    bigUnitPostfix: false,
+    ...opts,
+  });
+}
+
+export function formatDaiPrice(
+  num: NumStrBigNumber,
+  opts: FormattedNumberOptions = {}
+): FormattedNumber {
+  return formatDai(num, {
+    decimals: 3,
+    decimalsRounded: 3,
+    ...opts,
+  });
+}
+
 export function formatDai(
   num: NumStrBigNumber,
   opts: FormattedNumberOptions = {}
@@ -202,7 +231,7 @@ export function formatDai(
       const val = isNegative
         ? createBigNumber(v)
             .abs()
-            .toFixed(2)
+            .toFixed(3)
         : v;
       return `${isNegative ? '-' : ''}$${val}`;
     },
@@ -338,15 +367,15 @@ export function formatAttoRep(
 
 export function formatAttoDai(num: NumStrBigNumber, optsInc: FormattedNumberOptions = optionsBlank()): FormattedNumber {
   const opts = Object.assign(optionsBlank(), {
-    decimals: 2,
-    decimalsRounded: 2,
+    decimals: 3,
+    decimalsRounded: 3,
     ...optsInc,
     denomination: v => {
       const isNegative = Number(v) < 0;
       const val = isNegative
         ? createBigNumber(v)
             .abs()
-            .toFixed(2)
+            .toFixed(3)
         : v;
       return `${isNegative ? '-' : ''}$${val}`;
     },

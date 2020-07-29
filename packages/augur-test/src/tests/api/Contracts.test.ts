@@ -67,11 +67,10 @@ test('Contract :: ReputationToken', async () => {
 });
 
 test('Contract :: Cash', async () => {
-  const cashFaucet = contracts.cashFaucet;
   const cash = contracts.cash;
   const universe = contracts.universe;
   const marketCreationCost = await universe.getOrCacheValidityBond_();
-  await cashFaucet.faucet(marketCreationCost, {
+  await cash.faucet(marketCreationCost, {
     sender: ACCOUNTS[0].address,
   });
   await cash.approve(addresses.Augur, marketCreationCost, {
@@ -86,9 +85,8 @@ test('Contract :: Universe :: Create Market', async () => {
   const universe = contracts.universe;
 
   const marketCreationCost = await universe.getOrCacheValidityBond_();
-  const cashFaucet = contracts.cashFaucet;
   const cash = contracts.cash;
-  await cashFaucet.faucet(marketCreationCost, {
+  await cash.faucet(marketCreationCost, {
     sender: ACCOUNTS[0].address,
   });
   await cash.approve(addresses.Augur, marketCreationCost, {
@@ -135,6 +133,6 @@ test('Contract :: Universe :: Create Market', async () => {
   const marketAddress = marketCreatedEvent.parameters.market;
   const market = contracts.marketFromAddress(marketAddress);
 
-  const numticks = new BigNumber(100);
+  const numticks = new BigNumber(1000);
   await expect(await market.getNumTicks_()).toEqual(numticks);
 });

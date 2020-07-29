@@ -3,8 +3,9 @@ import { withRouter } from 'react-router-dom';
 import { startClaimingMarketsProceeds, claimMarketsProceedsGas } from 'modules/positions/actions/claim-markets-proceeds';
 import { selectCurrentTimestampInSeconds } from 'appStore/select-state';
 import {
-  formatDai,
+  formatDaiPrice,
   formatEther,
+  formatDai,
 } from 'utils/format-number';
 import { closeModal } from 'modules/modal/actions/close-modal';
 import { Proceeds } from 'modules/modal/proceeds';

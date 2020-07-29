@@ -851,7 +851,7 @@ export const TransactionFeeLabelToolTipCmp = ({
       highlight
       accentValue={isError}
       id={'transaction_fee'}
-      tipText={`Est. TX Fee is not included in profit and loss`}
+      tipText={`Est. tx fee is not included in profit and loss`}
     />
 )
 
@@ -1600,8 +1600,8 @@ const EthReserveNoticeCmp = ({ show, reserve }: EthReseveProps) => (
         <DismissableNotice
           show
           buttonType={DISMISSABLE_NOTICE_BUTTON_TYPES.NONE}
-          title={`Replenish Fee reserves`}
-          description={`$${reserve.formatted} DAI will be added to your Fee reserves`}
+          title={`Replenish fee reserve`}
+          description={`$${reserve.formatted} DAI will be added to your fee reserve`}
         />
       </div>
     )}
@@ -1639,7 +1639,7 @@ const mapStateToPropsEthReserveTopOff = (state: AppState) => {
   // top off buffer is used to determine to show automatic top off checkbox
   const topoffBuffer = createBigNumber(1.2);
   const tradingAccountDai = createBigNumber(state.loginAccount.balances.dai);
-  const signerEth = createBigNumber(state.loginAccount.balances.signerBalances.eth);
+  const signerEth = createBigNumber(state.loginAccount.balances.signerBalances.eth || 0);
   const aboveCutoff = tradingAccountDai.gt(createBigNumber(state.env.gsn.minDaiForSignerETHBalanceInDAI));
   const aboveTopOff = signerEth.gt(createBigNumber(state.env.gsn.desiredSignerBalanceInETH).times(topoffBuffer));
   return {
@@ -1659,6 +1659,15 @@ export const AutoCancelOrdersNotice = () => (
         title={`When cashing out, all open orders will automatically be cancelled, positions are left unchanged.`}
       />
     </div>
+);
+export const InsufficientFundsNotice = () => (
+  <div className={classNames(Styles.ModalMessageAutoCancel)}>
+    <DismissableNotice
+      show
+      buttonType={DISMISSABLE_NOTICE_BUTTON_TYPES.NONE}
+      title={`Account does not have enough funds to pay transaction fee, either add DAI or increase fee reserve to cash out.`}
+    />
+  </div>
 );
 
 export const ValueDenomination: React.FC<ValueDenominationProps> = ({
@@ -1755,7 +1764,7 @@ export const AddFundsHelp = props => (
       Add ETH to your {props.walletType} trading account.{' '}
       {props.walletType === ACCOUNT_TYPES.WEB3WALLET
         ? ''
-        : `${props.walletType} are our secure account and payment partners. ${props.walletType} will enable you to process the transaction fee without requiring Dai.`}{' '}
+        : `${props.walletType} are our secure account and payment partners. ${props.walletType} will enable you to process the transaction fee without requiring DAI.`}{' '}
       {props.walletType === ACCOUNT_TYPES.WEB3WALLET ? null : (
         <span onClick={() => props.showAddFundsModal()}>
           Add ETH to your {props.walletType} trading account

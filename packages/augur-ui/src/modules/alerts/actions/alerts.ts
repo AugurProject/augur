@@ -12,6 +12,7 @@ import {
   SUCCESS,
   ETH_RESERVE_INCREASE,
   NULL_ADDRESS,
+  CANCELORDERS,
 } from 'modules/common/constants';
 import { getNetworkId, getEthForDaiRate } from 'modules/contracts/actions/contractCalls';
 import { Action } from 'redux';
@@ -47,7 +48,8 @@ export function addAlert(alert: Partial<Alert>) {
       try {
         dispatch(setAlertText(alert, callback));
       } catch (error) {
-        callback(error, null);
+        console.error(error);
+        callback(null);
       }
     }
   };
@@ -109,41 +111,55 @@ export function updateAlert(
       const { alerts } = store.getState() as AppState;
       const alertName = alert.name.toUpperCase();
       alert.id = id;
-      alert.uniqueId =
-        alertName === PUBLICTRADE || alertName === PUBLICFILLORDER ? createUniqueOrderId(alert) : id;
+      alert.uniqueId = alert.uniqueId || id;
 
-      if (alertName === CLAIMTRADINGPROCEEDS) {
-        alert.uniqueId = createAlternateUniqueOrderId(alert);
-        if (createBigNumber(alert.params.numPayoutTokens).eq(ZERO)) {
-          return;
+      switch (alertName) {
+        case PUBLICTRADE:
+        case PUBLICFILLORDER: {
+          alert.uniqueId = createUniqueOrderId(alert);
+          break;
+        }
+        case CANCELORDERS: {
+          alert.id = alert.params?.hash || id;
+          break;
+        }
+        case CLAIMTRADINGPROCEEDS: {
+          alert.uniqueId = createAlternateUniqueOrderId(alert);
+          if (createBigNumber(alert.params.numPayoutTokens).eq(ZERO)) {
+            return;
+          }
+          break;
+        }
+        case DOINITIALREPORT: {
+          if (!dontMakeNewAlerts) {
+            dispatch(
+              updateAlert(id, {
+                ...alert,
+                params: {
+                  ...alert.params,
+                  preFilled: true,
+                },
+                name: CONTRIBUTE,
+              })
+            );
+          }
+          break;
         }
       }
 
-      if (alertName === DOINITIALREPORT && !dontMakeNewAlerts) {
-        dispatch(
-          updateAlert(id, {
-            ...alert,
-            params: {
-              ...alert.params,
-              preFilled: true,
-            },
-            name: CONTRIBUTE,
-          })
-        );
-      }
+      let foundAlert =
+        alertName === REDEEMSTAKE
+          ? alerts.find(
+              (findAlert) =>
+                findAlert.id === alert.id &&
+                findAlert.name.toUpperCase() === REDEEMSTAKE
+            )
+          : alerts.find(
+              (findAlert) =>
+                findAlert.uniqueId === alert.uniqueId &&
+                findAlert.name.toUpperCase() === alert.name.toUpperCase()
+            );
 
-      let foundAlert = alerts.find(
-        findAlert =>
-          findAlert.uniqueId === alert.uniqueId &&
-          findAlert.name.toUpperCase() === alert.name.toUpperCase()
-      );
-      if (alertName === REDEEMSTAKE) {
-        foundAlert = alerts.find(
-          findAlert =>
-            findAlert.id === alert.id &&
-            findAlert.name.toUpperCase() === REDEEMSTAKE
-        );
-      }
       if (foundAlert) {
         dispatch(removeAlert(alert.uniqueId, alert.name));
         dispatch(
@@ -154,7 +170,12 @@ export function updateAlert(
             params: {
               ...foundAlert.params,
               ...alert.params,
-              repReceived: alert.params.repReceived && foundAlert.params.repReceived && createBigNumber(alert.params.repReceived).plus(createBigNumber(foundAlert.params.repReceived))
+              repReceived:
+                alert.params.repReceived &&
+                foundAlert.params.repReceived &&
+                createBigNumber(alert.params.repReceived).plus(
+                  createBigNumber(foundAlert.params.repReceived)
+                ),
             },
           })
         );
@@ -184,7 +205,7 @@ export const addEthIncreaseAlert = (
   if (oldEthBalance === null) return null;
 
   const daiCutoff = getState().env.gsn.minDaiForSignerETHBalanceInDAI;
-  // user dai balance too low to have Fee reserve
+  // user dai balance too low to have fee reserve
   if (createBigNumber(daiBalance).lte(daiCutoff)) return null;
 
   const maxEthReserve = createBigNumber(
@@ -193,10 +214,10 @@ export const addEthIncreaseAlert = (
   const aboveCutoff = createBigNumber(oldEthBalance).isGreaterThan(
     createBigNumber(maxEthReserve)
   );
-  // user already has Fee reserve topped off
+  // user already has fee reserve topped off
   if (aboveCutoff) return null;
 
-  // ETH increase can only be up to max Fee reserve
+  // ETH increase can only be up to max fee reserve
   const toppedOffValue = BigNumber.min(maxEthReserve, newEthBalance);
   const increase = createBigNumber(toppedOffValue).minus(
     createBigNumber(oldEthBalance)
@@ -208,14 +229,14 @@ export const addEthIncreaseAlert = (
       createBigNumber(attoEthToDaiRate.div(10 ** 18) || 0)
     );
     const timestamp = getState().blockchain.currentAugurTimestamp * 1000;
-    console.log('adding Fee reserve increase alert');
+    console.log('adding fee reserve increase alert');
     dispatch(
       addAlert({
         name: ETH_RESERVE_INCREASE,
         uniqueId: String(timestamp),
         toast: true,
         description: `Your ETH balance has increased by $${amount.formatted} DAI`,
-        title: 'Fee reserves replenished',
+        title: 'Fee reserve replenished',
         status: SUCCESS,
         timestamp,
         params: {

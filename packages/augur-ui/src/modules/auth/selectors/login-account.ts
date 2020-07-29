@@ -1,6 +1,6 @@
 import { createSelector } from "reselect";
 import { selectLoginAccountState } from "appStore/select-state";
-import { formatRep, formatEther, formatDai } from "utils/format-number";
+import { formatRep, formatEther, formatDaiPrice, formatDai } from "utils/format-number";
 import generateDownloadAccountLink from "modules/auth/helpers/generate-download-account-link";
 import store from "appStore";
 

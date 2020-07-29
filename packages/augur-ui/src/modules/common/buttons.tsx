@@ -6,7 +6,6 @@ import {
   SortIcon,
   PercentIcon,
   DoubleArrowIcon,
-  RepLogoIcon,
   DaiLogoIcon,
   ViewIcon,
   DownloadIcon,
@@ -15,8 +14,9 @@ import {
   TwoArrowsOutline,
   XIcon,
   BackIcon,
+  ThickChevron,
   AlternateDaiLogoIcon,
-  Chevron, ThickChevron,
+  AugurLogo,
 } from 'modules/common/icons';
 import classNames from 'classnames';
 import { getNetworkId } from 'modules/contracts/actions/contractCalls';
@@ -523,7 +523,7 @@ export const REPFaucetButton = (props: DefaultActionButtonProps) => (
     title={props.title || 'REP Faucet'}
   >
     <span>{props.title ? props.title : 'REP Faucet'}</span>
-    {RepLogoIcon}
+    {AugurLogo}
   </button>
 );
 

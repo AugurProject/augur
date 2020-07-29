@@ -1,4 +1,3 @@
-import type { SDKConfiguration } from '@augurproject/utils';
 import { abi } from '@augurproject/artifacts';
 import {
   ContractDependenciesEthers,
@@ -9,6 +8,7 @@ import {
   TransactionStatus,
 } from '@augurproject/contract-dependencies-ethers';
 import { EthersProvider } from '@augurproject/ethersjs-provider';
+import { SDKConfiguration } from '@augurproject/utils';
 import { AsyncQueue, queue } from 'async';
 import { BigNumber } from 'bignumber.js';
 import { ethers } from 'ethers';

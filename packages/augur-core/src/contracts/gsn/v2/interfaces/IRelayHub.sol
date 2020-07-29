@@ -2,7 +2,8 @@
 pragma solidity 0.5.15;
 pragma experimental ABIEncoderV2;
 
-import "ROOT/gsn/v2/interfaces/ISignatureVerifier.sol";
+import "ROOT/gsn/v2/interfaces/GsnTypes.sol";
+
 
 interface IRelayHub {
 
@@ -128,7 +129,7 @@ interface IRelayHub {
     ///
     /// Emits a TransactionRelayed event.
     function relayCall(
-        ISignatureVerifier.RelayRequest calldata relayRequest,
+        GsnTypes.RelayRequest calldata relayRequest,
         bytes calldata signature,
         bytes calldata approvalData,
         uint externalGasLimit
@@ -143,9 +144,8 @@ interface IRelayHub {
     /// The fee is expressed as a base fee in wei plus percentage on actual charge.
     /// E.g. a value of 40 stands for a 40% fee, so the recipient will be
     /// charged for 1.4 times the spent amount.
-    function calculateCharge(uint256 gasUsed, ISignatureVerifier.GasData calldata gasData) external view returns (uint256);
+    function calculateCharge(uint256 gasUsed, GsnTypes.RelayData calldata relayData) external view returns (uint256);
 
     function versionHub() external view returns (string memory);
-
 }
 

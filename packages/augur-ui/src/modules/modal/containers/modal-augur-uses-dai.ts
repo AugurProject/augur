@@ -24,7 +24,7 @@ const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({
 
 const mergeProps = (sP: any, dP: any, oP: any) => ({
   icon: OnboardingDollarDaiIcon,
-  largeHeader: 'Augur uses Dai for betting',
+  largeHeader: 'Augur uses DAI for betting',
   showAccountStatus: true,
   currentStep: 2,
   changeCurrentStep: step => {
@@ -34,7 +34,7 @@ const mergeProps = (sP: any, dP: any, oP: any) => ({
   linkContent: [
     {
       content:
-        'Dai is a pegged currency that mirrors the value of the US dollar. This means that ‘1 Dai’ is equivalent to ‘1 USD’. Dai is referred to with $ symbol.',
+        'DAI is a pegged currency that mirrors the value of the US dollar. This means that ‘1 DAI’ is equivalent to ‘1 USD’. DAI is referred to with $ symbol.',
     },
     {
       content: 'Learn more about DAI',

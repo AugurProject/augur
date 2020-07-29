@@ -5,7 +5,7 @@ import { PulseLoader } from 'react-spinners';
 import ProfitLossChart from 'modules/account/components/profit-loss-chart';
 import { MovementLabel } from 'modules/common/labels';
 import Styles from 'modules/account/components/overview-chart.styles.less';
-import { formatDai, formatPercent } from 'utils/format-number';
+import { formatDaiPrice, formatPercent, formatDai } from 'utils/format-number';
 import { FormattedNumber } from 'modules/types';
 import { createBigNumber } from 'utils/create-big-number';
 
