@@ -115,7 +115,7 @@ const mergeProps = (sP: any, dP: any, oP: any) => ({
             // Activate Account placeholder
           },
           {
-            text: 'Do it later',
+            text: 'Continue',
             action: () => {
               dP.testBet();
             },
