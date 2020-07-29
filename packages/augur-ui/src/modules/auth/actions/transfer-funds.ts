@@ -8,7 +8,6 @@ import {
   sendRep_estimateGas,
   withdrawAllFunds,
 } from 'modules/contracts/actions/contractCalls';
-import { augurSdk } from 'services/augursdk';
 import { createBigNumber } from 'utils/create-big-number';
 import { updateAssets } from 'modules/auth/actions/update-assets';
 

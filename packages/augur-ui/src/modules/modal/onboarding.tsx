@@ -32,7 +32,6 @@ interface OnboardingProps {
   analyticsEvent?: Function;
   showAccountStatus?: boolean;
   showTransferMyDai?: boolean;
-  showActivationButton?: boolean;
   createFundedGsnWallet?: Function;
   showAugurP2PModal?: Function;
   gasPrice: number;
@@ -53,7 +52,6 @@ export const Onboarding = ({
   showAccountStatus,
   showTransferMyDai,
   showAugurP2PModal,
-  showActivationButton,
   disableActivatebutton,
   gasPrice,
 }: OnboardingProps) => {
@@ -66,17 +64,6 @@ export const Onboarding = ({
     <>
       <div>
         {buttons.length > 0 && <ButtonsRow buttons={buttons} />}
-        {showActivationButton &&
-          <ProcessingButton
-            small
-            text={'Activate Account'}
-            action={() => console.error("DELETE THIS") }
-            queueName={TRANSACTIONS}
-            queueId={CREATEAUGURWALLET}
-            disabled={disableActivatebutton}
-            customConfirmedButtonText={'Account Activated!'}
-          />
-        }
       </div>
       {currentStep && <Stepper changeCurrentStep={changeCurrentStep} currentStep={currentStep} maxSteps={ONBOARDING_MAX_STEPS} /> }
     </>

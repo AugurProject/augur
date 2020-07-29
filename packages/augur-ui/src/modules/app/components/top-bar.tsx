@@ -5,16 +5,15 @@ import ConnectAccount from 'modules/auth/containers/connect-account';
 import {
   MovementLabel,
   LinearPropertyLabel,
-  LinearPropertyLabelUnderlineTooltip,
 } from 'modules/common/labels';
-import { CoreStats, FormattedNumber } from 'modules/types';
+import { CoreStats } from 'modules/types';
 import { Link } from 'react-router-dom';
 import makePath from 'modules/routes/helpers/make-path';
 import Logo from 'modules/app/components/logo';
 import { PrimaryButton, SecondaryButton } from 'modules/common/buttons';
 import { MARKETS } from 'modules/routes/constants/views';
 import HelpResources from 'modules/app/containers/help-resources';
-import { TOTAL_FUNDS_TOOLTIP, TRANSACTIONS, CREATEAUGURWALLET, WALLET_STATUS_VALUES } from 'modules/common/constants';
+import { WALLET_STATUS_VALUES } from 'modules/common/constants';
 
 import Styles from 'modules/app/components/top-bar.styles.less';
 
@@ -38,11 +37,9 @@ export const Stats = ({ isLogged, restoredAccount, stats, isMobile = false, trad
             <LinearPropertyLabel {...availableFunds} highlightAlternateBolded />
             <LinearPropertyLabel {...frozenFunds} highlightAlternateBolded />
             {tradingAccountCreated ?
-              <LinearPropertyLabelUnderlineTooltip
+              <LinearPropertyLabel
                 {...totalFunds}
                 highlightAlternateBolded
-                id={isMobile ? 'totalFundsMobile' : 'totalFunds_top_bar'}
-                tipText={`${TOTAL_FUNDS_TOOLTIP} DAI`}
               /> :
               <LinearPropertyLabel {...totalFunds} highlightAlternateBolded />
             }
@@ -72,7 +69,6 @@ interface TopBarProps {
   loginModal: Function;
   helpModal: Function;
   showAddFundsButton: boolean;
-  showActivationButton: boolean;
   createFundedGsnWallet: Function;
   buyDaiModal: Function;
   activateWalletModal: Function;
@@ -91,7 +87,6 @@ const TopBar: React.FC<TopBarProps> = ({
   loginModal,
   helpModal,
   showAddFundsButton,
-  showActivationButton,
   buyDaiModal,
   activateWalletModal,
   walletStatus,
@@ -108,23 +103,9 @@ const TopBar: React.FC<TopBarProps> = ({
         isLogged={isLogged}
         stats={stats}
         restoredAccount={restoredAccount}
-        tradingAccountCreated={!showActivationButton && !showAddFundsButton }
+        tradingAccountCreated={!showAddFundsButton }
       />
       <div>
-        {(showActivationButton || showAddFundsButton) &&
-          <div className={Styles.AccountActivation}>
-            <PrimaryButton
-              action={() => {
-                if (showAddFundsButton) {
-                  buyDaiModal();
-                } else {
-                  activateWalletModal();
-                }
-              }}
-              text={'Complete account activation'}
-            />
-          </div>
-        }
 
         {(!isLogged || (!isMobile && (isLogged || restoredAccount))) && (
           <HelpResources isMobile={isMobile} helpModal={helpModal} />

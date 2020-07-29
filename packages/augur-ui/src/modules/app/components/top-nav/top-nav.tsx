@@ -21,7 +21,7 @@ import {
   CREATE_MARKET
 } from 'modules/routes/constants/views';
 import Styles from 'modules/app/components/top-nav/top-nav.styles.less';
-import { LinearPropertyLabelUnderlineTooltip } from 'modules/common/labels';
+import { LinearPropertyLabelUnderlineTooltip, LinearPropertyLabel } from 'modules/common/labels';
 import { formatNumber } from 'utils/format-number';
 
 interface TopNavProps {
@@ -80,11 +80,9 @@ const TopNav = ({
               )}
 
               <div className={Styles.ToolTip}>
-                <LinearPropertyLabelUnderlineTooltip
+                <LinearPropertyLabel
                   {...(formatNumber(0))}
                   highlightAlternateBolded
-                  id={'totalFunds_top_nav'}
-                  tipText={`${TOTAL_FUNDS_TOOLTIP} DAI`}
                 />
               </div>
 

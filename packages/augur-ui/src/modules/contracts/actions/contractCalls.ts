@@ -108,8 +108,8 @@ export async function getMaxMarketEndTime(): Promise<number> {
   return new BigNumber(maxEndTime).toNumber();
 }
 
-export async function convertV1ToV2Approve(useSigningWallet: boolean = false) {
-  const { contracts, dependencies } = augurSdk.get();
+export async function convertV1ToV2Approve() {
+  const { contracts } = augurSdk.get();
 
   const allowance = createBigNumber(99999999999999999999).times(
     TEN_TO_THE_EIGHTEENTH_POWER
@@ -124,8 +124,8 @@ export async function convertV1ToV2Approve(useSigningWallet: boolean = false) {
   return response;
 }
 
-export async function convertV1ToV2(useSigningWallet: boolean = false) {
-  const { contracts, dependencies } = augurSdk.get();
+export async function convertV1ToV2() {
+  const { contracts } = augurSdk.get();
   let response = false;
   try {
     response = await contracts.reputationToken.migrateFromLegacyReputationToken();
@@ -135,8 +135,8 @@ export async function convertV1ToV2(useSigningWallet: boolean = false) {
   return response;
 }
 
-export async function convertV1ToV2_estimate(useSigningWallet: boolean = false) {
-  const { contracts, dependencies } = augurSdk.get();
+export async function convertV1ToV2_estimate() {
+  const { contracts } = augurSdk.get();
   const allowance = createBigNumber(99999999999999999999).times(
     TEN_TO_THE_EIGHTEENTH_POWER
   );

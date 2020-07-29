@@ -123,8 +123,7 @@ export const MigrateRep = ({
           disabled={
             (walletBalances.legacyRep === '0' &&
               walletBalances.signerBalances.legacyRep === '0') ||
-            (inSigningWallet && !hasEnoughEthForGas) ||
-            (inTradingWallet && !hasEnoughDaiForGas && !hasEnoughEthForGas)
+            (inSigningWallet && !hasEnoughEthForGas)
           }
         />
         <SecondaryButton text={'Cancel'} action={closeAction} />

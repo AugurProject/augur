@@ -22,7 +22,6 @@ const mapStateToProps = (state: AppState) => {
     restoredAccount: authStatus.restoredAccount,
     alertsVisible: authStatus.isLogged && sidebarStatus.isAlertsVisible,
     showAddFundsButton: authStatus.isLogged && appStatus.walletStatus === WALLET_STATUS_VALUES.WAITING_FOR_FUNDING,
-    showActivationButton: authStatus.isLogged && appStatus.walletStatus === WALLET_STATUS_VALUES.FUNDED_NEED_CREATE,
     walletStatus: appStatus.walletStatus,
   };
 };
