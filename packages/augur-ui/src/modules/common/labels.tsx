@@ -1649,18 +1649,18 @@ export const DiscordLink = (props: DiscordLinkProps) => (
 export const AddFundsHelp = props => (
   <ol>
     <li>
-      Add ETH to your {props.walletType} trading account.{' '}
+      Add ETH to your {props.walletType} wallet address.{' '}
       {props.walletType === ACCOUNT_TYPES.WEB3WALLET
         ? ''
         : `${props.walletType} are our secure account and payment partners. ${props.walletType} will enable you to process the transaction fee without requiring DAI.`}{' '}
       {props.walletType === ACCOUNT_TYPES.WEB3WALLET ? null : (
         <span onClick={() => props.showAddFundsModal()}>
-          Add ETH to your {props.walletType} trading account
+          Add ETH to your {props.walletType} wallet address
         </span>
       )}
     </li>
     <li>
-      After you have sent the ETH to your {props.walletType} trading account you
+      After you have sent the ETH to your {props.walletType} wallet address you
       can then return and make the transaction.
     </li>
   </ol>

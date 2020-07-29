@@ -53,7 +53,7 @@ export const AddFunds = ({
   config,
   addFundsTorus,
   addFundsFortmatic,
-  useSigner = false,
+  useSigner = true,
   initialAddFundsFlow = null,
   initialSwapToken = null,
 }: AddFundsProps) => {
@@ -98,7 +98,7 @@ export const AddFunds = ({
     },
     {
       header: 'Transfer',
-      description: 'Send funds to your trading account',
+      description: 'Send funds to your wallet address',
       value: ADD_FUNDS_TRANSFER,
     },
     {

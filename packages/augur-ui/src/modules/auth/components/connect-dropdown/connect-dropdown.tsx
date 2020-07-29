@@ -211,8 +211,8 @@ const ConnectDropdown = (props: ConnectDropdownProps) => {
           <PrimaryButton action={() => showAddFundsModal()} text='Add Funds' />
         </div>
 
-        {showTransferMyDai && <TransferMyTokens condensed={true} tokenName={DAI} />}
-        {showTransferMyRep && <TransferMyTokens condensed={true} tokenName={REP} />}
+        {false && <TransferMyTokens condensed={true} tokenName={DAI} />}
+        {false && <TransferMyTokens condensed={true} tokenName={REP} />}
 
         {accountFunds
           .filter(fundType => !fundType.disabled)

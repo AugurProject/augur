@@ -24,7 +24,6 @@ const mapStateToProps = (state: AppState) => {
     ETH_RATE,
     REP_RATE,
     config: state.env,
-    isRelayDown: false, // TODO XXX Need to have some suitable status update for when relayer is down. No longer related to wallets
   };
 };
 
@@ -57,7 +56,7 @@ const mergeProps = (sP, dP, oP) => {
     tokenToAdd: sP.modal.tokenToAdd,
     initialAddFundsFlow: sP.modal.initialAddFundsFlow,
     initialSwapToken: sP.modal.initialSwapToken,
-    useSigner: sP.modal.useSigner,
+    useSigner: true,
     addFundsTorus: dP.addFundsTorus,
     addFundsFortmatic: dP.addFundsFortmatic,
     analyticsEvent: () => dP.track(ADD_FUNDS, {}),

@@ -92,7 +92,7 @@ export const MigrateRep = ({
       <Title title={'Migrate REP'} closeAction={closeAction} />
 
       <main>
-        {!inSigningWallet && <h1>You have REP in your trading account</h1>}
+        {!inSigningWallet && <h1>You have REP in your wallet address</h1>}
         {inSigningWallet && <h1>You have REP in your wallet</h1>}
 
         <h2>
@@ -106,7 +106,7 @@ export const MigrateRep = ({
           {inSigningWallet && (
             <p>
               After migrating your REP, in order to use it for reporting, disputing or
-              buying participation tokens transfer it to your trading account.
+              buying participation tokens transfer it to your wallet address.
             </p>
           )}
         </h2>
