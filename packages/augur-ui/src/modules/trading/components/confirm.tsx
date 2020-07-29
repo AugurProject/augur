@@ -18,6 +18,7 @@ import {
   CREATEAUGURWALLET,
   TRANSACTIONS,
   GWEI_CONVERSION,
+  APPROVE_GAS_ESTIMATE,
 } from 'modules/common/constants';
 import ReactTooltip from 'react-tooltip';
 import TooltipStyles from 'modules/common/tooltip.styles.less';
@@ -39,8 +40,9 @@ import { BigNumber, createBigNumber } from 'utils/create-big-number';
 import { LinearPropertyLabel, TransactionFeeLabelToolTip, ApprovalTxButtonLabel } from 'modules/common/labels';
 import { Trade, FormattedNumber } from 'modules/types';
 import { ExternalLinkButton, ProcessingButton, PrimaryButton } from 'modules/common/buttons';
-import { TXEventName } from '@augurproject/sdk-lite';
 import { isApprovedToTrade, approveToTrade } from 'modules/contracts/actions/contractCalls';
+import initialLiquidity from 'modules/create-market/containers/initial-liquidity';
+import loginAccount from 'modules/auth/selectors/login-account';
 
 interface MessageButton {
   action: Function;
@@ -82,7 +84,7 @@ interface ConfirmProps {
   allowPostOnlyOrder: boolean;
   ethToDaiRate: FormattedNumber;
   account: string;
-  updateAccountApproval: Function;
+  checkAccountApproval: Function;
   affiliate: string;
   isLogged: boolean;
 }
@@ -254,6 +256,27 @@ class Confirm extends Component<ConfirmProps, ConfirmState> {
       };
     }
 
+    if (tradingApproved && !tradingTutorial && !initialLiquidity) {
+      const gasNeeded = APPROVE_GAS_ESTIMATE.times(4);
+      const ethNeededForGas = createBigNumber(
+        formatGasCostToEther(
+          gasNeeded,
+          { decimalsRounded: 4 },
+          createBigNumber(GWEI_CONVERSION).multipliedBy(gasPrice)
+        )
+      );
+      const enoughEth = createBigNumber(ethNeededForGas).gte(
+        createBigNumber(availableEth)
+      );
+      if (enoughEth) {
+        messages = {
+          header: 'Insufficient ETH',
+          type: ERROR,
+          message: `You do not have enough funds to approve trading. ${ethNeededForGas} ETH required for gas.`,
+        };
+      }
+    }
+
     if (
       !tradingTutorial &&
       totalCost &&
@@ -303,7 +326,7 @@ class Confirm extends Component<ConfirmProps, ConfirmState> {
       showAddFundsModal,
       ethToDaiRate,
       account,
-      updateAccountApproval,
+      checkAccountApproval,
       tradingApproved,
       affiliate,
       isLogged,
@@ -480,15 +503,13 @@ class Confirm extends Component<ConfirmProps, ConfirmState> {
             buttonName={'Approve'}
             numApprovals={4}
             checkApprovals={isApprovedToTrade}
-            doApprovals={() => approveToTrade(affiliate)}
+            doApprovals={() => approveToTrade(account, affiliate)}
             account={account}
-            isApprovalCallback={value => {
-              value && updateAccountApproval();
-            }}
+            isApprovalCallback={() => checkAccountApproval()}
           />
         }
 
-        {messages && (
+        {messages && isLogged && (
           <div
             className={classNames(Styles.MessageContainer, {
               [Styles.Error]: messages.type === ERROR,
@@ -517,7 +538,7 @@ class Confirm extends Component<ConfirmProps, ConfirmState> {
               <button onClick={messages.callback ? () => messages.callback() : this.clearErrorMessage}>{XIcon}</button>
             )}
 
-            {!tradingTutorial && totalCost && createBigNumber(potentialDaiLoss.fullPrecision).gt(createBigNumber(availableDai)) &&
+            {!tradingTutorial && isLogged && totalCost && createBigNumber(potentialDaiLoss.fullPrecision).gt(createBigNumber(availableDai)) &&
               <PrimaryButton action={() => showAddFundsModal()} text={'Add Funds'} />
             }
           </div>

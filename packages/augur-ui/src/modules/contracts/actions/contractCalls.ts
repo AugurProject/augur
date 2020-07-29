@@ -796,28 +796,18 @@ export async function isContractApproval(account, contract, approvalContract): P
   }
 }
 
-export async function isApprovedAll(address): Promise<boolean> {
-  const isTradingApproved = await isApprovedToTrade(address);
-  const isMarketCreationApproved = await isApprovedMarketCreation(address);
-  return isTradingApproved && isMarketCreationApproved;
-}
-
 export async function isApprovedToTrade(address): Promise<boolean> {
   const { contracts } = augurSdk.get();
   const cashContractApproval = await isContractApproval(address, contracts.ZeroXTrade.address, contracts.cash);
   const fillContractApproval = await isContractApproval(address, contracts.fillOrder.address, contracts.cash);
   const zeroXContractApproval = await contracts.shareToken.isApprovedForAll_(address, contracts.ZeroXTrade.address);
+  console.log(fillContractApproval, cashContractApproval, zeroXContractApproval);
   return fillContractApproval && cashContractApproval && zeroXContractApproval
 }
 
 export async function isApprovedMarketCreation(address) {
   const { contracts } = augurSdk.get();
   return await isContractApproval(address, contracts.augur.address, contracts.cash);
-}
-
-export async function approveMarketCreationToTrade(): Promise<void> {
-    await approveMarketCreation();
-    await approveToTrade();
 }
 
 export async function approveMarketCreation(): Promise<void> {
@@ -827,23 +817,21 @@ export async function approveMarketCreation(): Promise<void> {
   return await contracts.cash.approve(augurContract, APPROVAL_AMOUNT);
 }
 
-export async function approveToTrade(referalAddress = NULL_ADDRESS) {
+export async function approveToTrade(address, referalAddress = NULL_ADDRESS) {
   const { contracts } = augurSdk.get();
   const APPROVAL_AMOUNT = new BigNumber(2**255);
-  return await Promise.all([
-    contracts.cash.approve(contracts.ZeroXTrade.address, APPROVAL_AMOUNT),
-    contracts.cash.approve(contracts.fillOrder.address, APPROVAL_AMOUNT),
-    contracts.shareToken.setApprovalForAll(contracts.ZeroXTrade.address, true),
-    contracts.affiliates.setReferrer(referalAddress),
-   ]);
-}
-
-export async function getAllowance(account: string): Promise<BigNumber> {
-  const { contracts } = augurSdk.get();
-  const augurContract = contracts.augur.address;
-  const allowanceRaw = await contracts.cash.allowance_(account, augurContract);
-  const allowance = allowanceRaw.dividedBy(TEN_TO_THE_EIGHTEENTH_POWER);
-  return allowance;
+  const approvals = [];
+  approvals.push(contracts.affiliates.setReferrer(referalAddress));
+  if (!(await isContractApproval(address, contracts.ZeroXTrade.address, contracts.cash))) {
+    approvals.push(contracts.cash.approve(contracts.ZeroXTrade.address, APPROVAL_AMOUNT));
+  }
+  if (!(await isContractApproval(address, contracts.fillOrder.address, contracts.cash))) {
+    approvals.push(contracts.cash.approve(contracts.fillOrder.address, APPROVAL_AMOUNT));
+  }
+  if (!(await contracts.shareToken.isApprovedForAll_(address, contracts.ZeroXTrade.address))) {
+    approvals.push(contracts.shareToken.setApprovalForAll(contracts.ZeroXTrade.address, true));
+  }
+  return Promise.all(approvals);
 }
 
 export async function getReportingDivisor(): Promise<BigNumber> {

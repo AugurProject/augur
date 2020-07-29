@@ -201,7 +201,7 @@ export const UnsignedOrders = (props: UnsignedOrdersProps) => {
         buttonName={'Approve'}
         numApprovals={4}
         checkApprovals={isApprovedToTrade}
-        doApprovals={() => approveToTrade(props.affiliate)}
+        doApprovals={() => approveToTrade(props.loginAccount.address, props.affiliate)}
         account={props.loginAccount.address}
         isApprovalCallback={value => {
           value && setIsApproved(value);

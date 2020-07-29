@@ -290,7 +290,6 @@ export const handleNewBlockLog = (log: NewBlock) => async (
   // update assets each block
   if (getState().authStatus.isLogged) {
     dispatch(updateAssets());
-    dispatch(checkAccountApproval());
     dispatch(
       loadAnalytics(getState().analytics, blockchain.currentAugurTimestamp)
     );

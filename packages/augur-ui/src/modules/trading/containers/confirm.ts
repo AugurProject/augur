@@ -43,7 +43,7 @@ const mapDispatchToProps = (dispatch) => ({
     dispatch(removePendingTransaction(CREATEAUGURWALLET));
   },
   showAddFundsModal: () => dispatch(updateModal({ type: MODAL_ADD_FUNDS })),
-  updateAccountApproval: () => dispatch(checkAccountApproval())
+  checkAccountApproval: () => dispatch(checkAccountApproval())
 });
 
 const mergeProps = (sP, dP, oP) => {

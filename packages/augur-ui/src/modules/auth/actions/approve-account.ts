@@ -14,11 +14,13 @@ export function checkAccountApproval(
     getState: () => AppState
   ) => {
     const { loginAccount } = getState();
+    console.log('check account approval');
     if (!loginAccount.address) {
       console.log('User not logged in, check that wallet is connected');
       return callback(null, '0');
     }
     const tradingApproved = await isApprovedToTrade(loginAccount.address);
+    console.log('user is approved for trading', tradingApproved);
     dispatch(
       updateLoginAccount({
         tradingApproved

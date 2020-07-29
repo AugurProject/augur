@@ -178,7 +178,7 @@ export const sendLiquidityOrder = (options: any) => async (
   );
 
   if (bnAllowance.lte(0) || bnAllowance.lte(createBigNumber(orderEstimate))) {
-    await approveToTrade(loginAccount?.affiliate);
+    await approveToTrade(loginAccount.address, loginAccount?.affiliate);
     isZeroX
       ? createZeroXLiquidityOrders(market, [options.order], blockchain.currentAugurTimestamp, dispatch)
       : sendOrder(options);

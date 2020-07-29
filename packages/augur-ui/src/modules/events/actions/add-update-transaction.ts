@@ -32,6 +32,7 @@ import {
   DOINITIALREPORT,
   CONTRIBUTE,
   APPROVE,
+  TRANSACTIONS,
 } from 'modules/common/constants';
 import { CreateMarketData } from 'modules/types';
 import { ThunkDispatch } from 'redux-thunk';
@@ -47,6 +48,7 @@ import {
   addCanceledOrder,
   updatePendingReportHash,
   updatePendingDisputeHash,
+  removePendingDataByHash,
 } from 'modules/pending-queue/actions/pending-queue-management';
 import { convertUnixToFormattedDate } from 'utils/format-date';
 import { TransactionMetadataParams } from '@augurproject/contract-dependencies-ethers';
@@ -328,6 +330,12 @@ export const addUpdateTransaction = (txStatus: Events.TXStatus) => async (
           dispatch(
             updatePendingDisputeHash(transaction.params, hash, eventName)
           );
+        break;
+      }
+      case APPROVE: {
+        if (eventName === TXEventName.Success) {
+          dispatch(removePendingDataByHash(hash, TRANSACTIONS));
+        }
         break;
       }
 

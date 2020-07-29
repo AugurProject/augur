@@ -256,7 +256,7 @@ const processingPendingQueue = (
         ? await transactionConfirmations(queueItem.hash)
         : undefined;
       if (confirmations === undefined) {
-        console.log('Transaction is taking a long time, check gas price', queueItem.hash)
+        //console.log('Transaction is taking a long time, check gas price', queueItem.hash)
         /*dispatch(
           addPendingData(
             queueItem.pendingId,
