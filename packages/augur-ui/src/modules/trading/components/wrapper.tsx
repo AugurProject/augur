@@ -547,6 +547,16 @@ class Wrapper extends Component<WrapperProps, WrapperState> {
       />
     );
     switch (true) {
+      case disableTrading:
+        actionButton = (
+          <PrimaryButton
+            id="reporting-ui"
+            disabled={true}
+            action={() => {}}
+            text="Trading Disabled in Reporting UI"
+          />
+        );
+      break;
       case !restoredAccount && !isLogged && !tradingTutorial:
         actionButton = (
           <PrimaryButton
