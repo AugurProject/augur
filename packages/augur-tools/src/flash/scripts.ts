@@ -172,7 +172,7 @@ export function addScripts(flash: FlashSession) {
       {
         name: 'amount',
         abbr: 'a',
-        description: 'Quantity',
+        description: 'Quantity (unit is full token aka 1 = 1e18 wei)',
         required: true,
       },
       {
@@ -184,15 +184,15 @@ export function addScripts(flash: FlashSession) {
       {
         name: 'target',
         abbr: 't',
-        description: 'Account to send funds (defaults to current user)',
-        required: false
+        description: 'Account to send tokens to',
+        required: true
       }
     ],
     async call(this: FlashSession, args: FlashArguments) {
       if (this.noProvider()) return;
       const user = await this.createUser(this.getAccount(), this.config);
 
-      const target = args.target as string || user.account.address;
+      const target = args.target as string;
       const amount = Number(args.amount);
       const token = args.token as string;
       const atto = new BigNumber(amount).times(_1_ETH);
@@ -2040,7 +2040,7 @@ export function addScripts(flash: FlashSession) {
         }
 
         console.log('Building');
-        await spawnSync('yarn', ['build']); // so UI etc will have the correct addresses        
+        await spawnSync('yarn', ['build']); // so UI etc will have the correct addresses
 
         env = {
           ...process.env,
