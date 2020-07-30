@@ -180,7 +180,7 @@ export const CashOutForm = ({
 
   breakdown.push({
     label: 'Total',
-    value: signerPays ? totalDaiFormatted : amountDai,
+    value: amountDai,
     showDenomination: true,
   });
 
