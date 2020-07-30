@@ -795,15 +795,6 @@ export async function isContractApproval(account, contract, approvalContract): P
   }
 }
 
-export async function isApprovedToTrade(address): Promise<boolean> {
-  const { contracts } = augurSdk.get();
-  const cashContractApproval = await isContractApproval(address, contracts.ZeroXTrade.address, contracts.cash);
-  const fillContractApproval = await isContractApproval(address, contracts.fillOrder.address, contracts.cash);
-  const zeroXContractApproval = await contracts.shareToken.isApprovedForAll_(address, contracts.ZeroXTrade.address);
-  console.log(fillContractApproval, cashContractApproval, zeroXContractApproval);
-  return fillContractApproval && cashContractApproval && zeroXContractApproval
-}
-
 export async function isApprovedMarketCreation(address) {
   const { contracts } = augurSdk.get();
   return await isContractApproval(address, contracts.augur.address, contracts.cash);
@@ -815,12 +806,21 @@ export async function approveMarketCreation(): Promise<void> {
   return await contracts.cash.approve(augurContract, APPROVAL_AMOUNT);
 }
 
+export async function isApprovedToTrade(address): Promise<boolean> {
+  const { contracts } = augurSdk.get();
+  const cashContractApproval = await isContractApproval(address, contracts.ZeroXTrade.address, contracts.cash);
+  const fillContractApproval = await isContractApproval(address, contracts.fillOrder.address, contracts.cash);
+  const zeroXContractApproval = await contracts.shareToken.isApprovedForAll_(address, contracts.fillOrder.address);
+  console.log(fillContractApproval, cashContractApproval, zeroXContractApproval);
+  return fillContractApproval && cashContractApproval && zeroXContractApproval
+}
+
 export async function approveToTrade(address, referalAddress = NULL_ADDRESS) {
   const { contracts } = augurSdk.get();
   const approvals = [];
   approvals.push(contracts.affiliates.setReferrer(referalAddress));
-  if (!(await contracts.shareToken.isApprovedForAll_(address, contracts.ZeroXTrade.address))) {
-    approvals.push(contracts.shareToken.setApprovalForAll(contracts.ZeroXTrade.address, true));
+  if (!(await contracts.shareToken.isApprovedForAll_(address, contracts.fillOrder.address))) {
+    approvals.push(contracts.shareToken.setApprovalForAll(contracts.fillOrder.address, true));
   }
   if (!(await isContractApproval(address, contracts.ZeroXTrade.address, contracts.cash))) {
     approvals.push(contracts.cash.approve(contracts.ZeroXTrade.address, APPROVAL_AMOUNT));
