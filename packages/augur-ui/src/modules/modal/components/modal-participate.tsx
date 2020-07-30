@@ -1,14 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { createBigNumber } from 'utils/create-big-number';
 import { TextInput } from 'modules/common/form';
-import Styles from 'modules/modal/components/common/common.styles.less';
 import { formatRep, formatGasCostToEther } from 'utils/format-number';
 import {
   BUY_PARTICIPATION_TOKENS_GAS_LIMIT,
   REP,
   GWEI_CONVERSION,
 } from 'modules/common/constants';
-import ModalActions from './common/modal-actions';
 import {
   Title,
   DescriptionMessage,
@@ -17,6 +15,9 @@ import {
 } from '../common';
 import { displayGasInDai } from 'modules/app/actions/get-ethToDai-rate';
 import { InitializeWalletModalNotice } from 'modules/common/labels';
+import { FormattedNumber } from 'modules/types';
+import { getGasCost } from 'modules/modal/gas';
+import Styles from 'modules/modal/components/common/common.styles.less';
 
 interface ModalParticipateProps {
   rep: string;
@@ -26,6 +27,7 @@ interface ModalParticipateProps {
   messages: AlertMessageProps[];
   title: string;
   GsnEnabled: boolean;
+  ethToDaiRate: FormattedNumber;
   gsnWalletInfoSeen: boolean;
   gsnUnavailable: boolean;
   initializeGsnWallet: Function;
@@ -40,20 +42,15 @@ export const ModalParticipate = (props: ModalParticipateProps) => {
     title,
     GsnEnabled,
     transactionLabel,
+    ethToDaiRate,
   } = props;
 
   const [isValid, setIsValid] = useState(false);
   const [quantity, setQuantity] = useState('');
   const [gasLimit, setGasLimit] = useState(BUY_PARTICIPATION_TOKENS_GAS_LIMIT);
   const [errors, setErrors] = useState([]);
-
   const formattedQuantity = formatRep(quantity || 0);
-
-  const gasEstimateInEth = formatGasCostToEther(
-    gasLimit,
-    { decimalsRounded: 4 },
-    createBigNumber(GWEI_CONVERSION).multipliedBy(gasPrice)
-  );
+  const gasCostDai = getGasCost(gasLimit, gasPrice, ethToDaiRate);
 
   useEffect(() => {
     props.purchaseParticipationTokens(1, true, (err, gasLimit) => {
@@ -134,9 +131,7 @@ export const ModalParticipate = (props: ModalParticipateProps) => {
     },
     {
       label: transactionLabel,
-      value: GsnEnabled
-        ? displayGasInDai(gasLimit)
-        : gasEstimateInEth,
+      value: gasCostDai,
       denomination: GsnEnabled ? 'DAI' : 'ETH',
       showDenomination: true,
     },

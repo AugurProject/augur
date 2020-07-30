@@ -70,6 +70,7 @@ import { AppState } from 'appStore/index';
 import { isGSNUnavailable } from 'modules/app/selectors/is-gsn-unavailable';
 import { removePendingTransaction } from 'modules/pending-queue/actions/pending-queue-management';
 import { updateModal } from 'modules/modal/actions/update-modal';
+import { getGasCost } from 'modules/modal/gas';
 
 export enum DISMISSABLE_NOTICE_BUTTON_TYPES {
   BUTTON = 'PrimaryButton',
@@ -471,6 +472,7 @@ export interface DisputingBondsViewProps {
   stakeRemaining?: string;
   tentativeWinning?: boolean;
   reportAction: Function;
+  ethToDaiRate: FormattedNumber;
   GsnEnabled: boolean;
   gasPrice: number;
   warpSyncHash: string;
@@ -497,11 +499,7 @@ export class DisputingBondsView extends Component<
     scalarError: '',
     stakeError: '',
     isScalar: this.props.market.marketType === SCALAR,
-    gasEstimate: formatGasCostToEther(
-      DISPUTE_GAS_COST,
-      { decimalsRounded: 4 },
-      this.props.gasPrice
-    ),
+    gasEstimate: DISPUTE_GAS_COST,
   };
 
   updateScalarOutcome = (range: string) => {
@@ -624,6 +622,8 @@ export class DisputingBondsView extends Component<
       reportAction,
       id,
       GsnEnabled,
+      ethToDaiRate,
+      gasPrice,
       warpSyncHash,
       gsnUnavailable,
       gsnWalletInfoSeen,
@@ -643,6 +643,8 @@ export class DisputingBondsView extends Component<
     const remaining = convertAttoValueToDisplayValue(
       createBigNumber(stakeRemaining)
     );
+    const gasCostDai = getGasCost(gasEstimate, gasPrice, ethToDaiRate);
+
     // id === "null" means blank scalar, user can input new scalar value to dispute
     return (
       <div className={classNames(Styles.DisputingBondsView)}>
@@ -690,7 +692,7 @@ export class DisputingBondsView extends Component<
           }
           value={formatRep(stakeValue || ZERO).formatted + ' REP'}
         />
-        <TransactionFeeLabel gasCostDai={gasEstimate} />
+        <TransactionFeeLabel gasCostDai={gasCostDai} />
         <InitializeWalletModalNotice />
         <PrimaryButton
           text="Confirm"
@@ -717,6 +719,7 @@ export interface ReportingBondsViewProps {
   reportAction: Function;
   GsnEnabled: boolean;
   gasPrice: number;
+  ethToDaiRate: FormattedNumber;
   inputtedReportingStake: DisputeInputtedValues;
   updateInputtedStake?: Function;
   inputScalarOutcome?: string;
@@ -859,6 +862,8 @@ export class ReportingBondsView extends Component<
       initialReport,
       owesRep,
       GsnEnabled,
+      ethToDaiRate,
+      gasPrice,
       openReporting,
       enoughRepBalance,
       userFunds,
@@ -878,6 +883,7 @@ export class ReportingBondsView extends Component<
       gasEstimate,
     } = this.state;
 
+    const gasCostDai = getGasCost(gasEstimate, gasPrice, ethToDaiRate);
     const repAmount = migrateRep
       ? formatAttoRep(inputtedReportingStake.inputToAttoRep).formatted
       : formatAttoRep(market.noShowBondAmount).formatted;
@@ -980,7 +986,7 @@ export class ReportingBondsView extends Component<
           </div>
         )}
         <div>
-          <TransactionFeeLabel gasCostDai={gasEstimate} />
+          <TransactionFeeLabel gasCostDai={gasCostDai} />
           {insufficientFunds && (
             <span className={FormStyles.ErrorText}>
               Insufficient Funds to complete transaction

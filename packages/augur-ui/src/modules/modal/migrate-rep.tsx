@@ -7,7 +7,7 @@ import {
   formatEther,
   formatDai,
 } from 'utils/format-number';
-import { AccountBalances } from 'modules/types';
+import { AccountBalances, FormattedNumber } from 'modules/types';
 import {
   ExternalLinkButton,
   ProcessingButton,
@@ -25,12 +25,14 @@ import {
 import Styles from 'modules/modal/modal.styles.less';
 import { createBigNumber } from 'utils/create-big-number';
 import { DISMISSABLE_NOTICE_BUTTON_TYPES, DismissableNotice } from 'modules/reporting/common';
+import { getGasCost } from 'modules/modal/gas';
 
 interface MigrateRepForm {
   closeAction: Function;
   tradingAccount: string;
   convertV1ToV2: Function;
   GsnEnabled: boolean;
+  ethToDaiRate: FormattedNumber;
   convertV1ToV2Estimate: Function;
   gasPrice: number;
   walletBalances: AccountBalances;
@@ -43,6 +45,7 @@ export const MigrateRep = ({
   GsnEnabled,
   convertV1ToV2Estimate,
   gasPrice,
+  ethToDaiRate,
   walletBalances,
 }: MigrateRepForm) => {
   const [gasLimit, setGasLimit] = useState(V1_REP_MIGRATE_ESTIMATE);
@@ -60,6 +63,8 @@ export const MigrateRep = ({
     createBigNumber(gasEstimateInEth)
   );
 
+  const gasCostDai = getGasCost(gasLimit, gasPrice, ethToDaiRate);
+
   const safeWalletContent = (
     <>
       <div>
@@ -71,7 +76,7 @@ export const MigrateRep = ({
         </span>
       </div>
       <div>
-        <TransactionFeeLabel gasCostDai={gasEstimateInEth} />
+        <TransactionFeeLabel gasCostDai={gasCostDai} />
       </div>
       {!hasEnoughEthForGas && inSigningWallet && (
         <span className={Styles.Error}>
