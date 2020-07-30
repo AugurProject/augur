@@ -14,7 +14,7 @@ const mapStateToProps = (state: AppState) => {
   const ETH_RATE = createBigNumber(1).dividedBy(
     ethToDaiRate?.value || createBigNumber(1)
   );
-  const REP_RATE = createBigNumber(1).dividedBy(
+  const REP_RATE = createBigNumber(ETH_RATE).times (
     repToDaiRate?.value || createBigNumber(1)
   );
 
@@ -24,6 +24,8 @@ const mapStateToProps = (state: AppState) => {
     ETH_RATE,
     REP_RATE,
     config: state.env,
+    ethToDaiRate,
+    repToDaiRate
   };
 };
 

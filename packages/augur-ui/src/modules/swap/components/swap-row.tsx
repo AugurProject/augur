@@ -6,6 +6,7 @@ import { createBigNumber } from 'utils/create-big-number';
 import Styles from 'modules/swap/components/swap-row.styles.less';
 import { TextInput } from 'modules/common/form';
 import { ChevronDown } from 'modules/common/icons';
+import { REP } from 'modules/common/constants';
 
 interface SwapBlockProps {
   token: string;
@@ -62,7 +63,7 @@ export const SwapRow = ({
       )}
       <div>
         <div onClick={setToken ? () => setToken() : null}>
-          {logo} {token} {showChevron && <ChevronDown />}
+          {logo} {token === REP ? 'REPv2' : token} {showChevron && <ChevronDown />}
         </div>
       </div>
     </div>

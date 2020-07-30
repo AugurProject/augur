@@ -12,7 +12,7 @@ import {
 import { AccountBalances, FormattedNumber } from 'modules/types';
 import {
   SwapArrow,
-  REP as REPIcon,
+  AugurLogo as REPIcon,
   ETH as ETHIcon,
   DaiLogoIcon,
 } from 'modules/common/icons';
@@ -42,6 +42,8 @@ interface SwapProps {
   config: SDKConfiguration,
   address: string;
   useSigner: boolean;
+  ethToDaiRate: FormattedNumber;
+  repToDaiRate: FormattedNumber;
 }
 
 const tokenIconImageMap = {
@@ -59,6 +61,8 @@ export const Swap = ({
   config,
   address,
   useSigner = false,
+  ethToDaiRate,
+  repToDaiRate,
 }: SwapProps) => {
 
   const VALID_TOKENS = [DAI, REP, ETH];
@@ -160,7 +164,7 @@ export const Swap = ({
       }
     }
     catch (error) {
-      if (error?.data === 'Reverted') {
+      if (error) {
         setErrorMessage('Liquidity error, please try reducing the size of your trade to avoid a price slippage.');
       }
     }
@@ -192,15 +196,13 @@ export const Swap = ({
   } else {
     if (toToken === REP) {
       if (fromTokenType === DAI) {
-        outputAmount = formatEther(inputAmount.dividedBy(REP_RATE));
+        outputAmount = formatEther(createBigNumber(1).dividedBy(repToDaiRate.value).multipliedBy(inputAmount));
       } else if (fromTokenType === ETH) {
-        const ethToDai = createBigNumber(1).dividedBy(ETH_RATE);
-        const inputValueInDai = ethToDai.multipliedBy(inputAmount);
-        outputAmount = formatEther(inputValueInDai.dividedBy(REP_RATE));
+        outputAmount = formatEther(createBigNumber(ethToDaiRate.value).multipliedBy(inputAmount).dividedBy(repToDaiRate.value));
       }
     } else if (toToken === DAI) {
       if (fromTokenType === REP) {
-        outputAmount = formatEther(REP_RATE.multipliedBy(inputAmount));
+        outputAmount = formatEther(createBigNumber(repToDaiRate.value).multipliedBy(inputAmount));
       } else if (fromTokenType === ETH) {
         outputAmount = formatEther(
           createBigNumber(inputAmount).dividedBy(ETH_RATE)
@@ -239,6 +241,8 @@ export const Swap = ({
         swapForToken={toToken}
         repRate={REP_RATE}
         ethRate={ETH_RATE}
+        ethToDaiRate={ethToDaiRate}
+        repToDaiRate={repToDaiRate}
       />
 
       <div>

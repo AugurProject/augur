@@ -4,12 +4,15 @@ import { BigNumber, createBigNumber } from 'utils/create-big-number';
 import { formatEther, formatRep, formatDai } from 'utils/format-number';
 
 import Styles from 'modules/swap/components/rate.styles.less';
+import { FormattedNumber } from 'modules/types';
 
 interface RateProps {
   baseToken: string;
   swapForToken: string;
   repRate: BigNumber;
   ethRate: BigNumber;
+  ethToDaiRate: FormattedNumber;
+  repToDaiRate: FormattedNumber
 }
 
 export const Rate = ({
@@ -17,22 +20,21 @@ export const Rate = ({
   swapForToken,
   repRate,
   ethRate,
+  ethToDaiRate,
 }: RateProps) => {
   let displayRate = null;
   if (swapForToken === REP) {
     const rate =
-      baseToken === DAI || baseToken === USDC || baseToken === USDT
-        ? formatDai(repRate).formattedValue + ' DAI'
-        : formatEther(repRate.multipliedBy(ethRate)).formattedValue + ' ETH';
+      baseToken === DAI
+        ? formatDai((repRate).multipliedBy(ethToDaiRate.value)).formattedValue + ' DAI'
+        : formatEther(repRate).formattedValue + ' ETH';
 
     displayRate = `1 ${swapForToken} = ${rate}`;
   } else {
     const rate =
-      baseToken === USDC || baseToken === USDT
-        ? `1 ${baseToken}`
-        : baseToken === ETH
-        ? formatEther(ethRate).formattedValue + ' ETH'
-        : formatRep(createBigNumber(1).dividedBy(repRate)).formattedValue +
+      baseToken === ETH
+        ? formatEther(repRate).formattedValue + ' ETH'
+        : formatDai((repRate).multipliedBy(ethToDaiRate.value)).formattedValue  +
           ' REP';
 
     displayRate = `1 ${swapForToken} = ${rate}`;
