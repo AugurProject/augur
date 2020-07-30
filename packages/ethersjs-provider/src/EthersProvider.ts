@@ -230,14 +230,17 @@ export class EthersProvider extends ethers.providers.BaseProvider
 
   async getGasPrice(): Promise<ethers.utils.BigNumber> {
     if (this.overrideGasPrice !== null) {
-      return this.overrideGasPrice;
+      const gasPrice = await this.overrideGasPrice;
+      return gasPrice;
     }
-    return super.getGasPrice();
+    const gasPrice = await super.getGasPrice();
+    return gasPrice;
   }
 
   async estimateGas(
     transaction: ethers.providers.TransactionRequest
   ): Promise<ethers.utils.BigNumber> {
+    transaction.gasPrice = await this.getGasPrice();
     let gasEstimate = new BigNumber(
       (await super.estimateGas(transaction)).toString()
     );
