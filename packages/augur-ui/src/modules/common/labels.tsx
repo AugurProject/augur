@@ -1490,7 +1490,6 @@ export const CategoryTagTrail = ({ categories }: CategoryTagTrailProps) => (
 interface ApprovalTxButtonLabelProps {
   checkApprovals: Function;
   doApprovals: Function;
-  numApprovals: number;
   buttonName: string;
   className?: string;
   account: string;
@@ -1504,7 +1503,6 @@ interface ApprovalTxButtonLabelProps {
 export const ApprovalTxButtonLabel = ({
   checkApprovals,
   doApprovals,
-  numApprovals = 1,
   buttonName,
   className,
   account,
@@ -1515,13 +1513,13 @@ export const ApprovalTxButtonLabel = ({
   disabled = false,
   addFunds,
 }: ApprovalTxButtonLabelProps) => {
-  const [isApproved, setIsApproved] = useState(true);
+  const [approvalsNeeded, setApprovalsNeeded] = useState(0);
   const [insufficientEth, setInsufficientEth] = useState(false);
-  const [description, setDescription] = useState(`${buttonName} requires ${numApprovals} approval${numApprovals > 1 ? 's' : ''}`);
+  const [description, setDescription] = useState('');
   const [isProcessing, setIsProcessing] = useState(false);
 
   useEffect(() => {
-      const gasNeeded = constants.APPROVE_GAS_ESTIMATE.times(numApprovals);
+      const gasNeeded = constants.APPROVE_GAS_ESTIMATE.times(approvalsNeeded);
       const ethNeededForGas = createBigNumber(
         formatGasCostToEther(
           gasNeeded,
@@ -1532,19 +1530,25 @@ export const ApprovalTxButtonLabel = ({
       const notEnoughEth = createBigNumber(userEthBalance).lt(createBigNumber(ethNeededForGas));
       setInsufficientEth(notEnoughEth);
       if (notEnoughEth) {
-        setDescription(`Insufficient ETH to approve trading. ${ethNeededForGas} ETH cost.`)
+        setDescription(`Insufficient ETH to approve trading. ${ethNeededForGas} ETH cost.`);
+      } else {
+        setDescription(`${buttonName} requires ${approvalsNeeded} approval${approvalsNeeded > 1 ? 's' : ''}`);
       }
-  }, [userEthBalance, gasPrice])
+  }, [userEthBalance, gasPrice, approvalsNeeded])
+
+  function doCheckApprovals() {
+    checkApprovals(account).then(approvalsNeeded => {
+      setApprovalsNeeded(approvalsNeeded);
+      isApprovalCallback(approvalsNeeded === 0);
+    });
+  }
 
   useEffect(() => {
-    checkApprovals(account).then(approved => {
-      setIsApproved(approved);
-      isApprovalCallback(approved);
-    });
+    doCheckApprovals();
   }, []);
 
   return (
-    !isApproved ? (
+    (approvalsNeeded > 0) ? (
       <div className={classNames(Styles.ModalMessageLabel, className)}>
         <DismissableNotice
           show={true}
@@ -1555,11 +1559,10 @@ export const ApprovalTxButtonLabel = ({
             } else {
               setIsProcessing(true)
               doApprovals(account).then(() => {
-                setIsApproved(true);
-                isApprovalCallback(true);
+                doCheckApprovals();
                 // delay disabling the button just in case there is a lag updating state
                 setTimeout(() => setIsProcessing(false), 300);
-              });
+              }).catch(() => setIsProcessing(false));
             }
           }}
           buttonText={insufficientEth ? 'Add Funds' : buttonName}

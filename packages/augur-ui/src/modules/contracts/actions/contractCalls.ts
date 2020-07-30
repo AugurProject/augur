@@ -789,7 +789,6 @@ const APPROVAL_TEST_AMOUNT = new BigNumber(0);
 export async function isContractApproval(account, contract, approvalContract): Promise<boolean> {
   try {
     const currentAllowance = await approvalContract.allowance_(account, contract);
-    console.log(String(currentAllowance), account, contract);
     return currentAllowance.gt(APPROVAL_TEST_AMOUNT);
   }
   catch(error) {
@@ -797,9 +796,10 @@ export async function isContractApproval(account, contract, approvalContract): P
   }
 }
 
-export async function isApprovedMarketCreation(address) {
+export async function approvalsNeededMarketCreation(address) {
   const { contracts } = augurSdk.get();
-  return await isContractApproval(address, contracts.augur.address, contracts.cash);
+  const isApproved = await isContractApproval(address, contracts.augur.address, contracts.cash);
+  return Number(!isApproved); // true is 1, so negating. false is 0 so negating.
 }
 
 export async function approveMarketCreation(): Promise<void> {
@@ -808,13 +808,14 @@ export async function approveMarketCreation(): Promise<void> {
   return await contracts.cash.approve(augurContract, APPROVAL_AMOUNT);
 }
 
-export async function isApprovedToTrade(address): Promise<boolean> {
+export async function approvalsNeededToTrade(address): Promise<number> {
   const { contracts } = augurSdk.get();
   const cashContractApproval = await isContractApproval(address, contracts.ZeroXTrade.address, contracts.cash);
   const fillContractApproval = await isContractApproval(address, contracts.fillOrder.address, contracts.cash);
   const fillShareAllContractApproval = await contracts.shareToken.isApprovedForAll_(address, contracts.fillOrder.address);
   console.log(fillContractApproval, cashContractApproval, fillShareAllContractApproval);
-  return fillContractApproval && cashContractApproval && fillShareAllContractApproval
+  const approvals = [fillContractApproval, cashContractApproval, fillShareAllContractApproval].filter(a => !a);
+  return (approvals.length > 0 ? approvals.length + 1 : 0); // add additional 1 for referral address
 }
 
 export async function approveToTrade(address, referalAddress = NULL_ADDRESS) {
