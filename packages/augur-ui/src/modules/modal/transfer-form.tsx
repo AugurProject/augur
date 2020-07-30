@@ -41,7 +41,6 @@ interface TransferFormProps {
   account: string;
   GsnEnabled: boolean;
   gasPrice: number;
-  useSigner?: boolean;
   signerAddress?: string;
   transactionLabel: string;
   signingEthBalance: string;
@@ -64,7 +63,6 @@ export const TransferForm = ({
   balances,
   account,
   gasPrice,
-  useSigner,
   transactionLabel,
   signingEthBalance,
   tokenName,
@@ -76,6 +74,7 @@ export const TransferForm = ({
   const [gasCosts, setGasCosts] = useState(
     createBigNumber(fallBackGasCosts[DAI.toLowerCase()])
   );
+  const [useSigner, setUseSigner] = useState(true);
   const getOptions = () => {
     const tokenOptions = {
       [DAI]: {
@@ -91,12 +90,10 @@ export const TransferForm = ({
         value: ETH,
       },
     };
-    if (useSigner && !tokenName) return [tokenOptions[DAI]];
-    if (useSigner && tokenName) return [tokenOptions[tokenName]];
     return [tokenOptions[DAI], tokenOptions[ETH], tokenOptions[REP]];
   };
   const [state, setState] = useState({
-    address: useSigner ? account : '',
+    address: '',
     errors: {
       address: '',
       amount: '',
@@ -211,7 +208,7 @@ export const TransferForm = ({
       } is min`;
     }
 
-    if ((useSigner || signerPays) && amountMinusGas.lt(ZERO)) {
+    if (amountMinusGas.lt(ZERO)) {
       updatedErrors.amount = `Not enough ETH to pay transaction fee. ${amountMinusGas.abs()} is needed`;
     }
 
@@ -287,7 +284,6 @@ export const TransferForm = ({
                 type='text'
                 value={address}
                 placeholder='0x...'
-                disabled={useSigner}
                 onChange={addressChange}
                 errorMessage={errors.address.length > 0 ? errors.address : ''}
               />

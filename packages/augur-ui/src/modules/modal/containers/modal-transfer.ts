@@ -20,7 +20,6 @@ import { WALLET_STATUS_VALUES } from 'modules/common/constants';
 const mapStateToProps = (state: AppState) => {
   const { loginAccount, appStatus, modal } = state;
   const { balances } = loginAccount;
-  const walletStatus = appStatus[WALLET_STATUS];
   balances.dai = String(totalTradingBalance(loginAccount));
   const gasPrice = state.gasPriceInfo.userDefinedGasPrice || state.gasPriceInfo.average;
   const signingEthBalance = loginAccount.balances.signerBalances.eth;
@@ -46,8 +45,8 @@ const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({
   closeModal: () => dispatch(closeModal()),
   transferFundsGasEstimate: (amount: string, asset: string, to: string) =>
     transferFundsGasEstimate(amount, asset, to),
-  transferFunds: (amount: string, asset: string, to: string, useSigner: boolean, useTopOff: boolean) => {
-    dispatch(transferFunds(amount, asset, to, useSigner, useTopOff));
+  transferFunds: (amount: string, asset: string, to: string) => {
+    dispatch(transferFunds(amount, asset, to));
   },
 });
 
@@ -69,8 +68,8 @@ const mergeProps = (sP: any, dP: any, oP: any) => ({
   },
   transactionLabel: sP.transactionLabel,
   transferFundsGasEstimate: (amount: string, asset: string, to: string) => dP.transferFundsGasEstimate(amount, asset, to),
-  transferFunds: (amount: string, asset: string, to: string, useSigner: boolean, useTopOff: boolean) =>
-    dP.transferFunds(amount, asset, to, useSigner, useTopOff),
+  transferFunds: (amount: string, asset: string, to: string) =>
+    dP.transferFunds(amount, asset, to),
 });
 
 export default withRouter(

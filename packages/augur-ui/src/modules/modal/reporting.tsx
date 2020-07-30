@@ -55,6 +55,7 @@ interface ModalReportingProps {
   closeAction: Function;
   market: MarketData;
   rep: string;
+  availableEthBalance: string;
   title: string;
   selectedOutcome?: number;
   isInvalid?: boolean;
@@ -368,7 +369,8 @@ export default class ModalReporting extends Component<
       migrateRep,
       isDisputing,
       getRepModal,
-      warpSyncHash
+      warpSyncHash,
+      availableEthBalance
     } = this.props;
     const {
       checked,
@@ -442,6 +444,7 @@ export default class ModalReporting extends Component<
               inputScalarOutcome={inputScalarOutcome}
               userCurrentDisputeRound={userCurrentDisputeRound}
               isDisputing={isDisputing}
+              availableEthBalance={availableEthBalance}
             />
           </div>
         </main>

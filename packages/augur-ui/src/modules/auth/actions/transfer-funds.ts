@@ -6,7 +6,6 @@ import {
   sendEthers,
   sendRep,
   sendRep_estimateGas,
-  withdrawAllFunds,
 } from 'modules/contracts/actions/contractCalls';
 import { createBigNumber } from 'utils/create-big-number';
 import { updateAssets } from 'modules/auth/actions/update-assets';
@@ -67,13 +66,3 @@ export function transferFundsGasEstimate(
     return createBigNumber(TRANSFER_ETH_GAS_COST);
   }
 }
-
-export const withdrawTransfer = destination => {
-  return async dispatch => {
-    try {
-      await withdrawAllFunds(destination);
-    } catch (e) {
-      console.log('error withdraw/transfer', e);
-    }
-  };
-};

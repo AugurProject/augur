@@ -1606,28 +1606,6 @@ export const ModalLabelNotice = (props: DismissableNoticeProps) => (
   </div>
 );
 
-const mapStateToPropsInitWalletModal = (state: AppState) => ({
-  gsnUnavailable: isGSNUnavailable(state),
-});
-
-const InitializeWalletModalNoticeCmp = ({ gsnUnavailable }) => (
-  <>
-    {gsnUnavailable && (
-      <div className={classNames(Styles.ModalMessageLabelInitWallet)}>
-        <DismissableNotice
-          show
-          buttonType={DISMISSABLE_NOTICE_BUTTON_TYPES.NONE}
-          title={`The fee displayed is higher than normal because it includes a one time only account activation.`}
-        />
-      </div>
-    )}
-  </>
-);
-
-export const InitializeWalletModalNotice = connect(
-  mapStateToPropsInitWalletModal
-)(InitializeWalletModalNoticeCmp);
-
 export const AutoCancelOrdersNotice = () => (
     <div className={classNames(Styles.ModalMessageAutoCancel)}>
       <DismissableNotice
@@ -1637,6 +1615,7 @@ export const AutoCancelOrdersNotice = () => (
       />
     </div>
 );
+
 export const InsufficientFundsNotice = () => (
   <div className={classNames(Styles.ModalMessageAutoCancel)}>
     <DismissableNotice

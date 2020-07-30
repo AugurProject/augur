@@ -21,6 +21,7 @@ import {
   MODAL_INITIALIZE_ACCOUNT,
   WARNING,
   WALLET_STATUS_VALUES,
+  GWEI_CONVERSION,
 } from 'modules/common/constants';
 import {
   FormattedNumber,
@@ -43,7 +44,6 @@ import {
   RepBalance,
   MovementLabel,
   InReportingLabel,
-  InitializeWalletModalNotice,
   TransactionFeeLabel,
 } from 'modules/common/labels';
 import { ButtonActionType } from 'modules/types';
@@ -480,6 +480,7 @@ export interface DisputingBondsViewProps {
   gsnUnavailable: boolean;
   gsnWalletInfoSeen: boolean;
   initializeGsnWallet: Function;
+  availableEthBalance: string;
 }
 
 interface DisputingBondsViewState {
@@ -488,6 +489,7 @@ interface DisputingBondsViewState {
   stakeError: string;
   isScalar: boolean;
   gasEstimate: string;
+  ethNeededForGas: string;
 }
 
 export class DisputingBondsView extends Component<
@@ -500,6 +502,7 @@ export class DisputingBondsView extends Component<
     stakeError: '',
     isScalar: this.props.market.marketType === SCALAR,
     gasEstimate: DISPUTE_GAS_COST,
+    ethNeededForGas: '0'
   };
 
   updateScalarOutcome = (range: string) => {
@@ -538,11 +541,20 @@ export class DisputingBondsView extends Component<
       tentativeWinning,
       isInvalid,
       warpSyncHash,
+      availableEthBalance,
+      gasPrice,
     } = this.props;
     let inputToAttoRep = null;
-    const { isScalar } = this.state;
+    const { isScalar, gasEstimate } = this.state;
     const min = formatAttoRep(market.noShowBondAmount).value;
     const remaining = formatAttoRep(stakeRemaining).value;
+
+    const gasEstimateInEth = formatGasCostToEther(
+      gasEstimate,
+      { decimalsRounded: 4 },
+      createBigNumber(GWEI_CONVERSION).multipliedBy(gasPrice)
+    );
+    const ethNeededForGas = String(createBigNumber(availableEthBalance).minus(gasEstimateInEth));
     if (!isNaN(Number(inputStakeValue))) {
       inputToAttoRep = convertDisplayValuetoAttoValue(
         createBigNumber(inputStakeValue)
@@ -574,6 +586,11 @@ export class DisputingBondsView extends Component<
         stakeError: `Value is bigger than needed: ${remaining} REP`,
         disabled: true,
       });
+    } else if (createBigNumber(ethNeededForGas).lt(ZERO)) {
+      this.setState({
+        stakeError: `Insufficient ETH to pay transaction fee, ${ethNeededForGas} ETH needed.`,
+        disabled: true,
+      });
     } else if (
       !tentativeWinning &&
       stakeRemaining &&
@@ -600,12 +617,11 @@ export class DisputingBondsView extends Component<
   };
 
   async componentDidMount() {
-    if (this.props.GsnEnabled) {
-      const gasLimit = await this.props.reportAction(true);
-      this.setState({
-        gasEstimate: gasLimit,
-      });
-    }
+    const gasLimit = await this.props.reportAction(true);
+    this.setState({
+      gasEstimate: gasLimit,
+    });
+
     if (this.props.isWarpSync) {
       this.updateScalarOutcome(this.props.warpSyncHash);
       this.updateInputtedStake('0');
@@ -636,6 +652,7 @@ export class DisputingBondsView extends Component<
       stakeError,
       isScalar,
       gasEstimate,
+      ethNeededForGas,
     } = this.state;
     const min = convertAttoValueToDisplayValue(
       createBigNumber(market.noShowBondAmount)
@@ -693,7 +710,9 @@ export class DisputingBondsView extends Component<
           value={formatRep(stakeValue || ZERO).formatted + ' REP'}
         />
         <TransactionFeeLabel gasCostDai={gasCostDai} />
-        <InitializeWalletModalNotice />
+        { createBigNumber(ethNeededForGas).lt(ZERO) &&
+          <span>{`Insufficient ETH to pay transaction fee, ${ethNeededForGas} ETH cost.`}</span>
+        }
         <PrimaryButton
           text="Confirm"
           action={() => {
@@ -916,10 +935,9 @@ export class ReportingBondsView extends Component<
     ) {
       buttonDisabled = true;
     }
-    let insufficientFunds = false;
-    if (userFunds.lt(createBigNumber(gasEstimate))) {
+    let insufficientFunds = userFunds.minus(createBigNumber(gasEstimate));
+    if (insufficientFunds.lt(ZERO)) {
       buttonDisabled = true;
-      insufficientFunds = true;
     }
 
     let insufficientRep = '';
@@ -987,12 +1005,11 @@ export class ReportingBondsView extends Component<
         )}
         <div>
           <TransactionFeeLabel gasCostDai={gasCostDai} />
-          {insufficientFunds && (
+          {insufficientFunds.lt(ZERO) && (
             <span className={FormStyles.ErrorText}>
-              Insufficient Funds to complete transaction
+              {`Insufficient ETH to pay transaction fee, ${insufficientFunds} ETH cost.`}
             </span>
           )}
-          <InitializeWalletModalNotice />
         </div>
 
         {migrateRep &&
@@ -1037,13 +1054,7 @@ export class ReportingBondsView extends Component<
               : buttonDisabled
           }
           action={() => {
-            if (gsnUnavailable && !gsnWalletInfoSeen) {
-              initializeGsnWallet(() => {
-                reportAction();
-              });
-            } else {
-              reportAction();
-            }
+            reportAction();
           }}
         />
       </div>

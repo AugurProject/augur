@@ -37,6 +37,7 @@ const mapStateToProps = (state: AppState, ownProps) => {
     modal: modal,
     market,
     rep: formatRep(loginAccount.balances.rep).formatted,
+    availableEthBalance: loginAccount.balances.eth,
     userAccount: loginAccount.address,
     migrateRep,
     migrateMarket,

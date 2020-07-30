@@ -14,7 +14,6 @@ import {
   Breakdown, ButtonsRow,
 } from '../common';
 import { displayGasInDai } from 'modules/app/actions/get-ethToDai-rate';
-import { InitializeWalletModalNotice } from 'modules/common/labels';
 import { FormattedNumber } from 'modules/types';
 import { getGasCost } from 'modules/modal/gas';
 import Styles from 'modules/modal/components/common/common.styles.less';
@@ -159,7 +158,6 @@ export const ModalParticipate = (props: ModalParticipateProps) => {
           innerLabel={REP}
         />
         <Breakdown rows={items} />
-        <InitializeWalletModalNotice />
         <ButtonsRow buttons={buttons}/>
       </div>
     </section>

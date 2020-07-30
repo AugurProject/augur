@@ -8,6 +8,7 @@ const mapStateToProps = (state: AppState) => {
     userAvailableRep: state.loginAccount.balances && state.loginAccount.balances.rep,
     gasPrice: state.gasPriceInfo.userDefinedGasPrice || state.gasPriceInfo.average,
     ethToDaiRate: state.appStatus.ethToDaiRate,
+    availableEthBalance: state.loginAccount.balances.eth,
   };
 };
 

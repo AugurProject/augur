@@ -296,6 +296,7 @@ export interface ReportingRadioBarProps extends BaseRadioButtonProp {
   hideButton?: boolean;
   isDisputing: boolean;
   isWarpSync: boolean;
+  availableEthBalance: string;
 }
 
 export interface RadioTwoLineBarProps extends BaseRadioButtonProp {
@@ -786,6 +787,7 @@ interface ReportingRadioGroupProps {
   inputScalarOutcome?: string;
   userCurrentDisputeRound: Getters.Accounts.UserCurrentOutcomeDisputeStake[];
   isDisputing: boolean;
+  availableEthBalance: string;
 }
 
 export const ReportingRadioBarGroup = ({
@@ -800,6 +802,7 @@ export const ReportingRadioBarGroup = ({
   updateScalarOutcome,
   userCurrentDisputeRound,
   isDisputing,
+  availableEthBalance,
 }: ReportingRadioGroupProps) => {
   const { disputeInfo } = market;
   const tentativeWinning = radioButtons.find(
@@ -860,6 +863,7 @@ export const ReportingRadioBarGroup = ({
             hideButton={disputeInfo.disputePacingOn}
             isDisputing={isDisputing}
             isWarpSync={market.isWarpSync}
+            availableEthBalance={availableEthBalance}
           />
         </section>
       )}
@@ -897,6 +901,7 @@ export const ReportingRadioBarGroup = ({
               )}
               isDisputing={isDisputing}
               isWarpSync={market.isWarpSync}
+              availableEthBalance={availableEthBalance}
             />
           )
       )}
@@ -929,6 +934,7 @@ export const ReportingRadioBarGroup = ({
               )}
               isDisputing={isDisputing}
               isWarpSync={market.isWarpSync}
+              availableEthBalance={availableEthBalance}
             />
           )
       )}
@@ -992,6 +998,7 @@ export class ReportingRadioBar extends Component<ReportingRadioBarProps, {}> {
       hideButton,
       isDisputing,
       isWarpSync,
+      availableEthBalance,
     } = this.props;
 
     let { stake } = this.props;
@@ -1097,6 +1104,7 @@ export class ReportingRadioBar extends Component<ReportingRadioBarProps, {}> {
                   tentativeWinning={stake && stake.tentativeWinning}
                   reportAction={reportAction}
                   isWarpSync={isWarpSync}
+                  availableEthBalance={availableEthBalance}
                 />
               )}
             </>
@@ -1110,6 +1118,7 @@ export class ReportingRadioBar extends Component<ReportingRadioBarProps, {}> {
               reportAction={reportAction}
               inputtedReportingStake={inputtedReportingStake}
               updateInputtedStake={updateInputtedStake}
+              availableEthBalance={availableEthBalance}
             />
           )}
         </div>
