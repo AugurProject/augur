@@ -196,7 +196,7 @@ export const CashOutForm = ({
   const isValid =
     errors.length === 0 &&
     address.length > 0 &&
-    amountDai.value > 0;
+    (amountDai.value > 0 || totalRep !== '0' || totalLegacyRep !== '0' || totalEth !== '0');
 
   let totalGasCost = 0;
   if (walletStatus != WALLET_STATUS_VALUES.CREATED) {
@@ -208,6 +208,7 @@ export const CashOutForm = ({
   if (totalEth !== "0") totalGasCost += 30000;
   // To safely cover anything unexpected either in low gas cost or in fluctuating gas price
   totalGasCost *= 2;
+  console.log(`TOTAL GAS: ${totalGasCost}`);
   const ethRequired = createBigNumber(gasPrice).multipliedBy(totalGasCost).dividedBy(GWEI_CONVERSION).toFixed();
 
   return (
