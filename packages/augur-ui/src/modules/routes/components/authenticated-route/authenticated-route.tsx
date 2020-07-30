@@ -15,7 +15,6 @@ const AuthenticatedRoute = ({
   ...rest
 }: AuthenticatedRouteProps) => {
   const { isLogged, restoredAccount } = useAppStatusStore();
-
   return (
     <Route
       {...rest}

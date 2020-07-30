@@ -32,7 +32,6 @@ export const RewriteUrlParams = (windowRef: Window, BaseCmp: React.ComponentType
         hash: path
       });
     }
-
     // Discover params added to window location and pass to wrapped component.
     const parsedParams = parseQuery(windowRef.location.search);
     const windowParams = {

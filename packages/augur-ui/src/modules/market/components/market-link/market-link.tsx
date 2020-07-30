@@ -19,8 +19,10 @@ import {
 import {
   MARKET_ID_PARAM_NAME,
   RETURN_PARAM_NAME,
-  OUTCOME_ID_PARAM_NAME
+  OUTCOME_ID_PARAM_NAME,
+  THEME_NAME,
 } from "modules/routes/constants/param-names";
+import { useAppStatusStore } from 'modules/app/store/app-status';
 
 interface MarketLinkProps {
   id: string;
@@ -31,6 +33,7 @@ interface MarketLinkProps {
 }
 
 const MarketLink: React.FC<MarketLinkProps> = ({ linkType, className, id, outcomeId, children, headerType }) => {
+  const { theme } = useAppStatusStore();
   let path;
 
   switch (linkType) {
@@ -49,6 +52,7 @@ const MarketLink: React.FC<MarketLinkProps> = ({ linkType, className, id, outcom
 
   let queryLink = {
     [MARKET_ID_PARAM_NAME]: id,
+    [THEME_NAME]: theme,
   };
 
   if (outcomeId) {

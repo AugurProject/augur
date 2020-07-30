@@ -10,6 +10,7 @@ import {
   RETURN_PARAM_NAME,
   OUTCOME_ID_PARAM_NAME,
   CREATE_MARKET_FORM_PARAM_NAME,
+  THEME_NAME,
 } from './routes/constants/param-names';
 import { Getters, PayoutNumeratorValue } from '@augurproject/sdk';
 import type { TransactionMetadataParams, EthersSigner } from '@augurproject/contract-dependencies-ethers';
@@ -573,6 +574,7 @@ export interface QueryEndpoints {
   [CATEGORY_PARAM_NAME]?: string;
   [TAGS_PARAM_NAME]?: string;
   [CREATE_MARKET_FORM_PARAM_NAME]?: string;
+  [THEME_NAME]?: string;
 }
 export interface Endpoints {
   ethereumNodeHTTP: string;

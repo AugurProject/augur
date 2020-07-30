@@ -264,22 +264,26 @@
     grid-column: 1;
     grid-row: span 2;
 
-    &[name*="BettorsIcon"] > path {
+    &[name*='BettorsIcon'] > path {
       stroke: var(--color-primary-text);
       fill: none;
-  
+
       &:nth-of-type(3) {
         stroke: none;
         fill: var(--color-primary-text);
       }
     }
 
-    &[name="DaiLogoIcon"] > g > path {
+    &[name='DaiLogoIcon'] > g > path {
       fill: var(--color-primary-text);
     }
 
-    &[name*="BetsIcon"] > g > path {
-      stroke: var(--color-primary-text);
+    &[name*='BetsIcon'] > g {
+      opacity: 1;
+
+      > path {
+        stroke: var(--color-primary-text);
+      }
     }
   }
 

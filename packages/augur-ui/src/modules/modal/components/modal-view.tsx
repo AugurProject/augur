@@ -5,10 +5,14 @@ import ModalReporting from 'modules/modal/reporting';
 import { TransferForm as ModalWithdraw } from 'modules/modal/transfer-form';
 import { ModalCashOut } from 'modules/modal/cash-out-form';
 import { MigrateRep as ModalMigrateRep } from 'modules/modal/migrate-rep';
-import { Transactions as ModalTransactions } from "modules/modal/transactions";
-import ModalNetworkDisconnected from "modules/modal/components/modal-network-disconnected";
+import { Transactions as ModalTransactions } from 'modules/modal/transactions';
+import ModalNetworkDisconnected from 'modules/modal/components/modal-network-disconnected';
 import { ModalBuyDai } from 'modules/modal/onboarding-modals';
-import { ModalClaimFees, ModalUnsignedOrders, ModalOpenOrders } from 'modules/modal/shared-modals';
+import {
+  ModalClaimFees,
+  ModalUnsignedOrders,
+  ModalOpenOrders,
+} from 'modules/modal/shared-modals';
 import { ModalClaimMarketsProceeds } from 'modules/modal/shared-modals';
 import { ModalParticipate } from 'modules/modal/components/modal-participate';
 import ModalNetworkConnect from 'modules/modal/components/modal-network-connect';
@@ -32,7 +36,28 @@ import Styles from 'modules/modal/common.styles.less';
 import { useAppStatusStore } from 'modules/app/store/app-status';
 import { track, MODAL_VIEWED } from 'services/analytics/helpers';
 import { ModalAccountCreated } from 'modules/modal/onboarding-modals';
-import { ModalCreateMarket, ModalDaiFaucet, ModalCreationHelp, ModalFinalize, ModalDiscard, ModalDrQuickGuide, ModalHelp, ModalRepFaucet, ModalSignTransaction, ModalMarketLoading, ModalOdds, ModalInvalidMarketRules, ModalNetworkMismatch, ModalNetworkDisabled, ModalMigrateMarket, ModalWalletError, ModalInitializeAccounts, ReportingOnly, ModalCashoutBet, ModalCancelAllBets } from '../message-modals';
+import {
+  ModalCreateMarket,
+  ModalDaiFaucet,
+  ModalCreationHelp,
+  ModalFinalize,
+  ModalDiscard,
+  ModalDrQuickGuide,
+  ModalHelp,
+  ModalRepFaucet,
+  ModalSignTransaction,
+  ModalMarketLoading,
+  ModalOdds,
+  ModalInvalidMarketRules,
+  ModalNetworkMismatch,
+  ModalNetworkDisabled,
+  ModalMigrateMarket,
+  ModalWalletError,
+  ModalInitializeAccounts,
+  ReportingOnly,
+  ModalCashoutBet,
+  ModalCancelAllBets,
+} from 'modules/modal/message-modals';
 import { HardwareWallet } from 'modules/modal/hardware-wallet';
 
 const ESCAPE_KEYCODE = 27;
@@ -64,7 +89,7 @@ function selectModal(type, props, closeModal, modal) {
         </>
       );
     case TYPES.MODAL_HARDWARE_WALLET:
-      return <HardwareWallet />
+      return <HardwareWallet />;
     case TYPES.MODAL_DAI_FAUCET:
       return <ModalDaiFaucet />;
     case TYPES.MODAL_CREATION_HELP:
@@ -74,7 +99,7 @@ function selectModal(type, props, closeModal, modal) {
     case TYPES.MODAL_CASHOUT_BET:
       return <ModalCashoutBet />;
     case TYPES.MODAL_CANCEL_ALL_BETS:
-        return <ModalCancelAllBets />;
+      return <ModalCancelAllBets />;
     case TYPES.MODAL_MIGRATE_REP:
       return <ModalMigrateRep />;
     case TYPES.MODAL_LEDGER:
@@ -129,23 +154,23 @@ function selectModal(type, props, closeModal, modal) {
     case TYPES.MODAL_TUTORIAL_INTRO:
       return <ModalTutorialIntro {...modal} />;
     case TYPES.MODAL_ACCOUNT_CREATED:
-      return <ModalAccountCreated />
+      return <ModalAccountCreated />;
     case TYPES.MODAL_AUGUR_USES_DAI:
-      return <ModalAugurUsesDai />
+      return <ModalAugurUsesDai />;
     case TYPES.MODAL_ERROR:
-      return <ModalWalletError />
+      return <ModalWalletError />;
     case TYPES.MODAL_SCALAR_MARKET:
-      return <ModalScalar {...modal} />
+      return <ModalScalar {...modal} />;
     case TYPES.MODAL_INVALID_MARKET_RULES:
       return <ModalInvalidMarketRules />;
     case TYPES.MODAL_CASHOUT:
-        return <ModalCashout />;
+      return <ModalCashout />;
     case TYPES.MODAL_INITIALIZE_ACCOUNT:
       return <ModalInitializeAccounts />;
     case TYPES.MODAL_FROZEN_FUNDS:
       return <ModalFrozenFunds />;
     case TYPES.MODAL_REPORTING_ONLY:
-        return <ReportingOnly />;
+      return <ReportingOnly />;
     default:
       return <div />;
   }
@@ -153,7 +178,10 @@ function selectModal(type, props, closeModal, modal) {
 
 const ModalView = () => {
   const history = useHistory();
-  const { modal, actions: { closeModal } } = useAppStatusStore();
+  const {
+    modal,
+    actions: { closeModal },
+  } = useAppStatusStore();
   const [locationKeys, setLocationKeys] = useState([]);
 
   const handleKeyDown = e => {
@@ -174,7 +202,6 @@ const ModalView = () => {
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, []);
 
-
   useEffect(() => {
     return history.listen(location => {
       if (history.action === 'PUSH') {
@@ -194,11 +221,12 @@ const ModalView = () => {
       }
     });
   }, [locationKeys]);
-  const trackModalViewed = (modalName, payload) => track(modalName + ' - ' + MODAL_VIEWED, payload);
+  const trackModalViewed = (modalName, payload) =>
+    track(modalName + ' - ' + MODAL_VIEWED, payload);
 
   const Modal = selectModal(
-     modal.type,
-    {  modal, closeModal, trackModalViewed },
+    modal.type,
+    { modal, closeModal, trackModalViewed },
     closeModal,
     modal
   );
@@ -207,8 +235,7 @@ const ModalView = () => {
     <section className={Styles.ModalView}>
       <div
         className={classNames({
-          [Styles.Taller]:
-            modal.type === TYPES.MODAL_DISCLAIMER,
+          [Styles.Taller]: modal.type === TYPES.MODAL_DISCLAIMER,
         })}
       >
         {Modal}

@@ -18,6 +18,8 @@ import {
   CATEGORY_PARAM_NAME,
   MARKET_CARD_FORMATS,
   SPORTS_MARKET_TYPES,
+  MAX_FEE_100_PERCENT,
+  MAX_SPREAD_ALL_SPREADS,
 } from 'modules/common/constants';
 import { PillSelection } from 'modules/common/selection';
 import { Getters } from '@augurproject/sdk';
@@ -41,8 +43,6 @@ import {
   MARKET_MAX_FEES,
   MARKET_MAX_SPREAD,
   MARKET_FILTER,
-  MAX_FEE_100_PERCENT,
-  MAX_SPREAD_ALL_SPREADS,
 } from 'modules/app/store/constants';
 import { updateLoginAccountSettings } from '../actions/update-login-account-settings';
 import { marketListViewed } from 'services/analytics/helpers';

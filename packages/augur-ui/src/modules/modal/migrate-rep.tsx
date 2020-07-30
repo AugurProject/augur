@@ -19,7 +19,8 @@ import {
   GWEI_CONVERSION,
   TRANSACTIONS,
 } from 'modules/common/constants';
-import convertV1ToV2, {
+import {
+  approveAndConvertV1ToV2,
   convertV1ToV2Estimate,
 } from 'modules/account/actions/convert-v1-rep-to-v2';
 
@@ -140,7 +141,7 @@ export const MigrateRep = () => {
             action: showForSafeWallet
               ? () => {
                   closeModal();
-                  convertV1ToV2();
+                  approveAndConvertV1ToV2();
                 }
               : () => closeModal(),
             disabled:

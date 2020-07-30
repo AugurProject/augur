@@ -13,7 +13,7 @@ import {
   DEFAULT_MAX_PRICE,
   DEFAULT_MIN_PRICE,
   OPEN,
-  INVALID_OUTCOME_NAME,
+  INVALID_OUTCOME_COMPARE,
   SHORT,
   ODDS_TYPE,
 } from './constants';
@@ -462,7 +462,7 @@ export const FilledOrder = ({
     marketType,
     originalQuantity
   );
-  const usePercent = outcome === INVALID_OUTCOME_NAME && marketType === SCALAR;
+  const usePercent = outcome === INVALID_OUTCOME_COMPARE && marketType === SCALAR;
   if (usePercent) {
     const market = marketInfos[filledOrder.marketId];
     const orderPricePercent = calcPercentageFromPrice(

@@ -16,8 +16,14 @@ export const loadMarketsInfo = (
     callback(null, []);
     return NO_MARKET_INFOS;
   }
-  const augur = augurSdk.get();
-  const marketInfoArray = await augur.getMarketsInfo({ marketIds });
+  let marketInfoArray = null;
+  try {
+    const augur = augurSdk.get();
+    marketInfoArray = await augur.getMarketsInfo({ marketIds });
+  } catch (e) {
+    console.log(e);
+  }
+
   if (marketInfoArray == null || !marketInfoArray.length) {
     callback("no markets data received", []);
     return NO_MARKET_INFOS;

@@ -1,18 +1,34 @@
 import React from 'react';
+import { useLocation, useHistory } from 'react-router';
 import classNames from 'classnames';
 import { THEMES } from 'modules/common/constants';
 import { useAppStatusStore } from 'modules/app/store/app-status';
 
 import Styles from 'modules/app/components/theme-switch.styles';
+import makePath from 'modules/routes/helpers/make-path';
+import { MARKETS } from 'modules/routes/constants/views';
+import parsePath from 'modules/routes/helpers/parse-path';
 
 export const ThemeSwitch = () => {
-  const { theme, actions: { setTheme } } = useAppStatusStore();
+  const location = useLocation();
+  const history = useHistory();
+  const {
+    theme,
+    actions: { setTheme },
+  } = useAppStatusStore();
+  const notMarkets = parsePath(location.pathname)[0] !== MARKETS;
+  const marketsPath = { pathname: makePath(MARKETS, null) };
   return (
     <ul className={Styles.ThemeSwitch}>
       <li>
         <button
           className={classNames({ [Styles.Active]: theme === THEMES.TRADING })}
-          onClick={() => setTheme(THEMES.TRADING)}
+          onClick={() => {
+            if (theme !== THEMES.TRADING) {
+              setTheme(THEMES.TRADING);
+              if (notMarkets) history.push(marketsPath);
+            }
+          }}
         >
           Trading
         </button>
@@ -28,7 +44,12 @@ export const ThemeSwitch = () => {
       <li>
         <button
           className={classNames({ [Styles.Active]: theme === THEMES.SPORTS })}
-          onClick={() => setTheme(THEMES.SPORTS)}
+          onClick={() => {
+            if (theme !== THEMES.SPORTS) {
+              setTheme(THEMES.SPORTS);
+              if (notMarkets) history.push(marketsPath);
+            }
+          }}
         >
           Sportsbook
         </button>
