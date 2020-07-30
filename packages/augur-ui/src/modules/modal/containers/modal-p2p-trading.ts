@@ -87,7 +87,7 @@ const mergeProps = (sP: any, dP: any, oP: any) => ({
   },
   linkContent: [
     {
-      content: `Users have reported a number of problems with account activation and funding. Do *not* proceed unless you *know what you are doing*. A simplified onboarding UX will be released soon to make the process reliable and fix these issues.`
+      content: `DO NOT PROCEED unless you know what you are doing. Users have reported a number of problems with account activation and funding. A simplified onboarding UX will be released soon to make the process reliable and fix these issues.`
     },
     {
       content:
