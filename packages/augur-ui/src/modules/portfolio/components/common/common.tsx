@@ -13,7 +13,7 @@ import { convertUnixToFormattedDate } from 'utils/format-date';
 import { MyBetsRow } from 'modules/common/table-rows';
 
 import Styles from 'modules/portfolio/components/common/common.styles.less';
-import { FUTURES, TABLET_MAX, ZERO } from 'modules/common/constants';
+import { SPORTS_GROUP_TYPES, TABLET_MAX, ZERO } from 'modules/common/constants';
 import Media from 'react-media';
 import { CashoutButton, PrimaryButton } from 'modules/common/buttons';
 import MarketLink from 'modules/market/components/market-link/market-link';
@@ -124,7 +124,7 @@ export const Game = ({ row, type }: GameProps) => {
           <BetRow
             key={order.outcomeId}
             outcome={order}
-            showExtraRow={type !== FUTURES}
+            showExtraRow={type !== SPORTS_GROUP_TYPES.FUTURES}
           />
         ))}
       </div>

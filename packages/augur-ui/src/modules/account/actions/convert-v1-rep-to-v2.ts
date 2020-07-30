@@ -1,9 +1,5 @@
 import { TXEventName } from '@augurproject/sdk-lite';
 import {
-  MIGRATE_FROM_LEG_REP_TOKEN,
-  V1_REP_MIGRATE_ESTIMATE,
-} from 'modules/common/constants';
-import {
   convertV1ToV2,
   convertV1ToV2_estimate,
   convertV1ToV2Approve,
@@ -15,6 +11,7 @@ import {
 } from 'modules/common/constants';
 import { addUpdatePendingTransaction } from 'modules/pending-queue/actions/pending-queue-management';
 import { updateAssets } from 'modules/auth/actions/update-assets';
+import logError from 'utils/log-error';
 
 export const approveAndConvertV1ToV2 = async (
   useSigningWallet: boolean = false,

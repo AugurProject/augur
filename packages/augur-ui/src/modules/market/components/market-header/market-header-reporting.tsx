@@ -6,7 +6,6 @@ import { ProcessingButton } from 'modules/common/buttons';
 import {
   CLAIMMARKETSPROCEEDS,
   FINALIZE,
-  INVALID_OUTCOME_NAME,
   INVALID_OUTCOME_LABEL,
   PROCEEDS_TO_CLAIM_TITLE,
   REPORTING_STATE,
