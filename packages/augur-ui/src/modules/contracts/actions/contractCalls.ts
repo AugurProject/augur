@@ -788,6 +788,7 @@ const APPROVAL_AMOUNT = new BigNumber(2**200);
 export async function isContractApproval(account, contract, approvalContract): Promise<boolean> {
   try {
     const currentAllowance = await approvalContract.allowance_(account, contract);
+    console.log(String(currentAllowance), account, contract);
     return currentAllowance.gte(APPROVAL_AMOUNT);
   }
   catch(error) {
