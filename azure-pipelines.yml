@@ -89,7 +89,5 @@ jobs:
       - task: npmAuthenticate@0
         inputs:
           workingFile: .npmrc
-          customEndpoint: npmjs-augur-integration
-
       - script: cat .npmrc
       - script: npm access ls-packages
