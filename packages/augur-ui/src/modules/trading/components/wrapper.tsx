@@ -21,12 +21,9 @@ import {
 import convertExponentialToDecimal from 'utils/convert-exponential';
 import { MarketData, OutcomeFormatted } from 'modules/types';
 import { calculateTotalOrderValue } from 'modules/trades/helpers/calc-order-profit-loss-percents';
-import { formatDaiPrice } from 'utils/format-number';
 import { Moment } from 'moment';
 import { calcOrderExpirationTime } from 'utils/format-date';
 import debounce from 'utils/debounce';
-import { ApprovalTxButtonLabel } from 'modules/common/labels';
-import { isApprovedToTrade, approveToTrade } from 'modules/contracts/actions/contractCalls';
 
 export interface SelectedOrderProperties {
   orderPrice: string;

@@ -115,7 +115,7 @@ import {
   ValidationType,
   getTemplateWednesdayAfterOpeningDay,
 } from '@augurproject/templates';
-import { isApprovedMarketCreation, approveMarketCreation } from 'modules/contracts/actions/contractCalls';
+import { approvalsNeededMarketCreation, approveMarketCreation } from 'modules/contracts/actions/contractCalls';
 
 interface FormProps {
   newMarket: NewMarket;
@@ -950,10 +950,9 @@ export default class Form extends React.Component<FormProps, FormState> {
                   className={Styles.MultipleTransactions}
                   title={'Approve to market creation'}
                   buttonName={'Approve'}
-                  numApprovals={1}
                   userEthBalance={availableEth}
                   gasPrice={gasPrice}
-                  checkApprovals={isApprovedMarketCreation}
+                  checkApprovals={approvalsNeededMarketCreation}
                   doApprovals={approveMarketCreation}
                   account={meta.address}
                   isApprovalCallback={(value) => { value && this.setDisableCreate(value)}}

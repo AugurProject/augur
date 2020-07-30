@@ -37,7 +37,7 @@ import { BigNumber, createBigNumber } from 'utils/create-big-number';
 import { LinearPropertyLabel, TransactionFeeLabelToolTip, ApprovalTxButtonLabel } from 'modules/common/labels';
 import { Trade, FormattedNumber } from 'modules/types';
 import { ExternalLinkButton, ProcessingButton, PrimaryButton } from 'modules/common/buttons';
-import { isApprovedToTrade, approveToTrade } from 'modules/contracts/actions/contractCalls';
+import { approvalsNeededToTrade, approveToTrade } from 'modules/contracts/actions/contractCalls';
 
 interface MessageButton {
   action: Function;
@@ -477,10 +477,9 @@ class Confirm extends Component<ConfirmProps, ConfirmState> {
             className={Styles.ApprovalNotice}
             title={'Approve to trade'}
             buttonName={'Approve'}
-            numApprovals={4}
             userEthBalance={String(availableEth)}
             gasPrice={gasPrice}
-            checkApprovals={isApprovedToTrade}
+            checkApprovals={approvalsNeededToTrade}
             doApprovals={() => approveToTrade(account, affiliate)}
             account={account}
             isApprovalCallback={() => checkAccountApproval()}
