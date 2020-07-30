@@ -85,9 +85,11 @@ jobs:
     pool: 'Default'
     steps:
       - template: .azure-templates/node-setup.yml
-      - script: echo "registry = https://registry.npmjs.org/" > .npmrc
+      - script: echo "registry = https://registry.npmjs.org/" > ~/.npmrc
       - task: npmAuthenticate@0
         inputs:
-          workingFile: .npmrc
+          workingFile: ~/.npmrc
           customEndpoint: npmjs-augur-integration
+
+      - script: cat ~/.npmrc
       - script: npm access ls-packages
