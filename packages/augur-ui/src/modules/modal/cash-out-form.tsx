@@ -207,8 +207,7 @@ export const CashOutForm = ({
   if (totalLegacyRep !== "0") totalGasCost += 120000;
   if (totalEth !== "0") totalGasCost += 30000;
   // To safely cover anything unexpected either in low gas cost or in fluctuating gas price
-  totalGasCost *= 2;
-  console.log(`TOTAL GAS: ${totalGasCost}`);
+  totalGasCost *= 1.25;
   const ethRequired = createBigNumber(gasPrice).multipliedBy(totalGasCost).dividedBy(GWEI_CONVERSION).toFixed();
 
   return (

@@ -220,7 +220,7 @@ export class ContractDependenciesGSN extends ContractDependenciesEthers {
   }
 
   setUseRelay(useRelay: boolean): void {
-    this.useRelay = useRelay;
+    //this.useRelay = useRelay;
   }
 
   setUseDesiredEthBalance(useDesiredEthBalance: boolean): void {
