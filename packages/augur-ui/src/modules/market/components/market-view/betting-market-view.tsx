@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { useLocation } from 'react-router';
 import parseQuery from 'modules/routes/helpers/parse-query';
 import { MARKET_ID_PARAM_NAME } from 'modules/routes/constants/param-names';
@@ -23,7 +23,7 @@ import parsePath from 'modules/routes/helpers/parse-path';
 import { convertInputs, findStartTime } from '../common/market-title';
 import { convertUnixToFormattedDate } from 'utils/format-date';
 import { bulkLoadMarketTradingHistory } from 'modules/markets/actions/market-trading-history-management';
-import { useEffect } from 'react';
+import { augurSdk } from "services/augursdk";
 
 export const isMarketView = location =>
   parsePath(location.pathname)[0] === MARKET;
@@ -50,7 +50,7 @@ const BettingMarketView = () => {
     if (!market?.sportsBook) {
       updateMarketsData(null, loadMarketsInfo([marketId]));
     }
-  }, []);
+  }, [augurSdk.client]);
 
   useEffect(() => {
     let isMounted = true;
@@ -75,7 +75,7 @@ const BettingMarketView = () => {
         });
       }
     }
-  }, [market.sportsBook]);
+  }, [market?.sportsBook]);
 
   useEffect(() => {
     let tradeCount = 0;
