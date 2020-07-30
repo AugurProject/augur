@@ -1,6 +1,6 @@
 {
   "name": "@augurproject/sdk",
-  "version": "2.0.5",
+  "version": "2.0.6-alpha.0",
   "description": "Augur SDK",
   "author": "The Augur Developers <team@augur.net>",
   "license": "MIT",
