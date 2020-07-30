@@ -45,7 +45,7 @@ import {
   MARKETS_LIST
 } from 'modules/app/store/constants';
 import { EMPTY_STATE } from 'modules/create-market/constants';
-import { ZERO, NEW_ORDER_GAS_ESTIMATE } from 'modules/common/constants';
+import { ZERO, NEW_ORDER_GAS_ESTIMATE, THEMES } from 'modules/common/constants';
 import { createBigNumber } from 'utils/create-big-number';
 import { LiquidityOrder } from 'modules/types';
 import { formatDai, formatShares } from 'utils/format-number';
@@ -111,8 +111,10 @@ const {
   SET_BETSLIP_MINIMIZED
 } = APP_STATUS_ACTIONS;
 
-const setHTMLTheme = theme =>
+export const setHTMLTheme = theme =>
   document.documentElement.setAttribute(THEME, theme);
+
+export const getHTMLTheme = () => document.documentElement.getAttribute(THEME);
 
 const recalculateCumulativeShares = orders => {
   let counterBids = 0;
@@ -665,6 +667,11 @@ export function AppStatusReducer(state, action) {
 }
 
 export const useAppStatus = (defaultState = DEFAULT_APP_STATUS) => {
+  // if the URL was passed with a t value, update defaultState.
+  const HTMLtheme = document.documentElement.getAttribute(THEME);
+  if (HTMLtheme && THEMES[HTMLtheme]) {
+    defaultState.theme = document.documentElement.getAttribute(THEME);
+  }
   const [state, dispatch] = useReducer(AppStatusReducer, defaultState);
   setHTMLTheme(state.theme);
   window.appStatus = state;

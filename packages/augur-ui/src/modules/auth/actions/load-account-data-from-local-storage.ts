@@ -9,6 +9,7 @@ import { loadMarketsInfoIfNotLoaded } from 'modules/markets/actions/load-markets
 import { loadAnalytics } from 'modules/app/actions/analytics-management';
 import { AppStatus } from 'modules/app/store/app-status';
 import isAddress from 'modules/auth/helpers/is-address';
+import { getHTMLTheme } from 'modules/app/store/app-status-hooks';
 
 export const loadAccountDataFromLocalStorage = (address: string) => {
   const localStorageRef = typeof window !== 'undefined' && window.localStorage;
@@ -27,6 +28,7 @@ export const loadAccountDataFromLocalStorage = (address: string) => {
         loadDrafts,
         setOdds,
         setTimeFormat,
+        setTheme,
       } = AppStatus.actions;
       const {
         oddsType,
@@ -43,8 +45,8 @@ export const loadAccountDataFromLocalStorage = (address: string) => {
         gasPriceInfo,
         drafts,
         analytics,
+        theme,
       } = storedAccountData;
-
       if (settings) {
         const filterOptions = Object.keys(settings).reduce(
           (p, key) => (settings[key] ? { ...p, [key]: settings[key] } : p),
@@ -117,13 +119,18 @@ export const loadAccountDataFromLocalStorage = (address: string) => {
           userDefinedGasPrice: gasPriceInfo.userDefinedGasPrice,
         });
       }
+      if (
+        (theme && AppStatus.get().theme !== theme) ||
+        (theme && getHTMLTheme() !== theme)
+      ) {
+        setTheme(theme);
+      }
       if (oddsType) {
         setOdds(oddsType);
       }
       if (timeFormat) {
         setTimeFormat(timeFormat);
       }
-
     }
   }
 };

@@ -3,10 +3,10 @@ import ReactDOM from 'react-dom';
 import { HashRouter } from 'react-router-dom';
 import { AppStatusProvider } from 'modules/app/store/app-status';
 import MainErrorBoundary from 'modules/app/components/main-error-boundary';
-
+import { parseLocation } from 'modules/routes/helpers/parse-query';
 import { WindowApp } from 'modules/types';
 import { PendingOrdersProvider } from 'modules/app/store/pending-orders';
-
+import { setHTMLTheme } from 'modules/app/store/app-status-hooks';
 console.log(`
   *******************************************
               DEBUGGING INFO
@@ -47,6 +47,10 @@ function render(Root) {
 handleRender();
 
 function handleRender() {
+  const locationParsed = parseLocation(window?.location?.href || '');
+  if (locationParsed.t) {
+    setHTMLTheme(locationParsed.t.toUpperCase());
+  }
   const UpdatedRoot = require('modules/app/components/app').default;
 
   // NOTE --  These are attached for convenience when built for development or debug
