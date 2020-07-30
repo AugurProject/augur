@@ -5,9 +5,6 @@ import { ZERO, REPORTING_STATE, MODAL_INITIALIZE_ACCOUNT } from 'modules/common/
 import { createBigNumber } from 'utils/create-big-number';
 import { AppState } from 'appStore';
 import { isSameAddress } from 'utils/isSameAddress';
-import getGasPrice from 'modules/auth/selectors/get-gas-price';
-import { updateModal } from 'modules/modal/actions/update-modal';
-import getValueFromlocalStorage from 'utils/get-local-storage-value';
 
 const mapStateToProps = (state: AppState, ownProps) => {
   const { universe, loginAccount } = state;
@@ -31,7 +28,8 @@ const mapStateToProps = (state: AppState, ownProps) => {
     migrateMarket,
     migrateRep,
     userAttoRep: convertAttoValueToDisplayValue(userAttoRep),
-    gasPrice: getGasPrice(state),
+    gasPrice: state.gasPriceInfo.userDefinedGasPrice || state.gasPriceInfo.average,
+    ethToDaiRate: state.appStatus.ethToDaiRate,
     openReporting,
     enoughRepBalance,
   };

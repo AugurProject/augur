@@ -15,7 +15,6 @@ import {
 } from 'modules/common/constants';
 import { createBigNumber } from 'utils/create-big-number';
 import classNames from 'classnames';
-import { displayGasInDai } from 'modules/app/actions/get-ethToDai-rate';
 import { DismissableNotice, DISMISSABLE_NOTICE_BUTTON_TYPES } from 'modules/reporting/common';
 
 export const getGasCost = (gasLimit, gasPrice, ethToDaiRate) => {

@@ -14,6 +14,7 @@ const mapStateToProps = (state: AppState) => {
     modal: state.modal,
     rep: state.loginAccount.balances.rep,
     gasPrice: state.gasPriceInfo.userDefinedGasPrice || state.gasPriceInfo.average,
+    ethToDaiRate: state.appStatus.ethToDaiRate,
     messages: [
       {
         key: 'quant',
@@ -21,7 +22,7 @@ const mapStateToProps = (state: AppState) => {
       },
     ],
     title: 'Buy Participation Tokens',
-    transactionLabel: getTransactionLabel(state)
+    transactionLabel: getTransactionLabel(state),
   }
 };
 

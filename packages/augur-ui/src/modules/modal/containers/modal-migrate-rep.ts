@@ -16,6 +16,7 @@ const mapStateToProps = (state: AppState) => ({
     state.gasPriceInfo.userDefinedGasPrice || state.gasPriceInfo.average,
   walletBalances: state.loginAccount.balances,
   tradingAccount: state.loginAccount.address,
+  ethToDaiRate: state.appStatus.ethToDaiRate,
 });
 
 const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({
