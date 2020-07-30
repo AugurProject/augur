@@ -1052,7 +1052,6 @@ export const TEMPLATES = {
                     type: TemplateInputType.DROPDOWN,
                     placeholder: `Event`,
                     values: LIST_VALUES.GOLF_PGA_EVENT,
-                    categoryDestId: 2,
                   },
                 ],
                 resolutionRules: {
@@ -1156,7 +1155,6 @@ export const TEMPLATES = {
                     placeholder: `Event`,
                     groupKey: EVENT,
                     values: LIST_VALUES.GOLF_PGA_EVENT,
-                    categoryDestId: 2,
                   },
                   {
                     id: 2,
