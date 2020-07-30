@@ -15,6 +15,9 @@ RUN apk add --no-cache \
         musl-dev \
         openssl-dev
 
+ARG CURRENT_COMMITHASH="COMMIT HASH NOT AVAILABLE"
+ENV CURRENT_COMMITHASH=$CURRENT_COMMITHASH
+
 WORKDIR /augur
 COPY . .
 

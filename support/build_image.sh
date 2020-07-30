@@ -10,4 +10,8 @@ yarn;
 # Pre-build this to avoid the
 yarn workspace orbit-web build;
 
-docker build . -f support/Dockerfile -t augurproject/augur:runner -t "augurproject/augur:v$VERSION";
+docker build . \
+  -f support/Dockerfile \
+  --build-arg CURRENT_COMMITHASH="$(git rev-parse HEAD)" \
+  -t augurproject/augur:runner \
+  -t "augurproject/augur:v$VERSION";

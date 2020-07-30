@@ -1,12 +1,11 @@
-import React from 'react';
-import { Provider } from 'react-redux';
-import ReactDOM from 'react-dom';
-import { HashRouter } from 'react-router-dom';
+import store from 'appStore';
 
 import MainErrorBoundary from 'modules/app/components/main-error-boundary';
-
-import store from 'appStore';
 import { WindowApp } from 'modules/types';
+import React from 'react';
+import ReactDOM from 'react-dom';
+import { Provider } from 'react-redux';
+import { HashRouter } from 'react-router-dom';
 
 console.log(`
   *******************************************
@@ -14,7 +13,6 @@ console.log(`
   *******************************************
   BUILD INFORMATION
 
-    branch            -- ${process.env.CURRENT_BRANCH}
     commit            -- ${process.env.CURRENT_COMMITHASH}
                       -- https://github.com/AugurProject/augur/commit/${process.env.CURRENT_COMMITHASH}
     network           -- ${process.env.ETHEREUM_NETWORK}

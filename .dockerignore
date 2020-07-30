@@ -3,6 +3,8 @@ packages/*/venv
 **/*.pyc
 node_modules
 
+.git
+
 packages/orbit-web/*
 !packages/orbit-web/dist/**
 packages/**/node_modules
