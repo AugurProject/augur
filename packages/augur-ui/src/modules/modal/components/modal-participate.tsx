@@ -7,6 +7,7 @@ import {
   BUY_PARTICIPATION_TOKENS_GAS_LIMIT,
   REP,
   GWEI_CONVERSION,
+  ZERO,
 } from 'modules/common/constants';
 import ModalActions from './common/modal-actions';
 import {
@@ -30,6 +31,7 @@ interface ModalParticipateProps {
   gsnUnavailable: boolean;
   initializeGsnWallet: Function;
   transactionLabel: string;
+  eth: string;
 }
 
 export const ModalParticipate = (props: ModalParticipateProps) => {
@@ -40,6 +42,7 @@ export const ModalParticipate = (props: ModalParticipateProps) => {
     title,
     GsnEnabled,
     transactionLabel,
+    eth,
   } = props;
 
   const [isValid, setIsValid] = useState(false);
@@ -92,6 +95,11 @@ export const ModalParticipate = (props: ModalParticipateProps) => {
       return { errors, isValid };
     }
     const bnQuantity = createBigNumber(quantity, 10);
+    const insufficient = createBigNumber(eth).minus(gasCostDai.value);
+    if (insufficient.lt(ZERO)) {
+      errors.push(`Insufficient ETH for transaction fees, ${insufficient} ETH needed`);
+      isValid = false;
+    }
 
     if (bnQuantity.lte(0)) {
       errors.push('Quantity must greater than 0.');

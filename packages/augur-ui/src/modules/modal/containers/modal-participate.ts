@@ -18,6 +18,7 @@ const mapStateToProps = (state: AppState) => {
   return {
     modal: state.modal,
     rep: state.loginAccount.balances.rep,
+    eth: state.loginAccount.balances.eth,
     gasPrice: state.gasPriceInfo.userDefinedGasPrice || state.gasPriceInfo.average,
     messages: [
       {
