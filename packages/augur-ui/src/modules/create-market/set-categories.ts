@@ -1422,33 +1422,6 @@ export const setCategories: SortedGroup[] = [
       {
         value: 'TV & Movies',
         label: 'TV & Movies',
-        subGroup: [
-          {
-            value: 'American Idol',
-            label: 'American Idol',
-          },
-          {
-            value: 'Big Brother',
-            label: 'Big Brother',
-          },
-          {
-            value: 'The Bachelor',
-            label: 'The Bachelor',
-          },
-          {
-            value: 'The Bachelorette',
-            label: 'The Bachelorette',
-          },
-          {
-            value: 'Dancing with the Stars',
-            label: 'Dancing with the Stars',
-          },
-          {
-            value: 'Box Office',
-            label: 'Box Office',
-          },
-          { value: CUSTOM, label: CUSTOM },
-        ],
       },
       {
         value: 'Social Media',
