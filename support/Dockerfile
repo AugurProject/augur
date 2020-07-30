@@ -15,6 +15,9 @@ RUN apk add --no-cache \
         musl-dev \
         openssl-dev
 
+ARG CURRENT_COMMITHASH="COMMIT HASH NOT AVAILABLE"
+ENV CURRENT_COMMITHASH=$CURRENT_COMMITHASH
+
 WORKDIR /augur
 COPY . .
 
@@ -22,7 +25,5 @@ COPY . .
 VOLUME /keys
 
 RUN yarn && yarn build
-
-RUN cd packages/orbit-web; ./node_modules/.bin/webpack --mode=production; cd -;
 
 ENTRYPOINT /augur/support/entrypoint.sh

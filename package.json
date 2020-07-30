@@ -93,6 +93,7 @@
     "**/sha3": "2.0.1",
     "**/leveldown": "5.4.1",
     "**/bignumber.js": "9.0.0",
+    "**/puppeteer": "https://github.com/AugurProject/blackhole.git",
     "**/scrypt": "https://github.com/AugurProject/blackhole.git",
     "ethers": "4.0.47",
     "lodash": "4.17.15",
