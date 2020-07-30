@@ -87,6 +87,9 @@ const mergeProps = (sP: any, dP: any, oP: any) => ({
   },
   linkContent: [
     {
+      content: `Users have reported a number of problems with account activation and funding. Do *not* proceed unless you *know what you are doing*. A simplified onboarding UX will be released soon to make the process reliable and fix these issues.`
+    },
+    {
       content:
         'This network requires transaction fees to operate which are paid in ETH. This goes entirely to the network and its participants, the Augur protocol doesn’t collect any fees.',
     },
