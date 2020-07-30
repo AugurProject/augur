@@ -8,6 +8,7 @@ import {
   SecondaryButton,
   ExternalLinkText,
   ProcessingButton,
+  AddFundsButton,
 } from 'modules/common/buttons';
 import { GlobalChat } from 'modules/global-chat/components/global-chat.tsx';
 import { NavMenuItem } from 'modules/types';
@@ -18,6 +19,7 @@ import {
   TOTAL_FUNDS_TOOLTIP,
   WALLET_STATUS_VALUES,
   MODAL_MIGRATE_REP,
+  THEMES,
 } from 'modules/common/constants';
 import { CREATE_MARKET } from 'modules/routes/constants/views';
 import { useAppStatusStore } from 'modules/app/store/app-status';
@@ -41,6 +43,7 @@ const TopNav = ({ isLogged, menuData }: TopNavProps) => {
     pendingQueue,
     loginAccount: { balances: walletBalances },
     actions: { setModal },
+    theme
   } = useAppStatusStore();
   const pending =
     pendingQueue[TRANSACTIONS] &&
@@ -160,6 +163,9 @@ const TopNav = ({ isLogged, menuData }: TopNavProps) => {
               URL="https://augur.net"
             />
           </div>
+        )}
+        {isLogged && theme === THEMES.SPORTS && (
+          <AddFundsButton />
         )}
       </ul>
       <GlobalChat />
