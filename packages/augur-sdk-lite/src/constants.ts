@@ -187,7 +187,6 @@ export function isSubscriptionEventName(eventName: string): string | null {
   return null;
 }
 
-export const TRADE_GAS_BUFFER = new BigNumber('600000', 10);
 export const MAX_FILLS_PER_TX = new BigNumber('4', 10);
 export const MAX_GAS_LIMIT_FOR_TRADE = new BigNumber('4500000', 10);
 export const PLACE_ORDER_NO_SHARES = {
