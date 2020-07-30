@@ -113,7 +113,7 @@ const TopBar: React.FC<TopBarProps> = ({
         {!isLogged && !restoredAccount && (
           <PrimaryButton action={() => loginModal()} text={'Connect'} />
         )}
-        {((isLogged || restoredAccount) && (isMobile)) && (
+        {(isLogged || restoredAccount) && (
           <button
             className={classNames(Styles.alerts, {
               [Styles.alertsDark]: alertsVisible,
