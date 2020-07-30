@@ -312,7 +312,7 @@ export const BettorsIcon = (
 
 export const BetsIcon = (
   <svg
-    name="AlternateBetsIcon"
+    name="BetsIcon"
     viewBox="0 0 48 48"
     fill="none"
   >
