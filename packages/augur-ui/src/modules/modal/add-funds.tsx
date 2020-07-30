@@ -20,7 +20,7 @@ import {
   USDC,
   USDT,
 } from 'modules/common/constants';
-import { LoginAccount } from 'modules/types';
+import { LoginAccount, FormattedNumber } from 'modules/types';
 import { Swap } from 'modules/swap/components/swap';
 import { PillSelection } from 'modules/common/selection';
 import { BigNumber, createBigNumber } from 'utils/create-big-number';
@@ -35,6 +35,8 @@ interface AddFundsProps {
   loginAccount: LoginAccount;
   ETH_RATE: BigNumber;
   REP_RATE: BigNumber;
+  ethToDaiRate: FormattedNumber;
+  repToDaiRate: FormattedNumber;
   config: SDKConfiguration;
   addFundsTorus: Function;
   addFundsFortmatic: Function;
@@ -50,6 +52,8 @@ export const AddFunds = ({
   loginAccount,
   ETH_RATE,
   REP_RATE,
+  ethToDaiRate,
+  repToDaiRate,
   config,
   addFundsTorus,
   addFundsFortmatic,
@@ -196,6 +200,8 @@ export const AddFunds = ({
                 fromToken={initialSwapToken ? initialSwapToken : null}
                 ETH_RATE={ETH_RATE}
                 REP_RATE={REP_RATE}
+                ethToDaiRate={ethToDaiRate}
+                repToDaiRate={repToDaiRate}
                 config={config}
                 useSigner={useSigner}
               />
