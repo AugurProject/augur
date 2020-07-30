@@ -232,7 +232,6 @@ module.exports = {
         return order.indexOf(b.names[0]) + order.indexOf(a.names[0]);
       },
     }),
-    gitRevisionPlugin,
     new webpack.DefinePlugin({
       'process.env': {
         AUGUR_ENV: JSON.stringify(AUGUR_ENV),
