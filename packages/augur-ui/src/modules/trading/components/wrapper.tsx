@@ -41,7 +41,7 @@ import {
 import makePath from 'modules/routes/helpers/make-path';
 import { MARKET } from 'modules/routes/constants/views';
 import makeQuery from 'modules/routes/helpers/make-query';
-import { MARKET_ID_PARAM_NAME } from 'modules/routes/constants/param-names';
+import { MARKET_ID_PARAM_NAME, THEME_NAME } from 'modules/routes/constants/param-names';
 import { FORM_INPUT_TYPES as INPUT_TYPES } from 'modules/trading/store/constants';
 import { canPostOrder } from 'modules/trades/actions/can-post-order';
 
@@ -52,14 +52,13 @@ export interface SelectedOrderProperties {
   expirationDate?: Moment;
 }
 
-const getMarketPath = id => {
-  return {
-    pathname: makePath(MARKET),
-    search: makeQuery({
-      [MARKET_ID_PARAM_NAME]: id,
-    }),
-  };
-};
+const getMarketPath = (id, theme) => ({
+  pathname: makePath(MARKET),
+  search: makeQuery({
+    [MARKET_ID_PARAM_NAME]: id,
+    [THEME_NAME]: theme,
+  }),
+});
 
 const getDefaultTrade = ({
   market: {
@@ -167,12 +166,15 @@ const Wrapper = ({
     loginAccount: {
       balances: { dai, eth },
     },
+    theme,
     gsnEnabled,
     isLogged,
     restoredAccount,
     blockchain: { currentAugurTimestamp: currentTimestamp },
     actions: { setModal },
-    env: { ui: { reportingOnly: disableTrading } },
+    env: {
+      ui: { reportingOnly: disableTrading },
+    },
   } = useAppStatusStore();
   const [state, setState] = useState({
     orderDaiEstimate: '',
@@ -202,11 +204,20 @@ const Wrapper = ({
   }, [selectedOutcome.id]);
 
   useEffect(() => {
-    if (selectedOrderProperties.orderQuantity !== '' && selectedOrderProperties.orderPrice !== '' && state.orderDaiEstimate === '' && !state.trade.limitPrice && !state.trade.numShares) {
+    if (
+      selectedOrderProperties.orderQuantity !== '' &&
+      selectedOrderProperties.orderPrice !== '' &&
+      state.orderDaiEstimate === '' &&
+      !state.trade.limitPrice &&
+      !state.trade.numShares
+    ) {
       // if SelectedOrderProps aren't empty but no estimated dai and have no price or numShares for trade, then recalculate.
       updateTradeTotalCost(selectedOrderProperties);
     }
-  }, [selectedOrderProperties.orderQuantity, selectedOrderProperties.orderPrice])
+  }, [
+    selectedOrderProperties.orderQuantity,
+    selectedOrderProperties.orderPrice,
+  ]);
 
   function clearOrderForm(wholeForm = true) {
     const tradeUpdate = getDefaultTrade({ market, selectedOutcome });
@@ -264,7 +275,7 @@ const Wrapper = ({
       if (allowPostOnlyOrder !== state.allowPostOnlyOrder) {
         setState({
           ...state,
-          allowPostOnlyOrder
+          allowPostOnlyOrder,
         });
       }
       return allowPostOnlyOrder;
@@ -404,7 +415,6 @@ const Wrapper = ({
               gasCostEst: formattedGasCost,
               postOnlyOrder: state.postOnlyOrder,
             });
-
           },
         })
       )
@@ -469,7 +479,10 @@ const Wrapper = ({
         disabled={
           !trade?.limitPrice ||
           (gsnUnavailable && isOpenOrder) ||
-          insufficientFunds || (state.postOnlyOrder && trade.numFills > 0) || !state.allowPostOnlyOrder || disableTrading
+          insufficientFunds ||
+          (state.postOnlyOrder && trade.numFills > 0) ||
+          !state.allowPostOnlyOrder ||
+          disableTrading
         }
       />
     );
@@ -481,7 +494,7 @@ const Wrapper = ({
             action={() =>
               setModal({
                 type: MODAL_LOGIN,
-                pathName: getMarketPath(marketId),
+                pathName: getMarketPath(marketId, theme),
               })
             }
             text="Login to Place Order"

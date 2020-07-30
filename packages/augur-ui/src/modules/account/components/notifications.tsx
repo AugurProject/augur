@@ -10,7 +10,7 @@ import { NotificationCard } from 'modules/account/components/notification-card';
 import { PillLabel } from 'modules/common/labels';
 import { MARKET } from 'modules/routes/constants/views';
 import {
-  MARKET_ID_PARAM_NAME,
+  MARKET_ID_PARAM_NAME, THEME_NAME,
 } from 'modules/routes/constants/param-names';
 import {
   OpenOrdersResolvedMarketsTemplate,
@@ -47,6 +47,7 @@ import Styles from 'modules/account/components/notification.styles.less';
 import { useAppStatusStore } from 'modules/app/store/app-status';
 import { selectMarket } from 'modules/markets/selectors/market';
 import { getNotifications } from 'modules/notifications/selectors/notification-state';
+import { getHTMLTheme } from 'modules/app/store/app-status-hooks';
 
 export interface NotificationsProps {
   toggle?: Function;
@@ -265,6 +266,7 @@ function getButtonAction(
             cb: () => {
               const queryLink: QueryEndpoints = {
                 [MARKET_ID_PARAM_NAME]: marketId,
+                [THEME_NAME]: getHTMLTheme(),
               };
               history.push({
                 pathname: makePath(MARKET, null),
@@ -303,6 +305,7 @@ function getButtonAction(
         markAsRead(notification);
         const queryLink: QueryEndpoints = {
           [MARKET_ID_PARAM_NAME]: marketId,
+          [THEME_NAME]: getHTMLTheme(),
         };
         history.push({
           pathname: makePath(MARKET, null),
