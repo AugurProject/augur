@@ -522,8 +522,8 @@ class Wrapper extends Component<WrapperProps, WrapperState> {
     } = this.state;
     const insufficientFunds =
       trade &&
-      trade.costInDai &&
-      createBigNumber(trade.costInDai.value).gte(createBigNumber(availableDai));
+      (trade.costInDai && createBigNumber(trade.costInDai.value).gte(createBigNumber(availableDai)) ||
+      (trade.totalCost && initialLiquidity && createBigNumber(trade.totalCost.value).gte(createBigNumber(availableDai))));
 
     const isOpenOrder = trade && trade.numFills === 0;
 
@@ -546,7 +546,7 @@ class Wrapper extends Component<WrapperProps, WrapperState> {
           }
         }}
         disabled={
-          !trade || !trade.limitPrice || (gsnUnavailable && isOpenOrder) || insufficientFunds || disableTrading || !tradingApproved || !allowPostOnlyOrder
+          !trade || !trade.limitPrice || (gsnUnavailable && isOpenOrder) || insufficientFunds || disableTrading || (!tradingApproved && initialLiquidity && tradingTutorial) || !allowPostOnlyOrder
         }
       />
     );
