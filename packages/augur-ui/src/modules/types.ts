@@ -674,6 +674,7 @@ export interface LoginAccountSettings {
 }
 
 export interface LoginAccount {
+  signerAddress?: string;
   address?: string;
   mixedCaseAddress?: string;
   meta?: LoginAccountMeta;

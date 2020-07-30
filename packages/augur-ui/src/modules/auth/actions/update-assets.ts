@@ -53,6 +53,7 @@ export const updateAssets = (): ThunkAction<any, any, any, any> => async (
     dispatch(addEthIncreaseAlert(daiBalance, ethNonSafeBalance, signerEthBalance));
     dispatch(
       updateLoginAccount({
+        signerAddress: nonSafeWallet,
         balances: {
           attoRep: String(walletREP),
           rep: String(createBigNumber(walletREP).dividedBy(ETHER)),

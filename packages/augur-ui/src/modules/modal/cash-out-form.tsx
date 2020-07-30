@@ -21,6 +21,7 @@ import {
   TRANSFER,
   FEE_RESERVES_LABEL,
   GWEI_CONVERSION,
+  WALLET_STATUS_VALUES,
 } from 'modules/common/constants';
 import { AutoCancelOrdersNotice, InsufficientFundsNotice } from 'modules/common/labels';
 
@@ -40,6 +41,11 @@ interface CashOutFormProps {
   tradingAccountEthFormatted: FormattedNumber;
   totalDai: string;
   signerEth: string;
+  totalRep: string;
+  totalLegacyRep: string;
+  totalEth: string;
+  walletStatus: string;
+  signerAddress: string;
 }
 
 const GAS_EST_MULTIPLIER = 4;
@@ -58,6 +64,11 @@ export const CashOutForm = ({
   tradingAccountEthFormatted,
   totalDai,
   signerEth,
+  totalRep,
+  totalLegacyRep,
+  totalEth,
+  walletStatus,
+  signerAddress
 }: CashOutFormProps) => {
   const [gasCosts, setGasCosts] = useState(
     createBigNumber(0)
@@ -187,6 +198,17 @@ export const CashOutForm = ({
     address.length > 0 &&
     amountDai.value > 0;
 
+  let totalGasCost = 0;
+  if (walletStatus != WALLET_STATUS_VALUES.CREATED) {
+    totalGasCost += 1800000
+  }
+  if (totalDai !== "0") totalGasCost += 80000;
+  if (totalRep !== "0") totalGasCost += 100000;
+  if (totalLegacyRep !== "0") totalGasCost += 120000;
+  if (totalEth !== "0") totalGasCost += 30000;
+  console.log(`TOTAL GAS COST: ${totalGasCost}`);
+  const ethRequired = createBigNumber(gasPrice).multipliedBy(totalGasCost).dividedBy(GWEI_CONVERSION).toFixed();
+
   return (
     <div className={Styles.WithdrawForm}>
       <header>
@@ -196,6 +218,8 @@ export const CashOutForm = ({
         <div>
           <h1>Withdraw all funds</h1>
           <h2>Withdraw all funds to another address</h2>
+          <h2>To perform this withdrawl you will need to fund your signing wallet {signerAddress} with {ethRequired} ETH.</h2>
+          <h2>Several Transactions may be required in order to move all funds from the wallet</h2>
         </div>
       </header>
 

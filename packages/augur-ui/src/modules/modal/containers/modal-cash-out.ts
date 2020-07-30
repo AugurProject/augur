@@ -29,7 +29,12 @@ const mapStateToProps = (state: AppState) => {
   const totalDaiFormatted = formatDai(createBigNumber(totalOpenOrdersFrozenFunds).plus(createBigNumber(accountFunds.totalAvailableTradingBalance).plus(reserveInDaiFormatted.value)));
   const tradingAccountEthFormatted = formatEther(loginAccount.balances.eth);
   const totalDai = loginAccount.balances.dai;
+  const totalRep = loginAccount.balances.rep;
+  const totalLegacyRep = loginAccount.balances.legacyRep;
+  const totalEth = loginAccount.balances.eth;
   const signerEth = loginAccount.balances.signerBalances.eth;
+  const walletStatus = appStatus.walletStatus;
+  const signerAddress = loginAccount.signerAddress;
 
   return {
     account: address,
@@ -42,6 +47,11 @@ const mapStateToProps = (state: AppState) => {
     tradingAccountEthFormatted,
     totalDai,
     signerEth,
+    totalRep,
+    totalLegacyRep,
+    totalEth,
+    walletStatus,
+    signerAddress
   }
 };
 

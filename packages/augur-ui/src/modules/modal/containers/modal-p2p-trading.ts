@@ -91,17 +91,7 @@ const mergeProps = (sP: any, dP: any, oP: any) => ({
         'This network requires transaction fees to operate which are paid in ETH. This goes entirely to the network and its participants, the Augur protocol doesn’t collect any fees.',
     },
     {
-      content: `Account activation is required before making your first transaction. There will be a transaction fee to activate your account. This fee can vary based on the gas price. ${
-        sP.highBalance
-          ? `$${sP.reserveInDai.formattedValue} worth of ETH, from your total funds will be held in your fee reserve to cover further transactions.`
-          : `If your account balance exceeds $${sP.daiHighValueAmount}, a portion of this (equivalent to ${sP.desiredSignerBalanceInETH} ETH) will be held in your fee reserve to cover further transactions.`
-      }`,
-    },
-    {
-      content: `As long as your available account balance remains over $${sP.daiHighValueAmount} DAI, your fee reserve will replenish automatically.`,
-    },
-    {
-      content: 'Your fee reserve can easily be cashed out at anytime.',
+      content: `Account activation is required before making your first transaction. There will be a transaction fee to activate your account. This fee can vary based on the gas price.`,
     },
     {
       content: 'LEARN MORE',
