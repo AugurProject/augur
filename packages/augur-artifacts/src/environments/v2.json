@@ -140,7 +140,7 @@
   "ui": {
     "showReloadModal": true,
     "averageBlocktime": 2000,
-    "liteProvider": "jsonrpc",
+    "liteProvider": "torus",
     "trackBestOffer": false,
     "trackMarketInvalidBids": true,
     "fallbackProvider": "torus",
