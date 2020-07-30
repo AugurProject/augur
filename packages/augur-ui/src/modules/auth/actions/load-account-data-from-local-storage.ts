@@ -10,6 +10,8 @@ import { loadAnalytics } from 'modules/app/actions/analytics-management';
 import { AppStatus } from 'modules/app/store/app-status';
 import isAddress from 'modules/auth/helpers/is-address';
 import { getHTMLTheme } from 'modules/app/store/app-status-hooks';
+import { THEME_NAME } from 'modules/routes/constants/param-names';
+import parseQuery, { parseLocation } from 'modules/routes/helpers/parse-query';
 
 export const loadAccountDataFromLocalStorage = (address: string) => {
   const localStorageRef = typeof window !== 'undefined' && window.localStorage;
@@ -120,8 +122,9 @@ export const loadAccountDataFromLocalStorage = (address: string) => {
         });
       }
       if (
-        (theme && AppStatus.get().theme !== theme) ||
-        (theme && getHTMLTheme() !== theme)
+        !parseLocation(window?.location?.href || '')[THEME_NAME] &&
+        ((theme && AppStatus.get().theme !== theme) ||
+          (theme && getHTMLTheme() !== theme))
       ) {
         setTheme(theme);
       }
