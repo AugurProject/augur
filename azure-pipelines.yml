@@ -85,6 +85,7 @@ jobs:
     pool: 'Default'
     steps:
       - template: .azure-templates/node-setup.yml
+      - script: touch .npmrc
       - task: npmAuthenticate@0
         inputs:
           workingFile: .npmrc
