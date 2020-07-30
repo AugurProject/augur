@@ -83,8 +83,8 @@ async function run() {
       const args = [ `--${opt.name} ${opt.flag ? '' : `<${opt.name}>`}`];
       if (opt.abbr) args.unshift(`-${opt.abbr}`);
       opt.required
-        ? subcommand.requiredOption(args.join(', '))
-        : subcommand.option(args.join(', ')).description(opt.description || '')
+        ? subcommand.requiredOption(args.join(', '), opt.description)
+        : subcommand.option(args.join(', '), opt.description)
     }
     subcommand.action(async (args) => {
       try {
