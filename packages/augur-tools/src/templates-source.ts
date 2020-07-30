@@ -1095,7 +1095,6 @@ export const TEMPLATES = {
                     type: TemplateInputType.DROPDOWN,
                     placeholder: `Event`,
                     values: LIST_VALUES.GOLF_PGA_EVENT,
-                    categoryDestId: 2,
                   },
                 ],
                 resolutionRules: {
@@ -1261,7 +1260,6 @@ export const TEMPLATES = {
                     type: TemplateInputType.DROPDOWN,
                     placeholder: `Event`,
                     values: LIST_VALUES.GOLF_EURO_EVENT,
-                    categoryDestId: 2,
                   },
                 ],
                 resolutionRules: {
@@ -1304,7 +1302,6 @@ export const TEMPLATES = {
                     type: TemplateInputType.DROPDOWN,
                     placeholder: `Event`,
                     values: LIST_VALUES.GOLF_EURO_EVENT,
-                    categoryDestId: 2,
                   },
                 ],
                 resolutionRules: {
@@ -1366,7 +1363,6 @@ export const TEMPLATES = {
                     placeholder: `Event`,
                     groupKey: EVENT,
                     values: LIST_VALUES.GOLF_EURO_EVENT,
-                    categoryDestId: 2,
                   },
                   {
                     id: 2,
@@ -1470,7 +1466,6 @@ export const TEMPLATES = {
                     type: TemplateInputType.DROPDOWN,
                     placeholder: `Event`,
                     values: LIST_VALUES.GOLF_LPGA_EVENT,
-                    categoryDestId: 2,
                   },
                 ],
                 resolutionRules: {
@@ -1513,7 +1508,6 @@ export const TEMPLATES = {
                     type: TemplateInputType.DROPDOWN,
                     placeholder: `Event`,
                     values: LIST_VALUES.GOLF_LPGA_EVENT,
-                    categoryDestId: 2,
                   },
                 ],
                 resolutionRules: {
@@ -1551,7 +1545,6 @@ export const TEMPLATES = {
                     placeholder: `Event`,
                     groupKey: EVENT,
                     values: LIST_VALUES.GOLF_LPGA_EVENT,
-                    categoryDestId: 2,
                   },
                   {
                     id: 2,
@@ -2210,6 +2203,53 @@ export const TEMPLATES = {
                 },
               },
               {
+                marketType: YES_NO,
+                question: `[0] Singles Tennis: Will [1] win the [2] [3]?`,
+                example: `Men's Singles Tennis: Will Roger Federer win the 2020 Wimbledon?`,
+                inputs: [
+                  {
+                    id: 0,
+                    type: TemplateInputType.DROPDOWN_QUESTION_DEP,
+                    placeholder: `Men's/Women's`,
+                    inputDestIds: [3],
+                    values: LIST_VALUES.MENS_WOMENS,
+                    inputDestValues: TENNIS_SINGLES_EVENTS,
+                  },
+                  {
+                    id: 1,
+                    type: TemplateInputType.TEXT,
+                    placeholder: TEXT_PLACEHOLDERS.SINGLE_PLAYER,
+                  },
+                  {
+                    id: 2,
+                    type: TemplateInputType.DROPDOWN,
+                    placeholder: `Year`,
+                    validationType: ValidationType.YEAR_YEAR_RANGE,
+                    values: LIST_VALUES.YEARS,
+                  },
+                  {
+                    id: 3,
+                    type: TemplateInputType.DROPDOWN,
+                    defaultLabel: `Select Men's/Women's First`,
+                    placeholder: `Event`,
+                    values: [],
+                  },
+                ],
+                resolutionRules: {
+                  [REQUIRED]: [
+                    {
+                      text: `If a player fails to start a tournament or a match or withdraws early or is disqualified, the market should resolve as 'No'`,
+                    },
+                    {
+                      text: `This market is intended to be about a Single Person, if this is not the case, this market should settle as 'Invalid'.`,
+                    },
+                    {
+                      text: `If the match is postponed and concludes after markets event expiration the market should resolve as 'No'`,
+                    },
+                  ],
+                },
+              },
+              {
                 marketType: CATEGORICAL,
                 question: `[0] Singles Tennis: Which player will win the [1] [2]?`,
                 example: `Men's Singles Tennis: Which player will win the 2020 Australian Open?`,
@@ -2240,7 +2280,6 @@ export const TEMPLATES = {
                     placeholder: `Event`,
                     groupKey: EVENT,
                     values: [],
-                    categoryDestId: 2,
                   },
                   {
                     id: 3,
@@ -2298,7 +2337,6 @@ export const TEMPLATES = {
                     defaultLabel: `Select Men's/Women's First`,
                     placeholder: `Event`,
                     groupKey: EVENT,
-                    categoryDestId: 2,
                     values: [],
                   },
                   {
@@ -2374,7 +2412,6 @@ export const TEMPLATES = {
                     defaultLabel: `Select Men's/Women's First`,
                     placeholder: `Event`,
                     groupKey: EVENT,
-                    categoryDestId: 2,
                     values: [],
                   },
                   {
@@ -2470,7 +2507,6 @@ export const TEMPLATES = {
                     defaultLabel: `Select Men's/Women's First`,
                     placeholder: `Event`,
                     groupKey: EVENT,
-                    categoryDestId: 2,
                     values: [],
                   },
                   {
@@ -2553,7 +2589,6 @@ export const TEMPLATES = {
                     type: TemplateInputType.DROPDOWN,
                     defaultLabel: `Select Men's/Women's/Mixed First`,
                     placeholder: `Event`,
-                    categoryDestId: 2,
                     values: [],
                   },
                 ],
@@ -2601,7 +2636,6 @@ export const TEMPLATES = {
                     defaultLabel: `Select Men's/Women's/Mixed First`,
                     placeholder: `Event`,
                     groupKey: EVENT,
-                    categoryDestId: 2,
                     values: [],
                   },
                   {
@@ -2663,7 +2697,6 @@ export const TEMPLATES = {
                     defaultLabel: `Select Men's/Women's/Mixed First`,
                     placeholder: `Event`,
                     groupKey: EVENT,
-                    categoryDestId: 2,
                     values: [],
                   },
                   {
@@ -2743,7 +2776,6 @@ export const TEMPLATES = {
                     defaultLabel: `Select Men's/Women's First`,
                     placeholder: `Event`,
                     groupKey: EVENT,
-                    categoryDestId: 2,
                     values: [],
                   },
                   {
@@ -2842,7 +2874,6 @@ export const TEMPLATES = {
                     defaultLabel: `Select Men's/Women's First`,
                     placeholder: `Event`,
                     groupKey: EVENT,
-                    categoryDestId: 2,
                     values: [],
                   },
                   {
@@ -2917,7 +2948,6 @@ export const TEMPLATES = {
                     inputDestIds: [1, 2],
                     values: LIST_VALUES.SOCCER_LEAGUES,
                     inputDestValues: SOCCER_LEAGUE_DEP_TEAMS,
-                    categoryDestId: 2,
                   },
                   {
                     id: 1,
@@ -2999,7 +3029,6 @@ export const TEMPLATES = {
                     inputDestIds: [1, 3],
                     values: LIST_VALUES.SOCCER_LEAGUES,
                     inputDestValues: SOCCER_LEAGUE_DEP_TEAMS,
-                    categoryDestId: 2,
                   },
                   {
                     id: 1,
@@ -3082,7 +3111,6 @@ export const TEMPLATES = {
                     inputDestIds: [1, 2],
                     values: LIST_VALUES.SOCCER_LEAGUES,
                     inputDestValues: SOCCER_LEAGUE_DEP_TEAMS,
-                    categoryDestId: 2,
                   },
                   {
                     id: 1,
@@ -3163,7 +3191,6 @@ export const TEMPLATES = {
                     inputDestIds: [1],
                     values: LIST_VALUES.SOCCER_LEAGUES,
                     inputDestValues: SOCCER_LEAGUE_DEP_YEARS,
-                    categoryDestId: 2,
                   },
                   {
                     id: 1,
@@ -3233,7 +3260,6 @@ export const TEMPLATES = {
                     defaultLabel: `Select Men's/Women's First`,
                     placeholder: `Event`,
                     groupKey: EVENT,
-                    categoryDestId: 2,
                     values: [],
                   },
                   {
@@ -3307,7 +3333,6 @@ export const TEMPLATES = {
                     defaultLabel: `Select Men's/Women's First`,
                     placeholder: `Event`,
                     groupKey: EVENT,
-                    categoryDestId: 2,
                     values: [],
                   },
                   {
@@ -3392,7 +3417,6 @@ export const TEMPLATES = {
                     defaultLabel: `Select Men's/Women's First`,
                     placeholder: `Event`,
                     groupKey: EVENT,
-                    categoryDestId: 2,
                     values: [],
                   },
                   {
@@ -3476,7 +3500,6 @@ export const TEMPLATES = {
                     inputDestIds: [2],
                     values: [],
                     inputDestValues: SOCCER_CUSTOM_DEP_YEARS,
-                    categoryDestId: 2,
                   },
                   {
                     id: 2,
@@ -5063,7 +5086,6 @@ export const TEMPLATES = {
                     type: TemplateInputType.DROPDOWN,
                     placeholder: `Event`,
                     values: LIST_VALUES.NCAA_BASKETBALL_EVENTS,
-                    categoryDestId: 2,
                   },
                 ],
                 resolutionRules: {
@@ -5843,7 +5865,6 @@ export const TEMPLATES = {
                     inputDestIds: [2],
                     values: LIST_VALUES.OLYMPIC_SUMMER_SPORTS,
                     inputDestValues: OLYMPIC_SUMMER_SPORT_EVENTS,
-                    categoryDestId: 2,
                   },
                   {
                     id: 1,
@@ -5884,7 +5905,6 @@ export const TEMPLATES = {
                     type: TemplateInputType.DROPDOWN,
                     placeholder: `Sport`,
                     values: LIST_VALUES.OLYMPIC_SUMMER_SPORTS,
-                    categoryDestId: 2,
                   },
                   {
                     id: 1,
@@ -5932,7 +5952,6 @@ export const TEMPLATES = {
                     inputDestIds: [3],
                     values: LIST_VALUES.OLYMPIC_SUMMER_SPORTS,
                     inputDestValues: OLYMPIC_SUMMER_SPORT_EVENTS,
-                    categoryDestId: 2,
                   },
                   {
                     id: 1,
@@ -5989,7 +6008,6 @@ export const TEMPLATES = {
                     inputDestIds: [3],
                     values: LIST_VALUES.OLYMPIC_SUMMER_SPORTS,
                     inputDestValues: OLYMPIC_SUMMER_SPORT_EVENTS,
-                    categoryDestId: 2,
                   },
                   {
                     id: 1,
@@ -6094,7 +6112,6 @@ export const TEMPLATES = {
                     inputDestIds: [1],
                     values: LIST_VALUES.OLYMPIC_SUMMER_SPORTS,
                     inputDestValues: OLYMPIC_SUMMER_SPORT_EVENTS,
-                    categoryDestId: 2,
                   },
                   {
                     id: 1,
@@ -6148,7 +6165,6 @@ export const TEMPLATES = {
                     id: 0,
                     type: TemplateInputType.DROPDOWN,
                     values: LIST_VALUES.OLYMPIC_MEDALS,
-                    categoryDestId: 2,
                     placeholder: `Medal type`,
                   },
                   {
@@ -6195,7 +6211,6 @@ export const TEMPLATES = {
                     inputDestIds: [2],
                     values: LIST_VALUES.OLYMPIC_WINTER_SPORTS,
                     inputDestValues: OLYMPIC_WINTER_SPORT_EVENTS,
-                    categoryDestId: 2,
                   },
                   {
                     id: 1,
@@ -6236,7 +6251,6 @@ export const TEMPLATES = {
                     type: TemplateInputType.DROPDOWN,
                     placeholder: `Sport`,
                     values: LIST_VALUES.OLYMPIC_WINTER_SPORTS,
-                    categoryDestId: 2,
                   },
                   {
                     id: 1,
@@ -6284,7 +6298,6 @@ export const TEMPLATES = {
                     inputDestIds: [3],
                     values: LIST_VALUES.OLYMPIC_WINTER_SPORTS,
                     inputDestValues: OLYMPIC_WINTER_SPORT_EVENTS,
-                    categoryDestId: 2,
                   },
                   {
                     id: 1,
@@ -6341,7 +6354,6 @@ export const TEMPLATES = {
                     inputDestIds: [3],
                     values: LIST_VALUES.OLYMPIC_WINTER_SPORTS,
                     inputDestValues: OLYMPIC_WINTER_SPORT_EVENTS,
-                    categoryDestId: 2,
                   },
                   {
                     id: 1,
@@ -6398,7 +6410,6 @@ export const TEMPLATES = {
                     type: TemplateInputType.DROPDOWN,
                     values: LIST_VALUES.OLYMPIC_MEDALS,
                     placeholder: `Medal type`,
-                    categoryDestId: 2,
                     groupKey: EVENT,
                   },
                   {
@@ -6447,7 +6458,6 @@ export const TEMPLATES = {
                     inputDestIds: [1],
                     values: LIST_VALUES.OLYMPIC_WINTER_SPORTS,
                     inputDestValues: OLYMPIC_WINTER_SPORT_EVENTS,
-                    categoryDestId: 2,
                   },
                   {
                     id: 1,
@@ -6501,7 +6511,6 @@ export const TEMPLATES = {
                     id: 0,
                     type: TemplateInputType.DROPDOWN,
                     values: LIST_VALUES.OLYMPIC_MEDALS,
-                    categoryDestId: 2,
                     placeholder: `Medal type`,
                   },
                   {
@@ -6780,7 +6789,6 @@ export const TEMPLATES = {
                     type: TemplateInputType.DROPDOWN,
                     placeholder: `Select Award`,
                     values: LIST_VALUES.FOOTBALL_AWARDS,
-                    categoryDestId: 2,
                   },
                 ],
                 resolutionRules: {
