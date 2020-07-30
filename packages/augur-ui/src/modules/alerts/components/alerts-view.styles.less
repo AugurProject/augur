@@ -130,6 +130,19 @@
     background: var(--color-module-background);
   }
 
+  article.NullStateMessage {
+    margin: 0;
+    border: 0;
+    display: flex;
+    flex-direction: column;
+
+    > span:first-of-type > svg {
+      width: @size-38;
+      height: @size-38;
+      margin-left: @size-16;
+    }
+  }
+
   .parent {
     right: @size-195;
     box-shadow: @size-2 @size-2 @size-5 var(--color-secondary-text-50);
@@ -173,5 +186,4 @@
       text-decoration-style: dashed;
     }
   }
-
 }

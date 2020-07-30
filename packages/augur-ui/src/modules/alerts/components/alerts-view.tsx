@@ -3,8 +3,7 @@ import classNames from 'classnames';
 
 import NullStateMessage from 'modules/common/null-state-message';
 import Alert from 'modules/alerts/components/alert';
-import { Alert as AlertType } from 'modules/types';
-import { Close } from 'modules/common/icons';
+import { Close, Alerts } from 'modules/common/icons';
 
 import Styles from 'modules/alerts/components/alerts-view.styles.less';
 import ToggleHeightStyles from 'utils/toggle-height.styles.less';
@@ -66,18 +65,20 @@ const AlertsView = () => {
           </div>
         ) : (
           <NullStateMessage
+            icon={Alerts(0)}
             className={Styles.NullStateMessage}
-            message="No Alerts"
+            message="You don’t have any alerts"
+            subMessage="We’ll let you know when you have an update!"
           />
         )}
-        {alerts && alerts.length ? (
-          <div className={Styles.dismissContainer}>
-            <span>Alerts</span>
+        <div className={Styles.dismissContainer}>
+          <span>Alerts</span>
+          {alerts && alerts.length ? (
             <button onClick={e => clearAlerts(INFO)} role="button" tabIndex={0}>
               Clear All
             </button>
-          </div>
-        ) : null}
+          ) : null}
+        </div>
       </section>
     </div>
   );

@@ -14,7 +14,6 @@ import { MarketData } from 'modules/types';
 import { LoadingMarketCard } from 'modules/market-cards/common';
 import { MagnifyingGlass } from 'modules/common/icons';
 import PaginationStyles from 'modules/common/pagination.styles.less';
-import Styles from 'modules/markets-list/components/markets-list-styles.less';
 import { useAppStatusStore } from 'modules/app/store/app-status';
 import { getMarkets } from 'modules/markets/selectors/markets-all';
 
@@ -169,7 +168,7 @@ export const MarketsList = ({
   const hasMarkets = marketCards.length > 0;
 
   return (
-    <article className={Styles.MarketsList} data-testid={testid}>
+    <article data-testid={testid}> 
       {hasMarkets ? (
         <>{marketCards}</>
       ) : (
