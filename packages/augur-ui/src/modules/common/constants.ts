@@ -1463,7 +1463,7 @@ export const TUTORIAL_TRADING_HISTORY = {
   ],
 };
 
-export const DISCORD_LINK = 'https://discord.gg/wWMumZr';
+export const DISCORD_LINK = 'https://invite.augur.net/';
 
 export enum HEADER_TYPE {
   H1 = 'h1',
