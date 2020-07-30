@@ -1,4 +1,4 @@
-import React, { useContext, useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import classNames from 'classnames';
 import { Link } from 'react-router-dom';
 import makePath from 'modules/routes/helpers/make-path';
@@ -31,8 +31,12 @@ import { convertUnixToFormattedDate } from 'utils/format-date';
 import { useAppStatusStore } from 'modules/app/store/app-status';
 import { useMarketsStore } from 'modules/markets/store/markets';
 import { createBigNumber } from 'utils/create-big-number';
-import { marketView } from 'modules/market/components/market-view/market-view.styles.less';
-import { INSUFFICIENT_FUNDS_ERROR, MODAL_ADD_FUNDS, MODAL_CANCEL_ALL_BETS } from 'modules/common/constants';
+import {
+  INSUFFICIENT_FUNDS_ERROR,
+  MODAL_ADD_FUNDS,
+  MODAL_CANCEL_ALL_BETS,
+  MODAL_SIGNUP,
+} from 'modules/common/constants';
 
 export interface EmptyStateProps {
   selectedTab: number;
@@ -42,6 +46,7 @@ export const EmptyState = () => {
   const {
     selected: { header },
   } = useBetslipStore();
+  const { isLogged, actions: { setModal } } = useAppStatusStore();
   return (
     <>
       <div>{BetsIcon}</div>
@@ -50,11 +55,19 @@ export const EmptyState = () => {
           ? `Betslip is empty`
           : `You don't have any bets`}
       </h3>
-      <h4>Need help placing a bet?</h4>
-      <SecondaryButton
-        text="View tutorial"
-        action={() => console.log('add tutorial link')}
-      />
+      <h4>
+        {!isLogged
+          ? `You need to Sign in to start betting!`
+          : `Need help placing a bet?`}
+      </h4>
+      {!isLogged ? (
+        <PrimaryButton text="Signup" action={() => setModal({ type: MODAL_SIGNUP })} />
+      ) : (
+        <SecondaryButton
+          text="View tutorial"
+          action={() => console.log('add tutorial link')}
+        />
+      )}
     </>
   );
 };
@@ -119,11 +132,9 @@ export const SportsMarketMyBets = ({ market }) => {
 };
 
 export const SportsBet = ({ bet }) => {
+  const { step } = useBetslipStore();
   const {
-    step,
-  } = useBetslipStore();
-  const {
-    actions: { setModal} 
+    actions: { setModal },
   } = useAppStatusStore();
   const isReview = step === 1;
   const {
@@ -137,7 +148,7 @@ export const SportsBet = ({ bet }) => {
     recentlyUpdated,
     errorMessage,
     selfTrade,
-    insufficientFunds
+    insufficientFunds,
   } = bet;
   const { liquidityPools } = useMarketsStore();
   const checkWager = wager => {
@@ -207,9 +218,11 @@ export const SportsBet = ({ bet }) => {
       )}
       <span className={Styles.error}>
         {errorMessage}
-        {errorMessage === INSUFFICIENT_FUNDS_ERROR && 
-          <button onClick={() => setModal({ type: MODAL_ADD_FUNDS })}>Add funds</button>
-        }
+        {errorMessage === INSUFFICIENT_FUNDS_ERROR && (
+          <button onClick={() => setModal({ type: MODAL_ADD_FUNDS })}>
+            Add funds
+          </button>
+        )}
       </span>
     </div>
   );
@@ -346,7 +359,7 @@ export const BetslipInput = ({
       <input
         ref={betslipInput}
         onChange={e => {
-          const newVal = e.target.value.replace('$', ''); 
+          const newVal = e.target.value.replace('$', '');
           setCurVal(newVal);
           setInvalid(errorCheck(newVal));
         }}
@@ -460,7 +473,7 @@ export const BetslipFooter = () => {
     placeBetsDisabled,
   } = useBetslipStore();
   const {
-    actions: { setModal }
+    actions: { setModal },
   } = useAppStatusStore();
   const { wager, potential, fees } = calculateBetslipTotals(betslip);
   const bet = formatDai(wager).full;
@@ -503,10 +516,13 @@ export const BetslipFooter = () => {
           <SecondaryButton
             text="Cancel Bets"
             action={() => {
-              setModal({type: MODAL_CANCEL_ALL_BETS, cb: () => {
-                cancelAllBets();
-                if (isReview) toggleStep();
-              }});
+              setModal({
+                type: MODAL_CANCEL_ALL_BETS,
+                cb: () => {
+                  cancelAllBets();
+                  if (isReview) toggleStep();
+                },
+              });
             }}
             icon={Trash}
           />
