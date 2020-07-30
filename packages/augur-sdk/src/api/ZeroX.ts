@@ -15,7 +15,6 @@ import {
   OrderEventUint256Value,
   OrderType,
   SubscriptionEventName,
-  TRADE_GAS_BUFFER,
   WORST_CASE_FILL,
   NORMAL_FILL
 } from '@augurproject/sdk-lite';
@@ -826,7 +825,6 @@ export class ZeroX {
       gasLimit = gasLimit.plus(NORMAL_FILL[params.numOutcomes]);
       numOrders--;
     }
-    gasLimit = gasLimit.plus(TRADE_GAS_BUFFER);
     return {
       loopLimit,
       gasLimit,
