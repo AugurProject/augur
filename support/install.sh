@@ -26,8 +26,6 @@ make_cli() {
   cat << 'EOF' > "${PWD}/augur/cli"
 #!/usr/bin/env bash
 
-set -e;
-
 DEFAULT_ETH_NODE_URL="${ETHEREUM_HTTP:-http://localhost:8545}";
 
 method="$1"
@@ -271,7 +269,15 @@ Reporting UI Link w/ subdomain: https://$reporting_ui_hash32.ipfs.cf-ipfs.com
 Previous Warp Sync Hash: $previous_warp_sync_hash
 Current Warp Sync Hash: $current_warp_sync_hash
 
-Send some ether (recommended: 1 ETH) to your augur address $augur_key for auto-reporting the warp sync market
+You are currently pinning the Trading and Reporting UIs to IPFS. Thanks!
+This will be true as long as you keep the "augur_augur_1" docker running.
+
+Actions you can take:
+1. Pin the Trading UI with your local ipfs daemon (not just the augur docker):
+   ipfs pin add $trading_ui_hash
+2. Pin the Reporting UI with your local ipfs daemon (not just the augur docker):
+   ipfs pin add reporting_ui_hash
+3. Begin autoreporting on the warpsync market by sending some ether (recommended: 1 ETH) to your augur address: $augur_key
 PRETTYBLOCK
   )
   ;;
