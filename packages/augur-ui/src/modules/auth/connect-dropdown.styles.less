@@ -336,8 +336,23 @@
     border: 0;
   }
 
+  .GasEdit > button,
+  .WalletProvider > button {
+    height: unset;
+    padding: @size-5 @size-6;
+  }
+
   .AccountFunds {
     background: var(--color-module-background);
+
+    > svg {
+      width: @size-22;
+      height: @size-18;
+      
+      > g > path {
+        fill: var(--color-primary-text);
+      }
+    }
   }
 
   .AddFunds {
@@ -349,6 +364,22 @@
 
     > button {
       .text-10-semi-bold;
+
+      height: unset;
+      width: unset;
+      padding: @size-12 @size-18;
+      text-transform: uppercase;
+
+      > svg {
+        height: @size-12;
+        width: @size-12;
+        margin-right: @size-4;
+
+        > path {
+          stroke: var(--color-primary-text);
+          fill: var(--color-primary-text);
+        }
+      }
     }
   }
 

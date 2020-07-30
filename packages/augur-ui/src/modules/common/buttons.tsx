@@ -12,6 +12,7 @@ import {
   REPORTING_STATE,
   CASHOUT,
   MODAL_CASHOUT_BET,
+  MODAL_ADD_FUNDS,
 } from 'modules/common/constants';
 import {
   StarIcon,
@@ -32,6 +33,7 @@ import {
   AlternateDaiLogoIcon,
   Chevron,
   ThickChevron,
+  AddIcon,
 } from 'modules/common/icons';
 import { useAppStatusStore, AppStatus } from 'modules/app/store/app-status';
 import classNames from 'classnames';
@@ -70,6 +72,7 @@ export interface DefaultButtonProps {
   failed?: boolean;
   submitTextButtton?: boolean;
   customConfirmedButtonText?: string;
+  className?: string;
 }
 
 export interface SortButtonProps {
@@ -145,6 +148,7 @@ export const PrimaryButton = ({
   confirmed,
   failed,
   icon,
+  className
 }: DefaultButtonProps) => (
   <>
     {URL && (
@@ -162,7 +166,8 @@ export const PrimaryButton = ({
     {!URL && (
       <button
         onClick={e => action(e)}
-        className={classNames(Styles.PrimaryButton, {
+        className={classNames(Styles.PrimaryButton, 
+          className, {
           [Styles.Confirmed]: confirmed,
           [Styles.Failed]: failed,
         })}
@@ -514,6 +519,22 @@ export const DepositButton = (props: DefaultActionButtonProps) => (
     Add funds
   </button>
 );
+
+
+export const AddFundsButton = (props: DefaultActionButtonProps) => {
+  const {
+    actions: { setModal },
+  } = useAppStatusStore();
+  return (
+    <PrimaryButton
+      className={Styles.AddFundsButton}
+      action={() => setModal({ type: MODAL_ADD_FUNDS })}
+      text="Add Funds"
+      icon={AddIcon}
+    />
+  );
+}
+
 
 export const TransferButton = (props: DefaultActionButtonProps) => (
   <button

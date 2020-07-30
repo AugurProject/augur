@@ -229,6 +229,15 @@ button.AddFunds {
       > .BettingUI {
         display: none;
       }
+
+      > button {
+        position: absolute;
+        right: @size-22;
+
+        @media @breakpoint-mobile-tablet {
+          display: none;
+        }
+      }
     }
   }
 }
