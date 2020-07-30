@@ -88,6 +88,7 @@ export interface DismissableNoticeProps {
   queueName?: string;
   queueId?: string;
   error?: boolean;
+  disabled?: boolean;
 }
 
 export const DismissableNotice = (props: DismissableNoticeProps) => {
@@ -110,6 +111,7 @@ export const DismissableNotice = (props: DismissableNoticeProps) => {
               action={props.buttonAction}
               queueName={props.queueName}
               queueId={props.queueId}
+              disabled={props.disabled}
             />
           )}
           {props.buttonType === DISMISSABLE_NOTICE_BUTTON_TYPES.CLOSE && (

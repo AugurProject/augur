@@ -1496,18 +1496,43 @@ interface ApprovalTxButtonLabelProps {
   account: string;
   isApprovalCallback: Function;
   title: string;
+  disabled?: boolean;
+  userEthBalance: string;
+  gasPrice: number;
 }
 export const ApprovalTxButtonLabel = ({
   checkApprovals,
   doApprovals,
-  numApprovals,
+  numApprovals = 1,
   buttonName,
   className,
   account,
   isApprovalCallback,
   title,
+  userEthBalance = "0",
+  gasPrice,
+  disabled = false,
 }: ApprovalTxButtonLabelProps) => {
   const [isApproved, setIsApproved] = useState(false);
+  const [insufficientEth, setInsufficientEth] = useState(false);
+  const [description, setDescription] = useState(`${buttonName} requires ${numApprovals} approval${numApprovals > 1 ? 's' : ''}`);
+  const [isProcessing, setIsProcessing] = useState(false);
+
+  useEffect(() => {
+      const gasNeeded = constants.APPROVE_GAS_ESTIMATE.times(numApprovals);
+      const ethNeededForGas = createBigNumber(
+        formatGasCostToEther(
+          gasNeeded,
+          { decimalsRounded: 4 },
+          createBigNumber(GWEI_CONVERSION).multipliedBy(gasPrice)
+        )
+      );
+      const notEnoughEth = createBigNumber(userEthBalance).lt(createBigNumber(ethNeededForGas));
+      setInsufficientEth(notEnoughEth);
+      if (notEnoughEth) {
+        setDescription(`Insufficient ETH to approve trading. ${ethNeededForGas} ETH cost.`)
+      }
+  }, [userEthBalance, gasPrice])
 
   useEffect(() => {
     checkApprovals(account).then(result => {
@@ -1522,14 +1547,21 @@ export const ApprovalTxButtonLabel = ({
         <DismissableNotice
           show={true}
           title={title}
-          buttonAction={(account) => doApprovals(account).then(() => {
-            setIsApproved(true);
-            isApprovalCallback(true);
-          })}
+          buttonAction={(account) => {
+            setIsProcessing(true)
+            doApprovals(account).then(() => {
+              setIsApproved(true);
+              isApprovalCallback(true);
+              // delay disabling the button just in case there is a lag updating state
+              setTimeout(() => setIsProcessing(false), 300);
+            }
+          )}}
           buttonText={buttonName}
           queueName={constants.TRANSACTIONS}
+          disabled={insufficientEth || disabled || isProcessing}
+          error={insufficientEth}
           queueId={constants.APPROVE} // TODO: check that is actually is the correct queue id
-          description={`${buttonName} requires ${numApprovals} approval${numApprovals > 1 ? 's' : ''}`}
+          description={description}
           buttonType={DISMISSABLE_NOTICE_BUTTON_TYPES.BUTTON}
         />
       </div>

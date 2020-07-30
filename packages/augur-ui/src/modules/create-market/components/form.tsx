@@ -115,7 +115,7 @@ import {
   ValidationType,
   getTemplateWednesdayAfterOpeningDay,
 } from '@augurproject/templates';
-import { isApprovedMarketCreation, approveMarketCreation, isApprovedToTrade, approveToTrade } from 'modules/contracts/actions/contractCalls';
+import { isApprovedMarketCreation, approveMarketCreation } from 'modules/contracts/actions/contractCalls';
 
 interface FormProps {
   newMarket: NewMarket;
@@ -138,6 +138,8 @@ interface FormProps {
   gsnUnavailable: boolean;
   gsnWalletInfoSeen: boolean;
   initializeGsnWallet: Function;
+  availableEth: string;
+  gasPrice: number;
 }
 
 interface FormState {
@@ -763,6 +765,8 @@ export default class Form extends React.Component<FormProps, FormState> {
       gsnWalletInfoSeen,
       initializeGsnWallet,
       meta,
+      availableEth,
+      gasPrice,
     } = this.props;
     const { contentPages, disableCreate } = this.state;
 
@@ -947,6 +951,8 @@ export default class Form extends React.Component<FormProps, FormState> {
                   title={'Approve to market creation'}
                   buttonName={'Approve'}
                   numApprovals={1}
+                  userEthBalance={availableEth}
+                  gasPrice={gasPrice}
                   checkApprovals={isApprovedMarketCreation}
                   doApprovals={approveMarketCreation}
                   account={meta.address}

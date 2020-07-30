@@ -52,6 +52,7 @@ interface UnsignedOrdersProps {
   insufficientFunds: boolean;
   isApproved: boolean;
   affiliate: string;
+  gasPrice: number;
 }
 
 const orderRow = (order: LiquidityOrder, props: UnsignedOrdersProps) => {
@@ -203,6 +204,8 @@ export const UnsignedOrders = (props: UnsignedOrdersProps) => {
         checkApprovals={isApprovedToTrade}
         doApprovals={() => approveToTrade(props.loginAccount.address, props.affiliate)}
         account={props.loginAccount.address}
+        userEthBalance={props.loginAccount.balances.eth}
+        gasPrice={props.gasPrice}
         isApprovalCallback={value => {
           value && setIsApproved(value);
         }}

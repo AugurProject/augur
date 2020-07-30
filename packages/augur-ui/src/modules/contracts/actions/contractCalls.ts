@@ -819,14 +819,14 @@ export async function approveToTrade(address, referalAddress = NULL_ADDRESS) {
   const { contracts } = augurSdk.get();
   const approvals = [];
   approvals.push(contracts.affiliates.setReferrer(referalAddress));
+  if (!(await contracts.shareToken.isApprovedForAll_(address, contracts.ZeroXTrade.address))) {
+    approvals.push(contracts.shareToken.setApprovalForAll(contracts.ZeroXTrade.address, true));
+  }
   if (!(await isContractApproval(address, contracts.ZeroXTrade.address, contracts.cash))) {
     approvals.push(contracts.cash.approve(contracts.ZeroXTrade.address, APPROVAL_AMOUNT));
   }
   if (!(await isContractApproval(address, contracts.fillOrder.address, contracts.cash))) {
     approvals.push(contracts.cash.approve(contracts.fillOrder.address, APPROVAL_AMOUNT));
-  }
-  if (!(await contracts.shareToken.isApprovedForAll_(address, contracts.ZeroXTrade.address))) {
-    approvals.push(contracts.shareToken.setApprovalForAll(contracts.ZeroXTrade.address, true));
   }
   return Promise.all(approvals);
 }

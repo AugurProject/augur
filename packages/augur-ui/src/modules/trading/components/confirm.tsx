@@ -12,13 +12,11 @@ import {
   ERROR,
   UPPER_FIXED_PRECISION_BOUND,
   ZERO,
-  WALLET_STATUS_VALUES,
   INVALID_OUTCOME_ID,
   HELP_CENTER,
   CREATEAUGURWALLET,
   TRANSACTIONS,
   GWEI_CONVERSION,
-  APPROVE_GAS_ESTIMATE,
 } from 'modules/common/constants';
 import ReactTooltip from 'react-tooltip';
 import TooltipStyles from 'modules/common/tooltip.styles.less';
@@ -32,8 +30,6 @@ import {
 import {
   formatGasCostToEther,
   formatShares,
-  formatNumber,
-  formatDaiPrice,
   formatDai,
 } from 'utils/format-number';
 import { BigNumber, createBigNumber } from 'utils/create-big-number';
@@ -41,8 +37,6 @@ import { LinearPropertyLabel, TransactionFeeLabelToolTip, ApprovalTxButtonLabel 
 import { Trade, FormattedNumber } from 'modules/types';
 import { ExternalLinkButton, ProcessingButton, PrimaryButton } from 'modules/common/buttons';
 import { isApprovedToTrade, approveToTrade } from 'modules/contracts/actions/contractCalls';
-import initialLiquidity from 'modules/create-market/containers/initial-liquidity';
-import loginAccount from 'modules/auth/selectors/login-account';
 
 interface MessageButton {
   action: Function;
@@ -170,6 +164,7 @@ class Confirm extends Component<ConfirmProps, ConfirmState> {
       allowPostOnlyOrder,
       showAddFundsModal,
       ethToDaiRate,
+      initialLiquidity,
     } = props || this.props;
 
     const {
@@ -256,27 +251,6 @@ class Confirm extends Component<ConfirmProps, ConfirmState> {
       };
     }
 
-    if (tradingApproved && !tradingTutorial && !initialLiquidity) {
-      const gasNeeded = APPROVE_GAS_ESTIMATE.times(4);
-      const ethNeededForGas = createBigNumber(
-        formatGasCostToEther(
-          gasNeeded,
-          { decimalsRounded: 4 },
-          createBigNumber(GWEI_CONVERSION).multipliedBy(gasPrice)
-        )
-      );
-      const enoughEth = createBigNumber(ethNeededForGas).gte(
-        createBigNumber(availableEth)
-      );
-      if (enoughEth) {
-        messages = {
-          header: 'Insufficient ETH',
-          type: ERROR,
-          message: `You do not have enough funds to approve trading. ${ethNeededForGas} ETH required for gas.`,
-        };
-      }
-    }
-
     if (
       !tradingTutorial &&
       totalCost &&
@@ -330,6 +304,7 @@ class Confirm extends Component<ConfirmProps, ConfirmState> {
       tradingApproved,
       affiliate,
       isLogged,
+      availableEth,
     } = this.props;
 
     const {
@@ -502,6 +477,8 @@ class Confirm extends Component<ConfirmProps, ConfirmState> {
             title={'Approve to trade'}
             buttonName={'Approve'}
             numApprovals={4}
+            userEthBalance={String(availableEth)}
+            gasPrice={gasPrice}
             checkApprovals={isApprovedToTrade}
             doApprovals={() => approveToTrade(account, affiliate)}
             account={account}

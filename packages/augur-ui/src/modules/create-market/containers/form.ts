@@ -19,14 +19,17 @@ import { NodeStyleCallback } from "modules/types";
 import { marketCreationStarted, marketCreationSaved } from "services/analytics/helpers";
 import getValueFromlocalStorage from "utils/get-local-storage-value";
 import { WALLET_STATUS } from "modules/app/actions/update-app-status";
+import { AppState } from "appStore/index";
 
-const mapStateToProps = state => {
+const mapStateToProps = (state: AppState) => {
 
   return {
     newMarket: state.newMarket,
     currentTimestamp: getValue(state, "blockchain.currentAugurTimestamp"),
     drafts: state.drafts,
     walletStatus: state.appStatus[WALLET_STATUS],
+    availableEth: state.loginAccount.balances.eth,
+    gasPrice: state.gasPriceInfo.userDefinedGasPrice || state.gasPriceInfo.average,
   }
 }
 
