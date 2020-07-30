@@ -13,16 +13,6 @@
 }
 
 .TEXT {
-  position: relative;
   white-space: nowrap;
-
-  &:after {
-    position: absolute;
-    height: 1px;
-    background: @color-highlight-template-text;
-    content: ' ';
-    width: 100%;
-    left: 0;
-    bottom: 0;
-  }
+  border-bottom: 1px solid @color-highlight-template-text;
 }
