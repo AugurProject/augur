@@ -265,7 +265,7 @@ export default function setAlertText(alert: any, callback: Function) {
               let updatedOrderType = alert.params.orderType;
               if (
                 alert.params.orderCreator.toUpperCase() ===
-                loginAccount.address.toUpperCase()
+                loginAccount?.address.toUpperCase()
               ) {
                 // creator
                 const orders = userOpenOrders[alert.params.market];
@@ -310,7 +310,7 @@ export default function setAlertText(alert: any, callback: Function) {
               let originalQuantity = null;
               let updatedOrderType = alert.params.orderType;
               if (
-                alert.params.orderCreator.toUpperCase() ===
+                loginAccount.address && alert.params.orderCreator.toUpperCase() ===
                 loginAccount.address.toUpperCase()
               ) {
                 // creator
