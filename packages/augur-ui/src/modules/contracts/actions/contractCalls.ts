@@ -785,12 +785,12 @@ export function createMarketRetry(market: CreateMarketData) {
   return createMarket(newMarket, true);
 }
 const APPROVAL_AMOUNT = new BigNumber(2**255).minus(1);
-const APPROVAL_TEST_AMOUNT = new BigNumber(2**200).minus(1);
+const APPROVAL_TEST_AMOUNT = new BigNumber(0);
 export async function isContractApproval(account, contract, approvalContract): Promise<boolean> {
   try {
     const currentAllowance = await approvalContract.allowance_(account, contract);
     console.log(String(currentAllowance), account, contract);
-    return currentAllowance.gte(APPROVAL_TEST_AMOUNT);
+    return currentAllowance.gt(APPROVAL_TEST_AMOUNT);
   }
   catch(error) {
     throw error;
