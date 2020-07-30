@@ -1515,7 +1515,7 @@ export const ApprovalTxButtonLabel = ({
   disabled = false,
   addFunds,
 }: ApprovalTxButtonLabelProps) => {
-  const [isApproved, setIsApproved] = useState(false);
+  const [isApproved, setIsApproved] = useState(true);
   const [insufficientEth, setInsufficientEth] = useState(false);
   const [description, setDescription] = useState(`${buttonName} requires ${numApprovals} approval${numApprovals > 1 ? 's' : ''}`);
   const [isProcessing, setIsProcessing] = useState(false);
@@ -1537,9 +1537,9 @@ export const ApprovalTxButtonLabel = ({
   }, [userEthBalance, gasPrice])
 
   useEffect(() => {
-    checkApprovals(account).then(result => {
-      setIsApproved(result);
-      isApprovalCallback(result);
+    checkApprovals(account).then(approved => {
+      setIsApproved(approved);
+      isApprovalCallback(approved);
     });
   }, []);
 
