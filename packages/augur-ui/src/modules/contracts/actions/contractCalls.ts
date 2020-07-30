@@ -810,9 +810,9 @@ export async function isApprovedToTrade(address): Promise<boolean> {
   const { contracts } = augurSdk.get();
   const cashContractApproval = await isContractApproval(address, contracts.ZeroXTrade.address, contracts.cash);
   const fillContractApproval = await isContractApproval(address, contracts.fillOrder.address, contracts.cash);
-  const zeroXContractApproval = await contracts.shareToken.isApprovedForAll_(address, contracts.fillOrder.address);
-  console.log(fillContractApproval, cashContractApproval, zeroXContractApproval);
-  return fillContractApproval && cashContractApproval && zeroXContractApproval
+  const fillShareAllContractApproval = await contracts.shareToken.isApprovedForAll_(address, contracts.fillOrder.address);
+  console.log(fillContractApproval, cashContractApproval, fillShareAllContractApproval);
+  return fillContractApproval && cashContractApproval && fillShareAllContractApproval
 }
 
 export async function approveToTrade(address, referalAddress = NULL_ADDRESS) {
