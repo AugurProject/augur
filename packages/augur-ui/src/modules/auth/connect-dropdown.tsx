@@ -26,6 +26,7 @@ import {
   v2AugurLogo,
   ClipboardCopy,
   DirectionArrow,
+  AddIcon,
 } from 'modules/common/icons';
 import { EthReserveAutomaticTopOff } from 'modules/common/labels';
 import { PrimaryButton, SecondaryButton } from 'modules/common/buttons';
@@ -42,7 +43,6 @@ import Styles from 'modules/auth/connect-dropdown.styles.less';
 import { createBigNumber } from 'utils/create-big-number';
 import { useAppStatusStore } from 'modules/app/store/app-status';
 import { getEthReserve } from 'modules/auth/helpers/login-account';
-import { TransferMyDai } from 'modules/modal/common';
 
 const useGasInfo = () => {
   const {
@@ -259,14 +259,16 @@ const ConnectDropdown = () => {
           <PrimaryButton
             action={() => setModal({ type: MODAL_ADD_FUNDS })}
             text="Add Funds"
+            icon={AddIcon}
           />
         </div>
 
         <div className={Styles.AddFunds}>
-          <div>Trading account</div>
+          <div>Your account</div>
           <PrimaryButton
             action={() => setModal({ type: MODAL_ADD_FUNDS })}
             text="Add Funds"
+            icon={AddIcon}
           />
         </div>
 {/* 
