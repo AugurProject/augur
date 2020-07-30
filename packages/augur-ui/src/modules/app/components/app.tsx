@@ -328,7 +328,7 @@ const AppView = ({
     </main>
   );
 };
-// TODO: do we need withRouter?
+
 export default withRouter(RewriteUrlParams(windowRef, AppView));
 
 const SideBarSection = ({
