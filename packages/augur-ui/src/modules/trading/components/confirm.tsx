@@ -17,6 +17,7 @@ import {
   CREATEAUGURWALLET,
   TRANSACTIONS,
   GWEI_CONVERSION,
+  ETH,
 } from 'modules/common/constants';
 import ReactTooltip from 'react-tooltip';
 import TooltipStyles from 'modules/common/tooltip.styles.less';
@@ -483,6 +484,7 @@ class Confirm extends Component<ConfirmProps, ConfirmState> {
             doApprovals={() => approveToTrade(account, affiliate)}
             account={account}
             isApprovalCallback={() => checkAccountApproval()}
+            addFunds={() => showAddFundsModal({ tokenToAdd: ETH })}
           />
         }
 

@@ -42,7 +42,7 @@ const mapDispatchToProps = (dispatch) => ({
   updateWalletStatus: () => {
     dispatch(removePendingTransaction(CREATEAUGURWALLET));
   },
-  showAddFundsModal: () => dispatch(updateModal({ type: MODAL_ADD_FUNDS })),
+  showAddFundsModal: (modal) => dispatch(updateModal({ type: MODAL_ADD_FUNDS, ...modal })),
   checkAccountApproval: () => dispatch(checkAccountApproval())
 });
 

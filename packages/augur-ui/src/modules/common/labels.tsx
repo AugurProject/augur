@@ -1499,6 +1499,7 @@ interface ApprovalTxButtonLabelProps {
   disabled?: boolean;
   userEthBalance: string;
   gasPrice: number;
+  addFunds: Function;
 }
 export const ApprovalTxButtonLabel = ({
   checkApprovals,
@@ -1512,6 +1513,7 @@ export const ApprovalTxButtonLabel = ({
   userEthBalance = "0",
   gasPrice,
   disabled = false,
+  addFunds,
 }: ApprovalTxButtonLabelProps) => {
   const [isApproved, setIsApproved] = useState(false);
   const [insufficientEth, setInsufficientEth] = useState(false);
@@ -1548,17 +1550,21 @@ export const ApprovalTxButtonLabel = ({
           show={true}
           title={title}
           buttonAction={(account) => {
-            setIsProcessing(true)
-            doApprovals(account).then(() => {
-              setIsApproved(true);
-              isApprovalCallback(true);
-              // delay disabling the button just in case there is a lag updating state
-              setTimeout(() => setIsProcessing(false), 300);
+            if (insufficientEth) {
+              addFunds();
+            } else {
+              setIsProcessing(true)
+              doApprovals(account).then(() => {
+                setIsApproved(true);
+                isApprovalCallback(true);
+                // delay disabling the button just in case there is a lag updating state
+                setTimeout(() => setIsProcessing(false), 300);
+              });
             }
-          )}}
-          buttonText={buttonName}
+          }}
+          buttonText={insufficientEth ? 'Add Funds' : buttonName}
           queueName={constants.TRANSACTIONS}
-          disabled={insufficientEth || disabled || isProcessing}
+          disabled={disabled || isProcessing}
           error={insufficientEth}
           queueId={constants.APPROVE} // TODO: check that is actually is the correct queue id
           description={description}
