@@ -27,7 +27,7 @@ if(!process.env.CURRENT_COMMITHASH) {
   const gitRevisionPlugin = new GitRevisionPlugin({
     branch: false
   });
-  process.env.CURRENT_COMMITHASH = JSON.stringify(gitRevisionPlugin.commithash());
+  process.env.CURRENT_COMMITHASH = gitRevisionPlugin.commithash();
 }
 
 module.exports = {
@@ -236,7 +236,7 @@ module.exports = {
       'process.env': {
         AUGUR_ENV: JSON.stringify(AUGUR_ENV),
         AUTO_LOGIN: process.env.AUTO_LOGIN || false,
-        CURRENT_COMMITHASH: process.env.CURRENT_COMMITHASH,
+        CURRENT_COMMITHASH: JSON.stringify(process.env.CURRENT_COMMITHASH),
         ETHEREUM_NETWORK: JSON.stringify(AUGUR_ENV),
         IPFS_STABLE_LOADER_HASH: JSON.stringify(process.env.IPFS_STABLE_LOADER_HASH),
 
