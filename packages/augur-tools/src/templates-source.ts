@@ -81,6 +81,7 @@ import {
   ZEROX,
   CHAINLINK,
   ADDITIONAL_TOKENS,
+  AMPLE,
 } from '@augurproject/sdk-lite';
 
 import { TemplateInputType, TEXT_PLACEHOLDERS, ValidationType } from './templates-template';
@@ -2152,54 +2153,6 @@ export const TEMPLATES = {
         children: {
           [SINGLES]: {
             templates: [
-              {
-                marketType: YES_NO,
-                question: `[0] Singles Tennis: Will [1] win the [2] [3]?`,
-                example: `Men's Singles Tennis: Will Roger Federer win the 2020 Wimbledon?`,
-                inputs: [
-                  {
-                    id: 0,
-                    type: TemplateInputType.DROPDOWN_QUESTION_DEP,
-                    placeholder: `Men's/Women's`,
-                    inputDestIds: [3],
-                    values: LIST_VALUES.MENS_WOMENS,
-                    inputDestValues: TENNIS_SINGLES_EVENTS,
-                  },
-                  {
-                    id: 1,
-                    type: TemplateInputType.TEXT,
-                    placeholder: TEXT_PLACEHOLDERS.SINGLE_PLAYER,
-                  },
-                  {
-                    id: 2,
-                    type: TemplateInputType.DROPDOWN,
-                    placeholder: `Year`,
-                    validationType: ValidationType.YEAR_YEAR_RANGE,
-                    values: LIST_VALUES.YEARS,
-                  },
-                  {
-                    id: 3,
-                    type: TemplateInputType.DROPDOWN,
-                    defaultLabel: `Select Men's/Women's First`,
-                    placeholder: `Event`,
-                    categoryDestId: 2,
-                    values: [],
-                  },
-                ],
-                resolutionRules: {
-                  [REQUIRED]: [
-                    {
-                      text: `If a player fails to start a tournament or a match or withdraws early or is disqualified, the market should resolve as 'No'`,
-                    },
-                    {
-                      text: `This market is intended to be about a Single Person, if this is not the case, this market should settle as 'Invalid'.`,
-                    },
-                    {
-                      text: `If the match is postponed and concludes after markets event expiration the market should resolve as 'No'`,
-                    },
-                  ],
-                },
-              },
               {
                 marketType: YES_NO,
                 question: `[0] Singles Tennis: Will [1] win the [2] [3]?`,
@@ -9484,12 +9437,12 @@ export const TEMPLATES = {
           },
         ],
       },
-      [AUGUR]: {
+      [AMPLE]: {
         templates: [
           {
             marketType: YES_NO,
-            question: `Will the price of REP/USD open at or above [0] on [1], according to TradingView.com "REPUSD (crypto - Coinbase)"?`,
-            example: `Will the price of REP/USD open at or above 25 on December 31, 2020, according to TradingView.com "REPUSD (crypto - Coinbase)"?`,
+            question: `Will the price of AMPL/USDT open at or above [0] on [1], according to TradingView.com "AMPLUSDT (crypto - KuCoin)"?`,
+            example: `Will the price of AMPL/USDT open at or above 1.00 on December 31, 2020, according to TradingView.com "AMPLUSDT (crypto - KuCoin)"?`,
             inputs: [
               {
                 id: 0,
@@ -9507,7 +9460,7 @@ export const TEMPLATES = {
             resolutionRules: {
               [REQUIRED]: [
                 {
-                  text: `Use ticker symbol search for token pair (ie REPUSD), find exchange that corresponds to market question. Navigate to Full-featured daily chart, Opening price is determined on the date in the market question on tradingview.com.`,
+                  text: `Use ticker symbol search for token pair (ie AMPLUSDT), find exchange that corresponds to market question. Navigate to Full-featured daily chart, Opening price is determined on the date in the market question on tradingview.com.`,
                 },
                 {
                   text: `Opening price can also be found on tradingview using the hourly chart for the date in the market question at UTC (0) 00:00`,
@@ -9520,8 +9473,8 @@ export const TEMPLATES = {
           },
           {
             marketType: YES_NO,
-            question: `Will the price of REP/USD, exceed [0] anytime between the open of [1] and close of [2], according to TradingView.com "REPUSD (crypto - Coinbase)"?`,
-            example: `Will the price of REP/USD exceed 25 anytime between the open of September 1, 2020 and close of December 31, 2020, according to TradingView.com "REPUSD (crypto - Coinbase)"?`,
+            question: `Will the price of AMPL/USDT, exceed [0] anytime between the open of [1] and close of [2], according to TradingView.com "AMPLUSDT (crypto - KuCoin)"?`,
+            example: `Will the price of AMPL/USDT exceed 1.00 anytime between the open of September 1, 2020 and close of December 31, 2020, according to TradingView.com "AMPLUSDT (crypto - KuCoin)"?`,
             inputs: [
               {
                 id: 0,
@@ -9545,7 +9498,7 @@ export const TEMPLATES = {
             resolutionRules: {
               [REQUIRED]: [
                 {
-                  text: `Use ticker symbol search for token pair (ie REPUSD), find exchange that corresponds to market question. Navigate to Full-featured daily chart, Opening price is determined on the date in the market question on tradingview.com.`,
+                  text: `Use ticker symbol search for token pair (ie AMPLUSDT), find exchange that corresponds to market question. Navigate to Full-featured daily chart, Opening price is determined on the date in the market question on tradingview.com.`,
                 },
                 {
                   text: `Opening price can also be found on tradingview using the hourly chart for the date in the market question at UTC (0) 00:00`,
@@ -9558,8 +9511,8 @@ export const TEMPLATES = {
           },
           {
             marketType: SCALAR,
-            question: `What price will REP/USD open at on [0], according to TradingView.com "REPUSD (crypto - Coinbase)"?`,
-            example: `What price will REP/USD open at on December 31, 2020, according to TradingView.com for "REPUSD (crypto - Coinbase)"?`,
+            question: `What price will AMPL/USDT open at on [0], according to TradingView.com "AMPLUSDT (crypto - KuCoin)"?`,
+            example: `What price will AMPL/USDT open at on December 31, 2020, according to TradingView.com for "AMPLUSDT (crypto - KuCoin)"?`,
             denomination: 'Price',
             inputs: [
              {
@@ -9572,7 +9525,7 @@ export const TEMPLATES = {
             resolutionRules: {
               [REQUIRED]: [
                 {
-                  text: `Use ticker symbol search for token pair (ie REPUSD), find exchange that corresponds to market question. Navigate to Full-featured daily chart, Opening price is determined on the date in the market question on tradingview.com.`,
+                  text: `Use ticker symbol search for token pair (ie AMPLUSDT), find exchange that corresponds to market question. Navigate to Full-featured daily chart, Opening price is determined on the date in the market question on tradingview.com.`,
                 },
                 {
                   text: `Opening price can also be found on tradingview using the hourly chart for the date in the market question at UTC (0) 00:00`,

@@ -1282,7 +1282,8 @@ const RadioCard = ({
     className={classNames(Styles.RadioCard, {
       [Styles.RadioCardActive]: checked,
       [Styles.CustomIcon]: icon && !useIconColors,
-      [Styles.InverseFill]: icon && inverseFill
+      [Styles.InverseFill]: icon && inverseFill,
+      [Styles.EmptyIcon]: !icon
     })}
     role="button"
     onClick={e => onChange(value)}
