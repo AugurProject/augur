@@ -422,8 +422,7 @@ export const MARKET_SUB_TEMPLATES = {
       value: AUGUR,
       header: AUGUR,
       description: defaultDescription,
-      inverseFill: true,
-      icon: icons.AugurLogo,
+      icon: icons.REP,
     },
     {
       value: COMPOUND,
