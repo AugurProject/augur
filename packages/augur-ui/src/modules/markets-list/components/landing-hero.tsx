@@ -11,7 +11,7 @@ export const LandingHero = ({showSignup}: LandingHeroProps) => {
   return (
     <section className={Styles.LandingHero}>
       <div>
-        <h1>Augur<br />Your global, no-limit betting platform</h1>
+        <h1>Augur<br /><span>Your global, no-limit betting platform</span></h1>
         <span>
           Bet how much you want on sports, economics, world events and more.
         </span>
