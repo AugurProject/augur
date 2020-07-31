@@ -11,7 +11,8 @@
   },
   "dependencies": {
     "bignumber.js": "9.0.0",
-    "ethereumjs-abi": "0.6.8"
+    "ethereumjs-abi": "0.6.8",
+    "axios": "0.19.2"
   },
   "devDependencies": {
     "typescript": "3.8.3"

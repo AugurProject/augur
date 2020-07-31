@@ -173,7 +173,6 @@ export class ZeroXOrders extends AbstractTable {
       const marketIds: string[] = _.uniq(documents.map((d) => d.market));
       const markets = _.keyBy(await this.stateDB.Markets.where('market').anyOf(marketIds).toArray(), 'market');
       documents = documents.filter((d) => this.validateStoredOrder(d, markets));
-      documents.forEach((doc) => delete this.pastOrders[doc.orderHash])
       await this.saveDocuments(documents);
       for (const d of documents) {
         const event = {eventType: OrderEventType.Create, ...d};

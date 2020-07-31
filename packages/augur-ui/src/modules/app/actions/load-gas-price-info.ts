@@ -14,6 +14,7 @@ import {
 } from 'modules/common/constants';
 import { augurSdk } from 'services/augursdk';
 import { checkIfMainnet } from './check-if-mainnet';
+import { getGasStation } from  '@augurproject/utils';
 
 export function loadGasPriceInfo(
   callback: NodeStyleCallback = logError
@@ -40,7 +41,8 @@ export function loadGasPriceInfo(
 async function getGasPriceRanges(networkId: string, callback: DataCallback) {
   const defaultGasPrice = setDefaultGasInfo();
   try {
-    const relayerGasStation = await augurSdk.get().getGasStation();
+    const networkId = (await augurSdk.get()).networkId;
+    const relayerGasStation = await getGasStation(networkId);
     // Take the eth gas station gas estimates for safeLow, standard, and fast
     // Add 1 GWEI to all of them (b/c we use a lot of gas).
     const relayerGasStationResults = {

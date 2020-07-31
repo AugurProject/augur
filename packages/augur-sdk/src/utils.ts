@@ -26,5 +26,6 @@ export {
   convertDisplayPriceToOnChainPrice,
   convertPayoutNumeratorsToStrings,
   convertDisplayValuetoAttoValue,
-  convertAttoValueToDisplayValue
-} from "@augurproject/utils";
+  convertAttoValueToDisplayValue,
+} from '@augurproject/utils';
+

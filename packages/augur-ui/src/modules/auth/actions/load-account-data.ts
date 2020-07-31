@@ -1,4 +1,3 @@
-import { loadAccountDataFromLocalStorage } from 'modules/auth/actions/load-account-data-from-local-storage';
 import { checkAccountApproval } from 'modules/auth/actions/approve-account';
 import { loadAccountHistory } from 'modules/auth/actions/load-account-history';
 import { loadUniverseDetails } from 'modules/universe/actions/load-universe-details';
