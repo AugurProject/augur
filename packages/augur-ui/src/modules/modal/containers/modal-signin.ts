@@ -34,6 +34,7 @@ import {
   MetaMaskLogin,
 } from 'modules/common/icons';
 import { windowRef } from 'utils/window-ref';
+import { isSafari } from 'utils/is-safari';
 
 const mapStateToProps = (state: AppState) => ({
   modal: state.modal,
@@ -108,12 +109,27 @@ const mergeProps = (sP: any, dP: any, oP: any) => {
 
   const connectMethods = [
     {
+      type: ACCOUNT_TYPES.FORTMATIC,
+      icon: EmailLogin,
+      text: `${LOGIN_OR_SIGNUP} with Email`,
+      subText: `Powered by ${ACCOUNT_TYPES.FORTMATIC}`,
+      hidden: false,
+      primary: true,
+      action: async () => {
+        dP.loadingModal(SIGNIN_LOADING_TEXT_FORTMATIC, () => login());
+        try {
+          await dP.connectFortmatic(false);
+        } catch (error) {
+          onError(error, ACCOUNT_TYPES.FORTMATIC);
+        }
+      },
+    },
+    {
       type: ACCOUNT_TYPES.PORTIS,
       icon: EmailLogin,
       text: `${LOGIN_OR_SIGNUP} with Email`,
       subText: `Powered by ${ACCOUNT_TYPES.PORTIS}`,
-      hidden: false,
-      primary: true,
+      hidden: isSafari() ? true : false,
       action: async () => {
         dP.loadingModal(SIGNIN_LOADING_TEXT_PORTIS, () => login());
         try {
@@ -156,21 +172,6 @@ const mergeProps = (sP: any, dP: any, oP: any) => {
           await dP.connectMetaMask();
         } catch (error) {
           onError(error, ACCOUNT_TYPES.WEB3WALLET);
-        }
-      },
-    },
-    {
-      type: ACCOUNT_TYPES.FORTMATIC,
-      icon: EmailLogin,
-      text: `${LOGIN_OR_SIGNUP} with Email`,
-      subText: `Powered by ${ACCOUNT_TYPES.FORTMATIC}`,
-      hidden: true,
-      action: async () => {
-        dP.loadingModal(SIGNIN_LOADING_TEXT_FORTMATIC, () => login());
-        try {
-          await dP.connectFortmatic(false);
-        } catch (error) {
-          onError(error, ACCOUNT_TYPES.FORTMATIC);
         }
       },
     },
