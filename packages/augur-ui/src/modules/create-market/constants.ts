@@ -130,7 +130,7 @@ export const EMPTY_STATE: NewMarket = {
 };
 
 export const WarpSyncErrorHeader = 'Universe Warp Sync Hash is undefined';
-export const WarpSyncErrorSubheader = 'Wait until warp sunc hash is defined to report or dispute';
+export const WarpSyncErrorSubheader = 'Wait until warp sync hash is defined to report or dispute';
 export const InvalidRules = [
   'The market question, resolution details  or its outcomes are ambiguous, subjective or unknown.',
   'The result of the event was known at market creation time.',
