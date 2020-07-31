@@ -17,7 +17,7 @@ import {
 import {
   LinearPropertyLabelProps, PendingLabel, BulkTxLabel, ModalLabelNotice, ApprovalTxButtonLabel,
 } from "modules/common/labels";
-import { BUY } from "modules/common/constants";
+import { BUY, ADDLIQUIDITY } from "modules/common/constants";
 import { formatMarketShares, formatDai } from "utils/format-number";
 import Styles from "modules/modal/modal.styles.less";
 import OpenOrdersTable from "modules/market/components/market-orders-positions-table/open-orders-table";
@@ -198,6 +198,7 @@ export const UnsignedOrders = (props: UnsignedOrdersProps) => {
       </main>
       <ApprovalTxButtonLabel
         className={Styles.MultipleTransactions}
+        ignore={Boolean(process.env.REPORTING_ONLY)}
         title={'Approve to create orders'}
         buttonName={'Approve'}
         checkApprovals={approvalsNeededToTrade}
@@ -205,6 +206,7 @@ export const UnsignedOrders = (props: UnsignedOrdersProps) => {
         account={props.loginAccount.address}
         userEthBalance={props.loginAccount.balances.eth}
         gasPrice={props.gasPrice}
+        approvalType={ADDLIQUIDITY}
         isApprovalCallback={value => {
           value && setIsApproved(value);
         }}

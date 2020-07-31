@@ -1499,6 +1499,8 @@ interface ApprovalTxButtonLabelProps {
   userEthBalance: string;
   gasPrice: number;
   addFunds: Function;
+  approvalType: string;
+  ignore?: boolean;
 }
 export const ApprovalTxButtonLabel = ({
   checkApprovals,
@@ -1512,6 +1514,8 @@ export const ApprovalTxButtonLabel = ({
   gasPrice,
   disabled = false,
   addFunds,
+  approvalType,
+  ignore,
 }: ApprovalTxButtonLabelProps) => {
   const [approvalsNeeded, setApprovalsNeeded] = useState(0);
   const [insufficientEth, setInsufficientEth] = useState(false);
@@ -1532,7 +1536,21 @@ export const ApprovalTxButtonLabel = ({
       if (notEnoughEth) {
         setDescription(`Insufficient ETH to approve trading. ${ethNeededForGas} ETH cost.`);
       } else {
-        setDescription(`${buttonName} requires ${approvalsNeeded} approval${approvalsNeeded > 1 ? 's' : ''}`);
+        switch(approvalType) {
+          case constants.CREATEMARKET:
+          setDescription('Approval requires one signing. Once confirmed, click create.');
+          break;
+          case constants.PUBLICTRADE:
+            setDescription(`Approval requires ${approvalsNeeded} signing${approvalsNeeded > 1 ? 's' : ''} before you can place your order.`)
+          break;
+          case constants.ADDLIQUIDITY:
+            setDescription(`Approval requires ${approvalsNeeded} signing${approvalsNeeded > 1 ? 's' : ''}. Once confirmed you can submit your orders.`)
+          break;
+          default:
+            setDescription(`Approval requires ${approvalsNeeded} signing${approvalsNeeded > 1 ? 's' : ''}. Once confirmed you can place your order.`)
+          break;
+        }
+
       }
   }, [userEthBalance, gasPrice, approvalsNeeded])
 
@@ -1548,7 +1566,7 @@ export const ApprovalTxButtonLabel = ({
   }, []);
 
   return (
-    (approvalsNeeded > 0) ? (
+    (!ignore && approvalsNeeded > 0) ? (
       <div className={classNames(Styles.ModalMessageLabel, className)}>
         <DismissableNotice
           show={true}
