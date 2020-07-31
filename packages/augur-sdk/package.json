@@ -63,6 +63,7 @@
     "ethers": "4.0.47",
     "express": "4.17.1",
     "flexsearch": "0.6.32",
+    "helmet": "3.23.3",
     "io-ts": "1.10.4",
     "ipfs": "0.40.0",
     "ipld-dag-pb": "0.18.1",
