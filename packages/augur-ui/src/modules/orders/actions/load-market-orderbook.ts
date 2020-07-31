@@ -31,7 +31,7 @@ export const updateMarketInvalidBids = (
     marketId,
     orderBook,
   },
-})
+});
 
 export const clearOrderBook = () => ({
   type: CLEAR_ORDER_BOOK,
@@ -50,7 +50,7 @@ export const loadMarketOrderBook = (
   const { loginAccount } = getState();
   const augur = augurSdk.get();
   const expirationCutoffSeconds = await augur.getGasConfirmEstimate();
-  let params = loginAccount.address
+  const params = loginAccount.address
     ? { account: loginAccount.address, expirationCutoffSeconds }
     : { };
   const Augur = augurSdk.get();
@@ -67,4 +67,4 @@ export const getBestInvalidBid = (marketId, orderBooks) => {
   const bids = invalidOutcome[BIDS];
   if (!bids || bids.length === 0) return null;
   return bids[0].price
-}
+};
