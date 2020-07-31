@@ -196,13 +196,13 @@ export const DisputeOutcome = (props: DisputeOutcomeProps) => {
               {props.stake && props.stake.tentativeWinning ? (
                 <span>
                   {props.stake ? stakeCurrent.formatted : 0}
-                  <span> REP</span>
+                  <span> REPv2</span>
                 </span>
               ) : (
                 <span>
                   {props.stake ? stakeCurrent.formatted : 0}
                   <span>
-                    / {props.stake ? bondSizeCurrent.formatted : 0} REP
+                    / {props.stake ? bondSizeCurrent.formatted : 0} REPv2
                   </span>
                 </span>
               )}

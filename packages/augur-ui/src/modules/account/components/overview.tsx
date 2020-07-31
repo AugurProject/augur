@@ -33,12 +33,12 @@ const Overview = ({
           <Funds />
           <div className={Styles.RepBalances}>
             <PropertyLabel
-              label="REP Balance"
+              label="REPv2 Balance"
               value={repBalanceFormatted.formatted}
             />
             {AugurLogo}
             <PropertyLabel
-              label="REP Staked"
+              label="REPv2 Staked"
               value={repTotalAmountStakedFormatted.formatted}
             />
           </div>

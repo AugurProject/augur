@@ -508,7 +508,7 @@ export async function redeemUserStakes(
       disputeWindows
     );
   } catch (e) {
-    console.error('Could not redeem REP', e);
+    console.error('Could not redeem REPv2', e);
   }
 }
 
@@ -1145,7 +1145,7 @@ export async function migrateRepToUniverse(migration: doReportDisputeAddStake) {
       createBigNumber(migration.attoRepAmount)
     );
   } catch (e) {
-    console.error('Could not migrate REP to universe', e);
+    console.error('Could not migrate REPv2 to universe', e);
   }
 }
 

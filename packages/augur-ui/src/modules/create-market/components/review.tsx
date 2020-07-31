@@ -324,7 +324,7 @@ export default class Review extends React.Component<
           <span>
             <LinearPropertyLabel
               label={"No-Show Bond"}
-              value={s.designatedReportNoShowReputationBond && s.designatedReportNoShowReputationBond.formattedValue + " REP"}
+              value={s.designatedReportNoShowReputationBond && s.designatedReportNoShowReputationBond.formattedValue + " REPv2"}
             />
           </span>
 
@@ -339,7 +339,7 @@ export default class Review extends React.Component<
             </span>
           </>}
 
-          <Subheaders header="Totals" subheader={GsnEnabled ? "Sum total of DAI and REP required to create this market" : "Sum total of DAI, ETH and REP required to create this market"} />
+          <Subheaders header="Totals" subheader={GsnEnabled ? "Sum total of DAI and REPv2 required to create this market" : "Sum total of DAI, ETH and REPv2 required to create this market"} />
           <span>
             <LinearPropertyLabel
               label={"Total DAI"}
@@ -347,8 +347,8 @@ export default class Review extends React.Component<
             />
             <TransactionFeeLabel gasCostDai={totalGasInDai} />
             <LinearPropertyLabel
-              label={"TOTAL REP"}
-              value={s.designatedReportNoShowReputationBond && s.designatedReportNoShowReputationBond.formattedValue + " REP"}
+              label={"TOTAL REPv2"}
+              value={s.designatedReportNoShowReputationBond && s.designatedReportNoShowReputationBond.formattedValue + " REPv2"}
             />
 
           </span>

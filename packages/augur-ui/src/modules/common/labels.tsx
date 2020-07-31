@@ -1254,7 +1254,7 @@ export const RepBalance = (props: RepBalanceProps) => (
   >
     <span>{constants.TOTAL_ACCOUNT_VALUE_IN_REP}</span>
     <span>{props.rep}</span>
-    <span>rep</span>
+    <span>REPv2</span>
   </div>
 );
 

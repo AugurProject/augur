@@ -23,7 +23,7 @@ import {
   LinearPropertyLabelProps,
 } from 'modules/common/labels';
 import Styles from 'modules/modal/modal.styles.less';
-import { PENDING, SUCCESS, DAI, FAILURE, ACCOUNT_TYPES, ETH, HELP_CENTER_ADD_FUNDS, HELP_CENTER_LEARN_ABOUT_ADDRESS, ON_BORDING_STATUS_STEP } from 'modules/common/constants';
+import { PENDING, SUCCESS, DAI, REP, FAILURE, ACCOUNT_TYPES, ETH, HELP_CENTER_ADD_FUNDS, HELP_CENTER_LEARN_ABOUT_ADDRESS, ON_BORDING_STATUS_STEP } from 'modules/common/constants';
 import { LinkContent, LoginAccount, FormattedNumber } from 'modules/types';
 import { DismissableNotice, DISMISSABLE_NOTICE_BUTTON_TYPES } from 'modules/reporting/common';
 import { toChecksumAddress } from 'ethereumjs-util';
@@ -669,10 +669,10 @@ export const DepositInfo = (props: DepositInfoProps) => (
       <li>Copy your connected wallet address shown here</li>
       <li>Transfer the ETH purchased to the copied address</li>
     </ul>
-    <h3>How to (REP):</h3>
+    <h3>How to (REPv2):</h3>
     <ul>
       <li>
-        Buy REP using{' '}
+        Buy REPv2 using{' '}
         {props.show0xInstant && (
           <ExternalLinkButton
             label="0x Instant"
@@ -685,7 +685,7 @@ export const DepositInfo = (props: DepositInfoProps) => (
         )}
       </li>
       <li>
-        Your purchased REP will automatically appear in your connected wallet
+        Your purchased REPv2 will automatically appear in your connected wallet
       </li>
     </ul>
   </section>
@@ -747,7 +747,7 @@ export const FundsHelp = ({ fundType = DAI }: FundsHelpProps) => (
   <div className={Styles.FundsHelp}>
     <p>Need help?</p>
     <div>
-      <span>Learn how to buy {fundType === DAI ? `DAI ($)` : fundType} {fundType === DAI ? generateDaiTooltip() : ''} and  send it to your wallet address.</span>
+      <span>Learn how to buy {fundType === DAI ? `DAI ($)` : fundType === REP ? 'REPv2' : fundType} {fundType === DAI ? generateDaiTooltip() : ''} and  send it to your wallet address.</span>
       <ExternalLinkButton URL={HELP_CENTER_ADD_FUNDS} label='Learn More' />
     </div>
   </div>

@@ -85,7 +85,7 @@ export const TransferForm = ({
         value: DAI,
       },
       [REP]: {
-        label: REP,
+        label: 'REPv2',
         value: REP,
       },
       [ETH]: {
