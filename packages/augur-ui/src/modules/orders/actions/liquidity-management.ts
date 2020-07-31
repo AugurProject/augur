@@ -11,6 +11,7 @@ import {
   createLiquidityOrders,
   approveToTrade,
   placeTrade,
+  approvalsNeededToTrade,
 } from 'modules/contracts/actions/contractCalls';
 import {
   convertDisplayAmountToOnChainAmount,
@@ -177,7 +178,7 @@ export const sendLiquidityOrder = (options: any) => async (
     )
   );
 
-  if (bnAllowance.lte(0) || bnAllowance.lte(createBigNumber(orderEstimate))) {
+  if ((await approvalsNeededToTrade(loginAccount.address)) > 0) {
     await approveToTrade(loginAccount.address, loginAccount?.affiliate);
     isZeroX
       ? createZeroXLiquidityOrders(market, [options.order], blockchain.currentAugurTimestamp, dispatch)

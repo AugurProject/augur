@@ -90,7 +90,7 @@ const TopNav = ({
                 <li key='migrate-rep-button'>
                   <div className={Styles.MigrateRep}>
                     <ProcessingButton
-                        text={'Migrate V1 to V2 REP'}
+                        text={'Migrate REP to REPv2'}
                         action={() => migrateV1Rep()}
                         queueName={TRANSACTIONS}
                         queueId={MIGRATE_FROM_LEG_REP_TOKEN}

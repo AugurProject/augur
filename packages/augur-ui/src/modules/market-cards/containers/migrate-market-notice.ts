@@ -89,7 +89,7 @@ const mapStateToProps = (state: AppState, ownProps) => {
 
   if (hasForkPassed && !canMigrateMarkets) {
     title =
-      'Fork has finalized. REP on Winning Universe is needed to migrate markets ';
+      'Fork has finalized. REPv2 on Winning Universe is needed to migrate markets ';
     buttonType = DISMISSABLE_NOTICE_BUTTON_TYPES.NONE;
   }
 
@@ -97,8 +97,8 @@ const mapStateToProps = (state: AppState, ownProps) => {
     title =
       'Disputing is paused on this market. Disputing can continue once the fork has finalised.';
     description =
-      'As you hold REP in this market’s dispute, please release it now to migrate in the fork.';
-    buttonText = 'Release REP';
+      'As you hold REPv2 in this market’s dispute, please release it now to migrate in the fork.';
+    buttonText = 'Release REPv2';
     buttonType = DISMISSABLE_NOTICE_BUTTON_TYPES.BUTTON;
   }
 

@@ -250,7 +250,7 @@ export function formatRep(
   return formatNumber(num, {
     decimals: 4,
     decimalsRounded: 4,
-    denomination: v => `${v} REP`,
+    denomination: v => `${v} REPv2`,
     positiveSign: false,
     zeroStyled: false,
     blankZero: false,
@@ -266,7 +266,7 @@ export function formatRepTokens(
   return formatNumber(num, {
     decimals: 2,
     decimalsRounded: 2,
-    denomination: v => `${v} REP Tokens`,
+    denomination: v => `${v} REPv2 Tokens`,
     positiveSign: false,
     zeroStyled: false,
     blankZero: false,
@@ -359,7 +359,7 @@ export function formatAttoRep(
       decimalsRounded: 4,
       blankZero: false,
       roundDown: true,
-      denomination: v => `${v} REP`,
+      denomination: v => `${v} REPv2`,
       ...opts,
     }
   );

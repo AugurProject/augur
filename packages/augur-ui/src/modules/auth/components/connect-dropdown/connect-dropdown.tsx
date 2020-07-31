@@ -150,7 +150,7 @@ const ConnectDropdown = (props: ConnectDropdownProps) => {
       disabled: GsnEnabled ? balances.eth === "0" : false,
     },
     {
-      name: 'REP',
+      name: 'REPv2',
       logo: AugurLogo,
       value: formatRep(balances.rep, {
         zeroStyled: false,

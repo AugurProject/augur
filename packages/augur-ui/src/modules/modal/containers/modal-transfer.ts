@@ -14,14 +14,11 @@ import { ThunkDispatch } from 'redux-thunk';
 import { Action } from 'redux';
 import { totalTradingBalance } from 'modules/auth/selectors/login-account';
 import { getTransactionLabel } from 'modules/auth/selectors/get-gas-price';
-import { WALLET_STATUS } from 'modules/app/actions/update-app-status';
-import { WALLET_STATUS_VALUES } from 'modules/common/constants';
 
 const mapStateToProps = (state: AppState) => {
   const { loginAccount, appStatus, modal } = state;
   const { balances } = loginAccount;
   balances.dai = String(totalTradingBalance(loginAccount));
-  const gasPrice = state.gasPriceInfo.userDefinedGasPrice || state.gasPriceInfo.average;
   const signingEthBalance = loginAccount.balances.signerBalances.eth;
 
   return {
@@ -30,7 +27,7 @@ const mapStateToProps = (state: AppState) => {
   balances,
   signingEthBalance,
   ethToDaiRate: appStatus.ethToDaiRate,
-  gasPrice,
+  gasPrice: state.gasPriceInfo.userDefinedGasPrice || state.gasPriceInfo.average,
   fallBackGasCosts: {
     eth: TRANSFER_ETH_GAS_COST,
     rep: TRANSFER_REP_GAS_COST,

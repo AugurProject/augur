@@ -60,7 +60,7 @@ export const Transactions = ({
         </div>
         {showFaucets && (
           <div>
-            <h4>REP for test net</h4>
+            <h4>REPv2 for test net</h4>
             <h4>DAI for test net</h4>
             <REPFaucetButton action={repFaucet} />
             <DAIFaucetButton action={daiFaucet} />

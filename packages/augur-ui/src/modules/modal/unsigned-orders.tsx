@@ -24,7 +24,7 @@ import OpenOrdersTable from "modules/market/components/market-orders-positions-t
 import { LiquidityOrder, LoginAccount } from "modules/types";
 import { TXEventName } from "@augurproject/sdk-lite";
 import { DISMISSABLE_NOTICE_BUTTON_TYPES } from "modules/reporting/common";
-import { isApprovedToTrade, approveToTrade } from 'modules/contracts/actions/contractCalls';
+import { approvalsNeededToTrade, approveToTrade } from 'modules/contracts/actions/contractCalls';
 
 interface UnsignedOrdersProps {
   closeAction: Function;
@@ -200,8 +200,7 @@ export const UnsignedOrders = (props: UnsignedOrdersProps) => {
         className={Styles.MultipleTransactions}
         title={'Approve to create orders'}
         buttonName={'Approve'}
-        numApprovals={4}
-        checkApprovals={isApprovedToTrade}
+        checkApprovals={approvalsNeededToTrade}
         doApprovals={() => approveToTrade(props.loginAccount.address, props.affiliate)}
         account={props.loginAccount.address}
         userEthBalance={props.loginAccount.balances.eth}

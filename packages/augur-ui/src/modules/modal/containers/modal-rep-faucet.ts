@@ -17,12 +17,12 @@ const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({
 });
 
 const mergeProps = (sP: any, dP: any, oP: any) => ({
-  title: "REP Faucet",
-  description: ["Get test net REP, it will be sent to your connected wallet."],
+  title: "REPv2 Faucet",
+  description: ["Get test net REPv2, it will be sent to your connected wallet."],
   closeAction: () => dP.closeModal(),
   buttons: [
     {
-      text: "Get REP",
+      text: "Get REPv2",
       action: () => {
         dP.getRep();
         dP.closeModal();

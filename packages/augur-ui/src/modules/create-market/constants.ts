@@ -732,7 +732,7 @@ export const MARKET_CREATION_COPY = {
   },
   [MARKET_COPY_LIST.NO_SHOW_BOND]: {
     subheader: [
-      'You must put up a No-Show bond, denominated in REP that will be returned upon market resolution if and only if the Designated Reporter submits a report within 24 hours of the market’s Reporting Start Time. If the Designated Reporter does not submit a report within 24 hours, the bond is forfeited to the first person to report the outcome in open reporting.'
+      'You must put up a No-Show bond, denominated in REPv2 that will be returned upon market resolution if and only if the Designated Reporter submits a report within 24 hours of the market’s Reporting Start Time. If the Designated Reporter does not submit a report within 24 hours, the bond is forfeited to the first person to report the outcome in open reporting.'
     ],
   },
   [MARKET_COPY_LIST.UNIT_OF_MEASURMENT]: {

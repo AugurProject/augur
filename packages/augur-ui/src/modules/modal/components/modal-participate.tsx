@@ -97,7 +97,7 @@ export const ModalParticipate = (props: ModalParticipateProps) => {
     }
 
     if (bnQuantity.gt(bnRep)) {
-      errors.push(`Value is bigger than REP balance: ${rep} REP`);
+      errors.push(`Value is bigger than REPv2 balance: ${rep} REPv2`);
       isValid = false;
     }
 
@@ -125,7 +125,7 @@ export const ModalParticipate = (props: ModalParticipateProps) => {
     {
       label: 'price',
       value: formattedQuantity,
-      denomination: 'REP',
+      denomination: 'REPv2',
       showDenomination: true,
     },
     {
@@ -155,7 +155,7 @@ export const ModalParticipate = (props: ModalParticipateProps) => {
           value={quantity}
           onChange={value => updateQuantity(value)}
           errorMessage={errors[0]}
-          innerLabel={REP}
+          innerLabel={'REPv2'}
         />
         <Breakdown rows={items} />
         <ButtonsRow buttons={buttons}/>

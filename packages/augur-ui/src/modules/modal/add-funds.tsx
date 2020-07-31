@@ -83,10 +83,10 @@ export const AddFunds = ({
     setAmountToBuy(amountToBuy);
   };
 
-  const fundTypeLabel = tokenToAdd === DAI ?  'DAI ($)' : tokenToAdd;
+  const fundTypeLabel = tokenToAdd === DAI ?  'DAI ($)' : tokenToAdd === REP ? 'REPv2' : tokenToAdd;
 
   const [selectedOption, setSelectedOption] = useState(
-    initialAddFundsFlow ? initialAddFundsFlow : usingOnRampSupportedWallet && tokenToAdd === DAI ? ADD_FUNDS_CREDIT_CARD : ADD_FUNDS_COINBASE
+    initialAddFundsFlow ? initialAddFundsFlow : usingOnRampSupportedWallet && tokenToAdd === DAI ? ADD_FUNDS_CREDIT_CARD : ADD_FUNDS_SWAP
   );
 
   const FUND_OTPIONS = [
@@ -94,6 +94,11 @@ export const AddFunds = ({
       header: 'Credit/debit card',
       description: 'Add funds instantly using a credit/debit card',
       value: ADD_FUNDS_CREDIT_CARD,
+    },
+    {
+      header: 'Convert',
+      description: tokenToAdd === DAI ? 'Trade ETH or REPv2 for DAI ($)' : 'Trade ETH or DAI ($) for REPv2',
+      value: ADD_FUNDS_SWAP,
     },
     {
       header: 'Coinbase',
@@ -105,11 +110,6 @@ export const AddFunds = ({
       description: 'Send funds to your wallet address',
       value: ADD_FUNDS_TRANSFER,
     },
-    {
-      header: 'Convert',
-      description: `Trade another token currency for ${tokenToAdd === DAI ? 'DAI ($)' : tokenToAdd}`,
-      value: ADD_FUNDS_SWAP,
-    },
   ];
 
   let addFundsOptions = [...FUND_OTPIONS];
@@ -117,21 +117,6 @@ export const AddFunds = ({
   // Only show CreditCard option for onRamp wallets using the Add DAI flow
   if (tokenToAdd !== DAI || !usingOnRampSupportedWallet) {
     addFundsOptions = addFundsOptions.slice(1, addFundsOptions.length);
-  }
-
-  // If Add REP flow show SWAP at the top
-  if (tokenToAdd === REP) {
-    addFundsOptions = addFundsOptions.filter(
-      option => option.value !== ADD_FUNDS_SWAP
-    );
-    addFundsOptions.unshift(
-      FUND_OTPIONS.find(option => option.value === ADD_FUNDS_SWAP)
-    );
-  }
-
-  if (initialSwapToken === USDC || initialSwapToken === USDT) {
-    // Convert USDT/USDC to dai flow, only show SWAP payament flow to avoid confusion
-    addFundsOptions = [FUND_OTPIONS[ADD_FUNDS_SWAP]];
   }
 
   const SWAP_ID = 0;
@@ -151,7 +136,7 @@ export const AddFunds = ({
           <CloseButton action={() => closeAction()} />
         </div>
         <div>
-          <h1>{tokenToAdd === REP ? 'Get REP' : 'Add Funds'}</h1>
+          <h1>{tokenToAdd === REP ? 'Get REPv2' : 'Add Funds'}</h1>
           <h2>Choose a method</h2>
           <RadioTwoLineBarGroup
             radioButtons={addFundsOptions}
@@ -182,8 +167,8 @@ export const AddFunds = ({
               <h1>Convert</h1>
               <h2>
                 {tokenToAdd === REP
-                  ? 'Trade a currency for REP'
-                  : 'Trade ETH or REP for DAI ($) and vice versa'}
+                  ? 'Trade ETH or DAI ($) for REPv2'
+                  : 'Trade ETH or REPv2 for DAI ($)'}
               </h2>
 
               <div className={Styles.AddFundsSwap}>

@@ -15,7 +15,6 @@ import {
   OrderEventUint256Value,
   OrderType,
   SubscriptionEventName,
-  TRADE_GAS_BUFFER,
   WORST_CASE_FILL,
   NORMAL_FILL
 } from '@augurproject/sdk-lite';
@@ -38,7 +37,7 @@ import {
   TradeTransactionLimits,
 } from './OnChainTrade';
 
-export const MAX_PROTOCOL_FEE_MULTIPLIER = 1.25;
+export const MAX_PROTOCOL_FEE_MULTIPLIER = 2;
 export enum Verbosity {
   Panic = 0,
   Fatal = 1,
@@ -826,7 +825,6 @@ export class ZeroX {
       gasLimit = gasLimit.plus(NORMAL_FILL[params.numOutcomes]);
       numOrders--;
     }
-    gasLimit = gasLimit.plus(TRADE_GAS_BUFFER);
     return {
       loopLimit,
       gasLimit,
