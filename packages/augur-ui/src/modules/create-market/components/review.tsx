@@ -51,6 +51,7 @@ interface ReviewProps {
   estimateSubmitNewMarket: Function;
   GsnEnabled: boolean;
   setDisableCreate: Function;
+  setIsApproved: Function;
   showAddFundsModal: Function;
 }
 

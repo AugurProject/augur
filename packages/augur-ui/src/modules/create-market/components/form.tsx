@@ -148,6 +148,7 @@ interface FormState {
   contentPages: any[];
   templateFormStarts: number;
   disableCreate: boolean;
+  isApproved: boolean;
 }
 
 interface Validations {
@@ -197,6 +198,7 @@ export default class Form extends React.Component<FormProps, FormState> {
       : CUSTOM_CONTENT_PAGES,
     showPreview: false,
     disableCreate: false,
+    isApproved: true,
   };
 
   componentDidMount() {
@@ -753,6 +755,12 @@ export default class Form extends React.Component<FormProps, FormState> {
     this.setState({ disableCreate: disable });
   };
 
+  setIsApproved = (isApproved: boolean) => {
+    this.setState({
+      isApproved
+    })
+  }
+
   render() {
     const {
       newMarket,
@@ -769,7 +777,7 @@ export default class Form extends React.Component<FormProps, FormState> {
       availableEth,
       gasPrice,
     } = this.props;
-    const { contentPages, disableCreate } = this.state;
+    const { contentPages, disableCreate, isApproved } = this.state;
 
     const { currentStep, validations, uniqueId, marketType } = newMarket;
 
@@ -920,7 +928,10 @@ export default class Form extends React.Component<FormProps, FormState> {
                 />
               )}
               {mainContent === REVIEW && (
-                <Review setDisableCreate={this.setDisableCreate} />
+                <Review
+                  setDisableCreate={this.setDisableCreate}
+                  setIsApproved={this.setIsApproved}
+                />
               )}
               {mainContent === TEMPLATE_PICKER && <TemplatePicker />}
               {mainContent === SUB_CATEGORIES && (
@@ -950,15 +961,15 @@ export default class Form extends React.Component<FormProps, FormState> {
                 <ApprovalTxButtonLabel
                   className={Styles.MultipleTransactions}
                   ignore={Boolean(process.env.REPORTING_ONLY)}
-                  title={'Approve to a create market'}
+                  title={'Approve to create the market'}
                   buttonName={'Approve'}
                   userEthBalance={availableEth}
                   gasPrice={gasPrice}
                   checkApprovals={approvalsNeededMarketCreation}
                   doApprovals={approveMarketCreation}
                   account={meta.address}
+                  isApprovalCallback={(isApproved) => { this.setIsApproved(isApproved)}}
                   approvalType={CREATEMARKET}
-                  isApprovalCallback={(value) => { value && this.setDisableCreate(value)}}
                 />
               )}
               <div>
@@ -985,7 +996,7 @@ export default class Form extends React.Component<FormProps, FormState> {
                   {secondButton === CREATE && (
                     <PrimaryButton
                       text="Create"
-                      disabled={disableCreate}
+                      disabled={disableCreate || !isApproved}
                       action={() => {
                         gsnUnavailable && !gsnWalletInfoSeen
                           ? initializeGsnWallet(() =>
