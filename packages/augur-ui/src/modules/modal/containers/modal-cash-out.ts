@@ -14,6 +14,7 @@ import { ethToDai } from 'modules/app/actions/get-ethToDai-rate';
 import { createBigNumber } from 'utils/create-big-number';
 import { transferFunds, transferFundsGasEstimate, withdrawTransfer } from 'modules/auth/actions/transfer-funds';
 import { DAI } from 'modules/common/constants';
+import { windowRef } from 'utils/window-ref';
 
 const mapStateToProps = (state: AppState) => {
   const { loginAccount, appStatus, modal } = state;
@@ -34,7 +35,7 @@ const mapStateToProps = (state: AppState) => {
   const totalEth = loginAccount.balances.eth;
   const signerEth = loginAccount.balances.signerBalances.eth;
   const walletStatus = appStatus.walletStatus;
-  const signerAddress = loginAccount.signerAddress;
+  const signerAddress = windowRef.AugurSDK.dependencies.signer._address;
 
   return {
     account: address,
