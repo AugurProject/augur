@@ -39,6 +39,8 @@ export const FilterSearch = () => {
       <SquareDropdown
         defaultValue={defaultSort}
         options={sortOptions}
+        minimalStyle
+        preLabel='sort by'
         onChange={sortOption => {
           goToPageOne();
           updateMultipleQueries(

@@ -1,7 +1,7 @@
 import React, { Component, useState, useEffect } from 'react';
 import classNames from 'classnames';
 import Styles from 'modules/common/selection.styles';
-import { ThickChevron, Chevron, ShareIcon, SlimArrow } from 'modules/common/icons';
+import { ThickChevron, Chevron, ShareIcon, SlimArrow, AlternateCheckMark } from 'modules/common/icons';
 import ReactTooltip from 'react-tooltip';
 import TooltipStyles from 'modules/common/tooltip.styles.less';
 import { MARKET_TEMPLATES } from 'modules/create-market/constants';
@@ -30,6 +30,8 @@ export interface DropdownProps {
   disabled?: boolean;
   sort?: boolean;
   minimalStyle?: boolean
+  preLabel?: string;
+  dontCheckInvalid?: boolean;
 }
 
 interface DropdownState {
@@ -207,7 +209,9 @@ class Dropdown extends Component<DropdownProps, DropdownState> {
       id,
       showColor,
       disabled,
-      minimalStyle
+      minimalStyle,
+      preLabel,
+      dontCheckInvalid
     } = this.props;
     const { selected, showList, isDisabled, sortedList } = this.state;
     return (
@@ -236,10 +240,11 @@ class Dropdown extends Component<DropdownProps, DropdownState> {
         data-for={'dropdown-' + id + staticLabel}
         data-iscapture={true}
       >
+        {preLabel && <span>{preLabel}:</span>}
         <button
           className={classNames(Styles.label, {
             [Styles.SelectedLabel]: selected,
-            [Styles.invalidColor]: selected?.value === INVALID_OUTCOME_ID,
+            [Styles.invalidColor]: !dontCheckInvalid && selected?.value === INVALID_OUTCOME_ID,
           })}
         >
           <span ref={ref => (this.labelRef = ref)}>
@@ -259,10 +264,12 @@ class Dropdown extends Component<DropdownProps, DropdownState> {
                 value={option.value}
                 onClick={() => this.dropdownSelect(option)}
                 className={classNames({
-                  [Styles.invalidColor]: option?.value === INVALID_OUTCOME_ID,
+                  [Styles.Selected]: option?.value === selected?.value,
+                  [Styles.invalidColor]: !dontCheckInvalid && option?.value === INVALID_OUTCOME_ID,
                 })}
               >
                 {option.label}
+                {minimalStyle && option?.value === selected?.value && AlternateCheckMark}
               </button>
             ))}
           </div>

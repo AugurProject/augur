@@ -193,38 +193,35 @@ export const MyBets = () => {
         </div>
         <ClaimWinnings />
         <div>
-          <span>
-            View by
-            <SquareDropdown
-              options={MY_BETS_VIEW_BY}
-              defaultValue={viewBy}
-              onChange={viewBy => {
-                setViewBy(viewBy);
-              }}
-              minimalStyle
-            />
-          </span>
+          <SquareDropdown
+            options={MY_BETS_VIEW_BY}
+            defaultValue={viewBy}
+            onChange={viewBy => {
+              setViewBy(viewBy);
+            }}
+            preLabel='view by'
+            minimalStyle
+            dontCheckInvalid
+          />
           {showEvents && (
-            <span>
-              Market Status:
-              <SquareDropdown
-                options={MY_BETS_MARKET_STATUS}
-                defaultValue={marketStatus}
-                onChange={marketStatus => setMarketStatus(marketStatus)}
-                minimalStyle
-              />
-            </span>
+            <SquareDropdown
+              options={MY_BETS_MARKET_STATUS}
+              defaultValue={marketStatus}
+              onChange={marketStatus => setMarketStatus(marketStatus)}
+              minimalStyle
+              preLabel='market status'
+              dontCheckInvalid
+            />
           )}
           {!showEvents && (
-            <span>
-              Bet Date:
-              <SquareDropdown
-                options={MY_BETS_BET_DATE}
-                defaultValue={betDate}
-                onChange={betDate => setBetDate(betDate)}
-                minimalStyle
-              />
-            </span>
+            <SquareDropdown
+              options={MY_BETS_BET_DATE}
+              defaultValue={betDate}
+              onChange={betDate => setBetDate(betDate)}
+              minimalStyle
+              preLabel='Bet Date'
+              dontCheckInvalid
+            />
           )}
         </div>
         {showEvents && (
