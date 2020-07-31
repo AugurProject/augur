@@ -54,6 +54,15 @@ export class GetterCache extends AbstractTable {
             "getProfitLossSummary",
             "getTradingHistory",
         ],
+        [SubscriptionEventName.BulkOrderEvent]: [
+            "getMarketOrderBook",
+            "getUserOpenOrders",
+            "getTotalOnChainFrozenFunds",
+            "getZeroXOrder",
+            "getZeroXOrders",
+            "getMarketsLiquidityPools",
+            "getMarketOutcomeBestOffer"
+        ],
         [SubscriptionEventName.DBUpdatedZeroXOrders]: [
             "getMarketOrderBook",
             "getUserOpenOrders",
