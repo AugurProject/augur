@@ -6,7 +6,6 @@ import {
 import { ContractInterfaces } from '@augurproject/core';
 import {
   isSubscriptionEventName,
-  NETWORK_IDS,
   NULL_ADDRESS,
   SubscriptionEventName,
   TXEventName,
@@ -17,8 +16,8 @@ import {
   LoggerLevels,
   NetworkId,
   SDKConfiguration,
+  getGasStation,
 } from '@augurproject/utils';
-import axios from 'axios';
 import { BigNumber } from 'bignumber.js';
 import { JsonRpcProvider, TransactionResponse } from 'ethers/providers';
 import { Arrayish } from 'ethers/utils';
@@ -263,28 +262,8 @@ export class Augur<TProvider extends Provider = Provider> {
     await this.dependencies.submitTransaction(transaction);
   }
 
-  async getGasStation() {
-    try {
-      const networkId = this.config.networkId;
-
-      if (networkId !== NETWORK_IDS.Mainnet) {
-        return {
-          fast: '4000000000',
-          standard: '1000000000'
-        }
-      }
-
-      const result = await axios.get(
-        'https://safe-relay.gnosis.io/api/v1/gas-station/'
-      );
-      return result.data;
-    } catch (error) {
-      throw error;
-    }
-  }
-
   async getGasConfirmEstimate() {
-    const gasLevels = await this.getGasStation();
+    const gasLevels = await getGasStation(this.networkId);
     const recommended = parseInt(gasLevels['standard']) + 1000000000;
     const fast = parseInt(gasLevels['fast']) + 1000000000;
     const gasPrice = await this.getGasPrice();

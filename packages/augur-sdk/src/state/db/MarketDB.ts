@@ -26,6 +26,7 @@ import { Augur } from '../../Augur';
 import { padHex, QUINTILLION } from '../../utils';
 import { DB } from './DB';
 import { DerivedDB } from './DerivedDB';
+import { getGasStation, GasStation } from '@augurproject/utils';
 
 interface MarketOrderBookData {
   _id: string;
@@ -157,6 +158,7 @@ export class MarketDB extends DerivedDB {
 
     const reportingFeeDivisor = await this.augur.contracts.universe.getReportingFeeDivisor_();
     const ETHInAttoDAI = await this.augur.getExchangeRate();
+    const gasLevels = await getGasStation(this.augur.networkId);
 
     const marketDataById = _.keyBy(marketsData, 'market');
     for (const marketId of ids) {
@@ -166,7 +168,8 @@ export class MarketDB extends DerivedDB {
           marketId,
           marketDataById[marketId],
           reportingFeeDivisor,
-          ETHInAttoDAI
+          ETHInAttoDAI,
+          gasLevels,
         );
         // This is needed to make rollbacks work properly
         doc['blockNumber'] = highestSyncedBlockNumber;
@@ -192,14 +195,14 @@ export class MarketDB extends DerivedDB {
     marketId: string,
     marketData: MarketData,
     reportingFeeDivisor: BigNumber,
-    ETHInAttoDAI: BigNumber
+    ETHInAttoDAI: BigNumber,
+    gasLevels: GasStation,
   ): Promise<MarketOrderBookData> {
     const numOutcomes =
       marketData.outcomes && marketData.outcomes.length > 0
         ? marketData.outcomes.length + 1
         : 3;
     const estimatedTradeGasCost = WORST_CASE_FILL[numOutcomes];
-    const gasLevels = await augur.getGasStation();
     let gasPriceInGwei = DEFAULT_GAS_PRICE_IN_GWEI;
     if (gasLevels && gasLevels['standard']) {
       gasPriceInGwei = Number(new BigNumber(gasLevels['standard']).dividedBy(10 ** 9));
