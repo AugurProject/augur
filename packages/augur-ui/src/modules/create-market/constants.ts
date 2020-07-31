@@ -431,7 +431,7 @@ export const MARKET_SUB_TEMPLATES = {
       value: AMPLE,
       header: AMPLE,
       description: defaultDescription,
-      icon: null,
+      icon: icons.AMPL,
     },
     {
       value: COMPOUND,
