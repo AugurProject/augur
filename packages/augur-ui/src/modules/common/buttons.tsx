@@ -51,6 +51,7 @@ import { createBigNumber } from 'utils/create-big-number';
 import { formatDai } from 'utils/format-number';
 import { useMarketsStore } from 'modules/markets/store/markets';
 import { startClaimingMarketsProceeds } from 'modules/positions/actions/claim-markets-proceeds';
+import { runBetslipTrade } from 'utils/betslip-helpers';
 
 export interface DefaultButtonProps {
   id?: string;
@@ -684,6 +685,7 @@ interface CashoutButtonProps {
 export const CashoutButton = ({
   bet
 }: CashoutButtonProps) => {
+  runBetslipTrade(bet.marketId, bet, bet.orderId);
   let cashoutDisabled = true;
   let cashoutText = 'cashout not available';
   let didWin = false;
@@ -702,28 +704,12 @@ export const CashoutButton = ({
   const { marketInfos } = useMarketsStore();
   const market = marketInfos[bet.marketId];
   if (positions[bet.marketId]) {
-    const marketPosition = positions[bet.marketId];
-    if (createBigNumber(
-          marketPosition.tradingPositionsPerMarket.unclaimedProceeds
-        ).gt(ZERO)
-      ) {
-        const claimable = createBigNumber(
-          marketPosition.tradingPositionsPerMarket.unclaimedProceeds
-        );
-        cashoutText = `Cashout ${formatDai(claimable).full}`;
-        cashoutDisabled = false;
-        cashout = () => {
-          addPendingData(queueId, CASHOUT, TXEventName.Pending, '', {}, null);
-          (async () => 
-            await claimMarketsProceeds(
-              [bet.marketId], 
-              account
-            ).catch(error =>
-              addPendingData(queueId, CASHOUT, TXEventName.Failure, '', {}, null)
-              )
-          )();
-        }
-      } else if (market?.reportingState !== REPORTING_STATE.AWAITING_FINALIZATION && market?.reportingState !== REPORTING_STATE.FINALIZED) {
+    if (market?.reportingState !== REPORTING_STATE.AWAITING_FINALIZATION && market?.reportingState !== REPORTING_STATE.FINALIZED) {
+        // call calcOrderShareProfitLoss
+        // need simulateTrade
+        // need to do userShares
+        // reversal, sharesFilledAvgPrice, shareCost -- from simulateTrade
+        // get potentialDaiProfit
         cashoutText = `Cashout ${formatDai(bet.unrealizedCost).full}`;
         cashoutDisabled = false;
     

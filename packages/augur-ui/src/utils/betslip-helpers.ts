@@ -1,5 +1,5 @@
 import { convertToNormalizedPrice, convertToWin, getWager } from './get-odds';
-import { BUY_INDEX, INSUFFICIENT_FUNDS_ERROR } from 'modules/common/constants';
+import { BUY_INDEX, INSUFFICIENT_FUNDS_ERROR, BUY } from 'modules/common/constants';
 import { getOutcomeNameWithOutcome } from './get-outcome';
 import { BET_STATUS } from 'modules/trading/store/constants';
 import { Markets } from 'modules/markets/store/markets';
@@ -8,6 +8,8 @@ import { Betslip } from 'modules/trading/store/betslip';
 import { AppStatus } from 'modules/app/store/app-status';
 import { createBigNumber } from './create-big-number';
 import { totalTradingBalance } from 'modules/auth/helpers/login-account';
+import { runSimulateTrade } from 'modules/trades/actions/update-trade-cost-shares';
+import { calculateTotalOrderValue } from 'modules/trades/helpers/calc-order-profit-loss-percents';
 
 export const convertPositionToBet = (position, marketInfo) => {
   const normalizedPrice = convertToNormalizedPrice({
@@ -81,11 +83,86 @@ export const checkForDisablingPlaceBets = (betslipItems) => {
   return placeBetsDisabled;
 }
 
+export const runBetslipTrade = (marketId, order, orderId) => {
+  const { marketInfos } = Markets.get();
+  const { loginAccount: { address }, accountPositions} = AppStatus.get();
+  const market = marketInfos[marketId];
+
+  if (!market) return null;
+
+  const totalCost = calculateTotalOrderValue(
+    order.quantitty,
+    order.price,
+    BUY,
+    createBigNumber(market.minPrice),
+    createBigNumber(market.maxPrice),
+    market.marketType
+  );
+
+  let newTradeDetails: any = {
+    side: BUY,
+    maxCost: totalCost,
+    limitPrice: order.price,
+    totalFee: '0',
+    totalCost: '0',
+  };
+
+  const marketMaxPrice = createBigNumber(market.maxPrice);
+  const marketMinPrice = createBigNumber(market.minPrice);
+  const marketRange = marketMaxPrice.minus(market.minPrice);
+  const scaledPrice = createBigNumber(order.price).plus(marketMinPrice.abs());
+
+  let newShares = createBigNumber(market.maxPrice).dividedBy(scaledPrice);
+
+  newTradeDetails.numShares = createBigNumber(newShares.toFixed(4));
+
+  (async() => {
+    await runSimulateTrade(
+      newTradeDetails,
+      market,
+      marketId,
+      order.outcomeId,
+      accountPositions,
+      address,
+      (err, simulateTradeData) => {
+        console.log(simulateTradeData);
+        Betslip.actions.modifyBet(marketId, orderId, {
+          ...order,
+          selfTrade: simulateTradeData.selfTrade,
+          errorMessage: formulateBetErrorMessage(order.insufficientFunds, simulateTradeData.selfTrade)
+        });
+      }
+    );
+  })();
+};
+
 export const simulateBetslipTrade = (marketId, order, orderId) => {
   const { marketInfos } = Markets.get();
   const { loginAccount: { address }, accountPositions} = AppStatus.get();
   const market = marketInfos[marketId];
-  
+  const positions = (accountPositions[marketId] || {}).tradingPositions;
+  const marketOutcomeShares = positions
+    ? (accountPositions[marketId].tradingPositionsPerMarket || {})
+        .userSharesBalances
+    : {};
+  let userShares = createBigNumber(marketOutcomeShares[order.outcomeId]);
+  // if (!!reversal && orderType === BUY_INDEX) {
+  //   // ignore trading outcome shares and find min across all other outcome shares.
+  //   const userSharesBalancesRemoveOutcome = Object.keys(
+  //     marketOutcomeShares
+  //   ).reduce(
+  //     (p, o) =>
+  //       String(outcomeId) === o
+  //         ? p
+  //         : [...p, new BigNumber(marketOutcomeShares[o])],
+  //     []
+  //   );
+  //   userShares =
+  //     userSharesBalancesRemoveOutcome.length > 0
+  //       ? BigNumber.min(...userSharesBalancesRemoveOutcome)
+  //       : ZERO;
+  // }
+
   (async() => {
     const simulateTradeData = await simulateTrade(
       BUY_INDEX,
@@ -99,7 +176,7 @@ export const simulateBetslipTrade = (marketId, order, orderId) => {
       market.maxPrice,
       order.shares,
       order.price,
-      '0',
+      userShares,
       address
     );
     Betslip.actions.modifyBet(marketId, orderId, {
