@@ -198,7 +198,7 @@ export const UnsignedOrders = (props: UnsignedOrdersProps) => {
       </main>
       <ApprovalTxButtonLabel
         className={Styles.MultipleTransactions}
-        ignore={process.env.REPORTING_ONLY}
+        ignore={Boolean(process.env.REPORTING_ONLY)}
         title={'Approve to create orders'}
         buttonName={'Approve'}
         checkApprovals={approvalsNeededToTrade}

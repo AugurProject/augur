@@ -949,7 +949,7 @@ export default class Form extends React.Component<FormProps, FormState> {
               {secondButton === CREATE && (
                 <ApprovalTxButtonLabel
                   className={Styles.MultipleTransactions}
-                  ignore={process.env.REPORTING_ONLY}
+                  ignore={Boolean(process.env.REPORTING_ONLY)}
                   title={'Approve to a create market'}
                   buttonName={'Approve'}
                   userEthBalance={availableEth}

@@ -179,6 +179,9 @@ class Confirm extends Component<ConfirmProps, ConfirmState> {
       orderShareProfit,
     } = trade;
 
+    // don't show any messages in reporting UI
+    if (process.env.REPORTING_ONLY) return null;
+
     let numTrades = loopLimit ? Math.ceil(numFills / loopLimit) : numFills;
     let needsApproval = false;
     let messages: Message | null = null;
@@ -476,7 +479,7 @@ class Confirm extends Component<ConfirmProps, ConfirmState> {
         { !tradingApproved && isLogged && !tradingTutorial && !initialLiquidity &&
           <ApprovalTxButtonLabel
             className={Styles.ApprovalNotice}
-            ignore={process.env.REPORTING_ONLY}
+            ignore={Boolean(process.env.REPORTING_ONLY)}
             title={'Approve to trade'}
             buttonName={'Approve'}
             userEthBalance={String(availableEth)}
