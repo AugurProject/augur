@@ -123,7 +123,9 @@ export class ZeroXOrders extends AbstractTable {
     if (orderEvents.length < 1) return;
     const bulkOrderEvents = [];
     const filteredOrders = orderEvents.filter(this.validateOrder, this);
+    console.log("Filtered Orders", filteredOrders);
     let documents: StoredOrder[] = filteredOrders.map(this.processOrder, this);
+    console.log("Processed Orders: ", documents);
 
     // Remove Canceled, Expired, and Invalid Orders and emit event
     const canceledOrders = _.keyBy(
@@ -204,11 +206,31 @@ export class ZeroXOrders extends AbstractTable {
       logger.table(LoggerLevels.debug, _.countBy(documents, 'market'));
     });
 
+    const statusToEndState = {
+      'OrderCancelled': 'CANCELLED',
+      'OrderExpired': 'EXPIRED',
+      'OrderUnfunded': 'UNFUNDED',
+      'OrderFullyFilled': 'FULLY_FILLED'
+    };
     if (ordersToAdd.length > 0) {
       // PG: Purposefully not awaiting here
-      this.augur.zeroX.addOrders(ordersToAdd).catch((e) => {
+      console.log("Adding orders back to mesh", ordersToAdd);
+      this.augur.zeroX.addOrders(ordersToAdd).then((r) => {
+        console.log("Add orders result: ", r);
+        try {
+          if(r.rejected.length > 0) {
+            this.handleOrderEvent(r.rejected.map((order) => {
+              order.endState = statusToEndState[order.status.code] || 'INVALID';
+              order.fillableTakerAssetAmount = new BigNumber("0");
+              return order;
+            }));
+          }
+        } catch(e) {
+          console.log("Error with order events", e);
+        }
+      }).catch((e) => {
         console.error("Error adding cached orders: ", e);
-      })
+      });
     }
     this.pastOrders = {};
   }
