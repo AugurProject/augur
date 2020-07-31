@@ -58,6 +58,28 @@ export class SDK {
       this.connector = new Connectors.SingleThreadConnector();
     }
 
+    // PG: BEGIN HACK
+    await new Promise((resolve, reject) => {
+      const request = indexedDB.open('0x-mesh/mesh_dexie_db');
+      request.onsuccess = () => {
+        const db = request.result;
+        const transaction = db.transaction('orders', "readwrite");
+        const objectStore = transaction.objectStore("orders");
+
+        transaction.onerror = () => {
+          console.log("There was an error clearing orders table");
+          reject();
+        }
+
+        const objectStoreRequest = objectStore.clear();
+        objectStoreRequest.onsuccess = function(event) {
+          console.log('Orders table clear complete');
+          resolve();
+        };
+      }
+    });
+    // PG: END HACK
+
     this.client = await createClient(this.config, this.connector, signer, ethersProvider, enableFlexSearch, createBrowserMeshWorker);
 
     if (!isEmpty(account)) {

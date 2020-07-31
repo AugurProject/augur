@@ -123,7 +123,7 @@
   "warpSync": {
     "enabled": true,
     "autoReport": false,
-    "createCheckpoints": false
+    "createCheckpoints": true
 
   },
   "syncing": {
