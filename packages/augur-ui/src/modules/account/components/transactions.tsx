@@ -68,9 +68,9 @@ export const Transactions = ({
         )}
         {showFaucets && (
           <div>
-            <h4>Legacy REPv2</h4>
+            <h4>Legacy REP</h4>
             <REPFaucetButton
-              title="Legacy REPv2 Faucet"
+              title="Legacy REP Faucet"
               action={legacyRepFaucet}
             />
           </div>
