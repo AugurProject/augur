@@ -57,6 +57,7 @@ export const ETHEREUM = 'Ethereum';
 export const LITECOIN = 'Litecoin';
 export const AUGUR = 'Augur';
 export const MAKER = 'Maker';
+export const AMPLE = 'Ample';
 export const COMPOUND = 'Compound';
 export const BALANCER = 'Balancer';
 export const ZEROX = '0x';

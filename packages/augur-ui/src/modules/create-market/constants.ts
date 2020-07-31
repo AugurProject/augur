@@ -42,6 +42,7 @@ import {
   BALANCER,
   AUGUR,
   MAKER,
+  AMPLE,
   ZEROX,
   CHAINLINK,
   ADDITIONAL_TOKENS,
@@ -418,11 +419,19 @@ export const MARKET_SUB_TEMPLATES = {
       inverseFill: true,
       icon: icons.MKR,
     },
+/*
     {
       value: AUGUR,
       header: AUGUR,
       description: defaultDescription,
       icon: icons.REP,
+    },
+*/
+    {
+      value: AMPLE,
+      header: AMPLE,
+      description: defaultDescription,
+      icon: null,
     },
     {
       value: COMPOUND,
