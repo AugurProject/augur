@@ -18,6 +18,7 @@ import {
   TRANSACTIONS,
   GWEI_CONVERSION,
   ETH,
+  PUBLICTRADE,
 } from 'modules/common/constants';
 import ReactTooltip from 'react-tooltip';
 import TooltipStyles from 'modules/common/tooltip.styles.less';
@@ -475,6 +476,7 @@ class Confirm extends Component<ConfirmProps, ConfirmState> {
         { !tradingApproved && isLogged && !tradingTutorial && !initialLiquidity &&
           <ApprovalTxButtonLabel
             className={Styles.ApprovalNotice}
+            ignore={process.env.REPORTING_ONLY}
             title={'Approve to trade'}
             buttonName={'Approve'}
             userEthBalance={String(availableEth)}
@@ -482,6 +484,7 @@ class Confirm extends Component<ConfirmProps, ConfirmState> {
             checkApprovals={approvalsNeededToTrade}
             doApprovals={() => approveToTrade(account, affiliate)}
             account={account}
+            approvalType={PUBLICTRADE}
             isApprovalCallback={() => checkAccountApproval()}
             addFunds={() => showAddFundsModal({ tokenToAdd: ETH })}
           />
