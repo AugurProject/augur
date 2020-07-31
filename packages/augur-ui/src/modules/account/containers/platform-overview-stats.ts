@@ -69,7 +69,7 @@ const mergeProps = (sP: any, dP: any, oP: any) => {
     },
     {
       key: 5,
-      label: 'REP in dispute',
+      label: 'REPv2 in dispute',
       value: formatAttoRep(amountStaked, {
         decimals: 4,
       }).fullPrecision,

@@ -18,7 +18,7 @@ const mapStateToProps = (state: AppState) => {
     messages: [
       {
         key: 'quant',
-        preText: 'Quantity (1 token @ 1 REP)',
+        preText: 'Quantity (1 token @ 1 REPv2)',
       },
     ],
     title: 'Buy Participation Tokens',

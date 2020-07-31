@@ -28,7 +28,7 @@ const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({
 const mergeProps = (sP: any, dP: any, oP: any) => ({
   title: "Finalize Warp Sync Market",
   marketTitle: sP.marketDescription,
-  callToAction: "Please finalize warp sync market to claim REP reward. The reward will be transferred to your signing wallet",
+  callToAction: "Please finalize warp sync market to claim REPv2 reward. The reward will be transferred to your signing wallet",
   closeAction: () => {
     dP.closeModal();
     if (sP.modal.cb) {

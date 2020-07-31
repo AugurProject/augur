@@ -83,7 +83,7 @@ export const AddFunds = ({
     setAmountToBuy(amountToBuy);
   };
 
-  const fundTypeLabel = tokenToAdd === DAI ?  'DAI ($)' : tokenToAdd;
+  const fundTypeLabel = tokenToAdd === DAI ?  'DAI ($)' : tokenToAdd === REP ? 'REPv2' : tokenToAdd;
 
   const [selectedOption, setSelectedOption] = useState(
     initialAddFundsFlow ? initialAddFundsFlow : usingOnRampSupportedWallet && tokenToAdd === DAI ? ADD_FUNDS_CREDIT_CARD : ADD_FUNDS_COINBASE
@@ -107,7 +107,7 @@ export const AddFunds = ({
     },
     {
       header: 'Convert',
-      description: `Trade another token currency for ${tokenToAdd === DAI ? 'DAI ($)' : tokenToAdd}`,
+      description: `Trade another token currency for ${tokenToAdd === DAI ? 'DAI ($)' : tokenToAdd === REP ? 'REPv2' : tokenToAdd}`,
       value: ADD_FUNDS_SWAP,
     },
   ];
@@ -151,7 +151,7 @@ export const AddFunds = ({
           <CloseButton action={() => closeAction()} />
         </div>
         <div>
-          <h1>{tokenToAdd === REP ? 'Get REP' : 'Add Funds'}</h1>
+          <h1>{tokenToAdd === REP ? 'Get REPv2' : 'Add Funds'}</h1>
           <h2>Choose a method</h2>
           <RadioTwoLineBarGroup
             radioButtons={addFundsOptions}
@@ -182,8 +182,8 @@ export const AddFunds = ({
               <h1>Convert</h1>
               <h2>
                 {tokenToAdd === REP
-                  ? 'Trade a currency for REP'
-                  : 'Trade ETH or REP for DAI ($) and vice versa'}
+                  ? 'Trade a currency for REPv2'
+                  : 'Trade ETH or REPv2 for DAI ($) and vice versa'}
               </h2>
 
               <div className={Styles.AddFundsSwap}>

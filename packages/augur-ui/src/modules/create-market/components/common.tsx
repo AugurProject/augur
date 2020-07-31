@@ -810,8 +810,8 @@ export const NoFundsErrors = (props: NoFundsErrorsProps) => {
       )}
       {noRep && (
         <DismissableNotice
-          title="Not enough REP in your wallet"
-          description={`You have ${availableRepFormatted.formatted} V2 REP of ${totalRep.formatted} required to create this market.`}
+          title="Not enough REPv2 in your wallet"
+          description={`You have ${availableRepFormatted.formatted} REPv2 of ${totalRep.formatted} required to create this market.`}
           show={true}
           buttonText='Add Funds'
           buttonAction={() => props.showAddFundsModal(REP)}

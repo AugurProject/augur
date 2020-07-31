@@ -85,7 +85,7 @@ const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({
 function airSwapOnClick(e) {
   const env = getNetworkId() === NETWORK_IDS.Mainnet ? 'production' : 'sandbox';
   e.preventDefault();
-  // The widget will offer swaps for REP <-> ETH on mainnet
+  // The widget will offer swaps for REPv2 <-> ETH on mainnet
   // It can still be tested on rinkeby, but only AST <-> ETH is offered
   (window as any).AirSwap.Trader.render(
     {
@@ -114,7 +114,7 @@ const mergeProps = (sP: any, dP: any, oP: any) => {
   return {
     title: 'Receive Funds',
     description: [
-      'Send Ethereum (ETH) or Reputation (REP) to the wallet you have connected to trade on Augur.',
+      'Send Ethereum (ETH) or Reputation (REPv2) to the wallet you have connected to trade on Augur.',
     ],
     closeAction: () => dP.closeModal(),
     depositInfo:
