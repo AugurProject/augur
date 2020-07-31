@@ -18,6 +18,7 @@ import {
   TRANSACTIONS,
   GWEI_CONVERSION,
   ETH,
+  PUBLICTRADE,
 } from 'modules/common/constants';
 import ReactTooltip from 'react-tooltip';
 import TooltipStyles from 'modules/common/tooltip.styles.less';
@@ -177,6 +178,9 @@ class Confirm extends Component<ConfirmProps, ConfirmState> {
       potentialDaiProfit,
       orderShareProfit,
     } = trade;
+
+    // don't show any messages in reporting UI
+    if (process.env.REPORTING_ONLY) return null;
 
     let numTrades = loopLimit ? Math.ceil(numFills / loopLimit) : numFills;
     let needsApproval = false;
@@ -475,6 +479,7 @@ class Confirm extends Component<ConfirmProps, ConfirmState> {
         { !tradingApproved && isLogged && !tradingTutorial && !initialLiquidity &&
           <ApprovalTxButtonLabel
             className={Styles.ApprovalNotice}
+            ignore={Boolean(process.env.REPORTING_ONLY)}
             title={'Approve to trade'}
             buttonName={'Approve'}
             userEthBalance={String(availableEth)}
@@ -482,6 +487,7 @@ class Confirm extends Component<ConfirmProps, ConfirmState> {
             checkApprovals={approvalsNeededToTrade}
             doApprovals={() => approveToTrade(account, affiliate)}
             account={account}
+            approvalType={PUBLICTRADE}
             isApprovalCallback={() => checkAccountApproval()}
             addFunds={() => showAddFundsModal({ tokenToAdd: ETH })}
           />

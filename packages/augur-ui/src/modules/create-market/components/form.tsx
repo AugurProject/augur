@@ -9,6 +9,7 @@ import {
   SCALAR_OUTCOMES,
   YES_NO_OUTCOMES,
   ZERO,
+  CREATEMARKET,
 } from 'modules/common/constants';
 
 import { Error, LocationDisplay } from 'modules/common/form';
@@ -948,13 +949,15 @@ export default class Form extends React.Component<FormProps, FormState> {
               {secondButton === CREATE && (
                 <ApprovalTxButtonLabel
                   className={Styles.MultipleTransactions}
-                  title={'Approve to market creation'}
+                  ignore={Boolean(process.env.REPORTING_ONLY)}
+                  title={'Approve to a create market'}
                   buttonName={'Approve'}
                   userEthBalance={availableEth}
                   gasPrice={gasPrice}
                   checkApprovals={approvalsNeededMarketCreation}
                   doApprovals={approveMarketCreation}
                   account={meta.address}
+                  approvalType={CREATEMARKET}
                   isApprovalCallback={(value) => { value && this.setDisableCreate(value)}}
                 />
               )}
