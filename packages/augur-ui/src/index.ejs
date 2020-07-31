@@ -107,9 +107,11 @@
 
   <!-- Google Translate -->
   <script type="text/javascript">
-    if ((window.location.protocol === "http:" &&
-      (window.location.host !== "localhost" && window.location.host !== "127.0.0.1") &&
-      (location.port === "80" || location.port === "")) ){
+    if (
+      window.location.protocol === "http:" &&
+      window.location.hostname !== "localhost" && 
+      window.location.hostname !== "127.0.0.1"
+    ){
         window.location.href = window.location.href.replace('http', 'https');
     }
 
