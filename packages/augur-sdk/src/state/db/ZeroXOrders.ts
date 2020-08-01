@@ -129,7 +129,7 @@ export class ZeroXOrders extends AbstractTable {
 
     // Remove Canceled, Expired, and Invalid Orders and emit event
     const canceledOrders = _.keyBy(
-      filteredOrders.filter((orderEvent) => ['CANCELLED', 'EXPIRED', 'INVALID', 'UNFUNDED', 'STOPPED_WATCHING'].includes(orderEvent.endState)),
+      filteredOrders.filter((orderEvent) => ['CANCELLED', 'EXPIRED', 'INVALID', 'UNFUNDED'].includes(orderEvent.endState)),
       'orderHash'
     );
 
