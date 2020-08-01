@@ -9796,6 +9796,7 @@ export const TEMPLATES = {
                 {
                   text: `Use the DefiPulse public API to get the reported locked value for the required date. The API request can be https://public.defipulse.com/api/GetHistory?period=1m. Note after one month, you may use a 'period' of 3m or 1y to receive daily values.`,
                 },
+                {
                   text: `The date will be in Unix timestamp in UTC for 00:00 (12:00 AM). You must convert the timestamp to a date and report the matching date.`,
                 },
                 {
