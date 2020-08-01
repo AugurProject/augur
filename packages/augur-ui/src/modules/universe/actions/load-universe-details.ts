@@ -15,6 +15,13 @@ export const loadUniverseDetails = (
   });
   const maxMarketEndTime = await getMaxMarketEndTime();
   const warpSyncHash = await augur.getMostRecentWarpSync();
-  dispatch(updateUniverse({ ...universeDetails, maxMarketEndTime, warpSyncHash: warpSyncHash?.hash }));
+  let result = { ...universeDetails, maxMarketEndTime }
+  if (warpSyncHash?.hash) {
+    result = {
+      ...result,
+      warpSyncHash: warpSyncHash.hash
+    }
+  }
+  dispatch(updateUniverse(result));
   if (callback) callback();
 };
