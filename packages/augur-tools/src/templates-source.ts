@@ -9777,9 +9777,9 @@ export const TEMPLATES = {
         templates: [
           {
             marketType: SCALAR,
-            question: `What will the Total Value Locked "USD" in Defi be on [0] (UTC), according to https://data.defipulse.com/ ?`,
-            example: `What will the Total Value Locked "USD" in Defi be on 03/27/2022 (UTC), according to https://data.defipulse.com/ ?`,
-            denomination: 'Price',
+            question: `What will the Total Value Locked (USD) in Defi be on [0] (UTC), according to https://data.defipulse.com/ ?`,
+            example: `What will the Total Value Locked (USD) in Defi be on 03/27/2022 (UTC), according to https://data.defipulse.com/ ?`,
+            denomination: 'Total Value Locked (USD)',
             inputs: [
              {
                 id: 0,
