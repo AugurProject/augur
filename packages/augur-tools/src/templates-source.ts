@@ -48,6 +48,7 @@ import {
   INDEXES,
   LEAGUE_NAME,
   AUGUR,
+  DEFI,
   LPGA,
   MEDICAL,
   MENS_LEAGUES,
@@ -9771,6 +9772,39 @@ export const TEMPLATES = {
             },
           },
         ],
+      },
+      [DEFI]: {
+        templates: [
+          {
+            marketType: SCALAR,
+            question: `What will the Total Value Locked "USD" in Defi be on [0] (UTC), according to https://defipulse.com/ ?`,
+            example: `What will the Total Value Locked "USD" in Defi be on 03/27/2022 (UTC), according to https://defipulse.com/ ?`,
+            denomination: 'Price',
+            inputs: [
+             {
+                id: 0,
+                type: TemplateInputType.DATEYEAR,
+                daysAfterDateStart: 1,
+                placeholder: `Day of Year`,
+              },
+            ],
+            resolutionRules: {
+              [REQUIRED]: [
+                {
+                  text: `This market shall resolve based on the Total Value Locked (USD) in DeFi reported by defipulse.com at the specified time. If data is unavailable at defipulse.com, the market shall resolve according to the DeFi pulse API.`,
+                  text: `To report, choose "30D" in the Total Value Locked (USD) for ALL DeFi. Hover over points until you reach the specified date and report the TVL (USD) in Billions (B) with 3 decimal points. If more are available, truncate the third decimal point following rounding rules: if the fourth decimal is 5 or greater, round up. Otherwise remain the same.`,
+                },
+                {
+                  text: `If using the DefiPulse public API found at https://public.defipulse.com/api/GetHistory?period=1m&api-key=<API_KEY> and report the value shown for the required date.`,
+                  text: `The date will be in Unix timestamp in UTC for 00:00 (12:00 AM). You must convert the timestamp to a date and report the matching date.`,
+                },
+                {
+                  text: `If DefiPulse is not available before the end of the reporting period for the given date, the market should resolve as "Invalid".`,
+                },
+              ],
+            },
+          }
+        ]
       },
       [AUGUR]: {
         templates: [
