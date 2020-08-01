@@ -37,7 +37,6 @@ export const loadAccountData = (
     }
     dispatch(loadAccountHistory());
     dispatch(checkAccountApproval());
-    dispatch(loadUniverseDetails(universe.id, address));
     dispatch(updateAssets());
     dispatch(loadGasPriceInfo());
     gasPriceInfo.userDefinedGasPrice && dispatch(registerUserDefinedGasPriceFunction(gasPriceInfo.userDefinedGasPrice, gasPriceInfo.average));
@@ -45,5 +44,6 @@ export const loadAccountData = (
     if (marketId) {
       dispatch(loadMarketOrderBook(marketId));
     }
+    dispatch(loadUniverseDetails(universe.id, address));
   }
 };

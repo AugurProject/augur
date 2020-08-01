@@ -1,6 +1,6 @@
 {
   "name": "@augurproject/templates",
-  "version": "2.1.1",
+  "version": "2.1.3",
   "description": "ABI and Contract Address Artifacts",
   "author": "Augur Team <team@augur.net>",
   "license": "MIT",
