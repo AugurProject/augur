@@ -297,10 +297,6 @@ export const handleNewBlockLog = (log: NewBlock) => async (
   }
   // update ETH/REP rate and gasPrice each block
   dispatch(loadGasPriceInfo());
-
-  // TOOD: move this out of new block. need to know when warp sync hash has been calc
-  // then load it.
-  dispatch(loadUniverseDetails(universe.id, loginAccount.address));
   if (log.logs && log.logs.length > 0) {
     console.log(log.logs);
     const eventLogs = log.logs.reduce(
