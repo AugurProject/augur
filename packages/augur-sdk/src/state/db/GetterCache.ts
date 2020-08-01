@@ -55,8 +55,13 @@ export class GetterCache extends AbstractTable {
             "getTradingHistory",
         ],
         [SubscriptionEventName.BulkOrderEvent]: [
+            "getMarketPriceHistory",
             "getMarketOrderBook",
+            "getUserFrozenFundsBreakdown",
+            "getUserAccountData",
+            "getUserPositionsPlus",
             "getUserOpenOrders",
+            "getAccountTimeRangedStats",
             "getTotalOnChainFrozenFunds",
             "getZeroXOrder",
             "getZeroXOrders",
@@ -64,8 +69,13 @@ export class GetterCache extends AbstractTable {
             "getMarketOutcomeBestOffer"
         ],
         [SubscriptionEventName.DBUpdatedZeroXOrders]: [
+            "getMarketPriceHistory",
             "getMarketOrderBook",
+            "getUserFrozenFundsBreakdown",
+            "getUserAccountData",
+            "getUserPositionsPlus",
             "getUserOpenOrders",
+            "getAccountTimeRangedStats",
             "getTotalOnChainFrozenFunds",
             "getZeroXOrder",
             "getZeroXOrders",

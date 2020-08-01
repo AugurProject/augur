@@ -61,22 +61,30 @@ export class SDK {
     // PG: BEGIN HACK
     try {
       await new Promise((resolve, reject) => {
-        const request = indexedDB.open('0x-mesh/mesh_dexie_db');
-        request.onsuccess = () => {
-          const db = request.result;
-          const transaction = db.transaction('orders', "readwrite");
-          const objectStore = transaction.objectStore("orders");
+        try {
+          const request = indexedDB.open('0x-mesh/mesh_dexie_db');
+          request.onsuccess = () => {
+            try {
+              const db = request.result;
+              const transaction = db.transaction('orders', "readwrite");
+              const objectStore = transaction.objectStore("orders");
 
-          transaction.onerror = () => {
-            console.log("There was an error clearing orders table");
-            reject();
+              transaction.onerror = () => {
+                console.log("There was an error clearing orders table");
+                reject();
+              }
+
+              const objectStoreRequest = objectStore.clear();
+              objectStoreRequest.onsuccess = function(event) {
+                console.log('Orders table clear complete');
+                resolve();
+              };
+            } catch(e) {
+              reject();
+            }
           }
-
-          const objectStoreRequest = objectStore.clear();
-          objectStoreRequest.onsuccess = function(event) {
-            console.log('Orders table clear complete');
-            resolve();
-          };
+        } catch(e) {
+          reject();
         }
       });
     } catch(e) {

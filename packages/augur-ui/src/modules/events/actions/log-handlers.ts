@@ -264,7 +264,7 @@ export const handleNewBlockLog = (log: NewBlock) => async (
   dispatch: ThunkDispatch<void, any, Action>,
   getState: () => AppState
 ) => {
-  const { blockchain, env } = getState();
+  const { blockchain, env, universe, loginAccount } = getState();
   const blockTime = env.averageBlocktime;
   if (blocksBehindTimer) clearTimeout(blocksBehindTimer);
   blocksBehindTimer = setTimeout(function() {
@@ -298,6 +298,9 @@ export const handleNewBlockLog = (log: NewBlock) => async (
   // update ETH/REP rate and gasPrice each block
   dispatch(loadGasPriceInfo());
 
+  // TOOD: move this out of new block. need to know when warp sync hash has been calc
+  // then load it.
+  dispatch(loadUniverseDetails(universe.id, loginAccount.address));
   if (log.logs && log.logs.length > 0) {
     console.log(log.logs);
     const eventLogs = log.logs.reduce(
