@@ -225,8 +225,8 @@ export const findAndSetTransactionsTimeouts = (blockNumber: number) => (dispatch
   const { pendingQueue, pendingOrders } = getState();
   const thresholdBlockNumber = blockNumber - TX_CHECK_BLOCKNUMBER_LIMIT;
 
-  dispatch(processingPendingQueue(thresholdBlockNumber, pendingQueue));
-  dispatch(processingPendingOrders(thresholdBlockNumber, pendingOrders));
+  //dispatch(processingPendingQueue(thresholdBlockNumber, pendingQueue));
+  //dispatch(processingPendingOrders(thresholdBlockNumber, pendingOrders));
 }
 
 const processingPendingQueue = (
