@@ -879,7 +879,7 @@ export const ReportingRadioBarGroup = ({
             subheader={`${winningStakeCurrent} additional REPv2 will still be needed to make it Tentative Winning Outcome. This will require an additional transaction.`}
           />
         )}
-      {radioButtons.map(
+      {radioButtons.filter(r => r).map(
         (radio, index) =>
           !radio.isInvalid &&
           (!isDisputing || !radio.stake.tentativeWinning) && (
@@ -912,7 +912,7 @@ export const ReportingRadioBarGroup = ({
             : 'If you believe this market to be invalid, you can help fill the dispute bond of the official Invalid outcome below to make Invalid the new Tentative Outcome. Please check the resolution details  above carefully.'}
         </span>
       )}
-      {radioButtons.map(
+      {radioButtons.filter(r => r).map(
         (radio, index) =>
           ((!market.isForking && !radio.stake.tentativeWinning && radio.isInvalid) ||
           (market.isForking && radio.isInvalid)) && (
@@ -963,7 +963,7 @@ export class RadioBarGroup extends Component<RadioGroupProps, RadioGroupState> {
     const { selected } = this.state;
     return (
       <div className={Styles.RadioBarGroup}>
-        {radioButtons.map(radio => (
+        {radioButtons.filter(r => r).map(radio => (
           <RadioBar
             key={radio.value}
             {...radio}
@@ -1192,7 +1192,7 @@ export class RadioTwoLineBarGroup extends Component<
     const { selected } = this.state;
     return (
       <div>
-        {radioButtons.map(radio => (
+        {radioButtons.filter(r => r).map(radio => (
           <RadioTwoLineBar
             key={radio.value}
             {...radio}
@@ -1251,7 +1251,7 @@ export class RadioCardGroup extends Component<
     const { selected } = this.state;
     return (
       <div className={Styles.RadioCardGroup}>
-        {radioButtons.map(radio => (
+        {radioButtons.filter(r => r).map(radio => (
           <RadioCard
             key={radio.value}
             {...radio}
