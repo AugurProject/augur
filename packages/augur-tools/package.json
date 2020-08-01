@@ -1,6 +1,6 @@
 {
   "name": "@augurproject/tools",
-  "version": "2.1.4",
+  "version": "2.1.5",
   "description": "Tools and dev dependencies",
   "author": "Augur Team <team@augur.net>",
   "license": "MIT",
@@ -42,7 +42,7 @@
   "dependencies": {
     "@augurproject/artifacts": "^2.1.1",
     "@augurproject/core": "^2.1.1",
-    "@augurproject/sdk": "^2.1.4",
+    "@augurproject/sdk": "^2.1.5",
     "@augurproject/sdk-lite": "^2.1.1",
     "@augurproject/utils": "^2.1.1",
     "@openzeppelin/gsn-helpers": "0.2.3",
