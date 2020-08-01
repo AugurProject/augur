@@ -9777,8 +9777,8 @@ export const TEMPLATES = {
         templates: [
           {
             marketType: SCALAR,
-            question: `What will the Total Value Locked "USD" in Defi be on [0] (UTC), according to https://defipulse.com/ ?`,
-            example: `What will the Total Value Locked "USD" in Defi be on 03/27/2022 (UTC), according to https://defipulse.com/ ?`,
+            question: `What will the Total Value Locked "USD" in Defi be on [0] (UTC), according to https://data.defipulse.com/ ?`,
+            example: `What will the Total Value Locked "USD" in Defi be on 03/27/2022 (UTC), according to https://data.defipulse.com/ ?`,
             denomination: 'Price',
             inputs: [
              {
@@ -9791,15 +9791,18 @@ export const TEMPLATES = {
             resolutionRules: {
               [REQUIRED]: [
                 {
-                  text: `This market shall resolve based on the Total Value Locked (USD) in DeFi reported by defipulse.com at the specified time. If data is unavailable at defipulse.com, the market shall resolve according to the DeFi pulse API.`,
-                  text: `To report, choose "30D" in the Total Value Locked (USD) for ALL DeFi. Hover over points until you reach the specified date and report the TVL (USD) in Billions (B) with 3 decimal points. If more are available, truncate the third decimal point following rounding rules: if the fourth decimal is 5 or greater, round up. Otherwise remain the same.`,
+                  text: `This market shall resolve based on the Total Value Locked (USD) in DeFi reported by DefiPulse's tool, data.defipulse.com at the specified time. The reporting should be the TVL (USD) in Billions (B) with 3 decimal points. If more are available, truncate the third decimal point following rounding rules: if the fourth decimal is 5 or greater, round up. Otherwise remain the same.`,
                 },
                 {
-                  text: `If using the DefiPulse public API found at https://public.defipulse.com/api/GetHistory?period=1m&api-key=<API_KEY> and report the value shown for the required date.`,
+                  text: `Use the DefiPulse public API to get the reported locked value for the required date. The API request can be https://public.defipulse.com/api/GetHistory?period=1m. Note after one month, you may use a 'period' of 3m or 1y to receive daily values.`,
+                },
                   text: `The date will be in Unix timestamp in UTC for 00:00 (12:00 AM). You must convert the timestamp to a date and report the matching date.`,
                 },
                 {
-                  text: `If DefiPulse is not available before the end of the reporting period for the given date, the market should resolve as "Invalid".`,
+                  text: `The DefiPulse data API may have rate limiting, so you may need to register for a free trial account to remove rate limits. For more information about the API, see the documentation: https://docs.defipulse.com/api-docs-by-provider/defi-pulse-data/total-value-locked/total-value-locked`,
+                },
+                {
+                  text: `The UI at DefiPulse may be used as an easy alternative to verify a report if available, but should not be considered the authoritative final reporting value. To see this value, hover over the required date after selecting all DeFi projects to receive a total value locked value..`,
                 },
               ],
             },
