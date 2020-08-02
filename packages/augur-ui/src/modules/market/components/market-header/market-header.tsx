@@ -311,7 +311,6 @@ export default class MarketHeader extends Component<
                   [Styles.ExpandedContent]: expandedDetails,
                 })}
               >
-                {market.isTemplate === false && <span className={Styles.CustomMarket}>{ExclamationCircle} CUSTOM MARKET - proceed with caution</span>}
                 {preview ? (
                   <PreviewMarketTitle market={market} />
                 ) : (
@@ -319,6 +318,7 @@ export default class MarketHeader extends Component<
                     id={market.marketId}
                     noLink
                     headerType={HEADER_TYPE.H1}
+                    topPadding={true}
                   />
                 )}
                 {market.mostLikelyInvalid ? (

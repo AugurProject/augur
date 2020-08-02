@@ -15,6 +15,7 @@ import Styles from 'modules/market/components/common/market-common.styles.less';
 import classNames from 'classnames';
 import TooltipStyles from 'modules/common/tooltip.styles.less';
 import ReactTooltip from 'react-tooltip';
+import { ExclamationCircle } from 'modules/common/icons';
 
 interface MarketTitleProps {
   id: string;
@@ -24,6 +25,7 @@ interface MarketTitleProps {
   template?: ExtraInfoTemplate;
   noLink?: boolean;
   headerType?: string;
+  topPadding?: boolean;
 }
 
 const wrapMarketName = (marketName: string) => <span>{`"${marketName}"`}</span>;
@@ -36,6 +38,7 @@ const MarketTitle: React.FC<MarketTitleProps> = ({
   template,
   noLink,
   headerType,
+  topPadding,
 }) =>
   isTemplate ? (
     <MarketLink className={Styles.MarketTemplateTitle} id={noLink ? null : id} headerType={headerType}>
@@ -43,6 +46,7 @@ const MarketTitle: React.FC<MarketTitleProps> = ({
     </MarketLink>
   ) : (
     <MarketLink id={noLink ? null : id} headerType={headerType}>
+      {isTemplate === false && <div className={classNames(Styles.CustomMarket, { [Styles.TopMargin]: topPadding })}>{ExclamationCircle} CUSTOM MARKET - proceed with caution</div>}
       {isWrapped ? wrapMarketName(description) : description}
     </MarketLink>
   );
