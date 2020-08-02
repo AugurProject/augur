@@ -1534,7 +1534,7 @@ export const ApprovalTxButtonLabel = ({
       const notEnoughEth = createBigNumber(userEthBalance).lt(createBigNumber(ethNeededForGas));
       setInsufficientEth(notEnoughEth);
       if (notEnoughEth) {
-        const ethDo = formatEther(notEnoughEth);
+        const ethDo = formatEther(ethNeededForGas);
         setDescription(`Insufficient ETH to approve trading. ${ethDo.formatted} ETH cost.`);
       } else {
         switch(approvalType) {
