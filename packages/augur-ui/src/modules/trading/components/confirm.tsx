@@ -33,6 +33,7 @@ import {
   formatGasCostToEther,
   formatShares,
   formatDai,
+  formatEther,
 } from 'utils/format-number';
 import { BigNumber, createBigNumber } from 'utils/create-big-number';
 import { LinearPropertyLabel, TransactionFeeLabelToolTip, ApprovalTxButtonLabel } from 'modules/common/labels';
@@ -249,10 +250,11 @@ class Confirm extends Component<ConfirmProps, ConfirmState> {
       totalCost &&
       createBigNumber(gasCostInEth).gte(createBigNumber(availableEth))
     ) {
+      const ethDo = formatEther(gasCostInEth);
       messages = {
         header: 'Insufficient ETH',
         type: ERROR,
-        message: `You do not have enough funds to place this order. ${gasCostInEth} ETH required for gas.`,
+        message: `You do not have enough funds to place this order. ${ethDo.formatted} ETH required for gas.`,
       };
     }
 
@@ -522,7 +524,8 @@ class Confirm extends Component<ConfirmProps, ConfirmState> {
               <button onClick={messages.callback ? () => messages.callback() : this.clearErrorMessage}>{XIcon}</button>
             )}
 
-            {!tradingTutorial && isLogged && totalCost && createBigNumber(potentialDaiLoss.fullPrecision).gt(createBigNumber(availableDai)) &&
+            {!tradingTutorial && isLogged && totalCost && (createBigNumber(potentialDaiLoss.fullPrecision).gt(createBigNumber(availableDai)) ||
+            createBigNumber(gasCostInEth).gte(createBigNumber(availableEth))) &&
               <PrimaryButton action={() => showAddFundsModal()} text={'Add Funds'} />
             }
           </div>

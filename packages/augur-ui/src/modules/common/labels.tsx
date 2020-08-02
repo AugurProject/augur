@@ -41,7 +41,7 @@ import {
   AUTO_ETH_REPLENISH,
 } from 'modules/common/constants';
 import { ViewTransactionDetailsButton } from 'modules/common/buttons';
-import { formatNumber, formatBlank, formatGasCostToEther, formatAttoEth } from 'utils/format-number';
+import { formatNumber, formatBlank, formatGasCostToEther, formatAttoEth, formatEther } from 'utils/format-number';
 import { DateFormattedObject, FormattedNumber, SizeTypes, MarketData } from 'modules/types';
 import type { Getters } from '@augurproject/sdk';
 import { TXEventName } from '@augurproject/sdk-lite';
@@ -1534,7 +1534,8 @@ export const ApprovalTxButtonLabel = ({
       const notEnoughEth = createBigNumber(userEthBalance).lt(createBigNumber(ethNeededForGas));
       setInsufficientEth(notEnoughEth);
       if (notEnoughEth) {
-        setDescription(`Insufficient ETH to approve trading. ${ethNeededForGas} ETH cost.`);
+        const ethDo = formatEther(notEnoughEth);
+        setDescription(`Insufficient ETH to approve trading. ${ethDo.formatted} ETH cost.`);
       } else {
         switch(approvalType) {
           case constants.CREATEMARKET:
