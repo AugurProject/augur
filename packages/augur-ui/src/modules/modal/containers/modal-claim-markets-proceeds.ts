@@ -3,9 +3,9 @@ import { withRouter } from 'react-router-dom';
 import { startClaimingMarketsProceeds, claimMarketsProceedsGas } from 'modules/positions/actions/claim-markets-proceeds';
 import { selectCurrentTimestampInSeconds } from 'appStore/select-state';
 import {
-  formatDaiPrice,
   formatEther,
   formatDai,
+  formatGasCostToEther,
 } from 'utils/format-number';
 import { closeModal } from 'modules/modal/actions/close-modal';
 import { Proceeds } from 'modules/modal/proceeds';
@@ -13,6 +13,7 @@ import {
   MAX_BULK_CLAIM_MARKETS_PROCEEDS_COUNT,
   PROCEEDS_TO_CLAIM_TITLE,
   CLAIM_ALL_TITLE,
+  GWEI_CONVERSION,
 } from 'modules/common/constants';
 import { CLAIM_MARKETS_PROCEEDS } from 'modules/common/constants';
 import { AppState } from 'appStore';
@@ -24,9 +25,10 @@ import {
   MarketData,
 } from 'modules/types';
 import { selectLoginAccountClaimablePositions } from 'modules/positions/selectors/login-account-claimable-winnings';
-import { displayGasInDai } from 'modules/app/actions/get-ethToDai-rate';
 import { labelWithTooltip } from 'modules/common/label-with-tooltip';
 import { getTransactionLabel } from 'modules/auth/selectors/get-gas-price';
+import { createBigNumber } from 'utils/create-big-number';
+import { getGasCost } from 'modules/modal/gas';
 
 const mapStateToProps = (state: AppState) => {
   const pendingQueue = state.pendingQueue || [];
@@ -46,7 +48,9 @@ const mapStateToProps = (state: AppState) => {
     accountMarketClaimablePositions,
     account: state.loginAccount.address,
     pendingQueue,
-    transactionLabel: getTransactionLabel(state)
+    transactionLabel: getTransactionLabel(state),
+    gasPrice: state.gasPriceInfo.userDefinedGasPrice || state.gasPriceInfo.average,
+    ethToDaiRate: state.appStatus.ethToDaiRate,
   };
 };
 
@@ -102,8 +106,14 @@ const mergeProps = (sP: any, dP: any, oP: any) => {
           text: PROCEEDS_TO_CLAIM_TITLE,
           action: showBreakdown ? () => dP.startClaimingMarketsProceeds([marketId], sP.account, () => {}) : null,
           estimateGas: async () => {
-              const gas = await dP.estimateGas([marketId], sP.account);
-              const displayfee = formatEther(gas).formattedValue;
+              const gasLimit = await dP.estimateGas([marketId], sP.account);
+              const gasEstimateInEth = formatGasCostToEther(
+                gasLimit,
+                { decimalsRounded: 4 },
+                createBigNumber(GWEI_CONVERSION).multipliedBy(sP.gasPrice)
+              );
+              const gasCostDai = getGasCost(gasLimit, sP.gasPrice, sP.ethToDaiRate);
+              const displayfee = `$${gasCostDai.formattedValue}`;
               return {
                 label: transactionLabel,
                 value: String(displayfee),
