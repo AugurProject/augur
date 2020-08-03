@@ -1,10 +1,12 @@
 import type { SDKConfiguration } from '@augurproject/artifacts';
 import { isDevNetworkId, mergeConfig } from '@augurproject/utils';
+import detectEthereumProvider from '@metamask/detect-provider';
 import { AppState } from 'appStore';
 import { toChecksumAddress } from 'ethereumjs-util';
 import { JsonRpcProvider, Web3Provider } from 'ethers/providers';
 import { updateLoginAccount } from 'modules/account/actions/login-account';
 import { checkIfMainnet } from 'modules/app/actions/check-if-mainnet';
+import { isPrivateNetwork } from 'modules/app/actions/is-private-network.ts';
 import { updateCanHotload } from 'modules/app/actions/update-connection';
 import { updateEnv } from 'modules/app/actions/update-env';
 import {
@@ -16,8 +18,8 @@ import {
   getWeb3Provider,
   loginWithInjectedWeb3,
 } from 'modules/auth/actions/login-with-injected-web3';
-import { loginWithTorus } from 'modules/auth/actions/login-with-torus';
 import { loginWithPortis } from 'modules/auth/actions/login-with-portis';
+import { loginWithTorus } from 'modules/auth/actions/login-with-torus';
 import { logout } from 'modules/auth/actions/logout';
 import isGlobalWeb3 from 'modules/auth/helpers/is-global-web3';
 import {
@@ -27,9 +29,9 @@ import {
   MODAL_NETWORK_DISABLED,
   MODAL_NETWORK_DISCONNECTED,
   MODAL_NETWORK_MISMATCH,
+  MODAL_REPORTING_ONLY,
   NETWORK_NAMES,
   SIGNIN_SIGN_WALLET,
-  MODAL_REPORTING_ONLY,
 } from 'modules/common/constants';
 import { getNetworkId } from 'modules/contracts/actions/contractCalls';
 import { listenForStartUpEvents } from 'modules/events/actions/listen-to-updates';
@@ -42,18 +44,17 @@ import { ThunkDispatch } from 'redux-thunk';
 import { augurSdk } from 'services/augursdk';
 import { augurSdkLite } from 'services/augursdklite';
 import { getLoggedInUserFromLocalStorage } from 'services/storage/localStorage';
+import { createBigNumber } from 'utils/create-big-number';
 import { getFingerprint } from 'utils/get-fingerprint';
 import { getNetwork } from 'utils/get-network-name';
 import { isEmpty } from 'utils/is-empty';
+import { isFirefox } from 'utils/is-firefox';
 import { isGoogleBot } from 'utils/is-google-bot';
-import { isMobileSafari } from 'utils/is-safari';
+import { isMobileSafari, isSafari } from 'utils/is-safari';
 import logError from 'utils/log-error';
 import { showIndexedDbSize } from 'utils/show-indexed-db-size';
 import { tryToPersistStorage } from 'utils/storage-manager';
 import { windowRef } from 'utils/window-ref';
-import { createBigNumber } from 'utils/create-big-number';
-import detectEthereumProvider from '@metamask/detect-provider'
-import { isPrivateNetwork } from 'modules/app/actions/is-private-network.ts';
 
 const NETWORK_ID_POLL_INTERVAL_DURATION = 10000;
 
@@ -251,6 +252,14 @@ export function connectAugur(
       } catch(e) {
         console.error('Error with web3 provider, moving on');
       }
+    }
+
+    // Force jsonrpc for every user agent but Safari and FF.
+    if (!isSafari() && !isMobileSafari() && !isFirefox()) {
+      config.ui = {
+        liteProvider: 'jsonrpc',
+        ...(config.ui ? config.ui : {})
+      };
     }
 
     // Optimize for the case where we can just use a JSON endpoint.
