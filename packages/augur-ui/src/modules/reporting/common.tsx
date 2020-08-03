@@ -656,7 +656,6 @@ export class DisputingBondsView extends Component<
     const remaining = convertAttoValueToDisplayValue(
       createBigNumber(stakeRemaining)
     );
-    const gasCostDai = getGasCost(gasEstimate, gasPrice, ethToDaiRate)
     // id === "null" means blank scalar, user can input new scalar value to dispute
     return (
       <div className={classNames(Styles.DisputingBondsView)}>
@@ -704,7 +703,7 @@ export class DisputingBondsView extends Component<
           }
           value={formatRep(stakeValue || ZERO).formatted + ' REPv2'}
         />
-        <TransactionFeeLabel gasCostDai={gasCostDai} />
+        <TransactionFeeLabel gasEstimate={gasEstimate} />
         <PrimaryButton
           text="Confirm"
           action={() => {
@@ -891,7 +890,6 @@ export class ReportingBondsView extends Component<
     } = this.state;
 
     const gasCostInEth = formatEther(formatGasCostToEther(gasEstimate, { decimalsRounded: 4 }, createBigNumber(GWEI_CONVERSION).multipliedBy(gasPrice)));
-    const gasCostDai = getGasCost(gasEstimate, gasPrice, ethToDaiRate)
     const repAmount = migrateRep
       ? formatAttoRep(inputtedReportingStake.inputToAttoRep).formatted
       : formatAttoRep(market.noShowBondAmount).formatted;
@@ -993,7 +991,7 @@ export class ReportingBondsView extends Component<
           </div>
         )}
         <div>
-          <TransactionFeeLabel gasCostDai={gasCostDai} />
+          <TransactionFeeLabel gasEstimate={gasEstimate} />
           {insufficientFunds.lt(ZERO) && (
             <span className={FormStyles.ErrorText}>
               {`Insufficient ETH to pay transaction fee, ${formatEther(insufficientFunds).formatted} ETH cost.`}

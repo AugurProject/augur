@@ -59,8 +59,8 @@ import { isGSNUnavailable } from 'modules/app/selectors/is-gsn-unavailable';
 import { AppState } from 'appStore';
 import { Ox_STATUS } from 'modules/app/actions/update-app-status';
 import { ethToDai } from 'modules/app/actions/get-ethToDai-rate';
-import { getTransactionLabel } from 'modules/auth/selectors/get-gas-price';
 import { augurSdk } from 'services/augursdk';
+import { getGasCost } from 'modules/modal/gas';
 
 export interface MarketTypeProps {
   marketType: string;
@@ -820,11 +820,17 @@ interface TransactionFeeLabelProps {
   label: string;
   gasCostDai: FormattedNumber;
   isError: boolean;
+  gasEstimate: number;
 }
 
-const mapStateToPropsTransactionFeeLabel = (state: AppState) => ({
-  label: getTransactionLabel(state)
-});
+const mapStateToPropsTransactionFeeLabel = (state: AppState, ownProps) => {
+  const gasPrice = state.gasPriceInfo.userDefinedGasPrice || state.gasPriceInfo.average;
+  const ethToDaiRate = state.appStatus.ethToDaiRate;
+  return {
+    label: constants.NOT_USE_ETH_RESERVE,
+    gasCostDai: getGasCost(ownProps.gasEstimate, gasPrice, ethToDaiRate)
+  }
+};
 
 export const TransactionFeeLabelCmp = ({
   label,
