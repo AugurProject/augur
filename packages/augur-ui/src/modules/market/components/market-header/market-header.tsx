@@ -64,6 +64,7 @@ interface MarketHeaderProps {
   showTutorialDetails?: boolean;
   marketLinkCopied: Function;
   userAccount: string;
+  loadAffiliateFee: Function;
 }
 
 interface MarketHeaderState {
@@ -198,6 +199,7 @@ export default class MarketHeader extends Component<
       showTutorialDetails,
       marketLinkCopied,
       userAccount,
+      loadAffiliateFee,
     } = this.props;
     let { details } = this.props;
     const {
@@ -388,6 +390,7 @@ export default class MarketHeader extends Component<
                     market={market}
                     reportingBarShowing={reportingBarShowing}
                     showExtraDetailsChevron={showProperties}
+                    loadAffiliateFee={loadAffiliateFee}
                   />
                 )}
                 {market.reportingState === REPORTING_STATE.PRE_REPORTING && (
