@@ -336,11 +336,11 @@ export class ZeroX {
 
     const gasPrice = await this.client.getGasPrice();
     const exchangeFeeMultiplier = await this.client.contracts.zeroXExchange.protocolFeeMultiplier_();
-    const protocolFee = gasPrice.multipliedBy(exchangeFeeMultiplier).multipliedBy(new BigNumber(loopLimit));
+    const protocolFee = gasPrice.multipliedBy(exchangeFeeMultiplier).multipliedBy(new BigNumber(loopLimit)).multipliedBy(MAX_PROTOCOL_FEE_MULTIPLIER);
     const walletEthBalance = await this.client.getEthBalance(account);
     const remainingToPay = protocolFee.gt(walletEthBalance) ? protocolFee.minus(walletEthBalance) : new BigNumber(0);
     let maxProtocolFeeInDai = remainingToPay.multipliedBy(await this.client.getExchangeRate(true)).div(QUINTILLION);
-    maxProtocolFeeInDai = maxProtocolFeeInDai.multipliedBy(MAX_PROTOCOL_FEE_MULTIPLIER).decimalPlaces(0);
+    maxProtocolFeeInDai = maxProtocolFeeInDai.decimalPlaces(0);
 
     const result: Event[] = await this.client.contracts.ZeroXTrade.trade(
       params.amount,
@@ -573,9 +573,9 @@ export class ZeroX {
 
     const gasPrice = await this.client.getGasPrice();
     const exchangeFeeMultiplier = await this.client.contracts.zeroXExchange.protocolFeeMultiplier_();
-    const protocolFee = gasPrice.multipliedBy(exchangeFeeMultiplier).multipliedBy(orders.length);
+    const protocolFee = gasPrice.multipliedBy(exchangeFeeMultiplier).multipliedBy(orders.length).multipliedBy(MAX_PROTOCOL_FEE_MULTIPLIER);
     let maxProtocolFeeInDai = protocolFee.multipliedBy(await this.client.getExchangeRate(true)).div(QUINTILLION);
-    maxProtocolFeeInDai = maxProtocolFeeInDai.multipliedBy(MAX_PROTOCOL_FEE_MULTIPLIER).decimalPlaces(0);
+    maxProtocolFeeInDai = maxProtocolFeeInDai.decimalPlaces(0);
 
     return this.client.contracts.ZeroXTrade.cancelOrders(orders, signatures, maxProtocolFeeInDai);
   }
