@@ -321,6 +321,7 @@ export default class MarketHeader extends Component<
                     noLink
                     headerType={HEADER_TYPE.H1}
                     topPadding={true}
+                    showCustomLabel={true}
                   />
                 )}
                 {market.mostLikelyInvalid ? (
