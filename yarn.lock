@@ -69,10 +69,10 @@
     jsonschema "^1.2.0"
     lodash.values "^4.3.0"
 
-"@0x/mesh-browser-lite@10.0.0-unstable-5", "@0x/mesh-browser-lite@^9.4.0", "@0x/mesh-browser-lite@v10.0.0-unstable-5":
-  version "10.0.0-unstable-5"
-  resolved "https://registry.yarnpkg.com/@0x/mesh-browser-lite/-/mesh-browser-lite-10.0.0-unstable-5.tgz#8adcd7d01e008b05d93eca4944e66850f0d53ed1"
-  integrity sha512-mPEZobgI0amhKztiBUw44Oztyy7ji4hNBMsD8sE9qCF/QmY4vnagGWpGsVp0aMn8rvIcFAafjtFxcA1Q7F8kKQ==
+"@0x/mesh-browser-lite@10.0.0-unstable-7", "@0x/mesh-browser-lite@^9.4.0", "@0x/mesh-browser-lite@v10.0.0-unstable-7":
+  version "10.0.0-unstable-7"
+  resolved "https://registry.yarnpkg.com/@0x/mesh-browser-lite/-/mesh-browser-lite-10.0.0-unstable-7.tgz#93bac186606b57a4a1bf17088286fec99b364d5c"
+  integrity sha512-MpBlIjDR/SecLn3e+qTgX9aqh+fbC3FB2U0tHqZ2/Nm/lAuTXEz0XeXBSMzmivCuu/cy8Q5ATkqCGuE+5KrEiQ==
   dependencies:
     "@0x/order-utils" "^10.2.0"
     "@0x/utils" "^5.4.0"
