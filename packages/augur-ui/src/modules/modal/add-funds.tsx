@@ -86,7 +86,7 @@ export const AddFunds = ({
   const fundTypeLabel = tokenToAdd === DAI ?  'DAI ($)' : tokenToAdd === REP ? 'REPv2' : tokenToAdd;
 
   const [selectedOption, setSelectedOption] = useState(
-    initialAddFundsFlow ? initialAddFundsFlow : usingOnRampSupportedWallet && tokenToAdd === DAI ? ADD_FUNDS_CREDIT_CARD : ADD_FUNDS_SWAP
+    initialAddFundsFlow ? initialAddFundsFlow : usingOnRampSupportedWallet && tokenToAdd === DAI ? ADD_FUNDS_CREDIT_CARD : tokenToAdd === ETH ? ADD_FUNDS_TRANSFER : ADD_FUNDS_SWAP
   );
 
   const FUND_OTPIONS = [
@@ -97,7 +97,7 @@ export const AddFunds = ({
     },
     {
       header: 'Convert',
-      description: tokenToAdd === DAI ? 'Trade ETH or REPv2 for DAI ($)' : 'Trade ETH or DAI ($) for REPv2',
+      description: tokenToAdd === DAI ? 'Trade ETH or REPv2 for DAI ($)' : tokenToAdd === ETH ? 'Trade DAI ($) or REPv2 for ETH' : 'Trade ETH or DAI ($) for REPv2',
       value: ADD_FUNDS_SWAP,
     },
     {
@@ -117,6 +117,10 @@ export const AddFunds = ({
   // Only show CreditCard option for onRamp wallets using the Add DAI flow
   if (tokenToAdd !== DAI || !usingOnRampSupportedWallet) {
     addFundsOptions = addFundsOptions.slice(1, addFundsOptions.length);
+  }
+
+  if (tokenToAdd === ETH) {
+    addFundsOptions = addFundsOptions.filter(option => option.value !== ADD_FUNDS_SWAP);
   }
 
   const SWAP_ID = 0;
@@ -168,7 +172,9 @@ export const AddFunds = ({
               <h2>
                 {tokenToAdd === REP
                   ? 'Trade ETH or DAI ($) for REPv2'
-                  : 'Trade ETH or REPv2 for DAI ($)'}
+                  : tokenToAdd === DAI
+                    ? 'Trade ETH or REPv2 for DAI ($)'
+                    :'Trade DAI ($) or REPv2 for ETH'}
               </h2>
 
               <div className={Styles.AddFundsSwap}>
