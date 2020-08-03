@@ -145,9 +145,7 @@ const CoreProperties: React.FC<CorePropertiesProps> = ({
               />
               <PropertyLabel
                 label="Affiliate Fee"
-                value={
-                    formatPercent(affiliateFee.value).full
-                }
+                value={affiliateFee.full}
                 hint={
                   <>
                     <h4>Affiliate Fee</h4>
