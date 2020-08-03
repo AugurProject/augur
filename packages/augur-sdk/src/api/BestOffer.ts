@@ -89,7 +89,11 @@ export class BestOffer {
     ).then((liquiditPoolsUpdated) => {
       if (_.keys(liquiditPoolsUpdated).length > 0) {
         const poolsToSend = liquiditPoolsUpdated.reduce((acc, poolObj) => {
-          const update = { ...acc, ...poolObj };
+          const liqId = Object.keys(poolObj)[0];
+          const update = acc[liqId] ? { ...acc, [liqId]: {
+            ...acc[liqId],
+            ...poolObj[liqId],
+          }} : {...acc, ...poolObj };
           return update;
         }, {});
         this.augur.events.emit(
