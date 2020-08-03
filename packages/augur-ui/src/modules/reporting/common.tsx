@@ -51,6 +51,8 @@ import {
   formatRep,
   formatAttoRep,
   formatGasCostToEther,
+  formatDai,
+  formatEther,
 } from 'utils/format-number';
 import { MarketProgress } from 'modules/common/progress';
 import { InfoIcon, InformationIcon, XIcon } from 'modules/common/icons';
@@ -489,7 +491,6 @@ interface DisputingBondsViewState {
   stakeError: string;
   isScalar: boolean;
   gasEstimate: string;
-  ethNeededForGas: string;
 }
 
 export class DisputingBondsView extends Component<
@@ -502,7 +503,6 @@ export class DisputingBondsView extends Component<
     stakeError: '',
     isScalar: this.props.market.marketType === SCALAR,
     gasEstimate: DISPUTE_GAS_COST,
-    ethNeededForGas: '0'
   };
 
   updateScalarOutcome = (range: string) => {
@@ -546,15 +546,11 @@ export class DisputingBondsView extends Component<
     } = this.props;
     let inputToAttoRep = null;
     const { isScalar, gasEstimate } = this.state;
+    const gasCostInEth = formatEther(formatGasCostToEther(gasEstimate, { decimalsRounded: 4 }, createBigNumber(GWEI_CONVERSION).multipliedBy(gasPrice)));
+    const ethNeededForGas = String(createBigNumber(availableEthBalance).minus(gasCostInEth.value));
     const min = formatAttoRep(market.noShowBondAmount).value;
     const remaining = formatAttoRep(stakeRemaining).value;
 
-    const gasEstimateInEth = formatGasCostToEther(
-      gasEstimate,
-      { decimalsRounded: 4 },
-      createBigNumber(GWEI_CONVERSION).multipliedBy(gasPrice)
-    );
-    const ethNeededForGas = String(createBigNumber(availableEthBalance).minus(gasEstimateInEth));
     if (!isNaN(Number(inputStakeValue))) {
       inputToAttoRep = convertDisplayValuetoAttoValue(
         createBigNumber(inputStakeValue)
@@ -588,7 +584,7 @@ export class DisputingBondsView extends Component<
       });
     } else if (createBigNumber(ethNeededForGas).lt(ZERO)) {
       this.setState({
-        stakeError: `Insufficient ETH to pay transaction fee, ${ethNeededForGas} ETH needed.`,
+        stakeError: `Insufficient ETH to pay transaction fee, ${formatEther(ethNeededForGas).formatted} ETH needed.`,
         disabled: true,
       });
     } else if (
@@ -644,6 +640,7 @@ export class DisputingBondsView extends Component<
       gsnUnavailable,
       gsnWalletInfoSeen,
       initializeGsnWallet,
+      availableEthBalance,
     } = this.props;
 
     const {
@@ -652,7 +649,6 @@ export class DisputingBondsView extends Component<
       stakeError,
       isScalar,
       gasEstimate,
-      ethNeededForGas,
     } = this.state;
     const min = convertAttoValueToDisplayValue(
       createBigNumber(market.noShowBondAmount)
@@ -660,8 +656,6 @@ export class DisputingBondsView extends Component<
     const remaining = convertAttoValueToDisplayValue(
       createBigNumber(stakeRemaining)
     );
-    const gasCostDai = getGasCost(gasEstimate, gasPrice, ethToDaiRate);
-
     // id === "null" means blank scalar, user can input new scalar value to dispute
     return (
       <div className={classNames(Styles.DisputingBondsView)}>
@@ -709,10 +703,7 @@ export class DisputingBondsView extends Component<
           }
           value={formatRep(stakeValue || ZERO).formatted + ' REPv2'}
         />
-        <TransactionFeeLabel gasCostDai={gasCostDai} />
-        { createBigNumber(ethNeededForGas).lt(ZERO) &&
-          <span>{`Insufficient ETH to pay transaction fee, ${ethNeededForGas} ETH cost.`}</span>
-        }
+        <TransactionFeeLabel gasEstimate={gasEstimate} />
         <PrimaryButton
           text="Confirm"
           action={() => {
@@ -781,11 +772,7 @@ export class ReportingBondsView extends Component<
     isScalar: this.props.market.marketType === SCALAR,
     threshold: this.props.userAttoRep.toString(),
     readAndAgreedCheckbox: false,
-    gasEstimate: formatGasCostToEther(
-      INITAL_REPORT_GAS_COST,
-      { decimalsRounded: 4 },
-      this.props.gasPrice
-    ),
+    gasEstimate: INITAL_REPORT_GAS_COST,
   };
 
   async componentDidMount() {
@@ -902,7 +889,7 @@ export class ReportingBondsView extends Component<
       gasEstimate,
     } = this.state;
 
-    const gasCostDai = getGasCost(gasEstimate, gasPrice, ethToDaiRate);
+    const gasCostInEth = formatEther(formatGasCostToEther(gasEstimate, { decimalsRounded: 4 }, createBigNumber(GWEI_CONVERSION).multipliedBy(gasPrice)));
     const repAmount = migrateRep
       ? formatAttoRep(inputtedReportingStake.inputToAttoRep).formatted
       : formatAttoRep(market.noShowBondAmount).formatted;
@@ -935,7 +922,7 @@ export class ReportingBondsView extends Component<
     ) {
       buttonDisabled = true;
     }
-    let insufficientFunds = userFunds.minus(createBigNumber(gasEstimate));
+    let insufficientFunds = userFunds.minus(createBigNumber(gasCostInEth.value));
     if (insufficientFunds.lt(ZERO)) {
       buttonDisabled = true;
     }
@@ -1004,10 +991,10 @@ export class ReportingBondsView extends Component<
           </div>
         )}
         <div>
-          <TransactionFeeLabel gasCostDai={gasCostDai} />
+          <TransactionFeeLabel gasEstimate={gasEstimate} />
           {insufficientFunds.lt(ZERO) && (
             <span className={FormStyles.ErrorText}>
-              {`Insufficient ETH to pay transaction fee, ${insufficientFunds} ETH cost.`}
+              {`Insufficient ETH to pay transaction fee, ${formatEther(insufficientFunds).formatted} ETH cost.`}
             </span>
           )}
         </div>

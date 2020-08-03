@@ -76,7 +76,7 @@ export const MigrateRep = ({
         </span>
       </div>
       <div>
-        <TransactionFeeLabel gasCostDai={gasCostDai} />
+        <TransactionFeeLabel gasEstimate={gasLimit} />
       </div>
       {!hasEnoughEthForGas && inSigningWallet && (
         <span className={Styles.Error}>
