@@ -361,7 +361,7 @@ export default class MarketCard extends React.Component<
             </DotSelection>
           </div>
 
-          <MarketTitle id={id} headerType={headerType} />
+          <MarketTitle id={id} headerType={headerType} showCustomLabel={true} />
           {!condensed && !marketResolved ? (
             <>
               <OutcomeGroup
