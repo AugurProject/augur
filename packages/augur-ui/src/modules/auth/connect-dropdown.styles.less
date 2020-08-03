@@ -402,35 +402,61 @@
     }
 
     > button {
+      .text-10-semi-bold;
+
       flex-flow: row nowrap;
+      border: 1px solid var(--color-dark-text);
+      padding: @size-9 @size-8 @size-9 @size-10;
+      text-transform: uppercase;
+      border-radius: @border-radius-default;
 
       > svg {
-        margin-right: 0;
-        margin-left: @size-4;
+        width: @size-16;
+        height: @size-16;
+        margin-left: 0;
+        margin-right: @size-4;
+        order: -1;
       }
     }
   }
 
-  .WalletProvider > button:hover > svg > {
+  .WalletProvider > button[class*="SecondaryButton"]:hover > svg > {
     > path:first-of-type {
       fill: var(--color-module-background);
     }
+  }
 
-    > path:last-of-type {
+  .WalletProvider > button > svg {
+    > path {
+      stroke: none;
+      fill: var(--color-primary-text);
+    }
+  }
+
+  .GasEdit > button > svg {
+    > path {
+      fill: none;
+      stroke: var(--color-primary-text);
+    }
+  }
+
+  .GasEdit > button:hover > svg {
+    > path {
       stroke: var(--color-module-background);
     }
   }
 
-  .GasEdit > button:hover > svg > path {
-    stroke: var(--color-module-background);
-  }
-
   .Logout {
+    .text-10-semi-bold;
+
     flex-flow: row-reverse;
     justify-content: flex-start;
     border-bottom: 0;
+    text-transform: uppercase;
 
     > svg {
+      width: @size-10;
+      height: @size-16;
       margin-right: @size-6;
     }
   }
