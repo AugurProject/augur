@@ -337,7 +337,12 @@ export function connectAugur(
     // wire up start up events for sdk
     dispatch(listenForStartUpEvents(Augur));
 
-    await augurSdk.connect();
+    try {
+      await augurSdk.connect();
+    } catch(e) {
+      console.error(e);
+      return callback(`Fatal Error while starting augur: `, e);
+    }
 
     // IPFS pin the UI hash.
     augurSdk.client.pinHashByGatewayUrl(windowApp.location.href);
