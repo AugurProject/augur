@@ -15,6 +15,7 @@
   @media @breakpoint-mobile {
     width: 100%;
     top: @top-bar-height-mobile;
+    left: 0;
 
     &.isOpen {
       position: fixed;
@@ -93,7 +94,7 @@
   display: flex;
   justify-content: flex-end;
   margin-top: auto;
-  padding: @size-6 @size-12;
+  padding: @size-10 @size-12;
 
   > span {
     display: none;
@@ -136,16 +137,20 @@
     display: flex;
     flex-direction: column;
 
-    > span:first-of-type > svg {
-      width: @size-38;
-      height: @size-38;
-      margin-left: @size-16;
+    > span:first-of-type {
+      background: var(--color-page-background);
+
+      > svg {
+        width: @size-50;
+        height: @size-50;
+        margin-left: @size-20;
+      }
     }
   }
 
   .parent {
-    right: @size-195;
-    box-shadow: @size-2 @size-2 @size-5 var(--color-secondary-text-50);
+    right: 0;
+    box-shadow: 0 @size-2 @size-2 var(--color-secondary-text-50);
     border-radius: 0 0 @border-radius-default @border-radius-default;
   }
 

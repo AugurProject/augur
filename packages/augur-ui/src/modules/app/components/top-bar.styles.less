@@ -28,6 +28,7 @@
       max-width: 40%;
     }
 
+    > div > button > svg,
     > button > svg {
       width: @size-34;
       height: @size-24;
@@ -179,6 +180,12 @@
   }
 }
 
+.AlertsDiv {
+  position: relative;
+  display: flex;
+  height: 100%;
+}
+
 .alerts {
   align-items: center;
   color: var(--color-primary-text);
@@ -284,11 +291,14 @@
     display: none;
   }
 
+  .AlertsDiv {
+    order: 3;
+  }
+
   .alerts {
     border-top: @size-3 solid transparent;
     border-right: @size-1 solid var(--color-secondary-text-50);
     border-left: @size-1 solid var(--color-secondary-text-50);
-    order: 3;
 
     > svg {
       margin-left: @size-8;

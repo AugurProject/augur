@@ -26,6 +26,7 @@ import { useAppStatusStore } from 'modules/app/store/app-status';
 import { MODAL_LOGIN, MODAL_SIGNUP } from 'modules/common/constants';
 import { getInfoAlertsAndSeenCount } from 'modules/alerts/helpers/alerts';
 import { getEthReserveInDai } from 'modules/auth/helpers/get-eth-reserve';
+import AlertsContainer from 'modules/alerts/components/alerts-view';
 
 import HelpResources from 'modules/app/containers/help-resources';
 
@@ -141,18 +142,21 @@ const TopBar = () => {
         {LoggedOrRestored &&
           ((isMobile && walletStatus === WALLET_STATUS_VALUES.CREATED) ||
             !isMobile) && (
-            <button
-              className={classNames(Styles.alerts, {
-                [Styles.alertsDark]: isAlertsMenuOpen,
-                [Styles.Empty]: unseenCount < 1,
-              })}
-              onClick={() => {
-                setIsAlertsMenuOpen(!isAlertsMenuOpen);
-              }}
-              tabIndex={-1}
-            >
-              {Alerts(unseenCount)}
-            </button>
+              <div className={Styles.AlertsDiv}>
+                <button
+                  className={classNames(Styles.alerts, {
+                    [Styles.alertsDark]: isAlertsMenuOpen,
+                    [Styles.Empty]: unseenCount < 1,
+                  })}
+                  onClick={() => {
+                    setIsAlertsMenuOpen(!isAlertsMenuOpen);
+                  }}
+                  tabIndex={-1}
+                >
+                  {Alerts(unseenCount)}
+                </button>
+                <AlertsContainer />
+            </div>
           )}
         <ConnectAccount />
       </div>

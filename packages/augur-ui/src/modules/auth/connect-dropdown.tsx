@@ -235,11 +235,11 @@ const ConnectDropdown = () => {
 
   const referralTooltipContent = (
     <span>
-      <p>Referral Link</p>
-      <p>
+      <span>Referral Link</span>
+      <div>
         Invite friends to Augur using this link and collect a portion of the
         market fees whenever they trade in markets.
-      </p>
+      </div>
     </span>
   );
 
