@@ -263,9 +263,6 @@ export default class Review extends React.Component<
       )
     );
 
-    // Total Gas in DAI
-    const totalGasInDai = totalEth;
-
     const noEth = s.insufficientFunds[ETH];
     const noRep = s.insufficientFunds[REP];
     const noDai = s.insufficientFunds[DAI];
@@ -346,7 +343,7 @@ export default class Review extends React.Component<
               label={"Total DAI"}
               value={totalDai.formattedValue + " DAI"}
             />
-            <TransactionFeeLabel gasCostDai={totalGasInDai} />
+            <TransactionFeeLabel gasEstimate={gasCost} />
             <LinearPropertyLabel
               label={"TOTAL REPv2"}
               value={s.designatedReportNoShowReputationBond && s.designatedReportNoShowReputationBond.formattedValue + " REPv2"}

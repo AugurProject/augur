@@ -26,6 +26,7 @@ interface MarketTitleProps {
   noLink?: boolean;
   headerType?: string;
   topPadding?: boolean;
+  showCustomLabel?: boolean;
 }
 
 const wrapMarketName = (marketName: string) => <span>{`"${marketName}"`}</span>;
@@ -39,6 +40,7 @@ const MarketTitle: React.FC<MarketTitleProps> = ({
   noLink,
   headerType,
   topPadding,
+  showCustomLabel,
 }) =>
   isTemplate ? (
     <MarketLink className={Styles.MarketTemplateTitle} id={noLink ? null : id} headerType={headerType}>
@@ -46,7 +48,7 @@ const MarketTitle: React.FC<MarketTitleProps> = ({
     </MarketLink>
   ) : (
     <MarketLink id={noLink ? null : id} headerType={headerType}>
-      {isTemplate === false && <div className={classNames(Styles.CustomMarket, { [Styles.TopMargin]: topPadding })}>{ExclamationCircle} CUSTOM MARKET - proceed with caution</div>}
+      {isTemplate === false && showCustomLabel && <div className={classNames(Styles.CustomMarket, { [Styles.TopMargin]: topPadding })}>{ExclamationCircle} CUSTOM MARKET - proceed with caution</div>}
       {isWrapped ? wrapMarketName(description) : description}
     </MarketLink>
   );
