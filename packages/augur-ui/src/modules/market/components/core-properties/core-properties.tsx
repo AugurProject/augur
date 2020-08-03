@@ -10,16 +10,20 @@ import {
   formatDaiPrice,
   formatRep,
   formatAttoRep,
+  formatNumber,
 } from 'utils/format-number';
 import MarketScalarOutcomeDisplay from '../market-scalar-outcome-display/market-scalar-outcome-display';
 import ChevronFlip from 'modules/common/chevron-flip';
 import classNames from 'classnames';
 import { MarketData } from 'modules/types';
+import { useEffect } from 'react';
+import { createBigNumber } from 'utils/create-big-number';
 
 interface CorePropertiesProps {
   market: MarketData;
   reportingBarShowing?: boolean;
   showExtraDetailsChevron?: boolean;
+  loadAffiliateFee: Function;
 }
 
 // TODO: Get market 24 hour volume, currently just using volume
@@ -27,8 +31,20 @@ const CoreProperties: React.FC<CorePropertiesProps> = ({
   market,
   reportingBarShowing,
   showExtraDetailsChevron,
+  loadAffiliateFee,
 }) => {
   const [showExtraDetails, setShowExtraDetails] = useState(false);
+  const [affiliateFee, setAffiliateFee] = useState(formatNumber(0));
+
+
+  useEffect(() => {
+    if (market) {
+      loadAffiliateFee(market.id).then(marketInfo => {
+        setAffiliateFee(formatPercent(marketInfo?.affiliateFee ? createBigNumber(marketInfo.affiliateFee).times(100) : '0', { decimals: 0}));
+      })
+    }
+  }, []);
+
   const isScalar = market.marketType === SCALAR;
   return (
     <div
@@ -123,6 +139,27 @@ const CoreProperties: React.FC<CorePropertiesProps> = ({
                         }
                       </b>
                       ): which occurs when shares are closed
+                    </p>
+                  </>
+                }
+              />
+              <PropertyLabel
+                label="Affiliate Fee"
+                value={affiliateFee.full}
+                hint={
+                  <>
+                    <h4>Affiliate Fee</h4>
+                    <p>
+                      The Affiliate fee is a percentage of the Market
+                      Creator fee (
+                      <b>
+                        {
+                          formatPercent(
+                            Number(market.marketCreatorFeeRate) * 100
+                          ).full
+                        }
+                      </b>
+                      ), which occurs when shares are closed
                     </p>
                   </>
                 }
