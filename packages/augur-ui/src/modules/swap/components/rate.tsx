@@ -5,7 +5,6 @@ import { formatEther, formatRep, formatDai } from 'utils/format-number';
 
 import Styles from 'modules/swap/components/rate.styles.less';
 import { FormattedNumber } from 'modules/types';
-import { swap } from './index.styles.less';
 
 interface RateProps {
   baseToken: string;
@@ -41,6 +40,15 @@ export const Rate = ({
 
     displayRate = `1 ${swapForToken === REP ? 'REPv2' : swapForToken} = ${rate}`;
   }
+  else if (swapForToken === ETH) {
+    if (baseToken === REP) {
+      displayRate = `1 REPv2 = ${formatEther(repRate).formattedValue} ETH`;
+    }
+    else if (baseToken === DAI) {
+      displayRate = `1 DAI = ${formatEther(ethRate).formattedValue} ETH`;
+    }
+  }
+
   return (
     <div className={Styles.Rate}>
       <div>Exchange Rate</div>
