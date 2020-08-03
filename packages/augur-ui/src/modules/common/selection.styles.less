@@ -263,46 +263,6 @@
       }
     }
   }
-
-
-  &.Minimal {
-    border: 0;
-
-    > button {
-      background-color: transparent;
-      padding: 0;
-
-      > span {
-        .text-14;
-
-        border: 0;
-        color: var(--color-primary-text);
-        text-transform: capitalize;
-        border-bottom: @size-1 dotted;
-        border-color: var(--color-primary-text);
-        padding: 0;
-      }
-
-      > svg {
-        width: @size-10;
-        height: @size-7;
-        margin-right: @size-8;
-
-        > path {
-          stroke: var(--color-primary-text);
-          fill: none;
-        }
-      }
-    }
-
-    &:hover {
-      > button {
-        > span {
-          border-bottom: 1px solid;
-        }
-      }
-    }
-  }
 }
 
 .stretchOut {
@@ -420,6 +380,102 @@
 
     > div > div > button {
       .text-10;
+    }
+
+    &.Minimal {
+      border: 0;
+  
+      > span {
+        .text-14;
+  
+        white-space: nowrap;
+        text-transform: capitalize;
+        margin-right: @size-4;
+        color: var(--color-secondary-text);
+        display: flex;
+        align-items: center;
+        margin-left: @size-2;
+      }
+  
+      > button {
+        background-color: transparent;
+        padding: 0;
+  
+        > span {
+          .text-14;
+  
+          border: 0;
+          color: var(--color-primary-text);
+          text-transform: capitalize;
+          border-bottom: @size-1 dotted;
+          border-color: var(--color-primary-text);
+          padding: 0;
+        }
+  
+        > svg {
+          width: @size-10;
+          height: @size-7;
+          margin-right: @size-8;
+  
+          > path {
+            stroke: var(--color-primary-text);
+            fill: none;
+          }
+        }
+      }
+  
+      &:hover {
+        > button {
+          > span {
+            border-bottom: 1px solid;
+          }
+        }
+      }
+
+      &.isOpen {
+        > button {
+          > span {
+            border-bottom: 1px solid;
+          }
+        }
+      }
+  
+      > div {
+        max-height: unset;
+
+      > div {
+        margin-top: @size-12;
+        border: @size-1 solid var(--color-secondary-action-outline);
+        box-shadow: 0px 0px @size-4 var(--color-primary-text-15);
+        border-radius: @border-radius-default;
+  
+        > button {
+          .text-14;
+  
+          background: transparent;
+          color: var(--color-secondary-text);
+          padding: @size-12 @size-16;
+          text-transform: capitalize;
+          height: unset;
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          
+          > svg {
+            width: @size-10;
+            height: @size-8;
+  
+            > path {
+              fill: var(--color-primary-text);
+            }
+          }
+  
+          &.Selected {
+            color: var(--color-primary-text);
+          }
+        }
+      }
+      }
     }
   }
 
