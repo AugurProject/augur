@@ -40,7 +40,7 @@ const CoreProperties: React.FC<CorePropertiesProps> = ({
   useEffect(() => {
     if (market) {
       loadAffiliateFee(market.id).then(marketInfo => {
-        setAffiliateFee(formatPercent(createBigNumber(marketInfo?.affiliateFee || '0').times(100), { decimals: 0}));
+        setAffiliateFee(formatPercent(marketInfo?.affiliateFee ? createBigNumber(marketInfo.affiliateFee).times(100) : '0', { decimals: 0}));
       })
     }
   }, []);
