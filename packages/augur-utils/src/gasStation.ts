@@ -36,7 +36,7 @@ const makeGetGasStation: MakeGasStationType = (rateLimitSeconds: number) => {
     }
 
     const now = Number(new Date());
-    if (lastcall + rateLimitMS < now) {
+    if (!cached || (lastcall + rateLimitMS < now)) {
       lastcall = now;
       cached = await axios.get('https://safe-relay.gnosis.io/api/v1/gas-station/')
         .then((r) => r.data);
