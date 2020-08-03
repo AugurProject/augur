@@ -196,9 +196,7 @@ export const MyBets = () => {
           <SquareDropdown
             options={MY_BETS_VIEW_BY}
             defaultValue={viewBy}
-            onChange={viewBy => {
-              setViewBy(viewBy);
-            }}
+            onChange={viewBy => setViewBy(viewBy)}
             preLabel='view by'
             minimalStyle
             dontCheckInvalid
