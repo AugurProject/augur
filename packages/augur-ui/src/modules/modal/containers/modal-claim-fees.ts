@@ -26,6 +26,7 @@ import {
   REDEEMSTAKE,
   FORKANDREDEEM,
   DISAVOWCROWDSOURCERS,
+  GWEI_CONVERSION,
 } from 'modules/common/constants';
 import { ThunkDispatch } from 'redux-thunk';
 import { Action } from 'redux';
@@ -36,6 +37,8 @@ import { displayGasInDai } from 'modules/app/actions/get-ethToDai-rate';
 import { TRANSACTIONS } from 'modules/routes/constants/views';
 import { TXEventName } from '@augurproject/sdk-lite';
 import { addPendingData } from 'modules/pending-queue/actions/pending-queue-management';
+import { createBigNumber } from 'utils/create-big-number';
+import { getGasCost } from 'modules/modal/gas';
 
 const mapStateToProps = (state: AppState) => {
   const gasPrice = state.gasPriceInfo.userDefinedGasPrice || state.gasPriceInfo.average;
@@ -45,7 +48,9 @@ const mapStateToProps = (state: AppState) => {
     pendingQueue: state.pendingQueue || [],
     claimReportingFees: selectReportingWinningsByMarket(state),
     forkingInfo: state.universe.forkingInfo,
-    transactionLabel: getTransactionLabel(state)
+    transactionLabel: getTransactionLabel(state),
+    gasPrice,
+    ethToDaiRate: state.appStatus.ethToDaiRate,
   };
 };
 
@@ -102,8 +107,14 @@ const mergeProps = (sP: any, dP: any, oP: any) => {
         let notice = undefined;
         let action = () => dP.redeemStake(redeemStakeOptions);
         let estimateGas = async () => {
-          const gas = await dP.redeemStakeGas(redeemStakeOptions);
-          const displayfee = formatEther(gas).formattedValue;
+          const gasLimit = await dP.redeemStakeGas(redeemStakeOptions);
+          const gasEstimateInEth = formatGasCostToEther(
+            gasLimit,
+            { decimalsRounded: 4 },
+            createBigNumber(GWEI_CONVERSION).multipliedBy(sP.gasPrice)
+          );
+          const gasCostDai = getGasCost(gasLimit, sP.gasPrice, sP.ethToDaiRate);
+          const displayfee = `$${gasCostDai.formattedValue}`;
           return {
             label: transactionLabel,
             value: String(displayfee),
