@@ -95,7 +95,7 @@ export class HotLoading {
     } else {
       displayPrices = displayPrices.map(price => new BigNumber(price._hex));
     }
-    const affiliateFee = new BigNumber(1).div(new BigNumber(marketData.affiliateFeeDivisor));
+    const affiliateFee = new BigNumber(marketData.affiliateFeeDivisor).gt(new BigNumber(0)) ? new BigNumber(1).div(new BigNumber(marketData.affiliateFeeDivisor)) : '0';
     const designatedReporter = marketData[6];
     const reportingStateNumber: number = marketData[7];
     const winningPayout = marketData[9];
