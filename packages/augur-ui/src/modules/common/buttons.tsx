@@ -52,6 +52,7 @@ import { formatDai } from 'utils/format-number';
 import { useMarketsStore } from 'modules/markets/store/markets';
 import { startClaimingMarketsProceeds } from 'modules/positions/actions/claim-markets-proceeds';
 import { runBetslipTrade } from 'utils/betslip-helpers';
+import { getOrderShareProfitLoss } from 'utils/betslip-helpers';
 
 export interface DefaultButtonProps {
   id?: string;
@@ -685,7 +686,6 @@ interface CashoutButtonProps {
 export const CashoutButton = ({
   bet
 }: CashoutButtonProps) => {
-  runBetslipTrade(bet.marketId, bet, bet.orderId);
   let cashoutDisabled = true;
   let cashoutText = 'cashout not available';
   let didWin = false;
@@ -712,11 +712,12 @@ export const CashoutButton = ({
         // get potentialDaiProfit
         cashoutText = `Cashout ${formatDai(bet.unrealizedCost).full}`;
         cashoutDisabled = false;
-    
+        getOrderShareProfitLoss(market, bet);
+
         cashout = () => {
           setModal({
             type: MODAL_CASHOUT_BET, 
-            stake: bet.wager, 
+            stake: bet.shares, 
             cashOut: bet.unrealizedCost,
             profit: '0',
             cb: () => {
@@ -731,7 +732,7 @@ export const CashoutButton = ({
                   market.numTicks,
                   market.minPrice,
                   market.maxPrice,
-                  bet.wager,
+                  bet.shares,
                   bet.price,
                   0,
                   '0',

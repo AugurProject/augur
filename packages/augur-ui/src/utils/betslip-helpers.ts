@@ -1,5 +1,5 @@
 import { convertToNormalizedPrice, convertToWin, getWager } from './get-odds';
-import { BUY_INDEX, INSUFFICIENT_FUNDS_ERROR, BUY } from 'modules/common/constants';
+import { BUY_INDEX, INSUFFICIENT_FUNDS_ERROR, BUY, SELL } from 'modules/common/constants';
 import { getOutcomeNameWithOutcome } from './get-outcome';
 import { BET_STATUS } from 'modules/trading/store/constants';
 import { Markets } from 'modules/markets/store/markets';
@@ -9,7 +9,9 @@ import { AppStatus } from 'modules/app/store/app-status';
 import { createBigNumber } from './create-big-number';
 import { totalTradingBalance } from 'modules/auth/helpers/login-account';
 import { runSimulateTrade } from 'modules/trades/actions/update-trade-cost-shares';
-import { calculateTotalOrderValue } from 'modules/trades/helpers/calc-order-profit-loss-percents';
+import { calculateTotalOrderValue, calcOrderShareProfitLoss } from 'modules/trades/helpers/calc-order-profit-loss-percents';
+import { chatButton } from 'modules/common/buttons.styles.less';
+import { formatDai } from './format-number';
 
 export const convertPositionToBet = (position, marketInfo) => {
   const normalizedPrice = convertToNormalizedPrice({
@@ -83,7 +85,17 @@ export const checkForDisablingPlaceBets = (betslipItems) => {
   return placeBetsDisabled;
 }
 
-export const runBetslipTrade = (marketId, order, orderId) => {
+export const checkForErrors = (marketId, order, orderId) => {
+  runBetslipTrade(marketId, order, false, (simulateTradeData) => {
+    Betslip.actions.modifyBet(marketId, orderId, {
+      ...order,
+      selfTrade: simulateTradeData.selfTrade,
+      errorMessage: formulateBetErrorMessage(order.insufficientFunds, simulateTradeData.selfTrade)
+    });
+  })
+}
+
+export const runBetslipTrade = (marketId, order, cashOut, cb) => {
   const { marketInfos } = Markets.get();
   const { loginAccount: { address }, accountPositions} = AppStatus.get();
   const market = marketInfos[marketId];
@@ -93,14 +105,14 @@ export const runBetslipTrade = (marketId, order, orderId) => {
   const totalCost = calculateTotalOrderValue(
     order.quantitty,
     order.price,
-    BUY,
+    cashOut ? SELL : BUY,
     createBigNumber(market.minPrice),
     createBigNumber(market.maxPrice),
     market.marketType
   );
 
   let newTradeDetails: any = {
-    side: BUY,
+    side: cashOut ? SELL : BUY,
     maxCost: totalCost,
     limitPrice: order.price,
     totalFee: '0',
@@ -109,7 +121,6 @@ export const runBetslipTrade = (marketId, order, orderId) => {
 
   const marketMaxPrice = createBigNumber(market.maxPrice);
   const marketMinPrice = createBigNumber(market.minPrice);
-  const marketRange = marketMaxPrice.minus(market.minPrice);
   const scaledPrice = createBigNumber(order.price).plus(marketMinPrice.abs());
 
   let newShares = createBigNumber(market.maxPrice).dividedBy(scaledPrice);
@@ -125,67 +136,11 @@ export const runBetslipTrade = (marketId, order, orderId) => {
       accountPositions,
       address,
       (err, simulateTradeData) => {
-        console.log(simulateTradeData);
-        Betslip.actions.modifyBet(marketId, orderId, {
-          ...order,
-          selfTrade: simulateTradeData.selfTrade,
-          errorMessage: formulateBetErrorMessage(order.insufficientFunds, simulateTradeData.selfTrade)
-        });
+        cb && cb(simulateTradeData);
       }
     );
   })();
 };
-
-export const simulateBetslipTrade = (marketId, order, orderId) => {
-  const { marketInfos } = Markets.get();
-  const { loginAccount: { address }, accountPositions} = AppStatus.get();
-  const market = marketInfos[marketId];
-  const positions = (accountPositions[marketId] || {}).tradingPositions;
-  const marketOutcomeShares = positions
-    ? (accountPositions[marketId].tradingPositionsPerMarket || {})
-        .userSharesBalances
-    : {};
-  let userShares = createBigNumber(marketOutcomeShares[order.outcomeId]);
-  // if (!!reversal && orderType === BUY_INDEX) {
-  //   // ignore trading outcome shares and find min across all other outcome shares.
-  //   const userSharesBalancesRemoveOutcome = Object.keys(
-  //     marketOutcomeShares
-  //   ).reduce(
-  //     (p, o) =>
-  //       String(outcomeId) === o
-  //         ? p
-  //         : [...p, new BigNumber(marketOutcomeShares[o])],
-  //     []
-  //   );
-  //   userShares =
-  //     userSharesBalancesRemoveOutcome.length > 0
-  //       ? BigNumber.min(...userSharesBalancesRemoveOutcome)
-  //       : ZERO;
-  // }
-
-  (async() => {
-    const simulateTradeData = await simulateTrade(
-      BUY_INDEX,
-      marketId,
-      market.numOutcomes,
-      order.outcomeId,
-      undefined,
-      true,
-      market.numTicks,
-      market.minPrice,
-      market.maxPrice,
-      order.shares,
-      order.price,
-      userShares,
-      address
-    );
-    Betslip.actions.modifyBet(marketId, orderId, {
-      ...order,
-      selfTrade: simulateTradeData.selfTrade,
-      errorMessage: formulateBetErrorMessage(order.insufficientFunds, simulateTradeData.selfTrade)
-    });
-  })();
-}
 
 export const formulateBetErrorMessage = (insufficientFunds, selfTrade) => {
   if (selfTrade) {
@@ -208,4 +163,40 @@ export const checkInsufficientFunds = (minPrice, maxPrice, limitPrice, numShares
   let availableDai = totalTradingBalance();
 
   return longETHpotentialProfit.gt(createBigNumber(availableDai));
+}
+
+export const getOrderShareProfitLoss = (market, trade) => {
+  runBetslipTrade(market.id, trade, true, (simulateTradeData) => {
+    const { settlementFee } = market;
+    const sharesFilledAvgPrice =
+      (trade && trade.averagePrice) ||
+      null;
+    const limitPrice =
+      (trade && trade.price) || null;
+    const shareCost = createBigNumber(
+      (simulateTradeData && simulateTradeData.shareCost.value) || "0",
+      10,
+    );
+    const marketType = (market && market.marketType) || null;
+    const minPrice = createBigNumber(market.minPrice);
+    const maxPrice = createBigNumber(market.maxPrice);
+  
+    const orderShareProfitLoss = shareCost.gt(0)
+      ? calcOrderShareProfitLoss(
+          limitPrice,
+          SELL,
+          minPrice,
+          maxPrice,
+          marketType,
+          shareCost,
+          sharesFilledAvgPrice,
+          settlementFee,
+          trade.reversal,
+        )
+      : null;
+
+      console.log(formatDai(orderShareProfitLoss.potentialDaiProfit));
+  
+      return orderShareProfitLoss.potentialDaiProfit;
+  });
 }

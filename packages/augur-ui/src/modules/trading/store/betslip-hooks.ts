@@ -11,7 +11,7 @@ import {
   BETSLIP_ACTIONS,
   DEFAULT_BETSLIP_STATE,
 } from 'modules/trading/store/constants';
-import { placeBet, simulateBetslipTrade, checkForDisablingPlaceBets, checkInsufficientFunds } from 'utils/betslip-helpers';
+import { placeBet, checkForErrors, checkForDisablingPlaceBets, checkInsufficientFunds } from 'utils/betslip-helpers';
 import { AppStatus } from 'modules/app/store/app-status';
 import deepClone from 'utils/deep-clone';
 
@@ -136,7 +136,7 @@ export function BetslipReducer(state, action) {
         orderId: betslipItems[marketId].orders.length,
         insufficientFunds,
       };
-      simulateBetslipTrade(marketId, order, order.orderId);
+      checkForErrors(marketId, order, order.orderId);
       updatedState.placeBetsDisabled = checkForDisablingPlaceBets(betslipItems);
       betslipItems[marketId].orders.push(order);
       updatedState.betslip.count++;
