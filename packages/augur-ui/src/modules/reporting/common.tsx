@@ -996,7 +996,7 @@ export class ReportingBondsView extends Component<
           <TransactionFeeLabel gasCostDai={gasCostDai} />
           {insufficientFunds.lt(ZERO) && (
             <span className={FormStyles.ErrorText}>
-              {`Insufficient ETH to pay transaction fee, ${insufficientFunds} ETH cost.`}
+              {`Insufficient ETH to pay transaction fee, ${formatEther(insufficientFunds).formatted} ETH cost.`}
             </span>
           )}
         </div>
