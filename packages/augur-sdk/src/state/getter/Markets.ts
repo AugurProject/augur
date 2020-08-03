@@ -586,7 +586,7 @@ export class Markets {
         }
 
         if (!params.includeWarpSyncMarkets && market.isWarpSync) {
-          filteredOutCount += 1;
+          // don't tell user that this market is hidden, there is no filter to turn on
           return false;
         } else if (market.isWarpSync) {
           return !tentativeWinningHashMatch;
