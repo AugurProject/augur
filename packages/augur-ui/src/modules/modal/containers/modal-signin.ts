@@ -109,12 +109,33 @@ const mergeProps = (sP: any, dP: any, oP: any) => {
 
   const connectMethods = [
     {
+      type: ACCOUNT_TYPES.WEB3WALLET,
+      icon: MetaMaskLogin,
+      text: `${LOGIN_OR_SIGNUP} with ${ACCOUNT_TYPES.WEB3WALLET}`,
+      subText: '',
+      disabled: false,
+      primary: true,
+      hidden: !isMetaMaskPresent(),
+      action: async () => {
+        const accounts =
+          windowRef.ethereum && windowRef.ethereum.selectedAddress;
+        const msg = accounts ? SIGNIN_LOADING_TEXT : SIGNIN_SIGN_WALLET;
+        const showMetaMaskHelper = accounts ? false : true;
+        dP.loadingModal(msg, () => login(), showMetaMaskHelper);
+        try {
+          await dP.connectMetaMask();
+        } catch (error) {
+          onError(error, ACCOUNT_TYPES.WEB3WALLET);
+        }
+      },
+    },
+    {
       type: ACCOUNT_TYPES.FORTMATIC,
       icon: EmailLogin,
       text: `${LOGIN_OR_SIGNUP} with Email`,
       subText: `Powered by ${ACCOUNT_TYPES.FORTMATIC}`,
       hidden: false,
-      primary: true,
+      primary: !isMetaMaskPresent() ? true : false,
       action: async () => {
         dP.loadingModal(SIGNIN_LOADING_TEXT_FORTMATIC, () => login());
         try {
@@ -152,26 +173,6 @@ const mergeProps = (sP: any, dP: any, oP: any) => {
           await dP.connectTorus();
         } catch (error) {
           onError(error, ACCOUNT_TYPES.TORUS);
-        }
-      },
-    },
-    {
-      type: ACCOUNT_TYPES.WEB3WALLET,
-      icon: MetaMaskLogin,
-      text: `${LOGIN_OR_SIGNUP} with ${ACCOUNT_TYPES.WEB3WALLET}`,
-      subText: '',
-      disabled: false,
-      hidden: !isMetaMaskPresent(),
-      action: async () => {
-        const accounts =
-          windowRef.ethereum && windowRef.ethereum.selectedAddress;
-        const msg = accounts ? SIGNIN_LOADING_TEXT : SIGNIN_SIGN_WALLET;
-        const showMetaMaskHelper = accounts ? false : true;
-        dP.loadingModal(msg, () => login(), showMetaMaskHelper);
-        try {
-          await dP.connectMetaMask();
-        } catch (error) {
-          onError(error, ACCOUNT_TYPES.WEB3WALLET);
         }
       },
     },
