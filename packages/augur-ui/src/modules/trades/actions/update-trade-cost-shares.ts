@@ -1,5 +1,5 @@
 import { createBigNumber } from 'utils/create-big-number';
-import { BUY, ZERO, ZEROX_GAS_FEE, BUY_INDEX } from 'modules/common/constants';
+import { BUY, ZERO, ZEROX_GAS_FEE, BUY_INDEX, TRADE_ORDER_GAS_MODAL_ESTIMATE } from 'modules/common/constants';
 import logError from 'utils/log-error';
 import { generateTrade } from 'modules/trades/helpers/generate-trade';
 import { AppState } from 'appStore';
@@ -9,8 +9,8 @@ import { BigNumber } from "bignumber.js";
 import { NodeStyleCallback, AccountPosition } from 'modules/types';
 import {
   simulateTrade,
-  simulateTradeGasLimit,
 } from 'modules/contracts/actions/contractCalls';
+import { NORMAL_FILL, WORST_CASE_FILL } from '@augurproject/sdk-lite';
 import type { Getters, SimulateTradeData } from '@augurproject/sdk';
 
 // Updates user's trade. Only defined (i.e. !== null) parameters are updated
@@ -195,6 +195,7 @@ async function runSimulateTrade(
   );
 
   let gasLimit: BigNumber = createBigNumber(0);
+  let normalGasLimit: BigNumber = createBigNumber(0);
 
   const totalFee = createBigNumber(simulateTradeValue.settlementFees, 10);
   newTradeDetails.totalFee = totalFee.toFixed();
@@ -210,25 +211,14 @@ async function runSimulateTrade(
     .toFixed();
   if (isNaN(newTradeDetails.feePercent)) newTradeDetails.feePercent = '0';
 
-  if (newTradeDetails.sharesFilled.toNumber() > 0) {
-    gasLimit = await simulateTradeGasLimit(
-      orderType,
-      marketId,
-      market.numOutcomes,
-      outcomeId,
-      undefined,
-      doNotCreateOrders,
-      market.numTicks,
-      market.minPrice,
-      market.maxPrice,
-      newTradeDetails.numShares,
-      newTradeDetails.limitPrice,
-      userShares,
-      takerAddress,
-    );
+  const hasFills = newTradeDetails.sharesFilled.toNumber();
+  if (hasFills > 0) {
+    const numFills = simulateTradeValue.numFills;
+    gasLimit = WORST_CASE_FILL[Number(market.numOutcomes)];
+    normalGasLimit = NORMAL_FILL[Number(market.numOutcomes)];
 
-    // Plus ZeroX fee (150k Gas)
-    gasLimit = gasLimit.plus(ZEROX_GAS_FEE);
+    gasLimit = gasLimit.times(numFills);
+    normalGasLimit = normalGasLimit.times(numFills);
   }
   // ignore share cost when user is shorting or longing another outcome
   // and the user doesn't have shares on the traded outcome
@@ -251,5 +241,5 @@ async function runSimulateTrade(
 
   const order = generateTrade(market, tradeInfo);
 
-  if (callback) callback(null, { ...order, gasLimit });
+  if (callback) callback(null, { ...order, gasLimit, normalGasLimit });
 }

@@ -40,6 +40,7 @@ import { LinearPropertyLabel, TransactionFeeLabelToolTip, ApprovalTxButtonLabel 
 import { Trade, FormattedNumber } from 'modules/types';
 import { ExternalLinkButton, ProcessingButton, PrimaryButton } from 'modules/common/buttons';
 import { approvalsNeededToTrade, approveToTrade } from 'modules/contracts/actions/contractCalls';
+import { getGasCost } from 'modules/modal/gas';
 
 interface MessageButton {
   action: Function;
@@ -60,6 +61,7 @@ interface ConfirmProps {
   trade: Trade;
   gasPrice: number;
   gasLimit: number;
+  normalGasLimit: number;
   availableEth: BigNumber;
   availableDai: BigNumber;
   outcomeName: string;
@@ -153,6 +155,7 @@ class Confirm extends Component<ConfirmProps, ConfirmState> {
       tradingApproved,
       gasPrice,
       gasLimit,
+      normalGasLimit,
       availableEth,
       availableDai,
       tradingTutorial,
@@ -187,7 +190,8 @@ class Confirm extends Component<ConfirmProps, ConfirmState> {
     let needsApproval = false;
     let messages: Message | null = null;
 
-
+    const averageGasLimit = gasLimit.plus(normalGasLimit).div(2);
+    const averageGasCost = getGasCost(averageGasLimit, gasPrice, ethToDaiRate);
     const gasCostInEth = gasLimit
       ? createBigNumber(formatGasCostToEther(gasLimit, { decimalsRounded: 4 }, createBigNumber(GWEI_CONVERSION).multipliedBy(gasPrice)))
       : ZERO;
@@ -217,9 +221,9 @@ class Confirm extends Component<ConfirmProps, ConfirmState> {
       !isNaN(numTrades) &&
       numTrades > 0 &&
       ((potentialDaiProfit && potentialDaiProfit.value !== 0 &&
-        createBigNumber(gasCostDai.value).gt(potentialDaiProfit.value)) ||
+        createBigNumber(averageGasCost.value).gt(potentialDaiProfit.value)) ||
         (orderShareProfit && orderShareProfit.value !== 0 &&
-          createBigNumber(gasCostDai.value).gt(orderShareProfit.value))) &&
+          createBigNumber(averageGasCost.value).gt(orderShareProfit.value))) &&
       !tradingTutorial
     ) {
       messages = {
@@ -312,6 +316,7 @@ class Confirm extends Component<ConfirmProps, ConfirmState> {
       affiliate,
       isLogged,
       availableEth,
+      normalGasLimit,
     } = this.props;
 
     const {
@@ -405,12 +410,13 @@ class Confirm extends Component<ConfirmProps, ConfirmState> {
               numFills > 0 && !postOnlyOrder && (
               <TransactionFeeLabelToolTip
                 isError={createBigNumber(gasCostDai.value).gt(createBigNumber(orderShareProfit.value))}
-                gasCostDai={gasCostDai}
+                gasEstimate={gasLimit}
+                normalGasLimit={normalGasLimit}
               />
             )}
             {postOnlyOrder && (
               <TransactionFeeLabelToolTip
-                gasCostDai={`0.00`}
+              gasEstimate={0}
               />
             )}
             <LinearPropertyLabel
@@ -474,7 +480,8 @@ class Confirm extends Component<ConfirmProps, ConfirmState> {
             />
             <TransactionFeeLabelToolTip
               isError={!tradingTutorial && createBigNumber(gasCostDai.value).gt(createBigNumber(potentialDaiProfit.value))}
-              gasCostDai={(tradingTutorial || postOnlyOrder) ? formatDai(0) : gasCostDai}
+              gasEstimate={(tradingTutorial || postOnlyOrder) ? 0 : gasLimit}
+              normalGasLimit={numFills > 0 && normalGasLimit}
             />
           </div>
         )}

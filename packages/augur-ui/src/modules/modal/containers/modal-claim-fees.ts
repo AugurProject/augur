@@ -108,11 +108,6 @@ const mergeProps = (sP: any, dP: any, oP: any) => {
         let action = () => dP.redeemStake(redeemStakeOptions);
         let estimateGas = async () => {
           const gasLimit = await dP.redeemStakeGas(redeemStakeOptions);
-          const gasEstimateInEth = formatGasCostToEther(
-            gasLimit,
-            { decimalsRounded: 4 },
-            createBigNumber(GWEI_CONVERSION).multipliedBy(sP.gasPrice)
-          );
           const gasCostDai = getGasCost(gasLimit, sP.gasPrice, sP.ethToDaiRate);
           const displayfee = `$${gasCostDai.formattedValue}`;
           return {
@@ -220,8 +215,9 @@ const mergeProps = (sP: any, dP: any, oP: any) => {
           disputeWindows: claimReportingFees.participationContracts.contracts,
           reportingParticipants: [],
         };
-        const gas = await dP.redeemStakeGas(redeemStakeOptions);
-        const displayfee = formatEther(gas).formattedValue;
+        const gasLimit = await dP.redeemStakeGas(redeemStakeOptions);
+        const gasCostDai = getGasCost(gasLimit, sP.gasPrice, sP.ethToDaiRate);
+        const displayfee = `$${gasCostDai.formattedValue}`;
         return {
           label: transactionLabel,
           value: String(displayfee),
@@ -292,11 +288,11 @@ const mergeProps = (sP: any, dP: any, oP: any) => {
     },
     estimateGas: async () => {
       if (!!breakdown) {
-        const gas = await dP.redeemStakeGas(allRedeemStakeOptions);
-        const displayfee = formatEther(gas).formattedValue;
+        const gasLimit = await dP.redeemStakeGas(allRedeemStakeOptions);
+        const gasCostDai = getGasCost(gasLimit, sP.gasPrice, sP.ethToDaiRate);
         return {
           label: transactionLabel,
-          value: String(displayfee),
+          value: `$${gasCostDai.formattedValue}`,
         };
       }
       return null;

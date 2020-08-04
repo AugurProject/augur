@@ -821,14 +821,17 @@ interface TransactionFeeLabelProps {
   gasCostDai: FormattedNumber;
   isError: boolean;
   gasEstimate: number;
+  normalGasLimit: number;
 }
 
 const mapStateToPropsTransactionFeeLabel = (state: AppState, ownProps) => {
   const gasPrice = state.gasPriceInfo.userDefinedGasPrice || state.gasPriceInfo.average;
   const ethToDaiRate = state.appStatus.ethToDaiRate;
+  const gasCostDai = getGasCost(ownProps.gasEstimate, gasPrice, ethToDaiRate);
+  const normalGasCostDai = ownProps.normalGasLimit && getGasCost(ownProps.normalGasLimit, gasPrice, ethToDaiRate);
   return {
     label: constants.NOT_USE_ETH_RESERVE,
-    gasCostDai: getGasCost(ownProps.gasEstimate, gasPrice, ethToDaiRate)
+    gasCostDai: ownProps.normalGasLimit ? `${normalGasCostDai.full} to ${gasCostDai.full}` : gasCostDai,
   }
 };
 
