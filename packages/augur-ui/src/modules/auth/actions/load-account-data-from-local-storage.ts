@@ -1,6 +1,6 @@
 import { loadFavoritesMarkets } from 'modules/markets/actions/update-favorites';
 import { loadDrafts } from 'modules/create-market/actions/update-drafts';
-import { updateAlert } from 'modules/alerts/actions/alerts';
+import { ADD_ALERT } from 'modules/alerts/actions/alerts';
 import { loadPendingLiquidityOrders } from 'modules/orders/actions/liquidity-management';
 import { updateReadNotifications } from 'modules/notifications/actions/update-notifications';
 import { loadPendingOrdersTransactions } from 'modules/orders/actions/pending-orders-management';
@@ -13,7 +13,6 @@ import { ThunkDispatch, ThunkAction } from 'redux-thunk';
 import { Action } from 'redux';
 import { AppState } from 'appStore';
 import { getNetworkId } from 'modules/contracts/actions/contractCalls';
-import { loadMarketsInfoIfNotLoaded } from 'modules/markets/actions/load-markets-info';
 import { loadAnalytics } from 'modules/app/actions/analytics-management';
 import {
   saveAffiliateAddress,
@@ -81,22 +80,7 @@ export const loadAccountDataFromLocalStorage = (
         dispatch(loadDrafts(drafts));
       }
       if (alerts) {
-        // get all market ids and load markets then process alerts
-        const marketIds = Array.from(
-          new Set(
-            alerts.reduce((p, alert) => {
-              const marketId =
-                alert.marketId ||
-                ((alert.params && alert.params.market) || alert.params._market);
-              return marketId ? [...p, marketId] : p;
-            }, [])
-          )
-        ) as string[];
-        dispatch(
-          loadMarketsInfoIfNotLoaded(marketIds, () => {
-            alerts.map(n => dispatch(updateAlert(n.id, n, true)));
-          })
-        );
+        alerts.map(alert => dispatch({ type: ADD_ALERT, data: { alert }}));
       }
       if (affiliate) dispatch(saveAffiliateAddress(affiliate));
       if (pendingLiquidityOrders) {
