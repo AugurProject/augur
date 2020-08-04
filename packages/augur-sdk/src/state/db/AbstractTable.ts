@@ -28,11 +28,14 @@ export abstract class AbstractTable {
   }
 
   async clearDB(): Promise<void> {
+    console.log(`AbstractTable: clearDB request for ${this.dbName} started`);
     await this.table.clear();
+    console.log(`AbstractTable: clearDB request for ${this.dbName} finished`);
   }
 
   // We pull all docs in batches to avoid maximum IPC message errors
   async allDocs(): Promise<any[]> {
+    console.log(`AbstractTable: allDocs request for ${this.dbName} started`);
     const results: any[] = [];
     const documentCount = await this.getDocumentCount();
     for (let batchIdx = 0; batchIdx * ALL_DOCS_BATCH_SIZE <= documentCount; batchIdx++) {
@@ -42,16 +45,22 @@ export abstract class AbstractTable {
         .toArray();
       results.push(...batchResults);
     }
+    console.log(`AbstractTable: allDocs request for ${this.dbName} finished`);
     return results;
   }
 
   async delete() {
+    console.log(`AbstractTable: delete request for ${this.dbName} started`);
     await this.table.clear();
-    return Dexie.delete(this.dbName);
+    await Dexie.delete(this.dbName);
+    console.log(`AbstractTable: delete request for ${this.dbName} finished`);
   }
 
   async getDocumentCount(): Promise<number> {
-    return this.table.count();
+    console.log(`AbstractTable: getDocumentCount request for ${this.dbName} started`);
+    const count = await this.table.count();
+    console.log(`AbstractTable: getDocumentCount request for ${this.dbName} finished`);
+    return count;
   }
 
   protected async getDocument<Document>(id: string): Promise<Document | undefined> {
@@ -59,20 +68,25 @@ export abstract class AbstractTable {
   }
 
   protected async bulkAddDocuments(documents: BaseDocument[]): Promise<void> {
+    console.log(`AbstractTable: bulkAddDocuments request for ${this.dbName} started. ${documents.length} docs`);
     for (const document of documents) {
       delete document.constructor;
     }
     await this.table.bulkAdd(documents);
+    console.log(`AbstractTable: bulkAddDocuments request for ${this.dbName} finished. ${documents.length} docs`);
   }
 
   protected async bulkPutDocuments(documents: BaseDocument[], documentIds?: any[]): Promise<void> {
+    console.log(`AbstractTable: bulkPutDocuments request for ${this.dbName} started. ${documents.length} docs`);
     for (const document of documents) {
       delete document.constructor;
     }
     await this.table.bulkPut(documents);
+    console.log(`AbstractTable: bulkPutDocuments request for ${this.dbName} finished. ${documents.length} docs`);
   }
 
   protected async bulkUpsertDocuments(documents: BaseDocument[]): Promise<void> {
+    console.log(`AbstractTable: bulkUpsertDocuments request for ${this.dbName} started. ${documents.length} docs`);
     const documentIds = _.map(documents, this.getIDValue.bind(this));
     const existingDocuments = await this.table.bulkGet(documentIds);
     let docIndex = 0;
@@ -81,6 +95,7 @@ export abstract class AbstractTable {
       docIndex++;
     }
     await this.bulkPutDocuments(existingDocuments, documentIds);
+    console.log(`AbstractTable: bulkUpsertDocuments request for ${this.dbName} finished. ${documents.length} docs`);
   }
 
   protected async saveDocuments(documents: BaseDocument[]): Promise<void> {

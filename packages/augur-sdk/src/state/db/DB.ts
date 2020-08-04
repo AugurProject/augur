@@ -212,10 +212,13 @@ export class DB {
   async initializeDB(): Promise<DB> {
     const schemas = this.generateSchemas();
 
+    console.log(`DB: Dexie schema store`);
     this.dexieDB.version(1).stores(schemas);
 
+    console.log(`DB: Dexie open DB`);
     await this.dexieDB.open();
 
+    console.log(`DB: Creating DB Objects`);
     this.syncStatus = new SyncStatus(this.networkId, this.uploadBlockNumber, this);
     this.warpCheckpoints = new WarpSyncCheckpointsDB(this.networkId, this);
     this.getterCache = GetterCache.create(this, this.networkId, this.augur);
@@ -285,6 +288,7 @@ export class DB {
 
     // Always start syncing from 10 blocks behind the lowest
     // last-synced block (in case of restarting after a crash)
+    console.log(`DB: Checking rollback requirements`);
     const startSyncBlockNumber = await this.getSyncStartingBlock() - 1;
     if (startSyncBlockNumber > this.syncStatus.defaultStartSyncBlockNumber) {
       console.log(
@@ -295,6 +299,7 @@ export class DB {
       console.log()
     }
 
+    console.log(`DB: Checking stale dev universe`);
     const universeCreatedLogCount = await this.UniverseCreated.count();
     if (universeCreatedLogCount > 0) {
       const currentUniverseCreateLogCount = await this.UniverseCreated.where(
@@ -304,6 +309,7 @@ export class DB {
         .count();
 
       if (currentUniverseCreateLogCount === 0) {
+        console.log(`DB: Deleting Database due to stale universe`);
         // Need to reset the db if we have universe created logs from a previous deployment.
         await this.delete();
         await this.initializeDB();
@@ -427,6 +433,7 @@ export class DB {
       }
     }
 
+    console.log(`Syncing generic DBs`);
     await Promise.all(dbSyncPromises);
 
     // Derived DBs are synced after generic log DBs complete
