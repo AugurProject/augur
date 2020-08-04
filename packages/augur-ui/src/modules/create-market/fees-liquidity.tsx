@@ -22,8 +22,7 @@ import { formatOrderBook } from "modules/create-market/helpers/format-order-book
 import { DefaultOrderPropertiesMap } from "modules/market/components/market-view/market-view";
 import { getReportingFeePercentage } from "modules/contracts/actions/contractCalls";
 import { formatPercent } from 'utils/format-number';
-import { Dropdown } from 'modules/common/search-sort.styles.less';
-import { SquareDropdown, NameValuePair } from 'modules/common/selection';
+import { NameValuePair } from 'modules/common/selection';
 
 interface FeesLiquidityProps {
   newMarket: NewMarket;
@@ -79,8 +78,8 @@ export default class FeesLiquidity extends React.Component<
       value: '25'
     },
     {
-      label: '25 %',
-      value: '25'
+      label: '20 %',
+      value: '20'
     },
     {
       label: '10 %',
