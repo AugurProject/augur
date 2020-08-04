@@ -229,7 +229,7 @@ class Confirm extends Component<ConfirmProps, ConfirmState> {
       messages = {
         header: 'UNPROFITABLE TRADE',
         type: ERROR,
-        message: `Est. tx fee is higher than profit. TX fees will be dramatically reduced in v3.`,
+        message: `Est. tx fee is higher than profit. Placing an unmatched order will not have a tx fee.`,
       };
     }
 
