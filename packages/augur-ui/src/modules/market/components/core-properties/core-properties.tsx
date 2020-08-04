@@ -40,7 +40,7 @@ const CoreProperties: React.FC<CorePropertiesProps> = ({
   useEffect(() => {
     if (market) {
       loadAffiliateFee && loadAffiliateFee(market.id).then(marketInfo => {
-        setAffiliateFee(formatPercent(marketInfo?.affiliateFee ? createBigNumber(marketInfo.affiliateFee).times(100) : '0', { decimals: 0}));
+        setAffiliateFee(formatPercent(marketInfo?.affiliateFee ? createBigNumber(marketInfo.affiliateFee).times(100).decimalPlaces(0) : '0', { decimals: 0}));
       })
     }
   }, []);
@@ -143,27 +143,6 @@ const CoreProperties: React.FC<CorePropertiesProps> = ({
                   </>
                 }
               />
-              {reportingBarShowing && <PropertyLabel
-                label="Affiliate Fee"
-                value={affiliateFee.full}
-                hint={
-                  <>
-                    <h4>Affiliate Fee</h4>
-                    <p>
-                      The Affiliate fee is a percentage of the Market
-                      Creator fee (
-                      <b>
-                        {
-                          formatPercent(
-                            Number(market.marketCreatorFeeRate) * 100
-                          ).full
-                        }
-                      </b>
-                      ), which occurs when shares are closed
-                    </p>
-                  </>
-                }
-              />}
               {isScalar && reportingBarShowing &&
                 <>
                   <PropertyLabel
@@ -182,6 +161,27 @@ const CoreProperties: React.FC<CorePropertiesProps> = ({
               }
             </>
           )}
+          {loadAffiliateFee && <PropertyLabel
+            label="Affiliate Fee"
+            value={affiliateFee.full}
+            hint={
+              <>
+                <h4>Affiliate Fee</h4>
+                <p>
+                  The Affiliate fee is a percentage of the Market
+                  Creator fee (
+                  <b>
+                    {
+                      formatPercent(
+                        Number(market.marketCreatorFeeRate) * 100
+                      ).full
+                    }
+                  </b>
+                  ), which occurs when shares are closed
+                </p>
+              </>
+            }
+          />}
         </div>
         {!reportingBarShowing && (
           <div className={Styles.TimeSection}>
