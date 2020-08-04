@@ -59,12 +59,14 @@ interface MessageProps {
   checkbox?: CheckboxCTAProps;
   subheader?: string;
   subheader_2?: string;
+  footer?: string;
   showDiscordLink?: boolean;
   invalidMarketRules?: boolean;
   showAddFundsHelp?: boolean;
   walletType?: string;
   showAddFundsModal?: Function;
   showHelp?: Boolean;
+  image?: string;
 }
 
 export const Message = ({
@@ -84,6 +86,8 @@ export const Message = ({
   buttons = [],
   subheader,
   subheader_2,
+  footer,
+  image,
   showDiscordLink,
   invalidMarketRules,
   showAddFundsHelp = false,
@@ -112,6 +116,7 @@ export const Message = ({
       )}
       {subheader && <Subheader subheaderContent={subheader} />}
       {subheader_2 && <Subheader subheaderContent={subheader_2} />}
+      {image && <img src={`images/${image}`} />}
       {breakdown && <Breakdown rows={breakdown} />}
       {readableAddress && <ReadableAddress {...readableAddress} />}
       {depositInfo && <DepositInfo {...depositInfo} />}
@@ -134,6 +139,7 @@ export const Message = ({
           ]}
         />
       )}
+      {footer && <Subheader subheaderContent={footer} />}
     </main>
     {buttons.length > 0 && <ButtonsRow buttons={buttons} />}
   </div>
