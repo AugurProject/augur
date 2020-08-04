@@ -12,7 +12,7 @@
     	> div:last-of-type {
 			margin-top: @size-40;
             display: flex;
-            
+
             @media @breakpoint-mobile {
                 margin-top: @size-36;
             }
@@ -45,28 +45,26 @@
         padding: 0;
 
     	> div {
-            background: @color-table-header;
-            display: flex;
-            flex-direction: column;
-            flex: 1;
-            width: 100%;
-            align-items: center;
-            overflow-y: auto;
+        background: @color-table-header;
+        display: grid;
+        width: 100%;
+        align-items: center;
+        justify-items: center;
+        overflow-y: auto;
 
-            > span {
-                width: 100%;
-                margin-top: 0;
-            }
-
-            > button {
-                margin: @size-14 0;
-            }
-
-            > button:first-of-type {
-                margin-top: @size-16;
-                margin-bottom: @size-16;
-            }
+        > span {
+          width: 100%;
+          margin-top: 0;
         }
+
+        > button {
+          margin: @size-14 0;
+        }
+
+        > button:first-of-type {
+          margin: @size-16 0;
+        }
+      }
     }
 
     @media @breakpoint-mobile {
