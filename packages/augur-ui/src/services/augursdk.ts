@@ -15,7 +15,6 @@ import { getFingerprint } from 'utils/get-fingerprint';
 import { isEmpty } from 'utils/is-empty';
 import { isLocalHost } from 'utils/is-localhost';
 import { analytics } from './analytics';
-import { createBrowserMeshWorker } from './browser-mesh';
 
 window.BigNumber = BigNumber;
 
@@ -92,7 +91,7 @@ export class SDK {
     }
     // PG: END HACK
 
-    this.client = await createClient(this.config, this.connector, signer, ethersProvider, enableFlexSearch, createBrowserMeshWorker);
+    this.client = await createClient(this.config, this.connector, signer, ethersProvider, enableFlexSearch);
 
     if (!isEmpty(account)) {
       this.syncUserData(account, provider, signer, this.networkId).catch((error) => {
