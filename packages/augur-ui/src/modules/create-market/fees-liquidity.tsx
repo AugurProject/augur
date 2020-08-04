@@ -16,14 +16,13 @@ import QuadBox from "modules/portfolio/components/common/quad-box";
 import Visibility from "modules/create-market/containers/visibility";
 
 import Styles from "modules/create-market/fees-liquidity.styles.less";
-import { OutcomeFormatted, NewMarket, FormattedNumber, ValueLabelPair } from "modules/types";
+import { OutcomeFormatted, NewMarket, FormattedNumber } from "modules/types";
 import { MARKET_COPY_LIST } from "modules/create-market/constants";
 import { formatOrderBook } from "modules/create-market/helpers/format-order-book";
 import { DefaultOrderPropertiesMap } from "modules/market/components/market-view/market-view";
 import { getReportingFeePercentage } from "modules/contracts/actions/contractCalls";
 import { formatPercent } from 'utils/format-number';
-import { Dropdown } from 'modules/common/search-sort.styles.less';
-import { SquareDropdown, NameValuePair } from 'modules/common/selection';
+import { NameValuePair } from 'modules/common/selection';
 
 interface FeesLiquidityProps {
   newMarket: NewMarket;
