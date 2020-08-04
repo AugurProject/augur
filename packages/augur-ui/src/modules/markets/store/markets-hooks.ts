@@ -47,7 +47,7 @@ export function MarketsReducer(state, action) {
         };
         if (matched.items[marketId]) {
           matched.items[marketId].orders.map(order => {
-            getOrderShareProfitLoss(order, (potentialDaiProfit) => {
+            getOrderShareProfitLoss(order, updatedState.orderBooks, (potentialDaiProfit) => {
               updateMatched(marketId, order.orderId, {
                 ...order,
                 potentialDaiProfit

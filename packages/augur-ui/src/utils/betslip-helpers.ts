@@ -147,8 +147,8 @@ export const checkInsufficientFunds = (minPrice, maxPrice, limitPrice, numShares
   return longETHpotentialProfit.gt(createBigNumber(availableDai));
 }
 
-export const getOrderShareProfitLoss = (bet, cb) => {
-  const { marketInfos, orderBooks } = Markets.get();
+export const getOrderShareProfitLoss = (bet, orderBooks, cb) => {
+  const { marketInfos } = Markets.get();
   const outcomeOrderBook = orderBooks[bet.marketId]?.orderBook[bet.outcomeId];
   const market = marketInfos[bet.marketId];
   const { topBid } = selectMarketOutcomeBestBidAsk(

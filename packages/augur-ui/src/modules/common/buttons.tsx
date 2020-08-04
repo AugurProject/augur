@@ -49,7 +49,6 @@ import { Link } from 'react-router-dom';
 import { removePendingData } from 'modules/pending-queue/actions/pending-queue-management';
 import { createBigNumber } from 'utils/create-big-number';
 import { useMarketsStore } from 'modules/markets/store/markets';
-import { getCashoutProfit, getOrderShareProfitLoss } from 'utils/betslip-helpers';
 
 export interface DefaultButtonProps {
   id?: string;
