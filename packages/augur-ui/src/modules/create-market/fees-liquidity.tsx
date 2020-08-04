@@ -79,8 +79,8 @@ export default class FeesLiquidity extends React.Component<
       value: '25'
     },
     {
-      label: '25 %',
-      value: '25'
+      label: '20 %',
+      value: '20'
     },
     {
       label: '10 %',
