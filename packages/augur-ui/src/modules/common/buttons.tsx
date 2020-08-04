@@ -38,7 +38,7 @@ import {
 import { useAppStatusStore, AppStatus } from 'modules/app/store/app-status';
 import classNames from 'classnames';
 import { getNetworkId, placeTrade, claimMarketsProceeds } from 'modules/contracts/actions/contractCalls';
-import Styles from 'modules/common/buttons.styles.less';
+import Styles, { left } from 'modules/common/buttons.styles.less';
 import { MARKET_TEMPLATES } from 'modules/create-market/constants';
 import type { Getters } from '@augurproject/sdk';
 import { TXEventName } from '@augurproject/sdk-lite';
@@ -48,11 +48,8 @@ import { Link } from 'react-router-dom';
 
 import { removePendingData } from 'modules/pending-queue/actions/pending-queue-management';
 import { createBigNumber } from 'utils/create-big-number';
-import { formatDai } from 'utils/format-number';
 import { useMarketsStore } from 'modules/markets/store/markets';
-import { startClaimingMarketsProceeds } from 'modules/positions/actions/claim-markets-proceeds';
-import { runBetslipTrade } from 'utils/betslip-helpers';
-import { getOrderShareProfitLoss } from 'utils/betslip-helpers';
+import { getCashoutProfit, getOrderShareProfitLoss } from 'utils/betslip-helpers';
 
 export interface DefaultButtonProps {
   id?: string;
@@ -702,17 +699,13 @@ export const CashoutButton = ({
   const queueId = `${bet.marketId}_${bet.orderId}`;
   const pending = pendingQueue[CASHOUT] && pendingQueue[CASHOUT][queueId];
   const { marketInfos } = useMarketsStore();
+
   const market = marketInfos[bet.marketId];
+ 
   if (positions[bet.marketId]) {
     if (market?.reportingState !== REPORTING_STATE.AWAITING_FINALIZATION && market?.reportingState !== REPORTING_STATE.FINALIZED) {
-        // call calcOrderShareProfitLoss
-        // need simulateTrade
-        // need to do userShares
-        // reversal, sharesFilledAvgPrice, shareCost -- from simulateTrade
-        // get potentialDaiProfit
-        cashoutText = `Cashout ${formatDai(bet.unrealizedCost).full}`;
+        cashoutText = `Cashout ${bet.potentialDaiProfit ? bet.potentialDaiProfit.full : '$0.00'}`;
         cashoutDisabled = false;
-        getOrderShareProfitLoss(market, bet);
 
         cashout = () => {
           setModal({

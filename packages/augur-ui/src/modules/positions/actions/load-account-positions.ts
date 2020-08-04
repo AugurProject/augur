@@ -11,6 +11,7 @@ import { Betslip } from 'modules/trading/store/betslip';
 import { createBigNumber } from 'utils/create-big-number';
 import { convertPositionToBet } from 'utils/betslip-helpers';
 import { ZERO } from 'modules/common/constants';
+import { loadMarketOrderBook } from 'modules/orders/helpers/load-market-orderbook';
 
 export const checkUpdateUserPositions = (marketIds: string[]) => {
   const { accountPositions, loginAccount: { address } } = AppStatus.get();
@@ -121,7 +122,8 @@ export const userPositionProcessing = (
     Object.values(positionData.positionData[marketId].tradingPositions).map(position => {
       if (marketInfo?.sportsBook && !position.priorPosition && createBigNumber(position.netPosition).gte(ZERO)) {
         Betslip.actions.addMatched(false, marketId, marketInfo.description, convertPositionToBet(position, marketInfo));
-        }      
+        Markets.actions.updateOrderBook(marketId, null, loadMarketOrderBook(marketId));  
+      }      
       });
   });
 };

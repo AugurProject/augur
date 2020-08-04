@@ -11,7 +11,8 @@ import { totalTradingBalance } from 'modules/auth/helpers/login-account';
 import { runSimulateTrade } from 'modules/trades/actions/update-trade-cost-shares';
 import { calculateTotalOrderValue, calcOrderShareProfitLoss } from 'modules/trades/helpers/calc-order-profit-loss-percents';
 import { chatButton } from 'modules/common/buttons.styles.less';
-import { formatDai } from './format-number';
+import { formatDaiValue } from 'modules/trades/helpers/generate-trade';
+import { selectMarketOutcomeBestBidAsk } from 'modules/markets/selectors/select-market-outcome-best-bid-ask';
 
 export const convertPositionToBet = (position, marketInfo) => {
   const normalizedPrice = convertToNormalizedPrice({
@@ -102,30 +103,11 @@ export const runBetslipTrade = (marketId, order, cashOut, cb) => {
 
   if (!market) return null;
 
-  const totalCost = calculateTotalOrderValue(
-    order.quantitty,
-    order.price,
-    cashOut ? SELL : BUY,
-    createBigNumber(market.minPrice),
-    createBigNumber(market.maxPrice),
-    market.marketType
-  );
-
   let newTradeDetails: any = {
     side: cashOut ? SELL : BUY,
-    maxCost: totalCost,
     limitPrice: order.price,
-    totalFee: '0',
-    totalCost: '0',
+    numShares: order.shares,
   };
-
-  const marketMaxPrice = createBigNumber(market.maxPrice);
-  const marketMinPrice = createBigNumber(market.minPrice);
-  const scaledPrice = createBigNumber(order.price).plus(marketMinPrice.abs());
-
-  let newShares = createBigNumber(market.maxPrice).dividedBy(scaledPrice);
-
-  newTradeDetails.numShares = createBigNumber(newShares.toFixed(4));
 
   (async() => {
     await runSimulateTrade(
@@ -165,7 +147,22 @@ export const checkInsufficientFunds = (minPrice, maxPrice, limitPrice, numShares
   return longETHpotentialProfit.gt(createBigNumber(availableDai));
 }
 
-export const getOrderShareProfitLoss = (market, trade) => {
+export const getOrderShareProfitLoss = (bet, cb) => {
+  const { marketInfos, orderBooks } = Markets.get();
+  const outcomeOrderBook = orderBooks[bet.marketId]?.orderBook[bet.outcomeId];
+  const market = marketInfos[bet.marketId];
+  const { topBid } = selectMarketOutcomeBestBidAsk(
+    outcomeOrderBook,
+    market.marketType,
+    market.tickSize
+  );
+
+  const topBidPrice = topBid?.price?.value;
+  const trade = {...bet, price: topBidPrice, reversal: {
+    quantity: bet.shares,
+    price: bet.price
+  }};
+
   runBetslipTrade(market.id, trade, true, (simulateTradeData) => {
     const { settlementFee } = market;
     const sharesFilledAvgPrice =
@@ -194,9 +191,7 @@ export const getOrderShareProfitLoss = (market, trade) => {
           trade.reversal,
         )
       : null;
-
-      console.log(formatDai(orderShareProfitLoss.potentialDaiProfit));
   
-      return orderShareProfitLoss.potentialDaiProfit;
+      cb(formatDaiValue(orderShareProfitLoss?.potentialDaiProfit));
   });
 }

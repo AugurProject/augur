@@ -8,6 +8,7 @@ import immutableDelete from 'immutable-delete';
 import { Betslip } from 'modules/trading/store/betslip';
 import { createBigNumber } from 'utils/create-big-number';
 import { getWager, convertToNormalizedPrice, convertToWin } from 'utils/get-odds';
+import { getOrderShareProfitLoss } from 'utils/betslip-helpers';
 
 const {
   UPDATE_ORDER_BOOK,
@@ -34,8 +35,8 @@ function processMarketsData(newMarketsData, existingMarketsData) {
 
 export function MarketsReducer(state, action) {
   const updatedState = { ...state };
-  const { betslip } = Betslip.get();
-  const { modifyBet } = Betslip.actions;
+  const { betslip, matched } = Betslip.get();
+  const { modifyBet, updateMatched } = Betslip.actions;
   switch (action.type) {
     case UPDATE_ORDER_BOOK: {
       const { marketId, orderBook } = action;
@@ -44,6 +45,16 @@ export function MarketsReducer(state, action) {
           ...updatedState.orderBooks,
           [marketId]: orderBook || action.payload?.orderBook,
         };
+        if (matched.items[marketId]) {
+          matched.items[marketId].orders.map(order => {
+            getOrderShareProfitLoss(order, (potentialDaiProfit) => {
+              updateMatched(marketId, order.orderId, {
+                ...order,
+                potentialDaiProfit
+              })
+            })
+          })
+        }
       }
       break;
     }
