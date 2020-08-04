@@ -10,6 +10,8 @@ export default async function getInjectedWeb3Accounts(): Promise<boolean | Array
     const accounts = await window.ethereum.enable();
     return accounts;
   } catch (error) {
+    // TODO console.error because enable() itself could maybe fail for a diff reason?
+
     // Handle error. If the user rejects the request for access, then
     // `ethereum.enable` will throw an error.
     return false;

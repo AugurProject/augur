@@ -219,7 +219,7 @@ export async function createServer(config: SDKConfiguration, client?: Augur): Pr
 export async function startServerFromClient(config: SDKConfiguration, client?: Augur ): Promise<API> {
   const { api, sync } = await createServer(config, client);
 
-  // TODO should this await?
+  // This is NOT awaited because it would block the UI.
   sync();
   /*
   controller.run().catch((err) => {

@@ -144,6 +144,7 @@ function getTimezoneAbbr(date: Date, timezone: string): string {
       timeZoneName: 'short',
     });
   } catch(e){
+    // TODO console.error
     console.log("could not find timezone", timezone);
   }
   return timezoneLocal.split(' ')[2];

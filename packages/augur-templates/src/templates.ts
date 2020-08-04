@@ -389,6 +389,7 @@ export function generateResolutionRulesHash(rules: ResolutionRules) {
     const details = rules[REQUIRED].map((r) => r.text).join('\n');
     hash = hashResolutionRules(details);
   } catch (e) {
+    // TODO switch to console.error?
     console.log(rules, rules[REQUIRED]);
   }
   return hash;

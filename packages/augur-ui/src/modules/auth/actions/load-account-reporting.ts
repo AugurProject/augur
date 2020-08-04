@@ -48,6 +48,7 @@ export const loadAccountCurrentDisputeHistory = async (
       account: userAccount,
     });
   } catch(e) {
+    // TODO: console.error?
     return callback(e);
   }
   callback(null, disputeValues);

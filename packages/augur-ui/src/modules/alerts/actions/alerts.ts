@@ -77,6 +77,7 @@ export function updateExistingAlert(id, alert) {
     try {
       return dispatch(setAlertText(alert, callback));
     } catch (error) {
+      // TODO also log error?
       return callback(error, null);
     }
   };

@@ -88,7 +88,7 @@ export class SDK {
         }
       });
     } catch(e) {
-
+      // TODO at least log this error, right?
     }
     // PG: END HACK
 
@@ -96,6 +96,7 @@ export class SDK {
 
     if (!isEmpty(account)) {
       this.syncUserData(account, provider, signer, this.networkId).catch((error) => {
+        // TODO console.error
         console.log('Wallet create error during create: ', error);
       });
     }
@@ -155,6 +156,7 @@ export class SDK {
       console.log('Subscribing to Augur events');
       dispatch(listenToUpdates(this.get()));
     } catch (e) {
+      // TODO console.error
       this.isSubscribed = false;
     }
   }

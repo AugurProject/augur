@@ -2118,6 +2118,11 @@ export function addScripts(flash: FlashSession) {
     ignoreNetwork: true,
     options: [
       {
+        name: 'zeroXRPC',
+        abbr: 'z',
+        description: 'WS RPC endpoint for 0x server; 0x mesh does not work in nodejs',
+      },
+      {
         name: 'warpSync',
         abbr: 'w',
         description: 'Generate a warp sync hash when the market end time elapses.',
@@ -2149,6 +2154,7 @@ export function addScripts(flash: FlashSession) {
       }
     ],
     async call(this: FlashSession, args: FlashArguments) {
+      const zeroXRPC = args.zeroXRPC as string;
       const autoReport = Boolean(args.autoReport);
       const showHashAndDie = Boolean(args.showHashAndDie);
       const useWarpSync = Boolean(args.warpSync);
@@ -2170,6 +2176,12 @@ export function addScripts(flash: FlashSession) {
           autoReport,
         }
       });
+
+      if (zeroXRPC) {
+        this.pushConfig({
+          zeroX: { rpc: { enabled: true, ws: zeroXRPC }}
+        })
+      }
 
       // Create a wallet, print out private key and display public key.
       let client;

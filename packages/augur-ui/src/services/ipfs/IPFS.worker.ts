@@ -44,7 +44,7 @@ ctx.addEventListener(
               },
             },
           };
-          
+
           ipfs = await IPFS.create(ipfsOptions);
           ctx.postMessage({ method: 'IPFS:started' });
           break;
@@ -86,6 +86,7 @@ function trackNumberOfPeers() {
 
       console.log(`The node now has ${peers.length} peers.`);
     } catch (err) {
+      // TODO console.error
       console.log('An error occurred trying to check our peers:', err);
     }
   }, 30000);

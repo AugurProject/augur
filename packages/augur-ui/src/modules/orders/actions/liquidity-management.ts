@@ -313,6 +313,7 @@ const createZeroXLiquidityOrders = async (
           );
         })
         .catch(err => {
+          // TODO console.error? how does this even reach this code path?
           dispatch(
             setLiquidityOrderStatus(
               {

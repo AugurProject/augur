@@ -74,6 +74,8 @@ export const loginWithInjectedWeb3 = () => async (
             await dispatch(loginWithInjectedWeb3());
           };
 
+
+
           console.log('refreshing account to', accounts[0]);
           await dispatch(logout());
 
@@ -90,6 +92,7 @@ export const loginWithInjectedWeb3 = () => async (
     const address = request.result[0];
     success(address, false);
   } catch (err) {
+    // TODO console.error of err. esp. since windowRef.ethereum sometimes doesnt exist
     return windowRef.ethereum
       .enable()
       .then((resolve: string[]) => success(resolve[0], false), failure);

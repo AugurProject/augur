@@ -17,6 +17,7 @@ import logError from 'utils/log-error';
 export const approveAndConvertV1ToV2 = (useSigningWallet: boolean = false, callback: NodeStyleCallback = logError) => {
   return async (dispatch: ThunkDispatch<void, any, Action>) => {
     dispatch(addUpdatePendingTransaction(MIGRATE_FROM_LEG_REP_TOKEN, TXEventName.Pending));
+    // TODO convertV1ToV2Approve doesn't take any args. same with convertV1ToV2 and its estimate
     await convertV1ToV2Approve(useSigningWallet).catch((err: Error) => {
       dispatch(addUpdatePendingTransaction(MIGRATE_FROM_LEG_REP_TOKEN, TXEventName.Failure));
     });

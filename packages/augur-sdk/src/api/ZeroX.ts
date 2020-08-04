@@ -176,6 +176,7 @@ export class ZeroX {
         this.client.events.emit(SubscriptionEventName.ZeroXRPCOrderEvent, orderEvents);
       }
     }).catch((err) => {
+      // TODO print that an error occurred here, in case the event isn't listened to anywhere?
       if (this.client) this.client.events.emit(SubscriptionEventName.ZeroXStatusError, {});
       throw Error(`Failure when subscribing to OrdersAsync in ZeroX set rpc: ${err}`);
     });

@@ -8,6 +8,7 @@ export default function(callback: NodeStyleCallback = logError) {
   return async (dispatch: ThunkDispatch<void, any, Action>) => {
     // TODO: this will change when pending tx exists
     await getDai().catch((err: Error) => {
+      // TODO console.error instead of log?
       console.log("error could not get dai", err);
       logError(new Error("get-DAI"));
     });

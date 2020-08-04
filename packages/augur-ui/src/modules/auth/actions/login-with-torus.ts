@@ -63,6 +63,7 @@ export const loginWithTorus = () => async (
       }
 
     } catch (error) {
+      // TODO console.error
       if (document.querySelector('#torusWidget')) {
         document.querySelector('#torusWidget').remove();
       }
@@ -83,6 +84,7 @@ export const loginWithTorus = () => async (
       accountObject.meta.profileImage = userInfo.profileImage;
       dispatch(updateSdk(accountObject, undefined));
     } catch (error) {
+      // TODO console.warn
       // User denied request
       dispatch(updateSdk(accountObject, undefined));
     }

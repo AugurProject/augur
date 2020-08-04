@@ -103,6 +103,7 @@ async function loadAccountIfStored(dispatch: ThunkDispatch<void, any, Action>) {
       }
     }
   } catch (error) {
+    // TODO log error?
     errorModal();
   }
 }
@@ -338,15 +339,15 @@ export function connectAugur(
       pollForNetwork(dispatch, getState);
     }
 
-    // wire up start up events for sdk
-    dispatch(listenForStartUpEvents(Augur));
-
     try {
       await augurSdk.connect();
     } catch(e) {
       console.error(e);
-      return callback(`Fatal Error while starting augur: `, e);
+      return callback('Fatal Error while starting augur: ', e);
     }
+
+    // wire up start up events for sdk
+    dispatch(listenForStartUpEvents(Augur));
 
     // IPFS pin the UI hash.
     augurSdk.client.pinHashByGatewayUrl(windowApp.location.href);

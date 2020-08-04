@@ -129,6 +129,7 @@ const mergeProps = (sP: any, dP: any, oP: any) => {
             action = () => {
               dP.addPendingData(market.id, DISAVOWCROWDSOURCERS, TXEventName.Pending, '0', undefined);
               dP.disavowMarket(market.id).catch(err => {
+                // TODO console.error
                 dP.addPendingData(market.id, DISAVOWCROWDSOURCERS, TXEventName.Failure, 0, undefined)
               });
             };
