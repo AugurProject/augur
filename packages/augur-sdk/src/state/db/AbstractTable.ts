@@ -120,7 +120,12 @@ export abstract class AbstractTable {
     console.log(`AbstractTable: bulkAddDocuments request for ${this.dbName} started. ${documents.length} docs`);
     for (const document of documents) {
       delete document.constructor;
-      await this.table.add(document);
+      try {
+        await this.table.add(document);
+      } catch(e) {
+        console.error(`AbstractTable: bulkAddDocuments request for ${this.dbName} failed.`, e);
+        throw e;
+      }
     }
     console.log(`AbstractTable: bulkAddDocuments request for ${this.dbName} finished. ${documents.length} docs`);
   }
@@ -129,7 +134,12 @@ export abstract class AbstractTable {
     console.log(`AbstractTable: bulkPutDocuments request for ${this.dbName} started. ${documents.length} docs`);
     for (const document of documents) {
       delete document.constructor;
-      await this.table.put(document);
+      try {
+        await this.table.put(document);
+      } catch(e) {
+        console.error(`AbstractTable: bulkPutDocuments request for ${this.dbName} failed.`, e);
+        throw e;
+      }
     }
 
     console.log(`AbstractTable: bulkPutDocuments request for ${this.dbName} finished. ${documents.length} docs`);
