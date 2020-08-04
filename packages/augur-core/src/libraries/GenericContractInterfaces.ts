@@ -13220,13 +13220,6 @@ export class AccountLoader<TBigNumber> extends Contract<TBigNumber> {
 		super(dependencies, address)
 	}
 
-	public augurWalletFactory_ = async (options?: { sender?: string }): Promise<string> => {
-		options = options || {}
-		const abi: AbiFunction = {"constant":true,"inputs":[],"name":"augurWalletFactory","outputs":[{"internalType":"contract IAugurWalletFactory","name":"","type":"address"}],"payable":false,"stateMutability":"view","type":"function"}
-		const result = await this.localCall(abi, [], options.sender)
-		return <string>result[0]
-	}
-
 	public cash_ = async (options?: { sender?: string }): Promise<string> => {
 		options = options || {}
 		const abi: AbiFunction = {"constant":true,"inputs":[],"name":"cash","outputs":[{"internalType":"contract IERC20","name":"","type":"address"}],"payable":false,"stateMutability":"view","type":"function"}
@@ -13234,11 +13227,11 @@ export class AccountLoader<TBigNumber> extends Contract<TBigNumber> {
 		return <string>result[0]
 	}
 
-	public ethExchange_ = async (options?: { sender?: string }): Promise<string> => {
+	public getExchangeRate_ = async (firstToken: string, secondToken: string, options?: { sender?: string }): Promise<TBigNumber> => {
 		options = options || {}
-		const abi: AbiFunction = {"constant":true,"inputs":[],"name":"ethExchange","outputs":[{"internalType":"contract IUniswapV2Pair","name":"","type":"address"}],"payable":false,"stateMutability":"view","type":"function"}
-		const result = await this.localCall(abi, [], options.sender)
-		return <string>result[0]
+		const abi: AbiFunction = {"constant":true,"inputs":[{"internalType":"address","name":"_firstToken","type":"address"},{"internalType":"address","name":"_secondToken","type":"address"}],"name":"getExchangeRate","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"}
+		const result = await this.localCall(abi, [firstToken, secondToken], options.sender)
+		return <TBigNumber>result[0]
 	}
 
 	public getInitialized_ = async (options?: { sender?: string }): Promise<boolean> => {
@@ -13273,18 +13266,11 @@ export class AccountLoader<TBigNumber> extends Contract<TBigNumber> {
 		return <string>result[0]
 	}
 
-	public loadAccountData_ = async (account: string, reputationToken: string, options?: { sender?: string }): Promise<{ signerETH: TBigNumber, signerDAI: TBigNumber, signerREP: TBigNumber, signerLegacyREP: TBigNumber, walletETH: TBigNumber, walletDAI: TBigNumber, walletREP: TBigNumber, walletLegacyREP: TBigNumber, attoDAIperREP: TBigNumber, attoDAIperETH: TBigNumber }> => {
+	public loadAccountData_ = async (account: string, reputationToken: string, USDC: string, USDT: string, options?: { sender?: string }): Promise<{ signerETH: TBigNumber, signerDAI: TBigNumber, signerREP: TBigNumber, signerLegacyREP: TBigNumber, attoDAIperREP: TBigNumber, attoDAIperETH: TBigNumber, attoDAIperUSDC: TBigNumber, attoDAIperUSDT: TBigNumber, attoETHperREP: TBigNumber, attoETHperUSDC: TBigNumber, attoETHperUSDT: TBigNumber, attoREPperUSDC: TBigNumber, attoREPperUSDT: TBigNumber, attoUSDCperUSDT: TBigNumber }> => {
 		options = options || {}
-		const abi: AbiFunction = {"constant":true,"inputs":[{"internalType":"address","name":"_account","type":"address"},{"internalType":"contract IERC20","name":"_reputationToken","type":"address"}],"name":"loadAccountData","outputs":[{"components":[{"internalType":"uint256","name":"signerETH","type":"uint256"},{"internalType":"uint256","name":"signerDAI","type":"uint256"},{"internalType":"uint256","name":"signerREP","type":"uint256"},{"internalType":"uint256","name":"signerLegacyREP","type":"uint256"},{"internalType":"uint256","name":"walletETH","type":"uint256"},{"internalType":"uint256","name":"walletDAI","type":"uint256"},{"internalType":"uint256","name":"walletREP","type":"uint256"},{"internalType":"uint256","name":"walletLegacyREP","type":"uint256"},{"internalType":"uint256","name":"attoDAIperREP","type":"uint256"},{"internalType":"uint256","name":"attoDAIperETH","type":"uint256"}],"internalType":"struct AccountLoader.AccountData","name":"_data","type":"tuple"}],"payable":false,"stateMutability":"view","type":"function"}
-		const result = await this.localCall(abi, [account, reputationToken], options.sender)
-		return <{ signerETH: TBigNumber, signerDAI: TBigNumber, signerREP: TBigNumber, signerLegacyREP: TBigNumber, walletETH: TBigNumber, walletDAI: TBigNumber, walletREP: TBigNumber, walletLegacyREP: TBigNumber, attoDAIperREP: TBigNumber, attoDAIperETH: TBigNumber }>result[0]
-	}
-
-	public token0IsCashInETHExchange_ = async (options?: { sender?: string }): Promise<boolean> => {
-		options = options || {}
-		const abi: AbiFunction = {"constant":true,"inputs":[],"name":"token0IsCashInETHExchange","outputs":[{"internalType":"bool","name":"","type":"bool"}],"payable":false,"stateMutability":"view","type":"function"}
-		const result = await this.localCall(abi, [], options.sender)
-		return <boolean>result[0]
+		const abi: AbiFunction = {"constant":true,"inputs":[{"internalType":"address","name":"_account","type":"address"},{"internalType":"contract IERC20","name":"_reputationToken","type":"address"},{"internalType":"contract IERC20","name":"_USDC","type":"address"},{"internalType":"contract IERC20","name":"_USDT","type":"address"}],"name":"loadAccountData","outputs":[{"components":[{"internalType":"uint256","name":"signerETH","type":"uint256"},{"internalType":"uint256","name":"signerDAI","type":"uint256"},{"internalType":"uint256","name":"signerREP","type":"uint256"},{"internalType":"uint256","name":"signerLegacyREP","type":"uint256"},{"internalType":"uint256","name":"attoDAIperREP","type":"uint256"},{"internalType":"uint256","name":"attoDAIperETH","type":"uint256"},{"internalType":"uint256","name":"attoDAIperUSDC","type":"uint256"},{"internalType":"uint256","name":"attoDAIperUSDT","type":"uint256"},{"internalType":"uint256","name":"attoETHperREP","type":"uint256"},{"internalType":"uint256","name":"attoETHperUSDC","type":"uint256"},{"internalType":"uint256","name":"attoETHperUSDT","type":"uint256"},{"internalType":"uint256","name":"attoREPperUSDC","type":"uint256"},{"internalType":"uint256","name":"attoREPperUSDT","type":"uint256"},{"internalType":"uint256","name":"attoUSDCperUSDT","type":"uint256"}],"internalType":"struct AccountLoader.AccountData","name":"_data","type":"tuple"}],"payable":false,"stateMutability":"view","type":"function"}
+		const result = await this.localCall(abi, [account, reputationToken, USDC, USDT], options.sender)
+		return <{ signerETH: TBigNumber, signerDAI: TBigNumber, signerREP: TBigNumber, signerLegacyREP: TBigNumber, attoDAIperREP: TBigNumber, attoDAIperETH: TBigNumber, attoDAIperUSDC: TBigNumber, attoDAIperUSDT: TBigNumber, attoETHperREP: TBigNumber, attoETHperUSDC: TBigNumber, attoETHperUSDT: TBigNumber, attoREPperUSDC: TBigNumber, attoREPperUSDT: TBigNumber, attoUSDCperUSDT: TBigNumber }>result[0]
 	}
 
 	public uniswapFactory_ = async (options?: { sender?: string }): Promise<string> => {

@@ -12,40 +12,27 @@ def test_market_hot_loading_basic(kitchenSinkFixture, augur, cash, reputationTok
     walletAddress = augurWalletRegistry.getCreate2WalletAddress(account)
 
     # Lets load the account right away without doing anything to check defaults
-    accountData = getAccountData(accountLoader, account, reputationToken.address)
+    accountData = getAccountData(accountLoader, account, reputationToken.address, nullAddress, nullAddress)
 
     assert accountData.signerETH == 999999999999999999645100
     assert accountData.signerDAI == 0
     assert accountData.signerREP == 0
     assert accountData.signerLegacyREP == 0
-    assert accountData.walletETH == 0
-    assert accountData.walletDAI == 0
-    assert accountData.walletREP == 0
-    assert accountData.walletLegacyREP == 0
     assert accountData.attoDAIperREP == 0
     assert accountData.attoDAIperETH == 0
 
     # Now lets make some data happen
 
     cash.faucet(10 * 10**18, sender=account)
-    reputationToken.faucet(10 * 10**18, sender=account)
-    legacyReputationToken.faucet(10 * 10**18, sender=account)
+    reputationToken.faucet(9 * 10**18, sender=account)
+    legacyReputationToken.faucet(8 * 10**18, sender=account)
 
-    cash.transfer(walletAddress, 1 * 10**18, sender=account)
-    reputationToken.transfer(walletAddress, 2 * 10**18, sender=account)
-    legacyReputationToken.transfer(walletAddress, 3 * 10**18, sender=account)
-    kitchenSinkFixture.sendEth(account, walletAddress, 100)
-
-    accountData = getAccountData(accountLoader, account, reputationToken.address)
+    accountData = getAccountData(accountLoader, account, reputationToken.address, nullAddress, nullAddress)
 
     assert accountData.signerETH < 999999999999999999645000
-    assert accountData.signerDAI == 9 * 10**18
-    assert accountData.signerREP == 8 * 10**18
-    assert accountData.signerLegacyREP == 7 * 10**18
-    assert accountData.walletETH == 100
-    assert accountData.walletDAI == 1 * 10**18
-    assert accountData.walletREP == 2 * 10**18
-    assert accountData.walletLegacyREP == 3 * 10**18
+    assert accountData.signerDAI == 10 * 10**18
+    assert accountData.signerREP == 9 * 10**18
+    assert accountData.signerLegacyREP == 8 * 10**18
 
     # Now lets create some Uniswap exchanges, provide initial liquidity and confirm we get current prices 
     repOracle = kitchenSinkFixture.contracts["RepOracle"]
@@ -61,7 +48,7 @@ def test_market_hot_loading_basic(kitchenSinkFixture, augur, cash, reputationTok
 
     repExchange.mint(account)
 
-    accountData = getAccountData(accountLoader, account, reputationToken.address)
+    accountData = getAccountData(accountLoader, account, reputationToken.address, nullAddress, nullAddress)
     assert accountData.attoDAIperREP == 20 * 10**18
 
     ZeroXTrade = kitchenSinkFixture.contracts['ZeroXTrade']
@@ -76,7 +63,7 @@ def test_market_hot_loading_basic(kitchenSinkFixture, augur, cash, reputationTok
     weth.transfer(ethExchange.address, ethAmount)
     ethExchange.mint(account)
 
-    accountData = getAccountData(accountLoader, account, reputationToken.address)
+    accountData = getAccountData(accountLoader, account, reputationToken.address, nullAddress, nullAddress)
     assert accountData.attoDAIperETH == 100 * 10**18
 
 
@@ -87,12 +74,8 @@ class AccountData:
         self.signerDAI = accountData[1]
         self.signerREP = accountData[2]
         self.signerLegacyREP = accountData[3]
-        self.walletETH = accountData[4]
-        self.walletDAI = accountData[5]
-        self.walletREP = accountData[6]
-        self.walletLegacyREP = accountData[7]
-        self.attoDAIperREP = accountData[8]
-        self.attoDAIperETH = accountData[9]
+        self.attoDAIperREP = accountData[4]
+        self.attoDAIperETH = accountData[5]
 
-def getAccountData(accountLoader, account, reputationToken):
-    return AccountData(accountLoader.loadAccountData(account, reputationToken))
+def getAccountData(accountLoader, account, reputationToken, USDC, USDT):
+    return AccountData(accountLoader.loadAccountData(account, reputationToken, USDC, USDT))

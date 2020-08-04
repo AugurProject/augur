@@ -2,21 +2,6 @@ export const AccountLoaderAbi = [
     {
         "constant": true,
         "inputs": [],
-        "name": "augurWalletFactory",
-        "outputs": [
-            {
-                "internalType": "contract IAugurWalletFactory",
-                "name": "",
-                "type": "address"
-            }
-        ],
-        "payable": false,
-        "stateMutability": "view",
-        "type": "function"
-    },
-    {
-        "constant": true,
-        "inputs": [],
         "name": "cash",
         "outputs": [
             {
@@ -31,13 +16,24 @@ export const AccountLoaderAbi = [
     },
     {
         "constant": true,
-        "inputs": [],
-        "name": "ethExchange",
+        "inputs": [
+            {
+                "internalType": "address",
+                "name": "_firstToken",
+                "type": "address"
+            },
+            {
+                "internalType": "address",
+                "name": "_secondToken",
+                "type": "address"
+            }
+        ],
+        "name": "getExchangeRate",
         "outputs": [
             {
-                "internalType": "contract IUniswapV2Pair",
+                "internalType": "uint256",
                 "name": "",
-                "type": "address"
+                "type": "uint256"
             }
         ],
         "payable": false,
@@ -106,6 +102,16 @@ export const AccountLoaderAbi = [
                 "internalType": "contract IERC20",
                 "name": "_reputationToken",
                 "type": "address"
+            },
+            {
+                "internalType": "contract IERC20",
+                "name": "_USDC",
+                "type": "address"
+            },
+            {
+                "internalType": "contract IERC20",
+                "name": "_USDT",
+                "type": "address"
             }
         ],
         "name": "loadAccountData",
@@ -134,26 +140,6 @@ export const AccountLoaderAbi = [
                     },
                     {
                         "internalType": "uint256",
-                        "name": "walletETH",
-                        "type": "uint256"
-                    },
-                    {
-                        "internalType": "uint256",
-                        "name": "walletDAI",
-                        "type": "uint256"
-                    },
-                    {
-                        "internalType": "uint256",
-                        "name": "walletREP",
-                        "type": "uint256"
-                    },
-                    {
-                        "internalType": "uint256",
-                        "name": "walletLegacyREP",
-                        "type": "uint256"
-                    },
-                    {
-                        "internalType": "uint256",
                         "name": "attoDAIperREP",
                         "type": "uint256"
                     },
@@ -161,26 +147,51 @@ export const AccountLoaderAbi = [
                         "internalType": "uint256",
                         "name": "attoDAIperETH",
                         "type": "uint256"
+                    },
+                    {
+                        "internalType": "uint256",
+                        "name": "attoDAIperUSDC",
+                        "type": "uint256"
+                    },
+                    {
+                        "internalType": "uint256",
+                        "name": "attoDAIperUSDT",
+                        "type": "uint256"
+                    },
+                    {
+                        "internalType": "uint256",
+                        "name": "attoETHperREP",
+                        "type": "uint256"
+                    },
+                    {
+                        "internalType": "uint256",
+                        "name": "attoETHperUSDC",
+                        "type": "uint256"
+                    },
+                    {
+                        "internalType": "uint256",
+                        "name": "attoETHperUSDT",
+                        "type": "uint256"
+                    },
+                    {
+                        "internalType": "uint256",
+                        "name": "attoREPperUSDC",
+                        "type": "uint256"
+                    },
+                    {
+                        "internalType": "uint256",
+                        "name": "attoREPperUSDT",
+                        "type": "uint256"
+                    },
+                    {
+                        "internalType": "uint256",
+                        "name": "attoUSDCperUSDT",
+                        "type": "uint256"
                     }
                 ],
                 "internalType": "struct AccountLoader.AccountData",
                 "name": "_data",
                 "type": "tuple"
-            }
-        ],
-        "payable": false,
-        "stateMutability": "view",
-        "type": "function"
-    },
-    {
-        "constant": true,
-        "inputs": [],
-        "name": "token0IsCashInETHExchange",
-        "outputs": [
-            {
-                "internalType": "bool",
-                "name": "",
-                "type": "bool"
             }
         ],
         "payable": false,

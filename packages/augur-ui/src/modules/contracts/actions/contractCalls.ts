@@ -359,6 +359,34 @@ export async function checkSetApprovalAmount(account, contract): Promise<void> {
   }
 }
 
+export async function uniswapRepForETH(rep: BigNumber, eth: BigNumber, tradeSpread: number): Promise<void> {
+  const { contracts, uniswap } = augurSdk.get();
+  const exactRep = rep.multipliedBy(10**18);
+  const minETH = eth.minus(eth.multipliedBy(createBigNumber(tradeSpread).minus(1))).multipliedBy(10**18);
+
+  try {
+    await uniswap.swapTokensForExactETH(contracts.reputationToken.address, exactRep, createBigNumber(minETH.toNumber()));
+  }
+  catch(error) {
+    console.error('uniswapRepForETH', error);
+    throw error;
+  }
+}
+
+export async function uniswapDaiForETH(dai: BigNumber, eth: BigNumber, tradeSpread: number): Promise<void> {
+  const { contracts, uniswap } = augurSdk.get();
+  const exactDai = dai.multipliedBy(10**18);
+  const minETH = eth.minus(eth.multipliedBy(createBigNumber(tradeSpread).minus(1))).multipliedBy(10**18);
+
+  try {
+    await uniswap.swapTokensForExactETH(contracts.cash.address, exactDai, createBigNumber(minETH.toNumber()));
+  }
+  catch(error) {
+    console.error('uniswapDaiForETH', error);
+    throw error;
+  }
+}
+
 export async function uniswapDaiForRep(dai: BigNumber, rep: BigNumber, tradeSpread: number): Promise<void> {
   const { contracts, uniswap } = augurSdk.get();
 
@@ -1163,6 +1191,8 @@ export async function loadAccountData_exchangeRates(account: string) {
   const { contracts } = augurSdk.get();
   const sdk = await augurSdkLite.get();
   const repToken = contracts.getReputationToken();
-  const values: AccountData = await sdk.loadAccountData(account, repToken.address);
+  const usdc = contracts.usdc.address;
+  const usdt = contracts.usdt.address;
+  const values: AccountData = await sdk.loadAccountData(account, repToken.address, usdc, usdt);
   return values;
 }

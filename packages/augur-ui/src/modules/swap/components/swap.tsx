@@ -6,6 +6,7 @@ import {
   REP,
   TRANSACTIONS,
   SWAPEXACTTOKENSFORTOKENS,
+  SWAPTOKENSFOREXACTETH,
   SWAPETHFOREXACTTOKENS,
   ZERO,
 } from 'modules/common/constants';
@@ -26,6 +27,8 @@ import {
   uniswapEthForDai,
   uniswapEthForRep,
   checkSetApprovalAmount,
+  uniswapDaiForETH,
+  uniswapRepForETH,
 } from 'modules/contracts/actions/contractCalls';
 import { ProcessingButton, ExternalLinkButton } from 'modules/common/buttons';
 import type { SDKConfiguration } from '@augurproject/artifacts';
@@ -146,12 +149,20 @@ export const Swap = ({
 
     try {
       if (fromTokenType === DAI) {
-        await checkSetApprovalAmount(address, contracts.cash);
-        await uniswapDaiForRep(input, output, exchangeRateBufferMultiplier);
+        if (toToken === ETH) {
+          await uniswapDaiForETH(input, output, exchangeRateBufferMultiplier);
+        } else if (toToken === REP) {
+          await checkSetApprovalAmount(address, contracts.cash);
+          await uniswapDaiForRep(input, output, exchangeRateBufferMultiplier);
+        }
         clearForm();
       } else if (fromTokenType === REP) {
-        await checkSetApprovalAmount(address, contracts.reputationToken);
-        await uniswapRepForDai(input, output, exchangeRateBufferMultiplier);
+        if (toToken === ETH) {
+            await uniswapRepForETH(input, output, exchangeRateBufferMultiplier);
+        } else if (toToken === DAI) {
+          await checkSetApprovalAmount(address, contracts.reputationToken);
+          await uniswapRepForDai(input, output, exchangeRateBufferMultiplier);
+        }
         clearForm();
       } else if (fromTokenType === ETH) {
         await checkSetApprovalAmount(address, contracts.weth);
@@ -217,6 +228,17 @@ export const Swap = ({
           createBigNumber(inputAmount).dividedBy(ETH_RATE)
         );
       }
+    } else if (toToken === ETH) {
+      if (fromTokenType === DAI) {
+        outputAmount = formatEther(
+          createBigNumber(ETH_RATE).multipliedBy(inputAmount)
+        );
+      }
+      else if (fromTokenType === REP) {
+        outputAmount = formatEther(
+          createBigNumber(REP_RATE).multipliedBy(inputAmount)
+        );
+      }
     }
   }
 
@@ -259,7 +281,7 @@ export const Swap = ({
           text={'Convert'}
           action={() => makeTrade()}
           queueName={TRANSACTIONS}
-          queueId={fromTokenType === ETH ? SWAPETHFOREXACTTOKENS : SWAPEXACTTOKENSFORTOKENS}
+          queueId={fromTokenType === ETH ? SWAPETHFOREXACTTOKENS : toToken === ETH ? SWAPTOKENSFOREXACTETH : SWAPEXACTTOKENSFORTOKENS}
           disabled={outputAmount.value <= 0}
         />
         {errorMessage && <div className={Styles.SwapError}>{errorMessage}</div>}

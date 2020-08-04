@@ -119,10 +119,6 @@ export const AddFunds = ({
     addFundsOptions = addFundsOptions.slice(1, addFundsOptions.length);
   }
 
-  if (tokenToAdd === ETH) {
-    addFundsOptions = addFundsOptions.filter(option => option.value !== ADD_FUNDS_SWAP);
-  }
-
   const SWAP_ID = 0;
   const pillOptions = [{ label: 'Convert', id: SWAP_ID }];
 
