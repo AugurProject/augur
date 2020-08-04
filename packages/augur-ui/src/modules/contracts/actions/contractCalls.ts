@@ -1163,6 +1163,8 @@ export async function loadAccountData_exchangeRates(account: string) {
   const { contracts } = augurSdk.get();
   const sdk = await augurSdkLite.get();
   const repToken = contracts.getReputationToken();
-  const values: AccountData = await sdk.loadAccountData(account, repToken.address);
+  const usdc = contracts.usdc.address;
+  const usdt = contracts.usdt.address;
+  const values: AccountData = await sdk.loadAccountData(account, repToken.address, usdc, usdt);
   return values;
 }
