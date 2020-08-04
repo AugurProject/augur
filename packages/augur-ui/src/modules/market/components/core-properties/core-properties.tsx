@@ -39,7 +39,7 @@ const CoreProperties: React.FC<CorePropertiesProps> = ({
 
   useEffect(() => {
     if (market) {
-      loadAffiliateFee(market.id).then(marketInfo => {
+      loadAffiliateFee && loadAffiliateFee(market.id).then(marketInfo => {
         setAffiliateFee(formatPercent(marketInfo?.affiliateFee ? createBigNumber(marketInfo.affiliateFee).times(100) : '0', { decimals: 0}));
       })
     }
@@ -143,7 +143,7 @@ const CoreProperties: React.FC<CorePropertiesProps> = ({
                   </>
                 }
               />
-              <PropertyLabel
+              {reportingBarShowing && <PropertyLabel
                 label="Affiliate Fee"
                 value={affiliateFee.full}
                 hint={
@@ -163,7 +163,7 @@ const CoreProperties: React.FC<CorePropertiesProps> = ({
                     </p>
                   </>
                 }
-              />
+              />}
               {isScalar && reportingBarShowing &&
                 <>
                   <PropertyLabel
