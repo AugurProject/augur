@@ -120,8 +120,8 @@ export abstract class AbstractTable {
     console.log(`AbstractTable: bulkAddDocuments request for ${this.dbName} started. ${documents.length} docs`);
     for (const document of documents) {
       delete document.constructor;
+      await this.table.add(document);
     }
-    await this.table.bulkAdd(documents);
     console.log(`AbstractTable: bulkAddDocuments request for ${this.dbName} finished. ${documents.length} docs`);
   }
 
@@ -129,8 +129,9 @@ export abstract class AbstractTable {
     console.log(`AbstractTable: bulkPutDocuments request for ${this.dbName} started. ${documents.length} docs`);
     for (const document of documents) {
       delete document.constructor;
+      await this.table.put(document);
     }
-    await this.table.bulkPut(documents);
+
     console.log(`AbstractTable: bulkPutDocuments request for ${this.dbName} finished. ${documents.length} docs`);
   }
 
