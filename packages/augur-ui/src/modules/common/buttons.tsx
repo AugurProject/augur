@@ -48,9 +48,7 @@ import { Link } from 'react-router-dom';
 
 import { removePendingData } from 'modules/pending-queue/actions/pending-queue-management';
 import { createBigNumber } from 'utils/create-big-number';
-import { formatDai } from 'utils/format-number';
 import { useMarketsStore } from 'modules/markets/store/markets';
-import { startClaimingMarketsProceeds } from 'modules/positions/actions/claim-markets-proceeds';
 
 export interface DefaultButtonProps {
   id?: string;
@@ -700,37 +698,18 @@ export const CashoutButton = ({
   const queueId = `${bet.marketId}_${bet.orderId}`;
   const pending = pendingQueue[CASHOUT] && pendingQueue[CASHOUT][queueId];
   const { marketInfos } = useMarketsStore();
+
   const market = marketInfos[bet.marketId];
+ 
   if (positions[bet.marketId]) {
-    const marketPosition = positions[bet.marketId];
-    if (createBigNumber(
-          marketPosition.tradingPositionsPerMarket.unclaimedProceeds
-        ).gt(ZERO)
-      ) {
-        const claimable = createBigNumber(
-          marketPosition.tradingPositionsPerMarket.unclaimedProceeds
-        );
-        cashoutText = `Cashout ${formatDai(claimable).full}`;
+    if (market?.reportingState !== REPORTING_STATE.AWAITING_FINALIZATION && market?.reportingState !== REPORTING_STATE.FINALIZED) {
+        cashoutText = `Cashout ${bet.potentialDaiProfit ? bet.potentialDaiProfit.full : '$0.00'}`;
         cashoutDisabled = false;
-        cashout = () => {
-          addPendingData(queueId, CASHOUT, TXEventName.Pending, '', {}, null);
-          (async () => 
-            await claimMarketsProceeds(
-              [bet.marketId], 
-              account
-            ).catch(error =>
-              addPendingData(queueId, CASHOUT, TXEventName.Failure, '', {}, null)
-              )
-          )();
-        }
-      } else if (market?.reportingState !== REPORTING_STATE.AWAITING_FINALIZATION && market?.reportingState !== REPORTING_STATE.FINALIZED) {
-        cashoutText = `Cashout ${formatDai(bet.unrealizedCost).full}`;
-        cashoutDisabled = false;
-    
+
         cashout = () => {
           setModal({
             type: MODAL_CASHOUT_BET, 
-            stake: bet.wager, 
+            stake: bet.shares, 
             cashOut: bet.unrealizedCost,
             profit: '0',
             cb: () => {
@@ -745,7 +724,7 @@ export const CashoutButton = ({
                   market.numTicks,
                   market.minPrice,
                   market.maxPrice,
-                  bet.wager,
+                  bet.shares,
                   bet.price,
                   0,
                   '0',

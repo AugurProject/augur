@@ -124,7 +124,7 @@ export const generateTrade = memoize(
   { max: 5 },
 );
 
-const formatDaiValue = (value, options = {}) =>
+export const formatDaiValue = (value, options = {}) =>
   formatDai(
     value,
     Object.assign(

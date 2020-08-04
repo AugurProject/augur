@@ -123,7 +123,7 @@ export const updateTradeShares = ({
   );
 };
 
-const runSimulateTrade = async (
+export const runSimulateTrade = async (
   newTradeDetails: any,
   market: Getters.Markets.MarketInfo,
   marketId: string,
