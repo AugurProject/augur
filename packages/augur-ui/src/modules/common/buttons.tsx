@@ -38,7 +38,7 @@ import {
 import { useAppStatusStore, AppStatus } from 'modules/app/store/app-status';
 import classNames from 'classnames';
 import { getNetworkId, placeTrade, claimMarketsProceeds } from 'modules/contracts/actions/contractCalls';
-import Styles, { left } from 'modules/common/buttons.styles.less';
+import Styles from 'modules/common/buttons.styles.less';
 import { MARKET_TEMPLATES } from 'modules/create-market/constants';
 import type { Getters } from '@augurproject/sdk';
 import { TXEventName } from '@augurproject/sdk-lite';
