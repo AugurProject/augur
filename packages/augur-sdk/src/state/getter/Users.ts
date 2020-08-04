@@ -545,6 +545,7 @@ export class Users {
       account: params.account,
       universe: params.universe,
     });
+    const userPositionsInMarket = _.groupBy(userPositions.tradingPositions, 'marketId')
     const positions = userPositions.tradingPositionsPerMarket;
     /*
       tokensEscrowed: string; // DAI
@@ -555,6 +556,8 @@ export class Users {
     Object.keys(orders).forEach(marketId => {
       const market = markets[marketId];
       const marketPositions = positions[marketId];
+      const userPositions = userPositionsInMarket[marketId];
+      const userPostionsByOutcome = _.groupBy(userPositions, 'outcome');
       // need all outcomes represented in user shares balances
       const userSharesBalances = populateUserShareBalances(
         market.marketType === MarketType.Categorical
@@ -569,12 +572,14 @@ export class Users {
           const orderIds = Object.keys(orders[marketId][outcome][orderType]);
           orderIds.forEach(orderId => {
             const order = orders[marketId][outcome][orderType][orderId];
+            const positions = userPostionsByOutcome && userPostionsByOutcome[outcome] && userPostionsByOutcome[outcome][0];
             addEscrowedAmountsDecrementShares(
               order,
               outcome,
               Number(orderType),
               market,
-              userSharesBalances
+              userSharesBalances,
+              positions
             );
             totalCost = totalCost.plus(new BigNumber(order.tokensEscrowed));
           });
@@ -1648,13 +1653,15 @@ function addEscrowedAmountsDecrementShares(
   outcome: string,
   orderType: number,
   market: MarketData,
-  userSharesBalances: { [outcome: string]: string }
+  userSharesBalances: { [outcome: string]: string },
+  position?: TradingPosition,
 ) {
   let cost = ZERO;
   const maxPrice = new BigNumber(market.prices[1]);
   const minPrice = new BigNumber(market.prices[0]);
   const displayMaxPrice = maxPrice.dividedBy(QUINTILLION);
   const displayMinPrice = minPrice.dividedBy(QUINTILLION);
+  const isCurrentlyLong = position && new BigNumber(position.netPosition).gt(ZERO);
   let sharesUsed = ZERO;
 
   if (new BigNumber(orderType).eq(ORDER_TYPES.BID)) {
@@ -1685,7 +1692,7 @@ function addEscrowedAmountsDecrementShares(
       }
     });
   } else {
-    const sharesBN = new BigNumber(userSharesBalances[outcome] || '0');
+    const sharesBN = isCurrentlyLong ? new BigNumber(userSharesBalances[outcome] || '0') : ZERO;
     sharesUsed = BigNumber.min(new BigNumber(order.amount), sharesBN);
 
     cost = new BigNumber(order.amount)
