@@ -107,11 +107,6 @@ const mergeProps = (sP: any, dP: any, oP: any) => {
           action: showBreakdown ? () => dP.startClaimingMarketsProceeds([marketId], sP.account, () => {}) : null,
           estimateGas: async () => {
               const gasLimit = await dP.estimateGas([marketId], sP.account);
-              const gasEstimateInEth = formatGasCostToEther(
-                gasLimit,
-                { decimalsRounded: 4 },
-                createBigNumber(GWEI_CONVERSION).multipliedBy(sP.gasPrice)
-              );
               const gasCostDai = getGasCost(gasLimit, sP.gasPrice, sP.ethToDaiRate);
               const displayfee = `$${gasCostDai.formattedValue}`;
               return {
@@ -141,7 +136,7 @@ const mergeProps = (sP: any, dP: any, oP: any) => {
   const breakdown = showBreakdown ? [
     {
       label: 'Total Proceeds',
-      value: totalUnclaimedProceedsFormatted.formatted,
+      value: totalUnclaimedProceedsFormatted.full,
     },
   ] : null;
 
@@ -157,8 +152,9 @@ const mergeProps = (sP: any, dP: any, oP: any) => {
     submitAllTxCount,
     estimateGas: async () => {
       if (breakdown) {
-        const gas = await dP.estimateGas(claimableMarkets.map(m => m.marketId), sP.account);
-        const displayfee = formatEther(gas).formattedValue;
+        const gasLimit = await dP.estimateGas(claimableMarkets.map(m => m.marketId), sP.account);
+        const gasCostDai = getGasCost(gasLimit, sP.gasPrice, sP.ethToDaiRate);
+        const displayfee = `$${gasCostDai.formattedValue}`;
         return {
           label: transactionLabel,
           value: String(displayfee),
