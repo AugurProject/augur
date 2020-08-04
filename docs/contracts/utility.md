@@ -10,7 +10,7 @@ title: Utility
 
 
 
-<div class="contract-index"><span class="contract-index-title">Functions</span><ul><li><a href="#AccountLoader.initialize(contract Augur,contract IAugurTrading)"><code class="function-signature">initialize(contract Augur _augur, contract IAugurTrading _augurTrading)</code></a></li><li><a href="#AccountLoader.loadAccountData(address,contract IERC20)"><code class="function-signature">loadAccountData(address _account, contract IERC20 _reputationToken)</code></a></li><li class="inherited"><a href="#Initializable.endInitialization()"><code class="function-signature">endInitialization()</code></a></li><li class="inherited"><a href="#Initializable.getInitialized()"><code class="function-signature">getInitialized()</code></a></li></ul></div>
+<div class="contract-index"><span class="contract-index-title">Functions</span><ul><li><a href="#AccountLoader.initialize(contract Augur,contract IAugurTrading)"><code class="function-signature">initialize(contract Augur _augur, contract IAugurTrading _augurTrading)</code></a></li><li><a href="#AccountLoader.loadAccountData(address,contract IERC20,contract IERC20,contract IERC20)"><code class="function-signature">loadAccountData(address _account, contract IERC20 _reputationToken, contract IERC20 _USDC, contract IERC20 _USDT)</code></a></li><li><a href="#AccountLoader.getExchangeRate(address,address)"><code class="function-signature">getExchangeRate(address _firstToken, address _secondToken)</code></a></li><li class="inherited"><a href="#Initializable.endInitialization()"><code class="function-signature">endInitialization()</code></a></li><li class="inherited"><a href="#Initializable.getInitialized()"><code class="function-signature">getInitialized()</code></a></li></ul></div>
 
 
 
@@ -20,7 +20,13 @@ title: Utility
 
 
 
-<h4><a class="anchor" aria-hidden="true" id="AccountLoader.loadAccountData(address,contract IERC20)"></a><code class="function-signature">loadAccountData(address _account, contract IERC20 _reputationToken) <span class="return-arrow">→</span> <span class="return-type">struct AccountLoader.AccountData</span></code><span class="function-visibility">public</span></h4>
+<h4><a class="anchor" aria-hidden="true" id="AccountLoader.loadAccountData(address,contract IERC20,contract IERC20,contract IERC20)"></a><code class="function-signature">loadAccountData(address _account, contract IERC20 _reputationToken, contract IERC20 _USDC, contract IERC20 _USDT) <span class="return-arrow">→</span> <span class="return-type">struct AccountLoader.AccountData</span></code><span class="function-visibility">public</span></h4>
+
+
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="AccountLoader.getExchangeRate(address,address)"></a><code class="function-signature">getExchangeRate(address _firstToken, address _secondToken) <span class="return-arrow">→</span> <span class="return-type">uint256</span></code><span class="function-visibility">public</span></h4>
 
 
 
@@ -1069,56 +1075,6 @@ title: Utility
 
 
 <h4><a class="anchor" aria-hidden="true" id="IAugurTrading.logZeroXOrderCanceled(address,address,address,uint256,uint256,uint256,uint8,bytes32)"></a><code class="function-signature">logZeroXOrderCanceled(address _universe, address _market, address _account, uint256 _outcome, uint256 _price, uint256 _amount, uint8 _type, bytes32 _orderHash)</code><span class="function-visibility">public</span></h4>
-
-
-
-
-
-
-
-### `IAugurWallet`
-
-
-
-<div class="contract-index"><span class="contract-index-title">Functions</span><ul><li><a href="#IAugurWallet.initialize(address,address,bytes32,address,address,address,contract IERC20,contract IAffiliates,contract IERC1155,address,address,address)"><code class="function-signature">initialize(address _owner, address _referralAddress, bytes32 _fingerprint, address _augur, address _registry, address _registryV2, contract IERC20 _cash, contract IAffiliates _affiliates, contract IERC1155 _shareToken, address _createOrder, address _fillOrder, address _zeroXTrade)</code></a></li><li><a href="#IAugurWallet.transferCash(address,uint256)"><code class="function-signature">transferCash(address _to, uint256 _amount)</code></a></li><li><a href="#IAugurWallet.executeTransaction(address,bytes,uint256)"><code class="function-signature">executeTransaction(address _to, bytes _data, uint256 _value)</code></a></li></ul></div>
-
-
-
-<h4><a class="anchor" aria-hidden="true" id="IAugurWallet.initialize(address,address,bytes32,address,address,address,contract IERC20,contract IAffiliates,contract IERC1155,address,address,address)"></a><code class="function-signature">initialize(address _owner, address _referralAddress, bytes32 _fingerprint, address _augur, address _registry, address _registryV2, contract IERC20 _cash, contract IAffiliates _affiliates, contract IERC1155 _shareToken, address _createOrder, address _fillOrder, address _zeroXTrade)</code><span class="function-visibility">external</span></h4>
-
-
-
-
-
-<h4><a class="anchor" aria-hidden="true" id="IAugurWallet.transferCash(address,uint256)"></a><code class="function-signature">transferCash(address _to, uint256 _amount)</code><span class="function-visibility">external</span></h4>
-
-
-
-
-
-<h4><a class="anchor" aria-hidden="true" id="IAugurWallet.executeTransaction(address,bytes,uint256)"></a><code class="function-signature">executeTransaction(address _to, bytes _data, uint256 _value) <span class="return-arrow">→</span> <span class="return-type">bool</span></code><span class="function-visibility">external</span></h4>
-
-
-
-
-
-
-
-### `IAugurWalletFactory`
-
-
-
-<div class="contract-index"><span class="contract-index-title">Functions</span><ul><li><a href="#IAugurWalletFactory.getCreate2WalletAddress(address)"><code class="function-signature">getCreate2WalletAddress(address _owner)</code></a></li><li><a href="#IAugurWalletFactory.createAugurWallet(address,address,bytes32)"><code class="function-signature">createAugurWallet(address _owner, address _referralAddress, bytes32 _fingerprint)</code></a></li></ul></div>
-
-
-
-<h4><a class="anchor" aria-hidden="true" id="IAugurWalletFactory.getCreate2WalletAddress(address)"></a><code class="function-signature">getCreate2WalletAddress(address _owner) <span class="return-arrow">→</span> <span class="return-type">address</span></code><span class="function-visibility">external</span></h4>
-
-
-
-
-
-<h4><a class="anchor" aria-hidden="true" id="IAugurWalletFactory.createAugurWallet(address,address,bytes32)"></a><code class="function-signature">createAugurWallet(address _owner, address _referralAddress, bytes32 _fingerprint) <span class="return-arrow">→</span> <span class="return-type">contract IAugurWallet</span></code><span class="function-visibility">public</span></h4>
 
 
 
