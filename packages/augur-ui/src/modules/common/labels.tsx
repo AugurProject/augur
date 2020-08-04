@@ -831,7 +831,7 @@ const mapStateToPropsTransactionFeeLabel = (state: AppState, ownProps) => {
   const normalGasCostDai = ownProps.normalGasLimit && getGasCost(ownProps.normalGasLimit, gasPrice, ethToDaiRate);
   return {
     label: constants.NOT_USE_ETH_RESERVE,
-    gasCostDai: ownProps.normalGasLimit ? `${gasCostDai.full} to ${normalGasCostDai.full}` : gasCostDai,
+    gasCostDai: ownProps.normalGasLimit ? `${normalGasCostDai.full} to ${gasCostDai.full}` : gasCostDai,
   }
 };
 
