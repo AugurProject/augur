@@ -61,6 +61,9 @@ interface Schemas {
   [table: string]: string;
 }
 
+// @ts-ignore
+Dexie.debug = true;
+
 // Prune horizon is 60 days.
 const PRUNE_HORIZON = SECONDS_IN_A_DAY.multipliedBy(60).toNumber();
 
