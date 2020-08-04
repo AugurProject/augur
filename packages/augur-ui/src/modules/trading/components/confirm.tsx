@@ -190,7 +190,7 @@ class Confirm extends Component<ConfirmProps, ConfirmState> {
     let needsApproval = false;
     let messages: Message | null = null;
 
-    const averageGasLimit = gasLimit.plus(normalGasLimit).div(2);
+    const averageGasLimit = gasLimit ? gasLimit.plus(normalGasLimit).div(2) : createBigNumber(0);
     const averageGasCost = getGasCost(averageGasLimit, gasPrice, ethToDaiRate);
     const gasCostInEth = gasLimit
       ? createBigNumber(formatGasCostToEther(gasLimit, { decimalsRounded: 4 }, createBigNumber(GWEI_CONVERSION).multipliedBy(gasPrice)))
