@@ -27,11 +27,11 @@ import {
   uniswapEthForRep,
   checkSetApprovalAmount,
 } from 'modules/contracts/actions/contractCalls';
-
-import Styles from 'modules/swap/components/index.styles.less';
-import { ProcessingButton } from 'modules/common/buttons';
+import { ProcessingButton, ExternalLinkButton } from 'modules/common/buttons';
 import type { SDKConfiguration } from '@augurproject/artifacts';
 import { augurSdk } from 'services/augursdk';
+
+import Styles from 'modules/swap/components/index.styles.less';
 
 interface SwapProps {
   balances: AccountBalances;
@@ -191,6 +191,15 @@ export const Swap = ({
 
   formattedInputAmount = formatEther(Number(balance) || 0);
 
+  let altExchangeMessage = null;
+  if (toToken === ETH) {
+    altExchangeMessage = 'Have USDC, USDT, DAI or REPv2 and looking to get a large quantity of ETH at lower slippage?';
+  } else if (toToken === DAI) {
+    altExchangeMessage = 'Have USDC, USDT, REPv2 or ETH and looking to get a large quantity of DAI at lower slippage?';
+  } else if (toToken === REP) {
+    altExchangeMessage = 'Have USDC, USDT, DAI or ETH and looking to get a large quantity of REPv2 at lower slippage?';
+  }
+
   if (!inputAmount.lt || inputAmount.lt(0)) {
     outputAmount = formatEther(0);
   } else {
@@ -254,6 +263,12 @@ export const Swap = ({
           disabled={outputAmount.value <= 0}
         />
         {errorMessage && <div className={Styles.SwapError}>{errorMessage}</div>}
+        {altExchangeMessage &&
+          <div>
+            {altExchangeMessage}<br />
+            Try <ExternalLinkButton URL={'https://1inch.exchange'} label={'1inch.exchange'} />
+          </div>
+        }
       </div>
     </div>
   );
