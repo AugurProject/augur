@@ -55,7 +55,7 @@
     "comlink": "^4.3.0",
     "cors": "2.8.5",
     "cross-fetch": "3.0.4",
-    "dexie": "3.0.0-rc.4",
+    "dexie": "3.0.2",
     "ethereum-types": "2.1.6",
     "ethereumjs-blockstream": "7.0.0",
     "ethereumjs-tx": "2.1.2",

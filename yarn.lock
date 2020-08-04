@@ -9820,10 +9820,10 @@ dexie@*, dexie@^3.0.1:
   resolved "https://registry.yarnpkg.com/dexie/-/dexie-3.0.1.tgz#faafeb94be0d5e18b25d700546a2c05725511cfc"
   integrity sha512-/s4KzlaerQnCad/uY1ZNdFckTrbdMVhLlziYQzz62Ff9Ick1lHGomvTXNfwh4ApEZATyXRyVk5F6/y8UU84B0w==
 
-dexie@3.0.0-rc.4:
-  version "3.0.0-rc.4"
-  resolved "https://registry.yarnpkg.com/dexie/-/dexie-3.0.0-rc.4.tgz#86d52b58a3a4ffc2d01c8f8d41114ab02bbb4ea1"
-  integrity sha512-zsttc+pYSSBPhwYlfQcPfB9n3jdyye0WubtDtO9lJ0r051V67W+BGDGsodNwYb/NmyTYG3jxN9M0z4FbFtYqtg==
+dexie@3.0.2:
+  version "3.0.2"
+  resolved "https://registry.yarnpkg.com/dexie/-/dexie-3.0.2.tgz#4b979904d739e0530b68352005f175a82633a075"
+  integrity sha512-go4FnIoAhcUiCdxutfIZRxnSaSyDgfEq+GH7N0I8nTCJbC2FmeBj+0FrETa3ln5ix+VQMOPsFeYHlgE/8SZWwQ==
 
 dezalgo@^1.0.0:
   version "1.0.3"
