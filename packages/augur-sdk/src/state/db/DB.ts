@@ -425,16 +425,12 @@ export class DB {
     for (const { EventName: dbName, primaryKey } of this
       .genericEventDBDescriptions) {
       if (primaryKey) {
-        dbSyncPromises.push(
-          this.syncableDatabases[`${dbName}Rollup`].sync(
-            highestAvailableBlockNumber
-          )
+        console.log(`Syncing derived db ${dbName}Rollup`);
+        await this.syncableDatabases[`${dbName}Rollup`].sync(
+          highestAvailableBlockNumber
         );
       }
     }
-
-    console.log(`Syncing generic DBs`);
-    await Promise.all(dbSyncPromises);
 
     // Derived DBs are synced after generic log DBs complete
     console.log('Syncing derived DBs');
