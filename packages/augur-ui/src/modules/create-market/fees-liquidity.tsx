@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-import { TextInput } from "modules/common/form";
+import { TextInput, FormDropdown } from "modules/common/form";
 import { LargeSubheaders } from "modules/create-market/components/common";
 import InitialLiquidity from "modules/create-market/containers/initial-liquidity";
 import OrderBook from "modules/market-charts/containers/order-book";
@@ -16,12 +16,14 @@ import QuadBox from "modules/portfolio/components/common/quad-box";
 import Visibility from "modules/create-market/containers/visibility";
 
 import Styles from "modules/create-market/fees-liquidity.styles.less";
-import { OutcomeFormatted, NewMarket, FormattedNumber } from "modules/types";
+import { OutcomeFormatted, NewMarket, FormattedNumber, ValueLabelPair } from "modules/types";
 import { MARKET_COPY_LIST } from "modules/create-market/constants";
 import { formatOrderBook } from "modules/create-market/helpers/format-order-book";
 import { DefaultOrderPropertiesMap } from "modules/market/components/market-view/market-view";
 import { getReportingFeePercentage } from "modules/contracts/actions/contractCalls";
 import { formatPercent } from 'utils/format-number';
+import { Dropdown } from 'modules/common/search-sort.styles.less';
+import { SquareDropdown, NameValuePair } from 'modules/common/selection';
 
 interface FeesLiquidityProps {
   newMarket: NewMarket;
@@ -41,6 +43,8 @@ interface FeesLiquidityState {
   selectedOrderProperties: DefaultOrderPropertiesMap;
   reportingFeePercent: FormattedNumber;
   creatorFeePercent: FormattedNumber;
+  affiliateFeeOptions: NameValuePair[];
+  affiliateFeeOptionsDefault: NameValuePair;
 }
 
 export default class FeesLiquidity extends React.Component<
@@ -59,6 +63,37 @@ export default class FeesLiquidity extends React.Component<
     selectedOrderProperties: this.DEFAULT_ORDER_PROPERTIES,
     reportingFeePercent: formatPercent(0),
     creatorFeePercent: formatPercent(0),
+    affiliateFeeOptions: [{
+      label: '100 %',
+      value: '100'
+    }, {
+      label: '50 %',
+      value: '50'
+    },
+    {
+      label: '33 %',
+      value: '33'
+    },
+    {
+      label: '25 %',
+      value: '25'
+    },
+    {
+      label: '25 %',
+      value: '25'
+    },
+    {
+      label: '10 %',
+      value: '10'
+    },
+    {
+      label: '5 %',
+      value: '5'
+    },
+    {
+      label: '0 %',
+      value: '0'
+    }]
   };
 
   getReportingFeePct = async () => {
@@ -210,14 +245,11 @@ export default class FeesLiquidity extends React.Component<
             copyType={MARKET_COPY_LIST.AFFILIATE_FEE}
             subheader="You have the option of assigning a percentage of the market creator fee to anyone who helps to promote your market (affiliates)."
           />
-          <TextInput
-            placeholder="0"
-            type="number"
+          <FormDropdown
             onChange={(value: string) => onChange("affiliateFee", value)}
-            value={String(affiliateFee)}
-            innerLabel="%"
-            trailingLabel="of market creator fees"
-            errorMessage={validations.affiliateFee}
+            defaultValue={'0'}
+            options={this.state.affiliateFeeOptions}
+            staticLabel={'Select Affiliate Fee'}
           />
         </div>
 
