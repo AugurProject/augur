@@ -34,11 +34,16 @@ const mergeProps = (sP: any, dP: any) => {
 
   return {
     title: 'Transaction fees',
-    description: 'If you want to set your transaction fee to something different than default, you should do so via your account settings at the top right of the app',
+    mediumSubheader: 'If you want to set your transaction fee to something different than default, you should do so via your account settings at the top right of the app',
     footer: 'Do not try to set the gas fee in your wallet as it will cause your trade to fail',
     image,
     ...sP,
-    closeAction: () => dP.closeAction(sP.callback),
+    buttons: [
+      {
+        text: "Cancel",
+        action: () => dP.closeAction(sP.callback)
+      },
+    ],
   }
 };
 

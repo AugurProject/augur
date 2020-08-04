@@ -109,7 +109,7 @@ const mapDispatchToProps = (dispatch, ownProps) => ({
     ),
     orderSubmitted: (type, marketId) => dispatch(orderSubmitted(type, marketId)),
     canPostOrder: (price, side, orderBook) => canPostOrder(price, side, orderBook),
-    showGasInfoModal: (modal) => dispatch(updateModal({ type: MODAL_GAS_INFO, ...modal })),
+    showGasInfoModal: (modal) => dispatch(updateModal({ type: MODAL_GAS_INFO, modal })),
 });
 
 const mergeProps = (sP, dP, oP) => {

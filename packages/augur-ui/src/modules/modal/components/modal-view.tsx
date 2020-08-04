@@ -188,7 +188,7 @@ function selectModal(type, props, closeModal, modal) {
     case TYPES.MODAL_TUTORIA_VIDEO:
       return <ModalTutorialVideo />
     case TYPES.MODAL_GAS_INFO:
-      return <ModalGasInfo />
+      return <ModalGasInfo {...modal} />
     default:
       return <div />;
   }
