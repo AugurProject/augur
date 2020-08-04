@@ -481,7 +481,7 @@ class Confirm extends Component<ConfirmProps, ConfirmState> {
             <TransactionFeeLabelToolTip
               isError={!tradingTutorial && createBigNumber(gasCostDai.value).gt(createBigNumber(potentialDaiProfit.value))}
               gasEstimate={(tradingTutorial || postOnlyOrder) ? 0 : gasLimit}
-              normalGasLimit={normalGasLimit}
+              normalGasLimit={numFills > 0 && normalGasLimit}
             />
           </div>
         )}
