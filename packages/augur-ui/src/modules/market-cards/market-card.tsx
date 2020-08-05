@@ -307,7 +307,8 @@ export default class MarketCard extends React.Component<
           </div>
           <div className={classNames(Styles.TopRow, Styles.HasCircularIcons, {
             [Styles.HasScalarOrInReportingLabels]: isScalar || (!marketResolved && reportingState !== REPORTING_STATE.PRE_REPORTING),
-          })}>
+            [Styles.CustomMarket]: market.isTemplate === false,
+           })}>
             <div>
               <CustomMarketLabel isTemplate={market.isTemplate} />
               <RedFlag market={market} />
@@ -325,8 +326,6 @@ export default class MarketCard extends React.Component<
                   isForkingMarket={isForking && forkingMarket === id}
                 />
               )}
-            </div>
-            <div>
             </div>
             <CategoryTagTrail categories={categoriesWithClick} />
             <MarketProgress
