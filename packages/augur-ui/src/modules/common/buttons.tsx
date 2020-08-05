@@ -688,8 +688,8 @@ export const CashoutButton = ({
 }: CashoutButtonProps) => {
   let cashoutDisabled = true;
   let cashoutText = 'cashout not available';
-  let didWin = false;
-  let loss = false;
+  let didWin = bet.potentialDaiProfit ? createBigNumber(bet.potentialDaiProfit.value).gt(ZERO) : false;
+  let loss = bet.potentialDaiProfit ? createBigNumber(bet.potentialDaiProfit.value).lt(ZERO) : false;;
   let cashout = () => bet.cashout();
 
   const {
