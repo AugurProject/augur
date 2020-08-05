@@ -2300,7 +2300,6 @@ InputDropdown.defaultProps = {
 };
 
 export interface CategoryRowProps {
-  hasChildren?: boolean;
   handleClick?: Function;
   category: string;
   count?: number;
@@ -2308,7 +2307,6 @@ export interface CategoryRowProps {
 }
 
 export const CategoryRow = ({
-  hasChildren = true,
   handleClick = noop,
   category,
   count = 0,
@@ -2334,7 +2332,6 @@ export const CategoryRow = ({
       className={classNames(Styles.CategoryRow, {
         [Styles.active]: active,
         [Styles.loading]: loading,
-        [Styles.disabled]: !hasChildren,
         [Styles.bold]: bold,
       })}
     >
