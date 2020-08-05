@@ -933,7 +933,7 @@ export const MarketTypeLabel = ({
   const labelTexts = {
     [YES_NO]: 'Yes/No',
     [CATEGORICAL]: 'Categorical',
-    [SCALAR]: 'Scalar Market',
+    [SCALAR]: 'Scalar',
   };
   const text = isWarpSync ? 'Warp Sync Market' : labelTexts[marketType];
   const isScalar = !isWarpSync && marketType === SCALAR;
@@ -945,7 +945,7 @@ export const MarketTypeLabel = ({
         [Styles.MarketStatus_warpSync]: isWarpSync,
       })}
     >
-      {text} {isScalar && ScalarIcon}
+      {isScalar && ScalarIcon} {text}
     </span>
   );
 };
@@ -1087,7 +1087,7 @@ export const InReportingLabel = (props: InReportingLabelProps) => {
   );
 };
 
-export const CustomMarketLabel = ({ isTemplate }) => {
+export const CustomMarketLabel = ({ isTemplate, inTitle }) => {
   if (isTemplate === false) {
     return (
       <span
@@ -1095,11 +1095,12 @@ export const CustomMarketLabel = ({ isTemplate }) => {
           Styles.MarketStatus,
           Styles.MarketStatus_reporting,
           Styles.MarketStatus_forking,
+          { [Styles.MarketStatus_isTitle]: inTitle}
         )}
       >
         {ExclamationCircle}
         {'Custom Market'}
-          <span className={Styles.InReporting_reportingDetails}>
+          <span className={Styles.CustomMarketCaution}>
             {/* {DoubleArrows} */}
             {' - Proceed with Caution'}
           </span>
