@@ -97,9 +97,9 @@
   .Button {
     .text-14-bold;
   }
-  
+
   .SecondaryButton {
-    .Button; 
+    .Button;
 
     align-items: center;
     background: var(--color-secondary-action);
@@ -155,8 +155,8 @@
   }
 
   .PrimaryButton {
-    .Button; 
-    
+    .Button;
+
     align-items: center;
     background: var(--color-primary-action-15);
     border: @size-1 solid var(--color-primary-action);
@@ -819,11 +819,6 @@
         fill: var(--color-primary-text);
         stroke: none;
       }
-
-      &:nth-child(odd) {
-        fill: none;
-        stroke: var(--color-primary-text);
-      }
     }
   }
 
@@ -839,6 +834,13 @@
         }
       }
     }
+  }
+}
+
+:root[theme='BETTING'],
+:root[theme='SPORTS'] {
+  .ViewTransactionsButton {
+    .text-10-semi-bold;
   }
 }
 
@@ -1258,7 +1260,7 @@
   .text-10-medium;
 
   color: var(--color-primary-text);
-  background: var(--color-module-background);  
+  background: var(--color-module-background);
   border: @size-1 solid var(--color-dark-text);
   border-radius: @border-radius-default;
   padding: @size-6 @size-4;
@@ -1270,7 +1272,7 @@
   }
 
   &:focus {
-    background: var(--color-module-background);  
+    background: var(--color-module-background);
     border: @size-2 solid var(--color-focused);
   }
 

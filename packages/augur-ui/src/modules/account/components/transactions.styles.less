@@ -114,6 +114,7 @@
 
         max-height: unset;
         height: @size-48;
+        align-items: center;
 
         &:nth-of-type(3) {
           border: @size-1 solid var(--color-primary-text);
@@ -122,14 +123,14 @@
             background: var(--color-primary-text);
             color: var(--color-secondary-action);
           }
-      
+
           &:not(:disabled):focus,
           &:not(:disabled):focus:hover {
             background: var(--color-secondary-action);
             color: var(--color-primary-text);
             border: @size-2 solid var(--color-focused);
           }
-      
+
           &:not(:disabled):active {
             background: var(--color-primary-text);
             color: var(--color-secondary-action);
@@ -162,7 +163,8 @@
           text-transform: uppercase;
 
           > span {
-            .text-12-semi-bold;
+            .text-10-semi-bold;
+
             color: var(--color-primary-text);
             padding-top: @size-8;
 
@@ -182,7 +184,7 @@
     float: right;
 
     > button {
-      .mono-12-semi-bold;
+      .mono-10-semi-bold;
 
       flex-direction: row-reverse;
       border: none;
