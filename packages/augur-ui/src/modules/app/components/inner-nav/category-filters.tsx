@@ -129,7 +129,6 @@ const CategoryFilters = () => {
           <CategoryRow
             category={item.category}
             count={item.count}
-            hasChildren={item.count > 0}
             handleClick={() =>
               pathToChildCategory(item.category, selectedCategories)
             }
@@ -196,7 +195,6 @@ const CategoryFilters = () => {
             category={item.category}
             icon={item.icon}
             count={item.count}
-            hasChildren={item.count > 0}
             handleClick={() =>
               pathToChildCategory(item.category, selectedCategories)
             }
@@ -208,7 +206,6 @@ const CategoryFilters = () => {
                   <CategoryRow
                     category={subItem.category}
                     count={subItem.count}
-                    hasChildren={subItem.count > 0}
                     handleClick={() =>
                       pathToChildCategory(subItem.category, [item.category])
                     }
@@ -266,12 +263,6 @@ const CategoryFilters = () => {
                 count={item.count}
                 handleClick={() =>
                   pathToChildCategory(item.category, selectedCategories)
-                }
-                hasChildren={
-                  getCategoryChildrenCount([
-                    ...selectedCategories,
-                    item.category,
-                  ]) > 0
                 }
               />
             </div>
