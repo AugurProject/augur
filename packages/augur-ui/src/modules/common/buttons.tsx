@@ -45,10 +45,14 @@ import { TXEventName } from '@augurproject/sdk-lite';
 import { addCategoryStats } from 'modules/create-market/get-template';
 import ChevronFlip from 'modules/common/chevron-flip';
 import { Link } from 'react-router-dom';
+import { getOrderShareProfitLoss } from 'utils/betslip-helpers';
 
 import { removePendingData } from 'modules/pending-queue/actions/pending-queue-management';
 import { createBigNumber } from 'utils/create-big-number';
 import { useMarketsStore } from 'modules/markets/store/markets';
+import { useMarkets } from 'modules/markets/store/markets-hooks';
+import { useEffect } from 'react';
+import { useBetslipStore } from 'modules/trading/store/betslip';
 
 export interface DefaultButtonProps {
   id?: string;
@@ -695,46 +699,60 @@ export const CashoutButton = ({
       pendingQueue,
       actions: { addPendingData, setModal }
   } = useAppStatusStore();
+  const { marketInfos, orderBooks } = useMarketsStore();
+  const {
+    actions: { updateMatched }
+  } = useBetslipStore();
+
   const queueId = `${bet.marketId}_${bet.orderId}`;
   const pending = pendingQueue[CASHOUT] && pendingQueue[CASHOUT][queueId];
-  const { marketInfos } = useMarketsStore();
-
   const market = marketInfos[bet.marketId];
- 
-  if (positions[bet.marketId]) {
-    if (market?.reportingState !== REPORTING_STATE.AWAITING_FINALIZATION && market?.reportingState !== REPORTING_STATE.FINALIZED) {
-        cashoutText = `Cashout ${bet.potentialDaiProfit ? bet.potentialDaiProfit.full : '$0.00'}`;
-        cashoutDisabled = false;
 
-        cashout = () => {
-          setModal({
-            type: MODAL_CASHOUT_BET, 
-            stake: bet.shares, 
-            cashOut: bet.unrealizedCost,
-            profit: '0',
-            cb: () => {
-              addPendingData(queueId, CASHOUT, TXEventName.Pending, '', {});
-              (async () =>
-                await placeTrade(
-                  0,
-                  bet.marketId,
-                  market.numOutcomes,
-                  bet.outcomeId,
-                  false,
-                  market.numTicks,
-                  market.minPrice,
-                  market.maxPrice,
-                  bet.shares,
-                  bet.price,
-                  0,
-                  '0',
-                  undefined
-                ).catch(error => addPendingData(queueId, CASHOUT, TXEventName.Failure, '', {}))
-            )();
-          }});
-      }
+  useEffect(() => {
+    getOrderShareProfitLoss(bet, orderBooks, (potentialDaiProfit, topBidPrice) => {
+      updateMatched(bet.marketId, bet.orderId, {
+        ...bet,
+        topBidPrice,
+        potentialDaiProfit
+      })
+    })
+  }, [marketInfos[bet.marketId], orderBooks[bet.marketId]]);
+
+  const position = positions[bet.marketId]?.tradingPositions[bet.outcomeId];
+  if (position.priorPosition) {
+    cashoutText = `Cashed out`;
+  } else if (market?.reportingState !== REPORTING_STATE.AWAITING_FINALIZATION && market?.reportingState !== REPORTING_STATE.FINALIZED) {
+      cashoutText = `Cashout ${bet.potentialDaiProfit ? bet.potentialDaiProfit.full : '$0.00'}`;
+      cashoutDisabled = false;
+      cashout = () => {
+        setModal({
+          type: MODAL_CASHOUT_BET, 
+          wager: bet.wager, 
+          odds: bet.odds,
+          cashOut: bet.potentialDaiProfit.value,
+          profit: '0',
+          cb: () => {
+            addPendingData(queueId, CASHOUT, TXEventName.Pending, '', {});
+            (async () =>
+              await placeTrade(
+                SELL_INDEX,
+                bet.marketId,
+                market.numOutcomes,
+                bet.outcomeId,
+                true,
+                market.numTicks,
+                market.minPrice,
+                market.maxPrice,
+                bet.shares,
+                bet.topBidPrice,
+                null,
+                '0',
+                undefined
+              ).catch(error => addPendingData(queueId, CASHOUT, TXEventName.Failure, '', {}))
+          )();
+        }});
     }
-  } 
+  }
   if (!won.eq(ZERO)) {
     didWin = true;
     if (won.lt(ZERO)) {
@@ -745,7 +763,7 @@ export const CashoutButton = ({
 
   return (
     <>
-      {pending ?
+      {pending && !position.priorPosition ?
         <ProcessingButton
           queueName={CASHOUT}
           queueId={queueId}

@@ -151,6 +151,7 @@ export const getOrderShareProfitLoss = (bet, orderBooks, cb) => {
   const { marketInfos } = Markets.get();
   const outcomeOrderBook = orderBooks[bet.marketId]?.orderBook[bet.outcomeId];
   const market = marketInfos[bet.marketId];
+  if (!market) cb(null);
   const { topBid } = selectMarketOutcomeBestBidAsk(
     outcomeOrderBook,
     market.marketType,
@@ -192,6 +193,6 @@ export const getOrderShareProfitLoss = (bet, orderBooks, cb) => {
         )
       : null;
   
-      cb(formatDaiValue(orderShareProfitLoss?.potentialDaiProfit));
+      cb(formatDaiValue(orderShareProfitLoss?.potentialDaiProfit), topBidPrice);
   });
 }
