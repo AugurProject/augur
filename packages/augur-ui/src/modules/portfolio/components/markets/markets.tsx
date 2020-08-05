@@ -76,7 +76,7 @@ interface MyMarketsProps {
 const MyMarkets = ({
   toggle,
   hide,
-  extend, 
+  extend,
 }: MyMarketsProps) => {
   const { theme, universe: { disputeWindow }, actions: { setTheme } } = useAppStatusStore();
   const isTrading = theme === THEMES.TRADING;
@@ -182,7 +182,7 @@ const MyMarkets = ({
           <div className={marketStyles.BottomContent}>
             <Link to={makePath(CREATE_MARKET)}>
               <SecondaryButton
-                text={'Create Market'}
+                text="Create Market"
                 action={() => setTheme(THEMES.TRADING)}
                 icon={AddIcon}
               />
@@ -190,16 +190,23 @@ const MyMarkets = ({
           </div>
         )
       }
-      emptyDisplayTitle={isTrading ? null : "You didn't create any market yet"}
-      emptyDisplayText={isTrading ? null : "Create your first market now!"}
+      emptyDisplayTitle={isTrading ? "You didn't create any market yet" : "No markets"}
+      emptyDisplayText={isTrading ? "Create your first market now!" : "To create a market you need to go to the Trading Exchange"}
       emptyDisplayIcon={CreatedMarketsIcon}
       emptyDisplayButton={
-        <Link to={makePath(CREATE_MARKET)}>
+        isTrading ? (
+          <Link to={makePath(CREATE_MARKET)}>
+            <SecondaryButton
+              text="Create Market"
+              action={() => null}
+            />
+          </Link>
+        ) : (
           <SecondaryButton
-            text={'Create Market'}
+            text="Go to trading"
             action={() => setTheme(THEMES.TRADING)}
           />
-        </Link>
+        )
       }
     />
   );
@@ -207,6 +214,6 @@ const MyMarkets = ({
 
 MyMarkets.defaultProps = {
   disputingWindowEndTime: 0
-}
+};
 
 export default MyMarkets;
