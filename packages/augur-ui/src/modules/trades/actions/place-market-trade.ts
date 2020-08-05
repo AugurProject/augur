@@ -64,7 +64,6 @@ export const placeMarketTrade = ({
     ? createBigNumber(tradeInProgress.expirationTime)
     : undefined;
   const tradeGroupId = generatePendingOrderId(
-    displayAmount,
     displayPrice,
     outcomeId,
     marketId,
