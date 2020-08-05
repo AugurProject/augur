@@ -204,8 +204,8 @@ export class MarketDB extends DerivedDB {
         : 3;
     const estimatedTradeGasCost = WORST_CASE_FILL[numOutcomes];
     let gasPriceInGwei = DEFAULT_GAS_PRICE_IN_GWEI;
-    if (gasLevels && gasLevels['standard']) {
-      gasPriceInGwei = Number(new BigNumber(gasLevels['standard']).dividedBy(10 ** 9));
+    if (gasLevels && gasLevels.standard) {
+      gasPriceInGwei = Number(new BigNumber(gasLevels.standard).dividedBy(10 ** 9));
     }
     const estimatedGasCost = ETHInAttoDAI.multipliedBy(
       gasPriceInGwei
