@@ -84,7 +84,7 @@ const FilterBox: React.FC<FilterBoxProps> = ({
   const marketsPick =
     markets &&
     markets.map((
-      market 
+      market
     ) => pick(market, pickVariables));
 
   const data = createMarketsStateObject(marketsPick);
@@ -97,6 +97,7 @@ const FilterBox: React.FC<FilterBoxProps> = ({
   const [filteredData, setFilteredData] = useState(data[ALL_MARKETS]);
   const [tabs, setTabs] = useState(createTabsInfo(data));
   const { theme, blockchain: { currentAugurTimestamp } } = useAppStatusStore();
+  const noData = !Boolean(data[ALL_MARKETS].length);
 
   useEffect(() => {
     applySearchAndSort();
@@ -197,6 +198,7 @@ const FilterBox: React.FC<FilterBoxProps> = ({
               onChange={tab => {
                 setSelectedTab(tab);
               }}
+              disabled={noData}
             />
             <span>Sort by:</span>
             <SquareDropdown
@@ -204,6 +206,7 @@ const FilterBox: React.FC<FilterBoxProps> = ({
               options={sortByOptions}
               onChange={sortBy => setSortBy(sortBy)}
               sortByStyles={sortByStyles}
+              disabled={noData}
             />
           </div>
         )

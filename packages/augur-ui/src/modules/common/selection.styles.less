@@ -15,7 +15,7 @@
   > button {
     align-items: center;
     border-radius: @border-radius-default;
-    
+
     display: flex;
     flex-flow: row nowrap;
     justify-content: space-between;
@@ -358,7 +358,7 @@
   .Large {
     > button {
       .text-12;
-  
+
       @media @breakpoint-mobile {
         .text-12;
       }
@@ -372,7 +372,7 @@
   .Normal {
     > button {
       .text-10;
-  
+
       @media @breakpoint-mobile {
         .text-10;
       }
@@ -384,10 +384,10 @@
 
     &.Minimal {
       border: 0;
-  
+
       > span {
         .text-14;
-  
+
         white-space: nowrap;
         text-transform: capitalize;
         margin-right: @size-4;
@@ -396,14 +396,14 @@
         align-items: center;
         margin-left: @size-2;
       }
-  
+
       > button {
         background-color: transparent;
         padding: 0;
-  
+
         > span {
           .text-14;
-  
+
           border: 0;
           color: var(--color-primary-text);
           text-transform: capitalize;
@@ -411,19 +411,19 @@
           border-color: var(--color-primary-text);
           padding: 0;
         }
-  
+
         > svg {
           width: @size-10;
           height: @size-7;
           margin-right: @size-8;
-  
+
           > path {
             stroke: var(--color-primary-text);
             fill: none;
           }
         }
       }
-  
+
       &:hover {
         > button {
           > span {
@@ -439,7 +439,7 @@
           }
         }
       }
-  
+
       > div {
         max-height: unset;
 
@@ -448,10 +448,10 @@
         border: @size-1 solid var(--color-secondary-action-outline);
         box-shadow: 0px 0px @size-4 var(--color-primary-text-15);
         border-radius: @border-radius-default;
-  
+
         > button {
           .text-14;
-  
+
           background: transparent;
           color: var(--color-secondary-text);
           padding: @size-12 @size-16;
@@ -460,16 +460,16 @@
           display: flex;
           justify-content: space-between;
           align-items: center;
-          
+
           > svg {
             width: @size-10;
             height: @size-8;
-  
+
             > path {
               fill: var(--color-primary-text);
             }
           }
-  
+
           &.Selected {
             color: var(--color-primary-text);
           }
@@ -565,7 +565,7 @@
       &:first-of-type:hover:not([class*="Selected"]) {
         border-right: 0;
       }
-      
+
       > button {
         .text-14-bold;
 
@@ -651,18 +651,18 @@
       &:first-of-type {
         border-bottom-left-radius: @border-radius-default;
         border-top-left-radius: @border-radius-default;
-  
+
         > button {
           border-bottom-left-radius: @border-radius-default;
           border-top-left-radius: @border-radius-default;
         }
       }
-  
+
       &:last-of-type {
         border-bottom-right-radius: @border-radius-default;
         border-right: @size-1 solid var(--color-secondary-action-outline);
         border-top-right-radius: @border-radius-default;
-  
+
         > button {
           border-bottom-right-radius: @border-radius-default;
           border-top-right-radius: @border-radius-default;
@@ -673,7 +673,7 @@
       &:hover {
         border: @size-1 solid var(--color-primary-text);
         border-right: @size-1 solid var(--color-primary-text);
-  
+
         &:last-of-type {
           border-right: @size-1 solid var(--color-primary-text);
         }
@@ -690,11 +690,11 @@
       &:focus {
         border: @size-2 solid var(--color-focused);
         border-right: @size-2 solid var(--color-focused);
-  
+
         &:last-of-type {
           border-right: @size-2 solid var(--color-focused);
         }
-  
+
         & + li {
           border-left: 0;
         }
@@ -703,11 +703,11 @@
       &:active {
         border: @size-1 solid var(--color-primary-text);
         border-right: @size-1 solid var(--color-primary-text);
-  
+
         &:last-of-type {
           border-right: @size-1 solid var(--color-primary-text);
         }
-  
+
         & + li {
           border-left: 0;
         }
@@ -716,11 +716,11 @@
       &:disabled {
         border: @size-1 solid var(--color-module-background-25);
         border-right: @size-1 solid var(--color-module-background-25);
-  
+
         &:last-of-type {
           border-right: @size-1 solid var(--color-module-background-25);
         }
-  
+
         & + li {
           border-left: 0;
         }

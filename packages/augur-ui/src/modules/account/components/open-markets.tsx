@@ -97,7 +97,7 @@ const OpenMarkets = ({ toggle }: OpenMarketsProps) => {
       noBackgroundBottom
       toggle={toggle}
       bottomBarContent={
-        <div className={Styles.BottomBar}>
+        markets.length === 0 ? null : <div className={Styles.BottomBar}>
           <span>24hr</span>
           <MovementLabel
             showIcon
