@@ -61,6 +61,8 @@ interface Schemas {
   [table: string]: string;
 }
 
+import './DBCollectionProxy';
+
 // @ts-ignore
 Dexie.debug = "dexie";
 
