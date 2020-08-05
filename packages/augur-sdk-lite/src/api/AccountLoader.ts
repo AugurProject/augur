@@ -15,6 +15,8 @@ export interface AccountData {
   signerDAI: string;
   signerREP: string;
   signerLegacyREP: string;
+  signerUSDC: string;
+  signerUSDT: string;
   attoDAIperREP: string;
   attoDAIperETH: string;
   attoDAIperUSDC: string;
@@ -75,6 +77,8 @@ export class AccountLoader {
         attoREPperUSDC: new BigNumber(accountData[11]._hex).toFixed(),
         attoREPperUSDT: new BigNumber(accountData[12]._hex).toFixed(),
         attoUSDCperUSDT: new BigNumber(accountData[13]._hex).toFixed(),
+        signerUSDC: new BigNumber(accountData[14]._hex).toFixed(),
+        signerUSDT: new BigNumber(accountData[15]._hex).toFixed(),
     };
   }
 }
