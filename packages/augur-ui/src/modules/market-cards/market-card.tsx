@@ -305,12 +305,14 @@ export default class MarketCard extends React.Component<
               forkingEndTime={forkingEndTime}
             />
           </div>
-          <div className={classNames(Styles.TopRow, {
+          <div className={classNames(Styles.TopRow, Styles.HasCircularIcons, {
             [Styles.HasScalarOrInReportingLabels]: isScalar || (!marketResolved && reportingState !== REPORTING_STATE.PRE_REPORTING),
-            [Styles.HasCircularIcons]: market.isTemplate || market.isArchived || market.mostLikelyInvalid,
           })}>
             <div>
               <CustomMarketLabel isTemplate={market.isTemplate} />
+              <RedFlag market={market} />
+              <TemplateShield market={market} />
+              <Archived market={market} />
               {isScalar && !isWarpSync && (
                 <MarketTypeLabel marketType={marketType} />
               )}
@@ -325,9 +327,6 @@ export default class MarketCard extends React.Component<
               )}
             </div>
             <div>
-              <RedFlag market={market} />
-              <TemplateShield market={market} />
-              <Archived market={market} />
             </div>
             <CategoryTagTrail categories={categoriesWithClick} />
             <MarketProgress

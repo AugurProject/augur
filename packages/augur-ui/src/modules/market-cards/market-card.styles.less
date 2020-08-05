@@ -95,8 +95,12 @@
     }
 
     &.HasCircularIcons {
-      > div:nth-of-type(2) {
+      > div:first-of-type {
         display: flex;
+
+        > label {
+          margin-bottom: 0;
+        }
       }
     }
 
@@ -593,7 +597,7 @@
       }
 
       &.HasCircularIcons {
-        > div:nth-of-type(2) {
+        > div:first-of-type {
           display: flex;
           grid-row: 1;
           grid-column: 1;
@@ -621,8 +625,7 @@
       }
 
       &.HasCircularIcons.HasScalarOrInReportingLabels {
-        > div:first-of-type,
-        > div:nth-of-type(2) {
+        > div:first-of-type {
           display: flex;
           margin-right: 0;
         }

@@ -1087,7 +1087,7 @@ export const InReportingLabel = (props: InReportingLabelProps) => {
   );
 };
 
-export const CustomMarketLabel = ({ isTemplate, inTitle }) => {
+export const CustomMarketLabel = ({ isTemplate, inTitle = false }) => {
   if (isTemplate === false) {
     return (
       <span
