@@ -637,6 +637,7 @@ export const MODAL_FINALIZE_MARKET = 'MODAL_FINALIZE_MARKET';
 export const MODAL_DISCARD = 'MODAL_DISCARD';
 export const MODAL_FROZEN_FUNDS = 'MODAL_FROZEN_FUNDS';
 export const DISCLAIMER_SEEN = 'disclaimerSeen';
+export const GAS_INFO_MODAL_SEEN = 'gasInfoSeen';
 export const MARKET_REVIEW_SEEN = 'marketReviewSeen';
 export const MODAL_MARKET_REVIEW = 'MODAL_MARKET_REVIEW';
 export const MODAL_OPEN_ORDERS = 'MODAL_OPEN_ORDERS';
@@ -653,6 +654,7 @@ export const MODAL_ERROR = 'MODAL_ERROR';
 export const MODAL_HELP = 'MODAL_HELP';
 export const MODAL_REPORTING_ONLY = 'MODAL_REPORTING_ONLY';
 export const MODAL_TUTORIA_VIDEO = 'MODAL_TUTORIA_VIDEO';
+export const MODAL_GAS_INFO = 'MODAL_GAS_INFO';
 
 // transactions parameter names
 export const TX_ORDER_ID = 'orderId';
