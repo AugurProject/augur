@@ -13,6 +13,7 @@ import {
   CASHOUT,
   MODAL_CASHOUT_BET,
   MODAL_ADD_FUNDS,
+  SELL_INDEX,
 } from 'modules/common/constants';
 import {
   StarIcon,
@@ -748,7 +749,7 @@ export const CashoutButton = ({
                 market.maxPrice,
                 bet.shares,
                 bet.topBidPrice,
-                null,
+                0,
                 '0',
                 undefined
               ).catch(error => addPendingData(queueId, CASHOUT, TXEventName.Failure, '', {}))
