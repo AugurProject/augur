@@ -9,9 +9,7 @@ import { AppStatus } from 'modules/app/store/app-status';
 import { createBigNumber } from './create-big-number';
 import { totalTradingBalance } from 'modules/auth/helpers/login-account';
 import { runSimulateTrade } from 'modules/trades/actions/update-trade-cost-shares';
-import { calculateTotalOrderValue, calcOrderShareProfitLoss } from 'modules/trades/helpers/calc-order-profit-loss-percents';
-import { chatButton } from 'modules/common/buttons.styles.less';
-import { formatDaiValue } from 'modules/trades/helpers/generate-trade';
+import { calcOrderShareProfitLoss } from 'modules/trades/helpers/calc-order-profit-loss-percents';
 import { selectMarketOutcomeBestBidAsk } from 'modules/markets/selectors/select-market-outcome-best-bid-ask';
 
 export const convertPositionToBet = (position, marketInfo) => {
@@ -192,7 +190,9 @@ export const getOrderShareProfitLoss = (bet, orderBooks, cb) => {
           trade.reversal,
         )
       : null;
-  
-      cb(formatDaiValue(orderShareProfitLoss?.potentialDaiProfit), topBidPrice);
+
+      const quantity = createBigNumber(Math.min(shareCost, trade.reversal.quantity));
+      const orderCost = orderShareProfitLoss && createBigNumber(orderShareProfitLoss.potentialDaiProfit).plus(createBigNumber(trade.reversal.price).times(quantity))
+      cb(orderShareProfitLoss?.potentialDaiProfit, topBidPrice, orderCost);
   });
 }

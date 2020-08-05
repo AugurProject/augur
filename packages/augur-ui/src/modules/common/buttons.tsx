@@ -53,6 +53,7 @@ import { useMarketsStore } from 'modules/markets/store/markets';
 import { useMarkets } from 'modules/markets/store/markets-hooks';
 import { useEffect } from 'react';
 import { useBetslipStore } from 'modules/trading/store/betslip';
+import { formatDai } from 'utils/format-number';
 
 export interface DefaultButtonProps {
   id?: string;
@@ -688,8 +689,8 @@ export const CashoutButton = ({
 }: CashoutButtonProps) => {
   let cashoutDisabled = true;
   let cashoutText = 'cashout not available';
-  let didWin = bet.potentialDaiProfit ? createBigNumber(bet.potentialDaiProfit.value).gt(ZERO) : false;
-  let loss = bet.potentialDaiProfit ? createBigNumber(bet.potentialDaiProfit.value).lt(ZERO) : false;;
+  let didWin = bet.potentialDaiProfit ? createBigNumber(bet.potentialDaiProfit).gt(ZERO) : false;
+  let loss = bet.potentialDaiProfit ? createBigNumber(bet.potentialDaiProfit).lt(ZERO) : false;
   let cashout = () => bet.cashout();
 
   const {
@@ -708,10 +709,11 @@ export const CashoutButton = ({
   const market = marketInfos[bet.marketId];
 
   useEffect(() => {
-    getOrderShareProfitLoss(bet, orderBooks, (potentialDaiProfit, topBidPrice) => {
+    getOrderShareProfitLoss(bet, orderBooks, (potentialDaiProfit, topBidPrice, orderCost) => {
       updateMatched(bet.marketId, bet.orderId, {
         ...bet,
         topBidPrice,
+        orderCost,
         potentialDaiProfit
       })
     })
@@ -723,14 +725,14 @@ export const CashoutButton = ({
   } else if (!bet.topBidPrice) {
     cashoutText = `Cashout not available`;
   } else if (position && market?.reportingState !== REPORTING_STATE.AWAITING_FINALIZATION && market?.reportingState !== REPORTING_STATE.FINALIZED) {
-      cashoutText = `Cashout ${bet.potentialDaiProfit ? bet.potentialDaiProfit.full : '$0.00'}`;
+      cashoutText = `Cashout ${bet.orderCost ? formatDai(bet.orderCost).full : '$0.00'}`;
       cashoutDisabled = false;
       cashout = () => {
         setModal({
           type: MODAL_CASHOUT_BET, 
           wager: bet.wager, 
           odds: bet.odds,
-          cashOut: bet.potentialDaiProfit.value,
+          cashOut: bet.orderCost,
           profit: '0',
           cb: () => {
             addPendingData(queueId, CASHOUT, TXEventName.Pending, '', {});
