@@ -690,7 +690,6 @@ export const CashoutButton = ({
   let cashoutText = 'cashout not available';
   let didWin = false;
   let loss = false;
-  let won = createBigNumber(bet.amountWon);
   let cashout = () => bet.cashout();
 
   const {
@@ -719,9 +718,11 @@ export const CashoutButton = ({
   }, [marketInfos[bet.marketId], orderBooks[bet.marketId]]);
 
   const position = positions[bet.marketId]?.tradingPositions[bet.outcomeId];
-  if (position.priorPosition) {
+  if (position?.priorPosition) {
     cashoutText = `Cashed out`;
-  } else if (market?.reportingState !== REPORTING_STATE.AWAITING_FINALIZATION && market?.reportingState !== REPORTING_STATE.FINALIZED) {
+  } else if (!bet.topBidPrice) {
+    cashoutText = `Cashout not available`;
+  } else if (position && market?.reportingState !== REPORTING_STATE.AWAITING_FINALIZATION && market?.reportingState !== REPORTING_STATE.FINALIZED) {
       cashoutText = `Cashout ${bet.potentialDaiProfit ? bet.potentialDaiProfit.full : '$0.00'}`;
       cashoutDisabled = false;
       cashout = () => {
@@ -753,17 +754,10 @@ export const CashoutButton = ({
         }});
     }
   }
-  if (!won.eq(ZERO)) {
-    didWin = true;
-    if (won.lt(ZERO)) {
-      loss = true;
-    }
-    cashoutText = `${loss ? 'LOSS' : 'WIN'}: $${Math.abs(bet.amountWon)}`;
-  }
 
   return (
     <>
-      {pending && !position.priorPosition ?
+      {pending && !position?.priorPosition ?
         <ProcessingButton
           queueName={CASHOUT}
           queueId={queueId}
