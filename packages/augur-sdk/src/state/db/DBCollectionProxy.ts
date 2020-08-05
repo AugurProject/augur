@@ -6,6 +6,7 @@ import { queue } from 'async';
 export function CollectionQueueAddOn (db: Dexie) {
   const originalToArray = db.Collection.prototype.toArray;
   const toArrayQueue = queue(async ({collection, cb}) => {
+    console.log('Reading Query');
     return originalToArray.call(collection, cb)
   }, 1);
 
