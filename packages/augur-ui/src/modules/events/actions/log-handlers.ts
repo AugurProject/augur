@@ -516,7 +516,6 @@ export const handleOrderCreatedLog = (log: ParsedOrderEventLog) => (
   if (isUserDataUpdate && authStatus.isLogged) {
     dispatch(throttleLoadUserOpenOrders());
     const pendingOrderId = constructPendingOrderid(
-      log.amount,
       log.price,
       log.outcome,
       log.market,
@@ -583,9 +582,27 @@ export const handleOrderFilledLog = (log: ParsedOrderEventLog) => (
       orderFilled(marketId, log, isSameAddress(log.orderCreator, address))
     );
     dispatch(throttleLoadUserOpenOrders());
-    if (log.orderFiller)
+    if (log.orderFiller) {
       handleAlert(log, PUBLICFILLORDER, true, dispatch, getState);
-    dispatch(removePendingOrder(log.tradeGroupId, marketId));
+    }
+    if (log.tradeGroupId) {
+      dispatch(removePendingOrder(log.tradeGroupId, marketId));
+    } else {
+      const makePendingOrderId = constructPendingOrderid(
+        log.price,
+        log.outcome,
+        log.market,
+        log.orderType
+      );
+      const takePendingOrderId = constructPendingOrderid(
+        log.price,
+        log.outcome,
+        log.market,
+        log.orderType === "0x00" ? "0x01" : "0x00"
+      );
+      dispatch(removePendingOrder(makePendingOrderId, marketId));
+      dispatch(removePendingOrder(takePendingOrderId, marketId));
+    }
   }
 };
 

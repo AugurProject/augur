@@ -325,11 +325,11 @@ export class ZeroX {
         // We send this just to remove the pending order display
         this.client.events.emit(SubscriptionEventName.BulkOrderEvent, {
           logs: [{
-              eventType: OrderEventType.Fill,
-              orderCreator: account,
-              ...params
-            }]
-          });
+            eventType: OrderEventType.Fill,
+            orderCreator: account,
+            ...params
+          }]
+        });
       }
       return false;
     }
