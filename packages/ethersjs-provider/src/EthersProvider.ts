@@ -1,21 +1,24 @@
-import {
-  EthersProvider as EProvider,
-  Transaction,
-} from '@augurproject/contract-dependencies-ethers';
-import { Log, LogValues } from '@augurproject/types';
-import { logger, LoggerLevels, NetworkId } from '@augurproject/utils';
 import { AsyncQueue, queue, retry } from 'async';
 import { BigNumber } from 'bignumber.js';
 import { Abi } from 'ethereum';
 import { JSONRPCErrorCallback, JSONRPCRequestPayload } from 'ethereum-types';
 import { ethers } from 'ethers';
 import * as _ from 'lodash';
+
+import {
+  EthersProvider as EProvider,
+  Transaction,
+} from '@augurproject/contract-dependencies-ethers';
+import { Log, LogValues } from '@augurproject/types';
+import { logger, LoggerLevels, NetworkId, getGasStation } from '@augurproject/utils';
+
 import { FasterAbiInterface } from './FasterAbiInterface';
 import { Counter, isInstanceOfArray, isInstanceOfBigNumber } from './utils';
 
+
 declare global {
   interface Array<T> {
-    toLowerCase(): Array<T>;
+    toLowerCase(): T[];
   }
 }
 
@@ -54,7 +57,6 @@ export class EthersProvider extends ethers.providers.BaseProvider
   get overrideGasPrice() {
     return this._overrideGasPrice;
   }
-
   set overrideGasPrice(gasPrice: ethers.utils.BigNumber | null) {
     if (gasPrice !== null && gasPrice.eq(new ethers.utils.BigNumber(0))) {
       this._overrideGasPrice = null;
@@ -94,10 +96,10 @@ export class EthersProvider extends ethers.providers.BaseProvider
         retry(
           {
             times,
-            interval: function (retryCount) {
+            interval (retryCount) {
               return interval * Math.pow(2, retryCount);
             },
-            errorFilter: function (err) {
+            errorFilter (err) {
               return (
                 err.message.includes('Rate limit') ||
                 err['code'] === -32000 ||
@@ -228,13 +230,30 @@ export class EthersProvider extends ethers.providers.BaseProvider
     return super.getBlockNumber();
   }
 
-  async getGasPrice(): Promise<ethers.utils.BigNumber> {
+  async getGasPrice(networkId?: NetworkId): Promise<ethers.utils.BigNumber> {
     if (this.overrideGasPrice !== null) {
-      const gasPrice = await this.overrideGasPrice;
-      return gasPrice;
+      return this.overrideGasPrice;
     }
-    const gasPrice = await super.getGasPrice();
-    return gasPrice;
+
+    const viaProviderPromise = super.getGasPrice();
+
+    networkId = networkId || await this.getNetworkId();
+    const viaGasStation = await getGasStation(networkId)
+      .then((gasStation) => {
+        return new ethers.utils.BigNumber(gasStation.standard);
+      }).catch((err) => {
+        console.warn('gas station query failed:', err);
+        return null;
+      });
+
+    const viaProvider = await viaProviderPromise; // delays await for simultaneity
+
+    // prefer higher estimate
+    if (viaGasStation === null || viaProvider.gt(viaGasStation)) {
+      return viaProvider;
+    } else {
+      return viaGasStation;
+    }
   }
 
   async estimateGas(
@@ -347,7 +366,7 @@ export class EthersProvider extends ethers.providers.BaseProvider
   }
 
   // We're primarily hacking this and bypassing ethers to support multiple addresses in the filter but this also allows us to cut out some expensive behavior we don't care about for the address
-  async getMultiAddressLogs(filter: MultiAddressFilter): Promise<Array<Log>> {
+  async getMultiAddressLogs(filter: MultiAddressFilter): Promise<Log[]> {
     await this.ready;
     if (filter.fromBlock !== undefined) {
       filter.fromBlock = ethers.utils.hexStripZeros(
@@ -431,7 +450,7 @@ export class EthersProvider extends ethers.providers.BaseProvider
     );
 
     // Presumably we would never have more than 10k logs in one block but just in case.
-    if (Number(filter.fromBlock) === midBlock) throw new Error("Log Limit encountered in a single block");
+    if (Number(filter.fromBlock) === midBlock) throw new Error('Log Limit encountered in a single block');
 
     const firstFilter = {
       ...filter,
@@ -480,12 +499,13 @@ export class EthersProvider extends ethers.providers.BaseProvider
     this.performQueue.push(
       { message: 'send', params: payload },
       (error, result) => {
-        if (callback)
+        if (callback) {
           callback(error, {
             result,
             id: payload.id,
             jsonrpc: payload.jsonrpc,
           });
+        }
       }
     );
   }

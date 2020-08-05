@@ -232,8 +232,8 @@ export class Augur<TProvider extends Provider = Provider> {
   }
 
   async getGasPrice(): Promise<BigNumber> {
-    const balance = await this.dependencies.provider.getGasPrice();
-    return new BigNumber(balance.toString());
+    const gasPrice = await this.dependencies.provider.getGasPrice(this.networkId);
+    return new BigNumber(gasPrice.toString()); // ethers.utils.BigNumber => bignumber.js
   }
 
   async getAccount(): Promise<string | null> {
