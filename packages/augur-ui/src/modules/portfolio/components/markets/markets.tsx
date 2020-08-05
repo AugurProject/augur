@@ -182,7 +182,7 @@ const MyMarkets = ({
           <div className={marketStyles.BottomContent}>
             <Link to={makePath(CREATE_MARKET)}>
               <SecondaryButton
-                text={'Create Market'}
+                text="Create Market"
                 action={() => setTheme(THEMES.TRADING)}
                 icon={AddIcon}
               />
@@ -197,13 +197,13 @@ const MyMarkets = ({
         isTrading ? (
           <Link to={makePath(CREATE_MARKET)}>
             <SecondaryButton
-              text={'Create Market'}
+              text="Create Market"
               action={() => null}
             />
           </Link>
         ) : (
           <SecondaryButton
-            text={'Go to trading'}
+            text="Go to trading"
             action={() => setTheme(THEMES.TRADING)}
           />
         )
@@ -214,6 +214,6 @@ const MyMarkets = ({
 
 MyMarkets.defaultProps = {
   disputingWindowEndTime: 0
-}
+};
 
 export default MyMarkets;
