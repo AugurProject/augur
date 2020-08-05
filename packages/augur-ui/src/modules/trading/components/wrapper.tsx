@@ -66,8 +66,6 @@ interface WrapperProps {
   disableTrading?: boolean;
   canPostOrder: Function;
   tradingApproved: boolean;
-  gasInfoModalSeen: boolean;
-  showGasInfoModal: Function;
 }
 
 interface WrapperState {
@@ -492,8 +490,6 @@ class Wrapper extends Component<WrapperProps, WrapperState> {
       gsnWalletInfoSeen,
       disableTrading,
       tradingApproved,
-      gasInfoModalSeen,
-      showGasInfoModal,
     } = this.props;
     let {
       marketType,
@@ -541,11 +537,9 @@ class Wrapper extends Component<WrapperProps, WrapperState> {
             tutorialNext();
             this.clearOrderForm();
           } else {
-            if (!gasInfoModalSeen) {
-              showGasInfoModal({ callback: () => this.placeMarketTrade(market, selectedOutcome, this.state) });
-            } else {
-              this.placeMarketTrade(market, selectedOutcome, this.state);
-            }
+            gsnUnavailable && !gsnWalletInfoSeen
+              ? initializeGsnWallet(() => this.placeMarketTrade(market, selectedOutcome, this.state))
+              : this.placeMarketTrade(market, selectedOutcome, this.state);
           }
         }}
         disabled={

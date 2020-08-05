@@ -24,8 +24,6 @@ import {
   Title,
   DescriptionWithLink,
   DescriptionWithLinkProps,
-  LargeSubheader,
-  MediumSubheader,
 } from 'modules/modal/common';
 import {
   MultipleExplainerBlock,
@@ -61,15 +59,12 @@ interface MessageProps {
   checkbox?: CheckboxCTAProps;
   subheader?: string;
   subheader_2?: string;
-  footer?: string;
-  mediumSubheader?: string;
   showDiscordLink?: boolean;
   invalidMarketRules?: boolean;
   showAddFundsHelp?: boolean;
   walletType?: string;
   showAddFundsModal?: Function;
   showHelp?: Boolean;
-  image?: string;
 }
 
 export const Message = ({
@@ -89,9 +84,6 @@ export const Message = ({
   buttons = [],
   subheader,
   subheader_2,
-  footer,
-  mediumSubheader,
-  image,
   showDiscordLink,
   invalidMarketRules,
   showAddFundsHelp = false,
@@ -107,7 +99,6 @@ export const Message = ({
       {callToAction && <CallToAction callToAction={callToAction} />}
       {content && <Content content={content} />}
       {description && <Description description={description} />}
-      {mediumSubheader && <MediumSubheader text={mediumSubheader} />}
       {descriptionWithLink && <DescriptionWithLink {...descriptionWithLink} />}
       {showHelp && <HelpMenu />}
       {showAddFundsHelp && (
@@ -121,7 +112,6 @@ export const Message = ({
       )}
       {subheader && <Subheader subheaderContent={subheader} />}
       {subheader_2 && <Subheader subheaderContent={subheader_2} />}
-      {image && <img src={`images/${image}`} />}
       {breakdown && <Breakdown rows={breakdown} />}
       {readableAddress && <ReadableAddress {...readableAddress} />}
       {depositInfo && <DepositInfo {...depositInfo} />}
@@ -144,7 +134,6 @@ export const Message = ({
           ]}
         />
       )}
-      {footer && <MediumSubheader text={footer} />}
     </main>
     {buttons.length > 0 && <ButtonsRow buttons={buttons} />}
   </div>

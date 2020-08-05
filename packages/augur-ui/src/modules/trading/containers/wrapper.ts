@@ -7,8 +7,6 @@ import {
   MODAL_LOGIN,
   MODAL_SIGNUP,
   MODAL_INITIALIZE_ACCOUNT,
-  MODAL_GAS_INFO,
-  GAS_INFO_MODAL_SEEN,
 } from 'modules/common/constants';
 import { updateModal } from 'modules/modal/actions/update-modal';
 import { getGasPrice } from 'modules/auth/selectors/get-gas-price';
@@ -109,19 +107,16 @@ const mapDispatchToProps = (dispatch, ownProps) => ({
     ),
     orderSubmitted: (type, marketId) => dispatch(orderSubmitted(type, marketId)),
     canPostOrder: (price, side, orderBook) => canPostOrder(price, side, orderBook),
-    showGasInfoModal: (modal) => dispatch(updateModal({ type: MODAL_GAS_INFO, modal })),
 });
 
 const mergeProps = (sP, dP, oP) => {
   const disclaimerSeen = getValueFromlocalStorage(DISCLAIMER_SEEN);
-  const gasInfoModalSeen = getValueFromlocalStorage(GAS_INFO_MODAL_SEEN);
 
   return {
     ...oP,
     ...sP,
     ...dP,
     disclaimerSeen: !!disclaimerSeen,
-    gasInfoModalSeen: !!gasInfoModalSeen,
     canPostOrder: (price, side) => dP.canPostOrder(price, side, sP.orderBook),
   };
 };
