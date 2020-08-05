@@ -300,6 +300,7 @@ const AppView = ({
             currentPath !== ACCOUNT_SUMMARY && (
               <section className={Styles.TopBar} />
             )}
+          <StatusErrorMessage />
           <section
             className={classNames(Styles.Wrap, {
               [Styles.WrapMarkets]: currentPath === MARKETS,
@@ -422,7 +423,6 @@ const MainAppContent = ({
             <Betslip />
             <SideImages />
           </div>
-          <StatusErrorMessage />
         </MarketsProvider>
       </BetslipProvider>
     </section>

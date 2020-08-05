@@ -432,6 +432,36 @@
 
 :root[theme='BETTING'],
 :root[theme='SPORTS'] {
+  .StatusErrorMessage {
+    > span {
+      .text-12;
+      
+      color: var(--color-primary-text);
+      text-transform: unset;
+      width: 100%;
+      margin: @size-32;
+      background: var(--color-module-background);
+      border: @size-1 solid var(--color-outcome-invalid);
+      align-items: center;
+      
+      > svg {
+        height: @size-20;
+        width: @size-20;
+        background: var(--color-outcome-invalid);
+        border-radius: 100px;
+
+        > path,
+        > rect {
+          fill: var(--color-module-background);
+        }
+
+        > circle {
+          stroke: var(--color-outcome-invalid);
+        }
+      }
+    }
+  }
+
   .LinearPropertyLabel {
     > svg > line {
       stroke: var(--color-dark-text);
@@ -1334,10 +1364,8 @@ span.PendingLabel {
 
     display: flex;
     background: var(--color-error-20);
-    border-bottom: @size-2 solid var(--color-error);
+    border: @size-2 solid var(--color-error);
     border-left: @size-4 solid var(--color-error);
-    border-right: @size-2 solid var(--color-error);
-    border-top: @size-2 solid var(--color-error);
     border-radius: 3px;
     color: var(--color-primary-text);
     padding: 0.5rem 0;
