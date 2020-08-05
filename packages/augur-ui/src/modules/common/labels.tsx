@@ -933,7 +933,7 @@ export const MarketTypeLabel = ({
   const labelTexts = {
     [YES_NO]: 'Yes/No',
     [CATEGORICAL]: 'Categorical',
-    [SCALAR]: 'Scalar Market',
+    [SCALAR]: 'Scalar',
   };
   const text = isWarpSync ? 'Warp Sync Market' : labelTexts[marketType];
   const isScalar = !isWarpSync && marketType === SCALAR;
@@ -945,7 +945,7 @@ export const MarketTypeLabel = ({
         [Styles.MarketStatus_warpSync]: isWarpSync,
       })}
     >
-      {text} {isScalar && ScalarIcon}
+      {isScalar && ScalarIcon} {text}
     </span>
   );
 };
@@ -1086,6 +1086,29 @@ export const InReportingLabel = (props: InReportingLabelProps) => {
     </span>
   );
 };
+
+export const CustomMarketLabel = ({ isTemplate, inTitle = false }) => {
+  if (isTemplate === false) {
+    return (
+      <span
+        className={classNames(
+          Styles.MarketStatus,
+          Styles.MarketStatus_reporting,
+          Styles.MarketStatus_forking,
+          { [Styles.MarketStatus_isTitle]: inTitle}
+        )}
+      >
+        {ExclamationCircle}
+        {'Custom Market'}
+          <span className={Styles.CustomMarketCaution}>
+            {/* {DoubleArrows} */}
+            {' - Proceed with Caution'}
+          </span>
+        </span>
+    )
+  }
+  return null;
+}
 
 interface PendingLabelProps {
   status?: string;

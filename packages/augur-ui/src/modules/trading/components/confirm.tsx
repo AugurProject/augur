@@ -196,7 +196,7 @@ class Confirm extends Component<ConfirmProps, ConfirmState> {
       ? createBigNumber(formatGasCostToEther(gasLimit, { decimalsRounded: 4 }, createBigNumber(GWEI_CONVERSION).multipliedBy(gasPrice)))
       : ZERO;
 
-    const gasCostDai = formatDai(ethToDaiRate.value * gasCostInEth);
+    const gasCostDai = formatDai(createBigNumber(ethToDaiRate?.value || 0).times(createBigNumber(gasCostInEth)));
 
     if (marketType === SCALAR && selectedOutcomeId === INVALID_OUTCOME_ID) {
       messages = {
@@ -346,7 +346,7 @@ class Confirm extends Component<ConfirmProps, ConfirmState> {
       ? createBigNumber(formatGasCostToEther(gasLimit, { decimalsRounded: 4 }, createBigNumber(GWEI_CONVERSION).multipliedBy(gasPrice)))
       : ZERO;
 
-    const gasCostDai = formatDai(ethToDaiRate.value * gasCostInEth);
+    const gasCostDai = formatDai(createBigNumber(ethToDaiRate?.value || 0).times(createBigNumber(gasCostInEth)));
 
     const limitPricePercentage = (side === BUY
       ? createBigNumber(limitPrice)

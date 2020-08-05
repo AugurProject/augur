@@ -8,6 +8,7 @@ import {
   RedFlag,
   TemplateShield,
   Archived,
+  CustomMarketLabel,
 } from 'modules/common/labels';
 import {
   HoverIcon,
@@ -304,11 +305,15 @@ export default class MarketCard extends React.Component<
               forkingEndTime={forkingEndTime}
             />
           </div>
-          <div className={classNames(Styles.TopRow, {
+          <div className={classNames(Styles.TopRow, Styles.HasCircularIcons, {
             [Styles.HasScalarOrInReportingLabels]: isScalar || (!marketResolved && reportingState !== REPORTING_STATE.PRE_REPORTING),
-            [Styles.HasCircularIcons]: market.isTemplate || market.isArchived || market.mostLikelyInvalid,
-          })}>
+            [Styles.CustomMarket]: market.isTemplate === false,
+           })}>
             <div>
+              <CustomMarketLabel isTemplate={market.isTemplate} />
+              <RedFlag market={market} />
+              <TemplateShield market={market} />
+              <Archived market={market} />
               {isScalar && !isWarpSync && (
                 <MarketTypeLabel marketType={marketType} />
               )}
@@ -321,11 +326,6 @@ export default class MarketCard extends React.Component<
                   isForkingMarket={isForking && forkingMarket === id}
                 />
               )}
-            </div>
-            <div>
-              <RedFlag market={market} />
-              <TemplateShield market={market} />
-              <Archived market={market} />
             </div>
             <CategoryTagTrail categories={categoriesWithClick} />
             <MarketProgress
@@ -361,7 +361,7 @@ export default class MarketCard extends React.Component<
             </DotSelection>
           </div>
 
-          <MarketTitle id={id} headerType={headerType} showCustomLabel={true} />
+          <MarketTitle id={id} headerType={headerType} showCustomLabel={false} />
           {!condensed && !marketResolved ? (
             <>
               <OutcomeGroup
