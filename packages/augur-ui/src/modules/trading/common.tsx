@@ -421,7 +421,7 @@ export const BetslipHeader = ({ myBetsCount }) => {
           toggleHeader(BETSLIP_SELECTED.MY_BETS);
         }}
       >
-        My Bets<span>{myBetsCount}</span>
+        Active Bets<span>{myBetsCount}</span>
       </li>
     </ul>
   );
