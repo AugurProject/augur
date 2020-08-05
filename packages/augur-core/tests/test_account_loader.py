@@ -12,7 +12,7 @@ def test_market_hot_loading_basic(kitchenSinkFixture, augur, cash, reputationTok
     walletAddress = augurWalletRegistry.getCreate2WalletAddress(account)
 
     # Lets load the account right away without doing anything to check defaults
-    accountData = getAccountData(accountLoader, account, reputationToken.address, nullAddress, nullAddress)
+    accountData = getAccountData(accountLoader, account, reputationToken.address, legacyReputationToken.address, legacyReputationToken.address)
 
     assert accountData.signerETH == 999999999999999999645100
     assert accountData.signerDAI == 0
@@ -27,7 +27,7 @@ def test_market_hot_loading_basic(kitchenSinkFixture, augur, cash, reputationTok
     reputationToken.faucet(9 * 10**18, sender=account)
     legacyReputationToken.faucet(8 * 10**18, sender=account)
 
-    accountData = getAccountData(accountLoader, account, reputationToken.address, nullAddress, nullAddress)
+    accountData = getAccountData(accountLoader, account, reputationToken.address, legacyReputationToken.address, legacyReputationToken.address)
 
     assert accountData.signerETH < 999999999999999999645000
     assert accountData.signerDAI == 10 * 10**18
@@ -48,7 +48,7 @@ def test_market_hot_loading_basic(kitchenSinkFixture, augur, cash, reputationTok
 
     repExchange.mint(account)
 
-    accountData = getAccountData(accountLoader, account, reputationToken.address, nullAddress, nullAddress)
+    accountData = getAccountData(accountLoader, account, reputationToken.address, legacyReputationToken.address, legacyReputationToken.address)
     assert accountData.attoDAIperREP == 20 * 10**18
 
     ZeroXTrade = kitchenSinkFixture.contracts['ZeroXTrade']
@@ -63,8 +63,12 @@ def test_market_hot_loading_basic(kitchenSinkFixture, augur, cash, reputationTok
     weth.transfer(ethExchange.address, ethAmount)
     ethExchange.mint(account)
 
-    accountData = getAccountData(accountLoader, account, reputationToken.address, nullAddress, nullAddress)
+    accountData = getAccountData(accountLoader, account, reputationToken.address, legacyReputationToken.address, cash.address)
     assert accountData.attoDAIperETH == 100 * 10**18
+
+    # It provides the balances of the last two tokens provided
+    assert accountData.signerUSDC == 8 * 10**18
+    assert accountData.signerUSDT == 10 * 10**18
 
 
 class AccountData:
@@ -76,6 +80,8 @@ class AccountData:
         self.signerLegacyREP = accountData[3]
         self.attoDAIperREP = accountData[4]
         self.attoDAIperETH = accountData[5]
+        self.signerUSDC = accountData[14]
+        self.signerUSDT = accountData[15]
 
 def getAccountData(accountLoader, account, reputationToken, USDC, USDT):
     return AccountData(accountLoader.loadAccountData(account, reputationToken, USDC, USDT))
