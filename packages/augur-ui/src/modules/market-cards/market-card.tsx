@@ -8,6 +8,7 @@ import {
   RedFlag,
   TemplateShield,
   Archived,
+  CustomMarketLabel,
 } from 'modules/common/labels';
 import {
   HoverIcon,
@@ -309,6 +310,7 @@ export default class MarketCard extends React.Component<
             [Styles.HasCircularIcons]: market.isTemplate || market.isArchived || market.mostLikelyInvalid,
           })}>
             <div>
+              <CustomMarketLabel isTemplate={market.isTemplate} />
               {isScalar && !isWarpSync && (
                 <MarketTypeLabel marketType={marketType} />
               )}
@@ -361,7 +363,7 @@ export default class MarketCard extends React.Component<
             </DotSelection>
           </div>
 
-          <MarketTitle id={id} headerType={headerType} showCustomLabel={true} />
+          <MarketTitle id={id} headerType={headerType} showCustomLabel={false} />
           {!condensed && !marketResolved ? (
             <>
               <OutcomeGroup

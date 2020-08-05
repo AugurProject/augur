@@ -1087,6 +1087,28 @@ export const InReportingLabel = (props: InReportingLabelProps) => {
   );
 };
 
+export const CustomMarketLabel = ({ isTemplate }) => {
+  if (isTemplate === false) {
+    return (
+      <span
+        className={classNames(
+          Styles.MarketStatus,
+          Styles.MarketStatus_reporting,
+          Styles.MarketStatus_forking,
+        )}
+      >
+        {ExclamationCircle}
+        {'Custom Market'}
+          <span className={Styles.InReporting_reportingDetails}>
+            {/* {DoubleArrows} */}
+            {' - Proceed with Caution'}
+          </span>
+        </span>
+    )
+  }
+  return null;
+}
+
 interface PendingLabelProps {
   status?: string;
 }
