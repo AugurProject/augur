@@ -29,6 +29,8 @@ contract AccountLoader is Initializable {
         uint256 attoREPperUSDC;
         uint256 attoREPperUSDT;
         uint256 attoUSDCperUSDT;
+        uint256 signerUSDC;
+        uint256 signerUSDT;
     }
 
     IERC20 public cash;
@@ -50,6 +52,8 @@ contract AccountLoader is Initializable {
         _data.signerDAI = cash.balanceOf(_account);
         _data.signerREP = _reputationToken.balanceOf(_account);
         _data.signerLegacyREP = legacyReputationToken.balanceOf(_account);
+        _data.signerUSDC = _USDC.balanceOf(_account);
+        _data.signerUSDT = _USDT.balanceOf(_account);
 
         _data.attoDAIperREP = getExchangeRate(address(_reputationToken), address(cash));
         _data.attoDAIperETH = getExchangeRate(address(weth), address(cash));

@@ -55,7 +55,6 @@ import ModalHelp from 'modules/modal/containers/modal-help';
 import ModalMarketNotFound from 'modules/modal/containers/modal-market-not-found';
 import FrozenFundsBreakdown from 'modules/modal/containers/modal-frozen-funds-breakdown';
 import ModalTutorialVideo from 'modules/modal/containers/modal-tutoria-video';
-import ModalGasInfo from 'modules/modal/containers/modal-gas-info'
 import * as TYPES from 'modules/common/constants';
 
 import Styles from 'modules/modal/components/common/common.styles.less';
@@ -187,8 +186,6 @@ function selectModal(type, props, closeModal, modal) {
       return <ModalDisclaimer {...modal} isReportingOnly={true} />;
     case TYPES.MODAL_TUTORIA_VIDEO:
       return <ModalTutorialVideo />
-    case TYPES.MODAL_GAS_INFO:
-      return <ModalGasInfo {...modal} />
     default:
       return <div />;
   }
