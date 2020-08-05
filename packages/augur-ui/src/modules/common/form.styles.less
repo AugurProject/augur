@@ -2462,6 +2462,18 @@ div.error > div > div > div > div > input {
         border: @size-1 solid var(--color-primary-text);
       }
     }
+
+    &:hover:not(.loading) {
+      > span:first-of-type {
+        color: var(--color-primary-text);
+        text-decoration: underline;
+      }
+
+      > span:last-of-type {
+        border: @size-1 solid var(--color-primary-text);
+        color: var(--color-primary-text);
+      }
+    }
   }
 }
 
