@@ -619,9 +619,9 @@ export const ModalCashoutBet = () => {
   } = useAppStatusStore();
 
   const {
-    stake, 
+    wager, 
     cashOut,
-    profit,
+    odds,
     cb
   } = modal;
 
@@ -634,16 +634,16 @@ export const ModalCashoutBet = () => {
       }}
       breakdown={[
         {
-          label: 'Stake',
-          value: formatNumber(stake).full,
+          label: 'Wager',
+          value: formatDai(wager).full,
+        },
+        {
+          label: 'Odds',
+          value: formatDai(odds).full,
         },
         {
           label: 'Cash out',
           value: formatDai(cashOut).full,
-        },
-        {
-          label: 'Profit',
-          value: formatDai(profit).full,
         },
       ]}
       buttons={[
