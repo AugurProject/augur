@@ -74,6 +74,7 @@ export class DB {
   getterCache: GetterCache;
   syncStatus: SyncStatus;
   warpCheckpoints: WarpSyncCheckpointsDB;
+  private dbOpened: boolean = false;
 
   readonly genericEventDBDescriptions: GenericEventDBDescription[] = [
     { EventName: 'CompleteSetsPurchased', indexes: ['timestamp', 'market'] },
@@ -210,12 +211,17 @@ export class DB {
    * @return {Promise<void>}
    */
   async initializeDB(): Promise<DB> {
-    const schemas = this.generateSchemas();
+    if (!this.dbOpened) {
+      const schemas = this.generateSchemas();
 
-    this.dexieDB.version(1).stores(schemas);
+      this.dexieDB.version(1).stores(schemas);
 
-    await this.dexieDB.open();
+      await this.dexieDB.open();
 
+      this.dbOpened = true;
+    }
+
+    console.log(`DB: Creating DB Objects`);
     this.syncStatus = new SyncStatus(this.networkId, this.uploadBlockNumber, this);
     this.warpCheckpoints = new WarpSyncCheckpointsDB(this.networkId, this);
     this.getterCache = GetterCache.create(this, this.networkId, this.augur);
@@ -295,30 +301,34 @@ export class DB {
       console.log()
     }
 
-    const universeCreatedLogCount = await this.UniverseCreated.count();
-    if (universeCreatedLogCount > 0) {
-      const currentUniverseCreateLogCount = await this.UniverseCreated.where(
-        'childUniverse'
-      )
-        .equalsIgnoreCase(this.augur.contracts.universe.address)
-        .count();
+    if (!this.augur.config.deploy.isProduction) {
+      console.log(`DB: Checking stale dev universe`);
+      const universeCreatedLogCount = await this.UniverseCreated.count();
+      if (universeCreatedLogCount > 0) {
+        const currentUniverseCreateLogCount = await this.UniverseCreated.where(
+          'childUniverse'
+        )
+          .equalsIgnoreCase(this.augur.contracts.universe.address)
+          .count();
 
-      if (currentUniverseCreateLogCount === 0) {
-        // Need to reset the db if we have universe created logs from a previous deployment.
-        await this.delete();
-        await this.initializeDB();
+        if (currentUniverseCreateLogCount === 0) {
+          console.log(`DB: Deleting Database due to stale universe`);
+          // Need to reset the db if we have universe created logs from a previous deployment.
+          await this.clear();
+          await this.initializeDB();
+        }
       }
     }
 
     return this;
   }
 
-  // Remove databases and unregister event handlers.
-  async delete() {
+  // Clear tables and unregister event handlers.
+  async clear() {
     for (const db of Object.values(this.syncableDatabases)) {
-      await db.delete();
+      await db.clear();
     }
-    this.getterCache.delete();
+    await this.getterCache.clear();
 
     this.syncableDatabases = {};
 
@@ -327,8 +337,6 @@ export class DB {
     this.marketDatabase = undefined;
     this.parsedOrderEventDatabase = undefined;
     this.getterCache = undefined;
-
-    this.dexieDB.close();
   }
 
   generateSchemas(): Schemas {

@@ -50,6 +50,12 @@ export abstract class AbstractTable {
     return Dexie.delete(this.dbName);
   }
 
+  async clear() {
+    console.log(`AbstractTable: clear request for ${this.dbName} started`);
+    await this.table.clear();
+    console.log(`AbstractTable: clear request for ${this.dbName} finished`);
+  }
+
   async getDocumentCount(): Promise<number> {
     return this.table.count();
   }
