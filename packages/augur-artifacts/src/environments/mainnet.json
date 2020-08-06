@@ -102,7 +102,7 @@
     "wssPort": 9002,
     "startWSS": true
   },
-  "logLevel": 2,
+  "logLevel": 0,
   "showReloadModal": false,
   "averageBlocktime": 15000,
   "ui": {
