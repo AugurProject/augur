@@ -207,7 +207,7 @@ export function BetslipReducer(state, action) {
       }
       const match = matchedItems[marketId].orders.findIndex(
         lOrder =>
-          lOrder.outcomeId === order.outcomeId && lOrder.price === order.price
+          lOrder.outcomeId === order.outcomeId
       );
       if (match > -1) {
         matchedItems[marketId].orders[match] = {
