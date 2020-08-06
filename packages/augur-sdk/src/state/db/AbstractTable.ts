@@ -1,6 +1,6 @@
 import Dexie from 'dexie';
 import * as _ from 'lodash';
-import { AsyncQueue, queue, timeout } from 'async';
+import { AsyncQueue, queue, timeout, retry } from 'async';
 
 export type PrimitiveID = string | number | Date;
 
@@ -33,7 +33,16 @@ export abstract class AbstractTable {
 
   private static writeQueue: AsyncQueue<WriteQueueTask> = queue(
     (task: WriteQueueTask, callback) => {
-      return timeout(async function WriteOperation() {
+      return retry(
+        {
+          times: 2,
+          interval: function (retryCount) {
+            return 100;
+          },
+          errorFilter: function (err) {
+            return err['code'] === "ETIMEDOUT";
+          }
+        }, timeout(async function WriteOperation() {
         if (task.type === WriteTaskType.ADD) {
           return task.table.bulkAddDocumentsInternal(task.documents);
         } else if (task.type === WriteTaskType.PUT) {
@@ -41,9 +50,9 @@ export abstract class AbstractTable {
         } else {
           return task.table.bulkUpsertDocumentsInternal(task.documents);
         }
-      }, 10000)(callback);
+      }, 5000), callback);
     },
-    1
+    10
   );
 
   protected constructor(networkId: number, dbName: string, db: Dexie) {
@@ -124,7 +133,12 @@ export abstract class AbstractTable {
     for (const document of documents) {
       delete document.constructor;
     }
-    await this.table.bulkAdd(documents);
+    try {
+      await this.table.bulkAdd(documents);
+    } catch(e) {
+      console.warn(`AbstractTable: bulkAddDocuments request for ${this.dbName} failed.`, e);
+      // We intentionally do not throw here so that retries on timeouts that actually succeed do not halt syncing
+    }
     console.log(`AbstractTable: bulkAddDocuments request for ${this.dbName} finished. ${documents.length} docs`);
   }
 
@@ -132,6 +146,12 @@ export abstract class AbstractTable {
     console.log(`AbstractTable: bulkPutDocuments request for ${this.dbName} started. ${documents.length} docs`);
     for (const document of documents) {
       delete document.constructor;
+    }
+    try {
+      await this.table.bulkPut(documents);
+    } catch(e) {
+      console.warn(`AbstractTable: bulkPutDocuments request for ${this.dbName} failed.`, e);
+      throw e;
     }
     await this.table.bulkPut(documents);
     console.log(`AbstractTable: bulkPutDocuments request for ${this.dbName} finished. ${documents.length} docs`);
