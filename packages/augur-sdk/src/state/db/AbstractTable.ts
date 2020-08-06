@@ -41,7 +41,7 @@ export abstract class AbstractTable {
         } else {
           return task.table.bulkUpsertDocumentsInternal(task.documents);
         }
-      }, 1000)(callback);
+      }, 2500)(callback);
     },
     1
   );
