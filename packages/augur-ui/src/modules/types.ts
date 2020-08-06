@@ -595,6 +595,8 @@ export interface AppStatus {
   isHelpMenuOpen: boolean;
   ethToDaiRate: FormattedNumber;
   repToDaiRate: FormattedNumber;
+  usdtToDaiRate: FormattedNumber;
+  usdcToDaiRate: FormattedNumber;
   zeroXEnabled: boolean;
   walletStatus: string;
 }
@@ -643,6 +645,8 @@ export interface AccountBalances {
     eth: string;
     rep: string;
     dai: string;
+    usdt: string;
+    usdc: string;
     legacyRep: string;
   }
 }

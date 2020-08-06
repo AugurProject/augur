@@ -33,14 +33,16 @@ interface AddFundsProps {
   closeAction: Function;
   tokenToAdd: string;
   loginAccount: LoginAccount;
+  balances: Balances;
   ETH_RATE: BigNumber;
   REP_RATE: BigNumber;
   ethToDaiRate: FormattedNumber;
   repToDaiRate: FormattedNumber;
+  usdtToDaiRate: FormattedNumber;
+  usdcToDaiRate: FormattedNumber;
   config: SDKConfiguration;
   addFundsTorus: Function;
   addFundsFortmatic: Function;
-  useSigner?: boolean;
   initialAddFundsFlow?: string;
   initialSwapToken?: string;
 }
@@ -54,17 +56,21 @@ export const AddFunds = ({
   REP_RATE,
   ethToDaiRate,
   repToDaiRate,
+  usdcToDaiRate,
+  usdtToDaiRate,
   config,
   addFundsTorus,
   addFundsFortmatic,
-  useSigner = true,
   initialAddFundsFlow = null,
   initialSwapToken = null,
+  balances,
 }: AddFundsProps) => {
   const address = loginAccount.address;
   const accountMeta = loginAccount.meta;
   const BUY_MIN = 20;
   const BUY_MAX = 250;
+  const SWAP_ID = 0;
+  const pillOptions = [{ label: 'Convert', id: SWAP_ID }];
 
   const usingOnRampSupportedWallet = accountMeta &&
     accountMeta.accountType === ACCOUNT_TYPES.TORUS ||
@@ -119,8 +125,9 @@ export const AddFunds = ({
     addFundsOptions = addFundsOptions.slice(1, addFundsOptions.length);
   }
 
-  const SWAP_ID = 0;
-  const pillOptions = [{ label: 'Convert', id: SWAP_ID }];
+  if (tokenToAdd === ETH) {
+    addFundsOptions = addFundsOptions.filter(options => options.value !== ADD_FUNDS_SWAP)
+  }
 
   return (
     <div
@@ -182,15 +189,16 @@ export const AddFunds = ({
 
               <Swap
                 address={loginAccount.address}
-                balances={loginAccount.balances}
                 toToken={tokenToAdd}
                 fromToken={initialSwapToken ? initialSwapToken : null}
                 ETH_RATE={ETH_RATE}
                 REP_RATE={REP_RATE}
                 ethToDaiRate={ethToDaiRate}
                 repToDaiRate={repToDaiRate}
+                usdtToDaiRate={usdtToDaiRate}
+                usdcToDaiRate={usdcToDaiRate}
                 config={config}
-                useSigner={useSigner}
+                balances={balances}
               />
             </>
           )}
