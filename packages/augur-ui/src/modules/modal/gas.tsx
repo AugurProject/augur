@@ -8,16 +8,18 @@ import {
   formatGasCostToEther,
   formatEtherEstimate,
   formatDai,
+  formatEther,
 } from 'utils/format-number';
 import {
   GWEI_CONVERSION,
   TRADE_ORDER_GAS_MODAL_ESTIMATE,
 } from 'modules/common/constants';
-import { createBigNumber } from 'utils/create-big-number';
+import { createBigNumber, BigNumber } from 'utils/create-big-number';
 import classNames from 'classnames';
 import { DismissableNotice, DISMISSABLE_NOTICE_BUTTON_TYPES } from 'modules/reporting/common';
+import { FormattedNumber } from 'modules/types';
 
-export const getGasCost = (gasLimit, gasPrice, ethToDaiRate) => {
+export const getGasCost = (gasLimit: Number, gasPrice: BigNumber, ethToDaiRate: FormattedNumber): FormattedNumber => {
   const gasCostInEth = createBigNumber(
     formatGasCostToEther(
       gasLimit,
@@ -28,7 +30,7 @@ export const getGasCost = (gasLimit, gasPrice, ethToDaiRate) => {
   if (ethToDaiRate) {
     return formatDai(ethToDaiRate.value * gasCostInEth);
   }
-  return gasCostInEth;
+  return formatEther(gasCostInEth);
 }
 
 interface GasProps {

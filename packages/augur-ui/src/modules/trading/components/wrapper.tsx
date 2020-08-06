@@ -64,7 +64,7 @@ interface WrapperProps {
   initializeGsnWallet: Function;
   endTime: number;
   disableTrading?: boolean;
-  canPostOrder: Function;
+  doesCrossOrderbook: Function;
   tradingApproved: boolean;
 }
 
@@ -267,18 +267,18 @@ class Wrapper extends Component<WrapperProps, WrapperState> {
     });
   }
 
-  checkCanPostOnly = (price, side) => {
-    const { canPostOrder } = this.props;
+  doesCrossSpread = (price, side) => {
+    if (price === undefined || side === undefined) return true;
+    const { doesCrossOrderbook } = this.props;
+    const crosses = doesCrossOrderbook(price, side);
     if (this.state.postOnlyOrder) {
-      const allowPostOnlyOrder = canPostOrder(price, side);
-      if (allowPostOnlyOrder !== this.state.allowPostOnlyOrder) {
+      if (crosses !== this.state.allowPostOnlyOrder) {
         this.setState({
-          allowPostOnlyOrder
+          allowPostOnlyOrder: !crosses
         });
       }
-      return allowPostOnlyOrder;
     }
-    return true;
+    return crosses;
   }
 
   debounceUpdateTradeCost = debounce(
@@ -301,6 +301,7 @@ class Wrapper extends Component<WrapperProps, WrapperState> {
           side: order.selectedNav,
           numShares: order.orderQuantity,
           selfTrade: order.selfTrade,
+          postOnly: !this.doesCrossSpread(order.orderPrice, order.selectedNav),
         },
         (err, newOrder) => {
           if (err) {
@@ -313,7 +314,7 @@ class Wrapper extends Component<WrapperProps, WrapperState> {
               selectedNav,
             };
             this.setState(order);
-            this.checkCanPostOnly(order.trade.limitPrice, order.trade.side);
+            this.doesCrossSpread(order.trade.limitPrice, order.trade.side);
           }
           const newOrderDaiEstimate = formatDai(
             createBigNumber(newOrder.totalOrderValue.fullPrecision),
@@ -336,7 +337,7 @@ class Wrapper extends Component<WrapperProps, WrapperState> {
             selectedNav,
           };
           this.setState(order);
-          this.checkCanPostOnly(order.trade.limitPrice, order.trade.side);
+          this.doesCrossSpread(order.trade.limitPrice, order.trade.side);
         }
       )
     }
@@ -407,7 +408,7 @@ class Wrapper extends Component<WrapperProps, WrapperState> {
           orderQuantity: order.orderQuantity
         })
       }
-      this.checkCanPostOnly(order.orderPrice, selectedNav);
+      this.doesCrossSpread(order.orderPrice, selectedNav);
     }
   }
 
@@ -420,12 +421,13 @@ class Wrapper extends Component<WrapperProps, WrapperState> {
         expirationTime: this.state.expirationDate,
       };
     }
+    const isPostOnly = !this.doesCrossSpread(trade.limitPrice, trade.side);
     this.props.onSubmitPlaceTrade(
       market.id,
       selectedOutcome.id,
       trade,
       s.doNotCreateOrders,
-      s.postOnlyOrder
+      isPostOnly
     );
     this.clearOrderForm();
   }
@@ -439,6 +441,7 @@ class Wrapper extends Component<WrapperProps, WrapperState> {
         limitPrice: order.orderPrice,
         side: order.selectedNav,
         maxCost: order.orderDaiEstimate,
+        postOnly: !this.doesCrossSpread(order.orderPrice, order.selectedNav),
       },
       (err, newOrder) => {
         if (err) return console.error(err); // what to do with error here
@@ -537,9 +540,7 @@ class Wrapper extends Component<WrapperProps, WrapperState> {
             tutorialNext();
             this.clearOrderForm();
           } else {
-            gsnUnavailable && !gsnWalletInfoSeen
-              ? initializeGsnWallet(() => this.placeMarketTrade(market, selectedOutcome, this.state))
-              : this.placeMarketTrade(market, selectedOutcome, this.state);
+              this.placeMarketTrade(market, selectedOutcome, this.state);
           }
         }}
         disabled={

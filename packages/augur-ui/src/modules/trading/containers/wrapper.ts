@@ -23,8 +23,7 @@ import { orderSubmitted } from 'services/analytics/helpers';
 import { AppState } from 'appStore';
 import { totalTradingBalance } from 'modules/auth/selectors/login-account';
 import getValueFromlocalStorage from 'utils/get-local-storage-value';
-import { canPostOrder } from 'modules/trades/actions/can-post-order';
-import { checkAccountApproval } from 'modules/auth/actions/approve-account';
+import { doesCrossOrderbook } from 'modules/trades/actions/does-cross-orderbook';
 
 const getMarketPath = id => {
   return {
@@ -106,7 +105,7 @@ const mapDispatchToProps = (dispatch, ownProps) => ({
       })
     ),
     orderSubmitted: (type, marketId) => dispatch(orderSubmitted(type, marketId)),
-    canPostOrder: (price, side, orderBook) => canPostOrder(price, side, orderBook),
+    doesCrossOrderbook: (price, side, orderBook) => doesCrossOrderbook(price, side, orderBook),
 });
 
 const mergeProps = (sP, dP, oP) => {
@@ -117,7 +116,7 @@ const mergeProps = (sP, dP, oP) => {
     ...sP,
     ...dP,
     disclaimerSeen: !!disclaimerSeen,
-    canPostOrder: (price, side) => dP.canPostOrder(price, side, sP.orderBook),
+    doesCrossOrderbook: (price, side) => dP.doesCrossOrderbook(price, side, sP.orderBook),
   };
 };
 

@@ -671,13 +671,15 @@ export class ZeroX {
     const outcome = params.outcome.toString();
     const price = new BN(params.price.toString()).toHexString().substr(2);
 
-    const zeroXOrders = await this.client.getZeroXOrders({
-      marketId: params.market,
-      outcome: params.outcome,
-      orderType,
-      matchPrice: `0x${price.padStart(20, '0')}`,
-      ignoreOrders,
-    });
+    let zeroXOrders = params.postOnly
+      ? []
+      : await this.client.getZeroXOrders({
+          marketId: params.market,
+          outcome: params.outcome,
+          orderType,
+          matchPrice: `0x${price.padStart(20, '0')}`,
+          ignoreOrders,
+        });
 
     if (_.size(zeroXOrders) < 1) {
       return { orders: [], signatures: [], orderIds: [], loopLimit: new BigNumber(0), gasLimit: new BigNumber(0)};

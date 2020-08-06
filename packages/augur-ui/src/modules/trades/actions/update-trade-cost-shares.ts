@@ -21,6 +21,7 @@ export function updateTradeCost({
   numShares,
   limitPrice,
   selfTrade,
+  postOnly = false,
   callback = logError,
 }: any) {
   return (
@@ -41,6 +42,7 @@ export function updateTradeCost({
       totalFee: '0',
       totalCost: '0',
       selfTrade,
+      postOnly,
     };
 
     return runSimulateTrade(
@@ -61,6 +63,7 @@ export function updateTradeShares({
   side,
   maxCost,
   limitPrice,
+  postOnly = false,
   callback = logError,
 }: any) {
   return (
@@ -80,6 +83,7 @@ export function updateTradeShares({
       limitPrice,
       totalFee: '0',
       totalCost: '0',
+      postOnly,
     };
 
     /*
@@ -192,6 +196,7 @@ async function runSimulateTrade(
     newTradeDetails.limitPrice,
     userShares,
     takerAddress,
+    newTradeDetails.postOnly,
   );
 
   let gasLimit: BigNumber = createBigNumber(0);

@@ -416,7 +416,7 @@ class Confirm extends Component<ConfirmProps, ConfirmState> {
             )}
             {postOnlyOrder && (
               <TransactionFeeLabelToolTip
-              gasEstimate={0}
+                gasEstimate={0}
               />
             )}
             <LinearPropertyLabel
