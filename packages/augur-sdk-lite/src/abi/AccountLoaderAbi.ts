@@ -187,6 +187,16 @@ export const AccountLoaderAbi = [
                         "internalType": "uint256",
                         "name": "attoUSDCperUSDT",
                         "type": "uint256"
+                    },
+                    {
+                        "internalType": "uint256",
+                        "name": "signerUSDC",
+                        "type": "uint256"
+                    },
+                    {
+                        "internalType": "uint256",
+                        "name": "signerUSDT",
+                        "type": "uint256"
                     }
                 ],
                 "internalType": "struct AccountLoader.AccountData",
