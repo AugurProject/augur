@@ -1016,6 +1016,7 @@ export async function simulateTrade(
   displayPrice: BigNumber | string,
   displayShares: BigNumber | string,
   address: string,
+  postOnly?: boolean,
 ): Promise<SimulateTradeData> {
   const Augur = augurSdk.get();
   const tradeGroupId = generateTradeGroupId();
@@ -1034,6 +1035,7 @@ export async function simulateTrade(
     displayPrice: createBigNumber(displayPrice),
     displayShares: createBigNumber(displayShares),
     takerAddress: address,
+    postOnly,
   };
 
   return Augur.simulateTrade(params);

@@ -301,6 +301,7 @@ class Wrapper extends Component<WrapperProps, WrapperState> {
           side: order.selectedNav,
           numShares: order.orderQuantity,
           selfTrade: order.selfTrade,
+          postOnly: !this.checkCanPostOnly(order.orderPrice, order.selectNav),
         },
         (err, newOrder) => {
           if (err) {
@@ -439,6 +440,7 @@ class Wrapper extends Component<WrapperProps, WrapperState> {
         limitPrice: order.orderPrice,
         side: order.selectedNav,
         maxCost: order.orderDaiEstimate,
+        postOnly: !this.checkCanPostOnly(order.orderPrice, order.selectNav),
       },
       (err, newOrder) => {
         if (err) return console.error(err); // what to do with error here
