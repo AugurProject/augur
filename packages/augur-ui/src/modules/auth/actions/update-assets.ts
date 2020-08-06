@@ -1,6 +1,6 @@
 import { updateLoginAccount } from 'modules/account/actions/login-account';
 import {
-  loadAccountData_exchangeRates, getUsdtRate, getUsdcRate, getRepRate,
+  loadAccountData_exchangeRates,
 } from 'modules/contracts/actions/contractCalls';
 import { AppState } from 'appStore';
 import { ThunkDispatch, ThunkAction } from 'redux-thunk';

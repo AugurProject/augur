@@ -81,11 +81,11 @@ export const Swap = ({
   const VALID_TOKENS = [DAI, REP, ETH, USDC, USDT];
 
   const toTokenBalance = balances[toToken.toLowerCase()] || 0;
-  const hasEth = createBigNumber(balances.eth).gt(ZERO);
-  const hasRep = createBigNumber(balances.rep).gt(ZERO);
-  const hasDai = createBigNumber(balances.dai).gt(ZERO);
-  const hasUSDC = createBigNumber(balances.usdc).gt(ZERO);
-  const hasUSDT = createBigNumber(balances.usdt).gt(ZERO);
+  const hasEth = createBigNumber(balances.eth || 0).gt(ZERO);
+  const hasRep = createBigNumber(balances.rep || 0).gt(ZERO);
+  const hasDai = createBigNumber(balances.dai || 0).gt(ZERO);
+  const hasUSDC = createBigNumber(balances.usdc || 0).gt(ZERO);
+  const hasUSDT = createBigNumber(balances.usdt || 0).gt(ZERO);
 
   let tokenSwapTypes = [];
 
