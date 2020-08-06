@@ -61,6 +61,7 @@ import { Ox_STATUS } from 'modules/app/actions/update-app-status';
 import { ethToDai } from 'modules/app/actions/get-ethToDai-rate';
 import { augurSdk } from 'services/augursdk';
 import { getGasCost } from 'modules/modal/gas';
+import { addPendingData } from 'modules/pending-queue/actions/pending-queue-management';
 
 export interface MarketTypeProps {
   marketType: string;
@@ -1533,8 +1534,10 @@ interface ApprovalTxButtonLabelProps {
   addFunds: Function;
   approvalType: string;
   ignore?: boolean;
+  addPendingData: Function;
+  pendingTx: boolean[];
 }
-export const ApprovalTxButtonLabel = ({
+export const ApprovalTxButtonLabelCmp = ({
   checkApprovals,
   doApprovals,
   buttonName,
@@ -1548,6 +1551,7 @@ export const ApprovalTxButtonLabel = ({
   addFunds,
   approvalType,
   ignore,
+  addPendingData,
 }: ApprovalTxButtonLabelProps) => {
   const [approvalsNeeded, setApprovalsNeeded] = useState(0);
   const [insufficientEth, setInsufficientEth] = useState(false);
@@ -1591,6 +1595,9 @@ export const ApprovalTxButtonLabel = ({
     checkApprovals(account).then(approvalsNeeded => {
       setApprovalsNeeded(approvalsNeeded);
       isApprovalCallback(approvalsNeeded === 0);
+      if (approvalsNeeded === 0) {
+        addPendingData(TXEventName.Success);
+      }
     });
   }
 
@@ -1608,26 +1615,42 @@ export const ApprovalTxButtonLabel = ({
             if (insufficientEth) {
               addFunds();
             } else {
+              addPendingData(TXEventName.Pending);
               setIsProcessing(true)
               doApprovals(account).then(() => {
                 doCheckApprovals();
-                // delay disabling the button just in case there is a lag updating state
-                setTimeout(() => setIsProcessing(false), 300);
-              }).catch(() => setIsProcessing(false));
+                setIsProcessing(false);
+              }).catch(() => {
+                addPendingData(TXEventName.Failure);
+                setIsProcessing(false)
+              });
             }
           }}
           buttonText={insufficientEth ? 'Add Funds' : buttonName}
           queueName={constants.TRANSACTIONS}
           disabled={disabled || isProcessing}
           error={insufficientEth}
-          queueId={constants.APPROVE} // TODO: check that is actually is the correct queue id
+          queueId={constants.APPROVALS}
           description={description}
+          customPendingButtonText={'Process...'}
           buttonType={DISMISSABLE_NOTICE_BUTTON_TYPES.BUTTON}
         />
       </div>
     ) : null
   )
 }
+
+const mapStateToProps = (state: AppState) => ({ });
+const mapDispatchToProps = (dispatch) => ({
+  addPendingData: status => dispatch(addPendingData(constants.APPROVALS, constants.TRANSACTIONS, status, '', { }))
+});
+const mergeProps = (sP: any, dP: any, oP: any) => ({...sP, ...dP, ...oP});
+
+export const ApprovalTxButtonLabel = connect(
+  mapStateToProps,
+  mapDispatchToProps,
+  mergeProps
+)(ApprovalTxButtonLabelCmp);
 
 interface BulkTxLabelProps {
   count: number;
