@@ -3,7 +3,7 @@ import Dexie, {
   PromiseExtended,
   ThenShortcut,
 } from 'dexie';
-import { queue, timeout } from 'async';
+import { queue, timeout, retry } from 'async';
 
 interface ToArrayQueueTask<T, R> {
   cb?: ThenShortcut<T[], R>;
@@ -13,10 +13,19 @@ interface ToArrayQueueTask<T, R> {
 export function CollectionQueueAddOn (db: Dexie) {
   const originalToArray = db.Collection.prototype.toArray;
   const toArrayQueue = queue<ToArrayQueueTask<any, any>>(({collection, cb}, callback) => {
-    return timeout(async function ReadOperation() {
+    return retry(
+      {
+        times: 2,
+        interval: function (retryCount) {
+          return 100;
+        },
+        errorFilter: function (err) {
+          return err['code'] === "ETIMEDOUT";
+        }
+      }, timeout(async function ReadOperation() {
       console.log('Reading Query');
       return originalToArray.call(collection, cb);
-    }, 2500)(callback);
+    }, 2500), callback);
   }, 1);
 
   db.Collection.prototype.toArray = function toArray<R>(cb?): PromiseExtended<any[]> {
