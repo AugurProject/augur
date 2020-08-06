@@ -996,6 +996,20 @@
 				> button:not([class*="FavoriteButton"]) > svg {
 					transform: none;
 				}
+
+				> span:last-of-type:not([class*="MatchedLine"]) {
+					margin-left: @size-8;
+
+					> a > svg {
+						width: @size-12;
+						height: @size-10;
+						transform: rotate(-90deg);
+
+						> path {
+							fill: var(--color-primary-text);
+						}
+					}
+				}
 			}
 			
 			> div {

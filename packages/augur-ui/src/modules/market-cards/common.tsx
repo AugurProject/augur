@@ -91,7 +91,6 @@ import { useMarketsStore } from 'modules/markets/store/markets';
 import { hasStakeInMarket } from 'modules/account/helpers/common';
 import { CountdownProgress } from 'modules/common/progress';
 import { isMarketView } from 'modules/market/components/market-view/betting-market-view';
-import { BETSLIP_SELECTED } from 'modules/trading/store/constants';
 
 export interface PercentProps {
   percent: number;
@@ -474,7 +473,8 @@ export const SportsOutcome = ({
   const { liquidityPools } = useMarketsStore();
   const { addBet } = Betslip.actions;
   const poolId = market?.sportsBook?.liquidityPool;
-  const bestAsk = poolId && liquidityPools[poolId] && liquidityPools[poolId][outcomeId];
+  const bestAsk =
+    poolId && liquidityPools[poolId] && liquidityPools[poolId][outcomeId];
   let topLabel = null;
   let disabled = true;
   let label = '-';
@@ -495,7 +495,7 @@ export const SportsOutcome = ({
     const normalizedPrice = convertToNormalizedPrice({
       price,
       min: market.minPriceBigNumber,
-      max: market.maxPriceBigNumber
+      max: market.maxPriceBigNumber,
     });
     const OddToUse = convertToOdds(normalizedPrice);
     topLabel = determineTopLabel(market.sportsBook, outcomeId, outcomeLabel);
@@ -513,7 +513,7 @@ export const SportsOutcome = ({
         outcomeId,
         price
       );
-    }
+    };
   }
   return (
     <div className={Styles.SportsOutcome}>
@@ -538,7 +538,7 @@ export const OutcomeGroupFooter = ({
   showLeader = false,
 }) => {
   const location = useLocation();
-  const isGroupPage = isMarketView(location);
+  const { isGroupPage } = isMarketView(location);
   let content;
   // if ShowLeader passed, info on leading outcome and total volume put in footer.
   if (showLeader || isGroupPage) {
@@ -825,8 +825,12 @@ export const SportsMarketContainer = ({
   const { FUTURES } = SPORTS_GROUP_TYPES;
   const { isLogged } = useAppStatusStore();
   const [isCollapsed, setIsCollapsed] = useState(!startOpen);
+  const location = useLocation();
+  const { isGroupPage, marketId: queryId } = isMarketView(location);
+  const isFutures = sportsGroup.type === FUTURES;
+  const forceCollapse = isFutures && isGroupPage && marketId !== queryId;
   useEffect(() => {
-    if (sportsGroup.type === FUTURES) {
+    if (isFutures) {
       const clipboardMarketId = new Clipboard('#copy_marketId');
       const clipboardAuthor = new Clipboard('#copy_author');
     }
@@ -840,7 +844,7 @@ export const SportsMarketContainer = ({
   } else {
     innerContent = <MultiOutcomeMarketRow key={marketId} data={data} />;
   }
-  if (sportsGroup.type === FUTURES) {
+  if (isFutures) {
     // futures
     headingContent = (
       <Fragment key={`${marketId}-heading`}>
@@ -877,20 +881,24 @@ export const SportsMarketContainer = ({
   return (
     <section
       className={classNames(Styles.SportsMarketContainer, {
-        [Styles.Collapsed]: isCollapsed,
+        [Styles.Collapsed]: forceCollapse || isCollapsed && queryId !== marketId,
         [Styles.NoHeader]: noHeader,
       })}
     >
       <header>
         {headingContent}
-        <button
-          onClick={e => {
-            e.preventDefault();
-            setIsCollapsed(!isCollapsed);
-          }}
-        >
-          {ThickChevron}
-        </button>
+        {isFutures && isGroupPage ? (
+          <MarketLink id={marketId}>{ThickChevron}</MarketLink>
+        ) : (
+          <button
+            onClick={e => {
+              e.preventDefault();
+              setIsCollapsed(!isCollapsed);
+            }}
+          >
+            {ThickChevron}
+          </button>
+        )}
       </header>
       <div>{innerContent}</div>
       {isGrid && <OutcomeGroupFooter market={market} />}
@@ -908,15 +916,19 @@ export interface SportsGroupMarketsProps {
 
 export const SportsGroupMarkets = ({ sportsGroup }) => {
   const location = useLocation();
-  const isGroupPage = isMarketView(location);
-  const marketGroups = prepareSportsGroup(sportsGroup, isGroupPage);
+  const { isGroupPage, marketId } = isMarketView(location);
+  const marketGroups = prepareSportsGroup(sportsGroup, isGroupPage, marketId);
   if (marketGroups.length > 0) {
     return <>{marketGroups.map(item => item)}</>;
   }
   return <section />;
 };
 
-export const prepareSportsGroup = (sportsGroup, isGroupPage = false) => {
+export const prepareSportsGroup = (
+  sportsGroup,
+  isGroupPage = false,
+  marketId = null
+) => {
   const { markets } = sportsGroup;
   const { COMBO, FUTURES } = SPORTS_GROUP_TYPES;
   const { MONEY_LINE } = SPORTS_GROUP_MARKET_TYPES;
@@ -928,6 +940,14 @@ export const prepareSportsGroup = (sportsGroup, isGroupPage = false) => {
     reduceToUniquePools,
     []
   );
+  if (marketId) {
+    const index = sortedMarkets.findIndex(m => m.id === marketId);
+    if (index >= 0) {
+      const leadMarket = sortedMarkets[index];
+      sortedMarkets.splice(index, 1);
+      sortedMarkets.splice(0, 0, leadMarket);
+    }
+  }
   if (numMarkets > 0) {
     sortedMarkets = sortedMarkets.filter(
       market => !market.sportsBook.groupType.includes(COMBO)
@@ -946,7 +966,10 @@ export const prepareSportsGroup = (sportsGroup, isGroupPage = false) => {
     const startOpen = marketGroups.length === 0;
     if (isGroupPage && marketGroups.length === 1) {
       marketGroups.push(
-        <section key="relatedMarketsDivider" className={Styles.RelatedMarketsDivider}>
+        <section
+          key="relatedMarketsDivider"
+          className={Styles.RelatedMarketsDivider}
+        >
           <h6>Related Markets</h6>
         </section>
       );
@@ -982,7 +1005,10 @@ export const prepareSportsGroup = (sportsGroup, isGroupPage = false) => {
       );
     } else if (isGroupPage && index === 1) {
       marketGroups.push(
-        <section key="relatedMarketsDivider" className={Styles.RelatedMarketsDivider}>
+        <section
+          key="relatedMarketsDivider"
+          className={Styles.RelatedMarketsDivider}
+        >
           <h6>Related Markets</h6>
         </section>
       );

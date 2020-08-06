@@ -25,9 +25,18 @@ import { convertUnixToFormattedDate } from 'utils/format-date';
 import { bulkLoadMarketTradingHistory } from 'modules/markets/actions/market-trading-history-management';
 import { augurSdk } from "services/augursdk";
 
-export const isMarketView = location =>
-  parsePath(location.pathname)[0] === MARKET;
-
+export const isMarketView = location => {
+  const isGroupPage = parsePath(location.pathname)[0] === MARKET;
+  const queryId = parseQuery(location.search)[MARKET_ID_PARAM_NAME];
+  let marketId = null;
+  if (queryId) {
+    marketId = getAddress(queryId);
+  }
+  return {
+    isGroupPage,
+    marketId
+  }
+};
 const BettingMarketView = () => {
   const {
     marketTradingHistory,
