@@ -34,6 +34,8 @@ import {
   CONTRIBUTE,
   APPROVE,
   TRANSACTIONS,
+  SETREFERRER,
+  SETAPPROVALFORALL,
 } from 'modules/common/constants';
 import { CreateMarketData } from 'modules/types';
 import { ThunkDispatch } from 'redux-thunk';
@@ -78,6 +80,8 @@ const ADD_PENDING_QUEUE_METHOD_CALLS = [
   CLAIMMARKETSPROCEEDS,
   FINALIZE,
   APPROVE,
+  SETREFERRER,
+  SETAPPROVALFORALL,
 ];
 export const getRelayerDownErrorMessage = (walletType, hasEth) => {
   const errorMessage =

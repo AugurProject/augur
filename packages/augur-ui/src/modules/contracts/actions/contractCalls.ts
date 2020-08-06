@@ -849,12 +849,12 @@ export async function approvalsNeededToTrade(address): Promise<number> {
 export async function approveToTrade(address, referalAddress = NULL_ADDRESS) {
   const { contracts } = augurSdk.get();
   const approvals = [];
+  if (!(await isContractApproval(address, contracts.ZeroXTrade.address, contracts.cash))) {
+    approvals.push(contracts.cash.approve(contracts.ZeroXTrade.address, APPROVAL_AMOUNT));
+  }
   approvals.push(contracts.affiliates.setReferrer(referalAddress));
   if (!(await contracts.shareToken.isApprovedForAll_(address, contracts.fillOrder.address))) {
     approvals.push(contracts.shareToken.setApprovalForAll(contracts.fillOrder.address, true));
-  }
-  if (!(await isContractApproval(address, contracts.ZeroXTrade.address, contracts.cash))) {
-    approvals.push(contracts.cash.approve(contracts.ZeroXTrade.address, APPROVAL_AMOUNT));
   }
   if (!(await isContractApproval(address, contracts.fillOrder.address, contracts.cash))) {
     approvals.push(contracts.cash.approve(contracts.fillOrder.address, APPROVAL_AMOUNT));

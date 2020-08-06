@@ -50,6 +50,7 @@ export interface DefaultButtonProps {
   failed?: boolean;
   submitTextButtton?: boolean;
   customConfirmedButtonText?: string;
+  customPendingButtonText?: string;
 }
 
 export interface SortButtonProps {
@@ -180,7 +181,7 @@ const ProcessingButtonComponent = (props: DefaultButtonProps) => {
     props.status === TXEventName.Pending ||
     props.status === TXEventName.AwaitingSigning
   ) {
-    buttonText = 'Processing...';
+    buttonText = props.customPendingButtonText || 'Processing...';
     isDisabled = true;
   }
   const failed = props.status === TXEventName.Failure;
