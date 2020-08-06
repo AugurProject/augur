@@ -104,14 +104,6 @@ const CoreProperties: React.FC<CorePropertiesProps> = ({
                 }
               />
               <PropertyLabel
-                label="24hr Volume"
-                value={
-                  market.volumeFormatted
-                    ? market.volumeFormatted.full
-                    : formatDaiPrice(0, { decimals: 0 }).full
-                }
-              />
-              <PropertyLabel
                 label="Market OI Fee"
                 value={
                   market.settlementFeePercent

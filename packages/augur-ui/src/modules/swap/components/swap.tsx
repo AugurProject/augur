@@ -101,7 +101,7 @@ export const Swap = ({
     tokenSwapTypes = tokenSwapTypes.concat(DAI);
   }
 
-  // Only add USDC/USDT to convert to DAI/ETH since there are no USDC/USDT -> REPV2 liquidity pools at this time
+  // Only add USDC/USDT to convert to DAI/ETH since there are no USDC/USDT -> REPv2 liquidity pools at this time
   if (toToken !== REP) {
     if (hasUSDC) {
       tokenSwapTypes = tokenSwapTypes.concat(USDC);
