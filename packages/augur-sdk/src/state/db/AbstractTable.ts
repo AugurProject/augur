@@ -82,6 +82,12 @@ export abstract class AbstractTable {
     console.log(`AbstractTable: delete request for ${this.dbName} finished`);
   }
 
+  async clear() {
+    console.log(`AbstractTable: clear request for ${this.dbName} started`);
+    await this.table.clear();
+    console.log(`AbstractTable: clear request for ${this.dbName} finished`);
+  }
+
   async getDocumentCount(): Promise<number> {
     console.log(`AbstractTable: getDocumentCount request for ${this.dbName} started`);
     const count = await this.table.count();

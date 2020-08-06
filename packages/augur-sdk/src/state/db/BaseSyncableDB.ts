@@ -35,6 +35,11 @@ export class BaseSyncableDB extends RollbackTable {
     return super.delete();
   }
 
+  async clear() {
+    this.db.unregisterEventListener(this.eventName, this.addNewBlock);
+    return super.clear();
+  }
+
   protected async saveDocuments(documents: BaseDocument[]): Promise<void> {
     return this.bulkAddDocuments(documents);
   }
