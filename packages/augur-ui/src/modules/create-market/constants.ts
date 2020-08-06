@@ -149,6 +149,9 @@ export const AugurMarkets = [
   'Cover events that occur between market start time and end time in the market question. If start time is not specified in the market question, market creation date/time is used. If no end time is specified in market question, the event expiration is to be used. If the event occurs outside of these bounds, the market should resolve as invalid',
   'Outcomes must be unique from one and other within a market.  If multiple outcomes share a common name, they must be easily distinguishable (ie. Serena Williams and Venus Williams)',
 ];
+
+export const InvalidTraderTooltip = 'If the market resolves as Invalid, shares of this outcome will pay out at the market max price.';
+
 export const AugurMarketsContent = () => ({
   explainerBlockTitle: 'Augur Markets:',
   explainerBlockSubtexts: AugurMarkets,

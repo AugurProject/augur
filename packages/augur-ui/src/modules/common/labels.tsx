@@ -51,7 +51,7 @@ import {
   DismissableNoticeProps,
 } from 'modules/reporting/common';
 import { hasTemplateTextInputs } from '@augurproject/templates';
-import { AugurMarketsContent, EventDetailsContent } from 'modules/create-market/constants';
+import { AugurMarketsContent, EventDetailsContent, InvalidTraderTooltip } from 'modules/create-market/constants';
 import { MultipleExplainerBlock } from 'modules/create-market/components/common';
 import { getDurationBetween } from 'utils/format-date';
 import { useTimer } from 'modules/common/progress';
@@ -757,29 +757,15 @@ export const InvalidLabel = ({
       <ReactTooltip
         id={`${keyId}-${text.replace(/\s+/g, '-')}`}
         className={classNames(
-          TooltipStyles.Tooltip,
-          TooltipStyles.TooltipInvalidRules
+          TooltipStyles.Tooltip
         )}
         effect="solid"
         place={tooltipPositioning || 'left'}
-        type="dark"
+        type="light"
         event="mouseover mouseenter"
         eventOff="mouseleave mouseout scroll mousewheel blur"
       >
-        <MultipleExplainerBlock
-          contents={[
-            {
-              title: EventDetailsContent().explainerBlockTitle,
-              subtexts: EventDetailsContent().explainerBlockSubtexts,
-              useBullets: EventDetailsContent().useBullets,
-            },
-            {
-              title: AugurMarketsContent().explainerBlockTitle,
-              subtexts: AugurMarketsContent().explainerBlockSubtexts,
-              useBullets: AugurMarketsContent().useBullets,
-            },
-          ]}
-        />
+        <p>{InvalidTraderTooltip}</p>
       </ReactTooltip>
     </span>
   );
