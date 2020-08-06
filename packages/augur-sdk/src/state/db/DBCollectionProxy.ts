@@ -14,6 +14,7 @@ export function CollectionQueueAddOn (db: Dexie) {
   const originalToArray = db.Collection.prototype.toArray;
   const toArrayQueue = queue<ToArrayQueueTask<any, any>>(({collection, cb}, callback) => {
     return timeout(async (args) => {
+      console.log('Reading Query');
       return originalToArray.call(collection, cb);
     }, 1000)(callback);
   }, 1);
