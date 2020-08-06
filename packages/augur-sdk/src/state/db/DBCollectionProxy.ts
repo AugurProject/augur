@@ -23,6 +23,7 @@ export function CollectionQueueAddOn (db: Dexie) {
     return new Dexie.Promise((resolve, reject) => {
       toArrayQueue.push({ collection: this, cb }, (err, result:any[]) => {
         if (err) {
+          console.log('ReadOperationDied')
           reject(err);
         }
         resolve(result);

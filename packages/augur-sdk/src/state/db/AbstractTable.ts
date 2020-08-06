@@ -105,6 +105,7 @@ export abstract class AbstractTable {
     return new Promise((resolve, reject) => {
       AbstractTable.writeQueue.push({ table: this, documents, type }, (err) => {
         if (err) {
+          console.log('WriteOperationDied');
           reject(err);
         }
           resolve();
