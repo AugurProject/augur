@@ -17,7 +17,7 @@ export function CollectionQueueAddOn (db: Dexie) {
       console.log('Reading Query');
       return originalToArray.call(collection, cb);
     }, 2500)(callback);
-  }, 1);
+  }, 2);
 
   db.Collection.prototype.toArray = function toArray<R>(cb?): PromiseExtended<any[]> {
     return new Dexie.Promise((resolve, reject) => {

@@ -43,7 +43,7 @@ export abstract class AbstractTable {
         }
       }, 2500)(callback);
     },
-    1
+    2
   );
 
   protected constructor(networkId: number, dbName: string, db: Dexie) {
