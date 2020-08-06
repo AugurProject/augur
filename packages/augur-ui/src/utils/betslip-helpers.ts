@@ -23,25 +23,27 @@ import { formatDai } from './format-number';
 import { create } from 'lodash/fp';
 
 export const convertPositionToBet = (position, marketInfo) => {
+  const avgPrice = position.priorPosition ? position.priorPosition.avgPrice : position.averagePrice;
   const normalizedPrice = convertToNormalizedPrice({
-    price: position.averagePrice,
+    price: avgPrice,
     min: marketInfo.minPrice,
     max: marketInfo.maxPrice,
   });
-  const wager = getWager(position.netPosition, position.averagePrice);
+  const netPosition = position.priorPosition ? position.priorPosition.netPosition : position.netPosition;
+  const wager = getWager(netPosition, avgPrice);
   return {
     ...position,
     outcomeId: position.outcome,
     sportsBook: marketInfo.sportsBook,
     amountWon: '0',
     amountFilled: '0',
-    price: position.averagePrice,
+    price: avgPrice,
     max: marketInfo.maxPrice,
     min: marketInfo.minPrice,
-    toWin: convertToWin(marketInfo.maxPrice, position.netPosition),
+    toWin: convertToWin(marketInfo.maxPrice, netPosition),
     normalizedPrice,
     outcome: getOutcomeNameWithOutcome(marketInfo, position.outcome),
-    shares: position.netPosition,
+    shares: netPosition,
     wager,
     dateUpdated: position.timestamp,
   };
