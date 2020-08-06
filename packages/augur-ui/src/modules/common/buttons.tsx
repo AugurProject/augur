@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import {
   ASCENDING,
   DESCENDING,
@@ -8,7 +8,6 @@ import {
   THEMES,
   ZERO,
   MOBILE_MENU_STATES,
-  FILLED,
   REPORTING_STATE,
   CASHOUT,
   MODAL_CASHOUT_BET,
@@ -32,13 +31,10 @@ import {
   BackIcon,
   ThickChevron,
   AlternateDaiLogoIcon,
-  Chevron,
-  ThickChevron,
   AddIcon,
 } from 'modules/common/icons';
-import { useAppStatusStore, AppStatus } from 'modules/app/store/app-status';
 import classNames from 'classnames';
-import { getNetworkId, placeTrade, claimMarketsProceeds } from 'modules/contracts/actions/contractCalls';
+import { getNetworkId, placeTrade } from 'modules/contracts/actions/contractCalls';
 import Styles from 'modules/common/buttons.styles.less';
 import { MARKET_TEMPLATES } from 'modules/create-market/constants';
 import type { Getters } from '@augurproject/sdk';
@@ -47,13 +43,11 @@ import { addCategoryStats } from 'modules/create-market/get-template';
 import ChevronFlip from 'modules/common/chevron-flip';
 import { Link } from 'react-router-dom';
 import { getOrderShareProfitLoss } from 'utils/betslip-helpers';
-
 import { removePendingData } from 'modules/pending-queue/actions/pending-queue-management';
-import { createBigNumber } from 'utils/create-big-number';
+import { useAppStatusStore } from 'modules/app/store/app-status';
 import { useMarketsStore } from 'modules/markets/store/markets';
-import { useMarkets } from 'modules/markets/store/markets-hooks';
-import { useEffect } from 'react';
 import { useBetslipStore } from 'modules/trading/store/betslip';
+import { createBigNumber } from 'utils/create-big-number';
 import { formatDai } from 'utils/format-number';
 
 export interface DefaultButtonProps {
