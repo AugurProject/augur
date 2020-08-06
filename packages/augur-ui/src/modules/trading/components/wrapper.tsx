@@ -268,6 +268,7 @@ class Wrapper extends Component<WrapperProps, WrapperState> {
   }
 
   doesCrossSpread = (price, side) => {
+    if (price === undefined || side === undefined) return true;
     const { doesCrossOrderbook } = this.props;
     const crosses = doesCrossOrderbook(price, side);
     if (this.state.postOnlyOrder) {
@@ -300,7 +301,7 @@ class Wrapper extends Component<WrapperProps, WrapperState> {
           side: order.selectedNav,
           numShares: order.orderQuantity,
           selfTrade: order.selfTrade,
-          postOnly: this.doesCrossSpread(order.orderPrice, order.selectNav),
+          postOnly: !this.doesCrossSpread(order.orderPrice, order.selectedNav),
         },
         (err, newOrder) => {
           if (err) {
@@ -420,12 +421,13 @@ class Wrapper extends Component<WrapperProps, WrapperState> {
         expirationTime: this.state.expirationDate,
       };
     }
+    const isPostOnly = !this.doesCrossSpread(trade.limitPrice, trade.side);
     this.props.onSubmitPlaceTrade(
       market.id,
       selectedOutcome.id,
       trade,
       s.doNotCreateOrders,
-      s.postOnlyOrder
+      isPostOnly
     );
     this.clearOrderForm();
   }
@@ -439,7 +441,7 @@ class Wrapper extends Component<WrapperProps, WrapperState> {
         limitPrice: order.orderPrice,
         side: order.selectedNav,
         maxCost: order.orderDaiEstimate,
-        postOnly: this.doesCrossSpread(order.orderPrice, order.selectNav),
+        postOnly: !this.doesCrossSpread(order.orderPrice, order.selectedNav),
       },
       (err, newOrder) => {
         if (err) return console.error(err); // what to do with error here
@@ -538,9 +540,7 @@ class Wrapper extends Component<WrapperProps, WrapperState> {
             tutorialNext();
             this.clearOrderForm();
           } else {
-            gsnUnavailable && !gsnWalletInfoSeen
-              ? initializeGsnWallet(() => this.placeMarketTrade(market, selectedOutcome, this.state))
-              : this.placeMarketTrade(market, selectedOutcome, this.state);
+              this.placeMarketTrade(market, selectedOutcome, this.state);
           }
         }}
         disabled={
