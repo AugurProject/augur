@@ -64,7 +64,7 @@ interface WrapperProps {
   initializeGsnWallet: Function;
   endTime: number;
   disableTrading?: boolean;
-  canPostOrder: Function;
+  doesCrossOrderbook: Function;
   tradingApproved: boolean;
 }
 
@@ -268,17 +268,16 @@ class Wrapper extends Component<WrapperProps, WrapperState> {
   }
 
   doesCrossSpread = (price, side) => {
-    const { canPostOrder } = this.props;
+    const { doesCrossOrderbook } = this.props;
+    const crosses = doesCrossOrderbook(price, side);
     if (this.state.postOnlyOrder) {
-      const allowPostOnlyOrder = canPostOrder(price, side);
-      if (allowPostOnlyOrder !== this.state.allowPostOnlyOrder) {
+      if (crosses !== this.state.allowPostOnlyOrder) {
         this.setState({
-          allowPostOnlyOrder
+          allowPostOnlyOrder: !crosses
         });
       }
-      return allowPostOnlyOrder;
     }
-    return true;
+    return crosses;
   }
 
   debounceUpdateTradeCost = debounce(
