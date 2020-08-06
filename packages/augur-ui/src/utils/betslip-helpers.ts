@@ -9,8 +9,7 @@ import { getOutcomeNameWithOutcome } from './get-outcome';
 import { BET_STATUS } from 'modules/trading/store/constants';
 import { Markets } from 'modules/markets/store/markets';
 import {
-  placeTrade,
-  simulateTrade,
+  placeTrade
 } from 'modules/contracts/actions/contractCalls';
 import { Betslip } from 'modules/trading/store/betslip';
 import { AppStatus } from 'modules/app/store/app-status';
@@ -18,9 +17,6 @@ import { createBigNumber } from './create-big-number';
 import { totalTradingBalance } from 'modules/auth/helpers/login-account';
 import { runSimulateTrade } from 'modules/trades/actions/update-trade-cost-shares';
 import { calcOrderShareProfitLoss } from 'modules/trades/helpers/calc-order-profit-loss-percents';
-import { bid } from 'modules/modal/modal.styles.less';
-import { formatDai } from './format-number';
-import { create } from 'lodash/fp';
 
 export const convertPositionToBet = (position, marketInfo) => {
   const avgPrice = position.priorPosition ? position.priorPosition.avgPrice : position.averagePrice;
