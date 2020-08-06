@@ -716,7 +716,9 @@ export const CashoutButton = ({
 
   const position = positions[bet.marketId]?.tradingPositions[bet.outcomeId];
   if (position?.priorPosition) {
-    cashoutText = `Cashed out`;
+    didWin = bet.closedPotentialDaiProfit ? createBigNumber(bet.closedPotentialDaiProfit).gt(ZERO) : false;
+    loss = bet.closedPotentialDaiProfit ? createBigNumber(bet.closedPotentialDaiProfit).lt(ZERO) : false;
+    cashoutText = `${didWin ? 'Won' : 'Loss'}: ${formatDai(bet.closedOrderCost).full}`;
   } else if (!bet.topBidPrice) {
     cashoutText = `Cashout not available`;
   } else if (position && market?.reportingState !== REPORTING_STATE.AWAITING_FINALIZATION && market?.reportingState !== REPORTING_STATE.FINALIZED) {

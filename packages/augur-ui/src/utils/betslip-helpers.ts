@@ -4,13 +4,12 @@ import {
   BUY,
   SELL,
   ZERO,
+  ONE,
 } from 'modules/common/constants';
 import { getOutcomeNameWithOutcome } from './get-outcome';
 import { BET_STATUS } from 'modules/trading/store/constants';
 import { Markets } from 'modules/markets/store/markets';
-import {
-  placeTrade
-} from 'modules/contracts/actions/contractCalls';
+import { placeTrade } from 'modules/contracts/actions/contractCalls';
 import { Betslip } from 'modules/trading/store/betslip';
 import { AppStatus } from 'modules/app/store/app-status';
 import { createBigNumber } from './create-big-number';
@@ -19,13 +18,17 @@ import { runSimulateTrade } from 'modules/trades/actions/update-trade-cost-share
 import { calcOrderShareProfitLoss } from 'modules/trades/helpers/calc-order-profit-loss-percents';
 
 export const convertPositionToBet = (position, marketInfo) => {
-  const avgPrice = position.priorPosition ? position.priorPosition.avgPrice : position.averagePrice;
+  const avgPrice = position.priorPosition
+    ? position.priorPosition.avgPrice
+    : position.averagePrice;
   const normalizedPrice = convertToNormalizedPrice({
     price: avgPrice,
     min: marketInfo.minPrice,
     max: marketInfo.maxPrice,
   });
-  const netPosition = position.priorPosition ? position.priorPosition.netPosition : position.netPosition;
+  const netPosition = position.priorPosition
+    ? position.priorPosition.netPosition
+    : position.netPosition;
   const wager = getWager(netPosition, avgPrice);
   return {
     ...position,
@@ -42,7 +45,26 @@ export const convertPositionToBet = (position, marketInfo) => {
     shares: netPosition,
     wager,
     dateUpdated: position.timestamp,
+    closedOrderCost: position.priorPosition
+      ? findProceeds(
+          position.realizedPercent,
+          position.realizedCost,
+          marketInfo.settlementFee
+        )
+      : null,
+    closedPotentialDaiProfit: position.priorPosition ? position.realized : null,
   };
+};
+
+const findProceeds = (realizedPercent, realizedCost, settlementFee) => {
+  const bnSettlementFee = createBigNumber(settlementFee, 10);
+  const bnRealizedPercent = createBigNumber(realizedPercent);
+  const bnRealizedCost = createBigNumber(realizedCost);
+
+  const bnRealizedPercentPlusOne = ONE.plus(bnRealizedPercent);
+  const a = bnRealizedPercentPlusOne.times(bnRealizedCost);
+  const b = bnRealizedPercentPlusOne.times(bnRealizedCost).times(bnSettlementFee);
+  return (a).plus(b);
 };
 
 const { FILLED, FAILED } = BET_STATUS;
@@ -187,7 +209,7 @@ const getTopBid = (orderBooks, bet, tickSize) => {
       }
       bids.push({
         price: bid.price,
-        shares: bidSharesBN.toString()
+        shares: bidSharesBN.toString(),
       });
       total = newTotal;
     }
@@ -206,9 +228,11 @@ const getTopBid = (orderBooks, bet, tickSize) => {
   const topBidPrice = weightedBidTotal.div(betSharesBN);
   const tickSizeBN = createBigNumber(tickSize);
   const roundedPrice = Math.round(topBidPrice.div(tickSizeBN).toNumber());
-  
+
   return {
-    topBidPrice: createBigNumber(roundedPrice).times(tickSizeBN).toString(),
+    topBidPrice: createBigNumber(roundedPrice)
+      .times(tickSizeBN)
+      .toString(),
     smallestPrice: bids[bids.length - 1]?.price,
   };
 };
@@ -217,7 +241,11 @@ export const getOrderShareProfitLoss = (bet, orderBooks, cb) => {
   const { marketInfos } = Markets.get();
   const market = marketInfos[bet.marketId];
   if (!market) return cb(null, null, null);
-  const { topBidPrice, smallestPrice } = getTopBid(orderBooks, bet, market.tickSize);
+  const { topBidPrice, smallestPrice } = getTopBid(
+    orderBooks,
+    bet,
+    market.tickSize
+  );
   if (!topBidPrice) return cb(null, null, null);
   const trade = {
     ...bet,
