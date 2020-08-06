@@ -23,7 +23,8 @@ import parsePath from 'modules/routes/helpers/parse-path';
 import { convertInputs, findStartTime } from '../common/market-title';
 import { convertUnixToFormattedDate } from 'utils/format-date';
 import { bulkLoadMarketTradingHistory } from 'modules/markets/actions/market-trading-history-management';
-import { augurSdk } from "services/augursdk";
+import { augurSdk } from 'services/augursdk';
+import { SportsGroupCharts } from 'modules/market-charts/sports-group-charts';
 
 export const isMarketView = location => {
   const isGroupPage = parsePath(location.pathname)[0] === MARKET;
@@ -34,8 +35,8 @@ export const isMarketView = location => {
   }
   return {
     isGroupPage,
-    marketId
-  }
+    marketId,
+  };
 };
 const BettingMarketView = () => {
   const {
@@ -196,6 +197,9 @@ const BettingMarketView = () => {
           <Subheaders header="rules" subheader={details} />
         )}
       </div>
+      {sportsGroup.current && (
+        <SportsGroupCharts sportsGroup={sportsGroup.current} />
+      )}
       <div>
         <InfoTicket
           icon={BettorsIcon}

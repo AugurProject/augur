@@ -1,0 +1,54 @@
+@import (reference) "~assets/styles/shared";
+
+.Container {
+  margin-top: @size-40;
+  display: flex;
+  flex-flow: row nowrap;
+}
+
+.ChartArea {
+  padding: @size-16;
+  background: var(--color-module-background);
+  box-shadow: 0 0 @size-4 var(--color-primary-text-15);
+  flex: 1;
+
+  > h4 {
+    .text-16-bold;
+
+    color: var(--color-primary-text);
+    text-transform: capitalize;
+  }
+}
+
+.Legend {
+  width: @size-222;
+  background: transparent;
+  padding-left: @size-24;
+
+  > h5 {
+    .text-16-bold;
+
+    color: var(--color-primary-text);
+  }
+
+  > ul {
+    margin-top: @size-16;
+
+    > li {
+      display: flex;
+      flex-flow: column nowrap;
+
+      > span:first-of-type {
+        .text-14-bold;
+
+        color: var(--color-primary-text);
+      }
+
+      > span:last-of-type {
+        .text-14;
+
+        color: var(--color-primary-text);
+      }
+    }
+  }
+}
