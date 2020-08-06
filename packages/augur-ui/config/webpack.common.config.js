@@ -23,11 +23,12 @@ const PATHS = {
 const AUGUR_ENV = process.env.AUGUR_ENV || process.env.ETHEREUM_NETWORK || 'local';
 const config = buildConfig(AUGUR_ENV);
 
-if(!process.env.CURRENT_COMMITHASH) {
+if(!process.env.CURRENT_COMMITHASH || !process.env.CURRENT_VERSION) {
   const gitRevisionPlugin = new GitRevisionPlugin({
     branch: false
   });
-  process.env.CURRENT_COMMITHASH = gitRevisionPlugin.commithash();
+  process.env.CURRENT_COMMITHASH = process.env.CURRENT_COMMITHASH || gitRevisionPlugin.commithash();
+  process.env.CURRENT_VERSION = process.env.CURRENT_VERSION || gitRevisionPlugin.version();
 }
 
 module.exports = {
@@ -237,6 +238,7 @@ module.exports = {
         AUGUR_ENV: JSON.stringify(AUGUR_ENV),
         AUTO_LOGIN: process.env.AUTO_LOGIN || false,
         CURRENT_COMMITHASH: JSON.stringify(process.env.CURRENT_COMMITHASH),
+        CURRENT_VERSION: JSON.stringify(process.env.CURRENT_VERSION),
         ETHEREUM_NETWORK: JSON.stringify(AUGUR_ENV),
         IPFS_STABLE_LOADER_HASH: JSON.stringify(process.env.IPFS_STABLE_LOADER_HASH),
 
