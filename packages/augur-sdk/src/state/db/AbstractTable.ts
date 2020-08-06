@@ -135,9 +135,7 @@ export abstract class AbstractTable {
     for (const document of documents) {
       delete document.constructor;
       try {
-        const id = this.getIDValue(document)
-        await this.table.delete(id);
-        await this.table.add(document);
+        await this.table.put(document);
       } catch(e) {
         console.error(`AbstractTable: bulkPutDocuments request for ${this.dbName} failed.`, e);
         throw e;
