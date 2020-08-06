@@ -43,7 +43,15 @@
       padding: 9px 12px;
     }
 
-    > div {
+    > div:first-of-type {
+      .text-10;
+
+      color: @color-error;
+      margin: @size-16 0 0 0;
+      text-align: center;
+    }
+
+    > div:last-of-type {
       .text-12;
 
       color: @color-secondary-text;
@@ -59,11 +67,4 @@
 
     color: @color-dark-text;
   }
-}
-
-.SwapError {
-  .text-12;
-
-  color: @color-error;
-  margin: @size-16 0 0 0;
 }

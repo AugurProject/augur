@@ -8,9 +8,13 @@ import { Action } from 'redux';
 import { ADD_FUNDS, track } from 'services/analytics/helpers';
 import { createBigNumber } from 'utils/create-big-number';
 
+
+
 const mapStateToProps = (state: AppState) => {
   const ethToDaiRate = state.appStatus.ethToDaiRate;
   const repToDaiRate = state.appStatus.repToDaiRate;
+  const usdtToDaiRate = state.appStatus.usdtToDaiRate;
+  const usdcToDaiRate = state.appStatus.usdcToDaiRate;
   const ETH_RATE = createBigNumber(1).dividedBy(
     ethToDaiRate?.value || createBigNumber(1)
   );
@@ -21,11 +25,16 @@ const mapStateToProps = (state: AppState) => {
   return {
     modal: state.modal,
     loginAccount: state.loginAccount,
+    balances: {
+      ...state.loginAccount.balances.signerBalances,
+    },
     ETH_RATE,
     REP_RATE,
     config: state.env,
     ethToDaiRate,
-    repToDaiRate
+    repToDaiRate,
+    usdtToDaiRate,
+    usdcToDaiRate,
   };
 };
 
@@ -45,6 +54,7 @@ const addFundsTorus = async (amount, address) => {
   });
 };
 
+
 const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({
   closeModal: () => dispatch(closeModal()),
   track: (eventName, payload) => dispatch(track(eventName, payload)),
@@ -58,7 +68,6 @@ const mergeProps = (sP, dP, oP) => {
     tokenToAdd: sP.modal.tokenToAdd,
     initialAddFundsFlow: sP.modal.initialAddFundsFlow,
     initialSwapToken: sP.modal.initialSwapToken,
-    useSigner: true,
     addFundsTorus: dP.addFundsTorus,
     addFundsFortmatic: dP.addFundsFortmatic,
     analyticsEvent: () => dP.track(ADD_FUNDS, {}),

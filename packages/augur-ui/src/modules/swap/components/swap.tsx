@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from "react";
 
 import {
   ETH,
@@ -9,32 +9,39 @@ import {
   SWAPTOKENSFOREXACTETH,
   SWAPETHFOREXACTTOKENS,
   ZERO,
-} from 'modules/common/constants';
-import { AccountBalances, FormattedNumber } from 'modules/types';
+  USDC,
+  USDT,
+} from "modules/common/constants";
+import { AccountBalances, FormattedNumber } from "modules/types";
 import {
   SwapArrow,
   AugurLogo as REPIcon,
   ETH as ETHIcon,
   DaiLogoIcon,
-} from 'modules/common/icons';
-import { formatEther } from 'utils/format-number';
-import { BigNumber, createBigNumber } from 'utils/create-big-number';
-import { Rate } from 'modules/swap/components/rate';
-import { SwapRow } from 'modules/swap/components/swap-row';
+  DollarIcon,
+} from "modules/common/icons";
+import { formatEther } from "utils/format-number";
+import { BigNumber, createBigNumber } from "utils/create-big-number";
+import { Rate } from "modules/swap/components/rate";
+import { SwapRow } from "modules/swap/components/swap-row";
+import classNames from "classnames";
 import {
-  uniswapRepForDai,
-  uniswapDaiForRep,
   uniswapEthForDai,
   uniswapEthForRep,
   checkSetApprovalAmount,
-  uniswapDaiForETH,
-  uniswapRepForETH,
-} from 'modules/contracts/actions/contractCalls';
-import { ProcessingButton, ExternalLinkButton } from 'modules/common/buttons';
-import type { SDKConfiguration } from '@augurproject/artifacts';
-import { augurSdk } from 'services/augursdk';
+  uniswapTokenForETH,
+  uniswapTokenForDai,
+  uniswapTokenForRep,
+} from "modules/contracts/actions/contractCalls";
+import {
+  ProcessingButton,
+  PrimaryButton,
+  ExternalLinkButton,
+} from "modules/common/buttons";
+import type { SDKConfiguration } from "@augurproject/artifacts";
+import { augurSdk } from "services/augursdk";
 
-import Styles from 'modules/swap/components/index.styles.less';
+import Styles from "modules/swap/components/index.styles.less";
 
 interface SwapProps {
   balances: AccountBalances;
@@ -42,18 +49,21 @@ interface SwapProps {
   fromToken: string;
   ETH_RATE: BigNumber;
   REP_RATE: BigNumber;
-  config: SDKConfiguration,
+  config: SDKConfiguration;
   address: string;
-  useSigner: boolean;
   ethToDaiRate: FormattedNumber;
   repToDaiRate: FormattedNumber;
+  usdcToDaiRate: FormattedNumber;
+  usdtToDaiRate: FormattedNumber;
 }
 
 const tokenIconImageMap = {
   eth: ETHIcon,
   rep: REPIcon,
   dai: DaiLogoIcon,
-}
+  usdc: DollarIcon,
+  usdt: DollarIcon,
+};
 
 export const Swap = ({
   balances,
@@ -63,28 +73,19 @@ export const Swap = ({
   REP_RATE,
   config,
   address,
-  useSigner = false,
   ethToDaiRate,
+  usdtToDaiRate,
+  usdcToDaiRate,
   repToDaiRate,
 }: SwapProps) => {
+  const VALID_TOKENS = [DAI, REP, ETH, USDC, USDT];
 
-  const VALID_TOKENS = [DAI, REP, ETH];
-  let hasEth;
-  let hasRep;
-  let hasDai;
-
-  let toTokenBalance = balances[toToken.toLowerCase()] || 0;
-  if (useSigner) {
-    toTokenBalance = balances.signerBalances[toToken.toLowerCase()] || 0;
-
-    hasEth = createBigNumber(balances.signerBalances.eth).gt(ZERO);
-    hasRep = createBigNumber(balances.signerBalances.rep).gt(ZERO);
-    hasDai = createBigNumber(balances.signerBalances.dai).gt(ZERO);
-  } else {
-    hasEth = createBigNumber(balances.eth).gt(ZERO);
-    hasRep = createBigNumber(balances.rep).gt(ZERO);
-    hasDai = createBigNumber(balances.dai).gt(ZERO);
-  }
+  const toTokenBalance = balances[toToken.toLowerCase()] || 0;
+  const hasEth = createBigNumber(balances.eth).gt(ZERO);
+  const hasRep = createBigNumber(balances.rep).gt(ZERO);
+  const hasDai = createBigNumber(balances.dai).gt(ZERO);
+  const hasUSDC = createBigNumber(balances.usdc).gt(ZERO);
+  const hasUSDT = createBigNumber(balances.usdt).gt(ZERO);
 
   let tokenSwapTypes = [];
 
@@ -100,36 +101,42 @@ export const Swap = ({
     tokenSwapTypes = tokenSwapTypes.concat(DAI);
   }
 
-  // remove the token that is being swaapped for
-  tokenSwapTypes = tokenSwapTypes.filter(token => token !== toToken);
+  // Only add USDC/USDT to convert to DAI/ETH since there are no USDC/USDT -> REPV2 liquidity pools at this time
+  if (toToken !== REP) {
+    if (hasUSDC) {
+      tokenSwapTypes = tokenSwapTypes.concat(USDC);
+    }
+    if (hasUSDT) {
+      tokenSwapTypes = tokenSwapTypes.concat(USDT);
+    }
+  }
 
+  // remove the token that is being swaapped for
+  tokenSwapTypes = tokenSwapTypes.filter((token) => token !== toToken);
+
+  // If user has no token balanaces, show all tokens
   if (tokenSwapTypes.length === 0) {
-    tokenSwapTypes = VALID_TOKENS.filter(token => token !== toToken);
+    tokenSwapTypes = VALID_TOKENS.filter((token) => token !== toToken);
   }
 
   let formattedInputAmount: FormattedNumber;
   let outputAmount: FormattedNumber = formatEther(0);
 
-
   const getBalanceForToken = (token) => {
     let balance = 0;
-    if (useSigner) {
-      balance = balances.signerBalances[token.toLowerCase()] || 0;
-    } else {
-      balance = balances[token.toLowerCase()] || 0;
-    }
+    balance = balances[token.toLowerCase()] || 0;
     return balance;
-  }
+  };
 
   const setAmountToSwap = (
     amount: BigNumber,
     formattedInputAmount: BigNumber
   ) => {
-    setErrorMessage('');
+    setErrorMessage("");
     if (amount.lt(0) || isNaN(amount.toNumber())) {
-      setErrorMessage('Check conversion amount');
+      setErrorMessage("Check conversion amount");
     } else if (amount.gt(formattedInputAmount)) {
-      setErrorMessage('Check amount is not greater than balance');
+      setErrorMessage("Check amount is not greater than balance");
     } else {
       setInputAmount(amount);
     }
@@ -145,23 +152,44 @@ export const Swap = ({
 
     const input = inputAmount;
     const output = createBigNumber(outputAmount.value);
-    const exchangeRateBufferMultiplier = config.uniswap?.exchangeRateBufferMultiplier || 1.005;
+    const exchangeRateBufferMultiplier =
+      config.uniswap?.exchangeRateBufferMultiplier || 1.005;
 
     try {
       if (fromTokenType === DAI) {
+        await checkSetApprovalAmount(address, contracts.cash);
         if (toToken === ETH) {
-          await uniswapDaiForETH(input, output, exchangeRateBufferMultiplier);
+          await uniswapTokenForETH(
+            contracts.cash.address,
+            input,
+            output,
+            exchangeRateBufferMultiplier
+          );
         } else if (toToken === REP) {
-          await checkSetApprovalAmount(address, contracts.cash);
-          await uniswapDaiForRep(input, output, exchangeRateBufferMultiplier);
+          await uniswapTokenForRep(
+            contracts.cash.address,
+            input,
+            output,
+            exchangeRateBufferMultiplier
+          );
         }
         clearForm();
       } else if (fromTokenType === REP) {
+        await checkSetApprovalAmount(address, contracts.reputationToken);
         if (toToken === ETH) {
-            await uniswapRepForETH(input, output, exchangeRateBufferMultiplier);
+          await uniswapTokenForETH(
+            contracts.reputationToken.address,
+            input,
+            output,
+            exchangeRateBufferMultiplier
+          );
         } else if (toToken === DAI) {
-          await checkSetApprovalAmount(address, contracts.reputationToken);
-          await uniswapRepForDai(input, output, exchangeRateBufferMultiplier);
+          await uniswapTokenForDai(
+            contracts.reputationToken.address,
+            input,
+            output,
+            exchangeRateBufferMultiplier
+          );
         }
         clearForm();
       } else if (fromTokenType === ETH) {
@@ -172,69 +200,135 @@ export const Swap = ({
           await uniswapEthForRep(input, output, exchangeRateBufferMultiplier);
         }
         clearForm();
+      } else if (fromTokenType === USDC) {
+        await checkSetApprovalAmount(address, contracts.usdc);
+        if (toToken === DAI) {
+          await uniswapTokenForDai(
+            contracts.usdc.address,
+            input,
+            output,
+            exchangeRateBufferMultiplier
+          );
+        } else if (toToken === REP) {
+          await uniswapTokenForRep(
+            contracts.usdc.address,
+            input,
+            output,
+            exchangeRateBufferMultiplier
+          );
+        }
+        clearForm();
+      } else if (fromTokenType === USDT) {
+        await checkSetApprovalAmount(address, contracts.usdt);
+        if (toToken === DAI) {
+          await uniswapTokenForDai(
+            contracts.usdt.address,
+            input,
+            output,
+            exchangeRateBufferMultiplier
+          );
+        } else if (toToken === REP) {
+          await uniswapTokenForRep(
+            contracts.usdt.address,
+            input,
+            output,
+            exchangeRateBufferMultiplier
+          );
+        }
+        clearForm();
       }
-    }
-    catch (error) {
-      if (error) {
-        setErrorMessage('Liquidity error, please try reducing the size of your trade to avoid a price slippage.');
+    } catch (error) {
+      if (error && error.message.indexOf("exception") !== -1) {
+        setErrorMessage(
+          "Liquidity error, please try reducing the size of your trade to avoid a price slippage."
+        );
       }
     }
   };
 
   const handleSetToken = () => {
-    setErrorMessage('');
-    const nextToken = currentTokenIndex === tokenSwapTypes.length - 1 ? 0 : currentTokenIndex + 1;
+    setErrorMessage("");
+    const nextToken =
+      currentTokenIndex === tokenSwapTypes.length - 1
+        ? 0
+        : currentTokenIndex + 1;
     setCurrentTokenIndex(nextToken);
     setFromTokenType(tokenSwapTypes[nextToken]);
     updateBalance(getBalanceForToken(tokenSwapTypes[nextToken]));
-    clearForm()
-  }
+    clearForm();
+  };
 
   const [inputAmount, setInputAmount] = useState(createBigNumber(0.0));
-  const [fromTokenType, setFromTokenType] = useState(fromToken ? fromToken : tokenSwapTypes[0]);
+  const [fromTokenType, setFromTokenType] = useState(
+    fromToken ? fromToken : tokenSwapTypes[0]
+  );
   const [balance, updateBalance] = useState(getBalanceForToken(fromTokenType));
   const [errorMessage, setErrorMessage] = useState(null);
   const [currentTokenIndex, setCurrentTokenIndex] = useState(0);
 
   if (!VALID_TOKENS.includes(fromTokenType)) {
-    throw Error('unsupported uniswap token');
+    throw Error("unsupported uniswap token");
   }
 
   formattedInputAmount = formatEther(Number(balance) || 0);
 
   let altExchangeMessage = null;
   if (toToken === ETH) {
-    altExchangeMessage = 'Have USDC, USDT, DAI or REPv2 and looking to get a large quantity of ETH at lower slippage?';
+    altExchangeMessage =
+      "Have USDC, USDT, DAI or REPv2 and looking to get a large quantity of ETH at lower slippage?";
   } else if (toToken === DAI) {
-    altExchangeMessage = 'Have USDC, USDT, REPv2 or ETH and looking to get a large quantity of DAI at lower slippage?';
+    altExchangeMessage =
+      "Have USDC, USDT, REPv2 or ETH and looking to get a large quantity of DAI at lower slippage?";
   } else if (toToken === REP) {
-    altExchangeMessage = 'Have USDC, USDT, DAI or ETH and looking to get a large quantity of REPv2 at lower slippage?';
+    altExchangeMessage =
+      "Have USDC, USDT, DAI or ETH and looking to get a large quantity of REPv2 at lower slippage?";
   }
 
   if (!inputAmount.lt || inputAmount.lt(0)) {
     outputAmount = formatEther(0);
   } else {
+    const rateUSDT = createBigNumber(usdtToDaiRate.value / 10**12);
+    const rateUSDC = createBigNumber(usdcToDaiRate.value / 10**12);
+    const repInDai = REP_RATE.multipliedBy(ethToDaiRate.value);
+
     if (toToken === REP) {
+      const inputValueRepInDai = createBigNumber(1)
+        .dividedBy(repToDaiRate.value)
+        .multipliedBy(inputAmount);
+
       if (fromTokenType === DAI) {
-        outputAmount = formatEther(createBigNumber(1).dividedBy(repToDaiRate.value).multipliedBy(inputAmount));
+        outputAmount = formatEther(inputValueRepInDai);
       } else if (fromTokenType === ETH) {
-        outputAmount = formatEther(createBigNumber(ethToDaiRate.value).multipliedBy(inputAmount).dividedBy(repToDaiRate.value));
+        outputAmount = formatEther(
+          createBigNumber(ethToDaiRate.value)
+            .multipliedBy(inputAmount)
+            .dividedBy(repToDaiRate.value)
+        );
+      } else if (fromTokenType === USDC) {
+        outputAmount = formatEther(rateUSDC.multipliedBy(inputValueRepInDai));
+      } else if (fromTokenType === USDT) {
+        outputAmount = formatEther(rateUSDT.multipliedBy(inputValueRepInDai));
       }
     } else if (toToken === DAI) {
       if (fromTokenType === REP) {
-        outputAmount = formatEther(createBigNumber(repToDaiRate.value).multipliedBy(inputAmount));
+        outputAmount = formatEther(
+          createBigNumber(repToDaiRate.value).multipliedBy(inputAmount)
+        );
       } else if (fromTokenType === ETH) {
         outputAmount = formatEther(
           createBigNumber(inputAmount).dividedBy(ETH_RATE)
         );
+      } else if (fromTokenType === USDC) {
+        outputAmount = formatEther(rateUSDC.multipliedBy(inputAmount));
+      } else if (fromTokenType === USDT) {
+        outputAmount = formatEther(rateUSDT.multipliedBy(inputAmount));
       }
     } else if (toToken === ETH) {
       if (fromTokenType === DAI) {
         outputAmount = formatEther(
           createBigNumber(ETH_RATE).multipliedBy(inputAmount)
         );
-      }
-      else if (fromTokenType === REP) {
+      } else if (fromTokenType === REP) {
         outputAmount = formatEther(
           createBigNumber(REP_RATE).multipliedBy(inputAmount)
         );
@@ -248,7 +342,7 @@ export const Swap = ({
         <SwapRow
           amount={formatEther(inputAmount)}
           token={fromTokenType}
-          label={'Input'}
+          label={"Input"}
           showChevron={tokenSwapTypes.length > 1}
           balance={formattedInputAmount}
           logo={tokenIconImageMap[fromTokenType.toLowerCase()] || ETHIcon}
@@ -262,7 +356,7 @@ export const Swap = ({
         <SwapRow
           amount={outputAmount}
           token={toToken}
-          label={'Output (estimated)'}
+          label={"Output (estimated)"}
           balance={formatEther(toTokenBalance)}
           logo={tokenIconImageMap[toToken.toLowerCase()] || ETHIcon}
         />
@@ -274,23 +368,39 @@ export const Swap = ({
         ethRate={ETH_RATE}
         ethToDaiRate={ethToDaiRate}
         repToDaiRate={repToDaiRate}
+        usdcToDaiRate={usdcToDaiRate}
+        usdtToDaiRate={usdtToDaiRate}
       />
 
       <div>
         <ProcessingButton
-          text={'Convert'}
+          text={"Convert"}
           action={() => makeTrade()}
           queueName={TRANSACTIONS}
-          queueId={fromTokenType === ETH ? SWAPETHFOREXACTTOKENS : toToken === ETH ? SWAPTOKENSFOREXACTETH : SWAPEXACTTOKENSFORTOKENS}
-          disabled={outputAmount.value <= 0}
+          disabled={
+            !outputAmount ||
+            (errorMessage && errorMessage.indexOf("Liquidity") === -1)
+          }
+          queueId={
+            fromTokenType === ETH
+              ? SWAPETHFOREXACTTOKENS
+              : toToken === ETH
+              ? SWAPTOKENSFOREXACTETH
+              : SWAPEXACTTOKENSFORTOKENS
+          }
         />
-        {errorMessage && <div className={Styles.SwapError}>{errorMessage}</div>}
-        {altExchangeMessage &&
+        {errorMessage && <div>{errorMessage}</div>}
+        {altExchangeMessage && (
           <div>
-            {altExchangeMessage}<br />
-            Try <ExternalLinkButton URL={'https://1inch.exchange'} label={'1inch.exchange'} />
+            {altExchangeMessage}
+            <br />
+            Try{" "}
+            <ExternalLinkButton
+              URL={"https://1inch.exchange"}
+              label={"1inch.exchange"}
+            />
           </div>
-        }
+        )}
       </div>
     </div>
   );

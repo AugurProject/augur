@@ -22,24 +22,50 @@ export const Rate = ({
   ethRate,
   ethToDaiRate,
   repToDaiRate,
+  usdcToDaiRate,
+  usdtToDaiRate,
 }: RateProps) => {
   let displayRate = null;
+
+  // Rates for converting TO DAI
   if (swapForToken === DAI) {
     if (baseToken === REP) {
       displayRate = `1 REPv2 = $${formatDai(repToDaiRate.value).formattedValue}`;
+    }
+    else if (baseToken === USDT) {
+      const rate = usdtToDaiRate.value / 10**12;
+      displayRate = `1 USDT = ${formatEther(rate).formattedValue} DAI`;
+    }
+    else if (baseToken === USDC) {
+      const rate = usdcToDaiRate.value / 10**12;
+      displayRate = `1 USDC = ${formatEther(rate).formattedValue} DAI`;
     }
     else if (baseToken === ETH) {
       displayRate = `1 ETH = $${formatDai(ethToDaiRate.value).formattedValue}`;
     }
   }
-  else if (swapForToken === REP) {
-    const rate =
-      baseToken === DAI
-        ? formatDai((repRate).multipliedBy(ethToDaiRate.value)).formattedValue + ' DAI'
-        : formatEther(repRate).formattedValue + ' ETH';
 
-    displayRate = `1 ${swapForToken === REP ? 'REPv2' : swapForToken} = ${rate}`;
+  // Rates for converting TO REPv2
+  else if (swapForToken === REP) {
+    const repInDai = repRate.multipliedBy(ethToDaiRate.value);
+
+    if (baseToken === ETH) {
+      displayRate = `1 REPv2 = ${formatEther(repRate).formattedValue} ETH`;
+    }
+    else if (baseToken === DAI) {
+      displayRate = `1 REPv2 = ${formatDai(repInDai).formattedValue} DAI`;
+    }
+    else if (baseToken === USDC) {
+      const rate = usdcToDaiRate.value / 10**12;
+      displayRate = `1 REPv2 = ${formatEther((createBigNumber(rate)).multipliedBy(repInDai)).formattedValue} USDC`;
+    }
+    else if (baseToken === USDT) {
+      const rate = usdtToDaiRate.value / 10**12;
+      displayRate = `1 REPv2 = ${formatEther((createBigNumber(rate)).multipliedBy(repInDai)).formattedValue} USDT`;
+    }
   }
+
+  // Rates for converting TO ETH
   else if (swapForToken === ETH) {
     if (baseToken === REP) {
       displayRate = `1 REPv2 = ${formatEther(repRate).formattedValue} ETH`;
