@@ -33,7 +33,7 @@ export abstract class AbstractTable {
 
   private static writeQueue: AsyncQueue<WriteQueueTask> = queue(
     (task: WriteQueueTask, callback) => {
-      return timeout(async () => {
+      return timeout(async function WriteOperation() {
         if (task.type === WriteTaskType.ADD) {
           return task.table.bulkAddDocumentsInternal(task.documents);
         } else if (task.type === WriteTaskType.PUT) {

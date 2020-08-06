@@ -13,7 +13,7 @@ interface ToArrayQueueTask<T, R> {
 export function CollectionQueueAddOn (db: Dexie) {
   const originalToArray = db.Collection.prototype.toArray;
   const toArrayQueue = queue<ToArrayQueueTask<any, any>>(({collection, cb}, callback) => {
-    return timeout(async (args) => {
+    return timeout(async function ReadOperation() {
       console.log('Reading Query');
       return originalToArray.call(collection, cb);
     }, 2500)(callback);
