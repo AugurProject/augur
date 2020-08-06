@@ -34,7 +34,7 @@
   "zeroX": {
     "rpc": {
       "enabled": false,
-      "ws": "wss://v2.augur.net/0x-ws"
+      "ws": "wss://staging.augur.net/0x-ws"
     },
     "mesh": {
       "verbosity": 1,
