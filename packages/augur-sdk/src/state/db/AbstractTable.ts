@@ -1,6 +1,6 @@
 import Dexie from 'dexie';
 import * as _ from 'lodash';
-import { AsyncQueue, queue } from 'async';
+import { AsyncQueue, queue, timeout } from 'async';
 
 export type PrimitiveID = string | number | Date;
 
@@ -32,14 +32,16 @@ export abstract class AbstractTable {
   protected syncing: boolean;
 
   private static writeQueue: AsyncQueue<WriteQueueTask> = queue(
-    async (task: WriteQueueTask) => {
-      if (task.type === WriteTaskType.ADD) {
-        return task.table.bulkAddDocumentsInternal(task.documents);
-      } else if (task.type === WriteTaskType.PUT) {
-        return task.table.bulkPutDocumentsInternal(task.documents);
-      } else {
-        return task.table.bulkUpsertDocumentsInternal(task.documents);
-      }
+    (task: WriteQueueTask, callback) => {
+      return timeout(async () => {
+        if (task.type === WriteTaskType.ADD) {
+          return task.table.bulkAddDocumentsInternal(task.documents);
+        } else if (task.type === WriteTaskType.PUT) {
+          return task.table.bulkPutDocumentsInternal(task.documents);
+        } else {
+          return task.table.bulkUpsertDocumentsInternal(task.documents);
+        }
+      }, 1000)(callback);
     },
     1
   );
