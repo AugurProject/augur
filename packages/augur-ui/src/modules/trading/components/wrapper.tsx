@@ -267,7 +267,7 @@ class Wrapper extends Component<WrapperProps, WrapperState> {
     });
   }
 
-  checkCanPostOnly = (price, side) => {
+  doesCrossSpread = (price, side) => {
     const { canPostOrder } = this.props;
     if (this.state.postOnlyOrder) {
       const allowPostOnlyOrder = canPostOrder(price, side);
@@ -301,7 +301,7 @@ class Wrapper extends Component<WrapperProps, WrapperState> {
           side: order.selectedNav,
           numShares: order.orderQuantity,
           selfTrade: order.selfTrade,
-          postOnly: !this.checkCanPostOnly(order.orderPrice, order.selectNav),
+          postOnly: this.doesCrossSpread(order.orderPrice, order.selectNav),
         },
         (err, newOrder) => {
           if (err) {
@@ -314,7 +314,7 @@ class Wrapper extends Component<WrapperProps, WrapperState> {
               selectedNav,
             };
             this.setState(order);
-            this.checkCanPostOnly(order.trade.limitPrice, order.trade.side);
+            this.doesCrossSpread(order.trade.limitPrice, order.trade.side);
           }
           const newOrderDaiEstimate = formatDai(
             createBigNumber(newOrder.totalOrderValue.fullPrecision),
@@ -337,7 +337,7 @@ class Wrapper extends Component<WrapperProps, WrapperState> {
             selectedNav,
           };
           this.setState(order);
-          this.checkCanPostOnly(order.trade.limitPrice, order.trade.side);
+          this.doesCrossSpread(order.trade.limitPrice, order.trade.side);
         }
       )
     }
@@ -408,7 +408,7 @@ class Wrapper extends Component<WrapperProps, WrapperState> {
           orderQuantity: order.orderQuantity
         })
       }
-      this.checkCanPostOnly(order.orderPrice, selectedNav);
+      this.doesCrossSpread(order.orderPrice, selectedNav);
     }
   }
 
@@ -440,7 +440,7 @@ class Wrapper extends Component<WrapperProps, WrapperState> {
         limitPrice: order.orderPrice,
         side: order.selectedNav,
         maxCost: order.orderDaiEstimate,
-        postOnly: !this.checkCanPostOnly(order.orderPrice, order.selectNav),
+        postOnly: this.doesCrossSpread(order.orderPrice, order.selectNav),
       },
       (err, newOrder) => {
         if (err) return console.error(err); // what to do with error here
