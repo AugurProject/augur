@@ -119,10 +119,6 @@ export class ZeroXOrders extends AbstractTable {
     this.augur.events.off(SubscriptionEventName.ZeroXRPCOrderEvent, this.handleOrderEvent);
   }
 
-  async clear() {
-    return this.delete();
-}
-
   async handleOrderEvent(orderEvents: OrderEvent[]): Promise<void> {
     if (orderEvents.length < 1) return;
     const bulkOrderEvents = [];
