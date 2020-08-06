@@ -41,7 +41,7 @@ export abstract class AbstractTable {
         } else {
           return task.table.bulkUpsertDocumentsInternal(task.documents);
         }
-      }, 2500)(callback);
+      }, 10000)(callback);
     },
     2
   );
@@ -99,7 +99,7 @@ export abstract class AbstractTable {
     return new Promise((resolve, reject) => {
       AbstractTable.writeQueue.push({ table: this, documents, type }, (err) => {
         if (err) {
-          console.log('WriteOperationDied');
+          console.log(`WriteOperationDied: ${JSON.stringify(err)}`);
           reject(err);
         }
           resolve();
