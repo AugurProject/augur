@@ -4,7 +4,7 @@ import { ethers } from 'ethers';
 import { BigNumber } from 'bignumber.js';
 import { TransactionRequest, TransactionResponse } from 'ethers/providers';
 
-import { getGasStation, NetworkId } from '@augurproject/utils';
+import { NetworkId } from '@augurproject/utils';
 
 import {
   Dependencies,
