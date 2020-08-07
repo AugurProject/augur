@@ -934,6 +934,7 @@ export const TOTAL_ACCOUNT_VALUE_IN_DAI = 'Total Account Value';
 export const TOTAL_ACCOUNT_VALUE_IN_REP = 'My Available REPv2 Balance ';
 export const ALL_TIME_PROFIT_AND_LOSS_REP = 'All Time Profit and Loss';
 export const MY_TOTOL_REP_STAKED = 'My Total REPv2 Staked';
+export const REPORTING_ONLY_BANNER = 'Reporting only, trading is disabled '
 
 // Account Summary - Augur Status
 export const AUGUR_STATUS_TITLE = 'Augur Status';
