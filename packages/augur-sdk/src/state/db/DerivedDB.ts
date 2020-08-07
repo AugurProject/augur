@@ -49,6 +49,10 @@ export class DerivedDB extends RollbackTable {
     );
   }
 
+  async clear() {
+    this.delete();
+  }
+
   async onBulkSyncComplete() {
     this.stateDB.registerEventListener(
       this.mergeEventNames,
