@@ -15,6 +15,7 @@ import { isEmpty } from 'utils/is-empty';
 import { isLocalHost } from 'utils/is-localhost';
 import { analytics } from './analytics';
 import { createBrowserMeshWorker } from './browser-mesh';
+import { isMobileSafari, isSafari } from 'utils/is-safari';
 
 window.BigNumber = BigNumber;
 
@@ -43,6 +44,10 @@ export class SDK {
     const { Connectors, EthersProvider, createClient } = await import(/* webpackChunkName: 'augur-sdk' */ '@augurproject/sdk');
 
     this.config = config;
+
+    if ((isSafari() || isMobileSafari()) && this.config.zeroX) {
+      this.config.zeroX.delayTillSDKReady = true;
+    }
 
     const ethersProvider = new EthersProvider(
       provider,

@@ -15,7 +15,7 @@ export function CollectionQueueAddOn (db: Dexie) {
   const toArrayQueue = queue<ToArrayQueueTask<any, any>>(({collection, cb}, callback) => {
     return retry(
       {
-        times: 2,
+        times: 5,
         interval: function (retryCount) {
           return 100;
         },
@@ -25,7 +25,7 @@ export function CollectionQueueAddOn (db: Dexie) {
       }, timeout(async function ReadOperation() {
       console.log('Reading Query');
       return originalToArray.call(collection, cb);
-    }, 2000), callback);
+    }, 2500), callback);
   }, 10);
 
   db.Collection.prototype.toArray = function toArray<R>(cb?): PromiseExtended<any[]> {

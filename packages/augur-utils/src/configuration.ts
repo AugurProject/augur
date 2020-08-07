@@ -74,6 +74,7 @@ export interface SDKConfiguration {
       useBootstrapList?: boolean,
       bootstrapList?: string[]
     }
+    delayTillSDKReady?: boolean
   },
   syncing?: {
     enabled: boolean,
