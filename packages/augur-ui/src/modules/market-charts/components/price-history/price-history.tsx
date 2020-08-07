@@ -36,12 +36,12 @@ interface BucketedPriceTimeSeries {
 interface PriceHistoryProps {
   marketId: string;
   market: MarketData;
-  selectedOutcomeId: number;
+  selectedOutcomeId?: number;
   isArchived?: boolean;
 }
 
 const PriceHistory = ({
-  selectedOutcomeId,
+  selectedOutcomeId = 9,
   isArchived,
   marketId,
   market
@@ -182,10 +182,11 @@ const getOptions = ({ maxPrice, pricePrecision, minPrice, isScalar, isArchived }
       y: 16,
     },
     crosshair: {
+      snap: true,
       label: {
         padding: 2,
         enabled: true,
-        style: null,
+        style: {},
         borderRadius: 5,
         shape: 'square',
         format: isScalar ? '{value:.4f}' : '${value:.2f}',
