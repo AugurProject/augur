@@ -93,7 +93,8 @@ jobs:
         inputs:
           command: build
           Dockerfile: support/Dockerfile
+          buildContext: ./
           repository: augurproject/augur
-          arguments: '--build-arg --build-arg CURRENT_COMMITHASH=${BUILD_SOURCEVERSION} --build-arg CURRENT_VERSION=$CURRENT_VERSION'
+          arguments: '--build-arg CURRENT_COMMITHASH=${BUILD_SOURCEVERSION} --build-arg CURRENT_VERSION=$CURRENT_VERSION'
           tags: |
             testrunnercreationinci
