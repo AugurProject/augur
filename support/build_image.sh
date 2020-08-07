@@ -13,6 +13,6 @@ yarn workspace orbit-web build;
 docker build . \
   -f support/Dockerfile \
   --build-arg CURRENT_COMMITHASH="$(git rev-parse HEAD)" \
-  --build-arg CURRENT_VERSION=$VERSION
+  --build-arg CURRENT_VERSION=$VERSION \
   -t augurproject/augur:runner \
   -t "augurproject/augur:v$VERSION";
