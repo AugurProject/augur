@@ -32,6 +32,7 @@ import {
   MODAL_REPORTING_ONLY,
   NETWORK_NAMES,
   SIGNIN_SIGN_WALLET,
+  DISCLAIMER_SEEN,
 } from 'modules/common/constants';
 import { getNetworkId } from 'modules/contracts/actions/contractCalls';
 import { listenForStartUpEvents } from 'modules/events/actions/listen-to-updates';
@@ -55,6 +56,7 @@ import logError from 'utils/log-error';
 import { showIndexedDbSize } from 'utils/show-indexed-db-size';
 import { tryToPersistStorage } from 'utils/storage-manager';
 import { windowRef } from 'utils/window-ref';
+import getValueFromlocalStorage from 'utils/get-local-storage-value';
 
 const NETWORK_ID_POLL_INTERVAL_DURATION = 10000;
 
@@ -303,7 +305,7 @@ export function connectAugur(
       return callback(`SDK could not be created, see console for more information`, { config });
     }
 
-    if (process.env.REPORTING_ONLY) {
+    if (process.env.REPORTING_ONLY && !getValueFromlocalStorage(DISCLAIMER_SEEN)) {
       dispatch(updateModal({
         type: MODAL_REPORTING_ONLY
       }))
