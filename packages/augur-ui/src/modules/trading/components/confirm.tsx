@@ -489,7 +489,7 @@ class Confirm extends Component<ConfirmProps, ConfirmState> {
           <ApprovalTxButtonLabel
             className={Styles.ApprovalNotice}
             ignore={Boolean(process.env.REPORTING_ONLY)}
-            title={'One time trade approval needed'}
+            title={'One time approval needed'}
             buttonName={'Approve'}
             userEthBalance={String(availableEth)}
             gasPrice={gasPrice}
