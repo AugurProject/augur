@@ -26,6 +26,6 @@ COPY . .
 # The private keys for the account will live here.
 VOLUME /keys
 
-RUN yarn && yarn build
+RUN yarn --frozen-lockfile && yarn build
 
 ENTRYPOINT /augur/support/entrypoint.sh
