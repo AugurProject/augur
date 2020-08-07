@@ -19,7 +19,9 @@ export function providerFromConfig(config: SDKConfiguration) {
     config.ethereum.rpcRetryCount,
     config.ethereum.rpcRetryInterval,
     config.ethereum.rpcConcurrency);
-  if (config.gas?.price) ethersProvider.overrideGasPrice = new ethers.utils.BigNumber(config.gas.price);
-  if (config.gas?.limit) ethersProvider.gasLimit = new ethers.utils.BigNumber(config.gas.limit);
+  if (config.gas?.override) {
+    if (config.gas?.price) ethersProvider.overrideGasPrice = new ethers.utils.BigNumber(config.gas.price);
+    if (config.gas?.limit) ethersProvider.gasLimit = new ethers.utils.BigNumber(config.gas.limit);
+  }
   return ethersProvider;
 }

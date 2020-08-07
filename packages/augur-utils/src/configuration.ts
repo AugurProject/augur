@@ -41,6 +41,7 @@ export interface SDKConfiguration {
     rpcConcurrency: number
   },
   gas?: {
+    override?: boolean,
     limit?: number,
     price?: number
   },
@@ -105,9 +106,9 @@ export interface SDKConfiguration {
     showReloadModal?: boolean,
     trackBestOffer?: boolean,
     trackMarketInvalidBids?: boolean,
-    fallbackProvider?: "jsonrpc" | "torus",
-    liteProvider?: "jsonrpc" | "default",
-    primaryProvider?: "jsonrpc" | "wallet"
+    fallbackProvider?: 'jsonrpc' | 'torus',
+    liteProvider?: 'jsonrpc' | 'default',
+    primaryProvider?: 'jsonrpc' | 'wallet'
   }
 };
 
@@ -205,6 +206,7 @@ export const DEFAULT_SDK_CONFIGURATION: SDKConfiguration = {
     rpcConcurrency: 40
   },
   gas: {
+    override: false,
     price: 1e9,
     limit: 95e5
   },
@@ -260,9 +262,9 @@ export const DEFAULT_SDK_CONFIGURATION: SDKConfiguration = {
     showReloadModal: true,
     trackBestOffer: false,
     trackMarketInvalidBids: true,
-    fallbackProvider: "torus",
-    liteProvider: "jsonrpc",
-    primaryProvider: "wallet"
+    fallbackProvider: 'torus',
+    liteProvider: 'jsonrpc',
+    primaryProvider: 'wallet'
   }
 };
 
@@ -374,6 +376,7 @@ export function configFromEnvvars(): RecursivePartial<SDKConfiguration> {
   if (t(e.ETHEREUM_RPC_RETRY_INTERVAL)) config = d(config, { ethereum: { rpcRetryInterval: Number(e.ETHEREUM_RPC_RETRY_INTERVAL) }});
   if (t(e.ETHEREUM_RPC_CONCURRENCY)) config = d(config, { ethereum: { rpcConcurrency: Number(e.ETHEREUM_RPC_CONCURRENCY) }});
 
+  if (t(e.GAS_OVERRIDE)) config = d(config, { gas: { override: bool(e.GAS_OVERRIDE) }});
   if (t(e.GAS_LIMIT)) config = d(config, { gas: { limit: Number(e.GAS_LIMIT) }});
   if (t(e.GAS_PRICE)) config = d(config, { gas: { price: Number(e.GAS_PRICE) }});
 
