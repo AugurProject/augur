@@ -1,0 +1,76 @@
+jobs:
+  - job: github_release
+    displayName: github release
+    dependsOn: PreFlightCheck
+    condition: |
+      and
+      (
+        succeeded(),
+        startsWith(variables['build.sourceBranch'], 'refs/tags')
+      )
+    pool:
+      vmImage: $(VM_IMAGE)
+    steps:
+      - template: node-setup.yml
+      - bash: |
+          set -euo pipefail
+          yarn build
+        displayName: yarn build
+      - bash: |
+          set -euo pipefail
+          export ETHEREUM_NETWORK=v2
+          ( cd packages/orbit-web && ./node_modules/.bin/webpack)
+          ( cd packages/augur-ui && REPORTING_ONLY=true ./node_modules/.bin/webpack)
+          mv packages/augur-ui/build reporting-build
+          ( cd packages/augur-ui && ./node_modules/.bin/webpack)
+          mv packages/augur-ui/build trading-build
+        displayName: ui build
+        env:
+          NODE_OPTIONS: "--max_old_space_size=6144"
+      - bash: |
+          set -euo pipefail
+          sudo apt update
+          sudo apt install golang-go -y
+          curl -l https://dist.ipfs.io/go-ipfs/v0.5.1/go-ipfs_v0.5.1_linux-amd64.tar.gz | tar xvzf -
+          sudo mv go-ipfs/ipfs /usr/local/bin/ipfs
+        displayName: install ipfs
+      - bash: |
+          set -euo pipefail
+          ipfs init > /dev/null 2>&1
+          IPFS_HASH_REPORTING_V0=$(ipfs add -r -Q -n --pin=false --cid-version=0 reporting-build)
+          IPFS_HASH_REPORTING_V1=$(ipfs add -r -Q -n --pin=false --cid-version=1 reporting-build)
+          IPFS_HASH_TRADING_V0=$(ipfs add -r -Q -n --pin=false --cid-version=0 trading-build)
+          IPFS_HASH_TRADING_V1=$(ipfs add -r -Q -n --pin=false --cid-version=1 trading-build)
+          (
+          cat <<-EOF
+          # Augur V2 Release
+
+          ## IPFS Hashes
+          * Reporting UI
+            * CIDv0: ${IPFS_HASH_REPORTING_V0}
+            * CIDv1: ${IPFS_HASH_REPORTING_V1}
+          * Trading UI
+            * CIDv0: ${IPFS_HASH_TRADING_V0}
+            * CIDv1: ${IPFS_HASH_TRADING_V1}
+          ---
+          EOF
+          ) > release-notes.txt
+        displayName: Generate Release Notes
+      - task: CopyFiles@2
+        inputs:
+          contents: |
+            release-notes.txt
+          targetFolder: $(Build.ArtifactStagingDirectory)
+          cleanTargetFolder: true
+      - task: GitHubRelease@1
+        displayName: 'GitHub release (create)'
+        inputs:
+          gitHubConnection: 'Github OAuth'
+          tagSource: 'userSpecifiedTag'
+          tag: '$(Build.SourceBranchName)'
+          title: 'Augur $(Build.SourceBranchName)'
+          assets: '$(Build.ArtifactStagingDirectory)/*'
+          releaseNotesSource: filePath
+          releaseNotesFile: '$(Build.ArtifactStagingDirectory)/release-notes.txt'
+          isDraft: true
+          isPreRelease: true
