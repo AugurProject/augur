@@ -137,7 +137,14 @@ export async function createClient(
     // interface instead of actually import @0x/mesh-browser -- since
     // that would attempt to start the wasm client in nodejs and cause
     // everything to die.
-    createBrowserMesh(config, ethersProvider, zeroX);
+    if (config.zeroX?.delayTillSDKReady) {
+      client.events.once(SubscriptionEventName.SDKReady, () => {
+        console.log(`DELAYED 0x CREATION`);
+        createBrowserMesh(config, ethersProvider, zeroX);
+      });
+    } else {
+      createBrowserMesh(config, ethersProvider, zeroX);
+    }
   }
 
   return client;
