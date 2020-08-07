@@ -14,6 +14,7 @@ import * as Unixfs from 'ipfs-unixfs';
 import { DAGNode } from 'ipld-dag-pb';
 import _ from 'lodash';
 import LZString from 'lz-string';
+import fetch from 'cross-fetch';
 import { Augur, Provider } from '..';
 
 import { DB } from '../state/db/DB';
@@ -113,12 +114,11 @@ export class WarpController {
     private uploadBlockNumber: number,
     ipfs?: Promise<IPFS>,
     // This is to simplify swapping out file retrieval mechanism.
-    private _fileRetrievalFn: (ipfsPath: string) => Promise<any> = (
+    private _fileRetrievalFn: (ipfsPath: string) => Promise<Uint8Array> = (
       ipfsPath: string
-    ) =>
-      fetch(`https://cloudflare-ipfs.com/ipfs/${ipfsPath}`)
-        .then(item => item.arrayBuffer())
-        .then(item => new Uint8Array(item))
+    ) => fetch(`https://cloudflare-ipfs.com/ipfs/${ipfsPath}`)
+      .then(item => item.arrayBuffer())
+      .then(item => new Uint8Array(item))
   ) {
     this.checkpoints = new Checkpoints(provider);
     if (ipfs) {
