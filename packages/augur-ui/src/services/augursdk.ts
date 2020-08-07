@@ -11,10 +11,10 @@ import {
   unListenToEvents,
 } from 'modules/events/actions/listen-to-updates';
 import { BigNumber } from 'utils/create-big-number';
-import { getFingerprint } from 'utils/get-fingerprint';
 import { isEmpty } from 'utils/is-empty';
 import { isLocalHost } from 'utils/is-localhost';
 import { analytics } from './analytics';
+import { createBrowserMeshWorker } from './browser-mesh';
 
 window.BigNumber = BigNumber;
 
@@ -91,7 +91,7 @@ export class SDK {
     }
     // PG: END HACK
 
-    this.client = await createClient(this.config, this.connector, signer, ethersProvider, enableFlexSearch);
+    this.client = await createClient(this.config, this.connector, signer, ethersProvider, enableFlexSearch, createBrowserMeshWorker);
 
     if (!isEmpty(account)) {
       this.syncUserData(account, provider, signer, this.networkId).catch((error) => {
