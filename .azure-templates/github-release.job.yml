@@ -74,3 +74,26 @@ jobs:
           releaseNotesFile: '$(Build.ArtifactStagingDirectory)/release-notes.txt'
           isDraft: true
           isPreRelease: true
+  - job: build_augur_runner
+    displayName: Build Augur Runner
+    pool:
+      vmImage: $(VM_IMAGE)
+    steps:
+      - template: node-setup.yml
+      - bash: echo "##vso[task.setvariable variable=CURRENT_VERSION]$(node -e 'process.stdout.write(require("./lerna.json").version);')"
+      - bash: echo "${CURRENT_VERSION}"
+      - bash: echo "${BUILD_SOURCEVERSION}"
+      - task: Docker@2
+        displayName: docker login
+        inputs:
+          command: login
+          containerRegistry: dockerhub-augurproject
+      - task: Docker@2
+        displayName: Build
+        inputs:
+          command: build
+          Dockerfile: support/Dockerfile
+          repository: augurproject/augur
+          arguments: '--build-arg --build-arg CURRENT_COMMITHASH=${BUILD_SOURCEVERSION} --build-arg CURRENT_VERSION=$CURRENT_VERSION'
+          tags: |
+            testrunnercreationinci
