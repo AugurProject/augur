@@ -182,13 +182,11 @@
     &.Won {
       background: var(--color-open-15);
       color: var(--color-primary-text);
-      border: 0;
     }
   
     &.Loss {
       background: var(--color-resolved-15);
       color: var(--color-primary-text);
-      border: 0;
     }
   
     &.CashedOut {
@@ -202,11 +200,23 @@
     }
 
     &.CashoutAvailable {
-      color: var(--color-dark-text);
+      background: var(--color-module-background);
+      color: var(--color-primary-text);
       
       > span {
-        color: var(--color-primary-text);
         margin-left: @size-4;
+      }
+
+      &.Won {
+        > span {
+          color: var(--color-open);
+        }
+      }
+    
+      &.Loss {
+        > span {
+          color: var(--color-resolved);
+        }
       }
     }
   }
