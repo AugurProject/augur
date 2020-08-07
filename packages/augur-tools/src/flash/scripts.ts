@@ -2233,15 +2233,16 @@ export function addScripts(flash: FlashSession) {
         const { warpSyncHash } = await api.augur.warpSync.getLastWarpSyncData(api.augur.contracts.universe.address);
         const warpSyncHash32 = warpSyncHash ? CIDTool.base32(warpSyncHash) : null;
         console.log(`\n\nPrevious Warp Sync Hash: ${warpSyncHash} ( ${warpSyncHash32} )`);
-        if (showHashAndDie) {
-          process.exit(0);
-        }
-      });
 
-      api.augur.events.once(SubscriptionEventName.WarpSyncHashUpdated, async () => {
+        // TODO fix: currently shows null instead of the actual current warp sync hash
+        //      would work if waiting for WarpSyncHashUpdated but that takes too long to trigger
         const { state, hash } = await api.augur.getWarpSyncStatus();
         const hash32 = hash ? CIDTool.base32(hash) : null;
         console.log(`\n\nCurrent Warp Sync State: ${state} Hash: ${hash} ( ${hash32} )`);
+
+        if (showHashAndDie) {
+          process.exit(0);
+        }
       });
 
       api.augur.events.on(SubscriptionEventName.WarpSyncHashUpdated, async () =>  {
