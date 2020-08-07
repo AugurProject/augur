@@ -26,7 +26,6 @@ interface CorePropertiesProps {
   loadAffiliateFee: Function;
 }
 
-// TODO: Get market 24 hour volume, currently just using volume
 const CoreProperties: React.FC<CorePropertiesProps> = ({
   market,
   reportingBarShowing,
@@ -100,14 +99,6 @@ const CoreProperties: React.FC<CorePropertiesProps> = ({
                 value={
                   market.openInterestFormatted
                     ? market.openInterestFormatted.full
-                    : formatDaiPrice(0, { decimals: 0 }).full
-                }
-              />
-              <PropertyLabel
-                label="24hr Volume"
-                value={
-                  market.volumeFormatted
-                    ? market.volumeFormatted.full
                     : formatDaiPrice(0, { decimals: 0 }).full
                 }
               />
