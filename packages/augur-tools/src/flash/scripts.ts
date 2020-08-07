@@ -297,6 +297,16 @@ export function addScripts(flash: FlashSession) {
   });
 
   flash.addScript({
+    name: 'gas-price',
+    async call(this: FlashSession) {
+      if (this.noProvider()) return;
+
+      const price = await this.provider.getGasPrice();
+      console.log(`Gas price: ${price.toString()}`);
+    },
+  });
+
+  flash.addScript({
     name: 'latest-block',
     async call(this: FlashSession): Promise<void> {
       if (this.noProvider()) return undefined;
@@ -2177,7 +2187,7 @@ export function addScripts(flash: FlashSession) {
 
       if (!autoReport) {
         client = await createClient(this.config, connector, undefined, undefined, true);
-      } else if(this.accounts === ACCOUNTS) {
+      } else if (this.accounts === ACCOUNTS) {
         console.log('Creating wallet.');
         const wallet = ethers.Wallet.createRandom();
 
