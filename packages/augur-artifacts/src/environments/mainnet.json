@@ -80,9 +80,9 @@
     "chat": "orbit"
   },
   "warpSync": {
-    "enabled": false,
+    "enabled": true,
     "autoReport": false,
-    "createCheckpoints": false
+    "createCheckpoints": true
   },
   "syncing": {
     "enabled": true

@@ -89,7 +89,6 @@ export abstract class AbstractTable {
   async delete() {
     console.log(`AbstractTable: delete request for ${this.dbName} started`);
     await this.table.clear();
-    await Dexie.delete(this.dbName);
     console.log(`AbstractTable: delete request for ${this.dbName} finished`);
   }
 
