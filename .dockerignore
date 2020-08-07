@@ -10,3 +10,4 @@ packages/orbit-web/*
 !packages/orbit-web/dist/**
 packages/**/node_modules
 packages/**/build
+packages/**/tsconfig.tsbuildinfo
