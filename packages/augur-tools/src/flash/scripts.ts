@@ -2222,18 +2222,19 @@ export function addScripts(flash: FlashSession) {
       api.augur.events.once(SubscriptionEventName.NewBlock, async () => {
         const { warpSyncHash } = await api.augur.warpSync.getLastWarpSyncData(api.augur.contracts.universe.address);
         const warpSyncHash32 = warpSyncHash ? CIDTool.base32(warpSyncHash) : null;
-        const { state, hash } = await api.augur.getWarpSyncStatus();
-        const hash32 = hash ? CIDTool.base32(hash) : null;
         console.log(`\n\nPrevious Warp Sync Hash: ${warpSyncHash} ( ${warpSyncHash32} )`);
-        console.log(`Current Warp Sync State: ${state} Hash: ${hash} ( ${hash32} )`);
         if (showHashAndDie) {
           process.exit(0);
         }
       });
 
-      api.augur.events.on(
-        SubscriptionEventName.WarpSyncHashUpdated,
-        async () =>  {
+      api.augur.events.once(SubscriptionEventName.WarpSyncHashUpdated, async () => {
+        const { state, hash } = await api.augur.getWarpSyncStatus();
+        const hash32 = hash ? CIDTool.base32(hash) : null;
+        console.log(`\n\nCurrent Warp Sync State: ${state} Hash: ${hash} ( ${hash32} )`);
+      });
+
+      api.augur.events.on(SubscriptionEventName.WarpSyncHashUpdated, async () =>  {
           const { state, hash } = await api.augur.getWarpSyncStatus();
           console.log(`\n\nUpdated Warp Sync Info:\nState:\t${state}\nHash:\t${hash}`)
         }
