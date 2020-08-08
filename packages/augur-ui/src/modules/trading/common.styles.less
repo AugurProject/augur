@@ -270,10 +270,6 @@
       grid-column: auto;
       border-color: var(--color-inactive-text);
 
-      &:disabled {
-        opacity: .5;
-      }
-
       &:first-of-type {
         border: none;
         justify-self: flex-start;
@@ -283,6 +279,8 @@
       &:last-of-type {
         justify-content: center;
         white-space: nowrap;
+        width: fit-content;
+        margin-left: auto;
       }
     }
 

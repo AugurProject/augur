@@ -718,11 +718,19 @@ export const CashoutButton = ({
   if (position?.priorPosition) {
     didWin = bet.closedPotentialDaiProfit ? createBigNumber(bet.closedPotentialDaiProfit).gt(ZERO) : false;
     loss = bet.closedPotentialDaiProfit ? createBigNumber(bet.closedPotentialDaiProfit).lt(ZERO) : false;
-    cashoutText = `${didWin ? 'Won' : 'Loss'}: ${formatDai(bet.closedOrderCost).full}`;
+    cashoutText = (
+      <>
+       {didWin ? 'Won: ' : 'Loss: '} <span>{formatDai(bet.closedOrderCost).full}</span>
+      </>
+    );
   } else if (!bet.topBidPrice) {
-    cashoutText = `Cashout not available`;
+    cashoutText = 'cashout not available';
   } else if (position && market?.reportingState !== REPORTING_STATE.AWAITING_FINALIZATION && market?.reportingState !== REPORTING_STATE.FINALIZED) {
-      cashoutText = `Cashout ${bet.orderCost ? formatDai(bet.orderCost).full : '$0.00'}`;
+      cashoutText = (
+        <>
+          Cashout <span>{bet.orderCost ? formatDai(bet.orderCost).full : '$0.00'}</span>
+        </>
+      );
       cashoutDisabled = false;
       cashout = () => {
         setModal({
@@ -768,6 +776,8 @@ export const CashoutButton = ({
           className={classNames(Styles.CashoutButton, {
             [Styles.Won]: didWin && !loss,
             [Styles.Loss]: loss,
+            [Styles.CashedOut]: position?.priorPosition,
+            [Styles.CashoutAvailable]: !cashoutDisabled
           })}
           disabled={cashoutDisabled}
         >

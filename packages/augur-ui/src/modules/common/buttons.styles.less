@@ -154,6 +154,73 @@
     }
   }
 
+  .CashoutButton {
+    .text-10-medium;
+  
+    color: var(--color-primary-text);
+    background: var(--color-module-background);
+    border: @size-1 solid var(--color-dark-text);
+    border-radius: @border-radius-default;
+    padding: @size-6 @size-4;
+    text-transform: uppercase;
+  
+    &:hover {
+      background: var(--color-page-background);
+      border: @size-1 solid var(--color-primary-text);
+    }
+  
+    &:focus {
+      background: var(--color-module-background);
+      border: @size-2 solid var(--color-focused);
+    }
+  
+    &:disabled {
+      border: @size-1 solid var(--color-dark-text);
+      color: var(--color-primary-text-15);
+    }
+  
+    &.Won {
+      background: var(--color-open-15);
+      color: var(--color-primary-text);
+    }
+  
+    &.Loss {
+      background: var(--color-resolved-15);
+      color: var(--color-primary-text);
+    }
+  
+    &.CashedOut {
+      border: 0;
+      color: var(--color-dark-text);
+  
+      > span {
+        color: var(--color-primary-text);
+        margin-left: @size-4;
+      }
+    }
+
+    &.CashoutAvailable {
+      background: var(--color-module-background);
+      color: var(--color-primary-text);
+      
+      > span {
+        margin-left: @size-4;
+      }
+
+      &.Won {
+        > span {
+          color: var(--color-open);
+        }
+      }
+    
+      &.Loss {
+        > span {
+          color: var(--color-resolved);
+        }
+      }
+    }
+  }
+
   .PrimaryButton {
     .Button;
 
@@ -1254,45 +1321,6 @@
 
 .Ascending > svg > path:last-of-type {
   fill: var(--color-primary-text);
-}
-
-.CashoutButton {
-  .text-10-medium;
-
-  color: var(--color-primary-text);
-  background: var(--color-module-background);
-  border: @size-1 solid var(--color-dark-text);
-  border-radius: @border-radius-default;
-  padding: @size-6 @size-4;
-  text-transform: uppercase;
-
-  &:hover {
-    background: var(--color-page-background);
-    border: @size-1 solid var(--color-primary-text);
-  }
-
-  &:focus {
-    background: var(--color-module-background);
-    border: @size-2 solid var(--color-focused);
-  }
-
-  &:disabled {
-    border: @size-1 solid var(--color-dark-text);
-    color: var(--color-primary-text);
-    opacity: .5;
-  }
-
-  &.Won {
-    background: var(--color-open-15);
-    color: var(--color-primary-text);
-    border: 0;
-  }
-
-  &.Loss {
-    background: var(--color-resolved-15);
-    color: var(--color-primary-text);
-    border: 0;
-  }
 }
 
 .FilterButton {
