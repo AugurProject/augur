@@ -235,7 +235,7 @@ export function connectAugur(
       })
     }
 
-    if (isMobileSafari()) {
+    if ((isSafari() || isMobileSafari())) {
       config = mergeConfig(config, {
         warpSync: {
           autoReport: false,
