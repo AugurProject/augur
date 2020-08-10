@@ -13,6 +13,8 @@ export interface EmptyDisplayProps {
   icon?: any;
   button?: ReactNode;
   searchObject?: string;
+  notTradingEmptyTitle?: string;
+  searchQuery?: string;
 }
 
 const EmptyDisplay = ({
@@ -24,10 +26,12 @@ const EmptyDisplay = ({
   emptyText,
   icon,
   button,
-  searchObject = 'markets'
+  searchObject = 'markets',
+  notTradingEmptyTitle,
+  searchQuery = 'keyword'
 }: EmptyDisplayProps) => {
-  let tradingEmptyTitle = `No ${selectedTab} ${filterLabel.toLowerCase()}`;
-  let notTradingEmptyTitle = `No ${title}`;
+  let tradingEmptyTitle =  `No ${selectedTab} ${filterLabel.toLowerCase()}`;
+  notTradingEmptyTitle = notTradingEmptyTitle || `No ${title}`;
 
   let defaultEmptyText = `You don't have any ${
     selectedTab.toLowerCase()
@@ -35,8 +39,9 @@ const EmptyDisplay = ({
 
   const searchActive = search !== "" && search !== undefined;
   if (searchActive) {
-    tradingEmptyTitle = `No ${searchObject} found'`;
-    notTradingEmptyTitle = `Try a different keyword`;
+    tradingEmptyTitle = `No results found for '${search}'`;
+    notTradingEmptyTitle = `No ${searchObject} found`;
+    emptyText = `Try a different ${searchQuery}`;
   } else if (emptyTitle) {
     notTradingEmptyTitle = emptyTitle;
   }

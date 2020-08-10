@@ -1,6 +1,8 @@
 @import (reference) '~assets/styles/shared';
 
-.MyBets {
+:root[theme='BETTING'],
+:root[theme='SPORTS'] {
+  .MyBets {
     padding: @size-32;
     display: flex;
     flex-direction: column;
@@ -9,171 +11,187 @@
     margin: 0 auto;
 
     > div:first-of-type {
+      display: grid;
+      grid-template-columns: auto 1fr auto;
+      grid-template-rows: auto 1fr;
+      height: 172px;
+      width: 100%;
+
+      > div:first-of-type {
+        .text-24-bold;
+
+        color: var(--color-primary-text);
         display: grid;
-        grid-template-columns: auto 1fr auto;
-        grid-template-rows: auto 1fr;
-        height: 172px;
-        width: 100%;
-    
-        > div:first-of-type {
-            .text-24-bold;
-    
-            color: var(--color-primary-text);
-            display: grid;
-            grid-template-columns: auto 1fr;
-            grid-column: 1 / span 2;
-            
-            > span:nth-of-type(1) {
-                grid-column: 1 / span 2;
-            }
+        grid-template-columns: auto 1fr;
+        grid-column: 1 / span 2;
 
-            > span:nth-of-type(2) {
-                .text-14;
-    
-                color: var(--color-primary-text);
-                display: flex;
-                align-items: center;
-            }
+        > span:nth-of-type(1) {
+          grid-column: 1 / span 2;
         }
 
-        > div:nth-of-type(2) {
-            grid-column: 3;
-            margin-top: auto;
-            margin-bottom: auto;
+        > span:nth-of-type(2) {
+          .text-14;
+
+          color: var(--color-primary-text);
+          display: flex;
+          align-items: center;
         }
+      }
 
-        > div:nth-of-type(3) {
-            display: flex;
+      > div:nth-of-type(2) {
+        grid-column: 3;
+        margin-top: auto;
+        margin-bottom: auto;
+      }
 
-            > span:first-of-type {
-                margin-right: @size-34;
-            }
+      > div:nth-of-type(3) {
+        display: flex;
+
+        > span:first-of-type {
+          margin-right: @size-34;
         }
+      }
 
-        > ul {
-            justify-content: center;
+      > ul {
+        justify-content: center;
+      }
+
+      > article {
+        justify-content: flex-end;
+
+        > div {
+          width: 270px;
+          height: @size-40;
+
+          @media @breakpoint-mobile-tablet {
+            width: 100%;
+          }
         }
+      }
 
-        > article {
-            justify-content: flex-end;
+      > div:nth-of-type(3),
+      > ul,
+      > article {
+        grid-row: 2;
+        margin-bottom: auto;
+        margin-top: auto;
+      }
 
-            > div {
-                width: 270px;
-                height: @size-40;
-
-                @media @breakpoint-mobile-tablet {
-                    width: 100%;
-                }
-            }
-        }
-    
-        > div:nth-of-type(3),
-        > ul,
-        > article {
-            grid-row: 2;
-            margin-bottom: auto;
-            margin-top: auto;
-        }
-
-        > button {
-            display: none;
-        }
+      > button {
+        display: none;
+      }
     }
 
     > div:nth-of-type(2) {
+      display: flex;
+      justify-content: center;
+      flex-direction: column;
+
+      > div:last-of-type {
         display: flex;
-        justify-content: center;
         flex-direction: column;
+        align-items: center;
+        margin-top: 80px;
 
-        > section:first-of-type {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            margin-top: 80px;
+        > span:first-of-type {
+          background: var(--color-module-background);
 
-            > svg {
-                width: 80px;
-                height: 80px;
-                margin-bottom: @size-16;
-
-                > circle {
-                    fill: var(--color-secondary-action);
-                }
-
-                > path {
-                    fill: var(--color-primary-text);
-                }
+          > svg {
+            > g {
+              > path {
+                fill: none;
+                stroke: var(--color-primary-text);
+              }
             }
-
-            > span {
-                color: var(--color-primary-text);
-
-                &:first-of-type {
-                    .text-16-bold;
-                }
-
-                &:last-of-type {
-                    .text-14;
-
-                    margin-top: @size-4;
-                    
-                    > b {
-                        border-bottom: @size-1 dotted var(--color-primary-text);
-                    }
-                }
-            }
+          }
         }
+
+        > span {
+          color: var(--color-primary-text);
+
+          &:first-of-type {
+            .text-16-bold;
+          }
+
+          &:last-of-type {
+            .text-14;
+
+            margin-top: @size-4;
+
+            > b {
+              border-bottom: @size-1 dotted var(--color-primary-text);
+            }
+          }
+        }
+      }
+    }
+
+    &.Searching {
+      > div:nth-of-type(2) {
+        > div:last-of-type {
+          > span:first-of-type {
+            > svg {
+              > g {
+                > path {
+                  fill: var(--color-primary-text);
+                  stroke: none;
+                }
+              }
+            }
+          }
+        }
+      }
     }
 
     @media @breakpoint-mobile-tablet {
-        padding: @size-16 @size-12;
+      padding: @size-16 @size-12;
+
+      > div:first-of-type {
+        margin-bottom: @size-16;
+        grid-template-columns: 1fr auto;
+        height: unset;
 
         > div:first-of-type {
+          grid-column: 1 / span 2;
+
+          > span:first-of-type {
+            margin-bottom: @size-6;
+          }
+
+          > button {
+            grid-row: 3;
+            margin-top: @size-6;
             margin-bottom: @size-16;
-            grid-template-columns: 1fr auto;
-            height: unset;
-
-            > div:first-of-type {
-                grid-column: 1 / span 2;
-
-                > span:first-of-type {
-                    margin-bottom: @size-6;
-                }
-
-                > button {
-                    grid-row: 3;
-                    margin-top: @size-6;
-                    margin-bottom: @size-16;
-                }
-            }
-
-            > div:nth-of-type(2) {
-                margin-bottom: @size-16;
-                grid-column: 1 / span 2;
-            }
-
-            > div:nth-of-type(3),
-            > ul {
-                display: none;
-            }
-
-            > article {
-                grid-row: 3;
-                justify-content: flex-start;
-                margin-right: @size-18;
-
-                > div {
-                    flex: 1;
-                }
-            }
-
-            > button {
-                display: flex;
-                grid-row: 3;
-                max-width: 86px;
-                height: 39px;
-            }
+          }
         }
-    }
-}
 
+        > div:nth-of-type(2) {
+          margin-bottom: @size-16;
+          grid-column: 1 / span 2;
+        }
+
+        > div:nth-of-type(3),
+        > ul {
+          display: none;
+        }
+
+        > article {
+          grid-row: 3;
+          justify-content: flex-start;
+          margin-right: @size-18;
+
+          > div {
+            flex: 1;
+          }
+        }
+
+        > button {
+          display: flex;
+          grid-row: 3;
+          max-width: 86px;
+          height: 39px;
+        }
+      }
+    }
+  }
+}
