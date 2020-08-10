@@ -116,7 +116,7 @@ export const Message = ({
       {description && <Description description={description} />}
       {descriptionWithLink && <DescriptionWithLink {...descriptionWithLink} />}
       {showHelp && <HelpMenu />}
-      {showOdds && <OptionsMenus />}
+      {showOdds && <OptionsMenus showConfirm closeAction={closeAction}/>}
       {showAddFundsHelp && (
         <AddFundsHelp
           showAddFundsModal={showAddFundsModal}
