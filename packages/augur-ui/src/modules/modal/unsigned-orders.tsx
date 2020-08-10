@@ -15,15 +15,18 @@ import {
   Title,
 } from 'modules/modal/common';
 import {
-  LinearPropertyLabelProps, PendingLabel, BulkTxLabel, ModalLabelNotice,
-} from "modules/common/labels";
-import { BUY, MAX_BULK_ORDER_COUNT } from "modules/common/constants";
-import { formatDai, formatMarketShares } from "utils/format-number";
-import Styles from "modules/modal/modal.styles.less";
-import OpenOrdersTable from "modules/market/components/market-orders-positions-table/open-orders-table";
-import { LiquidityOrder } from "modules/types";
-import { TXEventName } from "@augurproject/sdk";
-import { DISMISSABLE_NOTICE_BUTTON_TYPES } from "modules/reporting/common";
+  LinearPropertyLabelProps,
+  PendingLabel,
+  BulkTxLabel,
+  ModalLabelNotice,
+} from 'modules/common/labels';
+import { BUY, MAX_BULK_ORDER_COUNT } from 'modules/common/constants';
+import { formatDai, formatMarketShares } from 'utils/format-number';
+import Styles from 'modules/modal/modal.styles.less';
+import OpenOrdersTable from 'modules/market/components/market-orders-positions-table/open-orders-table';
+import { LiquidityOrder } from 'modules/types';
+import { TXEventName } from '@augurproject/sdk-lite';
+import { DISMISSABLE_NOTICE_BUTTON_TYPES } from 'modules/reporting/common';
 import { useAppStatusStore } from 'modules/app/store/app-status';
 
 interface UnsignedOrdersProps {
@@ -56,7 +59,7 @@ interface UnsignedOrdersProps {
 }
 
 const orderRow = (
-  order: LiquidityOrder, 
+  order: LiquidityOrder,
   {
     removeLiquidityOrder,
     sendLiquidityOrder,
@@ -70,8 +73,18 @@ const orderRow = (
     transactionHash,
     marketId,
     zeroXEnabled,
-  }: UnsignedOrdersProps) => {
-  const { outcomeId, outcomeName, type, quantity, price, orderEstimate, index, status } = order;
+  }: UnsignedOrdersProps
+) => {
+  const {
+    outcomeId,
+    outcomeName,
+    type,
+    quantity,
+    price,
+    orderEstimate,
+    index,
+    status,
+  } = order;
   const buttons = [
     {
       text: 'cancel',
@@ -161,9 +174,9 @@ export const UnsignedOrders = ({
   description,
 }: UnsignedOrdersProps) => {
   const { zeroXEnabled } = useAppStatusStore();
-  const submitAllTxCount = !zeroXEnabled ? Math.ceil(
-    numberOfTransactions / MAX_BULK_ORDER_COUNT
-  ) : numberOfTransactions;
+  const submitAllTxCount = !zeroXEnabled
+    ? Math.ceil(numberOfTransactions / MAX_BULK_ORDER_COUNT)
+    : numberOfTransactions;
   return (
     <div className={Styles.Orders}>
       <Title title={title} closeAction={closeAction} />
@@ -175,7 +188,7 @@ export const UnsignedOrders = ({
         {header && (
           <div className={Styles.Orders__header}>
             {header.map((headerLabel: string, index) => (
-              <span key={headerLabel+index}>{headerLabel}</span>
+              <span key={headerLabel + index}>{headerLabel}</span>
             ))}
           </div>
         )}
@@ -207,13 +220,21 @@ export const UnsignedOrders = ({
         )}
         {breakdown && <Breakdown rows={breakdown} short />}
       </main>
-      <BulkTxLabel buttonName={"Submit All"} count={submitAllTxCount} needsApproval={needsApproval}/>
-      {insufficientFunds && <ModalLabelNotice
-        show
-        buttonType={DISMISSABLE_NOTICE_BUTTON_TYPES.NONE}
-        title={`You do not have enough DAI to place ${submitAllTxCount > 1 ? 'these orders' : 'this order'}`}
-      />}
+      <BulkTxLabel
+        buttonName={'Submit All'}
+        count={submitAllTxCount}
+        needsApproval={needsApproval}
+      />
+      {insufficientFunds && (
+        <ModalLabelNotice
+          show
+          buttonType={DISMISSABLE_NOTICE_BUTTON_TYPES.NONE}
+          title={`You do not have enough DAI to place ${
+            submitAllTxCount > 1 ? 'these orders' : 'this order'
+          }`}
+        />
+      )}
       <ButtonsRow buttons={buttons} />
     </div>
   );
-}
+};
