@@ -11,17 +11,17 @@ const ThreeBoxChat = lazy(() =>
 
 export const GlobalChat = () => {
   const [show, setShow] = useState(false);
-  const {
-    isLogged,
-    loginAccount: {
-      meta: { signer } = { signer: undefined },
-    },
-    env: {
-      plugins: { chat } = { chat: undefined },
-    },
-    initialized3box,
-    actions: { setInitialized3Box },
-  } = useAppStatusStore();
+    const {
+      isLogged,
+      loginAccount: {
+        meta: { signer } = { signer: null },
+      },
+      env: {
+        plugins: { chat } = { chat: null },
+      },
+      initialized3box,
+      actions: { setInitialized3Box },
+    } = useAppStatusStore();
   const provider = signer ? signer.provider?._web3Provider : false;
 
   return (

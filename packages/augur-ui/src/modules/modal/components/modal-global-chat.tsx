@@ -12,10 +12,10 @@ export const ModalGlobalChat = () => {
   const {
     isLogged,
     loginAccount: {
-      meta: { signer } = { signer: undefined },
+      meta: { signer } = { signer: null },
     },
     env: {
-      plugins: { chat } = { chat: undefined },
+      plugins: { chat } = { chat: null },
     },
     initialized3box,
     actions: { closeModal, setInitialized3Box },

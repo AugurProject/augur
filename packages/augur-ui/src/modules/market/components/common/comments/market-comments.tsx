@@ -18,10 +18,10 @@ export const MarketComments = ({
   const {
     isLogged,
     loginAccount: {
-      meta: { signer } = { signer: undefined },
+      meta: { signer } = { signer: null },
     },
     env: {
-      plugins: { comments } = { comments: undefined },
+      plugins: { comments } = { comments: null },
     },
   } = useAppStatusStore();
   const provider = signer ? signer.provider?._web3Provider : false;
