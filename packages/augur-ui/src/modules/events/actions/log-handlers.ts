@@ -295,7 +295,7 @@ export const handleMarketCreatedLog = (logs: any) => {
           });
         })
       );
-      dispatch(getCategoryStats());
+      getCategoryStats();
     }
   });
   if (userLogs.length > 0) {
@@ -348,7 +348,7 @@ export const handleTokensTransferredLog = (
     .filter(log => isSameAddress(log.from, address))
     .map(log => {
       // TODO: will need to update user's contribution to dispute/reporting
-      // dispatch(loadReportingWindowBounds());
+      // loadReportingWindowBounds();
     });
 };
 
@@ -363,7 +363,7 @@ export const handleTokenBalanceChangedLog = (
     .map(log => {
       const isUserDataUpdate = isSameAddress(log.owner, address);
       if (isUserDataUpdate) {
-        // dispatch(loadReportingWindowBounds());
+        // loadReportingWindowBounds();
       }
     });
 };
