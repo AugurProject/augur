@@ -3,7 +3,6 @@ import { use3box } from 'utils/use-3box';
 import Comments from '3box-comments-react';
 import { SecondaryButton } from 'modules/common/buttons';
 import { useAppStatusStore } from 'modules/app/store/app-status';
-import { useAppStatus } from 'modules/app/store/app-status-hooks';
 
 interface ThreeBoxCommentsProps {
   adminEthAddr: string;
@@ -16,8 +15,7 @@ const ThreeBoxComments = ({
   provider,
   marketId,
 }: ThreeBoxCommentsProps) => {
-  const { initialized3box } = useAppStatusStore();
-  const { setInitialized3Box } = useAppStatus();
+  const { initialized3box, actions: { setInitialized3Box } } = useAppStatusStore();
   const { activate, setActivate, address, box, isReady, profile } = use3box(
     provider,
     setInitialized3Box,
