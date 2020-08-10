@@ -4,7 +4,7 @@ set -e;
 
 printf "\nBuilding client....\n\n";
 
-# This is an attempt to avoid memeory limitation in processes spawned from node.
+# This is an attempt to avoid memory limitation in processes spawned from node.
 cd packages/augur-ui;
 
 ENABLE_MAINNET=true REPORTING_ONLY=true ./node_modules/.bin/webpack;
