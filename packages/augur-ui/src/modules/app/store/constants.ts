@@ -77,6 +77,7 @@ export const FILLED_ORDERS = 'filledOrders';
 export const ACCOUNT_POSITIONS = 'accountPositions';
 export const ANALYTICS = 'analytics';
 export const DRAFTS = 'drafts';
+export const INITIALIZED_3BOX = 'initialized3box';
 export const NEW_MARKET = 'newMarket';
 export const MARKETS_LIST = 'marketsList';
 
@@ -265,6 +266,7 @@ export const DEFAULT_APP_STATUS = {
   [IS_LOGGED]: false,
   [IS_CONNECTED]: false,
   [IS_RECONNECTION_PAUSED]: false,
+  [INITIALIZED_3BOX]: {},
   [CAN_HOTLOAD]: false,
   [ENV]: DEFAULT_ENV,
   [GAS_PRICE_INFO]: DEFAULT_GAS_PRICE_INFO,
@@ -292,6 +294,7 @@ export const DEFAULT_APP_STATUS = {
 
 export const APP_STATUS_ACTIONS = {
   SET_THEME: 'SET_THEME',
+  SET_INITIALIZED_3BOX: 'SET_INITIALIZED_3BOX',
   SET_ODDS: 'SET_ODDS',
   SET_TIME_FORMAT: 'SET_TIME_FORMAT',
   SET_IS_MOBILE: 'SET_IS_MOBILE',
@@ -393,6 +396,7 @@ export const STUBBED_APP_STATUS_ACTIONS = {
   updateAlert: (id, alert) => {},
   removeAlert: (id, name) => {},
   clearAlerts: level => {},
+  setInitialized3Box: initialize3box => {},
   addPendingData: (
     pendingId,
     queueName,

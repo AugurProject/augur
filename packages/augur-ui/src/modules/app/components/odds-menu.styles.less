@@ -82,6 +82,17 @@
   flex-direction: column;
   box-shadow: @size-2 @size-2 @size-5 var(--color-secondary-text-50);
   border-radius: 0 0 @border-radius-default @border-radius-default;
+
+  > div {
+    display: flex;
+    justify-content: flex-end;
+    padding: @size-14 @size-16;
+    border-top: @size-1 solid var(--color-dark-grey);
+
+    > button:first-of-type {
+      margin-right: @size-8;
+    }
+  }
 }
 
 .OddsOptions {
