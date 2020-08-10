@@ -59,6 +59,7 @@ import {
   ModalCancelAllBets,
 } from 'modules/modal/message-modals';
 import { HardwareWallet } from 'modules/modal/hardware-wallet';
+import { ModalGlobalChat } from 'modules/modal/components/modal-global-chat';
 
 const ESCAPE_KEYCODE = 27;
 
@@ -171,6 +172,8 @@ function selectModal(type, props, closeModal, modal) {
       return <ModalFrozenFunds />;
     case TYPES.MODAL_REPORTING_ONLY:
       return <ReportingOnly />;
+    case TYPES.MODAL_GLOBAL_CHAT:
+      return <ModalGlobalChat />;
     default:
       return <div />;
   }
