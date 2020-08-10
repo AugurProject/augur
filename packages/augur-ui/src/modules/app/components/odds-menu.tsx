@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import classNames from 'classnames';
 
 import { Gear, CheckMark } from 'modules/common/icons';
@@ -10,7 +10,6 @@ import {
   SecondaryButton,
   PrimaryButton,
 } from 'modules/common/buttons';
-import { useState } from 'react';
 
 const { DECIMAL, FRACTIONAL, AMERICAN, PERCENT } = ODDS_TYPE;
 
