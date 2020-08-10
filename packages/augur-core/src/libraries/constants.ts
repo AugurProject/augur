@@ -60,7 +60,7 @@ export const TRADING_CONTRACTS = [
     'AugurWalletRegistryV2',
     'RelayHubV2',
     'AccountLoader',
-    'WETH9'
+    'WETH9',
 ];
 
 export const TEST_CONTRACTS = [
@@ -97,7 +97,10 @@ export const EXTERNAL_CONTRACTS = [
     'RelayHub',
     'RelayHubV2',
     'Penalizer',
-    'StakeManager'
+    'StakeManager',
+    // Token Proxying
+    'ERC20Proxy1155',
+    'ERC20Proxy1155Nexus',
 ];
 
 export const REGISTERED_EXTERNAL_CONTRACTS = [
