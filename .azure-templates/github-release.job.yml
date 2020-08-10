@@ -97,3 +97,11 @@ jobs:
           arguments: '--build-arg CURRENT_COMMITHASH=${BUILD_SOURCEVERSION} --build-arg CURRENT_VERSION=$CURRENT_VERSION'
           tags: |
             testrunnercreationinci
+      - task: Docker@2
+        displayName: Push
+        inputs:
+          command: push
+          repository: augurproject/augur
+          tags: |
+            testrunnercreationinci
+
