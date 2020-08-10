@@ -1308,8 +1308,8 @@ export const EstimatedStartSelector = ({
         userInput = newEndTimeFormatted.formattedUtc;
       } else {
         const addHours = input.hoursAfterEst;
-        userInput = String(endTimeFormatted.timestamp);
-        const newEndTime = moment.unix(endTimeFormatted.timestamp).add(Number(addHours), 'hours').unix();
+        userInput = String(newEndTimeFormatted.timestamp);
+        const newEndTime = moment.unix(newEndTimeFormatted.timestamp).add(Number(addHours), 'hours').unix();
         const comps = timestampComponents(newEndTime, offset);
         onChange('updateEventExpiration', {
           setEndTime: comps.setEndTime,
@@ -1350,7 +1350,7 @@ export const EstimatedStartSelector = ({
     onChange('description', question);
     onChange('template', template);
   }, [endTime, hour, minute, meridiem, timezone, offset, offsetName]);
-
+  
   return (
     <div className={Styles.EstimatedStartSelector}>
       <DateTimeSelector
@@ -1397,7 +1397,7 @@ export const EstimatedStartSelector = ({
         currentTimestamp={currentTime}
         endTimeFormatted={endTimeFormatted}
         isAfter={isAfter}
-        uniqueKey={'templateEstTime'}
+        uniqueKey='templateEstTime'
       />
     </div>
   );
