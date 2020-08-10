@@ -28,7 +28,9 @@
     > div {
       .text-24;
 
+      align-items: center;
       color: @color-secondary-text;
+      display: flex;
     }
 
     > div:last-of-type {
@@ -43,6 +45,7 @@
         justify-content: space-evenly;
         height: @size-32;
         width: 98px;
+        margin: @size-12 0;
 
         svg:first-of-type {
           fill: @color-outcome-seven;
@@ -73,5 +76,9 @@
 
   div[class*='TextInput'] > div:hover {
     border: none;
+  }
+
+  div[class*='FormDropdown'] > div {
+    min-width: 6.25rem;
   }
 }

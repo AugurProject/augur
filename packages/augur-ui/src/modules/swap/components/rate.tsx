@@ -12,7 +12,9 @@ interface RateProps {
   repRate: BigNumber;
   ethRate: BigNumber;
   ethToDaiRate: FormattedNumber;
-  repToDaiRate: FormattedNumber
+  repToDaiRate: FormattedNumber;
+  usdcToDaiRate: FormattedNumber;
+  usdtToDaiRate: FormattedNumber;
 }
 
 export const Rate = ({
