@@ -143,7 +143,7 @@ export class ContractCompiler {
         // The flattener removes the pragma experimental line from output so we add it back here
         let result = await this.getCommandOutputFromInput(childProcess, '');
         const originalFileData = (await fs.readFile(filePath)).toString('utf8');
-        if (result == "") {
+        if (result === '') {
             throw new Error(`Failed to flatten ${filePath}`);
         }
         if (originalFileData.includes('pragma experimental ABIEncoderV2')) {
@@ -192,7 +192,7 @@ export class ContractCompiler {
             sources: {}
         };
         for (const file in files) {
-            const filePath = filePaths[file].replace(this.configuration.contractSourceRoot, '').replace(/\\/g, '/').replace(/^\//, '');;
+            const filePath = filePaths[file].replace(this.configuration.contractSourceRoot, '').replace(/\\/g, '/').replace(/^\//, '');
             inputJson.sources[filePath] = { content : files[file] };
         }
 
