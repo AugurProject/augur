@@ -2124,6 +2124,32 @@ export function addScripts(flash: FlashSession) {
   });
 
   flash.addScript({
+    name: 'output-ipfs-ui-hashes',
+    async call(this: FlashSession, args: FlashArguments) {
+      const pinUIPath = '../augur-ui/build';
+      const  pinReportingUIPath = '../augur-ui/reporting-only-build';
+
+      const ipfs = await IPFS.create({});
+      const result = await ipfs.addFromFs(pinUIPath, { recursive: true });
+      const { hash } = result.pop();
+      const base32Hash = CIDTool.base32(hash);
+
+      // Assume build exists.
+      const reportingUIResult = await ipfs.addFromFs(pinReportingUIPath, { recursive: true });
+      const { hash:reportingUIHash } = reportingUIResult.pop();
+      const reportingUIBase32Hash = CIDTool.base32(reportingUIHash);
+
+      console.log('## IPFS Hashes');
+      console.log('* Reporting UI');
+      console.log(`  * CIDv0: ${hash}`);
+      console.log(`  * CIDv1: ${base32Hash}`);
+      console.log('* Trading UI');
+      console.log(`  * CIDv0: ${reportingUIHash}`);
+      console.log(`  * CIDv1: ${reportingUIBase32Hash}`);
+    }
+  });
+
+  flash.addScript({
     name: 'sdk-server',
     ignoreNetwork: true,
     options: [
