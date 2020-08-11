@@ -108,6 +108,22 @@ export async function getMaxMarketEndTime(): Promise<number> {
   return new BigNumber(maxEndTime).toNumber();
 }
 
+export async function isRepV2Approved(account): Promise<boolean> {
+  const { contracts } = augurSdk.get();
+  try {
+    const currentAllowance = await contracts.legacyReputationToken.allowance_(
+      account,
+      contracts.reputationToken.address
+    );
+    if (currentAllowance.lte(0)) {
+      return false;
+    }
+    return true;
+  } catch (error) {
+    throw error;
+  }
+}
+
 export async function convertV1ToV2Approve() {
   const { contracts } = augurSdk.get();
 
