@@ -1,4 +1,4 @@
-@import (reference) "~assets/styles/shared";
+@import (reference) '~assets/styles/shared';
 
 // Used in Betting UI
 .PriceHistory {
@@ -73,38 +73,56 @@
         display: none;
       }
 
-      .highcharts-crosshair-label.highcharts-crosshair-label > .highcharts-label-box {
+      .highcharts-crosshair-label.highcharts-crosshair-label
+        > .highcharts-label-box {
         stroke: var(--color-primary-text);
       }
 
       .highcharts-crosshair-label {
         background-color: var(--color-module-background);
-        border-radius: 5px;
+        border-radius: @size-5;
         color: var(--color-primary-text);
         font-size: @size-10;
         z-index: @above-all-content;
+        // ugh... we need !important here because inline styles are inserted.
+        > text {
+          color: var(--color-primary-text) !important;
+          fill: var(--color-primary-text) !important;
+
+          > tspan {
+            color: var(--color-primary-text) !important;
+            fill: var(--color-primary-text) !important;
+          }
+        }
       }
 
-      g.highcharts-yaxis-labels > g.highcharts-crosshair-label > path {
-        transform: translateX(38px);
-      }
+      g.highcharts-yaxis-labels > g.highcharts-crosshair-label {
+        > path {
+          transform: translateX(@size-38);
+        }
 
-      g.highcharts-yaxis-labels > g.highcharts-crosshair-label > text {
-        .mono-10;
+        > text {
+          .mono-10;
 
-        fill: var(--color-primary-text);
-        transform: translateX(38px);
+          fill: var(--color-primary-text);
+          transform: translateX(@size-38);
+
+          > tspan {
+            color: var(--color-primary-text);
+            fill: var(--color-primary-text);
+          }
+        }
       }
 
       g.highcharts-xaxis-labels > g.highcharts-crosshair-label > path {
-        transform: translateY(4px);
+        transform: translateY(@size-4);
       }
 
       g.highcharts-xaxis-labels > g.highcharts-crosshair-label > text {
         .mono-9;
 
         fill: var(--color-primary-text);
-        transform: translateY(4px);
+        transform: translateY(@size-4);
       }
 
       .highcharts-crosshair {
@@ -254,6 +272,19 @@
         color: var(--color-primary-text);
         fill: var(--color-primary-text);
         text-transform: capitalize;
+      }
+    }
+  }
+}
+
+:root[theme='BETTING'],
+:root[theme='SPORTS'] {
+  .PriceHistory {
+    svg {
+      :global {
+        .highcharts-xaxis-grid {
+          display: none;
+        }
       }
     }
   }
