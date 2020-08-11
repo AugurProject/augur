@@ -1210,27 +1210,14 @@ export const DoubleArrows = (
 );
 
 export const LoadingEllipse = (
-  <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+  <svg
+    viewBox="0 0 12 12"
+    fill="none"
+  >
     <path
-      d="M7.99998 14.4C11.5346 14.4 14.4 11.5346 14.4 7.99998C14.4 4.46535 11.5346 1.59998 7.99998 1.59998C4.46535 1.59998 1.59998 4.46535 1.59998 7.99998"
-      stroke="url(#paint0_linear)"
-      strokeWidth="1.4"
+      d="M1.20005 6C1.20005 8.65097 3.34908 10.8 6.00005 10.8C8.65102 10.8 10.8 8.65097 10.8 6C10.8 3.34903 8.65102 1.2 6.00005 1.2"
       strokeMiterlimit="1.5728"
-      strokeLinecap="round"
     />
-    <defs>
-      <linearGradient
-        id="paint0_linear"
-        x1="-2.4575e-05"
-        y1="12"
-        x2="7.99997"
-        y2="9.59998"
-        gradientUnits="userSpaceOnUse"
-      >
-        <stop stopColor="white" stopOpacity="0" />
-        <stop offset="1" stopColor="white" />
-      </linearGradient>
-    </defs>
   </svg>
 );
 

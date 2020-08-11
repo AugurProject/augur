@@ -13,9 +13,10 @@ import {
   SUBMIT_DISPUTE,
   YES_NO,
   ZERO,
+  REPORTING_STATE,
 } from 'modules/common/constants';
 import InvalidLabel from 'modules/common/containers/labels';
-import { CheckCircleIcon } from 'modules/common/icons';
+import { CheckCircleIcon, LoadingEllipse } from 'modules/common/icons';
 import TooltipStyles from 'modules/common/tooltip.styles.less';
 import { SmallSubheadersTooltip } from 'modules/create-market/components/common';
 
@@ -59,10 +60,12 @@ export interface OutcomeProps {
   isScalar: boolean;
   marketId: string;
   outcomeId: string;
+  reportingState?: boolean;
 }
 
 export const OutcomeCmp = (props: OutcomeProps) => {
-  const percent = props.lastPricePercent
+  const isLoading = true || props.reportingState === REPORTING_STATE.UNKNOWN;
+  const percent = props.lastPricePercent && !isLoading
     ? calculatePosition(props.min, props.max, props.lastPricePercent)
     : 0;
   return (
@@ -82,10 +85,10 @@ export const OutcomeCmp = (props: OutcomeProps) => {
           ) : (
             <span>{props.description}</span>
           )}
-          <span className={classNames({ [Styles.Zero]: percent === 0,
-          [Styles.InvalidPrice]: props.invalid
-            && percent >= INVALID_ALERT_PERCENTAGE.toNumber()})}>
-            {percent === 0
+          <span className={classNames({
+            [Styles.Zero]: percent === 0,
+            [Styles.InvalidPrice]: props.invalid && percent >= INVALID_ALERT_PERCENTAGE.toNumber()})}>
+            {isLoading ? LoadingEllipse : percent === 0
               ? `0.00${props.isScalar ? '' : '%'}`
               : `${formatOutcomePercentage(percent).formatted}%`}
           </span>
@@ -378,6 +381,7 @@ export const OutcomeGroup = (props: OutcomeGroupProps) => {
             lastPricePercent={
               removedInvalid.price ? removedInvalid.lastPricePercent : null
             }
+            reportingState={props.reportingState}
             invalid={true}
             index={0}
             min={props.min}
@@ -429,6 +433,7 @@ export const OutcomeGroup = (props: OutcomeGroupProps) => {
             ) : (
               <Outcome
                 key={outcome.id}
+                reportingState={props.reportingState}
                 description={outcome.description}
                 lastPricePercent={outcome.lastPricePercent}
                 invalid={outcome.isInvalid}
@@ -458,19 +463,21 @@ export interface LabelValueProps {
   label: string;
   value: number | string;
   condensed?: boolean;
+  loading?: boolean;
 }
 
 export const LabelValue = (props: LabelValueProps) => (
   <div
     className={classNames(Styles.LabelValue, {
       [Styles.Condensed]: props.condensed,
+      [Styles.Loading]: props.loading,
     })}
   >
     <span>
       {props.label}
       <span>:</span>
     </span>
-    <span>{props.value}</span>
+    <span>{props.loading ? LoadingEllipse : props.value}</span>
   </div>
 );
 

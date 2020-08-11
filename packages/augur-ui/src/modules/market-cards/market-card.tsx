@@ -271,12 +271,14 @@ export default class MarketCard extends React.Component<
                 <LabelValue
                   label={condensed ? 'Volume' : 'Total Volume'}
                   value={`$${volumeFormatted.formatted}`}
+                  loading={reportingState === REPORTING_STATE.UNKNOWN}
                   condensed
                 />
                 {!condensed && (
                   <LabelValue
                     label="Open Interest"
                     value={`$${openInterestFormatted.formatted}`}
+                    loading={reportingState === REPORTING_STATE.UNKNOWN}
                     condensed
                   />
                 )}

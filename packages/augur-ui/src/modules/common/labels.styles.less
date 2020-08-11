@@ -1,5 +1,11 @@
 @import (reference) '~assets/styles/shared';
 
+@keyframes spin {
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
 // Many labels can be used in Betting UI
 .TimeLabel {
   display: flex;
@@ -997,12 +1003,6 @@ span.PendingLabel {
         stroke: @color-primary-text;
       }
     }
-  }
-}
-
-@keyframes spin {
-  100% {
-    transform: rotate(360deg);
   }
 }
 
