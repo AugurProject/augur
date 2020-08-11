@@ -1,6 +1,7 @@
 import React, { ReactNode } from "react";
 
 import Styles from "modules/portfolio/components/common/empty-display.styles.less";
+import { SearchIcon } from "modules/common/icons";
 
 export interface EmptyDisplayProps {
   filterLabel: string;
@@ -10,7 +11,10 @@ export interface EmptyDisplayProps {
   emptyTitle?: string;
   emptyText?: string;
   icon?: any;
-  button?: ReactNode
+  button?: ReactNode;
+  searchObject?: string;
+  notTradingEmptyTitle?: string;
+  searchQuery?: string;
 }
 
 const EmptyDisplay = ({
@@ -21,25 +25,30 @@ const EmptyDisplay = ({
   emptyTitle,
   emptyText,
   icon,
-  button
+  button,
+  searchObject = 'markets',
+  notTradingEmptyTitle,
+  searchQuery = 'keyword'
 }: EmptyDisplayProps) => {
-  let tradingEmptyTitle = `No ${selectedTab} ${filterLabel.toLowerCase()}`;
-  let notTradingEmptyTitle = `No ${title}`;
+  let tradingEmptyTitle =  `No ${selectedTab} ${filterLabel.toLowerCase()}`;
+  notTradingEmptyTitle = notTradingEmptyTitle || `No ${title}`;
 
   let defaultEmptyText = `You don't have any ${
     selectedTab.toLowerCase()
   } ${filterLabel.toLowerCase()} yet!`;
 
-  if (search !== "" && search !== undefined) {
+  const searchActive = search !== "" && search !== undefined;
+  if (searchActive) {
     tradingEmptyTitle = `No results found for '${search}'`;
-    notTradingEmptyTitle = `No results found for '${search}'`;
+    notTradingEmptyTitle = `No ${searchObject} found`;
+    emptyText = `Try a different ${searchQuery}`;
   } else if (emptyTitle) {
     notTradingEmptyTitle = emptyTitle;
   }
 
   return (
     <div className={Styles.EmptyDisplay}>
-      <span>{icon}</span>
+      <span>{searchActive ? SearchIcon : icon}</span>
       <span>{tradingEmptyTitle}</span>
       <span>{notTradingEmptyTitle}</span>
       <span>{emptyText ? emptyText : defaultEmptyText}</span>

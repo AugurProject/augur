@@ -25,15 +25,15 @@ import {
   SPORTS_GROUP_TYPES,
 } from 'modules/common/constants';
 import { MARKETS } from 'modules/routes/constants/views';
-import { EmptyMagnifyingGlass } from 'modules/common/icons';
+import { EmptyMagnifyingGlass, BetsIcon } from 'modules/common/icons';
 import { Game, Outcomes, ClaimWinnings } from '../common/common';
 import { useMyBetsStore } from 'modules/portfolio/store/my-bets';
 import { FilterSearchPure } from 'modules/filter-sort/filter-search';
 import { AppStatus } from 'modules/app/store/app-status';
 import { useMarketsStore } from 'modules/markets/store/markets';
 import { useBetslipStore } from 'modules/trading/store/betslip';
-import { getOutcomeNameWithOutcome } from 'utils/get-outcome';
 import { convertInputs, findStartTime } from 'modules/market/components/common/market-title';
+import EmptyDisplay from '../common/empty-display';
 
 export const outcomesData = (myBets) => myBets.reduce(
   (p, game) => [
@@ -177,7 +177,7 @@ export const MyBets = () => {
 
   const showEvents = MY_BETS_VIEW_BY[viewBy].label === EVENT;
   return (
-    <div className={classNames(Styles.MyBets)}>
+    <div className={classNames(Styles.MyBets, {[Styles.Searching]: search !== '' && search !== undefined})}>
       <HelmetTag {...PORTFOLIO_VIEW_HEAD_TAGS} />
       <div>
         <div>
@@ -251,13 +251,16 @@ export const MyBets = () => {
       </div>
       <div>
         {rows.length === 0 && (
-          <section>
-            {EmptyMagnifyingGlass}
-            <span>No events found</span>
-            <span>
-              Try a different date range. <b>Clear Filter</b>
-            </span>
-          </section>
+          <EmptyDisplay
+              selectedTab={''}
+              search={search}
+              notTradingEmptyTitle={'You don\'t have any bets'}
+              emptyText={'Once you start betting your bets will appear in this page'}
+              icon={BetsIcon}
+              filterLabel= 'events'
+              searchObject='events'
+              searchQuery='date range'
+          />
         )}
         {showEvents &&
           rows.map(row => (

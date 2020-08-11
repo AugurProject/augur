@@ -108,7 +108,7 @@ const Favorites = ({
         'creationTime',
       ]}
       emptyDisplayText={
-        isTrading ? null : "You don't have any favorite market to show!"
+        isTrading ? null : "You don't have any favorite markets to show!"
       }
     />
   );
