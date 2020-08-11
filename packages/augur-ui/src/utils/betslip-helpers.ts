@@ -92,12 +92,14 @@ export const placeBet = async (marketId, order, orderId) => {
     .then(() => {
       Betslip.actions.updateMatched(marketId, orderId, {
         ...order,
+        marketId,
         status: FILLED,
       });
     })
     .catch(err => {
       Betslip.actions.updateMatched(marketId, orderId, {
         ...order,
+        marketId,
         status: FAILED,
       });
     });
