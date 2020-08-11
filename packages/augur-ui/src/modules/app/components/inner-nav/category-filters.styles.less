@@ -334,4 +334,24 @@
   .backToCategory + .SelectedCategory {
     padding-left: @size-30;
   }
+
+  @media @breakpoint-mobile-tablet {
+    .CategoryFilters {
+      margin: 0;
+      padding: 0 @size-12;
+      
+      > h3 {
+        .text-14-bold;
+
+        color: var(--color-module-background);
+        margin-bottom: 0;
+      }
+    }
+
+    .CategoriesGroup {
+      > span {
+        display: none;
+      }
+    }
+  }
 }

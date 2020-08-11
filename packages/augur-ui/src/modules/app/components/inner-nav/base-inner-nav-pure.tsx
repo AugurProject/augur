@@ -8,6 +8,7 @@ import {
   SPREAD_PARAM_NAME,
   TEMPLATE_FILTER,
   MARKET_TYPE_PARAM_NAME,
+  THEMES,
 } from 'modules/common/constants';
 import { XIcon } from 'modules/common/icons';
 import MarketsListFilters from 'modules/app/components/inner-nav/markets-list-filters';
@@ -26,6 +27,7 @@ const BaseInnerNavPure = () => {
   const {
     filterSortOptions,
     mobileMenuState,
+    theme,
     marketsList: { selectedCategories },
     actions: {
       setMobileMenuState,
@@ -142,6 +144,8 @@ const BaseInnerNavPure = () => {
     }
   }, [showMainMenu]);
 
+  const isTrading = theme === THEMES.TRADING;
+
   return (
     <aside
       className={classNames(Styles.InnerNav, {
@@ -150,7 +154,7 @@ const BaseInnerNavPure = () => {
     >
       {showMainMenu && (
         <div>
-          <span>Categories & Filters</span>
+          <span>Filters</span>
           <button
             onClick={() => {
               if (showMainMenu) {

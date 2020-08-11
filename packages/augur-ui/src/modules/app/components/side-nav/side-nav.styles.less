@@ -56,12 +56,7 @@
         display: flex;
 
         > div:first-of-type {
-          // Background for close icon and help icon when AccountFunds is opened.
-          background: var(--color-dark-grey);
-          border-bottom: @size-1 solid var(--color-dark-grey);
-          display: flex;
-          justify-content: flex-end;
-          width: 100%;
+          background: transparent;
         }
       }
 
@@ -315,9 +310,10 @@
     > div {
       > ul:last-of-type {
         background: var(--color-primary-text);
-        display: grid;
-        grid-template-columns: 1fr;
-        grid-template-rows: 0fr 0fr 0fr 0fr 0fr;
+        display: flex;
+        height: fit-content;
+        flex-direction: column;
+        padding-bottom: @size-24;
 
         > li {
           &.selected {

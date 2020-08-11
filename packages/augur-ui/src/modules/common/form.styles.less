@@ -2474,6 +2474,17 @@ div.error > div > div > div > div > input {
         color: var(--color-primary-text);
       }
     }
+
+    @media @breakpoint-mobile-tablet {
+      &.bold,
+      &.active {
+        > span:first-of-type {
+          .text-14-bold;
+  
+          color: var(--color-module-background);
+        }
+      }
+    }
   }
 }
 
