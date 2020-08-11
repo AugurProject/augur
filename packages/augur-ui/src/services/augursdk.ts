@@ -49,6 +49,10 @@ export class SDK {
       this.config.zeroX.delayTillSDKReady = true;
     }
 
+    if (isSafari() || isMobileSafari()) {
+      this.config.concurrentDBOperationsLimit = 1;
+    }
+
     const ethersProvider = new EthersProvider(
       provider,
       this.config.ethereum.rpcRetryCount,
