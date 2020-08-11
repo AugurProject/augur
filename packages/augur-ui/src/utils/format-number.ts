@@ -427,6 +427,16 @@ export function formatGasCostGwei(
   });
 }
 
+export function formatAmerican(
+  num: NumStrBigNumber,
+  opts: FormattedNumberOptions = optionsBlank()
+): FormattedNumber {
+  const value = num.decimalPlaces(4);
+  const processedNum = formatNumber(value, { ...opts, positiveSign: true });
+  processedNum.fullPrecision = num.toFixed();
+  return processedNum;
+}
+
 export function formatNumber(
   num: NumStrBigNumber,
   opts: FormattedNumberOptions = optionsBlank()
