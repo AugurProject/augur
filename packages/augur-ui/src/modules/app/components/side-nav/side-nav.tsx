@@ -140,7 +140,6 @@ const SideNav = ({
                 </Link>
               </li>
             ))}
-
             <div>
               {showMigrateRepButton && (
                 <span className={Styles.SideNavMigrateRep}>

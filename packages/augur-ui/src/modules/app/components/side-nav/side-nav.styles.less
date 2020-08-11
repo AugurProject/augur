@@ -247,7 +247,41 @@
 
 :root[theme="BETTING"],
 :root[theme="SPORTS"] {
+  .SideNavMigrateRep {
+    > label, 
+    > div {
+      display: none;
+    }
+
+    > button {
+      margin: @size-24 @size-12 0;
+      color: var(--color-module-background);
+    }
+  }
+  
   .SideNav {
+    > div:first-of-type {
+      > button:first-of-type {
+        > svg {
+          width: @size-24;
+          height: @size-24;
+
+          > path {
+            stroke: var(--color-module-background);
+          }
+        }
+      }
+      > button:last-of-type {
+        .text-10-semi-bold;
+
+        text-transform: uppercase;
+        padding: @size-12 @size-8;
+
+        > svg {
+          margin-right: @size-6;
+        }
+      }
+    }
     > div:first-of-type > div:last-of-type {
       display: none;
     }
