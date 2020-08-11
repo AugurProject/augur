@@ -64,7 +64,7 @@ export interface OutcomeProps {
 }
 
 export const OutcomeCmp = (props: OutcomeProps) => {
-  const isLoading = true || props.reportingState === REPORTING_STATE.UNKNOWN;
+  const isLoading = props.reportingState === REPORTING_STATE.UNKNOWN;
   const percent = props.lastPricePercent && !isLoading
     ? calculatePosition(props.min, props.max, props.lastPricePercent)
     : 0;

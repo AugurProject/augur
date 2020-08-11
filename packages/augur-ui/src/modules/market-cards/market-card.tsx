@@ -266,7 +266,7 @@ export default class MarketCard extends React.Component<
       >
         <>
           <div>
-            {reportingState === REPORTING_STATE.PRE_REPORTING && (
+            {(reportingState === REPORTING_STATE.PRE_REPORTING || reportingState === REPORTING_STATE.UNKNOWN) && (
               <>
                 <LabelValue
                   label={condensed ? 'Volume' : 'Total Volume'}
@@ -284,7 +284,7 @@ export default class MarketCard extends React.Component<
                 )}
               </>
             )}
-            {reportingState !== REPORTING_STATE.PRE_REPORTING && reportingState !== REPORTING_STATE.UNKNOWN && (
+            {(reportingState !== REPORTING_STATE.PRE_REPORTING && reportingState !== REPORTING_STATE.UNKNOWN) && (
               <LabelValue
                 condensed
                 label="Total Dispute Stake"
