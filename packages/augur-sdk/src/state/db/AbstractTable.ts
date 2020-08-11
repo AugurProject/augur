@@ -8,19 +8,6 @@ export type ID = PrimitiveID | Array<PrimitiveID>;
 
 export const ALL_DOCS_BATCH_SIZE = 200;
 
-export enum WriteTaskType {
-  ADD,
-  PUT,
-  UPSERT,
-  CLEAR,
-}
-
-interface WriteQueueTask {
-  type: WriteTaskType;
-  documents?: BaseDocument[];
-  table: AbstractTable;
-}
-
 export interface BaseDocument {
   [key: string]: any;
 }
@@ -31,32 +18,6 @@ export abstract class AbstractTable {
   readonly dbName: string;
   protected idFields: string[];
   protected syncing: boolean;
-
-  private static writeQueue: AsyncQueue<WriteQueueTask> = queue(
-    (task: WriteQueueTask, callback) => {
-      return retry(
-        {
-          times: 2,
-          interval: function (retryCount) {
-            return 100;
-          },
-          errorFilter: function (err) {
-            return err['code'] === "ETIMEDOUT";
-          }
-        }, timeout(async function WriteOperation() {
-        if (task.type === WriteTaskType.ADD) {
-          return task.table.bulkAddDocumentsInternal(task.documents);
-        } else if (task.type === WriteTaskType.PUT) {
-          return task.table.bulkPutDocumentsInternal(task.documents);
-        } else if (task.type === WriteTaskType.CLEAR) {
-          return task.table.clearInternal();
-        } else {
-          return task.table.bulkUpsertDocumentsInternal(task.documents);
-        }
-      }, 10000), callback);
-    },
-    10
-  );
 
   protected constructor(networkId: number, dbName: string, db: Dexie) {
     this.networkId = networkId;
@@ -90,11 +51,7 @@ export abstract class AbstractTable {
   }
 
   async delete() {
-    return this.addWriteTask(WriteTaskType.CLEAR);
-  }
-
-  async clear() {
-    return this.addWriteTask(WriteTaskType.CLEAR);
+    return this.clear();
   }
 
   async getDocumentCount(): Promise<number> {
@@ -108,37 +65,13 @@ export abstract class AbstractTable {
     return this.table.get(id);
   }
 
-  private async addWriteTask(type: WriteTaskType, documents?: BaseDocument[]): Promise<void> {
-    return new Promise((resolve, reject) => {
-      AbstractTable.writeQueue.push({ table: this, documents, type }, (err) => {
-        if (err) {
-          console.log(`WriteOperationDied: ${JSON.stringify(err)}`);
-          reject(err);
-        }
-          resolve();
-      });
-    });
-  }
-
-  protected async bulkAddDocuments(documents: BaseDocument[]): Promise<void> {
-    return this.addWriteTask(WriteTaskType.ADD, documents);
-  }
-
-  protected async bulkPutDocuments(documents: BaseDocument[], documentIds?: any[]): Promise<void> {
-    return this.addWriteTask(WriteTaskType.PUT, documents);
-  }
-
-  protected async bulkUpsertDocuments(documents: BaseDocument[]): Promise<void> {
-    return this.addWriteTask(WriteTaskType.UPSERT, documents);
-  }
-
-  protected async clearInternal(): Promise<void> {
+  protected async clear(): Promise<void> {
     console.log(`AbstractTable: clear request for ${this.dbName} started`);
     await this.table.clear();
     console.log(`AbstractTable: clear request for ${this.dbName} finished`);
   }
 
-  protected async bulkAddDocumentsInternal(documents: BaseDocument[]): Promise<void> {
+  protected async bulkAddDocuments(documents: BaseDocument[]): Promise<void> {
     console.log(`AbstractTable: bulkAddDocuments request for ${this.dbName} started. ${documents.length} docs`);
     for (const document of documents) {
       delete document.constructor;
@@ -152,7 +85,7 @@ export abstract class AbstractTable {
     console.log(`AbstractTable: bulkAddDocuments request for ${this.dbName} finished. ${documents.length} docs`);
   }
 
-  protected async bulkPutDocumentsInternal(documents: BaseDocument[], documentIds?: any[]): Promise<void> {
+  protected async bulkPutDocuments(documents: BaseDocument[], documentIds?: any[]): Promise<void> {
     console.log(`AbstractTable: bulkPutDocuments request for ${this.dbName} started. ${documents.length} docs`);
     for (const document of documents) {
       delete document.constructor;
@@ -167,7 +100,7 @@ export abstract class AbstractTable {
     console.log(`AbstractTable: bulkPutDocuments request for ${this.dbName} finished. ${documents.length} docs`);
   }
 
-  protected async bulkUpsertDocumentsInternal(documents: BaseDocument[]): Promise<void> {
+  protected async bulkUpsertDocuments(documents: BaseDocument[]): Promise<void> {
     console.log(`AbstractTable: bulkUpsertDocuments request for ${this.dbName} started. ${documents.length} docs`);
     const documentIds = _.map(documents, this.getIDValue.bind(this));
     const existingDocuments = await this.table.bulkGet(documentIds);
@@ -176,7 +109,7 @@ export abstract class AbstractTable {
       existingDocuments[docIndex] = Object.assign({}, existingDocument || {}, documents[docIndex]);
       docIndex++;
     }
-    await this.bulkPutDocumentsInternal(existingDocuments, documentIds);
+    await this.bulkPutDocuments(existingDocuments, documentIds);
     console.log(`AbstractTable: bulkUpsertDocuments request for ${this.dbName} finished. ${documents.length} docs`);
   }
 

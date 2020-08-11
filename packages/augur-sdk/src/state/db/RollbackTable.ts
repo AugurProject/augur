@@ -55,7 +55,7 @@ export class RollbackTable extends AbstractTable {
             const maxBlock =_.get(_.maxBy(documents, 'blockNumber'), 'blockNumber');
             await this.prune(maxBlock);
         }
-        await super.bulkPutDocumentsInternal(documents);
+        await super.bulkPutDocuments(documents);
     }
 
     async rollback(blockNumber: number): Promise<void> {

@@ -1,18 +1,30 @@
-import Dexie, {
-  Collection, IndexableType,
-  PromiseExtended,
-  ThenShortcut,
-} from 'dexie';
-import { queue, timeout, retry } from 'async';
+import { queue, retry, timeout } from 'async';
+import Dexie, { Collection, PromiseExtended, Table } from 'dexie';
 
-interface ToArrayQueueTask<T, R> {
-  cb?: ThenShortcut<T[], R>;
-  collection: Collection<T>;
+export enum WriteTaskType {
+  ADD,
+  PUT,
+  UPSERT,
+  CLEAR,
+  READ,
+}
+
+
+interface DBQueueTask<T, R> {
+  methodName: string;
+  args: any[];
+  scope: Collection<T> | Table<T>;
 };
 
 export function CollectionQueueAddOn (db: Dexie) {
-  const originalToArray = db.Collection.prototype.toArray;
-  const toArrayQueue = queue<ToArrayQueueTask<any, any>>(({collection, cb}, callback) => {
+  const originals = {
+    'bulkAdd': db.table.prototype.bulkAdd,
+    'bulkPut': db.table.prototype.bulkPut,
+    'clear': db.table.prototype.clear,
+    'toArray': db.Collection.prototype.toArray
+  };
+
+  const dbOperationQueue = queue<DBQueueTask<any, any>>(({args, methodName, scope}, callback) => {
     return retry(
       {
         times: 5,
@@ -23,14 +35,14 @@ export function CollectionQueueAddOn (db: Dexie) {
           return err['code'] === "ETIMEDOUT";
         }
       }, timeout(async function ReadOperation() {
-      console.log('Reading Query');
-      return originalToArray.call(collection, cb);
+        return originals[methodName].call(scope, ...args);
     }, 10000), callback);
   }, 10);
 
-  db.Collection.prototype.toArray = function toArray<R>(cb?): PromiseExtended<any[]> {
+  const generateQueueCallback = (methodName) => function(...args): PromiseExtended<any[]> {
     return new Dexie.Promise((resolve, reject) => {
-      toArrayQueue.push({ collection: this, cb }, (err, result:any[]) => {
+      // @ts-ignore
+      dbOperationQueue.push({ scope: this, args, methodName  }, (err, result:any[]) => {
         if (err) {
           console.log('ReadOperationDied')
           reject(err);
@@ -39,6 +51,11 @@ export function CollectionQueueAddOn (db: Dexie) {
       });
     });
   }
+
+  db.table.prototype.bulkAdd = generateQueueCallback('bulkAdd');
+  db.table.prototype.bulkPut = generateQueueCallback('bulkPut');
+  db.table.prototype.clear = generateQueueCallback('clear');
+  db.Collection.prototype.toArray = generateQueueCallback('toArray');
 }
 
 // Register the addon to be included by default (optional)
