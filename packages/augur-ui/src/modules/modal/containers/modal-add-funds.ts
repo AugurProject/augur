@@ -35,6 +35,7 @@ const mapStateToProps = (state: AppState) => {
     repToDaiRate,
     usdtToDaiRate,
     usdcToDaiRate,
+    gasPrice: state.gasPriceInfo.userDefinedGasPrice || state.gasPriceInfo.average,
   };
 };
 

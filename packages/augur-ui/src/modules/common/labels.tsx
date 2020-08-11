@@ -1536,6 +1536,7 @@ interface ApprovalTxButtonLabelProps {
   ignore?: boolean;
   addPendingData: Function;
   pendingTx: boolean[];
+  hideAddFunds?: boolean;
 }
 export const ApprovalTxButtonLabelCmp = ({
   checkApprovals,
@@ -1552,6 +1553,7 @@ export const ApprovalTxButtonLabelCmp = ({
   approvalType,
   ignore,
   addPendingData,
+  hideAddFunds = false,
 }: ApprovalTxButtonLabelProps) => {
   const [approvalsNeeded, setApprovalsNeeded] = useState(0);
   const [insufficientEth, setInsufficientEth] = useState(false);
@@ -1567,7 +1569,7 @@ export const ApprovalTxButtonLabelCmp = ({
           createBigNumber(GWEI_CONVERSION).multipliedBy(gasPrice)
         )
       );
-      const notEnoughEth = createBigNumber(userEthBalance).lt(createBigNumber(ethNeededForGas));
+      const notEnoughEth = createBigNumber(userEthBalance).lt(createBigNumber(ethNeededForGas)) && !hideAddFunds;
       setInsufficientEth(notEnoughEth);
       if (notEnoughEth) {
         const ethDo = formatEther(ethNeededForGas);
@@ -1582,6 +1584,9 @@ export const ApprovalTxButtonLabelCmp = ({
           break;
           case constants.ADDLIQUIDITY:
             setDescription(`Approval requires ${approvalsNeeded} signing${approvalsNeeded > 1 ? 's' : ''}. Once confirmed you can submit your orders.`)
+          break;
+          case constants.APPROVE:
+            setDescription(`Approval requires ${approvalsNeeded} signing${approvalsNeeded > 1 ? 's' : ''}. Once confirmed you can swap your tokens.`)
           break;
           default:
             setDescription(`Approval requires ${approvalsNeeded} signing${approvalsNeeded > 1 ? 's' : ''}. Once confirmed you can place your order.`)

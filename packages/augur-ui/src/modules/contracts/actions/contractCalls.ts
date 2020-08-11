@@ -367,6 +367,38 @@ export async function addLiquidityRepDai(
   );
 }
 
+export async function checkTokenApproval(account, contract): Promise<boolean> {
+  const { contracts } = augurSdk.get();
+  try {
+    const currentAllowance = await contract.allowance_(
+      account,
+      contracts.uniswap.address
+    );
+
+    if (currentAllowance.lte(0)) {
+      return false
+    }
+    return true;
+  } catch (error) {
+    throw error;
+  }
+}
+
+export async function setTokenApproval(account, contract): Promise<void> {
+  const { contracts } = augurSdk.get();
+  try {
+    const currentAllowance = await contract.allowance_(
+      account,
+      contracts.uniswap.address
+    );
+    if (currentAllowance.lte(0)) {
+      await contract.approve(contracts.uniswap.address, APPROVAL_AMOUNT);
+    }
+  } catch (error) {
+    throw error;
+  }
+}
+
 export async function checkSetApprovalAmount(account, contract): Promise<void> {
   const { contracts } = augurSdk.get();
   try {
@@ -375,7 +407,7 @@ export async function checkSetApprovalAmount(account, contract): Promise<void> {
       account,
       contracts.uniswap.address
     );
-    if (currentAllowance.toNumber() <= 0) {
+    if (currentAllowance.lte(0)) {
       await contract.approve(contracts.uniswap.address, APPROVAL_AMOUNT);
     }
   } catch (error) {
