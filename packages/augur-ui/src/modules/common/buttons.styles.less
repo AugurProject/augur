@@ -12,6 +12,27 @@
     cursor: @button-cursor-disabled;
   }
 
+  &.Phantom {
+    border: unset;
+    border-radius: unset;
+    background: unset;
+
+    &:hover:enabled {
+      background: unset;
+    }
+    &:focus:enabled {
+      background: unset;
+    }
+    &:active:enabled {
+      background: unset;
+    }
+    > svg {
+      > path {
+        fill: @color-primary-text;
+      }
+    }
+  }
+
   &.Confirmed {
     color: @color-primary-text;
     background: fade(@color-positive, 20%);
