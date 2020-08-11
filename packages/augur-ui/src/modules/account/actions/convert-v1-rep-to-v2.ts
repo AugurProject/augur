@@ -1,6 +1,7 @@
 import { TXEventName } from '@augurproject/sdk-lite';
 import {
   MIGRATE_FROM_LEG_REP_TOKEN,
+  APPROVE_FROM_LEG_REP_TOKEN,
   V1_REP_MIGRATE_ESTIMATE,
 } from 'modules/common/constants';
 import {
@@ -14,26 +15,53 @@ import { Action } from 'redux';
 import { ThunkDispatch } from 'redux-thunk';
 import logError from 'utils/log-error';
 
-export const approveAndConvertV1ToV2 = (useSigningWallet: boolean = false, callback: NodeStyleCallback = logError) => {
+export const approveRepV2 = (callback: NodeStyleCallback = logError) => {
   return async (dispatch: ThunkDispatch<void, any, Action>) => {
-    dispatch(addUpdatePendingTransaction(MIGRATE_FROM_LEG_REP_TOKEN, TXEventName.Pending));
-    await convertV1ToV2Approve(useSigningWallet).catch((err: Error) => {
-      dispatch(addUpdatePendingTransaction(MIGRATE_FROM_LEG_REP_TOKEN, TXEventName.Failure));
-    });
-    await convertV1ToV2(useSigningWallet).catch((err: Error) => {
-      logError(new Error('convertV1ToV2'));
-      dispatch(addUpdatePendingTransaction(MIGRATE_FROM_LEG_REP_TOKEN, TXEventName.Failure));
+    dispatch(
+      addUpdatePendingTransaction(
+        APPROVE_FROM_LEG_REP_TOKEN,
+        TXEventName.Pending
+      )
+    );
+    await convertV1ToV2Approve().catch((err: Error) => {
+      logError(new Error('approveRepV2'));
+      dispatch(
+        addUpdatePendingTransaction(
+          APPROVE_FROM_LEG_REP_TOKEN,
+          TXEventName.Failure
+        )
+      );
     });
     callback(null);
   };
-}
+};
 
-export const convertV1ToV2Estimate = async (useSigningWallet: boolean = false) => {
+export const convertRepV2 = (callback: NodeStyleCallback = logError) => {
+  return async (dispatch: ThunkDispatch<void, any, Action>) => {
+    dispatch(
+      addUpdatePendingTransaction(
+        MIGRATE_FROM_LEG_REP_TOKEN,
+        TXEventName.Pending
+      )
+    );
+    await convertV1ToV2().catch((err: Error) => {
+      logError(new Error('convertV1ToV2'));
+      dispatch(
+        addUpdatePendingTransaction(
+          MIGRATE_FROM_LEG_REP_TOKEN,
+          TXEventName.Failure
+        )
+      );
+    });
+    callback(null);
+  };
+};
+
+export const convertV1ToV2Estimate = async () => {
   try {
-    return await convertV1ToV2_estimate(useSigningWallet);
-  }
-  catch(error) {
+    return await convertV1ToV2_estimate();
+  } catch (error) {
     console.error('error could estimate gas', error);
     return V1_REP_MIGRATE_ESTIMATE;
-  };
-}
+  }
+};
