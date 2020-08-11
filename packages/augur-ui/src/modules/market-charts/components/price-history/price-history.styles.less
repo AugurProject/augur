@@ -80,7 +80,7 @@
 
       .highcharts-crosshair-label {
         background-color: var(--color-module-background);
-        border-radius: 5px;
+        border-radius: @size-5;
         color: var(--color-primary-text);
         font-size: @size-10;
         z-index: @above-all-content;
@@ -98,14 +98,14 @@
 
       g.highcharts-yaxis-labels > g.highcharts-crosshair-label {
         > path {
-          transform: translateX(38px);
+          transform: translateX(@size-38);
         }
 
         > text {
           .mono-10;
 
           fill: var(--color-primary-text);
-          transform: translateX(38px);
+          transform: translateX(@size-38);
 
           > tspan {
             color: var(--color-primary-text);
@@ -115,14 +115,14 @@
       }
 
       g.highcharts-xaxis-labels > g.highcharts-crosshair-label > path {
-        transform: translateY(4px);
+        transform: translateY(@size-4);
       }
 
       g.highcharts-xaxis-labels > g.highcharts-crosshair-label > text {
         .mono-9;
 
         fill: var(--color-primary-text);
-        transform: translateY(4px);
+        transform: translateY(@size-4);
       }
 
       .highcharts-crosshair {
