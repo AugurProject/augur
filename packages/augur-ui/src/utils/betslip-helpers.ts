@@ -32,6 +32,7 @@ export const convertPositionToBet = (position, marketInfo) => {
   const wager = getWager(netPosition, avgPrice);
   return {
     ...position,
+    marketId: marketInfo.id,
     outcomeId: position.outcome,
     sportsBook: marketInfo.sportsBook,
     amountWon: '0',
