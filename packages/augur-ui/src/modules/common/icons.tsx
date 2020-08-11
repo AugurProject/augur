@@ -808,29 +808,9 @@ export const MobileNavHamburgerIcon = () => (
 );
 
 export const MobileNavCloseIcon = () => (
-  <svg viewBox="0 0 16 14" className="mobile-nav-close-icon">
-    <g
-      id="Symbols"
-      stroke="none"
-      strokeWidth="1"
-      fill="none"
-      fillRule="evenodd"
-      strokeLinecap="round"
-    >
-      <g id="Nav/Header-Close" transform="translate(-16.000000, -17.000000)">
-        <g id="Icon/Close" transform="translate(16.000000, 16.000000)">
-          <path
-            d="M1.50624875,1.50624875 L14.4759537,14.4759537"
-            id="MobileNavCloseIconLine"
-          />
-          <path
-            d="M14.3030383,1.33333333 L1.33333333,14.3030383 L14.3030383,1.33333333 Z"
-            id="MobileNavCloseIconLineJoinRound"
-            strokeLinejoin="round"
-          />
-        </g>
-      </g>
-    </g>
+  <svg viewBox="0 0 24 24" className="mobile-nav-close-icon">
+    <path d="M16.2422 7.75736L7.75691 16.2426" strokeWidth="2" strokeMiterlimit="10" stroke-linecap="square"/>
+    <path d="M16.2431 16.2426L7.75781 7.75736" strokeWidth="2" strokeMiterlimit="10" stroke-linecap="square"/>
   </svg>
 );
 
