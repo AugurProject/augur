@@ -4,6 +4,8 @@ set -e;
 
 printf "\nBuilding client....\n\n";
 
+exit 0;
+
 # This is an attempt to avoid memory limitation in processes spawned from node.
 cd packages/augur-ui;
 
@@ -13,6 +15,9 @@ mv build reporting-only-build;
 ENABLE_MAINNET=true ./node_modules/.bin/webpack;
 
 cd -;
+
+
+
 
 yarn flash generate-wallet --keyfileOutputLocation /keys/priv.key
 echo
