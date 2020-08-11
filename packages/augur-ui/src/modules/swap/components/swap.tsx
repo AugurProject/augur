@@ -533,12 +533,13 @@ export const Swap = ({
       <div>
         {tokenUnlocked &&
           <ProcessingButton
-            text={"Convert"}
+            text={'Convert'}
             action={() => makeTrade()}
             queueName={TRANSACTIONS}
             disabled={
               !outputAmount ||
-              (errorMessage && errorMessage.indexOf("Liquidity") === -1)
+              outputAmount.value <= 0 ||
+              (errorMessage && errorMessage.indexOf('Liquidity') === -1)
             }
             queueId={
               fromTokenType === ETH

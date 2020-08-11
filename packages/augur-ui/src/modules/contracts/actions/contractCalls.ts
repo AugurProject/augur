@@ -375,7 +375,7 @@ export async function checkTokenApproval(account, contract): Promise<boolean> {
       contracts.uniswap.address
     );
 
-    if (currentAllowance.toNumber() <= 0) {
+    if (currentAllowance.lte(0)) {
       return false
     }
     return true;
@@ -391,7 +391,7 @@ export async function setTokenApproval(account, contract): Promise<void> {
       account,
       contracts.uniswap.address
     );
-    if (currentAllowance.toNumber() <= 0) {
+    if (currentAllowance.lte(0)) {
       await contract.approve(contracts.uniswap.address, APPROVAL_AMOUNT);
     }
   } catch (error) {
@@ -407,7 +407,7 @@ export async function checkSetApprovalAmount(account, contract): Promise<void> {
       account,
       contracts.uniswap.address
     );
-    if (currentAllowance.toNumber() <= 0) {
+    if (currentAllowance.lte(0)) {
       await contract.approve(contracts.uniswap.address, APPROVAL_AMOUNT);
     }
   } catch (error) {
