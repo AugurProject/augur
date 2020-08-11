@@ -103,8 +103,7 @@ jobs:
         displayName: run
         inputs:
           command: run
-          arguments: |
-            "augurproject/augur:v${CURRENT_VERSION} output-ipfs-ui-hashes"
+          arguments: augurproject/augur:v$(CURRENT_VERSION) output-ipfs-ui-hashes
 
       - task: Docker@2
         displayName: Push
