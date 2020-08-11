@@ -355,7 +355,7 @@ export default class MarketsView extends Component<
             updateMarketsListCardFormat={updateMarketsListCardFormat}
           />
 
-          <FilterDropDowns />
+          <FilterDropDowns refresh={this.updateFilteredMarkets} />
         </div>
 
         <FilterNotice
