@@ -1,3 +1,4 @@
+import { logger } from '@augurproject/utils';
 import Dexie from 'dexie';
 import * as _ from 'lodash';
 import { AsyncQueue, queue, timeout, retry } from 'async';
@@ -25,6 +26,7 @@ export interface BaseDocument {
   [key: string]: any;
 }
 
+export const DEFAULT_CONCURRENCY = 10;
 export abstract class AbstractTable {
   table: Dexie.Table<any, any>;
   protected networkId: number;
@@ -32,31 +34,37 @@ export abstract class AbstractTable {
   protected idFields: string[];
   protected syncing: boolean;
 
-  private static writeQueue: AsyncQueue<WriteQueueTask> = queue(
-    (task: WriteQueueTask, callback) => {
-      return retry(
-        {
-          times: 2,
-          interval: function (retryCount) {
-            return 100;
-          },
-          errorFilter: function (err) {
-            return err['code'] === "ETIMEDOUT";
-          }
-        }, timeout(async function WriteOperation() {
-        if (task.type === WriteTaskType.ADD) {
-          return task.table.bulkAddDocumentsInternal(task.documents);
-        } else if (task.type === WriteTaskType.PUT) {
-          return task.table.bulkPutDocumentsInternal(task.documents);
-        } else if (task.type === WriteTaskType.CLEAR) {
-          return task.table.clearInternal();
-        } else {
-          return task.table.bulkUpsertDocumentsInternal(task.documents);
-        }
-      }, 10000), callback);
-    },
-    10
-  );
+  static setConcurrency = (limit = DEFAULT_CONCURRENCY) => {
+    if(limit !== DEFAULT_CONCURRENCY) logger.info(`Setting concurrent DB write limit to ${limit}`);
+    AbstractTable.writeQueue = queue(
+      (task: WriteQueueTask, callback) => {
+        return retry(
+          {
+            times: 2,
+            interval: function (retryCount) {
+              return 100;
+            },
+            errorFilter: function (err) {
+              return err['code'] === "ETIMEDOUT";
+            }
+          }, timeout(async function WriteOperation() {
+            if (task.type === WriteTaskType.ADD) {
+              return task.table.bulkAddDocumentsInternal(task.documents);
+            } else if (task.type === WriteTaskType.PUT) {
+              return task.table.bulkPutDocumentsInternal(task.documents);
+            } else if (task.type === WriteTaskType.CLEAR) {
+              return task.table.clearInternal();
+            } else {
+              return task.table.bulkUpsertDocumentsInternal(task.documents);
+            }
+          }, 10000), callback);
+      },
+      limit
+    );
+    return AbstractTable.writeQueue;
+  }
+
+  private static writeQueue: AsyncQueue<WriteQueueTask> = AbstractTable.setConcurrency();
 
   protected constructor(networkId: number, dbName: string, db: Dexie) {
     this.networkId = networkId;

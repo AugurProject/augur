@@ -46,6 +46,7 @@ import {
   LogCallbackType,
   LogFilterAggregatorInterface,
 } from '../logs/LogFilterAggregator';
+import { AbstractTable, DEFAULT_CONCURRENCY } from './AbstractTable';
 import { BaseSyncableDB } from './BaseSyncableDB';
 import { DelayedSyncableDB } from './DelayedSyncableDB';
 import { DisputeDatabase } from './DisputeDB';
@@ -193,7 +194,8 @@ export class DB {
     uploadBlockNumber: number,
     logFilterAggregator: LogFilterAggregatorInterface,
     augur: Augur,
-    enableZeroX = false
+    enableZeroX = false,
+    concurrencyLimit = DEFAULT_CONCURRENCY
   ): Promise<DB> {
     const dbName = `augur-${networkId}`;
     const dbController = new DB(
@@ -204,6 +206,10 @@ export class DB {
       uploadBlockNumber,
       enableZeroX
     );
+
+    if(concurrencyLimit !== DEFAULT_CONCURRENCY) {
+      AbstractTable.setConcurrency(concurrencyLimit);
+    }
 
     return dbController.initializeDB();
   }
