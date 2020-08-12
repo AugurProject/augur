@@ -154,7 +154,7 @@ h6 {
   -webkit-overflow-scrolling: touch;
   overflow-x: hidden;
   overflow-y: auto;
-  padding-bottom: @size-60;
+  padding-bottom: @size-6;
 
   @media @breakpoint-mobile {
     height: 100%;
@@ -290,6 +290,32 @@ svg.SideBar__mobile-bars-unseen {
           opacity: 0.1;
         }
       }
+    }
+  }
+}
+
+.Footer {
+  .text-12;
+
+  display: flex;
+  justify-content: space-between;
+  color: @color-secondary-text;
+  border-top: @size-1 solid @color-dark-grey;
+
+  > div {
+    display: flex;
+    justify-content: flex-start;
+    padding: @size-12 @size-16;
+
+    > span {
+      color: @color-primary-text;
+      margin-left: @size-4;
+    }
+  }
+
+  @media @breakpoint-mobile {
+    > div:last-of-type {
+      display: none;
     }
   }
 }
