@@ -11,7 +11,6 @@ import { SubscriptionEventName } from '@augurproject/sdk-lite';
 import type { ZeroX } from '@augurproject/sdk';
 
 import { NetworkId } from "@augurproject/utils";
-import { retry } from 'async';
 import * as Comlink from 'comlink';
 import { SupportedProvider } from 'ethereum-types';
 import './MeshTransferHandler';
@@ -184,66 +183,6 @@ export async function createBrowserMeshWorker(
   } catch (error) {
     zeroX.client.events.emit(SubscriptionEventName.ZeroXStatusError, { error });
 
-    throw error;
-  }
-}
-
-export async function createBrowserMesh(
-  config: SDKConfiguration,
-  web3Provider: SupportedProvider,
-  zeroX: ZeroX
-) {
-  if (!config.zeroX?.mesh?.enabled) {
-    throw new Error(
-      `Attempting to create browser mesh without it being enabled in config ${JSON.stringify(
-        config
-      )}`
-    );
-  }
-
-  try {
-    const zeroXTimerLabel = 'ZeroX Wasm load duration: ';
-    const newMeshTimerLabel = 'new Mesh() startup duration: ';
-
-    zeroX.client.events.emit(SubscriptionEventName.ZeroXStatusStarting, {});
-    console.time(zeroXTimerLabel);
-
-    const loadMesh = async () => loadMeshStreamingWithURLAsync('zerox.wasm');
-    await new Promise((resolve, reject) =>
-      retry(5, loadMesh, (err, result) => {
-        if (err) reject(err);
-        resolve(result);
-      })
-    );
-
-    const meshConfig = createBrowserMeshConfig(
-      config.ethereum.http,
-      web3Provider,
-      Number(config.networkId),
-      config.addresses,
-      config.zeroX.mesh.verbosity || 5,
-      config.zeroX.mesh.useBootstrapList,
-      config.zeroX.mesh.bootstrapList
-    );
-
-    console.time(newMeshTimerLabel);
-    const mesh = new Mesh(meshConfig);
-
-    const cb = () => {
-      console.timeEnd(zeroXTimerLabel);
-      console.timeEnd(newMeshTimerLabel);
-
-      // Only want to get this once and `once` doesn't seem to be working.
-      zeroX.client.events.off(SubscriptionEventName.ZeroXStatusSynced, cb);
-    };
-
-    zeroX.client.events.on(SubscriptionEventName.ZeroXStatusSynced, cb);
-
-    mesh.onError(createBrowserMeshRestartFunction(meshConfig, web3Provider, zeroX, config));
-    await mesh.startAsync();
-    zeroX.mesh = mesh;
-  } catch (error) {
-    zeroX.client.events.emit(SubscriptionEventName.ZeroXStatusError, { error });
     throw error;
   }
 }
