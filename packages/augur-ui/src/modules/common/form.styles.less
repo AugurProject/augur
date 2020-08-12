@@ -2023,6 +2023,10 @@ div.error > div > div > div > div > input {
       height: @size-12;
       margin-right: @size-10;
       transform: translateY(-@size-1);
+
+      > path {
+        stroke: @color-secondary-text;
+      }
     }
 
     @media @breakpoint-mobile {
@@ -2035,6 +2039,10 @@ div.error > div > div > div > div > input {
         height: @size-16;
         margin-right: @size-16;
         transform: translateY(-@size-2);
+
+        > path {
+          stroke: @color-secondary-text;
+        }
       }
     }
   }
@@ -2066,6 +2074,16 @@ div.error > div > div > div > div > input {
       background: none;
       animation: spin 2s linear infinite;
       border: none;
+
+      > svg {
+        width: @size-12;
+        height: @size-12;
+        transform: translateY(-@size-1);
+
+        > path {
+          stroke: @color-secondary-text;
+        }
+      }
     }
   }
 
@@ -2088,6 +2106,10 @@ div.error > div > div > div > div > input {
 
   &.disabled {
     cursor: default;
+    > span:last-of-type {
+      background: none;
+      border: none;
+    }
   }
 }
 
