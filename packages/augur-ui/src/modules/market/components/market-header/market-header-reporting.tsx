@@ -21,7 +21,7 @@ import { MarketData } from 'modules/types';
 import React from 'react';
 import ReactTooltip from 'react-tooltip';
 import { getOutcomeNameWithOutcome } from 'utils/get-outcome';
-import { InvalidLabel } from 'modules/common/labels';
+import InvalidLabel from 'modules/common/containers/labels';
 
 interface MarketHeaderReportingProps {
   market: MarketData;
@@ -99,7 +99,7 @@ export const MarketHeaderReporting = ({
               <span>
                 {tentativeWinner &&
                   (tentativeWinner.isInvalidOutcome
-                    ? <InvalidLabel text={'invalid'} keyId={'invalid'} />
+                    ? <InvalidLabel text={'invalid'} keyId={'invalid'} marketId={market.marketId} />
                     : market.marketType === SCALAR
                     ? tentativeWinner.outcome
                     : getOutcomeNameWithOutcome(
