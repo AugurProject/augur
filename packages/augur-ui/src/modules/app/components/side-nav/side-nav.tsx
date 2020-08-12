@@ -32,6 +32,7 @@ import { Stats } from 'modules/app/components/top-bar';
 import { NewLogo } from 'modules/app/components/logo';
 import { OddsMenu } from 'modules/app/components/odds-menu';
 import { logout } from 'modules/auth/actions/logout';
+import CategoryFilters from '../inner-nav/category-filters';
 
 interface SideNavProps {
   isLogged: boolean;
@@ -195,6 +196,11 @@ const SideNav = ({
               </button>
             </footer>
           )}
+
+          {!isTrading &&
+            <CategoryFilters />
+          }
+
           {isLogged && !isTrading && (
             <footer>
               <HelpIcon
