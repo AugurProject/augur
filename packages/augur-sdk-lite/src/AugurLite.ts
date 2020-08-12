@@ -109,7 +109,7 @@ export class AugurLite {
     });
   }
 
-  async getMarketCreatedLogs(onlyOpenMarkets = false) {
+  async getMarketCreatedLogs(allAvailableMarkets = false) {
     const { warpSyncHash } = await this.warpSync.getLastWarpSyncData(
       this.addresses.Universe
     );
@@ -124,7 +124,7 @@ export class AugurLite {
       return logs
         .filter((log) => log.name === 'MarketCreated')
         .filter(
-          onlyOpenMarkets
+          !allAvailableMarkets
             ? (log) => Number(log.endTime) > timestamp
             : () => true
         )
