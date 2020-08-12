@@ -9,27 +9,28 @@ export const SportsGroupCharts = ({ sportsGroup }) => {
   const outcomes = market.outcomesFormatted;
   const invalid = outcomes.shift();
   outcomes.push(invalid);
-
   return (
     <section className={Styles.Container}>
       <div className={Styles.ChartArea}>
         <h4>Price History</h4>
-        <PriceHistory
-          marketId={market.id}
-          market={market}
-        />
+        <PriceHistory marketId={market.id} market={market} />
       </div>
       <div className={Styles.Legend}>
         <h5>References:</h5>
         <ul>
-          {outcomes.map(outcome => {
-            return (
-              <li key={outcome.id} className={classNames({[`Styles.${outcome.id}`]: true})}>
-                <span>{outcome.description}</span>
-                <span>{outcome.lastPricePercent.full}</span>
-              </li>
-            );
-          })}
+          {outcomes.map(outcome => (
+            <li
+              key={outcome.id}
+              id={`legend-outcome-${outcome.id}`}
+              className={classNames({
+                [Styles.hidden]:
+                  outcome.id === 0 && outcome.lastPricePercent.value === 0,
+              })}
+            >
+              <span>{outcome.description}</span>
+              <span>{outcome.lastPricePercent.full}</span>
+            </li>
+          ))}
         </ul>
       </div>
     </section>

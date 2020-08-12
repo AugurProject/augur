@@ -848,11 +848,6 @@ export const SportsMarketContainer = ({
     // futures
     const { tradingPositionsPerMarket = null } =
       accountPositions[marketId] || {};
-    console.log(
-      'isfutures:',
-      accountPositions[marketId],
-      tradingPositionsPerMarket
-    );
     headingContent = (
       <Fragment key={`${marketId}-heading`}>
         <CountdownProgress
