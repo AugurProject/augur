@@ -154,7 +154,7 @@ h6 {
   -webkit-overflow-scrolling: touch;
   overflow-x: hidden;
   overflow-y: auto;
-  padding-bottom: @size-60;
+  padding-bottom: @size-10;
 
   @media @breakpoint-mobile {
     height: 100%;
@@ -310,6 +310,12 @@ svg.SideBar__mobile-bars-unseen {
     > span {
       color: @color-primary-text;
       margin-left: @size-4;
+    }
+  }
+
+  @media @breakpoint-mobile {
+    > div:last-of-type {
+      display: none;
     }
   }
 }
