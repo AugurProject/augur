@@ -4,9 +4,10 @@ import Highcharts from 'highcharts/highstock';
 import NoDataToDisplay from 'highcharts/modules/no-data-to-display';
 import Styles from 'modules/market-charts/components/price-history/price-history.styles.less';
 import { selectMarket } from 'modules/markets/selectors/market';
-import { SCALAR, TRADING_TUTORIAL } from 'modules/common/constants';
+import { SCALAR, TRADING_TUTORIAL, THEMES } from 'modules/common/constants';
 import selectBucketedPriceTimeSeries from 'modules/markets/selectors/select-bucketed-price-time-series';
 import { MarketData } from 'modules/types';
+import { useAppStatusStore } from 'modules/app/store/app-status';
 
 const HIGHLIGHTED_LINE_WIDTH = 2;
 const NORMAL_LINE_WIDTH = 1;
@@ -44,28 +45,39 @@ const PriceHistory = ({
   selectedOutcomeId = 9,
   isArchived,
   marketId,
-  market
+  market,
 }: PriceHistoryProps) => {
+  const { theme } = useAppStatusStore();
+  const isTrading = theme === THEMES.TRADING;
   const isTradingTutorial = marketId === TRADING_TUTORIAL;
   const {
     maxPriceBigNumber,
     minPriceBigNumber,
-    outcomes = [],
     marketType,
     scalarDenomination,
   } = marketId && !isTradingTutorial ? selectMarket(marketId) : market;
   const isScalar = marketType === SCALAR;
 
-  const bucketedPriceTimeSeries = !isTradingTutorial ? selectBucketedPriceTimeSeries(marketId) : {};
+  const bucketedPriceTimeSeries = !isTradingTutorial
+    ? selectBucketedPriceTimeSeries(marketId)
+    : {};
 
   const maxPrice = !isTradingTutorial ? maxPriceBigNumber.toNumber() : 0;
   const minPrice = !isTradingTutorial ? minPriceBigNumber.toNumber() : 0;
   const pricePrecision = 4;
 
   const container = useRef(null);
-  const options = getOptions({ maxPrice, minPrice, isScalar, pricePrecision, isArchived });
+  const options = getOptions({
+    maxPrice,
+    minPrice,
+    isScalar,
+    pricePrecision,
+    isArchived,
+    isTrading,
+  });
   const { priceTimeSeries } = bucketedPriceTimeSeries;
-  const hasPriceTimeSeries = !!priceTimeSeries && !!Object.keys(priceTimeSeries);
+  const hasPriceTimeSeries =
+    !!priceTimeSeries && !!Object.keys(priceTimeSeries);
 
   useEffect(() => {
     if (!hasPriceTimeSeries) return NoDataToDisplay(Highcharts);
@@ -76,7 +88,8 @@ const PriceHistory = ({
       Object.keys(priceTimeSeries).filter(
         key => priceTimeSeries[key].length > 0
       ).length;
-    const series = hasData && handleSeries(priceTimeSeries, selectedOutcomeId, 0);
+    const series =
+      hasData && handleSeries(priceTimeSeries, selectedOutcomeId, 0, isTrading);
 
     if (isScalar && hasData) {
       options.title.text = scalarDenomination;
@@ -97,10 +110,12 @@ const PriceHistory = ({
         const seriesUpdated = handleSeries(
           priceTimeSeries,
           selectedOutcomeId,
-          0
+          0,
+          isTrading
         );
         seriesUpdated.forEach(({ data }, index) => {
-          chart.series[index] && chart.series[index].setData(data, false, false);
+          chart.series[index] &&
+            chart.series[index].setData(data, false, false);
         });
         chart.redraw();
       }
@@ -112,7 +127,14 @@ const PriceHistory = ({
 
 export default PriceHistory;
 // helper functions:
-const getOptions = ({ maxPrice, pricePrecision, minPrice, isScalar, isArchived }) => ({
+const getOptions = ({
+  maxPrice,
+  pricePrecision,
+  minPrice,
+  isScalar,
+  isArchived,
+  isTrading,
+}) => ({
   lang: {
     noData: isArchived ? 'Data Archived' : 'No Completed Trades',
   },
@@ -155,8 +177,10 @@ const getOptions = ({ maxPrice, pricePrecision, minPrice, isScalar, isArchived }
     tickLength: 7,
     gridLineWidth: 1,
     gridLineColor: null,
+    lineWidth: isTrading ? 1 : 0,
     labels: {
       style: null,
+      format: isTrading ? '{value:%H:%M}' : '{value:%l:%M %p}',
     },
     crosshair: {
       snap: true,
@@ -170,17 +194,17 @@ const getOptions = ({ maxPrice, pricePrecision, minPrice, isScalar, isArchived }
   },
   yAxis: {
     showEmpty: true,
-    opposite: true,
+    opposite: isTrading,
     max: createBigNumber(maxPrice).toFixed(pricePrecision),
     min: createBigNumber(minPrice).toFixed(pricePrecision),
-    showFirstLabel: false,
+    showFirstLabel: !isTrading,
     showLastLabel: true,
     offset: 2,
     labels: {
       format: isScalar ? '{value:.4f}' : '${value:.2f}',
       style: null,
       reserveSpace: true,
-      y: 16,
+      y: isTrading ? 16 : 0,
     },
     crosshair: {
       snap: true,
@@ -203,36 +227,40 @@ const getOptions = ({ maxPrice, pricePrecision, minPrice, isScalar, isArchived }
 const handleSeries = (
   priceTimeSeries,
   selectedOutcomeId,
-  mostRecentTradetime = 0
+  mostRecentTradetime = 0,
+  isTrading
 ) => {
   const series = [];
-  priceTimeSeries && Object.keys(priceTimeSeries).forEach(id => {
-    const isSelected = selectedOutcomeId && selectedOutcomeId == id;
-    const length = priceTimeSeries[id].length;
-    if (
-      length > 0 &&
-      priceTimeSeries[id][length - 1].timestamp > mostRecentTradetime
-    ) {
-      mostRecentTradetime = priceTimeSeries[id][length - 1].timestamp;
-    }
-    const data = priceTimeSeries[id].map(pts => [
-      pts.timestamp,
-      createBigNumber(pts.price).toNumber(),
-    ]);
-    const baseSeriesOptions = {
-      type: isSelected ? 'area' : 'line',
-      lineWidth: isSelected ? HIGHLIGHTED_LINE_WIDTH : NORMAL_LINE_WIDTH,
-      marker: {
-        symbol: 'cicle',
-      },
-      // @ts-ignore
-      data,
-    };
+  priceTimeSeries &&
+    Object.keys(priceTimeSeries).forEach(id => {
+      const isInvalidEmpty = id === "0" && !isTrading && priceTimeSeries[id][priceTimeSeries[id].length - 1].price === "0";
+      const isSelected = selectedOutcomeId && selectedOutcomeId == id;
+      const length = priceTimeSeries[id].length;
+      if (
+        length > 0 &&
+        priceTimeSeries[id][length - 1].timestamp > mostRecentTradetime
+      ) {
+        mostRecentTradetime = priceTimeSeries[id][length - 1].timestamp;
+      }
+      const data = priceTimeSeries[id].map(pts => [
+        pts.timestamp,
+        createBigNumber(pts.price).toNumber(),
+      ]);
+      const baseSeriesOptions = {
+        type: isSelected ? 'area' : 'line',
+        lineWidth: isSelected ? HIGHLIGHTED_LINE_WIDTH : NORMAL_LINE_WIDTH,
+        marker: {
+          symbol: 'cicle',
+        },
+        // @ts-ignore
+        data,
+        visible: !isInvalidEmpty
+      };
 
-    series.push({
-      ...baseSeriesOptions,
+      series.push({
+        ...baseSeriesOptions,
+      });
     });
-  });
   series.forEach(seriesObject => {
     const seriesData = seriesObject.data;
     // make sure we have a trade to fill chart
