@@ -769,14 +769,14 @@ export const InvalidLabel = ({
         <MultipleExplainerBlock
           contents={[
             {
-              title: EventDetailsContent().explainerBlockTitle,
-              subtexts: EventDetailsContent().explainerBlockSubtexts,
-              useBullets: EventDetailsContent().useBullets,
-            },
-            {
               title: AugurMarketsContent().explainerBlockTitle,
               subtexts: AugurMarketsContent().explainerBlockSubtexts,
               useBullets: AugurMarketsContent().useBullets,
+            },
+            {
+              title: EventDetailsContent().explainerBlockTitle,
+              subtexts: EventDetailsContent().explainerBlockSubtexts,
+              useBullets: EventDetailsContent().useBullets,
             },
           ]}
         />
