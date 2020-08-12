@@ -349,8 +349,17 @@
     }
 
     .CategoriesGroup {
+      border-bottom: 0;
       > span {
         display: none;
+      }
+    }
+
+    > .CategoriesGroup:first-of-type {  
+      > div {
+        > section {
+          padding-left: @size-40;
+        }
       }
     }
   }

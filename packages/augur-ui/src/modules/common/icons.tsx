@@ -1475,7 +1475,7 @@ export const Sports = (
 export const Politics = (
   <svg viewBox="0 0 48 48" fill="none">
     <path d="M4 24V46" strokeWidth="2" strokeMiterlimit="10" />
-    <path d="M44 24V46" strokeWidth="2" strokeMiterlimit="10" />
+    <path d="M44 24V46" strokeWidth="2" strokeMiterlimit="10"/>
     <path d="M34 24V46" strokeWidth="2" strokeMiterlimit="10" />
     <path d="M24 24V46" strokeWidth="2" strokeMiterlimit="10" />
     <path d="M14 24V46" strokeWidth="2" strokeMiterlimit="10" />
@@ -2497,6 +2497,7 @@ export const CategoryPolitics = (
       stroke="white"
       strokeMiterlimit="10"
       strokeLinecap="square"
+      className='highlight'
     />
     <path
       d="M11.5 10.25L0.5 10.25"
@@ -2575,11 +2576,13 @@ export const MMA = (
 export const CategorySports = (
   <svg viewBox="0 0 12 12" fill="none">
     <path
+      className='highlight'
       d="M10 9.77539C9.075 8.80039 8.5 7.47539 8.5 6.00039C8.5 4.52539 9.075 3.22539 10 2.22539"
       stroke="white"
       strokeMiterlimit="10"
     />
     <path
+      className='highlight'
       d="M2 9.77539C2.925 8.80039 3.5 7.47539 3.5 6.00039C3.5 4.52539 2.925 3.22539 2 2.22539"
       stroke="white"
       strokeMiterlimit="10"

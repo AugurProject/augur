@@ -2476,12 +2476,48 @@ div.error > div > div > div > div > input {
     }
 
     @media @breakpoint-mobile-tablet {
+      margin: @size-10 0;
+
+      &:first-of-type {
+        margin-top: @size-20;
+      }
+
+      > span:first-of-type {
+        display: flex;
+        align-items: center;
+
+        > svg {
+          display: flex;
+          width: @size-16;
+          height: @size-16;
+          margin-right: @size-12;
+  
+          > path {
+            stroke: var(--color-module-background);
+          }
+
+          > path[class*='highlight'] {
+            stroke: var(--color-primary-action);
+          }
+        }
+      }
+
+      > span:first-of-type {          
+        .text-14;
+
+        color: var(--color-dark-text);
+      }
+
       &.bold,
       &.active {
+        margin-top: @size-20;
+        margin-bottom: 0;
+        padding-top: @size-20;
+        border-top: @size-1 dashed var(--color-secondary-text);
         > span:first-of-type {
-          .text-14-bold;
-  
-          color: var(--color-module-background);
+          .text-14;
+
+          color: var(--color-dark-text);
         }
       }
     }
