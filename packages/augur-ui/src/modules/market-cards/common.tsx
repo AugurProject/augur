@@ -277,20 +277,21 @@ export interface ScalarOutcomeProps {
   lastPrice?: FormattedNumber;
   marketId: string;
   outcomeId: string;
+  reportingState: string;
 }
 
 export const ScalarOutcome = (props: ScalarOutcomeProps) => (
   <MarketLink id={props.marketId} outcomeId={props.outcomeId}>
     <div className={Styles.ScalarOutcome}>
       <div>
-        {props.lastPrice !== null && (
+        {props.lastPrice !== null || props.reportingState === REPORTING_STATE.UNKNOWN && (
           <span
             style={{
               left:
                 calculatePosition(props.min, props.max, props.lastPrice) + '%',
             }}
           >
-            {props.lastPrice.formatted}
+            {props.reportingState === REPORTING_STATE.UNKNOWN ? LoadingEllipse : props.lastPrice.formatted}
           </span>
         )}
       </div>
@@ -375,6 +376,7 @@ export const OutcomeGroup = (props: OutcomeGroupProps) => {
             scalarDenomination={props.scalarDenomination}
             marketId={props.marketId}
             outcomeId={String(SCALAR_UP_ID)}
+            reportingState={props.reportingState}
           />
           <Outcome
             description={removedInvalid.description}
@@ -392,7 +394,7 @@ export const OutcomeGroup = (props: OutcomeGroupProps) => {
           />
         </>
       )}
-      {((props.marketType !== SCALAR || inDispute) && props.reportingState !== MarketReportingState.Unknown) &&
+      {(props.marketType !== SCALAR || inDispute) &&
         outcomesShow.map(
           (outcome: OutcomeFormatted, index: number) =>
             ((!props.expanded && index < showOutcomeNumber) ||
@@ -470,7 +472,6 @@ export const LabelValue = (props: LabelValueProps) => (
   <div
     className={classNames(Styles.LabelValue, {
       [Styles.Condensed]: props.condensed,
-      [Styles.Loading]: props.loading,
     })}
   >
     <span>

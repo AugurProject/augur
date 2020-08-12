@@ -254,7 +254,17 @@
 				right: 0;
 				top: 100%;
 				width: @size-6;
-			}
+      }
+
+      > svg {
+        height: @size-10;
+        width: @size-10;
+        animation: spin 2s linear infinite;
+
+        path {
+          stroke: @color-secondary-text;
+        }
+      }
 		}
 	}
 
