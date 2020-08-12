@@ -37,18 +37,61 @@
     > li {
       display: flex;
       flex-flow: column nowrap;
+      margin-bottom: @size-2;
+
+      &.hidden {
+        display: none;
+      }
 
       > span:first-of-type {
         .text-14-bold;
 
         color: var(--color-primary-text);
+        display: flex;
+        align-items: center;
+
+        &:before {
+          content: " ";
+  
+          width: @size-6;
+          height: @size-6;
+          border-radius: @size-16;
+          margin-right: @size-4;
+        }
       }
 
       > span:last-of-type {
         .text-14;
 
         color: var(--color-primary-text);
+        margin-left: @size-10;
       }
+
+      &[id="legend-outcome-0"] > span:first-of-type:before {
+        background: var(--color-outcome-invalid);
+      }
+      &[id="legend-outcome-1"] > span:first-of-type:before {
+        background: var(--color-outcome-one);
+      }
+      &[id="legend-outcome-2"] > span:first-of-type:before {
+        background: var(--color-outcome-two);
+      }
+      &[id="legend-outcome-3"] > span:first-of-type:before {
+        background: var(--color-outcome-three);
+      }
+      &[id="legend-outcome-4"] > span:first-of-type:before {
+        background: var(--color-outcome-four);
+      }
+      &[id="legend-outcome-5"] > span:first-of-type:before {
+        background: var(--color-outcome-five);
+      }
+      &[id="legend-outcome-6"] > span:first-of-type:before {
+        background: var(--color-outcome-six);
+      }
+      &[id="legend-outcome-7"] > span:first-of-type:before {
+        background: var(--color-outcome-seven);
+      }
+      
     }
   }
 }

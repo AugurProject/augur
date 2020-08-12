@@ -66,6 +66,7 @@ const PriceHistory = ({
   const options = getOptions({ maxPrice, minPrice, isScalar, pricePrecision, isArchived });
   const { priceTimeSeries } = bucketedPriceTimeSeries;
   const hasPriceTimeSeries = !!priceTimeSeries && !!Object.keys(priceTimeSeries);
+
   useEffect(() => {
     if (!hasPriceTimeSeries) return NoDataToDisplay(Highcharts);
     const hasData =

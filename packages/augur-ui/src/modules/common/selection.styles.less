@@ -8,6 +8,10 @@
   position: relative;
   width: 100%;
 
+  > span {
+    display: none;
+  }
+
   > select {
     display: none;
   }
@@ -252,6 +256,10 @@
       height: @size-24;
       text-transform: uppercase;
 
+      > svg {
+        display: none;
+      }
+
       @media @breakpoint-mobile {
         .text-10-bold;
         height: @size-40;
@@ -344,6 +352,10 @@
 :root[theme="BETTING"],
 :root[theme="SPORTS"] {
   .Dropdown {
+    > span {
+      display: flex;
+    }
+
     > button {
 
       // arrow

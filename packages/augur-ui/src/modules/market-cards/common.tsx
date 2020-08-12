@@ -823,7 +823,7 @@ export const SportsMarketContainer = ({
   noHeader = false,
 }) => {
   const { FUTURES } = SPORTS_GROUP_TYPES;
-  const { isLogged } = useAppStatusStore();
+  const { isLogged, accountPositions } = useAppStatusStore();
   const [isCollapsed, setIsCollapsed] = useState(!startOpen);
   const location = useLocation();
   const { isGroupPage, marketId: queryId } = isMarketView(location);
@@ -846,6 +846,8 @@ export const SportsMarketContainer = ({
   }
   if (isFutures) {
     // futures
+    const { tradingPositionsPerMarket = null } =
+      accountPositions[marketId] || {};
     headingContent = (
       <Fragment key={`${marketId}-heading`}>
         <CountdownProgress
@@ -853,6 +855,7 @@ export const SportsMarketContainer = ({
           time={market.endTimeFormatted}
           reportingState={market.reportingState}
         />
+        {tradingPositionsPerMarket && tradingPositionsPerMarket.current !== "0" && PositionIcon}
         <span className={Styles.MatchedLine}>
           Matched<b>{market.volumeFormatted.full}</b>
         </span>
@@ -881,7 +884,8 @@ export const SportsMarketContainer = ({
   return (
     <section
       className={classNames(Styles.SportsMarketContainer, {
-        [Styles.Collapsed]: forceCollapse || isCollapsed && queryId !== marketId,
+        [Styles.Collapsed]:
+          forceCollapse || (isCollapsed && queryId !== marketId),
         [Styles.NoHeader]: noHeader,
       })}
     >
