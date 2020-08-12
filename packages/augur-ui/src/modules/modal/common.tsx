@@ -10,6 +10,8 @@ import {
   EthIcon,
   helpIcon,
   OnboardingCheckIcon,
+  AlternateXIcon,
+  REP
 } from 'modules/common/icons';
 import {
   DefaultButtonProps,
@@ -35,6 +37,7 @@ import {
   ON_BORDING_STATUS_STEP,
   WALLET_STATUS_VALUES,
   MODAL_TRANSFER,
+  THEMES,
 } from 'modules/common/constants';
 import { LinkContent, LoginAccount, FormattedNumber } from 'modules/types';
 import {
@@ -274,20 +277,26 @@ export const Examples = ({ header, previews }: ExamplesProps) => (
   </div>
 );
 
-export const Title = (props: TitleProps) => (
-  <header
-    className={classNames(Styles.TitleHeader, {
-      [Styles.Bright]: props.bright,
-      [Styles.ShortBorder]: props.subheader,
-    })}
-  >
-    <h1>{props.title}</h1>
-    {props.subheader && <h2>{props.subheader}</h2>}
-    {props.closeAction && (
-      <button onClick={() => props.closeAction()}>{XIcon}</button>
-    )}
-  </header>
-);
+export const Title = (props: TitleProps) => {
+  const { theme } = useAppStatusStore();
+  const isTrading = theme === THEMES.TRADING;
+  return (
+    <header
+      className={classNames(Styles.TitleHeader, {
+        [Styles.Bright]: props.bright,
+        [Styles.ShortBorder]: props.subheader,
+      })}
+    >
+      <h1>{props.title}</h1>
+      {props.subheader && <h2>{props.subheader}</h2>}
+      {props.closeAction && (
+        <button onClick={() => props.closeAction()}>
+          {isTrading ? XIcon : AlternateXIcon}
+        </button>
+      )}
+    </header>
+  );
+};
 
 export const Description = ({ description }: DescriptionProps) => {
   return description
@@ -497,12 +506,20 @@ interface ConvertToDaiProps {
   tokenName: string;
 }
 
-export const ConvertToDai = ({ walletType, balance, showAddFundsModal, isCondensed = false, tokenName}: ConvertToDaiProps) => {
+export const ConvertToDai = ({
+  walletType,
+  balance,
+  showAddFundsModal,
+  isCondensed = false,
+  tokenName,
+}: ConvertToDaiProps) => {
   if (isCondensed) {
     return (
       <div className={Styles.TransferMyDaiCondensed}>
         <div>
-          <span>{balance.formattedValue} {tokenName}</span>
+          <span>
+            {balance.formattedValue} {tokenName}
+          </span>
           <span>in {walletType} wallet</span>
         </div>
         <SecondaryButton
@@ -516,7 +533,9 @@ export const ConvertToDai = ({ walletType, balance, showAddFundsModal, isCondens
   return (
     <div className={Styles.TransferMyDai}>
       <div>
-        <span>{balance.formattedValue} {tokenName} in your {walletType} wallet</span>
+        <span>
+          {balance.formattedValue} {tokenName} in your {walletType} wallet
+        </span>
         <span>Convert any amount of this to Dai.</span>
       </div>
       <PrimaryButton
@@ -525,7 +544,7 @@ export const ConvertToDai = ({ walletType, balance, showAddFundsModal, isCondens
       />
     </div>
   );
-}
+};
 export const AccountStatusTracker = () => {
   const { walletStatus } = useAppStatusStore();
   let accountStatusTracker = ON_BORDING_STATUS_STEP.ONE;
@@ -762,7 +781,7 @@ export const AccountAddressDisplay = ({ address, copyable }) => {
   const getIsTestnet = () => {
     const isMainnet = checkIfMainnet();
     setIsTestnet(!isMainnet);
-  }
+  };
 
   const copyClicked = () => {
     setIsCopied(true);
@@ -787,7 +806,7 @@ export const AccountAddressDisplay = ({ address, copyable }) => {
         {copyable && (
           <>
             <button
-              id='copy_address'
+              id="copy_address"
               data-clipboard-text={address}
               onClick={() => copyClicked()}
               className={isCopied ? Styles.ShowConfirmaiton : null}
@@ -797,7 +816,15 @@ export const AccountAddressDisplay = ({ address, copyable }) => {
           </>
         )}
       </span>
-      {isTestnet && <DismissableNotice error title="Warning: This is a Testnet" description="Do not send mainnet tokens to this address, they will be lost forever" show={true} buttonType={DISMISSABLE_NOTICE_BUTTON_TYPES.NONE} />}
+      {isTestnet && (
+        <DismissableNotice
+          error
+          title="Warning: This is a Testnet"
+          description="Do not send mainnet tokens to this address, they will be lost forever"
+          show={true}
+          buttonType={DISMISSABLE_NOTICE_BUTTON_TYPES.NONE}
+        />
+      )}
     </>
   );
 };
@@ -934,10 +961,7 @@ export const CreditCard = ({
   fundTypeToUse,
 }: CreditCardProps) => {
   const {
-    loginAccount: {
-      address: walletAddress,
-      meta: accountMeta,
-    },
+    loginAccount: { address: walletAddress, meta: accountMeta },
   } = useAppStatusStore();
 
   const BUY_MIN = 20;
@@ -945,7 +969,6 @@ export const CreditCard = ({
 
   const [amountToBuy, setAmountToBuy] = useState(createBigNumber(0));
   const [isAmountValid, setIsAmountValid] = useState(false);
-
 
   const validateAndSet = amount => {
     const amountToBuy = createBigNumber(amount);
@@ -977,8 +1000,8 @@ export const CreditCard = ({
     <>
       <h1>Credit/debit card</h1>
       <h2>
-        Add {fundTypeLabel} {fundTypeToUse === DAI ? generateDaiTooltip() : null}{' '}
-        instantly
+        Add {fundTypeLabel}{' '}
+        {fundTypeToUse === DAI ? generateDaiTooltip() : null} instantly
       </h2>
 
       <h3>Amount</h3>
@@ -1017,34 +1040,28 @@ export const CreditCard = ({
         />
       )}
       <h4>
-        {[
-          ACCOUNT_TYPES.TORUS,
-          ACCOUNT_TYPES.FORTMATIC,
-        ].includes(accountMeta.accountType) && (
+        {[ACCOUNT_TYPES.TORUS, ACCOUNT_TYPES.FORTMATIC].includes(
+          accountMeta.accountType
+        ) && (
           <div>
             Buy {fundTypeLabel} with our secure payments partner,{' '}
-            {accountMeta.accountType}. Funds will appear in your User account when
-            payment finalizes.
+            {accountMeta.accountType}. Funds will appear in your User account
+            when payment finalizes.
           </div>
         )}
       </h4>
     </>
   );
-}
+};
 
 interface CoinbaseProps {
   fundTypeLabel: string;
   fundTypeToUse: string;
 }
 
-export const Coinbase = ({
-  fundTypeToUse,
-  fundTypeLabel,
-}: CoinbaseProps) => {
+export const Coinbase = ({ fundTypeToUse, fundTypeLabel }: CoinbaseProps) => {
   const {
-    loginAccount: {
-      address: walletAddress,
-    },
+    loginAccount: { address: walletAddress },
   } = useAppStatusStore();
 
   return (
@@ -1073,9 +1090,7 @@ export const Coinbase = ({
           </a>
         </li>
         <li>Buy the cryptocurrency {fundTypeLabel}</li>
-        <li>
-          Send the {fundTypeLabel} to your trading account
-        </li>
+        <li>Send the {fundTypeLabel} to your trading account</li>
       </ol>
       <h3>trading account</h3>
       <AccountAddressDisplay
@@ -1090,30 +1105,22 @@ export const Coinbase = ({
       )}
     </>
   );
-}
+};
 
 interface TransferProps {
   fundTypeLabel: string;
   fundTypeToUse: string;
 }
 
-export const Transfer = ({
-  fundTypeToUse,
-  fundTypeLabel,
-}: TransferProps) => {
+export const Transfer = ({ fundTypeToUse, fundTypeLabel }: TransferProps) => {
   const {
-    loginAccount: {
-      address: walletAddress,
-    },
+    loginAccount: { address: walletAddress },
   } = useAppStatusStore();
 
   return (
     <>
       <h1>Transfer</h1>
-      <h2>
-        Send funds to your{' '}
-        trading account
-      </h2>
+      <h2>Send funds to your trading account</h2>
       <ol>
         <li>
           Buy{' '}
@@ -1129,9 +1136,7 @@ export const Transfer = ({
             popular ways to buy {fundTypeLabel})
           </a>
         </li>
-        <li>
-          Transfer the {fundTypeLabel} to your trading account
-        </li>
+        <li>Transfer the {fundTypeLabel} to your trading account</li>
       </ol>
       <h3>trading account</h3>
       <AccountAddressDisplay
@@ -1146,7 +1151,7 @@ export const Transfer = ({
       )}
     </>
   );
-}
+};
 
 export const generateDaiTooltip = (
   tipText = 'Augur requires deposits in DAI ($), a currency pegged 1 to 1 to the US Dollar.'

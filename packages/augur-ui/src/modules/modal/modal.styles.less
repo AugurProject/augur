@@ -457,7 +457,12 @@ div.Onboarding {
 :root[theme='BETTING'],
 :root[theme='SPORTS'] {
   .TitleHeader {
-    padding: @size-16 @size-21;
+    > button:first-of-type {
+      > svg {
+        height: @size-16;
+        width: @size-16;
+      }
+    }
   }
 }
 
@@ -983,9 +988,13 @@ div.ButtonsRow:last-of-type {
 :root[theme='BETTING'],
 :root[theme='SPORTS'] {
   .Message {
+    border: 0;
+    border-radius: @border-radius-rounded;
+
     > main {
       padding: @size-24 @size-24 @size-8;
-      border-bottom: @size-1 solid var(--color-secondary-action-outline);
+      border-bottom: 0;
+      border-radius: @border-radius-rounded;
     }
 
     > header > h1 {
