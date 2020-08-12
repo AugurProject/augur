@@ -284,16 +284,19 @@ export const ScalarOutcome = (props: ScalarOutcomeProps) => (
   <MarketLink id={props.marketId} outcomeId={props.outcomeId}>
     <div className={Styles.ScalarOutcome}>
       <div>
-        {props.lastPrice !== null || props.reportingState === REPORTING_STATE.UNKNOWN && (
+      {props.reportingState === REPORTING_STATE.UNKNOWN ?
+        <span style={{ left: '50%' }}>{LoadingEllipse}</span>
+        :
+        props.lastPrice !== null && (
           <span
             style={{
               left:
                 calculatePosition(props.min, props.max, props.lastPrice) + '%',
             }}
           >
-            {props.reportingState === REPORTING_STATE.UNKNOWN ? LoadingEllipse : props.lastPrice.formatted}
+            {props.lastPrice.formatted}
           </span>
-        )}
+       )}
       </div>
       <div>
         {formatDaiPrice(props.min).formatted}

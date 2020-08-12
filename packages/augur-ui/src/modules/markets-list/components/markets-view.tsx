@@ -65,12 +65,14 @@ interface MarketsViewProps {
   hotLoadMarketList: Function;
   canHotload: boolean;
   updateFilterSortOptions: Function;
+  loadMarketsInfo: Function;
 }
 
 interface MarketsViewState {
   filterSortedMarkets: string[];
   marketCount: number;
   showPagination: boolean;
+  hotLoadedMarketList: boolean;
 }
 
 export default class MarketsView extends Component<
@@ -90,6 +92,7 @@ export default class MarketsView extends Component<
       filterSortedMarkets: [],
       marketCount: 0,
       showPagination: false,
+      hotLoadedMarketList: false,
     };
 
     this.setPageNumber = this.setPageNumber.bind(this);
@@ -155,12 +158,13 @@ export default class MarketsView extends Component<
     }
 
     if (isConnected !== prevProps.isConnected && isConnected) {
-      return this.updateFilteredMarkets();
+      return this.populateMarketsInPlace();
     }
 
     if(!isConnected && canHotload !== prevProps.canHotload && canHotload ) {
       hotLoadMarketList((marketsInfo) => {
         this.setState({
+          hotLoadedMarketList: true,
           filterSortedMarkets: marketsInfo.map((market) => market.id),
           marketCount: marketsInfo.length,
         });
@@ -229,6 +233,17 @@ export default class MarketsView extends Component<
     updateFilterSortOptions({
       [MARKET_OFFSET]: offset,
     });
+  }
+
+  populateMarketsInPlace = () => {
+    const { hotLoadedMarketList } = this.state;
+    const { markets, loadMarketsInfo } = this.props;
+    if (hotLoadedMarketList) {
+      loadMarketsInfo(markets.map(m => m.marketId));
+      this.setState({
+        hotLoadedMarketList: false,
+      })
+    }
   }
 
   updateFilteredMarkets = () => {
