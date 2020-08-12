@@ -86,6 +86,8 @@
     "@types/node-fetch": "2.5.1",
     "@types/web3": "1.0.19",
     "ganache-core": "2.9.1",
+    "jest": "24.9.0",
+    "ts-jest": "24.0.2",
     "ts-node": "8.4.1",
     "typedoc": "0.17.4",
     "typedoc-plugin-markdown": "2.2.17",
