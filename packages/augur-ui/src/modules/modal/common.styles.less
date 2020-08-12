@@ -43,6 +43,23 @@
   }
 }
 
+:root[theme='BETTING'],
+:root[theme='SPORTS'] {
+  .DefaultModalBorder {
+    border: 0;
+    border-radius: @border-radius-rounded;
+
+    @media @breakpoint-mobile {
+      border: 0;
+      border-radius: @border-radius-rounded;
+    }
+  }
+
+  .ModalView {
+    background: var(--color-primary-text-80);
+  }
+}
+
 .ModalContainer {
   .DefaultModalBorder;
 

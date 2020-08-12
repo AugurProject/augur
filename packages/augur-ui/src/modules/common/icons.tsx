@@ -481,6 +481,13 @@ export const XIcon = (
   </svg>
 );
 
+export const AlternateXIcon = (
+  <svg viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M10.8281 5.17159L5.17127 10.8284" strokeWidth="2" strokeMiterlimit="10" strokeLinecap="square"/>
+    <path d="M10.8287 10.8284L5.17188 5.17159" strokeWidth="2" strokeMiterlimit="10" strokeLinecap="square"/>
+  </svg>
+);
+
 export const AddIcon = (
   <svg viewBox="0 0 16 16">
     <path

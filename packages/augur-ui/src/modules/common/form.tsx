@@ -34,6 +34,7 @@ import {
   SearchIcon,
   XIcon,
   ExclamationCircle,
+  AlternateXIcon,
 } from 'modules/common/icons';
 import debounce from 'utils/debounce';
 import { formatAttoRep } from 'utils/format-number';
@@ -58,7 +59,7 @@ import {
 } from 'modules/types';
 import MarkdownRenderer from 'modules/common/markdown-renderer';
 import makeQuery from 'modules/routes/helpers/make-query';
-import { useAppStatusStore } from 'modules/app/store/app-status';
+import { useAppStatusStore, AppStatus } from 'modules/app/store/app-status';
 
 interface CheckboxProps {
   id: string;
@@ -1984,7 +1985,8 @@ export class Input extends Component<InputProps, InputState> {
       ...p
     } = this.props; // eslint-disable-line no-unused-vars
     const { focused, isHiddenContentVisible, value } = this.state;
-
+    const { theme } = AppStatus.get();
+    const isTrading = theme === THEMES.TRADING;
     return (
       <div
         className={classNames(
@@ -2049,7 +2051,7 @@ export class Input extends Component<InputProps, InputState> {
             className={Styles.close}
             onClick={this.handleClear}
           >
-            {XIcon}
+            {isTrading ? XIcon : AlternateXIcon}
           </button>
         )}
 
