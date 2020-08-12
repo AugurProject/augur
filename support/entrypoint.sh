@@ -4,7 +4,6 @@ set -e;
 
 printf "\nBuilding client....\n\n";
 
-
 # This is an attempt to avoid memory limitation in processes spawned from node.
 cd packages/augur-ui;
 
@@ -15,7 +14,7 @@ ENABLE_MAINNET=true ./node_modules/.bin/webpack;
 
 cd -;
 
-if [ "$1" == "output-ipfs-ui-hashes" ]; then
+if [ "$COMMAND" == "output-ipfs-ui-hashes" ]; then
   yarn flash output-ipfs-ui-hashes
 else
   yarn flash generate-wallet --keyfileOutputLocation /keys/priv.key
