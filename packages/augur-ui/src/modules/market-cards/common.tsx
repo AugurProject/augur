@@ -81,6 +81,7 @@ export const OutcomeCmp = (props: OutcomeProps) => {
             <InvalidLabel
               text={props.description}
               keyId={`${props.marketId}_${props.description}`}
+              marketId={props.marketId}
             />
           ) : (
             <span>{props.description}</span>
