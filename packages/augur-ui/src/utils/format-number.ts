@@ -231,7 +231,7 @@ export function formatDai(
       const val = isNegative
         ? createBigNumber(v)
             .abs()
-            .toFixed(3)
+            .decimalPlaces(2)
         : v;
       return `${isNegative ? '-' : ''}$${val}`;
     },
