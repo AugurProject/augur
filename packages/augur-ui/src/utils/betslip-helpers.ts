@@ -32,6 +32,7 @@ export const convertPositionToBet = (position, marketInfo) => {
   const wager = getWager(netPosition, avgPrice);
   return {
     ...position,
+    marketId: marketInfo.id,
     outcomeId: position.outcome,
     sportsBook: marketInfo.sportsBook,
     amountWon: '0',
@@ -91,12 +92,14 @@ export const placeBet = async (marketId, order, orderId) => {
     .then(() => {
       Betslip.actions.updateMatched(marketId, orderId, {
         ...order,
+        marketId,
         status: FILLED,
       });
     })
     .catch(err => {
       Betslip.actions.updateMatched(marketId, orderId, {
         ...order,
+        marketId,
         status: FAILED,
       });
     });

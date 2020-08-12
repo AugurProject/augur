@@ -153,7 +153,7 @@ function processOutcomes(
     ...outcome,
     marketId: market.id,
     lastPricePercent: outcome.price
-      ? formatNumber(outcome.price, {
+      ? formatPercent(outcome.price, {
           decimals: 2,
           decimalsRounded: 1,
           positiveSign: false,

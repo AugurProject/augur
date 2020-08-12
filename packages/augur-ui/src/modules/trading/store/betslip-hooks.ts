@@ -265,12 +265,14 @@ export function BetslipReducer(state, action) {
     }
     case UPDATE_MATCHED: {
       const { marketId, orderId, updates } = action;
-      matchedItems[marketId].orders[orderId] = {
-        ...matchedItems[marketId].orders[orderId],
-        ...updates,
-        dateUpdated: updatedTime,
-        timestampUpdated: Date.now() / 1000,
-      };
+      if (matchedItems[marketId]) {
+        matchedItems[marketId].orders[orderId] = {
+          ...matchedItems[marketId].orders[orderId],
+          ...updates,
+          dateUpdated: updatedTime,
+          timestampUpdated: Date.now() / 1000,
+        };
+      }
       break;
     }
     case TRASH: {

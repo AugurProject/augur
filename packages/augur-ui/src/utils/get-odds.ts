@@ -8,7 +8,7 @@ import {
 } from 'modules/common/constants';
 import { createBigNumber, BigNumber } from 'utils/create-big-number';
 import { AppStatus } from 'modules/app/store/app-status';
-import { formatNumber, formatPercent, formatFractional } from './format-number';
+import { formatNumber, formatPercent, formatFractional, formatAmerican } from './format-number';
 
 const { DECIMAL, FRACTIONAL, AMERICAN, PERCENT } = ODDS_TYPE;
 
@@ -94,13 +94,13 @@ export const getOddsObject = (normalizedValue: BigNumber, toDecimals = 4) => {
   const decimal: BigNumber = convertToDecimal(percentage);
   const fractional: BigNumber = convertToFractional(decimal);
   const american: BigNumber = convertToAmerican(percentage);
-
+  
   return {
     [DECIMAL]: formatNumber(decimal, {
       decimals: toDecimals,
     }),
     [FRACTIONAL]: formatFractional(fractional),
-    [AMERICAN]: formatNumber(american, { positiveSign: true }),
+    [AMERICAN]: formatAmerican(american),
     [PERCENT]: formatPercent(percentage, { decimalsRounded: 2 }),
   };
 };
