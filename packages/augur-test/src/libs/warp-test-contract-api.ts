@@ -12,6 +12,7 @@ import { WarpSyncStrategy } from '@augurproject/sdk/build/state/sync/WarpSyncStr
 import { WarpController } from '@augurproject/sdk/build/warp/WarpController';
 import { Account, makeSigner, TestContractAPI } from '@augurproject/tools';
 import { makeDbMock } from '@augurproject/tools/build/libs/MakeDbMock';
+import { IPFSHashVersion } from '@augurproject/utils/build';
 import * as IPFS from 'ipfs';
 
 const filterRetrievelFn = (ipfs: Promise<IPFS>) => async (ipfsPath: string) =>
@@ -36,8 +37,11 @@ export class WarpTestContractApi extends TestContractAPI {
       augur,
       provider,
       config.uploadBlockNumber,
-      ipfsServer,
-      filterRetrievelFn(ipfsServer)
+      {
+        version: IPFSHashVersion.IPFS,
+        url: null
+      },
+      ipfsServer
     );
 
     this.warpSyncStrategy = new WarpSyncStrategy(

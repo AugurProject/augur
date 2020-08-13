@@ -20,7 +20,7 @@ import { WarpSyncStrategy } from './sync/WarpSyncStrategy';
 
 export async function buildSyncStrategies(client:Augur, db:Promise<DB>, provider: EthersProvider, logFilterAggregator: LogFilterAggregator, config: SDKConfiguration) {
   const warpController = new WarpController((await db), client, provider,
-    config.uploadBlockNumber);
+    config.uploadBlockNumber, config.warpSync.ipfsEndpoint);
 
   client.warpController = warpController;
   return async () => {
