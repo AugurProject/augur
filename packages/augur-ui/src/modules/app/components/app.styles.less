@@ -208,8 +208,10 @@ h6 {
 :root[theme="BETTING"],
 :root[theme="SPORTS"] {
   .Wrap {
-    margin: 0 auto;
-    max-width: 1376px;
+    @media @breakpoint-min-desktop {
+      margin: 0 auto;
+      max-width: 1376px;
+    }
   }
   
   .Content {
