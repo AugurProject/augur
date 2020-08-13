@@ -116,7 +116,7 @@ export class WarpController {
     // This is to simplify swapping out file retrieval mechanism.
     private _fileRetrievalFn: (ipfsPath: string) => Promise<Uint8Array> = (
       ipfsPath: string
-    ) => fetch(`https://cloudflare-ipfs.com/ipfs/${ipfsPath}`)
+    ) => fetch(`https://ipfs.io/ipfs/${ipfsPath}`)
       .then(item => item.arrayBuffer())
       .then(item => new Uint8Array(item))
   ) {
