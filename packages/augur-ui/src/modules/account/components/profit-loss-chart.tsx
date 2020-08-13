@@ -124,7 +124,7 @@ const getAreaSpline = (data: number[][]): AxisData => {
     lineWidth: HIGHLIGHTED_LINE_WIDTH,
     data,
     color:
-      data[0][1] > 0 || data[data.length - 1][1] > 0
+      data[0][1] >= 0 || data[data.length - 1][1] >= 0
         ? positiveColor
         : negativeColor,
     fillColor: {
