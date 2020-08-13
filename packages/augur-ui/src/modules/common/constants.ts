@@ -932,9 +932,9 @@ export const TOTAL_FROZEN_FUNDS = 'Total Frozen Funds';
 export const REP_BALANCE = 'REPv2 Balance';
 export const REP_STAKED = 'REPv2 Staked';
 export const TOTAL_ACCOUNT_VALUE_IN_DAI = 'Total Account Value';
-export const TOTAL_ACCOUNT_VALUE_IN_REP = 'My Available REPv2 Balance ';
+export const TOTAL_ACCOUNT_VALUE_IN_REP = 'MY AVAILABLE REPv2 BALANCE';
 export const ALL_TIME_PROFIT_AND_LOSS_REP = 'All Time Profit and Loss';
-export const MY_TOTOL_REP_STAKED = 'My Total REPv2 Staked';
+export const MY_TOTOL_REP_STAKED = 'MY TOTAL REPv2 STAKED';
 export const REPORTING_ONLY_BANNER = 'Reporting only, trading is disabled '
 
 // Account Summary - Augur Status
