@@ -19,7 +19,7 @@
 
 • **totalFrozenFunds**: *string*
 
-*Defined in [packages/augur-sdk/src/state/getter/Users.ts:168](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/getter/Users.ts#L168)*
+*Defined in [packages/augur-sdk/src/state/getter/Users.ts:195](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/getter/Users.ts#L195)*
 
 ___
 
@@ -27,7 +27,7 @@ ___
 
 • **tradingPositionsTotal**: *object*
 
-*Defined in [packages/augur-sdk/src/state/getter/Users.ts:169](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/getter/Users.ts#L169)*
+*Defined in [packages/augur-sdk/src/state/getter/Users.ts:196](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/getter/Users.ts#L196)*
 
 #### Type declaration:
 

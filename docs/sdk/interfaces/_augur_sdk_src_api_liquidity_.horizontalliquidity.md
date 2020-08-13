@@ -22,4 +22,4 @@
 
 • **total**: *BigNumber*
 
-*Defined in [packages/augur-sdk/src/api/Liquidity.ts:28](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/api/Liquidity.ts#L28)*
+*Defined in [packages/augur-sdk/src/api/Liquidity.ts:30](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/api/Liquidity.ts#L30)*

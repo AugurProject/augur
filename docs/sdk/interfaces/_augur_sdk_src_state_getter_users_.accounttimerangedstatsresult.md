@@ -23,7 +23,7 @@
 
 • **marketsCreated**: *number*
 
-*Defined in [packages/augur-sdk/src/state/getter/Users.ts:92](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/getter/Users.ts#L92)*
+*Defined in [packages/augur-sdk/src/state/getter/Users.ts:120](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/getter/Users.ts#L120)*
 
 ___
 
@@ -31,7 +31,7 @@ ___
 
 • **marketsTraded**: *number*
 
-*Defined in [packages/augur-sdk/src/state/getter/Users.ts:95](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/getter/Users.ts#L95)*
+*Defined in [packages/augur-sdk/src/state/getter/Users.ts:123](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/getter/Users.ts#L123)*
 
 ___
 
@@ -39,7 +39,7 @@ ___
 
 • **numberOfTrades**: *number*
 
-*Defined in [packages/augur-sdk/src/state/getter/Users.ts:90](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/getter/Users.ts#L90)*
+*Defined in [packages/augur-sdk/src/state/getter/Users.ts:118](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/getter/Users.ts#L118)*
 
 ___
 
@@ -47,7 +47,7 @@ ___
 
 • **positions**: *number*
 
-*Defined in [packages/augur-sdk/src/state/getter/Users.ts:86](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/getter/Users.ts#L86)*
+*Defined in [packages/augur-sdk/src/state/getter/Users.ts:114](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/getter/Users.ts#L114)*
 
 ___
 
@@ -55,7 +55,7 @@ ___
 
 • **redeemedPositions**: *number*
 
-*Defined in [packages/augur-sdk/src/state/getter/Users.ts:101](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/getter/Users.ts#L101)*
+*Defined in [packages/augur-sdk/src/state/getter/Users.ts:129](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/getter/Users.ts#L129)*
 
 ___
 
@@ -63,4 +63,4 @@ ___
 
 • **successfulDisputes**: *number*
 
-*Defined in [packages/augur-sdk/src/state/getter/Users.ts:98](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/getter/Users.ts#L98)*
+*Defined in [packages/augur-sdk/src/state/getter/Users.ts:126](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/getter/Users.ts#L126)*

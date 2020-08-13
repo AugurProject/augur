@@ -34,7 +34,7 @@
 
 • **allLogsCallbackMetaData**: *[LogCallbackType](../modules/_augur_sdk_src_state_logs_logfilteraggregator_.md#logcallbacktype)[]*
 
-*Defined in [packages/augur-sdk/src/state/logs/LogFilterAggregator.ts:33](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/logs/LogFilterAggregator.ts#L33)*
+*Defined in [packages/augur-sdk/src/state/logs/LogFilterAggregator.ts:33](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/logs/LogFilterAggregator.ts#L33)*
 
 ___
 
@@ -42,7 +42,7 @@ ___
 
 • **logCallbackMetaData**: *[LogCallbackMetaData](_augur_sdk_src_state_logs_logfilteraggregator_.logcallbackmetadata.md)[]*
 
-*Defined in [packages/augur-sdk/src/state/logs/LogFilterAggregator.ts:35](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/logs/LogFilterAggregator.ts#L35)*
+*Defined in [packages/augur-sdk/src/state/logs/LogFilterAggregator.ts:35](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/logs/LogFilterAggregator.ts#L35)*
 
 ___
 
@@ -50,7 +50,7 @@ ___
 
 • **notifyNewBlockAfterLogsProcessMetadata**: *[LogCallbackType](../modules/_augur_sdk_src_state_logs_logfilteraggregator_.md#logcallbacktype)[]*
 
-*Defined in [packages/augur-sdk/src/state/logs/LogFilterAggregator.ts:34](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/logs/LogFilterAggregator.ts#L34)*
+*Defined in [packages/augur-sdk/src/state/logs/LogFilterAggregator.ts:34](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/logs/LogFilterAggregator.ts#L34)*
 
 ___
 
@@ -58,7 +58,7 @@ ___
 
 • **onLogsAdded**: *function*
 
-*Defined in [packages/augur-sdk/src/state/logs/LogFilterAggregator.ts:36](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/logs/LogFilterAggregator.ts#L36)*
+*Defined in [packages/augur-sdk/src/state/logs/LogFilterAggregator.ts:36](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/logs/LogFilterAggregator.ts#L36)*
 
 #### Type declaration:
 
@@ -77,7 +77,7 @@ Name | Type |
 
 ▸ **listenForAllEvents**(`onLogsAdded`: [LogCallbackType](../modules/_augur_sdk_src_state_logs_logfilteraggregator_.md#logcallbacktype)): *void*
 
-*Defined in [packages/augur-sdk/src/state/logs/LogFilterAggregator.ts:44](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/logs/LogFilterAggregator.ts#L44)*
+*Defined in [packages/augur-sdk/src/state/logs/LogFilterAggregator.ts:44](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/logs/LogFilterAggregator.ts#L44)*
 
 **`description`** Register a callback that will receive the sum total of all registered filters.
 
@@ -95,7 +95,7 @@ ___
 
 ▸ **listenForBlockRemoved**(`onBlockRemoved`: [BlockRemovalCallback](../modules/_augur_sdk_src_state_logs_logfilteraggregator_.md#blockremovalcallback)): *void*
 
-*Defined in [packages/augur-sdk/src/state/logs/LogFilterAggregator.ts:57](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/logs/LogFilterAggregator.ts#L57)*
+*Defined in [packages/augur-sdk/src/state/logs/LogFilterAggregator.ts:57](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/logs/LogFilterAggregator.ts#L57)*
 
 **Parameters:**
 
@@ -111,7 +111,7 @@ ___
 
 ▸ **listenForEvent**(`eventNames`: string | string[], `onLogsAdded`: [LogCallbackType](../modules/_augur_sdk_src_state_logs_logfilteraggregator_.md#logcallbacktype)): *void*
 
-*Defined in [packages/augur-sdk/src/state/logs/LogFilterAggregator.ts:46](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/logs/LogFilterAggregator.ts#L46)*
+*Defined in [packages/augur-sdk/src/state/logs/LogFilterAggregator.ts:46](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/logs/LogFilterAggregator.ts#L46)*
 
 **Parameters:**
 
@@ -128,7 +128,7 @@ ___
 
 ▸ **notifyNewBlockAfterLogsProcess**(`onBlockAdded`: [LogCallbackType](../modules/_augur_sdk_src_state_logs_logfilteraggregator_.md#logcallbacktype)): *void*
 
-*Defined in [packages/augur-sdk/src/state/logs/LogFilterAggregator.ts:38](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/logs/LogFilterAggregator.ts#L38)*
+*Defined in [packages/augur-sdk/src/state/logs/LogFilterAggregator.ts:38](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/logs/LogFilterAggregator.ts#L38)*
 
 **Parameters:**
 
@@ -144,7 +144,7 @@ ___
 
 ▸ **onBlockRemoved**(`blockNumber`: number): *void*
 
-*Defined in [packages/augur-sdk/src/state/logs/LogFilterAggregator.ts:56](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/logs/LogFilterAggregator.ts#L56)*
+*Defined in [packages/augur-sdk/src/state/logs/LogFilterAggregator.ts:56](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/logs/LogFilterAggregator.ts#L56)*
 
 **Parameters:**
 
@@ -160,7 +160,7 @@ ___
 
 ▸ **unlistenForEvent**(`eventNames`: string | string[], `onLogsAdded`: [LogCallbackType](../modules/_augur_sdk_src_state_logs_logfilteraggregator_.md#logcallbacktype)): *void*
 
-*Defined in [packages/augur-sdk/src/state/logs/LogFilterAggregator.ts:51](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/logs/LogFilterAggregator.ts#L51)*
+*Defined in [packages/augur-sdk/src/state/logs/LogFilterAggregator.ts:51](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/logs/LogFilterAggregator.ts#L51)*
 
 **Parameters:**
 

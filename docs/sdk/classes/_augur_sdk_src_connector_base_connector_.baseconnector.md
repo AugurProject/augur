@@ -42,7 +42,7 @@
 
 • **_client**: *[Augur](_augur_sdk_src_augur_.augur.md)*
 
-*Defined in [packages/augur-sdk/src/connector/base-connector.ts:7](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/connector/base-connector.ts#L7)*
+*Defined in [packages/augur-sdk/src/connector/base-connector.ts:10](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/connector/base-connector.ts#L10)*
 
 ___
 
@@ -50,7 +50,7 @@ ___
 
 • **subscriptions**: *object*
 
-*Defined in [packages/augur-sdk/src/connector/base-connector.ts:15](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/connector/base-connector.ts#L15)*
+*Defined in [packages/augur-sdk/src/connector/base-connector.ts:18](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/connector/base-connector.ts#L18)*
 
 #### Type declaration:
 
@@ -66,13 +66,13 @@ ___
 
 • **get client**(): *[Augur](_augur_sdk_src_augur_.augur.md)*
 
-*Defined in [packages/augur-sdk/src/connector/base-connector.ts:8](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/connector/base-connector.ts#L8)*
+*Defined in [packages/augur-sdk/src/connector/base-connector.ts:11](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/connector/base-connector.ts#L11)*
 
 **Returns:** *[Augur](_augur_sdk_src_augur_.augur.md)*
 
 • **set client**(`client`: [Augur](_augur_sdk_src_augur_.augur.md)): *void*
 
-*Defined in [packages/augur-sdk/src/connector/base-connector.ts:11](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/connector/base-connector.ts#L11)*
+*Defined in [packages/augur-sdk/src/connector/base-connector.ts:14](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/connector/base-connector.ts#L14)*
 
 **Parameters:**
 
@@ -86,9 +86,9 @@ Name | Type |
 
 ### `Abstract` bindTo
 
-▸ **bindTo**<**R**, **P**>(`f`: function): *function*
+▸ **bindTo**‹**R**, **P**›(`f`: function): *function*
 
-*Defined in [packages/augur-sdk/src/connector/base-connector.ts:22](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/connector/base-connector.ts#L22)*
+*Defined in [packages/augur-sdk/src/connector/base-connector.ts:28](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/connector/base-connector.ts#L28)*
 
 **Type parameters:**
 
@@ -124,13 +124,13 @@ ___
 
 ### `Protected` callbackWrapper
 
-▸ **callbackWrapper**<**T**>(`eventName`: string, `callback`: [Callback](../modules/_augur_sdk_src_events_.md#callback)): *function*
+▸ **callbackWrapper**‹**T**›(`eventName`: string, `callback`: [Callback](../modules/_augur_sdk_src_events_.md#callback)): *function*
 
-*Defined in [packages/augur-sdk/src/connector/base-connector.ts:27](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/connector/base-connector.ts#L27)*
+*Defined in [packages/augur-sdk/src/connector/base-connector.ts:38](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/connector/base-connector.ts#L38)*
 
 **Type parameters:**
 
-▪ **T**: *[SubscriptionType](../modules/_augur_sdk_src_event_handlers_.md#subscriptiontype)*
+▪ **T**: *SubscriptionType*
 
 **Parameters:**
 
@@ -141,13 +141,13 @@ Name | Type |
 
 **Returns:** *function*
 
-▸ (...`args`: [SubscriptionType](../modules/_augur_sdk_src_event_handlers_.md#subscriptiontype)[]): *void*
+▸ (...`args`: SubscriptionType[]): *void*
 
 **Parameters:**
 
 Name | Type |
 ------ | ------ |
-`...args` | [SubscriptionType](../modules/_augur_sdk_src_event_handlers_.md#subscriptiontype)[] |
+`...args` | SubscriptionType[] |
 
 ___
 
@@ -155,7 +155,7 @@ ___
 
 ▸ **connect**(`config`: SDKConfiguration, `account?`: string): *Promise‹void›*
 
-*Defined in [packages/augur-sdk/src/connector/base-connector.ts:18](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/connector/base-connector.ts#L18)*
+*Defined in [packages/augur-sdk/src/connector/base-connector.ts:21](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/connector/base-connector.ts#L21)*
 
 **Parameters:**
 
@@ -172,7 +172,7 @@ ___
 
 ▸ **disconnect**(): *Promise‹void›*
 
-*Defined in [packages/augur-sdk/src/connector/base-connector.ts:19](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/connector/base-connector.ts#L19)*
+*Defined in [packages/augur-sdk/src/connector/base-connector.ts:25](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/connector/base-connector.ts#L25)*
 
 **Returns:** *Promise‹void›*
 
@@ -180,15 +180,15 @@ ___
 
 ### `Abstract` off
 
-▸ **off**(`eventName`: [SubscriptionEventName](../enums/_augur_sdk_src_constants_.subscriptioneventname.md) | string): *Promise‹void›*
+▸ **off**(`eventName`: SubscriptionEventName | string): *Promise‹void›*
 
-*Defined in [packages/augur-sdk/src/connector/base-connector.ts:25](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/connector/base-connector.ts#L25)*
+*Defined in [packages/augur-sdk/src/connector/base-connector.ts:36](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/connector/base-connector.ts#L36)*
 
 **Parameters:**
 
 Name | Type |
 ------ | ------ |
-`eventName` | [SubscriptionEventName](../enums/_augur_sdk_src_constants_.subscriptioneventname.md) &#124; string |
+`eventName` | SubscriptionEventName &#124; string |
 
 **Returns:** *Promise‹void›*
 
@@ -196,15 +196,15 @@ ___
 
 ### `Abstract` on
 
-▸ **on**(`eventName`: [SubscriptionEventName](../enums/_augur_sdk_src_constants_.subscriptioneventname.md) | string, `callback`: [Callback](../modules/_augur_sdk_src_events_.md#callback)): *Promise‹void›*
+▸ **on**(`eventName`: SubscriptionEventName | string, `callback`: [Callback](../modules/_augur_sdk_src_events_.md#callback)): *Promise‹void›*
 
-*Defined in [packages/augur-sdk/src/connector/base-connector.ts:24](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/connector/base-connector.ts#L24)*
+*Defined in [packages/augur-sdk/src/connector/base-connector.ts:32](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/connector/base-connector.ts#L32)*
 
 **Parameters:**
 
 Name | Type |
 ------ | ------ |
-`eventName` | [SubscriptionEventName](../enums/_augur_sdk_src_constants_.subscriptioneventname.md) &#124; string |
+`eventName` | SubscriptionEventName &#124; string |
 `callback` | [Callback](../modules/_augur_sdk_src_events_.md#callback) |
 
 **Returns:** *Promise‹void›*

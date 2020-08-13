@@ -15,6 +15,7 @@
 * [getProfitLossSummaryParams](_augur_sdk_src_state_getter_users_.users.md#static-getprofitlosssummaryparams)
 * [getTotalOnChainFrozenFundsParams](_augur_sdk_src_state_getter_users_.users.md#static-gettotalonchainfrozenfundsparams)
 * [getUserAccountParams](_augur_sdk_src_state_getter_users_.users.md#static-getuseraccountparams)
+* [getUserFrozenFundsBreakdownParams](_augur_sdk_src_state_getter_users_.users.md#static-getuserfrozenfundsbreakdownparams)
 * [getUserPositionsPlusParams](_augur_sdk_src_state_getter_users_.users.md#static-getuserpositionsplusparams)
 * [getUserTradingPositionsParams](_augur_sdk_src_state_getter_users_.users.md#static-getusertradingpositionsparams)
 
@@ -25,6 +26,7 @@
 * [getProfitLossSummary](_augur_sdk_src_state_getter_users_.users.md#static-getprofitlosssummary)
 * [getTotalOnChainFrozenFunds](_augur_sdk_src_state_getter_users_.users.md#static-gettotalonchainfrozenfunds)
 * [getUserAccountData](_augur_sdk_src_state_getter_users_.users.md#static-getuseraccountdata)
+* [getUserFrozenFundsBreakdown](_augur_sdk_src_state_getter_users_.users.md#static-getuserfrozenfundsbreakdown)
 * [getUserOpenOrders](_augur_sdk_src_state_getter_users_.users.md#static-getuseropenorders)
 * [getUserPositionsPlus](_augur_sdk_src_state_getter_users_.users.md#static-getuserpositionsplus)
 * [getUserTradingPositions](_augur_sdk_src_state_getter_users_.users.md#static-getusertradingpositions)
@@ -44,7 +46,7 @@
     }),
   ])
 
-*Defined in [packages/augur-sdk/src/state/getter/Users.ts:200](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/getter/Users.ts#L200)*
+*Defined in [packages/augur-sdk/src/state/getter/Users.ts:227](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/getter/Users.ts#L227)*
 
 ___
 
@@ -52,7 +54,7 @@ ___
 
 ▪ **getProfitLossParams**: *IntersectionC‹[PartialC‹object›, PartialC‹object›]›* = getProfitLossParams
 
-*Defined in [packages/augur-sdk/src/state/getter/Users.ts:215](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/getter/Users.ts#L215)*
+*Defined in [packages/augur-sdk/src/state/getter/Users.ts:242](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/getter/Users.ts#L242)*
 
 ___
 
@@ -60,7 +62,7 @@ ___
 
 ▪ **getProfitLossSummaryParams**: *PartialC‹object›* = getProfitLossSummaryParams
 
-*Defined in [packages/augur-sdk/src/state/getter/Users.ts:216](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/getter/Users.ts#L216)*
+*Defined in [packages/augur-sdk/src/state/getter/Users.ts:243](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/getter/Users.ts#L243)*
 
 ___
 
@@ -68,7 +70,7 @@ ___
 
 ▪ **getTotalOnChainFrozenFundsParams**: *PartialC‹object›* = getUserAccountParams
 
-*Defined in [packages/augur-sdk/src/state/getter/Users.ts:218](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/getter/Users.ts#L218)*
+*Defined in [packages/augur-sdk/src/state/getter/Users.ts:246](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/getter/Users.ts#L246)*
 
 ___
 
@@ -76,7 +78,15 @@ ___
 
 ▪ **getUserAccountParams**: *PartialC‹object›* = getUserAccountParams
 
-*Defined in [packages/augur-sdk/src/state/getter/Users.ts:217](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/getter/Users.ts#L217)*
+*Defined in [packages/augur-sdk/src/state/getter/Users.ts:244](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/getter/Users.ts#L244)*
+
+___
+
+### `Static` getUserFrozenFundsBreakdownParams
+
+▪ **getUserFrozenFundsBreakdownParams**: *PartialC‹object›* = getUserAccountParams
+
+*Defined in [packages/augur-sdk/src/state/getter/Users.ts:245](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/getter/Users.ts#L245)*
 
 ___
 
@@ -84,7 +94,7 @@ ___
 
 ▪ **getUserPositionsPlusParams**: *PartialC‹object›* = getUserAccountParams
 
-*Defined in [packages/augur-sdk/src/state/getter/Users.ts:219](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/getter/Users.ts#L219)*
+*Defined in [packages/augur-sdk/src/state/getter/Users.ts:247](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/getter/Users.ts#L247)*
 
 ___
 
@@ -95,7 +105,7 @@ ___
     sortOptions,
   ])
 
-*Defined in [packages/augur-sdk/src/state/getter/Users.ts:211](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/getter/Users.ts#L211)*
+*Defined in [packages/augur-sdk/src/state/getter/Users.ts:238](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/getter/Users.ts#L238)*
 
 ## Methods
 
@@ -103,7 +113,7 @@ ___
 
 ▸ **getAccountTimeRangedStats**(`augur`: [Augur](_augur_sdk_src_augur_.augur.md), `db`: [DB](_augur_sdk_src_state_db_db_.db.md), `params`: t.TypeOf‹typeof getAccountTimeRangedStatsParams›): *Promise‹[AccountTimeRangedStatsResult](../interfaces/_augur_sdk_src_state_getter_users_.accounttimerangedstatsresult.md)›*
 
-*Defined in [packages/augur-sdk/src/state/getter/Users.ts:460](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/getter/Users.ts#L460)*
+*Defined in [packages/augur-sdk/src/state/getter/Users.ts:596](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/getter/Users.ts#L596)*
 
 **Parameters:**
 
@@ -121,7 +131,7 @@ ___
 
 ▸ **getProfitLoss**(`augur`: [Augur](_augur_sdk_src_augur_.augur.md), `db`: [DB](_augur_sdk_src_state_db_db_.db.md), `params`: t.TypeOf‹typeof getProfitLossParams›): *Promise‹[MarketTradingPosition](../interfaces/_augur_sdk_src_state_getter_users_.markettradingposition.md)[]›*
 
-*Defined in [packages/augur-sdk/src/state/getter/Users.ts:1033](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/getter/Users.ts#L1033)*
+*Defined in [packages/augur-sdk/src/state/getter/Users.ts:1164](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/getter/Users.ts#L1164)*
 
 **Parameters:**
 
@@ -139,7 +149,7 @@ ___
 
 ▸ **getProfitLossSummary**(`augur`: [Augur](_augur_sdk_src_augur_.augur.md), `db`: [DB](_augur_sdk_src_state_db_db_.db.md), `params`: t.TypeOf‹typeof getProfitLossSummaryParams›): *Promise‹NumericDictionary‹[MarketTradingPosition](../interfaces/_augur_sdk_src_state_getter_users_.markettradingposition.md)››*
 
-*Defined in [packages/augur-sdk/src/state/getter/Users.ts:1205](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/getter/Users.ts#L1205)*
+*Defined in [packages/augur-sdk/src/state/getter/Users.ts:1354](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/getter/Users.ts#L1354)*
 
 **Parameters:**
 
@@ -157,7 +167,7 @@ ___
 
 ▸ **getTotalOnChainFrozenFunds**(`augur`: [Augur](_augur_sdk_src_augur_.augur.md), `db`: [DB](_augur_sdk_src_state_db_db_.db.md), `params`: t.TypeOf‹typeof getTotalOnChainFrozenFundsParams›): *Promise‹[UserTotalOnChainFrozenFunds](../interfaces/_augur_sdk_src_state_getter_users_.usertotalonchainfrozenfunds.md)›*
 
-*Defined in [packages/augur-sdk/src/state/getter/Users.ts:962](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/getter/Users.ts#L962)*
+*Defined in [packages/augur-sdk/src/state/getter/Users.ts:1132](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/getter/Users.ts#L1132)*
 
 **Parameters:**
 
@@ -175,7 +185,7 @@ ___
 
 ▸ **getUserAccountData**(`augur`: [Augur](_augur_sdk_src_augur_.augur.md), `db`: [DB](_augur_sdk_src_state_db_db_.db.md), `params`: t.TypeOf‹typeof getUserAccountParams›): *Promise‹[UserAccountDataResult](../interfaces/_augur_sdk_src_state_getter_users_.useraccountdataresult.md)›*
 
-*Defined in [packages/augur-sdk/src/state/getter/Users.ts:222](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/getter/Users.ts#L222)*
+*Defined in [packages/augur-sdk/src/state/getter/Users.ts:250](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/getter/Users.ts#L250)*
 
 **Parameters:**
 
@@ -189,11 +199,29 @@ Name | Type |
 
 ___
 
+### `Static` getUserFrozenFundsBreakdown
+
+▸ **getUserFrozenFundsBreakdown**(`augur`: [Augur](_augur_sdk_src_augur_.augur.md), `db`: [DB](_augur_sdk_src_state_db_db_.db.md), `params`: t.TypeOf‹typeof getUserFrozenFundsBreakdownParams›): *Promise‹[FrozenFundsBreakdown](../interfaces/_augur_sdk_src_state_getter_users_.frozenfundsbreakdown.md)›*
+
+*Defined in [packages/augur-sdk/src/state/getter/Users.ts:437](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/getter/Users.ts#L437)*
+
+**Parameters:**
+
+Name | Type |
+------ | ------ |
+`augur` | [Augur](_augur_sdk_src_augur_.augur.md) |
+`db` | [DB](_augur_sdk_src_state_db_db_.db.md) |
+`params` | t.TypeOf‹typeof getUserFrozenFundsBreakdownParams› |
+
+**Returns:** *Promise‹[FrozenFundsBreakdown](../interfaces/_augur_sdk_src_state_getter_users_.frozenfundsbreakdown.md)›*
+
+___
+
 ### `Static` getUserOpenOrders
 
 ▸ **getUserOpenOrders**(`augur`: [Augur](_augur_sdk_src_augur_.augur.md), `db`: [DB](_augur_sdk_src_state_db_db_.db.md), `params`: t.TypeOf‹typeof getUserAccountParams›): *Promise‹[UserOpenOrders](../interfaces/_augur_sdk_src_state_getter_users_.useropenorders.md)›*
 
-*Defined in [packages/augur-sdk/src/state/getter/Users.ts:399](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/getter/Users.ts#L399)*
+*Defined in [packages/augur-sdk/src/state/getter/Users.ts:526](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/getter/Users.ts#L526)*
 
 **Parameters:**
 
@@ -211,7 +239,7 @@ ___
 
 ▸ **getUserPositionsPlus**(`augur`: [Augur](_augur_sdk_src_augur_.augur.md), `db`: [DB](_augur_sdk_src_state_db_db_.db.md), `params`: t.TypeOf‹typeof getUserAccountParams›): *Promise‹[UserPositionsPlusResult](../interfaces/_augur_sdk_src_state_getter_users_.userpositionsplusresult.md)›*
 
-*Defined in [packages/augur-sdk/src/state/getter/Users.ts:347](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/getter/Users.ts#L347)*
+*Defined in [packages/augur-sdk/src/state/getter/Users.ts:385](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/getter/Users.ts#L385)*
 
 **Parameters:**
 
@@ -229,7 +257,7 @@ ___
 
 ▸ **getUserTradingPositions**(`augur`: [Augur](_augur_sdk_src_augur_.augur.md), `db`: [DB](_augur_sdk_src_state_db_db_.db.md), `params`: t.TypeOf‹typeof getUserTradingPositionsParams›): *Promise‹[UserTradingPositions](../interfaces/_augur_sdk_src_state_getter_users_.usertradingpositions.md)›*
 
-*Defined in [packages/augur-sdk/src/state/getter/Users.ts:618](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/getter/Users.ts#L618)*
+*Defined in [packages/augur-sdk/src/state/getter/Users.ts:754](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/getter/Users.ts#L754)*
 
 **Parameters:**
 

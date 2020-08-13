@@ -19,6 +19,7 @@
 * [parentEmitter](_augur_sdk_src_subscriptions_.subscriptions.md#private-parentemitter)
 * [waitingOn](_augur_sdk_src_subscriptions_.subscriptions.md#private-waitingon)
 * [defaultMaxListeners](_augur_sdk_src_subscriptions_.subscriptions.md#static-defaultmaxlisteners)
+* [errorMonitor](_augur_sdk_src_subscriptions_.subscriptions.md#static-readonly-errormonitor)
 
 ### Methods
 
@@ -51,7 +52,7 @@
 
 *Overrides [EventNameEmitter](_augur_sdk_src_events_.eventnameemitter.md).[constructor](_augur_sdk_src_events_.eventnameemitter.md#constructor)*
 
-*Defined in [packages/augur-sdk/src/subscriptions.ts:15](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/subscriptions.ts#L15)*
+*Defined in [packages/augur-sdk/src/subscriptions.ts:15](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/subscriptions.ts#L15)*
 
 **Parameters:**
 
@@ -67,7 +68,7 @@ Name | Type |
 
 • **parentEmitter**: *EventEmitter*
 
-*Defined in [packages/augur-sdk/src/subscriptions.ts:14](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/subscriptions.ts#L14)*
+*Defined in [packages/augur-sdk/src/subscriptions.ts:14](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/subscriptions.ts#L14)*
 
 ___
 
@@ -75,7 +76,7 @@ ___
 
 • **waitingOn**: *[WaitingOn](../interfaces/_augur_sdk_src_subscriptions_.waitingon.md)*
 
-*Defined in [packages/augur-sdk/src/subscriptions.ts:15](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/subscriptions.ts#L15)*
+*Defined in [packages/augur-sdk/src/subscriptions.ts:15](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/subscriptions.ts#L15)*
 
 ___
 
@@ -87,6 +88,24 @@ ___
 
 Defined in node_modules/@types/node/events.d.ts:45
 
+___
+
+### `Static` `Readonly` errorMonitor
+
+▪ **errorMonitor**: *keyof symbol*
+
+*Inherited from [EventNameEmitter](_augur_sdk_src_events_.eventnameemitter.md).[errorMonitor](_augur_sdk_src_events_.eventnameemitter.md#static-readonly-errormonitor)*
+
+Defined in node_modules/@types/node/events.d.ts:55
+
+This symbol shall be used to install a listener for only monitoring `'error'`
+events. Listeners installed using this symbol are called before the regular
+`'error'` listeners are called.
+
+Installing a listener using this symbol does not change the behavior once an
+`'error'` event is emitted, therefore the process will still crash if no
+regular `'error'` listener is installed.
+
 ## Methods
 
 ###  addListener
@@ -95,7 +114,7 @@ Defined in node_modules/@types/node/events.d.ts:45
 
 *Inherited from [EventNameEmitter](_augur_sdk_src_events_.eventnameemitter.md).[addListener](_augur_sdk_src_events_.eventnameemitter.md#addlistener)*
 
-Defined in node_modules/@types/node/globals.d.ts:547
+Defined in node_modules/@types/node/globals.d.ts:553
 
 **Parameters:**
 
@@ -121,7 +140,7 @@ ___
 
 *Overrides void*
 
-*Defined in [packages/augur-sdk/src/subscriptions.ts:40](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/subscriptions.ts#L40)*
+*Defined in [packages/augur-sdk/src/subscriptions.ts:40](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/subscriptions.ts#L40)*
 
 **Parameters:**
 
@@ -138,7 +157,7 @@ ___
 
 ▸ **emitAfter**(`after`: string, `eventName`: string, ...`eventArgs`: any[]): *void*
 
-*Defined in [packages/augur-sdk/src/subscriptions.ts:32](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/subscriptions.ts#L32)*
+*Defined in [packages/augur-sdk/src/subscriptions.ts:32](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/subscriptions.ts#L32)*
 
 **Parameters:**
 
@@ -158,7 +177,7 @@ ___
 
 *Inherited from [EventNameEmitter](_augur_sdk_src_events_.eventnameemitter.md).[eventNames](_augur_sdk_src_events_.eventnameemitter.md#eventnames)*
 
-Defined in node_modules/@types/node/globals.d.ts:562
+Defined in node_modules/@types/node/globals.d.ts:568
 
 **Returns:** *Array‹string | symbol›*
 
@@ -170,7 +189,7 @@ ___
 
 *Inherited from [EventNameEmitter](_augur_sdk_src_events_.eventnameemitter.md).[getMaxListeners](_augur_sdk_src_events_.eventnameemitter.md#getmaxlisteners)*
 
-Defined in node_modules/@types/node/globals.d.ts:554
+Defined in node_modules/@types/node/globals.d.ts:560
 
 **Returns:** *number*
 
@@ -182,7 +201,7 @@ ___
 
 *Inherited from [EventNameEmitter](_augur_sdk_src_events_.eventnameemitter.md).[listenerCount](_augur_sdk_src_events_.eventnameemitter.md#listenercount)*
 
-Defined in node_modules/@types/node/globals.d.ts:558
+Defined in node_modules/@types/node/globals.d.ts:564
 
 **Parameters:**
 
@@ -200,7 +219,7 @@ ___
 
 *Inherited from [EventNameEmitter](_augur_sdk_src_events_.eventnameemitter.md).[listeners](_augur_sdk_src_events_.eventnameemitter.md#listeners)*
 
-Defined in node_modules/@types/node/globals.d.ts:555
+Defined in node_modules/@types/node/globals.d.ts:561
 
 **Parameters:**
 
@@ -218,7 +237,7 @@ ___
 
 *Overrides [EventNameEmitter](_augur_sdk_src_events_.eventnameemitter.md).[off](_augur_sdk_src_events_.eventnameemitter.md#off)*
 
-*Defined in [packages/augur-sdk/src/subscriptions.ts:57](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/subscriptions.ts#L57)*
+*Defined in [packages/augur-sdk/src/subscriptions.ts:57](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/subscriptions.ts#L57)*
 
 **Parameters:**
 
@@ -244,7 +263,7 @@ ___
 
 *Overrides [EventNameEmitter](_augur_sdk_src_events_.eventnameemitter.md).[on](_augur_sdk_src_events_.eventnameemitter.md#on)*
 
-*Defined in [packages/augur-sdk/src/subscriptions.ts:51](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/subscriptions.ts#L51)*
+*Defined in [packages/augur-sdk/src/subscriptions.ts:51](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/subscriptions.ts#L51)*
 
 **Parameters:**
 
@@ -270,7 +289,7 @@ ___
 
 *Inherited from [EventNameEmitter](_augur_sdk_src_events_.eventnameemitter.md).[once](_augur_sdk_src_events_.eventnameemitter.md#once)*
 
-Defined in node_modules/@types/node/globals.d.ts:549
+Defined in node_modules/@types/node/globals.d.ts:555
 
 **Parameters:**
 
@@ -296,7 +315,7 @@ ___
 
 *Inherited from [EventNameEmitter](_augur_sdk_src_events_.eventnameemitter.md).[prependListener](_augur_sdk_src_events_.eventnameemitter.md#prependlistener)*
 
-Defined in node_modules/@types/node/globals.d.ts:560
+Defined in node_modules/@types/node/globals.d.ts:566
 
 **Parameters:**
 
@@ -322,7 +341,7 @@ ___
 
 *Inherited from [EventNameEmitter](_augur_sdk_src_events_.eventnameemitter.md).[prependOnceListener](_augur_sdk_src_events_.eventnameemitter.md#prependoncelistener)*
 
-Defined in node_modules/@types/node/globals.d.ts:561
+Defined in node_modules/@types/node/globals.d.ts:567
 
 **Parameters:**
 
@@ -348,7 +367,7 @@ ___
 
 *Inherited from [EventNameEmitter](_augur_sdk_src_events_.eventnameemitter.md).[rawListeners](_augur_sdk_src_events_.eventnameemitter.md#rawlisteners)*
 
-Defined in node_modules/@types/node/globals.d.ts:556
+Defined in node_modules/@types/node/globals.d.ts:562
 
 **Parameters:**
 
@@ -366,7 +385,7 @@ ___
 
 *Overrides [EventNameEmitter](_augur_sdk_src_events_.eventnameemitter.md).[removeAllListeners](_augur_sdk_src_events_.eventnameemitter.md#removealllisteners)*
 
-*Defined in [packages/augur-sdk/src/subscriptions.ts:63](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/subscriptions.ts#L63)*
+*Defined in [packages/augur-sdk/src/subscriptions.ts:63](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/subscriptions.ts#L63)*
 
 **Parameters:**
 
@@ -384,7 +403,7 @@ ___
 
 *Inherited from [EventNameEmitter](_augur_sdk_src_events_.eventnameemitter.md).[removeListener](_augur_sdk_src_events_.eventnameemitter.md#removelistener)*
 
-Defined in node_modules/@types/node/globals.d.ts:550
+Defined in node_modules/@types/node/globals.d.ts:556
 
 **Parameters:**
 
@@ -410,7 +429,7 @@ ___
 
 *Inherited from [EventNameEmitter](_augur_sdk_src_events_.eventnameemitter.md).[setMaxListeners](_augur_sdk_src_events_.eventnameemitter.md#setmaxlisteners)*
 
-Defined in node_modules/@types/node/globals.d.ts:553
+Defined in node_modules/@types/node/globals.d.ts:559
 
 **Parameters:**
 
@@ -426,7 +445,7 @@ ___
 
 ▸ **subscribe**(`eventName`: string, `publish`: function): *string*
 
-*Defined in [packages/augur-sdk/src/subscriptions.ts:24](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/subscriptions.ts#L24)*
+*Defined in [packages/augur-sdk/src/subscriptions.ts:24](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/subscriptions.ts#L24)*
 
 **Parameters:**
 
@@ -450,7 +469,7 @@ ___
 
 ▸ **subscribeToEvent**(`eventName`: string, `publish`: function): *string*
 
-*Defined in [packages/augur-sdk/src/subscriptions.ts:68](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/subscriptions.ts#L68)*
+*Defined in [packages/augur-sdk/src/subscriptions.ts:68](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/subscriptions.ts#L68)*
 
 **Parameters:**
 
@@ -474,7 +493,7 @@ ___
 
 ▸ **unsubscribe**(`subscription`: string): *void*
 
-*Defined in [packages/augur-sdk/src/subscriptions.ts:28](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/subscriptions.ts#L28)*
+*Defined in [packages/augur-sdk/src/subscriptions.ts:28](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/subscriptions.ts#L28)*
 
 **Parameters:**
 

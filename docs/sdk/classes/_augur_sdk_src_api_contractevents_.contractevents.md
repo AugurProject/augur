@@ -14,11 +14,11 @@
 
 ### Properties
 
-* [augurAddress](_augur_sdk_src_api_contractevents_.contractevents.md#private-auguraddress)
-* [augurTradingAddress](_augur_sdk_src_api_contractevents_.contractevents.md#private-augurtradingaddress)
-* [contractAddressToName](_augur_sdk_src_api_contractevents_.contractevents.md#private-contractaddresstoname)
-* [provider](_augur_sdk_src_api_contractevents_.contractevents.md#private-provider)
-* [shareTokenAddress](_augur_sdk_src_api_contractevents_.contractevents.md#private-sharetokenaddress)
+* [augurAddress](_augur_sdk_src_api_contractevents_.contractevents.md#private-readonly-auguraddress)
+* [augurTradingAddress](_augur_sdk_src_api_contractevents_.contractevents.md#private-readonly-augurtradingaddress)
+* [contractAddressToName](_augur_sdk_src_api_contractevents_.contractevents.md#private-readonly-contractaddresstoname)
+* [provider](_augur_sdk_src_api_contractevents_.contractevents.md#private-readonly-provider)
+* [shareTokenAddress](_augur_sdk_src_api_contractevents_.contractevents.md#private-readonly-sharetokenaddress)
 
 ### Methods
 
@@ -30,7 +30,7 @@
 
 ### Object literals
 
-* [eventNameToContractName](_augur_sdk_src_api_contractevents_.contractevents.md#private-eventnametocontractname)
+* [eventNameToContractName](_augur_sdk_src_api_contractevents_.contractevents.md#private-readonly-eventnametocontractname)
 
 ## Constructors
 
@@ -38,7 +38,7 @@
 
 \+ **new ContractEvents**(`provider`: [Provider](../interfaces/_augur_sdk_src_ethereum_provider_.provider.md), `augurAddress`: string, `augurTradingAddress`: string, `shareTokenAddress`: string): *[ContractEvents](_augur_sdk_src_api_contractevents_.contractevents.md)*
 
-*Defined in [packages/augur-sdk/src/api/ContractEvents.ts:15](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/api/ContractEvents.ts#L15)*
+*Defined in [packages/augur-sdk/src/api/ContractEvents.ts:16](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/api/ContractEvents.ts#L16)*
 
 **Parameters:**
 
@@ -53,45 +53,45 @@ Name | Type |
 
 ## Properties
 
-### `Private` augurAddress
+### `Private` `Readonly` augurAddress
 
 • **augurAddress**: *string*
 
-*Defined in [packages/augur-sdk/src/api/ContractEvents.ts:19](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/api/ContractEvents.ts#L19)*
+*Defined in [packages/augur-sdk/src/api/ContractEvents.ts:20](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/api/ContractEvents.ts#L20)*
 
 ___
 
-### `Private` augurTradingAddress
+### `Private` `Readonly` augurTradingAddress
 
 • **augurTradingAddress**: *string*
 
-*Defined in [packages/augur-sdk/src/api/ContractEvents.ts:20](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/api/ContractEvents.ts#L20)*
+*Defined in [packages/augur-sdk/src/api/ContractEvents.ts:21](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/api/ContractEvents.ts#L21)*
 
 ___
 
-### `Private` contractAddressToName
+### `Private` `Readonly` contractAddressToName
 
 • **contractAddressToName**: *object*
 
-*Defined in [packages/augur-sdk/src/api/ContractEvents.ts:15](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/api/ContractEvents.ts#L15)*
+*Defined in [packages/augur-sdk/src/api/ContractEvents.ts:16](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/api/ContractEvents.ts#L16)*
 
 #### Type declaration:
 
 ___
 
-### `Private` provider
+### `Private` `Readonly` provider
 
 • **provider**: *[Provider](../interfaces/_augur_sdk_src_ethereum_provider_.provider.md)*
 
-*Defined in [packages/augur-sdk/src/api/ContractEvents.ts:18](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/api/ContractEvents.ts#L18)*
+*Defined in [packages/augur-sdk/src/api/ContractEvents.ts:19](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/api/ContractEvents.ts#L19)*
 
 ___
 
-### `Private` shareTokenAddress
+### `Private` `Readonly` shareTokenAddress
 
 • **shareTokenAddress**: *string*
 
-*Defined in [packages/augur-sdk/src/api/ContractEvents.ts:21](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/api/ContractEvents.ts#L21)*
+*Defined in [packages/augur-sdk/src/api/ContractEvents.ts:22](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/api/ContractEvents.ts#L22)*
 
 ## Methods
 
@@ -99,7 +99,7 @@ ___
 
 ▸ **getAugurContractAddresses**(): *string[]*
 
-*Defined in [packages/augur-sdk/src/api/ContractEvents.ts:39](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/api/ContractEvents.ts#L39)*
+*Defined in [packages/augur-sdk/src/api/ContractEvents.ts:40](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/api/ContractEvents.ts#L40)*
 
 **Returns:** *string[]*
 
@@ -109,7 +109,7 @@ ___
 
 ▸ **getEventContractAddress**(`eventName`: string): *string*
 
-*Defined in [packages/augur-sdk/src/api/ContractEvents.ts:47](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/api/ContractEvents.ts#L47)*
+*Defined in [packages/augur-sdk/src/api/ContractEvents.ts:48](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/api/ContractEvents.ts#L48)*
 
 **Parameters:**
 
@@ -125,7 +125,7 @@ ___
 
 ▸ **getEventContractName**(`eventName`: string): *any*
 
-*Defined in [packages/augur-sdk/src/api/ContractEvents.ts:34](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/api/ContractEvents.ts#L34)*
+*Defined in [packages/augur-sdk/src/api/ContractEvents.ts:35](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/api/ContractEvents.ts#L35)*
 
 **Parameters:**
 
@@ -141,7 +141,7 @@ ___
 
 ▸ **getEventTopics**(`eventName`: string): *string[]*
 
-*Defined in [packages/augur-sdk/src/api/ContractEvents.ts:54](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/api/ContractEvents.ts#L54)*
+*Defined in [packages/augur-sdk/src/api/ContractEvents.ts:55](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/api/ContractEvents.ts#L55)*
 
 **Parameters:**
 
@@ -157,7 +157,7 @@ ___
 
 ▸ **parseLogs**(`logs`: [Log](../interfaces/_augur_types_types_logs_.log.md)[]): *[ParsedLog](../interfaces/_augur_types_types_logs_.parsedlog.md)[]*
 
-*Defined in [packages/augur-sdk/src/api/ContractEvents.ts:58](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/api/ContractEvents.ts#L58)*
+*Defined in [packages/augur-sdk/src/api/ContractEvents.ts:59](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/api/ContractEvents.ts#L59)*
 
 **Parameters:**
 
@@ -169,44 +169,44 @@ Name | Type |
 
 ## Object literals
 
-### `Private` eventNameToContractName
+### `Private` `Readonly` eventNameToContractName
 
 ### ▪ **eventNameToContractName**: *object*
 
-*Defined in [packages/augur-sdk/src/api/ContractEvents.ts:6](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/api/ContractEvents.ts#L6)*
+*Defined in [packages/augur-sdk/src/api/ContractEvents.ts:7](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/api/ContractEvents.ts#L7)*
 
 ###  CancelZeroXOrder
 
 • **CancelZeroXOrder**: *string* = "AugurTrading"
 
-*Defined in [packages/augur-sdk/src/api/ContractEvents.ts:12](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/api/ContractEvents.ts#L12)*
+*Defined in [packages/augur-sdk/src/api/ContractEvents.ts:13](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/api/ContractEvents.ts#L13)*
 
 ###  MarketVolumeChanged
 
 • **MarketVolumeChanged**: *string* = "AugurTrading"
 
-*Defined in [packages/augur-sdk/src/api/ContractEvents.ts:11](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/api/ContractEvents.ts#L11)*
+*Defined in [packages/augur-sdk/src/api/ContractEvents.ts:12](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/api/ContractEvents.ts#L12)*
 
 ###  OrderEvent
 
 • **OrderEvent**: *string* = "AugurTrading"
 
-*Defined in [packages/augur-sdk/src/api/ContractEvents.ts:9](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/api/ContractEvents.ts#L9)*
+*Defined in [packages/augur-sdk/src/api/ContractEvents.ts:10](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/api/ContractEvents.ts#L10)*
 
 ###  ProfitLossChanged
 
 • **ProfitLossChanged**: *string* = "AugurTrading"
 
-*Defined in [packages/augur-sdk/src/api/ContractEvents.ts:10](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/api/ContractEvents.ts#L10)*
+*Defined in [packages/augur-sdk/src/api/ContractEvents.ts:11](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/api/ContractEvents.ts#L11)*
 
 ###  TransferBatch
 
 • **TransferBatch**: *string* = "ShareToken"
 
-*Defined in [packages/augur-sdk/src/api/ContractEvents.ts:8](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/api/ContractEvents.ts#L8)*
+*Defined in [packages/augur-sdk/src/api/ContractEvents.ts:9](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/api/ContractEvents.ts#L9)*
 
 ###  TransferSingle
 
 • **TransferSingle**: *string* = "ShareToken"
 
-*Defined in [packages/augur-sdk/src/api/ContractEvents.ts:7](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/api/ContractEvents.ts#L7)*
+*Defined in [packages/augur-sdk/src/api/ContractEvents.ts:8](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/api/ContractEvents.ts#L8)*

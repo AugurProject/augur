@@ -14,7 +14,7 @@
 
 ### Properties
 
-* [augur](_augur_sdk_src_api_onchaintrade_.onchaintrade.md#private-augur)
+* [augur](_augur_sdk_src_api_onchaintrade_.onchaintrade.md#private-readonly-augur)
 
 ### Methods
 
@@ -33,7 +33,7 @@
 
 \+ **new OnChainTrade**(`augur`: [Augur](_augur_sdk_src_augur_.augur.md)): *[OnChainTrade](_augur_sdk_src_api_onchaintrade_.onchaintrade.md)*
 
-*Defined in [packages/augur-sdk/src/api/OnChainTrade.ts:75](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/api/OnChainTrade.ts#L75)*
+*Defined in [packages/augur-sdk/src/api/OnChainTrade.ts:93](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/api/OnChainTrade.ts#L93)*
 
 **Parameters:**
 
@@ -45,11 +45,11 @@ Name | Type |
 
 ## Properties
 
-### `Private` augur
+### `Private` `Readonly` augur
 
 • **augur**: *[Augur](_augur_sdk_src_augur_.augur.md)*
 
-*Defined in [packages/augur-sdk/src/api/OnChainTrade.ts:75](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/api/OnChainTrade.ts#L75)*
+*Defined in [packages/augur-sdk/src/api/OnChainTrade.ts:93](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/api/OnChainTrade.ts#L93)*
 
 ## Methods
 
@@ -57,7 +57,7 @@ Name | Type |
 
 ▸ **checkIfTradeValid**(`params`: [NativePlaceTradeChainParams](../interfaces/_augur_sdk_src_api_onchaintrade_.nativeplacetradechainparams.md)): *Promise‹string | null›*
 
-*Defined in [packages/augur-sdk/src/api/OnChainTrade.ts:151](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/api/OnChainTrade.ts#L151)*
+*Defined in [packages/augur-sdk/src/api/OnChainTrade.ts:232](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/api/OnChainTrade.ts#L232)*
 
 **Parameters:**
 
@@ -73,7 +73,7 @@ ___
 
 ▸ **getOnChainTradeParams**(`params`: [NativePlaceTradeDisplayParams](../interfaces/_augur_sdk_src_api_onchaintrade_.nativeplacetradedisplayparams.md)): *[NativePlaceTradeChainParams](../interfaces/_augur_sdk_src_api_onchaintrade_.nativeplacetradechainparams.md)*
 
-*Defined in [packages/augur-sdk/src/api/OnChainTrade.ts:92](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/api/OnChainTrade.ts#L92)*
+*Defined in [packages/augur-sdk/src/api/OnChainTrade.ts:114](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/api/OnChainTrade.ts#L114)*
 
 **Parameters:**
 
@@ -89,7 +89,7 @@ ___
 
 ▸ **getTradeAmountRemaining**(`tradeOnChainAmountRemaining`: BigNumber, `events`: Event[]): *BigNumber*
 
-*Defined in [packages/augur-sdk/src/api/OnChainTrade.ts:187](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/api/OnChainTrade.ts#L187)*
+*Defined in [packages/augur-sdk/src/api/OnChainTrade.ts:292](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/api/OnChainTrade.ts#L292)*
 
 **Parameters:**
 
@@ -106,7 +106,7 @@ ___
 
 ▸ **getTradeTransactionLimits**(`params`: [NativePlaceTradeChainParams](../interfaces/_augur_sdk_src_api_onchaintrade_.nativeplacetradechainparams.md)): *[TradeTransactionLimits](../interfaces/_augur_sdk_src_api_onchaintrade_.tradetransactionlimits.md)*
 
-*Defined in [packages/augur-sdk/src/api/OnChainTrade.ts:171](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/api/OnChainTrade.ts#L171)*
+*Defined in [packages/augur-sdk/src/api/OnChainTrade.ts:266](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/api/OnChainTrade.ts#L266)*
 
 **Parameters:**
 
@@ -122,7 +122,7 @@ ___
 
 ▸ **placeOnChainTrade**(`params`: [NativePlaceTradeChainParams](../interfaces/_augur_sdk_src_api_onchaintrade_.nativeplacetradechainparams.md)): *Promise‹boolean›*
 
-*Defined in [packages/augur-sdk/src/api/OnChainTrade.ts:104](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/api/OnChainTrade.ts#L104)*
+*Defined in [packages/augur-sdk/src/api/OnChainTrade.ts:142](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/api/OnChainTrade.ts#L142)*
 
 **Parameters:**
 
@@ -138,7 +138,7 @@ ___
 
 ▸ **placeTrade**(`params`: [NativePlaceTradeDisplayParams](../interfaces/_augur_sdk_src_api_onchaintrade_.nativeplacetradedisplayparams.md)): *Promise‹boolean›*
 
-*Defined in [packages/augur-sdk/src/api/OnChainTrade.ts:81](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/api/OnChainTrade.ts#L81)*
+*Defined in [packages/augur-sdk/src/api/OnChainTrade.ts:99](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/api/OnChainTrade.ts#L99)*
 
 **Parameters:**
 
@@ -154,7 +154,7 @@ ___
 
 ▸ **simulateTrade**(`params`: [NativePlaceTradeDisplayParams](../interfaces/_augur_sdk_src_api_onchaintrade_.nativeplacetradedisplayparams.md)): *Promise‹[NativeSimulateTradeData](../interfaces/_augur_sdk_src_api_onchaintrade_.nativesimulatetradedata.md)›*
 
-*Defined in [packages/augur-sdk/src/api/OnChainTrade.ts:130](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/api/OnChainTrade.ts#L130)*
+*Defined in [packages/augur-sdk/src/api/OnChainTrade.ts:190](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/api/OnChainTrade.ts#L190)*
 
 **Parameters:**
 
@@ -170,7 +170,7 @@ ___
 
 ▸ **simulateTradeGasLimit**(`params`: [NativePlaceTradeDisplayParams](../interfaces/_augur_sdk_src_api_onchaintrade_.nativeplacetradedisplayparams.md)): *Promise‹BigNumber›*
 
-*Defined in [packages/augur-sdk/src/api/OnChainTrade.ts:86](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/api/OnChainTrade.ts#L86)*
+*Defined in [packages/augur-sdk/src/api/OnChainTrade.ts:104](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/api/OnChainTrade.ts#L104)*
 
 **Parameters:**
 

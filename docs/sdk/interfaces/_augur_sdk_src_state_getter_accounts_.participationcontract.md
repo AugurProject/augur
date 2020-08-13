@@ -21,7 +21,7 @@
 
 • **address**: *string*
 
-*Defined in [packages/augur-sdk/src/state/getter/Accounts.ts:97](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/getter/Accounts.ts#L97)*
+*Defined in [packages/augur-sdk/src/state/getter/Accounts.ts:101](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/getter/Accounts.ts#L101)*
 
 ___
 
@@ -29,7 +29,7 @@ ___
 
 • **amount**: *string*
 
-*Defined in [packages/augur-sdk/src/state/getter/Accounts.ts:98](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/getter/Accounts.ts#L98)*
+*Defined in [packages/augur-sdk/src/state/getter/Accounts.ts:102](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/getter/Accounts.ts#L102)*
 
 ___
 
@@ -37,7 +37,7 @@ ___
 
 • **amountFees**: *string*
 
-*Defined in [packages/augur-sdk/src/state/getter/Accounts.ts:99](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/getter/Accounts.ts#L99)*
+*Defined in [packages/augur-sdk/src/state/getter/Accounts.ts:103](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/getter/Accounts.ts#L103)*
 
 ___
 
@@ -45,4 +45,4 @@ ___
 
 • **isClaimable**: *boolean*
 
-*Defined in [packages/augur-sdk/src/state/getter/Accounts.ts:100](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/getter/Accounts.ts#L100)*
+*Defined in [packages/augur-sdk/src/state/getter/Accounts.ts:104](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/getter/Accounts.ts#L104)*

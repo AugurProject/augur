@@ -21,7 +21,7 @@
 
 • **error**? : *any*
 
-*Defined in [packages/augur-sdk/src/state/getter/types.ts:23](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/getter/types.ts#L23)*
+*Defined in [packages/augur-sdk/src/state/getter/types.ts:23](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/getter/types.ts#L23)*
 
 ___
 
@@ -29,7 +29,7 @@ ___
 
 • **id**: *string | number | null*
 
-*Defined in [packages/augur-sdk/src/state/getter/types.ts:20](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/getter/types.ts#L20)*
+*Defined in [packages/augur-sdk/src/state/getter/types.ts:20](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/getter/types.ts#L20)*
 
 ___
 
@@ -37,7 +37,7 @@ ___
 
 • **jsonrpc**: *string*
 
-*Defined in [packages/augur-sdk/src/state/getter/types.ts:21](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/getter/types.ts#L21)*
+*Defined in [packages/augur-sdk/src/state/getter/types.ts:21](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/getter/types.ts#L21)*
 
 ___
 
@@ -45,4 +45,4 @@ ___
 
 • **result**? : *any*
 
-*Defined in [packages/augur-sdk/src/state/getter/types.ts:22](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/getter/types.ts#L22)*
+*Defined in [packages/augur-sdk/src/state/getter/types.ts:22](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/getter/types.ts#L22)*

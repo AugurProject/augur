@@ -4,6 +4,10 @@
 
 ## Index
 
+### Enumerations
+
+* [WriteTaskType](../enums/_augur_sdk_src_state_db_abstracttable_.writetasktype.md)
+
 ### Classes
 
 * [AbstractTable](../classes/_augur_sdk_src_state_db_abstracttable_.abstracttable.md)
@@ -11,6 +15,7 @@
 ### Interfaces
 
 * [BaseDocument](../interfaces/_augur_sdk_src_state_db_abstracttable_.basedocument.md)
+* [WriteQueueTask](../interfaces/_augur_sdk_src_state_db_abstracttable_.writequeuetask.md)
 
 ### Type aliases
 
@@ -20,6 +25,7 @@
 ### Variables
 
 * [ALL_DOCS_BATCH_SIZE](_augur_sdk_src_state_db_abstracttable_.md#const-all_docs_batch_size)
+* [DEFAULT_CONCURRENCY](_augur_sdk_src_state_db_abstracttable_.md#const-default_concurrency)
 
 ## Type aliases
 
@@ -27,7 +33,7 @@
 
 Ƭ **ID**: *[PrimitiveID](_augur_sdk_src_state_db_abstracttable_.md#primitiveid) | Array‹[PrimitiveID](_augur_sdk_src_state_db_abstracttable_.md#primitiveid)›*
 
-*Defined in [packages/augur-sdk/src/state/db/AbstractTable.ts:6](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/db/AbstractTable.ts#L6)*
+*Defined in [packages/augur-sdk/src/state/db/AbstractTable.ts:8](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/db/AbstractTable.ts#L8)*
 
 ___
 
@@ -35,7 +41,7 @@ ___
 
 Ƭ **PrimitiveID**: *string | number | Date*
 
-*Defined in [packages/augur-sdk/src/state/db/AbstractTable.ts:4](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/db/AbstractTable.ts#L4)*
+*Defined in [packages/augur-sdk/src/state/db/AbstractTable.ts:6](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/db/AbstractTable.ts#L6)*
 
 ## Variables
 
@@ -43,4 +49,12 @@ ___
 
 • **ALL_DOCS_BATCH_SIZE**: *200* = 200
 
-*Defined in [packages/augur-sdk/src/state/db/AbstractTable.ts:8](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/db/AbstractTable.ts#L8)*
+*Defined in [packages/augur-sdk/src/state/db/AbstractTable.ts:10](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/db/AbstractTable.ts#L10)*
+
+___
+
+### `Const` DEFAULT_CONCURRENCY
+
+• **DEFAULT_CONCURRENCY**: *10* = 10
+
+*Defined in [packages/augur-sdk/src/state/db/AbstractTable.ts:29](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/db/AbstractTable.ts#L29)*

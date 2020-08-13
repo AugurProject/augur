@@ -16,7 +16,7 @@
 
 * [augur](_augur_sdk_src_state_getter_api_.api.md#augur)
 * [db](_augur_sdk_src_state_getter_api_.api.md#db)
-* [router](_augur_sdk_src_state_getter_api_.api.md#private-router)
+* [router](_augur_sdk_src_state_getter_api_.api.md#private-readonly-router)
 
 ### Methods
 
@@ -28,7 +28,7 @@
 
 \+ **new API**(`augur`: [Augur](_augur_sdk_src_augur_.augur.md), `db`: Promise‹[DB](_augur_sdk_src_state_db_db_.db.md)›): *[API](_augur_sdk_src_state_getter_api_.api.md)*
 
-*Defined in [packages/augur-sdk/src/state/getter/API.ts:20](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/getter/API.ts#L20)*
+*Defined in [packages/augur-sdk/src/state/getter/API.ts:20](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/getter/API.ts#L20)*
 
 **Parameters:**
 
@@ -45,7 +45,7 @@ Name | Type |
 
 • **augur**: *[Augur](_augur_sdk_src_augur_.augur.md)*
 
-*Defined in [packages/augur-sdk/src/state/getter/API.ts:18](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/getter/API.ts#L18)*
+*Defined in [packages/augur-sdk/src/state/getter/API.ts:18](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/getter/API.ts#L18)*
 
 ___
 
@@ -53,15 +53,15 @@ ___
 
 • **db**: *Promise‹[DB](_augur_sdk_src_state_db_db_.db.md)›*
 
-*Defined in [packages/augur-sdk/src/state/getter/API.ts:19](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/getter/API.ts#L19)*
+*Defined in [packages/augur-sdk/src/state/getter/API.ts:19](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/getter/API.ts#L19)*
 
 ___
 
-### `Private` router
+### `Private` `Readonly` router
 
 • **router**: *[Router](_augur_sdk_src_state_getter_router_.router.md)*
 
-*Defined in [packages/augur-sdk/src/state/getter/API.ts:20](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/getter/API.ts#L20)*
+*Defined in [packages/augur-sdk/src/state/getter/API.ts:20](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/getter/API.ts#L20)*
 
 ## Methods
 
@@ -69,7 +69,7 @@ ___
 
 ▸ **route**(`name`: string, `params`: any): *Promise‹any›*
 
-*Defined in [packages/augur-sdk/src/state/getter/API.ts:28](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/getter/API.ts#L28)*
+*Defined in [packages/augur-sdk/src/state/getter/API.ts:28](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/getter/API.ts#L28)*
 
 **Parameters:**
 

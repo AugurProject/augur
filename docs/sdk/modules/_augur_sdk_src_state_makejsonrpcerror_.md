@@ -18,7 +18,7 @@
 
 ▸ **MakeJsonRpcError**(`id`: string, `code`: [JsonRpcErrorCode](../enums/_augur_sdk_src_state_makejsonrpcerror_.jsonrpcerrorcode.md), `message`: string, `data`: object | boolean): *string*
 
-*Defined in [packages/augur-sdk/src/state/MakeJsonRpcError.ts:10](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/MakeJsonRpcError.ts#L10)*
+*Defined in [packages/augur-sdk/src/state/MakeJsonRpcError.ts:10](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/MakeJsonRpcError.ts#L10)*
 
 **Parameters:**
 

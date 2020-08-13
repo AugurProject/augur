@@ -22,7 +22,7 @@
 
 • **isInvalid**: *boolean*
 
-*Defined in [packages/augur-sdk/src/state/getter/Accounts.ts:138](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/getter/Accounts.ts#L138)*
+*Defined in [packages/augur-sdk/src/state/getter/Accounts.ts:142](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/getter/Accounts.ts#L142)*
 
 ___
 
@@ -30,7 +30,7 @@ ___
 
 • **malformed**? : *boolean*
 
-*Defined in [packages/augur-sdk/src/state/getter/Accounts.ts:139](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/getter/Accounts.ts#L139)*
+*Defined in [packages/augur-sdk/src/state/getter/Accounts.ts:143](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/getter/Accounts.ts#L143)*
 
 ___
 
@@ -38,7 +38,7 @@ ___
 
 • **outcome**: *string*
 
-*Defined in [packages/augur-sdk/src/state/getter/Accounts.ts:137](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/getter/Accounts.ts#L137)*
+*Defined in [packages/augur-sdk/src/state/getter/Accounts.ts:141](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/getter/Accounts.ts#L141)*
 
 ___
 
@@ -46,7 +46,7 @@ ___
 
 • **payoutNumerators**: *string[]*
 
-*Defined in [packages/augur-sdk/src/state/getter/Accounts.ts:140](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/getter/Accounts.ts#L140)*
+*Defined in [packages/augur-sdk/src/state/getter/Accounts.ts:144](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/getter/Accounts.ts#L144)*
 
 ___
 
@@ -54,4 +54,4 @@ ___
 
 • **userStakeCurrent**: *string*
 
-*Defined in [packages/augur-sdk/src/state/getter/Accounts.ts:141](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/getter/Accounts.ts#L141)*
+*Defined in [packages/augur-sdk/src/state/getter/Accounts.ts:145](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/getter/Accounts.ts#L145)*

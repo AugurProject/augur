@@ -14,7 +14,7 @@
 
 ▸ **MakeJsonRpcResponse**(`id`: string | null, `result`: object | boolean): *string*
 
-*Defined in [packages/augur-sdk/src/state/MakeJsonRpcResponse.ts:1](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/MakeJsonRpcResponse.ts#L1)*
+*Defined in [packages/augur-sdk/src/state/MakeJsonRpcResponse.ts:1](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/MakeJsonRpcResponse.ts#L1)*
 
 **Parameters:**
 

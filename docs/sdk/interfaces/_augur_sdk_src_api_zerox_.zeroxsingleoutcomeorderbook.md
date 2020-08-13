@@ -19,7 +19,7 @@
 
 • **buyOrders**: *[ZeroXOrder](_augur_sdk_src_api_zerox_.zeroxorder.md)[]*
 
-*Defined in [packages/augur-sdk/src/api/ZeroX.ts:82](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/api/ZeroX.ts#L82)*
+*Defined in [packages/augur-sdk/src/api/ZeroX.ts:96](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/api/ZeroX.ts#L96)*
 
 ___
 
@@ -27,4 +27,4 @@ ___
 
 • **sellorders**: *[ZeroXOrder](_augur_sdk_src_api_zerox_.zeroxorder.md)[]*
 
-*Defined in [packages/augur-sdk/src/api/ZeroX.ts:83](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/api/ZeroX.ts#L83)*
+*Defined in [packages/augur-sdk/src/api/ZeroX.ts:97](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/api/ZeroX.ts#L97)*

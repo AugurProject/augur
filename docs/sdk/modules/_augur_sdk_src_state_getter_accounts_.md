@@ -51,7 +51,7 @@
 
 • **actionnDeserializer**: *KeyofC‹[Action](../enums/_augur_sdk_src_state_getter_accounts_.action.md)›* = t.keyof(Action)
 
-*Defined in [packages/augur-sdk/src/state/getter/Accounts.ts:60](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/getter/Accounts.ts#L60)*
+*Defined in [packages/augur-sdk/src/state/getter/Accounts.ts:64](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/getter/Accounts.ts#L64)*
 
 ___
 
@@ -59,7 +59,7 @@ ___
 
 • **coinDeserializer**: *KeyofC‹[Coin](../enums/_augur_sdk_src_state_getter_accounts_.coin.md)›* = t.keyof(Coin)
 
-*Defined in [packages/augur-sdk/src/state/getter/Accounts.ts:61](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/getter/Accounts.ts#L61)*
+*Defined in [packages/augur-sdk/src/state/getter/Accounts.ts:65](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/getter/Accounts.ts#L65)*
 
 ___
 
@@ -70,7 +70,7 @@ ___
   account: t.string,
 })
 
-*Defined in [packages/augur-sdk/src/state/getter/Accounts.ts:72](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/getter/Accounts.ts#L72)*
+*Defined in [packages/augur-sdk/src/state/getter/Accounts.ts:76](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/getter/Accounts.ts#L76)*
 
 ___
 
@@ -85,7 +85,7 @@ ___
   action: t.union([actionnDeserializer, t.null, t.undefined]),
 })
 
-*Defined in [packages/augur-sdk/src/state/getter/Accounts.ts:63](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/getter/Accounts.ts#L63)*
+*Defined in [packages/augur-sdk/src/state/getter/Accounts.ts:67](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/getter/Accounts.ts#L67)*
 
 ___
 
@@ -96,21 +96,21 @@ ___
   account: t.string,
 })
 
-*Defined in [packages/augur-sdk/src/state/getter/Accounts.ts:77](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/getter/Accounts.ts#L77)*
+*Defined in [packages/augur-sdk/src/state/getter/Accounts.ts:81](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/getter/Accounts.ts#L81)*
 
 ## Functions
 
 ###  formatCrowdsourcerRedeemedLogs
 
-▸ **formatCrowdsourcerRedeemedLogs**(`transactionLogs`: [InitialReporterRedeemedLog](../interfaces/_augur_sdk_src_state_logs_types_.initialreporterredeemedlog.md)[] | [DisputeCrowdsourcerRedeemedLog](../interfaces/_augur_sdk_src_state_logs_types_.disputecrowdsourcerredeemedlog.md)[], `marketInfo`: [MarketCreatedInfo](../interfaces/_augur_sdk_src_state_getter_accounts_.marketcreatedinfo.md), `params`: t.TypeOf‹typeof getAccountTransactionHistoryParams›): *Promise‹[AccountTransaction](../interfaces/_augur_sdk_src_state_getter_accounts_.accounttransaction.md)[]›*
+▸ **formatCrowdsourcerRedeemedLogs**(`transactionLogs`: InitialReporterRedeemedLog[] | DisputeCrowdsourcerRedeemedLog[], `marketInfo`: [MarketCreatedInfo](../interfaces/_augur_sdk_src_state_getter_accounts_.marketcreatedinfo.md), `params`: t.TypeOf‹typeof getAccountTransactionHistoryParams›): *Promise‹[AccountTransaction](../interfaces/_augur_sdk_src_state_getter_accounts_.accounttransaction.md)[]›*
 
-*Defined in [packages/augur-sdk/src/state/getter/Accounts.ts:782](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/getter/Accounts.ts#L782)*
+*Defined in [packages/augur-sdk/src/state/getter/Accounts.ts:1072](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/getter/Accounts.ts#L1072)*
 
 **Parameters:**
 
 Name | Type |
 ------ | ------ |
-`transactionLogs` | [InitialReporterRedeemedLog](../interfaces/_augur_sdk_src_state_logs_types_.initialreporterredeemedlog.md)[] &#124; [DisputeCrowdsourcerRedeemedLog](../interfaces/_augur_sdk_src_state_logs_types_.disputecrowdsourcerredeemedlog.md)[] |
+`transactionLogs` | InitialReporterRedeemedLog[] &#124; DisputeCrowdsourcerRedeemedLog[] |
 `marketInfo` | [MarketCreatedInfo](../interfaces/_augur_sdk_src_state_getter_accounts_.marketcreatedinfo.md) |
 `params` | t.TypeOf‹typeof getAccountTransactionHistoryParams› |
 
@@ -120,15 +120,15 @@ ___
 
 ###  formatDisputeCrowdsourcerContributionLogs
 
-▸ **formatDisputeCrowdsourcerContributionLogs**(`transactionLogs`: [DisputeCrowdsourcerContributionLog](../interfaces/_augur_sdk_src_state_logs_types_.disputecrowdsourcercontributionlog.md)[], `augur`: [Augur](../classes/_augur_sdk_src_augur_.augur.md), `marketInfo`: [MarketCreatedInfo](../interfaces/_augur_sdk_src_state_getter_accounts_.marketcreatedinfo.md)): *Promise‹[AccountTransaction](../interfaces/_augur_sdk_src_state_getter_accounts_.accounttransaction.md)[]›*
+▸ **formatDisputeCrowdsourcerContributionLogs**(`transactionLogs`: DisputeCrowdsourcerContributionLog[], `augur`: [Augur](../classes/_augur_sdk_src_augur_.augur.md), `marketInfo`: [MarketCreatedInfo](../interfaces/_augur_sdk_src_state_getter_accounts_.marketcreatedinfo.md)): *Promise‹[AccountTransaction](../interfaces/_augur_sdk_src_state_getter_accounts_.accounttransaction.md)[]›*
 
-*Defined in [packages/augur-sdk/src/state/getter/Accounts.ts:860](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/getter/Accounts.ts#L860)*
+*Defined in [packages/augur-sdk/src/state/getter/Accounts.ts:1154](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/getter/Accounts.ts#L1154)*
 
 **Parameters:**
 
 Name | Type |
 ------ | ------ |
-`transactionLogs` | [DisputeCrowdsourcerContributionLog](../interfaces/_augur_sdk_src_state_logs_types_.disputecrowdsourcercontributionlog.md)[] |
+`transactionLogs` | DisputeCrowdsourcerContributionLog[] |
 `augur` | [Augur](../classes/_augur_sdk_src_augur_.augur.md) |
 `marketInfo` | [MarketCreatedInfo](../interfaces/_augur_sdk_src_state_getter_accounts_.marketcreatedinfo.md) |
 
@@ -138,15 +138,15 @@ ___
 
 ###  formatInitialReportSubmittedLogs
 
-▸ **formatInitialReportSubmittedLogs**(`transactionLogs`: [InitialReportSubmittedLog](../interfaces/_augur_sdk_src_state_logs_types_.initialreportsubmittedlog.md)[], `augur`: [Augur](../classes/_augur_sdk_src_augur_.augur.md), `marketInfo`: [MarketCreatedInfo](../interfaces/_augur_sdk_src_state_getter_accounts_.marketcreatedinfo.md)): *Promise‹[AccountTransaction](../interfaces/_augur_sdk_src_state_getter_accounts_.accounttransaction.md)[]›*
+▸ **formatInitialReportSubmittedLogs**(`transactionLogs`: InitialReportSubmittedLog[], `augur`: [Augur](../classes/_augur_sdk_src_augur_.augur.md), `marketInfo`: [MarketCreatedInfo](../interfaces/_augur_sdk_src_state_getter_accounts_.marketcreatedinfo.md)): *Promise‹[AccountTransaction](../interfaces/_augur_sdk_src_state_getter_accounts_.accounttransaction.md)[]›*
 
-*Defined in [packages/augur-sdk/src/state/getter/Accounts.ts:897](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/getter/Accounts.ts#L897)*
+*Defined in [packages/augur-sdk/src/state/getter/Accounts.ts:1201](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/getter/Accounts.ts#L1201)*
 
 **Parameters:**
 
 Name | Type |
 ------ | ------ |
-`transactionLogs` | [InitialReportSubmittedLog](../interfaces/_augur_sdk_src_state_logs_types_.initialreportsubmittedlog.md)[] |
+`transactionLogs` | InitialReportSubmittedLog[] |
 `augur` | [Augur](../classes/_augur_sdk_src_augur_.augur.md) |
 `marketInfo` | [MarketCreatedInfo](../interfaces/_augur_sdk_src_state_getter_accounts_.marketcreatedinfo.md) |
 
@@ -156,15 +156,15 @@ ___
 
 ###  formatMarketCreatedLogs
 
-▸ **formatMarketCreatedLogs**(`transactionLogs`: [MarketCreatedLog](../interfaces/_augur_sdk_src_state_logs_types_.marketcreatedlog.md)[]): *[AccountTransaction](../interfaces/_augur_sdk_src_state_getter_accounts_.accounttransaction.md)[]*
+▸ **formatMarketCreatedLogs**(`transactionLogs`: MarketCreatedLog[]): *[AccountTransaction](../interfaces/_augur_sdk_src_state_getter_accounts_.accounttransaction.md)[]*
 
-*Defined in [packages/augur-sdk/src/state/getter/Accounts.ts:831](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/getter/Accounts.ts#L831)*
+*Defined in [packages/augur-sdk/src/state/getter/Accounts.ts:1123](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/getter/Accounts.ts#L1123)*
 
 **Parameters:**
 
 Name | Type |
 ------ | ------ |
-`transactionLogs` | [MarketCreatedLog](../interfaces/_augur_sdk_src_state_logs_types_.marketcreatedlog.md)[] |
+`transactionLogs` | MarketCreatedLog[] |
 
 **Returns:** *[AccountTransaction](../interfaces/_augur_sdk_src_state_getter_accounts_.accounttransaction.md)[]*
 
@@ -172,15 +172,15 @@ ___
 
 ###  formatOrderFilledLogs
 
-▸ **formatOrderFilledLogs**(`transactionLogs`: [ParsedOrderEventLog](../interfaces/_augur_sdk_src_state_logs_types_.parsedordereventlog.md)[], `marketInfo`: [MarketCreatedInfo](../interfaces/_augur_sdk_src_state_getter_accounts_.marketcreatedinfo.md)): *[AccountTransaction](../interfaces/_augur_sdk_src_state_getter_accounts_.accounttransaction.md)[]*
+▸ **formatOrderFilledLogs**(`transactionLogs`: ParsedOrderEventLog[], `marketInfo`: [MarketCreatedInfo](../interfaces/_augur_sdk_src_state_getter_accounts_.marketcreatedinfo.md)): *[AccountTransaction](../interfaces/_augur_sdk_src_state_getter_accounts_.accounttransaction.md)[]*
 
-*Defined in [packages/augur-sdk/src/state/getter/Accounts.ts:607](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/getter/Accounts.ts#L607)*
+*Defined in [packages/augur-sdk/src/state/getter/Accounts.ts:830](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/getter/Accounts.ts#L830)*
 
 **Parameters:**
 
 Name | Type |
 ------ | ------ |
-`transactionLogs` | [ParsedOrderEventLog](../interfaces/_augur_sdk_src_state_logs_types_.parsedordereventlog.md)[] |
+`transactionLogs` | ParsedOrderEventLog[] |
 `marketInfo` | [MarketCreatedInfo](../interfaces/_augur_sdk_src_state_getter_accounts_.marketcreatedinfo.md) |
 
 **Returns:** *[AccountTransaction](../interfaces/_augur_sdk_src_state_getter_accounts_.accounttransaction.md)[]*
@@ -189,15 +189,15 @@ ___
 
 ###  formatParticipationTokensRedeemedLogs
 
-▸ **formatParticipationTokensRedeemedLogs**(`transactionLogs`: [ParticipationTokensRedeemedLog](../interfaces/_augur_sdk_src_state_logs_types_.participationtokensredeemedlog.md)[]): *[AccountTransaction](../interfaces/_augur_sdk_src_state_getter_accounts_.accounttransaction.md)[]*
+▸ **formatParticipationTokensRedeemedLogs**(`transactionLogs`: ParticipationTokensRedeemedLog[]): *[AccountTransaction](../interfaces/_augur_sdk_src_state_getter_accounts_.accounttransaction.md)[]*
 
-*Defined in [packages/augur-sdk/src/state/getter/Accounts.ts:727](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/getter/Accounts.ts#L727)*
+*Defined in [packages/augur-sdk/src/state/getter/Accounts.ts:996](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/getter/Accounts.ts#L996)*
 
 **Parameters:**
 
 Name | Type |
 ------ | ------ |
-`transactionLogs` | [ParticipationTokensRedeemedLog](../interfaces/_augur_sdk_src_state_logs_types_.participationtokensredeemedlog.md)[] |
+`transactionLogs` | ParticipationTokensRedeemedLog[] |
 
 **Returns:** *[AccountTransaction](../interfaces/_augur_sdk_src_state_getter_accounts_.accounttransaction.md)[]*
 
@@ -205,15 +205,15 @@ ___
 
 ###  formatTradingProceedsClaimedLogs
 
-▸ **formatTradingProceedsClaimedLogs**(`transactionLogs`: [TradingProceedsClaimedLog](../interfaces/_augur_sdk_src_state_logs_types_.tradingproceedsclaimedlog.md)[], `augur`: [Augur](../classes/_augur_sdk_src_augur_.augur.md), `marketInfo`: [MarketCreatedInfo](../interfaces/_augur_sdk_src_state_getter_accounts_.marketcreatedinfo.md)): *Promise‹[AccountTransaction](../interfaces/_augur_sdk_src_state_getter_accounts_.accounttransaction.md)[]›*
+▸ **formatTradingProceedsClaimedLogs**(`transactionLogs`: TradingProceedsClaimedLog[], `augur`: [Augur](../classes/_augur_sdk_src_augur_.augur.md), `marketInfo`: [MarketCreatedInfo](../interfaces/_augur_sdk_src_state_getter_accounts_.marketcreatedinfo.md)): *Promise‹[AccountTransaction](../interfaces/_augur_sdk_src_state_getter_accounts_.accounttransaction.md)[]›*
 
-*Defined in [packages/augur-sdk/src/state/getter/Accounts.ts:752](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/getter/Accounts.ts#L752)*
+*Defined in [packages/augur-sdk/src/state/getter/Accounts.ts:1030](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/getter/Accounts.ts#L1030)*
 
 **Parameters:**
 
 Name | Type |
 ------ | ------ |
-`transactionLogs` | [TradingProceedsClaimedLog](../interfaces/_augur_sdk_src_state_logs_types_.tradingproceedsclaimedlog.md)[] |
+`transactionLogs` | TradingProceedsClaimedLog[] |
 `augur` | [Augur](../classes/_augur_sdk_src_augur_.augur.md) |
 `marketInfo` | [MarketCreatedInfo](../interfaces/_augur_sdk_src_state_getter_accounts_.marketcreatedinfo.md) |
 
@@ -223,15 +223,15 @@ ___
 
 ###  formatZeroXCancelledOrders
 
-▸ **formatZeroXCancelledOrders**(`storedOrders`: [CancelZeroXOrderLog](../interfaces/_augur_sdk_src_state_logs_types_.cancelzeroxorderlog.md)[], `marketInfo`: [MarketCreatedInfo](../interfaces/_augur_sdk_src_state_getter_accounts_.marketcreatedinfo.md)): *[AccountTransaction](../interfaces/_augur_sdk_src_state_getter_accounts_.accounttransaction.md)[]*
+▸ **formatZeroXCancelledOrders**(`storedOrders`: CancelZeroXOrderLog[], `marketInfo`: [MarketCreatedInfo](../interfaces/_augur_sdk_src_state_getter_accounts_.marketcreatedinfo.md)): *[AccountTransaction](../interfaces/_augur_sdk_src_state_getter_accounts_.accounttransaction.md)[]*
 
-*Defined in [packages/augur-sdk/src/state/getter/Accounts.ts:687](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/getter/Accounts.ts#L687)*
+*Defined in [packages/augur-sdk/src/state/getter/Accounts.ts:945](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/getter/Accounts.ts#L945)*
 
 **Parameters:**
 
 Name | Type |
 ------ | ------ |
-`storedOrders` | [CancelZeroXOrderLog](../interfaces/_augur_sdk_src_state_logs_types_.cancelzeroxorderlog.md)[] |
+`storedOrders` | CancelZeroXOrderLog[] |
 `marketInfo` | [MarketCreatedInfo](../interfaces/_augur_sdk_src_state_getter_accounts_.marketcreatedinfo.md) |
 
 **Returns:** *[AccountTransaction](../interfaces/_augur_sdk_src_state_getter_accounts_.accounttransaction.md)[]*
@@ -242,7 +242,7 @@ ___
 
 ▸ **formatZeroXOrders**(`storedOrders`: [StoredOrder](../interfaces/_augur_sdk_src_state_db_zeroxorders_.storedorder.md)[], `marketInfo`: [MarketCreatedInfo](../interfaces/_augur_sdk_src_state_getter_accounts_.marketcreatedinfo.md)): *[AccountTransaction](../interfaces/_augur_sdk_src_state_getter_accounts_.accounttransaction.md)[]*
 
-*Defined in [packages/augur-sdk/src/state/getter/Accounts.ts:651](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/getter/Accounts.ts#L651)*
+*Defined in [packages/augur-sdk/src/state/getter/Accounts.ts:896](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/getter/Accounts.ts#L896)*
 
 **Parameters:**
 
@@ -257,15 +257,15 @@ ___
 
 ###  outcomeFromMarketLog
 
-▸ **outcomeFromMarketLog**(`market`: [MarketData](../interfaces/_augur_sdk_src_state_logs_types_.marketdata.md), `payoutNumerators`: Array‹BigNumber | string›): *[PayoutNumeratorValue](../interfaces/_augur_sdk_src_utils_.payoutnumeratorvalue.md)*
+▸ **outcomeFromMarketLog**(`market`: MarketData, `payoutNumerators`: Array‹BigNumber | string›): *PayoutNumeratorValue*
 
-*Defined in [packages/augur-sdk/src/state/getter/Accounts.ts:940](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/getter/Accounts.ts#L940)*
+*Defined in [packages/augur-sdk/src/state/getter/Accounts.ts:1243](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/getter/Accounts.ts#L1243)*
 
 **Parameters:**
 
 Name | Type |
 ------ | ------ |
-`market` | [MarketData](../interfaces/_augur_sdk_src_state_logs_types_.marketdata.md) |
+`market` | MarketData |
 `payoutNumerators` | Array‹BigNumber &#124; string› |
 
-**Returns:** *[PayoutNumeratorValue](../interfaces/_augur_sdk_src_utils_.payoutnumeratorvalue.md)*
+**Returns:** *PayoutNumeratorValue*

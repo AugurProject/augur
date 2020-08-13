@@ -22,4 +22,4 @@
 
 • **MAX_PAYOUT**: *BigNumber‹›* = (new BigNumber(2)).pow(256).minus(2)
 
-*Defined in [packages/augur-sdk/src/api/WarpSync.ts:6](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/api/WarpSync.ts#L6)*
+*Defined in [packages/augur-sdk/src/api/WarpSync.ts:6](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/api/WarpSync.ts#L6)*

@@ -18,4 +18,4 @@
 
 • **response**: *string*
 
-*Defined in [packages/augur-sdk/src/state/getter/Ping.ts:6](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/getter/Ping.ts#L6)*
+*Defined in [packages/augur-sdk/src/state/getter/Ping.ts:6](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/getter/Ping.ts#L6)*

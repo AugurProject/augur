@@ -32,7 +32,7 @@
 
 ▸ **formatTimestamp**(`timestamp`: number): *string*
 
-*Defined in [packages/augur-sdk/src/state/getter/Platform.ts:200](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/getter/Platform.ts#L200)*
+*Defined in [packages/augur-sdk/src/state/getter/Platform.ts:259](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/getter/Platform.ts#L259)*
 
 **Parameters:**
 
@@ -48,7 +48,7 @@ ___
 
 ▸ **getActiveUsers**(`universe`: string, `startTime`: number, `endTime`: number, `db`: [DB](../classes/_augur_sdk_src_state_db_db_.db.md)): *Promise‹number›*
 
-*Defined in [packages/augur-sdk/src/state/getter/Platform.ts:75](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/getter/Platform.ts#L75)*
+*Defined in [packages/augur-sdk/src/state/getter/Platform.ts:82](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/getter/Platform.ts#L82)*
 
 **Parameters:**
 
@@ -65,9 +65,9 @@ ___
 
 ###  getAmountStaked
 
-▸ **getAmountStaked**(`universe`: string, `startTime`: number, `endTime`: number, `db`: [DB](../classes/_augur_sdk_src_state_db_db_.db.md)): *Promise‹BigNumber›*
+▸ **getAmountStaked**(`universe`: string, `startTime`: number, `endTime`: number, `db`: [DB](../classes/_augur_sdk_src_state_db_db_.db.md)): *Promise‹string›*
 
-*Defined in [packages/augur-sdk/src/state/getter/Platform.ts:147](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/getter/Platform.ts#L147)*
+*Defined in [packages/augur-sdk/src/state/getter/Platform.ts:188](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/getter/Platform.ts#L188)*
 
 **Parameters:**
 
@@ -78,7 +78,7 @@ Name | Type |
 `endTime` | number |
 `db` | [DB](../classes/_augur_sdk_src_state_db_db_.db.md) |
 
-**Returns:** *Promise‹BigNumber›*
+**Returns:** *Promise‹string›*
 
 ___
 
@@ -86,7 +86,7 @@ ___
 
 ▸ **getDisputedMarkets**(`universe`: string, `startTime`: number, `endTime`: number, `db`: [DB](../classes/_augur_sdk_src_state_db_db_.db.md)): *Promise‹number›*
 
-*Defined in [packages/augur-sdk/src/state/getter/Platform.ts:165](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/getter/Platform.ts#L165)*
+*Defined in [packages/augur-sdk/src/state/getter/Platform.ts:214](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/getter/Platform.ts#L214)*
 
 **Parameters:**
 
@@ -105,7 +105,7 @@ ___
 
 ▸ **getMarketCount**(`universe`: string, `startTime`: number, `endTime`: number, `db`: [DB](../classes/_augur_sdk_src_state_db_db_.db.md)): *Promise‹number›*
 
-*Defined in [packages/augur-sdk/src/state/getter/Platform.ts:118](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/getter/Platform.ts#L118)*
+*Defined in [packages/augur-sdk/src/state/getter/Platform.ts:152](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/getter/Platform.ts#L152)*
 
 **Parameters:**
 
@@ -122,9 +122,9 @@ ___
 
 ###  getOpenInterest
 
-▸ **getOpenInterest**(`universe`: string, `augur`: [Augur](../classes/_augur_sdk_src_augur_.augur.md)): *Promise‹BigNumber›*
+▸ **getOpenInterest**(`universe`: string, `augur`: [Augur](../classes/_augur_sdk_src_augur_.augur.md)): *Promise‹string›*
 
-*Defined in [packages/augur-sdk/src/state/getter/Platform.ts:113](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/getter/Platform.ts#L113)*
+*Defined in [packages/augur-sdk/src/state/getter/Platform.ts:144](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/getter/Platform.ts#L144)*
 
 **Parameters:**
 
@@ -133,7 +133,7 @@ Name | Type |
 `universe` | string |
 `augur` | [Augur](../classes/_augur_sdk_src_augur_.augur.md) |
 
-**Returns:** *Promise‹BigNumber›*
+**Returns:** *Promise‹string›*
 
 ___
 
@@ -141,7 +141,7 @@ ___
 
 ▸ **getTradeCount**(`universe`: string, `startTime`: number, `endTime`: number, `db`: [DB](../classes/_augur_sdk_src_state_db_db_.db.md)): *Promise‹number›*
 
-*Defined in [packages/augur-sdk/src/state/getter/Platform.ts:97](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/getter/Platform.ts#L97)*
+*Defined in [packages/augur-sdk/src/state/getter/Platform.ts:122](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/getter/Platform.ts#L122)*
 
 **Parameters:**
 
@@ -158,9 +158,9 @@ ___
 
 ###  getVolume
 
-▸ **getVolume**(`universe`: string, `startTime`: number, `endTime`: number, `db`: [DB](../classes/_augur_sdk_src_state_db_db_.db.md)): *Promise‹BigNumber›*
+▸ **getVolume**(`universe`: string, `startTime`: number, `endTime`: number, `db`: [DB](../classes/_augur_sdk_src_state_db_db_.db.md)): *Promise‹string›*
 
-*Defined in [packages/augur-sdk/src/state/getter/Platform.ts:130](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/getter/Platform.ts#L130)*
+*Defined in [packages/augur-sdk/src/state/getter/Platform.ts:167](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/getter/Platform.ts#L167)*
 
 **Parameters:**
 
@@ -171,21 +171,21 @@ Name | Type |
 `endTime` | number |
 `db` | [DB](../classes/_augur_sdk_src_state_db_db_.db.md) |
 
-**Returns:** *Promise‹BigNumber›*
+**Returns:** *Promise‹string›*
 
 ___
 
 ###  makeGetField
 
-▸ **makeGetField**(`universe`: [Address](_augur_sdk_src_state_logs_types_.md#address), `startTime`: number, `endTime`: number): *(Anonymous function)*
+▸ **makeGetField**(`universe`: Address, `startTime`: number, `endTime`: number): *(Anonymous function)*
 
-*Defined in [packages/augur-sdk/src/state/getter/Platform.ts:204](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/getter/Platform.ts#L204)*
+*Defined in [packages/augur-sdk/src/state/getter/Platform.ts:263](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/getter/Platform.ts#L263)*
 
 **Parameters:**
 
 Name | Type |
 ------ | ------ |
-`universe` | [Address](_augur_sdk_src_state_logs_types_.md#address) |
+`universe` | Address |
 `startTime` | number |
 `endTime` | number |
 
@@ -197,7 +197,7 @@ ___
 
 ▸ **timeConstraint**(`startTime`: number, `endTime`: number): *[TimeConstraint](../interfaces/_augur_sdk_src_state_getter_platform_.timeconstraint.md)*
 
-*Defined in [packages/augur-sdk/src/state/getter/Platform.ts:188](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/getter/Platform.ts#L188)*
+*Defined in [packages/augur-sdk/src/state/getter/Platform.ts:247](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/getter/Platform.ts#L247)*
 
 **Parameters:**
 

@@ -19,7 +19,7 @@
 
 • **marketId**: *string*
 
-*Defined in [packages/augur-sdk/src/state/getter/Universe.ts:25](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/getter/Universe.ts#L25)*
+*Defined in [packages/augur-sdk/src/state/getter/Universe.ts:24](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/getter/Universe.ts#L24)*
 
 ___
 
@@ -27,4 +27,4 @@ ___
 
 • **outcomes**: *[MigrationOutcome](_augur_sdk_src_state_getter_universe_.migrationoutcome.md)[]*
 
-*Defined in [packages/augur-sdk/src/state/getter/Universe.ts:26](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/getter/Universe.ts#L26)*
+*Defined in [packages/augur-sdk/src/state/getter/Universe.ts:25](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/getter/Universe.ts#L25)*

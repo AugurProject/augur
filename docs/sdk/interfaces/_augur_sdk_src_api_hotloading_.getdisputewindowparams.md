@@ -17,14 +17,14 @@
 
 ###  augur
 
-• **augur**: *[Address](../modules/_augur_sdk_src_state_logs_types_.md#address)*
+• **augur**: *Address*
 
-*Defined in [packages/augur-sdk/src/api/HotLoading.ts:16](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/api/HotLoading.ts#L16)*
+*Defined in [packages/augur-sdk/src/api/HotLoading.ts:21](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/api/HotLoading.ts#L21)*
 
 ___
 
 ###  universe
 
-• **universe**: *[Address](../modules/_augur_sdk_src_state_logs_types_.md#address)*
+• **universe**: *Address*
 
-*Defined in [packages/augur-sdk/src/api/HotLoading.ts:17](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/api/HotLoading.ts#L17)*
+*Defined in [packages/augur-sdk/src/api/HotLoading.ts:22](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/api/HotLoading.ts#L22)*

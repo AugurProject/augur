@@ -18,4 +18,4 @@
 
 • **SECONDS_FROM_NOW_DEADLINE**: *3600* = 3600
 
-*Defined in [packages/augur-sdk/src/api/Uniswap.ts:6](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/api/Uniswap.ts#L6)*
+*Defined in [packages/augur-sdk/src/api/Uniswap.ts:5](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/api/Uniswap.ts#L5)*

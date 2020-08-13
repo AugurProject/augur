@@ -14,7 +14,7 @@
 
 ### Properties
 
-* [data](_augur_sdk_src_state_server_servercontroller_.servercontroller.md#private-data)
+* [data](_augur_sdk_src_state_server_servercontroller_.servercontroller.md#private-readonly-data)
 
 ### Methods
 
@@ -26,7 +26,7 @@
 
 \+ **new ServerController**(`data`: number): *[ServerController](_augur_sdk_src_state_server_servercontroller_.servercontroller.md)*
 
-*Defined in [packages/augur-sdk/src/state/server/ServerController.ts:2](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/server/ServerController.ts#L2)*
+*Defined in [packages/augur-sdk/src/state/server/ServerController.ts:2](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/server/ServerController.ts#L2)*
 
 **Parameters:**
 
@@ -38,11 +38,11 @@ Name | Type |
 
 ## Properties
 
-### `Private` data
+### `Private` `Readonly` data
 
 • **data**: *number*
 
-*Defined in [packages/augur-sdk/src/state/server/ServerController.ts:2](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/server/ServerController.ts#L2)*
+*Defined in [packages/augur-sdk/src/state/server/ServerController.ts:2](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/server/ServerController.ts#L2)*
 
 ## Methods
 
@@ -50,7 +50,7 @@ Name | Type |
 
 ▸ **start**(`data`: number): *Promise‹number›*
 
-*Defined in [packages/augur-sdk/src/state/server/ServerController.ts:9](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/server/ServerController.ts#L9)*
+*Defined in [packages/augur-sdk/src/state/server/ServerController.ts:9](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/server/ServerController.ts#L9)*
 
 **Parameters:**
 

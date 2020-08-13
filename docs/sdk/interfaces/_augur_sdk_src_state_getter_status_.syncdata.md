@@ -21,7 +21,7 @@
 
 • **blocksBehindCurrent**: *number*
 
-*Defined in [packages/augur-sdk/src/state/getter/status.ts:9](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/getter/status.ts#L9)*
+*Defined in [packages/augur-sdk/src/state/getter/status.ts:9](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/getter/status.ts#L9)*
 
 ___
 
@@ -29,7 +29,7 @@ ___
 
 • **highestAvailableBlockNumber**: *number*
 
-*Defined in [packages/augur-sdk/src/state/getter/status.ts:7](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/getter/status.ts#L7)*
+*Defined in [packages/augur-sdk/src/state/getter/status.ts:7](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/getter/status.ts#L7)*
 
 ___
 
@@ -37,7 +37,7 @@ ___
 
 • **lastSyncedBlockNumber**: *number*
 
-*Defined in [packages/augur-sdk/src/state/getter/status.ts:8](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/getter/status.ts#L8)*
+*Defined in [packages/augur-sdk/src/state/getter/status.ts:8](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/getter/status.ts#L8)*
 
 ___
 
@@ -45,4 +45,4 @@ ___
 
 • **percentSynced**: *string*
 
-*Defined in [packages/augur-sdk/src/state/getter/status.ts:10](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/getter/status.ts#L10)*
+*Defined in [packages/augur-sdk/src/state/getter/status.ts:10](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/getter/status.ts#L10)*

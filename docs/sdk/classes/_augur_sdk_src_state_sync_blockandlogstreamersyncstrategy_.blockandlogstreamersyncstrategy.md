@@ -22,6 +22,7 @@
 ### Properties
 
 * [blockAndLogStreamer](_augur_sdk_src_state_sync_blockandlogstreamersyncstrategy_.blockandlogstreamersyncstrategy.md#private-blockandlogstreamer)
+* [blockQueue](_augur_sdk_src_state_sync_blockandlogstreamersyncstrategy_.blockandlogstreamersyncstrategy.md#private-blockqueue)
 * [blockWindowWidth](_augur_sdk_src_state_sync_blockandlogstreamersyncstrategy_.blockandlogstreamersyncstrategy.md#private-blockwindowwidth)
 * [contractAddresses](_augur_sdk_src_state_sync_blockandlogstreamersyncstrategy_.blockandlogstreamersyncstrategy.md#protected-contractaddresses)
 * [currentSuspectBlocks](_augur_sdk_src_state_sync_blockandlogstreamersyncstrategy_.blockandlogstreamersyncstrategy.md#private-currentsuspectblocks)
@@ -37,6 +38,7 @@
 * [onBlockAdded](_augur_sdk_src_state_sync_blockandlogstreamersyncstrategy_.blockandlogstreamersyncstrategy.md#onblockadded)
 * [onBlockRemoved](_augur_sdk_src_state_sync_blockandlogstreamersyncstrategy_.blockandlogstreamersyncstrategy.md#onblockremoved)
 * [onNewBlock](_augur_sdk_src_state_sync_blockandlogstreamersyncstrategy_.blockandlogstreamersyncstrategy.md#onnewblock)
+* [processBlockAdded](_augur_sdk_src_state_sync_blockandlogstreamersyncstrategy_.blockandlogstreamersyncstrategy.md#processblockadded)
 * [start](_augur_sdk_src_state_sync_blockandlogstreamersyncstrategy_.blockandlogstreamersyncstrategy.md#start)
 * [create](_augur_sdk_src_state_sync_blockandlogstreamersyncstrategy_.blockandlogstreamersyncstrategy.md#static-create)
 
@@ -44,11 +46,11 @@
 
 ###  constructor
 
-\+ **new BlockAndLogStreamerSyncStrategy**(`getLogs`: function, `contractAddresses`: string[], `onLogsAdded`: function, `blockAndLogStreamer`: [BlockAndLogStreamerInterface](../interfaces/_augur_sdk_src_state_sync_blockandlogstreamersyncstrategy_.blockandlogstreamerinterface.md)‹Block, ExtendedLog›, `listenForNewBlocks`: function, `parseLogs`: function, `blockWindowWidth`: number): *[BlockAndLogStreamerSyncStrategy](_augur_sdk_src_state_sync_blockandlogstreamersyncstrategy_.blockandlogstreamersyncstrategy.md)*
+\+ **new BlockAndLogStreamerSyncStrategy**(`getLogs`: function, `contractAddresses`: string[], `onLogsAdded`: function, `blockAndLogStreamer`: [BlockAndLogStreamerInterface](../interfaces/_augur_sdk_src_state_sync_blockandlogstreamersyncstrategy_.blockandlogstreamerinterface.md)‹Block, [ExtendedLog](../interfaces/_augur_sdk_src_lib_blockstream_adapters_index_.extendedlog.md)›, `listenForNewBlocks`: function, `parseLogs`: function, `blockWindowWidth`: number): *[BlockAndLogStreamerSyncStrategy](_augur_sdk_src_state_sync_blockandlogstreamersyncstrategy_.blockandlogstreamersyncstrategy.md)*
 
 *Overrides [AbstractSyncStrategy](_augur_sdk_src_state_sync_abstractsyncstrategy_.abstractsyncstrategy.md).[constructor](_augur_sdk_src_state_sync_abstractsyncstrategy_.abstractsyncstrategy.md#constructor)*
 
-*Defined in [packages/augur-sdk/src/state/sync/BlockAndLogStreamerSyncStrategy.ts:54](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/sync/BlockAndLogStreamerSyncStrategy.ts#L54)*
+*Defined in [packages/augur-sdk/src/state/sync/BlockAndLogStreamerSyncStrategy.ts:60](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/sync/BlockAndLogStreamerSyncStrategy.ts#L60)*
 
 **Parameters:**
 
@@ -75,7 +77,7 @@ Name | Type |
 `blockNumber` | number |
 `logs` | [Log](../interfaces/_augur_types_types_logs_.log.md)[] |
 
-▪ **blockAndLogStreamer**: *[BlockAndLogStreamerInterface](../interfaces/_augur_sdk_src_state_sync_blockandlogstreamersyncstrategy_.blockandlogstreamerinterface.md)‹Block, ExtendedLog›*
+▪ **blockAndLogStreamer**: *[BlockAndLogStreamerInterface](../interfaces/_augur_sdk_src_state_sync_blockandlogstreamersyncstrategy_.blockandlogstreamerinterface.md)‹Block, [ExtendedLog](../interfaces/_augur_sdk_src_lib_blockstream_adapters_index_.extendedlog.md)›*
 
 ▪ **listenForNewBlocks**: *function*
 
@@ -111,9 +113,17 @@ Name | Type |
 
 ### `Private` blockAndLogStreamer
 
-• **blockAndLogStreamer**: *[BlockAndLogStreamerInterface](../interfaces/_augur_sdk_src_state_sync_blockandlogstreamersyncstrategy_.blockandlogstreamerinterface.md)‹Block, ExtendedLog›*
+• **blockAndLogStreamer**: *[BlockAndLogStreamerInterface](../interfaces/_augur_sdk_src_state_sync_blockandlogstreamersyncstrategy_.blockandlogstreamerinterface.md)‹Block, [ExtendedLog](../interfaces/_augur_sdk_src_lib_blockstream_adapters_index_.extendedlog.md)›*
 
-*Defined in [packages/augur-sdk/src/state/sync/BlockAndLogStreamerSyncStrategy.ts:60](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/sync/BlockAndLogStreamerSyncStrategy.ts#L60)*
+*Defined in [packages/augur-sdk/src/state/sync/BlockAndLogStreamerSyncStrategy.ts:66](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/sync/BlockAndLogStreamerSyncStrategy.ts#L66)*
+
+___
+
+### `Private` blockQueue
+
+• **blockQueue**: *AsyncQueue‹[BlockQueueTask](../interfaces/_augur_sdk_src_state_sync_blockandlogstreamersyncstrategy_.blockqueuetask.md)›*
+
+*Defined in [packages/augur-sdk/src/state/sync/BlockAndLogStreamerSyncStrategy.ts:60](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/sync/BlockAndLogStreamerSyncStrategy.ts#L60)*
 
 ___
 
@@ -121,7 +131,7 @@ ___
 
 • **blockWindowWidth**: *number*
 
-*Defined in [packages/augur-sdk/src/state/sync/BlockAndLogStreamerSyncStrategy.ts:68](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/sync/BlockAndLogStreamerSyncStrategy.ts#L68)*
+*Defined in [packages/augur-sdk/src/state/sync/BlockAndLogStreamerSyncStrategy.ts:74](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/sync/BlockAndLogStreamerSyncStrategy.ts#L74)*
 
 ___
 
@@ -131,7 +141,7 @@ ___
 
 *Inherited from [AbstractSyncStrategy](_augur_sdk_src_state_sync_abstractsyncstrategy_.abstractsyncstrategy.md).[contractAddresses](_augur_sdk_src_state_sync_abstractsyncstrategy_.abstractsyncstrategy.md#protected-contractaddresses)*
 
-*Defined in [packages/augur-sdk/src/state/sync/AbstractSyncStrategy.ts:11](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/sync/AbstractSyncStrategy.ts#L11)*
+*Defined in [packages/augur-sdk/src/state/sync/AbstractSyncStrategy.ts:11](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/sync/AbstractSyncStrategy.ts#L11)*
 
 ___
 
@@ -139,7 +149,7 @@ ___
 
 • **currentSuspectBlocks**: *Block[]* = []
 
-*Defined in [packages/augur-sdk/src/state/sync/BlockAndLogStreamerSyncStrategy.ts:54](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/sync/BlockAndLogStreamerSyncStrategy.ts#L54)*
+*Defined in [packages/augur-sdk/src/state/sync/BlockAndLogStreamerSyncStrategy.ts:59](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/sync/BlockAndLogStreamerSyncStrategy.ts#L59)*
 
 ___
 
@@ -149,7 +159,7 @@ ___
 
 *Inherited from [AbstractSyncStrategy](_augur_sdk_src_state_sync_abstractsyncstrategy_.abstractsyncstrategy.md).[getLogs](_augur_sdk_src_state_sync_abstractsyncstrategy_.abstractsyncstrategy.md#protected-getlogs)*
 
-*Defined in [packages/augur-sdk/src/state/sync/AbstractSyncStrategy.ts:10](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/sync/AbstractSyncStrategy.ts#L10)*
+*Defined in [packages/augur-sdk/src/state/sync/AbstractSyncStrategy.ts:10](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/sync/AbstractSyncStrategy.ts#L10)*
 
 #### Type declaration:
 
@@ -167,7 +177,7 @@ ___
 
 • **listenForNewBlocks**: *function*
 
-*Defined in [packages/augur-sdk/src/state/sync/BlockAndLogStreamerSyncStrategy.ts:64](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/sync/BlockAndLogStreamerSyncStrategy.ts#L64)*
+*Defined in [packages/augur-sdk/src/state/sync/BlockAndLogStreamerSyncStrategy.ts:70](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/sync/BlockAndLogStreamerSyncStrategy.ts#L70)*
 
 #### Type declaration:
 
@@ -193,7 +203,7 @@ ___
 
 *Inherited from [AbstractSyncStrategy](_augur_sdk_src_state_sync_abstractsyncstrategy_.abstractsyncstrategy.md).[onLogsAdded](_augur_sdk_src_state_sync_abstractsyncstrategy_.abstractsyncstrategy.md#protected-onlogsadded)*
 
-*Defined in [packages/augur-sdk/src/state/sync/AbstractSyncStrategy.ts:12](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/sync/AbstractSyncStrategy.ts#L12)*
+*Defined in [packages/augur-sdk/src/state/sync/AbstractSyncStrategy.ts:12](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/sync/AbstractSyncStrategy.ts#L12)*
 
 #### Type declaration:
 
@@ -212,7 +222,7 @@ ___
 
 • **parseLogs**: *function*
 
-*Defined in [packages/augur-sdk/src/state/sync/BlockAndLogStreamerSyncStrategy.ts:67](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/sync/BlockAndLogStreamerSyncStrategy.ts#L67)*
+*Defined in [packages/augur-sdk/src/state/sync/BlockAndLogStreamerSyncStrategy.ts:73](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/sync/BlockAndLogStreamerSyncStrategy.ts#L73)*
 
 #### Type declaration:
 
@@ -230,7 +240,7 @@ Name | Type |
 
 ▸ **listenForBlockAdded**(`callback`: [BlockCallback](../modules/_augur_sdk_src_state_sync_blockandlogstreamersyncstrategy_.md#blockcallback)): *void*
 
-*Defined in [packages/augur-sdk/src/state/sync/BlockAndLogStreamerSyncStrategy.ts:103](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/sync/BlockAndLogStreamerSyncStrategy.ts#L103)*
+*Defined in [packages/augur-sdk/src/state/sync/BlockAndLogStreamerSyncStrategy.ts:115](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/sync/BlockAndLogStreamerSyncStrategy.ts#L115)*
 
 **Parameters:**
 
@@ -246,7 +256,7 @@ ___
 
 ▸ **listenForBlockRemoved**(`callback`: function): *void*
 
-*Defined in [packages/augur-sdk/src/state/sync/BlockAndLogStreamerSyncStrategy.ts:110](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/sync/BlockAndLogStreamerSyncStrategy.ts#L110)*
+*Defined in [packages/augur-sdk/src/state/sync/BlockAndLogStreamerSyncStrategy.ts:122](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/sync/BlockAndLogStreamerSyncStrategy.ts#L122)*
 
 **Parameters:**
 
@@ -266,9 +276,9 @@ ___
 
 ###  onBlockAdded
 
-▸ **onBlockAdded**(`block`: Block): *Promise‹void›*
+▸ **onBlockAdded**(`block`: Block): *Promise‹unknown›*
 
-*Defined in [packages/augur-sdk/src/state/sync/BlockAndLogStreamerSyncStrategy.ts:134](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/sync/BlockAndLogStreamerSyncStrategy.ts#L134)*
+*Defined in [packages/augur-sdk/src/state/sync/BlockAndLogStreamerSyncStrategy.ts:146](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/sync/BlockAndLogStreamerSyncStrategy.ts#L146)*
 
 **Parameters:**
 
@@ -276,7 +286,7 @@ Name | Type |
 ------ | ------ |
 `block` | Block |
 
-**Returns:** *Promise‹void›*
+**Returns:** *Promise‹unknown›*
 
 ___
 
@@ -284,7 +294,7 @@ ___
 
 ▸ **onBlockRemoved**(`block`: Block): *Promise‹void›*
 
-*Defined in [packages/augur-sdk/src/state/sync/BlockAndLogStreamerSyncStrategy.ts:178](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/sync/BlockAndLogStreamerSyncStrategy.ts#L178)*
+*Defined in [packages/augur-sdk/src/state/sync/BlockAndLogStreamerSyncStrategy.ts:202](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/sync/BlockAndLogStreamerSyncStrategy.ts#L202)*
 
 **Parameters:**
 
@@ -300,7 +310,23 @@ ___
 
 ▸ **onNewBlock**(`block`: Block): *Promise‹void›*
 
-*Defined in [packages/augur-sdk/src/state/sync/BlockAndLogStreamerSyncStrategy.ts:128](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/sync/BlockAndLogStreamerSyncStrategy.ts#L128)*
+*Defined in [packages/augur-sdk/src/state/sync/BlockAndLogStreamerSyncStrategy.ts:140](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/sync/BlockAndLogStreamerSyncStrategy.ts#L140)*
+
+**Parameters:**
+
+Name | Type |
+------ | ------ |
+`block` | Block |
+
+**Returns:** *Promise‹void›*
+
+___
+
+###  processBlockAdded
+
+▸ **processBlockAdded**(`block`: Block): *Promise‹void›*
+
+*Defined in [packages/augur-sdk/src/state/sync/BlockAndLogStreamerSyncStrategy.ts:157](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/sync/BlockAndLogStreamerSyncStrategy.ts#L157)*
 
 **Parameters:**
 
@@ -318,7 +344,7 @@ ___
 
 *Overrides [AbstractSyncStrategy](_augur_sdk_src_state_sync_abstractsyncstrategy_.abstractsyncstrategy.md).[start](_augur_sdk_src_state_sync_abstractsyncstrategy_.abstractsyncstrategy.md#abstract-start)*
 
-*Defined in [packages/augur-sdk/src/state/sync/BlockAndLogStreamerSyncStrategy.ts:120](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/sync/BlockAndLogStreamerSyncStrategy.ts#L120)*
+*Defined in [packages/augur-sdk/src/state/sync/BlockAndLogStreamerSyncStrategy.ts:132](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/sync/BlockAndLogStreamerSyncStrategy.ts#L132)*
 
 **Parameters:**
 
@@ -334,7 +360,7 @@ ___
 
 ▸ **create**(`provider`: EthersProvider, `contractAddresses`: string[], `logFilterAggregator`: [LogFilterAggregatorInterface](../interfaces/_augur_sdk_src_state_logs_logfilteraggregator_.logfilteraggregatorinterface.md), `parseLogs`: function): *[BlockAndLogStreamerSyncStrategy](_augur_sdk_src_state_sync_blockandlogstreamersyncstrategy_.blockandlogstreamersyncstrategy.md)‹›*
 
-*Defined in [packages/augur-sdk/src/state/sync/BlockAndLogStreamerSyncStrategy.ts:74](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/sync/BlockAndLogStreamerSyncStrategy.ts#L74)*
+*Defined in [packages/augur-sdk/src/state/sync/BlockAndLogStreamerSyncStrategy.ts:86](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/sync/BlockAndLogStreamerSyncStrategy.ts#L86)*
 
 **Parameters:**
 

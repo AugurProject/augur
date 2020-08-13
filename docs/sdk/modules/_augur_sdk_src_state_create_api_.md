@@ -16,9 +16,9 @@
 
 ###  buildSyncStrategies
 
-▸ **buildSyncStrategies**(`client`: [Augur](../classes/_augur_sdk_src_augur_.augur.md), `db`: Promise‹[DB](../classes/_augur_sdk_src_state_db_db_.db.md)›, `provider`: EthersProvider, `logFilterAggregator`: [LogFilterAggregator](../classes/_augur_sdk_src_state_logs_logfilteraggregator_.logfilteraggregator.md), `config`: SDKConfiguration): *(Anonymous function)*
+▸ **buildSyncStrategies**(`client`: [Augur](../classes/_augur_sdk_src_augur_.augur.md), `db`: Promise‹[DB](../classes/_augur_sdk_src_state_db_db_.db.md)›, `provider`: EthersProvider, `logFilterAggregator`: [LogFilterAggregator](../classes/_augur_sdk_src_state_logs_logfilteraggregator_.logfilteraggregator.md), `config`: SDKConfiguration): *Promise‹(Anonymous function)›*
 
-*Defined in [packages/augur-sdk/src/state/create-api.ts:24](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/create-api.ts#L24)*
+*Defined in [packages/augur-sdk/src/state/create-api.ts:21](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/create-api.ts#L21)*
 
 **Parameters:**
 
@@ -30,23 +30,21 @@ Name | Type |
 `logFilterAggregator` | [LogFilterAggregator](../classes/_augur_sdk_src_state_logs_logfilteraggregator_.logfilteraggregator.md) |
 `config` | SDKConfiguration |
 
-**Returns:** *(Anonymous function)*
+**Returns:** *Promise‹(Anonymous function)›*
 
 ___
 
 ###  createClient
 
-▸ **createClient**(`config`: SDKConfiguration, `connector`: [BaseConnector](../classes/_augur_sdk_src_connector_base_connector_.baseconnector.md), `account?`: string, `signer?`: EthersSigner, `provider?`: EthersProvider, `enableFlexSearch`: boolean, `createBrowserMesh?`: function): *Promise‹[Augur](../classes/_augur_sdk_src_augur_.augur.md)›*
+▸ **createClient**(`config`: SDKConfiguration, `connector`: [BaseConnector](../classes/_augur_sdk_src_connector_base_connector_.baseconnector.md), `signer?`: EthersSigner, `provider?`: EthersProvider, `enableFlexSearch`: boolean, `createBrowserMesh?`: function): *Promise‹[Augur](../classes/_augur_sdk_src_augur_.augur.md)›*
 
-*Defined in [packages/augur-sdk/src/state/create-api.ts:85](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/create-api.ts#L85)*
+*Defined in [packages/augur-sdk/src/state/create-api.ts:98](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/create-api.ts#L98)*
 
 **Parameters:**
 
 ▪ **config**: *SDKConfiguration*
 
 ▪ **connector**: *[BaseConnector](../classes/_augur_sdk_src_connector_base_connector_.baseconnector.md)*
-
-▪`Optional`  **account**: *string*
 
 ▪`Optional`  **signer**: *EthersSigner*
 
@@ -72,9 +70,9 @@ ___
 
 ###  createServer
 
-▸ **createServer**(`config`: SDKConfiguration, `client?`: [Augur](../classes/_augur_sdk_src_augur_.augur.md), `account?`: string): *Promise‹object›*
+▸ **createServer**(`config`: SDKConfiguration, `client?`: [Augur](../classes/_augur_sdk_src_augur_.augur.md)): *Promise‹object›*
 
-*Defined in [packages/augur-sdk/src/state/create-api.ts:148](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/create-api.ts#L148)*
+*Defined in [packages/augur-sdk/src/state/create-api.ts:157](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/create-api.ts#L157)*
 
 **Parameters:**
 
@@ -82,7 +80,6 @@ Name | Type |
 ------ | ------ |
 `config` | SDKConfiguration |
 `client?` | [Augur](../classes/_augur_sdk_src_augur_.augur.md) |
-`account?` | string |
 
 **Returns:** *Promise‹object›*
 
@@ -90,16 +87,15 @@ ___
 
 ###  startServer
 
-▸ **startServer**(`config`: SDKConfiguration, `account?`: string): *Promise‹[API](../classes/_augur_sdk_src_state_getter_api_.api.md)›*
+▸ **startServer**(`config`: SDKConfiguration): *Promise‹[API](../classes/_augur_sdk_src_state_getter_api_.api.md)›*
 
-*Defined in [packages/augur-sdk/src/state/create-api.ts:227](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/create-api.ts#L227)*
+*Defined in [packages/augur-sdk/src/state/create-api.ts:249](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/create-api.ts#L249)*
 
 **Parameters:**
 
 Name | Type |
 ------ | ------ |
 `config` | SDKConfiguration |
-`account?` | string |
 
 **Returns:** *Promise‹[API](../classes/_augur_sdk_src_state_getter_api_.api.md)›*
 
@@ -109,7 +105,7 @@ ___
 
 ▸ **startServerFromClient**(`config`: SDKConfiguration, `client?`: [Augur](../classes/_augur_sdk_src_augur_.augur.md)): *Promise‹[API](../classes/_augur_sdk_src_state_getter_api_.api.md)›*
 
-*Defined in [packages/augur-sdk/src/state/create-api.ts:212](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/create-api.ts#L212)*
+*Defined in [packages/augur-sdk/src/state/create-api.ts:234](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/create-api.ts#L234)*
 
 **Parameters:**
 

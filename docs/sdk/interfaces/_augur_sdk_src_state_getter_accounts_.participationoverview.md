@@ -21,7 +21,7 @@
 
 • **contracts**: *[ParticipationContract](_augur_sdk_src_state_getter_accounts_.participationcontract.md)[]*
 
-*Defined in [packages/augur-sdk/src/state/getter/Accounts.ts:107](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/getter/Accounts.ts#L107)*
+*Defined in [packages/augur-sdk/src/state/getter/Accounts.ts:111](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/getter/Accounts.ts#L111)*
 
 ___
 
@@ -29,7 +29,7 @@ ___
 
 • **totalClaimable**: *string*
 
-*Defined in [packages/augur-sdk/src/state/getter/Accounts.ts:105](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/getter/Accounts.ts#L105)*
+*Defined in [packages/augur-sdk/src/state/getter/Accounts.ts:109](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/getter/Accounts.ts#L109)*
 
 ___
 
@@ -37,7 +37,7 @@ ___
 
 • **totalFees**: *string*
 
-*Defined in [packages/augur-sdk/src/state/getter/Accounts.ts:106](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/getter/Accounts.ts#L106)*
+*Defined in [packages/augur-sdk/src/state/getter/Accounts.ts:110](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/getter/Accounts.ts#L110)*
 
 ___
 
@@ -45,4 +45,4 @@ ___
 
 • **totalStaked**: *string*
 
-*Defined in [packages/augur-sdk/src/state/getter/Accounts.ts:104](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/getter/Accounts.ts#L104)*
+*Defined in [packages/augur-sdk/src/state/getter/Accounts.ts:108](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/getter/Accounts.ts#L108)*

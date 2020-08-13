@@ -19,7 +19,7 @@
 
 • **asks**: *[Order](_augur_sdk_src_api_liquidity_.order.md)[]*
 
-*Defined in [packages/augur-sdk/src/api/Liquidity.ts:15](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/api/Liquidity.ts#L15)*
+*Defined in [packages/augur-sdk/src/api/Liquidity.ts:17](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/api/Liquidity.ts#L17)*
 
 ___
 
@@ -27,4 +27,4 @@ ___
 
 • **bids**: *[Order](_augur_sdk_src_api_liquidity_.order.md)[]*
 
-*Defined in [packages/augur-sdk/src/api/Liquidity.ts:14](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/api/Liquidity.ts#L14)*
+*Defined in [packages/augur-sdk/src/api/Liquidity.ts:16](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/api/Liquidity.ts#L16)*

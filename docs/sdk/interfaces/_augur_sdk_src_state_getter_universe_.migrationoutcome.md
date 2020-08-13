@@ -23,7 +23,7 @@
 
 • **amount**: *string*
 
-*Defined in [packages/augur-sdk/src/state/getter/Universe.ts:32](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/getter/Universe.ts#L32)*
+*Defined in [packages/augur-sdk/src/state/getter/Universe.ts:31](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/getter/Universe.ts#L31)*
 
 ___
 
@@ -31,7 +31,7 @@ ___
 
 • **isInvalid**: *boolean*
 
-*Defined in [packages/augur-sdk/src/state/getter/Universe.ts:35](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/getter/Universe.ts#L35)*
+*Defined in [packages/augur-sdk/src/state/getter/Universe.ts:34](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/getter/Universe.ts#L34)*
 
 ___
 
@@ -39,7 +39,7 @@ ___
 
 • **isMalformed**: *boolean*
 
-*Defined in [packages/augur-sdk/src/state/getter/Universe.ts:33](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/getter/Universe.ts#L33)*
+*Defined in [packages/augur-sdk/src/state/getter/Universe.ts:32](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/getter/Universe.ts#L32)*
 
 ___
 
@@ -47,7 +47,7 @@ ___
 
 • **outcome**: *string*
 
-*Defined in [packages/augur-sdk/src/state/getter/Universe.ts:31](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/getter/Universe.ts#L31)*
+*Defined in [packages/augur-sdk/src/state/getter/Universe.ts:30](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/getter/Universe.ts#L30)*
 
 ___
 
@@ -55,7 +55,7 @@ ___
 
 • **outcomeName**: *string*
 
-*Defined in [packages/augur-sdk/src/state/getter/Universe.ts:30](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/getter/Universe.ts#L30)*
+*Defined in [packages/augur-sdk/src/state/getter/Universe.ts:29](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/getter/Universe.ts#L29)*
 
 ___
 
@@ -63,4 +63,4 @@ ___
 
 • **payoutNumerators**: *string[]*
 
-*Defined in [packages/augur-sdk/src/state/getter/Universe.ts:34](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/getter/Universe.ts#L34)*
+*Defined in [packages/augur-sdk/src/state/getter/Universe.ts:33](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/getter/Universe.ts#L33)*

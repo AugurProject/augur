@@ -38,7 +38,7 @@
 
 *Overrides [AbstractSyncStrategy](_augur_sdk_src_state_sync_abstractsyncstrategy_.abstractsyncstrategy.md).[constructor](_augur_sdk_src_state_sync_abstractsyncstrategy_.abstractsyncstrategy.md#constructor)*
 
-*Defined in [packages/augur-sdk/src/state/sync/BulkSyncStrategy.ts:8](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/sync/BulkSyncStrategy.ts#L8)*
+*Defined in [packages/augur-sdk/src/state/sync/BulkSyncStrategy.ts:8](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/sync/BulkSyncStrategy.ts#L8)*
 
 **Parameters:**
 
@@ -85,7 +85,7 @@ Name | Type |
 
 • **chunkSize**: *number*
 
-*Defined in [packages/augur-sdk/src/state/sync/BulkSyncStrategy.ts:14](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/sync/BulkSyncStrategy.ts#L14)*
+*Defined in [packages/augur-sdk/src/state/sync/BulkSyncStrategy.ts:14](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/sync/BulkSyncStrategy.ts#L14)*
 
 ___
 
@@ -95,7 +95,7 @@ ___
 
 *Inherited from [AbstractSyncStrategy](_augur_sdk_src_state_sync_abstractsyncstrategy_.abstractsyncstrategy.md).[contractAddresses](_augur_sdk_src_state_sync_abstractsyncstrategy_.abstractsyncstrategy.md#protected-contractaddresses)*
 
-*Defined in [packages/augur-sdk/src/state/sync/AbstractSyncStrategy.ts:11](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/sync/AbstractSyncStrategy.ts#L11)*
+*Defined in [packages/augur-sdk/src/state/sync/AbstractSyncStrategy.ts:11](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/sync/AbstractSyncStrategy.ts#L11)*
 
 ___
 
@@ -105,7 +105,7 @@ ___
 
 *Inherited from [AbstractSyncStrategy](_augur_sdk_src_state_sync_abstractsyncstrategy_.abstractsyncstrategy.md).[getLogs](_augur_sdk_src_state_sync_abstractsyncstrategy_.abstractsyncstrategy.md#protected-getlogs)*
 
-*Defined in [packages/augur-sdk/src/state/sync/AbstractSyncStrategy.ts:10](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/sync/AbstractSyncStrategy.ts#L10)*
+*Defined in [packages/augur-sdk/src/state/sync/AbstractSyncStrategy.ts:10](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/sync/AbstractSyncStrategy.ts#L10)*
 
 #### Type declaration:
 
@@ -125,7 +125,7 @@ ___
 
 *Inherited from [AbstractSyncStrategy](_augur_sdk_src_state_sync_abstractsyncstrategy_.abstractsyncstrategy.md).[onLogsAdded](_augur_sdk_src_state_sync_abstractsyncstrategy_.abstractsyncstrategy.md#protected-onlogsadded)*
 
-*Defined in [packages/augur-sdk/src/state/sync/AbstractSyncStrategy.ts:12](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/sync/AbstractSyncStrategy.ts#L12)*
+*Defined in [packages/augur-sdk/src/state/sync/AbstractSyncStrategy.ts:12](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/sync/AbstractSyncStrategy.ts#L12)*
 
 #### Type declaration:
 
@@ -144,7 +144,7 @@ ___
 
 • **parseLogs**: *function*
 
-*Defined in [packages/augur-sdk/src/state/sync/BulkSyncStrategy.ts:13](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/sync/BulkSyncStrategy.ts#L13)*
+*Defined in [packages/augur-sdk/src/state/sync/BulkSyncStrategy.ts:13](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/sync/BulkSyncStrategy.ts#L13)*
 
 #### Type declaration:
 
@@ -166,7 +166,7 @@ Name | Type |
 
 *Overrides [AbstractSyncStrategy](_augur_sdk_src_state_sync_abstractsyncstrategy_.abstractsyncstrategy.md).[start](_augur_sdk_src_state_sync_abstractsyncstrategy_.abstractsyncstrategy.md#abstract-start)*
 
-*Defined in [packages/augur-sdk/src/state/sync/BulkSyncStrategy.ts:19](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/sync/BulkSyncStrategy.ts#L19)*
+*Defined in [packages/augur-sdk/src/state/sync/BulkSyncStrategy.ts:19](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/sync/BulkSyncStrategy.ts#L19)*
 
 **Parameters:**
 

@@ -20,7 +20,7 @@
 
 • **Hash**: *string*
 
-*Defined in [packages/augur-sdk/src/warp/WarpController.ts:52](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/warp/WarpController.ts#L52)*
+*Defined in [packages/augur-sdk/src/warp/WarpController.ts:60](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/warp/WarpController.ts#L60)*
 
 ___
 
@@ -28,7 +28,7 @@ ___
 
 • **Name**? : *string*
 
-*Defined in [packages/augur-sdk/src/warp/WarpController.ts:53](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/warp/WarpController.ts#L53)*
+*Defined in [packages/augur-sdk/src/warp/WarpController.ts:61](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/warp/WarpController.ts#L61)*
 
 ___
 
@@ -36,4 +36,4 @@ ___
 
 • **Size**: *number*
 
-*Defined in [packages/augur-sdk/src/warp/WarpController.ts:54](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/warp/WarpController.ts#L54)*
+*Defined in [packages/augur-sdk/src/warp/WarpController.ts:62](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/warp/WarpController.ts#L62)*

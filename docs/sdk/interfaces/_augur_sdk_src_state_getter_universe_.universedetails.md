@@ -27,7 +27,7 @@
 
 • **children**: *[UniverseDetails](_augur_sdk_src_state_getter_universe_.universedetails.md)[]*
 
-*Defined in [packages/augur-sdk/src/state/getter/Universe.ts:47](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/getter/Universe.ts#L47)*
+*Defined in [packages/augur-sdk/src/state/getter/Universe.ts:46](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/getter/Universe.ts#L46)*
 
 ___
 
@@ -35,7 +35,7 @@ ___
 
 • **creationTimestamp**: *number*
 
-*Defined in [packages/augur-sdk/src/state/getter/Universe.ts:41](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/getter/Universe.ts#L41)*
+*Defined in [packages/augur-sdk/src/state/getter/Universe.ts:40](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/getter/Universe.ts#L40)*
 
 ___
 
@@ -43,7 +43,7 @@ ___
 
 • **id**: *string*
 
-*Defined in [packages/augur-sdk/src/state/getter/Universe.ts:39](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/getter/Universe.ts#L39)*
+*Defined in [packages/augur-sdk/src/state/getter/Universe.ts:38](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/getter/Universe.ts#L38)*
 
 ___
 
@@ -51,7 +51,7 @@ ___
 
 • **numberOfMarkets**: *number*
 
-*Defined in [packages/augur-sdk/src/state/getter/Universe.ts:46](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/getter/Universe.ts#L46)*
+*Defined in [packages/augur-sdk/src/state/getter/Universe.ts:45](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/getter/Universe.ts#L45)*
 
 ___
 
@@ -59,7 +59,7 @@ ___
 
 • **outcomeName**: *string*
 
-*Defined in [packages/augur-sdk/src/state/getter/Universe.ts:42](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/getter/Universe.ts#L42)*
+*Defined in [packages/augur-sdk/src/state/getter/Universe.ts:41](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/getter/Universe.ts#L41)*
 
 ___
 
@@ -67,7 +67,7 @@ ___
 
 • **parentUniverseId**: *string | null*
 
-*Defined in [packages/augur-sdk/src/state/getter/Universe.ts:40](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/getter/Universe.ts#L40)*
+*Defined in [packages/augur-sdk/src/state/getter/Universe.ts:39](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/getter/Universe.ts#L39)*
 
 ___
 
@@ -75,7 +75,7 @@ ___
 
 • **totalOpenInterest**: *string*
 
-*Defined in [packages/augur-sdk/src/state/getter/Universe.ts:45](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/getter/Universe.ts#L45)*
+*Defined in [packages/augur-sdk/src/state/getter/Universe.ts:44](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/getter/Universe.ts#L44)*
 
 ___
 
@@ -83,7 +83,7 @@ ___
 
 • **totalRepSupply**: *string*
 
-*Defined in [packages/augur-sdk/src/state/getter/Universe.ts:44](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/getter/Universe.ts#L44)*
+*Defined in [packages/augur-sdk/src/state/getter/Universe.ts:43](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/getter/Universe.ts#L43)*
 
 ___
 
@@ -91,7 +91,7 @@ ___
 
 • **usersRep**: *string*
 
-*Defined in [packages/augur-sdk/src/state/getter/Universe.ts:43](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/getter/Universe.ts#L43)*
+*Defined in [packages/augur-sdk/src/state/getter/Universe.ts:42](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/getter/Universe.ts#L42)*
 
 ___
 
@@ -99,4 +99,4 @@ ___
 
 • **warpSyncHash**: *string*
 
-*Defined in [packages/augur-sdk/src/state/getter/Universe.ts:48](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/getter/Universe.ts#L48)*
+*Defined in [packages/augur-sdk/src/state/getter/Universe.ts:47](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/getter/Universe.ts#L47)*

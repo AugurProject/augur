@@ -17,9 +17,9 @@
 
 ###  orders
 
-• **orders**: *[ZeroXOrders](_augur_sdk_src_state_getter_zeroxordersgetters_.zeroxorders.md)*
+• **orders**: *ZeroXOrders*
 
-*Defined in [packages/augur-sdk/src/state/getter/Users.ts:79](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/getter/Users.ts#L79)*
+*Defined in [packages/augur-sdk/src/state/getter/Users.ts:85](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/getter/Users.ts#L85)*
 
 ___
 
@@ -27,4 +27,4 @@ ___
 
 • **totalOpenOrdersFrozenFunds**: *string*
 
-*Defined in [packages/augur-sdk/src/state/getter/Users.ts:80](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/getter/Users.ts#L80)*
+*Defined in [packages/augur-sdk/src/state/getter/Users.ts:86](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/getter/Users.ts#L86)*

@@ -19,7 +19,7 @@
 
 • **betterOrderId**: *string | null*
 
-*Defined in [packages/augur-sdk/src/state/getter/OnChainTrading.ts:138](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/getter/OnChainTrading.ts#L138)*
+*Defined in [packages/augur-sdk/src/state/getter/OnChainTrading.ts:74](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/getter/OnChainTrading.ts#L74)*
 
 ___
 
@@ -27,4 +27,4 @@ ___
 
 • **worseOrderId**: *string | null*
 
-*Defined in [packages/augur-sdk/src/state/getter/OnChainTrading.ts:139](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/getter/OnChainTrading.ts#L139)*
+*Defined in [packages/augur-sdk/src/state/getter/OnChainTrading.ts:75](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/getter/OnChainTrading.ts#L75)*

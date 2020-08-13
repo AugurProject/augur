@@ -7,3 +7,7 @@
 ### Classes
 
 * [WarpSyncGetter](../classes/_augur_sdk_src_state_getter_warpsyncgetter_.warpsyncgetter.md)
+
+### Interfaces
+
+* [WarpSyncStatusResponse](../interfaces/_augur_sdk_src_state_getter_warpsyncgetter_.warpsyncstatusresponse.md)

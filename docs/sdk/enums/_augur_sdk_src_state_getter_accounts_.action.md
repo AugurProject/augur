@@ -25,7 +25,7 @@
 
 • **ALL**: = "ALL"
 
-*Defined in [packages/augur-sdk/src/state/getter/Accounts.ts:39](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/getter/Accounts.ts#L39)*
+*Defined in [packages/augur-sdk/src/state/getter/Accounts.ts:43](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/getter/Accounts.ts#L43)*
 
 ___
 
@@ -33,7 +33,7 @@ ___
 
 • **BUY**: = "BUY"
 
-*Defined in [packages/augur-sdk/src/state/getter/Accounts.ts:40](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/getter/Accounts.ts#L40)*
+*Defined in [packages/augur-sdk/src/state/getter/Accounts.ts:44](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/getter/Accounts.ts#L44)*
 
 ___
 
@@ -41,7 +41,7 @@ ___
 
 • **CANCEL**: = "CANCEL"
 
-*Defined in [packages/augur-sdk/src/state/getter/Accounts.ts:42](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/getter/Accounts.ts#L42)*
+*Defined in [packages/augur-sdk/src/state/getter/Accounts.ts:46](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/getter/Accounts.ts#L46)*
 
 ___
 
@@ -49,7 +49,7 @@ ___
 
 • **CLAIM_PARTICIPATION_TOKENS**: = "CLAIM_PARTICIPATION_TOKENS"
 
-*Defined in [packages/augur-sdk/src/state/getter/Accounts.ts:45](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/getter/Accounts.ts#L45)*
+*Defined in [packages/augur-sdk/src/state/getter/Accounts.ts:49](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/getter/Accounts.ts#L49)*
 
 ___
 
@@ -57,7 +57,7 @@ ___
 
 • **CLAIM_TRADING_PROCEEDS**: = "CLAIM_TRADING_PROCEEDS"
 
-*Defined in [packages/augur-sdk/src/state/getter/Accounts.ts:46](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/getter/Accounts.ts#L46)*
+*Defined in [packages/augur-sdk/src/state/getter/Accounts.ts:50](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/getter/Accounts.ts#L50)*
 
 ___
 
@@ -65,7 +65,7 @@ ___
 
 • **CLAIM_WINNING_CROWDSOURCERS**: = "CLAIM_WINNING_CROWDSOURCERS"
 
-*Defined in [packages/augur-sdk/src/state/getter/Accounts.ts:47](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/getter/Accounts.ts#L47)*
+*Defined in [packages/augur-sdk/src/state/getter/Accounts.ts:51](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/getter/Accounts.ts#L51)*
 
 ___
 
@@ -73,7 +73,7 @@ ___
 
 • **DISPUTE**: = "DISPUTE"
 
-*Defined in [packages/augur-sdk/src/state/getter/Accounts.ts:48](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/getter/Accounts.ts#L48)*
+*Defined in [packages/augur-sdk/src/state/getter/Accounts.ts:52](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/getter/Accounts.ts#L52)*
 
 ___
 
@@ -81,7 +81,7 @@ ___
 
 • **FILLED**: = "FILLED"
 
-*Defined in [packages/augur-sdk/src/state/getter/Accounts.ts:44](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/getter/Accounts.ts#L44)*
+*Defined in [packages/augur-sdk/src/state/getter/Accounts.ts:48](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/getter/Accounts.ts#L48)*
 
 ___
 
@@ -89,7 +89,7 @@ ___
 
 • **INITIAL_REPORT**: = "INITIAL_REPORT"
 
-*Defined in [packages/augur-sdk/src/state/getter/Accounts.ts:49](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/getter/Accounts.ts#L49)*
+*Defined in [packages/augur-sdk/src/state/getter/Accounts.ts:53](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/getter/Accounts.ts#L53)*
 
 ___
 
@@ -97,7 +97,7 @@ ___
 
 • **MARKET_CREATION**: = "MARKET_CREATION"
 
-*Defined in [packages/augur-sdk/src/state/getter/Accounts.ts:50](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/getter/Accounts.ts#L50)*
+*Defined in [packages/augur-sdk/src/state/getter/Accounts.ts:54](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/getter/Accounts.ts#L54)*
 
 ___
 
@@ -105,7 +105,7 @@ ___
 
 • **OPEN**: = "OPEN"
 
-*Defined in [packages/augur-sdk/src/state/getter/Accounts.ts:43](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/getter/Accounts.ts#L43)*
+*Defined in [packages/augur-sdk/src/state/getter/Accounts.ts:47](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/getter/Accounts.ts#L47)*
 
 ___
 
@@ -113,4 +113,4 @@ ___
 
 • **SELL**: = "SELL"
 
-*Defined in [packages/augur-sdk/src/state/getter/Accounts.ts:41](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/getter/Accounts.ts#L41)*
+*Defined in [packages/augur-sdk/src/state/getter/Accounts.ts:45](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/getter/Accounts.ts#L45)*

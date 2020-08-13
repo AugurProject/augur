@@ -39,7 +39,7 @@
 
 \+ **new WebsocketConnector**(): *[WebsocketConnector](_augur_sdk_src_connector_ws_connector_.websocketconnector.md)*
 
-*Defined in [packages/augur-sdk/src/connector/ws-connector.ts:9](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/connector/ws-connector.ts#L9)*
+*Defined in [packages/augur-sdk/src/connector/ws-connector.ts:12](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/connector/ws-connector.ts#L12)*
 
 **Returns:** *[WebsocketConnector](_augur_sdk_src_connector_ws_connector_.websocketconnector.md)*
 
@@ -49,7 +49,7 @@
 
 • **socket**: *WebSocketAsPromised*
 
-*Defined in [packages/augur-sdk/src/connector/ws-connector.ts:9](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/connector/ws-connector.ts#L9)*
+*Defined in [packages/augur-sdk/src/connector/ws-connector.ts:12](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/connector/ws-connector.ts#L12)*
 
 ___
 
@@ -59,7 +59,7 @@ ___
 
 *Inherited from [BaseConnector](_augur_sdk_src_connector_base_connector_.baseconnector.md).[subscriptions](_augur_sdk_src_connector_base_connector_.baseconnector.md#subscriptions)*
 
-*Defined in [packages/augur-sdk/src/connector/base-connector.ts:15](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/connector/base-connector.ts#L15)*
+*Defined in [packages/augur-sdk/src/connector/base-connector.ts:18](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/connector/base-connector.ts#L18)*
 
 #### Type declaration:
 
@@ -77,7 +77,7 @@ ___
 
 *Inherited from [BaseConnector](_augur_sdk_src_connector_base_connector_.baseconnector.md).[client](_augur_sdk_src_connector_base_connector_.baseconnector.md#client)*
 
-*Defined in [packages/augur-sdk/src/connector/base-connector.ts:8](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/connector/base-connector.ts#L8)*
+*Defined in [packages/augur-sdk/src/connector/base-connector.ts:11](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/connector/base-connector.ts#L11)*
 
 **Returns:** *[Augur](_augur_sdk_src_augur_.augur.md)*
 
@@ -85,7 +85,7 @@ ___
 
 *Inherited from [BaseConnector](_augur_sdk_src_connector_base_connector_.baseconnector.md).[client](_augur_sdk_src_connector_base_connector_.baseconnector.md#client)*
 
-*Defined in [packages/augur-sdk/src/connector/base-connector.ts:11](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/connector/base-connector.ts#L11)*
+*Defined in [packages/augur-sdk/src/connector/base-connector.ts:14](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/connector/base-connector.ts#L14)*
 
 **Parameters:**
 
@@ -99,11 +99,11 @@ Name | Type |
 
 ###  bindTo
 
-▸ **bindTo**<**R**, **P**>(`f`: function): *function*
+▸ **bindTo**‹**R**, **P**›(`f`: function): *function*
 
 *Overrides [BaseConnector](_augur_sdk_src_connector_base_connector_.baseconnector.md).[bindTo](_augur_sdk_src_connector_base_connector_.baseconnector.md#abstract-bindto)*
 
-*Defined in [packages/augur-sdk/src/connector/ws-connector.ts:55](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/connector/ws-connector.ts#L55)*
+*Defined in [packages/augur-sdk/src/connector/ws-connector.ts:58](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/connector/ws-connector.ts#L58)*
 
 **Type parameters:**
 
@@ -139,15 +139,15 @@ ___
 
 ### `Protected` callbackWrapper
 
-▸ **callbackWrapper**<**T**>(`eventName`: string, `callback`: [Callback](../modules/_augur_sdk_src_events_.md#callback)): *function*
+▸ **callbackWrapper**‹**T**›(`eventName`: string, `callback`: [Callback](../modules/_augur_sdk_src_events_.md#callback)): *function*
 
 *Inherited from [BaseConnector](_augur_sdk_src_connector_base_connector_.baseconnector.md).[callbackWrapper](_augur_sdk_src_connector_base_connector_.baseconnector.md#protected-callbackwrapper)*
 
-*Defined in [packages/augur-sdk/src/connector/base-connector.ts:27](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/connector/base-connector.ts#L27)*
+*Defined in [packages/augur-sdk/src/connector/base-connector.ts:38](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/connector/base-connector.ts#L38)*
 
 **Type parameters:**
 
-▪ **T**: *[SubscriptionType](../modules/_augur_sdk_src_event_handlers_.md#subscriptiontype)*
+▪ **T**: *SubscriptionType*
 
 **Parameters:**
 
@@ -158,13 +158,13 @@ Name | Type |
 
 **Returns:** *function*
 
-▸ (...`args`: [SubscriptionType](../modules/_augur_sdk_src_event_handlers_.md#subscriptiontype)[]): *void*
+▸ (...`args`: SubscriptionType[]): *void*
 
 **Parameters:**
 
 Name | Type |
 ------ | ------ |
-`...args` | [SubscriptionType](../modules/_augur_sdk_src_event_handlers_.md#subscriptiontype)[] |
+`...args` | SubscriptionType[] |
 
 ___
 
@@ -174,7 +174,7 @@ ___
 
 *Overrides [BaseConnector](_augur_sdk_src_connector_base_connector_.baseconnector.md).[connect](_augur_sdk_src_connector_base_connector_.baseconnector.md#abstract-connect)*
 
-*Defined in [packages/augur-sdk/src/connector/ws-connector.ts:15](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/connector/ws-connector.ts#L15)*
+*Defined in [packages/augur-sdk/src/connector/ws-connector.ts:18](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/connector/ws-connector.ts#L18)*
 
 **Parameters:**
 
@@ -193,7 +193,7 @@ ___
 
 *Overrides [BaseConnector](_augur_sdk_src_connector_base_connector_.baseconnector.md).[disconnect](_augur_sdk_src_connector_base_connector_.baseconnector.md#abstract-disconnect)*
 
-*Defined in [packages/augur-sdk/src/connector/ws-connector.ts:51](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/connector/ws-connector.ts#L51)*
+*Defined in [packages/augur-sdk/src/connector/ws-connector.ts:54](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/connector/ws-connector.ts#L54)*
 
 **Returns:** *Promise‹any›*
 
@@ -203,7 +203,7 @@ ___
 
 ▸ **messageReceived**(`message`: any): *void*
 
-*Defined in [packages/augur-sdk/src/connector/ws-connector.ts:42](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/connector/ws-connector.ts#L42)*
+*Defined in [packages/augur-sdk/src/connector/ws-connector.ts:45](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/connector/ws-connector.ts#L45)*
 
 **Parameters:**
 
@@ -217,17 +217,17 @@ ___
 
 ###  off
 
-▸ **off**(`eventName`: [SubscriptionEventName](../enums/_augur_sdk_src_constants_.subscriptioneventname.md) | string): *Promise‹void›*
+▸ **off**(`eventName`: SubscriptionEventName | string): *Promise‹void›*
 
 *Overrides [BaseConnector](_augur_sdk_src_connector_base_connector_.baseconnector.md).[off](_augur_sdk_src_connector_base_connector_.baseconnector.md#abstract-off)*
 
-*Defined in [packages/augur-sdk/src/connector/ws-connector.ts:84](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/connector/ws-connector.ts#L84)*
+*Defined in [packages/augur-sdk/src/connector/ws-connector.ts:87](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/connector/ws-connector.ts#L87)*
 
 **Parameters:**
 
 Name | Type |
 ------ | ------ |
-`eventName` | [SubscriptionEventName](../enums/_augur_sdk_src_constants_.subscriptioneventname.md) &#124; string |
+`eventName` | SubscriptionEventName &#124; string |
 
 **Returns:** *Promise‹void›*
 
@@ -235,21 +235,21 @@ ___
 
 ###  on
 
-▸ **on**<**T**>(`eventName`: [SubscriptionEventName](../enums/_augur_sdk_src_constants_.subscriptioneventname.md) | string, `callback`: [Callback](../modules/_augur_sdk_src_events_.md#callback)): *Promise‹void›*
+▸ **on**‹**T**›(`eventName`: SubscriptionEventName | string, `callback`: [Callback](../modules/_augur_sdk_src_events_.md#callback)): *Promise‹void›*
 
 *Overrides [BaseConnector](_augur_sdk_src_connector_base_connector_.baseconnector.md).[on](_augur_sdk_src_connector_base_connector_.baseconnector.md#abstract-on)*
 
-*Defined in [packages/augur-sdk/src/connector/ws-connector.ts:68](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/connector/ws-connector.ts#L68)*
+*Defined in [packages/augur-sdk/src/connector/ws-connector.ts:71](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/connector/ws-connector.ts#L71)*
 
 **Type parameters:**
 
-▪ **T**: *[SubscriptionType](../modules/_augur_sdk_src_event_handlers_.md#subscriptiontype)*
+▪ **T**: *SubscriptionType*
 
 **Parameters:**
 
 Name | Type |
 ------ | ------ |
-`eventName` | [SubscriptionEventName](../enums/_augur_sdk_src_constants_.subscriptioneventname.md) &#124; string |
+`eventName` | SubscriptionEventName &#124; string |
 `callback` | [Callback](../modules/_augur_sdk_src_events_.md#callback) |
 
 **Returns:** *Promise‹void›*

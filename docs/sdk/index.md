@@ -1,2 +1,3 @@
 # Index
 
+[Globals](./globals)

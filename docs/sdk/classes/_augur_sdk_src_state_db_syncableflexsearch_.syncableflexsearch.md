@@ -29,7 +29,7 @@
 
 \+ **new SyncableFlexSearch**(): *[SyncableFlexSearch](_augur_sdk_src_state_db_syncableflexsearch_.syncableflexsearch.md)*
 
-*Defined in [packages/augur-sdk/src/state/db/SyncableFlexSearch.ts:22](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/db/SyncableFlexSearch.ts#L22)*
+*Defined in [packages/augur-sdk/src/state/db/SyncableFlexSearch.ts:17](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/db/SyncableFlexSearch.ts#L17)*
 
 **Returns:** *[SyncableFlexSearch](_augur_sdk_src_state_db_syncableflexsearch_.syncableflexsearch.md)*
 
@@ -39,21 +39,21 @@
 
 • **flexSearchIndex**: *Index‹[MarketFields](../interfaces/_augur_sdk_src_state_db_syncableflexsearch_.marketfields.md)›*
 
-*Defined in [packages/augur-sdk/src/state/db/SyncableFlexSearch.ts:22](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/db/SyncableFlexSearch.ts#L22)*
+*Defined in [packages/augur-sdk/src/state/db/SyncableFlexSearch.ts:17](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/db/SyncableFlexSearch.ts#L17)*
 
 ## Methods
 
 ###  addMarketCreatedDocs
 
-▸ **addMarketCreatedDocs**(`marketCreatedDocs`: [MarketData](../interfaces/_augur_sdk_src_state_logs_types_.marketdata.md)[]): *Promise‹void›*
+▸ **addMarketCreatedDocs**(`marketCreatedDocs`: MarketData[]): *Promise‹void›*
 
-*Defined in [packages/augur-sdk/src/state/db/SyncableFlexSearch.ts:58](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/db/SyncableFlexSearch.ts#L58)*
+*Defined in [packages/augur-sdk/src/state/db/SyncableFlexSearch.ts:65](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/db/SyncableFlexSearch.ts#L65)*
 
 **Parameters:**
 
 Name | Type |
 ------ | ------ |
-`marketCreatedDocs` | [MarketData](../interfaces/_augur_sdk_src_state_logs_types_.marketdata.md)[] |
+`marketCreatedDocs` | MarketData[] |
 
 **Returns:** *Promise‹void›*
 
@@ -63,7 +63,7 @@ ___
 
 ▸ **removeMarketCreatedDocs**(`marketCreatedDocs`: Collection‹any, any›): *Promise‹void›*
 
-*Defined in [packages/augur-sdk/src/state/db/SyncableFlexSearch.ts:97](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/db/SyncableFlexSearch.ts#L97)*
+*Defined in [packages/augur-sdk/src/state/db/SyncableFlexSearch.ts:117](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/db/SyncableFlexSearch.ts#L117)*
 
 **Parameters:**
 
@@ -79,7 +79,7 @@ ___
 
 ▸ **search**(`query`: string, `options?`: SearchOptions): *Promise‹Array‹SearchResults‹[MarketFields](../interfaces/_augur_sdk_src_state_db_syncableflexsearch_.marketfields.md)›››*
 
-*Defined in [packages/augur-sdk/src/state/db/SyncableFlexSearch.ts:50](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/db/SyncableFlexSearch.ts#L50)*
+*Defined in [packages/augur-sdk/src/state/db/SyncableFlexSearch.ts:52](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/db/SyncableFlexSearch.ts#L52)*
 
 **Parameters:**
 
@@ -96,7 +96,7 @@ ___
 
 ▸ **where**(`whereObj`: object): *Promise‹Array‹SearchResults‹[MarketFields](../interfaces/_augur_sdk_src_state_db_syncableflexsearch_.marketfields.md)›››*
 
-*Defined in [packages/augur-sdk/src/state/db/SyncableFlexSearch.ts:54](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/db/SyncableFlexSearch.ts#L54)*
+*Defined in [packages/augur-sdk/src/state/db/SyncableFlexSearch.ts:59](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/db/SyncableFlexSearch.ts#L59)*
 
 **Parameters:**
 

@@ -16,16 +16,19 @@
 
 * [augur](_augur_sdk_src_state_db_db_.db.md#private-augur)
 * [currentOrdersDatabase](_augur_sdk_src_state_db_db_.db.md#private-currentordersdatabase)
-* [dexieDB](_augur_sdk_src_state_db_db_.db.md#dexiedb)
+* [dbOpened](_augur_sdk_src_state_db_db_.db.md#private-dbopened)
+* [dexieDB](_augur_sdk_src_state_db_db_.db.md#readonly-dexiedb)
 * [disputeDatabase](_augur_sdk_src_state_db_db_.db.md#private-disputedatabase)
 * [enableZeroX](_augur_sdk_src_state_db_db_.db.md#private-enablezerox)
-* [genericEventDBDescriptions](_augur_sdk_src_state_db_db_.db.md#genericeventdbdescriptions)
-* [logFilters](_augur_sdk_src_state_db_db_.db.md#logfilters)
+* [genericEventDBDescriptions](_augur_sdk_src_state_db_db_.db.md#readonly-genericeventdbdescriptions)
+* [getterCache](_augur_sdk_src_state_db_db_.db.md#gettercache)
+* [logFilters](_augur_sdk_src_state_db_db_.db.md#readonly-logfilters)
 * [marketDatabase](_augur_sdk_src_state_db_db_.db.md#marketdatabase)
 * [networkId](_augur_sdk_src_state_db_db_.db.md#private-networkid)
 * [parsedOrderEventDatabase](_augur_sdk_src_state_db_db_.db.md#private-parsedordereventdatabase)
 * [syncStatus](_augur_sdk_src_state_db_db_.db.md#syncstatus)
 * [syncableDatabases](_augur_sdk_src_state_db_db_.db.md#private-syncabledatabases)
+* [uploadBlockNumber](_augur_sdk_src_state_db_db_.db.md#private-uploadblocknumber)
 * [warpCheckpoints](_augur_sdk_src_state_db_db_.db.md#warpcheckpoints)
 * [zeroXOrders](_augur_sdk_src_state_db_db_.db.md#private-zeroxorders)
 
@@ -77,7 +80,7 @@
 ### Methods
 
 * [addNewBlock](_augur_sdk_src_state_db_db_.db.md#addnewblock)
-* [delete](_augur_sdk_src_state_db_db_.db.md#delete)
+* [clear](_augur_sdk_src_state_db_db_.db.md#clear)
 * [generateSchemas](_augur_sdk_src_state_db_db_.db.md#generateschemas)
 * [getSyncStartingBlock](_augur_sdk_src_state_db_db_.db.md#getsyncstartingblock)
 * [initializeDB](_augur_sdk_src_state_db_db_.db.md#initializedb)
@@ -93,9 +96,9 @@
 
 ###  constructor
 
-\+ **new DB**(`dexieDB`: Dexie, `logFilters`: [LogFilterAggregatorInterface](../interfaces/_augur_sdk_src_state_logs_logfilteraggregator_.logfilteraggregatorinterface.md), `augur`: [Augur](_augur_sdk_src_augur_.augur.md), `networkId`: number, `enableZeroX`: boolean): *[DB](_augur_sdk_src_state_db_db_.db.md)*
+\+ **new DB**(`dexieDB`: Dexie, `logFilters`: [LogFilterAggregatorInterface](../interfaces/_augur_sdk_src_state_logs_logfilteraggregator_.logfilteraggregatorinterface.md), `augur`: [Augur](_augur_sdk_src_augur_.augur.md), `networkId`: number, `uploadBlockNumber`: number, `enableZeroX`: boolean): *[DB](_augur_sdk_src_state_db_db_.db.md)*
 
-*Defined in [packages/augur-sdk/src/state/db/DB.ts:157](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/db/DB.ts#L157)*
+*Defined in [packages/augur-sdk/src/state/db/DB.ts:170](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/db/DB.ts#L170)*
 
 **Parameters:**
 
@@ -105,6 +108,7 @@ Name | Type |
 `logFilters` | [LogFilterAggregatorInterface](../interfaces/_augur_sdk_src_state_logs_logfilteraggregator_.logfilteraggregatorinterface.md) |
 `augur` | [Augur](_augur_sdk_src_augur_.augur.md) |
 `networkId` | number |
+`uploadBlockNumber` | number |
 `enableZeroX` | boolean |
 
 **Returns:** *[DB](_augur_sdk_src_state_db_db_.db.md)*
@@ -115,23 +119,31 @@ Name | Type |
 
 • **augur**: *[Augur](_augur_sdk_src_augur_.augur.md)*
 
-*Defined in [packages/augur-sdk/src/state/db/DB.ts:162](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/db/DB.ts#L162)*
+*Defined in [packages/augur-sdk/src/state/db/DB.ts:175](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/db/DB.ts#L175)*
 
 ___
 
 ### `Private` currentOrdersDatabase
 
-• **currentOrdersDatabase**: *[CurrentOrdersDatabase](_augur_sdk_src_state_db_currentordersdb_.currentordersdatabase.md)*
+• **currentOrdersDatabase**: *[ParsedOrderEventDB](_augur_sdk_src_state_db_parsedordereventdb_.parsedordereventdb.md)*
 
-*Defined in [packages/augur-sdk/src/state/db/DB.ts:69](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/db/DB.ts#L69)*
+*Defined in [packages/augur-sdk/src/state/db/DB.ts:76](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/db/DB.ts#L76)*
 
 ___
 
-###  dexieDB
+### `Private` dbOpened
+
+• **dbOpened**: *boolean* = false
+
+*Defined in [packages/augur-sdk/src/state/db/DB.ts:83](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/db/DB.ts#L83)*
+
+___
+
+### `Readonly` dexieDB
 
 • **dexieDB**: *Dexie*
 
-*Defined in [packages/augur-sdk/src/state/db/DB.ts:160](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/db/DB.ts#L160)*
+*Defined in [packages/augur-sdk/src/state/db/DB.ts:173](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/db/DB.ts#L173)*
 
 ___
 
@@ -139,7 +151,7 @@ ___
 
 • **disputeDatabase**: *[DisputeDatabase](_augur_sdk_src_state_db_disputedb_.disputedatabase.md)*
 
-*Defined in [packages/augur-sdk/src/state/db/DB.ts:68](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/db/DB.ts#L68)*
+*Defined in [packages/augur-sdk/src/state/db/DB.ts:75](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/db/DB.ts#L75)*
 
 ___
 
@@ -147,13 +159,13 @@ ___
 
 • **enableZeroX**: *boolean*
 
-*Defined in [packages/augur-sdk/src/state/db/DB.ts:164](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/db/DB.ts#L164)*
+*Defined in [packages/augur-sdk/src/state/db/DB.ts:178](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/db/DB.ts#L178)*
 
 ___
 
-###  genericEventDBDescriptions
+### `Readonly` genericEventDBDescriptions
 
-• **genericEventDBDescriptions**: *[GenericEventDBDescription](../interfaces/_augur_sdk_src_state_logs_types_.genericeventdbdescription.md)[]* = [
+• **genericEventDBDescriptions**: *GenericEventDBDescription[]* = [
     { EventName: 'CompleteSetsPurchased', indexes: ['timestamp', 'market'] },
     { EventName: 'CompleteSetsSold', indexes: ['timestamp', 'market'] },
     {
@@ -181,7 +193,7 @@ ___
       EventName: 'InitialReportSubmitted',
       indexes: ['timestamp', 'reporter', '[universe+reporter]', 'market'],
     },
-    { EventName: 'InitialReporterTransferred', indexes: ['market'] },
+    { EventName: 'InitialReporterTransferred', indexes: ['market', 'to'] },
     {
       EventName: 'MarketCreated',
       indexes: ['market', 'timestamp', '[universe+timestamp]'],
@@ -190,7 +202,11 @@ ___
     { EventName: 'MarketMigrated', indexes: ['market'] },
     { EventName: 'MarketParticipantsDisavowed', indexes: ['market'] },
     { EventName: 'MarketTransferred', indexes: ['market'] },
-    { EventName: 'MarketVolumeChanged', indexes: ['market'], primaryKey: 'market' },
+    {
+      EventName: 'MarketVolumeChanged',
+      indexes: ['market'],
+      primaryKey: 'market',
+    },
     { EventName: 'MarketOIChanged', indexes: ['market'], primaryKey: 'market' },
     {
       EventName: 'OrderEvent',
@@ -236,15 +252,23 @@ ___
     },
   ]
 
-*Defined in [packages/augur-sdk/src/state/db/DB.ts:76](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/db/DB.ts#L76)*
+*Defined in [packages/augur-sdk/src/state/db/DB.ts:85](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/db/DB.ts#L85)*
 
 ___
 
-###  logFilters
+###  getterCache
+
+• **getterCache**: *[GetterCache](_augur_sdk_src_state_db_gettercache_.gettercache.md)*
+
+*Defined in [packages/augur-sdk/src/state/db/DB.ts:80](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/db/DB.ts#L80)*
+
+___
+
+### `Readonly` logFilters
 
 • **logFilters**: *[LogFilterAggregatorInterface](../interfaces/_augur_sdk_src_state_logs_logfilteraggregator_.logfilteraggregatorinterface.md)*
 
-*Defined in [packages/augur-sdk/src/state/db/DB.ts:161](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/db/DB.ts#L161)*
+*Defined in [packages/augur-sdk/src/state/db/DB.ts:174](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/db/DB.ts#L174)*
 
 ___
 
@@ -252,7 +276,7 @@ ___
 
 • **marketDatabase**: *[MarketDB](_augur_sdk_src_state_db_marketdb_.marketdb.md)*
 
-*Defined in [packages/augur-sdk/src/state/db/DB.ts:70](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/db/DB.ts#L70)*
+*Defined in [packages/augur-sdk/src/state/db/DB.ts:77](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/db/DB.ts#L77)*
 
 ___
 
@@ -260,7 +284,7 @@ ___
 
 • **networkId**: *number*
 
-*Defined in [packages/augur-sdk/src/state/db/DB.ts:163](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/db/DB.ts#L163)*
+*Defined in [packages/augur-sdk/src/state/db/DB.ts:176](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/db/DB.ts#L176)*
 
 ___
 
@@ -268,7 +292,7 @@ ___
 
 • **parsedOrderEventDatabase**: *[ParsedOrderEventDB](_augur_sdk_src_state_db_parsedordereventdb_.parsedordereventdb.md)*
 
-*Defined in [packages/augur-sdk/src/state/db/DB.ts:71](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/db/DB.ts#L71)*
+*Defined in [packages/augur-sdk/src/state/db/DB.ts:78](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/db/DB.ts#L78)*
 
 ___
 
@@ -276,7 +300,7 @@ ___
 
 • **syncStatus**: *[SyncStatus](_augur_sdk_src_state_db_syncstatus_.syncstatus.md)*
 
-*Defined in [packages/augur-sdk/src/state/db/DB.ts:73](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/db/DB.ts#L73)*
+*Defined in [packages/augur-sdk/src/state/db/DB.ts:81](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/db/DB.ts#L81)*
 
 ___
 
@@ -284,7 +308,7 @@ ___
 
 • **syncableDatabases**: *object*
 
-*Defined in [packages/augur-sdk/src/state/db/DB.ts:67](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/db/DB.ts#L67)*
+*Defined in [packages/augur-sdk/src/state/db/DB.ts:74](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/db/DB.ts#L74)*
 
 #### Type declaration:
 
@@ -292,11 +316,19 @@ ___
 
 ___
 
+### `Private` uploadBlockNumber
+
+• **uploadBlockNumber**: *number*
+
+*Defined in [packages/augur-sdk/src/state/db/DB.ts:177](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/db/DB.ts#L177)*
+
+___
+
 ###  warpCheckpoints
 
 • **warpCheckpoints**: *[WarpSyncCheckpointsDB](_augur_sdk_src_state_db_warpsynccheckpointsdb_.warpsynccheckpointsdb.md)*
 
-*Defined in [packages/augur-sdk/src/state/db/DB.ts:74](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/db/DB.ts#L74)*
+*Defined in [packages/augur-sdk/src/state/db/DB.ts:82](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/db/DB.ts#L82)*
 
 ___
 
@@ -304,427 +336,427 @@ ___
 
 • **zeroXOrders**: *[ZeroXOrders](_augur_sdk_src_state_db_zeroxorders_.zeroxorders.md)*
 
-*Defined in [packages/augur-sdk/src/state/db/DB.ts:72](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/db/DB.ts#L72)*
+*Defined in [packages/augur-sdk/src/state/db/DB.ts:79](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/db/DB.ts#L79)*
 
 ## Accessors
 
 ###  CancelZeroXOrder
 
-• **get CancelZeroXOrder**(): *Table‹[CancelZeroXOrderLog](../interfaces/_augur_sdk_src_state_logs_types_.cancelzeroxorderlog.md), any›*
+• **get CancelZeroXOrder**(): *Table‹CancelZeroXOrderLog, any›*
 
-*Defined in [packages/augur-sdk/src/state/db/DB.ts:503](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/db/DB.ts#L503)*
+*Defined in [packages/augur-sdk/src/state/db/DB.ts:644](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/db/DB.ts#L644)*
 
-**Returns:** *Table‹[CancelZeroXOrderLog](../interfaces/_augur_sdk_src_state_logs_types_.cancelzeroxorderlog.md), any›*
+**Returns:** *Table‹CancelZeroXOrderLog, any›*
 
 ___
 
 ###  CompleteSetsPurchased
 
-• **get CompleteSetsPurchased**(): *Table‹[CompleteSetsPurchasedLog](../interfaces/_augur_sdk_src_state_logs_types_.completesetspurchasedlog.md), string | number | Date | ArrayBuffer | ArrayBufferView | DataView | void[][] | ReadonlyArray‹string | number | Date | ArrayBuffer | ArrayBufferView | DataView | void[][]››*
+• **get CompleteSetsPurchased**(): *Table‹CompleteSetsPurchasedLog, IndexableType›*
 
-*Defined in [packages/augur-sdk/src/state/db/DB.ts:483](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/db/DB.ts#L483)*
+*Defined in [packages/augur-sdk/src/state/db/DB.ts:564](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/db/DB.ts#L564)*
 
-**Returns:** *Table‹[CompleteSetsPurchasedLog](../interfaces/_augur_sdk_src_state_logs_types_.completesetspurchasedlog.md), string | number | Date | ArrayBuffer | ArrayBufferView | DataView | void[][] | ReadonlyArray‹string | number | Date | ArrayBuffer | ArrayBufferView | DataView | void[][]››*
+**Returns:** *Table‹CompleteSetsPurchasedLog, IndexableType›*
 
 ___
 
 ###  CompleteSetsSold
 
-• **get CompleteSetsSold**(): *Table‹[CompleteSetsSoldLog](../interfaces/_augur_sdk_src_state_logs_types_.completesetssoldlog.md), string | number | Date | ArrayBuffer | ArrayBufferView | DataView | void[][] | ReadonlyArray‹string | number | Date | ArrayBuffer | ArrayBufferView | DataView | void[][]››*
+• **get CompleteSetsSold**(): *Table‹CompleteSetsSoldLog, IndexableType›*
 
-*Defined in [packages/augur-sdk/src/state/db/DB.ts:484](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/db/DB.ts#L484)*
+*Defined in [packages/augur-sdk/src/state/db/DB.ts:569](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/db/DB.ts#L569)*
 
-**Returns:** *Table‹[CompleteSetsSoldLog](../interfaces/_augur_sdk_src_state_logs_types_.completesetssoldlog.md), string | number | Date | ArrayBuffer | ArrayBufferView | DataView | void[][] | ReadonlyArray‹string | number | Date | ArrayBuffer | ArrayBufferView | DataView | void[][]››*
+**Returns:** *Table‹CompleteSetsSoldLog, IndexableType›*
 
 ___
 
 ###  CurrentOrders
 
-• **get CurrentOrders**(): *Table‹[CurrentOrder](../interfaces/_augur_sdk_src_state_logs_types_.currentorder.md), string | number | Date | ArrayBuffer | ArrayBufferView | DataView | void[][] | ReadonlyArray‹string | number | Date | ArrayBuffer | ArrayBufferView | DataView | void[][]››*
+• **get CurrentOrders**(): *Table‹CurrentOrder, IndexableType›*
 
-*Defined in [packages/augur-sdk/src/state/db/DB.ts:522](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/db/DB.ts#L522)*
+*Defined in [packages/augur-sdk/src/state/db/DB.ts:716](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/db/DB.ts#L716)*
 
-**Returns:** *Table‹[CurrentOrder](../interfaces/_augur_sdk_src_state_logs_types_.currentorder.md), string | number | Date | ArrayBuffer | ArrayBufferView | DataView | void[][] | ReadonlyArray‹string | number | Date | ArrayBuffer | ArrayBufferView | DataView | void[][]››*
+**Returns:** *Table‹CurrentOrder, IndexableType›*
 
 ___
 
 ###  Dispute
 
-• **get Dispute**(): *Table‹[DisputeDoc](../interfaces/_augur_sdk_src_state_logs_types_.disputedoc.md), string | number | Date | ArrayBuffer | ArrayBufferView | DataView | void[][] | ReadonlyArray‹string | number | Date | ArrayBuffer | ArrayBufferView | DataView | void[][]››*
+• **get Dispute**(): *Table‹DisputeDoc, IndexableType›*
 
-*Defined in [packages/augur-sdk/src/state/db/DB.ts:521](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/db/DB.ts#L521)*
+*Defined in [packages/augur-sdk/src/state/db/DB.ts:713](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/db/DB.ts#L713)*
 
-**Returns:** *Table‹[DisputeDoc](../interfaces/_augur_sdk_src_state_logs_types_.disputedoc.md), string | number | Date | ArrayBuffer | ArrayBufferView | DataView | void[][] | ReadonlyArray‹string | number | Date | ArrayBuffer | ArrayBufferView | DataView | void[][]››*
+**Returns:** *Table‹DisputeDoc, IndexableType›*
 
 ___
 
 ###  DisputeCrowdsourcerCompleted
 
-• **get DisputeCrowdsourcerCompleted**(): *Table‹[DisputeCrowdsourcerCompletedLog](../interfaces/_augur_sdk_src_state_logs_types_.disputecrowdsourcercompletedlog.md), string | number | Date | ArrayBuffer | ArrayBufferView | DataView | void[][] | ReadonlyArray‹string | number | Date | ArrayBuffer | ArrayBufferView | DataView | void[][]››*
+• **get DisputeCrowdsourcerCompleted**(): *Table‹DisputeCrowdsourcerCompletedLog, IndexableType›*
 
-*Defined in [packages/augur-sdk/src/state/db/DB.ts:486](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/db/DB.ts#L486)*
+*Defined in [packages/augur-sdk/src/state/db/DB.ts:577](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/db/DB.ts#L577)*
 
-**Returns:** *Table‹[DisputeCrowdsourcerCompletedLog](../interfaces/_augur_sdk_src_state_logs_types_.disputecrowdsourcercompletedlog.md), string | number | Date | ArrayBuffer | ArrayBufferView | DataView | void[][] | ReadonlyArray‹string | number | Date | ArrayBuffer | ArrayBufferView | DataView | void[][]››*
+**Returns:** *Table‹DisputeCrowdsourcerCompletedLog, IndexableType›*
 
 ___
 
 ###  DisputeCrowdsourcerContribution
 
-• **get DisputeCrowdsourcerContribution**(): *Table‹[DisputeCrowdsourcerContributionLog](../interfaces/_augur_sdk_src_state_logs_types_.disputecrowdsourcercontributionlog.md), string | number | Date | ArrayBuffer | ArrayBufferView | DataView | void[][] | ReadonlyArray‹string | number | Date | ArrayBuffer | ArrayBufferView | DataView | void[][]››*
+• **get DisputeCrowdsourcerContribution**(): *Table‹DisputeCrowdsourcerContributionLog, IndexableType›*
 
-*Defined in [packages/augur-sdk/src/state/db/DB.ts:485](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/db/DB.ts#L485)*
+*Defined in [packages/augur-sdk/src/state/db/DB.ts:572](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/db/DB.ts#L572)*
 
-**Returns:** *Table‹[DisputeCrowdsourcerContributionLog](../interfaces/_augur_sdk_src_state_logs_types_.disputecrowdsourcercontributionlog.md), string | number | Date | ArrayBuffer | ArrayBufferView | DataView | void[][] | ReadonlyArray‹string | number | Date | ArrayBuffer | ArrayBufferView | DataView | void[][]››*
+**Returns:** *Table‹DisputeCrowdsourcerContributionLog, IndexableType›*
 
 ___
 
 ###  DisputeCrowdsourcerCreated
 
-• **get DisputeCrowdsourcerCreated**(): *Table‹[DisputeCrowdsourcerCreatedLog](../interfaces/_augur_sdk_src_state_logs_types_.disputecrowdsourcercreatedlog.md), string | number | Date | ArrayBuffer | ArrayBufferView | DataView | void[][] | ReadonlyArray‹string | number | Date | ArrayBuffer | ArrayBufferView | DataView | void[][]››*
+• **get DisputeCrowdsourcerCreated**(): *Table‹DisputeCrowdsourcerCreatedLog, IndexableType›*
 
-*Defined in [packages/augur-sdk/src/state/db/DB.ts:487](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/db/DB.ts#L487)*
+*Defined in [packages/augur-sdk/src/state/db/DB.ts:582](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/db/DB.ts#L582)*
 
-**Returns:** *Table‹[DisputeCrowdsourcerCreatedLog](../interfaces/_augur_sdk_src_state_logs_types_.disputecrowdsourcercreatedlog.md), string | number | Date | ArrayBuffer | ArrayBufferView | DataView | void[][] | ReadonlyArray‹string | number | Date | ArrayBuffer | ArrayBufferView | DataView | void[][]››*
+**Returns:** *Table‹DisputeCrowdsourcerCreatedLog, IndexableType›*
 
 ___
 
 ###  DisputeCrowdsourcerRedeemed
 
-• **get DisputeCrowdsourcerRedeemed**(): *Table‹[DisputeCrowdsourcerRedeemedLog](../interfaces/_augur_sdk_src_state_logs_types_.disputecrowdsourcerredeemedlog.md), string | number | Date | ArrayBuffer | ArrayBufferView | DataView | void[][] | ReadonlyArray‹string | number | Date | ArrayBuffer | ArrayBufferView | DataView | void[][]››*
+• **get DisputeCrowdsourcerRedeemed**(): *Table‹DisputeCrowdsourcerRedeemedLog, IndexableType›*
 
-*Defined in [packages/augur-sdk/src/state/db/DB.ts:488](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/db/DB.ts#L488)*
+*Defined in [packages/augur-sdk/src/state/db/DB.ts:587](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/db/DB.ts#L587)*
 
-**Returns:** *Table‹[DisputeCrowdsourcerRedeemedLog](../interfaces/_augur_sdk_src_state_logs_types_.disputecrowdsourcerredeemedlog.md), string | number | Date | ArrayBuffer | ArrayBufferView | DataView | void[][] | ReadonlyArray‹string | number | Date | ArrayBuffer | ArrayBufferView | DataView | void[][]››*
+**Returns:** *Table‹DisputeCrowdsourcerRedeemedLog, IndexableType›*
 
 ___
 
 ###  DisputeWindowCreated
 
-• **get DisputeWindowCreated**(): *Table‹[DisputeWindowCreatedLog](../interfaces/_augur_sdk_src_state_logs_types_.disputewindowcreatedlog.md), string | number | Date | ArrayBuffer | ArrayBufferView | DataView | void[][] | ReadonlyArray‹string | number | Date | ArrayBuffer | ArrayBufferView | DataView | void[][]››*
+• **get DisputeWindowCreated**(): *Table‹DisputeWindowCreatedLog, IndexableType›*
 
-*Defined in [packages/augur-sdk/src/state/db/DB.ts:489](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/db/DB.ts#L489)*
+*Defined in [packages/augur-sdk/src/state/db/DB.ts:592](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/db/DB.ts#L592)*
 
-**Returns:** *Table‹[DisputeWindowCreatedLog](../interfaces/_augur_sdk_src_state_logs_types_.disputewindowcreatedlog.md), string | number | Date | ArrayBuffer | ArrayBufferView | DataView | void[][] | ReadonlyArray‹string | number | Date | ArrayBuffer | ArrayBufferView | DataView | void[][]››*
+**Returns:** *Table‹DisputeWindowCreatedLog, IndexableType›*
 
 ___
 
 ###  InitialReportSubmitted
 
-• **get InitialReportSubmitted**(): *Table‹[InitialReportSubmittedLog](../interfaces/_augur_sdk_src_state_logs_types_.initialreportsubmittedlog.md), string | number | Date | ArrayBuffer | ArrayBufferView | DataView | void[][] | ReadonlyArray‹string | number | Date | ArrayBuffer | ArrayBufferView | DataView | void[][]››*
+• **get InitialReportSubmitted**(): *Table‹InitialReportSubmittedLog, IndexableType›*
 
-*Defined in [packages/augur-sdk/src/state/db/DB.ts:491](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/db/DB.ts#L491)*
+*Defined in [packages/augur-sdk/src/state/db/DB.ts:600](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/db/DB.ts#L600)*
 
-**Returns:** *Table‹[InitialReportSubmittedLog](../interfaces/_augur_sdk_src_state_logs_types_.initialreportsubmittedlog.md), string | number | Date | ArrayBuffer | ArrayBufferView | DataView | void[][] | ReadonlyArray‹string | number | Date | ArrayBuffer | ArrayBufferView | DataView | void[][]››*
+**Returns:** *Table‹InitialReportSubmittedLog, IndexableType›*
 
 ___
 
 ###  InitialReporterRedeemed
 
-• **get InitialReporterRedeemed**(): *Table‹[InitialReporterRedeemedLog](../interfaces/_augur_sdk_src_state_logs_types_.initialreporterredeemedlog.md), string | number | Date | ArrayBuffer | ArrayBufferView | DataView | void[][] | ReadonlyArray‹string | number | Date | ArrayBuffer | ArrayBufferView | DataView | void[][]››*
+• **get InitialReporterRedeemed**(): *Table‹InitialReporterRedeemedLog, IndexableType›*
 
-*Defined in [packages/augur-sdk/src/state/db/DB.ts:490](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/db/DB.ts#L490)*
+*Defined in [packages/augur-sdk/src/state/db/DB.ts:595](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/db/DB.ts#L595)*
 
-**Returns:** *Table‹[InitialReporterRedeemedLog](../interfaces/_augur_sdk_src_state_logs_types_.initialreporterredeemedlog.md), string | number | Date | ArrayBuffer | ArrayBufferView | DataView | void[][] | ReadonlyArray‹string | number | Date | ArrayBuffer | ArrayBufferView | DataView | void[][]››*
+**Returns:** *Table‹InitialReporterRedeemedLog, IndexableType›*
 
 ___
 
 ###  InitialReporterTransferred
 
-• **get InitialReporterTransferred**(): *Table‹[InitialReporterTransferredLog](../interfaces/_augur_sdk_src_state_logs_types_.initialreportertransferredlog.md), string | number | Date | ArrayBuffer | ArrayBufferView | DataView | void[][] | ReadonlyArray‹string | number | Date | ArrayBuffer | ArrayBufferView | DataView | void[][]››*
+• **get InitialReporterTransferred**(): *Table‹InitialReporterTransferredLog, IndexableType›*
 
-*Defined in [packages/augur-sdk/src/state/db/DB.ts:492](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/db/DB.ts#L492)*
+*Defined in [packages/augur-sdk/src/state/db/DB.ts:605](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/db/DB.ts#L605)*
 
-**Returns:** *Table‹[InitialReporterTransferredLog](../interfaces/_augur_sdk_src_state_logs_types_.initialreportertransferredlog.md), string | number | Date | ArrayBuffer | ArrayBufferView | DataView | void[][] | ReadonlyArray‹string | number | Date | ArrayBuffer | ArrayBufferView | DataView | void[][]››*
+**Returns:** *Table‹InitialReporterTransferredLog, IndexableType›*
 
 ___
 
 ###  MarketCreated
 
-• **get MarketCreated**(): *Table‹[MarketCreatedLog](../interfaces/_augur_sdk_src_state_logs_types_.marketcreatedlog.md), string | number | Date | ArrayBuffer | ArrayBufferView | DataView | void[][] | ReadonlyArray‹string | number | Date | ArrayBuffer | ArrayBufferView | DataView | void[][]››*
+• **get MarketCreated**(): *Table‹MarketCreatedLog, IndexableType›*
 
-*Defined in [packages/augur-sdk/src/state/db/DB.ts:493](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/db/DB.ts#L493)*
+*Defined in [packages/augur-sdk/src/state/db/DB.ts:610](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/db/DB.ts#L610)*
 
-**Returns:** *Table‹[MarketCreatedLog](../interfaces/_augur_sdk_src_state_logs_types_.marketcreatedlog.md), string | number | Date | ArrayBuffer | ArrayBufferView | DataView | void[][] | ReadonlyArray‹string | number | Date | ArrayBuffer | ArrayBufferView | DataView | void[][]››*
+**Returns:** *Table‹MarketCreatedLog, IndexableType›*
 
 ___
 
 ###  MarketFinalized
 
-• **get MarketFinalized**(): *Table‹[MarketFinalizedLog](../interfaces/_augur_sdk_src_state_logs_types_.marketfinalizedlog.md), string | number | Date | ArrayBuffer | ArrayBufferView | DataView | void[][] | ReadonlyArray‹string | number | Date | ArrayBuffer | ArrayBufferView | DataView | void[][]››*
+• **get MarketFinalized**(): *Table‹MarketFinalizedLog, IndexableType›*
 
-*Defined in [packages/augur-sdk/src/state/db/DB.ts:494](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/db/DB.ts#L494)*
+*Defined in [packages/augur-sdk/src/state/db/DB.ts:613](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/db/DB.ts#L613)*
 
-**Returns:** *Table‹[MarketFinalizedLog](../interfaces/_augur_sdk_src_state_logs_types_.marketfinalizedlog.md), string | number | Date | ArrayBuffer | ArrayBufferView | DataView | void[][] | ReadonlyArray‹string | number | Date | ArrayBuffer | ArrayBufferView | DataView | void[][]››*
+**Returns:** *Table‹MarketFinalizedLog, IndexableType›*
 
 ___
 
 ###  MarketMigrated
 
-• **get MarketMigrated**(): *Table‹[MarketMigratedLog](../interfaces/_augur_sdk_src_state_logs_types_.marketmigratedlog.md), string | number | Date | ArrayBuffer | ArrayBufferView | DataView | void[][] | ReadonlyArray‹string | number | Date | ArrayBuffer | ArrayBufferView | DataView | void[][]››*
+• **get MarketMigrated**(): *Table‹MarketMigratedLog, IndexableType›*
 
-*Defined in [packages/augur-sdk/src/state/db/DB.ts:495](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/db/DB.ts#L495)*
+*Defined in [packages/augur-sdk/src/state/db/DB.ts:616](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/db/DB.ts#L616)*
 
-**Returns:** *Table‹[MarketMigratedLog](../interfaces/_augur_sdk_src_state_logs_types_.marketmigratedlog.md), string | number | Date | ArrayBuffer | ArrayBufferView | DataView | void[][] | ReadonlyArray‹string | number | Date | ArrayBuffer | ArrayBufferView | DataView | void[][]››*
+**Returns:** *Table‹MarketMigratedLog, IndexableType›*
 
 ___
 
 ###  MarketOIChanged
 
-• **get MarketOIChanged**(): *Table‹[MarketOIChangedLog](../interfaces/_augur_sdk_src_state_logs_types_.marketoichangedlog.md), string | number | Date | ArrayBuffer | ArrayBufferView | DataView | void[][] | ReadonlyArray‹string | number | Date | ArrayBuffer | ArrayBufferView | DataView | void[][]››*
+• **get MarketOIChanged**(): *Table‹MarketOIChangedLog, IndexableType›*
 
-*Defined in [packages/augur-sdk/src/state/db/DB.ts:500](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/db/DB.ts#L500)*
+*Defined in [packages/augur-sdk/src/state/db/DB.ts:635](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/db/DB.ts#L635)*
 
-**Returns:** *Table‹[MarketOIChangedLog](../interfaces/_augur_sdk_src_state_logs_types_.marketoichangedlog.md), string | number | Date | ArrayBuffer | ArrayBufferView | DataView | void[][] | ReadonlyArray‹string | number | Date | ArrayBuffer | ArrayBufferView | DataView | void[][]››*
+**Returns:** *Table‹MarketOIChangedLog, IndexableType›*
 
 ___
 
 ###  MarketOIChangedRollup
 
-• **get MarketOIChangedRollup**(): *Table‹[MarketOIChangedLog](../interfaces/_augur_sdk_src_state_logs_types_.marketoichangedlog.md), string | number | Date | ArrayBuffer | ArrayBufferView | DataView | void[][] | ReadonlyArray‹string | number | Date | ArrayBuffer | ArrayBufferView | DataView | void[][]››*
+• **get MarketOIChangedRollup**(): *Table‹MarketOIChangedLog, IndexableType›*
 
-*Defined in [packages/augur-sdk/src/state/db/DB.ts:501](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/db/DB.ts#L501)*
+*Defined in [packages/augur-sdk/src/state/db/DB.ts:638](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/db/DB.ts#L638)*
 
-**Returns:** *Table‹[MarketOIChangedLog](../interfaces/_augur_sdk_src_state_logs_types_.marketoichangedlog.md), string | number | Date | ArrayBuffer | ArrayBufferView | DataView | void[][] | ReadonlyArray‹string | number | Date | ArrayBuffer | ArrayBufferView | DataView | void[][]››*
+**Returns:** *Table‹MarketOIChangedLog, IndexableType›*
 
 ___
 
 ###  MarketParticipantsDisavowed
 
-• **get MarketParticipantsDisavowed**(): *Table‹[MarketParticipantsDisavowedLog](../interfaces/_augur_sdk_src_state_logs_types_.marketparticipantsdisavowedlog.md), string | number | Date | ArrayBuffer | ArrayBufferView | DataView | void[][] | ReadonlyArray‹string | number | Date | ArrayBuffer | ArrayBufferView | DataView | void[][]››*
+• **get MarketParticipantsDisavowed**(): *Table‹MarketParticipantsDisavowedLog, IndexableType›*
 
-*Defined in [packages/augur-sdk/src/state/db/DB.ts:496](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/db/DB.ts#L496)*
+*Defined in [packages/augur-sdk/src/state/db/DB.ts:619](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/db/DB.ts#L619)*
 
-**Returns:** *Table‹[MarketParticipantsDisavowedLog](../interfaces/_augur_sdk_src_state_logs_types_.marketparticipantsdisavowedlog.md), string | number | Date | ArrayBuffer | ArrayBufferView | DataView | void[][] | ReadonlyArray‹string | number | Date | ArrayBuffer | ArrayBufferView | DataView | void[][]››*
+**Returns:** *Table‹MarketParticipantsDisavowedLog, IndexableType›*
 
 ___
 
 ###  MarketTransferred
 
-• **get MarketTransferred**(): *Table‹[MarketTransferredLog](../interfaces/_augur_sdk_src_state_logs_types_.markettransferredlog.md), string | number | Date | ArrayBuffer | ArrayBufferView | DataView | void[][] | ReadonlyArray‹string | number | Date | ArrayBuffer | ArrayBufferView | DataView | void[][]››*
+• **get MarketTransferred**(): *Table‹MarketTransferredLog, IndexableType›*
 
-*Defined in [packages/augur-sdk/src/state/db/DB.ts:497](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/db/DB.ts#L497)*
+*Defined in [packages/augur-sdk/src/state/db/DB.ts:624](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/db/DB.ts#L624)*
 
-**Returns:** *Table‹[MarketTransferredLog](../interfaces/_augur_sdk_src_state_logs_types_.markettransferredlog.md), string | number | Date | ArrayBuffer | ArrayBufferView | DataView | void[][] | ReadonlyArray‹string | number | Date | ArrayBuffer | ArrayBufferView | DataView | void[][]››*
+**Returns:** *Table‹MarketTransferredLog, IndexableType›*
 
 ___
 
 ###  MarketVolumeChanged
 
-• **get MarketVolumeChanged**(): *Table‹[MarketVolumeChangedLog](../interfaces/_augur_sdk_src_state_logs_types_.marketvolumechangedlog.md), string | number | Date | ArrayBuffer | ArrayBufferView | DataView | void[][] | ReadonlyArray‹string | number | Date | ArrayBuffer | ArrayBufferView | DataView | void[][]››*
+• **get MarketVolumeChanged**(): *Table‹MarketVolumeChangedLog, IndexableType›*
 
-*Defined in [packages/augur-sdk/src/state/db/DB.ts:498](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/db/DB.ts#L498)*
+*Defined in [packages/augur-sdk/src/state/db/DB.ts:627](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/db/DB.ts#L627)*
 
-**Returns:** *Table‹[MarketVolumeChangedLog](../interfaces/_augur_sdk_src_state_logs_types_.marketvolumechangedlog.md), string | number | Date | ArrayBuffer | ArrayBufferView | DataView | void[][] | ReadonlyArray‹string | number | Date | ArrayBuffer | ArrayBufferView | DataView | void[][]››*
+**Returns:** *Table‹MarketVolumeChangedLog, IndexableType›*
 
 ___
 
 ###  MarketVolumeChangedRollup
 
-• **get MarketVolumeChangedRollup**(): *Table‹[MarketVolumeChangedLog](../interfaces/_augur_sdk_src_state_logs_types_.marketvolumechangedlog.md), string | number | Date | ArrayBuffer | ArrayBufferView | DataView | void[][] | ReadonlyArray‹string | number | Date | ArrayBuffer | ArrayBufferView | DataView | void[][]››*
+• **get MarketVolumeChangedRollup**(): *Table‹MarketVolumeChangedLog, IndexableType›*
 
-*Defined in [packages/augur-sdk/src/state/db/DB.ts:499](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/db/DB.ts#L499)*
+*Defined in [packages/augur-sdk/src/state/db/DB.ts:630](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/db/DB.ts#L630)*
 
-**Returns:** *Table‹[MarketVolumeChangedLog](../interfaces/_augur_sdk_src_state_logs_types_.marketvolumechangedlog.md), string | number | Date | ArrayBuffer | ArrayBufferView | DataView | void[][] | ReadonlyArray‹string | number | Date | ArrayBuffer | ArrayBufferView | DataView | void[][]››*
+**Returns:** *Table‹MarketVolumeChangedLog, IndexableType›*
 
 ___
 
 ###  Markets
 
-• **get Markets**(): *Table‹[MarketData](../interfaces/_augur_sdk_src_state_logs_types_.marketdata.md), string | number | Date | ArrayBuffer | ArrayBufferView | DataView | void[][] | ReadonlyArray‹string | number | Date | ArrayBuffer | ArrayBufferView | DataView | void[][]››*
+• **get Markets**(): *Table‹MarketData, IndexableType›*
 
-*Defined in [packages/augur-sdk/src/state/db/DB.ts:519](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/db/DB.ts#L519)*
+*Defined in [packages/augur-sdk/src/state/db/DB.ts:707](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/db/DB.ts#L707)*
 
-**Returns:** *Table‹[MarketData](../interfaces/_augur_sdk_src_state_logs_types_.marketdata.md), string | number | Date | ArrayBuffer | ArrayBufferView | DataView | void[][] | ReadonlyArray‹string | number | Date | ArrayBuffer | ArrayBufferView | DataView | void[][]››*
+**Returns:** *Table‹MarketData, IndexableType›*
 
 ___
 
 ###  OrderEvent
 
-• **get OrderEvent**(): *Table‹[OrderEventLog](../interfaces/_augur_sdk_src_state_logs_types_.ordereventlog.md), string | number | Date | ArrayBuffer | ArrayBufferView | DataView | void[][] | ReadonlyArray‹string | number | Date | ArrayBuffer | ArrayBufferView | DataView | void[][]››*
+• **get OrderEvent**(): *Table‹OrderEventLog, IndexableType›*
 
-*Defined in [packages/augur-sdk/src/state/db/DB.ts:502](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/db/DB.ts#L502)*
+*Defined in [packages/augur-sdk/src/state/db/DB.ts:641](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/db/DB.ts#L641)*
 
-**Returns:** *Table‹[OrderEventLog](../interfaces/_augur_sdk_src_state_logs_types_.ordereventlog.md), string | number | Date | ArrayBuffer | ArrayBufferView | DataView | void[][] | ReadonlyArray‹string | number | Date | ArrayBuffer | ArrayBufferView | DataView | void[][]››*
+**Returns:** *Table‹OrderEventLog, IndexableType›*
 
 ___
 
 ###  ParsedOrderEvent
 
-• **get ParsedOrderEvent**(): *Table‹[ParsedOrderEventLog](../interfaces/_augur_sdk_src_state_logs_types_.parsedordereventlog.md), string | number | Date | ArrayBuffer | ArrayBufferView | DataView | void[][] | ReadonlyArray‹string | number | Date | ArrayBuffer | ArrayBufferView | DataView | void[][]››*
+• **get ParsedOrderEvent**(): *Table‹ParsedOrderEventLog, IndexableType›*
 
-*Defined in [packages/augur-sdk/src/state/db/DB.ts:520](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/db/DB.ts#L520)*
+*Defined in [packages/augur-sdk/src/state/db/DB.ts:710](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/db/DB.ts#L710)*
 
-**Returns:** *Table‹[ParsedOrderEventLog](../interfaces/_augur_sdk_src_state_logs_types_.parsedordereventlog.md), string | number | Date | ArrayBuffer | ArrayBufferView | DataView | void[][] | ReadonlyArray‹string | number | Date | ArrayBuffer | ArrayBufferView | DataView | void[][]››*
+**Returns:** *Table‹ParsedOrderEventLog, IndexableType›*
 
 ___
 
 ###  ParticipationTokensRedeemed
 
-• **get ParticipationTokensRedeemed**(): *Table‹[ParticipationTokensRedeemedLog](../interfaces/_augur_sdk_src_state_logs_types_.participationtokensredeemedlog.md), string | number | Date | ArrayBuffer | ArrayBufferView | DataView | void[][] | ReadonlyArray‹string | number | Date | ArrayBuffer | ArrayBufferView | DataView | void[][]››*
+• **get ParticipationTokensRedeemed**(): *Table‹ParticipationTokensRedeemedLog, IndexableType›*
 
-*Defined in [packages/augur-sdk/src/state/db/DB.ts:504](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/db/DB.ts#L504)*
+*Defined in [packages/augur-sdk/src/state/db/DB.ts:650](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/db/DB.ts#L650)*
 
-**Returns:** *Table‹[ParticipationTokensRedeemedLog](../interfaces/_augur_sdk_src_state_logs_types_.participationtokensredeemedlog.md), string | number | Date | ArrayBuffer | ArrayBufferView | DataView | void[][] | ReadonlyArray‹string | number | Date | ArrayBuffer | ArrayBufferView | DataView | void[][]››*
+**Returns:** *Table‹ParticipationTokensRedeemedLog, IndexableType›*
 
 ___
 
 ###  ProfitLossChanged
 
-• **get ProfitLossChanged**(): *Table‹[ProfitLossChangedLog](../interfaces/_augur_sdk_src_state_logs_types_.profitlosschangedlog.md), string | number | Date | ArrayBuffer | ArrayBufferView | DataView | void[][] | ReadonlyArray‹string | number | Date | ArrayBuffer | ArrayBufferView | DataView | void[][]››*
+• **get ProfitLossChanged**(): *Table‹ProfitLossChangedLog, IndexableType›*
 
-*Defined in [packages/augur-sdk/src/state/db/DB.ts:505](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/db/DB.ts#L505)*
+*Defined in [packages/augur-sdk/src/state/db/DB.ts:655](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/db/DB.ts#L655)*
 
-**Returns:** *Table‹[ProfitLossChangedLog](../interfaces/_augur_sdk_src_state_logs_types_.profitlosschangedlog.md), string | number | Date | ArrayBuffer | ArrayBufferView | DataView | void[][] | ReadonlyArray‹string | number | Date | ArrayBuffer | ArrayBufferView | DataView | void[][]››*
+**Returns:** *Table‹ProfitLossChangedLog, IndexableType›*
 
 ___
 
 ###  ReportingFeeChanged
 
-• **get ReportingFeeChanged**(): *Table‹[ReportingFeeChangedLog](../interfaces/_augur_sdk_src_state_logs_types_.reportingfeechangedlog.md), string | number | Date | ArrayBuffer | ArrayBufferView | DataView | void[][] | ReadonlyArray‹string | number | Date | ArrayBuffer | ArrayBufferView | DataView | void[][]››*
+• **get ReportingFeeChanged**(): *Table‹ReportingFeeChangedLog, IndexableType›*
 
-*Defined in [packages/augur-sdk/src/state/db/DB.ts:524](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/db/DB.ts#L524)*
+*Defined in [packages/augur-sdk/src/state/db/DB.ts:722](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/db/DB.ts#L722)*
 
-**Returns:** *Table‹[ReportingFeeChangedLog](../interfaces/_augur_sdk_src_state_logs_types_.reportingfeechangedlog.md), string | number | Date | ArrayBuffer | ArrayBufferView | DataView | void[][] | ReadonlyArray‹string | number | Date | ArrayBuffer | ArrayBufferView | DataView | void[][]››*
+**Returns:** *Table‹ReportingFeeChangedLog, IndexableType›*
 
 ___
 
 ###  ReportingParticipantDisavowed
 
-• **get ReportingParticipantDisavowed**(): *Table‹[ReportingParticipantDisavowedLog](../interfaces/_augur_sdk_src_state_logs_types_.reportingparticipantdisavowedlog.md), string | number | Date | ArrayBuffer | ArrayBufferView | DataView | void[][] | ReadonlyArray‹string | number | Date | ArrayBuffer | ArrayBufferView | DataView | void[][]››*
+• **get ReportingParticipantDisavowed**(): *Table‹ReportingParticipantDisavowedLog, IndexableType›*
 
-*Defined in [packages/augur-sdk/src/state/db/DB.ts:506](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/db/DB.ts#L506)*
+*Defined in [packages/augur-sdk/src/state/db/DB.ts:658](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/db/DB.ts#L658)*
 
-**Returns:** *Table‹[ReportingParticipantDisavowedLog](../interfaces/_augur_sdk_src_state_logs_types_.reportingparticipantdisavowedlog.md), string | number | Date | ArrayBuffer | ArrayBufferView | DataView | void[][] | ReadonlyArray‹string | number | Date | ArrayBuffer | ArrayBufferView | DataView | void[][]››*
+**Returns:** *Table‹ReportingParticipantDisavowedLog, IndexableType›*
 
 ___
 
 ###  ShareTokenBalanceChanged
 
-• **get ShareTokenBalanceChanged**(): *Table‹[ShareTokenBalanceChangedLog](../interfaces/_augur_sdk_src_state_logs_types_.sharetokenbalancechangedlog.md), string | number | Date | ArrayBuffer | ArrayBufferView | DataView | void[][] | ReadonlyArray‹string | number | Date | ArrayBuffer | ArrayBufferView | DataView | void[][]››*
+• **get ShareTokenBalanceChanged**(): *Table‹ShareTokenBalanceChangedLog, IndexableType›*
 
-*Defined in [packages/augur-sdk/src/state/db/DB.ts:517](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/db/DB.ts#L517)*
+*Defined in [packages/augur-sdk/src/state/db/DB.ts:697](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/db/DB.ts#L697)*
 
-**Returns:** *Table‹[ShareTokenBalanceChangedLog](../interfaces/_augur_sdk_src_state_logs_types_.sharetokenbalancechangedlog.md), string | number | Date | ArrayBuffer | ArrayBufferView | DataView | void[][] | ReadonlyArray‹string | number | Date | ArrayBuffer | ArrayBufferView | DataView | void[][]››*
+**Returns:** *Table‹ShareTokenBalanceChangedLog, IndexableType›*
 
 ___
 
 ###  ShareTokenBalanceChangedRollup
 
-• **get ShareTokenBalanceChangedRollup**(): *Table‹[ShareTokenBalanceChangedLog](../interfaces/_augur_sdk_src_state_logs_types_.sharetokenbalancechangedlog.md), string | number | Date | ArrayBuffer | ArrayBufferView | DataView | void[][] | ReadonlyArray‹string | number | Date | ArrayBuffer | ArrayBufferView | DataView | void[][]››*
+• **get ShareTokenBalanceChangedRollup**(): *Table‹ShareTokenBalanceChangedLog, IndexableType›*
 
-*Defined in [packages/augur-sdk/src/state/db/DB.ts:518](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/db/DB.ts#L518)*
+*Defined in [packages/augur-sdk/src/state/db/DB.ts:702](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/db/DB.ts#L702)*
 
-**Returns:** *Table‹[ShareTokenBalanceChangedLog](../interfaces/_augur_sdk_src_state_logs_types_.sharetokenbalancechangedlog.md), string | number | Date | ArrayBuffer | ArrayBufferView | DataView | void[][] | ReadonlyArray‹string | number | Date | ArrayBuffer | ArrayBufferView | DataView | void[][]››*
+**Returns:** *Table‹ShareTokenBalanceChangedLog, IndexableType›*
 
 ___
 
 ###  TimestampSet
 
-• **get TimestampSet**(): *Table‹[TimestampSetLog](../interfaces/_augur_sdk_src_state_logs_types_.timestampsetlog.md), string | number | Date | ArrayBuffer | ArrayBufferView | DataView | void[][] | ReadonlyArray‹string | number | Date | ArrayBuffer | ArrayBufferView | DataView | void[][]››*
+• **get TimestampSet**(): *Table‹TimestampSetLog, IndexableType›*
 
-*Defined in [packages/augur-sdk/src/state/db/DB.ts:507](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/db/DB.ts#L507)*
+*Defined in [packages/augur-sdk/src/state/db/DB.ts:663](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/db/DB.ts#L663)*
 
-**Returns:** *Table‹[TimestampSetLog](../interfaces/_augur_sdk_src_state_logs_types_.timestampsetlog.md), string | number | Date | ArrayBuffer | ArrayBufferView | DataView | void[][] | ReadonlyArray‹string | number | Date | ArrayBuffer | ArrayBufferView | DataView | void[][]››*
+**Returns:** *Table‹TimestampSetLog, IndexableType›*
 
 ___
 
 ###  TokenBalanceChanged
 
-• **get TokenBalanceChanged**(): *Table‹[TokenBalanceChangedLog](../interfaces/_augur_sdk_src_state_logs_types_.tokenbalancechangedlog.md), string | number | Date | ArrayBuffer | ArrayBufferView | DataView | void[][] | ReadonlyArray‹string | number | Date | ArrayBuffer | ArrayBufferView | DataView | void[][]››*
+• **get TokenBalanceChanged**(): *Table‹TokenBalanceChangedLog, IndexableType›*
 
-*Defined in [packages/augur-sdk/src/state/db/DB.ts:508](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/db/DB.ts#L508)*
+*Defined in [packages/augur-sdk/src/state/db/DB.ts:666](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/db/DB.ts#L666)*
 
-**Returns:** *Table‹[TokenBalanceChangedLog](../interfaces/_augur_sdk_src_state_logs_types_.tokenbalancechangedlog.md), string | number | Date | ArrayBuffer | ArrayBufferView | DataView | void[][] | ReadonlyArray‹string | number | Date | ArrayBuffer | ArrayBufferView | DataView | void[][]››*
+**Returns:** *Table‹TokenBalanceChangedLog, IndexableType›*
 
 ___
 
 ###  TokenBalanceChangedRollup
 
-• **get TokenBalanceChangedRollup**(): *Table‹[TokenBalanceChangedLog](../interfaces/_augur_sdk_src_state_logs_types_.tokenbalancechangedlog.md), string | number | Date | ArrayBuffer | ArrayBufferView | DataView | void[][] | ReadonlyArray‹string | number | Date | ArrayBuffer | ArrayBufferView | DataView | void[][]››*
+• **get TokenBalanceChangedRollup**(): *Table‹TokenBalanceChangedLog, IndexableType›*
 
-*Defined in [packages/augur-sdk/src/state/db/DB.ts:509](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/db/DB.ts#L509)*
+*Defined in [packages/augur-sdk/src/state/db/DB.ts:669](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/db/DB.ts#L669)*
 
-**Returns:** *Table‹[TokenBalanceChangedLog](../interfaces/_augur_sdk_src_state_logs_types_.tokenbalancechangedlog.md), string | number | Date | ArrayBuffer | ArrayBufferView | DataView | void[][] | ReadonlyArray‹string | number | Date | ArrayBuffer | ArrayBufferView | DataView | void[][]››*
+**Returns:** *Table‹TokenBalanceChangedLog, IndexableType›*
 
 ___
 
 ###  TokensMinted
 
-• **get TokensMinted**(): *Table‹[TokensMinted](../interfaces/_augur_sdk_src_state_logs_types_.tokensminted.md), string | number | Date | ArrayBuffer | ArrayBufferView | DataView | void[][] | ReadonlyArray‹string | number | Date | ArrayBuffer | ArrayBufferView | DataView | void[][]››*
+• **get TokensMinted**(): *Table‹TokensMinted, IndexableType›*
 
-*Defined in [packages/augur-sdk/src/state/db/DB.ts:510](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/db/DB.ts#L510)*
+*Defined in [packages/augur-sdk/src/state/db/DB.ts:674](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/db/DB.ts#L674)*
 
-**Returns:** *Table‹[TokensMinted](../interfaces/_augur_sdk_src_state_logs_types_.tokensminted.md), string | number | Date | ArrayBuffer | ArrayBufferView | DataView | void[][] | ReadonlyArray‹string | number | Date | ArrayBuffer | ArrayBufferView | DataView | void[][]››*
+**Returns:** *Table‹TokensMinted, IndexableType›*
 
 ___
 
 ###  TokensTransferred
 
-• **get TokensTransferred**(): *Table‹[TokensTransferredLog](../interfaces/_augur_sdk_src_state_logs_types_.tokenstransferredlog.md), string | number | Date | ArrayBuffer | ArrayBufferView | DataView | void[][] | ReadonlyArray‹string | number | Date | ArrayBuffer | ArrayBufferView | DataView | void[][]››*
+• **get TokensTransferred**(): *Table‹TokensTransferredLog, IndexableType›*
 
-*Defined in [packages/augur-sdk/src/state/db/DB.ts:511](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/db/DB.ts#L511)*
+*Defined in [packages/augur-sdk/src/state/db/DB.ts:677](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/db/DB.ts#L677)*
 
-**Returns:** *Table‹[TokensTransferredLog](../interfaces/_augur_sdk_src_state_logs_types_.tokenstransferredlog.md), string | number | Date | ArrayBuffer | ArrayBufferView | DataView | void[][] | ReadonlyArray‹string | number | Date | ArrayBuffer | ArrayBufferView | DataView | void[][]››*
+**Returns:** *Table‹TokensTransferredLog, IndexableType›*
 
 ___
 
 ###  TradingProceedsClaimed
 
-• **get TradingProceedsClaimed**(): *Table‹[TradingProceedsClaimedLog](../interfaces/_augur_sdk_src_state_logs_types_.tradingproceedsclaimedlog.md), string | number | Date | ArrayBuffer | ArrayBufferView | DataView | void[][] | ReadonlyArray‹string | number | Date | ArrayBuffer | ArrayBufferView | DataView | void[][]››*
+• **get TradingProceedsClaimed**(): *Table‹TradingProceedsClaimedLog, IndexableType›*
 
-*Defined in [packages/augur-sdk/src/state/db/DB.ts:512](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/db/DB.ts#L512)*
+*Defined in [packages/augur-sdk/src/state/db/DB.ts:680](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/db/DB.ts#L680)*
 
-**Returns:** *Table‹[TradingProceedsClaimedLog](../interfaces/_augur_sdk_src_state_logs_types_.tradingproceedsclaimedlog.md), string | number | Date | ArrayBuffer | ArrayBufferView | DataView | void[][] | ReadonlyArray‹string | number | Date | ArrayBuffer | ArrayBufferView | DataView | void[][]››*
+**Returns:** *Table‹TradingProceedsClaimedLog, IndexableType›*
 
 ___
 
 ###  TransferBatch
 
-• **get TransferBatch**(): *Table‹[TransferBatchLog](../interfaces/_augur_sdk_src_state_logs_types_.transferbatchlog.md), string | number | Date | ArrayBuffer | ArrayBufferView | DataView | void[][] | ReadonlyArray‹string | number | Date | ArrayBuffer | ArrayBufferView | DataView | void[][]››*
+• **get TransferBatch**(): *Table‹TransferBatchLog, IndexableType›*
 
-*Defined in [packages/augur-sdk/src/state/db/DB.ts:516](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/db/DB.ts#L516)*
+*Defined in [packages/augur-sdk/src/state/db/DB.ts:694](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/db/DB.ts#L694)*
 
-**Returns:** *Table‹[TransferBatchLog](../interfaces/_augur_sdk_src_state_logs_types_.transferbatchlog.md), string | number | Date | ArrayBuffer | ArrayBufferView | DataView | void[][] | ReadonlyArray‹string | number | Date | ArrayBuffer | ArrayBufferView | DataView | void[][]››*
+**Returns:** *Table‹TransferBatchLog, IndexableType›*
 
 ___
 
 ###  TransferSingle
 
-• **get TransferSingle**(): *Table‹[TransferSingleLog](../interfaces/_augur_sdk_src_state_logs_types_.transfersinglelog.md), string | number | Date | ArrayBuffer | ArrayBufferView | DataView | void[][] | ReadonlyArray‹string | number | Date | ArrayBuffer | ArrayBufferView | DataView | void[][]››*
+• **get TransferSingle**(): *Table‹TransferSingleLog, IndexableType›*
 
-*Defined in [packages/augur-sdk/src/state/db/DB.ts:515](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/db/DB.ts#L515)*
+*Defined in [packages/augur-sdk/src/state/db/DB.ts:691](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/db/DB.ts#L691)*
 
-**Returns:** *Table‹[TransferSingleLog](../interfaces/_augur_sdk_src_state_logs_types_.transfersinglelog.md), string | number | Date | ArrayBuffer | ArrayBufferView | DataView | void[][] | ReadonlyArray‹string | number | Date | ArrayBuffer | ArrayBufferView | DataView | void[][]››*
+**Returns:** *Table‹TransferSingleLog, IndexableType›*
 
 ___
 
 ###  UniverseCreated
 
-• **get UniverseCreated**(): *Table‹[UniverseCreatedLog](../interfaces/_augur_sdk_src_state_logs_types_.universecreatedlog.md), string | number | Date | ArrayBuffer | ArrayBufferView | DataView | void[][] | ReadonlyArray‹string | number | Date | ArrayBuffer | ArrayBufferView | DataView | void[][]››*
+• **get UniverseCreated**(): *Table‹UniverseCreatedLog, IndexableType›*
 
-*Defined in [packages/augur-sdk/src/state/db/DB.ts:513](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/db/DB.ts#L513)*
+*Defined in [packages/augur-sdk/src/state/db/DB.ts:685](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/db/DB.ts#L685)*
 
-**Returns:** *Table‹[UniverseCreatedLog](../interfaces/_augur_sdk_src_state_logs_types_.universecreatedlog.md), string | number | Date | ArrayBuffer | ArrayBufferView | DataView | void[][] | ReadonlyArray‹string | number | Date | ArrayBuffer | ArrayBufferView | DataView | void[][]››*
+**Returns:** *Table‹UniverseCreatedLog, IndexableType›*
 
 ___
 
 ###  UniverseForked
 
-• **get UniverseForked**(): *Table‹[UniverseForkedLog](../interfaces/_augur_sdk_src_state_logs_types_.universeforkedlog.md), string | number | Date | ArrayBuffer | ArrayBufferView | DataView | void[][] | ReadonlyArray‹string | number | Date | ArrayBuffer | ArrayBufferView | DataView | void[][]››*
+• **get UniverseForked**(): *Table‹UniverseForkedLog, IndexableType›*
 
-*Defined in [packages/augur-sdk/src/state/db/DB.ts:514](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/db/DB.ts#L514)*
+*Defined in [packages/augur-sdk/src/state/db/DB.ts:688](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/db/DB.ts#L688)*
 
-**Returns:** *Table‹[UniverseForkedLog](../interfaces/_augur_sdk_src_state_logs_types_.universeforkedlog.md), string | number | Date | ArrayBuffer | ArrayBufferView | DataView | void[][] | ReadonlyArray‹string | number | Date | ArrayBuffer | ArrayBufferView | DataView | void[][]››*
+**Returns:** *Table‹UniverseForkedLog, IndexableType›*
 
 ___
 
 ###  ZeroXOrders
 
-• **get ZeroXOrders**(): *Table‹[StoredOrder](../interfaces/_augur_sdk_src_state_db_zeroxorders_.storedorder.md), string | number | Date | ArrayBuffer | ArrayBufferView | DataView | void[][] | ReadonlyArray‹string | number | Date | ArrayBuffer | ArrayBufferView | DataView | void[][]››*
+• **get ZeroXOrders**(): *Table‹[StoredOrder](../interfaces/_augur_sdk_src_state_db_zeroxorders_.storedorder.md), IndexableType›*
 
-*Defined in [packages/augur-sdk/src/state/db/DB.ts:523](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/db/DB.ts#L523)*
+*Defined in [packages/augur-sdk/src/state/db/DB.ts:719](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/db/DB.ts#L719)*
 
-**Returns:** *Table‹[StoredOrder](../interfaces/_augur_sdk_src_state_db_zeroxorders_.storedorder.md), string | number | Date | ArrayBuffer | ArrayBufferView | DataView | void[][] | ReadonlyArray‹string | number | Date | ArrayBuffer | ArrayBufferView | DataView | void[][]››*
+**Returns:** *Table‹[StoredOrder](../interfaces/_augur_sdk_src_state_db_zeroxorders_.storedorder.md), IndexableType›*
 
 ## Methods
 
@@ -732,7 +764,7 @@ ___
 
 ▸ **addNewBlock**(`dbName`: string, `blockLogs`: any): *Promise‹void›*
 
-*Defined in [packages/augur-sdk/src/state/db/DB.ts:466](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/db/DB.ts#L466)*
+*Defined in [packages/augur-sdk/src/state/db/DB.ts:540](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/db/DB.ts#L540)*
 
 Adds a new block to a SyncableDB/UserSyncableDB and updates MetaDB.
 
@@ -749,11 +781,11 @@ Name | Type | Description |
 
 ___
 
-###  delete
+###  clear
 
-▸ **delete**(): *Promise‹void›*
+▸ **clear**(): *Promise‹void›*
 
-*Defined in [packages/augur-sdk/src/state/db/DB.ts:277](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/db/DB.ts#L277)*
+*Defined in [packages/augur-sdk/src/state/db/DB.ts:341](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/db/DB.ts#L341)*
 
 **Returns:** *Promise‹void›*
 
@@ -763,7 +795,7 @@ ___
 
 ▸ **generateSchemas**(): *[Schemas](../interfaces/_augur_sdk_src_state_db_db_.schemas.md)*
 
-*Defined in [packages/augur-sdk/src/state/db/DB.ts:305](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/db/DB.ts#L305)*
+*Defined in [packages/augur-sdk/src/state/db/DB.ts:356](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/db/DB.ts#L356)*
 
 **Returns:** *[Schemas](../interfaces/_augur_sdk_src_state_db_db_.schemas.md)*
 
@@ -773,7 +805,7 @@ ___
 
 ▸ **getSyncStartingBlock**(): *Promise‹number›*
 
-*Defined in [packages/augur-sdk/src/state/db/DB.ts:359](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/db/DB.ts#L359)*
+*Defined in [packages/augur-sdk/src/state/db/DB.ts:419](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/db/DB.ts#L419)*
 
 Gets the block number at which to begin syncing. (That is, the lowest last-synced
 block across all event log databases or the upload block number for this network.)
@@ -786,17 +818,11 @@ ___
 
 ###  initializeDB
 
-▸ **initializeDB**(`uploadBlockNumber`: number): *Promise‹[DB](_augur_sdk_src_state_db_db_.db.md)›*
+▸ **initializeDB**(): *Promise‹[DB](_augur_sdk_src_state_db_db_.db.md)›*
 
-*Defined in [packages/augur-sdk/src/state/db/DB.ts:197](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/db/DB.ts#L197)*
+*Defined in [packages/augur-sdk/src/state/db/DB.ts:224](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/db/DB.ts#L224)*
 
 Creates databases to be used for syncing.
-
-**Parameters:**
-
-Name | Type | Default |
------- | ------ | ------ |
-`uploadBlockNumber` | number | 0 |
 
 **Returns:** *Promise‹[DB](_augur_sdk_src_state_db_db_.db.md)›*
 
@@ -806,7 +832,7 @@ ___
 
 ▸ **notifySyncableDBAdded**(`db`: [BaseSyncableDB](_augur_sdk_src_state_db_basesyncabledb_.basesyncabledb.md)): *void*
 
-*Defined in [packages/augur-sdk/src/state/db/DB.ts:341](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/db/DB.ts#L341)*
+*Defined in [packages/augur-sdk/src/state/db/DB.ts:395](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/db/DB.ts#L395)*
 
 Called from SyncableDB constructor once SyncableDB is successfully created.
 
@@ -824,7 +850,7 @@ ___
 
 ▸ **prune**(`timestamp`: number): *Promise‹void›*
 
-*Defined in [packages/augur-sdk/src/state/db/DB.ts:400](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/db/DB.ts#L400)*
+*Defined in [packages/augur-sdk/src/state/db/DB.ts:462](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/db/DB.ts#L462)*
 
 **Parameters:**
 
@@ -840,7 +866,7 @@ ___
 
 ▸ **registerEventListener**(`eventNames`: string | string[], `callback`: [LogCallbackType](../modules/_augur_sdk_src_state_logs_logfilteraggregator_.md#logcallbacktype)): *void*
 
-*Defined in [packages/augur-sdk/src/state/db/DB.ts:345](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/db/DB.ts#L345)*
+*Defined in [packages/augur-sdk/src/state/db/DB.ts:399](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/db/DB.ts#L399)*
 
 **Parameters:**
 
@@ -857,7 +883,7 @@ ___
 
 ▸ **rollback**(`blockNumber`: number): *Promise‹void›*
 
-*Defined in [packages/augur-sdk/src/state/db/DB.ts:432](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/db/DB.ts#L432)*
+*Defined in [packages/augur-sdk/src/state/db/DB.ts:500](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/db/DB.ts#L500)*
 
 Rolls back all blocks from blockNumber onward.
 
@@ -875,7 +901,7 @@ ___
 
 ▸ **sync**(`highestAvailableBlockNumber?`: number): *Promise‹void›*
 
-*Defined in [packages/augur-sdk/src/state/db/DB.ts:372](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/db/DB.ts#L372)*
+*Defined in [packages/augur-sdk/src/state/db/DB.ts:435](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/db/DB.ts#L435)*
 
 Syncs generic events and user-specific events with blockchain and updates MetaDB info.
 
@@ -893,7 +919,7 @@ ___
 
 ▸ **unregisterEventListener**(`eventNames`: string | string[], `callback`: [LogCallbackType](../modules/_augur_sdk_src_state_logs_logfilteraggregator_.md#logcallbacktype)): *void*
 
-*Defined in [packages/augur-sdk/src/state/db/DB.ts:349](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/db/DB.ts#L349)*
+*Defined in [packages/augur-sdk/src/state/db/DB.ts:406](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/db/DB.ts#L406)*
 
 **Parameters:**
 
@@ -908,9 +934,9 @@ ___
 
 ### `Static` createAndInitializeDB
 
-▸ **createAndInitializeDB**(`networkId`: number, `logFilterAggregator`: [LogFilterAggregatorInterface](../interfaces/_augur_sdk_src_state_logs_logfilteraggregator_.logfilteraggregatorinterface.md), `augur`: [Augur](_augur_sdk_src_augur_.augur.md), `enableZeroX`: boolean): *Promise‹[DB](_augur_sdk_src_state_db_db_.db.md)›*
+▸ **createAndInitializeDB**(`networkId`: number, `uploadBlockNumber`: number, `logFilterAggregator`: [LogFilterAggregatorInterface](../interfaces/_augur_sdk_src_state_logs_logfilteraggregator_.logfilteraggregatorinterface.md), `augur`: [Augur](_augur_sdk_src_augur_.augur.md), `enableZeroX`: boolean, `concurrencyLimit`: number): *Promise‹[DB](_augur_sdk_src_state_db_db_.db.md)›*
 
-*Defined in [packages/augur-sdk/src/state/db/DB.ts:178](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/db/DB.ts#L178)*
+*Defined in [packages/augur-sdk/src/state/db/DB.ts:192](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/db/DB.ts#L192)*
 
 Creates and returns a new dbController.
 
@@ -919,9 +945,11 @@ Creates and returns a new dbController.
 Name | Type | Default | Description |
 ------ | ------ | ------ | ------ |
 `networkId` | number | - | Network on which to sync events |
+`uploadBlockNumber` | number | - | - |
 `logFilterAggregator` | [LogFilterAggregatorInterface](../interfaces/_augur_sdk_src_state_logs_logfilteraggregator_.logfilteraggregatorinterface.md) | - | object responsible for routing logs to individual db tables. |
 `augur` | [Augur](_augur_sdk_src_augur_.augur.md) | - | - |
 `enableZeroX` | boolean | false | - |
+`concurrencyLimit` | number | DEFAULT_CONCURRENCY | - |
 
 **Returns:** *Promise‹[DB](_augur_sdk_src_state_db_db_.db.md)›*
 

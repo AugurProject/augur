@@ -4,7 +4,7 @@
 
 ## Hierarchy
 
-  ↳ [SyncableDB](_augur_sdk_src_state_db_syncabledb_.syncabledb.md)
+  ↳ [DerivedDB](_augur_sdk_src_state_db_deriveddb_.deriveddb.md)
 
   ↳ **ParsedOrderEventDB**
 
@@ -17,33 +17,40 @@
 ### Properties
 
 * [augur](_augur_sdk_src_state_db_parsedordereventdb_.parsedordereventdb.md#protected-augur)
-* [db](_augur_sdk_src_state_db_parsedordereventdb_.parsedordereventdb.md#protected-db)
-* [dbName](_augur_sdk_src_state_db_parsedordereventdb_.parsedordereventdb.md#dbname)
-* [eventName](_augur_sdk_src_state_db_parsedordereventdb_.parsedordereventdb.md#protected-eventname)
+* [dbName](_augur_sdk_src_state_db_parsedordereventdb_.parsedordereventdb.md#readonly-dbname)
 * [idFields](_augur_sdk_src_state_db_parsedordereventdb_.parsedordereventdb.md#protected-idfields)
 * [isStandardRollback](_augur_sdk_src_state_db_parsedordereventdb_.parsedordereventdb.md#protected-isstandardrollback)
 * [networkId](_augur_sdk_src_state_db_parsedordereventdb_.parsedordereventdb.md#protected-networkid)
+* [requiresOrder](_augur_sdk_src_state_db_parsedordereventdb_.parsedordereventdb.md#protected-requiresorder)
 * [rollbackTable](_augur_sdk_src_state_db_parsedordereventdb_.parsedordereventdb.md#protected-rollbacktable)
 * [rollingBack](_augur_sdk_src_state_db_parsedordereventdb_.parsedordereventdb.md#protected-rollingback)
+* [stateDB](_augur_sdk_src_state_db_parsedordereventdb_.parsedordereventdb.md#protected-statedb)
 * [syncStatus](_augur_sdk_src_state_db_parsedordereventdb_.parsedordereventdb.md#protected-syncstatus)
 * [syncing](_augur_sdk_src_state_db_parsedordereventdb_.parsedordereventdb.md#protected-syncing)
 * [table](_augur_sdk_src_state_db_parsedordereventdb_.parsedordereventdb.md#table)
 
 ### Methods
 
-* [addNewBlock](_augur_sdk_src_state_db_parsedordereventdb_.parsedordereventdb.md#addnewblock)
 * [allDocs](_augur_sdk_src_state_db_parsedordereventdb_.parsedordereventdb.md#alldocs)
 * [bulkAddDocuments](_augur_sdk_src_state_db_parsedordereventdb_.parsedordereventdb.md#protected-bulkadddocuments)
+* [bulkAddDocumentsInternal](_augur_sdk_src_state_db_parsedordereventdb_.parsedordereventdb.md#protected-bulkadddocumentsinternal)
 * [bulkPutDocuments](_augur_sdk_src_state_db_parsedordereventdb_.parsedordereventdb.md#protected-bulkputdocuments)
+* [bulkPutDocumentsInternal](_augur_sdk_src_state_db_parsedordereventdb_.parsedordereventdb.md#protected-bulkputdocumentsinternal)
 * [bulkUpsertDocuments](_augur_sdk_src_state_db_parsedordereventdb_.parsedordereventdb.md#protected-bulkupsertdocuments)
+* [bulkUpsertDocumentsInternal](_augur_sdk_src_state_db_parsedordereventdb_.parsedordereventdb.md#protected-bulkupsertdocumentsinternal)
+* [clear](_augur_sdk_src_state_db_parsedordereventdb_.parsedordereventdb.md#clear)
 * [clearDB](_augur_sdk_src_state_db_parsedordereventdb_.parsedordereventdb.md#cleardb)
+* [clearInternal](_augur_sdk_src_state_db_parsedordereventdb_.parsedordereventdb.md#protected-clearinternal)
 * [delete](_augur_sdk_src_state_db_parsedordereventdb_.parsedordereventdb.md#delete)
+* [doSync](_augur_sdk_src_state_db_parsedordereventdb_.parsedordereventdb.md#dosync)
 * [find](_augur_sdk_src_state_db_parsedordereventdb_.parsedordereventdb.md#find)
 * [getDocument](_augur_sdk_src_state_db_parsedordereventdb_.parsedordereventdb.md#protected-getdocument)
 * [getDocumentCount](_augur_sdk_src_state_db_parsedordereventdb_.parsedordereventdb.md#getdocumentcount)
-* [getFullEventName](_augur_sdk_src_state_db_parsedordereventdb_.parsedordereventdb.md#getfulleventname)
+* [getEvents](_augur_sdk_src_state_db_parsedordereventdb_.parsedordereventdb.md#getevents)
 * [getIDValue](_augur_sdk_src_state_db_parsedordereventdb_.parsedordereventdb.md#protected-getidvalue)
-* [processOrderEvent](_augur_sdk_src_state_db_parsedordereventdb_.parsedordereventdb.md#private-processorderevent)
+* [handleMergeEvent](_augur_sdk_src_state_db_parsedordereventdb_.parsedordereventdb.md#handlemergeevent)
+* [onBulkSyncComplete](_augur_sdk_src_state_db_parsedordereventdb_.parsedordereventdb.md#onbulksynccomplete)
+* [processDoc](_augur_sdk_src_state_db_parsedordereventdb_.parsedordereventdb.md#protected-processdoc)
 * [prune](_augur_sdk_src_state_db_parsedordereventdb_.parsedordereventdb.md#prune)
 * [rollback](_augur_sdk_src_state_db_parsedordereventdb_.parsedordereventdb.md#rollback)
 * [rollupRollback](_augur_sdk_src_state_db_parsedordereventdb_.parsedordereventdb.md#rolluprollback)
@@ -51,16 +58,19 @@
 * [standardRollback](_augur_sdk_src_state_db_parsedordereventdb_.parsedordereventdb.md#standardrollback)
 * [sync](_augur_sdk_src_state_db_parsedordereventdb_.parsedordereventdb.md#sync)
 * [upsertDocument](_augur_sdk_src_state_db_parsedordereventdb_.parsedordereventdb.md#protected-upsertdocument)
+* [setConcurrency](_augur_sdk_src_state_db_parsedordereventdb_.parsedordereventdb.md#static-setconcurrency)
 
 ## Constructors
 
 ###  constructor
 
-\+ **new ParsedOrderEventDB**(`db`: [DB](_augur_sdk_src_state_db_db_.db.md), `networkId`: number, `augur`: [Augur](_augur_sdk_src_augur_.augur.md)): *[ParsedOrderEventDB](_augur_sdk_src_state_db_parsedordereventdb_.parsedordereventdb.md)*
+\+ **new ParsedOrderEventDB**(`db`: [DB](_augur_sdk_src_state_db_db_.db.md), `networkId`: number, `name`: string, `mergeEventNames`: string[], `augur`: [Augur](_augur_sdk_src_augur_.augur.md)): *[ParsedOrderEventDB](_augur_sdk_src_state_db_parsedordereventdb_.parsedordereventdb.md)*
 
-*Overrides [SyncableDB](_augur_sdk_src_state_db_syncabledb_.syncabledb.md).[constructor](_augur_sdk_src_state_db_syncabledb_.syncabledb.md#constructor)*
+*Inherited from [DerivedDB](_augur_sdk_src_state_db_deriveddb_.deriveddb.md).[constructor](_augur_sdk_src_state_db_deriveddb_.deriveddb.md#constructor)*
 
-*Defined in [packages/augur-sdk/src/state/db/ParsedOrderEventDB.ts:6](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/db/ParsedOrderEventDB.ts#L6)*
+*Overrides [RollbackTable](_augur_sdk_src_state_db_rollbacktable_.rollbacktable.md).[constructor](_augur_sdk_src_state_db_rollbacktable_.rollbacktable.md#protected-constructor)*
+
+*Defined in [packages/augur-sdk/src/state/db/DerivedDB.ts:22](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/db/DerivedDB.ts#L22)*
 
 **Parameters:**
 
@@ -68,6 +78,8 @@ Name | Type |
 ------ | ------ |
 `db` | [DB](_augur_sdk_src_state_db_db_.db.md) |
 `networkId` | number |
+`name` | string |
+`mergeEventNames` | string[] |
 `augur` | [Augur](_augur_sdk_src_augur_.augur.md) |
 
 **Returns:** *[ParsedOrderEventDB](_augur_sdk_src_state_db_parsedordereventdb_.parsedordereventdb.md)*
@@ -78,41 +90,21 @@ Name | Type |
 
 • **augur**: *[Augur](_augur_sdk_src_augur_.augur.md)*
 
-*Inherited from [RollbackTable](_augur_sdk_src_state_db_rollbacktable_.rollbacktable.md).[augur](_augur_sdk_src_state_db_rollbacktable_.rollbacktable.md#protected-augur)*
+*Inherited from [DerivedDB](_augur_sdk_src_state_db_deriveddb_.deriveddb.md).[augur](_augur_sdk_src_state_db_deriveddb_.deriveddb.md#protected-augur)*
 
-*Defined in [packages/augur-sdk/src/state/db/RollbackTable.ts:19](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/db/RollbackTable.ts#L19)*
+*Overrides [RollbackTable](_augur_sdk_src_state_db_rollbacktable_.rollbacktable.md).[augur](_augur_sdk_src_state_db_rollbacktable_.rollbacktable.md#protected-augur)*
 
-___
-
-### `Protected` db
-
-• **db**: *[DB](_augur_sdk_src_state_db_db_.db.md)*
-
-*Inherited from [BaseSyncableDB](_augur_sdk_src_state_db_basesyncabledb_.basesyncabledb.md).[db](_augur_sdk_src_state_db_basesyncabledb_.basesyncabledb.md#protected-db)*
-
-*Defined in [packages/augur-sdk/src/state/db/BaseSyncableDB.ts:21](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/db/BaseSyncableDB.ts#L21)*
+*Defined in [packages/augur-sdk/src/state/db/DerivedDB.ts:22](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/db/DerivedDB.ts#L22)*
 
 ___
 
-###  dbName
+### `Readonly` dbName
 
 • **dbName**: *string*
 
-*Inherited from [AbstractTable](_augur_sdk_src_state_db_abstracttable_.abstracttable.md).[dbName](_augur_sdk_src_state_db_abstracttable_.abstracttable.md#dbname)*
+*Inherited from [AbstractTable](_augur_sdk_src_state_db_abstracttable_.abstracttable.md).[dbName](_augur_sdk_src_state_db_abstracttable_.abstracttable.md#readonly-dbname)*
 
-*Defined in [packages/augur-sdk/src/state/db/AbstractTable.ts:17](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/db/AbstractTable.ts#L17)*
-
-___
-
-### `Protected` eventName
-
-• **eventName**: *string*
-
-*Inherited from [SyncableDB](_augur_sdk_src_state_db_syncabledb_.syncabledb.md).[eventName](_augur_sdk_src_state_db_syncabledb_.syncabledb.md#protected-eventname)*
-
-*Overrides [BaseSyncableDB](_augur_sdk_src_state_db_basesyncabledb_.basesyncabledb.md).[eventName](_augur_sdk_src_state_db_basesyncabledb_.basesyncabledb.md#protected-eventname)*
-
-*Defined in [packages/augur-sdk/src/state/db/SyncableDB.ts:15](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/db/SyncableDB.ts#L15)*
+*Defined in [packages/augur-sdk/src/state/db/AbstractTable.ts:33](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/db/AbstractTable.ts#L33)*
 
 ___
 
@@ -122,7 +114,7 @@ ___
 
 *Inherited from [AbstractTable](_augur_sdk_src_state_db_abstracttable_.abstracttable.md).[idFields](_augur_sdk_src_state_db_abstracttable_.abstracttable.md#protected-idfields)*
 
-*Defined in [packages/augur-sdk/src/state/db/AbstractTable.ts:18](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/db/AbstractTable.ts#L18)*
+*Defined in [packages/augur-sdk/src/state/db/AbstractTable.ts:34](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/db/AbstractTable.ts#L34)*
 
 ___
 
@@ -132,7 +124,7 @@ ___
 
 *Inherited from [RollbackTable](_augur_sdk_src_state_db_rollbacktable_.rollbacktable.md).[isStandardRollback](_augur_sdk_src_state_db_rollbacktable_.rollbacktable.md#protected-isstandardrollback)*
 
-*Defined in [packages/augur-sdk/src/state/db/RollbackTable.ts:23](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/db/RollbackTable.ts#L23)*
+*Defined in [packages/augur-sdk/src/state/db/RollbackTable.ts:20](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/db/RollbackTable.ts#L20)*
 
 ___
 
@@ -142,7 +134,17 @@ ___
 
 *Inherited from [AbstractTable](_augur_sdk_src_state_db_abstracttable_.abstracttable.md).[networkId](_augur_sdk_src_state_db_abstracttable_.abstracttable.md#protected-networkid)*
 
-*Defined in [packages/augur-sdk/src/state/db/AbstractTable.ts:16](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/db/AbstractTable.ts#L16)*
+*Defined in [packages/augur-sdk/src/state/db/AbstractTable.ts:32](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/db/AbstractTable.ts#L32)*
+
+___
+
+### `Protected` requiresOrder
+
+• **requiresOrder**: *boolean* = false
+
+*Inherited from [DerivedDB](_augur_sdk_src_state_db_deriveddb_.deriveddb.md).[requiresOrder](_augur_sdk_src_state_db_deriveddb_.deriveddb.md#protected-requiresorder)*
+
+*Defined in [packages/augur-sdk/src/state/db/DerivedDB.ts:21](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/db/DerivedDB.ts#L21)*
 
 ___
 
@@ -152,7 +154,7 @@ ___
 
 *Inherited from [RollbackTable](_augur_sdk_src_state_db_rollbacktable_.rollbacktable.md).[rollbackTable](_augur_sdk_src_state_db_rollbacktable_.rollbacktable.md#protected-rollbacktable)*
 
-*Defined in [packages/augur-sdk/src/state/db/RollbackTable.ts:24](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/db/RollbackTable.ts#L24)*
+*Defined in [packages/augur-sdk/src/state/db/RollbackTable.ts:21](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/db/RollbackTable.ts#L21)*
 
 ___
 
@@ -162,7 +164,17 @@ ___
 
 *Inherited from [RollbackTable](_augur_sdk_src_state_db_rollbacktable_.rollbacktable.md).[rollingBack](_augur_sdk_src_state_db_rollbacktable_.rollbacktable.md#protected-rollingback)*
 
-*Defined in [packages/augur-sdk/src/state/db/RollbackTable.ts:21](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/db/RollbackTable.ts#L21)*
+*Defined in [packages/augur-sdk/src/state/db/RollbackTable.ts:18](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/db/RollbackTable.ts#L18)*
+
+___
+
+### `Protected` stateDB
+
+• **stateDB**: *[DB](_augur_sdk_src_state_db_db_.db.md)*
+
+*Inherited from [DerivedDB](_augur_sdk_src_state_db_deriveddb_.deriveddb.md).[stateDB](_augur_sdk_src_state_db_deriveddb_.deriveddb.md#protected-statedb)*
+
+*Defined in [packages/augur-sdk/src/state/db/DerivedDB.ts:18](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/db/DerivedDB.ts#L18)*
 
 ___
 
@@ -172,7 +184,7 @@ ___
 
 *Inherited from [RollbackTable](_augur_sdk_src_state_db_rollbacktable_.rollbacktable.md).[syncStatus](_augur_sdk_src_state_db_rollbacktable_.rollbacktable.md#protected-syncstatus)*
 
-*Defined in [packages/augur-sdk/src/state/db/RollbackTable.ts:22](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/db/RollbackTable.ts#L22)*
+*Defined in [packages/augur-sdk/src/state/db/RollbackTable.ts:19](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/db/RollbackTable.ts#L19)*
 
 ___
 
@@ -184,7 +196,7 @@ ___
 
 *Overrides [AbstractTable](_augur_sdk_src_state_db_abstracttable_.abstracttable.md).[syncing](_augur_sdk_src_state_db_abstracttable_.abstracttable.md#protected-syncing)*
 
-*Defined in [packages/augur-sdk/src/state/db/RollbackTable.ts:20](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/db/RollbackTable.ts#L20)*
+*Defined in [packages/augur-sdk/src/state/db/RollbackTable.ts:17](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/db/RollbackTable.ts#L17)*
 
 ___
 
@@ -194,28 +206,9 @@ ___
 
 *Inherited from [AbstractTable](_augur_sdk_src_state_db_abstracttable_.abstracttable.md).[table](_augur_sdk_src_state_db_abstracttable_.abstracttable.md#table)*
 
-*Defined in [packages/augur-sdk/src/state/db/AbstractTable.ts:15](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/db/AbstractTable.ts#L15)*
+*Defined in [packages/augur-sdk/src/state/db/AbstractTable.ts:31](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/db/AbstractTable.ts#L31)*
 
 ## Methods
-
-###  addNewBlock
-
-▸ **addNewBlock**(`blocknumber`: number, `logs`: [ParsedLog](../interfaces/_augur_types_types_logs_.parsedlog.md)[]): *Promise‹number›*
-
-*Overrides [BaseSyncableDB](_augur_sdk_src_state_db_basesyncabledb_.basesyncabledb.md).[addNewBlock](_augur_sdk_src_state_db_basesyncabledb_.basesyncabledb.md#addnewblock)*
-
-*Defined in [packages/augur-sdk/src/state/db/ParsedOrderEventDB.ts:11](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/db/ParsedOrderEventDB.ts#L11)*
-
-**Parameters:**
-
-Name | Type |
------- | ------ |
-`blocknumber` | number |
-`logs` | [ParsedLog](../interfaces/_augur_types_types_logs_.parsedlog.md)[] |
-
-**Returns:** *Promise‹number›*
-
-___
 
 ###  allDocs
 
@@ -223,7 +216,7 @@ ___
 
 *Inherited from [AbstractTable](_augur_sdk_src_state_db_abstracttable_.abstracttable.md).[allDocs](_augur_sdk_src_state_db_abstracttable_.abstracttable.md#alldocs)*
 
-*Defined in [packages/augur-sdk/src/state/db/AbstractTable.ts:35](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/db/AbstractTable.ts#L35)*
+*Defined in [packages/augur-sdk/src/state/db/AbstractTable.ts:85](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/db/AbstractTable.ts#L85)*
 
 **Returns:** *Promise‹any[]›*
 
@@ -235,7 +228,25 @@ ___
 
 *Inherited from [AbstractTable](_augur_sdk_src_state_db_abstracttable_.abstracttable.md).[bulkAddDocuments](_augur_sdk_src_state_db_abstracttable_.abstracttable.md#protected-bulkadddocuments)*
 
-*Defined in [packages/augur-sdk/src/state/db/AbstractTable.ts:56](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/db/AbstractTable.ts#L56)*
+*Defined in [packages/augur-sdk/src/state/db/AbstractTable.ts:131](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/db/AbstractTable.ts#L131)*
+
+**Parameters:**
+
+Name | Type |
+------ | ------ |
+`documents` | [BaseDocument](../interfaces/_augur_sdk_src_state_db_abstracttable_.basedocument.md)[] |
+
+**Returns:** *Promise‹void›*
+
+___
+
+### `Protected` bulkAddDocumentsInternal
+
+▸ **bulkAddDocumentsInternal**(`documents`: [BaseDocument](../interfaces/_augur_sdk_src_state_db_abstracttable_.basedocument.md)[]): *Promise‹void›*
+
+*Inherited from [AbstractTable](_augur_sdk_src_state_db_abstracttable_.abstracttable.md).[bulkAddDocumentsInternal](_augur_sdk_src_state_db_abstracttable_.abstracttable.md#protected-bulkadddocumentsinternal)*
+
+*Defined in [packages/augur-sdk/src/state/db/AbstractTable.ts:149](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/db/AbstractTable.ts#L149)*
 
 **Parameters:**
 
@@ -251,11 +262,30 @@ ___
 
 ▸ **bulkPutDocuments**(`documents`: [BaseDocument](../interfaces/_augur_sdk_src_state_db_abstracttable_.basedocument.md)[], `documentIds?`: any[]): *Promise‹void›*
 
-*Inherited from [RollbackTable](_augur_sdk_src_state_db_rollbacktable_.rollbacktable.md).[bulkPutDocuments](_augur_sdk_src_state_db_rollbacktable_.rollbacktable.md#protected-bulkputdocuments)*
+*Inherited from [AbstractTable](_augur_sdk_src_state_db_abstracttable_.abstracttable.md).[bulkPutDocuments](_augur_sdk_src_state_db_abstracttable_.abstracttable.md#protected-bulkputdocuments)*
 
-*Overrides [AbstractTable](_augur_sdk_src_state_db_abstracttable_.abstracttable.md).[bulkPutDocuments](_augur_sdk_src_state_db_abstracttable_.abstracttable.md#protected-bulkputdocuments)*
+*Defined in [packages/augur-sdk/src/state/db/AbstractTable.ts:135](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/db/AbstractTable.ts#L135)*
 
-*Defined in [packages/augur-sdk/src/state/db/RollbackTable.ts:35](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/db/RollbackTable.ts#L35)*
+**Parameters:**
+
+Name | Type |
+------ | ------ |
+`documents` | [BaseDocument](../interfaces/_augur_sdk_src_state_db_abstracttable_.basedocument.md)[] |
+`documentIds?` | any[] |
+
+**Returns:** *Promise‹void›*
+
+___
+
+### `Protected` bulkPutDocumentsInternal
+
+▸ **bulkPutDocumentsInternal**(`documents`: [BaseDocument](../interfaces/_augur_sdk_src_state_db_abstracttable_.basedocument.md)[], `documentIds?`: any[]): *Promise‹void›*
+
+*Inherited from [RollbackTable](_augur_sdk_src_state_db_rollbacktable_.rollbacktable.md).[bulkPutDocumentsInternal](_augur_sdk_src_state_db_rollbacktable_.rollbacktable.md#protected-bulkputdocumentsinternal)*
+
+*Overrides [AbstractTable](_augur_sdk_src_state_db_abstracttable_.abstracttable.md).[bulkPutDocumentsInternal](_augur_sdk_src_state_db_abstracttable_.abstracttable.md#protected-bulkputdocumentsinternal)*
+
+*Defined in [packages/augur-sdk/src/state/db/RollbackTable.ts:32](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/db/RollbackTable.ts#L32)*
 
 **Parameters:**
 
@@ -274,7 +304,7 @@ ___
 
 *Inherited from [AbstractTable](_augur_sdk_src_state_db_abstracttable_.abstracttable.md).[bulkUpsertDocuments](_augur_sdk_src_state_db_abstracttable_.abstracttable.md#protected-bulkupsertdocuments)*
 
-*Defined in [packages/augur-sdk/src/state/db/AbstractTable.ts:70](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/db/AbstractTable.ts#L70)*
+*Defined in [packages/augur-sdk/src/state/db/AbstractTable.ts:139](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/db/AbstractTable.ts#L139)*
 
 **Parameters:**
 
@@ -286,13 +316,57 @@ Name | Type |
 
 ___
 
+### `Protected` bulkUpsertDocumentsInternal
+
+▸ **bulkUpsertDocumentsInternal**(`documents`: [BaseDocument](../interfaces/_augur_sdk_src_state_db_abstracttable_.basedocument.md)[]): *Promise‹void›*
+
+*Inherited from [AbstractTable](_augur_sdk_src_state_db_abstracttable_.abstracttable.md).[bulkUpsertDocumentsInternal](_augur_sdk_src_state_db_abstracttable_.abstracttable.md#protected-bulkupsertdocumentsinternal)*
+
+*Defined in [packages/augur-sdk/src/state/db/AbstractTable.ts:178](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/db/AbstractTable.ts#L178)*
+
+**Parameters:**
+
+Name | Type |
+------ | ------ |
+`documents` | [BaseDocument](../interfaces/_augur_sdk_src_state_db_abstracttable_.basedocument.md)[] |
+
+**Returns:** *Promise‹void›*
+
+___
+
+###  clear
+
+▸ **clear**(): *Promise‹void›*
+
+*Inherited from [DerivedDB](_augur_sdk_src_state_db_deriveddb_.deriveddb.md).[clear](_augur_sdk_src_state_db_deriveddb_.deriveddb.md#clear)*
+
+*Overrides [AbstractTable](_augur_sdk_src_state_db_abstracttable_.abstracttable.md).[clear](_augur_sdk_src_state_db_abstracttable_.abstracttable.md#clear)*
+
+*Defined in [packages/augur-sdk/src/state/db/DerivedDB.ts:52](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/db/DerivedDB.ts#L52)*
+
+**Returns:** *Promise‹void›*
+
+___
+
 ###  clearDB
 
 ▸ **clearDB**(): *Promise‹void›*
 
 *Inherited from [AbstractTable](_augur_sdk_src_state_db_abstracttable_.abstracttable.md).[clearDB](_augur_sdk_src_state_db_abstracttable_.abstracttable.md#cleardb)*
 
-*Defined in [packages/augur-sdk/src/state/db/AbstractTable.ts:30](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/db/AbstractTable.ts#L30)*
+*Defined in [packages/augur-sdk/src/state/db/AbstractTable.ts:78](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/db/AbstractTable.ts#L78)*
+
+**Returns:** *Promise‹void›*
+
+___
+
+### `Protected` clearInternal
+
+▸ **clearInternal**(): *Promise‹void›*
+
+*Inherited from [AbstractTable](_augur_sdk_src_state_db_abstracttable_.abstracttable.md).[clearInternal](_augur_sdk_src_state_db_abstracttable_.abstracttable.md#protected-clearinternal)*
+
+*Defined in [packages/augur-sdk/src/state/db/AbstractTable.ts:143](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/db/AbstractTable.ts#L143)*
 
 **Returns:** *Promise‹void›*
 
@@ -302,9 +376,29 @@ ___
 
 ▸ **delete**(): *Promise‹void›*
 
-*Inherited from [BaseSyncableDB](_augur_sdk_src_state_db_basesyncabledb_.basesyncabledb.md).[delete](_augur_sdk_src_state_db_basesyncabledb_.basesyncabledb.md#delete)*
+*Inherited from [DerivedDB](_augur_sdk_src_state_db_deriveddb_.deriveddb.md).[delete](_augur_sdk_src_state_db_deriveddb_.deriveddb.md#delete)*
 
-*Defined in [packages/augur-sdk/src/state/db/BaseSyncableDB.ts:33](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/db/BaseSyncableDB.ts#L33)*
+*Overrides [AbstractTable](_augur_sdk_src_state_db_abstracttable_.abstracttable.md).[delete](_augur_sdk_src_state_db_abstracttable_.abstracttable.md#delete)*
+
+*Defined in [packages/augur-sdk/src/state/db/DerivedDB.ts:45](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/db/DerivedDB.ts#L45)*
+
+**Returns:** *Promise‹void›*
+
+___
+
+###  doSync
+
+▸ **doSync**(`highestAvailableBlockNumber`: number): *Promise‹void›*
+
+*Inherited from [DerivedDB](_augur_sdk_src_state_db_deriveddb_.deriveddb.md).[doSync](_augur_sdk_src_state_db_deriveddb_.deriveddb.md#dosync)*
+
+*Defined in [packages/augur-sdk/src/state/db/DerivedDB.ts:75](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/db/DerivedDB.ts#L75)*
+
+**Parameters:**
+
+Name | Type |
+------ | ------ |
+`highestAvailableBlockNumber` | number |
 
 **Returns:** *Promise‹void›*
 
@@ -316,7 +410,7 @@ ___
 
 *Inherited from [AbstractTable](_augur_sdk_src_state_db_abstracttable_.abstracttable.md).[find](_augur_sdk_src_state_db_abstracttable_.abstracttable.md#find)*
 
-*Defined in [packages/augur-sdk/src/state/db/AbstractTable.ts:94](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/db/AbstractTable.ts#L94)*
+*Defined in [packages/augur-sdk/src/state/db/AbstractTable.ts:204](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/db/AbstractTable.ts#L204)*
 
 **Parameters:**
 
@@ -330,11 +424,11 @@ ___
 
 ### `Protected` getDocument
 
-▸ **getDocument**<**Document**>(`id`: string): *Promise‹Document | undefined›*
+▸ **getDocument**‹**Document**›(`id`: string): *Promise‹Document | undefined›*
 
 *Inherited from [AbstractTable](_augur_sdk_src_state_db_abstracttable_.abstracttable.md).[getDocument](_augur_sdk_src_state_db_abstracttable_.abstracttable.md#protected-getdocument)*
 
-*Defined in [packages/augur-sdk/src/state/db/AbstractTable.ts:52](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/db/AbstractTable.ts#L52)*
+*Defined in [packages/augur-sdk/src/state/db/AbstractTable.ts:115](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/db/AbstractTable.ts#L115)*
 
 **Type parameters:**
 
@@ -356,21 +450,28 @@ ___
 
 *Inherited from [AbstractTable](_augur_sdk_src_state_db_abstracttable_.abstracttable.md).[getDocumentCount](_augur_sdk_src_state_db_abstracttable_.abstracttable.md#getdocumentcount)*
 
-*Defined in [packages/augur-sdk/src/state/db/AbstractTable.ts:48](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/db/AbstractTable.ts#L48)*
+*Defined in [packages/augur-sdk/src/state/db/AbstractTable.ts:108](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/db/AbstractTable.ts#L108)*
 
 **Returns:** *Promise‹number›*
 
 ___
 
-###  getFullEventName
+###  getEvents
 
-▸ **getFullEventName**(): *string*
+▸ **getEvents**(`highestSyncedBlockNumber`: number, `eventName`: string): *Promise‹[BaseDocument](../interfaces/_augur_sdk_src_state_db_abstracttable_.basedocument.md)[]›*
 
-*Inherited from [BaseSyncableDB](_augur_sdk_src_state_db_basesyncabledb_.basesyncabledb.md).[getFullEventName](_augur_sdk_src_state_db_basesyncabledb_.basesyncabledb.md#getfulleventname)*
+*Inherited from [DerivedDB](_augur_sdk_src_state_db_deriveddb_.deriveddb.md).[getEvents](_augur_sdk_src_state_db_deriveddb_.deriveddb.md#getevents)*
 
-*Defined in [packages/augur-sdk/src/state/db/BaseSyncableDB.ts:96](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/db/BaseSyncableDB.ts#L96)*
+*Defined in [packages/augur-sdk/src/state/db/DerivedDB.ts:117](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/db/DerivedDB.ts#L117)*
 
-**Returns:** *string*
+**Parameters:**
+
+Name | Type |
+------ | ------ |
+`highestSyncedBlockNumber` | number |
+`eventName` | string |
+
+**Returns:** *Promise‹[BaseDocument](../interfaces/_augur_sdk_src_state_db_abstracttable_.basedocument.md)[]›*
 
 ___
 
@@ -380,7 +481,7 @@ ___
 
 *Inherited from [AbstractTable](_augur_sdk_src_state_db_abstracttable_.abstracttable.md).[getIDValue](_augur_sdk_src_state_db_abstracttable_.abstracttable.md#protected-getidvalue)*
 
-*Defined in [packages/augur-sdk/src/state/db/AbstractTable.ts:98](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/db/AbstractTable.ts#L98)*
+*Defined in [packages/augur-sdk/src/state/db/AbstractTable.ts:208](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/db/AbstractTable.ts#L208)*
 
 **Parameters:**
 
@@ -392,19 +493,53 @@ Name | Type |
 
 ___
 
-### `Private` processOrderEvent
+###  handleMergeEvent
 
-▸ **processOrderEvent**(`logs`: [ParsedLog](../interfaces/_augur_types_types_logs_.parsedlog.md)[]): *[ParsedLog](../interfaces/_augur_types_types_logs_.parsedlog.md)[]*
+▸ **handleMergeEvent**(`blocknumber`: number, `logs`: [ParsedLog](../interfaces/_augur_types_types_logs_.parsedlog.md)[], `syncing`: boolean): *Promise‹number›*
 
-*Defined in [packages/augur-sdk/src/state/db/ParsedOrderEventDB.ts:15](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/db/ParsedOrderEventDB.ts#L15)*
+*Inherited from [DerivedDB](_augur_sdk_src_state_db_deriveddb_.deriveddb.md).[handleMergeEvent](_augur_sdk_src_state_db_deriveddb_.deriveddb.md#handlemergeevent)*
+
+*Defined in [packages/augur-sdk/src/state/db/DerivedDB.ts:128](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/db/DerivedDB.ts#L128)*
+
+**Parameters:**
+
+Name | Type | Default |
+------ | ------ | ------ |
+`blocknumber` | number | - |
+`logs` | [ParsedLog](../interfaces/_augur_types_types_logs_.parsedlog.md)[] | - |
+`syncing` | boolean | false |
+
+**Returns:** *Promise‹number›*
+
+___
+
+###  onBulkSyncComplete
+
+▸ **onBulkSyncComplete**(): *Promise‹void›*
+
+*Inherited from [DerivedDB](_augur_sdk_src_state_db_deriveddb_.deriveddb.md).[onBulkSyncComplete](_augur_sdk_src_state_db_deriveddb_.deriveddb.md#onbulksynccomplete)*
+
+*Defined in [packages/augur-sdk/src/state/db/DerivedDB.ts:56](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/db/DerivedDB.ts#L56)*
+
+**Returns:** *Promise‹void›*
+
+___
+
+### `Protected` processDoc
+
+▸ **processDoc**(`log`: [ParsedLog](../interfaces/_augur_types_types_logs_.parsedlog.md)): *[ParsedLog](../interfaces/_augur_types_types_logs_.parsedlog.md)*
+
+*Overrides [DerivedDB](_augur_sdk_src_state_db_deriveddb_.deriveddb.md).[processDoc](_augur_sdk_src_state_db_deriveddb_.deriveddb.md#protected-processdoc)*
+
+*Defined in [packages/augur-sdk/src/state/db/ParsedOrderEventDB.ts:6](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/db/ParsedOrderEventDB.ts#L6)*
 
 **Parameters:**
 
 Name | Type |
 ------ | ------ |
-`logs` | [ParsedLog](../interfaces/_augur_types_types_logs_.parsedlog.md)[] |
+`log` | [ParsedLog](../interfaces/_augur_types_types_logs_.parsedlog.md) |
 
-**Returns:** *[ParsedLog](../interfaces/_augur_types_types_logs_.parsedlog.md)[]*
+**Returns:** *[ParsedLog](../interfaces/_augur_types_types_logs_.parsedlog.md)*
 
 ___
 
@@ -414,7 +549,7 @@ ___
 
 *Inherited from [RollbackTable](_augur_sdk_src_state_db_rollbacktable_.rollbacktable.md).[prune](_augur_sdk_src_state_db_rollbacktable_.rollbacktable.md#prune)*
 
-*Defined in [packages/augur-sdk/src/state/db/RollbackTable.ts:111](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/db/RollbackTable.ts#L111)*
+*Defined in [packages/augur-sdk/src/state/db/RollbackTable.ts:108](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/db/RollbackTable.ts#L108)*
 
 **Parameters:**
 
@@ -432,7 +567,7 @@ ___
 
 *Inherited from [RollbackTable](_augur_sdk_src_state_db_rollbacktable_.rollbacktable.md).[rollback](_augur_sdk_src_state_db_rollbacktable_.rollbacktable.md#rollback)*
 
-*Defined in [packages/augur-sdk/src/state/db/RollbackTable.ts:64](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/db/RollbackTable.ts#L64)*
+*Defined in [packages/augur-sdk/src/state/db/RollbackTable.ts:61](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/db/RollbackTable.ts#L61)*
 
 **Parameters:**
 
@@ -450,7 +585,7 @@ ___
 
 *Inherited from [RollbackTable](_augur_sdk_src_state_db_rollbacktable_.rollbacktable.md).[rollupRollback](_augur_sdk_src_state_db_rollbacktable_.rollbacktable.md#rolluprollback)*
 
-*Defined in [packages/augur-sdk/src/state/db/RollbackTable.ts:82](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/db/RollbackTable.ts#L82)*
+*Defined in [packages/augur-sdk/src/state/db/RollbackTable.ts:79](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/db/RollbackTable.ts#L79)*
 
 **Parameters:**
 
@@ -466,11 +601,9 @@ ___
 
 ▸ **saveDocuments**(`documents`: [BaseDocument](../interfaces/_augur_sdk_src_state_db_abstracttable_.basedocument.md)[]): *Promise‹void›*
 
-*Inherited from [BaseSyncableDB](_augur_sdk_src_state_db_basesyncabledb_.basesyncabledb.md).[saveDocuments](_augur_sdk_src_state_db_basesyncabledb_.basesyncabledb.md#protected-savedocuments)*
+*Inherited from [AbstractTable](_augur_sdk_src_state_db_abstracttable_.abstracttable.md).[saveDocuments](_augur_sdk_src_state_db_abstracttable_.abstracttable.md#protected-savedocuments)*
 
-*Overrides [AbstractTable](_augur_sdk_src_state_db_abstracttable_.abstracttable.md).[saveDocuments](_augur_sdk_src_state_db_abstracttable_.abstracttable.md#protected-savedocuments)*
-
-*Defined in [packages/augur-sdk/src/state/db/BaseSyncableDB.ts:37](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/db/BaseSyncableDB.ts#L37)*
+*Defined in [packages/augur-sdk/src/state/db/AbstractTable.ts:191](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/db/AbstractTable.ts#L191)*
 
 **Parameters:**
 
@@ -488,7 +621,7 @@ ___
 
 *Inherited from [RollbackTable](_augur_sdk_src_state_db_rollbacktable_.rollbacktable.md).[standardRollback](_augur_sdk_src_state_db_rollbacktable_.rollbacktable.md#standardrollback)*
 
-*Defined in [packages/augur-sdk/src/state/db/RollbackTable.ts:76](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/db/RollbackTable.ts#L76)*
+*Defined in [packages/augur-sdk/src/state/db/RollbackTable.ts:73](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/db/RollbackTable.ts#L73)*
 
 **Parameters:**
 
@@ -504,9 +637,9 @@ ___
 
 ▸ **sync**(`highestAvailableBlockNumber`: number): *Promise‹void›*
 
-*Inherited from [BaseSyncableDB](_augur_sdk_src_state_db_basesyncabledb_.basesyncabledb.md).[sync](_augur_sdk_src_state_db_basesyncabledb_.basesyncabledb.md#sync)*
+*Inherited from [DerivedDB](_augur_sdk_src_state_db_deriveddb_.deriveddb.md).[sync](_augur_sdk_src_state_db_deriveddb_.deriveddb.md#sync)*
 
-*Defined in [packages/augur-sdk/src/state/db/BaseSyncableDB.ts:92](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/db/BaseSyncableDB.ts#L92)*
+*Defined in [packages/augur-sdk/src/state/db/DerivedDB.ts:63](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/db/DerivedDB.ts#L63)*
 
 **Parameters:**
 
@@ -524,7 +657,7 @@ ___
 
 *Inherited from [AbstractTable](_augur_sdk_src_state_db_abstracttable_.abstracttable.md).[upsertDocument](_augur_sdk_src_state_db_abstracttable_.abstracttable.md#protected-upsertdocument)*
 
-*Defined in [packages/augur-sdk/src/state/db/AbstractTable.ts:85](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/db/AbstractTable.ts#L85)*
+*Defined in [packages/augur-sdk/src/state/db/AbstractTable.ts:195](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/db/AbstractTable.ts#L195)*
 
 **Parameters:**
 
@@ -534,3 +667,21 @@ Name | Type |
 `document` | [BaseDocument](../interfaces/_augur_sdk_src_state_db_abstracttable_.basedocument.md) |
 
 **Returns:** *Promise‹void›*
+
+___
+
+### `Static` setConcurrency
+
+▸ **setConcurrency**(`limit`: number): *AsyncQueue‹[WriteQueueTask](../interfaces/_augur_sdk_src_state_db_abstracttable_.writequeuetask.md)›*
+
+*Inherited from [AbstractTable](_augur_sdk_src_state_db_abstracttable_.abstracttable.md).[setConcurrency](_augur_sdk_src_state_db_abstracttable_.abstracttable.md#static-setconcurrency)*
+
+*Defined in [packages/augur-sdk/src/state/db/AbstractTable.ts:37](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/db/AbstractTable.ts#L37)*
+
+**Parameters:**
+
+Name | Type | Default |
+------ | ------ | ------ |
+`limit` | number | DEFAULT_CONCURRENCY |
+
+**Returns:** *AsyncQueue‹[WriteQueueTask](../interfaces/_augur_sdk_src_state_db_abstracttable_.writequeuetask.md)›*

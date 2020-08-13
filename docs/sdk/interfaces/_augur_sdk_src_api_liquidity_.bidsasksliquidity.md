@@ -19,7 +19,7 @@
 
 • **asks**: *BigNumber*
 
-*Defined in [packages/augur-sdk/src/api/Liquidity.ts:24](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/api/Liquidity.ts#L24)*
+*Defined in [packages/augur-sdk/src/api/Liquidity.ts:26](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/api/Liquidity.ts#L26)*
 
 ___
 
@@ -27,4 +27,4 @@ ___
 
 • **bids**: *BigNumber*
 
-*Defined in [packages/augur-sdk/src/api/Liquidity.ts:23](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/api/Liquidity.ts#L23)*
+*Defined in [packages/augur-sdk/src/api/Liquidity.ts:25](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/api/Liquidity.ts#L25)*

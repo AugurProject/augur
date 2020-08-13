@@ -22,7 +22,7 @@
 
 • **userPositionTotals**: *[UserPositionTotals](_augur_sdk_src_state_getter_users_.userpositiontotals.md)*
 
-*Defined in [packages/augur-sdk/src/state/getter/Users.ts:196](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/getter/Users.ts#L196)*
+*Defined in [packages/augur-sdk/src/state/getter/Users.ts:223](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/getter/Users.ts#L223)*
 
 ___
 
@@ -30,12 +30,12 @@ ___
 
 • **userPositions**: *[UserTradingPositions](_augur_sdk_src_state_getter_users_.usertradingpositions.md)*
 
-*Defined in [packages/augur-sdk/src/state/getter/Users.ts:195](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/getter/Users.ts#L195)*
+*Defined in [packages/augur-sdk/src/state/getter/Users.ts:222](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/getter/Users.ts#L222)*
 
 ___
 
 ###  userTradeHistory
 
-• **userTradeHistory**: *[MarketTradingHistory](_augur_sdk_src_state_getter_onchaintrading_.markettradinghistory.md)*
+• **userTradeHistory**: *MarketTradingHistory*
 
-*Defined in [packages/augur-sdk/src/state/getter/Users.ts:194](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/getter/Users.ts#L194)*
+*Defined in [packages/augur-sdk/src/state/getter/Users.ts:221](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/getter/Users.ts#L221)*

@@ -19,7 +19,7 @@
 
 • **eventNames**: *[EventTopics](../modules/_augur_sdk_src_state_logs_logfilteraggregator_.md#eventtopics)*
 
-*Defined in [packages/augur-sdk/src/state/logs/LogFilterAggregator.ts:21](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/logs/LogFilterAggregator.ts#L21)*
+*Defined in [packages/augur-sdk/src/state/logs/LogFilterAggregator.ts:21](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/logs/LogFilterAggregator.ts#L21)*
 
 ___
 
@@ -27,4 +27,4 @@ ___
 
 • **onLogsAdded**: *[LogCallbackType](../modules/_augur_sdk_src_state_logs_logfilteraggregator_.md#logcallbacktype)*
 
-*Defined in [packages/augur-sdk/src/state/logs/LogFilterAggregator.ts:22](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/logs/LogFilterAggregator.ts#L22)*
+*Defined in [packages/augur-sdk/src/state/logs/LogFilterAggregator.ts:22](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/logs/LogFilterAggregator.ts#L22)*

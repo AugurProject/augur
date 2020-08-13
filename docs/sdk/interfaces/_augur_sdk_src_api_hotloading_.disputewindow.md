@@ -20,9 +20,9 @@
 
 ###  address
 
-• **address**: *[Address](../modules/_augur_sdk_src_state_logs_types_.md#address)*
+• **address**: *Address*
 
-*Defined in [packages/augur-sdk/src/api/HotLoading.ts:21](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/api/HotLoading.ts#L21)*
+*Defined in [packages/augur-sdk/src/api/HotLoading.ts:26](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/api/HotLoading.ts#L26)*
 
 ___
 
@@ -30,7 +30,7 @@ ___
 
 • **endTime**: *number*
 
-*Defined in [packages/augur-sdk/src/api/HotLoading.ts:23](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/api/HotLoading.ts#L23)*
+*Defined in [packages/augur-sdk/src/api/HotLoading.ts:28](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/api/HotLoading.ts#L28)*
 
 ___
 
@@ -38,7 +38,7 @@ ___
 
 • **fees**: *string*
 
-*Defined in [packages/augur-sdk/src/api/HotLoading.ts:25](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/api/HotLoading.ts#L25)*
+*Defined in [packages/augur-sdk/src/api/HotLoading.ts:30](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/api/HotLoading.ts#L30)*
 
 ___
 
@@ -46,7 +46,7 @@ ___
 
 • **purchased**: *string*
 
-*Defined in [packages/augur-sdk/src/api/HotLoading.ts:24](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/api/HotLoading.ts#L24)*
+*Defined in [packages/augur-sdk/src/api/HotLoading.ts:29](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/api/HotLoading.ts#L29)*
 
 ___
 
@@ -54,4 +54,4 @@ ___
 
 • **startTime**: *number*
 
-*Defined in [packages/augur-sdk/src/api/HotLoading.ts:22](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/api/HotLoading.ts#L22)*
+*Defined in [packages/augur-sdk/src/api/HotLoading.ts:27](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/api/HotLoading.ts#L27)*

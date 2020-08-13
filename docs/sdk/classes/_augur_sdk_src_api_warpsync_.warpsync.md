@@ -14,7 +14,7 @@
 
 ### Properties
 
-* [augur](_augur_sdk_src_api_warpsync_.warpsync.md#private-augur)
+* [augur](_augur_sdk_src_api_warpsync_.warpsync.md#private-readonly-augur)
 
 ### Methods
 
@@ -31,7 +31,7 @@
 
 \+ **new WarpSync**(`augur`: [Augur](_augur_sdk_src_augur_.augur.md)): *[WarpSync](_augur_sdk_src_api_warpsync_.warpsync.md)*
 
-*Defined in [packages/augur-sdk/src/api/WarpSync.ts:14](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/api/WarpSync.ts#L14)*
+*Defined in [packages/augur-sdk/src/api/WarpSync.ts:14](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/api/WarpSync.ts#L14)*
 
 **Parameters:**
 
@@ -43,11 +43,11 @@ Name | Type |
 
 ## Properties
 
-### `Private` augur
+### `Private` `Readonly` augur
 
 • **augur**: *[Augur](_augur_sdk_src_augur_.augur.md)*
 
-*Defined in [packages/augur-sdk/src/api/WarpSync.ts:14](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/api/WarpSync.ts#L14)*
+*Defined in [packages/augur-sdk/src/api/WarpSync.ts:14](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/api/WarpSync.ts#L14)*
 
 ## Methods
 
@@ -55,7 +55,7 @@ Name | Type |
 
 ▸ **getLastWarpSyncData**(`universe`: string): *Promise‹[WarpSyncData](../interfaces/_augur_sdk_src_api_warpsync_.warpsyncdata.md)›*
 
-*Defined in [packages/augur-sdk/src/api/WarpSync.ts:53](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/api/WarpSync.ts#L53)*
+*Defined in [packages/augur-sdk/src/api/WarpSync.ts:53](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/api/WarpSync.ts#L53)*
 
 **Parameters:**
 
@@ -71,7 +71,7 @@ ___
 
 ▸ **getPayoutFromWarpSyncHash**(`warpSyncHash`: string): *Promise‹BigNumber[]›*
 
-*Defined in [packages/augur-sdk/src/api/WarpSync.ts:45](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/api/WarpSync.ts#L45)*
+*Defined in [packages/augur-sdk/src/api/WarpSync.ts:45](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/api/WarpSync.ts#L45)*
 
 **Parameters:**
 
@@ -87,7 +87,7 @@ ___
 
 ▸ **getWarpSyncHashFromMarket**(`market`: Market): *Promise‹string›*
 
-*Defined in [packages/augur-sdk/src/api/WarpSync.ts:31](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/api/WarpSync.ts#L31)*
+*Defined in [packages/augur-sdk/src/api/WarpSync.ts:31](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/api/WarpSync.ts#L31)*
 
 **Parameters:**
 
@@ -103,7 +103,7 @@ ___
 
 ▸ **getWarpSyncHashFromPayout**(`payout`: BigNumber): *string*
 
-*Defined in [packages/augur-sdk/src/api/WarpSync.ts:38](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/api/WarpSync.ts#L38)*
+*Defined in [packages/augur-sdk/src/api/WarpSync.ts:38](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/api/WarpSync.ts#L38)*
 
 **Parameters:**
 
@@ -119,7 +119,7 @@ ___
 
 ▸ **getWarpSyncMarket**(`universe`: string): *Promise‹Market›*
 
-*Defined in [packages/augur-sdk/src/api/WarpSync.ts:25](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/api/WarpSync.ts#L25)*
+*Defined in [packages/augur-sdk/src/api/WarpSync.ts:25](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/api/WarpSync.ts#L25)*
 
 **Parameters:**
 
@@ -135,7 +135,7 @@ ___
 
 ▸ **initializeUniverse**(`universe`: string): *Promise‹void›*
 
-*Defined in [packages/augur-sdk/src/api/WarpSync.ts:20](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/api/WarpSync.ts#L20)*
+*Defined in [packages/augur-sdk/src/api/WarpSync.ts:20](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/api/WarpSync.ts#L20)*
 
 **Parameters:**
 

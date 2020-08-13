@@ -25,7 +25,7 @@
 
 • **blockPollingIntervalSeconds**? : *number*
 
-*Defined in [packages/augur-sdk/src/api/ZeroX.ts:45](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/api/ZeroX.ts#L45)*
+*Defined in [packages/augur-sdk/src/api/ZeroX.ts:58](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/api/ZeroX.ts#L58)*
 
 ___
 
@@ -33,7 +33,7 @@ ___
 
 • **bootstrapList**? : *string[]*
 
-*Defined in [packages/augur-sdk/src/api/ZeroX.ts:43](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/api/ZeroX.ts#L43)*
+*Defined in [packages/augur-sdk/src/api/ZeroX.ts:56](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/api/ZeroX.ts#L56)*
 
 ___
 
@@ -41,7 +41,7 @@ ___
 
 • **ethereumNetworkID**: *number*
 
-*Defined in [packages/augur-sdk/src/api/ZeroX.ts:41](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/api/ZeroX.ts#L41)*
+*Defined in [packages/augur-sdk/src/api/ZeroX.ts:54](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/api/ZeroX.ts#L54)*
 
 ___
 
@@ -49,7 +49,7 @@ ___
 
 • **ethereumRPCMaxContentLength**? : *number*
 
-*Defined in [packages/augur-sdk/src/api/ZeroX.ts:46](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/api/ZeroX.ts#L46)*
+*Defined in [packages/augur-sdk/src/api/ZeroX.ts:59](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/api/ZeroX.ts#L59)*
 
 ___
 
@@ -57,7 +57,7 @@ ___
 
 • **ethereumRPCURL**: *string*
 
-*Defined in [packages/augur-sdk/src/api/ZeroX.ts:40](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/api/ZeroX.ts#L40)*
+*Defined in [packages/augur-sdk/src/api/ZeroX.ts:53](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/api/ZeroX.ts#L53)*
 
 ___
 
@@ -65,7 +65,7 @@ ___
 
 • **orderExpirationBufferSeconds**? : *number*
 
-*Defined in [packages/augur-sdk/src/api/ZeroX.ts:44](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/api/ZeroX.ts#L44)*
+*Defined in [packages/augur-sdk/src/api/ZeroX.ts:57](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/api/ZeroX.ts#L57)*
 
 ___
 
@@ -73,7 +73,7 @@ ___
 
 • **useBootstrapList**? : *boolean*
 
-*Defined in [packages/augur-sdk/src/api/ZeroX.ts:42](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/api/ZeroX.ts#L42)*
+*Defined in [packages/augur-sdk/src/api/ZeroX.ts:55](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/api/ZeroX.ts#L55)*
 
 ___
 
@@ -81,4 +81,4 @@ ___
 
 • **verbosity**? : *[Verbosity](../enums/_augur_sdk_src_api_zerox_.verbosity.md)*
 
-*Defined in [packages/augur-sdk/src/api/ZeroX.ts:39](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/api/ZeroX.ts#L39)*
+*Defined in [packages/augur-sdk/src/api/ZeroX.ts:52](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/api/ZeroX.ts#L52)*

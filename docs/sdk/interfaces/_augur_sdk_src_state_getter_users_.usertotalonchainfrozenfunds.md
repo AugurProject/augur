@@ -18,4 +18,4 @@
 
 • **totalFrozenFunds**: *string*
 
-*Defined in [packages/augur-sdk/src/state/getter/Users.ts:174](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/getter/Users.ts#L174)*
+*Defined in [packages/augur-sdk/src/state/getter/Users.ts:201](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/getter/Users.ts#L201)*

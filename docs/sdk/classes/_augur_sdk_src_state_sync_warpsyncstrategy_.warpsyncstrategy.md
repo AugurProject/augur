@@ -14,7 +14,9 @@
 
 ### Properties
 
+* [db](_augur_sdk_src_state_sync_warpsyncstrategy_.warpsyncstrategy.md#protected-db)
 * [onLogsAdded](_augur_sdk_src_state_sync_warpsyncstrategy_.warpsyncstrategy.md#protected-onlogsadded)
+* [provider](_augur_sdk_src_state_sync_warpsyncstrategy_.warpsyncstrategy.md#protected-provider)
 * [warpSyncController](_augur_sdk_src_state_sync_warpsyncstrategy_.warpsyncstrategy.md#protected-warpsynccontroller)
 
 ### Methods
@@ -28,9 +30,9 @@
 
 ###  constructor
 
-\+ **new WarpSyncStrategy**(`warpSyncController`: [WarpController](_augur_sdk_src_warp_warpcontroller_.warpcontroller.md), `onLogsAdded`: function): *[WarpSyncStrategy](_augur_sdk_src_state_sync_warpsyncstrategy_.warpsyncstrategy.md)*
+\+ **new WarpSyncStrategy**(`warpSyncController`: [WarpController](_augur_sdk_src_warp_warpcontroller_.warpcontroller.md), `onLogsAdded`: function, `db`: [DB](_augur_sdk_src_state_db_db_.db.md), `provider`: EthersProvider): *[WarpSyncStrategy](_augur_sdk_src_state_sync_warpsyncstrategy_.warpsyncstrategy.md)*
 
-*Defined in [packages/augur-sdk/src/state/sync/WarpSyncStrategy.ts:9](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/sync/WarpSyncStrategy.ts#L9)*
+*Defined in [packages/augur-sdk/src/state/sync/WarpSyncStrategy.ts:12](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/sync/WarpSyncStrategy.ts#L12)*
 
 **Parameters:**
 
@@ -47,15 +49,27 @@ Name | Type |
 `blockNumber` | number |
 `logs` | [Log](../interfaces/_augur_types_types_logs_.log.md)[] |
 
+▪ **db**: *[DB](_augur_sdk_src_state_db_db_.db.md)*
+
+▪ **provider**: *EthersProvider*
+
 **Returns:** *[WarpSyncStrategy](_augur_sdk_src_state_sync_warpsyncstrategy_.warpsyncstrategy.md)*
 
 ## Properties
+
+### `Protected` db
+
+• **db**: *[DB](_augur_sdk_src_state_db_db_.db.md)*
+
+*Defined in [packages/augur-sdk/src/state/sync/WarpSyncStrategy.ts:16](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/sync/WarpSyncStrategy.ts#L16)*
+
+___
 
 ### `Protected` onLogsAdded
 
 • **onLogsAdded**: *function*
 
-*Defined in [packages/augur-sdk/src/state/sync/WarpSyncStrategy.ts:12](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/sync/WarpSyncStrategy.ts#L12)*
+*Defined in [packages/augur-sdk/src/state/sync/WarpSyncStrategy.ts:15](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/sync/WarpSyncStrategy.ts#L15)*
 
 #### Type declaration:
 
@@ -70,26 +84,34 @@ Name | Type |
 
 ___
 
+### `Protected` provider
+
+• **provider**: *EthersProvider*
+
+*Defined in [packages/augur-sdk/src/state/sync/WarpSyncStrategy.ts:17](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/sync/WarpSyncStrategy.ts#L17)*
+
+___
+
 ### `Protected` warpSyncController
 
 • **warpSyncController**: *[WarpController](_augur_sdk_src_warp_warpcontroller_.warpcontroller.md)*
 
-*Defined in [packages/augur-sdk/src/state/sync/WarpSyncStrategy.ts:11](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/sync/WarpSyncStrategy.ts#L11)*
+*Defined in [packages/augur-sdk/src/state/sync/WarpSyncStrategy.ts:14](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/sync/WarpSyncStrategy.ts#L14)*
 
 ## Methods
 
 ###  loadCheckpoints
 
-▸ **loadCheckpoints**(`ipfsRootHash`: string, `highestSyncedBlock?`: Block): *Promise‹number | undefined›*
+▸ **loadCheckpoints**(`ipfsRootHash`: string, `currentBlock?`: Block): *Promise‹number | undefined›*
 
-*Defined in [packages/augur-sdk/src/state/sync/WarpSyncStrategy.ts:31](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/sync/WarpSyncStrategy.ts#L31)*
+*Defined in [packages/augur-sdk/src/state/sync/WarpSyncStrategy.ts:42](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/sync/WarpSyncStrategy.ts#L42)*
 
 **Parameters:**
 
 Name | Type |
 ------ | ------ |
 `ipfsRootHash` | string |
-`highestSyncedBlock?` | Block |
+`currentBlock?` | Block |
 
 **Returns:** *Promise‹number | undefined›*
 
@@ -99,7 +121,7 @@ ___
 
 ▸ **pinHashByGatewayUrl**(`url`: string): *Promise‹boolean›*
 
-*Defined in [packages/augur-sdk/src/state/sync/WarpSyncStrategy.ts:15](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/sync/WarpSyncStrategy.ts#L15)*
+*Defined in [packages/augur-sdk/src/state/sync/WarpSyncStrategy.ts:20](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/sync/WarpSyncStrategy.ts#L20)*
 
 **Parameters:**
 
@@ -115,7 +137,7 @@ ___
 
 ▸ **processFile**(`logs`: [Log](../interfaces/_augur_types_types_logs_.log.md)[]): *Promise‹number | undefined›*
 
-*Defined in [packages/augur-sdk/src/state/sync/WarpSyncStrategy.ts:43](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/sync/WarpSyncStrategy.ts#L43)*
+*Defined in [packages/augur-sdk/src/state/sync/WarpSyncStrategy.ts:82](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/sync/WarpSyncStrategy.ts#L82)*
 
 **Parameters:**
 
@@ -129,15 +151,15 @@ ___
 
 ###  start
 
-▸ **start**(`ipfsRootHash?`: string, `highestSyncedBlock?`: Block): *Promise‹number | undefined›*
+▸ **start**(`currentBlock`: Block, `ipfsRootHash?`: string): *Promise‹number | undefined›*
 
-*Defined in [packages/augur-sdk/src/state/sync/WarpSyncStrategy.ts:19](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/sync/WarpSyncStrategy.ts#L19)*
+*Defined in [packages/augur-sdk/src/state/sync/WarpSyncStrategy.ts:24](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/sync/WarpSyncStrategy.ts#L24)*
 
 **Parameters:**
 
 Name | Type |
 ------ | ------ |
+`currentBlock` | Block |
 `ipfsRootHash?` | string |
-`highestSyncedBlock?` | Block |
 
 **Returns:** *Promise‹number | undefined›*

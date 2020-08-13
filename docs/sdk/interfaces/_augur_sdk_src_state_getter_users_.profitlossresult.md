@@ -24,7 +24,7 @@
 
 • **averagePrice**: *string*
 
-*Defined in [packages/augur-sdk/src/state/getter/Users.ts:179](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/getter/Users.ts#L179)*
+*Defined in [packages/augur-sdk/src/state/getter/Users.ts:206](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/getter/Users.ts#L206)*
 
 ___
 
@@ -32,7 +32,7 @@ ___
 
 • **cost**: *string*
 
-*Defined in [packages/augur-sdk/src/state/getter/Users.ts:180](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/getter/Users.ts#L180)*
+*Defined in [packages/augur-sdk/src/state/getter/Users.ts:207](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/getter/Users.ts#L207)*
 
 ___
 
@@ -40,7 +40,7 @@ ___
 
 • **position**: *string*
 
-*Defined in [packages/augur-sdk/src/state/getter/Users.ts:178](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/getter/Users.ts#L178)*
+*Defined in [packages/augur-sdk/src/state/getter/Users.ts:205](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/getter/Users.ts#L205)*
 
 ___
 
@@ -48,7 +48,7 @@ ___
 
 • **realized**: *string*
 
-*Defined in [packages/augur-sdk/src/state/getter/Users.ts:181](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/getter/Users.ts#L181)*
+*Defined in [packages/augur-sdk/src/state/getter/Users.ts:208](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/getter/Users.ts#L208)*
 
 ___
 
@@ -56,7 +56,7 @@ ___
 
 • **timestamp**: *number*
 
-*Defined in [packages/augur-sdk/src/state/getter/Users.ts:177](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/getter/Users.ts#L177)*
+*Defined in [packages/augur-sdk/src/state/getter/Users.ts:204](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/getter/Users.ts#L204)*
 
 ___
 
@@ -64,7 +64,7 @@ ___
 
 • **total**: *string*
 
-*Defined in [packages/augur-sdk/src/state/getter/Users.ts:183](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/getter/Users.ts#L183)*
+*Defined in [packages/augur-sdk/src/state/getter/Users.ts:210](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/getter/Users.ts#L210)*
 
 ___
 
@@ -72,4 +72,4 @@ ___
 
 • **unrealized**: *string*
 
-*Defined in [packages/augur-sdk/src/state/getter/Users.ts:182](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/getter/Users.ts#L182)*
+*Defined in [packages/augur-sdk/src/state/getter/Users.ts:209](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/getter/Users.ts#L209)*

@@ -19,7 +19,7 @@
 
 • **getEventTopics**: *function*
 
-*Defined in [packages/augur-sdk/src/state/logs/LogFilterAggregator.ts:26](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/logs/LogFilterAggregator.ts#L26)*
+*Defined in [packages/augur-sdk/src/state/logs/LogFilterAggregator.ts:26](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/logs/LogFilterAggregator.ts#L26)*
 
 #### Type declaration:
 
@@ -37,7 +37,7 @@ ___
 
 • **parseLogs**: *function*
 
-*Defined in [packages/augur-sdk/src/state/logs/LogFilterAggregator.ts:27](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/logs/LogFilterAggregator.ts#L27)*
+*Defined in [packages/augur-sdk/src/state/logs/LogFilterAggregator.ts:27](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/logs/LogFilterAggregator.ts#L27)*
 
 #### Type declaration:
 

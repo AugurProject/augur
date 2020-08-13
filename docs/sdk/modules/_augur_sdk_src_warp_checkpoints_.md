@@ -16,6 +16,6 @@
 
 ###  MarketWithEndTime
 
-Ƭ **MarketWithEndTime**: *Pick‹[MarketCreated](../interfaces/_augur_sdk_src_event_handlers_.marketcreated.md), "blockNumber" | "endTime"›*
+Ƭ **MarketWithEndTime**: *Pick‹MarketCreated, "blockNumber" | "endTime"›*
 
-*Defined in [packages/augur-sdk/src/warp/Checkpoints.ts:16](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/warp/Checkpoints.ts#L16)*
+*Defined in [packages/augur-sdk/src/warp/Checkpoints.ts:15](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/warp/Checkpoints.ts#L15)*

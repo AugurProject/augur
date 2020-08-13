@@ -20,7 +20,7 @@
 
 • **Debug**: = 5
 
-*Defined in [packages/augur-sdk/src/api/ZeroX.ts:34](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/api/ZeroX.ts#L34)*
+*Defined in [packages/augur-sdk/src/api/ZeroX.ts:47](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/api/ZeroX.ts#L47)*
 
 ___
 
@@ -28,7 +28,7 @@ ___
 
 • **Error**: = 2
 
-*Defined in [packages/augur-sdk/src/api/ZeroX.ts:31](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/api/ZeroX.ts#L31)*
+*Defined in [packages/augur-sdk/src/api/ZeroX.ts:44](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/api/ZeroX.ts#L44)*
 
 ___
 
@@ -36,7 +36,7 @@ ___
 
 • **Fatal**: = 1
 
-*Defined in [packages/augur-sdk/src/api/ZeroX.ts:30](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/api/ZeroX.ts#L30)*
+*Defined in [packages/augur-sdk/src/api/ZeroX.ts:43](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/api/ZeroX.ts#L43)*
 
 ___
 
@@ -44,7 +44,7 @@ ___
 
 • **Info**: = 4
 
-*Defined in [packages/augur-sdk/src/api/ZeroX.ts:33](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/api/ZeroX.ts#L33)*
+*Defined in [packages/augur-sdk/src/api/ZeroX.ts:46](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/api/ZeroX.ts#L46)*
 
 ___
 
@@ -52,7 +52,7 @@ ___
 
 • **Panic**: = 0
 
-*Defined in [packages/augur-sdk/src/api/ZeroX.ts:29](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/api/ZeroX.ts#L29)*
+*Defined in [packages/augur-sdk/src/api/ZeroX.ts:42](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/api/ZeroX.ts#L42)*
 
 ___
 
@@ -60,7 +60,7 @@ ___
 
 • **Trace**: = 6
 
-*Defined in [packages/augur-sdk/src/api/ZeroX.ts:35](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/api/ZeroX.ts#L35)*
+*Defined in [packages/augur-sdk/src/api/ZeroX.ts:48](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/api/ZeroX.ts#L48)*
 
 ___
 
@@ -68,4 +68,4 @@ ___
 
 • **Warn**: = 3
 
-*Defined in [packages/augur-sdk/src/api/ZeroX.ts:32](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/api/ZeroX.ts#L32)*
+*Defined in [packages/augur-sdk/src/api/ZeroX.ts:45](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/api/ZeroX.ts#L45)*

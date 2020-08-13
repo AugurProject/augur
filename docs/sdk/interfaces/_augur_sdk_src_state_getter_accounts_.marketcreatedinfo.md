@@ -8,4 +8,4 @@
 
 ## Indexable
 
-* \[ **key**: *string*\]: [MarketData](_augur_sdk_src_state_logs_types_.marketdata.md)
+* \[ **key**: *string*\]: MarketData

@@ -19,7 +19,7 @@
 
 • **gasLimit**: *BigNumber*
 
-*Defined in [packages/augur-sdk/src/api/OnChainTrade.ts:41](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/api/OnChainTrade.ts#L41)*
+*Defined in [packages/augur-sdk/src/api/OnChainTrade.ts:59](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/api/OnChainTrade.ts#L59)*
 
 ___
 
@@ -27,4 +27,4 @@ ___
 
 • **loopLimit**: *BigNumber*
 
-*Defined in [packages/augur-sdk/src/api/OnChainTrade.ts:40](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/api/OnChainTrade.ts#L40)*
+*Defined in [packages/augur-sdk/src/api/OnChainTrade.ts:58](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/api/OnChainTrade.ts#L58)*

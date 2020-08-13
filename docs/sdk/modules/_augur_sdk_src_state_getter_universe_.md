@@ -33,26 +33,26 @@
 
 ###  calculateOutcomeFromLogs
 
-▸ **calculateOutcomeFromLogs**(`universeCreationLog`: [UniverseCreatedLog](../interfaces/_augur_sdk_src_state_logs_types_.universecreatedlog.md), `forkingMarketLog`: [MarketData](../interfaces/_augur_sdk_src_state_logs_types_.marketdata.md)): *[PayoutNumeratorValue](../interfaces/_augur_sdk_src_utils_.payoutnumeratorvalue.md)*
+▸ **calculateOutcomeFromLogs**(`universeCreationLog`: UniverseCreatedLog, `forkingMarketLog`: MarketData): *PayoutNumeratorValue*
 
-*Defined in [packages/augur-sdk/src/state/getter/Universe.ts:150](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/getter/Universe.ts#L150)*
+*Defined in [packages/augur-sdk/src/state/getter/Universe.ts:176](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/getter/Universe.ts#L176)*
 
 **Parameters:**
 
 Name | Type |
 ------ | ------ |
-`universeCreationLog` | [UniverseCreatedLog](../interfaces/_augur_sdk_src_state_logs_types_.universecreatedlog.md) |
-`forkingMarketLog` | [MarketData](../interfaces/_augur_sdk_src_state_logs_types_.marketdata.md) |
+`universeCreationLog` | UniverseCreatedLog |
+`forkingMarketLog` | MarketData |
 
-**Returns:** *[PayoutNumeratorValue](../interfaces/_augur_sdk_src_utils_.payoutnumeratorvalue.md)*
+**Returns:** *PayoutNumeratorValue*
 
 ___
 
 ###  getMarket
 
-▸ **getMarket**(`db`: [DB](../classes/_augur_sdk_src_state_db_db_.db.md), `address`: string): *Promise‹[MarketData](../interfaces/_augur_sdk_src_state_logs_types_.marketdata.md) | null›*
+▸ **getMarket**(`db`: [DB](../classes/_augur_sdk_src_state_db_db_.db.md), `address`: string): *Promise‹MarketData | null›*
 
-*Defined in [packages/augur-sdk/src/state/getter/Universe.ts:210](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/getter/Universe.ts#L210)*
+*Defined in [packages/augur-sdk/src/state/getter/Universe.ts:262](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/getter/Universe.ts#L262)*
 
 **Parameters:**
 
@@ -61,15 +61,15 @@ Name | Type |
 `db` | [DB](../classes/_augur_sdk_src_state_db_db_.db.md) |
 `address` | string |
 
-**Returns:** *Promise‹[MarketData](../interfaces/_augur_sdk_src_state_logs_types_.marketdata.md) | null›*
+**Returns:** *Promise‹MarketData | null›*
 
 ___
 
 ###  getMarketsForUniverse
 
-▸ **getMarketsForUniverse**(`db`: [DB](../classes/_augur_sdk_src_state_db_db_.db.md), `address`: string): *Promise‹[MarketData](../interfaces/_augur_sdk_src_state_logs_types_.marketdata.md)[]›*
+▸ **getMarketsForUniverse**(`db`: [DB](../classes/_augur_sdk_src_state_db_db_.db.md), `address`: string): *Promise‹MarketData[]›*
 
-*Defined in [packages/augur-sdk/src/state/getter/Universe.ts:214](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/getter/Universe.ts#L214)*
+*Defined in [packages/augur-sdk/src/state/getter/Universe.ts:266](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/getter/Universe.ts#L266)*
 
 **Parameters:**
 
@@ -78,23 +78,23 @@ Name | Type |
 `db` | [DB](../classes/_augur_sdk_src_state_db_db_.db.md) |
 `address` | string |
 
-**Returns:** *Promise‹[MarketData](../interfaces/_augur_sdk_src_state_logs_types_.marketdata.md)[]›*
+**Returns:** *Promise‹MarketData[]›*
 
 ___
 
 ###  getMigrationOutcomes
 
-▸ **getMigrationOutcomes**(`augur`: [Augur](../classes/_augur_sdk_src_augur_.augur.md), `forkingMarket`: [MarketData](../interfaces/_augur_sdk_src_state_logs_types_.marketdata.md), `children`: [UniverseCreatedLog](../interfaces/_augur_sdk_src_state_logs_types_.universecreatedlog.md)[]): *Promise‹[MigrationOutcome](../interfaces/_augur_sdk_src_state_getter_universe_.migrationoutcome.md)[]›*
+▸ **getMigrationOutcomes**(`augur`: [Augur](../classes/_augur_sdk_src_augur_.augur.md), `forkingMarket`: MarketData, `children`: UniverseCreatedLog[]): *Promise‹[MigrationOutcome](../interfaces/_augur_sdk_src_state_getter_universe_.migrationoutcome.md)[]›*
 
-*Defined in [packages/augur-sdk/src/state/getter/Universe.ts:164](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/getter/Universe.ts#L164)*
+*Defined in [packages/augur-sdk/src/state/getter/Universe.ts:190](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/getter/Universe.ts#L190)*
 
 **Parameters:**
 
 Name | Type |
 ------ | ------ |
 `augur` | [Augur](../classes/_augur_sdk_src_augur_.augur.md) |
-`forkingMarket` | [MarketData](../interfaces/_augur_sdk_src_state_logs_types_.marketdata.md) |
-`children` | [UniverseCreatedLog](../interfaces/_augur_sdk_src_state_logs_types_.universecreatedlog.md)[] |
+`forkingMarket` | MarketData |
+`children` | UniverseCreatedLog[] |
 
 **Returns:** *Promise‹[MigrationOutcome](../interfaces/_augur_sdk_src_state_getter_universe_.migrationoutcome.md)[]›*
 
@@ -102,16 +102,16 @@ ___
 
 ###  getOutcomeNameFromLogs
 
-▸ **getOutcomeNameFromLogs**(`universeCreationLog`: [UniverseCreatedLog](../interfaces/_augur_sdk_src_state_logs_types_.universecreatedlog.md), `forkingMarketLog`: [MarketData](../interfaces/_augur_sdk_src_state_logs_types_.marketdata.md)): *string*
+▸ **getOutcomeNameFromLogs**(`universeCreationLog`: UniverseCreatedLog, `forkingMarketLog`: MarketData): *string*
 
-*Defined in [packages/augur-sdk/src/state/getter/Universe.ts:142](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/getter/Universe.ts#L142)*
+*Defined in [packages/augur-sdk/src/state/getter/Universe.ts:165](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/getter/Universe.ts#L165)*
 
 **Parameters:**
 
 Name | Type |
 ------ | ------ |
-`universeCreationLog` | [UniverseCreatedLog](../interfaces/_augur_sdk_src_state_logs_types_.universecreatedlog.md) |
-`forkingMarketLog` | [MarketData](../interfaces/_augur_sdk_src_state_logs_types_.marketdata.md) |
+`universeCreationLog` | UniverseCreatedLog |
+`forkingMarketLog` | MarketData |
 
 **Returns:** *string*
 
@@ -121,7 +121,7 @@ ___
 
 ▸ **getRepSupply**(`augur`: [Augur](../classes/_augur_sdk_src_augur_.augur.md), `universe`: Universe): *Promise‹BigNumber›*
 
-*Defined in [packages/augur-sdk/src/state/getter/Universe.ts:204](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/getter/Universe.ts#L204)*
+*Defined in [packages/augur-sdk/src/state/getter/Universe.ts:250](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/getter/Universe.ts#L250)*
 
 **Parameters:**
 
@@ -136,9 +136,9 @@ ___
 
 ###  getUniverseChildrenCreationLogs
 
-▸ **getUniverseChildrenCreationLogs**(`db`: [DB](../classes/_augur_sdk_src_state_db_db_.db.md), `address`: string): *Promise‹[UniverseCreatedLog](../interfaces/_augur_sdk_src_state_logs_types_.universecreatedlog.md)[]›*
+▸ **getUniverseChildrenCreationLogs**(`db`: [DB](../classes/_augur_sdk_src_state_db_db_.db.md), `address`: string): *Promise‹UniverseCreatedLog[]›*
 
-*Defined in [packages/augur-sdk/src/state/getter/Universe.ts:238](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/getter/Universe.ts#L238)*
+*Defined in [packages/augur-sdk/src/state/getter/Universe.ts:305](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/getter/Universe.ts#L305)*
 
 **Parameters:**
 
@@ -147,15 +147,15 @@ Name | Type |
 `db` | [DB](../classes/_augur_sdk_src_state_db_db_.db.md) |
 `address` | string |
 
-**Returns:** *Promise‹[UniverseCreatedLog](../interfaces/_augur_sdk_src_state_logs_types_.universecreatedlog.md)[]›*
+**Returns:** *Promise‹UniverseCreatedLog[]›*
 
 ___
 
 ###  getUniverseCreationLog
 
-▸ **getUniverseCreationLog**(`db`: [DB](../classes/_augur_sdk_src_state_db_db_.db.md), `address`: string): *Promise‹[UniverseCreatedLog](../interfaces/_augur_sdk_src_state_logs_types_.universecreatedlog.md) | null›*
+▸ **getUniverseCreationLog**(`db`: [DB](../classes/_augur_sdk_src_state_db_db_.db.md), `address`: string): *Promise‹UniverseCreatedLog | null›*
 
-*Defined in [packages/augur-sdk/src/state/getter/Universe.ts:218](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/getter/Universe.ts#L218)*
+*Defined in [packages/augur-sdk/src/state/getter/Universe.ts:275](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/getter/Universe.ts#L275)*
 
 **Parameters:**
 
@@ -164,7 +164,7 @@ Name | Type |
 `db` | [DB](../classes/_augur_sdk_src_state_db_db_.db.md) |
 `address` | string |
 
-**Returns:** *Promise‹[UniverseCreatedLog](../interfaces/_augur_sdk_src_state_logs_types_.universecreatedlog.md) | null›*
+**Returns:** *Promise‹UniverseCreatedLog | null›*
 
 ___
 
@@ -172,7 +172,7 @@ ___
 
 ▸ **getUniverseDetails**(`augur`: [Augur](../classes/_augur_sdk_src_augur_.augur.md), `db`: [DB](../classes/_augur_sdk_src_state_db_db_.db.md), `address`: string, `account`: string): *Promise‹[UniverseDetails](../interfaces/_augur_sdk_src_state_getter_universe_.universedetails.md)›*
 
-*Defined in [packages/augur-sdk/src/state/getter/Universe.ts:103](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/getter/Universe.ts#L103)*
+*Defined in [packages/augur-sdk/src/state/getter/Universe.ts:111](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/getter/Universe.ts#L111)*
 
 **Parameters:**
 
@@ -189,9 +189,9 @@ ___
 
 ###  getUniverseForkedLog
 
-▸ **getUniverseForkedLog**(`db`: [DB](../classes/_augur_sdk_src_state_db_db_.db.md), `address`: string): *Promise‹[UniverseForkedLog](../interfaces/_augur_sdk_src_state_logs_types_.universeforkedlog.md) | null›*
+▸ **getUniverseForkedLog**(`db`: [DB](../classes/_augur_sdk_src_state_db_db_.db.md), `address`: string): *Promise‹UniverseForkedLog | null›*
 
-*Defined in [packages/augur-sdk/src/state/getter/Universe.ts:228](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/getter/Universe.ts#L228)*
+*Defined in [packages/augur-sdk/src/state/getter/Universe.ts:290](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/getter/Universe.ts#L290)*
 
 **Parameters:**
 
@@ -200,7 +200,7 @@ Name | Type |
 `db` | [DB](../classes/_augur_sdk_src_state_db_db_.db.md) |
 `address` | string |
 
-**Returns:** *Promise‹[UniverseForkedLog](../interfaces/_augur_sdk_src_state_logs_types_.universeforkedlog.md) | null›*
+**Returns:** *Promise‹UniverseForkedLog | null›*
 
 ___
 
@@ -208,7 +208,7 @@ ___
 
 ▸ **getUserRep**(`db`: [DB](../classes/_augur_sdk_src_state_db_db_.db.md), `universe`: Universe, `account`: string): *Promise‹BigNumber›*
 
-*Defined in [packages/augur-sdk/src/state/getter/Universe.ts:190](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/getter/Universe.ts#L190)*
+*Defined in [packages/augur-sdk/src/state/getter/Universe.ts:232](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/getter/Universe.ts#L232)*
 
 **Parameters:**
 

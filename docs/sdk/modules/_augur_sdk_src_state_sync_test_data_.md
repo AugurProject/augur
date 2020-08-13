@@ -2338,7 +2338,7 @@
   },
 ]
 
-*Defined in [packages/augur-sdk/src/state/sync/test-data.ts:3](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/sync/test-data.ts#L3)*
+*Defined in [packages/augur-sdk/src/state/sync/test-data.ts:3](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/sync/test-data.ts#L3)*
 
 ## Functions
 
@@ -2346,7 +2346,7 @@
 
 ▸ **getLogs**(`filter`: Filter): *Promise‹Log[]›*
 
-*Defined in [packages/augur-sdk/src/state/sync/test-data.ts:2325](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/sync/test-data.ts#L2325)*
+*Defined in [packages/augur-sdk/src/state/sync/test-data.ts:2325](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/sync/test-data.ts#L2325)*
 
 **Parameters:**
 

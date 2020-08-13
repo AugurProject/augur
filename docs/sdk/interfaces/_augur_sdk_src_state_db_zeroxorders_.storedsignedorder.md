@@ -31,7 +31,7 @@
 
 • **exchangeAddress**: *string*
 
-*Defined in [packages/augur-sdk/src/state/db/ZeroXOrders.ts:95](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/db/ZeroXOrders.ts#L95)*
+*Defined in [packages/augur-sdk/src/state/db/ZeroXOrders.ts:56](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/db/ZeroXOrders.ts#L56)*
 
 ___
 
@@ -39,7 +39,7 @@ ___
 
 • **expirationTimeSeconds**: *string*
 
-*Defined in [packages/augur-sdk/src/state/db/ZeroXOrders.ts:97](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/db/ZeroXOrders.ts#L97)*
+*Defined in [packages/augur-sdk/src/state/db/ZeroXOrders.ts:58](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/db/ZeroXOrders.ts#L58)*
 
 ___
 
@@ -47,7 +47,7 @@ ___
 
 • **feeRecipientAddress**: *string*
 
-*Defined in [packages/augur-sdk/src/state/db/ZeroXOrders.ts:96](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/db/ZeroXOrders.ts#L96)*
+*Defined in [packages/augur-sdk/src/state/db/ZeroXOrders.ts:57](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/db/ZeroXOrders.ts#L57)*
 
 ___
 
@@ -55,7 +55,7 @@ ___
 
 • **makerAddress**: *string*
 
-*Defined in [packages/augur-sdk/src/state/db/ZeroXOrders.ts:86](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/db/ZeroXOrders.ts#L86)*
+*Defined in [packages/augur-sdk/src/state/db/ZeroXOrders.ts:47](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/db/ZeroXOrders.ts#L47)*
 
 ___
 
@@ -63,7 +63,7 @@ ___
 
 • **makerAssetAmount**: *string*
 
-*Defined in [packages/augur-sdk/src/state/db/ZeroXOrders.ts:90](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/db/ZeroXOrders.ts#L90)*
+*Defined in [packages/augur-sdk/src/state/db/ZeroXOrders.ts:51](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/db/ZeroXOrders.ts#L51)*
 
 ___
 
@@ -71,7 +71,7 @@ ___
 
 • **makerAssetData**: *string*
 
-*Defined in [packages/augur-sdk/src/state/db/ZeroXOrders.ts:92](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/db/ZeroXOrders.ts#L92)*
+*Defined in [packages/augur-sdk/src/state/db/ZeroXOrders.ts:53](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/db/ZeroXOrders.ts#L53)*
 
 ___
 
@@ -79,7 +79,7 @@ ___
 
 • **makerFee**: *string*
 
-*Defined in [packages/augur-sdk/src/state/db/ZeroXOrders.ts:88](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/db/ZeroXOrders.ts#L88)*
+*Defined in [packages/augur-sdk/src/state/db/ZeroXOrders.ts:49](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/db/ZeroXOrders.ts#L49)*
 
 ___
 
@@ -87,7 +87,7 @@ ___
 
 • **salt**: *string*
 
-*Defined in [packages/augur-sdk/src/state/db/ZeroXOrders.ts:94](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/db/ZeroXOrders.ts#L94)*
+*Defined in [packages/augur-sdk/src/state/db/ZeroXOrders.ts:55](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/db/ZeroXOrders.ts#L55)*
 
 ___
 
@@ -95,7 +95,7 @@ ___
 
 • **senderAddress**: *string*
 
-*Defined in [packages/augur-sdk/src/state/db/ZeroXOrders.ts:85](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/db/ZeroXOrders.ts#L85)*
+*Defined in [packages/augur-sdk/src/state/db/ZeroXOrders.ts:46](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/db/ZeroXOrders.ts#L46)*
 
 ___
 
@@ -103,7 +103,7 @@ ___
 
 • **signature**: *string*
 
-*Defined in [packages/augur-sdk/src/state/db/ZeroXOrders.ts:84](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/db/ZeroXOrders.ts#L84)*
+*Defined in [packages/augur-sdk/src/state/db/ZeroXOrders.ts:45](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/db/ZeroXOrders.ts#L45)*
 
 ___
 
@@ -111,7 +111,7 @@ ___
 
 • **takerAddress**: *string*
 
-*Defined in [packages/augur-sdk/src/state/db/ZeroXOrders.ts:87](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/db/ZeroXOrders.ts#L87)*
+*Defined in [packages/augur-sdk/src/state/db/ZeroXOrders.ts:48](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/db/ZeroXOrders.ts#L48)*
 
 ___
 
@@ -119,7 +119,7 @@ ___
 
 • **takerAssetAmount**: *string*
 
-*Defined in [packages/augur-sdk/src/state/db/ZeroXOrders.ts:91](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/db/ZeroXOrders.ts#L91)*
+*Defined in [packages/augur-sdk/src/state/db/ZeroXOrders.ts:52](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/db/ZeroXOrders.ts#L52)*
 
 ___
 
@@ -127,7 +127,7 @@ ___
 
 • **takerAssetData**: *string*
 
-*Defined in [packages/augur-sdk/src/state/db/ZeroXOrders.ts:93](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/db/ZeroXOrders.ts#L93)*
+*Defined in [packages/augur-sdk/src/state/db/ZeroXOrders.ts:54](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/db/ZeroXOrders.ts#L54)*
 
 ___
 
@@ -135,4 +135,4 @@ ___
 
 • **takerFee**: *string*
 
-*Defined in [packages/augur-sdk/src/state/db/ZeroXOrders.ts:89](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/db/ZeroXOrders.ts#L89)*
+*Defined in [packages/augur-sdk/src/state/db/ZeroXOrders.ts:50](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/db/ZeroXOrders.ts#L50)*

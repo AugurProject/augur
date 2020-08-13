@@ -20,7 +20,7 @@
 
 • **hasLiquidity**: *boolean*
 
-*Defined in [packages/augur-sdk/src/state/getter/Liquidity.ts:37](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/getter/Liquidity.ts#L37)*
+*Defined in [packages/augur-sdk/src/state/getter/Liquidity.ts:26](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/getter/Liquidity.ts#L26)*
 
 ___
 
@@ -28,7 +28,7 @@ ___
 
 • **marketRank**: *number*
 
-*Defined in [packages/augur-sdk/src/state/getter/Liquidity.ts:35](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/getter/Liquidity.ts#L35)*
+*Defined in [packages/augur-sdk/src/state/getter/Liquidity.ts:24](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/getter/Liquidity.ts#L24)*
 
 ___
 
@@ -36,4 +36,4 @@ ___
 
 • **totalMarkets**: *number*
 
-*Defined in [packages/augur-sdk/src/state/getter/Liquidity.ts:36](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/getter/Liquidity.ts#L36)*
+*Defined in [packages/augur-sdk/src/state/getter/Liquidity.ts:25](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/getter/Liquidity.ts#L25)*

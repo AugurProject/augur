@@ -26,7 +26,7 @@
 
 • **loopLimit**? : *BigNumber*
 
-*Defined in [packages/augur-sdk/src/api/Trade.ts:21](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/api/Trade.ts#L21)*
+*Defined in [packages/augur-sdk/src/api/Trade.ts:21](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/api/Trade.ts#L21)*
 
 ___
 
@@ -36,7 +36,7 @@ ___
 
 *Inherited from [ZeroXSimulateTradeData](_augur_sdk_src_api_zerox_.zeroxsimulatetradedata.md).[numFills](_augur_sdk_src_api_zerox_.zeroxsimulatetradedata.md#numfills)*
 
-*Defined in [packages/augur-sdk/src/api/ZeroX.ts:99](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/api/ZeroX.ts#L99)*
+*Defined in [packages/augur-sdk/src/api/ZeroX.ts:113](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/api/ZeroX.ts#L113)*
 
 ___
 
@@ -46,7 +46,7 @@ ___
 
 *Inherited from [ZeroXSimulateTradeData](_augur_sdk_src_api_zerox_.zeroxsimulatetradedata.md).[selfTrade](_augur_sdk_src_api_zerox_.zeroxsimulatetradedata.md#selftrade)*
 
-*Defined in [packages/augur-sdk/src/api/ZeroX.ts:100](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/api/ZeroX.ts#L100)*
+*Defined in [packages/augur-sdk/src/api/ZeroX.ts:114](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/api/ZeroX.ts#L114)*
 
 ___
 
@@ -56,7 +56,7 @@ ___
 
 *Inherited from [ZeroXSimulateTradeData](_augur_sdk_src_api_zerox_.zeroxsimulatetradedata.md).[settlementFees](_augur_sdk_src_api_zerox_.zeroxsimulatetradedata.md#settlementfees)*
 
-*Defined in [packages/augur-sdk/src/api/ZeroX.ts:96](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/api/ZeroX.ts#L96)*
+*Defined in [packages/augur-sdk/src/api/ZeroX.ts:110](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/api/ZeroX.ts#L110)*
 
 ___
 
@@ -66,7 +66,7 @@ ___
 
 *Inherited from [ZeroXSimulateTradeData](_augur_sdk_src_api_zerox_.zeroxsimulatetradedata.md).[sharesDepleted](_augur_sdk_src_api_zerox_.zeroxsimulatetradedata.md#sharesdepleted)*
 
-*Defined in [packages/augur-sdk/src/api/ZeroX.ts:97](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/api/ZeroX.ts#L97)*
+*Defined in [packages/augur-sdk/src/api/ZeroX.ts:111](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/api/ZeroX.ts#L111)*
 
 ___
 
@@ -76,7 +76,7 @@ ___
 
 *Inherited from [ZeroXSimulateTradeData](_augur_sdk_src_api_zerox_.zeroxsimulatetradedata.md).[sharesFilled](_augur_sdk_src_api_zerox_.zeroxsimulatetradedata.md#sharesfilled)*
 
-*Defined in [packages/augur-sdk/src/api/ZeroX.ts:95](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/api/ZeroX.ts#L95)*
+*Defined in [packages/augur-sdk/src/api/ZeroX.ts:109](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/api/ZeroX.ts#L109)*
 
 ___
 
@@ -86,4 +86,4 @@ ___
 
 *Inherited from [ZeroXSimulateTradeData](_augur_sdk_src_api_zerox_.zeroxsimulatetradedata.md).[tokensDepleted](_augur_sdk_src_api_zerox_.zeroxsimulatetradedata.md#tokensdepleted)*
 
-*Defined in [packages/augur-sdk/src/api/ZeroX.ts:98](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/api/ZeroX.ts#L98)*
+*Defined in [packages/augur-sdk/src/api/ZeroX.ts:112](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/api/ZeroX.ts#L112)*

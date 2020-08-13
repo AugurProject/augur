@@ -19,7 +19,7 @@
 
 • **orders**: *number*
 
-*Defined in [packages/augur-sdk/src/api/ZeroX.ts:78](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/api/ZeroX.ts#L78)*
+*Defined in [packages/augur-sdk/src/api/ZeroX.ts:92](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/api/ZeroX.ts#L92)*
 
 ___
 
@@ -27,4 +27,4 @@ ___
 
 • **peers**: *number*
 
-*Defined in [packages/augur-sdk/src/api/ZeroX.ts:77](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/api/ZeroX.ts#L77)*
+*Defined in [packages/augur-sdk/src/api/ZeroX.ts:91](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/api/ZeroX.ts#L91)*

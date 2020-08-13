@@ -24,4 +24,4 @@
 
 • **blockNumber**: *number*
 
-*Defined in [packages/augur-sdk/src/state/db/BaseSyncableDB.ts:10](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/db/BaseSyncableDB.ts#L10)*
+*Defined in [packages/augur-sdk/src/state/db/BaseSyncableDB.ts:10](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/db/BaseSyncableDB.ts#L10)*

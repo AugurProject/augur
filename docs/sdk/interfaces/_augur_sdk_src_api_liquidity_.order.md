@@ -19,7 +19,7 @@
 
 • **amount**: *string*
 
-*Defined in [packages/augur-sdk/src/api/Liquidity.ts:10](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/api/Liquidity.ts#L10)*
+*Defined in [packages/augur-sdk/src/api/Liquidity.ts:12](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/api/Liquidity.ts#L12)*
 
 ___
 
@@ -27,4 +27,4 @@ ___
 
 • **price**: *string*
 
-*Defined in [packages/augur-sdk/src/api/Liquidity.ts:9](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/api/Liquidity.ts#L9)*
+*Defined in [packages/augur-sdk/src/api/Liquidity.ts:11](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/api/Liquidity.ts#L11)*

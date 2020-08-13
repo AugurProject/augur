@@ -18,4 +18,4 @@
 
 • **BULKSYNC_HORIZON**: *number* = SECONDS_IN_A_DAY.multipliedBy(7).toNumber()
 
-*Defined in [packages/augur-sdk/src/state/sync/WarpSyncStrategy.ts:7](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/sync/WarpSyncStrategy.ts#L7)*
+*Defined in [packages/augur-sdk/src/state/sync/WarpSyncStrategy.ts:10](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/sync/WarpSyncStrategy.ts#L10)*

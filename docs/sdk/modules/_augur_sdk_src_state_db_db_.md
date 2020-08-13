@@ -22,4 +22,4 @@
 
 • **PRUNE_HORIZON**: *number* = SECONDS_IN_A_DAY.multipliedBy(60).toNumber()
 
-*Defined in [packages/augur-sdk/src/state/db/DB.ts:64](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/db/DB.ts#L64)*
+*Defined in [packages/augur-sdk/src/state/db/DB.ts:71](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/db/DB.ts#L71)*
