@@ -1,6 +1,6 @@
 import { AppStatus } from 'modules/app/store/app-status';
 import { getNetworkId } from 'modules/contracts/actions/contractCalls';
-import { SUCCESS, FAILURE, INFO } from 'modules/common/constants';
+import { SUCCESS, FAILURE, INFO, HEX_BUY, BUY_INDEX, SELL_INDEX } from 'modules/common/constants';
 import { createBigNumber } from 'utils/create-big-number';
 
 export const getAlertsByLevel = level =>
@@ -53,10 +53,11 @@ export function createUniqueOrderId({ id, params }) {
   const outcome = params._outcome
     ? params._outcome.toString()
     : createBigNumber(params.outcome).toString();
-  const direction = params._direction
+  let direction = params._direction
     ? params._direction.toString()
     : params.orderType;
-
+  
+  direction = direction === HEX_BUY || direction === BUY_INDEX ? BUY_INDEX : SELL_INDEX;
   return `${id}_${price}_${outcome}_${direction}`;
 }
 
