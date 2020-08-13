@@ -19,7 +19,7 @@
 
 • **buyOrders**: *[Order](_augur_sdk_src_api_onchaintrade_.order.md)[]*
 
-*Defined in [packages/augur-sdk/src/api/OnChainTrade.ts:52](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/api/OnChainTrade.ts#L52)*
+*Defined in [packages/augur-sdk/src/api/OnChainTrade.ts:70](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/api/OnChainTrade.ts#L70)*
 
 ___
 
@@ -27,4 +27,4 @@ ___
 
 • **sellorders**: *[Order](_augur_sdk_src_api_onchaintrade_.order.md)[]*
 
-*Defined in [packages/augur-sdk/src/api/OnChainTrade.ts:53](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/api/OnChainTrade.ts#L53)*
+*Defined in [packages/augur-sdk/src/api/OnChainTrade.ts:71](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/api/OnChainTrade.ts#L71)*

@@ -26,7 +26,7 @@
     universe: t.string,
   })
 
-*Defined in [packages/augur-sdk/src/state/getter/Universe.ts:52](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/getter/Universe.ts#L52)*
+*Defined in [packages/augur-sdk/src/state/getter/Universe.ts:51](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/getter/Universe.ts#L51)*
 
 ___
 
@@ -37,7 +37,7 @@ ___
     account: t.string,
   })
 
-*Defined in [packages/augur-sdk/src/state/getter/Universe.ts:55](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/getter/Universe.ts#L55)*
+*Defined in [packages/augur-sdk/src/state/getter/Universe.ts:54](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/getter/Universe.ts#L54)*
 
 ## Methods
 
@@ -45,7 +45,7 @@ ___
 
 ▸ **getForkMigrationTotals**(`augur`: [Augur](_augur_sdk_src_augur_.augur.md), `db`: [DB](_augur_sdk_src_state_db_db_.db.md), `params`: t.TypeOf‹typeof getForkMigrationTotalsParams›): *Promise‹[MigrationTotals](../interfaces/_augur_sdk_src_state_getter_universe_.migrationtotals.md) | [NonForkingMigrationTotals](../interfaces/_augur_sdk_src_state_getter_universe_.nonforkingmigrationtotals.md)›*
 
-*Defined in [packages/augur-sdk/src/state/getter/Universe.ts:61](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/getter/Universe.ts#L61)*
+*Defined in [packages/augur-sdk/src/state/getter/Universe.ts:60](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/getter/Universe.ts#L60)*
 
 **Parameters:**
 
@@ -63,7 +63,7 @@ ___
 
 ▸ **getUniverseChildren**(`augur`: [Augur](_augur_sdk_src_augur_.augur.md), `db`: [DB](_augur_sdk_src_state_db_db_.db.md), `params`: t.TypeOf‹typeof getUniverseChildrenParams›): *Promise‹[UniverseDetails](../interfaces/_augur_sdk_src_state_getter_universe_.universedetails.md) | null›*
 
-*Defined in [packages/augur-sdk/src/state/getter/Universe.ts:84](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/getter/Universe.ts#L84)*
+*Defined in [packages/augur-sdk/src/state/getter/Universe.ts:87](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/getter/Universe.ts#L87)*
 
 **Parameters:**
 

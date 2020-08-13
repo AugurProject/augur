@@ -30,7 +30,7 @@
 
 ▸ **sortAsks**(`collection`: any): *any*
 
-*Defined in [packages/augur-sdk/src/api/Liquidity.ts:63](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/api/Liquidity.ts#L63)*
+*Defined in [packages/augur-sdk/src/api/Liquidity.ts:66](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/api/Liquidity.ts#L66)*
 
 **Parameters:**
 
@@ -46,7 +46,7 @@ ___
 
 ▸ **sortBids**(`collection`: any): *any*
 
-*Defined in [packages/augur-sdk/src/api/Liquidity.ts:53](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/api/Liquidity.ts#L53)*
+*Defined in [packages/augur-sdk/src/api/Liquidity.ts:55](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/api/Liquidity.ts#L55)*
 
 **Parameters:**
 

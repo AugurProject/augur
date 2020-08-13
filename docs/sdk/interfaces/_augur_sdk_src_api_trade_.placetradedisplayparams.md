@@ -25,6 +25,7 @@
 * [numOutcomes](_augur_sdk_src_api_trade_.placetradedisplayparams.md#numoutcomes)
 * [numTicks](_augur_sdk_src_api_trade_.placetradedisplayparams.md#numticks)
 * [outcome](_augur_sdk_src_api_trade_.placetradedisplayparams.md#outcome)
+* [postOnly](_augur_sdk_src_api_trade_.placetradedisplayparams.md#optional-postonly)
 * [takerAddress](_augur_sdk_src_api_trade_.placetradedisplayparams.md#optional-takeraddress)
 * [tradeGroupId](_augur_sdk_src_api_trade_.placetradedisplayparams.md#tradegroupid)
 
@@ -32,11 +33,11 @@
 
 ###  direction
 
-• **direction**: *[TradeDirection](../modules/_augur_sdk_src_state_logs_types_.md#tradedirection)*
+• **direction**: *TradeDirection*
 
 *Inherited from [NativePlaceTradeParams](_augur_sdk_src_api_onchaintrade_.nativeplacetradeparams.md).[direction](_augur_sdk_src_api_onchaintrade_.nativeplacetradeparams.md#direction)*
 
-*Defined in [packages/augur-sdk/src/api/OnChainTrade.ts:14](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/api/OnChainTrade.ts#L14)*
+*Defined in [packages/augur-sdk/src/api/OnChainTrade.ts:32](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/api/OnChainTrade.ts#L32)*
 
 ___
 
@@ -46,7 +47,7 @@ ___
 
 *Inherited from [NativePlaceTradeDisplayParams](_augur_sdk_src_api_onchaintrade_.nativeplacetradedisplayparams.md).[displayAmount](_augur_sdk_src_api_onchaintrade_.nativeplacetradedisplayparams.md#displayamount)*
 
-*Defined in [packages/augur-sdk/src/api/OnChainTrade.ts:28](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/api/OnChainTrade.ts#L28)*
+*Defined in [packages/augur-sdk/src/api/OnChainTrade.ts:46](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/api/OnChainTrade.ts#L46)*
 
 ___
 
@@ -56,7 +57,7 @@ ___
 
 *Inherited from [NativePlaceTradeDisplayParams](_augur_sdk_src_api_onchaintrade_.nativeplacetradedisplayparams.md).[displayMaxPrice](_augur_sdk_src_api_onchaintrade_.nativeplacetradedisplayparams.md#displaymaxprice)*
 
-*Defined in [packages/augur-sdk/src/api/OnChainTrade.ts:27](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/api/OnChainTrade.ts#L27)*
+*Defined in [packages/augur-sdk/src/api/OnChainTrade.ts:45](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/api/OnChainTrade.ts#L45)*
 
 ___
 
@@ -66,7 +67,7 @@ ___
 
 *Inherited from [NativePlaceTradeDisplayParams](_augur_sdk_src_api_onchaintrade_.nativeplacetradedisplayparams.md).[displayMinPrice](_augur_sdk_src_api_onchaintrade_.nativeplacetradedisplayparams.md#displayminprice)*
 
-*Defined in [packages/augur-sdk/src/api/OnChainTrade.ts:26](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/api/OnChainTrade.ts#L26)*
+*Defined in [packages/augur-sdk/src/api/OnChainTrade.ts:44](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/api/OnChainTrade.ts#L44)*
 
 ___
 
@@ -76,7 +77,7 @@ ___
 
 *Inherited from [NativePlaceTradeDisplayParams](_augur_sdk_src_api_onchaintrade_.nativeplacetradedisplayparams.md).[displayPrice](_augur_sdk_src_api_onchaintrade_.nativeplacetradedisplayparams.md#displayprice)*
 
-*Defined in [packages/augur-sdk/src/api/OnChainTrade.ts:29](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/api/OnChainTrade.ts#L29)*
+*Defined in [packages/augur-sdk/src/api/OnChainTrade.ts:47](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/api/OnChainTrade.ts#L47)*
 
 ___
 
@@ -86,7 +87,7 @@ ___
 
 *Inherited from [NativePlaceTradeDisplayParams](_augur_sdk_src_api_onchaintrade_.nativeplacetradedisplayparams.md).[displayShares](_augur_sdk_src_api_onchaintrade_.nativeplacetradedisplayparams.md#displayshares)*
 
-*Defined in [packages/augur-sdk/src/api/OnChainTrade.ts:30](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/api/OnChainTrade.ts#L30)*
+*Defined in [packages/augur-sdk/src/api/OnChainTrade.ts:48](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/api/OnChainTrade.ts#L48)*
 
 ___
 
@@ -96,7 +97,7 @@ ___
 
 *Inherited from [NativePlaceTradeParams](_augur_sdk_src_api_onchaintrade_.nativeplacetradeparams.md).[doNotCreateOrders](_augur_sdk_src_api_onchaintrade_.nativeplacetradeparams.md#donotcreateorders)*
 
-*Defined in [packages/augur-sdk/src/api/OnChainTrade.ts:21](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/api/OnChainTrade.ts#L21)*
+*Defined in [packages/augur-sdk/src/api/OnChainTrade.ts:39](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/api/OnChainTrade.ts#L39)*
 
 ___
 
@@ -104,7 +105,7 @@ ___
 
 • **expirationTime**? : *BigNumber*
 
-*Defined in [packages/augur-sdk/src/api/Trade.ts:25](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/api/Trade.ts#L25)*
+*Defined in [packages/augur-sdk/src/api/Trade.ts:25](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/api/Trade.ts#L25)*
 
 ___
 
@@ -114,7 +115,7 @@ ___
 
 *Inherited from [NativePlaceTradeParams](_augur_sdk_src_api_onchaintrade_.nativeplacetradeparams.md).[fingerprint](_augur_sdk_src_api_onchaintrade_.nativeplacetradeparams.md#fingerprint)*
 
-*Defined in [packages/augur-sdk/src/api/OnChainTrade.ts:20](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/api/OnChainTrade.ts#L20)*
+*Defined in [packages/augur-sdk/src/api/OnChainTrade.ts:38](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/api/OnChainTrade.ts#L38)*
 
 ___
 
@@ -124,17 +125,17 @@ ___
 
 *Inherited from [NativePlaceTradeParams](_augur_sdk_src_api_onchaintrade_.nativeplacetradeparams.md).[market](_augur_sdk_src_api_onchaintrade_.nativeplacetradeparams.md#market)*
 
-*Defined in [packages/augur-sdk/src/api/OnChainTrade.ts:15](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/api/OnChainTrade.ts#L15)*
+*Defined in [packages/augur-sdk/src/api/OnChainTrade.ts:33](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/api/OnChainTrade.ts#L33)*
 
 ___
 
 ###  numOutcomes
 
-• **numOutcomes**: *[NumOutcomes](../modules/_augur_sdk_src_state_logs_types_.md#numoutcomes)*
+• **numOutcomes**: *NumOutcomes*
 
 *Inherited from [NativePlaceTradeParams](_augur_sdk_src_api_onchaintrade_.nativeplacetradeparams.md).[numOutcomes](_augur_sdk_src_api_onchaintrade_.nativeplacetradeparams.md#numoutcomes)*
 
-*Defined in [packages/augur-sdk/src/api/OnChainTrade.ts:17](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/api/OnChainTrade.ts#L17)*
+*Defined in [packages/augur-sdk/src/api/OnChainTrade.ts:35](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/api/OnChainTrade.ts#L35)*
 
 ___
 
@@ -144,17 +145,25 @@ ___
 
 *Inherited from [NativePlaceTradeParams](_augur_sdk_src_api_onchaintrade_.nativeplacetradeparams.md).[numTicks](_augur_sdk_src_api_onchaintrade_.nativeplacetradeparams.md#numticks)*
 
-*Defined in [packages/augur-sdk/src/api/OnChainTrade.ts:16](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/api/OnChainTrade.ts#L16)*
+*Defined in [packages/augur-sdk/src/api/OnChainTrade.ts:34](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/api/OnChainTrade.ts#L34)*
 
 ___
 
 ###  outcome
 
-• **outcome**: *[OutcomeNumber](../modules/_augur_sdk_src_state_logs_types_.md#outcomenumber)*
+• **outcome**: *OutcomeNumber*
 
 *Inherited from [NativePlaceTradeParams](_augur_sdk_src_api_onchaintrade_.nativeplacetradeparams.md).[outcome](_augur_sdk_src_api_onchaintrade_.nativeplacetradeparams.md#outcome)*
 
-*Defined in [packages/augur-sdk/src/api/OnChainTrade.ts:18](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/api/OnChainTrade.ts#L18)*
+*Defined in [packages/augur-sdk/src/api/OnChainTrade.ts:36](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/api/OnChainTrade.ts#L36)*
+
+___
+
+### `Optional` postOnly
+
+• **postOnly**? : *boolean*
+
+*Defined in [packages/augur-sdk/src/api/Trade.ts:26](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/api/Trade.ts#L26)*
 
 ___
 
@@ -164,7 +173,7 @@ ___
 
 *Inherited from [NativePlaceTradeParams](_augur_sdk_src_api_onchaintrade_.nativeplacetradeparams.md).[takerAddress](_augur_sdk_src_api_onchaintrade_.nativeplacetradeparams.md#optional-takeraddress)*
 
-*Defined in [packages/augur-sdk/src/api/OnChainTrade.ts:22](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/api/OnChainTrade.ts#L22)*
+*Defined in [packages/augur-sdk/src/api/OnChainTrade.ts:40](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/api/OnChainTrade.ts#L40)*
 
 ___
 
@@ -174,4 +183,4 @@ ___
 
 *Inherited from [NativePlaceTradeParams](_augur_sdk_src_api_onchaintrade_.nativeplacetradeparams.md).[tradeGroupId](_augur_sdk_src_api_onchaintrade_.nativeplacetradeparams.md#tradegroupid)*
 
-*Defined in [packages/augur-sdk/src/api/OnChainTrade.ts:19](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/api/OnChainTrade.ts#L19)*
+*Defined in [packages/augur-sdk/src/api/OnChainTrade.ts:37](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/api/OnChainTrade.ts#L37)*

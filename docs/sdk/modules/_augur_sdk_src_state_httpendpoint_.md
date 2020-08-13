@@ -16,7 +16,7 @@
 
 ▸ **createApp**(`api`: [API](../classes/_augur_sdk_src_state_getter_api_.api.md)): *express.Application*
 
-*Defined in [packages/augur-sdk/src/state/HTTPEndpoint.ts:14](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/HTTPEndpoint.ts#L14)*
+*Defined in [packages/augur-sdk/src/state/HTTPEndpoint.ts:14](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/HTTPEndpoint.ts#L14)*
 
 **Parameters:**
 
@@ -32,7 +32,7 @@ ___
 
 ▸ **runHttpServer**(`app`: express.Application, `config`: SDKConfiguration): *Server*
 
-*Defined in [packages/augur-sdk/src/state/HTTPEndpoint.ts:47](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/HTTPEndpoint.ts#L47)*
+*Defined in [packages/augur-sdk/src/state/HTTPEndpoint.ts:47](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/HTTPEndpoint.ts#L47)*
 
 **Parameters:**
 
@@ -49,7 +49,7 @@ ___
 
 ▸ **runHttpsServer**(`app`: express.Application, `config`: SDKConfiguration): *Server*
 
-*Defined in [packages/augur-sdk/src/state/HTTPEndpoint.ts:54](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/HTTPEndpoint.ts#L54)*
+*Defined in [packages/augur-sdk/src/state/HTTPEndpoint.ts:54](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/HTTPEndpoint.ts#L54)*
 
 **Parameters:**
 

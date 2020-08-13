@@ -1,6 +1,6 @@
 [@augurproject/types](../README.md) › [Globals](../globals.md) › ["augur-sdk/src/state/getter/Accounts"](../modules/_augur_sdk_src_state_getter_accounts_.md) › [Accounts](_augur_sdk_src_state_getter_accounts_.accounts.md)
 
-# Class: Accounts <**TBigNumber**>
+# Class: Accounts ‹**TBigNumber**›
 
 ## Type parameters
 
@@ -32,7 +32,7 @@
 
 ▪ **getAccountRepStakeSummaryParams**: *TypeC‹object›* = getAccountRepStakeSummaryParamsSpecific
 
-*Defined in [packages/augur-sdk/src/state/getter/Accounts.ts:150](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/getter/Accounts.ts#L150)*
+*Defined in [packages/augur-sdk/src/state/getter/Accounts.ts:154](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/getter/Accounts.ts#L154)*
 
 ___
 
@@ -43,7 +43,7 @@ ___
     sortOptions,
   ])
 
-*Defined in [packages/augur-sdk/src/state/getter/Accounts.ts:145](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/getter/Accounts.ts#L145)*
+*Defined in [packages/augur-sdk/src/state/getter/Accounts.ts:149](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/getter/Accounts.ts#L149)*
 
 ___
 
@@ -51,15 +51,15 @@ ___
 
 ▪ **getUserCurrentDisputeStakeParams**: *TypeC‹object›* = getUserCurrentDisputeStakeParams
 
-*Defined in [packages/augur-sdk/src/state/getter/Accounts.ts:152](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/getter/Accounts.ts#L152)*
+*Defined in [packages/augur-sdk/src/state/getter/Accounts.ts:156](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/getter/Accounts.ts#L156)*
 
 ## Methods
 
 ### `Static` getAccountRepStakeSummary
 
-▸ **getAccountRepStakeSummary**<**TBigNumber**>(`augur`: [Augur](_augur_sdk_src_augur_.augur.md), `db`: [DB](_augur_sdk_src_state_db_db_.db.md), `params`: t.TypeOf‹typeof getAccountRepStakeSummaryParams›): *Promise‹[AccountReportingHistory](../interfaces/_augur_sdk_src_state_getter_accounts_.accountreportinghistory.md)›*
+▸ **getAccountRepStakeSummary**‹**TBigNumber**›(`augur`: [Augur](_augur_sdk_src_augur_.augur.md), `db`: [DB](_augur_sdk_src_state_db_db_.db.md), `params`: t.TypeOf‹typeof getAccountRepStakeSummaryParams›): *Promise‹[AccountReportingHistory](../interfaces/_augur_sdk_src_state_getter_accounts_.accountreportinghistory.md)›*
 
-*Defined in [packages/augur-sdk/src/state/getter/Accounts.ts:155](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/getter/Accounts.ts#L155)*
+*Defined in [packages/augur-sdk/src/state/getter/Accounts.ts:159](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/getter/Accounts.ts#L159)*
 
 **Type parameters:**
 
@@ -79,9 +79,9 @@ ___
 
 ### `Static` getAccountTransactionHistory
 
-▸ **getAccountTransactionHistory**<**TBigNumber**>(`augur`: [Augur](_augur_sdk_src_augur_.augur.md), `db`: [DB](_augur_sdk_src_state_db_db_.db.md), `params`: t.TypeOf‹typeof getAccountTransactionHistoryParams›): *Promise‹[AccountTransaction](../interfaces/_augur_sdk_src_state_getter_accounts_.accounttransaction.md)[]›*
+▸ **getAccountTransactionHistory**‹**TBigNumber**›(`augur`: [Augur](_augur_sdk_src_augur_.augur.md), `db`: [DB](_augur_sdk_src_state_db_db_.db.md), `params`: t.TypeOf‹typeof getAccountTransactionHistoryParams›): *Promise‹[AccountTransaction](../interfaces/_augur_sdk_src_state_getter_accounts_.accounttransaction.md)[]›*
 
-*Defined in [packages/augur-sdk/src/state/getter/Accounts.ts:301](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/getter/Accounts.ts#L301)*
+*Defined in [packages/augur-sdk/src/state/getter/Accounts.ts:443](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/getter/Accounts.ts#L443)*
 
 **Type parameters:**
 
@@ -101,9 +101,9 @@ ___
 
 ### `Static` getMarketCreatedInfo
 
-▸ **getMarketCreatedInfo**<**TBigNumber**>(`db`: [DB](_augur_sdk_src_state_db_db_.db.md), `transactionLogs`: Array‹[ParsedOrderEventLog](../interfaces/_augur_sdk_src_state_logs_types_.parsedordereventlog.md) | [TradingProceedsClaimedLog](../interfaces/_augur_sdk_src_state_logs_types_.tradingproceedsclaimedlog.md) | [DisputeCrowdsourcerRedeemedLog](../interfaces/_augur_sdk_src_state_logs_types_.disputecrowdsourcerredeemedlog.md) | [InitialReporterRedeemedLog](../interfaces/_augur_sdk_src_state_logs_types_.initialreporterredeemedlog.md) | [DisputeCrowdsourcerContributionLog](../interfaces/_augur_sdk_src_state_logs_types_.disputecrowdsourcercontributionlog.md) | [InitialReportSubmittedLog](../interfaces/_augur_sdk_src_state_logs_types_.initialreportsubmittedlog.md) | [CompleteSetsPurchasedLog](../interfaces/_augur_sdk_src_state_logs_types_.completesetspurchasedlog.md) | [CompleteSetsSoldLog](../interfaces/_augur_sdk_src_state_logs_types_.completesetssoldlog.md)›): *Promise‹[MarketCreatedInfo](../interfaces/_augur_sdk_src_state_getter_accounts_.marketcreatedinfo.md)›*
+▸ **getMarketCreatedInfo**‹**TBigNumber**›(`db`: [DB](_augur_sdk_src_state_db_db_.db.md), `transactionLogs`: Array‹ParsedOrderEventLog | TradingProceedsClaimedLog | DisputeCrowdsourcerRedeemedLog | InitialReporterRedeemedLog | DisputeCrowdsourcerContributionLog | InitialReportSubmittedLog | CompleteSetsPurchasedLog | CompleteSetsSoldLog›): *Promise‹[MarketCreatedInfo](../interfaces/_augur_sdk_src_state_getter_accounts_.marketcreatedinfo.md)›*
 
-*Defined in [packages/augur-sdk/src/state/getter/Accounts.ts:576](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/getter/Accounts.ts#L576)*
+*Defined in [packages/augur-sdk/src/state/getter/Accounts.ts:798](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/getter/Accounts.ts#L798)*
 
 **Type parameters:**
 
@@ -114,7 +114,7 @@ ___
 Name | Type |
 ------ | ------ |
 `db` | [DB](_augur_sdk_src_state_db_db_.db.md) |
-`transactionLogs` | Array‹[ParsedOrderEventLog](../interfaces/_augur_sdk_src_state_logs_types_.parsedordereventlog.md) &#124; [TradingProceedsClaimedLog](../interfaces/_augur_sdk_src_state_logs_types_.tradingproceedsclaimedlog.md) &#124; [DisputeCrowdsourcerRedeemedLog](../interfaces/_augur_sdk_src_state_logs_types_.disputecrowdsourcerredeemedlog.md) &#124; [InitialReporterRedeemedLog](../interfaces/_augur_sdk_src_state_logs_types_.initialreporterredeemedlog.md) &#124; [DisputeCrowdsourcerContributionLog](../interfaces/_augur_sdk_src_state_logs_types_.disputecrowdsourcercontributionlog.md) &#124; [InitialReportSubmittedLog](../interfaces/_augur_sdk_src_state_logs_types_.initialreportsubmittedlog.md) &#124; [CompleteSetsPurchasedLog](../interfaces/_augur_sdk_src_state_logs_types_.completesetspurchasedlog.md) &#124; [CompleteSetsSoldLog](../interfaces/_augur_sdk_src_state_logs_types_.completesetssoldlog.md)› |
+`transactionLogs` | Array‹ParsedOrderEventLog &#124; TradingProceedsClaimedLog &#124; DisputeCrowdsourcerRedeemedLog &#124; InitialReporterRedeemedLog &#124; DisputeCrowdsourcerContributionLog &#124; InitialReportSubmittedLog &#124; CompleteSetsPurchasedLog &#124; CompleteSetsSoldLog› |
 
 **Returns:** *Promise‹[MarketCreatedInfo](../interfaces/_augur_sdk_src_state_getter_accounts_.marketcreatedinfo.md)›*
 
@@ -122,9 +122,9 @@ ___
 
 ### `Static` getMarketCreatedInfoByIds
 
-▸ **getMarketCreatedInfoByIds**<**TBigNumber**>(`db`: [DB](_augur_sdk_src_state_db_db_.db.md), `marketIds`: string[]): *Promise‹[MarketCreatedInfo](../interfaces/_augur_sdk_src_state_getter_accounts_.marketcreatedinfo.md)›*
+▸ **getMarketCreatedInfoByIds**‹**TBigNumber**›(`db`: [DB](_augur_sdk_src_state_db_db_.db.md), `marketIds`: string[]): *Promise‹[MarketCreatedInfo](../interfaces/_augur_sdk_src_state_getter_accounts_.marketcreatedinfo.md)›*
 
-*Defined in [packages/augur-sdk/src/state/getter/Accounts.ts:593](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/getter/Accounts.ts#L593)*
+*Defined in [packages/augur-sdk/src/state/getter/Accounts.ts:815](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/getter/Accounts.ts#L815)*
 
 **Type parameters:**
 
@@ -143,9 +143,9 @@ ___
 
 ### `Static` getUserCurrentDisputeStake
 
-▸ **getUserCurrentDisputeStake**<**TBigNumber**>(`augur`: [Augur](_augur_sdk_src_augur_.augur.md), `db`: [DB](_augur_sdk_src_state_db_db_.db.md), `params`: t.TypeOf‹typeof getUserCurrentDisputeStakeParams›): *Promise‹[UserCurrentOutcomeDisputeStake](../interfaces/_augur_sdk_src_state_getter_accounts_.usercurrentoutcomedisputestake.md)[]›*
+▸ **getUserCurrentDisputeStake**‹**TBigNumber**›(`augur`: [Augur](_augur_sdk_src_augur_.augur.md), `db`: [DB](_augur_sdk_src_state_db_db_.db.md), `params`: t.TypeOf‹typeof getUserCurrentDisputeStakeParams›): *Promise‹[UserCurrentOutcomeDisputeStake](../interfaces/_augur_sdk_src_state_getter_accounts_.usercurrentoutcomedisputestake.md)[]›*
 
-*Defined in [packages/augur-sdk/src/state/getter/Accounts.ts:537](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/getter/Accounts.ts#L537)*
+*Defined in [packages/augur-sdk/src/state/getter/Accounts.ts:734](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/getter/Accounts.ts#L734)*
 
 **Type parameters:**
 

@@ -72,6 +72,8 @@
     "lodash": "4.17.19",
     "lz-string": "1.4.4",
     "moment": "2.26.0",
+    "typedoc": "^0.18.0",
+    "typedoc-plugin-markdown": "^2.4.0",
     "websocket-as-promised": "1.0.1",
     "ws": "7.1.2"
   },

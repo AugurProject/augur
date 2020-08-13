@@ -24,7 +24,7 @@
 
 • **liquidityCheckInterval**: *any* = null
 
-*Defined in [packages/augur-sdk/src/state/db/MarketDB.ts:40](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/db/MarketDB.ts#L40)*
+*Defined in [packages/augur-sdk/src/state/db/MarketDB.ts:43](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/db/MarketDB.ts#L43)*
 
 ___
 
@@ -32,4 +32,4 @@ ___
 
 • **liquidityDirty**: *Set‹unknown›* = new Set()
 
-*Defined in [packages/augur-sdk/src/state/db/MarketDB.ts:41](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/db/MarketDB.ts#L41)*
+*Defined in [packages/augur-sdk/src/state/db/MarketDB.ts:44](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/db/MarketDB.ts#L44)*

@@ -22,7 +22,7 @@
 
 • **address**? : *string | string[]*
 
-*Defined in [packages/augur-sdk/src/state/sync/BlockAndLogStreamerSyncStrategy.ts:23](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/sync/BlockAndLogStreamerSyncStrategy.ts#L23)*
+*Defined in [packages/augur-sdk/src/state/sync/BlockAndLogStreamerSyncStrategy.ts:28](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/sync/BlockAndLogStreamerSyncStrategy.ts#L28)*
 
 ___
 
@@ -30,7 +30,7 @@ ___
 
 • **blockhash**? : *string*
 
-*Defined in [packages/augur-sdk/src/state/sync/BlockAndLogStreamerSyncStrategy.ts:20](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/sync/BlockAndLogStreamerSyncStrategy.ts#L20)*
+*Defined in [packages/augur-sdk/src/state/sync/BlockAndLogStreamerSyncStrategy.ts:25](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/sync/BlockAndLogStreamerSyncStrategy.ts#L25)*
 
 ___
 
@@ -38,7 +38,7 @@ ___
 
 • **fromBlock**? : *number | string*
 
-*Defined in [packages/augur-sdk/src/state/sync/BlockAndLogStreamerSyncStrategy.ts:21](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/sync/BlockAndLogStreamerSyncStrategy.ts#L21)*
+*Defined in [packages/augur-sdk/src/state/sync/BlockAndLogStreamerSyncStrategy.ts:26](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/sync/BlockAndLogStreamerSyncStrategy.ts#L26)*
 
 ___
 
@@ -46,7 +46,7 @@ ___
 
 • **toBlock**? : *number | string*
 
-*Defined in [packages/augur-sdk/src/state/sync/BlockAndLogStreamerSyncStrategy.ts:22](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/sync/BlockAndLogStreamerSyncStrategy.ts#L22)*
+*Defined in [packages/augur-sdk/src/state/sync/BlockAndLogStreamerSyncStrategy.ts:27](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/sync/BlockAndLogStreamerSyncStrategy.ts#L27)*
 
 ___
 
@@ -54,4 +54,4 @@ ___
 
 • **topics**? : *Array‹string | string[]›*
 
-*Defined in [packages/augur-sdk/src/state/sync/BlockAndLogStreamerSyncStrategy.ts:24](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/sync/BlockAndLogStreamerSyncStrategy.ts#L24)*
+*Defined in [packages/augur-sdk/src/state/sync/BlockAndLogStreamerSyncStrategy.ts:29](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/sync/BlockAndLogStreamerSyncStrategy.ts#L29)*

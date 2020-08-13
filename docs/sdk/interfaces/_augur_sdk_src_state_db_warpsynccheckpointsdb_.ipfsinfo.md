@@ -20,7 +20,7 @@
 
 • **Hash**: *string*
 
-*Defined in [packages/augur-sdk/src/state/db/WarpSyncCheckpointsDB.ts:9](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/db/WarpSyncCheckpointsDB.ts#L9)*
+*Defined in [packages/augur-sdk/src/state/db/WarpSyncCheckpointsDB.ts:9](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/db/WarpSyncCheckpointsDB.ts#L9)*
 
 ___
 
@@ -28,7 +28,7 @@ ___
 
 • **Name**: *string*
 
-*Defined in [packages/augur-sdk/src/state/db/WarpSyncCheckpointsDB.ts:8](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/db/WarpSyncCheckpointsDB.ts#L8)*
+*Defined in [packages/augur-sdk/src/state/db/WarpSyncCheckpointsDB.ts:8](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/db/WarpSyncCheckpointsDB.ts#L8)*
 
 ___
 
@@ -36,4 +36,4 @@ ___
 
 • **Size**: *0*
 
-*Defined in [packages/augur-sdk/src/state/db/WarpSyncCheckpointsDB.ts:10](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/db/WarpSyncCheckpointsDB.ts#L10)*
+*Defined in [packages/augur-sdk/src/state/db/WarpSyncCheckpointsDB.ts:10](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/db/WarpSyncCheckpointsDB.ts#L10)*

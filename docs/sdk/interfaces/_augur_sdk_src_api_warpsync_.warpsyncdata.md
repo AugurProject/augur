@@ -19,7 +19,7 @@
 
 • **timestamp**: *number*
 
-*Defined in [packages/augur-sdk/src/api/WarpSync.ts:10](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/api/WarpSync.ts#L10)*
+*Defined in [packages/augur-sdk/src/api/WarpSync.ts:10](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/api/WarpSync.ts#L10)*
 
 ___
 
@@ -27,4 +27,4 @@ ___
 
 • **warpSyncHash**: *string*
 
-*Defined in [packages/augur-sdk/src/api/WarpSync.ts:9](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/api/WarpSync.ts#L9)*
+*Defined in [packages/augur-sdk/src/api/WarpSync.ts:9](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/api/WarpSync.ts#L9)*

@@ -21,7 +21,7 @@
 
 • **disputing**: *[ContractOverview](_augur_sdk_src_state_getter_accounts_.contractoverview.md) | null*
 
-*Defined in [packages/augur-sdk/src/state/getter/Accounts.ts:113](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/getter/Accounts.ts#L113)*
+*Defined in [packages/augur-sdk/src/state/getter/Accounts.ts:117](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/getter/Accounts.ts#L117)*
 
 ___
 
@@ -29,7 +29,7 @@ ___
 
 • **participationTokens**: *[ParticipationOverview](_augur_sdk_src_state_getter_accounts_.participationoverview.md)*
 
-*Defined in [packages/augur-sdk/src/state/getter/Accounts.ts:114](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/getter/Accounts.ts#L114)*
+*Defined in [packages/augur-sdk/src/state/getter/Accounts.ts:118](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/getter/Accounts.ts#L118)*
 
 ___
 
@@ -37,7 +37,7 @@ ___
 
 • **repWinnings**: *string*
 
-*Defined in [packages/augur-sdk/src/state/getter/Accounts.ts:111](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/getter/Accounts.ts#L111)*
+*Defined in [packages/augur-sdk/src/state/getter/Accounts.ts:115](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/getter/Accounts.ts#L115)*
 
 ___
 
@@ -45,4 +45,4 @@ ___
 
 • **reporting**: *[ContractOverview](_augur_sdk_src_state_getter_accounts_.contractoverview.md) | null*
 
-*Defined in [packages/augur-sdk/src/state/getter/Accounts.ts:112](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/getter/Accounts.ts#L112)*
+*Defined in [packages/augur-sdk/src/state/getter/Accounts.ts:116](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/getter/Accounts.ts#L116)*

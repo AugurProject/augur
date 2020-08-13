@@ -19,9 +19,9 @@
 
 ###  blockAndLogStreamer
 
-• **blockAndLogStreamer**: *[BlockAndLogStreamerInterface](_augur_sdk_src_state_sync_blockandlogstreamersyncstrategy_.blockandlogstreamerinterface.md)‹Block, ExtendedLog›*
+• **blockAndLogStreamer**: *[BlockAndLogStreamerInterface](_augur_sdk_src_state_sync_blockandlogstreamersyncstrategy_.blockandlogstreamerinterface.md)‹Block, [ExtendedLog](_augur_sdk_src_lib_blockstream_adapters_index_.extendedlog.md)›*
 
-*Defined in [packages/augur-sdk/src/state/sync/BlockAndLogStreamerSyncStrategy.ts:40](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/sync/BlockAndLogStreamerSyncStrategy.ts#L40)*
+*Defined in [packages/augur-sdk/src/state/sync/BlockAndLogStreamerSyncStrategy.ts:45](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/sync/BlockAndLogStreamerSyncStrategy.ts#L45)*
 
 ___
 
@@ -29,7 +29,7 @@ ___
 
 • **getLogs**: *function*
 
-*Defined in [packages/augur-sdk/src/state/sync/BlockAndLogStreamerSyncStrategy.ts:39](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/sync/BlockAndLogStreamerSyncStrategy.ts#L39)*
+*Defined in [packages/augur-sdk/src/state/sync/BlockAndLogStreamerSyncStrategy.ts:44](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/sync/BlockAndLogStreamerSyncStrategy.ts#L44)*
 
 #### Type declaration:
 
@@ -47,7 +47,7 @@ ___
 
 • **listenForNewBlocks**: *function*
 
-*Defined in [packages/augur-sdk/src/state/sync/BlockAndLogStreamerSyncStrategy.ts:41](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/sync/BlockAndLogStreamerSyncStrategy.ts#L41)*
+*Defined in [packages/augur-sdk/src/state/sync/BlockAndLogStreamerSyncStrategy.ts:46](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/sync/BlockAndLogStreamerSyncStrategy.ts#L46)*
 
 #### Type declaration:
 
@@ -71,7 +71,7 @@ ___
 
 • **onLogsAdded**: *function*
 
-*Defined in [packages/augur-sdk/src/state/sync/BlockAndLogStreamerSyncStrategy.ts:42](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/sync/BlockAndLogStreamerSyncStrategy.ts#L42)*
+*Defined in [packages/augur-sdk/src/state/sync/BlockAndLogStreamerSyncStrategy.ts:47](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/sync/BlockAndLogStreamerSyncStrategy.ts#L47)*
 
 #### Type declaration:
 

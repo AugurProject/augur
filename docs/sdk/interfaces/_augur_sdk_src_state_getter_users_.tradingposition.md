@@ -37,7 +37,7 @@
 
 • **averagePrice**: *string*
 
-*Defined in [packages/augur-sdk/src/state/getter/Users.ts:137](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/getter/Users.ts#L137)*
+*Defined in [packages/augur-sdk/src/state/getter/Users.ts:165](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/getter/Users.ts#L165)*
 
 ___
 
@@ -45,7 +45,7 @@ ___
 
 • **currentValue**: *string*
 
-*Defined in [packages/augur-sdk/src/state/getter/Users.ts:149](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/getter/Users.ts#L149)*
+*Defined in [packages/augur-sdk/src/state/getter/Users.ts:177](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/getter/Users.ts#L177)*
 
 ___
 
@@ -53,7 +53,7 @@ ___
 
 • **frozenFunds**: *string*
 
-*Defined in [packages/augur-sdk/src/state/getter/Users.ts:132](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/getter/Users.ts#L132)*
+*Defined in [packages/augur-sdk/src/state/getter/Users.ts:160](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/getter/Users.ts#L160)*
 
 ___
 
@@ -61,7 +61,7 @@ ___
 
 • **marketId**: *string*
 
-*Defined in [packages/augur-sdk/src/state/getter/Users.ts:133](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/getter/Users.ts#L133)*
+*Defined in [packages/augur-sdk/src/state/getter/Users.ts:161](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/getter/Users.ts#L161)*
 
 ___
 
@@ -69,7 +69,7 @@ ___
 
 • **netPosition**: *string*
 
-*Defined in [packages/augur-sdk/src/state/getter/Users.ts:135](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/getter/Users.ts#L135)*
+*Defined in [packages/augur-sdk/src/state/getter/Users.ts:163](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/getter/Users.ts#L163)*
 
 ___
 
@@ -77,7 +77,7 @@ ___
 
 • **outcome**: *number*
 
-*Defined in [packages/augur-sdk/src/state/getter/Users.ts:134](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/getter/Users.ts#L134)*
+*Defined in [packages/augur-sdk/src/state/getter/Users.ts:162](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/getter/Users.ts#L162)*
 
 ___
 
@@ -85,7 +85,7 @@ ___
 
 • **priorPosition**? : *object*
 
-*Defined in [packages/augur-sdk/src/state/getter/Users.ts:150](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/getter/Users.ts#L150)*
+*Defined in [packages/augur-sdk/src/state/getter/Users.ts:178](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/getter/Users.ts#L178)*
 
 #### Type declaration:
 
@@ -101,7 +101,7 @@ ___
 
 • **rawPosition**: *string*
 
-*Defined in [packages/augur-sdk/src/state/getter/Users.ts:136](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/getter/Users.ts#L136)*
+*Defined in [packages/augur-sdk/src/state/getter/Users.ts:164](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/getter/Users.ts#L164)*
 
 ___
 
@@ -109,7 +109,7 @@ ___
 
 • **realized**: *string*
 
-*Defined in [packages/augur-sdk/src/state/getter/Users.ts:138](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/getter/Users.ts#L138)*
+*Defined in [packages/augur-sdk/src/state/getter/Users.ts:166](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/getter/Users.ts#L166)*
 
 ___
 
@@ -117,7 +117,7 @@ ___
 
 • **realizedCost**: *string*
 
-*Defined in [packages/augur-sdk/src/state/getter/Users.ts:143](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/getter/Users.ts#L143)*
+*Defined in [packages/augur-sdk/src/state/getter/Users.ts:171](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/getter/Users.ts#L171)*
 
 ___
 
@@ -125,7 +125,7 @@ ___
 
 • **realizedPercent**: *string*
 
-*Defined in [packages/augur-sdk/src/state/getter/Users.ts:145](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/getter/Users.ts#L145)*
+*Defined in [packages/augur-sdk/src/state/getter/Users.ts:173](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/getter/Users.ts#L173)*
 
 ___
 
@@ -133,7 +133,7 @@ ___
 
 • **timestamp**: *number*
 
-*Defined in [packages/augur-sdk/src/state/getter/Users.ts:131](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/getter/Users.ts#L131)*
+*Defined in [packages/augur-sdk/src/state/getter/Users.ts:159](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/getter/Users.ts#L159)*
 
 ___
 
@@ -141,7 +141,7 @@ ___
 
 • **total**: *string*
 
-*Defined in [packages/augur-sdk/src/state/getter/Users.ts:141](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/getter/Users.ts#L141)*
+*Defined in [packages/augur-sdk/src/state/getter/Users.ts:169](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/getter/Users.ts#L169)*
 
 ___
 
@@ -149,7 +149,7 @@ ___
 
 • **totalCost**: *string*
 
-*Defined in [packages/augur-sdk/src/state/getter/Users.ts:144](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/getter/Users.ts#L144)*
+*Defined in [packages/augur-sdk/src/state/getter/Users.ts:172](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/getter/Users.ts#L172)*
 
 ___
 
@@ -157,7 +157,7 @@ ___
 
 • **totalPercent**: *string*
 
-*Defined in [packages/augur-sdk/src/state/getter/Users.ts:148](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/getter/Users.ts#L148)*
+*Defined in [packages/augur-sdk/src/state/getter/Users.ts:176](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/getter/Users.ts#L176)*
 
 ___
 
@@ -165,7 +165,7 @@ ___
 
 • **unrealized**: *string*
 
-*Defined in [packages/augur-sdk/src/state/getter/Users.ts:139](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/getter/Users.ts#L139)*
+*Defined in [packages/augur-sdk/src/state/getter/Users.ts:167](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/getter/Users.ts#L167)*
 
 ___
 
@@ -173,7 +173,7 @@ ___
 
 • **unrealized24Hr**: *string*
 
-*Defined in [packages/augur-sdk/src/state/getter/Users.ts:140](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/getter/Users.ts#L140)*
+*Defined in [packages/augur-sdk/src/state/getter/Users.ts:168](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/getter/Users.ts#L168)*
 
 ___
 
@@ -181,7 +181,7 @@ ___
 
 • **unrealized24HrPercent**: *string*
 
-*Defined in [packages/augur-sdk/src/state/getter/Users.ts:147](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/getter/Users.ts#L147)*
+*Defined in [packages/augur-sdk/src/state/getter/Users.ts:175](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/getter/Users.ts#L175)*
 
 ___
 
@@ -189,7 +189,7 @@ ___
 
 • **unrealizedCost**: *string*
 
-*Defined in [packages/augur-sdk/src/state/getter/Users.ts:142](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/getter/Users.ts#L142)*
+*Defined in [packages/augur-sdk/src/state/getter/Users.ts:170](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/getter/Users.ts#L170)*
 
 ___
 
@@ -197,4 +197,4 @@ ___
 
 • **unrealizedPercent**: *string*
 
-*Defined in [packages/augur-sdk/src/state/getter/Users.ts:146](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/getter/Users.ts#L146)*
+*Defined in [packages/augur-sdk/src/state/getter/Users.ts:174](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/getter/Users.ts#L174)*

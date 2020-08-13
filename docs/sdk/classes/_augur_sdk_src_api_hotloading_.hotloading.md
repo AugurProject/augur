@@ -14,7 +14,7 @@
 
 ### Properties
 
-* [augur](_augur_sdk_src_api_hotloading_.hotloading.md#private-augur)
+* [augur](_augur_sdk_src_api_hotloading_.hotloading.md#private-readonly-augur)
 
 ### Methods
 
@@ -27,7 +27,7 @@
 
 \+ **new HotLoading**(`augur`: [Augur](_augur_sdk_src_augur_.augur.md)): *[HotLoading](_augur_sdk_src_api_hotloading_.hotloading.md)*
 
-*Defined in [packages/augur-sdk/src/api/HotLoading.ts:61](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/api/HotLoading.ts#L61)*
+*Defined in [packages/augur-sdk/src/api/HotLoading.ts:66](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/api/HotLoading.ts#L66)*
 
 **Parameters:**
 
@@ -39,11 +39,11 @@ Name | Type |
 
 ## Properties
 
-### `Private` augur
+### `Private` `Readonly` augur
 
 • **augur**: *[Augur](_augur_sdk_src_augur_.augur.md)*
 
-*Defined in [packages/augur-sdk/src/api/HotLoading.ts:61](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/api/HotLoading.ts#L61)*
+*Defined in [packages/augur-sdk/src/api/HotLoading.ts:66](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/api/HotLoading.ts#L66)*
 
 ## Methods
 
@@ -51,7 +51,7 @@ Name | Type |
 
 ▸ **getCurrentDisputeWindowData**(`params`: [GetDisputeWindowParams](../interfaces/_augur_sdk_src_api_hotloading_.getdisputewindowparams.md)): *Promise‹[DisputeWindow](../interfaces/_augur_sdk_src_api_hotloading_.disputewindow.md)›*
 
-*Defined in [packages/augur-sdk/src/api/HotLoading.ts:198](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/api/HotLoading.ts#L198)*
+*Defined in [packages/augur-sdk/src/api/HotLoading.ts:242](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/api/HotLoading.ts#L242)*
 
 **Parameters:**
 
@@ -67,7 +67,7 @@ ___
 
 ▸ **getMarketDataParams**(`params`: [GetMarketDataParams](../interfaces/_augur_sdk_src_api_hotloading_.getmarketdataparams.md)): *Promise‹[HotLoadMarketInfo](../interfaces/_augur_sdk_src_api_hotloading_.hotloadmarketinfo.md)›*
 
-*Defined in [packages/augur-sdk/src/api/HotLoading.ts:67](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/api/HotLoading.ts#L67)*
+*Defined in [packages/augur-sdk/src/api/HotLoading.ts:72](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/api/HotLoading.ts#L72)*
 
 **Parameters:**
 

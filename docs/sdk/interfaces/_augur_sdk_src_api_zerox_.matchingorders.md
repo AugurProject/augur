@@ -10,6 +10,7 @@
 
 ### Properties
 
+* [gasLimit](_augur_sdk_src_api_zerox_.matchingorders.md#gaslimit)
 * [loopLimit](_augur_sdk_src_api_zerox_.matchingorders.md#looplimit)
 * [orderIds](_augur_sdk_src_api_zerox_.matchingorders.md#orderids)
 * [orders](_augur_sdk_src_api_zerox_.matchingorders.md#orders)
@@ -17,11 +18,19 @@
 
 ## Properties
 
+###  gasLimit
+
+• **gasLimit**: *BigNumber*
+
+*Defined in [packages/augur-sdk/src/api/ZeroX.ts:139](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/api/ZeroX.ts#L139)*
+
+___
+
 ###  loopLimit
 
 • **loopLimit**: *BigNumber*
 
-*Defined in [packages/augur-sdk/src/api/ZeroX.ts:124](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/api/ZeroX.ts#L124)*
+*Defined in [packages/augur-sdk/src/api/ZeroX.ts:138](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/api/ZeroX.ts#L138)*
 
 ___
 
@@ -29,7 +38,7 @@ ___
 
 • **orderIds**: *string[]*
 
-*Defined in [packages/augur-sdk/src/api/ZeroX.ts:123](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/api/ZeroX.ts#L123)*
+*Defined in [packages/augur-sdk/src/api/ZeroX.ts:137](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/api/ZeroX.ts#L137)*
 
 ___
 
@@ -37,7 +46,7 @@ ___
 
 • **orders**: *[ZeroXTradeOrder](_augur_sdk_src_api_zerox_.zeroxtradeorder.md)[]*
 
-*Defined in [packages/augur-sdk/src/api/ZeroX.ts:121](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/api/ZeroX.ts#L121)*
+*Defined in [packages/augur-sdk/src/api/ZeroX.ts:135](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/api/ZeroX.ts#L135)*
 
 ___
 
@@ -45,4 +54,4 @@ ___
 
 • **signatures**: *string[]*
 
-*Defined in [packages/augur-sdk/src/api/ZeroX.ts:122](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/api/ZeroX.ts#L122)*
+*Defined in [packages/augur-sdk/src/api/ZeroX.ts:136](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/api/ZeroX.ts#L136)*

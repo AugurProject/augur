@@ -53,7 +53,7 @@
 
 • **Approval**: = "Approval"
 
-*Defined in [packages/augur-types/types/events.ts:2](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-types/types/events.ts#L2)*
+*Defined in [packages/augur-types/types/events.ts:2](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-types/types/events.ts#L2)*
 
 ___
 
@@ -61,7 +61,7 @@ ___
 
 • **AuthorizedOperator**: = "AuthorizedOperator"
 
-*Defined in [packages/augur-types/types/events.ts:3](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-types/types/events.ts#L3)*
+*Defined in [packages/augur-types/types/events.ts:3](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-types/types/events.ts#L3)*
 
 ___
 
@@ -69,7 +69,7 @@ ___
 
 • **Burn**: = "Burn"
 
-*Defined in [packages/augur-types/types/events.ts:4](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-types/types/events.ts#L4)*
+*Defined in [packages/augur-types/types/events.ts:4](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-types/types/events.ts#L4)*
 
 ___
 
@@ -77,7 +77,7 @@ ___
 
 • **Burned**: = "Burned"
 
-*Defined in [packages/augur-types/types/events.ts:5](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-types/types/events.ts#L5)*
+*Defined in [packages/augur-types/types/events.ts:5](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-types/types/events.ts#L5)*
 
 ___
 
@@ -85,7 +85,7 @@ ___
 
 • **CompleteSetsPurchased**: = "CompleteSetsPurchased"
 
-*Defined in [packages/augur-types/types/events.ts:6](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-types/types/events.ts#L6)*
+*Defined in [packages/augur-types/types/events.ts:6](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-types/types/events.ts#L6)*
 
 ___
 
@@ -93,7 +93,7 @@ ___
 
 • **CompleteSetsSold**: = "CompleteSetsSold"
 
-*Defined in [packages/augur-types/types/events.ts:7](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-types/types/events.ts#L7)*
+*Defined in [packages/augur-types/types/events.ts:7](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-types/types/events.ts#L7)*
 
 ___
 
@@ -101,7 +101,7 @@ ___
 
 • **DisputeCrowdsourcerCompleted**: = "DisputeCrowdsourcerCompleted"
 
-*Defined in [packages/augur-types/types/events.ts:8](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-types/types/events.ts#L8)*
+*Defined in [packages/augur-types/types/events.ts:8](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-types/types/events.ts#L8)*
 
 ___
 
@@ -109,7 +109,7 @@ ___
 
 • **DisputeCrowdsourcerContribution**: = "DisputeCrowdsourcerContribution"
 
-*Defined in [packages/augur-types/types/events.ts:9](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-types/types/events.ts#L9)*
+*Defined in [packages/augur-types/types/events.ts:9](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-types/types/events.ts#L9)*
 
 ___
 
@@ -117,7 +117,7 @@ ___
 
 • **DisputeCrowdsourcerCreated**: = "DisputeCrowdsourcerCreated"
 
-*Defined in [packages/augur-types/types/events.ts:10](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-types/types/events.ts#L10)*
+*Defined in [packages/augur-types/types/events.ts:10](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-types/types/events.ts#L10)*
 
 ___
 
@@ -125,7 +125,7 @@ ___
 
 • **DisputeCrowdsourcerRedeemed**: = "DisputeCrowdsourcerRedeemed"
 
-*Defined in [packages/augur-types/types/events.ts:11](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-types/types/events.ts#L11)*
+*Defined in [packages/augur-types/types/events.ts:11](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-types/types/events.ts#L11)*
 
 ___
 
@@ -133,7 +133,7 @@ ___
 
 • **DisputeWindowCreated**: = "DisputeWindowCreated"
 
-*Defined in [packages/augur-types/types/events.ts:12](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-types/types/events.ts#L12)*
+*Defined in [packages/augur-types/types/events.ts:12](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-types/types/events.ts#L12)*
 
 ___
 
@@ -141,7 +141,7 @@ ___
 
 • **FundedAccount**: = "FundedAccount"
 
-*Defined in [packages/augur-types/types/events.ts:13](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-types/types/events.ts#L13)*
+*Defined in [packages/augur-types/types/events.ts:13](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-types/types/events.ts#L13)*
 
 ___
 
@@ -149,7 +149,7 @@ ___
 
 • **InitialReportSubmitted**: = "InitialReportSubmitted"
 
-*Defined in [packages/augur-types/types/events.ts:14](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-types/types/events.ts#L14)*
+*Defined in [packages/augur-types/types/events.ts:14](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-types/types/events.ts#L14)*
 
 ___
 
@@ -157,7 +157,7 @@ ___
 
 • **InitialReporterRedeemed**: = "InitialReporterRedeemed"
 
-*Defined in [packages/augur-types/types/events.ts:15](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-types/types/events.ts#L15)*
+*Defined in [packages/augur-types/types/events.ts:15](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-types/types/events.ts#L15)*
 
 ___
 
@@ -165,7 +165,7 @@ ___
 
 • **InitialReporterTransferred**: = "InitialReporterTransferred"
 
-*Defined in [packages/augur-types/types/events.ts:16](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-types/types/events.ts#L16)*
+*Defined in [packages/augur-types/types/events.ts:16](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-types/types/events.ts#L16)*
 
 ___
 
@@ -173,7 +173,7 @@ ___
 
 • **InterfaceImplementerSet**: = "InterfaceImplementerSet"
 
-*Defined in [packages/augur-types/types/events.ts:17](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-types/types/events.ts#L17)*
+*Defined in [packages/augur-types/types/events.ts:17](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-types/types/events.ts#L17)*
 
 ___
 
@@ -181,7 +181,7 @@ ___
 
 • **ManagerChanged**: = "ManagerChanged"
 
-*Defined in [packages/augur-types/types/events.ts:18](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-types/types/events.ts#L18)*
+*Defined in [packages/augur-types/types/events.ts:18](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-types/types/events.ts#L18)*
 
 ___
 
@@ -189,7 +189,7 @@ ___
 
 • **MarketCreated**: = "MarketCreated"
 
-*Defined in [packages/augur-types/types/events.ts:19](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-types/types/events.ts#L19)*
+*Defined in [packages/augur-types/types/events.ts:19](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-types/types/events.ts#L19)*
 
 ___
 
@@ -197,7 +197,7 @@ ___
 
 • **MarketFinalized**: = "MarketFinalized"
 
-*Defined in [packages/augur-types/types/events.ts:20](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-types/types/events.ts#L20)*
+*Defined in [packages/augur-types/types/events.ts:20](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-types/types/events.ts#L20)*
 
 ___
 
@@ -205,7 +205,7 @@ ___
 
 • **MarketMigrated**: = "MarketMigrated"
 
-*Defined in [packages/augur-types/types/events.ts:21](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-types/types/events.ts#L21)*
+*Defined in [packages/augur-types/types/events.ts:21](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-types/types/events.ts#L21)*
 
 ___
 
@@ -213,7 +213,7 @@ ___
 
 • **MarketParticipantsDisavowed**: = "MarketParticipantsDisavowed"
 
-*Defined in [packages/augur-types/types/events.ts:22](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-types/types/events.ts#L22)*
+*Defined in [packages/augur-types/types/events.ts:22](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-types/types/events.ts#L22)*
 
 ___
 
@@ -221,7 +221,7 @@ ___
 
 • **MarketTransferred**: = "MarketTransferred"
 
-*Defined in [packages/augur-types/types/events.ts:23](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-types/types/events.ts#L23)*
+*Defined in [packages/augur-types/types/events.ts:23](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-types/types/events.ts#L23)*
 
 ___
 
@@ -229,7 +229,7 @@ ___
 
 • **MarketVolumeChanged**: = "MarketVolumeChanged"
 
-*Defined in [packages/augur-types/types/events.ts:24](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-types/types/events.ts#L24)*
+*Defined in [packages/augur-types/types/events.ts:24](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-types/types/events.ts#L24)*
 
 ___
 
@@ -237,7 +237,7 @@ ___
 
 • **Mint**: = "Mint"
 
-*Defined in [packages/augur-types/types/events.ts:25](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-types/types/events.ts#L25)*
+*Defined in [packages/augur-types/types/events.ts:25](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-types/types/events.ts#L25)*
 
 ___
 
@@ -245,7 +245,7 @@ ___
 
 • **Minted**: = "Minted"
 
-*Defined in [packages/augur-types/types/events.ts:26](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-types/types/events.ts#L26)*
+*Defined in [packages/augur-types/types/events.ts:26](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-types/types/events.ts#L26)*
 
 ___
 
@@ -253,7 +253,7 @@ ___
 
 • **OrderEvent**: = "OrderEvent"
 
-*Defined in [packages/augur-types/types/events.ts:27](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-types/types/events.ts#L27)*
+*Defined in [packages/augur-types/types/events.ts:27](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-types/types/events.ts#L27)*
 
 ___
 
@@ -261,7 +261,7 @@ ___
 
 • **ParticipationTokensRedeemed**: = "ParticipationTokensRedeemed"
 
-*Defined in [packages/augur-types/types/events.ts:28](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-types/types/events.ts#L28)*
+*Defined in [packages/augur-types/types/events.ts:28](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-types/types/events.ts#L28)*
 
 ___
 
@@ -269,7 +269,7 @@ ___
 
 • **ProfitLossChanged**: = "ProfitLossChanged"
 
-*Defined in [packages/augur-types/types/events.ts:29](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-types/types/events.ts#L29)*
+*Defined in [packages/augur-types/types/events.ts:29](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-types/types/events.ts#L29)*
 
 ___
 
@@ -277,7 +277,7 @@ ___
 
 • **ReportingParticipantDisavowed**: = "ReportingParticipantDisavowed"
 
-*Defined in [packages/augur-types/types/events.ts:30](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-types/types/events.ts#L30)*
+*Defined in [packages/augur-types/types/events.ts:30](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-types/types/events.ts#L30)*
 
 ___
 
@@ -285,7 +285,7 @@ ___
 
 • **RevokedOperator**: = "RevokedOperator"
 
-*Defined in [packages/augur-types/types/events.ts:31](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-types/types/events.ts#L31)*
+*Defined in [packages/augur-types/types/events.ts:31](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-types/types/events.ts#L31)*
 
 ___
 
@@ -293,7 +293,7 @@ ___
 
 • **Sent**: = "Sent"
 
-*Defined in [packages/augur-types/types/events.ts:32](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-types/types/events.ts#L32)*
+*Defined in [packages/augur-types/types/events.ts:32](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-types/types/events.ts#L32)*
 
 ___
 
@@ -301,7 +301,7 @@ ___
 
 • **TimestampSet**: = "TimestampSet"
 
-*Defined in [packages/augur-types/types/events.ts:33](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-types/types/events.ts#L33)*
+*Defined in [packages/augur-types/types/events.ts:33](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-types/types/events.ts#L33)*
 
 ___
 
@@ -309,7 +309,7 @@ ___
 
 • **TokenBalanceChanged**: = "TokenBalanceChanged"
 
-*Defined in [packages/augur-types/types/events.ts:34](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-types/types/events.ts#L34)*
+*Defined in [packages/augur-types/types/events.ts:34](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-types/types/events.ts#L34)*
 
 ___
 
@@ -317,7 +317,7 @@ ___
 
 • **TokensBurned**: = "TokensBurned"
 
-*Defined in [packages/augur-types/types/events.ts:35](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-types/types/events.ts#L35)*
+*Defined in [packages/augur-types/types/events.ts:35](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-types/types/events.ts#L35)*
 
 ___
 
@@ -325,7 +325,7 @@ ___
 
 • **TokensMinted**: = "TokensMinted"
 
-*Defined in [packages/augur-types/types/events.ts:36](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-types/types/events.ts#L36)*
+*Defined in [packages/augur-types/types/events.ts:36](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-types/types/events.ts#L36)*
 
 ___
 
@@ -333,7 +333,7 @@ ___
 
 • **TokensTransferred**: = "TokensTransferred"
 
-*Defined in [packages/augur-types/types/events.ts:37](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-types/types/events.ts#L37)*
+*Defined in [packages/augur-types/types/events.ts:37](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-types/types/events.ts#L37)*
 
 ___
 
@@ -341,7 +341,7 @@ ___
 
 • **TradingProceedsClaimed**: = "TradingProceedsClaimed"
 
-*Defined in [packages/augur-types/types/events.ts:38](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-types/types/events.ts#L38)*
+*Defined in [packages/augur-types/types/events.ts:38](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-types/types/events.ts#L38)*
 
 ___
 
@@ -349,7 +349,7 @@ ___
 
 • **Transfer**: = "Transfer"
 
-*Defined in [packages/augur-types/types/events.ts:39](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-types/types/events.ts#L39)*
+*Defined in [packages/augur-types/types/events.ts:39](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-types/types/events.ts#L39)*
 
 ___
 
@@ -357,7 +357,7 @@ ___
 
 • **UniverseCreated**: = "UniverseCreated"
 
-*Defined in [packages/augur-types/types/events.ts:40](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-types/types/events.ts#L40)*
+*Defined in [packages/augur-types/types/events.ts:40](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-types/types/events.ts#L40)*
 
 ___
 
@@ -365,4 +365,4 @@ ___
 
 • **UniverseForked**: = "UniverseForked"
 
-*Defined in [packages/augur-types/types/events.ts:41](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-types/types/events.ts#L41)*
+*Defined in [packages/augur-types/types/events.ts:41](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-types/types/events.ts#L41)*

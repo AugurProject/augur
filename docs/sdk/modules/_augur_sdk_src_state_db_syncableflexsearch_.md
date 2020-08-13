@@ -22,4 +22,4 @@
 
 • **flexSearch**: *any* = require('flexsearch')
 
-*Defined in [packages/augur-sdk/src/state/db/SyncableFlexSearch.ts:4](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/db/SyncableFlexSearch.ts#L4)*
+*Defined in [packages/augur-sdk/src/state/db/SyncableFlexSearch.ts:6](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/db/SyncableFlexSearch.ts#L6)*

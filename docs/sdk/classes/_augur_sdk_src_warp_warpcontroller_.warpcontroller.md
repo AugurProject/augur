@@ -16,10 +16,9 @@
 
 * [_fileRetrievalFn](_augur_sdk_src_warp_warpcontroller_.warpcontroller.md#private-_fileretrievalfn)
 * [augur](_augur_sdk_src_warp_warpcontroller_.warpcontroller.md#private-augur)
-* [checkpointCreationInProgress](_augur_sdk_src_warp_warpcontroller_.warpcontroller.md#private-checkpointcreationinprogress)
 * [checkpoints](_augur_sdk_src_warp_warpcontroller_.warpcontroller.md#checkpoints)
 * [db](_augur_sdk_src_warp_warpcontroller_.warpcontroller.md#private-db)
-* [ipfs](_augur_sdk_src_warp_warpcontroller_.warpcontroller.md#private-ipfs)
+* [ipfs](_augur_sdk_src_warp_warpcontroller_.warpcontroller.md#ipfs)
 * [provider](_augur_sdk_src_warp_warpcontroller_.warpcontroller.md#private-provider)
 * [uploadBlockNumber](_augur_sdk_src_warp_warpcontroller_.warpcontroller.md#private-uploadblocknumber)
 
@@ -47,7 +46,7 @@
 
 \+ **new WarpController**(`db`: [DB](_augur_sdk_src_state_db_db_.db.md), `augur`: [Augur](_augur_sdk_src_augur_.augur.md)‹[Provider](../interfaces/_augur_sdk_src_ethereum_provider_.provider.md)›, `provider`: [Provider](../interfaces/_augur_sdk_src_ethereum_provider_.provider.md), `uploadBlockNumber`: number, `ipfs?`: Promise‹IPFS›, `_fileRetrievalFn`: function): *[WarpController](_augur_sdk_src_warp_warpcontroller_.warpcontroller.md)*
 
-*Defined in [packages/augur-sdk/src/warp/WarpController.ts:101](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/warp/WarpController.ts#L101)*
+*Defined in [packages/augur-sdk/src/warp/WarpController.ts:108](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/warp/WarpController.ts#L108)*
 
 **Parameters:**
 
@@ -63,11 +62,11 @@
 
 ▪`Default value`  **_fileRetrievalFn**: *function*= (
       ipfsPath: string
-    ) => fetch(`https://cloudflare-ipfs.com/ipfs/${ipfsPath}`).then(item =>
-        item.json()
-      )
+    ) => fetch(`https://cloudflare-ipfs.com/ipfs/${ipfsPath}`)
+      .then(item => item.arrayBuffer())
+      .then(item => new Uint8Array(item))
 
-▸ (`ipfsPath`: string): *Promise‹any›*
+▸ (`ipfsPath`: string): *Promise‹Uint8Array›*
 
 **Parameters:**
 
@@ -83,11 +82,11 @@ Name | Type |
 
 • **_fileRetrievalFn**: *function*
 
-*Defined in [packages/augur-sdk/src/warp/WarpController.ts:110](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/warp/WarpController.ts#L110)*
+*Defined in [packages/augur-sdk/src/warp/WarpController.ts:117](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/warp/WarpController.ts#L117)*
 
 #### Type declaration:
 
-▸ (`ipfsPath`: string): *Promise‹any›*
+▸ (`ipfsPath`: string): *Promise‹Uint8Array›*
 
 **Parameters:**
 
@@ -101,15 +100,7 @@ ___
 
 • **augur**: *[Augur](_augur_sdk_src_augur_.augur.md)‹[Provider](../interfaces/_augur_sdk_src_ethereum_provider_.provider.md)›*
 
-*Defined in [packages/augur-sdk/src/warp/WarpController.ts:105](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/warp/WarpController.ts#L105)*
-
-___
-
-### `Private` checkpointCreationInProgress
-
-• **checkpointCreationInProgress**: *boolean* = false
-
-*Defined in [packages/augur-sdk/src/warp/WarpController.ts:98](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/warp/WarpController.ts#L98)*
+*Defined in [packages/augur-sdk/src/warp/WarpController.ts:112](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/warp/WarpController.ts#L112)*
 
 ___
 
@@ -117,7 +108,7 @@ ___
 
 • **checkpoints**: *[Checkpoints](_augur_sdk_src_warp_checkpoints_.checkpoints.md)*
 
-*Defined in [packages/augur-sdk/src/warp/WarpController.ts:100](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/warp/WarpController.ts#L100)*
+*Defined in [packages/augur-sdk/src/warp/WarpController.ts:107](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/warp/WarpController.ts#L107)*
 
 ___
 
@@ -125,15 +116,15 @@ ___
 
 • **db**: *[DB](_augur_sdk_src_state_db_db_.db.md)*
 
-*Defined in [packages/augur-sdk/src/warp/WarpController.ts:104](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/warp/WarpController.ts#L104)*
+*Defined in [packages/augur-sdk/src/warp/WarpController.ts:111](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/warp/WarpController.ts#L111)*
 
 ___
 
-### `Private` ipfs
+###  ipfs
 
 • **ipfs**: *Promise‹IPFS›*
 
-*Defined in [packages/augur-sdk/src/warp/WarpController.ts:101](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/warp/WarpController.ts#L101)*
+*Defined in [packages/augur-sdk/src/warp/WarpController.ts:108](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/warp/WarpController.ts#L108)*
 
 ___
 
@@ -141,7 +132,7 @@ ___
 
 • **provider**: *[Provider](../interfaces/_augur_sdk_src_ethereum_provider_.provider.md)*
 
-*Defined in [packages/augur-sdk/src/warp/WarpController.ts:106](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/warp/WarpController.ts#L106)*
+*Defined in [packages/augur-sdk/src/warp/WarpController.ts:113](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/warp/WarpController.ts#L113)*
 
 ___
 
@@ -149,7 +140,7 @@ ___
 
 • **uploadBlockNumber**: *number*
 
-*Defined in [packages/augur-sdk/src/warp/WarpController.ts:107](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/warp/WarpController.ts#L107)*
+*Defined in [packages/augur-sdk/src/warp/WarpController.ts:114](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/warp/WarpController.ts#L114)*
 
 ## Methods
 
@@ -157,7 +148,7 @@ ___
 
 ▸ **createCheckpoint**(`endBlock`: Block): *Promise‹[IpfsInfo](../interfaces/_augur_sdk_src_state_db_warpsynccheckpointsdb_.ipfsinfo.md)›*
 
-*Defined in [packages/augur-sdk/src/warp/WarpController.ts:242](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/warp/WarpController.ts#L242)*
+*Defined in [packages/augur-sdk/src/warp/WarpController.ts:256](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/warp/WarpController.ts#L256)*
 
 **Parameters:**
 
@@ -173,7 +164,7 @@ ___
 
 ▸ **createInitialCheckpoint**(): *Promise‹void›*
 
-*Defined in [packages/augur-sdk/src/warp/WarpController.ts:216](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/warp/WarpController.ts#L216)*
+*Defined in [packages/augur-sdk/src/warp/WarpController.ts:229](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/warp/WarpController.ts#L229)*
 
 **Returns:** *Promise‹void›*
 
@@ -183,7 +174,7 @@ ___
 
 ▸ **destroyAndRecreateDB**(): *Promise‹void›*
 
-*Defined in [packages/augur-sdk/src/warp/WarpController.ts:237](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/warp/WarpController.ts#L237)*
+*Defined in [packages/augur-sdk/src/warp/WarpController.ts:250](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/warp/WarpController.ts#L250)*
 
 **Returns:** *Promise‹void›*
 
@@ -193,7 +184,7 @@ ___
 
 ▸ **getCheckpointFile**(`ipfsRootHash`: string): *Promise‹[CheckpointInterface](../interfaces/_augur_sdk_src_warp_warpcontroller_.checkpointinterface.md)›*
 
-*Defined in [packages/augur-sdk/src/warp/WarpController.ts:306](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/warp/WarpController.ts#L306)*
+*Defined in [packages/augur-sdk/src/warp/WarpController.ts:323](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/warp/WarpController.ts#L323)*
 
 **Parameters:**
 
@@ -207,9 +198,9 @@ ___
 
 ###  getFile
 
-▸ **getFile**(`ipfsPath`: string): *Promise‹any›*
+▸ **getFile**(`ipfsPath`: string): *Promise‹[CheckpointInterface](../interfaces/_augur_sdk_src_warp_warpcontroller_.checkpointinterface.md)›*
 
-*Defined in [packages/augur-sdk/src/warp/WarpController.ts:300](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/warp/WarpController.ts#L300)*
+*Defined in [packages/augur-sdk/src/warp/WarpController.ts:312](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/warp/WarpController.ts#L312)*
 
 **Parameters:**
 
@@ -217,7 +208,7 @@ Name | Type |
 ------ | ------ |
 `ipfsPath` | string |
 
-**Returns:** *Promise‹any›*
+**Returns:** *Promise‹[CheckpointInterface](../interfaces/_augur_sdk_src_warp_warpcontroller_.checkpointinterface.md)›*
 
 ___
 
@@ -225,7 +216,7 @@ ___
 
 ▸ **getIpfs**(): *Promise‹IPFS›*
 
-*Defined in [packages/augur-sdk/src/warp/WarpController.ts:126](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/warp/WarpController.ts#L126)*
+*Defined in [packages/augur-sdk/src/warp/WarpController.ts:133](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/warp/WarpController.ts#L133)*
 
 **Returns:** *Promise‹IPFS›*
 
@@ -235,7 +226,7 @@ ___
 
 ▸ **getMostRecentCheckpoint**(): *Promise‹[WarpCheckpointDocument](../interfaces/_augur_sdk_src_state_db_warpsynccheckpointsdb_.warpcheckpointdocument.md)›*
 
-*Defined in [packages/augur-sdk/src/warp/WarpController.ts:327](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/warp/WarpController.ts#L327)*
+*Defined in [packages/augur-sdk/src/warp/WarpController.ts:347](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/warp/WarpController.ts#L347)*
 
 **Returns:** *Promise‹[WarpCheckpointDocument](../interfaces/_augur_sdk_src_state_db_warpsynccheckpointsdb_.warpcheckpointdocument.md)›*
 
@@ -245,7 +236,7 @@ ___
 
 ▸ **getMostRecentWarpSync**(): *Promise‹[WarpCheckpointDocument](../interfaces/_augur_sdk_src_state_db_warpsynccheckpointsdb_.warpcheckpointdocument.md)›*
 
-*Defined in [packages/augur-sdk/src/warp/WarpController.ts:323](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/warp/WarpController.ts#L323)*
+*Defined in [packages/augur-sdk/src/warp/WarpController.ts:343](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/warp/WarpController.ts#L343)*
 
 **Returns:** *Promise‹[WarpCheckpointDocument](../interfaces/_augur_sdk_src_state_db_warpsynccheckpointsdb_.warpcheckpointdocument.md)›*
 
@@ -255,7 +246,7 @@ ___
 
 ▸ **hasMostRecentCheckpoint**(): *Promise‹boolean›*
 
-*Defined in [packages/augur-sdk/src/warp/WarpController.ts:331](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/warp/WarpController.ts#L331)*
+*Defined in [packages/augur-sdk/src/warp/WarpController.ts:351](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/warp/WarpController.ts#L351)*
 
 **Returns:** *Promise‹boolean›*
 
@@ -265,7 +256,7 @@ ___
 
 ▸ **onNewBlock**(`newBlock`: Block): *Promise‹string | void›*
 
-*Defined in [packages/augur-sdk/src/warp/WarpController.ts:130](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/warp/WarpController.ts#L130)*
+*Defined in [packages/augur-sdk/src/warp/WarpController.ts:137](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/warp/WarpController.ts#L137)*
 
 **Parameters:**
 
@@ -281,7 +272,7 @@ ___
 
 ▸ **pinHashByGatewayUrl**(`urlString`: string): *Promise‹boolean›*
 
-*Defined in [packages/augur-sdk/src/warp/WarpController.ts:312](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/warp/WarpController.ts#L312)*
+*Defined in [packages/augur-sdk/src/warp/WarpController.ts:327](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/warp/WarpController.ts#L327)*
 
 **Parameters:**
 
@@ -297,16 +288,16 @@ Name | Type |
 
 ### ▪ **DEFAULT_NODE_TYPE**: *object*
 
-*Defined in [packages/augur-sdk/src/warp/WarpController.ts:99](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/warp/WarpController.ts#L99)*
+*Defined in [packages/augur-sdk/src/warp/WarpController.ts:106](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/warp/WarpController.ts#L106)*
 
 ###  format
 
 • **format**: *string* = "dag-pb"
 
-*Defined in [packages/augur-sdk/src/warp/WarpController.ts:99](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/warp/WarpController.ts#L99)*
+*Defined in [packages/augur-sdk/src/warp/WarpController.ts:106](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/warp/WarpController.ts#L106)*
 
 ###  hashAlg
 
 • **hashAlg**: *string* = "sha2-256"
 
-*Defined in [packages/augur-sdk/src/warp/WarpController.ts:99](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/warp/WarpController.ts#L99)*
+*Defined in [packages/augur-sdk/src/warp/WarpController.ts:106](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/warp/WarpController.ts#L106)*

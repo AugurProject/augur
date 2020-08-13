@@ -23,7 +23,7 @@
 
 • **_id**: *string*
 
-*Defined in [packages/augur-sdk/src/state/db/WarpSyncCheckpointsDB.ts:14](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/db/WarpSyncCheckpointsDB.ts#L14)*
+*Defined in [packages/augur-sdk/src/state/db/WarpSyncCheckpointsDB.ts:28](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/db/WarpSyncCheckpointsDB.ts#L28)*
 
 ___
 
@@ -31,15 +31,15 @@ ___
 
 • **_rev**? : *string*
 
-*Defined in [packages/augur-sdk/src/state/db/WarpSyncCheckpointsDB.ts:15](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/db/WarpSyncCheckpointsDB.ts#L15)*
+*Defined in [packages/augur-sdk/src/state/db/WarpSyncCheckpointsDB.ts:29](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/db/WarpSyncCheckpointsDB.ts#L29)*
 
 ___
 
 ### `Optional` end
 
-• **end**? : *Block*
+• **end**? : *[WarpCheckpointBlock](_augur_sdk_src_state_db_warpsynccheckpointsdb_.warpcheckpointblock.md)*
 
-*Defined in [packages/augur-sdk/src/state/db/WarpSyncCheckpointsDB.ts:19](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/db/WarpSyncCheckpointsDB.ts#L19)*
+*Defined in [packages/augur-sdk/src/state/db/WarpSyncCheckpointsDB.ts:33](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/db/WarpSyncCheckpointsDB.ts#L33)*
 
 ___
 
@@ -47,7 +47,7 @@ ___
 
 • **endTimestamp**: *number*
 
-*Defined in [packages/augur-sdk/src/state/db/WarpSyncCheckpointsDB.ts:18](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/db/WarpSyncCheckpointsDB.ts#L18)*
+*Defined in [packages/augur-sdk/src/state/db/WarpSyncCheckpointsDB.ts:32](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/db/WarpSyncCheckpointsDB.ts#L32)*
 
 ___
 
@@ -55,12 +55,12 @@ ___
 
 • **hash**: *string*
 
-*Defined in [packages/augur-sdk/src/state/db/WarpSyncCheckpointsDB.ts:16](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/db/WarpSyncCheckpointsDB.ts#L16)*
+*Defined in [packages/augur-sdk/src/state/db/WarpSyncCheckpointsDB.ts:30](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/db/WarpSyncCheckpointsDB.ts#L30)*
 
 ___
 
 ###  market
 
-• **market**: *[Address](../modules/_augur_sdk_src_state_logs_types_.md#address)*
+• **market**: *Address*
 
-*Defined in [packages/augur-sdk/src/state/db/WarpSyncCheckpointsDB.ts:17](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/db/WarpSyncCheckpointsDB.ts#L17)*
+*Defined in [packages/augur-sdk/src/state/db/WarpSyncCheckpointsDB.ts:31](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/db/WarpSyncCheckpointsDB.ts#L31)*

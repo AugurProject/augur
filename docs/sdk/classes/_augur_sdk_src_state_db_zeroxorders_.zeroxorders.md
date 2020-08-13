@@ -19,27 +19,32 @@ Stores 0x orders
 ### Properties
 
 * [augur](_augur_sdk_src_state_db_zeroxorders_.zeroxorders.md#private-augur)
-* [cashAssetData](_augur_sdk_src_state_db_zeroxorders_.zeroxorders.md#cashassetdata)
-* [dbName](_augur_sdk_src_state_db_zeroxorders_.zeroxorders.md#dbname)
+* [cashAssetData](_augur_sdk_src_state_db_zeroxorders_.zeroxorders.md#readonly-cashassetdata)
+* [dbName](_augur_sdk_src_state_db_zeroxorders_.zeroxorders.md#readonly-dbname)
 * [idFields](_augur_sdk_src_state_db_zeroxorders_.zeroxorders.md#protected-idfields)
 * [networkId](_augur_sdk_src_state_db_zeroxorders_.zeroxorders.md#protected-networkid)
 * [pastOrders](_augur_sdk_src_state_db_zeroxorders_.zeroxorders.md#private-pastorders)
-* [shareAssetData](_augur_sdk_src_state_db_zeroxorders_.zeroxorders.md#shareassetdata)
+* [shareAssetData](_augur_sdk_src_state_db_zeroxorders_.zeroxorders.md#readonly-shareassetdata)
 * [stateDB](_augur_sdk_src_state_db_zeroxorders_.zeroxorders.md#protected-statedb)
 * [syncStatus](_augur_sdk_src_state_db_zeroxorders_.zeroxorders.md#protected-syncstatus)
 * [syncing](_augur_sdk_src_state_db_zeroxorders_.zeroxorders.md#protected-syncing)
 * [table](_augur_sdk_src_state_db_zeroxorders_.zeroxorders.md#table)
-* [takerAssetData](_augur_sdk_src_state_db_zeroxorders_.zeroxorders.md#takerassetdata)
-* [tradeTokenAddress](_augur_sdk_src_state_db_zeroxorders_.zeroxorders.md#tradetokenaddress)
+* [takerAssetData](_augur_sdk_src_state_db_zeroxorders_.zeroxorders.md#readonly-takerassetdata)
+* [tradeTokenAddress](_augur_sdk_src_state_db_zeroxorders_.zeroxorders.md#readonly-tradetokenaddress)
 
 ### Methods
 
 * [allDocs](_augur_sdk_src_state_db_zeroxorders_.zeroxorders.md#alldocs)
 * [bulkAddDocuments](_augur_sdk_src_state_db_zeroxorders_.zeroxorders.md#protected-bulkadddocuments)
+* [bulkAddDocumentsInternal](_augur_sdk_src_state_db_zeroxorders_.zeroxorders.md#protected-bulkadddocumentsinternal)
 * [bulkPutDocuments](_augur_sdk_src_state_db_zeroxorders_.zeroxorders.md#protected-bulkputdocuments)
+* [bulkPutDocumentsInternal](_augur_sdk_src_state_db_zeroxorders_.zeroxorders.md#protected-bulkputdocumentsinternal)
 * [bulkUpsertDocuments](_augur_sdk_src_state_db_zeroxorders_.zeroxorders.md#protected-bulkupsertdocuments)
+* [bulkUpsertDocumentsInternal](_augur_sdk_src_state_db_zeroxorders_.zeroxorders.md#protected-bulkupsertdocumentsinternal)
+* [cacheOrdersAndSync](_augur_sdk_src_state_db_zeroxorders_.zeroxorders.md#cacheordersandsync)
+* [clear](_augur_sdk_src_state_db_zeroxorders_.zeroxorders.md#clear)
 * [clearDB](_augur_sdk_src_state_db_zeroxorders_.zeroxorders.md#cleardb)
-* [clearDBAndCacheOrders](_augur_sdk_src_state_db_zeroxorders_.zeroxorders.md#cleardbandcacheorders)
+* [clearInternal](_augur_sdk_src_state_db_zeroxorders_.zeroxorders.md#protected-clearinternal)
 * [delete](_augur_sdk_src_state_db_zeroxorders_.zeroxorders.md#delete)
 * [find](_augur_sdk_src_state_db_zeroxorders_.zeroxorders.md#find)
 * [getDocument](_augur_sdk_src_state_db_zeroxorders_.zeroxorders.md#protected-getdocument)
@@ -56,8 +61,7 @@ Stores 0x orders
 * [validateOrder](_augur_sdk_src_state_db_zeroxorders_.zeroxorders.md#validateorder)
 * [validateStoredOrder](_augur_sdk_src_state_db_zeroxorders_.zeroxorders.md#validatestoredorder)
 * [create](_augur_sdk_src_state_db_zeroxorders_.zeroxorders.md#static-create)
-* [parseAssetData](_augur_sdk_src_state_db_zeroxorders_.zeroxorders.md#static-parseassetdata)
-* [parseTradeAssetData](_augur_sdk_src_state_db_zeroxorders_.zeroxorders.md#static-parsetradeassetdata)
+* [setConcurrency](_augur_sdk_src_state_db_zeroxorders_.zeroxorders.md#static-setconcurrency)
 
 ## Constructors
 
@@ -67,7 +71,7 @@ Stores 0x orders
 
 *Overrides [AbstractTable](_augur_sdk_src_state_db_abstracttable_.abstracttable.md).[constructor](_augur_sdk_src_state_db_abstracttable_.abstracttable.md#protected-constructor)*
 
-*Defined in [packages/augur-sdk/src/state/db/ZeroXOrders.ts:111](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/db/ZeroXOrders.ts#L111)*
+*Defined in [packages/augur-sdk/src/state/db/ZeroXOrders.ts:72](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/db/ZeroXOrders.ts#L72)*
 
 **Parameters:**
 
@@ -85,25 +89,25 @@ Name | Type |
 
 • **augur**: *[Augur](_augur_sdk_src_augur_.augur.md)*
 
-*Defined in [packages/augur-sdk/src/state/db/ZeroXOrders.ts:106](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/db/ZeroXOrders.ts#L106)*
+*Defined in [packages/augur-sdk/src/state/db/ZeroXOrders.ts:67](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/db/ZeroXOrders.ts#L67)*
 
 ___
 
-###  cashAssetData
+### `Readonly` cashAssetData
 
 • **cashAssetData**: *string*
 
-*Defined in [packages/augur-sdk/src/state/db/ZeroXOrders.ts:108](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/db/ZeroXOrders.ts#L108)*
+*Defined in [packages/augur-sdk/src/state/db/ZeroXOrders.ts:69](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/db/ZeroXOrders.ts#L69)*
 
 ___
 
-###  dbName
+### `Readonly` dbName
 
 • **dbName**: *string*
 
-*Inherited from [AbstractTable](_augur_sdk_src_state_db_abstracttable_.abstracttable.md).[dbName](_augur_sdk_src_state_db_abstracttable_.abstracttable.md#dbname)*
+*Inherited from [AbstractTable](_augur_sdk_src_state_db_abstracttable_.abstracttable.md).[dbName](_augur_sdk_src_state_db_abstracttable_.abstracttable.md#readonly-dbname)*
 
-*Defined in [packages/augur-sdk/src/state/db/AbstractTable.ts:17](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/db/AbstractTable.ts#L17)*
+*Defined in [packages/augur-sdk/src/state/db/AbstractTable.ts:33](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/db/AbstractTable.ts#L33)*
 
 ___
 
@@ -113,7 +117,7 @@ ___
 
 *Inherited from [AbstractTable](_augur_sdk_src_state_db_abstracttable_.abstracttable.md).[idFields](_augur_sdk_src_state_db_abstracttable_.abstracttable.md#protected-idfields)*
 
-*Defined in [packages/augur-sdk/src/state/db/AbstractTable.ts:18](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/db/AbstractTable.ts#L18)*
+*Defined in [packages/augur-sdk/src/state/db/AbstractTable.ts:34](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/db/AbstractTable.ts#L34)*
 
 ___
 
@@ -123,7 +127,7 @@ ___
 
 *Inherited from [AbstractTable](_augur_sdk_src_state_db_abstracttable_.abstracttable.md).[networkId](_augur_sdk_src_state_db_abstracttable_.abstracttable.md#protected-networkid)*
 
-*Defined in [packages/augur-sdk/src/state/db/AbstractTable.ts:16](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/db/AbstractTable.ts#L16)*
+*Defined in [packages/augur-sdk/src/state/db/AbstractTable.ts:32](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/db/AbstractTable.ts#L32)*
 
 ___
 
@@ -131,15 +135,15 @@ ___
 
 • **pastOrders**: *Dictionary‹[StoredOrder](../interfaces/_augur_sdk_src_state_db_zeroxorders_.storedorder.md)›*
 
-*Defined in [packages/augur-sdk/src/state/db/ZeroXOrders.ts:111](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/db/ZeroXOrders.ts#L111)*
+*Defined in [packages/augur-sdk/src/state/db/ZeroXOrders.ts:72](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/db/ZeroXOrders.ts#L72)*
 
 ___
 
-###  shareAssetData
+### `Readonly` shareAssetData
 
 • **shareAssetData**: *string*
 
-*Defined in [packages/augur-sdk/src/state/db/ZeroXOrders.ts:109](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/db/ZeroXOrders.ts#L109)*
+*Defined in [packages/augur-sdk/src/state/db/ZeroXOrders.ts:70](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/db/ZeroXOrders.ts#L70)*
 
 ___
 
@@ -147,7 +151,7 @@ ___
 
 • **stateDB**: *[DB](_augur_sdk_src_state_db_db_.db.md)*
 
-*Defined in [packages/augur-sdk/src/state/db/ZeroXOrders.ts:105](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/db/ZeroXOrders.ts#L105)*
+*Defined in [packages/augur-sdk/src/state/db/ZeroXOrders.ts:66](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/db/ZeroXOrders.ts#L66)*
 
 ___
 
@@ -155,7 +159,7 @@ ___
 
 • **syncStatus**: *[SyncStatus](_augur_sdk_src_state_db_syncstatus_.syncstatus.md)*
 
-*Defined in [packages/augur-sdk/src/state/db/ZeroXOrders.ts:104](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/db/ZeroXOrders.ts#L104)*
+*Defined in [packages/augur-sdk/src/state/db/ZeroXOrders.ts:65](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/db/ZeroXOrders.ts#L65)*
 
 ___
 
@@ -165,7 +169,7 @@ ___
 
 *Inherited from [AbstractTable](_augur_sdk_src_state_db_abstracttable_.abstracttable.md).[syncing](_augur_sdk_src_state_db_abstracttable_.abstracttable.md#protected-syncing)*
 
-*Defined in [packages/augur-sdk/src/state/db/AbstractTable.ts:19](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/db/AbstractTable.ts#L19)*
+*Defined in [packages/augur-sdk/src/state/db/AbstractTable.ts:35](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/db/AbstractTable.ts#L35)*
 
 ___
 
@@ -175,23 +179,23 @@ ___
 
 *Inherited from [AbstractTable](_augur_sdk_src_state_db_abstracttable_.abstracttable.md).[table](_augur_sdk_src_state_db_abstracttable_.abstracttable.md#table)*
 
-*Defined in [packages/augur-sdk/src/state/db/AbstractTable.ts:15](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/db/AbstractTable.ts#L15)*
+*Defined in [packages/augur-sdk/src/state/db/AbstractTable.ts:31](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/db/AbstractTable.ts#L31)*
 
 ___
 
-###  takerAssetData
+### `Readonly` takerAssetData
 
 • **takerAssetData**: *string*
 
-*Defined in [packages/augur-sdk/src/state/db/ZeroXOrders.ts:110](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/db/ZeroXOrders.ts#L110)*
+*Defined in [packages/augur-sdk/src/state/db/ZeroXOrders.ts:71](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/db/ZeroXOrders.ts#L71)*
 
 ___
 
-###  tradeTokenAddress
+### `Readonly` tradeTokenAddress
 
 • **tradeTokenAddress**: *string*
 
-*Defined in [packages/augur-sdk/src/state/db/ZeroXOrders.ts:107](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/db/ZeroXOrders.ts#L107)*
+*Defined in [packages/augur-sdk/src/state/db/ZeroXOrders.ts:68](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/db/ZeroXOrders.ts#L68)*
 
 ## Methods
 
@@ -201,7 +205,7 @@ ___
 
 *Inherited from [AbstractTable](_augur_sdk_src_state_db_abstracttable_.abstracttable.md).[allDocs](_augur_sdk_src_state_db_abstracttable_.abstracttable.md#alldocs)*
 
-*Defined in [packages/augur-sdk/src/state/db/AbstractTable.ts:35](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/db/AbstractTable.ts#L35)*
+*Defined in [packages/augur-sdk/src/state/db/AbstractTable.ts:85](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/db/AbstractTable.ts#L85)*
 
 **Returns:** *Promise‹any[]›*
 
@@ -213,7 +217,25 @@ ___
 
 *Inherited from [AbstractTable](_augur_sdk_src_state_db_abstracttable_.abstracttable.md).[bulkAddDocuments](_augur_sdk_src_state_db_abstracttable_.abstracttable.md#protected-bulkadddocuments)*
 
-*Defined in [packages/augur-sdk/src/state/db/AbstractTable.ts:56](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/db/AbstractTable.ts#L56)*
+*Defined in [packages/augur-sdk/src/state/db/AbstractTable.ts:131](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/db/AbstractTable.ts#L131)*
+
+**Parameters:**
+
+Name | Type |
+------ | ------ |
+`documents` | [BaseDocument](../interfaces/_augur_sdk_src_state_db_abstracttable_.basedocument.md)[] |
+
+**Returns:** *Promise‹void›*
+
+___
+
+### `Protected` bulkAddDocumentsInternal
+
+▸ **bulkAddDocumentsInternal**(`documents`: [BaseDocument](../interfaces/_augur_sdk_src_state_db_abstracttable_.basedocument.md)[]): *Promise‹void›*
+
+*Inherited from [AbstractTable](_augur_sdk_src_state_db_abstracttable_.abstracttable.md).[bulkAddDocumentsInternal](_augur_sdk_src_state_db_abstracttable_.abstracttable.md#protected-bulkadddocumentsinternal)*
+
+*Defined in [packages/augur-sdk/src/state/db/AbstractTable.ts:149](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/db/AbstractTable.ts#L149)*
 
 **Parameters:**
 
@@ -231,7 +253,26 @@ ___
 
 *Inherited from [AbstractTable](_augur_sdk_src_state_db_abstracttable_.abstracttable.md).[bulkPutDocuments](_augur_sdk_src_state_db_abstracttable_.abstracttable.md#protected-bulkputdocuments)*
 
-*Defined in [packages/augur-sdk/src/state/db/AbstractTable.ts:63](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/db/AbstractTable.ts#L63)*
+*Defined in [packages/augur-sdk/src/state/db/AbstractTable.ts:135](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/db/AbstractTable.ts#L135)*
+
+**Parameters:**
+
+Name | Type |
+------ | ------ |
+`documents` | [BaseDocument](../interfaces/_augur_sdk_src_state_db_abstracttable_.basedocument.md)[] |
+`documentIds?` | any[] |
+
+**Returns:** *Promise‹void›*
+
+___
+
+### `Protected` bulkPutDocumentsInternal
+
+▸ **bulkPutDocumentsInternal**(`documents`: [BaseDocument](../interfaces/_augur_sdk_src_state_db_abstracttable_.basedocument.md)[], `documentIds?`: any[]): *Promise‹void›*
+
+*Inherited from [AbstractTable](_augur_sdk_src_state_db_abstracttable_.abstracttable.md).[bulkPutDocumentsInternal](_augur_sdk_src_state_db_abstracttable_.abstracttable.md#protected-bulkputdocumentsinternal)*
+
+*Defined in [packages/augur-sdk/src/state/db/AbstractTable.ts:163](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/db/AbstractTable.ts#L163)*
 
 **Parameters:**
 
@@ -250,7 +291,7 @@ ___
 
 *Inherited from [AbstractTable](_augur_sdk_src_state_db_abstracttable_.abstracttable.md).[bulkUpsertDocuments](_augur_sdk_src_state_db_abstracttable_.abstracttable.md#protected-bulkupsertdocuments)*
 
-*Defined in [packages/augur-sdk/src/state/db/AbstractTable.ts:70](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/db/AbstractTable.ts#L70)*
+*Defined in [packages/augur-sdk/src/state/db/AbstractTable.ts:139](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/db/AbstractTable.ts#L139)*
 
 **Parameters:**
 
@@ -262,23 +303,65 @@ Name | Type |
 
 ___
 
+### `Protected` bulkUpsertDocumentsInternal
+
+▸ **bulkUpsertDocumentsInternal**(`documents`: [BaseDocument](../interfaces/_augur_sdk_src_state_db_abstracttable_.basedocument.md)[]): *Promise‹void›*
+
+*Inherited from [AbstractTable](_augur_sdk_src_state_db_abstracttable_.abstracttable.md).[bulkUpsertDocumentsInternal](_augur_sdk_src_state_db_abstracttable_.abstracttable.md#protected-bulkupsertdocumentsinternal)*
+
+*Defined in [packages/augur-sdk/src/state/db/AbstractTable.ts:178](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/db/AbstractTable.ts#L178)*
+
+**Parameters:**
+
+Name | Type |
+------ | ------ |
+`documents` | [BaseDocument](../interfaces/_augur_sdk_src_state_db_abstracttable_.basedocument.md)[] |
+
+**Returns:** *Promise‹void›*
+
+___
+
+###  cacheOrdersAndSync
+
+▸ **cacheOrdersAndSync**(): *Promise‹void›*
+
+*Defined in [packages/augur-sdk/src/state/db/ZeroXOrders.ts:104](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/db/ZeroXOrders.ts#L104)*
+
+**Returns:** *Promise‹void›*
+
+___
+
+###  clear
+
+▸ **clear**(): *Promise‹void›*
+
+*Overrides [AbstractTable](_augur_sdk_src_state_db_abstracttable_.abstracttable.md).[clear](_augur_sdk_src_state_db_abstracttable_.abstracttable.md#clear)*
+
+*Defined in [packages/augur-sdk/src/state/db/ZeroXOrders.ts:122](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/db/ZeroXOrders.ts#L122)*
+
+**Returns:** *Promise‹void›*
+
+___
+
 ###  clearDB
 
 ▸ **clearDB**(): *Promise‹void›*
 
 *Inherited from [AbstractTable](_augur_sdk_src_state_db_abstracttable_.abstracttable.md).[clearDB](_augur_sdk_src_state_db_abstracttable_.abstracttable.md#cleardb)*
 
-*Defined in [packages/augur-sdk/src/state/db/AbstractTable.ts:30](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/db/AbstractTable.ts#L30)*
+*Defined in [packages/augur-sdk/src/state/db/AbstractTable.ts:78](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/db/AbstractTable.ts#L78)*
 
 **Returns:** *Promise‹void›*
 
 ___
 
-###  clearDBAndCacheOrders
+### `Protected` clearInternal
 
-▸ **clearDBAndCacheOrders**(): *Promise‹void›*
+▸ **clearInternal**(): *Promise‹void›*
 
-*Defined in [packages/augur-sdk/src/state/db/ZeroXOrders.ts:150](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/db/ZeroXOrders.ts#L150)*
+*Inherited from [AbstractTable](_augur_sdk_src_state_db_abstracttable_.abstracttable.md).[clearInternal](_augur_sdk_src_state_db_abstracttable_.abstracttable.md#protected-clearinternal)*
+
+*Defined in [packages/augur-sdk/src/state/db/AbstractTable.ts:143](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/db/AbstractTable.ts#L143)*
 
 **Returns:** *Promise‹void›*
 
@@ -286,11 +369,13 @@ ___
 
 ###  delete
 
-▸ **delete**(): *void*
+▸ **delete**(): *Promise‹void›*
 
-*Defined in [packages/augur-sdk/src/state/db/ZeroXOrders.ts:163](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/db/ZeroXOrders.ts#L163)*
+*Overrides [AbstractTable](_augur_sdk_src_state_db_abstracttable_.abstracttable.md).[delete](_augur_sdk_src_state_db_abstracttable_.abstracttable.md#delete)*
 
-**Returns:** *void*
+*Defined in [packages/augur-sdk/src/state/db/ZeroXOrders.ts:116](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/db/ZeroXOrders.ts#L116)*
+
+**Returns:** *Promise‹void›*
 
 ___
 
@@ -300,7 +385,7 @@ ___
 
 *Inherited from [AbstractTable](_augur_sdk_src_state_db_abstracttable_.abstracttable.md).[find](_augur_sdk_src_state_db_abstracttable_.abstracttable.md#find)*
 
-*Defined in [packages/augur-sdk/src/state/db/AbstractTable.ts:94](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/db/AbstractTable.ts#L94)*
+*Defined in [packages/augur-sdk/src/state/db/AbstractTable.ts:204](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/db/AbstractTable.ts#L204)*
 
 **Parameters:**
 
@@ -314,11 +399,11 @@ ___
 
 ### `Protected` getDocument
 
-▸ **getDocument**<**Document**>(`id`: string): *Promise‹Document | undefined›*
+▸ **getDocument**‹**Document**›(`id`: string): *Promise‹Document | undefined›*
 
 *Inherited from [AbstractTable](_augur_sdk_src_state_db_abstracttable_.abstracttable.md).[getDocument](_augur_sdk_src_state_db_abstracttable_.abstracttable.md#protected-getdocument)*
 
-*Defined in [packages/augur-sdk/src/state/db/AbstractTable.ts:52](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/db/AbstractTable.ts#L52)*
+*Defined in [packages/augur-sdk/src/state/db/AbstractTable.ts:115](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/db/AbstractTable.ts#L115)*
 
 **Type parameters:**
 
@@ -340,7 +425,7 @@ ___
 
 *Inherited from [AbstractTable](_augur_sdk_src_state_db_abstracttable_.abstracttable.md).[getDocumentCount](_augur_sdk_src_state_db_abstracttable_.abstracttable.md#getdocumentcount)*
 
-*Defined in [packages/augur-sdk/src/state/db/AbstractTable.ts:48](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/db/AbstractTable.ts#L48)*
+*Defined in [packages/augur-sdk/src/state/db/AbstractTable.ts:108](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/db/AbstractTable.ts#L108)*
 
 **Returns:** *Promise‹number›*
 
@@ -352,7 +437,7 @@ ___
 
 *Inherited from [AbstractTable](_augur_sdk_src_state_db_abstracttable_.abstracttable.md).[getIDValue](_augur_sdk_src_state_db_abstracttable_.abstracttable.md#protected-getidvalue)*
 
-*Defined in [packages/augur-sdk/src/state/db/AbstractTable.ts:98](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/db/AbstractTable.ts#L98)*
+*Defined in [packages/augur-sdk/src/state/db/AbstractTable.ts:208](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/db/AbstractTable.ts#L208)*
 
 **Parameters:**
 
@@ -368,7 +453,7 @@ ___
 
 ▸ **handleOrderEvent**(`orderEvents`: OrderEvent[]): *Promise‹void›*
 
-*Defined in [packages/augur-sdk/src/state/db/ZeroXOrders.ts:168](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/db/ZeroXOrders.ts#L168)*
+*Defined in [packages/augur-sdk/src/state/db/ZeroXOrders.ts:126](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/db/ZeroXOrders.ts#L126)*
 
 **Parameters:**
 
@@ -384,7 +469,7 @@ ___
 
 ▸ **isValidMultiAssetFormat**(`multiAssetData`: any): *boolean*
 
-*Defined in [packages/augur-sdk/src/state/db/ZeroXOrders.ts:321](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/db/ZeroXOrders.ts#L321)*
+*Defined in [packages/augur-sdk/src/state/db/ZeroXOrders.ts:312](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/db/ZeroXOrders.ts#L312)*
 
 **Parameters:**
 
@@ -398,9 +483,9 @@ ___
 
 ###  parseAssetDataAndValidate
 
-▸ **parseAssetDataAndValidate**(`assetData`: string): *[OrderData](../interfaces/_augur_sdk_src_state_db_zeroxorders_.orderdata.md)*
+▸ **parseAssetDataAndValidate**(`assetData`: string): *OrderData*
 
-*Defined in [packages/augur-sdk/src/state/db/ZeroXOrders.ts:297](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/db/ZeroXOrders.ts#L297)*
+*Defined in [packages/augur-sdk/src/state/db/ZeroXOrders.ts:302](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/db/ZeroXOrders.ts#L302)*
 
 **Parameters:**
 
@@ -408,7 +493,7 @@ Name | Type |
 ------ | ------ |
 `assetData` | string |
 
-**Returns:** *[OrderData](../interfaces/_augur_sdk_src_state_db_zeroxorders_.orderdata.md)*
+**Returns:** *OrderData*
 
 ___
 
@@ -416,7 +501,7 @@ ___
 
 ▸ **processOrder**(`order`: OrderInfo): *[StoredOrder](../interfaces/_augur_sdk_src_state_db_zeroxorders_.storedorder.md)*
 
-*Defined in [packages/augur-sdk/src/state/db/ZeroXOrders.ts:265](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/db/ZeroXOrders.ts#L265)*
+*Defined in [packages/augur-sdk/src/state/db/ZeroXOrders.ts:270](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/db/ZeroXOrders.ts#L270)*
 
 **Parameters:**
 
@@ -434,7 +519,7 @@ ___
 
 *Overrides [AbstractTable](_augur_sdk_src_state_db_abstracttable_.abstracttable.md).[saveDocuments](_augur_sdk_src_state_db_abstracttable_.abstracttable.md#protected-savedocuments)*
 
-*Defined in [packages/augur-sdk/src/state/db/ZeroXOrders.ts:141](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/db/ZeroXOrders.ts#L141)*
+*Defined in [packages/augur-sdk/src/state/db/ZeroXOrders.ts:95](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/db/ZeroXOrders.ts#L95)*
 
 **Parameters:**
 
@@ -450,7 +535,7 @@ ___
 
 ▸ **subscribeToOrderEvents**(): *void*
 
-*Defined in [packages/augur-sdk/src/state/db/ZeroXOrders.ts:156](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/db/ZeroXOrders.ts#L156)*
+*Defined in [packages/augur-sdk/src/state/db/ZeroXOrders.ts:109](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/db/ZeroXOrders.ts#L109)*
 
 **Returns:** *void*
 
@@ -460,7 +545,7 @@ ___
 
 ▸ **sync**(): *Promise‹void›*
 
-*Defined in [packages/augur-sdk/src/state/db/ZeroXOrders.ts:209](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/db/ZeroXOrders.ts#L209)*
+*Defined in [packages/augur-sdk/src/state/db/ZeroXOrders.ts:172](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/db/ZeroXOrders.ts#L172)*
 
 **Returns:** *Promise‹void›*
 
@@ -472,7 +557,7 @@ ___
 
 *Inherited from [AbstractTable](_augur_sdk_src_state_db_abstracttable_.abstracttable.md).[upsertDocument](_augur_sdk_src_state_db_abstracttable_.abstracttable.md#protected-upsertdocument)*
 
-*Defined in [packages/augur-sdk/src/state/db/AbstractTable.ts:85](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/db/AbstractTable.ts#L85)*
+*Defined in [packages/augur-sdk/src/state/db/AbstractTable.ts:195](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/db/AbstractTable.ts#L195)*
 
 **Parameters:**
 
@@ -489,7 +574,7 @@ ___
 
 ▸ **validateOrder**(`order`: OrderInfo): *boolean*
 
-*Defined in [packages/augur-sdk/src/state/db/ZeroXOrders.ts:238](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/db/ZeroXOrders.ts#L238)*
+*Defined in [packages/augur-sdk/src/state/db/ZeroXOrders.ts:242](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/db/ZeroXOrders.ts#L242)*
 
 **Parameters:**
 
@@ -503,16 +588,16 @@ ___
 
 ###  validateStoredOrder
 
-▸ **validateStoredOrder**(`storedOrder`: [StoredOrder](../interfaces/_augur_sdk_src_state_db_zeroxorders_.storedorder.md), `markets`: Dictionary‹[MarketData](../interfaces/_augur_sdk_src_state_logs_types_.marketdata.md)›): *boolean*
+▸ **validateStoredOrder**(`storedOrder`: [StoredOrder](../interfaces/_augur_sdk_src_state_db_zeroxorders_.storedorder.md), `markets`: Dictionary‹MarketData›): *boolean*
 
-*Defined in [packages/augur-sdk/src/state/db/ZeroXOrders.ts:245](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/db/ZeroXOrders.ts#L245)*
+*Defined in [packages/augur-sdk/src/state/db/ZeroXOrders.ts:249](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/db/ZeroXOrders.ts#L249)*
 
 **Parameters:**
 
 Name | Type |
 ------ | ------ |
 `storedOrder` | [StoredOrder](../interfaces/_augur_sdk_src_state_db_zeroxorders_.storedorder.md) |
-`markets` | Dictionary‹[MarketData](../interfaces/_augur_sdk_src_state_logs_types_.marketdata.md)› |
+`markets` | Dictionary‹MarketData› |
 
 **Returns:** *boolean*
 
@@ -522,7 +607,7 @@ ___
 
 ▸ **create**(`db`: [DB](_augur_sdk_src_state_db_db_.db.md), `networkId`: number, `augur`: [Augur](_augur_sdk_src_augur_.augur.md)): *[ZeroXOrders](_augur_sdk_src_state_db_zeroxorders_.zeroxorders.md)*
 
-*Defined in [packages/augur-sdk/src/state/db/ZeroXOrders.ts:145](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/db/ZeroXOrders.ts#L145)*
+*Defined in [packages/augur-sdk/src/state/db/ZeroXOrders.ts:99](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/db/ZeroXOrders.ts#L99)*
 
 **Parameters:**
 
@@ -536,32 +621,18 @@ Name | Type |
 
 ___
 
-### `Static` parseAssetData
+### `Static` setConcurrency
 
-▸ **parseAssetData**(`assetData`: string): *[ParsedAssetDataResults](../interfaces/_augur_sdk_src_state_db_zeroxorders_.parsedassetdataresults.md)*
+▸ **setConcurrency**(`limit`: number): *AsyncQueue‹[WriteQueueTask](../interfaces/_augur_sdk_src_state_db_abstracttable_.writequeuetask.md)›*
 
-*Defined in [packages/augur-sdk/src/state/db/ZeroXOrders.ts:307](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/db/ZeroXOrders.ts#L307)*
+*Inherited from [AbstractTable](_augur_sdk_src_state_db_abstracttable_.abstracttable.md).[setConcurrency](_augur_sdk_src_state_db_abstracttable_.abstracttable.md#static-setconcurrency)*
 
-**Parameters:**
-
-Name | Type |
------- | ------ |
-`assetData` | string |
-
-**Returns:** *[ParsedAssetDataResults](../interfaces/_augur_sdk_src_state_db_zeroxorders_.parsedassetdataresults.md)*
-
-___
-
-### `Static` parseTradeAssetData
-
-▸ **parseTradeAssetData**(`assetData`: string): *[OrderData](../interfaces/_augur_sdk_src_state_db_zeroxorders_.orderdata.md)*
-
-*Defined in [packages/augur-sdk/src/state/db/ZeroXOrders.ts:337](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/db/ZeroXOrders.ts#L337)*
+*Defined in [packages/augur-sdk/src/state/db/AbstractTable.ts:37](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/db/AbstractTable.ts#L37)*
 
 **Parameters:**
 
-Name | Type |
------- | ------ |
-`assetData` | string |
+Name | Type | Default |
+------ | ------ | ------ |
+`limit` | number | DEFAULT_CONCURRENCY |
 
-**Returns:** *[OrderData](../interfaces/_augur_sdk_src_state_db_zeroxorders_.orderdata.md)*
+**Returns:** *AsyncQueue‹[WriteQueueTask](../interfaces/_augur_sdk_src_state_db_abstracttable_.writequeuetask.md)›*

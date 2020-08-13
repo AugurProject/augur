@@ -8,6 +8,10 @@
 
 * [Router](../classes/_augur_sdk_src_state_getter_router_.router.md)
 
+### Interfaces
+
+* [RequestQueueTask](../interfaces/_augur_sdk_src_state_getter_router_.requestqueuetask.md)
+
 ### Type aliases
 
 * [GetterFunction](_augur_sdk_src_state_getter_router_.md#getterfunction)
@@ -22,7 +26,7 @@
 
 Ƭ **GetterFunction**: *function*
 
-*Defined in [packages/augur-sdk/src/state/getter/Router.ts:34](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/getter/Router.ts#L34)*
+*Defined in [packages/augur-sdk/src/state/getter/Router.ts:56](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/getter/Router.ts#L56)*
 
 #### Type declaration:
 
@@ -41,7 +45,7 @@ Name | Type |
 
 ▸ **Getter**(`alternateInterface?`: string): *(Anonymous function)*
 
-*Defined in [packages/augur-sdk/src/state/getter/Router.ts:10](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/getter/Router.ts#L10)*
+*Defined in [packages/augur-sdk/src/state/getter/Router.ts:15](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/getter/Router.ts#L15)*
 
 **Parameters:**
 

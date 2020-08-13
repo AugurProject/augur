@@ -20,7 +20,7 @@
 
 • **endBlockNumber**: *number*
 
-*Defined in [packages/augur-sdk/src/warp/WarpController.ts:93](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/warp/WarpController.ts#L93)*
+*Defined in [packages/augur-sdk/src/warp/WarpController.ts:101](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/warp/WarpController.ts#L101)*
 
 ___
 
@@ -28,7 +28,7 @@ ___
 
 • **logs**: *SerializedLog[]*
 
-*Defined in [packages/augur-sdk/src/warp/WarpController.ts:94](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/warp/WarpController.ts#L94)*
+*Defined in [packages/augur-sdk/src/warp/WarpController.ts:102](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/warp/WarpController.ts#L102)*
 
 ___
 
@@ -36,4 +36,4 @@ ___
 
 • **startBlockNumber**: *number*
 
-*Defined in [packages/augur-sdk/src/warp/WarpController.ts:92](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/warp/WarpController.ts#L92)*
+*Defined in [packages/augur-sdk/src/warp/WarpController.ts:100](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/warp/WarpController.ts#L100)*

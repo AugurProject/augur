@@ -10,26 +10,17 @@
 
 ### Properties
 
-* [frozenFundsTotal](_augur_sdk_src_state_getter_users_.usertradingpositions.md#frozenfundstotal)
 * [tradingPositions](_augur_sdk_src_state_getter_users_.usertradingpositions.md#tradingpositions)
 * [tradingPositionsPerMarket](_augur_sdk_src_state_getter_users_.usertradingpositions.md#tradingpositionspermarket)
 * [unrealizedRevenue24hChangePercent](_augur_sdk_src_state_getter_users_.usertradingpositions.md#unrealizedrevenue24hchangepercent)
 
 ## Properties
 
-###  frozenFundsTotal
-
-• **frozenFundsTotal**: *string*
-
-*Defined in [packages/augur-sdk/src/state/getter/Users.ts:163](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/getter/Users.ts#L163)*
-
-___
-
 ###  tradingPositions
 
 • **tradingPositions**: *[TradingPosition](_augur_sdk_src_state_getter_users_.tradingposition.md)[]*
 
-*Defined in [packages/augur-sdk/src/state/getter/Users.ts:158](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/getter/Users.ts#L158)*
+*Defined in [packages/augur-sdk/src/state/getter/Users.ts:186](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/getter/Users.ts#L186)*
 
 ___
 
@@ -37,7 +28,7 @@ ___
 
 • **tradingPositionsPerMarket**: *object*
 
-*Defined in [packages/augur-sdk/src/state/getter/Users.ts:159](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/getter/Users.ts#L159)*
+*Defined in [packages/augur-sdk/src/state/getter/Users.ts:187](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/getter/Users.ts#L187)*
 
 #### Type declaration:
 
@@ -49,4 +40,4 @@ ___
 
 • **unrealizedRevenue24hChangePercent**: *string*
 
-*Defined in [packages/augur-sdk/src/state/getter/Users.ts:164](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/getter/Users.ts#L164)*
+*Defined in [packages/augur-sdk/src/state/getter/Users.ts:191](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/getter/Users.ts#L191)*

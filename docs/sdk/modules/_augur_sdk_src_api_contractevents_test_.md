@@ -14,7 +14,7 @@
 
 ▸ **makeProviderMock**(`opts?`: any): *[Provider](../interfaces/_augur_sdk_src_ethereum_provider_.provider.md)*
 
-*Defined in [packages/augur-sdk/src/api/ContractEvents.test.ts:8](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/api/ContractEvents.test.ts#L8)*
+*Defined in [packages/augur-sdk/src/api/ContractEvents.test.ts:9](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/api/ContractEvents.test.ts#L9)*
 
 **Parameters:**
 

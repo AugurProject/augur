@@ -8,9 +8,9 @@
 
   ↳ [Document](_augur_sdk_src_state_db_basesyncabledb_.document.md)
 
-  ↳ [Document](_augur_sdk_src_state_db_deriveddb_.document.md)
-
   ↳ [Document](_augur_sdk_src_state_db_delayedsyncabledb_.document.md)
+
+  ↳ [Document](_augur_sdk_src_state_db_deriveddb_.document.md)
 
   ↳ [Document](_augur_sdk_src_state_db_syncabledb_.document.md)
 

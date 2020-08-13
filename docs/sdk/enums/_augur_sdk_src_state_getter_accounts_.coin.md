@@ -17,7 +17,7 @@
 
 • **ALL**: = "ALL"
 
-*Defined in [packages/augur-sdk/src/state/getter/Accounts.ts:54](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/getter/Accounts.ts#L54)*
+*Defined in [packages/augur-sdk/src/state/getter/Accounts.ts:58](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/getter/Accounts.ts#L58)*
 
 ___
 
@@ -25,7 +25,7 @@ ___
 
 • **DAI**: = "DAI"
 
-*Defined in [packages/augur-sdk/src/state/getter/Accounts.ts:57](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/getter/Accounts.ts#L57)*
+*Defined in [packages/augur-sdk/src/state/getter/Accounts.ts:61](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/getter/Accounts.ts#L61)*
 
 ___
 
@@ -33,7 +33,7 @@ ___
 
 • **ETH**: = "ETH"
 
-*Defined in [packages/augur-sdk/src/state/getter/Accounts.ts:55](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/getter/Accounts.ts#L55)*
+*Defined in [packages/augur-sdk/src/state/getter/Accounts.ts:59](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/getter/Accounts.ts#L59)*
 
 ___
 
@@ -41,4 +41,4 @@ ___
 
 • **REP**: = "REP"
 
-*Defined in [packages/augur-sdk/src/state/getter/Accounts.ts:56](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/getter/Accounts.ts#L56)*
+*Defined in [packages/augur-sdk/src/state/getter/Accounts.ts:60](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/getter/Accounts.ts#L60)*

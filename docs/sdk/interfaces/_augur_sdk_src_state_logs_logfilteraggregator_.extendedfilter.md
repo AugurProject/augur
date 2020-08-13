@@ -22,7 +22,7 @@
 
 • **address**? : *Array‹string | string[]›*
 
-*Defined in [packages/augur-sdk/src/state/logs/LogFilterAggregator.ts:16](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/logs/LogFilterAggregator.ts#L16)*
+*Defined in [packages/augur-sdk/src/state/logs/LogFilterAggregator.ts:16](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/logs/LogFilterAggregator.ts#L16)*
 
 ___
 
@@ -30,7 +30,7 @@ ___
 
 • **blockhash**? : *string*
 
-*Defined in [packages/augur-sdk/src/state/logs/LogFilterAggregator.ts:13](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/logs/LogFilterAggregator.ts#L13)*
+*Defined in [packages/augur-sdk/src/state/logs/LogFilterAggregator.ts:13](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/logs/LogFilterAggregator.ts#L13)*
 
 ___
 
@@ -38,7 +38,7 @@ ___
 
 • **fromBlock**? : *number | string*
 
-*Defined in [packages/augur-sdk/src/state/logs/LogFilterAggregator.ts:14](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/logs/LogFilterAggregator.ts#L14)*
+*Defined in [packages/augur-sdk/src/state/logs/LogFilterAggregator.ts:14](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/logs/LogFilterAggregator.ts#L14)*
 
 ___
 
@@ -46,7 +46,7 @@ ___
 
 • **toBlock**? : *number | string*
 
-*Defined in [packages/augur-sdk/src/state/logs/LogFilterAggregator.ts:15](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/logs/LogFilterAggregator.ts#L15)*
+*Defined in [packages/augur-sdk/src/state/logs/LogFilterAggregator.ts:15](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/logs/LogFilterAggregator.ts#L15)*
 
 ___
 
@@ -54,4 +54,4 @@ ___
 
 • **topics**? : *Array‹string | string[]›*
 
-*Defined in [packages/augur-sdk/src/state/logs/LogFilterAggregator.ts:17](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/logs/LogFilterAggregator.ts#L17)*
+*Defined in [packages/augur-sdk/src/state/logs/LogFilterAggregator.ts:17](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/logs/LogFilterAggregator.ts#L17)*

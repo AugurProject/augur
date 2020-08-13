@@ -20,7 +20,7 @@
 
 • **amount**: *BigNumber*
 
-*Defined in [packages/augur-sdk/src/api/ZeroX.ts:71](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/api/ZeroX.ts#L71)*
+*Defined in [packages/augur-sdk/src/api/ZeroX.ts:85](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/api/ZeroX.ts#L85)*
 
 ___
 
@@ -28,7 +28,7 @@ ___
 
 • **displayPrice**: *BigNumber*
 
-*Defined in [packages/augur-sdk/src/api/ZeroX.ts:72](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/api/ZeroX.ts#L72)*
+*Defined in [packages/augur-sdk/src/api/ZeroX.ts:86](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/api/ZeroX.ts#L86)*
 
 ___
 
@@ -36,4 +36,4 @@ ___
 
 • **owner**: *string*
 
-*Defined in [packages/augur-sdk/src/api/ZeroX.ts:73](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/api/ZeroX.ts#L73)*
+*Defined in [packages/augur-sdk/src/api/ZeroX.ts:87](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/api/ZeroX.ts#L87)*

@@ -19,7 +19,7 @@
 
 • **eventArgs**: *any[]*
 
-*Defined in [packages/augur-sdk/src/subscriptions.ts:6](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/subscriptions.ts#L6)*
+*Defined in [packages/augur-sdk/src/subscriptions.ts:6](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/subscriptions.ts#L6)*
 
 ___
 
@@ -27,4 +27,4 @@ ___
 
 • **eventName**: *string*
 
-*Defined in [packages/augur-sdk/src/subscriptions.ts:5](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/subscriptions.ts#L5)*
+*Defined in [packages/augur-sdk/src/subscriptions.ts:5](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/subscriptions.ts#L5)*

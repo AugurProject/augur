@@ -29,7 +29,7 @@
 
 \+ **new Checkpoints**(`provider`: [Provider](../interfaces/_augur_sdk_src_ethereum_provider_.provider.md)): *[Checkpoints](_augur_sdk_src_warp_checkpoints_.checkpoints.md)*
 
-*Defined in [packages/augur-sdk/src/warp/Checkpoints.ts:18](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/warp/Checkpoints.ts#L18)*
+*Defined in [packages/augur-sdk/src/warp/Checkpoints.ts:17](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/warp/Checkpoints.ts#L17)*
 
 **Parameters:**
 
@@ -45,7 +45,7 @@ Name | Type |
 
 • **provider**: *[Provider](../interfaces/_augur_sdk_src_ethereum_provider_.provider.md)*
 
-*Defined in [packages/augur-sdk/src/warp/Checkpoints.ts:19](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/warp/Checkpoints.ts#L19)*
+*Defined in [packages/augur-sdk/src/warp/Checkpoints.ts:18](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/warp/Checkpoints.ts#L18)*
 
 ## Methods
 
@@ -53,7 +53,7 @@ Name | Type |
 
 ▸ **calculateBoundary**(`timestamp`: number, `beginBlock?`: Block, `endBlock?`: Block): *Promise‹[Block, Block]›*
 
-*Defined in [packages/augur-sdk/src/warp/Checkpoints.ts:32](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/warp/Checkpoints.ts#L32)*
+*Defined in [packages/augur-sdk/src/warp/Checkpoints.ts:34](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/warp/Checkpoints.ts#L34)*
 
 **`description`** Given a timestamp
 
@@ -73,7 +73,7 @@ ___
 
 ▸ **calculateBoundaryByMarkets**(`firstMarket`: [MarketWithEndTime](../modules/_augur_sdk_src_warp_checkpoints_.md#marketwithendtime), `secondMarket`: [MarketWithEndTime](../modules/_augur_sdk_src_warp_checkpoints_.md#marketwithendtime)): *Promise‹void›*
 
-*Defined in [packages/augur-sdk/src/warp/Checkpoints.ts:21](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/warp/Checkpoints.ts#L21)*
+*Defined in [packages/augur-sdk/src/warp/Checkpoints.ts:20](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/warp/Checkpoints.ts#L20)*
 
 **Parameters:**
 
@@ -90,7 +90,7 @@ ___
 
 ▸ **compareTimestamp**(`timestamp`: number, `begin`: Block, `middle`: Block, `end`: Block): *[Block, Block]*
 
-*Defined in [packages/augur-sdk/src/warp/Checkpoints.ts:61](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/warp/Checkpoints.ts#L61)*
+*Defined in [packages/augur-sdk/src/warp/Checkpoints.ts:64](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/warp/Checkpoints.ts#L64)*
 
 **Parameters:**
 
@@ -109,7 +109,7 @@ ___
 
 ▸ **isValidBlockRangeForTimeStamp**(`timestamp`: number, `begin`: Block, `end`: Block): *boolean*
 
-*Defined in [packages/augur-sdk/src/warp/Checkpoints.ts:69](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/warp/Checkpoints.ts#L69)*
+*Defined in [packages/augur-sdk/src/warp/Checkpoints.ts:77](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/warp/Checkpoints.ts#L77)*
 
 **Parameters:**
 

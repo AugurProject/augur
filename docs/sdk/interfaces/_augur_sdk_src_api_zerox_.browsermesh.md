@@ -23,7 +23,7 @@
 
 ▸ **addOrdersAsync**(`orders`: [SignedOrder](_augur_sdk_src_api_zerox_.signedorder.md)[], `pinned?`: boolean): *Promise‹ValidationResults›*
 
-*Defined in [packages/augur-sdk/src/api/ZeroX.ts:53](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/api/ZeroX.ts#L53)*
+*Defined in [packages/augur-sdk/src/api/ZeroX.ts:66](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/api/ZeroX.ts#L66)*
 
 **Parameters:**
 
@@ -40,7 +40,7 @@ ___
 
 ▸ **getOrdersAsync**(): *Promise‹GetOrdersResponse›*
 
-*Defined in [packages/augur-sdk/src/api/ZeroX.ts:57](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/api/ZeroX.ts#L57)*
+*Defined in [packages/augur-sdk/src/api/ZeroX.ts:70](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/api/ZeroX.ts#L70)*
 
 **Returns:** *Promise‹GetOrdersResponse›*
 
@@ -50,7 +50,7 @@ ___
 
 ▸ **getStatsAsync**(): *Promise‹Stats›*
 
-*Defined in [packages/augur-sdk/src/api/ZeroX.ts:58](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/api/ZeroX.ts#L58)*
+*Defined in [packages/augur-sdk/src/api/ZeroX.ts:71](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/api/ZeroX.ts#L71)*
 
 **Returns:** *Promise‹Stats›*
 
@@ -60,7 +60,7 @@ ___
 
 ▸ **onError**(`handler`: function): *void*
 
-*Defined in [packages/augur-sdk/src/api/ZeroX.ts:51](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/api/ZeroX.ts#L51)*
+*Defined in [packages/augur-sdk/src/api/ZeroX.ts:64](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/api/ZeroX.ts#L64)*
 
 **Parameters:**
 
@@ -82,7 +82,7 @@ ___
 
 ▸ **onOrderEvents**(`handler`: function): *void*
 
-*Defined in [packages/augur-sdk/src/api/ZeroX.ts:52](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/api/ZeroX.ts#L52)*
+*Defined in [packages/augur-sdk/src/api/ZeroX.ts:65](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/api/ZeroX.ts#L65)*
 
 **Parameters:**
 
@@ -104,6 +104,6 @@ ___
 
 ▸ **startAsync**(): *Promise‹void›*
 
-*Defined in [packages/augur-sdk/src/api/ZeroX.ts:50](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/api/ZeroX.ts#L50)*
+*Defined in [packages/augur-sdk/src/api/ZeroX.ts:63](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/api/ZeroX.ts#L63)*
 
 **Returns:** *Promise‹void›*

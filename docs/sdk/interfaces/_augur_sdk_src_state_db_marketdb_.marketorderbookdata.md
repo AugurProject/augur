@@ -22,7 +22,7 @@
 
 • **_id**: *string*
 
-*Defined in [packages/augur-sdk/src/state/db/MarketDB.ts:29](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/db/MarketDB.ts#L29)*
+*Defined in [packages/augur-sdk/src/state/db/MarketDB.ts:32](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/db/MarketDB.ts#L32)*
 
 ___
 
@@ -30,7 +30,7 @@ ___
 
 • **hasRecentlyDepletedLiquidity**: *boolean*
 
-*Defined in [packages/augur-sdk/src/state/db/MarketDB.ts:32](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/db/MarketDB.ts#L32)*
+*Defined in [packages/augur-sdk/src/state/db/MarketDB.ts:35](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/db/MarketDB.ts#L35)*
 
 ___
 
@@ -38,7 +38,7 @@ ___
 
 • **invalidFilter**: *number*
 
-*Defined in [packages/augur-sdk/src/state/db/MarketDB.ts:30](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/db/MarketDB.ts#L30)*
+*Defined in [packages/augur-sdk/src/state/db/MarketDB.ts:33](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/db/MarketDB.ts#L33)*
 
 ___
 
@@ -46,7 +46,7 @@ ___
 
 • **lastPassingLiquidityCheck**: *number*
 
-*Defined in [packages/augur-sdk/src/state/db/MarketDB.ts:33](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/db/MarketDB.ts#L33)*
+*Defined in [packages/augur-sdk/src/state/db/MarketDB.ts:36](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/db/MarketDB.ts#L36)*
 
 ___
 
@@ -54,4 +54,4 @@ ___
 
 • **liquidity**: *[LiquidityResults](_augur_sdk_src_state_db_marketdb_.liquidityresults.md)*
 
-*Defined in [packages/augur-sdk/src/state/db/MarketDB.ts:31](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/db/MarketDB.ts#L31)*
+*Defined in [packages/augur-sdk/src/state/db/MarketDB.ts:34](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/db/MarketDB.ts#L34)*

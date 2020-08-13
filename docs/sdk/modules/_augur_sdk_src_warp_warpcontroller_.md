@@ -24,6 +24,7 @@
 
 ### Variables
 
+* [FILE_FETCH_TIMEOUT](_augur_sdk_src_warp_warpcontroller_.md#const-file_fetch_timeout)
 * [WARPSYNC_VERSION](_augur_sdk_src_warp_warpcontroller_.md#const-warpsync_version)
 * [databasesToSync](_augur_sdk_src_warp_warpcontroller_.md#const-databasestosync)
 
@@ -31,9 +32,9 @@
 
 ###  AllDBNames
 
-Ƭ **AllDBNames**: *[NameOfType](_augur_sdk_src_warp_warpcontroller_.md#nameoftype)‹[DB](../classes/_augur_sdk_src_state_db_db_.db.md), Table‹[Log](../interfaces/_augur_sdk_src_state_logs_types_.log.md), unknown››*
+Ƭ **AllDBNames**: *[NameOfType](_augur_sdk_src_warp_warpcontroller_.md#nameoftype)‹[DB](../classes/_augur_sdk_src_state_db_db_.db.md), Table‹Log, unknown››*
 
-*Defined in [packages/augur-sdk/src/warp/WarpController.ts:24](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/warp/WarpController.ts#L24)*
+*Defined in [packages/augur-sdk/src/warp/WarpController.ts:32](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/warp/WarpController.ts#L32)*
 
 ___
 
@@ -41,7 +42,7 @@ ___
 
 Ƭ **AllDbs**: *object*
 
-*Defined in [packages/augur-sdk/src/warp/WarpController.ts:25](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/warp/WarpController.ts#L25)*
+*Defined in [packages/augur-sdk/src/warp/WarpController.ts:33](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/warp/WarpController.ts#L33)*
 
 #### Type declaration:
 
@@ -51,7 +52,7 @@ ___
 
 Ƭ **Db**: *[DbExpander](_augur_sdk_src_warp_warpcontroller_.md#dbexpander)‹keyof AllDbs, keyof AllDbs›*
 
-*Defined in [packages/augur-sdk/src/warp/WarpController.ts:48](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/warp/WarpController.ts#L48)*
+*Defined in [packages/augur-sdk/src/warp/WarpController.ts:56](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/warp/WarpController.ts#L56)*
 
 ___
 
@@ -59,7 +60,7 @@ ___
 
 Ƭ **DbExpander**: *P extends keyof AllDbs ? object : never*
 
-*Defined in [packages/augur-sdk/src/warp/WarpController.ts:31](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/warp/WarpController.ts#L31)*
+*Defined in [packages/augur-sdk/src/warp/WarpController.ts:39](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/warp/WarpController.ts#L39)*
 
 ___
 
@@ -67,7 +68,7 @@ ___
 
 Ƭ **NameOfType**: *object[keyof T]*
 
-*Defined in [packages/augur-sdk/src/warp/WarpController.ts:20](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/warp/WarpController.ts#L20)*
+*Defined in [packages/augur-sdk/src/warp/WarpController.ts:28](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/warp/WarpController.ts#L28)*
 
 ___
 
@@ -75,15 +76,23 @@ ___
 
 Ƭ **RollupDescription**: *Readonly‹[Db](_augur_sdk_src_warp_warpcontroller_.md#db)[]›*
 
-*Defined in [packages/augur-sdk/src/warp/WarpController.ts:49](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/warp/WarpController.ts#L49)*
+*Defined in [packages/augur-sdk/src/warp/WarpController.ts:57](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/warp/WarpController.ts#L57)*
 
 ## Variables
+
+### `Const` FILE_FETCH_TIMEOUT
+
+• **FILE_FETCH_TIMEOUT**: *10000* = 10000
+
+*Defined in [packages/augur-sdk/src/warp/WarpController.ts:26](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/warp/WarpController.ts#L26)*
+
+___
 
 ### `Const` WARPSYNC_VERSION
 
 • **WARPSYNC_VERSION**: *"1"* = "1"
 
-*Defined in [packages/augur-sdk/src/warp/WarpController.ts:18](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/warp/WarpController.ts#L18)*
+*Defined in [packages/augur-sdk/src/warp/WarpController.ts:25](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/warp/WarpController.ts#L25)*
 
 ___
 
@@ -123,4 +132,4 @@ ___
   { databaseName: 'ShareTokenBalanceChanged' },
 ]
 
-*Defined in [packages/augur-sdk/src/warp/WarpController.ts:57](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/warp/WarpController.ts#L57)*
+*Defined in [packages/augur-sdk/src/warp/WarpController.ts:65](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/warp/WarpController.ts#L65)*

@@ -21,7 +21,7 @@
 
 • **left**: *BigNumber*
 
-*Defined in [packages/augur-sdk/src/api/Liquidity.ts:33](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/api/Liquidity.ts#L33)*
+*Defined in [packages/augur-sdk/src/api/Liquidity.ts:35](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/api/Liquidity.ts#L35)*
 
 ___
 
@@ -29,4 +29,4 @@ ___
 
 • **right**: *BigNumber*
 
-*Defined in [packages/augur-sdk/src/api/Liquidity.ts:34](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/api/Liquidity.ts#L34)*
+*Defined in [packages/augur-sdk/src/api/Liquidity.ts:36](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/api/Liquidity.ts#L36)*

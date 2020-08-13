@@ -22,7 +22,7 @@
 
 • **address**? : *string | string[]*
 
-*Defined in [packages/augur-types/types/logs.ts:35](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-types/types/logs.ts#L35)*
+*Defined in [packages/augur-types/types/logs.ts:35](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-types/types/logs.ts#L35)*
 
 ___
 
@@ -30,7 +30,7 @@ ___
 
 • **blockhash**? : *string*
 
-*Defined in [packages/augur-types/types/logs.ts:32](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-types/types/logs.ts#L32)*
+*Defined in [packages/augur-types/types/logs.ts:32](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-types/types/logs.ts#L32)*
 
 ___
 
@@ -38,7 +38,7 @@ ___
 
 • **fromBlock**? : *number | string*
 
-*Defined in [packages/augur-types/types/logs.ts:33](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-types/types/logs.ts#L33)*
+*Defined in [packages/augur-types/types/logs.ts:33](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-types/types/logs.ts#L33)*
 
 ___
 
@@ -46,7 +46,7 @@ ___
 
 • **toBlock**? : *number | string*
 
-*Defined in [packages/augur-types/types/logs.ts:34](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-types/types/logs.ts#L34)*
+*Defined in [packages/augur-types/types/logs.ts:34](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-types/types/logs.ts#L34)*
 
 ___
 
@@ -54,4 +54,4 @@ ___
 
 • **topics**? : *Array‹string | string[]›*
 
-*Defined in [packages/augur-types/types/logs.ts:36](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-types/types/logs.ts#L36)*
+*Defined in [packages/augur-types/types/logs.ts:36](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-types/types/logs.ts#L36)*

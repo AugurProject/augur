@@ -58,7 +58,7 @@
 
 \+ **new ZeroX**(`_rpcEndpoint?`: string): *[ZeroX](_augur_sdk_src_api_zerox_.zerox.md)*
 
-*Defined in [packages/augur-sdk/src/api/ZeroX.ts:208](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/api/ZeroX.ts#L208)*
+*Defined in [packages/augur-sdk/src/api/ZeroX.ts:224](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/api/ZeroX.ts#L224)*
 
 **Parameters:**
 
@@ -74,7 +74,7 @@ Name | Type |
 
 • **_client**: *[Augur](_augur_sdk_src_augur_.augur.md)*
 
-*Defined in [packages/augur-sdk/src/api/ZeroX.ts:196](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/api/ZeroX.ts#L196)*
+*Defined in [packages/augur-sdk/src/api/ZeroX.ts:212](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/api/ZeroX.ts#L212)*
 
 ___
 
@@ -82,7 +82,7 @@ ___
 
 • **_mesh**? : *[BrowserMesh](../interfaces/_augur_sdk_src_api_zerox_.browsermesh.md)*
 
-*Defined in [packages/augur-sdk/src/api/ZeroX.ts:171](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/api/ZeroX.ts#L171)*
+*Defined in [packages/augur-sdk/src/api/ZeroX.ts:186](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/api/ZeroX.ts#L186)*
 
 ___
 
@@ -90,7 +90,7 @@ ___
 
 • **_rpc**? : *WSClient*
 
-*Defined in [packages/augur-sdk/src/api/ZeroX.ts:146](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/api/ZeroX.ts#L146)*
+*Defined in [packages/augur-sdk/src/api/ZeroX.ts:161](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/api/ZeroX.ts#L161)*
 
 ## Accessors
 
@@ -98,13 +98,13 @@ ___
 
 • **get client**(): *[Augur](_augur_sdk_src_augur_.augur.md)‹[Provider](../interfaces/_augur_sdk_src_ethereum_provider_.provider.md)›*
 
-*Defined in [packages/augur-sdk/src/api/ZeroX.ts:197](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/api/ZeroX.ts#L197)*
+*Defined in [packages/augur-sdk/src/api/ZeroX.ts:213](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/api/ZeroX.ts#L213)*
 
 **Returns:** *[Augur](_augur_sdk_src_augur_.augur.md)‹[Provider](../interfaces/_augur_sdk_src_ethereum_provider_.provider.md)›*
 
 • **set client**(`client`: [Augur](_augur_sdk_src_augur_.augur.md)): *void*
 
-*Defined in [packages/augur-sdk/src/api/ZeroX.ts:200](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/api/ZeroX.ts#L200)*
+*Defined in [packages/augur-sdk/src/api/ZeroX.ts:216](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/api/ZeroX.ts#L216)*
 
 **Parameters:**
 
@@ -120,13 +120,13 @@ ___
 
 • **get mesh**(): *[BrowserMesh](../interfaces/_augur_sdk_src_api_zerox_.browsermesh.md)*
 
-*Defined in [packages/augur-sdk/src/api/ZeroX.ts:172](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/api/ZeroX.ts#L172)*
+*Defined in [packages/augur-sdk/src/api/ZeroX.ts:187](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/api/ZeroX.ts#L187)*
 
 **Returns:** *[BrowserMesh](../interfaces/_augur_sdk_src_api_zerox_.browsermesh.md)*
 
 • **set mesh**(`mesh`: [BrowserMesh](../interfaces/_augur_sdk_src_api_zerox_.browsermesh.md) | null): *void*
 
-*Defined in [packages/augur-sdk/src/api/ZeroX.ts:176](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/api/ZeroX.ts#L176)*
+*Defined in [packages/augur-sdk/src/api/ZeroX.ts:191](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/api/ZeroX.ts#L191)*
 
 **Parameters:**
 
@@ -142,13 +142,13 @@ ___
 
 • **get rpc**(): *WSClient*
 
-*Defined in [packages/augur-sdk/src/api/ZeroX.ts:147](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/api/ZeroX.ts#L147)*
+*Defined in [packages/augur-sdk/src/api/ZeroX.ts:162](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/api/ZeroX.ts#L162)*
 
 **Returns:** *WSClient*
 
 • **set rpc**(`client`: WSClient | null): *void*
 
-*Defined in [packages/augur-sdk/src/api/ZeroX.ts:151](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/api/ZeroX.ts#L151)*
+*Defined in [packages/augur-sdk/src/api/ZeroX.ts:166](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/api/ZeroX.ts#L166)*
 
 **Parameters:**
 
@@ -164,7 +164,7 @@ Name | Type |
 
 ▸ **addOrders**(`orders`: any): *any*
 
-*Defined in [packages/augur-sdk/src/api/ZeroX.ts:520](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/api/ZeroX.ts#L520)*
+*Defined in [packages/augur-sdk/src/api/ZeroX.ts:546](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/api/ZeroX.ts#L546)*
 
 **Parameters:**
 
@@ -180,7 +180,7 @@ ___
 
 ▸ **batchCancelOrders**(`orders`: any, `signatures`: any): *Promise‹Event[]›*
 
-*Defined in [packages/augur-sdk/src/api/ZeroX.ts:541](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/api/ZeroX.ts#L541)*
+*Defined in [packages/augur-sdk/src/api/ZeroX.ts:571](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/api/ZeroX.ts#L571)*
 
 **Parameters:**
 
@@ -197,7 +197,7 @@ ___
 
 ▸ **cancelOrder**(`order`: any, `signature`: any): *Promise‹Event[]›*
 
-*Defined in [packages/augur-sdk/src/api/ZeroX.ts:536](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/api/ZeroX.ts#L536)*
+*Defined in [packages/augur-sdk/src/api/ZeroX.ts:566](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/api/ZeroX.ts#L566)*
 
 **Parameters:**
 
@@ -214,7 +214,7 @@ ___
 
 ▸ **checkIfTradeValid**(`params`: [ZeroXPlaceTradeParams](../interfaces/_augur_sdk_src_api_zerox_.zeroxplacetradeparams.md)): *Promise‹string | null›*
 
-*Defined in [packages/augur-sdk/src/api/ZeroX.ts:703](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/api/ZeroX.ts#L703)*
+*Defined in [packages/augur-sdk/src/api/ZeroX.ts:741](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/api/ZeroX.ts#L741)*
 
 **Parameters:**
 
@@ -230,7 +230,7 @@ ___
 
 ▸ **createZeroXOrder**(`params`: [ZeroXPlaceTradeParams](../interfaces/_augur_sdk_src_api_zerox_.zeroxplacetradeparams.md)): *Promise‹object›*
 
-*Defined in [packages/augur-sdk/src/api/ZeroX.ts:423](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/api/ZeroX.ts#L423)*
+*Defined in [packages/augur-sdk/src/api/ZeroX.ts:449](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/api/ZeroX.ts#L449)*
 
 **Parameters:**
 
@@ -246,7 +246,7 @@ ___
 
 ▸ **disconnect**(): *void*
 
-*Defined in [packages/augur-sdk/src/api/ZeroX.ts:204](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/api/ZeroX.ts#L204)*
+*Defined in [packages/augur-sdk/src/api/ZeroX.ts:220](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/api/ZeroX.ts#L220)*
 
 **Returns:** *void*
 
@@ -256,7 +256,7 @@ ___
 
 ▸ **getMatchingOrders**(`params`: [ZeroXPlaceTradeParams](../interfaces/_augur_sdk_src_api_zerox_.zeroxplacetradeparams.md), `ignoreOrders?`: string[]): *Promise‹[MatchingOrders](../interfaces/_augur_sdk_src_api_zerox_.matchingorders.md)›*
 
-*Defined in [packages/augur-sdk/src/api/ZeroX.ts:630](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/api/ZeroX.ts#L630)*
+*Defined in [packages/augur-sdk/src/api/ZeroX.ts:666](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/api/ZeroX.ts#L666)*
 
 **Parameters:**
 
@@ -273,7 +273,7 @@ ___
 
 ▸ **getOnChainTradeParams**(`params`: [ZeroXPlaceTradeDisplayParams](../interfaces/_augur_sdk_src_api_zerox_.zeroxplacetradedisplayparams.md)): *[ZeroXPlaceTradeParams](../interfaces/_augur_sdk_src_api_zerox_.zeroxplacetradeparams.md)*
 
-*Defined in [packages/augur-sdk/src/api/ZeroX.ts:251](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/api/ZeroX.ts#L251)*
+*Defined in [packages/augur-sdk/src/api/ZeroX.ts:267](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/api/ZeroX.ts#L267)*
 
 **Parameters:**
 
@@ -289,7 +289,7 @@ ___
 
 ▸ **getOrders**(): *Promise‹OrderInfo[]›*
 
-*Defined in [packages/augur-sdk/src/api/ZeroX.ts:216](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/api/ZeroX.ts#L216)*
+*Defined in [packages/augur-sdk/src/api/ZeroX.ts:232](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/api/ZeroX.ts#L232)*
 
 **Returns:** *Promise‹OrderInfo[]›*
 
@@ -299,7 +299,7 @@ ___
 
 ▸ **getStats**(): *Promise‹[ZeroXStats](../interfaces/_augur_sdk_src_api_zerox_.zeroxstats.md)›*
 
-*Defined in [packages/augur-sdk/src/api/ZeroX.ts:232](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/api/ZeroX.ts#L232)*
+*Defined in [packages/augur-sdk/src/api/ZeroX.ts:248](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/api/ZeroX.ts#L248)*
 
 **Returns:** *Promise‹[ZeroXStats](../interfaces/_augur_sdk_src_api_zerox_.zeroxstats.md)›*
 
@@ -309,7 +309,7 @@ ___
 
 ▸ **getTradeAmountRemaining**(`account`: any, `tradeOnChainAmountRemaining`: BigNumber, `events`: Event[]): *BigNumber*
 
-*Defined in [packages/augur-sdk/src/api/ZeroX.ts:742](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/api/ZeroX.ts#L742)*
+*Defined in [packages/augur-sdk/src/api/ZeroX.ts:780](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/api/ZeroX.ts#L780)*
 
 **Parameters:**
 
@@ -325,15 +325,16 @@ ___
 
 ###  getTradeTransactionLimits
 
-▸ **getTradeTransactionLimits**(`params`: [NativePlaceTradeChainParams](../interfaces/_augur_sdk_src_api_onchaintrade_.nativeplacetradechainparams.md)): *[TradeTransactionLimits](../interfaces/_augur_sdk_src_api_onchaintrade_.tradetransactionlimits.md)*
+▸ **getTradeTransactionLimits**(`params`: [NativePlaceTradeChainParams](../interfaces/_augur_sdk_src_api_onchaintrade_.nativeplacetradechainparams.md), `numOrders`: number): *[TradeTransactionLimits](../interfaces/_augur_sdk_src_api_onchaintrade_.tradetransactionlimits.md)*
 
-*Defined in [packages/augur-sdk/src/api/ZeroX.ts:774](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/api/ZeroX.ts#L774)*
+*Defined in [packages/augur-sdk/src/api/ZeroX.ts:812](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/api/ZeroX.ts#L812)*
 
 **Parameters:**
 
 Name | Type |
 ------ | ------ |
 `params` | [NativePlaceTradeChainParams](../interfaces/_augur_sdk_src_api_onchaintrade_.nativeplacetradechainparams.md) |
+`numOrders` | number |
 
 **Returns:** *[TradeTransactionLimits](../interfaces/_augur_sdk_src_api_onchaintrade_.tradetransactionlimits.md)*
 
@@ -343,7 +344,7 @@ ___
 
 ▸ **isReady**(): *boolean*
 
-*Defined in [packages/augur-sdk/src/api/ZeroX.ts:228](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/api/ZeroX.ts#L228)*
+*Defined in [packages/augur-sdk/src/api/ZeroX.ts:244](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/api/ZeroX.ts#L244)*
 
 **Returns:** *boolean*
 
@@ -353,7 +354,7 @@ ___
 
 ▸ **placeOnChainOrders**(`orders`: [ZeroXPlaceTradeParams](../interfaces/_augur_sdk_src_api_zerox_.zeroxplacetradeparams.md)[]): *Promise‹void›*
 
-*Defined in [packages/augur-sdk/src/api/ZeroX.ts:406](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/api/ZeroX.ts#L406)*
+*Defined in [packages/augur-sdk/src/api/ZeroX.ts:432](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/api/ZeroX.ts#L432)*
 
 **Parameters:**
 
@@ -369,7 +370,7 @@ ___
 
 ▸ **placeOnChainTrade**(`params`: [ZeroXPlaceTradeParams](../interfaces/_augur_sdk_src_api_zerox_.zeroxplacetradeparams.md), `ignoreOrders?`: string[]): *Promise‹boolean›*
 
-*Defined in [packages/augur-sdk/src/api/ZeroX.ts:279](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/api/ZeroX.ts#L279)*
+*Defined in [packages/augur-sdk/src/api/ZeroX.ts:295](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/api/ZeroX.ts#L295)*
 
 **Parameters:**
 
@@ -386,7 +387,7 @@ ___
 
 ▸ **placeOrder**(`params`: [ZeroXPlaceTradeDisplayParams](../interfaces/_augur_sdk_src_api_zerox_.zeroxplacetradedisplayparams.md)): *Promise‹void›*
 
-*Defined in [packages/augur-sdk/src/api/ZeroX.ts:395](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/api/ZeroX.ts#L395)*
+*Defined in [packages/augur-sdk/src/api/ZeroX.ts:421](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/api/ZeroX.ts#L421)*
 
 **Parameters:**
 
@@ -402,7 +403,7 @@ ___
 
 ▸ **placeOrders**(`orders`: [ZeroXPlaceTradeDisplayParams](../interfaces/_augur_sdk_src_api_zerox_.zeroxplacetradedisplayparams.md)[]): *Promise‹void›*
 
-*Defined in [packages/augur-sdk/src/api/ZeroX.ts:399](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/api/ZeroX.ts#L399)*
+*Defined in [packages/augur-sdk/src/api/ZeroX.ts:425](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/api/ZeroX.ts#L425)*
 
 **Parameters:**
 
@@ -418,7 +419,7 @@ ___
 
 ▸ **placeTrade**(`params`: [ZeroXPlaceTradeDisplayParams](../interfaces/_augur_sdk_src_api_zerox_.zeroxplacetradedisplayparams.md)): *Promise‹boolean›*
 
-*Defined in [packages/augur-sdk/src/api/ZeroX.ts:246](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/api/ZeroX.ts#L246)*
+*Defined in [packages/augur-sdk/src/api/ZeroX.ts:262](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/api/ZeroX.ts#L262)*
 
 **Parameters:**
 
@@ -434,7 +435,7 @@ ___
 
 ▸ **safePlaceOrders**(`params`: [ZeroXPlaceTradeDisplayParams](../interfaces/_augur_sdk_src_api_zerox_.zeroxplacetradedisplayparams.md)[]): *Promise‹void›*
 
-*Defined in [packages/augur-sdk/src/api/ZeroX.ts:348](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/api/ZeroX.ts#L348)*
+*Defined in [packages/augur-sdk/src/api/ZeroX.ts:374](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/api/ZeroX.ts#L374)*
 
 **Parameters:**
 
@@ -450,7 +451,7 @@ ___
 
 ▸ **signOrder**(`signedOrder`: [SignedOrder](../interfaces/_augur_sdk_src_api_zerox_.signedorder.md), `orderHash`: string, `wallet`: boolean): *Promise‹string›*
 
-*Defined in [packages/augur-sdk/src/api/ZeroX.ts:471](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/api/ZeroX.ts#L471)*
+*Defined in [packages/augur-sdk/src/api/ZeroX.ts:497](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/api/ZeroX.ts#L497)*
 
 **Parameters:**
 
@@ -468,7 +469,7 @@ ___
 
 ▸ **signSimpleOrder**(`orderHash`: string): *Promise‹string›*
 
-*Defined in [packages/augur-sdk/src/api/ZeroX.ts:509](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/api/ZeroX.ts#L509)*
+*Defined in [packages/augur-sdk/src/api/ZeroX.ts:535](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/api/ZeroX.ts#L535)*
 
 **Parameters:**
 
@@ -484,7 +485,7 @@ ___
 
 ▸ **signWalletOrder**(`signedOrder`: [SignedOrder](../interfaces/_augur_sdk_src_api_zerox_.signedorder.md), `orderHash`: string): *Promise‹string›*
 
-*Defined in [packages/augur-sdk/src/api/ZeroX.ts:483](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/api/ZeroX.ts#L483)*
+*Defined in [packages/augur-sdk/src/api/ZeroX.ts:509](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/api/ZeroX.ts#L509)*
 
 **Parameters:**
 
@@ -501,7 +502,7 @@ ___
 
 ▸ **simulateMakeOrder**(`params`: [ZeroXPlaceTradeParams](../interfaces/_augur_sdk_src_api_zerox_.zeroxplacetradeparams.md)): *BigNumber[]*
 
-*Defined in [packages/augur-sdk/src/api/ZeroX.ts:611](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/api/ZeroX.ts#L611)*
+*Defined in [packages/augur-sdk/src/api/ZeroX.ts:647](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/api/ZeroX.ts#L647)*
 
 **Parameters:**
 
@@ -517,7 +518,7 @@ ___
 
 ▸ **simulateTrade**(`params`: [ZeroXPlaceTradeDisplayParams](../interfaces/_augur_sdk_src_api_zerox_.zeroxplacetradedisplayparams.md)): *Promise‹[ZeroXSimulateTradeData](../interfaces/_augur_sdk_src_api_zerox_.zeroxsimulatetradedata.md)›*
 
-*Defined in [packages/augur-sdk/src/api/ZeroX.ts:547](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/api/ZeroX.ts#L547)*
+*Defined in [packages/augur-sdk/src/api/ZeroX.ts:583](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/api/ZeroX.ts#L583)*
 
 **Parameters:**
 
@@ -533,7 +534,7 @@ ___
 
 ▸ **simulateTradeGasLimit**(`params`: [ZeroXPlaceTradeDisplayParams](../interfaces/_augur_sdk_src_api_zerox_.zeroxplacetradedisplayparams.md)): *Promise‹BigNumber›*
 
-*Defined in [packages/augur-sdk/src/api/ZeroX.ts:795](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/api/ZeroX.ts#L795)*
+*Defined in [packages/augur-sdk/src/api/ZeroX.ts:836](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/api/ZeroX.ts#L836)*
 
 **Parameters:**
 

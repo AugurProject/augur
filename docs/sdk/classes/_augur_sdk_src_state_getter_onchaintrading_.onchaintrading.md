@@ -29,7 +29,7 @@
     filterFinalized: t.boolean,
   })
 
-*Defined in [packages/augur-sdk/src/state/getter/OnChainTrading.ts:147](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/getter/OnChainTrading.ts#L147)*
+*Defined in [packages/augur-sdk/src/state/getter/OnChainTrading.ts:83](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/getter/OnChainTrading.ts#L83)*
 
 ___
 
@@ -37,7 +37,7 @@ ___
 
 ▪ **GetOrdersParams**: *IntersectionC‹[PartialC‹object›, PartialC‹object›]›* = t.intersection([sortOptions, OrdersParams])
 
-*Defined in [packages/augur-sdk/src/state/getter/OnChainTrading.ts:151](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/getter/OnChainTrading.ts#L151)*
+*Defined in [packages/augur-sdk/src/state/getter/OnChainTrading.ts:87](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/getter/OnChainTrading.ts#L87)*
 
 ___
 
@@ -48,15 +48,15 @@ ___
     TradingHistoryParams,
   ])
 
-*Defined in [packages/augur-sdk/src/state/getter/OnChainTrading.ts:143](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/getter/OnChainTrading.ts#L143)*
+*Defined in [packages/augur-sdk/src/state/getter/OnChainTrading.ts:79](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/getter/OnChainTrading.ts#L79)*
 
 ## Methods
 
 ### `Static` getOpenOnChainOrders
 
-▸ **getOpenOnChainOrders**(`augur`: [Augur](_augur_sdk_src_augur_.augur.md), `db`: [DB](_augur_sdk_src_state_db_db_.db.md), `params`: t.TypeOf‹typeof GetOrdersParams›): *Promise‹[Orders](../interfaces/_augur_sdk_src_state_getter_onchaintrading_.orders.md)›*
+▸ **getOpenOnChainOrders**(`augur`: [Augur](_augur_sdk_src_augur_.augur.md), `db`: [DB](_augur_sdk_src_state_db_db_.db.md), `params`: t.TypeOf‹typeof GetOrdersParams›): *Promise‹Orders›*
 
-*Defined in [packages/augur-sdk/src/state/getter/OnChainTrading.ts:267](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/getter/OnChainTrading.ts#L267)*
+*Defined in [packages/augur-sdk/src/state/getter/OnChainTrading.ts:210](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/getter/OnChainTrading.ts#L210)*
 
 **Parameters:**
 
@@ -66,15 +66,15 @@ Name | Type |
 `db` | [DB](_augur_sdk_src_state_db_db_.db.md) |
 `params` | t.TypeOf‹typeof GetOrdersParams› |
 
-**Returns:** *Promise‹[Orders](../interfaces/_augur_sdk_src_state_getter_onchaintrading_.orders.md)›*
+**Returns:** *Promise‹Orders›*
 
 ___
 
 ### `Static` getOpenOrders
 
-▸ **getOpenOrders**(`augur`: [Augur](_augur_sdk_src_augur_.augur.md), `db`: [DB](_augur_sdk_src_state_db_db_.db.md), `params`: t.TypeOf‹typeof GetOrdersParams›): *Promise‹[ZeroXOrders](../interfaces/_augur_sdk_src_state_getter_zeroxordersgetters_.zeroxorders.md)›*
+▸ **getOpenOrders**(`augur`: [Augur](_augur_sdk_src_augur_.augur.md), `db`: [DB](_augur_sdk_src_state_db_db_.db.md), `params`: t.TypeOf‹typeof GetOrdersParams›): *Promise‹ZeroXOrders›*
 
-*Defined in [packages/augur-sdk/src/state/getter/OnChainTrading.ts:252](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/getter/OnChainTrading.ts#L252)*
+*Defined in [packages/augur-sdk/src/state/getter/OnChainTrading.ts:195](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/getter/OnChainTrading.ts#L195)*
 
 **Parameters:**
 
@@ -84,15 +84,15 @@ Name | Type |
 `db` | [DB](_augur_sdk_src_state_db_db_.db.md) |
 `params` | t.TypeOf‹typeof GetOrdersParams› |
 
-**Returns:** *Promise‹[ZeroXOrders](../interfaces/_augur_sdk_src_state_getter_zeroxordersgetters_.zeroxorders.md)›*
+**Returns:** *Promise‹ZeroXOrders›*
 
 ___
 
 ### `Static` getTradingHistory
 
-▸ **getTradingHistory**(`augur`: [Augur](_augur_sdk_src_augur_.augur.md), `db`: [DB](_augur_sdk_src_state_db_db_.db.md), `params`: t.TypeOf‹typeof GetTradingHistoryParams›): *Promise‹[MarketTradingHistory](../interfaces/_augur_sdk_src_state_getter_onchaintrading_.markettradinghistory.md)›*
+▸ **getTradingHistory**(`augur`: [Augur](_augur_sdk_src_augur_.augur.md), `db`: [DB](_augur_sdk_src_state_db_db_.db.md), `params`: t.TypeOf‹typeof GetTradingHistoryParams›): *Promise‹MarketTradingHistory›*
 
-*Defined in [packages/augur-sdk/src/state/getter/OnChainTrading.ts:154](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/getter/OnChainTrading.ts#L154)*
+*Defined in [packages/augur-sdk/src/state/getter/OnChainTrading.ts:90](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/getter/OnChainTrading.ts#L90)*
 
 **Parameters:**
 
@@ -102,4 +102,4 @@ Name | Type |
 `db` | [DB](_augur_sdk_src_state_db_db_.db.md) |
 `params` | t.TypeOf‹typeof GetTradingHistoryParams› |
 
-**Returns:** *Promise‹[MarketTradingHistory](../interfaces/_augur_sdk_src_state_getter_onchaintrading_.markettradinghistory.md)›*
+**Returns:** *Promise‹MarketTradingHistory›*

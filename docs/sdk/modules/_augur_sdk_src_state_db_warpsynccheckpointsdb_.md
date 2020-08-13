@@ -11,4 +11,5 @@
 ### Interfaces
 
 * [IpfsInfo](../interfaces/_augur_sdk_src_state_db_warpsynccheckpointsdb_.ipfsinfo.md)
+* [WarpCheckpointBlock](../interfaces/_augur_sdk_src_state_db_warpsynccheckpointsdb_.warpcheckpointblock.md)
 * [WarpCheckpointDocument](../interfaces/_augur_sdk_src_state_db_warpsynccheckpointsdb_.warpcheckpointdocument.md)

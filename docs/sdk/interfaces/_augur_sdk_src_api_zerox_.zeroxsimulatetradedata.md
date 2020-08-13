@@ -25,7 +25,7 @@
 
 • **numFills**: *BigNumber*
 
-*Defined in [packages/augur-sdk/src/api/ZeroX.ts:99](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/api/ZeroX.ts#L99)*
+*Defined in [packages/augur-sdk/src/api/ZeroX.ts:113](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/api/ZeroX.ts#L113)*
 
 ___
 
@@ -33,7 +33,7 @@ ___
 
 • **selfTrade**: *boolean*
 
-*Defined in [packages/augur-sdk/src/api/ZeroX.ts:100](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/api/ZeroX.ts#L100)*
+*Defined in [packages/augur-sdk/src/api/ZeroX.ts:114](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/api/ZeroX.ts#L114)*
 
 ___
 
@@ -41,7 +41,7 @@ ___
 
 • **settlementFees**: *BigNumber*
 
-*Defined in [packages/augur-sdk/src/api/ZeroX.ts:96](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/api/ZeroX.ts#L96)*
+*Defined in [packages/augur-sdk/src/api/ZeroX.ts:110](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/api/ZeroX.ts#L110)*
 
 ___
 
@@ -49,7 +49,7 @@ ___
 
 • **sharesDepleted**: *BigNumber*
 
-*Defined in [packages/augur-sdk/src/api/ZeroX.ts:97](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/api/ZeroX.ts#L97)*
+*Defined in [packages/augur-sdk/src/api/ZeroX.ts:111](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/api/ZeroX.ts#L111)*
 
 ___
 
@@ -57,7 +57,7 @@ ___
 
 • **sharesFilled**: *BigNumber*
 
-*Defined in [packages/augur-sdk/src/api/ZeroX.ts:95](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/api/ZeroX.ts#L95)*
+*Defined in [packages/augur-sdk/src/api/ZeroX.ts:109](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/api/ZeroX.ts#L109)*
 
 ___
 
@@ -65,4 +65,4 @@ ___
 
 • **tokensDepleted**: *BigNumber*
 
-*Defined in [packages/augur-sdk/src/api/ZeroX.ts:98](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/api/ZeroX.ts#L98)*
+*Defined in [packages/augur-sdk/src/api/ZeroX.ts:112](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/api/ZeroX.ts#L112)*

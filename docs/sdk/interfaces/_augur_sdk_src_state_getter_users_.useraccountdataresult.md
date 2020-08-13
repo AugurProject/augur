@@ -24,17 +24,17 @@
 
 ###  marketTradeHistory
 
-• **marketTradeHistory**: *[MarketTradingHistory](_augur_sdk_src_state_getter_onchaintrading_.markettradinghistory.md)*
+• **marketTradeHistory**: *MarketTradingHistory*
 
-*Defined in [packages/augur-sdk/src/state/getter/Users.ts:187](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/getter/Users.ts#L187)*
+*Defined in [packages/augur-sdk/src/state/getter/Users.ts:214](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/getter/Users.ts#L214)*
 
 ___
 
 ###  marketsInfo
 
-• **marketsInfo**: *[MarketInfo](_augur_sdk_src_state_getter_markets_.marketinfo.md)[]*
+• **marketsInfo**: *MarketInfo[]*
 
-*Defined in [packages/augur-sdk/src/state/getter/Users.ts:190](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/getter/Users.ts#L190)*
+*Defined in [packages/augur-sdk/src/state/getter/Users.ts:217](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/getter/Users.ts#L217)*
 
 ___
 
@@ -42,7 +42,7 @@ ___
 
 • **userOpenOrders**: *[UserOpenOrders](_augur_sdk_src_state_getter_users_.useropenorders.md)*
 
-*Defined in [packages/augur-sdk/src/state/getter/Users.ts:188](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/getter/Users.ts#L188)*
+*Defined in [packages/augur-sdk/src/state/getter/Users.ts:215](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/getter/Users.ts#L215)*
 
 ___
 
@@ -52,7 +52,7 @@ ___
 
 *Inherited from [UserAccountDataResult](_augur_sdk_src_state_getter_users_.useraccountdataresult.md).[userPositionTotals](_augur_sdk_src_state_getter_users_.useraccountdataresult.md#userpositiontotals)*
 
-*Defined in [packages/augur-sdk/src/state/getter/Users.ts:196](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/getter/Users.ts#L196)*
+*Defined in [packages/augur-sdk/src/state/getter/Users.ts:223](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/getter/Users.ts#L223)*
 
 ___
 
@@ -62,7 +62,7 @@ ___
 
 *Inherited from [UserAccountDataResult](_augur_sdk_src_state_getter_users_.useraccountdataresult.md).[userPositions](_augur_sdk_src_state_getter_users_.useraccountdataresult.md#userpositions)*
 
-*Defined in [packages/augur-sdk/src/state/getter/Users.ts:195](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/getter/Users.ts#L195)*
+*Defined in [packages/augur-sdk/src/state/getter/Users.ts:222](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/getter/Users.ts#L222)*
 
 ___
 
@@ -70,14 +70,14 @@ ___
 
 • **userStakedRep**: *[AccountReportingHistory](_augur_sdk_src_state_getter_accounts_.accountreportinghistory.md)*
 
-*Defined in [packages/augur-sdk/src/state/getter/Users.ts:189](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/getter/Users.ts#L189)*
+*Defined in [packages/augur-sdk/src/state/getter/Users.ts:216](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/getter/Users.ts#L216)*
 
 ___
 
 ###  userTradeHistory
 
-• **userTradeHistory**: *[MarketTradingHistory](_augur_sdk_src_state_getter_onchaintrading_.markettradinghistory.md)*
+• **userTradeHistory**: *MarketTradingHistory*
 
 *Inherited from [UserAccountDataResult](_augur_sdk_src_state_getter_users_.useraccountdataresult.md).[userTradeHistory](_augur_sdk_src_state_getter_users_.useraccountdataresult.md#usertradehistory)*
 
-*Defined in [packages/augur-sdk/src/state/getter/Users.ts:194](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/getter/Users.ts#L194)*
+*Defined in [packages/augur-sdk/src/state/getter/Users.ts:221](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/getter/Users.ts#L221)*

@@ -20,7 +20,7 @@
 
 • **NULL_ADDRESS**: *"0x0000000000000000000000000000000000000000"* = "0x0000000000000000000000000000000000000000"
 
-*Defined in [packages/augur-sdk/src/state/getter/types.ts:3](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/getter/types.ts#L3)*
+*Defined in [packages/augur-sdk/src/state/getter/types.ts:3](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/getter/types.ts#L3)*
 
 ___
 
@@ -33,4 +33,4 @@ ___
   offset: t.number,
 })
 
-*Defined in [packages/augur-sdk/src/state/getter/types.ts:5](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/getter/types.ts#L5)*
+*Defined in [packages/augur-sdk/src/state/getter/types.ts:5](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/getter/types.ts#L5)*

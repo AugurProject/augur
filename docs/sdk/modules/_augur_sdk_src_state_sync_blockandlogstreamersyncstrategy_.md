@@ -13,6 +13,7 @@
 * [BlockAndLogStreamerInterface](../interfaces/_augur_sdk_src_state_sync_blockandlogstreamersyncstrategy_.blockandlogstreamerinterface.md)
 * [BlockAndLogStreamerListenerDependencies](../interfaces/_augur_sdk_src_state_sync_blockandlogstreamersyncstrategy_.blockandlogstreamerlistenerdependencies.md)
 * [BlockAndLogStreamerListenerInterface](../interfaces/_augur_sdk_src_state_sync_blockandlogstreamersyncstrategy_.blockandlogstreamerlistenerinterface.md)
+* [BlockQueueTask](../interfaces/_augur_sdk_src_state_sync_blockandlogstreamersyncstrategy_.blockqueuetask.md)
 * [ExtendedFilter](../interfaces/_augur_sdk_src_state_sync_blockandlogstreamersyncstrategy_.extendedfilter.md)
 
 ### Type aliases
@@ -25,7 +26,7 @@
 
 Ƭ **BlockCallback**: *function*
 
-*Defined in [packages/augur-sdk/src/state/sync/BlockAndLogStreamerSyncStrategy.ts:45](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/sync/BlockAndLogStreamerSyncStrategy.ts#L45)*
+*Defined in [packages/augur-sdk/src/state/sync/BlockAndLogStreamerSyncStrategy.ts:50](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/sync/BlockAndLogStreamerSyncStrategy.ts#L50)*
 
 #### Type declaration:
 

@@ -23,7 +23,7 @@
 
 Ƭ **SomeRepToken**: *ReputationToken | TestNetReputationToken*
 
-*Defined in [packages/augur-sdk/src/api/Contracts.ts:5](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/api/Contracts.ts#L5)*
+*Defined in [packages/augur-sdk/src/api/Contracts.ts:5](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/api/Contracts.ts#L5)*
 
 ___
 
@@ -31,7 +31,7 @@ ___
 
 Ƭ **SomeTime**: *Time | TimeControlled*
 
-*Defined in [packages/augur-sdk/src/api/Contracts.ts:6](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/api/Contracts.ts#L6)*
+*Defined in [packages/augur-sdk/src/api/Contracts.ts:8](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/api/Contracts.ts#L8)*
 
 ## Variables
 
@@ -39,4 +39,4 @@ ___
 
 • **RELAY_HUB_ADDRESS**: *"0xD216153c06E857cD7f72665E0aF1d7D82172F494"* = "0xD216153c06E857cD7f72665E0aF1d7D82172F494"
 
-*Defined in [packages/augur-sdk/src/api/Contracts.ts:7](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/api/Contracts.ts#L7)*
+*Defined in [packages/augur-sdk/src/api/Contracts.ts:11](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/api/Contracts.ts#L11)*

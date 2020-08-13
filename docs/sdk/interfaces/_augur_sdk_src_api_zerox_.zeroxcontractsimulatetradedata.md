@@ -22,7 +22,7 @@
 
 • **_numFills**: *BigNumber*
 
-*Defined in [packages/augur-sdk/src/api/ZeroX.ts:91](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/api/ZeroX.ts#L91)*
+*Defined in [packages/augur-sdk/src/api/ZeroX.ts:105](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/api/ZeroX.ts#L105)*
 
 ___
 
@@ -30,7 +30,7 @@ ___
 
 • **_settlementFees**: *BigNumber*
 
-*Defined in [packages/augur-sdk/src/api/ZeroX.ts:88](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/api/ZeroX.ts#L88)*
+*Defined in [packages/augur-sdk/src/api/ZeroX.ts:102](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/api/ZeroX.ts#L102)*
 
 ___
 
@@ -38,7 +38,7 @@ ___
 
 • **_sharesDepleted**: *BigNumber*
 
-*Defined in [packages/augur-sdk/src/api/ZeroX.ts:89](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/api/ZeroX.ts#L89)*
+*Defined in [packages/augur-sdk/src/api/ZeroX.ts:103](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/api/ZeroX.ts#L103)*
 
 ___
 
@@ -46,7 +46,7 @@ ___
 
 • **_sharesFilled**: *BigNumber*
 
-*Defined in [packages/augur-sdk/src/api/ZeroX.ts:87](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/api/ZeroX.ts#L87)*
+*Defined in [packages/augur-sdk/src/api/ZeroX.ts:101](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/api/ZeroX.ts#L101)*
 
 ___
 
@@ -54,4 +54,4 @@ ___
 
 • **_tokensDepleted**: *BigNumber*
 
-*Defined in [packages/augur-sdk/src/api/ZeroX.ts:90](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/api/ZeroX.ts#L90)*
+*Defined in [packages/augur-sdk/src/api/ZeroX.ts:104](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/api/ZeroX.ts#L104)*

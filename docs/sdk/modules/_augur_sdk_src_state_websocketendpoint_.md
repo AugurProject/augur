@@ -19,7 +19,7 @@
 
 ▸ **isSafe**(`websocket`: WebSocket): *boolean*
 
-*Defined in [packages/augur-sdk/src/state/WebsocketEndpoint.ts:108](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/WebsocketEndpoint.ts#L108)*
+*Defined in [packages/augur-sdk/src/state/WebsocketEndpoint.ts:166](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/WebsocketEndpoint.ts#L166)*
 
 **Parameters:**
 
@@ -35,7 +35,7 @@ ___
 
 ▸ **runWsServer**(`api`: [API](../classes/_augur_sdk_src_state_getter_api_.api.md), `app`: express.Application, `config`: SDKConfiguration): *Server*
 
-*Defined in [packages/augur-sdk/src/state/WebsocketEndpoint.ts:17](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/WebsocketEndpoint.ts#L17)*
+*Defined in [packages/augur-sdk/src/state/WebsocketEndpoint.ts:16](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/WebsocketEndpoint.ts#L16)*
 
 **Parameters:**
 
@@ -53,7 +53,7 @@ ___
 
 ▸ **runWssServer**(`api`: [API](../classes/_augur_sdk_src_state_getter_api_.api.md), `app`: express.Application, `config`: SDKConfiguration): *Server*
 
-*Defined in [packages/augur-sdk/src/state/WebsocketEndpoint.ts:27](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/WebsocketEndpoint.ts#L27)*
+*Defined in [packages/augur-sdk/src/state/WebsocketEndpoint.ts:30](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/WebsocketEndpoint.ts#L30)*
 
 **Parameters:**
 
@@ -71,7 +71,7 @@ ___
 
 ▸ **safePing**(`websocket`: WebSocket): *void*
 
-*Defined in [packages/augur-sdk/src/state/WebsocketEndpoint.ts:123](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/WebsocketEndpoint.ts#L123)*
+*Defined in [packages/augur-sdk/src/state/WebsocketEndpoint.ts:181](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/WebsocketEndpoint.ts#L181)*
 
 **Parameters:**
 
@@ -87,7 +87,7 @@ ___
 
 ▸ **safeSend**(`websocket`: WebSocket, `payload`: string): *void*
 
-*Defined in [packages/augur-sdk/src/state/WebsocketEndpoint.ts:117](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/WebsocketEndpoint.ts#L117)*
+*Defined in [packages/augur-sdk/src/state/WebsocketEndpoint.ts:175](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/WebsocketEndpoint.ts#L175)*
 
 **Parameters:**
 
@@ -104,7 +104,7 @@ ___
 
 ▸ **setupServer**(`server`: Server, `api`: [API](../classes/_augur_sdk_src_state_getter_api_.api.md)): *void*
 
-*Defined in [packages/augur-sdk/src/state/WebsocketEndpoint.ts:38](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/WebsocketEndpoint.ts#L38)*
+*Defined in [packages/augur-sdk/src/state/WebsocketEndpoint.ts:45](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/WebsocketEndpoint.ts#L45)*
 
 **Parameters:**
 

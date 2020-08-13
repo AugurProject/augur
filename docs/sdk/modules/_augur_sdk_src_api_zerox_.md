@@ -26,3 +26,15 @@
 * [ZeroXSingleOutcomeOrderBook](../interfaces/_augur_sdk_src_api_zerox_.zeroxsingleoutcomeorderbook.md)
 * [ZeroXStats](../interfaces/_augur_sdk_src_api_zerox_.zeroxstats.md)
 * [ZeroXTradeOrder](../interfaces/_augur_sdk_src_api_zerox_.zeroxtradeorder.md)
+
+### Variables
+
+* [MAX_PROTOCOL_FEE_MULTIPLIER](_augur_sdk_src_api_zerox_.md#const-max_protocol_fee_multiplier)
+
+## Variables
+
+### `Const` MAX_PROTOCOL_FEE_MULTIPLIER
+
+• **MAX_PROTOCOL_FEE_MULTIPLIER**: *2* = 2
+
+*Defined in [packages/augur-sdk/src/api/ZeroX.ts:40](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/api/ZeroX.ts#L40)*

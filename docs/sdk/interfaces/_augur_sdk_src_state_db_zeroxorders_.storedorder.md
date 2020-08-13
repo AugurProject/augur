@@ -4,7 +4,7 @@
 
 ## Hierarchy
 
-* [OrderData](_augur_sdk_src_state_db_zeroxorders_.orderdata.md)
+* OrderData
 
   ↳ **StoredOrder**
 
@@ -30,7 +30,7 @@
 
 • **amount**: *string*
 
-*Defined in [packages/augur-sdk/src/state/db/ZeroXOrders.ts:77](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/db/ZeroXOrders.ts#L77)*
+*Defined in [packages/augur-sdk/src/state/db/ZeroXOrders.ts:38](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/db/ZeroXOrders.ts#L38)*
 
 ___
 
@@ -38,9 +38,9 @@ ___
 
 • **invalidOrder**? : *boolean*
 
-*Inherited from [OrderData](_augur_sdk_src_state_db_zeroxorders_.orderdata.md).[invalidOrder](_augur_sdk_src_state_db_zeroxorders_.orderdata.md#optional-invalidorder)*
+*Inherited from [StoredOrder](_augur_sdk_src_state_db_zeroxorders_.storedorder.md).[invalidOrder](_augur_sdk_src_state_db_zeroxorders_.storedorder.md#optional-invalidorder)*
 
-*Defined in [packages/augur-sdk/src/state/db/ZeroXOrders.ts:63](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/db/ZeroXOrders.ts#L63)*
+Defined in packages/augur-sdk-lite/build/zeroX.d.ts:7
 
 ___
 
@@ -48,9 +48,9 @@ ___
 
 • **market**: *string*
 
-*Inherited from [OrderData](_augur_sdk_src_state_db_zeroxorders_.orderdata.md).[market](_augur_sdk_src_state_db_zeroxorders_.orderdata.md#market)*
+*Inherited from [StoredOrder](_augur_sdk_src_state_db_zeroxorders_.storedorder.md).[market](_augur_sdk_src_state_db_zeroxorders_.storedorder.md#market)*
 
-*Defined in [packages/augur-sdk/src/state/db/ZeroXOrders.ts:59](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/db/ZeroXOrders.ts#L59)*
+Defined in packages/augur-sdk-lite/build/zeroX.d.ts:3
 
 ___
 
@@ -58,7 +58,7 @@ ___
 
 • **numberAmount**: *BigNumber*
 
-*Defined in [packages/augur-sdk/src/state/db/ZeroXOrders.ts:78](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/db/ZeroXOrders.ts#L78)*
+*Defined in [packages/augur-sdk/src/state/db/ZeroXOrders.ts:39](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/db/ZeroXOrders.ts#L39)*
 
 ___
 
@@ -66,7 +66,7 @@ ___
 
 • **orderCreator**: *string*
 
-*Defined in [packages/augur-sdk/src/state/db/ZeroXOrders.ts:79](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/db/ZeroXOrders.ts#L79)*
+*Defined in [packages/augur-sdk/src/state/db/ZeroXOrders.ts:40](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/db/ZeroXOrders.ts#L40)*
 
 ___
 
@@ -74,7 +74,7 @@ ___
 
 • **orderHash**: *string*
 
-*Defined in [packages/augur-sdk/src/state/db/ZeroXOrders.ts:75](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/db/ZeroXOrders.ts#L75)*
+*Defined in [packages/augur-sdk/src/state/db/ZeroXOrders.ts:36](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/db/ZeroXOrders.ts#L36)*
 
 ___
 
@@ -82,7 +82,7 @@ ___
 
 • **orderId**? : *string*
 
-*Defined in [packages/augur-sdk/src/state/db/ZeroXOrders.ts:80](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/db/ZeroXOrders.ts#L80)*
+*Defined in [packages/augur-sdk/src/state/db/ZeroXOrders.ts:41](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/db/ZeroXOrders.ts#L41)*
 
 ___
 
@@ -90,9 +90,9 @@ ___
 
 • **orderType**: *string*
 
-*Inherited from [OrderData](_augur_sdk_src_state_db_zeroxorders_.orderdata.md).[orderType](_augur_sdk_src_state_db_zeroxorders_.orderdata.md#ordertype)*
+*Inherited from [StoredOrder](_augur_sdk_src_state_db_zeroxorders_.storedorder.md).[orderType](_augur_sdk_src_state_db_zeroxorders_.storedorder.md#ordertype)*
 
-*Defined in [packages/augur-sdk/src/state/db/ZeroXOrders.ts:62](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/db/ZeroXOrders.ts#L62)*
+Defined in packages/augur-sdk-lite/build/zeroX.d.ts:6
 
 ___
 
@@ -100,9 +100,9 @@ ___
 
 • **outcome**: *string*
 
-*Inherited from [OrderData](_augur_sdk_src_state_db_zeroxorders_.orderdata.md).[outcome](_augur_sdk_src_state_db_zeroxorders_.orderdata.md#outcome)*
+*Inherited from [StoredOrder](_augur_sdk_src_state_db_zeroxorders_.storedorder.md).[outcome](_augur_sdk_src_state_db_zeroxorders_.storedorder.md#outcome)*
 
-*Defined in [packages/augur-sdk/src/state/db/ZeroXOrders.ts:61](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/db/ZeroXOrders.ts#L61)*
+Defined in packages/augur-sdk-lite/build/zeroX.d.ts:5
 
 ___
 
@@ -110,9 +110,9 @@ ___
 
 • **price**: *string*
 
-*Inherited from [OrderData](_augur_sdk_src_state_db_zeroxorders_.orderdata.md).[price](_augur_sdk_src_state_db_zeroxorders_.orderdata.md#price)*
+*Inherited from [StoredOrder](_augur_sdk_src_state_db_zeroxorders_.storedorder.md).[price](_augur_sdk_src_state_db_zeroxorders_.storedorder.md#price)*
 
-*Defined in [packages/augur-sdk/src/state/db/ZeroXOrders.ts:60](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/db/ZeroXOrders.ts#L60)*
+Defined in packages/augur-sdk-lite/build/zeroX.d.ts:4
 
 ___
 
@@ -120,4 +120,4 @@ ___
 
 • **signedOrder**: *[StoredSignedOrder](_augur_sdk_src_state_db_zeroxorders_.storedsignedorder.md)*
 
-*Defined in [packages/augur-sdk/src/state/db/ZeroXOrders.ts:76](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/db/ZeroXOrders.ts#L76)*
+*Defined in [packages/augur-sdk/src/state/db/ZeroXOrders.ts:37](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/db/ZeroXOrders.ts#L37)*

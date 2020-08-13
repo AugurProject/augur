@@ -32,7 +32,7 @@
 
 \+ **new AbstractSyncStrategy**(`getLogs`: function, `contractAddresses`: string[], `onLogsAdded`: function): *[AbstractSyncStrategy](_augur_sdk_src_state_sync_abstractsyncstrategy_.abstractsyncstrategy.md)*
 
-*Defined in [packages/augur-sdk/src/state/sync/AbstractSyncStrategy.ts:8](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/sync/AbstractSyncStrategy.ts#L8)*
+*Defined in [packages/augur-sdk/src/state/sync/AbstractSyncStrategy.ts:8](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/sync/AbstractSyncStrategy.ts#L8)*
 
 **Parameters:**
 
@@ -67,7 +67,7 @@ Name | Type |
 
 • **contractAddresses**: *string[]*
 
-*Defined in [packages/augur-sdk/src/state/sync/AbstractSyncStrategy.ts:11](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/sync/AbstractSyncStrategy.ts#L11)*
+*Defined in [packages/augur-sdk/src/state/sync/AbstractSyncStrategy.ts:11](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/sync/AbstractSyncStrategy.ts#L11)*
 
 ___
 
@@ -75,7 +75,7 @@ ___
 
 • **getLogs**: *function*
 
-*Defined in [packages/augur-sdk/src/state/sync/AbstractSyncStrategy.ts:10](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/sync/AbstractSyncStrategy.ts#L10)*
+*Defined in [packages/augur-sdk/src/state/sync/AbstractSyncStrategy.ts:10](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/sync/AbstractSyncStrategy.ts#L10)*
 
 #### Type declaration:
 
@@ -93,7 +93,7 @@ ___
 
 • **onLogsAdded**: *function*
 
-*Defined in [packages/augur-sdk/src/state/sync/AbstractSyncStrategy.ts:12](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/sync/AbstractSyncStrategy.ts#L12)*
+*Defined in [packages/augur-sdk/src/state/sync/AbstractSyncStrategy.ts:12](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/sync/AbstractSyncStrategy.ts#L12)*
 
 #### Type declaration:
 
@@ -112,7 +112,7 @@ Name | Type |
 
 ▸ **start**(`blockNumber`: number, `endBlockNumber?`: number): *Promise‹number›*
 
-*Defined in [packages/augur-sdk/src/state/sync/AbstractSyncStrategy.ts:16](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/sync/AbstractSyncStrategy.ts#L16)*
+*Defined in [packages/augur-sdk/src/state/sync/AbstractSyncStrategy.ts:16](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/sync/AbstractSyncStrategy.ts#L16)*
 
 **Parameters:**
 

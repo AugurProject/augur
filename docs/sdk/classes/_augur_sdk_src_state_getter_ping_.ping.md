@@ -22,7 +22,7 @@
 
 ▪ **PingParams**: *TypeC‹object›* = t.type({})
 
-*Defined in [packages/augur-sdk/src/state/getter/Ping.ts:10](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/getter/Ping.ts#L10)*
+*Defined in [packages/augur-sdk/src/state/getter/Ping.ts:10](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/getter/Ping.ts#L10)*
 
 ## Methods
 
@@ -30,7 +30,7 @@
 
 ▸ **ping**(`db`: [DB](_augur_sdk_src_state_db_db_.db.md), `params`: t.TypeOf‹typeof PingParams›): *Promise‹[Pong](../interfaces/_augur_sdk_src_state_getter_ping_.pong.md)›*
 
-*Defined in [packages/augur-sdk/src/state/getter/Ping.ts:13](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/getter/Ping.ts#L13)*
+*Defined in [packages/augur-sdk/src/state/getter/Ping.ts:13](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/getter/Ping.ts#L13)*
 
 **Parameters:**
 

@@ -30,7 +30,7 @@
 
 • **address**: *string*
 
-*Defined in [packages/augur-types/types/logs.ts:20](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-types/types/logs.ts#L20)*
+*Defined in [packages/augur-types/types/logs.ts:20](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-types/types/logs.ts#L20)*
 
 ___
 
@@ -38,7 +38,7 @@ ___
 
 • **blockHash**: *string*
 
-*Defined in [packages/augur-types/types/logs.ts:22](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-types/types/logs.ts#L22)*
+*Defined in [packages/augur-types/types/logs.ts:22](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-types/types/logs.ts#L22)*
 
 ___
 
@@ -46,7 +46,7 @@ ___
 
 • **blockNumber**: *number*
 
-*Defined in [packages/augur-types/types/logs.ts:21](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-types/types/logs.ts#L21)*
+*Defined in [packages/augur-types/types/logs.ts:21](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-types/types/logs.ts#L21)*
 
 ___
 
@@ -54,7 +54,7 @@ ___
 
 • **logIndex**: *number*
 
-*Defined in [packages/augur-types/types/logs.ts:26](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-types/types/logs.ts#L26)*
+*Defined in [packages/augur-types/types/logs.ts:26](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-types/types/logs.ts#L26)*
 
 ___
 
@@ -62,7 +62,7 @@ ___
 
 • **name**: *string*
 
-*Defined in [packages/augur-types/types/logs.ts:19](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-types/types/logs.ts#L19)*
+*Defined in [packages/augur-types/types/logs.ts:19](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-types/types/logs.ts#L19)*
 
 ___
 
@@ -70,7 +70,7 @@ ___
 
 • **removed**: *boolean*
 
-*Defined in [packages/augur-types/types/logs.ts:24](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-types/types/logs.ts#L24)*
+*Defined in [packages/augur-types/types/logs.ts:24](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-types/types/logs.ts#L24)*
 
 ___
 
@@ -78,7 +78,7 @@ ___
 
 • **topics**? : *Array‹string | string[]›*
 
-*Defined in [packages/augur-types/types/logs.ts:27](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-types/types/logs.ts#L27)*
+*Defined in [packages/augur-types/types/logs.ts:27](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-types/types/logs.ts#L27)*
 
 ___
 
@@ -86,7 +86,7 @@ ___
 
 • **transactionHash**: *string*
 
-*Defined in [packages/augur-types/types/logs.ts:25](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-types/types/logs.ts#L25)*
+*Defined in [packages/augur-types/types/logs.ts:25](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-types/types/logs.ts#L25)*
 
 ___
 
@@ -94,4 +94,4 @@ ___
 
 • **transactionIndex**: *number*
 
-*Defined in [packages/augur-types/types/logs.ts:23](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-types/types/logs.ts#L23)*
+*Defined in [packages/augur-types/types/logs.ts:23](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-types/types/logs.ts#L23)*

@@ -28,7 +28,7 @@
 
 Ƭ **BlockRemovalCallback**: *function*
 
-*Defined in [packages/augur-sdk/src/state/logs/LogFilterAggregator.ts:30](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/logs/LogFilterAggregator.ts#L30)*
+*Defined in [packages/augur-sdk/src/state/logs/LogFilterAggregator.ts:30](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/logs/LogFilterAggregator.ts#L30)*
 
 #### Type declaration:
 
@@ -46,7 +46,7 @@ ___
 
 Ƭ **EventTopics**: *string | string[]*
 
-*Defined in [packages/augur-sdk/src/state/logs/LogFilterAggregator.ts:4](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/logs/LogFilterAggregator.ts#L4)*
+*Defined in [packages/augur-sdk/src/state/logs/LogFilterAggregator.ts:4](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/logs/LogFilterAggregator.ts#L4)*
 
 ___
 
@@ -54,7 +54,7 @@ ___
 
 Ƭ **GenericLogCallbackType**: *function*
 
-*Defined in [packages/augur-sdk/src/state/logs/LogFilterAggregator.ts:6](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/logs/LogFilterAggregator.ts#L6)*
+*Defined in [packages/augur-sdk/src/state/logs/LogFilterAggregator.ts:6](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/logs/LogFilterAggregator.ts#L6)*
 
 #### Type declaration:
 
@@ -73,4 +73,4 @@ ___
 
 Ƭ **LogCallbackType**: *[GenericLogCallbackType](_augur_sdk_src_state_logs_logfilteraggregator_.md#genericlogcallbacktype)‹number, [ParsedLog](../interfaces/_augur_types_types_logs_.parsedlog.md)›*
 
-*Defined in [packages/augur-sdk/src/state/logs/LogFilterAggregator.ts:10](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/logs/LogFilterAggregator.ts#L10)*
+*Defined in [packages/augur-sdk/src/state/logs/LogFilterAggregator.ts:10](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/logs/LogFilterAggregator.ts#L10)*

@@ -31,7 +31,7 @@
 
 • **expirationTimeSeconds**: *BigNumber*
 
-*Defined in [packages/augur-sdk/src/api/ZeroX.ts:136](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/api/ZeroX.ts#L136)*
+*Defined in [packages/augur-sdk/src/api/ZeroX.ts:151](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/api/ZeroX.ts#L151)*
 
 ___
 
@@ -39,7 +39,7 @@ ___
 
 • **feeRecipientAddress**: *string*
 
-*Defined in [packages/augur-sdk/src/api/ZeroX.ts:130](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/api/ZeroX.ts#L130)*
+*Defined in [packages/augur-sdk/src/api/ZeroX.ts:145](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/api/ZeroX.ts#L145)*
 
 ___
 
@@ -47,7 +47,7 @@ ___
 
 • **makerAddress**: *string*
 
-*Defined in [packages/augur-sdk/src/api/ZeroX.ts:128](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/api/ZeroX.ts#L128)*
+*Defined in [packages/augur-sdk/src/api/ZeroX.ts:143](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/api/ZeroX.ts#L143)*
 
 ___
 
@@ -55,7 +55,7 @@ ___
 
 • **makerAssetAmount**: *BigNumber*
 
-*Defined in [packages/augur-sdk/src/api/ZeroX.ts:132](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/api/ZeroX.ts#L132)*
+*Defined in [packages/augur-sdk/src/api/ZeroX.ts:147](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/api/ZeroX.ts#L147)*
 
 ___
 
@@ -63,7 +63,7 @@ ___
 
 • **makerAssetData**: *string*
 
-*Defined in [packages/augur-sdk/src/api/ZeroX.ts:138](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/api/ZeroX.ts#L138)*
+*Defined in [packages/augur-sdk/src/api/ZeroX.ts:153](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/api/ZeroX.ts#L153)*
 
 ___
 
@@ -71,7 +71,7 @@ ___
 
 • **makerFee**: *BigNumber*
 
-*Defined in [packages/augur-sdk/src/api/ZeroX.ts:134](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/api/ZeroX.ts#L134)*
+*Defined in [packages/augur-sdk/src/api/ZeroX.ts:149](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/api/ZeroX.ts#L149)*
 
 ___
 
@@ -79,7 +79,7 @@ ___
 
 • **makerFeeAssetData**: *string*
 
-*Defined in [packages/augur-sdk/src/api/ZeroX.ts:140](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/api/ZeroX.ts#L140)*
+*Defined in [packages/augur-sdk/src/api/ZeroX.ts:155](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/api/ZeroX.ts#L155)*
 
 ___
 
@@ -87,7 +87,7 @@ ___
 
 • **salt**: *BigNumber*
 
-*Defined in [packages/augur-sdk/src/api/ZeroX.ts:137](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/api/ZeroX.ts#L137)*
+*Defined in [packages/augur-sdk/src/api/ZeroX.ts:152](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/api/ZeroX.ts#L152)*
 
 ___
 
@@ -95,7 +95,7 @@ ___
 
 • **senderAddress**: *string*
 
-*Defined in [packages/augur-sdk/src/api/ZeroX.ts:131](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/api/ZeroX.ts#L131)*
+*Defined in [packages/augur-sdk/src/api/ZeroX.ts:146](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/api/ZeroX.ts#L146)*
 
 ___
 
@@ -103,7 +103,7 @@ ___
 
 • **takerAddress**: *string*
 
-*Defined in [packages/augur-sdk/src/api/ZeroX.ts:129](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/api/ZeroX.ts#L129)*
+*Defined in [packages/augur-sdk/src/api/ZeroX.ts:144](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/api/ZeroX.ts#L144)*
 
 ___
 
@@ -111,7 +111,7 @@ ___
 
 • **takerAssetAmount**: *BigNumber*
 
-*Defined in [packages/augur-sdk/src/api/ZeroX.ts:133](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/api/ZeroX.ts#L133)*
+*Defined in [packages/augur-sdk/src/api/ZeroX.ts:148](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/api/ZeroX.ts#L148)*
 
 ___
 
@@ -119,7 +119,7 @@ ___
 
 • **takerAssetData**: *string*
 
-*Defined in [packages/augur-sdk/src/api/ZeroX.ts:139](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/api/ZeroX.ts#L139)*
+*Defined in [packages/augur-sdk/src/api/ZeroX.ts:154](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/api/ZeroX.ts#L154)*
 
 ___
 
@@ -127,7 +127,7 @@ ___
 
 • **takerFee**: *BigNumber*
 
-*Defined in [packages/augur-sdk/src/api/ZeroX.ts:135](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/api/ZeroX.ts#L135)*
+*Defined in [packages/augur-sdk/src/api/ZeroX.ts:150](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/api/ZeroX.ts#L150)*
 
 ___
 
@@ -135,4 +135,4 @@ ___
 
 • **takerFeeAssetData**: *string*
 
-*Defined in [packages/augur-sdk/src/api/ZeroX.ts:141](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/api/ZeroX.ts#L141)*
+*Defined in [packages/augur-sdk/src/api/ZeroX.ts:156](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/api/ZeroX.ts#L156)*

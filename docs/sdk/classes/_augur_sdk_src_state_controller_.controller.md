@@ -16,7 +16,7 @@
 
 * [augur](_augur_sdk_src_state_controller_.controller.md#private-augur)
 * [db](_augur_sdk_src_state_controller_.controller.md#private-db)
-* [events](_augur_sdk_src_state_controller_.controller.md#private-events)
+* [events](_augur_sdk_src_state_controller_.controller.md#private-readonly-events)
 * [logFilterAggregator](_augur_sdk_src_state_controller_.controller.md#private-logfilteraggregator)
 * [latestBlock](_augur_sdk_src_state_controller_.controller.md#static-private-latestblock)
 
@@ -33,7 +33,7 @@
 
 \+ **new Controller**(`augur`: [Augur](_augur_sdk_src_augur_.augur.md), `db`: Promise‹[DB](_augur_sdk_src_state_db_db_.db.md)›, `logFilterAggregator`: [LogFilterAggregatorInterface](../interfaces/_augur_sdk_src_state_logs_logfilteraggregator_.logfilteraggregatorinterface.md)): *[Controller](_augur_sdk_src_state_controller_.controller.md)*
 
-*Defined in [packages/augur-sdk/src/state/Controller.ts:17](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/Controller.ts#L17)*
+*Defined in [packages/augur-sdk/src/state/Controller.ts:14](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/Controller.ts#L14)*
 
 **Parameters:**
 
@@ -51,7 +51,7 @@ Name | Type |
 
 • **augur**: *[Augur](_augur_sdk_src_augur_.augur.md)*
 
-*Defined in [packages/augur-sdk/src/state/Controller.ts:20](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/Controller.ts#L20)*
+*Defined in [packages/augur-sdk/src/state/Controller.ts:17](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/Controller.ts#L17)*
 
 ___
 
@@ -59,15 +59,15 @@ ___
 
 • **db**: *Promise‹[DB](_augur_sdk_src_state_db_db_.db.md)›*
 
-*Defined in [packages/augur-sdk/src/state/Controller.ts:21](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/Controller.ts#L21)*
+*Defined in [packages/augur-sdk/src/state/Controller.ts:18](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/Controller.ts#L18)*
 
 ___
 
-### `Private` events
+### `Private` `Readonly` events
 
 • **events**: *any*
 
-*Defined in [packages/augur-sdk/src/state/Controller.ts:17](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/Controller.ts#L17)*
+*Defined in [packages/augur-sdk/src/state/Controller.ts:14](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/Controller.ts#L14)*
 
 ___
 
@@ -75,7 +75,7 @@ ___
 
 • **logFilterAggregator**: *[LogFilterAggregatorInterface](../interfaces/_augur_sdk_src_state_logs_logfilteraggregator_.logfilteraggregatorinterface.md)*
 
-*Defined in [packages/augur-sdk/src/state/Controller.ts:22](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/Controller.ts#L22)*
+*Defined in [packages/augur-sdk/src/state/Controller.ts:19](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/Controller.ts#L19)*
 
 ___
 
@@ -83,7 +83,7 @@ ___
 
 ▪ **latestBlock**: *Block*
 
-*Defined in [packages/augur-sdk/src/state/Controller.ts:15](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/Controller.ts#L15)*
+*Defined in [packages/augur-sdk/src/state/Controller.ts:12](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/Controller.ts#L12)*
 
 ## Methods
 
@@ -91,7 +91,7 @@ ___
 
 ▸ **allEvents**(`blockNumber`: number, `allLogs`: [ParsedLog](../interfaces/_augur_types_types_logs_.parsedlog.md)[]): *Promise‹void›*
 
-*Defined in [packages/augur-sdk/src/state/Controller.ts:49](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/Controller.ts#L49)*
+*Defined in [packages/augur-sdk/src/state/Controller.ts:53](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/Controller.ts#L53)*
 
 **Parameters:**
 
@@ -108,7 +108,7 @@ ___
 
 ▸ **getLatestBlock**(): *Promise‹Block›*
 
-*Defined in [packages/augur-sdk/src/state/Controller.ts:96](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/Controller.ts#L96)*
+*Defined in [packages/augur-sdk/src/state/Controller.ts:99](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/Controller.ts#L99)*
 
 **Returns:** *Promise‹Block›*
 
@@ -118,7 +118,7 @@ ___
 
 ▸ **notifyNewBlockEvent**(`blockNumber`: number, `logs`: [ParsedLog](../interfaces/_augur_types_types_logs_.parsedlog.md)[]): *Promise‹void›*
 
-*Defined in [packages/augur-sdk/src/state/Controller.ts:66](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/Controller.ts#L66)*
+*Defined in [packages/augur-sdk/src/state/Controller.ts:72](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/Controller.ts#L72)*
 
 **Parameters:**
 
@@ -135,7 +135,7 @@ ___
 
 ▸ **updateMarketsData**(`marketIds`: string[]): *Promise‹void›*
 
-*Defined in [packages/augur-sdk/src/state/Controller.ts:37](https://github.com/AugurProject/augur/blob/69c4be52bf/packages/augur-sdk/src/state/Controller.ts#L37)*
+*Defined in [packages/augur-sdk/src/state/Controller.ts:37](https://github.com/AugurProject/augur/blob/88b6e76efb/packages/augur-sdk/src/state/Controller.ts#L37)*
 
 **Parameters:**
 
