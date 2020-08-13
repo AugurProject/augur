@@ -190,6 +190,7 @@ const getOptions = ({
     labels: {
       style: null,
       format: isTrading ? '{value:%H:%M}' : '{value:%l:%M %p}',
+      y: isTrading ? undefined : 27;
     },
     crosshair: {
       snap: true,
@@ -210,10 +211,12 @@ const getOptions = ({
     showLastLabel: true,
     offset: 2,
     labels: {
+      align: isTrading ? 'right' : 'left',
       format: isScalar ? '{value:.4f}' : '${value:.2f}',
       style: null,
-      reserveSpace: true,
-      y: isTrading ? 16 : 0,
+      reserveSpace: isTrading,
+      y: isTrading ? 16 : -4,
+      x: isTrading ? -15 : 0,
     },
     crosshair: {
       snap: true,

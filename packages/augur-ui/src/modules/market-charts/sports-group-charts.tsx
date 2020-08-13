@@ -64,6 +64,7 @@ export const SportsGroupCharts = ({ sportsGroup }) => {
               className={classNames({
                 [Styles.hidden]:
                   outcome.id === 0 && outcome.lastPricePercent.value === 0,
+                [Styles.invalid]: outcome.id === 0,
               })}
             >
               <span>{outcome.description}</span>

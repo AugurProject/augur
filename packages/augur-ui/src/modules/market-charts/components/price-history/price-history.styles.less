@@ -286,6 +286,10 @@
           display: none;
         }
 
+        g.highcharts-yaxis-grid path.highcharts-grid-line:nth-child(1) {
+          display: block;
+        }
+
         .highcharts-axis-line {
           stroke-width: 0;
           transform: none;
@@ -293,6 +297,14 @@
 
         .highcharts-tick {
           stroke-width: 0;
+        }
+
+        g.highcharts-xaxis-labels > text {
+          .text-10-semi-bold;
+
+          > tspan {
+            .text-10-semi-bold;
+          }
         }
       }
     }
