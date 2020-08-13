@@ -7,6 +7,7 @@ import 'ROOT/trading/erc20proxy1155/IERC20Proxy1155.sol';
 
 contract ERC20Proxy1155 is IERC20Proxy1155 {
     function initialize(IERC20Proxy1155Nexus _nexus, uint256 _tokenId) public {
+        require(nexus == IERC20Proxy1155Nexus(0));
         nexus = _nexus;
         tokenId = _tokenId;
     }

@@ -160,6 +160,11 @@ def test_malicious_proxy(testerSnapshot, fixture, nexus, market, cash, shareToke
     benignProxy.transferFrom(account0, account2, shares - 1, sender=account1)
 
 
+def test_re_init(testerSnapshot, erc20):
+    with raises(TransactionFailed):
+        erc20.initialize(NULL_ADDRESS, 40000)
+
+
 def test_bulk(testerSnapshot, sessionFixture, nexus):
     erc20s = nexus.newERC20s([5, 7, 21])
     assert len(erc20s) == 3
