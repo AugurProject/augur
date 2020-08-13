@@ -34,6 +34,7 @@ import { useMarketsStore } from 'modules/markets/store/markets';
 import { useBetslipStore } from 'modules/trading/store/betslip';
 import { convertInputs, findStartTime } from 'modules/market/components/common/market-title';
 import EmptyDisplay from '../common/empty-display';
+import { getOutcomeNameWithOutcome } from 'utils/get-outcome';
 
 export const outcomesData = (myBets) => myBets.reduce(
   (p, game) => [
