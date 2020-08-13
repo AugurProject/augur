@@ -4,7 +4,7 @@ import { LinearPropertyLabel } from 'modules/common/labels';
 import {
   AVAILABLE_TRADING_BALANCE,
   TOTAL_FROZEN_FUNDS,
-  TOTAL_ACCOUNT_VALUE_IN_DAI,
+  TOTAL_ACCOUNT_VALUE_IN_DAI, THEMES, AVAILABLE_BETTING_BALANCE, TOTAL_EXPOSURE,
 } from 'modules/common/constants';
 import { MODAL_FROZEN_FUNDS } from 'modules/common/constants';
 import Styles from 'modules/account/components/funds.styles.less';
@@ -15,26 +15,25 @@ import {
 } from "modules/auth/helpers/login-account";
 
 const Funds = () => {
-  const { loginAccount, actions: { setModal } } = useAppStatusStore();
+  const { loginAccount, theme, actions: { setModal } } = useAppStatusStore();
   const {
     totalFrozenFunds,
     totalAvailableTradingBalance,
     totalAccountValue,
   } = getAccountFunds(loginAccount);
-  const { tradingPositionsTotal } = loginAccount;
   return (
     <section className={Styles.Funds}>
       <h4>{TOTAL_ACCOUNT_VALUE_IN_DAI}</h4>
       <div>{formatDai(totalAccountValue, { removeComma: true }).full}</div>
       <LinearPropertyLabel
         value={formatDai(totalAvailableTradingBalance, { removeComma: true }).full}
-        label={AVAILABLE_TRADING_BALANCE}
+        label={theme === THEMES.TRADING ? AVAILABLE_TRADING_BALANCE : AVAILABLE_BETTING_BALANCE}
       />
       <LinearPropertyLabel
         value={formatDai(totalFrozenFunds, { removeComma: true }).full}
-        underline
-        label={TOTAL_FROZEN_FUNDS}
-        onValueClick={() => setModal({ type: MODAL_FROZEN_FUNDS })}
+        underline={theme === THEMES.TRADING}
+        label={theme === THEMES.TRADING ? TOTAL_FROZEN_FUNDS : TOTAL_EXPOSURE}
+        onValueClick={theme === THEMES.TRADING ? () => setModal({ type: MODAL_FROZEN_FUNDS }) : null}
       />
     </section>
   );

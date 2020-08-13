@@ -67,7 +67,7 @@
 }
 
 .ProfitLossChart {
-  margin: 0;
+  margin: @size-20 0 0 0;
   pointer-events: none;
   overflow: hidden;
   width: 100%;
@@ -82,14 +82,14 @@
       g.highcharts-yaxis-labels > text {
         .mono-9-bold;
         // y axis labels
-        fill: var(--color-primary-text);
+        fill: var(--color-secondary-text);
       }
 
       g.highcharts-xaxis-labels > text > tspan,
       g.highcharts-xaxis-labels > text {
         .mono-9-bold;
         // x axis labels
-        fill: var(--color-primary-text);
+        fill: var(--color-secondary-text);
         text-transform: uppercase;
       }
 
@@ -97,7 +97,7 @@
       .highcharts-label {
         .mono-10-medium;
 
-        fill: var(--color-primary-text);
+        fill: var(--color-secondary-text);
       }
 
       .highcharts-no-data {
