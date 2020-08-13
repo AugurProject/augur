@@ -8,11 +8,7 @@ import { selectPriceTimeSeries } from 'modules/markets/selectors/price-time-seri
 import { AppStatus } from 'modules/app/store/app-status';
 import { Markets } from '../store/markets';
 
-export default function(marketId) {
-  return bucketedPriceTimeSeries(marketId);
-}
-
-export const bucketedPriceTimeSeries = marketId => {
+export const getBucketedPriceTimeSeries = (marketId, rangeValue = 0) => {
   const { marketInfos, marketTradingHistory } = Markets.get();
   const marketData = marketInfos[marketId];
   const marketTradeHistory = marketTradingHistory[marketId];
@@ -23,7 +19,7 @@ export const bucketedPriceTimeSeries = marketId => {
   const creationTime = convertUnixToFormattedDate(
     marketData.creationTime
   ).value.getTime();
-
+  
   const outcomes =
     Object.keys(marketData.outcomes).map(oId => ({
       ...marketData.outcomes[oId],
@@ -33,9 +29,10 @@ export const bucketedPriceTimeSeries = marketId => {
       ),
     })) || [];
   const currentTime = currentAugurTimestamp * 1000 || Date.now();
+  const startTime = rangeValue === 0 ? creationTime : currentTime - (rangeValue * 1000);
 
   return bucketedPriceTimeSeriesInternal(
-    creationTime,
+    startTime <= creationTime ? creationTime : startTime,
     currentTime,
     outcomes,
     marketData.minPrice

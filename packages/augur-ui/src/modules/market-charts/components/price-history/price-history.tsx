@@ -5,7 +5,7 @@ import NoDataToDisplay from 'highcharts/modules/no-data-to-display';
 import Styles from 'modules/market-charts/components/price-history/price-history.styles.less';
 import { selectMarket } from 'modules/markets/selectors/market';
 import { SCALAR, TRADING_TUTORIAL, THEMES } from 'modules/common/constants';
-import selectBucketedPriceTimeSeries from 'modules/markets/selectors/select-bucketed-price-time-series';
+import { getBucketedPriceTimeSeries } from 'modules/markets/selectors/select-bucketed-price-time-series';
 import { MarketData } from 'modules/types';
 import { useAppStatusStore } from 'modules/app/store/app-status';
 
@@ -39,6 +39,7 @@ interface PriceHistoryProps {
   market: MarketData;
   selectedOutcomeId?: number;
   isArchived?: boolean;
+  rangeValue?: number;
 }
 
 const PriceHistory = ({
@@ -46,8 +47,10 @@ const PriceHistory = ({
   isArchived,
   marketId,
   market,
+  rangeValue = 0,
 }: PriceHistoryProps) => {
-  const { theme } = useAppStatusStore();
+  const { theme, timeFormat } = useAppStatusStore();
+  const is24hr = timeFormat === '24h';
   const isTrading = theme === THEMES.TRADING;
   const isTradingTutorial = marketId === TRADING_TUTORIAL;
   const {
@@ -59,7 +62,7 @@ const PriceHistory = ({
   const isScalar = marketType === SCALAR;
 
   const bucketedPriceTimeSeries = !isTradingTutorial
-    ? selectBucketedPriceTimeSeries(marketId)
+    ? getBucketedPriceTimeSeries(marketId, rangeValue)
     : {};
 
   const maxPrice = !isTradingTutorial ? maxPriceBigNumber.toNumber() : 0;
@@ -74,6 +77,7 @@ const PriceHistory = ({
     pricePrecision,
     isArchived,
     isTrading,
+    is24hr,
   });
   const { priceTimeSeries } = bucketedPriceTimeSeries;
   const hasPriceTimeSeries =
@@ -100,9 +104,13 @@ const PriceHistory = ({
       units: [['minute', [1]]],
     };
 
+    options.xAxis.crosshair.label.format = is24hr
+      ? '{value:%b %d %H:%M}'
+      : '{value:%b %d %l:%M %p}';
+
     const newOptions = Object.assign(options, { series });
     Highcharts.stockChart(container.current, newOptions);
-  }, [selectedOutcomeId, hasPriceTimeSeries]);
+  }, [selectedOutcomeId, hasPriceTimeSeries, is24hr]);
 
   useEffect(() => {
     Highcharts.charts.forEach(chart => {
@@ -134,6 +142,7 @@ const getOptions = ({
   isScalar,
   isArchived,
   isTrading,
+  is24hr,
 }) => ({
   lang: {
     noData: isArchived ? 'Data Archived' : 'No Completed Trades',
@@ -188,7 +197,7 @@ const getOptions = ({
         enabled: true,
         shape: 'square',
         padding: 2,
-        format: '{value:%b %d %H:%M}',
+        format: is24hr ? '{value:%b %d %H:%M}' : '{value:%b %d %l:%M %p}',
       },
     },
   },
@@ -233,7 +242,10 @@ const handleSeries = (
   const series = [];
   priceTimeSeries &&
     Object.keys(priceTimeSeries).forEach(id => {
-      const isInvalidEmpty = id === "0" && !isTrading && priceTimeSeries[id][priceTimeSeries[id].length - 1].price === "0";
+      const isInvalidEmpty =
+        id === '0' &&
+        !isTrading &&
+        priceTimeSeries[id][priceTimeSeries[id].length - 1].price === '0';
       const isSelected = selectedOutcomeId && selectedOutcomeId == id;
       const length = priceTimeSeries[id].length;
       if (
@@ -254,7 +266,7 @@ const handleSeries = (
         },
         // @ts-ignore
         data,
-        visible: !isInvalidEmpty
+        visible: !isInvalidEmpty,
       };
 
       series.push({
