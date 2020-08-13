@@ -60,6 +60,7 @@ import {
 import MarkdownRenderer from 'modules/common/markdown-renderer';
 import makeQuery from 'modules/routes/helpers/make-query';
 import { useAppStatusStore, AppStatus } from 'modules/app/store/app-status';
+import { pathToChildCategory } from 'modules/app/components/inner-nav/category-filters';
 
 interface CheckboxProps {
   id: string;
@@ -2309,13 +2310,19 @@ export interface CategoryRowProps {
   category: string;
   count?: number;
   icon?: React.ReactNode;
+  showChildren?: boolean;
+  children?: any[];
+  parentCategory?: string;
 }
 
 export const CategoryRow = ({
   handleClick = noop,
+  parentCategory,
   category,
   count = 0,
   icon,
+  children,
+  showChildren,
 }: CategoryRowProps) => {
   const {
     theme,
@@ -2347,26 +2354,47 @@ export const CategoryRow = ({
     }
   };
 
+  const [showChildrenOption, setShowChildren] = useState(false);
+
   return (
-    <div
-      onClick={isSportsTheme && isMobile ? null : clickFnc}
-      className={classNames(Styles.CategoryRow, {
-        [Styles.active]: active,
-        [Styles.loading]: loading,
-        [Styles.bold]: bold,
-      })}
-    >
-      <span>
-        {icon} {isShortText ? category.toUpperCase() : category}
-      </span>
-      {loading ? (
-        <span>{LoadingEllipse}</span>
-      ) : (
-        <span onClick={isSportsTheme && isMobile ? clickFnc : null}>
-          {count}
+    <>
+      <div
+        onClick={isSportsTheme && isMobile ? null : clickFnc}
+        className={classNames(Styles.CategoryRow, {
+          [Styles.active]: active,
+          [Styles.loading]: loading,
+          [Styles.bold]: bold,
+        })}
+      >
+        <span onClick={() => setShowChildren(!showChildrenOption)}>
+          {icon} {isShortText ? category.toUpperCase() : category}
+          {showChildren && Object.keys(children).length > 0 && (
+            <ChevronFlip
+              pointDown={showChildrenOption}
+              filledInIcon
+              instant
+            />
+          )}
         </span>
-      )}
-    </div>
+        {loading ? (
+          <span>{LoadingEllipse}</span>
+        ) : (
+          <span onClick={isSportsTheme && isMobile ? clickFnc : null}>
+            {count}
+          </span>
+        )}
+      </div>
+      {showChildrenOption &&
+        Object.keys(children).map(childName => (
+          <CategoryRow
+            category={childName}
+            count={children[childName].count}
+            handleClick={() =>
+              pathToChildCategory(childName, [parentCategory, category])
+            }
+          />
+        ))}
+    </>
   );
 };
 

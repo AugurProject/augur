@@ -6,22 +6,23 @@ import {
 import { getMarkets } from 'modules/markets/selectors/markets-all';
 import { AppStatus } from 'modules/app/store/app-status';
 
-export const selectPopularCategories = () => {
+export const selectPopularCategories = (useAllCategories) => {
   const { marketsList } = AppStatus.get();
-  if (!marketsList.isSearching && marketsList.meta) {
-    const categories = Object.keys(marketsList.meta.categories).map(category =>
+  const meta = useAllCategories ? marketsList.allCategoriesMeta : marketsList.meta;
+  if (!marketsList.isSearching && meta) {
+    const categories = Object.keys(meta.categories).map(category =>
       category.toLowerCase()
     );
 
     const mapObject = (category, idx) => {
-      const item = Object.keys(marketsList.meta.categories).find(
+      const item = Object.keys(meta.categories).find(
         c => c.toLowerCase() === category
       );
       return {
         category,
         icon: POPULAR_CATEGORIES_ICONS[category],
-        count: marketsList.meta.categories[item].count,
-        children: marketsList.meta.categories[item].children,
+        count: meta.categories[item].count,
+        children: meta.categories[item].children,
       };
     };
 

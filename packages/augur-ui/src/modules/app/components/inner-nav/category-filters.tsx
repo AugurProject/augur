@@ -14,13 +14,35 @@ import { MARKETS } from 'modules/routes/constants/views';
 import parseQuery from 'modules/routes/helpers/parse-query';
 import makeQuery from 'modules/routes/helpers/make-query';
 import { QueryEndpoints } from 'modules/types';
-import { useAppStatusStore } from 'modules/app/store/app-status';
+import { useAppStatusStore, AppStatus } from 'modules/app/store/app-status';
 import {
   selectPopularCategories,
   selectAllOtherCategories,
 } from 'modules/markets-list/selectors/markets-list';
 
 const { POLITICS, SPORTS } = SPORTSBOOK_CATEGORIES;
+
+export const pathToChildCategory = (
+  selectedCategory,
+  selectedCategories,
+  hidden = true
+) => {
+  const {
+    theme,
+    isMobile,
+    marketsList: { isSearching }
+  } = AppStatus.get();
+  if (isSearching && hidden) return [];
+  const isSportsTheme = theme === THEMES.SPORTS;
+  const sportsMobileView = isSportsTheme && isMobile;
+  if (sportsMobileView) {
+    const index = selectedCategories.findIndex(category => category === selectedCategory);
+    if (index > -1) {
+      return selectedCategories.slice(0, index + 1);
+    }
+  }
+  return selectedCategories.concat(selectedCategory);
+};
 
 const CategoryFilters = () => {
   const history = useHistory();
@@ -30,15 +52,22 @@ const CategoryFilters = () => {
     isMobile,
     marketsList: {
       isSearching,
-      meta: categoryMetaData,
       selectedCategories,
       selectedCategory,
     },
   } = useAppStatusStore();
-  const popularCategories = selectPopularCategories();
+  let {
+    marketsList: {
+      meta: categoryMetaData,
+      allCategoriesMeta
+    },
+  } = useAppStatusStore();
+  const isSportsTheme = theme === THEMES.SPORTS;
+  const sportsMobileView = isSportsTheme && isMobile;
+  if (sportsMobileView) categoryMetaData = allCategoriesMeta;
+  const popularCategories = selectPopularCategories(isSportsTheme);
   const allOtherCategories = selectAllOtherCategories();
   const [showAllCategories, setShowAllCategories] = useState(false);
-  const isSportsTheme = theme === THEMES.SPORTS;
 
   const removeCategoryQuery = () => {
     let updatedSearch = parseQuery(location.search);
@@ -105,15 +134,6 @@ const CategoryFilters = () => {
   const getSelectedCategoryCount = () => {
     // selected category is the last category in selectedCategories
     return getCategoryChildrenCount(selectedCategories);
-  };
-
-  const pathToChildCategory = (
-    selectedCategory,
-    selectedCategories,
-    hidden = true
-  ) => {
-    if (isSearching && hidden) return [];
-    return selectedCategories.concat(selectedCategory);
   };
 
   const removeBlankCategories = category => {
@@ -211,8 +231,11 @@ const CategoryFilters = () => {
               {subRows.map((subItem, index) => (
                 <div key={`${item.category}-${index}`}>
                   <CategoryRow
+                    parentCategory={item.category}
                     category={subItem.category}
                     count={subItem.count}
+                    children={subItem.children}
+                    showChildren={sportsMobileView}
                     handleClick={() =>
                       pathToChildCategory(subItem.category, [item.category])
                     }
@@ -291,7 +314,7 @@ const CategoryFilters = () => {
       </div>
     </div>
   );
-  const sportsTitle = selectedCategory ? selectedCategory : 'Popular Markets';
+  const sportsTitle = selectedCategory && !sportsMobileView ? selectedCategory : 'Popular Markets';
   return (
     <div className={Styles.CategoryFilters}>
       {isSportsTheme &&
@@ -306,13 +329,13 @@ const CategoryFilters = () => {
         ) : (
           <h3>{sportsTitle}</h3>
         ))}
-      {!hasSelectedCategories && renderPopularCategories()}
-      {!hasSelectedCategories && categoryMetaData && renderAllCategories()}
+      {(!hasSelectedCategories || sportsMobileView) && renderPopularCategories()}
+      {(!hasSelectedCategories && categoryMetaData || sportsMobileView) && renderAllCategories()}
 
-      {hasSelectedCategories && categoryMetaData && showAllCategoriesButton}
+      {hasSelectedCategories && categoryMetaData && !sportsMobileView && showAllCategoriesButton}
       {hasSelectedCategories &&
         categoryMetaData &&
-        hasSelectedCategoriesCount > 0 &&
+        hasSelectedCategoriesCount > 0 && !sportsMobileView && 
         renderSelectedCategories()}
     </div>
   );

@@ -498,6 +498,11 @@ export interface MarketsList {
     marketCount: number;
     categories: object;
   };
+  allCategoriesMeta: {
+    filteredOutCount: number;
+    marketCount: number;
+    categories: object;
+  };
   selectedCategories: string[];
   selectedCategory: string;
   marketCardFormat: string;
