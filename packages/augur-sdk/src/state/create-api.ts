@@ -197,8 +197,6 @@ export async function createServer(config: SDKConfiguration, client?: Augur): Pr
     config.zeroX?.mesh?.enabled || config.zeroX?.rpc?.enabled
   );
 
-  await db;
-
   if(config.warpSync?.createCheckpoints && config.warpSync?.autoReport) {
     client.events.on(SubscriptionEventName.WarpSyncHashUpdated,
       async ({ hash }) => {

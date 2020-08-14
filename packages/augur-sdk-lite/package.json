@@ -32,7 +32,7 @@
     "lz-string": "1.4.4"
   },
   "devDependencies": {
-    "@types/async": "3.2.3",
+    "@types/async": "3.0.1",
     "@types/cors": "2.8.6",
     "@types/node": "10.14.18",
     "@types/node-fetch": "2.5.1",

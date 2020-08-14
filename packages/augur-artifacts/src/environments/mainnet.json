@@ -123,6 +123,7 @@
     "enabled": true,
     "autoReport": false,
     "createCheckpoints": true
+
   },
   "syncing": {
     "enabled": true
@@ -131,6 +132,7 @@
   "sdk": {
     "enabled": false,
     "ws": "ws://localhost:60557"
+
   },
   "server": {
     "httpPort": 9003,
@@ -141,8 +143,9 @@
     "startWS": true,
     "wssPort": 9002,
     "startWSS": true
+
   },
-  "logLevel": 0,
+  "logLevel": 2,
   "showReloadModal": false,
   "averageBlocktime": 15000,
   "ui": {
