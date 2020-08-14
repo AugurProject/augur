@@ -2429,6 +2429,17 @@ div.error > div > div > div > div > input {
           stroke: var(--color-primary-text);
         }
       }
+
+      > span {
+        margin-left: @size-8;
+        display: flex;
+        
+        > svg {
+          > path {
+            stroke: var(--color-dark-text);
+          }
+        }
+      }
     }
 
     > span:last-of-type {
@@ -2482,6 +2493,11 @@ div.error > div > div > div > div > input {
         margin-top: @size-20;
       }
 
+      &:not(:first-of-type) {
+        margin-top: @size-20;
+        margin-left: @size-10;
+      }
+
       > span:first-of-type {
         display: flex;
         align-items: center;
@@ -2515,18 +2531,59 @@ div.error > div > div > div > div > input {
         border: @size-1 solid var(--color-secondary-text);
         border-radius: @border-radius-default;  
         color: var(--color-module-background);
-      }      
-
-      &.bold,
-      &.active {
+      }    
+    
+      &.bold {
         margin-top: @size-20;
         margin-bottom: 0;
         padding-top: @size-20;
         border-top: @size-1 dashed var(--color-secondary-text);
+
         > span:first-of-type {
           .text-14;
 
           color: var(--color-dark-text);
+          text-decoration: none;
+        }
+      }
+
+      &.active, 
+      &.hover {
+        > span:first-of-type {
+          .text-14;
+
+          color: var(--color-module-background);
+          text-decoration: none;
+        }
+
+        > span:last-of-type {
+          border: @size-1 solid var(--color-secondary-text);
+          color: var(--color-module-background);
+        }
+      }
+
+
+      &.loading {
+        > span:last-of-type {
+          border: 0;
+        }
+      }
+
+      &.active:not(.loading) {
+        > span:last-of-type {
+          border: @size-1 solid var(--color-secondary-text);
+        }
+      }
+  
+      &:hover:not(.loading) {
+        > span:first-of-type {
+          color: var(--color-dark-text);
+          text-decoration: none;
+        }
+  
+        > span:last-of-type {
+          border: @size-1 solid var(--color-secondary-text);
+          color: var(--color-module-background);
         }
       }
     }

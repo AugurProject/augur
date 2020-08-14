@@ -60,6 +60,7 @@ import {
 import MarkdownRenderer from 'modules/common/markdown-renderer';
 import makeQuery from 'modules/routes/helpers/make-query';
 import { useAppStatusStore, AppStatus } from 'modules/app/store/app-status';
+import { pathToChildCategory } from 'modules/app/components/inner-nav/category-filters';
 
 interface CheckboxProps {
   id: string;
@@ -401,7 +402,8 @@ export const determineVisible = (
   selected: string[]
 ) => {
   const showSecondaryDropdown = values[0] !== '' && secondaryOptions.length > 0;
-  const showTertiaryDropdown = tertiaryOptions.length > 0 && values[1] !== '' && !values[2];
+  const showTertiaryDropdown =
+    tertiaryOptions.length > 0 && values[1] !== '' && !values[2];
   const customPrimary =
     selected[0] === CUSTOM ||
     (selected[0] &&
@@ -417,7 +419,8 @@ export const determineVisible = (
     (selected[2] &&
       !disabledTertiary &&
       !tertiaryOptions.map(option => option.value).includes(selected[2])) ||
-    (!showTertiaryDropdown && values[1] !== '') || values[2];
+    (!showTertiaryDropdown && values[1] !== '') ||
+    values[2];
   return {
     showSecondaryDropdown,
     showTertiaryDropdown,
@@ -691,8 +694,12 @@ export class CategoryMultiSelect extends Component<
       disableTertiaryCategory,
       selected
     );
-    const tertiaryDefault = selected[2] || (!disableTertiaryCategory && tertiaryOptions.length > 0) ? (tertiaryOptions[0]?.label || tertiaryOptions[0]) : null;
-    if (tertiaryDefault && !selected[2]) this.onChangeDropdown(tertiaryDefault, 2)
+    const tertiaryDefault =
+      selected[2] || (!disableTertiaryCategory && tertiaryOptions.length > 0)
+        ? tertiaryOptions[0]?.label || tertiaryOptions[0]
+        : null;
+    if (tertiaryDefault && !selected[2])
+      this.onChangeDropdown(tertiaryDefault, 2);
     return (
       <ul
         className={classNames(Styles.CategoryMultiSelect, {
@@ -1285,7 +1292,7 @@ const RadioCard = ({
     className={classNames(Styles.RadioCard, {
       [Styles.RadioCardActive]: checked,
       [Styles.CustomIcon]: icon && !useIconColors,
-      [Styles.InverseFill]: icon && inverseFill
+      [Styles.InverseFill]: icon && inverseFill,
     })}
     role="button"
     onClick={e => onChange(value)}
@@ -1395,10 +1402,7 @@ export class TextInput extends React.Component<TextInputProps, TextInputState> {
     );
   };
 
-  debounceOnChange = debounce(
-    (value) => this.props.onChange(value),
-    500
-  );
+  debounceOnChange = debounce(value => this.props.onChange(value), 500);
 
   onChange = (e: any) => {
     const value = e.target.value;
@@ -2306,45 +2310,93 @@ export interface CategoryRowProps {
   category: string;
   count?: number;
   icon?: React.ReactNode;
+  showChildren?: boolean;
+  children?: any[];
+  parentCategory?: string;
 }
 
 export const CategoryRow = ({
   handleClick = noop,
+  parentCategory,
   category,
   count = 0,
   icon,
-}: CategoryRowProps) => { 
-  const { theme, marketsList: { isSearching: loading, selectedCategory } } = useAppStatusStore();
+  children,
+  showChildren,
+}: CategoryRowProps) => {
+  const {
+    theme,
+    isMobile,
+    marketsList: { isSearching: loading, selectedCategory },
+    mobileMenuState,
+    actions: { setMobileMenuState, closeAppMenus },
+  } = useAppStatusStore();
   const history = useHistory();
-  const bold = theme === THEMES.SPORTS && (category === SPORTSBOOK_CATEGORIES.SPORTS || category === SPORTSBOOK_CATEGORIES.POLITICS);
+  const isSportsTheme = theme === THEMES.SPORTS;
+  const bold =
+    theme === THEMES.SPORTS &&
+    (category === SPORTSBOOK_CATEGORIES.SPORTS ||
+      category === SPORTSBOOK_CATEGORIES.POLITICS);
   const isShortText = category && category.length <= 3;
   const active = selectedCategory === category;
+  const clickFnc = () => {
+    const categories = handleClick();
+    const query: QueryEndpoints = {
+      [CATEGORY_PARAM_NAME]: categories,
+    };
+    history.push({
+      pathname: 'markets',
+      search: makeQuery(query),
+    });
+    if (isMobile && isSportsTheme) {
+      closeAppMenus();
+      setMobileMenuState(mobileMenuState - 1);
+    }
+  };
+
+  const [showChildrenOption, setShowChildren] = useState(false);
+
   return (
-    <div
-      onClick={() => {
-        const categories = handleClick();
-        const query: QueryEndpoints = {
-          [CATEGORY_PARAM_NAME]: categories,
-        };
-        history.push({
-          pathname: 'markets',
-          search: makeQuery(query),
-        });
-      }}
-      className={classNames(Styles.CategoryRow, {
-        [Styles.active]: active,
-        [Styles.loading]: loading,
-        [Styles.bold]: bold,
-      })}
-    >
-      <span>
-        {icon}{' '}
-        {isShortText ? category.toUpperCase() : category}
-      </span>
-      {loading ? <span>{LoadingEllipse}</span> : <span>{count}</span>}
-    </div>
+    <>
+      <div
+        onClick={isSportsTheme && isMobile ? null : clickFnc}
+        className={classNames(Styles.CategoryRow, {
+          [Styles.active]: active,
+          [Styles.loading]: loading,
+          [Styles.bold]: bold,
+        })}
+      >
+        <span onClick={() => setShowChildren(!showChildrenOption)}>
+          {icon} {isShortText ? category.toUpperCase() : category}
+          {showChildren && Object.keys(children).length > 0 && (
+            <ChevronFlip
+              pointDown={showChildrenOption}
+              filledInIcon
+              instant
+            />
+          )}
+        </span>
+        {loading ? (
+          <span>{LoadingEllipse}</span>
+        ) : (
+          <span onClick={isSportsTheme && isMobile ? clickFnc : null}>
+            {count}
+          </span>
+        )}
+      </div>
+      {showChildrenOption && children &&
+        Object.keys(children).map(childName => (
+          <CategoryRow
+            category={childName}
+            count={children[childName].count}
+            handleClick={() =>
+              pathToChildCategory(childName, [parentCategory, category])
+            }
+          />
+        ))}
+    </>
   );
-}
+};
 
 export const MigrateRepInfo = () => (
   <section className={Styles.MigrateRepInfo}>

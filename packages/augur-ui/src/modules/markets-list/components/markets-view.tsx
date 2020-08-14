@@ -46,6 +46,7 @@ import {
 } from 'modules/app/store/constants';
 import { updateLoginAccountSettings } from '../actions/update-login-account-settings';
 import { marketListViewed } from 'services/analytics/helpers';
+import { categoriesGroup } from 'modules/app/components/inner-nav/category-filters.styles.less';
 
 const PAGINATION_COUNT = 10;
 
@@ -274,7 +275,11 @@ const MarketsView = () => {
               : showPagination,
           });
           // TODO: put liquidity getter here if we are in sportsbook.
-          updateMarketsList({ isSearching: false, meta: result.meta });
+          let data = { isSearching: false, meta: result.meta };
+          if(!selectedCategories || selectedCategories.length === 0) {
+            data.allCategoriesMeta = result.meta;
+          }
+          updateMarketsList(data);
         }
       }
     );

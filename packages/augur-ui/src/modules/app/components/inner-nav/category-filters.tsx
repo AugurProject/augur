@@ -4,38 +4,60 @@ import classNames from 'classnames';
 import { useHistory, useLocation } from 'react-router';
 import { MenuChevron, SearchIcon } from 'modules/common/icons';
 import { CategoryRow } from 'modules/common/form';
-import { CATEGORIES_MAX, CATEGORY_PARAM_NAME, THEMES, SPORTSBOOK_CATEGORIES } from 'modules/common/constants';
+import {
+  CATEGORIES_MAX,
+  CATEGORY_PARAM_NAME,
+  THEMES,
+  SPORTSBOOK_CATEGORIES,
+} from 'modules/common/constants';
 import { MARKETS } from 'modules/routes/constants/views';
 import parseQuery from 'modules/routes/helpers/parse-query';
 import makeQuery from 'modules/routes/helpers/make-query';
 import { QueryEndpoints } from 'modules/types';
-import { useAppStatusStore } from 'modules/app/store/app-status';
+import { useAppStatusStore, AppStatus } from 'modules/app/store/app-status';
 import {
   selectPopularCategories,
   selectAllOtherCategories,
 } from 'modules/markets-list/selectors/markets-list';
 
-const {
-  POLITICS,
-  SPORTS,
-} = SPORTSBOOK_CATEGORIES;
+const { POLITICS, SPORTS } = SPORTSBOOK_CATEGORIES;
+
+export const pathToChildCategory = (
+  selectedCategory,
+  selectedCategories,
+  hidden = true
+) => {
+  const {
+    marketsList: { isSearching }
+  } = AppStatus.get();
+  if (isSearching && hidden) return [];
+  return selectedCategories.concat(selectedCategory);
+};
 
 const CategoryFilters = () => {
   const history = useHistory();
   const location = useLocation();
   const {
     theme,
+    isMobile,
     marketsList: {
       isSearching,
-      meta: categoryMetaData,
       selectedCategories,
       selectedCategory,
     },
   } = useAppStatusStore();
-  const popularCategories = selectPopularCategories();
+  let {
+    marketsList: {
+      meta: categoryMetaData,
+      allCategoriesMeta
+    },
+  } = useAppStatusStore();
+  const isSportsTheme = theme === THEMES.SPORTS;
+  const sportsMobileView = isSportsTheme && isMobile;
+  if (sportsMobileView) categoryMetaData = allCategoriesMeta;
+  const popularCategories = selectPopularCategories(isSportsTheme);
   const allOtherCategories = selectAllOtherCategories();
   const [showAllCategories, setShowAllCategories] = useState(false);
-  const isSportsTheme = theme === THEMES.SPORTS;
 
   const removeCategoryQuery = () => {
     let updatedSearch = parseQuery(location.search);
@@ -104,15 +126,6 @@ const CategoryFilters = () => {
     return getCategoryChildrenCount(selectedCategories);
   };
 
-  const pathToChildCategory = (
-    selectedCategory,
-    selectedCategories,
-    hidden = true
-  ) => {
-    if (isSearching && hidden) return [];
-    return selectedCategories.concat(selectedCategory);
-  };
-
   const removeBlankCategories = category => {
     return Boolean(category);
   };
@@ -167,10 +180,14 @@ const CategoryFilters = () => {
       subRows.push({ category: key, ...value });
     }
     return subRows.sort((a, b) => b.count - a.count);
-  }
+  };
 
   const renderPopularCategories = () => {
-    const categoriesToRender = isSportsTheme ? popularCategories.filter(({ category }) => category === SPORTS || category === POLITICS) : popularCategories;
+    const categoriesToRender = isSportsTheme
+      ? popularCategories.filter(
+          ({ category }) => category === SPORTS || category === POLITICS
+        )
+      : popularCategories;
     let renderPopular = categoriesToRender.map((item, idx) => {
       if (isSearching) {
         // No meta data yet
@@ -196,7 +213,7 @@ const CategoryFilters = () => {
             icon={item.icon}
             count={item.count}
             handleClick={() =>
-              pathToChildCategory(item.category, selectedCategories)
+              pathToChildCategory(item.category, isSportsTheme ? [] : selectedCategories)
             }
           />
           {isSportsTheme && subRows.length > 0 && (
@@ -204,8 +221,11 @@ const CategoryFilters = () => {
               {subRows.map((subItem, index) => (
                 <div key={`${item.category}-${index}`}>
                   <CategoryRow
+                    parentCategory={item.category}
                     category={subItem.category}
                     count={subItem.count}
+                    children={subItem.children}
+                    showChildren={sportsMobileView}
                     handleClick={() =>
                       pathToChildCategory(subItem.category, [item.category])
                     }
@@ -213,7 +233,7 @@ const CategoryFilters = () => {
                 </div>
               ))}
             </section>
-          )} 
+          )}
         </div>
       );
     });
@@ -221,7 +241,7 @@ const CategoryFilters = () => {
     if (popularCategories.length === 0) {
       renderPopular = <span>{SearchIcon} No categories found</span>;
     }
-    const header = isSportsTheme ? "Explore Categories" : "Popular Categories";
+    const header = isSportsTheme ? 'Explore Categories' : 'Popular Categories';
     return (
       <div className={Styles.CategoriesGroup}>
         <span>{header}</span>
@@ -231,9 +251,11 @@ const CategoryFilters = () => {
   };
 
   const renderSelectedCategories = () => (
-    <div className={classNames(Styles.SelectedCategories, {
-      [Styles.SubCategories]: selectedCategories.length > 1,
-    })}>
+    <div
+      className={classNames(Styles.SelectedCategories, {
+        [Styles.SubCategories]: selectedCategories.length > 1,
+      })}
+    >
       {selectedCategories
         .filter(categories => categories !== selectedCategory)
         .map((category, idx) => {
@@ -282,17 +304,28 @@ const CategoryFilters = () => {
       </div>
     </div>
   );
-  const sportsTitle = selectedCategory ? selectedCategory : 'Popular Markets';
+  const sportsTitle = selectedCategory && !sportsMobileView ? selectedCategory : 'Popular Markets';
   return (
     <div className={Styles.CategoryFilters}>
-      {isSportsTheme && <h3>{sportsTitle}</h3>}
-      {!hasSelectedCategories && renderPopularCategories()}
-      {!hasSelectedCategories && categoryMetaData && renderAllCategories()}
+      {isSportsTheme &&
+        (isMobile ? (
+          <h3>
+            <CategoryRow
+              category={sportsTitle}
+              count={categoryMetaData?.marketCount}
+              handleClick={() => removeCategoryQuery()}
+            />
+          </h3>
+        ) : (
+          <h3>{sportsTitle}</h3>
+        ))}
+      {(!hasSelectedCategories || sportsMobileView) && renderPopularCategories()}
+      {(!hasSelectedCategories && categoryMetaData || sportsMobileView) && renderAllCategories()}
 
-      {hasSelectedCategories && categoryMetaData && showAllCategoriesButton}
+      {hasSelectedCategories && categoryMetaData && !sportsMobileView && showAllCategoriesButton}
       {hasSelectedCategories &&
         categoryMetaData &&
-        hasSelectedCategoriesCount > 0 &&
+        hasSelectedCategoriesCount > 0 && !sportsMobileView && 
         renderSelectedCategories()}
     </div>
   );

@@ -240,6 +240,7 @@ const DEFAULT_FILTER_SORT_OPTIONS: FilterSortOptions = {
 const DEFAULT_MARKETS_LIST_STATE: MarketsList = {
   isSearching: true,
   meta: null,
+  allCategoriesMeta: null,
   selectedCategories: [],
   selectedCategory: null,
   marketCardFormat: MARKET_CARD_FORMATS.CLASSIC,
