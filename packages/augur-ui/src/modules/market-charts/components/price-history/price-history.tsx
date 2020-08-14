@@ -4,7 +4,7 @@ import Highcharts from 'highcharts/highstock';
 import NoDataToDisplay from 'highcharts/modules/no-data-to-display';
 import Styles from 'modules/market-charts/components/price-history/price-history.styles.less';
 import { selectMarket } from 'modules/markets/selectors/market';
-import { SCALAR, TRADING_TUTORIAL, THEMES } from 'modules/common/constants';
+import { SCALAR, TRADING_TUTORIAL, THEMES, TIME_FORMATS } from 'modules/common/constants';
 import { getBucketedPriceTimeSeries } from 'modules/markets/selectors/select-bucketed-price-time-series';
 import { MarketData } from 'modules/types';
 import { useAppStatusStore } from 'modules/app/store/app-status';
@@ -50,7 +50,7 @@ const PriceHistory = ({
   rangeValue = 0,
 }: PriceHistoryProps) => {
   const { theme, timeFormat } = useAppStatusStore();
-  const is24hr = timeFormat === '24h';
+  const is24hr = timeFormat === TIME_FORMATS.TWENTY_FOUR;
   const isTrading = theme === THEMES.TRADING;
   const isTradingTutorial = marketId === TRADING_TUTORIAL;
   const {
