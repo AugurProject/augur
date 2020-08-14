@@ -1,4 +1,5 @@
 import { ContractAddresses, SDKConfiguration, RecursivePartial } from '@augurproject/utils';
+import { BigNumber } from 'ethers/utils';
 import { MemDown } from 'memdown';
 import { ethers } from 'ethers';
 import { createSeed } from './ganache';
@@ -14,6 +15,7 @@ export class TestEthersProvider extends EthersProvider {
     private accounts: Account[],
     private contractAddresses: ContractAddresses) {
     super(provider, 5, 0, 40);
+    this.overrideGasPrice = new BigNumber(100);
   }
 
   getSeed = async () => {
