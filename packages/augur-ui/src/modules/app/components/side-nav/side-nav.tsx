@@ -145,7 +145,7 @@ const SideNav = ({
               {showMigrateRepButton && (
                 <span className={Styles.SideNavMigrateRep}>
                   <ProcessingButton
-                    text={'Migrate V1 to V2 REP'}
+                    text='Migrate V1 to V2 REP'
                     action={() => setModal({ type: MODAL_MIGRATE_REP })}
                     queueName={TRANSACTIONS}
                     queueId={MIGRATE_FROM_LEG_REP_TOKEN}

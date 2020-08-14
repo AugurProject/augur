@@ -12,7 +12,7 @@ import { Link } from 'react-router-dom';
 import makePath from 'modules/routes/helpers/make-path';
 import { NewLogo } from 'modules/app/components/logo';
 import { ThemeSwitch } from 'modules/app/components/theme-switch';
-import { PrimaryButton, SecondaryButton } from 'modules/common/buttons';
+import { PrimaryButton, SecondaryButton, ProcessingButton } from 'modules/common/buttons';
 import { MARKETS } from 'modules/routes/constants/views';
 import { HelpResources } from 'modules/app/components/help-resources';
 import { OddsMenu } from 'modules/app/components/odds-menu';
@@ -21,9 +21,14 @@ import {
   WALLET_STATUS_VALUES,
   MODAL_BUY_DAI,
   MODAL_AUGUR_P2P,
+  MODAL_MIGRATE_REP,
+  TRANSACTIONS,
+  MODAL_LOGIN,
+  MODAL_SIGNUP,
+  MIGRATE_FROM_LEG_REP_TOKEN,
+  THEMES,
 } from 'modules/common/constants';
 import { useAppStatusStore } from 'modules/app/store/app-status';
-import { MODAL_LOGIN, MODAL_SIGNUP } from 'modules/common/constants';
 import { getInfoAlertsAndSeenCount } from 'modules/alerts/helpers/alerts';
 import { getEthReserveInDai } from 'modules/auth/helpers/get-eth-reserve';
 import AlertsContainer from 'modules/alerts/components/alerts-view';
@@ -35,11 +40,11 @@ import { getCoreStats } from 'modules/auth/helpers/login-account';
 
 export const Stats = () => {
   const {
-    isLogged, 
+    isLogged,
     restoredAccount,
     isMobile,
     loginAccount,
-    walletStatus
+    walletStatus,
   } = useAppStatusStore();
 
   const showAddFundsButton =
@@ -51,7 +56,7 @@ export const Stats = () => {
   if (!stats) return null;
   const { availableFunds, frozenFunds, totalFunds, realizedPL } = stats;
   const ethReserveInDai = getEthReserveInDai();
-  
+
   return (
     <>
       {(isLogged || restoredAccount) && (
@@ -59,15 +64,16 @@ export const Stats = () => {
           <div>
             <LinearPropertyLabel {...availableFunds} highlightAlternateBolded />
             <LinearPropertyLabel {...frozenFunds} highlightAlternateBolded />
-            {tradingAccountCreated ?
+            {tradingAccountCreated ? (
               <LinearPropertyLabelUnderlineTooltip
                 {...totalFunds}
                 highlightAlternateBolded
                 id={isMobile ? 'totalFundsMobile' : 'totalFunds_top_bar'}
                 tipText={`${TOTAL_FUNDS_TOOLTIP} of $${ethReserveInDai.formatted} DAI`}
-              /> :
+              />
+            ) : (
               <LinearPropertyLabel {...totalFunds} highlightAlternateBolded />
-            }
+            )}
             <div>
               <span>{realizedPL.label}</span>
               <MovementLabel value={realizedPL.value} useFull />
@@ -85,6 +91,9 @@ export const Stats = () => {
 
 const TopBar = () => {
   const {
+    pendingQueue,
+    loginAccount: { balances },
+    theme,
     isLogged,
     restoredAccount,
     isMobile,
@@ -92,6 +101,7 @@ const TopBar = () => {
     actions: { setIsAlertsMenuOpen, setModal },
     walletStatus,
   } = useAppStatusStore();
+  const isSports = theme === THEMES.SPORTS;
   const { unseenCount } = getInfoAlertsAndSeenCount();
   const LoggedOrRestored = isLogged || restoredAccount;
   const notLoggedAndRestored = !isLogged && !restoredAccount;
@@ -99,7 +109,11 @@ const TopBar = () => {
     isLogged && walletStatus === WALLET_STATUS_VALUES.WAITING_FOR_FUNDING;
   const showActivationButton =
     isLogged && walletStatus === WALLET_STATUS_VALUES.FUNDED_NEED_CREATE;
-
+  const pending =
+    pendingQueue[TRANSACTIONS] &&
+    pendingQueue[TRANSACTIONS][MIGRATE_FROM_LEG_REP_TOKEN];
+  const showMigrateRepButton =
+    !!balances.legacyRep || !!balances.legacyRepNonSafe || !!pending;
   return (
     <header className={Styles.TopBar}>
       <div className={Styles.Logo}>
@@ -109,8 +123,16 @@ const TopBar = () => {
       </div>
       <ThemeSwitch />
       {LoggedOrRestored && <Stats />}
-
       <div>
+        {LoggedOrRestored && isSports && showMigrateRepButton && (
+          <ProcessingButton
+            text="Migrate V1 to V2 REP"
+            action={() => setModal({ type: MODAL_MIGRATE_REP })}
+            queueName={TRANSACTIONS}
+            queueId={MIGRATE_FROM_LEG_REP_TOKEN}
+            primaryButton
+          />
+        )}
         {(showActivationButton || showAddFundsButton) && (
           <div className={Styles.AccountActivation}>
             <PrimaryButton
@@ -121,7 +143,7 @@ const TopBar = () => {
                   setModal({ type: MODAL_AUGUR_P2P });
                 }
               }}
-              text={'Complete account activation'}
+              text="Complete account activation"
             />
           </div>
         )}
@@ -142,20 +164,20 @@ const TopBar = () => {
         {LoggedOrRestored &&
           ((isMobile && walletStatus === WALLET_STATUS_VALUES.CREATED) ||
             !isMobile) && (
-              <div className={Styles.AlertsDiv}>
-                <button
-                  className={classNames(Styles.alerts, {
-                    [Styles.alertsDark]: isAlertsMenuOpen,
-                    [Styles.Empty]: unseenCount < 1,
-                  })}
-                  onClick={() => {
-                    setIsAlertsMenuOpen(!isAlertsMenuOpen);
-                  }}
-                  tabIndex={-1}
-                >
-                  {Alerts(unseenCount)}
-                </button>
-                <AlertsContainer />
+            <div className={Styles.AlertsDiv}>
+              <button
+                className={classNames(Styles.alerts, {
+                  [Styles.alertsDark]: isAlertsMenuOpen,
+                  [Styles.Empty]: unseenCount < 1,
+                })}
+                onClick={() => {
+                  setIsAlertsMenuOpen(!isAlertsMenuOpen);
+                }}
+                tabIndex={-1}
+              >
+                {Alerts(unseenCount)}
+              </button>
+              <AlertsContainer />
             </div>
           )}
         <ConnectAccount />
