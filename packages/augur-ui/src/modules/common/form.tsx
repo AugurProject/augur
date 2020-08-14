@@ -2384,7 +2384,7 @@ export const CategoryRow = ({
           </span>
         )}
       </div>
-      {showChildrenOption &&
+      {showChildrenOption && children &&
         Object.keys(children).map(childName => (
           <CategoryRow
             category={childName}

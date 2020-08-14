@@ -2562,6 +2562,13 @@ div.error > div > div > div > div > input {
         }
       }
 
+
+      &.loading {
+        > span:last-of-type {
+          border: 0;
+        }
+      }
+
       &.active:not(.loading) {
         > span:last-of-type {
           border: @size-1 solid var(--color-secondary-text);
