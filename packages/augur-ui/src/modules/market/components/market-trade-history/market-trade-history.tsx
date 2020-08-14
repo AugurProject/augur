@@ -3,7 +3,7 @@
 import React, { Component } from 'react';
 import classNames from 'classnames';
 
-import { formatDaiPrice, formatMarketShares } from 'utils/format-number';
+import { formatDaiPrice, formatMarketShares, formatEther } from 'utils/format-number';
 import {
   SELL,
   SCALAR,
@@ -73,7 +73,7 @@ export default class MarketTradeHistory extends Component<
                       </li>
                       <li>
                         {isScalar ? (
-                          <HoverValueLabel value={formatDaiPrice(priceTime.price)} />
+                          <HoverValueLabel value={formatEther(priceTime.price)} />
                         ) : (
                           priceTime.price.toFixed(3)
                         )}

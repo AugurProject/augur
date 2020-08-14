@@ -11,6 +11,7 @@ import {
   formatRep,
   formatAttoRep,
   formatNumber,
+  formatEther,
 } from 'utils/format-number';
 import MarketScalarOutcomeDisplay from '../market-scalar-outcome-display/market-scalar-outcome-display';
 import ChevronFlip from 'modules/common/chevron-flip';
@@ -60,7 +61,7 @@ const CoreProperties: React.FC<CorePropertiesProps> = ({
             value={
               market.volumeFormatted
                 ? market.volumeFormatted.full
-                : formatDaiPrice(0, { decimals: 0 }).full
+                : formatEther(0, { decimals: 0 }).full
             }
           />
           {reportingBarShowing && (
@@ -99,7 +100,7 @@ const CoreProperties: React.FC<CorePropertiesProps> = ({
                 value={
                   market.openInterestFormatted
                     ? market.openInterestFormatted.full
-                    : formatDaiPrice(0, { decimals: 0 }).full
+                    : formatEther(0, { decimals: 0 }).full
                 }
               />
               <PropertyLabel

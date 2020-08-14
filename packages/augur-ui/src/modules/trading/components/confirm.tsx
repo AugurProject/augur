@@ -196,8 +196,6 @@ class Confirm extends Component<ConfirmProps, ConfirmState> {
       ? createBigNumber(formatGasCostToEther(gasLimit, { decimalsRounded: 4 }, createBigNumber(GWEI_CONVERSION).multipliedBy(gasPrice)))
       : ZERO;
 
-    const gasCostDai = formatDai(createBigNumber(ethToDaiRate?.value || 0).times(createBigNumber(gasCostInEth)));
-
     if (marketType === SCALAR && selectedOutcomeId === INVALID_OUTCOME_ID) {
       messages = {
         header: null,

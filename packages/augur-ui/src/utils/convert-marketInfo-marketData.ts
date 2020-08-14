@@ -27,6 +27,7 @@ import {
   formatNumber,
   formatPercent,
   formatDai,
+  formatEther,
 } from './format-number';
 import { getOutcomeNameWithOutcome } from './get-outcome';
 import { keyBy } from './key-by';
@@ -71,18 +72,18 @@ export function convertMarketInfoToMarketData(
       decimals: 4,
       decimalsRounded: 4,
     }),
-    openInterestFormatted: formatDai(marketInfo.openInterest, {
+    openInterestFormatted: formatEther(marketInfo.openInterest, {
       positiveSign: false,
       decimals: 0,
       decimalsRounded: 0,
     }),
-    volumeFormatted: formatDai(marketInfo.volume, {
+    volumeFormatted: formatEther(marketInfo.volume, {
       positiveSign: false,
       decimals: 0,
       decimalsRounded: 0,
     }),
-    unclaimedCreatorFeesFormatted: formatDai('0'), // TODO: figure out where this comes from
-    marketCreatorFeesCollectedFormatted: formatDai('0'), // TODO: figure out where this comes from
+    unclaimedCreatorFeesFormatted: formatEther('0'), // TODO: figure out where this comes from
+    marketCreatorFeesCollectedFormatted: formatEther('0'), // TODO: figure out where this comes from
     disputeInfo: processDisputeInfo(
       marketInfo.marketType,
       marketInfo.disputeInfo,

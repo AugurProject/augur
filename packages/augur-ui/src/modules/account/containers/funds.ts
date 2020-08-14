@@ -1,7 +1,7 @@
 import { connect } from "react-redux";
 
 import Funds from "modules/account/components/funds";
-import { formatDaiPrice, formatDai } from "utils/format-number";
+import { formatDaiPrice, formatDai, formatEther } from "utils/format-number";
 import {
   selectAccountFunds,
 } from "modules/auth/selectors/login-account";
@@ -17,9 +17,9 @@ const mapStateToProps = (state: AppState) => {
   } = selectAccountFunds(state);
 
   return {
-    totalFrozenFunds: formatDai(totalFrozenFunds, { removeComma: true }),
-    totalAvailableTradingBalance: formatDai(totalAvailableTradingBalance, { removeComma: true }),
-    totalAccountValue: formatDai(totalAccountValue, { removeComma: true }),
+    totalFrozenFunds: formatEther(totalFrozenFunds, { removeComma: true }),
+    totalAvailableTradingBalance: formatEther(totalAvailableTradingBalance, { removeComma: true }),
+    totalAccountValue: formatEther(totalAccountValue, { removeComma: true }),
   };
 };
 

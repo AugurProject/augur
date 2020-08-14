@@ -132,7 +132,7 @@ const ConnectDropdown = (props: ConnectDropdownProps) => {
 
   const accountFunds = [
     {
-      value: formatDai(balances.dai, {
+      value: formatEther(balances.dai, {
         zeroStyled: false,
         decimalsRounded: 2,
       }).formatted,

@@ -3,7 +3,7 @@ import { withRouter } from 'react-router-dom';
 import { AppState } from 'appStore';
 import { UniverseCard } from 'modules/universe-cards/components/universe-card';
 import { switchUniverse } from 'modules/universe-cards/actions/switch-universe';
-import { formatDaiPrice, formatAttoRep, formatDai } from 'utils/format-number';
+import { formatDaiPrice, formatAttoRep, formatDai, formatEther } from 'utils/format-number';
 import { convertUnixToFormattedDate } from 'utils/format-date';
 
 const mapStateToProps = (state: AppState, ownProps) => {
@@ -27,7 +27,7 @@ const mapStateToProps = (state: AppState, ownProps) => {
       },
       {
         label: 'Total Open Interest',
-        value: formatDai(universe.totalOpenInterest).full,
+        value: formatEther(universe.totalOpenInterest).full,
       },
       {
         label: 'Number of Markets',

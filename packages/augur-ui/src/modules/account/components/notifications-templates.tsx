@@ -22,7 +22,7 @@ import {
   MarketReportClaimableContracts,
 } from 'modules/types';
 import React, { useEffect, useState } from 'react';
-import { formatDaiPrice, formatDai } from 'utils/format-number';
+import { formatDaiPrice, formatDai, formatEther } from 'utils/format-number';
 
 interface BaseProps {
   market: MarketData;
@@ -269,7 +269,7 @@ export const ProceedsToClaimTemplate = (
   props: ProceedsToClaimTemplateProps
 ) => {
   const { markets, totalProceeds } = props;
-  const formattedProceeds = formatDai(totalProceeds).formatted;
+  const formattedProceeds = formatEther(totalProceeds).formatted;
 
   let messageText = `You have $${formattedProceeds} available to be claimed from one market.`;
   if (markets.length > 1) {

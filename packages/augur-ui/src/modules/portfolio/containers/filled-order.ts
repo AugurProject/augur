@@ -1,7 +1,7 @@
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import { AppState } from 'appStore';
-import { formatDaiPrice, calcPercentageFromPrice, formatMarketShares } from 'utils/format-number';
+import { formatDaiPrice, calcPercentageFromPrice, formatMarketShares, formatEther } from 'utils/format-number';
 import {
   COLUMN_TYPES,
   SCALAR,
@@ -21,7 +21,7 @@ const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({});
 const mergeProps = (sP: any, dP: any, oP: any) => {
   const filledOrder = oP.filledOrder;
   const orderQuantity = formatMarketShares(filledOrder.marketType, filledOrder.amount);
-  let orderPrice = formatDaiPrice(filledOrder.price, { roundDown: true});
+  let orderPrice = formatEther(filledOrder.price, { roundDown: true});
   const orderType = filledOrder.type;
 
   const originalQuantity = formatMarketShares(filledOrder.marketType, filledOrder.originalQuantity);

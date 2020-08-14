@@ -43,12 +43,6 @@ export const AugurLogoWithText = (
   </svg>
 );
 
-export const LargeDaiIcon = (
-  <svg viewBox="0 0 64 64" fill="none">
-    <path d="M31.8562 6.40002L57.6 32.1438L32.1438 57.6L6.39999 31.8562L31.8562 6.40002ZM39.3143 32.0411L50.2857 32.1028L31.8973 13.7143L13.7143 31.8973L24.6857 31.9589L31.9589 24.6857L39.3143 32.0411Z" />
-  </svg>
-);
-
 export const LargeDollarIcon = (
   <svg viewBox="0 0 52 52" fill="none">
     <path d="M21.1453 19.7689C21.1453 21.9261 22.6038 22.7484 24.6569 23.5332V16.54C22.7581 16.8862 21.1453 17.8311 21.1453 19.7689Z" />

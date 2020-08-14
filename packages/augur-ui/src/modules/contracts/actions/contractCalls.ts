@@ -979,7 +979,7 @@ export async function approvalsNeededToTrade(address): Promise<number> {
   const fillShareAllContractApproval = await contracts.shareToken.isApprovedForAll_(address, contracts.fillOrder.address);
   console.log(fillContractApproval, cashContractApproval, fillShareAllContractApproval);
   const approvals = [fillContractApproval, cashContractApproval, fillShareAllContractApproval].filter(a => !a);
-  return (approvals.length > 0 ? approvals.length + 1 : 0); // add additional 1 for referral address
+  return approvals.length;
 }
 
 export async function approveToTrade(address, referalAddress = NULL_ADDRESS) {
@@ -988,7 +988,7 @@ export async function approveToTrade(address, referalAddress = NULL_ADDRESS) {
   if (!(await isContractApproval(address, contracts.ZeroXTrade.address, contracts.cash))) {
     approvals.push(contracts.cash.approve(contracts.ZeroXTrade.address, APPROVAL_AMOUNT));
   }
-  approvals.push(contracts.affiliates.setReferrer(referalAddress));
+  //approvals.push(contracts.affiliates.setReferrer(referalAddress));
   if (!(await contracts.shareToken.isApprovedForAll_(address, contracts.fillOrder.address))) {
     approvals.push(contracts.shareToken.setApprovalForAll(contracts.fillOrder.address, true));
   }

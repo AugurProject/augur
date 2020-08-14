@@ -35,7 +35,7 @@ import {
 import React, { Fragment } from 'react';
 import ReactTooltip from 'react-tooltip';
 import { BigNumber, createBigNumber } from 'utils/create-big-number';
-import { formatAttoRep, formatDaiPrice, formatNumber, formatNone, formatOutcomePercentage } from 'utils/format-number';
+import { formatAttoRep, formatDaiPrice, formatNumber, formatNone, formatOutcomePercentage, formatEther } from 'utils/format-number';
 import { getOutcomeNameWithOutcome } from 'utils/get-outcome';
 import { AppState } from 'appStore';
 import { getBestInvalidBid } from 'modules/orders/actions/load-market-orderbook';
@@ -300,9 +300,9 @@ export const ScalarOutcome = (props: ScalarOutcomeProps) => (
        )}
       </div>
       <div>
-        {formatDaiPrice(props.min).formatted}
+        {formatEther(props.min).formatted}
         <span>{props.scalarDenomination}</span>
-        {formatDaiPrice(props.max).formatted}
+        {formatEther(props.max).formatted}
       </div>
     </div>
   </MarketLink>

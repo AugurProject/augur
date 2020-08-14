@@ -18,7 +18,7 @@ import {
   LinearPropertyLabelProps, PendingLabel, BulkTxLabel, ModalLabelNotice, ApprovalTxButtonLabel,
 } from "modules/common/labels";
 import { BUY, ADDLIQUIDITY } from "modules/common/constants";
-import { formatMarketShares, formatDai } from "utils/format-number";
+import { formatMarketShares, formatDai, formatEther } from "utils/format-number";
 import Styles from "modules/modal/modal.styles.less";
 import OpenOrdersTable from "modules/market/components/market-orders-positions-table/open-orders-table";
 import { LiquidityOrder, LoginAccount } from "modules/types";
@@ -115,8 +115,8 @@ const orderRow = (order: LiquidityOrder, props: UnsignedOrdersProps) => {
       <span>{outcomeName}</span>
       <span className={type === BUY ? Styles.bid : Styles.ask}>{type}</span>
       <span>{formatMarketShares(marketType, quantity).formatted}</span>
-      <span>{formatDai(Number(price)).formatted}</span>
-      <span>{formatDai(Number(orderEstimate)).formatted}</span>
+      <span>{formatEther(Number(price)).formatted}</span>
+      <span>{formatEther(Number(orderEstimate)).formatted}</span>
       <span>{status && <PendingLabel status={status} />}</span>
       <div>
         {buttons.map((Button: DefaultButtonProps, index: number) => {

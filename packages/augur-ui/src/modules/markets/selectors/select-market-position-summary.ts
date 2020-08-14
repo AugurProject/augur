@@ -3,7 +3,7 @@ import {
   selectAccountPositionsState,
 } from 'appStore/select-state';
 import { MyPositionsSummary } from 'modules/types';
-import { formatDaiPrice, formatPercent, formatDai } from 'utils/format-number';
+import { formatDaiPrice, formatPercent, formatDai, formatEther } from 'utils/format-number';
 import { ZERO } from 'modules/common/constants';
 import { createBigNumber } from 'utils/create-big-number';
 
@@ -19,17 +19,17 @@ export const selectMarketPositionsSummary = createSelector(
       !marketAccountPositions.tradingPositionsPerMarket
     ) {
       return {
-        currentValue: formatDai(0),
+        currentValue: formatEther(0),
         totalPercent: formatPercent(0),
-        totalReturns: formatDai(0),
+        totalReturns: formatEther(0),
         valueChange: formatPercent(0),
         valueChange24Hr: formatPercent(0),
       };
     }
     const marketPositions = marketAccountPositions.tradingPositionsPerMarket;
 
-    const currentValue = formatDai(marketPositions.currentValue || ZERO);
-    const totalReturns = formatDai(marketPositions.total || ZERO);
+    const currentValue = formatEther(marketPositions.currentValue || ZERO);
+    const totalReturns = formatEther(marketPositions.total || ZERO);
     const totalPercent = formatPercent(
       createBigNumber(marketPositions.totalPercent || ZERO).times(100),
       { decimalsRounded: 2 }

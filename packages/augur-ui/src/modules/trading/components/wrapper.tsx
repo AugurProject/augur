@@ -17,6 +17,7 @@ import {
   formatNumber,
   formatMarketShares,
   formatDai,
+  formatEther,
 } from 'utils/format-number';
 import convertExponentialToDecimal from 'utils/convert-exponential';
 import { MarketData, OutcomeFormatted } from 'modules/types';
@@ -316,7 +317,7 @@ class Wrapper extends Component<WrapperProps, WrapperState> {
             this.setState(order);
             this.doesCrossSpread(order.trade.limitPrice, order.trade.side);
           }
-          const newOrderDaiEstimate = formatDai(
+          const newOrderDaiEstimate = formatEther(
             createBigNumber(newOrder.totalOrderValue.fullPrecision),
             {
               roundDown: false,
@@ -374,12 +375,12 @@ class Wrapper extends Component<WrapperProps, WrapperState> {
         createBigNumber(market.maxPrice),
         market.marketType
       );
-      const formattedValue = formatDai(totalCost);
+      const formattedValue = formatEther(totalCost);
       let trade = {
         ...useValues,
         limitPrice: order.orderPrice,
         selectedOutcome: selectedOutcome.id,
-        totalCost: formatDai(totalCost),
+        totalCost: formatEther(totalCost),
         numShares: order.orderQuantity,
         shareCost: formatNumber(0),
         potentialDaiLoss: formatDai(40),

@@ -44,7 +44,7 @@ export const Rate = ({
       displayRate = `1 USDC = ${formatEther(usdcDaiRate).formattedValue} DAI`;
     }
     else if (baseToken === ETH) {
-      displayRate = `1 ETH = $${formatDai(ethToDaiRate.value).formattedValue}`;
+      displayRate = `1 ETH = $${formatEther(ethToDaiRate.value).formattedValue}`;
     }
   }
 

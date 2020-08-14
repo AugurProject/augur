@@ -15,6 +15,7 @@ import { FormattedNumber, FormattedNumberOptions } from 'modules/types';
 import addCommas from 'utils/add-commas-to-number';
 import { BigNumber, createBigNumber } from 'utils/create-big-number';
 import getPrecision from 'utils/get-number-precision';
+import { EthIcon } from 'modules/common/icons';
 
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
   Produces a formatted number object used for display and calculations
@@ -77,7 +78,7 @@ export function formatEther(
   return formatNumber(num, {
     decimals: ETHER_NUMBER_OF_DECIMALS,
     decimalsRounded: ETHER_NUMBER_OF_DECIMALS,
-    denomination: v => `${v} ETH`,
+    denomination: v => `${v}`,
     positiveSign: false,
     zeroStyled: false,
     blankZero: false,
@@ -93,7 +94,7 @@ export function formatEtherEstimate(
   return formatNumber(num, {
     decimals: ETHER_NUMBER_OF_DECIMALS,
     decimalsRounded: ETHER_NUMBER_OF_DECIMALS,
-    denomination: v => `${v} ETH (estimated)`,
+    denomination: v => `${v} E (est.)`,
     positiveSign: false,
     zeroStyled: false,
     blankZero: false,

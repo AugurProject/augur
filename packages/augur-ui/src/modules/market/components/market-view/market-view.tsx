@@ -60,7 +60,7 @@ import Media from 'react-media';
 import { getDefaultOutcomeSelected } from 'utils/convert-marketInfo-marketData';
 import { createBigNumber } from 'utils/create-big-number';
 import { convertUnixToFormattedDate } from 'utils/format-date';
-import { formatDaiPrice, formatShares, formatDai } from 'utils/format-number';
+import { formatDaiPrice, formatShares, formatDai, formatEther } from 'utils/format-number';
 import { TutorialPopUp } from '../common/tutorial-pop-up';
 
 interface MarketViewProps {
@@ -548,10 +548,10 @@ export default class MarketView extends Component<
           pending: true,
           id: 'trading-tutorial-pending-order',
           type: BUY,
-          avgPrice: formatDaiPrice(TUTORIAL_PRICE),
+          avgPrice: formatEther(TUTORIAL_PRICE),
           outcomeName: TRADING_TUTORIAL_OUTCOMES[outcomeId].description,
           unmatchedShares: formatShares(TUTORIAL_QUANTITY),
-          tokensEscrowed: formatDaiPrice(TUTORIAL_PRICE * TUTORIAL_QUANTITY),
+          tokensEscrowed: formatEther(TUTORIAL_PRICE * TUTORIAL_QUANTITY),
           sharesEscrowed: formatShares(0),
           creationTime: 0,
         },
@@ -598,11 +598,11 @@ export default class MarketView extends Component<
           quantity: formatShares(TUTORIAL_QUANTITY),
           id: TRADING_TUTORIAL,
           outcomeId: outcomeId,
-          totalValue: formatDai(TUTORIAL_QUANTITY),
-          totalReturns: formatDai(TUTORIAL_QUANTITY),
-          unrealizedNet: formatDai(TUTORIAL_QUANTITY),
-          realizedNet: formatDai(TUTORIAL_QUANTITY),
-          purchasePrice: formatDaiPrice(TUTORIAL_PRICE),
+          totalValue: formatEther(TUTORIAL_QUANTITY),
+          totalReturns: formatEther(TUTORIAL_QUANTITY),
+          unrealizedNet: formatEther(TUTORIAL_QUANTITY),
+          realizedNet: formatEther(TUTORIAL_QUANTITY),
+          purchasePrice: formatEther(TUTORIAL_PRICE),
         },
       ];
     }

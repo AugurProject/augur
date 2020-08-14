@@ -19,7 +19,7 @@ import { Pagination } from 'modules/common/pagination';
 import { ValueLabel, TextLabel } from 'modules/common/labels';
 import { DatePicker, FormDropdown } from 'modules/common/form';
 import { Title } from 'modules/modal/common';
-import { formatShares, formatDaiPrice, formatDai } from 'utils/format-number';
+import { formatShares, formatDaiPrice, formatDai, formatEther } from 'utils/format-number';
 import Styles from 'modules/modal/modal.styles.less';
 import { createBigNumber } from 'utils/create-big-number';
 import {
@@ -328,7 +328,7 @@ export const Transactions: React.FC<TransactionsProps> = props => {
         }
       />,
       <ValueLabel
-        value={formatDaiPrice(Number(tx.price))}
+        value={formatEther(Number(tx.price))}
         showDenomination={false}
         showEmptyDash={false}
       />,
@@ -339,12 +339,12 @@ export const Transactions: React.FC<TransactionsProps> = props => {
       />,
       <span>{tx.coin}</span>,
       <ValueLabel
-        value={formatDai(Number(tx.fee))}
+        value={formatEther(Number(tx.fee))}
         showDenomination={false}
         showEmptyDash={false}
       />,
       <ValueLabel
-        value={formatDai(createBigNumber(tx.total))}
+        value={formatEther(createBigNumber(tx.total))}
         showDenomination={false}
         showEmptyDash={false}
       />,

@@ -1,7 +1,7 @@
 import { connect } from 'react-redux';
 import { AppState } from 'appStore';
 import * as constants from 'modules/common/constants';
-import { formatDaiPrice, formatMarketShares, formatDai } from 'utils/format-number';
+import { formatDaiPrice, formatMarketShares, formatDai, formatEther } from 'utils/format-number';
 import Row from 'modules/common/row';
 import { ThunkDispatch } from 'redux-thunk';
 import { Action } from 'redux';
@@ -40,13 +40,13 @@ const mergeProps = (sP: any, dP: any, oP: any) => {
     {
       key: 'price',
       columnType: COLUMN_TYPES.VALUE,
-      value: formatDai(order.price),
+      value: formatEther(order.price),
       keyId: 'order-price-' + order.id,
     },
     {
       key: 'orderEstimate',
       columnType: COLUMN_TYPES.VALUE,
-      value: formatDai(order.orderEstimate),
+      value: formatEther(order.orderEstimate),
       keyId: 'order-orderEstimate-' + order.id,
     },
     {
