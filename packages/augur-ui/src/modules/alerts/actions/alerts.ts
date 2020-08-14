@@ -119,29 +119,7 @@ export function updateAlert(
           );
 
     if (foundAlert) {
-      AppStatus.actions.removeAlert(alert.uniqueId, alert.name);
-      addAlert({
-        ...foundAlert,
-        ...alert,
-        name: foundAlert.name !== '' ? foundAlert.name : alert.name,
-        params: {
-          ...foundAlert.params,
-          ...alert.params,
-          repReceived:
-            alert.params.repReceived &&
-            foundAlert.params.repReceived &&
-            createBigNumber(alert.params.repReceived).plus(
-              createBigNumber(foundAlert.params.repReceived)
-            ),
-        },
-      });
-    } else {
-      addAlert(alert);
-    }
-    
-    if (foundAlert) {
-      AppStatus.actions.removeAlert(alert.uniqueId, alert.name);
-      addAlert({
+      AppStatus.actions.updateAlert(alert.uniqueId, {
         ...foundAlert,
         ...alert,
         name: foundAlert.name !== '' ? foundAlert.name : alert.name,
