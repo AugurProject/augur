@@ -145,6 +145,5 @@
     "fallbackProvider": "torus",
     "primaryProvider": "wallet"
   },
-  "averageBlocktime": 2000,
-  "concurrentDBOperationsLimit": 10
+  "averageBlocktime": 2000
 }

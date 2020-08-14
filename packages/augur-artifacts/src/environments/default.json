@@ -72,6 +72,5 @@
     "trackMarketInvalidBids": true,
     "fallbackProvider": "torus",
     "primaryProvider" : "wallet"
-  },
-  "concurrentDBOperationsLimit": 10
+  }
 }

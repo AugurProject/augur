@@ -189,14 +189,12 @@ export async function createServer(config: SDKConfiguration, client?: Augur): Pr
     contractEvents.getEventTopics,
     contractEvents.parseLogs,
   );
-
   const db = DB.createAndInitializeDB(
     Number(config.networkId),
     config.uploadBlockNumber,
     logFilterAggregator,
     client,
-    config.zeroX?.mesh?.enabled || config.zeroX?.rpc?.enabled,
-    client.config.concurrentDBOperationsLimit
+    config.zeroX?.mesh?.enabled || config.zeroX?.rpc?.enabled
   );
 
   await db;
