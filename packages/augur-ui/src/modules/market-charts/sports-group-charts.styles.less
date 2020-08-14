@@ -12,11 +12,46 @@
   box-shadow: 0 0 @size-4 var(--color-primary-text-15);
   flex: 1;
 
+  display: grid;
+  grid-template-columns: 1fr 0fr;
+  grid-template-rows: @size-20 0fr;
+
   > h4 {
     .text-16-bold;
 
     color: var(--color-primary-text);
     text-transform: capitalize;
+    grid-column: 1;
+    grid-row: 1;
+  }
+
+  > div {
+    grid-column: span 2;
+    grid-row: 2;
+  } 
+}
+
+.RangeSelection {
+  display: flex;
+  flex-flow: row nowrap;
+  grid-column: 2;
+  grid-row: 1;
+
+  > li {
+    margin: 0 @size-8;
+
+    > button {
+      .text-12-semi-bold;
+
+      color: var(--color-secondary-text);
+      border-bottom: @size-2 solid transparent;
+      white-space: nowrap;
+
+      &.selected {
+        color: var(--color-primary-text);
+        border-bottom: @size-2 solid var(--color-primary-text);
+      }
+    }
   }
 }
 
@@ -60,6 +95,12 @@
         }
       }
 
+      &.invalid {
+        > span:first-of-type {
+          color: var(--color-outcome-invalid);
+        }
+      }
+      
       > span:last-of-type {
         .text-14;
 

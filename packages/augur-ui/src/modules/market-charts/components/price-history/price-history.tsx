@@ -4,9 +4,10 @@ import Highcharts from 'highcharts/highstock';
 import NoDataToDisplay from 'highcharts/modules/no-data-to-display';
 import Styles from 'modules/market-charts/components/price-history/price-history.styles.less';
 import { selectMarket } from 'modules/markets/selectors/market';
-import { SCALAR, TRADING_TUTORIAL } from 'modules/common/constants';
-import selectBucketedPriceTimeSeries from 'modules/markets/selectors/select-bucketed-price-time-series';
+import { SCALAR, TRADING_TUTORIAL, THEMES, TIME_FORMATS } from 'modules/common/constants';
+import { getBucketedPriceTimeSeries } from 'modules/markets/selectors/select-bucketed-price-time-series';
 import { MarketData } from 'modules/types';
+import { useAppStatusStore } from 'modules/app/store/app-status';
 
 const HIGHLIGHTED_LINE_WIDTH = 2;
 const NORMAL_LINE_WIDTH = 1;
@@ -38,34 +39,49 @@ interface PriceHistoryProps {
   market: MarketData;
   selectedOutcomeId?: number;
   isArchived?: boolean;
+  rangeValue?: number;
 }
 
 const PriceHistory = ({
   selectedOutcomeId = 9,
   isArchived,
   marketId,
-  market
+  market,
+  rangeValue = 0,
 }: PriceHistoryProps) => {
+  const { theme, timeFormat } = useAppStatusStore();
+  const is24hr = timeFormat === TIME_FORMATS.TWENTY_FOUR;
+  const isTrading = theme === THEMES.TRADING;
   const isTradingTutorial = marketId === TRADING_TUTORIAL;
   const {
     maxPriceBigNumber,
     minPriceBigNumber,
-    outcomes = [],
     marketType,
     scalarDenomination,
   } = marketId && !isTradingTutorial ? selectMarket(marketId) : market;
   const isScalar = marketType === SCALAR;
 
-  const bucketedPriceTimeSeries = !isTradingTutorial ? selectBucketedPriceTimeSeries(marketId) : {};
+  const bucketedPriceTimeSeries = !isTradingTutorial
+    ? getBucketedPriceTimeSeries(marketId, rangeValue)
+    : {};
 
   const maxPrice = !isTradingTutorial ? maxPriceBigNumber.toNumber() : 0;
   const minPrice = !isTradingTutorial ? minPriceBigNumber.toNumber() : 0;
   const pricePrecision = 4;
 
   const container = useRef(null);
-  const options = getOptions({ maxPrice, minPrice, isScalar, pricePrecision, isArchived });
+  const options = getOptions({
+    maxPrice,
+    minPrice,
+    isScalar,
+    pricePrecision,
+    isArchived,
+    isTrading,
+    is24hr,
+  });
   const { priceTimeSeries } = bucketedPriceTimeSeries;
-  const hasPriceTimeSeries = !!priceTimeSeries && !!Object.keys(priceTimeSeries);
+  const hasPriceTimeSeries =
+    !!priceTimeSeries && !!Object.keys(priceTimeSeries);
 
   useEffect(() => {
     if (!hasPriceTimeSeries) return NoDataToDisplay(Highcharts);
@@ -76,7 +92,8 @@ const PriceHistory = ({
       Object.keys(priceTimeSeries).filter(
         key => priceTimeSeries[key].length > 0
       ).length;
-    const series = hasData && handleSeries(priceTimeSeries, selectedOutcomeId, 0);
+    const series =
+      hasData && handleSeries(priceTimeSeries, selectedOutcomeId, 0, isTrading);
 
     if (isScalar && hasData) {
       options.title.text = scalarDenomination;
@@ -87,9 +104,13 @@ const PriceHistory = ({
       units: [['minute', [1]]],
     };
 
+    options.xAxis.crosshair.label.format = is24hr
+      ? '{value:%b %d %H:%M}'
+      : '{value:%b %d %l:%M %p}';
+
     const newOptions = Object.assign(options, { series });
     Highcharts.stockChart(container.current, newOptions);
-  }, [selectedOutcomeId, hasPriceTimeSeries]);
+  }, [selectedOutcomeId, hasPriceTimeSeries, is24hr]);
 
   useEffect(() => {
     Highcharts.charts.forEach(chart => {
@@ -97,10 +118,12 @@ const PriceHistory = ({
         const seriesUpdated = handleSeries(
           priceTimeSeries,
           selectedOutcomeId,
-          0
+          0,
+          isTrading
         );
         seriesUpdated.forEach(({ data }, index) => {
-          chart.series[index] && chart.series[index].setData(data, false, false);
+          chart.series[index] &&
+            chart.series[index].setData(data, false, false);
         });
         chart.redraw();
       }
@@ -112,7 +135,15 @@ const PriceHistory = ({
 
 export default PriceHistory;
 // helper functions:
-const getOptions = ({ maxPrice, pricePrecision, minPrice, isScalar, isArchived }) => ({
+const getOptions = ({
+  maxPrice,
+  pricePrecision,
+  minPrice,
+  isScalar,
+  isArchived,
+  isTrading,
+  is24hr,
+}) => ({
   lang: {
     noData: isArchived ? 'Data Archived' : 'No Completed Trades',
   },
@@ -155,8 +186,11 @@ const getOptions = ({ maxPrice, pricePrecision, minPrice, isScalar, isArchived }
     tickLength: 7,
     gridLineWidth: 1,
     gridLineColor: null,
+    lineWidth: isTrading ? 1 : 0,
     labels: {
       style: null,
+      format: isTrading ? '{value:%H:%M}' : '{value:%l:%M %p}',
+      y: isTrading ? undefined : 27,
     },
     crosshair: {
       snap: true,
@@ -164,23 +198,25 @@ const getOptions = ({ maxPrice, pricePrecision, minPrice, isScalar, isArchived }
         enabled: true,
         shape: 'square',
         padding: 2,
-        format: '{value:%b %d %H:%M}',
+        format: is24hr ? '{value:%b %d %H:%M}' : '{value:%b %d %l:%M %p}',
       },
     },
   },
   yAxis: {
     showEmpty: true,
-    opposite: true,
+    opposite: isTrading,
     max: createBigNumber(maxPrice).toFixed(pricePrecision),
     min: createBigNumber(minPrice).toFixed(pricePrecision),
-    showFirstLabel: false,
+    showFirstLabel: !isTrading,
     showLastLabel: true,
     offset: 2,
     labels: {
+      align: isTrading ? 'right' : 'left',
       format: isScalar ? '{value:.4f}' : '${value:.2f}',
       style: null,
-      reserveSpace: true,
-      y: 16,
+      reserveSpace: isTrading,
+      y: isTrading ? 16 : -4,
+      x: isTrading ? -15 : 0,
     },
     crosshair: {
       snap: true,
@@ -203,36 +239,43 @@ const getOptions = ({ maxPrice, pricePrecision, minPrice, isScalar, isArchived }
 const handleSeries = (
   priceTimeSeries,
   selectedOutcomeId,
-  mostRecentTradetime = 0
+  mostRecentTradetime = 0,
+  isTrading
 ) => {
   const series = [];
-  priceTimeSeries && Object.keys(priceTimeSeries).forEach(id => {
-    const isSelected = selectedOutcomeId && selectedOutcomeId == id;
-    const length = priceTimeSeries[id].length;
-    if (
-      length > 0 &&
-      priceTimeSeries[id][length - 1].timestamp > mostRecentTradetime
-    ) {
-      mostRecentTradetime = priceTimeSeries[id][length - 1].timestamp;
-    }
-    const data = priceTimeSeries[id].map(pts => [
-      pts.timestamp,
-      createBigNumber(pts.price).toNumber(),
-    ]);
-    const baseSeriesOptions = {
-      type: isSelected ? 'area' : 'line',
-      lineWidth: isSelected ? HIGHLIGHTED_LINE_WIDTH : NORMAL_LINE_WIDTH,
-      marker: {
-        symbol: 'cicle',
-      },
-      // @ts-ignore
-      data,
-    };
+  priceTimeSeries &&
+    Object.keys(priceTimeSeries).forEach(id => {
+      const isInvalidEmpty =
+        id === '0' &&
+        !isTrading &&
+        priceTimeSeries[id][priceTimeSeries[id].length - 1].price === '0';
+      const isSelected = selectedOutcomeId && selectedOutcomeId == id;
+      const length = priceTimeSeries[id].length;
+      if (
+        length > 0 &&
+        priceTimeSeries[id][length - 1].timestamp > mostRecentTradetime
+      ) {
+        mostRecentTradetime = priceTimeSeries[id][length - 1].timestamp;
+      }
+      const data = priceTimeSeries[id].map(pts => [
+        pts.timestamp,
+        createBigNumber(pts.price).toNumber(),
+      ]);
+      const baseSeriesOptions = {
+        type: isSelected ? 'area' : 'line',
+        lineWidth: isSelected ? HIGHLIGHTED_LINE_WIDTH : NORMAL_LINE_WIDTH,
+        marker: {
+          symbol: 'cicle',
+        },
+        // @ts-ignore
+        data,
+        visible: !isInvalidEmpty,
+      };
 
-    series.push({
-      ...baseSeriesOptions,
+      series.push({
+        ...baseSeriesOptions,
+      });
     });
-  });
   series.forEach(seriesObject => {
     const seriesData = seriesObject.data;
     // make sure we have a trade to fill chart
