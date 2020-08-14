@@ -240,7 +240,7 @@ jobs:
           cd packages/augur-tools/ethereum-nodes/geth-poa && docker image build --tag augurproject/dev-node-geth:$(GETH_VERSION) .
           docker tag augurproject/dev-node-geth:$(GETH_VERSION) augurproject/dev-node-geth:latest
           docker push augurproject/dev-node-geth:$(GETH_VERSION)
-          docker push augurproject/dev-node-geth:latest
+          #docker push augurproject/dev-node-geth:latest
         displayName: 'build and push dev-node-geth image'
       - task: Docker@1
         displayName: docker logout
