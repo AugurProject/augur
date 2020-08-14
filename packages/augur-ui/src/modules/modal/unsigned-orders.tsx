@@ -28,6 +28,8 @@ import { LiquidityOrder } from 'modules/types';
 import { TXEventName } from '@augurproject/sdk-lite';
 import { DISMISSABLE_NOTICE_BUTTON_TYPES } from 'modules/reporting/common';
 import { useAppStatusStore } from 'modules/app/store/app-status';
+import { usePendingOrdersStore } from 'modules/app/store/pending-orders';
+import { sendLiquidityOrder } from 'modules/orders/actions/liquidity-management';
 
 interface UnsignedOrdersProps {
   closeAction: Function;
@@ -48,8 +50,6 @@ interface UnsignedOrdersProps {
   maxPrice: object;
   outcomes: Array<string>;
   marketType: string;
-  sendLiquidityOrder: Function;
-  removeLiquidityOrder: Function;
   scalarDenomination: string;
   numberOfTransactions: number;
   openOrders: boolean;
@@ -61,20 +61,19 @@ interface UnsignedOrdersProps {
 const orderRow = (
   order: LiquidityOrder,
   {
-    removeLiquidityOrder,
-    sendLiquidityOrder,
     marketType,
     numTicks,
     maxPrice,
     minPrice,
     outcomes,
     bnAllowance,
-    loginAccount,
     transactionHash,
     marketId,
     zeroXEnabled,
   }: UnsignedOrdersProps
 ) => {
+  const { loginAccount } = useAppStatusStore();
+  const { actions: { removeLiquidity }} = usePendingOrdersStore();
   const {
     outcomeId,
     outcomeName,
@@ -88,12 +87,13 @@ const orderRow = (
   const buttons = [
     {
       text: 'cancel',
-      action: () =>
-        removeLiquidityOrder({
-          transactionHash,
+      action: () => {
+        removeLiquidity({
+          txParamHash: transactionHash,
           outcomeId,
           orderId: index,
-        }),
+        });
+      }
     },
     {
       text: 'submit',
@@ -148,15 +148,12 @@ const orderRow = (
 };
 
 export const UnsignedOrders = ({
-  removeLiquidityOrder,
-  sendLiquidityOrder,
   marketType,
   numTicks,
   maxPrice,
   minPrice,
   outcomes,
   bnAllowance,
-  loginAccount,
   transactionHash,
   marketId,
   title,
@@ -177,6 +174,7 @@ export const UnsignedOrders = ({
   const submitAllTxCount = !zeroXEnabled
     ? Math.ceil(numberOfTransactions / MAX_BULK_ORDER_COUNT)
     : numberOfTransactions;
+
   return (
     <div className={Styles.Orders}>
       <Title title={title} closeAction={closeAction} />
@@ -186,7 +184,7 @@ export const UnsignedOrders = ({
         <Description description={description} />
         <MarketTitle title={marketTitle} />
         {header && (
-          <div className={Styles.Orders__header}>
+          <div className={Styles.OrdersHeader}>
             {header.map((headerLabel: string, index) => (
               <span key={headerLabel + index}>{headerLabel}</span>
             ))}
@@ -197,15 +195,12 @@ export const UnsignedOrders = ({
             {outcomes.map((outcome: string) =>
               (liquidity[outcome] || []).map((order: LiquidityOrder) =>
                 orderRow(order, {
-                  removeLiquidityOrder,
-                  sendLiquidityOrder,
                   marketType,
                   numTicks,
                   maxPrice,
                   minPrice,
                   outcomes,
                   bnAllowance,
-                  loginAccount,
                   transactionHash,
                   marketId,
                   zeroXEnabled,
@@ -221,7 +216,7 @@ export const UnsignedOrders = ({
         {breakdown && <Breakdown rows={breakdown} short />}
       </main>
       <BulkTxLabel
-        buttonName={'Submit All'}
+        buttonName='Submit All'
         count={submitAllTxCount}
         needsApproval={needsApproval}
       />

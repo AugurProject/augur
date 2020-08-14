@@ -42,7 +42,7 @@ export const convertPositionToBet = (position, marketInfo) => {
     min: marketInfo.minPrice,
     toWin: convertToWin(marketInfo.maxPrice, netPosition),
     normalizedPrice,
-    outcome: getOutcomeNameWithOutcome(marketInfo, position.outcome),
+    outcome: getOutcomeNameWithOutcome(marketInfo, position.outcome.toString()),
     shares: netPosition,
     wager,
     dateUpdated: position.timestamp,

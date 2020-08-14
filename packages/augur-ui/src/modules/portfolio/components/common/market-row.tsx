@@ -13,7 +13,7 @@ import {
 
 import ToggleRow from 'modules/common/toggle-row';
 import { MarketStatusLabel, TemplateShield, MarketTypeLabel, LiquidityDepletedLabel, Archived } from 'modules/common/labels';
-import { SCALAR, SIGN_SEND_ORDERS, MODAL_UNSIGNED_ORDERS } from 'modules/common/constants';
+import { SCALAR, SIGN_SEND_ORDERS, MODAL_UNSIGNED_ORDERS, THEMES } from 'modules/common/constants';
 import MarketTitle from 'modules/market/components/common/market-title';
 import { TXEventName } from '@augurproject/sdk';
 import { SubmitTextButton } from 'modules/common/buttons';
@@ -21,6 +21,7 @@ import { SubmitTextButton } from 'modules/common/buttons';
 import Styles from 'modules/portfolio/components/common/market-row.styles.less';
 import { MarketData } from 'modules/types';
 import { useAppStatusStore } from 'modules/app/store/app-status';
+import { useMarketsStore } from 'modules/markets/store/markets';
 
 export interface TimeObject {
   formattedUtcShortDate: string;
@@ -51,8 +52,20 @@ const MarketRow = ({
   showLiquidityDepleted
 }: MarketRowProps) => {
   const {
-    actions: {setModal}
+    theme,
+    actions: { setModal }
   } = useAppStatusStore();
+  const { liquidityPools } = useMarketsStore();
+  let renderLiquidityDepletedLabel = showLiquidityDepleted;
+  if (theme === THEMES.SPORTS) {
+    const { sportsBook: { liquidityPool } } = market;
+    const marketPool = liquidityPools[liquidityPool];
+    Object.keys(marketPool).forEach(outcomeId => {
+      if (marketPool[outcomeId]) {
+        renderLiquidityDepletedLabel = false;
+      }
+    })
+  }
   const content = (
     <div
       className={classNames(Styles.MarketRowContent, addedClass, {
@@ -78,7 +91,7 @@ const MarketRow = ({
               isWarpSync={market.isWarpSync}
             />
             {market.marketType === SCALAR && <MarketTypeLabel marketType={market.marketType} />}
-            {showLiquidityDepleted && <LiquidityDepletedLabel market={market} />}
+            {renderLiquidityDepletedLabel && <LiquidityDepletedLabel market={market} />}
             <span>{rightContent}</span>
           </div>
         )}

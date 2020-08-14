@@ -54,7 +54,7 @@ import { selectMarket } from 'modules/markets/selectors/market';
 import { cancelAllOpenOrders } from 'modules/orders/actions/cancel-order';
 import { totalTradingBalance } from 'modules/auth/helpers/login-account';
 import { createBigNumber } from 'utils/create-big-number';
-import { sendLiquidityOrder, startOrderSending } from 'modules/orders/actions/liquidity-management';
+import { startOrderSending } from 'modules/orders/actions/liquidity-management';
 import { Getters } from '@augurproject/sdk';
 import getUserOpenOrders from 'modules/orders/selectors/user-open-orders';
 
@@ -522,10 +522,10 @@ export const ModalOpenOrders = () => {
 
   return (
     <UnsignedOrders
-      title={'Open Orders in resolved market'}
+      title='Open Orders in resolved market'
       description={['You have open orders in this resolved market:']}
       marketId={marketId}
-      openOrders={true}
+      openOrders
       marketTitle={marketTitle}
       orders={openOrders}
       buttons={[
@@ -566,7 +566,6 @@ export const ModalUnsignedOrders = () => {
   } = useAppStatusStore();
   const {
     pendingLiquidityOrders,
-    actions: { clearAllMarketLiquidity, removeLiquidity },
   } = usePendingOrdersStore();
   const market = selectMarket(modal.marketId);
   let availableDai = totalTradingBalance();
@@ -615,7 +614,7 @@ export const ModalUnsignedOrders = () => {
   }
   return (
     <UnsignedOrders
-      title={'Unsigned Orders'}
+      title='Unsigned Orders'
       description={[
         "You have unsigned orders pending for this market's initial liquidity:",
       ]}
@@ -648,9 +647,6 @@ export const ModalUnsignedOrders = () => {
       ]}
       liquidity={liquidity}
       outcomes={liquidity && Object.keys(liquidity)}
-      removeLiquidityOrder={removeLiquidity}
-      sendLiquidityOrder={sendLiquidityOrder}
-      loginAccount={loginAccount}
       bnAllowance={bnAllowance}
       buttons={[
         {
