@@ -28,19 +28,9 @@ export const pathToChildCategory = (
   hidden = true
 ) => {
   const {
-    theme,
-    isMobile,
     marketsList: { isSearching }
   } = AppStatus.get();
   if (isSearching && hidden) return [];
-  const isSportsTheme = theme === THEMES.SPORTS;
-  const sportsMobileView = isSportsTheme && isMobile;
-  if (sportsMobileView) {
-    const index = selectedCategories.findIndex(category => category === selectedCategory);
-    if (index > -1) {
-      return selectedCategories.slice(0, index + 1);
-    }
-  }
   return selectedCategories.concat(selectedCategory);
 };
 
@@ -223,7 +213,7 @@ const CategoryFilters = () => {
             icon={item.icon}
             count={item.count}
             handleClick={() =>
-              pathToChildCategory(item.category, selectedCategories)
+              pathToChildCategory(item.category, isSportsTheme ? [] : selectedCategories)
             }
           />
           {isSportsTheme && subRows.length > 0 && (
