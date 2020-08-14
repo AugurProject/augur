@@ -64,3 +64,4 @@ junit.xml
 src/utils/**/*.less.d.ts
 src/modules/**/*.styles.less.d.ts
 src/modules/**/*.less.d.ts
+reporting-only-build/**
