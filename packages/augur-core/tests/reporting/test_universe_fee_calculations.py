@@ -46,26 +46,34 @@ def test_floating_amount_calculation(numWithCondition, targetWithConditionPerHun
 
 def test_reporter_fees(contractsFixture, universe, market, cash):
     defaultValue = 10000
-    shareToken = contractsFixture.contracts['ShareToken']
+    shareToken = contractsFixture.getShareToken()
 
-    assert universe.getOrCacheReportingFeeDivisor() == defaultValue
+    OIUniverse = universe
+    if contractsFixture.paraAugur:
+        paraAugur = contractsFixture.contracts["ParaAugur"]
+        OIUniverse = contractsFixture.applySignature("ParaUniverse", paraAugur.getParaUniverse(universe.address))
+
+    assert OIUniverse.getOrCacheReportingFeeDivisor() == defaultValue
 
     # Generate an enormous amount of OI
-    assert universe.getOpenInterestInAttoCash() == 0
+    assert contractsFixture.getOpenInterestInAttoCash(universe) == 0
     cost = market.getNumTicks() * 10**30
     with BuyWithCash(cash, cost, contractsFixture.accounts[1], "buy complete set"):
         shareToken.publicBuyCompleteSets(market.address, 10**30, sender = contractsFixture.accounts[1])
-    assert universe.getOpenInterestInAttoCash() > 0
+    assert contractsFixture.getOpenInterestInAttoCash(universe) > 0
 
-    # Move dispute window forward
-    disputeWindow = contractsFixture.applySignature('DisputeWindow', universe.getOrCreateCurrentDisputeWindow(False))
-    contractsFixture.contracts["Time"].setTimestamp(disputeWindow.getEndTime() + 1)
+    if contractsFixture.paraAugur:
+        contractsFixture.contracts["Time"].incrementTimestamp(3 * 24 * 60 * 60)
+    else:
+        # Move dispute window forward
+        disputeWindow = contractsFixture.applySignature('DisputeWindow', universe.getOrCreateCurrentDisputeWindow(False))
+        contractsFixture.contracts["Time"].setTimestamp(disputeWindow.getEndTime() + 1)
 
     reportingFeeChangedLog = {
         "universe": universe.address,
     }
     with AssertLog(contractsFixture, "ReportingFeeChanged", reportingFeeChangedLog):
-        assert universe.getOrCacheReportingFeeDivisor() < defaultValue
+        assert OIUniverse.getOrCacheReportingFeeDivisor() < defaultValue
 
 def test_validity_bond_up(contractsFixture, universe, market):
     initialValidityBond = universe.getOrCacheValidityBond()

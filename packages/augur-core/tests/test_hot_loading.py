@@ -5,7 +5,9 @@ from reporting_utils import proceedToDesignatedReporting, proceedToInitialReport
 from constants import BID, ASK, YES, NO, SHORT
 
 def test_market_hot_loading_basic(kitchenSinkFixture, augur, cash, market, categoricalMarket, scalarMarket):
-    hotLoading = kitchenSinkFixture.contracts["HotLoading"]
+    hotLoading = kitchenSinkFixture.contracts["HotLoadingUniversal"] if kitchenSinkFixture.paraAugur else kitchenSinkFixture.contracts["HotLoading"]
+    if kitchenSinkFixture.paraAugur:
+        augur = kitchenSinkFixture.contracts["ParaAugur"]
     fillOrder = kitchenSinkFixture.contracts["FillOrder"]
     orders = kitchenSinkFixture.contracts["Orders"]
     account = kitchenSinkFixture.accounts[0]
@@ -49,7 +51,9 @@ def test_market_hot_loading_basic(kitchenSinkFixture, augur, cash, market, categ
     assert marketData.displayPrices == [-10 * 10 **18, 30 * 10 ** 18]
 
 def test_hot_loading_bulk(kitchenSinkFixture, augur, cash, categoricalMarket, scalarMarket):
-    hotLoading = kitchenSinkFixture.contracts["HotLoading"]
+    hotLoading = kitchenSinkFixture.contracts["HotLoadingUniversal"] if kitchenSinkFixture.paraAugur else kitchenSinkFixture.contracts["HotLoading"]
+    if kitchenSinkFixture.paraAugur:
+        augur = kitchenSinkFixture.contracts["ParaAugur"]
     fillOrder = kitchenSinkFixture.contracts["FillOrder"]
     orders = kitchenSinkFixture.contracts["Orders"]
     account = kitchenSinkFixture.accounts[0]
@@ -71,7 +75,9 @@ def test_hot_loading_bulk(kitchenSinkFixture, augur, cash, categoricalMarket, sc
     assert marketData.displayPrices == [-10 * 10 **18, 30 * 10 ** 18]
 
 def test_trading(kitchenSinkFixture, augur, cash, market):
-    hotLoading = kitchenSinkFixture.contracts["HotLoading"]
+    hotLoading = kitchenSinkFixture.contracts["HotLoadingUniversal"] if kitchenSinkFixture.paraAugur else kitchenSinkFixture.contracts["HotLoading"]
+    if kitchenSinkFixture.paraAugur:
+        augur = kitchenSinkFixture.contracts["ParaAugur"]
     fillOrder = kitchenSinkFixture.contracts["FillOrder"]
     trade = kitchenSinkFixture.contracts["Trade"]
     orders = kitchenSinkFixture.contracts["Orders"]
@@ -101,7 +107,9 @@ def test_trading(kitchenSinkFixture, augur, cash, market):
     
 
 def test_reporting(kitchenSinkFixture, augur, cash, market):
-    hotLoading = kitchenSinkFixture.contracts["HotLoading"]
+    hotLoading = kitchenSinkFixture.contracts["HotLoadingUniversal"] if kitchenSinkFixture.paraAugur else kitchenSinkFixture.contracts["HotLoading"]
+    if kitchenSinkFixture.paraAugur:
+        augur = kitchenSinkFixture.contracts["ParaAugur"]
     fillOrder = kitchenSinkFixture.contracts["FillOrder"]
     orders = kitchenSinkFixture.contracts["Orders"]
     account = kitchenSinkFixture.accounts[0]
@@ -148,7 +156,9 @@ def test_reporting(kitchenSinkFixture, augur, cash, market):
     assert marketData.reportingState == 6
 
 def test_dispute_window_hot_loading(kitchenSinkFixture, augur, cash, universe, reputationToken):
-    hotLoading = kitchenSinkFixture.contracts["HotLoading"]
+    hotLoading = kitchenSinkFixture.contracts["HotLoadingUniversal"] if kitchenSinkFixture.paraAugur else kitchenSinkFixture.contracts["HotLoading"]
+    if kitchenSinkFixture.paraAugur:
+        augur = kitchenSinkFixture.contracts["ParaAugur"]
     account = kitchenSinkFixture.accounts[0]
 
     disputeWindowData = getDisputeWindowData(hotLoading, augur, universe)
@@ -188,7 +198,9 @@ def test_dispute_window_hot_loading(kitchenSinkFixture, augur, cash, universe, r
     assert disputeWindowData.fees == 0
 
 def test_validity_bonds(kitchenSinkFixture, augur, cash, market, categoricalMarket, scalarMarket):
-    hotLoading = kitchenSinkFixture.contracts["HotLoading"]
+    hotLoading = kitchenSinkFixture.contracts["HotLoadingUniversal"] if kitchenSinkFixture.paraAugur else kitchenSinkFixture.contracts["HotLoading"]
+    if kitchenSinkFixture.paraAugur:
+        augur = kitchenSinkFixture.contracts["ParaAugur"]
     account = kitchenSinkFixture.accounts[0]
 
     totalValidityBonds = hotLoading.getTotalValidityBonds([market.address, categoricalMarket.address, scalarMarket.address])

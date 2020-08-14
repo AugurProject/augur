@@ -2,6 +2,7 @@ import { ethers } from 'ethers';
 import { BigNumber } from 'bignumber.js';
 import { ContractCompiler } from '../libraries/ContractCompiler';
 import { ContractDeployer } from '../libraries/ContractDeployer';
+import { ParaContractDeployer } from '../libraries/ParaContractDeployer';
 import { CompilerConfiguration } from '../libraries/CompilerConfiguration';
 import { ContractDependenciesEthers } from '@augurproject/contract-dependencies-ethers';
 import {
@@ -98,6 +99,15 @@ export class TestFixture {
             compiledContracts
         );
         await contractDeployer.deploy('test');
+
+        const paraContractDeployer = new ParaContractDeployer(
+            config,
+            dependencies,
+            provider,
+            signer,
+            compiledContracts
+        );
+        await paraContractDeployer.deploy('test', config.addresses.WETH9);
 
         return new TestFixture(
             dependencies,

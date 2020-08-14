@@ -86,7 +86,7 @@ def test_transfering_ownership(contractsFixture, universe, market):
     True,
     False
 ])
-def test_variable_validity_bond(invalid, contractsFixture, universe, cash):
+def test_variable_validity_bond(invalid, contractsFixture, universe):
     # We can't make a market with less than the minimum required validity bond
     minimumValidityBond = universe.getOrCacheValidityBond()
 
@@ -108,6 +108,8 @@ def test_variable_validity_bond(invalid, contractsFixture, universe, cash):
     # Move time forward so we can finalize and see the bond move
     disputeWindow = contractsFixture.applySignature('DisputeWindow', market.getDisputeWindow())
     assert contractsFixture.contracts["Time"].setTimestamp(disputeWindow.getEndTime() + 1)
+
+    cash = contractsFixture.contracts["Cash"]
 
     if invalid:
         with TokenDelta(cash, minimumValidityBond, universe.getOrCreateNextDisputeWindow(False), "Validity bond did not go to the dispute window"):

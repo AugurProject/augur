@@ -5,11 +5,10 @@ import codecs
 import functools
 from old_eth_utils import sha3
 
-def test_rep_oracle(contractsFixture, augur, market, universe):
-    cash = contractsFixture.contracts["Cash"]
+def test_rep_oracle(contractsFixture, augur, cash, market, universe):
     reputationTokenAddress = universe.getReputationToken()
     reputationToken = contractsFixture.applySignature('TestNetReputationToken', reputationTokenAddress)
-    repOracle = contractsFixture.contracts["RepOracle"]
+    repOracle = contractsFixture.contracts["ParaRepOracle"]
     repExchange = contractsFixture.applySignature("UniswapV2Pair", repOracle.getExchange(reputationTokenAddress))
 
     account = contractsFixture.accounts[0]

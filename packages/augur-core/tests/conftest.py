@@ -135,13 +135,15 @@ CONTRACT_SIZE_WARN_LEVEL = CONTRACT_SIZE_LIMIT * 0.75
 
 def pytest_addoption(parser):
     parser.addoption("--cover", action="store_true", help="Use the coverage enabled contracts. Meant to be used with the tools/generateCoverageReport.js script")
-    parser.addoption("--subFork", action="store_true", help="Use the coverage enabled contracts. Meant to be used with the tools/generateCoverageReport.js script")
+    parser.addoption("--subFork", action="store_true", help="Run tests in the context of a forked universe child")
+    parser.addoption("--paraAugur", action="store_true", help="Run tests in the context of the ETH sub-version of Augur")
 
 def pytest_configure(config):
     # register an additional marker
     config.addinivalue_line("markers", "cover: use coverage contracts")
 
 TRADING_CONTRACTS = ['CreateOrder','FillOrder','CancelOrder','Trade','Orders','ZeroXTrade','ProfitLoss','SimulateTrade','AugurWalletRegistry','AugurWalletRegistryV2','AugurWalletFactory','AccountLoader']
+AUGUR_ETH_CONTRACTS = ['FeePotFactory','ParaUniverseFactory','ParaOICashFactory','ParaShareToken','ParaRepOracle','ParaOICash','OINexus']
 
 class ContractsFixture:
     signatures = {}
@@ -169,6 +171,7 @@ class ContractsFixture:
         # self.relativeTestContractsPath = 'mock_templates/contracts'
         self.coverageMode = request.config.option.cover
         self.subFork = request.config.option.subFork
+        self.paraAugur = request.config.option.paraAugur
         self.logListener = None
         if self.coverageMode:
             self.logListener = self.writeLogToFile
@@ -312,7 +315,12 @@ class ContractsFixture:
         #with PrintGasUsed(self, "UPLOAD CONTRACT %s" % lookupKey, 0):
         contract = self.upload(relativeFilePath, lookupKey, signatureKey, constructorArgs)
         if not contract: return None
-        if lookupKey in TRADING_CONTRACTS:
+        if lookupKey in AUGUR_ETH_CONTRACTS:
+            if lookupKey == "ParaShareToken":
+                lookupKey = "ShareToken"
+            print("REGISTERING: " + lookupKey)
+            self.contracts['ParaAugur'].registerContract(lookupKey.ljust(32, '\x00').encode('utf-8'), contract.address)
+        elif lookupKey in TRADING_CONTRACTS:
             self.contracts['AugurTrading'].registerContract(lookupKey.ljust(32, '\x00').encode('utf-8'), contract.address)
         else:
             self.contracts['Augur'].registerContract(lookupKey.ljust(32, '\x00').encode('utf-8'), contract.address)
@@ -412,6 +420,7 @@ class ContractsFixture:
                 if name == 'Time': continue # In testing and development we swap the Time library for a ControlledTime version which lets us manage block timestamp
                 if name == 'ReputationTokenFactory': continue # In testing and development we use the TestNetReputationTokenFactory which lets us faucet
                 if name == 'Cash': continue # We upload the Test Dai contracts manually after this process
+                if name in ['ParaAugur', 'FeePot', 'ParaUniverse']: continue # We upload ParaAugur explicitly and the others are generated via contract
                 if name in ['IAugur', 'IDisputeCrowdsourcer', 'IDisputeWindow', 'IUniverse', 'IMarket', 'IReportingParticipant', 'IReputationToken', 'IOrders', 'IShareToken', 'Order', 'IInitialReporter']: continue # Don't compile interfaces or libraries
                 # TODO these four are necessary for test_universe but break everything else
                 # if name == 'MarketFactory': continue # tests use mock
@@ -486,26 +495,30 @@ class ContractsFixture:
                 self.contracts[contractName].initialize(self.contracts['Augur'].address)
             else:
                 raise "contract has no 'initialize' method on it."
+        tradingAugurAddress = self.contracts["ParaAugur"].address if self.paraAugur else self.contracts["Augur"].address
         for contractName in TRADING_CONTRACTS:
             print("Initializing %s" % contractName)
             value = 0
             if contractName.startswith("AugurWalletRegistry"):
                 value = 2.5 * 10**17
-            self.contracts[contractName].initialize(self.contracts['Augur'].address, self.contracts['AugurTrading'].address, value=value)
+            self.contracts[contractName].initialize(tradingAugurAddress, self.contracts['AugurTrading'].address, value=value)
+        # Augur ETH contracts
+        self.contracts["ParaRepOracle"].initialize(self.contracts['ParaAugur'].address)
+        self.contracts["ParaShareToken"].initialize(self.contracts['ParaAugur'].address, self.contracts['ShareToken'].address)
 
     ####
     #### Helpers
     ####
 
     def approveCentralAuthority(self):
-        contractsNeedingApproval = ['Augur','FillOrder','CreateOrder','ZeroXTrade']
-        contractsToApprove = ['Cash']
+        contractsNeedingApproval = ['Augur','FillOrder','CreateOrder','ZeroXTrade', 'ParaAugur']
+        contractsToApprove = ['Cash', 'ParaAugurCash']
         testersGivingApproval = [self.accounts[x] for x in range(0,8)]
         for testerKey in testersGivingApproval:
             for contractName in contractsToApprove:
                 for authorityName in contractsNeedingApproval:
                     self.contracts[contractName].approve(self.contracts[authorityName].address, 2**254, sender=testerKey)
-        contractsToSetApproval = ['ShareToken']
+        contractsToSetApproval = ['ShareToken', 'ParaShareToken']
         for testerKey in testersGivingApproval:
             for contractName in contractsToSetApproval:
                 for authorityName in contractsNeedingApproval:
@@ -517,9 +530,18 @@ class ContractsFixture:
         with PrintGasUsed(self, "AUGUR CREATION", 0):
             return self.upload("../src/contracts/Augur.sol")
 
+    def uploadParaAugur(self):
+        # We have to upload Augur ETH prior to the trading contracts
+        paraAugurCash = self.upload("../src/contracts/Cash.sol", "ParaAugurCash", "Cash")
+        paraAugur = self.upload("../src/contracts/para/ParaAugur.sol", constructorArgs=[self.contracts["Augur"].address])
+        paraAugur.registerContract("Cash".ljust(32, '\x00').encode('utf-8'), paraAugurCash.address)
+        self.generateAndStoreSignature("../src/contracts/para/FeePot.sol")
+        self.generateAndStoreSignature("../src/contracts/para/ParaUniverse.sol")
+
     def uploadAugurTrading(self):
         # We have to upload Augur Trading before trading contracts
-        return self.upload("../src/contracts/trading/AugurTrading.sol", constructorArgs=[self.contracts["Augur"].address])
+        tradingAugurAddress = self.contracts["ParaAugur"].address if self.paraAugur else self.contracts["Augur"].address
+        return self.upload("../src/contracts/trading/AugurTrading.sol", constructorArgs=[tradingAugurAddress])
 
     def deployRelayHub(self):
         self.sendEth(self.accounts[0], "0xff20d47eb84b1b85aadcccc43d2dc0124c6211f7", 42 * 10**17)
@@ -542,6 +564,9 @@ class ContractsFixture:
         universeCreatedLogs = augur.getLogs("UniverseCreated")
         universeAddress = universeCreatedLogs[0].args.childUniverse
         universe = self.applySignature('Universe', universeAddress)
+        if self.paraAugur:
+            with PrintGasUsed(self, "ETH GENESIS CREATION", 0):
+                self.contracts["ParaAugur"].generateParaUniverse(universeAddress)
         return universe
 
     def distributeRep(self, universe):
@@ -640,6 +665,36 @@ class ContractsFixture:
         tester = self.testerProvider.ethereum_tester
         return tester.get_balance(account)
 
+    def getShareToken(self):
+        return self.contracts["ParaShareToken"] if self.paraAugur else self.contracts["ShareToken"]
+
+    def marketBalance(self, market):
+        universe = self.applySignature("Universe", market.getUniverse())
+        if self.paraAugur:
+            paraAugur = self.contracts["ParaAugur"]
+            universe = self.applySignature("Universe", paraAugur.getParaUniverse(universe.address))
+        return universe.marketBalance(market.address)
+
+    def getOpenInterestInAttoCash(self, universe):
+        if self.paraAugur:
+            paraAugur = self.contracts["ParaAugur"]
+            universe = self.applySignature("Universe", paraAugur.getParaUniverse(universe.address))
+        return universe.getOpenInterestInAttoCash()
+
+    def marketCreatorFeesAttoCash(self, market):
+        if not self.paraAugur:
+            return market.marketCreatorFeesAttoCash()
+        universe = self.applySignature("Universe", market.getUniverse())
+        paraAugur = self.contracts["ParaAugur"]
+        paraUniverse = self.applySignature("ParaUniverse", paraAugur.getParaUniverse(universe.address))
+        return paraUniverse.marketCreatorFeesAttoCash(market.address)
+
+    def getFeePot(self, universe):
+        paraAugur = self.contracts["ParaAugur"]
+        paraUniverse = self.applySignature("ParaUniverse", paraAugur.getParaUniverse(universe.address))
+        return self.applySignature("FeePot", paraUniverse.getFeePot())
+
+
 @pytest.fixture(scope="session")
 def fixture(request):
     return ContractsFixture(request)
@@ -652,10 +707,12 @@ def baseSnapshot(fixture):
 def augurInitializedSnapshot(fixture, baseSnapshot):
     fixture.resetToSnapshot(baseSnapshot)
     fixture.uploadAugur()
+    fixture.uploadParaAugur()
     fixture.uploadAugurTrading()
     fixture.deployRelayHub()
     fixture.deployRelayHubV2()
     fixture.uploadAllContracts()
+    fixture.contracts["OINexus"].addParaAugur(fixture.contracts["ParaAugur"].address)
     fixture.uploadTestDaiContracts()
     fixture.upload0xContracts()
     fixture.uploadUniswapContracts()
@@ -672,6 +729,7 @@ def kitchenSinkSnapshot(fixture, augurInitializedSnapshot):
     universe = fixture.createUniverse()
     cash = fixture.contracts['Cash']
     augur = fixture.contracts['Augur']
+    paraAugurCash = fixture.contracts['ParaAugurCash']
     fixture.distributeRep(universe)
 
     if fixture.subFork:
@@ -692,6 +750,7 @@ def kitchenSinkSnapshot(fixture, augurInitializedSnapshot):
     snapshot = fixture.createSnapshot()
     snapshot['universe'] = universe
     snapshot['cash'] = cash
+    snapshot['paraAugurCash'] = paraAugurCash
     snapshot['augur'] = augur
     snapshot['yesNoMarket'] = yesNoMarket
     snapshot['categoricalMarket'] = categoricalMarket
@@ -711,7 +770,8 @@ def universe(kitchenSinkFixture, kitchenSinkSnapshot):
 
 @pytest.fixture
 def cash(kitchenSinkFixture, kitchenSinkSnapshot):
-    return kitchenSinkFixture.applySignature(None, kitchenSinkSnapshot['cash'].address, kitchenSinkSnapshot['cash'].abi)
+    cashAddress = kitchenSinkSnapshot['paraAugurCash'].address if kitchenSinkFixture.paraAugur else kitchenSinkSnapshot['cash'].address
+    return kitchenSinkFixture.applySignature(None, cashAddress, kitchenSinkSnapshot['cash'].abi)
 
 @pytest.fixture
 def augur(kitchenSinkFixture, kitchenSinkSnapshot):

@@ -108,10 +108,10 @@ def test_universe_contains(localFixture, populatedUniverse, mockMarket, chain, m
 def test_open_interest(localFixture, populatedUniverse):
     multiplier = localFixture.contracts['Constants'].TARGET_REP_MARKET_CAP_MULTIPLIER() / float(localFixture.contracts['Constants'].TARGET_REP_MARKET_CAP_DIVISOR())
     assert populatedUniverse.getTargetRepMarketCapInAttoCash() == 0
-    assert populatedUniverse.getOpenInterestInAttoCash() == 0
+    assert localFixture.getOpenInterestInAttoCash(populatedUniverse) == 0
     populatedUniverse.incrementOpenInterest(20)
     assert populatedUniverse.getTargetRepMarketCapInAttoCash() == 20 * multiplier
-    assert populatedUniverse.getOpenInterestInAttoCash() == 20
+    assert localFixture.getOpenInterestInAttoCash(populatedUniverse) == 20
 
 @mark.skip
 def test_universe_calculate_bonds_stakes(localFixture, chain, populatedUniverse, mockDisputeWindow, mockDisputeWindowFactory):

@@ -31,6 +31,13 @@ export interface SDKConfiguration {
   networkId: NetworkId,
   uploadBlockNumber?: number,
   addresses?: ContractAddresses,
+  paraDeploys?: {
+    [cashAddress: string]: {
+      name: string,
+      addresses: ParaAddresses
+    }
+  }
+  paraDeploy?: string;
   averageBlocktime?: number,
   logLevel?: LoggerLevels, // In the JSON configs an integer will need to be used.
   ethereum?: {
@@ -113,22 +120,27 @@ export interface SDKConfiguration {
   }
 };
 
-export interface ContractAddresses {
-  Universe: string;
-  Augur: string;
+export interface TradingAddresses {
   AugurTrading: string;
-  LegacyReputationToken: string;
   CancelOrder: string;
-  Cash: string;
-  USDC: string;
-  USDT: string;
-  ShareToken: string;
   CreateOrder: string;
   FillOrder: string;
   Order?: string;
   Orders: string;
   Trade: string;
   SimulateTrade: string;
+  ZeroXTrade?: string;
+  ProfitLoss?: string;
+}
+
+export interface ContractAddresses extends TradingAddresses {
+  Universe: string;
+  Augur: string;
+  LegacyReputationToken: string;
+  Cash: string;
+  USDC: string;
+  USDT: string;
+  ShareToken: string;
   Controller?: string;
   OrdersFinder?: string;
   OrdersFetcher?: string;
@@ -141,10 +153,8 @@ export interface ContractAddresses {
   RedeemStake?: string;
   GnosisSafeRegistry?: string;
   HotLoading?: string;
-  ZeroXTrade?: string;
   Affiliates?: string;
   AffiliateValidator?: string;
-  ProfitLoss?: string;
   WarpSync?: string;
   AugurWalletRegistry?: string;
   OICash?: string;
@@ -167,6 +177,18 @@ export interface ContractAddresses {
   DevUtils?: string;
   WETH9?: string;
   ZRXToken?: string;
+
+  // Para
+  OINexus?: string;
+}
+
+export interface ParaAddresses extends TradingAddresses {
+  Augur: string;
+  Universe: string;
+  ShareToken: string;
+  Cash: string;
+  HotLoading: string;
+  OICash?: string;
 }
 
 export interface ExternalAddresses {

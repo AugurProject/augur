@@ -14,7 +14,7 @@ def test_binary_and_claim(contractsFixture, cash, market, universe):
     createOrder = contractsFixture.contracts["CreateOrder"]
     fillOrder = contractsFixture.contracts["FillOrder"]
     profitLoss = contractsFixture.contracts["ProfitLoss"]
-    shareToken = contractsFixture.contracts['ShareToken']
+    shareToken = contractsFixture.getShareToken()
     augurTrading = contractsFixture.contracts['AugurTrading']
     test_data = [
         {
@@ -91,7 +91,7 @@ def test_simple(contractsFixture, cash, market, universe):
     createOrder = contractsFixture.contracts["CreateOrder"]
     fillOrder = contractsFixture.contracts["FillOrder"]
     profitLoss = contractsFixture.contracts["ProfitLoss"]
-    shareToken = contractsFixture.contracts['ShareToken']
+    shareToken = contractsFixture.getShareToken()
     augurTrading = contractsFixture.contracts['AugurTrading']
     test_data = [
         {

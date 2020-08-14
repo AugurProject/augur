@@ -8,7 +8,7 @@ from reporting_utils import proceedToNextRound
 from decimal import Decimal
 
 @mark.parametrize('withSelf', [
-    True,
+    #True,
     False
 ])
 def test_one_bid_on_books_buy_full_order(withSelf, contractsFixture, cash, market, universe):
@@ -541,8 +541,8 @@ def test_take_best_order_with_shares_escrowed_buy_with_cash(withSelf, contractsF
     createOrder = contractsFixture.contracts['CreateOrder']
     trade = contractsFixture.contracts['Trade']
     orders = contractsFixture.contracts['Orders']
-    shareToken = contractsFixture.contracts['ShareToken']
-    shareToken = contractsFixture.contracts["ShareToken"]
+    shareToken = contractsFixture.getShareToken()
+    shareToken = contractsFixture.getShareToken()
 
     # buy complete sets
     sender = contractsFixture.accounts[2] if withSelf else contractsFixture.accounts[1]
@@ -573,8 +573,8 @@ def test_take_best_order_with_shares_escrowed_buy_with_shares_categorical(contra
     createOrder = contractsFixture.contracts['CreateOrder']
     trade = contractsFixture.contracts['Trade']
     orders = contractsFixture.contracts['Orders']
-    shareToken = contractsFixture.contracts['ShareToken']
-    shareToken = contractsFixture.contracts["ShareToken"]
+    shareToken = contractsFixture.getShareToken()
+    shareToken = contractsFixture.getShareToken()
 
     # buy complete sets for both users
     numTicks = market.getNumTicks()
@@ -762,8 +762,8 @@ def test_fees_from_trades(finalized, invalid, contractsFixture, cash, market, un
     createOrder = contractsFixture.contracts['CreateOrder']
     trade = contractsFixture.contracts['Trade']
     orders = contractsFixture.contracts['Orders']
-    shareToken = contractsFixture.contracts['ShareToken']
-    shareToken = contractsFixture.contracts["ShareToken"]
+    shareToken = contractsFixture.getShareToken()
+    shareToken = contractsFixture.getShareToken()
     fingerprint = longTo32Bytes(11)
 
     affiliateAddress = contractsFixture.accounts[3]
@@ -804,6 +804,10 @@ def test_fees_from_trades(finalized, invalid, contractsFixture, cash, market, un
     if finalized:
         if invalid:
             nextDisputeWindowAddress = universe.getOrCreateNextDisputeWindow(False)
+            if contractsFixture.paraAugur:
+                paraAugur = contractsFixture.contracts["ParaAugur"]
+                paraUniverse = contractsFixture.applySignature("ParaUniverse", paraAugur.getParaUniverse(universe.address))
+                nextDisputeWindowAddress = paraUniverse.feePot()
             totalFees = fix(1) - sourceKickback # market fees
             totalFees += fix(.01) # reporting fee
             with TokenDelta(cash, totalFees, nextDisputeWindowAddress, "Dispute Window did not recieve the correct fees"):

@@ -43,6 +43,17 @@ export const INTERNAL_CONTRACTS = [
     'OICashFactory',
     'ReputationTokenFactory',
     'UniverseFactory',
+    // Para
+    'FeePotFactory',
+    'ParaOICashFactory',
+    'ParaUniverseFactory',
+    'ParaAugur',
+    'FeePot',
+    'ParaOICash',
+    'ParaRepOracle',
+    'ParaShareToken',
+    'ParaUniverse',
+    'OINexus',
 ];
 
 export const TRADING_CONTRACTS = [

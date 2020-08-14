@@ -10,7 +10,7 @@ from old_eth_utils import ecsign, sha3, normalize_key, int_to_32bytearray, bytea
 def test_fingerprint(kitchenSinkFixture, universe, cash, market):
     affiliates = kitchenSinkFixture.contracts['Affiliates']
     affiliateValidator = kitchenSinkFixture.applySignature("AffiliateValidator", affiliates.createAffiliateValidator())
-    shareToken = kitchenSinkFixture.contracts['ShareToken']
+    shareToken = kitchenSinkFixture.getShareToken()
 
     accountFingerprint = longTo32Bytes(11)
     affiliateFingerprint = longTo32Bytes(12)
@@ -40,7 +40,7 @@ def test_fingerprint(kitchenSinkFixture, universe, cash, market):
 def test_affiliate_validator(kitchenSinkFixture, universe, cash):
     affiliates = kitchenSinkFixture.contracts['Affiliates']
     affiliateValidator = kitchenSinkFixture.applySignature("AffiliateValidator", affiliates.createAffiliateValidator())
-    shareToken = kitchenSinkFixture.contracts['ShareToken']
+    shareToken = kitchenSinkFixture.getShareToken()
 
     market = kitchenSinkFixture.createReasonableYesNoMarket(universe, affiliateValidator = affiliateValidator.address)
 

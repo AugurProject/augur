@@ -8,6 +8,8 @@ from old_eth_utils import ecsign, sha3, normalize_key, int_to_32bytearray, bytea
 RELAY_HUB_ADDRESS = "0xD216153c06E857cD7f72665E0aF1d7D82172F494"
 
 def test_augur_wallet_registry(contractsFixture, augur, universe, cash, reputationToken):
+    if contractsFixture.paraAugur:
+        return
     augurWalletRegistry = contractsFixture.contracts["AugurWalletRegistry"]
     relayHub = contractsFixture.applySignature("RelayHub", RELAY_HUB_ADDRESS)
     ethExchange = contractsFixture.applySignature("UniswapV2Pair", augurWalletRegistry.ethExchange())
@@ -226,6 +228,8 @@ def test_augur_wallet_registry(contractsFixture, augur, universe, cash, reputati
     assert contractsFixture.ethBalance(ethRecipient) == oldBalance + ethAmount
     
 def test_augur_wallet_registry_auto_create(contractsFixture, augur, universe, cash, reputationToken):
+    if contractsFixture.paraAugur:
+        return
     augurWalletRegistry = contractsFixture.contracts["AugurWalletRegistry"]
     relayHub = contractsFixture.applySignature("RelayHub", RELAY_HUB_ADDRESS)
     ethExchange = contractsFixture.applySignature("UniswapV2Pair", augurWalletRegistry.ethExchange())
@@ -310,6 +314,8 @@ def test_augur_wallet_registry_auto_create(contractsFixture, augur, universe, ca
     assert reputationToken.balanceOf(walletAddress) == initialRep + repAmount
 
 def test_augur_wallet_registry_fund_signer(contractsFixture, augur, universe, cash, reputationToken):
+    if contractsFixture.paraAugur:
+        return
     augurWalletRegistry = contractsFixture.contracts["AugurWalletRegistry"]
     relayHub = contractsFixture.applySignature("RelayHub", RELAY_HUB_ADDRESS)
     ethExchange = contractsFixture.applySignature("UniswapV2Pair", augurWalletRegistry.ethExchange())

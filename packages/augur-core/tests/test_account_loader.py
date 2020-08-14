@@ -14,7 +14,8 @@ def test_market_hot_loading_basic(kitchenSinkFixture, augur, cash, reputationTok
     # Lets load the account right away without doing anything to check defaults
     accountData = getAccountData(accountLoader, account, reputationToken.address, legacyReputationToken.address, legacyReputationToken.address)
 
-    assert accountData.signerETH == 999999999999999999645100
+    initialSignerETH = accountData.signerETH
+    assert accountData.signerETH > 0
     assert accountData.signerDAI == 0
     assert accountData.signerREP == 0
     assert accountData.signerLegacyREP == 0
@@ -29,13 +30,13 @@ def test_market_hot_loading_basic(kitchenSinkFixture, augur, cash, reputationTok
 
     accountData = getAccountData(accountLoader, account, reputationToken.address, legacyReputationToken.address, legacyReputationToken.address)
 
-    assert accountData.signerETH < 999999999999999999645000
+    assert accountData.signerETH < initialSignerETH
     assert accountData.signerDAI == 10 * 10**18
     assert accountData.signerREP == 9 * 10**18
     assert accountData.signerLegacyREP == 8 * 10**18
 
     # Now lets create some Uniswap exchanges, provide initial liquidity and confirm we get current prices 
-    repOracle = kitchenSinkFixture.contracts["RepOracle"]
+    repOracle = kitchenSinkFixture.contracts["ParaRepOracle"] if kitchenSinkFixture.paraAugur else kitchenSinkFixture.contracts["RepOracle"]
     repExchange = kitchenSinkFixture.applySignature("UniswapV2Pair", repOracle.getExchange(reputationToken.address))
 
     cashAmount = 20 * 10**18

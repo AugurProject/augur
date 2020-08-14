@@ -7,7 +7,9 @@ from reporting_utils import proceedToDesignatedReporting, proceedToInitialReport
 from constants import YES, NO
 
 def test_shares(kitchenSinkFixture, universe, cash, market, scalarMarket):
-    shareToken = kitchenSinkFixture.contracts['ShareToken']
+    if kitchenSinkFixture.paraAugur:
+        return
+    shareToken = kitchenSinkFixture.getShareToken()
     auditFunds = kitchenSinkFixture.contracts['AuditFunds']
 
     account = kitchenSinkFixture.accounts[0]
@@ -118,7 +120,7 @@ def test_disputes(kitchenSinkFixture, universe, cash, market, reputationToken):
 
 def acquireLongShares(kitchenSinkFixture, cash, market, outcome, amount, approvalAddress, sender):
     if amount == 0: return
-    shareToken = kitchenSinkFixture.contracts["ShareToken"]
+    shareToken = kitchenSinkFixture.getShareToken()
 
     cost = amount * market.getNumTicks()
     with BuyWithCash(cash, cost, sender, "complete set buy"):
@@ -130,7 +132,7 @@ def acquireLongShares(kitchenSinkFixture, cash, market, outcome, amount, approva
 def acquireShortShareSet(kitchenSinkFixture, cash, market, outcome, amount, approvalAddress, sender):
     if amount == 0: return
     cost = amount * market.getNumTicks()
-    shareToken = kitchenSinkFixture.contracts["ShareToken"]
+    shareToken = kitchenSinkFixture.getShareToken()
 
     with BuyWithCash(cash, cost, sender, "complete set buy"):
         assert shareToken.publicBuyCompleteSets(market.address, amount, sender = sender)

@@ -304,6 +304,7 @@ Deploying to: ${env}
         mapping['USDTExchange'] = await uniswapV2Factory.getPair_(USDTAddress, this.getContractAddress('Cash'));
         mapping['AuditFunds'] = this.contracts.get('AuditFunds').address!;
         mapping['AccountLoader'] = this.contracts.get('AccountLoader').address!;
+        mapping['OINexus'] = this.contracts.get('OINexus').address!;
 
         mapping['OICash'] = this.contracts.get('OICash').address!;
         mapping['AugurWalletRegistry'] = this.contracts.get('AugurWalletRegistry').address!;
@@ -831,6 +832,7 @@ Deploying to: ${env}
         mapping['EthExchange'] = await uniswapV2Factory.getPair_(this.getContractAddress('WETH9'), this.getContractAddress('Cash'));
         mapping['AuditFunds'] = this.contracts.get('AuditFunds').address!;
         mapping['AccountLoader'] = this.contracts.get('AccountLoader').address!;
+        mapping['OINexus'] = this.contracts.get('OINexus').address!;
 
         // 0x
         mapping['ERC20Proxy'] = this.contracts.get('ERC20Proxy').address!;

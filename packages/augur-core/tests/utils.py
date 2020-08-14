@@ -119,6 +119,7 @@ class PrintGasUsed():
             print("GAS USED WITH %s : %i" % (self.action, gasUsed))
 
 TRADE_EVENTS = ['OrderEvent','ProfitLossChanged','MarketVolumeChanged','CancelZeroXOrder']
+AUGUR_ETH_EVENTS = ['CompleteSetsPurchased','FinishDeployment','RegisterContract','ShareTokenBalanceChanged','ReportingFeeChanged','MarketOIChanged','TradingProceedsClaimed','CompleteSetsSold']
 
 class AssertLog():
 
@@ -131,6 +132,8 @@ class AssertLog():
         if not self.contract:
             if eventName in TRADE_EVENTS:
                 self.contract = fixture.contracts['AugurTrading']
+            elif fixture.paraAugur and eventName in AUGUR_ETH_EVENTS:
+                self.contract = fixture.contracts['ParaAugur']
             else:
                 self.contract = fixture.contracts['Augur']
 

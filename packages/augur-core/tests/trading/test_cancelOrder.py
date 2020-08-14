@@ -9,7 +9,7 @@ def test_cancelBid(contractsFixture, cash, market, universe):
     createOrder = contractsFixture.contracts['CreateOrder']
     cancelOrder = contractsFixture.contracts['CancelOrder']
     orders = contractsFixture.contracts['Orders']
-    shareToken = contractsFixture.contracts["ShareToken"]
+    shareToken = contractsFixture.getShareToken()
 
     orderType = BID
     amount = fix(1)
@@ -54,7 +54,7 @@ def test_cancelAsk(contractsFixture, cash, market):
     createOrder = contractsFixture.contracts['CreateOrder']
     cancelOrder = contractsFixture.contracts['CancelOrder']
     orders = contractsFixture.contracts['Orders']
-    shareToken = contractsFixture.contracts["ShareToken"]
+    shareToken = contractsFixture.getShareToken()
 
     orderType = ASK
     amount = fix(1)
@@ -85,7 +85,7 @@ def test_cancelAsk(contractsFixture, cash, market):
     assert marketInitialNoShares == shareToken.totalSupplyForMarketOutcome(market.address, NO), "Market's no shares should be unchanged"
 
 def test_cancelWithSharesInEscrow(contractsFixture, cash, market, universe):
-    shareToken = contractsFixture.contracts['ShareToken']
+    shareToken = contractsFixture.getShareToken()
     createOrder = contractsFixture.contracts['CreateOrder']
     cancelOrder = contractsFixture.contracts['CancelOrder']
     orders = contractsFixture.contracts['Orders']
@@ -130,11 +130,11 @@ def test_cancelWithSharesInEscrow(contractsFixture, cash, market, universe):
     assert marketInitialNoShares == shareToken.totalSupplyForMarketOutcome(market.address, NO), "Market's no shares should be unchanged"
 
 def test_cancelWithSharesInEscrowAsk(contractsFixture, cash, market, universe):
-    shareToken = contractsFixture.contracts['ShareToken']
+    shareToken = contractsFixture.getShareToken()
     createOrder = contractsFixture.contracts['CreateOrder']
     cancelOrder = contractsFixture.contracts['CancelOrder']
     orders = contractsFixture.contracts['Orders']
-    shareToken = contractsFixture.contracts["ShareToken"]
+    shareToken = contractsFixture.getShareToken()
 
     totalProceeds = fix('12', market.getNumTicks())
     marketCreatorFee = totalProceeds / market.getMarketCreatorSettlementFeeDivisor()

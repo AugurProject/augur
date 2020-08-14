@@ -7,10 +7,10 @@ from constants import BID, ASK, YES, NO
 
 
 def test_create_ask_with_shares_fill_with_shares(contractsFixture, cash, market):
-    shareToken = contractsFixture.contracts['ShareToken']
+    shareToken = contractsFixture.getShareToken()
     createOrder = contractsFixture.contracts['CreateOrder']
     fillOrder = contractsFixture.contracts['FillOrder']
-    shareToken = contractsFixture.contracts["ShareToken"]
+    shareToken = contractsFixture.getShareToken()
 
     completeSetFees = fix('12', '0.0101') * market.getNumTicks()
 
@@ -46,10 +46,10 @@ def test_create_ask_with_shares_fill_with_shares(contractsFixture, cash, market)
     assert shareToken.balanceOfMarketOutcome(market.address, NO, contractsFixture.accounts[2]) == 0
 
 def test_create_ask_with_shares_fill_with_cash(contractsFixture, cash, market):
-    shareToken = contractsFixture.contracts['ShareToken']
+    shareToken = contractsFixture.getShareToken()
     createOrder = contractsFixture.contracts['CreateOrder']
     fillOrder = contractsFixture.contracts['FillOrder']
-    shareToken = contractsFixture.contracts["ShareToken"]
+    shareToken = contractsFixture.getShareToken()
 
     # 1. buy a complete set with account 1
     with BuyWithCash(cash, fix('12', market.getNumTicks()), contractsFixture.accounts[1], "buy complete set"):
@@ -77,10 +77,10 @@ def test_create_ask_with_shares_fill_with_cash(contractsFixture, cash, market):
     assert shareToken.balanceOfMarketOutcome(market.address, NO, contractsFixture.accounts[2]) == 0
 
 def test_create_ask_with_cash_fill_with_shares(contractsFixture, cash, market):
-    shareToken = contractsFixture.contracts['ShareToken']
+    shareToken = contractsFixture.getShareToken()
     createOrder = contractsFixture.contracts['CreateOrder']
     fillOrder = contractsFixture.contracts['FillOrder']
-    shareToken = contractsFixture.contracts["ShareToken"]
+    shareToken = contractsFixture.getShareToken()
 
     # 1. buy complete sets with account 2
     with BuyWithCash(cash, fix('12', market.getNumTicks()), contractsFixture.accounts[2], "buy complete set"):
@@ -108,10 +108,10 @@ def test_create_ask_with_cash_fill_with_shares(contractsFixture, cash, market):
     assert shareToken.balanceOfMarketOutcome(market.address, NO, contractsFixture.accounts[2]) == 0
 
 def test_create_ask_with_cash_fill_with_cash(contractsFixture, cash, market):
-    shareToken = contractsFixture.contracts['ShareToken']
+    shareToken = contractsFixture.getShareToken()
     createOrder = contractsFixture.contracts['CreateOrder']
     fillOrder = contractsFixture.contracts['FillOrder']
-    shareToken = contractsFixture.contracts["ShareToken"]
+    shareToken = contractsFixture.getShareToken()
 
     # 1. create ASK order for YES with cash escrowed
     with BuyWithCash(cash, fix('12', '400'), contractsFixture.accounts[1], "create order"):
@@ -133,10 +133,10 @@ def test_create_ask_with_cash_fill_with_cash(contractsFixture, cash, market):
     assert shareToken.balanceOfMarketOutcome(market.address, NO, contractsFixture.accounts[2]) == 0
 
 def test_create_bid_with_shares_fill_with_shares(contractsFixture, cash, market, universe):
-    shareToken = contractsFixture.contracts['ShareToken']
+    shareToken = contractsFixture.getShareToken()
     createOrder = contractsFixture.contracts['CreateOrder']
     fillOrder = contractsFixture.contracts['FillOrder']
-    shareToken = contractsFixture.contracts["ShareToken"]
+    shareToken = contractsFixture.getShareToken()
 
     totalProceeds = fix('12', market.getNumTicks())
     marketCreatorFee = totalProceeds / market.getMarketCreatorSettlementFeeDivisor()
@@ -184,10 +184,10 @@ def test_create_bid_with_shares_fill_with_shares(contractsFixture, cash, market,
     assert shareToken.balanceOfMarketOutcome(market.address, NO, contractsFixture.accounts[2]) == fix(12)
 
 def test_create_bid_with_shares_fill_with_cash(contractsFixture, cash, market):
-    shareToken = contractsFixture.contracts['ShareToken']
+    shareToken = contractsFixture.getShareToken()
     createOrder = contractsFixture.contracts['CreateOrder']
     fillOrder = contractsFixture.contracts['FillOrder']
-    shareToken = contractsFixture.contracts["ShareToken"]
+    shareToken = contractsFixture.getShareToken()
 
     # 1. buy complete sets with account 1
     with BuyWithCash(cash, fix('12', market.getNumTicks()), contractsFixture.accounts[1], "buy complete set"):
@@ -215,10 +215,10 @@ def test_create_bid_with_shares_fill_with_cash(contractsFixture, cash, market):
     assert shareToken.balanceOfMarketOutcome(market.address, NO, contractsFixture.accounts[2]) == fix(12)
 
 def test_create_bid_with_cash_fill_with_shares(contractsFixture, cash, market):
-    shareToken = contractsFixture.contracts['ShareToken']
+    shareToken = contractsFixture.getShareToken()
     createOrder = contractsFixture.contracts['CreateOrder']
     fillOrder = contractsFixture.contracts['FillOrder']
-    shareToken = contractsFixture.contracts["ShareToken"]
+    shareToken = contractsFixture.getShareToken()
 
     # 1. buy complete sets with account 2
     with BuyWithCash(cash, fix('12', market.getNumTicks()), contractsFixture.accounts[2], "buy complete set"):
@@ -248,7 +248,7 @@ def test_create_bid_with_cash_fill_with_shares(contractsFixture, cash, market):
 def test_create_bid_with_cash_fill_with_cash(contractsFixture, cash, market):
     createOrder = contractsFixture.contracts['CreateOrder']
     fillOrder = contractsFixture.contracts['FillOrder']
-    shareToken = contractsFixture.contracts["ShareToken"]
+    shareToken = contractsFixture.getShareToken()
 
     # 1. create BID order for YES with cash escrowed
     with BuyWithCash(cash, fix('12', '600'), contractsFixture.accounts[1], "create order"):

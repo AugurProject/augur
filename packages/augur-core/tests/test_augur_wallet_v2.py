@@ -7,6 +7,8 @@ from old_eth_utils import ecsign, sha3, normalize_key, int_to_32bytearray, bytea
 
 
 def test_augur_wallet_registry(contractsFixture, augur, universe, cash, reputationToken):
+    if contractsFixture.paraAugur:
+        return
     augurWalletRegistry = contractsFixture.contracts["AugurWalletRegistryV2"]
     stakeManager = contractsFixture.contracts["StakeManager"]
     relayHub = contractsFixture.contracts["RelayHubV2"]
@@ -236,6 +238,8 @@ def test_augur_wallet_registry(contractsFixture, augur, universe, cash, reputati
     assert contractsFixture.ethBalance(ethRecipient) == oldBalance + ethAmount
     
 def test_augur_wallet_registry_auto_create(contractsFixture, augur, universe, cash, reputationToken):
+    if contractsFixture.paraAugur:
+        return
     augurWalletRegistry = contractsFixture.contracts["AugurWalletRegistryV2"]
     stakeManager = contractsFixture.contracts["StakeManager"]
     relayHub = contractsFixture.contracts["RelayHubV2"]
@@ -333,6 +337,8 @@ def test_augur_wallet_registry_auto_create(contractsFixture, augur, universe, ca
     assert legacyWalletRegistry.getCreate2WalletAddress(account) == walletAddress
 
 def test_augur_wallet_registry_fund_signer(contractsFixture, augur, universe, cash, reputationToken):
+    if contractsFixture.paraAugur:
+        return
     augurWalletRegistry = contractsFixture.contracts["AugurWalletRegistryV2"]
     stakeManager = contractsFixture.contracts["StakeManager"]
     relayHub = contractsFixture.contracts["RelayHubV2"]
@@ -438,6 +444,8 @@ def test_augur_wallet_registry_fund_signer(contractsFixture, augur, universe, ca
     assert contractsFixture.ethBalance(account) < signerEthBalance - ethReserve
 
 def test_authorizedProxies(contractsFixture, augur, universe, cash, reputationToken):
+    if contractsFixture.paraAugur:
+        return
     augurWalletRegistry = contractsFixture.contracts["AugurWalletRegistryV2"]
     stakeManager = contractsFixture.contracts["StakeManager"]
     relayHub = contractsFixture.contracts["RelayHubV2"]
@@ -483,7 +491,6 @@ def test_authorizedProxies(contractsFixture, augur, universe, cash, reputationTo
 
     with raises(TransactionFailed):
         newProxy.executeWalletTransaction(reputationToken.address, repFaucetData, 0, ethPayment, nullAddress, fingerprint, desiredSignerBalance, maxExchangeRate, False)
-
 
 
 def signMessage(messageHash, private_key):

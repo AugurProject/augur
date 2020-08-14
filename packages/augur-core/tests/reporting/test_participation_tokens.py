@@ -5,6 +5,9 @@ from reporting_utils import generateFees
 
 
 def test_participation_tokens(kitchenSinkFixture, universe, market, cash):
+    if kitchenSinkFixture.paraAugur:
+        return
+
     reputationToken = kitchenSinkFixture.applySignature("ReputationToken", universe.getReputationToken())
 
     disputeWindow = kitchenSinkFixture.applySignature("DisputeWindow", universe.getOrCreateNextDisputeWindow(False))
@@ -46,6 +49,9 @@ def test_participation_tokens(kitchenSinkFixture, universe, market, cash):
                 assert disputeWindow.redeem(kitchenSinkFixture.accounts[1])
 
 def test_participation_tokens_convenience(kitchenSinkFixture, universe, market, cash):
+    if kitchenSinkFixture.paraAugur:
+        return
+
     reputationToken = kitchenSinkFixture.applySignature("ReputationToken", universe.getReputationToken())
     buyParticipationTokens = kitchenSinkFixture.contracts["BuyParticipationTokens"]
 

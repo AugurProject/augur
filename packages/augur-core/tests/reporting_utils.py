@@ -16,6 +16,9 @@ def proceedToNextRound(fixture, market, contributor = None, doGenerateFees = Fal
     if fixture.contracts["Augur"].getTimestamp() < market.getEndTime():
         fixture.contracts["Time"].setTimestamp(market.getDesignatedReportingEndTime() + 1)
 
+    lookupAugur = fixture.contracts["ParaAugur"] if fixture.paraAugur else fixture.contracts["Augur"]
+    cash = fixture.applySignature("Cash", lookupAugur.lookup("Cash"))
+
     disputeWindow = market.getDisputeWindow()
 
     payoutNumerators = [0] * market.getNumberOfOutcomes()
@@ -52,7 +55,7 @@ def proceedToNextRound(fixture, market, contributor = None, doGenerateFees = Fal
 
     if (doGenerateFees):
         universe = fixture.applySignature("Universe", market.getUniverse())
-        generateFees(fixture, universe, market)
+        generateFees(fixture, universe, market, cash)
 
     if (moveTimeForward):
         disputeWindow = fixture.applySignature('DisputeWindow', market.getDisputeWindow())
@@ -131,22 +134,26 @@ def finalize(fixture, market, universe, finalizeByMigration = True):
     with raises(TransactionFailed):
         market.finalize()
 
-def generateFees(fixture, universe, market):
+def generateFees(fixture, universe, market, cash):
     account1 = fixture.accounts[1]
-    shareToken = fixture.contracts['ShareToken']
-    cash = fixture.contracts['Cash']
-    disputeWindow = universe.getOrCreateNextDisputeWindow(False)
-    oldFeesBalance = cash.balanceOf(disputeWindow)
+    shareToken = fixture.getShareToken()
+    feePot = universe.getOrCreateNextDisputeWindow(False)
+    if fixture.paraAugur:
+        paraAugur = fixture.contracts["ParaAugur"]
+        universe = fixture.applySignature("ParaUniverse", paraAugur.getParaUniverse(universe.address))
+        feePot = universe.getFeePot()
+
+    oldFeesBalance = cash.balanceOf(feePot)
 
     cost = 1000 * market.getNumTicks()
     marketCreatorFees = cost / market.getMarketCreatorSettlementFeeDivisor()
 
     with BuyWithCash(cash, cost, account1, "buy complete set"):
         shareToken.publicBuyCompleteSets(market.address, 1000, sender=account1)
-    initialMarketCreatorFees = market.marketCreatorFeesAttoCash()
+    initialMarketCreatorFees = fixture.marketCreatorFeesAttoCash(market)
     shareToken.publicSellCompleteSets(market.address, 1000, sender=account1)
-    assert marketCreatorFees == market.marketCreatorFeesAttoCash() - initialMarketCreatorFees, "The market creator didn't get correct share of fees from complete set sale"
-    newFeesBalance = cash.balanceOf(disputeWindow)
+    assert marketCreatorFees == fixture.marketCreatorFeesAttoCash(market) - initialMarketCreatorFees, "The market creator didn't get correct share of fees from complete set sale"
+    newFeesBalance = cash.balanceOf(feePot)
     reporterFees = cost / universe.getOrCacheReportingFeeDivisor()
     feesGenerated = newFeesBalance - oldFeesBalance
     assert feesGenerated == reporterFees, "Cash balance of dispute window differs by: " + str(feesGenerated - reporterFees)
