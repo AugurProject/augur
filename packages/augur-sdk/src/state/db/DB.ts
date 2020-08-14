@@ -46,7 +46,6 @@ import {
   LogCallbackType,
   LogFilterAggregatorInterface,
 } from '../logs/LogFilterAggregator';
-import { AbstractTable, DEFAULT_CONCURRENCY } from './AbstractTable';
 import { BaseSyncableDB } from './BaseSyncableDB';
 import { DelayedSyncableDB } from './DelayedSyncableDB';
 import { DisputeDatabase } from './DisputeDB';
@@ -62,11 +61,6 @@ interface Schemas {
   [table: string]: string;
 }
 
-import './DBCollectionProxy';
-
-// @ts-ignore
-Dexie.debug = "dexie";
-
 // Prune horizon is 60 days.
 const PRUNE_HORIZON = SECONDS_IN_A_DAY.multipliedBy(60).toNumber();
 
@@ -80,7 +74,6 @@ export class DB {
   getterCache: GetterCache;
   syncStatus: SyncStatus;
   warpCheckpoints: WarpSyncCheckpointsDB;
-  private dbOpened: boolean = false;
 
   readonly genericEventDBDescriptions: GenericEventDBDescription[] = [
     { EventName: 'CompleteSetsPurchased', indexes: ['timestamp', 'market'] },
@@ -194,8 +187,7 @@ export class DB {
     uploadBlockNumber: number,
     logFilterAggregator: LogFilterAggregatorInterface,
     augur: Augur,
-    enableZeroX = false,
-    concurrencyLimit = DEFAULT_CONCURRENCY
+    enableZeroX = false
   ): Promise<DB> {
     const dbName = `augur-${networkId}`;
     const dbController = new DB(
@@ -206,10 +198,6 @@ export class DB {
       uploadBlockNumber,
       enableZeroX
     );
-
-    if(concurrencyLimit !== DEFAULT_CONCURRENCY) {
-      AbstractTable.setConcurrency(concurrencyLimit);
-    }
 
     return dbController.initializeDB();
   }
@@ -222,19 +210,12 @@ export class DB {
    * @return {Promise<void>}
    */
   async initializeDB(): Promise<DB> {
-    if (!this.dbOpened) {
-      const schemas = this.generateSchemas();
+    const schemas = this.generateSchemas();
 
-      console.log(`DB: Dexie schema store`);
-      this.dexieDB.version(1).stores(schemas);
+    this.dexieDB.version(1).stores(schemas);
 
-      console.log(`DB: Dexie open DB`);
-      await this.dexieDB.open();
+    await this.dexieDB.open();
 
-      this.dbOpened = true;
-    }
-
-    console.log(`DB: Creating DB Objects`);
     this.syncStatus = new SyncStatus(this.networkId, this.uploadBlockNumber, this);
     this.warpCheckpoints = new WarpSyncCheckpointsDB(this.networkId, this);
     this.getterCache = GetterCache.create(this, this.networkId, this.augur);
@@ -304,7 +285,6 @@ export class DB {
 
     // Always start syncing from 10 blocks behind the lowest
     // last-synced block (in case of restarting after a crash)
-    console.log(`DB: Checking rollback requirements`);
     const startSyncBlockNumber = await this.getSyncStartingBlock() - 1;
     if (startSyncBlockNumber > this.syncStatus.defaultStartSyncBlockNumber) {
       console.log(
@@ -315,34 +295,30 @@ export class DB {
       console.log()
     }
 
-    if (!this.augur.config.deploy.isProduction) {
-      console.log(`DB: Checking stale dev universe`);
-      const universeCreatedLogCount = await this.UniverseCreated.count();
-      if (universeCreatedLogCount > 0) {
-        const currentUniverseCreateLogCount = await this.UniverseCreated.where(
-          'childUniverse'
-        )
-          .equalsIgnoreCase(this.augur.contracts.universe.address)
-          .count();
+    const universeCreatedLogCount = await this.UniverseCreated.count();
+    if (universeCreatedLogCount > 0) {
+      const currentUniverseCreateLogCount = await this.UniverseCreated.where(
+        'childUniverse'
+      )
+        .equalsIgnoreCase(this.augur.contracts.universe.address)
+        .count();
 
-        if (currentUniverseCreateLogCount === 0) {
-          console.log(`DB: Deleting Database due to stale universe`);
-          // Need to reset the db if we have universe created logs from a previous deployment.
-          await this.clear();
-          await this.initializeDB();
-        }
+      if (currentUniverseCreateLogCount === 0) {
+        // Need to reset the db if we have universe created logs from a previous deployment.
+        await this.delete();
+        await this.initializeDB();
       }
     }
 
     return this;
   }
 
-  // Clear tables and unregister event handlers.
-  async clear() {
+  // Remove databases and unregister event handlers.
+  async delete() {
     for (const db of Object.values(this.syncableDatabases)) {
-      await db.clear();
+      await db.delete();
     }
-    await this.getterCache.clear();
+    this.getterCache.delete();
 
     this.syncableDatabases = {};
 
@@ -351,6 +327,8 @@ export class DB {
     this.marketDatabase = undefined;
     this.parsedOrderEventDatabase = undefined;
     this.getterCache = undefined;
+
+    this.dexieDB.close();
   }
 
   generateSchemas(): Schemas {
@@ -441,12 +419,15 @@ export class DB {
     for (const { EventName: dbName, primaryKey } of this
       .genericEventDBDescriptions) {
       if (primaryKey) {
-        console.log(`Syncing derived db ${dbName}Rollup`);
-        await this.syncableDatabases[`${dbName}Rollup`].sync(
-          highestAvailableBlockNumber
+        dbSyncPromises.push(
+          this.syncableDatabases[`${dbName}Rollup`].sync(
+            highestAvailableBlockNumber
+          )
         );
       }
     }
+
+    await Promise.all(dbSyncPromises);
 
     // Derived DBs are synced after generic log DBs complete
     console.log('Syncing derived DBs');
