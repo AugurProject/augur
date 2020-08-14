@@ -1,4 +1,4 @@
-ARG GETH_VERSION=v1.9.9
+ARG GETH_VERSION=v1.9.19
 FROM ethereum/client-go:$GETH_VERSION
 
 RUN apk update \
