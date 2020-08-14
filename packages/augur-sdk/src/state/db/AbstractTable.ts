@@ -12,12 +12,11 @@ export enum WriteTaskType {
   ADD,
   PUT,
   UPSERT,
-  CLEAR,
 }
 
 interface WriteQueueTask {
   type: WriteTaskType;
-  documents?: BaseDocument[];
+  documents: BaseDocument[];
   table: AbstractTable;
 }
 
@@ -48,8 +47,6 @@ export abstract class AbstractTable {
           return task.table.bulkAddDocumentsInternal(task.documents);
         } else if (task.type === WriteTaskType.PUT) {
           return task.table.bulkPutDocumentsInternal(task.documents);
-        } else if (task.type === WriteTaskType.CLEAR) {
-          return task.table.clearInternal();
         } else {
           return task.table.bulkUpsertDocumentsInternal(task.documents);
         }
@@ -90,11 +87,15 @@ export abstract class AbstractTable {
   }
 
   async delete() {
-    return this.addWriteTask(WriteTaskType.CLEAR);
+    console.log(`AbstractTable: delete request for ${this.dbName} started`);
+    await this.table.clear();
+    console.log(`AbstractTable: delete request for ${this.dbName} finished`);
   }
 
   async clear() {
-    return this.addWriteTask(WriteTaskType.CLEAR);
+    console.log(`AbstractTable: clear request for ${this.dbName} started`);
+    await this.table.clear();
+    console.log(`AbstractTable: clear request for ${this.dbName} finished`);
   }
 
   async getDocumentCount(): Promise<number> {
@@ -108,7 +109,7 @@ export abstract class AbstractTable {
     return this.table.get(id);
   }
 
-  private async addWriteTask(type: WriteTaskType, documents?: BaseDocument[]): Promise<void> {
+  private async addWriteTask(type: WriteTaskType, documents: BaseDocument[]): Promise<void> {
     return new Promise((resolve, reject) => {
       AbstractTable.writeQueue.push({ table: this, documents, type }, (err) => {
         if (err) {
@@ -130,12 +131,6 @@ export abstract class AbstractTable {
 
   protected async bulkUpsertDocuments(documents: BaseDocument[]): Promise<void> {
     return this.addWriteTask(WriteTaskType.UPSERT, documents);
-  }
-
-  protected async clearInternal(): Promise<void> {
-    console.log(`AbstractTable: clear request for ${this.dbName} started`);
-    await this.table.clear();
-    console.log(`AbstractTable: clear request for ${this.dbName} finished`);
   }
 
   protected async bulkAddDocumentsInternal(documents: BaseDocument[]): Promise<void> {
