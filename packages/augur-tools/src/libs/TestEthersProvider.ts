@@ -15,7 +15,6 @@ export class TestEthersProvider extends EthersProvider {
     private accounts: Account[],
     private contractAddresses: ContractAddresses) {
     super(provider, 5, 0, 40);
-    this.overrideGasPrice = new BigNumber(100);
   }
 
   getSeed = async () => {
