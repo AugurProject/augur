@@ -14,6 +14,8 @@ import {
   USDT,
   WETH,
   ONE,
+  WRAP_ETH,
+  UNWRAP_ETH,
 } from "modules/common/constants";
 import { AccountBalances, FormattedNumber } from "modules/types";
 import {
@@ -513,11 +515,23 @@ export const Swap = ({
 
   let buttonText = 'Convert';
   let wrapping = false;
+  let queueId = fromTokenType === ETH
+  ? SWAPETHFOREXACTTOKENS
+  : toTokenType === ETH
+  ? SWAPTOKENSFOREXACTETH
+  : SWAPEXACTTOKENSFORTOKENS;
+
+
   if (toToken === WETH && fromToken === ETH) {
     buttonText = 'Wrap';
     wrapping = true;
+    queueId = WRAP_ETH;
   }
-  if (toToken === ETH && fromToken === WETH) buttonText = 'Unwrap';
+  if (toToken === ETH && fromToken === WETH) {
+    buttonText = 'Unwrap';
+    queueId = UNWRAP_ETH;
+  }
+
 
   return (
     <div className={Styles.Swap}>
@@ -591,13 +605,7 @@ export const Swap = ({
               outputAmount.value <= 0 ||
               (errorMessage && errorMessage.indexOf('Liquidity') === -1)
             }
-            queueId={
-              fromTokenType === ETH
-                ? SWAPETHFOREXACTTOKENS
-                : toTokenType === ETH
-                ? SWAPTOKENSFOREXACTETH
-                : SWAPEXACTTOKENSFORTOKENS
-            }
+            queueId={queueId}
           />
         }
 

@@ -762,8 +762,8 @@ export const ADDLIQUIDITY = 'ADDLIQUIDITY';
 export const ETH_RESERVE_INCREASE = 'ETH_RESERVE_INCREASE';
 export const SETREFERRER = 'SETREFERRER'
 export const SETAPPROVALFORALL = 'SETAPPROVALFORALL'
-export const WRAP_ETH = 'WRAPETH';
-export const UNWRAP_ETH = 'UNWRAP_ETH';
+export const WRAP_ETH = 'DEPOSIT';
+export const UNWRAP_ETH = 'WITHDRAW';
 
 // # Orders/Trade Constants
 export const ORDER_BOOK_TABLE = 'ORDER_BOOK_TABLE';
