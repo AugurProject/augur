@@ -70,10 +70,12 @@ Dexie.debug = "dexie";
 const PRUNE_HORIZON = SECONDS_IN_A_DAY.multipliedBy(60).toNumber();
 
 export class DB {
+  private isParaDeploy: boolean;
   private syncableDatabases: { [dbName: string]: BaseSyncableDB } = {};
   private disputeDatabase: DisputeDatabase;
   private currentOrdersDatabase: ParsedOrderEventDB;
-  marketDatabase: MarketDB;
+  private _marketDatabase: MarketDB;
+  private _paraMarketDatabase: MarketDB;
   private parsedOrderEventDatabase: ParsedOrderEventDB;
   private zeroXOrders: ZeroXOrders;
   getterCache: GetterCache;
@@ -152,7 +154,7 @@ export class DB {
     },
     { EventName: 'TokensMinted', indexes: [] },
     { EventName: 'TokensTransferred', indexes: [] },
-    { EventName: 'ReportingFeeChanged', indexes: ['universe'] }, // TODO: add Rollup
+    { EventName: 'ReportingFeeChanged', indexes: ['universe'] },
     { EventName: 'TradingProceedsClaimed', indexes: ['timestamp', 'market'] },
     {
       EventName: 'UniverseCreated',
@@ -164,7 +166,7 @@ export class DB {
     {
       EventName: 'ShareTokenBalanceChanged',
       indexes: ['[universe+account]', 'market'],
-      primaryKey: '[account+market+outcome]',
+      primaryKey: '[account+market+outcome]'
     },
   ];
 
@@ -188,6 +190,7 @@ export class DB {
     private uploadBlockNumber: number,
     private enableZeroX: boolean
   ) {
+    this.isParaDeploy = typeof augur.config.paraDeploy === 'string';
     logFilters.listenForBlockRemoved(this.rollback.bind(this));
   }
 
@@ -232,7 +235,7 @@ export class DB {
       const schemas = this.generateSchemas();
 
       console.log(`DB: Dexie schema store`);
-      this.dexieDB.version(1).stores(schemas);
+      this.dexieDB.version(2).stores(schemas);
 
       console.log(`DB: Dexie open DB`);
       await this.dexieDB.open();
@@ -268,6 +271,20 @@ export class DB {
           dbName,
           genericEventDBDescription.indexes
         );
+
+        if(this.paraEventNames.includes(genericEventDBDescription.EventName)) {
+          const dbName = `Para${genericEventDBDescription.EventName}Rollup`;
+          this.syncableDatabases[dbName] = new DelayedSyncableDB(
+            this.augur,
+            this,
+            this.networkId,
+            genericEventDBDescription.EventName,
+            dbName,
+            genericEventDBDescription.indexes,
+            true
+          );
+
+        }
       }
     }
     // Custom Derived DBs here
@@ -290,7 +307,10 @@ export class DB {
       ['OrderEvent'],
       this.augur
     );
-    this.marketDatabase = new MarketDB(this, this.networkId, this.augur);
+
+    this._marketDatabase = new MarketDB(this, this.networkId, this.augur);
+    this._paraMarketDatabase = new MarketDB(this, this.networkId, this.augur, true);
+
     this.parsedOrderEventDatabase = new ParsedOrderEventDB(
       this,
       this.networkId,
@@ -343,6 +363,10 @@ export class DB {
     return this;
   }
 
+  get marketDatabase(): MarketDB {
+    return (this.isParaDeploy) ? this._paraMarketDatabase : this._marketDatabase;
+  }
+
   // Clear tables and unregister event handlers.
   async clear() {
     for (const db of Object.values(this.syncableDatabases)) {
@@ -354,7 +378,8 @@ export class DB {
 
     this.disputeDatabase = undefined;
     this.currentOrdersDatabase = undefined;
-    this.marketDatabase = undefined;
+    this._marketDatabase = undefined;
+    this._paraMarketDatabase = undefined;
     this.parsedOrderEventDatabase = undefined;
     this.getterCache = undefined;
   }
@@ -367,11 +392,15 @@ export class DB {
           genericEventDBDescription.primaryKey,
           'blockNumber',
         ].concat(genericEventDBDescription.indexes);
+
         schemas[`${genericEventDBDescription.EventName}Rollup`] = fields.join(
           ','
         );
+        if(this.paraEventNames.includes(genericEventDBDescription.EventName)) {
+          schemas[`Para${genericEventDBDescription.EventName}Rollup`] = [ ...fields, 'para'].join(',');
+        }
       }
-      const fields = ['[blockNumber+logIndex]', 'blockNumber'].concat(
+      const fields = ['[blockNumber+logIndex]', 'blockNumber', 'para'].concat(
         genericEventDBDescription.indexes
       );
       schemas[genericEventDBDescription.EventName] = fields.join(',');
@@ -462,7 +491,8 @@ export class DB {
     await this.parsedOrderEventDatabase.sync(highestAvailableBlockNumber);
 
     // The Market DB syncs after the derived DBs, as it depends on a derived DB
-    await this.marketDatabase.sync(highestAvailableBlockNumber);
+    await this._marketDatabase.sync(highestAvailableBlockNumber);
+    await this._paraMarketDatabase.sync(highestAvailableBlockNumber);
   }
 
   async prune(timestamp: number) {
@@ -634,6 +664,12 @@ export class DB {
     return this.dexieDB.table<MarketVolumeChangedLog>('MarketVolumeChanged');
   }
   get MarketVolumeChangedRollup() {
+    if(this.isParaDeploy) {
+      return this.dexieDB.table<MarketVolumeChangedLog>(
+        'ParaMarketVolumeChangedRollup'
+      );
+    }
+
     return this.dexieDB.table<MarketVolumeChangedLog>(
       'MarketVolumeChangedRollup'
     );
@@ -642,6 +678,10 @@ export class DB {
     return this.dexieDB.table<MarketOIChangedLog>('MarketOIChanged');
   }
   get MarketOIChangedRollup() {
+    if(this.isParaDeploy) {
+      return this.dexieDB.table<MarketOIChangedLog>('ParaMarketOIChangedRollup');
+    }
+
     return this.dexieDB.table<MarketOIChangedLog>('MarketOIChangedRollup');
   }
   get OrderEvent() {
@@ -673,6 +713,12 @@ export class DB {
     return this.dexieDB.table<TokenBalanceChangedLog>('TokenBalanceChanged');
   }
   get TokenBalanceChangedRollup() {
+    if(this.isParaDeploy) {
+      return this.dexieDB.table<TokenBalanceChangedLog>(
+        'ParaTokenBalanceChangedRollup'
+      );
+    }
+
     return this.dexieDB.table<TokenBalanceChangedLog>(
       'TokenBalanceChangedRollup'
     );
@@ -706,8 +752,14 @@ export class DB {
     );
   }
   get ShareTokenBalanceChangedRollup() {
+    if(this.isParaDeploy) {
+      return this.dexieDB.table<ShareTokenBalanceChangedLog>(
+        'ShareTokenBalanceChangedRollup'
+      );
+    }
+
     return this.dexieDB.table<ShareTokenBalanceChangedLog>(
-      'ShareTokenBalanceChangedRollup'
+      'ParaShareTokenBalanceChangedRollup'
     );
   }
   get Markets() {

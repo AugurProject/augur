@@ -27,17 +27,19 @@ export function deepCopy<T>(x: T): T {
   return JSON.parse(JSON.stringify(x));
 }
 
+export interface ParaDeploys {
+  [cashAddress: string]: {
+    uploadBlockNumber?: number,
+    name: string,
+    addresses: ParaAddresses
+  };
+}
+
 export interface SDKConfiguration {
   networkId: NetworkId,
   uploadBlockNumber?: number,
   addresses?: ContractAddresses,
-  paraDeploys?: {
-    [cashAddress: string]: {
-      uploadBlockNumber?: number,
-      name: string,
-      addresses: ParaAddresses
-    }
-  }
+  paraDeploys?: ParaDeploys
   paraDeploy?: string; // cashAddress of paraDeploy to use instead of base augur deploy
   averageBlocktime?: number,
   logLevel?: LoggerLevels, // In the JSON configs an integer will need to be used.

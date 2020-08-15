@@ -174,17 +174,8 @@ export async function createServer(config: SDKConfiguration, client?: Augur): Pr
   }
 
   const ethersProvider: EthersProvider = client.provider as EthersProvider;
-  const contractEvents = new ContractEvents(
-    ethersProvider,
-    client.config.addresses.Augur,
-    client.config.addresses.AugurTrading,
-    client.config.addresses.ShareToken,
-  );
 
-  const logFilterAggregator = LogFilterAggregator.create(
-    contractEvents.getEventTopics,
-    contractEvents.parseLogs,
-  );
+  const logFilterAggregator = LogFilterAggregator.create();
   const db = DB.createAndInitializeDB(
     Number(config.networkId),
     config.uploadBlockNumber,

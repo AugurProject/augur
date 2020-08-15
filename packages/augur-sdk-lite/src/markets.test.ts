@@ -111,7 +111,7 @@ test('calculate payout numerators value : scalar : malformed', () => {
 
 test('calculate payout numerators value : scalar : invalid', () => {
   const value = calculatePayoutNumeratorsValue(
-    '10',
+    '{10',
     '-10',
     '10000',
     MarketTypeName.Scalar,

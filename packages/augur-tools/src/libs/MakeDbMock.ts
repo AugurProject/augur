@@ -1,6 +1,5 @@
 import { DB } from '@augurproject/sdk/build/state/db/DB';
 import { LogFilterAggregator } from '@augurproject/sdk/build/state/logs/LogFilterAggregator';
-import { BlockAndLogStreamerListenerInterface } from '@augurproject/sdk/build/state/sync/BlockAndLogStreamerSyncStrategy';
 import { configureDexieForNode } from '@augurproject/sdk/build/state/utils/DexieIDBShim';
 
 configureDexieForNode(true);
@@ -30,10 +29,7 @@ export function makeDbMock(prefix = undefined) {
   return {
     wipeDB,
     makeDB: augur => {
-      const logFilterAggregator = LogFilterAggregator.create(
-        augur.contractEvents.getEventTopics,
-        augur.contractEvents.parseLogs
-      );
+      const logFilterAggregator = LogFilterAggregator.create();
 
       const db = DB.createAndInitializeDB(
         prefix ? prefix : iterator.next().value,

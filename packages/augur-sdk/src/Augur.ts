@@ -156,9 +156,8 @@ export class Augur<TProvider extends Provider = Provider> {
     this.liquidity = new Liquidity(this);
     this.contractEvents = new ContractEvents(
       this.provider,
-      this.config.addresses.Augur,
-      this.config.addresses.AugurTrading,
-      this.config.addresses.ShareToken
+      this.config.addresses,
+      this.config.paraDeploys
     );
     this.warpSync = new WarpSync(this);
     this.hotLoading = new HotLoading(this);

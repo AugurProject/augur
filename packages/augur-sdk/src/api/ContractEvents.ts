@@ -1,7 +1,11 @@
 import { abi } from '@augurproject/artifacts';
 import { Log, ParsedLog } from '@augurproject/types';
+import { ContractAddresses, ParaDeploys } from '@augurproject/utils';
 import { Abi } from 'ethereum';
 import { Provider } from '..';
+
+
+type EmittingContractAddresses = Pick<ContractAddresses, 'Augur' | 'AugurTrading' | 'ShareToken'>;
 
 export class ContractEvents {
   private readonly eventNameToContractName = {
@@ -14,22 +18,49 @@ export class ContractEvents {
   };
 
   private readonly contractAddressToName = {};
+  private readonly contractAddresses = [];
 
   constructor(
     private readonly provider: Provider,
-    private readonly augurAddress: string,
-    private readonly augurTradingAddress: string,
-    private readonly shareTokenAddress: string,
+    private readonly augurContractAddresses:EmittingContractAddresses,
+    private readonly augurParaDeploys:ParaDeploys = {},
     ) {
     this.provider.storeAbiData(abi.Augur as Abi, 'Augur');
     this.provider.storeAbiData(abi.AugurTrading as Abi, 'AugurTrading');
     this.provider.storeAbiData(abi.ShareToken as Abi, 'ShareToken');
-    this.augurAddress = this.augurAddress.toLowerCase();
-    this.augurTradingAddress = this.augurTradingAddress.toLowerCase();
-    this.shareTokenAddress = this.shareTokenAddress.toLowerCase();
-    this.contractAddressToName[this.augurAddress] = 'Augur';
-    this.contractAddressToName[this.augurTradingAddress] = 'AugurTrading';
-    this.contractAddressToName[this.shareTokenAddress] = 'ShareToken';
+
+    // ParaDeploy ABI
+    this.provider.storeAbiData(abi.ParaAugur as Abi, 'ParaAugur');
+    this.provider.storeAbiData(abi.ParaAugurTrading as Abi, 'ParaAugurTrading');
+    this.provider.storeAbiData(abi.ParaShareToken as Abi, 'ParaShareToken');
+
+    const allContractAddresses = [
+      augurContractAddresses,
+      ...Object.values(augurParaDeploys).map((augurParaDeploy) => augurParaDeploy.addresses)
+    ].map(({Augur, AugurTrading, ShareToken}) => ({
+      Augur: Augur.toLocaleLowerCase(),
+      AugurTrading: AugurTrading.toLocaleLowerCase(),
+      ShareToken: ShareToken.toLocaleLowerCase()
+    }));
+
+    this.contractAddressToName = allContractAddresses.reduce((acc, contractAddresses) => {
+      for(const contractName in contractAddresses) {
+        acc[contractAddresses[contractName]] = contractName;
+      }
+
+      return acc;
+    }, this.contractAddressToName);
+
+    console.log('contractAddressToName', this.contractAddressToName);
+
+    this.contractAddresses = allContractAddresses.reduce((acc, {Augur, AugurTrading, ShareToken}) => [
+      ...acc,
+      Augur,
+      AugurTrading,
+      ShareToken
+    ], [])
+      // Remove duplicates.
+    .filter((value, index, self) => self.indexOf(value) === index);
   }
 
   getEventContractName = (eventName: string) => {
@@ -38,19 +69,8 @@ export class ContractEvents {
   };
 
   getAugurContractAddresses = () => {
-    return [
-      this.augurAddress,
-      this.shareTokenAddress,
-      this.augurTradingAddress,
-    ];
+    return this.contractAddresses;
   }
-
-  getEventContractAddress = (eventName: string) => {
-    const contractName = this.getEventContractName(eventName);
-    if (contractName === 'ShareToken') return this.shareTokenAddress;
-    if (contractName === 'AugurTrading') return this.augurTradingAddress;
-    return this.augurAddress;
-  };
 
   getEventTopics = (eventName: string) => {
     return [this.provider.getEventTopic(this.getEventContractName(eventName), eventName)];

@@ -1416,9 +1416,7 @@ export function addScripts(flash: FlashSession) {
 
       const contractEvents = new ContractEvents(
         this.provider,
-        this.config.addresses.Augur,
-        this.config.addresses.AugurTrading,
-        this.config.addresses.ShareToken,
+        this.config.addresses
       );
       let parsedLogs = contractEvents.parseLogs(logsWithBlockNumber);
 
