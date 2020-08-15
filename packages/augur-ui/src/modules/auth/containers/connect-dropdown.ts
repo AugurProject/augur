@@ -40,7 +40,7 @@ const mapStateToProps = (state: AppState) => {
       state.loginAccount.meta,
     balances: state.loginAccount && state.loginAccount.balances,
     ethToDaiRate: state.appStatus.ethToDaiRate,
-    showTransferMyDai: createBigNumber(state.loginAccount.balances.signerBalances.dai).gte(FIVE),
+    showTransferMyDai: false,
     showWrapEther: createBigNumber(state.loginAccount.balances.eth).gt(ZERO),
     walletType: state.loginAccount?.meta?.accountType,
   };

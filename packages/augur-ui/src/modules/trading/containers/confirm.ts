@@ -15,7 +15,7 @@ const mapStateToProps = (state: AppState, ownProps) => {
     ethToDaiRate,
   } = appStatus;
 
-  const hasFunds = !!loginAccount.balances.eth && !!loginAccount.balances.dai;
+  const hasFunds = !!loginAccount.balances.weth;
 
   let availableDai = totalTradingBalance(loginAccount)
   if (ownProps.initialLiquidity) {

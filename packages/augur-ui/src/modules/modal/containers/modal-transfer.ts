@@ -18,7 +18,7 @@ import { getTransactionLabel } from 'modules/auth/selectors/get-gas-price';
 const mapStateToProps = (state: AppState) => {
   const { loginAccount, appStatus, modal } = state;
   const { balances } = loginAccount;
-  balances.dai = String(totalTradingBalance(loginAccount));
+  balances.weth = String(totalTradingBalance(loginAccount));
   const signingEthBalance = loginAccount.balances.signerBalances.eth;
 
   return {
