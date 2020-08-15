@@ -40,7 +40,7 @@ FILL_ORDER_DOUBLE_REVERSE_POSITION    =   [
 
 @mark.parametrize('numOutcomes', range(2,8))
 def test_order_filling_take_shares(numOutcomes, cash, localFixture, markets):
-    ZeroXTrade = localFixture.contracts['ZeroXTrade']
+    ZeroXTrade = localFixture.getZeroXTrade()
     cash = localFixture.contracts['Cash']
     shareToken = localFixture.getShareToken()
     expirationTime = localFixture.contracts['Time'].getTimestamp() + 10000
@@ -67,7 +67,7 @@ def test_order_filling_take_shares(numOutcomes, cash, localFixture, markets):
 
 @mark.parametrize('numOutcomes', range(2,8))
 def test_order_filling_both_eth(numOutcomes, cash, localFixture, markets):
-    ZeroXTrade = localFixture.contracts['ZeroXTrade']
+    ZeroXTrade = localFixture.getZeroXTrade()
     cash = localFixture.contracts['Cash']
     shareToken = localFixture.getShareToken()
     expirationTime = localFixture.contracts['Time'].getTimestamp() + 10000
@@ -96,7 +96,7 @@ def test_order_filling_both_eth(numOutcomes, cash, localFixture, markets):
 
 @mark.parametrize('numOutcomes', range(2,8))
 def test_order_filling_double_reverse(numOutcomes, cash, localFixture, markets):
-    ZeroXTrade = localFixture.contracts['ZeroXTrade']
+    ZeroXTrade = localFixture.getZeroXTrade()
     cash = localFixture.contracts['Cash']
     shareToken = localFixture.getShareToken()
     expirationTime = localFixture.contracts['Time'].getTimestamp() + 10000

@@ -75,6 +75,30 @@ export class RelayHubV2 extends c.RelayHubV2<BigNumber> {
 }
 export class StakeManager extends c.StakeManager<BigNumber> {
 }
+export class FeePot extends c.FeePot<BigNumber> {
+}
+export class OINexus extends c.OINexus<BigNumber> {
+}
+export class ParaAugur extends c.ParaAugur<BigNumber> {
+}
+export class ParaAugurTrading extends c.ParaAugurTrading<BigNumber> {
+}
+export class ParaOICash extends c.ParaOICash<BigNumber> {
+}
+export class ParaRepOracle extends c.ParaRepOracle<BigNumber> {
+}
+export class ParaShareToken extends c.ParaShareToken<BigNumber> {
+}
+export class ParaUniverse extends c.ParaUniverse<BigNumber> {
+}
+export class ParaZeroXTrade extends c.ParaZeroXTrade<BigNumber> {
+}
+export class FeePotFactory extends c.FeePotFactory<BigNumber> {
+}
+export class ParaOICashFactory extends c.ParaOICashFactory<BigNumber> {
+}
+export class ParaUniverseFactory extends c.ParaUniverseFactory<BigNumber> {
+}
 export class AffiliateValidator extends c.AffiliateValidator<BigNumber> {
 }
 export class Affiliates extends c.Affiliates<BigNumber> {
@@ -130,6 +154,8 @@ export class BuyParticipationTokens extends c.BuyParticipationTokens<BigNumber> 
 export class Formulas extends c.Formulas<BigNumber> {
 }
 export class HotLoading extends c.HotLoading<BigNumber> {
+}
+export class HotLoadingUniversal extends c.HotLoadingUniversal<BigNumber> {
 }
 export class RedeemStake extends c.RedeemStake<BigNumber> {
 }

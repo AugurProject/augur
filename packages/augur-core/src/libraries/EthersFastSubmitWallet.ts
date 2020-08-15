@@ -31,7 +31,7 @@ export class EthersFastSubmitWallet extends ethers.Wallet {
     return Promise.resolve(super.signMessage(hashmessage));
   }
 
-  sendTransaction(
+  async sendTransaction(
     transaction: ethers.providers.TransactionRequest
   ): Promise<ethers.providers.TransactionResponse> {
     transaction = ethers.utils.shallowCopy(transaction);
@@ -40,16 +40,10 @@ export class EthersFastSubmitWallet extends ethers.Wallet {
     transaction.gasPrice = this.gasPrice;
     this.nonce++;
 
-    return this.provider.estimateGas(transaction).then(gasEstimate => {
       // https://github.com/ethers-io/ethers.js/issues/321
-      delete transaction.from;
-      return ethers.utils
-        .populateTransaction(transaction, this.provider, this.address)
-        .then(tx => {
-          return this.sign(tx).then(signedTransaction => {
-            return this.provider.sendTransaction(signedTransaction);
-          });
-        });
-    });
+    delete transaction.from;
+    const populatedTx = await ethers.utils.populateTransaction(transaction, this.provider, this.address);
+    const signedTransaction = await this.sign(populatedTx);
+    return this.provider.sendTransaction(signedTransaction);
   }
 }

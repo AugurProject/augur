@@ -33,6 +33,7 @@ export interface SDKConfiguration {
   addresses?: ContractAddresses,
   paraDeploys?: {
     [cashAddress: string]: {
+      uploadBlockNumber?: number,
       name: string,
       addresses: ParaAddresses
     }
@@ -180,6 +181,7 @@ export interface ContractAddresses extends TradingAddresses {
 
   // Para
   OINexus?: string;
+  HotLoadingUniversal?: string;
 }
 
 export interface ParaAddresses extends TradingAddresses {
@@ -187,7 +189,6 @@ export interface ParaAddresses extends TradingAddresses {
   Universe: string;
   ShareToken: string;
   Cash: string;
-  HotLoading: string;
   OICash?: string;
 }
 

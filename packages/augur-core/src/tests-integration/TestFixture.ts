@@ -67,10 +67,11 @@ export class TestFixture {
         pretendToBeProduction = false
     ): Promise<TestFixture> => {
         const compilerConfiguration = CompilerConfiguration.create();
-        const config = buildConfig('test', {
+        let config = buildConfig('test', {
             deploy: {
                 isProduction: pretendToBeProduction,
                 normalTime: false,
+                writeArtifacts: true,
             },
         });
 
@@ -100,6 +101,7 @@ export class TestFixture {
         );
         await contractDeployer.deploy('test');
 
+        config = buildConfig('test');
         const paraContractDeployer = new ParaContractDeployer(
             config,
             dependencies,

@@ -168,6 +168,18 @@ export class DB {
     },
   ];
 
+  readonly paraEventNames: string[] = [
+    'CompleteSetsPurchased',
+    'CompleteSetsSold',
+    'TradingProceedsClaimed',
+    'MarketOIChanged',
+    'ReportingFeeChanged',
+    'ShareTokenBalanceChanged',
+    'OrderEvent',
+    'ProfitLossChanged',
+    'MarketVolumeChanged'
+  ];
+
   constructor(
     readonly dexieDB: Dexie,
     readonly logFilters: LogFilterAggregatorInterface,

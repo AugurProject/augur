@@ -35,6 +35,7 @@ export const INTERNAL_CONTRACTS = [
     'RepSymbol',
     'AuditFunds',
     'AccountLoader',
+    'HotLoadingUniversal',
     // factories
     'DisputeCrowdsourcerFactory',
     'DisputeWindowFactory',
@@ -54,6 +55,8 @@ export const INTERNAL_CONTRACTS = [
     'ParaShareToken',
     'ParaUniverse',
     'OINexus',
+    'ParaAugurTrading',
+    'ParaZeroXTrade',
 ];
 
 export const TRADING_CONTRACTS = [

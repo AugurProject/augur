@@ -225,8 +225,8 @@ Deploying to: ${env}
             await this.setupTokenExchange(new USDT(this.dependencies, this.getContractAddress('USDT')), cash);
         }
 
-        console.log('Writing artifacts');
         if (this.configuration.deploy.writeArtifacts) {
+          console.log('Writing artifacts');
           await this.generateLocalEnvFile(env, blockNumber, this.configuration);
         }
 
@@ -321,6 +321,7 @@ Deploying to: ${env}
             if (contract.relativeFilePath.startsWith('legacy_reputation/')) continue;
             if (contract.relativeFilePath.startsWith('external/')) continue;
             if (contract.relativeFilePath.startsWith('uniswap/')) continue;
+            if (contract.relativeFilePath.startsWith('para/')) continue;
 
             // 0x
             if (this.configuration.deploy.externalAddresses.Exchange && [
@@ -522,6 +523,7 @@ Deploying to: ${env}
         if (contract.relativeFilePath.startsWith('legacy_reputation/')) return;
         if (contract.relativeFilePath.startsWith('uniswap/')) return;
         if (contract.relativeFilePath.startsWith('gsn/')) return;
+        if (contractName !== 'OINexus' && contract.relativeFilePath.startsWith('para/')) return;
         if (contractName === 'LegacyReputationToken') return;
         if (contractName === 'Cash') return;
         if (contractName === 'USDC') return;
@@ -833,6 +835,7 @@ Deploying to: ${env}
         mapping['AuditFunds'] = this.contracts.get('AuditFunds').address!;
         mapping['AccountLoader'] = this.contracts.get('AccountLoader').address!;
         mapping['OINexus'] = this.contracts.get('OINexus').address!;
+        mapping['HotLoadingUniversal'] = this.contracts.get('HotLoadingUniversal').address!;
 
         // 0x
         mapping['ERC20Proxy'] = this.contracts.get('ERC20Proxy').address!;

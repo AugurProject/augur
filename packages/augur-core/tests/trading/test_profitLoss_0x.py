@@ -18,7 +18,7 @@ C = 3
     False
 ])
 def test_binary_and_claim(taker, contractsFixture, cash, market, universe):
-    zeroXTrade = contractsFixture.contracts["ZeroXTrade"]
+    zeroXTrade = contractsFixture.getZeroXTrade()
     profitLoss = contractsFixture.contracts["ProfitLoss"]
     shareToken = contractsFixture.getShareToken()
     augurTrading = contractsFixture.contracts['AugurTrading']
@@ -101,7 +101,7 @@ def test_binary_and_claim(taker, contractsFixture, cash, market, universe):
     False
 ])
 def test_cat3_1(taker, contractsFixture, cash, categoricalMarket, universe):
-    zeroXTrade = contractsFixture.contracts["ZeroXTrade"]
+    zeroXTrade = contractsFixture.getZeroXTrade()
     profitLoss = contractsFixture.contracts["ProfitLoss"]
     test_data = [
         {
@@ -150,7 +150,7 @@ def test_cat3_1(taker, contractsFixture, cash, categoricalMarket, universe):
     False
 ])
 def test_cat3_2(taker, contractsFixture, cash, categoricalMarket, universe):
-    zeroXTrade = contractsFixture.contracts["ZeroXTrade"]
+    zeroXTrade = contractsFixture.getZeroXTrade()
     profitLoss = contractsFixture.contracts["ProfitLoss"]
     test_data = [
         {
@@ -199,7 +199,7 @@ def test_cat3_2(taker, contractsFixture, cash, categoricalMarket, universe):
     False
 ])
 def test_cat3_3(taker, contractsFixture, cash, categoricalMarket, universe):
-    zeroXTrade = contractsFixture.contracts["ZeroXTrade"]
+    zeroXTrade = contractsFixture.getZeroXTrade()
     profitLoss = contractsFixture.contracts["ProfitLoss"]
     test_data = [
         {
@@ -278,7 +278,7 @@ def test_cat3_3(taker, contractsFixture, cash, categoricalMarket, universe):
 @mark.skip()
 def test_scalar(taker, contractsFixture, cash, universe):
     scalarMarket = contractsFixture.createReasonableScalarMarket(universe, 250 * 10**18, 50 * 10**18, 2000000)
-    zeroXTrade = contractsFixture.contracts["ZeroXTrade"]
+    zeroXTrade = contractsFixture.getZeroXTrade()
     profitLoss = contractsFixture.contracts["ProfitLoss"]
     test_data = [
         {

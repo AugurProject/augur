@@ -142,7 +142,7 @@ def pytest_configure(config):
     # register an additional marker
     config.addinivalue_line("markers", "cover: use coverage contracts")
 
-TRADING_CONTRACTS = ['CreateOrder','FillOrder','CancelOrder','Trade','Orders','ZeroXTrade','ProfitLoss','SimulateTrade','AugurWalletRegistry','AugurWalletRegistryV2','AugurWalletFactory','AccountLoader']
+TRADING_CONTRACTS = ['CreateOrder','FillOrder','CancelOrder','Trade','Orders','ZeroXTrade','ParaZeroXTrade','ProfitLoss','SimulateTrade','AugurWalletRegistry','AugurWalletRegistryV2','AugurWalletFactory','AccountLoader']
 AUGUR_ETH_CONTRACTS = ['FeePotFactory','ParaUniverseFactory','ParaOICashFactory','ParaShareToken','ParaRepOracle','ParaOICash','OINexus']
 
 class ContractsFixture:
@@ -321,6 +321,14 @@ class ContractsFixture:
             print("REGISTERING: " + lookupKey)
             self.contracts['ParaAugur'].registerContract(lookupKey.ljust(32, '\x00').encode('utf-8'), contract.address)
         elif lookupKey in TRADING_CONTRACTS:
+            if lookupKey == "ZeroXTrade" and self.paraAugur:
+                return
+            if lookupKey == "ParaZeroXTrade":
+                if self.paraAugur:
+                    lookupKey = "ZeroXTrade"
+                else:
+                    return
+            print("REGISTERING: " + lookupKey)
             self.contracts['AugurTrading'].registerContract(lookupKey.ljust(32, '\x00').encode('utf-8'), contract.address)
         else:
             self.contracts['Augur'].registerContract(lookupKey.ljust(32, '\x00').encode('utf-8'), contract.address)
@@ -420,7 +428,7 @@ class ContractsFixture:
                 if name == 'Time': continue # In testing and development we swap the Time library for a ControlledTime version which lets us manage block timestamp
                 if name == 'ReputationTokenFactory': continue # In testing and development we use the TestNetReputationTokenFactory which lets us faucet
                 if name == 'Cash': continue # We upload the Test Dai contracts manually after this process
-                if name in ['ParaAugur', 'FeePot', 'ParaUniverse']: continue # We upload ParaAugur explicitly and the others are generated via contract
+                if name in ['ParaAugur', 'FeePot', 'ParaUniverse', 'ParaAugurTrading']: continue # We upload ParaAugur explicitly and the others are generated via contract
                 if name in ['IAugur', 'IDisputeCrowdsourcer', 'IDisputeWindow', 'IUniverse', 'IMarket', 'IReportingParticipant', 'IReputationToken', 'IOrders', 'IShareToken', 'Order', 'IInitialReporter']: continue # Don't compile interfaces or libraries
                 # TODO these four are necessary for test_universe but break everything else
                 # if name == 'MarketFactory': continue # tests use mock
@@ -495,14 +503,14 @@ class ContractsFixture:
                 self.contracts[contractName].initialize(self.contracts['Augur'].address)
             else:
                 raise "contract has no 'initialize' method on it."
-        tradingAugurAddress = self.contracts["ParaAugur"].address if self.paraAugur else self.contracts["Augur"].address
+        augurAddress = self.contracts["ParaAugur"].address if self.paraAugur else self.contracts["Augur"].address
         for contractName in TRADING_CONTRACTS:
             print("Initializing %s" % contractName)
             value = 0
             if contractName.startswith("AugurWalletRegistry"):
                 value = 2.5 * 10**17
-            self.contracts[contractName].initialize(tradingAugurAddress, self.contracts['AugurTrading'].address, value=value)
-        # Augur ETH contracts
+            self.contracts[contractName].initialize(augurAddress, self.contracts['AugurTrading'].address, value=value)
+        # Para Augur contracts
         self.contracts["ParaRepOracle"].initialize(self.contracts['ParaAugur'].address)
         self.contracts["ParaShareToken"].initialize(self.contracts['ParaAugur'].address, self.contracts['ShareToken'].address)
 
@@ -511,7 +519,7 @@ class ContractsFixture:
     ####
 
     def approveCentralAuthority(self):
-        contractsNeedingApproval = ['Augur','FillOrder','CreateOrder','ZeroXTrade', 'ParaAugur']
+        contractsNeedingApproval = ['Augur','FillOrder','CreateOrder','ZeroXTrade', 'ParaAugur', 'ParaZeroXTrade']
         contractsToApprove = ['Cash', 'ParaAugurCash']
         testersGivingApproval = [self.accounts[x] for x in range(0,8)]
         for testerKey in testersGivingApproval:
@@ -540,8 +548,9 @@ class ContractsFixture:
 
     def uploadAugurTrading(self):
         # We have to upload Augur Trading before trading contracts
-        tradingAugurAddress = self.contracts["ParaAugur"].address if self.paraAugur else self.contracts["Augur"].address
-        return self.upload("../src/contracts/trading/AugurTrading.sol", constructorArgs=[tradingAugurAddress])
+        augurAddress = self.contracts["ParaAugur"].address if self.paraAugur else self.contracts["Augur"].address
+        path = "../src/contracts/para/ParaAugurTrading.sol" if self.paraAugur else "../src/contracts/trading/AugurTrading.sol"
+        return self.upload(path, "AugurTrading", constructorArgs=[augurAddress])
 
     def deployRelayHub(self):
         self.sendEth(self.accounts[0], "0xff20d47eb84b1b85aadcccc43d2dc0124c6211f7", 42 * 10**17)
@@ -565,7 +574,7 @@ class ContractsFixture:
         universeAddress = universeCreatedLogs[0].args.childUniverse
         universe = self.applySignature('Universe', universeAddress)
         if self.paraAugur:
-            with PrintGasUsed(self, "ETH GENESIS CREATION", 0):
+            with PrintGasUsed(self, "PARA GENESIS CREATION", 0):
                 self.contracts["ParaAugur"].generateParaUniverse(universeAddress)
         return universe
 
@@ -667,6 +676,9 @@ class ContractsFixture:
 
     def getShareToken(self):
         return self.contracts["ParaShareToken"] if self.paraAugur else self.contracts["ShareToken"]
+
+    def getZeroXTrade(self):
+        return self.contracts["ParaZeroXTrade"] if self.paraAugur else self.contracts["ZeroXTrade"]
 
     def marketBalance(self, market):
         universe = self.applySignature("Universe", market.getUniverse())

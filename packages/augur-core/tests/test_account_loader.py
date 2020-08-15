@@ -52,7 +52,10 @@ def test_market_hot_loading_basic(kitchenSinkFixture, augur, cash, reputationTok
     accountData = getAccountData(accountLoader, account, reputationToken.address, legacyReputationToken.address, legacyReputationToken.address)
     assert accountData.attoDAIperREP == 20 * 10**18
 
-    ZeroXTrade = kitchenSinkFixture.contracts['ZeroXTrade']
+    if kitchenSinkFixture.paraAugur:
+        return
+
+    ZeroXTrade = kitchenSinkFixture.getZeroXTrade()
     weth = kitchenSinkFixture.contracts["WETH9"]
     ethExchange = kitchenSinkFixture.applySignature("UniswapV2Pair", ZeroXTrade.ethExchange())
 

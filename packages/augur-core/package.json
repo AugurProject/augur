@@ -23,6 +23,7 @@
     "test:integration": "jest --forceExit --detectOpenHandles --verbose=true",
     "test:coverage": "node --max-old-space-size=12288 src/tools/generateCoverageReport.js",
     "deploy:net": "bash src/support/deploy/run.sh direct",
+    "deploy:para:net": "bash src/support/deployPara/run.sh direct",
     "deploy:local": "npm run deploy:net -- environment",
     "deploy:aura": "npm run deploy:net -- aura",
     "deploy:clique": "npm run deploy:net -- clique",
@@ -31,6 +32,9 @@
     "deploy:kovan": "npm run deploy:net -- kovan",
     "deploy:foundation": "npm run deploy:net -- foundation",
     "deploy:mainnet": "npm run deploy:net -- mainnet",
+    "deploy:para:local": "npm run deploy:para:net -- environment",
+    "deploy:para:mainnet": "npm run deploy:para:net -- mainnet",
+    "deploy:para:ropsten": "npm run deploy:para:net -- ropsten",
     "deploy": "npm run deploy:net -- aura clique rinkeby",
     "verifyDeployment": "node -r ts-node/register src/deployment/verifyDeployment.ts",
     "docker:build": "docker build --cache-from augurproject/augur-core:monorepo --tag augurproject/augur-core:monorepo -f src/support/Dockerfile ./../..",
@@ -73,7 +77,7 @@
     "@augurproject/contract-dependencies-ethers": "^2.1.9",
     "@augurproject/solidity-docgen": "0.2.0-alpha.3",
     "bignumber.js": "9.0.0",
-    "ethers": "4.0.47",
+    "ethers": "5.0.8",
     "path": "0.12.7"
   },
   "devDependencies": {

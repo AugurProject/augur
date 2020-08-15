@@ -79,7 +79,7 @@ contract ParaShareToken is ITyped, Initializable, ERC1155, ReentrancyGuard {
         markets[address(_market)].numTicks = _market.getNumTicks();
     }
 
-    function isMarketInitialized(IMarket _market) public returns (bool) {
+    function isMarketInitialized(IMarket _market) public view returns (bool) {
         return markets[address(_market)].numTicks != 0;
     }
 
@@ -401,7 +401,7 @@ contract ParaShareToken is ITyped, Initializable, ERC1155, ReentrancyGuard {
     /**
      * @return The market associated with this Share Token ID
      */
-    function getMarket(uint256 _tokenId) external view returns(IMarket) {
+    function getMarket(uint256 _tokenId) external pure returns(IMarket) {
         (address _market, uint256 _outcome) = TokenId.unpackTokenId(_tokenId);
         return IMarket(_market);
     }
@@ -409,7 +409,7 @@ contract ParaShareToken is ITyped, Initializable, ERC1155, ReentrancyGuard {
     /**
      * @return The outcome associated with this Share Token ID
      */
-    function getOutcome(uint256 _tokenId) external view returns(uint256) {
+    function getOutcome(uint256 _tokenId) external pure returns(uint256) {
         (address _market, uint256 _outcome) = TokenId.unpackTokenId(_tokenId);
         return _outcome;
     }
