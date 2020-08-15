@@ -518,6 +518,17 @@ export const DepositButton = (props: DefaultActionButtonProps) => (
   </button>
 );
 
+export const WrapUnwrapEthAddfunds = (props: DefaultActionButtonProps) => (
+  <button
+    onClick={e => props.action(e)}
+    className={Styles.CurrenyActionButton}
+    disabled={props.disabled}
+    title={'Wrap/Unwrap ETH'}
+  >
+    Wrap/Unwrap
+  </button>
+);
+
 export const TransferButton = (props: DefaultActionButtonProps) => (
   <button
     onClick={e => props.action(e)}

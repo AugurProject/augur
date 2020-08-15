@@ -19,6 +19,7 @@ import {
   ADD_FUNDS_TRANSFER,
   USDC,
   USDT,
+  WETH,
 } from 'modules/common/constants';
 import { LoginAccount, FormattedNumber } from 'modules/types';
 import { Swap } from 'modules/swap/components/swap';
@@ -93,7 +94,7 @@ export const AddFunds = ({
   const fundTypeLabel = tokenToAdd === DAI ?  'DAI ($)' : tokenToAdd === REP ? 'REPv2' : tokenToAdd;
 
   const [selectedOption, setSelectedOption] = useState(
-    initialAddFundsFlow ? initialAddFundsFlow : usingOnRampSupportedWallet && tokenToAdd === DAI ? ADD_FUNDS_CREDIT_CARD : tokenToAdd === ETH ? ADD_FUNDS_TRANSFER : ADD_FUNDS_SWAP
+    initialAddFundsFlow ? initialAddFundsFlow : usingOnRampSupportedWallet && tokenToAdd === DAI ? ADD_FUNDS_CREDIT_CARD : (tokenToAdd === ETH && !initialSwapToken) ? ADD_FUNDS_TRANSFER : ADD_FUNDS_SWAP
   );
 
   const FUND_OTPIONS = [
@@ -126,7 +127,7 @@ export const AddFunds = ({
     addFundsOptions = addFundsOptions.slice(1, addFundsOptions.length);
   }
 
-  if (tokenToAdd === ETH) {
+  if (tokenToAdd === ETH && !initialSwapToken) {
     addFundsOptions = addFundsOptions.filter(options => options.value !== ADD_FUNDS_SWAP)
   }
 
