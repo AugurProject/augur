@@ -132,6 +132,15 @@ const ConnectDropdown = (props: ConnectDropdownProps) => {
 
   const accountFunds = [
     {
+      value: formatEther(balances.weth, {
+        zeroStyled: false,
+        decimalsRounded: 4,
+      }).formatted,
+      name: 'WETH',
+      logo: EthIcon,
+      disabled: GsnEnabled ? balances.weth === "0" : false,
+    },
+    {
       value: formatEther(balances.eth, {
         zeroStyled: false,
         decimalsRounded: 4,

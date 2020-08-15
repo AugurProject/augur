@@ -35,6 +35,7 @@ import {
   checkTokenApproval,
   setTokenApproval,
   wrapEth,
+  unwrapEth,
 } from "modules/contracts/actions/contractCalls";
 import {
   ProcessingButton,
@@ -142,7 +143,7 @@ export const Swap = ({
     return null;
   }
 
-  const VALID_TOKENS = [DAI, REP, ETH, USDC, USDT];
+  const VALID_TOKENS = [DAI, REP, ETH, USDC, USDT, WETH];
 
   const [toTokenType, setToTokenType] = useState(toToken);
 
@@ -202,6 +203,14 @@ export const Swap = ({
     balance = balances[token.toLowerCase()] || 0;
     return balance;
   };
+
+  const [inputAmount, setInputAmount] = useState(createBigNumber(0.0));
+  const [fromTokenType, setFromTokenType] = useState(
+    fromToken ? fromToken : tokenSwapTypes[0]
+  );
+  const [balance, updateBalance] = useState(getBalanceForToken(fromTokenType));
+  const [errorMessage, setErrorMessage] = useState(null);
+
 
   const setAmountToSwap = (
     amount: BigNumber,
@@ -329,6 +338,11 @@ export const Swap = ({
           );
         }
         clearForm();
+      } else if (fromTokenType === WETH) {
+        if (toTokenType === ETH) {
+          unwrapEth(input);
+        }
+        clearForm();
       }
     } catch (error) {
       if (error && error.message.indexOf('denied') === -1) {
@@ -342,7 +356,7 @@ export const Swap = ({
   const handleSetToken = (token) => {
     setErrorMessage('');
     setFromTokenType(token);
-    if (token === DAI) {
+    if (token === DAI || token === WETH) {
       setToTokenType(ETH);
     } else {
       setToTokenType(DAI);
@@ -351,12 +365,6 @@ export const Swap = ({
     clearForm();
   };
 
-  const [inputAmount, setInputAmount] = useState(createBigNumber(0.0));
-  const [fromTokenType, setFromTokenType] = useState(
-    fromToken ? fromToken : tokenSwapTypes[0]
-  );
-  const [balance, updateBalance] = useState(getBalanceForToken(fromTokenType));
-  const [errorMessage, setErrorMessage] = useState(null);
 
   if (!VALID_TOKENS.includes(fromTokenType)) {
     throw Error('unsupported uniswap token');
@@ -430,6 +438,10 @@ export const Swap = ({
       } else if (fromTokenType === USDC) {
         outputAmount = formatEther(
           rateUSDC.multipliedBy(ETH_RATE).multipliedBy(inputAmount)
+        );
+      } else if (fromTokenType === WETH) {
+        outputAmount = formatEther(
+          ONE.multipliedBy(ONE).multipliedBy(inputAmount)
         );
       }
     } else if (toTokenType === WETH) {
@@ -522,12 +534,12 @@ export const Swap = ({
   : SWAPEXACTTOKENSFORTOKENS;
 
 
-  if (toToken === WETH && fromToken === ETH) {
+  if (toTokenType === WETH && fromTokenType === ETH) {
     buttonText = 'Wrap';
     wrapping = true;
     queueId = WRAP_ETH;
   }
-  if (toToken === ETH && fromToken === WETH) {
+  if (toTokenType === ETH && fromTokenType === WETH) {
     buttonText = 'Unwrap';
     queueId = UNWRAP_ETH;
   }

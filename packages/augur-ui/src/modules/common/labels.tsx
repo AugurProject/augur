@@ -61,7 +61,7 @@ import { Ox_STATUS } from 'modules/app/actions/update-app-status';
 import { ethToDai } from 'modules/app/actions/get-ethToDai-rate';
 import { augurSdk } from 'services/augursdk';
 import { getGasCost } from 'modules/modal/gas';
-import { addPendingData } from 'modules/pending-queue/actions/pending-queue-management';
+import { addPendingData, removePendingData } from 'modules/pending-queue/actions/pending-queue-management';
 
 export interface MarketTypeProps {
   marketType: string;
@@ -1521,6 +1521,7 @@ interface ApprovalTxButtonLabelProps {
   approvalType: string;
   ignore?: boolean;
   addPendingData: Function;
+  removePendingData: Function;
   pendingTx: boolean[];
   hideAddFunds?: boolean;
 }
@@ -1539,6 +1540,7 @@ export const ApprovalTxButtonLabelCmp = ({
   approvalType,
   ignore,
   addPendingData,
+  removePendingData,
   hideAddFunds = false,
 }: ApprovalTxButtonLabelProps) => {
   const [approvalsNeeded, setApprovalsNeeded] = useState(0);
@@ -1582,18 +1584,19 @@ export const ApprovalTxButtonLabelCmp = ({
       }
   }, [userEthBalance, gasPrice, approvalsNeeded])
 
-  function doCheckApprovals() {
+  function doCheckApprovals(init: boolean = false) {
     checkApprovals(account).then(approvalsNeeded => {
       setApprovalsNeeded(approvalsNeeded);
       isApprovalCallback(approvalsNeeded === 0);
-      if (approvalsNeeded === 0) {
+      if (approvalsNeeded === 0 && !init) {
         addPendingData(TXEventName.Success);
+        setTimeout(() => removePendingData(), 500);
       }
     });
   }
 
   useEffect(() => {
-    doCheckApprovals();
+    doCheckApprovals(true);
   }, []);
 
   return (
@@ -1633,7 +1636,8 @@ export const ApprovalTxButtonLabelCmp = ({
 
 const mapStateToProps = (state: AppState) => ({ });
 const mapDispatchToProps = (dispatch) => ({
-  addPendingData: status => dispatch(addPendingData(constants.APPROVALS, constants.TRANSACTIONS, status, '', { }))
+  addPendingData: status => dispatch(addPendingData(constants.APPROVALS, constants.TRANSACTIONS, status, '', { })),
+  removePendingData: () => dispatch(removePendingData(constants.APPROVALS, constants.TRANSACTIONS))
 });
 const mergeProps = (sP: any, dP: any, oP: any) => ({...sP, ...dP, ...oP});
 
