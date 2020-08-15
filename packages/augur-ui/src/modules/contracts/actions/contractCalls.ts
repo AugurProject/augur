@@ -431,6 +431,21 @@ export async function checkSetApprovalAmount(account, contract): Promise<void> {
   }
 }
 
+export async function wrapEth(
+  tokenAmount: BigNumber,
+): Promise<void> {
+  const { contracts } = augurSdk.get();
+  return contracts.weth.deposit({ attachedEth: tokenAmount.multipliedBy(10 ** 18) });
+}
+
+export async function unwrapEth(
+  tokenAmount: BigNumber,
+): Promise<void> {
+  const { contracts } = augurSdk.get();
+  return contracts.weth.withdraw(tokenAmount.multipliedBy(10 ** 18));
+
+}
+
 export async function uniswapTokenForDai(
   tokenAddress: string,
   tokenAmount: BigNumber,

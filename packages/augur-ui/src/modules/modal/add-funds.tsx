@@ -72,7 +72,6 @@ export const AddFunds = ({
   const BUY_MIN = 20;
   const BUY_MAX = 250;
   const SWAP_ID = 0;
-  const pillOptions = [{ label: 'Convert', id: SWAP_ID }];
 
   const usingOnRampSupportedWallet = accountMeta &&
     accountMeta.accountType === ACCOUNT_TYPES.TORUS ||
@@ -183,10 +182,7 @@ export const AddFunds = ({
               </h2>
 
               <div className={Styles.AddFundsSwap}>
-                <PillSelection
-                  options={pillOptions}
-                  defaultSelection={SWAP_ID}
-                />
+
               </div>
 
               <Swap

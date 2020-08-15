@@ -59,6 +59,7 @@ export const REP = 'REP';
 export const DAI = 'DAI';
 export const USDT = 'USDT';
 export const USDC = 'USDC';
+export const WETH = 'WETH';
 
 export const TRADING_TUTORIAL = 'TRADING_TUTORIAL';
 export const INVALID_BEST_BID_ALERT_VALUE = createBigNumber('.1');
@@ -761,6 +762,8 @@ export const ADDLIQUIDITY = 'ADDLIQUIDITY';
 export const ETH_RESERVE_INCREASE = 'ETH_RESERVE_INCREASE';
 export const SETREFERRER = 'SETREFERRER'
 export const SETAPPROVALFORALL = 'SETAPPROVALFORALL'
+export const WRAP_ETH = 'WRAPETH';
+export const UNWRAP_ETH = 'UNWRAP_ETH';
 
 // # Orders/Trade Constants
 export const ORDER_BOOK_TABLE = 'ORDER_BOOK_TABLE';

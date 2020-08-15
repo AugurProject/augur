@@ -10,7 +10,7 @@ import {
   Stepper,
 } from 'modules/modal/common';
 import AccountStatusTracker from 'modules/modal/containers/account-status-tracker';
-import TransferMyTokens from 'modules/modal/containers/transfer-my-tokens';
+import WrapUnwrapEth from 'modules/modal/containers/transfer-my-tokens';
 import { LinkContent } from 'modules/types';
 import classNames from 'classnames';
 import { ONBOARDING_MAX_STEPS, TRANSACTIONS, CREATEAUGURWALLET, DAI, GWEI_CONVERSION } from 'modules/common/constants';
@@ -93,7 +93,7 @@ export const Onboarding = ({
           {smallHeader && <SmallSubheader text={smallHeader} />}
           {mediumHeader && <MediumSubheader text={mediumHeader} />}
           {linkContent && <LinkContentSection linkContent={modLinkContent} />}
-          {showTransferMyDai && <TransferMyTokens tokenName={DAI} autoClose={true} callBack={() => showAugurP2PModal()}/>}
+          {showTransferMyDai && <WrapUnwrapEth tokenName={DAI} autoClose={true} callBack={() => showAugurP2PModal()}/>}
         </main>
 
         <div className={Styles.OnboardingNav}>{NavControls}</div>

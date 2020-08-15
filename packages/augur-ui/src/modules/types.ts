@@ -636,6 +636,7 @@ export interface TimeframeData {
 }
 export interface AccountBalances {
   eth: string;
+  weth: string;
   rep: string;
   dai: string;
   usdt: string;

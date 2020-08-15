@@ -3,7 +3,7 @@ import { withRouter } from 'react-router-dom';
 import { AppState } from 'appStore';
 import { ThunkDispatch } from 'redux-thunk';
 import { Action } from 'redux';
-import { TransferMyTokens } from 'modules/modal/common';
+import { WrapUnwrapEth } from 'modules/modal/common';
 import { formatDai, formatEther } from 'utils/format-number';
 import { updateModal } from '../actions/update-modal';
 import {
@@ -45,7 +45,7 @@ const mergeProps = (sP: any, dP: any, oP: OwnProps) => ({
   tokenName: oP.tokenName ? oP.tokenName : DAI,
   tokenAmount: formatEther(sP.tokenAmount),
   autoClose: oP.autoClose,
-  showTransferModal: (autoClose) => {
+  showConvertModal: (autoClose) => {
     dP.transferfunds(() => {
       if (oP.callBack) {
         setTimeout(() => oP.callBack());
@@ -55,5 +55,5 @@ const mergeProps = (sP: any, dP: any, oP: OwnProps) => ({
 });
 
 export default withRouter(
-  connect(mapStateToProps, mapDispatchToProps, mergeProps)(TransferMyTokens)
+  connect(mapStateToProps, mapDispatchToProps, mergeProps)(WrapUnwrapEth)
 );

@@ -12,6 +12,8 @@ import {
   ZERO,
   USDC,
   USDT,
+  WETH,
+  ONE,
 } from "modules/common/constants";
 import { AccountBalances, FormattedNumber } from "modules/types";
 import {
@@ -30,6 +32,7 @@ import {
   uniswapTokenForRep,
   checkTokenApproval,
   setTokenApproval,
+  wrapEth,
 } from "modules/contracts/actions/contractCalls";
 import {
   ProcessingButton,
@@ -40,6 +43,7 @@ import { augurSdk } from "services/augursdk";
 
 import Styles from "modules/swap/components/index.styles.less";
 import { ApprovalTxButtonLabel } from "modules/common/labels";
+import { DismissableNotice, DISMISSABLE_NOTICE_BUTTON_TYPES } from "modules/reporting/common";
 
 interface SwapProps {
   balances: AccountBalances;
@@ -72,6 +76,11 @@ const tokenOptions = {
     value: ETH,
     comp: null,
   },
+  [WETH]: {
+    label: WETH,
+    value: WETH,
+    comp: null,
+  },
   [USDC]: {
     label: USDC,
     value: USDC,
@@ -88,6 +97,7 @@ const getFromTokenOptions = () => {
   return [
     tokenOptions[DAI],
     tokenOptions[ETH],
+    tokenOptions[WETH],
     tokenOptions[REP],
     tokenOptions[USDC],
     tokenOptions[USDT],
@@ -96,13 +106,15 @@ const getFromTokenOptions = () => {
 
 const getToTokenOptions = (token) => {
   if (token === ETH) {
-    return [tokenOptions[DAI], tokenOptions[REP]];
+    return [tokenOptions[DAI], tokenOptions[REP], tokenOptions[WETH]];
   } else if (token === DAI) {
     return [tokenOptions[REP], tokenOptions[ETH]];
   } else if (token === REP) {
     return [tokenOptions[ETH], tokenOptions[DAI]];
   } else if (token === USDT || token === USDC) {
     return [tokenOptions[DAI]];
+  } else if (token === WETH) {
+    return [tokenOptions[ETH]]
   }
 
   return [tokenOptions[DAI], tokenOptions[ETH], tokenOptions[REP]];
@@ -134,6 +146,7 @@ export const Swap = ({
 
   const toTokenBalance = balances[toTokenType.toLowerCase()] || 0;
   const hasEth = createBigNumber(balances.eth || 0).gt(ZERO);
+  const hasWeth = createBigNumber(balances.weth || 0).gt(ZERO);
   const hasRep = createBigNumber(balances.rep || 0).gt(ZERO);
   const hasDai = createBigNumber(balances.dai || 0).gt(ZERO);
   const hasUSDC = createBigNumber(balances.usdc || 0).gt(ZERO);
@@ -143,6 +156,10 @@ export const Swap = ({
 
   if (hasEth) {
     tokenSwapTypes = tokenSwapTypes.concat(ETH);
+  }
+
+  if (hasWeth) {
+    tokenSwapTypes = tokenSwapTypes.concat(WETH);
   }
 
   if (hasRep) {
@@ -249,8 +266,10 @@ export const Swap = ({
         }
         clearForm();
       } else if (fromTokenType === ETH) {
-        await checkSetApprovalAmount(address, contracts.weth);
-        if (toTokenType === DAI) {
+        //        await checkSetApprovalAmount(address, contracts.weth);
+        if (toTokenType === WETH) {
+          await wrapEth(input);
+        } else if (toTokenType === DAI) {
           await uniswapEthForDai(input, output, exchangeRateBufferMultiplier);
         } else if (toTokenType === REP) {
           await uniswapEthForRep(input, output, exchangeRateBufferMultiplier);
@@ -411,9 +430,30 @@ export const Swap = ({
           rateUSDC.multipliedBy(ETH_RATE).multipliedBy(inputAmount)
         );
       }
+    } else if (toTokenType === WETH) {
+      if (fromTokenType === DAI) {
+        outputAmount = formatEther(
+          createBigNumber(ETH_RATE).multipliedBy(inputAmount)
+        );
+      } else if (fromTokenType === REP) {
+        outputAmount = formatEther(
+          createBigNumber(REP_RATE).multipliedBy(inputAmount)
+        );
+      } else if (fromTokenType === USDT) {
+        outputAmount = formatEther(
+          rateUSDT.multipliedBy(ETH_RATE).multipliedBy(inputAmount)
+        );
+      } else if (fromTokenType === USDC) {
+        outputAmount = formatEther(
+          rateUSDC.multipliedBy(ETH_RATE).multipliedBy(inputAmount)
+        );
+      } else if (fromTokenType === ETH) {
+        outputAmount = formatEther(
+          ONE.multipliedBy(ONE).multipliedBy(inputAmount)
+        );
+      }
     }
   }
-
 
   const getCurrentTokenContract = () => {
     const { contracts } = augurSdk.get();
@@ -427,7 +467,7 @@ export const Swap = ({
       tokenContract = contracts.usdt;
     } else if (fromTokenType === USDC) {
       tokenContract = contracts.usdc;
-    } else {
+    } else if (fromTokenType === WETH) {
       tokenContract = contracts.weth;
     }
     return tokenContract;
@@ -440,16 +480,17 @@ export const Swap = ({
 
   const [tokenUnlocked, setTokenUnlocked] = useState(false);
   const [isApproved, setIsApproved] = useState({
-    eth: false,
+    eth: true,
     dai: false,
     rep: false,
     usdc: false,
     usdt: false,
+    weth: false,
   });
 
   const showUnlockForToken = async () => {
     const tokenContract = getCurrentTokenContract();
-    const approved = await checkTokenApproval(address, tokenContract);
+    const approved = tokenContract ? await checkTokenApproval(address, tokenContract) : true;
     setIsApproved({
       ...isApproved,
       [fromTokenType.toLowerCase()]: approved
@@ -469,6 +510,14 @@ export const Swap = ({
       setTokenUnlocked(true);
     }
   }, [fromTokenType, balances]);
+
+  let buttonText = 'Convert';
+  let wrapping = false;
+  if (toToken === WETH && fromToken === ETH) {
+    buttonText = 'Wrap';
+    wrapping = true;
+  }
+  if (toToken === ETH && fromToken === WETH) buttonText = 'Unwrap';
 
   return (
     <div className={Styles.Swap}>
@@ -531,9 +580,10 @@ export const Swap = ({
       }
 
       <div>
+        {wrapping && <DismissableNotice show title={'Make sure to leave enough ETH to pay transaction fees'} buttonType={DISMISSABLE_NOTICE_BUTTON_TYPES.NONE} />}
         {tokenUnlocked &&
           <ProcessingButton
-            text={'Convert'}
+            text={buttonText}
             action={() => makeTrade()}
             queueName={TRANSACTIONS}
             disabled={
