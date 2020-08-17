@@ -459,9 +459,10 @@ div.Onboarding {
   .Orders {
     background: var(--color-module-background);
     border: 0;
-    padding: @size-24;
 
     > main {
+      padding: @size-24;
+
       > p {
         margin-bottom: @size-8;
       }
@@ -470,6 +471,23 @@ div.Onboarding {
         .text-14-bold;
 
         margin: 0 0 @size-16;
+      }
+
+      > div:first-of-type {
+        border: @size-1 solid var(--color-outline);
+        border-radius: @border-radius-rounded;
+
+        > div {
+          background: var(--color-table-header);
+          border-top: 0;
+          border-radius: @border-radus-rounded;
+        }
+
+        > section {
+          margin-bottom: 0;
+          border-bottom: 0;
+          border-radius: @border-radus-rounded;
+        }
       }
     }
 
