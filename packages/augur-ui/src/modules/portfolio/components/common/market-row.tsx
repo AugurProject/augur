@@ -60,7 +60,7 @@ const MarketRow = ({
   if (theme === THEMES.SPORTS) {
     const { sportsBook: { liquidityPool } } = market;
     const marketPool = liquidityPools[liquidityPool];
-    Object.keys(marketPool).forEach(outcomeId => {
+    Object.keys(marketPool || {}).forEach(outcomeId => {
       if (marketPool[outcomeId]) {
         renderLiquidityDepletedLabel = false;
       }
