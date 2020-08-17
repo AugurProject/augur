@@ -283,6 +283,10 @@
 
       > button[class*="PrimaryButton"][title*="Migrate V1 to V2 REP"] {
         order: 0;
+
+        @media @breakpoint-mobile-tablet {
+          display: none;
+        }
       }
     }
   }
