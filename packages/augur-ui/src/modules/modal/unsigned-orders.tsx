@@ -73,7 +73,9 @@ const orderRow = (
   }: UnsignedOrdersProps
 ) => {
   const { loginAccount } = useAppStatusStore();
-  const { actions: { removeLiquidity }} = usePendingOrdersStore();
+  const {
+    actions: { removeLiquidity },
+  } = usePendingOrdersStore();
   const {
     outcomeId,
     outcomeName,
@@ -93,7 +95,7 @@ const orderRow = (
           outcomeId,
           orderId: index,
         });
-      }
+      },
     },
     {
       text: 'submit',
@@ -183,32 +185,34 @@ export const UnsignedOrders = ({
           // @ts-ignore */}
         <Description description={description} />
         <MarketTitle title={marketTitle} />
-        {header && (
-          <div className={Styles.OrdersHeader}>
-            {header.map((headerLabel: string, index) => (
-              <span key={headerLabel + index}>{headerLabel}</span>
-            ))}
-          </div>
-        )}
-        {outcomes && (
-          <section>
-            {outcomes.map((outcome: string) =>
-              (liquidity[outcome] || []).map((order: LiquidityOrder) =>
-                orderRow(order, {
-                  marketType,
-                  numTicks,
-                  maxPrice,
-                  minPrice,
-                  outcomes,
-                  bnAllowance,
-                  transactionHash,
-                  marketId,
-                  zeroXEnabled,
-                })
-              )
-            )}
-          </section>
-        )}
+        <div>
+          {header && (
+            <div className={Styles.OrdersHeader}>
+              {header.map((headerLabel: string, index) => (
+                <span key={headerLabel + index}>{headerLabel}</span>
+              ))}
+            </div>
+          )}
+          {outcomes && (
+            <section>
+              {outcomes.map((outcome: string) =>
+                (liquidity[outcome] || []).map((order: LiquidityOrder) =>
+                  orderRow(order, {
+                    marketType,
+                    numTicks,
+                    maxPrice,
+                    minPrice,
+                    outcomes,
+                    bnAllowance,
+                    transactionHash,
+                    marketId,
+                    zeroXEnabled,
+                  })
+                )
+              )}
+            </section>
+          )}
+        </div>
         {openOrders && (
           // @ts-ignore
           <OpenOrdersTable relative openOrders={orders} marketId={marketId} />
@@ -216,7 +220,7 @@ export const UnsignedOrders = ({
         {breakdown && <Breakdown rows={breakdown} short />}
       </main>
       <BulkTxLabel
-        buttonName='Submit All'
+        buttonName="Submit All"
         count={submitAllTxCount}
         needsApproval={needsApproval}
       />

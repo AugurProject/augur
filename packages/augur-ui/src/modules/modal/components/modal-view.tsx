@@ -165,7 +165,7 @@ function selectModal(type, props, closeModal, modal) {
     case TYPES.MODAL_INVALID_MARKET_RULES:
       return <ModalInvalidMarketRules />;
     case TYPES.MODAL_CASHOUT:
-      return <ModalCashout />;
+      return <ModalCashOut />;
     case TYPES.MODAL_INITIALIZE_ACCOUNT:
       return <ModalInitializeAccounts />;
     case TYPES.MODAL_FROZEN_FUNDS:

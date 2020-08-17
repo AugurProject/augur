@@ -271,6 +271,22 @@ div.ReportingSubheaders {
 
 :root[theme="BETTING"],
 :root[theme="SPORTS"] {
+  .DismissableNotice {
+    border-left-width: @size-1;
+    border: @size-1 solid var(--color-resolved);
+
+    > span > svg {
+      fill: var(--color-resolved);
+    }
+    > div {
+      > div:first-of-type {
+        .text-12;
+
+        color: var(--color-primary-text);
+      }
+    }
+  }
+
   div.ReportingSubheaders {
 
       > span {
