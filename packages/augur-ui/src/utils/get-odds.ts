@@ -94,7 +94,7 @@ export const getOddsObject = (normalizedValue: BigNumber, toDecimals = 4) => {
   const decimal: BigNumber = convertToDecimal(percentage);
   const fractional: BigNumber = convertToFractional(decimal);
   const american: BigNumber = convertToAmerican(percentage);
-  
+
   return {
     [DECIMAL]: formatNumber(decimal, {
       decimals: toDecimals,
@@ -123,16 +123,9 @@ const convertToNegativeAmerican = (percentage: BigNumber): BigNumber =>
     .times(NEGATIVE_ONE);
 
 const convertToAmerican = (percentage: BigNumber): BigNumber =>
-  percentage.gte(FIFTY)
+  percentage.lte(FIFTY)
     ? convertToPositiveAmerican(percentage)
     : convertToNegativeAmerican(percentage);
-
-const convertAmericanToFractional = americanOdds => {
-  const bnAmerican = createBigNumber(americanOdds);
-  return bnAmerican.isNegative()
-    ? HUNDRED.times(-1).dividedBy(bnAmerican)
-    : bnAmerican.dividedBy(HUNDRED);
-};
 
 // Percentage = normalized price times 100, e.g. a normalized price of .85 = .85 * 100 = 85.
 
