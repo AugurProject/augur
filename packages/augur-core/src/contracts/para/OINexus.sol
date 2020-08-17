@@ -31,6 +31,19 @@ contract OINexus is Ownable {
 
     function recordParaUniverseValuesAndUpdateReportingFee(IUniverse _universe, uint256 _targetRepMarketCapInAttoCash, uint256 _repMarketCapInAttoCash) public returns (uint256) {
         require(knownParaUniverse[msg.sender]);
+        IParaUniverse _paraUniverse = IParaUniverse(msg.sender);
+        // Before applying the para universe values we update/apply the core universe values first
+        {
+            uint256 _coreTargetRepMarketCapInAttoCash = _universe.getTargetRepMarketCapInAttoCash();
+            uint256 _coreRepMarketCapInAttoCash = _universe.pokeRepMarketCapInAttoCash();
+            if (_coreTargetRepMarketCapInAttoCash > 0) {
+                applyReportingFeeChanges(_universe, IParaUniverse(address(_universe)), _coreTargetRepMarketCapInAttoCash, _coreRepMarketCapInAttoCash, false);
+            }
+        }
+        return applyReportingFeeChanges(_universe, _paraUniverse, _targetRepMarketCapInAttoCash, _repMarketCapInAttoCash, true);
+    }
+
+    function applyReportingFeeChanges(IUniverse _universe, IParaUniverse _paraUniverse, uint256 _targetRepMarketCapInAttoCash, uint256 _repMarketCapInAttoCash, bool recalculate) public returns (uint256) {
         uint256 _reportingFeeDivisor = universeReportingFeeDivisor[address(_universe)];
         if (_reportingFeeDivisor == 0) {
             _reportingFeeDivisor = Reporting.getDefaultReportingFeeDivisor();
@@ -39,11 +52,15 @@ contract OINexus is Ownable {
         // Derive a new total para universe factor by subtracting this ones old value then adding its new value
         uint256 _magnifiedReportingDivisorFactorContribution = _targetRepMarketCapInAttoCash.mul(10**18).div(_repMarketCapInAttoCash);
         uint256 _totalMagnifiedUniverseContributions = totalUniverseContributions[address(_universe)];
-        uint256 _paraUniversePreviousContribution = paraUniversePreviousContribution[address(msg.sender)];
+        uint256 _paraUniversePreviousContribution = paraUniversePreviousContribution[address(_paraUniverse)];
         _totalMagnifiedUniverseContributions = _totalMagnifiedUniverseContributions.sub(_paraUniversePreviousContribution);
         _totalMagnifiedUniverseContributions = _totalMagnifiedUniverseContributions.add(_magnifiedReportingDivisorFactorContribution);
         totalUniverseContributions[address(_universe)] = _totalMagnifiedUniverseContributions;
-        paraUniversePreviousContribution[address(msg.sender)] = _magnifiedReportingDivisorFactorContribution;
+        paraUniversePreviousContribution[address(_paraUniverse)] = _magnifiedReportingDivisorFactorContribution;
+
+        if (!recalculate) {
+            return _reportingFeeDivisor;
+        }
 
         if (_totalMagnifiedUniverseContributions == 0) {
             _reportingFeeDivisor = Reporting.getDefaultReportingFeeDivisor();

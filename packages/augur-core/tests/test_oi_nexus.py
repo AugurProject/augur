@@ -20,7 +20,7 @@ def test_oi_nexus(contractsFixture, universe):
     nexus.addParaAugur(account)
 
     # Now we'll add a universe and a "paraUniverse" which will just be an account key so that we can send from it to do updates
-    nexus.registerParaUniverse(universe.address, paraUniverse1)
+    nexus.registerParaUniverse(universeAddress, paraUniverse1)
 
     # Lets provide some test data and get / store a new reporting fee. In this paraUniverse lets say we're at exactly the target OI. This will give us the default reporting fee back
     targetRepMarketCapInAttoCash = 100
@@ -65,3 +65,55 @@ def test_oi_nexus(contractsFixture, universe):
     repMarketCapInAttoCash = 10
     reportingFee = nexus.recordParaUniverseValuesAndUpdateReportingFee(universeAddress, targetRepMarketCapInAttoCash, repMarketCapInAttoCash, sender=paraUniverse3)
     assert reportingFee == 4455
+
+def test_oi_nexus_core_influence(contractsFixture, universe, cash):
+    if not contractsFixture.paraAugur:
+        return
+
+    nexus = contractsFixture.contracts["OINexus"]
+    openInterestCashAddress = universe.openInterestCash()
+    openInterestCash = contractsFixture.applySignature("OICash", openInterestCashAddress)
+
+    account = contractsFixture.accounts[0]
+    universeAddress = universe.address
+    paraUniverse1 = contractsFixture.accounts[1]
+
+    # We'll do a hack to unit test the contract and make ourselves an ParaAugur instance
+    nexus.addParaAugur(account)
+
+    # Now we'll add a universe and a "paraUniverse" which will just be an account key so that we can send from it to do updates
+    nexus.registerParaUniverse(universeAddress, paraUniverse1)
+
+    # In this test we're accounting for the "core universe" so we'll need to use some more realistic values. We'll get the total rep market cap in the core universe first to base our numbers off of
+    coreRepMarketCapInAttoCash = universe.pokeRepMarketCapInAttoCash()
+
+    # Lets add enough OI that we're at exactly the target
+    desiredOI = coreRepMarketCapInAttoCash / 5
+    coreCashAddress = universe.cash()
+    coreCash = contractsFixture.applySignature("Cash", coreCashAddress)
+    assert coreCash.faucet(desiredOI)
+    assert openInterestCash.deposit(desiredOI)
+    coreTargetRepMarketCapInAttoCash = universe.getTargetRepMarketCapInAttoCash()
+    assert roughlyEqual(coreTargetRepMarketCapInAttoCash, coreRepMarketCapInAttoCash)
+
+    # Lets provide some test data and get / store a new reporting fee. In this paraUniverse lets say we're at exactly the target OI. This will set the total MCAP to be double the desired OI and thus decrease the divisor by half
+    targetRepMarketCapInAttoCash = coreTargetRepMarketCapInAttoCash * 10
+    repMarketCapInAttoCash = coreRepMarketCapInAttoCash * 10
+    reportingFee = nexus.recordParaUniverseValuesAndUpdateReportingFee(universeAddress, targetRepMarketCapInAttoCash, repMarketCapInAttoCash, sender=paraUniverse1)
+    assert reportingFee == 4999
+
+    # We can provide a new ratio to update accordingly. If the target is 4x the mcap we will see the disivor decrease by 4/5 as the total OI is now 5x target
+    targetRepMarketCapInAttoCash = coreTargetRepMarketCapInAttoCash * 40
+    repMarketCapInAttoCash = coreRepMarketCapInAttoCash * 10
+    reportingFee = nexus.recordParaUniverseValuesAndUpdateReportingFee(universeAddress, targetRepMarketCapInAttoCash, repMarketCapInAttoCash, sender=paraUniverse1)
+    assert reportingFee == 999
+
+    # Lets increase the core universe OI such that the total OI is 10x the target and see the divisor decrease accordingly
+    assert coreCash.faucet(desiredOI * 5)
+    assert openInterestCash.deposit(desiredOI * 5)
+    reportingFee = nexus.recordParaUniverseValuesAndUpdateReportingFee(universeAddress, targetRepMarketCapInAttoCash, repMarketCapInAttoCash, sender=paraUniverse1)
+    assert reportingFee == 99
+
+
+def roughlyEqual(amount1, amount2, tolerance=10**12):
+    return abs(amount1 - amount2) < tolerance
