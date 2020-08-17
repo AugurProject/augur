@@ -348,6 +348,9 @@ export const BetslipInput = ({
   useEffect(() => {
     betslipInput && betslipInput.current.focus();
   }, []);
+  useEffect(() => {
+    if (noEdit) setCurVal(value)
+  }, [value]);
   return (
     <div
       className={classNames(Styles.BetslipInput, {

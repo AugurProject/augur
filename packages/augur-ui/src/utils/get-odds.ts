@@ -87,6 +87,11 @@ export const convertToWin = (maxPrice, shares, toDecimals = 2) => {
 export const getWager = (shares, price) => {
   return createBigNumber(shares).times(createBigNumber(price)).toString();
 }
+
+export const getShares = (wager, price) => {
+  return createBigNumber(wager).div(createBigNumber(price)).toString();
+}
+
 export const getOddsObject = (normalizedValue: BigNumber, toDecimals = 4) => {
   const percentage: BigNumber = convertToPercentage(
     createBigNumber(normalizedValue)
