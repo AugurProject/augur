@@ -2338,7 +2338,10 @@ export const CategoryRow = ({
     (category === SPORTSBOOK_CATEGORIES.SPORTS ||
       category === SPORTSBOOK_CATEGORIES.POLITICS);
   const isShortText = category && category.length <= 3;
-  const active = selectedCategory === category;
+  let active = selectedCategory === category;
+  if (category === 'Popular Markets' && !selectedCategory) {
+    active = true;
+  }
   const clickFnc = () => {
     const categories = handleClick();
     const query: QueryEndpoints = {
