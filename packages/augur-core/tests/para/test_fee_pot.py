@@ -4,6 +4,9 @@ from utils import captureFilteredLogs, AssertLog, nullAddress, TokenDelta
 from pytest import raises
 
 def test_fee_pot_symbol(contractsFixture, universe, reputationToken):
+    if not contractsFixture.paraAugur:
+        return
+        
     feePot = contractsFixture.getFeePot(universe)
 
     assert feePot.symbol() == "S_REPv2"

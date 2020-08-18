@@ -55,7 +55,7 @@ class TokenDelta():
         delta = self.delta
         resultDelta = newBalance - originalBalance
         diff = delta - resultDelta
-        assert diff < 1, self.err + ". Delta EXPECTED: %i ACTUAL: %i DIFF: %i" % (delta, resultDelta, diff)
+        assert abs(diff) < 1, self.err + ". Delta EXPECTED: %i ACTUAL: %i DIFF: %i" % (delta, resultDelta, diff)
 
 class BuyWithCash():
 

@@ -217,7 +217,7 @@ def test_forking(finalizeByMigration, manuallyDisavow, localFixture, universe, m
     shareToken = localFixture.getShareToken()
 
     time = localFixture.contracts["Time"].getTimestamp()
-    farOutEndTime = time + (200 * 24 * 60 * 60)
+    farOutEndTime = time + (365 * 24 * 60 * 60)
     farOutMarket = localFixture.createYesNoMarket(universe, farOutEndTime, 0, 0, localFixture.accounts[0])
 
     # Let's go into the one dispute round for the categorical market
@@ -291,11 +291,11 @@ def test_forking(finalizeByMigration, manuallyDisavow, localFixture, universe, m
     expectedYesOutcomePayout = newUniverse.payoutNumerators(YES)
     expectedNoOutcomePayout = newUniverse.payoutNumerators(NO)
 
-    expectedYesPayout = expectedYesOutcomePayout * shareToken.balanceOfMarketOutcome(market.address, YES, localFixture.accounts[0]) * .99 # to account for fees (creator fee goes to the claimer in this case)
+    expectedYesPayout = expectedYesOutcomePayout * shareToken.balanceOfMarketOutcome(market.address, YES, localFixture.accounts[0]) * .9999 # to account for fees (creator fee goes to the claimer in this case)
     with TokenDelta(cash, expectedYesPayout, localFixture.accounts[0], "Payout for Yes Shares was wrong in forking market"):
         shareToken.claimTradingProceeds(market.address, localFixture.accounts[0], longTo32Bytes(11))
 
-    expectedNoPayout = expectedNoOutcomePayout * shareToken.balanceOfMarketOutcome(market.address, NO, localFixture.accounts[1]) * .98 # to account for fees
+    expectedNoPayout = expectedNoOutcomePayout * shareToken.balanceOfMarketOutcome(market.address, NO, localFixture.accounts[1]) * .9899 # to account for fees
     with TokenDelta(cash, expectedNoPayout, localFixture.accounts[1], "Payout for No Shares was wrong in forking market"):
         shareToken.claimTradingProceeds(market.address, localFixture.accounts[1], longTo32Bytes(11))
 
@@ -331,7 +331,7 @@ def test_forking(finalizeByMigration, manuallyDisavow, localFixture, universe, m
     assert categoricalDisputeCrowdsourcer.isDisavowed()
     assert not universe.isContainerForReportingParticipant(categoricalDisputeCrowdsourcer.address)
     assert not newUniverse.isContainerForReportingParticipant(categoricalDisputeCrowdsourcer.address)
-    assert localFixture.getOpenInterestInAttoCash(universe) == cost
+    assert localFixture.getOpenInterestInAttoCash(newUniverse) == cost
 
     # The initial report is still present however
     categoricalInitialReport = localFixture.applySignature("InitialReporter", categoricalMarket.participants(0))

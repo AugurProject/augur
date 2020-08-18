@@ -13,7 +13,7 @@ def test_participation_tokens(kitchenSinkFixture, universe, market, cash):
     disputeWindow = kitchenSinkFixture.applySignature("DisputeWindow", universe.getOrCreateNextDisputeWindow(False))
 
     # Generate Fees
-    generateFees(kitchenSinkFixture, universe, market)
+    generateFees(kitchenSinkFixture, universe, market, cash)
 
     # We can't buy participation tokens until the window starts
     with raises(TransactionFailed):

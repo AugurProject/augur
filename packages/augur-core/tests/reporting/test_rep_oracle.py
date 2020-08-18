@@ -8,7 +8,7 @@ from old_eth_utils import sha3
 def test_rep_oracle(contractsFixture, augur, cash, market, universe):
     reputationTokenAddress = universe.getReputationToken()
     reputationToken = contractsFixture.applySignature('TestNetReputationToken', reputationTokenAddress)
-    repOracle = contractsFixture.contracts["ParaRepOracle"]
+    repOracle = contractsFixture.contracts["ParaRepOracle"] if contractsFixture.paraAugur else contractsFixture.contracts["RepOracle"]
     repExchange = contractsFixture.applySignature("UniswapV2Pair", repOracle.getExchange(reputationTokenAddress))
 
     account = contractsFixture.accounts[0]

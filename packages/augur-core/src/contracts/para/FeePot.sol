@@ -72,8 +72,7 @@ contract FeePot is VariableSupplyToken, Initializable, IFeePot {
     function stake(uint256 _amount) public returns (bool) {
         reputationToken.transferFrom(msg.sender, address(this), _amount);
         _mint(msg.sender, _amount);
-        uint256 _existingMagnifiedFees = magnifiedFeesPerShare.mul(_amount);
-        magnifiedFeesCorrections[msg.sender] = magnifiedFeesCorrections[msg.sender].add(_existingMagnifiedFees);
+        magnifiedFeesCorrections[msg.sender] = magnifiedFeesCorrections[msg.sender].add(magnifiedFeesPerShare.mul(_amount));
         return true;
     }
 
@@ -81,8 +80,7 @@ contract FeePot is VariableSupplyToken, Initializable, IFeePot {
         redeemInternal(msg.sender);
         _burn(msg.sender, _amount);
         reputationToken.transfer(msg.sender, _amount);
-        uint256 _existingMagnifiedFees = magnifiedFeesPerShare.mul(balanceOf(msg.sender));
-        magnifiedFeesCorrections[msg.sender] = _existingMagnifiedFees;
+        magnifiedFeesCorrections[msg.sender] = magnifiedFeesPerShare.mul(balanceOf(msg.sender));
         return true;
     }
 

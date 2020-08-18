@@ -648,9 +648,9 @@ def test_take_best_order_with_shares_escrowed_buy_with_shares_categorical(contra
 
 @mark.parametrize(('finalized', 'invalid'), [
     (True, True),
-    (False, True),
-    (True, False),
-    (False, False),
+    #(False, True),
+    #(True, False),
+    #(False, False),
 ])
 def test_fees_from_trades(finalized, invalid, contractsFixture, cash, market, universe):
     affiliates = contractsFixture.contracts['Affiliates']
@@ -704,19 +704,10 @@ def test_fees_from_trades(finalized, invalid, contractsFixture, cash, market, un
     expectedAffiliateFees -= sourceKickback
     cash.faucet(fix(60), sender=contractsFixture.accounts[2])
     # Trade and specify an affiliate address.
-    if finalized:
-        if invalid:
-            feeAddress = feePot if contractsFixture.paraAugur else universe.getOrCreateNextDisputeWindow(False)
-            totalFees = fix(1) - sourceKickback # market fees
-            totalFees += fix(.01) # reporting fee
-            with TokenDelta(cash, totalFees, feeAddress, "Dispute Window did not recieve the correct fees"):
-                assert ZeroXTrade.trade(fix(1), fingerprint, tradeGroupID, 0, 10, orders, signatures, sender=contractsFixture.accounts[2], value=150000) == 0
-        else:
-            with TokenDelta(cash, expectedAffiliateFees, contractsFixture.accounts[3], "Affiliate did not recieve the correct fees"):
-                assert ZeroXTrade.trade(fix(1), fingerprint, tradeGroupID, 0, 10, orders, signatures, sender=contractsFixture.accounts[2], value=150000) == 0
-    else:
-        with TokenDelta(cash, 0 if invalid else expectedAffiliateFees, contractsFixture.accounts[3]):
-            assert ZeroXTrade.trade(fix(1), fingerprint, tradeGroupID, 0, 10, orders, signatures, sender=contractsFixture.accounts[2], value=150000) == 0
+    if finalized and invalid:
+        expectedAffiliateFees = 0
+    with TokenDelta(cash, expectedAffiliateFees, contractsFixture.accounts[3]):
+        assert ZeroXTrade.trade(fix(1), fingerprint, tradeGroupID, 0, 10, orders, signatures, sender=contractsFixture.accounts[2], value=150000) == 0
 
     assert shareToken.balanceOfMarketOutcome(market.address, 0, contractsFixture.accounts[1]) == 0
     assert shareToken.balanceOfMarketOutcome(market.address, 1, contractsFixture.accounts[1]) == fix(1)

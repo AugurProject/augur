@@ -418,6 +418,7 @@ class ContractsFixture:
             if '0x' in directory: continue # uploaded separately
             if 'uniswap' in directory: continue # uploaded separately
             if 'gsn/v2' in directory: continue # uploaded separately
+            if 'gov' in directory: continue # uploaded separately
             for filename in filenames:
                 name = path.splitext(filename)[0]
                 extension = path.splitext(filename)[1]

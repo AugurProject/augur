@@ -8,6 +8,9 @@ from old_eth_utils import ecsign, sha3, normalize_key, int_to_32bytearray, bytea
 
 
 def test_fingerprint(kitchenSinkFixture, universe, cash, market):
+    if kitchenSinkFixture.paraAugur:
+        return
+
     affiliates = kitchenSinkFixture.contracts['Affiliates']
     affiliateValidator = kitchenSinkFixture.applySignature("AffiliateValidator", affiliates.createAffiliateValidator())
     shareToken = kitchenSinkFixture.getShareToken()
@@ -102,7 +105,8 @@ def test_affiliate_validator(kitchenSinkFixture, universe, cash):
     
     cash.faucet(cost, sender=dupeAccount)
     shareToken.buyCompleteSets(market.address, dupeAccount, numSets, sender=dupeAccount)
-    with TokenDelta(cash, 0, affiliate):
+    expectedAffiliateAmount = 20 if kitchenSinkFixture.paraAugur else 0
+    with TokenDelta(cash, expectedAffiliateAmount, affiliate):
         shareToken.sellCompleteSets(market.address, dupeAccount, dupeAccount, numSets, accountFingerprint, sender=dupeAccount)
 
     # It will also not work if the account or the referrer does not have a key registered with the validator
@@ -111,7 +115,7 @@ def test_affiliate_validator(kitchenSinkFixture, universe, cash):
     
     cash.faucet(cost, sender=noKeyAccount)
     shareToken.buyCompleteSets(market.address, noKeyAccount, numSets, sender=noKeyAccount)
-    with TokenDelta(cash, 0, affiliate):
+    with TokenDelta(cash, expectedAffiliateAmount, affiliate):
         shareToken.sellCompleteSets(market.address, noKeyAccount, noKeyAccount, numSets, accountFingerprint, sender=noKeyAccount)
 
 def signHash(hash, private_key):
