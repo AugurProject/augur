@@ -126,9 +126,8 @@ const MarketView = ({
   const location = useLocation();
   const history = useHistory();
   const node = useRef(null);
-
   const queryId = parseQuery(location.search)[MARKET_ID_PARAM_NAME];
-  const marketId = queryId === TRADING_TUTORIAL ? queryId : getAddress(queryId);
+  const marketId = (queryId === TRADING_TUTORIAL || isPreview) ? queryId : getAddress(queryId);
   const queryOutcomeId = parseQuery(location.search)[
     OUTCOME_ID_PARAM_NAME
   ];
