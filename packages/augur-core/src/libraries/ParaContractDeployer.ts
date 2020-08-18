@@ -102,12 +102,8 @@ Deploying to: ${env}
         console.log('Creating genesis para universe');
         this.universe = await this.createGenesisParaUniverse();
 
-        console.log('Registering para universe with OI Nexus');
-        // NOTE: This requires the deployer of OINexus be the deployer of this
-        nexus.registerParaUniverse(coreAddresses.Universe, this.universe.address);
-
         // Handle some things that make testing less erorr prone that will need to occur naturally in production
-        if (!this.configuration.deploy.isProduction) {            
+        if (!this.configuration.deploy.isProduction) {
             const cash = new Cash(this.dependencies, this.cashAddress);
 
             console.log('Approving Augur');
