@@ -11,6 +11,7 @@ import {
   Pencil,
   ClipboardCopy,
   AugurLogo,
+  WethIcon as WethIcon,
 } from 'modules/common/icons';
 import { PrimaryButton, SecondaryButton } from 'modules/common/buttons';
 import { formatEther, formatRep, } from 'utils/format-number';
@@ -137,7 +138,8 @@ const ConnectDropdown = (props: ConnectDropdownProps) => {
         decimalsRounded: 4,
       }).formatted,
       name: 'WETH',
-      logo: EthIcon,
+      logo: WethIcon,
+      wrapped: true,
       disabled: GsnEnabled ? balances.weth === "0" : false,
     },
     {
@@ -212,7 +214,9 @@ const ConnectDropdown = (props: ConnectDropdownProps) => {
         {accountFunds
           .filter(fundType => !fundType.disabled)
           .map((fundType, idx) => (
-            <div key={idx} className={Styles.AccountFunds}>
+            <div key={idx} className={classNames(Styles.AccountFunds, {
+              [Styles.Wrapped]: fundType.wrapped
+            })}>
               {fundType.logo} {fundType.name}
               <div>
                   {fundType.value} {fundType.name}

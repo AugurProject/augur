@@ -15,7 +15,6 @@ import { FormattedNumber, FormattedNumberOptions } from 'modules/types';
 import addCommas from 'utils/add-commas-to-number';
 import { BigNumber, createBigNumber } from 'utils/create-big-number';
 import getPrecision from 'utils/get-number-precision';
-import { EthIcon } from 'modules/common/icons';
 
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
   Produces a formatted number object used for display and calculations
