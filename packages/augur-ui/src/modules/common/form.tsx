@@ -2387,6 +2387,7 @@ export const CategoryRow = ({
       {showChildrenOption && children &&
         Object.keys(children).map(childName => (
           <CategoryRow
+            key={childName}
             category={childName}
             count={children[childName].count}
             handleClick={() =>
