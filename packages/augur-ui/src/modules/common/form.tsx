@@ -2385,20 +2385,21 @@ export const CategoryRow = ({
         </span>
         {loading ? (
           <span>{LoadingEllipse}</span>
-        ) : (
-          count !== null && (
-            <span
-              onClick={
-                isSportsTheme && isMobile && hasChildren ? clickFnc : null
-              }
-            >
-              {count}
-            </span>
-          )
+        ) : count !== null && (
+          <span
+            onClick={isSportsTheme && isMobile && hasChildren ? clickFnc : null}
+          >
+            {count}
+          </span>
         )}
       </div>
       {showChildrenOption && children && (
-        <CategoryRow viewAll count={null} category={category} handleClick={handleClick} />
+        <CategoryRow
+          viewAll
+          count={null}
+          category={category}
+          handleClick={handleClick}
+        />
       )}
       {showChildrenOption &&
         children &&
