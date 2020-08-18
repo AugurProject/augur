@@ -201,7 +201,7 @@ const SideNav = ({
             <CategoryFilters />
           }
 
-          {isLogged && !isTrading && (
+          {!isTrading && (
             <footer>
               <HelpIcon
                 isHelpMenuOpen={isHelpMenuOpen}
