@@ -2313,6 +2313,8 @@ export interface CategoryRowProps {
   showChildren?: boolean;
   children?: any[];
   parentCategory?: string;
+  allCategories?: boolean;
+  viewAll?: boolean;
 }
 
 export const CategoryRow = ({
@@ -2323,6 +2325,8 @@ export const CategoryRow = ({
   icon,
   children,
   showChildren,
+  allCategories,
+  viewAll,
 }: CategoryRowProps) => {
   const {
     theme,
@@ -2339,10 +2343,17 @@ export const CategoryRow = ({
       category === SPORTSBOOK_CATEGORIES.POLITICS);
   const isShortText = category && category.length <= 3;
   let active = selectedCategory === category;
-  if (category === 'Popular Markets' && !selectedCategory) {
+  if (allCategories && !selectedCategory) {
     active = true;
   }
   const clickFnc = () => {
+    if (isMobile && isSportsTheme) {
+      closeAppMenus();
+      setMobileMenuState(mobileMenuState - 1);
+    }
+    if (allCategories) {
+      return handleClick();
+    }
     const categories = handleClick();
     const query: QueryEndpoints = {
       [CATEGORY_PARAM_NAME]: categories,
@@ -2351,18 +2362,15 @@ export const CategoryRow = ({
       pathname: 'markets',
       search: makeQuery(query),
     });
-    if (isMobile && isSportsTheme) {
-      closeAppMenus();
-      setMobileMenuState(mobileMenuState - 1);
-    }
   };
 
   const [showChildrenOption, setShowChildren] = useState(false);
-
+  const hasChildren = children && Object.keys(children).length > 0;
+  const categoryDisplay = viewAll ? `View all ${category}` : category;
   return (
     <>
       <div
-        onClick={isSportsTheme && isMobile ? null : clickFnc}
+        onClick={isSportsTheme && hasChildren && isMobile ? null : clickFnc}
         className={classNames(Styles.CategoryRow, {
           [Styles.active]: active,
           [Styles.loading]: loading,
@@ -2370,24 +2378,30 @@ export const CategoryRow = ({
         })}
       >
         <span onClick={() => setShowChildren(!showChildrenOption)}>
-          {icon} {isShortText ? category.toUpperCase() : category}
-          {showChildren && Object.keys(children).length > 0 && (
-            <ChevronFlip
-              pointDown={showChildrenOption}
-              filledInIcon
-              instant
-            />
+          {icon} {isShortText ? categoryDisplay.toUpperCase() : categoryDisplay}
+          {showChildren && hasChildren && (
+            <ChevronFlip pointDown={showChildrenOption} filledInIcon instant />
           )}
         </span>
         {loading ? (
           <span>{LoadingEllipse}</span>
         ) : (
-          <span onClick={isSportsTheme && isMobile ? clickFnc : null}>
-            {count}
-          </span>
+          count !== null && (
+            <span
+              onClick={
+                isSportsTheme && isMobile && hasChildren ? clickFnc : null
+              }
+            >
+              {count}
+            </span>
+          )
         )}
       </div>
-      {showChildrenOption && children &&
+      {showChildrenOption && children && (
+        <CategoryRow viewAll count={null} category={category} handleClick={handleClick} />
+      )}
+      {showChildrenOption &&
+        children &&
         Object.keys(children).map(childName => (
           <CategoryRow
             key={childName}
