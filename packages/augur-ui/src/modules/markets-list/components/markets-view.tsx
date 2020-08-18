@@ -253,6 +253,27 @@ const MarketsView = () => {
             sportGroup => sportGroup.id
           );
           const sportsGroupCount = sportsGroups.length;
+          const numDaily = sportsGroups.filter(
+            m => m.type === SPORTS_MARKET_TYPES[0].header
+          ).length;
+          const numFutures = sportsGroups.filter(
+            m => m.type === SPORTS_MARKET_TYPES[1].header
+          ).length;
+          const selectedNum =
+            SPORTS_MARKET_TYPES[0].header === sportsGroupTypeFilter
+              ? numDaily
+              : numFutures;
+          let newSportsGroupTypeFilter = sportsGroupTypeFilter;
+          if (
+            selectedNum === 0 &&
+            sportsFilterSortedMarkets.length > 0 &&
+            selectedCategories.length > 1
+          ) {
+            newSportsGroupTypeFilter =
+              sportsGroupTypeFilter === SPORTS_MARKET_TYPES[0].header
+                ? SPORTS_MARKET_TYPES[1].header
+                : sportsGroupTypeFilter;
+          }
           const sportsShowPagination = sportsGroupCount > limit;
           const marketInfos = result.markets
             .filter(marketHasData => marketHasData)
@@ -275,8 +296,12 @@ const MarketsView = () => {
               : showPagination,
           });
           // TODO: put liquidity getter here if we are in sportsbook.
-          let data = { isSearching: false, meta: result.meta };
-          if(!selectedCategories || selectedCategories.length === 0) {
+          let data = {
+            isSearching: false,
+            meta: result.meta,
+            sportsGroupTypeFilter: newSportsGroupTypeFilter,
+          };
+          if (!selectedCategories || selectedCategories.length === 0) {
             data.allCategoriesMeta = result.meta;
           }
           updateMarketsList(data);
@@ -342,7 +367,9 @@ const MarketsView = () => {
         <section>
           <PillSelection
             options={SPORTS_MARKET_TYPES}
-            defaultSelection={0}
+            defaultSelection={
+              SPORTS_MARKET_TYPES[0].header === sportsGroupTypeFilter ? 0 : 1
+            }
             onChange={v => {
               if (SPORTS_MARKET_TYPES[v].header !== sportsGroupTypeFilter) {
                 updateMarketsList({
