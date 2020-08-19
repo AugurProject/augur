@@ -37,6 +37,7 @@ import {
   MODAL_CANCEL_ALL_BETS,
   MODAL_SIGNUP,
 } from 'modules/common/constants';
+import { checkMultipleOfShares } from 'utils/betslip-helpers';
 
 export interface EmptyStateProps {
   selectedTab: number;
@@ -94,7 +95,7 @@ export const SportsMarketBets = ({ market }) => {
       <h4>{description}</h4>
       <>
         {bets.map(bet => (
-          <SportsBet key={bet.orderId} bet={bet} />
+          <SportsBet key={bet.orderId} bet={bet} market={marketInfos[marketId]}/>
         ))}
       </>
     </div>
@@ -131,7 +132,7 @@ export const SportsMarketMyBets = ({ market }) => {
   );
 };
 
-export const SportsBet = ({ bet }) => {
+export const SportsBet = ({ bet, market }) => {
   const { step } = useBetslipStore();
   const {
     actions: { setModal },
@@ -149,24 +150,36 @@ export const SportsBet = ({ bet }) => {
     errorMessage,
     selfTrade,
     insufficientFunds,
+    price
   } = bet;
   const { liquidityPools } = useMarketsStore();
   const checkWager = wager => {
     if (wager === '' || isNaN(Number(wager))) {
-      modifyBetErrorMessage('Enter a valid number');
-      return true;
+      return {
+        checkError: true,
+        errorMessage: 'Enter a valid number'
+      }
     }
     const liquidity = liquidityPools[bet.poolId][bet.outcomeId];
     if (liquidity) {
       const totalWager = getWager(liquidity.shares, liquidity.price);
       if (createBigNumber(totalWager).lt(createBigNumber(wager))) {
-        modifyBetErrorMessage(
-          'Your bet exceeds the max available for this odds'
-        );
-        return true;
+        return {
+          checkError: true,
+          errorMessage: 'Your bet exceeds the max available for this odds'
+        }
       }
     }
-    modifyBetErrorMessage('');
+    const multipleOf = checkMultipleOfShares(wager, price, market);
+    if (multipleOf !== '') {
+      return {
+        checkError: true,
+        errorMessage: multipleOf
+      }
+    }
+    modifyBetErrorMessage(
+      ''
+    );
     return false;
   };
   return (
@@ -363,19 +376,29 @@ export const BetslipInput = ({
         ref={betslipInput}
         onChange={e => {
           const newVal = e.target.value.replace('$', '');
-          const checkError = errorCheck(newVal);
+          const {
+            checkError, 
+            errorMessage 
+          } = errorCheck(newVal);
           setInvalid(checkError);
           if (!checkError) {
-            modifyBet({ [valueKey]: newVal });
+            modifyBet({ [valueKey]: newVal, errorMessage: '' });
+          } else {
+            modifyBet({ [valueKey]: newVal, errorMessage });
           }
           setCurVal(newVal);
         }}
         value={`$${curVal}`}
         onBlur={() => {
-          const checkError = errorCheck(curVal);
+          const {
+            checkError, 
+            errorMessage 
+          } = errorCheck(curVal);
           setInvalid(checkError);
           if (!checkError) {
-            modifyBet({ [valueKey]: curVal });
+            modifyBet({ [valueKey]: curVal, errorMessage: '' });
+          } else {
+            modifyBet({ [valueKey]: curVal, errorMessage });
           }
           setCurVal(curVal);
         }}
