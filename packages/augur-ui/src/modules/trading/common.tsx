@@ -363,8 +363,12 @@ export const BetslipInput = ({
         ref={betslipInput}
         onChange={e => {
           const newVal = e.target.value.replace('$', '');
+          const checkError = errorCheck(newVal);
+          setInvalid(checkError);
+          if (!checkError) {
+            modifyBet({ [valueKey]: newVal });
+          }
           setCurVal(newVal);
-          setInvalid(errorCheck(newVal));
         }}
         value={`$${curVal}`}
         onBlur={() => {
