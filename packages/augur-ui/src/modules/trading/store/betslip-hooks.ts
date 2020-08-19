@@ -147,7 +147,6 @@ export function BetslipReducer(state, action) {
       break;
     }
     case SEND_BET: {
-      // TODO: make this real, for now immediately to matched.
       const { marketId, description, orderId, order } = action;
       if (!matchedItems[marketId]) {
         matchedItems[marketId] = {
