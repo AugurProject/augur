@@ -433,6 +433,8 @@ export function configFromEnvvars(): RecursivePartial<SDKConfiguration> {
   if (t(e.SERVER_WSS_PORT)) config = d(config, { server: { wssPort: Number(e.SERVER_WSS_PORT) }});
   if (t(e.SERVER_START_WSS)) config = d(config, { server: { startWSS: bool(e.SERVER_START_WSS) }});
 
+  if (t(e.PARA_DEPLOY)) config = d(config, { paraDeploy: e.PARA_DEPLOY });
+
   if (t(e.UPLOAD_BLOCK_NUMBER)) config = d(config, { uploadBlockNumber: Number(e.UPLOAD_BLOCK_NUMBER) });
 
   if (t(e.ADDRESSES)) config = d(config, { addresses: JSON.parse(e.ADDRESSES) });
