@@ -71,7 +71,7 @@ function updateBalances(
     ]);
 
 
-allPromises.then(async (amounts) => {
+  allPromises.then(async (amounts) => {
     const attoRep = String(amounts[0]);
     const dai = String(amounts[1]);
     const eth = amounts[2];

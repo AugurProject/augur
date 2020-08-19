@@ -135,11 +135,11 @@ const MyMarkets = ({
               <span>Market failed to create.</span>
               <div>
                 <SubmitTextButton
-                  text={'submit again'}
+                  text='submit again'
                   action={() => retrySubmitMarket(market)}
                 />
                 <CancelTextButton
-                  text={'cancel'}
+                  text='cancel'
                   action={() =>
                     removePendingData(market.pendingId, CREATE_MARKET)
                   }
