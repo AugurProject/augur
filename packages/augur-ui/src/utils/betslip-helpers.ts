@@ -1,4 +1,9 @@
-import { convertToNormalizedPrice, convertToWin, getWager } from './get-odds';
+import {
+  convertToNormalizedPrice,
+  convertToWin,
+  getWager,
+  getShares,
+} from './get-odds';
 import {
   INSUFFICIENT_FUNDS_ERROR,
   BUY,
@@ -16,6 +21,11 @@ import { createBigNumber } from './create-big-number';
 import { totalTradingBalance } from 'modules/auth/helpers/login-account';
 import { runSimulateTrade } from 'modules/trades/actions/update-trade-cost-shares';
 import { calcOrderShareProfitLoss } from 'modules/trades/helpers/calc-order-profit-loss-percents';
+import {
+  DEFAULT_TRADE_INTERVAL,
+  findMultipleOf,
+} from 'modules/trading/helpers/form-helpers';
+import { convertDisplayAmountToOnChainAmount } from '@augurproject/sdk';
 
 export const convertPositionToBet = (position, marketInfo) => {
   const avgPrice = position.priorPosition
@@ -64,8 +74,10 @@ const findProceeds = (realizedPercent, realizedCost, settlementFee) => {
 
   const bnRealizedPercentPlusOne = ONE.plus(bnRealizedPercent);
   const a = bnRealizedPercentPlusOne.times(bnRealizedCost);
-  const b = bnRealizedPercentPlusOne.times(bnRealizedCost).times(bnSettlementFee);
-  return (a).plus(b);
+  const b = bnRealizedPercentPlusOne
+    .times(bnRealizedCost)
+    .times(bnSettlementFee);
+  return a.plus(b);
 };
 
 const { FILLED, FAILED } = BET_STATUS;
@@ -295,4 +307,21 @@ export const getOrderShareProfitLoss = (bet, orderBooks, cb) => {
       );
     cb(orderShareProfitLoss?.potentialDaiProfit, smallestPrice, orderCost);
   });
+};
+
+export const checkMultipleOfShares = (wager, price, market) => {
+  const shares = getShares(wager, price);
+  let tradeInterval = DEFAULT_TRADE_INTERVAL;
+  if (
+    !convertDisplayAmountToOnChainAmount(
+      createBigNumber(shares),
+      createBigNumber(market.tickSize)
+    )
+      .mod(tradeInterval)
+      .isEqualTo(0)
+  ) {
+    const multipleOf = findMultipleOf(market);
+    return `Quantity needs to be a multiple of ${multipleOf}`;
+  }
+  return '';
 };

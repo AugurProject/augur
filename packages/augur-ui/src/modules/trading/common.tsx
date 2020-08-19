@@ -37,6 +37,7 @@ import {
   MODAL_CANCEL_ALL_BETS,
   MODAL_SIGNUP,
 } from 'modules/common/constants';
+import { checkMultipleOfShares } from 'utils/betslip-helpers';
 
 export interface EmptyStateProps {
   selectedTab: number;
@@ -94,7 +95,7 @@ export const SportsMarketBets = ({ market }) => {
       <h4>{description}</h4>
       <>
         {bets.map(bet => (
-          <SportsBet key={bet.orderId} bet={bet} />
+          <SportsBet key={bet.orderId} bet={bet} market={marketInfos[marketId]}/>
         ))}
       </>
     </div>
@@ -131,7 +132,7 @@ export const SportsMarketMyBets = ({ market }) => {
   );
 };
 
-export const SportsBet = ({ bet }) => {
+export const SportsBet = ({ bet, market }) => {
   const { step } = useBetslipStore();
   const {
     actions: { setModal },
@@ -149,6 +150,7 @@ export const SportsBet = ({ bet }) => {
     errorMessage,
     selfTrade,
     insufficientFunds,
+    price
   } = bet;
   const { liquidityPools } = useMarketsStore();
   const checkWager = wager => {
@@ -166,6 +168,13 @@ export const SportsBet = ({ bet }) => {
           checkError: true,
           errorMessage: 'Your bet exceeds the max available for this odds'
         }
+      }
+    }
+    const multipleOf = checkMultipleOfShares(wager, price, market);
+    if (multipleOf !== '') {
+      return {
+        checkError: true,
+        errorMessage: multipleOf
       }
     }
     modifyBetErrorMessage(
