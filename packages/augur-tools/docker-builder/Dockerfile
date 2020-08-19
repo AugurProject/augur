@@ -29,7 +29,7 @@ COPY . /augur
 WORKDIR /augur
 
 
-RUN yarn install --frozen-lockfile --ignore-scripts && yarn build
+RUN yarn install --frozen-lockfile && yarn build
 
 RUN bash /augur/packages/augur-tools/docker-builder/run-geth-and-deploy.sh
 

@@ -1,7 +1,6 @@
 import { WSClient } from '@0x/mesh-rpc-client';
 import { buildConfig } from '@augurproject/artifacts';
 import { SDKConfiguration } from '@augurproject/utils';
-import { sleep } from '@augurproject/core/build/libraries/HelperFunctions';
 import { EthersProvider } from '@augurproject/ethersjs-provider';
 import { Connectors } from '@augurproject/sdk';
 import { ACCOUNTS } from '@augurproject/tools';
@@ -15,22 +14,14 @@ import { ZeroXOrders, ZeroXOrder } from '@augurproject/sdk-lite';
 
 describe('3rd Party :: ZeroX :: ', () => {
   let john: TestContractAPI;
-  let mary: TestContractAPI;
 
   let meshClient: WSClient;
   let providerJohn: EthersProvider;
-  let providerMary: EthersProvider;
   let config: SDKConfiguration;
 
   beforeAll(async () => {
     config = buildConfig('local');
     providerJohn = new EthersProvider(
-      new JsonRpcProvider(config.ethereum.http),
-      config.ethereum.rpcRetryCount,
-      config.ethereum.rpcRetryInterval,
-      config.ethereum.rpcConcurrency
-    );
-    providerMary = new EthersProvider(
       new JsonRpcProvider(config.ethereum.http),
       config.ethereum.rpcRetryCount,
       config.ethereum.rpcRetryInterval,
