@@ -21,27 +21,28 @@ import {
     Cash,
     ProfitLoss,
     SimulateTrade,
-} from "./ContractInterfaces";
+} from './ContractInterfaces';
 import { Contracts, ContractData } from './Contracts';
 import { Dependencies } from './GenericContractInterfaces';
 import { ParaAddresses, SDKConfiguration, mergeConfig } from '@augurproject/utils';
-import { updateConfig } from "@augurproject/artifacts";
+import { updateConfig } from '@augurproject/artifacts';
 import { TRADING_CONTRACTS } from './constants';
+import { Block, BlockTag } from 'ethers/providers/abstract-provider';
 
-const NULL_ADDRESS = "0x0000000000000000000000000000000000000000";
+const NULL_ADDRESS = '0x0000000000000000000000000000000000000000';
+
+export interface BlockGetter {
+    getBlock(blockHashOrBlockTag: BlockTag | string | Promise<BlockTag | string>, includeTransactions?: boolean): Promise<Block>;
+}
 
 export class ParaContractDeployer {
-    private readonly configuration: SDKConfiguration;
     private readonly contracts: Contracts;
-    private readonly dependencies: Dependencies<BigNumber>;
-    private readonly provider: ethers.providers.JsonRpcProvider;
-    private readonly signer: ethers.Signer;
     augur: ParaAugur|null = null;
     augurTrading: ParaAugurTrading|null = null;
     universe: ParaUniverse|null = null;
     cashAddress: string = null;
 
-    static deployToNetwork = async (env: string, config: SDKConfiguration, dependencies: Dependencies<BigNumber>, provider: ethers.providers.JsonRpcProvider,signer: ethers.Signer, cashAddress: string) => {
+    static deployToNetwork = async (env: string, config: SDKConfiguration, dependencies: Dependencies<BigNumber>, provider: BlockGetter, signer: ethers.Signer, cashAddress: string) => {
         const compilerOutput = JSON.parse(await readFile(config.deploy.contractInputPath, 'utf8'));
         const contractDeployer = new ParaContractDeployer(config, dependencies, provider, signer, compilerOutput);
 
@@ -52,11 +53,13 @@ Deploying to: ${env}
         await contractDeployer.deploy(env, cashAddress);
     };
 
-    constructor(configuration: SDKConfiguration, dependencies: Dependencies<BigNumber>, provider: ethers.providers.JsonRpcProvider, signer: ethers.Signer, compilerOutput: CompilerOutput) {
-        this.configuration = configuration;
-        this.dependencies = dependencies;
-        this.provider = provider;
-        this.signer = signer;
+    constructor(
+        private readonly configuration: SDKConfiguration,
+        private readonly dependencies: Dependencies<BigNumber>,
+        private readonly provider: BlockGetter,
+        private readonly signer: ethers.Signer,
+        compilerOutput: CompilerOutput,
+    ) {
         this.contracts = new Contracts(compilerOutput);
 
         if (!configuration.deploy) {
@@ -193,8 +196,8 @@ Deploying to: ${env}
 
     private async upload(contract: ContractData): Promise<void> {
         let contractName = contract.contractName;
-        if (contractName === "ParaShareToken") contractName = "ShareToken";
-        if (contractName === "ParaZeroXTrade") contractName = "ZeroXTrade";
+        if (contractName === 'ParaShareToken') contractName = 'ShareToken';
+        if (contractName === 'ParaZeroXTrade') contractName = 'ZeroXTrade';
         console.log(`Uploading new version of contract for ${contractName}`);
         contract.address = await this.uploadAndAddToAugur(contract, contractName, []);
     }
@@ -302,7 +305,7 @@ Deploying to: ${env}
             },
             async () => {
                 const contract = new ParaZeroXTrade(this.dependencies, await this.getContractAddress('ParaZeroXTrade'));
-                console.log("Checking ZeroXTrade for initialized status");
+                console.log('Checking ZeroXTrade for initialized status');
                 if (await contract.getInitialized_()) {
                     return;
                 }

@@ -119,7 +119,7 @@ export interface SDKConfiguration {
     liteProvider?: 'jsonrpc' | 'default',
     primaryProvider?: 'jsonrpc' | 'wallet'
   }
-};
+}
 
 export interface TradingAddresses {
   AugurTrading: string;
