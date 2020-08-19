@@ -463,6 +463,10 @@ div.Onboarding {
     > main {
       padding: @size-24;
 
+      > div > .OrdersHeader > span {
+        .text-10-semi-bold;
+      }
+
       > p {
         margin-bottom: @size-8;
       }
@@ -486,7 +490,12 @@ div.Onboarding {
         > section {
           margin-bottom: 0;
           border-bottom: 0;
-          border-radius: @border-radius-rounded;
+
+          > div {
+            padding: @size-10 @size-24;
+            height: unset;
+            background: transparent;
+          }
         }
       }
     }
