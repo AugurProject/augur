@@ -3,6 +3,7 @@ packages/*/venv
 **/*.pyc
 node_modules
 
+tsconfig.tsbuildinfo
 .git
 
 packages/orbit-web/*
