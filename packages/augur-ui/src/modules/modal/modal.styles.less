@@ -463,9 +463,15 @@ div.Onboarding {
     > main {
       padding: @size-24;
 
-      > div > .OrdersHeader > span {
-        .text-10-semi-bold;
+      > div > .OrdersHeader {
+        > span:nth-of-type(2) {
+          display: none;
+        }
+        > span {
+          .text-10-semi-bold;
+        }
       }
+      
 
       > p {
         margin-bottom: @size-8;
@@ -1649,8 +1655,23 @@ div.ButtonsRow:last-of-type {
           flex: 1 0 @size-104;
 
           > button:first-of-type {
+            .text-10-semi-bold;
+
+            text-transform: uppercase;
             margin-left: auto;
-            margin-right: @size-16;
+            margin-right: @size-28;
+            display: flex;
+            align-items: center;
+
+            > svg {
+              width: @size-16;
+              height: @size-18;
+              margin-right: @size-6;
+
+              > path {
+                stroke:black;
+              }
+            }
           }
         }
       }
