@@ -201,12 +201,7 @@ const MyMarkets = ({
               action={() => null}
             />
           </Link>
-        ) : (
-          <SecondaryButton
-            text="Go to trading"
-            action={() => setTheme(THEMES.TRADING)}
-          />
-        )
+        ) : null
       }
     />
   );
