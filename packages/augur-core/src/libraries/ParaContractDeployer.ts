@@ -205,12 +205,12 @@ Deploying to: ${env}
     private async uploadAndAddToAugur(contract: ContractData, registrationContractName: string = contract.contractName, constructorArgs: any[] = []): Promise<string> {
         if (TRADING_CONTRACTS.includes(registrationContractName)) {
             const alreadyRegisteredAddress = await this.augurTrading!.lookup_(stringTo32ByteHex(registrationContractName));
-            if (alreadyRegisteredAddress != NULL_ADDRESS) {
+            if (alreadyRegisteredAddress !== NULL_ADDRESS) {
                 return alreadyRegisteredAddress;
             }
         } else {
             const alreadyRegisteredAddress = await this.augur!.lookup_(stringTo32ByteHex(registrationContractName));
-            if (alreadyRegisteredAddress != NULL_ADDRESS) {
+            if (alreadyRegisteredAddress !== NULL_ADDRESS) {
                 return alreadyRegisteredAddress;
             }
         }
@@ -380,7 +380,7 @@ Deploying to: ${env}
             Orders: this.contracts.get('Orders').address!,
             Trade: this.contracts.get('Trade').address!,
             SimulateTrade: this.contracts.get('SimulateTrade').address!,
-            ZeroXTrade: this.contracts.get('ZeroXTrade').address!,
+            ZeroXTrade: this.contracts.get('ParaZeroXTrade').address!,
             ProfitLoss: this.contracts.get('ProfitLoss').address!
         };
 

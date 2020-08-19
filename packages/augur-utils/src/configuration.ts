@@ -38,7 +38,7 @@ export interface SDKConfiguration {
       addresses: ParaAddresses
     }
   }
-  paraDeploy?: string;
+  paraDeploy?: string; // cashAddress of paraDeploy to use instead of base augur deploy
   averageBlocktime?: number,
   logLevel?: LoggerLevels, // In the JSON configs an integer will need to be used.
   ethereum?: {
