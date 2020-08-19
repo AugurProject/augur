@@ -22,6 +22,7 @@ import { selectAuthorOwnedMarkets } from 'modules/markets/selectors/user-markets
 
 import Styles from 'modules/portfolio/components/common/quad.styles.less';
 import marketStyles from 'modules/portfolio/components/markets/markets.styles.less';
+import { useMarketsStore } from 'modules/markets/store/markets';
 
 const sortByOptions = [
   {
@@ -82,6 +83,7 @@ const MyMarkets = ({
   const isTrading = theme === THEMES.TRADING;
   const disputingWindowEndTime = disputeWindow?.endTime || 0;
   const myMarkets = selectAuthorOwnedMarkets();
+  const { marketInfos } = useMarketsStore();
 
   function renderRightContent(market) {
     return (
