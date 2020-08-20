@@ -9,13 +9,13 @@ def test_fee_pot_staking(contractsFixture, universe, reputationToken, cash):
     bob = contractsFixture.accounts[0]
     alice = contractsFixture.accounts[1]
 
-    rewardsToken = contractsFixture.upload('../src/contracts/Cash.sol', "rewardsToken")
+    rewardsToken = contractsFixture.upload('../src/contracts/gov/GovToken.sol', "rewardsToken", constructorArgs=[bob])
 
     feePot = contractsFixture.getFeePot(universe)
     stakingContract = contractsFixture.upload('../src/contracts/gov/FeePotStakingRewards.sol', constructorArgs=[bob, bob, rewardsToken.address, feePot.address])
-    rewardsToken.faucet(10**18)
-    rewardsToken.transfer(stakingContract.address, 10**18)
-    stakingContract.notifyRewardAmount(10**18)
+    rewardSupply = 10**18
+    rewardsToken.setMintAllowance(stakingContract.address, rewardSupply)
+    stakingContract.notifyRewardAmount(rewardSupply)
 
     reputationToken.faucet(100, sender=bob)
     reputationToken.faucet(100, sender=alice)
@@ -113,13 +113,13 @@ def test_double_stake(contractsFixture, universe, reputationToken, cash):
     bob = contractsFixture.accounts[0]
     alice = contractsFixture.accounts[1]
 
-    rewardsToken = contractsFixture.upload('../src/contracts/Cash.sol', "rewardsToken")
+    rewardsToken = contractsFixture.upload('../src/contracts/gov/GovToken.sol', "rewardsToken", constructorArgs=[bob])
 
     feePot = contractsFixture.getFeePot(universe)
     stakingContract = contractsFixture.upload('../src/contracts/gov/FeePotStakingRewards.sol', constructorArgs=[bob, bob, rewardsToken.address, feePot.address])
-    rewardsToken.faucet(10**18)
-    rewardsToken.transfer(stakingContract.address, 10**18)
-    stakingContract.notifyRewardAmount(10**18)
+    initialSupply = 10**18
+    rewardsToken.setMintAllowance(stakingContract.address, initialSupply)
+    stakingContract.notifyRewardAmount(initialSupply)
 
     reputationToken.faucet(100, sender=bob)
     reputationToken.faucet(100, sender=alice)
@@ -165,13 +165,13 @@ def test_exit_partial(contractsFixture, universe, reputationToken, cash):
     bob = contractsFixture.accounts[0]
     alice = contractsFixture.accounts[1]
 
-    rewardsToken = contractsFixture.upload('../src/contracts/Cash.sol', "rewardsToken")
+    rewardsToken = contractsFixture.upload('../src/contracts/gov/GovToken.sol', "rewardsToken", constructorArgs=[bob])
 
     feePot = contractsFixture.getFeePot(universe)
     stakingContract = contractsFixture.upload('../src/contracts/gov/FeePotStakingRewards.sol', constructorArgs=[bob, bob, rewardsToken.address, feePot.address])
-    rewardsToken.faucet(10**18)
-    rewardsToken.transfer(stakingContract.address, 10**18)
-    stakingContract.notifyRewardAmount(10**18)
+    initialSupply = 10**18
+    rewardsToken.setMintAllowance(stakingContract.address, initialSupply)
+    stakingContract.notifyRewardAmount(initialSupply)
 
     reputationToken.faucet(100, sender=bob)
     reputationToken.faucet(100, sender=alice)

@@ -245,7 +245,7 @@ class ContractsFixture:
             elif (contractSize >= CONTRACT_SIZE_WARN_LEVEL):
                 print('%sContract %s is under size limit by only %d bytes%s' % (bcolors.WARN, name, CONTRACT_SIZE_LIMIT - contractSize, bcolors.ENDC))
             elif (contractSize > 0):
-                pass#print('Size: %i' % contractSize)
+                print('Contract %s Size: %i' % (name, contractSize))
             ContractsFixture.compiledCode[name] = compiledCode
             return(compiledCode)
 
