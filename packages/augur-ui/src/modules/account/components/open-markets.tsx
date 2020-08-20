@@ -35,10 +35,13 @@ const OpenMarkets = ({ toggle }: OpenMarketsProps) => {
   }: LoginAcccountPositionsMarketsInfo = getLoginAccountPositionsMarkets();
   const { theme } = useAppStatusStore();
   const isTrading = theme === THEMES.TRADING;
-
   let customClass = Styles.OpenMarkets;
   if (!isTrading && markets.length === 0) {
     customClass = Styles.OpenMarketsEmptyDisplay;
+  }
+  let marketsToShow = markets;
+  if (theme === THEMES.SPORTS) {
+    marketsToShow = marketsToShow.filter(market => !!market?.sportsBook?.groupId);
   }
 
   function renderRows(market: Partial<MarketData>) {
@@ -91,7 +94,7 @@ const OpenMarkets = ({ toggle }: OpenMarketsProps) => {
       filterLabel="markets"
       title="My Active Markets"
       showFilterSearch
-      data={markets}
+      data={marketsToShow}
       customClass={customClass}
       filterComp={filterComp}
       noBackgroundBottom

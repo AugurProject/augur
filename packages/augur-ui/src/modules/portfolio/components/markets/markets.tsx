@@ -80,9 +80,10 @@ const MyMarkets = ({ toggle, hide, extend }: MyMarketsProps) => {
   } = useAppStatusStore();
   const isTrading = theme === THEMES.TRADING;
   const disputingWindowEndTime = disputeWindow?.endTime || 0;
-  const myMarkets = selectAuthorOwnedMarkets();
-  const { marketInfos } = useMarketsStore();
-
+  let myMarkets = selectAuthorOwnedMarkets();
+  if (theme === THEMES.SPORTS) {
+    myMarkets = myMarkets.filter(market => !!market?.sportsBook?.groupId);
+  }
   function renderRightContent(market) {
     return (
       <>
