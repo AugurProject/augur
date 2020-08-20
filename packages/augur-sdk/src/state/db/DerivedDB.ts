@@ -119,11 +119,12 @@ export class DerivedDB extends RollbackTable {
     highestSyncedBlockNumber: number,
     eventName: string
   ): Promise<BaseDocument[]> {
-    return this.stateDB.dexieDB[eventName]
+    const logs = await this.stateDB.dexieDB[eventName]
       .where('blockNumber')
       .aboveOrEqual(highestSyncedBlockNumber)
-      .toArray()
-      .filter((log) => this.paraDeploy ? typeof log.para === 'string' : typeof log.para === 'undefined');
+      .toArray();
+
+    return logs.filter((log) => this.paraDeploy ? typeof log.para === 'string' : typeof log.para === 'undefined');
   }
 
   // For a group of documents/logs for a particular event type get the latest per id and update the DB documents for the corresponding ids
