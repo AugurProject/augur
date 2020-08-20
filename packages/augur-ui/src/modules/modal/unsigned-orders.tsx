@@ -20,7 +20,7 @@ import {
   BulkTxLabel,
   ModalLabelNotice,
 } from 'modules/common/labels';
-import { BUY, MAX_BULK_ORDER_COUNT } from 'modules/common/constants';
+import { BUY, MAX_BULK_ORDER_COUNT, THEMES } from 'modules/common/constants';
 import { formatDai, formatMarketShares } from 'utils/format-number';
 import Styles from 'modules/modal/modal.styles.less';
 import OpenOrdersTable from 'modules/market/components/market-orders-positions-table/open-orders-table';
@@ -30,6 +30,7 @@ import { DISMISSABLE_NOTICE_BUTTON_TYPES } from 'modules/reporting/common';
 import { useAppStatusStore } from 'modules/app/store/app-status';
 import { usePendingOrdersStore } from 'modules/app/store/pending-orders';
 import { sendLiquidityOrder } from 'modules/orders/actions/liquidity-management';
+import { Trash } from 'modules/common/icons';
 
 interface UnsignedOrdersProps {
   closeAction: Function;
@@ -72,7 +73,8 @@ const orderRow = (
     zeroXEnabled,
   }: UnsignedOrdersProps
 ) => {
-  const { loginAccount } = useAppStatusStore();
+  const { loginAccount, theme } = useAppStatusStore();
+  const isTrading = theme === THEMES.TRADING;
   const {
     actions: { removeLiquidity },
   } = usePendingOrdersStore();
@@ -121,7 +123,7 @@ const orderRow = (
   return (
     <div key={`${outcomeName}-${price}-${index}`}>
       <span>{outcomeName}</span>
-      <span className={type === BUY ? Styles.bid : Styles.ask}>{type}</span>
+      {isTrading && <span className={type === BUY ? Styles.bid : Styles.ask}>{type}</span>}
       <span>{formatMarketShares(marketType, quantity).formatted}</span>
       <span>{formatDai(Number(price)).formatted}</span>
       <span>{formatDai(Number(orderEstimate)).formatted}</span>
@@ -129,15 +131,29 @@ const orderRow = (
       <div>
         {buttons.map((Button: DefaultButtonProps, index: number) => {
           if (index === 0)
-            return (
+            return isTrading ? (
               <CancelTextButton
                 key={Button.text}
                 {...Button}
                 disabled={status && status !== TXEventName.Failure}
               />
+            ) : (
+              <button
+                key={Button.text}
+                disabled={status && status !== TXEventName.Failure}
+                onClick={() => Button.action}
+              >
+                {Trash} {Button.text}
+              </button>
             );
-          return (
+          return isTrading ? (
             <SubmitTextButton
+              key={Button.text}
+              {...Button}
+              disabled={status && status !== TXEventName.Failure}
+            />
+          ) : (
+            <CancelTextButton
               key={Button.text}
               {...Button}
               disabled={status && status !== TXEventName.Failure}
