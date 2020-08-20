@@ -312,7 +312,7 @@ export const getOrderShareProfitLoss = (bet, orderBooks, cb) => {
 
 export const checkMultipleOfShares = (wager, price, market) => {
   const shares = getShares(wager, price);
-  let tradeInterval = DEFAULT_TRADE_INTERVAL;
+  const tradeInterval = DEFAULT_TRADE_INTERVAL;
   if (
     !convertDisplayAmountToOnChainAmount(
       createBigNumber(shares),
@@ -322,7 +322,7 @@ export const checkMultipleOfShares = (wager, price, market) => {
       .isEqualTo(0)
   ) {
     const multipleOf = findMultipleOf(market);
-    return `Quantity needs to be a multiple of ${multipleOf}`;
+    return `Quantity must be a multiple of ${multipleOf}. cur: ${shares}`;
   }
   return '';
 };
