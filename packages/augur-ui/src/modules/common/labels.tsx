@@ -40,6 +40,7 @@ import {
   MODAL_INVALID_MARKET_RULES,
   GWEI_CONVERSION,
   AUTO_ETH_REPLENISH,
+  BUY,
 } from 'modules/common/constants';
 import { useAppStatusStore, AppStatus } from 'modules/app/store/app-status';
 import { ViewTransactionDetailsButton } from 'modules/common/buttons';
@@ -327,6 +328,14 @@ export const RedFlag = ({ market }: RedFlagProps) => {
     </>
   ) : null;
 };
+
+interface TypeLabelProps {
+  type: string;
+}
+
+export const TypeLabel = ({type}: TypeLabelProps) => (
+  <span className={classNames(Styles.TypeLabel, {[Styles.Ask]: type !== BUY})}>{type}</span>
+);
 
 interface TemplateShieldProps {
   market: Getters.Markets.MarketInfo;
