@@ -24,6 +24,7 @@
     "test:coverage": "node --max-old-space-size=12288 src/tools/generateCoverageReport.js",
     "deploy:net": "bash src/support/deploy/run.sh direct",
     "deploy:para:net": "bash src/support/deployPara/run.sh direct",
+    "deploy:gov:net": "bash src/support/deployGov/run.sh direct",
     "deploy:local": "npm run deploy:net -- environment",
     "deploy:aura": "npm run deploy:net -- aura",
     "deploy:clique": "npm run deploy:net -- clique",
@@ -35,6 +36,9 @@
     "deploy:para:local": "npm run deploy:para:net -- environment",
     "deploy:para:mainnet": "npm run deploy:para:net -- mainnet",
     "deploy:para:ropsten": "npm run deploy:para:net -- ropsten",
+    "deploy:gov:local": "npm run deploy:gov:net -- environment",
+    "deploy:gov:mainnet": "npm run deploy:gov:net -- mainnet",
+    "deploy:gov:ropsten": "npm run deploy:gov:net -- ropsten",
     "deploy": "npm run deploy:net -- aura clique rinkeby",
     "verifyDeployment": "node -r ts-node/register src/deployment/verifyDeployment.ts",
     "docker:build": "docker build --cache-from augurproject/augur-core:monorepo --tag augurproject/augur-core:monorepo -f src/support/Dockerfile ./../..",
@@ -81,7 +85,7 @@
     "path": "0.12.7"
   },
   "devDependencies": {
-    "@augurproject/solidity-typescript-generator": "1.1.13",
+    "@augurproject/solidity-typescript-generator": "1.1.14",
     "@types/chai": "4.2.3",
     "@types/mkdirp": "0.5.2",
     "@types/node": "10.14.18",

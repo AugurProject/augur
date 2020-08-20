@@ -30,8 +30,7 @@ def test_gov(contractsFixture, universe, reputationToken, cash):
     govToken = contractsFixture.upload("../src/contracts/gov/GovToken.sol", constructorArgs=[deployer])
 
     # Deploy Timelock
-    delay = 2 * 24 * 60 * 60
-    timelock = contractsFixture.upload("../src/contracts/gov/Timelock.sol", constructorArgs=[deployer, delay])
+    timelock = contractsFixture.upload("../src/contracts/gov/Timelock.sol", constructorArgs=[deployer])
 
     # Deploy a FeePotStakingContract for S_REP (Fee Pot Tokens)
     feePotStakingContract = contractsFixture.upload("../src/contracts/gov/FeePotStakingRewards.sol", constructorArgs=[deployer, deployer, govToken.address, feePot.address])

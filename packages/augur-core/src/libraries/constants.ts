@@ -57,6 +57,11 @@ export const INTERNAL_CONTRACTS = [
     'OINexus',
     'ParaAugurTrading',
     'ParaZeroXTrade',
+    // Gov
+    'Governance',
+    'GovToken',
+    'Timelock',
+    'FeePotStakingRewards',
 ];
 
 export const TRADING_CONTRACTS = [

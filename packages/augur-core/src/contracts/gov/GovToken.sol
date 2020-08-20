@@ -2,37 +2,40 @@ pragma solidity 0.5.15;
 pragma experimental ABIEncoderV2;
 
 import 'ROOT/libraries/Ownable.sol';
+import 'ROOT/libraries/math/SafeMathUint256.sol';
 
 
 contract GovToken is Ownable {
+    using SafeMathUint256 for uint256;
+
     /// @notice EIP-20 token name for this token
     string public constant name = "Augur Governance Token";
 
     /// @notice EIP-20 token symbol for this token
-    string public constant symbol = "GOV";
+    string public constant symbol = "GREP";
 
     /// @notice EIP-20 token decimals for this token
     uint8 public constant decimals = 18;
 
     /// @notice Total number of tokens in circulation
-    uint96 public totalSupply;
+    uint256 public totalSupply;
 
     /// @notice Allowance amounts on behalf of others
-    mapping (address => mapping (address => uint96)) internal allowances;
+    mapping (address => mapping (address => uint256)) internal allowances;
 
     /// @notice Official record of token balances for each account
-    mapping (address => uint96) internal balances;
+    mapping (address => uint256) internal balances;
 
     /// @notice A record of each accounts delegate
     mapping (address => address) public delegates;
 
     /// @notice Mapping from address to minting allowance
-    mapping (address => uint96) public mintAlowance;
+    mapping (address => uint256) public mintAlowance;
 
     /// @notice A checkpoint for marking number of votes from a given block
     struct Checkpoint {
         uint32 fromBlock;
-        uint96 votes;
+        uint256 votes;
     }
 
     /// @notice A record of votes checkpoints for each account, by index
@@ -54,7 +57,7 @@ contract GovToken is Ownable {
     event DelegateChanged(address indexed delegator, address indexed fromDelegate, address indexed toDelegate);
 
     /// @notice An event thats emitted when a delegate account's vote balance changes
-    event DelegateVotesChanged(address indexed delegate, uint previousBalance, uint newBalance);
+    event DelegateVotesChanged(address indexed delegate, uint256 previousBalance, uint256 newBalance);
 
     /// @notice The standard EIP-20 transfer event
     event Transfer(address indexed from, address indexed to, uint256 amount);
@@ -67,7 +70,7 @@ contract GovToken is Ownable {
      * @param account The initial account to grant all the tokens
      */
     constructor(address account) public {
-        balances[account] = uint96(totalSupply);
+        balances[account] = totalSupply;
         owner = account;
         emit Transfer(address(0), account, totalSupply);
     }
@@ -87,20 +90,12 @@ contract GovToken is Ownable {
      * @dev This will overwrite the approval amount for `spender`
      *  and is subject to issues noted [here](https://eips.ethereum.org/EIPS/eip-20#approve)
      * @param spender The address of the account which may transfer tokens
-     * @param rawAmount The number of tokens that are approved (2^256-1 means infinite)
      * @return Whether or not the approval succeeded
      */
-    function approve(address spender, uint rawAmount) external returns (bool) {
-        uint96 amount;
-        if (rawAmount == uint(-1)) {
-            amount = uint96(-1);
-        } else {
-            amount = safe96(rawAmount, "Gov::approve: amount exceeds 96 bits");
-        }
+    function approve(address spender, uint256 _amount) external returns (bool) {
+        allowances[msg.sender][spender] = _amount;
 
-        allowances[msg.sender][spender] = amount;
-
-        emit Approval(msg.sender, spender, amount);
+        emit Approval(msg.sender, spender, _amount);
         return true;
     }
 
@@ -116,12 +111,11 @@ contract GovToken is Ownable {
     /**
      * @notice Transfer `amount` tokens from `msg.sender` to `dst`
      * @param dst The address of the destination account
-     * @param rawAmount The number of tokens to transfer
+     * @param _amount The number of tokens to transfer
      * @return Whether or not the transfer succeeded
      */
-    function transfer(address dst, uint rawAmount) external returns (bool) {
-        uint96 amount = safe96(rawAmount, "Gov::transfer: amount exceeds 96 bits");
-        _transferTokens(msg.sender, dst, amount);
+    function transfer(address dst, uint256 _amount) external returns (bool) {
+        _transferTokens(msg.sender, dst, _amount);
         return true;
     }
 
@@ -129,22 +123,21 @@ contract GovToken is Ownable {
      * @notice Transfer `amount` tokens from `src` to `dst`
      * @param src The address of the source account
      * @param dst The address of the destination account
-     * @param rawAmount The number of tokens to transfer
+     * @param _amount The number of tokens to transfer
      * @return Whether or not the transfer succeeded
      */
-    function transferFrom(address src, address dst, uint rawAmount) external returns (bool) {
+    function transferFrom(address src, address dst, uint256 _amount) external returns (bool) {
         address spender = msg.sender;
-        uint96 spenderAllowance = allowances[src][spender];
-        uint96 amount = safe96(rawAmount, "Gov::approve: amount exceeds 96 bits");
+        uint256 spenderAllowance = allowances[src][spender];
 
-        if (spender != src && spenderAllowance != uint96(-1)) {
-            uint96 newAllowance = sub96(spenderAllowance, amount, "Gov::transferFrom: transfer amount exceeds spender allowance");
+        if (spender != src) {
+            uint256 newAllowance = spenderAllowance.sub(_amount);
             allowances[src][spender] = newAllowance;
 
             emit Approval(src, spender, newAllowance);
         }
 
-        _transferTokens(src, dst, amount);
+        _transferTokens(src, dst, _amount);
         return true;
     }
 
@@ -165,7 +158,7 @@ contract GovToken is Ownable {
      * @param r Half of the ECDSA signature pair
      * @param s Half of the ECDSA signature pair
      */
-    function delegateBySig(address delegatee, uint nonce, uint expiry, uint8 v, bytes32 r, bytes32 s) public {
+    function delegateBySig(address delegatee, uint256 nonce, uint256 expiry, uint8 v, bytes32 r, bytes32 s) public {
         bytes32 domainSeparator = keccak256(abi.encode(DOMAIN_TYPEHASH, keccak256(bytes(name)), getChainId(), address(this)));
         bytes32 structHash = keccak256(abi.encode(DELEGATION_TYPEHASH, delegatee, nonce, expiry));
         bytes32 digest = keccak256(abi.encodePacked("\x19\x01", domainSeparator, structHash));
@@ -181,7 +174,7 @@ contract GovToken is Ownable {
      * @param account The address to get votes balance
      * @return The number of current votes for `account`
      */
-    function getCurrentVotes(address account) external view returns (uint96) {
+    function getCurrentVotes(address account) external view returns (uint256) {
         uint32 nCheckpoints = numCheckpoints[account];
         return nCheckpoints > 0 ? checkpoints[account][nCheckpoints - 1].votes : 0;
     }
@@ -193,7 +186,7 @@ contract GovToken is Ownable {
      * @param blockNumber The block number to get the vote balance at
      * @return The number of votes the account had as of the given block
      */
-    function getPriorVotes(address account, uint blockNumber) public view returns (uint96) {
+    function getPriorVotes(address account, uint256 blockNumber) public view returns (uint256) {
         require(blockNumber < block.number, "Gov::getPriorVotes: not yet determined");
 
         uint32 nCheckpoints = numCheckpoints[account];
@@ -229,7 +222,7 @@ contract GovToken is Ownable {
 
     function _delegate(address delegator, address delegatee) internal {
         address currentDelegate = delegates[delegator];
-        uint96 delegatorBalance = balances[delegator];
+        uint256 delegatorBalance = balances[delegator];
         delegates[delegator] = delegatee;
 
         emit DelegateChanged(delegator, currentDelegate, delegatee);
@@ -237,36 +230,36 @@ contract GovToken is Ownable {
         _moveDelegates(currentDelegate, delegatee, delegatorBalance);
     }
 
-    function _transferTokens(address src, address dst, uint96 amount) internal {
+    function _transferTokens(address src, address dst, uint256 amount) internal {
         require(src != address(0), "Gov::_transferTokens: cannot transfer from the zero address");
         require(dst != address(0), "Gov::_transferTokens: cannot transfer to the zero address");
 
-        balances[src] = sub96(balances[src], amount, "Gov::_transferTokens: transfer amount exceeds balance");
-        balances[dst] = add96(balances[dst], amount, "Gov::_transferTokens: transfer amount overflows");
+        balances[src] = balances[src].sub(amount);
+        balances[dst] = balances[dst].add(amount);
         emit Transfer(src, dst, amount);
 
         _moveDelegates(delegates[src], delegates[dst], amount);
     }
 
-    function _moveDelegates(address srcRep, address dstRep, uint96 amount) internal {
+    function _moveDelegates(address srcRep, address dstRep, uint256 amount) internal {
         if (srcRep != dstRep && amount > 0) {
             if (srcRep != address(0)) {
                 uint32 srcRepNum = numCheckpoints[srcRep];
-                uint96 srcRepOld = srcRepNum > 0 ? checkpoints[srcRep][srcRepNum - 1].votes : 0;
-                uint96 srcRepNew = sub96(srcRepOld, amount, "Gov::_moveVotes: vote amount underflows");
+                uint256 srcRepOld = srcRepNum > 0 ? checkpoints[srcRep][srcRepNum - 1].votes : 0;
+                uint256 srcRepNew = srcRepOld.sub(amount);
                 _writeCheckpoint(srcRep, srcRepNum, srcRepOld, srcRepNew);
             }
 
             if (dstRep != address(0)) {
                 uint32 dstRepNum = numCheckpoints[dstRep];
-                uint96 dstRepOld = dstRepNum > 0 ? checkpoints[dstRep][dstRepNum - 1].votes : 0;
-                uint96 dstRepNew = add96(dstRepOld, amount, "Gov::_moveVotes: vote amount overflows");
+                uint256 dstRepOld = dstRepNum > 0 ? checkpoints[dstRep][dstRepNum - 1].votes : 0;
+                uint256 dstRepNew = dstRepOld.add(amount);
                 _writeCheckpoint(dstRep, dstRepNum, dstRepOld, dstRepNew);
             }
         }
     }
 
-    function _writeCheckpoint(address delegatee, uint32 nCheckpoints, uint96 oldVotes, uint96 newVotes) internal {
+    function _writeCheckpoint(address delegatee, uint32 nCheckpoints, uint256 oldVotes, uint256 newVotes) internal {
       uint32 blockNumber = safe32(block.number, "Gov::_writeCheckpoint: block number exceeds 32 bits");
 
       if (nCheckpoints > 0 && checkpoints[delegatee][nCheckpoints - 1].fromBlock == blockNumber) {
@@ -279,25 +272,9 @@ contract GovToken is Ownable {
       emit DelegateVotesChanged(delegatee, oldVotes, newVotes);
     }
 
-    function safe32(uint n, string memory errorMessage) internal pure returns (uint32) {
+    function safe32(uint256 n, string memory errorMessage) internal pure returns (uint32) {
         require(n < 2**32, errorMessage);
         return uint32(n);
-    }
-
-    function safe96(uint n, string memory errorMessage) internal pure returns (uint96) {
-        require(n < 2**96, errorMessage);
-        return uint96(n);
-    }
-
-    function add96(uint96 a, uint96 b, string memory errorMessage) internal pure returns (uint96) {
-        uint96 c = a + b;
-        require(c >= a, errorMessage);
-        return c;
-    }
-
-    function sub96(uint96 a, uint96 b, string memory errorMessage) internal pure returns (uint96) {
-        require(b <= a, errorMessage);
-        return a - b;
     }
 
     function getChainId() internal pure returns (uint) {
@@ -308,30 +285,30 @@ contract GovToken is Ownable {
 
     // Variable Supply Functions
 
-    function setMintAllowance(address _target, uint96 _mintAllowance) public onlyOwner returns (uint256) {
+    function setMintAllowance(address _target, uint256 _mintAllowance) public onlyOwner returns (uint256) {
          mintAlowance[_target] = _mintAllowance;
     }
 
-    function mint(address _target, uint96 _amount) public returns (bool) {
+    function mint(address _target, uint256 _amount) public returns (bool) {
         require(_target != address(0), "ERC20: mint to the zero address");
         address _owner = owner;
         require(msg.sender == _owner || mintAlowance[msg.sender] >= _amount);
 
-        totalSupply = add96(totalSupply, _amount, "Gov::mint: totalSupply overflows");
-        balances[_target] = add96(balances[_target], _amount, "Gov::mint: balance overflows");
+        totalSupply = totalSupply.add(_amount);
+        balances[_target] = balances[_target].add(_amount);
         if (msg.sender != _owner) {
-            mintAlowance[msg.sender] = sub96(mintAlowance[msg.sender], _amount, "Gov::mint mint Allowance underflows");
+            mintAlowance[msg.sender] = mintAlowance[msg.sender].sub(_amount);
         }
         _moveDelegates(address(0), delegates[_target], _amount);
         emit Transfer(address(0), _target, _amount);
         return true;
     }
 
-    function burn(address _target, uint96 _amount) public onlyOwner returns (bool) {
+    function burn(address _target, uint256 _amount) public onlyOwner returns (bool) {
         require(_target != address(0), "ERC20: burn from the zero address");
 
-        totalSupply = sub96(totalSupply, _amount, "Gov::burn: totalSupply underflows");
-        balances[_target] = sub96(balances[_target], _amount, "Gov::burn: balance underflows");
+        totalSupply = totalSupply.sub(_amount);
+        balances[_target] = balances[_target].sub(_amount);
         _moveDelegates(delegates[_target], address(0), _amount);
         emit Transfer(_target, address(0), _amount);
         return true;

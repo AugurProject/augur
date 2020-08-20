@@ -37,6 +37,10 @@ export interface SDKConfiguration {
       name: string,
       addresses: ParaAddresses
     }
+  },
+  governance?: {
+    uploadBlockNumber?: number,
+    addresses: GovernanceAddresses
   }
   paraDeploy?: string;
   averageBlocktime?: number,
@@ -190,6 +194,14 @@ export interface ParaAddresses extends TradingAddresses {
   ShareToken: string;
   Cash: string;
   OICash?: string;
+}
+
+export interface GovernanceAddresses {
+  GovToken: string;
+  Timelock: string;
+  Governance: string;
+  InitialStakingRewards: string;
+  FeePot: string;
 }
 
 export interface ExternalAddresses {
