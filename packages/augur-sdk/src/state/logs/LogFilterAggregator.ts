@@ -22,11 +22,6 @@ interface LogCallbackMetaData {
   onLogsAdded: LogCallbackType;
 }
 
-export interface LogFilterAggregatorDepsInterface {
-  getEventTopics: (eventName: string) => string[];
-  parseLogs: (logs: Log[]) => ParsedLog[];
-}
-
 type BlockRemovalCallback = (blockNumber: number) => void;
 
 export interface LogFilterAggregatorInterface {
@@ -63,16 +58,8 @@ export class LogFilterAggregator implements LogFilterAggregatorInterface {
   logCallbackMetaData: LogCallbackMetaData[] = [];
   blockRemovalCallback: BlockRemovalCallback[] = [];
 
-  constructor(private deps: LogFilterAggregatorDepsInterface) {}
-
-  static create(
-    getEventTopics: (eventName: string) => string[],
-    parseLogs: (logs: Log[]) => ParsedLog[],
-  ) {
-    return new LogFilterAggregator({
-      getEventTopics,
-      parseLogs,
-    });
+  static create() {
+    return new LogFilterAggregator();
   }
 
   notifyNewBlockAfterLogsProcess(onBlockAdded: LogCallbackType) {

@@ -140,6 +140,18 @@ export class Augur<TProvider extends Provider = Provider> {
         `Augur config must include addresses. Config=${JSON.stringify(config)}`
       );
 
+    let addresses;
+    if(config.paraDeploy) {
+      const paraDeployAddresses = config.paraDeploys[config.paraDeploy];
+      if(!paraDeployAddresses) throw new Error('Specified ParaDeploy doe not exist in config.');
+      addresses = {
+        ...config.addresses,
+        ...paraDeployAddresses
+      };
+    } else {
+      addresses = config.addresses;
+    }
+
     this.events = new EventNameEmitter();
     this.events.setMaxListeners(0);
     this.events.on(SubscriptionEventName.SDKReady, () => {
@@ -151,14 +163,13 @@ export class Augur<TProvider extends Provider = Provider> {
     if (this.zeroX) this.zeroX.client = this;
 
     // API
-    this.contracts = new Contracts(this.config.addresses, this.dependencies);
+    this.contracts = new Contracts(addresses, this.dependencies);
     this.market = new Market(this);
     this.liquidity = new Liquidity(this);
     this.contractEvents = new ContractEvents(
       this.provider,
-      this.config.addresses.Augur,
-      this.config.addresses.AugurTrading,
-      this.config.addresses.ShareToken
+      this.config.addresses,
+      this.config.paraDeploys
     );
     this.warpSync = new WarpSync(this);
     this.hotLoading = new HotLoading(this);

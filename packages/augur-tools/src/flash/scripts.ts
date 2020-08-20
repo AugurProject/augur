@@ -86,10 +86,10 @@ import {
   waitForSigint,
   waitForSync,
 } from './util';
+import { ParaContractDeployer } from '@augurproject/core/build/libraries/ParaContractDeployer';
+import { ContractDependenciesEthers } from '@augurproject/contract-dependencies-ethers';
 
 const compilerOutput = require('@augurproject/artifacts/build/contracts.json');
-
-const UNIVERSAL_RELAY_HUB_ADDRESS = '0xd216153c06e857cd7f72665e0af1d7d82172f494';
 
 export function addScripts(flash: FlashSession) {
   flash.addScript({
@@ -666,7 +666,7 @@ export function addScripts(flash: FlashSession) {
       }
       if (cat) {
         const numOutcomes = Number(args.numOutcomes);
-        if (numOutcomes === undefined) throw new Error(`numOutcomes is required for categorical market`);
+        if (numOutcomes === undefined) throw new Error('numOutcomes is required for categorical market');
         await createCatZeroXOrders(user, market, skipFaucetOrApproval, numOutcomes);
       }
       if (scalar) {
@@ -674,7 +674,7 @@ export function addScripts(flash: FlashSession) {
         const numTicks = new BigNumber(args.numTicks as string);
         const maxPrice = new BigNumber(args.maxPrice as string);
         const minPrice = new BigNumber(args.minPrice as string);
-        if (numTicks === undefined || maxPrice === undefined || minPrice === undefined) throw new Error(`numTicks, maxPrice and minPrice are required for scalar market`);
+        if (numTicks === undefined || maxPrice === undefined || minPrice === undefined) throw new Error('numTicks, maxPrice and minPrice are required for scalar market');
         await createScalarZeroXOrders(user, market, skipFaucetOrApproval, onInvalid, numTicks, minPrice, maxPrice);
       }
     },
@@ -1416,9 +1416,7 @@ export function addScripts(flash: FlashSession) {
 
       const contractEvents = new ContractEvents(
         this.provider,
-        this.config.addresses.Augur,
-        this.config.addresses.AugurTrading,
-        this.config.addresses.ShareToken,
+        this.config.addresses
       );
       let parsedLogs = contractEvents.parseLogs(logsWithBlockNumber);
 
@@ -1810,7 +1808,7 @@ export function addScripts(flash: FlashSession) {
       },
     ],
     async call(this: FlashSession, args: FlashArguments) {
-      const amount = args.amount ? String(args.amount) : "10";
+      const amount = args.amount ? String(args.amount) : '10';
       const user = await this.createUser(this.getAccount(), this.config);
       const attoAmount = new BigNumber(amount).times(_1_ETH);
       return user.simpleBuyParticipationTokens(attoAmount);
@@ -2691,5 +2689,38 @@ export function addScripts(flash: FlashSession) {
         const marketIds = await getMarketIds(user, num);
         console.log(`MARKET IDS: ${JSON.stringify(marketIds)}`);
       },
+    });
+
+    flash.addScript({
+      name: 'deploy-para-augur',
+      options: [
+        {
+          name: 'cash',
+          abbr: 'c',
+          description: 'address of ERC20 cash contract to point this para-augur at',
+          required: true,
+        }
+      ],
+      async call(this: FlashSession, args: FlashArguments) {
+        const cash = args.cash as string;
+
+        const provider = await providerFromConfig(this.config);
+        const signer = await makeSigner(this.accounts[0], provider);
+        const dependencies = new ContractDependenciesEthers(
+          provider,
+          signer,
+          signer.address
+        );
+        // const compilerOutput = JSON.parse(await readFile(config.deploy.contractInputPath, 'utf8'));
+
+        const deployer = new ParaContractDeployer(
+          this.config,
+          dependencies,
+          provider,
+          signer,
+          compilerOutput,
+        )
+        await deployer.deploy(this.network, cash);
+      }
     });
 }

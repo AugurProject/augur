@@ -233,23 +233,21 @@ module.exports = {
         return order.indexOf(b.names[0]) + order.indexOf(a.names[0]);
       },
     }),
-    new webpack.DefinePlugin({
-      'process.env': {
-        AUGUR_ENV: JSON.stringify(AUGUR_ENV),
-        AUTO_LOGIN: process.env.AUTO_LOGIN || false,
-        CURRENT_COMMITHASH: JSON.stringify(process.env.CURRENT_COMMITHASH),
-        CURRENT_VERSION: JSON.stringify(process.env.CURRENT_VERSION),
-        ETHEREUM_NETWORK: JSON.stringify(AUGUR_ENV),
-        IPFS_STABLE_LOADER_HASH: JSON.stringify(process.env.IPFS_STABLE_LOADER_HASH),
+    new webpack.EnvironmentPlugin({
+        AUGUR_ENV: null,
+        AUTO_LOGIN: false,
+        CURRENT_COMMITHASH: null,
+        CURRENT_VERSION: null,
+        ETHEREUM_NETWORK: AUGUR_ENV,
+        IPFS_STABLE_LOADER_HASH: null,
 
         // Set this var to remove code that is problematic for us to host.
         // Will need to be negated in the relevant conditionals.
-        AUGUR_HOSTED: process.env.AUGUR_HOSTED || false,
-        ENABLE_MAINNET: process.env.ENABLE_MAINNET || false,
-        REPORTING_ONLY: process.env.REPORTING_ONLY || false,
-
-        CONFIGURATION: serializeConfig(config)
-      },
+        AUGUR_HOSTED: false,
+        ENABLE_MAINNET: false,
+        REPORTING_ONLY: false,
+        CONFIGURATION: config,
+        PARA_DEPLOY_TOKEN_NAME: null,
     }),
   ],
   node: {

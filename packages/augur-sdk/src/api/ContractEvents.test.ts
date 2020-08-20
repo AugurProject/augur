@@ -35,7 +35,11 @@ test('get event topics', async () => {
   const eventTopic = 'foobarington';
   const provider = makeProviderMock({ eventTopic });
 
-  const contractEvents = new ContractEvents(provider, '0x0', '0x0', '0x0');
+  const contractEvents = new ContractEvents(provider, {
+    AugurTrading: '0x0',
+    Augur: '0x0',
+    ShareToken: '0x0'
+  }, {});
   const topics = await contractEvents.getEventTopics('foobar');
 
   expect(topics).toEqual([eventTopic]);

@@ -27,22 +27,24 @@ export function deepCopy<T>(x: T): T {
   return JSON.parse(JSON.stringify(x));
 }
 
+export interface ParaDeploys {
+  [cashAddress: string]: {
+    uploadBlockNumber?: number,
+    name: string,
+    addresses: ParaAddresses
+  };
+}
+
 export interface SDKConfiguration {
   networkId: NetworkId,
   uploadBlockNumber?: number,
   addresses?: ContractAddresses,
-  paraDeploys?: {
-    [cashAddress: string]: {
-      uploadBlockNumber?: number,
-      name: string,
-      addresses: ParaAddresses
-    }
-  },
+  paraDeploys?: ParaDeploys
+  paraDeploy?: string; // cashAddress of paraDeploy to use instead of base augur deploy
   governance?: {
     uploadBlockNumber?: number,
     addresses: GovernanceAddresses
   }
-  paraDeploy?: string;
   averageBlocktime?: number,
   logLevel?: LoggerLevels, // In the JSON configs an integer will need to be used.
   ethereum?: {
@@ -123,7 +125,7 @@ export interface SDKConfiguration {
     liteProvider?: 'jsonrpc' | 'default',
     primaryProvider?: 'jsonrpc' | 'wallet'
   }
-};
+}
 
 export interface TradingAddresses {
   AugurTrading: string;
@@ -444,6 +446,8 @@ export function configFromEnvvars(): RecursivePartial<SDKConfiguration> {
   if (t(e.SERVER_START_WS)) config = d(config, { server: { startWS: bool(e.SERVER_START_WS) }});
   if (t(e.SERVER_WSS_PORT)) config = d(config, { server: { wssPort: Number(e.SERVER_WSS_PORT) }});
   if (t(e.SERVER_START_WSS)) config = d(config, { server: { startWSS: bool(e.SERVER_START_WSS) }});
+
+  if (t(e.PARA_DEPLOY)) config = d(config, { paraDeploy: e.PARA_DEPLOY });
 
   if (t(e.UPLOAD_BLOCK_NUMBER)) config = d(config, { uploadBlockNumber: Number(e.UPLOAD_BLOCK_NUMBER) });
 
