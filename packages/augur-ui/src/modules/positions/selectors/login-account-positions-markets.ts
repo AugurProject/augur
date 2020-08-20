@@ -24,12 +24,13 @@ export default function() {
   }, {});
 
   const marketsPick = markets.map((
-    { id, description, reportingState, recentlyTraded }: any // when these things change then component will re-render/re-sort
+    { id, description, reportingState, recentlyTraded, sportsBook }: any // when these things change then component will re-render/re-sort
   ) => ({
     id,
     description,
     reportingState,
-    recentlyTraded
+    recentlyTraded,
+    sportsBook
   }));
 
   return {

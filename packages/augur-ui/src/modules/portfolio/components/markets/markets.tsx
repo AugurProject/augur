@@ -83,7 +83,6 @@ const MyMarkets = ({
   const isTrading = theme === THEMES.TRADING;
   const disputingWindowEndTime = disputeWindow?.endTime || 0;
   let myMarkets = selectAuthorOwnedMarkets();
-  const { marketInfos } = useMarketsStore();
   if (theme === THEMES.SPORTS) {
     myMarkets = myMarkets.filter(market => !!market?.sportsBook?.groupId);
   }
