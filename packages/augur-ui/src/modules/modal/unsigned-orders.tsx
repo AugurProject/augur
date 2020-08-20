@@ -19,6 +19,7 @@ import {
   PendingLabel,
   BulkTxLabel,
   ModalLabelNotice,
+  TypeLabel,
 } from 'modules/common/labels';
 import { BUY, MAX_BULK_ORDER_COUNT, THEMES } from 'modules/common/constants';
 import { formatDai, formatMarketShares } from 'utils/format-number';
@@ -122,7 +123,7 @@ const orderRow = (
   ];
   return (
     <div key={`${outcomeName}-${price}-${index}`}>
-      <span>{outcomeName}</span>
+      <span>{!isTrading && <TypeLabel type={type}/>}{outcomeName}</span>
       {isTrading && <span className={type === BUY ? Styles.bid : Styles.ask}>{type}</span>}
       <span>{formatMarketShares(marketType, quantity).formatted}</span>
       <span>{formatDai(Number(price)).formatted}</span>
