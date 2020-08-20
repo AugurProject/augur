@@ -154,7 +154,8 @@ export const handleTxEvents = (txStatus: Events.TXStatus) => {
   );
   if (txStatus.eventName === 'Success') {
     AppStatus.actions.setWalletStatus(WALLET_STATUS_VALUES.CREATED);
-    updateAssets();
+    // for faucets we have to treat it like an inital login to pull latest info.
+    updateAssets(txStatus?.transaction?.name === 'faucet');
   } else if (txStatus.eventName === 'FeeTooLow') {
     AppStatus.actions.setModal({ type: MODAL_GAS_PRICE, feeTooLow: true });
   }

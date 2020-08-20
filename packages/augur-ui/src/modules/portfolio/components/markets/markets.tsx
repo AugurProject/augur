@@ -1,9 +1,7 @@
 import React from 'react';
 import classNames from 'classnames';
 import { Link } from 'react-router-dom';
-import {
-  CREATE_MARKET
-} from 'modules/routes/constants/views';
+import { CREATE_MARKET } from 'modules/routes/constants/views';
 import makePath from 'modules/routes/helpers/make-path';
 import FilterBox from 'modules/portfolio/components/common/filter-box';
 import { SecondaryButton } from 'modules/common/buttons';
@@ -74,12 +72,12 @@ interface MyMarketsProps {
   extend: boolean;
 }
 
-const MyMarkets = ({
-  toggle,
-  hide,
-  extend,
-}: MyMarketsProps) => {
-  const { theme, universe: { disputeWindow }, actions: { setTheme } } = useAppStatusStore();
+const MyMarkets = ({ toggle, hide, extend }: MyMarketsProps) => {
+  const {
+    theme,
+    universe: { disputeWindow },
+    actions: { setTheme },
+  } = useAppStatusStore();
   const isTrading = theme === THEMES.TRADING;
   const disputingWindowEndTime = disputeWindow?.endTime || 0;
   const myMarkets = selectAuthorOwnedMarkets();
@@ -137,11 +135,11 @@ const MyMarkets = ({
               <span>Market failed to create.</span>
               <div>
                 <SubmitTextButton
-                  text={'submit again'}
+                  text="submit again"
                   action={() => retrySubmitMarket(market)}
                 />
                 <CancelTextButton
-                  text={'cancel'}
+                  text="cancel"
                   action={() =>
                     removePendingData(market.pendingId, CREATE_MARKET)
                   }
@@ -180,7 +178,9 @@ const MyMarkets = ({
         'creationTime',
         'endTime',
       ]}
-      bottomContent={(myMarkets.length !== 0 && !isTrading) && (
+      bottomContent={
+        myMarkets.length !== 0 &&
+        !isTrading && (
           <div className={marketStyles.BottomContent}>
             <Link to={makePath(CREATE_MARKET)}>
               <SecondaryButton
@@ -192,16 +192,19 @@ const MyMarkets = ({
           </div>
         )
       }
-      emptyDisplayTitle={isTrading ? "You didn't create any market yet" : "No markets"}
-      emptyDisplayText={isTrading ? "Create your first market now!" : "To create a market you need to go to the Trading Exchange"}
+      emptyDisplayTitle={
+        isTrading ? "You didn't create any market yet" : 'No markets'
+      }
+      emptyDisplayText={
+        isTrading
+          ? 'Create your first market now!'
+          : 'To create a market you need to go to the Trading Exchange'
+      }
       emptyDisplayIcon={CreatedMarketsIcon}
       emptyDisplayButton={
         isTrading ? (
           <Link to={makePath(CREATE_MARKET)}>
-            <SecondaryButton
-              text="Create Market"
-              action={() => null}
-            />
+            <SecondaryButton text="Create Market" action={() => null} />
           </Link>
         ) : (
           <SecondaryButton
@@ -215,7 +218,7 @@ const MyMarkets = ({
 };
 
 MyMarkets.defaultProps = {
-  disputingWindowEndTime: 0
+  disputingWindowEndTime: 0,
 };
 
 export default MyMarkets;

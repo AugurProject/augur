@@ -153,10 +153,12 @@ const TopBar = () => {
           <>
             <SecondaryButton
               action={() => setModal({ type: MODAL_LOGIN })}
+              title="Login"
               text="Login"
             />
             <PrimaryButton
               action={() => setModal({ type: MODAL_SIGNUP })}
+              title="Signup"
               text="Signup"
             />
           </>
