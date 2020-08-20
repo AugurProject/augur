@@ -82,9 +82,11 @@ const MyMarkets = ({
   const { theme, universe: { disputeWindow }, actions: { setTheme } } = useAppStatusStore();
   const isTrading = theme === THEMES.TRADING;
   const disputingWindowEndTime = disputeWindow?.endTime || 0;
-  const myMarkets = selectAuthorOwnedMarkets();
+  let myMarkets = selectAuthorOwnedMarkets();
   const { marketInfos } = useMarketsStore();
-
+  if (theme === THEMES.SPORTS) {
+    myMarkets = myMarkets.filter(market => !!market?.sportsBook?.groupId);
+  }
   function renderRightContent(market) {
     return (
       <>
