@@ -146,11 +146,13 @@ export class Augur<TProvider extends Provider = Provider> {
       if(!paraDeployAddresses) throw new Error('Specified ParaDeploy doe not exist in config.');
       addresses = {
         ...config.addresses,
-        ...paraDeployAddresses
+        ...paraDeployAddresses.addresses
       };
     } else {
       addresses = config.addresses;
     }
+
+    console.log('addresses', addresses);
 
     this.events = new EventNameEmitter();
     this.events.setMaxListeners(0);
