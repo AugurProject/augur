@@ -1,6 +1,6 @@
 import React from 'react';
 import classNames from 'classnames';
-import { SORT_OPTIONS } from 'modules/common/constants';
+import { SORT_OPTIONS, THEMES, SORT_OPTIONS_SPORTS } from 'modules/common/constants';
 import Styles from 'modules/app/components/inner-nav/markets-list-sortBy.styles.less';
 import { SortByIcon } from 'modules/common/icons';
 import { RadioBarGroup } from 'modules/common/form';
@@ -14,6 +14,7 @@ interface MarketsListSortByProps {
 const MarketsListSortBy = ({ setFilterSortState }: MarketsListSortByProps) => {
   const {
     isMobile,
+    theme,
     filterSortOptions: { sortBy },
     marketsList: { isSearching },
     actions: { updateFilterSortOptions },
@@ -30,7 +31,7 @@ const MarketsListSortBy = ({ setFilterSortState }: MarketsListSortByProps) => {
           Sort By
         </div>
         <RadioBarGroup
-          radioButtons={SORT_OPTIONS}
+          radioButtons={theme === THEMES.SPORTS ? SORT_OPTIONS_SPORTS : SORT_OPTIONS}
           defaultSelected={sortBy}
           light
           onChange={(value: string) =>
