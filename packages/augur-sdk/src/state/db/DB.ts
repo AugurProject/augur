@@ -1,3 +1,4 @@
+import { buildParaAddresses } from '@augurproject/artifacts';
 import {
   CancelZeroXOrderLog,
   CompleteSetsPurchasedLog,
@@ -320,7 +321,7 @@ export class DB {
     );
 
     if (this.enableZeroX && !this.zeroXOrders) {
-      this.zeroXOrders = ZeroXOrders.create(this, this.networkId, this.augur);
+      this.zeroXOrders = ZeroXOrders.create(this, this.networkId, this.augur, buildParaAddresses(this.augur.config));
       if (this.augur.zeroX?.isReady()) {
         this.zeroXOrders.cacheOrdersAndSync(); // Don't await here -- this happens in the background
       } else {
@@ -339,25 +340,6 @@ export class DB {
       await this.rollback(startSyncBlockNumber);
     } else {
       console.log()
-    }
-
-    if (!this.augur.config.deploy.isProduction) {
-      console.log(`DB: Checking stale dev universe`);
-      const universeCreatedLogCount = await this.UniverseCreated.count();
-      if (universeCreatedLogCount > 0) {
-        const currentUniverseCreateLogCount = await this.UniverseCreated.where(
-          'childUniverse'
-        )
-          .equalsIgnoreCase(this.augur.contracts.universe.address)
-          .count();
-
-        if (currentUniverseCreateLogCount === 0) {
-          console.log(`DB: Deleting Database due to stale universe`);
-          // Need to reset the db if we have universe created logs from a previous deployment.
-          await this.clear();
-          await this.initializeDB();
-        }
-      }
     }
 
     return this;
@@ -713,12 +695,6 @@ export class DB {
     return this.dexieDB.table<TokenBalanceChangedLog>('TokenBalanceChanged');
   }
   get TokenBalanceChangedRollup() {
-    if(this.isParaDeploy) {
-      return this.dexieDB.table<TokenBalanceChangedLog>(
-        'ParaTokenBalanceChangedRollup'
-      );
-    }
-
     return this.dexieDB.table<TokenBalanceChangedLog>(
       'TokenBalanceChangedRollup'
     );

@@ -313,6 +313,8 @@ export function connectAugur(
 
     let universeId =
       config.addresses?.Universe || Augur.contracts.universe.address;
+    console.log('universeId', JSON.stringify(universeId));
+
     if (
       windowApp.localStorage &&
       windowApp.localStorage.getItem &&

@@ -7,7 +7,7 @@ import 'ROOT/reporting/IDisputeWindow.sol';
 import 'ROOT/reporting/IReportingParticipant.sol';
 import 'ROOT/reporting/IShareToken.sol';
 import 'ROOT/uniswap/interfaces/IUniswapV2Pair.sol';
-
+import 'ROOT/reporting/IAffiliateValidator.sol';
 
 contract IUniverse {
     function creationTime() external view returns (uint256);

@@ -11,7 +11,7 @@ export type SomeTime =
 const RELAY_HUB_ADDRESS = '0xD216153c06E857cD7f72665E0aF1d7D82172F494';
 
 export class Contracts {
-  augur: ContractInterfaces.Augur;
+  augur: ContractInterfaces.ParaAugur;
   augurTrading: ContractInterfaces.AugurTrading;
   universe: ContractInterfaces.Universe;
   cash: ContractInterfaces.Cash;
@@ -51,7 +51,7 @@ export class Contracts {
     dependencies: ContractDependenciesEthers
   ) {
     this.dependencies = dependencies;
-    this.augur = new ContractInterfaces.Augur(dependencies, addresses.Augur);
+    this.augur = new ContractInterfaces.ParaAugur(dependencies, addresses.Augur);
     this.augurTrading = new ContractInterfaces.AugurTrading(
       dependencies,
       addresses.AugurTrading

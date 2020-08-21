@@ -7,7 +7,7 @@ import {
   OrderData,
   parseAssetData
 } from '@augurproject/sdk-lite';
-import { logger, LoggerLevels, DEFAULT_TRADE_INTERVAL } from '@augurproject/utils';
+import { ContractAddresses, logger, LoggerLevels, DEFAULT_TRADE_INTERVAL } from '@augurproject/utils';
 import { getAddress } from 'ethers/utils/address';
 import * as _ from 'lodash';
 import { Augur } from '../../Augur';
@@ -74,7 +74,8 @@ export class ZeroXOrders extends AbstractTable {
   constructor(
     db: DB,
     networkId: number,
-    augur: Augur
+    augur: Augur,
+    addresses: ContractAddresses
   ) {
     super(networkId, 'ZeroXOrders', db.dexieDB);
     this.handleOrderEvent = this.handleOrderEvent.bind(this);
@@ -82,9 +83,9 @@ export class ZeroXOrders extends AbstractTable {
     this.syncStatus = db.syncStatus;
     this.stateDB = db;
     this.augur = augur;
-    this.tradeTokenAddress = this.augur.config.addresses.ZeroXTrade.substr(2).toLowerCase(); // normalize and remove the 0x
-    const cashTokenAddress = this.augur.config.addresses.Cash.substr(2).toLowerCase(); // normalize and remove the 0x
-    const shareTokenAddress = this.augur.config.addresses.ShareToken.substr(2).toLowerCase(); // normalize and remove the 0x
+    this.tradeTokenAddress = addresses.ZeroXTrade.substr(2).toLowerCase(); // normalize and remove the 0x
+    const cashTokenAddress = addresses.Cash.substr(2).toLowerCase(); // normalize and remove the 0x
+    const shareTokenAddress = addresses.ShareToken.substr(2).toLowerCase(); // normalize and remove the 0x
     this.cashAssetData = `0xf47261b0000000000000000000000000${cashTokenAddress}`;
     this.shareAssetData = `0xa7cb5fb7000000000000000000000000${shareTokenAddress}000000000000000000000000000000000000000000000000000000000000008000000000000000000000000000000000000000000000000000000000000000a000000000000000000000000000000000000000000000000000000000000000c0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000`;
     this.takerAssetData = `0xa7cb5fb7000000000000000000000000${this.tradeTokenAddress}000000000000000000000000000000000000000000000000000000000000008000000000000000000000000000000000000000000000000000000000000000a000000000000000000000000000000000000000000000000000000000000000c0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000`;
@@ -96,13 +97,16 @@ export class ZeroXOrders extends AbstractTable {
     return super.bulkPutDocuments(documents);
   }
 
-  static create(db: DB, networkId: number, augur: Augur): ZeroXOrders {
-    const zeroXOrders = new ZeroXOrders(db, networkId, augur);
+  static create(db: DB, networkId: number, augur: Augur, addresses: ContractAddresses): ZeroXOrders {
+    const zeroXOrders = new ZeroXOrders(db, networkId, augur, addresses);
     return zeroXOrders;
   }
 
   async cacheOrdersAndSync(): Promise<void> {
     this.pastOrders = Object.assign(this.pastOrders, _.keyBy(await this.allDocs(), 'orderHash'));
+
+    // Clear to avoid pollution when switching from para to non-para deploys.
+    await this.clearDB();
     await this.sync();
   }
 

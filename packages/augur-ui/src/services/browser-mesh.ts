@@ -108,6 +108,18 @@ export async function createBrowserMeshWorker(
   web3Provider: SupportedProvider,
   zeroX: ZeroX
 ) {
+  let addresses;
+  if(config.paraDeploy) {
+    const paraDeployAddresses = config.paraDeploys[config.paraDeploy];
+    if(!paraDeployAddresses) throw new Error('Specified ParaDeploy doe not exist in config.');
+    addresses = {
+      ...config.addresses,
+      ...paraDeployAddresses.addresses
+    };
+  } else {
+    addresses = config.addresses;
+  }
+
   if (!config.zeroX?.mesh?.enabled) {
     throw new Error(
       `Attempting to create browser mesh without it being enabled in config ${JSON.stringify(
@@ -121,7 +133,7 @@ export async function createBrowserMeshWorker(
       config.ethereum.http,
       undefined,
       Number(config.networkId),
-      config.addresses,
+      addresses,
       config.zeroX.mesh.verbosity || 5,
       config.zeroX.mesh.useBootstrapList,
       config.zeroX.mesh.bootstrapList

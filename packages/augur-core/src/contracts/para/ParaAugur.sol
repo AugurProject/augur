@@ -24,7 +24,7 @@ contract ParaAugur is IParaAugur, IAugurCreationDataGetter {
     event MarketOIChanged(address indexed universe, address indexed market, uint256 marketOI, address para);
     event ReportingFeeChanged(address indexed universe, uint256 reportingFee, address para);
     event ShareTokenBalanceChanged(address indexed universe, address indexed account, address indexed market, uint256 outcome, uint256 balance, address para);
-    
+
     event RegisterContract(address contractAddress, bytes32 key);
     event FinishDeployment();
 
@@ -186,5 +186,29 @@ contract ParaAugur is IParaAugur, IAugurCreationDataGetter {
 
     function getMarketCreationData(IMarket _market) public view returns (MarketCreationData memory) {
         return IAugurCreationDataGetter(address(augur)).getMarketCreationData(_market);
+    }
+
+    function getMaximumMarketEndDate() public returns (uint256) {
+        return augur.getMaximumMarketEndDate();
+    }
+
+    function getUniverseForkIndex(IUniverse _universe) public view returns (uint256) {
+        return augur.getUniverseForkIndex(_universe);
+    }
+
+    function isKnownFeeSender(address _feeSender) public view returns (bool) {
+        return augur.isKnownFeeSender(_feeSender);
+    }
+
+    function derivePayoutDistributionHash(uint256[] memory _payoutNumerators, uint256 _numTicks, uint256 _numOutcomes) public view returns (bytes32) {
+        return augur.derivePayoutDistributionHash(_payoutNumerators, _numTicks, _numOutcomes);
+    }
+
+    function getMarketType(IMarket _market) public view returns (IMarket.MarketType) {
+        return augur.getMarketType(_market);
+    }
+
+    function getMarketOutcomes(IMarket _market) public view returns (bytes32[] memory _outcomes) {
+        return augur.getMarketOutcomes(_market);
     }
 }

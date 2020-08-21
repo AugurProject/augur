@@ -1,7 +1,7 @@
 import path from 'path';
 import requireAll from 'require-all';
 import { writeFile } from 'async-file';
-import { DEFAULT_SDK_CONFIGURATION, RecursivePartial, NetworkId, SDKConfiguration, configFromEnvvars, serializeConfig, mergeConfig, validConfigOrDie } from '@augurproject/utils';
+import { ContractAddresses, DEFAULT_SDK_CONFIGURATION, RecursivePartial, NetworkId, SDKConfiguration, configFromEnvvars, serializeConfig, mergeConfig, validConfigOrDie } from '@augurproject/utils';
 
 export function getConfigForNetwork(networkId: NetworkId, breakOnMulti=true, validate=true): SDKConfiguration {
   let targetConfig: SDKConfiguration = null;
@@ -25,6 +25,19 @@ export function getConfigForNetwork(networkId: NetworkId, breakOnMulti=true, val
   }
 
   return targetConfig;
+}
+
+export function buildParaAddresses(config:SDKConfiguration): ContractAddresses {
+  if(config.paraDeploy) {
+    const paraDeployAddresses = config.paraDeploys[config.paraDeploy];
+    if(!paraDeployAddresses) throw new Error('Specified ParaDeploy doe not exist in config.');
+    return {
+      ...config.addresses,
+      ...paraDeployAddresses.addresses
+    };
+  } else {
+    return config.addresses;
+  }
 }
 
 export function buildConfig(env: string, specified: RecursivePartial<SDKConfiguration> = {}): SDKConfiguration {
