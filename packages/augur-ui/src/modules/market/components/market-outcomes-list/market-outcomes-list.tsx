@@ -12,7 +12,6 @@ import { MarketOutcome } from 'modules/common/table-rows';
 import Styles from 'modules/market/components/market-outcomes-list/market-outcomes-list.styles.less';
 import SharedStyles from 'modules/market/components/market-orders-positions-table/open-orders-table.styles.less';
 import HeaderStyles from 'modules/portfolio/components/common/data-table-header.styles.less';
-import { OutcomeFormatted, MarketData } from 'modules/types';
 import { ToggleExtendButton } from 'modules/common/buttons';
 import { SMALL_MOBILE } from 'modules/common/constants';
 import type { Getters } from '@augurproject/sdk';
@@ -22,11 +21,10 @@ interface MarketOutcomesListProps {
   updateSelectedOutcome: Function;
   selectedOutcomeId: number;
   marketId: string;
-  popUp: boolean;
-  toggle: Function;
+  popUp?: boolean;
+  toggle?: Function;
   hideOutcomes?: boolean;
   preview: boolean;
-  market: MarketData;
   orderBook: Getters.Markets.OutcomeOrderBook;
   updateSelectedOrderProperties: Function;
 }
@@ -34,22 +32,21 @@ interface MarketOutcomesListProps {
 const MarketOutcomesList = ({
   selectedOutcomeId,
   updateSelectedOutcome,
-  popUp,
+  popUp = false,
   marketId,
-  toggle,
-  hideOutcomes,
+  toggle = null,
+  hideOutcomes = false,
   preview,
   updateSelectedOrderProperties,
-  market,
   orderBook
 }: MarketOutcomesListProps) => {
-  const marketSelected = market || selectMarket(marketId);
+  const market = selectMarket(marketId);
 
   const {
     scalarDenomination,
     marketType,
     outcomesFormatted
-  } = marketSelected;
+  } = market;
  
   const outcomesFormattedSelected = selectSortedMarketOutcomes(marketType, outcomesFormatted);
 
@@ -128,7 +125,6 @@ const MarketOutcomesList = ({
                 selectedOutcomeId={selectedOutcomeId}
                 updateSelectedOutcome={updateSelectedOutcome}
                 updateSelectedOrderProperties={updateSelectedOrderProperties}
-                marketType={marketType}
                 preview={preview}
                 scalarDenomination={scalarDenomination}
               />

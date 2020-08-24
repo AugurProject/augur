@@ -1,4 +1,4 @@
-import React, { Component, useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import classNames from 'classnames';
 import {
   ChevronDown,
@@ -8,7 +8,6 @@ import {
 } from 'modules/common/icons';
 import MarkdownRenderer from 'modules/common/markdown-renderer';
 import { MarketHeaderBar } from 'modules/market/components/market-header/market-header-bar';
-import { BigNumber } from 'bignumber.js';
 import Styles from 'modules/market/components/market-header/market-header.styles.less';
 import CoreProperties from 'modules/market/components/core-properties/core-properties';
 import {
@@ -20,7 +19,7 @@ import {
 } from 'modules/common/constants';
 import { MarketHeaderReporting } from 'modules/market/components/market-header/market-header-reporting';
 import ToggleHeightStyles from 'utils/toggle-height.styles.less';
-import { MarketData, TextObject } from 'modules/types';
+import { TextObject } from 'modules/types';
 import { TutorialPopUp } from 'modules/market/components/common/tutorial-pop-up';
 import MarketTitle from 'modules/market/components/common/market-title';
 import PreviewMarketTitle from 'modules/market/components/common/PreviewMarketTitle';
@@ -34,28 +33,25 @@ import { useHistory } from 'react-router';
 const OVERFLOW_DETAILS_LENGTH = 48; // in px, overflow limit to trigger MORE details
 
 interface MarketHeaderProps {
-  market: MarketData;
-  preview?: boolean;
-  reportingBarShowing: boolean;
-  next: Function;
-  showTutorialData?: boolean;
-  text: TextObject;
-  step: number;
-  totalSteps: number;
-  showTutorialDetails?: boolean;
   marketId: string;
+  preview?: boolean;
+  next?: Function;
+  showTutorialData?: boolean;
+  text?: TextObject;
+  step?: number;
+  totalSteps?: number;
+  showTutorialDetails?: boolean;
 }
 
 export const MarketHeader = ({
-  market,
   marketId,
-  showTutorialDetails,
-  preview,
-  showTutorialData,
-  totalSteps,
-  text,
-  next,
-  step,
+  showTutorialDetails = false,
+  preview = false,
+  showTutorialData = false,
+  totalSteps = null,
+  text = null,
+  next = null,
+  step = null,
 }: MarketHeaderProps) => {
   const detailsContainer = useRef({
     current: { clientHeight: 0, scrollHeight: 0, scrollTop: 0 },
@@ -65,20 +61,18 @@ export const MarketHeader = ({
 
   const history = useHistory();
 
-  const marketSelected = market || selectMarket(marketId);
+  const market = selectMarket(marketId);
   let reportingBarShowing = false;
   const {
-    loginAccount: { address: userAccount },
-    universe: { forkingInfo },
-    blockchain: { currentAugurTimestamp },
+    loginAccount: { address },
   } = useAppStatusStore();
 
   const {
+    details: marketDetails,
+    description: marketDesctipion,
     marketType,
     scalarDenomination,
     reportingState,
-    disputeInfo,
-    endTimeFormatted,
     maxPriceBigNumber,
     minPriceBigNumber,
     detailsText,
@@ -86,20 +80,20 @@ export const MarketHeader = ({
     id,
     consensusFormatted: consensus,
     mostLikelyInvalid,
-  } = marketSelected;
+  } = market;
 
   if (
     consensus ||
     reportingState === REPORTING_STATE.CROWDSOURCING_DISPUTE ||
     reportingState === REPORTING_STATE.OPEN_REPORTING ||
     (reportingState === REPORTING_STATE.DESIGNATED_REPORTING &&
-      isSameAddress(designatedReporter, userAccount))
+      isSameAddress(designatedReporter, address))
   ) {
     reportingBarShowing = true;
   }
 
-  const description = marketSelected.description || '';
-  let details = marketSelected.details || detailsText || '';
+  const description = marketDesctipion || '';
+  let details = marketDetails || detailsText || '';
   const maxPrice = maxPriceBigNumber || ZERO;
   const minPrice = minPriceBigNumber || ZERO;
 
@@ -143,9 +137,8 @@ export const MarketHeader = ({
   }, []);
 
   const detailsTooLong =
-    marketSelected.details && detailsHeight > OVERFLOW_DETAILS_LENGTH;
-  const isScalar = marketType === SCALAR;
-  if (isScalar) {
+    marketDetails && detailsHeight > OVERFLOW_DETAILS_LENGTH;
+  if (marketType === SCALAR) {
     const denomination = scalarDenomination ? ` ${scalarDenomination}` : '';
     const warningText =
       (details.length > 0 ? `\n\n` : ``) +
@@ -177,7 +170,7 @@ export const MarketHeader = ({
             })}
           >
             <HeadingBar
-              market={marketSelected}
+              market={market}
               expandedDetails={expandedDetails}
               showCopied={showCopied}
               setShowCopied={() => setShowCopied(true)}
@@ -190,7 +183,7 @@ export const MarketHeader = ({
               })}
             >
               {preview ? (
-                <PreviewMarketTitle market={marketSelected} />
+                <PreviewMarketTitle market={market} />
               ) : (
                 <MarketTitle id={id} noLink headerType={HEADER_TYPE.H1} />
               )}
@@ -239,22 +232,14 @@ export const MarketHeader = ({
                 [Styles.HideProperties]: !showProperties,
               })}
             >
-              {(id || preview) && (
-                <MarketHeaderBar
-                  market={marketSelected}
-                  reportingState={reportingState}
-                  disputeInfo={disputeInfo}
-                  endTimeFormatted={endTimeFormatted}
-                />
-              )}
+              {(id || preview) && <MarketHeaderBar market={market} />}
               <MarketHeaderReporting
-                marketId={id}
                 preview={preview}
-                market={preview && marketSelected}
+                market={market}
               />
               {(id || preview) && (
                 <CoreProperties
-                  market={marketSelected}
+                  market={market}
                   reportingBarShowing={reportingBarShowing}
                   showExtraDetailsChevron={showProperties}
                 />
@@ -299,12 +284,7 @@ export const MarketHeader = ({
           {headerCollapsed && (
             <>
               <h1>{description}</h1>
-              <MarketHeaderBar
-                market={marketSelected}
-                reportingState={reportingState}
-                disputeInfo={disputeInfo}
-                endTimeFormatted={endTimeFormatted}
-              />
+              <MarketHeaderBar market={market} />
             </>
           )}
           {TwoArrowsOutline}

@@ -212,22 +212,34 @@ export const ChatButton = ({ action, disabled }: DefaultButtonProps) => (
   </button>
 );
 
-export const ProcessingButton = (props: DefaultButtonProps) => {
+export interface ProcessingButtonProps extends DefaultButtonProps {
+  queueName: string;
+  queueId: string;
+  matchingId?: string;
+  nonMatchingIds?: Array<String>;
+}
+
+export const ProcessingButton = ({
+  queueName = null,
+  queueId = null,
+  matchingId = null,
+  nonMatchingIds = null,
+  ...props,
+}: ProcessingButtonProps) => {
   const { pendingQueue } = useAppStatusStore();
   let disabled = false;
-
   const pendingData =
-    pendingQueue[props.queueName] &&
-    pendingQueue[props.queueName][props.queueId];
+    pendingQueue[queueName] &&
+    pendingQueue[queueName][queueId];
 
   let status = pendingData && pendingData.status;
   if (pendingData) {
     if (
-      (props.matchingId !== undefined &&
-        String(pendingData.data?.matchingId) !== String(props.matchingId)) ||
-      (props.nonMatchingIds &&
-        props.nonMatchingIds.length &&
-        props.nonMatchingIds.includes(pendingData.data.matchingId))
+      (matchingId !== null &&
+        String(pendingData.data?.matchingId) !== String(matchingId)) ||
+      (nonMatchingIds &&
+        nonMatchingIds.length &&
+        nonMatchingIds.includes(pendingData.data.matchingId))
     ) {
       status = null;
       disabled = true;
@@ -256,7 +268,7 @@ export const ProcessingButton = (props: DefaultButtonProps) => {
       buttonText = props.customConfirmedButtonText;
     }
   }
-  const cancel = () => removePendingData(props.queueId, props.queueName);
+  const cancel = () => removePendingData(queueId, queueName);
   if (failed || confirmed) {
     buttonAction = e => cancel(e);
     icon = XIcon;

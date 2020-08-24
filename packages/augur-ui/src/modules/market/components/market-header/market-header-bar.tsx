@@ -8,9 +8,6 @@ import { DateFormattedObject, MarketData } from 'modules/types';
 import React from 'react';
 
 export interface MarketHeaderBarProps {
-  reportingState: string;
-  disputeInfo: Getters.Markets.DisputeInfo;
-  endTimeFormatted: DateFormattedObject;
   market: MarketData;
 }
 
@@ -33,23 +30,23 @@ const showProgress = (state: string) =>
   statesToShowProgress.includes(state);
 
 export const MarketHeaderBar = ({
-  reportingState,
-  disputeInfo,
-  endTimeFormatted,
   market
-}: MarketHeaderBarProps) => (
-  <section className={Styles.HeaderBar}>
-    <Archived market={market} />
-    <InReportingLabel
-      reportingState={reportingState || PRE_REPORTING}
-      disputeInfo={disputeInfo}
-    />
-    {showProgress(reportingState) && (
-      <MarketProgress
-        reportingState={reportingState}
-        endTimeFormatted={endTimeFormatted}
-        reportingWindowEndTime={disputeInfo && disputeInfo.disputeWindow && disputeInfo.disputeWindow.endTime}
+}: MarketHeaderBarProps) => {
+  const { disputeInfo, reportingState, endTimeFormatted } = market;
+  return (
+    <section className={Styles.HeaderBar}>
+      <Archived market={market} />
+      <InReportingLabel
+        reportingState={reportingState || PRE_REPORTING}
+        disputeInfo={disputeInfo}
       />
-    )}
-  </section>
-);
+      {showProgress(reportingState) && (
+        <MarketProgress
+          reportingState={reportingState}
+          endTimeFormatted={endTimeFormatted}
+          reportingWindowEndTime={disputeInfo?.disputeWindow?.endTime}
+        />
+      )}
+    </section>
+  );
+};

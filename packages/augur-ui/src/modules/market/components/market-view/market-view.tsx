@@ -82,7 +82,7 @@ import { addAlert } from 'modules/alerts/actions/alerts';
 import OrderBook from 'modules/market-charts/components/order-book/order-book';
 import { formatDai, formatShares } from 'utils/format-number';
 
-import { MarketProvider, useMarketStore } from 'modules/market/store/market';
+import { MarketProvider } from 'modules/market/store/market';
 
 interface MarketViewProps {
   history: History;
@@ -615,7 +615,7 @@ const MarketView = ({
     outcomeOrderBook = formatOrderBook(newOrderBook);
   }
   const parsedMarketDescription = parseMarketTitle(marketDescription);
-  
+
   return (
     <MarketProvider
       market={market}
@@ -676,12 +676,10 @@ const MarketView = ({
                     <div className={Styles.PaneContainer}>
                       <MarketHeader
                         marketId={marketId}
-                        market={preview && market}
                         preview={preview}
                       />
                       <MarketOutcomesList
                         marketId={marketId}
-                        market={market}
                         preview={preview}
                         selectedOutcomeId={outcomeIdSet}
                         updateSelectedOutcome={updateSelectedOutcome}
@@ -824,7 +822,6 @@ const MarketView = ({
                   >
                     <MarketHeader
                       marketId={marketId}
-                      market={preview && market}
                       preview={preview}
                       next={next}
                       showTutorialData={
@@ -920,7 +917,6 @@ const MarketView = ({
                   </div>
                   <MarketOutcomesList
                     marketId={marketId}
-                    market={market}
                     preview={preview}
                     selectedOutcomeId={outcomeIdSet}
                     updateSelectedOutcome={updateSelectedOutcome}

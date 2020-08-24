@@ -91,6 +91,7 @@ export interface MarketStatusProps {
   endTimeFormatted: DateFormattedObject;
   currentAugurTimestamp: number;
   isWarpSync?: boolean;
+  mini?: boolean;
 }
 
 export interface InReportingLabelProps extends MarketStatusProps {
@@ -1048,16 +1049,20 @@ export const LiquidityDepletedLabel = ({
     </span>
   );
 };
+export interface MarketStatusLabelProps {
+  reportingState: string;
+  mini?: boolean;
+  isWarpSync?: boolean; 
+};
 
 export const MarketStatusLabel = ({
   reportingState,
-  mini,
-  isWarpSync,
-}: MarketStatusProps) => {
+  mini = false,
+  isWarpSync = false,
+}: MarketStatusLabelProps) => {
   let open = false;
   let resolved = false;
   let reporting = false;
-  let warpSync = false;
   let text: string;
   switch (reportingState) {
     case REPORTING_STATE.UNKNOWN:
@@ -1080,7 +1085,6 @@ export const MarketStatusLabel = ({
   }
 
   if (isWarpSync) {
-    warpSync = true;
     text = 'Warp Sync Market';
   }
   return (
@@ -1090,7 +1094,7 @@ export const MarketStatusLabel = ({
         [Styles.MarketStatus_open]: open,
         [Styles.MarketStatus_resolved]: resolved,
         [Styles.MarketStatus_reporting]: reporting,
-        [Styles.MarketStatus_warpSync]: warpSync,
+        [Styles.MarketStatus_warpSync]: isWarpSync,
       })}
     >
       {text}
@@ -1098,8 +1102,7 @@ export const MarketStatusLabel = ({
   );
 };
 
-export const InReportingLabel = (props: InReportingLabelProps) => {
-  const { reportingState, disputeInfo, isWarpSync, isForkingMarket } = props;
+export const InReportingLabel = ({ reportingState, disputeInfo, isWarpSync, isForkingMarket }: InReportingLabelProps) => {
 
   const reportingStates = [
     REPORTING_STATE.DESIGNATED_REPORTING,
@@ -1109,7 +1112,7 @@ export const InReportingLabel = (props: InReportingLabelProps) => {
   ];
 
   if (!reportingStates.includes(reportingState)) {
-    return <MarketStatusLabel {...props} />;
+    return <MarketStatusLabel reportingState={reportingState} isWarpSync={isWarpSync} />;
   }
 
   let reportingExtraText: string | null;
