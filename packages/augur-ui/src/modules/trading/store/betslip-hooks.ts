@@ -193,7 +193,7 @@ export function BetslipReducer(state, action) {
         });
         updatedState.matched.count += ordersAmount;
       }
-      updatedState.betslip = EMPTY_BETSLIST;
+      updatedState.betslip = deepClone(EMPTY_BETSLIST);
       break;
     }
     case ADD_MATCHED: {
