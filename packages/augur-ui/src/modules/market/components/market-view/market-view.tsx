@@ -82,7 +82,7 @@ import { addAlert } from 'modules/alerts/actions/alerts';
 import OrderBook from 'modules/market-charts/components/order-book/order-book';
 import { formatDai, formatShares } from 'utils/format-number';
 
-import { MarketProvider } from 'modules/market/store/market';
+import { MarketProvider, useMarketStore } from 'modules/market/store/market';
 
 interface MarketViewProps {
   history: History;
@@ -203,7 +203,7 @@ const MarketView = ({
   const {
     universe,
     modal: { type: modalType },
-    zeroXStatus: zeroXstatus,
+    zeroXStatus,
     isConnected: connected,
     canHotload,
     blockchain: { currentAugurTimestamp },
@@ -233,8 +233,8 @@ const MarketView = ({
   const tradingTutorial = marketId === TRADING_TUTORIAL;
   const preview = tradingTutorial || isPreview;
   const market = tradingTutorial ? TRADING_TUTORIAL_MARKET : defaultMarket || marketInfos && marketInfos[marketId] && convertMarketInfoToMarketData(marketInfos[marketId], currentAugurTimestamp * 1000);
-  const hasZeroXError = zeroXstatus === ZEROX_STATUSES.ERROR;
-  const zeroXSynced = zeroXstatus === ZEROX_STATUSES.SYNCED;
+  const hasZeroXError = zeroXStatus === ZEROX_STATUSES.ERROR;
+  const zeroXSynced = zeroXStatus === ZEROX_STATUSES.SYNCED;
   const orderBook: Getters.Markets.OutcomeOrderBook = preview ? market.orderBook : (orderBooks[marketId] || {}).orderBook;
   const orderbookLoading = !orderBook;
   const cat5 = findType(market);
@@ -691,7 +691,7 @@ const MarketView = ({
                         }
                       />
                       <ModuleTabs selected={0} fillForMobile>
-                        <ModulePane status={zeroXstatus} label="Order Book">
+                        <ModulePane label="Order Book">
                           <div className={Styles.Orders}>
                             <OrderBook
                               updateSelectedOrderProperties={
