@@ -125,14 +125,71 @@ function findType(market) {
   }
 }
 
+const TUTORIAL_BN_QTY = createBigNumber(TUTORIAL_QUANTITY);
+const TUTORIAL_BN_PRC = createBigNumber(TUTORIAL_PRICE);
+const TUTORIAL_QTY_DAI = formatDai(TUTORIAL_QUANTITY);
+const TUTORIAL_QTY_SHARES = formatShares(TUTORIAL_QUANTITY);
+const TUTORIAL_PRC_DAI = formatDai(TUTORIAL_PRICE);
+const TUTORIAL_POSITION = {
+  type: LONG,
+  quantity: TUTORIAL_QTY_SHARES,
+  id: TRADING_TUTORIAL,
+  totalValue: TUTORIAL_QTY_DAI,
+  totalReturns: TUTORIAL_QTY_DAI,
+  unrealizedNet: TUTORIAL_QTY_DAI,
+  realizedNet: TUTORIAL_QTY_DAI,
+  purchasePrice: TUTORIAL_PRC_DAI,
+};
+
+const TUTORIAL_FILL = {
+  amount: TUTORIAL_BN_QTY,
+  logIndex: 1,
+  originalQuantity: TUTORIAL_BN_QTY,
+  id: 'trading-tutorial-pending-order',
+  type: BUY,
+  price: TUTORIAL_BN_PRC,
+};
+const TUTORIAL_OPEN_ORDER = {
+  pending: true,
+  id: 'trading-tutorial-pending-order',
+  type: BUY,
+  avgPrice: TUTORIAL_PRC_DAI,
+  unmatchedShares: TUTORIAL_QTY_SHARES,
+  tokensEscrowed: formatShares(0),
+  sharesEscrowed: formatShares(0),
+  creationTime: 0,
+};
+
+const TUTORIAL_FILL_TRADE = {
+  amount: TUTORIAL_BN_QTY,
+  logIndex: 1,
+  type: BUY,
+  price: TUTORIAL_BN_PRC,
+  transactionHash: '0xerjejfsdk',
+};
+
+const TRADING_TUTORIAL_MARKET = {
+  ...deepClone<NewMarket>(EMPTY_STATE),
+  id: TRADING_TUTORIAL,
+  description:
+    'Which NFL team will win: Los Angeles Rams vs New England Patriots Scheduled start time: October 27, 2019 1:00 PM ET',
+  numOutcomes: 4,
+  defaultSelectedOutcomeId: 1,
+  marketType: CATEGORICAL,
+  endTimeFormatted: convertUnixToFormattedDate(1668452763),
+  creationTimeFormatted: convertUnixToFormattedDate(1573585563),
+  outcomesFormatted: TRADING_TUTORIAL_OUTCOMES,
+  groupedTradeHistory: TUTORIAL_TRADING_HISTORY,
+  orderBook: TUTORIAL_ORDER_BOOK,
+};
+
 const MarketView = ({
   defaultMarket = null,
   isPreview = null
 }: MarketViewProps) => {
   const {
-    loginAccount,
     universe,
-    modal,
+    modal: { type: modalType },
     zeroXStatus: zeroXstatus,
     isConnected: connected,
     canHotload,
@@ -157,59 +214,15 @@ const MarketView = ({
   const queryOutcomeId = parseQuery(location.search)[
     OUTCOME_ID_PARAM_NAME
   ];
+  const isConnected = connected && universe.id != null;
   const outcomeId = queryOutcomeId ? parseInt(queryOutcomeId) : null;
-  let market = null;
-  let daysPassed = null;
-  let modalShowing = null;
-  let preview = null;
-  let sortedOutcomes = null;
-  let account = null;
-  let hasZeroXError = null;
-  let orderBook: Getters.Markets.OutcomeOrderBook = null;
-
+  const modalShowing = modalType;
   const tradingTutorial = marketId === TRADING_TUTORIAL;
-  if (tradingTutorial) {
-    // TODO move trading tutorial market state to constants
-    market = {
-      ...deepClone<NewMarket>(EMPTY_STATE),
-      id: TRADING_TUTORIAL,
-      description:
-        'Which NFL team will win: Los Angeles Rams vs New England Patriots Scheduled start time: October 27, 2019 1:00 PM ET',
-      numOutcomes: 4,
-      defaultSelectedOutcomeId: 1,
-      marketType: CATEGORICAL,
-      endTimeFormatted: convertUnixToFormattedDate(1668452763),
-      creationTimeFormatted: convertUnixToFormattedDate(1573585563),
-      outcomesFormatted: TRADING_TUTORIAL_OUTCOMES,
-      groupedTradeHistory: TUTORIAL_TRADING_HISTORY,
-      orderBook: TUTORIAL_ORDER_BOOK,
-    };
-  } else {
-    market = defaultMarket || marketInfos && marketInfos[marketId] && convertMarketInfoToMarketData(marketInfos[marketId], currentAugurTimestamp * 1000);
-  }
-  if (market) {
-    if (tradingTutorial || isPreview) {
-      orderBook = market.orderBook;
-    }
-    if (!tradingTutorial && !isPreview) {
-      orderBook = (orderBooks[marketId] || {}).orderBook;
-    }
-
-    daysPassed =
-      market &&
-      market.creationTime &&
-      getMarketAgeInDays(market.creationTime, currentAugurTimestamp);
-
-    modalShowing = modal.type;
-    preview = tradingTutorial || isPreview;
-    sortedOutcomes = selectSortedMarketOutcomes(
-          market.marketType,
-          market.outcomesFormatted
-        );
-    account = loginAccount.address;
-    hasZeroXError = zeroXstatus === ZEROX_STATUSES.ERROR;
-  }
-
+  const preview = tradingTutorial || isPreview;
+  const market = tradingTutorial ? TRADING_TUTORIAL_MARKET : defaultMarket || marketInfos && marketInfos[marketId] && convertMarketInfoToMarketData(marketInfos[marketId], currentAugurTimestamp * 1000);
+  const hasZeroXError = zeroXstatus === ZEROX_STATUSES.ERROR;
+  const orderBook: Getters.Markets.OutcomeOrderBook = preview ? market.orderBook : (orderBooks[marketId] || {}).orderBook;
+  const orderbookLoading = !orderBook;
   const cat5 = findType(market);
   const [state, setState] = useState({
     pane: null,
@@ -229,11 +242,8 @@ const MarketView = ({
         : undefined,
     tutorialError: '',
   });
-
-  const isConnected = connected && universe.id != null;
-
   const scalarModalSeen =
-    Boolean(modal.type) || windowRef?.localStorage?.getItem(SCALAR_MODAL_SEEN) === 'true';
+    Boolean(modalType) || windowRef?.localStorage?.getItem(SCALAR_MODAL_SEEN) === 'true';
 
   const {
     selectedOutcomeId,
@@ -399,36 +409,21 @@ const MarketView = ({
   }
 
   function toggleOrderBook() {
-    if (!extendOrderBook && extendTradeHistory) {
-      setState({
-        ...state,
-        extendOrderBook: false,
-        extendTradeHistory: false,
-      });
-    } else {
-      setState({
-        ...state,
-        extendOrderBook: !extendOrderBook,
-        extendTradeHistory: false,
-      });
-    }
+    setState({
+      ...state,
+      extendTradeHistory: false,
+      extendOrderBook: 
+        (!extendOrderBook && extendTradeHistory) ? false : !extendOrderBook,
+    })
   }
 
   function updateSelectedOutcome(selectedOutcomeIdPassed, keepOrder) {
     if (selectedOutcomeIdPassed !== selectedOutcomeId) {
-      if (keepOrder) {
-        return setState({
-          ...state,
-          selectedOutcomeId: selectedOutcomeIdPassed,
-        });
-      }
-
       setState({
         ...state,
         selectedOutcomeId: selectedOutcomeIdPassed,
-        selectedOrderProperties: {
-          ...DEFAULT_ORDER_PROPERTIES,
-        },
+        selectedOrderProperties: keepOrder ? 
+          state.selectedOrderProperties : { ...DEFAULT_ORDER_PROPERTIES }
       });
     }
   }
@@ -550,7 +545,7 @@ const MarketView = ({
   }
 
   let outcomeOrderBook = EmptyOrderBook;
-  const orderbookLoading = !orderBook;
+ 
   if (orderBook && orderBook[outcomeIdSet]) {
     outcomeOrderBook = orderBook[outcomeIdSet];
   }
@@ -559,8 +554,6 @@ const MarketView = ({
     outcomeIdSet = getDefaultOutcomeSelected(market.marketType);
     outcomeOrderBook = formatOrderBook(orderBook[outcomeIdSet]);
   }
-
-  const networkId = tradingTutorial ? null : getNetworkId();
   let orders = null;
   if (tradingTutorial) {
     outcomeOrderBook = formatOrderBook(orderBook[outcomeIdSet]);
@@ -568,67 +561,38 @@ const MarketView = ({
   if (tradingTutorial && tutorialStep === TRADING_TUTORIAL_STEPS.OPEN_ORDERS) {
     orders = [
       {
-        pending: true,
-        id: 'trading-tutorial-pending-order',
-        type: BUY,
-        avgPrice: formatDai(TUTORIAL_PRICE),
+        ...TUTORIAL_OPEN_ORDER,
         outcomeName: TRADING_TUTORIAL_OUTCOMES[outcomeIdSet].description,
-        unmatchedShares: formatShares(TUTORIAL_QUANTITY),
-        tokensEscrowed: formatShares(0),
-        sharesEscrowed: formatShares(0),
-        creationTime: 0,
       },
     ];
   }
 
-  let fills = null;
-  if (tradingTutorial && tutorialStep === TRADING_TUTORIAL_STEPS.MY_FILLS) {
-    fills = [
-      {
-        amount: createBigNumber(TUTORIAL_QUANTITY),
-        logIndex: 1,
-        marketDescription: market.description,
-        marketId: market.id,
-        originalQuantity: createBigNumber(TUTORIAL_QUANTITY),
-        id: 'trading-tutorial-pending-order',
-        type: BUY,
-        price: createBigNumber(TUTORIAL_PRICE),
-        outcome: TRADING_TUTORIAL_OUTCOMES[outcomeIdSet].description,
-        timestamp: convertUnixToFormattedDate(currentAugurTimestamp),
-        trades: [
-          {
-            amount: createBigNumber(TUTORIAL_QUANTITY),
-            logIndex: 1,
-            marketDescription: market.description,
-            marketId: market.id,
-            type: BUY,
-            price: createBigNumber(TUTORIAL_PRICE),
-            outcome: TRADING_TUTORIAL_OUTCOMES[outcomeIdSet].description,
-            timestamp: convertUnixToFormattedDate(currentAugurTimestamp),
-            transactionHash: '0xerjejfsdk',
-          },
-        ],
-      },
-    ];
-  }
+  const fills = (tradingTutorial && tutorialStep === TRADING_TUTORIAL_STEPS.MY_FILLS) ? [
+    {
+      ...TUTORIAL_FILL,
+      marketDescription: market.description,
+      marketId: market.id,
+      outcome: TRADING_TUTORIAL_OUTCOMES[outcomeIdSet].description,
+      timestamp: convertUnixToFormattedDate(currentAugurTimestamp),
+      trades: [
+        {
+          ...TUTORIAL_FILL_TRADE,
+          marketDescription: market.description,
+          marketId: market.id,
+          outcome: TRADING_TUTORIAL_OUTCOMES[outcomeIdSet].description,
+          timestamp: convertUnixToFormattedDate(currentAugurTimestamp),
+        },
+      ],
+    },
+  ] : null;
 
-  let positions = null;
-  if (tradingTutorial && tutorialStep === TRADING_TUTORIAL_STEPS.POSITIONS) {
-    positions = [
-      {
-        type: LONG,
-        outcomeName: TRADING_TUTORIAL_OUTCOMES[outcomeIdSet].description,
-        quantity: formatShares(TUTORIAL_QUANTITY),
-        id: TRADING_TUTORIAL,
-        outcomeId: outcomeIdSet,
-        totalValue: formatDai(TUTORIAL_QUANTITY),
-        totalReturns: formatDai(TUTORIAL_QUANTITY),
-        unrealizedNet: formatDai(TUTORIAL_QUANTITY),
-        realizedNet: formatDai(TUTORIAL_QUANTITY),
-        purchasePrice: formatDai(TUTORIAL_PRICE),
-      },
-    ];
-  }
+  const positions = (tradingTutorial && tutorialStep === TRADING_TUTORIAL_STEPS.POSITIONS) ? [
+    {
+      ...TUTORIAL_POSITION,
+      outcomeName: TRADING_TUTORIAL_OUTCOMES[outcomeIdSet].description,
+      outcomeId: outcomeIdSet,
+    },
+  ] : null;
 
   let selected = 0;
   if (tradingTutorial && tutorialStep === TRADING_TUTORIAL_STEPS.MY_FILLS) {
@@ -843,7 +807,9 @@ const MarketView = ({
                     </div>
                   </ModulePane>
                 </ModuleTabs>
-                <MarketComments marketId={marketId} networkId={networkId} />
+                {!tradingTutorial && (
+                  <MarketComments marketId={marketId} />
+                )}
               </>
             ) : (
               <>
@@ -1090,7 +1056,7 @@ const MarketView = ({
                   </div>
                 </div>
                 {!tradingTutorial && (
-                  <MarketComments marketId={marketId} networkId={networkId} />
+                  <MarketComments marketId={marketId} />
                 )}
               </>
             )
