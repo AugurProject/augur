@@ -67,6 +67,7 @@ export const MyBetsRow = ({
       key: 'wager',
       columnType: COLUMN_TYPES.VALUE,
       value: formatNumber(outcome && outcome.wager),
+      useFull: true,
       keyId: 'outcome-wager-' + outcome.outcome,
     },
     {
