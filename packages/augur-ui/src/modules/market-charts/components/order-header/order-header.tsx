@@ -8,7 +8,7 @@ import classNames from 'classnames';
 interface OrderHeaderProps {
   title: string;
   headers: string[];
-  toggle: any;
+  toggle: Function;
   hide: boolean;
   status?: string;
 }

@@ -8,9 +8,9 @@ import {
   DEFAULT_SHORT_PERIODS_VALUE,
   DEFAULT_PERIODS_VALUE,
 } from 'modules/common/constants';
+import { useAppStatusStore } from 'modules/app/store/app-status';
 
 interface CandlestickProps {
-  currentTimeInSeconds: number;
   marketId: string;
   maxPrice: BigNumber;
   minPrice: BigNumber;
@@ -20,7 +20,6 @@ interface CandlestickProps {
 }
 
 export const Candlestick = ({
-  currentTimeInSeconds,
   marketId,
   maxPrice,
   minPrice,
@@ -28,6 +27,9 @@ export const Candlestick = ({
   daysPassed,
   isArchived
 }: CandlestickProps) => {
+  const {
+    blockchain: { currentAugurTimestamp: currentTimeInSeconds },
+  } = useAppStatusStore();
   const [priceTimeSeries, setPriceTimeSeries] = useState([]);
   const [selectedPeriod, setSelectedPeriod] = useState(
     daysPassed < 1 ? DEFAULT_SHORT_PERIODS_VALUE : DEFAULT_PERIODS_VALUE

@@ -253,7 +253,7 @@ const MarketView = ({
         ? outcomeId
         : market
         ? market.defaultSelectedOutcomeId
-        : undefined,
+        : null,
     tutorialError: '',
   });
   const scalarModalSeen =
@@ -274,7 +274,7 @@ const MarketView = ({
   } = state;
 
   let outcomeIdSet =
-    selectedOutcomeId === null || selectedOutcomeId === undefined
+    selectedOutcomeId === null
       ? market && market.defaultSelectedOutcomeId
       : selectedOutcomeId;
 
@@ -316,7 +316,7 @@ const MarketView = ({
   }, [tradingTutorial, outcomeId, isConnected]);
 
   useEffect(() => {
-    outcomeIdSet = selectedOutcomeId === null || selectedOutcomeId === undefined
+    outcomeIdSet = selectedOutcomeId === null
     ? market && market.defaultSelectedOutcomeId
     : selectedOutcomeId;
   }, [selectedOutcomeId]);
@@ -512,8 +512,8 @@ const MarketView = ({
     }
 
     if (tutorialStep === TRADING_TUTORIAL_STEPS.OPEN_ORDERS) {
-      let outcomeId =
-        selectedOutcomeId === null || selectedOutcomeId === undefined
+      const outcomeId =
+        selectedOutcomeId === null
           ? market?.defaultSelectedOutcomeId
           : selectedOutcomeId;
       addAlert({
@@ -695,10 +695,7 @@ const MarketView = ({
                               updateSelectedOrderProperties={
                                 updateSelectedOrderProperties
                               }
-                              marketId={marketId}
-                              selectedOutcomeId={outcomeIdSet}
                               toggle={toggleOrderBook}
-                              extend={extendOrderBook}
                               hide={extendTradeHistory}
                               market={market}
                               initialLiquidity={preview}
@@ -942,7 +939,7 @@ const MarketView = ({
                           ? () => toggleMiddleColumn('extendOutcomesList')
                           : null
                       }
-                      market={preview && market}
+                      market={market}
                       preview={preview}
                       orderBook={outcomeOrderBook}
                       extendOutcomesList={extendOutcomesList}
@@ -1004,10 +1001,7 @@ const MarketView = ({
                         updateSelectedOrderProperties={
                           updateSelectedOrderProperties
                         }
-                        marketId={marketId}
-                        selectedOutcomeId={outcomeIdSet}
                         toggle={toggleOrderBook}
-                        extend={extendOrderBook}
                         hide={extendTradeHistory}
                         market={market}
                         initialLiquidity={preview}

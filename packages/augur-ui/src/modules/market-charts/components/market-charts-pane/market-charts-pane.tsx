@@ -45,14 +45,11 @@ const MarketChartsPane = ({
   const {
     blockchain: { currentAugurTimestamp: currentTimestamp },
   } = useAppStatusStore();
-  market = market || selectMarket(marketId);
-  const daysPassed =
-    market &&
-    market.creationTime &&
-    getMarketAgeInDays(market.creationTime, currentTimestamp);
+  const { creationTime, minPriceBigNumber, maxPriceBigNumber } = market;
+  const daysPassed = getMarketAgeInDays(creationTime, currentTimestamp);
 
-  const minPrice = market.minPriceBigNumber || ZERO;
-  const maxPrice = market.maxPriceBigNumber || ZERO;
+  const minPrice = minPriceBigNumber || ZERO;
+  const maxPrice = maxPriceBigNumber || ZERO;
   const [hoveredDepth, updateHoveredDepth] = useState([]);
   const [hoveredPrice, updateHoveredPrice] = useState(null);
   const shared = { marketId, selectedOutcomeId, isArchived };
@@ -66,7 +63,6 @@ const MarketChartsPane = ({
               {!preview && (
                 <Candlestick
                   {...shared}
-                  currentTimeInSeconds={currentTimestamp}
                   minPrice={minPrice}
                   maxPrice={maxPrice}
                   daysPassed={daysPassed}
@@ -106,7 +102,6 @@ const MarketChartsPane = ({
               {!preview && (
                 <Candlestick
                   {...shared}
-                  currentTimeInSeconds={currentTimestamp}
                   minPrice={minPrice}
                   maxPrice={maxPrice}
                   daysPassed={daysPassed}

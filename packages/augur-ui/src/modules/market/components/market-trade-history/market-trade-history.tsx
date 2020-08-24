@@ -21,7 +21,7 @@ interface MarketTradeHistoryProps {
   marketType: string;
   isArchived?: boolean;
   initialGroupedTradeHistory?: object
-  outcome?: string;
+  outcome?: number;
 }
 const MarketTradeHistory = ({
   marketId,

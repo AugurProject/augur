@@ -720,79 +720,70 @@ export const TextLabel = ({ text, keyId }: TextLabelProps) => {
   );
 };
 
-export class HoverValueLabel extends React.Component<
-  ValueLabelProps,
-  HoverValueLabelState
-> {
-  state: HoverValueLabelState = {
-    hover: false,
-  };
-  render() {
-    const { value, showDenomination, useFull } = this.props;
-    if (!value || value === null) return <span />;
+export const HoverValueLabel = ({
+    value = null,
+    showDenomination = false,
+    useFull = false
+  }) => {
+  const [hover, setHover] = useState(false);
+  if (value === null) return <span />;
 
-    const expandedValues = formatDecimalValue(value, showDenomination);
-    const {
-      fullPrecision,
-      postfix,
-      frontFacingLabel,
-      showHover,
-    } = expandedValues;
+  const expandedValues = formatDecimalValue(value, showDenomination);
+  const {
+    fullPrecision,
+    postfix,
+    frontFacingLabel,
+    showHover,
+  } = expandedValues;
 
-    const frontFacingLabelSplit = frontFacingLabel.toString().split('.');
-    const firstHalf = frontFacingLabelSplit[0];
-    const secondHalf = frontFacingLabelSplit[1];
+  const frontFacingLabelSplit = frontFacingLabel.toString().split('.');
+  const firstHalf = frontFacingLabelSplit[0];
+  const secondHalf = frontFacingLabelSplit[1];
 
-    const fullPrecisionSplit = fullPrecision.toString().split('.');
-    const firstHalfFull = fullPrecisionSplit[0];
-    const secondHalfFull = fullPrecisionSplit[1];
-
-    return (
-      <span
-        className={Styles.HoverValueLabel}
-        onMouseEnter={() => {
-          this.setState({
-            hover: true,
-          });
-        }}
-        onMouseLeave={() => {
-          this.setState({
-            hover: false,
-          });
-        }}
-      >
-        {this.state.hover && showHover ? (
-          <span>
-            {useFull && value.full}
-            {!useFull && (
-              <>
-                <span>
-                  {firstHalfFull}
-                  {secondHalfFull && '.'}
-                </span>
-                <span>{secondHalfFull}</span>
-              </>
-            )}
-          </span>
-        ) : (
-          <span>
-            {useFull && value.formatted}
-            {!useFull && (
-              <>
-                <span>
-                  {firstHalf}
-                  {secondHalf && '.'}
-                </span>
-                <span>
-                  {secondHalf} {postfix}
-                </span>
-              </>
-            )}
-          </span>
-        )}
-      </span>
-    );
-  }
+  const fullPrecisionSplit = fullPrecision.toString().split('.');
+  const firstHalfFull = fullPrecisionSplit[0];
+  const secondHalfFull = fullPrecisionSplit[1];
+  return (
+    <span
+      className={Styles.HoverValueLabel}
+      onMouseEnter={() => {
+        setHover(true);
+      }}
+      onMouseLeave={() => {
+        setHover(false);
+      }}
+    >
+      {hover && showHover ? (
+        <span>
+          {useFull && value.full}
+          {!useFull && (
+            <>
+              <span>
+                {firstHalfFull}
+                {secondHalfFull && '.'}
+              </span>
+              <span>{secondHalfFull}</span>
+            </>
+          )}
+        </span>
+      ) : (
+        <span>
+          {useFull && value.formatted}
+          {!useFull && (
+            <>
+              <span>
+                {firstHalf}
+                {secondHalf && '.'}
+              </span>
+              <span>
+                {secondHalf} {postfix}
+              </span>
+            </>
+          )}
+        </span>
+      )}
+    </span>
+  );
 }
 
 export const InvalidLabel = ({
