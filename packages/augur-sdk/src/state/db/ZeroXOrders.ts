@@ -127,9 +127,7 @@ export class ZeroXOrders extends AbstractTable {
     if (orderEvents.length < 1) return;
     const bulkOrderEvents = [];
     const filteredOrders = orderEvents.filter(this.validateOrder, this);
-    console.log("Filtered Orders", filteredOrders);
     let documents: StoredOrder[] = filteredOrders.map(this.processOrder, this);
-    console.log("Processed Orders: ", documents);
 
     // Remove Canceled, Expired, and Invalid Orders and emit event
     const canceledOrders = _.keyBy(
