@@ -41,7 +41,6 @@ import ModulePane from 'modules/market/components/common/module-tabs/module-pane
 import PriceHistory from "modules/market-charts/components/price-history/price-history";
 import Styles from 'modules/market/components/market-view/market-view.styles.less';
 import { LeftChevron } from 'modules/common/icons';
-import { getNetworkId } from 'modules/contracts/actions/contractCalls';
 import { MARKET_VIEW_HEAD_TAGS } from 'modules/seo/helmet-configs';
 import { HelmetTag } from 'modules/seo/helmet-tag';
 import {
@@ -59,9 +58,6 @@ import type { Getters } from '@augurproject/sdk';
 import { TXEventName } from '@augurproject/sdk-lite';
 import { StatusErrorMessage } from 'modules/common/labels';
 import { useAppStatusStore } from 'modules/app/store/app-status';
-import {
-  selectSortedMarketOutcomes,
-} from 'modules/markets/selectors/market';
 import parseQuery from 'modules/routes/helpers/parse-query';
 import {
   MARKET_ID_PARAM_NAME,
@@ -74,7 +70,7 @@ import { NewMarket } from 'modules/types';
 import deepClone from 'utils/deep-clone';
 import { hotLoadMarket } from 'modules/markets/actions/load-markets';
 import {
-  getMarketAgeInDays, convertUnixToFormattedDate,
+ convertUnixToFormattedDate,
 } from 'utils/format-date';
 import { AppStatus } from 'modules/app/store/app-status';
 import { useMarketsStore } from 'modules/markets/store/markets';
@@ -109,7 +105,6 @@ const EmptyOrderBook: IndividualOutcomeOrderBook = {
   bids: [],
   asks: [],
 };
-
 
 function findType(market) {
   if (market) {
@@ -168,6 +163,22 @@ const TUTORIAL_FILL_TRADE = {
   transactionHash: '0xerjejfsdk',
 };
 
+const TUTORIAL_FILL_ALERT = {
+  name: PUBLICFILLORDER,
+  toast: true,
+  id: TRADING_TUTORIAL,
+  uniqueId: TRADING_TUTORIAL,
+  status: TXEventName.Success,
+  params: {
+    market: TRADING_TUTORIAL,
+    amountFilled: TUTORIAL_QUANTITY,
+    orderCreator: '0x1',
+    price: TUTORIAL_PRICE,
+    amount: TUTORIAL_QUANTITY,
+    orderType: BUY,
+  },
+};
+
 const TRADING_TUTORIAL_MARKET = {
   ...deepClone<NewMarket>(EMPTY_STATE),
   id: TRADING_TUTORIAL,
@@ -182,6 +193,8 @@ const TRADING_TUTORIAL_MARKET = {
   groupedTradeHistory: TUTORIAL_TRADING_HISTORY,
   orderBook: TUTORIAL_ORDER_BOOK,
 };
+
+const MARKET_INFO = "Market Info";
 
 const MarketView = ({
   defaultMarket = null,
@@ -221,6 +234,7 @@ const MarketView = ({
   const preview = tradingTutorial || isPreview;
   const market = tradingTutorial ? TRADING_TUTORIAL_MARKET : defaultMarket || marketInfos && marketInfos[marketId] && convertMarketInfoToMarketData(marketInfos[marketId], currentAugurTimestamp * 1000);
   const hasZeroXError = zeroXstatus === ZEROX_STATUSES.ERROR;
+  const zeroXSynced = zeroXstatus === ZEROX_STATUSES.SYNCED;
   const orderBook: Getters.Markets.OutcomeOrderBook = preview ? market.orderBook : (orderBooks[marketId] || {}).orderBook;
   const orderbookLoading = !orderBook;
   const cat5 = findType(market);
@@ -283,7 +297,7 @@ const MarketView = ({
       !!marketId &&
       !tradingTutorial &&
       !preview &&
-      zeroXstatus === ZEROX_STATUSES.SYNCED
+      zeroXSynced
     ) {
       updateMarketsData(null, loadMarketsInfo([marketId]));
       updateOrderBook(marketId, null, loadMarketOrderBook(marketId));
@@ -327,7 +341,7 @@ const MarketView = ({
       ) {
         setModal({
           type: MODAL_TUTORIAL_INTRO,
-          next: next,
+          next,
         });
         setState({
           ...state,
@@ -347,7 +361,7 @@ const MarketView = ({
       !!marketId &&
       !tradingTutorial &&
       !preview &&
-      zeroXstatus === ZEROX_STATUSES.SYNCED
+      zeroXSynced
     ) {
       updateOrderBook(marketId, null, loadMarketOrderBook(marketId));
       updateMarketsData(null, loadMarketsInfo(marketId));
@@ -360,7 +374,7 @@ const MarketView = ({
     if (
       !prevProps.current.tradingTutorial &&
       !scalarModalSeen &&
-      market && market.marketType === SCALAR &&
+      market?.marketType === SCALAR &&
       !hasShownScalarModal
     ) {
       setModal({
@@ -383,6 +397,20 @@ const MarketView = ({
     hasShownScalarModal,
   ]);
 
+  if (!market) {
+    return <div ref={node} className={Styles.MarketView} />;
+  }
+
+  const {
+    description: marketDescription,
+    marketType,
+    tickSize,
+    minPrice,
+    maxPrice,
+    isArchived,
+    groupedTradeHistory,
+  } = market;
+
   function tradingTutorialWidthCheck() {
     if (tradingTutorial && window.innerWidth < 1150) {
       // tablet-max
@@ -393,19 +421,12 @@ const MarketView = ({
   }
 
   function toggleTradeHistory() {
-    if (!extendTradeHistory && extendOrderBook) {
-      setState({
-        ...state,
-        extendTradeHistory: false,
-        extendOrderBook: false,
-      });
-    } else {
-      setState({
-        ...state,
-        extendTradeHistory: !extendTradeHistory,
-        extendOrderBook: false,
-      });
-    }
+    setState({
+      ...state,
+      extendOrderBook: false,
+      extendTradeHistory: 
+        (extendOrderBook && !extendTradeHistory) ? false : !extendTradeHistory,
+    })
   }
 
   function toggleOrderBook() {
@@ -430,7 +451,7 @@ const MarketView = ({
 
   function updateSelectedOrderProperties(selectedOrderProperties) {
     checkTutorialErrors(selectedOrderProperties);
-    if (pane === 'Market Info') {
+    if (pane === MARKET_INFO) {
       document
         .querySelector('.trading-form-styles_TradingForm')
         .scrollIntoView({ block: 'start', behavior: 'smooth' });
@@ -482,13 +503,6 @@ const MarketView = ({
     });
   }
 
-  function back() {
-    setState({
-      ...state,
-      tutorialStep: tutorialStep - 1,
-    });
-  }
-
   function next() {
     if (!checkTutorialErrors(selectedOrderProperties)) {
       setState({
@@ -500,28 +514,19 @@ const MarketView = ({
     if (tutorialStep === TRADING_TUTORIAL_STEPS.OPEN_ORDERS) {
       let outcomeId =
         selectedOutcomeId === null || selectedOutcomeId === undefined
-          ? market && market.defaultSelectedOutcomeId
+          ? market?.defaultSelectedOutcomeId
           : selectedOutcomeId;
       addAlert({
-        name: PUBLICFILLORDER,
-        toast: true,
-        id: TRADING_TUTORIAL,
-        uniqueId: TRADING_TUTORIAL,
-        status: TXEventName.Success,
+        ...TUTORIAL_FILL_ALERT,
         params: {
-          market: TRADING_TUTORIAL,
-          amountFilled: TUTORIAL_QUANTITY,
+          ...TUTORIAL_FILL_ALERT.params,
           outcome: TRADING_TUTORIAL_OUTCOMES[outcomeId].description,
-          orderCreator: '0x1',
-          price: TUTORIAL_PRICE,
-          amount: TUTORIAL_QUANTITY,
-          orderType: BUY,
           marketInfo: {
-            tickSize: market.tickSize,
-            description: market.description,
-            minPrice: market.minPrice,
-            maxPrice: market.maxPrice,
-            marketType: market.marketType,
+            tickSize,
+            description: marketDescription,
+            minPrice,
+            maxPrice,
+            marketType,
           },
         },
       });
@@ -540,10 +545,6 @@ const MarketView = ({
     }
   }
 
-  if (!market) {
-    return <div ref={node} className={Styles.MarketView} />;
-  }
-
   let outcomeOrderBook = EmptyOrderBook;
  
   if (orderBook && orderBook[outcomeIdSet]) {
@@ -551,7 +552,7 @@ const MarketView = ({
   }
 
   if (preview && !tradingTutorial) {
-    outcomeIdSet = getDefaultOutcomeSelected(market.marketType);
+    outcomeIdSet = getDefaultOutcomeSelected(marketType);
     outcomeOrderBook = formatOrderBook(orderBook[outcomeIdSet]);
   }
   let orders = null;
@@ -570,15 +571,15 @@ const MarketView = ({
   const fills = (tradingTutorial && tutorialStep === TRADING_TUTORIAL_STEPS.MY_FILLS) ? [
     {
       ...TUTORIAL_FILL,
-      marketDescription: market.description,
-      marketId: market.id,
+      marketDescription,
+      marketId,
       outcome: TRADING_TUTORIAL_OUTCOMES[outcomeIdSet].description,
       timestamp: convertUnixToFormattedDate(currentAugurTimestamp),
       trades: [
         {
           ...TUTORIAL_FILL_TRADE,
-          marketDescription: market.description,
-          marketId: market.id,
+          marketDescription,
+          marketId,
           outcome: TRADING_TUTORIAL_OUTCOMES[outcomeIdSet].description,
           timestamp: convertUnixToFormattedDate(currentAugurTimestamp),
         },
@@ -613,11 +614,8 @@ const MarketView = ({
     const newOrderBook = orders.filter(order => !order.disappear);
     outcomeOrderBook = formatOrderBook(newOrderBook);
   }
-
-  const {
-    description,
-  } = market;
-
+  const parsedMarketDescription = parseMarketTitle(marketDescription);
+  
   return (
     <MarketProvider
       market={market}
@@ -633,17 +631,17 @@ const MarketView = ({
         {tradingTutorial && <span />}
         <HelmetTag
           {...MARKET_VIEW_HEAD_TAGS}
-          title={parseMarketTitle(description)}
-          ogTitle={parseMarketTitle(description)}
-          twitterTitle={parseMarketTitle(description)}
+          title={parsedMarketDescription}
+          ogTitle={parsedMarketDescription}
+          twitterTitle={parsedMarketDescription}
         />
         <Media
           query={SMALL_MOBILE}
           onChange={matches => {
-            if (matches && pane !== 'Market Info')
+            if (matches && pane !== MARKET_INFO)
               setState({
                 ...state,
-                pane: 'Market Info',
+                pane: MARKET_INFO,
               });
           }}
         >
@@ -667,11 +665,11 @@ const MarketView = ({
                   }
                 >
                   <ModulePane
-                    label="Market Info"
+                    label={MARKET_INFO}
                     onClickCallback={() =>
                       setState({
                         ...state,
-                        pane: 'Market Info',
+                        pane: MARKET_INFO,
                       })
                     }
                   >
@@ -716,13 +714,13 @@ const MarketView = ({
                           <div className={Styles.History}>
                             {(marketId || preview) && (
                               <MarketTradeHistory
-                                isArchived={market.isArchived}
+                                isArchived={isArchived}
                                 marketId={marketId}
                                 outcome={outcomeIdSet}
                                 toggle={toggleTradeHistory}
                                 extend={extendTradeHistory}
                                 hide={extendOrderBook}
-                                marketType={market.marketType}
+                                marketType={marketType}
                               />
                             )}
                           </div>
@@ -757,7 +755,7 @@ const MarketView = ({
                     }}
                   >
                     <div className={Styles.PaneContainer}>
-                      <h1>{description}</h1>
+                      <h1>{marketDescription}</h1>
                       <div className={Styles.PriceHistory}>
                         <h3>Price History</h3>
                         {!preview && (
@@ -771,9 +769,8 @@ const MarketView = ({
                       <MarketChartsPane
                         marketId={!tradingTutorial && marketId}
                         market={preview && market}
-                        isArchived={market.isArchived}
+                        isArchived={isArchived}
                         selectedOutcomeId={outcomeIdSet}
-                        currentTimestamp={currentAugurTimestamp}
                         updateSelectedOrderProperties={
                           updateSelectedOrderProperties
                         }
@@ -792,7 +789,7 @@ const MarketView = ({
                     }
                   >
                     <div className={Styles.PaneContainer}>
-                      <h1>{description}</h1>
+                      <h1>{marketDescription}</h1>
                       <MarketOrdersPositionsTable
                         updateSelectedOrderProperties={
                           updateSelectedOrderProperties
@@ -938,7 +935,7 @@ const MarketView = ({
                   >
                     <MarketChartsPane
                       marketId={!tradingTutorial && marketId}
-                      isArchived={market.isArchived}
+                      isArchived={isArchived}
                       selectedOutcomeId={outcomeIdSet}
                       updateSelectedOrderProperties={
                         updateSelectedOrderProperties
@@ -952,7 +949,6 @@ const MarketView = ({
                       market={preview && market}
                       preview={preview}
                       orderBook={outcomeOrderBook}
-                      canHotload={canHotload}
                       extendOutcomesList={extendOutcomesList}
                     />
                   </div>
@@ -1043,13 +1039,13 @@ const MarketView = ({
                         <MarketTradeHistory
                           marketId={marketId}
                           outcome={outcomeIdSet}
-                          isArchived={market.isArchived}
+                          isArchived={isArchived}
                           toggle={toggleTradeHistory}
                           extend={extendTradeHistory}
-                          marketType={market.marketType}
+                          marketType={marketType}
                           hide={extendOrderBook}
                           tradingTutorial={tradingTutorial}
-                          initialGroupedTradeHistory={market.groupedTradeHistory}
+                          initialGroupedTradeHistory={groupedTradeHistory}
                         />
                       )}
                     </div>

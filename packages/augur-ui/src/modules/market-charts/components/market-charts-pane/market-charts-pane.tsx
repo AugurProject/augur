@@ -1,4 +1,4 @@
-import React, { Component, useState } from 'react';
+import React, { useState } from 'react';
 import Media from 'react-media';
 
 import ModuleTabs from 'modules/market/components/common/module-tabs/module-tabs';
