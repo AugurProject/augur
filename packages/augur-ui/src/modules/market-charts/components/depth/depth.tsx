@@ -1,4 +1,4 @@
-import React, { Component, useRef, useState } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import * as d3 from 'd3';
 import ReactFauxDOM from 'react-faux-dom';
 import memoize from 'memoizee';
@@ -14,8 +14,6 @@ import { selectMarket } from 'modules/markets/selectors/market';
 import getOrderBookKeys from 'modules/markets/helpers/get-orderbook-keys';
 import getPrecision from 'utils/get-number-precision';
 import { isEmpty } from 'utils/is-empty';
-import { useAppStatusStore } from 'modules/app/store/app-status';
-import { useEffect } from 'react';
 
 interface DepthChartProps {
   marketDepth: MarketDepth;
@@ -28,10 +26,6 @@ interface DepthChartProps {
   marketMax: BigNumber;
   hasOrders: boolean;
   hoveredPriceProp?: any;
-}
-
-interface DepthChartState {
-  zoom: number;
 }
 
 const ZOOM_LEVELS = [1, 0.8, 0.6, 0.4, 0.2];
@@ -80,7 +74,6 @@ const DepthChart = ({
   updateSelectedOrderProperties,
   updateHoveredDepth,
   orderBook,
-  selectedOutcomeId,
   market,
   marketId,
   hoveredPriceProp,
@@ -95,17 +88,10 @@ const DepthChart = ({
   let yScaleThis = useRef(0);
 
   market = marketId ? selectMarket(marketId) : market;
-  let isLoading = false;
-  if (market === null) {
-    isLoading = true;
-  }
 
   const cumulativeOrderBook = orderBook;
   const minPrice = market ? createBigNumber(market.minPriceBigNumber) : ZERO;
   const maxPrice = market ? createBigNumber(market.maxPriceBigNumber) : ZERO;
-  const marketOutcome = market?.outcomesFormatted.find(
-    outcome => outcome.id === selectedOutcomeId
-  );
 
   const marketDepth = market ? orderForMarketDepth(cumulativeOrderBook) : null;
   const orderBookKeys = market
@@ -114,11 +100,6 @@ const DepthChart = ({
 
   const pricePrecision = market && getPrecision(market.tickSize, 4);
 
-  const outcomeName = marketOutcome?.description;
-  const selectedOutcome = marketOutcome;
-  const {
-    blockchain: { currentAugurTimestamp: currentTimeInSeconds },
-  } = useAppStatusStore();
   orderBook = cumulativeOrderBook;
   const hasOrders =
     !isEmpty(cumulativeOrderBook[BIDS]) || !isEmpty(cumulativeOrderBook[ASKS]);
@@ -506,7 +487,7 @@ const DepthChart = ({
   }
 
   return (
-    <div ref={depthChartThis} className={Styles.MarketOutcomeDepth__container}>
+    <div ref={depthChartThis} className={Styles.Container}>
       <button onClick={() => handleZoom(-1)} disabled={zoom === 0}>
         {ZoomOutIcon}
       </button>
