@@ -739,7 +739,7 @@ export const CashoutButton = ({
           wager: bet.wager, 
           odds: convertToOdds(bet.normalizedPrice).full,
           cashOut: bet.orderCost,
-          positive: bet.potentialDaiProfit.gt(ZERO)
+          positive: bet.potentialDaiProfit.gt(ZERO),
           cb: () => {
             addPendingData(queueId, CASHOUT, TXEventName.Pending, '', {});
             (async () =>
