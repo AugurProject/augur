@@ -622,6 +622,7 @@ export const ModalCashoutBet = () => {
     wager, 
     cashOut,
     odds,
+    positive,
     cb
   } = modal;
 
@@ -639,11 +640,13 @@ export const ModalCashoutBet = () => {
         },
         {
           label: 'Odds',
-          value: formatDai(odds).full,
+          value: odds,
         },
         {
           label: 'Cash out',
           value: formatDai(cashOut).full,
+          positive: positive,
+          showColor: true
         },
       ]}
       buttons={[

@@ -49,6 +49,7 @@ import { useMarketsStore } from 'modules/markets/store/markets';
 import { useBetslipStore } from 'modules/trading/store/betslip';
 import { createBigNumber } from 'utils/create-big-number';
 import { formatDai } from 'utils/format-number';
+import { convertToOdds } from 'utils/get-odds';
 
 export interface DefaultButtonProps {
   id?: string;
@@ -736,9 +737,9 @@ export const CashoutButton = ({
         setModal({
           type: MODAL_CASHOUT_BET, 
           wager: bet.wager, 
-          odds: bet.odds,
+          odds: convertToOdds(bet.normalizedPrice).full,
           cashOut: bet.orderCost,
-          profit: '0',
+          positive: bet.potentialDaiProfit.gt(ZERO)
           cb: () => {
             addPendingData(queueId, CASHOUT, TXEventName.Pending, '', {});
             (async () =>
