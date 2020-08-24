@@ -20,7 +20,9 @@ describe('3rd Party :: ZeroX :: ', () => {
   let config: SDKConfiguration;
 
   beforeAll(async () => {
-    config = buildConfig('local');
+    config = buildConfig('local', {
+      zeroX: { rpc: { enabled: true } }
+    });
     providerJohn = new EthersProvider(
       new JsonRpcProvider(config.ethereum.http),
       config.ethereum.rpcRetryCount,

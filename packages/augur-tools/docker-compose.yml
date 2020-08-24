@@ -19,4 +19,3 @@ services:
       - BLOCK_POLLING_INTERVAL=1s
       - ETHEREUM_RPC_MAX_REQUESTS_PER_24_HR_UTC=169120 # needed when polling interval is 1s
       - WS_RPC_ADDR=0.0.0.0:60557
-

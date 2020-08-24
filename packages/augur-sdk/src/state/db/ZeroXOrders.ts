@@ -127,9 +127,7 @@ export class ZeroXOrders extends AbstractTable {
     if (orderEvents.length < 1) return;
     const bulkOrderEvents = [];
     const filteredOrders = orderEvents.filter(this.validateOrder, this);
-    console.log("Filtered Orders", filteredOrders);
     let documents: StoredOrder[] = filteredOrders.map(this.processOrder, this);
-    console.log("Processed Orders: ", documents);
 
     // Remove Canceled, Expired, and Invalid Orders and emit event
     const canceledOrders = _.keyBy(
@@ -141,7 +139,7 @@ export class ZeroXOrders extends AbstractTable {
     for (const d of documents) {
       if (!canceledOrders[d.orderHash]) continue;
       // Spread this once to avoid extra copies
-      const eventType = canceledOrders[d.orderHash].endState === "EXPIRED" ? OrderEventType.Expire : OrderEventType.Cancel;
+      const eventType = canceledOrders[d.orderHash].endState === 'EXPIRED' ? OrderEventType.Expire : OrderEventType.Cancel;
       const event = {eventType, orderId: d.orderHash, ...d};
       bulkOrderEvents.push(event);
       this.augur.events.emit(SubscriptionEventName.DBUpdatedZeroXOrders, event);
@@ -172,7 +170,7 @@ export class ZeroXOrders extends AbstractTable {
   async sync(): Promise<void> {
     logger.info('Syncing ZeroX Orders');
     const orders: OrderInfo[] = await this.augur.zeroX.getOrders();
-    let bulkOrderEvents = [];
+    const bulkOrderEvents = [];
     let documents = [];
     if (orders?.length > 0) {
       documents = orders.filter(this.validateOrder, this).map(this.processOrder, this);
