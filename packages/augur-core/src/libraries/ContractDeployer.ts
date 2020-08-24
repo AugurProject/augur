@@ -92,7 +92,7 @@ Deploying to: ${env}
         const walletFactoryAddress = await this.uploadAugurWalletFactory();
         this.augur = await this.uploadAugur();
         this.augurTrading = await this.uploadAugurTrading();
-        this.registerContract("AugurWalletFactory", walletFactoryAddress);
+        await this.registerContract('AugurWalletFactory', walletFactoryAddress);
         await this.uploadAllContracts();
 
         const externalAddresses = this.configuration.deploy.externalAddresses;
@@ -204,7 +204,7 @@ Deploying to: ${env}
             console.log('Initializing warp sync market');
             const warpSync = new WarpSync(this.dependencies, this.getContractAddress('WarpSync'));
             await warpSync.initializeUniverse(this.universe.address);
-            
+
             const cash = new Cash(this.dependencies, this.getContractAddress('Cash'));
 
             console.log('Approving Augur');
