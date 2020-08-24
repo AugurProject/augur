@@ -67,7 +67,7 @@ export const convertPositionToBet = (position, marketInfo) => {
   };
 };
 
-const findProceeds = (realizedPercent, realizedCost, settlementFee) => {
+export const findProceeds = (realizedPercent, realizedCost, settlementFee) => {
   const bnSettlementFee = createBigNumber(settlementFee, 10);
   const bnRealizedPercent = createBigNumber(realizedPercent);
   const bnRealizedCost = createBigNumber(realizedCost);

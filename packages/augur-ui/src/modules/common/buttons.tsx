@@ -42,7 +42,7 @@ import { TXEventName } from '@augurproject/sdk-lite';
 import { addCategoryStats } from 'modules/create-market/get-template';
 import ChevronFlip from 'modules/common/chevron-flip';
 import { Link } from 'react-router-dom';
-import { getOrderShareProfitLoss } from 'utils/betslip-helpers';
+import { getOrderShareProfitLoss, findProceeds } from 'utils/betslip-helpers';
 import { removePendingData } from 'modules/pending-queue/actions/pending-queue-management';
 import { useAppStatusStore } from 'modules/app/store/app-status';
 import { useMarketsStore } from 'modules/markets/store/markets';
@@ -703,6 +703,7 @@ export const CashoutButton = ({
   const queueId = `${bet.marketId}_${bet.orderId}`;
   const pending = pendingQueue[CASHOUT] && pendingQueue[CASHOUT][queueId];
   const market = marketInfos[bet.marketId];
+  const position = positions[bet.marketId]?.tradingPositions[bet.outcomeId];
 
   useEffect(() => {
     getOrderShareProfitLoss(bet, orderBooks, (potentialDaiProfit, topBidPrice, orderCost) => {
@@ -710,12 +711,18 @@ export const CashoutButton = ({
         ...bet,
         topBidPrice,
         orderCost,
-        potentialDaiProfit
+        potentialDaiProfit,
+        closedPotentialDaiProfit: position?.priorPosition ? position.realized : null
+        closedOrderCost: position?.priorPosition ? findProceeds(
+          position.realizedPercent,
+          position.realizedCost,
+          market.settlementFee
+        )
+      : null,
       })
     })
   }, [marketInfos[bet.marketId], orderBooks[bet.marketId]]);
 
-  const position = positions[bet.marketId]?.tradingPositions[bet.outcomeId];
   if (position?.priorPosition) {
     didWin = bet.closedPotentialDaiProfit ? createBigNumber(bet.closedPotentialDaiProfit).gt(ZERO) : false;
     loss = bet.closedPotentialDaiProfit ? createBigNumber(bet.closedPotentialDaiProfit).lt(ZERO) : false;
@@ -757,6 +764,7 @@ export const CashoutButton = ({
                 0,
                 '0',
                 undefined
+              ).then(() => addPendingData(queueId, CASHOUT, TXEventName.Success, '', {})
               ).catch(error => addPendingData(queueId, CASHOUT, TXEventName.Failure, '', {}))
           )();
         }});
