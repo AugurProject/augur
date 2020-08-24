@@ -86,6 +86,8 @@ import { addAlert } from 'modules/alerts/actions/alerts';
 import OrderBook from 'modules/market-charts/components/order-book/order-book';
 import { formatDai, formatShares } from 'utils/format-number';
 
+import { MarketProvider } from 'modules/market/store/market';
+
 interface MarketViewProps {
   history: History;
   defaultMarket: MarketData;
@@ -108,9 +110,24 @@ const EmptyOrderBook: IndividualOutcomeOrderBook = {
   asks: [],
 };
 
+
+function findType(market) {
+  if (market) {
+    const { numOutcomes, marketType } = market;
+
+    if (marketType === CATEGORICAL && numOutcomes > 4) {
+      return true;
+    } else {
+      return false;
+    }
+  } else {
+    return true;
+  }
+}
+
 const MarketView = ({
-  defaultMarket,
-  isPreview
+  defaultMarket = null,
+  isPreview = null
 }: MarketViewProps) => {
   const {
     loginAccount,
@@ -122,10 +139,19 @@ const MarketView = ({
     blockchain: { currentAugurTimestamp },
     actions: { setModal, closeModal }
   } = useAppStatusStore();
-  const { marketInfos, orderBooks, actions: { updateOrderBook, bulkMarketTradingHistory, updateMarketsData } } = useMarketsStore();
+  const {
+    marketInfos,
+    orderBooks,
+    actions: {
+      updateOrderBook,
+      bulkMarketTradingHistory,
+      updateMarketsData
+    },
+  } = useMarketsStore();
   const location = useLocation();
   const history = useHistory();
   const node = useRef(null);
+  const prevProps = useRef();
   const queryId = parseQuery(location.search)[MARKET_ID_PARAM_NAME];
   const marketId = (queryId === TRADING_TUTORIAL || isPreview) ? queryId : getAddress(queryId);
   const queryOutcomeId = parseQuery(location.search)[
@@ -184,7 +210,7 @@ const MarketView = ({
     hasZeroXError = zeroXstatus === ZEROX_STATUSES.ERROR;
   }
 
-  const cat5 = findType();
+  const cat5 = findType(market);
   const [state, setState] = useState({
     pane: null,
     introShowing: false,
@@ -227,8 +253,6 @@ const MarketView = ({
     selectedOutcomeId === null || selectedOutcomeId === undefined
       ? market && market.defaultSelectedOutcomeId
       : selectedOutcomeId;
-
-  const prevProps = useRef();
 
   useEffect(() => {
     if (!preview && !hasZeroXError) {
@@ -348,20 +372,6 @@ const MarketView = ({
     scalarModalSeen,
     hasShownScalarModal,
   ]);
-
-  function findType() {
-    if (market) {
-      const { numOutcomes, marketType } = market;
-
-      if (marketType === CATEGORICAL && numOutcomes > 4) {
-        return true;
-      } else {
-        return false;
-      }
-    } else {
-      return true;
-    }
-  }
 
   function tradingTutorialWidthCheck() {
     if (tradingTutorial && window.innerWidth < 1150) {
@@ -645,111 +655,265 @@ const MarketView = ({
   } = market;
 
   return (
-    <div
-      ref={node}
-      className={classNames(Styles.MarketView, {
-        [Styles.Inactive]: preview,
-      })}
+    <MarketProvider
+      market={market}
+      defaultMarket={defaultMarket}
+      isPreview={isPreview}
     >
-      {tradingTutorial && <span />}
-      <HelmetTag
-        {...MARKET_VIEW_HEAD_TAGS}
-        title={parseMarketTitle(description)}
-        ogTitle={parseMarketTitle(description)}
-        twitterTitle={parseMarketTitle(description)}
-      />
-      <Media
-        query={SMALL_MOBILE}
-        onChange={matches => {
-          if (matches && pane !== 'Market Info')
-            setState({
-              ...state,
-              pane: 'Market Info',
-            });
-        }}
+      <div
+        ref={node}
+        className={classNames(Styles.MarketView, {
+          [Styles.Inactive]: preview,
+        })}
       >
-        {matches =>
-          matches ? (
-            <>
-              <StatusErrorMessage />
-              <ModuleTabs
-                selected={0}
-                fillWidth
-                noBorder
-                id="mobileView"
-                scrollOver={matches && !preview}
-                leftButton={
-                  <button
-                    className={Styles.BackButton}
-                    onClick={() => history.goBack()}
-                  >
-                    {LeftChevron}
-                  </button>
-                }
-              >
-                <ModulePane
-                  label="Market Info"
-                  onClickCallback={() =>
-                    setState({
-                      ...state,
-                      pane: 'Market Info',
-                    })
+        {tradingTutorial && <span />}
+        <HelmetTag
+          {...MARKET_VIEW_HEAD_TAGS}
+          title={parseMarketTitle(description)}
+          ogTitle={parseMarketTitle(description)}
+          twitterTitle={parseMarketTitle(description)}
+        />
+        <Media
+          query={SMALL_MOBILE}
+          onChange={matches => {
+            if (matches && pane !== 'Market Info')
+              setState({
+                ...state,
+                pane: 'Market Info',
+              });
+          }}
+        >
+          {matches =>
+            matches ? (
+              <>
+                <StatusErrorMessage />
+                <ModuleTabs
+                  selected={0}
+                  fillWidth
+                  noBorder
+                  id="mobileView"
+                  scrollOver={matches && !preview}
+                  leftButton={
+                    <button
+                      className={Styles.BackButton}
+                      onClick={() => history.goBack()}
+                    >
+                      {LeftChevron}
+                    </button>
                   }
                 >
-                  <div className={Styles.PaneContainer}>
+                  <ModulePane
+                    label="Market Info"
+                    onClickCallback={() =>
+                      setState({
+                        ...state,
+                        pane: 'Market Info',
+                      })
+                    }
+                  >
+                    <div className={Styles.PaneContainer}>
+                      <MarketHeader
+                        marketId={marketId}
+                        market={preview && market}
+                        preview={preview}
+                      />
+                      <MarketOutcomesList
+                        marketId={marketId}
+                        market={market}
+                        preview={preview}
+                        selectedOutcomeId={outcomeIdSet}
+                        updateSelectedOutcome={updateSelectedOutcome}
+                        orderBook={orderBook}
+                        updateSelectedOrderProperties={
+                          updateSelectedOrderProperties
+                        }
+                      />
+                      <ModuleTabs selected={0} fillForMobile>
+                        <ModulePane status={zeroXstatus} label="Order Book">
+                          <div className={Styles.Orders}>
+                            <OrderBook
+                              updateSelectedOrderProperties={
+                                updateSelectedOrderProperties
+                              }
+                              marketId={marketId}
+                              selectedOutcomeId={outcomeIdSet}
+                              toggle={toggleOrderBook}
+                              extend={extendOrderBook}
+                              hide={extendTradeHistory}
+                              market={market}
+                              initialLiquidity={preview}
+                              orderBook={outcomeOrderBook}
+                              showButtons
+                              orderbookLoading={orderbookLoading}
+                            />
+                          </div>
+                        </ModulePane>
+                        <ModulePane label="Trade History">
+                          <div className={Styles.History}>
+                            {(marketId || preview) && (
+                              <MarketTradeHistory
+                                isArchived={market.isArchived}
+                                marketId={marketId}
+                                outcome={outcomeIdSet}
+                                toggle={toggleTradeHistory}
+                                extend={extendTradeHistory}
+                                hide={extendOrderBook}
+                                marketType={market.marketType}
+                              />
+                            )}
+                          </div>
+                        </ModulePane>
+                      </ModuleTabs>
+
+                      <TradingForm
+                        market={market}
+                        initialLiquidity={preview && !tradingTutorial}
+                        tradingTutorial={tradingTutorial}
+                        selectedOrderProperties={selectedOrderProperties}
+                        selectedOutcomeId={outcomeIdSet}
+                        updateSelectedOutcome={updateSelectedOutcome}
+                        orderBook={outcomeOrderBook}
+                        updateSelectedOrderProperties={
+                          updateSelectedOrderProperties
+                        }
+                      />
+                    </div>
+                  </ModulePane>
+                  <ModulePane
+                    label="Charts"
+                    onClickCallback={() => {
+                      setState({
+                        ...state,
+                        pane: 'Charts',
+                      });
+                      node.children[0].children[1].scrollTo({
+                        top: 0,
+                        behavior: 'smooth',
+                      });
+                    }}
+                  >
+                    <div className={Styles.PaneContainer}>
+                      <h1>{description}</h1>
+                      <div className={Styles.PriceHistory}>
+                        <h3>Price History</h3>
+                        {!preview && (
+                          <PriceHistory
+                            marketId={marketId}
+                            market={preview && market}
+                            selectedOutcomeId={outcomeIdSet}
+                          />
+                        )}
+                      </div>
+                      <MarketChartsPane
+                        marketId={!tradingTutorial && marketId}
+                        market={preview && market}
+                        isArchived={market.isArchived}
+                        selectedOutcomeId={outcomeIdSet}
+                        currentTimestamp={currentAugurTimestamp}
+                        updateSelectedOrderProperties={
+                          updateSelectedOrderProperties
+                        }
+                        preview={preview}
+                        orderBook={outcomeOrderBook}
+                      />
+                    </div>
+                  </ModulePane>
+                  <ModulePane
+                    label="Orders/Position"
+                    onClickCallback={() =>
+                      setState({
+                        ...state,
+                        pane: 'Orders/Position',
+                      })
+                    }
+                  >
+                    <div className={Styles.PaneContainer}>
+                      <h1>{description}</h1>
+                      <MarketOrdersPositionsTable
+                        updateSelectedOrderProperties={
+                          updateSelectedOrderProperties
+                        }
+                        marketId={marketId}
+                        market={preview && market}
+                        preview={preview}
+                        tradingTutorial={tradingTutorial}
+                        orders={orders}
+                        fills={fills}
+                      />
+                    </div>
+                  </ModulePane>
+                </ModuleTabs>
+                <MarketComments marketId={marketId} networkId={networkId} />
+              </>
+            ) : (
+              <>
+                <div
+                  className={classNames(Styles.container, {
+                    [Styles.Tutorial]: tradingTutorial,
+                  })}
+                >
+                  <div
+                    className={classNames(Styles.Header, {
+                      [Styles.HeaderTutorial]:
+                        tradingTutorial &&
+                        tutorialStep === TRADING_TUTORIAL_STEPS.MARKET_DETAILS,
+                    })}
+                  >
                     <MarketHeader
                       marketId={marketId}
                       market={preview && market}
                       preview={preview}
-                    />
-                    <MarketOutcomesList
-                      marketId={marketId}
-                      market={market}
-                      preview={preview}
-                      selectedOutcomeId={outcomeIdSet}
-                      updateSelectedOutcome={updateSelectedOutcome}
-                      orderBook={orderBook}
-                      updateSelectedOrderProperties={
-                        updateSelectedOrderProperties
+                      next={next}
+                      showTutorialData={
+                        tradingTutorial &&
+                        tutorialStep === TRADING_TUTORIAL_STEPS.MARKET_DATA
+                      }
+                      step={tutorialStep}
+                      totalSteps={totalSteps}
+                      text={TRADING_TUTORIAL_COPY[tutorialStep]}
+                      showTutorialDetails={
+                        tradingTutorial &&
+                        tutorialStep === TRADING_TUTORIAL_STEPS.MARKET_DETAILS
                       }
                     />
-                    <ModuleTabs selected={0} fillForMobile>
-                      <ModulePane status={zeroXstatus} label="Order Book">
-                        <div className={Styles.Orders}>
-                          <OrderBook
-                            updateSelectedOrderProperties={
-                              updateSelectedOrderProperties
-                            }
-                            marketId={marketId}
-                            selectedOutcomeId={outcomeIdSet}
-                            toggle={toggleOrderBook}
-                            extend={extendOrderBook}
-                            hide={extendTradeHistory}
-                            market={market}
-                            initialLiquidity={preview}
-                            orderBook={outcomeOrderBook}
-                            showButtons
-                            orderbookLoading={orderbookLoading}
-                          />
-                        </div>
-                      </ModulePane>
-                      <ModulePane label="Trade History">
-                        <div className={Styles.History}>
-                          {(marketId || preview) && (
-                            <MarketTradeHistory
-                              isArchived={market.isArchived}
-                              marketId={marketId}
-                              outcome={outcomeIdSet}
-                              toggle={toggleTradeHistory}
-                              extend={extendTradeHistory}
-                              hide={extendOrderBook}
-                              marketType={market.marketType}
-                            />
-                          )}
-                        </div>
-                      </ModulePane>
-                    </ModuleTabs>
-
+                    {tradingTutorial &&
+                      tutorialStep === TRADING_TUTORIAL_STEPS.MARKET_DETAILS && (
+                        <TutorialPopUp
+                          top
+                          step={tutorialStep}
+                          totalSteps={totalSteps}
+                          text={TRADING_TUTORIAL_COPY[tutorialStep]}
+                          next={next}
+                        />
+                      )}
+                  </div>
+                  <div
+                    className={classNames(Styles.TradingForm, {
+                      [Styles.TradingFormTutorial]:
+                        tradingTutorial &&
+                        ((tutorialStep >= TRADING_TUTORIAL_STEPS.BUYING_SHARES &&
+                          tutorialStep <= TRADING_TUTORIAL_STEPS.ORDER_VALUE) ||
+                          tutorialStep === TRADING_TUTORIAL_STEPS.PLACE_ORDER),
+                      [Styles.PlaceOrderTutorial]:
+                        tradingTutorial &&
+                        tutorialStep === TRADING_TUTORIAL_STEPS.PLACE_ORDER,
+                      [Styles.SelectOutcomeTutorial]:
+                        tradingTutorial &&
+                        tutorialStep === TRADING_TUTORIAL_STEPS.SELECT_OUTCOME,
+                      [Styles.BuyingSharesTutorial]:
+                        tradingTutorial &&
+                        tutorialStep === TRADING_TUTORIAL_STEPS.BUYING_SHARES,
+                      [Styles.QuantityTutorial]:
+                        tradingTutorial &&
+                        tutorialStep === TRADING_TUTORIAL_STEPS.QUANTITY,
+                      [Styles.LimitPriceTutorial]:
+                        tradingTutorial &&
+                        tutorialStep === TRADING_TUTORIAL_STEPS.LIMIT_PRICE,
+                      [Styles.OrderValueTutorial]:
+                        tradingTutorial &&
+                        tutorialStep === TRADING_TUTORIAL_STEPS.ORDER_VALUE,
+                    })}
+                  >
                     <TradingForm
                       market={market}
                       initialLiquidity={preview && !tradingTutorial}
@@ -757,294 +921,110 @@ const MarketView = ({
                       selectedOrderProperties={selectedOrderProperties}
                       selectedOutcomeId={outcomeIdSet}
                       updateSelectedOutcome={updateSelectedOutcome}
-                      orderBook={outcomeOrderBook}
                       updateSelectedOrderProperties={
                         updateSelectedOrderProperties
                       }
+                      tutorialNext={next}
                     />
-                  </div>
-                </ModulePane>
-                <ModulePane
-                  label="Charts"
-                  onClickCallback={() => {
-                    setState({
-                      ...state,
-                      pane: 'Charts',
-                    });
-                    node.children[0].children[1].scrollTo({
-                      top: 0,
-                      behavior: 'smooth',
-                    });
-                  }}
-                >
-                  <div className={Styles.PaneContainer}>
-                    <h1>{description}</h1>
-                    <div className={Styles.PriceHistory}>
-                      <h3>Price History</h3>
-                      {!preview && (
-                        <PriceHistory
-                          marketId={marketId}
-                          market={preview && market}
-                          selectedOutcomeId={outcomeIdSet}
+                    {tradingTutorial &&
+                      ((tutorialStep >= TRADING_TUTORIAL_STEPS.BUYING_SHARES &&
+                        tutorialStep <= TRADING_TUTORIAL_STEPS.ORDER_VALUE) ||
+                        tutorialStep === TRADING_TUTORIAL_STEPS.PLACE_ORDER) && (
+                        <TutorialPopUp
+                          left={
+                            tutorialStep !== TRADING_TUTORIAL_STEPS.PLACE_ORDER
+                          }
+                          leftBottom={
+                            tutorialStep === TRADING_TUTORIAL_STEPS.PLACE_ORDER
+                          }
+                          next={() => {
+                            if (
+                              tutorialStep === TRADING_TUTORIAL_STEPS.PLACE_ORDER
+                            ) {
+                              updateSelectedOrderProperties({
+                                orderQuantity: '',
+                                orderPrice: '',
+                              });
+                            }
+                            next();
+                          }}
+                          step={tutorialStep}
+                          totalSteps={totalSteps}
+                          text={TRADING_TUTORIAL_COPY[tutorialStep]}
+                          error={tutorialError !== '' ? tutorialError : null}
                         />
                       )}
-                    </div>
+                  </div>
+                  <MarketOutcomesList
+                    marketId={marketId}
+                    market={market}
+                    preview={preview}
+                    selectedOutcomeId={outcomeIdSet}
+                    updateSelectedOutcome={updateSelectedOutcome}
+                    hideOutcomes={cat5 ? !extendOutcomesList : false}
+                    orderBook={orderBook}
+                    updateSelectedOrderProperties={updateSelectedOrderProperties}
+                  />
+                  <div
+                    className={classNames(Styles.ChartsPane, {
+                      [Styles.Hide]: cat5 ? extendOutcomesList : extendOrders,
+                    })}
+                  >
                     <MarketChartsPane
                       marketId={!tradingTutorial && marketId}
-                      market={preview && market}
                       isArchived={market.isArchived}
                       selectedOutcomeId={outcomeIdSet}
-                      currentTimestamp={currentAugurTimestamp}
                       updateSelectedOrderProperties={
                         updateSelectedOrderProperties
                       }
+                      tradingTutorial={tradingTutorial}
+                      toggle={
+                        cat5
+                          ? () => toggleMiddleColumn('extendOutcomesList')
+                          : null
+                      }
+                      market={preview && market}
                       preview={preview}
                       orderBook={outcomeOrderBook}
+                      canHotload={canHotload}
+                      extendOutcomesList={extendOutcomesList}
                     />
                   </div>
-                </ModulePane>
-                <ModulePane
-                  label="Orders/Position"
-                  onClickCallback={() =>
-                    setState({
-                      ...state,
-                      pane: 'Orders/Position',
-                    })
-                  }
-                >
-                  <div className={Styles.PaneContainer}>
-                    <h1>{description}</h1>
+                  <div
+                    className={classNames(Styles.OrdersPane, {
+                      [Styles.OpenOrdersTutorial]:
+                        tradingTutorial &&
+                        tutorialStep === TRADING_TUTORIAL_STEPS.OPEN_ORDERS,
+                      [Styles.FillsTutorial]:
+                        tradingTutorial &&
+                        tutorialStep === TRADING_TUTORIAL_STEPS.MY_FILLS,
+                      [Styles.PositionsTutorial]:
+                        tradingTutorial &&
+                        tutorialStep === TRADING_TUTORIAL_STEPS.POSITIONS,
+                    })}
+                  >
                     <MarketOrdersPositionsTable
                       updateSelectedOrderProperties={
                         updateSelectedOrderProperties
                       }
                       marketId={marketId}
+                      toggle={
+                        cat5 ? null : () => toggleMiddleColumn('extendOrders')
+                      }
                       market={preview && market}
                       preview={preview}
                       tradingTutorial={tradingTutorial}
                       orders={orders}
                       fills={fills}
-                    />
-                  </div>
-                </ModulePane>
-              </ModuleTabs>
-              <MarketComments marketId={marketId} networkId={networkId} />
-            </>
-          ) : (
-            <>
-              <div
-                className={classNames(Styles.container, {
-                  [Styles.Tutorial]: tradingTutorial,
-                })}
-              >
-                <div
-                  className={classNames(Styles.Header, {
-                    [Styles.HeaderTutorial]:
-                      tradingTutorial &&
-                      tutorialStep === TRADING_TUTORIAL_STEPS.MARKET_DETAILS,
-                  })}
-                >
-                  <MarketHeader
-                    marketId={marketId}
-                    market={preview && market}
-                    preview={preview}
-                    next={next}
-                    showTutorialData={
-                      tradingTutorial &&
-                      tutorialStep === TRADING_TUTORIAL_STEPS.MARKET_DATA
-                    }
-                    step={tutorialStep}
-                    totalSteps={totalSteps}
-                    text={TRADING_TUTORIAL_COPY[tutorialStep]}
-                    showTutorialDetails={
-                      tradingTutorial &&
-                      tutorialStep === TRADING_TUTORIAL_STEPS.MARKET_DETAILS
-                    }
-                  />
-                  {tradingTutorial &&
-                    tutorialStep === TRADING_TUTORIAL_STEPS.MARKET_DETAILS && (
-                      <TutorialPopUp
-                        top
-                        step={tutorialStep}
-                        totalSteps={totalSteps}
-                        text={TRADING_TUTORIAL_COPY[tutorialStep]}
-                        next={next}
-                      />
-                    )}
-                </div>
-                <div
-                  className={classNames(Styles.TradingForm, {
-                    [Styles.TradingFormTutorial]:
-                      tradingTutorial &&
-                      ((tutorialStep >= TRADING_TUTORIAL_STEPS.BUYING_SHARES &&
-                        tutorialStep <= TRADING_TUTORIAL_STEPS.ORDER_VALUE) ||
-                        tutorialStep === TRADING_TUTORIAL_STEPS.PLACE_ORDER),
-                    [Styles.PlaceOrderTutorial]:
-                      tradingTutorial &&
-                      tutorialStep === TRADING_TUTORIAL_STEPS.PLACE_ORDER,
-                    [Styles.SelectOutcomeTutorial]:
-                      tradingTutorial &&
-                      tutorialStep === TRADING_TUTORIAL_STEPS.SELECT_OUTCOME,
-                    [Styles.BuyingSharesTutorial]:
-                      tradingTutorial &&
-                      tutorialStep === TRADING_TUTORIAL_STEPS.BUYING_SHARES,
-                    [Styles.QuantityTutorial]:
-                      tradingTutorial &&
-                      tutorialStep === TRADING_TUTORIAL_STEPS.QUANTITY,
-                    [Styles.LimitPriceTutorial]:
-                      tradingTutorial &&
-                      tutorialStep === TRADING_TUTORIAL_STEPS.LIMIT_PRICE,
-                    [Styles.OrderValueTutorial]:
-                      tradingTutorial &&
-                      tutorialStep === TRADING_TUTORIAL_STEPS.ORDER_VALUE,
-                  })}
-                >
-                  <TradingForm
-                    market={market}
-                    initialLiquidity={preview && !tradingTutorial}
-                    tradingTutorial={tradingTutorial}
-                    selectedOrderProperties={selectedOrderProperties}
-                    selectedOutcomeId={outcomeIdSet}
-                    updateSelectedOutcome={updateSelectedOutcome}
-                    updateSelectedOrderProperties={
-                      updateSelectedOrderProperties
-                    }
-                    tutorialNext={next}
-                  />
-                  {tradingTutorial &&
-                    ((tutorialStep >= TRADING_TUTORIAL_STEPS.BUYING_SHARES &&
-                      tutorialStep <= TRADING_TUTORIAL_STEPS.ORDER_VALUE) ||
-                      tutorialStep === TRADING_TUTORIAL_STEPS.PLACE_ORDER) && (
-                      <TutorialPopUp
-                        left={
-                          tutorialStep !== TRADING_TUTORIAL_STEPS.PLACE_ORDER
-                        }
-                        leftBottom={
-                          tutorialStep === TRADING_TUTORIAL_STEPS.PLACE_ORDER
-                        }
-                        next={() => {
-                          if (
-                            tutorialStep === TRADING_TUTORIAL_STEPS.PLACE_ORDER
-                          ) {
-                            updateSelectedOrderProperties({
-                              orderQuantity: '',
-                              orderPrice: '',
-                            });
-                          }
-                          next();
-                        }}
-                        step={tutorialStep}
-                        totalSteps={totalSteps}
-                        text={TRADING_TUTORIAL_COPY[tutorialStep]}
-                        error={tutorialError !== '' ? tutorialError : null}
-                      />
-                    )}
-                </div>
-                <MarketOutcomesList
-                  marketId={marketId}
-                  market={market}
-                  preview={preview}
-                  selectedOutcomeId={outcomeIdSet}
-                  updateSelectedOutcome={updateSelectedOutcome}
-                  hideOutcomes={cat5 ? !extendOutcomesList : false}
-                  orderBook={orderBook}
-                  updateSelectedOrderProperties={updateSelectedOrderProperties}
-                />
-                <div
-                  className={classNames(Styles.ChartsPane, {
-                    [Styles.Hide]: cat5 ? extendOutcomesList : extendOrders,
-                  })}
-                >
-                  <MarketChartsPane
-                    marketId={!tradingTutorial && marketId}
-                    isArchived={market.isArchived}
-                    selectedOutcomeId={outcomeIdSet}
-                    updateSelectedOrderProperties={
-                      updateSelectedOrderProperties
-                    }
-                    tradingTutorial={tradingTutorial}
-                    toggle={
-                      cat5
-                        ? () => toggleMiddleColumn('extendOutcomesList')
-                        : null
-                    }
-                    market={preview && market}
-                    preview={preview}
-                    orderBook={outcomeOrderBook}
-                    canHotload={canHotload}
-                    extendOutcomesList={extendOutcomesList}
-                  />
-                </div>
-                <div
-                  className={classNames(Styles.OrdersPane, {
-                    [Styles.OpenOrdersTutorial]:
-                      tradingTutorial &&
-                      tutorialStep === TRADING_TUTORIAL_STEPS.OPEN_ORDERS,
-                    [Styles.FillsTutorial]:
-                      tradingTutorial &&
-                      tutorialStep === TRADING_TUTORIAL_STEPS.MY_FILLS,
-                    [Styles.PositionsTutorial]:
-                      tradingTutorial &&
-                      tutorialStep === TRADING_TUTORIAL_STEPS.POSITIONS,
-                  })}
-                >
-                  <MarketOrdersPositionsTable
-                    updateSelectedOrderProperties={
-                      updateSelectedOrderProperties
-                    }
-                    marketId={marketId}
-                    toggle={
-                      cat5 ? null : () => toggleMiddleColumn('extendOrders')
-                    }
-                    market={preview && market}
-                    preview={preview}
-                    tradingTutorial={tradingTutorial}
-                    orders={orders}
-                    fills={fills}
-                    positions={positions}
-                    selected={selected}
-                  />
-                  {tradingTutorial &&
-                    (tutorialStep === TRADING_TUTORIAL_STEPS.OPEN_ORDERS ||
-                      tutorialStep === TRADING_TUTORIAL_STEPS.MY_FILLS ||
-                      tutorialStep === TRADING_TUTORIAL_STEPS.POSITIONS) && (
-                      <TutorialPopUp
-                        bottom
-                        next={next}
-                        step={tutorialStep}
-                        totalSteps={totalSteps}
-                        text={TRADING_TUTORIAL_COPY[tutorialStep]}
-                      />
-                    )}
-                </div>
-                <div className={Styles.OrderBookAndHistory}>
-                  <div
-                    className={classNames(Styles.OrderBook, {
-                      [Styles.hide]: extendTradeHistory,
-                      [Styles.show]: extendOrderBook,
-                      [Styles.OrderBookTutorial]:
-                        tradingTutorial &&
-                        tutorialStep === TRADING_TUTORIAL_STEPS.ORDER_BOOK,
-                    })}
-                  >
-                    <OrderBook
-                      updateSelectedOrderProperties={
-                        updateSelectedOrderProperties
-                      }
-                      marketId={marketId}
-                      selectedOutcomeId={outcomeIdSet}
-                      toggle={toggleOrderBook}
-                      extend={extendOrderBook}
-                      hide={extendTradeHistory}
-                      market={market}
-                      initialLiquidity={preview}
-                      orderBook={outcomeOrderBook}
-                      orderbookLoading={orderbookLoading}
+                      positions={positions}
+                      selected={selected}
                     />
                     {tradingTutorial &&
-                      tutorialStep === TRADING_TUTORIAL_STEPS.ORDER_BOOK && (
+                      (tutorialStep === TRADING_TUTORIAL_STEPS.OPEN_ORDERS ||
+                        tutorialStep === TRADING_TUTORIAL_STEPS.MY_FILLS ||
+                        tutorialStep === TRADING_TUTORIAL_STEPS.POSITIONS) && (
                         <TutorialPopUp
-                          right
+                          bottom
                           next={next}
                           step={tutorialStep}
                           totalSteps={totalSteps}
@@ -1052,36 +1032,72 @@ const MarketView = ({
                         />
                       )}
                   </div>
-                  <div
-                    className={classNames(Styles.History, {
-                      [Styles.hide]: extendOrderBook,
-                      [Styles.show]: extendTradeHistory,
-                    })}
-                  >
-                    {(marketId || preview) && (
-                      <MarketTradeHistory
+                  <div className={Styles.OrderBookAndHistory}>
+                    <div
+                      className={classNames(Styles.OrderBook, {
+                        [Styles.hide]: extendTradeHistory,
+                        [Styles.show]: extendOrderBook,
+                        [Styles.OrderBookTutorial]:
+                          tradingTutorial &&
+                          tutorialStep === TRADING_TUTORIAL_STEPS.ORDER_BOOK,
+                      })}
+                    >
+                      <OrderBook
+                        updateSelectedOrderProperties={
+                          updateSelectedOrderProperties
+                        }
                         marketId={marketId}
-                        outcome={outcomeIdSet}
-                        isArchived={market.isArchived}
-                        toggle={toggleTradeHistory}
-                        extend={extendTradeHistory}
-                        marketType={market.marketType}
-                        hide={extendOrderBook}
-                        tradingTutorial={tradingTutorial}
-                        initialGroupedTradeHistory={market.groupedTradeHistory}
+                        selectedOutcomeId={outcomeIdSet}
+                        toggle={toggleOrderBook}
+                        extend={extendOrderBook}
+                        hide={extendTradeHistory}
+                        market={market}
+                        initialLiquidity={preview}
+                        orderBook={outcomeOrderBook}
+                        orderbookLoading={orderbookLoading}
                       />
-                    )}
+                      {tradingTutorial &&
+                        tutorialStep === TRADING_TUTORIAL_STEPS.ORDER_BOOK && (
+                          <TutorialPopUp
+                            right
+                            next={next}
+                            step={tutorialStep}
+                            totalSteps={totalSteps}
+                            text={TRADING_TUTORIAL_COPY[tutorialStep]}
+                          />
+                        )}
+                    </div>
+                    <div
+                      className={classNames(Styles.History, {
+                        [Styles.hide]: extendOrderBook,
+                        [Styles.show]: extendTradeHistory,
+                      })}
+                    >
+                      {(marketId || preview) && (
+                        <MarketTradeHistory
+                          marketId={marketId}
+                          outcome={outcomeIdSet}
+                          isArchived={market.isArchived}
+                          toggle={toggleTradeHistory}
+                          extend={extendTradeHistory}
+                          marketType={market.marketType}
+                          hide={extendOrderBook}
+                          tradingTutorial={tradingTutorial}
+                          initialGroupedTradeHistory={market.groupedTradeHistory}
+                        />
+                      )}
+                    </div>
                   </div>
                 </div>
-              </div>
-              {!tradingTutorial && (
-                <MarketComments marketId={marketId} networkId={networkId} />
-              )}
-            </>
-          )
-        }
-      </Media>
-    </div>
+                {!tradingTutorial && (
+                  <MarketComments marketId={marketId} networkId={networkId} />
+                )}
+              </>
+            )
+          }
+        </Media>
+      </div>
+    </MarketProvider>
   );
 };
 
