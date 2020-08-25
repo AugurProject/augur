@@ -712,7 +712,7 @@ export const CashoutButton = ({
         topBidPrice,
         orderCost,
         potentialDaiProfit,
-        closedPotentialDaiProfit: position?.priorPosition ? position.realized : null
+        closedPotentialDaiProfit: position?.priorPosition ? position.realized : null,
         closedOrderCost: position?.priorPosition ? findProceeds(
           position.realizedPercent,
           position.realizedCost,
