@@ -80,12 +80,12 @@ import {
   TRADING_TUTORIAL_MARKET,
   DEFAULT_ORDER_PROPERTIES,
 } from 'modules/market/store/constants';
+import { getIsTutorial, getIsPreview } from 'modules/market/store/market-utils';
 
 
 interface MarketViewProps {
   history: History;
   defaultMarket: MarketData;
-  isPreview?: boolean;
 }
 
 export interface DefaultOrderPropertiesMap {
@@ -109,7 +109,6 @@ const {
 
 const MarketView = ({
   defaultMarket = null,
-  isPreview = null
 }: MarketViewProps) => {
   const {
     universe,
@@ -137,20 +136,19 @@ const MarketView = ({
     [MARKET_ID_PARAM_NAME]: queryId,
     [OUTCOME_ID_PARAM_NAME]: queryOutcomeId,
   } = parseQuery(location.search);
+  const isPreview = getIsPreview(location);
   const marketId = (queryId === TRADING_TUTORIAL || isPreview) ? queryId : getAddress(queryId);
+  const tradingTutorial = getIsTutorial(marketId);
   const isConnected = connected && universe.id != null;
   const outcomeId = queryOutcomeId ? parseInt(queryOutcomeId) : null;
-  const modalShowing = modalType;
-  const tradingTutorial = marketId === TRADING_TUTORIAL;
   const preview = tradingTutorial || isPreview;
   const market = tradingTutorial ? 
     TRADING_TUTORIAL_MARKET : 
     defaultMarket || marketInfos && marketInfos[marketId] && convertMarketInfoToMarketData(marketInfos[marketId], currentAugurTimestamp * 1000);
+  const cat5 = findType(market);
   const hasZeroXError = zeroXStatus === ZEROX_STATUSES.ERROR;
   const zeroXSynced = zeroXStatus === ZEROX_STATUSES.SYNCED;
   const orderBook: Getters.Markets.OutcomeOrderBook = preview ? market.orderBook : (orderBooks[marketId] || {}).orderBook;
-  const orderbookLoading = !orderBook;
-  const cat5 = findType(market);
   const [state, setState] = useState({
     pane: null,
     introShowing: false,
@@ -196,9 +194,7 @@ const MarketView = ({
       window.scrollTo(0, 1);
     }
     if (!market) {
-      setModal({
-        type: MODAL_MARKET_LOADING,
-      });
+      setModal({ type: MODAL_MARKET_LOADING });
     }
   }, []);
 
@@ -218,7 +214,7 @@ const MarketView = ({
     }
 
     return () => {
-      modalShowing === MODAL_MARKET_LOADING && closeModal();
+      modalType === MODAL_MARKET_LOADING && closeModal();
     }
   }, []);
 
@@ -236,7 +232,7 @@ const MarketView = ({
 
   useEffect(() => {
     // This will only be called once on the 'canHotLoad' prop change.
-    if (canHotload && !tradingTutorial && marketId && !market) hotLoadMarket(marketId, history);
+    if (canHotload && marketId && !market) hotLoadMarket(marketId, history);
   }, [canHotload, marketId]);
 
   useEffect(() => {
@@ -281,7 +277,7 @@ const MarketView = ({
       bulkMarketTradingHistory(null, loadMarketTradingHistory(marketId));
     }
     if (market) {
-      modalShowing === MODAL_MARKET_LOADING && closeModal();
+      modalType === MODAL_MARKET_LOADING && closeModal();
     }
 
     if (
@@ -621,10 +617,8 @@ const MarketView = ({
                               toggle={toggleOrderBook}
                               hide={extendTradeHistory}
                               market={market}
-                              initialLiquidity={preview}
                               orderBook={outcomeOrderBook}
                               showButtons
-                              orderbookLoading={orderbookLoading}
                             />
                           </div>
                         </ModulePane>
