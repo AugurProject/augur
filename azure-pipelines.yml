@@ -34,7 +34,7 @@ jobs:
           if [[ "$(Build.SourceBranchName)" == "dev" || "$(Build.SourceBranchName)" == "v2" ]]; then
             GIT_COMMAND='git log -m -1 --name-only --pretty="format:" $(Build.SourceVersion)'
           else
-            GIT_COMMAND='git diff --name-only $(System.PullRequest.TargetBranch)..HEAD'
+            GIT_COMMAND='git diff --name-only origin/$(System.PullRequest.TargetBranch)..$(System.SourceVersion)'
           fi
           echo "running git command: $GIT_COMMAND"
           for f in $(eval "$GIT_COMMAND");
