@@ -10,14 +10,13 @@ export const loadMarketOrderBook = (
   if (marketId == null) {
     return callback('must specify market ID');
   }
-  const { loginAccount: { address: account } } = AppStatus.get();
   const augur = augurSdk.get();
+  const { loginAccount: { address: account } } = AppStatus.get();
   const expirationCutoffSeconds = await augur.getGasConfirmEstimate();
   let params = account
     ? { marketId, account, expirationCutoffSeconds, ignoreCrossOrders: true }
     : { marketId, ignoreCrossOrders: true };
-  const Augur = augurSdk.get();
-  const marketOrderBook = await Augur.getMarketOrderBook(params);
-  callback(null, marketOrderBook);
-  return {orderBook: marketOrderBook};
+  const orderBook = await augur.getMarketOrderBook(params);
+  callback(null, orderBook);
+  return { orderBook };
 };

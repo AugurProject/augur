@@ -66,7 +66,7 @@ const MarketTradeHistory = ({
       <div>
         {isArchived && <DataArchivedLabel label="tradeHistory" />}
         {!isArchived && Object.keys(groupedTradeHistory).length === 0 && (
-          <span>No Trade History</span>
+          <span className={Styles.NoHistory}>No Trade History</span>
         )}
         {!isArchived &&
           groupedTradeHistory &&

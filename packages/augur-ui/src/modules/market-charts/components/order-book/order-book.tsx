@@ -210,7 +210,12 @@ const OrderBook = ({
   showButtons,
   orderbookLoading,
   orderBook,
-  market,
+  market: {
+    id,
+    marketType,
+    minPrice,
+    maxPrice,
+  },
   initialLiquidity,
 }: OrderBookProps) => {
   const {
@@ -218,16 +223,9 @@ const OrderBook = ({
     actions: { updateOrderBook },
   } = useMarketsStore();
   const {
-    zeroXStatus,
     blockchain: { currentAugurTimestamp: currentTimeInSeconds },
   } = useAppStatusStore();
-  const {
-    id,
-    marketType,
-    minPrice,
-    maxPrice,
-  } = market;
-  let orderBookSelected = (orderBooks && orderBooks[id]) || {
+  const orderBookSelected = (orderBooks && orderBooks[id]) || {
     expirationTime: 0,
   };
   const outcomeOrderBook = orderBook || {};
@@ -258,14 +256,6 @@ const OrderBook = ({
     hoveredSide: null,
   });
 
-  const loadMarketOrderbook = () => {
-    updateOrderBook(
-      id,
-      null,
-      loadMarketOrderBook(id)
-    );
-  };
-
   useEffect(() => {
     const expirationMaxSeconds =
       expirationTime - currentTimeInSeconds - MIN_ORDER_LIFESPAN;
@@ -274,12 +264,15 @@ const OrderBook = ({
       expirationMaxSeconds < NUMBER_OF_SECONDS_IN_A_DAY
     ) {
       const timer = setTimeout(
-        () => loadMarketOrderbook(),
+        () => updateOrderBook(
+          id,
+          null,
+          loadMarketOrderBook(id)
+        ),
         expirationMaxSeconds * 1000
       );
       return () => clearTimeout(timer);
     }
-    return () => {};
   }, [expirationTime]);
 
   const sideProps = {
@@ -302,7 +295,6 @@ const OrderBook = ({
         headers={['quantity', usePercent ? 'percent' : 'price', 'my quantity']}
         toggle={toggle}
         hide={hide}
-        status={zeroXStatus}
       />
       <OrderBookSide
         type={ASKS}

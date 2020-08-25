@@ -26,7 +26,7 @@ export const MarketProvider = ({ market, defaultMarket, isPreview, children }) =
 
   useEffect(() => {
     return () => window.market = null;
-  }, [])
+  }, []);
 
   return (
     <MarketContext.Provider value={state}>

@@ -159,6 +159,7 @@ export const MarketHeader = ({
         {
           [Styles.Collapsed]: headerCollapsed,
           [ToggleHeightStyles.open]: !headerCollapsed,
+          [Styles.Expandable]: detailsTooLong
         }
       )}
     >
