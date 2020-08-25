@@ -12,7 +12,6 @@ interface TradingFormProps {
   updateSelectedOutcome: Function;
   updateLiquidity?: Function;
   tutorialNext?: Function;
-  initialLiquidity?: boolean;
   orderBook: IndividualOutcomeOrderBook;
 }
 

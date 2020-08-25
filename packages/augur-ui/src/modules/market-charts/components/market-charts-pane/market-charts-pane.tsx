@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import Media from 'react-media';
-
+import { useLocation } from 'react-router';
 import ModuleTabs from 'modules/market/components/common/module-tabs/module-tabs';
 import ModulePane from 'modules/market/components/common/module-tabs/module-pane';
 import PriceHistory from "modules/market-charts/components/price-history/price-history";
@@ -8,24 +8,17 @@ import { SMALL_MOBILE, ZERO } from 'modules/common/constants';
 
 import { Candlestick } from 'modules/market-charts/components/candlestick/candlestick';
 import DepthChart from 'modules/market-charts/components/depth/depth';
-import { BigNumber } from 'bignumber.js';
 import { MarketData, IndividualOutcomeOrderBook } from 'modules/types';
 import { useAppStatusStore } from 'modules/app/store/app-status';
-import { selectMarket } from 'modules/markets/selectors/market';
+import { getTutorialPreview } from 'modules/market/store/market-utils';
 import { getMarketAgeInDays } from 'utils/format-date';
 
 interface MarketChartsPaneProps {
-  currentTimestamp?: number | undefined;
   marketId: string;
-  maxPrice: BigNumber;
-  minPrice: BigNumber;
   selectedOutcomeId: number;
   updateSelectedOrderProperties: Function;
-  daysPassed?: number;
-  preview?: Boolean;
-  market?: MarketData;
+  market: MarketData;
   toggle: Function;
-  tradingTutorial?: boolean;
   orderBook: IndividualOutcomeOrderBook;
   extendOutcomesList: boolean;
   isArchived?: boolean;
@@ -35,9 +28,8 @@ const MarketChartsPane = ({
   marketId,
   selectedOutcomeId,
   updateSelectedOrderProperties,
-  preview,
   market,
-  toggle,
+  toggle = () => {},
   isArchived,
   extendOutcomesList,
   orderBook,
@@ -45,9 +37,10 @@ const MarketChartsPane = ({
   const {
     blockchain: { currentAugurTimestamp: currentTimestamp },
   } = useAppStatusStore();
+  const location = useLocation();
   const { creationTime, minPriceBigNumber, maxPriceBigNumber } = market;
   const daysPassed = getMarketAgeInDays(creationTime, currentTimestamp);
-
+  const { preview } = getTutorialPreview(marketId, location);
   const minPrice = minPriceBigNumber || ZERO;
   const maxPrice = maxPriceBigNumber || ZERO;
   const [hoveredDepth, updateHoveredDepth] = useState([]);
@@ -77,7 +70,7 @@ const MarketChartsPane = ({
                 hoveredDepth={hoveredDepth}
                 updateHoveredDepth={updateHoveredDepth}
                 updateHoveredPrice={updateHoveredPrice}
-                market={preview && market}
+                market={market}
                 initialLiquidity={preview}
                 orderBook={orderBook}
               />
@@ -88,7 +81,7 @@ const MarketChartsPane = ({
             <ModulePane
               label="Price History"
               onClickCallback={() => {
-                extendOutcomesList && toggle && toggle();
+                extendOutcomesList && toggle();
               }}
             >
               {!preview && <PriceHistory {...shared} daysPassed={daysPassed} />}
@@ -96,7 +89,7 @@ const MarketChartsPane = ({
             <ModulePane
               label="Candlesticks"
               onClickCallback={() => {
-                extendOutcomesList && toggle && toggle();
+                extendOutcomesList && toggle();
               }}
             >
               {!preview && (
@@ -111,7 +104,7 @@ const MarketChartsPane = ({
             <ModulePane
               label="Market Depth"
               onClickCallback={() => {
-                extendOutcomesList && toggle && toggle();
+                extendOutcomesList && toggle();
               }}
             >
               <DepthChart
@@ -121,7 +114,7 @@ const MarketChartsPane = ({
                 hoveredDepth={hoveredDepth}
                 updateHoveredDepth={updateHoveredDepth}
                 updateHoveredPrice={updateHoveredPrice}
-                market={preview && market}
+                market={market}
                 initialLiquidity={preview}
                 orderBook={orderBook}
               />

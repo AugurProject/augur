@@ -184,7 +184,6 @@ export const FeesLiquidity = ({ onChange }: FeesLiquidityProps) => {
             setSelectedOrderProperties(value)
           }
           updateLiquidity={updateLiquidity}
-          initialLiquidity
           updateSelectedOutcome={value => {
             setSelectedOutcome(value);
             setSelectedOrderProperties({ ...DEFAULT_ORDER_PROPERTIES });

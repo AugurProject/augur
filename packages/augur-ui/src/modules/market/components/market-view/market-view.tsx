@@ -68,7 +68,7 @@ import { loadMarketTradingHistory } from 'modules/markets/actions/market-trading
 import { loadMarketsInfo } from 'modules/markets/actions/load-markets-info';
 import { addAlert } from 'modules/alerts/actions/alerts';
 import OrderBook from 'modules/market-charts/components/order-book/order-book';
-import { handleStyleCalculation, findType } from 'modules/market/store/market-utils';
+import { handleStyleCalculation, findType, getIsTutorial, getIsPreview } from 'modules/market/store/market-utils';
 import { MarketProvider } from 'modules/market/store/market';
 import { 
   TUTORIAL_POSITION,
@@ -80,7 +80,6 @@ import {
   TRADING_TUTORIAL_MARKET,
   DEFAULT_ORDER_PROPERTIES,
 } from 'modules/market/store/constants';
-import { getIsTutorial, getIsPreview } from 'modules/market/store/market-utils';
 
 
 interface MarketViewProps {
@@ -104,7 +103,6 @@ const {
   ORDER_VALUE,
   PLACE_ORDER,
   ORDER_BOOK,
-  MARKET_DATA,
 } = TRADING_TUTORIAL_STEPS;
 
 const MarketView = ({
@@ -596,7 +594,7 @@ const MarketView = ({
                     }
                   >
                     <div className={Styles.PaneContainer}>
-                      <MarketHeader marketId={marketId} preview={preview} />
+                      <MarketHeader market={market} />
                       <MarketOutcomesList
                         market={market}
                         preview={preview}
@@ -639,7 +637,6 @@ const MarketView = ({
                       </ModuleTabs>
                       <TradingForm
                         market={market}
-                        initialLiquidity={preview && !tradingTutorial}
                         selectedOrderProperties={selectedOrderProperties}
                         selectedOutcomeId={outcomeIdSet}
                         updateSelectedOutcome={updateSelectedOutcome}
@@ -677,13 +674,12 @@ const MarketView = ({
                       </div>
                       <MarketChartsPane
                         marketId={marketId}
-                        market={preview && market}
+                        market={market}
                         isArchived={isArchived}
                         selectedOutcomeId={outcomeIdSet}
                         updateSelectedOrderProperties={
                           updateSelectedOrderProperties
                         }
-                        preview={preview}
                         orderBook={outcomeOrderBook}
                       />
                     </div>
@@ -705,7 +701,6 @@ const MarketView = ({
                         }
                         marketId={marketId}
                         market={preview && market}
-                        preview={preview}
                         orders={orders}
                         fills={fills}
                       />
@@ -722,19 +717,10 @@ const MarketView = ({
                   <div className={HeaderStyle}>
                     <MarketHeader
                       market={market}
-                      preview={preview}
                       next={next}
-                      showTutorialData={
-                        tradingTutorial &&
-                        tutorialStep === MARKET_DATA
-                      }
                       step={tutorialStep}
                       totalSteps={totalSteps}
                       text={TRADING_TUTORIAL_COPY[tutorialStep]}
-                      showTutorialDetails={
-                        tradingTutorial &&
-                        tutorialStep === MARKET_DETAILS
-                      }
                     />
                     {tradingTutorial &&
                       tutorialStep === MARKET_DETAILS && (
@@ -750,7 +736,6 @@ const MarketView = ({
                   <div className={TradingFormStyle}>
                     <TradingForm
                       market={market}
-                      initialLiquidity={preview && !tradingTutorial}
                       selectedOrderProperties={selectedOrderProperties}
                       selectedOutcomeId={outcomeIdSet}
                       updateSelectedOutcome={updateSelectedOutcome}
@@ -799,14 +784,12 @@ const MarketView = ({
                       updateSelectedOrderProperties={
                         updateSelectedOrderProperties
                       }
-                      tradingTutorial={tradingTutorial}
                       toggle={
                         cat5
                           ? () => toggleMiddleColumn('extendOutcomesList')
                           : null
                       }
                       market={market}
-                      preview={preview}
                       orderBook={outcomeOrderBook}
                       extendOutcomesList={extendOutcomesList}
                     />
@@ -821,8 +804,6 @@ const MarketView = ({
                         cat5 ? null : () => toggleMiddleColumn('extendOrders')
                       }
                       market={preview && market}
-                      preview={preview}
-                      tradingTutorial={tradingTutorial}
                       orders={orders}
                       fills={fills}
                       positions={positions}
@@ -872,7 +853,6 @@ const MarketView = ({
                           toggle={toggleTradeHistory}
                           marketType={marketType}
                           hide={extendOrderBook}
-                          tradingTutorial={tradingTutorial}
                           initialGroupedTradeHistory={groupedTradeHistory}
                         />
                       )}

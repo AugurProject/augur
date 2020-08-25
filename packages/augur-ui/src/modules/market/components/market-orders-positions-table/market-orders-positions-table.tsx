@@ -1,5 +1,5 @@
 import React from 'react';
-
+import { useLocation } from 'react-router';
 import ModuleTabs from 'modules/market/components/common/module-tabs/module-tabs';
 import ModulePane from 'modules/market/components/common/module-tabs/module-pane';
 import OpenOrdersTable from 'modules/market/components/market-orders-positions-table/open-orders-table';
@@ -10,7 +10,6 @@ import { CancelTextButton } from 'modules/common/buttons';
 import Styles from 'modules/market/components/market-orders-positions-table/open-orders-table.styles.less';
 import {
   MarketData,
-  NodeStyleCallback,
   UIOrder,
   DefaultOrderProperties,
 } from 'modules/types';
@@ -23,14 +22,13 @@ import { selectMarket } from 'modules/markets/selectors/market';
 import { selectUserFilledOrders } from 'modules/orders/selectors/filled-orders';
 import getUserOpenOrders from 'modules/orders/selectors/user-open-orders';
 import { cancelAllOpenOrders } from 'modules/orders/actions/cancel-order';
-import { TRADING_TUTORIAL } from 'modules/common/constants';
+import { getTutorialPreview } from 'modules/market/store/market-utils';
 
 interface MarketOrdersPositionsTableProps {
   marketId: string;
   orders?: UIOrder[];
   market: MarketData;
   fills?: UIOrder[];
-  preview: boolean;
   toggle?: () => void;
   updateSelectedOrderProperties: (
     selectedOrderProperties: DefaultOrderProperties
@@ -43,14 +41,17 @@ const MarketOrdersPositionsTable: React.FC<MarketOrdersPositionsTableProps> = ({
   market,
   marketId,
   fills,
-  preview,
   orders,
   toggle,
   updateSelectedOrderProperties,
   selected,
   positions,
 }: MarketOrdersPositionsTableProps) => {
-  const tradingTutorial = marketId === TRADING_TUTORIAL;
+  const location = useLocation();
+  const {
+    preview,
+    isTutorial: tradingTutorial
+  } = getTutorialPreview(marketId, location);
   const marketSelected = market || selectMarket(marketId);
   let openOrders = getUserOpenOrders(marketSelected.id);
   let filledOrders = marketSelected.id

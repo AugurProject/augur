@@ -31,7 +31,7 @@ import {
 } from 'modules/markets/helpers/order-and-assign-cumulative-shares';
 import { isEmpty } from 'utils/is-empty';
 import { useLocation } from 'react-router';
-import { getIsTutorial, getIsPreview } from 'modules/market/store/market-utils';
+import { getTutorialPreview } from 'modules/market/store/market-utils';
 
 interface OrderBookSideProps {
   processedOrderbook: QuantityOutcomeOrderBook;
@@ -216,9 +216,10 @@ const OrderBook = ({
     actions: { updateOrderBook },
   } = useMarketsStore();
   const location = useLocation();
-  const isPreview = getIsPreview(location);
-  const isTutorial = getIsTutorial(id);
-  const initialLiquidity = isPreview || isTutorial;
+  const {
+    isPreview,
+    preview: initialLiquidity
+  } = getTutorialPreview(id, location);
   const orderbookLoading = isPreview ? !marketOrderBook : !(orderBooks[id] || {})?.orderBook;
   const {
     blockchain: { currentAugurTimestamp: currentTimeInSeconds },

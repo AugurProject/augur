@@ -22,6 +22,15 @@ const {
 
 export const getIsTutorial = (marketId) => marketId === TRADING_TUTORIAL;
 export const getIsPreview = (location) => parsePath(location.pathname)[0] === CREATE_MARKET;
+export const getTutorialPreview = (marketId, location) => {
+  const isTutorial = getIsTutorial(marketId);
+  const isPreview = getIsPreview(location);
+  return {
+    isTutorial,
+    isPreview,
+    preview: isTutorial || isPreview,
+  }
+};
 
 export function findType(market) {
   if (market) {

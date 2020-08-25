@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import classNames from 'classnames';
 import { createBigNumber } from 'utils/create-big-number';
-
+import { useLocation } from 'react-router';
 import Form from 'modules/trading/components/form';
 import Confirm from 'modules/trading/components/confirm';
 import { generateTrade } from 'modules/trades/helpers/generate-trade';
@@ -45,6 +45,7 @@ import makeQuery from 'modules/routes/helpers/make-query';
 import { MARKET_ID_PARAM_NAME, THEME_NAME } from 'modules/routes/constants/param-names';
 import { FORM_INPUT_TYPES as INPUT_TYPES } from 'modules/trading/store/constants';
 import { canPostOrder } from 'modules/trades/actions/can-post-order';
+import { getIsTutorial, getIsPreview } from 'modules/market/store/market-utils';
 
 export interface SelectedOrderProperties {
   orderPrice: string;
@@ -154,7 +155,6 @@ const Wrapper = ({
   updateSelectedOutcome,
   selectedOrderProperties,
   updateSelectedOrderProperties,
-  initialLiquidity,
   updateLiquidity,
   tutorialNext,
   orderBook,
@@ -176,6 +176,10 @@ const Wrapper = ({
       ui: { reportingOnly: disableTrading },
     },
   } = useAppStatusStore();
+  const location = useLocation();
+  const isTutorial = getIsTutorial(market.id);
+  const isPreview = getIsPreview(location);
+  const initialLiquidity = isPreview && !isTutorial;
   const [state, setState] = useState({
     orderDaiEstimate: '',
     orderEscrowdDai: '',

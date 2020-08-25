@@ -16,6 +16,7 @@ import {
   HEADER_TYPE,
   REPORTING_STATE,
   ZERO,
+  TRADING_TUTORIAL_STEPS,
 } from 'modules/common/constants';
 import { MarketHeaderReporting } from 'modules/market/components/market-header/market-header-reporting';
 import ToggleHeightStyles from 'utils/toggle-height.styles.less';
@@ -27,26 +28,29 @@ import { HeadingBar } from '../common/common';
 import { useAppStatusStore } from 'modules/app/store/app-status';
 import { isSameAddress } from 'utils/isSameAddress';
 import { useRef } from 'react';
-import { useHistory } from 'react-router';
+import { useHistory, useLocation } from 'react-router';
+import { getTutorialPreview } from 'modules/market/store/market-utils';
 
 const OVERFLOW_DETAILS_LENGTH = 48; // in px, overflow limit to trigger MORE details
+const { MARKET_DETAILS, MARKET_DATA } = TRADING_TUTORIAL_STEPS;
+
+const {
+  PRE_REPORTING,
+  CROWDSOURCING_DISPUTE,
+  OPEN_REPORTING,
+  DESIGNATED_REPORTING,
+} = REPORTING_STATE;
 
 interface MarketHeaderProps {
   market: MarketData;
-  preview?: boolean;
   next?: Function;
-  showTutorialData?: boolean;
   text?: TextObject;
   step?: number;
   totalSteps?: number;
-  showTutorialDetails?: boolean;
 }
 
 export const MarketHeader = ({
   market,
-  showTutorialDetails = false,
-  preview = false,
-  showTutorialData = false,
   totalSteps = null,
   text = null,
   next = null,
@@ -57,11 +61,14 @@ export const MarketHeader = ({
   });
   const refTitle = useRef(null);
   const refNotCollapsed = useRef(null);
-
+  const location = useLocation();
   const history = useHistory();
-
-  // const market = selectMarket(marketId);
-  let reportingBarShowing = false;
+  const {
+    isTutorial,
+    preview,
+  } = getTutorialPreview(market.id, location);
+  const showTutorialData = isTutorial && step === MARKET_DATA;
+  const showTutorialDetails = isTutorial && step === MARKET_DETAILS;
   const {
     loginAccount: { address },
   } = useAppStatusStore();
@@ -80,16 +87,13 @@ export const MarketHeader = ({
     consensusFormatted: consensus,
     mostLikelyInvalid,
   } = market;
-
-  if (
+  const reportingBarShowing = Boolean(
     consensus ||
-    reportingState === REPORTING_STATE.CROWDSOURCING_DISPUTE ||
-    reportingState === REPORTING_STATE.OPEN_REPORTING ||
-    (reportingState === REPORTING_STATE.DESIGNATED_REPORTING &&
-      isSameAddress(designatedReporter, address))
-  ) {
-    reportingBarShowing = true;
-  }
+      reportingState === CROWDSOURCING_DISPUTE ||
+      reportingState === OPEN_REPORTING ||
+      (reportingState === DESIGNATED_REPORTING &&
+        isSameAddress(designatedReporter, address))
+  );
 
   const description = marketDesctipion || '';
   let details = marketDetails || detailsText || '';
@@ -97,7 +101,7 @@ export const MarketHeader = ({
   const minPrice = minPriceBigNumber || ZERO;
 
   const [showProperties, setShowProperties] = useState(
-    reportingState === REPORTING_STATE.PRE_REPORTING ? false : true
+    reportingState === PRE_REPORTING ? false : true
   );
   const [headerCollapsed, setHeaderCollapsed] = useState(false);
   const [showCopied, setShowCopied] = useState(false);
@@ -158,7 +162,7 @@ export const MarketHeader = ({
         {
           [Styles.Collapsed]: headerCollapsed,
           [ToggleHeightStyles.open]: !headerCollapsed,
-          [Styles.Expandable]: detailsTooLong
+          [Styles.Expandable]: detailsTooLong,
         }
       )}
     >
@@ -233,10 +237,7 @@ export const MarketHeader = ({
               })}
             >
               {(id || preview) && <MarketHeaderBar market={market} />}
-              <MarketHeaderReporting
-                preview={preview}
-                market={market}
-              />
+              <MarketHeaderReporting preview={preview} market={market} />
               {(id || preview) && (
                 <CoreProperties
                   market={market}
@@ -244,7 +245,7 @@ export const MarketHeader = ({
                   showExtraDetailsChevron={showProperties}
                 />
               )}
-              {reportingState === REPORTING_STATE.PRE_REPORTING && (
+              {reportingState === PRE_REPORTING && (
                 <button
                   onClick={e => {
                     e.stopPropagation();
