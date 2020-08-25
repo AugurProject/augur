@@ -76,6 +76,7 @@ export const MyBetsRow = ({
       text: convertToOdds(outcome && outcome.normalizedPrice).full,
       value: isFractional ? null : convertToOdds(outcome && outcome.normalizedPrice),
       keyId: 'outcome-odds-' + outcome.outcome,
+      useFull: true,
     },
     {
       key: 'toWin',
