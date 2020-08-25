@@ -145,6 +145,8 @@ export interface LinearPropertyLabelProps {
   underline?: boolean;
   onValueClick?: Function;
   regularCase?: boolean;
+  positive?: boolean;
+  showColor?: boolean;
 }
 
 export interface LinearPropertyLabelTooltipProps {
@@ -944,14 +946,16 @@ export const LinearPropertyLabel = ({
   onValueClick,
   regularCase,
   secondary,
-  recentlyUpdated
+  recentlyUpdated,
+  positive,
+  showColor
 }: LinearPropertyLabelProps) => (
   <div
     className={classNames(Styles.LinearPropertyLabel, {
       [Styles.Highlight]: highlight,
       [Styles.HighlightAlternateBolded]: highlightAlternateBolded,
       [Styles.HighlightFirst]: highlightFirst,
-      [Styles.RecentlyUpdated]: recentlyUpdated
+      [Styles.RecentlyUpdated]: recentlyUpdated,
     })}
   >
     <span
@@ -972,6 +976,8 @@ export const LinearPropertyLabel = ({
           [Styles.isAccented]: accentValue,
           [Styles.underline]: underline,
           [Styles.isSecondary]: secondary,
+          [Styles.Positive]: positive && showColor,
+          [Styles.Negative]: showColor,
         })}
         onClick={() => onValueClick && onValueClick()}
       >
