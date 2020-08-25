@@ -23,9 +23,10 @@ import { selectMarket } from 'modules/markets/selectors/market';
 import { selectUserFilledOrders } from 'modules/orders/selectors/filled-orders';
 import getUserOpenOrders from 'modules/orders/selectors/user-open-orders';
 import { cancelAllOpenOrders } from 'modules/orders/actions/cancel-order';
+import { TRADING_TUTORIAL } from 'modules/common/constants';
 
 interface MarketOrdersPositionsTableProps {
-  marketId?: string;
+  marketId: string;
   orders?: UIOrder[];
   market: MarketData;
   fills?: UIOrder[];
@@ -36,7 +37,6 @@ interface MarketOrdersPositionsTableProps {
   ) => void;
   selected?: number;
   positions?: any[];
-  tradingTutorial?: boolean;
 }
 
 const MarketOrdersPositionsTable: React.FC<MarketOrdersPositionsTableProps> = ({
@@ -44,13 +44,13 @@ const MarketOrdersPositionsTable: React.FC<MarketOrdersPositionsTableProps> = ({
   marketId,
   fills,
   preview,
-  tradingTutorial,
   orders,
   toggle,
   updateSelectedOrderProperties,
   selected,
   positions,
 }: MarketOrdersPositionsTableProps) => {
+  const tradingTutorial = marketId === TRADING_TUTORIAL;
   const marketSelected = market || selectMarket(marketId);
   let openOrders = getUserOpenOrders(marketSelected.id);
   let filledOrders = marketSelected.id
@@ -111,6 +111,7 @@ const MarketOrdersPositionsTable: React.FC<MarketOrdersPositionsTableProps> = ({
       <ModulePane label="Positions">
         <PositionsTable
           marketId={marketId}
+          market={market}
           extendedView
           updateSelectedOrderProperties={updateSelectedOrderProperties}
           positions={positions}
