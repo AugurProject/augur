@@ -80,6 +80,8 @@ import {
   TRADING_TUTORIAL_MARKET,
   DEFAULT_ORDER_PROPERTIES,
 } from 'modules/market/store/constants';
+
+
 interface MarketViewProps {
   history: History;
   defaultMarket: MarketData;
@@ -131,11 +133,11 @@ const MarketView = ({
   const history = useHistory();
   const node = useRef(null);
   const prevProps = useRef();
-  const queryId = parseQuery(location.search)[MARKET_ID_PARAM_NAME];
+  const {
+    [MARKET_ID_PARAM_NAME]: queryId,
+    [OUTCOME_ID_PARAM_NAME]: queryOutcomeId,
+  } = parseQuery(location.search);
   const marketId = (queryId === TRADING_TUTORIAL || isPreview) ? queryId : getAddress(queryId);
-  const queryOutcomeId = parseQuery(location.search)[
-    OUTCOME_ID_PARAM_NAME
-  ];
   const isConnected = connected && universe.id != null;
   const outcomeId = queryOutcomeId ? parseInt(queryOutcomeId) : null;
   const modalShowing = modalType;
@@ -600,7 +602,7 @@ const MarketView = ({
                     <div className={Styles.PaneContainer}>
                       <MarketHeader marketId={marketId} preview={preview} />
                       <MarketOutcomesList
-                        marketId={marketId}
+                        market={market}
                         preview={preview}
                         selectedOutcomeId={outcomeIdSet}
                         updateSelectedOutcome={updateSelectedOutcome}
@@ -634,7 +636,6 @@ const MarketView = ({
                                 marketId={marketId}
                                 outcome={outcomeIdSet}
                                 toggle={toggleTradeHistory}
-                                extend={extendTradeHistory}
                                 hide={extendOrderBook}
                                 marketType={marketType}
                               />
@@ -645,7 +646,6 @@ const MarketView = ({
                       <TradingForm
                         market={market}
                         initialLiquidity={preview && !tradingTutorial}
-                        tradingTutorial={tradingTutorial}
                         selectedOrderProperties={selectedOrderProperties}
                         selectedOutcomeId={outcomeIdSet}
                         updateSelectedOutcome={updateSelectedOutcome}
@@ -727,7 +727,7 @@ const MarketView = ({
                 <div className={ContainerStyle}>
                   <div className={HeaderStyle}>
                     <MarketHeader
-                      marketId={marketId}
+                      market={market}
                       preview={preview}
                       next={next}
                       showTutorialData={
@@ -757,7 +757,6 @@ const MarketView = ({
                     <TradingForm
                       market={market}
                       initialLiquidity={preview && !tradingTutorial}
-                      tradingTutorial={tradingTutorial}
                       selectedOrderProperties={selectedOrderProperties}
                       selectedOutcomeId={outcomeIdSet}
                       updateSelectedOutcome={updateSelectedOutcome}
@@ -790,7 +789,7 @@ const MarketView = ({
                       )}
                   </div>
                   <MarketOutcomesList
-                    marketId={marketId}
+                    market={market}
                     preview={preview}
                     selectedOutcomeId={outcomeIdSet}
                     updateSelectedOutcome={updateSelectedOutcome}
@@ -857,9 +856,7 @@ const MarketView = ({
                         toggle={toggleOrderBook}
                         hide={extendTradeHistory}
                         market={market}
-                        initialLiquidity={preview}
                         orderBook={outcomeOrderBook}
-                        orderbookLoading={orderbookLoading}
                       />
                       {tradingTutorial &&
                         tutorialStep === ORDER_BOOK && (

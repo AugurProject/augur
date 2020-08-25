@@ -15,12 +15,13 @@ import HeaderStyles from 'modules/portfolio/components/common/data-table-header.
 import { ToggleExtendButton } from 'modules/common/buttons';
 import { SMALL_MOBILE } from 'modules/common/constants';
 import type { Getters } from '@augurproject/sdk';
-import { selectSortedMarketOutcomes, selectMarket } from 'modules/markets/selectors/market';
+import { selectSortedMarketOutcomes } from 'modules/markets/selectors/market';
+import { MarketData } from 'modules/types';
 
 interface MarketOutcomesListProps {
   updateSelectedOutcome: Function;
   selectedOutcomeId: number;
-  marketId: string;
+  market: MarketData;
   popUp?: boolean;
   toggle?: Function;
   hideOutcomes?: boolean;
@@ -30,22 +31,20 @@ interface MarketOutcomesListProps {
 }
 
 const MarketOutcomesList = ({
+  market,
   selectedOutcomeId,
   updateSelectedOutcome,
   popUp = false,
-  marketId,
   toggle = null,
   hideOutcomes = false,
   preview,
   updateSelectedOrderProperties,
   orderBook
 }: MarketOutcomesListProps) => {
-  const market = selectMarket(marketId);
-
   const {
     scalarDenomination,
     marketType,
-    outcomesFormatted
+    outcomesFormatted,
   } = market;
  
   const outcomesFormattedSelected = selectSortedMarketOutcomes(marketType, outcomesFormatted);
@@ -120,7 +119,7 @@ const MarketOutcomesList = ({
               <MarketOutcome
                 key={outcome.id}
                 orderBook={orderBook}
-                marketId={marketId}
+                marketId={market.id}
                 outcome={outcome}
                 selectedOutcomeId={selectedOutcomeId}
                 updateSelectedOutcome={updateSelectedOutcome}

@@ -1,5 +1,7 @@
 import classNames from 'classnames';
-import { TRADING_TUTORIAL_STEPS, CATEGORICAL } from "modules/common/constants";
+import { TRADING_TUTORIAL_STEPS, CATEGORICAL, TRADING_TUTORIAL } from "modules/common/constants";
+import { CREATE_MARKET } from 'modules/routes/constants/views';
+import parsePath from 'modules/routes/helpers/parse-path';
 import Styles from 'modules/market/components/market-view/market-view.styles.less';
 
 const {
@@ -17,6 +19,9 @@ const {
   ORDER_BOOK,
   MARKET_DATA,
 } = TRADING_TUTORIAL_STEPS;
+
+export const getIsTutorial = (marketId) => marketId === TRADING_TUTORIAL;
+export const getIsPreview = (location) => parsePath(location.pathname)[0] === CREATE_MARKET;
 
 export function findType(market) {
   if (market) {

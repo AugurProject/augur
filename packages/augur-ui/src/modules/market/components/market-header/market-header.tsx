@@ -19,12 +19,11 @@ import {
 } from 'modules/common/constants';
 import { MarketHeaderReporting } from 'modules/market/components/market-header/market-header-reporting';
 import ToggleHeightStyles from 'utils/toggle-height.styles.less';
-import { TextObject } from 'modules/types';
+import { TextObject, MarketData } from 'modules/types';
 import { TutorialPopUp } from 'modules/market/components/common/tutorial-pop-up';
 import MarketTitle from 'modules/market/components/common/market-title';
 import PreviewMarketTitle from 'modules/market/components/common/PreviewMarketTitle';
 import { HeadingBar } from '../common/common';
-import { selectMarket } from 'modules/markets/selectors/market';
 import { useAppStatusStore } from 'modules/app/store/app-status';
 import { isSameAddress } from 'utils/isSameAddress';
 import { useRef } from 'react';
@@ -33,7 +32,7 @@ import { useHistory } from 'react-router';
 const OVERFLOW_DETAILS_LENGTH = 48; // in px, overflow limit to trigger MORE details
 
 interface MarketHeaderProps {
-  marketId: string;
+  market: MarketData;
   preview?: boolean;
   next?: Function;
   showTutorialData?: boolean;
@@ -44,7 +43,7 @@ interface MarketHeaderProps {
 }
 
 export const MarketHeader = ({
-  marketId,
+  market,
   showTutorialDetails = false,
   preview = false,
   showTutorialData = false,
@@ -61,7 +60,7 @@ export const MarketHeader = ({
 
   const history = useHistory();
 
-  const market = selectMarket(marketId);
+  // const market = selectMarket(marketId);
   let reportingBarShowing = false;
   const {
     loginAccount: { address },

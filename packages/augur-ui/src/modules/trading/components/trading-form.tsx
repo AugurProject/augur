@@ -13,7 +13,6 @@ interface TradingFormProps {
   updateLiquidity?: Function;
   tutorialNext?: Function;
   initialLiquidity?: boolean;
-  tradingTutorial?: boolean;
   orderBook: IndividualOutcomeOrderBook;
 }
 

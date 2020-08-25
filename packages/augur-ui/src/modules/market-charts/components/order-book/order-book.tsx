@@ -30,6 +30,8 @@ import {
   calcOrderbookPercentages,
 } from 'modules/markets/helpers/order-and-assign-cumulative-shares';
 import { isEmpty } from 'utils/is-empty';
+import { useLocation } from 'react-router';
+import { getIsTutorial, getIsPreview } from 'modules/market/store/market-utils';
 
 interface OrderBookSideProps {
   processedOrderbook: QuantityOutcomeOrderBook;
@@ -50,21 +52,13 @@ interface OrderBookSideProps {
 interface OrderBookProps {
   orderBook: QuantityOutcomeOrderBook;
   updateSelectedOrderProperties: Function;
-  hasOrders?: boolean;
-  orderBookKeys: object;
-  fixedPrecision: number;
   pricePrecision: number;
   toggle: Function;
   hide?: boolean;
-  marketType: string;
   showButtons?: boolean;
-  orderbookLoading?: boolean;
   usePercent?: boolean;
   expirationTime: number;
-  currentTimeInSeconds: number;
-  status: string;
   market: MarketData;
-  initialLiquidity: Boolean;
 }
 const LOADING = "Loading ...";
 const ADD_OFFER = "Add Offer";
@@ -208,20 +202,24 @@ const OrderBook = ({
   toggle,
   hide = false,
   showButtons,
-  orderbookLoading,
   orderBook,
   market: {
     id,
     marketType,
     minPrice,
     maxPrice,
+    orderBook: marketOrderBook
   },
-  initialLiquidity,
 }: OrderBookProps) => {
   const {
     orderBooks,
     actions: { updateOrderBook },
   } = useMarketsStore();
+  const location = useLocation();
+  const isPreview = getIsPreview(location);
+  const isTutorial = getIsTutorial(id);
+  const initialLiquidity = isPreview || isTutorial;
+  const orderbookLoading = isPreview ? !marketOrderBook : !(orderBooks[id] || {})?.orderBook;
   const {
     blockchain: { currentAugurTimestamp: currentTimeInSeconds },
   } = useAppStatusStore();

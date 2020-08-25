@@ -15,6 +15,7 @@ import {
   MODAL_ADD_FUNDS,
   MODAL_INITIALIZE_ACCOUNT,
   MODAL_DISCLAIMER,
+  TRADING_TUTORIAL,
 } from 'modules/common/constants';
 import Styles from 'modules/trading/components/wrapper.styles.less';
 import { OrderButton, PrimaryButton } from 'modules/common/buttons';
@@ -155,7 +156,6 @@ const Wrapper = ({
   updateSelectedOrderProperties,
   initialLiquidity,
   updateLiquidity,
-  tradingTutorial,
   tutorialNext,
   orderBook,
 }) => {
@@ -188,6 +188,7 @@ const Wrapper = ({
     allowPostOnlyOrder: true,
   });
   const marketId = market.id;
+  const tradingTutorial = marketId === TRADING_TUTORIAL;
   const endTime = initialLiquidity ? newMarket.setEndTime : market.endTime;
   let availableDai = totalTradingBalance();
   if (initialLiquidity) {
