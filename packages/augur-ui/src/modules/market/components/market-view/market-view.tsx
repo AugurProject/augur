@@ -254,10 +254,7 @@ export default class MarketView extends Component<
         !this.state.introShowing &&
         this.state.tutorialStep === TRADING_TUTORIAL_STEPS.INTRO_MODAL
       ) {
-        updateModal({
-          type: MODAL_TUTORIAL_INTRO,
-          next: this.next,
-        });
+        this.next();
         this.setState({
           introShowing: true,
           selectedOrderProperties: {

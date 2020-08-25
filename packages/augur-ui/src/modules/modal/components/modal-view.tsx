@@ -8,8 +8,6 @@ import ModalReview from 'modules/modal/components/modal-review';
 import ModalRepFaucet from 'modules/modal/containers/modal-rep-faucet';
 import ModalCreateMarket from 'modules/modal/containers/modal-create-market';
 import ModalDaiFaucet from 'modules/modal/containers/modal-dai-faucet';
-import ModalCreationHelp from 'modules/modal/containers/modal-creation-help';
-import ModalDeposit from 'modules/modal/containers/modal-deposit';
 import ModalWithdraw from 'modules/modal/containers/modal-transfer';
 import ModalMigrateRep from 'modules/modal/containers/modal-migrate-rep';
 import ModalNetworkDisabled from 'modules/modal/containers/modal-network-disabled';
@@ -42,10 +40,13 @@ import ModalLoading from 'modules/modal/containers/modal-loading';
 import ModalUniverseSelector from 'modules/modal/containers/modal-universe-selector';
 import ModalTestBet from 'modules/modal/containers/modal-test-bet';
 import ModalAugurP2P from 'modules/modal/containers/modal-p2p-trading';
+import ModalApprovals from 'modules/modal/containers/modal-approvals';
+import ModalEthDeposit from 'modules/modal/containers/modal-eth-deposit';
 import ModalGlobalChat from 'modules/modal/containers/modal-global-chat';
-import ModalAccountCreated from 'modules/modal/containers/modal-account-created';
 import ModalWalletError from 'modules/modal/containers/modal-wallet-error';
 import ModalAugurUsesDai from 'modules/modal/containers/modal-augur-uses-dai';
+import ModalSwap from 'modules/modal/containers/modal-swap';
+import ModalBankroll from 'modules/modal/containers/modal-bankroll';
 import ModalTutorialOutro from 'modules/modal/containers/modal-tutorial-outro';
 import ModalTutorialIntro from 'modules/modal/containers/modal-tutorial-intro';
 import ModalScalar from 'modules/modal/containers/modal-scalar';
@@ -97,8 +98,6 @@ function selectModal(type, props, closeModal, modal) {
       return <ModalDaiFaucet />;
     case TYPES.MODAL_CREATION_HELP:
       return <ModalCreationHelp {...modal} />;
-    case TYPES.MODAL_DEPOSIT:
-      return <ModalDeposit />;
     case TYPES.MODAL_TRANSFER:
       return <ModalWithdraw />;
     case TYPES.MODAL_MIGRATE_REP:
@@ -162,16 +161,24 @@ function selectModal(type, props, closeModal, modal) {
       return <ModalTestBet />;
     case TYPES.MODAL_AUGUR_P2P:
       return <ModalAugurP2P />;
+    case TYPES.MODAL_APPROVALS:
+      return <ModalApprovals />;
+    case TYPES.MODAL_ETH_DEPOSIT:
+      return <ModalEthDeposit />;
     case TYPES.MODAL_TUTORIAL_OUTRO:
       return <ModalTutorialOutro {...modal} />;
     case TYPES.MODAL_TUTORIAL_INTRO:
       return <ModalTutorialIntro {...modal} />;
     case TYPES.MODAL_GLOBAL_CHAT:
       return <ModalGlobalChat />;
-    case TYPES.MODAL_ACCOUNT_CREATED:
-      return <ModalAccountCreated />
     case TYPES.MODAL_AUGUR_USES_DAI:
       return <ModalAugurUsesDai />
+    case TYPES.MODAL_BANKROLL:
+      return <ModalBankroll />;
+    case TYPES.MODAL_SWAP:
+      return <ModalSwap />;
+    case TYPES.MODAL_BANKROLL:
+      return <ModalBankroll />;
     case TYPES.MODAL_ERROR:
       return <ModalWalletError />
     case TYPES.MODAL_SCALAR_MARKET:

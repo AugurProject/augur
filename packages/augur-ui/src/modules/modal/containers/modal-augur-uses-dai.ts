@@ -6,31 +6,45 @@ import { AppState } from 'appStore';
 import { ThunkDispatch } from 'redux-thunk';
 import { Action } from 'redux';
 import {
-  MODAL_BUY_DAI,
   HELP_CENTER_WHAT_IS_DAI,
+  MODAL_ETH_DEPOSIT,
+  MODAL_BANKROLL,
+  MODAL_APPROVALS,
 } from 'modules/common/constants';
-import { OnboardingDollarDaiIcon } from 'modules/common/icons';
-import { AUGUR_USES_DAI, track } from 'services/analytics/helpers';
-import { getOnboardingStep } from './modal-p2p-trading';
+import { OnboardingDollarDaiIcon, EthIcon } from 'modules/common/icons';
 
-const mapStateToProps = (state: AppState) => ({});
+const mapStateToProps = (state: AppState) => ({
+  balances: state.loginAccount.balances,
+});
 
 const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({
-  buyDaiModal: () => dispatch(updateModal({ type: MODAL_BUY_DAI })),
-  track: (eventName, payload) => dispatch(track(eventName, payload)),
-  gotoOnboardingStep: step =>
-    dispatch(updateModal({ type: getOnboardingStep(step) })),
+  gotoApprovals: () => dispatch(updateModal({ type: MODAL_APPROVALS })),
+  gotoBankroll: () => dispatch(updateModal({ type: MODAL_BANKROLL })),
+  gotoDeposit: () => dispatch(updateModal({ type: MODAL_ETH_DEPOSIT })),
 });
 
 const mergeProps = (sP: any, dP: any, oP: any) => ({
   icon: OnboardingDollarDaiIcon,
-  largeHeader: 'Augur uses DAI for betting',
-  showAccountStatus: true,
-  currentStep: 2,
-  changeCurrentStep: step => {
-    dP.gotoOnboardingStep(step);
-  },
-  analyticsEvent: () => dP.track(AUGUR_USES_DAI, {}),
+  title: 'Augur requires both DAI & ETH ',
+  content: [
+    {
+      icon: OnboardingDollarDaiIcon,
+      header: 'Augur uses DAI for betting',
+      content:
+        'DAI is a pegged currency that mirrors the value of the US dollar. This means that ‘1 DAI’ is equivalent to ‘1 USD’. DAI is referred to with $ symbol.',
+    },
+    {
+      icon: EthIcon,
+      header: 'ETH is used for transaction costs',
+      content:
+        'Gas costs are transaction fees which are payed in ETH. These are required to process any transactions on the Ethereum network.',
+    },
+  ],
+  currentStep: 1,
+  gotoApprovals: dP.gotoApprovals,
+  gotoBankroll: dP.gotoBankroll,
+  gotoDeposit: dP.gotoDeposit,
+  balances: sP.balances,
   linkContent: [
     {
       content:
@@ -43,11 +57,9 @@ const mergeProps = (sP: any, dP: any, oP: any) => ({
   ],
   buttons: [
     {
-      text: 'Continue',
-      disabled: false,
-      action: () => {
-        dP.buyDaiModal();
-      },
+      text: 'Next',
+      disabled: true,
+      action: () => null,
     },
   ],
 });
