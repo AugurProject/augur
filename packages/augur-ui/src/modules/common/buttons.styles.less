@@ -91,7 +91,29 @@
     background: var(--color-primary-action-40);
   }
 }
+.TextIconButton {
+  .text-10-semi-bold;
 
+  text-transform: uppercase;
+  margin-left: auto;
+  margin-right: @size-28;
+  display: flex;
+  align-items: center;
+
+  > svg {
+    width: @size-16;
+    height: @size-18;
+    margin-right: @size-6;
+
+    > path {
+      stroke:black;
+    }
+  }
+
+  &:hover {
+    text-decoration: underline;
+  }
+}
 :root[theme='BETTING'],
 :root[theme='SPORTS'] {
   .Button {
