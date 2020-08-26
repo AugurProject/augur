@@ -5,6 +5,7 @@ import {
   CancelTextButton,
   DefaultButtonProps,
   SubmitTextButton,
+  TextIconButton,
 } from 'modules/common/buttons';
 import {
   Breakdown,
@@ -123,8 +124,13 @@ const orderRow = (
   ];
   return (
     <div key={`${outcomeName}-${price}-${index}`}>
-      <span>{!isTrading && <TypeLabel type={type}/>}{outcomeName}</span>
-      {isTrading && <span className={type === BUY ? Styles.bid : Styles.ask}>{type}</span>}
+      <span>
+        {!isTrading && <TypeLabel type={type} />}
+        {outcomeName}
+      </span>
+      {isTrading && (
+        <span className={type === BUY ? Styles.bid : Styles.ask}>{type}</span>
+      )}
       <span>{formatMarketShares(marketType, quantity).formatted}</span>
       <span>{formatDai(Number(price)).formatted}</span>
       <span>{formatDai(Number(orderEstimate)).formatted}</span>
@@ -139,13 +145,12 @@ const orderRow = (
                 disabled={status && status !== TXEventName.Failure}
               />
             ) : (
-              <button
-                key={Button.text}
+              <TextIconButton
                 disabled={status && status !== TXEventName.Failure}
-                onClick={() => Button.action}
-              >
-                {Trash} {Button.text}
-              </button>
+                action={() => Button.action}
+                icon={Trash}
+                {...Button}
+              />
             );
           return isTrading ? (
             <SubmitTextButton

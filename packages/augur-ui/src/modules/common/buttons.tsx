@@ -476,6 +476,24 @@ export const CancelTextButton = ({
   </button>
 );
 
+export const TextIconButton = ({
+  text,
+  action,
+  title,
+  disabled,
+  icon,
+}: DefaultButtonProps) => (
+  <button
+    onClick={e => action(e)}
+    className={Styles.TextIconButton}
+    disabled={disabled}
+    title={title}
+  >
+    {icon} {text}
+  </button>
+);
+
+
 // Only used in ADVANCED button in trade-form
 export const TextButtonFlip = (props: DefaultButtonProps) => (
   <button
