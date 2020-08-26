@@ -45,7 +45,6 @@ export const convertPositionToBet = (position, marketInfo) => {
     marketId: marketInfo.id,
     outcomeId: position.outcome,
     sportsBook: marketInfo.sportsBook,
-    amountWon: '0',
     amountFilled: '0',
     price: avgPrice,
     max: marketInfo.maxPrice,
