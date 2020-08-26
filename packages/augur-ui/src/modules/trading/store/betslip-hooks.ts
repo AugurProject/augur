@@ -152,27 +152,14 @@ export function BetslipReducer(state, action) {
           };
         }
         orders.forEach(order => {
-          const match = matchedItems[marketId].orders.findIndex(
-            lOrder =>
-              lOrder.outcomeId === order.outcomeId
-          );
-          let orderId = matchedItems[marketId].orders.length;
-          const updatedOrder = {
+          const orderId = matchedItems[marketId].orders.length;
+          matchedItems[marketId].orders.push({
             ...order,
             orderId,
             amountFilled: order.wager,
             timestamp: currentAugurTimestamp,
             status: PENDING,
-          };
-          if (match > -1) {
-            matchedItems[marketId].orders[match] = {
-              ...updatedOrder,
-              orderId: match,
-            };
-            orderId = match;
-          } else {
-            matchedItems[marketId].orders.push(updatedOrder);
-          }
+          });
           placeBet(marketId, order, orderId);
         });
         updatedState.matched.count += ordersAmount;

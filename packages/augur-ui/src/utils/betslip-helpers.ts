@@ -101,12 +101,7 @@ export const placeBet = async (marketId, order, orderId) => {
     undefined
   )
     .then(() => {
-      Betslip.actions.updateMatched(marketId, orderId, {
-        ...order,
-        marketId,
-        sportsBook: market.sportsBook,
-        status: FILLED,
-      });
+      Betslip.actions.trash(marketId, orderId);
     })
     .catch(err => {
       Betslip.actions.updateMatched(marketId, orderId, {
