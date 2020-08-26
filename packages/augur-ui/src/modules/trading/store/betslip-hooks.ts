@@ -64,7 +64,6 @@ export function BetslipReducer(state, action) {
   const {
     blockchain: { currentAugurTimestamp },
   } = AppStatus.get();
-  const updatedTime = currentAugurTimestamp;
   switch (action.type) {
     case TOGGLE_HEADER: {
       const currentHeader = updatedState.selected.header;
@@ -159,7 +158,7 @@ export function BetslipReducer(state, action) {
             ...order,
             amountFilled: order.wager,
             amountWon: '0',
-            timestamp: updatedTime,
+            timestamp: currentAugurTimestamp,
             status: PENDING,
           });
         });
@@ -219,7 +218,7 @@ export function BetslipReducer(state, action) {
         matchedItems[marketId].orders[orderId] = {
           ...matchedItems[marketId].orders[orderId],
           ...updates,
-          dateUpdated: updatedTime,
+          dateUpdated: currentAugurTimestamp,
           timestampUpdated: Date.now() / 1000,
         };
       }
