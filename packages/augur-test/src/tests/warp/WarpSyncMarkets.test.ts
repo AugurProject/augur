@@ -221,6 +221,7 @@ describe('Warp Sync markets', () => {
         state: MarketReportingState.Unknown,
       });
     });
+
     // Giant omnibus test because speed.
     test('should create subsequent checkpoints after warp market end time', async () => {
       const amountToTransfer = new BigNumber(1000);
