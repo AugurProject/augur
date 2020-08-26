@@ -1,6 +1,6 @@
 /* eslint react/no-array-index-key: 0 */
 
-import React, { Component } from 'react';
+import React from 'react';
 import classNames from 'classnames';
 
 import { formatDai, formatMarketShares } from 'utils/format-number';
@@ -23,6 +23,7 @@ interface MarketTradeHistoryProps {
   initialGroupedTradeHistory?: object
   outcome?: number;
 }
+
 const MarketTradeHistory = ({
   marketId,
   toggle,
@@ -45,9 +46,9 @@ const MarketTradeHistory = ({
 
     Object.keys(groupedTradeHistory).forEach(key => {
       groupedTradeHistoryVolume[key] = groupedTradeHistory[key].reduce(
-        (p, item) =>
+        (p, { amount }) =>
           createBigNumber(p)
-            .plus(createBigNumber(item.amount))
+            .plus(createBigNumber(amount))
             .toFixed(4),
         '0'
       );

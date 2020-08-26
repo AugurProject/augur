@@ -202,7 +202,6 @@ const MarketView = ({
     if (
       isConnected &&
       !!marketId &&
-      !tradingTutorial &&
       !preview &&
       zeroXSynced
     ) {
@@ -266,7 +265,6 @@ const MarketView = ({
     if (
       prevProps.current.isConnected !== isConnected &&
       !!marketId &&
-      !tradingTutorial &&
       !preview &&
       zeroXSynced
     ) {
@@ -622,16 +620,14 @@ const MarketView = ({
                         </ModulePane>
                         <ModulePane label="Trade History">
                           <div className={Styles.History}>
-                            {(marketId || preview) && (
-                              <MarketTradeHistory
-                                isArchived={isArchived}
-                                marketId={marketId}
-                                outcome={outcomeIdSet}
-                                toggle={toggleTradeHistory}
-                                hide={extendOrderBook}
-                                marketType={marketType}
-                              />
-                            )}
+                            <MarketTradeHistory
+                              isArchived={isArchived}
+                              marketId={marketId}
+                              outcome={outcomeIdSet}
+                              toggle={toggleTradeHistory}
+                              hide={extendOrderBook}
+                              marketType={marketType}
+                            />
                           </div>
                         </ModulePane>
                       </ModuleTabs>
@@ -787,7 +783,7 @@ const MarketView = ({
                       toggle={
                         cat5
                           ? () => toggleMiddleColumn('extendOutcomesList')
-                          : null
+                          : () => {}
                       }
                       market={market}
                       orderBook={outcomeOrderBook}
@@ -845,17 +841,15 @@ const MarketView = ({
                         )}
                     </div>
                     <div className={HistoryStyle}>
-                      {(marketId || preview) && (
-                        <MarketTradeHistory
-                          marketId={marketId}
-                          outcome={outcomeIdSet}
-                          isArchived={isArchived}
-                          toggle={toggleTradeHistory}
-                          marketType={marketType}
-                          hide={extendOrderBook}
-                          initialGroupedTradeHistory={groupedTradeHistory}
-                        />
-                      )}
+                      <MarketTradeHistory
+                        marketId={marketId}
+                        outcome={outcomeIdSet}
+                        isArchived={isArchived}
+                        toggle={toggleTradeHistory}
+                        marketType={marketType}
+                        hide={extendOrderBook}
+                        initialGroupedTradeHistory={groupedTradeHistory}
+                      />
                     </div>
                   </div>
                 </div>
