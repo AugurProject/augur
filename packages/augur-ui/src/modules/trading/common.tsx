@@ -105,7 +105,7 @@ export const SportsMarketBets = ({ market }) => {
 export const SportsMarketMyBets = ({ market }) => {
   const {
     selected: { subHeader },
-    actions: { retry, cashOut, updateMatched, updateUnmatched, trash },
+    actions: { retry, cashOut, trash },
   } = useBetslipStore();
   const marketId = market[0];
   const { description, orders } = market[1];
@@ -115,10 +115,6 @@ export const SportsMarketMyBets = ({ market }) => {
     cashOut: () => cashOut(marketId, orderId),
     retry: () => retry(marketId, orderId),
     trash: () => trash(marketId, orderId),
-    update: updates =>
-      subHeader === BETSLIP_SELECTED.UNMATCHED
-        ? updateUnmatched(marketId, orderId, updates)
-        : updateMatched(marketId, orderId, updates),
   }));
   return (
     <div className={Styles.SportsMarketBets}>
@@ -251,7 +247,7 @@ export const SportsMyBet = ({ bet }) => {
     status,
     amountFilled,
     toWin,
-    dateUpdated,
+    timestamp,
     timestampUpdated,
   } = bet;
   const [isRecentUpdate, setIsRecentUpdate] = useState(true);
@@ -328,7 +324,7 @@ export const SportsMyBet = ({ bet }) => {
       <LinearPropertyLabel label="to win" value={formatDai(toWin)} useFull />
       <LinearPropertyLabel
         label="Date"
-        value={convertUnixToFormattedDate(dateUpdated).formattedUtc}
+        value={convertUnixToFormattedDate(timestamp).formattedUtc}
       />
       {!!message && (
         <span>

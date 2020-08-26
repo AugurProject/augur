@@ -87,7 +87,7 @@ export const MyBetsRow = ({
     {
       key: 'betDate',
       columnType: COLUMN_TYPES.TEXT,
-      text: convertUnixToFormattedDate(outcome.dateUpdated).formattedUtc,
+      text: convertUnixToFormattedDate(outcome.timestamp).formattedUtc,
       keyId: 'outcome-betDate-' + outcome.outcome,
     },
     {

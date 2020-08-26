@@ -107,7 +107,6 @@ export const STUBBED_BETSLIP_ACTIONS = {
   toggleSubHeader: selected => {},
   toggleStep: () => {},
   addBet: (marketId, description, max, min, normalizedPrice, outcome, shares, outcomeId, price) => {},
-  sendBet: (marketId, orderId, description, order) => {},
   modifyBet: (marketId, orderId, order) => {},
   modifyBetErrorMessage: (marketId, orderId, errorMessage) => {},
   cancelBet: (marketId, orderId) => {},
@@ -119,5 +118,4 @@ export const STUBBED_BETSLIP_ACTIONS = {
   addMatched: (fromList, marketId, description, order) => {},
   trash: (marketId, orderId) => {},
   cancelAllUnmatched: () => {},
-  updateUnmatched: (marketId, orderId, updates) => {},
 };
