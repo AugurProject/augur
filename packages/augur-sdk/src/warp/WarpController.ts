@@ -329,7 +329,7 @@ export class WarpController {
       }
 
       clearTimeout(timeout);
-      const decompressedResult = await LZString.decompressFromUint8Array(fileResult);
+      const decompressedResult = await LZString.decompressFromUint8Array(await fileResult);
       resolve(JSON.parse(decompressedResult));
     });
   }
