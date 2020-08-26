@@ -162,6 +162,7 @@ export function BetslipReducer(state, action) {
             status: PENDING,
           });
         });
+        matchedItems[marketId].orders = matchedItems[marketId].orders.sort((a, b) => b.timestamp - a.timestamp);
         updatedState.matched.count += ordersAmount;
       }
       updatedState.betslip = deepClone(EMPTY_BETSLIST);
@@ -182,6 +183,7 @@ export function BetslipReducer(state, action) {
       if (match > -1) {
         matchedItems[marketId].orders[match] = {
           ...matchedItems[marketId].orders[match],
+          ...order
         };
       } else {
         matchedItems[marketId].orders.push({
@@ -193,6 +195,7 @@ export function BetslipReducer(state, action) {
         updatedState.matched.count++;
         fromList && updatedState[fromList].count--;
       }
+      matchedItems[marketId].orders = matchedItems[marketId].orders.sort((a, b) => b.timestamp - a.timestamp);
       break;
     }
     case RETRY: {

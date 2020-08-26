@@ -121,7 +121,7 @@ export const Game = ({ row, type }: GameProps) => {
       </div>
       <div>
         <BetsHeader />
-        {Object.values(row.orders).sort((a,b) => b.timestamp - a.timestamp).map(order => (
+        {Object.values(row.orders).map(order => (
           <BetRow
             key={order.outcomeId}
             outcome={order}

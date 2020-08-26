@@ -49,7 +49,6 @@ export const Betslip = () => {
     ? Object.entries(isUnmatched ? unmatchedItems : matchedItems)
     : Object.entries(betslipItems);
   if (isMyBets) {
-    marketItems.map(item => item[1].orders = item[1].orders.sort((a, b) => b.timestamp - a.timestamp));
     marketItems = marketItems.sort((a, b) => b[1].orders[0].timestamp - a[1].orders[0].timestamp);
   }
   let oddsChanged = false;
