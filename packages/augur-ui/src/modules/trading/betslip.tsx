@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import classNames from 'classnames';
 import { ThickChevron } from 'modules/common/icons';
 import {
@@ -15,7 +15,6 @@ import { useBetslipStore } from 'modules/trading/store/betslip';
 
 import Styles from 'modules/trading/betslip.styles';
 import { PrimaryButton } from 'modules/common/buttons';
-import { recentlyUpdated } from './common.styles.less';
 
 export const Betslip = () => {
   const {
@@ -46,9 +45,13 @@ export const Betslip = () => {
     ? matchedCount
     : unmatchedCount + matchedCount;
   const isSelectedEmpty = isMyBets ? myBetsCount === 0 : betslipCount === 0;
-  const marketItems = isMyBets
+  let marketItems = isMyBets
     ? Object.entries(isUnmatched ? unmatchedItems : matchedItems)
     : Object.entries(betslipItems);
+  if (isMyBets) {
+    marketItems.map(item => item[1].orders = item[1].orders.sort((a, b) => b.timestamp - a.timestamp));
+    marketItems = marketItems.sort((a, b) => b[1].orders[0].timestamp - a[1].orders[0].timestamp);
+  }
   let oddsChanged = false;
   Object.values(betslipItems).map(market => {
     const recentlyUpdated = market?.orders.filter(item => item.recentlyUpdated);

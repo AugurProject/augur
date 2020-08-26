@@ -1,8 +1,7 @@
 import { useReducer } from 'react';
-import { formatDate } from 'utils/format-date';
-import { convertToWin, getOddsObject, getWager, getShares } from 'utils/get-odds';
+import { convertToWin, getWager, getShares } from 'utils/get-odds';
 
-import { ZERO, ODDS_TYPE } from 'modules/common/constants';
+import { ZERO } from 'modules/common/constants';
 import {
   BET_STATUS,
   BETSLIP_SELECTED,
@@ -20,9 +19,7 @@ const {
   RETRY,
   ADD_BET,
   MODIFY_BET,
-  UPDATE_UNMATCHED,
   UPDATE_MATCHED,
-  SEND_BET,
   SEND_ALL_BETS,
   TRASH,
   CANCEL_BET,
@@ -32,7 +29,6 @@ const {
   TOGGLE_HEADER,
   TOGGLE_SUBHEADER,
   ADD_MATCHED,
-  ADD_MULTIPLE_MATCHED,
   SET_DISABLE_PLACE_BETS,
   MODIFY_BET_ERROR_MESSAGE,
   CLEAR_BETSLIP
@@ -146,30 +142,6 @@ export function BetslipReducer(state, action) {
       updatedState.placeBetsDisabled = action.placeBetsDisable;
       break;
     }
-    case SEND_BET: {
-      const { marketId, description, orderId, order } = action;
-      if (!matchedItems[marketId]) {
-        matchedItems[marketId] = {
-          description,
-          orders: [],
-        };
-      }
-      matchedItems[marketId].orders.push({
-        ...order,
-        amountFilled: order.wager,
-        amountWon: '0',
-        dateUpdated: updatedTime,
-        status: PENDING,
-      });
-      const market = betslipItems[marketId];
-      market.orders.splice(orderId, 1);
-      if (market.orders.length === 0) {
-        delete betslipItems[marketId];
-      }
-      updatedState.betslip.count--;
-      updatedState.matched.count++;
-      break;
-    }
     case SEND_ALL_BETS: {
       for (let [marketId, { description, orders }] of Object.entries(
         betslipItems
@@ -187,7 +159,7 @@ export function BetslipReducer(state, action) {
             ...order,
             amountFilled: order.wager,
             amountWon: '0',
-            dateUpdated: updatedTime,
+            timestamp: updatedTime,
             status: PENDING,
           });
         });
@@ -222,27 +194,6 @@ export function BetslipReducer(state, action) {
         updatedState.matched.count++;
         fromList && updatedState[fromList].count--;
       }
-      break;
-    }
-    case ADD_MULTIPLE_MATCHED: {
-      const { fromList, marketId, description, orders } = action;
-      if (!matchedItems[marketId]) {
-        matchedItems[marketId] = {
-          description,
-          orders: [],
-        };
-      }
-      orders.forEach(order => {
-        matchedItems[marketId].orders.push({
-          ...order,
-          amountFilled: order.wager,
-          amountWon: '0',
-          dateUpdated: updatedTime,
-          status: PENDING,
-        });
-      });
-      updatedState.matched.count += orders.length;
-      updatedState[fromList].count -= orders.length;
       break;
     }
     case RETRY: {
@@ -373,8 +324,6 @@ export const useBetslip = (defaultState = MOCK_BETSLIP_STATE) => {
           outcomeId,
           price,
         }),
-      sendBet: (marketId, orderId, description, order) =>
-        dispatch({ type: SEND_BET, marketId, orderId, description, order }),
       modifyBet: (marketId, orderId, order) =>
         dispatch({ type: MODIFY_BET, marketId, orderId, order }),
       modifyBetErrorMessage: (marketId, orderId, errorMessage) =>
@@ -394,8 +343,6 @@ export const useBetslip = (defaultState = MOCK_BETSLIP_STATE) => {
       trash: (marketId, orderId) =>
         dispatch({ type: TRASH, marketId, orderId }),
       cancelAllUnmatched: () => dispatch({ type: CANCEL_ALL_UNMATCHED }),
-      updateUnmatched: (marketId, orderId, updates) =>
-        console.log(`implement ${UPDATE_UNMATCHED} dispatch`),
     },
   };
 };
