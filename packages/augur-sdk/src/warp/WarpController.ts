@@ -309,6 +309,7 @@ export class WarpController {
     return new Promise<CheckpointInterface>(async function(resolve, reject) {
       const timeout = setTimeout(function() {reject(new Error('Request timed out'));}, FILE_FETCH_TIMEOUT);
       let fileResult;
+      console.log('self.ipfsEndpointInfo', JSON.stringify(self.ipfsEndpointInfo));
       switch (self.ipfsEndpointInfo.version) {
         case IPFSHashVersion.CIDv0:
           fileResult = await fetch(`${self.ipfsEndpointInfo.url}/ipfs/${ipfsHash}${ipfsPath}`)
@@ -322,7 +323,7 @@ export class WarpController {
           .then(item => new Uint8Array(item))
           break;
         case IPFSHashVersion.IPFS:
-          fileResult = (await self.ipfs).cat(ipfsHash);
+          fileResult = (await self.ipfs).cat(`${ipfsHash}${ipfsPath}`);
           break;
         default:
           throw new Error('No IPFS gateway configured');
