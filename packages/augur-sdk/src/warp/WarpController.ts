@@ -305,14 +305,12 @@ export class WarpController {
   }
 
   getFile(ipfsHash: string, ipfsPath: string) {
-    const self = this;
-    return new Promise<CheckpointInterface>(async function(resolve, reject) {
-      const timeout = setTimeout(function() {reject(new Error('Request timed out'));}, FILE_FETCH_TIMEOUT);
+    return new Promise<CheckpointInterface>(async (resolve, reject) => {
+      const timeout = setTimeout(() => {reject(new Error('Request timed out'));}, FILE_FETCH_TIMEOUT);
       let fileResult;
-      console.log('self.ipfsEndpointInfo', JSON.stringify(self.ipfsEndpointInfo));
-      switch (self.ipfsEndpointInfo.version) {
+      switch (this.ipfsEndpointInfo.version) {
         case IPFSHashVersion.CIDv0:
-          fileResult = await fetch(`${self.ipfsEndpointInfo.url}/ipfs/${ipfsHash}${ipfsPath}`)
+          fileResult = await fetch(`${this.ipfsEndpointInfo.url}/ipfs/${ipfsHash}${ipfsPath}`)
           .then(item => item.arrayBuffer())
           .then(item => new Uint8Array(item))
           break;
@@ -323,14 +321,20 @@ export class WarpController {
           .then(item => new Uint8Array(item))
           break;
         case IPFSHashVersion.IPFS:
-          fileResult = (await self.ipfs).cat(`${ipfsHash}${ipfsPath}`);
+          try {
+            fileResult = await (await this.ipfs).cat(`${ipfsHash}${ipfsPath}`);
+          } catch(err) {
+            if (err.message === 'this dag node is a directory') {
+              throw Error(`IPFS: tried to read directory as if it were a file: hash=${ipfsHash} path=${ipfsPath}`)
+            }
+          }
           break;
         default:
           throw new Error('No IPFS gateway configured');
       }
 
       clearTimeout(timeout);
-      const decompressedResult = await LZString.decompressFromUint8Array(await fileResult);
+      const decompressedResult = await LZString.decompressFromUint8Array(fileResult);
       resolve(JSON.parse(decompressedResult));
     });
   }
