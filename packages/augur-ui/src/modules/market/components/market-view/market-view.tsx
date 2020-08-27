@@ -455,14 +455,14 @@ const MarketView = ({
     }
   }
 
-  let outcomeOrderBook = preview ? formatOrderBook(orderBook[selectedOutcomeId]) : orderBook[selectedOutcomeId];
-
-  if (isPositions || isFills) {
-    const orders = orderBook[TUTORIAL_OUTCOME] as TestTradingOrder[];
-    const newOrderBook = orders.filter(order => !order.disappear);
-    outcomeOrderBook = formatOrderBook(newOrderBook);
-  }
   const parsedMarketDescription = parseMarketTitle(description);
+  const tutorialOrders = (isFills || isPositions) ? orderBook[TUTORIAL_OUTCOME] as TestTradingOrder[] : [];
+  const tutorialBook = formatOrderBook(tutorialOrders.filter(order => !order.disappear));
+  const outcomeOrderBook = preview ? 
+    formatOrderBook(orderBook[selectedOutcomeId]) :
+    tutorialOrders.length ? 
+      tutorialBook :
+      orderBook[selectedOutcomeId];
 
   return (
     <div
@@ -642,14 +642,14 @@ const MarketView = ({
                     text={tutorialCopy}
                   />
                   {isDetails && (
-                      <TutorialPopUp
-                        top
-                        step={tutorialStep}
-                        totalSteps={totalSteps}
-                        text={tutorialCopy}
-                        next={next}
-                      />
-                    )}
+                    <TutorialPopUp
+                      top
+                      step={tutorialStep}
+                      totalSteps={totalSteps}
+                      text={tutorialCopy}
+                      next={next}
+                    />
+                  )}
                 </div>
                 <div className={TradingFormStyle}>
                   <TradingForm
@@ -663,24 +663,24 @@ const MarketView = ({
                     tutorialNext={next}
                   />
                   {isTrading && (
-                      <TutorialPopUp
-                        left={!isPlaceOrder}
-                        leftBottom={isPlaceOrder}
-                        next={() => {
-                          if (isPlaceOrder) {
-                            updateSelectedOrderProperties({
-                              orderQuantity: '',
-                              orderPrice: '',
-                            });
-                          }
-                          next();
-                        }}
-                        step={tutorialStep}
-                        totalSteps={totalSteps}
-                        text={tutorialCopy}
-                        error={tutorialError !== '' ? tutorialError : null}
-                      />
-                    )}
+                    <TutorialPopUp
+                      left={!isPlaceOrder}
+                      leftBottom={isPlaceOrder}
+                      next={() => {
+                        if (isPlaceOrder) {
+                          updateSelectedOrderProperties({
+                            orderQuantity: '',
+                            orderPrice: '',
+                          });
+                        }
+                        next();
+                      }}
+                      step={tutorialStep}
+                      totalSteps={totalSteps}
+                      text={tutorialCopy}
+                      error={tutorialError !== '' ? tutorialError : null}
+                    />
+                  )}
                 </div>
                 <MarketOutcomesList
                   market={market}
@@ -725,14 +725,14 @@ const MarketView = ({
                     selected={selected}
                   />
                   {isOpenOrders || isFills || isPositions && (
-                      <TutorialPopUp
-                        bottom
-                        next={next}
-                        step={tutorialStep}
-                        totalSteps={totalSteps}
-                        text={tutorialCopy}
-                      />
-                    )}
+                    <TutorialPopUp
+                      bottom
+                      next={next}
+                      step={tutorialStep}
+                      totalSteps={totalSteps}
+                      text={tutorialCopy}
+                    />
+                  )}
                 </div>
                 <div className={Styles.OrderBookAndHistory}>
                   <div className={OrderBookStyle}>
@@ -746,14 +746,14 @@ const MarketView = ({
                       orderBook={outcomeOrderBook}
                     />
                     {isOrderBook && (
-                        <TutorialPopUp
-                          right
-                          next={next}
-                          step={tutorialStep}
-                          totalSteps={totalSteps}
-                          text={tutorialCopy}
-                        />
-                      )}
+                      <TutorialPopUp
+                        right
+                        next={next}
+                        step={tutorialStep}
+                        totalSteps={totalSteps}
+                        text={tutorialCopy}
+                      />
+                    )}
                   </div>
                   <div className={HistoryStyle}>
                     <MarketTradeHistory
