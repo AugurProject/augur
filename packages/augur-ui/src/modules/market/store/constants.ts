@@ -1,4 +1,4 @@
-import { BUY, TUTORIAL_QUANTITY, TUTORIAL_PRICE, LONG, TRADING_TUTORIAL, PUBLICFILLORDER, CATEGORICAL, TRADING_TUTORIAL_OUTCOMES, TUTORIAL_TRADING_HISTORY, TUTORIAL_ORDER_BOOK } from "modules/common/constants";
+import { BUY, TUTORIAL_QUANTITY, TUTORIAL_PRICE, LONG, TRADING_TUTORIAL, PUBLICFILLORDER, CATEGORICAL, TRADING_TUTORIAL_OUTCOMES, TUTORIAL_TRADING_HISTORY, TUTORIAL_ORDER_BOOK, TUTORIAL_OUTCOME } from "modules/common/constants";
 import { createBigNumber } from "utils/create-big-number";
 import { formatDai, formatShares } from "utils/format-number";
 import deepClone from "utils/deep-clone";
@@ -6,6 +6,7 @@ import { NewMarket, IndividualOutcomeOrderBook } from "modules/types";
 import { EMPTY_STATE } from "modules/create-market/constants";
 import { convertUnixToFormattedDate } from "utils/format-date";
 import { TXEventName } from '@augurproject/sdk-lite';
+import { formatOrderBook } from "modules/create-market/helpers/format-order-book";
 
 export const DEFAULT_MARKET_STATE = {
   market: {},
@@ -109,3 +110,5 @@ export const TRADING_TUTORIAL_MARKET = {
   groupedTradeHistory: TUTORIAL_TRADING_HISTORY,
   orderBook: TUTORIAL_ORDER_BOOK,
 };
+
+export const FORMATTED_TUTORIAL_BOOK = formatOrderBook(TUTORIAL_ORDER_BOOK[TUTORIAL_OUTCOME].filter(order => !order.disappear));

@@ -70,6 +70,7 @@ import {
   TRADING_TUTORIAL_MARKET,
   DEFAULT_ORDER_PROPERTIES,
   EMPTY_FORMATTED_BOOK,
+  FORMATTED_TUTORIAL_BOOK,
 } from 'modules/market/store/constants';
 
 
@@ -90,10 +91,9 @@ const MarketView = ({
   defaultMarket = null,
 }: MarketViewProps) => {
   const {
-    universe,
     modal: { type: modalType },
     zeroXStatus,
-    isConnected: connected,
+    isConnected,
     canHotload,
     blockchain: { currentAugurTimestamp },
     actions: { setModal, closeModal, removeAlert }
@@ -110,7 +110,6 @@ const MarketView = ({
   const location = useLocation();
   const history = useHistory();
   const node = useRef(null);
-  const prevProps = useRef();
   const {
     [MARKET_ID_PARAM_NAME]: queryId,
     [OUTCOME_ID_PARAM_NAME]: queryOutcomeId,
@@ -121,13 +120,11 @@ const MarketView = ({
     preview
   } = getTutorialPreview(queryId, location);
   const marketId = (preview) ? queryId : getAddress(queryId);
-  const isConnected = connected && universe.id != null;
   const market = tradingTutorial ? 
     TRADING_TUTORIAL_MARKET : 
     defaultMarket || convertMarketInfoToMarketData(marketInfos[marketId], currentAugurTimestamp * 1000);
   const defaultOutcomeId = market?.defaultSelectedOutcomeId;
   const cat5 = findType(market);
-  const hasZeroXError = zeroXStatus === ZEROX_STATUSES.ERROR;
   const zeroXSynced = zeroXStatus === ZEROX_STATUSES.SYNCED;
   const orderBook: Getters.Markets.OutcomeOrderBook = preview ? market.orderBook : ((orderBooks[marketId] || {}).orderBook || EMPTY_FORMATTED_BOOK);
   const [state, setState] = useState({
@@ -206,16 +203,22 @@ const MarketView = ({
     [isOpenOrders, isFills, isPositions]);
 
   useEffect(() => {
-    if (!preview && !hasZeroXError) {
-      window.scrollTo(0, 1);
-    }
-    if (!market) {
-      setModal({ type: MODAL_MARKET_LOADING });
-    }
-  }, []);
+    // This will only be called once on the 'canHotLoad' prop change.
+    if (canHotload && marketId && !market) hotLoadMarket(marketId, history);
+  }, [canHotload, marketId]);
 
   useEffect(() => {
-    // inital mount, state setting
+    // set selectedOutcomeID if it's unset.
+    if (!selectedOutcomeId) {
+      setState({
+        ...state,
+        selectedOutcomeId: queryOutcomeId ? parseInt(queryOutcomeId) : defaultOutcomeId,
+      });
+    }
+  }, [defaultOutcomeId, queryOutcomeId]);
+
+  useEffect(() => {
+    // loadInfoIfNotLoaded
     tradingTutorialWidthCheck();
     if (
       isConnected &&
@@ -234,32 +237,8 @@ const MarketView = ({
   }, [zeroXSynced, marketId]);
 
   useEffect(() => {
-    prevProps.current = {
-      tradingTutorial, isConnected
-    };
-  }, [tradingTutorial, isConnected]);
-
-  useEffect(() => {
-    // set selectedOutcomeID if it's unset.
-    if (!selectedOutcomeId) {
-      setState({
-        ...state,
-        selectedOutcomeId: queryOutcomeId ? parseInt(queryOutcomeId) : defaultOutcomeId,
-      });
-    }
-  }, [defaultOutcomeId, queryOutcomeId]);
-
-  useEffect(() => {
-    // This will only be called once on the 'canHotLoad' prop change.
-    if (canHotload && marketId && !market) hotLoadMarket(marketId, history);
-  }, [canHotload, marketId]);
-
-  useEffect(() => {
     if (tradingTutorial) {
-      if (
-        !introShowing &&
-        isIntro
-      ) {
+      if (!introShowing && isIntro) {
         setModal({
           type: MODAL_TUTORIAL_INTRO,
           next,
@@ -268,23 +247,13 @@ const MarketView = ({
           ...state,
           introShowing: true,
           selectedOrderProperties: {
-            ...(tradingTutorial !== prevProps.current.tradingTutorial
-              ? DEFAULT_ORDER_PROPERTIES
-              : selectedOrderProperties),
+            ...DEFAULT_ORDER_PROPERTIES
           },
         });
       }
-      return;
-    }
-
-    if (market) {
-      modalType === MODAL_MARKET_LOADING && closeModal();
-    }
-
-    if (
-      !prevProps.current.tradingTutorial &&
-      !scalarModalSeen &&
+    } else if (
       market?.marketType === SCALAR &&
+      !scalarModalSeen &&
       !hasShownScalarModal
     ) {
       setModal({
@@ -296,19 +265,19 @@ const MarketView = ({
           }),
       });
     }
-  }, [
-    market,
-    introShowing,
-    preview,
-    tradingTutorial,
-    isConnected,
-    scalarModalSeen,
-    hasShownScalarModal,
-    queryOutcomeId
-  ]);
+  }, [tradingTutorial, scalarModalSeen, hasShownScalarModal]);
+
+  useEffect(() => {
+    // initial render only.
+    document.getElementById("mainContent")?.scrollTo(0, 0);
+    window.scrollTo(0, 1);
+  }, []);
 
   if (!market) {
+    if (modalType !== MODAL_MARKET_LOADING) setModal({ type: MODAL_MARKET_LOADING });
     return <div ref={node} className={Styles.MarketView} />;
+  } else {
+    modalType === MODAL_MARKET_LOADING && closeModal()
   }
 
   const {
@@ -456,12 +425,10 @@ const MarketView = ({
   }
 
   const parsedMarketDescription = parseMarketTitle(description);
-  const tutorialOrders = (isFills || isPositions) ? orderBook[TUTORIAL_OUTCOME] as TestTradingOrder[] : [];
-  const tutorialBook = formatOrderBook(tutorialOrders.filter(order => !order.disappear));
   const outcomeOrderBook = preview ? 
     formatOrderBook(orderBook[selectedOutcomeId]) :
-    tutorialOrders.length ? 
-      tutorialBook :
+    (isFills || isPositions) ? 
+      FORMATTED_TUTORIAL_BOOK :
       orderBook[selectedOutcomeId];
 
   return (
