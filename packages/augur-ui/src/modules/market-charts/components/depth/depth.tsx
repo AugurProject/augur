@@ -87,8 +87,6 @@ const DepthChart = ({
   let xScaleThis = useRef(0);
   let yScaleThis = useRef(0);
 
-  market = marketId ? selectMarket(marketId) : market;
-
   const cumulativeOrderBook = orderBook;
   const minPrice = market ? createBigNumber(market.minPriceBigNumber) : ZERO;
   const maxPrice = market ? createBigNumber(market.maxPriceBigNumber) : ZERO;

@@ -449,9 +449,7 @@ const Wrapper = ({
             });
             clearOrderForm();
           } else if (tradingTutorial) {
-            setTimeout(() => {
-              tutorialNext();
-            });
+            tutorialNext();
           } else {
             if (disclaimerSeen) {
               if (noGSN) {

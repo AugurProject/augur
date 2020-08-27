@@ -22,7 +22,6 @@ import {
   TRADING_TUTORIAL,
   TRADING_TUTORIAL_OUTCOMES,
   TRADING_TUTORIAL_STEPS,
-  TUTORIAL_OUTCOME,
   ZEROX_STATUSES,
   SCALAR_MODAL_SEEN,
   MODAL_MARKET_LOADING,
@@ -39,7 +38,6 @@ import { HelmetTag } from 'modules/seo/helmet-tag';
 import {
   MarketData,
   DefaultOrderProperties,
-  TestTradingOrder,
 } from 'modules/types';
 import { getDefaultOutcomeSelected } from 'utils/convert-marketInfo-marketData';
 import makePath from 'modules/routes/helpers/make-path';
@@ -268,6 +266,41 @@ const MarketView = ({
   }, [tradingTutorial, scalarModalSeen, hasShownScalarModal]);
 
   useEffect(() => {
+    if (isOpenOrders) {
+      const outcomeId =
+        selectedOutcomeId === null
+          ? market?.defaultSelectedOutcomeId
+          : selectedOutcomeId;
+      addAlert({
+        ...TUTORIAL_FILL_ALERT,
+        params: {
+          ...TUTORIAL_FILL_ALERT.params,
+          outcome: TRADING_TUTORIAL_OUTCOMES[outcomeId].description,
+          marketInfo: {
+            tickSize,
+            description,
+            minPrice,
+            maxPrice,
+            marketType,
+          },
+        },
+      });
+    } else if (isFills) {
+      removeAlert(TRADING_TUTORIAL, PUBLICFILLORDER);
+    } else if (isPositions) {
+      setModal({
+        type: MODAL_TUTORIAL_OUTRO,
+        back: () => {
+          setState({
+            ...state,
+            tutorialStep: MARKET_DETAILS,
+          });
+        },
+      });
+    }
+  }, [isOpenOrders, isFills, isPositions]);
+
+  useEffect(() => {
     // initial render only.
     document.getElementById("mainContent")?.scrollTo(0, 0);
     window.scrollTo(0, 1);
@@ -289,6 +322,12 @@ const MarketView = ({
     isArchived,
     groupedTradeHistory,
   } = market;
+  const parsedMarketDescription = parseMarketTitle(description);
+  const outcomeOrderBook = preview ? 
+    formatOrderBook(orderBook[selectedOutcomeId]) :
+    (isFills || isPositions) ? 
+      FORMATTED_TUTORIAL_BOOK :
+      orderBook[selectedOutcomeId];
 
   function tradingTutorialWidthCheck() {
     if (tradingTutorial && window.innerWidth < 1150) {
@@ -329,7 +368,7 @@ const MarketView = ({
   }
 
   function updateSelectedOrderProperties(selectedOrderProperties) {
-    checkTutorialErrors(selectedOrderProperties);
+    if (tradingTutorial) checkTutorialErrors(selectedOrderProperties);
     if (pane === MARKET_INFO) {
       document
         .querySelector('.trading-form-styles_TradingForm')
@@ -389,47 +428,7 @@ const MarketView = ({
         tutorialStep: tutorialStep + 1,
       });
     }
-
-    if (isOpenOrders) {
-      const outcomeId =
-        selectedOutcomeId === null
-          ? market?.defaultSelectedOutcomeId
-          : selectedOutcomeId;
-      addAlert({
-        ...TUTORIAL_FILL_ALERT,
-        params: {
-          ...TUTORIAL_FILL_ALERT.params,
-          outcome: TRADING_TUTORIAL_OUTCOMES[outcomeId].description,
-          marketInfo: {
-            tickSize,
-            description,
-            minPrice,
-            maxPrice,
-            marketType,
-          },
-        },
-      });
-    } else if (isFills) {
-      removeAlert(TRADING_TUTORIAL, PUBLICFILLORDER);
-    } else if (isPositions) {
-      setModal({
-        type: MODAL_TUTORIAL_OUTRO,
-        back: () => {
-          setState({
-            ...state,
-            tutorialStep: MARKET_DETAILS,
-          });
-        },
-      });
-    }
   }
-
-  const parsedMarketDescription = parseMarketTitle(description);
-  const outcomeOrderBook = preview ? 
-    formatOrderBook(orderBook[selectedOutcomeId]) :
-    (isFills || isPositions) ? 
-      FORMATTED_TUTORIAL_BOOK :
-      orderBook[selectedOutcomeId];
 
   return (
     <div
@@ -553,7 +552,7 @@ const MarketView = ({
                       {!preview && (
                         <PriceHistory
                           marketId={marketId}
-                          market={preview && market}
+                          market={market}
                           selectedOutcomeId={selectedOutcomeId}
                         />
                       )}
@@ -634,6 +633,7 @@ const MarketView = ({
                       left={!isPlaceOrder}
                       leftBottom={isPlaceOrder}
                       next={() => {
+                        console.log('in tutorial next', isPlaceOrder);
                         if (isPlaceOrder) {
                           updateSelectedOrderProperties({
                             orderQuantity: '',
@@ -660,7 +660,7 @@ const MarketView = ({
                 />
                 <div className={ChartsPaneStyle}>
                   <MarketChartsPane
-                    marketId={!tradingTutorial && marketId}
+                    marketId={marketId}
                     isArchived={isArchived}
                     selectedOutcomeId={selectedOutcomeId}
                     updateSelectedOrderProperties={
@@ -691,7 +691,7 @@ const MarketView = ({
                     positions={positions}
                     selected={selected}
                   />
-                  {isOpenOrders || isFills || isPositions && (
+                  {(isOpenOrders || isFills || isPositions) && (
                     <TutorialPopUp
                       bottom
                       next={next}
