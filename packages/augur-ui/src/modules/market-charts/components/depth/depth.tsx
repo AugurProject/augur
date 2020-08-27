@@ -75,19 +75,18 @@ const DepthChart = ({
   updateHoveredDepth,
   orderBook,
   market,
-  marketId,
   hoveredPriceProp,
 }) => {
-  let depthChartThis = useRef();
-  let depthContainerThis = useRef(null);
-  let drawParamsThis = useRef();
+  const depthChartThis = useRef();
+  const depthContainerThis = useRef(null);
+  const drawParamsThis = useRef();
+  const prevProps = useRef();
+  const containerHeightThis = useRef(0);
+  const containerWidthThis = useRef(0);
+  const xScaleThis = useRef(0);
+  const yScaleThis = useRef(0);
 
-  let containerHeightThis = useRef(0);
-  let containerWidthThis = useRef(0);
-  let xScaleThis = useRef(0);
-  let yScaleThis = useRef(0);
-
-  const cumulativeOrderBook = orderBook;
+  const cumulativeOrderBook = orderBook ? orderBook : [];
   const minPrice = market ? createBigNumber(market.minPriceBigNumber) : ZERO;
   const maxPrice = market ? createBigNumber(market.maxPriceBigNumber) : ZERO;
 
@@ -98,7 +97,7 @@ const DepthChart = ({
 
   const pricePrecision = market && getPrecision(market.tickSize, 4);
 
-  orderBook = cumulativeOrderBook;
+  // orderBook = cumulativeOrderBook;
   const hasOrders =
     !isEmpty(cumulativeOrderBook[BIDS]) || !isEmpty(cumulativeOrderBook[ASKS]);
   const marketMin = minPrice;
@@ -127,7 +126,6 @@ const DepthChart = ({
     };
   }, []);
 
-  const prevProps = useRef();
   useEffect(() => {
     prevProps.current = {
       hoveredPriceProp, marketDepth, orderBookKeys, zoom
@@ -183,7 +181,7 @@ const DepthChart = ({
         marketDepth: marketDepth,
         marketMin: marketMin,
         marketMax: marketMax,
-        drawParams: drawParamsThis,
+        drawParams: drawParamsThis.current,
       });
     }  
   });
@@ -302,7 +300,7 @@ const DepthChart = ({
   }
 
   function drawDepth(options, cb = null) {
-    if (depthChartThis) {
+    if (depthChartThis.current) {
       const {
         marketDepth,
         orderBookKeys,
@@ -324,9 +322,9 @@ const DepthChart = ({
         zoom,
       });
 
-      xScaleThis = drawParams.xScale;
-      yScaleThis = drawParams.yScale;
-      drawParamsThis = drawParams;
+      xScaleThis.current = drawParams.xScale;
+      yScaleThis.current = drawParams.yScale;
+      drawParamsThis.current = drawParams;
 
       const depthContainer = new ReactFauxDOM.Element('div');
 
@@ -390,7 +388,7 @@ const DepthChart = ({
   }
 
   function drawCrosshairs(options) {
-    if (depthChartThis) {
+    if (depthChartThis.current) {
       const {
         hoveredPrice,
         marketDepth,
@@ -399,8 +397,8 @@ const DepthChart = ({
         drawParams,
       } = options;
 
-      const xScale = xScaleThis;
-      const yScale = yScaleThis;
+      const xScale = xScaleThis.current;
+      const yScale = yScaleThis.current;
       const containerHeight = containerHeightThis.current;
       const containerWidth = containerWidthThis.current;
 

@@ -110,7 +110,13 @@ export const MarketHeader = ({
   const [detailsHeight, setDetailsHeight] = useState(0);
 
   useEffect(() => {
-    if (showCopied) setTimeout(() => setShowCopied(false), 4000);
+    let isMounted = true;
+    if (showCopied && isMounted) setTimeout(() => {
+      if (isMounted) { 
+        setShowCopied(false); 
+      }
+    }, 4000);
+    return () => isMounted = false;
   }, [showCopied]);
 
   useEffect(() => {
