@@ -2,7 +2,7 @@ import { BUY, TUTORIAL_QUANTITY, TUTORIAL_PRICE, LONG, TRADING_TUTORIAL, PUBLICF
 import { createBigNumber } from "utils/create-big-number";
 import { formatDai, formatShares } from "utils/format-number";
 import deepClone from "utils/deep-clone";
-import { NewMarket } from "modules/types";
+import { NewMarket, IndividualOutcomeOrderBook } from "modules/types";
 import { EMPTY_STATE } from "modules/create-market/constants";
 import { convertUnixToFormattedDate } from "utils/format-date";
 import { TXEventName } from '@augurproject/sdk-lite';
@@ -29,6 +29,11 @@ export const DEFAULT_ORDER_PROPERTIES = {
   orderPrice: '',
   orderQuantity: '',
   selectedNav: BUY,
+};
+export const EMPTY_FORMATTED_BOOK: IndividualOutcomeOrderBook = {
+  spread: null,
+  bids: [],
+  asks: [],
 };
 
 const TUTORIAL_BN_QTY = createBigNumber(TUTORIAL_QUANTITY);

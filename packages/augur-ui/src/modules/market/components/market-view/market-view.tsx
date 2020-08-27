@@ -20,7 +20,6 @@ import {
   SCALAR,
   SMALL_MOBILE,
   TRADING_TUTORIAL,
-  TRADING_TUTORIAL_COPY,
   TRADING_TUTORIAL_OUTCOMES,
   TRADING_TUTORIAL_STEPS,
   TUTORIAL_OUTCOME,
@@ -40,7 +39,6 @@ import { HelmetTag } from 'modules/seo/helmet-tag';
 import {
   MarketData,
   DefaultOrderProperties,
-  IndividualOutcomeOrderBook,
   TestTradingOrder,
 } from 'modules/types';
 import { getDefaultOutcomeSelected } from 'utils/convert-marketInfo-marketData';
@@ -57,9 +55,6 @@ import {
 import { windowRef } from 'utils/window-ref';
 import { getAddress } from 'ethers/utils/address';
 import { hotLoadMarket } from 'modules/markets/actions/load-markets';
-import {
- convertUnixToFormattedDate,
-} from 'utils/format-date';
 import { useAppStatusStore } from 'modules/app/store/app-status';
 import { useMarketsStore } from 'modules/markets/store/markets';
 import { convertMarketInfoToMarketData } from 'utils/convert-marketInfo-marketData';
@@ -68,21 +63,17 @@ import { loadMarketTradingHistory } from 'modules/markets/actions/market-trading
 import { loadMarketsInfo } from 'modules/markets/actions/load-markets-info';
 import { addAlert } from 'modules/alerts/actions/alerts';
 import OrderBook from 'modules/market-charts/components/order-book/order-book';
-import { handleStyleCalculation, findType, getTutorialPreview, handleTutorialInfo } from 'modules/market/store/market-utils';
+import { handleStyleCalculation, findType, getTutorialPreview, handleTutorialInfo, handleTutorialMocks } from 'modules/market/store/market-utils';
 import { 
-  TUTORIAL_POSITION,
   MARKET_INFO,
-  TUTORIAL_FILL,
-  TUTORIAL_OPEN_ORDER,
-  TUTORIAL_FILL_TRADE,
   TUTORIAL_FILL_ALERT,
   TRADING_TUTORIAL_MARKET,
   DEFAULT_ORDER_PROPERTIES,
+  EMPTY_FORMATTED_BOOK,
 } from 'modules/market/store/constants';
 
 
 interface MarketViewProps {
-  history: History;
   defaultMarket: MarketData;
 }
 
@@ -92,16 +83,7 @@ export interface DefaultOrderPropertiesMap {
 
 const {
   INTRO_MODAL,
-  QUANTITY,
-  LIMIT_PRICE,
-  OPEN_ORDERS,
-  MY_FILLS,
-  POSITIONS,
   MARKET_DETAILS,
-  BUYING_SHARES,
-  ORDER_VALUE,
-  PLACE_ORDER,
-  ORDER_BOOK,
 } = TRADING_TUTORIAL_STEPS;
 
 const MarketView = ({
@@ -147,7 +129,7 @@ const MarketView = ({
   const cat5 = findType(market);
   const hasZeroXError = zeroXStatus === ZEROX_STATUSES.ERROR;
   const zeroXSynced = zeroXStatus === ZEROX_STATUSES.SYNCED;
-  const orderBook: Getters.Markets.OutcomeOrderBook = preview ? market.orderBook : (orderBooks[marketId] || {}).orderBook;
+  const orderBook: Getters.Markets.OutcomeOrderBook = preview ? market.orderBook : ((orderBooks[marketId] || {}).orderBook || EMPTY_FORMATTED_BOOK);
   const [state, setState] = useState({
     pane: null,
     introShowing: false,
@@ -190,6 +172,7 @@ const MarketView = ({
     isPlaceOrder,
     isOrderBook,
     isTrading,
+    totalSteps,
   } = useMemo(() => handleTutorialInfo(tradingTutorial, tutorialStep), [tradingTutorial, tutorialStep]);
 
   const {
@@ -204,6 +187,23 @@ const MarketView = ({
   } = useMemo(() => 
     handleStyleCalculation(preview, tradingTutorial, tutorialStep, extendOrderBook, extendTradeHistory, extendOutcomesList, extendOrders, cat5), 
   [preview, tradingTutorial, tutorialStep, extendOrderBook, extendTradeHistory, extendOutcomesList, extendOrders, cat5]);
+
+  const {
+    selected,
+    orders,
+    fills,
+    positions,
+  } = useMemo(() => 
+    handleTutorialMocks(
+      selectedOutcomeId,
+      market?.description,
+      marketId,
+      currentAugurTimestamp,
+      isOpenOrders,
+      isFills,
+      isPositions
+    ), 
+    [isOpenOrders, isFills, isPositions]);
 
   useEffect(() => {
     if (!preview && !hasZeroXError) {
@@ -240,7 +240,7 @@ const MarketView = ({
   }, [tradingTutorial, isConnected]);
 
   useEffect(() => {
-    // sett selectedOutcomeID if it's unset.
+    // set selectedOutcomeID if it's unset.
     if (!selectedOutcomeId) {
       setState({
         ...state,
@@ -312,7 +312,7 @@ const MarketView = ({
   }
 
   const {
-    description: marketDescription,
+    description,
     marketType,
     tickSize,
     minPrice,
@@ -433,7 +433,7 @@ const MarketView = ({
           outcome: TRADING_TUTORIAL_OUTCOMES[outcomeId].description,
           marketInfo: {
             tickSize,
-            description: marketDescription,
+            description,
             minPrice,
             maxPrice,
             marketType,
@@ -455,64 +455,14 @@ const MarketView = ({
     }
   }
 
-  let outcomeOrderBook: IndividualOutcomeOrderBook = {
-    spread: null,
-    bids: [],
-    asks: [],
-  };
- 
-  if (orderBook && orderBook[selectedOutcomeId]) {
-    outcomeOrderBook = orderBook[selectedOutcomeId];
-  }
-
-  if (preview) {
-    outcomeOrderBook = formatOrderBook(orderBook[selectedOutcomeId]);
-  }
-
-  const orders = isOpenOrders ? [
-    {
-      ...TUTORIAL_OPEN_ORDER,
-      outcomeName: TRADING_TUTORIAL_OUTCOMES[selectedOutcomeId].description,
-    },
-  ] : null;
-
-  const fills = isFills ? [
-    {
-      ...TUTORIAL_FILL,
-      marketDescription,
-      marketId,
-      outcome: TRADING_TUTORIAL_OUTCOMES[selectedOutcomeId].description,
-      timestamp: convertUnixToFormattedDate(currentAugurTimestamp),
-      trades: [
-        {
-          ...TUTORIAL_FILL_TRADE,
-          marketDescription,
-          marketId,
-          outcome: TRADING_TUTORIAL_OUTCOMES[selectedOutcomeId].description,
-          timestamp: convertUnixToFormattedDate(currentAugurTimestamp),
-        },
-      ],
-    },
-  ] : null;
-
-  const positions = isPositions ? [
-    {
-      ...TUTORIAL_POSITION,
-      outcomeName: TRADING_TUTORIAL_OUTCOMES[selectedOutcomeId].description,
-      outcomeId: selectedOutcomeId,
-    },
-  ] : null;
-
-  let selected = isFills ? 1 : isPositions ? 2 : 0;
-
-  const totalSteps = Object.keys(TRADING_TUTORIAL_STEPS).length / 2 - 2;
+  let outcomeOrderBook = preview ? formatOrderBook(orderBook[selectedOutcomeId]) : orderBook[selectedOutcomeId];
 
   if (isPositions || isFills) {
     const orders = orderBook[TUTORIAL_OUTCOME] as TestTradingOrder[];
     const newOrderBook = orders.filter(order => !order.disappear);
     outcomeOrderBook = formatOrderBook(newOrderBook);
   }
-  const parsedMarketDescription = parseMarketTitle(marketDescription);
+  const parsedMarketDescription = parseMarketTitle(description);
 
   return (
     <div
@@ -630,7 +580,7 @@ const MarketView = ({
                   }}
                 >
                   <div className={Styles.PaneContainer}>
-                    <h1>{marketDescription}</h1>
+                    <h1>{description}</h1>
                     <div className={Styles.PriceHistory}>
                       <h3>Price History</h3>
                       {!preview && (
@@ -663,7 +613,7 @@ const MarketView = ({
                   }
                 >
                   <div className={Styles.PaneContainer}>
-                    <h1>{marketDescription}</h1>
+                    <h1>{description}</h1>
                     <MarketOrdersPositionsTable
                       updateSelectedOrderProperties={
                         updateSelectedOrderProperties
