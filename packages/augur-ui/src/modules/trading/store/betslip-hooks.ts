@@ -10,7 +10,7 @@ import {
   BETSLIP_ACTIONS,
   DEFAULT_BETSLIP_STATE,
 } from 'modules/trading/store/constants';
-import { placeBet, checkForErrors, checkForDisablingPlaceBets, checkInsufficientFunds } from 'utils/betslip-helpers';
+import { placeBet, checkForDisablingPlaceBets } from 'utils/betslip-helpers';
 import { AppStatus } from 'modules/app/store/app-status';
 import deepClone from 'utils/deep-clone';
 
@@ -30,7 +30,6 @@ const {
   TOGGLE_SUBHEADER,
   ADD_MATCHED,
   SET_DISABLE_PLACE_BETS,
-  MODIFY_BET_ERROR_MESSAGE,
   CLEAR_BETSLIP
 } = BETSLIP_ACTIONS;
 const { BETSLIP, MY_BETS, MATCHED, UNMATCHED } = BETSLIP_SELECTED;
@@ -105,33 +104,29 @@ export function BetslipReducer(state, action) {
         const matchingBet = betslipItems[marketId].orders.find(
           order =>
             order.outcomeId === outcomeId &&
-            order.price === price &&
-            order.shares === shares
+            order.price === price
         );
         if (matchingBet) {
           break;
         }
       }
-      const wager = getWager(shares, price);
-      const insufficientFunds = checkInsufficientFunds(min, max, price, shares);
       let order = {
         outcome,
         normalizedPrice,
-        wager,
-        shares,
+        wager: null,
+        shares: null,
         outcomeId,
         price,
         max,
         min,
-        toWin: convertToWin(max, shares),
+        toWin: null,
         amountFilled: '0',
         status: UNSENT,
         dateUpdated: null,
         orderId: betslipItems[marketId].orders.length,
-        insufficientFunds,
       };
-      checkForErrors(marketId, order, order.orderId);
-      updatedState.placeBetsDisabled = checkForDisablingPlaceBets(betslipItems);
+      updatedState.placeBetsDisabled = true;
+
       betslipItems[marketId].orders.push(order);
       updatedState.betslip.count++;
       break;
@@ -239,13 +234,7 @@ export function BetslipReducer(state, action) {
         order.max,
         shares
       );
-      betslipItems[marketId].orders[orderId] = { ...order, shares, toWin };
-      updatedState.placeBetsDisabled = checkForDisablingPlaceBets(betslipItems);
-      break;
-    }
-    case MODIFY_BET_ERROR_MESSAGE: {
-      const { marketId, orderId, errorMessage } = action;
-      betslipItems[marketId].orders[orderId] = { ...betslipItems[marketId].orders[orderId], errorMessage: errorMessage };
+      if (betslipItems[marketId]?.orders) betslipItems[marketId].orders[orderId] = { ...order, shares, toWin };
       updatedState.placeBetsDisabled = checkForDisablingPlaceBets(betslipItems);
       break;
     }
@@ -324,8 +313,6 @@ export const useBetslip = (defaultState = MOCK_BETSLIP_STATE) => {
         }),
       modifyBet: (marketId, orderId, order) =>
         dispatch({ type: MODIFY_BET, marketId, orderId, order }),
-      modifyBetErrorMessage: (marketId, orderId, errorMessage) =>
-        dispatch({ type: MODIFY_BET_ERROR_MESSAGE, marketId, orderId, errorMessage }),
       cancelBet: (marketId, orderId) =>
         dispatch({ type: CANCEL_BET, marketId, orderId }),
       sendAllBets: () => dispatch({ type: SEND_ALL_BETS }),

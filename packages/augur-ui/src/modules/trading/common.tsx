@@ -26,7 +26,7 @@ import { BET_STATUS, BETSLIP_SELECTED } from 'modules/trading/store/constants';
 import { formatDai } from 'utils/format-number';
 
 import Styles from 'modules/trading/common.styles';
-import { convertToOdds, getWager } from 'utils/get-odds';
+import { convertToOdds, getWager, getShares } from 'utils/get-odds';
 import { convertUnixToFormattedDate } from 'utils/format-date';
 import { useAppStatusStore } from 'modules/app/store/app-status';
 import { useMarketsStore } from 'modules/markets/store/markets';
@@ -37,7 +37,7 @@ import {
   MODAL_CANCEL_ALL_BETS,
   MODAL_SIGNUP,
 } from 'modules/common/constants';
-import { checkMultipleOfShares } from 'utils/betslip-helpers';
+import { checkMultipleOfShares, checkForConsumingOwnOrderError, checkInsufficientFunds } from 'utils/betslip-helpers';
 
 export interface EmptyStateProps {
   selectedTab: number;
@@ -76,19 +76,21 @@ export const EmptyState = () => {
 export const SportsMarketBets = ({ market }) => {
   const marketId = market[0];
   const {
-    actions: { modifyBet, cancelBet, modifyBetErrorMessage },
+    actions: { modifyBet, cancelBet },
   } = useBetslipStore();
   const { marketInfos } = useMarketsStore();
   const { description, orders } = market[1];
-  const bets = orders.map((order, orderId) => ({
+  const marketInfo = marketInfos[marketId];
+  const bets = orders.map(order => ({
     ...order,
-    orderId,
-    poolId: marketInfos[marketId]?.sportsBook?.liquidityPool,
+    orderId: order.orderId,
+    min: marketInfo.minPrice,
+    max: marketInfo.maxPrice,
+    poolId: marketInfo?.sportsBook?.liquidityPool,
+    checkForConsumingOwnOrderError: (order, cb) => checkForConsumingOwnOrderError(marketId, order, cb),
     modifyBet: orderUpdate =>
-      modifyBet(marketId, orderId, { ...order, ...orderUpdate }),
-    modifyBetErrorMessage: errorMessage =>
-      modifyBetErrorMessage(marketId, orderId, errorMessage),
-    cancelBet: () => cancelBet(marketId, orderId),
+      modifyBet(marketId, order.orderId, { ...order, ...orderUpdate }),
+    cancelBet: () => cancelBet(marketId, order.orderId),
   }));
   return (
     <div className={Styles.SportsMarketBets}>
@@ -140,22 +142,30 @@ export const SportsBet = ({ bet, market }) => {
     wager,
     toWin,
     modifyBet,
-    modifyBetErrorMessage,
     cancelBet,
     recentlyUpdated,
     errorMessage,
-    selfTrade,
-    insufficientFunds,
-    price
+    price,
+    checkForConsumingOwnOrderError,
+    min,
+    max
   } = bet;
   const { liquidityPools } = useMarketsStore();
   const checkWager = wager => {
-    if (wager === '' || isNaN(Number(wager))) {
+    if (!wager || wager <= 0 || wager === '' || isNaN(Number(wager))) {
       return {
         checkError: true,
         errorMessage: 'Enter a valid number'
       }
     }
+    const insufficientFundsError = checkInsufficientFunds(min, max, price, getShares(wager, price));
+    if (insufficientFundsError !== '') {
+      return {
+        checkError: true,
+        errorMessage: INSUFFICIENT_FUNDS_ERROR
+      }
+    }
+  
     const liquidity = liquidityPools[bet.poolId][bet.outcomeId];
     if (liquidity) {
       const totalWager = getWager(liquidity.shares, liquidity.price);
@@ -173,10 +183,20 @@ export const SportsBet = ({ bet, market }) => {
         errorMessage: multipleOf
       }
     }
-    modifyBetErrorMessage(
-      ''
-    );
-    return false;
+
+    checkForConsumingOwnOrderError(bet, (error) => { // needs fixing
+      if (error !== '') {
+        return {
+          checkError: true,
+          errorMessage: error
+        }
+      }
+    });
+    
+    return {
+      checkError: false,
+      errorMessage: ''
+    }
   };
   return (
     <div
@@ -214,7 +234,6 @@ export const SportsBet = ({ bet, market }) => {
             valueKey="wager"
             modifyBet={modifyBet}
             errorCheck={checkWager}
-            noEdit={selfTrade || insufficientFunds}
           />
           <BetslipInput
             label="To Win"
@@ -352,7 +371,7 @@ export const BetslipInput = ({
   errorCheck,
 }) => {
   const betslipInput = useRef(null);
-  const [curVal, setCurVal] = useState(formatDai(value).formatted);
+  const [curVal, setCurVal] = useState(value ? formatDai(value).formatted : null);
   const [invalid, setInvalid] = useState(false);
   useEffect(() => {
     betslipInput && betslipInput.current.focus();
@@ -384,7 +403,7 @@ export const BetslipInput = ({
           }
           setCurVal(newVal);
         }}
-        value={`$${curVal}`}
+        value={`$${curVal ? curVal : ''}`}
         onBlur={() => {
           const {
             checkError, 
