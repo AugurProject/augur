@@ -1,10 +1,11 @@
 import classNames from 'classnames';
-import { TRADING_TUTORIAL_STEPS, CATEGORICAL, TRADING_TUTORIAL } from "modules/common/constants";
+import { TRADING_TUTORIAL_STEPS, CATEGORICAL, TRADING_TUTORIAL, TRADING_TUTORIAL_COPY } from "modules/common/constants";
 import { CREATE_MARKET } from 'modules/routes/constants/views';
 import parsePath from 'modules/routes/helpers/parse-path';
 import Styles from 'modules/market/components/market-view/market-view.styles.less';
 
 const {
+  INTRO_MODAL,
   QUANTITY,
   LIMIT_PRICE,
   OPEN_ORDERS,
@@ -109,3 +110,33 @@ export const handleStyleCalculation =
     [Styles.show]: extendTradeHistory,
   }),
 });
+
+export const handleTutorialInfo = (isTutorial, tutorialStep) => {
+  if (!isTutorial) return {
+    tutorialCopy: '',
+    isIntro: false,
+    isDetails: false,
+    isQuantity: false,
+    isPrice: false,
+    isOpenOrders: false,
+    isFills: false,
+    isPositions: false,
+    isPlaceOrder: false,
+    isOrderBook: false,
+    isTrading: false,
+  };
+  return {
+    tutorialCopy: TRADING_TUTORIAL_COPY[tutorialStep],
+    isIntro: tutorialStep === INTRO_MODAL,
+    isDetails: tutorialStep === MARKET_DETAILS,
+    isQuantity: tutorialStep === QUANTITY,
+    isPrice: tutorialStep === LIMIT_PRICE,
+    isOpenOrders: tutorialStep === OPEN_ORDERS,
+    isFills: tutorialStep === MY_FILLS,
+    isPositions: tutorialStep === POSITIONS,
+    isPlaceOrder: tutorialStep === PLACE_ORDER,
+    isOrderBook: tutorialStep === ORDER_BOOK,
+    isTrading: (tutorialStep >= BUYING_SHARES &&
+      tutorialStep <= ORDER_VALUE) || tutorialStep === PLACE_ORDER
+  };
+}

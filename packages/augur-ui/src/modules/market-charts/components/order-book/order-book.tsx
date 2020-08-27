@@ -222,7 +222,6 @@ const OrderBook = ({
   } = getTutorialPreview(id, location);
   const orderbookLoading = isPreview ? !marketOrderBook : !(orderBooks[id]?.orderBook);
   const {
-    zeroXStatus
     blockchain: { currentAugurTimestamp: currentTimeInSeconds },
   } = useAppStatusStore();
   const orderBookSelected = (orderBooks && orderBooks[id]) || {
