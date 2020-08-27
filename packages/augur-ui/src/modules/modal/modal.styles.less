@@ -118,19 +118,42 @@ div.Onboarding {
   .Message;
 
   align-items: center;
-  border: 3px solid @color-secondary-action-outline;
-  height: 598px;
-  justify-content: center;
-  padding: @size-32 @size-28 @size-32;
+  border: @size-3 solid @color-secondary-action-outline;
+  max-height: 700px;
+  height: 100%;
+  justify-content: flex-start;
+  padding: @size-50 @size-72;
   width: 568px;
 
   @media @breakpoint-mobile {
     border: 2px solid @color-secondary-action-outline;
     height: 100%;
-    margin: @size-32 @size-8 @size-72;
     max-width: 100%;
-    padding: 0;
+    padding: @size-40 @size-12 0 @size-12;
+    overflow: scroll;
+  }
+
+  > nav {
+    display: flex;
+    color: @color-primary-text;
+    cursor: pointer;
     justify-content: space-between;
+    width: 100%;
+
+    svg {
+      height: @size-11;
+
+      > g {
+        stroke-width: @size-2;
+      }
+    }
+
+    > div:last-of-type {
+      position: absolute;
+      top: 0;
+      right: 0;
+      margin: @size-16;
+    }
   }
 
   > div {
@@ -138,23 +161,35 @@ div.Onboarding {
     flex-flow: column nowrap;
     align-items: center;
     height: 100%;
+    justify-content: space-between;
 
-    @media @breakpoint-mobile {
+
+    > div:first-of-type {
       display: flex;
       flex-direction: column;
-      overflow: auto;
-      padding: @size-16 @size-22 0 @size-22;
+      align-items: center;
 
-      > div:first-of-type {
-        margin: 0 0 1rem 0;
+      > h2 {
+        font-weight: bold;
+        text-align: center;
+        color: @color-primary-text;
+
+        > span {
+          color: @color-brand;
+        }
+      }
+
+      > hr {
+        margin: @size-24 0;
+        width: @size-40;
+        border: @size-1 solid @color-primary-text;
       }
     }
 
+
     > main {
       display: flex;
-      flex: 2;
       flex-direction: column;
-      justify-content: center;
 
       @media @breakpoint-mobile {
         margin: 0 @size-16;
@@ -162,75 +197,90 @@ div.Onboarding {
 
       > div {
         text-align: center;
-      }
 
-      > div:nth-of-type(1) {
+        > img {
+          height: 250px;
+       }
+
         > svg {
           height: 62px;
-          fill: @color-primary-text;
+
+          > circle {
+            fill: none;
+          }
+
+          path {
+            fill: @color-primary-text;
+          }
         }
       }
 
       > div[class*='LargeSubheader'] {
+        .text-16;
+        font-weight: bold;
         margin: @size-16 0 0 0;
       }
 
-
       > div[class*="LinkContentSection"] {
         margin: @size-12 0 0 0;
+        font-weight: 500;
         text-align: center;
 
         > div {
           margin: @size-16 0 0 0;
         }
+      }
 
-        button {
-          .text-10-semi-bold;
+    }
 
-          color: @color-primary-text;
-          background: none;
-          border: none;
-
-          > svg path:first-of-type {
-            fill: @color-primary-text;
-          }
-
-          > svg path:last-of-type {
-            stroke: @color-primary-text;
-          }
-        }
+    > main:last-of-type {
+      > div > svg {
+        height: @size-32;
       }
     }
 
     > div.OnboardingNav {
-      display: flex;
-      align-items: center;
-      flex-direction: column;
-
-      @media @breakpoint-mobile {
-        display: none;
-      }
+      width: 100%;
+      margin: @size-21 @size-72;
 
       > div:first-of-type {
-        display: flex;
-        flex-direction: row;
+        > span:first-of-type {
+          .text-12-bold;
 
-        > div:first-of-type {
+          color: @color-primary-text;
           display: flex;
-          flex-direction: row-reverse;
-          padding: 0;
+          justify-content: center;
+          align-items: center;
+          margin: 0 0 @size-16 0;
 
-          > button:first-of-type {
-            margin-left: @size-16;
-          }
-
-          > button:only-of-type {
-            margin: 0;
+          > svg {
+            stroke: @color-open;
+            margin: 0 @size-8 0 0;
+            width: @size-12
           }
         }
 
-        > button {
-          margin-left: @size-16;
+        > span:last-of-type {
+          .text-12-bold;
+
+          text-align: center;
+          border-bottom: @size-1 dashed @color-primary-text;
+          width: fit-content;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          color: @color-primary-text;
+          margin: @size-16 auto 0;
+          text-transform: uppercase;
+          cursor: pointer;
+        }
+
+        > div:first-of-type {
+          padding: 0;
+
+          > button {
+            width: 100%;
+          }
         }
       }
     }
@@ -238,106 +288,256 @@ div.Onboarding {
 
   > div.OnboardingMobileNav {
     display: none;
-
-    @media @breakpoint-mobile {
-      border-top: 1px solid @color-secondary-action-outline;
-      display: flex;
-      flex-direction: row;
-      justify-content: space-between;
-      max-height: 100px;
-      width: 100%;
-    }
-
-    > div:first-of-type,
-    > div:last-of-type {
-      height: @size-6;
-      width: @size-6;
-      margin: 0;
-
-      > svg {
-        stroke: @color-secondary-text;
-      }
-    }
-
-    > div:last-of-type > svg {
-      transform: rotate(-180deg);
-    }
-
-    > div:nth-of-type(2) {
-      align-items: center;
-      display: flex;
-      flex-direction: column;
-
-      > div:first-of-type {
-        display: flex;
-        align-items: center;
-      }
-
-      div[class*="ButtonsRow"] {
-        display: flex;
-        flex-direction: row-reverse;
-      }
-    }
-
-    button[class*="SecondaryButton"] {
-      margin: 0 @size-12 0 0;
-    }
-
-    div[class*="Stepper"] {
-      margin-top: @size-6;
-    }
   }
 
-  &.Condensed {
-    min-height: 200px;
-    width: 445px;
-    padding: @size-32 @size-24 @size-12;
+  .InfoBubble {
+    .text-12;
 
-    > main {
-      > div:nth-of-type(1) {
-        .text-18-bold;
+    align-items: center;
+    display: flex;
+    flex-direction: row;
+    background: @color-active-background;
+    border-radius: @size-80;
+    line-height: 140%;
+    color: @color-secondary-text;
+    padding: @size-12 @size-16 @size-12 0;
+
+    > svg {
+      margin: 0 @size-16;
+      width: @size-44;
+    }
+
+    > div > button[class*='ExternalLinkButton'] {
+      border: none;
+      padding: 0;
+      background: @color-active-background;
+
+      > a {
+        text-transform: lowercase;
+        color: @color-primary-text;
+        font-size: @size-12;
+        font-weight: 100;
       }
 
-      > div:nth-of-type(2) {
-        .text-12;
+      > svg > path:first-of-type {
+        fill: @color-primary-text;
+      }
 
-        margin-top: @size-16;
-        line-height: 140%;
+      > svg > path:last-of-type {
+        stroke: @color-primary-text;
       }
     }
   }
 }
 
+.OnboardingDeposit {
+  .text-14-bold;
 
-.Stepper {
-  align-items: center;
-  display: flex;
-  height: @size-12;
-  margin-top: @size-32;
+  border: @size-1 solid @color-secondary-action-outline;
+  border-radius: @size-3;
+  color: @color-primary-text;
+  flex: 2;
+  margin: @size-32 0 @size-64 0;
+  padding: @size-16 @size-14;
+  text-align: center;
 
-  > span {
-    background: @color-inactive-text;
-    border-radius: 50%;
-    cursor: pointer;
-    height: @size-8;
-    margin: @size-4;
-    width: @size-8;
-
-    &:hover {
-      background: @color-dark-text;
-      height: @size-12;
-      margin: @size-2;
-      width: @size-12;
-    }
-
-    &.Current {
-      background: @color-primary-text;
+  > div:first-of-type {
+    > div {
+      background: #1B1A1E;
+      position: absolute;
+      padding: 42px;
+      border: 1px solid @color-secondary-action-outline;
+      top: 50%;
+      left: 0;
+      right: 0;
+      margin-left: auto;
+      margin-right: auto;
+      width: 225px;
     }
   }
 
+  > div:nth-of-type(2) {
+    .text-14-semi-bold;
+
+    align-items: center;
+    color: @color-inactive-text;
+    display: flex;
+    margin: @size-12 0;
+
+    > div:first-of-type > svg {
+      cursor: pointer;
+      fill: @color-primary-text;
+      height: @size-32;
+      margin: 0 @size-16;
+    }
+
+    > div:last-of-type {
+      align-items: center;
+      background: @color-secondary-action;
+      border-radius: @size-3;
+      display: flex;
+      justify-content: center;
+      height: @size-38;
+      width: 100%;
+    }
+  }
+
+  > button {
+    .text-12-bold;
+
+    color: @color-primary-text;
+    border: @size-1 solid @color-secondary-action-outline;
+    border-radius: @size-3;
+    margin: 0 0 @size-12 0;
+    padding: @size-8;
+    width: 100%;
+  }
+
+  > div:last-of-type {
+    .text-11-semi-bold;
+
+    color: @color-secondary-text;
+
+    > a {
+      color: @color-primary-text;
+      border-bottom: @size-1 dotted @color-primary-text;
+    }
+  }
+}
+
+.OnboardingBankroll {
+  flex: 2;
+
+  > span:first-of-type {
+    .text-14-semi-bold;
+
+    color: @color-secondary-text;
+    display: flex;
+    text-align: center;
+    margin: 0 0 @size-24 0;
+  }
+
+  > div {
+    .text-16-bold;
+
+    align-items: center;
+    border: @size-1 solid @color-secondary-action-outline;
+    border-radius: @size-3;
+    color: @color-primary-text;
+    cursor: pointer;
+    display: flex;
+    margin: @size-12 auto 0 auto;
+    justify-content: center;
+    height: @size-52;
+  }
+
   > span:last-of-type {
-    &:hover {
-      margin-left: @size-2;
+    .text-12;
+
+    align-items: center;
+    background: @color-module-background-action-focus;
+    border-radius: @border-radius-full-round;
+    color: @color-primary-text;
+    display: flex;
+    height: @size-50;
+    margin: @size-16 0 0 0;
+    text-align: center;
+  }
+
+  .OnboardingBankroll1Inch {
+    background: @color-module-background;
+    border-top: none;
+    flex-direction: column;
+    height: fit-content;
+    margin: 0;
+    padding: @size-24;
+    transform: translateY(-4px);
+
+    > div:first-of-type {
+      .text-14-bold;
+
+      color: @color-primary-text;
+      margin: @size-6 0 0 0;
+    }
+
+    > div:nth-of-type(2) {
+      .text-12;
+
+      color: @color-secondary-text;
+      margin: @size-6 0 0 0;
+    }
+
+    > div:nth-of-type(3) {
+      .text-12;
+
+      border-bottom: @size-1 dashed @color-primary-text;
+      color: @color-primary-text;
+      font-weight: 600;
+      text-transform: uppercase;
+    }
+
+    > a {
+      margin: @size-16 0;
+      width: 100%;
+
+      > button {
+        width: 100%;
+      }
+    }
+  }
+}
+
+.OnboardingApprovals {
+  flex: 2;
+  margin: @size-16 0 0 0;
+
+  > div > span {
+    .text-12;
+
+    color: @color-primary-text;
+  }
+
+  > div > svg {
+    width: @size-32
+  }
+
+  > .ApproveBox {
+    .text-12;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: 48px;
+    border: @size-1 solid @color-secondary-action-outline;
+    border-radius: @size-8;
+    font-weight: 500;
+    margin: 0 0 @size-8 0;
+    padding: @size-8 @size-12;
+  }
+
+  > .ApproveBoxCompleted {
+    > span {
+      .text-12;
+
+      color: @color-inactive-text;
+    }
+
+    > svg {
+      width: @size-32
+    }
+  }
+
+  > div:last-of-type {
+    .text-12;
+
+    align-items: center;
+    color: @color-primary-text;
+    display: flex;
+    font-weight: 500;
+
+    > svg {
+      height: @size-14;
+      fill: @color-primary-text;
+      margin: 0 @size-8 0 0;
     }
   }
 }
@@ -730,8 +930,6 @@ div.ButtonsRow:last-of-type {
     fill: @color-secondary-text;
   }
 }
-
-
 
 .AddFundsCoinbase,
 .AddFundsCreditDebit {
@@ -1439,7 +1637,7 @@ div.ButtonsRow:last-of-type {
 
           > button:first-of-type {
             margin-left: auto;
-            margin-right: 1rem;
+            margin-right: @size-16;
           }
         }
       }
@@ -1487,7 +1685,7 @@ div.ButtonsRow:last-of-type {
     }
 
     > div:last-of-type {
-      margin-top: 1rem;
+      margin-top: @size-16;
     }
   }
 
@@ -1865,7 +2063,7 @@ div.ButtonsRow:last-of-type {
       border-radius: @border-radius-default;
       color: @color-primary-text;
       height: @size-40;
-      line-height: 1rem;
+      line-height: @size-16;
 
       &::placeholder {
         color: @color-inactive-text;
@@ -2740,7 +2938,7 @@ div.ButtonsRow:last-of-type {
   align-items: center;
   display: flex;
   flex-flow: column nowrap;
-  margin-top: 1rem;
+  margin-top: @size-16;
 
   > h4 {
     .mono-10;
@@ -2880,7 +3078,7 @@ div.ButtonsRow:last-of-type {
       flex-direction: column;
 
       > h2 {
-        margin-bottom: 1rem;
+        margin-bottom: @size-16;
         word-break: break-word;
       }
 

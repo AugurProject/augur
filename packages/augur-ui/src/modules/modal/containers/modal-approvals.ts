@@ -12,6 +12,7 @@ const mapStateToProps = (state: AppState) => {
   return {
     address: state.loginAccount.address,
     balances: state.loginAccount.balances,
+    blockchain: state.blockchain,
   };
 };
 

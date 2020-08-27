@@ -22,12 +22,13 @@ const mapStateToProps = (state: AppState) => {
     repToDaiRate?.value || createBigNumber(1)
   );
 
-  const balances = state.loginAccount.balances.signerBalances;
+  const balances = state.loginAccount?.balances?.signerBalances;
   const ethAmountInDai =
-    Number(state.loginAccount.balances.signerBalances.eth) * ethToDaiRate.value;
+    Number(state.loginAccount.balances.signerBalances.eth) * ethToDaiRate?.value || createBigNumber(1);
 
   const swapOptions = {
     loginAccount: state.loginAccount,
+    address: state.loginAccount.address,
     balances: {
       ...state.loginAccount.balances.signerBalances,
     },
@@ -67,8 +68,8 @@ const mergeProps = (sP: any, dP: any, oP: any) => ({
   content: [],
   buttons: [
     {
-      text: 'Convert',
-      disabled: false,
+      text: 'Continue',
+      disabled: true,
       action: () => {
         dP.approvalsModal();
       },

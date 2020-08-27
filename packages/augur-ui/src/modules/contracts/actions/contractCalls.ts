@@ -982,6 +982,57 @@ export async function approvalsNeededToTrade(address): Promise<number> {
   return (approvals.length > 0 ? approvals.length + 1 : 0); // add additional 1 for referral address
 }
 
+export async function approveZeroX(address, ) {
+  const { contracts } = augurSdk.get();
+  try {
+    if (!(await isContractApproval(address, contracts.ZeroXTrade.address, contracts.cash))) {
+      return await contracts.cash.approve(contracts.ZeroXTrade.address, APPROVAL_AMOUNT);
+    }
+  } catch(error) {
+    console.error('approveZeroX', error);
+    return false;
+  }
+}
+
+export async function approveShareToken(address, ) {
+  const { contracts } = augurSdk.get();
+  try {
+    if (!(await contracts.shareToken.isApprovedForAll_(address, contracts.fillOrder.address))) {
+      return await contracts.shareToken.setApprovalForAll(contracts.fillOrder.address, true);
+    }
+  } catch(error) {
+    console.error('approveShareToken', error);
+    return false;
+  }
+}
+
+export async function approveFillOrder(address, ) {
+  const { contracts } = augurSdk.get();
+  try {
+    if (!(await isContractApproval(address, contracts.fillOrder.address, contracts.cash))) {
+      return await contracts.cash.approve(contracts.fillOrder.address, APPROVAL_AMOUNT);
+    }
+  } catch(error) {
+    console.error('approveFillOrder', error);
+    return false;
+  }
+}
+
+export async function approveZeroXCheck(address) {
+  const { contracts } = augurSdk.get();
+  return await isContractApproval(address, contracts.ZeroXTrade.address, contracts.cash);
+}
+
+export async function approveShareTokenCheck(address) {
+  const { contracts } = augurSdk.get();
+  return await contracts.shareToken.isApprovedForAll_(address, contracts.fillOrder.address);
+}
+
+export async function approveFillOrderCheck(address) {
+  const { contracts } = augurSdk.get();
+  return await isContractApproval(address, contracts.fillOrder.address, contracts.cash);
+}
+
 export async function approveToTrade(address, referalAddress = NULL_ADDRESS) {
   const { contracts } = augurSdk.get();
   const approvals = [];

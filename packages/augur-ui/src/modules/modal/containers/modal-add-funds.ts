@@ -25,6 +25,7 @@ const mapStateToProps = (state: AppState) => {
   return {
     modal: state.modal,
     loginAccount: state.loginAccount,
+    address: state.loginAccount.address,
     balances: {
       ...state.loginAccount.balances.signerBalances,
     },

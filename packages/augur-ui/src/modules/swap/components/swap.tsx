@@ -54,6 +54,7 @@ interface SwapProps {
   usdcToDaiRate: FormattedNumber;
   usdtToDaiRate: FormattedNumber;
   gasPrice: number;
+  onboarding: boolean;
 }
 
 const tokenOptions = {
@@ -121,6 +122,7 @@ export const Swap = ({
   usdcToDaiRate,
   repToDaiRate,
   gasPrice,
+  onboarding = false,
 }: SwapProps) => {
 
   // SDK not loadeds
@@ -552,7 +554,7 @@ export const Swap = ({
         }
 
         {errorMessage && <div>{errorMessage}</div>}
-        {altExchangeMessage && (
+        {!onboarding && altExchangeMessage && (
           <div>
             {altExchangeMessage}
             <br />
