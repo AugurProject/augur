@@ -125,7 +125,6 @@ export function BetslipReducer(state, action) {
         min,
         toWin: convertToWin(max, shares),
         amountFilled: '0',
-        amountWon: '0',
         status: UNSENT,
         dateUpdated: null,
         orderId: betslipItems[marketId].orders.length,
@@ -153,16 +152,16 @@ export function BetslipReducer(state, action) {
           };
         }
         orders.forEach(order => {
-          placeBet(marketId, order, matchedItems[marketId].orders.length);
+          const orderId = matchedItems[marketId].orders.length;
           matchedItems[marketId].orders.push({
             ...order,
+            orderId,
             amountFilled: order.wager,
-            amountWon: '0',
             timestamp: currentAugurTimestamp,
             status: PENDING,
           });
+          placeBet(marketId, order, orderId);
         });
-        matchedItems[marketId].orders = matchedItems[marketId].orders.sort((a, b) => b.timestamp - a.timestamp);
         updatedState.matched.count += ordersAmount;
       }
       updatedState.betslip = deepClone(EMPTY_BETSLIST);
@@ -190,12 +189,10 @@ export function BetslipReducer(state, action) {
           ...order,
           orderId: matchedItems[marketId].orders.length,
           amountFilled: order.wager,
-          amountWon: '0',
         });
         updatedState.matched.count++;
         fromList && updatedState[fromList].count--;
       }
-      matchedItems[marketId].orders = matchedItems[marketId].orders.sort((a, b) => b.timestamp - a.timestamp);
       break;
     }
     case RETRY: {
@@ -212,7 +209,6 @@ export function BetslipReducer(state, action) {
       // TODO: sell order, but for now...
       const cashedOutOrder = matchedItems[marketId].orders[orderId];
       cashedOutOrder.status = CLOSED;
-      cashedOutOrder.amountWon = cashedOutOrder.toWin;
       break;
     }
     case UPDATE_MATCHED: {
