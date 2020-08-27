@@ -23,9 +23,7 @@ const OrderHeader = ({
   return (
     <section className={Styles.OrderHeader}>
       <span
-        className={classNames({
-          [Styles.WithStatus]: !!zeroXStatus,
-        })}
+        className={Styles.WithStatus}
       >
         <StatusDotTooltip
           status={zeroXStatus}

@@ -34,6 +34,7 @@ export function convertMarketInfoToMarketData(
   marketInfo: Getters.Markets.MarketInfo,
   currentTimestamp: number
 ) {
+  if (!marketInfo) return null;
   const reportingFee = parseInt(marketInfo.reportingFeeRate || '0', 10);
   const creatorFee = parseInt(marketInfo.marketCreatorFeeRate || '0', 10);
   const allFee = createBigNumber(marketInfo.settlementFee || '0');

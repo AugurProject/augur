@@ -68,7 +68,7 @@ import { loadMarketTradingHistory } from 'modules/markets/actions/market-trading
 import { loadMarketsInfo } from 'modules/markets/actions/load-markets-info';
 import { addAlert } from 'modules/alerts/actions/alerts';
 import OrderBook from 'modules/market-charts/components/order-book/order-book';
-import { handleStyleCalculation, findType, getIsTutorial, getIsPreview } from 'modules/market/store/market-utils';
+import { handleStyleCalculation, findType, getIsTutorial, getIsPreview, getTutorialPreview } from 'modules/market/store/market-utils';
 import { MarketProvider } from 'modules/market/store/market';
 import { 
   TUTORIAL_POSITION,
@@ -134,15 +134,17 @@ const MarketView = ({
     [MARKET_ID_PARAM_NAME]: queryId,
     [OUTCOME_ID_PARAM_NAME]: queryOutcomeId,
   } = parseQuery(location.search);
-  const isPreview = getIsPreview(location);
-  const marketId = (queryId === TRADING_TUTORIAL || isPreview) ? queryId : getAddress(queryId);
-  const tradingTutorial = getIsTutorial(marketId);
+  const {
+    isPreview,
+    isTradingTutoral: tradingTutorial,
+    preview
+  } = getTutorialPreview(queryId, location);
+  const marketId = (preview) ? queryId : getAddress(queryId);
   const isConnected = connected && universe.id != null;
-  const outcomeId = queryOutcomeId ? parseInt(queryOutcomeId) : null;
-  const preview = tradingTutorial || isPreview;
   const market = tradingTutorial ? 
     TRADING_TUTORIAL_MARKET : 
-    defaultMarket || marketInfos && marketInfos[marketId] && convertMarketInfoToMarketData(marketInfos[marketId], currentAugurTimestamp * 1000);
+    defaultMarket || convertMarketInfoToMarketData(marketInfos[marketId], currentAugurTimestamp * 1000);
+  const defaultOutcomeId = market?.defaultSelectedOutcomeId;
   const cat5 = findType(market);
   const hasZeroXError = zeroXStatus === ZEROX_STATUSES.ERROR;
   const zeroXSynced = zeroXStatus === ZEROX_STATUSES.SYNCED;
@@ -157,12 +159,7 @@ const MarketView = ({
     extendOutcomesList: cat5 ? true : false,
     extendOrders: false,
     selectedOrderProperties: DEFAULT_ORDER_PROPERTIES,
-    selectedOutcomeId:
-      outcomeId !== null
-        ? outcomeId
-        : market
-        ? market.defaultSelectedOutcomeId
-        : null,
+    selectedOutcomeId: isPreview ? getDefaultOutcomeSelected(market.marketType) : !queryOutcomeId ? defaultOutcomeId : parseInt(queryOutcomeId),
     tutorialError: '',
   });
   const scalarModalSeen =
@@ -181,11 +178,6 @@ const MarketView = ({
     introShowing,
     hasShownScalarModal,
   } = state;
-
-  let outcomeIdSet =
-    selectedOutcomeId === null
-      ? market?.defaultSelectedOutcomeId
-      : selectedOutcomeId;
 
   useEffect(() => {
     if (!preview && !hasZeroXError) {
@@ -213,19 +205,23 @@ const MarketView = ({
     return () => {
       modalType === MODAL_MARKET_LOADING && closeModal();
     }
-  }, []);
+  }, [zeroXSynced, marketId]);
 
   useEffect(() => {
     prevProps.current = {
-      tradingTutorial, outcomeId, isConnected
+      tradingTutorial, isConnected
     };
-  }, [tradingTutorial, outcomeId, isConnected]);
+  }, [tradingTutorial, isConnected]);
 
   useEffect(() => {
-    outcomeIdSet = selectedOutcomeId === null
-    ? market?.defaultSelectedOutcomeId
-    : selectedOutcomeId;
-  }, [selectedOutcomeId]);
+    // sett selectedOutcomeID if it's unset.
+    if (!selectedOutcomeId) {
+      setState({
+        ...state,
+        selectedOutcomeId: queryOutcomeId ? parseInt(queryOutcomeId) : defaultOutcomeId,
+      });
+    }
+  }, [defaultOutcomeId, queryOutcomeId]);
 
   useEffect(() => {
     // This will only be called once on the 'canHotLoad' prop change.
@@ -233,13 +229,6 @@ const MarketView = ({
   }, [canHotload, marketId]);
 
   useEffect(() => {
-    if (outcomeId !== prevProps.current.outcomeId && outcomeId !== null) {
-      setState({
-        ...state,
-        selectedOutcomeId: outcomeId,
-      });
-    }
-
     if (tradingTutorial) {
       if (
         !introShowing &&
@@ -262,16 +251,6 @@ const MarketView = ({
       return;
     }
 
-    if (
-      prevProps.current.isConnected !== isConnected &&
-      !!marketId &&
-      !preview &&
-      zeroXSynced
-    ) {
-      updateOrderBook(marketId, null, loadMarketOrderBook(marketId));
-      updateMarketsData(null, loadMarketsInfo(marketId));
-      bulkMarketTradingHistory(null, loadMarketTradingHistory(marketId));
-    }
     if (market) {
       modalType === MODAL_MARKET_LOADING && closeModal();
     }
@@ -296,10 +275,10 @@ const MarketView = ({
     introShowing,
     preview,
     tradingTutorial,
-    outcomeId,
     isConnected,
     scalarModalSeen,
     hasShownScalarModal,
+    queryOutcomeId
   ]);
 
   const {
@@ -380,15 +359,15 @@ const MarketView = ({
     });
   }
 
-  function checkTutorialErrors(selectedOrderProperties) {
+  function checkTutorialErrors({ orderQuantity, orderPrice }) {
     if (tutorialStep === QUANTITY) {
       const invalidQuantity =
-        parseFloat(selectedOrderProperties.orderQuantity) !== TUTORIAL_QUANTITY;
+        parseFloat(orderQuantity) !== TUTORIAL_QUANTITY;
 
       setState({
         ...state,
         tutorialError:
-          parseFloat(selectedOrderProperties.orderQuantity) !==
+          parseFloat(orderQuantity) !==
           TUTORIAL_QUANTITY
             ? 'Please enter a quantity of 100 for this order to be filled on the test market'
             : '',
@@ -399,7 +378,7 @@ const MarketView = ({
 
     if (tutorialStep === LIMIT_PRICE) {
       const invalidPrice =
-        parseFloat(selectedOrderProperties.orderPrice) !== TUTORIAL_PRICE;
+        parseFloat(orderPrice) !== TUTORIAL_PRICE;
 
       setState({
         ...state,
@@ -469,22 +448,18 @@ const MarketView = ({
     asks: [],
   };
  
-  if (orderBook && orderBook[outcomeIdSet]) {
-    outcomeOrderBook = orderBook[outcomeIdSet];
+  if (orderBook && orderBook[selectedOutcomeId]) {
+    outcomeOrderBook = orderBook[selectedOutcomeId];
   }
 
-  if (preview && !tradingTutorial) {
-    outcomeIdSet = getDefaultOutcomeSelected(marketType);
-    outcomeOrderBook = formatOrderBook(orderBook[outcomeIdSet]);
-  }
-  if (tradingTutorial) {
-    outcomeOrderBook = formatOrderBook(orderBook[outcomeIdSet]);
+  if (preview) {
+    outcomeOrderBook = formatOrderBook(orderBook[selectedOutcomeId]);
   }
 
   const orders = tradingTutorial && tutorialStep === OPEN_ORDERS ? [
     {
       ...TUTORIAL_OPEN_ORDER,
-      outcomeName: TRADING_TUTORIAL_OUTCOMES[outcomeIdSet].description,
+      outcomeName: TRADING_TUTORIAL_OUTCOMES[selectedOutcomeId].description,
     },
   ] : null;
 
@@ -493,14 +468,14 @@ const MarketView = ({
       ...TUTORIAL_FILL,
       marketDescription,
       marketId,
-      outcome: TRADING_TUTORIAL_OUTCOMES[outcomeIdSet].description,
+      outcome: TRADING_TUTORIAL_OUTCOMES[selectedOutcomeId].description,
       timestamp: convertUnixToFormattedDate(currentAugurTimestamp),
       trades: [
         {
           ...TUTORIAL_FILL_TRADE,
           marketDescription,
           marketId,
-          outcome: TRADING_TUTORIAL_OUTCOMES[outcomeIdSet].description,
+          outcome: TRADING_TUTORIAL_OUTCOMES[selectedOutcomeId].description,
           timestamp: convertUnixToFormattedDate(currentAugurTimestamp),
         },
       ],
@@ -510,8 +485,8 @@ const MarketView = ({
   const positions = (tradingTutorial && tutorialStep === POSITIONS) ? [
     {
       ...TUTORIAL_POSITION,
-      outcomeName: TRADING_TUTORIAL_OUTCOMES[outcomeIdSet].description,
-      outcomeId: outcomeIdSet,
+      outcomeName: TRADING_TUTORIAL_OUTCOMES[selectedOutcomeId].description,
+      outcomeId: selectedOutcomeId,
     },
   ] : null;
 
@@ -596,7 +571,7 @@ const MarketView = ({
                       <MarketOutcomesList
                         market={market}
                         preview={preview}
-                        selectedOutcomeId={outcomeIdSet}
+                        selectedOutcomeId={selectedOutcomeId}
                         updateSelectedOutcome={updateSelectedOutcome}
                         orderBook={orderBook}
                         updateSelectedOrderProperties={
@@ -623,7 +598,7 @@ const MarketView = ({
                             <MarketTradeHistory
                               isArchived={isArchived}
                               marketId={marketId}
-                              outcome={outcomeIdSet}
+                              outcome={selectedOutcomeId}
                               toggle={toggleTradeHistory}
                               hide={extendOrderBook}
                               marketType={marketType}
@@ -634,7 +609,7 @@ const MarketView = ({
                       <TradingForm
                         market={market}
                         selectedOrderProperties={selectedOrderProperties}
-                        selectedOutcomeId={outcomeIdSet}
+                        selectedOutcomeId={selectedOutcomeId}
                         updateSelectedOutcome={updateSelectedOutcome}
                         orderBook={outcomeOrderBook}
                         updateSelectedOrderProperties={
@@ -664,7 +639,7 @@ const MarketView = ({
                           <PriceHistory
                             marketId={marketId}
                             market={preview && market}
-                            selectedOutcomeId={outcomeIdSet}
+                            selectedOutcomeId={selectedOutcomeId}
                           />
                         )}
                       </div>
@@ -672,7 +647,7 @@ const MarketView = ({
                         marketId={marketId}
                         market={market}
                         isArchived={isArchived}
-                        selectedOutcomeId={outcomeIdSet}
+                        selectedOutcomeId={selectedOutcomeId}
                         updateSelectedOrderProperties={
                           updateSelectedOrderProperties
                         }
@@ -733,7 +708,7 @@ const MarketView = ({
                     <TradingForm
                       market={market}
                       selectedOrderProperties={selectedOrderProperties}
-                      selectedOutcomeId={outcomeIdSet}
+                      selectedOutcomeId={selectedOutcomeId}
                       updateSelectedOutcome={updateSelectedOutcome}
                       updateSelectedOrderProperties={
                         updateSelectedOrderProperties
@@ -766,7 +741,7 @@ const MarketView = ({
                   <MarketOutcomesList
                     market={market}
                     preview={preview}
-                    selectedOutcomeId={outcomeIdSet}
+                    selectedOutcomeId={selectedOutcomeId}
                     updateSelectedOutcome={updateSelectedOutcome}
                     hideOutcomes={cat5 ? !extendOutcomesList : false}
                     orderBook={orderBook}
@@ -776,7 +751,7 @@ const MarketView = ({
                     <MarketChartsPane
                       marketId={!tradingTutorial && marketId}
                       isArchived={isArchived}
-                      selectedOutcomeId={outcomeIdSet}
+                      selectedOutcomeId={selectedOutcomeId}
                       updateSelectedOrderProperties={
                         updateSelectedOrderProperties
                       }
@@ -843,7 +818,7 @@ const MarketView = ({
                     <div className={HistoryStyle}>
                       <MarketTradeHistory
                         marketId={marketId}
-                        outcome={outcomeIdSet}
+                        outcome={selectedOutcomeId}
                         isArchived={isArchived}
                         toggle={toggleTradeHistory}
                         marketType={marketType}

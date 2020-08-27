@@ -492,10 +492,6 @@ export const handleOrderFilledLog = (log: ParsedOrderEventLog) => {
     if (log.orderFiller) handleAlert(log, PUBLICFILLORDER, true);
     removePendingOrder(log.tradeGroupId, marketId);
   }
-  const { theme } = AppStatus.get();
-  if (theme === THEMES.SPORTS) {
-    throttleLoadMarketOrders(marketId);
-  }
 };
 
 export const handleTradingProceedsClaimedLog = (

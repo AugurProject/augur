@@ -5,7 +5,6 @@ import parsePath from 'modules/routes/helpers/parse-path';
 import Styles from 'modules/market/components/market-view/market-view.styles.less';
 
 const {
-  INTRO_MODAL,
   QUANTITY,
   LIMIT_PRICE,
   OPEN_ORDERS,
@@ -17,7 +16,6 @@ const {
   PLACE_ORDER,
   SELECT_OUTCOME,
   ORDER_BOOK,
-  MARKET_DATA,
 } = TRADING_TUTORIAL_STEPS;
 
 export const getIsTutorial = (marketId) => marketId === TRADING_TUTORIAL;

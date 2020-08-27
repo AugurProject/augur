@@ -220,8 +220,9 @@ const OrderBook = ({
     isPreview,
     preview: initialLiquidity
   } = getTutorialPreview(id, location);
-  const orderbookLoading = isPreview ? !marketOrderBook : !(orderBooks[id] || {})?.orderBook;
+  const orderbookLoading = isPreview ? !marketOrderBook : !(orderBooks[id]?.orderBook);
   const {
+    zeroXStatus
     blockchain: { currentAugurTimestamp: currentTimeInSeconds },
   } = useAppStatusStore();
   const orderBookSelected = (orderBooks && orderBooks[id]) || {
@@ -263,17 +264,18 @@ const OrderBook = ({
       expirationMaxSeconds < NUMBER_OF_SECONDS_IN_A_DAY
     ) {
       const timer = setTimeout(
-        () => updateOrderBook(
-          id,
-          null,
-          loadMarketOrderBook(id)
-        ),
+        () => {
+          return updateOrderBook(
+            id,
+            null,
+            loadMarketOrderBook(id)
+          );
+        },
         expirationMaxSeconds * 1000
       );
       return () => clearTimeout(timer);
     }
   }, [expirationTime]);
-
   const sideProps = {
     pricePrecision,
     processedOrderbook,
