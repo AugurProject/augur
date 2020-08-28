@@ -148,6 +148,13 @@ div.Onboarding {
       }
     }
 
+    > div:first-of-type {
+      position: absolute;
+      top: 0;
+      left: 0;
+      margin: @size-16;
+    }
+
     > div:last-of-type {
       position: absolute;
       top: 0;
@@ -337,7 +344,7 @@ div.Onboarding {
   border-radius: @size-3;
   color: @color-primary-text;
   flex: 2;
-  margin: @size-32 0 @size-64 0;
+  margin: @size-32 0 @size-32 0;
   padding: @size-16 @size-14;
   text-align: center;
 
@@ -353,6 +360,19 @@ div.Onboarding {
       margin-left: auto;
       margin-right: auto;
       width: 225px;
+
+      > svg {
+        cursor: pointer;
+        height: @size-12;
+        position: absolute;
+        margin: @size-16;
+        right: 0;
+        top: 0;
+
+        > g {
+          stroke-width: @size-2;
+        }
+      }
     }
   }
 
@@ -401,6 +421,104 @@ div.Onboarding {
     > a {
       color: @color-primary-text;
       border-bottom: @size-1 dotted @color-primary-text;
+    }
+  }
+}
+
+
+.OnboardingDepositWalletOnRamp {
+  margin: 0 0 @size-32 0;
+  width: 100%;
+  text-align: center;
+
+  > div:first-of-type  {
+    align-items: center;
+    color: @color-secondary-text;
+    display: flex;
+    margin: 0 0 @size-8 0;
+
+    > hr:first-of-type {
+      border-color: @color-secondary-text;
+      margin: 0 @size-8 0 0;
+      width: 50%;
+    }
+
+    > hr:last-of-type {
+      border-color: @color-secondary-text;
+      margin: 0 0 0 0@size-8;
+      width: 50%;
+    }
+  }
+
+  > div:last-of-type {
+    .text-12-bold;
+
+    color: @color-primary-text;
+    cursor: pointer;
+    border-bottom: @size-1 dotted @color-primary-text;
+    width: max-content;
+    margin: auto;
+    text-transform: uppercase;
+  }
+}
+
+.OnboardingTokenSelect {
+  flex: 2;
+  width: 100%;
+
+
+  > div {
+    align-items: center;
+    border: @size-1 solid @color-secondary-action-outline;
+    border-radius: @size-3;
+    cursor: pointer;
+    display: flex;
+    margin: @size-12 auto 0 auto;
+    justify-content: space-between;
+    height: @size-52;
+
+    > div:first-of-type {
+      .text-14-bold;
+
+      display: flex;
+      align-items: center;
+      margin: 0 0 0 @size-12;
+
+      color: @color-primary-text;
+
+      > svg {
+        fill: @color-primary-text;
+        margin: 0 @size-8 0 0;
+        width: @size-24;
+      }
+    }
+
+    > div:last-of-type {
+      text-align: right;
+      margin: 0 @size-12 0 0;
+
+      > div:first-of-type {
+        .text-10;
+
+        color: @color-secondary-text;
+      }
+
+      > div:last-of-type {
+        .text-12-semi-bold;
+
+        color: @color-primary-text;
+        margin: @size-4 0 0 0;
+      }
+    }
+  }
+
+  > .OnboardingTokenSelectDisabled {
+    pointer-events: none;
+
+    > div:last-of-type {
+      > div:last-of-type {
+        color: @color-inactive-text;
+      }
     }
   }
 }

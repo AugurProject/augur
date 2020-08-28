@@ -12,6 +12,9 @@ import {
   OnboardingCheckIcon,
   QRCodeIcon,
   InformationIcon,
+  tokenEth,
+  tokenUSDC,
+  tokenUSDT,
 } from 'modules/common/icons';
 import {
   DefaultButtonProps,
@@ -25,15 +28,16 @@ import {
   LinearPropertyLabelProps,
 } from 'modules/common/labels';
 import Styles from 'modules/modal/modal.styles.less';
-import { PENDING, SUCCESS, DAI, REP, FAILURE, ACCOUNT_TYPES, ETH, HELP_CENTER_ADD_FUNDS, HELP_CENTER_LEARN_ABOUT_ADDRESS, ON_BORDING_STATUS_STEP, TRANSACTIONS, SETAPPROVALFORALL, APPROVE } from 'modules/common/constants';
-import { LinkContent, LoginAccount, FormattedNumber } from 'modules/types';
+import { PENDING, SUCCESS, DAI, REP, USDC, USDT, FAILURE, ACCOUNT_TYPES, ETH, HELP_CENTER_ADD_FUNDS, HELP_CENTER_LEARN_ABOUT_ADDRESS, ON_BORDING_STATUS_STEP, TRANSACTIONS, SETAPPROVALFORALL, APPROVE } from 'modules/common/constants';
+import { LinkContent, LoginAccount, FormattedNumber, AccountBalances } from 'modules/types';
 import { DismissableNotice, DISMISSABLE_NOTICE_BUTTON_TYPES } from 'modules/reporting/common';
 import { toChecksumAddress } from 'ethereumjs-util';
 import TooltipStyles from 'modules/common/tooltip.styles.less';
 import ReactTooltip from 'react-tooltip';
-import { BigNumber } from 'utils/create-big-number';
+import { BigNumber, createBigNumber } from 'utils/create-big-number';
 import titleCase from 'utils/title-case';
 import { checkIfMainnet } from 'modules/app/actions/check-if-mainnet';
+import { formatDai, formatNumber } from 'utils/format-number';
 
 export interface TitleProps {
   title: string;
@@ -462,12 +466,78 @@ export const Deposit = ({ address }: DepositProps) => {
   );
 };
 
+interface TokenSelectProps {
+  balances: AccountBalances;
+  handleSelection: Function;
+  ethToDaiRate: number;
+}
+
+export const TokenSelect = ({
+  balances,
+  handleSelection,
+  ethToDaiRate,
+}: TokenSelectProps) => {
+  const ethAmountInDai: FormattedNumber = formatDai(
+    createBigNumber(balances?.signerBalances?.eth || 0).times(ethToDaiRate)
+  );
+
+  if (!ethAmountInDai) {
+    return null;
+  }
+
+  const ethAmount = createBigNumber(balances?.signerBalances?.eth || 0);
+  const usdcAmount = createBigNumber(balances?.signerBalances?.usdc || 0);
+  const usdtAmount = createBigNumber(balances?.signerBalances?.usdt || 0);
+
+  console.log('ethAmount::', ethAmount);
+  console.log('usdcAmount::', usdcAmount);
+  console.log('usdtAmount::', usdtAmount);
+
+
+  if (ethAmount.gt(0) && !usdcAmount.gt(0) && !usdtAmount.gt(0)) {
+    handleSelection(ETH);
+  }
+
+  if (!ethAmount.gt(0) && !usdcAmount.gt(0) && !usdtAmount.gt(0)) {
+    handleSelection(ETH);
+  }
+
+  return (
+    <div className={Styles.OnboardingTokenSelect}>
+      <div onClick={() => handleSelection(ETH)}>
+        <div>{tokenEth} ETH</div>
+        <div>
+          <div>Wallet Balance:</div>
+          <div>${ethAmountInDai.formattedValue}</div>
+        </div>
+      </div>
+
+      <div className={!usdcAmount.gt(0) ? Styles.OnboardingTokenSelectDisabled : null} onClick={() => handleSelection(USDC)}>
+        <div>{tokenUSDC} USDC</div>
+        <div>
+          <div>Wallet Balance:</div>
+          <div>${formatNumber(usdcAmount).formattedValue}</div>
+        </div>
+      </div>
+
+      <div className={!usdtAmount.gt(0) ? Styles.OnboardingTokenSelectDisabled : null} onClick={() => handleSelection(USDT)}>
+        <div>{tokenUSDT} USDT</div>
+        <div>
+          <div>Wallet Balance:</div>
+          <div>${formatNumber(usdtAmount).formattedValue}</div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
 interface BankrollProps {
   approveModal: Function;
   swapModal: Function;
+  token: string;
 }
 
-export const Bankroll = ({ swapModal, approveModal }: BankrollProps) => {
+export const Bankroll = ({ swapModal, approveModal, token }: BankrollProps) => {
   const [show1InchExchange, setShow1InchExchange] = useState(false);
   const [hasClicked1inchLink, setHasClicked1inchLink] = useState(false);
 
@@ -481,7 +551,7 @@ export const Bankroll = ({ swapModal, approveModal }: BankrollProps) => {
       <div onClick={() => setShow1InchExchange(true)}>$50k+</div>
       {show1InchExchange && (
         <div className={Styles.OnboardingBankroll1Inch}>
-          <div>Use 1inch.exchange to convert ETH to DAI</div>
+          <div>Use 1inch.exchange to convert {token} to DAI</div>
           <div>Convert quantities greater than $50k at a lower slippage.</div>
           <PrimaryButton
             action={() => setHasClicked1inchLink(true)}
@@ -543,7 +613,7 @@ export const Approvals = ({ currentApprovalStep, approvalData }: ApprovalsProps)
             queueName={TRANSACTIONS}
             queueId={APPROVE}
           />
-        : <div style={{opacity: '0.3', mouseEvents: 'none' }}><PrimaryButton action={() => handleApprove()} text={'Approve'} /></div>
+        : <PrimaryButton disabled action={() => null} text={'Approve'} />
       )}
     </div>
   );

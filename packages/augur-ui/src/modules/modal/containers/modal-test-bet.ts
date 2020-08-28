@@ -35,7 +35,7 @@ const mergeProps = (sP: any, dP: any, oP: any) => ({
         : 'Learn how betting works on Augur by placing a pretend bet. Get tips and guidance and start betting for real today',
     },
   ],
-  currentStep: 6,
+  currentStep: 7,
   changeCurrentStep: step => {
     dP.gotoOnboardingStep(step);
   },

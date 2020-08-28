@@ -5,9 +5,9 @@ import { updateModal } from 'modules/modal/actions/update-modal';
 import { AppState } from 'appStore';
 import { ThunkDispatch } from 'redux-thunk';
 import { Action } from 'redux';
-import { MODAL_APPROVALS, MODAL_BANKROLL } from 'modules/common/constants';
+import { MODAL_APPROVALS, MODAL_BANKROLL, ETH, USDC, USDT } from 'modules/common/constants';
 import { createBigNumber } from 'utils/create-big-number';
-import { formatDai } from 'utils/format-number';
+import { formatDai, formatNumber } from 'utils/format-number';
 import { closeModal } from '../actions/close-modal';
 
 const mapStateToProps = (state: AppState) => {
@@ -46,6 +46,7 @@ const mapStateToProps = (state: AppState) => {
   return {
     ethAmountInDai,
     swapOptions,
+    token: state.modal.token || ETH,
   };
 };
 
@@ -55,27 +56,37 @@ const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({
   goBack: () => dispatch(updateModal({ type: MODAL_BANKROLL })),
 });
 
-const mergeProps = (sP: any, dP: any, oP: any) => ({
-  ...sP,
-  title: `You have ##$${
-    formatDai(sP.ethAmountInDai).formattedValue
-  } worth of ETH## in your wallet, would you like to convert a portion of this to DAI?`,
-  show1InchToolTip: true,
-  showSwapper: true,
-  currentStep: 4,
-  goBack: dP.goBack,
-  closeModal: dP.closeModal,
-  content: [],
-  buttons: [
-    {
-      text: 'Continue',
-      disabled: true,
-      action: () => {
-        dP.approvalsModal();
+const mergeProps = (sP: any, dP: any, oP: any) => {
+    let title = null;
+
+    if (sP.token === ETH) {
+      title = `You have ##$${formatDai(sP.ethAmountInDai).formattedValue} worth of ETH## in your wallet, would you like to convert a portion of this to DAI?`;
+    } else if (sP.token === USDC) {
+      title = `You have ##$${formatNumber(sP.swapOptions?.balances?.usdc).formattedValue} worth of USDC## in your wallet, would you like to convert a portion of this to DAI?`;
+    } else if (sP.token === USDT) {
+      title = `You have ##$${formatNumber(sP.swapOptions?.balances?.usdt).formattedValue} worth of USDT## in your wallet, would you like to convert a portion of this to DAI?`;
+    }
+
+    return {
+    ...sP,
+    title,
+    show1InchToolTip: true,
+    showSwapper: true,
+    currentStep: 5,
+    goBack: dP.goBack,
+    closeModal: dP.closeModal,
+    content: [],
+    buttons: [
+      {
+        text: 'Continue',
+        disabled: true,
+        action: () => {
+          dP.approvalsModal();
+        },
       },
-    },
-  ],
-});
+    ],
+  }
+};
 
 export default withRouter(
   connect(mapStateToProps, mapDispatchToProps, mergeProps)(Onboarding)

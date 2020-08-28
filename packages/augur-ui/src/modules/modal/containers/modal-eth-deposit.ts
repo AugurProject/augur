@@ -6,8 +6,8 @@ import { AppState } from 'appStore';
 import { ThunkDispatch } from 'redux-thunk';
 import { Action } from 'redux';
 import {
-  MODAL_BANKROLL,
   MODAL_AUGUR_USES_DAI,
+  MODAL_TOKEN_SELECT,
 } from 'modules/common/constants';
 import { closeModal } from '../actions/close-modal';
 
@@ -20,7 +20,7 @@ const mapStateToProps = (state: AppState) => {
 
 const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({
   closeModal: () => dispatch(closeModal()),
-  bankrollModal: () => dispatch(updateModal({ type: MODAL_BANKROLL })),
+  tokenSelectModala: () => dispatch(updateModal({ type: MODAL_TOKEN_SELECT })),
   goBack: () => dispatch(updateModal({ type: MODAL_AUGUR_USES_DAI })),
 });
 
@@ -44,7 +44,7 @@ const mergeProps = (sP: any, dP: any, oP: any) => ({
       text: 'Next',
       disabled: !(Number(sP.balances?.signerBalances?.eth) > 0),
       action: () => {
-        dP.bankrollModal();
+        dP.tokenSelectModala();
       },
     },
   ],

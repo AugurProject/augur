@@ -13,6 +13,7 @@ import {
   Bankroll,
   Approvals,
   Deposit,
+  TokenSelect,
 } from 'modules/modal/common';
 import classNames from 'classnames';
 import { DAI, ETH } from 'modules/common/constants';
@@ -77,8 +78,10 @@ interface OnboardingProps {
   goBack: Function;
   swapModal: Function;
   gotoApprovals: Function;
-  gotoBankroll: Function;
+  gotoTokenSelect: Function;
   gotoDeposit: Function;
+  ethToDaiRate: number;
+  token: string;
 }
 
 export const Onboarding = ({
@@ -102,8 +105,10 @@ export const Onboarding = ({
   goBack,
   swapModal,
   gotoApprovals,
-  gotoBankroll,
+  gotoTokenSelect,
   gotoDeposit,
+  ethToDaiRate,
+  token,
 }: OnboardingProps) => {
   const [ethRecieved, setEthRecieved] = useState(false);
   const [isZeroXApproved, setIsZeroXApproved] = useState(false);
@@ -219,7 +224,7 @@ export const Onboarding = ({
       if (onboardingRoute === 1) {
         gotoApprovals();
       } else if (onboardingRoute === 2) {
-        gotoBankroll();
+        gotoTokenSelect();
       } else if (onboardingRoute === 3) {
         gotoDeposit();
       }
@@ -244,7 +249,7 @@ export const Onboarding = ({
       })}
     >
       <nav>
-        {false && goBack && <div onClick={() => goBack()}>{MobileNavBackIcon()}</div>}
+        {goBack && <div onClick={() => goBack()}>{MobileNavBackIcon()}</div>}
         {closeModal && <div onClick={() => closeModal()}>{MobileNavCloseIcon()}</div>}
       </nav>
       <div>
@@ -271,7 +276,7 @@ export const Onboarding = ({
           <Swap
             {...swapOptions}
             toToken={DAI}
-            fromToken={ETH}
+            fromToken={token || ETH}
             onboarding={true}
           />
         }
@@ -286,8 +291,12 @@ export const Onboarding = ({
           );
         })}
 
+        {showCompoundToolTip &&
+          <TokenSelect ethToDaiRate={ethToDaiRate} handleSelection={(token) => modalAction(token)} balances={balances} />
+        }
+
         {showBankroll &&
-          <Bankroll swapModal={() => swapModal()} approveModal={() => modalAction()} />
+          <Bankroll token={token} swapModal={() => swapModal()} approveModal={() => modalAction()} />
         }
 
         {showApprovals &&

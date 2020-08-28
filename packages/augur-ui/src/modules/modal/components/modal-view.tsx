@@ -47,6 +47,7 @@ import ModalWalletError from 'modules/modal/containers/modal-wallet-error';
 import ModalAugurUsesDai from 'modules/modal/containers/modal-augur-uses-dai';
 import ModalSwap from 'modules/modal/containers/modal-swap';
 import ModalBankroll from 'modules/modal/containers/modal-bankroll';
+import ModalTokenSelect from 'modules/modal/containers/modal-token-select';
 import ModalTutorialOutro from 'modules/modal/containers/modal-tutorial-outro';
 import ModalTutorialIntro from 'modules/modal/containers/modal-tutorial-intro';
 import ModalScalar from 'modules/modal/containers/modal-scalar';
@@ -175,10 +176,10 @@ function selectModal(type, props, closeModal, modal) {
       return <ModalAugurUsesDai />
     case TYPES.MODAL_BANKROLL:
       return <ModalBankroll />;
+    case TYPES.MODAL_TOKEN_SELECT:
+      return <ModalTokenSelect />;
     case TYPES.MODAL_SWAP:
       return <ModalSwap />;
-    case TYPES.MODAL_BANKROLL:
-      return <ModalBankroll />;
     case TYPES.MODAL_ERROR:
       return <ModalWalletError />
     case TYPES.MODAL_SCALAR_MARKET:

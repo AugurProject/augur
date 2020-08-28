@@ -20,6 +20,7 @@ import {
   MODAL_APPROVALS,
   MODAL_TEST_BET,
   MODAL_SWAP,
+  MODAL_TOKEN_SELECT,
 } from 'modules/common/constants';
 import { Action } from 'redux';
 import { getCurrentOnboardingStep } from 'modules/modal/onboarding';
@@ -59,12 +60,14 @@ const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({
     } else if (currentOnboardingStep === 2) {
       nextStep = MODAL_ETH_DEPOSIT;
     } else if (currentOnboardingStep === 3) {
-      nextStep = MODAL_BANKROLL;
+      nextStep = MODAL_TOKEN_SELECT;
     } else if (currentOnboardingStep === 4) {
-      nextStep = MODAL_SWAP;
+      nextStep = MODAL_TOKEN_SELECT;
     } else if (currentOnboardingStep === 5) {
-      nextStep = MODAL_APPROVALS;
+      nextStep = MODAL_TOKEN_SELECT;
     } else if (currentOnboardingStep === 6) {
+      nextStep = MODAL_APPROVALS;
+    } else if (currentOnboardingStep === 7) {
       nextStep = MODAL_TEST_BET;
     }
     dispatch(updateModal({ type: nextStep }));

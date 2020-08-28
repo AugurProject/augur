@@ -26,7 +26,7 @@ const mergeProps = (sP: any, dP: any, oP: any) => ({
   ...sP,
   title: 'Please approve your wallet to interact with the Ethereum network',
   showApprovals: true,
-  currentStep: 5,
+  currentStep: 6,
   goBack: dP.goBack,
   closeModal: dP.closeModal,
   content: [

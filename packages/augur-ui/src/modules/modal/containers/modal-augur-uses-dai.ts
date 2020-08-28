@@ -8,8 +8,8 @@ import { Action } from 'redux';
 import {
   HELP_CENTER_WHAT_IS_DAI,
   MODAL_ETH_DEPOSIT,
-  MODAL_BANKROLL,
   MODAL_APPROVALS,
+  MODAL_TOKEN_SELECT,
 } from 'modules/common/constants';
 import { OnboardingDollarDaiIcon, EthIcon } from 'modules/common/icons';
 
@@ -19,7 +19,7 @@ const mapStateToProps = (state: AppState) => ({
 
 const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({
   gotoApprovals: () => dispatch(updateModal({ type: MODAL_APPROVALS })),
-  gotoBankroll: () => dispatch(updateModal({ type: MODAL_BANKROLL })),
+  gotoTokenSelect: () => dispatch(updateModal({ type: MODAL_TOKEN_SELECT })),
   gotoDeposit: () => dispatch(updateModal({ type: MODAL_ETH_DEPOSIT })),
 });
 
@@ -42,7 +42,7 @@ const mergeProps = (sP: any, dP: any, oP: any) => ({
   ],
   currentStep: 1,
   gotoApprovals: dP.gotoApprovals,
-  gotoBankroll: dP.gotoBankroll,
+  gotoTokenSelect: dP.gotoTokenSelect,
   gotoDeposit: dP.gotoDeposit,
   balances: sP.balances,
   linkContent: [
