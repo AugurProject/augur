@@ -15,6 +15,7 @@ import {
   tokenEth,
   tokenUSDC,
   tokenUSDT,
+  MobileNavCloseIcon,
 } from 'modules/common/icons';
 import {
   DefaultButtonProps,
@@ -429,6 +430,7 @@ export const Deposit = ({ address }: DepositProps) => {
       <div>
         {showQRCode && (
           <div onClick={() => setShowQRCode(false)}>
+            {MobileNavCloseIcon()}
             <QRCode value={address} />
           </div>
         )}
@@ -488,11 +490,6 @@ export const TokenSelect = ({
   const ethAmount = createBigNumber(balances?.signerBalances?.eth || 0);
   const usdcAmount = createBigNumber(balances?.signerBalances?.usdc || 0);
   const usdtAmount = createBigNumber(balances?.signerBalances?.usdt || 0);
-
-  console.log('ethAmount::', ethAmount);
-  console.log('usdcAmount::', usdcAmount);
-  console.log('usdtAmount::', usdtAmount);
-
 
   if (ethAmount.gt(0) && !usdcAmount.gt(0) && !usdtAmount.gt(0)) {
     handleSelection(ETH);

@@ -16,10 +16,8 @@ import {
   MODAL_BUY_DAI,
   MODAL_AUGUR_USES_DAI,
   MODAL_ETH_DEPOSIT,
-  MODAL_BANKROLL,
   MODAL_APPROVALS,
   MODAL_TEST_BET,
-  MODAL_SWAP,
   MODAL_TOKEN_SELECT,
 } from 'modules/common/constants';
 import { Action } from 'redux';

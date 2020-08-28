@@ -114,7 +114,7 @@ const TopBar: React.FC<TopBarProps> = ({
         tradingAccountCreated={!showAddFundsButton }
       />
       <div>
-        {(isLogged || restoredAccount) && currentOnboardingStep && currentOnboardingStep < 6 && (
+        {(isLogged || restoredAccount) && currentOnboardingStep && currentOnboardingStep < 7 && (
           <PrimaryButton text={'Continue account setup'} action={() => handleShowOnboarding()} />
         )}
 

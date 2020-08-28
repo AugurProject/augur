@@ -24,7 +24,7 @@ const mapStateToProps = (state: AppState) => {
 
   const balances = state.loginAccount?.balances?.signerBalances;
   const ethAmountInDai =
-    Number(state.loginAccount.balances.signerBalances.eth) * ethToDaiRate?.value || createBigNumber(1);
+    Number(state.loginAccount.balances.signerBalances.eth) * ethToDaiRate?.value || createBigNumber(0);
 
   const swapOptions = {
     loginAccount: state.loginAccount,

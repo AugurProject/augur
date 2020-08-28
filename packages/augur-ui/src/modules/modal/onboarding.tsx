@@ -16,7 +16,7 @@ import {
   TokenSelect,
 } from 'modules/modal/common';
 import classNames from 'classnames';
-import { DAI, ETH } from 'modules/common/constants';
+import { DAI, ETH, ACCOUNT_TYPES } from 'modules/common/constants';
 import {
   oneInchExchageIcon,
   compoundIcon,
@@ -38,6 +38,8 @@ import { createBigNumber } from 'utils/create-big-number';
 import { AccountBalances, Blockchain } from 'modules/types';
 
 import Styles from 'modules/modal/modal.styles.less';
+import { addFundsTorus, addFundsFortmatic } from './containers/modal-add-funds';
+import loginAccount from 'modules/auth/selectors/login-account';
 
 export const CURRENT_ONBOARDING_STEP_KEY = 'currentOnboardingStep';
 
@@ -82,6 +84,8 @@ interface OnboardingProps {
   gotoDeposit: Function;
   ethToDaiRate: number;
   token: string;
+  walletOnRamp: boolean;
+  accountType: string;
 }
 
 export const Onboarding = ({
@@ -109,6 +113,8 @@ export const Onboarding = ({
   gotoDeposit,
   ethToDaiRate,
   token,
+  walletOnRamp,
+  accountType,
 }: OnboardingProps) => {
   const [ethRecieved, setEthRecieved] = useState(false);
   const [isZeroXApproved, setIsZeroXApproved] = useState(false);
@@ -249,81 +255,119 @@ export const Onboarding = ({
       })}
     >
       <nav>
-        {goBack && <div onClick={() => goBack()}>{MobileNavBackIcon()}</div>}
-        {closeModal && <div onClick={() => closeModal()}>{MobileNavCloseIcon()}</div>}
+        {goBack && false && <div onClick={() => goBack()}>{MobileNavBackIcon()}</div>}
+        {closeModal && (
+          <div onClick={() => closeModal()}>{MobileNavCloseIcon()}</div>
+        )}
       </nav>
       <div>
-        {!showSwapper && title &&
+        {!showSwapper && title && (
           <div>
             <h2>{title}</h2>
             <hr />
           </div>
-        }
+        )}
 
-        {showSwapper && title &&
+        {showSwapper && title && (
           <div>
             <h2>
               {title.split('##').map((dom, idx) => {
-                return (
-                  idx === 1 ? <span>{dom}</span> : dom
-                );
+                return idx === 1 ? <span key={idx}>{dom}</span> : dom;
               })}
-              </h2>
+            </h2>
           </div>
-        }
+        )}
 
-        { showSwapper && swapOptions &&
+        {showSwapper && swapOptions && (
           <Swap
             {...swapOptions}
             toToken={DAI}
             fromToken={token || ETH}
             onboarding={true}
           />
-        }
+        )}
 
-        {content && content.map((item, idx) => {
-          return (
-            <main key={idx}>
-              <div>{item.icon}</div>
-              <LargeSubheader text={item.header} />
-              <SmallSubheader text={item.content} />
-            </main>
-          );
-        })}
+        {content &&
+          content.map((item, idx) => {
+            return (
+              <main key={idx}>
+                <div>{item.icon}</div>
+                <LargeSubheader text={item.header} />
+                <SmallSubheader text={item.content} />
+              </main>
+            );
+          })}
 
-        {showCompoundToolTip &&
-          <TokenSelect ethToDaiRate={ethToDaiRate} handleSelection={(token) => modalAction(token)} balances={balances} />
-        }
+        {showCompoundToolTip && (
+          <TokenSelect
+            ethToDaiRate={ethToDaiRate}
+            handleSelection={(token) => modalAction(token)}
+            balances={balances}
+          />
+        )}
 
-        {showBankroll &&
-          <Bankroll token={token} swapModal={() => swapModal()} approveModal={() => modalAction()} />
-        }
+        {showBankroll && (
+          <Bankroll
+            token={token}
+            swapModal={() => swapModal()}
+            approveModal={() => modalAction()}
+          />
+        )}
 
-        {showApprovals &&
-          <Approvals currentApprovalStep={currentApprovalStep} approvalData={approvalData} />
-        }
+        {showApprovals && (
+          <Approvals
+            currentApprovalStep={currentApprovalStep}
+            approvalData={approvalData}
+          />
+        )}
 
-        {showDeposit &&
-          <Deposit address={address} />
-        }
+        {showDeposit && <Deposit address={address} />}
+
+        {showDeposit && walletOnRamp && (
+          <div className={Styles.OnboardingDepositWalletOnRamp}>
+            <div>
+              <hr />
+              OR
+              <hr />
+            </div>
+            <div
+              onClick={() =>
+                accountType === ACCOUNT_TYPES.TORUS
+                  ? addFundsTorus(createBigNumber(50), address)
+                  : addFundsFortmatic(createBigNumber(50), ETH, address)
+              }
+            >
+              Buy direct through {accountType}{' '}
+            </div>
+          </div>
+        )}
 
         <div className={Styles.OnboardingNav}>{navControls}</div>
 
-        {show1InchToolTip &&
+        {show1InchToolTip && (
           <InfoBubble icon={oneInchExchageIcon}>
             <div>
-              Looking to get a large quantity of DAI at a lower slippage. Try <ExternalLinkButton URL={'https://1inch.exchange'} label={'1inch.exchange'} />
+              Looking to get a large quantity of DAI at a lower slippage. Try{' '}
+              <ExternalLinkButton
+                URL={'https://1inch.exchange'}
+                label={'1inch.exchange'}
+              />
             </div>
           </InfoBubble>
-        }
+        )}
 
-        {showCompoundToolTip &&
+        {showCompoundToolTip && (
           <InfoBubble icon={compoundIcon}>
             <div>
-              Don’t want to sell your crypto to buy DAI. Depost tokens to borrow dai in <ExternalLinkButton URL={'https://compound.finance '} label={'compound.finance '} />
+              Don’t want to sell your crypto to buy DAI. Depost tokens to borrow
+              dai in{' '}
+              <ExternalLinkButton
+                URL={'https://compound.finance '}
+                label={'compound.finance '}
+              />
             </div>
           </InfoBubble>
-        }
+        )}
       </div>
       <div className={Styles.OnboardingMobileNav} />
     </div>

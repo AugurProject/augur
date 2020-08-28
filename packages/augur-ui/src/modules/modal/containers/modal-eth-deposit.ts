@@ -8,6 +8,7 @@ import { Action } from 'redux';
 import {
   MODAL_AUGUR_USES_DAI,
   MODAL_TOKEN_SELECT,
+  ACCOUNT_TYPES,
 } from 'modules/common/constants';
 import { closeModal } from '../actions/close-modal';
 
@@ -15,6 +16,8 @@ const mapStateToProps = (state: AppState) => {
   return {
     address: state.loginAccount.address,
     balances: state.loginAccount.balances,
+    walletOnRamp:  [ACCOUNT_TYPES.TORUS, ACCOUNT_TYPES.FORTMATIC].includes(state.loginAccount?.meta?.accountType),
+    accountType: state.loginAccount.meta.accountType,
   };
 };
 
