@@ -249,7 +249,7 @@ const handleSeries = (
         id === '0' &&
         !isTrading &&
         priceTimeSeries[id][priceTimeSeries[id].length - 1].price === '0';
-      const isSelected = selectedOutcomeId && selectedOutcomeId == id;
+      const isSelected = selectedOutcomeId == id;
       const length = priceTimeSeries[id].length;
       if (
         length > 0 &&

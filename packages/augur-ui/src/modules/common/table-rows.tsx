@@ -145,15 +145,14 @@ export const MarketOutcome = ({
     ? newMarket
     : null;
   // default values for create market preview
-  const minPrice = market ? market.minPrice : 0;
-  const maxPrice = market ? market.maxPrice : 1;
-  const tickSize = market ? market.tickSize : 100;
-  const marketType = market ? market.marketType : YES_NO; // default to yes no. has to be something
+  const minPrice = market?.minPrice || 0;
+  const maxPrice = market?.maxPrice || 1;
+  const tickSize = market?.tickSize || 100;
+  const marketType = market?.marketType || YES_NO; // default to yes no. has to be something
 
   const usePercent =
-    outcome &&
-    outcome.id === INVALID_OUTCOME_ID &&
-    market.marketType === SCALAR;
+    outcome?.id === INVALID_OUTCOME_ID &&
+    market?.marketType === SCALAR;
 
   const { topAsk, topBid } = selectMarketOutcomeBestBidAsk(
     outcomeOrderBook,
@@ -233,8 +232,8 @@ export const MarketOutcome = ({
         updateSelectedOutcome(outcome.id, true);
         updateSelectedOrderProperties({
           selectedOutcomeId: outcome.id,
-          orderPrice: topBidPrice && topBidPrice.value.toString(),
-          orderQuantity: topBidShares && topBidShares.value.toString(),
+          orderPrice: topBidPrice?.value?.toString(),
+          orderQuantity: ttopBidShares?.value?.toString(),
           selectedNav: SELL,
         });
         e.stopPropagation();
@@ -251,8 +250,8 @@ export const MarketOutcome = ({
         updateSelectedOutcome(outcome.id, true);
         updateSelectedOrderProperties({
           selectedOutcomeId: outcome.id,
-          orderPrice: topAskPrice && topAskPrice.value.toString(),
-          orderQuantity: topAskShares && topAskShares.value.toString(),
+          orderPrice: topAskPrice?.value?.toString(),
+          orderQuantity: topAskShares?.value?.toString(),
           selectedNav: BUY,
         });
         e.stopPropagation();
