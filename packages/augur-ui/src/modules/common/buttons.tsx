@@ -724,22 +724,24 @@ export const CashoutButton = ({
   const position = positions[bet.marketId]?.tradingPositions[bet.outcomeId];
 
   useEffect(() => {
-    getOrderShareProfitLoss(bet, orderBooks, (potentialDaiProfit, topBidPrice, orderCost) => {
-      updateMatched(bet.marketId, bet.orderId, {
-        ...bet,
-        topBidPrice,
-        orderCost,
-        potentialDaiProfit,
-        closedPotentialDaiProfit: position?.priorPosition ? position.realized : null,
-        closedOrderCost: position?.priorPosition ? findProceeds(
-          position.realizedPercent,
-          position.realizedCost,
-          market.settlementFee
-        )
-      : null,
+    if (market) {
+      getOrderShareProfitLoss(bet, orderBooks, (potentialDaiProfit, topBidPrice, orderCost) => {
+        updateMatched(bet.marketId, bet.orderId, {
+          ...bet,
+          topBidPrice,
+          orderCost,
+          potentialDaiProfit,
+          closedPotentialDaiProfit: position?.priorPosition ? position.realized : null,
+          closedOrderCost: position?.priorPosition ? findProceeds(
+            position.realizedPercent,
+            position.realizedCost,
+            market.settlementFee
+          )
+        : null,
+        })
       })
-    })
-  }, [marketInfos[bet.marketId], orderBooks[bet.marketId]]);
+    }
+  }, [market, orderBooks[bet.marketId]]);
 
   if (position?.priorPosition) {
     didWin = bet.closedPotentialDaiProfit ? createBigNumber(bet.closedPotentialDaiProfit).gt(ZERO) : false;
