@@ -330,12 +330,14 @@ export function BetslipReducer(state, action) {
       throw new Error(`Error: ${action.type} not caught by Betslip reducer`);
   }
   window.betslip = updatedState;
+  window.stores.betslip = updatedState;
   return updatedState;
 }
 
 export const useBetslip = (defaultState = MOCK_BETSLIP_STATE) => {
   const [state, dispatch] = useReducer(BetslipReducer, defaultState);
   window.betslip = state;
+  window.stores.betslip = state;
   return {
     ...state,
     actions: {

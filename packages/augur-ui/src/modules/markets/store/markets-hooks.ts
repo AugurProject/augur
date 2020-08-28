@@ -133,6 +133,7 @@ export function MarketsReducer(state, action) {
   }
 
   window.markets = updatedState;
+  window.stores.markets = updatedState;
   return updatedState;
 }
 
@@ -173,6 +174,7 @@ export const dispatchMiddleware = dispatch => action =>
 export const useMarkets = (defaultState = MOCK_MARKETS_STATE) => {
   const [state, dispatch] = useReducer(MarketsReducer, defaultState);
   window.markets = state;
+  window.stores.markets = state;
   const newDispatch = dispatchMiddleware(dispatch);
 
   return {

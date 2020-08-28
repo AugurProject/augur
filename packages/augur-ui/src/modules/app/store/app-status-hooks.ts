@@ -669,6 +669,7 @@ export function AppStatusReducer(state, action) {
   }
   // console.log(action.type, updatedState, action);
   window.appStatus = updatedState;
+  window.stores.appStatus = updatedState;
   return updatedState;
 }
 
@@ -681,6 +682,7 @@ export const useAppStatus = (defaultState = DEFAULT_APP_STATUS) => {
   const [state, dispatch] = useReducer(AppStatusReducer, defaultState);
   setHTMLTheme(state.theme);
   window.appStatus = state;
+  window.stores.appStatus = state;
   return {
     ...state,
     actions: {
