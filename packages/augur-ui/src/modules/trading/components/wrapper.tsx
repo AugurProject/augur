@@ -537,7 +537,6 @@ const Wrapper = ({
     (orderShareProfit && orderShareProfit.value !== 0) ||
     (sharesFilled && sharesFilled.value !== 0);
   const actionButton = getActionButton();
-
   return (
     <section className={Styles.Wrapper}>
       <div>

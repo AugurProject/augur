@@ -196,16 +196,24 @@ interface FromProps {
   tradingTutorial?: boolean;
 }
 
-const calculateStartState = props => {
+const calculateStartState = ({
+  orderQuantity,
+  orderPrice,
+  doNotCreateOrders,
+  expirationDate,
+  endTime,
+  currentTimestamp,
+  orderDaiEstimate,
+}) => {
   return {
-    [INPUT_TYPES.QUANTITY]: props.orderQuantity,
-    [INPUT_TYPES.PRICE]: props.orderPrice,
-    [INPUT_TYPES.DO_NOT_CREATE_ORDERS]: props.doNotCreateOrders,
+    [INPUT_TYPES.QUANTITY]: orderQuantity,
+    [INPUT_TYPES.PRICE]: orderPrice,
+    [INPUT_TYPES.DO_NOT_CREATE_ORDERS]: doNotCreateOrders,
     [INPUT_TYPES.POST_ONLY_ORDER]: false,
     [INPUT_TYPES.EXPIRATION_DATE]:
-      props.expirationDate ||
-      calcOrderExpirationTime(props.endTime, props.currentTimestamp),
-    [INPUT_TYPES.EST_DAI]: props.orderDaiEstimate,
+      expirationDate ||
+      calcOrderExpirationTime(endTime, currentTimestamp),
+    [INPUT_TYPES.EST_DAI]: orderDaiEstimate,
   };
 };
 
@@ -217,7 +225,10 @@ const getStartState = ({
   endTime,
   currentTimestamp,
   orderDaiEstimate,
-  remainingTime,
+  remainingTime: {
+    time: fastForwardTime,
+    unit: expirationDateOption,
+  },
 }) => {
   const startState = calculateStartState({
     orderQuantity,
@@ -232,8 +243,8 @@ const getStartState = ({
     ...startState,
     lastInputModified: '',
     advancedOption: advancedDropdownOptions[0].value,
-    fastForwardTime: remainingTime.time,
-    expirationDateOption: remainingTime.unit,
+    fastForwardTime,
+    expirationDateOption,
     percentage: '',
     confirmationTimeEstimation: 0,
   };
@@ -495,7 +506,10 @@ const Form = ({
   }
 
   function clearOrderFormProperties() {
-    const remainingTime = calcOrderExpirationTimeRemaining(
+    const {
+      time: fastForwardTime,
+      unit: expirationDateOption,
+    } = calcOrderExpirationTimeRemaining(
       endTime,
       currentTimestamp
     );
@@ -509,8 +523,8 @@ const Form = ({
         currentTimestamp
       ),
       [INPUT_TYPES.EST_DAI]: '',
-      fastForwardTime: remainingTime.time,
-      expirationDateOption: remainingTime.unit,
+      fastForwardTime,
+      expirationDateOption,
       advancedOption: advancedDropdownOptions[0].value,
     };
     setState({
@@ -553,6 +567,7 @@ const Form = ({
     (isScalar && selectedOutcome.id !== INVALID_OUTCOME_ID) || !isScalar;
   const isExpirationCustom =
     state.expirationDateOption === EXPIRATION_DATE_OPTIONS.CUSTOM;
+
   return (
     <div className={Styles.TradingForm}>
       <div className={Styles.Outcome}>
@@ -794,8 +809,11 @@ const Form = ({
           <SquareDropdown
             defaultValue={advancedOptions[0].value}
             options={advancedOptions}
-            onChange={value => {
-              const remainingTime = calcOrderExpirationTimeRemaining(
+            onChange={advancedOption => {
+              const {
+                time: fastForwardTime,
+                unit: expirationDateOption,
+              } = calcOrderExpirationTimeRemaining(
                 endTime,
                 currentTimestamp
               );
@@ -807,13 +825,13 @@ const Form = ({
               updateState({
                 [INPUT_TYPES.DO_NOT_CREATE_ORDERS]:
                   value === ADVANCED_OPTIONS.FILL,
-                [INPUT_TYPES.POST_ONLY_ORDER]: value === ADVANCED_OPTIONS.POST,
+                [INPUT_TYPES.POST_ONLY_ORDER]: advancedOption === ADVANCED_OPTIONS.POST,
               });
               setState({
                 ...state,
-                advancedOption: value,
-                fastForwardTime: remainingTime.time,
-                expirationDateOption: remainingTime.unit,
+                advancedOption,
+                fastForwardTime,
+                expirationDateOption,
               });
             }}
           />

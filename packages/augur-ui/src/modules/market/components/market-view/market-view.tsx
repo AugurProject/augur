@@ -136,7 +136,7 @@ const MarketView = ({
     extendOrders: false,
     selectedOrderProperties: DEFAULT_ORDER_PROPERTIES,
     selectedOutcomeId: isPreview ? getDefaultOutcomeSelected(market.marketType) : !queryOutcomeId ? defaultOutcomeId : parseInt(queryOutcomeId),
-    tutorialError: '',
+    tutorialError: null,
   });
   const scalarModalSeen =
     Boolean(modalType) || windowRef?.localStorage?.getItem(SCALAR_MODAL_SEEN) === 'true';
@@ -391,7 +391,7 @@ const MarketView = ({
           parseFloat(orderQuantity) !==
           TUTORIAL_QUANTITY
             ? 'Please enter a quantity of 100 for this order to be filled on the test market'
-            : '',
+            : null,
       });
 
       return invalidQuantity;
@@ -405,7 +405,7 @@ const MarketView = ({
         ...state,
         tutorialError: invalidPrice
           ? 'Enter a limit price of $.40 for this order to be filled on the test market'
-          : '',
+          : null,
       });
 
       return invalidPrice;
@@ -429,7 +429,6 @@ const MarketView = ({
       });
     }
   }
-
   return (
     <div
       ref={node}
@@ -633,7 +632,6 @@ const MarketView = ({
                       left={!isPlaceOrder}
                       leftBottom={isPlaceOrder}
                       next={() => {
-                        console.log('in tutorial next', isPlaceOrder);
                         if (isPlaceOrder) {
                           updateSelectedOrderProperties({
                             orderQuantity: '',
@@ -645,7 +643,7 @@ const MarketView = ({
                       step={tutorialStep}
                       totalSteps={totalSteps}
                       text={tutorialCopy}
-                      error={tutorialError !== '' ? tutorialError : null}
+                      error={tutorialError}
                     />
                   )}
                 </div>
