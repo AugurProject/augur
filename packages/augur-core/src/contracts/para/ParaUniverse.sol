@@ -64,11 +64,11 @@ contract ParaUniverse is Initializable, IParaUniverse {
     /**
      * @return The OI Cash contract
      */
-    function isOpenInterestCash(address _address) public view returns (bool) {
+    function isOpenInterestCash(address _address) external view returns (bool) {
         return _address == address(openInterestCash);
     }
 
-    function getReputationToken() public view returns (IV2ReputationToken) {
+    function getReputationToken() external view returns (IV2ReputationToken) {
         return originUniverse.getReputationToken();
     }
 
@@ -76,7 +76,7 @@ contract ParaUniverse is Initializable, IParaUniverse {
         return feePot;
     }
 
-    function setOrigin(IUniverse _originUniverse) public {
+    function setOrigin(IUniverse _originUniverse) external {
         IParaAugur _augur = augur;
         require(msg.sender == address(_augur));
         originUniverse = _originUniverse;
@@ -86,7 +86,7 @@ contract ParaUniverse is Initializable, IParaUniverse {
         openInterestCash.approveFeePot();
     }
 
-    function deposit(address _sender, uint256 _amount, address _market) public returns (bool) {
+    function deposit(address _sender, uint256 _amount, address _market) external returns (bool) {
         require(msg.sender == address(shareToken) || msg.sender == _sender || msg.sender == address(openInterestCash));
         augur.trustedCashTransfer(_sender, address(this), _amount);
         totalBalance = totalBalance.add(_amount);
@@ -105,13 +105,13 @@ contract ParaUniverse is Initializable, IParaUniverse {
         return true;
     }
 
-    function decrementOpenInterest(uint256 _amount) public returns (bool) {
+    function decrementOpenInterest(uint256 _amount) external returns (bool) {
         require(msg.sender == address(shareToken));
         openInterestInAttoCash = openInterestInAttoCash.sub(_amount);
         return true;
     }
 
-    function incrementOpenInterest(uint256 _amount) public returns (bool) {
+    function incrementOpenInterest(uint256 _amount) external returns (bool) {
         require(msg.sender == address(shareToken));
         openInterestInAttoCash = openInterestInAttoCash.add(_amount);
         return true;
@@ -124,7 +124,7 @@ contract ParaUniverse is Initializable, IParaUniverse {
         return openInterestInAttoCash;
     }
 
-    function setMarketFinalized(IMarket _market, uint256 _totalSupply) public returns (bool) {
+    function setMarketFinalized(IMarket _market, uint256 _totalSupply) external returns (bool) {
         require(msg.sender == address(shareToken));
         if (marketFinalized[address(_market)]) {
             return true;
@@ -160,7 +160,7 @@ contract ParaUniverse is Initializable, IParaUniverse {
      * @dev this should be used in contracts so that the fee is actually set
      * @return The reporting fee for this window
      */
-    function getOrCacheReportingFeeDivisor() public returns (uint256) {
+    function getOrCacheReportingFeeDivisor() external returns (uint256) {
         uint256 _currentFeeDivisor = currentReportingFeeDivisor;
         uint256 _currentTime = augur.getTimestamp();
         if ((_currentTime - lastReportingFeeUpdateTimestamp) < MIN_TIME_BETWEEN_REPORTING_FEE_RECALC) {
@@ -178,7 +178,7 @@ contract ParaUniverse is Initializable, IParaUniverse {
      * @dev this should be used for estimation purposes as it is a view and does not actually freeze or recalculate the rate
      * @return The reporting fee for this dispute window
      */
-    function getReportingFeeDivisor() public view returns (uint256) {
+    function getReportingFeeDivisor() external view returns (uint256) {
         if (currentReportingFeeDivisor != 0) {
             return currentReportingFeeDivisor;
         }
@@ -194,7 +194,7 @@ contract ParaUniverse is Initializable, IParaUniverse {
         return _reportingFeeDivisor;
     }
 
-    function getMarketOpenInterest(IMarket _market) public view returns (uint256) {
+    function getMarketOpenInterest(IMarket _market) external view returns (uint256) {
         if (_market.isFinalized()) {
             return 0;
         }

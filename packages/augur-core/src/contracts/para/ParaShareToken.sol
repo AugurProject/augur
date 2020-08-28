@@ -39,7 +39,7 @@ contract ParaShareToken is ITyped, Initializable, ERC1155, ReentrancyGuard {
         require(cash != ICash(0));
     }
 
-    function approveUniverse(IParaUniverse _paraUniverse) public {
+    function approveUniverse(IParaUniverse _paraUniverse) external {
         require(msg.sender == address(augur));
         cash.approve(address(_paraUniverse), MAX_APPROVAL_AMOUNT);
         cash.approve(address(_paraUniverse.getFeePot()), MAX_APPROVAL_AMOUNT);
@@ -54,7 +54,7 @@ contract ParaShareToken is ITyped, Initializable, ERC1155, ReentrancyGuard {
         @param _id ID of the token type
         @param _value Transfer amount
     */
-    function unsafeTransferFrom(address _from, address _to, uint256 _id, uint256 _value) public {
+    function unsafeTransferFrom(address _from, address _to, uint256 _id, uint256 _value) external {
         _transferFrom(_from, _to, _id, _value, bytes(""), false);
     }
 
@@ -68,7 +68,7 @@ contract ParaShareToken is ITyped, Initializable, ERC1155, ReentrancyGuard {
         @param _ids IDs of each token type
         @param _values Transfer amounts per token type
     */
-    function unsafeBatchTransferFrom(address _from, address _to, uint256[] memory _ids, uint256[] memory _values) public {
+    function unsafeBatchTransferFrom(address _from, address _to, uint256[] calldata _ids, uint256[] calldata _values) external {
         _batchTransferFrom(_from, _to, _ids, _values, bytes(""), false);
     }
 
@@ -262,6 +262,7 @@ contract ParaShareToken is ITyped, Initializable, ERC1155, ReentrancyGuard {
     }
 
     function burnCompleteSets(IMarket _market, address _account, uint256 _amount, address _sourceAccount, bytes32 _fingerprint) private returns (uint256 _payout, uint256 _creatorFee, uint256 _reportingFee) {
+        _fingerprint;
         if (!isMarketInitialized(_market)) {
             initializeMarket(_market);
         }
@@ -323,6 +324,7 @@ contract ParaShareToken is ITyped, Initializable, ERC1155, ReentrancyGuard {
     }
 
     function claimTradingProceedsInternal(IMarket _market, address _shareHolder, bytes32 _fingerprint) internal returns (uint256[] memory _outcomeFees) {
+        _fingerprint;
         require(augur.isKnownMarket(_market));
         IParaUniverse _paraUniverse = IParaUniverse(IParaAugur(address(augur)).getParaUniverse(address(_market.getUniverse())));
         if (!_market.isFinalized()) {
@@ -402,7 +404,7 @@ contract ParaShareToken is ITyped, Initializable, ERC1155, ReentrancyGuard {
      * @return The market associated with this Share Token ID
      */
     function getMarket(uint256 _tokenId) external pure returns(IMarket) {
-        (address _market, uint256 _outcome) = TokenId.unpackTokenId(_tokenId);
+        (address _market, ) = TokenId.unpackTokenId(_tokenId);
         return IMarket(_market);
     }
 
@@ -410,7 +412,7 @@ contract ParaShareToken is ITyped, Initializable, ERC1155, ReentrancyGuard {
      * @return The outcome associated with this Share Token ID
      */
     function getOutcome(uint256 _tokenId) external pure returns(uint256) {
-        (address _market, uint256 _outcome) = TokenId.unpackTokenId(_tokenId);
+        (, uint256 _outcome) = TokenId.unpackTokenId(_tokenId);
         return _outcome;
     }
 
@@ -437,26 +439,29 @@ contract ParaShareToken is ITyped, Initializable, ERC1155, ReentrancyGuard {
         return TokenId.getTokenId(_market, _outcome);
     }
 
-    function getTokenIds(IMarket _market, uint256[] memory _outcomes) public pure returns (uint256[] memory _tokenIds) {
+    function getTokenIds(IMarket _market, uint256[] calldata _outcomes) external pure returns (uint256[] memory _tokenIds) {
         return TokenId.getTokenIds(_market, _outcomes);
     }
 
-    function unpackTokenId(uint256 _tokenId) public pure returns (address _market, uint256 _outcome) {
+    function unpackTokenId(uint256 _tokenId) external pure returns (address _market, uint256 _outcome) {
         return TokenId.unpackTokenId(_tokenId);
     }
 
     function onTokenTransfer(uint256 _tokenId, address _from, address _to, uint256 _value) internal {
+        _value;
         (address _marketAddress, uint256 _outcome) = TokenId.unpackTokenId(_tokenId);
         augur.logShareTokensBalanceChanged(_from, IMarket(_marketAddress), _outcome, balanceOf(_from, _tokenId));
         augur.logShareTokensBalanceChanged(_to, IMarket(_marketAddress), _outcome, balanceOf(_to, _tokenId));
     }
 
     function onMint(uint256 _tokenId, address _target, uint256 _amount) internal {
+        _amount;
         (address _marketAddress, uint256 _outcome) = TokenId.unpackTokenId(_tokenId);
         augur.logShareTokensBalanceChanged(_target, IMarket(_marketAddress), _outcome, balanceOf(_target, _tokenId));
     }
 
     function onBurn(uint256 _tokenId, address _target, uint256 _amount) internal {
+        _amount;
         (address _marketAddress, uint256 _outcome) = TokenId.unpackTokenId(_tokenId);
         augur.logShareTokensBalanceChanged(_target, IMarket(_marketAddress), _outcome, balanceOf(_target, _tokenId));
     }

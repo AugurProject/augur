@@ -5,5 +5,5 @@ import 'ROOT/para/interfaces/IParaOICash.sol';
 
 
 contract IParaOICashFactory {
-    function createParaOICash(IParaAugur _augur) public returns (IParaOICash);
+    function createParaOICash(IParaAugur _augur) external returns (IParaOICash);
 }

@@ -56,7 +56,7 @@ contract ParaAugur is IParaAugur, IAugurCreationDataGetter {
     // Registry
     //
 
-    function registerContract(bytes32 _key, address _address) public onlyUploader returns (bool) {
+    function registerContract(bytes32 _key, address _address) external onlyUploader returns (bool) {
         require(registry[_key] == address(0), "Augur.registerContract: key has already been used in registry");
         require(_address.exists());
         registry[_key] = _address;
@@ -78,14 +78,14 @@ contract ParaAugur is IParaAugur, IAugurCreationDataGetter {
      * @param _key The key to lookup
      * @return the address of the registered contract if one exists for the given key
      */
-    function lookup(bytes32 _key) public view returns (address) {
+    function lookup(bytes32 _key) external view returns (address) {
         if (_key == "ShareToken" || _key == "Cash" || _key == "ParaRepOracle" || _key == "FeePotFactory" || _key == "ParaUniverseFactory" || _key == "ParaOICashFactory" || _key == "ParaOICash" || _key == "OINexus") {
             return registry[_key];
         }
         return augur.lookup(_key);
     }
 
-    function finishDeployment() public onlyUploader returns (bool) {
+    function finishDeployment() external onlyUploader returns (bool) {
         uploader = address(1);
         emit FinishDeployment();
         return true;
@@ -95,7 +95,7 @@ contract ParaAugur is IParaAugur, IAugurCreationDataGetter {
         return augur.isKnownUniverse(_universe);
     }
 
-    function generateParaUniverse(IUniverse _universe) public returns (IParaUniverse) {
+    function generateParaUniverse(IUniverse _universe) external returns (IParaUniverse) {
         require(isKnownUniverse(_universe));
         require(getParaUniverse[address(_universe)] == NULL_ADDRESS);
         IUniverse _parentUniverse = IUniverse(_universe.getParentUniverse());
@@ -138,38 +138,38 @@ contract ParaAugur is IParaAugur, IAugurCreationDataGetter {
         return augur.isKnownMarket(_market);
     }
 
-    function logCompleteSetsPurchased(IUniverse _universe, IMarket _market, address _account, uint256 _numCompleteSets) public returns (bool) {
+    function logCompleteSetsPurchased(IUniverse _universe, IMarket _market, address _account, uint256 _numCompleteSets) external returns (bool) {
         require(msg.sender == registry["ShareToken"] || (isKnownUniverse(_universe) && _universe.isOpenInterestCash(msg.sender)));
         emit CompleteSetsPurchased(address(_universe), address(_market), _account, _numCompleteSets, getTimestamp(), address(cash));
         return true;
     }
 
-    function logCompleteSetsSold(IUniverse _universe, IMarket _market, address _account, uint256 _numCompleteSets, uint256 _fees) public returns (bool) {
+    function logCompleteSetsSold(IUniverse _universe, IMarket _market, address _account, uint256 _numCompleteSets, uint256 _fees) external returns (bool) {
         require(msg.sender == registry["ShareToken"]);
         emit CompleteSetsSold(address(_universe), address(_market), _account, _numCompleteSets, _fees, getTimestamp(), address(cash));
         return true;
     }
 
-    function logMarketOIChanged(IUniverse _universe, IMarket _market) public returns (bool) {
+    function logMarketOIChanged(IUniverse _universe, IMarket _market) external returns (bool) {
         require(msg.sender == registry["ShareToken"]);
         IParaUniverse _paraUniverse = IParaUniverse(getParaUniverse[address(_universe)]);
         emit MarketOIChanged(address(_universe), address(_market), _paraUniverse.getMarketOpenInterest(_market), address(cash));
         return true;
     }
 
-    function logTradingProceedsClaimed(IUniverse _universe, address _sender, address _market, uint256 _outcome, uint256 _numShares, uint256 _numPayoutTokens, uint256 _fees) public returns (bool) {
+    function logTradingProceedsClaimed(IUniverse _universe, address _sender, address _market, uint256 _outcome, uint256 _numShares, uint256 _numPayoutTokens, uint256 _fees) external returns (bool) {
         require(msg.sender == registry["ShareToken"]);
         emit TradingProceedsClaimed(address(_universe), _sender, _market, _outcome, _numShares, _numPayoutTokens, _fees, getTimestamp(), address(cash));
         return true;
     }
 
-    function logShareTokensBalanceChanged(address _account, IMarket _market, uint256 _outcome, uint256 _balance) public returns (bool) {
+    function logShareTokensBalanceChanged(address _account, IMarket _market, uint256 _outcome, uint256 _balance) external returns (bool) {
         require(msg.sender == registry["ShareToken"]);
         emit ShareTokenBalanceChanged(address(_market.getUniverse()), _account, address(_market), _outcome, _balance, address(cash));
         return true;
     }
 
-    function logReportingFeeChanged(uint256 _reportingFee) public returns (bool) {
+    function logReportingFeeChanged(uint256 _reportingFee) external returns (bool) {
         IParaUniverse _paraUniverse = IParaUniverse(msg.sender);
         require(isKnownParaUniverse(_paraUniverse));
         emit ReportingFeeChanged(address(_paraUniverse.originUniverse()), _reportingFee, address(cash));
@@ -180,7 +180,7 @@ contract ParaAugur is IParaAugur, IAugurCreationDataGetter {
         return augur.getTimestamp();
     }
 
-    function getMarketRecommendedTradeInterval(IMarket _market) public view returns (uint256) {
+    function getMarketRecommendedTradeInterval(IMarket _market) external view returns (uint256) {
         return IAugurMarketDataGetter(address(augur)).getMarketRecommendedTradeInterval(_market) / 10;
     }
 

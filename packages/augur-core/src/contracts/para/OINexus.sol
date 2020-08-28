@@ -18,18 +18,18 @@ contract OINexus is Ownable {
     mapping(address => uint256) public totalUniverseContributions;
     mapping(address => uint256) public universeReportingFeeDivisor;
 
-    function addParaAugur(IParaAugur _paraAugur) public onlyOwner returns (bool) {
+    function addParaAugur(IParaAugur _paraAugur) external onlyOwner returns (bool) {
         registeredParaAugur[address(_paraAugur)] = true;
         return true;
     }
 
-    function registerParaUniverse(IUniverse _universe, IParaUniverse _paraUniverse) public {
+    function registerParaUniverse(IUniverse _universe, IParaUniverse _paraUniverse) external {
         require(registeredParaAugur[msg.sender]);
         numParaUniverses[address(_universe)] += 1;
         knownParaUniverse[address(_paraUniverse)] = true;
     }
 
-    function recordParaUniverseValuesAndUpdateReportingFee(IUniverse _universe, uint256 _targetRepMarketCapInAttoCash, uint256 _repMarketCapInAttoCash) public returns (uint256) {
+    function recordParaUniverseValuesAndUpdateReportingFee(IUniverse _universe, uint256 _targetRepMarketCapInAttoCash, uint256 _repMarketCapInAttoCash) external returns (uint256) {
         require(knownParaUniverse[msg.sender]);
         IParaUniverse _paraUniverse = IParaUniverse(msg.sender);
         // Before applying the para universe values we update/apply the core universe values first
