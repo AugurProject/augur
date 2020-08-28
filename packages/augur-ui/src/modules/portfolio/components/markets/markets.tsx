@@ -22,6 +22,7 @@ import { selectAuthorOwnedMarkets } from 'modules/markets/selectors/user-markets
 
 import Styles from 'modules/portfolio/components/common/quad.styles.less';
 import marketStyles from 'modules/portfolio/components/markets/markets.styles.less';
+import NewFilterBox from 'modules/portfolio/components/common/new-filter-box';
 
 const sortByOptions = [
   {
@@ -153,21 +154,15 @@ const MyMarkets = ({
   }
 
   return (
-    // @ts-ignore
-    <FilterBox
+    <NewFilterBox
       title="My Created Markets"
       customClass={marketStyles.Markets}
       sortByOptions={sortByOptions}
-      sortByStyles={isTrading ? { minWidth: '10.8125rem' } : {}}
       markets={myMarkets}
       filterComp={filterComp}
       renderRightContent={renderRightContent}
       renderToggleContent={renderToggleContent}
       filterLabel="markets"
-      showPending
-      toggle={toggle}
-      hide={hide}
-      extend={extend}
       showLiquidityDepleted
       pickVariables={[
         'id',
@@ -179,16 +174,16 @@ const MyMarkets = ({
         'endTime',
       ]}
       bottomContent={(myMarkets.length !== 0 && !isTrading) && (
-          <div className={marketStyles.BottomContent}>
-            <Link to={makePath(CREATE_MARKET)}>
-              <SecondaryButton
-                text="Create Market"
-                action={() => setTheme(THEMES.TRADING)}
-                icon={AddIcon}
-              />
-            </Link>
-          </div>
-        )
+        <div className={marketStyles.BottomContent}>
+          <Link to={makePath(CREATE_MARKET)}>
+            <SecondaryButton
+              text="Create Market"
+              action={() => setTheme(THEMES.TRADING)}
+              icon={AddIcon}
+            />
+          </Link>
+        </div>
+      )
       }
       emptyDisplayTitle={isTrading ? "You didn't create any market yet" : "No markets"}
       emptyDisplayText={isTrading ? "Create your first market now!" : "To create a market you need to go to the Trading Exchange"}

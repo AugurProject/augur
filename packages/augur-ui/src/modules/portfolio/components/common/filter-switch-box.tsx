@@ -10,30 +10,30 @@ export interface MarketsByReportingState {
 }
 
 export interface FilterBoxProps {
-  title: string;
   bottomBarContent?: ReactNode;
-  sortByOptions?: Array<NameValuePair>;
+  bottomContent?: ReactNode;
+  customClass?: string;
   data: Array<Market>;
+  emptyDisplayButton?: ReactNode;
+  emptyDisplayIcon: any;
+  emptyDisplayText?: string,
+  emptyDisplayTitle?: string,
+  extend?: boolean;
   filterComp: Function;
-  showFilterSearch?: boolean;
-  switchView?: Function;
-  noSwitch?: boolean;
-  renderRows: Function;
   filterLabel: string;
-  sortByStyles?: object;
+  footer?: ReactNode;
+  hide?: boolean;
   noBackgroundBottom?: boolean;
   normalOnMobile?: boolean;
-  toggle?: Function;
-  extend?: boolean;
-  hide?: boolean;
-  customClass?: string;
+  noSwitch?: boolean;
+  renderRows: Function;
+  showFilterSearch?: boolean;
   showHeaderOnMobile?: boolean;
-  bottomContent?: ReactNode;
-  emptyDisplayTitle?: string,
-  emptyDisplayText?: string,
-  emptyDisplayIcon: any;
-  emptyDisplayButton?: ReactNode;
-  footer?: ReactNode;
+  sortByOptions?: Array<NameValuePair>;
+  sortByStyles?: object;
+  switchView?: Function;
+  title: string;
+  toggle?: Function;
 }
 
 interface FilterBoxState {

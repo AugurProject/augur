@@ -7,31 +7,31 @@ import { SearchSort } from 'modules/common/search-sort';
 import Styles from 'modules/portfolio/components/common/quad-box.styles.less';
 
 export interface QuadBoxProps {
-  title: string;
-  showFilterSearch?: boolean | undefined;
-  sortByOptions?: any;
-  updateDropdown?: any;
-  onSearchChange?: any;
-  content?: ReactNode;
-  bottomContent?: ReactNode;
   bottomBarContent?: ReactNode;
+  bottomContent?: ReactNode;
   bottomRightBarContent?: ReactNode;
-  leftContent?: ReactNode;
-  rightContent?: ReactNode;
-  sortByStyles?: object;
-  switchHeaders?: boolean;
-  noBackgroundBottom?: boolean;
-  search?: string;
+  content?: ReactNode;
+  customClass?: string;
+  extend?: boolean;
   extraTitlePadding?: boolean;
+  h1Title?: boolean;
+  hide?: boolean;
+  hideHeader?: boolean;
+  leftContent?: ReactNode;
+  noBackgroundBottom?: boolean;
   noBorders?: boolean;
   normalOnMobile?: boolean;
-  toggle?: Function;
-  hide?: boolean;
-  extend?: boolean;
-  hideHeader?: boolean;
-  customClass?: string;
+  onSearchChange?: any;
+  rightContent?: ReactNode;
+  search?: string;
+  showFilterSearch?: boolean | undefined;
   showHeaderOnMobile?: boolean;
-  h1Title?: boolean;
+  sortByOptions?: any;
+  sortByStyles?: object;
+  switchHeaders?: boolean;
+  title: string;
+  toggle?: Function;
+  updateDropdown?: any;
 }
 
 const BoxHeaderElement = (props: QuadBoxProps) => (

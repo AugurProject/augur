@@ -10,6 +10,7 @@ import { useAppStatusStore } from 'modules/app/store/app-status';
 import getLoginAccountPositionsMarkets from 'modules/positions/selectors/login-account-positions-markets';
 
 import Styles from 'modules/account/components/open-markets.styles.less';
+import NewFilterSwitchBox from 'modules/portfolio/components/common/new-filter-switch-box';
 
 function filterComp(input: any, market: any) {
   return market && market.description
@@ -87,7 +88,7 @@ const OpenMarkets = ({ toggle }: OpenMarketsProps) => {
   }
 
   return (
-    <FilterSwitchBox
+    <NewFilterSwitchBox
       filterLabel="markets"
       title="My Active Markets"
       showFilterSearch
@@ -96,7 +97,7 @@ const OpenMarkets = ({ toggle }: OpenMarketsProps) => {
       filterComp={filterComp}
       noBackgroundBottom
       toggle={toggle}
-      bottomBarContent={
+      subheader={
         markets.length === 0 ? null : <div className={Styles.BottomBar}>
           <span>24hr</span>
           <MovementLabel

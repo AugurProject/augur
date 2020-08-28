@@ -1,6 +1,5 @@
 import React from 'react';
 
-import QuadBox from 'modules/portfolio/components/common/quad-box';
 import {
   DepositButton,
   TransferButton,
@@ -28,6 +27,7 @@ import { toChecksumAddress } from 'ethereumjs-util';
 import Styles from 'modules/account/components/transactions.styles.less';
 import { getNetworkId, getLegacyRep } from 'modules/contracts/actions/contractCalls';
 import { createBigNumber } from 'utils/create-big-number';
+import NewQuadBox from 'modules/portfolio/components/common/new-quad-box';
 
 export const Transactions = () => {
   const {
@@ -45,9 +45,9 @@ export const Transactions = () => {
   const signingWalletNoEth = createBigNumber(balances.signerBalances?.eth || 0).lte(ZERO);
 
   return (
-    <QuadBox
+    <NewQuadBox
       title={theme === THEMES.TRADING ? 'Transactions' : 'Your funds'}
-      rightContent={
+      headerComplement={
         <div className={Styles.RightContent}>
           <ViewTransactionsButton
             action={() => setModal({ type: MODAL_TRANSACTIONS })}

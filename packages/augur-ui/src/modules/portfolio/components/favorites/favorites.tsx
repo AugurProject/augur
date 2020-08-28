@@ -10,6 +10,7 @@ import favoriteStyles from 'modules/portfolio/components/favorites/favorites.sty
 import { useAppStatusStore } from 'modules/app/store/app-status';
 import { selectMarket } from 'modules/markets/selectors/market';
 import { loadMarketsInfoIfNotLoaded } from 'modules/markets/actions/load-markets-info';
+import NewFilterBox from 'modules/portfolio/components/common/new-filter-box';
 
 const sortByOptions = [
   {
@@ -88,17 +89,14 @@ const Favorites = ({
   };
 
   return (
-    <FilterBox
+    <NewFilterBox
       title={isTrading ? 'Watchlist' : 'Favorites'}
       customClass={customClass}
       sortByOptions={sortByOptions}
-      sortByStyles={isTrading ? { minWidth: '10.625rem' } : {}}
       markets={markets}
       filterComp={filterComp}
       renderRightContent={renderRightContent}
-      noToggle
       filterLabel="markets"
-      toggle={toggle}
       pickVariables={[
         'id',
         'favoriteAddedData',
@@ -107,9 +105,9 @@ const Favorites = ({
         'endTime',
         'creationTime',
       ]}
-      emptyDisplayText={
-        isTrading ? null : "You don't have any favorite markets to show!"
-      }
+      emptyDisplayConfig={{
+        emptyText: isTrading ? null : "You don't have any favorite markets to show!"
+      }}
     />
   );
 };

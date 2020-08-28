@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-import FilterSwitchBox from 'modules/portfolio/components/common/filter-switch-box';
+import NewFilterSwitchBox from 'modules/portfolio/components/common/new-filter-switch-box';
 import OrderMarketRow from 'modules/portfolio/components/common/order-market-row';
 import { FilledOrder } from "modules/common/table-rows";
 
@@ -75,20 +75,15 @@ const FilledOrders = ({ toggle, extend, hide }: FilledOrdersProps) => {
   }
   return (
     // @ts-ignore
-    <FilterSwitchBox
+    <NewFilterSwitchBox
       title="Filled Orders"
       filterLabel="filled orders"
-      showFilterSearch
       sortByOptions={sortByOptions}
-      sortByStyles={{ minWidth: '13.6875rem' }}
       data={viewByMarkets ? markets : filledOrders}
       filterComp={filterComp}
       switchView={switchView}
-      bottomBarContent={<FilledOrdersHeader />}
+      subheader={<FilledOrdersHeader />}
       renderRows={renderRows}
-      toggle={toggle}
-      extend={extend}
-      hide={hide}
     />
   );
 };

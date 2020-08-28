@@ -20,6 +20,7 @@ import {
   loadCurrentlyDisputingMarkets,
   loadNextWindowDisputingMarkets,
 } from 'modules/markets/actions/load-markets';
+import NewQuadBox from 'modules/portfolio/components/common/new-quad-box';
 
 const ITEMS_PER_SECTION = 10;
 const NUM_LOADING_CARDS = 5;
@@ -210,15 +211,30 @@ const MarketsInDispute = () => {
           )
         }
       </Media>
-      <QuadBox
+      <NewQuadBox
         title="Markets In Dispute"
-        switchHeaders={true}
-        showFilterSearch={true}
         onSearchChange={onSearchChange}
         sortByOptions={sortByOptions}
         updateDropdown={updateDropdown}
-        h1Title={true}
-        bottomBarContent={
+        headerComplement={
+          <>
+            {userAddress && (
+              <label className={Styles.OnlyPortfolio} htmlFor="checkbox">
+                <Checkbox
+                  id="checkbox"
+                  value={checkBox.didCheck}
+                  isChecked={checkBox.didCheck}
+                  onClick={(e: React.SyntheticEvent) => {
+                    e.preventDefault();
+                    checkBox.action();
+                  }}
+                />
+                {checkBox.label}
+              </label>
+            )}
+          </>
+        }
+        subheader={
           <SwitchLabelsGroup
             tabs={tabs}
             selectedTab={selectedTab}
@@ -226,7 +242,47 @@ const MarketsInDispute = () => {
             checkBox={userAddress && checkBox}
           />
         }
-        leftContent={
+        content={
+          <div className={Styles.MarketCards}>
+            {!isLoadingMarkets && filteredData[selectedTab].length === 0 && (
+              <EmptyDisplay
+                selectedTab={label}
+                filterLabel={''}
+                search={search}
+                title="Markets In Dispute"
+              />
+            )}
+            {isLoadingMarkets &&
+            filteredData[selectedTab].length === 0 &&
+            new Array(NUM_LOADING_CARDS)
+              .fill(null)
+              .map((prop, index) => (
+                <LoadingMarketCard key={`${index}-loading`} />
+              ))}
+            {filteredData[selectedTab].length > 0 &&
+            filteredData[selectedTab].map(market => (
+              <MarketCard key={market.id} market={market} />
+            ))}
+            {showPagination && (
+              <div className={PaginationStyles.PaginationContainer}>
+                <Pagination
+                  page={offset}
+                  itemCount={marketCount}
+                  itemsPerPage={ITEMS_PER_SECTION}
+                  action={setOffset}
+                  updateLimit={null}
+                />
+              </div>
+            )}
+          </div>
+        }
+      />
+      <NewQuadBox
+        title="Markets In Dispute"
+        onSearchChange={onSearchChange}
+        sortByOptions={sortByOptions}
+        updateDropdown={updateDropdown}
+        headerComplement={
           userAddress && (
             <label className={Styles.OnlyPortfolio} htmlFor="checkbox">
               <Checkbox
@@ -241,6 +297,14 @@ const MarketsInDispute = () => {
               {checkBox.label}
             </label>
           )
+        }
+        subheader={
+          <SwitchLabelsGroup
+            tabs={tabs}
+            selectedTab={selectedTab}
+            selectTab={selectTab}
+            checkBox={userAddress && checkBox}
+          />
         }
         content={
           <div className={Styles.MarketCards}>

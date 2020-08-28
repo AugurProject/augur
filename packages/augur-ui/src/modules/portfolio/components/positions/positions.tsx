@@ -11,6 +11,7 @@ import getMarketsPositionsRecentlyTraded from "modules/portfolio/selectors/selec
 
 import Styles from "modules/portfolio/components/common/quad.styles.less";
 import { MarketData, SizeTypes } from "modules/types";
+import NewFilterBox from 'modules/portfolio/components/common/new-filter-box';
 
 const sortByOptions = [
   {
@@ -79,7 +80,7 @@ const getPositionsMarkets = memoize(
 const Positions = ({
   toggle,
   hide,
-  extend, 
+  extend,
 }: PositionsProps) => {
   const [showCurrentValue, setCurrentValue] = useState(false);
   const positions = getLoginAccountPositions();
@@ -96,7 +97,7 @@ const Positions = ({
       <ValueLabel value={currentValue} useFull />
     ) : (
         <div className={Styles.Column}>
-          
+
           <ValueLabel value={totalReturns} useFull />
           <MovementLabel
             showPlusMinus
@@ -110,16 +111,12 @@ const Positions = ({
   }
 
     return (
-      <FilterBox
-        sortByStyles={{ minWidth: "10.8125rem" }}
+      <NewFilterBox
         title="Positions"
         sortByOptions={sortByOptions}
         markets={markets}
         filterComp={filterComp}
-        toggle={toggle}
-        hide={hide}
-        extend={extend}
-        bottomRightContent={
+        subheader={
           <CompactButton
             text={showCurrentValue ? "Current Value" : "Total Returns"}
             action={updateRightContentValue}
@@ -129,13 +126,13 @@ const Positions = ({
         renderToggleContent={renderToggleContent}
         filterLabel="positions"
         pickVariables={[
-          "id",
+            "id",
           "description",
           "reportingState",
           "myPositionsSummary",
           "recentlyTraded",
           "endTime",
-        ]}
+      ]}
       />
     );
 };

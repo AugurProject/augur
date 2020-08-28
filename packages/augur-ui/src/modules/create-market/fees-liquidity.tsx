@@ -6,20 +6,19 @@ import InitialLiquidity from 'modules/create-market/initial-liquidity';
 import OrderBook from 'modules/market-charts/components/order-book/order-book';
 import TradingForm from 'modules/trading/components/trading-form';
 import { BUY, CATEGORICAL } from 'modules/common/constants';
-import FilterSwitchBox from 'modules/portfolio/components/common/filter-switch-box';
 import OpenOrdersHeader from 'modules/portfolio/components/common/open-orders-header';
 import DepthChart from 'modules/market-charts/components/depth/depth';
-import QuadBox from 'modules/portfolio/components/common/quad-box';
 import Visibility from 'modules/create-market/components/visibility';
 
 import Styles from 'modules/create-market/fees-liquidity.styles.less';
 import { OutcomeFormatted } from 'modules/types';
 import { MARKET_COPY_LIST } from 'modules/create-market/constants';
 import { formatOrderBook } from 'modules/create-market/helpers/format-order-book';
-import { DefaultOrderPropertiesMap } from "modules/market/components/market-view/market-view";
 import { getReportingFeePercentage } from 'modules/contracts/actions/contractCalls';
 import { formatPercent } from 'utils/format-number';
 import { useAppStatusStore } from 'modules/app/store/app-status';
+import NewQuadBox from 'modules/portfolio/components/common/new-quad-box';
+import NewFilterSwitchBox from 'modules/portfolio/components/common/new-filter-switch-box';
 
 interface FeesLiquidityProps {
   onChange: Function;
@@ -88,7 +87,7 @@ export const FeesLiquidity = ({ onChange }: FeesLiquidityProps) => {
     value === '0'
       ? onChange('settlementFee', 0)
       : onChange('settlementFee', creatorFee);
-    
+
     onChange('settlementFeePercent', formatPercent((fee + creatorFee), {
       positiveSign: false,
       decimals: 4,
@@ -202,20 +201,20 @@ export const FeesLiquidity = ({ onChange }: FeesLiquidityProps) => {
       </div>
 
       <Visibility />
-      <FilterSwitchBox
+      <NewFilterSwitchBox
         title="Initial liquidity"
+        customClass={Styles.ShowHeaderOnMobile}
         filterLabel="orders"
         data={orderBook[selectedOutcome] || []}
-        bottomBarContent={
+        subheader={
           <OpenOrdersHeader showTotalCost noRightMargin initialLiquidity />
         }
         renderRows={renderRows}
         showHeaderOnMobile
       />
-      <QuadBox
+      <NewQuadBox
         title="Depth chart"
-        noBorders
-        normalOnMobile
+        customClass={Styles.NoBorders}
         content={
           <DepthChart
             market={newMarket}

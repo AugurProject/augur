@@ -10,6 +10,7 @@ import { CancelTextButton } from 'modules/common/buttons';
 import { useAppStatusStore } from 'modules/app/store/app-status';
 import { createBigNumber } from 'utils/create-big-number';
 import { ZERO, ONE } from 'modules/common/constants';
+import NewQuadBox from 'modules/portfolio/components/common/new-quad-box';
 
 interface SavedDraftsProps {
   updatePage: Function;
@@ -71,10 +72,10 @@ const SavedDrafts = ({
   });
 
   return (
-    <QuadBox
+    <NewQuadBox
       title={'Saved drafts'}
-      extraTitlePadding
-      normalOnMobile
+      // extraTitlePadding
+      // normalOnMobile
       content={
         <div className={Styles.SavedDrafts}>
           {draftsSorted.map(key => (
