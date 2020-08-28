@@ -154,6 +154,37 @@
     &:disabled {
       opacity: 0.25;
     }
+
+    &.Small {
+      .text-10-semi-bold;
+  
+      align-items: center;
+      padding: @size-12 @size-16;
+      display: flex;
+      background: var(--color-secondary-action);
+      text-transform: uppercase;
+
+      > svg {
+        height: @size-12;
+        margin-right: @size-6;
+
+        > path {
+          fill: var(--color-secondary-text);
+        }
+      }
+
+      &:hover,
+      &:active {
+        background: var(--color-primary-text);
+        color: var(--color-secondary-action);
+
+        > svg > path {
+          fill: var(--color-secondary-action);
+          stroke: var(--color-secondary-action);
+        }
+      }
+    }
+    
   }
 
   .BackButton {

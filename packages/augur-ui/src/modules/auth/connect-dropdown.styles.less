@@ -195,21 +195,6 @@
     display: flex;
     margin: 0 0 @size-4;
   }
-
-  button {
-    .mono-10-semi-bold;
-
-    align-items: center;
-    padding: @size-5 @size-6 ;
-    display: flex;
-    background: var(--color-secondary-action);
-
-    > svg {
-      fill: var(--color-secondary-text);
-      height: @size-9;
-      margin-left: @size-5;
-    }
-  }
 }
 
 .GasEdit {
@@ -339,7 +324,6 @@
   .GasEdit > button,
   .WalletProvider > button {
     height: unset;
-    padding: @size-5 @size-6;
   }
 
   .AccountFunds {
@@ -399,50 +383,6 @@
 
         color: var(--color-secondary-text);
       }
-    }
-
-    > button {
-      .text-10-semi-bold;
-
-      flex-flow: row nowrap;
-      border: 1px solid var(--color-dark-text);
-      padding: @size-9 @size-8 @size-9 @size-10;
-      text-transform: uppercase;
-      border-radius: @border-radius-default;
-
-      > svg {
-        width: @size-16;
-        height: @size-16;
-        margin-left: 0;
-        margin-right: @size-4;
-        order: -1;
-      }
-    }
-  }
-
-  .WalletProvider > button:hover > svg > {
-    > path:first-of-type {
-      fill: var(--color-module-background);
-    }
-  }
-
-  .WalletProvider > button > svg {
-    > path {
-      stroke: none;
-      fill: var(--color-primary-text);
-    }
-  }
-
-  .GasEdit > button > svg {
-    > path {
-      fill: none;
-      stroke: var(--color-primary-text);
-    }
-  }
-
-  .GasEdit > button[class*="SecondaryButton"]:hover > svg {
-    > path {
-      stroke: var(--color-module-background);
     }
   }
 
