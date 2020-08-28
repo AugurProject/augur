@@ -37,7 +37,7 @@ import {
   MODAL_CANCEL_ALL_BETS,
   MODAL_SIGNUP,
 } from 'modules/common/constants';
-import { checkMultipleOfShares, checkForConsumingOwnOrderError, checkInsufficientFunds } from 'utils/betslip-helpers';
+import { checkMultipleOfShares, checkInsufficientFunds } from 'utils/betslip-helpers';
 
 export interface EmptyStateProps {
   selectedTab: number;
@@ -87,7 +87,6 @@ export const SportsMarketBets = ({ market }) => {
     min: marketInfo.minPrice,
     max: marketInfo.maxPrice,
     poolId: marketInfo?.sportsBook?.liquidityPool,
-    checkForConsumingOwnOrderError: (order, cb) => checkForConsumingOwnOrderError(marketId, order, cb),
     modifyBet: orderUpdate =>
       modifyBet(marketId, order.orderId, { ...order, ...orderUpdate }),
     cancelBet: () => cancelBet(marketId, order.orderId),
@@ -146,7 +145,6 @@ export const SportsBet = ({ bet, market }) => {
     recentlyUpdated,
     errorMessage,
     price,
-    checkForConsumingOwnOrderError,
     min,
     max
   } = bet;
@@ -183,15 +181,6 @@ export const SportsBet = ({ bet, market }) => {
         errorMessage: multipleOf
       }
     }
-
-    checkForConsumingOwnOrderError(bet, (error) => { // needs fixing
-      if (error !== '') {
-        return {
-          checkError: true,
-          errorMessage: error
-        }
-      }
-    });
     
     return {
       checkError: false,
@@ -234,6 +223,7 @@ export const SportsBet = ({ bet, market }) => {
             valueKey="wager"
             modifyBet={modifyBet}
             errorCheck={checkWager}
+            orderErrorMessage={errorMessage}
           />
           <BetslipInput
             label="To Win"
@@ -241,6 +231,7 @@ export const SportsBet = ({ bet, market }) => {
             valueKey="toWin"
             modifyBet={modifyBet}
             noEdit
+            orderErrorMessage=''
           />
         </>
       )}
@@ -366,13 +357,13 @@ export const BetslipInput = ({
   value,
   valueKey,
   modifyBet,
+  orderErrorMessage,
   disabled = false,
   noEdit = false,
   errorCheck,
 }) => {
   const betslipInput = useRef(null);
   const [curVal, setCurVal] = useState(value ? formatDai(value).formatted : null);
-  const [invalid, setInvalid] = useState(false);
   useEffect(() => {
     betslipInput && betslipInput.current.focus();
   }, []);
@@ -382,7 +373,7 @@ export const BetslipInput = ({
   return (
     <div
       className={classNames(Styles.BetslipInput, {
-        [Styles.Error]: invalid,
+        [Styles.Error]: orderErrorMessage && orderErrorMessage !== '',
         [Styles.NoEdit]: disabled || noEdit,
       })}
     >
@@ -395,7 +386,6 @@ export const BetslipInput = ({
             checkError, 
             errorMessage 
           } = errorCheck(newVal);
-          setInvalid(checkError);
           if (!checkError) {
             modifyBet({ [valueKey]: newVal, errorMessage: '' });
           } else {
@@ -404,19 +394,6 @@ export const BetslipInput = ({
           setCurVal(newVal);
         }}
         value={`$${curVal ? curVal : ''}`}
-        onBlur={() => {
-          const {
-            checkError, 
-            errorMessage 
-          } = errorCheck(curVal);
-          setInvalid(checkError);
-          if (!checkError) {
-            modifyBet({ [valueKey]: curVal, errorMessage: '' });
-          } else {
-            modifyBet({ [valueKey]: curVal, errorMessage });
-          }
-          setCurVal(curVal);
-        }}
         disabled={disabled || noEdit}
       />
     </div>

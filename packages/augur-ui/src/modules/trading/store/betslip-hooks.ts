@@ -10,7 +10,11 @@ import {
   BETSLIP_ACTIONS,
   DEFAULT_BETSLIP_STATE,
 } from 'modules/trading/store/constants';
-import { placeBet, checkForDisablingPlaceBets } from 'utils/betslip-helpers';
+import {
+  placeBet,
+  checkForDisablingPlaceBets,
+  checkForConsumingOwnOrderError,
+} from 'utils/betslip-helpers';
 import { AppStatus } from 'modules/app/store/app-status';
 import deepClone from 'utils/deep-clone';
 
@@ -30,7 +34,7 @@ const {
   TOGGLE_SUBHEADER,
   ADD_MATCHED,
   SET_DISABLE_PLACE_BETS,
-  CLEAR_BETSLIP
+  CLEAR_BETSLIP,
 } = BETSLIP_ACTIONS;
 const { BETSLIP, MY_BETS, MATCHED, UNMATCHED } = BETSLIP_SELECTED;
 const { UNSENT, PENDING, CLOSED, FILLED } = BET_STATUS;
@@ -102,9 +106,7 @@ export function BetslipReducer(state, action) {
         };
       } else {
         const matchingBet = betslipItems[marketId].orders.find(
-          order =>
-            order.outcomeId === outcomeId &&
-            order.price === price
+          order => order.outcomeId === outcomeId && order.price === price
         );
         if (matchingBet) {
           break;
@@ -171,13 +173,12 @@ export function BetslipReducer(state, action) {
         };
       }
       const match = matchedItems[marketId].orders.findIndex(
-        lOrder =>
-          lOrder.outcomeId === order.outcomeId
+        lOrder => lOrder.outcomeId === order.outcomeId
       );
       if (match > -1) {
         matchedItems[marketId].orders[match] = {
           ...matchedItems[marketId].orders[match],
-          ...order
+          ...order,
         };
       } else {
         matchedItems[marketId].orders.push({
@@ -230,11 +231,17 @@ export function BetslipReducer(state, action) {
     case MODIFY_BET: {
       const { marketId, orderId, order } = action;
       const shares = getShares(order.wager, order.price);
-      const toWin = convertToWin(
-        order.max,
-        shares
-      );
-      if (betslipItems[marketId]?.orders) betslipItems[marketId].orders[orderId] = { ...order, shares, toWin };
+      const toWin = convertToWin(order.max, shares);
+      const prevWager = betslipItems[marketId].orders[orderId].wager;
+      if (betslipItems[marketId]?.orders)
+        betslipItems[marketId].orders[orderId] = { ...order, shares, toWin };
+      if (prevWager !== order.wager) {
+        checkForConsumingOwnOrderError(
+          marketId,
+          { ...order, shares: shares },
+          orderId
+        );
+      }
       updatedState.placeBetsDisabled = checkForDisablingPlaceBets(betslipItems);
       break;
     }
@@ -286,7 +293,8 @@ export const useBetslip = (defaultState = MOCK_BETSLIP_STATE) => {
         if (selected !== state.selected.subHeader)
           dispatch({ type: TOGGLE_SUBHEADER });
       },
-      setDisablePlaceBets: (placeBetsDisabled) => dispatch({ type: SET_DISABLE_PLACE_BETS, placeBetsDisabled }),
+      setDisablePlaceBets: placeBetsDisabled =>
+        dispatch({ type: SET_DISABLE_PLACE_BETS, placeBetsDisabled }),
       toggleStep: () => dispatch({ type: TOGGLE_STEP }),
       addBet: (
         marketId,

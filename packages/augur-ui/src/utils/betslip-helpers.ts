@@ -124,13 +124,6 @@ export const checkForDisablingPlaceBets = betslipItems => {
   return placeBetsDisabled;
 };
 
-export const checkForConsumingOwnOrderError = (marketId, order, cb) => {
-  runBetslipTrade(marketId, order, false, (simulateTradeData) => {
-    const error = simulateTradeData?.selfTrade ? 'Consuming own order' : '';
-    cb(error);
-  });
-};
-
 export const runBetslipTrade = (marketId, order, cashOut, cb) => {
   const { marketInfos } = Markets.get();
   const {
@@ -232,6 +225,16 @@ const getTopBid = (orderBooks, bet, tickSize) => {
     smallestPrice: bids[bids.length - 1]?.price,
   };
 };
+
+export const checkForConsumingOwnOrderError = (marketId, order, orderId) => {
+  runBetslipTrade(marketId, order, false, simulateTradeData => {
+      Betslip.actions.modifyBet(marketId, orderId, {
+      ...order,
+      selfTrade: simulateTradeData.selfTrade,
+      errorMessage: simulateTradeData.selfTrade && order.errorMessage === '' ? 'Consuming own order' : order.errorMessage 
+    });
+  });
+}
 
 export const getOrderShareProfitLoss = (bet, orderBooks, cb) => {
   const { marketInfos } = Markets.get();
