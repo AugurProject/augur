@@ -5,12 +5,13 @@ import 'ROOT/reporting/Reporting.sol';
 import 'ROOT/reporting/IUniverse.sol';
 import 'ROOT/para/interfaces/IParaAugur.sol';
 import 'ROOT/para/interfaces/IParaUniverse.sol';
+import 'ROOT/para/interfaces/IOINexus.sol';
 import 'ROOT/libraries/math/SafeMathUint256.sol';
 
 
-contract OINexus is Ownable {
+contract OINexus is Ownable, IOINexus {
     using SafeMathUint256 for uint256;
-    
+
     mapping(address => bool) public registeredParaAugur;
     mapping(address => uint256) public numParaUniverses;
     mapping(address => bool) public knownParaUniverse;
@@ -48,7 +49,7 @@ contract OINexus is Ownable {
         if (_reportingFeeDivisor == 0) {
             _reportingFeeDivisor = Reporting.getDefaultReportingFeeDivisor();
         }
-        
+
         // Derive a new total para universe factor by subtracting this ones old value then adding its new value
         uint256 _magnifiedReportingDivisorFactorContribution = _targetRepMarketCapInAttoCash.mul(10**18).div(_repMarketCapInAttoCash);
         uint256 _totalMagnifiedUniverseContributions = totalUniverseContributions[address(_universe)];
