@@ -1,6 +1,6 @@
 @import (reference) '~assets/styles/shared';
 
-.SearchMock {
+.Search {
   width: @size-34;
   height: @size-36;
   display: grid;
@@ -102,10 +102,10 @@
 
   .SearchAndFilters {
     display: none;
-    grid-template-columns: 3fr 1fr;
+    grid-template-columns: auto;
     grid-template-rows: @size-40;
     grid-gap: @size-8;
-    padding: @size-8;
+    padding: @size-8 0;
     align-items: center;
 
     > div:first-of-type {
@@ -118,6 +118,10 @@
 
     &.Hide {
       display: none;
+    }
+
+    &.TwoColumns {
+      grid-template-columns: 2fr 1fr;
     }
 
     @media @breakpoint-mobile {
@@ -207,8 +211,12 @@
         min-height: calc(100% - @size-43);
       }
     }
+  }
 
-    @media @breakpoint-mobile {
+  @media @breakpoint-mobile {
+    padding: 0 @size-8;
+
+    .Container {
       min-height: calc(100vh - 9.9rem);
 
       > div:first-of-type {

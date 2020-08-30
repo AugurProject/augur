@@ -12,6 +12,19 @@ export enum OPTIONTYPE {
   RADIO = 'radio',
 }
 
+export interface TabsProps {
+  key: string;
+  value: string;
+  label: string;
+  num: number;
+}
+
+interface SortingProps {
+  label: string;
+  value: string;
+  comp: Function; // comparator
+}
+
 interface RadioProps {
   sectionTitle: string;
   options: string[];
@@ -26,7 +39,7 @@ interface OptionsProps {
   action?: Function;
   type: OPTIONTYPE;
   sectionTitle: string;
-  options: string[] | PillContentProps[];
+  options: PillContentProps[] | SortingProps[] | TabsProps[];
   selected?: number;
 }
 
@@ -63,59 +76,59 @@ const SidebarNav = ({
           <button onClick={() => setShowSidebar(false)}>{XIcon}</button>
         </div>
         <div>
-          {filters &&
-            filters.map(({ type, sectionTitle, options, selected, action }) => {
-              return (
-                <div>
-                  <span>{sectionTitle}</span>
-                  {type === OPTIONTYPE.RADIO && (
-                    <RadioBarGroup
-                      radioButtons={options.map((option, index) => ({
-                        checked: false,
-                        value: option,
-                        header: option,
+          {filters && filters.map(({ type, sectionTitle, options, selected, action }, index) => {
+            return (
+              <div key={index}>
+                <span>{sectionTitle}</span>
+                {type === OPTIONTYPE.RADIO && (
+                  <RadioBarGroup
+                    radioButtons={options.map(({key, value, label, num, comp}, index) => ({
+                      checked: false,
+                      value: value,
+                      header: label,
+                      id: index,
+                    }))}
+                    defaultSelected={options[0].value}
+                    onChange={selected => {action(selected)}}
+                  />
+                )}
+                {type === OPTIONTYPE.PILLS && options && (
+                  <>
+                    <PillSelection
+                      defaultSelection={0}
+                      onChange={selectedPill => action(selectedPill)}
+                      options={options.map(({ pillTitle }, index) => ({
+                        label: pillTitle,
                         id: index,
                       }))}
-                      defaultSelected={options[0]}
-                      onChange={selected => {console.log(selected)}}
+                      large
                     />
-                  )}
-                  {type === OPTIONTYPE.PILLS && options && (
-                    <>
-                      <PillSelection
-                        defaultSelection={0}
-                        onChange={selectedPill => action(selectedPill)}
-                        options={options.map(({ pillTitle }, index) => ({
-                          label: pillTitle,
-                          id: index,
-                        }))}
-                        large
-                      />
-                      {options[selected].pillContents.map(({ sectionTitle, options }) => {
-                        return (
-                          <div>
-                            <span>{sectionTitle}</span>
-                            <RadioBarGroup
-                              radioButtons={options.map((option, index) => ({
-                                checked: false,
-                                value: option,
-                                header: option,
-                                id: index,
-                              }))}
-                              defaultSelected={options[0]}
-                              onChange={selected => {console.log(selected)}}
-                            />
-                          </div>
-                        );
-                      })}
-                    </>
-                  )}
-                </div>
-              );
-            })}
-          <div>
-            <SecondaryButton text="Apply" action={() => {}} />
-          </div>
+                    {options[selected].pillContents.map(({ sectionTitle, options }, index) => {
+                      return (
+                        <div key={index}>
+                          <span>{sectionTitle}</span>
+                          <RadioBarGroup
+                            radioButtons={options.map(({key, value, label, num, comp}, index) => ({
+                              checked: false,
+                              value: value,
+                              header: label,
+                              id: index,
+                            }))}
+                            defaultSelected={options[0].value}
+                            onChange={selected => {action(selected)}}
+                          />
+                        </div>
+                      );
+                    })}
+                  </>
+                )}
+              </div>
+            );
+          })}
+          {/*TODO: Find a generic way to apply all the filters only after clicking the apply button*/}
+          {/*<div className={Styles.ApplyButton}>*/}
+          {/*  <SecondaryButton text="Apply" action={() => {}} />*/}
+          {/*</div>*/}
         </div>
       </div>
     </div>

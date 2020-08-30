@@ -13,8 +13,6 @@ import parseQuery from 'modules/routes/helpers/parse-query';
 import { CREATE_MARKET_PORTFOLIO } from 'modules/routes/constants/param-names';
 import { MyBets } from './my-bets';
 import { useAppStatusStore } from 'modules/app/store/app-status';
-import NewQuadBox, { SearchMock } from 'modules/portfolio/components/common/new-quad-box';
-import SidebarNav, { OPTIONTYPE } from 'modules/portfolio/components/common/sidebar-nav';
 import Positions from 'modules/portfolio/components/positions/positions';
 
 interface PortfolioViewProps {
@@ -57,34 +55,6 @@ const PortfolioView = ({ location }: PortfolioViewProps) => {
       <MyBets />
     );
   }
-
-  const [selectedPill, setSelectedPill] = useState(0);
-  const filtersMock = [{
-    type: OPTIONTYPE.PILLS,
-    sectionTitle: "Section One",
-    selected: selectedPill,
-    action: selected => setSelectedPill(selected),
-    options: [{
-      pillTitle: "One",
-      pillContents: [{
-        sectionTitle: "Radio title for pill 1a",
-        options: ["One", "Two", "Three"],
-      }, {
-        sectionTitle: "Radio title for pill 1b",
-        options: ["One", "Two", "Three"],
-      }],
-    }, {
-      pillTitle: "Two",
-      pillContents: [{
-        sectionTitle: "Radio title for pill 2",
-        options: ["One", "Two", "Three"],
-      }],
-    }],
-  }, {
-    type: OPTIONTYPE.RADIO,
-    sectionTitle: "Section Two",
-    options: ["One", "Two"],
-  }];
 
   return (
     <div className={Styles.PortfolioView}>

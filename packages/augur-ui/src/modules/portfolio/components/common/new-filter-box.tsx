@@ -46,7 +46,6 @@ const NewFilterBox = ({
   headerComplement,
   subheader,
   footer,
-  filters,
   customClass,
   sortByOptions,
   filterComp,
@@ -171,9 +170,11 @@ const NewFilterBox = ({
       }
       customClass={customClass}
       sortByOptions={sortByOptions}
-      updateDropdown={(sortBy) => setSortBy(sortBy)}
+      updateDropdown={sortBy => setSortBy(sortBy)}
       search={search}
       setSearch={setSearch}
+      tabs={tabs}
+      setSelectedTab={tab => setSelectedTab(tab)}
       subheader={
         <>
           {theme === THEMES.TRADING ? (

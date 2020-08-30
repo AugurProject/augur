@@ -23,7 +23,6 @@ const NewFilterSwitchBox = ({
   headerComplement,
   subheader,
   footer,
-  filters,
   customClass,
   sortByOptions,
   data,
@@ -53,7 +52,7 @@ const NewFilterSwitchBox = ({
   };
 
   const applySearch = (input: string, filteredData: Market[]) => {
-    return filteredData.filter(filterComp.bind(this, input));
+    return filteredData.filter(filterComp.bind(applySearch, input));
   };
 
   const updateView = () => {

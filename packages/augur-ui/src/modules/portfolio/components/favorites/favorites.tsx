@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 
 import FilterBox from 'modules/portfolio/components/common/filter-box';
 import { MarketProgress } from 'modules/common/progress';
@@ -11,6 +11,7 @@ import { useAppStatusStore } from 'modules/app/store/app-status';
 import { selectMarket } from 'modules/markets/selectors/market';
 import { loadMarketsInfoIfNotLoaded } from 'modules/markets/actions/load-markets-info';
 import NewFilterBox from 'modules/portfolio/components/common/new-filter-box';
+import { sortBy } from 'async';
 
 const sortByOptions = [
   {
@@ -65,6 +66,7 @@ const Favorites = ({
   if (!isTrading && markets.length === 0) {
     customClass = favoriteStyles.WatchlistEmptyDisplay;
   }
+
   function renderRightContent(market) {
     return (
       <div className={Styles.MultiColumn}>
@@ -86,7 +88,7 @@ const Favorites = ({
         />
       </div>
     );
-  };
+  }
 
   return (
     <NewFilterBox
