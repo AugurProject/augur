@@ -8,6 +8,7 @@ import { CancelTextButton } from 'modules/common/buttons';
 import Styles from 'modules/market/components/market-orders-positions-table/open-orders-table.styles.less';
 import NewFilterSwitchBox from 'modules/portfolio/components/common/new-filter-switch-box';
 import { cancelAllOpenOrders } from 'modules/orders/actions/cancel-order';
+import NewFilterBox from 'modules/portfolio/components/common/new-filter-box';
 
 const sortByOptions = [
   {
@@ -84,6 +85,9 @@ const OpenOrders = ({
       switchView={switchView}
       subheader={<OpenOrdersHeader />}
       renderRows={renderRows}
+      toggle={toggle}
+      hide={hide}
+      extend={extend}
       footer={
         openOrders.length > 0 ? (
           <div className={Styles.PortfolioFooter}>

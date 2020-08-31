@@ -1,6 +1,5 @@
-import React, { useState } from 'react';
+import React from 'react';
 
-import FilterBox from 'modules/portfolio/components/common/filter-box';
 import { MarketProgress } from 'modules/common/progress';
 import { FavoritesButton } from 'modules/common/buttons';
 import { END_TIME, THEMES } from 'modules/common/constants';
@@ -11,7 +10,6 @@ import { useAppStatusStore } from 'modules/app/store/app-status';
 import { selectMarket } from 'modules/markets/selectors/market';
 import { loadMarketsInfoIfNotLoaded } from 'modules/markets/actions/load-markets-info';
 import NewFilterBox from 'modules/portfolio/components/common/new-filter-box';
-import { sortBy } from 'async';
 
 const sortByOptions = [
   {
@@ -99,6 +97,7 @@ const Favorites = ({
       filterComp={filterComp}
       renderRightContent={renderRightContent}
       filterLabel="markets"
+      toggle={toggle}
       pickVariables={[
         'id',
         'favoriteAddedData',

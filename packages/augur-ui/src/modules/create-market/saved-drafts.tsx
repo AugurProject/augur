@@ -2,7 +2,6 @@ import React from 'react';
 
 import { Draft } from 'modules/types';
 import { formatDate } from 'utils/format-date';
-import QuadBox from 'modules/portfolio/components/common/quad-box';
 import { SCRATCH, TEMPLATE } from 'modules/create-market/constants';
 
 import Styles from 'modules/create-market/saved-drafts.styles.less';
@@ -74,6 +73,7 @@ const SavedDrafts = ({
   return (
     <NewQuadBox
       title={'Saved drafts'}
+      customClass={Styles.CustomQuadBoxStyles}
       // extraTitlePadding
       // normalOnMobile
       content={

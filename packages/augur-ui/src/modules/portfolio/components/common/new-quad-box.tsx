@@ -24,6 +24,9 @@ export interface NewQuadBoxProps {
   updateDropdown?: Function;
   tabs?: TabsProps[];
   setSelectedTab?: Function;
+  toggle?: Function;
+  hide?: boolean;
+  extend?: boolean;
 }
 
 const QuadBoxSearch = ({ search, setSearch }) => {
@@ -65,7 +68,7 @@ const QuadBoxMobileFilters = ({
   tabs,
   setSelectedTab,
 }) => {
-  const tabsFilters = setSelectedTab
+  const tabsFilters = setSelectedTab && tabs
     ? {
         type: OPTIONTYPE.RADIO,
         action: setSelectedTab,
@@ -75,7 +78,7 @@ const QuadBoxMobileFilters = ({
       }
     : null;
 
-  const sortFilters = updateDropdown
+  const sortFilters = updateDropdown && sortByOptions
     ? {
         type: OPTIONTYPE.RADIO,
         action: updateDropdown,
@@ -105,14 +108,18 @@ const NewQuadBox = ({
   updateDropdown,
   tabs,
   setSelectedTab,
+  toggle,
+  hide,
+  extend,
 }: NewQuadBoxProps) => {
-  const [extend, setExtend] = useState(false);
   const nothingInTheHeader =
     !title && !headerComplement && !setSearch && !updateDropdown;
 
   return (
     <div
       className={classNames(Styles.NewQuadBox, {
+        [Styles.HideToggle]: hide,
+        [Styles.ExtendToggle]: extend,
         [customClass]: customClass,
       })}
     >
@@ -130,27 +137,25 @@ const NewQuadBox = ({
           setSelectedTab={setSelectedTab}
         />
       </div>
-      <div
-        className={classNames(Styles.Container, {
-          [Styles.Extend]: extend,
-        })}
-      >
+      <div className={Styles.Container}>
         <div
-          className={classNames({
+          className={classNames(Styles.Header, {
             [Styles.Hide]: nothingInTheHeader,
           })}
         >
           <span>{title}</span>
-          <div>
+          <div className={classNames({
+            [Styles.HideToggleButton]: !toggle,
+          })}>
             {headerComplement && headerComplement}
             <QuadBoxSearch search={search} setSearch={setSearch} />
             <QuadBoxSort options={sortByOptions} onChange={updateDropdown} />
-            <ToggleExtendButton toggle={setExtend} />
+            <ToggleExtendButton toggle={toggle} />
           </div>
         </div>
         <div
-          className={classNames(Styles.SubHeader, {
-            [Styles.Hide]: !subheader || setSelectedTab,
+          className={classNames(Styles.Subheader, {
+            [Styles.Hide]: !subheader,
           })}
         >
           {subheader && subheader}

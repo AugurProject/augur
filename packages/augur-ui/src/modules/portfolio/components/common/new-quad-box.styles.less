@@ -100,12 +100,23 @@
   display: grid;
   min-height: 50%;
 
+  &.HideToggle {
+    max-height: @size-43;
+    min-height: unset;
+    overflow-y: hidden;
+    flex: 0;
+  }
+
+  &.ExtendToggle {
+    min-height: calc(100% - @size-43);
+  }
+
   .SearchAndFilters {
     display: none;
     grid-template-columns: auto;
     grid-template-rows: @size-40;
     grid-gap: @size-8;
-    padding: @size-8 0;
+    padding: 0 0 @size-8 0;
     align-items: center;
 
     > div:first-of-type {
@@ -137,8 +148,7 @@
     border: @size-1 solid var(--color-dark-grey);
     border-radius: @border-radius-default;
 
-    // header
-    > div:first-of-type {
+    .Header {
       align-items: center;
       background: var(--color-dark-grey);
       border-bottom: @size-1 solid var(--color-dark-grey);
@@ -148,7 +158,6 @@
       max-height: @size-40;
       min-height: @size-40;
 
-      // title
       > span:first-of-type {
         .mono-11-bold;
 
@@ -177,9 +186,15 @@
       &.Hide {
         display: none;
       }
+
+      .HideToggleButton {
+        > button:last-of-type {
+          display: none;
+        }
+      }
     }
 
-    .SubHeader {
+    .Subheader {
       background: var(--color-table-header);
       border-bottom: 0.0625rem solid var(--color-dark-grey);
       align-items: center;
@@ -205,21 +220,21 @@
         color: var(--color-inactive-text);
       }
     }
-
-    &.Extended {
-      > div:nth-of-type(3) {
-        min-height: calc(100% - @size-43);
-      }
-    }
   }
 
   @media @breakpoint-mobile {
-    padding: 0 @size-8;
+    padding: @size-8;
 
     .Container {
+      background: none;
+      border: none;
       min-height: calc(100vh - 9.9rem);
 
       > div:first-of-type {
+        display: none;
+      }
+
+      .Subheader {
         display: none;
       }
     }

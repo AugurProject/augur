@@ -164,6 +164,9 @@ const MyMarkets = ({
       renderToggleContent={renderToggleContent}
       filterLabel="markets"
       showLiquidityDepleted
+      toggle={toggle}
+      hide={hide}
+      extend={extend}
       pickVariables={[
         'id',
         'description',
@@ -173,7 +176,7 @@ const MyMarkets = ({
         'creationTime',
         'endTime',
       ]}
-      bottomContent={(myMarkets.length !== 0 && !isTrading) && (
+      footer={(myMarkets.length !== 0 && !isTrading) && (
         <div className={marketStyles.BottomContent}>
           <Link to={makePath(CREATE_MARKET)}>
             <SecondaryButton
@@ -183,13 +186,12 @@ const MyMarkets = ({
             />
           </Link>
         </div>
-      )
-      }
-      emptyDisplayTitle={isTrading ? "You didn't create any market yet" : "No markets"}
-      emptyDisplayText={isTrading ? "Create your first market now!" : "To create a market you need to go to the Trading Exchange"}
-      emptyDisplayIcon={CreatedMarketsIcon}
-      emptyDisplayButton={
-        isTrading ? (
+      )}
+      emptyDisplayConfig={{
+        emptyTitle: isTrading ? "You didn't create any market yet" : "No markets",
+        emptyText: isTrading ? "Create your first market now!" : "To create a market you need to go to the Trading Exchange",
+        icon: CreatedMarketsIcon,
+        button: isTrading ? (
           <Link to={makePath(CREATE_MARKET)}>
             <SecondaryButton
               text="Create Market"
@@ -202,7 +204,7 @@ const MyMarkets = ({
             action={() => setTheme(THEMES.TRADING)}
           />
         )
-      }
+      }}
     />
   );
 };

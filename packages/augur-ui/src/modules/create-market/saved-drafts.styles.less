@@ -1,5 +1,29 @@
 @import (reference) "~assets/styles/shared";
 
+.CustomQuadBoxStyles {
+  padding: 0;
+
+  > div:nth-of-type(2) {
+    background: var(--color-module-background);
+    border: @size-1 solid var(--color-dark-grey);
+
+    > div:first-of-type {
+      display: flex;
+      padding-left: @size-32;
+
+      > div {
+        display: none;
+      }
+    }
+  }
+
+  @media @breakpoint-mobile {
+    > div:nth-of-type(2) > div:first-of-type {
+      padding-left: @size-16;
+    }
+  }
+}
+
 .SavedDrafts {
 	max-height: 250px;
 }
@@ -19,7 +43,7 @@
     flex: 1;
     flex-direction: column;
     margin-right: @size-10;
-      
+
     > span:first-of-type {
       .text-12-medium;
 
@@ -40,7 +64,7 @@
   > button:last-of-type {
     height: min-content;
   }
-  
+
   @media @breakpoint-mobile {
     padding: @size-16 0;
     margin: 0 @size-16;
@@ -49,7 +73,7 @@
     > button:first-of-type {
       > span:last-of-type {
         .text-10-medium;
-        
+
         margin-top: @size-6;
       }
     }

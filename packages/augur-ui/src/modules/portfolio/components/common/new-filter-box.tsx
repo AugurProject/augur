@@ -57,6 +57,9 @@ const NewFilterBox = ({
   markets,
   pickVariables,
   emptyDisplayConfig,
+  toggle,
+  hide,
+  extend,
 }: NewFilterBoxProps) => {
   const marketsObj = markets.reduce((obj, market) => {
     obj[market.id] = market;
@@ -175,6 +178,9 @@ const NewFilterBox = ({
       setSearch={setSearch}
       tabs={tabs}
       setSelectedTab={tab => setSelectedTab(tab)}
+      toggle={toggle}
+      hide={hide}
+      extend={extend}
       subheader={
         <>
           {theme === THEMES.TRADING ? (

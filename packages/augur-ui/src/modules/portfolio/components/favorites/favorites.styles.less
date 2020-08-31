@@ -1,6 +1,12 @@
 @import (reference) '~assets/styles/shared';
 
 .Watchlist {
+  @media @breakpoint-mobile {
+    > div:nth-of-type(2) > div:nth-of-type(3) > div:first-of-type {
+      margin-top: 0;
+    }
+  }
+
   > div:last-of-type {
     @media @breakpoint-mobile {
       > div:nth-of-type(2):not([class*="EmptyDisplay"]) {

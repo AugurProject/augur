@@ -116,6 +116,9 @@ const Positions = ({
         sortByOptions={sortByOptions}
         markets={markets}
         filterComp={filterComp}
+        toggle={toggle}
+        hide={hide}
+        extend={extend}
         subheader={
           <CompactButton
             text={showCurrentValue ? "Current Value" : "Total Returns"}

@@ -31,6 +31,9 @@ const NewFilterSwitchBox = ({
   renderRows,
   switchView,
   emptyDisplayConfig,
+  toggle,
+  hide,
+  extend,
 }: NewFilterSwitchBoxProps) => {
   const [search, setSearch] = useState('');
   const [view, setView] = useState(false);
@@ -80,6 +83,9 @@ const NewFilterSwitchBox = ({
       updateDropdown={updateView}
       subheader={subheader}
       footer={footer}
+      toggle={toggle}
+      hide={hide}
+      extend={extend}
       content={
         <>
           {thereIsData ? (

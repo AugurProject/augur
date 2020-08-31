@@ -6,6 +6,7 @@ import { FilledOrder } from "modules/common/table-rows";
 
 import FilledOrdersHeader from 'modules/portfolio/components/common/filled-orders-header';
 import selectMarketsFilledOrders from 'modules/portfolio/selectors/select-markets-filled-orders';
+import NewFilterBox from 'modules/portfolio/components/common/new-filter-box';
 
 const sortByOptions = [
   {
@@ -84,6 +85,9 @@ const FilledOrders = ({ toggle, extend, hide }: FilledOrdersProps) => {
       switchView={switchView}
       subheader={<FilledOrdersHeader />}
       renderRows={renderRows}
+      toggle={toggle}
+      hide={hide}
+      extend={extend}
     />
   );
 };

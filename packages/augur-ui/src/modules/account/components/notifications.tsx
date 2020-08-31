@@ -376,6 +376,7 @@ const Notifications = ({ toggle }: NotificationsProps) => {
     <NewQuadBox
       title={NOTIFICATIONS_TITLE}
       headerComplement={labelContent}
+      toggle={toggle}
       customClass={notificationCount !== 0 && Styles.DarkBackgroundMobile}
       content={
         notificationCount === 0 ? (
