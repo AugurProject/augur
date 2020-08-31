@@ -8,7 +8,7 @@ import MarketRow from 'modules/portfolio/components/common/market-row';
 import EmptyDisplay from 'modules/portfolio/components/common/empty-display';
 import { createTabsInfo } from 'modules/portfolio/helpers/create-tabs-info';
 import { useAppStatusStore } from 'modules/app/store/app-status';
-import Styles from 'modules/portfolio/components/common/quad-box.styles.less';
+import Styles from 'modules/portfolio/components/common/new-quad-box.styles.less';
 import { StarIcon } from 'modules/common/icons';
 import { createMarketsStateObject } from 'modules/portfolio/helpers/create-markets-state-object';
 import NewQuadBox, {

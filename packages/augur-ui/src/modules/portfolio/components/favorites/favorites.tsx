@@ -10,6 +10,7 @@ import { useAppStatusStore } from 'modules/app/store/app-status';
 import { selectMarket } from 'modules/markets/selectors/market';
 import { loadMarketsInfoIfNotLoaded } from 'modules/markets/actions/load-markets-info';
 import NewFilterBox from 'modules/portfolio/components/common/new-filter-box';
+import { StarIcon } from 'modules/common/icons';
 
 const sortByOptions = [
   {
@@ -107,7 +108,8 @@ const Favorites = ({
         'creationTime',
       ]}
       emptyDisplayConfig={{
-        emptyText: isTrading ? null : "You don't have any favorite markets to show!"
+        emptyText: isTrading ? null : "You don't have any favorite markets to show!",
+        icon: StarIcon
       }}
     />
   );

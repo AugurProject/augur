@@ -9,6 +9,8 @@ import SidebarNav, {
   OPTIONTYPE,
   TabsProps,
 } from 'modules/portfolio/components/common/sidebar-nav';
+import { useAppStatusStore } from 'modules/app/store/app-status';
+import { THEMES } from 'modules/common/constants';
 
 export interface NewQuadBoxProps {
   title?: string;
@@ -112,6 +114,8 @@ const NewQuadBox = ({
   hide,
   extend,
 }: NewQuadBoxProps) => {
+  const { theme } = useAppStatusStore();
+  const isTrading = theme === THEMES.TRADING;
   const nothingInTheHeader =
     !title && !headerComplement && !setSearch && !updateDropdown;
 
@@ -148,7 +152,7 @@ const NewQuadBox = ({
             [Styles.HideToggleButton]: !toggle,
           })}>
             {headerComplement && headerComplement}
-            <QuadBoxSort sortByOptions={sortByOptions} updateDropdown={updateDropdown} />
+            {isTrading && <QuadBoxSort sortByOptions={sortByOptions} updateDropdown={updateDropdown} />}
             <QuadBoxSearch search={search} setSearch={setSearch} />
             <ToggleExtendButton toggle={toggle} />
           </div>

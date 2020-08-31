@@ -1,7 +1,7 @@
 import React, { ReactNode, useEffect, useState } from 'react';
 import { Market } from 'modules/portfolio/types';
 import EmptyDisplay from 'modules/portfolio/components/common/empty-display';
-import Styles from 'modules/portfolio/components/common/quad-box.styles.less';
+import Styles from 'modules/portfolio/components/common/new-quad-box.styles.less';
 import NewQuadBox, { NewQuadBoxProps } from 'modules/portfolio/components/common/new-quad-box';
 
 export interface NewFilterSwitchBoxProps extends NewQuadBoxProps {

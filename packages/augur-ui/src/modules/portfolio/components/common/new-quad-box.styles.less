@@ -162,7 +162,7 @@
         .mono-11-bold;
 
         line-height: @size-12;
-        margin-right: @size-16;
+        margin-right: @size-8;
         white-space: nowrap;
         text-transform: uppercase;
       }
@@ -181,6 +181,10 @@
         // filters
         > div:nth-of-type(2) {
         }
+      }
+
+      .Count {
+        display: none;
       }
 
       &.Hide {
@@ -237,6 +241,83 @@
       .Subheader {
         display: none;
       }
+
+      .MarketBox {
+        border: @size-1 solid var(--color-dark-grey);
+        margin-top: @size-8;
+
+        > div[class*='MarketRow']:last-of-type {
+          border-bottom: none;
+        }
+      }
+    }
+  }
+}
+
+:root[theme='BETTING'],
+:root[theme='SPORTS'] {
+  .NewQuadBox {
+    .Container {
+      .Header {
+        background: transparent;
+        min-height: @size-56;
+        max-height: @size-56;
+        padding: 0 @size-12;
+
+        > span:first-of-type {
+          .text-16-bold;
+
+          text-transform: none;
+        }
+
+        .Count {
+          .text-12;
+
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          width: @size-19;
+          height: @size-21;
+          color: var(--color-secondary-text);
+          border: @size-1 solid var(--color-outline);
+          border-radius: @border-radius-default;
+          background: var(--color-module-background);
+          margin-right: auto;
+        }
+      }
+
+      .Subheader {
+        height: @size-40;
+        background: var(--color-module-background);
+        padding: 0 @size-12 0;
+
+        > div:first-of-type {
+          display: flex;
+          align-items: center;
+          width: 100%;
+
+          > span {
+            .text-14;
+
+            color: var(--color-secondary-text);
+          }
+
+          > span:nth-of-type(2) {
+            margin-left: auto;
+          }
+        }
+      }
+
+      .MarketBox span[class*="ArrowContainer"] {
+        display: none;
+      }
+    }
+  }
+
+  @media @breakpoint-mobile {
+    .MarketBox {
+      border: none;
+      margin-top: 0;
     }
   }
 }
