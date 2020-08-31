@@ -5,10 +5,10 @@ import {
 } from 'modules/account/actions/login-account';
 import { LoginAccount, BaseAction } from 'modules/types';
 import { ZERO } from 'modules/common/constants';
-import { formatAttoDai } from 'utils/format-number';
 
 const DEFAULT_STATE: LoginAccount = {
   balances: {
+    weth: '0',
     eth: '0',
     rep: '0',
     dai: '0',

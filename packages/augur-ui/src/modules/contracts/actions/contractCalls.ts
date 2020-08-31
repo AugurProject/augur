@@ -108,6 +108,22 @@ export async function getMaxMarketEndTime(): Promise<number> {
   return new BigNumber(maxEndTime).toNumber();
 }
 
+export async function isRepV2Approved(account): Promise<boolean> {
+  const { contracts } = augurSdk.get();
+  try {
+    const currentAllowance = await contracts.legacyReputationToken.allowance_(
+      account,
+      contracts.reputationToken.address
+    );
+    if (currentAllowance.lte(0)) {
+      return false;
+    }
+    return true;
+  } catch (error) {
+    throw error;
+  }
+}
+
 export async function convertV1ToV2Approve() {
   const { contracts } = augurSdk.get();
 
@@ -367,6 +383,38 @@ export async function addLiquidityRepDai(
   );
 }
 
+export async function checkTokenApproval(account, contract): Promise<boolean> {
+  const { contracts } = augurSdk.get();
+  try {
+    const currentAllowance = await contract.allowance_(
+      account,
+      contracts.uniswap.address
+    );
+
+    if (currentAllowance.lte(0)) {
+      return false
+    }
+    return true;
+  } catch (error) {
+    throw error;
+  }
+}
+
+export async function setTokenApproval(account, contract): Promise<void> {
+  const { contracts } = augurSdk.get();
+  try {
+    const currentAllowance = await contract.allowance_(
+      account,
+      contracts.uniswap.address
+    );
+    if (currentAllowance.lte(0)) {
+      await contract.approve(contracts.uniswap.address, APPROVAL_AMOUNT);
+    }
+  } catch (error) {
+    throw error;
+  }
+}
+
 export async function checkSetApprovalAmount(account, contract): Promise<void> {
   const { contracts } = augurSdk.get();
   try {
@@ -375,12 +423,27 @@ export async function checkSetApprovalAmount(account, contract): Promise<void> {
       account,
       contracts.uniswap.address
     );
-    if (currentAllowance.toNumber() <= 0) {
+    if (currentAllowance.lte(0)) {
       await contract.approve(contracts.uniswap.address, APPROVAL_AMOUNT);
     }
   } catch (error) {
     throw error;
   }
+}
+
+export async function wrapEth(
+  tokenAmount: BigNumber,
+): Promise<void> {
+  const { contracts } = augurSdk.get();
+  return contracts.weth.deposit({ attachedEth: tokenAmount.multipliedBy(10 ** 18) });
+}
+
+export async function unwrapEth(
+  tokenAmount: BigNumber,
+): Promise<void> {
+  const { contracts } = augurSdk.get();
+  return contracts.weth.withdraw(tokenAmount.multipliedBy(10 ** 18));
+
 }
 
 export async function uniswapTokenForDai(
@@ -931,7 +994,7 @@ export async function approvalsNeededToTrade(address): Promise<number> {
   const fillShareAllContractApproval = await contracts.shareToken.isApprovedForAll_(address, contracts.fillOrder.address);
   console.log(fillContractApproval, cashContractApproval, fillShareAllContractApproval);
   const approvals = [fillContractApproval, cashContractApproval, fillShareAllContractApproval].filter(a => !a);
-  return (approvals.length > 0 ? approvals.length + 1 : 0); // add additional 1 for referral address
+  return approvals.length;
 }
 
 export async function approveToTrade(address, referalAddress = NULL_ADDRESS) {
@@ -940,7 +1003,7 @@ export async function approveToTrade(address, referalAddress = NULL_ADDRESS) {
   if (!(await isContractApproval(address, contracts.ZeroXTrade.address, contracts.cash))) {
     approvals.push(contracts.cash.approve(contracts.ZeroXTrade.address, APPROVAL_AMOUNT));
   }
-  approvals.push(contracts.affiliates.setReferrer(referalAddress));
+  //approvals.push(contracts.affiliates.setReferrer(referalAddress));
   if (!(await contracts.shareToken.isApprovedForAll_(address, contracts.fillOrder.address))) {
     approvals.push(contracts.shareToken.setApprovalForAll(contracts.fillOrder.address, true));
   }

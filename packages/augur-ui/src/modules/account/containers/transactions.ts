@@ -11,6 +11,8 @@ import {
   MODAL_TRANSACTIONS,
   MODAL_ACCOUNT_APPROVAL,
   ZERO,
+  WETH,
+  ETH,
 } from 'modules/common/constants';
 import { AppState } from 'appStore';
 import { ThunkDispatch } from 'redux-thunk';
@@ -48,6 +50,7 @@ const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({
   approval: () => dispatch(updateModal({ type: MODAL_ACCOUNT_APPROVAL })),
   legacyRepFaucet: () => getLegacyRep(),
   cashOut: () => dispatch(updateModal({ type: MODAL_CASHOUT })),
+  wrapUnwrapEth: () => dispatch(updateModal({ type: MODAL_ADD_FUNDS, tokenToAdd: ETH, initialSwapToken: WETH })),
 });
 
 const TransactionsContainer = connect(

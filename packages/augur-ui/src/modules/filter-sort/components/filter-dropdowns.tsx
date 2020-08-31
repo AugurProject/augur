@@ -7,6 +7,7 @@ import {
   MARKET_OFFSET,
 } from '../actions/update-filter-sort-options';
 import updateMultipleQueries from 'modules/routes/helpers/update-multiple-queries';
+import { RefreshButton } from 'modules/common/buttons';
 
 const sortOptions = SORT_OPTIONS.map(option => {
   return {
@@ -20,6 +21,7 @@ interface FilterSearchProps {
   updateFilterSortOptions: Function;
   history: History;
   location: Location;
+  refresh: Function
 }
 
 const FilterSearch = ({
@@ -27,6 +29,7 @@ const FilterSearch = ({
   updateFilterSortOptions,
   history,
   location,
+  refresh,
 }: FilterSearchProps) => {
   const changeSortDropdown = value => {
     updateMultipleQueries(
@@ -52,6 +55,7 @@ const FilterSearch = ({
         onChange={changeSortDropdown}
         stretchOutOnMobile
       />
+      <RefreshButton action={refresh} />
     </div>
   );
 };

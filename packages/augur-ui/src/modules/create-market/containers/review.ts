@@ -20,7 +20,7 @@ const mapStateToProps = (state: AppState) => {
     gasPrice: state.gasPriceInfo.userDefinedGasPrice || state.gasPriceInfo.average,
     availableEthFormatted: formatEther(loginAccount.balances.eth),
     availableRepFormatted: formatRep(loginAccount.balances.rep),
-    availableDaiFormatted: formatDaiPrice(
+    availableDaiFormatted: formatEther(
       totalTradingBalance(loginAccount)
     ),
     ethToDaiRate: appStatus.ethToDaiRate,

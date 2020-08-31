@@ -2,7 +2,7 @@ import { connect } from 'react-redux';
 import ConnectDropdown from 'modules/auth/components/connect-dropdown/connect-dropdown';
 import { logout } from 'modules/auth/actions/logout';
 import { updateModal } from 'modules/modal/actions/update-modal';
-import { MODAL_GAS_PRICE, GAS_SPEED_LABELS, GAS_TIME_LEFT_LABELS, MODAL_ADD_FUNDS, MODAL_UNIVERSE_SELECTOR, FIVE, ONE } from 'modules/common/constants';
+import { MODAL_GAS_PRICE, GAS_SPEED_LABELS, GAS_TIME_LEFT_LABELS, MODAL_ADD_FUNDS, MODAL_UNIVERSE_SELECTOR, FIVE, ETH, ZERO, WETH } from 'modules/common/constants';
 import { NULL_ADDRESS } from 'modules/common/constants';
 import { FormattedNumber } from 'modules/types';
 import { AppState } from 'appStore';
@@ -40,8 +40,9 @@ const mapStateToProps = (state: AppState) => {
       state.loginAccount.meta,
     balances: state.loginAccount && state.loginAccount.balances,
     ethToDaiRate: state.appStatus.ethToDaiRate,
-    showTransferMyDai: createBigNumber(state.loginAccount.balances.signerBalances.dai).gte(FIVE),
-    showTransferMyRep: createBigNumber(state.loginAccount.balances.signerBalances.rep).gte(ONE),
+    showTransferMyDai: false,
+    showWrapEther: createBigNumber(state.loginAccount.balances.eth).gt(ZERO),
+    walletType: state.loginAccount?.meta?.accountType,
   };
 };
 
@@ -50,6 +51,7 @@ const mapDispatchToProps = dispatch => ({
   gasModal: () => dispatch(updateModal({ type: MODAL_GAS_PRICE })),
   universeSelectorModal: () => dispatch(updateModal({ type: MODAL_UNIVERSE_SELECTOR })),
   showAddFundsModal: () => dispatch(updateModal({ type: MODAL_ADD_FUNDS })),
+  showWrapAddFundsModal: () => dispatch(updateModal({ type: MODAL_ADD_FUNDS, tokenToAdd: WETH, initialSwapToken: ETH })),
 });
 
 export default connect(

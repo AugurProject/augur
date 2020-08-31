@@ -24,6 +24,7 @@ import {
   TRANSFER,
   MODAL_ERROR,
   MIGRATE_FROM_LEG_REP_TOKEN,
+  APPROVE_FROM_LEG_REP_TOKEN,
   REDEEMSTAKE,
   MIGRATEOUTBYPAYOUT,
   TRADINGPROCEEDSCLAIMED,
@@ -36,6 +37,8 @@ import {
   TRANSACTIONS,
   SETREFERRER,
   SETAPPROVALFORALL,
+  WRAP_ETH,
+  UNWRAP_ETH,
 } from 'modules/common/constants';
 import { CreateMarketData } from 'modules/types';
 import { ThunkDispatch } from 'redux-thunk';
@@ -52,6 +55,7 @@ import {
   updatePendingReportHash,
   updatePendingDisputeHash,
   removePendingDataByHash,
+  removePendingTransaction,
 } from 'modules/pending-queue/actions/pending-queue-management';
 import { convertUnixToFormattedDate } from 'utils/format-date';
 import { TransactionMetadataParams } from '@augurproject/contract-dependencies-ethers';
@@ -65,6 +69,7 @@ const ADD_PENDING_QUEUE_METHOD_CALLS = [
   BUYPARTICIPATIONTOKENS,
   REDEEMSTAKE,
   MIGRATE_FROM_LEG_REP_TOKEN,
+  APPROVE_FROM_LEG_REP_TOKEN,
   BATCHCANCELORDERS,
   TRADINGPROCEEDSCLAIMED,
   MIGRATEOUTBYPAYOUT,
@@ -82,6 +87,14 @@ const ADD_PENDING_QUEUE_METHOD_CALLS = [
   APPROVE,
   SETREFERRER,
   SETAPPROVALFORALL,
+  WRAP_ETH,
+  UNWRAP_ETH
+];
+
+const AUTO_REMVE_SUCCESSFUL_PENDING_QUEUE = [
+  APPROVE,
+  WRAP_ETH,
+  UNWRAP_ETH
 ];
 export const getRelayerDownErrorMessage = (walletType, hasEth) => {
   const errorMessage =
@@ -114,6 +127,12 @@ export const addUpdateTransaction = (txStatus: Events.TXStatus) => async (
           ...transaction,
         })
       );
+    }
+    if (
+      AUTO_REMVE_SUCCESSFUL_PENDING_QUEUE.includes(methodCall) &&
+      eventName === TXEventName.Success
+    ) {
+      setTimeout(() => dispatch(removePendingTransaction(methodCall)), 500);
     }
 
     if (eventName === TXEventName.RelayerDown) {

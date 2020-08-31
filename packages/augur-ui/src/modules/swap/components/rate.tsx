@@ -1,5 +1,5 @@
 import React from 'react';
-import { DAI, REP, ETH, USDC, USDT } from 'modules/common/constants';
+import { DAI, REP, ETH, USDC, USDT, WETH } from 'modules/common/constants';
 import { BigNumber, createBigNumber } from 'utils/create-big-number';
 import { formatEther, formatRep, formatDai } from 'utils/format-number';
 
@@ -44,7 +44,7 @@ export const Rate = ({
       displayRate = `1 USDC = ${formatEther(usdcDaiRate).formattedValue} DAI`;
     }
     else if (baseToken === ETH) {
-      displayRate = `1 ETH = $${formatDai(ethToDaiRate.value).formattedValue}`;
+      displayRate = `1 ETH = $${formatEther(ethToDaiRate.value).formattedValue}`;
     }
   }
 
@@ -73,6 +73,15 @@ export const Rate = ({
     }
     else if (baseToken === USDT) {
       displayRate = `1 USDT = ${formatEther((createBigNumber(usdtDaiRate)).multipliedBy(ethRate)).formattedValue} ETH`;
+    }
+    else if (baseToken === WETH) {
+      displayRate = `1 WETH = 1 ETH`;
+    }
+  }
+
+  else if (swapForToken === WETH) {
+    if (baseToken === ETH) {
+      displayRate = `1 ETH = 1 WETH`;
     }
   }
 

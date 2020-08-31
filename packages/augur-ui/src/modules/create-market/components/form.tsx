@@ -839,15 +839,15 @@ export default class Form extends React.Component<FormProps, FormState> {
     const explainerBlockContents = (explainerBlockTitle ===
       EventDetailsContent().explainerBlockTitle ||
       explainerBlockTitle === ReviewContent.explainerBlockTitle) && [
-      {
+        {
+          title: AugurMarketsContent().explainerBlockTitle,
+          subtexts: AugurMarketsContent().explainerBlockSubtexts,
+          useBullets: AugurMarketsContent().useBullets,
+        },
+        {
         title: explainerBlockTitle,
         subtexts: explainerBlockSubtexts,
         useBullets: useBullets,
-      },
-      {
-        title: AugurMarketsContent().explainerBlockTitle,
-        subtexts: AugurMarketsContent().explainerBlockSubtexts,
-        useBullets: AugurMarketsContent().useBullets,
       },
     ];
 

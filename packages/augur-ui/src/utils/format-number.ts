@@ -77,7 +77,7 @@ export function formatEther(
   return formatNumber(num, {
     decimals: ETHER_NUMBER_OF_DECIMALS,
     decimalsRounded: ETHER_NUMBER_OF_DECIMALS,
-    denomination: v => `${v} ETH`,
+    denomination: v => `${v}`,
     positiveSign: false,
     zeroStyled: false,
     blankZero: false,
@@ -93,7 +93,7 @@ export function formatEtherEstimate(
   return formatNumber(num, {
     decimals: ETHER_NUMBER_OF_DECIMALS,
     decimalsRounded: ETHER_NUMBER_OF_DECIMALS,
-    denomination: v => `${v} ETH (estimated)`,
+    denomination: v => `${v} E (est.)`,
     positiveSign: false,
     zeroStyled: false,
     blankZero: false,
@@ -231,7 +231,7 @@ export function formatDai(
       const val = isNegative
         ? createBigNumber(v)
             .abs()
-            .toFixed(3)
+            .decimalPlaces(2)
         : v;
       return `${isNegative ? '-' : ''}$${val}`;
     },

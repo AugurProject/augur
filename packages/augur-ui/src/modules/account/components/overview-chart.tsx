@@ -5,7 +5,7 @@ import { PulseLoader } from 'react-spinners';
 import ProfitLossChart from 'modules/account/components/profit-loss-chart';
 import { MovementLabel } from 'modules/common/labels';
 import Styles from 'modules/account/components/overview-chart.styles.less';
-import { formatDaiPrice, formatPercent, formatDai } from 'utils/format-number';
+import { formatDaiPrice, formatPercent, formatDai, formatEther } from 'utils/format-number';
 import { FormattedNumber } from 'modules/types';
 import { createBigNumber } from 'utils/create-big-number';
 
@@ -128,7 +128,7 @@ export default class OverviewChart extends React.Component<
         const realizedChange = createBigNumber(lastData.realized).minus(firstData.realized);
         this.setState({
           profitLossData,
-          profitLossChange: formatDai(realizedChange || 0),
+          profitLossChange: formatEther(realizedChange || 0),
           profitLossChangeHasValue: !createBigNumber(lastData.realized || 0).eq(
             constants.ZERO
           ),

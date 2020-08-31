@@ -636,6 +636,7 @@ export interface TimeframeData {
 }
 export interface AccountBalances {
   eth: string;
+  weth: string;
   rep: string;
   dai: string;
   usdt: string;
@@ -645,6 +646,7 @@ export interface AccountBalances {
   legacyAttoRep?: string;
   signerBalances: {
     eth: string;
+    weth: string;
     rep: string;
     dai: string;
     usdt: string;

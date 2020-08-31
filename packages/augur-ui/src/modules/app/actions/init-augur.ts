@@ -345,7 +345,6 @@ export function connectAugur(
     // wire up start up events for sdk
     dispatch(listenForStartUpEvents(Augur));
 
-    console.log("AUGURSDK: connect");
     try {
       await augurSdk.connect();
     } catch(e) {
