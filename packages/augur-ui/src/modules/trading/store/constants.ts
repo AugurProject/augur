@@ -131,6 +131,10 @@ export const DEFAULT_ORDER_PROPERTIES = {
   selectedNav: BUY,
   postOnlyOrder: false,
   doNotCreateOrders: false,
+  orderDaiEstimate: '',
+  orderEscrowdDai: '',
+  gasCostEst: '',
+  expirationDate: null,
 };
 
 export const MOCK_TRADING_STATE = {

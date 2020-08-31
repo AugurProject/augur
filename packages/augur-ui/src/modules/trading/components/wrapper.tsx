@@ -26,7 +26,6 @@ import {
 } from 'utils/format-number';
 import { calculateTotalOrderValue } from 'modules/trades/helpers/calc-order-profit-loss-percents';
 import { formatDai } from 'utils/format-number';
-import { Moment } from 'moment';
 import { calcOrderExpirationTime } from 'utils/format-date';
 import { orderSubmitted } from 'services/analytics/helpers';
 import { placeMarketTrade } from 'modules/trades/actions/place-market-trade';
@@ -373,6 +372,7 @@ const Wrapper = ({
   }
 
   async function queueStimulateTrade(order, useValues) {
+    console.log("async queueSimTrade", state.simulateQueue);
     const queue = state.simulateQueue.slice(0);
     queue.push(
       new Promise(resolve =>
@@ -419,9 +419,11 @@ const Wrapper = ({
         })
       )
     );
-    await Promise.all(queue).then(results =>
-      setState({ ...state, ...results[results.length - 1] })
-    );
+    console.log("post push", queue);
+    await Promise.all(queue).then(results => {
+      console.log("after awaitAll", results);
+      setState({ ...state, ...results[results.length - 1] });
+    });
   }
 
   function getActionButton() {
