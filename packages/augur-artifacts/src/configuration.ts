@@ -65,7 +65,7 @@ export async function updateConfig(env: string, config: RecursivePartial<SDKConf
   const original = environments[env] || {};
   const updated = mergeConfig(original, config);
   const valid = validConfigOrDie(updated);
-  writeConfig(env, valid);
+  await writeConfig(env, valid);
   return valid;
 }
 
