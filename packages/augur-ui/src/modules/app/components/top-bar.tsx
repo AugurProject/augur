@@ -73,7 +73,13 @@ interface TopBarProps {
   buyDaiModal: Function;
   activateWalletModal: Function;
   walletStatus: string;
+  handleShowOnboarding: Function;
+  currentOnboardingStep: number;
 }
+
+
+
+
 
 const TopBar: React.FC<TopBarProps> = ({
   alertsVisible,
@@ -90,6 +96,8 @@ const TopBar: React.FC<TopBarProps> = ({
   buyDaiModal,
   activateWalletModal,
   walletStatus,
+  handleShowOnboarding,
+  currentOnboardingStep,
 }) => {
   return (
     <header className={Styles.TopBar}>
@@ -106,6 +114,9 @@ const TopBar: React.FC<TopBarProps> = ({
         tradingAccountCreated={!showAddFundsButton }
       />
       <div>
+        {(isLogged || restoredAccount) && currentOnboardingStep && currentOnboardingStep < 7 && (
+          <PrimaryButton text={'Continue account setup'} action={() => handleShowOnboarding()} />
+        )}
 
         {(!isLogged || (!isMobile && (isLogged || restoredAccount))) && (
           <HelpResources isMobile={isMobile} helpModal={helpModal} />
