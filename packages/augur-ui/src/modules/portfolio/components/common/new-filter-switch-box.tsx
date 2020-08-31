@@ -78,7 +78,7 @@ const NewFilterSwitchBox = ({
       }
       search={search}
       customClass={customClass}
-      onSearchChange={onSearchChange}
+      setSearch={onSearchChange}
       sortByOptions={sortByOptions}
       updateDropdown={updateView}
       subheader={subheader}

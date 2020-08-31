@@ -148,8 +148,8 @@ const NewQuadBox = ({
             [Styles.HideToggleButton]: !toggle,
           })}>
             {headerComplement && headerComplement}
+            <QuadBoxSort sortByOptions={sortByOptions} updateDropdown={updateDropdown} />
             <QuadBoxSearch search={search} setSearch={setSearch} />
-            <QuadBoxSort options={sortByOptions} onChange={updateDropdown} />
             <ToggleExtendButton toggle={toggle} />
           </div>
         </div>
