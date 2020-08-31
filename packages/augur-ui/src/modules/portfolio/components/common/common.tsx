@@ -123,9 +123,9 @@ export const Game = ({ row, type }: GameProps) => {
         <BetsHeader />
         {Object.values(row.orders)
           .sort((a, b) => b.timestamp - a.timestamp)
-          .map(order => (
+          .map((order, index) => (
             <BetRow
-              key={order.outcomeId}
+              key={`${order.outcomeId}_${index}`}
               outcome={order}
               showExtraRow={type !== SPORTS_GROUP_TYPES.FUTURES}
             />

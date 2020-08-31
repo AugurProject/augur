@@ -37,6 +37,7 @@ import { removePendingOrder } from 'modules/orders/actions/pending-orders-manage
 import { Properties } from './row-column';
 import { convertToOdds } from 'utils/get-odds';
 import { BET_STATUS } from 'modules/trading/store/constants';
+import { useBetslipStore } from 'modules/trading/store/betslip';
 
 interface MyBetsRowProps {
   outcome: Object;
@@ -66,7 +67,7 @@ export const MyBetsRow = ({
       templateShield: isEvent,
       outcome: outcome,
       marketId: outcome.marketId,
-      retry: outcome.status === BET_STATUS.FAILED ? retry(outcome.marketId, outcome.orderId) : null
+      retryFnc: outcome.status === BET_STATUS.FAILED ? () => retry(outcome.marketId, outcome.orderId) : null
     },
     {
       key: 'wager',

@@ -275,6 +275,7 @@ export const SportsMyBet = ({ bet }) => {
     case FAILED:
       message = `Order failed when processing. `;
       messageAction = <button onClick={() => retry()}>Retry</button>;
+      classToApply = Styles.FAILED;
       break;
     default:
       break;

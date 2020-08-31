@@ -213,6 +213,7 @@ export function BetslipReducer(state, action) {
         matchedItems[marketId].orders[orderId] = {
           ...matchedItems[marketId].orders[orderId],
           ...updates,
+          orderId,
           dateUpdated: currentAugurTimestamp,
           timestampUpdated: Date.now() / 1000,
         };
@@ -234,7 +235,7 @@ export function BetslipReducer(state, action) {
       const toWin = convertToWin(order.max, shares);
       const prevWager = betslipItems[marketId].orders[orderId].wager;
       if (betslipItems[marketId]?.orders)
-        betslipItems[marketId].orders[orderId] = { ...order, shares, toWin };
+        betslipItems[marketId].orders[orderId] = { ...order, orderId, shares, toWin };
       if (prevWager !== order.wager) {
         checkForConsumingOwnOrderError(
           marketId,

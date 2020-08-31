@@ -50,7 +50,7 @@ export interface Properties {
   showDenomination?: boolean;
   templateShield?: boolean;
   marketId?: string;
-  retry?: Function;
+  retryFnc?: Function;
 }
 
 function selectColumn(columnType: string, properties: Properties) {
@@ -62,12 +62,9 @@ function selectColumn(columnType: string, properties: Properties) {
     pending,
     disabled,
     action,
-    showPercent,
     showBrackets,
     showPlusMinus,
-    showColors,
     value,
-    size,
     showEmptyDash,
     addIndicator,
     alert,
@@ -85,7 +82,7 @@ function selectColumn(columnType: string, properties: Properties) {
     showDenomination,
     templateShield,
     marketId,
-    retry
+    retryFnc
   } = properties;
 
   switch (columnType) {
@@ -101,7 +98,7 @@ function selectColumn(columnType: string, properties: Properties) {
           )}
           {showExtraNumber && templateShield && <MarketLink id={marketId}>{value}</MarketLink>}
           {showExtraNumber && !templateShield && <span>{value}</span>}
-          {retry && <span>Order failed when processing <button onClick={() => retry()}>Retry</button></span>}
+          {!!retryFnc && <span>Order failed when processing. <button onClick={() => retryFnc()}>Retry</button></span>}
         </>
       );
     case COLUMN_TYPES.POSITION_TYPE:

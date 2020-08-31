@@ -318,7 +318,7 @@ div.SingleRow3 {
   &.Failed {
     background: var(--color-error-10);
 
-    > ul > li {
+    > ul > li:first-child {
       > span:nth-of-type(2) {
         .text-12;
 
@@ -331,6 +331,10 @@ div.SingleRow3 {
           margin-left: @size-4;
         }
       }
+    }
+
+    &:hover {
+      background: var(--color-error-20);
     }
   }
 
