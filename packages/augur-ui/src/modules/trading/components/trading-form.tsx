@@ -3,7 +3,8 @@ import { SelectedOrderProperties } from 'modules/trading/components/wrapper';
 import Wrapper from 'modules/trading/components/wrapper';
 import Styles from 'modules/trading/components/trading-form.styles.less';
 import { MarketData, OutcomeFormatted, NewMarket, IndividualOutcomeOrderBook } from 'modules/types';
-
+import { TradingProvider } from 'modules/trading/store/trading';
+ 
 interface TradingFormProps {
   selectedOutcomeId: number;
   market: MarketData | NewMarket;
@@ -28,13 +29,15 @@ const TradingForm = ({
     [selectedOutcomeId, market]
   );
   return (
-    <section className={Styles.TradingForm}>
-      <Wrapper
-        market={market}
-        selectedOutcome={selectedOutcome}
-        {...props}
-      />
-    </section>
+    <TradingProvider>
+      <section className={Styles.TradingForm}>
+        <Wrapper
+          market={market}
+          selectedOutcome={selectedOutcome}
+          {...props}
+        />
+      </section>
+   </TradingProvider>
   );
 };
 

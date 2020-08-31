@@ -32,6 +32,7 @@ import {
 import { isEmpty } from 'utils/is-empty';
 import { useLocation } from 'react-router';
 import { getTutorialPreview } from 'modules/market/store/market-utils';
+import { Trading } from 'modules/trading/store/trading';
 
 interface OrderBookSideProps {
   processedOrderbook: QuantityOutcomeOrderBook;
@@ -63,6 +64,16 @@ interface OrderBookProps {
 const LOADING = "Loading ...";
 const ADD_OFFER = "Add Offer";
 const ADD_BID = "Add Bid";
+const EMPTY_BUY = {
+  orderPrice: '',
+  orderQuantity: '',
+  selectedNav: BUY,
+};
+const EMPTY_SELL = {
+  orderPrice: '',
+  orderQuantity: '',
+  selectedNav: SELL,
+};
 
 const OrderBookSide = ({
   pricePrecision = 4,
@@ -76,6 +87,7 @@ const OrderBookSide = ({
   orderbookLoading,
   usePercent,
 }: OrderBookSideProps) => {
+  const { updateOrderProperties } = Trading.actions;
   const side = useRef({
     current: { clientHeight: 0, scrollHeight: 0, scrollTop: 0 },
   });
@@ -114,25 +126,19 @@ const OrderBookSide = ({
               <CancelTextButton
                 text={ADD_OFFER}
                 title={ADD_OFFER}
-                action={() =>
-                  updateSelectedOrderProperties({
-                    orderPrice: '',
-                    orderQuantity: '',
-                    selectedNav: SELL,
-                  })
-                }
+                action={() => {
+                  updateOrderProperties(EMPTY_SELL);
+                  updateSelectedOrderProperties(EMPTY_SELL);
+                }}
               />
             ) : (
               <CancelTextButton
                 text={ADD_BID}
                 title={ADD_BID}
-                action={() =>
-                  updateSelectedOrderProperties({
-                    orderPrice: '',
-                    orderQuantity: '',
-                    selectedNav: BUY,
-                  })
-                }
+                action={() => {
+                  updateOrderProperties(EMPTY_BUY);
+                  updateSelectedOrderProperties(EMPTY_BUY);
+                }}
               />
             ))}
         </div>
@@ -161,13 +167,18 @@ const OrderBookSide = ({
             })}
             onMouseEnter={() => setHovers(i, type)}
             onMouseLeave={() => setHovers(null, null)}
-            onClick={() =>
-              updateSelectedOrderProperties({
+            onClick={() => {
+              updateOrderProperties({
                 orderPrice: order.price,
                 orderQuantity: order.cumulativeShares,
                 selectedNav: isAsks ? BUY : SELL,
               })
-            }
+              updateSelectedOrderProperties({
+                orderPrice: order.price,
+                orderQuantity: order.cumulativeShares,
+                selectedNav: isAsks ? BUY : SELL,
+              });
+            }}
           >
             <div>
               <div

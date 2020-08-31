@@ -42,10 +42,14 @@ import {
 import makePath from 'modules/routes/helpers/make-path';
 import { MARKET } from 'modules/routes/constants/views';
 import makeQuery from 'modules/routes/helpers/make-query';
-import { MARKET_ID_PARAM_NAME, THEME_NAME } from 'modules/routes/constants/param-names';
+import {
+  MARKET_ID_PARAM_NAME,
+  THEME_NAME,
+} from 'modules/routes/constants/param-names';
 import { FORM_INPUT_TYPES as INPUT_TYPES } from 'modules/trading/store/constants';
 import { canPostOrder } from 'modules/trades/actions/can-post-order';
 import { getIsTutorial, getIsPreview } from 'modules/market/store/market-utils';
+import { useTradingStore } from 'modules/trading/store/trading';
 
 export interface SelectedOrderProperties {
   orderPrice: string;
@@ -96,7 +100,12 @@ const OrderTicketHeader = ({
   selectedOrderProperties,
   updateTradeTotalCost,
 }) => {
-  const buySelected = selectedOrderProperties.selectedNav === BUY;
+  const {
+    orderProperties,
+    actions: { updateSelectedNav },
+  } = useTradingStore();
+  const buySelected = orderProperties.selectedNav === BUY;
+
   return (
     <ul
       className={classNames({
@@ -112,12 +121,13 @@ const OrderTicketHeader = ({
       >
         <button
           onClick={() => {
+            updateSelectedNav(BUY);
             updateSelectedOrderProperties({
-              ...selectedOrderProperties,
+              ...orderProperties,
               selectedNav: BUY,
             });
             updateTradeTotalCost({
-              ...selectedOrderProperties,
+              ...orderProperties,
               selectedNav: BUY,
             });
           }}
@@ -132,12 +142,13 @@ const OrderTicketHeader = ({
       >
         <button
           onClick={() => {
+            updateSelectedNav(SELL);
             updateSelectedOrderProperties({
-              ...selectedOrderProperties,
+              ...orderProperties,
               selectedNav: SELL,
             });
             updateTradeTotalCost({
-              ...selectedOrderProperties,
+              ...orderProperties,
               selectedNav: SELL,
             });
           }}
@@ -153,7 +164,6 @@ const Wrapper = ({
   market,
   selectedOutcome,
   updateSelectedOutcome,
-  selectedOrderProperties,
   updateSelectedOrderProperties,
   updateLiquidity,
   tutorialNext,
@@ -176,6 +186,10 @@ const Wrapper = ({
       ui: { reportingOnly: disableTrading },
     },
   } = useAppStatusStore();
+  const {
+    orderProperties,
+    actions: { updateOrderProperties },
+  } = useTradingStore();
   const location = useLocation();
   const isTutorial = getIsTutorial(market.id);
   const isPreview = getIsPreview(location);
@@ -185,12 +199,13 @@ const Wrapper = ({
     orderEscrowdDai: '',
     gasCostEst: '',
     postOnlyOrder: false,
-    doNotCreateOrders: selectedOrderProperties.doNotCreateOrders || false,
-    expirationDate: selectedOrderProperties.expirationDate || null,
+    doNotCreateOrders: orderProperties.doNotCreateOrders || false,
+    expirationDate: orderProperties.expirationDate || null,
     trade: getDefaultTrade({ market, selectedOutcome }),
     simulateQueue: [],
     allowPostOnlyOrder: true,
   });
+  console.log('wrapper render: props/state', orderProperties, state);
   const marketId = market.id;
   const tradingTutorial = marketId === TRADING_TUTORIAL;
   const endTime = initialLiquidity ? newMarket.setEndTime : market.endTime;
@@ -210,24 +225,24 @@ const Wrapper = ({
 
   useEffect(() => {
     if (
-      selectedOrderProperties.orderQuantity !== '' &&
-      selectedOrderProperties.orderPrice !== '' &&
+      orderProperties.orderQuantity !== '' &&
+      orderProperties.orderPrice !== '' &&
       state.orderDaiEstimate === '' &&
       !state.trade.limitPrice &&
       !state.trade.numShares
     ) {
       // if SelectedOrderProps aren't empty but no estimated dai and have no price or numShares for trade, then recalculate.
-      updateTradeTotalCost(selectedOrderProperties);
+      updateTradeTotalCost(orderProperties);
     }
   }, [
-    selectedOrderProperties.orderQuantity,
-    selectedOrderProperties.orderPrice,
+    orderProperties.orderQuantity,
+    orderProperties.orderPrice,
   ]);
 
   function clearOrderForm(wholeForm = true) {
     const tradeUpdate = getDefaultTrade({ market, selectedOutcome });
     const expirationDate =
-      selectedOrderProperties.expirationDate ||
+      orderProperties.expirationDate ||
       calcOrderExpirationTime(endTime, currentTimestamp);
     const updatedState: any = wholeForm
       ? {
@@ -242,8 +257,12 @@ const Wrapper = ({
       : { trade: tradeUpdate };
     setState({ ...state, ...updatedState });
     if (wholeForm) {
+      updateOrderProperties({
+        orderPrice: "",
+        orderQuantity: "",
+      });
       updateSelectedOrderProperties({
-        ...selectedOrderProperties,
+        ...orderProperties,
         orderPrice: '',
         orderQuantity: '',
       });
@@ -256,7 +275,7 @@ const Wrapper = ({
   }
 
   function handlePlaceMarketTrade(market, selectedOutcome, s) {
-    orderSubmitted(selectedOrderProperties.selectedNav, market.id);
+    orderSubmitted(orderProperties.selectedNav, market.id);
     let tradeInProgress = state.trade;
     if (state.expirationDate) {
       tradeInProgress = {
@@ -311,8 +330,11 @@ const Wrapper = ({
           { decimalsRounded: 4 },
           String(getGasPrice())
         ).toString();
+        updateOrderProperties({
+          orderQuantity: String(numShares),
+        });
         updateSelectedOrderProperties({
-          ...selectedOrderProperties,
+          ...orderProperties,
           orderQuantity: String(numShares),
         });
         setState({
@@ -431,12 +453,11 @@ const Wrapper = ({
 
   function getActionButton() {
     const { trade } = state;
-    const { selectedNav } = selectedOrderProperties;
     const noGSN = gsnUnavailable && !gsnWalletInfoSeen;
     const hasFunds = gsnEnabled ? !!dai : !!eth && !!dai;
     let actionButton: any = (
       <OrderButton
-        type={selectedNav}
+        type={orderProperties.selectedNav}
         initialLiquidity={initialLiquidity}
         action={e => {
           e.preventDefault();
@@ -445,7 +466,7 @@ const Wrapper = ({
             updateLiquidity(selectedOutcome, {
               ...trade,
               ...state,
-              ...selectedOrderProperties,
+              ...orderProperties,
             });
             clearOrderForm();
           } else if (tradingTutorial) {
@@ -527,8 +548,8 @@ const Wrapper = ({
     );
   const isOpenOrder = state.trade?.numFills === 0;
   const orderEmpty =
-    selectedOrderProperties.orderPrice === '' &&
-    selectedOrderProperties.orderQuantity === '' &&
+    orderProperties.orderPrice === '' &&
+    orderProperties.orderQuantity === '' &&
     state.orderDaiEstimate === '';
   const showTip = !hasHistory && orderEmpty;
   const { potentialDaiLoss, sharesFilled, orderShareProfit } = state.trade;
@@ -542,7 +563,6 @@ const Wrapper = ({
       <div>
         <OrderTicketHeader
           market={market}
-          selectedOrderProperties={selectedOrderProperties}
           updateSelectedOrderProperties={updateSelectedOrderProperties}
           updateTradeTotalCost={updateTradeTotalCost}
         />
@@ -554,9 +574,9 @@ const Wrapper = ({
           updateSelectedOutcome={updateSelectedOutcome}
           orderState={{
             ...state,
-            orderPrice: selectedOrderProperties.orderPrice,
-            selectedNav: selectedOrderProperties.selectedNav,
-            orderQuantity: selectedOrderProperties.orderQuantity,
+            orderPrice: orderProperties.orderPrice,
+            selectedNav: orderProperties.selectedNav,
+            orderQuantity: orderProperties.orderQuantity,
           }}
           updateState={updates => setState({ ...state, ...updates })}
           updateOrderProperty={property => {
@@ -566,9 +586,10 @@ const Wrapper = ({
               property.hasOwnProperty(INPUT_TYPES.SELECTED_NAV)
             ) {
               updateSelectedOrderProperties({
-                ...selectedOrderProperties,
+                ...orderProperties,
                 ...property,
               });
+              updateOrderProperties({ ...property });
             } else {
               setState({ ...state, ...property });
             }

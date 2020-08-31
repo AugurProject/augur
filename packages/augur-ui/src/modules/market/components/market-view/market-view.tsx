@@ -70,6 +70,7 @@ import {
   EMPTY_FORMATTED_BOOK,
   FORMATTED_TUTORIAL_BOOK,
 } from 'modules/market/store/constants';
+import { Trading } from 'modules/trading/store/trading';
 
 
 interface MarketViewProps {
@@ -134,7 +135,6 @@ const MarketView = ({
     extendTradeHistory: false,
     extendOutcomesList: cat5 ? true : false,
     extendOrders: false,
-    selectedOrderProperties: DEFAULT_ORDER_PROPERTIES,
     selectedOutcomeId: isPreview ? getDefaultOutcomeSelected(market.marketType) : !queryOutcomeId ? defaultOutcomeId : parseInt(queryOutcomeId),
     tutorialError: null,
   });
@@ -301,6 +301,10 @@ const MarketView = ({
   }, [isOpenOrders, isFills, isPositions]);
 
   useEffect(() => {
+    checkTutorialErrors(Trading.get().orderProperties);
+  }, [isQuantity, isPrice, Trading.get().orderProperties])
+
+  useEffect(() => {
     // initial render only.
     document.getElementById("mainContent")?.scrollTo(0, 0);
     window.scrollTo(0, 1);
@@ -361,8 +365,6 @@ const MarketView = ({
       setState({
         ...state,
         selectedOutcomeId: selectedOutcomeIdPassed,
-        selectedOrderProperties: keepOrder ? 
-          state.selectedOrderProperties : { ...DEFAULT_ORDER_PROPERTIES }
       });
     }
   }
@@ -374,10 +376,6 @@ const MarketView = ({
         .querySelector('.trading-form-styles_TradingForm')
         .scrollIntoView({ block: 'start', behavior: 'smooth' });
     }
-    setState({
-      ...state,
-      selectedOrderProperties,
-    });
   }
 
   function checkTutorialErrors({ orderQuantity, orderPrice }) {
@@ -521,7 +519,6 @@ const MarketView = ({
                     </ModuleTabs>
                     <TradingForm
                       market={market}
-                      selectedOrderProperties={selectedOrderProperties}
                       selectedOutcomeId={selectedOutcomeId}
                       updateSelectedOutcome={updateSelectedOutcome}
                       orderBook={outcomeOrderBook}
@@ -619,7 +616,6 @@ const MarketView = ({
                 <div className={TradingFormStyle}>
                   <TradingForm
                     market={market}
-                    selectedOrderProperties={selectedOrderProperties}
                     selectedOutcomeId={selectedOutcomeId}
                     updateSelectedOutcome={updateSelectedOutcome}
                     updateSelectedOrderProperties={

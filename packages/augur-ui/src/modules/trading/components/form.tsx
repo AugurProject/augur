@@ -818,13 +818,13 @@ const Form = ({
                 currentTimestamp
               );
               const timestamp =
-                value === ADVANCED_OPTIONS.EXPIRATION
+                advancedOption === ADVANCED_OPTIONS.EXPIRATION
                   ? calcOrderExpirationTime(endTime, currentTimestamp)
                   : null;
               updateAndValidate(INPUT_TYPES.EXPIRATION_DATE, timestamp);
               updateState({
                 [INPUT_TYPES.DO_NOT_CREATE_ORDERS]:
-                  value === ADVANCED_OPTIONS.FILL,
+                advancedOption === ADVANCED_OPTIONS.FILL,
                 [INPUT_TYPES.POST_ONLY_ORDER]: advancedOption === ADVANCED_OPTIONS.POST,
               });
               setState({

@@ -1,3 +1,5 @@
+import { BUY } from "modules/common/constants";
+
 export const FORM_INPUT_TYPES = {
   MULTIPLE_QUANTITY: 'multipleOrderQuantity',
   QUANTITY: 'orderQuantity',
@@ -120,4 +122,31 @@ export const STUBBED_BETSLIP_ACTIONS = {
   trash: (marketId, orderId) => {},
   cancelAllUnmatched: () => {},
   updateUnmatched: (marketId, orderId, updates) => {},
+};
+
+// ==== Trading Form Constants
+export const DEFAULT_ORDER_PROPERTIES = {
+  orderPrice: '',
+  orderQuantity: '',
+  selectedNav: BUY,
+  postOnlyOrder: false,
+  doNotCreateOrders: false,
+};
+
+export const MOCK_TRADING_STATE = {
+  orderProperties: DEFAULT_ORDER_PROPERTIES,
+};
+
+export const DEFAULT_TRADING_STATE = MOCK_TRADING_STATE;
+
+export const TRADING_ACTIONS = {
+  CLEAR_ORDER_PROPERTIES: 'CLEAR_ORDER_PROPERTIES',
+  UPDATE_ORDER_PROPERTIES: 'UPDATE_ORDER_PROPERTIES',
+  UPDATE_SELECTED_NAV: 'UPDATE_SELECTED_NAV',
+};
+
+export const STUBBED_TRADING_ACTIONS = {
+  clearOrderProperties: () => {},
+  updateSelectedNav: (selectedNav) => {},
+  updateOrderProperties: (orderProperties) => {},
 };

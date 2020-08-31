@@ -10,10 +10,10 @@ import orderForMarketDepth, {
   MarketDepth,
 } from 'modules/markets/helpers/order-for-market-depth';
 import { ZoomOutIcon, ZoomInIcon } from 'modules/common/icons';
-import { selectMarket } from 'modules/markets/selectors/market';
 import getOrderBookKeys from 'modules/markets/helpers/get-orderbook-keys';
 import getPrecision from 'utils/get-number-precision';
 import { isEmpty } from 'utils/is-empty';
+import { Trading } from 'modules/trading/store/trading';
 
 interface DepthChartProps {
   marketDepth: MarketDepth;
@@ -974,6 +974,11 @@ function attachHoverClickHandlers(options) {
         createBigNumber(orderPrice).gte(marketMin) &&
         createBigNumber(orderPrice).lte(marketMax)
       ) {
+        Trading.actions.updateOrderProperties({
+          orderQuantity: nearestFillingOrder[0],
+          orderPrice: nearestFillingOrder[1],
+          selectedNav: nearestFillingOrder[4] === BIDS ? SELL : BUY,
+        });
         updateSelectedOrderProperties({
           orderQuantity: nearestFillingOrder[0],
           orderPrice: nearestFillingOrder[1],
