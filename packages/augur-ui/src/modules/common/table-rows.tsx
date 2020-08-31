@@ -36,6 +36,7 @@ import { removeCanceledOrder } from 'modules/pending-queue/actions/pending-queue
 import { removePendingOrder } from 'modules/orders/actions/pending-orders-management';
 import { Properties } from './row-column';
 import { convertToOdds } from 'utils/get-odds';
+import { BET_STATUS } from 'modules/trading/store/constants';
 
 interface MyBetsRowProps {
   outcome: Object;
@@ -90,13 +91,26 @@ export const MyBetsRow = ({
       text: convertUnixToFormattedDate(outcome.timestamp).formattedUtc,
       keyId: 'outcome-betDate-' + outcome.outcome,
     },
-    {
-      key: 'button',
-      columnType: COLUMN_TYPES.CASHOUT_BUTTON,
-      outcome: outcome,
-      action: async (e: Event) => {},
-    },
   ];
+  if (outcome.status === BET_STATUS.PENDING || outcome.status === BET_STATUS.FAILED) {
+    columnProperties.push(
+      {
+        key: 'button',
+        columnType: COLUMN_TYPES.PENDING_ICON_BUTTON,
+        outcome: outcome,
+        action: async (e: Event) => {},
+      }
+    );
+  } else {
+    columnProperties.push(
+      {
+        key: 'button',
+        columnType: COLUMN_TYPES.CASHOUT_BUTTON,
+        outcome: outcome,
+        action: async (e: Event) => {},
+      }
+    );
+  }
   return (
     <Row
       rowProperties={outcome}

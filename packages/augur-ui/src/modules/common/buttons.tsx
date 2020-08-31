@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   ASCENDING,
   DESCENDING,
@@ -32,6 +32,9 @@ import {
   ThickChevron,
   AlternateDaiLogoIcon,
   AddIcon,
+  LoadingEllipse,
+  Trash,
+  CheckMark,
 } from 'modules/common/icons';
 import classNames from 'classnames';
 import { getNetworkId, placeTrade } from 'modules/contracts/actions/contractCalls';
@@ -50,6 +53,7 @@ import { useBetslipStore } from 'modules/trading/store/betslip';
 import { createBigNumber } from 'utils/create-big-number';
 import { formatDai } from 'utils/format-number';
 import { convertToOdds } from 'utils/get-odds';
+import { BET_STATUS } from 'modules/trading/store/constants';
 
 export interface DefaultButtonProps {
   id?: string;
@@ -693,6 +697,75 @@ export const ExternalLinkText = (props: ExternalLinkTextProps) => (
     {ViewIcon}
   </button>
 );
+
+interface PendingIconButtonProps {
+  bet: Object;
+}
+
+export const PendingIconButton = ({
+  bet
+}: PendingIconButtonProps) => {
+  const {
+    actions: { trash },
+  } = useBetslipStore();
+  const {
+    status,
+    marketId,
+    orderId,
+    timestampUpdated
+  } = bet;
+  const [isRecentUpdate, setIsRecentUpdate] = useState(true);
+  useEffect(() => {
+    setIsRecentUpdate(true);
+  }, [timestampUpdated]);
+
+  useEffect(() => {
+    const currentTime = new Date().getTime() / 1000;
+    const seconds = Math.round(currentTime - timestampUpdated);
+    const milliSeconds = seconds * 1000;
+    if (isRecentUpdate && status === BET_STATUS.FILLED && seconds < 20) {
+      setTimeout(() => {
+        setIsRecentUpdate(false);
+      }, 20000 - milliSeconds);
+    } else {
+      setIsRecentUpdate(false);
+    }
+  }, [isRecentUpdate]);
+
+  const { PENDING, FILLED, PARTIALLY_FILLED, FAILED } = BET_STATUS;
+  let icon = null;
+  let classToApply = Styles.NEWFILL;
+  let iconAction = () => null;
+  switch (status) {
+    case FILLED:
+      icon = isRecentUpdate ? CheckMark : null;
+      classToApply = isRecentUpdate ? Styles.NEWFILL : Styles.FILLED;
+      break;
+    case PARTIALLY_FILLED:
+      icon = null;
+      classToApply = Styles.PARTIALLY_FILLED;
+      break;
+    case PENDING:
+      icon = LoadingEllipse;
+      classToApply = Styles.PENDING;
+      break;
+    case FAILED:
+      icon = Trash;
+      classToApply = Styles.FAILED;
+      iconAction = () => trash(marketId, orderId);
+      break;
+    default:
+      break;
+  }
+  return (
+  <button
+    className={classNames(Styles.PendingIconButton, classToApply)}
+    onClick={() => iconAction()}
+  >
+    {icon}
+  </button>
+  );
+}
 
 interface CashoutButtonProps {
   bet: Object;

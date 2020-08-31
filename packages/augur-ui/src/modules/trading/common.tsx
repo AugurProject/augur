@@ -10,6 +10,7 @@ import {
   PrimaryButton,
   ExternalLinkButton,
   CashoutButton,
+  PendingIconButton,
 } from 'modules/common/buttons';
 import {
   BetsIcon,
@@ -253,59 +254,25 @@ export const SportsMyBet = ({ bet }) => {
     normalizedPrice,
     wager,
     retry,
-    trash,
     status,
     amountFilled,
     toWin,
     timestamp,
-    timestampUpdated,
   } = bet;
-  const [isRecentUpdate, setIsRecentUpdate] = useState(true);
-  useEffect(() => {
-    setIsRecentUpdate(true);
-  }, [timestampUpdated]);
-
-  useEffect(() => {
-    const currentTime = new Date().getTime() / 1000;
-    const seconds = Math.round(currentTime - timestampUpdated);
-    const milliSeconds = seconds * 1000;
-    if (isRecentUpdate && status === BET_STATUS.FILLED && seconds < 20) {
-      setTimeout(() => {
-        setIsRecentUpdate(false);
-      }, 20000 - milliSeconds);
-    } else {
-      setIsRecentUpdate(false);
-    }
-  }, [isRecentUpdate]);
-
-  const { PENDING, FILLED, PARTIALLY_FILLED, FAILED } = BET_STATUS;
-  let icon = null;
-  let classToApply = Styles.NEWFILL;
+ 
   let message = null;
   let messageAction = null;
   let wagerToShow = wager;
-  let iconAction = () => console.log('setup actions');
+  let classToApply = Styles.NEWFILL;
+  const { PARTIALLY_FILLED, FAILED, PENDING } = BET_STATUS;
   switch (status) {
-    case FILLED:
-      icon = isRecentUpdate ? CheckMark : null;
-      classToApply = isRecentUpdate ? Styles.NEWFILL : Styles.FILLED;
-      break;
     case PARTIALLY_FILLED:
-      icon = null;
-      classToApply = Styles.PARTIALLY_FILLED;
       message = `This bet was partially filled. Original wager: ${
         formatDai(wager).full
       }`;
       wagerToShow = amountFilled;
       break;
-    case PENDING:
-      icon = LoadingEllipse;
-      classToApply = Styles.PENDING;
-      break;
     case FAILED:
-      icon = Trash;
-      classToApply = Styles.FAILED;
-      iconAction = () => trash();
       message = `Order failed when processing. `;
       messageAction = <button onClick={() => retry()}>Retry</button>;
       break;
@@ -319,12 +286,7 @@ export const SportsMyBet = ({ bet }) => {
       <header>
         <span>{outcome}</span>
         <span>{convertToOdds(normalizedPrice).full}</span>
-        <button
-          className={classNames(classToApply)}
-          onClick={() => iconAction()}
-        >
-          {icon}
-        </button>
+        <PendingIconButton bet={bet} />
       </header>
       <LinearPropertyLabel
         label="wager"

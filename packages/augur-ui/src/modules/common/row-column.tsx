@@ -10,7 +10,7 @@ import {
   TemplateShield,
   InvalidLabel,
 } from 'modules/common/labels';
-import { CancelTextButton, CashoutButton } from 'modules/common/buttons';
+import { CancelTextButton, CashoutButton, PendingIconButton } from 'modules/common/buttons';
 import OutcomeTradingIndicator from "modules/market/components/common/outcome-trading-indicator/outcome-trading-indicator";
 import { DateFormattedObject, FormattedNumber } from 'modules/types';
 import { TXEventName } from '@augurproject/sdk-lite';
@@ -166,6 +166,12 @@ function selectColumn(columnType: string, properties: Properties) {
       return (
         <span>
           <CashoutButton bet={outcome}/>
+        </span>
+      );
+    case COLUMN_TYPES.PENDING_ICON_BUTTON:
+      return (
+        <span>
+          <PendingIconButton bet={outcome}/>
         </span>
       );
     case COLUMN_TYPES.CANCEL_TEXT_BUTTON:

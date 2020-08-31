@@ -312,18 +312,6 @@
       }
     }
 
-    &.PARTIALLY_FILLED {
-      > button {
-        display: flex;
-        grid-column: span 2;
-        justify-self: flex-end;
-
-        &:first-of-type {
-          display: none;
-        }
-      }
-    }
-
     > header > button {
       &.NEWFILL {
         > svg {
@@ -360,11 +348,6 @@
             stop-color: var(--color-reporting);
           }
         }
-      }
-
-      &.PARTIALLY_FILLED,
-      &.FILLED {
-        display: none;
       }
     }
   }
