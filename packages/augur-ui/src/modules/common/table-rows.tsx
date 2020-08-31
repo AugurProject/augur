@@ -51,6 +51,9 @@ export const MyBetsRow = ({
 }: MyBetsRowProps) => {
   const { oddsType } = useAppStatusStore();
   const isFractional = oddsType === ODDS_TYPE.FRACTIONAL;
+  const {
+    actions: { retry },
+  } = useBetslipStore();
   const columnProperties = [
     {
       key: 'outcomeName',
@@ -63,6 +66,7 @@ export const MyBetsRow = ({
       templateShield: isEvent,
       outcome: outcome,
       marketId: outcome.marketId,
+      retry: outcome.status === BET_STATUS.FAILED ? retry(outcome.marketId, outcome.orderId) : null
     },
     {
       key: 'wager',
@@ -118,6 +122,7 @@ export const MyBetsRow = ({
       styleOptions={{
         noToggle: true,
         myBetRow: true,
+        failed: outcome.status === BET_STATUS.FAILED
       }}
     />
   );

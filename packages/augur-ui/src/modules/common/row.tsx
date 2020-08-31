@@ -25,6 +25,7 @@ export interface StyleOptions {
   active?: Boolean;
   isInvalid?: Boolean;
   myBetRow?: Boolean;
+  failed?: Boolean;
 }
 
 export interface RowProps {
@@ -93,7 +94,6 @@ const Row = (props: RowProps) => {
     isSingle,
     extendedView,
     extendedViewNotOnMobile,
-    columnProperties,
     styleOptions,
     rowOnClick
   } = props;
@@ -110,9 +110,9 @@ const Row = (props: RowProps) => {
     noToggle,
     isFirst,
     outcome,
-    active,
     initialLiquidity,
-    myBetRow
+    myBetRow,
+    failed
   } = styleOptions;
 
   const rowContent = (
@@ -133,7 +133,8 @@ const Row = (props: RowProps) => {
             [Styles.Row4Parent]: outcome,
             [Styles.DarkRow]: initialLiquidity,
             [Styles.BottomBorder]: !initialLiquidity,
-            [Styles.MyBetRow]: myBetRow
+            [Styles.MyBetRow]: myBetRow,
+            [Styles.Failed]: failed
           }
         )}
        >

@@ -50,6 +50,7 @@ export interface Properties {
   showDenomination?: boolean;
   templateShield?: boolean;
   marketId?: string;
+  retry?: Function;
 }
 
 function selectColumn(columnType: string, properties: Properties) {
@@ -83,7 +84,8 @@ function selectColumn(columnType: string, properties: Properties) {
     showFullPrecision,
     showDenomination,
     templateShield,
-    marketId
+    marketId,
+    retry
   } = properties;
 
   switch (columnType) {
@@ -99,6 +101,7 @@ function selectColumn(columnType: string, properties: Properties) {
           )}
           {showExtraNumber && templateShield && <MarketLink id={marketId}>{value}</MarketLink>}
           {showExtraNumber && !templateShield && <span>{value}</span>}
+          {retry && <span>Order failed when processing <button onClick={() => retry()}>Retry</button></span>}
         </>
       );
     case COLUMN_TYPES.POSITION_TYPE:

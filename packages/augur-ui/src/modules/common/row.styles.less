@@ -315,6 +315,25 @@ div.SingleRow3 {
   min-height: @size-64;
   max-height: @size-64;
 
+  &.Failed {
+    background: var(--color-error-10);
+
+    > ul > li {
+      > span:nth-of-type(2) {
+        .text-12;
+
+        color: var(--color-error);
+
+        > button {
+          .text-12-bold;
+
+          text-decoration: underline;
+          margin-left: @size-4;
+        }
+      }
+    }
+  }
+
   > ul {
     grid-template-columns: 2fr repeat(5, 1fr);
     border-top: @size-1 solid var(--color-dark-grey);

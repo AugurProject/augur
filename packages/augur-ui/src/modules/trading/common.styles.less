@@ -160,14 +160,6 @@
         > span:last-of-type {
           display: none;
         }
-
-        > button > svg {
-          margin-right: @size-6;
-
-          > path {
-            stroke: var(--color-primary-text);
-          }
-        }
       }
 
       > div {
@@ -311,45 +303,18 @@
         }
       }
     }
+  }
 
-    > header > button {
-      &.NEWFILL {
-        > svg {
-          margin: 0;
-  
-          > path {
-            stroke: var(--color-open);
-          }
-        }
-      }
+  .SportsBet > button > svg {
+    margin-right: @size-6;
 
-      &.FAILED {
-        > svg {
-          margin: 0;
-  
-          > path {
-            stroke: var(--color-error);
-          }
-        }
-      }
-
-      &.PENDING {
-        > svg {
-          animation: spin 2s linear infinite;
-          height: @size-14;
-          width: @size-14;
-          margin: 0;
-
-          > path {
-            stroke: var(--color-reporting);
-          }
-
-          LinearGradient > stop {
-            stop-color: var(--color-reporting);
-          }
-        }
-      }
+    > path {
+      stroke: var(--color-primary-text);
     }
+  }
+
+  .SportsBet > header > button > svg {
+    margin-right: @size-6;
   }
 
   .BetslipInput {
