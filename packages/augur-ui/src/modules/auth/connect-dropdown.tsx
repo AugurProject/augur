@@ -318,6 +318,7 @@ const ConnectDropdown = () => {
                   title="Open"
                   icon={Open}
                   disabled={wallet.disabled}
+                  small
                 />
               </div>
             );
@@ -342,6 +343,7 @@ const ConnectDropdown = () => {
               text="Edit"
               title="Edit"
               icon={Pencil}
+              small
             />
           </div>
         )}
@@ -354,14 +356,15 @@ const ConnectDropdown = () => {
             </div>
             <div>{referralLink}</div>
           </div>
-          <button
+          <SecondaryButton
+            small
             id="copy_referral"
             data-clipboard-text={referralLink}
-            onClick={() => copyClicked()}
+            action={() => copyClicked()}
+            text='Copy'
+            icon={ClipboardCopy}
             className={isCopied ? Styles.ShowConfirmaiton : null}
-          >
-            Copy {ClipboardCopy}
-          </button>
+          />
         </div>
 
         {(parentUniverseId !== null || !!forkingInfo) && (
