@@ -715,22 +715,22 @@ export const PendingIconButton = ({
     timestampUpdated
   } = bet;
   const [isRecentUpdate, setIsRecentUpdate] = useState(true);
-  // useEffect(() => {
-  //   setIsRecentUpdate(true);
-  // }, [timestampUpdated]);
+  useEffect(() => {
+    setIsRecentUpdate(true);
+  }, [timestampUpdated]);
 
-  // useEffect(() => {
-  //   const currentTime = new Date().getTime() / 1000;
-  //   const seconds = Math.round(currentTime - timestampUpdated);
-  //   const milliSeconds = seconds * 1000;
-  //   if (isRecentUpdate && status === BET_STATUS.FILLED && seconds < 20) {
-  //     setTimeout(() => {
-  //       setIsRecentUpdate(false);
-  //     }, 20000 - milliSeconds);
-  //   } else {
-  //     setIsRecentUpdate(false);
-  //   }
-  // }, [isRecentUpdate]);
+  useEffect(() => {
+    const currentTime = new Date().getTime() / 1000;
+    const seconds = Math.round(currentTime - timestampUpdated);
+    const milliSeconds = seconds * 1000;
+    if (isRecentUpdate && status === BET_STATUS.FILLED && seconds < 20) {
+      setTimeout(() => {
+        setIsRecentUpdate(false);
+      }, 20000 - milliSeconds);
+    } else {
+      setIsRecentUpdate(false);
+    }
+  }, [isRecentUpdate]);
 
   const { PENDING, FILLED, PARTIALLY_FILLED, FAILED } = BET_STATUS;
   let icon = null;
