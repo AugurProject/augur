@@ -27,7 +27,6 @@ interface MarketOutcomesListProps {
   hideOutcomes?: boolean;
   preview: boolean;
   orderBook: Getters.Markets.OutcomeOrderBook;
-  updateSelectedOrderProperties: Function;
 }
 
 const MarketOutcomesList = ({
@@ -38,7 +37,6 @@ const MarketOutcomesList = ({
   toggle = null,
   hideOutcomes = false,
   preview,
-  updateSelectedOrderProperties,
   orderBook
 }: MarketOutcomesListProps) => {
   const {
@@ -123,7 +121,6 @@ const MarketOutcomesList = ({
                 outcome={outcome}
                 selectedOutcomeId={selectedOutcomeId}
                 updateSelectedOutcome={updateSelectedOutcome}
-                updateSelectedOrderProperties={updateSelectedOrderProperties}
                 preview={preview}
                 scalarDenomination={scalarDenomination}
               />

@@ -51,13 +51,6 @@ import { canPostOrder } from 'modules/trades/actions/can-post-order';
 import { getIsTutorial, getIsPreview } from 'modules/market/store/market-utils';
 import { useTradingStore } from 'modules/trading/store/trading';
 
-export interface SelectedOrderProperties {
-  orderPrice: string;
-  orderQuantity: string;
-  selectedNav: string;
-  expirationDate?: Moment;
-}
-
 const getMarketPath = (id, theme) => ({
   pathname: makePath(MARKET),
   search: makeQuery({
@@ -96,8 +89,6 @@ const getDefaultTrade = ({
 
 const OrderTicketHeader = ({
   market,
-  updateSelectedOrderProperties,
-  selectedOrderProperties,
   updateTradeTotalCost,
 }) => {
   const {
@@ -122,10 +113,6 @@ const OrderTicketHeader = ({
         <button
           onClick={() => {
             updateSelectedNav(BUY);
-            updateSelectedOrderProperties({
-              ...orderProperties,
-              selectedNav: BUY,
-            });
             updateTradeTotalCost({
               ...orderProperties,
               selectedNav: BUY,
@@ -143,10 +130,6 @@ const OrderTicketHeader = ({
         <button
           onClick={() => {
             updateSelectedNav(SELL);
-            updateSelectedOrderProperties({
-              ...orderProperties,
-              selectedNav: SELL,
-            });
             updateTradeTotalCost({
               ...orderProperties,
               selectedNav: SELL,
@@ -164,7 +147,6 @@ const Wrapper = ({
   market,
   selectedOutcome,
   updateSelectedOutcome,
-  updateSelectedOrderProperties,
   updateLiquidity,
   tutorialNext,
   orderBook,
@@ -261,11 +243,6 @@ const Wrapper = ({
         orderPrice: "",
         orderQuantity: "",
       });
-      updateSelectedOrderProperties({
-        ...orderProperties,
-        orderPrice: '',
-        orderQuantity: '',
-      });
     }
   }
 
@@ -331,10 +308,6 @@ const Wrapper = ({
           String(getGasPrice())
         ).toString();
         updateOrderProperties({
-          orderQuantity: String(numShares),
-        });
-        updateSelectedOrderProperties({
-          ...orderProperties,
           orderQuantity: String(numShares),
         });
         setState({
@@ -563,7 +536,6 @@ const Wrapper = ({
       <div>
         <OrderTicketHeader
           market={market}
-          updateSelectedOrderProperties={updateSelectedOrderProperties}
           updateTradeTotalCost={updateTradeTotalCost}
         />
         <Form
@@ -585,10 +557,6 @@ const Wrapper = ({
               property.hasOwnProperty(INPUT_TYPES.QUANTITY) ||
               property.hasOwnProperty(INPUT_TYPES.SELECTED_NAV)
             ) {
-              updateSelectedOrderProperties({
-                ...orderProperties,
-                ...property,
-              });
               updateOrderProperties({ ...property });
             } else {
               setState({ ...state, ...property });

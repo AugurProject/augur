@@ -36,7 +36,6 @@ import { Trading } from 'modules/trading/store/trading';
 
 interface OrderBookSideProps {
   processedOrderbook: QuantityOutcomeOrderBook;
-  updateSelectedOrderProperties: Function;
   pricePrecision: number;
   setHovers: Function;
   type: string;
@@ -44,7 +43,7 @@ interface OrderBookSideProps {
   hoverState: {
     hoveredSide?: string;
     hoveredOrderIndex?: number;
-  },
+  };
   showButtons: boolean;
   orderbookLoading: boolean;
   usePercent: boolean;
@@ -52,7 +51,6 @@ interface OrderBookSideProps {
 
 interface OrderBookProps {
   orderBook: QuantityOutcomeOrderBook;
-  updateSelectedOrderProperties: Function;
   pricePrecision: number;
   toggle: Function;
   hide?: boolean;
@@ -61,9 +59,9 @@ interface OrderBookProps {
   expirationTime: number;
   market: MarketData;
 }
-const LOADING = "Loading ...";
-const ADD_OFFER = "Add Offer";
-const ADD_BID = "Add Bid";
+const LOADING = 'Loading ...';
+const ADD_OFFER = 'Add Offer';
+const ADD_BID = 'Add Bid';
 const EMPTY_BUY = {
   orderPrice: '',
   orderQuantity: '',
@@ -78,7 +76,6 @@ const EMPTY_SELL = {
 const OrderBookSide = ({
   pricePrecision = 4,
   processedOrderbook,
-  updateSelectedOrderProperties,
   hoverState,
   setHovers,
   type,
@@ -91,10 +88,7 @@ const OrderBookSide = ({
   const side = useRef({
     current: { clientHeight: 0, scrollHeight: 0, scrollTop: 0 },
   });
-  const {
-    hoveredSide,
-    hoveredOrderIndex,
-  } = hoverState;
+  const { hoveredSide, hoveredOrderIndex } = hoverState;
   const isAsks = type === ASKS;
   const isScalar = marketType === SCALAR;
   const opts = { removeComma: true };
@@ -117,28 +111,20 @@ const OrderBookSide = ({
       {orderBookOrders.length === 0 && (
         <div className={Styles.NoOrders}>
           {orderbookLoading && LOADING}
-          {!orderbookLoading &&
-            !showButtons &&
-            (isAsks ? ADD_OFFER : ADD_BID)}
+          {!orderbookLoading && !showButtons && (isAsks ? ADD_OFFER : ADD_BID)}
           {!orderbookLoading &&
             showButtons &&
             (isAsks ? (
               <CancelTextButton
                 text={ADD_OFFER}
                 title={ADD_OFFER}
-                action={() => {
-                  updateOrderProperties(EMPTY_SELL);
-                  updateSelectedOrderProperties(EMPTY_SELL);
-                }}
+                action={() => updateOrderProperties(EMPTY_SELL)}
               />
             ) : (
               <CancelTextButton
                 text={ADD_BID}
                 title={ADD_BID}
-                action={() => {
-                  updateOrderProperties(EMPTY_BUY);
-                  updateSelectedOrderProperties(EMPTY_BUY);
-                }}
+                action={() => updateOrderProperties(EMPTY_BUY)}
               />
             ))}
         </div>
@@ -167,18 +153,13 @@ const OrderBookSide = ({
             })}
             onMouseEnter={() => setHovers(i, type)}
             onMouseLeave={() => setHovers(null, null)}
-            onClick={() => {
+            onClick={() =>
               updateOrderProperties({
                 orderPrice: order.price,
                 orderQuantity: order.cumulativeShares,
                 selectedNav: isAsks ? BUY : SELL,
               })
-              updateSelectedOrderProperties({
-                orderPrice: order.price,
-                orderQuantity: order.cumulativeShares,
-                selectedNav: isAsks ? BUY : SELL,
-              });
-            }}
+            }
           >
             <div>
               <div
@@ -208,30 +189,25 @@ const OrderBookSide = ({
 };
 
 const OrderBook = ({
-  updateSelectedOrderProperties,
   pricePrecision = 2,
   toggle,
   hide = false,
   showButtons,
   orderBook,
-  market: {
-    id,
-    marketType,
-    minPrice,
-    maxPrice,
-    orderBook: marketOrderBook
-  },
+  market: { id, marketType, minPrice, maxPrice, orderBook: marketOrderBook },
 }: OrderBookProps) => {
   const {
     orderBooks,
     actions: { updateOrderBook },
   } = useMarketsStore();
   const location = useLocation();
-  const {
-    isPreview,
-    preview: initialLiquidity
-  } = getTutorialPreview(id, location);
-  const orderbookLoading = isPreview ? !marketOrderBook : !(orderBooks[id]?.orderBook);
+  const { isPreview, preview: initialLiquidity } = getTutorialPreview(
+    id,
+    location
+  );
+  const orderbookLoading = isPreview
+    ? !marketOrderBook
+    : !orderBooks[id]?.orderBook;
   const {
     blockchain: { currentAugurTimestamp: currentTimeInSeconds },
   } = useAppStatusStore();
@@ -240,8 +216,7 @@ const OrderBook = ({
   };
   const outcomeOrderBook = orderBook || {};
   const usePercent =
-    marketType === SCALAR &&
-    orderBookSelected === INVALID_OUTCOME_ID;
+    marketType === SCALAR && orderBookSelected === INVALID_OUTCOME_ID;
 
   let processedOrderbook = orderAndAssignCumulativeShares(outcomeOrderBook);
 
@@ -273,26 +248,18 @@ const OrderBook = ({
       expirationMaxSeconds > 0 &&
       expirationMaxSeconds < NUMBER_OF_SECONDS_IN_A_DAY
     ) {
-      const timer = setTimeout(
-        () => {
-          return updateOrderBook(
-            id,
-            null,
-            loadMarketOrderBook(id)
-          );
-        },
-        expirationMaxSeconds * 1000
-      );
+      const timer = setTimeout(() => {
+        return updateOrderBook(id, null, loadMarketOrderBook(id));
+      }, expirationMaxSeconds * 1000);
       return () => clearTimeout(timer);
     }
   }, [expirationTime]);
   const sideProps = {
     pricePrecision,
     processedOrderbook,
-    updateSelectedOrderProperties,
     marketType,
     setHovers: (hoveredOrderIndex: number, hoveredSide: string) =>
-    setHoverState({ hoveredOrderIndex, hoveredSide }),
+      setHoverState({ hoveredOrderIndex, hoveredSide }),
     hoverState,
     showButtons,
     orderbookLoading,
@@ -307,10 +274,7 @@ const OrderBook = ({
         toggle={toggle}
         hide={hide}
       />
-      <OrderBookSide
-        type={ASKS}
-        {...sideProps}
-      />
+      <OrderBookSide type={ASKS} {...sideProps} />
       {!hide && (
         <div className={Styles.Midmarket}>
           {hasOrders &&
@@ -323,10 +287,7 @@ const OrderBook = ({
             }`}
         </div>
       )}
-      <OrderBookSide
-        type={BIDS}
-        {...sideProps}
-      />
+      <OrderBookSide type={BIDS} {...sideProps} />
     </section>
   );
 };

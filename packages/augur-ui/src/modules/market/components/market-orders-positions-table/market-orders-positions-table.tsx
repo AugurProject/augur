@@ -30,9 +30,6 @@ interface MarketOrdersPositionsTableProps {
   market: MarketData;
   fills?: UIOrder[];
   toggle?: () => void;
-  updateSelectedOrderProperties: (
-    selectedOrderProperties: DefaultOrderProperties
-  ) => void;
   selected?: number;
   positions?: any[];
 }
@@ -43,7 +40,6 @@ const MarketOrdersPositionsTable: React.FC<MarketOrdersPositionsTableProps> = ({
   fills,
   orders,
   toggle,
-  updateSelectedOrderProperties,
   selected,
   positions,
 }: MarketOrdersPositionsTableProps) => {
@@ -114,7 +110,6 @@ const MarketOrdersPositionsTable: React.FC<MarketOrdersPositionsTableProps> = ({
           marketId={marketId}
           market={market}
           extendedView
-          updateSelectedOrderProperties={updateSelectedOrderProperties}
           positions={positions}
         />
       </ModulePane>

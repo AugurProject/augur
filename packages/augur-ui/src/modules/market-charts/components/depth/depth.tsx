@@ -21,7 +21,6 @@ interface DepthChartProps {
   pricePrecision: number;
   updateHoveredPrice: Function;
   updateHoveredDepth: Function;
-  updateSelectedOrderProperties: Function;
   marketMin: BigNumber;
   marketMax: BigNumber;
   hasOrders: boolean;
@@ -71,7 +70,6 @@ function determineInitialZoom(props) {
 
 const DepthChart = ({
   updateHoveredPrice,
-  updateSelectedOrderProperties,
   updateHoveredDepth,
   orderBook,
   market,
@@ -123,7 +121,6 @@ const DepthChart = ({
       marketMin,
       marketMax,
       updateHoveredPrice,
-      updateSelectedOrderProperties,
       hasOrders,
       zoom,
     });
@@ -142,7 +139,6 @@ const DepthChart = ({
       marketMin,
       marketMax,
       updateHoveredPrice,
-      updateSelectedOrderProperties,
       hasOrders,
       zoom,
     });
@@ -281,7 +277,6 @@ const DepthChart = ({
         marketMin,
         marketMax,
         updateHoveredPrice,
-        updateSelectedOrderProperties,
         hasOrders,
         zoom,
       } = options;
@@ -343,7 +338,6 @@ const DepthChart = ({
         marketMin,
         marketMax,
         updateHoveredPrice,
-        updateSelectedOrderProperties,
       });
 
       drawCrosshairs({
@@ -449,7 +443,6 @@ const DepthChart = ({
       marketMin,
       marketMax,
       updateHoveredPrice,
-      updateSelectedOrderProperties,
       hasOrders,
       zoom,
     });
@@ -852,7 +845,6 @@ function attachHoverClickHandlers(options) {
     marketMin,
     marketMax,
     updateHoveredPrice,
-    updateSelectedOrderProperties,
   } = options;
 
   depthChart
@@ -975,11 +967,6 @@ function attachHoverClickHandlers(options) {
         createBigNumber(orderPrice).lte(marketMax)
       ) {
         Trading.actions.updateOrderProperties({
-          orderQuantity: nearestFillingOrder[0],
-          orderPrice: nearestFillingOrder[1],
-          selectedNav: nearestFillingOrder[4] === BIDS ? SELL : BUY,
-        });
-        updateSelectedOrderProperties({
           orderQuantity: nearestFillingOrder[0],
           orderPrice: nearestFillingOrder[1],
           selectedNav: nearestFillingOrder[4] === BIDS ? SELL : BUY,

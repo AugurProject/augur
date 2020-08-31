@@ -145,7 +145,6 @@ const MarketView = ({
     selectedOutcomeId,
     extendOrderBook,
     extendTradeHistory,
-    selectedOrderProperties,
     extendOutcomesList,
     extendOrders,
     tutorialStep,
@@ -243,11 +242,9 @@ const MarketView = ({
         });
         setState({
           ...state,
-          introShowing: true,
-          selectedOrderProperties: {
-            ...DEFAULT_ORDER_PROPERTIES
-          },
+          introShowing: true
         });
+        Trading.actions.clearOrderProperties();
       }
     } else if (
       market?.marketType === SCALAR &&
@@ -368,9 +365,8 @@ const MarketView = ({
       });
     }
   }
-
-  function updateSelectedOrderProperties(selectedOrderProperties) {
-    if (tradingTutorial) checkTutorialErrors(selectedOrderProperties);
+  // TODO: update functionality to handle this behavior.
+  function updateSelectedOrderProperties() {
     if (pane === MARKET_INFO) {
       document
         .querySelector('.trading-form-styles_TradingForm')
@@ -420,7 +416,7 @@ const MarketView = ({
   }
 
   function next() {
-    if (!checkTutorialErrors(selectedOrderProperties)) {
+    if (!checkTutorialErrors(Trading.get().orderProperties)) {
       setState({
         ...state,
         tutorialStep: tutorialStep + 1,
@@ -485,17 +481,11 @@ const MarketView = ({
                       selectedOutcomeId={selectedOutcomeId}
                       updateSelectedOutcome={updateSelectedOutcome}
                       orderBook={orderBook}
-                      updateSelectedOrderProperties={
-                        updateSelectedOrderProperties
-                      }
                     />
                     <ModuleTabs selected={0} fillForMobile>
                       <ModulePane label="Order Book">
                         <div className={Styles.Orders}>
                           <OrderBook
-                            updateSelectedOrderProperties={
-                              updateSelectedOrderProperties
-                            }
                             toggle={toggleOrderBook}
                             hide={extendTradeHistory}
                             market={market}
@@ -522,9 +512,6 @@ const MarketView = ({
                       selectedOutcomeId={selectedOutcomeId}
                       updateSelectedOutcome={updateSelectedOutcome}
                       orderBook={outcomeOrderBook}
-                      updateSelectedOrderProperties={
-                        updateSelectedOrderProperties
-                      }
                     />
                   </div>
                 </ModulePane>
@@ -558,9 +545,6 @@ const MarketView = ({
                       market={market}
                       isArchived={isArchived}
                       selectedOutcomeId={selectedOutcomeId}
-                      updateSelectedOrderProperties={
-                        updateSelectedOrderProperties
-                      }
                       orderBook={outcomeOrderBook}
                     />
                   </div>
@@ -577,9 +561,6 @@ const MarketView = ({
                   <div className={Styles.PaneContainer}>
                     <h1>{description}</h1>
                     <MarketOrdersPositionsTable
-                      updateSelectedOrderProperties={
-                        updateSelectedOrderProperties
-                      }
                       marketId={marketId}
                       market={preview && market}
                       orders={orders}
@@ -618,9 +599,6 @@ const MarketView = ({
                     market={market}
                     selectedOutcomeId={selectedOutcomeId}
                     updateSelectedOutcome={updateSelectedOutcome}
-                    updateSelectedOrderProperties={
-                      updateSelectedOrderProperties
-                    }
                     tutorialNext={next}
                   />
                   {isTrading && (
@@ -629,7 +607,7 @@ const MarketView = ({
                       leftBottom={isPlaceOrder}
                       next={() => {
                         if (isPlaceOrder) {
-                          updateSelectedOrderProperties({
+                          Trading.actions.updateOrderProperties({
                             orderQuantity: '',
                             orderPrice: '',
                           });
@@ -650,16 +628,12 @@ const MarketView = ({
                   updateSelectedOutcome={updateSelectedOutcome}
                   hideOutcomes={cat5 ? !extendOutcomesList : false}
                   orderBook={orderBook}
-                  updateSelectedOrderProperties={updateSelectedOrderProperties}
                 />
                 <div className={ChartsPaneStyle}>
                   <MarketChartsPane
                     marketId={marketId}
                     isArchived={isArchived}
                     selectedOutcomeId={selectedOutcomeId}
-                    updateSelectedOrderProperties={
-                      updateSelectedOrderProperties
-                    }
                     toggle={
                       cat5
                         ? () => toggleMiddleColumn('extendOutcomesList')
@@ -672,9 +646,6 @@ const MarketView = ({
                 </div>
                 <div className={OrdersPaneStyle}>
                   <MarketOrdersPositionsTable
-                    updateSelectedOrderProperties={
-                      updateSelectedOrderProperties
-                    }
                     marketId={marketId}
                     toggle={
                       cat5 ? null : () => toggleMiddleColumn('extendOrders')
@@ -698,9 +669,6 @@ const MarketView = ({
                 <div className={Styles.OrderBookAndHistory}>
                   <div className={OrderBookStyle}>
                     <OrderBook
-                      updateSelectedOrderProperties={
-                        updateSelectedOrderProperties
-                      }
                       toggle={toggleOrderBook}
                       hide={extendTradeHistory}
                       market={market}

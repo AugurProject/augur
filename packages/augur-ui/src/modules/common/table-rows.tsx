@@ -114,7 +114,6 @@ interface MarketOutcomeProps {
   preview: Boolean;
   marketId: string;
   updateSelectedOutcome: Function;
-  updateSelectedOrderProperties: Function;
   scalarDenomination: string;
   selectedOutcomeId: number;
 }
@@ -125,7 +124,6 @@ export const MarketOutcome = ({
   preview,
   marketId,
   updateSelectedOutcome,
-  updateSelectedOrderProperties,
   scalarDenomination,
   selectedOutcomeId,
 }: MarketOutcomeProps) => {
@@ -236,11 +234,6 @@ export const MarketOutcome = ({
           orderQuantity: topBidShares?.value?.toString(),
           selectedNav: SELL,
         });
-        updateSelectedOrderProperties({
-          orderPrice: topBidPrice?.value?.toString(),
-          orderQuantity: topBidShares?.value?.toString(),
-          selectedNav: SELL,
-        });
         e.stopPropagation();
       },
     },
@@ -254,11 +247,6 @@ export const MarketOutcome = ({
       action: e => {
         updateSelectedOutcome(outcome.id, true);
         Trading.actions.updateOrderProperties({
-          orderPrice: topAskPrice?.value?.toString(),
-          orderQuantity: topAskShares?.value?.toString(),
-          selectedNav: BUY,
-        });
-        updateSelectedOrderProperties({
           orderPrice: topAskPrice?.value?.toString(),
           orderQuantity: topAskShares?.value?.toString(),
           selectedNav: BUY,
@@ -544,7 +532,6 @@ interface PositionRowProps {
   extendedView: Boolean;
   isFirst: Boolean;
   showPercent: Boolean;
-  updateSelectedOrderProperties: Function;
 }
 
 export const PositionRow = ({
@@ -552,7 +539,6 @@ export const PositionRow = ({
   showExpandedToggleOnMobile,
   extendedView,
   isFirst,
-  updateSelectedOrderProperties,
   showPercent,
 }: PositionRowProps) => {
   const { marketInfos } = useMarketsStore();
@@ -596,11 +582,6 @@ export const PositionRow = ({
       keyId: 'position-quantity-' + position.id,
       action: () => {
         updateOrderProperties({
-          orderQuantity: position.quantity.value,
-          selectedNav: position.type === SHORT ? BUY : SELL,
-          orderPrice: '',
-        });
-        updateSelectedOrderProperties({
           orderQuantity: position.quantity.value,
           selectedNav: position.type === SHORT ? BUY : SELL,
           orderPrice: '',

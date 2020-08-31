@@ -1,15 +1,12 @@
 import React, { useMemo } from 'react';
-import { SelectedOrderProperties } from 'modules/trading/components/wrapper';
 import Wrapper from 'modules/trading/components/wrapper';
 import Styles from 'modules/trading/components/trading-form.styles.less';
-import { MarketData, OutcomeFormatted, NewMarket, IndividualOutcomeOrderBook } from 'modules/types';
+import { MarketData, NewMarket, IndividualOutcomeOrderBook } from 'modules/types';
 import { TradingProvider } from 'modules/trading/store/trading';
  
 interface TradingFormProps {
   selectedOutcomeId: number;
   market: MarketData | NewMarket;
-  selectedOrderProperties: SelectedOrderProperties;
-  updateSelectedOrderProperties: Function;
   updateSelectedOutcome: Function;
   updateLiquidity?: Function;
   tutorialNext?: Function;

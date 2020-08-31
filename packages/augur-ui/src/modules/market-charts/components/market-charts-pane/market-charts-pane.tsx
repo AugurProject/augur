@@ -16,7 +16,6 @@ import { getMarketAgeInDays } from 'utils/format-date';
 interface MarketChartsPaneProps {
   marketId: string;
   selectedOutcomeId: number;
-  updateSelectedOrderProperties: Function;
   market: MarketData;
   toggle: Function;
   orderBook: IndividualOutcomeOrderBook;
@@ -27,7 +26,6 @@ interface MarketChartsPaneProps {
 const MarketChartsPane = ({
   marketId,
   selectedOutcomeId,
-  updateSelectedOrderProperties,
   market,
   toggle = () => {},
   isArchived,
@@ -65,7 +63,6 @@ const MarketChartsPane = ({
             <ModulePane label="Market Depth">
               <DepthChart
                 {...shared}
-                updateSelectedOrderProperties={updateSelectedOrderProperties}
                 hoveredPriceProp={hoveredPrice}
                 hoveredDepth={hoveredDepth}
                 updateHoveredDepth={updateHoveredDepth}
@@ -109,7 +106,6 @@ const MarketChartsPane = ({
             >
               <DepthChart
                 {...shared}
-                updateSelectedOrderProperties={updateSelectedOrderProperties}
                 hoveredPriceProp={hoveredPrice}
                 hoveredDepth={hoveredDepth}
                 updateHoveredDepth={updateHoveredDepth}

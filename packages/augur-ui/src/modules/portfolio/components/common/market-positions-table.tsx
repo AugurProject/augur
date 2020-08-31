@@ -14,7 +14,6 @@ export interface MarketPositionsTableProps {
   positions: Getters.Users.TradingPosition[];
   extendedView: boolean;
   marketId: string;
-  updateSelectedOrderProperties: Function;
   market: MarketData;
 }
 
@@ -22,7 +21,6 @@ export const PositionsTable = ({
   market,
   marketId,
   extendedView,
-  updateSelectedOrderProperties,
   positions
 }: MarketPositionsTableProps) => {
   let marketIdSelected = marketId;
@@ -59,7 +57,6 @@ export const PositionsTable = ({
             isSingle={extendedView}
             showExpandedToggleOnMobile
             isFirst={index === 0}
-            updateSelectedOrderProperties={updateSelectedOrderProperties}
           />
         ))}
       </div>
