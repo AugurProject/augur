@@ -8,8 +8,6 @@ import {
   SMALL_MOBILE,
   MIN_QUANTITY,
   GWEI_CONVERSION,
-  INVALID_OUTCOME_COMPARE,
-  INVALID_OUTCOME_LABEL,
 } from 'modules/common/constants';
 import FormStyles from 'modules/common/form-styles.less';
 import Styles from 'modules/trading/components/form.styles.less';
@@ -18,16 +16,8 @@ import { SquareDropdown } from 'modules/common/selection';
 import { TextInput } from 'modules/common/form';
 import getPrecision from 'utils/get-number-precision';
 import convertExponentialToDecimal from 'utils/convert-exponential';
-import { MarketData, OutcomeFormatted } from 'modules/types';
+import { MarketData } from 'modules/types';
 import type { Getters } from "@augurproject/sdk";
-import {
-  getTradeInterval,
-} from '@augurproject/sdk-lite';
-import {
-  tickSizeToNumTickWithDisplayPrices,
-  convertDisplayAmountToOnChainAmount,
-  QUINTILLION,
-} from '@augurproject/utils';
 import { CancelTextButton, SecondaryButton } from 'modules/common/buttons';
 import moment, { Moment } from 'moment';
 import {

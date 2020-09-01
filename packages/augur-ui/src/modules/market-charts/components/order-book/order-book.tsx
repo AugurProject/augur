@@ -265,14 +265,12 @@ const OrderBook = ({
     orderbookLoading,
     usePercent,
   };
-
   return (
     <section className={Styles.OrderBook}>
       <OrderHeader
         title="Order Book"
         headers={['quantity', usePercent ? 'percent' : 'price', 'my quantity']}
-        toggle={toggle}
-        hide={hide}
+        {...{ toggle, hide }}
       />
       <OrderBookSide type={ASKS} {...sideProps} />
       {!hide && (

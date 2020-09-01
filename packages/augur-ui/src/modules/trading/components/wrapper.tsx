@@ -45,10 +45,16 @@ import {
   MARKET_ID_PARAM_NAME,
   THEME_NAME,
 } from 'modules/routes/constants/param-names';
-import { FORM_INPUT_TYPES as INPUT_TYPES } from 'modules/trading/store/constants';
+import { FORM_INPUT_TYPES } from 'modules/trading/store/constants';
 import { canPostOrder } from 'modules/trades/actions/can-post-order';
 import { getIsTutorial, getIsPreview } from 'modules/market/store/market-utils';
 import { useTradingStore } from 'modules/trading/store/trading';
+
+const {
+  PRICE,
+  QUANTITY,
+  SELECTED_NAV
+} = FORM_INPUT_TYPES;
 
 const getMarketPath = (id, theme) => ({
   pathname: makePath(MARKET),
@@ -86,10 +92,7 @@ const getDefaultTrade = ({
   );
 };
 
-const OrderTicketHeader = ({
-  market,
-  updateTradeTotalCost,
-}) => {
+const OrderTicketHeader = ({ market, updateTradeTotalCost }) => {
   const {
     orderProperties,
     actions: { updateSelectedNav },
@@ -215,10 +218,7 @@ const Wrapper = ({
       // if SelectedOrderProps aren't empty but no estimated dai and have no price or numShares for trade, then recalculate.
       updateTradeTotalCost(orderProperties);
     }
-  }, [
-    orderProperties.orderQuantity,
-    orderProperties.orderPrice,
-  ]);
+  }, [orderProperties.orderQuantity, orderProperties.orderPrice]);
 
   function clearOrderForm(wholeForm = true) {
     const tradeUpdate = getDefaultTrade({ market, selectedOutcome });
@@ -239,8 +239,8 @@ const Wrapper = ({
     setState({ ...state, ...updatedState });
     if (wholeForm) {
       updateOrderProperties({
-        orderPrice: "",
-        orderQuantity: "",
+        orderPrice: '',
+        orderQuantity: '',
       });
     }
   }
@@ -372,7 +372,7 @@ const Wrapper = ({
   }
 
   async function queueStimulateTrade(order, useValues) {
-    console.log("async queueSimTrade", state.simulateQueue);
+    console.log('async queueSimTrade', state.simulateQueue);
     const queue = state.simulateQueue.slice(0);
     queue.push(
       new Promise(resolve =>
@@ -419,9 +419,9 @@ const Wrapper = ({
         })
       )
     );
-    console.log("post push", queue);
+    console.log('post push', queue);
     await Promise.all(queue).then(results => {
-      console.log("after awaitAll", results);
+      console.log('after awaitAll', results);
       setState({ ...state, ...results[results.length - 1] });
     });
   }
@@ -529,23 +529,16 @@ const Wrapper = ({
   const showTip = !hasHistory && orderEmpty;
   const { potentialDaiLoss, sharesFilled, orderShareProfit } = state.trade;
   const showConfirm =
-    (potentialDaiLoss && potentialDaiLoss.value !== 0) ||
-    (orderShareProfit && orderShareProfit.value !== 0) ||
-    (sharesFilled && sharesFilled.value !== 0);
+    potentialDaiLoss?.value > 0 ||
+    orderShareProfit?.value > 0 ||
+    sharesFilled?.value > 0;
+
   const actionButton = getActionButton();
   return (
     <section className={Styles.Wrapper}>
       <div>
-        <OrderTicketHeader
-          market={market}
-          updateTradeTotalCost={updateTradeTotalCost}
-        />
+        <OrderTicketHeader {...{ market, updateTradeTotalCost }} />
         <Form
-          market={market}
-          tradingTutorial={tradingTutorial}
-          initialLiquidity={initialLiquidity}
-          selectedOutcome={selectedOutcome}
-          updateSelectedOutcome={updateSelectedOutcome}
           orderState={{
             ...state,
             orderPrice: orderProperties.orderPrice,
@@ -555,30 +548,39 @@ const Wrapper = ({
           updateState={updates => setState({ ...state, ...updates })}
           updateOrderProperty={property => {
             if (
-              property.hasOwnProperty(INPUT_TYPES.PRICE) ||
-              property.hasOwnProperty(INPUT_TYPES.QUANTITY) ||
-              property.hasOwnProperty(INPUT_TYPES.SELECTED_NAV)
+              property.hasOwnProperty(PRICE) ||
+              property.hasOwnProperty(QUANTITY) ||
+              property.hasOwnProperty(SELECTED_NAV)
             ) {
               updateOrderProperties({ ...property });
             } else {
               setState({ ...state, ...property });
             }
           }}
-          clearOrderForm={clearOrderForm}
-          updateTradeTotalCost={updateTradeTotalCost}
-          updateTradeNumShares={updateTradeNumShares}
-          clearOrderConfirmation={clearOrderConfirmation}
+          {...{
+            market,
+            tradingTutorial,
+            initialLiquidity,
+            selectedOutcome,
+            updateSelectedOutcome,
+            clearOrderForm,
+            updateTradeTotalCost,
+            updateTradeNumShares,
+            clearOrderConfirmation,
+          }}
         />
       </div>
       {showConfirm && (
         <Confirm
-          selectedOutcome={selectedOutcome}
-          market={market}
-          trade={state.trade}
-          postOnlyOrder={state.postOnlyOrder}
-          initialLiquidity={initialLiquidity}
-          tradingTutorial={tradingTutorial}
-          allowPostOnlyOrder={state.allowPostOnlyOrder}
+          {...{
+            selectedOutcome,
+            market,
+            tradingTutorial,
+            initialLiquidity,
+            trade: state.trade,
+            postOnlyOrder: state.postOnlyOrder,
+            allowPostOnlyOrder: state.allowPostOnlyOrder,
+          }}
         />
       )}
       <div>{actionButton}</div>
