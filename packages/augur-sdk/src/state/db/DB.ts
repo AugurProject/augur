@@ -58,6 +58,8 @@ import { WarpSyncCheckpointsDB } from './WarpSyncCheckpointsDB';
 import { StoredOrder, ZeroXOrders } from './ZeroXOrders';
 import { GetterCache } from './GetterCache';
 
+import './ParaDBFilterAddOn';
+
 interface Schemas {
   [table: string]: string;
 }
@@ -185,6 +187,12 @@ export class DB {
     private uploadBlockNumber: number,
     private enableZeroX: boolean
   ) {
+    // @ts-ignore
+    this.dexieDB.paraEventNames = this.paraEventNames;
+
+    // @ts-ignore
+    this.dexieDB.paraDeploy = augur.config.paraDeploy;
+
     this.isParaDeploy = typeof augur.config.paraDeploy === 'string';
     logFilters.listenForBlockRemoved(this.rollback.bind(this));
   }

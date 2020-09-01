@@ -118,7 +118,8 @@ export class DerivedDB extends RollbackTable {
     const logs = await this.stateDB.dexieDB[eventName]
       .where('blockNumber')
       .aboveOrEqual(highestSyncedBlockNumber)
-      .toArray();
+      // @ts-ignore
+      .toArrayOriginal();
 
     return logs.filter((log) => this.paraDeploy ? typeof log.para === 'string' : typeof log.para === 'undefined');
   }
