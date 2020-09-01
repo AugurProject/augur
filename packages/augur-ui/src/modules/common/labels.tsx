@@ -1540,7 +1540,6 @@ export const ApprovalTxButtonLabelCmp = ({
   approvalType,
   ignore,
   addPendingData,
-  removePendingData,
   hideAddFunds = false,
 }: ApprovalTxButtonLabelProps) => {
   const [approvalsNeeded, setApprovalsNeeded] = useState(0);
@@ -1572,6 +1571,9 @@ export const ApprovalTxButtonLabelCmp = ({
           break;
           case constants.ADDLIQUIDITY:
             setDescription(`Approval requires ${approvalsNeeded} signing${approvalsNeeded > 1 ? 's' : ''}. Once confirmed you can submit your orders.`)
+          break;
+          case constants.APPROVE:
+            setDescription(`Approval requires ${approvalsNeeded} signing${approvalsNeeded > 1 ? 's' : ''}. Once confirmed you can swap your tokens.`)
           break;
           case constants.APPROVE:
             setDescription(`Approval requires ${approvalsNeeded} signing${approvalsNeeded > 1 ? 's' : ''}. Once confirmed you can swap your tokens.`)

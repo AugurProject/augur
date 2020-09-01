@@ -49,3 +49,4 @@ export * from './repeat';
 export * from './configuration';
 export * from './conversions';
 export * from './gasStation';
+export * from './extract-ipfs-url';

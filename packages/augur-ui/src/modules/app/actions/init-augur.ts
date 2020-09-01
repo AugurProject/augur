@@ -1,5 +1,5 @@
 import type { SDKConfiguration } from '@augurproject/artifacts';
-import { isDevNetworkId, mergeConfig } from '@augurproject/utils';
+import { extractIPFSUrl, IPFSHashVersion, isDevNetworkId, mergeConfig } from '@augurproject/utils';
 import detectEthereumProvider from '@metamask/detect-provider';
 import { AppState } from 'appStore';
 import { toChecksumAddress } from 'ethereumjs-util';
@@ -225,6 +225,16 @@ export function connectAugur(
         dispatch(updateAuthStatus(RESTORED_ACCOUNT, true));
         dispatch(updateLoginAccount(accountObject));
         break;
+    }
+
+    // Use the default gateway if currently using one.
+    const ipfsEndpoint = extractIPFSUrl(window.location.href);
+    if(ipfsEndpoint.version !== IPFSHashVersion.Invalid) {
+      config = mergeConfig(config, {
+        warpSync: {
+          ipfsEndpoint
+        }
+      });
     }
 
     // Disable mesh for googleBot

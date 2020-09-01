@@ -545,6 +545,62 @@ export const Swap = ({
   }
 
 
+
+  const getCurrentTokenContract = () => {
+    const { contracts } = augurSdk.get();
+
+    let tokenContract = null;
+    if (fromTokenType === DAI) {
+      tokenContract = contracts.cash;
+    } else if (fromTokenType === REP) {
+      tokenContract = contracts.reputationToken;
+    } else if (fromTokenType === USDT) {
+      tokenContract = contracts.usdt;
+    } else if (fromTokenType === USDC) {
+      tokenContract = contracts.usdc;
+    } else {
+      tokenContract = contracts.weth;
+    }
+    return tokenContract;
+  }
+
+  const setTokenApprovalSwap = async () => {
+    const tokenContract = getCurrentTokenContract();
+    await setTokenApproval(address, tokenContract);
+  }
+
+  const [tokenUnlocked, setTokenUnlocked] = useState(false);
+  const [isApproved, setIsApproved] = useState({
+    eth: false,
+    dai: false,
+    rep: false,
+    usdc: false,
+    usdt: false,
+  });
+
+  const showUnlockForToken = async () => {
+    const tokenContract = getCurrentTokenContract();
+    const approved = await checkTokenApproval(address, tokenContract);
+    setIsApproved({
+      ...isApproved,
+      [fromTokenType.toLowerCase()]: approved
+    });
+
+    return approved;
+  }
+
+  useEffect(() => {
+    if (!isApproved[fromTokenType.toLowerCase()]) {
+      const getData = async () => {
+        const tokenUnlocked = await showUnlockForToken();
+        setTokenUnlocked(tokenUnlocked);
+      }
+      getData();
+    } else {
+      setTokenUnlocked(true);
+    }
+  }, [fromTokenType, balances]);
+
   return (
     <div className={Styles.Swap}>
       <>

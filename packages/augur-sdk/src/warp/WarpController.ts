@@ -1,3 +1,4 @@
+import * as CIDTool from 'cid-tool';
 import {
   Log,
   MarketReportingState,
@@ -5,7 +6,7 @@ import {
   SubscriptionEventName,
 } from '@augurproject/sdk-lite';
 import { Log as SerializedLog } from '@augurproject/types';
-import { logger } from '@augurproject/utils';
+import { IPFSEndpointInfo, IPFSHashVersion, logger } from '@augurproject/utils';
 import Dexie from 'dexie';
 import { Block } from 'ethers/providers';
 import { BigNumber } from 'ethers/utils';
@@ -112,13 +113,8 @@ export class WarpController {
     private augur: Augur<Provider>,
     private provider: Provider,
     private uploadBlockNumber: number,
+    private ipfsEndpointInfo:IPFSEndpointInfo,
     ipfs?: Promise<IPFS>,
-    // This is to simplify swapping out file retrieval mechanism.
-    private _fileRetrievalFn: (ipfsPath: string) => Promise<Uint8Array> = (
-      ipfsPath: string
-    ) => fetch(`https://cloudflare-ipfs.com/ipfs/${ipfsPath}`)
-      .then(item => item.arrayBuffer())
-      .then(item => new Uint8Array(item))
   ) {
     this.checkpoints = new Checkpoints(provider);
     if (ipfs) {
@@ -308,11 +304,35 @@ export class WarpController {
     return hash;
   }
 
-  getFile(ipfsPath: string) {
-    const self = this;
-    return new Promise<CheckpointInterface>(async function(resolve, reject) {
-      const timeout = setTimeout(function() {reject(new Error('Request timed out'));}, FILE_FETCH_TIMEOUT);
-      const fileResult = await self._fileRetrievalFn(ipfsPath);
+  getFile(ipfsHash: string, ipfsPath: string) {
+    return new Promise<CheckpointInterface>(async (resolve, reject) => {
+      const timeout = setTimeout(() => {reject(new Error('Request timed out'));}, FILE_FETCH_TIMEOUT);
+      let fileResult;
+      switch (this.ipfsEndpointInfo.version) {
+        case IPFSHashVersion.CIDv0:
+          fileResult = await fetch(`${this.ipfsEndpointInfo.url}/ipfs/${ipfsHash}${ipfsPath}`)
+          .then(item => item.arrayBuffer())
+          .then(item => new Uint8Array(item))
+          break;
+        case IPFSHashVersion.CIDv1:
+          const base32Hash = CIDTool.base32(ipfsHash)
+          fileResult = await fetch(`https://cloudflare-ipfs.com/ipfs/${base32Hash}${ipfsPath}`)
+          .then(item => item.arrayBuffer())
+          .then(item => new Uint8Array(item))
+          break;
+        case IPFSHashVersion.IPFS:
+          try {
+            fileResult = await (await this.ipfs).cat(`${ipfsHash}${ipfsPath}`);
+          } catch(err) {
+            if (err.message === 'this dag node is a directory') {
+              throw Error(`IPFS: tried to read directory as if it were a file: hash=${ipfsHash} path=${ipfsPath}`)
+            }
+          }
+          break;
+        default:
+          throw new Error('No IPFS gateway configured');
+      }
+
       clearTimeout(timeout);
       const decompressedResult = await LZString.decompressFromUint8Array(fileResult);
       resolve(JSON.parse(decompressedResult));
@@ -320,7 +340,7 @@ export class WarpController {
   }
 
   async getCheckpointFile(ipfsRootHash: string): Promise<CheckpointInterface> {
-    return this.getFile(`${ipfsRootHash}/index`);
+    return this.getFile(ipfsRootHash, '/index');
   }
 
   async pinHashByGatewayUrl(urlString: string) {

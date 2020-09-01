@@ -38,15 +38,15 @@ import {
     UniswapV2Factory,
     UniswapV2Pair,
     WETH9, TestNetReputationToken, UniswapV2Router02
-} from "./ContractInterfaces";
+} from './ContractInterfaces';
 import { Contracts, ContractData } from './Contracts';
 import { Dependencies } from './GenericContractInterfaces';
 import { NetworkId } from '@augurproject/utils';
 import { ContractAddresses, SDKConfiguration, mergeConfig } from '@augurproject/utils';
-import { updateConfig } from "@augurproject/artifacts";
+import { updateConfig } from '@augurproject/artifacts';
 import { TRADING_CONTRACTS, RELAY_HUB_SIGNED_DEPLOY_TX, RELAY_HUB_DEPLOYER_ADDRESS, RELAY_HUB_ADDRESS } from './constants';
 
-const NULL_ADDRESS = "0x0000000000000000000000000000000000000000";
+const NULL_ADDRESS = '0x0000000000000000000000000000000000000000';
 
 export class ContractDeployer {
     private readonly configuration: SDKConfiguration;
@@ -92,7 +92,7 @@ Deploying to: ${env}
         const walletFactoryAddress = await this.uploadAugurWalletFactory();
         this.augur = await this.uploadAugur();
         this.augurTrading = await this.uploadAugurTrading();
-        this.registerContract("AugurWalletFactory", walletFactoryAddress);
+        await this.registerContract('AugurWalletFactory', walletFactoryAddress);
         await this.uploadAllContracts();
 
         const externalAddresses = this.configuration.deploy.externalAddresses;
@@ -204,7 +204,7 @@ Deploying to: ${env}
             console.log('Initializing warp sync market');
             const warpSync = new WarpSync(this.dependencies, this.getContractAddress('WarpSync'));
             await warpSync.initializeUniverse(this.universe.address);
-            
+
             const cash = new Cash(this.dependencies, this.getContractAddress('Cash'));
 
             console.log('Approving Augur');
@@ -476,9 +476,9 @@ Deploying to: ${env}
 
     private async uploadUniswapContracts() : Promise<string> {
       const uniswapV2FactoryContract = await this.contracts.get('UniswapV2Factory');
-      uniswapV2FactoryContract.address = await this.uploadAndAddToAugur(uniswapV2FactoryContract, 'UniswapV2Factory', ["0x0000000000000000000000000000000000000000"]);
+      uniswapV2FactoryContract.address = await this.uploadAndAddToAugur(uniswapV2FactoryContract, 'UniswapV2Factory', ['0x0000000000000000000000000000000000000000']);
       const uniswapRouterContract = await this.contracts.get('UniswapV2Router02');
-      uniswapRouterContract.address = await this.uploadAndAddToAugur(uniswapRouterContract, 'UniswapV2Router02', [uniswapV2FactoryContract.address, this.getContractAddress("WETH9")]);
+      uniswapRouterContract.address = await this.uploadAndAddToAugur(uniswapRouterContract, 'UniswapV2Router02', [uniswapV2FactoryContract.address, this.getContractAddress('WETH9')]);
       return uniswapV2FactoryContract.address;
     }
 
@@ -555,12 +555,12 @@ Deploying to: ${env}
     private async uploadAndAddToAugur(contract: ContractData, registrationContractName: string = contract.contractName, constructorArgs: any[] = []): Promise<string> {
         if (TRADING_CONTRACTS.includes(registrationContractName)) {
             const alreadyRegisteredAddress = await this.augurTrading!.lookup_(stringTo32ByteHex(registrationContractName));
-            if (alreadyRegisteredAddress != NULL_ADDRESS) {
+            if (alreadyRegisteredAddress !== NULL_ADDRESS) {
                 return alreadyRegisteredAddress;
             }
         } else {
             const alreadyRegisteredAddress = await this.augur!.lookup_(stringTo32ByteHex(registrationContractName));
-            if (alreadyRegisteredAddress != NULL_ADDRESS) {
+            if (alreadyRegisteredAddress !== NULL_ADDRESS) {
                 return alreadyRegisteredAddress;
             }
         }

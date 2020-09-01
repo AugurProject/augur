@@ -496,6 +496,7 @@ export class ContractAPI {
   ): Promise<ZeroXSimulateTradeData> {
     return this.simulateZeroXTrade({
       direction,
+      takerAddress: this.account.address,
       market: market.address,
       numTicks: await market.getNumTicks_(),
       numOutcomes: ((await market.getNumberOfOutcomes_()) as unknown) as

@@ -172,7 +172,7 @@ export class ZeroXOrders extends AbstractTable {
   async sync(): Promise<void> {
     logger.info('Syncing ZeroX Orders');
     const orders: OrderInfo[] = await this.augur.zeroX.getOrders();
-    let bulkOrderEvents = [];
+    const bulkOrderEvents = [];
     let documents = [];
     if (orders?.length > 0) {
       documents = orders.filter(this.validateOrder, this).map(this.processOrder, this);

@@ -92,7 +92,7 @@ export class AugurLite {
 
   async getIPFSFile(ipfsPath: string) {
     const fileRetrievalFn = (ipfsPath: string) =>
-      fetch(`https://cloudflare-ipfs.com/ipfs/${ipfsPath}/index `)
+      fetch(`https://dweb.link/ipfs/${ipfsPath}/index `)
         .then((item) => item.arrayBuffer())
         .then((item) => new Uint8Array(item));
 
