@@ -104,7 +104,9 @@
   }
 }
 
-.HideHeader {
+.HideHeader,
+:root[theme='BETTING'] .HideHeader,
+:root[theme='SPORTS'] .HideHeader {
   > div:nth-of-type(2) > div:first-of-type {
     display: none;
   }

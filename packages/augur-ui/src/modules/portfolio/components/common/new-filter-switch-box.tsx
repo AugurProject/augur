@@ -9,7 +9,6 @@ export interface NewFilterSwitchBoxProps extends NewQuadBoxProps {
   filterComp: Function;
   filterLabel: string;
   renderRows: Function;
-  switchView?: Function;
   emptyDisplayConfig?: {
     emptyTitle?: string;
     emptyText?: string;
@@ -29,14 +28,12 @@ const NewFilterSwitchBox = ({
   filterComp,
   filterLabel,
   renderRows,
-  switchView,
   emptyDisplayConfig,
   toggle,
   hide,
   extend,
 }: NewFilterSwitchBoxProps) => {
   const [search, setSearch] = useState('');
-  const [view, setView] = useState(false);
   const [filteredData, setFilteredData] = useState(data);
   const thereIsData = filteredData.length > 0;
 
@@ -46,7 +43,7 @@ const NewFilterSwitchBox = ({
       filteredData = applySearch(search, data);
     }
     setFilteredData(filteredData);
-  }, [data, view]);
+  }, [data]);
 
   const onSearchChange = (input: string) => {
     setSearch(input);
@@ -56,13 +53,6 @@ const NewFilterSwitchBox = ({
 
   const applySearch = (input: string, filteredData: Market[]) => {
     return filteredData.filter(filterComp.bind(applySearch, input));
-  };
-
-  const updateView = () => {
-    if (switchView) {
-      switchView();
-    }
-    setView(!view);
   };
 
   return (
@@ -80,7 +70,6 @@ const NewFilterSwitchBox = ({
       customClass={customClass}
       setSearch={onSearchChange}
       sortByOptions={sortByOptions}
-      updateDropdown={updateView}
       subheader={subheader}
       footer={footer}
       toggle={toggle}

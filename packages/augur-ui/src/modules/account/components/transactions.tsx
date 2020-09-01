@@ -28,6 +28,7 @@ import Styles from 'modules/account/components/transactions.styles.less';
 import { getNetworkId, getLegacyRep } from 'modules/contracts/actions/contractCalls';
 import { createBigNumber } from 'utils/create-big-number';
 import NewQuadBox from 'modules/portfolio/components/common/new-quad-box';
+import classNames from 'classnames';
 
 export const Transactions = () => {
   const {
@@ -35,6 +36,7 @@ export const Transactions = () => {
     loginAccount: { meta, balances },
     actions: { setModal },
   } = useAppStatusStore();
+  const isTrading = theme === THEMES.TRADING;
   const networkId = getNetworkId();
   const targetAddress = meta.signer?._address;
   const showFaucets = networkId !== NETWORK_IDS.Mainnet;
@@ -46,7 +48,10 @@ export const Transactions = () => {
 
   return (
     <NewQuadBox
-      title={theme === THEMES.TRADING ? 'Transactions' : 'Your funds'}
+      title={isTrading ? 'Transactions' : 'Your funds'}
+      customClass={classNames({
+        [Styles.ShowHeaderOnMobile]: !isTrading,
+      })}
       headerComplement={
         <div className={Styles.RightContent}>
           <ViewTransactionsButton

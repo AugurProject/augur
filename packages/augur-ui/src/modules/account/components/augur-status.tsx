@@ -6,9 +6,10 @@ import { AUGUR_STATUS_TITLE } from 'modules/common/constants';
 
 import Styles from 'modules/account/components/status.styles.less';
 import NewQuadBox from 'modules/portfolio/components/common/new-quad-box';
+import classNames from 'classnames';
 
 export interface AugurStatusProps {
-  hideHeader: boolean;
+  hideHeader?: boolean;
 }
 
 const AugurStatus = ({
@@ -16,7 +17,9 @@ const AugurStatus = ({
 }: AugurStatusProps) => (
   <NewQuadBox
     title={AUGUR_STATUS_TITLE}
-    customClass={hideHeader && Styles.HideHeader}
+    customClass={classNames(Styles.ShowHeaderOnMobile, {
+      [Styles.HideHeader]: hideHeader,
+    })}
     content={
       <div className={Styles.AugurStatusContent}>
         <SyncStatus />

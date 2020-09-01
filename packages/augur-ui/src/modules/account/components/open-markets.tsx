@@ -91,11 +91,9 @@ const OpenMarkets = ({ toggle }: OpenMarketsProps) => {
     <NewFilterSwitchBox
       filterLabel="markets"
       title="My Active Markets"
-      showFilterSearch
       data={markets}
       customClass={customClass}
       filterComp={filterComp}
-      noBackgroundBottom
       toggle={toggle}
       subheader={
         markets.length === 0 ? null : <div className={Styles.BottomBar}>
@@ -112,11 +110,11 @@ const OpenMarkets = ({ toggle }: OpenMarketsProps) => {
       }
       noSwitch
       renderRows={renderRows}
-      emptyDisplayTitle={isTrading ? null : 'No Active Markets'}
-      emptyDisplayText={
-        isTrading ? null : "You don't have any active markets yet!"
-      }
-      emptyDisplayIcon={ActiveMarketsIcon}
+      emptyDisplayConfig={{
+        emptyTitle: isTrading ? null : "No Active Markets",
+        emptyText: isTrading ? null : "You don't have any active markets yet!",
+        icon: ActiveMarketsIcon,
+      }}
     />
   );
 };

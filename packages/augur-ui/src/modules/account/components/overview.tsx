@@ -16,7 +16,7 @@ import { formatRep } from 'utils/format-number';
 import NewQuadBox from 'modules/portfolio/components/common/new-quad-box';
 
 export interface OverviewProps {
-  hideHeader: boolean;
+  hideHeader?: boolean;
 }
 
 const Overview = ({ hideHeader }: OverviewProps) => {
