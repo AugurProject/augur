@@ -85,6 +85,7 @@ export const placeBet = async (marketId, order, orderId) => {
   const { marketInfos } = Markets.get();
   const market = marketInfos[marketId];
   // todo: need to add user shares
+  if (!market) return;
   await placeTrade(
     0,
     marketId,

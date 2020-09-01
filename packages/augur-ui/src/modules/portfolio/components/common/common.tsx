@@ -121,13 +121,15 @@ export const Game = ({ row, type }: GameProps) => {
       </div>
       <div>
         <BetsHeader />
-        {Object.values(row.orders).sort((a,b) => b.timestamp - a.timestamp).map(order => (
-          <BetRow
-            key={order.outcomeId}
-            outcome={order}
-            showExtraRow={type !== SPORTS_GROUP_TYPES.FUTURES}
-          />
-        ))}
+        {Object.values(row.orders)
+          .sort((a, b) => b.timestamp - a.timestamp)
+          .map((order, index) => (
+            <BetRow
+              key={`${order.outcomeId}_${index}`}
+              outcome={order}
+              showExtraRow={type !== SPORTS_GROUP_TYPES.FUTURES}
+            />
+          ))}
       </div>
     </div>
   );
@@ -139,9 +141,11 @@ export interface OutcomesProps {
 export const Outcomes = ({ rows }: OutcomesProps) => (
   <div className={Styles.Outcomes}>
     <BetsHeader />
-    {rows.sort((a,b) => b.timestamp - a.timestamp).map(row => (
-      <BetRow key={row.outcome} outcome={row} showExtraRow isEvent />
-    ))}
+    {rows
+      .sort((a, b) => b.timestamp - a.timestamp)
+      .map(row => (
+        <BetRow key={row.outcome} outcome={row} showExtraRow isEvent />
+      ))}
   </div>
 );
 
@@ -152,64 +156,55 @@ export interface BetRowProps {
 }
 
 export const BetRow = ({ outcome, showExtraRow, isEvent }: BetRowProps) => (
-  <>
-    {outcome.status !== BET_STATUS.PENDING &&
-      outcome.status !== BET_STATUS.FAILED && (
-        <Media query={TABLET_MAX}>
-          {matches =>
-            matches ? (
-              <div className={Styles.BetRowMobile}>
-                <div>
-                  <span>{outcome.outcome}</span>
-                  <span>{convertToOdds(outcome.normalizedPrice).full}</span>
-                  {showExtraRow && (
-                    <span>
-                      {isEvent && <TemplateShield market={outcome} />}
-                      {outcome.highRisk && (
-                        <RedFlag market={{ mostLikelyInvalid: true, id: 0 }} />
-                      )}
-                      <span>
-                        {isEvent
-                          ? outcome.description
-                          : outcome.sportsBook?.title}
-                      </span>
-                    </span>
-                  )}
-                </div>
-                <LinearPropertyLabel
-                  highlight
-                  key="wager"
-                  label="Wager"
-                  value={outcome.wager}
-                  useFull={true}
-                />
-                <LinearPropertyLabel
-                  highlight
-                  key="toWin"
-                  label="To win"
-                  value={outcome.toWin}
-                  useFull={true}
-                />
-                <LinearPropertyLabel
-                  highlight
-                  key="date"
-                  label="Date"
-                  value={
-                    convertUnixToFormattedDate(outcome.dateUpdated).formattedUtc
-                  }
-                  useFull={true}
-                />
-                <CashoutButton bet={outcome} />
-              </div>
-            ) : (
-              <MyBetsRow
-                outcome={outcome}
-                showExtraRow={showExtraRow}
-                isEvent={isEvent}
-              />
-            )
-          }
-        </Media>
-      )}
-  </>
+  <Media query={TABLET_MAX}>
+    {matches =>
+      matches ? (
+        <div className={Styles.BetRowMobile}>
+          <div>
+            <span>{outcome.outcome}</span>
+            <span>{convertToOdds(outcome.normalizedPrice).full}</span>
+            {showExtraRow && (
+              <span>
+                {isEvent && <TemplateShield market={outcome} />}
+                {outcome.highRisk && (
+                  <RedFlag market={{ mostLikelyInvalid: true, id: 0 }} />
+                )}
+                <span>
+                  {isEvent ? outcome.description : outcome.sportsBook?.title}
+                </span>
+              </span>
+            )}
+          </div>
+          <LinearPropertyLabel
+            highlight
+            key="wager"
+            label="Wager"
+            value={outcome.wager}
+            useFull={true}
+          />
+          <LinearPropertyLabel
+            highlight
+            key="toWin"
+            label="To win"
+            value={outcome.toWin}
+            useFull={true}
+          />
+          <LinearPropertyLabel
+            highlight
+            key="date"
+            label="Date"
+            value={convertUnixToFormattedDate(outcome.dateUpdated).formattedUtc}
+            useFull={true}
+          />
+          <CashoutButton bet={outcome} />
+        </div>
+      ) : (
+        <MyBetsRow
+          outcome={outcome}
+          showExtraRow={showExtraRow}
+          isEvent={isEvent}
+        />
+      )
+    }
+  </Media>
 );
