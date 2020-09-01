@@ -11,7 +11,8 @@
   },
   "gas": {
     "price": 20000000000,
-    "limit": 10000000
+    "limit": 10000000,
+    "override": false
   },
   "deploy": {
     "isProduction": false,
@@ -109,7 +110,8 @@
     "RelayHubV2": "0x6EFF7F7154347B4b2611cb9aeee5dE6a679FF41C",
     "USDC": "0xf9Bf04bDd519B37Ffe988Ea3273e08Bf1406b523",
     "USDT": "0x0e236158806f3A411f99Fbf512496D90D8FBE67C",
-    "AccountLoader": "0x679FA27db29b84BE82C2b6d1fBdEb583D8f89d40"
+    "AccountLoader": "0x679FA27db29b84BE82C2b6d1fBdEb583D8f89d40",
+    "OINexus": "0xDAedF06c50aD76dBA17a6a3dBC1FA7d9C1CECa0F"
   },
   "server": {
     "httpPort": 9003,
@@ -145,5 +147,27 @@
     "fallbackProvider": "torus",
     "primaryProvider": "wallet"
   },
-  "averageBlocktime": 2000
+  "averageBlocktime": 2000,
+  "paraDeploys": {
+    "0xf68B100D9Acd8421F7f04E4548a604Ff3f0254E4": {
+      "name": "WETH",
+      "uploadBlockNumber": 20625676,
+      "addresses": {
+        "Augur": "0x8ca6f69665c5F5325fd02cC37c6fc8646169D230",
+        "AugurTrading": "0xaCD4aC8E2AdcFdFC5B5db8b6F039b81c6e380E7A",
+        "Universe": "0x1bf67107dBEAf5339Db25F4ee0CF6C8048E76Cd9",
+        "Cash": "0xf68B100D9Acd8421F7f04E4548a604Ff3f0254E4",
+        "ShareToken": "0x1A6A64A1390cA95c54009eFE5B48D227d041724f",
+        "OICash": "0xF1553A32E1B72c9c3a096E006F1f99Ae56E7022f",
+        "CancelOrder": "0xd6AbE1208ee2cE423d6DEA517d35f13E57E16982",
+        "CreateOrder": "0x6e73d8d13CE9b730c6dDBa4ba3591de879422d4A",
+        "FillOrder": "0x836884a366f0f78A06a47821C078a63b71FB002b",
+        "Orders": "0x06945997F0D40201C6E265299FCd6cF6F3E7D2Ac",
+        "Trade": "0xEe90FBD9323742550ffE262F5A0210CcE20AeA68",
+        "SimulateTrade": "0xC230b9AB9d1792CfC0E56EAE3C9117735B79036E",
+        "ZeroXTrade": "0x316C11490d9180e4187A08E4d3AbAb18eD305FE2",
+        "ProfitLoss": "0x91F481D971E6694EfE171C64Cd7098dafBa89Bb7"
+      }
+    }
+  }
 }
