@@ -1,5 +1,5 @@
 # populated geth docker file
-FROM augurproject/dev-node-geth:v1.9.9 as geth
+FROM augurproject/dev-node-geth:v1.9.19 as geth
 
 ARG normal_time=true
 ENV NORMAL_TIME=$normal_time
@@ -29,14 +29,14 @@ COPY . /augur
 WORKDIR /augur
 
 
-RUN yarn install --frozen-lockfile --ignore-scripts && yarn build
+RUN yarn install --frozen-lockfile && yarn build
 
 RUN bash /augur/packages/augur-tools/docker-builder/run-geth-and-deploy.sh
 
 #RUN find /geth -name geth.ipc -delete
 
 # create final image with no cruft
-FROM augurproject/dev-node-geth:v1.9.9
+FROM augurproject/dev-node-geth:v1.9.19
 
 RUN apk add --no-cache \
     bash \
