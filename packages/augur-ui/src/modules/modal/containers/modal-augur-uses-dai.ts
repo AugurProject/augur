@@ -12,6 +12,7 @@ import {
   MODAL_TOKEN_SELECT,
 } from 'modules/common/constants';
 import { OnboardingDollarDaiIcon, EthIcon } from 'modules/common/icons';
+import { updateLoginAccount } from 'modules/account/actions/login-account';
 
 const mapStateToProps = (state: AppState) => ({
   balances: state.loginAccount.balances,
@@ -21,6 +22,7 @@ const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({
   gotoApprovals: () => dispatch(updateModal({ type: MODAL_APPROVALS })),
   gotoTokenSelect: () => dispatch(updateModal({ type: MODAL_TOKEN_SELECT })),
   gotoDeposit: () => dispatch(updateModal({ type: MODAL_ETH_DEPOSIT })),
+  setCurrentOnboardingStep: (currentOnboardingStep) => dispatch(updateLoginAccount({ currentOnboardingStep })),
 });
 
 const mergeProps = (sP: any, dP: any, oP: any) => ({
@@ -41,6 +43,7 @@ const mergeProps = (sP: any, dP: any, oP: any) => ({
     },
   ],
   currentStep: 1,
+  setCurrentOnboardingStep: dP.setCurrentOnboardingStep,
   gotoApprovals: dP.gotoApprovals,
   gotoTokenSelect: dP.gotoTokenSelect,
   gotoDeposit: dP.gotoDeposit,

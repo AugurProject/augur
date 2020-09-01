@@ -7,6 +7,7 @@ import { ThunkDispatch } from 'redux-thunk';
 import { Action } from 'redux';
 import { MODAL_TEST_BET, MODAL_BANKROLL } from 'modules/common/constants';
 import { closeModal } from '../actions/close-modal';
+import { updateLoginAccount } from 'modules/account/actions/login-account';
 
 const mapStateToProps = (state: AppState) => {
   return {
@@ -20,6 +21,7 @@ const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({
   closeModal: () => dispatch(closeModal()),
   testBetModal: () => dispatch(updateModal({ type: MODAL_TEST_BET })),
   goBack: () => dispatch(updateModal({ type: MODAL_BANKROLL })),
+  setCurrentOnboardingStep: (currentOnboardingStep) => dispatch(updateLoginAccount({ currentOnboardingStep })),
 });
 
 const mergeProps = (sP: any, dP: any, oP: any) => ({
@@ -27,6 +29,7 @@ const mergeProps = (sP: any, dP: any, oP: any) => ({
   title: 'Please approve your wallet to interact with the Ethereum network',
   showApprovals: true,
   currentStep: 6,
+  setCurrentOnboardingStep: dP.setCurrentOnboardingStep,
   goBack: dP.goBack,
   closeModal: dP.closeModal,
   content: [

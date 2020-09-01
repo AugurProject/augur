@@ -679,6 +679,7 @@ export interface LoginAccountSettings {
 }
 
 export interface LoginAccount {
+  currentOnboardingStep: number;
   address?: string;
   mixedCaseAddress?: string;
   meta?: LoginAccountMeta;

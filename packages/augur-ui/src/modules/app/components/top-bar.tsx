@@ -10,10 +10,10 @@ import { CoreStats } from 'modules/types';
 import { Link } from 'react-router-dom';
 import makePath from 'modules/routes/helpers/make-path';
 import Logo from 'modules/app/components/logo';
-import { PrimaryButton, SecondaryButton } from 'modules/common/buttons';
+import { PrimaryButton } from 'modules/common/buttons';
 import { MARKETS } from 'modules/routes/constants/views';
 import HelpResources from 'modules/app/containers/help-resources';
-import { WALLET_STATUS_VALUES } from 'modules/common/constants';
+import { TOTAL_ONBOARDING_STEPS } from 'modules/modal/onboarding';
 
 import Styles from 'modules/app/components/top-bar.styles.less';
 
@@ -77,10 +77,6 @@ interface TopBarProps {
   currentOnboardingStep: number;
 }
 
-
-
-
-
 const TopBar: React.FC<TopBarProps> = ({
   alertsVisible,
   isLogged,
@@ -114,8 +110,8 @@ const TopBar: React.FC<TopBarProps> = ({
         tradingAccountCreated={!showAddFundsButton }
       />
       <div>
-        {(isLogged || restoredAccount) && currentOnboardingStep && currentOnboardingStep < 7 && (
-          <PrimaryButton text={'Continue account setup'} action={() => handleShowOnboarding()} />
+        {(isLogged || restoredAccount) && currentOnboardingStep < TOTAL_ONBOARDING_STEPS && (
+          <PrimaryButton text={'Continue account setup'} action={() => handleShowOnboarding(currentOnboardingStep)} />
         )}
 
         {(!isLogged || (!isMobile && (isLogged || restoredAccount))) && (

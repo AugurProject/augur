@@ -9,6 +9,7 @@ import { MODAL_APPROVALS, MODAL_BANKROLL, ETH, USDC, USDT } from 'modules/common
 import { createBigNumber } from 'utils/create-big-number';
 import { formatDai, formatNumber } from 'utils/format-number';
 import { closeModal } from '../actions/close-modal';
+import { updateLoginAccount } from 'modules/account/actions/login-account';
 
 const mapStateToProps = (state: AppState) => {
   const ethToDaiRate = state.appStatus.ethToDaiRate;
@@ -54,6 +55,7 @@ const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({
   approvalsModal: () => dispatch(updateModal({ type: MODAL_APPROVALS })),
   closeModal: () => dispatch(closeModal()),
   goBack: () => dispatch(updateModal({ type: MODAL_BANKROLL })),
+  setCurrentOnboardingStep: (currentOnboardingStep) => dispatch(updateLoginAccount({ currentOnboardingStep })),
 });
 
 const mergeProps = (sP: any, dP: any, oP: any) => {
@@ -73,6 +75,7 @@ const mergeProps = (sP: any, dP: any, oP: any) => {
     show1InchToolTip: true,
     showSwapper: true,
     currentStep: 5,
+    setCurrentOnboardingStep: dP.setCurrentOnboardingStep,
     goBack: dP.goBack,
     closeModal: dP.closeModal,
     content: [],

@@ -10,6 +10,7 @@ import {
   MODAL_BANKROLL,
 } from 'modules/common/constants';
 import { closeModal } from '../actions/close-modal';
+import { updateLoginAccount } from 'modules/account/actions/login-account';
 
 const mapStateToProps = (state: AppState) => {
   const ethToDaiRate = state.appStatus?.ethToDaiRate?.value;
@@ -26,6 +27,7 @@ const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({
   bankrollModal: (token: string) =>
     dispatch(updateModal({ type: MODAL_BANKROLL, token })),
   goBack: () => dispatch(updateModal({ type: MODAL_ETH_DEPOSIT })),
+  setCurrentOnboardingStep: (currentOnboardingStep) => dispatch(updateLoginAccount({ currentOnboardingStep })),
 });
 
 const mergeProps = (sP: any, dP: any, oP: any) => ({
@@ -37,6 +39,7 @@ const mergeProps = (sP: any, dP: any, oP: any) => ({
   content: [],
   showCompoundToolTip: true,
   currentStep: 3,
+  setCurrentOnboardingStep: dP.setCurrentOnboardingStep,
   modalAction: token => {
     dP.bankrollModal(token);
   },
