@@ -8,6 +8,7 @@ import { ZERO } from 'modules/common/constants';
 import { formatAttoDai } from 'utils/format-number';
 
 const DEFAULT_STATE: LoginAccount = {
+  currentOnboardingStep: 0,
   balances: {
     eth: '0',
     rep: '0',

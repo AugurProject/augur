@@ -36,20 +36,12 @@ import {
 import { windowRef } from 'utils/window-ref';
 import { createBigNumber } from 'utils/create-big-number';
 import { AccountBalances, Blockchain } from 'modules/types';
+import { addFundsTorus, addFundsFortmatic } from './containers/modal-add-funds';
 
 import Styles from 'modules/modal/modal.styles.less';
-import { addFundsTorus, addFundsFortmatic } from './containers/modal-add-funds';
-import loginAccount from 'modules/auth/selectors/login-account';
 
 export const CURRENT_ONBOARDING_STEP_KEY = 'currentOnboardingStep';
-
-export const getCurrentOnboardingStep = (): number => {
-  return Number(windowRef.localStorage.getItem(CURRENT_ONBOARDING_STEP_KEY)) || 0
-}
-
-export const setCurrentOnboardingStep = (step: number) => {
-  windowRef.localStorage.setItem(CURRENT_ONBOARDING_STEP_KEY, String(step));
-}
+export const TOTAL_ONBOARDING_STEPS = 7;
 
 interface Content {
   icon: string;
@@ -86,6 +78,7 @@ interface OnboardingProps {
   token: string;
   walletOnRamp: boolean;
   accountType: string;
+  setCurrentOnboardingStep: Function;
 }
 
 export const Onboarding = ({
@@ -115,6 +108,7 @@ export const Onboarding = ({
   token,
   walletOnRamp,
   accountType,
+  setCurrentOnboardingStep,
 }: OnboardingProps) => {
   const [ethRecieved, setEthRecieved] = useState(false);
   const [isZeroXApproved, setIsZeroXApproved] = useState(false);

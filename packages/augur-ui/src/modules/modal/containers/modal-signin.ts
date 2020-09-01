@@ -36,7 +36,6 @@ import {
 } from 'modules/common/icons';
 import { windowRef } from 'utils/window-ref';
 import { isSafari } from 'utils/is-safari';
-import { getCurrentOnboardingStep } from 'modules/modal/onboarding';
 
 const mapStateToProps = (state: AppState) => ({
   modal: state.modal,
@@ -106,8 +105,7 @@ const mergeProps = (sP: any, dP: any, oP: any) => {
   const login = () => {
     dP.closeModal();
     setTimeout(() => {
-      const currentOnboardingStep = getCurrentOnboardingStep();
-      if (LOGIN_OR_SIGNUP === 'Signup' || currentOnboardingStep === 0) {
+      if (LOGIN_OR_SIGNUP === 'Signup') {
         // Kicks off onboarding
         dP.accountCreatedModal();
       }

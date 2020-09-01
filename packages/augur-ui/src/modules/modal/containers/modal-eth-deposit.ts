@@ -11,6 +11,7 @@ import {
   ACCOUNT_TYPES,
 } from 'modules/common/constants';
 import { closeModal } from '../actions/close-modal';
+import { updateLoginAccount } from 'modules/account/actions/login-account';
 
 const mapStateToProps = (state: AppState) => {
   return {
@@ -25,6 +26,7 @@ const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({
   closeModal: () => dispatch(closeModal()),
   tokenSelectModala: () => dispatch(updateModal({ type: MODAL_TOKEN_SELECT })),
   goBack: () => dispatch(updateModal({ type: MODAL_AUGUR_USES_DAI })),
+  setCurrentOnboardingStep: (currentOnboardingStep) => dispatch(updateLoginAccount({ currentOnboardingStep })),
 });
 
 const mergeProps = (sP: any, dP: any, oP: any) => ({
@@ -35,6 +37,7 @@ const mergeProps = (sP: any, dP: any, oP: any) => ({
   closeModal: dP.closeModal,
   address: sP.address,
   currentStep: 2,
+  setCurrentOnboardingStep: dP.setCurrentOnboardingStep,
   goBack: dP.goBack,
   content: [
     {

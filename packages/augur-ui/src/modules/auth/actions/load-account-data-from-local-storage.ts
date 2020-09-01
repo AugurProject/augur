@@ -15,7 +15,7 @@ import { AppState } from 'appStore';
 import { getNetworkId } from 'modules/contracts/actions/contractCalls';
 import { loadAnalytics } from 'modules/app/actions/analytics-management';
 import {
-  saveAffiliateAddress,
+  saveAffiliateAddress, updateLoginAccount,
 } from 'modules/account/actions/login-account';
 import {
   updateFilterSortOptionsSettings,
@@ -38,6 +38,11 @@ export const loadAccountDataFromLocalStorage = (
       const { pendingQueue } = storedAccountData;
       const { affiliate } = storedAccountData;
       const { settings } = storedAccountData;
+      const { currentOnboardingStep } = storedAccountData;
+
+      if (currentOnboardingStep) {
+        dispatch(updateLoginAccount({ currentOnboardingStep }));
+      }
 
       if (settings) {
         const filterOptions = Object.keys(settings).reduce(
