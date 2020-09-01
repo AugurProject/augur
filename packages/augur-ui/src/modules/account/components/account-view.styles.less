@@ -152,7 +152,7 @@
   .AccountView {
     margin: @size-22 @size-32 @size-82;
     display: grid;
-    grid-auto-rows: @size-160 @size-10 auto;
+    grid-auto-rows: @size-128 @size-10 auto;
     grid-gap: @size-24;
     grid-template-columns: repeat(auto-fill, minmax(30%, 1fr));
     grid-template-rows: auto;
@@ -245,10 +245,10 @@
     }
 
     > div:nth-of-type(5) {
-      grid-column: ~"3/4";
-      grid-row: ~"2/3";
-      min-height: @size-160;
-      max-height: @size-160;
+      grid-column: 3;
+      grid-row: 2;
+      // min-height: @size-160;
+      // max-height: @size-160;
 
       div[class*='BoxHeader'] {
         > div:first-of-type > div:last-of-type {
@@ -284,12 +284,12 @@
 
       > div:first-of-type {
         grid-column: ~"1/2";
-        grid-row: ~"2/6";
+        grid-row: ~"2/7";
       }
 
       > div:nth-of-type(2) {
         grid-column: ~"1/2";
-        grid-row: ~"6/13";
+        grid-row: ~"7/13";
       }
 
       > div:nth-of-type(3) {

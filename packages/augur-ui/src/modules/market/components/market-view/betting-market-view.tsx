@@ -20,7 +20,6 @@ import { loadMarketsInfo } from 'modules/markets/actions/load-markets-info';
 import { useMarketsStore } from 'modules/markets/store/markets';
 import { MARKET } from 'modules/routes/constants/views';
 import parsePath from 'modules/routes/helpers/parse-path';
-import { convertInputs, findStartTime } from '../common/market-title';
 import { convertUnixToFormattedDate } from 'utils/format-date';
 import { bulkLoadMarketTradingHistory } from 'modules/markets/actions/market-trading-history-management';
 import { augurSdk } from 'services/augursdk';
@@ -131,10 +130,9 @@ const BettingMarketView = () => {
     sportsBook,
   } = market;
   const header = sportsBook ? sportsBook.header : description;
-  const convertedInputs = template && convertInputs(template.inputs);
-  const estDateTime = convertedInputs && findStartTime(convertedInputs);
+  const estDateTime = sportsBook?.estTimestamp;
   const startTimeFormatted =
-    estDateTime && convertUnixToFormattedDate(estDateTime.timestamp);
+    estDateTime && convertUnixToFormattedDate(estDateTime);
   return (
     <div className={Styles.BettingMarketView}>
       <div>
@@ -162,7 +160,7 @@ const BettingMarketView = () => {
                 : formatPercent(Number(settlementFee) * 100).full
             }
           />
-          {startTimeFormatted ? (
+          {estDateTime ? (
             <FullTimeLabel
               label="Estimated Start Time"
               time={startTimeFormatted}

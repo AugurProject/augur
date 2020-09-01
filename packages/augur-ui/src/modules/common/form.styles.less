@@ -2345,7 +2345,7 @@ div.error > div > div > div > div > input {
     }
   }
 
-  > span:last-of-type {
+  > span:nth-of-type(2) {
     .text-10-bold;
 
     color: var(--color-secondary-text);
@@ -2446,7 +2446,7 @@ div.error > div > div > div > div > input {
       }
     }
 
-    > span:last-of-type {
+    > span:nth-of-type(2) {
       .text-10;
 
       min-width: @size-25;
@@ -2454,7 +2454,7 @@ div.error > div > div > div > div > input {
     }
 
     &.loading {
-      > span:last-of-type {
+      > span:nth-of-type(2) {
         > svg {
           LinearGradient > stop {
             stop-color: var(--color-secondary-text);
@@ -2473,7 +2473,7 @@ div.error > div > div > div > div > input {
     }
 
     &.active:not(.loading) {
-      > span:last-of-type {
+      > span:nth-of-type(2) {
         border: @size-1 solid var(--color-primary-text);
       }
     }
@@ -2484,7 +2484,7 @@ div.error > div > div > div > div > input {
         text-decoration: underline;
       }
 
-      > span:last-of-type {
+      > span:nth-of-type(2) {
         border: @size-1 solid var(--color-primary-text);
         color: var(--color-primary-text);
       }
@@ -2528,7 +2528,7 @@ div.error > div > div > div > div > input {
         color: var(--color-dark-text);
       }
 
-      > span:last-of-type {
+      > span:nth-of-type(2) {  
         .text-10;
 
         background: transparent;
@@ -2560,21 +2560,28 @@ div.error > div > div > div > div > input {
           text-decoration: none;
         }
 
-        > span:last-of-type {
+        > span:nth-of-type(2) {
           border: @size-1 solid var(--color-secondary-text);
           color: var(--color-module-background);
         }
       }
 
+      &.active {
+        > span:nth-of-type(2) {
+          background: var(--color-module-background);
+          color: var(--color-secondary-text);
+        }
+      }
 
       &.loading {
-        > span:last-of-type {
+        > span:nth-of-type(2) {
           border: 0;
+          background: transparent;
         }
       }
 
       &.active:not(.loading) {
-        > span:last-of-type {
+        > span:nth-of-type(2) {
           border: @size-1 solid var(--color-secondary-text);
         }
       }
@@ -2585,7 +2592,7 @@ div.error > div > div > div > div > input {
           text-decoration: none;
         }
 
-        > span:last-of-type {
+        > span:nth-of-type(2) {
           border: @size-1 solid var(--color-secondary-text);
           color: var(--color-module-background);
         }

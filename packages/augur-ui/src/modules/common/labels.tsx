@@ -40,6 +40,7 @@ import {
   MODAL_INVALID_MARKET_RULES,
   GWEI_CONVERSION,
   AUTO_ETH_REPLENISH,
+  BUY,
 } from 'modules/common/constants';
 import { useAppStatusStore, AppStatus } from 'modules/app/store/app-status';
 import { ViewTransactionDetailsButton } from 'modules/common/buttons';
@@ -144,6 +145,8 @@ export interface LinearPropertyLabelProps {
   underline?: boolean;
   onValueClick?: Function;
   regularCase?: boolean;
+  positive?: boolean;
+  showColor?: boolean;
 }
 
 export interface LinearPropertyLabelTooltipProps {
@@ -327,6 +330,14 @@ export const RedFlag = ({ market }: RedFlagProps) => {
     </>
   ) : null;
 };
+
+interface TypeLabelProps {
+  type: string;
+}
+
+export const TypeLabel = ({type}: TypeLabelProps) => (
+  <span className={classNames(Styles.TypeLabel, {[Styles.Ask]: type !== BUY})}>{type}</span>
+);
 
 interface TemplateShieldProps {
   market: Getters.Markets.MarketInfo;
@@ -935,14 +946,16 @@ export const LinearPropertyLabel = ({
   onValueClick,
   regularCase,
   secondary,
-  recentlyUpdated
+  recentlyUpdated,
+  positive,
+  showColor
 }: LinearPropertyLabelProps) => (
   <div
     className={classNames(Styles.LinearPropertyLabel, {
       [Styles.Highlight]: highlight,
       [Styles.HighlightAlternateBolded]: highlightAlternateBolded,
       [Styles.HighlightFirst]: highlightFirst,
-      [Styles.RecentlyUpdated]: recentlyUpdated
+      [Styles.RecentlyUpdated]: recentlyUpdated,
     })}
   >
     <span
@@ -963,6 +976,8 @@ export const LinearPropertyLabel = ({
           [Styles.isAccented]: accentValue,
           [Styles.underline]: underline,
           [Styles.isSecondary]: secondary,
+          [Styles.Positive]: positive && showColor,
+          [Styles.Negative]: showColor,
         })}
         onClick={() => onValueClick && onValueClick()}
       >

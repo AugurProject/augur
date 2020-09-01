@@ -445,6 +445,13 @@ export const SearchIcon = (
   </svg>
 );
 
+export const SmallXIcon = (
+  <svg viewBox="0 0 10 10">
+    <path d="M7.82812 2.17163L2.17127 7.82849" strokeWidth="2" strokeMiterlimit="10" strokeLinecap="square"/>
+    <path d="M7.82873 7.82849L2.17188 2.17163" strokeWidth="2" strokeMiterlimit="10" strokeLinecap="square"/>
+  </svg>
+);
+
 export const FilterIcon = (
   <svg viewBox="0 0 16 16" fill="none">
     <g clipPath="url(#clip0)">

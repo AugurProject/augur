@@ -56,10 +56,6 @@
           grid-column: 1;
         }
       }
-
-      > div {
-        display: none;
-      }
     }
 
     &:nth-of-type(3) {
@@ -97,7 +93,7 @@
 :root[theme='BETTING'],
 :root[theme='SPORTS'] {
   .Content {
-    padding: @size-12;
+    padding: @size-12 @size-12 0;
 
     @media @breakpoint-mobile {
       padding: @size-12 @size-12 @size-20;
@@ -153,27 +149,6 @@
 
         > h4 {
           display: none;
-        }
-
-        > div {
-          display: initial;
-          grid-column: 1 / span 2;
-          text-align: center;
-          cursor: pointer;
-          text-transform: uppercase;
-
-          > span {
-            .text-10-semi-bold;
-
-            color: var(--color-primary-text);
-            padding-top: @size-8;
-
-            > svg {
-              width: @size-10;
-              height: @size-10;
-              margin: 0 @size-7;
-            }
-          }
         }
       }
     }

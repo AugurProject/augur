@@ -5,6 +5,7 @@ import {
   CancelTextButton,
   DefaultButtonProps,
   SubmitTextButton,
+  TextIconButton,
 } from 'modules/common/buttons';
 import {
   Breakdown,
@@ -19,8 +20,9 @@ import {
   PendingLabel,
   BulkTxLabel,
   ModalLabelNotice,
+  TypeLabel,
 } from 'modules/common/labels';
-import { BUY, MAX_BULK_ORDER_COUNT } from 'modules/common/constants';
+import { BUY, MAX_BULK_ORDER_COUNT, THEMES } from 'modules/common/constants';
 import { formatDai, formatMarketShares } from 'utils/format-number';
 import Styles from 'modules/modal/modal.styles.less';
 import OpenOrdersTable from 'modules/market/components/market-orders-positions-table/open-orders-table';
@@ -30,6 +32,7 @@ import { DISMISSABLE_NOTICE_BUTTON_TYPES } from 'modules/reporting/common';
 import { useAppStatusStore } from 'modules/app/store/app-status';
 import { usePendingOrdersStore } from 'modules/app/store/pending-orders';
 import { sendLiquidityOrder } from 'modules/orders/actions/liquidity-management';
+import { Trash } from 'modules/common/icons';
 
 interface UnsignedOrdersProps {
   closeAction: Function;
@@ -72,8 +75,11 @@ const orderRow = (
     zeroXEnabled,
   }: UnsignedOrdersProps
 ) => {
-  const { loginAccount } = useAppStatusStore();
-  const { actions: { removeLiquidity }} = usePendingOrdersStore();
+  const { loginAccount, theme } = useAppStatusStore();
+  const isTrading = theme === THEMES.TRADING;
+  const {
+    actions: { removeLiquidity },
+  } = usePendingOrdersStore();
   const {
     outcomeId,
     outcomeName,
@@ -93,7 +99,7 @@ const orderRow = (
           outcomeId,
           orderId: index,
         });
-      }
+      },
     },
     {
       text: 'submit',
@@ -118,8 +124,13 @@ const orderRow = (
   ];
   return (
     <div key={`${outcomeName}-${price}-${index}`}>
-      <span>{outcomeName}</span>
-      <span className={type === BUY ? Styles.bid : Styles.ask}>{type}</span>
+      <span>
+        {!isTrading && <TypeLabel type={type} />}
+        {outcomeName}
+      </span>
+      {isTrading && (
+        <span className={type === BUY ? Styles.bid : Styles.ask}>{type}</span>
+      )}
       <span>{formatMarketShares(marketType, quantity).formatted}</span>
       <span>{formatDai(Number(price)).formatted}</span>
       <span>{formatDai(Number(orderEstimate)).formatted}</span>
@@ -127,15 +138,28 @@ const orderRow = (
       <div>
         {buttons.map((Button: DefaultButtonProps, index: number) => {
           if (index === 0)
-            return (
+            return isTrading ? (
               <CancelTextButton
                 key={Button.text}
                 {...Button}
                 disabled={status && status !== TXEventName.Failure}
               />
+            ) : (
+              <TextIconButton
+                disabled={status && status !== TXEventName.Failure}
+                action={() => Button.action}
+                icon={Trash}
+                {...Button}
+              />
             );
-          return (
+          return isTrading ? (
             <SubmitTextButton
+              key={Button.text}
+              {...Button}
+              disabled={status && status !== TXEventName.Failure}
+            />
+          ) : (
+            <CancelTextButton
               key={Button.text}
               {...Button}
               disabled={status && status !== TXEventName.Failure}
@@ -183,32 +207,34 @@ export const UnsignedOrders = ({
           // @ts-ignore */}
         <Description description={description} />
         <MarketTitle title={marketTitle} />
-        {header && (
-          <div className={Styles.OrdersHeader}>
-            {header.map((headerLabel: string, index) => (
-              <span key={headerLabel + index}>{headerLabel}</span>
-            ))}
-          </div>
-        )}
-        {outcomes && (
-          <section>
-            {outcomes.map((outcome: string) =>
-              (liquidity[outcome] || []).map((order: LiquidityOrder) =>
-                orderRow(order, {
-                  marketType,
-                  numTicks,
-                  maxPrice,
-                  minPrice,
-                  outcomes,
-                  bnAllowance,
-                  transactionHash,
-                  marketId,
-                  zeroXEnabled,
-                })
-              )
-            )}
-          </section>
-        )}
+        <div>
+          {header && (
+            <div className={Styles.OrdersHeader}>
+              {header.map((headerLabel: string, index) => (
+                <span key={headerLabel + index}>{headerLabel}</span>
+              ))}
+            </div>
+          )}
+          {outcomes && (
+            <section>
+              {outcomes.map((outcome: string) =>
+                (liquidity[outcome] || []).map((order: LiquidityOrder) =>
+                  orderRow(order, {
+                    marketType,
+                    numTicks,
+                    maxPrice,
+                    minPrice,
+                    outcomes,
+                    bnAllowance,
+                    transactionHash,
+                    marketId,
+                    zeroXEnabled,
+                  })
+                )
+              )}
+            </section>
+          )}
+        </div>
         {openOrders && (
           // @ts-ignore
           <OpenOrdersTable relative openOrders={orders} marketId={marketId} />
@@ -216,7 +242,7 @@ export const UnsignedOrders = ({
         {breakdown && <Breakdown rows={breakdown} short />}
       </main>
       <BulkTxLabel
-        buttonName='Submit All'
+        buttonName="Submit All"
         count={submitAllTxCount}
         needsApproval={needsApproval}
       />

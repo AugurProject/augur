@@ -1,6 +1,6 @@
 import React from 'react';
 import { useHistory, useLocation } from 'react-router';
-import { SORT_OPTIONS, DEFAULT_MARKET_OFFSET } from 'modules/common/constants';
+import { SORT_OPTIONS, DEFAULT_MARKET_OFFSET, THEMES, SORT_OPTIONS_SPORTS } from 'modules/common/constants';
 import Styles from 'modules/filter-sort/filter-dropdowns.styles.less';
 import parseQuery from 'modules/routes/helpers/parse-query';
 import makeQuery from 'modules/routes/helpers/make-query';
@@ -10,7 +10,7 @@ import { useAppStatusStore } from 'modules/app/store/app-status';
 import { MARKET_SORT, MARKET_OFFSET } from 'modules/app/store/constants';
 import updateMultipleQueries from 'modules/routes/helpers/update-multiple-queries';
 
-const sortOptions = SORT_OPTIONS.map(option => {
+const convertSortOptions = (sortOptions) => sortOptions.map(option => {
   return {
     value: option.value,
     label: option.header,
@@ -21,6 +21,7 @@ export const FilterSearch = () => {
   const {
     filterSortOptions: { sortBy: defaultSort },
     actions: { updateFilterSortOptions },
+    theme
   } = useAppStatusStore();
   const history = useHistory();
   const location = useLocation();
@@ -38,7 +39,7 @@ export const FilterSearch = () => {
     <div className={Styles.FilterDropdowns}>
       <SquareDropdown
         defaultValue={defaultSort}
-        options={sortOptions}
+        options={convertSortOptions(theme === THEMES.SPORTS ? SORT_OPTIONS_SPORTS : SORT_OPTIONS)}
         minimalStyle
         preLabel='sort by'
         onChange={sortOption => {

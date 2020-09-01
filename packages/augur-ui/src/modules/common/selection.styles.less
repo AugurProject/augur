@@ -476,6 +476,7 @@
           > svg {
             width: @size-10;
             height: @size-8;
+            display: flex;
 
             > path {
               fill: var(--color-primary-text);
@@ -602,8 +603,17 @@
 
 :root[theme="BETTING"],
 :root[theme="SPORTS"] {
-  .PillSelection > li > button {
-    padding: @size-6 @size-8;
+  .PillSelection {
+      > li > button {
+      padding: @size-6 @size-8;
+    }
+
+    &.LargePillSelection {
+      > li > button {
+        padding: @size-12 @size-24;
+        height: @size-40;
+      }  
+    }
   }
 }
 

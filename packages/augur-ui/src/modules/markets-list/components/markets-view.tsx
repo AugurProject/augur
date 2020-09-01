@@ -20,6 +20,10 @@ import {
   SPORTS_MARKET_TYPES,
   MAX_FEE_100_PERCENT,
   MAX_SPREAD_ALL_SPREADS,
+  MARKET_OPEN,
+  MARKET_SORT_PARAMS,
+  SORT_OPTIONS,
+  SORT_OPTIONS_SPORTS,
 } from 'modules/common/constants';
 import { PillSelection } from 'modules/common/selection';
 import { Getters } from '@augurproject/sdk';
@@ -43,6 +47,7 @@ import {
   MARKET_MAX_FEES,
   MARKET_MAX_SPREAD,
   MARKET_FILTER,
+  MARKET_SORT,
 } from 'modules/app/store/constants';
 import { updateLoginAccountSettings } from '../actions/update-login-account-settings';
 import { marketListViewed } from 'services/analytics/helpers';
@@ -215,6 +220,21 @@ const MarketsView = () => {
     offset,
     state.marketCount,
   ]);
+  useEffect(() => {
+    if (theme === THEMES.SPORTS) {
+      updateFilterSortOptions({
+        [MARKET_SORT]: SORT_OPTIONS_SPORTS[0].value,
+      })
+    } else {
+      updateFilterSortOptions({
+        [MARKET_SORT]: SORT_OPTIONS[0].value,
+      })
+    }
+  }, [
+    theme
+  ])
+  const isSports = theme === THEMES.SPORTS;
+  const sortByStartTime = sortBy === MARKET_SORT_PARAMS.ESTIMATED_START_TIME ;
 
   function updateFilteredMarkets() {
     window.scrollTo(0, 1);
@@ -227,8 +247,8 @@ const MarketsView = () => {
       {
         categories: selectedCategories ? selectedCategories : [],
         search,
-        filter: marketFilter,
-        sort: sortBy,
+        filter: isSports ? MARKET_OPEN : marketFilter,
+        sort: sortByStartTime && isSports ? MARKET_SORT_PARAMS.END_DATE : sortBy,
         maxFee,
         limit,
         offset,
@@ -249,10 +269,34 @@ const MarketsView = () => {
             filterSortedMarkets,
             result.markets
           );
-          const sportsFilterSortedMarkets = sportsGroups.map(
+          let sportsFilterSortedMarkets = sportsGroups.map(
             sportGroup => sportGroup.id
           );
           const sportsGroupCount = sportsGroups.length;
+          const numDaily = sportsGroups.filter(
+            m => m.type === SPORTS_MARKET_TYPES[0].header
+          ).length;
+          const numFutures = sportsGroups.filter(
+            m => m.type === SPORTS_MARKET_TYPES[1].header
+          ).length;
+          const selectedNum =
+            SPORTS_MARKET_TYPES[0].header === sportsGroupTypeFilter
+              ? numDaily
+              : numFutures;
+          let newSportsGroupTypeFilter = sportsGroupTypeFilter;
+          if (
+            selectedNum === 0 &&
+            sportsFilterSortedMarkets.length > 0 &&
+            selectedCategories.length > 1
+          ) {
+            newSportsGroupTypeFilter =
+              sportsGroupTypeFilter === SPORTS_MARKET_TYPES[0].header
+                ? SPORTS_MARKET_TYPES[1].header
+                : sportsGroupTypeFilter;
+          }
+          if (sortByStartTime && isSports) {
+            sportsFilterSortedMarkets = sportsFilterSortedMarkets.sort((market1, market2) => market2?.sportsBook?.estTimestamp - market1?.sportsBook?.estTimestamp);
+          }
           const sportsShowPagination = sportsGroupCount > limit;
           const marketInfos = result.markets
             .filter(marketHasData => marketHasData)
@@ -275,8 +319,12 @@ const MarketsView = () => {
               : showPagination,
           });
           // TODO: put liquidity getter here if we are in sportsbook.
-          let data = { isSearching: false, meta: result.meta };
-          if(!selectedCategories || selectedCategories.length === 0) {
+          let data = {
+            isSearching: false,
+            meta: result.meta,
+            sportsGroupTypeFilter: newSportsGroupTypeFilter,
+          };
+          if (!selectedCategories || selectedCategories.length === 0) {
             data.allCategoriesMeta = result.meta;
           }
           updateMarketsList(data);
@@ -342,7 +390,9 @@ const MarketsView = () => {
         <section>
           <PillSelection
             options={SPORTS_MARKET_TYPES}
-            defaultSelection={0}
+            defaultSelection={
+              SPORTS_MARKET_TYPES[0].header === sportsGroupTypeFilter ? 0 : 1
+            }
             onChange={v => {
               if (SPORTS_MARKET_TYPES[v].header !== sportsGroupTypeFilter) {
                 updateMarketsList({

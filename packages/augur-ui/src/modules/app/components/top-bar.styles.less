@@ -257,7 +257,7 @@
     background: var(--color-primary-text);
 
     > div:last-of-type {
-      > button[class*="SecondaryButton"] {
+      > button[class*="SecondaryButton"][title*="Login"] {
         border: @size-1 solid var(--color-secondary-action);
         color: var(--color-secondary-action);
         background: transparent;
@@ -270,7 +270,7 @@
         }
       }
   
-      > button[class*="PrimaryButton"] {
+      > button[class*="PrimaryButton"][title*="Signup"] {
         color: var(--color-module-background);
         order: 2;
       
@@ -281,8 +281,22 @@
         }
       }
 
-      > button[class*="PrimaryButton"][title*="Migrate V1 to V2 REP"] {
+      > button:not([title*="Signup"]),
+      > button:not([title*="Login"]) {
         order: 0;
+        color: var(--color-module-background);
+
+        &[class*="Confirmed"] {
+          > svg {
+            width: @size-10;
+            height: @size-10;
+            margin-right: @size-8;
+
+            > path {
+              stroke: var(--color-module-background);
+            }
+          }
+        }
 
         @media @breakpoint-mobile-tablet {
           display: none;

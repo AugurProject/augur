@@ -52,8 +52,14 @@
             }
           }
 
-          &[class*="Disabled"] > button > span {
-            color: var(--color-inactive-text);
+          &[class*="Disabled"] > button {
+            > span {
+              color: var(--color-inactive-text);
+            }
+
+            > svg > path {
+              fill: var(--color-inactive-text);
+            }
           }
         }
 

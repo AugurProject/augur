@@ -380,6 +380,7 @@ export enum MARKET_SORT_PARAMS {
   OPEN_INTEREST = 'openInterest',
   LIQUIDITY = 'liquidity',
   MOST_TRADED = 'mostTraded',
+  ESTIMATED_START_TIME = 'estimatedStartTime'
 }
 
 export const SORT_OPTIONS = [
@@ -387,9 +388,15 @@ export const SORT_OPTIONS = [
   { value: MARKET_SORT_PARAMS.OPEN_INTEREST, header: 'Highest open interest' },
   { value: MARKET_SORT_PARAMS.VOLUME, header: 'Highest volume' },
   { value: MARKET_SORT_PARAMS.CREATION_TIME, header: 'Recently created' },
-  { value: MARKET_SORT_PARAMS.END_DATE, header: 'Ending soon ' },
+  { value: MARKET_SORT_PARAMS.END_DATE, header: 'Ending soon' },
   { value: MARKET_SORT_PARAMS.RECENTLY_TRADED, header: 'Recently Traded' },
   { value: MARKET_SORT_PARAMS.MOST_TRADED, header: 'Most Traded' },
+];
+
+export const SORT_OPTIONS_SPORTS = [
+  { value: MARKET_SORT_PARAMS.ESTIMATED_START_TIME, header: 'Estimated Start Time' },
+  { value: MARKET_SORT_PARAMS.END_DATE, header: 'Ending soon' },
+  { value: MARKET_SORT_PARAMS.LIQUIDITY, header: 'Highest liquidity' },
 ];
 
 export enum MARKET_CARD_FORMATS {
@@ -1107,6 +1114,7 @@ export const CANCEL_TEXT_BUTTON = 'CANCEL_TEXT_BUTTON';
 export const MOVEMENT_LABEL = 'MOVEMENT_LABEL';
 export const INVALID_LABEL = 'INVALID_LABEL';
 export const CASHOUT_BUTTON = 'CASHOUT_BUTTON';
+export const PENDING_ICON_BUTTON = 'PENDING_ICON_BUTTON';
 
 export const COLUMN_TYPES = {
   [TEXT]: TEXT,
@@ -1116,7 +1124,8 @@ export const COLUMN_TYPES = {
   [CANCEL_TEXT_BUTTON]: CANCEL_TEXT_BUTTON,
   [MOVEMENT_LABEL]: MOVEMENT_LABEL,
   [PLAIN]: PLAIN,
-  [CASHOUT_BUTTON]: CASHOUT_BUTTON
+  [CASHOUT_BUTTON]: CASHOUT_BUTTON,
+  [PENDING_ICON_BUTTON]: PENDING_ICON_BUTTON
 };
 
 // Login method variables

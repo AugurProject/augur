@@ -113,7 +113,7 @@ const TopBar = () => {
     pendingQueue[TRANSACTIONS] &&
     pendingQueue[TRANSACTIONS][MIGRATE_FROM_LEG_REP_TOKEN];
   const showMigrateRepButton =
-    !!balances.legacyRep || !!balances.legacyRepNonSafe || !!pending;
+    balances?.legacyRep !== "0" || balances?.legacyAttoRep !== "0" || !!pending;
   return (
     <header className={Styles.TopBar}>
       <div className={Styles.Logo}>
@@ -153,10 +153,12 @@ const TopBar = () => {
           <>
             <SecondaryButton
               action={() => setModal({ type: MODAL_LOGIN })}
+              title="Login"
               text="Login"
             />
             <PrimaryButton
               action={() => setModal({ type: MODAL_SIGNUP })}
+              title="Signup"
               text="Signup"
             />
           </>

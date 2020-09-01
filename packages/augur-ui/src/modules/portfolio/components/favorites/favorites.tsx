@@ -53,13 +53,22 @@ const Favorites = ({
   const { theme, favorites } = useAppStatusStore();
   const marketIds = Object.keys(favorites);
   loadMarketsInfoIfNotLoaded(marketIds);
-  const markets = marketIds.reduce(
-    (filtered: any, marketId: string) => [
-      ...filtered,
-      { ...selectMarket(marketId), favoriteAddedData: favorites[marketId] }
-    ],
+  let markets = marketIds.reduce(
+    (filtered: any, marketId: string) => {
+      const market = selectMarket(marketId);
+      if (!market) {
+        return [...filtered];
+      }
+      return [
+        ...filtered,
+        { ...selectMarket(marketId), favoriteAddedData: favorites[marketId] }
+      ];
+    },
     [],
   );
+  if (theme === THEMES.SPORTS) {
+    markets = markets.filter(market => !!market?.sportsBook?.groupId);
+  }
   const isTrading = theme === THEMES.TRADING;
   let customClass = favoriteStyles.Watchlist;
   if (!isTrading && markets.length === 0) {

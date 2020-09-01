@@ -312,6 +312,7 @@ const CategoryFilters = () => {
           <h3>
             <CategoryRow
               category={sportsTitle}
+              allCategories
               count={categoryMetaData?.marketCount}
               handleClick={() => removeCategoryQuery()}
             />

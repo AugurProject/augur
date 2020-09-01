@@ -60,7 +60,7 @@ const SideNav = ({
     pendingQueue[TRANSACTIONS] &&
     pendingQueue[TRANSACTIONS][MIGRATE_FROM_LEG_REP_TOKEN];
   const showMigrateRepButton =
-    !!balances.legacyRep || !!balances.legacyRepNonSafe || !!pending;
+    balances?.legacyRep !== "0" || balances?.legacyAttoRep !== "0" || !!pending;
   const whichChatPlugin = env.plugins?.chat;
   const accessFilteredMenu = menuData.filter(
     item => !(item.requireLogin && !isLogged)
@@ -201,7 +201,7 @@ const SideNav = ({
             <CategoryFilters />
           }
 
-          {isLogged && !isTrading && (
+          {!isTrading && (
             <footer>
               <HelpIcon
                 isHelpMenuOpen={isHelpMenuOpen}

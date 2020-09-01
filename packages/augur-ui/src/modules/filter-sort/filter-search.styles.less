@@ -122,16 +122,10 @@
     background: var(--color-secondary-action);
     border: @size-1 solid var(--color-dark-grey);
 
-    &:hover {
-      border: @size-1 solid var(--color-dark-text);
-    }
-
+    &:hover,
+    &:active,
     &:focus {
       border: @size-1 solid var(--color-dark-text);
-    }
-
-    &:active {
-      border: @size-1 solid var(--color-dark-grey);
     }
 
     &:disabled {
@@ -140,8 +134,8 @@
 
     > input {
       border: none;
-
       margin: auto 0;
+      height: unset;
 
       &::placeholder {
         .text-14;

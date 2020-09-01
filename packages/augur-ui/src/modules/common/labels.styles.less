@@ -180,6 +180,18 @@
   }
 }
 
+.TypeLabel {
+  .text-8-semi-bold;
+
+  padding: @size-1 @size-2;
+  background: var(--color-positive-40);
+  border-radius: @size-1;
+  text-transform: uppercase;
+
+  &.Ask {
+    background: var(--color-negative-40);
+  }
+}
 // Used in market-header in market detail page.
 .PropertyLabel {
   display: flex;
@@ -361,6 +373,12 @@
     &.underline {
       cursor: pointer;
       text-decoration: underline;
+    }
+    &.Negative {
+      color: var(--color-resolved);
+    }
+    &.Positive {
+      color: var(--color-open);
     }
   }
 

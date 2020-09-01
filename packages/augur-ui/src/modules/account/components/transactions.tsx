@@ -20,7 +20,6 @@ import {
   MODAL_REP_FAUCET,
   MODAL_DAI_FAUCET,
 } from 'modules/common/constants';
-import { AddIcon } from 'modules/common/icons';
 import { AccountAddressDisplay } from 'modules/modal/common';
 import { useAppStatusStore } from 'modules/app/store/app-status';
 import { toChecksumAddress } from 'ethereumjs-util';
@@ -72,12 +71,6 @@ export const Transactions = () => {
             <DepositButton action={() => setModal({ type: MODAL_ADD_FUNDS })} />
             <TransferButton action={() => setModal({ type: MODAL_TRANSFER })} />
             <WithdrawButton action={() => setModal({ type: MODAL_CASHOUT })} />
-            <div>
-              <span>
-                {AddIcon}
-                Get REP or add liquidity of the REP pool
-              </span>
-            </div>
           </div>
           {showFaucets && (
             <>

@@ -456,6 +456,67 @@ div.Onboarding {
 
 :root[theme='BETTING'],
 :root[theme='SPORTS'] {
+  .Orders {
+    background: var(--color-module-background);
+    border: 0;
+
+    > main {
+      padding: @size-24;
+
+      > div > .OrdersHeader {
+        > span:nth-of-type(2) {
+          display: none;
+        }
+        > span {
+          .text-10-semi-bold;
+        }
+      }
+      
+
+      > p {
+        margin-bottom: @size-8;
+      }
+
+      > h2 {
+        .text-14-bold;
+
+        margin: 0 0 @size-16;
+      }
+
+      > div:first-of-type {
+        border: @size-1 solid var(--color-outline);
+        border-radius: @border-radius-rounded;
+
+        > div {
+          background: var(--color-table-header);
+          border-top: 0;
+          border-radius: @border-radius-rounded;
+        }
+
+        > section {
+          margin-bottom: 0;
+          border-bottom: 0;
+
+          > div {
+            padding: @size-10 @size-24;
+            height: unset;
+            background: transparent;
+
+            > span:first-of-type {
+              > span {
+                margin-right: @size-8;
+              }
+            }
+          }
+        }
+      }
+    }
+
+    > header > h1 {
+      .text-16-bold;
+    }
+  }
+
   .TitleHeader {
     > button:first-of-type {
       > svg {
@@ -479,6 +540,7 @@ div.ButtonsRow:last-of-type {
   div.ButtonsRow:last-of-type {
     background: var(--color-table-header-50);
     padding: @size-14 @size-16;
+    border-top: @size-1 solid var(--color-outline);
   }
 }
 
@@ -1503,7 +1565,7 @@ div.ButtonsRow:last-of-type {
   }
 
   > main {
-    > .OrdersHeader {
+    > div > .OrdersHeader {
       align-items: center;
       background: var(--color-module-background);
       border-top: @size-1 solid var(--color-dark-grey);
@@ -1550,7 +1612,7 @@ div.ButtonsRow:last-of-type {
       }
     }
 
-    > section {
+    > div > section {
       border-bottom: @size-1 solid var(--color-dark-grey);
       color: var(--color-primary-text);
       margin-bottom: @size-24;
@@ -1597,11 +1659,6 @@ div.ButtonsRow:last-of-type {
           align-items: center;
           display: flex;
           flex: 1 0 @size-104;
-
-          > button:first-of-type {
-            margin-left: auto;
-            margin-right: @size-16;
-          }
         }
       }
 

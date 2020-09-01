@@ -1,9 +1,7 @@
 import React from 'react';
 import classNames from 'classnames';
 import { Link } from 'react-router-dom';
-import {
-  CREATE_MARKET
-} from 'modules/routes/constants/views';
+import { CREATE_MARKET } from 'modules/routes/constants/views';
 import makePath from 'modules/routes/helpers/make-path';
 import { SecondaryButton } from 'modules/common/buttons';
 import { THEMES } from 'modules/common/constants';
@@ -22,6 +20,7 @@ import { selectAuthorOwnedMarkets } from 'modules/markets/selectors/user-markets
 import Styles from 'modules/portfolio/components/common/quad.styles.less';
 import marketStyles from 'modules/portfolio/components/markets/markets.styles.less';
 import FilterBox from 'modules/portfolio/components/common/filter-box';
+import { useMarketsStore } from 'modules/markets/store/markets';
 
 const sortByOptions = [
   {
@@ -73,16 +72,18 @@ interface MyMarketsProps {
   extend: boolean;
 }
 
-const MyMarkets = ({
-  toggle,
-  hide,
-  extend,
-}: MyMarketsProps) => {
-  const { theme, universe: { disputeWindow }, actions: { setTheme } } = useAppStatusStore();
+const MyMarkets = ({ toggle, hide, extend }: MyMarketsProps) => {
+  const {
+    theme,
+    universe: { disputeWindow },
+    actions: { setTheme },
+  } = useAppStatusStore();
   const isTrading = theme === THEMES.TRADING;
   const disputingWindowEndTime = disputeWindow?.endTime || 0;
-  const myMarkets = selectAuthorOwnedMarkets();
-
+  let myMarkets = selectAuthorOwnedMarkets();
+  if (theme === THEMES.SPORTS) {
+    myMarkets = myMarkets.filter(market => !!market?.sportsBook?.groupId);
+  }
   function renderRightContent(market) {
     return (
       <>
@@ -135,11 +136,11 @@ const MyMarkets = ({
               <span>Market failed to create.</span>
               <div>
                 <SubmitTextButton
-                  text={'submit again'}
+                  text="submit again"
                   action={() => retrySubmitMarket(market)}
                 />
                 <CancelTextButton
-                  text={'cancel'}
+                  text="cancel"
                   action={() =>
                     removePendingData(market.pendingId, CREATE_MARKET)
                   }
@@ -192,10 +193,7 @@ const MyMarkets = ({
         icon: CreatedMarketsIcon,
         button: isTrading ? (
           <Link to={makePath(CREATE_MARKET)}>
-            <SecondaryButton
-              text="Create Market"
-              action={() => null}
-            />
+            <SecondaryButton text="Create Market" action={() => null} />
           </Link>
         ) : (
           <SecondaryButton
@@ -209,7 +207,7 @@ const MyMarkets = ({
 };
 
 MyMarkets.defaultProps = {
-  disputingWindowEndTime: 0
+  disputingWindowEndTime: 0,
 };
 
 export default MyMarkets;

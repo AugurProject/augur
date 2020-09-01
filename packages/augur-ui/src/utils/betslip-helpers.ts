@@ -1,4 +1,9 @@
-import { convertToNormalizedPrice, convertToWin, getWager } from './get-odds';
+import {
+  convertToNormalizedPrice,
+  convertToWin,
+  getWager,
+  getShares,
+} from './get-odds';
 import {
   INSUFFICIENT_FUNDS_ERROR,
   BUY,
@@ -16,6 +21,11 @@ import { createBigNumber } from './create-big-number';
 import { totalTradingBalance } from 'modules/auth/helpers/login-account';
 import { runSimulateTrade } from 'modules/trades/actions/update-trade-cost-shares';
 import { calcOrderShareProfitLoss } from 'modules/trades/helpers/calc-order-profit-loss-percents';
+import {
+  DEFAULT_TRADE_INTERVAL,
+  findMultipleOf,
+} from 'modules/trading/helpers/form-helpers';
+import { convertDisplayAmountToOnChainAmount } from '@augurproject/sdk';
 
 export const convertPositionToBet = (position, marketInfo) => {
   const avgPrice = position.priorPosition
@@ -35,7 +45,6 @@ export const convertPositionToBet = (position, marketInfo) => {
     marketId: marketInfo.id,
     outcomeId: position.outcome,
     sportsBook: marketInfo.sportsBook,
-    amountWon: '0',
     amountFilled: '0',
     price: avgPrice,
     max: marketInfo.maxPrice,
@@ -57,15 +66,17 @@ export const convertPositionToBet = (position, marketInfo) => {
   };
 };
 
-const findProceeds = (realizedPercent, realizedCost, settlementFee) => {
+export const findProceeds = (realizedPercent, realizedCost, settlementFee) => {
   const bnSettlementFee = createBigNumber(settlementFee, 10);
   const bnRealizedPercent = createBigNumber(realizedPercent);
   const bnRealizedCost = createBigNumber(realizedCost);
 
   const bnRealizedPercentPlusOne = ONE.plus(bnRealizedPercent);
   const a = bnRealizedPercentPlusOne.times(bnRealizedCost);
-  const b = bnRealizedPercentPlusOne.times(bnRealizedCost).times(bnSettlementFee);
-  return (a).plus(b);
+  const b = bnRealizedPercentPlusOne
+    .times(bnRealizedCost)
+    .times(bnSettlementFee);
+  return a.plus(b);
 };
 
 const { FILLED, FAILED } = BET_STATUS;
@@ -74,6 +85,7 @@ export const placeBet = async (marketId, order, orderId) => {
   const { marketInfos } = Markets.get();
   const market = marketInfos[marketId];
   // todo: need to add user shares
+  if (!market) return;
   await placeTrade(
     0,
     marketId,
@@ -90,11 +102,7 @@ export const placeBet = async (marketId, order, orderId) => {
     undefined
   )
     .then(() => {
-      Betslip.actions.updateMatched(marketId, orderId, {
-        ...order,
-        marketId,
-        status: FILLED,
-      });
+      Betslip.actions.trash(marketId, orderId);
     })
     .catch(err => {
       Betslip.actions.updateMatched(marketId, orderId, {
@@ -117,19 +125,6 @@ export const checkForDisablingPlaceBets = betslipItems => {
   return placeBetsDisabled;
 };
 
-export const checkForErrors = (marketId, order, orderId) => {
-  runBetslipTrade(marketId, order, false, simulateTradeData => {
-    Betslip.actions.modifyBet(marketId, orderId, {
-      ...order,
-      selfTrade: simulateTradeData.selfTrade,
-      errorMessage: formulateBetErrorMessage(
-        order.insufficientFunds,
-        simulateTradeData.selfTrade
-      ),
-    });
-  });
-};
-
 export const runBetslipTrade = (marketId, order, cashOut, cb) => {
   const { marketInfos } = Markets.get();
   const {
@@ -138,7 +133,7 @@ export const runBetslipTrade = (marketId, order, cashOut, cb) => {
   } = AppStatus.get();
   const market = marketInfos[marketId];
 
-  if (!market) return null;
+  if (!market || !order.shares) return null;
 
   let newTradeDetails: any = {
     side: cashOut ? SELL : BUY,
@@ -161,21 +156,13 @@ export const runBetslipTrade = (marketId, order, cashOut, cb) => {
   })();
 };
 
-export const formulateBetErrorMessage = (insufficientFunds, selfTrade) => {
-  if (selfTrade) {
-    return 'Consuming own order';
-  } else if (insufficientFunds) {
-    return INSUFFICIENT_FUNDS_ERROR;
-  } else {
-    return '';
-  }
-};
 export const checkInsufficientFunds = (
   minPrice,
   maxPrice,
   limitPrice,
   numShares
 ) => {
+  if (!numShares) return '';
   const max = createBigNumber(maxPrice, 10);
   const min = createBigNumber(minPrice, 10);
   const marketRange = max.minus(min).abs();
@@ -188,7 +175,7 @@ export const checkInsufficientFunds = (
 
   let availableDai = totalTradingBalance();
 
-  return longETHpotentialProfit.gt(createBigNumber(availableDai));
+  return longETHpotentialProfit.gt(createBigNumber(availableDai)) ? 'Insufficient funds' : '';
 };
 
 const getTopBid = (orderBooks, bet, tickSize) => {
@@ -239,6 +226,16 @@ const getTopBid = (orderBooks, bet, tickSize) => {
     smallestPrice: bids[bids.length - 1]?.price,
   };
 };
+
+export const checkForConsumingOwnOrderError = (marketId, order, orderId) => {
+  runBetslipTrade(marketId, order, false, simulateTradeData => {
+      Betslip.actions.modifyBet(marketId, orderId, {
+      ...order,
+      selfTrade: simulateTradeData.selfTrade,
+      errorMessage: simulateTradeData.selfTrade && order.errorMessage === '' ? 'Consuming own order' : order.errorMessage 
+    });
+  });
+}
 
 export const getOrderShareProfitLoss = (bet, orderBooks, cb) => {
   const { marketInfos } = Markets.get();
@@ -295,4 +292,21 @@ export const getOrderShareProfitLoss = (bet, orderBooks, cb) => {
       );
     cb(orderShareProfitLoss?.potentialDaiProfit, smallestPrice, orderCost);
   });
+};
+
+export const checkMultipleOfShares = (wager, price, market) => {
+  const shares = getShares(wager, price);
+  const tradeInterval = DEFAULT_TRADE_INTERVAL;
+  if (
+    !convertDisplayAmountToOnChainAmount(
+      createBigNumber(shares),
+      createBigNumber(market.tickSize)
+    )
+      .mod(tradeInterval)
+      .isEqualTo(0)
+  ) {
+    const multipleOf = findMultipleOf(market);
+    return `Quantity must be a multiple of ${multipleOf}. cur: ${shares}`;
+  }
+  return '';
 };

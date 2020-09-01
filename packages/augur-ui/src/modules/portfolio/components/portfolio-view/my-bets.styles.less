@@ -46,6 +46,7 @@
 
       > div:nth-of-type(3) {
         display: flex;
+        grid-column: 1;
 
         > span:first-of-type {
           margin-right: @size-34;
@@ -54,10 +55,12 @@
 
       > ul {
         justify-content: center;
+        grid-column: 1 / span 3;
       }
 
       > article {
         justify-content: flex-end;
+        grid-column: 3;
 
         > div {
           width: 270px;

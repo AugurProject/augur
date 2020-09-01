@@ -1,9 +1,9 @@
-/* eslint-disable jsx-a11y/no-static-element-interactions */ // can't have button within a button
-
-import * as React from "react";
-import classNames from "classnames";
-import Styles from "modules/common/search.styles";
-import { SearchIcon, XIcon } from "modules/common/icons";
+import React, { useState, useRef, useEffect } from 'react';
+import classNames from 'classnames';
+import Styles from 'modules/common/search.styles';
+import { SearchIcon, XIcon, SmallXIcon } from 'modules/common/icons';
+import { THEMES } from 'modules/common/constants';
+import { useAppStatusStore } from 'modules/app/store/app-status';
 
 export interface SearchBarProps {
   onChange: (value: string) => void;
@@ -11,79 +11,63 @@ export interface SearchBarProps {
   onFocus: Function;
 }
 
-export interface SearchBarState {
-  isFocused: boolean;
-}
+export const SearchBar = ({
+  onChange,
+  placeholder = 'Search',
+  onFocus,
+}: SearchBarProps) => {
+  const [isFocused, setIsFocused] = useState(false);
+  const container = useRef();
+  const search = useRef();
+  const { theme } = useAppStatusStore();
 
-export class SearchBar extends React.Component<SearchBarProps, SearchBarState> {
-  state: SearchBarState = {
-    isFocused: false
-  };
-
-  componentDidMount() {
-    window.addEventListener("click", this.handleWindowOnClick);
-  }
-
-  componentWillUnmount() {
-    window.removeEventListener("click", this.handleWindowOnClick);
-  }
-
-  refContainer: any = null;
-  refSearch: any = null;
-
-  handleWindowOnClick = (event: React.MouseEvent<HTMLElement>) => {
-    if (this.refContainer && this.refContainer.contains(event.target)) {
-      this.refSearch.focus();
+  useEffect(() => {
+    function handleClick(event) {
+      if (container?.current?.contains(event.target) && search?.current) {
+        search.current.focus();
+      }
     }
-  };
+    window.addEventListener('click', handleClick);
 
-  handlerClicked = () => {
-    this.setState({ isFocused: true });
-    this.props.onFocus(false);
-  };
+    return () => window.removeEventListener('click', handleClick);
+  }, [])
 
-  deFocus = e => {
-    this.setState({ isFocused: false });
-    this.props.onFocus(true);
-    this.refSearch.value = "";
-    this.props.onChange("");
-    e.stopPropagation();
-  };
-
-  render() {
-    const { onChange, placeholder } = this.props;
-    const placeholderText = placeholder || "Search";
-    const { isFocused } = this.state;
-
-    return (
+  return (
+    <div
+      className={classNames(Styles.Container, {
+        [Styles.ContainerFocused]: isFocused,
+      })}
+    >
       <div
-        className={classNames(Styles.Container, {
-          [Styles.ContainerFocused]: isFocused
+        className={classNames(Styles.SearchBar, {
+          [Styles.isFocused]: isFocused,
         })}
+        ref={container}
+        onClick={() => {
+          setIsFocused(true);
+          onFocus(false);
+        }}
       >
-        <div
-          className={classNames(Styles.SearchBar, {
-            [Styles.isFocused]: isFocused
-          })}
-          ref={container => {
-            this.refContainer = container;
-          }}
-          onClick={this.handlerClicked}
-        >
-          <input
-            ref={search => {
-              this.refSearch = search;
-            }}
-            onChange={e => onChange(e.target.value)}
-            placeholder={placeholderText}
-          />
-          <div>Search</div>
-          {isFocused ? 
-            <button onClick={this.deFocus}>{XIcon}</button> 
-            : SearchIcon}
-        </div>
-
+        <input
+          ref={search}
+          onChange={e => onChange(e.target.value)}
+          placeholder={placeholder}
+        />
+        <div>Search</div>
+        {isFocused ? (
+          <button onClick={(e) => {
+            setIsFocused(false);
+            onFocus(true);
+            search?.current?.value = '';
+            onChange('');
+            e.stopPropagation();
+          }}>
+            {theme === THEMES.SPORTS ? SmallXIcon : XIcon}
+          </button>
+        ) : (
+          SearchIcon
+        )}
       </div>
-    );
-  }
-}
+    </div>
+  );
+};

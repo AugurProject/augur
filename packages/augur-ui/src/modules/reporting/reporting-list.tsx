@@ -89,13 +89,13 @@ export const Paginator = ({
   const { isLogged, isConnected } = useAppStatusStore();
 
   const [state, setState] = useState({
-    offset: 1,
     limit: ITEMS_PER_SECTION,
     showPagination: false,
     marketCount: 0,
   });
+  const [offset, setOffset] = useState(1);
   const [isLoadingMarkets, setIsLoadingMarkets] = useState(true);
-  const { offset, limit, showPagination, marketCount } = state;
+  const { limit, showPagination, marketCount } = state;
 
   useEffect(() => {
     if (isConnected) {
@@ -121,8 +121,8 @@ export const Paginator = ({
     });
   }
 
-  function setOffset(offset) {
-    setState({ ...state, offset });
+  function setOffsetFnc(offset) {
+    setOffset(offset);
     loadingMarkets(offset, limit, reportingType);
   }
 
@@ -161,7 +161,7 @@ export const Paginator = ({
             page={offset}
             itemCount={marketCount}
             itemsPerPage={limit}
-            action={setOffset}
+            action={setOffsetFnc}
             updateLimit={null}
           />
         </div>
