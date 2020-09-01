@@ -19,6 +19,7 @@ import {
   ADD_FUNDS_TRANSFER,
   USDC,
   USDT,
+  WETH,
 } from 'modules/common/constants';
 import { LoginAccount, FormattedNumber } from 'modules/types';
 import { Swap } from 'modules/swap/components/swap';
@@ -45,6 +46,7 @@ interface AddFundsProps {
   addFundsFortmatic: Function;
   initialAddFundsFlow?: string;
   initialSwapToken?: string;
+  gasPrice: number;
 }
 
 export const AddFunds = ({
@@ -63,6 +65,7 @@ export const AddFunds = ({
   addFundsFortmatic,
   initialAddFundsFlow = null,
   initialSwapToken = null,
+  gasPrice,
   balances,
 }: AddFundsProps) => {
   const address = loginAccount.address;
@@ -70,7 +73,6 @@ export const AddFunds = ({
   const BUY_MIN = 20;
   const BUY_MAX = 250;
   const SWAP_ID = 0;
-  const pillOptions = [{ label: 'Convert', id: SWAP_ID }];
 
   const usingOnRampSupportedWallet = accountMeta &&
     accountMeta.accountType === ACCOUNT_TYPES.TORUS ||
@@ -92,7 +94,7 @@ export const AddFunds = ({
   const fundTypeLabel = tokenToAdd === DAI ?  'DAI ($)' : tokenToAdd === REP ? 'REPv2' : tokenToAdd;
 
   const [selectedOption, setSelectedOption] = useState(
-    initialAddFundsFlow ? initialAddFundsFlow : usingOnRampSupportedWallet && tokenToAdd === DAI ? ADD_FUNDS_CREDIT_CARD : tokenToAdd === ETH ? ADD_FUNDS_TRANSFER : ADD_FUNDS_SWAP
+    initialAddFundsFlow ? initialAddFundsFlow : usingOnRampSupportedWallet && tokenToAdd === DAI ? ADD_FUNDS_CREDIT_CARD : (tokenToAdd === ETH && !initialSwapToken) ? ADD_FUNDS_TRANSFER : ADD_FUNDS_SWAP
   );
 
   const FUND_OTPIONS = [
@@ -125,7 +127,7 @@ export const AddFunds = ({
     addFundsOptions = addFundsOptions.slice(1, addFundsOptions.length);
   }
 
-  if (tokenToAdd === ETH) {
+  if (tokenToAdd === ETH && !initialSwapToken) {
     addFundsOptions = addFundsOptions.filter(options => options.value !== ADD_FUNDS_SWAP)
   }
 
@@ -181,10 +183,7 @@ export const AddFunds = ({
               </h2>
 
               <div className={Styles.AddFundsSwap}>
-                <PillSelection
-                  options={pillOptions}
-                  defaultSelection={SWAP_ID}
-                />
+
               </div>
 
               <Swap
@@ -199,6 +198,7 @@ export const AddFunds = ({
                 usdcToDaiRate={usdcToDaiRate}
                 config={config}
                 balances={balances}
+                gasPrice={gasPrice}
               />
             </>
           )}

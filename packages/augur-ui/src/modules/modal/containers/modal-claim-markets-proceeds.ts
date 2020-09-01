@@ -86,7 +86,7 @@ const mergeProps = (sP: any, dP: any, oP: any) => {
           pendingQueue[CLAIM_MARKETS_PROCEEDS] &&
           pendingQueue[CLAIM_MARKETS_PROCEEDS][marketId];
 
-        const unclaimedProceeds = formatDai(
+        const unclaimedProceeds = formatEther(
           claimablePosition.unclaimedProceeds
         );
         return {

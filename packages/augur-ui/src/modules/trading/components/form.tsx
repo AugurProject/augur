@@ -17,7 +17,7 @@ import {
 } from 'modules/common/constants';
 import FormStyles from 'modules/common/form-styles.less';
 import Styles from 'modules/trading/components/form.styles.less';
-import { ExclamationCircle } from 'modules/common/icons';
+import { ExclamationCircle, WethIcon } from 'modules/common/icons';
 import { SquareDropdown } from 'modules/common/selection';
 import { TextInput } from 'modules/common/form';
 import getPrecision from 'utils/get-number-precision';
@@ -979,7 +979,7 @@ class Form extends Component<FromProps, FormState> {
                   }}
                 />
                 <span
-                  className={classNames({
+                  className={classNames(Styles.Ether, {
                     [`${Styles.isScalar_largeText}`]:
                       isScalar &&
                       (market.scalarDenomination || []).length <= 24,
@@ -989,7 +989,7 @@ class Form extends Component<FromProps, FormState> {
                       .length,
                   })}
                 >
-                  {isScalar ? market.scalarDenomination : '$'}
+                  {isScalar ? market.scalarDenomination : WethIcon}
                 </span>
               </div>
             </li>
@@ -1078,12 +1078,12 @@ class Form extends Component<FromProps, FormState> {
                 }
               />
               <span
-                className={classNames({
+                className={classNames(Styles.Ether, {
                   [`${Styles.error}`]: s.errors[this.INPUT_TYPES.EST_DAI]
                     .length,
                 })}
               >
-                $
+                {WethIcon}
               </span>
             </div>
           </li>

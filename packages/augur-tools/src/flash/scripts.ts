@@ -2711,7 +2711,6 @@ export function addScripts(flash: FlashSession) {
           signer,
           signer.address
         );
-        // const compilerOutput = JSON.parse(await readFile(config.deploy.contractInputPath, 'utf8'));
 
         const deployer = new ParaContractDeployer(
           this.config,

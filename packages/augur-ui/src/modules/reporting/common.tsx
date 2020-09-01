@@ -1321,10 +1321,10 @@ export const ParticipationTokensView = (
 
   return (
     <div className={Styles.ParticipationTokensView}>
-      <h4>Participation Tokens</h4>
+      <h4>Fee Pot</h4>
       <span>
         <span>Don’t see any reports that need disputing? </span>
-        You can earn a proportional share of the reporting fees from this dispute window.
+        You can earn a proportional share of the reporting fees by staking in the fee pot.
         <span>
           <a
             href={HELP_CENTER_PARTICIPATION_TOKENS}
@@ -1341,29 +1341,29 @@ export const ParticipationTokensView = (
         info
         header="Total Reporting Fees"
         subheader={disputeWindowFees.formatted}
-        secondSubheader="DAI"
-        tooltipText="The total amount to be paid to reporters"
+        secondSubheader="ETH"
+        tooltipText="The total amount to be paid to fee pot"
       />
       <Subheaders
         large
         info
-        header="Total Participation Tokens Purchased"
+        header="Total Staked"
         subheader={purchasedParticipationTokens.formatted}
         tooltipText={
-          'The total amount of participation tokens purchased by reporters in the current window'
+          'The total amount of REPv2 tokens staked'
         }
       />
       <Subheaders
         info
-        header="Participation Tokens I OWN in Current Dispute Window"
+        header="Total staked in fee pot"
         subheader={tokensOwned.formatted}
         secondSubheader={`(${percentageOfTotalFees.formatted}% of Total Fees)`}
-        tooltipText="The % of participation tokens you own among all participation tokens purchased in the current window"
+        tooltipText="The % of staked you own among all staked"
       />
 
       <ProcessingButton
         disabled={disablePurchaseButton}
-        text="Get Participation Tokens"
+        text="Stake REP"
         action={openModal}
         queueName={TRANSACTIONS}
         queueId={BUYPARTICIPATIONTOKENS}
@@ -1371,30 +1371,38 @@ export const ParticipationTokensView = (
 
       <section />
 
-      <h4>Redeem Past Participation Tokens</h4>
+      <h4>Claim fees and/or Unstake</h4>
       <span>
-      Redeem your past participation tokens and any returns from your portion of the reporting fees.
+      Unstake your staked tokens and claim reporting fees.
       </span>
       <Subheaders
         info
-        header="Participation Tokens Purchased"
+        header="Current stake"
         subheader={pastParticipationTokensPurchased.formatted}
         tooltipText={
-          "The total amount of unredeemed participation tokens you've purchased for past reporting minus any you've lost for incorrect reporting"
+          "The total amount of REPv2 you have staked minus any you've lost for incorrect reporting"
         }
       />
       <Subheaders
         info
         header="My Portion of Reporting Fees"
         subheader={participationTokensClaimableFees.formatted}
-        secondSubheader="DAI"
+        secondSubheader="ETH"
         tooltipText={
-          "The total amount of unclaimed DAI you've earned through reporting"
+          "The total amount of ETH you've earned through staking"
         }
       />
       <ProcessingButton
         disabled={!hasRedeemable}
-        text="Redeem Past Participation Tokens"
+        text="Claim fees only"
+        action={openClaimParticipationTokensModal}
+        queueName={TRANSACTIONS}
+        queueId={REDEEMSTAKE}
+      />
+      <section />
+      <ProcessingButton
+        disabled={!hasRedeemable}
+        text="Claim fees and unstake"
         action={openClaimParticipationTokensModal}
         queueName={TRANSACTIONS}
         queueId={REDEEMSTAKE}

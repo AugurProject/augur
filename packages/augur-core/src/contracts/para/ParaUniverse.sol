@@ -168,7 +168,7 @@ contract ParaUniverse is Initializable, IParaUniverse {
         }
 
         _currentFeeDivisor = calculateReportingFeeDivisorInternal();
-        
+
         currentReportingFeeDivisor = _currentFeeDivisor;
         augur.logReportingFeeChanged(_currentFeeDivisor);
         return _currentFeeDivisor;
@@ -251,5 +251,9 @@ contract ParaUniverse is Initializable, IParaUniverse {
             withdraw(_affiliate, _affiliateBalance, address(_market));
         }
         return true;
+    }
+
+    function getForkingMarket() public view returns (IMarket) {
+        return originUniverse.getForkingMarket();
     }
 }

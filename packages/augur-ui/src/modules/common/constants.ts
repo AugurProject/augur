@@ -9,7 +9,7 @@ import {
 import { DEFAULT_DERIVATION_PATH } from 'modules/auth/helpers/derivation-path';
 import * as d3 from 'd3-time';
 import { createBigNumber } from 'utils/create-big-number';
-import { formatShares, formatDaiPrice } from 'utils/format-number';
+import { formatShares, formatDaiPrice, formatEther } from 'utils/format-number';
 import {
   MarketReportingState,
   MarketTypeName,
@@ -59,6 +59,7 @@ export const REP = 'REP';
 export const DAI = 'DAI';
 export const USDT = 'USDT';
 export const USDC = 'USDC';
+export const WETH = 'WETH';
 
 export const TRADING_TUTORIAL = 'TRADING_TUTORIAL';
 export const INVALID_BEST_BID_ALERT_VALUE = createBigNumber('.1');
@@ -751,6 +752,7 @@ export const SENDREPUTATION = 'SENDREPUTATION';
 export const CUSTOM = 'Custom';
 export const PREFILLEDSTAKE = 'PREFILLEDSTAKE';
 export const MIGRATE_FROM_LEG_REP_TOKEN = 'MIGRATEFROMLEGACYREPUTATIONTOKEN';
+export const APPROVE_FROM_LEG_REP_TOKEN = 'APPROVEFROMLEGACYREPUTATIONTOKEN';
 export const CREATEAUGURWALLET = 'RUNPERIODICALS';
 export const WITHDRAWALLFUNDSASDAI = 'WITHDRAWALLFUNDSASDAI';
 export const SWAPEXACTTOKENSFORTOKENS = 'SWAPEXACTTOKENSFORTOKENS';
@@ -760,6 +762,8 @@ export const ADDLIQUIDITY = 'ADDLIQUIDITY';
 export const ETH_RESERVE_INCREASE = 'ETH_RESERVE_INCREASE';
 export const SETREFERRER = 'SETREFERRER'
 export const SETAPPROVALFORALL = 'SETAPPROVALFORALL'
+export const WRAP_ETH = 'DEPOSIT';
+export const UNWRAP_ETH = 'WITHDRAW';
 
 // # Orders/Trade Constants
 export const ORDER_BOOK_TABLE = 'ORDER_BOOK_TABLE';
@@ -931,10 +935,11 @@ export const TOTAL_FROZEN_FUNDS = 'Total Frozen Funds';
 export const REP_BALANCE = 'REPv2 Balance';
 export const REP_STAKED = 'REPv2 Staked';
 export const TOTAL_ACCOUNT_VALUE_IN_DAI = 'Total Account Value';
-export const TOTAL_ACCOUNT_VALUE_IN_REP = 'My Available REPv2 Balance ';
+export const TOTAL_ACCOUNT_VALUE_IN_REP = 'MY AVAILABLE REPv2 BALANCE';
 export const ALL_TIME_PROFIT_AND_LOSS_REP = 'All Time Profit and Loss';
-export const MY_TOTOL_REP_STAKED = 'My Total REPv2 Staked';
-export const REPORTING_ONLY_BANNER = 'Reporting only, trading is disabled '
+export const MY_TOTOL_REP_STAKED = 'MY TOTAL REPv2 STAKED';
+export const REPORTING_ONLY_BANNER = 'Reporting only, trading is disabled ';
+export const TRADING_ETH_VERSION = 'THIS VERSION OF AUGUR TRADES IN ETH ONLY';
 
 // Account Summary - Augur Status
 export const AUGUR_STATUS_TITLE = 'Augur Status';
@@ -1397,7 +1402,7 @@ export const REPORTING_GUIDE = {
 function createOrder(disappear, price, quantity, id, outcomeId, type) {
   return {
     disappear,
-    avgPrice: formatDaiPrice(price),
+    avgPrice: formatEther(price),
     cumulativeShares: quantity.toString(),
     id,
     mySize: '0',
@@ -1408,7 +1413,7 @@ function createOrder(disappear, price, quantity, id, outcomeId, type) {
     quantity: quantity.toString(),
     shares: quantity.toString(),
     sharesEscrowed: formatShares(quantity),
-    tokensEscrowed: formatDaiPrice(price),
+    tokensEscrowed: formatEther(price),
     type,
     unmatchedShares: formatShares(quantity),
   };

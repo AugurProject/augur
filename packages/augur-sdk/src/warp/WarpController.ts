@@ -248,8 +248,7 @@ export class WarpController {
   }
 
   async destroyAndRecreateDB() {
-    console.log(`WarpController: Clearing and re-initializing DB`);
-    await this.db.clear();
+    await this.db.delete();
     await this.db.initializeDB();
   }
 

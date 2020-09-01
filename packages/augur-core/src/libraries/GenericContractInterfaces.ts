@@ -8304,6 +8304,13 @@ export class ParaAugur<TBigNumber> extends Contract<TBigNumber> {
 		return <string>result[0]
 	}
 
+	public derivePayoutDistributionHash_ = async (payoutNumerators: Array<TBigNumber>, numTicks: TBigNumber, numOutcomes: TBigNumber, options?: { sender?: string }): Promise<string> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":true,"inputs":[{"internalType":"uint256[]","name":"_payoutNumerators","type":"uint256[]"},{"internalType":"uint256","name":"_numTicks","type":"uint256"},{"internalType":"uint256","name":"_numOutcomes","type":"uint256"}],"name":"derivePayoutDistributionHash","outputs":[{"internalType":"bytes32","name":"","type":"bytes32"}],"payable":false,"stateMutability":"view","type":"function"}
+		const result = await this.localCall(abi, [payoutNumerators, numTicks, numOutcomes], options.sender)
+		return <string>result[0]
+	}
+
 	public finishDeployment = async (options?: { sender?: string }): Promise<Array<Event>> => {
 		options = options || {}
 		const abi: AbiFunction = {"constant":false,"inputs":[],"name":"finishDeployment","outputs":[{"internalType":"bool","name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"}
@@ -8349,10 +8356,43 @@ export class ParaAugur<TBigNumber> extends Contract<TBigNumber> {
 		return <{ extraInfo: string, marketCreator: string, outcomes: Array<string>, displayPrices: Array<TBigNumber>, marketType: TBigNumber, recommendedTradeInterval: TBigNumber }>result[0]
 	}
 
+	public getMarketOutcomes_ = async (market: string, options?: { sender?: string }): Promise<Array<string>> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":true,"inputs":[{"internalType":"contract IMarket","name":"_market","type":"address"}],"name":"getMarketOutcomes","outputs":[{"internalType":"bytes32[]","name":"_outcomes","type":"bytes32[]"}],"payable":false,"stateMutability":"view","type":"function"}
+		const result = await this.localCall(abi, [market], options.sender)
+		return <Array<string>>result[0]
+	}
+
 	public getMarketRecommendedTradeInterval_ = async (market: string, options?: { sender?: string }): Promise<TBigNumber> => {
 		options = options || {}
 		const abi: AbiFunction = {"constant":true,"inputs":[{"internalType":"contract IMarket","name":"_market","type":"address"}],"name":"getMarketRecommendedTradeInterval","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"}
 		const result = await this.localCall(abi, [market], options.sender)
+		return <TBigNumber>result[0]
+	}
+
+	public getMarketType_ = async (market: string, options?: { sender?: string }): Promise<TBigNumber> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":true,"inputs":[{"internalType":"contract IMarket","name":"_market","type":"address"}],"name":"getMarketType","outputs":[{"internalType":"enum IMarket.MarketType","name":"","type":"uint8"}],"payable":false,"stateMutability":"view","type":"function"}
+		const result = await this.localCall(abi, [market], options.sender)
+		return <TBigNumber>result[0]
+	}
+
+	public getMaximumMarketEndDate = async (options?: { sender?: string }): Promise<Array<Event>> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":false,"inputs":[],"name":"getMaximumMarketEndDate","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"payable":false,"stateMutability":"nonpayable","type":"function"}
+		return await this.remoteCall(abi, [], 'getMaximumMarketEndDate', options.sender)
+	}
+	
+	public getMaximumMarketEndDate_estimateGas = async (options?: { sender?: string }): Promise<TBigNumber> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":false,"inputs":[],"name":"getMaximumMarketEndDate","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"payable":false,"stateMutability":"nonpayable","type":"function"}
+		return await this.estimateGas(abi, [], 'getMaximumMarketEndDate', options.sender)
+	}
+
+	public getMaximumMarketEndDate_ = async (options?: { sender?: string }): Promise<TBigNumber> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":false,"inputs":[],"name":"getMaximumMarketEndDate","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"payable":false,"stateMutability":"nonpayable","type":"function"}
+		const result = await this.localCall(abi, [], options.sender)
 		return <TBigNumber>result[0]
 	}
 
@@ -8368,6 +8408,20 @@ export class ParaAugur<TBigNumber> extends Contract<TBigNumber> {
 		const abi: AbiFunction = {"constant":true,"inputs":[],"name":"getTimestamp","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"}
 		const result = await this.localCall(abi, [], options.sender)
 		return <TBigNumber>result[0]
+	}
+
+	public getUniverseForkIndex_ = async (universe: string, options?: { sender?: string }): Promise<TBigNumber> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":true,"inputs":[{"internalType":"contract IUniverse","name":"_universe","type":"address"}],"name":"getUniverseForkIndex","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"}
+		const result = await this.localCall(abi, [universe], options.sender)
+		return <TBigNumber>result[0]
+	}
+
+	public isKnownFeeSender_ = async (feeSender: string, options?: { sender?: string }): Promise<boolean> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":true,"inputs":[{"internalType":"address","name":"_feeSender","type":"address"}],"name":"isKnownFeeSender","outputs":[{"internalType":"bool","name":"","type":"bool"}],"payable":false,"stateMutability":"view","type":"function"}
+		const result = await this.localCall(abi, [feeSender], options.sender)
+		return <boolean>result[0]
 	}
 
 	public isKnownMarket_ = async (market: string, options?: { sender?: string }): Promise<boolean> => {
@@ -9858,6 +9912,13 @@ export class ParaUniverse<TBigNumber> extends Contract<TBigNumber> {
 	public getFeePot_ = async (options?: { sender?: string }): Promise<string> => {
 		options = options || {}
 		const abi: AbiFunction = {"constant":true,"inputs":[],"name":"getFeePot","outputs":[{"internalType":"contract IFeePot","name":"","type":"address"}],"payable":false,"stateMutability":"view","type":"function"}
+		const result = await this.localCall(abi, [], options.sender)
+		return <string>result[0]
+	}
+
+	public getForkingMarket_ = async (options?: { sender?: string }): Promise<string> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":true,"inputs":[],"name":"getForkingMarket","outputs":[{"internalType":"contract IMarket","name":"","type":"address"}],"payable":false,"stateMutability":"view","type":"function"}
 		const result = await this.localCall(abi, [], options.sender)
 		return <string>result[0]
 	}

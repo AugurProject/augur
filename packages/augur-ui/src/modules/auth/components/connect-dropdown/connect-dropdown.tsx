@@ -4,7 +4,6 @@ import Clipboard from 'clipboard';
 import classNames from 'classnames';
 import { ACCOUNT_TYPES, TRADE_ORDER_GAS_MODAL_ESTIMATE, GWEI_CONVERSION,ETH, DAI, FEE_RESERVES_LABEL, REP } from 'modules/common/constants';
 import {
-  DaiLogoIcon,
   EthIcon,
   helpIcon,
   LogoutIcon,
@@ -12,19 +11,18 @@ import {
   Pencil,
   ClipboardCopy,
   AugurLogo,
+  WethIcon as WethIcon,
 } from 'modules/common/icons';
 import { PrimaryButton, SecondaryButton } from 'modules/common/buttons';
-import { formatDaiPrice, formatEther, formatRep, formatDai, formatGasCostToEther } from 'utils/format-number';
+import { formatEther, formatRep, } from 'utils/format-number';
 import { AccountBalances, FormattedNumber } from 'modules/types';
 import ModalMetaMaskFinder from 'modules/modal/components/common/modal-metamask-finder';
 import { AFFILIATE_NAME } from 'modules/routes/constants/param-names';
-import { displayGasInDai } from 'modules/app/actions/get-ethToDai-rate';
 import { getGasCost } from 'modules/modal/gas';
-import { createBigNumber, BigNumber } from 'utils/create-big-number';
-import TransferMyTokens from 'modules/modal/containers/transfer-my-tokens';
-
+import { BigNumber } from 'utils/create-big-number';
 import TooltipStyles from 'modules/common/tooltip.styles.less';
 import Styles from 'modules/auth/components/connect-dropdown/connect-dropdown.styles.less';
+import { WrapUnwrapEth } from 'modules/modal/common';
 
 interface ConnectDropdownProps {
   isLogged: boolean;
@@ -53,6 +51,9 @@ interface ConnectDropdownProps {
   reserveEthAmount: FormattedNumber;
   showTransferMyDai: boolean;
   showTransferMyRep: boolean;
+  showWrapEther?: boolean;
+  showWrapAddFundsModal?: Function;
+  walletType?: string;
 }
 
 const ConnectDropdown = (props: ConnectDropdownProps) => {
@@ -73,9 +74,9 @@ const ConnectDropdown = (props: ConnectDropdownProps) => {
     GsnEnabled,
     ethToDaiRate,
     loginAccountAddress,
-    reserveEthAmount,
-    showTransferMyDai,
-    showTransferMyRep,
+    showWrapEther,
+    showWrapAddFundsModal,
+    walletType,
   } = props;
 
   const [showMetaMaskHelper, setShowMetaMaskHelper] = useState(false);
@@ -132,13 +133,14 @@ const ConnectDropdown = (props: ConnectDropdownProps) => {
 
   const accountFunds = [
     {
-      value: formatDai(balances.dai, {
+      value: formatEther(balances.weth, {
         zeroStyled: false,
-        decimalsRounded: 2,
+        decimalsRounded: 4,
       }).formatted,
-      name: 'DAI',
-      logo: DaiLogoIcon,
-      disabled: false,
+      name: 'WETH',
+      logo: WethIcon,
+      wrapped: true,
+      disabled: GsnEnabled ? balances.weth === "0" : false,
     },
     {
       value: formatEther(balances.eth, {
@@ -207,13 +209,14 @@ const ConnectDropdown = (props: ConnectDropdownProps) => {
           <PrimaryButton action={() => showAddFundsModal()} text='Add Funds' />
         </div>
 
-        {false && <TransferMyTokens condensed={true} tokenName={DAI} />}
-        {false && <TransferMyTokens condensed={true} tokenName={REP} />}
+        {showWrapEther && <WrapUnwrapEth walletType={walletType} tokenName={ETH} tokenAmount={formatEther(balances.eth)} isCondensed={true} showConvertModal={showWrapAddFundsModal} />}
 
         {accountFunds
           .filter(fundType => !fundType.disabled)
           .map((fundType, idx) => (
-            <div key={idx} className={Styles.AccountFunds}>
+            <div key={idx} className={classNames(Styles.AccountFunds, {
+              [Styles.Wrapped]: fundType.wrapped
+            })}>
               {fundType.logo} {fundType.name}
               <div>
                   {fundType.value} {fundType.name}

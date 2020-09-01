@@ -38,7 +38,7 @@ const mapStateToProps = (state: AppState, ownProps) => {
   const { authStatus, loginAccount, appStatus, accountPositions, userOpenOrders, blockchain, newMarket, env } = state;
   const marketId = ownProps.market.id;
   const hasHistory = !!accountPositions[marketId] || !!userOpenOrders[marketId];
-  const hasFunds = !!loginAccount.balances.eth && !!loginAccount.balances.dai;
+  const hasFunds = !!loginAccount.balances.weth;
 
   let availableDai = totalTradingBalance(loginAccount)
   if (ownProps.initialLiquidity) {

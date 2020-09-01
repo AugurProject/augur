@@ -19,6 +19,7 @@ import {
   GWEI_CONVERSION,
   ETH,
   PUBLICTRADE,
+  WETH,
 } from 'modules/common/constants';
 import ReactTooltip from 'react-tooltip';
 import TooltipStyles from 'modules/common/tooltip.styles.less';
@@ -196,8 +197,6 @@ class Confirm extends Component<ConfirmProps, ConfirmState> {
       ? createBigNumber(formatGasCostToEther(gasLimit, { decimalsRounded: 4 }, createBigNumber(GWEI_CONVERSION).multipliedBy(gasPrice)))
       : ZERO;
 
-    const gasCostDai = formatDai(createBigNumber(ethToDaiRate?.value || 0).times(createBigNumber(gasCostInEth)));
-
     if (marketType === SCALAR && selectedOutcomeId === INVALID_OUTCOME_ID) {
       messages = {
         header: null,
@@ -270,9 +269,9 @@ class Confirm extends Component<ConfirmProps, ConfirmState> {
       )
     ) {
       messages = {
-        header: 'Insufficient DAI',
+        header: 'Insufficient WETH',
         type: ERROR,
-        message: 'You do not have enough DAI to place this order',
+        message: 'You do not have enough WETH to place this order',
       };
     }
 
@@ -533,7 +532,7 @@ class Confirm extends Component<ConfirmProps, ConfirmState> {
 
             {!tradingTutorial && isLogged && totalCost && (createBigNumber(potentialDaiLoss.fullPrecision).gt(createBigNumber(availableDai)) ||
             createBigNumber(gasCostInEth).gte(createBigNumber(availableEth))) &&
-              <PrimaryButton action={() => showAddFundsModal()} text={'Add Funds'} />
+              <PrimaryButton action={() => showAddFundsModal({ tokenToAdd: WETH })} text={'Add Funds'} />
             }
           </div>
         )}

@@ -111,7 +111,6 @@ export default class AccountView extends React.Component<
                   }
                 />
                 <Transactions />
-                <TermsAndConditions />
               </div>
             )
           }

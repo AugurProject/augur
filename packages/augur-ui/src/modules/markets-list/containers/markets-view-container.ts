@@ -39,6 +39,7 @@ import {
   updateMarketsListCardFormat,
   updateMarketsListMeta,
 } from '../actions/update-markets-list';
+import { loadMarketsInfo } from 'modules/markets/actions/load-markets-info';
 
 const findMarketsInReportingState = (markets, reportingState) => {
   const reportingStates: String[] = organizeReportingStates(reportingState);
@@ -156,7 +157,8 @@ const mapDispatchToProps = (
     const marketsInfo = await augurSdkLite.get().getMarketCreatedLogs(isGoogleBot());
     dispatch(handleMarketsUpdatedLog({ marketsInfo }));
     cb(marketsInfo);
-  }
+  },
+  loadMarketsInfo: marketIds => dispatch(loadMarketsInfo(marketIds)),
 });
 
 const Markets = withRouter(

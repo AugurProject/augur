@@ -51,10 +51,14 @@ export async function buildSyncStrategies(client:Augur, db:Promise<DB>, provider
     const warpSyncStrategy = new WarpSyncStrategy(warpController,
       logFilterAggregator.onLogsAdded, await db, provider);
 
-    const { warpSyncHash } = await client.warpSync.getLastWarpSyncData(
-      client.contracts.universe.address);
+    try {
+      const { warpSyncHash } = await client.warpSync.getLastWarpSyncData(
+        client.contracts.universe.address);
 
-    await warpSyncStrategy.start(currentBlock, warpSyncHash);
+      await warpSyncStrategy.start(currentBlock, warpSyncHash);
+    } catch (e) {
+      logger.error('Unable to load warp sync file.', e);
+    }
 
     if (config.warpSync && config.warpSync.createCheckpoints) {
       client.events.once(SubscriptionEventName.SDKReady, () => {
@@ -183,8 +187,6 @@ export async function createServer(config: SDKConfiguration, client?: Augur): Pr
     client,
     config.zeroX?.mesh?.enabled || config.zeroX?.rpc?.enabled
   );
-
-  await db;
 
   if(config.warpSync?.createCheckpoints && config.warpSync?.autoReport) {
     client.events.on(SubscriptionEventName.WarpSyncHashUpdated,

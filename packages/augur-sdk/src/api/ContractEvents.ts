@@ -3,7 +3,7 @@ import { Log, ParsedLog } from '@augurproject/types';
 import { ContractAddresses, ParaDeploys } from '@augurproject/utils';
 import { Abi } from 'ethereum';
 import { Provider } from '..';
-
+import { invert, invertBy } from 'lodash/fp';
 
 type EmittingContractAddresses = Pick<ContractAddresses, 'Augur' | 'AugurTrading' | 'ShareToken'>;
 
@@ -34,33 +34,44 @@ export class ContractEvents {
     this.provider.storeAbiData(abi.ParaAugurTrading as Abi, 'ParaAugurTrading');
     this.provider.storeAbiData(abi.ParaShareToken as Abi, 'ParaShareToken');
 
-    const allContractAddresses = [
+    this.contractAddresses = [
       augurContractAddresses,
       ...Object.values(augurParaDeploys).map((augurParaDeploy) => augurParaDeploy.addresses)
     ].map(({Augur, AugurTrading, ShareToken}) => ({
       Augur: Augur.toLocaleLowerCase(),
       AugurTrading: AugurTrading.toLocaleLowerCase(),
       ShareToken: ShareToken.toLocaleLowerCase()
-    }));
-
-    this.contractAddressToName = allContractAddresses.reduce((acc, contractAddresses) => {
-      for(const contractName in contractAddresses) {
-        acc[contractAddresses[contractName]] = contractName;
-      }
-
-      return acc;
-    }, this.contractAddressToName);
-
-    console.log('contractAddressToName', this.contractAddressToName);
-
-    this.contractAddresses = allContractAddresses.reduce((acc, {Augur, AugurTrading, ShareToken}) => [
+    })).reduce((acc, {Augur, AugurTrading, ShareToken}) => [
       ...acc,
       Augur,
       AugurTrading,
       ShareToken
     ], [])
-      // Remove duplicates.
+    // Remove duplicates.
     .filter((value, index, self) => self.indexOf(value) === index);
+
+    const pluckContracts = (prefix = '') => ({Augur, AugurTrading, ShareToken}) => ({
+      [Augur.toLocaleLowerCase()]: `${prefix}Augur`,
+      [AugurTrading.toLocaleLowerCase()]: `${prefix}AugurTrading`,
+      [ShareToken.toLocaleLowerCase()]: `${prefix}ShareToken`
+    });
+
+    this.contractAddressToName =  {
+      ...Object.values(augurParaDeploys)
+      .map(({addresses}) => addresses)
+      // Prefix para deploy contract names.
+      .map(pluckContracts('Para'))
+      .reduce((acc, value) => {
+        return {
+          ...acc,
+          ...value,
+          }
+        }, {}),
+      ...pluckContracts()(augurContractAddresses),
+    };
+
+    console.log('this.contractAddressToName',
+      JSON.stringify(this.contractAddressToName));
   }
 
   getEventContractName = (eventName: string) => {
@@ -71,10 +82,6 @@ export class ContractEvents {
   getAugurContractAddresses = () => {
     return this.contractAddresses;
   }
-
-  getEventTopics = (eventName: string) => {
-    return [this.provider.getEventTopic(this.getEventContractName(eventName), eventName)];
-  };
 
   parseLogs = (logs: Log[]): ParsedLog[] => {
     return logs.map((log) => {

@@ -51,7 +51,7 @@ import {
   DismissableNoticeProps,
 } from 'modules/reporting/common';
 import { hasTemplateTextInputs } from '@augurproject/templates';
-import { AugurMarketsContent, EventDetailsContent } from 'modules/create-market/constants';
+import { AugurMarketsContent, EventDetailsContent, InvalidTradingTooltip } from 'modules/create-market/constants';
 import { MultipleExplainerBlock } from 'modules/create-market/components/common';
 import { getDurationBetween } from 'utils/format-date';
 import { useTimer } from 'modules/common/progress';
@@ -61,7 +61,7 @@ import { Ox_STATUS } from 'modules/app/actions/update-app-status';
 import { ethToDai } from 'modules/app/actions/get-ethToDai-rate';
 import { augurSdk } from 'services/augursdk';
 import { getGasCost } from 'modules/modal/gas';
-import { addPendingData } from 'modules/pending-queue/actions/pending-queue-management';
+import { addPendingData, removePendingData } from 'modules/pending-queue/actions/pending-queue-management';
 
 export interface MarketTypeProps {
   marketType: string;
@@ -189,6 +189,7 @@ export interface TextLabelProps {
 export interface InvalidLabelProps extends TextLabelProps {
   openInvalidMarketRulesModal?: Function;
   tooltipPositioning?: string;
+  maxPrice?: string;
 }
 
 export interface TextLabelState {
@@ -736,6 +737,7 @@ export const InvalidLabel = ({
   keyId,
   openInvalidMarketRulesModal,
   tooltipPositioning,
+  phrase,
 }: InvalidLabelProps) => {
   const openModal = event => {
     event.preventDefault();
@@ -756,30 +758,14 @@ export const InvalidLabel = ({
       </label>
       <ReactTooltip
         id={`${keyId}-${text.replace(/\s+/g, '-')}`}
-        className={classNames(
-          TooltipStyles.Tooltip,
-          TooltipStyles.TooltipInvalidRules
-        )}
+        className={TooltipStyles.Tooltip}
         effect="solid"
         place={tooltipPositioning || 'left'}
-        type="dark"
+        type="light"
         event="mouseover mouseenter"
         eventOff="mouseleave mouseout scroll mousewheel blur"
       >
-        <MultipleExplainerBlock
-          contents={[
-            {
-              title: EventDetailsContent().explainerBlockTitle,
-              subtexts: EventDetailsContent().explainerBlockSubtexts,
-              useBullets: EventDetailsContent().useBullets,
-            },
-            {
-              title: AugurMarketsContent().explainerBlockTitle,
-              subtexts: AugurMarketsContent().explainerBlockSubtexts,
-              useBullets: AugurMarketsContent().useBullets,
-            },
-          ]}
-        />
+        <p onClick={event => openModal(event)} >{phrase}</p>
       </ReactTooltip>
     </span>
   );
@@ -1535,7 +1521,9 @@ interface ApprovalTxButtonLabelProps {
   approvalType: string;
   ignore?: boolean;
   addPendingData: Function;
+  removePendingData: Function;
   pendingTx: boolean[];
+  hideAddFunds?: boolean;
 }
 export const ApprovalTxButtonLabelCmp = ({
   checkApprovals,
@@ -1552,6 +1540,8 @@ export const ApprovalTxButtonLabelCmp = ({
   approvalType,
   ignore,
   addPendingData,
+  removePendingData,
+  hideAddFunds = false,
 }: ApprovalTxButtonLabelProps) => {
   const [approvalsNeeded, setApprovalsNeeded] = useState(0);
   const [insufficientEth, setInsufficientEth] = useState(false);
@@ -1567,7 +1557,7 @@ export const ApprovalTxButtonLabelCmp = ({
           createBigNumber(GWEI_CONVERSION).multipliedBy(gasPrice)
         )
       );
-      const notEnoughEth = createBigNumber(userEthBalance).lt(createBigNumber(ethNeededForGas));
+      const notEnoughEth = createBigNumber(userEthBalance).lt(createBigNumber(ethNeededForGas)) && !hideAddFunds;
       setInsufficientEth(notEnoughEth);
       if (notEnoughEth) {
         const ethDo = formatEther(ethNeededForGas);
@@ -1583,6 +1573,9 @@ export const ApprovalTxButtonLabelCmp = ({
           case constants.ADDLIQUIDITY:
             setDescription(`Approval requires ${approvalsNeeded} signing${approvalsNeeded > 1 ? 's' : ''}. Once confirmed you can submit your orders.`)
           break;
+          case constants.APPROVE:
+            setDescription(`Approval requires ${approvalsNeeded} signing${approvalsNeeded > 1 ? 's' : ''}. Once confirmed you can swap your tokens.`)
+          break;
           default:
             setDescription(`Approval requires ${approvalsNeeded} signing${approvalsNeeded > 1 ? 's' : ''}. Once confirmed you can place your order.`)
           break;
@@ -1591,18 +1584,19 @@ export const ApprovalTxButtonLabelCmp = ({
       }
   }, [userEthBalance, gasPrice, approvalsNeeded])
 
-  function doCheckApprovals() {
+  function doCheckApprovals(init: boolean = false) {
     checkApprovals(account).then(approvalsNeeded => {
       setApprovalsNeeded(approvalsNeeded);
       isApprovalCallback(approvalsNeeded === 0);
-      if (approvalsNeeded === 0) {
+      if (approvalsNeeded === 0 && !init) {
         addPendingData(TXEventName.Success);
+        setTimeout(() => removePendingData(), 500);
       }
     });
   }
 
   useEffect(() => {
-    doCheckApprovals();
+    doCheckApprovals(true);
   }, []);
 
   return (
@@ -1642,7 +1636,8 @@ export const ApprovalTxButtonLabelCmp = ({
 
 const mapStateToProps = (state: AppState) => ({ });
 const mapDispatchToProps = (dispatch) => ({
-  addPendingData: status => dispatch(addPendingData(constants.APPROVALS, constants.TRANSACTIONS, status, '', { }))
+  addPendingData: status => dispatch(addPendingData(constants.APPROVALS, constants.TRANSACTIONS, status, '', { })),
+  removePendingData: () => dispatch(removePendingData(constants.APPROVALS, constants.TRANSACTIONS))
 });
 const mergeProps = (sP: any, dP: any, oP: any) => ({...sP, ...dP, ...oP});
 

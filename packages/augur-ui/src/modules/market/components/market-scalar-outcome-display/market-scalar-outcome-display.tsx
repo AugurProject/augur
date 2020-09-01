@@ -8,7 +8,7 @@ import MarketOutcomeTradingIndicator
 import { FormattedNumber } from 'modules/types';
 import React from 'react';
 import { BigNumber, createBigNumber } from 'utils/create-big-number';
-import { formatDaiPrice } from 'utils/format-number';
+import { formatDaiPrice, formatEther } from 'utils/format-number';
 
 import getValue from 'utils/get-value';
 
@@ -41,7 +41,7 @@ const MarketScalarOutcomeDisplay: React.FC<MarketScalarOutcomeDisplayProps> = ({
   scalarDenomination,
 }) => {
   const lastPrice = getValue(outcomes[SCALAR_UP_ID], 'price');
-  const lastPriceFormatted = formatDaiPrice(lastPrice);
+  const lastPriceFormatted = formatEther(lastPrice);
 
   const outcomeVerticalLinePosition = (): string => {
     let pos = calculatePosition(min, max, lastPrice === null ? null : lastPriceFormatted).toString();

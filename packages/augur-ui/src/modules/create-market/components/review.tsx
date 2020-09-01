@@ -251,7 +251,7 @@ export default class Review extends React.Component<
       timezone,
       template,
     } = newMarket;
-    const totalDai = formatDai(createBigNumber(s.validityBond ? s.validityBond.value : 0).plus(createBigNumber(s.formattedInitialLiquidityDai ? s.formattedInitialLiquidityDai.value : 0)));
+    const totalDai = formatEther(createBigNumber(s.validityBond ? s.validityBond.value : 0).plus(createBigNumber(s.formattedInitialLiquidityDai ? s.formattedInitialLiquidityDai.value : 0)));
 
     // Total Gas in ETH
     const gasCost = createBigNumber(s.gasCost ? s.gasCost : 0);

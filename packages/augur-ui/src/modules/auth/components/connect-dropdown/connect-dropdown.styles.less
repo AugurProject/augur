@@ -100,8 +100,20 @@
     > path {
       fill: @color-primary-text;
     }
+
+    > circle {
+      stroke: @color-primary-text;
+    }
   }
 
+  &.Wrapped {
+    svg {
+      fill: transparent;
+      > path {
+        fill: @color-primary-text;
+      }
+    }
+  }
 
   > div:last-of-type {
     .mono-11-bold;

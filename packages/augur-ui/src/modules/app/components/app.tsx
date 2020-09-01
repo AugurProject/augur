@@ -1,3 +1,4 @@
+import React, { Component } from 'react';
 // TODO -- this component needs to be broken up
 import type { SDKConfiguration } from '@augurproject/artifacts';
 
@@ -13,11 +14,11 @@ import TopBar from 'modules/app/containers/top-bar';
 import { ExternalLinkText } from 'modules/common/buttons';
 import {
   MOBILE_MENU_STATES,
-  MODAL_NETWORK_CONNECT,
   TRADING_TUTORIAL,
   ZEROX_STATUSES,
   MODAL_ERROR,
   REPORTING_ONLY_BANNER,
+  TRADING_ETH_VERSION,
 } from 'modules/common/constants';
 
 import {
@@ -52,15 +53,14 @@ import {
   AppStatus,
   Blockchain,
   CoreStats,
-  FormattedNumber,
   LoginAccount,
   Notification,
   Universe,
 } from 'modules/types';
-import React, { Component } from 'react';
 import isWindows from 'utils/is-windows';
 import { Ox_STATUS } from '../actions/update-app-status';
 import { DismissableNotice, DISMISSABLE_NOTICE_BUTTON_TYPES } from 'modules/reporting/common';
+import Footer from 'modules/app/components/footer';
 
 //         all logic related to sidebar(s) need to be housed w/in a separate component
 
@@ -523,6 +523,7 @@ export default class AppView extends Component<AppProps> {
             </section>
             {!isMobile && <StatusErrorMessage />}
             {!isMobile && process.env.REPORTING_ONLY && <DismissableNotice show center title={REPORTING_ONLY_BANNER} buttonType={DISMISSABLE_NOTICE_BUTTON_TYPES.NONE} />}
+            {!isMobile && <DismissableNotice show center className={Styles.TradingEth} title={TRADING_ETH_VERSION} buttonType={DISMISSABLE_NOTICE_BUTTON_TYPES.NONE} />}
             <AlertsContainer
               alertsVisible={isLogged && sidebarStatus.isAlertsVisible}
               toggleAlerts={() => this.toggleAlerts()}
@@ -555,6 +556,7 @@ export default class AppView extends Component<AppProps> {
               )}
               {isMobile && <StatusErrorMessage />}
               {isMobile && process.env.REPORTING_ONLY && <DismissableNotice show center title={REPORTING_ONLY_BANNER} buttonType={DISMISSABLE_NOTICE_BUTTON_TYPES.NONE} />}
+              {isMobile && <DismissableNotice show center className={Styles.TradingEth} title={TRADING_ETH_VERSION} buttonType={DISMISSABLE_NOTICE_BUTTON_TYPES.NONE} />}
               <section
                 className={classNames(Styles.Main__content, {
                   [Styles.Tutorial]: onTradingTutorial,
@@ -579,6 +581,7 @@ export default class AppView extends Component<AppProps> {
 
                 <ForkingBanner />
                 <Routes isLogged={isLogged || restoredAccount} disableMarketCreation={disableMarketCreation}/>
+                <Footer />
               </section>
             </section>
           </section>

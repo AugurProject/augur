@@ -313,6 +313,8 @@ export function connectAugur(
 
     let universeId =
       config.addresses?.Universe || Augur.contracts.universe.address;
+    console.log('universeId', JSON.stringify(universeId));
+
     if (
       windowApp.localStorage &&
       windowApp.localStorage.getItem &&
@@ -343,7 +345,6 @@ export function connectAugur(
     // wire up start up events for sdk
     dispatch(listenForStartUpEvents(Augur));
 
-    console.log("AUGURSDK: connect");
     try {
       await augurSdk.connect();
     } catch(e) {
