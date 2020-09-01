@@ -6,9 +6,9 @@ import { UIOrder } from 'modules/types';
 import selectMarketsOpenOrders from 'modules/portfolio/selectors/select-markets-open-orders';
 import { CancelTextButton } from 'modules/common/buttons';
 import Styles from 'modules/market/components/market-orders-positions-table/open-orders-table.styles.less';
-import NewFilterSwitchBox from 'modules/portfolio/components/common/new-filter-switch-box';
+import FilterSwitchBox from 'modules/portfolio/components/common/filter-switch-box';
 import { cancelAllOpenOrders } from 'modules/orders/actions/cancel-order';
-import NewFilterBox from 'modules/portfolio/components/common/new-filter-box';
+import FilterBox from 'modules/portfolio/components/common/filter-box';
 
 const sortByOptions = [
   {
@@ -76,7 +76,7 @@ const OpenOrders = ({
 
   const hasPending = Boolean(openOrders.find(order => order.pending));
   return (
-    <NewFilterSwitchBox
+    <FilterSwitchBox
       title="Open Orders"
       filterLabel="open orders"
       sortByOptions={sortByOptions}

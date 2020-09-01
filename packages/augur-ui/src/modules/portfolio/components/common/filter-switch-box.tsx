@@ -1,166 +1,97 @@
-import React, { ReactNode } from 'react';
-
-import QuadBox from 'modules/portfolio/components/common/quad-box';
-import { NameValuePair, Market } from 'modules/portfolio/types';
+import React, { ReactNode, useEffect, useState } from 'react';
+import { Market } from 'modules/portfolio/types';
 import EmptyDisplay from 'modules/portfolio/components/common/empty-display';
 import Styles from 'modules/portfolio/components/common/quad-box.styles.less';
+import QuadBox, { QuadBoxProps } from 'modules/portfolio/components/common/quad-box';
 
-export interface MarketsByReportingState {
-  [type: string]: Array<Market>;
-}
-
-export interface FilterBoxProps {
-  bottomBarContent?: ReactNode;
-  bottomContent?: ReactNode;
-  customClass?: string;
-  data: Array<Market>;
-  emptyDisplayButton?: ReactNode;
-  emptyDisplayIcon: any;
-  emptyDisplayText?: string,
-  emptyDisplayTitle?: string,
-  extend?: boolean;
+export interface FilterSwitchBoxProps extends QuadBoxProps {
+  data: Market[];
   filterComp: Function;
   filterLabel: string;
-  footer?: ReactNode;
-  hide?: boolean;
-  noBackgroundBottom?: boolean;
-  normalOnMobile?: boolean;
-  noSwitch?: boolean;
   renderRows: Function;
-  showFilterSearch?: boolean;
-  showHeaderOnMobile?: boolean;
-  sortByOptions?: Array<NameValuePair>;
-  sortByStyles?: object;
-  switchView?: Function;
-  title: string;
-  toggle?: Function;
+  emptyDisplayConfig?: {
+    emptyTitle?: string;
+    emptyText?: string;
+    icon?: ReactNode;
+    button?: ReactNode;
+  }
 }
 
-interface FilterBoxState {
-  search: string;
-  filteredData: Array<Market>;
-  view: boolean;
-}
+const FilterSwitchBox = ({
+  title,
+  headerComplement,
+  subheader,
+  footer,
+  customClass,
+  sortByOptions,
+  data,
+  filterComp,
+  filterLabel,
+  renderRows,
+  emptyDisplayConfig,
+  toggle,
+  hide,
+  extend,
+}: FilterSwitchBoxProps) => {
+  const [search, setSearch] = useState('');
+  const [filteredData, setFilteredData] = useState(data);
+  const thereIsData = filteredData.length > 0;
 
-export default class FilterSwitchBox extends React.Component<
-  FilterBoxProps,
-  FilterBoxState
-> {
-  state: FilterBoxState = {
-    search: '',
-    filteredData: this.props.data,
-    view: false,
+  useEffect(() => {
+    let filteredData = data;
+    if (search !== '') {
+      filteredData = applySearch(search, data);
+    }
+    setFilteredData(filteredData);
+  }, [data]);
+
+  const onSearchChange = (input: string) => {
+    setSearch(input);
+    const filteredData = applySearch(input, data);
+    setFilteredData(filteredData);
   };
 
-  componentDidUpdate(prevProps: FilterBoxProps, prevState: FilterBoxState) {
-    const { data } = prevProps;
-    const { view } = prevState;
-    if (
-      JSON.stringify(data) !== JSON.stringify(this.props.data) ||
-      this.state.view !== view
-    ) {
-      let filteredData = this.props.data;
-      if (this.state.search !== '') {
-        filteredData = this.applySearch(this.state.search, this.props.data);
+  const applySearch = (input: string, filteredData: Market[]) => {
+    return filteredData.filter(filterComp.bind(applySearch, input));
+  };
+
+  return (
+    <QuadBox
+      title={title}
+      headerComplement={
+        <>
+          {thereIsData && (
+            <div className={Styles.Count}>{filteredData.length}</div>
+          )}
+          {headerComplement}
+        </>
       }
-      this.updateFilteredData(filteredData);
-    }
-  }
+      search={search}
+      customClass={customClass}
+      setSearch={onSearchChange}
+      sortByOptions={sortByOptions}
+      subheader={subheader}
+      footer={footer}
+      toggle={toggle}
+      hide={hide}
+      extend={extend}
+      content={
+        <>
+          {thereIsData ? (
+            filteredData.map(data => renderRows(data))
+          ) : (
+            <EmptyDisplay
+              selectedTab=""
+              filterLabel={filterLabel}
+              search={search}
+              title={title}
+              {...emptyDisplayConfig}
+            />
+          )}
+        </>
+      }
+    />
+  );
+};
 
-  onSearchChange = (input: string) => {
-    this.setState({ search: input });
-
-    const { data } = this.props;
-    const filteredData = this.applySearch(input, data);
-
-    this.updateFilteredData(filteredData);
-  };
-
-  applySearch = (input: string, filteredData: Array<Market>) => {
-    const { filterComp } = this.props;
-
-    return filteredData.filter(filterComp.bind(this, input));
-  };
-
-  updateView = () => {
-    if (this.props.switchView) {
-      this.props.switchView();
-    }
-    this.setState({ view: !this.state.view });
-  };
-
-  updateFilteredData = (filteredData: Array<Market>) => {
-    this.setState({ filteredData });
-  };
-
-  render() {
-    const {
-      title,
-      bottomBarContent,
-      sortByOptions,
-      showFilterSearch,
-      noSwitch,
-      renderRows,
-      filterLabel,
-      sortByStyles,
-      noBackgroundBottom,
-      normalOnMobile,
-      toggle,
-      extend,
-      hide,
-      customClass,
-      showHeaderOnMobile,
-      bottomContent,
-      emptyDisplayTitle,
-      emptyDisplayText,
-      emptyDisplayIcon,
-      emptyDisplayButton,
-      footer,
-    } = this.props;
-
-    const { search, filteredData } = this.state;
-
-    return (
-      <QuadBox
-        title={title}
-        leftContent={filteredData.length > 0 &&
-          <div className={Styles.Count}>{filteredData.length}</div>
-        }
-        showFilterSearch={showFilterSearch}
-        search={search}
-        customClass={customClass}
-        onSearchChange={this.onSearchChange}
-        sortByOptions={sortByOptions}
-        sortByStyles={sortByStyles}
-        updateDropdown={!noSwitch && this.updateView}
-        bottomBarContent={bottomBarContent}
-        noBackgroundBottom={noBackgroundBottom}
-        normalOnMobile={normalOnMobile}
-        toggle={toggle}
-        extend={extend}
-        hide={hide}
-        showHeaderOnMobile={showHeaderOnMobile}
-        bottomContent={bottomContent}
-        content={
-          <>
-            {filteredData.length === 0 && (
-              <EmptyDisplay
-                selectedTab=""
-                filterLabel={filterLabel}
-                search={search}
-                title={title}
-                emptyTitle={emptyDisplayTitle}
-                emptyText={emptyDisplayText}
-                icon={emptyDisplayIcon}
-                button={emptyDisplayButton}
-              />
-            )}
-            {filteredData.length > 0 &&
-              filteredData.map(data => renderRows(data))}
-            {footer ? footer : null}
-          </>
-        }
-      />
-    );
-  }
-}
+export default FilterSwitchBox;

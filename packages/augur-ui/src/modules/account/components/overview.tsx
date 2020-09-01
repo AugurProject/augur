@@ -13,7 +13,7 @@ import Styles from 'modules/account/components/overview.styles.less';
 import { useAppStatusStore } from 'modules/app/store/app-status';
 import { selectReportingBalances } from 'modules/account/helpers/common';
 import { formatRep } from 'utils/format-number';
-import NewQuadBox from 'modules/portfolio/components/common/new-quad-box';
+import QuadBox from 'modules/portfolio/components/common/quad-box';
 
 export interface OverviewProps {
   hideHeader?: boolean;
@@ -36,7 +36,7 @@ const Overview = ({ hideHeader }: OverviewProps) => {
     { removeComma: true }
   );
   return (
-    <NewQuadBox
+    <QuadBox
       title={YOUR_OVERVIEW_TITLE}
       customClass={hideHeader && Styles.HideHeader}
       content={

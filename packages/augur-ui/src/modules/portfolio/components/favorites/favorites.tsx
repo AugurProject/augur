@@ -9,7 +9,7 @@ import favoriteStyles from 'modules/portfolio/components/favorites/favorites.sty
 import { useAppStatusStore } from 'modules/app/store/app-status';
 import { selectMarket } from 'modules/markets/selectors/market';
 import { loadMarketsInfoIfNotLoaded } from 'modules/markets/actions/load-markets-info';
-import NewFilterBox from 'modules/portfolio/components/common/new-filter-box';
+import FilterBox from 'modules/portfolio/components/common/filter-box';
 import { StarIcon } from 'modules/common/icons';
 
 const sortByOptions = [
@@ -90,7 +90,7 @@ const Favorites = ({
   }
 
   return (
-    <NewFilterBox
+    <FilterBox
       title={isTrading ? 'Watchlist' : 'Favorites'}
       customClass={customClass}
       sortByOptions={sortByOptions}

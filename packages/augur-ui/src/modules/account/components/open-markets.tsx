@@ -1,5 +1,4 @@
 import React from 'react';
-import FilterSwitchBox from 'modules/portfolio/components/common/filter-switch-box';
 import MarketRow from 'modules/portfolio/components/common/market-row';
 import { MovementLabel } from 'modules/common/labels';
 import { ActiveMarketsIcon } from 'modules/common/icons';
@@ -10,7 +9,7 @@ import { useAppStatusStore } from 'modules/app/store/app-status';
 import getLoginAccountPositionsMarkets from 'modules/positions/selectors/login-account-positions-markets';
 
 import Styles from 'modules/account/components/open-markets.styles.less';
-import NewFilterSwitchBox from 'modules/portfolio/components/common/new-filter-switch-box';
+import FilterSwitchBox from 'modules/portfolio/components/common/filter-switch-box';
 
 function filterComp(input: any, market: any) {
   return market && market.description
@@ -88,7 +87,7 @@ const OpenMarkets = ({ toggle }: OpenMarketsProps) => {
   }
 
   return (
-    <NewFilterSwitchBox
+    <FilterSwitchBox
       filterLabel="markets"
       title="My Active Markets"
       data={markets}

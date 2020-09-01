@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
 
-import NewFilterSwitchBox from 'modules/portfolio/components/common/new-filter-switch-box';
+import FilterSwitchBox from 'modules/portfolio/components/common/filter-switch-box';
 import OrderMarketRow from 'modules/portfolio/components/common/order-market-row';
 import { FilledOrder } from "modules/common/table-rows";
 
 import FilledOrdersHeader from 'modules/portfolio/components/common/filled-orders-header';
 import selectMarketsFilledOrders from 'modules/portfolio/selectors/select-markets-filled-orders';
-import NewFilterBox from 'modules/portfolio/components/common/new-filter-box';
+import FilterBox from 'modules/portfolio/components/common/filter-box';
 
 const sortByOptions = [
   {
@@ -76,7 +76,7 @@ const FilledOrders = ({ toggle, extend, hide }: FilledOrdersProps) => {
   }
   return (
     // @ts-ignore
-    <NewFilterSwitchBox
+    <FilterSwitchBox
       title="Filled Orders"
       filterLabel="filled orders"
       sortByOptions={sortByOptions}

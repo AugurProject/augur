@@ -17,8 +17,8 @@ import { formatOrderBook } from 'modules/create-market/helpers/format-order-book
 import { getReportingFeePercentage } from 'modules/contracts/actions/contractCalls';
 import { formatPercent } from 'utils/format-number';
 import { useAppStatusStore } from 'modules/app/store/app-status';
-import NewQuadBox from 'modules/portfolio/components/common/new-quad-box';
-import NewFilterSwitchBox from 'modules/portfolio/components/common/new-filter-switch-box';
+import QuadBox from 'modules/portfolio/components/common/quad-box';
+import FilterSwitchBox from 'modules/portfolio/components/common/filter-switch-box';
 
 interface FeesLiquidityProps {
   onChange: Function;
@@ -201,7 +201,7 @@ export const FeesLiquidity = ({ onChange }: FeesLiquidityProps) => {
       </div>
 
       <Visibility />
-      <NewFilterSwitchBox
+      <FilterSwitchBox
         title="Initial liquidity"
         customClass={Styles.ShowHeaderOnMobile}
         filterLabel="orders"
@@ -212,7 +212,7 @@ export const FeesLiquidity = ({ onChange }: FeesLiquidityProps) => {
         renderRows={renderRows}
         showHeaderOnMobile
       />
-      <NewQuadBox
+      <QuadBox
         title="Depth chart"
         customClass={Styles.NoBorders}
         content={

@@ -47,7 +47,7 @@ import { useAppStatusStore } from 'modules/app/store/app-status';
 import { selectMarket } from 'modules/markets/selectors/market';
 import { getNotifications } from 'modules/notifications/selectors/notification-state';
 import { getHTMLTheme } from 'modules/app/store/app-status-hooks';
-import NewQuadBox from 'modules/portfolio/components/common/new-quad-box';
+import QuadBox from 'modules/portfolio/components/common/quad-box';
 
 export interface NotificationsProps {
   toggle?: Function;
@@ -373,7 +373,7 @@ const Notifications = ({ toggle }: NotificationsProps) => {
   0), disabledNotifications);
 
   return (
-    <NewQuadBox
+    <QuadBox
       title={NOTIFICATIONS_TITLE}
       headerComplement={labelContent}
       toggle={toggle}

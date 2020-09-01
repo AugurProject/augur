@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import QuadBox from 'modules/portfolio/components/common/quad-box';
 import EmptyDisplay from 'modules/portfolio/components/common/empty-display';
 import { SwitchLabelsGroup } from 'modules/common/switch-labels-group';
 import MarketCard from 'modules/market-cards/market-card';
@@ -20,7 +19,7 @@ import {
   loadCurrentlyDisputingMarkets,
   loadNextWindowDisputingMarkets,
 } from 'modules/markets/actions/load-markets';
-import NewQuadBox from 'modules/portfolio/components/common/new-quad-box';
+import QuadBox from 'modules/portfolio/components/common/quad-box';
 
 const ITEMS_PER_SECTION = 10;
 const NUM_LOADING_CARDS = 5;
@@ -211,7 +210,7 @@ const MarketsInDispute = () => {
           )
         }
       </Media>
-      <NewQuadBox
+      <QuadBox
         title="Markets In Dispute"
         onSearchChange={onSearchChange}
         sortByOptions={sortByOptions}
@@ -277,7 +276,7 @@ const MarketsInDispute = () => {
           </div>
         }
       />
-      <NewQuadBox
+      <QuadBox
         title="Markets In Dispute"
         onSearchChange={onSearchChange}
         sortByOptions={sortByOptions}

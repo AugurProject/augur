@@ -5,7 +5,6 @@ import {
   CREATE_MARKET
 } from 'modules/routes/constants/views';
 import makePath from 'modules/routes/helpers/make-path';
-import FilterBox from 'modules/portfolio/components/common/filter-box';
 import { SecondaryButton } from 'modules/common/buttons';
 import { THEMES } from 'modules/common/constants';
 import { AddIcon } from 'modules/common/icons';
@@ -22,7 +21,7 @@ import { selectAuthorOwnedMarkets } from 'modules/markets/selectors/user-markets
 
 import Styles from 'modules/portfolio/components/common/quad.styles.less';
 import marketStyles from 'modules/portfolio/components/markets/markets.styles.less';
-import NewFilterBox from 'modules/portfolio/components/common/new-filter-box';
+import FilterBox from 'modules/portfolio/components/common/filter-box';
 
 const sortByOptions = [
   {
@@ -154,7 +153,7 @@ const MyMarkets = ({
   }
 
   return (
-    <NewFilterBox
+    <FilterBox
       title="My Created Markets"
       customClass={marketStyles.Markets}
       sortByOptions={sortByOptions}

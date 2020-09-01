@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 
 import memoize from "memoizee";
-import FilterBox from 'modules/portfolio/components/common/filter-box';
 import { CompactButton } from "modules/common/buttons";
 import { MovementLabel, ValueLabel } from "modules/common/labels";
 import { PositionsTable } from "modules/portfolio/components/common/market-positions-table";
@@ -11,7 +10,7 @@ import getMarketsPositionsRecentlyTraded from "modules/portfolio/selectors/selec
 
 import Styles from "modules/portfolio/components/common/quad.styles.less";
 import { MarketData, SizeTypes } from "modules/types";
-import NewFilterBox from 'modules/portfolio/components/common/new-filter-box';
+import FilterBox from 'modules/portfolio/components/common/filter-box';
 
 const sortByOptions = [
   {
@@ -111,7 +110,7 @@ const Positions = ({
   }
 
     return (
-      <NewFilterBox
+      <FilterBox
         title="Positions"
         sortByOptions={sortByOptions}
         markets={markets}

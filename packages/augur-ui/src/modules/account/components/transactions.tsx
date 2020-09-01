@@ -27,7 +27,7 @@ import { toChecksumAddress } from 'ethereumjs-util';
 import Styles from 'modules/account/components/transactions.styles.less';
 import { getNetworkId, getLegacyRep } from 'modules/contracts/actions/contractCalls';
 import { createBigNumber } from 'utils/create-big-number';
-import NewQuadBox from 'modules/portfolio/components/common/new-quad-box';
+import QuadBox from 'modules/portfolio/components/common/quad-box';
 import classNames from 'classnames';
 
 export const Transactions = () => {
@@ -47,7 +47,7 @@ export const Transactions = () => {
   const signingWalletNoEth = createBigNumber(balances.signerBalances?.eth || 0).lte(ZERO);
 
   return (
-    <NewQuadBox
+    <QuadBox
       title={isTrading ? 'Transactions' : 'Your funds'}
       customClass={classNames({
         [Styles.ShowHeaderOnMobile]: !isTrading,
