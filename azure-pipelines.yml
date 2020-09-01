@@ -302,7 +302,7 @@ jobs:
           export ETHEREUM_GAS_PRICE_IN_NANOETH=1
           export ETHEREUM_PRIVATE_KEY=0xfae42052f82bed612a724fec3632f325f377120592c75bb78adfcceae6470c5a
           if [[ "$(TESTS)" == "integration:geth" ]]; then
-            docker run -p 8545:8545 -p 47625:8546 --name geth --detach augurproject/dev-node-geth:v1.9.9
+            docker run -p 8545:8545 -p 47625:8546 --name geth --detach augurproject/dev-node-geth:v1.9.19
             yarn workspace @augurproject/core test:integration
             docker stop geth
           elif [[ "$(TESTS)" == "integration:parity" ]]; then
