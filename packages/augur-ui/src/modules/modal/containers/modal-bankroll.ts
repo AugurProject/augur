@@ -12,6 +12,7 @@ import {
   ETH,
 } from 'modules/common/constants';
 import { closeModal } from '../actions/close-modal';
+import { updateLoginAccount } from 'modules/account/actions/login-account';
 
 const mapStateToProps = (state: AppState) => {
   return {
@@ -26,6 +27,7 @@ const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({
   approvalModal: () => dispatch(updateModal({ type: MODAL_APPROVALS })),
   swapModal: (token) => dispatch(updateModal({ type: MODAL_SWAP, token })),
   goBack: () => dispatch(updateModal({ type: MODAL_ETH_DEPOSIT })),
+  setCurrentOnboardingStep: (currentOnboardingStep) => dispatch(updateLoginAccount({ currentOnboardingStep })),
 });
 
 const mergeProps = (sP: any, dP: any, oP: any) => ({
@@ -36,6 +38,7 @@ const mergeProps = (sP: any, dP: any, oP: any) => ({
   closeModal: dP.closeModal,
   content: [],
   currentStep: 4,
+  setCurrentOnboardingStep: dP.setCurrentOnboardingStep,
   swapModal: () => {
     dP.swapModal(sP.token);
   },

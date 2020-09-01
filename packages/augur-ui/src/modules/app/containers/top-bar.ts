@@ -21,12 +21,11 @@ import {
   MODAL_TOKEN_SELECT,
 } from 'modules/common/constants';
 import { Action } from 'redux';
-import { getCurrentOnboardingStep } from 'modules/modal/onboarding';
 
 const mapStateToProps = (state: AppState) => {
   const { sidebarStatus, authStatus, appStatus } = state;
   const { unseenCount } = selectInfoAlertsAndSeenCount(state);
-  const currentOnboardingStep = getCurrentOnboardingStep();
+  const currentOnboardingStep = state.loginAccount?.currentOnboardingStep || 0
 
   return {
     stats: selectCoreStats(state),
@@ -50,9 +49,8 @@ const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({
   helpModal: () => dispatch(updateModal({ type: MODAL_HELP })),
   buyDaiModal: () => dispatch(updateModal({ type: MODAL_BUY_DAI })),
   activateWalletModal: () => dispatch(updateModal({ type: MODAL_AUGUR_P2P })),
-  handleShowOnboarding: () => {
+  handleShowOnboarding: (currentOnboardingStep) => {
     let nextStep = MODAL_AUGUR_USES_DAI;
-    const currentOnboardingStep = getCurrentOnboardingStep();
     if (currentOnboardingStep === 1) {
       nextStep = MODAL_AUGUR_USES_DAI;
     } else if (currentOnboardingStep === 2) {

@@ -96,6 +96,7 @@ const localStorageMiddleware = store => next => action => {
         selectedUniverse: {
           ...storedAccountData.selectedUniverse,
         },
+        currentOnboardingStep: loginAccount.currentOnboardingStep,
         settings: loginAccount.settings || {},
         affiliate
       })
