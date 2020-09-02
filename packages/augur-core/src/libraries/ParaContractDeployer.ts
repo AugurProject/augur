@@ -85,6 +85,7 @@ Deploying to: ${env}
         // Cash
         console.log(`Registering Cash Contract at ${cashAddress}`);
         await this.augur!.registerContract(stringTo32ByteHex('Cash'), cashAddress);
+        await this.augurTrading!.registerContract(stringTo32ByteHex('Cash'), cashAddress);
 
         // OI Nexus
         if (!coreAddresses.OINexus) {
