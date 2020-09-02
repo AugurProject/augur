@@ -39,6 +39,7 @@ const mapStateToProps = (state: AppState) => {
       appStatus.walletStatus === WALLET_STATUS_VALUES.WAITING_FOR_FUNDING,
     walletStatus: appStatus.walletStatus,
     currentOnboardingStep,
+    address: state.loginAccount.address,
   };
 };
 
