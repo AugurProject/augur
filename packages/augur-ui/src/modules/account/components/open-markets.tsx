@@ -58,7 +58,7 @@ const OpenMarkets = ({ toggle }: OpenMarketsProps) => {
         addedClass={Styles.OpenMarketsRow}
         rightContent={
           <MovementLabel
-            showBrackets
+            showBrackets={isTrading}
             useFull
             showIcon
             showPlusMinus
