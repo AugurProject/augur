@@ -13,9 +13,8 @@ export const Trading = {
   actions: STUBBED_TRADING_ACTIONS,
 };
 
-export const TradingProvider = ({ children }) => {
-  const state = useTrading();
-
+export const TradingProvider = ({ presetOrderProperties, children }) => {
+  const state = useTrading(presetOrderProperties);
   if (!Trading.actionsSet) {
     Trading.actions = state.actions;
     Trading.actionsSet = true;

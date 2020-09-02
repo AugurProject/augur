@@ -48,12 +48,19 @@ import { formatOrderBook } from 'modules/create-market/helpers/format-order-book
 import { totalTradingBalance } from 'modules/auth/helpers/login-account';
 import { selectSortedMarketOutcomes } from 'modules/markets/selectors/market';
 import { augurSdk } from 'services/augursdk';
+import { useTradingStore } from 'modules/trading/store/trading';
 
 enum ADVANCED_OPTIONS {
   EXPIRATION = '1',
   FILL = '2',
   POST = '3',
 }
+
+const {
+  EXPIRATION,
+  FILL,
+  POST,
+} = ADVANCED_OPTIONS;
 const advancedExpirationDateOptions = [
   {
     label: 'Days',
@@ -76,22 +83,22 @@ const advancedExpirationDateOptions = [
 const advancedDropdownOptions = [
   {
     label: 'Order expiration',
-    value: ADVANCED_OPTIONS.EXPIRATION,
+    value: EXPIRATION,
   },
   {
     label: 'Fill only',
-    value: ADVANCED_OPTIONS.FILL,
+    value: FILL,
   },
   {
     label: 'Post only',
-    value: ADVANCED_OPTIONS.POST,
+    value: POST,
   },
 ];
 
 const liqAdvancedDropdownOptions = [
   {
     label: 'Order expiration',
-    value: ADVANCED_OPTIONS.EXPIRATION,
+    value: EXPIRATION,
   },
 ];
 
@@ -181,11 +188,9 @@ interface FromProps {
     orderQuantity: string;
     orderDaiEstimate: string;
     orderEscrowdDai: string;
-    doNotCreateOrders: boolean;
     expirationDate?: Moment;
   };
   selectedOutcome: Getters.Markets.MarketInfoOutcome;
-  updateState: Function;
   updateOrderProperty: Function;
   updateSelectedOutcome: Function;
   clearOrderForm: Function;
@@ -199,7 +204,6 @@ interface FromProps {
 const calculateStartState = ({
   orderQuantity,
   orderPrice,
-  doNotCreateOrders,
   expirationDate,
   endTime,
   currentTimestamp,
@@ -208,8 +212,6 @@ const calculateStartState = ({
   return {
     [QUANTITY]: orderQuantity,
     [PRICE]: orderPrice,
-    [DO_NOT_CREATE_ORDERS]: doNotCreateOrders,
-    [POST_ONLY_ORDER]: false,
     [EXPIRATION_DATE]:
       expirationDate ||
       calcOrderExpirationTime(endTime, currentTimestamp),
@@ -220,7 +222,6 @@ const calculateStartState = ({
 const getStartState = ({
   orderQuantity,
   orderPrice,
-  doNotCreateOrders,
   expirationDate,
   endTime,
   currentTimestamp,
@@ -233,7 +234,6 @@ const getStartState = ({
   const startState = calculateStartState({
     orderQuantity,
     orderPrice,
-    doNotCreateOrders,
     expirationDate,
     endTime,
     currentTimestamp,
@@ -257,7 +257,6 @@ const Form = ({
   selectedOutcome,
   updateSelectedOutcome,
   orderState,
-  updateState,
   updateOrderProperty,
   clearOrderForm,
   updateTradeTotalCost,
@@ -275,9 +274,9 @@ const Form = ({
     orderQuantity,
     orderDaiEstimate,
     orderEscrowdDai,
-    doNotCreateOrders,
     expirationDate,
   } = orderState;
+  const { orderProperties, actions: { updateOrderProperties } } = useTradingStore();
   const endTime = market.endTime || market.setEndTime;
   const selectedOutcomeId =
     selectedOutcome !== undefined && selectedOutcome !== null
@@ -300,7 +299,6 @@ const Form = ({
     getStartState({
       orderQuantity,
       orderPrice,
-      doNotCreateOrders,
       expirationDate,
       endTime,
       currentTimestamp,
@@ -369,7 +367,6 @@ const Form = ({
         [PRICE]: orderPrice,
         [QUANTITY]: orderQuantity,
         [EST_DAI]: orderDaiEstimate,
-        [DO_NOT_CREATE_ORDERS]: doNotCreateOrders,
         percentage,
       });
     }
@@ -377,7 +374,7 @@ const Form = ({
       updateAndValidate(PRICE, orderPrice);
     }
     return () => isMounted = false;
-  }, [orderPrice, orderQuantity, orderDaiEstimate, doNotCreateOrders]);
+  }, [orderPrice, orderQuantity, orderDaiEstimate]);
 
   useEffect(() => {
     if (validation.errorCount > 0) {
@@ -517,8 +514,6 @@ const Form = ({
     const startState = {
       [QUANTITY]: '',
       [PRICE]: '',
-      [DO_NOT_CREATE_ORDERS]: false,
-      [POST_ONLY_ORDER]: false,
       [EXPIRATION_DATE]: calcOrderExpirationTime(
         endTime,
         currentTimestamp
@@ -568,7 +563,9 @@ const Form = ({
     (isScalar && selectedOutcome.id !== INVALID_OUTCOME_ID) || !isScalar;
   const isExpirationCustom =
     state.expirationDateOption === EXPIRATION_DATE_OPTIONS.CUSTOM;
-
+  console.log("Form Passed:", orderState);
+  console.log("Form State:", state);
+  console.log("Form Context:", orderProperties);
   return (
     <div className={Styles.TradingForm}>
       <div className={Styles.Outcome}>
@@ -818,15 +815,14 @@ const Form = ({
                 currentTimestamp
               );
               const timestamp =
-                advancedOption === ADVANCED_OPTIONS.EXPIRATION
+                advancedOption === EXPIRATION
                   ? calcOrderExpirationTime(endTime, currentTimestamp)
                   : null;
               updateAndValidate(EXPIRATION_DATE, timestamp);
-              updateState({
-                [DO_NOT_CREATE_ORDERS]:
-                advancedOption === ADVANCED_OPTIONS.FILL,
-                [POST_ONLY_ORDER]: advancedOption === ADVANCED_OPTIONS.POST,
-              });
+              updateOrderProperties({
+                [DO_NOT_CREATE_ORDERS]: advancedOption === FILL,
+                [POST_ONLY_ORDER]: advancedOption === POST,
+              })
               setState({
                 ...state,
                 advancedOption,
@@ -835,7 +831,7 @@ const Form = ({
               });
             }}
           />
-          {state.advancedOption === ADVANCED_OPTIONS.EXPIRATION && (
+          {state.advancedOption === EXPIRATION && (
             <>
               <div>
                 {!isExpirationCustom && (
@@ -872,15 +868,7 @@ const Form = ({
                   }}
                 />
               </div>
-              {!isExpirationCustom && (
-                <span>
-                  {state[EXPIRATION_DATE] &&
-                    convertUnixToFormattedDate(
-                      Number(state[EXPIRATION_DATE])
-                    ).formattedLocalShortDateTimeWithTimezone}
-                </span>
-              )}
-              {isExpirationCustom && (
+              {isExpirationCustom ? (
                 <Media query={SMALL_MOBILE}>
                   {matches => (
                     <SimpleTimeSelector
@@ -895,10 +883,18 @@ const Form = ({
                     />
                   )}
                 </Media>
+              ) :
+              (
+                <span>
+                  {state[EXPIRATION_DATE] &&
+                    convertUnixToFormattedDate(
+                      Number(state[EXPIRATION_DATE])
+                    ).formattedLocalShortDateTimeWithTimezone}
+                </span>
               )}
             </>
           )}
-          {state.advancedOption === ADVANCED_OPTIONS.FILL && (
+          {state.advancedOption === FILL && (
             <span className={Styles.tipText}>
               Fill Only will fill up to the specified amount. Can be partially
               filled and will cancel the remaining balance.

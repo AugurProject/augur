@@ -3,7 +3,11 @@ import Wrapper from 'modules/trading/components/wrapper';
 import Styles from 'modules/trading/components/trading-form.styles.less';
 import { MarketData, NewMarket, IndividualOutcomeOrderBook } from 'modules/types';
 import { TradingProvider } from 'modules/trading/store/trading';
- 
+import { useAppStatusStore } from 'modules/app/store/app-status';
+import {
+  calcOrderExpirationTime,
+} from 'utils/format-date';
+
 interface TradingFormProps {
   selectedOutcomeId: number;
   market: MarketData | NewMarket;
@@ -25,8 +29,12 @@ const TradingForm = ({
       ),
     [selectedOutcomeId, market]
   );
+  const {
+    blockchain: { currentAugurTimestamp: currentTimestamp },
+  } = useAppStatusStore();
+  const expirationDate = calcOrderExpirationTime(market.endTime || market.setEndTime, currentTimestamp);
   return (
-    <TradingProvider>
+    <TradingProvider presetOrderProperties={{ expirationDate }}>
       <section className={Styles.TradingForm}>
         <Wrapper
           market={market}

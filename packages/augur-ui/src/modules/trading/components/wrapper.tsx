@@ -178,8 +178,6 @@ const Wrapper = ({
     orderDaiEstimate: '',
     orderEscrowdDai: '',
     gasCostEst: '',
-    postOnlyOrder: false,
-    doNotCreateOrders: orderProperties.doNotCreateOrders || false,
     expirationDate: orderProperties.expirationDate || null,
     trade: getDefaultTrade({ market, selectedOutcome }),
     simulateQueue: [],
@@ -214,7 +212,6 @@ const Wrapper = ({
           gasCostEst: '',
           expirationDate,
           trade: tradeUpdate,
-          postOnlyOrder: false,
           allowPostOnlyOrder: true,
         }
       : { trade: tradeUpdate };
@@ -257,7 +254,7 @@ const Wrapper = ({
   }
 
   function checkCanPostOnly(price, side) {
-    if (state.postOnlyOrder) {
+    if (orderProperties.postOnlyOrder) {
       const allowPostOnlyOrder = canPostOrder(price, side, orderBook);
       if (allowPostOnlyOrder !== state.allowPostOnlyOrder) {
         setState({
@@ -416,7 +413,9 @@ const Wrapper = ({
       )
     );
     await Promise.all(queue).then(results => {
-      setState({ ...state, ...results[results.length - 1] });
+      const stateUpdates = results[results.length - 1];
+      delete stateUpdates.postOnlyOrder;
+      setState({ ...state, ...stateUpdates });
       delete results[results.length - 1].trade;
       updateOrderProperties(results[results.length - 1]);
     });
@@ -541,7 +540,6 @@ const Wrapper = ({
             selectedNav: orderProperties.selectedNav,
             orderQuantity: orderProperties.orderQuantity,
           }}
-          updateState={updates => setState({ ...state, ...updates })}
           updateOrderProperty={property => {
             if (
               property.hasOwnProperty(PRICE) ||

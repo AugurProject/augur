@@ -1,5 +1,9 @@
 import { useReducer } from 'react';
-import { MOCK_TRADING_STATE, TRADING_ACTIONS, DEFAULT_ORDER_PROPERTIES } from 'modules/trading/store/constants';
+import {
+  MOCK_TRADING_STATE,
+  TRADING_ACTIONS,
+  DEFAULT_ORDER_PROPERTIES,
+} from 'modules/trading/store/constants';
 
 const {
   CLEAR_ORDER_PROPERTIES,
@@ -11,7 +15,12 @@ export function TradingReducer(state, action) {
   let updatedState = { ...state };
   switch (action.type) {
     case CLEAR_ORDER_PROPERTIES: {
-      updatedState.orderProperties = DEFAULT_ORDER_PROPERTIES;
+      const { selectedNav, expirationDate } = updatedState.orderProperties;
+      updatedState.orderProperties = {
+        ...DEFAULT_ORDER_PROPERTIES,
+        expirationDate,
+        selectedNav,
+      };
       break;
     }
     case UPDATE_SELECTED_NAV: {
@@ -34,16 +43,24 @@ export function TradingReducer(state, action) {
   return updatedState;
 }
 
-export const useTrading = (defaultState = MOCK_TRADING_STATE) => {
-  const [state, dispatch] = useReducer(TradingReducer, defaultState);
+export const useTrading = (presetOrderProperties, defaultState = MOCK_TRADING_STATE) => {
+  const [state, dispatch] = useReducer(TradingReducer, {
+    ...defaultState,
+    orderProperties: {
+      ...defaultState.orderProperties,
+      ...presetOrderProperties,
+    },
+  });
   window.trading = state;
   window.stores.trading = state;
   return {
     ...state,
     actions: {
       clearOrderProperties: () => dispatch({ type: CLEAR_ORDER_PROPERTIES }),
-      updateOrderProperties: (orderProperties) => dispatch({ type: UPDATE_ORDER_PROPERTIES, orderProperties }),
-      updateSelectedNav: (selectedNav) => dispatch({ type: UPDATE_SELECTED_NAV, selectedNav }),
+      updateOrderProperties: orderProperties =>
+        dispatch({ type: UPDATE_ORDER_PROPERTIES, orderProperties }),
+      updateSelectedNav: selectedNav =>
+        dispatch({ type: UPDATE_SELECTED_NAV, selectedNav }),
     },
   };
 };
