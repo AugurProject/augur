@@ -18,13 +18,13 @@ const mapStateToProps = (state: AppState) => {
     address: state.loginAccount.address,
     balances: state.loginAccount.balances,
     walletOnRamp:  [ACCOUNT_TYPES.TORUS, ACCOUNT_TYPES.FORTMATIC].includes(state.loginAccount?.meta?.accountType),
-    accountType: state.loginAccount.meta.accountType,
+    accountType: state.loginAccount?.meta?.accountType,
   };
 };
 
 const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({
   closeModal: () => dispatch(closeModal()),
-  tokenSelectModala: () => dispatch(updateModal({ type: MODAL_TOKEN_SELECT })),
+  tokenSelectModal: () => dispatch(updateModal({ type: MODAL_TOKEN_SELECT })),
   goBack: () => dispatch(updateModal({ type: MODAL_AUGUR_USES_DAI })),
   setCurrentOnboardingStep: (currentOnboardingStep) => dispatch(updateLoginAccount({ currentOnboardingStep })),
 });
@@ -34,6 +34,7 @@ const mergeProps = (sP: any, dP: any, oP: any) => ({
   title: 'First you need to deposit ETH to pay for transaction fees.',
   showDeposit: true,
   showSkipButton: true,
+  skipAction: dP.tokenSelectModal,
   closeModal: dP.closeModal,
   address: sP.address,
   currentStep: 2,
@@ -50,7 +51,7 @@ const mergeProps = (sP: any, dP: any, oP: any) => ({
       text: 'Next',
       disabled: !(Number(sP.balances?.signerBalances?.eth) > 0),
       action: () => {
-        dP.tokenSelectModala();
+        dP.tokenSelectModal();
       },
     },
   ],
