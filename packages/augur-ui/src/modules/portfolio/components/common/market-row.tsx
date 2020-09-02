@@ -1,7 +1,7 @@
 import React from 'react';
 import { TXEventName } from '@augurproject/sdk-lite';
 import classNames from 'classnames';
-import { SubmitTextButton } from 'modules/common/buttons';
+import { SubmitTextButton, TextUnderlineButton } from 'modules/common/buttons';
 import { SCALAR, SIGN_SEND_ORDERS } from 'modules/common/constants';
 import {
   Archived,
@@ -12,8 +12,19 @@ import {
 } from 'modules/common/labels';
 
 import ToggleRow from 'modules/common/toggle-row';
-import { MarketStatusLabel, TemplateShield, MarketTypeLabel, LiquidityDepletedLabel, Archived } from 'modules/common/labels';
-import { SCALAR, SIGN_SEND_ORDERS, MODAL_UNSIGNED_ORDERS, THEMES } from 'modules/common/constants';
+import {
+  MarketStatusLabel,
+  TemplateShield,
+  MarketTypeLabel,
+  LiquidityDepletedLabel,
+  Archived,
+} from 'modules/common/labels';
+import {
+  SCALAR,
+  SIGN_SEND_ORDERS,
+  MODAL_UNSIGNED_ORDERS,
+  THEMES,
+} from 'modules/common/constants';
 import MarketTitle from 'modules/market/components/common/market-title';
 import { TXEventName } from '@augurproject/sdk';
 import { SubmitTextButton } from 'modules/common/buttons';
@@ -49,22 +60,24 @@ const MarketRow = ({
   noToggle,
   showPending,
   addedClass,
-  showLiquidityDepleted
+  showLiquidityDepleted,
 }: MarketRowProps) => {
   const {
     theme,
-    actions: { setModal }
+    actions: { setModal },
   } = useAppStatusStore();
   const { liquidityPools } = useMarketsStore();
   let renderLiquidityDepletedLabel = showLiquidityDepleted;
   if (theme === THEMES.SPORTS) {
-    const { sportsBook: { liquidityPool } } = market;
+    const {
+      sportsBook: { liquidityPool },
+    } = market;
     const marketPool = liquidityPools[liquidityPool];
     Object.keys(marketPool || {}).forEach(outcomeId => {
       if (marketPool[outcomeId]) {
         renderLiquidityDepletedLabel = false;
       }
-    })
+    });
   }
   const content = (
     <div
@@ -90,33 +103,50 @@ const MarketRow = ({
               mini
               isWarpSync={market.isWarpSync}
             />
-            {market.marketType === SCALAR && <MarketTypeLabel marketType={market.marketType} />}
-            {renderLiquidityDepletedLabel && <LiquidityDepletedLabel market={market} />}
+            {market.marketType === SCALAR && (
+              <MarketTypeLabel marketType={market.marketType} />
+            )}
+            {renderLiquidityDepletedLabel && (
+              <LiquidityDepletedLabel market={market} />
+            )}
             <span>{rightContent}</span>
           </div>
         )}
         {!market.pending && <MarketTitle id={market.id} />}
         {market.pending && <span>{market.description}</span>}
-        {market.pending &&
-          market.status === TXEventName.Pending && (
-            <span>
-              When the market is confirmed you can submit initial liquidity
-            </span>
-          )}
-        {!market.pending &&
-          showPending &&
-          market.hasPendingLiquidityOrders && (
-            <span>
-              You have pending initial liquidity.
-              <SubmitTextButton
-                action={() => setModal({
-                  type: MODAL_UNSIGNED_ORDERS,
-                  marketId: market.marketId,
-                })}
+        {market.pending && market.status === TXEventName.Pending && (
+          <span>
+            When the market is confirmed you can submit initial liquidity
+          </span>
+        )}
+        {!market.pending && showPending && market.hasPendingLiquidityOrders && (
+          <span>
+            {theme === THEMES.SPORTS
+              ? ''
+              : 'You have pending initial liquidity.'}
+            {theme === THEMES.SPORTS ? (
+              <TextUnderlineButton
+                action={() =>
+                  setModal({
+                    type: MODAL_UNSIGNED_ORDERS,
+                    marketId: market.marketId,
+                  })
+                }
                 text={SIGN_SEND_ORDERS}
               />
-            </span>
-          )}
+            ) : (
+              <SubmitTextButton
+                action={() =>
+                  setModal({
+                    type: MODAL_UNSIGNED_ORDERS,
+                    marketId: market.marketId,
+                  })
+                }
+                text={SIGN_SEND_ORDERS}
+              />
+            )}
+          </span>
+        )}
         <span>{rightContent}</span>
       </div>
       <span

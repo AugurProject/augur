@@ -496,7 +496,21 @@ export const TextIconButton = ({
     {icon} {text}
   </button>
 );
-
+export const TextUnderlineButton = ({
+  text,
+  action,
+  title,
+  disabled,
+}: DefaultButtonProps) => (
+  <button
+    onClick={e => action(e)}
+    className={Styles.TextUnderlineButton}
+    disabled={disabled}
+    title={title}
+  >
+    {text}
+  </button>
+);
 
 // Only used in ADVANCED button in trade-form
 export const TextButtonFlip = (props: DefaultButtonProps) => (
