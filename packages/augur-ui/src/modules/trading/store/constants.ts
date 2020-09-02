@@ -135,8 +135,6 @@ export const DEFAULT_ORDER_PROPERTIES = {
   orderEscrowdDai: '',
   gasCostEst: '',
   expirationDate: null,
-  simulateQueue: [],
-  trade: null,
 };
 
 export const MOCK_TRADING_STATE = {

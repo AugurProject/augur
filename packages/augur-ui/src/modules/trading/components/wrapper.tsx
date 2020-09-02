@@ -50,11 +50,7 @@ import { canPostOrder } from 'modules/trades/actions/can-post-order';
 import { getIsTutorial, getIsPreview } from 'modules/market/store/market-utils';
 import { useTradingStore } from 'modules/trading/store/trading';
 
-const {
-  PRICE,
-  QUANTITY,
-  SELECTED_NAV
-} = FORM_INPUT_TYPES;
+const { PRICE, QUANTITY, SELECTED_NAV } = FORM_INPUT_TYPES;
 
 const getMarketPath = (id, theme) => ({
   pathname: makePath(MARKET),
@@ -189,14 +185,13 @@ const Wrapper = ({
     simulateQueue: [],
     allowPostOnlyOrder: true,
   });
-  console.log('wrapper render: props/state', orderProperties, state);
+  // console.log('wrapper render: props/state', orderProperties, state);
   const marketId = market.id;
   const tradingTutorial = marketId === TRADING_TUTORIAL;
   const endTime = initialLiquidity ? newMarket.setEndTime : market.endTime;
-  let availableDai = totalTradingBalance();
-  if (initialLiquidity) {
-    availableDai = availableDai.minus(newMarket.initialLiquidityDai);
-  }
+  const availableDai = initialLiquidity ? 
+    totalTradingBalance().minus(newMarket.initialLiquidityDai) : 
+    totalTradingBalance();
   const gsnUnavailable = isGSNUnavailable();
   const disclaimerSeen = !!getValueFromlocalStorage(DISCLAIMER_SEEN);
   const gsnWalletInfoSeen = !!getValueFromlocalStorage(GSN_WALLET_SEEN);
@@ -206,19 +201,6 @@ const Wrapper = ({
   useEffect(() => {
     clearOrderForm(true);
   }, [selectedOutcome.id]);
-
-  useEffect(() => {
-    if (
-      orderProperties.orderQuantity !== '' &&
-      orderProperties.orderPrice !== '' &&
-      state.orderDaiEstimate === '' &&
-      !state.trade.limitPrice &&
-      !state.trade.numShares
-    ) {
-      // if SelectedOrderProps aren't empty but no estimated dai and have no price or numShares for trade, then recalculate.
-      updateTradeTotalCost(orderProperties);
-    }
-  }, [orderProperties.orderQuantity, orderProperties.orderPrice]);
 
   function clearOrderForm(wholeForm = true) {
     const tradeUpdate = getDefaultTrade({ market, selectedOutcome });
@@ -239,7 +221,12 @@ const Wrapper = ({
     setState({ ...state, ...updatedState });
     if (wholeForm) {
       updateOrderProperties({
+        orderDaiEstimate: '',
+        orderEscrowdDai: '',
+        gasCostEst: '',
+        expirationDate,
         orderPrice: '',
+        postOnlyOrder: false,
         orderQuantity: '',
       });
     }
@@ -263,8 +250,8 @@ const Wrapper = ({
       marketId: market.id,
       outcomeId: selectedOutcome.id,
       tradeInProgress,
-      doNotCreateOrders: s.doNotCreateOrders,
-      postOnly: s.postOnlyOrder,
+      doNotCreateOrders: orderProperties.doNotCreateOrders,
+      postOnly: orderProperties.postOnlyOrder,
     });
     clearOrderForm();
   }
@@ -308,6 +295,9 @@ const Wrapper = ({
         ).toString();
         updateOrderProperties({
           orderQuantity: String(numShares),
+          orderEscrowdDai: newOrder.costInDai.formatted,
+          orderDaiEstimate: order.orderDaiEstimate,
+          gasCostEst: formattedGasCost,
         });
         setState({
           ...state,
@@ -363,6 +353,13 @@ const Wrapper = ({
         gasCostEst: '',
         trade,
       });
+      updateOrderProperties({
+        orderDaiEstimate: totalCost ? formattedValue.roundedValue : '',
+        orderEscrowdDai: totalCost
+          ? formattedValue.roundedValue.toString()
+          : '',
+        gasCostEst: '',
+      });
     } else {
       if (order.orderPrice) {
         await queueStimulateTrade(order, useValues);
@@ -372,7 +369,6 @@ const Wrapper = ({
   }
 
   async function queueStimulateTrade(order, useValues) {
-    console.log('async queueSimTrade', state.simulateQueue);
     const queue = state.simulateQueue.slice(0);
     queue.push(
       new Promise(resolve =>
@@ -413,16 +409,16 @@ const Wrapper = ({
               orderEscrowdDai: newOrder.costInDai.formatted,
               trade: newOrder,
               gasCostEst: formattedGasCost,
-              postOnlyOrder: state.postOnlyOrder,
+              postOnlyOrder: orderProperties.postOnlyOrder,
             });
           },
         })
       )
     );
-    console.log('post push', queue);
     await Promise.all(queue).then(results => {
-      console.log('after awaitAll', results);
       setState({ ...state, ...results[results.length - 1] });
+      delete results[results.length - 1].trade;
+      updateOrderProperties(results[results.length - 1]);
     });
   }
 
@@ -479,7 +475,7 @@ const Wrapper = ({
           !trade?.limitPrice ||
           (gsnUnavailable && isOpenOrder) ||
           insufficientFunds ||
-          (state.postOnlyOrder && trade.numFills > 0) ||
+          (orderProperties.postOnlyOrder && trade.numFills > 0) ||
           !state.allowPostOnlyOrder ||
           disableTrading
         }
@@ -525,7 +521,7 @@ const Wrapper = ({
   const orderEmpty =
     orderProperties.orderPrice === '' &&
     orderProperties.orderQuantity === '' &&
-    state.orderDaiEstimate === '';
+    orderProperties.orderDaiEstimate === '';
   const showTip = !hasHistory && orderEmpty;
   const { potentialDaiLoss, sharesFilled, orderShareProfit } = state.trade;
   const showConfirm =
@@ -578,7 +574,7 @@ const Wrapper = ({
             tradingTutorial,
             initialLiquidity,
             trade: state.trade,
-            postOnlyOrder: state.postOnlyOrder,
+            postOnlyOrder: orderProperties.postOnlyOrder,
             allowPostOnlyOrder: state.allowPostOnlyOrder,
           }}
         />

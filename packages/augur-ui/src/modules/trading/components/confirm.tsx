@@ -183,7 +183,7 @@ export const Confirm = ({
     )
   : ZERO;
 
-  const messages = () => {
+  const messages = (() => {
     let numTrades = loopLimit ? Math.ceil(numFills / loopLimit) : numFills;
     numTrades = isNaN(numTrades) ? 0 : numTrades;
     let messages: Message | null = null;
@@ -316,7 +316,7 @@ export const Confirm = ({
     }
 
     return messages;
-  };
+  })();
  
   const limitPricePercentage = (isBuy
     ? createBigNumber(limitPrice)

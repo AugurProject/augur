@@ -19,13 +19,11 @@ export function TradingReducer(state, action) {
       break;
     }
     case UPDATE_ORDER_PROPERTIES: {
-      console.log("Update order properties", action.orderProperties);
       const { orderProperties } = action;
       updatedState.orderProperties = {
         ...updatedState.orderProperties,
         ...orderProperties,
       };
-      console.log('updates:', updatedState.orderProperties);
       break;
     }
     default:
