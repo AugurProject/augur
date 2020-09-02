@@ -124,19 +124,19 @@ const getToTokenOptions = (token) => {
 };
 
 export const Swap = ({
-  balances,
-  fromToken,
-  toToken,
-  ETH_RATE,
-  REP_RATE,
-  config,
-  address,
-  ethToDaiRate,
-  usdtToDaiRate,
-  usdcToDaiRate,
-  repToDaiRate,
-  gasPrice,
-}: SwapProps) => {
+                       balances,
+                       fromToken,
+                       toToken,
+                       ETH_RATE,
+                       REP_RATE,
+                       config,
+                       address,
+                       ethToDaiRate,
+                       usdtToDaiRate,
+                       usdcToDaiRate,
+                       repToDaiRate,
+                       gasPrice,
+                     }: SwapProps) => {
 
   // SDK not loadeds
   if (!ethToDaiRate || !usdcToDaiRate || !usdtToDaiRate || !repToDaiRate || !balances) {
@@ -392,16 +392,16 @@ export const Swap = ({
 
     if (toTokenType === REP) {
       const inputValueRepInDai = createBigNumber(1)
-        .dividedBy(repToDaiRate.value)
-        .multipliedBy(inputAmount);
+      .dividedBy(repToDaiRate.value)
+      .multipliedBy(inputAmount);
 
       if (fromTokenType === DAI) {
         outputAmount = formatEther(inputValueRepInDai);
       } else if (fromTokenType === ETH) {
         outputAmount = formatEther(
           createBigNumber(ethToDaiRate.value)
-            .multipliedBy(inputAmount)
-            .dividedBy(repToDaiRate.value)
+          .multipliedBy(inputAmount)
+          .dividedBy(repToDaiRate.value)
         );
       } else if (fromTokenType === USDC) {
         outputAmount = formatEther(rateUSDC.multipliedBy(inputValueRepInDai));
@@ -528,10 +528,10 @@ export const Swap = ({
   let buttonText = 'Convert';
   let wrapping = false;
   let queueId = fromTokenType === ETH
-  ? SWAPETHFOREXACTTOKENS
-  : toTokenType === ETH
-  ? SWAPTOKENSFOREXACTETH
-  : SWAPEXACTTOKENSFORTOKENS;
+    ? SWAPETHFOREXACTTOKENS
+    : toTokenType === ETH
+      ? SWAPTOKENSFOREXACTETH
+      : SWAPEXACTTOKENSFORTOKENS;
 
 
   if (toTokenType === WETH && fromTokenType === ETH) {
@@ -544,62 +544,6 @@ export const Swap = ({
     queueId = UNWRAP_ETH;
   }
 
-
-
-  const getCurrentTokenContract = () => {
-    const { contracts } = augurSdk.get();
-
-    let tokenContract = null;
-    if (fromTokenType === DAI) {
-      tokenContract = contracts.cash;
-    } else if (fromTokenType === REP) {
-      tokenContract = contracts.reputationToken;
-    } else if (fromTokenType === USDT) {
-      tokenContract = contracts.usdt;
-    } else if (fromTokenType === USDC) {
-      tokenContract = contracts.usdc;
-    } else {
-      tokenContract = contracts.weth;
-    }
-    return tokenContract;
-  }
-
-  const setTokenApprovalSwap = async () => {
-    const tokenContract = getCurrentTokenContract();
-    await setTokenApproval(address, tokenContract);
-  }
-
-  const [tokenUnlocked, setTokenUnlocked] = useState(false);
-  const [isApproved, setIsApproved] = useState({
-    eth: false,
-    dai: false,
-    rep: false,
-    usdc: false,
-    usdt: false,
-  });
-
-  const showUnlockForToken = async () => {
-    const tokenContract = getCurrentTokenContract();
-    const approved = await checkTokenApproval(address, tokenContract);
-    setIsApproved({
-      ...isApproved,
-      [fromTokenType.toLowerCase()]: approved
-    });
-
-    return approved;
-  }
-
-  useEffect(() => {
-    if (!isApproved[fromTokenType.toLowerCase()]) {
-      const getData = async () => {
-        const tokenUnlocked = await showUnlockForToken();
-        setTokenUnlocked(tokenUnlocked);
-      }
-      getData();
-    } else {
-      setTokenUnlocked(true);
-    }
-  }, [fromTokenType, balances]);
 
   return (
     <div className={Styles.Swap}>
@@ -640,41 +584,41 @@ export const Swap = ({
       />
 
       {!tokenUnlocked &&
-        <ApprovalTxButtonLabel
-          className={Styles.ApprovalNotice}
-          title={`Unlock ${fromTokenType}`}
-          buttonName={'Approve'}
-          userEthBalance={String(balances.eth)}
-          gasPrice={gasPrice}
-          checkApprovals={async () => {
-            const unlocked = await showUnlockForToken();
-            if (unlocked) {
-              return 0;
-            }
-            return 1;
-          }}
-          doApprovals={() => setTokenApprovalSwap()}
-          account={address}
-          approvalType={APPROVE}
-          isApprovalCallback={() => null}
-          hideAddFunds={true}
-        />
+      <ApprovalTxButtonLabel
+        className={Styles.ApprovalNotice}
+        title={`Unlock ${fromTokenType}`}
+        buttonName={'Approve'}
+        userEthBalance={String(balances.eth)}
+        gasPrice={gasPrice}
+        checkApprovals={async () => {
+          const unlocked = await showUnlockForToken();
+          if (unlocked) {
+            return 0;
+          }
+          return 1;
+        }}
+        doApprovals={() => setTokenApprovalSwap()}
+        account={address}
+        approvalType={APPROVE}
+        isApprovalCallback={() => null}
+        hideAddFunds={true}
+      />
       }
 
       <div>
         {wrapping && <DismissableNotice show title={'Make sure to leave enough ETH to pay transaction fees'} buttonType={DISMISSABLE_NOTICE_BUTTON_TYPES.NONE} />}
         {tokenUnlocked &&
-          <ProcessingButton
-            text={buttonText}
-            action={() => makeTrade()}
-            queueName={TRANSACTIONS}
-            disabled={
-              !outputAmount ||
-              outputAmount.value <= 0 ||
-              (errorMessage && errorMessage.indexOf('Liquidity') === -1)
-            }
-            queueId={queueId}
-          />
+        <ProcessingButton
+          text={buttonText}
+          action={() => makeTrade()}
+          queueName={TRANSACTIONS}
+          disabled={
+            !outputAmount ||
+            outputAmount.value <= 0 ||
+            (errorMessage && errorMessage.indexOf('Liquidity') === -1)
+          }
+          queueId={queueId}
+        />
         }
 
         {errorMessage && <div>{errorMessage}</div>}
