@@ -178,10 +178,7 @@ const Wrapper = ({
     orderDaiEstimate: '',
     orderEscrowdDai: '',
     gasCostEst: '',
-    expirationDate: orderProperties.expirationDate || null,
     trade: getDefaultTrade({ market, selectedOutcome }),
-    simulateQueue: [],
-    allowPostOnlyOrder: true,
   });
   // console.log('wrapper render: props/state', orderProperties, state);
   const marketId = market.id;
@@ -210,14 +207,13 @@ const Wrapper = ({
           orderDaiEstimate: '',
           orderEscrowdDai: '',
           gasCostEst: '',
-          expirationDate,
           trade: tradeUpdate,
-          allowPostOnlyOrder: true,
         }
       : { trade: tradeUpdate };
     setState({ ...state, ...updatedState });
     if (wholeForm) {
       updateOrderProperties({
+        allowPostOnlyOrder: true,
         orderDaiEstimate: '',
         orderEscrowdDai: '',
         gasCostEst: '',
@@ -237,10 +233,10 @@ const Wrapper = ({
   function handlePlaceMarketTrade(market, selectedOutcome, s) {
     orderSubmitted(orderProperties.selectedNav, market.id);
     let tradeInProgress = state.trade;
-    if (state.expirationDate) {
+    if (orderProperties.expirationDate) {
       tradeInProgress = {
         ...tradeInProgress,
-        expirationTime: state.expirationDate,
+        expirationTime: orderProperties.expirationDate,
       };
     }
     placeMarketTrade({
@@ -256,11 +252,8 @@ const Wrapper = ({
   function checkCanPostOnly(price, side) {
     if (orderProperties.postOnlyOrder) {
       const allowPostOnlyOrder = canPostOrder(price, side, orderBook);
-      if (allowPostOnlyOrder !== state.allowPostOnlyOrder) {
-        setState({
-          ...state,
-          allowPostOnlyOrder,
-        });
+      if (allowPostOnlyOrder !== orderProperties.allowPostOnlyOrder) {
+        updateOrderProperties({ allowPostOnlyOrder });
       }
       return allowPostOnlyOrder;
     }
@@ -366,7 +359,7 @@ const Wrapper = ({
   }
 
   async function queueStimulateTrade(order, useValues) {
-    const queue = state.simulateQueue.slice(0);
+    const queue = [];
     queue.push(
       new Promise(resolve =>
         updateTradeCost({
@@ -423,11 +416,12 @@ const Wrapper = ({
 
   function getActionButton() {
     const { trade } = state;
+    const { selectedNav, allowPostOnlyOrder, postOnlyOrder } = orderProperties;
     const noGSN = gsnUnavailable && !gsnWalletInfoSeen;
     const hasFunds = gsnEnabled ? !!dai : !!eth && !!dai;
     let actionButton: any = (
       <OrderButton
-        type={orderProperties.selectedNav}
+        type={selectedNav}
         initialLiquidity={initialLiquidity}
         action={e => {
           e.preventDefault();
@@ -474,8 +468,8 @@ const Wrapper = ({
           !trade?.limitPrice ||
           (gsnUnavailable && isOpenOrder) ||
           insufficientFunds ||
-          (orderProperties.postOnlyOrder && trade.numFills > 0) ||
-          !state.allowPostOnlyOrder ||
+          (postOnlyOrder && trade.numFills > 0) ||
+          !allowPostOnlyOrder ||
           disableTrading
         }
       />
@@ -536,20 +530,7 @@ const Wrapper = ({
         <Form
           orderState={{
             ...state,
-            orderPrice: orderProperties.orderPrice,
-            selectedNav: orderProperties.selectedNav,
-            orderQuantity: orderProperties.orderQuantity,
-          }}
-          updateOrderProperty={property => {
-            if (
-              property.hasOwnProperty(PRICE) ||
-              property.hasOwnProperty(QUANTITY) ||
-              property.hasOwnProperty(SELECTED_NAV)
-            ) {
-              updateOrderProperties({ ...property });
-            } else {
-              setState({ ...state, ...property });
-            }
+            ...orderProperties,
           }}
           {...{
             market,
@@ -572,8 +553,6 @@ const Wrapper = ({
             tradingTutorial,
             initialLiquidity,
             trade: state.trade,
-            postOnlyOrder: orderProperties.postOnlyOrder,
-            allowPostOnlyOrder: state.allowPostOnlyOrder,
           }}
         />
       )}

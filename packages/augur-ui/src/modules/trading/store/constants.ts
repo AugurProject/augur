@@ -129,6 +129,7 @@ export const DEFAULT_ORDER_PROPERTIES = {
   orderPrice: '',
   orderQuantity: '',
   selectedNav: BUY,
+  allowPostOnlyOrder: true,
   postOnlyOrder: false,
   doNotCreateOrders: false,
   orderDaiEstimate: '',

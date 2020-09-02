@@ -328,8 +328,8 @@ const MarketView = ({
     formatOrderBook(orderBook[selectedOutcomeId]) :
     (isFills || isPositions) ? 
       FORMATTED_TUTORIAL_BOOK :
-      orderBook[selectedOutcomeId];
-
+      orderBook[selectedOutcomeId] ? 
+        orderBook[selectedOutcomeId] : orderBook;
   function tradingTutorialWidthCheck() {
     if (tradingTutorial && window.innerWidth < 1150) {
       // tablet-max
@@ -600,6 +600,7 @@ const MarketView = ({
                     selectedOutcomeId={selectedOutcomeId}
                     updateSelectedOutcome={updateSelectedOutcome}
                     tutorialNext={next}
+                    orderBook={outcomeOrderBook}
                   />
                   {isTrading && (
                     <TutorialPopUp

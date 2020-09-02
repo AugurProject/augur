@@ -47,6 +47,7 @@ import { TXEventName } from '@augurproject/sdk-lite';
 import { removePendingTransaction } from 'modules/pending-queue/actions/pending-queue-management';
 import { useAppStatusStore } from 'modules/app/store/app-status';
 import { totalTradingBalance } from 'modules/auth/helpers/login-account';
+import { useTradingStore } from 'modules/trading/store/trading';
 
 interface MessageButton {
   action: Function;
@@ -111,8 +112,6 @@ export const Confirm = ({
   selectedOutcome,
   tradingTutorial,
   initialLiquidity,
-  postOnlyOrder,
-  allowPostOnlyOrder,
 }: ConfirmProps) => {
   const {
     env: {
@@ -129,6 +128,12 @@ export const Confirm = ({
     gasPriceInfo,
     actions: { setModal },
   } = useAppStatusStore();
+  const {
+    orderProperties: {
+      postOnlyOrder,
+      allowPostOnlyOrder,
+    },
+  } = useTradingStore();
   let availableDai = totalTradingBalance();
   if (initialLiquidity) {
     availableDai = availableDai.minus(newMarket.initialLiquidityDai);

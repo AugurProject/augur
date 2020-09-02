@@ -191,7 +191,6 @@ interface FromProps {
     expirationDate?: Moment;
   };
   selectedOutcome: Getters.Markets.MarketInfoOutcome;
-  updateOrderProperty: Function;
   updateSelectedOutcome: Function;
   clearOrderForm: Function;
   updateTradeTotalCost: Function;
@@ -201,46 +200,19 @@ interface FromProps {
   tradingTutorial?: boolean;
 }
 
-const calculateStartState = ({
-  orderQuantity,
-  orderPrice,
-  expirationDate,
-  endTime,
-  currentTimestamp,
-  orderDaiEstimate,
-}) => {
-  return {
-    [QUANTITY]: orderQuantity,
-    [PRICE]: orderPrice,
-    [EXPIRATION_DATE]:
-      expirationDate ||
-      calcOrderExpirationTime(endTime, currentTimestamp),
-    [EST_DAI]: orderDaiEstimate,
-  };
-};
-
 const getStartState = ({
   orderQuantity,
   orderPrice,
-  expirationDate,
-  endTime,
-  currentTimestamp,
   orderDaiEstimate,
   remainingTime: {
     time: fastForwardTime,
     unit: expirationDateOption,
   },
 }) => {
-  const startState = calculateStartState({
+  return {
     orderQuantity,
     orderPrice,
-    expirationDate,
-    endTime,
-    currentTimestamp,
     orderDaiEstimate,
-  });
-  return {
-    ...startState,
     lastInputModified: '',
     advancedOption: advancedDropdownOptions[0].value,
     fastForwardTime,
@@ -257,7 +229,6 @@ const Form = ({
   selectedOutcome,
   updateSelectedOutcome,
   orderState,
-  updateOrderProperty,
   clearOrderForm,
   updateTradeTotalCost,
   updateTradeNumShares,
@@ -274,7 +245,6 @@ const Form = ({
     orderQuantity,
     orderDaiEstimate,
     orderEscrowdDai,
-    expirationDate,
   } = orderState;
   const { orderProperties, actions: { updateOrderProperties } } = useTradingStore();
   const endTime = market.endTime || market.setEndTime;
@@ -299,9 +269,6 @@ const Form = ({
     getStartState({
       orderQuantity,
       orderPrice,
-      expirationDate,
-      endTime,
-      currentTimestamp,
       orderDaiEstimate,
       remainingTime,
     })
@@ -314,7 +281,7 @@ const Form = ({
   ).value;
   const validation = orderValidation(
     {
-      expirationDate: state.expirationDate,
+      expirationDate: orderProperties.expirationDate,
       orderQuantity,
       orderPrice,
       orderDaiEstimate,
@@ -386,7 +353,7 @@ const Form = ({
   function updateAndValidate(property: string, rawValue) {
     const newValues = { [property]: rawValue };
     setState({ ...state, ...newValues });
-    updateOrderProperty(newValues);
+    updateOrderProperties(newValues);
     return validateForm(property, rawValue);
   }
 
@@ -438,12 +405,12 @@ const Form = ({
     // have price and quantity was modified clear total cost
     if (orderPrice && property === QUANTITY) {
       updatedState[EST_DAI] = '';
-      updateOrderProperty({ [EST_DAI]: '' });
+      updateOrderProperties({ [EST_DAI]: '' });
       orderDaiEstimate = '';
     } else if (orderPrice && property === EST_DAI) {
       // have price and total cost was modified clear quantity
       updatedState[QUANTITY] = '';
-      updateOrderProperty({ [QUANTITY]: '' });
+      updateOrderProperties({ [QUANTITY]: '' });
       orderQuantity = '';
     }
 
@@ -514,10 +481,6 @@ const Form = ({
     const startState = {
       [QUANTITY]: '',
       [PRICE]: '',
-      [EXPIRATION_DATE]: calcOrderExpirationTime(
-        endTime,
-        currentTimestamp
-      ),
       [EST_DAI]: '',
       fastForwardTime,
       expirationDateOption,
@@ -563,9 +526,9 @@ const Form = ({
     (isScalar && selectedOutcome.id !== INVALID_OUTCOME_ID) || !isScalar;
   const isExpirationCustom =
     state.expirationDateOption === EXPIRATION_DATE_OPTIONS.CUSTOM;
-  console.log("Form Passed:", orderState);
-  console.log("Form State:", state);
-  console.log("Form Context:", orderProperties);
+  // console.log("Form Passed:", orderState);
+  // console.log("Form State:", state);
+  // console.log("Form Context:", orderProperties);
   return (
     <div className={Styles.TradingForm}>
       <div className={Styles.Outcome}>
