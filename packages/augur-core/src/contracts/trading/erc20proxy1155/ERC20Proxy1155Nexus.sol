@@ -1,16 +1,17 @@
 pragma solidity 0.5.15;
 
-import 'ROOT/libraries/CloneFactory.sol';
+import 'ROOT/libraries/CloneFactory2.sol';
 import 'ROOT/libraries/math/SafeMathUint256.sol';
 import 'ROOT/reporting/IShareToken.sol';
 import 'ROOT/trading/erc20proxy1155/IERC20Proxy1155Nexus.sol';
 import 'ROOT/trading/erc20proxy1155/IERC20Proxy1155.sol';
+import 'ROOT/trading/erc20proxy1155/ERC20Proxy1155.sol';
 
 // To use these ERC20s, the user will have to call
 // setApprovalForAll(ERC20Proxy1155Nexus, true)
 // on the ShareToken contract themselves.
 
-contract ERC20Proxy1155Nexus is IERC20Proxy1155Nexus, CloneFactory {
+contract ERC20Proxy1155Nexus is IERC20Proxy1155Nexus, CloneFactory2 {
     using SafeMathUint256 for uint256;
 
     IERC20Proxy1155 internal proxyToClone;
@@ -25,9 +26,7 @@ contract ERC20Proxy1155Nexus is IERC20Proxy1155Nexus, CloneFactory {
     }
 
     function newERC20(uint256 _tokenId) public returns (IERC20Proxy1155) {
-        require(proxies[_tokenId] == IERC20Proxy1155(0)); // must not have been registered yet
-        IERC20Proxy1155 _erc20 = IERC20Proxy1155(createClone(address(proxyToClone)));
-        proxies[_tokenId] = _erc20; // register
+        IERC20Proxy1155 _erc20 = IERC20Proxy1155(createClone2(address(proxyToClone), _tokenId));
         _erc20.initialize(this, _tokenId);
         return _erc20;
     }
@@ -81,6 +80,15 @@ contract ERC20Proxy1155Nexus is IERC20Proxy1155Nexus, CloneFactory {
     // So we can trust its _caller to be the proxy's msg.sender.
     function _gate(IERC20Proxy1155 _proxy,  uint256 _tokenId) internal view {
         require(msg.sender == address(_proxy)); // only proxies may make calls
-        require(proxies[_tokenId] == _proxy); // no sneaky stuff!
+        require(getProxy(_tokenId) == _proxy); // no sneaky stuff!
+    }
+
+    function getProxy(uint256 _tokenId) public view returns (IERC20Proxy1155) {
+        return IERC20Proxy1155(uint160(uint256(keccak256(abi.encodePacked(
+                bytes1(0xff), // standard for CREATE2
+                address(this), // creator address is this nexus contract
+                _tokenId, // proxies for a specific nexus only vary by their tokenId so just that works as the salt
+                keccak256(abi.encodePacked(type(ERC20Proxy1155).creationCode)) // bytecode of proxy
+            )))));
     }
 }

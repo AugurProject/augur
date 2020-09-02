@@ -10,9 +10,6 @@ import 'ROOT/trading/erc20proxy1155/IERC20Proxy1155.sol';
 contract IERC20Proxy1155Nexus {
     IShareToken public target1155;
 
-    // tokenId -> proxy contract
-    mapping (uint256 => IERC20Proxy1155) public proxies;
-
     function newERC20(uint256 _tokenId) public returns (IERC20Proxy1155);
 
     function newERC20s(uint256[] memory _tokenIds) public returns (IERC20Proxy1155[] memory);
