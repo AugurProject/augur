@@ -6,8 +6,6 @@ const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const WorkerPlugin = require('worker-plugin');
 const GitRevisionPlugin = require('git-revision-webpack-plugin');
 const { buildConfig } = require('@augurproject/artifacts');
-const { serializeConfig } = require('@augurproject/utils');
-
 
 const PATHS = {
   APP: path.resolve(__dirname, '../src'),
@@ -24,7 +22,7 @@ const AUGUR_ENV = process.env.AUGUR_ENV || process.env.ETHEREUM_NETWORK || 'loca
 const config = buildConfig(AUGUR_ENV);
 
 // Unset REPORTING_ONLY if CI passes in 'false'.
-if(process.env.REPORTING_ONLY === 'false') process.env.REPORTING_ONLY = undefined;
+if(process.env.REPORTING_ONLY === 'false') delete process.env.REPORTING_ONLY;
 
 if(!process.env.CURRENT_COMMITHASH || !process.env.CURRENT_VERSION) {
   const gitRevisionPlugin = new GitRevisionPlugin({
