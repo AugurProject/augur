@@ -19,7 +19,7 @@ import convertExponentialToDecimal from 'utils/convert-exponential';
 import { MarketData } from 'modules/types';
 import type { Getters } from "@augurproject/sdk";
 import { CancelTextButton, SecondaryButton } from 'modules/common/buttons';
-import moment, { Moment } from 'moment';
+import moment from 'moment';
 import {
   EXPIRATION_DATE_OPTIONS,
   convertUnixToFormattedDate,
@@ -123,7 +123,7 @@ const ErrorsContainer = ({ errors }) => (
 );
 
 const ValidationContainer = ({
-  validation,
+  validation: { errors },
   updateAndValidate,
   market,
   quantityValue,
@@ -131,7 +131,7 @@ const ValidationContainer = ({
   const [low, high] = findNearestValues(quantityValue, market);
   return (
     <div className={Styles.ErrorContainer}>
-      {validation.errors[MULTIPLE_QUANTITY].map((error, key) => (
+      {errors[MULTIPLE_QUANTITY].map((error, key) => (
         <div key={error} className={Styles.ErrorClickable}>
           {ExclamationCircle} <span>{error}</span>
           <span>Please select from the closest quantities</span>
@@ -182,14 +182,6 @@ const getGasConfirmEstimate = async () => {
 
 interface FromProps {
   market: MarketData;
-  orderState: {
-    selectedNav: string;
-    orderPrice: string;
-    orderQuantity: string;
-    orderDaiEstimate: string;
-    orderEscrowdDai: string;
-    expirationDate?: Moment;
-  };
   selectedOutcome: Getters.Markets.MarketInfoOutcome;
   updateSelectedOutcome: Function;
   clearOrderForm: Function;
@@ -201,18 +193,14 @@ interface FromProps {
 }
 
 const getStartState = ({
-  orderQuantity,
-  orderPrice,
-  orderDaiEstimate,
-  remainingTime: {
+  endTime,
+  currentTimestamp
+}) => {
+  const  {
     time: fastForwardTime,
     unit: expirationDateOption,
-  },
-}) => {
+  } = calcOrderExpirationTimeRemaining(endTime, currentTimestamp);
   return {
-    orderQuantity,
-    orderPrice,
-    orderDaiEstimate,
     lastInputModified: '',
     advancedOption: advancedDropdownOptions[0].value,
     fastForwardTime,
@@ -228,7 +216,6 @@ const Form = ({
   initialLiquidity,
   selectedOutcome,
   updateSelectedOutcome,
-  orderState,
   clearOrderForm,
   updateTradeTotalCost,
   updateTradeNumShares,
@@ -239,14 +226,15 @@ const Form = ({
     minPriceBigNumber: minPrice,
     scalarDenomination,
   } = market;
+  const { orderProperties, actions: { updateOrderProperties } } = useTradingStore();
   const {
     selectedNav,
     orderPrice,
     orderQuantity,
     orderDaiEstimate,
     orderEscrowdDai,
-  } = orderState;
-  const { orderProperties, actions: { updateOrderProperties } } = useTradingStore();
+    expirationDate,
+  } = orderProperties;
   const endTime = market.endTime || market.setEndTime;
   const selectedOutcomeId =
     selectedOutcome !== undefined && selectedOutcome !== null
@@ -261,18 +249,17 @@ const Form = ({
     formatOrderBook(market.orderBook[selectedOutcomeId]) :
     {};
 
-  const remainingTime = calcOrderExpirationTimeRemaining(
-    endTime,
-    currentTimestamp
-  );
   const [state, setState] = useState(
-    getStartState({
-      orderQuantity,
-      orderPrice,
-      orderDaiEstimate,
-      remainingTime,
-    })
+    getStartState({ endTime, currentTimestamp })
   );
+
+  const {
+    confirmationTimeEstimation,
+    percentage,
+    advancedOption,
+    expirationDateOption,
+    fastForwardTime,
+  } = state;
   const gasPriceInWei = formatGasCost(
     createBigNumber(gasPriceInfo.userDefinedGasPrice || 0).times(
       createBigNumber(GWEI_CONVERSION)
@@ -281,7 +268,7 @@ const Form = ({
   ).value;
   const validation = orderValidation(
     {
-      expirationDate: orderProperties.expirationDate,
+      expirationDate,
       orderQuantity,
       orderPrice,
       orderDaiEstimate,
@@ -297,7 +284,7 @@ const Form = ({
       selectedOutcome,
       currentTimestamp,
     },
-    state.confirmationTimeEstimation
+    confirmationTimeEstimation
   );
 
   useEffect(() => {
@@ -322,7 +309,7 @@ const Form = ({
       selectedOutcome.id === INVALID_OUTCOME_ID &&
       !state.percentage &&
       orderPrice !== '' &&
-      !state[PRICE]
+      !orderPrice
     ) {
       percentage = String(
         calcPercentageFromPrice(orderPrice, String(minPrice), String(maxPrice))
@@ -331,9 +318,6 @@ const Form = ({
     if (isMounted) {
       setState({
         ...state,
-        [PRICE]: orderPrice,
-        [QUANTITY]: orderQuantity,
-        [EST_DAI]: orderDaiEstimate,
         percentage,
       });
     }
@@ -351,9 +335,7 @@ const Form = ({
   }, [validation.errorCount]);
 
   function updateAndValidate(property: string, rawValue) {
-    const newValues = { [property]: rawValue };
-    setState({ ...state, ...newValues });
-    updateOrderProperties(newValues);
+    updateOrderProperties({ [property]: rawValue });
     return validateForm(property, rawValue);
   }
 
@@ -361,22 +343,24 @@ const Form = ({
     const value = availableDai
       .times(createBigNumber(percent))
       .integerValue(BigNumber.ROUND_DOWN);
-    setState({ ...state, [EST_DAI]: value.toString() });
+    updateOrderProperties({ [EST_DAI]: value.toString() });
     validateForm(EST_DAI, value.toString());
   }
 
   function validateForm(property: string, rawValue) {
     const value =
-      property != 'expirationDate'
+      property !== EXPIRATION
         ? convertExponentialToDecimal(rawValue)
         : rawValue;
-    const updatedState = {
-      ...state,
+    const { lastInputModified, confirmationTimeEstimation } = state;
+
+    const updatedOrderProps = {
+      ...orderProperties,
       [property]: value,
     };
 
     const validationResults = orderValidation(
-      updatedState,
+      updatedOrderProps,
       property,
       {
         maxPrice,
@@ -388,7 +372,7 @@ const Form = ({
         selectedOutcome,
         currentTimestamp,
       },
-      state.confirmationTimeEstimation
+      confirmationTimeEstimation
     );
 
     if (validationResults.errorCount > 0) {
@@ -397,19 +381,18 @@ const Form = ({
 
     let orderProcessingMethod = updateTradeTotalCost;
 
-    let orderQuantity = updatedState[QUANTITY];
-    const orderPrice = updatedState[PRICE];
-    let orderDaiEstimate = updatedState[EST_DAI];
-    let expiration = updatedState[EXPIRATION_DATE];
-
+    let orderQuantity = updatedOrderProps[QUANTITY];
+    const orderPrice = updatedOrderProps[PRICE];
+    let orderDaiEstimate = updatedOrderProps[EST_DAI];
+    let expiration = updatedOrderProps[EXPIRATION_DATE];
     // have price and quantity was modified clear total cost
     if (orderPrice && property === QUANTITY) {
-      updatedState[EST_DAI] = '';
+      updatedOrderProps[EST_DAI] = '';
       updateOrderProperties({ [EST_DAI]: '' });
       orderDaiEstimate = '';
     } else if (orderPrice && property === EST_DAI) {
       // have price and total cost was modified clear quantity
-      updatedState[QUANTITY] = '';
+      updatedOrderProps[QUANTITY] = '';
       updateOrderProperties({ [QUANTITY]: '' });
       orderQuantity = '';
     }
@@ -419,18 +402,13 @@ const Form = ({
     // last was quantity then regular updateTradeTotalCost
     // last was total order cost then updateTradeNumShares
     if (
-      (property == PRICE &&
+      (property === PRICE &&
         orderQuantity &&
         orderDaiEstimate &&
-        state.lastInputModified &&
-        state.lastInputModified === EST_DAI) ||
+        lastInputModified === EST_DAI) ||
       (orderDaiEstimate && orderPrice && orderQuantity === '')
     ) {
       orderProcessingMethod = updateTradeNumShares;
-    }
-
-    if (orderPrice && orderQuantity === '' && orderDaiEstimate === '') {
-      clearOrderForm(false);
     }
 
     if (
@@ -438,6 +416,10 @@ const Form = ({
       (orderQuantity === '' || orderDaiEstimate === '')
     ) {
       orderProcessingMethod = null;
+    }
+
+    if (orderPrice && orderQuantity === '' && orderDaiEstimate === '') {
+      clearOrderForm(false);
     }
 
     const order = {
@@ -454,13 +436,8 @@ const Form = ({
       selectedNav,
     };
     if (property !== PRICE) {
-      updatedState.lastInputModified = property;
+      setState({ ...state, lastInputModified: property });
     }
-    // update the local state of this form then make call to calculate total or shares
-    setState({
-      ...state,
-      ...updatedState,
-    });
     if (
       orderProcessingMethod &&
       validationResults.isOrderValid &&
@@ -478,17 +455,11 @@ const Form = ({
       endTime,
       currentTimestamp
     );
-    const startState = {
-      [QUANTITY]: '',
-      [PRICE]: '',
-      [EST_DAI]: '',
+    setState({
+      ...state,
       fastForwardTime,
       expirationDateOption,
       advancedOption: advancedDropdownOptions[0].value,
-    };
-    setState({
-      ...state,
-      ...startState,
       percentage: '',
     });
     clearOrderForm();
@@ -512,9 +483,8 @@ const Form = ({
       ...validation.errors[EXPIRATION_DATE],
     ])
   );
-
   const quantityValue = convertExponentialToDecimal(
-    state[QUANTITY]
+    orderQuantity
   );
   
   // TODO: figure out default outcome after we figure out ordering of the outcomes
@@ -525,10 +495,7 @@ const Form = ({
   const showLimitPriceInput =
     (isScalar && selectedOutcome.id !== INVALID_OUTCOME_ID) || !isScalar;
   const isExpirationCustom =
-    state.expirationDateOption === EXPIRATION_DATE_OPTIONS.CUSTOM;
-  // console.log("Form Passed:", orderState);
-  // console.log("Form State:", state);
-  // console.log("Form Context:", orderProperties);
+    expirationDateOption === EXPIRATION_DATE_OPTIONS.CUSTOM;
   return (
     <div className={Styles.TradingForm}>
       <div className={Styles.Outcome}>
@@ -623,7 +590,7 @@ const Form = ({
                 min={min}
                 placeholder="0.00"
                 tabIndex={tradingTutorial ? -1 : 2}
-                value={state[PRICE]}
+                value={orderPrice}
                 onTouchStart={e =>
                   e.target.scrollIntoView({
                     block: 'nearest',
@@ -670,7 +637,7 @@ const Form = ({
                 min={1}
                 placeholder="0"
                 tabIndex={tradingTutorial ? -1 : 2}
-                value={state.percentage}
+                value={percentage}
                 onTouchStart={e =>
                   e.target.scrollIntoView({
                     block: 'nearest',
@@ -719,9 +686,9 @@ const Form = ({
               placeholder="0.00"
               tabIndex={tradingTutorial ? -1 : 2}
               value={
-                state[EST_DAI]
-                  ? createBigNumber(state[EST_DAI]).toNumber()
-                  : state[EST_DAI]
+                orderDaiEstimate
+                  ? createBigNumber(orderDaiEstimate).toNumber()
+                  : orderDaiEstimate
               }
               onTouchStart={e =>
                 e.target.scrollIntoView({
@@ -794,12 +761,12 @@ const Form = ({
               });
             }}
           />
-          {state.advancedOption === EXPIRATION && (
+          {advancedOption === EXPIRATION && (
             <>
               <div>
                 {!isExpirationCustom && (
                   <TextInput
-                    value={state.fastForwardTime.toString()}
+                    value={fastForwardTime.toString()}
                     placeholder="0"
                     onChange={value => {
                       const addedValue =
@@ -808,7 +775,7 @@ const Form = ({
                         EXPIRATION_DATE,
                         moment
                           .unix(currentTimestamp)
-                          .add(addedValue, state.expirationDateOption)
+                          .add(addedValue, expirationDateOption)
                           .unix()
                       );
                       setState({ ...state, fastForwardTime: addedValue });
@@ -816,7 +783,7 @@ const Form = ({
                   />
                 )}
                 <SquareDropdown
-                  defaultValue={state.expirationDateOption}
+                  defaultValue={expirationDateOption}
                   options={advancedExpirationDateOptions}
                   onChange={value => {
                     const fastForwardTime = state.fastForwardTime || 1;
@@ -849,15 +816,15 @@ const Form = ({
               ) :
               (
                 <span>
-                  {state[EXPIRATION_DATE] &&
+                  {expirationDate &&
                     convertUnixToFormattedDate(
-                      Number(state[EXPIRATION_DATE])
+                      Number(expirationDate)
                     ).formattedLocalShortDateTimeWithTimezone}
                 </span>
               )}
             </>
           )}
-          {state.advancedOption === FILL && (
+          {advancedOption === FILL && (
             <span className={Styles.tipText}>
               Fill Only will fill up to the specified amount. Can be partially
               filled and will cancel the remaining balance.
