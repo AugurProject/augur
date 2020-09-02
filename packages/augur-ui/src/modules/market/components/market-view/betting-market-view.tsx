@@ -24,6 +24,9 @@ import { convertUnixToFormattedDate } from 'utils/format-date';
 import { bulkLoadMarketTradingHistory } from 'modules/markets/actions/market-trading-history-management';
 import { augurSdk } from 'services/augursdk';
 import { SportsGroupCharts } from 'modules/market-charts/sports-group-charts';
+import { MarketComments } from 'modules/market/components/common/comments/market-comments';
+import { useAppStatusStore } from 'modules/app/store/app-status';
+import { getNetworkId } from 'modules/contracts/actions/contractCalls';
 
 export const isMarketView = location => {
   const isGroupPage = parsePath(location.pathname)[0] === MARKET;
@@ -133,89 +136,94 @@ const BettingMarketView = () => {
   const estDateTime = sportsBook?.estTimestamp;
   const startTimeFormatted =
     estDateTime && convertUnixToFormattedDate(estDateTime);
+  const networkId = getNetworkId();
+
   return (
-    <div className={Styles.BettingMarketView}>
-      <div>
-        <HeadingBar
-          market={market}
-          showReportingLabel
-          showCopied={showCopied}
-          setShowCopied={() => setShowCopied(true)}
-        />
-        <span>{header}</span>
+    <>
+      <div className={Styles.BettingMarketView}>
         <div>
-          <PropertyLabel
-            label="matched"
-            value={formatDai(sportsGroup.current?.totalVolume || '0').full}
-            hint={<h4>Matched</h4>}
-            large
+          <HeadingBar
+            market={market}
+            showReportingLabel
+            showCopied={showCopied}
+            setShowCopied={() => setShowCopied(true)}
           />
-          <PropertyLabel
-            label="fee"
-            hint={<h4>Fee</h4>}
-            large
-            value={
-              settlementFeePercent
-                ? formatPercent(settlementFeePercent.formattedValue).full
-                : formatPercent(Number(settlementFee) * 100).full
-            }
+          <span>{header}</span>
+          <div>
+            <PropertyLabel
+              label="matched"
+              value={formatDai(sportsGroup.current?.totalVolume || '0').full}
+              hint={<h4>Matched</h4>}
+              large
+            />
+            <PropertyLabel
+              label="fee"
+              hint={<h4>Fee</h4>}
+              large
+              value={
+                settlementFeePercent
+                  ? formatPercent(settlementFeePercent.formattedValue).full
+                  : formatPercent(Number(settlementFee) * 100).full
+              }
+            />
+            {estDateTime ? (
+              <FullTimeLabel
+                label="Estimated Start Time"
+                time={startTimeFormatted}
+                large
+                hint={<h4>Estimated Start Time</h4>}
+              />
+            ) : (
+              <FullTimeLabel
+                label="Event Expiration Date"
+                time={endTimeFormatted}
+                large
+                hint={<h4>Event Expiration Date</h4>}
+              />
+            )}
+          </div>
+        </div>
+        {sportsGroup.current && (
+          <SportsGroupMarkets sportsGroup={sportsGroup.current} />
+        )}
+        <div>
+          <Subheaders
+            header="creation date"
+            subheader={creationTimeFormatted.formattedUtc}
           />
-          {estDateTime ? (
-            <FullTimeLabel
-              label="Estimated Start Time"
-              time={startTimeFormatted}
-              large
-              hint={<h4>Estimated Start Time</h4>}
-            />
-          ) : (
-            <FullTimeLabel
-              label="Event Expiration Date"
-              time={endTimeFormatted}
-              large
-              hint={<h4>Event Expiration Date</h4>}
-            />
+          <Subheaders
+            header="event expiration date"
+            subheader={endTimeFormatted.formattedUtc}
+            info
+            tooltipText="event expiration date"
+          />
+          {details?.length > 0 && (
+            <Subheaders header="rules" subheader={details} />
           )}
         </div>
-      </div>
-      {sportsGroup.current && (
-        <SportsGroupMarkets sportsGroup={sportsGroup.current} />
-      )}
-      <div>
-        <Subheaders
-          header="creation date"
-          subheader={creationTimeFormatted.formattedUtc}
-        />
-        <Subheaders
-          header="event expiration date"
-          subheader={endTimeFormatted.formattedUtc}
-          info
-          tooltipText="event expiration date"
-        />
-        {details?.length > 0 && (
-          <Subheaders header="rules" subheader={details} />
+        {sportsGroup.current && (
+          <SportsGroupCharts sportsGroup={sportsGroup.current} />
         )}
+        <div>
+          <InfoTicket
+            icon={BettorsIcon}
+            value={String(totalBettors.current)}
+            subheader="Number of bettors on this event"
+          />
+          <InfoTicket
+            icon={BetsIcon}
+            value={String(totalBets.current)}
+            subheader="Bets were placed on this event"
+          />
+          <InfoTicket
+            icon={DaiLogoIcon}
+            value={formatDai(sportsGroup.current?.totalVolume || '0').full}
+            subheader="Is the amount traded on this event"
+          />
+        </div>
       </div>
-      {sportsGroup.current && (
-        <SportsGroupCharts sportsGroup={sportsGroup.current} />
-      )}
-      <div>
-        <InfoTicket
-          icon={BettorsIcon}
-          value={String(totalBettors.current)}
-          subheader="Number of bettors on this event"
-        />
-        <InfoTicket
-          icon={BetsIcon}
-          value={String(totalBets.current)}
-          subheader="Bets were placed on this event"
-        />
-        <InfoTicket
-          icon={DaiLogoIcon}
-          value={formatDai(sportsGroup.current?.totalVolume || '0').full}
-          subheader="Is the amount traded on this event"
-        />
-      </div>
-    </div>
+      <MarketComments marketId={marketId} networkId={networkId} />
+    </>
   );
 };
 
