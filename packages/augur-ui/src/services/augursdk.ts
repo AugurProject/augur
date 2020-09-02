@@ -45,7 +45,7 @@ export class SDK {
 
     this.config = config;
 
-    if(process.env.PARA_DEPLOY_TOKEN_NAME) {
+    if(process.env.PARA_DEPLOY_TOKEN_NAME && process.env.PARA_DEPLOY_TOKEN_NAME !== '') {
       for(const key of Object.keys(config.paraDeploys)) {
         if(config.paraDeploys[key].name === process.env.PARA_DEPLOY_TOKEN_NAME) {
           config.paraDeploy = key;
