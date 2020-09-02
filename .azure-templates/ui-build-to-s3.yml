@@ -13,6 +13,10 @@ parameters:
     displayName: 'Set to true if this is a reporting only build'
     type: string
     default: 'false'
+  - name: paraDeployTokenName
+    displayName: 'The name of the cash contract to use for para deploy. Leave blank for none.'
+    type: string
+    default: ''
 
 jobs:
   - job: ${{ parameters.name }}
@@ -45,6 +49,7 @@ jobs:
           AUGUR_ENV: ${{ parameters.environment }}
           ETHEREUM_NETWORK: ${{ parameters.environment }}
           REPORTING_ONLY: ${{ parameters.reportingOnly }}
+          PARA_DEPLOY_TOKEN_NAME: ${{ parameters.paraDeployTokenName }}
       - script: |
           set -euo pipefail
           python3 -m venv venv && \
