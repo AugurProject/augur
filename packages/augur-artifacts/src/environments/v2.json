@@ -136,7 +136,11 @@
   "warpSync": {
     "enabled": true,
     "autoReport": false,
-    "createCheckpoints": true
+    "createCheckpoints": true,
+    "ipfsEndpoint": {
+      "version": 1,
+      "url": "https://cloudflare-ipfs.com/ipfs/"
+    }
   },
   "ui": {
     "showReloadModal": true,
@@ -151,22 +155,22 @@
   "paraDeploys": {
     "0xf68B100D9Acd8421F7f04E4548a604Ff3f0254E4": {
       "name": "WETH",
-      "uploadBlockNumber": 20625676,
+      "uploadBlockNumber": 20656555,
       "addresses": {
-        "Augur": "0x8ca6f69665c5F5325fd02cC37c6fc8646169D230",
-        "AugurTrading": "0xaCD4aC8E2AdcFdFC5B5db8b6F039b81c6e380E7A",
-        "Universe": "0x1bf67107dBEAf5339Db25F4ee0CF6C8048E76Cd9",
+        "Augur": "0x62E022E5174158804eb0C72d358cdbB597154Da7",
+        "AugurTrading": "0x25263E39822d53ABB9a42EADaca095153C96fFfa",
+        "Universe": "0x62e19c111DB1c9D3cE9F4FACa4ffc89E17834DB6",
         "Cash": "0xf68B100D9Acd8421F7f04E4548a604Ff3f0254E4",
-        "ShareToken": "0x1A6A64A1390cA95c54009eFE5B48D227d041724f",
-        "OICash": "0xF1553A32E1B72c9c3a096E006F1f99Ae56E7022f",
-        "CancelOrder": "0xd6AbE1208ee2cE423d6DEA517d35f13E57E16982",
-        "CreateOrder": "0x6e73d8d13CE9b730c6dDBa4ba3591de879422d4A",
-        "FillOrder": "0x836884a366f0f78A06a47821C078a63b71FB002b",
-        "Orders": "0x06945997F0D40201C6E265299FCd6cF6F3E7D2Ac",
-        "Trade": "0xEe90FBD9323742550ffE262F5A0210CcE20AeA68",
-        "SimulateTrade": "0xC230b9AB9d1792CfC0E56EAE3C9117735B79036E",
-        "ZeroXTrade": "0x316C11490d9180e4187A08E4d3AbAb18eD305FE2",
-        "ProfitLoss": "0x91F481D971E6694EfE171C64Cd7098dafBa89Bb7"
+        "ShareToken": "0x3460C5A6FEE1095B960AF95c091D69a9dFe766c9",
+        "OICash": "0x6C65f767D029C4a606803664569509bc052E2FDf",
+        "CancelOrder": "0xBD1962A35cb2Eb8e5ED10A10348A2A0a65C797Df",
+        "CreateOrder": "0x84359985BCd34f8b31B870E288494ebfB3B3E91A",
+        "FillOrder": "0xb7D95c2976e502F5a06ef904f74f41Fd0ecAbed1",
+        "Orders": "0x1277bFa56CAB7776d6f419D22F932fcE7E556c18",
+        "Trade": "0xC3eE074B88780d180eE40B6aC5E9877d19178737",
+        "SimulateTrade": "0x82de7Da76821fd3f94431883fa77D672b90320d3",
+        "ZeroXTrade": "0xcEa9D393371cf82c3Bb8635AD44B443cd5fFfF42",
+        "ProfitLoss": "0x1a3071Cbc19173742E16f343020c12dF5494F8Df"
       }
     }
   }
