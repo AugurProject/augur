@@ -175,7 +175,10 @@ export class DB {
     'ShareTokenBalanceChanged',
     'OrderEvent',
     'ProfitLossChanged',
-    'MarketVolumeChanged'
+    'MarketVolumeChanged',
+
+    // Not strictly a contract event but needs to be filtered for para logs.
+    'ParsedOrderEvents',
   ];
 
   constructor(
