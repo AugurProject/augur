@@ -16,6 +16,7 @@ import {
   tokenUSDC,
   tokenUSDT,
   MobileNavCloseIcon,
+  ExclamationCircle,
 } from 'modules/common/icons';
 import {
   DefaultButtonProps,
@@ -532,11 +533,26 @@ interface BankrollProps {
   approveModal: Function;
   swapModal: Function;
   token: string;
+  triggerOnRamp: Function;
+  accountType: string;
+  hasBalanceOver50k: boolean;
 }
 
-export const Bankroll = ({ swapModal, approveModal, token }: BankrollProps) => {
+export const Bankroll = ({
+  swapModal,
+  approveModal,
+  token,
+  accountType,
+  triggerOnRamp,
+  hasBalanceOver50k,
+}: BankrollProps) => {
   const [show1InchExchange, setShow1InchExchange] = useState(false);
+  const [showWalletOnRamp, setShowWalletOnRamp] = useState(false);
   const [hasClicked1inchLink, setHasClicked1inchLink] = useState(false);
+
+  const isWalletProvider =
+    [ACCOUNT_TYPES.FORTMATIC, ACCOUNT_TYPES.TORUS].includes(accountType) ||
+    false;
 
   return (
     <div className={Styles.OnboardingBankroll}>
@@ -544,23 +560,56 @@ export const Bankroll = ({ swapModal, approveModal, token }: BankrollProps) => {
         (This step is designed to guide you through the best way to acquire DAI
         for use within Augur){' '}
       </span>
-      <div onClick={() => swapModal()}>$0 - 50k</div>
-      <div onClick={() => setShow1InchExchange(true)}>$50k+</div>
+      <div
+        onClick={() => {
+          if (isWalletProvider) {
+            setShowWalletOnRamp(true);
+            setShow1InchExchange(false);
+          } else {
+            swapModal();
+          }
+        }}
+      >
+        $0 - 50k
+      </div>
+      {showWalletOnRamp && (
+        <div className={Styles.OnboardingBankroll1Inch}>
+          <div>Buy DAI through your ETH wallet</div>
+          <div>This is simpler to use but may have a greater slippage.</div>
+          <PrimaryButton
+            action={() => triggerOnRamp(DAI)}
+            text={`Buy DAI through ${accountType}`}
+          />
+          <div onClick={() => approveModal()}>Continue</div>
+        </div>
+      )}
+      {hasBalanceOver50k && (
+        <div
+          onClick={() => {
+            setShowWalletOnRamp(false);
+            setShow1InchExchange(true);
+          }}
+        >
+          $50k+
+        </div>
+      )}
       {show1InchExchange && (
         <div className={Styles.OnboardingBankroll1Inch}>
           <div>Use 1inch.exchange to convert {token} to DAI</div>
           <div>Convert quantities greater than $50k at a lower slippage.</div>
-          <PrimaryButton
-            action={() => setHasClicked1inchLink(true)}
+          <ExternalLinkButton
             URL={'https://1inch.exchange'}
-            text='1inch.exchange'
+            label="1inch.exchange"
           />
-          {hasClicked1inchLink && <div onClick={() => approveModal()}>Continue</div>}
+          <div onClick={() => approveModal()}>Continue</div>
         </div>
       )}
       <span>
-        Due to current high gas prices it’s recommended you maintain a $50
-        minimum worth of ETH.{' '}
+        <div>{ExclamationCircle}</div>
+        <div>
+          Due to current high gas prices it’s recommended you maintain a $50
+          minimum worth of ETH.
+        </div>
       </span>
     </div>
   );

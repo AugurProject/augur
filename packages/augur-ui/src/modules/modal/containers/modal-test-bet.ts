@@ -12,6 +12,7 @@ import makeQuery from 'modules/routes/helpers/make-query';
 import { MARKET_ID_PARAM_NAME } from 'modules/routes/constants/param-names';
 import { TestBet } from 'modules/modal/common';
 import { updateModal } from '../actions/update-modal';
+import { updateLoginAccount } from 'modules/account/actions/login-account';
 
 const mapStateToProps = (state: AppState) => ({
   isTablet: window.innerWidth <= 1280,
@@ -20,6 +21,7 @@ const mapStateToProps = (state: AppState) => ({
 const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({
   closeModal: () => dispatch(closeModal()),
   goBack: () => dispatch(updateModal({ type: MODAL_APPROVALS })),
+  setCurrentOnboardingStep: (currentOnboardingStep) => dispatch(updateLoginAccount({ currentOnboardingStep })),
 });
 
 const mergeProps = (sP: any, dP: any, oP: any) => ({
@@ -36,9 +38,8 @@ const mergeProps = (sP: any, dP: any, oP: any) => ({
     },
   ],
   currentStep: 7,
-  changeCurrentStep: step => {
-    dP.gotoOnboardingStep(step);
-  },
+  closeModal: dP.closeModal,
+  setCurrentOnboardingStep: dP.setCurrentOnboardingStep,
   buttons: [
     {
       text: sP.isTablet ? 'Continue' : 'Place test bet',

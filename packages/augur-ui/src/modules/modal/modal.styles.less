@@ -552,7 +552,20 @@ div.Onboarding {
     display: flex;
     height: @size-50;
     margin: @size-16 0 0 0;
+    padding: @size-8 @size-12;
     text-align: center;
+
+    > div:first-of-type svg {
+      height: @size-16;
+
+      > circle {
+        fill: @color-primary-text;
+      }
+    }
+
+    > div:last-of-type {
+      margin: @size-8;
+    }
   }
 
   .OnboardingBankroll1Inch {
@@ -561,7 +574,7 @@ div.Onboarding {
     flex-direction: column;
     height: fit-content;
     margin: 0;
-    padding: @size-24;
+    padding: @size-24 @size-24 @size-16 @size-24;
     transform: translateY(-4px);
 
     > div:first-of-type {
@@ -587,7 +600,32 @@ div.Onboarding {
       text-transform: uppercase;
     }
 
-    > a {
+    > button[class*='ExternalLinkButton'] {
+      .text-12-bold;
+
+      background: @color-primary-action;
+      border: none;
+      padding: @size-8 @size-12;
+
+      > a {
+        color: @color-dark-grey;
+      }
+
+      svg > path {
+        stroke: @color-dark-grey;
+      }
+
+      svg > path:nth-child(odd) {
+        fill: @color-dark-grey;
+        stroke: none;
+      }
+
+      p {
+        fill: @color-dark-grey;
+      }
+    }
+
+    > a, > button {
       margin: @size-16 0;
       width: 100%;
 
