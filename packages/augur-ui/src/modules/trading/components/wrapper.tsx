@@ -196,10 +196,7 @@ const Wrapper = ({
     if (!!orderQuantity && !!orderPrice && !isSimulatingTrade) {
       updateTradeTotalCost(orderProperties);
     }
-  }, [
-    orderProperties.orderPrice,
-    orderProperties.orderQuantity
-  ]);
+  }, [orderProperties.orderPrice, orderProperties.orderQuantity]);
 
   function clearOrderForm(wholeForm = true) {
     const expirationDate =
@@ -284,8 +281,12 @@ const Wrapper = ({
           orderDaiEstimate: order.orderDaiEstimate,
           gasCostEst: formattedGasCost,
         });
+        console.log('is it newOrder?', newOrder);
         setTrade(newOrder);
-        checkCanPostOnly(newOrder?.trade?.limitPrice || order.orderPrice, newOrder?.trade?.side || order.selectedNav);
+        checkCanPostOnly(
+          newOrder?.trade?.limitPrice || order.orderPrice,
+          newOrder?.trade?.side || order.selectedNav
+        );
       },
     });
   }
@@ -321,6 +322,7 @@ const Wrapper = ({
         potentialDaiProfit: formatNumber(60),
         side: order.selectedNav,
       };
+      console.log('is it newTrade?', newTrade);
       setTrade(newTrade);
       updateOrderProperties({
         orderDaiEstimate: totalCost ? formattedValue.roundedValue : '',
@@ -386,9 +388,15 @@ const Wrapper = ({
     );
     setIsSimulatingTrade(true);
     await Promise.all(queue).then(results => {
-      setTrade(results[results.length - 1].trade);
-      delete results[results.length - 1].trade;
-      updateOrderProperties(results[results.length - 1]);
+      const info = results[results.length - 1];
+      const newTrade = info.trade;
+      delete info.trade;
+      if (!newTrade) {
+        clearOrderForm(true);
+      } else {
+        setTrade(newTrade);
+        updateOrderProperties({ ...info });
+      }
       setIsSimulatingTrade(false);
     });
   }
@@ -491,7 +499,11 @@ const Wrapper = ({
     orderProperties.orderQuantity === '' &&
     orderProperties.orderDaiEstimate === '';
   const showTip = !hasHistory && orderEmpty;
-  const { potentialDaiLoss, sharesFilled, orderShareProfit } = trade;
+  const {
+    potentialDaiLoss = null,
+    sharesFilled = null,
+    orderShareProfit = null,
+  } = trade;
   const showConfirm =
     potentialDaiLoss?.value > 0 ||
     orderShareProfit?.value > 0 ||
