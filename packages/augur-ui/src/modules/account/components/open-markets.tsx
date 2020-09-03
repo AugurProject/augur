@@ -108,7 +108,7 @@ const OpenMarkets = ({ toggle }: OpenMarketsProps) => {
             showPlusMinus
             value={formatNumber(2)}
             useFull
-            size={SizeTypes.SMALL}
+            size={!isTrading ? SizeTypes.NORMAL : SizeTypes.SMALL}
           />
         </div>
       }
