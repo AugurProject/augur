@@ -139,91 +139,89 @@ const BettingMarketView = () => {
   const networkId = getNetworkId();
 
   return (
-    <>
-      <div className={Styles.BettingMarketView}>
+    <div className={Styles.BettingMarketView}>
+      <div>
+        <HeadingBar
+          market={market}
+          showReportingLabel
+          showCopied={showCopied}
+          setShowCopied={() => setShowCopied(true)}
+        />
+        <span>{header}</span>
         <div>
-          <HeadingBar
-            market={market}
-            showReportingLabel
-            showCopied={showCopied}
-            setShowCopied={() => setShowCopied(true)}
+          <PropertyLabel
+            label="matched"
+            value={formatDai(sportsGroup.current?.totalVolume || '0').full}
+            hint={<h4>Matched</h4>}
+            large
           />
-          <span>{header}</span>
-          <div>
-            <PropertyLabel
-              label="matched"
-              value={formatDai(sportsGroup.current?.totalVolume || '0').full}
-              hint={<h4>Matched</h4>}
+          <PropertyLabel
+            label="fee"
+            hint={<h4>Fee</h4>}
+            large
+            value={
+              settlementFeePercent
+                ? formatPercent(settlementFeePercent.formattedValue).full
+                : formatPercent(Number(settlementFee) * 100).full
+            }
+          />
+          {estDateTime ? (
+            <FullTimeLabel
+              label="Estimated Start Time"
+              time={startTimeFormatted}
               large
+              hint={<h4>Estimated Start Time</h4>}
             />
-            <PropertyLabel
-              label="fee"
-              hint={<h4>Fee</h4>}
+          ) : (
+            <FullTimeLabel
+              label="Event Expiration Date"
+              time={endTimeFormatted}
               large
-              value={
-                settlementFeePercent
-                  ? formatPercent(settlementFeePercent.formattedValue).full
-                  : formatPercent(Number(settlementFee) * 100).full
-              }
+              hint={<h4>Event Expiration Date</h4>}
             />
-            {estDateTime ? (
-              <FullTimeLabel
-                label="Estimated Start Time"
-                time={startTimeFormatted}
-                large
-                hint={<h4>Estimated Start Time</h4>}
-              />
-            ) : (
-              <FullTimeLabel
-                label="Event Expiration Date"
-                time={endTimeFormatted}
-                large
-                hint={<h4>Event Expiration Date</h4>}
-              />
-            )}
-          </div>
-        </div>
-        {sportsGroup.current && (
-          <SportsGroupMarkets sportsGroup={sportsGroup.current} />
-        )}
-        <div>
-          <Subheaders
-            header="creation date"
-            subheader={creationTimeFormatted.formattedUtc}
-          />
-          <Subheaders
-            header="event expiration date"
-            subheader={endTimeFormatted.formattedUtc}
-            info
-            tooltipText="event expiration date"
-          />
-          {details?.length > 0 && (
-            <Subheaders header="rules" subheader={details} />
           )}
         </div>
-        {sportsGroup.current && (
-          <SportsGroupCharts sportsGroup={sportsGroup.current} />
-        )}
-        <div>
-          <InfoTicket
-            icon={BettorsIcon}
-            value={String(totalBettors.current)}
-            subheader="Number of bettors on this event"
-          />
-          <InfoTicket
-            icon={BetsIcon}
-            value={String(totalBets.current)}
-            subheader="Bets were placed on this event"
-          />
-          <InfoTicket
-            icon={DaiLogoIcon}
-            value={formatDai(sportsGroup.current?.totalVolume || '0').full}
-            subheader="Is the amount traded on this event"
-          />
-        </div>
-        <MarketComments marketId={marketId} networkId={networkId} />
       </div>
-    </>
+      {sportsGroup.current && (
+        <SportsGroupMarkets sportsGroup={sportsGroup.current} />
+      )}
+      <div>
+        <Subheaders
+          header="creation date"
+          subheader={creationTimeFormatted.formattedUtc}
+        />
+        <Subheaders
+          header="event expiration date"
+          subheader={endTimeFormatted.formattedUtc}
+          info
+          tooltipText="event expiration date"
+        />
+        {details?.length > 0 && (
+          <Subheaders header="rules" subheader={details} />
+        )}
+      </div>
+      {sportsGroup.current && (
+        <SportsGroupCharts sportsGroup={sportsGroup.current} />
+      )}
+      <div>
+        <InfoTicket
+          icon={BettorsIcon}
+          value={String(totalBettors.current)}
+          subheader="Number of bettors on this event"
+        />
+        <InfoTicket
+          icon={BetsIcon}
+          value={String(totalBets.current)}
+          subheader="Bets were placed on this event"
+        />
+        <InfoTicket
+          icon={DaiLogoIcon}
+          value={formatDai(sportsGroup.current?.totalVolume || '0').full}
+          subheader="Is the amount traded on this event"
+        />
+      </div>
+      <MarketComments marketId={marketId} networkId={networkId} />
+    </div>
   );
 };
 
