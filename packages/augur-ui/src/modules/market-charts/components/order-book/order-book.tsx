@@ -99,6 +99,17 @@ const OrderBookSide = ({
   useEffect(() => {
     side.current.scrollTop = type === BIDS ? 0 : side.current.scrollHeight;
   }, [processedOrderbook[type], side.current.clientHeight]);
+  const buttonProps = isAsks
+    ? {
+        text: ADD_OFFER,
+        title: ADD_OFFER,
+        action: () => updateOrderProperties(EMPTY_SELL),
+      }
+    : {
+        text: ADD_BID,
+        title: ADD_BID,
+        action: () => updateOrderProperties(EMPTY_BUY),
+      };
 
   return (
     <div
@@ -110,42 +121,28 @@ const OrderBookSide = ({
     >
       {orderBookOrders.length === 0 && (
         <div className={Styles.NoOrders}>
-          {orderbookLoading && LOADING}
-          {!orderbookLoading && !showButtons && (isAsks ? ADD_OFFER : ADD_BID)}
-          {!orderbookLoading &&
-            showButtons &&
-            (isAsks ? (
-              <CancelTextButton
-                text={ADD_OFFER}
-                title={ADD_OFFER}
-                action={() => updateOrderProperties(EMPTY_SELL)}
-              />
+          {orderbookLoading ? (
+            LOADING
+          ) : !showButtons ? (
+            isAsks ? (
+              ADD_OFFER
             ) : (
-              <CancelTextButton
-                text={ADD_BID}
-                title={ADD_BID}
-                action={() => updateOrderProperties(EMPTY_BUY)}
-              />
-            ))}
+              ADD_BID
+            )
+          ) : (
+            <CancelTextButton {...buttonProps} />
+          )}
         </div>
       )}
-      {orderBookOrders.map((order: QuantityOrderBookOrder, i) => {
-        const hasSize = order.mySize !== '0';
-        const shouldEncompass =
-          (hoveredOrderIndex !== null &&
-            isAsks &&
-            hoveredSide === ASKS &&
-            i > hoveredOrderIndex) ||
-          (hoveredOrderIndex !== null &&
-            !isAsks &&
-            hoveredSide === BIDS &&
-            i < hoveredOrderIndex);
-        const isHovered = i === hoveredOrderIndex && hoveredSide === type;
-        const mySize = formatMarketShares(marketType, order.mySize)
+      {orderBookOrders.map(({ mySize, cumulativeShares: orderQuantity, shares, price: orderPrice, quantityScale, percent }: QuantityOrderBookOrder, i) => {
+        const isSideHovered = hoveredSide === type;
+        const shouldEncompass = i < hoveredOrderIndex && isSideHovered;
+        const isHovered = i === hoveredOrderIndex && isSideHovered;
+        const mySizeFormatted = formatMarketShares(marketType, mySize)
           .formattedValue;
         return (
           <div
-            key={order.cumulativeShares + i}
+            key={`${orderQuantity}${i}`}
             className={classNames({
               [Styles.AskSide]: isAsks,
               [Styles.Hover]: isHovered,
@@ -155,8 +152,8 @@ const OrderBookSide = ({
             onMouseLeave={() => setHovers(null, null)}
             onClick={() =>
               updateOrderProperties({
-                orderPrice: order.price,
-                orderQuantity: order.cumulativeShares,
+                orderPrice,
+                orderQuantity,
                 selectedNav: isAsks ? BUY : SELL,
               })
             }
@@ -164,23 +161,23 @@ const OrderBookSide = ({
             <div>
               <div
                 className={classNames({ [Styles.Neg]: isAsks })}
-                style={{ width: 100 - order.quantityScale + '%' }}
+                style={{ width: `${100 - quantityScale}%` }}
               />
             </div>
             <HoverValueLabel
-              value={formatMarketShares(marketType, order.shares, opts)}
+              value={formatMarketShares(marketType, shares, opts)}
               useFull
             />
             {isScalar && !usePercent ? (
-              <HoverValueLabel value={formatDai(order.price)} />
+              <HoverValueLabel value={formatDai(orderPrice)} />
             ) : (
               <span>
                 {usePercent
-                  ? order.percent
-                  : createBigNumber(order.price).toFixed(pricePrecision)}
+                  ? percent
+                  : createBigNumber(orderPrice).toFixed(pricePrecision)}
               </span>
             )}
-            <span>{hasSize ? mySize : '—'}</span>
+            <span>{mySize !== '0' ? mySizeFormatted : '—'}</span>
           </div>
         );
       })}
