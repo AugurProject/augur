@@ -120,6 +120,8 @@ export const EXTERNAL_CONTRACTS = [
     // Token Proxying
     'ERC20Proxy1155',
     'ERC20Proxy1155Nexus',
+    // AMM
+    'AMMExchange',
 ];
 
 export const REGISTERED_EXTERNAL_CONTRACTS = [
