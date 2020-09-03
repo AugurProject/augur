@@ -57,10 +57,10 @@ const PriceHistory = ({
 }: PriceHistoryProps) => {
   const { theme, timeFormat } = useAppStatusStore();
   const container = useRef(null);
+  const [forceRender, setForceRender] = useState(false);
   const is24hr = timeFormat === TIME_FORMATS.TWENTY_FOUR;
   const isTrading = theme === THEMES.TRADING;
   const isTradingTutorial = marketId === TRADING_TUTORIAL;
-  const [forceRender, setForceRender] = useState(false);
   const {
     maxPriceBigNumber: maxPrice,
     minPriceBigNumber: minPrice,
@@ -68,7 +68,7 @@ const PriceHistory = ({
     scalarDenomination,
   } = market;
   const isScalar = marketType === SCALAR;
-  const bucketedPriceTimeSeries: BucketedPriceTimeSeries = !isTradingTutorial
+  const { priceTimeArray }: BucketedPriceTimeSeries = !isTradingTutorial
     ? getBucketedPriceTimeSeries(marketId, rangeValue)
     : { priceTimeArray: [] };
 
@@ -95,14 +95,11 @@ const PriceHistory = ({
       scalarDenomination,
     ]
   );
-  const { priceTimeArray } = bucketedPriceTimeSeries;
   useMemo(() => {
-    console.log('Use Memo Hit.', container.current);
     if (container.current) {
       const chart = Highcharts.charts.find(
         chart => chart?.renderTo === container.current
       );
-      console.log("doing something...", chart, priceTimeArray.length === 0);
       const series =
         (priceTimeArray.length === 0 || isArchived)
           ? []
@@ -110,12 +107,6 @@ const PriceHistory = ({
       if (!chart || chart?.renderTo !== container.current) {
         Highcharts.stockChart(container.current, { ...options, series });
       } else {
-        console.log(
-          "redraw...",
-          chart,
-          series,
-          !!(priceTimeArray.length === 0 || isArchived)
-        );
         series?.forEach((seriesObj, index) => {
           if (chart.series[index]) {
             chart.series[index].update(seriesObj, false);
@@ -140,6 +131,7 @@ const PriceHistory = ({
       chart => chart?.renderTo === container.current
     );
     if (!chart || chart?.renderTo !== container.current) {
+      // needs to be done because container ref is null on first load.
       setForceRender(true);
     }
     return () => {
