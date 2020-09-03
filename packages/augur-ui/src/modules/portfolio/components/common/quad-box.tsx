@@ -31,8 +31,11 @@ export interface QuadBoxProps {
   extend?: boolean;
 }
 
-const QuadBoxSearch = ({ search, setSearch }) => {
-  const [focus, setFocus] = useState(false);
+const QuadBoxSearch = ({ search, setSearch, focus, setFocus }) => {
+  const closeSearchBar = () => {
+    setFocus(!focus);
+    setSearch('');
+  };
 
   return setSearch ? (
     <div
@@ -47,19 +50,22 @@ const QuadBoxSearch = ({ search, setSearch }) => {
         onChange={(event) => setSearch(event.target.value)}
       />
       <span>{SearchIcon}</span>
-      <button onClick={() => setFocus(!focus)}>
+      <button onClick={() => closeSearchBar()}>
         {focus ? XIcon : SearchIcon}
       </button>
     </div>
   ) : null;
 };
 
-const QuadBoxSort = ({ sortByOptions, updateDropdown }) => {
+const QuadBoxSort = ({ sortByOptions, updateDropdown, focus }) => {
   return sortByOptions && updateDropdown ? (
     <SquareDropdown
       defaultValue={sortByOptions[0].value}
       options={sortByOptions}
       onChange={updateDropdown}
+      className={classNames({
+        [Styles.Hide]: focus,
+      })}
     />
   ) : null;
 };
@@ -102,6 +108,7 @@ const QuadBox = ({
   title,
   headerComplement,
   subheader,
+  footer,
   content,
   customClass,
   search,
@@ -118,6 +125,7 @@ const QuadBox = ({
   const isTrading = theme === THEMES.TRADING;
   const nothingInTheHeader =
     !title && !headerComplement && !setSearch && !updateDropdown;
+  const [focus, setFocus] = useState(false);
 
   return (
     <div
@@ -152,8 +160,8 @@ const QuadBox = ({
             [Styles.HideToggleButton]: !toggle,
           })}>
             {headerComplement && headerComplement}
-            {isTrading && <QuadBoxSort sortByOptions={sortByOptions} updateDropdown={updateDropdown} />}
-            <QuadBoxSearch search={search} setSearch={setSearch} />
+            {isTrading && <QuadBoxSort sortByOptions={sortByOptions} updateDropdown={updateDropdown} focus={focus} />}
+            <QuadBoxSearch search={search} setSearch={setSearch} focus={focus} setFocus={setFocus} />
             <ToggleExtendButton toggle={toggle} />
           </div>
         </div>
@@ -164,7 +172,14 @@ const QuadBox = ({
         >
           {subheader && subheader}
         </div>
-        <div className={Styles.Content}>{content}</div>
+        <div className={Styles.Content}>
+          {content}
+        </div>
+        {footer && (
+          <div className={Styles.Footer}>
+            {footer}
+          </div>
+        )}
       </div>
     </div>
   );

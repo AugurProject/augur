@@ -5,7 +5,7 @@
   height: @size-36;
   display: grid;
   grid-template-columns: @size-28;
-  padding: @size-1 0;
+  padding: @size-1 0 @size-1 @size-16;
 
   > input {
     .text-14;
@@ -147,6 +147,7 @@
     background: var(--color-module-background);
     border: @size-1 solid var(--color-dark-grey);
     border-radius: @border-radius-default;
+    overflow: hidden;
 
     .Header {
       align-items: center;
@@ -154,7 +155,7 @@
       border-bottom: @size-1 solid var(--color-dark-grey);
       display: flex;
       flex-direction: row;
-      padding: 0 @size-10 0 @size-16;
+      padding: 0 0 0 @size-16;
       max-height: @size-40;
       min-height: @size-40;
 
@@ -174,12 +175,9 @@
         flex-direction: row;
         justify-content: flex-end;
 
-        // search
-        > div:first-of-type {
-        }
-
-        // filters
-        > div:nth-of-type(2) {
+        > button:last-of-type {
+          padding: @size-12;
+          margin-left: @size-12;
         }
       }
 
@@ -217,6 +215,7 @@
       display: flex;
       flex: 1;
       flex-direction: column;
+      overflow-y: auto;
 
       > span {
         .text-12;
@@ -252,6 +251,10 @@
       }
     }
   }
+}
+
+.Hide {
+  display: none;
 }
 
 :root[theme='BETTING'],

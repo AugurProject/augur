@@ -148,7 +148,8 @@ class Dropdown extends Component<DropdownProps, DropdownState> {
       this.props.disabled !== nextProps.disabled ||
       this.props.staticLabel !== nextProps.staticLabel ||
       this.props.defaultValue !== nextProps.defaultValue ||
-      JSON.stringify(this.props.options) !== JSON.stringify(nextProps.options)
+      JSON.stringify(this.props.options) !== JSON.stringify(nextProps.options) ||
+      this.props.className !== nextProps.className
     ) {
       return true;
     }
@@ -421,7 +422,7 @@ export const PillSelection = ({
       onChange(option.id);
     }
   };
-  
+
   const renderButton = (option: SelectionOption): React.ReactNode => (
     <li
       className={classNames({
@@ -476,7 +477,7 @@ export const Tab = ({
   );
 
   return (
-    <ul 
+    <ul
       className={classNames(Styles.Tab, {
         [Styles.TabLarge]: large,
         [Styles.TabSmall]: small,
