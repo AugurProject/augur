@@ -199,10 +199,6 @@ interface SizableValueLabelProps extends ValueLabelProps {
   highlight?: boolean;
 }
 
-interface HoverValueLabelState {
-  hover: boolean;
-}
-
 export interface TextLabelProps {
   text: string;
   keyId?: string;
@@ -722,11 +718,17 @@ export const TextLabel = ({ text, keyId }: TextLabelProps) => {
   );
 };
 
+interface HoverValueLabelProps {
+  value?: FormattedNumber | null;
+  showDenomination?: boolean;
+  useFull?: boolean;
+}
+
 export const HoverValueLabel = ({
     value = null,
     showDenomination = false,
     useFull = false
-  }) => {
+  }: HoverValueLabelProps) => {
   const [hover, setHover] = useState(false);
   if (value === null) return <span />;
 

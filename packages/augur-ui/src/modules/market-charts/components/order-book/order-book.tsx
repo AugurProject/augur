@@ -93,12 +93,13 @@ const OrderBookSide = ({
   const isScalar = marketType === SCALAR;
   const opts = { removeComma: true };
   const orderBookOrders = processedOrderbook[type] || [];
-  const isScrollable =
-    side.current && orderBookOrders.length * 20 >= side.current.clientHeight;
+  const { clientHeight, scrollHeight } = side.current;
+  const isScrollable = orderBookOrders.length * 20 >= clientHeight;
 
   useEffect(() => {
-    side.current.scrollTop = type === BIDS ? 0 : side.current.scrollHeight;
-  }, [processedOrderbook[type], side.current.clientHeight]);
+    side.current.scrollTop = !isAsks ? 0 : scrollHeight;
+  }, [processedOrderbook[type], clientHeight]);
+
   const buttonProps = isAsks
     ? {
         text: ADD_OFFER,
@@ -124,63 +125,71 @@ const OrderBookSide = ({
           {orderbookLoading ? (
             LOADING
           ) : !showButtons ? (
-            isAsks ? (
-              ADD_OFFER
-            ) : (
-              ADD_BID
-            )
+            buttonProps.text
           ) : (
             <CancelTextButton {...buttonProps} />
           )}
         </div>
       )}
-      {orderBookOrders.map(({ mySize, cumulativeShares: orderQuantity, shares, price: orderPrice, quantityScale, percent }: QuantityOrderBookOrder, i) => {
-        const isSideHovered = hoveredSide === type;
-        const shouldEncompass = i < hoveredOrderIndex && isSideHovered;
-        const isHovered = i === hoveredOrderIndex && isSideHovered;
-        const mySizeFormatted = formatMarketShares(marketType, mySize)
-          .formattedValue;
-        return (
-          <div
-            key={`${orderQuantity}${i}`}
-            className={classNames({
-              [Styles.AskSide]: isAsks,
-              [Styles.Hover]: isHovered,
-              [Styles.EncompassedHover]: shouldEncompass,
-            })}
-            onMouseEnter={() => setHovers(i, type)}
-            onMouseLeave={() => setHovers(null, null)}
-            onClick={() =>
-              updateOrderProperties({
-                orderPrice,
-                orderQuantity,
-                selectedNav: isAsks ? BUY : SELL,
-              })
-            }
-          >
-            <div>
-              <div
-                className={classNames({ [Styles.Neg]: isAsks })}
-                style={{ width: `${100 - quantityScale}%` }}
+      {orderBookOrders.map(
+        (
+          {
+            mySize,
+            cumulativeShares: orderQuantity,
+            shares,
+            price: orderPrice,
+            quantityScale,
+            percent,
+          }: QuantityOrderBookOrder,
+          i
+        ) => {
+          const isSideHovered = hoveredSide === type;
+          const shouldEncompass = i < hoveredOrderIndex && isSideHovered;
+          const isHovered = i === hoveredOrderIndex && isSideHovered;
+          const mySizeFormatted = formatMarketShares(marketType, mySize)
+            .formattedValue;
+          return (
+            <div
+              key={`${orderQuantity}${i}`}
+              className={classNames({
+                [Styles.AskSide]: isAsks,
+                [Styles.Hover]: isHovered,
+                [Styles.EncompassedHover]: shouldEncompass,
+              })}
+              onMouseEnter={() => setHovers(i, type)}
+              onMouseLeave={() => setHovers(null, null)}
+              onClick={() =>
+                updateOrderProperties({
+                  orderPrice,
+                  orderQuantity,
+                  selectedNav: isAsks ? BUY : SELL,
+                })
+              }
+            >
+              <div>
+                <div
+                  className={classNames({ [Styles.Neg]: isAsks })}
+                  style={{ width: `${100 - quantityScale}%` }}
+                />
+              </div>
+              <HoverValueLabel
+                value={formatMarketShares(marketType, shares, opts)}
+                useFull
               />
+              {isScalar && !usePercent ? (
+                <HoverValueLabel value={formatDai(orderPrice)} />
+              ) : (
+                <span>
+                  {usePercent
+                    ? percent
+                    : createBigNumber(orderPrice).toFixed(pricePrecision)}
+                </span>
+              )}
+              <span>{mySize !== '0' ? mySizeFormatted : '—'}</span>
             </div>
-            <HoverValueLabel
-              value={formatMarketShares(marketType, shares, opts)}
-              useFull
-            />
-            {isScalar && !usePercent ? (
-              <HoverValueLabel value={formatDai(orderPrice)} />
-            ) : (
-              <span>
-                {usePercent
-                  ? percent
-                  : createBigNumber(orderPrice).toFixed(pricePrecision)}
-              </span>
-            )}
-            <span>{mySize !== '0' ? mySizeFormatted : '—'}</span>
-          </div>
-        );
-      })}
+          );
+        }
+      )}
     </div>
   );
 };
