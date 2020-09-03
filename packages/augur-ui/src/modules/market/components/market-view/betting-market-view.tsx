@@ -25,7 +25,6 @@ import { bulkLoadMarketTradingHistory } from 'modules/markets/actions/market-tra
 import { augurSdk } from 'services/augursdk';
 import { SportsGroupCharts } from 'modules/market-charts/sports-group-charts';
 import { MarketComments } from 'modules/market/components/common/comments/market-comments';
-import { useAppStatusStore } from 'modules/app/store/app-status';
 import { getNetworkId } from 'modules/contracts/actions/contractCalls';
 
 export const isMarketView = location => {
