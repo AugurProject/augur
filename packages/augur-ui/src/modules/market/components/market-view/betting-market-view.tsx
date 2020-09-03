@@ -221,8 +221,8 @@ const BettingMarketView = () => {
             subheader="Is the amount traded on this event"
           />
         </div>
+        <MarketComments marketId={marketId} networkId={networkId} />
       </div>
-      <MarketComments marketId={marketId} networkId={networkId} />
     </>
   );
 };
