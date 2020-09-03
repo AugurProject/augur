@@ -101,7 +101,7 @@ const OpenMarkets = ({ toggle }: OpenMarketsProps) => {
       toggle={toggle}
       bottomBarContent={
         markets.length === 0 ? null : <div className={Styles.BottomBar}>
-          <span>24hr {isTrading && ' change'}</span>
+          <span>24hr {!isTrading && ' change'}</span>
           <MovementLabel
             showIcon
             showBracket={isTrading}
