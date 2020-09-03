@@ -46,7 +46,6 @@ const MarketOutcomesList = ({
   } = market;
  
   const outcomesFormattedSelected = selectSortedMarketOutcomes(marketType, outcomesFormatted);
-
   return (
     <section className={Styles.OutcomesList}>
       {!popUp && (

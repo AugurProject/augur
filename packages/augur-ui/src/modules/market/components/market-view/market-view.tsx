@@ -423,6 +423,7 @@ const MarketView = ({
       });
     }
   }
+
   return (
     <div
       ref={node}
@@ -643,6 +644,7 @@ const MarketView = ({
                     market={market}
                     orderBook={outcomeOrderBook}
                     extendOutcomesList={extendOutcomesList}
+                    extendOrders={extendOrders}
                   />
                 </div>
                 <div className={OrdersPaneStyle}>

@@ -12,7 +12,8 @@ export const getBucketedPriceTimeSeries = (marketId, rangeValue = 0) => {
   const { marketInfos, marketTradingHistory } = Markets.get();
   const marketData = marketInfos[marketId];
   const marketTradeHistory = marketTradingHistory[marketId];
-  if (marketData === null || !marketData.creationTime) return {};
+  if (marketData === null || !marketData.creationTime) return { priceTimeSeries: {},
+priceTimeArray: [] };
   const {
     blockchain: { currentAugurTimestamp },
   } = AppStatus.get();
@@ -69,9 +70,8 @@ const bucketedPriceTimeSeriesInternal = (
       bnCreationTimestamp.plus(createBigNumber(index).times(bucket)).toNumber()
     )
   );
-
   timeBuckets.push(currentTimestamp);
-  const priceTimeSeries = outcomes.reduce((p, o) => {
+  const priceTimeArray = outcomes.reduce((p, o) => {
     const lastTrade =
       o.priceTimeSeries.length > 0 &&
       o.priceTimeSeries[o.priceTimeSeries.length - 1];
@@ -90,11 +90,12 @@ const bucketedPriceTimeSeriesInternal = (
         timestamp: currentTimestamp,
       },
     ];
-    p[o.id] = splitTradesByTimeBucket(priceTimeSeries, timeBuckets);
+    // p[o.id] = splitTradesByTimeBucket(priceTimeSeries, timeBuckets);
+    p.push(splitTradesByTimeBucket(priceTimeSeries, timeBuckets));
     return p;
-  }, {});
+  }, [])
   return {
-    priceTimeSeries,
+    priceTimeArray,
   };
 };
 

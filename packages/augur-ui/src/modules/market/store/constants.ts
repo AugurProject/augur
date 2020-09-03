@@ -1,8 +1,7 @@
 import { BUY, TUTORIAL_QUANTITY, TUTORIAL_PRICE, LONG, TRADING_TUTORIAL, PUBLICFILLORDER, CATEGORICAL, TRADING_TUTORIAL_OUTCOMES, TUTORIAL_TRADING_HISTORY, TUTORIAL_ORDER_BOOK, TUTORIAL_OUTCOME } from "modules/common/constants";
 import { createBigNumber } from "utils/create-big-number";
 import { formatDai, formatShares } from "utils/format-number";
-import deepClone from "utils/deep-clone";
-import { NewMarket, IndividualOutcomeOrderBook } from "modules/types";
+import { IndividualOutcomeOrderBook } from "modules/types";
 import { EMPTY_STATE } from "modules/create-market/constants";
 import { convertUnixToFormattedDate } from "utils/format-date";
 import { TXEventName } from '@augurproject/sdk-lite';

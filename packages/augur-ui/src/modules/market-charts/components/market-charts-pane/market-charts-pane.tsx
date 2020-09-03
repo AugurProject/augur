@@ -3,7 +3,7 @@ import Media from 'react-media';
 import { useLocation } from 'react-router';
 import ModuleTabs from 'modules/market/components/common/module-tabs/module-tabs';
 import ModulePane from 'modules/market/components/common/module-tabs/module-pane';
-import PriceHistory from "modules/market-charts/components/price-history/price-history";
+import PriceHistory from 'modules/market-charts/components/price-history/price-history';
 import { SMALL_MOBILE, ZERO } from 'modules/common/constants';
 
 import { Candlestick } from 'modules/market-charts/components/candlestick/candlestick';
@@ -20,6 +20,7 @@ interface MarketChartsPaneProps {
   toggle: Function;
   orderBook: IndividualOutcomeOrderBook;
   extendOutcomesList: boolean;
+  extendOrders: boolean;
   isArchived?: boolean;
 }
 
@@ -31,6 +32,7 @@ const MarketChartsPane = ({
   isArchived,
   extendOutcomesList,
   orderBook,
+  extendOrders = false,
 }: MarketChartsPaneProps) => {
   const {
     blockchain: { currentAugurTimestamp: currentTimestamp },
@@ -38,82 +40,70 @@ const MarketChartsPane = ({
   const location = useLocation();
   const { creationTime, minPriceBigNumber, maxPriceBigNumber } = market;
   const daysPassed = getMarketAgeInDays(creationTime, currentTimestamp);
-  const { preview } = getTutorialPreview(marketId, location);
+  const { preview: initialLiquidity } = getTutorialPreview(marketId, location);
   const minPrice = minPriceBigNumber || ZERO;
   const maxPrice = maxPriceBigNumber || ZERO;
   const [hoveredDepth, updateHoveredDepth] = useState([]);
-  const [hoveredPrice, updateHoveredPrice] = useState(null);
+  const [hoveredPriceProp, updateHoveredPrice] = useState(null);
   const shared = { marketId, selectedOutcomeId, isArchived };
-
+  const onClickCallback = () => extendOutcomesList && toggle();
+  const show = !initialLiquidity;
   return (
     <Media query={SMALL_MOBILE}>
       {matches =>
         matches ? (
-          <ModuleTabs selected={preview ? 2 : 0} fillForMobile>
+          <ModuleTabs selected={show ? 0 : 2} fillForMobile>
             <ModulePane label="Candlesticks">
-              {!preview && (
+              {show && (
                 <Candlestick
-                  {...shared}
-                  minPrice={minPrice}
-                  maxPrice={maxPrice}
-                  daysPassed={daysPassed}
+                  {...{ ...shared, minPrice, maxPrice, daysPassed }}
                 />
               )}
             </ModulePane>
             <ModulePane label="Market Depth">
               <DepthChart
-                {...shared}
-                hoveredPriceProp={hoveredPrice}
-                hoveredDepth={hoveredDepth}
-                updateHoveredDepth={updateHoveredDepth}
-                updateHoveredPrice={updateHoveredPrice}
-                market={market}
-                initialLiquidity={preview}
-                orderBook={orderBook}
+                {...{
+                  ...shared,
+                  hoveredDepth,
+                  hoveredPriceProp,
+                  updateHoveredDepth,
+                  updateHoveredPrice,
+                  market,
+                  orderBook,
+                  initialLiquidity,
+                }}
               />
             </ModulePane>
           </ModuleTabs>
         ) : (
-          <ModuleTabs selected={preview ? 2 : 0} showToggle toggle={toggle}>
-            <ModulePane
-              label="Price History"
-              onClickCallback={() => {
-                extendOutcomesList && toggle();
-              }}
-            >
-              {!preview && <PriceHistory {...shared} daysPassed={daysPassed} />}
+          <ModuleTabs selected={show ? 0 : 2} showToggle toggle={toggle}>
+            <ModulePane label="Price History" onClickCallback={onClickCallback}>
+              {show && !extendOrders && (
+                <PriceHistory {...{ ...shared, market, daysPassed }} />
+              )}
             </ModulePane>
-            <ModulePane
-              label="Candlesticks"
-              onClickCallback={() => {
-                extendOutcomesList && toggle();
-              }}
-            >
-              {!preview && (
+            <ModulePane label="Candlesticks" onClickCallback={onClickCallback}>
+              {show && !extendOrders && (
                 <Candlestick
-                  {...shared}
-                  minPrice={minPrice}
-                  maxPrice={maxPrice}
-                  daysPassed={daysPassed}
+                  {...{ ...shared, minPrice, maxPrice, daysPassed }}
                 />
               )}
             </ModulePane>
-            <ModulePane
-              label="Market Depth"
-              onClickCallback={() => {
-                extendOutcomesList && toggle();
-              }}
-            >
-              <DepthChart
-                {...shared}
-                hoveredPriceProp={hoveredPrice}
-                hoveredDepth={hoveredDepth}
-                updateHoveredDepth={updateHoveredDepth}
-                updateHoveredPrice={updateHoveredPrice}
-                market={market}
-                initialLiquidity={preview}
-                orderBook={orderBook}
-              />
+            <ModulePane label="Market Depth" onClickCallback={onClickCallback}>
+              {!extendOrders && (
+                <DepthChart
+                  {...{
+                    ...shared,
+                    hoveredDepth,
+                    hoveredPriceProp,
+                    updateHoveredDepth,
+                    updateHoveredPrice,
+                    market,
+                    orderBook,
+                    initialLiquidity,
+                  }}
+                />
+              )}
             </ModulePane>
           </ModuleTabs>
         )

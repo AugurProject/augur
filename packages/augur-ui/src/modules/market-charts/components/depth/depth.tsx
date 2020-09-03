@@ -24,7 +24,7 @@ interface DepthChartProps {
   marketMin: BigNumber;
   marketMax: BigNumber;
   hasOrders: boolean;
-  hoveredPrice?: any;
+  hoveredPriceProp?: any;
 }
 
 const ZOOM_LEVELS = [1, 0.8, 0.6, 0.4, 0.2];
@@ -73,7 +73,7 @@ const DepthChart = ({
   updateHoveredDepth,
   orderBook,
   market,
-  hoveredPrice,
+  hoveredPriceProp,
 }) => {
   const depthChartThis = useRef();
   const depthContainerThis = useRef(null);
@@ -107,7 +107,7 @@ const DepthChart = ({
     containerHeightThis?.current
   );
   const nearestHover = nearestCompletelyFillingOrder(
-    hoveredPrice,
+    hoveredPriceProp,
     marketDepth,
     marketMin,
     marketMax
@@ -146,7 +146,7 @@ const DepthChart = ({
 
   useEffect(() => {
     drawCrosshairs({
-      hoveredPrice,
+      hoveredPriceProp,
       pricePrecision,
       marketDepth,
       marketMin,
@@ -341,7 +341,7 @@ const DepthChart = ({
       });
 
       drawCrosshairs({
-        hoveredPrice,
+        hoveredPriceProp,
         pricePrecision,
         marketDepth,
         marketMin,
@@ -357,7 +357,7 @@ const DepthChart = ({
   function drawCrosshairs(options) {
     if (depthChartThis.current) {
       const {
-        hoveredPrice,
+        hoveredPriceProp,
         marketDepth,
         marketMin,
         marketMax,
@@ -368,13 +368,13 @@ const DepthChart = ({
       const yScale = yScaleThis.current;
       const containerHeight = containerHeightThis.current;
       const containerWidth = containerWidthThis.current;
-      if (hoveredPrice === null) {
+      if (hoveredPriceProp === null) {
         d3.select('#crosshairs').style('display', 'none');
         d3.select('#hovered_tooltip_container').style('display', 'none');
         updateHoveredDepth([]);
       } else {
         const nearestFillingOrder = nearestCompletelyFillingOrder(
-          hoveredPrice,
+          hoveredPriceProp,
           marketDepth,
           marketMin,
           marketMax
@@ -385,8 +385,8 @@ const DepthChart = ({
         d3.select('#crosshairs').style('display', null);
 
         if (
-          createBigNumber(hoveredPrice).gte(marketMin) &&
-          createBigNumber(hoveredPrice).lte(marketMax)
+          createBigNumber(hoveredPriceProp).gte(marketMin) &&
+          createBigNumber(hoveredPriceProp).lte(marketMax)
         ) {
           d3.select('#crosshairX')
             .attr('x1', xScale(nearestFillingOrder[1]))
