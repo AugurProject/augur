@@ -251,7 +251,7 @@ export const MarketOutcome = ({
       alert: showInvalidAlert,
       action: e => {
         updateSelectedOutcome(outcome.id, true);
-        Trading.actions.updateOrderProperties({
+        Trading.actions().updateOrderProperties({
           orderPrice: topBidPrice?.value?.toString(),
           orderQuantity: topBidShares?.value?.toString(),
           selectedNav: SELL,
@@ -268,7 +268,7 @@ export const MarketOutcome = ({
       usePercent: !!topAskPrice.percent,
       action: e => {
         updateSelectedOutcome(outcome.id, true);
-        Trading.actions.updateOrderProperties({
+        Trading.actions().updateOrderProperties({
           orderPrice: topAskPrice?.value?.toString(),
           orderQuantity: topAskShares?.value?.toString(),
           selectedNav: BUY,
@@ -564,7 +564,7 @@ export const PositionRow = ({
   showPercent,
 }: PositionRowProps) => {
   const { marketInfos } = useMarketsStore();
-  const { updateOrderProperties } = Trading.actions;
+  const { updateOrderProperties } = Trading.actions();
   let { lastPrice, purchasePrice } = position;
 
   const market = marketInfos[position.marketId];

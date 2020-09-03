@@ -84,7 +84,7 @@ const OrderBookSide = ({
   orderbookLoading,
   usePercent,
 }: OrderBookSideProps) => {
-  const { updateOrderProperties } = Trading.actions;
+  const { updateOrderProperties } = Trading.actions();
   const side = useRef({
     current: { clientHeight: 0, scrollHeight: 0, scrollTop: 0 },
   });

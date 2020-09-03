@@ -963,7 +963,7 @@ function attachHoverClickHandlers(options) {
         createBigNumber(orderPrice).gte(marketMin) &&
         createBigNumber(orderPrice).lte(marketMax)
       ) {
-        Trading.actions.updateOrderProperties({
+        Trading.actions().updateOrderProperties({
           orderQuantity: nearestFillingOrder[0],
           orderPrice: nearestFillingOrder[1],
           selectedNav: nearestFillingOrder[4] === BIDS ? SELL : BUY,

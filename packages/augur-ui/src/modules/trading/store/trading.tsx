@@ -8,18 +8,14 @@ const TradingContext = createContext({
 });
 
 export const Trading = {
-  actionsSet: false,
   get: () => ({ ...DEFAULT_TRADING_STATE }),
-  actions: STUBBED_TRADING_ACTIONS,
+  actions: () =>({ ...STUBBED_TRADING_ACTIONS }),
 };
 
 export const TradingProvider = ({ presetOrderProperties, children }) => {
   const state = useTrading(presetOrderProperties);
-  if (!Trading.actionsSet) {
-    Trading.actions = state.actions;
-    Trading.actionsSet = true;
-  }
   const readableState = { ...state };
+  Trading.actions = () => readableState.actions;
   delete readableState.actions;
   Trading.get = () => readableState;
 
