@@ -171,26 +171,35 @@ const Wrapper = ({
   const isTutorial = getIsTutorial(market.id);
   const isPreview = getIsPreview(location);
   const initialLiquidity = isPreview && !isTutorial;
-  // const [state, setState] = useState({
-  //   trade: getDefaultTrade({ market, selectedOutcome }),
-  // });
-  const [trade, setTrade] = useState(getDefaultTrade({ market, selectedOutcome }));
-  // console.log('wrapper render: props/state', orderProperties, state);
+  const [trade, setTrade] = useState(
+    getDefaultTrade({ market, selectedOutcome })
+  );
   const marketId = market.id;
   const tradingTutorial = marketId === TRADING_TUTORIAL;
   const endTime = initialLiquidity ? newMarket.setEndTime : market.endTime;
-  const availableDai = initialLiquidity ? 
-    totalTradingBalance().minus(newMarket.initialLiquidityDai) : 
-    totalTradingBalance();
+  const availableDai = initialLiquidity
+    ? totalTradingBalance().minus(newMarket.initialLiquidityDai)
+    : totalTradingBalance();
   const gsnUnavailable = isGSNUnavailable();
   const disclaimerSeen = !!getValueFromlocalStorage(DISCLAIMER_SEEN);
   const gsnWalletInfoSeen = !!getValueFromlocalStorage(GSN_WALLET_SEEN);
 
   const hasHistory = !!accountPositions[marketId] || !!userOpenOrders[marketId];
-
+  // if outcome id changes we clear form
   useEffect(() => {
     clearOrderForm(true);
   }, [selectedOutcome.id]);
+  // if price and quantity are filled in but estimated dai isn't, run it. can happen from orderbook/outcome table clicks.
+  useEffect(() => {
+    const { orderPrice, orderQuantity, orderDaiEstimate } = orderProperties;
+    if (!orderDaiEstimate && !!orderQuantity && !!orderPrice) {
+      updateTradeTotalCost(orderProperties);
+    }
+  }, [
+    orderProperties.orderPrice,
+    orderProperties.orderQuantity,
+    orderProperties.orderDaiEstimate,
+  ]);
 
   function clearOrderForm(wholeForm = true) {
     const expirationDate =
@@ -472,9 +481,7 @@ const Wrapper = ({
 
   const insufficientFunds =
     trade?.costInDai &&
-    createBigNumber(trade.costInDai.value).gte(
-      createBigNumber(availableDai)
-    );
+    createBigNumber(trade.costInDai.value).gte(createBigNumber(availableDai));
   const isOpenOrder = trade?.numFills === 0;
   const orderEmpty =
     orderProperties.orderPrice === '' &&
