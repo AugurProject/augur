@@ -281,7 +281,6 @@ const Wrapper = ({
           orderDaiEstimate: order.orderDaiEstimate,
           gasCostEst: formattedGasCost,
         });
-        console.log('is it newOrder?', newOrder);
         setTrade(newOrder);
         checkCanPostOnly(
           newOrder?.trade?.limitPrice || order.orderPrice,
@@ -322,7 +321,6 @@ const Wrapper = ({
         potentialDaiProfit: formatNumber(60),
         side: order.selectedNav,
       };
-      console.log('is it newTrade?', newTrade);
       setTrade(newTrade);
       updateOrderProperties({
         orderDaiEstimate: totalCost ? formattedValue.roundedValue : '',
