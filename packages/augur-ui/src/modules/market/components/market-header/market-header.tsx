@@ -75,7 +75,7 @@ export const MarketHeader = ({
 
   const {
     details: marketDetails,
-    description: marketDesctipion,
+    description: marketDescription,
     marketType,
     scalarDenomination,
     reportingState,
@@ -95,7 +95,7 @@ export const MarketHeader = ({
         isSameAddress(designatedReporter, address))
   );
 
-  const description = marketDesctipion || '';
+  const description = marketDescription || '';
   let details = marketDetails || detailsText || '';
   const maxPrice = maxPriceBigNumber || ZERO;
   const minPrice = minPriceBigNumber || ZERO;

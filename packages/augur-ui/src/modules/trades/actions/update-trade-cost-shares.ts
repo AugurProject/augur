@@ -55,6 +55,7 @@ export const updateTradeCost = ({
 
 export const updateTradeShares = ({
   marketId,
+  market,
   outcomeId,
   side,
   maxCost,
@@ -69,9 +70,9 @@ export const updateTradeShares = ({
     accountPositions,
     loginAccount: { address },
   } = AppStatus.get();
-  const { marketInfos } = Markets.get();
+  // const { marketInfos } = Markets.get();
   checkAccountAllowance();
-  const market = marketInfos[marketId];
+  // const market = marketInfos[marketId];
   const newTradeDetails: any = {
     side,
     maxCost,

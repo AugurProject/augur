@@ -174,6 +174,7 @@ const Wrapper = ({
   const [trade, setTrade] = useState(
     getDefaultTrade({ market, selectedOutcome })
   );
+  const [isSimulatingTrade, setIsSimulatingTrade] = useState(false);
   const marketId = market.id;
   const tradingTutorial = marketId === TRADING_TUTORIAL;
   const endTime = initialLiquidity ? newMarket.setEndTime : market.endTime;
@@ -191,14 +192,13 @@ const Wrapper = ({
   }, [selectedOutcome.id]);
   // if price and quantity are filled in but estimated dai isn't, run it. can happen from orderbook/outcome table clicks.
   useEffect(() => {
-    const { orderPrice, orderQuantity, orderDaiEstimate } = orderProperties;
-    if (!orderDaiEstimate && !!orderQuantity && !!orderPrice) {
+    const { orderPrice, orderQuantity } = orderProperties;
+    if (!!orderQuantity && !!orderPrice && !isSimulatingTrade) {
       updateTradeTotalCost(orderProperties);
     }
   }, [
     orderProperties.orderPrice,
-    orderProperties.orderQuantity,
-    orderProperties.orderDaiEstimate,
+    orderProperties.orderQuantity
   ]);
 
   function clearOrderForm(wholeForm = true) {
@@ -257,6 +257,7 @@ const Wrapper = ({
   function updateTradeNumShares(order) {
     updateTradeShares({
       marketId,
+      market,
       outcomeId: selectedOutcome.id,
       limitPrice: order.orderPrice,
       side: order.selectedNav,
@@ -284,7 +285,7 @@ const Wrapper = ({
           gasCostEst: formattedGasCost,
         });
         setTrade(newOrder);
-        checkCanPostOnly(order.trade.limitPrice, order.trade.side);
+        checkCanPostOnly(newOrder?.trade?.limitPrice || order.orderPrice, newOrder?.trade?.side || order.selectedNav);
       },
     });
   }
@@ -383,10 +384,12 @@ const Wrapper = ({
         })
       )
     );
+    setIsSimulatingTrade(true);
     await Promise.all(queue).then(results => {
       setTrade(results[results.length - 1].trade);
       delete results[results.length - 1].trade;
       updateOrderProperties(results[results.length - 1]);
+      setIsSimulatingTrade(false);
     });
   }
 

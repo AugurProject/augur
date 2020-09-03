@@ -378,7 +378,6 @@ const Form = ({
     if (validationResults.errorCount > 0) {
       clearOrderForm(false);
     }
-
     let orderProcessingMethod = updateTradeTotalCost;
 
     let orderQuantity = updatedOrderProps[QUANTITY];
