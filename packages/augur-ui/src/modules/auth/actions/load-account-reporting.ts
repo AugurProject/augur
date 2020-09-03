@@ -4,7 +4,11 @@ import { NOTIFICATION_TYPES } from 'modules/common/constants';
 import { loadMarketsInfoIfNotLoaded } from 'modules/markets/actions/load-markets-info';
 import { AppStatus } from 'modules/app/store/app-status';
 
-export const loadAccountReportingHistory = () => async () => {
+export const loadAccountReportingHistory = () => {
+  loadReportingHistory();
+};
+
+async function loadReportingHistory() {
   const { notifications, loginAccount: { address }, universe } = AppStatus.get();
   const { updateLoginAccount, updateNotifications } = AppStatus.actions;
   if (!address) return;

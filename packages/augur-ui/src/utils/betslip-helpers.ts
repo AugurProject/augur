@@ -45,7 +45,6 @@ export const convertPositionToBet = (position, marketInfo) => {
     marketId: marketInfo.id,
     outcomeId: position.outcome,
     sportsBook: marketInfo.sportsBook,
-    amountWon: '0',
     amountFilled: '0',
     price: avgPrice,
     max: marketInfo.maxPrice,
@@ -67,7 +66,7 @@ export const convertPositionToBet = (position, marketInfo) => {
   };
 };
 
-const findProceeds = (realizedPercent, realizedCost, settlementFee) => {
+export const findProceeds = (realizedPercent, realizedCost, settlementFee) => {
   const bnSettlementFee = createBigNumber(settlementFee, 10);
   const bnRealizedPercent = createBigNumber(realizedPercent);
   const bnRealizedCost = createBigNumber(realizedCost);
@@ -86,6 +85,7 @@ export const placeBet = async (marketId, order, orderId) => {
   const { marketInfos } = Markets.get();
   const market = marketInfos[marketId];
   // todo: need to add user shares
+  if (!market) return;
   await placeTrade(
     0,
     marketId,
@@ -102,12 +102,7 @@ export const placeBet = async (marketId, order, orderId) => {
     undefined
   )
     .then(() => {
-      Betslip.actions.updateMatched(marketId, orderId, {
-        ...order,
-        marketId,
-        sportsBook: market.sportsBook,
-        status: FILLED,
-      });
+      Betslip.actions.trash(marketId, orderId);
     })
     .catch(err => {
       Betslip.actions.updateMatched(marketId, orderId, {
@@ -130,19 +125,6 @@ export const checkForDisablingPlaceBets = betslipItems => {
   return placeBetsDisabled;
 };
 
-export const checkForErrors = (marketId, order, orderId) => {
-  runBetslipTrade(marketId, order, false, simulateTradeData => {
-    Betslip.actions.modifyBet(marketId, orderId, {
-      ...order,
-      selfTrade: simulateTradeData.selfTrade,
-      errorMessage: formulateBetErrorMessage(
-        order.insufficientFunds,
-        simulateTradeData.selfTrade
-      ),
-    });
-  });
-};
-
 export const runBetslipTrade = (marketId, order, cashOut, cb) => {
   const { marketInfos } = Markets.get();
   const {
@@ -151,7 +133,7 @@ export const runBetslipTrade = (marketId, order, cashOut, cb) => {
   } = AppStatus.get();
   const market = marketInfos[marketId];
 
-  if (!market) return null;
+  if (!market || !order.shares) return null;
 
   let newTradeDetails: any = {
     side: cashOut ? SELL : BUY,
@@ -174,21 +156,13 @@ export const runBetslipTrade = (marketId, order, cashOut, cb) => {
   })();
 };
 
-export const formulateBetErrorMessage = (insufficientFunds, selfTrade) => {
-  if (selfTrade) {
-    return 'Consuming own order';
-  } else if (insufficientFunds) {
-    return INSUFFICIENT_FUNDS_ERROR;
-  } else {
-    return '';
-  }
-};
 export const checkInsufficientFunds = (
   minPrice,
   maxPrice,
   limitPrice,
   numShares
 ) => {
+  if (!numShares) return '';
   const max = createBigNumber(maxPrice, 10);
   const min = createBigNumber(minPrice, 10);
   const marketRange = max.minus(min).abs();
@@ -201,7 +175,7 @@ export const checkInsufficientFunds = (
 
   let availableDai = totalTradingBalance();
 
-  return longETHpotentialProfit.gt(createBigNumber(availableDai));
+  return longETHpotentialProfit.gt(createBigNumber(availableDai)) ? 'Insufficient funds' : '';
 };
 
 const getTopBid = (orderBooks, bet, tickSize) => {
@@ -252,6 +226,16 @@ const getTopBid = (orderBooks, bet, tickSize) => {
     smallestPrice: bids[bids.length - 1]?.price,
   };
 };
+
+export const checkForConsumingOwnOrderError = (marketId, order, orderId) => {
+  runBetslipTrade(marketId, order, false, simulateTradeData => {
+      Betslip.actions.modifyBet(marketId, orderId, {
+      ...order,
+      selfTrade: simulateTradeData.selfTrade,
+      errorMessage: simulateTradeData.selfTrade && order.errorMessage === '' ? 'Consuming own order' : order.errorMessage 
+    });
+  });
+}
 
 export const getOrderShareProfitLoss = (bet, orderBooks, cb) => {
   const { marketInfos } = Markets.get();

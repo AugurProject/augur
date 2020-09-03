@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   ASCENDING,
   DESCENDING,
@@ -32,6 +32,9 @@ import {
   ThickChevron,
   AlternateDaiLogoIcon,
   AddIcon,
+  LoadingEllipse,
+  Trash,
+  CheckMark,
 } from 'modules/common/icons';
 import classNames from 'classnames';
 import { getNetworkId, placeTrade } from 'modules/contracts/actions/contractCalls';
@@ -42,13 +45,15 @@ import { TXEventName } from '@augurproject/sdk-lite';
 import { addCategoryStats } from 'modules/create-market/get-template';
 import ChevronFlip from 'modules/common/chevron-flip';
 import { Link } from 'react-router-dom';
-import { getOrderShareProfitLoss } from 'utils/betslip-helpers';
+import { getOrderShareProfitLoss, findProceeds } from 'utils/betslip-helpers';
 import { removePendingData } from 'modules/pending-queue/actions/pending-queue-management';
 import { useAppStatusStore } from 'modules/app/store/app-status';
 import { useMarketsStore } from 'modules/markets/store/markets';
 import { useBetslipStore } from 'modules/trading/store/betslip';
 import { createBigNumber } from 'utils/create-big-number';
 import { formatDai } from 'utils/format-number';
+import { convertToOdds } from 'utils/get-odds';
+import { BET_STATUS } from 'modules/trading/store/constants';
 
 export interface DefaultButtonProps {
   id?: string;
@@ -487,6 +492,24 @@ export const CancelTextButton = ({
   </button>
 );
 
+export const TextIconButton = ({
+  text,
+  action,
+  title,
+  disabled,
+  icon,
+}: DefaultButtonProps) => (
+  <button
+    onClick={e => action(e)}
+    className={Styles.TextIconButton}
+    disabled={disabled}
+    title={title}
+  >
+    {icon} {text}
+  </button>
+);
+
+
 // Only used in ADVANCED button in trade-form
 export const TextButtonFlip = (props: DefaultButtonProps) => (
   <button
@@ -687,6 +710,75 @@ export const ExternalLinkText = (props: ExternalLinkTextProps) => (
   </button>
 );
 
+interface PendingIconButtonProps {
+  bet: Object;
+}
+
+export const PendingIconButton = ({
+  bet
+}: PendingIconButtonProps) => {
+  const {
+    actions: { trash },
+  } = useBetslipStore();
+  const {
+    status,
+    marketId,
+    orderId,
+    timestampUpdated
+  } = bet;
+  const [isRecentUpdate, setIsRecentUpdate] = useState(true);
+  useEffect(() => {
+    setIsRecentUpdate(true);
+  }, [timestampUpdated]);
+
+  useEffect(() => {
+    const currentTime = new Date().getTime() / 1000;
+    const seconds = Math.round(currentTime - timestampUpdated);
+    const milliSeconds = seconds * 1000;
+    if (isRecentUpdate && status === BET_STATUS.FILLED && seconds < 20) {
+      setTimeout(() => {
+        setIsRecentUpdate(false);
+      }, 20000 - milliSeconds);
+    } else {
+      setIsRecentUpdate(false);
+    }
+  }, [isRecentUpdate]);
+
+  const { PENDING, FILLED, PARTIALLY_FILLED, FAILED } = BET_STATUS;
+  let icon = null;
+  let classToApply = Styles.NEWFILL;
+  let iconAction = () => null;
+  switch (status) {
+    case FILLED:
+      icon = isRecentUpdate ? CheckMark : null;
+      classToApply = isRecentUpdate ? Styles.NEWFILL : Styles.FILLED;
+      break;
+    case PARTIALLY_FILLED:
+      icon = null;
+      classToApply = Styles.PARTIALLY_FILLED;
+      break;
+    case PENDING:
+      icon = LoadingEllipse;
+      classToApply = Styles.PENDING;
+      break;
+    case FAILED:
+      icon = Trash;
+      classToApply = Styles.FAILED;
+      iconAction = () => trash(marketId, orderId);
+      break;
+    default:
+      break;
+  }
+  return (
+  <button
+    className={classNames(Styles.PendingIconButton, classToApply)}
+    onClick={() => iconAction()}
+  >
+    {icon}
+  </button>
+  );
+}
+
 interface CashoutButtonProps {
   bet: Object;
 }
@@ -714,19 +806,28 @@ export const CashoutButton = ({
   const queueId = `${bet.marketId}_${bet.orderId}`;
   const pending = pendingQueue[CASHOUT] && pendingQueue[CASHOUT][queueId];
   const market = marketInfos[bet.marketId];
+  const position = positions[bet.marketId]?.tradingPositions[bet.outcomeId];
 
   useEffect(() => {
-    getOrderShareProfitLoss(bet, orderBooks, (potentialDaiProfit, topBidPrice, orderCost) => {
-      updateMatched(bet.marketId, bet.orderId, {
-        ...bet,
-        topBidPrice,
-        orderCost,
-        potentialDaiProfit
+    if (market) {
+      getOrderShareProfitLoss(bet, orderBooks, (potentialDaiProfit, topBidPrice, orderCost) => {
+        updateMatched(bet.marketId, bet.orderId, {
+          ...bet,
+          topBidPrice,
+          orderCost,
+          potentialDaiProfit,
+          closedPotentialDaiProfit: position?.priorPosition ? position.realized : null,
+          closedOrderCost: position?.priorPosition ? findProceeds(
+            position.realizedPercent,
+            position.realizedCost,
+            market.settlementFee
+          )
+        : null,
+        })
       })
-    })
-  }, [marketInfos[bet.marketId], orderBooks[bet.marketId]]);
+    }
+  }, [market, orderBooks[bet.marketId]]);
 
-  const position = positions[bet.marketId]?.tradingPositions[bet.outcomeId];
   if (position?.priorPosition) {
     didWin = bet.closedPotentialDaiProfit ? createBigNumber(bet.closedPotentialDaiProfit).gt(ZERO) : false;
     loss = bet.closedPotentialDaiProfit ? createBigNumber(bet.closedPotentialDaiProfit).lt(ZERO) : false;
@@ -748,9 +849,9 @@ export const CashoutButton = ({
         setModal({
           type: MODAL_CASHOUT_BET, 
           wager: bet.wager, 
-          odds: bet.odds,
+          odds: convertToOdds(bet.normalizedPrice).full,
           cashOut: bet.orderCost,
-          profit: '0',
+          positive: bet.potentialDaiProfit.gt(ZERO),
           cb: () => {
             addPendingData(queueId, CASHOUT, TXEventName.Pending, '', {});
             (async () =>
@@ -768,6 +869,7 @@ export const CashoutButton = ({
                 0,
                 '0',
                 undefined
+              ).then(() => addPendingData(queueId, CASHOUT, TXEventName.Success, '', {})
               ).catch(error => addPendingData(queueId, CASHOUT, TXEventName.Failure, '', {}))
           )();
         }});

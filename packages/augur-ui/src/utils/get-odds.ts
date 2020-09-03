@@ -80,16 +80,17 @@ export const convertToNormalizedPrice = ({
 };
 
 export const convertToWin = (maxPrice, shares, toDecimals = 2) => {
+  if (!shares) return null;
   const bnShares = createBigNumber(shares);
   return bnShares.times(createBigNumber(maxPrice)).toFixed(toDecimals);
 };
 
 export const getWager = (shares, price) => {
-  return createBigNumber(shares).times(createBigNumber(price)).toString();
+  return shares && price ? createBigNumber(shares).times(createBigNumber(price)).toString() : null;
 }
 
 export const getShares = (wager, price) => {
-  return createBigNumber(wager).div(createBigNumber(price)).toString();
+  return wager && price ? createBigNumber(wager).div(createBigNumber(price)).toString() : null;
 }
 
 export const getOddsObject = (normalizedValue: BigNumber, toDecimals = 4) => {

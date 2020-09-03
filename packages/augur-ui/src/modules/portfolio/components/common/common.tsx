@@ -24,6 +24,7 @@ import { useAppStatusStore } from 'modules/app/store/app-status';
 import { createBigNumber } from 'utils/create-big-number';
 import { startClaimingMarketsProceeds } from 'modules/positions/actions/claim-markets-proceeds';
 import { FilterNotice } from 'modules/common/filter-notice';
+import { BET_STATUS } from 'modules/trading/store/constants';
 
 export const BetsHeader = () => (
   <ul className={Styles.BetsHeader}>
@@ -120,13 +121,15 @@ export const Game = ({ row, type }: GameProps) => {
       </div>
       <div>
         <BetsHeader />
-        {Object.values(row.orders).map(order => (
-          <BetRow
-            key={order.outcomeId}
-            outcome={order}
-            showExtraRow={type !== SPORTS_GROUP_TYPES.FUTURES}
-          />
-        ))}
+        {Object.values(row.orders)
+          .sort((a, b) => b.timestamp - a.timestamp)
+          .map((order, index) => (
+            <BetRow
+              key={`${order.outcomeId}_${index}`}
+              outcome={order}
+              showExtraRow={type !== SPORTS_GROUP_TYPES.FUTURES}
+            />
+          ))}
       </div>
     </div>
   );
@@ -138,9 +141,11 @@ export interface OutcomesProps {
 export const Outcomes = ({ rows }: OutcomesProps) => (
   <div className={Styles.Outcomes}>
     <BetsHeader />
-    {rows.map(row => (
-      <BetRow key={row.outcome} outcome={row} showExtraRow isEvent />
-    ))}
+    {rows
+      .sort((a, b) => b.timestamp - a.timestamp)
+      .map(row => (
+        <BetRow key={row.outcome} outcome={row} showExtraRow isEvent />
+      ))}
   </div>
 );
 

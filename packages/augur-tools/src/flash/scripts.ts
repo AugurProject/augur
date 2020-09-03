@@ -2029,10 +2029,12 @@ export function addScripts(flash: FlashSession) {
 
         env = {
           ...process.env,
+          ETHEREUM_RPC_HTTP: runGeth ? 'http://geth:8545' : this.config.ethereum.http,
           ETHEREUM_CHAIN_ID: this.config.networkId,
           CUSTOM_CONTRACT_ADDRESSES: JSON.stringify(this.config.addresses),
           ZEROX_CONTRACT_ADDRESS: formatAddress(this.config.addresses.ZeroXTrade, { lower: true, prefix: false }),
         };
+
 
         console.log('Running dockers. Type ctrl-c to quit:');
         await spawnSync('docker-compose', ['-f', 'docker-compose.yml', 'up', '-d'], {

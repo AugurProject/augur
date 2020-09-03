@@ -37,6 +37,8 @@ import { removePendingOrder } from 'modules/orders/actions/pending-orders-manage
 import { Properties } from './row-column';
 import { convertToOdds } from 'utils/get-odds';
 import { Trading } from 'modules/trading/store/trading';
+import { BET_STATUS } from 'modules/trading/store/constants';
+import { useBetslipStore } from 'modules/trading/store/betslip';
 
 interface MyBetsRowProps {
   outcome: Object;
@@ -51,6 +53,9 @@ export const MyBetsRow = ({
 }: MyBetsRowProps) => {
   const { oddsType } = useAppStatusStore();
   const isFractional = oddsType === ODDS_TYPE.FRACTIONAL;
+  const {
+    actions: { retry },
+  } = useBetslipStore();
   const columnProperties = [
     {
       key: 'outcomeName',
@@ -63,11 +68,13 @@ export const MyBetsRow = ({
       templateShield: isEvent,
       outcome: outcome,
       marketId: outcome.marketId,
+      retryFnc: outcome.status === BET_STATUS.FAILED ? () => retry(outcome.marketId, outcome.orderId) : null
     },
     {
       key: 'wager',
       columnType: COLUMN_TYPES.VALUE,
       value: formatNumber(outcome && outcome.wager),
+      useFull: true,
       keyId: 'outcome-wager-' + outcome.outcome,
     },
     {
@@ -76,6 +83,7 @@ export const MyBetsRow = ({
       text: convertToOdds(outcome && outcome.normalizedPrice).full,
       value: isFractional ? null : convertToOdds(outcome && outcome.normalizedPrice),
       keyId: 'outcome-odds-' + outcome.outcome,
+      useFull: true,
     },
     {
       key: 'toWin',
@@ -86,16 +94,29 @@ export const MyBetsRow = ({
     {
       key: 'betDate',
       columnType: COLUMN_TYPES.TEXT,
-      text: convertUnixToFormattedDate(outcome.dateUpdated).formattedUtc,
+      text: convertUnixToFormattedDate(outcome.timestamp).formattedUtc,
       keyId: 'outcome-betDate-' + outcome.outcome,
     },
-    {
-      key: 'button',
-      columnType: COLUMN_TYPES.CASHOUT_BUTTON,
-      outcome: outcome,
-      action: async (e: Event) => {},
-    },
   ];
+  if (outcome.status === BET_STATUS.PENDING || outcome.status === BET_STATUS.FAILED) {
+    columnProperties.push(
+      {
+        key: 'button',
+        columnType: COLUMN_TYPES.PENDING_ICON_BUTTON,
+        outcome: outcome,
+        action: async (e: Event) => {},
+      }
+    );
+  } else {
+    columnProperties.push(
+      {
+        key: 'button',
+        columnType: COLUMN_TYPES.CASHOUT_BUTTON,
+        outcome: outcome,
+        action: async (e: Event) => {},
+      }
+    );
+  }
   return (
     <Row
       rowProperties={outcome}
@@ -103,6 +124,7 @@ export const MyBetsRow = ({
       styleOptions={{
         noToggle: true,
         myBetRow: true,
+        failed: outcome.status === BET_STATUS.FAILED
       }}
     />
   );

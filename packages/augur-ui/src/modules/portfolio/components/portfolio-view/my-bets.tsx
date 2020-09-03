@@ -264,10 +264,10 @@ export const MyBets = () => {
           />
         )}
         {showEvents &&
-          rows.map(row => (
+          rows.map((row, index) => (
             <Game
               row={row}
-              key={row.marketId}
+              key={`${row.marketId}_${index}`}
               type={SPORTS_MARKET_TYPES[selectedMarketCardType].header}
             />
           ))}
