@@ -305,16 +305,15 @@
     height: @size-44;
     padding: 0 @size-24;
 
-    &:not(:disabled):hover {
-      background: var(--color-primary-action-40);
-    }
-
     &:not(:disabled):focus {
       background: var(--color-primary-action-15);
-      border: @size-1 solid var(--color-focused);
     }
 
     &:not(:disabled):active {
+      background: var(--color-primary-action-40);
+    }
+
+    &:not(:disabled):hover {
       background: var(--color-primary-action-40);
     }
 
