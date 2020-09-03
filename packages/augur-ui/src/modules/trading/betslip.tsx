@@ -28,6 +28,7 @@ export const Betslip = () => {
     unmatched: { count: unmatchedCount, items: unmatchedItems },
     matched: { count: matchedCount, items: matchedItems },
     actions: { toggleSubHeader },
+    step,
   } = useBetslipStore();
 
   useEffect(() => {
@@ -87,6 +88,7 @@ export const Betslip = () => {
             <EmptyState />
           ) : (
             <>
+              {step !== 0 && !isMyBets && <span>Please review your bets:</span>}
               <BetslipList marketItems={marketItems} />
               {oddsChanged && !isMyBets &&
                 <span>
