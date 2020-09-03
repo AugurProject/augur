@@ -244,7 +244,7 @@ const MarketView = ({
           ...state,
           introShowing: true
         });
-        Trading.actions().clearOrderProperties();
+        Trading.actions.clearOrderProperties();
       }
     } else if (
       market?.marketType === SCALAR &&
@@ -608,7 +608,7 @@ const MarketView = ({
                       leftBottom={isPlaceOrder}
                       next={() => {
                         if (isPlaceOrder) {
-                          Trading.actions().updateOrderProperties({
+                          Trading.actions.updateOrderProperties({
                             orderQuantity: '',
                             orderPrice: '',
                           });
