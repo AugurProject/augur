@@ -36,7 +36,7 @@ export function TradingReducer(state, action) {
       break;
     }
     default:
-      console.log('trading DEFAULT:', updatedState);
+      throw new Error(`Error: ${action.type} not caught by Trading reducer`);
   }
   window.trading = updatedState;
   window.stores.trading = updatedState;

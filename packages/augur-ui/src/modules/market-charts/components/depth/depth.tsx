@@ -142,7 +142,7 @@ const DepthChart = ({
       hasOrders,
       zoom,
     });
-  }, [marketDepth, orderBookKeys?.min.value, orderBookKeys?.mid.value, orderBookKeys?.max.value]);
+  }, [marketDepth, orderBookKeys?.min.toFixed(), orderBookKeys?.mid.toFixed(), orderBookKeys?.max.toFixed()]);
 
   useEffect(() => {
     drawCrosshairs({
@@ -368,8 +368,7 @@ const DepthChart = ({
       const yScale = yScaleThis.current;
       const containerHeight = containerHeightThis.current;
       const containerWidth = containerWidthThis.current;
-
-      if (hoveredPrice == null) {
+      if (hoveredPrice === null) {
         d3.select('#crosshairs').style('display', 'none');
         d3.select('#hovered_tooltip_container').style('display', 'none');
         updateHoveredDepth([]);
@@ -381,7 +380,6 @@ const DepthChart = ({
           marketMax
         );
         if (nearestFillingOrder[0] === null) return;
-
         updateHoveredDepth(nearestFillingOrder);
 
         d3.select('#crosshairs').style('display', null);
@@ -894,7 +892,6 @@ function attachHoverClickHandlers(options) {
         'class',
         `crosshair-${nearestFillingOrder[4]}`
       );
-
       updateHoveredPrice(hoveredPrice);
       const { xScale, yScale } = drawParams;
       d3.select('#price_label').attr('class', `${nearestFillingOrder[4]}`);

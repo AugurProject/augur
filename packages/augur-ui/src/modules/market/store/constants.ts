@@ -97,7 +97,7 @@ export const TUTORIAL_FILL_ALERT = {
 };
 
 export const TRADING_TUTORIAL_MARKET = {
-  ...deepClone<NewMarket>(EMPTY_STATE),
+  ...EMPTY_STATE,
   id: TRADING_TUTORIAL,
   description:
     'Which NFL team will win: Los Angeles Rams vs New England Patriots Scheduled start time: October 27, 2019 1:00 PM ET',

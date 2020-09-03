@@ -30,7 +30,6 @@ import {
 import makePath from 'modules/routes/helpers/make-path';
 import parsePath from 'modules/routes/helpers/parse-path';
 import {
-  MODAL_NETWORK_CONNECT,
   MOBILE_MENU_STATES,
   TRADING_TUTORIAL,
   THEMES,
