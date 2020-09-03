@@ -24,6 +24,8 @@ import { convertUnixToFormattedDate } from 'utils/format-date';
 import { bulkLoadMarketTradingHistory } from 'modules/markets/actions/market-trading-history-management';
 import { augurSdk } from 'services/augursdk';
 import { SportsGroupCharts } from 'modules/market-charts/sports-group-charts';
+import { MarketComments } from 'modules/market/components/common/comments/market-comments';
+import { getNetworkId } from 'modules/contracts/actions/contractCalls';
 
 export const isMarketView = location => {
   const isGroupPage = parsePath(location.pathname)[0] === MARKET;
@@ -133,6 +135,8 @@ const BettingMarketView = () => {
   const estDateTime = sportsBook?.estTimestamp;
   const startTimeFormatted =
     estDateTime && convertUnixToFormattedDate(estDateTime);
+  const networkId = getNetworkId();
+
   return (
     <div className={Styles.BettingMarketView}>
       <div>
@@ -215,6 +219,7 @@ const BettingMarketView = () => {
           subheader="Is the amount traded on this event"
         />
       </div>
+      <MarketComments marketId={marketId} networkId={networkId} />
     </div>
   );
 };

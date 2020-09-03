@@ -730,8 +730,33 @@ div.OutcomeNameDisplay {
 :root[theme="BETTING"],
 :root[theme="SPORTS"] {
   .Comments {
+    display: flex;
+    margin: unset;
+    grid-gap: unset;
+    grid-template-columns: unset;
+
     div[class*="input"] textarea {
       background-color: #fff;
+    }
+
+    span[class*="context_text"] {
+      .text-16-bold;
+
+      color: var(--color-primary-text);
+    }
+
+    @media @breakpoint-mobile {
+      padding: @size-40 0 @size-12;
+
+      > div:first-of-type {
+        padding: 0 @size-56 0 0;
+      }
+
+      > button:first-of-type {
+        padding: 0;
+        margin: 0;
+        width: 100%;
+      }
     }
   }
 }
