@@ -242,6 +242,10 @@
     &:disabled {
       border: @size-1 solid var(--color-dark-text);
       color: var(--color-primary-text-15);
+
+      &:hover {
+        background: var(--color-module-background);
+      }
     }
 
     &.Won {
@@ -754,6 +758,25 @@
 
         LinearGradient > stop {
           stop-color: var(--color-reporting);
+        }
+      }
+    }
+
+    &:hover {
+      cursor: default;
+      &.PENDING {
+        > svg {
+          > path {
+            stroke: var(--color-reporting);
+          }
+        }
+      }
+
+      &.FAILED {
+        > svg {
+          > path {
+            stroke: var(--color-error);
+          }
         }
       }
     }

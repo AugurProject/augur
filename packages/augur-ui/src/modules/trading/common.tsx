@@ -307,7 +307,6 @@ export const SportsMyBet = ({ bet }) => {
       )}
       {status !== PENDING && status !== FAILED && (
         <>
-          <ExternalLinkButton URL={null} label="view tx" />
           <CashoutButton bet={bet} />
         </>
       )}
