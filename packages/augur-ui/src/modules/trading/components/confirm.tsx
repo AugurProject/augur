@@ -3,7 +3,6 @@ import classNames from 'classnames';
 import {
   SCALAR,
   BUY,
-  SELL,
   BUYING,
   SELLING,
   BUYING_BACK,
@@ -48,6 +47,7 @@ import { TXEventName } from '@augurproject/sdk-lite';
 import { removePendingTransaction } from 'modules/pending-queue/actions/pending-queue-management';
 import { useAppStatusStore } from 'modules/app/store/app-status';
 import { totalTradingBalance } from 'modules/auth/helpers/login-account';
+import { useTradingStore } from 'modules/trading/store/trading';
 
 interface MessageButton {
   action: Function;
@@ -70,8 +70,41 @@ interface ConfirmProps {
   tradingTutorial?: boolean;
   initialLiquidity?: boolean;
   postOnlyOrder?: boolean;
-  allowPostOnlyOrder?: boolean,
+  allowPostOnlyOrder?: boolean;
 }
+
+const MessageContainer = ({
+  header,
+  type,
+  message,
+  button = null,
+  link = null,
+  callback = () => {},
+}: Message) => (
+  <div
+    className={classNames(Styles.MessageContainer, {
+      [Styles.Error]: type === ERROR,
+    })}
+  >
+    {type === ERROR ? ExclamationCircle : InformationIcon}
+    <span>{header}</span>
+    <div>
+      {message}
+      {link && <ExternalLinkButton URL={link} label="LEARN MORE" />}
+    </div>
+    {button && (
+      <ProcessingButton
+        text={button.text}
+        action={button.action}
+        queueName={TRANSACTIONS}
+        queueId={CREATEAUGURWALLET}
+      />
+    )}
+    {type !== ERROR && !button && (
+      <button onClick={() => callback()}>{XIcon}</button>
+    )}
+  </div>
+);
 
 export const Confirm = ({
   market,
@@ -79,11 +112,11 @@ export const Confirm = ({
   selectedOutcome,
   tradingTutorial,
   initialLiquidity,
-  postOnlyOrder,
-  allowPostOnlyOrder,
 }: ConfirmProps) => {
   const {
-    env: { ui: { reportingOnly: disableTrading } },
+    env: {
+      ui: { reportingOnly: disableTrading },
+    },
     newMarket,
     pendingQueue,
     loginAccount: {
@@ -95,6 +128,12 @@ export const Confirm = ({
     gasPriceInfo,
     actions: { setModal },
   } = useAppStatusStore();
+  const {
+    orderProperties: {
+      postOnlyOrder,
+      allowPostOnlyOrder,
+    },
+  } = useTradingStore();
   let availableDai = totalTradingBalance();
   if (initialLiquidity) {
     availableDai = availableDai.minus(newMarket.initialLiquidityDai);
@@ -126,6 +165,9 @@ export const Confirm = ({
     sharesFilled,
     selfTrade,
   } = trade;
+  const isScalar = marketType === SCALAR;
+  const isBuy = side === BUY;
+  const hasFills = numFills > 0;
 
   useEffect(() => {
     if (
@@ -135,28 +177,27 @@ export const Confirm = ({
       removePendingTransaction(CREATEAUGURWALLET);
     }
   }, []);
-  const constructMessages = () => {
+
+  const gasCostInEth = gasLimit
+  ? createBigNumber(
+      formatGasCostToEther(
+        gasLimit,
+        { decimalsRounded: 4 },
+        createBigNumber(GWEI_CONVERSION).multipliedBy(gasPrice)
+      )
+    )
+  : ZERO;
+
+  const messages = (() => {
     let numTrades = loopLimit ? Math.ceil(numFills / loopLimit) : numFills;
-    let needsApproval = false;
+    numTrades = isNaN(numTrades) ? 0 : numTrades;
     let messages: Message | null = null;
 
-    const gasCostInEth = gasLimit
-      ? createBigNumber(
-          formatGasCostToEther(
-            gasLimit,
-            { decimalsRounded: 4 },
-            createBigNumber(GWEI_CONVERSION).multipliedBy(gasPrice)
-          )
-        )
-      : ZERO;
+    const gasCostDai = gsnEnabled
+      ? getGasInDai(Number(createBigNumber(gasLimit))).fullPrecision
+      : '0';
 
-    let gasCostDai: number = 0;
-
-    if (gsnEnabled) {
-      gasCostDai = getGasInDai(Number(createBigNumber(gasLimit))).fullPrecision;
-    }
-
-    if (marketType === SCALAR && selectedOutcomeId === INVALID_OUTCOME_ID) {
+    if (isScalar && selectedOutcomeId === INVALID_OUTCOME_ID) {
       messages = {
         header: null,
         type: WARNING,
@@ -164,211 +205,152 @@ export const Confirm = ({
         link: HELP_CENTER,
       };
     }
+    // multiple transaction warnings
+    if (!tradingTutorial) {
+      if (numTrades > 1) {
+        messages = {
+          header: 'MULTIPLE TRANSACTIONS',
+          type: WARNING,
+          message: `This trade will take ${numTrades} Transactions${
+            createBigNumber(potentialDaiLoss.value).gt(allowanceBigNumber || 0)
+              ? ' and approvals.'
+              : '.'
+          }`,
+        };
+      }
+      // self trade warning
+      if (selfTrade) {
+        messages = {
+          header: 'CONSUMING OWN ORDER',
+          type: WARNING,
+          message: 'You are trading against one of your existing orders',
+        };
+      }
+      // unprofitable error
+      if (
+        numTrades > 0 &&
+        ((potentialDaiProfit?.value !== 0 &&
+          createBigNumber(gasCostDai).gt(potentialDaiProfit.value)) ||
+          (orderShareProfit?.value !== 0 &&
+            createBigNumber(gasCostDai).gt(orderShareProfit.value)))
+      ) {
+        messages = {
+          header: 'UNPROFITABLE TRADE',
+          type: ERROR,
+          message: `Est. TX Fee is higher than profit`,
+        };
+      }
 
-    if (
-      !isNaN(numTrades) &&
-      numTrades > 1 &&
-      allowanceBigNumber &&
-      createBigNumber(potentialDaiLoss.value).gt(allowanceBigNumber) &&
-      !tradingTutorial
-    ) {
-      needsApproval = true;
-      messages = {
-        header: 'MULTIPLE TRANSACTIONS',
-        type: WARNING,
-        message: `This trade will take ${numTrades} Transactions and approvals.`,
-      };
-    }
+      if (totalCost) {
+        // GAS error in DAI [Gsn]
+        if (gsnEnabled && createBigNumber(gasCostDai).gte(availableDai)) {
+          messages = {
+            header: 'Insufficient DAI',
+            type: ERROR,
+            message: `You do not have enough funds to place this order. ${gasCostDai} DAI required for gas.`,
+          };
+        }
 
-    if (!isNaN(numTrades) && numTrades > 1 && !tradingTutorial) {
-      messages = {
-        header: 'MULTIPLE TRANSACTIONS',
-        type: WARNING,
-        message: `This trade will take ${numTrades} Transactions${
-          needsApproval ? `, and approvals.` : ``
-        }`,
-      };
-    }
+        // GAS error in ETH
+        if (!gsnEnabled && gasCostInEth.gte(availableEth)) {
+          messages = {
+            header: 'Insufficient ETH',
+            type: ERROR,
+            message: `You do not have enough funds to place this order. ${gasCostInEth.toFixed()} ETH required for gas.`,
+          };
+        }
 
-    if (selfTrade) {
-      messages = {
-        header: 'CONSUMING OWN ORDER',
-        type: WARNING,
-        message: 'You are trading against one of your existing orders',
-      };
-    }
+        if (createBigNumber(potentialDaiLoss?.fullPrecision).gt(availableDai)) {
+          messages = {
+            header: 'Insufficient DAI',
+            type: ERROR,
+            message: 'You do not have enough DAI to place this order',
+          };
+        }
+      }
 
-    // GAS error in DAI [Gsn]
-    if (
-      !tradingTutorial &&
-      gsnEnabled &&
-      totalCost &&
-      createBigNumber(gasCostDai).gte(createBigNumber(availableDai))
-    ) {
-      messages = {
-        header: 'Insufficient DAI',
-        type: ERROR,
-        message: `You do not have enough funds to place this order. ${gasCostDai} DAI required for gas.`,
-      };
-    }
+      // Show when GSN wallet activation is successful
+      if (
+        walletStatus === WALLET_STATUS_VALUES.CREATED &&
+        sweepStatus === TXEventName.Success &&
+        hasFills
+      ) {
+        messages = {
+          header: 'Confirmed',
+          type: WARNING,
+          message: 'You can now place your trade',
+          callback: () => {
+            removePendingTransaction(CREATEAUGURWALLET);
+            // clearErrorMessage();
+          },
+        };
+      } else if (
+        walletStatus === WALLET_STATUS_VALUES.FUNDED_NEED_CREATE &&
+        hasFills
+      ) {
+        // Show if OpenOrder and GSN wallet still needs to be activated
+        messages = {
+          header: '',
+          type: WARNING,
+          message: 'Activation of your account is needed',
+          button: {
+            text: 'Activate Account',
+            action: () =>
+              setModal({
+                type: MODAL_INITIALIZE_ACCOUNT,
+              }),
+          },
+        };
+      }
 
-    if (
-      !isNaN(numTrades) &&
-      numTrades > 0 &&
-      ((potentialDaiProfit &&
-        potentialDaiProfit.value !== 0 &&
-        createBigNumber(gasCostDai).gt(potentialDaiProfit.value)) ||
-        (orderShareProfit &&
-          orderShareProfit.value !== 0 &&
-          createBigNumber(gasCostDai).gt(orderShareProfit.value))) &&
-      !tradingTutorial
-    ) {
-      messages = {
-        header: 'UNPROFITABLE TRADE',
-        type: ERROR,
-        message: `Est. TX Fee is higher than profit`,
-      };
-    }
+      if (!allowPostOnlyOrder) {
+        messages = {
+          header: 'POST ONLY ORDER',
+          type: ERROR,
+          message: `Can not match existing order.`,
+        };
+      }
 
-    // GAS error in ETH
-    if (
-      !tradingTutorial &&
-      !gsnEnabled &&
-      totalCost &&
-      createBigNumber(gasCostInEth).gte(createBigNumber(availableEth))
-    ) {
-      messages = {
-        header: 'Insufficient ETH',
-        type: ERROR,
-        message: `You do not have enough funds to place this order. ${gasCostInEth} ETH required for gas.`,
-      };
-    }
-
-    if (
-      !tradingTutorial &&
-      totalCost &&
-      createBigNumber(potentialDaiLoss?.fullPrecision).gt(
-        createBigNumber(availableDai)
-      ) &&
-      !tradingTutorial
-    ) {
-      messages = {
-        header: 'Insufficient DAI',
-        type: ERROR,
-        message: 'You do not have enough DAI to place this order',
-      };
-    }
-
-    // Show when GSN wallet activation is successful
-    if (
-      walletStatus === WALLET_STATUS_VALUES.CREATED &&
-      sweepStatus === TXEventName.Success &&
-      !tradingTutorial &&
-      numFills === 0
-    ) {
-      messages = {
-        header: 'Confirmed',
-        type: WARNING,
-        message: 'You can now place your trade',
-        callback: () => {
-          removePendingTransaction(CREATEAUGURWALLET);
-          // clearErrorMessage();
-        },
-      };
-    }
-    // Show if OpenOrder and GSN wallet still needs to be activated
-    else if (
-      walletStatus === WALLET_STATUS_VALUES.FUNDED_NEED_CREATE &&
-      !tradingTutorial &&
-      numFills === 0
-    ) {
-      messages = {
-        header: '',
-        type: WARNING,
-        message: 'Activation of your account is needed',
-        button: {
-          text: 'Activate Account',
-          action: () =>
-            setModal({
-              type: MODAL_INITIALIZE_ACCOUNT,
-            }),
-        },
-      };
-    }
-
-    if (
-      !allowPostOnlyOrder && !tradingTutorial
-    ) {
-      messages = {
-        header: 'POST ONLY ORDER',
-        type: ERROR,
-        message: `Can not match existing order.`,
-      };
-    }
-
-    if (disableTrading && !tradingTutorial) {
-      messages = {
-        header: 'Reporting Only',
-        type: WARNING,
-        message: 'Trading is disabled',
-      };
+      if (disableTrading) {
+        messages = {
+          header: 'Reporting Only',
+          type: WARNING,
+          message: 'Trading is disabled',
+        };
+      }
     }
 
     return messages;
-  };
-  const messages = constructMessages();
-  const greaterLess = side === BUY ? 'greater' : 'less';
-  const higherLower = side === BUY ? 'higher' : 'lower';
-
-  const marketRange = createBigNumber(maxPrice)
-    .minus(createBigNumber(minPrice))
-    .abs();
-
-  let gasCostDai = formatNumber(0);
-
-  const gasCostInEth = gasLimit
-    ? createBigNumber(
-        formatGasCostToEther(
-          gasLimit,
-          { decimalsRounded: 4 },
-          createBigNumber(GWEI_CONVERSION).multipliedBy(gasPrice)
-        )
-      )
-    : ZERO;
-
-    if (gsnEnabled) {
-      gasCostDai = getGasInDai(Number(createBigNumber(gasLimit)));
-    }
-
-  const limitPricePercentage = (side === BUY
+  })();
+ 
+  const limitPricePercentage = (isBuy
     ? createBigNumber(limitPrice)
-    : createBigNumber(maxPrice).minus(createBigNumber(limitPrice))
+    : maxPrice.minus(createBigNumber(limitPrice))
   )
-    .dividedBy(marketRange)
+    .dividedBy(maxPrice.minus(minPrice).abs())
     .times(100)
     .toFixed(0);
 
+  const gasCostDai = gsnEnabled
+    ? getGasInDai(Number(createBigNumber(gasLimit)))
+    : formatNumber(0);
 
-  let tooltip = `You believe ${outcomeName} has a ${greaterLess}
-                      than ${limitPricePercentage}% chance to occur.`;
-  if (marketType === SCALAR) {
-    tooltip = `You believe the outcome of this event will be ${higherLower}
-  than ${limitPrice} ${scalarDenomination}`;
-  }
+  const tooltip = isScalar
+    ? `You believe the outcome of this event will be ${isBuy ? 'greater' : 'less'}
+  than ${limitPrice} ${scalarDenomination}`
+    : `You believe ${outcomeName} has a ${isBuy ? 'greater' : 'less'} than ${limitPricePercentage}% chance to occur.`;
 
   let newOrderAmount = formatShares('0').rounded;
   if (numShares && totalCost.fullPrecision && shareCost.fullPrecision) {
-    newOrderAmount =
-      marketType !== SCALAR
-        ? formatShares(
-            createBigNumber(numShares).minus(shareCost.fullPrecision),
-            {
-              decimalsRounded: UPPER_FIXED_PRECISION_BOUND,
-            }
-          ).rounded
-        : formatShares(
-            createBigNumber(numShares).minus(shareCost.fullPrecision)
-          ).rounded;
+    newOrderAmount = isScalar
+      ? formatShares(createBigNumber(numShares).minus(shareCost.fullPrecision))
+          .rounded
+      : formatShares(
+          createBigNumber(numShares).minus(shareCost.fullPrecision),
+          {
+            decimalsRounded: UPPER_FIXED_PRECISION_BOUND,
+          }
+        ).rounded;
   } else if (sharesFilled && sharesFilled.fullPrecision) {
     newOrderAmount = sharesFilled.rounded;
   }
@@ -385,11 +367,11 @@ export const Confirm = ({
           <div className={Styles.properties}>Closing Position</div>
           <div
             className={classNames(Styles.AggregatePosition, {
-              [Styles.long]: side === BUY,
-              [Styles.short]: side === SELL,
+              [Styles.long]: isBuy,
+              [Styles.short]: !isBuy,
             })}
           >
-            {`${side === BUY ? BUYING_BACK : SELLING_OUT}
+            {`${isBuy ? BUYING_BACK : SELLING_OUT}
               ${shareCost.fullPrecision}
               Shares @ ${limitPrice}`}
           </div>
@@ -398,7 +380,7 @@ export const Confirm = ({
             value={orderShareTradingFee}
             showDenomination={true}
           />
-          {gasCostDai.roundedValue.gt(0) > 0 && numFills > 0 && (
+          {gasCostDai.roundedValue.gt(0) > 0 && hasFills && (
             <TransactionFeeLabelToolTip
               isError={createBigNumber(gasCostDai.value).gt(
                 createBigNumber(orderShareProfit.value)
@@ -447,26 +429,26 @@ export const Confirm = ({
           </div>
           <div
             className={classNames(Styles.AggregatePosition, {
-              [Styles.long]: side === BUY,
-              [Styles.short]: side === SELL,
+              [Styles.long]: isBuy,
+              [Styles.short]: !isBuy,
             })}
           >
-            {`${side === BUY ? BUYING : SELLING}
+            {`${isBuy ? BUYING : SELLING}
               ${newOrderAmount}
               Shares @ ${limitPrice}`}
           </div>
           <LinearPropertyLabel
             label="Max Profit"
             value={potentialDaiProfit}
-            showDenomination={true}
+            showDenomination
           />
           <LinearPropertyLabel
             label="Max Loss"
             value={potentialDaiLoss}
-            showDenomination={true}
+            showDenomination
           />
 
-          {gasCostDai.roundedValue.gt(0) > 0 && numFills > 0 && (
+          {gasCostDai.roundedValue.gt(0) > 0 && hasFills && (
             <TransactionFeeLabelToolTip
               isError={createBigNumber(gasCostDai.value).gt(
                 createBigNumber(potentialDaiProfit.value)
@@ -476,38 +458,8 @@ export const Confirm = ({
           )}
         </div>
       )}
-      {numFills > 0 && !postOnlyOrder && <EthReserveAutomaticTopOff />}
-      {messages && (
-        <div
-          className={classNames(Styles.MessageContainer, {
-            [Styles.Error]: messages.type === ERROR,
-          })}
-        >
-          {messages.type === ERROR ? ExclamationCircle : InformationIcon}
-          <span>{messages.header}</span>
-          <div>
-            {messages.message}
-            {messages.link && (
-              <ExternalLinkButton URL={messages.link} label="LEARN MORE" />
-            )}
-          </div>
-          {messages.button && (
-            <ProcessingButton
-              text={messages.button.text}
-              action={messages.button.action}
-              queueName={TRANSACTIONS}
-              queueId={CREATEAUGURWALLET}
-            />
-          )}
-          {messages.type !== ERROR && !messages.button && (
-            <button
-              onClick={messages.callback ? () => messages.callback() : null}
-            >
-              {XIcon}
-            </button>
-          )}
-        </div>
-      )}
+      {hasFills && !postOnlyOrder && <EthReserveAutomaticTopOff />}
+      {messages && <MessageContainer {...messages} />}
       {!postOnlyOrder && <EthReserveNotice gasLimit={gasLimit} />}
     </section>
   );

@@ -1,13 +1,10 @@
 import React, { Component } from 'react';
 import { createBigNumber } from 'utils/create-big-number';
 import Highcharts from 'highcharts/highstock';
-import NoDataToDisplay from 'highcharts/modules/no-data-to-display';
 import Styles from 'modules/market-charts/components/candlestick/candlestick.styles.less';
 import { PERIOD_RANGES, DAI } from 'modules/common/constants';
 import { PriceTimeSeriesData } from 'modules/types';
 import { AppStatus } from 'modules/app/store/app-status';
-
-NoDataToDisplay(Highcharts);
 
 interface HighChartsWrapperProps {
   priceTimeSeries: PriceTimeSeriesData[];

@@ -30,7 +30,6 @@ import {
 import makePath from 'modules/routes/helpers/make-path';
 import parsePath from 'modules/routes/helpers/parse-path';
 import {
-  MODAL_NETWORK_CONNECT,
   MOBILE_MENU_STATES,
   TRADING_TUTORIAL,
   THEMES,
@@ -121,6 +120,7 @@ const AppView = ({
   location: locationProp,
 }: AppProps) => {
   const {
+    theme,
     universe: { forkEndTime, forkingInfo },
     blockchain: { currentAugurTimestamp },
     mobileMenuState,
@@ -297,7 +297,8 @@ const AppView = ({
           />
           {forkEndTime !== '0' &&
             currentAugurTimestamp &&
-            currentPath !== ACCOUNT_SUMMARY && (
+            currentPath !== ACCOUNT_SUMMARY &&
+            theme === THEMES.TRADING && (
               <section className={Styles.TopBar} />
             )}
           <StatusErrorMessage />

@@ -1,4 +1,4 @@
-import React, { Component, useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import classNames from 'classnames';
 import {
   ChevronDown,
@@ -8,7 +8,6 @@ import {
 } from 'modules/common/icons';
 import MarkdownRenderer from 'modules/common/markdown-renderer';
 import { MarketHeaderBar } from 'modules/market/components/market-header/market-header-bar';
-import { BigNumber } from 'bignumber.js';
 import Styles from 'modules/market/components/market-header/market-header.styles.less';
 import CoreProperties from 'modules/market/components/core-properties/core-properties';
 import {
@@ -17,68 +16,69 @@ import {
   HEADER_TYPE,
   REPORTING_STATE,
   ZERO,
+  TRADING_TUTORIAL_STEPS,
 } from 'modules/common/constants';
 import { MarketHeaderReporting } from 'modules/market/components/market-header/market-header-reporting';
 import ToggleHeightStyles from 'utils/toggle-height.styles.less';
-import { MarketData, TextObject } from 'modules/types';
+import { TextObject, MarketData } from 'modules/types';
 import { TutorialPopUp } from 'modules/market/components/common/tutorial-pop-up';
 import MarketTitle from 'modules/market/components/common/market-title';
 import PreviewMarketTitle from 'modules/market/components/common/PreviewMarketTitle';
 import { HeadingBar } from '../common/common';
-import { selectMarket } from 'modules/markets/selectors/market';
 import { useAppStatusStore } from 'modules/app/store/app-status';
 import { isSameAddress } from 'utils/isSameAddress';
 import { useRef } from 'react';
-import { useHistory } from 'react-router';
+import { useHistory, useLocation } from 'react-router';
+import { getTutorialPreview } from 'modules/market/store/market-utils';
 
 const OVERFLOW_DETAILS_LENGTH = 48; // in px, overflow limit to trigger MORE details
+const { MARKET_DETAILS, MARKET_DATA } = TRADING_TUTORIAL_STEPS;
+
+const {
+  PRE_REPORTING,
+  CROWDSOURCING_DISPUTE,
+  OPEN_REPORTING,
+  DESIGNATED_REPORTING,
+} = REPORTING_STATE;
 
 interface MarketHeaderProps {
   market: MarketData;
-  preview?: boolean;
-  reportingBarShowing: boolean;
-  next: Function;
-  showTutorialData?: boolean;
-  text: TextObject;
-  step: number;
-  totalSteps: number;
-  showTutorialDetails?: boolean;
-  marketId: string;
+  next?: Function;
+  text?: TextObject;
+  step?: number;
+  totalSteps?: number;
 }
 
 export const MarketHeader = ({
   market,
-  marketId,
-  showTutorialDetails,
-  preview,
-  showTutorialData,
-  totalSteps,
-  text,
-  next,
-  step,
+  totalSteps = null,
+  text = null,
+  next = null,
+  step = null,
 }: MarketHeaderProps) => {
   const detailsContainer = useRef({
     current: { clientHeight: 0, scrollHeight: 0, scrollTop: 0 },
   });
   const refTitle = useRef(null);
   const refNotCollapsed = useRef(null);
-
+  const location = useLocation();
   const history = useHistory();
-
-  const marketSelected = market || selectMarket(marketId);
-  let reportingBarShowing = false;
   const {
-    loginAccount: { address: userAccount },
-    universe: { forkingInfo },
-    blockchain: { currentAugurTimestamp },
+    isTutorial,
+    preview,
+  } = getTutorialPreview(market.id, location);
+  const showTutorialData = isTutorial && step === MARKET_DATA;
+  const showTutorialDetails = isTutorial && step === MARKET_DETAILS;
+  const {
+    loginAccount: { address },
   } = useAppStatusStore();
 
   const {
+    details: marketDetails,
+    description: marketDescription,
     marketType,
     scalarDenomination,
     reportingState,
-    disputeInfo,
-    endTimeFormatted,
     maxPriceBigNumber,
     minPriceBigNumber,
     detailsText,
@@ -86,25 +86,22 @@ export const MarketHeader = ({
     id,
     consensusFormatted: consensus,
     mostLikelyInvalid,
-  } = marketSelected;
-
-  if (
+  } = market;
+  const reportingBarShowing = Boolean(
     consensus ||
-    reportingState === REPORTING_STATE.CROWDSOURCING_DISPUTE ||
-    reportingState === REPORTING_STATE.OPEN_REPORTING ||
-    (reportingState === REPORTING_STATE.DESIGNATED_REPORTING &&
-      isSameAddress(designatedReporter, userAccount))
-  ) {
-    reportingBarShowing = true;
-  }
+      reportingState === CROWDSOURCING_DISPUTE ||
+      reportingState === OPEN_REPORTING ||
+      (reportingState === DESIGNATED_REPORTING &&
+        isSameAddress(designatedReporter, address))
+  );
 
-  const description = marketSelected.description || '';
-  let details = marketSelected.details || detailsText || '';
+  const description = marketDescription || '';
+  let details = marketDetails || detailsText || '';
   const maxPrice = maxPriceBigNumber || ZERO;
   const minPrice = minPriceBigNumber || ZERO;
 
   const [showProperties, setShowProperties] = useState(
-    reportingState === REPORTING_STATE.PRE_REPORTING ? false : true
+    reportingState === PRE_REPORTING ? false : true
   );
   const [headerCollapsed, setHeaderCollapsed] = useState(false);
   const [showCopied, setShowCopied] = useState(false);
@@ -113,7 +110,13 @@ export const MarketHeader = ({
   const [detailsHeight, setDetailsHeight] = useState(0);
 
   useEffect(() => {
-    if (showCopied) setTimeout(() => setShowCopied(false), 4000);
+    let isMounted = true;
+    if (showCopied && isMounted) setTimeout(() => {
+      if (isMounted) { 
+        setShowCopied(false); 
+      }
+    }, 4000);
+    return () => isMounted = false;
   }, [showCopied]);
 
   useEffect(() => {
@@ -143,9 +146,8 @@ export const MarketHeader = ({
   }, []);
 
   const detailsTooLong =
-    marketSelected.details && detailsHeight > OVERFLOW_DETAILS_LENGTH;
-  const isScalar = marketType === SCALAR;
-  if (isScalar) {
+    marketDetails && detailsHeight > OVERFLOW_DETAILS_LENGTH;
+  if (marketType === SCALAR) {
     const denomination = scalarDenomination ? ` ${scalarDenomination}` : '';
     const warningText =
       (details.length > 0 ? `\n\n` : ``) +
@@ -166,6 +168,7 @@ export const MarketHeader = ({
         {
           [Styles.Collapsed]: headerCollapsed,
           [ToggleHeightStyles.open]: !headerCollapsed,
+          [Styles.Expandable]: detailsTooLong,
         }
       )}
     >
@@ -177,7 +180,7 @@ export const MarketHeader = ({
             })}
           >
             <HeadingBar
-              market={marketSelected}
+              market={market}
               expandedDetails={expandedDetails}
               showCopied={showCopied}
               setShowCopied={() => setShowCopied(true)}
@@ -190,7 +193,7 @@ export const MarketHeader = ({
               })}
             >
               {preview ? (
-                <PreviewMarketTitle market={marketSelected} />
+                <PreviewMarketTitle market={market} />
               ) : (
                 <MarketTitle id={id} noLink headerType={HEADER_TYPE.H1} />
               )}
@@ -239,27 +242,16 @@ export const MarketHeader = ({
                 [Styles.HideProperties]: !showProperties,
               })}
             >
-              {(id || preview) && (
-                <MarketHeaderBar
-                  market={marketSelected}
-                  reportingState={reportingState}
-                  disputeInfo={disputeInfo}
-                  endTimeFormatted={endTimeFormatted}
-                />
-              )}
-              <MarketHeaderReporting
-                marketId={id}
-                preview={preview}
-                market={preview && marketSelected}
-              />
+              {(id || preview) && <MarketHeaderBar market={market} />}
+              <MarketHeaderReporting preview={preview} market={market} />
               {(id || preview) && (
                 <CoreProperties
-                  market={marketSelected}
+                  market={market}
                   reportingBarShowing={reportingBarShowing}
                   showExtraDetailsChevron={showProperties}
                 />
               )}
-              {reportingState === REPORTING_STATE.PRE_REPORTING && (
+              {reportingState === PRE_REPORTING && (
                 <button
                   onClick={e => {
                     e.stopPropagation();
@@ -299,12 +291,7 @@ export const MarketHeader = ({
           {headerCollapsed && (
             <>
               <h1>{description}</h1>
-              <MarketHeaderBar
-                market={marketSelected}
-                reportingState={reportingState}
-                disputeInfo={disputeInfo}
-                endTimeFormatted={endTimeFormatted}
-              />
+              <MarketHeaderBar market={market} />
             </>
           )}
           {TwoArrowsOutline}

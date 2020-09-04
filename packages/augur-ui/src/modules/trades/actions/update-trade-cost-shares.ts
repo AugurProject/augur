@@ -26,7 +26,6 @@ export const updateTradeCost = ({
   if (!side || !numShares || !limitPrice) {
     return callback('side or numShare or limitPrice is not provided');
   }
-
   const {
     accountPositions,
     loginAccount: { address },
@@ -56,6 +55,7 @@ export const updateTradeCost = ({
 
 export const updateTradeShares = ({
   marketId,
+  market,
   outcomeId,
   side,
   maxCost,
@@ -70,9 +70,9 @@ export const updateTradeShares = ({
     accountPositions,
     loginAccount: { address },
   } = AppStatus.get();
-  const { marketInfos } = Markets.get();
+  // const { marketInfos } = Markets.get();
   checkAccountAllowance();
-  const market = marketInfos[marketId];
+  // const market = marketInfos[marketId];
   const newTradeDetails: any = {
     side,
     maxCost,
@@ -96,22 +96,17 @@ export const updateTradeShares = ({
     MaxCostLong / scaledPrice = quantityLong => 50 / 5 = 10
     MaxCostShort /(range - scaledPrice) = quantityShort => 100 / (15 - 5) = 10
     */
-
+  const {
+    minPriceBigNumber,
+    maxPriceBigNumber,
+  } = market;
   // calculate num shares
-  const marketMaxPrice = createBigNumber(market.maxPrice);
-  const marketMinPrice = createBigNumber(market.minPrice);
-  const marketRange = marketMaxPrice.minus(market.minPrice);
-  const scaledPrice = createBigNumber(limitPrice).plus(marketMinPrice.abs());
-
-  let newShares = createBigNumber(maxCost).dividedBy(
+  const marketRange = maxPriceBigNumber.minus(minPriceBigNumber);
+  const scaledPrice = createBigNumber(limitPrice).plus(minPriceBigNumber.abs());
+  const newShares = side === BUY ? createBigNumber(maxCost).dividedBy(scaledPrice) : createBigNumber(maxCost).dividedBy(
     marketRange.minus(scaledPrice)
   );
-  if (side === BUY) {
-    newShares = createBigNumber(maxCost).dividedBy(scaledPrice);
-  }
-
   newTradeDetails.numShares = createBigNumber(newShares.toFixed(4));
-
   return runSimulateTrade(
     newTradeDetails,
     market,

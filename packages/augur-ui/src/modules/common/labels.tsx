@@ -91,6 +91,7 @@ export interface MarketStatusProps {
   endTimeFormatted: DateFormattedObject;
   currentAugurTimestamp: number;
   isWarpSync?: boolean;
+  mini?: boolean;
 }
 
 export interface InReportingLabelProps extends MarketStatusProps {
@@ -196,10 +197,6 @@ export interface ValueLabelProps {
 interface SizableValueLabelProps extends ValueLabelProps {
   size: SizeTypes;
   highlight?: boolean;
-}
-
-interface HoverValueLabelState {
-  hover: boolean;
 }
 
 export interface TextLabelProps {
@@ -721,79 +718,76 @@ export const TextLabel = ({ text, keyId }: TextLabelProps) => {
   );
 };
 
-export class HoverValueLabel extends React.Component<
-  ValueLabelProps,
-  HoverValueLabelState
-> {
-  state: HoverValueLabelState = {
-    hover: false,
-  };
-  render() {
-    const { value, showDenomination, useFull } = this.props;
-    if (!value || value === null) return <span />;
+interface HoverValueLabelProps {
+  value?: FormattedNumber | null;
+  showDenomination?: boolean;
+  useFull?: boolean;
+}
 
-    const expandedValues = formatDecimalValue(value, showDenomination);
-    const {
-      fullPrecision,
-      postfix,
-      frontFacingLabel,
-      showHover,
-    } = expandedValues;
+export const HoverValueLabel = ({
+    value = null,
+    showDenomination = false,
+    useFull = false
+  }: HoverValueLabelProps) => {
+  const [hover, setHover] = useState(false);
+  if (value === null) return <span />;
 
-    const frontFacingLabelSplit = frontFacingLabel.toString().split('.');
-    const firstHalf = frontFacingLabelSplit[0];
-    const secondHalf = frontFacingLabelSplit[1];
+  const expandedValues = formatDecimalValue(value, showDenomination);
+  const {
+    fullPrecision,
+    postfix,
+    frontFacingLabel,
+    showHover,
+  } = expandedValues;
 
-    const fullPrecisionSplit = fullPrecision.toString().split('.');
-    const firstHalfFull = fullPrecisionSplit[0];
-    const secondHalfFull = fullPrecisionSplit[1];
+  const frontFacingLabelSplit = frontFacingLabel.toString().split('.');
+  const firstHalf = frontFacingLabelSplit[0];
+  const secondHalf = frontFacingLabelSplit[1];
 
-    return (
-      <span
-        className={Styles.HoverValueLabel}
-        onMouseEnter={() => {
-          this.setState({
-            hover: true,
-          });
-        }}
-        onMouseLeave={() => {
-          this.setState({
-            hover: false,
-          });
-        }}
-      >
-        {this.state.hover && showHover ? (
-          <span>
-            {useFull && value.full}
-            {!useFull && (
-              <>
-                <span>
-                  {firstHalfFull}
-                  {secondHalfFull && '.'}
-                </span>
-                <span>{secondHalfFull}</span>
-              </>
-            )}
-          </span>
-        ) : (
-          <span>
-            {useFull && value.formatted}
-            {!useFull && (
-              <>
-                <span>
-                  {firstHalf}
-                  {secondHalf && '.'}
-                </span>
-                <span>
-                  {secondHalf} {postfix}
-                </span>
-              </>
-            )}
-          </span>
-        )}
-      </span>
-    );
-  }
+  const fullPrecisionSplit = fullPrecision.toString().split('.');
+  const firstHalfFull = fullPrecisionSplit[0];
+  const secondHalfFull = fullPrecisionSplit[1];
+  return (
+    <span
+      className={Styles.HoverValueLabel}
+      onMouseEnter={() => {
+        setHover(true);
+      }}
+      onMouseLeave={() => {
+        setHover(false);
+      }}
+    >
+      {hover && showHover ? (
+        <span>
+          {useFull && value.full}
+          {!useFull && (
+            <>
+              <span>
+                {firstHalfFull}
+                {secondHalfFull && '.'}
+              </span>
+              <span>{secondHalfFull}</span>
+            </>
+          )}
+        </span>
+      ) : (
+        <span>
+          {useFull && value.formatted}
+          {!useFull && (
+            <>
+              <span>
+                {firstHalf}
+                {secondHalf && '.'}
+              </span>
+              <span>
+                {secondHalf} {postfix}
+              </span>
+            </>
+          )}
+        </span>
+      )}
+    </span>
+  );
 }
 
 export const InvalidLabel = ({
@@ -1054,16 +1048,20 @@ export const LiquidityDepletedLabel = ({
     </span>
   );
 };
+export interface MarketStatusLabelProps {
+  reportingState: string;
+  mini?: boolean;
+  isWarpSync?: boolean; 
+};
 
 export const MarketStatusLabel = ({
   reportingState,
-  mini,
-  isWarpSync,
-}: MarketStatusProps) => {
+  mini = false,
+  isWarpSync = false,
+}: MarketStatusLabelProps) => {
   let open = false;
   let resolved = false;
   let reporting = false;
-  let warpSync = false;
   let text: string;
   switch (reportingState) {
     case REPORTING_STATE.UNKNOWN:
@@ -1086,7 +1084,6 @@ export const MarketStatusLabel = ({
   }
 
   if (isWarpSync) {
-    warpSync = true;
     text = 'Warp Sync Market';
   }
   return (
@@ -1096,7 +1093,7 @@ export const MarketStatusLabel = ({
         [Styles.MarketStatus_open]: open,
         [Styles.MarketStatus_resolved]: resolved,
         [Styles.MarketStatus_reporting]: reporting,
-        [Styles.MarketStatus_warpSync]: warpSync,
+        [Styles.MarketStatus_warpSync]: isWarpSync,
       })}
     >
       {text}
@@ -1104,8 +1101,7 @@ export const MarketStatusLabel = ({
   );
 };
 
-export const InReportingLabel = (props: InReportingLabelProps) => {
-  const { reportingState, disputeInfo, isWarpSync, isForkingMarket } = props;
+export const InReportingLabel = ({ reportingState, disputeInfo, isWarpSync, isForkingMarket }: InReportingLabelProps) => {
 
   const reportingStates = [
     REPORTING_STATE.DESIGNATED_REPORTING,
@@ -1115,7 +1111,7 @@ export const InReportingLabel = (props: InReportingLabelProps) => {
   ];
 
   if (!reportingStates.includes(reportingState)) {
-    return <MarketStatusLabel {...props} />;
+    return <MarketStatusLabel reportingState={reportingState} isWarpSync={isWarpSync} />;
   }
 
   let reportingExtraText: string | null;

@@ -206,12 +206,14 @@ export function PendingOrdersReducer(state, action) {
       console.error(`Error: ${action.type} not caught by Pending reducer.`);
   }
   window.pendingOrders = updatedState;
+  window.stores.pendingOrders = updatedState;
   return updatedState;
 }
 
 export const usePendingOrders = (defaultState = DEFAULT_PENDING_ORDERS) => {
   const [state, dispatch] = useReducer(PendingOrdersReducer, defaultState);
   window.pendingOrders = state;
+  window.stores.pendingOrders = state;
   return {
     ...state,
     actions: {

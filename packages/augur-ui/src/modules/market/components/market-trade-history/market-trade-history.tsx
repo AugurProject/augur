@@ -1,6 +1,6 @@
 /* eslint react/no-array-index-key: 0 */
 
-import React, { Component } from 'react';
+import React from 'react';
 import classNames from 'classnames';
 
 import { formatDai, formatMarketShares } from 'utils/format-number';
@@ -12,20 +12,20 @@ import Styles from 'modules/market/components/market-trade-history/market-trade-
 import { useMarketsStore } from 'modules/markets/store/markets';
 import { marketTradingPriceTimeSeries } from 'modules/markets/selectors/market-trading-price-time-series';
 import { createBigNumber } from 'utils/create-big-number';
+import { getIsTutorial } from 'modules/market/store/market-utils';
 
 interface MarketTradeHistoryProps {
   marketId: string;
-  tradingTutorial?: boolean;
   toggle: Function;
   hide: boolean;
   marketType: string;
   isArchived?: boolean;
   initialGroupedTradeHistory?: object
-  outcome?: string;
+  outcome?: number;
 }
+
 const MarketTradeHistory = ({
   marketId,
-  tradingTutorial,
   toggle,
   hide,
   marketType,
@@ -34,6 +34,7 @@ const MarketTradeHistory = ({
   outcome
 }: MarketTradeHistoryProps) => {
   const { marketTradingHistory } = useMarketsStore();
+  const tradingTutorial = getIsTutorial(marketId);
   let groupedTradeHistory = {};
   const groupedTradeHistoryVolume = {};
   const tradeHistory = marketTradingHistory[marketId] || [];
@@ -45,9 +46,9 @@ const MarketTradeHistory = ({
 
     Object.keys(groupedTradeHistory).forEach(key => {
       groupedTradeHistoryVolume[key] = groupedTradeHistory[key].reduce(
-        (p, item) =>
+        (p, { amount }) =>
           createBigNumber(p)
-            .plus(createBigNumber(item.amount))
+            .plus(createBigNumber(amount))
             .toFixed(4),
         '0'
       );
@@ -66,7 +67,7 @@ const MarketTradeHistory = ({
       <div>
         {isArchived && <DataArchivedLabel label="tradeHistory" />}
         {!isArchived && Object.keys(groupedTradeHistory).length === 0 && (
-          <span>No Trade History</span>
+          <span className={Styles.NoHistory}>No Trade History</span>
         )}
         {!isArchived &&
           groupedTradeHistory &&
@@ -80,8 +81,13 @@ const MarketTradeHistory = ({
                   ).full
                 } - ${date}`}
               </span>
-              {groupedTradeHistory[date].map((priceTime, indexJ) => {
-                const isSell = priceTime.type === SELL;
+              {groupedTradeHistory[date].map(({
+                type,
+                amount,
+                price,
+                time,
+              }, indexJ) => {
+                const isSell = type === SELL;
                 return (
                   <ul
                     className={classNames({ [Styles.Sell]: isSell })}
@@ -89,15 +95,15 @@ const MarketTradeHistory = ({
                   >
                     <li>
                       <HoverValueLabel
-                        value={formatMarketShares(marketType, priceTime.amount)}
+                        value={formatMarketShares(marketType, amount)}
                         useFull
                       />
                     </li>
                     <li>
                       {isScalar ? (
-                        <HoverValueLabel value={formatDai(priceTime.price)} />
+                        <HoverValueLabel value={formatDai(price)} />
                       ) : (
-                        priceTime.price.toFixed(2)
+                        price.toFixed(2)
                       )}
                       <span
                         className={classNames({
@@ -106,7 +112,7 @@ const MarketTradeHistory = ({
                         })}
                       />
                     </li>
-                    <li>{priceTime.time}</li>
+                    <li>{time}</li>
                   </ul>
                 );
               })}

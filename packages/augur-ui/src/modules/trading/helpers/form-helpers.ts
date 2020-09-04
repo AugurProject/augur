@@ -7,7 +7,7 @@ import {
   UPPER_FIXED_PRECISION_BOUND,
   MIN_ORDER_LIFESPAN,
 } from 'modules/common/constants';
-import { FORM_INPUT_TYPES as INPUT_TYPES } from 'modules/trading/store/constants';
+import { FORM_INPUT_TYPES } from 'modules/trading/store/constants';
 import { createBigNumber, BigNumber } from 'utils/create-big-number';
 import { calcPercentageFromPrice } from 'utils/format-number';
 import getPrecision from 'utils/get-number-precision';
@@ -38,6 +38,13 @@ interface Props {
   orderBook: Getters.Markets.OutcomeOrderBook;
   initialLiquidity?: Boolean;
 }
+const {
+  PRICE,
+  QUANTITY,
+  MULTIPLE_QUANTITY,
+  EXPIRATION_DATE,
+  EST_DAI,
+} = FORM_INPUT_TYPES;
 
 export const testPrice = (
   value,
@@ -68,9 +75,9 @@ export const testPrice = (
     errorCount += 1;
     passedTest = false;
     if (usePercent) {
-      errors[INPUT_TYPES.PRICE].push(`Enter a valid percentage`);
+      errors[PRICE].push(`Enter a valid percentage`);
     } else {
-      errors[INPUT_TYPES.PRICE].push(
+      errors[PRICE].push(
         `Price must be above ${minPrice} and below ${maxPrice}`
       );
     }
@@ -84,7 +91,7 @@ export const testPrice = (
   ) {
     errorCount += 1;
     passedTest = false;
-    errors[INPUT_TYPES.PRICE].push(`Price must be a multiple of ${tickSize}`);
+    errors[PRICE].push(`Price must be a multiple of ${tickSize}`);
   }
   if (
     initialLiquidity &&
@@ -102,7 +109,7 @@ export const testPrice = (
       : `Price must be less than best ask of ${orderBook.asks[0].price}`;
     errorCount += 1;
     passedTest = false;
-    errors[INPUT_TYPES.PRICE].push(message);
+    errors[PRICE].push(message);
   } else if (
     initialLiquidity &&
     selectedNav === SELL &&
@@ -119,7 +126,7 @@ export const testPrice = (
       : `Price must be more than best bid of ${orderBook.bids[0].price}`;
     errorCount += 1;
     passedTest = false;
-    errors[INPUT_TYPES.PRICE].push(message);
+    errors[PRICE].push(message);
   }
   return { isOrderValid: passedTest, errors, errorCount };
 };
@@ -139,7 +146,7 @@ export const testTotal = (
   if (value && createBigNumber(value).lt(0)) {
     errorCount += 1;
     passedTest = false;
-    errors[INPUT_TYPES.EST_DAI].push(
+    errors[EST_DAI].push(
       'Total Order Value must be greater than 0'
     );
   }
@@ -156,23 +163,23 @@ export const testPropertyCombo = (
   let errorCount = 0;
   if (quantity && estEth && !price) {
     errorCount += 1;
-    errors[INPUT_TYPES.PRICE].push(
+    errors[PRICE].push(
       'Price is needed with Quantity or Total Value'
     );
   }
   if (
-    changedProperty === INPUT_TYPES.QUANTITY &&
+    changedProperty === QUANTITY &&
     createBigNumber(quantity).lte(0)
   ) {
     errorCount += 1;
-    errors[INPUT_TYPES.QUANTITY].push('Quantity must be greater than 0');
+    errors[QUANTITY].push('Quantity must be greater than 0');
   }
   if (
-    changedProperty === INPUT_TYPES.EST_DAI &&
+    changedProperty === EST_DAI &&
     createBigNumber(estEth).lte(0)
   ) {
     errorCount += 1;
-    errors[INPUT_TYPES.EST_DAI].push(
+    errors[EST_DAI].push(
       'Total Order Value must be greater than 0'
     );
   }
@@ -186,14 +193,14 @@ export const findMultipleOf = market => {
     ? createBigNumber(market.numTicks)
     : tickSizeToNumTickWithDisplayPrices(
         createBigNumber(market.tickSize),
-        createBigNumber(market.minPrice),
-        createBigNumber(market.maxPrice)
+        market.minPriceBigNumber,
+        market.maxPriceBigNumber
       );
 
   if (market.marketType == SCALAR) {
     tradeInterval = getTradeInterval(
-      createBigNumber(market.minPrice).times(QUINTILLION),
-      createBigNumber(market.maxPrice).times(QUINTILLION),
+      market.minPriceBigNumber.times(QUINTILLION),
+      market.maxPriceBigNumber.times(QUINTILLION),
       numTicks
     );
   }
@@ -240,12 +247,12 @@ export const testQuantityAndExpiry = (
   if (value && value.lte(0)) {
     errorCount += 1;
     passedTest = false;
-    errors[INPUT_TYPES.QUANTITY].push('Quantity must be greater than 0');
+    errors[QUANTITY].push('Quantity must be greater than 0');
   }
   if (value && value.lt(0.000000001) && !value.eq(0) && !fromExternal) {
     errorCount += 1;
     passedTest = false;
-    errors[INPUT_TYPES.QUANTITY].push(
+    errors[QUANTITY].push(
       'Quantity must be greater than 0.000000001'
     );
   }
@@ -257,7 +264,7 @@ export const testQuantityAndExpiry = (
   ) {
     errorCount += 1;
     passedTest = false;
-    errors[INPUT_TYPES.QUANTITY].push(
+    errors[QUANTITY].push(
       `Precision must be ${UPPER_FIXED_PRECISION_BOUND} decimals or less`
     );
   }
@@ -296,7 +303,7 @@ export const testQuantityAndExpiry = (
         .plus(multipleOf)
         .minus(value.mod(multipleOf));
     }
-    errors[INPUT_TYPES.MULTIPLE_QUANTITY].push(
+    errors[MULTIPLE_QUANTITY].push(
       `Quantity needs to be a multiple of ${multipleOf}`
     );
   }
@@ -311,7 +318,7 @@ export const testQuantityAndExpiry = (
   if (expiration && expiryTime < MIN_ORDER_LIFESPAN) {
     errorCount += 1;
     passedTest = false;
-    errors[INPUT_TYPES.EXPIRATION_DATE].push(
+    errors[EXPIRATION_DATE].push(
       `Order expires to soon! Earilest expiration is ${earliestExp} minutes`
     );
   }
@@ -326,28 +333,25 @@ export const orderValidation = (
   fromExternal = false
 ): TestResults => {
   let errors = {
-    [INPUT_TYPES.MULTIPLE_QUANTITY]: [],
-    [INPUT_TYPES.QUANTITY]: [],
-    [INPUT_TYPES.PRICE]: [],
-    [INPUT_TYPES.EST_DAI]: [],
-    [INPUT_TYPES.EXPIRATION_DATE]: [],
+    [MULTIPLE_QUANTITY]: [],
+    [QUANTITY]: [],
+    [PRICE]: [],
+    [EST_DAI]: [],
+    [EXPIRATION_DATE]: [],
   };
   let isOrderValid = true;
   let errorCount = 0;
 
   const price =
-    order[INPUT_TYPES.PRICE] && createBigNumber(order[INPUT_TYPES.PRICE]);
+    order[PRICE] && createBigNumber(order[PRICE]);
 
   const quantity =
-    order[INPUT_TYPES.QUANTITY] && createBigNumber(order[INPUT_TYPES.QUANTITY]);
+    order[QUANTITY] && createBigNumber(order[QUANTITY]);
 
   const total =
-    order[INPUT_TYPES.EST_DAI] && createBigNumber(order[INPUT_TYPES.EST_DAI]);
+    order[EST_DAI] && createBigNumber(order[EST_DAI]);
 
-  let expiration = null;
-  if (order[INPUT_TYPES.EXPIRATION_DATE]) {
-    expiration = order[INPUT_TYPES.EXPIRATION_DATE];
-  }
+  const expiration = order[EXPIRATION_DATE] ? order[EXPIRATION_DATE] : null;
 
   const {
     isOrderValid: priceValid,
@@ -360,7 +364,7 @@ export const orderValidation = (
 
   let quantityValid = true;
 
-  if (changedProperty !== INPUT_TYPES.EST_DAI) {
+  if (changedProperty !== EST_DAI) {
     const {
       isOrderValid: isThisOrderValid,
       errors: quantityErrors,
@@ -394,9 +398,9 @@ export const orderValidation = (
     errors: comboErrors,
     errorCount: comboErrorCount,
   } = testPropertyCombo(
-    order[INPUT_TYPES.QUANTITY],
-    order[INPUT_TYPES.PRICE],
-    order[INPUT_TYPES.EST_DAI],
+    order[QUANTITY],
+    order[PRICE],
+    order[EST_DAI],
     changedProperty,
     errors
   );

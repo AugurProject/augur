@@ -36,6 +36,7 @@ import { removeCanceledOrder } from 'modules/pending-queue/actions/pending-queue
 import { removePendingOrder } from 'modules/orders/actions/pending-orders-management';
 import { Properties } from './row-column';
 import { convertToOdds } from 'utils/get-odds';
+import { Trading } from 'modules/trading/store/trading';
 import { BET_STATUS } from 'modules/trading/store/constants';
 import { useBetslipStore } from 'modules/trading/store/betslip';
 
@@ -135,7 +136,6 @@ interface MarketOutcomeProps {
   preview: Boolean;
   marketId: string;
   updateSelectedOutcome: Function;
-  updateSelectedOrderProperties: Function;
   scalarDenomination: string;
   selectedOutcomeId: number;
 }
@@ -146,7 +146,6 @@ export const MarketOutcome = ({
   preview,
   marketId,
   updateSelectedOutcome,
-  updateSelectedOrderProperties,
   scalarDenomination,
   selectedOutcomeId,
 }: MarketOutcomeProps) => {
@@ -167,15 +166,14 @@ export const MarketOutcome = ({
     ? newMarket
     : null;
   // default values for create market preview
-  const minPrice = market ? market.minPrice : 0;
-  const maxPrice = market ? market.maxPrice : 1;
-  const tickSize = market ? market.tickSize : 100;
-  const marketType = market ? market.marketType : YES_NO; // default to yes no. has to be something
+  const minPrice = market?.minPrice || 0;
+  const maxPrice = market?.maxPrice || 1;
+  const tickSize = market?.tickSize || 100;
+  const marketType = market?.marketType || YES_NO; // default to yes no. has to be something
 
   const usePercent =
-    outcome &&
-    outcome.id === INVALID_OUTCOME_ID &&
-    market.marketType === SCALAR;
+    outcome?.id === INVALID_OUTCOME_ID &&
+    market?.marketType === SCALAR;
 
   const { topAsk, topBid } = selectMarketOutcomeBestBidAsk(
     outcomeOrderBook,
@@ -253,10 +251,9 @@ export const MarketOutcome = ({
       alert: showInvalidAlert,
       action: e => {
         updateSelectedOutcome(outcome.id, true);
-        updateSelectedOrderProperties({
-          selectedOutcomeId: outcome.id,
-          orderPrice: topBidPrice && topBidPrice.value.toString(),
-          orderQuantity: topBidShares && topBidShares.value.toString(),
+        Trading.actions.updateOrderProperties({
+          orderPrice: topBidPrice?.value?.toString(),
+          orderQuantity: topBidShares?.value?.toString(),
           selectedNav: SELL,
         });
         e.stopPropagation();
@@ -271,10 +268,9 @@ export const MarketOutcome = ({
       usePercent: !!topAskPrice.percent,
       action: e => {
         updateSelectedOutcome(outcome.id, true);
-        updateSelectedOrderProperties({
-          selectedOutcomeId: outcome.id,
-          orderPrice: topAskPrice && topAskPrice.value.toString(),
-          orderQuantity: topAskShares && topAskShares.value.toString(),
+        Trading.actions.updateOrderProperties({
+          orderPrice: topAskPrice?.value?.toString(),
+          orderQuantity: topAskShares?.value?.toString(),
           selectedNav: BUY,
         });
         e.stopPropagation();
@@ -558,7 +554,6 @@ interface PositionRowProps {
   extendedView: Boolean;
   isFirst: Boolean;
   showPercent: Boolean;
-  updateSelectedOrderProperties: Function;
 }
 
 export const PositionRow = ({
@@ -566,11 +561,10 @@ export const PositionRow = ({
   showExpandedToggleOnMobile,
   extendedView,
   isFirst,
-  updateSelectedOrderProperties,
   showPercent,
 }: PositionRowProps) => {
   const { marketInfos } = useMarketsStore();
-
+  const { updateOrderProperties } = Trading.actions;
   let { lastPrice, purchasePrice } = position;
 
   const market = marketInfos[position.marketId];
@@ -609,7 +603,7 @@ export const PositionRow = ({
       value: position.quantity,
       keyId: 'position-quantity-' + position.id,
       action: () => {
-        updateSelectedOrderProperties({
+        updateOrderProperties({
           orderQuantity: position.quantity.value,
           selectedNav: position.type === SHORT ? BUY : SELL,
           orderPrice: '',

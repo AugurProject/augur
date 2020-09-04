@@ -57,6 +57,14 @@
     .text-11-bold;
 
     padding: @size-9 @size-12;
+    display: flex;
+    align-items: center;
+
+    > svg {
+      height: @size-11;
+      width: @size-11;
+      margin-left: @size-4;
+    }
   }
 }
 
@@ -358,6 +366,7 @@
         height: @size-12;
         width: @size-12;
         margin-right: @size-4;
+        margin-left: 0;
 
         > path {
           stroke: var(--color-primary-text);

@@ -1,36 +1,6 @@
 @import (reference) "~assets/styles/shared";
 
-// Used in Betting UI
-.MarketOutcomeDepth {
-  display: flex;
-  flex: 1 100%;
-  flex-direction: column;
-}
-
-.MarketOutcomeDepth__depth-hover-values {
-  display: flex;
-  font-size: @size-12;
-  font-weight: 400;
-  letter-spacing: 0.3px;
-  line-height: @size-12;
-  text-transform: capitalize;
-}
-
-.MarketOutcomeDepth__hover-depth {
-  display: flex;
-}
-
-.MarketOutcomeDepth__depth-hover-title {
-  color: var(--color-primary-text);
-  margin-right: @size-5;
-}
-
-.MarketOutcomeDepth__depth-hover-value {
-  color: var(--color-secondary-text);
-  width: 5em;
-}
-
-.MarketOutcomeDepth__container {
+.Container {
   background: var(--color-module-background);
   cursor: cell;
   flex: 1;
@@ -39,11 +9,12 @@
   padding-top: @size-8;
   padding-bottom: @size-4;
   display: grid;
-  grid-template-columns: auto 24px 50px 24px auto;
-  grid-template-rows: 12px 16px 0fr;
+  grid-template-columns: auto @size-24 @size-50 @size-24 auto;
+  grid-template-rows: @size-12 @size-16 0fr;
   grid-gap: 0 @size-22;
 
   > button {
+    align-items: center;
     display: flex;
     justify-content: center;
     width: @size-24;
@@ -63,7 +34,7 @@
 
     &:disabled {
       cursor: not-allowed;
-      border: 1px solid var(--color-inactive-text);
+      border: @size-1 solid var(--color-inactive-text);
 
       > svg > rect {
         fill: var(--color-inactive-text);
@@ -366,7 +337,7 @@
 
 :root[theme="BETTING"],
 :root[theme="SPORTS"] {
-  .MarketOutcomeDepth__container {
+  .Container {
     > button {
       display: none;
     }

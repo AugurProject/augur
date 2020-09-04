@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import classNames from 'classnames';
 import { createBigNumber } from 'utils/create-big-number';
-
+import { useLocation } from 'react-router';
 import Form from 'modules/trading/components/form';
 import Confirm from 'modules/trading/components/confirm';
 import { generateTrade } from 'modules/trades/helpers/generate-trade';
@@ -15,6 +15,7 @@ import {
   MODAL_ADD_FUNDS,
   MODAL_INITIALIZE_ACCOUNT,
   MODAL_DISCLAIMER,
+  TRADING_TUTORIAL,
 } from 'modules/common/constants';
 import Styles from 'modules/trading/components/wrapper.styles.less';
 import { OrderButton, PrimaryButton } from 'modules/common/buttons';
@@ -25,7 +26,6 @@ import {
 } from 'utils/format-number';
 import { calculateTotalOrderValue } from 'modules/trades/helpers/calc-order-profit-loss-percents';
 import { formatDai } from 'utils/format-number';
-import { Moment } from 'moment';
 import { calcOrderExpirationTime } from 'utils/format-date';
 import { orderSubmitted } from 'services/analytics/helpers';
 import { placeMarketTrade } from 'modules/trades/actions/place-market-trade';
@@ -41,16 +41,13 @@ import {
 import makePath from 'modules/routes/helpers/make-path';
 import { MARKET } from 'modules/routes/constants/views';
 import makeQuery from 'modules/routes/helpers/make-query';
-import { MARKET_ID_PARAM_NAME, THEME_NAME } from 'modules/routes/constants/param-names';
-import { FORM_INPUT_TYPES as INPUT_TYPES } from 'modules/trading/store/constants';
+import {
+  MARKET_ID_PARAM_NAME,
+  THEME_NAME,
+} from 'modules/routes/constants/param-names';
 import { canPostOrder } from 'modules/trades/actions/can-post-order';
-
-export interface SelectedOrderProperties {
-  orderPrice: string;
-  orderQuantity: string;
-  selectedNav: string;
-  expirationDate?: Moment;
-}
+import { getIsTutorial, getIsPreview } from 'modules/market/store/market-utils';
+import { useTradingStore } from 'modules/trading/store/trading';
 
 const getMarketPath = (id, theme) => ({
   pathname: makePath(MARKET),
@@ -88,13 +85,13 @@ const getDefaultTrade = ({
   );
 };
 
-const OrderTicketHeader = ({
-  market,
-  updateSelectedOrderProperties,
-  selectedOrderProperties,
-  updateTradeTotalCost,
-}) => {
-  const buySelected = selectedOrderProperties.selectedNav === BUY;
+const OrderTicketHeader = ({ market, updateTradeTotalCost }) => {
+  const {
+    orderProperties,
+    actions: { updateSelectedNav },
+  } = useTradingStore();
+  const buySelected = orderProperties.selectedNav === BUY;
+
   return (
     <ul
       className={classNames({
@@ -110,12 +107,9 @@ const OrderTicketHeader = ({
       >
         <button
           onClick={() => {
-            updateSelectedOrderProperties({
-              ...selectedOrderProperties,
-              selectedNav: BUY,
-            });
+            updateSelectedNav(BUY);
             updateTradeTotalCost({
-              ...selectedOrderProperties,
+              ...orderProperties,
               selectedNav: BUY,
             });
           }}
@@ -130,12 +124,9 @@ const OrderTicketHeader = ({
       >
         <button
           onClick={() => {
-            updateSelectedOrderProperties({
-              ...selectedOrderProperties,
-              selectedNav: SELL,
-            });
+            updateSelectedNav(SELL);
             updateTradeTotalCost({
-              ...selectedOrderProperties,
+              ...orderProperties,
               selectedNav: SELL,
             });
           }}
@@ -151,11 +142,7 @@ const Wrapper = ({
   market,
   selectedOutcome,
   updateSelectedOutcome,
-  selectedOrderProperties,
-  updateSelectedOrderProperties,
-  initialLiquidity,
   updateLiquidity,
-  tradingTutorial,
   tutorialNext,
   orderBook,
 }) => {
@@ -176,107 +163,88 @@ const Wrapper = ({
       ui: { reportingOnly: disableTrading },
     },
   } = useAppStatusStore();
-  const [state, setState] = useState({
-    orderDaiEstimate: '',
-    orderEscrowdDai: '',
-    gasCostEst: '',
-    postOnlyOrder: false,
-    doNotCreateOrders: selectedOrderProperties.doNotCreateOrders || false,
-    expirationDate: selectedOrderProperties.expirationDate || null,
-    trade: getDefaultTrade({ market, selectedOutcome }),
-    simulateQueue: [],
-    allowPostOnlyOrder: true,
-  });
+  const {
+    orderProperties,
+    actions: { updateOrderProperties },
+  } = useTradingStore();
+  const location = useLocation();
+  const isTutorial = getIsTutorial(market.id);
+  const isPreview = getIsPreview(location);
+  const initialLiquidity = isPreview && !isTutorial;
+  const [trade, setTrade] = useState(
+    getDefaultTrade({ market, selectedOutcome })
+  );
+  const [isSimulatingTrade, setIsSimulatingTrade] = useState(false);
   const marketId = market.id;
+  const tradingTutorial = marketId === TRADING_TUTORIAL;
   const endTime = initialLiquidity ? newMarket.setEndTime : market.endTime;
-  let availableDai = totalTradingBalance();
-  if (initialLiquidity) {
-    availableDai = availableDai.minus(newMarket.initialLiquidityDai);
-  }
+  const availableDai = initialLiquidity
+    ? totalTradingBalance().minus(newMarket.initialLiquidityDai)
+    : totalTradingBalance();
   const gsnUnavailable = isGSNUnavailable();
   const disclaimerSeen = !!getValueFromlocalStorage(DISCLAIMER_SEEN);
   const gsnWalletInfoSeen = !!getValueFromlocalStorage(GSN_WALLET_SEEN);
 
   const hasHistory = !!accountPositions[marketId] || !!userOpenOrders[marketId];
-
+  // if outcome id changes we clear form
   useEffect(() => {
     clearOrderForm(true);
   }, [selectedOutcome.id]);
-
+  // if price and quantity are filled in but estimated dai isn't, run it. can happen from orderbook/outcome table clicks.
   useEffect(() => {
-    if (
-      selectedOrderProperties.orderQuantity !== '' &&
-      selectedOrderProperties.orderPrice !== '' &&
-      state.orderDaiEstimate === '' &&
-      !state.trade.limitPrice &&
-      !state.trade.numShares
-    ) {
-      // if SelectedOrderProps aren't empty but no estimated dai and have no price or numShares for trade, then recalculate.
-      updateTradeTotalCost(selectedOrderProperties);
+    const { orderPrice, orderQuantity } = orderProperties;
+    if (!!orderQuantity && !!orderPrice && !isSimulatingTrade) {
+      updateTradeTotalCost(orderProperties);
     }
-  }, [
-    selectedOrderProperties.orderQuantity,
-    selectedOrderProperties.orderPrice,
-  ]);
+  }, [orderProperties.orderPrice, orderProperties.orderQuantity]);
 
   function clearOrderForm(wholeForm = true) {
-    const tradeUpdate = getDefaultTrade({ market, selectedOutcome });
     const expirationDate =
-      selectedOrderProperties.expirationDate ||
+      orderProperties.expirationDate ||
       calcOrderExpirationTime(endTime, currentTimestamp);
-    const updatedState: any = wholeForm
-      ? {
-          orderDaiEstimate: '',
-          orderEscrowdDai: '',
-          gasCostEst: '',
-          expirationDate,
-          trade: tradeUpdate,
-          postOnlyOrder: false,
-          allowPostOnlyOrder: true,
-        }
-      : { trade: tradeUpdate };
-    setState({ ...state, ...updatedState });
     if (wholeForm) {
-      updateSelectedOrderProperties({
-        ...selectedOrderProperties,
+      updateOrderProperties({
+        allowPostOnlyOrder: true,
+        orderDaiEstimate: '',
+        orderEscrowdDai: '',
+        gasCostEst: '',
+        expirationDate,
         orderPrice: '',
+        postOnlyOrder: false,
         orderQuantity: '',
       });
     }
+    clearOrderConfirmation();
   }
 
   function clearOrderConfirmation() {
-    const trade = getDefaultTrade({ market, selectedOutcome });
-    setState({ ...state, trade });
+    setTrade(getDefaultTrade({ market, selectedOutcome }));
   }
 
-  function handlePlaceMarketTrade(market, selectedOutcome, s) {
-    orderSubmitted(selectedOrderProperties.selectedNav, market.id);
-    let tradeInProgress = state.trade;
-    if (state.expirationDate) {
+  function handlePlaceMarketTrade(market, selectedOutcome) {
+    orderSubmitted(orderProperties.selectedNav, market.id);
+    let tradeInProgress = trade;
+    if (orderProperties.expirationDate) {
       tradeInProgress = {
         ...tradeInProgress,
-        expirationTime: state.expirationDate,
+        expirationTime: orderProperties.expirationDate,
       };
     }
     placeMarketTrade({
       marketId: market.id,
       outcomeId: selectedOutcome.id,
       tradeInProgress,
-      doNotCreateOrders: s.doNotCreateOrders,
-      postOnly: s.postOnlyOrder,
+      doNotCreateOrders: orderProperties.doNotCreateOrders,
+      postOnly: orderProperties.postOnlyOrder,
     });
     clearOrderForm();
   }
 
   function checkCanPostOnly(price, side) {
-    if (state.postOnlyOrder) {
+    if (orderProperties.postOnlyOrder) {
       const allowPostOnlyOrder = canPostOrder(price, side, orderBook);
-      if (allowPostOnlyOrder !== state.allowPostOnlyOrder) {
-        setState({
-          ...state,
-          allowPostOnlyOrder,
-        });
+      if (allowPostOnlyOrder !== orderProperties.allowPostOnlyOrder) {
+        updateOrderProperties({ allowPostOnlyOrder });
       }
       return allowPostOnlyOrder;
     }
@@ -286,6 +254,7 @@ const Wrapper = ({
   function updateTradeNumShares(order) {
     updateTradeShares({
       marketId,
+      market,
       outcomeId: selectedOutcome.id,
       limitPrice: order.orderPrice,
       side: order.selectedNav,
@@ -306,19 +275,17 @@ const Wrapper = ({
           { decimalsRounded: 4 },
           String(getGasPrice())
         ).toString();
-        updateSelectedOrderProperties({
-          ...selectedOrderProperties,
+        updateOrderProperties({
           orderQuantity: String(numShares),
-        });
-        setState({
-          ...state,
-          // orderQuantity: String(numShares),
           orderEscrowdDai: newOrder.costInDai.formatted,
           orderDaiEstimate: order.orderDaiEstimate,
-          trade: newOrder,
           gasCostEst: formattedGasCost,
         });
-        checkCanPostOnly(order.trade.limitPrice, order.trade.side);
+        setTrade(newOrder);
+        checkCanPostOnly(
+          newOrder?.trade?.limitPrice || order.orderPrice,
+          newOrder?.trade?.side || order.selectedNav
+        );
       },
     });
   }
@@ -343,7 +310,7 @@ const Wrapper = ({
         market.marketType
       );
       const formattedValue = formatDai(totalCost);
-      let trade = {
+      const newTrade = {
         ...useValues,
         limitPrice: order.orderPrice,
         selectedOutcome: selectedOutcome.id,
@@ -354,15 +321,13 @@ const Wrapper = ({
         potentialDaiProfit: formatNumber(60),
         side: order.selectedNav,
       };
-      setState({
-        ...state,
-        ...useValues,
+      setTrade(newTrade);
+      updateOrderProperties({
         orderDaiEstimate: totalCost ? formattedValue.roundedValue : '',
         orderEscrowdDai: totalCost
           ? formattedValue.roundedValue.toString()
           : '',
         gasCostEst: '',
-        trade,
       });
     } else {
       if (order.orderPrice) {
@@ -373,7 +338,7 @@ const Wrapper = ({
   }
 
   async function queueStimulateTrade(order, useValues) {
-    const queue = state.simulateQueue.slice(0);
+    const queue = [];
     queue.push(
       new Promise(resolve =>
         updateTradeCost({
@@ -413,20 +378,29 @@ const Wrapper = ({
               orderEscrowdDai: newOrder.costInDai.formatted,
               trade: newOrder,
               gasCostEst: formattedGasCost,
-              postOnlyOrder: state.postOnlyOrder,
+              postOnlyOrder: orderProperties.postOnlyOrder,
             });
           },
         })
       )
     );
-    await Promise.all(queue).then(results =>
-      setState({ ...state, ...results[results.length - 1] })
-    );
+    setIsSimulatingTrade(true);
+    await Promise.all(queue).then(results => {
+      const info = results[results.length - 1];
+      const newTrade = info.trade;
+      delete info.trade;
+      if (!newTrade) {
+        clearOrderForm(true);
+      } else {
+        setTrade(newTrade);
+        updateOrderProperties({ ...info });
+      }
+      setIsSimulatingTrade(false);
+    });
   }
 
   function getActionButton() {
-    const { trade } = state;
-    const { selectedNav } = selectedOrderProperties;
+    const { selectedNav, allowPostOnlyOrder, postOnlyOrder } = orderProperties;
     const noGSN = gsnUnavailable && !gsnWalletInfoSeen;
     const hasFunds = gsnEnabled ? !!dai : !!eth && !!dai;
     let actionButton: any = (
@@ -439,24 +413,21 @@ const Wrapper = ({
             // make sure we have everything defined.
             updateLiquidity(selectedOutcome, {
               ...trade,
-              ...state,
-              ...selectedOrderProperties,
+              ...orderProperties,
             });
             clearOrderForm();
           } else if (tradingTutorial) {
-            setTimeout(() => {
-              tutorialNext();
-            });
+            tutorialNext();
           } else {
             if (disclaimerSeen) {
               if (noGSN) {
                 setModal({
                   customAction: () =>
-                    handlePlaceMarketTrade(market, selectedOutcome, state),
+                    handlePlaceMarketTrade(market, selectedOutcome),
                   type: MODAL_INITIALIZE_ACCOUNT,
                 });
               } else {
-                handlePlaceMarketTrade(market, selectedOutcome, state);
+                handlePlaceMarketTrade(market, selectedOutcome);
               }
             } else {
               setModal({
@@ -465,11 +436,11 @@ const Wrapper = ({
                   if (noGSN) {
                     setModal({
                       customAction: () =>
-                        handlePlaceMarketTrade(market, selectedOutcome, state),
+                        handlePlaceMarketTrade(market, selectedOutcome),
                       type: MODAL_INITIALIZE_ACCOUNT,
                     });
                   } else {
-                    handlePlaceMarketTrade(market, selectedOutcome, state);
+                    handlePlaceMarketTrade(market, selectedOutcome);
                   }
                 },
               });
@@ -480,8 +451,8 @@ const Wrapper = ({
           !trade?.limitPrice ||
           (gsnUnavailable && isOpenOrder) ||
           insufficientFunds ||
-          (state.postOnlyOrder && trade.numFills > 0) ||
-          !state.allowPostOnlyOrder ||
+          (postOnlyOrder && trade.numFills > 0) ||
+          !allowPostOnlyOrder ||
           disableTrading
         }
       />
@@ -518,74 +489,52 @@ const Wrapper = ({
   }
 
   const insufficientFunds =
-    state.trade?.costInDai &&
-    createBigNumber(state.trade.costInDai.value).gte(
-      createBigNumber(availableDai)
-    );
-  const isOpenOrder = state.trade?.numFills === 0;
+    trade?.costInDai &&
+    createBigNumber(trade.costInDai.value).gte(createBigNumber(availableDai));
+  const isOpenOrder = trade?.numFills === 0;
   const orderEmpty =
-    selectedOrderProperties.orderPrice === '' &&
-    selectedOrderProperties.orderQuantity === '' &&
-    state.orderDaiEstimate === '';
+    orderProperties.orderPrice === '' &&
+    orderProperties.orderQuantity === '' &&
+    orderProperties.orderDaiEstimate === '';
   const showTip = !hasHistory && orderEmpty;
-  const { potentialDaiLoss, sharesFilled, orderShareProfit } = state.trade;
+  const {
+    potentialDaiLoss = null,
+    sharesFilled = null,
+    orderShareProfit = null,
+  } = trade;
   const showConfirm =
-    (potentialDaiLoss && potentialDaiLoss.value !== 0) ||
-    (orderShareProfit && orderShareProfit.value !== 0) ||
-    (sharesFilled && sharesFilled.value !== 0);
-  const actionButton = getActionButton();
+    potentialDaiLoss?.value > 0 ||
+    orderShareProfit?.value > 0 ||
+    sharesFilled?.value > 0;
 
+  const actionButton = getActionButton();
   return (
     <section className={Styles.Wrapper}>
       <div>
-        <OrderTicketHeader
-          market={market}
-          selectedOrderProperties={selectedOrderProperties}
-          updateSelectedOrderProperties={updateSelectedOrderProperties}
-          updateTradeTotalCost={updateTradeTotalCost}
-        />
+        <OrderTicketHeader {...{ market, updateTradeTotalCost }} />
         <Form
-          market={market}
-          tradingTutorial={tradingTutorial}
-          initialLiquidity={initialLiquidity}
-          selectedOutcome={selectedOutcome}
-          updateSelectedOutcome={updateSelectedOutcome}
-          orderState={{
-            ...state,
-            orderPrice: selectedOrderProperties.orderPrice,
-            selectedNav: selectedOrderProperties.selectedNav,
-            orderQuantity: selectedOrderProperties.orderQuantity,
+          {...{
+            market,
+            tradingTutorial,
+            initialLiquidity,
+            selectedOutcome,
+            updateSelectedOutcome,
+            clearOrderForm,
+            updateTradeTotalCost,
+            updateTradeNumShares,
+            clearOrderConfirmation,
           }}
-          updateState={updates => setState({ ...state, ...updates })}
-          updateOrderProperty={property => {
-            if (
-              property.hasOwnProperty(INPUT_TYPES.PRICE) ||
-              property.hasOwnProperty(INPUT_TYPES.QUANTITY) ||
-              property.hasOwnProperty(INPUT_TYPES.SELECTED_NAV)
-            ) {
-              updateSelectedOrderProperties({
-                ...selectedOrderProperties,
-                ...property,
-              });
-            } else {
-              setState({ ...state, ...property });
-            }
-          }}
-          clearOrderForm={clearOrderForm}
-          updateTradeTotalCost={updateTradeTotalCost}
-          updateTradeNumShares={updateTradeNumShares}
-          clearOrderConfirmation={clearOrderConfirmation}
         />
       </div>
       {showConfirm && (
         <Confirm
-          selectedOutcome={selectedOutcome}
-          market={market}
-          trade={state.trade}
-          postOnlyOrder={state.postOnlyOrder}
-          initialLiquidity={initialLiquidity}
-          tradingTutorial={tradingTutorial}
-          allowPostOnlyOrder={state.allowPostOnlyOrder}
+          {...{
+            selectedOutcome,
+            market,
+            tradingTutorial,
+            initialLiquidity,
+            trade,
+          }}
         />
       )}
       <div>{actionButton}</div>

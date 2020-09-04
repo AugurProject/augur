@@ -184,7 +184,6 @@ export const FeesLiquidity = ({ onChange }: FeesLiquidityProps) => {
             setSelectedOrderProperties(value)
           }
           updateLiquidity={updateLiquidity}
-          initialLiquidity
           updateSelectedOutcome={value => {
             setSelectedOutcome(value);
             setSelectedOrderProperties({ ...DEFAULT_ORDER_PROPERTIES });
@@ -196,7 +195,6 @@ export const FeesLiquidity = ({ onChange }: FeesLiquidityProps) => {
           }
           market={newMarket}
           orderBook={formatOrderBook(orderBook[selectedOutcome] || [])}
-          selectedOutcomeId={selectedOutcome}
           initialLiquidity
         />
       </div>
@@ -221,7 +219,6 @@ export const FeesLiquidity = ({ onChange }: FeesLiquidityProps) => {
             market={newMarket}
             orderBook={formatOrderBook(orderBook[selectedOutcome] || [])}
             initialLiquidity
-            selectedOutcomeId={selectedOutcome}
             updateSelectedOrderProperties={value =>
               setSelectedOrderProperties(value)
             }

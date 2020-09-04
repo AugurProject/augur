@@ -29,36 +29,46 @@ export const orderAndAssignCumulativeShares = memoize(
     const rawAsks = ((orderBook || {})[ASKS] || []).slice();
 
     const mostBidShares = Math.max(
-      ...rawBids.map(bid => createBigNumber(bid.shares).toNumber())
+      ...rawBids.map(({ shares }) => createBigNumber(shares).toNumber())
     );
     const mostAskShares = Math.max(
-      ...rawAsks.map(ask => createBigNumber(ask.shares).toNumber())
+      ...rawAsks.map(({ shares }) => createBigNumber(shares).toNumber())
     );
     const outOf = calculateMaxValues(Math.max(mostBidShares, mostAskShares));
 
     const bids = rawBids
-      .map(order => ({
-        price: order.price,
-        shares: order.shares,
+      .map(({
+        price,
+        shares,
+        cumulativeShares,
+        mySize,
+      }) => ({
+        price,
+        shares,
         quantityScale: calculateQuantityScale(
           outOf,
-          createBigNumber(order.shares)
+          createBigNumber(shares)
         ).toString(),
-        cumulativeShares: order.cumulativeShares,
-        mySize: order.mySize,
+        cumulativeShares,
+        mySize,
       }))
       .sort((a, b) => createBigNumber(b.price).minus(createBigNumber(a.price)));
 
     const asks = rawAsks
-      .map(order => ({
-        price: order.price,
-        shares: order.shares,
+      .map(({
+        price,
+        shares,
+        cumulativeShares,
+        mySize,
+      }) => ({
+        price,
+        shares,
         quantityScale: calculateQuantityScale(
           outOf,
-          createBigNumber(order.shares)
+          createBigNumber(shares)
         ).toString(),
-        cumulativeShares: order.cumulativeShares,
-        mySize: order.mySize,
+        cumulativeShares,
+        mySize,
       }))
       .sort((a, b) => createBigNumber(b.price).minus(createBigNumber(a.price)));
 
@@ -94,8 +104,8 @@ export const calcOrderbookPercentages = memoize(
         percent: calcPercentageFromPrice(o.price, minPrice, maxPrice),
       }));
       let spread = 0;
-      const bestBid = Math.max(...bids.map(bid => bid.percent));
-      const bestAsk = Math.min(...asks.map(ask => ask.percent));
+      const bestBid = Math.max(...bids.map(({ percent }) => percent));
+      const bestAsk = Math.min(...asks.map(({ percent }) => percent));
       if (bestBid !== undefined && bestAsk !== undefined) {
         spread = bestAsk - bestBid;
       }

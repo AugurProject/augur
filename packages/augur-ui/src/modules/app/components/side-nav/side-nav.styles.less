@@ -16,19 +16,20 @@
     z-index: @mask-modal;
 
     > div:first-of-type {
-      z-index: @above-all-content;
+      border-bottom: @size-1 solid var(--color-module-background);
       display: grid;
       grid-template-columns: auto 1fr auto;
+      z-index: @above-all-content;
 
-      > button {
-        padding: @size-12;
+      > button:first-of-type {
+        padding-left: @size-8;
 
         > svg {
-          width: @size-12;
-          height: @size-12;
+          width: @size-24;
+          height: @size-24;
 
-          > g {
-            stroke: var(--color-outcome-seven);
+          > path {
+            stroke: var(--color-primary-text);
           }
         }
       }
@@ -287,10 +288,11 @@
 
     @media @breakpoint-mobile-tablet {
       > div:first-of-type {
+        align-items: center;
+        border-bottom: none;
         justify-content: space-between;
         padding: @size-8 0;
         padding-right: @size-14;
-        align-items: center;
 
         > button {
           color: var(--color-secondary-action);
@@ -299,6 +301,17 @@
             > path {
               fill: var(--color-secondary-action);
             }
+          }
+        }
+
+        > section {
+          margin-left: @size-8;
+        }
+
+        > button:last-of-type {
+          > svg {
+            height: @size-16;
+            width: @size-16;
           }
         }
       }

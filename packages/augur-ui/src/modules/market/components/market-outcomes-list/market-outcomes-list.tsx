@@ -12,47 +12,40 @@ import { MarketOutcome } from 'modules/common/table-rows';
 import Styles from 'modules/market/components/market-outcomes-list/market-outcomes-list.styles.less';
 import SharedStyles from 'modules/market/components/market-orders-positions-table/open-orders-table.styles.less';
 import HeaderStyles from 'modules/portfolio/components/common/data-table-header.styles.less';
-import { OutcomeFormatted, MarketData } from 'modules/types';
 import { ToggleExtendButton } from 'modules/common/buttons';
 import { SMALL_MOBILE } from 'modules/common/constants';
 import type { Getters } from '@augurproject/sdk';
-import { selectSortedMarketOutcomes, selectMarket } from 'modules/markets/selectors/market';
+import { selectSortedMarketOutcomes } from 'modules/markets/selectors/market';
+import { MarketData } from 'modules/types';
 
 interface MarketOutcomesListProps {
   updateSelectedOutcome: Function;
   selectedOutcomeId: number;
-  marketId: string;
-  popUp: boolean;
-  toggle: Function;
+  market: MarketData;
+  popUp?: boolean;
+  toggle?: Function;
   hideOutcomes?: boolean;
   preview: boolean;
-  market: MarketData;
   orderBook: Getters.Markets.OutcomeOrderBook;
-  updateSelectedOrderProperties: Function;
 }
 
 const MarketOutcomesList = ({
+  market,
   selectedOutcomeId,
   updateSelectedOutcome,
-  popUp,
-  marketId,
-  toggle,
-  hideOutcomes,
+  popUp = false,
+  toggle = null,
+  hideOutcomes = false,
   preview,
-  updateSelectedOrderProperties,
-  market,
   orderBook
 }: MarketOutcomesListProps) => {
-  const marketSelected = market || selectMarket(marketId);
-
   const {
     scalarDenomination,
     marketType,
-    outcomesFormatted
-  } = marketSelected;
+    outcomesFormatted,
+  } = market;
  
   const outcomesFormattedSelected = selectSortedMarketOutcomes(marketType, outcomesFormatted);
-
   return (
     <section className={Styles.OutcomesList}>
       {!popUp && (
@@ -123,12 +116,10 @@ const MarketOutcomesList = ({
               <MarketOutcome
                 key={outcome.id}
                 orderBook={orderBook}
-                marketId={marketId}
+                marketId={market.id}
                 outcome={outcome}
                 selectedOutcomeId={selectedOutcomeId}
                 updateSelectedOutcome={updateSelectedOutcome}
-                updateSelectedOrderProperties={updateSelectedOrderProperties}
-                marketType={marketType}
                 preview={preview}
                 scalarDenomination={scalarDenomination}
               />

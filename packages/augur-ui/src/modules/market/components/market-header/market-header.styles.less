@@ -23,6 +23,12 @@
     }
   }
 
+  &.Expandable {
+    > div:first-of-type > div:first-of-type {
+      min-height: 172px;
+    }
+  }
+
   > div:first-of-type {
     align-items: flex-start;
     display: flex;
@@ -167,6 +173,7 @@
         transition-property: box-shadow, z-index, position;
         transition-duration: 0.15s;
         transition-timing-function: ease-out;
+        justify-content: space-between;
 
         @media @breakpoint-mobile {
           padding: 0 @size-12;

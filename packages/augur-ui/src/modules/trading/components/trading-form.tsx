@@ -1,19 +1,19 @@
 import React, { useMemo } from 'react';
-import { SelectedOrderProperties } from 'modules/trading/components/wrapper';
 import Wrapper from 'modules/trading/components/wrapper';
 import Styles from 'modules/trading/components/trading-form.styles.less';
-import { MarketData, OutcomeFormatted, NewMarket, IndividualOutcomeOrderBook } from 'modules/types';
+import { MarketData, NewMarket, IndividualOutcomeOrderBook } from 'modules/types';
+import { TradingProvider } from 'modules/trading/store/trading';
+import { useAppStatusStore } from 'modules/app/store/app-status';
+import {
+  calcOrderExpirationTime,
+} from 'utils/format-date';
 
 interface TradingFormProps {
   selectedOutcomeId: number;
   market: MarketData | NewMarket;
-  selectedOrderProperties: SelectedOrderProperties;
-  updateSelectedOrderProperties: Function;
   updateSelectedOutcome: Function;
   updateLiquidity?: Function;
   tutorialNext?: Function;
-  initialLiquidity?: boolean;
-  tradingTutorial?: boolean;
   orderBook: IndividualOutcomeOrderBook;
 }
 
@@ -29,14 +29,20 @@ const TradingForm = ({
       ),
     [selectedOutcomeId, market]
   );
+  const {
+    blockchain: { currentAugurTimestamp: currentTimestamp },
+  } = useAppStatusStore();
+  const expirationDate = calcOrderExpirationTime(market.endTime || market.setEndTime, currentTimestamp);
   return (
-    <section className={Styles.TradingForm}>
-      <Wrapper
-        market={market}
-        selectedOutcome={selectedOutcome}
-        {...props}
-      />
-    </section>
+    <TradingProvider presetOrderProperties={{ expirationDate }}>
+      <section className={Styles.TradingForm}>
+        <Wrapper
+          market={market}
+          selectedOutcome={selectedOutcome}
+          {...props}
+        />
+      </section>
+   </TradingProvider>
   );
 };
 

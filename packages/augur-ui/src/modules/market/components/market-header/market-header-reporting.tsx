@@ -1,6 +1,5 @@
 import React from 'react';
 import ReactTooltip from 'react-tooltip';
-import type { Getters } from '@augurproject/sdk';
 import classNames from 'classnames';
 import { ProcessingButton } from 'modules/common/buttons';
 import {
@@ -23,7 +22,6 @@ import {
 import TooltipStyles from 'modules/common/tooltip.styles.less';
 import { finalizeMarket } from 'modules/contracts/actions/contractCalls';
 import { useAppStatusStore } from 'modules/app/store/app-status';
-import { selectMarket } from 'modules/markets/selectors/market';
 import { isSameAddress } from 'utils/isSameAddress';
 import { createBigNumber } from 'utils/create-big-number';
 import Styles
@@ -35,12 +33,10 @@ import { getOutcomeNameWithOutcome } from 'utils/get-outcome';
 interface MarketHeaderReportingProps {
   market: MarketData;
   preview: boolean;
-  marketId: string;
 }
 
 export const MarketHeaderReporting = ({
   market,
-  marketId,
   preview,
 }: MarketHeaderReportingProps) => {
   const {
@@ -48,19 +44,8 @@ export const MarketHeaderReporting = ({
     accountPositions,
     loginAccount: { address },
     universe: { forkingInfo },
-    blockchain: { currentAugurTimestamp },
   } = useAppStatusStore();
-  let { isLogged } = useAppStatusStore();
-  const marketSelected = market || selectMarket(marketId);
-  const disputeInfoStakes =
-    marketSelected.disputeInfo && marketSelected.disputeInfo.stakes;
-
-  const isForking = !!forkingInfo;
-  const isForkingMarket =
-    forkingInfo && forkingInfo.forkingMarket === marketSelected.id;
-  isLogged = isLogged && !forkingInfo;
-  const isLoggedIn = isLogged;
-
+  const { isLogged } = useAppStatusStore();
   const {
     disputeInfo,
     reportingState,
@@ -69,7 +54,14 @@ export const MarketHeaderReporting = ({
     designatedReporter,
     designatedReporterType,
     marketType
-  } = marketSelected;
+  } = market;
+  const disputeInfoStakes = disputeInfo?.stakes;
+
+  const isForking = !!forkingInfo;
+  const isForkingMarket = forkingInfo?.forkingMarket === id;
+  const isLoggedIn = isLogged && !forkingInfo;
+
+  
 
   const isDesignatedReporter = preview
     ? designatedReporterType === DESIGNATED_REPORTER_SELF
@@ -79,14 +71,11 @@ export const MarketHeaderReporting = ({
       disputeInfoStakes.find(stake => stake.tentativeWinning)) ||
     {};
   const canClaimProceeds =
-    accountPositions[marketId] &&
-    accountPositions[marketId].tradingPositionsPerMarket &&
+    !!(accountPositions[id]?.tradingPositionsPerMarket &&
     createBigNumber(
-      accountPositions[marketSelected.marketId].tradingPositionsPerMarket
+      accountPositions[id].tradingPositionsPerMarket
         .unclaimedProceeds
-    ).gt(ZERO)
-      ? true
-      : false;
+    ).gt(ZERO));
 
   let content = null;
   const slowDisputing = disputeInfo?.disputePacingOn;
@@ -126,7 +115,7 @@ export const MarketHeaderReporting = ({
               queueId={FINALIZE}
               small
               disabled={!isLoggedIn}
-              text={'Finalize Market'}
+              text='Finalize Market'
               action={() => finalizeMarket(id)}
             />
           )}
@@ -150,7 +139,7 @@ export const MarketHeaderReporting = ({
                     : marketType === SCALAR
                     ? tentativeWinner.outcome
                     : getOutcomeNameWithOutcome(
-                        marketSelected,
+                        market,
                         tentativeWinner.outcome,
                         tentativeWinner.isInvalidOutcome
                       ))}
@@ -169,7 +158,7 @@ export const MarketHeaderReporting = ({
             action={() =>
               setModal({
                 type: MODAL_REPORTING,
-                market: marketSelected,
+                market,
               })
             }
           />
@@ -193,7 +182,7 @@ export const MarketHeaderReporting = ({
           action={() =>
             setModal({
               type: MODAL_REPORTING,
-              market: marketSelected,
+              market,
             })
           }
           disabled={!isLogged}

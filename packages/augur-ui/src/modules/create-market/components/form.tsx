@@ -820,8 +820,6 @@ export const Form = ({ isTemplate, updatePage }) => {
                     )
                   : newMarket.detailsText,
               }}
-              isPreview
-              orderBook={newMarket.orderBook}
             />
           </span>
           <PrimaryButton text="Close preview" action={() => togglePreview()} />

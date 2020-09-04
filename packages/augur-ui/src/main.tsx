@@ -28,7 +28,7 @@ console.log(`
   ${JSON.stringify(process.env.CONFIGURATION, null, 2)}
   *******************************************
 `);
-
+window.stores = {};
 function render(Root) {
   ReactDOM.render(
     <AppStatusProvider>

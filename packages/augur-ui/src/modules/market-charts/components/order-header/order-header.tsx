@@ -4,13 +4,13 @@ import { ToggleExtendButton } from 'modules/common/buttons';
 import { ZEROX_STATUSES_TOOLTIP } from 'modules/common/constants';
 import { StatusDotTooltip } from 'modules/common/labels';
 import classNames from 'classnames';
+import { useAppStatusStore } from 'modules/app/store/app-status';
 
 interface OrderHeaderProps {
   title: string;
   headers: string[];
-  toggle: any;
+  toggle: Function;
   hide: boolean;
-  status?: string;
 }
 
 const OrderHeader = ({
@@ -18,29 +18,28 @@ const OrderHeader = ({
   headers,
   toggle,
   hide,
-  status,
-}: OrderHeaderProps) => (
-  <section className={Styles.OrderHeader}>
-    <span
-      className={classNames({
-        [Styles.WithStatus]: !!status,
-      })}
-    >
-      <StatusDotTooltip
-        status={status}
-        tooltip={ZEROX_STATUSES_TOOLTIP[status]}
-        title={title}
-      />
-      <ToggleExtendButton toggle={toggle} />
-    </span>
-    {!hide && (
-      <ul>
-        <li>{headers[0]}</li>
-        <li>{headers[1]}</li>
-        <li>{headers[2]}</li>
-      </ul>
-    )}
-  </section>
-);
-
+}: OrderHeaderProps) => {
+  const { zeroXStatus } = useAppStatusStore();
+  return (
+    <section className={Styles.OrderHeader}>
+      <span
+        className={Styles.WithStatus}
+      >
+        <StatusDotTooltip
+          status={zeroXStatus}
+          tooltip={ZEROX_STATUSES_TOOLTIP[zeroXStatus]}
+          title={title}
+        />
+        <ToggleExtendButton toggle={toggle} />
+      </span>
+      {!hide && (
+        <ul>
+          <li>{headers[0]}</li>
+          <li>{headers[1]}</li>
+          <li>{headers[2]}</li>
+        </ul>
+      )}
+    </section>
+  );
+}
 export default OrderHeader;
