@@ -486,12 +486,29 @@
   width: @size-326;
 
   > a {
-    display: block;
+    display: none;
     height: 200px;
     margin-top: @size-24;
 
     > img {
       width: 100%;
+    }
+  }
+
+  > a:nth-of-type(3), 
+  > a:nth-of-type(4) {
+    height: 106px;
+    display: block;
+  }
+
+  @media @breakpoint-desktop-large {
+    > a:nth-of-type(1), 
+    > a:nth-of-type(2) {
+      display: block;
+    }
+    > a:nth-of-type(3), 
+    > a:nth-of-type(4) {
+      display: none;
     }
   }
 

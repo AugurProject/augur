@@ -5,6 +5,8 @@ import makePath from 'modules/routes/helpers/make-path';
 
 import BannerSportsbook from '../../assets/images/banner-sportsbook.png';
 import BannerTrading from '../../assets/images/banner-trading.png';
+import SmallBannerSportsbook from '../../assets/images/small-banner-sportsbook.png';
+import SmallBannerTrading from '../../assets/images/small-banner-trading.png';
 import {
   SecondaryButton,
   PrimaryButton,
@@ -570,13 +572,21 @@ export const SideImages = () => {
       <a href="" target="_blank" rel="noopener noreferrer">
         <img
           src={BannerSportsbook}
-          alt="The image shows an American Football player running. The banner says '+1000 markets' and there is a button entitled 'Explore Sportsbook'."
         />
       </a>
       <a href="" target="_blank" rel="noopener noreferrer">
         <img
           src={BannerTrading}
-          alt="The image shows Augur's Trading user interface and it says 'Trade Now!'."
+        />
+      </a>
+      <a href="" target="_blank" rel="noopener noreferrer">
+        <img
+          src={SmallBannerSportsbook}
+        />
+      </a>
+      <a href="" target="_blank" rel="noopener noreferrer">
+        <img
+          src={SmallBannerTrading}
         />
       </a>
     </section>
