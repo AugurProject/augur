@@ -120,6 +120,7 @@
     align-items: center;
 
     > div:first-of-type {
+      padding: @size-1 0;
     }
 
     > button {
@@ -223,6 +224,18 @@
         color: var(--color-inactive-text);
       }
     }
+
+    .MarketBox {
+      > div {
+        padding-right: @size-16;
+        background-color: var(--color-module-background);
+        border-radius: 0;
+      }
+
+      span[class*="ArrowContainer"] {
+        display: none;
+      }
+    }
   }
 
   @media @breakpoint-mobile {
@@ -309,10 +322,6 @@
             margin-left: auto;
           }
         }
-      }
-
-      .MarketBox span[class*="ArrowContainer"] {
-        display: none;
       }
     }
   }

@@ -85,7 +85,7 @@ const SidebarNav = ({
                     radioButtons={options.map(({key, value, label, num, comp}, index) => ({
                       checked: false,
                       value: value,
-                      header: label,
+                      header: num !== undefined ? `${label} (${num})` : label,
                       id: index,
                     }))}
                     defaultSelected={options[0].value}
