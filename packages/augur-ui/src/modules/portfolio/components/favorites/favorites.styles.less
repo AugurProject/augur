@@ -1,6 +1,14 @@
 @import (reference) '~assets/styles/shared';
 
 .Watchlist {
+  div[class*="MarketRow"] {
+    padding-right: @size-8;
+  }
+
+  span[class*="ArrowContainer"] {
+    display: none;
+  }
+
   @media @breakpoint-mobile {
     > div:nth-of-type(2) > div:nth-of-type(3) > div:first-of-type {
       margin-top: 0;

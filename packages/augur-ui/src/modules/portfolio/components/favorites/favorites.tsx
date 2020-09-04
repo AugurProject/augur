@@ -6,6 +6,7 @@ import { END_TIME, THEMES } from 'modules/common/constants';
 
 import Styles from 'modules/portfolio/components/common/quad.styles.less';
 import favoriteStyles from 'modules/portfolio/components/favorites/favorites.styles.less';
+import classNames from 'classnames';
 import { useAppStatusStore } from 'modules/app/store/app-status';
 import { selectMarket } from 'modules/markets/selectors/market';
 import { loadMarketsInfoIfNotLoaded } from 'modules/markets/actions/load-markets-info';
@@ -70,10 +71,11 @@ const Favorites = ({
     markets = markets.filter(market => !!market?.sportsBook?.groupId);
   }
   const isTrading = theme === THEMES.TRADING;
-  let customClass = favoriteStyles.Watchlist;
+  let watchlistClass = favoriteStyles.Watchlist;
   if (!isTrading && markets.length === 0) {
-    customClass = favoriteStyles.WatchlistEmptyDisplay;
+    watchlistClass = favoriteStyles.WatchlistEmptyDisplay;
   }
+  const customClass = classNames(watchlistClass, favoriteStyles.HideToggleArrow);
 
   function renderRightContent(market) {
     return (

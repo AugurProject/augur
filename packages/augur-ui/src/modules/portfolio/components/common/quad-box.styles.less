@@ -5,7 +5,8 @@
   height: @size-36;
   display: grid;
   grid-template-columns: @size-28;
-  padding: @size-1 0 @size-1 @size-16;
+  padding: @size-1 0;
+  margin-left: @size-16;
 
   > input {
     .text-14;
@@ -227,13 +228,8 @@
 
     .MarketBox {
       > div {
-        padding-right: @size-16;
         background-color: var(--color-module-background);
         border-radius: 0;
-      }
-
-      span[class*="ArrowContainer"] {
-        display: none;
       }
     }
   }
