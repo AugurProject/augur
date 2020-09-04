@@ -210,7 +210,6 @@ export const FeesLiquidity = ({ onChange }: FeesLiquidityProps) => {
           <OpenOrdersHeader showTotalCost noRightMargin initialLiquidity />
         }
         renderRows={renderRows}
-        showHeaderOnMobile
       />
       <QuadBox
         title="Depth chart"

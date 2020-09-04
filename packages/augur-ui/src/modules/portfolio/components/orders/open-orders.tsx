@@ -83,6 +83,7 @@ const OpenOrders = ({
       data={viewByMarkets ? markets : openOrders}
       filterComp={filterComp}
       switchView={switchView}
+      showDropdown
       subheader={<OpenOrdersHeader />}
       renderRows={renderRows}
       toggle={toggle}

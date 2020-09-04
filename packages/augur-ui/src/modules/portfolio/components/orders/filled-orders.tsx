@@ -83,6 +83,7 @@ const FilledOrders = ({ toggle, extend, hide }: FilledOrdersProps) => {
       data={viewByMarkets ? markets : filledOrders}
       filterComp={filterComp}
       switchView={switchView}
+      showDropdown
       subheader={<FilledOrdersHeader />}
       renderRows={renderRows}
       toggle={toggle}

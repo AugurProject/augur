@@ -60,7 +60,7 @@
 
       > article {
         justify-content: flex-end;
-        grid-column: 3;
+        grid-column: 2;
 
         > div {
           width: 270px;
@@ -146,8 +146,9 @@
 
       > div:first-of-type {
         margin-bottom: @size-16;
-        grid-template-columns: 1fr auto;
         height: unset;
+        grid-template-columns: auto 1fr;
+        grid-gap: @size-8;
 
         > div:first-of-type {
           grid-column: 1 / span 2;
@@ -159,12 +160,12 @@
           > button {
             grid-row: 3;
             margin-top: @size-6;
-            margin-bottom: @size-16;
+            margin-bottom: @size-8;
           }
         }
 
         > div:nth-of-type(2) {
-          margin-bottom: @size-16;
+          margin-bottom: @size-8;
           grid-column: 1 / span 2;
         }
 
@@ -173,10 +174,14 @@
           display: none;
         }
 
+        > ul {
+          grid-column: 1;
+        }
+
         > article {
           grid-row: 3;
           justify-content: flex-start;
-          margin-right: @size-18;
+          margin-right: 0;
 
           > div {
             flex: 1;

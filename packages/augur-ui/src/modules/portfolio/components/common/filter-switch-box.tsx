@@ -10,6 +10,7 @@ export interface FilterSwitchBoxProps extends QuadBoxProps {
   filterLabel: string;
   renderRows: Function;
   switchView?: Function;
+  showDropdown?: boolean;
   emptyDisplayConfig?: {
     emptyTitle?: string;
     emptyText?: string;
@@ -30,6 +31,7 @@ const FilterSwitchBox = ({
   filterLabel,
   renderRows,
   switchView,
+  showDropdown,
   emptyDisplayConfig,
   toggle,
   hide,
@@ -80,7 +82,7 @@ const FilterSwitchBox = ({
       customClass={customClass}
       setSearch={onSearchChange}
       sortByOptions={sortByOptions}
-      updateDropdown={updateView}
+      updateDropdown={showDropdown && updateView}
       subheader={subheader}
       footer={footer}
       toggle={toggle}

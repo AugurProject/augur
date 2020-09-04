@@ -110,7 +110,6 @@ const OpenMarkets = ({ toggle }: OpenMarketsProps) => {
           />
         </div>
       }
-      noSwitch
       renderRows={renderRows}
       emptyDisplayConfig={{
         emptyTitle: isTrading ? null : "No Active Markets",
