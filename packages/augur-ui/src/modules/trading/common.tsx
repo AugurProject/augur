@@ -38,7 +38,10 @@ import {
   MODAL_CANCEL_ALL_BETS,
   MODAL_SIGNUP,
 } from 'modules/common/constants';
-import { checkMultipleOfShares, checkInsufficientFunds } from 'utils/betslip-helpers';
+import {
+  checkMultipleOfShares,
+  checkInsufficientFunds,
+} from 'utils/betslip-helpers';
 
 export interface EmptyStateProps {
   selectedTab: number;
@@ -48,7 +51,10 @@ export const EmptyState = () => {
   const {
     selected: { header },
   } = useBetslipStore();
-  const { isLogged, actions: { setModal } } = useAppStatusStore();
+  const {
+    isLogged,
+    actions: { setModal },
+  } = useAppStatusStore();
   return (
     <>
       <div>{BetsIcon}</div>
@@ -63,7 +69,10 @@ export const EmptyState = () => {
           : `Need help placing a bet?`}
       </h4>
       {!isLogged ? (
-        <PrimaryButton text="Signup" action={() => setModal({ type: MODAL_SIGNUP })} />
+        <PrimaryButton
+          text="Signup"
+          action={() => setModal({ type: MODAL_SIGNUP })}
+        />
       ) : (
         <SecondaryButton
           text="View tutorial"
@@ -97,7 +106,11 @@ export const SportsMarketBets = ({ market }) => {
       <h4>{description}</h4>
       <>
         {bets.map(bet => (
-          <SportsBet key={bet.orderId} bet={bet} market={marketInfos[marketId]}/>
+          <SportsBet
+            key={bet.orderId}
+            bet={bet}
+            market={marketInfos[marketId]}
+          />
         ))}
       </>
     </div>
@@ -147,46 +160,51 @@ export const SportsBet = ({ bet, market }) => {
     errorMessage,
     price,
     min,
-    max
+    max,
   } = bet;
   const { liquidityPools } = useMarketsStore();
   const checkWager = wager => {
     if (!wager || wager <= 0 || wager === '' || isNaN(Number(wager))) {
       return {
         checkError: true,
-        errorMessage: 'Enter a valid number'
-      }
+        errorMessage: 'Enter a valid number',
+      };
     }
-    const insufficientFundsError = checkInsufficientFunds(min, max, price, getShares(wager, price));
+    const insufficientFundsError = checkInsufficientFunds(
+      min,
+      max,
+      price,
+      getShares(wager, price)
+    );
     if (insufficientFundsError !== '') {
       return {
         checkError: true,
-        errorMessage: INSUFFICIENT_FUNDS_ERROR
-      }
+        errorMessage: INSUFFICIENT_FUNDS_ERROR,
+      };
     }
-  
+
     const liquidity = liquidityPools[bet.poolId][bet.outcomeId];
     if (liquidity) {
       const totalWager = getWager(liquidity.shares, liquidity.price);
       if (createBigNumber(totalWager).lt(createBigNumber(wager))) {
         return {
           checkError: true,
-          errorMessage: 'Your bet exceeds the max available for this odds'
-        }
+          errorMessage: 'Your bet exceeds the max available for this odds',
+        };
       }
     }
     const multipleOf = checkMultipleOfShares(wager, price, market);
     if (multipleOf !== '') {
       return {
         checkError: true,
-        errorMessage: multipleOf
-      }
+        errorMessage: multipleOf,
+      };
     }
-    
+
     return {
       checkError: false,
-      errorMessage: ''
-    }
+      errorMessage: '',
+    };
   };
   return (
     <div
@@ -232,7 +250,7 @@ export const SportsBet = ({ bet, market }) => {
             valueKey="toWin"
             modifyBet={modifyBet}
             noEdit
-            orderErrorMessage=''
+            orderErrorMessage=""
           />
         </>
       )}
@@ -259,7 +277,7 @@ export const SportsMyBet = ({ bet }) => {
     toWin,
     timestamp,
   } = bet;
- 
+
   let message = null;
   let messageAction = null;
   let wagerToShow = wager;
@@ -295,10 +313,12 @@ export const SportsMyBet = ({ bet }) => {
         useFull
       />
       <LinearPropertyLabel label="to win" value={formatDai(toWin)} useFull />
-      <LinearPropertyLabel
-        label="Date"
-        value={convertUnixToFormattedDate(timestamp).formattedUtc}
-      />
+      {status !== FAILED && status !== PENDING && (
+        <LinearPropertyLabel
+          label="Date"
+          value={convertUnixToFormattedDate(timestamp).formattedUtc}
+        />
+      )}
       {!!message && (
         <span>
           {message}
@@ -307,7 +327,6 @@ export const SportsMyBet = ({ bet }) => {
       )}
       {status !== PENDING && status !== FAILED && (
         <>
-          <ExternalLinkButton URL={null} label="view tx" />
           <CashoutButton bet={bet} />
         </>
       )}
@@ -326,12 +345,14 @@ export const BetslipInput = ({
   errorCheck,
 }) => {
   const betslipInput = useRef(null);
-  const [curVal, setCurVal] = useState(value ? formatDai(value).formatted : null);
+  const [curVal, setCurVal] = useState(
+    value ? formatDai(value).formatted : null
+  );
   useEffect(() => {
     betslipInput && betslipInput.current.focus();
   }, []);
   useEffect(() => {
-    if (noEdit) setCurVal(value)
+    if (noEdit) setCurVal(value);
   }, [value]);
   return (
     <div
@@ -345,10 +366,7 @@ export const BetslipInput = ({
         ref={betslipInput}
         onChange={e => {
           const newVal = e.target.value.replace('$', '');
-          const {
-            checkError, 
-            errorMessage 
-          } = errorCheck(newVal);
+          const { checkError, errorMessage } = errorCheck(newVal);
           if (!checkError) {
             modifyBet({ [valueKey]: newVal, errorMessage: '' });
           } else {

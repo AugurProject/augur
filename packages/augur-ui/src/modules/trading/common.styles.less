@@ -260,21 +260,9 @@
       border-radius: @border-radius-default;
       border: @size-1 solid var(--color-inactive-text);
       padding: @size-3 @size-6;
-      grid-column: auto;
       border-color: var(--color-inactive-text);
-
-      &:first-of-type {
-        border: none;
-        justify-self: flex-start;
-        background: transparent;
-      }
-
-      &:last-of-type {
-        justify-content: center;
-        white-space: nowrap;
-        width: fit-content;
-        margin-left: auto;
-      }
+      white-space: nowrap;
+      grid-column: 2;
     }
 
     > span {
