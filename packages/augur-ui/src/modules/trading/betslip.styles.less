@@ -195,12 +195,20 @@
     border-bottom-right-radius: @border-radius-rounded;
     min-height: @size-350;
 
+    > span:first-of-type {
+      .text-16-bold;
+
+      width: 100%;
+      padding: @size-12 @size-12 0 @size-12;
+      color: var(--color-primary-text);
+    }
+
     @media @breakpoint-tablet {
       height: 100%;
     }
 
 
-    > span {
+    > span:nth-of-type(2) {
       .text-12-semi-bold;
 
       padding: @size-4 @size-13;
