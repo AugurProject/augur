@@ -31,7 +31,13 @@ export interface QuadBoxProps {
   extend?: boolean;
 }
 
-const QuadBoxSearch = ({ search, setSearch, focus, setFocus }) => {
+interface QuadBoxSearchProps {
+  search?: string;
+  setSearch?: Function;
+  focus?: boolean;
+  setFocus?: Function;
+}
+const QuadBoxSearch = ({ search, setSearch, focus, setFocus }: QuadBoxSearchProps) => {
   const closeSearchBar = () => {
     setFocus(!focus);
     setSearch('');
@@ -57,25 +63,38 @@ const QuadBoxSearch = ({ search, setSearch, focus, setFocus }) => {
   ) : null;
 };
 
-const QuadBoxSort = ({ sortByOptions, updateDropdown, focus }) => {
+interface QuadBoxSortProps {
+  sortByOptions?: NameValuePair[];
+  updateDropdown?: Function;
+  focus: boolean;
+}
+
+const QuadBoxSort = ({ sortByOptions, updateDropdown, focus }: QuadBoxSortProps) => {
   return sortByOptions && updateDropdown ? (
     <SquareDropdown
       defaultValue={sortByOptions[0].value}
       options={sortByOptions}
       onChange={updateDropdown}
-      className={classNames({
+      className={classNames(Styles.Dropdown, {
         [Styles.Hide]: focus,
       })}
     />
   ) : null;
 };
 
+interface QuadBoxMobileFiltersProps {
+  sortByOptions?: NameValuePair[];
+  updateDropdown?: Function;
+  tabs?: TabsProps[];
+  setSelectedTab?: Function;
+}
+
 const QuadBoxMobileFilters = ({
   sortByOptions,
   updateDropdown,
   tabs,
   setSelectedTab,
-}) => {
+}: QuadBoxMobileFiltersProps) => {
   const tabsFilters = setSelectedTab && tabs
     ? {
         type: OPTIONTYPE.RADIO,

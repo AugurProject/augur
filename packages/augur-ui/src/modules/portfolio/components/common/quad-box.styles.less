@@ -6,7 +6,7 @@
   display: grid;
   grid-template-columns: @size-28;
   padding: @size-1 0;
-  margin-left: @size-16;
+  margin-left: @size-10;
 
   > input {
     .text-14;
@@ -179,8 +179,8 @@
         justify-content: flex-end;
 
         > button:last-of-type {
-          padding: @size-12;
-          margin-left: @size-12;
+          padding: @size-12 @size-10 @size-12 @size-4;
+          margin-left: 0;
         }
       }
 
@@ -233,6 +233,10 @@
         border-radius: 0;
       }
     }
+
+    .Dropdown {
+      min-width: @size-173;
+    }
   }
 
   @media @breakpoint-mobile {
@@ -258,6 +262,10 @@
         > div[class*='MarketRow']:last-of-type {
           border-bottom: none;
         }
+      }
+
+      .Dropdown {
+        min-width: unset;
       }
     }
   }
