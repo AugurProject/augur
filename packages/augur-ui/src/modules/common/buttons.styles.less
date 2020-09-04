@@ -220,13 +220,13 @@
   }
 
   .CashoutButton {
-    .text-10-medium;
+    .text-10-semi-bold;
 
     color: var(--color-primary-text);
     background: var(--color-module-background);
     border: @size-1 solid var(--color-dark-text);
     border-radius: @border-radius-default;
-    padding: @size-6 @size-4;
+    padding: @size-3 @size-6;
     text-transform: uppercase;
 
     &:hover {
@@ -241,7 +241,8 @@
 
     &:disabled {
       border: @size-1 solid var(--color-dark-text);
-      color: var(--color-primary-text-15);
+      color: var(--color-primary-text);
+      opacity: 0.5;
 
       &:hover {
         cursor: default;
