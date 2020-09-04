@@ -120,6 +120,7 @@ const AppView = ({
   location: locationProp,
 }: AppProps) => {
   const {
+    theme,
     universe: { forkEndTime, forkingInfo },
     blockchain: { currentAugurTimestamp },
     mobileMenuState,
@@ -296,7 +297,8 @@ const AppView = ({
           />
           {forkEndTime !== '0' &&
             currentAugurTimestamp &&
-            currentPath !== ACCOUNT_SUMMARY && (
+            currentPath !== ACCOUNT_SUMMARY &&
+            theme === THEMES.TRADING && (
               <section className={Styles.TopBar} />
             )}
           <StatusErrorMessage />
