@@ -315,6 +315,13 @@ h6 {
 
   .Betslip {
     padding: @size-32;
+    position: sticky;
+    top: 0;
+
+    @media @breakpoint-mobile-tablet {
+      position: static;
+      top: auto;
+    }
   }
 }
 
