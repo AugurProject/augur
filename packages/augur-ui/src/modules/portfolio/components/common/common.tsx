@@ -95,6 +95,7 @@ export interface GameProps {
 }
 export const Game = ({ row, type }: GameProps) => {
   const history = useHistory();
+  const isDaily = type !== SPORTS_GROUP_TYPES.FUTURES;
   return (
     <div className={Styles.Game}>
       <div>
@@ -106,14 +107,18 @@ export const Game = ({ row, type }: GameProps) => {
         <CategoryTagTrail
           categories={getCategoriesWithClick(row.categories, history)}
         />
-        {row.startTime ? (
+        {isDaily ? (
           <CountdownProgress
             alignRight
             label="Estimated Event Start Time"
             value={convertUnixToFormattedDate(row.startTime).formattedUtc}
           />
         ) : (
-          <span />
+          <CountdownProgress
+            alignRight
+            label="Event Expiration Time"
+            value={convertUnixToFormattedDate(row.endTime).formattedUtc}
+          />
         )}
         <MarketLink id={row.id}>
           <span>{row.description}</span>
@@ -127,7 +132,7 @@ export const Game = ({ row, type }: GameProps) => {
             <BetRow
               key={`${order.outcomeId}_${index}`}
               outcome={order}
-              showExtraRow={type !== SPORTS_GROUP_TYPES.FUTURES}
+              showExtraRow={isDaily}
             />
           ))}
       </div>
