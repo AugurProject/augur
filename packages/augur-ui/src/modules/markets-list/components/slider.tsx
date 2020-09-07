@@ -3,17 +3,27 @@ import Styles from 'modules/markets-list/components/slider.styles.less';
 import { LeftArrow, RightArrow } from 'modules/common/icons';
 import classNames from 'classnames';
 import { PrimaryButton } from 'modules/common/buttons';
+import { useWindowDimensions } from 'utils/use-window-dimensions';
 
 interface SliderButton {
   text: string;
   link: string;
 }
 
+interface SliderImage {
+  mobile: string;
+  tablet: string;
+  medium: string;
+  big: string;
+}
+
 interface SliderImages {
-  alignment: 'left'|'center'|'right';
-  image: string;
+  alignment: 'left' | 'center' | 'right';
+  image: SliderImage | string;
   text: string;
+  altText: string;
   button?: SliderButton;
+  noOverlay?: boolean;
 }
 
 interface SliderProps {
@@ -22,23 +32,27 @@ interface SliderProps {
 
 interface ArrowProps {
   action: Function;
-  direction: "left"|"right";
+  direction: 'left' | 'right';
 }
 
-const Arrow = ({action, direction}: ArrowProps) => {
+const Arrow = ({ action, direction }: ArrowProps) => {
   return (
-    <button onClick={() => action()} className={classNames({
-      [Styles.LeftArrow]: direction === 'left',
-      [Styles.RightArrow]: direction === 'right',
-    })}>
+    <button
+      onClick={() => action()}
+      className={classNames({
+        [Styles.LeftArrow]: direction === 'left',
+        [Styles.RightArrow]: direction === 'right',
+      })}
+    >
       {direction === 'left' ? LeftArrow : RightArrow}
     </button>
-  )
+  );
 };
 
-export const Slider = ({images}: SliderProps) => {
+export const Slider = ({ images }: SliderProps) => {
   const [activeSlide, setActiveSlide] = useState(0);
   const [transition, setTransition] = useState(0.45);
+  const { width } = useWindowDimensions();
 
   const prevSlide = () => {
     if (activeSlide === 0) {
@@ -62,25 +76,72 @@ export const Slider = ({images}: SliderProps) => {
     setActiveSlide(activeSlide + 1);
   };
 
+  const whichBreakpointToChoose = (width) => {
+    if (width <= 767) return 'mobile';
+    if (width > 767 && width <= 1023) return 'tablet';
+    if (width > 1024 && width <= 1199) return 'medium';
+    return 'big';
+  };
+
   return (
     <div className={Styles.SliderContainer}>
-      <div className={Styles.Slider} style={{transition: `transform ${transition}s ease`, transform: `translateX(${-activeSlide * 100}%)`}}>
-        {images.map(({alignment, image, text, button}) => (
-          <div key={`${text}`} style={{backgroundImage: `url(${image})`}}>
-            <div className={classNames({
-              [Styles.LeftAligned]: alignment === 'left',
-              [Styles.RightAligned]: alignment === 'right',
-            })}>
-              <h2>{text}</h2>
-              {button && (
-                <PrimaryButton URL={button.link} text={button.text} action={() => {}} />
-              )}
-            </div>
-          </div>
-        ))}
+      <div
+        className={Styles.Slider}
+        style={{
+          transition: `transform ${transition}s ease`,
+          transform: `translateX(${-activeSlide * 100}%)`,
+        }}
+      >
+        {images.map(
+          ({ alignment, image, text, altText, button, noOverlay }) => {
+            {
+              const responsiveImage = image[whichBreakpointToChoose(width)];
+
+              return noOverlay ? (
+                <a href={button.link} target="_blank" rel="noopener noreferrer">
+                  <img
+                    src={
+                      typeof image === 'string'
+                        ? image
+                        : responsiveImage
+                    }
+                    alt={altText}
+                  />
+                </a>
+              ) : (
+                <div
+                  key={`${text}`}
+                  style={{
+                    backgroundImage: `url(${
+                      typeof image === 'string'
+                        ? image
+                        : responsiveImage
+                    })`,
+                  }}
+                >
+                  <div
+                    className={classNames({
+                      [Styles.LeftAligned]: alignment === 'left',
+                      [Styles.RightAligned]: alignment === 'right',
+                    })}
+                  >
+                    <h2>{text}</h2>
+                    {button && (
+                      <PrimaryButton
+                        URL={button.link}
+                        text={button.text}
+                        action={() => {}}
+                      />
+                    )}
+                  </div>
+                </div>
+              );
+            }
+          }
+        )}
       </div>
-      <Arrow action={prevSlide} direction='left' />
-      <Arrow action={nextSlide} direction='right' />
+      <Arrow action={prevSlide} direction="left" />
+      <Arrow action={nextSlide} direction="right" />
     </div>
-  )
+  );
 };

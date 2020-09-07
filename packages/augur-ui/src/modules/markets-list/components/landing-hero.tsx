@@ -5,32 +5,62 @@ import { ExternalLinkButton, PrimaryButton } from 'modules/common/buttons';
 import { MODAL_SIGNUP, THEMES } from 'modules/common/constants';
 import { useAppStatusStore } from 'modules/app/store/app-status';
 import { Slider } from 'modules/markets-list/components/slider';
-import Image from '../../../assets/images/landing-slider-img.png';
 import classNames from 'classnames';
+
+import Image1Mobile from '../../../assets/images/banner-1-1011x741.png';
+import Image1Tablet from '../../../assets/images/banner-1-1486x494.png';
+import Image1Medium from '../../../assets/images/banner-1-1522x456.png';
+import Image1Big from '../../../assets/images/banner-1-1920x456.png';
+import Image2Mobile from '../../../assets/images/banner-2-1011x741.png';
+import Image2Tablet from '../../../assets/images/banner-2-1486x494.png';
+import Image2Medium from '../../../assets/images/banner-2-1522x456.png';
+import Image2Big from '../../../assets/images/banner-2-1920x456.png';
+import Image3Mobile from '../../../assets/images/banner-3-1011x741.png';
+import Image3Tablet from '../../../assets/images/banner-3-1486x494.png';
+import Image3Medium from '../../../assets/images/banner-3-1522x456.png';
+import Image3Big from '../../../assets/images/banner-3-1920x456.png';
 
 const images = [{
   alignment: 'left',
-  image: Image,
+  noOverlay: true,
+  image: {
+    mobile: Image1Mobile,
+    tablet: Image1Tablet,
+    medium: Image1Medium,
+    big: Image1Big,
+  },
   text: 'No Limits. Lower Fees.\nBet on anything you want.',
   button: {
     text: 'Sign up to start betting',
-    link: 'https://demo.augur.net/'
+    link: 'https://dev.augur.net/'
   }
 }, {
   alignment: 'center',
-  image: Image,
+  noOverlay: true,
+  image: {
+    mobile: Image2Mobile,
+    tablet: Image2Tablet,
+    medium: Image2Medium,
+    big: Image2Big,
+  },
   text: 'No Limits. Lower Fees.\nBet on anything you want. 2',
   button: {
     text: 'Sign up to start betting',
-    link: 'https://demo.augur.net/'
+    link: 'https://dev.augur.net/'
   }
 }, {
   alignment: 'right',
-  image: Image,
+  noOverlay: true,
+  image: {
+    mobile: Image3Mobile,
+    tablet: Image3Tablet,
+    medium: Image3Medium,
+    big: Image3Big,
+  },
   text: 'No Limits. Lower Fees.\nBet on anything you want. 3',
   button: {
     text: 'Sign up to start betting',
-    link: 'https://demo.augur.net/'
+    link: 'https://dev.augur.net/'
   }
 }];
 
@@ -71,17 +101,9 @@ export const LandingHero = () => {
         ) : (
           <section className={Styles.LandingHeroSlider}>
             <Slider images={images} />
-            <div style={{backgroundImage: `url(${images[0].image})`}}>
-              <div className={classNames({
-                [Styles.LeftAligned]: images[0].alignment === 'left',
-                [Styles.RightAligned]: images[0].alignment === 'right',
-              })}>
-                <h2>{images[0].text}</h2>
-                {images[0].button && (
-                  <PrimaryButton URL={images[0].button.link} text={images[0].button.text} action={() => {}} />
-                )}
-              </div>
-            </div>
+            <a href={images[0].button.link} target="_blank" rel="noopener noreferrer">
+              <img src={images[0].image.big} alt="Promotional banner image with an American Football player and the text '+ 1000 markets' and the button with the text 'explore betting exchange'." />
+            </a>
           </section>
         )}
     </>
