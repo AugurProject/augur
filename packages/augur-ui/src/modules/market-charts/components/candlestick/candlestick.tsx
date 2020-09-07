@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, Fragment } from 'react';
+import React, { useState, useEffect } from 'react';
 
 import { loadCandleStickData } from 'modules/markets/actions/load-candlestick-data';
 import logError from 'utils/log-error';
@@ -19,29 +19,29 @@ interface CandlestickProps {
   isArchived?: boolean;
 }
 
-
 export const Candlestick = ({
   marketId,
-  maxPrice,
-  minPrice,
+  maxPrice: marketMax,
+  minPrice: marketMin,
   selectedOutcomeId,
   daysPassed,
-  isArchived
+  isArchived,
 }: CandlestickProps) => {
   const {
-    blockchain: { currentAugurTimestamp: currentTimeInSeconds },
+    blockchain: { currentAugurTimestamp: end },
   } = useAppStatusStore();
   const [priceTimeSeries, setPriceTimeSeries] = useState([]);
   const [selectedPeriod, setSelectedPeriod] = useState(
     daysPassed < 1 ? DEFAULT_SHORT_PERIODS_VALUE : DEFAULT_PERIODS_VALUE
   );
   useEffect(() => {
+    if (!isArchived) return;
     let isMounted = true;
     loadCandleStickData(
       {
         marketId,
         period: selectedPeriod,
-        end: currentTimeInSeconds,
+        end,
         start: 0,
         outcome: selectedOutcomeId,
       },
@@ -52,19 +52,24 @@ export const Candlestick = ({
         setPriceTimeSeries(updatedPriceTimeSeries);
       }
     );
-    return () => isMounted = false;
-  }, [marketId, selectedPeriod, currentTimeInSeconds, selectedOutcomeId]);
-
+    return () => (isMounted = false);
+  }, [
+    marketId,
+    selectedPeriod,
+    end,
+    selectedOutcomeId,
+    isArchived,
+  ]);
   return (
     <OutcomeCandlestick
-      priceTimeSeries={isArchived ? [] : priceTimeSeries}
-      fixedPrecision={2}
-      pricePrecision={2}
-      selectedPeriod={selectedPeriod}
-      updateSelectedPeriod={v => setSelectedPeriod(v)}
-      marketMax={maxPrice}
-      marketMin={minPrice}
-      isArchived={isArchived}
+      {...{
+        priceTimeSeries,
+        selectedPeriod,
+        marketMax,
+        marketMin,
+        isArchived,
+        updateSelectedPeriod: v => setSelectedPeriod(v),
+      }}
     />
   );
 };
