@@ -88,12 +88,12 @@ const DepthChart = ({
     determineInitialZoom({ orderBookKeys, marketMin, marketMax })
   );
 
-  // const hasResized = checkResize(
-  //   depthChartThis?.current?.clientWidth,
-  //   depthChartThis?.current?.clientHeight,
-  //   containerWidthThis?.current,
-  //   containerHeightThis?.current
-  // );
+  const hasResized = checkResize(
+    depthChartThis?.current?.clientWidth,
+    depthChartThis?.current?.clientHeight,
+    containerWidthThis?.current,
+    containerHeightThis?.current
+  );
   const nearestHover = nearestCompletelyFillingOrder(
     hoveredPriceProp,
     marketDepth,
@@ -113,6 +113,7 @@ const DepthChart = ({
     });
   }, [
     zoom,
+    hasResized,
     marketDepth,
     orderBookKeys?.min.toFixed(),
     orderBookKeys?.mid.toFixed(),
