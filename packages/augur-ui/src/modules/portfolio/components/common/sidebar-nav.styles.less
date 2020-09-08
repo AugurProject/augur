@@ -1,0 +1,104 @@
+@import (reference) '~assets/styles/shared';
+
+.Sidebar {
+  > button {
+    width: 100%;
+    height: @size-38;
+  }
+}
+
+.SidebarMenu {
+  width: 100vw;
+  height: 100vh;
+  position: fixed;
+  top: 0;
+  left: -100vw;
+  transition: all .1s linear;
+  background-color: var(--color-module-background);
+  z-index: @mask-toast;
+  overflow: auto;
+
+  // header
+  > div:first-of-type {
+    display: grid;
+    align-items: center;
+    justify-items: center;
+    padding: @size-16;
+    grid-template-columns: @size-25 1fr @size-25;
+    grid-template-rows: auto;
+    border-bottom: 1px solid var(--color-dark-grey);
+
+    > span {
+      .text-16-bold;
+
+      grid-column: 2;
+    }
+
+    button {
+      grid-column: 3;
+
+      > svg {
+        height: @size-16;
+        width: @size-16;
+
+        > path {
+          stroke: var(--color-primary-text);
+        }
+      }
+    }
+  }
+
+  // container
+  > div:nth-of-type(2) {
+    padding: @size-24 @size-12;
+
+    > div {
+      > div,
+      > ul {
+        margin-bottom: @size-24;
+      }
+    }
+
+    > div,
+    > div > ul {
+      > span,
+      > div > span {
+        .text-10-medium;
+
+        display: inline-block;
+        text-transform: uppercase;
+        margin-bottom: @size-16;
+      }
+
+      > li {
+        flex: 1;
+      }
+    }
+
+    > .ApplyButton {
+      display: none;
+
+      > button {
+        width: 100%;
+        text-align: center;
+      }
+    }
+  }
+}
+
+.ShowSidebar {
+  left: 0;
+  transition: all .1s linear;
+
+  > .ApplyButton {
+    display: block;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: @size-16 @size-12;
+    background-color: var(--color-table-header);
+    border-top: @size-1 solid var(--color-dark-grey);
+  }
+}
+

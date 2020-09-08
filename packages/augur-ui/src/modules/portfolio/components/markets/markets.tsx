@@ -3,7 +3,6 @@ import classNames from 'classnames';
 import { Link } from 'react-router-dom';
 import { CREATE_MARKET } from 'modules/routes/constants/views';
 import makePath from 'modules/routes/helpers/make-path';
-import FilterBox from 'modules/portfolio/components/common/filter-box';
 import { SecondaryButton } from 'modules/common/buttons';
 import { THEMES } from 'modules/common/constants';
 import { AddIcon } from 'modules/common/icons';
@@ -20,6 +19,7 @@ import { selectAuthorOwnedMarkets } from 'modules/markets/selectors/user-markets
 
 import Styles from 'modules/portfolio/components/common/quad.styles.less';
 import marketStyles from 'modules/portfolio/components/markets/markets.styles.less';
+import FilterBox from 'modules/portfolio/components/common/filter-box';
 import { useMarketsStore } from 'modules/markets/store/markets';
 
 const sortByOptions = [
@@ -154,22 +154,19 @@ const MyMarkets = ({ toggle, hide, extend }: MyMarketsProps) => {
   }
 
   return (
-    // @ts-ignore
     <FilterBox
       title="My Created Markets"
       customClass={marketStyles.Markets}
       sortByOptions={sortByOptions}
-      sortByStyles={isTrading ? { minWidth: '10.8125rem' } : {}}
       markets={myMarkets}
       filterComp={filterComp}
       renderRightContent={renderRightContent}
       renderToggleContent={renderToggleContent}
       filterLabel="markets"
-      showPending
+      showLiquidityDepleted
       toggle={toggle}
       hide={hide}
       extend={extend}
-      showLiquidityDepleted
       pickVariables={[
         'id',
         'description',
@@ -179,31 +176,22 @@ const MyMarkets = ({ toggle, hide, extend }: MyMarketsProps) => {
         'creationTime',
         'endTime',
       ]}
-      bottomContent={
-        myMarkets.length !== 0 &&
-        !isTrading && (
-          <div className={marketStyles.BottomContent}>
-            <Link to={makePath(CREATE_MARKET)}>
-              <SecondaryButton
-                text="Create Market"
-                action={() => setTheme(THEMES.TRADING)}
-                icon={AddIcon}
-              />
-            </Link>
-          </div>
-        )
-      }
-      emptyDisplayTitle={
-        isTrading ? "You didn't create any market yet" : 'No markets'
-      }
-      emptyDisplayText={
-        isTrading
-          ? 'Create your first market now!'
-          : 'To create a market you need to go to the Trading Exchange'
-      }
-      emptyDisplayIcon={CreatedMarketsIcon}
-      emptyDisplayButton={
-        isTrading ? (
+      footer={(myMarkets.length !== 0 && !isTrading) && (
+        <div className={marketStyles.BottomContent}>
+          <Link to={makePath(CREATE_MARKET)}>
+            <SecondaryButton
+              text="Create Market"
+              action={() => setTheme(THEMES.TRADING)}
+              icon={AddIcon}
+            />
+          </Link>
+        </div>
+      )}
+      emptyDisplayConfig={{
+        emptyTitle: isTrading ? "You didn't create any market yet" : "No markets",
+        emptyText: isTrading ? "Create your first market now!" : "To create a market you need to go to the Trading Exchange",
+        icon: CreatedMarketsIcon,
+        button: isTrading ? (
           <Link to={makePath(CREATE_MARKET)}>
             <SecondaryButton text="Create Market" action={() => null} />
           </Link>
@@ -213,7 +201,7 @@ const MyMarkets = ({ toggle, hide, extend }: MyMarketsProps) => {
             action={() => setTheme(THEMES.TRADING)}
           />
         )
-      }
+      }}
     />
   );
 };

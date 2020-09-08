@@ -1,15 +1,17 @@
 import React from 'react';
 
-import FilterBox from 'modules/portfolio/components/common/filter-box';
 import { MarketProgress } from 'modules/common/progress';
 import { FavoritesButton } from 'modules/common/buttons';
 import { END_TIME, THEMES } from 'modules/common/constants';
 
 import Styles from 'modules/portfolio/components/common/quad.styles.less';
 import favoriteStyles from 'modules/portfolio/components/favorites/favorites.styles.less';
+import classNames from 'classnames';
 import { useAppStatusStore } from 'modules/app/store/app-status';
 import { selectMarket } from 'modules/markets/selectors/market';
 import { loadMarketsInfoIfNotLoaded } from 'modules/markets/actions/load-markets-info';
+import FilterBox from 'modules/portfolio/components/common/filter-box';
+import { StarIcon } from 'modules/common/icons';
 
 const sortByOptions = [
   {
@@ -69,10 +71,12 @@ const Favorites = ({
     markets = markets.filter(market => !!market?.sportsBook?.groupId);
   }
   const isTrading = theme === THEMES.TRADING;
-  let customClass = favoriteStyles.Watchlist;
+  let watchlistClass = favoriteStyles.Watchlist;
   if (!isTrading && markets.length === 0) {
-    customClass = favoriteStyles.WatchlistEmptyDisplay;
+    watchlistClass = favoriteStyles.WatchlistEmptyDisplay;
   }
+  const customClass = classNames(watchlistClass, favoriteStyles.HideToggleArrow);
+
   function renderRightContent(market) {
     return (
       <div className={Styles.MultiColumn}>
@@ -94,18 +98,16 @@ const Favorites = ({
         />
       </div>
     );
-  };
+  }
 
   return (
     <FilterBox
       title={isTrading ? 'Watchlist' : 'Favorites'}
       customClass={customClass}
       sortByOptions={sortByOptions}
-      sortByStyles={isTrading ? { minWidth: '10.625rem' } : {}}
       markets={markets}
       filterComp={filterComp}
       renderRightContent={renderRightContent}
-      noToggle
       filterLabel="markets"
       toggle={toggle}
       pickVariables={[
@@ -116,9 +118,10 @@ const Favorites = ({
         'endTime',
         'creationTime',
       ]}
-      emptyDisplayText={
-        isTrading ? null : "You don't have any favorite markets to show!"
-      }
+      emptyDisplayConfig={{
+        emptyText: isTrading ? null : "You don't have any favorite markets to show!",
+        icon: StarIcon
+      }}
     />
   );
 };

@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { useHistory } from 'react-router';
 import { orderBy } from 'lodash';
-import QuadBox from 'modules/portfolio/components/common/quad-box';
 import EmptyDisplay from 'modules/portfolio/components/common/empty-display';
 import makePath from 'modules/routes/helpers/make-path';
 import makeQuery from 'modules/routes/helpers/make-query';
@@ -48,6 +47,7 @@ import { useAppStatusStore } from 'modules/app/store/app-status';
 import { selectMarket } from 'modules/markets/selectors/market';
 import { getNotifications } from 'modules/notifications/selectors/notification-state';
 import { getHTMLTheme } from 'modules/app/store/app-status-hooks';
+import QuadBox from 'modules/portfolio/components/common/quad-box';
 
 export interface NotificationsProps {
   toggle?: Function;
@@ -218,7 +218,7 @@ function getButtonAction(
     id: notificationId
   } = notification;
   let marketId = notification?.market?.id;
-  
+
   switch (notification.type) {
     case NOTIFICATION_TYPES.resolvedMarketsOpenOrders:
       buttonAction = () => {
@@ -375,7 +375,7 @@ const Notifications = ({ toggle }: NotificationsProps) => {
   return (
     <QuadBox
       title={NOTIFICATIONS_TITLE}
-      rightContent={labelContent}
+      headerComplement={labelContent}
       toggle={toggle}
       customClass={notificationCount !== 0 && Styles.DarkBackgroundMobile}
       content={

@@ -124,7 +124,7 @@ div.HasCheckbox {
       padding-left: 0;
     }
   }
-} 
+}
 
 .NotificationCard button {
   margin-left: auto;
@@ -248,7 +248,7 @@ div.DarkBackgroundMobile {
       > rect {
         fill: var(--color-module-background);
       }
-  
+
       > path {
         fill: var(--color-module-background);
       }
@@ -265,7 +265,7 @@ div.DarkBackgroundMobile {
       > rect {
         fill: var(--color-module-background);
       }
-  
+
       > path {
         fill: var(--color-module-background);
       }
@@ -311,7 +311,7 @@ div.DarkBackgroundMobile {
 
         text-transform: none;
       }
-  
+
       > span:last-of-type {
         .mono-12-semi-bold;
 
@@ -331,6 +331,13 @@ div.DarkBackgroundMobile {
       padding: @size-4 @size-6;
       max-height: unset;
       height: @size-21;
+    }
+  }
+
+  @media @breakpoint-mobile {
+    .NotificationCard:last-of-type {
+      margin-bottom: 0;
+      border-bottom: none;
     }
   }
 }
