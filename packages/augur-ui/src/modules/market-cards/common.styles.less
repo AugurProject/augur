@@ -1003,15 +1003,16 @@
 			border-radius: @size-16;
 			margin-left: @size-8;
 
-			> g > path {
-				fill: var(--color-secondary-text);
+				> g > path {
+					fill: var(--color-secondary-text);
+				}
 			}
-		}}
+		}
 
 		&.Collapsed {
 			> header {
 				border-radius: @border-radius-default;
-				border-bottom: none;
+				border-bottom: @size-1 solid transparent;
 
 				> button:not([class*="FavoriteButton"]) > svg {
 					transform: none;
