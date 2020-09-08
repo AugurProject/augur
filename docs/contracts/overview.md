@@ -199,7 +199,7 @@ In this scenario User A pays $11 and User B pays $9. The range here is limited t
 
 Now let’s say at market resolution the stock value is $55. This market would pay out holders of LONG shares $15 per share \(55-40 == 15\) and holders of SHORT shares $5. In this way the position in a scalar market tracks a value and pays out accordingly rather than following a “winner take all” model like the other market types.
 
-### REP Bond
+### Creation Bond
 
 When a market is created a deposit of REP is required in order to fulfil 2 different bond requirements. The REP required is **the maximum** of both:
 
@@ -436,7 +436,7 @@ When a Market reaches its configured end time it will be eligible for reporting.
 The first reported payout a market receives is referred to as the Initial Report. It is distinct from other dispute based reports for 2 reasons:
 
 * It is a report by a single party rather than sourced from any number of addresses
-* The REP which is staked is \(in most cases\) provided by the [REP Bond](overview.md#rep-bond) given to the market at its creation.
+* The REP which is staked is \(in most cases\) provided by the [Creation Bond](overview.md#creation-bond) given to the market at its creation.
 
 The value of the initial report is at minimum ~.35 REP and will [float accordingly](overview.md#float-accordingly) as the [maximum of the No Show and Initial Report Bonds](overview.md#maximum-of-the-no-show-and-initial-report-bonds).
 
@@ -450,7 +450,7 @@ If the Designated Reporter does make the initial report the Market creator will 
 
 #### Open Report
 
-If the Designated Reporter does not provide a report within their [allotted window](overview.md#allotted-window) anyone will be allowed to provide the Initial Report. In the event this happens the [No Show Bond](overview.md#no-show-bond) is used to provide the stake for the Initial Report. If the reporter was correct this means they will have essentially been paid that REP bond by the market creator to provide the Initial Report.
+If the Designated Reporter does not provide a report within their [allotted window](overview.md#allotted-window) anyone will be allowed to provide the Initial Report. In the event this happens the [No Show Bond](overview.md#no-show-bond) is used to provide the stake for the Initial Report. If the reporter was correct this means they will have essentially been paid that Creation bond by the market creator to provide the Initial Report.
 
 ### Disputing
 
@@ -474,7 +474,7 @@ This formula guarantees that the profit from correctly staking REP is 50% of wha
 
 If contributions are made to a dispute but the bond size is not reached, or if a different dispute crowdsourced is filled first, the bond is considered “disavowed” and contributors may get the stake they placed back immediately.
 
-One unusual restriction on dispute contributions is that there is a threshold of remaining value to fill a bond which may not occur. This means that once a bond is filled up to a particular amount the remaining amount must be filled entirely in any further contributions. This threshold is whatever the current [REP bond](overview.md#rep-bond) for market creation is.
+One unusual restriction on dispute contributions is that there is a threshold of remaining value to fill a bond which may not occur. This means that once a bond is filled up to a particular amount the remaining amount must be filled entirely in any further contributions. This threshold is whatever the current [Creation bond](overview.md#creation-bond) for market creation is.
 
 #### Fast & Slow Disputing
 
@@ -509,7 +509,7 @@ In the event no universe has 50% of the REP supply migrate to it the Universe wi
 
 The winning universe’s correlated payout determines how the Forking Market ultimately resolves.
 
-Once there is a winning universe any existing markets in the forking universe can be migrated to that winning universe. Until they are migrated they cannot be finalized. The transaction to migrate them will require a new [REP bond](overview.md#rep-bond) and if the market is past its end time will require an [Initial Report](overview.md#initial-report) be made.
+Once there is a winning universe any existing markets in the forking universe can be migrated to that winning universe. Until they are migrated they cannot be finalized. The transaction to migrate them will require a new [Creation bond](overview.md#creation-bond) and if the market is past its end time will require an [Initial Report](overview.md#initial-report) be made.
 
 ### Resolution / Finalization
 
