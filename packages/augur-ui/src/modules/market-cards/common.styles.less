@@ -994,23 +994,24 @@
 		border: @size-1 solid var(--color-outline);
 		border-radius: @border-radius-default;
 
+		> header { 
+			> svg {
+			height: @size-20;
+			width: @size-20;
+			padding: @size-2;
+			border: @size-1 solid var(--color-dark-grey);
+			border-radius: @size-16;
+			margin-left: @size-8;
+
+			> g > path {
+				fill: var(--color-secondary-text);
+			}
+		}}
+
 		&.Collapsed {
 			> header {
 				border-radius: @border-radius-default;
 				border-bottom: none;
-
-				> svg {
-					height: @size-20;
-					width: @size-20;
-					padding: @size-2;
-					border: @size-1 solid var(--color-dark-grey);
-					border-radius: @size-16;
-					margin-left: @size-8;
-
-					> g > path {
-						fill: var(--color-secondary-text);
-					}
-				}
 
 				> button:not([class*="FavoriteButton"]) > svg {
 					transform: none;
