@@ -37,6 +37,7 @@ interface QuadBoxSearchProps {
   focus?: boolean;
   setFocus?: Function;
 }
+
 const QuadBoxSearch = ({ search, setSearch, focus, setFocus }: QuadBoxSearchProps) => {
   const closeSearchBar = () => {
     setFocus(!focus);

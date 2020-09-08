@@ -9,6 +9,7 @@ import EmptyDisplay from 'modules/portfolio/components/common/empty-display';
 import { createTabsInfo } from 'modules/portfolio/helpers/create-tabs-info';
 import { useAppStatusStore } from 'modules/app/store/app-status';
 import Styles from 'modules/portfolio/components/common/quad-box.styles.less';
+import classNames from 'classnames';
 import { createMarketsStateObject } from 'modules/portfolio/helpers/create-markets-state-object';
 import QuadBox, {
   QuadBoxProps,
@@ -170,7 +171,11 @@ const FilterBox = ({
           {headerComplement}
         </>
       }
-      customClass={customClass}
+      customClass={classNames(customClass, {
+        [Styles.DisabledSearch]: noData,
+        [Styles.DisabledFilters]: noData,
+        [Styles.DisabledTabs]: noData,
+      })}
       sortByOptions={sortByOptions}
       updateDropdown={sortBy => setSortBy(sortBy)}
       search={search}
@@ -191,7 +196,7 @@ const FilterBox = ({
               }}
             />
           ) : (
-            <div>
+            <div className={Styles.SportsAndBettingFilters}>
               <span>Status:</span>
               <SquareDropdown
                 defaultValue={selectedTab}
@@ -199,14 +204,12 @@ const FilterBox = ({
                 onChange={(tab) => {
                   setSelectedTab(tab);
                 }}
-                disabled={noData}
               />
               <span>Sort by:</span>
               <SquareDropdown
                 defaultValue={sortByOptions[0].value}
                 options={sortByOptions}
                 onChange={(sortBy) => setSortBy(sortBy)}
-                disabled={noData}
               />
             </div>
           )}

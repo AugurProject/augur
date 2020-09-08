@@ -97,6 +97,11 @@
   }
 }
 
+.Disabled {
+  pointer-events: none;
+  opacity: 0.5;
+}
+
 .NewQuadBox {
   color: var(--color-primary-text);
   display: grid;
@@ -236,6 +241,26 @@
 
     .Dropdown {
       min-width: @size-173;
+    }
+  }
+
+  &.DisabledSearch {
+    .Search {
+      .Disabled;
+    }
+  }
+
+  &.DisabledFilters {
+    .Dropdown,
+    .SportsAndBettingFilters,
+    div[class$="Sidebar"] {
+      .Disabled;
+    }
+  }
+
+  &.DisabledTabs {
+    div[class$="SwitchLabelsGroup"] {
+      .Disabled;
     }
   }
 
