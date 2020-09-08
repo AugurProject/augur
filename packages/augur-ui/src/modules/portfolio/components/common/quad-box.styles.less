@@ -244,10 +244,8 @@
     }
   }
 
-  &.DisabledSearch {
-    .Search {
-      .Disabled;
-    }
+  &.DisabledSearch .Search {
+    .Disabled;
   }
 
   &.DisabledFilters {
@@ -258,10 +256,8 @@
     }
   }
 
-  &.DisabledTabs {
-    div[class$="SwitchLabelsGroup"] {
-      .Disabled;
-    }
+  &.DisabledTabs div[class$="SwitchLabelsGroup"] {
+    .Disabled;
   }
 
   @media @breakpoint-mobile {
