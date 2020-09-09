@@ -129,7 +129,10 @@ export const Confirm = ({
     actions: { setModal },
   } = useAppStatusStore();
   const {
-    orderProperties: { postOnlyOrder, allowPostOnlyOrder },
+    orderProperties: {
+      postOnlyOrder,
+      allowPostOnlyOrder,
+    },
   } = useTradingStore();
   let availableDai = totalTradingBalance();
   if (initialLiquidity) {
@@ -176,14 +179,14 @@ export const Confirm = ({
   }, []);
 
   const gasCostInEth = gasLimit
-    ? createBigNumber(
-        formatGasCostToEther(
-          gasLimit,
-          { decimalsRounded: 4 },
-          createBigNumber(GWEI_CONVERSION).multipliedBy(gasPrice)
-        )
+  ? createBigNumber(
+      formatGasCostToEther(
+        gasLimit,
+        { decimalsRounded: 4 },
+        createBigNumber(GWEI_CONVERSION).multipliedBy(gasPrice)
       )
-    : ZERO;
+    )
+  : ZERO;
 
   const messages = (() => {
     let numTrades = loopLimit ? Math.ceil(numFills / loopLimit) : numFills;
@@ -209,9 +212,7 @@ export const Confirm = ({
           header: 'MULTIPLE TRANSACTIONS',
           type: WARNING,
           message: `This trade will take ${numTrades} Transactions${
-            createBigNumber(potentialDaiLoss?.value || 0).gt(
-              allowanceBigNumber || 0
-            )
+            createBigNumber(potentialDaiLoss.value).gt(allowanceBigNumber || 0)
               ? ' and approvals.'
               : '.'
           }`,
@@ -228,10 +229,10 @@ export const Confirm = ({
       // unprofitable error
       if (
         numTrades > 0 &&
-        ((potentialDaiProfit?.value !== 0 &&
-          createBigNumber(gasCostDai).gt(potentialDaiProfit?.value || 0)) ||
-          (orderShareProfit?.value !== 0 &&
-            createBigNumber(gasCostDai).gt(orderShareProfit?.value || 0)))
+        ((potentialDaiProfit?.value &&
+          createBigNumber(gasCostDai).gt(potentialDaiProfit.value)) ||
+          (orderShareProfit?.value &&
+            createBigNumber(gasCostDai).gt(orderShareProfit.value)))
       ) {
         messages = {
           header: 'UNPROFITABLE TRADE',
@@ -240,7 +241,7 @@ export const Confirm = ({
         };
       }
 
-      if (totalCost) {
+      if (totalCost && potentialDaiLoss) {
         // GAS error in DAI [Gsn]
         if (gsnEnabled && createBigNumber(gasCostDai).gte(availableDai)) {
           messages = {
@@ -259,9 +260,7 @@ export const Confirm = ({
           };
         }
 
-        if (
-          createBigNumber(potentialDaiLoss?.fullPrecision || 0).gt(availableDai)
-        ) {
+        if (createBigNumber(potentialDaiLoss.fullPrecision).gt(availableDai)) {
           messages = {
             header: 'Insufficient DAI',
             type: ERROR,
@@ -323,7 +322,7 @@ export const Confirm = ({
 
     return messages;
   })();
-
+ 
   const limitPricePercentage = (isBuy
     ? createBigNumber(limitPrice)
     : maxPrice.minus(createBigNumber(limitPrice))
@@ -337,13 +336,9 @@ export const Confirm = ({
     : formatNumber(0);
 
   const tooltip = isScalar
-    ? `You believe the outcome of this event will be ${
-        isBuy ? 'greater' : 'less'
-      }
+    ? `You believe the outcome of this event will be ${isBuy ? 'greater' : 'less'}
   than ${limitPrice} ${scalarDenomination}`
-    : `You believe ${outcomeName} has a ${
-        isBuy ? 'greater' : 'less'
-      } than ${limitPricePercentage}% chance to occur.`;
+    : `You believe ${outcomeName} has a ${isBuy ? 'greater' : 'less'} than ${limitPricePercentage}% chance to occur.`;
 
   let newOrderAmount = formatShares('0').rounded;
   if (numShares && totalCost.fullPrecision && shareCost.fullPrecision) {
@@ -361,13 +356,13 @@ export const Confirm = ({
   }
 
   const notProfitable =
-    (orderShareProfit && createBigNumber(orderShareProfit?.value).lte(0)) ||
-    (potentialDaiLoss?.value > 0 &&
+    (orderShareProfit && createBigNumber(orderShareProfit.value).lte(0)) ||
+    (potentialDaiLoss.value > 0 &&
       potentialDaiProfit &&
-      potentialDaiProfit?.value <= 0);
+      potentialDaiProfit.value <= 0);
   return (
     <section className={Styles.TradingConfirm}>
-      {!initialLiquidity && shareCost?.value !== 0 && (
+      {!initialLiquidity && shareCost && shareCost.value !== 0 && (
         <div className={Styles.details}>
           <div className={Styles.properties}>Closing Position</div>
           <div
@@ -385,10 +380,10 @@ export const Confirm = ({
             value={orderShareTradingFee}
             showDenomination={true}
           />
-          {gasCostDai?.roundedValue.gt(0) > 0 && hasFills && (
+          {gasCostDai.roundedValue.gt(0) > 0 && hasFills && (
             <TransactionFeeLabelToolTip
-              isError={createBigNumber(gasCostDai?.value).gt(
-                createBigNumber(orderShareProfit?.value)
+              isError={createBigNumber(gasCostDai.value).gt(
+                createBigNumber(orderShareProfit.value)
               )}
               gasCostDai={gasCostDai}
             />
@@ -415,7 +410,7 @@ export const Confirm = ({
                 )}
                 data-tip
                 data-for="tooltip--confirm"
-                data-iscapture
+                data-iscapture={true}
               >
                 {QuestionIcon}
               </label>
@@ -455,8 +450,8 @@ export const Confirm = ({
 
           {gasCostDai.roundedValue.gt(0) > 0 && hasFills && (
             <TransactionFeeLabelToolTip
-              isError={createBigNumber(gasCostDai?.value).gt(
-                createBigNumber(potentialDaiProfit?.value)
+              isError={createBigNumber(gasCostDai.value).gt(
+                createBigNumber(potentialDaiProfit.value)
               )}
               gasCostDai={postOnlyOrder ? `0.00` : gasCostDai}
             />
