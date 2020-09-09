@@ -49,18 +49,17 @@ export const ClaimWinnings = () => {
   Object.keys(matched.items).map(marketId => {
     let marketIsClaimable = false;
     const market = matched.items[marketId];
-    market.orders.map(bet => {
-      if (positions[bet.marketId]) {
-        const marketPosition = positions[bet.marketId];
-        const unclaimedProceeds = createBigNumber(
-          marketPosition.tradingPositionsPerMarket.unclaimedProceeds
-        );
-        if (unclaimedProceeds.gt(ZERO)) {
-          totalProceeds = totalProceeds.plus(unclaimedProceeds);
-          marketIsClaimable = true;
-        }
+    const bet = market.orders[0];
+    if (positions[bet.marketId]) {
+      const marketPosition = positions[bet.marketId];
+      const unclaimedProceeds = createBigNumber(
+        marketPosition.tradingPositionsPerMarket.unclaimedProceeds
+      );
+      if (unclaimedProceeds.gt(ZERO)) {
+        totalProceeds = totalProceeds.plus(unclaimedProceeds);
+        marketIsClaimable = true;
       }
-    });
+    }
     if (marketIsClaimable) claimableMarkets.push(marketId);
   });
 
