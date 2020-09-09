@@ -1,4 +1,4 @@
-import React, { useRef, useState, useEffect, useMemo } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import * as d3 from 'd3';
 import ReactFauxDOM from 'react-faux-dom';
 import memoize from 'memoizee';
@@ -16,10 +16,14 @@ import { isEmpty } from 'utils/is-empty';
 import { Trading } from 'modules/trading/store/trading';
 
 interface DepthChartProps {
-  market: MarketData | MarketInfo;
-  orderBook: OrderBook;
+  marketDepth: MarketDepth;
+  orderBookKeys: { max: BigNumber; min: BigNumber; mid: BigNumber };
+  pricePrecision: number;
   updateHoveredPrice: Function;
   updateHoveredDepth: Function;
+  marketMin: BigNumber;
+  marketMax: BigNumber;
+  hasOrders: boolean;
   hoveredPriceProp?: any;
 }
 
@@ -81,9 +85,13 @@ const DepthChart = ({
     maxPriceBigNumber: marketMax,
     tickSize,
   } = market;
+
   const marketDepth = orderForMarketDepth(orderBook);
   const orderBookKeys = getOrderBookKeys(marketDepth, marketMin, marketMax);
+
   const pricePrecision = getPrecision(tickSize, 4);
+  const hasOrders = !!orderBook &&
+    (!isEmpty(orderBook[BIDS]) || !isEmpty(orderBook[ASKS]));
   const [zoom, setZoom] = useState(
     determineInitialZoom({ orderBookKeys, marketMin, marketMax })
   );
@@ -101,7 +109,7 @@ const DepthChart = ({
     marketMax
   )[0];
 
-  useMemo(() => {
+  useEffect(() => {
     drawDepth({
       marketDepth,
       orderBookKeys,
@@ -109,34 +117,48 @@ const DepthChart = ({
       marketMin,
       marketMax,
       updateHoveredPrice,
+      hasOrders,
       zoom,
     });
-  }, [
-    zoom,
-    hasResized,
-    marketDepth,
-    orderBookKeys?.min.toFixed(),
-    orderBookKeys?.mid.toFixed(),
-    orderBookKeys?.max.toFixed(),
-    window.innerWidth,
-    window.innerHeight,
-  ]);
+    window.addEventListener('resize', handleResize);
 
-  useMemo(() => {
-    if (depthChartThis.current && drawParamsThis.current) {
-      drawCrosshairs({
-        hoveredPriceProp,
-        pricePrecision,
-        marketDepth,
-        marketMin,
-        marketMax,
-        drawParams: drawParamsThis.current,
-      });
-    }
+    return () => {
+      window.removeEventListener('resize', handleResize);
+    };
+  }, [zoom, hasResized]);
+
+  useEffect(() => {
+    drawDepth({
+      marketDepth,
+      orderBookKeys,
+      pricePrecision,
+      marketMin,
+      marketMax,
+      updateHoveredPrice,
+      hasOrders,
+      zoom,
+    });
+  }, [Object.values(marketDepth).flat().length, orderBookKeys?.min.toFixed(), orderBookKeys?.mid.toFixed(), orderBookKeys?.max.toFixed()]);
+
+  useEffect(() => {
+    drawCrosshairs({
+      hoveredPriceProp,
+      pricePrecision,
+      marketDepth,
+      marketMin,
+      marketMax,
+      drawParams: drawParamsThis.current,
+    });
   }, [nearestHover]);
 
   function determineDrawParams(options) {
-    const { marketDepth, marketMax, marketMin, orderBookKeys, zoom } = options;
+    const {
+      marketDepth,
+      marketMax,
+      marketMin,
+      orderBookKeys,
+      zoom,
+    } = options;
 
     const containerHeight = containerHeightThis?.current
       ? containerHeightThis.current
@@ -185,6 +207,7 @@ const DepthChart = ({
         }
         return p;
       }, ZERO)
+      // .times(1.05)
       .toNumber();
 
     const xDomain = [xDomainMin.toNumber(), xDomainMax.toNumber()];
@@ -249,6 +272,7 @@ const DepthChart = ({
         marketMin,
         marketMax,
         updateHoveredPrice,
+        hasOrders,
         zoom,
       } = options;
 
@@ -280,6 +304,7 @@ const DepthChart = ({
         pricePrecision,
         marketMax,
         marketMin,
+        hasOrders,
         marketDepth: drawParams.newMarketDepth,
       });
 
@@ -287,6 +312,7 @@ const DepthChart = ({
         drawParams,
         depthChart,
         marketDepth: drawParams.newMarketDepth,
+        hasOrders,
         marketMin,
         marketMax,
       });
@@ -400,6 +426,19 @@ const DepthChart = ({
     }
   }
 
+  function handleResize() {
+    drawDepth({
+      marketDepth,
+      orderBookKeys,
+      pricePrecision,
+      marketMin,
+      marketMax,
+      updateHoveredPrice,
+      hasOrders,
+      zoom,
+    });
+  }
+
   return (
     <div ref={depthChartThis} className={Styles.Container}>
       <button onClick={() => handleZoom(-1)} disabled={zoom === 0}>
@@ -480,6 +519,7 @@ function drawTicks(options) {
     orderBookKeys,
     marketMax,
     marketMin,
+    hasOrders,
     marketDepth,
   } = options;
   //  Chart Bounds
@@ -497,7 +537,7 @@ function drawTicks(options) {
     .attr('y2', (d, i) => (drawParams.containerHeight - CHART_DIM.bottom) * i);
 
   //  Midpoint line
-  if (marketDepth.bids.length > 0 && marketDepth.asks.length > 0) {
+  if (hasOrders && marketDepth.bids.length > 0 && marketDepth.asks.length > 0) {
     depthChart
       .append('line')
       .attr('class', 'tick-line--midpoint')
@@ -510,21 +550,23 @@ function drawTicks(options) {
   const tickCount = 5;
 
   // Draw LeftSide yAxis
-  const yTicks = depthChart.append('g').attr('id', 'depth_y_ticks');
+  if (hasOrders) {
+    const yTicks = depthChart.append('g').attr('id', 'depth_y_ticks');
 
-  yTicks
-    .call(
-      d3
-        .axisRight(drawParams.yScale)
-        .tickValues(drawParams.yScale.ticks(tickCount))
-        .tickSize(9)
-        .tickPadding(4)
-    )
-    .attr('transform', `translate(-${CHART_DIM.left}, 6)`)
-    .selectAll('text')
-    .text(d => d)
-    .select('path')
-    .remove();
+    yTicks
+      .call(
+        d3
+          .axisRight(drawParams.yScale)
+          .tickValues(drawParams.yScale.ticks(tickCount))
+          .tickSize(9)
+          .tickPadding(4)
+      )
+      .attr('transform', `translate(-${CHART_DIM.left}, 6)`)
+      .selectAll('text')
+      .text(d => d)
+      .select('path')
+      .remove();
+  }
 
   // X Axis
   let hasAddedMin = false;
@@ -598,24 +640,26 @@ function drawTicks(options) {
   });
 
   // Draw RightSide yAxis
-  const yTicks2 = depthChart.append('g').attr('id', 'depth_y_ticks');
+  if (hasOrders) {
+    const yTicks2 = depthChart.append('g').attr('id', 'depth_y_ticks');
 
-  yTicks2
-    .call(
-      d3
-        .axisLeft(drawParams.yScale)
-        .tickValues(drawParams.yScale.ticks(tickCount))
-        .tickSize(9)
-        .tickPadding(4)
-    )
-    .attr(
-      'transform',
-      `translate(${drawParams.containerWidth + CHART_DIM.right}, 6)`
-    )
-    .selectAll('text')
-    .text(d => d)
-    .select('path')
-    .remove();
+    yTicks2
+      .call(
+        d3
+          .axisLeft(drawParams.yScale)
+          .tickValues(drawParams.yScale.ticks(tickCount))
+          .tickSize(9)
+          .tickPadding(4)
+      )
+      .attr(
+        'transform',
+        `translate(${drawParams.containerWidth + CHART_DIM.right}, 6)`
+      )
+      .selectAll('text')
+      .text(d => d)
+      .select('path')
+      .remove();
+  }
 }
 
 function drawLines(options) {
@@ -623,6 +667,7 @@ function drawLines(options) {
     drawParams,
     depthChart,
     marketDepth,
+    hasOrders,
     marketMin,
     marketMax,
   } = options;
@@ -665,6 +710,8 @@ function drawLines(options) {
     .append('stop')
     .attr('class', 'stop-top-ask')
     .attr('offset', '10');
+
+  if (!hasOrders) return;
 
   // Depth Line
   const depthLine = d3
