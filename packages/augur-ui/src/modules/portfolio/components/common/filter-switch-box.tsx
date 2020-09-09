@@ -3,6 +3,7 @@ import { Market } from 'modules/portfolio/types';
 import EmptyDisplay from 'modules/portfolio/components/common/empty-display';
 import Styles from 'modules/portfolio/components/common/quad-box.styles.less';
 import QuadBox, { QuadBoxProps } from 'modules/portfolio/components/common/quad-box';
+import classNames from 'classnames';
 
 export interface FilterSwitchBoxProps extends QuadBoxProps {
   data: Market[];
@@ -79,7 +80,10 @@ const FilterSwitchBox = ({
         </>
       }
       search={search}
-      customClass={customClass}
+      customClass={classNames(customClass, {
+        [Styles.DisabledSearch]: !thereIsData,
+        [Styles.DisabledFilters]: !thereIsData,
+      })}
       setSearch={onSearchChange}
       sortByOptions={sortByOptions}
       updateDropdown={showDropdown && updateView}
