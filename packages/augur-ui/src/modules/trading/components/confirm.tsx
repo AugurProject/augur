@@ -64,7 +64,7 @@ interface ConfirmProps {
   gasLimit: number;
   normalGasLimit: number;
   availableEth: BigNumber;
-  availableDai: BigNumber;
+  availableWeth: BigNumber;
   outcomeName: string;
   marketType: string;
   maxPrice: BigNumber;
@@ -113,7 +113,7 @@ class Confirm extends Component<ConfirmProps, ConfirmState> {
       trade,
       gasPrice,
       availableEth,
-      availableDai,
+      availableWeth,
       walletStatus,
       sweepStatus,
       postOnlyOrder,
@@ -139,8 +139,8 @@ class Confirm extends Component<ConfirmProps, ConfirmState> {
       !createBigNumber(prevProps.availableEth).eq(
         createBigNumber(availableEth)
       ) ||
-      !createBigNumber(prevProps.availableDai).eq(
-        createBigNumber(availableDai)
+      !createBigNumber(prevProps.availableWeth).eq(
+        createBigNumber(availableWeth)
       ) ||
       allowPostOnlyOrder !== prevProps.allowPostOnlyOrder
     ) {
@@ -158,7 +158,7 @@ class Confirm extends Component<ConfirmProps, ConfirmState> {
       gasLimit,
       normalGasLimit,
       availableEth,
-      availableDai,
+      availableWeth,
       tradingTutorial,
       GsnEnabled,
       initializeGsnWallet,
@@ -192,7 +192,6 @@ class Confirm extends Component<ConfirmProps, ConfirmState> {
     let messages: Message | null = null;
 
     const averageGasLimit = gasLimit ? gasLimit.plus(normalGasLimit).div(2) : createBigNumber(0);
-    const averageGasCost = getGasCost(averageGasLimit, gasPrice, ethToDaiRate);
     const gasCostInEth = gasLimit
       ? createBigNumber(formatGasCostToEther(gasLimit, { decimalsRounded: 4 }, createBigNumber(GWEI_CONVERSION).multipliedBy(gasPrice)))
       : ZERO;
@@ -220,9 +219,9 @@ class Confirm extends Component<ConfirmProps, ConfirmState> {
       !isNaN(numTrades) &&
       numTrades > 0 &&
       ((potentialDaiProfit && potentialDaiProfit.value !== 0 &&
-        createBigNumber(averageGasCost.value).gt(potentialDaiProfit.value)) ||
+        createBigNumber(gasCostInEth.value).gt(potentialDaiProfit.value)) ||
         (orderShareProfit && orderShareProfit.value !== 0 &&
-          createBigNumber(averageGasCost.value).gt(orderShareProfit.value))) &&
+          createBigNumber(gasCostInEth.value).gt(orderShareProfit.value))) &&
       !tradingTutorial
     ) {
       messages = {
@@ -265,13 +264,14 @@ class Confirm extends Component<ConfirmProps, ConfirmState> {
       !tradingTutorial &&
       totalCost &&
       createBigNumber(potentialDaiLoss.fullPrecision).gt(
-        createBigNumber(availableDai)
+        createBigNumber(availableWeth)
       )
     ) {
+      const hasEth = createBigNumber(availableEth).gt("0.001")
       messages = {
         header: 'Insufficient WETH',
         type: ERROR,
-        message: 'You do not have enough WETH to place this order',
+        message: `You do not have enough WETH${hasEth ? `, wrap some of ${formatEther(availableEth).formatted} ETH`: ''}`,
       };
     }
 
@@ -306,7 +306,7 @@ class Confirm extends Component<ConfirmProps, ConfirmState> {
       initialLiquidity,
       postOnlyOrder,
       tradingTutorial,
-      availableDai,
+      availableWeth,
       showAddFundsModal,
       ethToDaiRate,
       account,
@@ -530,7 +530,7 @@ class Confirm extends Component<ConfirmProps, ConfirmState> {
               <button onClick={messages.callback ? () => messages.callback() : this.clearErrorMessage}>{XIcon}</button>
             )}
 
-            {!tradingTutorial && isLogged && totalCost && (createBigNumber(potentialDaiLoss.fullPrecision).gt(createBigNumber(availableDai)) ||
+            {!tradingTutorial && isLogged && totalCost && (createBigNumber(potentialDaiLoss.fullPrecision).gt(createBigNumber(availableWeth)) ||
             createBigNumber(gasCostInEth).gte(createBigNumber(availableEth))) &&
               <PrimaryButton action={() => showAddFundsModal({ tokenToAdd: WETH })} text={'Add Funds'} />
             }

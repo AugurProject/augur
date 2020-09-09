@@ -1274,8 +1274,8 @@ export class UserRepDisplay extends Component<
                   useValueLabel
                 />
                 <LinearPropertyLabel
-                  key="participation"
-                  label="Participation Tokens"
+                  key="stakedrep"
+                  label="Staked REP"
                   value={participationAmountFormatted}
                   showDenomination
                   useFull
