@@ -26,6 +26,11 @@ import { augurSdk } from 'services/augursdk';
 import { SportsGroupCharts } from 'modules/market-charts/sports-group-charts';
 import { MarketComments } from 'modules/market/components/common/comments/market-comments';
 import { getNetworkId } from 'modules/contracts/actions/contractCalls';
+import { MARKET_STATUS_MESSAGES } from 'modules/common/constants';
+
+const {
+  RESOLVED
+} = MARKET_STATUS_MESSAGES;
 
 export const isMarketView = location => {
   const isGroupPage = parsePath(location.pathname)[0] === MARKET;
@@ -130,13 +135,14 @@ const BettingMarketView = () => {
     settlementFee,
     template,
     sportsBook,
+    marketStatus,
   } = market;
   const header = sportsBook ? sportsBook.header : description;
   const estDateTime = sportsBook?.estTimestamp;
   const startTimeFormatted =
     estDateTime && convertUnixToFormattedDate(estDateTime);
   const networkId = getNetworkId();
-
+  console.log(market);
   return (
     <div className={Styles.BettingMarketView}>
       <div>
@@ -164,7 +170,7 @@ const BettingMarketView = () => {
                 : formatPercent(Number(settlementFee) * 100).full
             }
           />
-          {estDateTime ? (
+          {marketStatus !== RESOLVED && estDateTime ? (
             <FullTimeLabel
               label="Estimated Start Time"
               time={startTimeFormatted}
