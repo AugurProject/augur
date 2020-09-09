@@ -229,10 +229,10 @@ export const Confirm = ({
       // unprofitable error
       if (
         numTrades > 0 &&
-        ((potentialDaiProfit?.value !== 0 &&
-          createBigNumber(gasCostDai).gt(potentialDaiProfit.value)) ||
-          (orderShareProfit?.value !== 0 &&
-            createBigNumber(gasCostDai).gt(orderShareProfit.value)))
+        ((potentialDaiProfit?.value &&
+          createBigNumber(gasCostDai).gt(potentialDaiProfit?.value)) ||
+          (orderShareProfit?.value &&
+            createBigNumber(gasCostDai).gt(orderShareProfit?.value)))
       ) {
         messages = {
           header: 'UNPROFITABLE TRADE',
