@@ -49,9 +49,8 @@ export const ClaimWinnings = () => {
   Object.keys(matched.items).map(marketId => {
     let marketIsClaimable = false;
     const market = matched.items[marketId];
-    const bet = market.orders[0];
-    if (positions[bet.marketId]) {
-      const marketPosition = positions[bet.marketId];
+    if (positions[marketId]) {
+      const marketPosition = positions[marketId];
       const unclaimedProceeds = createBigNumber(
         marketPosition.tradingPositionsPerMarket.unclaimedProceeds
       );
