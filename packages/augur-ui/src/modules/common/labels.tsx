@@ -271,6 +271,7 @@ interface FullTimeLabelProps {
   time: DateFormattedObject;
   hint?: React.ReactNode;
   large?: boolean;
+  hideContent?: boolean;
 }
 
 interface CountdownLabelProps {
@@ -480,36 +481,41 @@ export const FullTimeLabel = ({
   time,
   hint,
   large,
+  hideContent = false,
 }: FullTimeLabelProps) => (
     <div className={classNames(Styles.FullTimeLabel, { [Styles.Large]: large })}>
-      <span>
-        {label}
-        {hint && (
-          <>
-            <label
-              className={TooltipStyles.TooltipHint}
-              data-tip
-              data-for={`tooltip-${label.replace(' ', '-')}`}
-              data-iscapture={true}
-            >
-              {QuestionIcon}
-            </label>
-            <ReactTooltip
-              id={`tooltip-${label.replace(' ', '-')}`}
-              className={TooltipStyles.Tooltip}
-              effect="solid"
-              place="right"
-              type="light"
-              event="mouseover mouseenter"
-              eventOff="mouseleave mouseout scroll mousewheel blur"
-            >
-              {hint}
-            </ReactTooltip>
-          </>
-        )}
-      </span>
-      <span>{time.formattedUtc}</span>
-      <span>{time.formattedLocalShortWithUtcOffsetWithoutSeconds}</span>
+      {!hideContent && 
+        <>
+          <span>
+            {label}
+            {hint && (
+              <>
+                <label
+                  className={TooltipStyles.TooltipHint}
+                  data-tip
+                  data-for={`tooltip-${label.replace(' ', '-')}`}
+                  data-iscapture={true}
+                >
+                  {QuestionIcon}
+                </label>
+                <ReactTooltip
+                  id={`tooltip-${label.replace(' ', '-')}`}
+                  className={TooltipStyles.Tooltip}
+                  effect="solid"
+                  place="right"
+                  type="light"
+                  event="mouseover mouseenter"
+                  eventOff="mouseleave mouseout scroll mousewheel blur"
+                >
+                  {hint}
+                </ReactTooltip>
+              </>
+            )}
+          </span>
+          <span>{time.formattedUtc}</span>
+          <span>{time.formattedLocalShortWithUtcOffsetWithoutSeconds}</span>
+        </>
+      }
     </div>
 );
 

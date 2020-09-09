@@ -26,11 +26,11 @@ import { augurSdk } from 'services/augursdk';
 import { SportsGroupCharts } from 'modules/market-charts/sports-group-charts';
 import { MarketComments } from 'modules/market/components/common/comments/market-comments';
 import { getNetworkId } from 'modules/contracts/actions/contractCalls';
-import { MARKET_STATUS_MESSAGES } from 'modules/common/constants';
+import { MARKET_STATUS_MESSAGES, REPORTING_STATE } from 'modules/common/constants';
 
 const {
-  RESOLVED
-} = MARKET_STATUS_MESSAGES;
+  FINALIZED,
+} = REPORTING_STATE;
 
 export const isMarketView = location => {
   const isGroupPage = parsePath(location.pathname)[0] === MARKET;
@@ -135,13 +135,15 @@ const BettingMarketView = () => {
     settlementFee,
     template,
     sportsBook,
-    marketStatus,
+    reportingState,
   } = market;
   const header = sportsBook ? sportsBook.header : description;
   const estDateTime = sportsBook?.estTimestamp;
   const startTimeFormatted =
     estDateTime && convertUnixToFormattedDate(estDateTime);
   const networkId = getNetworkId();
+  console.log(reportingState, FINALIZED, market);
+  const isFinalized = reportingState === FINALIZED;
   return (
     <div className={Styles.BettingMarketView}>
       <div>
@@ -169,11 +171,12 @@ const BettingMarketView = () => {
                 : formatPercent(Number(settlementFee) * 100).full
             }
           />
-          {marketStatus !== RESOLVED && estDateTime ? (
+          {estDateTime ? (
             <FullTimeLabel
               label="Estimated Start Time"
               time={startTimeFormatted}
               large
+              hideContent={isFinalized}
               hint={<h4>Estimated Start Time</h4>}
             />
           ) : (
@@ -181,6 +184,7 @@ const BettingMarketView = () => {
               label="Event Expiration Date"
               time={endTimeFormatted}
               large
+              hideContent={isFinalized}
               hint={<h4>Event Expiration Date</h4>}
             />
           )}
