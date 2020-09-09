@@ -104,7 +104,7 @@ const OpenMarkets = ({ toggle }: OpenMarketsProps) => {
             showIcon
             showBracket={isTrading}
             showPlusMinus
-            value={formatNumber(2)}
+            value={totalPercentage}
             useFull
             size={!isTrading ? SizeTypes.NORMAL : SizeTypes.SMALL}
           />
