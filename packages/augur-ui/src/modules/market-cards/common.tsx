@@ -472,7 +472,19 @@ export const SportsOutcome = ({
 }: SportsOutcomeProps) => {
   const { liquidityPools } = useMarketsStore();
   const { addBet } = Betslip.actions;
-  const poolId = market?.sportsBook?.liquidityPool;
+  const {
+    sportsBook,
+    minPriceBigNumber,
+    maxPriceBigNumber,
+    marketType,
+    id,
+    description,
+    minPrice,
+    maxPrice,
+    consensusFormatted
+  } = market;
+  const isWinningOutcome = consensusFormatted.winningOutcome == outcomeId
+  const poolId = sportsBook?.liquidityPool;
   const bestAsk =
     poolId && liquidityPools[poolId] && liquidityPools[poolId][outcomeId];
   let topLabel = null;
@@ -480,33 +492,37 @@ export const SportsOutcome = ({
   let label = '-';
   let subLabel = '';
   let action = () => {};
-  if (bestAsk) {
+  if (isWinningOutcome) {
+    topLabel = determineTopLabel(sportsBook, outcomeId, outcomeLabel);
+    label = 'Winner';
+    disabled = false;
+  } else if (bestAsk) {
     const { shares, price } = bestAsk;
     subLabel = formatDai(
       calculateTotalOrderValue(
         shares,
         price,
         BUY,
-        createBigNumber(market.minPrice),
-        createBigNumber(market.maxPrice),
-        market.marketType
+        minPriceBigNumber,
+        maxPriceBigNumber,
+        marketType
       )
     ).full;
     const normalizedPrice = convertToNormalizedPrice({
       price,
-      min: market.minPriceBigNumber,
-      max: market.maxPriceBigNumber,
+      min: minPriceBigNumber,
+      max: maxPriceBigNumber,
     });
     const OddToUse = convertToOdds(normalizedPrice);
-    topLabel = determineTopLabel(market.sportsBook, outcomeId, outcomeLabel);
+    topLabel = determineTopLabel(sportsBook, outcomeId, outcomeLabel);
     label = OddToUse.full;
     disabled = false;
     action = () => {
       addBet(
-        market.id,
-        market.description,
-        market.maxPrice,
-        market.minPrice,
+        id,
+        description,
+        maxPrice,
+        minPrice,
         normalizedPrice,
         outcomeLabel,
         shares,
@@ -516,7 +532,9 @@ export const SportsOutcome = ({
     };
   }
   return (
-    <div className={Styles.SportsOutcome}>
+    <div className={classNames(Styles.SportsOutcome, {
+      [Styles.Winner]: isWinningOutcome,
+    })}>
       {title && <h6>{title}</h6>}
       <button
         title={
@@ -525,8 +543,20 @@ export const SportsOutcome = ({
         onClick={action}
         disabled={disabled}
       >
-        {topLabel && <span>{topLabel}</span>}
-        <span>{label}</span>
+        {isWinningOutcome ? (
+          <>
+            {WinningMedal}
+            <span>
+              {topLabel && <span>{topLabel}</span>}
+              <span>{label}</span>
+            </span>
+          </>
+        ) : (
+          <>
+            {topLabel && <span>{topLabel}</span>}
+            <span>{label}</span>
+          </>
+        )}
       </button>
       <span>{subLabel}</span>
     </div>
