@@ -142,7 +142,6 @@ const BettingMarketView = () => {
   const startTimeFormatted =
     estDateTime && convertUnixToFormattedDate(estDateTime);
   const networkId = getNetworkId();
-  console.log(market);
   return (
     <div className={Styles.BettingMarketView}>
       <div>
