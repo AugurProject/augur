@@ -611,8 +611,9 @@ export function getLegacyRep() {
 
 export async function getCreateMarketBreakdown() {
   const { contracts } = augurSdk.get();
-  const vBond = await contracts.universe.getOrCacheValidityBond_();
-  const noShowBond = await contracts.universe.getOrCacheMarketRepBond_();
+  const originUniverse = contracts.universeFromAddress(contracts.universe.address);
+  const vBond = await originUniverse.getOrCacheValidityBond_();
+  const noShowBond = await originUniverse.getOrCacheMarketRepBond_();
   const validityBondFormatted = formatAttoDai(vBond, { decimals: 2, decimalsRounded: 2});
   const noShowFormatted = formatAttoRep(noShowBond, {
     decimals: 4,
@@ -1348,4 +1349,36 @@ export async function loadAccountData_exchangeRates(account: string) {
   const usdt = contracts.usdt.address;
   const values: AccountData = await sdk.loadAccountData(account, repToken.address, usdc, usdt);
   return values;
+}
+
+export async function stakeInFeePool(amount: string) {
+  const stakedAmount = convertDisplayAmountToOnChainAmount(amount);
+  const feePool = await getFeePool();
+  const staking = await feePool.stake(stakedAmount);
+  return staking;
+}
+
+export async function exitFeePool(amount: string) {
+  const stakedAmount = convertDisplayAmountToOnChainAmount(amount);
+  const feePool = await getFeePool();
+  const exiting = await feePool.exit(stakedAmount);
+  return exiting;
+}
+
+export async function redeemFeePool() {
+  const feePool = await getFeePool();
+  const redeeming = await feePool.redeem();
+  return redeeming;
+}
+
+interface IFeePot {
+    redeem: Function;
+    exit: Function;
+    stake: Function;
+}
+async function getFeePool(): Promise<IFeePot> {
+  const { contracts } = augurSdk.get();
+  const feePotAddress = await contracts.universe.getFeePot_();
+  const feePot = contracts.feePotFromAddress(feePotAddress) as IFeePot;
+  return feePot;
 }

@@ -249,7 +249,7 @@ class Confirm extends Component<ConfirmProps, ConfirmState> {
 
     if (
       !tradingTutorial &&
-      totalCost &&
+      totalCost && totalCost.value > 0 &&
       createBigNumber(gasCostInEth).gte(createBigNumber(availableEth))
     ) {
       const ethDo = formatEther(gasCostInEth);
@@ -262,7 +262,7 @@ class Confirm extends Component<ConfirmProps, ConfirmState> {
 
     if (
       !tradingTutorial &&
-      totalCost &&
+      totalCost && totalCost.value > 0 &&
       createBigNumber(potentialDaiLoss.fullPrecision).gt(
         createBigNumber(availableWeth)
       )

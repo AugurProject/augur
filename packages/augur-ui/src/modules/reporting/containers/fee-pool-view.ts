@@ -1,5 +1,5 @@
 import { connect } from 'react-redux';
-import { ParticipationTokensView } from 'modules/reporting/common';
+import { FeePoolView } from 'modules/reporting/common';
 import { updateModal } from 'modules/modal/actions/update-modal';
 import { MODAL_CLAIM_FEES, MODAL_PARTICIPATE, ZERO } from 'modules/common/constants';
 import { formatAttoDai, formatAttoRep, formatPercent, } from 'utils/format-number';
@@ -61,9 +61,9 @@ const mapDispatchToProps = dispatch => ({
   openClaimParticipationTokensModal: () => dispatch(updateModal({type: MODAL_CLAIM_FEES, participationTokensOnly: true}))
 });
 
-const ParticipationTokensViewContainer = connect(
+const FeePoolViewContainer = connect(
   mapStateToProps,
   mapDispatchToProps
-)(ParticipationTokensView);
+)(FeePoolView);
 
-export default ParticipationTokensViewContainer;
+export default FeePoolViewContainer;

@@ -233,7 +233,6 @@ div.ReportingSubheaders {
     color: @color-secondary-text;
     display: flex;
     margin-bottom: @size-4;
-    text-transform: uppercase;
 
     > label {
       > svg {
@@ -790,7 +789,7 @@ div.ReportingSubheaders {
   }
 }
 
-.ParticipationTokensView {
+.FeePoolView {
   background: @color-module-background;
   border: 1px solid @color-dark-grey;
   border-radius: @size-3;
@@ -802,12 +801,11 @@ div.ReportingSubheaders {
     max-width: 100%;
   }
 
-  > h4 {
-    .mono-10;
+  > h3 {
+    .text-16-bold;
 
     color: @color-primary-text;
     margin-bottom: @size-12;
-    text-transform: uppercase;
   }
 
   > section {
@@ -847,6 +845,10 @@ div.ReportingSubheaders {
   > div:first-of-type,
   > div:nth-of-type(4) {
     margin-bottom: @size-16;
+  }
+
+  > button {
+    margin-right: 0.5rem;
   }
 
   @media @breakpoint-mobile {
