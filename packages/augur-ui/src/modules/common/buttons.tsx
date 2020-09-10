@@ -98,6 +98,10 @@ export interface DefaultActionButtonProps {
   title?: string;
 }
 
+export interface SideMenuActionButtonProps extends DefaultActionButtonProps {
+  whichMenu?: number;
+}
+
 export interface DaiPercentProps {
   action: Function;
   disabled?: boolean;
@@ -169,7 +173,7 @@ export const PrimaryButton = ({
     {!URL && (
       <button
         onClick={e => action(e)}
-        className={classNames(Styles.PrimaryButton, 
+        className={classNames(Styles.PrimaryButton,
           className, {
           [Styles.Confirmed]: confirmed,
           [Styles.Failed]: failed,
@@ -454,16 +458,17 @@ export const DaiPercentButton = (props: DaiPercentProps) => (
 
 interface ToggleExtendButtonProps {
   toggle: Function;
-  hide?: boolean;
-  extended?: boolean;
   disabled?: boolean;
 }
 
-export const ToggleExtendButton = (props: ToggleExtendButtonProps) => (
+export const ToggleExtendButton = ({
+  toggle,
+  disabled,
+}: ToggleExtendButtonProps) => (
   <button
-    onClick={e => props.toggle(e)}
+    onClick={e => toggle(e)}
     className={Styles.ToggleExtendButton}
-    disabled={props.disabled}
+    disabled={disabled}
   >
     {TwoArrowsOutline}
   </button>
@@ -899,7 +904,7 @@ export const CashoutButton = ({
           cancelButton
         />
         :
-        <button 
+        <button
           onClick={() => cashout()}
           className={classNames(Styles.CashoutButton, {
             [Styles.Won]: didWin && !loss,
@@ -997,13 +1002,14 @@ export const FilterButton = ({
   action = () => {},
   disabled,
   title,
-}: DefaultActionButtonProps) => {
+  whichMenu = MOBILE_MENU_STATES.FIRSTMENU_OPEN,
+}: SideMenuActionButtonProps) => {
   const {
     actions: { setMobileMenuState },
   } = useAppStatusStore();
   return (
     <button
-      onClick={() => setMobileMenuState(MOBILE_MENU_STATES.FIRSTMENU_OPEN)}
+      onClick={() => setMobileMenuState(whichMenu)}
       className={Styles.FilterButton}
       disabled={disabled}
     >

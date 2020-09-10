@@ -6,7 +6,6 @@ import {
 } from 'modules/common/constants';
 import { v2AugurLogo } from 'modules/common/icons';
 import { PropertyLabel } from 'modules/common/labels';
-import QuadBox from 'modules/portfolio/components/common/quad-box';
 import Funds from 'modules/account/components/funds';
 import Stats from 'modules/account/components/stats';
 import OverviewChart from 'modules/account/components/overview-chart';
@@ -14,9 +13,10 @@ import Styles from 'modules/account/components/overview.styles.less';
 import { useAppStatusStore } from 'modules/app/store/app-status';
 import { selectReportingBalances } from 'modules/account/helpers/common';
 import { formatRep } from 'utils/format-number';
+import QuadBox from 'modules/portfolio/components/common/quad-box';
 
 export interface OverviewProps {
-  hideHeader: boolean;
+  hideHeader?: boolean;
 }
 
 const Overview = ({ hideHeader }: OverviewProps) => {
@@ -38,7 +38,7 @@ const Overview = ({ hideHeader }: OverviewProps) => {
   return (
     <QuadBox
       title={YOUR_OVERVIEW_TITLE}
-      hideHeader={hideHeader}
+      customClass={hideHeader && Styles.HideHeader}
       content={
         <div className={Styles.AccountOverview}>
           <Funds />

@@ -6,6 +6,7 @@ import { FilledOrder } from "modules/common/table-rows";
 
 import FilledOrdersHeader from 'modules/portfolio/components/common/filled-orders-header';
 import selectMarketsFilledOrders from 'modules/portfolio/selectors/select-markets-filled-orders';
+import FilterBox from 'modules/portfolio/components/common/filter-box';
 
 const sortByOptions = [
   {
@@ -78,17 +79,16 @@ const FilledOrders = ({ toggle, extend, hide }: FilledOrdersProps) => {
     <FilterSwitchBox
       title="Filled Orders"
       filterLabel="filled orders"
-      showFilterSearch
       sortByOptions={sortByOptions}
-      sortByStyles={{ minWidth: '13.6875rem' }}
       data={viewByMarkets ? markets : filledOrders}
       filterComp={filterComp}
       switchView={switchView}
-      bottomBarContent={<FilledOrdersHeader />}
+      showDropdown
+      subheader={<FilledOrdersHeader />}
       renderRows={renderRows}
       toggle={toggle}
-      extend={extend}
       hide={hide}
+      extend={extend}
     />
   );
 };

@@ -46,6 +46,10 @@
       }
     }
   }
+
+  .SubHeader {
+    background: unset;
+  }
 }
 
 .ExpandedContent {
@@ -73,7 +77,7 @@
       > div[class*="MovementLabel_Icon"] {
         margin: 0 @size-2 0 0;
       }
-  
+
       > div[class*="MovementLabel_Text"] {
         .mono-11-medium;
       }
@@ -169,21 +173,21 @@
       > div[class*="MovementLabel"] {
         > div[class*="MovementLabel_Icon"] {
           margin: 0 @size-4 0 0;
-  
+
           > svg {
             height: @size-7;
             width: @size-12;
           }
         }
-    
+
         > div[class*="MovementLabel_Text"] {
           .mono-12-semi-bold;
         }
-  
+
         > div[class*="_positive"] {
           color: var(--color-primary-text);
         }
-  
+
         > div[class*="_negative"] {
           color: var(--color-resolved);
         }
@@ -208,7 +212,7 @@
           width: @size-12;
         }
       }
-  
+
       > div[class*="MovementLabel_Text"] {
         .mono-12-semi-bold;
       }
@@ -246,8 +250,7 @@
       .mono-12-semi-bold;
 
       color: var(--color-primary-text);
-      margin-top: auto;
-      margin-bottom: auto;
+      height: @size-19;
       text-transform: none;
     }
 
@@ -285,5 +288,4 @@
       }
     }
   }
-
 }

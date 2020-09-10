@@ -1,46 +1,35 @@
-import React, { ReactNode, useState, useEffect } from 'react';
+import React, { ReactNode, useEffect, useState } from 'react';
 
-import { ALL_MARKETS, END_TIME } from 'modules/common/constants';
-import QuadBox from 'modules/portfolio/components/common/quad-box';
+import { ALL_MARKETS, END_TIME, THEMES } from 'modules/common/constants';
 import { SquareDropdown } from 'modules/common/selection';
 import { SwitchLabelsGroup } from 'modules/common/switch-labels-group';
-import { NameValuePair, Market, Tab } from 'modules/portfolio/types';
+import { Market } from 'modules/portfolio/types';
 import MarketRow from 'modules/portfolio/components/common/market-row';
 import EmptyDisplay from 'modules/portfolio/components/common/empty-display';
 import { createTabsInfo } from 'modules/portfolio/helpers/create-tabs-info';
-import { THEMES } from 'modules/common/constants';
 import { useAppStatusStore } from 'modules/app/store/app-status';
 import Styles from 'modules/portfolio/components/common/quad-box.styles.less';
-import { StarIcon } from 'modules/common/icons';
+import classNames from 'classnames';
 import { createMarketsStateObject } from 'modules/portfolio/helpers/create-markets-state-object';
+import QuadBox, {
+  QuadBoxProps,
+} from 'modules/portfolio/components/common/quad-box';
 
-export interface MarketsByReportingState {
-  [type: string]: Array<Market>;
-}
-
-export interface FilterBoxProps {
-  title: string;
-  sortByOptions: Array<NameValuePair>;
-  filteredData: Array<Market>;
+export interface FilterBoxProps extends QuadBoxProps {
   filterComp: (input: string, market: Market) => boolean;
-  bottomRightContent?: ReactNode;
-  rightContent?: Function;
-  noToggle?: boolean;
-  renderToggleContent?: Function;
   filterLabel: string;
-  sortByStyles?: object;
   renderRightContent?: Function;
-  showPending?: Boolean;
-  toggle: Function;
-  hide: boolean;
-  extend: boolean;
-  customClass?: string;
+  renderToggleContent?: Function;
   showLiquidityDepleted?: boolean;
-  bottomContent?: ReactNode;
-  emptyDisplayTitle?: string,
-  emptyDisplayText?: string,
-  emptyDisplayIcon: any;
-  emptyDisplayButton?: ReactNode;
+  showPending?: Boolean;
+  markets: any;
+  pickVariables: any;
+  emptyDisplayConfig?: {
+    emptyTitle?: string;
+    emptyText?: string;
+    icon?: ReactNode;
+    button?: ReactNode;
+  };
 }
 
 function pick(object, keys) {
@@ -52,40 +41,33 @@ function pick(object, keys) {
   }, {});
 }
 
-const FilterBox: React.FC<FilterBoxProps> = ({
+const FilterBox = ({
   title,
+  headerComplement,
+  subheader,
+  footer,
+  customClass,
   sortByOptions,
-  bottomRightContent,
-  noToggle,
+  filterComp,
+  filterLabel,
   renderRightContent,
   renderToggleContent,
-  filterLabel,
-  sortByStyles,
+  showLiquidityDepleted,
   showPending,
-  filterComp,
+  markets,
+  pickVariables,
+  emptyDisplayConfig,
   toggle,
   hide,
   extend,
-  customClass,
-  showLiquidityDepleted,
-  bottomContent,
-  emptyDisplayTitle,
-  emptyDisplayText,
-  emptyDisplayIcon,
-  emptyDisplayButton,
-  markets,
-  pickVariables
-}) => {
+}: FilterBoxProps) => {
   const marketsObj = markets.reduce((obj, market) => {
     obj[market.id] = market;
     return obj;
   }, {});
 
   const marketsPick =
-    markets &&
-    markets.map((
-      market
-    ) => pick(market, pickVariables));
+    markets && markets.map((market) => pick(market, pickVariables));
 
   const data = createMarketsStateObject(marketsPick);
   const dataObj = marketsObj;
@@ -96,18 +78,29 @@ const FilterBox: React.FC<FilterBoxProps> = ({
   );
   const [filteredData, setFilteredData] = useState(data[ALL_MARKETS]);
   const [tabs, setTabs] = useState(createTabsInfo(data));
-  const { theme, blockchain: { currentAugurTimestamp } } = useAppStatusStore();
+  const {
+    theme,
+    blockchain: { currentAugurTimestamp },
+  } = useAppStatusStore();
   const noData = !Boolean(data[ALL_MARKETS].length);
 
   useEffect(() => {
     applySearchAndSort();
-  }, [search, sortBy, selectedTab, data.all, data.closed, data.open, data.reporting]);
+  }, [
+    search,
+    sortBy,
+    selectedTab,
+    data.all,
+    data.closed,
+    data.open,
+    data.reporting,
+  ]);
 
   const applySearchAndSort = () => {
     let nextFilteredData = data[selectedTab];
     let updateFilteredData = false;
     // filter markets
-    nextFilteredData = nextFilteredData.filter(market =>
+    nextFilteredData = nextFilteredData.filter((market) =>
       filterComp(search, market)
     );
 
@@ -146,11 +139,15 @@ const FilterBox: React.FC<FilterBoxProps> = ({
       nextFilteredData = nextFilteredData.sort((a, b) => comp(a, b));
     }
     // if number of markets changes or if the market info isn't loaded yet (no id) then we need to update until it is.
-    if (filteredData.length !== nextFilteredData.length || !!filteredData.find(market => market.id === undefined)) updateFilteredData = true;
+    if (
+      filteredData.length !== nextFilteredData.length ||
+      !!filteredData.find((market) => market.id === undefined)
+    )
+      updateFilteredData = true;
     const nextTabs = [...tabs];
     let updateTabs = false;
     for (let i = 0; i < tabs.length; i++) {
-      const numOfMarkets = data[tabs[i].key].filter(market =>
+      const numOfMarkets = data[tabs[i].key].filter((market) =>
         filterComp(search, market)
       ).length;
       if (tabs[i].num !== numOfMarkets) updateTabs = true;
@@ -166,52 +163,60 @@ const FilterBox: React.FC<FilterBoxProps> = ({
   return (
     <QuadBox
       title={title}
-      leftContent={filteredData.length > 0 &&
-        <div className={Styles.Count}>{filteredData.length}</div>
+      headerComplement={
+        <>
+          {filteredData.length > 0 && (
+            <div className={Styles.Count}>{filteredData.length}</div>
+          )}
+          {headerComplement}
+        </>
       }
-      customClass={customClass}
-      switchHeaders={true}
-      showFilterSearch={true}
-      onSearchChange={search => setSearch(search)}
+      customClass={classNames(customClass, {
+        [Styles.DisabledSearch]: noData,
+        [Styles.DisabledFilters]: noData,
+        [Styles.DisabledTabs]: noData,
+      })}
       sortByOptions={sortByOptions}
-      sortByStyles={sortByStyles}
       updateDropdown={sortBy => setSortBy(sortBy)}
-      bottomRightBarContent={bottomRightContent}
+      search={search}
+      setSearch={setSearch}
+      tabs={tabs}
+      setSelectedTab={tab => setSelectedTab(tab)}
       toggle={toggle}
       hide={hide}
       extend={extend}
-      bottomBarContent={
-        theme === THEMES.TRADING ? (
-          <SwitchLabelsGroup
-            tabs={tabs}
-            selectedTab={selectedTab}
-            selectTab={tab => {
-              setSelectedTab(tab);
-            }}
-          />
-        ) : (
-          <div>
-            <span>Status:</span>
-            <SquareDropdown
-              defaultValue={selectedTab}
-              options={tabs}
-              onChange={tab => {
+      subheader={
+        <>
+          {theme === THEMES.TRADING ? (
+            <SwitchLabelsGroup
+              tabs={tabs}
+              selectedTab={selectedTab}
+              selectTab={(tab) => {
                 setSelectedTab(tab);
               }}
-              disabled={noData}
             />
-            <span>Sort by:</span>
-            <SquareDropdown
-              defaultValue={sortByOptions[0].value}
-              options={sortByOptions}
-              onChange={sortBy => setSortBy(sortBy)}
-              sortByStyles={sortByStyles}
-              disabled={noData}
-            />
-          </div>
-        )
+          ) : (
+            <div className={Styles.SportsAndBettingFilters}>
+              <span>Status:</span>
+              <SquareDropdown
+                defaultValue={selectedTab}
+                options={tabs}
+                onChange={(tab) => {
+                  setSelectedTab(tab);
+                }}
+              />
+              <span>Sort by:</span>
+              <SquareDropdown
+                defaultValue={sortByOptions[0].value}
+                options={sortByOptions}
+                onChange={(sortBy) => setSortBy(sortBy)}
+              />
+            </div>
+          )}
+          {subheader}
+        </>
       }
-      bottomContent={bottomContent}
+      footer={footer}
       content={
         <>
           {filteredData.length === 0 && (
@@ -220,10 +225,7 @@ const FilterBox: React.FC<FilterBoxProps> = ({
               filterLabel={filterLabel}
               search={search}
               title={title}
-              emptyTitle={emptyDisplayTitle}
-              emptyText={emptyDisplayText}
-              icon={emptyDisplayIcon}
-              button={emptyDisplayButton}
+              {...emptyDisplayConfig}
             />
           )}
           <div className={Styles.MarketBox}>
@@ -234,7 +236,7 @@ const FilterBox: React.FC<FilterBoxProps> = ({
                   market={dataObj[id]}
                   showState
                   showLiquidityDepleted={showLiquidityDepleted}
-                  noToggle={noToggle}
+                  // noToggle={noToggle}
                   showPending={showPending}
                   toggleContent={
                     renderToggleContent && renderToggleContent(dataObj[id])
@@ -248,13 +250,8 @@ const FilterBox: React.FC<FilterBoxProps> = ({
           </div>
         </>
       }
-      search={search}
     />
   );
 };
-
-FilterBox.defaultProps = {
-  emptyDisplayIcon: StarIcon
-}
 
 export default FilterBox;

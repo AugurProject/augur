@@ -1,7 +1,5 @@
 import React, { useState } from 'react';
 import Media from 'react-media';
-
-import Positions from "modules/portfolio/components/positions/positions";
 import MyMarkets from 'modules/portfolio/components/markets/markets';
 import OpenOrders from "modules/portfolio/components/orders/open-orders";
 import FilledOrders from 'modules/portfolio/components/orders/filled-orders';
@@ -15,6 +13,7 @@ import parseQuery from 'modules/routes/helpers/parse-query';
 import { CREATE_MARKET_PORTFOLIO } from 'modules/routes/constants/param-names';
 import { MyBets } from './my-bets';
 import { useAppStatusStore } from 'modules/app/store/app-status';
+import Positions from 'modules/portfolio/components/positions/positions';
 
 interface PortfolioViewProps {
   location: Location;

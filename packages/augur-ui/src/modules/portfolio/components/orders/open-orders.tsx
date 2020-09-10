@@ -1,12 +1,14 @@
 import React, { useState } from 'react';
-import FilterSwitchBox from 'modules/portfolio/components/common/filter-switch-box';
 import { OpenOrder } from 'modules/common/table-rows';
 import OpenOrdersHeader from 'modules/portfolio/components/common/open-orders-header';
 import OrderMarketRow from 'modules/portfolio/components/common/order-market-row';
-import { MarketData, UIOrder } from 'modules/types';
+import { UIOrder } from 'modules/types';
 import selectMarketsOpenOrders from 'modules/portfolio/selectors/select-markets-open-orders';
 import { CancelTextButton } from 'modules/common/buttons';
 import Styles from 'modules/market/components/market-orders-positions-table/open-orders-table.styles.less';
+import FilterSwitchBox from 'modules/portfolio/components/common/filter-switch-box';
+import { cancelAllOpenOrders } from 'modules/orders/actions/cancel-order';
+import FilterBox from 'modules/portfolio/components/common/filter-box';
 
 const sortByOptions = [
   {
@@ -75,31 +77,30 @@ const OpenOrders = ({
   const hasPending = Boolean(openOrders.find(order => order.pending));
   return (
     <FilterSwitchBox
-        title="Open Orders"
-        showFilterSearch
-        filterLabel="open orders"
-        sortByOptions={sortByOptions}
-        sortByStyles={{ minWidth: '13.6875rem' }}
-        data={viewByMarkets ? markets : openOrders}
-        filterComp={filterComp}
-        switchView={switchView}
-        bottomBarContent={<OpenOrdersHeader />}
-        renderRows={renderRows}
-        toggle={toggle}
-        extend={extend}
-        hide={hide}
-        footer={
-          openOrders.length > 0 ? (
-            <div className={Styles.PortfolioFooter}>
-              <CancelTextButton
-                action={() => cancelAllOpenOrders(openOrders)}
-                text="Cancel All"
-                disabled={hasPending}
-              />
-            </div>
-          ) : null
-        }
-      />
+      title="Open Orders"
+      filterLabel="open orders"
+      sortByOptions={sortByOptions}
+      data={viewByMarkets ? markets : openOrders}
+      filterComp={filterComp}
+      switchView={switchView}
+      showDropdown
+      subheader={<OpenOrdersHeader />}
+      renderRows={renderRows}
+      toggle={toggle}
+      hide={hide}
+      extend={extend}
+      footer={
+        openOrders.length > 0 ? (
+          <div className={Styles.PortfolioFooter}>
+            <CancelTextButton
+              action={() => cancelAllOpenOrders(openOrders)}
+              text="Cancel All"
+              disabled={hasPending}
+            />
+          </div>
+        ) : null
+      }
+    />
   );
 };
 

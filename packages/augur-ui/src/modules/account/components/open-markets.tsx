@@ -1,5 +1,4 @@
 import React from 'react';
-import FilterSwitchBox from 'modules/portfolio/components/common/filter-switch-box';
 import MarketRow from 'modules/portfolio/components/common/market-row';
 import { MovementLabel } from 'modules/common/labels';
 import { ActiveMarketsIcon } from 'modules/common/icons';
@@ -10,6 +9,7 @@ import { useAppStatusStore } from 'modules/app/store/app-status';
 import getLoginAccountPositionsMarkets from 'modules/positions/selectors/login-account-positions-markets';
 
 import Styles from 'modules/account/components/open-markets.styles.less';
+import FilterSwitchBox from 'modules/portfolio/components/common/filter-switch-box';
 
 function filterComp(input: any, market: any) {
   return market && market.description
@@ -93,32 +93,29 @@ const OpenMarkets = ({ toggle }: OpenMarketsProps) => {
     <FilterSwitchBox
       filterLabel="markets"
       title="My Active Markets"
-      showFilterSearch
       data={marketsToShow}
       customClass={customClass}
       filterComp={filterComp}
-      noBackgroundBottom
       toggle={toggle}
-      bottomBarContent={
+      subheader={
         markets.length === 0 ? null : <div className={Styles.BottomBar}>
           <span>{!isTrading ? '24H change' : '24hr'}</span>
           <MovementLabel
             showIcon
             showBracket={isTrading}
             showPlusMinus
-            value={formatNumber(2)}
+            value={totalPercentage}
             useFull
             size={!isTrading ? SizeTypes.NORMAL : SizeTypes.SMALL}
           />
         </div>
       }
-      noSwitch
       renderRows={renderRows}
-      emptyDisplayTitle={isTrading ? null : 'No Active Markets'}
-      emptyDisplayText={
-        isTrading ? null : "You don't have any active markets yet!"
-      }
-      emptyDisplayIcon={ActiveMarketsIcon}
+      emptyDisplayConfig={{
+        emptyTitle: isTrading ? null : "No Active Markets",
+        emptyText: isTrading ? null : "You don't have any active markets yet!",
+        icon: ActiveMarketsIcon,
+      }}
     />
   );
 };

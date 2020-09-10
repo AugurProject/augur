@@ -105,3 +105,17 @@
     }
   }
 }
+
+.NoBorders {
+  > div:nth-of-type(2) {
+    border: none;
+  }
+}
+
+.ShowHeaderOnMobile {
+  @media @breakpoint-mobile {
+    .Container {
+      display: flex;
+    }
+  }
+}

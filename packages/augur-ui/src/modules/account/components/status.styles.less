@@ -73,7 +73,7 @@
   &.syncing {
     > span {
       color: var(--color-reporting);
-      
+
       > span > svg > path {
         fill: var(--color-reporting);
       }
@@ -101,7 +101,7 @@
     display: flex;
     flex-flow: row nowrap;
     margin-bottom: @size-2;
-    
+
     > span {
       align-items: center;
       display: flex;
@@ -174,9 +174,9 @@
       > span:first-of-type {
         .mono-10-semi-bold;
       }
-  
+
       > span {
-        .mono-12;  
+        .mono-12;
       }
     }
   }
@@ -208,7 +208,7 @@
     }
 
     > h5 {
-      .mono-24-bold;  
+      .mono-24-bold;
     }
 
     > div:not([class*="BlockStatus"]) {
@@ -219,5 +219,17 @@
       min-width: @size-269;
       max-width: 80%;
     }
+  }
+}
+
+.ShowHeaderOnMobile {
+  > div:nth-of-type(2) > div:first-of-type {
+    display: flex;
+  }
+}
+
+.HideHeader {
+  > div:nth-of-type(2) > div:first-of-type {
+    display: none;
   }
 }

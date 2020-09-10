@@ -1,6 +1,5 @@
 import React from 'react';
 
-import QuadBox from 'modules/portfolio/components/common/quad-box';
 import {
   DepositButton,
   TransferButton,
@@ -27,6 +26,8 @@ import { toChecksumAddress } from 'ethereumjs-util';
 import Styles from 'modules/account/components/transactions.styles.less';
 import { getNetworkId, getLegacyRep } from 'modules/contracts/actions/contractCalls';
 import { createBigNumber } from 'utils/create-big-number';
+import QuadBox from 'modules/portfolio/components/common/quad-box';
+import classNames from 'classnames';
 
 export const Transactions = () => {
   const {
@@ -34,6 +35,7 @@ export const Transactions = () => {
     loginAccount: { meta, balances },
     actions: { setModal },
   } = useAppStatusStore();
+  const isTrading = theme === THEMES.TRADING;
   const networkId = getNetworkId();
   const targetAddress = meta.signer?._address;
   const showFaucets = networkId !== NETWORK_IDS.Mainnet;
@@ -45,8 +47,11 @@ export const Transactions = () => {
 
   return (
     <QuadBox
-      title={theme === THEMES.TRADING ? 'Transactions' : 'Your funds'}
-      rightContent={
+      title={isTrading ? 'Transactions' : 'Your funds'}
+      customClass={classNames({
+        [Styles.ShowHeaderOnMobile]: !isTrading,
+      })}
+      headerComplement={
         <div className={Styles.RightContent}>
           <ViewTransactionsButton
             action={() => setModal({ type: MODAL_TRANSACTIONS })}

@@ -921,6 +921,42 @@
 		display: grid;
 		grid-gap: @size-4;
 
+		&.Winner {
+			> button {
+				align-items: center;
+				background: var(--color-primary-action-20);
+				border: @size-1 solid transparent;
+				border-radius: @border-radius-default;
+				flex-flow: row nowrap;
+				justify-content: center;
+				
+				> svg {
+					height: @size-16;
+					width: @size-16;
+				}
+
+				> span:last-of-type {
+					.text-10;
+
+					color: var(--color-primary-text);
+					display: flex;
+					flex-flow: column;
+					padding: 0 @size-8;
+
+					> span:last-of-type {
+						.text-10-semi-bold;
+
+						text-transform: uppercase;
+					}
+				}
+	
+				&:hover:enabled,
+				&:active:enabled {
+					background: var(--color-primary-action-20) !important;
+				}
+			}
+		}
+
 		> h6 {
 			.text-14-bold;
 			
@@ -994,23 +1030,25 @@
 		border: @size-1 solid var(--color-outline);
 		border-radius: @border-radius-default;
 
+		> header { 
+			> svg {
+			height: @size-20;
+			width: @size-20;
+			padding: @size-2;
+			border: @size-1 solid var(--color-dark-grey);
+			border-radius: @size-16;
+			margin-left: @size-8;
+
+				> g > path {
+					fill: var(--color-secondary-text);
+				}
+			}
+		}
+
 		&.Collapsed {
 			> header {
 				border-radius: @border-radius-default;
-				border-bottom: none;
-
-				> svg {
-					height: @size-20;
-					width: @size-20;
-					padding: @size-2;
-					border: @size-1 solid var(--color-dark-grey);
-					border-radius: @size-16;
-					margin-left: @size-8;
-
-					> g > path {
-						fill: var(--color-secondary-text);
-					}
-				}
+				border-bottom: @size-1 solid transparent;
 
 				> button:not([class*="FavoriteButton"]) > svg {
 					transform: none;
