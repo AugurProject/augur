@@ -496,7 +496,7 @@ export const SportsOutcome = ({
     topLabel = determineTopLabel(sportsBook, outcomeId, outcomeLabel);
     label = 'Winner';
     disabled = false;
-  } else if (bestAsk && market) {
+  } else if (bestAsk && id) {
     const { shares, price } = bestAsk;
     subLabel = formatDai(
       calculateTotalOrderValue(
