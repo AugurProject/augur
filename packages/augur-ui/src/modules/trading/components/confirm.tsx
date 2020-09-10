@@ -230,9 +230,9 @@ export const Confirm = ({
       if (
         numTrades > 0 &&
         ((potentialDaiProfit?.value &&
-          createBigNumber(gasCostDai).gt(potentialDaiProfit?.value)) ||
+          createBigNumber(gasCostDai).gt(potentialDaiProfit.value)) ||
           (orderShareProfit?.value &&
-            createBigNumber(gasCostDai).gt(orderShareProfit?.value)))
+            createBigNumber(gasCostDai).gt(orderShareProfit.value)))
       ) {
         messages = {
           header: 'UNPROFITABLE TRADE',
@@ -241,7 +241,7 @@ export const Confirm = ({
         };
       }
 
-      if (totalCost) {
+      if (totalCost && potentialDaiLoss) {
         // GAS error in DAI [Gsn]
         if (gsnEnabled && createBigNumber(gasCostDai).gte(availableDai)) {
           messages = {
@@ -260,7 +260,7 @@ export const Confirm = ({
           };
         }
 
-        if (createBigNumber(potentialDaiLoss?.fullPrecision).gt(availableDai)) {
+        if (createBigNumber(potentialDaiLoss.fullPrecision).gt(availableDai)) {
           messages = {
             header: 'Insufficient DAI',
             type: ERROR,

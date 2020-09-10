@@ -6,7 +6,6 @@ import {
   CategoryCrypto,
 } from 'modules/common/icons';
 import { DEFAULT_DERIVATION_PATH } from 'modules/auth/helpers/derivation-path';
-import * as d3 from 'd3-time';
 import { createBigNumber } from 'utils/create-big-number';
 import { formatShares, formatDai } from 'utils/format-number';
 import {
@@ -565,72 +564,6 @@ export const PRICE_DEPTH_DEFAULT = 0.1; // Not used yet
 export const IS_SIMULATION = false; // Not used yet
 export const DEFAULT_MIN_PRICE = 0;
 export const DEFAULT_MAX_PRICE = 100;
-
-// # Permissible Periods
-// Note: times are in seconds
-export const RANGES = [
-  {
-    duration: 60,
-    label: 'Past minute',
-    tickInterval: axis => axis.ticks(d3.timeSecond.every(30)),
-  },
-  {
-    duration: 3600,
-    label: 'Past hour',
-    tickInterval: axis => axis.ticks(d3.timeMinute.every(10)),
-  },
-  {
-    duration: 86400,
-    label: 'Past day',
-    tickInterval: axis => axis.ticks(d3.timeHour.every(3)),
-  },
-  {
-    duration: 604800,
-    label: 'Past week',
-    isDefault: true,
-    tickInterval: axis =>
-      axis.ticks(d3.timeDay.every(1)).tickFormat(d3.timeFormat('%a %d')),
-  },
-  {
-    duration: 2629800,
-    label: 'Past month',
-    tickInterval: axis => axis.ticks(d3.timeDay.every(6)),
-  },
-  {
-    duration: 31557600,
-    label: 'Past year',
-    tickInterval: axis =>
-      axis.ticks(d3.timeMonth.every(1)).tickFormat(d3.timeFormat('%b')),
-  },
-];
-
-export const PERIOD_RANGES = {
-  3600: {
-    period: 3600,
-    format: '{value:%b %d}',
-    crosshair: '{value:%H:%M}',
-    range: 24 * 3600 * 1000, // 1 day
-  },
-  43200: {
-    period: 43200,
-    format: '{value:%b %d}',
-    crosshair: '{value:%H:%M}',
-    range: 7 * 24 * 3600 * 1000, // 1 week
-  },
-  86400: {
-    period: 86400,
-    format: '{value:%b %d}',
-    crosshair: '{value:%b %d }',
-    range: 30 * 24 * 3600 * 1000, // month
-  },
-  604800: {
-    period: 604800,
-    format: '{value:%b %d}',
-    crosshair: '{value:%b %d }',
-    range: 6 * 30 * 24 * 3600 * 1000, // 6 months
-  },
-};
-
 export const DEFAULT_PERIODS_VALUE = 86400;
 export const DEFAULT_SHORT_PERIODS_VALUE = 3600;
 export const PERIODS = [
