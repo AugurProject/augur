@@ -571,6 +571,7 @@ export const DisputingBondsView = ({
         inputStakeValue === '.' ||
         inputStakeValue === '0.')
     ) {
+      setStakeError
       setState({
         ...state,
         stakeError: 'Enter a valid number',
@@ -756,7 +757,6 @@ export const ReportingBondsView = ({
     showInput: false,
     disabled: market.marketType === SCALAR && migrateRep ? true : false,
     scalarError: '',
-    stakeError: '',
     isScalar: market.marketType === SCALAR,
     threshold: userAttoRep.toString(),
     readAndAgreedCheckbox: false,
@@ -766,12 +766,12 @@ export const ReportingBondsView = ({
       gasPrice
     ),
   });
+  const [stakeError, setStakeError] = useState('');
 
   const {
     showInput,
     disabled,
     scalarError,
-    stakeError,
     isScalar,
     threshold,
     readAndAgreedCheckbox,
@@ -832,25 +832,19 @@ export const ReportingBondsView = ({
     let disabled = false;
     if (isNaN(Number(inputStakeValue))) {
       disabled = true;
-      setState({ ...state, stakeError: 'Enter a valid number' });
+      setStakeError('Enter a valid number');
     } else if (
       createBigNumber(userAttoRep).lt(createBigNumber(inputStakeValue))
     ) {
       disabled = true;
-      setState({
-        ...state,
-        stakeError: 'Value is bigger than user REP balance',
-      });
+      setStakeError('Value is bigger than user REP balance');
     } else if (
       createBigNumber(threshold).lt(createBigNumber(inputStakeValue))
     ) {
       disabled = true;
-      setState({
-        ...state,
-        stakeError: `Value is bigger than the REP threshold: ${threshold}`,
-      });
+      setStakeError(`Value is bigger than the REP threshold: ${threshold}`);
     } else {
-      setState({ ...state, stakeError: '' });
+      setStakeError('');
     }
     let inputToAttoRep = '0';
     if (!isNaN(Number(inputStakeValue)) && inputStakeValue !== '') {
