@@ -32,10 +32,10 @@ export const use3box = (provider, initialize3box, initialized3box, chatOrComment
     }
 
     let threeBoxInstance;
-    let addressFromProvider = (await provider.enable())[0];
+    const addressFromProvider = (await provider.enable())[0];
     let publicProfile;
 
-    if (addressFromProvider === initialized3box.address) {
+    if (initialized3box.address && addressFromProvider === initialized3box.address) {
       threeBoxInstance = initialized3box.box;
       publicProfile = initialized3box.profile;
     } else {
@@ -65,7 +65,12 @@ export const use3box = (provider, initialize3box, initialized3box, chatOrComment
     setIsReady(true);
 
     const commentsAlreadyOpened = chatOrComments === 'comments';
-    initialize3box(addressFromProvider, threeBoxInstance, publicProfile, commentsAlreadyOpened);
+    initialize3box({
+      address: addressFromProvider,
+      box: threeBoxInstance,
+      profile: publicProfile,
+      openComments: commentsAlreadyOpened
+    });
   };
 
   return {
