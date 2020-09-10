@@ -473,7 +473,7 @@ export const SportsOutcome = ({
   const { liquidityPools } = useMarketsStore();
   const { addBet } = Betslip.actions;
   const {
-    sportsBook,
+    sportsBook = null,
     minPriceBigNumber,
     maxPriceBigNumber,
     marketType,
