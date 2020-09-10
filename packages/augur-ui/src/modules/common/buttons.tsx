@@ -860,7 +860,7 @@ export const CashoutButton = ({
   } else if (createBigNumber(marketPositions?.tradingPositionsPerMarket?.unclaimedProceeds).gt(ZERO) && market.consensus.outcome == bet.outcomeId ) {
     cashoutText = (
       <>
-       Won: <span>{formatDai(marketPositions?.tradingPositionsPerMarket?.unclaimedProceeds).full}</span>
+       Won:<span>{formatDai(marketPositions?.tradingPositionsPerMarket?.unclaimedProceeds).full}</span>
       </>
     );
     wonStyle = true;
