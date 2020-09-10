@@ -483,7 +483,7 @@ export const SportsOutcome = ({
     maxPrice,
     consensusFormatted
   } = market;
-  const isWinningOutcome = consensusFormatted?.winningOutcome == outcomeId
+  const isWinningOutcome = consensusFormatted?.winningOutcome === String(outcomeId);
   const poolId = sportsBook?.liquidityPool;
   const bestAsk =
     poolId && liquidityPools[poolId] && liquidityPools[poolId][outcomeId];
@@ -492,11 +492,11 @@ export const SportsOutcome = ({
   let label = '-';
   let subLabel = '';
   let action = () => {};
-  if (isWinningOutcome) {
+  if (isWinningOutcome && sportsBook) {
     topLabel = determineTopLabel(sportsBook, outcomeId, outcomeLabel);
     label = 'Winner';
     disabled = false;
-  } else if (bestAsk && id) {
+  } else if (bestAsk && sportsBook) {
     const { shares, price } = bestAsk;
     subLabel = formatDai(
       calculateTotalOrderValue(
