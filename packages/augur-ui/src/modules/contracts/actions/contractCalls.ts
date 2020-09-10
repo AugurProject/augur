@@ -611,9 +611,8 @@ export function getLegacyRep() {
 
 export async function getCreateMarketBreakdown() {
   const { contracts } = augurSdk.get();
-  const originUniverse = contracts.universeFromAddress(contracts.universe.address);
-  const vBond = await originUniverse.getOrCacheValidityBond_();
-  const noShowBond = await originUniverse.getOrCacheMarketRepBond_();
+  const vBond = await contracts.universe.getOrCacheValidityBond_();
+  const noShowBond = await contracts.universe.getOrCacheMarketRepBond_();
   const validityBondFormatted = formatAttoDai(vBond, { decimals: 2, decimalsRounded: 2});
   const noShowFormatted = formatAttoRep(noShowBond, {
     decimals: 4,
