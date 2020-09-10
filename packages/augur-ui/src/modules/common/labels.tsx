@@ -1025,33 +1025,43 @@ interface LiquidityDepletedLabelProps {
 export const LiquidityDepletedLabel = ({
   market,
 }: LiquidityDepletedLabelProps) => {
+  const { theme } = useAppStatusStore();
   if (
     market.passDefaultLiquiditySpread ||
     market.hasPendingLiquidityOrders ||
     market.marketStatus === constants.MARKET_CLOSED
   )
     return null;
+  const isSports = theme === THEMES.SPORTS;
   return (
-    <span
-      className={classNames(Styles.LiquidityDepletedLabel)}
-      data-tip
-      data-for={'liquidityDepleted' + market.id}
-      data-iscapture={true}
-    >
-      LIQUIDITY DEPLETED
-      <ReactTooltip
-        id={'liquidityDepleted' + market.id}
-        className={TooltipStyles.Tooltip}
-        effect="solid"
-        place="top"
-        type="light"
-        event="mouseover mouseenter"
-        eventOff="mouseleave mouseout scroll mousewheel blur"
-      >
-        No longer passing the Liquidity spread filter, add more liquidity to
-        have your market seen. Liquidity indicator updates every minute.
-      </ReactTooltip>
-    </span>
+    <>
+      {isSports ? (
+          <button className={Styles.AddLiquidityButton} onClick={() => {console.log('clicked liquidity add more!')}}>
+            Add more liquidity
+          </button>
+        ): (
+        <span
+          className={classNames(Styles.LiquidityDepletedLabel)}
+          data-tip
+          data-for={'liquidityDepleted' + market.id}
+          data-iscapture={true}
+        >
+          LIQUIDITY DEPLETED
+          <ReactTooltip
+            id={'liquidityDepleted' + market.id}
+            className={TooltipStyles.Tooltip}
+            effect="solid"
+            place="top"
+            type="light"
+            event="mouseover mouseenter"
+            eventOff="mouseleave mouseout scroll mousewheel blur"
+          >
+            No longer passing the Liquidity spread filter, add more liquidity to
+            have your market seen. Liquidity indicator updates every minute.
+          </ReactTooltip>
+        </span>
+      )}
+    </>
   );
 };
 export interface MarketStatusLabelProps {
