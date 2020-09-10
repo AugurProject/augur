@@ -1290,7 +1290,7 @@ export class UserRepDisplay extends Component<
   }
 }
 
-export interface ParticipationTokensViewProps {
+export interface FeePoolViewProps {
   openModal: Function;
   openClaimParticipationTokensModal: Function;
   disputeWindowFees: FormattedNumber;
@@ -1303,8 +1303,8 @@ export interface ParticipationTokensViewProps {
   hasRedeemable: boolean;
 }
 
-export const ParticipationTokensView = (
-  props: ParticipationTokensViewProps
+export const FeePoolView = (
+  props: FeePoolViewProps
 ) => {
   const {
     openModal,
@@ -1320,20 +1320,10 @@ export const ParticipationTokensView = (
   } = props;
 
   return (
-    <div className={Styles.ParticipationTokensView}>
-      <h4>Fee Pot</h4>
+    <div className={Styles.FeePoolView}>
+      <h3>Fee Pool</h3>
       <span>
-        <span>Don’t see any reports that need disputing? </span>
-        You can earn a proportional share of the reporting fees by staking in the fee pot.
-        <span>
-          <a
-            href={HELP_CENTER_PARTICIPATION_TOKENS}
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Learn more
-          </a>
-        </span>
+        Stake <b>REP</b> to recieve Staking REP (<b>SREP</b>) to earn a portion of the reporting fees.
       </span>
 
       <Subheaders
@@ -1342,12 +1332,12 @@ export const ParticipationTokensView = (
         header="Total Reporting Fees"
         subheader={disputeWindowFees.formatted}
         secondSubheader="ETH"
-        tooltipText="The total amount to be paid to fee pot"
+        tooltipText="The total amount of fees in the fee pool"
       />
       <Subheaders
         large
         info
-        header="Total Staked"
+        header="Total REP Staked"
         subheader={purchasedParticipationTokens.formatted}
         tooltipText={
           'The total amount of REPv2 tokens staked'
@@ -1355,10 +1345,18 @@ export const ParticipationTokensView = (
       />
       <Subheaders
         info
-        header="Total staked in fee pot"
+        header="My Staked REP"
         subheader={tokensOwned.formatted}
         secondSubheader={`(${percentageOfTotalFees.formatted}% of Total Fees)`}
-        tooltipText="The % of staked you own among all staked"
+        tooltipText="The % of REPv2 you staked in the fee pool"
+      />
+
+      <Subheaders
+        info
+        header="Claimable Fees"
+        subheader={tokensOwned.formatted}
+        secondSubheader={`(${percentageOfTotalFees.formatted}% of Total Fees)`}
+        tooltipText="The fee's own because of percentage of staked REPv2 in the fee pool"
       />
 
       <ProcessingButton
@@ -1368,41 +1366,54 @@ export const ParticipationTokensView = (
         queueName={TRANSACTIONS}
         queueId={BUYPARTICIPATIONTOKENS}
       />
-
+      <ProcessingButton
+        secondaryButton
+        disabled={disablePurchaseButton}
+        text="Claim Fees"
+        action={openModal}
+        queueName={TRANSACTIONS}
+        queueId={BUYPARTICIPATIONTOKENS}
+      />
+      <ProcessingButton
+        secondaryButton
+        disabled={disablePurchaseButton}
+        text="Unstake & Claim Fees"
+        action={openModal}
+        queueName={TRANSACTIONS}
+        queueId={BUYPARTICIPATIONTOKENS}
+      />
       <section />
 
-      <h4>Claim fees and/or Unstake</h4>
+      <h3>Governance</h3>
       <span>
-      Unstake your staked tokens and claim reporting fees.
+      You can stake your <b>SREP</b> to get Governance REP (<b>GREP</b>) which can be used for voting power.
       </span>
       <Subheaders
         info
-        header="Current stake"
+        header="Total SREP staked in Goverance"
         subheader={pastParticipationTokensPurchased.formatted}
         tooltipText={
-          "The total amount of REPv2 you have staked minus any you've lost for incorrect reporting"
+          "The total amount of SREP staked in the Governance contract"
         }
       />
       <Subheaders
         info
-        header="My Portion of Reporting Fees"
+        header="My SREP staked (${} GREP)"
         subheader={participationTokensClaimableFees.formatted}
-        secondSubheader="ETH"
+        secondSubheader="SREP"
         tooltipText={
-          "The total amount of ETH you've earned through staking"
+          "The total SREP you have staked in the governance contract"
         }
       />
       <ProcessingButton
-        disabled={!hasRedeemable}
-        text="Claim fees only"
+        text="Stake SREP"
         action={openClaimParticipationTokensModal}
         queueName={TRANSACTIONS}
         queueId={REDEEMSTAKE}
       />
-      <section />
       <ProcessingButton
-        disabled={!hasRedeemable}
-        text="Claim fees and unstake"
+        secondaryButton
+        text="Unstake"
         action={openClaimParticipationTokensModal}
         queueName={TRANSACTIONS}
         queueId={REDEEMSTAKE}

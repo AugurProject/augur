@@ -239,6 +239,7 @@ export const selectNotifications = createSelector(
     ];
 
     // Add unquie notifications
+    /* no notifications for participation token that change to fee pool
     if (
       claimReportingFees &&
       (claimReportingFees.participationContracts.unclaimedDai.gt(ZERO) ||
@@ -258,6 +259,7 @@ export const selectNotifications = createSelector(
         id: NOTIFICATION_TYPES.claimReportingFees,
       });
     }
+    */
 
     const accountMarketClaimablePositions: MarketClaimablePositions = selectLoginAccountClaimablePositions(
       store.getState()
