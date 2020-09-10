@@ -345,6 +345,7 @@ export const BetslipInput = ({
   disabled = false,
   noEdit = false,
   errorCheck,
+  noForcedText = false,
 }) => {
   const betslipInput = useRef(null);
   const [curVal, setCurVal] = useState(
@@ -376,7 +377,7 @@ export const BetslipInput = ({
           }
           setCurVal(newVal);
         }}
-        value={`$${curVal ? curVal : ''}`}
+        value={`${noForcedText ? '' : '$'}${curVal ? curVal : ''}`}
         disabled={disabled || noEdit}
       />
     </div>

@@ -2961,6 +2961,11 @@ div.ButtonsRow:last-of-type {
   .Container;
 
   border: 0;
+  min-width: @size-750;
+
+  @media @breakpoint-mobile {
+    min-width: 100%;
+  }
 
   > header {
     border-top-left-radius: @size-8;
@@ -2981,8 +2986,22 @@ div.ButtonsRow:last-of-type {
     > section {
       border: @size-1 solid var(--color-dark-grey);
       border-radius: @size-6;
+      display: grid;
+      grid-template-columns: 0fr @size-90 @size-90;
+      grid-gap: @size-24 @size-8;
+      justify-content: center;
       margin: @size-24 0;
       padding: @size-24;
+
+      > div:first-of-type {
+        height: @size-36;
+        min-width: @size-240;
+      }
+
+      > button {
+        grid-column: span 3;
+        margin: 0 auto;
+      }
     }
 
     > div {
@@ -2994,11 +3013,16 @@ div.ButtonsRow:last-of-type {
         border-top-left-radius: @size-6;
         border-top-right-radius: @size-6;
 
-        > li {
+        > li,
+        > li:first-of-type {
           .text-10-semi-bold;
 
           color: var(--color-secondary-text);
           text-transform: uppercase;
+        }
+
+        > li > button > svg {
+          margin-right: @size-4;
         }
       }
 
@@ -3006,15 +3030,31 @@ div.ButtonsRow:last-of-type {
         display: flex;
         flex-flow: row nowrap;
 
+        &:not(:first-of-type) {
+          border-top: @size-1 solid var(--color-dark-grey);
+        }
+
         > li:first-of-type {
+          .text-14-bold;
+
           flex: 1;
+          padding-left: @size-16;
         }
 
         > li {
+          .text-12;
+
+          color: var(--color-primary-text);
           align-items: center;
           display: flex;
           flex: 0;
-          padding: @size-14 @size-16;
+          padding: @size-14 0;
+          min-width: @size-72;
+
+          &:nth-of-type(2),
+          &:nth-of-type(3) {
+            justify-content: flex-end;
+          }
 
           > button {
             .text-10-semi-bold;
@@ -3030,7 +3070,6 @@ div.ButtonsRow:last-of-type {
             > svg {
               width: @size-18;
               height: @size-16;
-              margin-right: @size-4;
 
               > path {
                 stroke: var(--color-primary-text);
@@ -3041,6 +3080,8 @@ div.ButtonsRow:last-of-type {
 
         li:last-of-type {
           min-width: @size-116;
+          justify-content: flex-end;
+          padding-right: @size-16;
         }
       }
 
