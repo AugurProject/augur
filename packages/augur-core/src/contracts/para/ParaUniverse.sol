@@ -280,4 +280,8 @@ contract ParaUniverse is Initializable, IParaUniverse {
     function createScalarMarket(uint256 _endTime, uint256 _feePerCashInAttoCash, IAffiliateValidator _affiliateValidator, uint256 _affiliateFeeDivisor, address _designatedReporterAddress, int256[] memory _prices, uint256 _numTicks, string memory _extraInfo) public returns (IMarket _newMarket) {
         return originUniverse.createScalarMarket(_endTime, _feePerCashInAttoCash, _affiliateValidator, _affiliateFeeDivisor, _designatedReporterAddress, _prices, _numTicks, _extraInfo);
     }
+
+    function getOrCacheValidityBond() public returns (uint256) {
+        return originUniverse.getOrCacheValidityBond();
+    }
 }
