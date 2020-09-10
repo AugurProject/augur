@@ -117,6 +117,9 @@ export const startOrderSending = async ({
   const market = marketInfos[marketId];
   let orders = [];
   const liquidity = pendingLiquidityOrders[market.transactionHash];
+  if (!liquidity) {
+    return;
+  }
   Object.keys(liquidity).map(outcomeId => {
     orders = [...orders, ...liquidity[outcomeId]];
   });

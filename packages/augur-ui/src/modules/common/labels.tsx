@@ -41,6 +41,7 @@ import {
   GWEI_CONVERSION,
   AUTO_ETH_REPLENISH,
   BUY,
+  MODAL_ADD_LIQUIDITY,
 } from 'modules/common/constants';
 import { useAppStatusStore, AppStatus } from 'modules/app/store/app-status';
 import { ViewTransactionDetailsButton } from 'modules/common/buttons';
@@ -1025,7 +1026,7 @@ interface LiquidityDepletedLabelProps {
 export const LiquidityDepletedLabel = ({
   market,
 }: LiquidityDepletedLabelProps) => {
-  const { theme } = useAppStatusStore();
+  const { theme, actions: { setModal } } = useAppStatusStore();
   if (
     market.passDefaultLiquiditySpread ||
     market.hasPendingLiquidityOrders ||
@@ -1036,7 +1037,7 @@ export const LiquidityDepletedLabel = ({
   return (
     <>
       {isSports ? (
-          <button className={Styles.AddLiquidityButton} onClick={() => {console.log('clicked liquidity add more!')}}>
+          <button className={Styles.AddLiquidityButton} onClick={() => setModal({ type: MODAL_ADD_LIQUIDITY, market })}>
             Add more liquidity
           </button>
         ): (

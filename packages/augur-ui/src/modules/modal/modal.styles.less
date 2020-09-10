@@ -2957,6 +2957,106 @@ div.ButtonsRow:last-of-type {
   }
 }
 
+.AddLiquidityModal {
+  .Container;
+
+  border: 0;
+
+  > header {
+    border-top-left-radius: @size-8;
+    border-top-right-radius: @size-8;
+  }
+  
+  > main {
+    > h2 {
+      margin-bottom: 0;
+    }
+
+    > span {
+      .text-14;
+
+      color: var(--color-primary-text);
+    }
+
+    > section {
+      border: @size-1 solid var(--color-dark-grey);
+      border-radius: @size-6;
+      margin: @size-24 0;
+      padding: @size-24;
+    }
+
+    > div {
+      border: @size-1 solid var(--color-dark-grey);
+      border-radius: @size-6;
+
+      > ul:first-of-type {
+        background: var(--color-table-header);
+        border-top-left-radius: @size-6;
+        border-top-right-radius: @size-6;
+
+        > li {
+          .text-10-semi-bold;
+
+          color: var(--color-secondary-text);
+          text-transform: uppercase;
+        }
+      }
+
+      > ul {
+        display: flex;
+        flex-flow: row nowrap;
+
+        > li:first-of-type {
+          flex: 1;
+        }
+
+        > li {
+          align-items: center;
+          display: flex;
+          flex: 0;
+          padding: @size-14 @size-16;
+
+          > button {
+            .text-10-semi-bold;
+
+            color: var(--color-primary-text);
+            display: flex;
+            flex-flow: row nowrap;
+            align-items: center;
+            justify-content: center;
+            text-transform: uppercase;
+            white-space: nowrap;
+
+            > svg {
+              width: @size-18;
+              height: @size-16;
+              margin-right: @size-4;
+
+              > path {
+                stroke: var(--color-primary-text);
+              }
+            }
+          }
+        }
+
+        li:last-of-type {
+          min-width: @size-116;
+        }
+      }
+
+      ul:last-of-type {
+        border-bottom-left-radius: @size-6;
+        border-bottom-right-radius: @size-6;
+      }
+    }
+  }
+
+  > div:last-of-type {
+    border-bottom-left-radius: @size-8;
+    border-bottom-right-radius: @size-8;
+  }
+}
+
 .AlertMessage {
   .text-12;
 
