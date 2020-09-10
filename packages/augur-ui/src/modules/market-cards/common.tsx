@@ -468,7 +468,7 @@ export const SportsOutcome = ({
   title = undefined,
   outcomeId,
   outcomeLabel,
-  market,
+  market = {},
 }: SportsOutcomeProps) => {
   const { liquidityPools } = useMarketsStore();
   const { addBet } = Betslip.actions;
@@ -483,7 +483,7 @@ export const SportsOutcome = ({
     maxPrice,
     consensusFormatted
   } = market;
-  const isWinningOutcome = consensusFormatted.winningOutcome == outcomeId
+  const isWinningOutcome = consensusFormatted?.winningOutcome == outcomeId
   const poolId = sportsBook?.liquidityPool;
   const bestAsk =
     poolId && liquidityPools[poolId] && liquidityPools[poolId][outcomeId];
@@ -496,7 +496,7 @@ export const SportsOutcome = ({
     topLabel = determineTopLabel(sportsBook, outcomeId, outcomeLabel);
     label = 'Winner';
     disabled = false;
-  } else if (bestAsk) {
+  } else if (bestAsk && id) {
     const { shares, price } = bestAsk;
     subLabel = formatDai(
       calculateTotalOrderValue(
