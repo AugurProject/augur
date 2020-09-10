@@ -25955,6 +25955,159 @@
 			"type": "function"
 		},
 		{
+			"constant": false,
+			"inputs": [
+				{
+					"internalType": "uint256",
+					"name": "_endTime",
+					"type": "uint256"
+				},
+				{
+					"internalType": "uint256",
+					"name": "_feePerCashInAttoCash",
+					"type": "uint256"
+				},
+				{
+					"internalType": "contract IAffiliateValidator",
+					"name": "_affiliateValidator",
+					"type": "address"
+				},
+				{
+					"internalType": "uint256",
+					"name": "_affiliateFeeDivisor",
+					"type": "uint256"
+				},
+				{
+					"internalType": "address",
+					"name": "_designatedReporterAddress",
+					"type": "address"
+				},
+				{
+					"internalType": "bytes32[]",
+					"name": "_outcomes",
+					"type": "bytes32[]"
+				},
+				{
+					"internalType": "string",
+					"name": "_extraInfo",
+					"type": "string"
+				}
+			],
+			"name": "createCategoricalMarket",
+			"outputs": [
+				{
+					"internalType": "contract IMarket",
+					"name": "_newMarket",
+					"type": "address"
+				}
+			],
+			"payable": false,
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"constant": false,
+			"inputs": [
+				{
+					"internalType": "uint256",
+					"name": "_endTime",
+					"type": "uint256"
+				},
+				{
+					"internalType": "uint256",
+					"name": "_feePerCashInAttoCash",
+					"type": "uint256"
+				},
+				{
+					"internalType": "contract IAffiliateValidator",
+					"name": "_affiliateValidator",
+					"type": "address"
+				},
+				{
+					"internalType": "uint256",
+					"name": "_affiliateFeeDivisor",
+					"type": "uint256"
+				},
+				{
+					"internalType": "address",
+					"name": "_designatedReporterAddress",
+					"type": "address"
+				},
+				{
+					"internalType": "int256[]",
+					"name": "_prices",
+					"type": "int256[]"
+				},
+				{
+					"internalType": "uint256",
+					"name": "_numTicks",
+					"type": "uint256"
+				},
+				{
+					"internalType": "string",
+					"name": "_extraInfo",
+					"type": "string"
+				}
+			],
+			"name": "createScalarMarket",
+			"outputs": [
+				{
+					"internalType": "contract IMarket",
+					"name": "_newMarket",
+					"type": "address"
+				}
+			],
+			"payable": false,
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"constant": false,
+			"inputs": [
+				{
+					"internalType": "uint256",
+					"name": "_endTime",
+					"type": "uint256"
+				},
+				{
+					"internalType": "uint256",
+					"name": "_feePerCashInAttoCash",
+					"type": "uint256"
+				},
+				{
+					"internalType": "contract IAffiliateValidator",
+					"name": "_affiliateValidator",
+					"type": "address"
+				},
+				{
+					"internalType": "uint256",
+					"name": "_affiliateFeeDivisor",
+					"type": "uint256"
+				},
+				{
+					"internalType": "address",
+					"name": "_designatedReporterAddress",
+					"type": "address"
+				},
+				{
+					"internalType": "string",
+					"name": "_extraInfo",
+					"type": "string"
+				}
+			],
+			"name": "createYesNoMarket",
+			"outputs": [
+				{
+					"internalType": "contract IMarket",
+					"name": "_newMarket",
+					"type": "address"
+				}
+			],
+			"payable": false,
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
 			"constant": true,
 			"inputs": [],
 			"name": "currentReportingFeeDivisor",
@@ -26030,6 +26183,21 @@
 					"internalType": "contract IFeePot",
 					"name": "",
 					"type": "address"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [],
+			"name": "getDisputeThresholdForDisputePacing",
+			"outputs": [
+				{
+					"internalType": "uint256",
+					"name": "",
+					"type": "uint256"
 				}
 			],
 			"payable": false,
@@ -26115,6 +26283,21 @@
 			],
 			"payable": false,
 			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": false,
+			"inputs": [],
+			"name": "getOrCacheDesignatedReportStake",
+			"outputs": [
+				{
+					"internalType": "uint256",
+					"name": "",
+					"type": "uint256"
+				}
+			],
+			"payable": false,
+			"stateMutability": "nonpayable",
 			"type": "function"
 		},
 		{
@@ -26406,6 +26589,21 @@
 			],
 			"payable": false,
 			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": false,
+			"inputs": [],
+			"name": "runPeriodicals",
+			"outputs": [
+				{
+					"internalType": "bool",
+					"name": "",
+					"type": "bool"
+				}
+			],
+			"payable": false,
+			"stateMutability": "nonpayable",
 			"type": "function"
 		},
 		{
