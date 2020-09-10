@@ -25,6 +25,7 @@ import {
 import { BigNumber, createBigNumber } from 'utils/create-big-number';
 import { ethToDai } from 'modules/app/actions/get-ethToDai-rate';
 import { Alert } from 'modules/types';
+import { convertAttoValueToDisplayValue } from '@augurproject/utils';
 
 export const ADD_ALERT = 'ADD_ALERT';
 export const REMOVE_ALERT = 'REMOVE_ALERT';
@@ -51,15 +52,13 @@ export function addAlert(alert: Partial<Alert>) {
 }
 
 export function updateExistingAlert(id, alert) {
-  return () => {
-    const callback = alertUpdated =>
-      AppStatus.actions.updateAlert(id, alertUpdated);
-    try {
-      return setAlertText(alert, callback);
-    } catch (error) {
-      return callback(error, null);
-    }
-  };
+  const callback = alertUpdated =>
+    AppStatus.actions.updateAlert(id, alertUpdated);
+  try {
+    setAlertText(alert, callback);
+  } catch (error) {
+    return callback(error, null);
+  }
 }
 
 export function updateAlert(
@@ -108,18 +107,18 @@ export function updateAlert(
     let foundAlert =
       alertName === REDEEMSTAKE
         ? alerts.find(
-            (findAlert) =>
+            findAlert =>
               findAlert.id === alert.id &&
               findAlert.name.toUpperCase() === REDEEMSTAKE
           )
         : alerts.find(
-            (findAlert) =>
+            findAlert =>
               findAlert.uniqueId === alert.uniqueId &&
               findAlert.name.toUpperCase() === alert.name.toUpperCase()
           );
 
     if (foundAlert) {
-      AppStatus.actions.updateAlert(alert.uniqueId, {
+      updateExistingAlert(alert.uniqueId, {
         ...foundAlert,
         ...alert,
         name: foundAlert.name !== '' ? foundAlert.name : alert.name,
@@ -129,9 +128,8 @@ export function updateAlert(
           repReceived:
             alert.params.repReceived &&
             foundAlert.params.repReceived &&
-            createBigNumber(alert.params.repReceived).plus(
-              createBigNumber(foundAlert.params.repReceived)
-            ),
+            createBigNumber(alert.params.repReceived)
+              .plus(createBigNumber(foundAlert.params.repReceived)),
         },
       });
     } else {
