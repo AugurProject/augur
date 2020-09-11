@@ -1,6 +1,5 @@
 import React, { useState, useMemo } from 'react';
 import { useAppStatusStore } from 'modules/app/store/app-status';
-import { CloseButton } from 'modules/common/buttons';
 import Styles from 'modules/modal/modal.styles.less';
 import { Title, ButtonsRow } from 'modules/modal/common';
 import { Trash } from 'modules/common/icons';
@@ -10,7 +9,11 @@ import {
 } from 'modules/orders/actions/pending-order-management';
 import { usePendingOrdersStore } from 'modules/app/store/pending-orders';
 import { startOrderSending } from 'modules/orders/actions/liquidity-management';
-import { convertToOdds, convertToNormalizedPrice } from 'utils/get-odds';
+import {
+  convertOddsToPrice,
+  convertToOdds,
+  convertToNormalizedPrice,
+} from 'utils/get-odds';
 import { formatDai } from 'utils/format-number';
 import { SquareDropdown } from 'modules/common/selection';
 import { BetslipInput } from 'modules/trading/common';
@@ -30,6 +33,7 @@ const getOutcomeOptions = outcomesFormatted => {
 
 export const ModalAddLiquidity = () => {
   const {
+    oddsType,
     modal,
     actions: { closeModal },
   } = useAppStatusStore();
@@ -72,10 +76,11 @@ export const ModalAddLiquidity = () => {
       },
     },
   ];
-  const checkWager = (newVal) => ({checkError: false, errorMessage: null });
+  const checkWager = newVal => ({ checkError: false, errorMessage: null });
   const errorMessage = null;
-  const modifyBet = v => console.log('modifyBet', v);
-
+  const modifyBet = v => {
+    v.odds ? setOdds(v.odds) : setWager(v.wager);
+  };
   return (
     <div className={Styles.AddLiquidityModal}>
       <Title title="Add more liquidity" closeAction={() => closeModal()} />
@@ -109,8 +114,15 @@ export const ModalAddLiquidity = () => {
             noForcedText
           />
           <PrimaryButton
-            action={() => console.log('place bet clicked')}
-            text="Place Bet"
+            action={() => {
+              console.log("add Offer clicked", selectedOutcome, wager, odds);
+              console.log(convertOddsToPrice(odds).roundedFormatted);
+              // we would add order here to the book
+              // reset state.
+              setOdds('');
+              setWager('');
+            }}
+            text="Add offer"
           />
         </section>
         <div>
@@ -130,7 +142,7 @@ export const ModalAddLiquidity = () => {
             <li>
               {
                 convertToOdds(
-                  convertToNormalizedPrice({ price: '1.5', min, max })
+                  convertToNormalizedPrice({ price: '0.5', min, max })
                 ).full
               }
             </li>

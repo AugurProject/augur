@@ -8,7 +8,13 @@ import {
 } from 'modules/common/constants';
 import { createBigNumber, BigNumber } from 'utils/create-big-number';
 import { AppStatus } from 'modules/app/store/app-status';
-import { formatNumber, formatPercent, formatFractional, formatAmerican } from './format-number';
+import {
+  formatNumber,
+  formatPercent,
+  formatFractional,
+  formatAmerican,
+} from './format-number';
+import { FormattedNumber } from 'modules/types';
 
 const { DECIMAL, FRACTIONAL, AMERICAN, PERCENT } = ODDS_TYPE;
 
@@ -86,12 +92,20 @@ export const convertToWin = (maxPrice, shares, toDecimals = 2) => {
 };
 
 export const getWager = (shares, price) => {
-  return shares && price ? createBigNumber(shares).times(createBigNumber(price)).toString() : null;
-}
+  return shares && price
+    ? createBigNumber(shares)
+        .times(createBigNumber(price))
+        .toString()
+    : null;
+};
 
 export const getShares = (wager, price) => {
-  return wager && price ? createBigNumber(wager).div(createBigNumber(price)).toString() : null;
-}
+  return wager && price
+    ? createBigNumber(wager)
+        .div(createBigNumber(price))
+        .toString()
+    : null;
+};
 
 export const getOddsObject = (normalizedValue: BigNumber, toDecimals = 4) => {
   const percentage: BigNumber = convertToPercentage(
@@ -110,6 +124,51 @@ export const getOddsObject = (normalizedValue: BigNumber, toDecimals = 4) => {
     [PERCENT]: formatPercent(percentage, { decimalsRounded: 2 }),
   };
 };
+
+export const convertOddsToPrice = (odds: string) => {
+  const { oddsType } = AppStatus.get();
+  let result = null;
+  switch (oddsType) {
+    case (DECIMAL): {
+      result = convertPercentToNormalizedPrice(convertDecimalToPercentage(odds));
+      break;
+    }
+    case FRACTIONAL: {
+      result = convertPercentToNormalizedPrice(convertFractionalToPercentage(
+        createBigNumber(odds.replace('/1', ''))
+      ));
+      break;
+    }
+    case AMERICAN: {
+      result = convertPercentToNormalizedPrice(convertAmericanToPercentage(odds));
+      break;
+    }
+    case PERCENT: {
+      result = convertPercentToNormalizedPrice(createBigNumber(odds.replace('%', '')));
+      break;
+    }
+    default:
+      break;
+  }
+  return result;
+};
+const convertPercentToNormalizedPrice = (percent: BigNumber): FormattedNumber => formatNumber(percent.dividedBy(HUNDRED), { decimalsRounded: 2 });
+const convertDecimalToPercentage = (decimal: string): BigNumber =>
+  ONE.dividedBy(decimal).times(HUNDRED);
+const convertFractionalToPercentage = (fractional: BigNumber): BigNumber =>
+  ONE.dividedBy(fractional.dividedBy(ONE).plus(ONE)).times(HUNDRED);
+const convertAmericanToPercentage = (american: string): BigNumber =>
+  american.includes('-')
+    ? convertNegativeAmericanToPercentage(
+        createBigNumber(american.replace('-', ''))
+      )
+    : convertPositiveAmericanToPercentage(
+        createBigNumber(american.replace('+', ''))
+      );
+const convertNegativeAmericanToPercentage = (american: BigNumber): BigNumber =>
+  american.dividedBy(american.plus(HUNDRED)).times(HUNDRED);
+const convertPositiveAmericanToPercentage = (american: BigNumber): BigNumber =>
+  HUNDRED.dividedBy(american.plus(HUNDRED)).times(HUNDRED);
 
 const convertToPercentage = (normalizedValue: BigNumber): BigNumber =>
   normalizedValue.times(HUNDRED);
