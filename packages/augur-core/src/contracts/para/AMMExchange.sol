@@ -1,6 +1,7 @@
 pragma solidity 0.5.15;
 
 import 'ROOT/libraries/math/SafeMathUint256.sol';
+import 'ROOT/libraries/math/SafeMathInt256.sol';
 import 'ROOT/libraries/token/ERC20.sol';
 import 'ROOT/para/interfaces/IParaShareToken.sol';
 import 'ROOT/reporting/IMarket.sol';
@@ -9,6 +10,7 @@ import 'ROOT/ICash.sol';
 
 contract AMMExchange is ERC20 {
     using SafeMathUint256 for uint256;
+	using SafeMathInt256 for int256;
 
     ICash public cash;
     IParaShareToken public shareToken;
@@ -126,10 +128,64 @@ contract AMMExchange is ERC20 {
         cash.transfer(msg.sender, _cashToBuy);
     }
 
-//    function exitAll(uint256 _minCashPayout) external {
-//        (uint256 _userNo, uint256 _userYes) = yesNoShareBalances(msg.sender);
-//        exitPosition(_userNo, _userYes, _minCashPayout);
-//    }
+	function exitAll(uint256 _minCashPayout) external {
+		(uint256 _userInvalid, uint256 _userNo, uint256 _userYes) = shareBalances(msg.sender);
+		exitPositionShares(_userYes, _userNo, _userInvalid, _minCashPayout);
+	}
+
+	function exitPositionShares(uint256 _yesShares, uint256 _noShares, uint256 _invalidShares, uint256 _minCashPayout) public {
+		(uint256 _poolNo, uint256 _poolYes) = yesNoShareBalances(address(this));
+		uint256 _invalidFromUser = _invalidShares;
+		uint256 _yesFromUser = _yesShares;
+		uint256 _noFromUser = _noShares;
+		uint256 _setsToSell = _invalidShares;
+
+		// Figure out how many shares we're buying in our synthetic swap and use that to figure out the final balance of Yes/No (setsToSell)
+		if (_yesShares > _noShares) {
+			uint256 _delta = _yesShares.sub(_noShares);
+			uint256 _noSharesToBuy = quadratic(1, -int256(_delta.add(_poolYes).add(_poolNo)), int256(_delta.mul(_poolNo)), _yesShares);
+			_setsToSell = _noShares.add(_noSharesToBuy);
+		}
+		else if (_noShares > _yesShares) {
+			uint256 _delta = _noShares.sub(_yesShares);
+			uint256 _yesSharesToBuy = quadratic(1, -int256(_delta.add(_poolYes).add(_poolNo)), int256(_delta.mul(_poolYes)), _noShares);
+			_setsToSell = _yesShares.add(_yesSharesToBuy);
+		}
+
+		if (_invalidShares > _setsToSell) {
+			// We have excess Invalid shares that the user will just keep.
+			_invalidFromUser = _setsToSell;
+		} else {
+			// We don't have enough Invalid to actually close out the Yes/No shares. They will be kept by the user.
+			// Need to actually receive yes or no shares here since we are swapping to get partial complete sets but dont have enough yes/no to make full complete sets
+			if (_yesShares > _noShares) {
+				uint256 _noSharesToBuy = _setsToSell.sub(_noShares);
+				shareToken.unsafeTransferFrom(address(this), msg.sender, NO, _noSharesToBuy);
+				_noFromUser = _invalidFromUser;
+				_yesFromUser = _yesShares.sub(_noShares.add(_noSharesToBuy).sub(_noFromUser));
+			} else {
+				uint256 _yesSharesToBuy = _setsToSell.sub(_yesShares);
+				shareToken.unsafeTransferFrom(address(this), msg.sender, YES, _yesSharesToBuy);
+				_yesFromUser = _invalidFromUser;
+				_noFromUser = _noShares.sub(_yesShares.add(_yesSharesToBuy).sub(_yesFromUser));
+			}
+			_setsToSell = _invalidFromUser;
+		}
+
+		uint256 _cashPayout = _setsToSell.mul(numTicks);
+		require(_cashPayout >= _minCashPayout, "Proceeds were less than the required payout");
+
+		shareTransfer(msg.sender, address(this), _invalidFromUser, _noFromUser, _yesFromUser);
+        cash.transfer(msg.sender, _cashPayout);
+	}
+
+	function quadratic(int256 _a, int256 _b, int256 _c, uint256 _maximum) public returns (uint256) {
+		int256 _piece = SafeMathInt256.sqrt(_b*_b - (_a.mul(_b).mul(4)));
+		int256 _resultPlus = (-_b + _piece) / (2 * _a);
+		int256 _resultMinus = (-_b - _piece) / (2 * _a);
+		// TODO choose correct abs solution based on maximum
+		return uint256(_resultPlus);
+	}
 
     // How many extra shares you need.
     // Returns (no,yes) or (long,short)

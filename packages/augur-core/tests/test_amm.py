@@ -15,10 +15,10 @@ def test_amm(contractsFixture, market, cash):
     amm = contractsFixture.upload('../src/contracts/para/AMMExchange.sol', constructorArgs=[market.address, shareToken.address])
 
     # Add liquidity
-    cash.faucet(10000 * 10**18)
+    cash.faucet(100000 * 10**18)
     cash.approve(amm.address, 10**40)
     amm.addLiquidity(10 * 10**18)
 
-    # Swap
+    # Enter position
 
-    # Remove liquidity
+    # Exit position
