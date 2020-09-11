@@ -253,11 +253,24 @@
     &.Won {
       background: var(--color-open-15);
       color: var(--color-primary-text);
+
+      &:hover {
+        background: var(--color-open-15);
+      }
     }
 
     &.Loss {
       background: var(--color-resolved-15);
       color: var(--color-primary-text);
+
+      &:hover {
+        background: var(--color-resolved-15);
+      }
+    }
+
+    &.Won,
+    &.Loss {
+      opacity: 1;
     }
 
     &.CashedOut {
