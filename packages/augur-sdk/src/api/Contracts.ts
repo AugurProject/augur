@@ -42,6 +42,7 @@ export class Contracts {
   weth: ContractInterfaces.WETH9;
   uniswap: ContractInterfaces.UniswapV2Router02;
   auditFunds: ContractInterfaces.AuditFunds;
+  paraUniverse: ContractInterfaces.ParaUniverse;
 
   reputationToken: SomeRepToken | null = null;
   private readonly dependencies: ContractDependenciesEthers;
@@ -151,6 +152,10 @@ export class Contracts {
       dependencies,
       addresses.AuditFunds
     );
+    this.paraUniverse = new ContractInterfaces.ParaUniverse(
+      dependencies,
+      addresses.Universe
+    )
 
     if (typeof addresses.Time !== 'undefined') {
       this.time = new ContractInterfaces.Time(dependencies, addresses.Time);
@@ -210,6 +215,10 @@ export class Contracts {
 
   disputeWindowFromAddress(address: string): ContractInterfaces.DisputeWindow {
     return new ContractInterfaces.DisputeWindow(this.dependencies, address);
+  }
+
+  feePotFromAddress(address: string): ContractInterfaces.FeePot {
+    return new ContractInterfaces.FeePot(this.dependencies, address);
   }
 
   getInitialReporter(

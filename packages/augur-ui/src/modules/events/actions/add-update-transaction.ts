@@ -39,6 +39,7 @@ import {
   SETAPPROVALFORALL,
   WRAP_ETH,
   UNWRAP_ETH,
+  STAKE,
 } from 'modules/common/constants';
 import { CreateMarketData } from 'modules/types';
 import { ThunkDispatch } from 'redux-thunk';
@@ -88,7 +89,8 @@ const ADD_PENDING_QUEUE_METHOD_CALLS = [
   SETREFERRER,
   SETAPPROVALFORALL,
   WRAP_ETH,
-  UNWRAP_ETH
+  UNWRAP_ETH,
+  STAKE,
 ];
 
 const AUTO_REMVE_SUCCESSFUL_PENDING_QUEUE = [

@@ -11,7 +11,7 @@ import { Action } from 'redux';
 import { ThunkDispatch } from 'redux-thunk';
 import logError from 'utils/log-error';
 
-export const purchaseParticipationTokens = (
+export const stakeTokens = (
   amount: string,
   estimateGas = false,
   callback: NodeStyleCallback = logError

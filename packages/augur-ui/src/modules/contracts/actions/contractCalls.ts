@@ -1350,15 +1350,28 @@ export async function loadAccountData_exchangeRates(account: string) {
   return values;
 }
 
-export async function stakeInFeePool(amount: string) {
-  const stakedAmount = convertDisplayAmountToOnChainAmount(amount);
+export async function feePoolBalance(account: string): Promise<string> {
+  const feePool = await getFeePool();
+  const balance = await feePool.balanceOf_(account);
+  return String(balance);
+}
+
+export async function getEarnedFeesOf(account: string): Promise<string> {
+  const feePool = await getFeePool();
+  const amount = await feePool.earnedFeesOf_(account);
+  console.log('fees earned', String(amount));
+  return String(amount);
+}
+
+export async function stakeInFeePool(amount: string): Promise<void> {
+  const stakedAmount = convertDisplayValuetoAttoValue(createBigNumber(amount));
   const feePool = await getFeePool();
   const staking = await feePool.stake(stakedAmount);
   return staking;
 }
 
-export async function exitFeePool(amount: string) {
-  const stakedAmount = convertDisplayAmountToOnChainAmount(amount);
+export async function exitFeePool(amount: string): Promise<void> {
+  const stakedAmount = convertDisplayValuetoAttoValue(createBigNumber(amount));
   const feePool = await getFeePool();
   const exiting = await feePool.exit(stakedAmount);
   return exiting;
@@ -1374,10 +1387,13 @@ interface IFeePot {
     redeem: Function;
     exit: Function;
     stake: Function;
+    earnedFeesOf_: Function;
+    balanceOf_: Function;
 }
+
 async function getFeePool(): Promise<IFeePot> {
   const { contracts } = augurSdk.get();
-  const feePotAddress = await contracts.universe.getFeePot_();
+  const feePotAddress = await contracts.paraUniverse.getFeePot_();
   const feePot = contracts.feePotFromAddress(feePotAddress) as IFeePot;
   return feePot;
 }

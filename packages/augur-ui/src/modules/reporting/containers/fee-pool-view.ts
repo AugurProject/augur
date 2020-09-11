@@ -1,8 +1,8 @@
 import { connect } from 'react-redux';
 import { FeePoolView } from 'modules/reporting/common';
 import { updateModal } from 'modules/modal/actions/update-modal';
-import { MODAL_CLAIM_FEES, MODAL_PARTICIPATE, ZERO } from 'modules/common/constants';
-import { formatAttoDai, formatAttoRep, formatPercent, } from 'utils/format-number';
+import { MODAL_CLAIM_FEES, MODAL_STAKE_TOKENS, REP, SREP, ZERO } from 'modules/common/constants';
+import { formatAttoDai, formatAttoRep, formatPercent, formatRep, } from 'utils/format-number';
 import { createBigNumber } from 'utils/create-big-number';
 import { AppState } from 'appStore';
 
@@ -13,6 +13,7 @@ const mapStateToProps = (state: AppState) => {
   const disablePurchaseButton = !!state.universe.forkingInfo;
   const { participationTokens } =
     state.loginAccount && state.loginAccount.reporting;
+  const { balances } = state.loginAccount;
   const tokenAmount =
     (address &&
       participationTokens &&
@@ -53,17 +54,41 @@ const mapStateToProps = (state: AppState) => {
     participationTokensClaimableFees: formatAttoDai(participationTokensClaimableFees),
     disablePurchaseButton,
     hasRedeemable,
+    balances,
   };
 };
 
 const mapDispatchToProps = dispatch => ({
-  openModal: () => dispatch(updateModal({ type: MODAL_PARTICIPATE })),
+  openModal: (modal) => dispatch(updateModal({ type: MODAL_STAKE_TOKENS, modal })),
   openClaimParticipationTokensModal: () => dispatch(updateModal({type: MODAL_CLAIM_FEES, participationTokensOnly: true}))
 });
 
+
+const mergeProps = (sP: any, dP: any, oP: any) => {
+  const rep = sP.balances.rep;
+  const srep = sP.balances.feePool.stakedRep;
+  const sRepFormatted = formatRep(srep);
+  // TODO: get governance tokens balance
+  const gRepFormatted = formatRep('0'); //sP.balances
+
+  return {
+    sRepFormatted,
+    gRepFormatted,
+    ...sP,
+    ...dP,
+    ...oP,
+    openStakeRepModal: () => dP.openModal({ tokenName: REP, balance: rep}),
+    openStakeSrepModal: () => dP.openModal({ tokenName: SREP, balance: srep}),
+    openClaimFeesModal: () => dP.openClaimParticipationTokensModal(),
+    openExitFeePoolModal: () => dP.openClaimParticipationTokensModal(),
+    openUnstakeSrepModal: () => dP.openClaimParticipationTokensModal(),
+  }
+};
+
 const FeePoolViewContainer = connect(
   mapStateToProps,
-  mapDispatchToProps
+  mapDispatchToProps,
+  mergeProps,
 )(FeePoolView);
 
 export default FeePoolViewContainer;

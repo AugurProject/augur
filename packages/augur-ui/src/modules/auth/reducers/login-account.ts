@@ -3,7 +3,7 @@ import {
   UPDATE_LOGIN_ACCOUNT,
   CLEAR_LOGIN_ACCOUNT,
 } from 'modules/account/actions/login-account';
-import { LoginAccount, BaseAction } from 'modules/types';
+import { LoginAccount, BaseAction, FeePoolBalances } from 'modules/types';
 import { ZERO } from 'modules/common/constants';
 
 const DEFAULT_STATE: LoginAccount = {
@@ -15,6 +15,7 @@ const DEFAULT_STATE: LoginAccount = {
     legacyRep: '0',
     attoRep: '0',
     legacyAttoRep: '0',
+    feePool: { stakedRep: '0', poolFees: '0'},
     signerBalances: {
       eth: null,
       rep: '0',
