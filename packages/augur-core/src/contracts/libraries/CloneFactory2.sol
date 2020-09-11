@@ -34,7 +34,7 @@ contract CloneFactory2 {
         }
     }
 
-    function clone2Address(address target, uint256 salt, address creator) public pure returns (address result) {
+    function clone2Address(address target, uint256 salt, address creator) public pure returns (address) {
         // convert address to bytes20 for assembly use
         bytes20 targetBytes = bytes20(target);
         uint256 bytecode;

@@ -23,6 +23,7 @@ contract AMMExchange is ERC20 {
 
     function initialize(IMarket _market, IParaShareToken _shareToken, uint256 _fee) public {
         require(cash == ICash(0)); // can only initialize once
+        require(_fee <= 1000); // fee must be [0,1000]
 
         cash = _shareToken.cash();
         shareToken = _shareToken;
@@ -37,191 +38,177 @@ contract AMMExchange is ERC20 {
     }
 
     // Adds shares to the liquidity pool by minting complete sets.
-    function addLiquidity(uint256 _sharesToBuy) external {
-        uint256 _liquidityConstant = calculateLiquidityConstant();
+    function addLiquidity(uint256 _setsToBuy) external {
+        uint256 _lpTokensGained = rateAddLiquidity(_setsToBuy);
 
-        cash.transferFrom(msg.sender, address(this), _sharesToBuy.mul(numTicks));
-        shareToken.publicBuyCompleteSets(augurMarket, _sharesToBuy);
+        cash.transferFrom(msg.sender, address(this), _setsToBuy.mul(numTicks));
+        shareToken.publicBuyCompleteSets(augurMarket, _setsToBuy);
+        _mint(msg.sender, _lpTokensGained);
+    }
 
-        uint256 _newLiquidityConstant = calculateLiquidityConstant();
+    // returns how many LP tokens you get for providing the given number of sets
+    function rateAddLiquidity(uint256 _setsToBuy) public view returns (uint256) {
+        uint256 _yesBalance = shareToken.balanceOf(address(this), YES);
+        uint256 _noBalance = shareToken.balanceOf(address(this), NO);
 
-        if (_liquidityConstant == 0) {
-            // The formula for issuing LP tokens breaks down when the supply (and therefore liquidityConstant) are zero.
-            _mint(msg.sender, _newLiquidityConstant);
+        uint256 _priorLiquidityConstant = SafeMathUint256.sqrt(_yesBalance * _noBalance);
+        uint256 _newLiquidityConstant = SafeMathUint256.sqrt((_yesBalance + _setsToBuy) * (_noBalance + _setsToBuy));
+
+        if (_priorLiquidityConstant == 0) {
+            return _newLiquidityConstant;
         } else {
             uint256 _totalSupply = totalSupply;
-            // User gains LP tokens relative to how many LP tokens were already issued, and the change in the ratio of shares in the pool.
-            // User gains more LP tokens if they are an earlier
-            _mint(msg.sender, _totalSupply.mul(_newLiquidityConstant).div(_liquidityConstant).sub(_totalSupply));
+            return _totalSupply.mul(_newLiquidityConstant).div(_priorLiquidityConstant).sub(_totalSupply);
         }
     }
 
-    // Removes shares from the liquidity pool; does not redeem complete sets for cash.
-    function removeLiquidity(uint256 _poolTokensToSell) external {
-        uint256 _poolSupply = totalSupply;
-        (uint256 _poolInvalid, uint256 _poolNo, uint256 _poolYes) = shareBalances(address(this));
-        uint256 _poolCash = cash.balanceOf(address(this));
-        uint256 _invalidShare = _poolInvalid.mul(_poolTokensToSell).div(_poolSupply);
-        uint256 _noShare = _poolNo.mul(_poolTokensToSell).div(_poolSupply);
-        uint256 _yesShare = _poolYes.mul(_poolTokensToSell).div(_poolSupply);
-        uint256 _cashShare = _poolCash.mul(_poolTokensToSell).div(_poolSupply);
+    // Removes shares from the liquidity pool.
+    // If _minSetsSold > 0 then also sell complete sets through burning and through swapping in the pool.
+    function removeLiquidity(uint256 _poolTokensToSell, uint256 _minSetsSold) external {
+        (uint256 _invalidShare, uint256 _noShare, uint256 _yesShare, uint256 _cashShare, uint256 _setsSold) = rateRemoveLiquidity(_poolTokensToSell, _minSetsSold);
+
+        require(_setsSold == 0 || _setsSold >= _minSetsSold, "AugurCP: Would not receive the minimum number of sets");
+
         _burn(msg.sender, _poolTokensToSell);
+
         shareTransfer(address(this), msg.sender, _invalidShare, _noShare, _yesShare);
+        shareToken.publicSellCompleteSets(augurMarket, _setsSold);
         cash.transfer(msg.sender, _cashShare);
         // CONSIDER: convert min(poolInvalid, poolYes, poolNo) to DAI by selling complete sets. Selling complete sets incurs Augur fees, maybe we should let the user sell the sets themselves if they want to pay the fee?
     }
 
-    // Spend cash for shares.
-    // You will receive as many shares as you can afford for the given cash.
-    // If that isn't as many shares as _minSharesReceived then this reverts.
-    function enterPosition(uint256 _amountInCash, bool _buyYes, uint256 _minSharesReceived) public returns (uint256) {
-        uint256 _setsToBuy = _amountInCash.div(numTicks);
-        uint256 _position = rateEnterPosition(_setsToBuy, _buyYes);
+    // Tells you how many shares you receive, how much cash you receive, and how many complete sets you burn for cash.
+    function rateRemoveLiquidity(uint256 _poolTokensToSell, uint256 _minSetsSold) public view returns (uint256 _invalidShare, uint256 _noShare, uint256 _yesShare, uint256 _cashShare, uint256 _setsSold) {
+        uint256 _poolSupply = totalSupply;
+        (uint256 _poolInvalid, uint256 _poolNo, uint256 _poolYes) = shareBalances(address(this));
+        uint256 _poolCash = cash.balanceOf(address(this));
 
-        require(_position >= _minSharesReceived, "AugurCP: Not enough cash to buy at least the minimum requested shares.");
+        _invalidShare = _poolInvalid.mul(_poolTokensToSell).div(_poolSupply);
+        _noShare = _poolNo.mul(_poolTokensToSell).div(_poolSupply);
+        _yesShare = _poolYes.mul(_poolTokensToSell).div(_poolSupply);
+        _cashShare = _poolCash.mul(_poolTokensToSell).div(_poolSupply);
+        _setsSold = 0;
 
-        // materialize the final result of the simulation
-        cash.transferFrom(msg.sender, address(this), _setsToBuy.mul(numTicks));
-        if (_buyYes) {
-            shareTransfer(address(this), msg.sender, _setsToBuy, 0, _position);
-        } else {
-            shareTransfer(address(this), msg.sender, _setsToBuy, _position, 0);
+        if (_minSetsSold > 0) {
+            // First, how many complete sets you have
+            _setsSold = SafeMathUint256.min(_invalidShare, SafeMathUint256.min(_noShare, _yesShare));
+            _invalidShare -= _setsSold;
+            _noShare -= _setsSold;
+            _yesShare -= _setsSold;
+            _cashShare += _setsSold.mul(numTicks);
+            // Then, how many you can make from the pool
+            (uint256 _cashFromExit, uint256 _invalidFromUser, int256 _noFromUser, int256 _yesFromUser) = rateExitPosition(_invalidShare, _noShare, _yesShare);
+            _cashShare += _cashFromExit; // extra cash from selling sets to the pool
+            _invalidShare -= _invalidFromUser; // minus the invalids spent selling sets to the pool
+            if (_noFromUser > 0) {
+                _noShare -= uint256(_noFromUser);
+            } else { // user gained some No shares when making complete sets
+                _noShare += uint256(-_noFromUser);
+            }
+            if (_yesFromUser > 0) {
+                _yesShare -= uint256(_yesFromUser);
+            } else { // user gained some No shares when making complete sets
+                _yesShare += uint256(-_yesFromUser);
+            }
         }
-
-        return _position;
     }
 
-    // How many shares you get if you buy complete sets then sell the other side.
-    function rateEnterPosition(uint256 _setsToBuy, bool _buyYes) public view returns (uint256) {
+    function enterPosition(uint256 _sharesToBuy, bool _buyYes, uint256 _maxCashCost) public returns (uint256){
+        uint256 _cashCost = rateEnterPosition(_sharesToBuy, _buyYes);
+        uint256 _setsToBuy = _cashCost.div(numTicks);
+
+        require(_cashCost <= _maxCashCost, "AugurCP: Cost to enter position is greater than specified max cash cost.");
+
+        cash.transferFrom(msg.sender, address(this), _cashCost);
+
+        if (_buyYes) {
+            shareTransfer(address(this), msg.sender, _setsToBuy, 0, _sharesToBuy);
+        } else {
+            shareTransfer(address(this), msg.sender, _setsToBuy, _sharesToBuy, 0);
+        }
+
+        return _cashCost;
+    }
+
+    // Tells you have much cash you need to acquire the shares you want.
+    function rateEnterPosition(uint256 _sharesToBuy, bool _buyYes) public view returns (uint256) {
         (uint256 _poolInvalid, uint256 _poolNo, uint256 _poolYes) = shareBalances(address(this));
 
-        // simulate the user buying complete sets directly from the exchange
-        _poolInvalid = _poolInvalid.subS(_setsToBuy, "AugurCP: The pool doesn't have enough INVALID tokens to fulfill the request.");
-        _poolNo = _poolNo.subS(_setsToBuy, "AugurCP: The pool doesn't have enough NO tokens to fulfill the request.");
-        _poolYes = _poolYes.subS(_setsToBuy, "AugurCP: The pool doesn't have enough YES tokens to fulfill the request.");
-
-        require(_poolInvalid > 0, "AugurCP: The pool doesn't have enough INVALID tokens to fulfill the request.");
-        require(_poolNo > 0, "AugurCP: The pool doesn't have enough NO tokens to fulfill the request.");
-        require(_poolYes > 0, "AugurCP: The pool doesn't have enough YES tokens to fulfill the request.");
-
-        // simulate user swapping YES to NO or NO to YES
-        uint256 _poolConstant = poolConstant(_poolYes, _poolNo);
+        uint256 _setsToBuy;
         if (_buyYes) {
-            // yesToUser + poolYes - poolConstant / (poolNo + _setsToBuy)
-            return _setsToBuy.add(_poolYes.sub(_poolConstant.div(_poolNo.add(_setsToBuy))));
-        } else {
-            return _setsToBuy.add(_poolNo.sub(_poolConstant.div(_poolYes.add(_setsToBuy))));
+            _setsToBuy = quadratic(1, -int256(_sharesToBuy.add(_poolYes).add(_poolNo)), int256(_sharesToBuy.mul(_poolNo)), _sharesToBuy);
+        } else { // buy Yes shares
+            _setsToBuy = quadratic(1, -int256(_sharesToBuy.add(_poolYes).add(_poolNo)), int256(_sharesToBuy.mul(_poolYes)), _sharesToBuy);
         }
+
+        return _setsToBuy.mul(numTicks);
     }
 
-    // If you do not have complete sets then you must have more shares than _setsToSell because you will be swapping
-    // some of them to build complete sets.
-    function exitPosition(uint256 _setsToSell, uint256 _maxSharesSwappedAway) public {
-        uint256 _cashToBuy = _setsToSell.mul(numTicks);
-        (uint256 _noFromUser, uint256 _yesFromUser) = rateExitPosition(_setsToSell);
-
-        uint256 _sharesSwappedAway = _setsToSell.mul(2).sub(_noFromUser).sub(_yesFromUser);
-        require(_sharesSwappedAway <= _maxSharesSwappedAway, "AugurCP: Could not exit position without trading away more shares than desired.");
-
-        // materialize the complete set sale for cash
-        shareTransfer(msg.sender, address(this), _setsToSell, _noFromUser, _yesFromUser);
-        cash.transfer(msg.sender, _cashToBuy);
-    }
-
+    // Exits as much of the position as possible.
 	function exitAll(uint256 _minCashPayout) external {
 		(uint256 _userInvalid, uint256 _userNo, uint256 _userYes) = shareBalances(msg.sender);
-		exitPositionShares(_userYes, _userNo, _userInvalid, _minCashPayout);
+		exitPosition(_userInvalid, _userNo, _userYes, _minCashPayout);
 	}
 
-	function exitPositionShares(uint256 _yesShares, uint256 _noShares, uint256 _invalidShares, uint256 _minCashPayout) public {
-		(uint256 _poolNo, uint256 _poolYes) = yesNoShareBalances(address(this));
-		uint256 _invalidFromUser = _invalidShares;
-		uint256 _yesFromUser = _yesShares;
-		uint256 _noFromUser = _noShares;
-		uint256 _setsToSell = _invalidShares;
+    // Sell as many of the given shares as possible, swapping yes<->no as-needed.
+    function exitPosition(uint256 _invalidShares, uint256 _noShares, uint256 _yesShares, uint256 _minCashPayout) public {
+        (uint256 _cashPayout, uint256 _invalidFromUser, int256 _noFromUser, int256 _yesFromUser) = rateExitPosition(_yesShares, _noShares, _invalidShares);
 
-		// Figure out how many shares we're buying in our synthetic swap and use that to figure out the final balance of Yes/No (setsToSell)
-		if (_yesShares > _noShares) {
-			uint256 _delta = _yesShares.sub(_noShares);
-			uint256 _noSharesToBuy = quadratic(1, -int256(_delta.add(_poolYes).add(_poolNo)), int256(_delta.mul(_poolNo)), _yesShares);
-			_setsToSell = _noShares.add(_noSharesToBuy);
-		}
-		else if (_noShares > _yesShares) {
-			uint256 _delta = _noShares.sub(_yesShares);
-			uint256 _yesSharesToBuy = quadratic(1, -int256(_delta.add(_poolYes).add(_poolNo)), int256(_delta.mul(_poolYes)), _noShares);
-			_setsToSell = _yesShares.add(_yesSharesToBuy);
-		}
+        require(_cashPayout >= _minCashPayout, "Proceeds were less than the required payout");
+        if (_noFromUser < 0) {
+            shareToken.unsafeTransferFrom(address(this), msg.sender, NO, uint256(-_noFromUser));
+            _noFromUser = 0;
+        } else if (_yesFromUser < 0) {
+            shareToken.unsafeTransferFrom(address(this), msg.sender, YES, uint256(-_yesFromUser));
+            _yesFromUser = 0;
+        }
 
-		if (_invalidShares > _setsToSell) {
-			// We have excess Invalid shares that the user will just keep.
-			_invalidFromUser = _setsToSell;
-		} else {
-			// We don't have enough Invalid to actually close out the Yes/No shares. They will be kept by the user.
-			// Need to actually receive yes or no shares here since we are swapping to get partial complete sets but dont have enough yes/no to make full complete sets
-			if (_yesShares > _noShares) {
-				uint256 _noSharesToBuy = _setsToSell.sub(_noShares);
-				shareToken.unsafeTransferFrom(address(this), msg.sender, NO, _noSharesToBuy);
-				_noFromUser = _invalidFromUser;
-				_yesFromUser = _yesShares.sub(_noShares.add(_noSharesToBuy).sub(_noFromUser));
-			} else {
-				uint256 _yesSharesToBuy = _setsToSell.sub(_yesShares);
-				shareToken.unsafeTransferFrom(address(this), msg.sender, YES, _yesSharesToBuy);
-				_yesFromUser = _invalidFromUser;
-				_noFromUser = _noShares.sub(_yesShares.add(_yesSharesToBuy).sub(_yesFromUser));
-			}
-			_setsToSell = _invalidFromUser;
-		}
-
-		uint256 _cashPayout = _setsToSell.mul(numTicks);
-		require(_cashPayout >= _minCashPayout, "Proceeds were less than the required payout");
-
-		shareTransfer(msg.sender, address(this), _invalidFromUser, _noFromUser, _yesFromUser);
+        shareTransfer(msg.sender, address(this), _invalidFromUser, uint256(_noFromUser), uint256(_yesFromUser));
         cash.transfer(msg.sender, _cashPayout);
-	}
+    }
 
-	function quadratic(int256 _a, int256 _b, int256 _c, uint256 _maximum) public returns (uint256) {
-		int256 _piece = SafeMathInt256.sqrt(_b*_b - (_a.mul(_b).mul(4)));
-		int256 _resultPlus = (-_b + _piece) / (2 * _a);
-		int256 _resultMinus = (-_b - _piece) / (2 * _a);
-		// TODO choose correct abs solution based on maximum
-		return uint256(_resultPlus);
-	}
-
-    // How many extra shares you need.
-    // Returns (no,yes) or (long,short)
-    function rateExitPosition(uint256 _setsToSell) public view returns (uint256,uint256) {
+    function rateExitAll() public view returns (uint256, uint256, int256, int256) {
         (uint256 _userInvalid, uint256 _userNo, uint256 _userYes) = shareBalances(msg.sender);
+        return rateExitPosition(_userInvalid, _userNo, _userYes);
+    }
+
+    function rateExitPosition(uint256 _invalidShares, uint256 _noShares, uint256 _yesShares) public view returns (uint256 _cashPayout, uint256 _invalidFromUser, int256 _noFromUser, int256 _yesFromUser) {
         (uint256 _poolNo, uint256 _poolYes) = yesNoShareBalances(address(this));
+        _invalidFromUser = _invalidShares;
+        _yesFromUser = int256(_yesShares);
+        _noFromUser = int256(_noShares);
+        uint256 _setsToSell = _invalidShares;
 
-        // short circuit if user is closing out their own complete sets
-        if (_userInvalid >= _setsToSell && _userNo >= _setsToSell && _userYes >= _setsToSell) {
-            return (_setsToSell, _setsToSell);
+        // Figure out how many shares we're buying in our synthetic swap and use that to figure out the final balance of Yes/No (setsToSell)
+        if (_yesShares > _noShares) {
+            uint256 _delta = _yesShares.sub(_noShares);
+            uint256 _noSharesToBuy = quadratic(1, -int256(_delta.add(_poolYes).add(_poolNo)), int256(_delta.mul(_poolNo)), _yesShares);
+            _setsToSell = _noShares.add(_noSharesToBuy);
+        } else if (_noShares > _yesShares) {
+            uint256 _delta = _noShares.sub(_yesShares);
+            uint256 _yesSharesToBuy = quadratic(1, -int256(_delta.add(_poolYes).add(_poolNo)), int256(_delta.mul(_poolYes)), _noShares);
+            _setsToSell = _yesShares.add(_yesSharesToBuy);
         }
 
-        // User can only have insufficient invalid shares if they sell them outside of the AMM.
-        require(_userInvalid >= _setsToSell, "AugurCP: You don't have enough invalid tokens to close out for this amount.");
-        require(_userNo > _setsToSell || _userYes > _setsToSell, "AugurCP: You don't have enough YES or NO tokens to close out for this amount.");
-
-        // simulate user swapping enough NO ➡ YES or YES ➡ NO to create setsToSell complete sets
-        uint256 _poolConstant = poolConstant(_poolYes, _poolNo);
-        uint256 _invalidFromUser = _setsToSell;
-        uint256 _noFromUser = 0;
-        uint256 _yesFromUser = 0;
-        if (_userYes > _userNo) {
-            uint256 _noToUser = _setsToSell.sub(_userNo);
-            uint256 _yesToPool = _poolConstant.div(_poolNo.sub(_noToUser)).sub(_poolYes);
-            require(_yesToPool <= _userYes.sub(_setsToSell), "AugurCP: You don't have enough YES tokens to close out for this amount.");
-            _noFromUser = _userNo;
-            _yesFromUser = _yesToPool + _setsToSell;
+        if (_invalidShares > _setsToSell) {
+            // We have excess Invalid shares that the user will just keep.
+            _invalidFromUser = _setsToSell;
         } else {
-            uint256 _yesToUser = _setsToSell.sub(_userYes);
-            uint256 _noToPool = _poolConstant.div(_poolYes.sub(_yesToUser)).sub(_poolNo);
-            require(_noToPool <= _userNo.sub(_setsToSell), "AugurCP: You don't have enough NO tokens to close out for this amount.");
-            _yesFromUser = _userYes;
-            _noFromUser = _noToPool + _setsToSell;
+            // We don't have enough Invalid to actually close out the Yes/No shares. They will be kept by the user.
+            // Need to actually receive yes or no shares here since we are swapping to get partial complete sets but dont have enough yes/no to make full complete sets
+            if (_yesShares > _noShares) {
+                uint256 _noSharesToBuy = _setsToSell.sub(_noShares);
+                _noFromUser = _noFromUser.sub(int256(_noSharesToBuy));
+                _yesFromUser = int256(_yesShares.sub(_noShares).sub(_noSharesToBuy).sub(_invalidShares));
+            } else {
+                uint256 _yesSharesToBuy = _setsToSell.sub(_yesShares);
+                _yesFromUser = _yesFromUser.sub(int256(_yesSharesToBuy));
+                _noFromUser = int256(_noShares.sub(_yesShares.add(_yesSharesToBuy).sub(_invalidShares)));
+            }
+            _setsToSell = _invalidFromUser;
         }
 
-        return (_noFromUser, _yesFromUser);
+        _cashPayout = _setsToSell.mul(numTicks);
     }
 
     function swap(uint256 _inputShares, bool _inputYes, uint256 _minOutputShares) external returns (uint256) {
@@ -249,10 +236,6 @@ contract AMMExchange is ERC20 {
         } else {
             return _poolYes.sub(_poolConstant.div(_poolNo.add(_inputShares)));
         }
-    }
-
-    function calculateLiquidityConstant() public view returns (uint256) {
-        return SafeMathUint256.sqrt(shareToken.balanceOf(address(this), YES) * shareToken.balanceOf(address(this), NO));
     }
 
     // When swapping (which includes entering and exiting positions), a fee is taken.
@@ -319,6 +302,21 @@ contract AMMExchange is ERC20 {
             _amounts[2] = _yesAmount;
         }
         shareToken.unsafeBatchTransferFrom(_from, _to, _tokenIds, _amounts);
+    }
+
+    function quadratic(int256 _a, int256 _b, int256 _c, uint256 _maximum) internal pure returns (uint256) {
+        int256 _piece = SafeMathInt256.sqrt(_b*_b - (_a.mul(_c).mul(4)));
+        int256 _resultPlus = (-_b + _piece) / (2 * _a);
+        int256 _resultMinus = (-_b - _piece) / (2 * _a);
+
+        // Choose correct answer based on maximum.
+        if (_resultMinus < 0) _resultMinus = -_resultMinus;
+        if (_resultPlus < 0) _resultPlus = -_resultPlus;
+        if (_resultPlus > int256(_maximum)) {
+            return uint256(_resultMinus);
+        } else {
+            return uint256(_resultPlus);
+        }
     }
 
     function onTokenTransfer(address _from, address _to, uint256 _value) internal {}

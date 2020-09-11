@@ -9,6 +9,7 @@ interface IParaShareToken {
     function augur() external view returns (address);
     function approveUniverse(IParaUniverse _paraUniverse) external;
     function buyCompleteSets(IMarket _market, address _account, uint256 _amount) external returns (bool);
+    function publicSellCompleteSets(IMarket _market, uint256 _amount) external returns (uint256 _creatorFee, uint256 _reportingFee);
     function publicBuyCompleteSets(IMarket _market, uint256 _amount) external returns (bool);
     function getTokenId(IMarket _market, uint256 _outcome) external pure returns (uint256 _tokenId);
     function unsafeTransferFrom(address _from, address _to, uint256 _id, uint256 _value) external;

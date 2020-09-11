@@ -430,7 +430,7 @@ class ContractsFixture:
                 if name == 'Time': continue # In testing and development we swap the Time library for a ControlledTime version which lets us manage block timestamp
                 if name == 'ReputationTokenFactory': continue # In testing and development we use the TestNetReputationTokenFactory which lets us faucet
                 if name == 'Cash': continue # We upload the Test Dai contracts manually after this process
-                if name in ['ParaAugur', 'FeePot', 'ParaUniverse', 'ParaAugurTrading','AMMExchange']: continue # We upload ParaAugur explicitly and the others are generated via contract
+                if name in ['ParaAugur', 'FeePot', 'ParaUniverse', 'ParaAugurTrading','AMMExchange', 'AMMFactory']: continue # We upload ParaAugur explicitly and the others are generated via contract
                 if name in ['IAugur', 'IDisputeCrowdsourcer', 'IDisputeWindow', 'IUniverse', 'IMarket', 'IReportingParticipant', 'IReputationToken', 'IOrders', 'IShareToken', 'Order', 'IInitialReporter']: continue # Don't compile interfaces or libraries
                 # TODO these four are necessary for test_universe but break everything else
                 # if name == 'MarketFactory': continue # tests use mock
@@ -456,7 +456,12 @@ class ContractsFixture:
     def uploadERC20Proxy1155(self):
         masterProxy = self.upload("../src/contracts/trading/erc20proxy1155/ERC20Proxy1155.sol")
         shareToken = self.contracts["ShareToken"]
-        self.upload("../src/contracts/trading/erc20proxy1155/ERC20Proxy1155Nexus.sol", None, None, [masterProxy.address, shareToken.address])
+        self.upload("../src/contracts/trading/erc20proxy1155/ERC20Proxy1155Nexus.sol", constructorArgs=[masterProxy.address, shareToken.address])
+
+    def uploadAMMContracts(self):
+        self.amm_fee = 3 # 3/1000
+        masterProxy = self.upload('../src/contracts/para/AMMExchange.sol')
+        self.upload('../src/contracts/para/AMMFactory.sol', constructorArgs=[masterProxy.address, self.amm_fee])
 
     def upload0xContracts(self):
         chainId = 123456
@@ -737,6 +742,7 @@ def augurInitializedSnapshot(fixture, baseSnapshot):
     fixture.uploadUniswapContracts()
     fixture.initializeAllContracts()
     fixture.uploadERC20Proxy1155()
+    fixture.uploadAMMContracts()
     fixture.doAugurTradingApprovals()
     fixture.approveCentralAuthority()
     return fixture.createSnapshot()
@@ -751,6 +757,7 @@ def kitchenSinkSnapshot(fixture, augurInitializedSnapshot):
     shareToken = fixture.contracts['ShareToken']
     augur = fixture.contracts['Augur']
     paraAugurCash = fixture.contracts['ParaAugurCash']
+    paraShareToken = fixture.contracts['ParaShareToken']
     fixture.distributeRep(universe)
 
     if fixture.subFork:
@@ -772,6 +779,7 @@ def kitchenSinkSnapshot(fixture, augurInitializedSnapshot):
     snapshot['universe'] = universe
     snapshot['cash'] = cash
     snapshot['paraAugurCash'] = paraAugurCash
+    snapshot['paraShareToken'] = paraShareToken
     snapshot['shareToken'] = shareToken
     snapshot['augur'] = augur
     snapshot['yesNoMarket'] = yesNoMarket
@@ -792,12 +800,13 @@ def universe(kitchenSinkFixture, kitchenSinkSnapshot):
 
 @pytest.fixture
 def cash(kitchenSinkFixture, kitchenSinkSnapshot):
-    cashAddress = kitchenSinkSnapshot['paraAugurCash'].address if kitchenSinkFixture.paraAugur else kitchenSinkSnapshot['cash'].address
-    return kitchenSinkFixture.applySignature(None, cashAddress, kitchenSinkSnapshot['cash'].abi)
+    cash = kitchenSinkSnapshot['paraAugurCash'] if kitchenSinkFixture.paraAugur else kitchenSinkSnapshot['cash']
+    return kitchenSinkFixture.applySignature(None, cash.address, cash.abi)
 
 @pytest.fixture
 def shareToken(kitchenSinkFixture, kitchenSinkSnapshot):
-    return kitchenSinkFixture.applySignature(None, kitchenSinkSnapshot['shareToken'].address, kitchenSinkSnapshot['shareToken'].abi)
+    shareToken = kitchenSinkSnapshot['paraShareToken'] if kitchenSinkFixture.paraAugur else kitchenSinkSnapshot['shareToken']
+    return kitchenSinkFixture.applySignature(None, shareToken.address, shareToken.abi)
 
 @pytest.fixture
 def augur(kitchenSinkFixture, kitchenSinkSnapshot):

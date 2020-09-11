@@ -122,6 +122,7 @@ export const EXTERNAL_CONTRACTS = [
     'ERC20Proxy1155Nexus',
     // AMM
     'AMMExchange',
+    'AMMFactory',
 ];
 
 export const REGISTERED_EXTERNAL_CONTRACTS = [

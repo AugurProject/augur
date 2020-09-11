@@ -180,6 +180,7 @@ Deploying to: ${env}
         }
 
         await this.uploadERC20Proxy1155Contracts();
+        await this.uploadAMMContracts();
 
         await this.initializeAllContracts();
         await this.doTradingApprovals();
@@ -312,9 +313,13 @@ Deploying to: ${env}
 
         mapping['OICash'] = this.contracts.get('OICash').address!;
         mapping['AugurWalletRegistry'] = this.contracts.get('AugurWalletRegistry').address!;
+
+        mapping['AMMFactory'] = this.contracts.get('AMMFactory').address!;
+
         for (let contract of this.contracts) {
             if (/^I[A-Z].*/.test(contract.contractName)) continue;
             if (contract.contractName === 'ERC20Proxy1155') continue;
+            if (contract.contractName === 'AMMExchange') continue;
             if (contract.contractName === 'TimeControlled') continue;
             if (contract.contractName === 'Universe') continue;
             if (contract.contractName === 'ReputationToken') continue;
@@ -510,6 +515,16 @@ Deploying to: ${env}
         return nexus.address;
     }
 
+    // fee is thousandths of a percent; valid values are [0,1000]
+    private async uploadAMMContracts(fee = 3): Promise<string> {
+        console.log('Uploading AMM contracts');
+        const factory = this.contracts.get('AMMFactory');
+        const masterProxy = this.contracts.get('AMMExchange');
+        masterProxy.address = await this.construct(masterProxy, []);
+        factory.address = await this.construct(factory, [masterProxy.address, fee]);
+        return factory.address;
+    }
+
     private async uploadAllContracts(): Promise<void> {
         console.log('Uploading contracts...');
 
@@ -549,6 +564,8 @@ Deploying to: ${env}
         if (contractName === 'USDT') return;
         if (contractName === 'ERC20Proxy1155') return;
         if (contractName === 'ERC20Proxy1155Nexus') return;
+        if (contractName === 'AMMExchange') return;
+        if (contractName === 'AMMFactory') return;
         // 0x
         if ([
           'ERC20Proxy',
@@ -595,7 +612,7 @@ Deploying to: ${env}
         }
     }
 
-    private async construct(contract: ContractData, constructorArgs: string[]): Promise<string> {
+    private async construct(contract: ContractData, constructorArgs: Array<string|number>): Promise<string> {
         console.log(`Upload contract: ${contract.contractName}`);
         const factory = new ethers.ContractFactory(contract.abi, contract.bytecode, this.signer);
         const contractObj = await factory.deploy(...constructorArgs);
@@ -873,11 +890,14 @@ Deploying to: ${env}
         if (this.contracts.get('TimeControlled')) mapping['TimeControlled'] = this.contracts.get('TimeControlled').address;
         if (this.contracts.get('Time')) mapping['Time'] = this.contracts.get('Time').address;
 
+        if (this.contracts.get('AMMFactory')) mapping['AMMFactory'] = this.contracts.get('AMMFactory').address;
+
         for (const contract of this.contracts) {
             if (!contract.relativeFilePath.startsWith('trading/')) continue;
             if (/^I[A-Z].*/.test(contract.contractName)) continue;
             if (contract.contractName === 'ZeroXTradeToken') continue;
             if (contract.contractName === 'ERC20Proxy1155') continue;
+            if (contract.contractName === 'AMMExchange') continue;
             if (contract.address === undefined) throw new Error(`${contract.contractName} not uploaded.`);
             mapping[contract.contractName] = contract.address;
         }

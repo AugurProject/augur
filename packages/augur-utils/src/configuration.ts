@@ -192,6 +192,9 @@ export interface ContractAddresses extends TradingAddresses {
   // Para
   OINexus?: string;
   HotLoadingUniversal?: string;
+
+  // AMM
+  AMMFactory?: string;
 }
 
 export interface ParaAddresses extends TradingAddresses {
