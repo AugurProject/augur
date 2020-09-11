@@ -56,6 +56,8 @@ export const MALFORMED_OUTCOME = 'malformed outcome';
 // # Asset Types
 export const ETH = 'ETH';
 export const REP = 'REP';
+export const SREP = 'SREP';
+export const GREP = 'GREP';
 export const DAI = 'DAI';
 export const USDT = 'USDT';
 export const USDC = 'USDC';
@@ -605,7 +607,7 @@ export const MODAL_ACCOUNT_APPROVAL = 'MODAL_ACCOUNT_APPROVAL';
 export const MODAL_CLAIM_REPORTING_FEES_FORKED_MARKET =
   'MODAL_CLAIM_REPORTING_FEES_FORKED_MARKET';
 export const MODAL_CLAIM_FEES = 'MODAL_CLAIM_FEES';
-export const MODAL_PARTICIPATE = 'MODAL_PARTICIPATE';
+export const MODAL_STAKE_TOKENS = 'MODAL_STAKE_TOKENS';
 export const MODAL_NETWORK_DISABLED = 'MODAL_NETWORK_DISABLED';
 export const MODAL_DISCLAIMER = 'MODAL_DISCLAIMER';
 export const MODAL_CONFIRM = 'MODAL_CONFIRM';
@@ -764,7 +766,7 @@ export const SETREFERRER = 'SETREFERRER'
 export const SETAPPROVALFORALL = 'SETAPPROVALFORALL'
 export const WRAP_ETH = 'DEPOSIT';
 export const UNWRAP_ETH = 'WITHDRAW';
-
+export const STAKE = 'STAKE';
 // # Orders/Trade Constants
 export const ORDER_BOOK_TABLE = 'ORDER_BOOK_TABLE';
 export const ORDER_BOOK_CHART = 'ORDER_BOOK_CHART';

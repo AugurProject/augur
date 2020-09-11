@@ -1,5 +1,7 @@
 import { updateLoginAccount } from 'modules/account/actions/login-account';
 import {
+  feePoolBalance,
+  getEarnedFeesOf,
   loadAccountData_exchangeRates,
 } from 'modules/contracts/actions/contractCalls';
 import { AppState } from 'appStore';
@@ -18,6 +20,7 @@ import { createBigNumber } from 'utils/create-big-number';
 import { ETHER, WALLET_STATUS_VALUES, FIVE, ZERO, GWEI_CONVERSION } from 'modules/common/constants';
 import { formatAttoDai } from 'utils/format-number';
 import { augurSdk } from 'services/augursdk';
+import { FeePoolBalances } from 'modules/types';
 
 
 export const updateAssets = (): ThunkAction<any, any, any, any> => async (
@@ -27,7 +30,7 @@ export const updateAssets = (): ThunkAction<any, any, any, any> => async (
   const { loginAccount, appStatus, env, gasPriceInfo } = getState();
   const { meta } = loginAccount;
   const nonSafeWallet = await meta.signer?.getAddress();
-
+  const feePool = await getFeePoolBalances(nonSafeWallet);
   // temp call to get user weth balance
   const { contracts } = augurSdk.get();
   const wethBalance = await contracts.weth.balanceOf_(nonSafeWallet);
@@ -73,6 +76,7 @@ export const updateAssets = (): ThunkAction<any, any, any, any> => async (
           legacyRep: String(
             createBigNumber(String(signerLegacyREP)).dividedBy(ETHER)
           ),
+          feePool,
           signerBalances: {
             eth: signerEthBalance,
             weth,
@@ -93,3 +97,11 @@ export const updateAssets = (): ThunkAction<any, any, any, any> => async (
     }
   }
 };
+
+
+const getFeePoolBalances = async (account: string): Promise<FeePoolBalances> => {
+  const stake = await feePoolBalance(account);
+  const feesEarned = await getEarnedFeesOf(account);
+
+  return { stakedRep: stake, poolFees: feesEarned };
+}

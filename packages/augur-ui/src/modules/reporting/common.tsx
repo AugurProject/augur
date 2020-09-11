@@ -21,7 +21,7 @@ import {
   MODAL_INITIALIZE_ACCOUNT,
   WARNING,
   WALLET_STATUS_VALUES,
-  GWEI_CONVERSION,
+  GWEI_CONVERSION,, STAKE
 } from 'modules/common/constants';
 import {
   FormattedNumber,
@@ -1281,6 +1281,14 @@ export class UserRepDisplay extends Component<
                   useFull
                   useValueLabel
                 />
+                <LinearPropertyLabel
+                  key="stakedrep"
+                  label="Staked SREP"
+                  value={participationAmountFormatted}
+                  showDenomination
+                  useFull
+                  useValueLabel
+                />
               </div>
             </>
           )}
@@ -1291,7 +1299,6 @@ export class UserRepDisplay extends Component<
 }
 
 export interface FeePoolViewProps {
-  openModal: Function;
   openClaimParticipationTokensModal: Function;
   disputeWindowFees: FormattedNumber;
   purchasedParticipationTokens: FormattedNumber;
@@ -1301,13 +1308,19 @@ export interface FeePoolViewProps {
   participationTokensClaimableFees: FormattedNumber;
   disablePurchaseButton: boolean;
   hasRedeemable: boolean;
+  openStakeRepModal: Function;
+  openStakeSrepModal: Function;
+  openClaimFeesModal: Function;
+  openExitFeePoolModal: Function;
+  openUnstakeSrepModal: Function;
 }
 
 export const FeePoolView = (
   props: FeePoolViewProps
 ) => {
   const {
-    openModal,
+    openStakeRepModal,
+    openStakeSrepModal,
     openClaimParticipationTokensModal,
     disputeWindowFees,
     purchasedParticipationTokens,
@@ -1316,7 +1329,9 @@ export const FeePoolView = (
     pastParticipationTokensPurchased,
     participationTokensClaimableFees,
     disablePurchaseButton,
-    hasRedeemable,
+    openClaimFeesModal,
+    openExitFeePoolModal,
+    openUnstakeSrepModal,
   } = props;
 
   return (
@@ -1362,15 +1377,15 @@ export const FeePoolView = (
       <ProcessingButton
         disabled={disablePurchaseButton}
         text="Stake REP"
-        action={openModal}
+        action={openStakeRepModal}
         queueName={TRANSACTIONS}
-        queueId={BUYPARTICIPATIONTOKENS}
+        queueId={STAKE}
       />
       <ProcessingButton
         secondaryButton
         disabled={disablePurchaseButton}
         text="Claim Fees"
-        action={openModal}
+        action={openClaimFeesModal}
         queueName={TRANSACTIONS}
         queueId={BUYPARTICIPATIONTOKENS}
       />
@@ -1378,7 +1393,7 @@ export const FeePoolView = (
         secondaryButton
         disabled={disablePurchaseButton}
         text="Unstake & Claim Fees"
-        action={openModal}
+        action={openExitFeePoolModal}
         queueName={TRANSACTIONS}
         queueId={BUYPARTICIPATIONTOKENS}
       />
@@ -1407,14 +1422,14 @@ export const FeePoolView = (
       />
       <ProcessingButton
         text="Stake SREP"
-        action={openClaimParticipationTokensModal}
+        action={openStakeSrepModal}
         queueName={TRANSACTIONS}
-        queueId={REDEEMSTAKE}
+        queueId={STAKE}
       />
       <ProcessingButton
         secondaryButton
         text="Unstake"
-        action={openClaimParticipationTokensModal}
+        action={openUnstakeSrepModal}
         queueName={TRANSACTIONS}
         queueId={REDEEMSTAKE}
       />

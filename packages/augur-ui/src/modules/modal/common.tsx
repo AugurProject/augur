@@ -337,6 +337,18 @@ export const DescriptionMessage = (props: DescriptionMessageProps) => (
   </div>
 );
 
+interface MaxDescriptionProps {
+  label: string;
+  max: Function;
+  balance: string;
+}
+export const MaxDescription = ({label, max, balance }: MaxDescriptionProps) => (
+  <div className={Styles.SetMaxDescription}>
+    <span>{label}</span>
+    <span onClick={() => max()}>{balance}</span>
+  </div>
+);
+
 export const Subheader = (props: SubheaderProps) => (
   <div className={Styles.Subheader}>
     <span>{props.subheaderContent.header}</span>
