@@ -10027,6 +10027,25 @@ export class ParaUniverse<TBigNumber> extends Contract<TBigNumber> {
 		return <TBigNumber>result[0]
 	}
 
+	public getOrCacheMarketRepBond = async (options?: { sender?: string }): Promise<Array<Event>> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":false,"inputs":[],"name":"getOrCacheMarketRepBond","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"payable":false,"stateMutability":"nonpayable","type":"function"}
+		return await this.remoteCall(abi, [], 'getOrCacheMarketRepBond', options.sender)
+	}
+	
+	public getOrCacheMarketRepBond_estimateGas = async (options?: { sender?: string }): Promise<TBigNumber> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":false,"inputs":[],"name":"getOrCacheMarketRepBond","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"payable":false,"stateMutability":"nonpayable","type":"function"}
+		return await this.estimateGas(abi, [], 'getOrCacheMarketRepBond', options.sender)
+	}
+
+	public getOrCacheMarketRepBond_ = async (options?: { sender?: string }): Promise<TBigNumber> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":false,"inputs":[],"name":"getOrCacheMarketRepBond","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"payable":false,"stateMutability":"nonpayable","type":"function"}
+		const result = await this.localCall(abi, [], options.sender)
+		return <TBigNumber>result[0]
+	}
+
 	public getOrCacheReportingFeeDivisor = async (options?: { sender?: string }): Promise<Array<Event>> => {
 		options = options || {}
 		const abi: AbiFunction = {"constant":false,"inputs":[],"name":"getOrCacheReportingFeeDivisor","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"payable":false,"stateMutability":"nonpayable","type":"function"}

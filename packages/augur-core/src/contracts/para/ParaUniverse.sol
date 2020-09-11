@@ -284,4 +284,8 @@ contract ParaUniverse is Initializable, IParaUniverse {
     function getOrCacheValidityBond() public returns (uint256) {
         return originUniverse.getOrCacheValidityBond();
     }
+
+    function getOrCacheMarketRepBond() public returns (uint256) {
+        return originUniverse.getOrCacheMarketRepBond();
+    }
 }
