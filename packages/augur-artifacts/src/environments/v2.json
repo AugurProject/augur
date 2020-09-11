@@ -155,22 +155,22 @@
   "paraDeploys": {
     "0xf68B100D9Acd8421F7f04E4548a604Ff3f0254E4": {
       "name": "WETH",
-      "uploadBlockNumber": 20833771,
+      "uploadBlockNumber": 20850080,
       "addresses": {
-        "Augur": "0x3082c1b9E62a9f34608BAB53202005D797251C69",
-        "AugurTrading": "0x8C84C55068E9730c35D798AB56aAE86e1a726889",
-        "Universe": "0x2b8506f832AB032cBAbE0BC086883a925A0c47E2",
+        "Augur": "0xD3475Ef17aA02CB534c1320717338D25C921d12D",
+        "AugurTrading": "0x69351ebF2e58da528Fd429411c180F41189203d0",
+        "Universe": "0x1bB4d8638E773eeE3b57fB4D27CcAb59Cf680977",
         "Cash": "0xf68B100D9Acd8421F7f04E4548a604Ff3f0254E4",
-        "ShareToken": "0xA2eD20e3e6CC5174726d9f4c63afc7D2e1467D09",
-        "OICash": "0x1813713136A4D0f554c78Fd5350aF675d6Cc5783",
-        "CancelOrder": "0xf5128D8e45AfB6f1F987ea461B748cFB9F284763",
-        "CreateOrder": "0x10246315649E8d704B52fa34DEcFD9E59A9B637f",
-        "FillOrder": "0x7959f7FdccDA4c7bb9CBc0618A9ADA63b68A5351",
-        "Orders": "0x5752031a75efe7Fd22EAb9f58b0E945ad0E52fef",
-        "Trade": "0x473948d526ecD8a4833fd94DB6Da4e765Ad50206",
-        "SimulateTrade": "0x597773b9445CE206E09007f9a7F233C56490344C",
-        "ZeroXTrade": "0xFb9763c384b29e1b93c6b7B88eFEEB47916d76b5",
-        "ProfitLoss": "0x34629eda745fb82A962B4dc9c9fb8509b8ab4dd3"
+        "ShareToken": "0x3eA16380e152cD8BdC69f5167909F1a41710079d",
+        "OICash": "0x4bb0dA1aC0Fb2Ad1aD37D13F328147BFC3aFe51e",
+        "CancelOrder": "0xaf821a455D5AEcC4341cCa448a41140285B686e0",
+        "CreateOrder": "0xF16C30E0AE8e048ea5714B8998D43BF346618BE1",
+        "FillOrder": "0x5915A2Fbe674e77e6FE673FC6Aad000C32E860F2",
+        "Orders": "0x59B57CD6aBDF79cc4836C63b095943e13Ea45B5E",
+        "Trade": "0xfe1e2bC9e6dDc5d6b6ca8E813957573b7cE938Df",
+        "SimulateTrade": "0x57D3b44515f06ac9A166d5Cd310dC8C1Cc0d43B2",
+        "ZeroXTrade": "0xed946129e8d406704c0560F3d97Ca897Eb170A94",
+        "ProfitLoss": "0xe4E0932FEB59f62A79bf53F255C99beFEDC3eC74"
       }
     }
   }
