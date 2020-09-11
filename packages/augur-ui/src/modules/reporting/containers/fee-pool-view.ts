@@ -1,7 +1,7 @@
 import { connect } from 'react-redux';
 import { FeePoolView } from 'modules/reporting/common';
 import { updateModal } from 'modules/modal/actions/update-modal';
-import { MODAL_CLAIM_FEES, MODAL_STAKE_TOKENS, REP, SREP, ZERO } from 'modules/common/constants';
+import { ETH, MODAL_ADD_FUNDS, MODAL_CLAIM_FEES, MODAL_STAKE_TOKENS, REP, SREP, ZERO } from 'modules/common/constants';
 import { formatAttoDai, formatAttoRep, formatPercent, formatRep, } from 'utils/format-number';
 import { createBigNumber } from 'utils/create-big-number';
 import { AppState } from 'appStore';
@@ -55,12 +55,14 @@ const mapStateToProps = (state: AppState) => {
     disablePurchaseButton,
     hasRedeemable,
     balances,
+    account: state.loginAccount.address,
   };
 };
 
 const mapDispatchToProps = dispatch => ({
   openModal: (modal) => dispatch(updateModal({ type: MODAL_STAKE_TOKENS, modal })),
-  openClaimParticipationTokensModal: () => dispatch(updateModal({type: MODAL_CLAIM_FEES, participationTokensOnly: true}))
+  openClaimParticipationTokensModal: () => dispatch(updateModal({type: MODAL_CLAIM_FEES, participationTokensOnly: true})),
+  showAddFundsModal: () => dispatch(updateModal({ type: MODAL_ADD_FUNDS, tokenToAdd: ETH })),
 });
 
 
@@ -82,6 +84,7 @@ const mergeProps = (sP: any, dP: any, oP: any) => {
     openClaimFeesModal: () => dP.openClaimParticipationTokensModal(),
     openExitFeePoolModal: () => dP.openClaimParticipationTokensModal(),
     openUnstakeSrepModal: () => dP.openClaimParticipationTokensModal(),
+    openExitUnstakeGovModal: () => dP.openClaimParticipationTokensModal(),
   }
 };
 

@@ -21,7 +21,7 @@ import {
   MODAL_INITIALIZE_ACCOUNT,
   WARNING,
   WALLET_STATUS_VALUES,
-  GWEI_CONVERSION,, STAKE
+  GWEI_CONVERSION,, STAKE, APPROVE, ETH, APPROVE_GAS_ESTIMATE
 } from 'modules/common/constants';
 import {
   FormattedNumber,
@@ -44,7 +44,7 @@ import {
   RepBalance,
   MovementLabel,
   InReportingLabel,
-  TransactionFeeLabel,
+  TransactionFeeLabel,, ApprovalTxButtonLabel
 } from 'modules/common/labels';
 import { ButtonActionType } from 'modules/types';
 import {
@@ -66,7 +66,7 @@ import {
   convertAttoValueToDisplayValue,
 } from '@augurproject/sdk-lite';
 import { calculatePosition } from 'modules/market/components/market-scalar-outcome-display/market-scalar-outcome-display';
-import { getRepThresholdForPacing } from 'modules/contracts/actions/contractCalls';
+import { approveFeePool, getRepThresholdForPacing, hasApprovedFeePool } from 'modules/contracts/actions/contractCalls';
 import MarketTitle from 'modules/market/containers/market-title';
 import { AppState } from 'appStore/index';
 import { isGSNUnavailable } from 'modules/app/selectors/is-gsn-unavailable';
@@ -1313,15 +1313,16 @@ export interface FeePoolViewProps {
   openClaimFeesModal: Function;
   openExitFeePoolModal: Function;
   openUnstakeSrepModal: Function;
+  openExitUnstakeGovModal: Function;
+  account: string;
+  showAddFundsModal: Function;
+  balances: AccountBalances
 }
 
 export const FeePoolView = (
-  props: FeePoolViewProps
-) => {
-  const {
+  {
     openStakeRepModal,
     openStakeSrepModal,
-    openClaimParticipationTokensModal,
     disputeWindowFees,
     purchasedParticipationTokens,
     tokensOwned,
@@ -1332,7 +1333,12 @@ export const FeePoolView = (
     openClaimFeesModal,
     openExitFeePoolModal,
     openUnstakeSrepModal,
-  } = props;
+    openExitUnstakeGovModal,
+    account,
+    showAddFundsModal,
+    balances,
+  }: FeePoolViewProps
+) => {
 
   return (
     <div className={Styles.FeePoolView}>
@@ -1374,6 +1380,18 @@ export const FeePoolView = (
         tooltipText="The fee's own because of percentage of staked REPv2 in the fee pool"
       />
 
+      <ApprovalTxButtonLabel
+        className={Styles.ApprovalNotice}
+        title={'One time approval needed'}
+        buttonName={'Approve'}
+        userEthBalance={String(balances.eth)}
+        gasPrice={APPROVE_GAS_ESTIMATE}
+        checkApprovals={hasApprovedFeePool}
+        doApprovals={() => approveFeePool(account)}
+        account={account}
+        approvalType={APPROVE}
+        addFunds={() => showAddFundsModal({ tokenToAdd: ETH })}
+      />
       <ProcessingButton
         disabled={disablePurchaseButton}
         text="Stake REP"
@@ -1398,7 +1416,8 @@ export const FeePoolView = (
         queueId={BUYPARTICIPATIONTOKENS}
       />
       <section />
-
+      {false /* TODO: when governance comes in wire this up */&&
+      <>
       <h3>Governance</h3>
       <span>
       You can stake your <b>SREP</b> to get Governance REP (<b>GREP</b>) which can be used for voting power.
@@ -1428,11 +1447,20 @@ export const FeePoolView = (
       />
       <ProcessingButton
         secondaryButton
-        text="Unstake"
+        text="Claim GREP"
         action={openUnstakeSrepModal}
         queueName={TRANSACTIONS}
         queueId={REDEEMSTAKE}
       />
+      <ProcessingButton
+        secondaryButton
+        text="Unstake & Claim GREP"
+        action={openExitUnstakeGovModal}
+        queueName={TRANSACTIONS}
+        queueId={REDEEMSTAKE}
+      />
+      </>
+      }
     </div>
   );
 };

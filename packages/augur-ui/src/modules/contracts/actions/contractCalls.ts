@@ -1350,6 +1350,18 @@ export async function loadAccountData_exchangeRates(account: string) {
   return values;
 }
 
+export async function hasApprovedFeePool(account: string): Promise<boolean> {
+  const feePool = await getFeePool();
+  const approved = checkTokenApproval(account, feePool.address);
+  return approved;
+}
+
+export async function approveFeePool(account: string): Promise<void> {
+  const feePool = await getFeePool();
+  return setTokenApproval(account, feePool.address);
+}
+
+
 export async function feePoolBalance(account: string): Promise<string> {
   const feePool = await getFeePool();
   const balance = await feePool.balanceOf_(account);
@@ -1359,7 +1371,6 @@ export async function feePoolBalance(account: string): Promise<string> {
 export async function getEarnedFeesOf(account: string): Promise<string> {
   const feePool = await getFeePool();
   const amount = await feePool.earnedFeesOf_(account);
-  console.log('fees earned', String(amount));
   return String(amount);
 }
 
@@ -1389,6 +1400,7 @@ interface IFeePot {
     stake: Function;
     earnedFeesOf_: Function;
     balanceOf_: Function;
+    address: string;
 }
 
 async function getFeePool(): Promise<IFeePot> {

@@ -131,7 +131,10 @@ export const ModalStaking = ({
 
   const buttons = [{
     text: 'Stake',
-    action: () => submitForm(),
+    action: () => {
+      submitForm();
+      closeModal();
+    },
     disabled: !isValid,
   }, {
     text: 'Cancel',
