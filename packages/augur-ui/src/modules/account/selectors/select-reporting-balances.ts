@@ -54,10 +54,10 @@ export const selectReportingBalances = createSelector(
       .plus(createBigNumber(disputingAmountFormatted.value));
     const repTotalAmountStakedFormatted = formatRep(repTotalAmountStaked);
 
-    const feePoolStakedRep = accountBalances.feePool.stakedRep;
+    const feePoolStakedRep = accountBalances.feePool.userStakedRep;
 
     // TODO: wire this up when governance contracts are in
-    const govStakedSrep = '0';
+    const stakedSrep = '0';
     return {
       repBalanceFormatted,
       repProfitLossPercentageFormatted,
@@ -68,7 +68,7 @@ export const selectReportingBalances = createSelector(
       repTotalAmountStakedFormatted,
       hasStakedRep,
       feePoolStakedRep,
-      govStakedSrep,
+      stakedSrep,
     };
   }
 );
@@ -84,6 +84,7 @@ export const selectDefaultReportingBalances = () => {
   const reportingAmountFormatted = formatAttoRep(ZERO);
   const disputingAmountFormatted = formatAttoRep(ZERO);
   const repTotalAmountStakedFormatted = formatAttoRep(ZERO);
+  const stakedSrep = formatAttoRep(ZERO);
 
   return {
     repBalanceFormatted,
@@ -93,5 +94,6 @@ export const selectDefaultReportingBalances = () => {
     reportingAmountFormatted,
     participationAmountFormatted,
     repTotalAmountStakedFormatted,
+    stakedSrep
   };
 };

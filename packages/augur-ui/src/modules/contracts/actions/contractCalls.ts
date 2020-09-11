@@ -38,6 +38,7 @@ import {
   ACCOUNT_ACTIVATION_GAS_COST,
   DISPUTE_GAS_COST,
 } from 'modules/common/constants';
+import { resolutionRules } from 'modules/create-market/components/common.styles.less';
 import { constructMarketParams } from 'modules/create-market/helpers/construct-market-params';
 import {
   CreateMarketData,
@@ -124,12 +125,13 @@ export async function isRepV2Approved(account): Promise<boolean> {
   }
 }
 
+const allowance = createBigNumber(99999999999999999999).times(
+  TEN_TO_THE_EIGHTEENTH_POWER
+);
+
 export async function convertV1ToV2Approve() {
   const { contracts } = augurSdk.get();
 
-  const allowance = createBigNumber(99999999999999999999).times(
-    TEN_TO_THE_EIGHTEENTH_POWER
-  );
   let response = null;
   try {
     const getReputationToken = await contracts.universe.getReputationToken_();
@@ -153,9 +155,6 @@ export async function convertV1ToV2() {
 
 export async function convertV1ToV2_estimate() {
   const { contracts } = augurSdk.get();
-  const allowance = createBigNumber(99999999999999999999).times(
-    TEN_TO_THE_EIGHTEENTH_POWER
-  );
 
   let approvalGas = ZERO;
   let migrationGas = ZERO;
@@ -1350,15 +1349,25 @@ export async function loadAccountData_exchangeRates(account: string) {
   return values;
 }
 
-export async function hasApprovedFeePool(account: string): Promise<boolean> {
+export async function hasApprovedFeePool(account: string): Promise<number> {
+  const { contracts } = augurSdk.get();
   const feePool = await getFeePool();
-  const approved = checkTokenApproval(account, feePool.address);
-  return approved;
+  const currentAllowance = await contracts.reputationToken.allowance_(
+    account,
+    feePool.address
+  );
+  let approvalsNeeded = 1;
+  if (currentAllowance.gt(0)) {
+    approvalsNeeded = 0;
+  }
+  return approvalsNeeded;
 }
 
-export async function approveFeePool(account: string): Promise<void> {
+export async function approveFeePool(): Promise<void> {
+  const { contracts } = augurSdk.get();
   const feePool = await getFeePool();
-  return setTokenApproval(account, feePool.address);
+  const result = await contracts.reputationToken.approve(feePool.address, allowance);
+  return result;
 }
 
 

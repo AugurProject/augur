@@ -7,6 +7,7 @@ import { createBigNumber } from 'utils/create-big-number';
 import { AppState } from 'appStore';
 
 const mapStateToProps = (state: AppState) => {
+  const gasPrice = state.gasPriceInfo.userDefinedGasPrice || state.gasPriceInfo.average;
   const isLoggedIn = state.authStatus.isLogged;
   const { address, fees, purchased } =
     state.universe && state.universe.disputeWindow;
@@ -56,6 +57,8 @@ const mapStateToProps = (state: AppState) => {
     hasRedeemable,
     balances,
     account: state.loginAccount.address,
+    isLoggedIn,
+    gasPrice,
   };
 };
 
@@ -68,7 +71,7 @@ const mapDispatchToProps = dispatch => ({
 
 const mergeProps = (sP: any, dP: any, oP: any) => {
   const rep = sP.balances.rep;
-  const srep = sP.balances.feePool.stakedRep;
+  const srep = sP.balances.feePool.userStakedRep;
   const sRepFormatted = formatRep(srep);
   // TODO: get governance tokens balance
   const gRepFormatted = formatRep('0'); //sP.balances

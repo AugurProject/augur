@@ -767,6 +767,7 @@ export const SETAPPROVALFORALL = 'SETAPPROVALFORALL'
 export const WRAP_ETH = 'DEPOSIT';
 export const UNWRAP_ETH = 'WITHDRAW';
 export const STAKE = 'STAKE';
+export const FEE_POT_APPROVE = 'FEE_POT_APPROVE';
 // # Orders/Trade Constants
 export const ORDER_BOOK_TABLE = 'ORDER_BOOK_TABLE';
 export const ORDER_BOOK_CHART = 'ORDER_BOOK_CHART';

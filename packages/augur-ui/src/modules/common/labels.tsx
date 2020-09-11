@@ -1540,6 +1540,7 @@ export const ApprovalTxButtonLabelCmp = ({
   approvalType,
   ignore,
   addPendingData,
+  removePendingData,
   hideAddFunds = false,
 }: ApprovalTxButtonLabelProps) => {
   const [approvalsNeeded, setApprovalsNeeded] = useState(0);
@@ -1578,6 +1579,9 @@ export const ApprovalTxButtonLabelCmp = ({
           case constants.APPROVE:
             setDescription(`Approval requires ${approvalsNeeded} signing${approvalsNeeded > 1 ? 's' : ''}. Once confirmed you can swap your tokens.`)
           break;
+          case constants.FEE_POT_APPROVE:
+            setDescription('Approval requires one signing. Once confirmed, click stake.');
+          break;
           default:
             setDescription(`Approval requires ${approvalsNeeded} signing${approvalsNeeded > 1 ? 's' : ''}. Once confirmed you can place your order.`)
           break;
@@ -1588,6 +1592,7 @@ export const ApprovalTxButtonLabelCmp = ({
 
   function doCheckApprovals(init: boolean = false) {
     checkApprovals(account).then(approvalsNeeded => {
+      console.log('approvalsNeeded', approvalsNeeded);
       setApprovalsNeeded(approvalsNeeded);
       isApprovalCallback(approvalsNeeded === 0);
       if (approvalsNeeded === 0 && !init) {
