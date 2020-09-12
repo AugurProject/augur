@@ -402,6 +402,7 @@ class ContractsFixture:
             if '0x' in directory: continue # uploaded separately
             if 'uniswap' in directory: continue # uploaded separately
             if 'gsn/v2' in directory: continue # uploaded separately
+            if 'trading/erc20proxy' in directory: continue # uploaded separately
             for filename in filenames:
                 name = path.splitext(filename)[0]
                 extension = path.splitext(filename)[1]
@@ -433,6 +434,11 @@ class ContractsFixture:
 
     def uploadTestDaiContracts(self):
         self.uploadAndAddToAugur("../src/contracts/Cash.sol")
+
+    def uploadERC20Proxy1155(self):
+        masterProxy = self.upload("../src/contracts/trading/erc20proxy1155/ERC20Proxy1155.sol")
+        shareToken = self.contracts["ShareToken"]
+        self.upload("../src/contracts/trading/erc20proxy1155/ERC20Proxy1155Nexus.sol", None, None, [masterProxy.address, shareToken.address])
 
     def upload0xContracts(self):
         chainId = 123456
@@ -660,6 +666,7 @@ def augurInitializedSnapshot(fixture, baseSnapshot):
     fixture.upload0xContracts()
     fixture.uploadUniswapContracts()
     fixture.initializeAllContracts()
+    fixture.uploadERC20Proxy1155()
     fixture.doAugurTradingApprovals()
     fixture.approveCentralAuthority()
     return fixture.createSnapshot()
@@ -671,6 +678,7 @@ def kitchenSinkSnapshot(fixture, augurInitializedSnapshot):
     legacyReputationToken.faucet(11 * 10**6 * 10**18)
     universe = fixture.createUniverse()
     cash = fixture.contracts['Cash']
+    shareToken = fixture.contracts['ShareToken']
     augur = fixture.contracts['Augur']
     fixture.distributeRep(universe)
 
@@ -692,6 +700,7 @@ def kitchenSinkSnapshot(fixture, augurInitializedSnapshot):
     snapshot = fixture.createSnapshot()
     snapshot['universe'] = universe
     snapshot['cash'] = cash
+    snapshot['shareToken'] = shareToken
     snapshot['augur'] = augur
     snapshot['yesNoMarket'] = yesNoMarket
     snapshot['categoricalMarket'] = categoricalMarket
@@ -712,6 +721,10 @@ def universe(kitchenSinkFixture, kitchenSinkSnapshot):
 @pytest.fixture
 def cash(kitchenSinkFixture, kitchenSinkSnapshot):
     return kitchenSinkFixture.applySignature(None, kitchenSinkSnapshot['cash'].address, kitchenSinkSnapshot['cash'].abi)
+
+@pytest.fixture
+def shareToken(kitchenSinkFixture, kitchenSinkSnapshot):
+    return kitchenSinkFixture.applySignature(None, kitchenSinkSnapshot['shareToken'].address, kitchenSinkSnapshot['shareToken'].abi)
 
 @pytest.fixture
 def augur(kitchenSinkFixture, kitchenSinkSnapshot):
