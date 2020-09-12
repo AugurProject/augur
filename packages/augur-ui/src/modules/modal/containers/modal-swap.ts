@@ -78,16 +78,10 @@ const mergeProps = (sP: any, dP: any, oP: any) => {
     setCurrentOnboardingStep: dP.setCurrentOnboardingStep,
     goBack: dP.goBack,
     closeModal: dP.closeModal,
+    showSkipButton: true,
+    skipAction: dP.approvalsModal,
     content: [],
-    buttons: [
-      {
-        text: 'Continue',
-        disabled: true,
-        action: () => {
-          dP.approvalsModal();
-        },
-      },
-    ],
+    buttons: [],
   }
 };
 

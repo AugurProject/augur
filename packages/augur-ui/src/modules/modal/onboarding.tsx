@@ -62,12 +62,12 @@ interface OnboardingProps {
   showDeposit: boolean;
   showSkipButton: boolean;
   showBankroll: boolean;
+  hasBalanceOver50k: boolean;
   address?: string;
   swapOptions: {
     balances: AccountBalances;
   };
   balances: AccountBalances;
-  blockchain: Blockchain;
   modalAction: Function;
   goBack: Function;
   swapModal: Function;
@@ -79,6 +79,7 @@ interface OnboardingProps {
   walletOnRamp: boolean;
   accountType: string;
   setCurrentOnboardingStep: Function;
+  skipAction: Function;
 }
 
 export const Onboarding = ({
@@ -94,10 +95,10 @@ export const Onboarding = ({
   showDeposit = false,
   showSkipButton = false,
   showBankroll = false,
+  hasBalanceOver50k,
   address,
   swapOptions,
   balances,
-  blockchain,
   modalAction,
   goBack,
   swapModal,
@@ -109,15 +110,35 @@ export const Onboarding = ({
   walletOnRamp,
   accountType,
   setCurrentOnboardingStep,
+  skipAction,
 }: OnboardingProps) => {
   const [ethRecieved, setEthRecieved] = useState(false);
   const [isZeroXApproved, setIsZeroXApproved] = useState(false);
   const [isShareTokenApproved, setIsShareTokenApproved] = useState(false);
   const [isFillOrderAprpoved, setIsFillOrderApproved] = useState(false);
-  const [currentApprovalStep, setCurrentApprovalStep] = useState(0);
   const [onboardingRoute, setOnboardingRoute] = useState(null);
 
+  const checkIsZeroXApproved = async () => {
+    const approved = await approveZeroXCheck(address);
+    setIsZeroXApproved(approved);
+    return approved;
+  }
+
+  const checkIsShareTokenApproved = async () => {
+    const approved = await approveShareTokenCheck(address);
+    setIsShareTokenApproved(approved);
+    return approved;
+  }
+
+  const checkIsFillOrderApproved = async () => {
+    const approved = await approveFillOrderCheck(address);
+    setIsFillOrderApproved(approved);
+    return approved;
+  }
+
   useEffect(() => {
+    let intervalId = null;
+
     if (balances && balances?.signerBalances?.eth) {
       const daiAmount = createBigNumber(balances?.signerBalances?.dai);
       const ethAmount = createBigNumber(balances?.signerBalances?.eth);
@@ -139,48 +160,26 @@ export const Onboarding = ({
       setEthRecieved(true);
     }
 
-    const checkIsZeroXApproved = async () => {
-      const approved = await approveZeroXCheck(address);
-      setIsZeroXApproved(approved);
-      if (!approved) {
-        setCurrentApprovalStep(0);
-      }
+    if (showApprovals) {
+      checkIsZeroXApproved();
+      checkIsShareTokenApproved();
+      checkIsFillOrderApproved();
+
+      intervalId = setInterval(async() => {
+        if (!isZeroXApproved) {
+          await checkIsZeroXApproved();
+        } else if (!isShareTokenApproved) {
+          await checkIsShareTokenApproved();
+        } else if (!isFillOrderAprpoved) {
+          await checkIsFillOrderApproved();
+        } else {
+          clearInterval(intervalId);
+        }
+      }, 5000);
     }
 
-    const checkIsShareTokenApproved = async () => {
-      const approved = await approveShareTokenCheck(address);
-      setIsShareTokenApproved(approved);
-      if (!approved) {
-        setCurrentApprovalStep(1);
-      }
-    }
-
-    const checkIsFillOrderApproved = async () => {
-      const approved = await approveFillOrderCheck(address);
-      setIsFillOrderApproved(approved);
-      if (!approved) {
-        setCurrentApprovalStep(2);
-      }
-    }
-
-    if (address && showApprovals && (!isZeroXApproved || !isShareTokenApproved || !isFillOrderAprpoved)) {
-      if (!isFillOrderAprpoved) {
-        checkIsFillOrderApproved();
-      }
-
-      if (!isShareTokenApproved) {
-        checkIsShareTokenApproved();
-      }
-
-      if (!isZeroXApproved) {
-        checkIsZeroXApproved();
-     }
-
-      if (isZeroXApproved &&  isShareTokenApproved && isFillOrderAprpoved) {
-        setCurrentApprovalStep(3);
-      }
-    }
-  }, [balances, blockchain]);
+    return () => clearInterval(intervalId);
+  }, [balances]);
 
 
   let approvalData = [];
@@ -214,10 +213,6 @@ export const Onboarding = ({
     buttons[0].disabled = (!isZeroXApproved || !isShareTokenApproved || !isFillOrderAprpoved);
   }
 
-  if (showSwapper) {
-    buttons[0].disabled = createBigNumber(swapOptions?.balances?.dai || 0).lte(0);
-  }
-
   if (currentStep === 1) {
     buttons[0].disabled = onboardingRoute === null;
     buttons[0].action = () => {
@@ -237,10 +232,14 @@ export const Onboarding = ({
         {showDeposit && !ethRecieved && <span>Waiting for your deposit (transfer may take time)</span>}
         {showDeposit && ethRecieved && <span>{CheckMark} Deposit recieved</span>}
         {buttons.length > 0 && <ButtonsRow buttons={buttons} />}
-        {showSkipButton && <span onClick={() => buttons[0].action()}>skip this step</span>}
+        {showSkipButton && <span onClick={() => skipAction()}>skip this step</span>}
       </div>
     </>
   );
+
+  const triggerOnRamp = (token = ETH) =>  accountType === ACCOUNT_TYPES.TORUS
+    ? addFundsTorus(createBigNumber(50), address, token)
+    : addFundsFortmatic(createBigNumber(50), token, address);
 
   return (
     <div
@@ -305,12 +304,15 @@ export const Onboarding = ({
             token={token}
             swapModal={() => swapModal()}
             approveModal={() => modalAction()}
+            triggerOnRamp={(token) => triggerOnRamp(token)}
+            accountType={accountType}
+            hasBalanceOver50k={hasBalanceOver50k}
           />
         )}
 
         {showApprovals && (
           <Approvals
-            currentApprovalStep={currentApprovalStep}
+            currentApprovalStep={!isZeroXApproved ? 0 : !isShareTokenApproved ? 1 : !isFillOrderAprpoved ? 2 : 3}
             approvalData={approvalData}
           />
         )}
@@ -325,11 +327,7 @@ export const Onboarding = ({
               <hr />
             </div>
             <div
-              onClick={() =>
-                accountType === ACCOUNT_TYPES.TORUS
-                  ? addFundsTorus(createBigNumber(50), address)
-                  : addFundsFortmatic(createBigNumber(50), ETH, address)
-              }
+              onClick={() => triggerOnRamp()}
             >
               Buy direct through {accountType}{' '}
             </div>

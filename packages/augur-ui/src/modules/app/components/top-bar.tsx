@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import classNames from 'classnames';
 import { Alerts } from 'modules/common/icons';
 import ConnectAccount from 'modules/auth/containers/connect-account';
@@ -16,6 +16,7 @@ import HelpResources from 'modules/app/containers/help-resources';
 import { TOTAL_ONBOARDING_STEPS } from 'modules/modal/onboarding';
 
 import Styles from 'modules/app/components/top-bar.styles.less';
+import { approveZeroXCheck, approveShareTokenCheck, approveFillOrderCheck } from 'modules/contracts/actions/contractCalls';
 
 interface StatsProps {
   isLogged: boolean;
@@ -94,7 +95,44 @@ const TopBar: React.FC<TopBarProps> = ({
   walletStatus,
   handleShowOnboarding,
   currentOnboardingStep,
+  address,
 }) => {
+
+  const [isZeroXApproved, setIsZeroXApproved] = useState(false);
+  const [isShareTokenApproved, setIsShareTokenApproved] = useState(false);
+  const [isFillOrderAprpoved, setIsFillOrderApproved] = useState(false);
+
+  useEffect(() => {
+    if (
+      isLogged &&
+      address &&
+      currentOnboardingStep < TOTAL_ONBOARDING_STEPS &&
+      (!isZeroXApproved || !isShareTokenApproved || !isFillOrderAprpoved)
+    ) {
+      const checkIsZeroXApproved = async () => {
+        const approved = await approveZeroXCheck(address);
+        setIsZeroXApproved(approved);
+      };
+
+      const checkIsShareTokenApproved = async () => {
+        const approved = await approveShareTokenCheck(address);
+        setIsShareTokenApproved(approved);
+      };
+
+      const checkIsFillOrderApproved = async () => {
+        const approved = await approveFillOrderCheck(address);
+        setIsFillOrderApproved(approved);
+      };
+
+      checkIsZeroXApproved();
+      checkIsShareTokenApproved();
+      checkIsFillOrderApproved();
+    }
+  }, [isLogged, address]);
+
+
+
+  const accountSetup = isZeroXApproved && isShareTokenApproved && isFillOrderAprpoved;
   return (
     <header className={Styles.TopBar}>
       <div className={Styles.Logo}>
@@ -110,7 +148,7 @@ const TopBar: React.FC<TopBarProps> = ({
         tradingAccountCreated={!showAddFundsButton }
       />
       <div>
-        {(isLogged || restoredAccount) && currentOnboardingStep < TOTAL_ONBOARDING_STEPS && (
+        {(isLogged || restoredAccount) && !accountSetup && currentOnboardingStep < TOTAL_ONBOARDING_STEPS && (
           <PrimaryButton text={'Continue account setup'} action={() => handleShowOnboarding(currentOnboardingStep)} />
         )}
 
