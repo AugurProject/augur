@@ -32086,12 +32086,64 @@
 			"constant": true,
 			"inputs": [
 				{
+					"internalType": "address",
+					"name": "target",
+					"type": "address"
+				},
+				{
+					"internalType": "uint256",
+					"name": "salt",
+					"type": "uint256"
+				},
+				{
+					"internalType": "address",
+					"name": "creator",
+					"type": "address"
+				}
+			],
+			"name": "clone2Address",
+			"outputs": [
+				{
+					"internalType": "address",
+					"name": "result",
+					"type": "address"
+				}
+			],
+			"payable": false,
+			"stateMutability": "pure",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [
+				{
 					"internalType": "uint256",
 					"name": "_tokenId",
 					"type": "uint256"
 				}
 			],
 			"name": "getProxy",
+			"outputs": [
+				{
+					"internalType": "contract IERC20Proxy1155",
+					"name": "",
+					"type": "address"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [
+				{
+					"internalType": "uint256",
+					"name": "_tokenId",
+					"type": "uint256"
+				}
+			],
+			"name": "getProxyAddress",
 			"outputs": [
 				{
 					"internalType": "contract IERC20Proxy1155",

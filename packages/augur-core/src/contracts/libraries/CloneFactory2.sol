@@ -33,4 +33,29 @@ contract CloneFactory2 {
             result := create2(0, clone, 0x37, salt)
         }
     }
+
+    function clone2Address(address target, uint256 salt, address creator) public pure returns (address result) {
+        // convert address to bytes20 for assembly use
+        bytes20 targetBytes = bytes20(target);
+        uint256 bytecode;
+        assembly {
+            // allocate clone memory
+            let clone := mload(0x40)
+            // store initial portion of the delegation contract code in bytes form
+            mstore(clone, 0x3d602d80600a3d3981f3363d3d373d3d3d363d73000000000000000000000000)
+            // store the provided address
+            mstore(add(clone, 0x14), targetBytes)
+            // store the remaining delegation contract code
+            mstore(add(clone, 0x28), 0x5af43d82803e903d91602b57fd5bf30000000000000000000000000000000000)
+            // create the actual delegate contract reference and return its address
+            bytecode := keccak256(clone, 0x37)
+        }
+
+        return address(uint256(keccak256(abi.encodePacked(
+            bytes1(0xff),
+            creator,
+            salt,
+            bytecode
+        ))));
+    }
 }
