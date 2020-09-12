@@ -103,5 +103,5 @@ const getFeePoolBalances = async (account: string): Promise<FeePoolBalances> => 
   const stake = await feePoolBalance(account);
   const feesEarned = await getEarnedFeesOf(account);
 
-  return { stakedRep: stake, poolFees: feesEarned };
+  return { userStakedRep: stake, userPoolFees: feesEarned };
 }

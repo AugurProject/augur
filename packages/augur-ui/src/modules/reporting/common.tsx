@@ -21,13 +21,13 @@ import {
   MODAL_INITIALIZE_ACCOUNT,
   WARNING,
   WALLET_STATUS_VALUES,
-  GWEI_CONVERSION,, STAKE
+  GWEI_CONVERSION,, STAKE, APPROVE, ETH, APPROVE_GAS_ESTIMATE, FEE_POT_APPROVE
 } from 'modules/common/constants';
 import {
   FormattedNumber,
   SizeTypes,
   MarketData,
-  DisputeInputtedValues,
+  DisputeInputtedValues,, AccountBalances
 } from 'modules/types';
 import ReactTooltip from 'react-tooltip';
 import {
@@ -44,7 +44,7 @@ import {
   RepBalance,
   MovementLabel,
   InReportingLabel,
-  TransactionFeeLabel,
+  TransactionFeeLabel,, ApprovalTxButtonLabel
 } from 'modules/common/labels';
 import { ButtonActionType } from 'modules/types';
 import {
@@ -66,7 +66,7 @@ import {
   convertAttoValueToDisplayValue,
 } from '@augurproject/sdk-lite';
 import { calculatePosition } from 'modules/market/components/market-scalar-outcome-display/market-scalar-outcome-display';
-import { getRepThresholdForPacing } from 'modules/contracts/actions/contractCalls';
+import { approveFeePool, getRepThresholdForPacing, hasApprovedFeePool } from 'modules/contracts/actions/contractCalls';
 import MarketTitle from 'modules/market/containers/market-title';
 import { AppState } from 'appStore/index';
 import { isGSNUnavailable } from 'modules/app/selectors/is-gsn-unavailable';
@@ -1180,6 +1180,8 @@ interface UserRepDisplayProps {
   repTotalAmountStakedFormatted: FormattedNumber;
   openGetRepModal: Function;
   hasStakedRep: boolean;
+  stakedSrep: string;
+  feePoolStakedRep: string;
 }
 
 export class UserRepDisplay extends Component<
@@ -1206,6 +1208,8 @@ export class UserRepDisplay extends Component<
       reportingAmountFormatted,
       participationAmountFormatted,
       hasStakedRep,
+      stakedSrep,
+      feePoolStakedRep,
     } = this.props;
     const s = this.state;
 
@@ -1276,7 +1280,7 @@ export class UserRepDisplay extends Component<
                 <LinearPropertyLabel
                   key="stakedrep"
                   label="Staked REP"
-                  value={participationAmountFormatted}
+                  value={formatAttoRep(feePoolStakedRep)}
                   showDenomination
                   useFull
                   useValueLabel
@@ -1284,7 +1288,7 @@ export class UserRepDisplay extends Component<
                 <LinearPropertyLabel
                   key="stakedrep"
                   label="Staked SREP"
-                  value={participationAmountFormatted}
+                  value={formatAttoRep(stakedSrep)}
                   showDenomination
                   useFull
                   useValueLabel
@@ -1313,15 +1317,18 @@ export interface FeePoolViewProps {
   openClaimFeesModal: Function;
   openExitFeePoolModal: Function;
   openUnstakeSrepModal: Function;
+  openExitUnstakeGovModal: Function;
+  account: string;
+  showAddFundsModal: Function;
+  balances: AccountBalances;
+  isLoggedIn: boolean;
+  gasPrice: string;
 }
 
 export const FeePoolView = (
-  props: FeePoolViewProps
-) => {
-  const {
+  {
     openStakeRepModal,
     openStakeSrepModal,
-    openClaimParticipationTokensModal,
     disputeWindowFees,
     purchasedParticipationTokens,
     tokensOwned,
@@ -1332,8 +1339,16 @@ export const FeePoolView = (
     openClaimFeesModal,
     openExitFeePoolModal,
     openUnstakeSrepModal,
-  } = props;
-
+    openExitUnstakeGovModal,
+    account,
+    showAddFundsModal,
+    balances,
+    isLoggedIn,
+    gasPrice,
+  }: FeePoolViewProps
+) => {
+  const [isApproved, setIsApproved] = useState(false);
+  const [isGovApproved, setGovApproved] = useState(false);
   return (
     <div className={Styles.FeePoolView}>
       <h3>Fee Pool</h3>
@@ -1373,9 +1388,23 @@ export const FeePoolView = (
         secondSubheader={`(${percentageOfTotalFees.formatted}% of Total Fees)`}
         tooltipText="The fee's own because of percentage of staked REPv2 in the fee pool"
       />
-
+      { isLoggedIn &&
+        <ApprovalTxButtonLabel
+          className={Styles.ApprovalNotice}
+          title={'One time approval needed'}
+          buttonName={'Approve'}
+          userEthBalance={String(balances.eth)}
+          gasPrice={gasPrice}
+          checkApprovals={hasApprovedFeePool}
+          doApprovals={approveFeePool}
+          account={account}
+          approvalType={FEE_POT_APPROVE}
+          isApprovalCallback={(isApproved: boolean) => setIsApproved(isApproved)}
+          addFunds={() => showAddFundsModal({ tokenToAdd: ETH })}
+        />
+      }
       <ProcessingButton
-        disabled={disablePurchaseButton}
+        disabled={!isLoggedIn || !isApproved}
         text="Stake REP"
         action={openStakeRepModal}
         queueName={TRANSACTIONS}
@@ -1383,7 +1412,7 @@ export const FeePoolView = (
       />
       <ProcessingButton
         secondaryButton
-        disabled={disablePurchaseButton}
+        disabled={!isLoggedIn || !isApproved}
         text="Claim Fees"
         action={openClaimFeesModal}
         queueName={TRANSACTIONS}
@@ -1391,14 +1420,15 @@ export const FeePoolView = (
       />
       <ProcessingButton
         secondaryButton
-        disabled={disablePurchaseButton}
+        disabled={!isLoggedIn || !isApproved}
         text="Unstake & Claim Fees"
         action={openExitFeePoolModal}
         queueName={TRANSACTIONS}
         queueId={BUYPARTICIPATIONTOKENS}
       />
       <section />
-
+      {false /* TODO: when governance comes in wire this up */&&
+      <>
       <h3>Governance</h3>
       <span>
       You can stake your <b>SREP</b> to get Governance REP (<b>GREP</b>) which can be used for voting power.
@@ -1422,17 +1452,29 @@ export const FeePoolView = (
       />
       <ProcessingButton
         text="Stake SREP"
+        disabled={!isLoggedIn || !isGovApproved}
         action={openStakeSrepModal}
         queueName={TRANSACTIONS}
         queueId={STAKE}
       />
       <ProcessingButton
         secondaryButton
-        text="Unstake"
+        text="Claim GREP"
+        disabled={!isLoggedIn || !isGovApproved}
         action={openUnstakeSrepModal}
         queueName={TRANSACTIONS}
         queueId={REDEEMSTAKE}
       />
+      <ProcessingButton
+        secondaryButton
+        text="Unstake & Claim GREP"
+        disabled={!isLoggedIn || !isGovApproved}
+        action={openExitUnstakeGovModal}
+        queueName={TRANSACTIONS}
+        queueId={REDEEMSTAKE}
+      />
+      </>
+      }
     </div>
   );
 };
