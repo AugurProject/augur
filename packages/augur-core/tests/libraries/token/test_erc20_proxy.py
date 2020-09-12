@@ -60,7 +60,7 @@ def test_proxy_required(testerSnapshot, nexus, erc20, account0, account1):
 
 def test_base_state(testerSnapshot, tokenId, erc20, nexus, account0, account1):
     assert erc20.tokenId() == tokenId
-    assert nexus.proxies(tokenId) == erc20.address
+    assert nexus.getProxy(tokenId) == erc20.address
     assert erc20.totalSupply() == 0
     assert erc20.balanceOf(account0) == 0
     assert nexus.allowance(erc20.address, account0, account1) == 0
@@ -128,11 +128,14 @@ def test_no_overwrite_of_proxy(testerSnapshot, nexus, erc20, tokenId):
     fakeTokenId = 42
     fakeErc = nexus.newERC20(fakeTokenId)
 
-    assert nexus.proxies(tokenId) == erc20.address
-    assert nexus.proxies(fakeTokenId) == fakeErc
+    assert nexus.getProxy(tokenId) == erc20.address
+    assert nexus.getProxy(fakeTokenId) == fakeErc
     unregisteredTokenId = 9001
-    assert nexus.proxies(unregisteredTokenId) == NULL_ADDRESS
+    assert nexus.getProxy(unregisteredTokenId) == NULL_ADDRESS
 
+def test_can_always_get_proxy_address(testerSnapshot, nexus):
+    uncreatedTokenId = 9001
+    assert nexus.getProxyAddress(uncreatedTokenId) == "0x3CCFf0dd2eEF0Ba49a6DdCfDA9DD24d560A60e85"
 
 def test_malicious_proxy(testerSnapshot, fixture, nexus, market, cash, shareToken, account0, account1, account2, tokenId, erc20):
     maliciousProxy = fixture.upload("../../../src/contracts/trading/erc20proxy1155/ERC20Proxy1155.sol")

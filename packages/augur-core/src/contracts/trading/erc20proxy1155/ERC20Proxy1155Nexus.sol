@@ -84,11 +84,21 @@ contract ERC20Proxy1155Nexus is IERC20Proxy1155Nexus, CloneFactory2 {
     }
 
     function getProxy(uint256 _tokenId) public view returns (IERC20Proxy1155) {
-        return IERC20Proxy1155(uint160(uint256(keccak256(abi.encodePacked(
-                bytes1(0xff), // standard for CREATE2
-                address(this), // creator address is this nexus contract
-                _tokenId, // proxies for a specific nexus only vary by their tokenId so just that works as the salt
-                keccak256(abi.encodePacked(type(ERC20Proxy1155).creationCode)) // bytecode of proxy
-            )))));
+        IERC20Proxy1155 _proxy = getProxyAddress(_tokenId);
+        if (isContract(address(_proxy))) {
+            return _proxy;
+        } else {
+            return IERC20Proxy1155(0);
+        }
+    }
+
+    function getProxyAddress(uint256 _tokenId) public view returns (IERC20Proxy1155) {
+        return IERC20Proxy1155(clone2Address(address(proxyToClone), _tokenId, address(this)));
+    }
+
+    function isContract(address addr) internal view returns (bool) {
+        uint size;
+        assembly { size := extcodesize(addr) }
+        return size > 0;
     }
 }
