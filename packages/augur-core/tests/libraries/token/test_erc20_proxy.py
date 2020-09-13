@@ -135,7 +135,7 @@ def test_no_overwrite_of_proxy(testerSnapshot, nexus, erc20, tokenId):
 
 def test_can_always_get_proxy_address(testerSnapshot, nexus):
     uncreatedTokenId = 9001
-    assert nexus.getProxyAddress(uncreatedTokenId) == "0x3CCFf0dd2eEF0Ba49a6DdCfDA9DD24d560A60e85"
+    assert nexus.getProxyAddress(uncreatedTokenId) == "0xB2Ec0D9743159A1894FbfA8eF7a7FB42707fFae4"
 
 def test_malicious_proxy(testerSnapshot, fixture, nexus, market, cash, shareToken, account0, account1, account2, tokenId, erc20):
     maliciousProxy = fixture.upload("../../../src/contracts/trading/erc20proxy1155/ERC20Proxy1155.sol")
