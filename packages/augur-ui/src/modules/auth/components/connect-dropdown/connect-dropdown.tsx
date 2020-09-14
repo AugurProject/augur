@@ -11,7 +11,8 @@ import {
   Pencil,
   ClipboardCopy,
   AugurLogo,
-  WethIcon as WethIcon,, DaiLogoIcon
+  WethIcon as WethIcon,
+  DaiLogoIcon
 } from 'modules/common/icons';
 import { PrimaryButton, SecondaryButton } from 'modules/common/buttons';
 import { formatEther, formatRep, } from 'utils/format-number';
