@@ -1,3 +1,4 @@
+
 import React, { Component, useEffect, useState } from 'react';
 import { connect } from 'react-redux';
 import classNames from 'classnames';
@@ -27,7 +28,8 @@ import {
   FormattedNumber,
   SizeTypes,
   MarketData,
-  DisputeInputtedValues,, AccountBalances
+  DisputeInputtedValues,
+  AccountBalances
 } from 'modules/types';
 import ReactTooltip from 'react-tooltip';
 import {
@@ -44,7 +46,8 @@ import {
   RepBalance,
   MovementLabel,
   InReportingLabel,
-  TransactionFeeLabel,, ApprovalTxButtonLabel
+  TransactionFeeLabel,
+  ApprovalTxButtonLabel
 } from 'modules/common/labels';
 import { ButtonActionType } from 'modules/types';
 import {
@@ -53,7 +56,8 @@ import {
   formatGasCostToEther,
   formatDai,
   formatAttoEth,
-  formatEther,, formatPercent
+  formatEther,
+  formatPercent
 } from 'utils/format-number';
 import { MarketProgress } from 'modules/common/progress';
 import { InfoIcon, InformationIcon, XIcon } from 'modules/common/icons';
