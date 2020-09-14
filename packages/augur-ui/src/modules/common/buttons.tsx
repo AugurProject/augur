@@ -810,6 +810,7 @@ export const CashoutButton = ({
   let didWin = bet.potentialDaiProfit ? createBigNumber(bet.potentialDaiProfit).gt(ZERO) : false;
   let loss = bet.potentialDaiProfit ? createBigNumber(bet.potentialDaiProfit).lt(ZERO) : false;
   let cashout = () => bet.cashout();
+  let wonStyle = false;
 
   const {
       accountPositions: positions,
@@ -825,7 +826,8 @@ export const CashoutButton = ({
   const queueId = `${bet.marketId}_${bet.orderId}`;
   const pending = pendingQueue[CASHOUT] && pendingQueue[CASHOUT][queueId];
   const market = marketInfos[bet.marketId];
-  const position = positions[bet.marketId]?.tradingPositions[bet.outcomeId];
+  const marketPositions = positions[bet.marketId];
+  const position = marketPositions?.tradingPositions[bet.outcomeId];
 
   useEffect(() => {
     if (market) {
@@ -855,6 +857,13 @@ export const CashoutButton = ({
        {didWin ? 'Won: ' : 'Loss: '} <span>{formatDai(bet.closedOrderCost).full}</span>
       </>
     );
+  } else if (createBigNumber(marketPositions?.tradingPositionsPerMarket?.unclaimedProceeds).gt(ZERO) && market.consensus.outcome == bet.outcomeId ) {
+    cashoutText = (
+      <>
+       Won:<span>{formatDai(marketPositions?.tradingPositionsPerMarket?.unclaimedProceeds).full}</span>
+      </>
+    );
+    wonStyle = true;
   } else if (!bet.topBidPrice) {
     cashoutText = 'cashout not available';
   } else if (position && market?.reportingState !== REPORTING_STATE.AWAITING_FINALIZATION && market?.reportingState !== REPORTING_STATE.FINALIZED) {
@@ -910,7 +919,8 @@ export const CashoutButton = ({
             [Styles.Won]: didWin && !loss,
             [Styles.Loss]: loss,
             [Styles.CashedOut]: position?.priorPosition,
-            [Styles.CashoutAvailable]: !cashoutDisabled
+            [Styles.CashoutAvailable]: !cashoutDisabled,
+            [Styles.WonPreCashout]: wonStyle
           })}
           disabled={cashoutDisabled}
         >
