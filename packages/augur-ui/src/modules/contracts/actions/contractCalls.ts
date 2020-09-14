@@ -1357,11 +1357,6 @@ export async function hasApprovedFeePool(account: string): Promise<number> {
     feePool.address
   );
 
-  const sRepAllowance = await contracts.reputationToken.allowance_(
-    account,
-    feePool.address
-  );
-
   let approvalsNeeded = 1;
   if (currentAllowance.gt(0)) {
     approvalsNeeded = 0;
@@ -1419,9 +1414,8 @@ export async function stakeInFeePool(amount: string): Promise<void> {
 }
 
 export async function exitFeePool(amount: string): Promise<void> {
-  const stakedAmount = convertDisplayValuetoAttoValue(createBigNumber(amount));
   const feePool = await getFeePool();
-  const exiting = await feePool.exit(stakedAmount);
+  const exiting = await feePool.exit(amount);
   return exiting;
 }
 
