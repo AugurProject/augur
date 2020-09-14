@@ -19,11 +19,11 @@ import { createBigNumber } from 'utils/create-big-number';
 
 const mapStateToProps = (state: AppState) => {
   return {
-    address: state.loginAccount.address,
-    balances: state.loginAccount.balances,
+    address: state.loginAccount?.address,
+    balances: state.loginAccount?.balances,
     token: state.modal?.token || ETH,
-    accountType: state.loginAccount.meta.accountType,
-    ethToDaiRate: state.appStatus.ethToDaiRate.value,
+    accountType: state.loginAccount?.meta?.accountType,
+    ethToDaiRate: state.appStatus?.ethToDaiRate?.value,
   };
 };
 
@@ -36,21 +36,22 @@ const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({
 });
 
 const mergeProps = (sP: any, dP: any, oP: any) => {
+  const MIN_AMOUNT = 50000;
   let hasBalanceOver50k = false;
 
   if (sP.token === USDC) {
     const totalUSDC = createBigNumber(Number(sP.balances.signerBalances.usdc));
-    if (totalUSDC.gt(50000)) {
+    if (totalUSDC.gt(MIN_AMOUNT)) {
       hasBalanceOver50k = true;
     }
   } else if (sP.token === USDT) {
     const totalUSDT = createBigNumber(Number(sP.balances.signerBalances.usdt));
-    if (totalUSDT.gt(50000)) {
+    if (totalUSDT.gt(MIN_AMOUNT)) {
       hasBalanceOver50k = true;
     }
   } else {
     const totalETHinDai = createBigNumber(Number(sP.balances.signerBalances.eth)).times(sP.ethToDaiRate);
-    if (totalETHinDai.gt(50000)) {
+    if (totalETHinDai.gt(MIN_AMOUNT)) {
       hasBalanceOver50k = true;
     }
   }

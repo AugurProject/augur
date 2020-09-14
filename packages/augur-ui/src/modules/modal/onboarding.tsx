@@ -61,6 +61,7 @@ interface OnboardingProps {
   showApprovals: boolean;
   showDeposit: boolean;
   showSkipButton: boolean;
+  showTestBet: boolean;
   showBankroll: boolean;
   hasBalanceOver50k: boolean;
   address?: string;
@@ -94,6 +95,7 @@ export const Onboarding = ({
   showApprovals = false,
   showDeposit = false,
   showSkipButton = false,
+  showTestBet = false,
   showBankroll = false,
   hasBalanceOver50k,
   address,
@@ -158,6 +160,14 @@ export const Onboarding = ({
 
     if (showDeposit && Number(balances?.signerBalances?.eth) > 0) {
       setEthRecieved(true);
+    }
+
+    if (showBankroll && Number(balances?.signerBalances?.eth) <= 0) {
+      modalAction();
+    }
+
+    if (showApprovals && Number(balances?.signerBalances?.eth) <= 0) {
+      buttons[0].action();
     }
 
     if (showApprovals) {
@@ -233,6 +243,8 @@ export const Onboarding = ({
         {showDeposit && ethRecieved && <span>{CheckMark} Deposit recieved</span>}
         {buttons.length > 0 && <ButtonsRow buttons={buttons} />}
         {showSkipButton && <span onClick={() => skipAction()}>skip this step</span>}
+        {showTestBet && <span onClick={() => skipAction()}>explore markets</span>}
+
       </div>
     </>
   );

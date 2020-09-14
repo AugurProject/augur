@@ -40,6 +40,7 @@ import { BigNumber, createBigNumber } from 'utils/create-big-number';
 import titleCase from 'utils/title-case';
 import { checkIfMainnet } from 'modules/app/actions/check-if-mainnet';
 import { formatDai, formatNumber } from 'utils/format-number';
+import { swap } from 'modules/swap/components/index.styles.less';
 
 export interface TitleProps {
   title: string;
@@ -550,6 +551,9 @@ export const Bankroll = ({
   const [showWalletOnRamp, setShowWalletOnRamp] = useState(false);
   const [hasClicked1inchLink, setHasClicked1inchLink] = useState(false);
 
+  if (!hasBalanceOver50k) {
+    swapModal();
+  }
   const isWalletProvider =
     [ACCOUNT_TYPES.FORTMATIC, ACCOUNT_TYPES.TORUS].includes(accountType) ||
     false;

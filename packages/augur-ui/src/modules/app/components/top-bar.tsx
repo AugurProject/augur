@@ -10,7 +10,7 @@ import { CoreStats } from 'modules/types';
 import { Link } from 'react-router-dom';
 import makePath from 'modules/routes/helpers/make-path';
 import Logo from 'modules/app/components/logo';
-import { PrimaryButton } from 'modules/common/buttons';
+import { PrimaryButton, SecondaryButton } from 'modules/common/buttons';
 import { MARKETS } from 'modules/routes/constants/views';
 import HelpResources from 'modules/app/containers/help-resources';
 import { TOTAL_ONBOARDING_STEPS } from 'modules/modal/onboarding';
@@ -156,7 +156,10 @@ const TopBar: React.FC<TopBarProps> = ({
           <HelpResources isMobile={isMobile} helpModal={helpModal} />
         )}
         {!isLogged && !restoredAccount && (
-          <PrimaryButton action={() => loginModal()} text={'Connect'} />
+          <SecondaryButton action={() => loginModal()} text={'Connect'} />
+        )}
+        {!isLogged && !restoredAccount && (
+          <PrimaryButton action={() => signupModal()} text={'Signup'} />
         )}
         {(isLogged || restoredAccount) && (
           <button
