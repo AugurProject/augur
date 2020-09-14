@@ -1362,7 +1362,6 @@ export async function hasApprovedFeePool(account: string): Promise<number> {
     feePool.address
   );
 
-
   let approvalsNeeded = 1;
   if (currentAllowance.gt(0)) {
     approvalsNeeded = 0;
@@ -1399,7 +1398,6 @@ export async function getUserFeePoolBalances(account: string): Promise<UserFeePo
   const feeBalance = await feePool.withdrawableFeesOf_(account);
   return { userRep: repBalance, userFees: feeBalance}
 }
-
 
 export async function feePoolBalance(account: string): Promise<string> {
   const feePool = await getFeePool();
