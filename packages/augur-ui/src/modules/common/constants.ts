@@ -656,6 +656,7 @@ export const MODAL_ERROR = 'MODAL_ERROR';
 export const MODAL_HELP = 'MODAL_HELP';
 export const MODAL_REPORTING_ONLY = 'MODAL_REPORTING_ONLY';
 export const MODAL_TUTORIA_VIDEO = 'MODAL_TUTORIA_VIDEO';
+export const FEE_POOL_CLAIMING = 'FEE_POOL_CLAIMING';
 
 // transactions parameter names
 export const TX_ORDER_ID = 'orderId';
@@ -768,6 +769,8 @@ export const WRAP_ETH = 'DEPOSIT';
 export const UNWRAP_ETH = 'WITHDRAW';
 export const STAKE = 'STAKE';
 export const FEE_POT_APPROVE = 'FEE_POT_APPROVE';
+export const EXIT = 'EXIT';
+
 // # Orders/Trade Constants
 export const ORDER_BOOK_TABLE = 'ORDER_BOOK_TABLE';
 export const ORDER_BOOK_CHART = 'ORDER_BOOK_CHART';

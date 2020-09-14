@@ -1,4 +1,4 @@
-import React, { Component, useState } from 'react';
+import React, { Component, useEffect, useState } from 'react';
 import { connect } from 'react-redux';
 import classNames from 'classnames';
 import { createBigNumber, BigNumber } from 'utils/create-big-number';
@@ -21,7 +21,7 @@ import {
   MODAL_INITIALIZE_ACCOUNT,
   WARNING,
   WALLET_STATUS_VALUES,
-  GWEI_CONVERSION,, STAKE, APPROVE, ETH, APPROVE_GAS_ESTIMATE, FEE_POT_APPROVE
+  GWEI_CONVERSION,, STAKE, APPROVE, ETH, APPROVE_GAS_ESTIMATE, FEE_POT_APPROVE, REDEEM, EXIT, WETH
 } from 'modules/common/constants';
 import {
   FormattedNumber,
@@ -52,7 +52,8 @@ import {
   formatAttoRep,
   formatGasCostToEther,
   formatDai,
-  formatEther,
+  formatAttoEth,
+  formatEther,, formatPercent
 } from 'utils/format-number';
 import { MarketProgress } from 'modules/common/progress';
 import { InfoIcon, InformationIcon, XIcon } from 'modules/common/icons';
@@ -66,7 +67,7 @@ import {
   convertAttoValueToDisplayValue,
 } from '@augurproject/sdk-lite';
 import { calculatePosition } from 'modules/market/components/market-scalar-outcome-display/market-scalar-outcome-display';
-import { approveFeePool, getRepThresholdForPacing, hasApprovedFeePool } from 'modules/contracts/actions/contractCalls';
+import { approveFeePool, getRepThresholdForPacing, hasApprovedFeePool, getFeePoolBalances, getUserFeePoolBalances } from 'modules/contracts/actions/contractCalls';
 import MarketTitle from 'modules/market/containers/market-title';
 import { AppState } from 'appStore/index';
 import { isGSNUnavailable } from 'modules/app/selectors/is-gsn-unavailable';
@@ -1285,6 +1286,7 @@ export class UserRepDisplay extends Component<
                   useFull
                   useValueLabel
                 />
+                { false && // governance needs to be decided on to show this
                 <LinearPropertyLabel
                   key="stakedrep"
                   label="Staked SREP"
@@ -1293,6 +1295,7 @@ export class UserRepDisplay extends Component<
                   useFull
                   useValueLabel
                 />
+                }
               </div>
             </>
           )}
@@ -1322,7 +1325,11 @@ export interface FeePoolViewProps {
   showAddFundsModal: Function;
   balances: AccountBalances;
   isLoggedIn: boolean;
+  isConnected: boolean;
   gasPrice: string;
+  showFeePoolClaiming: Function;
+  showFeePoolExitClaiming: Function;
+  blockNumber: number;
 }
 
 export const FeePoolView = (
@@ -1345,30 +1352,49 @@ export const FeePoolView = (
     balances,
     isLoggedIn,
     gasPrice,
+    isConnected,
+    showFeePoolClaiming,
+    showFeePoolExitClaiming,
+    blockNumber,
   }: FeePoolViewProps
 ) => {
   const [isApproved, setIsApproved] = useState(false);
   const [isGovApproved, setGovApproved] = useState(false);
+  const [feePoolTotalRep, setFeePoolTotalRep] = useState("0");
+  const [userTotalRep, setUserTotalRep] = useState("0");
+  const [userTotalFees, setUserTotalFees] = useState("0");
+  const [userRepPercentage, setUserRepPercentage] = useState("0");
+
+  useEffect(() => {
+    if (isConnected) {
+      getFeePoolBalances()
+      .then(balances => {
+        setFeePoolTotalRep(balances.totalRep);
+
+        getUserFeePoolBalances(account)
+        .then(userBalances => {
+          setUserTotalRep(userBalances.userRep);
+          setUserTotalFees(userBalances.userFees);
+          const totalRep = createBigNumber(balances.totalRep);
+          const repPercent = (totalRep.gt(0) ? createBigNumber(userBalances.userRep).div(totalRep) : 0).times(100);
+          setUserRepPercentage(repPercent.toNumber());
+        })
+
+      });
+    }
+  }, [isConnected, blockNumber]);
+
   return (
     <div className={Styles.FeePoolView}>
       <h3>Fee Pool</h3>
       <span>
         Stake <b>REP</b> to recieve Staking REP (<b>SREP</b>) to earn a portion of the reporting fees.
       </span>
-
-      <Subheaders
-        large
-        info
-        header="Total Reporting Fees"
-        subheader={disputeWindowFees.formatted}
-        secondSubheader="ETH"
-        tooltipText="The total amount of fees in the fee pool"
-      />
       <Subheaders
         large
         info
         header="Total REP Staked"
-        subheader={purchasedParticipationTokens.formatted}
+        subheader={formatAttoRep(feePoolTotalRep).formatted}
         tooltipText={
           'The total amount of REPv2 tokens staked'
         }
@@ -1376,17 +1402,17 @@ export const FeePoolView = (
       <Subheaders
         info
         header="My Staked REP"
-        subheader={tokensOwned.formatted}
-        secondSubheader={`(${percentageOfTotalFees.formatted}% of Total Fees)`}
+        subheader={formatAttoRep(userTotalRep).formatted}
+        secondSubheader={`(${formatPercent(userRepPercentage).formatted}% of Total Fees)`}
         tooltipText="The % of REPv2 you staked in the fee pool"
       />
 
       <Subheaders
         info
         header="Claimable Fees"
-        subheader={tokensOwned.formatted}
-        secondSubheader={`(${percentageOfTotalFees.formatted}% of Total Fees)`}
-        tooltipText="The fee's own because of percentage of staked REPv2 in the fee pool"
+        subheader={formatAttoEth(userTotalFees).formatted}
+        secondSubheader={`ETH`}
+        tooltipText="The fee's owed because of percentage of staked REPv2 in the fee pool"
       />
       { isLoggedIn &&
         <ApprovalTxButtonLabel
@@ -1400,7 +1426,7 @@ export const FeePoolView = (
           account={account}
           approvalType={FEE_POT_APPROVE}
           isApprovalCallback={(isApproved: boolean) => setIsApproved(isApproved)}
-          addFunds={() => showAddFundsModal({ tokenToAdd: ETH })}
+          addFunds={() => showAddFundsModal({ tokenToAdd: WETH })}
         />
       }
       <ProcessingButton
@@ -1414,17 +1440,17 @@ export const FeePoolView = (
         secondaryButton
         disabled={!isLoggedIn || !isApproved}
         text="Claim Fees"
-        action={openClaimFeesModal}
+        action={() => showFeePoolClaiming(userTotalFees)}
         queueName={TRANSACTIONS}
-        queueId={BUYPARTICIPATIONTOKENS}
+        queueId={REDEEM}
       />
       <ProcessingButton
         secondaryButton
         disabled={!isLoggedIn || !isApproved}
         text="Unstake & Claim Fees"
-        action={openExitFeePoolModal}
+        action={() => showFeePoolExitClaiming(userTotalFees)}
         queueName={TRANSACTIONS}
-        queueId={BUYPARTICIPATIONTOKENS}
+        queueId={EXIT}
       />
       <section />
       {false /* TODO: when governance comes in wire this up */&&
