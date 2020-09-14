@@ -17,14 +17,10 @@ export const MarketComments = ({
 }) => {
   const {
     isLogged,
-    loginAccount: {
-      meta: { signer } = { signer: null },
-    },
     env: {
       plugins: { comments } = { comments: null },
     },
   } = useAppStatusStore();
-  const provider = signer ? signer.provider?._web3Provider : false;
   const threeBoxAdminAccount = '0x913dA4198E6bE1D5f5E4a40D0667f70C0B5430Eb';
 
   const networkId = getNetworkId();
@@ -35,7 +31,6 @@ export const MarketComments = ({
         <Suspense fallback={null}>
           <ThreeBoxComments
             adminEthAddr={threeBoxAdminAccount}
-            provider={provider}
             marketId={marketId}
           />
         </Suspense>

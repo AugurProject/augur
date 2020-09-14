@@ -6,18 +6,16 @@ import { useAppStatusStore } from 'modules/app/store/app-status';
 
 interface ThreeBoxCommentsProps {
   adminEthAddr: string;
-  provider: any;
   marketId: string;
 }
 
 const ThreeBoxComments = ({
   adminEthAddr,
-  provider,
   marketId,
 }: ThreeBoxCommentsProps) => {
-  const { initialized3box, actions: { setInitialized3Box } } = useAppStatusStore();
+  const { initialized3box, loginAccount: { meta: { provider: { _web3Provider } } }, actions: { setInitialized3Box } } = useAppStatusStore();
   const { activate, setActivate, address, box, isReady, profile } = use3box(
-    provider,
+    _web3Provider,
     setInitialized3Box,
     initialized3box,
     'comments',
