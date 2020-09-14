@@ -546,7 +546,7 @@ export const BetslipFooter = () => {
                 icon={Trash}
               />
               <PrimaryButton
-                text={`${!isReview ? 'Place Bet' : 'Confirm Bet'}${betslip.count > 1 && 's'}`}
+                text={`${!isReview ? 'Place Bet' : 'Confirm Bet'}${betslip.count > 1 ? 's' : ''}`}
                 disabled={placeBetsDisabled}
                 action={() => {
                   if (!isReview) {
