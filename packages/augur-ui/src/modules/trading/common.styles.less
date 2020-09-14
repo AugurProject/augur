@@ -360,7 +360,7 @@
     background: var(--color-table-header);
     border-top: @size-1 solid var(--color-secondary-action-outline);
     display: grid;
-    grid-gap: @size-8 @size-16;
+    grid-gap: 0 @size-8;
     grid-template-columns: 1fr 1fr;
     border-bottom-left-radius: @border-radius-rounded;
     border-bottom-right-radius: @border-radius-rounded;
@@ -403,6 +403,8 @@
 
       color: var(--color-primary-text);
       grid-column: span 2;
+      text-align: center;
+      margin: @size-4 0 @size-16;
     }
 
     > button[class*="Button"] {

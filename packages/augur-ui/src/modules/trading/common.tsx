@@ -86,6 +86,15 @@ export const EmptyState = () => {
   );
 };
 
+function convertToCaps(description) {
+  const vsIndex = description.indexOf('vs.');
+  return vsIndex > -1
+    ? description.substring(0, vsIndex).toUpperCase() +
+        'vs.' +
+        description.substring(vsIndex + 3, description.length).toUpperCase()
+    : description.toUpperCase();
+}
+
 export const SportsMarketBets = ({ market }) => {
   const marketId = market[0];
   const {
@@ -106,7 +115,7 @@ export const SportsMarketBets = ({ market }) => {
   }));
   return (
     <div className={Styles.SportsMarketBets}>
-      <h4>{description}</h4>
+      <h4>{convertToCaps(description)}</h4>
       <>
         {bets.map(bet => (
           <SportsBet
@@ -136,7 +145,7 @@ export const SportsMarketMyBets = ({ market }) => {
   }));
   return (
     <div className={Styles.SportsMarketBets}>
-      <h4>{description}</h4>
+      <h4>{convertToCaps(description)}</h4>
       <>
         {bets.map(bet => (
           <SportsMyBet key={bet.orderId} bet={bet} />
@@ -491,7 +500,7 @@ export const BetslipFooter = () => {
     <footer
       className={classNames(Styles.BetslipFooter, {
         [Styles.Unmatched]: subHeader === BETSLIP_SELECTED.UNMATCHED,
-        [Styles.LoggedOut]: !isLogged
+        [Styles.LoggedOut]: !isLogged,
       })}
     >
       {header === BETSLIP_SELECTED.BETSLIP ? (
@@ -516,15 +525,14 @@ export const BetslipFooter = () => {
             <span>
               {`You're Betting `}
               <b>{bet}</b>
-              {` and will win `}
+              {` to win `}
               <b>{win}</b>
-              {` if you win`}
             </span>
           )}
           {isLogged ? (
             <>
               <SecondaryButton
-                text="Cancel Bets"
+                text="Cancel All"
                 lightBorder
                 action={() => {
                   setModal({
@@ -538,7 +546,7 @@ export const BetslipFooter = () => {
                 icon={Trash}
               />
               <PrimaryButton
-                text={!isReview ? 'Place Bets' : 'Confirm Bets'}
+                text={`${!isReview ? 'Place Bet' : 'Confirm Bet'}${betslip.count > 1 && 's'}`}
                 disabled={placeBetsDisabled}
                 action={() => {
                   if (!isReview) {
