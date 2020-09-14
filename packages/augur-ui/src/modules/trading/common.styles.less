@@ -407,41 +407,8 @@
     }
 
     > button[class*="Button"] {
-      .text-14-bold;
-
-      max-width: @size-147;
       min-width: 100%;
       padding: 0;
-
-      &:first-of-type {
-        border: @size-1 solid var(--color-dark-text);
-
-        &:hover,
-        &:active {
-          border: @size-1 solid var(--color-primary-text);
-
-          > svg > path {
-            stroke: var(--color-module-background);
-          }
-        }
-
-        &:active:hover:focus,
-        &:focus:hover {
-           > svg > path {
-             stroke: var(--color-primary-text);
-          }
-        }
-
-        > svg {
-          width: @size-15;
-          height: @size-17;
-          margin-right: @size-8;
-  
-          > path {
-            stroke: var(--color-primary-text);
-          }
-        }
-      }
     }
 
     > button:not([class*="Button"]) {
@@ -475,6 +442,10 @@
           }
         }
       }
+    }
+
+    &.LoggedOut {
+      grid-template-columns: 1fr;
     }
   }
 }

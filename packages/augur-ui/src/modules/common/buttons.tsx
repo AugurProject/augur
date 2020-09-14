@@ -196,6 +196,7 @@ export const SecondaryButton = ({
   title,
   text,
   icon,
+  lightBorder
 }: DefaultButtonProps) => (
   <button
     onClick={e => action(e)}
@@ -203,6 +204,7 @@ export const SecondaryButton = ({
       [Styles.Small]: small,
       [Styles.Confirmed]: confirmed,
       [Styles.Failed]: failed,
+      [Styles.LightBorder]: lightBorder
     })}
     disabled={disabled}
     title={title || text}

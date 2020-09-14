@@ -39,6 +39,7 @@ import {
   MODAL_ADD_FUNDS,
   MODAL_CANCEL_ALL_BETS,
   MODAL_SIGNUP,
+  MODAL_LOGIN,
 } from 'modules/common/constants';
 import {
   checkMultipleOfShares,
@@ -479,6 +480,7 @@ export const BetslipFooter = () => {
   } = useBetslipStore();
   const {
     actions: { setModal },
+    isLogged,
   } = useAppStatusStore();
   const { wager, potential, fees } = calculateBetslipTotals(betslip);
   const bet = formatDai(wager).full;
@@ -489,6 +491,7 @@ export const BetslipFooter = () => {
     <footer
       className={classNames(Styles.BetslipFooter, {
         [Styles.Unmatched]: subHeader === BETSLIP_SELECTED.UNMATCHED,
+        [Styles.LoggedOut]: !isLogged
       })}
     >
       {header === BETSLIP_SELECTED.BETSLIP ? (
@@ -518,32 +521,46 @@ export const BetslipFooter = () => {
               {` if you win`}
             </span>
           )}
-          <SecondaryButton
-            text="Cancel Bets"
-            action={() => {
-              setModal({
-                type: MODAL_CANCEL_ALL_BETS,
-                cb: () => {
-                  cancelAllBets();
-                  if (isReview) toggleStep();
-                },
-              });
-            }}
-            icon={Trash}
-          />
-          <PrimaryButton
-            text={!isReview ? 'Place Bets' : 'Confirm Bets'}
-            disabled={placeBetsDisabled}
-            action={() => {
-              if (!isReview) {
-                toggleStep();
-              } else {
-                toggleHeader(BETSLIP_SELECTED.MY_BETS);
-                toggleStep();
-                sendAllBets();
+          {isLogged ? (
+            <>
+              <SecondaryButton
+                text="Cancel Bets"
+                lightBorder
+                action={() => {
+                  setModal({
+                    type: MODAL_CANCEL_ALL_BETS,
+                    cb: () => {
+                      cancelAllBets();
+                      if (isReview) toggleStep();
+                    },
+                  });
+                }}
+                icon={Trash}
+              />
+              <PrimaryButton
+                text={!isReview ? 'Place Bets' : 'Confirm Bets'}
+                disabled={placeBetsDisabled}
+                action={() => {
+                  if (!isReview) {
+                    toggleStep();
+                  } else {
+                    toggleHeader(BETSLIP_SELECTED.MY_BETS);
+                    toggleStep();
+                    sendAllBets();
+                  }
+                }}
+              />
+            </>
+          ) : (
+            <PrimaryButton
+              text="Login to place bets"
+              action={() =>
+                setModal({
+                  type: MODAL_LOGIN,
+                })
               }
-            }}
-          />
+            />
+          )}
         </>
       ) : (
         <>
@@ -570,24 +587,16 @@ export const SideImages = () => {
       })}
     >
       <a href="" target="_blank" rel="noopener noreferrer">
-        <img
-          src={BannerSportsbook}
-        />
+        <img src={BannerSportsbook} />
       </a>
       <a href="" target="_blank" rel="noopener noreferrer">
-        <img
-          src={BannerTrading}
-        />
+        <img src={BannerTrading} />
       </a>
       <a href="" target="_blank" rel="noopener noreferrer">
-        <img
-          src={SmallBannerSportsbook}
-        />
+        <img src={SmallBannerSportsbook} />
       </a>
       <a href="" target="_blank" rel="noopener noreferrer">
-        <img
-          src={SmallBannerTrading}
-        />
+        <img src={SmallBannerTrading} />
       </a>
     </section>
   );
