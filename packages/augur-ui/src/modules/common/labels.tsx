@@ -1027,13 +1027,13 @@ export const LiquidityDepletedLabel = ({
   market,
 }: LiquidityDepletedLabelProps) => {
   const { theme, actions: { setModal } } = useAppStatusStore();
+  const isSports = theme === THEMES.SPORTS;
   if (
     market.passDefaultLiquiditySpread ||
-    market.hasPendingLiquidityOrders ||
+    (market.hasPendingLiquidityOrders && !isSports) ||
     market.marketStatus === constants.MARKET_CLOSED
   )
     return null;
-  const isSports = theme === THEMES.SPORTS;
   return (
     <>
       {isSports ? (

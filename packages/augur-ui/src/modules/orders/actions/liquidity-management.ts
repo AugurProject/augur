@@ -117,6 +117,7 @@ export const startOrderSending = async ({
   const market = marketInfos[marketId];
   let orders = [];
   const liquidity = pendingLiquidityOrders[market.transactionHash];
+  console.log("start order sending", marketId, market, liquidity);
   if (!liquidity) {
     return;
   }

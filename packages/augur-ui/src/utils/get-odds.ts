@@ -129,22 +129,37 @@ export const convertOddsToPrice = (odds: string) => {
   const { oddsType } = AppStatus.get();
   let result = null;
   switch (oddsType) {
-    case (DECIMAL): {
-      result = convertPercentToNormalizedPrice(convertDecimalToPercentage(odds));
+    case DECIMAL: {
+      result = convertPercentToNormalizedPrice(
+        convertDecimalToPercentage(odds)
+      );
       break;
     }
     case FRACTIONAL: {
-      result = convertPercentToNormalizedPrice(convertFractionalToPercentage(
-        createBigNumber(odds.replace('/1', ''))
-      ));
+      const fractionIndex = odds.indexOf('/');
+      const numerator =
+        fractionIndex > 0
+          ? createBigNumber(odds.slice(0, fractionIndex))
+          : createBigNumber(odds);
+      const denominator =
+        fractionIndex > 0
+          ? createBigNumber(odds.slice(fractionIndex + 1))
+          : ONE;
+      result = convertPercentToNormalizedPrice(
+        convertFractionalToPercentage(numerator, denominator)
+      );
       break;
     }
     case AMERICAN: {
-      result = convertPercentToNormalizedPrice(convertAmericanToPercentage(odds));
+      result = convertPercentToNormalizedPrice(
+        convertAmericanToPercentage(odds)
+      );
       break;
     }
     case PERCENT: {
-      result = convertPercentToNormalizedPrice(createBigNumber(odds.replace('%', '')));
+      result = convertPercentToNormalizedPrice(
+        createBigNumber(odds.replace('%', ''))
+      );
       break;
     }
     default:
@@ -152,23 +167,34 @@ export const convertOddsToPrice = (odds: string) => {
   }
   return result;
 };
-const convertPercentToNormalizedPrice = (percent: BigNumber): FormattedNumber => formatNumber(percent.dividedBy(HUNDRED), { decimalsRounded: 2 });
+
+const convertPercentToNormalizedPrice = (percent: BigNumber): FormattedNumber =>
+  formatNumber(percent.dividedBy(HUNDRED), { decimalsRounded: 2 });
 const convertDecimalToPercentage = (decimal: string): BigNumber =>
   ONE.dividedBy(decimal).times(HUNDRED);
-const convertFractionalToPercentage = (fractional: BigNumber): BigNumber =>
-  ONE.dividedBy(fractional.dividedBy(ONE).plus(ONE)).times(HUNDRED);
-const convertAmericanToPercentage = (american: string): BigNumber =>
-  american.includes('-')
-    ? convertNegativeAmericanToPercentage(
-        createBigNumber(american.replace('-', ''))
-      )
-    : convertPositiveAmericanToPercentage(
-        createBigNumber(american.replace('+', ''))
-      );
-const convertNegativeAmericanToPercentage = (american: BigNumber): BigNumber =>
-  american.dividedBy(american.plus(HUNDRED)).times(HUNDRED);
-const convertPositiveAmericanToPercentage = (american: BigNumber): BigNumber =>
-  HUNDRED.dividedBy(american.plus(HUNDRED)).times(HUNDRED);
+const convertFractionalToPercentage = (
+  numerator: BigNumber,
+  denomintor: BigNumber = ONE
+): BigNumber =>
+  ONE.dividedBy(numerator.dividedBy(denomintor).plus(ONE)).times(HUNDRED);
+const convertAmericanToPercentage = (american: string): BigNumber => {
+  const absAmerican = createBigNumber(
+    american.replace('-', '').replace('+', '')
+  );
+  const absAmericanPlus100 = absAmerican.plus(HUNDRED);
+  const americanConverted = american.includes('-')
+    ? convertNegativeAmericanToPercentage(absAmerican, absAmericanPlus100)
+    : convertPositiveAmericanToPercentage(absAmericanPlus100);
+  return americanConverted.times(HUNDRED);
+};
+const convertNegativeAmericanToPercentage = (
+  american: BigNumber,
+  americanPlus100: BigNumber
+): BigNumber => american.dividedBy(americanPlus100);
+
+const convertPositiveAmericanToPercentage = (
+  americanPlus100: BigNumber
+): BigNumber => HUNDRED.dividedBy(americanPlus100);
 
 const convertToPercentage = (normalizedValue: BigNumber): BigNumber =>
   normalizedValue.times(HUNDRED);
