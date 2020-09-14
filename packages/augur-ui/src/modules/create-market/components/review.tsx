@@ -251,7 +251,8 @@ export default class Review extends React.Component<
       timezone,
       template,
     } = newMarket;
-    const totalDai = formatEther(createBigNumber(s.validityBond ? s.validityBond.value : 0).plus(createBigNumber(s.formattedInitialLiquidityDai ? s.formattedInitialLiquidityDai.value : 0)));
+    const totalDai = formatEther(createBigNumber(s.validityBond ? s.validityBond.value : 0));
+    const totalWETH = formatEther(createBigNumber(s.formattedInitialLiquidityDai ? s.formattedInitialLiquidityDai.value : 0));
 
     // Total Gas in ETH
     const gasCost = createBigNumber(s.gasCost ? s.gasCost : 0);
@@ -332,16 +333,20 @@ export default class Review extends React.Component<
             <span>
               <LinearPropertyLabel
                 label={"Initial Liquidity"}
-                value={s.formattedInitialLiquidityDai.formattedValue + " DAI"}
+                value={s.formattedInitialLiquidityDai.formattedValue + " WETH"}
               />
             </span>
           </>}
 
-          <Subheaders header="Totals" subheader={GsnEnabled ? "Sum total of DAI and REPv2 required to create this market" : "Sum total of DAI, ETH and REPv2 required to create this market"} />
+          <Subheaders header="Totals" subheader={GsnEnabled ? "Sum total of DAI, WETH and REPv2 required to create this market" : "Sum total of DAI, WETH, ETH and REPv2 required to create this market"} />
           <span>
             <LinearPropertyLabel
               label={"Total DAI"}
               value={totalDai.formattedValue + " DAI"}
+            />
+            <LinearPropertyLabel
+              label={"Total WETH"}
+              value={totalWETH.formattedValue + " WETH"}
             />
             <TransactionFeeLabel gasEstimate={gasCost} />
             <LinearPropertyLabel

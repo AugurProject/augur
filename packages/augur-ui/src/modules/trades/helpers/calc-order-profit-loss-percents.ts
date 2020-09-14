@@ -11,8 +11,8 @@ import { SCALAR, BUY } from "modules/common/constants";
  * @param type the market type
  * @param settlementFee
  * @returns object with the following properties
- *    potentialDaiProfit:     number, maximum number of ether that can be made according to the current numShares and limit price
- *    potentialDaiLoss:       number, maximum number of ether that can be lost according to the current numShares and limit price
+ *    potentialTradeProfit:     number, maximum number of ether that can be made according to the current numShares and limit price
+ *    potentialTradeLoss:       number, maximum number of ether that can be lost according to the current numShares and limit price
  *    potentialProfitPercent: number, the maximum percentage profit that can be earned with current numShares and limit price,
  *                                    excluding first 100% (so a 2x is a 100% return and not a 200% return). For BUYs, loss is always 100% (exc. fees)
  */
@@ -59,17 +59,17 @@ export const calcOrderProfitLossPercents = (
   const longETHpotentialProfit = longETH;
   const shortETHpotentialProfit = shortETH;
 
-  const potentialDaiProfit =
+  const potentialTradeProfit =
     side === BUY ? shortETHpotentialProfit : longETHpotentialProfit;
 
-  const potentialDaiLoss =
+  const potentialTradeLoss =
     side === BUY ? longETHpotentialProfit : shortETHpotentialProfit;
 
   const tradingFees = winningSettlementCost;
 
   return {
-    potentialDaiProfit,
-    potentialDaiLoss,
+    potentialTradeProfit,
+    potentialTradeLoss,
     tradingFees,
   };
 };
@@ -136,25 +136,25 @@ export const calcOrderShareProfitLoss = (
       .minus(winningSettlementCost);
   }
 
-  let potentialDaiProfit =
+  let potentialTradeProfit =
     side === BUY ? shortETHpotentialProfit : longETHpotentialProfit;
 
   if (reversal) {
     const quantity = createBigNumber(Math.min(shareCost, reversal.quantity));
     if (side === BUY) {
       const normalizedPrice = max.minus(reversal.price);
-      potentialDaiProfit = shortETH
+      potentialTradeProfit = shortETH
         .minus(createBigNumber(normalizedPrice).times(quantity))
         .minus(winningSettlementCost);
     } else {
-      potentialDaiProfit = longETH
+      potentialTradeProfit = longETH
         .minus(createBigNumber(reversal.price).times(quantity))
         .minus(winningSettlementCost);
     }
   }
 
   return {
-    potentialDaiProfit,
+    potentialTradeProfit,
     tradingFees: winningSettlementCost,
   };
 };

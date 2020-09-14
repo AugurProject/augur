@@ -94,16 +94,16 @@ export const generateTrade = memoize(
         ? formatEthValue(totalOrderValue)
         : null,
       orderShareProfit: orderShareProfitLoss
-        ? formatEthValue(orderShareProfitLoss.potentialDaiProfit)
+        ? formatEthValue(orderShareProfitLoss.potentialTradeProfit)
         : null,
       orderShareTradingFee: orderShareProfitLoss
         ? formatEthValue(orderShareProfitLoss.tradingFees)
         : null,
-      potentialDaiProfit: preOrderProfitLoss
-        ? formatEthValue(preOrderProfitLoss.potentialDaiProfit)
+      potentialTradeProfit: preOrderProfitLoss
+        ? formatEthValue(preOrderProfitLoss.potentialTradeProfit)
         : null,
-      potentialDaiLoss: preOrderProfitLoss
-        ? formatEthValue(preOrderProfitLoss.potentialDaiLoss)
+      potentialTradeLoss: preOrderProfitLoss
+        ? formatEthValue(preOrderProfitLoss.potentialTradeLoss)
         : null,
       tradingFees: preOrderProfitLoss
         ? formatEthValue(preOrderProfitLoss.tradingFees)

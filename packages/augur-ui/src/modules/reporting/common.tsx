@@ -1307,18 +1307,11 @@ export class UserRepDisplay extends Component<
 
 export interface FeePoolViewProps {
   openClaimParticipationTokensModal: Function;
-  disputeWindowFees: FormattedNumber;
-  purchasedParticipationTokens: FormattedNumber;
-  tokensOwned: FormattedNumber;
-  percentageOfTotalFees: FormattedNumber;
   pastParticipationTokensPurchased: FormattedNumber;
   participationTokensClaimableFees: FormattedNumber;
-  disablePurchaseButton: boolean;
   hasRedeemable: boolean;
   openStakeRepModal: Function;
   openStakeSrepModal: Function;
-  openClaimFeesModal: Function;
-  openExitFeePoolModal: Function;
   openUnstakeSrepModal: Function;
   openExitUnstakeGovModal: Function;
   account: string;
@@ -1336,15 +1329,8 @@ export const FeePoolView = (
   {
     openStakeRepModal,
     openStakeSrepModal,
-    disputeWindowFees,
-    purchasedParticipationTokens,
-    tokensOwned,
-    percentageOfTotalFees,
     pastParticipationTokensPurchased,
     participationTokensClaimableFees,
-    disablePurchaseButton,
-    openClaimFeesModal,
-    openExitFeePoolModal,
     openUnstakeSrepModal,
     openExitUnstakeGovModal,
     account,
@@ -1364,6 +1350,7 @@ export const FeePoolView = (
   const [userTotalRep, setUserTotalRep] = useState("0");
   const [userTotalFees, setUserTotalFees] = useState("0");
   const [userRepPercentage, setUserRepPercentage] = useState("0");
+  const [disableClaiming, setDisableClaiming] = useState(true);
 
   useEffect(() => {
     if (isConnected) {
@@ -1376,8 +1363,10 @@ export const FeePoolView = (
           setUserTotalRep(userBalances.userRep);
           setUserTotalFees(userBalances.userFees);
           const totalRep = createBigNumber(balances.totalRep);
-          const repPercent = (totalRep.gt(0) ? createBigNumber(userBalances.userRep).div(totalRep) : 0).times(100);
+          const repPercent = (totalRep.gt(0) ? createBigNumber(userBalances.userRep).div(totalRep) : createBigNumber(0)).times(100);
           setUserRepPercentage(repPercent.toNumber());
+          if (totalRep.gt(0))
+          setDisableClaiming(false);
         })
 
       });
@@ -1438,7 +1427,7 @@ export const FeePoolView = (
       />
       <ProcessingButton
         secondaryButton
-        disabled={!isLoggedIn || !isApproved}
+        disabled={!isLoggedIn || !isApproved || disableClaiming}
         text="Claim Fees"
         action={() => showFeePoolClaiming(userTotalFees)}
         queueName={TRANSACTIONS}
@@ -1446,7 +1435,7 @@ export const FeePoolView = (
       />
       <ProcessingButton
         secondaryButton
-        disabled={!isLoggedIn || !isApproved}
+        disabled={!isLoggedIn || !isApproved || disableClaiming}
         text="Unstake & Claim Fees"
         action={() => showFeePoolExitClaiming(userTotalFees)}
         queueName={TRANSACTIONS}

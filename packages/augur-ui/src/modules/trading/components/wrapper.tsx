@@ -367,24 +367,34 @@ class Wrapper extends Component<WrapperProps, WrapperState> {
       };
     }
     if (initialLiquidity || tradingTutorial) {
+      const minPrice = createBigNumber(market.minPrice);
+      const maxPrice = createBigNumber(market.maxPrice);
+
       const totalCost = calculateTotalOrderValue(
         order.orderQuantity,
         order.orderPrice,
         order.selectedNav,
-        createBigNumber(market.minPrice),
-        createBigNumber(market.maxPrice),
+        minPrice,
+        maxPrice,
         market.marketType
       );
       const formattedValue = formatEther(totalCost);
+      let potentialTradeLoss = formatEther(totalCost);
+      const maxProfit = createBigNumber(order.orderQuantity).times(maxPrice);
+      let potentialTradeProfit = totalCost ? formatEther(maxProfit.minus(createBigNumber(totalCost))) : null;
+      if (tradingTutorial) {
+        potentialTradeLoss = formatEther(40);
+        potentialTradeProfit = formatEther(60);
+      }
       let trade = {
         ...useValues,
         limitPrice: order.orderPrice,
         selectedOutcome: selectedOutcome.id,
-        totalCost: formatEther(totalCost),
+        totalCost: formatEther(totalCost || 0),
         numShares: order.orderQuantity,
         shareCost: formatNumber(0),
-        potentialDaiLoss: formatDai(40),
-        potentialDaiProfit: formatDai(60),
+        potentialTradeLoss,
+        potentialTradeProfit,
         side: order.selectedNav,
         selectedNav,
       };
@@ -587,7 +597,7 @@ class Wrapper extends Component<WrapperProps, WrapperState> {
     const showTip = !hasHistory && orderEmpty;
     const showConfirm =
       !!trade &&
-      ((trade.potentialDaiLoss && trade.potentialDaiLoss.value !== 0) ||
+      ((trade.potentialTradeLoss && trade.potentialTradeLoss.value !== 0) ||
         (trade.orderShareProfit && trade.orderShareProfit.value !== 0) ||
         (trade.sharesFilled && trade.sharesFilled.value !== 0));
     return (

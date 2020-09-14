@@ -11,27 +11,9 @@ const mapStateToProps = (state: AppState) => {
   const gasPrice = state.gasPriceInfo.userDefinedGasPrice || state.gasPriceInfo.average;
   const isLoggedIn = state.authStatus.isLogged;
   const isConnected = state.connection.isConnected;
-  const { address, fees, purchased } =
-    state.universe && state.universe.disputeWindow;
-  const disablePurchaseButton = !!state.universe.forkingInfo;
   const { participationTokens } =
     state.loginAccount && state.loginAccount.reporting;
   const { balances } = state.loginAccount;
-  const tokenAmount =
-    (address &&
-      participationTokens &&
-      (participationTokens.contracts.find(c => !c.isClaimable) || {}).amount) ||
-    ZERO;
-  const purchasedTokens = purchased || 0;
-  const purchasedParticipationTokens = formatAttoRep(purchasedTokens);
-  const ONE_HUNDRED_BECAUSE_PERCENTAGES = 100;
-  const percentageOfTotalFees = formatPercent(
-    purchasedParticipationTokens.value
-      ? createBigNumber(tokenAmount)
-          .dividedBy(createBigNumber(purchasedTokens))
-          .times(ONE_HUNDRED_BECAUSE_PERCENTAGES)
-      : 0
-  );
   const pastParticipationTokensPurchased =
     (participationTokens && createBigNumber(participationTokens.totalClaimable)) || ZERO;
 
@@ -49,13 +31,8 @@ const mapStateToProps = (state: AppState) => {
   const hasRedeemable = isLoggedIn && pastParticipationTokensPurchased.gt(ZERO);
 
   return {
-    disputeWindowFees: formatAttoDai(fees || 0),
-    purchasedParticipationTokens,
-    tokensOwned: formatAttoRep(tokenAmount),
-    percentageOfTotalFees,
     pastParticipationTokensPurchased: formatAttoRep(pastParticipationTokensPurchased),
     participationTokensClaimableFees: formatAttoDai(participationTokensClaimableFees),
-    disablePurchaseButton,
     hasRedeemable,
     balances,
     account: state.loginAccount.address,
@@ -89,8 +66,6 @@ const mergeProps = (sP: any, dP: any, oP: any) => {
     ...oP,
     openStakeRepModal: () => dP.openModal({ tokenName: REP, balance: rep}),
     openStakeSrepModal: () => dP.openModal({ tokenName: SREP, balance: srep}),
-    openClaimFeesModal: () => dP.openClaimParticipationTokensModal(),
-    openExitFeePoolModal: () => dP.openClaimParticipationTokensModal(),
     openUnstakeSrepModal: () => dP.openClaimParticipationTokensModal(),
     openExitUnstakeGovModal: () => dP.openClaimParticipationTokensModal(),
     showFeePoolClaiming: totalFees => dP.showFeePoolClaiming({ totalRep: srep, totalFees }),

@@ -243,7 +243,7 @@ class Form extends Component<FromProps, FormState> {
   }
 
   updateTestProperty(property, nextProps) {
-    const { clearOrderConfirmation } = this.props;
+    const { clearOrderConfirmation, initialLiquidity } = this.props;
     if (nextProps[property] !== this.state[property]) {
       this.setState(
         {
@@ -258,7 +258,8 @@ class Form extends Component<FromProps, FormState> {
             newOrderInfo,
             undefined,
             nextProps,
-            true
+            true,
+            initialLiquidity
           );
           if (errorCount > 0) {
             clearOrderConfirmation();
@@ -284,9 +285,12 @@ class Form extends Component<FromProps, FormState> {
     }
   }
 
-  testTotal(value, errors, isOrderValid, price, quantity): TestResults {
+  testTotal(value, errors, isOrderValid, price, quantity, initialLiquidity): TestResults {
     let errorCount = 0;
     let passedTest = !!isOrderValid;
+    if ((!price || !quantity) && initialLiquidity) {
+      return { isOrderValid: false, errors, errorCount };
+    }
     if (value === '' && price && !!!quantity) {
       return { isOrderValid: false, errors, errorCount };
     }
@@ -562,7 +566,8 @@ class Form extends Component<FromProps, FormState> {
     order,
     changedProperty?: string,
     nextProps?: FromProps,
-    fromExternal = false
+    fromExternal = false,
+    initialLiquidity = false,
   ): TestResults {
     let errors = {
       [this.INPUT_TYPES.MULTIPLE_QUANTITY]: [],
@@ -625,7 +630,7 @@ class Form extends Component<FromProps, FormState> {
       isOrderValid: totalValid,
       errors: totalErrors,
       errorCount: totalErrorCount,
-    } = this.testTotal(total, errors, isOrderValid, price, quantity);
+    } = this.testTotal(total, errors, isOrderValid, price, quantity, initialLiquidity);
 
     errorCount += totalErrorCount;
     errors = { ...errors, ...totalErrors };

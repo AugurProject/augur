@@ -177,10 +177,10 @@ class Confirm extends Component<ConfirmProps, ConfirmState> {
     const {
       totalCost,
       selfTrade,
-      potentialDaiLoss,
+      potentialTradeLoss,
       numFills,
       loopLimit,
-      potentialDaiProfit,
+      potentialTradeProfit,
       orderShareProfit,
     } = trade;
 
@@ -218,8 +218,8 @@ class Confirm extends Component<ConfirmProps, ConfirmState> {
     if (
       !isNaN(numTrades) &&
       numTrades > 0 &&
-      ((potentialDaiProfit && potentialDaiProfit.value !== 0 &&
-        createBigNumber(gasCostInEth.value).gt(potentialDaiProfit.value)) ||
+      ((potentialTradeProfit && potentialTradeProfit.value !== 0 &&
+        createBigNumber(gasCostInEth.value).gt(potentialTradeProfit.value)) ||
         (orderShareProfit && orderShareProfit.value !== 0 &&
           createBigNumber(gasCostInEth.value).gt(orderShareProfit.value))) &&
       !tradingTutorial
@@ -263,7 +263,7 @@ class Confirm extends Component<ConfirmProps, ConfirmState> {
     if (
       !tradingTutorial &&
       totalCost && totalCost.value > 0 &&
-      createBigNumber(potentialDaiLoss.fullPrecision).gt(
+      createBigNumber(potentialTradeLoss.fullPrecision).gt(
         createBigNumber(availableWeth)
       )
     ) {
@@ -321,8 +321,8 @@ class Confirm extends Component<ConfirmProps, ConfirmState> {
     const {
       limitPrice,
       numShares,
-      potentialDaiProfit,
-      potentialDaiLoss,
+      potentialTradeProfit,
+      potentialTradeLoss,
       totalCost,
       shareCost,
       side,
@@ -381,9 +381,9 @@ class Confirm extends Component<ConfirmProps, ConfirmState> {
 
     const notProfitable =
       (orderShareProfit && createBigNumber(orderShareProfit.value).lte(0)) ||
-      (potentialDaiLoss.value > 0 &&
-        potentialDaiProfit &&
-        potentialDaiProfit.value <= 0);
+      (potentialTradeLoss.value > 0 &&
+        potentialTradeProfit &&
+        potentialTradeProfit.value <= 0);
 
     return (
       <section className={Styles.TradingConfirm}>
@@ -469,16 +469,16 @@ class Confirm extends Component<ConfirmProps, ConfirmState> {
             </div>
             <LinearPropertyLabel
               label="Max Profit"
-              value={potentialDaiProfit}
+              value={potentialTradeProfit}
               showDenomination={true}
             />
             <LinearPropertyLabel
               label="Max Loss"
-              value={potentialDaiLoss}
+              value={potentialTradeLoss}
               showDenomination={true}
             />
             <TransactionFeeLabelToolTip
-              isError={!tradingTutorial && createBigNumber(gasCostDai.value).gt(createBigNumber(potentialDaiProfit.value))}
+              isError={!tradingTutorial && createBigNumber(gasCostDai.value).gt(createBigNumber(potentialTradeProfit.value))}
               gasEstimate={(tradingTutorial || postOnlyOrder) ? 0 : gasLimit}
               normalGasLimit={numFills > 0 && normalGasLimit}
             />
@@ -530,7 +530,7 @@ class Confirm extends Component<ConfirmProps, ConfirmState> {
               <button onClick={messages.callback ? () => messages.callback() : this.clearErrorMessage}>{XIcon}</button>
             )}
 
-            {!tradingTutorial && isLogged && totalCost && (createBigNumber(potentialDaiLoss.fullPrecision).gt(createBigNumber(availableWeth)) ||
+            {!tradingTutorial && isLogged && totalCost && (createBigNumber(potentialTradeLoss.fullPrecision).gt(createBigNumber(availableWeth)) ||
             createBigNumber(gasCostInEth).gte(createBigNumber(availableEth))) &&
               <PrimaryButton action={() => showAddFundsModal({ tokenToAdd: WETH })} text={'Add Funds'} />
             }

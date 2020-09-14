@@ -11,7 +11,7 @@ import {
   Pencil,
   ClipboardCopy,
   AugurLogo,
-  WethIcon as WethIcon,
+  WethIcon as WethIcon,, DaiLogoIcon
 } from 'modules/common/icons';
 import { PrimaryButton, SecondaryButton } from 'modules/common/buttons';
 import { formatEther, formatRep, } from 'utils/format-number';
@@ -140,7 +140,7 @@ const ConnectDropdown = (props: ConnectDropdownProps) => {
       name: 'WETH',
       logo: WethIcon,
       wrapped: true,
-      disabled: GsnEnabled ? balances.weth === "0" : false,
+      disabled: balances.weth === "0",
     },
     {
       value: formatEther(balances.eth, {
@@ -149,7 +149,7 @@ const ConnectDropdown = (props: ConnectDropdownProps) => {
       }).formatted,
       name: 'ETH',
       logo: EthIcon,
-      disabled: GsnEnabled ? balances.eth === "0" : false,
+      disabled: balances.eth === "0",
     },
     {
       name: 'REPv2',
@@ -158,7 +158,16 @@ const ConnectDropdown = (props: ConnectDropdownProps) => {
         zeroStyled: false,
         decimalsRounded: 4,
       }).formatted,
-      disabled: GsnEnabled ? balances.rep === "0" : false,
+      disabled: balances.rep === "0",
+    },
+    {
+      value: formatEther(balances.dai, {
+        zeroStyled: false,
+        decimalsRounded: 2,
+      }).formatted,
+      name: 'DAI',
+      logo: DaiLogoIcon,
+      disabled: balances.dai === "0",
     },
   ];
 
