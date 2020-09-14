@@ -55,6 +55,7 @@ import ModalHelp from 'modules/modal/containers/modal-help';
 import ModalMarketNotFound from 'modules/modal/containers/modal-market-not-found';
 import FrozenFundsBreakdown from 'modules/modal/containers/modal-frozen-funds-breakdown';
 import ModalTutorialVideo from 'modules/modal/containers/modal-tutoria-video';
+import ModalFeePoolClaiming from 'modules/modal/containers/modal-feepool-claiming';
 import * as TYPES from 'modules/common/constants';
 
 import Styles from 'modules/modal/components/common/common.styles.less';
@@ -186,6 +187,8 @@ function selectModal(type, props, closeModal, modal) {
       return <ModalDisclaimer {...modal} isReportingOnly={true} />;
     case TYPES.MODAL_TUTORIA_VIDEO:
       return <ModalTutorialVideo />
+    case TYPES.FEE_POOL_CLAIMING:
+      return <ModalFeePoolClaiming />
     default:
       return <div />;
   }

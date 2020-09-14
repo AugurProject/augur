@@ -1356,6 +1356,12 @@ export async function hasApprovedFeePool(account: string): Promise<number> {
     account,
     feePool.address
   );
+
+  const sRepAllowance = await contracts.reputationToken.allowance_(
+    account,
+    feePool.address
+  );
+
   let approvalsNeeded = 1;
   if (currentAllowance.gt(0)) {
     approvalsNeeded = 0;
@@ -1370,6 +1376,28 @@ export async function approveFeePool(): Promise<void> {
   return result;
 }
 
+interface FeePoolBalances {
+  totalRep: string;
+  totalFees: string;
+}
+export async function getFeePoolBalances(): Promise<FeePoolBalances> {
+  const feePool = await getFeePool();
+  const repBalance = await feePool.totalSupply_();
+  const feeBalance = await feePool.feeReserve_();
+  return { totalRep: repBalance, totalFees: feeBalance}
+}
+
+interface UserFeePoolBalances {
+  userRep: string;
+  userFees: string;
+}
+
+export async function getUserFeePoolBalances(account: string): Promise<UserFeePoolBalances> {
+  const feePool = await getFeePool();
+  const repBalance = await feePool.balanceOf_(account);
+  const feeBalance = await feePool.withdrawableFeesOf_(account);
+  return { userRep: repBalance, userFees: feeBalance}
+}
 
 export async function feePoolBalance(account: string): Promise<string> {
   const feePool = await getFeePool();
@@ -1409,6 +1437,9 @@ interface IFeePot {
     stake: Function;
     earnedFeesOf_: Function;
     balanceOf_: Function;
+    totalSupply_: Function;
+    feeReserve_: Function;
+    withdrawableFeesOf_: Function;
     address: string;
 }
 

@@ -1,14 +1,16 @@
 import { connect } from 'react-redux';
 import { FeePoolView } from 'modules/reporting/common';
 import { updateModal } from 'modules/modal/actions/update-modal';
-import { ETH, MODAL_ADD_FUNDS, MODAL_CLAIM_FEES, MODAL_STAKE_TOKENS, REP, SREP, ZERO } from 'modules/common/constants';
+import { ETH, FEE_POOL_CLAIMING, MODAL_ADD_FUNDS, MODAL_CLAIM_FEES, MODAL_STAKE_TOKENS, REP, SREP, ZERO } from 'modules/common/constants';
 import { formatAttoDai, formatAttoRep, formatPercent, formatRep, } from 'utils/format-number';
 import { createBigNumber } from 'utils/create-big-number';
 import { AppState } from 'appStore';
 
 const mapStateToProps = (state: AppState) => {
+  const blockNumber = state.blockchain.currentBlockNumber;
   const gasPrice = state.gasPriceInfo.userDefinedGasPrice || state.gasPriceInfo.average;
   const isLoggedIn = state.authStatus.isLogged;
+  const isConnected = state.connection.isConnected;
   const { address, fees, purchased } =
     state.universe && state.universe.disputeWindow;
   const disablePurchaseButton = !!state.universe.forkingInfo;
@@ -59,6 +61,8 @@ const mapStateToProps = (state: AppState) => {
     account: state.loginAccount.address,
     isLoggedIn,
     gasPrice,
+    isConnected,
+    blockNumber,
   };
 };
 
@@ -66,6 +70,7 @@ const mapDispatchToProps = dispatch => ({
   openModal: (modal) => dispatch(updateModal({ type: MODAL_STAKE_TOKENS, modal })),
   openClaimParticipationTokensModal: () => dispatch(updateModal({type: MODAL_CLAIM_FEES, participationTokensOnly: true})),
   showAddFundsModal: () => dispatch(updateModal({ type: MODAL_ADD_FUNDS, tokenToAdd: ETH })),
+  showFeePoolClaiming: (modal) => dispatch(updateModal({ type: FEE_POOL_CLAIMING, modal }))
 });
 
 
@@ -88,6 +93,8 @@ const mergeProps = (sP: any, dP: any, oP: any) => {
     openExitFeePoolModal: () => dP.openClaimParticipationTokensModal(),
     openUnstakeSrepModal: () => dP.openClaimParticipationTokensModal(),
     openExitUnstakeGovModal: () => dP.openClaimParticipationTokensModal(),
+    showFeePoolClaiming: totalFees => dP.showFeePoolClaiming({ totalRep: srep, totalFees }),
+    showFeePoolExitClaiming: totalFees => dP.showFeePoolClaiming({ totalRep: srep, totalFees, isFullExit: true })
   }
 };
 
