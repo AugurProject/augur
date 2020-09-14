@@ -29,9 +29,17 @@
             grid-column: 4;
             
             > span {
+                .text-12;
+                
                 width: unset;
                 margin: 0;
                 margin-left: @size-3;
+
+                &:nth-of-type(2) {
+                    .text-12-semi-bold;
+
+                    text-transform: none;
+                }
             }
         }
 
@@ -132,7 +140,7 @@
 
 .BetsHeader {
     display: grid;
-    grid-template-columns: 2fr repeat(5, 1fr);
+    grid-template-columns: 2fr repeat(3, 1fr) 12.5rem 1fr;
     
     &:first-of-type {
         .text-10-medium;
@@ -142,7 +150,6 @@
         border-top: @size-1 solid var(--color-dark-grey);
         padding: @size-14 0 @size-14 @size-16;
         text-transform: uppercase;
-        grid-gap: @size-24;
 
         > li {
             &:not(:first-child) {
