@@ -117,8 +117,8 @@ export const Onboarding = ({
   const [ethRecieved, setEthRecieved] = useState(false);
   const [isZeroXApproved, setIsZeroXApproved] = useState(false);
   const [isShareTokenApproved, setIsShareTokenApproved] = useState(false);
-  const [isFillOrderAprpoved, setIsFillOrderApproved] = useState(false);
-  const [onboardingRoute, setOnboardingRoute] = useState(null);
+  const [isFillOrderApproved, setIsFillOrderApproved] = useState(false);
+  const [onboardingRoute, setOnboardingRoute] = useState(1);
 
   const checkIsZeroXApproved = async () => {
     const approved = await approveZeroXCheck(address);
@@ -170,6 +170,10 @@ export const Onboarding = ({
       buttons[0].action();
     }
 
+    if (showApprovals && isZeroXApproved && isShareTokenApproved && isFillOrderApproved) {
+      buttons[0].text = 'Next';
+    }
+
     if (showApprovals) {
       checkIsZeroXApproved();
       checkIsShareTokenApproved();
@@ -180,7 +184,7 @@ export const Onboarding = ({
           await checkIsZeroXApproved();
         } else if (!isShareTokenApproved) {
           await checkIsShareTokenApproved();
-        } else if (!isFillOrderAprpoved) {
+        } else if (!isFillOrderApproved) {
           await checkIsFillOrderApproved();
         } else {
           clearInterval(intervalId);
@@ -215,18 +219,17 @@ export const Onboarding = ({
         const approved = await approveFillOrder(address);
         setIsFillOrderApproved(approved);
       },
-      isApproved: isFillOrderAprpoved,
+      isApproved: isFillOrderApproved,
     }];
   }
 
   if (showApprovals) {
-    buttons[0].disabled = (!isZeroXApproved || !isShareTokenApproved || !isFillOrderAprpoved);
+    buttons[0].disabled = (!isZeroXApproved || !isShareTokenApproved || !isFillOrderApproved);
   }
 
   if (currentStep === 1) {
-    buttons[0].disabled = onboardingRoute === null;
     buttons[0].action = () => {
-      if (onboardingRoute === 1) {
+      if (onboardingRoute === 1 || onboardingRoute === null) {
         gotoApprovals();
       } else if (onboardingRoute === 2) {
         gotoTokenSelect();
@@ -324,7 +327,7 @@ export const Onboarding = ({
 
         {showApprovals && (
           <Approvals
-            currentApprovalStep={!isZeroXApproved ? 0 : !isShareTokenApproved ? 1 : !isFillOrderAprpoved ? 2 : 3}
+            currentApprovalStep={!isZeroXApproved ? 0 : !isShareTokenApproved ? 1 : !isFillOrderApproved ? 2 : 3}
             approvalData={approvalData}
           />
         )}

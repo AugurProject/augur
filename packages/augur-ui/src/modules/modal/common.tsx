@@ -511,21 +511,21 @@ export const TokenSelect = ({
         </div>
       </div>
 
-      <div className={!usdcAmount.gt(0) ? Styles.OnboardingTokenSelectDisabled : null} onClick={() => handleSelection(USDC)}>
+      {usdcAmount.gt(0) && <div onClick={() => handleSelection(USDC)}>
         <div>{tokenUSDC} USDC</div>
         <div>
           <div>Wallet Balance:</div>
           <div>${formatNumber(usdcAmount).formattedValue}</div>
         </div>
-      </div>
+      </div>}
 
-      <div className={!usdtAmount.gt(0) ? Styles.OnboardingTokenSelectDisabled : null} onClick={() => handleSelection(USDT)}>
+      {usdtAmount.gt(0) && <div onClick={() => handleSelection(USDT)}>
         <div>{tokenUSDT} USDT</div>
         <div>
           <div>Wallet Balance:</div>
           <div>${formatNumber(usdtAmount).formattedValue}</div>
         </div>
-      </div>
+      </div>}
     </div>
   );
 };
@@ -549,7 +549,6 @@ export const Bankroll = ({
 }: BankrollProps) => {
   const [show1InchExchange, setShow1InchExchange] = useState(false);
   const [showWalletOnRamp, setShowWalletOnRamp] = useState(false);
-  const [hasClicked1inchLink, setHasClicked1inchLink] = useState(false);
 
   if (!hasBalanceOver50k) {
     swapModal();

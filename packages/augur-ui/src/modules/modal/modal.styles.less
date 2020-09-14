@@ -200,6 +200,10 @@ div.Onboarding {
 
         > img {
           height: 250px;
+
+          @media @breakpoint-mobile {
+            height: 120px;
+          }
        }
 
         > svg {
@@ -263,10 +267,10 @@ div.Onboarding {
         > span:last-of-type {
           .text-12-bold;
 
+          display: table;
           text-align: center;
           border-bottom: @size-1 dashed @color-primary-text;
           width: fit-content;
-          display: flex;
           align-items: center;
           justify-content: center;
           color: @color-primary-text;
@@ -504,16 +508,6 @@ div.Onboarding {
       }
     }
   }
-
-  > .OnboardingTokenSelectDisabled {
-    pointer-events: none;
-
-    > div:last-of-type {
-      > div:last-of-type {
-        color: @color-inactive-text;
-      }
-    }
-  }
 }
 
 .OnboardingBankroll {
@@ -576,6 +570,9 @@ div.Onboarding {
     margin: 0;
     padding: @size-24 @size-24 @size-16 @size-24;
     transform: translateY(-4px);
+    display: table;
+    width: 100%;
+    text-align: center;
 
     > div:first-of-type {
       .text-14-bold;
@@ -596,7 +593,9 @@ div.Onboarding {
 
       border-bottom: @size-1 dashed @color-primary-text;
       color: @color-primary-text;
+      display: table;
       font-weight: 600;
+      margin: auto;
       text-transform: uppercase;
     }
 
@@ -609,6 +608,16 @@ div.Onboarding {
 
       > a {
         color: @color-dark-grey;
+        display: inline-block;
+        margin: -16px;
+        outline: none;
+        padding: @size-16 8rem;
+        position: relative;
+        z-index: 1;
+      }
+
+      > svg {
+        transform: translateX(-6rem);
       }
 
       svg > path {

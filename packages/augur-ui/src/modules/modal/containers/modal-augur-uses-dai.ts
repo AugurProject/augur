@@ -61,7 +61,7 @@ const mergeProps = (sP: any, dP: any, oP: any) => ({
   buttons: [
     {
       text: 'Next',
-      disabled: true,
+      disabled: false,
       action: () => null,
     },
   ],
