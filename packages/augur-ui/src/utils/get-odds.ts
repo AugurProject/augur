@@ -128,22 +128,23 @@ export const getOddsObject = (normalizedValue: BigNumber, toDecimals = 4) => {
 export const convertOddsToPrice = (odds: string) => {
   const { oddsType } = AppStatus.get();
   let result = null;
+  const cleanOdds = odds.replace(',', '').replace('%', '').trim();
   switch (oddsType) {
     case DECIMAL: {
       result = convertPercentToNormalizedPrice(
-        convertDecimalToPercentage(odds)
+        convertDecimalToPercentage(cleanOdds)
       );
       break;
     }
     case FRACTIONAL: {
-      const fractionIndex = odds.indexOf('/');
+      const fractionIndex = cleanOdds.indexOf('/');
       const numerator =
         fractionIndex > 0
-          ? createBigNumber(odds.slice(0, fractionIndex))
-          : createBigNumber(odds);
+          ? createBigNumber(cleanOdds.slice(0, fractionIndex))
+          : createBigNumber(cleanOdds);
       const denominator =
         fractionIndex > 0
-          ? createBigNumber(odds.slice(fractionIndex + 1))
+          ? createBigNumber(cleanOdds.slice(fractionIndex + 1))
           : ONE;
       result = convertPercentToNormalizedPrice(
         convertFractionalToPercentage(numerator, denominator)
@@ -152,13 +153,13 @@ export const convertOddsToPrice = (odds: string) => {
     }
     case AMERICAN: {
       result = convertPercentToNormalizedPrice(
-        convertAmericanToPercentage(odds)
+        convertAmericanToPercentage(cleanOdds)
       );
       break;
     }
     case PERCENT: {
       result = convertPercentToNormalizedPrice(
-        createBigNumber(odds.replace('%', ''))
+        createBigNumber(cleanOdds)
       );
       break;
     }

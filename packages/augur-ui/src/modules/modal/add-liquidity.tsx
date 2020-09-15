@@ -15,9 +15,7 @@ import { formatDai } from 'utils/format-number';
 import { SquareDropdown } from 'modules/common/selection';
 import { BetslipInput } from 'modules/trading/common';
 import { PrimaryButton } from 'modules/common/buttons';
-import {
-  updateTradeCost
-} from 'modules/trades/actions/update-trade-cost-shares';
+import { updateTradeCost } from 'modules/trades/actions/update-trade-cost-shares';
 import { createBigNumber } from 'utils/create-big-number';
 
 const getOutcomeOptions = outcomesFormatted => {
@@ -61,11 +59,16 @@ export const ModalAddLiquidity = () => {
       description,
       minPriceBigNumber: min,
       maxPriceBigNumber: max,
+      tickSize,
     },
   } = modal;
   const orderBook = pendingLiquidityOrders[txParamHash] || {};
-  const [odds, setOdds] = useState('');
-  const [wager, setWager] = useState('');
+  const [errorMessage, setErrorMessage] = useState(null);
+  const odds = useRef(null);
+  const oddsValidation = useRef({ checkError: false, errorMessage: null });
+  const wager = useRef(null);
+  const wagerValidation = useRef({ checkError: false, errorMessage: null });
+  const shares = useRef('10');
   const [selectedOutcome, setSelectedOutcome] = useState(1);
   const options = useMemo(() => getOutcomeOptions(outcomesFormatted), [
     outcomesFormatted,
@@ -89,11 +92,98 @@ export const ModalAddLiquidity = () => {
       },
     },
   ];
-  const checkWager = newVal => ({ checkError: false, errorMessage: null });
-  const errorMessage = null;
-  const modifyBet = v => {
-    v.odds ? setOdds(v.odds) : setWager(v.wager);
+  const checkWager = newVal => {
+    wager.current = newVal;
+    wagerValidation.current.checkError = false;
+    wagerValidation.current.errorMessage = null;
+    const formattedDai = formatDai(isNaN(Number(newVal)) ? 0 : newVal);
+    if (
+      formattedDai.value <= 0
+    ) {
+      wagerValidation.current.checkError = true;
+      wagerValidation.current.errorMessage = `Your wager must be a number above $0.00`;
+    }
+    checkSharesAssignMessage();
+    return {
+      checkError: wagerValidation.current.checkError,
+      errorMessage: wagerValidation.current.errorMessage,
+    };
   };
+
+  const checkOdds = newVal => {
+    odds.current = newVal;
+    oddsValidation.current.checkError = false;
+    oddsValidation.current.errorMessage = null;
+    if (!!newVal) {
+      const normalizedPrice = convertOddsToPrice(odds.current);
+      const priceBN = createBigNumber(normalizedPrice.fullPrecision);
+      const maxValid = max.minus(tickSize);
+      if (isNaN(normalizedPrice.formatted) || priceBN.gt(maxValid) || priceBN.lt(tickSize)) {
+        const minOdds = convertToOdds(
+          convertToNormalizedPrice({
+            price: tickSize,
+            min,
+            max,
+          })
+        ).full;
+        const maxOdds = convertToOdds(
+          convertToNormalizedPrice({
+            price: maxValid.toFixed(),
+            min,
+            max,
+          })
+        ).full;
+        oddsValidation.current.checkError = true;
+        oddsValidation.current.errorMessage = `Odds must be between ${minOdds} and ${maxOdds}`;
+      }
+    }
+    checkSharesAssignMessage();
+    return {
+      checkError: oddsValidation.current.checkError,
+      errorMessage: oddsValidation.current.errorMessage,
+    };
+  };
+
+  const checkSharesAssignMessage = () => {
+    const oddsMessage = oddsValidation.current.errorMessage;
+    const wagerMessage = wagerValidation.current.errorMessage;
+    // TODO: after matic, refactor this out as it shouldn't be needed anymore.
+    let shareAmountMessage = null;
+    const total = wager.current
+      ? createBigNumber(formatDai(wager.current).formatted)
+      : wager.current;
+    const price = odds.current
+      ? createBigNumber(convertOddsToPrice(odds.current).fullPrecision)
+      : odds.current;
+
+    if (!oddsMessage && !wagerMessage && price && total) {
+      const marketRange = max.minus(min);
+      const askPrice = marketRange.minus(price);
+      const curNumShares = total.dividedBy(askPrice);
+      const numSharesMod = curNumShares.modulo(10);
+      const isValidShares = numSharesMod.eq(0);
+      if (!isValidShares) {
+        const costOfMod = numSharesMod.times(askPrice);
+        const tenShareCost = createBigNumber(10).times(askPrice);
+        const raiseTo = costOfMod.eq(total)
+          ? tenShareCost
+          : total.plus(tenShareCost.minus(costOfMod));
+        const lowerTo = total.minus(costOfMod);
+        const customPart = lowerTo.gt(0)
+          ? `Raise total to ${formatDai(raiseTo).full} or lower total to ${
+              formatDai(lowerTo).full
+            }`
+          : `Raise total to ${formatDai(raiseTo).full}.`;
+          shareAmountMessage = `This amount will fail due to system limitaitons. ${customPart}`;
+      }
+    }
+    const messageToSet =
+      oddsMessage || wagerMessage || shareAmountMessage || null;
+    if (errorMessage !== messageToSet) {
+      setErrorMessage(messageToSet);
+    }
+  };
+  const modifyBet = v => {};
   return (
     <div className={Styles.AddLiquidityModal}>
       <Title title="Add more liquidity" closeAction={() => closeModal()} />
@@ -111,25 +201,26 @@ export const ModalAddLiquidity = () => {
           />
           <BetslipInput
             label="Wager"
-            value={wager}
+            value={wager.current}
             valueKey="wager"
             modifyBet={modifyBet}
             errorCheck={checkWager}
-            orderErrorMessage={errorMessage}
+            orderErrorMessage={wagerValidation.current.errorMessage}
           />
           <BetslipInput
             label="Odds"
-            value={odds}
+            value={odds.current}
             valueKey="odds"
             modifyBet={modifyBet}
-            errorCheck={checkWager}
-            orderErrorMessage={errorMessage}
+            errorCheck={checkOdds}
+            orderErrorMessage={oddsValidation.current.errorMessage}
             noForcedText
           />
           <PrimaryButton
             action={() => {
-              const limitPrice = convertOddsToPrice(odds).roundedFormatted;
-              const orderShares = '10';
+              const limitPrice = convertOddsToPrice(odds.current)
+                .roundedFormatted;
+              const orderShares = shares.current;
               const curOutcome = selectedOutcome;
               const curOutcomeArray = orderBook[curOutcome]
                 ? orderBook[curOutcome]
@@ -152,8 +243,9 @@ export const ModalAddLiquidity = () => {
                   const order = trade;
                   order.price = createBigNumber(trade.limitPrice);
                   order.quantity = createBigNumber(trade.numShares);
-                  order.outcome = outcomesFormatted[curOutcome];
+                  order.outcomeName = outcomesFormatted[curOutcome].description;
                   order.outcomeId = curOutcome;
+                  order.orderEstimate = order.totalCost.formatted;
                   if (index >= 0) {
                     curOutcomeArray[index] = order;
                   } else {
@@ -171,7 +263,9 @@ export const ModalAddLiquidity = () => {
               });
             }}
             text="Add offer"
+            disabled={errorMessage}
           />
+          {errorMessage && <span>{errorMessage}</span>}
         </section>
         <div>
           <ul key={`tableheader`}>
@@ -186,7 +280,7 @@ export const ModalAddLiquidity = () => {
           </ul>
           {Object.keys(orderBook).map(outcomeId => {
             const displayingOutcome = outcomesFormatted[outcomeId];
-            return (orderBook[outcomeId] || []).map((order, orderId, array) => {
+            return (orderBook[outcomeId] || []).map((order, orderId) => {
               const key = `${order.limitPrice}-${displayingOutcome.id}`;
               return (
                 <ul key={key}>
