@@ -106,31 +106,45 @@
   .BottomContent {
     border-top: @size-1 solid var(--color-dark-grey);
     display: flex;
-    flex-direction: row-reverse;
     position: absolute;
     bottom: 0;
     width: 100%;
+    padding: @size-16;
+    align-items: center;
 
-    > a > button {
-      .mono-10-semi-bold;
+    > span {
+      .text-12;
 
-      border: none;
-      text-transform: uppercase;
-
-      > svg {
-        margin-right: @size-8;
-
-        > path {
-          fill: var(--color-primary-text);
-        }
+      > button {
+        font-size: @size-12;
       }
+    }
 
-      &:not(:disabled):hover,
-      &:not(:disabled):focus,
-      &:not(:disabled):focus:hover,
-      &:not(:disabled):active {
-        color: var(--color-primary-text);
-        background: var(--color-secondary-action);
+    > a {
+      margin-left: auto;
+
+      > button {
+        .mono-10-semi-bold;
+
+        border: none;
+        text-transform: uppercase;
+        padding-right: 0;
+
+        > svg {
+          margin-right: @size-8;
+
+          > path {
+            fill: var(--color-primary-text);
+          }
+        }
+
+        &:not(:disabled):hover,
+        &:not(:disabled):focus,
+        &:not(:disabled):focus:hover,
+        &:not(:disabled):active {
+          color: var(--color-primary-text);
+          background: var(--color-secondary-action);
+        }
       }
     }
   }

@@ -3,7 +3,7 @@ import classNames from 'classnames';
 import { Link } from 'react-router-dom';
 import { CREATE_MARKET } from 'modules/routes/constants/views';
 import makePath from 'modules/routes/helpers/make-path';
-import { SecondaryButton } from 'modules/common/buttons';
+import { SecondaryButton, TextUnderlineButton } from 'modules/common/buttons';
 import { THEMES } from 'modules/common/constants';
 import { AddIcon } from 'modules/common/icons';
 import { useAppStatusStore } from 'modules/app/store/app-status';
@@ -178,6 +178,7 @@ const MyMarkets = ({ toggle, hide, extend }: MyMarketsProps) => {
       ]}
       footer={(myMarkets.length !== 0 && !isTrading) && (
         <div className={marketStyles.BottomContent}>
+          <span>You are viewing Sportsbook markets only.<br />To view all your created markets, visit <TextUnderlineButton text="Trading" action={() => setTheme(THEMES.TRADING)} />.</span>
           <Link to={makePath(CREATE_MARKET)}>
             <SecondaryButton
               text="Create Market"
