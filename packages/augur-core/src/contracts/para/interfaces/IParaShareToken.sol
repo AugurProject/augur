@@ -3,7 +3,6 @@ pragma solidity 0.5.15;
 import 'ROOT/para/interfaces/IParaUniverse.sol';
 import 'ROOT/ICash.sol';
 
-
 interface IParaShareToken {
     function cash() external view returns (ICash);
     function augur() external view returns (address);

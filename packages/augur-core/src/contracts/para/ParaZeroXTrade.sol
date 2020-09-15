@@ -91,7 +91,7 @@ contract ParaZeroXTrade is Initializable, IZeroXTrade, IERC1155 {
     IWETH public WETH;
     bool public token0IsCash;
 
-    function initialize(IAugur _augur, IAugurTrading _augurTrading) public beforeInitialized {
+    function initialize(IAugur _augur, IAugurTrading _augurTrading) external beforeInitialized {
         endInitialization();
         augur = _augur;
         augurTrading = _augurTrading;
@@ -123,6 +123,7 @@ contract ParaZeroXTrade is Initializable, IZeroXTrade, IERC1155 {
     /// @param value   Transfer amount
     /// @param data    Additional data with no specified format, sent in call to `_to`
     function safeTransferFrom(address from, address to, uint256 id, uint256 value, bytes calldata data) external {
+        data;
         require(transferFromAllowed);
         emit TransferSingle(msg.sender, from, to, id, value);
     }
@@ -135,6 +136,7 @@ contract ParaZeroXTrade is Initializable, IZeroXTrade, IERC1155 {
     /// @param values  Transfer amounts per token type
     /// @param data    Additional data with no specified format, sent in call to `_to`
     function safeBatchTransferFrom(address from, address to, uint256[] calldata ids, uint256[] calldata values, bytes calldata data) external {
+        data;
         require(transferFromAllowed);
         emit TransferBatch(msg.sender, from, to, ids, values);
     }
@@ -155,6 +157,7 @@ contract ParaZeroXTrade is Initializable, IZeroXTrade, IERC1155 {
     }
 
     function totalSupply(uint256 id) external view returns (uint256) {
+        id;
         return 0;
     }
 
@@ -205,10 +208,12 @@ contract ParaZeroXTrade is Initializable, IZeroXTrade, IERC1155 {
     }
 
     function setApprovalForAll(address operator, bool approved) external {
+        operator; approved;
         revert("Not supported");
     }
 
     function isApprovedForAll(address owner, address operator) external view returns (bool) {
+        owner; operator;
         return true;
     }
 
@@ -220,7 +225,7 @@ contract ParaZeroXTrade is Initializable, IZeroXTrade, IERC1155 {
      * @param  _requestedFillAmount  Share amount to fill
      * @param  _fingerprint          Fingerprint of the user to restrict affiliate fees
      * @param  _tradeGroupId         Random id to correlate these fills as one trade action
-     * @param  _maxProtocolFeeDai    The maximum amount of DAI to spend on covering the 0x protocol fee
+     * @param  _unused               IGNORED: The _maxProtocolFeeDai is only used on the non-Para ZeroXTrade
      * @param  _maxTrades            The maximum number of trades to actually take from the provided 0x orders
      * @param  _orders               Array of encoded Order struct data
      * @param  _signatures           Array of signature data
@@ -230,7 +235,7 @@ contract ParaZeroXTrade is Initializable, IZeroXTrade, IERC1155 {
         uint256 _requestedFillAmount,
         bytes32 _fingerprint,
         bytes32 _tradeGroupId,
-        uint256 _maxProtocolFeeDai,
+        uint256 _unused,
         uint256 _maxTrades,
         IExchange.Order[] memory _orders,
         bytes[] memory _signatures
@@ -239,6 +244,7 @@ contract ParaZeroXTrade is Initializable, IZeroXTrade, IERC1155 {
         payable
         returns (uint256)
     {
+        _unused;
         require(_orders.length > 0);
         uint256 _fillAmountRemaining = _requestedFillAmount;
 
@@ -297,7 +303,7 @@ contract ParaZeroXTrade is Initializable, IZeroXTrade, IERC1155 {
         return fillResults;
     }
 
-    function getAmountIn(uint amountOut, uint reserveIn, uint reserveOut) public pure returns (uint amountIn) {
+    function getAmountIn(uint amountOut, uint reserveIn, uint reserveOut) external pure returns (uint amountIn) {
         require(amountOut > 0);
         require(reserveIn > 0 && reserveOut > 0);
         uint numerator = reserveIn.mul(amountOut).mul(1000);
@@ -309,8 +315,7 @@ contract ParaZeroXTrade is Initializable, IZeroXTrade, IERC1155 {
         require(_order.takerAssetData.equals(encodeTakerAssetData()));
         require(_order.takerAssetAmount == _order.makerAssetAmount);
         (IERC1155 _zeroXTradeTokenMaker, uint256 _tokenIdMaker) = getZeroXTradeTokenData(_order.makerAssetData);
-        (address _market, uint256 _price, uint8 _outcome, uint8 _type) = unpackTokenId(_tokenIdMaker);
-        uint256 _numTicks = IMarket(_market).getNumTicks();
+        (address _market, , , ) = unpackTokenId(_tokenIdMaker);
         require(isOrderAmountValid(IMarket(_market), _fillAmountRemaining), "Order must be a multiple of the market trade increment");
         require(_zeroXTradeTokenMaker == this);
     }
@@ -320,7 +325,8 @@ contract ParaZeroXTrade is Initializable, IZeroXTrade, IERC1155 {
         return _orderAmount.isMultipleOf(_tradeInterval);
     }
 
-    function cancelOrders(IExchange.Order[] memory _orders, bytes[] memory _signatures, uint256 _maxProtocolFeeDai) public payable returns (bool) {
+    function cancelOrders(IExchange.Order[] memory _orders, bytes[] memory _signatures, uint256 _unused) public payable returns (bool) {
+        _unused;
         require(_orders.length == _signatures.length);
         uint256 _protocolFee = exchange.protocolFeeMultiplier().mul(tx.gasprice);
         transferFromAllowed = true;
@@ -383,7 +389,7 @@ contract ParaZeroXTrade is Initializable, IZeroXTrade, IERC1155 {
         return _amount <= this.balanceOf(_order.makerAddress, _tokenId);
     }
 
-    function getTransferFromAllowed() public view returns (bool) {
+    function getTransferFromAllowed() external view returns (bool) {
         return transferFromAllowed;
     }
 
@@ -627,7 +633,7 @@ contract ParaZeroXTrade is Initializable, IZeroXTrade, IERC1155 {
     }
 
     function parseOrderData(IExchange.Order memory _order) public view returns (AugurOrderData memory _data) {
-        (bytes4 _assetProxyId, address _tokenAddress, uint256[] memory _tokenIds, uint256[] memory _tokenValues, bytes memory _callbackData) = decodeAssetData(_order.makerAssetData);
+        (/* bytes4 _assetProxyId */, /* address _tokenAddress */ , uint256[] memory _tokenIds, /* uint256[] memory _tokenValues */, /* bytes memory _callbackData */) = decodeAssetData(_order.makerAssetData);
         (address _market, uint256 _price, uint8 _outcome, uint8 _type) = unpackTokenId(_tokenIds[0]);
         _data.marketAddress = _market;
         _data.price = _price;
@@ -636,13 +642,13 @@ contract ParaZeroXTrade is Initializable, IZeroXTrade, IERC1155 {
     }
 
     function getZeroXTradeTokenData(bytes memory _assetData) public view returns (IERC1155 _token, uint256 _tokenId) {
-        (bytes4 _assetProxyId, address _tokenAddress, uint256[] memory _tokenIds, uint256[] memory _tokenValues, bytes memory _callbackData) = decodeAssetData(_assetData);
+        (/* bytes4 _assetProxyId */, address _tokenAddress, uint256[] memory _tokenIds, /* uint256[] memory _tokenValues */, /* bytes memory _callbackData */) = decodeAssetData(_assetData);
         _tokenId = _tokenIds[0];
         _token = IERC1155(_tokenAddress);
     }
 
     function getTokenIdFromOrder(IExchange.Order memory _order) public view returns (uint256 _tokenId) {
-        (bytes4 _assetProxyId, address _tokenAddress, uint256[] memory _tokenIds, uint256[] memory _tokenValues, bytes memory _callbackData) = decodeAssetData(_order.makerAssetData);
+        (/* bytes4 _assetProxyId */, /* address _tokenAddress */, uint256[] memory _tokenIds, /* uint256[] memory _tokenValues */, /* bytes memory _callbackData */) = decodeAssetData(_order.makerAssetData);
         _tokenId = _tokenIds[0];
     }
 
@@ -664,10 +670,10 @@ contract ParaZeroXTrade is Initializable, IZeroXTrade, IERC1155 {
     }
 
     function encodeEIP1271OrderWithHash(
-        IExchange.Order memory _zeroXOrder,
+        IExchange.Order calldata _zeroXOrder,
         bytes32 _orderHash
     )
-        public
+        external
         pure
         returns (bytes memory encoded)
     {
