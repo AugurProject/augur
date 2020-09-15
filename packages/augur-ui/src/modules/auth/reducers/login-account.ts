@@ -15,7 +15,6 @@ const DEFAULT_STATE: LoginAccount = {
     legacyRep: '0',
     attoRep: '0',
     legacyAttoRep: '0',
-    feePool: { userStakedRep: '0', userPoolFees: '0'},
     signerBalances: {
       eth: null,
       rep: '0',

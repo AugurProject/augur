@@ -7,6 +7,7 @@ import { closeModal } from 'modules/modal/actions/close-modal';
 import { Action } from 'redux';
 import { ThunkDispatch } from 'redux-thunk';
 import { formatAttoEth, formatAttoRep } from 'utils/format-number';
+import { WETH } from 'modules/common/constants';
 
 const mapStateToProps = (state: AppState) => ({
   modal: state.modal.modal,
@@ -25,7 +26,7 @@ const mergeProps = (sP: any, dP: any, oP: any) => {
   const totalFees = sP.modal?.totalFees || "0";
   const fullExit = sP.modal.isFullExit;
 
-  const description = [`You have earned ${formatAttoEth(totalFees).formatted} wETH in fees.`];
+  const description = [`You have earned ${formatAttoEth(totalFees).formatted} ${WETH} in fees.`];
 
   let title = "Claim Fee Pool Fees"
   let actionButtonName = "Claim Fees";

@@ -15,6 +15,8 @@ const mapStateToProps = state => {
   return {
     ...repBalances,
     isLoggedIn,
+    account: state.loginAccount?.address,
+    blockNumber: state.blockchain.currentBlockNumber,
   };
 };
 
