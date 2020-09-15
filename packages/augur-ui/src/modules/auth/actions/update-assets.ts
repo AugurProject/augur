@@ -30,7 +30,6 @@ export const updateAssets = (): ThunkAction<any, any, any, any> => async (
   const { loginAccount, appStatus, env, gasPriceInfo } = getState();
   const { meta } = loginAccount;
   const nonSafeWallet = await meta.signer?.getAddress();
-  const feePool = await getFeePoolBalances(nonSafeWallet);
   // temp call to get user weth balance
   const { contracts } = augurSdk.get();
   const wethBalance = await contracts.weth.balanceOf_(nonSafeWallet);
@@ -76,7 +75,6 @@ export const updateAssets = (): ThunkAction<any, any, any, any> => async (
           legacyRep: String(
             createBigNumber(String(signerLegacyREP)).dividedBy(ETHER)
           ),
-          feePool,
           signerBalances: {
             eth: signerEthBalance,
             weth,

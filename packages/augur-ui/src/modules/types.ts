@@ -634,15 +634,7 @@ export interface TimeframeData {
   successfulDisputes: number;
   redeemedPositions: number;
 }
-export interface FeePoolBalances {
-  userStakedRep: string;
-  userPoolFees: string;
-}
 
-export interface GovBalances {
-  stakedSrep: string;
-  totalSrep: string;
-}
 export interface AccountBalances {
   eth: string;
   weth: string;
@@ -653,8 +645,6 @@ export interface AccountBalances {
   legacyRep: string;
   attoRep: string;
   legacyAttoRep?: string;
-  feePool: FeePoolBalances;
-  gov: GovBalances;
   signerBalances: {
     eth: string;
     weth: string;

@@ -53,23 +53,17 @@ const mapDispatchToProps = dispatch => ({
 
 const mergeProps = (sP: any, dP: any, oP: any) => {
   const rep = sP.balances.rep;
-  const srep = sP.balances.feePool.userStakedRep;
-  const sRepFormatted = formatRep(srep);
-  // TODO: get governance tokens balance
-  const gRepFormatted = formatRep('0'); //sP.balances
 
   return {
-    sRepFormatted,
-    gRepFormatted,
     ...sP,
     ...dP,
     ...oP,
     openStakeRepModal: () => dP.openModal({ tokenName: REP, balance: rep}),
-    openStakeSrepModal: () => dP.openModal({ tokenName: SREP, balance: srep}),
+    openStakeSrepModal: (srep) => dP.openModal({ tokenName: SREP, balance: srep}),
     openUnstakeSrepModal: () => dP.openClaimParticipationTokensModal(),
     openExitUnstakeGovModal: () => dP.openClaimParticipationTokensModal(),
-    showFeePoolClaiming: totalFees => dP.showFeePoolClaiming({ totalRep: srep, totalFees }),
-    showFeePoolExitClaiming: totalFees => dP.showFeePoolClaiming({ totalRep: srep, totalFees, isFullExit: true })
+    showFeePoolClaiming: (totalFees, srep) => dP.showFeePoolClaiming({ totalRep: srep, totalFees }),
+    showFeePoolExitClaiming: (totalFees, srep) => dP.showFeePoolClaiming({ totalRep: srep, totalFees, isFullExit: true })
   }
 };
 

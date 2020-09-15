@@ -1181,116 +1181,106 @@ interface UserRepDisplayProps {
   repProfitAmountFormatted: FormattedNumber;
   disputingAmountFormatted: FormattedNumber;
   reportingAmountFormatted: FormattedNumber;
-  participationAmountFormatted: FormattedNumber;
   repTotalAmountStakedFormatted: FormattedNumber;
   openGetRepModal: Function;
   hasStakedRep: boolean;
   stakedSrep: string;
-  feePoolStakedRep: string;
+  account: string;
+  blockNumber;
 }
 
-export class UserRepDisplay extends Component<
-  UserRepDisplayProps,
-  UserRepDisplayState
-> {
-  state: UserRepDisplayState = {
-    toggle: false,
-  };
+export const UserRepDisplay = ({
+  isLoggedIn,
+  repBalanceFormatted,
+  repProfitAmountFormatted,
+  repProfitLossPercentageFormatted,
+  openGetRepModal,
+  repTotalAmountStakedFormatted,
+  disputingAmountFormatted,
+  reportingAmountFormatted,
+  hasStakedRep,
+  stakedSrep,
+  account,
+  blockNumber,
+}: UserRepDisplayProps) => {
+  const [toggle, setToggle] = useState(false);
+  const [userTotalRep, setUserTotalRep] = useState("0");
 
-  toggle = () => {
-    this.setState({ toggle: !this.state.toggle });
-  };
+  useEffect(() => {
+    if (isLoggedIn) {
+        getUserFeePoolBalances(account)
+        .then(userBalances => {
+          setUserTotalRep(userBalances.userRep);
+      });
+    }
+  }, [isLoggedIn, blockNumber]);
 
-  render() {
-    const {
-      isLoggedIn,
-      repBalanceFormatted,
-      repProfitAmountFormatted,
-      repProfitLossPercentageFormatted,
-      openGetRepModal,
-      repTotalAmountStakedFormatted,
-      disputingAmountFormatted,
-      reportingAmountFormatted,
-      participationAmountFormatted,
-      hasStakedRep,
-      stakedSrep,
-      feePoolStakedRep,
-    } = this.props;
-    const s = this.state;
-
-    return (
-      <div
-        className={classNames(Styles.UserRepDisplay, {
-          [Styles.HideForMobile]: s.toggle,
-        })}
-      >
-        <>
-          <div onClick={this.toggle}>
-            <RepBalance alternate larger rep={repBalanceFormatted.formatted} />
-            <ChevronFlip
-              stroke="#fff"
-              filledInIcon
-              quick
-              pointDown={s.toggle}
-            />
-          </div>
-          <div>
-            <AllTimeProfitLoss
-              repProfitAmountFormatted={repProfitAmountFormatted}
-              repProfitLossPercentageFormatted={
-                repProfitLossPercentageFormatted
-              }
-            />
-            <PrimaryButton
-              action={openGetRepModal}
-              text={'Get REPv2'}
-              id="get-rep"
-            />
-          </div>
-          {!isLoggedIn && (
-            <p>Connect a wallet to see your Available REPv2 Balance</p>
-          )}
-          {isLoggedIn && hasStakedRep && (
-            <>
-              <div />
-              <div>
-                <span>{MY_TOTOL_REP_STAKED}</span>
-                <SizableValueLabel
-                  value={repTotalAmountStakedFormatted}
-                  keyId={'rep-staked'}
-                  showDenomination
-                  showEmptyDash={false}
-                  useFull
-                  highlight
-                  size={SizeTypes.LARGE}
-                />
-              </div>
-              <div>
-                <LinearPropertyLabel
-                  key="Disputing"
-                  label="Disputing"
-                  value={disputingAmountFormatted}
-                  showDenomination
-                  useFull
-                  useValueLabel
-                />
-                <LinearPropertyLabel
-                  key="reporting"
-                  label="Reporting"
-                  value={reportingAmountFormatted}
-                  showDenomination
-                  useFull
-                  useValueLabel
-                />
-                <LinearPropertyLabel
-                  key="stakedrep"
-                  label="Staked REP"
-                  value={formatAttoRep(feePoolStakedRep)}
-                  showDenomination
-                  useFull
-                  useValueLabel
-                />
-                { false && // governance needs to be decided on to show this
+  return (
+    <div
+      className={classNames(Styles.UserRepDisplay, {
+        [Styles.HideForMobile]: toggle,
+      })}
+    >
+      <>
+        <div onClick={() => setToggle(!toggle)}>
+          <RepBalance alternate larger rep={repBalanceFormatted.formatted} />
+          <ChevronFlip stroke="#fff" filledInIcon quick pointDown={toggle} />
+        </div>
+        <div>
+          <AllTimeProfitLoss
+            repProfitAmountFormatted={repProfitAmountFormatted}
+            repProfitLossPercentageFormatted={repProfitLossPercentageFormatted}
+          />
+          <PrimaryButton
+            action={openGetRepModal}
+            text={'Get REPv2'}
+            id="get-rep"
+          />
+        </div>
+        {!isLoggedIn && (
+          <p>Connect a wallet to see your Available REPv2 Balance</p>
+        )}
+        {isLoggedIn && hasStakedRep && (
+          <>
+            <div />
+            <div>
+              <span>{MY_TOTOL_REP_STAKED}</span>
+              <SizableValueLabel
+                value={repTotalAmountStakedFormatted}
+                keyId={'rep-staked'}
+                showDenomination
+                showEmptyDash={false}
+                useFull
+                highlight
+                size={SizeTypes.LARGE}
+              />
+            </div>
+            <div>
+              <LinearPropertyLabel
+                key="Disputing"
+                label="Disputing"
+                value={disputingAmountFormatted}
+                showDenomination
+                useFull
+                useValueLabel
+              />
+              <LinearPropertyLabel
+                key="reporting"
+                label="Reporting"
+                value={reportingAmountFormatted}
+                showDenomination
+                useFull
+                useValueLabel
+              />
+              <LinearPropertyLabel
+                key="stakedrep"
+                label="Staked REP"
+                value={formatAttoRep(userTotalRep)}
+                showDenomination
+                useFull
+                useValueLabel
+              />
+              {false && ( // governance needs to be decided on to show this
                 <LinearPropertyLabel
                   key="stakedrep"
                   label="Staked SREP"
@@ -1299,15 +1289,15 @@ export class UserRepDisplay extends Component<
                   useFull
                   useValueLabel
                 />
-                }
-              </div>
-            </>
-          )}
-        </>
-      </div>
-    );
-  }
-}
+              )}
+            </div>
+          </>
+        )}
+      </>
+    </div>
+  );
+};
+
 
 export interface FeePoolViewProps {
   openClaimParticipationTokensModal: Function;
@@ -1358,21 +1348,20 @@ export const FeePoolView = (
 
   useEffect(() => {
     if (isConnected) {
-      getFeePoolBalances()
-      .then(balances => {
+      getFeePoolBalances().then(balances => {
         setFeePoolTotalRep(balances.totalRep);
 
-        getUserFeePoolBalances(account)
-        .then(userBalances => {
+        getUserFeePoolBalances(account).then(userBalances => {
           setUserTotalRep(userBalances.userRep);
           setUserTotalFees(userBalances.userFees);
           const totalRep = createBigNumber(balances.totalRep);
-          const repPercent = (totalRep.gt(0) ? createBigNumber(userBalances.userRep).div(totalRep) : createBigNumber(0)).times(100);
+          const repPercent = (totalRep.gt(0)
+            ? createBigNumber(userBalances.userRep).div(totalRep)
+            : createBigNumber(0)
+          ).times(100);
           setUserRepPercentage(repPercent.toNumber());
-          if (totalRep.gt(0))
-          setDisableClaiming(false);
-        })
-
+          if (totalRep.gt(0)) setDisableClaiming(false);
+        });
       });
     }
   }, [isConnected, blockNumber]);
@@ -1433,7 +1422,7 @@ export const FeePoolView = (
         secondaryButton
         disabled={!isLoggedIn || !isApproved || disableClaiming}
         text="Claim Fees"
-        action={() => showFeePoolClaiming(userTotalFees)}
+        action={() => showFeePoolClaiming(userTotalFees, userTotalRep)}
         queueName={TRANSACTIONS}
         queueId={REDEEM}
       />
@@ -1441,7 +1430,7 @@ export const FeePoolView = (
         secondaryButton
         disabled={!isLoggedIn || !isApproved || disableClaiming}
         text="Unstake & Claim Fees"
-        action={() => showFeePoolExitClaiming(userTotalFees)}
+        action={() => showFeePoolExitClaiming(userTotalFees, userTotalRep)}
         queueName={TRANSACTIONS}
         queueId={EXIT}
       />
@@ -1472,7 +1461,7 @@ export const FeePoolView = (
       <ProcessingButton
         text="Stake SREP"
         disabled={!isLoggedIn || !isGovApproved}
-        action={openStakeSrepModal}
+        action={() => openStakeSrepModal(userTotalRep)}
         queueName={TRANSACTIONS}
         queueId={STAKE}
       />
