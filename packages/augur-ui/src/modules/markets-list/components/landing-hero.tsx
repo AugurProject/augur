@@ -19,6 +19,7 @@ import Image3Mobile from '../../../assets/images/banner-3-1011x741.png';
 import Image3Tablet from '../../../assets/images/banner-3-1486x494.png';
 import Image3Medium from '../../../assets/images/banner-3-1522x456.png';
 import Image3Big from '../../../assets/images/banner-3-1920x456.png';
+import ImageDesktop from '../../../assets/images/banner-desktop-1920x456.png';
 
 const images = [{
   alignment: 'left',
@@ -101,9 +102,14 @@ export const LandingHero = () => {
         ) : (
           <section className={Styles.LandingHeroSlider}>
             <Slider images={images} />
-            <a href={images[0].button.link} target="_blank" rel="noopener noreferrer">
-              <img src={images[0].image.big} alt="Promotional banner image with an American Football player and the text '+ 1000 markets' and the button with the text 'explore betting exchange'." />
-            </a>
+            <div style={{backgroundImage: `url(${ImageDesktop})`}}>
+              <div className={Styles.LeftAligned}>
+                <h2>{images[0].text}</h2>
+                {images[0].button && (
+                  <PrimaryButton URL={images[0].button.link} text={images[0].button.text} action={() => {}} />
+                )}
+              </div>
+            </div>
           </section>
         )}
     </>
