@@ -133,7 +133,7 @@
       border-top-left-radius: @border-radius-rounded;
       border-top-right-radius: @border-radius-rounded;
       color: var(--color-primary-text);
-      padding: @size-8 @size-7;
+      padding: @size-8 @size-12;
       height: @size-30;
       white-space: nowrap;
       word-break: break-all;
@@ -165,7 +165,7 @@
 
       > div {
         grid-column: span 2;
-        margin: 0 @size-4;
+        margin: 0;
 
         > span {
           .text-12;
@@ -190,7 +190,6 @@
       grid-column: span 2;
       grid-template-columns: 1fr 0fr 0fr;
       grid-gap: 0 @size-10;
-      margin: 0 @size-4;
 
       > span {
         .text-12-bold;
@@ -361,7 +360,7 @@
     background: var(--color-table-header);
     border-top: @size-1 solid var(--color-secondary-action-outline);
     display: grid;
-    grid-gap: @size-8 @size-16;
+    grid-gap: 0 @size-8;
     grid-template-columns: 1fr 1fr;
     border-bottom-left-radius: @border-radius-rounded;
     border-bottom-right-radius: @border-radius-rounded;
@@ -397,6 +396,7 @@
 
     > div {
       grid-column: span 2;
+      margin: @size-4 0 @size-16;
     }
 
     > span {
@@ -404,44 +404,13 @@
 
       color: var(--color-primary-text);
       grid-column: span 2;
+      text-align: center;
+      margin: @size-4 0 @size-16;
     }
 
     > button[class*="Button"] {
-      .text-14-bold;
-
-      max-width: @size-147;
       min-width: 100%;
       padding: 0;
-
-      &:first-of-type {
-        border: @size-1 solid var(--color-dark-text);
-
-        &:hover,
-        &:active {
-          border: @size-1 solid var(--color-primary-text);
-
-          > svg > path {
-            stroke: var(--color-module-background);
-          }
-        }
-
-        &:active:hover:focus,
-        &:focus:hover {
-           > svg > path {
-             stroke: var(--color-primary-text);
-          }
-        }
-
-        > svg {
-          width: @size-15;
-          height: @size-17;
-          margin-right: @size-8;
-  
-          > path {
-            stroke: var(--color-primary-text);
-          }
-        }
-      }
     }
 
     > button:not([class*="Button"]) {
@@ -475,6 +444,10 @@
           }
         }
       }
+    }
+
+    &.LoggedOut {
+      grid-template-columns: 1fr;
     }
   }
 }
