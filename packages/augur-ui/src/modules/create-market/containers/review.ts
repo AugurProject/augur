@@ -4,7 +4,7 @@ import { submitNewMarket } from 'modules/markets/actions/submit-new-market';
 import { updateNewMarket } from 'modules/markets/actions/update-new-market';
 import Review from 'modules/create-market/components/review';
 import { estimateSubmitNewMarket } from 'modules/markets/actions/estimate-submit-new-market';
-import { formatDaiPrice, formatRep, formatEther } from 'utils/format-number';
+import { formatDaiPrice, formatRep, formatEther, formatDai } from 'utils/format-number';
 import { AppState } from 'appStore';
 import { totalTradingBalance } from 'modules/auth/selectors/login-account';
 import { updateModal } from 'modules/modal/actions/update-modal';
@@ -20,9 +20,7 @@ const mapStateToProps = (state: AppState) => {
     gasPrice: state.gasPriceInfo.userDefinedGasPrice || state.gasPriceInfo.average,
     availableEthFormatted: formatEther(loginAccount.balances.eth),
     availableRepFormatted: formatRep(loginAccount.balances.rep),
-    availableDaiFormatted: formatDaiPrice(
-      totalTradingBalance(loginAccount)
-    ),
+    availableDaiFormatted: formatDai(loginAccount.balances.dai),
     ethToDaiRate: appStatus.ethToDaiRate,
   };
 };

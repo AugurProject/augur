@@ -1,7 +1,8 @@
-import { LoggerLevels } from './logger';
-import { NetworkId } from './constants';
-import path from 'path';
 import deepmerge from 'deepmerge';
+import path from 'path';
+import { NetworkId } from './constants';
+import { IPFSEndpointInfo, IPFSHashVersion } from './extract-ipfs-url';
+import { LoggerLevels } from './logger';
 
 export type RecursivePartial<T> = {
   [P in keyof T]?:
@@ -27,18 +28,24 @@ export function deepCopy<T>(x: T): T {
   return JSON.parse(JSON.stringify(x));
 }
 
+export interface ParaDeploys {
+  [cashAddress: string]: {
+    uploadBlockNumber?: number,
+    name: string,
+    addresses: ParaAddresses
+  };
+}
+
 export interface SDKConfiguration {
   networkId: NetworkId,
   uploadBlockNumber?: number,
   addresses?: ContractAddresses,
-  paraDeploys?: {
-    [cashAddress: string]: {
-      uploadBlockNumber?: number,
-      name: string,
-      addresses: ParaAddresses
-    }
-  }
+  paraDeploys?: ParaDeploys
   paraDeploy?: string; // cashAddress of paraDeploy to use instead of base augur deploy
+  governance?: {
+    uploadBlockNumber?: number,
+    addresses: GovernanceAddresses
+  }
   averageBlocktime?: number,
   logLevel?: LoggerLevels, // In the JSON configs an integer will need to be used.
   ethereum?: {
@@ -67,6 +74,7 @@ export interface SDKConfiguration {
   warpSync?: {
     createCheckpoints?: boolean,
     autoReport?: boolean
+    ipfsEndpoint?: IPFSEndpointInfo
   },
   uniswap?: {
     exchangeRateBufferMultiplier: number;
@@ -118,7 +126,8 @@ export interface SDKConfiguration {
     fallbackProvider?: 'jsonrpc' | 'torus',
     liteProvider?: 'jsonrpc' | 'default',
     primaryProvider?: 'jsonrpc' | 'wallet'
-  }
+  },
+  concurrentDBOperationsLimit?: number
 }
 
 export interface TradingAddresses {
@@ -166,6 +175,7 @@ export interface ContractAddresses extends TradingAddresses {
   RelayHubV2?: string;
   AugurWalletRegistryV2?: string;
   AccountLoader?: string;
+  ERC20Proxy1155Nexus?: string;
 
   // 0x
   //   The 0x contract names must be what 0x mesh expects.
@@ -190,6 +200,14 @@ export interface ParaAddresses extends TradingAddresses {
   ShareToken: string;
   Cash: string;
   OICash?: string;
+}
+
+export interface GovernanceAddresses {
+  GovToken: string;
+  Timelock: string;
+  Governance: string;
+  InitialStakingRewards: string;
+  FeePot: string;
 }
 
 export interface ExternalAddresses {
@@ -246,6 +264,10 @@ export const DEFAULT_SDK_CONFIGURATION: SDKConfiguration = {
   warpSync: {
     createCheckpoints: false,
     autoReport: false,
+    ipfsEndpoint: {
+      version: IPFSHashVersion.CIDv0,
+      url: 'https://cloudflare-ipfs.com/ipfs/'
+    }
   },
   uniswap: {
     // mainnet will be <= 1.005 but for dev we can get away with a wide spread
@@ -432,6 +454,8 @@ export function configFromEnvvars(): RecursivePartial<SDKConfiguration> {
   if (t(e.SERVER_START_WS)) config = d(config, { server: { startWS: bool(e.SERVER_START_WS) }});
   if (t(e.SERVER_WSS_PORT)) config = d(config, { server: { wssPort: Number(e.SERVER_WSS_PORT) }});
   if (t(e.SERVER_START_WSS)) config = d(config, { server: { startWSS: bool(e.SERVER_START_WSS) }});
+
+  if (t(e.PARA_DEPLOY)) config = d(config, { paraDeploy: e.PARA_DEPLOY });
 
   if (t(e.UPLOAD_BLOCK_NUMBER)) config = d(config, { uploadBlockNumber: Number(e.UPLOAD_BLOCK_NUMBER) });
 

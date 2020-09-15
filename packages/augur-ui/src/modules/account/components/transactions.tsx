@@ -9,6 +9,7 @@ import {
   REPFaucetButton,
   DAIFaucetButton,
   ExternalLinkButton,
+  WrapUnwrapEthAddfunds,
 } from 'modules/common/buttons';
 import { AccountAddressDisplay } from 'modules/modal/common';
 import { toChecksumAddress } from 'ethereumjs-util';
@@ -29,6 +30,7 @@ interface TransactionsProps {
   signingEth: number;
   signingWalletNoEth: boolean;
   localLabel: string;
+  wrapUnwrapEth: Function;
 }
 
 export const Transactions = ({
@@ -43,7 +45,8 @@ export const Transactions = ({
   targetAddress,
   signingEth,
   signingWalletNoEth,
-  localLabel
+  localLabel,
+  wrapUnwrapEth
 }: TransactionsProps) => (
   <QuadBox
     title="Transactions"
@@ -57,6 +60,7 @@ export const Transactions = ({
           <h4>Your funds</h4>
           <DepositButton action={addFunds} />
           <TransferButton action={transfer} />
+          <WrapUnwrapEthAddfunds action={wrapUnwrapEth} />
         </div>
         {showFaucets && (
           <div>

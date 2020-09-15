@@ -34,7 +34,7 @@ import {
 import { DateTimeComponents, OutcomeFormatted } from 'modules/types';
 import deepClone from 'utils/deep-clone';
 import { timestampComponents } from 'utils/format-date';
-import { formatDaiPrice, formatDai } from 'utils/format-number';
+import { formatDaiPrice, formatDai, formatEther } from 'utils/format-number';
 
 const MarketTypeIcons = {
   [YES_NO]: YesNoMarketIcon,
@@ -119,7 +119,7 @@ export const addCategoryStats = (
     stats = catStats && catStats.categories[cardValue];
   }
   if (stats) {
-    const vol = formatDai(stats.volume || '0').formatted;
+    const vol = formatEther(stats.volume || '0').formatted;
     const mkrLabel = stats.numberOfMarkets === 1 ? 'Market' : 'Markets';
     card.description = `${stats.numberOfMarkets} ${mkrLabel} | $${vol}`;
     card.count = stats.numberOfMarkets;

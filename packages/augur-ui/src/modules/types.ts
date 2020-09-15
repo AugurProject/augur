@@ -634,8 +634,10 @@ export interface TimeframeData {
   successfulDisputes: number;
   redeemedPositions: number;
 }
+
 export interface AccountBalances {
   eth: string;
+  weth: string;
   rep: string;
   dai: string;
   usdt: string;
@@ -645,6 +647,7 @@ export interface AccountBalances {
   legacyAttoRep?: string;
   signerBalances: {
     eth: string;
+    weth: string;
     rep: string;
     dai: string;
     usdt: string;
@@ -761,8 +764,8 @@ export interface WalletObject {
 export interface Trade {
   numShares: FormattedNumber;
   limitPrice: FormattedNumber;
-  potentialDaiProfit: FormattedNumber;
-  potentialDaiLoss: FormattedNumber;
+  potentialTradeProfit: FormattedNumber;
+  potentialTradeLoss: FormattedNumber;
   totalCost: FormattedNumber;
   sharesFilled: FormattedNumber;
   shareCost: FormattedNumber;

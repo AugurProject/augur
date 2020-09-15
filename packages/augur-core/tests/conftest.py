@@ -245,7 +245,7 @@ class ContractsFixture:
             elif (contractSize >= CONTRACT_SIZE_WARN_LEVEL):
                 print('%sContract %s is under size limit by only %d bytes%s' % (bcolors.WARN, name, CONTRACT_SIZE_LIMIT - contractSize, bcolors.ENDC))
             elif (contractSize > 0):
-                pass#print('Size: %i' % contractSize)
+                print('Contract %s Size: %i' % (name, contractSize))
             ContractsFixture.compiledCode[name] = compiledCode
             return(compiledCode)
 
@@ -419,6 +419,7 @@ class ContractsFixture:
             if 'uniswap' in directory: continue # uploaded separately
             if 'gsn/v2' in directory: continue # uploaded separately
             if 'gov' in directory: continue # uploaded separately
+            if 'trading/erc20proxy' in directory: continue # uploaded separately
             for filename in filenames:
                 name = path.splitext(filename)[0]
                 extension = path.splitext(filename)[1]
@@ -429,7 +430,7 @@ class ContractsFixture:
                 if name == 'Time': continue # In testing and development we swap the Time library for a ControlledTime version which lets us manage block timestamp
                 if name == 'ReputationTokenFactory': continue # In testing and development we use the TestNetReputationTokenFactory which lets us faucet
                 if name == 'Cash': continue # We upload the Test Dai contracts manually after this process
-                if name in ['ParaAugur', 'FeePot', 'ParaUniverse', 'ParaAugurTrading']: continue # We upload ParaAugur explicitly and the others are generated via contract
+                if name in ['ParaAugur', 'FeePot', 'ParaUniverse', 'ParaAugurTrading','AMMExchange']: continue # We upload ParaAugur explicitly and the others are generated via contract
                 if name in ['IAugur', 'IDisputeCrowdsourcer', 'IDisputeWindow', 'IUniverse', 'IMarket', 'IReportingParticipant', 'IReputationToken', 'IOrders', 'IShareToken', 'Order', 'IInitialReporter']: continue # Don't compile interfaces or libraries
                 # TODO these four are necessary for test_universe but break everything else
                 # if name == 'MarketFactory': continue # tests use mock
@@ -451,6 +452,11 @@ class ContractsFixture:
 
     def uploadTestDaiContracts(self):
         self.uploadAndAddToAugur("../src/contracts/Cash.sol")
+
+    def uploadERC20Proxy1155(self):
+        masterProxy = self.upload("../src/contracts/trading/erc20proxy1155/ERC20Proxy1155.sol")
+        shareToken = self.contracts["ShareToken"]
+        self.upload("../src/contracts/trading/erc20proxy1155/ERC20Proxy1155Nexus.sol", None, None, [masterProxy.address, shareToken.address])
 
     def upload0xContracts(self):
         chainId = 123456
@@ -730,6 +736,7 @@ def augurInitializedSnapshot(fixture, baseSnapshot):
     fixture.upload0xContracts()
     fixture.uploadUniswapContracts()
     fixture.initializeAllContracts()
+    fixture.uploadERC20Proxy1155()
     fixture.doAugurTradingApprovals()
     fixture.approveCentralAuthority()
     return fixture.createSnapshot()
@@ -741,6 +748,7 @@ def kitchenSinkSnapshot(fixture, augurInitializedSnapshot):
     legacyReputationToken.faucet(11 * 10**6 * 10**18)
     universe = fixture.createUniverse()
     cash = fixture.contracts['Cash']
+    shareToken = fixture.contracts['ShareToken']
     augur = fixture.contracts['Augur']
     paraAugurCash = fixture.contracts['ParaAugurCash']
     fixture.distributeRep(universe)
@@ -764,6 +772,7 @@ def kitchenSinkSnapshot(fixture, augurInitializedSnapshot):
     snapshot['universe'] = universe
     snapshot['cash'] = cash
     snapshot['paraAugurCash'] = paraAugurCash
+    snapshot['shareToken'] = shareToken
     snapshot['augur'] = augur
     snapshot['yesNoMarket'] = yesNoMarket
     snapshot['categoricalMarket'] = categoricalMarket
@@ -785,6 +794,10 @@ def universe(kitchenSinkFixture, kitchenSinkSnapshot):
 def cash(kitchenSinkFixture, kitchenSinkSnapshot):
     cashAddress = kitchenSinkSnapshot['paraAugurCash'].address if kitchenSinkFixture.paraAugur else kitchenSinkSnapshot['cash'].address
     return kitchenSinkFixture.applySignature(None, cashAddress, kitchenSinkSnapshot['cash'].abi)
+
+@pytest.fixture
+def shareToken(kitchenSinkFixture, kitchenSinkSnapshot):
+    return kitchenSinkFixture.applySignature(None, kitchenSinkSnapshot['shareToken'].address, kitchenSinkSnapshot['shareToken'].abi)
 
 @pytest.fixture
 def augur(kitchenSinkFixture, kitchenSinkSnapshot):

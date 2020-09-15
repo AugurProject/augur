@@ -1,5 +1,5 @@
 import type { SDKConfiguration } from '@augurproject/artifacts';
-import { isDevNetworkId, mergeConfig } from '@augurproject/utils';
+import { extractIPFSUrl, IPFSHashVersion, isDevNetworkId, mergeConfig } from '@augurproject/utils';
 import detectEthereumProvider from '@metamask/detect-provider';
 import { AppState } from 'appStore';
 import { toChecksumAddress } from 'ethereumjs-util';
@@ -227,6 +227,16 @@ export function connectAugur(
         break;
     }
 
+    // Use the default gateway if currently using one.
+    const ipfsEndpoint = extractIPFSUrl(window.location.href);
+    if(ipfsEndpoint.version !== IPFSHashVersion.Invalid) {
+      config = mergeConfig(config, {
+        warpSync: {
+          ipfsEndpoint
+        }
+      });
+    }
+
     // Disable mesh for googleBot
     if (isGoogleBot()) {
       config = mergeConfig(config, {
@@ -313,6 +323,8 @@ export function connectAugur(
 
     let universeId =
       config.addresses?.Universe || Augur.contracts.universe.address;
+    console.log('universeId', JSON.stringify(universeId));
+
     if (
       windowApp.localStorage &&
       windowApp.localStorage.getItem &&
@@ -343,7 +355,6 @@ export function connectAugur(
     // wire up start up events for sdk
     dispatch(listenForStartUpEvents(Augur));
 
-    console.log("AUGURSDK: connect");
     try {
       await augurSdk.connect();
     } catch(e) {

@@ -2,7 +2,7 @@ import React from "react";
 import Styles from "modules/app/components/terms-and-conditions.styles.less";
 
 const TermsAndConditions = () => (
-  <footer className={Styles.TermsAndConditions}>
+  <div className={Styles.TermsAndConditions}>
     <a
       href="https://raw.githubusercontent.com/AugurProject/augur-core/master/LICENSE"
       target="_blank"
@@ -17,7 +17,7 @@ const TermsAndConditions = () => (
     >
       Augur License
     </a>
-  </footer>
+  </div>
 );
 
 export default TermsAndConditions;

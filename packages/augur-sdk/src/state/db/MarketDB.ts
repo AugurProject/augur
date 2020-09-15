@@ -50,7 +50,7 @@ export class MarketDB extends DerivedDB {
   readonly liquiditySpreads = [10, 15, 20, 100];
   private readonly docProcessMap;
 
-  constructor(db: DB, networkId: number, augur: Augur) {
+  constructor(db: DB, networkId: number, augur: Augur, paraDeploy = false) {
     super(
       db,
       networkId,
@@ -65,7 +65,8 @@ export class MarketDB extends DerivedDB {
         'MarketParticipantsDisavowed',
         'MarketMigrated',
       ],
-      augur
+      augur,
+      paraDeploy
     );
 
     this.docProcessMap = {

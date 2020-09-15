@@ -10,7 +10,7 @@ library Reporting {
 
     uint256 private constant BASE_MARKET_DURATION_MAXIMUM = 30 days; // A market of 30 day length can always be created
     uint256 private constant UPGRADE_CADENCE = 365 days;
-    uint256 private constant INITIAL_UPGRADE_TIMESTAMP = 16277760000; // Ridiculous Future Date so tests will always pass
+    uint256 private constant INITIAL_UPGRADE_TIMESTAMP = 1627776000000; // Forever in the future
 
     uint256 private constant INITIAL_REP_SUPPLY = 11 * 10 ** 6 * 10 ** 18; // 11 Million REP
 

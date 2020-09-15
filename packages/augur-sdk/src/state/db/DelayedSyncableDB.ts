@@ -1,4 +1,5 @@
 import { SubscriptionEventName } from '@augurproject/sdk-lite';
+import { ParsedLog } from '@augurproject/types';
 import * as _ from 'lodash';
 import { Augur } from '../../Augur';
 import { BaseDocument } from './AbstractTable';
@@ -19,7 +20,8 @@ export class DelayedSyncableDB extends BaseSyncableDB {
     networkId: number,
     eventName: string,
     dbName: string = eventName,
-    indexes: string[] = []
+    indexes: string[] = [],
+    private paraDeploy = false
   ) {
     super(augur, db, networkId, eventName, dbName);
 
@@ -36,6 +38,15 @@ export class DelayedSyncableDB extends BaseSyncableDB {
 
   async onBulkSyncComplete() {
     this.db.registerEventListener(this.eventName, this.addNewBlock.bind(this));
+  }
+
+  async addNewBlock(blocknumber: number, logs: ParsedLog[]): Promise<number> {
+    if(this.paraDeploy) {
+      logs = logs.filter((log) => typeof log.para === 'string');
+    } else {
+      logs = logs.filter((log) => typeof log.para !== 'string');
+    }
+    return super.addNewBlock(blocknumber, logs);
   }
 
   async sync(highestAvailableBlockNumber: number): Promise<void> {

@@ -111,6 +111,7 @@ contract ParaShareToken is ITyped, Initializable, ERC1155, ReentrancyGuard {
         if (!isMarketInitialized(_market)) {
             initializeMarket(_market);
         }
+
         uint256 _numOutcomes = markets[address(_market)].numOutcomes;
         uint256 _numTicks = markets[address(_market)].numTicks;
 
@@ -120,6 +121,7 @@ contract ParaShareToken is ITyped, Initializable, ERC1155, ReentrancyGuard {
         IParaUniverse _paraUniverse = IParaUniverse(IParaAugur(address(augur)).getParaUniverse(address(_market.getUniverse())));
 
         uint256 _cost = _amount.mul(_numTicks);
+
         _paraUniverse.deposit(msg.sender, _cost, address(_market));
 
         uint256[] memory _tokenIds = new uint256[](_numOutcomes);

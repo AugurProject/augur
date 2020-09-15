@@ -85,9 +85,18 @@ Deploying to: ${env}
         // Cash
         console.log(`Registering Cash Contract at ${cashAddress}`);
         await this.augur!.registerContract(stringTo32ByteHex('Cash'), cashAddress);
+        await this.augurTrading!.registerContract(stringTo32ByteHex('Cash'), cashAddress);
 
         // OI Nexus
-        await this.augur!.registerContract(stringTo32ByteHex('OINexus'), coreAddresses.OINexus);
+        if (!coreAddresses.OINexus) {
+            console.log(`No OINexus in configuration. Deploying one.`);
+            const OINexusContract = this.contracts.get("OINexus");
+            await this.upload(OINexusContract);
+            coreAddresses.OINexus = OINexusContract.address;
+            console.log(`OINexus uploaded and registered at address: ${coreAddresses.OINexus}`);
+        } else {
+            await this.augur!.registerContract(stringTo32ByteHex('OINexus'), coreAddresses.OINexus);
+        }
 
         // Augur Trading registrations
         await this.augurTrading!.registerContract(stringTo32ByteHex('WETH9'), coreAddresses.WETH9);
@@ -386,7 +395,7 @@ Deploying to: ${env}
 
         const name = await cash.symbol_();
 
-        await updateConfig(env, mergeConfig(config, {
+        const configUpdate = {
             paraDeploys: {
                 [cash.address]: {
                     name,
@@ -394,6 +403,14 @@ Deploying to: ${env}
                     addresses,
                 }
             }
-        }));
+        };
+
+        if (!config.addresses.OINexus) {
+            configUpdate['addresses'] = {
+                OINexus: this.contracts.get('OINexus').address!
+            }
+        }
+
+        await updateConfig(env, mergeConfig(config, configUpdate));
     }
 }

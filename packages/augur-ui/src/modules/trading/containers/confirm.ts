@@ -15,17 +15,17 @@ const mapStateToProps = (state: AppState, ownProps) => {
     ethToDaiRate,
   } = appStatus;
 
-  const hasFunds = !!loginAccount.balances.eth && !!loginAccount.balances.dai;
+  const hasFunds = !!loginAccount.balances.weth;
 
-  let availableDai = totalTradingBalance(loginAccount)
+  let availableWeth = totalTradingBalance(loginAccount)
   if (ownProps.initialLiquidity) {
-    availableDai = availableDai.minus(newMarket.initialLiquidityDai);
+    availableWeth = availableWeth.minus(newMarket.initialLiquidityDai);
   }
   const sweepStatus = state.pendingQueue[TRANSACTIONS]?.[CREATEAUGURWALLET]?.status;
   return {
     gasPrice: state.gasPriceInfo.userDefinedGasPrice || state.gasPriceInfo.average,
     availableEth: createBigNumber(loginAccount.balances.eth),
-    availableDai,
+    availableWeth,
     ethToDaiRate,
     hasFunds,
     isLogged: authStatus.isLogged,

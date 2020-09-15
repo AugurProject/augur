@@ -600,7 +600,7 @@ export class ZeroX {
         : false;
     if (orders.length < 1 && !params.doNotCreateOrders) {
       simulationData = await this.simulateMakeOrder(onChainTradeParams);
-    } else if (orders.length < 1) {
+    } else if (orders.length < 1 || !params.takerAddress) {
       return {
         sharesFilled: new BigNumber(0),
         tokensDepleted: new BigNumber(0),

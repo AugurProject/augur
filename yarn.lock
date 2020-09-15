@@ -216,10 +216,10 @@
     react-dom "^16.8.3"
     solc "0.5.4"
 
-"@augurproject/solidity-typescript-generator@1.1.13":
-  version "1.1.13"
-  resolved "https://registry.yarnpkg.com/@augurproject/solidity-typescript-generator/-/solidity-typescript-generator-1.1.13.tgz#bfadded40ccdddd05be5bf0c98d518875ec187d4"
-  integrity sha512-D6pioumyZF3qFPr9lb0Ab8xO2OQLbdF5TGbpMhxYnVLfF6+x4HrmhfByABoyvAbmUWbEx9IVjkabWMSF5rN/GA==
+"@augurproject/solidity-typescript-generator@1.1.14":
+  version "1.1.14"
+  resolved "https://registry.yarnpkg.com/@augurproject/solidity-typescript-generator/-/solidity-typescript-generator-1.1.14.tgz#6171d79834ad346e1e19f86ad5b3be0a0e7a0ad9"
+  integrity sha512-EZxu92SFHvs+Gz4cT6AMjBRURIVS9WTWiGx839HBXISX1lFqxpHAhU+EeiKkYuEE3XxN1mNXZi5T5vc8dSmR2A==
   dependencies:
     js-sha3 "0.8.0"
 
@@ -3902,10 +3902,10 @@
   resolved "https://registry.yarnpkg.com/@types/argparse/-/argparse-1.0.36.tgz#9720632ec67f4e48f75c5956107c07f899765842"
   integrity sha512-3+i1qzPwyNjbJeiZuJQuETdAe7kWsbI+Vrpj8kbdqAEsXaBDxHPEPg6tXGeDEP0DDPrOnvyFJjm6XNOoK6685w==
 
-"@types/async@3.2.3":
-  version "3.2.3"
-  resolved "https://registry.yarnpkg.com/@types/async/-/async-3.2.3.tgz#c56f5e0fc02f8b37196f79239cc857e789b97bb4"
-  integrity sha512-deXFjLZc1h6SOh3hicVgD+S2EAkhSBGX/vdlD4nTzCjjOFQ+bfNiXocQ21xJjFAUwqaCeyvOQMgrnbg4QEV63A==
+"@types/async@3.0.1":
+  version "3.0.1"
+  resolved "https://registry.yarnpkg.com/@types/async/-/async-3.0.1.tgz#eb33247ffc23d904f9069a292c260c6324cb652c"
+  integrity sha512-fBq+1+btw/4CPGCpp3B05vUsslyikLUSUoZmFEjjHrUEPOisIVxUzGJFg1k43iWq9y0lC2UDqWAlg5ynUCwwSA==
 
 "@types/babel__core@^7.1.0":
   version "7.1.8"
@@ -7818,7 +7818,7 @@ class-utils@^0.3.5:
     isobject "^3.0.0"
     static-extend "^0.1.1"
 
-classnames@2.2.6, classnames@^2.2.5:
+classnames@2.2.6:
   version "2.2.6"
   resolved "https://registry.yarnpkg.com/classnames/-/classnames-2.2.6.tgz#43935bffdd291f326dad0a205309b38d00f650ce"
   integrity sha512-JR/iSQOSt+LQIWwrwEzJ9uk0xfN3mTVYMwt1Ir5mUcSN6pU+V4zQFFaJsclJbPuAUQH+yfWef6tm7l1quW3C8Q==
@@ -9820,10 +9820,10 @@ dexie@*, dexie@^3.0.1:
   resolved "https://registry.yarnpkg.com/dexie/-/dexie-3.0.1.tgz#faafeb94be0d5e18b25d700546a2c05725511cfc"
   integrity sha512-/s4KzlaerQnCad/uY1ZNdFckTrbdMVhLlziYQzz62Ff9Ick1lHGomvTXNfwh4ApEZATyXRyVk5F6/y8UU84B0w==
 
-dexie@3.0.2:
-  version "3.0.2"
-  resolved "https://registry.yarnpkg.com/dexie/-/dexie-3.0.2.tgz#4b979904d739e0530b68352005f175a82633a075"
-  integrity sha512-go4FnIoAhcUiCdxutfIZRxnSaSyDgfEq+GH7N0I8nTCJbC2FmeBj+0FrETa3ln5ix+VQMOPsFeYHlgE/8SZWwQ==
+dexie@3.0.0-rc.4:
+  version "3.0.0-rc.4"
+  resolved "https://registry.yarnpkg.com/dexie/-/dexie-3.0.0-rc.4.tgz#86d52b58a3a4ffc2d01c8f8d41114ab02bbb4ea1"
+  integrity sha512-zsttc+pYSSBPhwYlfQcPfB9n3jdyye0WubtDtO9lJ0r051V67W+BGDGsodNwYb/NmyTYG3jxN9M0z4FbFtYqtg==
 
 dezalgo@^1.0.0:
   version "1.0.3"
@@ -23399,12 +23399,11 @@ react-test-renderer@^16.0.0-0:
     react-is "^16.8.6"
     scheduler "^0.19.1"
 
-react-tooltip@3.11.1:
-  version "3.11.1"
-  resolved "https://registry.yarnpkg.com/react-tooltip/-/react-tooltip-3.11.1.tgz#7b4ce48ed26a46e996662b19a2afebbfd483513b"
-  integrity sha512-YCMVlEC2KuHIzOQhPplTK5jmBBwoL+PYJJdJKXj7M/h7oevupd/QSVq6z5U7/ehIGXyHsAqvwpdxexDfyQ0o3A==
+react-tooltip@3.11.6:
+  version "3.11.6"
+  resolved "https://registry.yarnpkg.com/react-tooltip/-/react-tooltip-3.11.6.tgz#4f9735a2a4aa50580af351ce23e74a56f41afc0c"
+  integrity sha512-nTc1yHHaPCHHURvMpf/VNF17pIZiU4zwUGFJBUVr1fZkezFC7E0VPMMVrCfDjt+IpwTHICyzlyx+1FiQ7lw5LQ==
   dependencies:
-    classnames "^2.2.5"
     prop-types "^15.6.0"
 
 react-transition-group@4.3.0:

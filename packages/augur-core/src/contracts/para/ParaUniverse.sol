@@ -168,7 +168,7 @@ contract ParaUniverse is Initializable, IParaUniverse {
         }
 
         _currentFeeDivisor = calculateReportingFeeDivisorInternal();
-        
+
         currentReportingFeeDivisor = _currentFeeDivisor;
         augur.logReportingFeeChanged(_currentFeeDivisor);
         return _currentFeeDivisor;
@@ -251,5 +251,41 @@ contract ParaUniverse is Initializable, IParaUniverse {
             withdraw(_affiliate, _affiliateBalance, address(_market));
         }
         return true;
+    }
+
+    function getForkingMarket() public view returns (IMarket) {
+        return originUniverse.getForkingMarket();
+    }
+
+    function getDisputeThresholdForDisputePacing() public view returns (uint256) {
+        return originUniverse.getDisputeThresholdForDisputePacing();
+    }
+
+    function getOrCacheDesignatedReportStake() public returns (uint256) {
+        return originUniverse.getOrCacheDesignatedReportStake();
+    }
+
+    function runPeriodicals() external returns (bool) {
+        return originUniverse.runPeriodicals();
+    }
+
+    function createYesNoMarket(uint256 _endTime, uint256 _feePerCashInAttoCash, IAffiliateValidator _affiliateValidator, uint256 _affiliateFeeDivisor, address _designatedReporterAddress, string memory _extraInfo) public returns (IMarket _newMarket) {
+        return originUniverse.createYesNoMarket(_endTime, _feePerCashInAttoCash, _affiliateValidator, _affiliateFeeDivisor, _designatedReporterAddress, _extraInfo);
+    }
+
+    function createCategoricalMarket(uint256 _endTime, uint256 _feePerCashInAttoCash, IAffiliateValidator _affiliateValidator, uint256 _affiliateFeeDivisor, address _designatedReporterAddress, bytes32[] memory _outcomes, string memory _extraInfo) public returns (IMarket _newMarket) {
+        return originUniverse.createCategoricalMarket(_endTime, _feePerCashInAttoCash, _affiliateValidator, _affiliateFeeDivisor, _designatedReporterAddress, _outcomes, _extraInfo);
+    }
+
+    function createScalarMarket(uint256 _endTime, uint256 _feePerCashInAttoCash, IAffiliateValidator _affiliateValidator, uint256 _affiliateFeeDivisor, address _designatedReporterAddress, int256[] memory _prices, uint256 _numTicks, string memory _extraInfo) public returns (IMarket _newMarket) {
+        return originUniverse.createScalarMarket(_endTime, _feePerCashInAttoCash, _affiliateValidator, _affiliateFeeDivisor, _designatedReporterAddress, _prices, _numTicks, _extraInfo);
+    }
+
+    function getOrCacheValidityBond() public returns (uint256) {
+        return originUniverse.getOrCacheValidityBond();
+    }
+
+    function getOrCacheMarketRepBond() public returns (uint256) {
+        return originUniverse.getOrCacheMarketRepBond();
     }
 }

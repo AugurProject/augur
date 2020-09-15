@@ -1,5 +1,7 @@
 import { updateLoginAccount } from 'modules/account/actions/login-account';
 import {
+  feePoolBalance,
+  getEarnedFeesOf,
   loadAccountData_exchangeRates,
 } from 'modules/contracts/actions/contractCalls';
 import { AppState } from 'appStore';
@@ -18,6 +20,7 @@ import { createBigNumber } from 'utils/create-big-number';
 import { ETHER, WALLET_STATUS_VALUES, FIVE, ZERO, GWEI_CONVERSION } from 'modules/common/constants';
 import { formatAttoDai } from 'utils/format-number';
 import { augurSdk } from 'services/augursdk';
+import { FeePoolBalances } from 'modules/types';
 
 
 export const updateAssets = (): ThunkAction<any, any, any, any> => async (
@@ -27,7 +30,9 @@ export const updateAssets = (): ThunkAction<any, any, any, any> => async (
   const { loginAccount, appStatus, env, gasPriceInfo } = getState();
   const { meta } = loginAccount;
   const nonSafeWallet = await meta.signer?.getAddress();
-
+  // temp call to get user weth balance
+  const { contracts } = augurSdk.get();
+  const wethBalance = await contracts.weth.balanceOf_(nonSafeWallet);
   const values = await loadAccountData_exchangeRates(nonSafeWallet);
   if (values) {
     const {
@@ -53,6 +58,7 @@ export const updateAssets = (): ThunkAction<any, any, any, any> => async (
     dispatch(updateAppStatus(USDC_TO_DAI_RATE, formatAttoDai(attoDAIperUSDC)));
 
     const daiBalance = String(createBigNumber(String(signerDAI)).dividedBy(ETHER));
+    const weth = String(createBigNumber(wethBalance).dividedBy(ETHER));
     const signerEthBalance = String(
       createBigNumber(String(signerETH)).dividedBy(ETHER)
     );
@@ -63,6 +69,7 @@ export const updateAssets = (): ThunkAction<any, any, any, any> => async (
           attoRep: String(signerREP),
           rep: String(createBigNumber(signerREP).dividedBy(ETHER)),
           dai: daiBalance,
+          weth,
           eth: String(createBigNumber(String(signerETH)).dividedBy(ETHER)),
           legacyAttoRep: String(signerLegacyREP),
           legacyRep: String(
@@ -70,6 +77,7 @@ export const updateAssets = (): ThunkAction<any, any, any, any> => async (
           ),
           signerBalances: {
             eth: signerEthBalance,
+            weth,
             usdt: String(createBigNumber(String(signerUSDT)).dividedBy(10**6)),
             usdc: String(createBigNumber(String(signerUSDC)).dividedBy(10**6)),
             dai: String(createBigNumber(String(signerDAI)).dividedBy(ETHER)),
@@ -87,3 +95,11 @@ export const updateAssets = (): ThunkAction<any, any, any, any> => async (
     }
   }
 };
+
+
+const getFeePoolBalances = async (account: string): Promise<FeePoolBalances> => {
+  const stake = await feePoolBalance(account);
+  const feesEarned = await getEarnedFeesOf(account);
+
+  return { userStakedRep: stake, userPoolFees: feesEarned };
+}

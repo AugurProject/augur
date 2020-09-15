@@ -44,6 +44,7 @@ export class FlashSession {
   constructor(
     public accounts: Account[],
     public network?: string,
+    public para?: string,
     public config?: SDKConfiguration,
   ) {}
 

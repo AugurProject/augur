@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 
 import { Breakdown, Title, ButtonsRow } from 'modules/modal/common';
 import Styles from 'modules/modal/modal.styles.less';
-import { formatDaiPrice, formatDai } from 'utils/format-number';
+import { formatDaiPrice, formatDai, formatEther } from 'utils/format-number';
 import type { Getters } from '@augurproject/sdk';
 import { LinearPropertyLabel } from 'modules/common/labels';
 import MarketTitle from 'modules/market/containers/market-title';
@@ -33,22 +33,22 @@ export const ModalFrozenFunds = ({
   getUserFrozenFundsBreakdown,
 }: ModalFrozenFundsProps) => {
   const [breakdowns, setBreakdowns] = useState([]);
-  const [total, setTotal] = useState(formatDai('0'));
+  const [total, setTotal] = useState(formatEther('0'));
 
   async function getBreakdown() {
     try {
       const breakdown: Getters.Users.FrozenFundsBreakdown = await getUserFrozenFundsBreakdown();
-      setTotal(formatDai(breakdown.total));
+      setTotal(formatEther(breakdown.total));
       if (breakdown.total === '0') return;
       const updateBreakdowns = FROZEN_FUNDS_KEYS.reduce((p, key) => {
         if (breakdown[key].total === '0') return p;
-        const total = breakdown[key] ? formatDai(breakdown[key].total) : null;
+        const total = breakdown[key] ? formatEther(breakdown[key].total) : null;
         const rows = Object.keys(breakdown[key].markets).map(marketId => ({
           key: `${marketId}${key}`,
           marketId: marketId,
           showDenomination: true,
           label: `Frozen Funds`,
-          value: formatDai(breakdown[key].markets[marketId]),
+          value: formatEther(breakdown[key].markets[marketId]),
           regularCase: true,
           secondary: true,
         }));

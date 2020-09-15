@@ -26,7 +26,8 @@ export class DerivedDB extends RollbackTable {
     networkId: number,
     name: string,
     mergeEventNames: string[],
-    augur: Augur
+    augur: Augur,
+    private paraDeploy = false
   ) {
     super(networkId, augur, name, db);
     this.mergeEventNames = mergeEventNames;
@@ -47,10 +48,6 @@ export class DerivedDB extends RollbackTable {
       this.mergeEventNames,
       this.handleMergeEvent
     );
-  }
-
-  async clear() {
-    this.delete();
   }
 
   async onBulkSyncComplete() {
@@ -118,10 +115,11 @@ export class DerivedDB extends RollbackTable {
     highestSyncedBlockNumber: number,
     eventName: string
   ): Promise<BaseDocument[]> {
-    return await this.stateDB.dexieDB[eventName]
+    return this.stateDB.dexieDB[eventName]
       .where('blockNumber')
       .aboveOrEqual(highestSyncedBlockNumber)
-      .toArray();
+      // @ts-ignore
+      .toArrayOriginal();
   }
 
   // For a group of documents/logs for a particular event type get the latest per id and update the DB documents for the corresponding ids

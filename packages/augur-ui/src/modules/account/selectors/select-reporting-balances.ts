@@ -3,6 +3,7 @@ import {
   selectLoginAccountBalancesState,
   selectLoginAccountReportingState,
 } from 'appStore/select-state';
+import loginAccount from 'modules/auth/selectors/login-account';
 import { ZERO } from 'modules/common/constants';
 import { AccountBalances } from 'modules/types';
 import { createSelector } from 'reselect';
@@ -53,6 +54,9 @@ export const selectReportingBalances = createSelector(
       .plus(createBigNumber(disputingAmountFormatted.value));
     const repTotalAmountStakedFormatted = formatRep(repTotalAmountStaked);
 
+
+    // TODO: wire this up when governance contracts are in
+    const stakedSrep = '0';
     return {
       repBalanceFormatted,
       repProfitLossPercentageFormatted,
@@ -61,7 +65,8 @@ export const selectReportingBalances = createSelector(
       reportingAmountFormatted,
       participationAmountFormatted,
       repTotalAmountStakedFormatted,
-      hasStakedRep
+      hasStakedRep,
+      stakedSrep,
     };
   }
 );
@@ -77,6 +82,7 @@ export const selectDefaultReportingBalances = () => {
   const reportingAmountFormatted = formatAttoRep(ZERO);
   const disputingAmountFormatted = formatAttoRep(ZERO);
   const repTotalAmountStakedFormatted = formatAttoRep(ZERO);
+  const stakedSrep = formatAttoRep(ZERO);
 
   return {
     repBalanceFormatted,
@@ -86,5 +92,6 @@ export const selectDefaultReportingBalances = () => {
     reportingAmountFormatted,
     participationAmountFormatted,
     repTotalAmountStakedFormatted,
+    stakedSrep
   };
 };

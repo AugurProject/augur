@@ -29,7 +29,7 @@ export class RollbackTable extends AbstractTable {
         this.augur = augur;
     }
 
-    protected async bulkPutDocumentsInternal(documents: BaseDocument[], documentIds?: any[]): Promise<void> {
+    protected async bulkPutDocuments(documents: BaseDocument[], documentIds?: any[]): Promise<void> {
         if (!this.isStandardRollback && !this.syncing && documentIds) {
             const rollbackDocuments = [];
             const rollbackIds = [];
@@ -55,7 +55,7 @@ export class RollbackTable extends AbstractTable {
             const maxBlock =_.get(_.maxBy(documents, 'blockNumber'), 'blockNumber');
             await this.prune(maxBlock);
         }
-        await super.bulkPutDocumentsInternal(documents);
+        await super.bulkPutDocuments(documents);
     }
 
     async rollback(blockNumber: number): Promise<void> {

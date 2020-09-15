@@ -23,7 +23,7 @@ import ModalBuyDai from 'modules/modal/containers/modal-buy-dai';
 import ModalDiscard from 'modules/modal/containers/modal-discard';
 import ModalMarketReview from 'modules/modal/containers/modal-market-review';
 import ModalClaimFees from 'modules/modal/containers/modal-claim-fees';
-import ModalParticipate from 'modules/modal/containers/modal-participate';
+import ModalStaking from 'modules/modal/containers/modal-staking';
 import ModalNetworkConnect from 'modules/modal/containers/modal-network-connect';
 import ModalDisclaimer from 'modules/modal/containers/modal-disclaimer';
 import ModalGasPrice from 'modules/modal/containers/modal-gas-price';
@@ -55,6 +55,7 @@ import ModalHelp from 'modules/modal/containers/modal-help';
 import ModalMarketNotFound from 'modules/modal/containers/modal-market-not-found';
 import FrozenFundsBreakdown from 'modules/modal/containers/modal-frozen-funds-breakdown';
 import ModalTutorialVideo from 'modules/modal/containers/modal-tutoria-video';
+import ModalFeePoolClaiming from 'modules/modal/containers/modal-feepool-claiming';
 import * as TYPES from 'modules/common/constants';
 
 import Styles from 'modules/modal/components/common/common.styles.less';
@@ -112,8 +113,8 @@ function selectModal(type, props, closeModal, modal) {
       return <ModalSignTransaction {...modal} />;
     case TYPES.MODAL_REPORTING:
       return <ModalReporting {...modal} />;
-    case TYPES.MODAL_PARTICIPATE:
-      return <ModalParticipate />;
+    case TYPES.MODAL_STAKE_TOKENS:
+      return <ModalStaking  {...modal} />;
     case TYPES.MODAL_NETWORK_MISMATCH:
       return <ModalNetworkMismatch {...modal} />;
     case TYPES.MODAL_NETWORK_DISABLED:
@@ -186,6 +187,8 @@ function selectModal(type, props, closeModal, modal) {
       return <ModalDisclaimer {...modal} isReportingOnly={true} />;
     case TYPES.MODAL_TUTORIA_VIDEO:
       return <ModalTutorialVideo />
+    case TYPES.FEE_POOL_CLAIMING:
+      return <ModalFeePoolClaiming />
     default:
       return <div />;
   }

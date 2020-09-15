@@ -67,6 +67,14 @@ export class TestNetReputationTokenFactory extends c.TestNetReputationTokenFacto
 }
 export class UniverseFactory extends c.UniverseFactory<BigNumber> {
 }
+export class FeePotStakingRewards extends c.FeePotStakingRewards<BigNumber> {
+}
+export class GovToken extends c.GovToken<BigNumber> {
+}
+export class Governance extends c.Governance<BigNumber> {
+}
+export class Timelock extends c.Timelock<BigNumber> {
+}
 export class RelayHub extends c.RelayHub<BigNumber> {
 }
 export class Penalizer extends c.Penalizer<BigNumber> {

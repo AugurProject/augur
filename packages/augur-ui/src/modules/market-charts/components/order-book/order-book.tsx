@@ -18,7 +18,7 @@ import {
   QuantityOrderBookOrder,
 } from 'modules/types';
 import { createBigNumber } from 'utils/create-big-number';
-import { formatDaiPrice, formatMarketShares } from 'utils/format-number';
+import { formatDaiPrice, formatMarketShares, formatEther } from 'utils/format-number';
 import { NUMBER_OF_SECONDS_IN_A_DAY } from 'utils/format-date';
 
 interface OrderBookSideProps {
@@ -171,7 +171,7 @@ const OrderBookSide = ({
               showDenomination={false}
             />
             {isScalar && !usePercent ?
-              <HoverValueLabel value={formatDaiPrice(order.price)}/> :
+              <HoverValueLabel value={formatEther(order.price)}/> :
               <span>{usePercent ? order.percent : createBigNumber(order.price).toFixed(pricePrecision)}</span>
             }
             <span>

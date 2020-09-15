@@ -1,3 +1,4 @@
+import { buildParaAddresses } from '@augurproject/artifacts';
 import {
   EthersSigner,
   TransactionStatus,
@@ -78,14 +79,14 @@ export class Augur<TProvider extends Provider = Provider> {
   readonly warpSync: WarpSync;
   readonly uniswap: Uniswap;
 
-  readonly universe: Universe;
+  readonly universeAddress: string;
   readonly liquidity: Liquidity;
   readonly hotLoading: HotLoading;
   readonly bestOffer: BestOffer;
   readonly marketInvalidBids: MarketInvalidBids;
   readonly events: EventEmitter;
 
-  private ethExchangetoken0IsCash: Boolean;
+  private ethExchangetoken0IsCash: boolean;
 
   private _sdkReady = false;
 
@@ -140,6 +141,11 @@ export class Augur<TProvider extends Provider = Provider> {
         `Augur config must include addresses. Config=${JSON.stringify(config)}`
       );
 
+
+    // This is the non-para deploy universe.
+    this.universeAddress = config.addresses.Universe;
+    const addresses = buildParaAddresses(config);
+
     this.events = new EventNameEmitter();
     this.events.setMaxListeners(0);
     this.events.on(SubscriptionEventName.SDKReady, () => {
@@ -151,14 +157,14 @@ export class Augur<TProvider extends Provider = Provider> {
     if (this.zeroX) this.zeroX.client = this;
 
     // API
-    this.contracts = new Contracts(this.config.addresses, this.dependencies);
+    this.contracts = new Contracts(addresses, this.dependencies);
+
     this.market = new Market(this);
     this.liquidity = new Liquidity(this);
     this.contractEvents = new ContractEvents(
       this.provider,
-      this.config.addresses.Augur,
-      this.config.addresses.AugurTrading,
-      this.config.addresses.ShareToken
+      this.config.addresses,
+      this.config.paraDeploys
     );
     this.warpSync = new WarpSync(this);
     this.hotLoading = new HotLoading(this);
@@ -417,7 +423,10 @@ export class Augur<TProvider extends Provider = Provider> {
   getMarkets = (
     params: Parameters<typeof Markets.getMarkets>[2]
   ): ReturnType<typeof Markets.getMarkets> => {
-    return this.bindTo(Markets.getMarkets)(params);
+    return this.bindTo(Markets.getMarkets)({
+      ...params,
+      universe: this.universeAddress,
+    });
   };
 
   getMarketsInfo = (
@@ -451,12 +460,18 @@ export class Augur<TProvider extends Provider = Provider> {
   getTradingHistory = (
     params: Parameters<typeof OnChainTrading.getTradingHistory>[2]
   ): ReturnType<typeof OnChainTrading.getTradingHistory> => {
-    return this.bindTo(OnChainTrading.getTradingHistory)(params);
+    return this.bindTo(OnChainTrading.getTradingHistory)({
+      ...params,
+      universe: this.universeAddress,
+    });
   };
   getTradingOrders = (
     params: Parameters<typeof OnChainTrading.getOpenOrders>[2]
   ): ReturnType<typeof OnChainTrading.getOpenOrders> => {
-    return this.bindTo(OnChainTrading.getOpenOrders)(params);
+    return this.bindTo(OnChainTrading.getOpenOrders)({
+      ...params,
+      universe: this.universeAddress,
+    });
   };
   getMarketOrderBook = (
     params: Parameters<typeof Markets.getMarketOrderBook>[2]
@@ -485,13 +500,19 @@ export class Augur<TProvider extends Provider = Provider> {
   getUserOpenOrders = (
     params: Parameters<typeof Users.getUserOpenOrders>[2]
   ): ReturnType<typeof Users.getUserOpenOrders> => {
-    return this.bindTo(Users.getUserOpenOrders)(params);
+    return this.bindTo(Users.getUserOpenOrders)({
+      ...params,
+      universe: this.universeAddress,
+    });
   };
 
   getUserFrozenFundsBreakdown = (
     params: Parameters<typeof Users.getUserFrozenFundsBreakdown>[2]
   ): ReturnType<typeof Users.getUserFrozenFundsBreakdown> => {
-    return this.bindTo(Users.getUserFrozenFundsBreakdown)(params);
+    return this.bindTo(Users.getUserFrozenFundsBreakdown)({
+      ...params,
+      universe: this.universeAddress,
+    });
   };
 
   getMostRecentWarpSync = (): ReturnType<
@@ -522,47 +543,71 @@ export class Augur<TProvider extends Provider = Provider> {
   getProfitLoss = (
     params: Parameters<typeof Users.getProfitLoss>[2]
   ): ReturnType<typeof Users.getProfitLoss> => {
-    return this.bindTo(Users.getProfitLoss)(params);
+    return this.bindTo(Users.getProfitLoss)({
+      ...params,
+      universe: this.universeAddress,
+    });
   };
   getProfitLossSummary = (
     params: Parameters<typeof Users.getProfitLossSummary>[2]
   ): ReturnType<typeof Users.getProfitLossSummary> => {
-    return this.bindTo(Users.getProfitLossSummary)(params);
+    return this.bindTo(Users.getProfitLossSummary)({
+      ...params,
+      universe: this.universeAddress,
+    });
   };
 
   getAccountTimeRangedStats = (
     params: Parameters<typeof Users.getAccountTimeRangedStats>[2]
   ): ReturnType<typeof Users.getAccountTimeRangedStats> => {
-    return this.bindTo(Users.getAccountTimeRangedStats)(params);
+    return this.bindTo(Users.getAccountTimeRangedStats)({
+      ...params,
+      universe: this.universeAddress,
+    });
   };
 
   getUserAccountData = (
     params: Parameters<typeof Users.getUserAccountData>[2]
   ): ReturnType<typeof Users.getUserAccountData> => {
-    return this.bindTo(Users.getUserAccountData)(params);
+    return this.bindTo(Users.getUserAccountData)({
+      ...params,
+      universe: this.universeAddress,
+    });
   };
 
   getUserPositionsPlus = (
     params: Parameters<typeof Users.getUserPositionsPlus>[2]
   ): ReturnType<typeof Users.getUserPositionsPlus> => {
-    return this.bindTo(Users.getUserPositionsPlus)(params);
+    return this.bindTo(Users.getUserPositionsPlus)({
+      ...params,
+      universe: this.universeAddress,
+    });
   };
 
   getTotalOnChainFrozenFunds = (
     params: Parameters<typeof Users.getTotalOnChainFrozenFunds>[2]
   ): ReturnType<typeof Users.getTotalOnChainFrozenFunds> => {
-    return this.bindTo(Users.getTotalOnChainFrozenFunds)(params);
+    return this.bindTo(Users.getTotalOnChainFrozenFunds)({
+      ...params,
+      universe: this.universeAddress,
+    });
   };
   getAccountTransactionHistory = (
     params: Parameters<typeof Accounts.getAccountTransactionHistory>[2]
   ): ReturnType<typeof Accounts.getAccountTransactionHistory> => {
-    return this.bindTo(Accounts.getAccountTransactionHistory)(params);
+    return this.bindTo(Accounts.getAccountTransactionHistory)({
+      ...params,
+      universe: this.universeAddress,
+    });
   };
 
   getAccountRepStakeSummary = (
     params: Parameters<typeof Accounts.getAccountRepStakeSummary>[2]
   ): ReturnType<typeof Accounts.getAccountRepStakeSummary> => {
-    return this.bindTo(Accounts.getAccountRepStakeSummary)(params);
+    return this.bindTo(Accounts.getAccountRepStakeSummary)({
+      ...params,
+      universe: this.universeAddress,
+    });
   };
 
   getUserCurrentDisputeStake = (
@@ -573,12 +618,18 @@ export class Augur<TProvider extends Provider = Provider> {
   getPlatformActivityStats = (
     params: Parameters<typeof Platform.getPlatformActivityStats>[2]
   ): ReturnType<typeof Platform.getPlatformActivityStats> => {
-    return this.bindTo(Platform.getPlatformActivityStats)(params);
+    return this.bindTo(Platform.getPlatformActivityStats)({
+      ...params,
+      universe: this.universeAddress,
+    });
   };
   getCategoryStats = (
     params: Parameters<typeof Markets.getCategoryStats>[2]
   ): ReturnType<typeof Markets.getCategoryStats> => {
-    return this.bindTo(Markets.getCategoryStats)(params);
+    return this.bindTo(Markets.getCategoryStats)({
+      ...params,
+      universe: this.universeAddress,
+    });
   };
 
   getOrder = (
@@ -594,7 +645,10 @@ export class Augur<TProvider extends Provider = Provider> {
   async getDisputeWindow(
     params: GetDisputeWindowParams
   ): Promise<DisputeWindow> {
-    return this.hotLoading.getCurrentDisputeWindowData(params);
+    return this.hotLoading.getCurrentDisputeWindowData({
+      ...params,
+      universe: this.universeAddress,
+    });
   }
 
   getMarketOutcomeBestOffer = (
@@ -666,7 +720,10 @@ export class Augur<TProvider extends Provider = Provider> {
   getUniverseChildren = (
     params: Parameters<typeof Universe.getUniverseChildren>[2]
   ): ReturnType<typeof Universe.getUniverseChildren> => {
-    return this.bindTo(Universe.getUniverseChildren)(params);
+    return this.bindTo(Universe.getUniverseChildren)({
+      ...params,
+      universe: this.universeAddress,
+    });
   };
 
   private registerTransactionStatusEvents() {

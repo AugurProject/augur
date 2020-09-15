@@ -38,7 +38,7 @@ import {
   MarketCreator,
   CopyAlternateIcon,
   Person,
-  PositionIcon,
+  EthIcon,
 } from 'modules/common/icons';
 import { MarketProgress } from 'modules/common/progress';
 import ChevronFlip from 'modules/common/chevron-flip';
@@ -185,7 +185,7 @@ export default class MarketCard extends React.Component<
           <HoverIcon
             id={id}
             label="Position"
-            icon={PositionIcon}
+            icon={EthIcon}
             hoverText="Position"
           />
         )}
@@ -266,23 +266,25 @@ export default class MarketCard extends React.Component<
       >
         <>
           <div>
-            {reportingState === REPORTING_STATE.PRE_REPORTING && (
+            {(reportingState === REPORTING_STATE.PRE_REPORTING || reportingState === REPORTING_STATE.UNKNOWN) && (
               <>
                 <LabelValue
                   label={condensed ? 'Volume' : 'Total Volume'}
-                  value={`$${volumeFormatted.formatted}`}
+                  value={`${volumeFormatted.formatted} ETH`}
+                  loading={reportingState === REPORTING_STATE.UNKNOWN}
                   condensed
                 />
                 {!condensed && (
                   <LabelValue
                     label="Open Interest"
-                    value={`$${openInterestFormatted.formatted}`}
+                    value={`${openInterestFormatted.formatted} ETH`}
+                    loading={reportingState === REPORTING_STATE.UNKNOWN}
                     condensed
                   />
                 )}
               </>
             )}
-            {reportingState !== REPORTING_STATE.PRE_REPORTING && reportingState !== REPORTING_STATE.UNKNOWN && (
+            {(reportingState !== REPORTING_STATE.PRE_REPORTING && reportingState !== REPORTING_STATE.UNKNOWN) && (
               <LabelValue
                 condensed
                 label="Total Dispute Stake"

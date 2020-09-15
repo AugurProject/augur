@@ -58,4 +58,6 @@ contract IAugur {
     function logNoShowBondChanged(uint256 _noShowBond) public returns (bool);
     function logReportingFeeChanged(uint256 _reportingFee) public returns (bool);
     function getUniverseForkIndex(IUniverse _universe) public view returns (uint256);
+    function getMarketType(IMarket _market) public view returns (IMarket.MarketType);
+    function getMarketOutcomes(IMarket _market) public view returns (bytes32[] memory _outcomes);
 }

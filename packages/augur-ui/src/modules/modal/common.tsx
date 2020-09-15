@@ -337,6 +337,18 @@ export const DescriptionMessage = (props: DescriptionMessageProps) => (
   </div>
 );
 
+interface MaxDescriptionProps {
+  label: string;
+  max: Function;
+  balance: string;
+}
+export const MaxDescription = ({label, max, balance }: MaxDescriptionProps) => (
+  <div className={Styles.SetMaxDescription}>
+    <span>{label}</span>
+    <span onClick={() => max()}>{balance}</span>
+  </div>
+);
+
 export const Subheader = (props: SubheaderProps) => (
   <div className={Styles.Subheader}>
     <span>{props.subheaderContent.header}</span>
@@ -408,13 +420,13 @@ export const Stepper = ({ currentStep, maxSteps, changeCurrentStep = null }: Ste
 interface TransferMyDaiProps {
   walletType: string;
   tokenAmount: FormattedNumber;
-  showTransferModal: Function;
+  showConvertModal: Function;
   isCondensed: boolean;
   tokenName: string;
   autoClose?: boolean;
 }
 
-export const TransferMyTokens = ({ walletType, tokenAmount, showTransferModal, tokenName, isCondensed = false, autoClose = false }: TransferMyDaiProps) => {
+export const WrapUnwrapEth = ({ walletType, tokenAmount, showConvertModal, tokenName, isCondensed = false, autoClose = false }: TransferMyDaiProps) => {
   if (isCondensed) {
     return (
       <div className={Styles.TransferMyDaiCondensed}>
@@ -423,22 +435,22 @@ export const TransferMyTokens = ({ walletType, tokenAmount, showTransferModal, t
           <span>in {walletType} wallet</span>
         </div>
         <SecondaryButton
-          action={() => showTransferModal()}
-          text={'Transfer to wallet address'}
+          action={() => showConvertModal()}
+          text={tokenName === ETH ? 'Wrap ETH' : 'Unwrap ETH'}
         />
       </div>
     );
   }
 
   return (
-    <div className={Styles.TransferMyTokens}>
+    <div className={Styles.WrapUnwrapEth}>
       <div>
         <span>{tokenAmount.formattedValue} {titleCase(tokenName)} in your {walletType} wallet</span>
-        <span>Transfer any amount to your wallet address.</span>
+        <span>Wrap or Unwrap ETH</span>
       </div>
       <PrimaryButton
-        action={() => showTransferModal(autoClose)}
-        text={`Transfer my ${titleCase(tokenName)}`}
+        action={() => showConvertModal(autoClose)}
+        text={tokenName === ETH ? `Wrap my ETH` : `Unwrap my ETH`}
       />
     </div>
   );

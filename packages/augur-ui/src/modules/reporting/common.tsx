@@ -1,4 +1,5 @@
-import React, { Component, useState } from 'react';
+
+import React, { Component, useEffect, useState } from 'react';
 import { connect } from 'react-redux';
 import classNames from 'classnames';
 import { createBigNumber, BigNumber } from 'utils/create-big-number';
@@ -21,13 +22,14 @@ import {
   MODAL_INITIALIZE_ACCOUNT,
   WARNING,
   WALLET_STATUS_VALUES,
-  GWEI_CONVERSION,
+  GWEI_CONVERSION, STAKE, APPROVE, ETH, APPROVE_GAS_ESTIMATE, FEE_POT_APPROVE, REDEEM, EXIT, WETH
 } from 'modules/common/constants';
 import {
   FormattedNumber,
   SizeTypes,
   MarketData,
   DisputeInputtedValues,
+  AccountBalances
 } from 'modules/types';
 import ReactTooltip from 'react-tooltip';
 import {
@@ -45,6 +47,7 @@ import {
   MovementLabel,
   InReportingLabel,
   TransactionFeeLabel,
+  ApprovalTxButtonLabel
 } from 'modules/common/labels';
 import { ButtonActionType } from 'modules/types';
 import {
@@ -52,7 +55,9 @@ import {
   formatAttoRep,
   formatGasCostToEther,
   formatDai,
+  formatAttoEth,
   formatEther,
+  formatPercent
 } from 'utils/format-number';
 import { MarketProgress } from 'modules/common/progress';
 import { InfoIcon, InformationIcon, XIcon } from 'modules/common/icons';
@@ -66,7 +71,7 @@ import {
   convertAttoValueToDisplayValue,
 } from '@augurproject/sdk-lite';
 import { calculatePosition } from 'modules/market/components/market-scalar-outcome-display/market-scalar-outcome-display';
-import { getRepThresholdForPacing } from 'modules/contracts/actions/contractCalls';
+import { approveFeePool, getRepThresholdForPacing, hasApprovedFeePool, getFeePoolBalances, getUserFeePoolBalances } from 'modules/contracts/actions/contractCalls';
 import MarketTitle from 'modules/market/containers/market-title';
 import { AppState } from 'appStore/index';
 import { isGSNUnavailable } from 'modules/app/selectors/is-gsn-unavailable';
@@ -1176,229 +1181,308 @@ interface UserRepDisplayProps {
   repProfitAmountFormatted: FormattedNumber;
   disputingAmountFormatted: FormattedNumber;
   reportingAmountFormatted: FormattedNumber;
-  participationAmountFormatted: FormattedNumber;
   repTotalAmountStakedFormatted: FormattedNumber;
   openGetRepModal: Function;
   hasStakedRep: boolean;
+  stakedSrep: string;
+  account: string;
+  blockNumber;
 }
 
-export class UserRepDisplay extends Component<
-  UserRepDisplayProps,
-  UserRepDisplayState
-> {
-  state: UserRepDisplayState = {
-    toggle: false,
-  };
+export const UserRepDisplay = ({
+  isLoggedIn,
+  repBalanceFormatted,
+  repProfitAmountFormatted,
+  repProfitLossPercentageFormatted,
+  openGetRepModal,
+  repTotalAmountStakedFormatted,
+  disputingAmountFormatted,
+  reportingAmountFormatted,
+  hasStakedRep,
+  stakedSrep,
+  account,
+  blockNumber,
+}: UserRepDisplayProps) => {
+  const [toggle, setToggle] = useState(false);
+  const [userTotalRep, setUserTotalRep] = useState("0");
 
-  toggle = () => {
-    this.setState({ toggle: !this.state.toggle });
-  };
-
-  render() {
-    const {
-      isLoggedIn,
-      repBalanceFormatted,
-      repProfitAmountFormatted,
-      repProfitLossPercentageFormatted,
-      openGetRepModal,
-      repTotalAmountStakedFormatted,
-      disputingAmountFormatted,
-      reportingAmountFormatted,
-      participationAmountFormatted,
-      hasStakedRep,
-    } = this.props;
-    const s = this.state;
-
-    return (
-      <div
-        className={classNames(Styles.UserRepDisplay, {
-          [Styles.HideForMobile]: s.toggle,
-        })}
-      >
-        <>
-          <div onClick={this.toggle}>
-            <RepBalance alternate larger rep={repBalanceFormatted.formatted} />
-            <ChevronFlip
-              stroke="#fff"
-              filledInIcon
-              quick
-              pointDown={s.toggle}
-            />
-          </div>
-          <div>
-            <AllTimeProfitLoss
-              repProfitAmountFormatted={repProfitAmountFormatted}
-              repProfitLossPercentageFormatted={
-                repProfitLossPercentageFormatted
-              }
-            />
-            <PrimaryButton
-              action={openGetRepModal}
-              text={'Get REPv2'}
-              id="get-rep"
-            />
-          </div>
-          {!isLoggedIn && (
-            <p>Connect a wallet to see your Available REPv2 Balance</p>
-          )}
-          {isLoggedIn && hasStakedRep && (
-            <>
-              <div />
-              <div>
-                <span>{MY_TOTOL_REP_STAKED}</span>
-                <SizableValueLabel
-                  value={repTotalAmountStakedFormatted}
-                  keyId={'rep-staked'}
-                  showDenomination
-                  showEmptyDash={false}
-                  useFull
-                  highlight
-                  size={SizeTypes.LARGE}
-                />
-              </div>
-              <div>
-                <LinearPropertyLabel
-                  key="Disputing"
-                  label="Disputing"
-                  value={disputingAmountFormatted}
-                  showDenomination
-                  useFull
-                  useValueLabel
-                />
-                <LinearPropertyLabel
-                  key="reporting"
-                  label="Reporting"
-                  value={reportingAmountFormatted}
-                  showDenomination
-                  useFull
-                  useValueLabel
-                />
-                <LinearPropertyLabel
-                  key="participation"
-                  label="Participation Tokens"
-                  value={participationAmountFormatted}
-                  showDenomination
-                  useFull
-                  useValueLabel
-                />
-              </div>
-            </>
-          )}
-        </>
-      </div>
-    );
-  }
-}
-
-export interface ParticipationTokensViewProps {
-  openModal: Function;
-  openClaimParticipationTokensModal: Function;
-  disputeWindowFees: FormattedNumber;
-  purchasedParticipationTokens: FormattedNumber;
-  tokensOwned: FormattedNumber;
-  percentageOfTotalFees: FormattedNumber;
-  pastParticipationTokensPurchased: FormattedNumber;
-  participationTokensClaimableFees: FormattedNumber;
-  disablePurchaseButton: boolean;
-  hasRedeemable: boolean;
-}
-
-export const ParticipationTokensView = (
-  props: ParticipationTokensViewProps
-) => {
-  const {
-    openModal,
-    openClaimParticipationTokensModal,
-    disputeWindowFees,
-    purchasedParticipationTokens,
-    tokensOwned,
-    percentageOfTotalFees,
-    pastParticipationTokensPurchased,
-    participationTokensClaimableFees,
-    disablePurchaseButton,
-    hasRedeemable,
-  } = props;
+  useEffect(() => {
+    if (isLoggedIn) {
+        getUserFeePoolBalances(account)
+        .then(userBalances => {
+          setUserTotalRep(userBalances.userRep);
+      });
+    }
+  }, [isLoggedIn, blockNumber]);
 
   return (
-    <div className={Styles.ParticipationTokensView}>
-      <h4>Participation Tokens</h4>
-      <span>
-        <span>Don’t see any reports that need disputing? </span>
-        You can earn a proportional share of the reporting fees from this dispute window.
-        <span>
-          <a
-            href={HELP_CENTER_PARTICIPATION_TOKENS}
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Learn more
-          </a>
-        </span>
-      </span>
+    <div
+      className={classNames(Styles.UserRepDisplay, {
+        [Styles.HideForMobile]: toggle,
+      })}
+    >
+      <>
+        <div onClick={() => setToggle(!toggle)}>
+          <RepBalance alternate larger rep={repBalanceFormatted.formatted} />
+          <ChevronFlip stroke="#fff" filledInIcon quick pointDown={toggle} />
+        </div>
+        <div>
+          <AllTimeProfitLoss
+            repProfitAmountFormatted={repProfitAmountFormatted}
+            repProfitLossPercentageFormatted={repProfitLossPercentageFormatted}
+          />
+          <PrimaryButton
+            action={openGetRepModal}
+            text={'Get REPv2'}
+            id="get-rep"
+          />
+        </div>
+        {!isLoggedIn && (
+          <p>Connect a wallet to see your Available REPv2 Balance</p>
+        )}
+        {isLoggedIn && hasStakedRep && (
+          <>
+            <div />
+            <div>
+              <span>{MY_TOTOL_REP_STAKED}</span>
+              <SizableValueLabel
+                value={repTotalAmountStakedFormatted}
+                keyId={'rep-staked'}
+                showDenomination
+                showEmptyDash={false}
+                useFull
+                highlight
+                size={SizeTypes.LARGE}
+              />
+            </div>
+            <div>
+              <LinearPropertyLabel
+                key="Disputing"
+                label="Disputing"
+                value={disputingAmountFormatted}
+                showDenomination
+                useFull
+                useValueLabel
+              />
+              <LinearPropertyLabel
+                key="reporting"
+                label="Reporting"
+                value={reportingAmountFormatted}
+                showDenomination
+                useFull
+                useValueLabel
+              />
+              <LinearPropertyLabel
+                key="stakedrep"
+                label="Staked REP"
+                value={formatAttoRep(userTotalRep)}
+                showDenomination
+                useFull
+                useValueLabel
+              />
+              {false && ( // governance needs to be decided on to show this
+                <LinearPropertyLabel
+                  key="stakedrep"
+                  label="Staked SREP"
+                  value={formatAttoRep(stakedSrep)}
+                  showDenomination
+                  useFull
+                  useValueLabel
+                />
+              )}
+            </div>
+          </>
+        )}
+      </>
+    </div>
+  );
+};
 
+
+export interface FeePoolViewProps {
+  openClaimParticipationTokensModal: Function;
+  pastParticipationTokensPurchased: FormattedNumber;
+  participationTokensClaimableFees: FormattedNumber;
+  hasRedeemable: boolean;
+  openStakeRepModal: Function;
+  openStakeSrepModal: Function;
+  openUnstakeSrepModal: Function;
+  openExitUnstakeGovModal: Function;
+  account: string;
+  showAddFundsModal: Function;
+  balances: AccountBalances;
+  isLoggedIn: boolean;
+  isConnected: boolean;
+  gasPrice: string;
+  showFeePoolClaiming: Function;
+  showFeePoolExitClaiming: Function;
+  blockNumber: number;
+}
+
+export const FeePoolView = (
+  {
+    openStakeRepModal,
+    openStakeSrepModal,
+    pastParticipationTokensPurchased,
+    participationTokensClaimableFees,
+    openUnstakeSrepModal,
+    openExitUnstakeGovModal,
+    account,
+    showAddFundsModal,
+    balances,
+    isLoggedIn,
+    gasPrice,
+    isConnected,
+    showFeePoolClaiming,
+    showFeePoolExitClaiming,
+    blockNumber,
+  }: FeePoolViewProps
+) => {
+  const [isApproved, setIsApproved] = useState(false);
+  const [isGovApproved, setGovApproved] = useState(false);
+  const [feePoolTotalRep, setFeePoolTotalRep] = useState("0");
+  const [userTotalRep, setUserTotalRep] = useState("0");
+  const [userTotalFees, setUserTotalFees] = useState("0");
+  const [userRepPercentage, setUserRepPercentage] = useState("0");
+  const [disableClaiming, setDisableClaiming] = useState(true);
+
+  useEffect(() => {
+    if (isConnected) {
+      getFeePoolBalances().then(balances => {
+        setFeePoolTotalRep(balances.totalRep);
+
+        getUserFeePoolBalances(account).then(userBalances => {
+          setUserTotalRep(userBalances.userRep);
+          setUserTotalFees(userBalances.userFees);
+          const totalRep = createBigNumber(balances.totalRep);
+          const repPercent = (totalRep.gt(0)
+            ? createBigNumber(userBalances.userRep).div(totalRep)
+            : createBigNumber(0)
+          ).times(100);
+          setUserRepPercentage(repPercent.toNumber());
+          if (totalRep.gt(0)) setDisableClaiming(false);
+        });
+      });
+    }
+  }, [isConnected, blockNumber]);
+
+  return (
+    <div className={Styles.FeePoolView}>
+      <h3>Fee Pool</h3>
+      <span>
+        Stake <b>REP</b> to recieve Staking REP (<b>SREP</b>) to earn a portion of the reporting fees.
+      </span>
       <Subheaders
         large
         info
-        header="Total Reporting Fees"
-        subheader={disputeWindowFees.formatted}
-        secondSubheader="DAI"
-        tooltipText="The total amount to be paid to reporters"
-      />
-      <Subheaders
-        large
-        info
-        header="Total Participation Tokens Purchased"
-        subheader={purchasedParticipationTokens.formatted}
+        header="Total REP Staked"
+        subheader={formatAttoRep(feePoolTotalRep).formatted}
         tooltipText={
-          'The total amount of participation tokens purchased by reporters in the current window'
+          'The total amount of REPv2 tokens staked'
         }
       />
       <Subheaders
         info
-        header="Participation Tokens I OWN in Current Dispute Window"
-        subheader={tokensOwned.formatted}
-        secondSubheader={`(${percentageOfTotalFees.formatted}% of Total Fees)`}
-        tooltipText="The % of participation tokens you own among all participation tokens purchased in the current window"
+        header="My Staked REP"
+        subheader={formatAttoRep(userTotalRep).formatted}
+        secondSubheader={`(${formatPercent(userRepPercentage).formatted}% of Total Fees)`}
+        tooltipText="The % of REPv2 you staked in the fee pool"
       />
 
+      <Subheaders
+        info
+        header="Claimable Fees"
+        subheader={formatAttoEth(userTotalFees).formatted}
+        secondSubheader={`ETH`}
+        tooltipText="The fee's owed because of percentage of staked REPv2 in the fee pool"
+      />
+      { isLoggedIn &&
+        <ApprovalTxButtonLabel
+          className={Styles.ApprovalNotice}
+          title={'One time approval needed'}
+          buttonName={'Approve'}
+          userEthBalance={String(balances.eth)}
+          gasPrice={gasPrice}
+          checkApprovals={hasApprovedFeePool}
+          doApprovals={approveFeePool}
+          account={account}
+          approvalType={FEE_POT_APPROVE}
+          isApprovalCallback={(isApproved: boolean) => setIsApproved(isApproved)}
+          addFunds={() => showAddFundsModal({ tokenToAdd: WETH })}
+        />
+      }
       <ProcessingButton
-        disabled={disablePurchaseButton}
-        text="Get Participation Tokens"
-        action={openModal}
+        disabled={!isLoggedIn || !isApproved}
+        text="Stake REP"
+        action={openStakeRepModal}
         queueName={TRANSACTIONS}
-        queueId={BUYPARTICIPATIONTOKENS}
+        queueId={STAKE}
       />
-
+      <ProcessingButton
+        secondaryButton
+        disabled={!isLoggedIn || !isApproved || disableClaiming}
+        text="Claim Fees"
+        action={() => showFeePoolClaiming(userTotalFees, userTotalRep)}
+        queueName={TRANSACTIONS}
+        queueId={REDEEM}
+      />
+      <ProcessingButton
+        secondaryButton
+        disabled={!isLoggedIn || !isApproved || disableClaiming}
+        text="Unstake & Claim Fees"
+        action={() => showFeePoolExitClaiming(userTotalFees, userTotalRep)}
+        queueName={TRANSACTIONS}
+        queueId={EXIT}
+      />
       <section />
-
-      <h4>Redeem Past Participation Tokens</h4>
+      {false /* TODO: when governance comes in wire this up */&&
+      <>
+      <h3>Governance</h3>
       <span>
-      Redeem your past participation tokens and any returns from your portion of the reporting fees.
+      You can stake your <b>SREP</b> to get Governance REP (<b>GREP</b>) which can be used for voting power.
       </span>
       <Subheaders
         info
-        header="Participation Tokens Purchased"
+        header="Total SREP staked in Goverance"
         subheader={pastParticipationTokensPurchased.formatted}
         tooltipText={
-          "The total amount of unredeemed participation tokens you've purchased for past reporting minus any you've lost for incorrect reporting"
+          "The total amount of SREP staked in the Governance contract"
         }
       />
       <Subheaders
         info
-        header="My Portion of Reporting Fees"
+        header="My SREP staked (${} GREP)"
         subheader={participationTokensClaimableFees.formatted}
-        secondSubheader="DAI"
+        secondSubheader="SREP"
         tooltipText={
-          "The total amount of unclaimed DAI you've earned through reporting"
+          "The total SREP you have staked in the governance contract"
         }
       />
       <ProcessingButton
-        disabled={!hasRedeemable}
-        text="Redeem Past Participation Tokens"
-        action={openClaimParticipationTokensModal}
+        text="Stake SREP"
+        disabled={!isLoggedIn || !isGovApproved}
+        action={() => openStakeSrepModal(userTotalRep)}
+        queueName={TRANSACTIONS}
+        queueId={STAKE}
+      />
+      <ProcessingButton
+        secondaryButton
+        text="Claim GREP"
+        disabled={!isLoggedIn || !isGovApproved}
+        action={openUnstakeSrepModal}
         queueName={TRANSACTIONS}
         queueId={REDEEMSTAKE}
       />
+      <ProcessingButton
+        secondaryButton
+        text="Unstake & Claim GREP"
+        disabled={!isLoggedIn || !isGovApproved}
+        action={openExitUnstakeGovModal}
+        queueName={TRANSACTIONS}
+        queueId={REDEEMSTAKE}
+      />
+      </>
+      }
     </div>
   );
 };

@@ -38,6 +38,7 @@ import {
   ACCOUNT_ACTIVATION_GAS_COST,
   DISPUTE_GAS_COST,
 } from 'modules/common/constants';
+import { resolutionRules } from 'modules/create-market/components/common.styles.less';
 import { constructMarketParams } from 'modules/create-market/helpers/construct-market-params';
 import {
   CreateMarketData,
@@ -108,12 +109,29 @@ export async function getMaxMarketEndTime(): Promise<number> {
   return new BigNumber(maxEndTime).toNumber();
 }
 
+export async function isRepV2Approved(account): Promise<boolean> {
+  const { contracts } = augurSdk.get();
+  try {
+    const currentAllowance = await contracts.legacyReputationToken.allowance_(
+      account,
+      contracts.reputationToken.address
+    );
+    if (currentAllowance.lte(0)) {
+      return false;
+    }
+    return true;
+  } catch (error) {
+    throw error;
+  }
+}
+
+const allowance = createBigNumber(99999999999999999999).times(
+  TEN_TO_THE_EIGHTEENTH_POWER
+);
+
 export async function convertV1ToV2Approve() {
   const { contracts } = augurSdk.get();
 
-  const allowance = createBigNumber(99999999999999999999).times(
-    TEN_TO_THE_EIGHTEENTH_POWER
-  );
   let response = null;
   try {
     const getReputationToken = await contracts.universe.getReputationToken_();
@@ -137,9 +155,6 @@ export async function convertV1ToV2() {
 
 export async function convertV1ToV2_estimate() {
   const { contracts } = augurSdk.get();
-  const allowance = createBigNumber(99999999999999999999).times(
-    TEN_TO_THE_EIGHTEENTH_POWER
-  );
 
   let approvalGas = ZERO;
   let migrationGas = ZERO;
@@ -367,6 +382,38 @@ export async function addLiquidityRepDai(
   );
 }
 
+export async function checkTokenApproval(account, contract): Promise<boolean> {
+  const { contracts } = augurSdk.get();
+  try {
+    const currentAllowance = await contract.allowance_(
+      account,
+      contracts.uniswap.address
+    );
+
+    if (currentAllowance.lte(0)) {
+      return false
+    }
+    return true;
+  } catch (error) {
+    throw error;
+  }
+}
+
+export async function setTokenApproval(account, contract): Promise<void> {
+  const { contracts } = augurSdk.get();
+  try {
+    const currentAllowance = await contract.allowance_(
+      account,
+      contracts.uniswap.address
+    );
+    if (currentAllowance.lte(0)) {
+      await contract.approve(contracts.uniswap.address, APPROVAL_AMOUNT);
+    }
+  } catch (error) {
+    throw error;
+  }
+}
+
 export async function checkSetApprovalAmount(account, contract): Promise<void> {
   const { contracts } = augurSdk.get();
   try {
@@ -375,12 +422,27 @@ export async function checkSetApprovalAmount(account, contract): Promise<void> {
       account,
       contracts.uniswap.address
     );
-    if (currentAllowance.toNumber() <= 0) {
+    if (currentAllowance.lte(0)) {
       await contract.approve(contracts.uniswap.address, APPROVAL_AMOUNT);
     }
   } catch (error) {
     throw error;
   }
+}
+
+export async function wrapEth(
+  tokenAmount: BigNumber,
+): Promise<void> {
+  const { contracts } = augurSdk.get();
+  return contracts.weth.deposit({ attachedEth: tokenAmount.multipliedBy(10 ** 18) });
+}
+
+export async function unwrapEth(
+  tokenAmount: BigNumber,
+): Promise<void> {
+  const { contracts } = augurSdk.get();
+  return contracts.weth.withdraw(tokenAmount.multipliedBy(10 ** 18));
+
 }
 
 export async function uniswapTokenForDai(
@@ -931,7 +993,7 @@ export async function approvalsNeededToTrade(address): Promise<number> {
   const fillShareAllContractApproval = await contracts.shareToken.isApprovedForAll_(address, contracts.fillOrder.address);
   console.log(fillContractApproval, cashContractApproval, fillShareAllContractApproval);
   const approvals = [fillContractApproval, cashContractApproval, fillShareAllContractApproval].filter(a => !a);
-  return (approvals.length > 0 ? approvals.length + 1 : 0); // add additional 1 for referral address
+  return approvals.length;
 }
 
 export async function approveToTrade(address, referalAddress = NULL_ADDRESS) {
@@ -940,7 +1002,7 @@ export async function approveToTrade(address, referalAddress = NULL_ADDRESS) {
   if (!(await isContractApproval(address, contracts.ZeroXTrade.address, contracts.cash))) {
     approvals.push(contracts.cash.approve(contracts.ZeroXTrade.address, APPROVAL_AMOUNT));
   }
-  approvals.push(contracts.affiliates.setReferrer(referalAddress));
+  //approvals.push(contracts.affiliates.setReferrer(referalAddress));
   if (!(await contracts.shareToken.isApprovedForAll_(address, contracts.fillOrder.address))) {
     approvals.push(contracts.shareToken.setApprovalForAll(contracts.fillOrder.address, true));
   }
@@ -1285,4 +1347,99 @@ export async function loadAccountData_exchangeRates(account: string) {
   const usdt = contracts.usdt.address;
   const values: AccountData = await sdk.loadAccountData(account, repToken.address, usdc, usdt);
   return values;
+}
+
+export async function hasApprovedFeePool(account: string): Promise<number> {
+  const { contracts } = augurSdk.get();
+  const feePool = await getFeePool();
+  const currentAllowance = await contracts.reputationToken.allowance_(
+    account,
+    feePool.address
+  );
+
+  let approvalsNeeded = 1;
+  if (currentAllowance.gt(0)) {
+    approvalsNeeded = 0;
+  }
+  return approvalsNeeded;
+}
+
+export async function approveFeePool(): Promise<void> {
+  const { contracts } = augurSdk.get();
+  const feePool = await getFeePool();
+  const result = await contracts.reputationToken.approve(feePool.address, allowance);
+  return result;
+}
+
+interface FeePoolBalances {
+  totalRep: string;
+  totalFees: string;
+}
+export async function getFeePoolBalances(): Promise<FeePoolBalances> {
+  const feePool = await getFeePool();
+  const repBalance = await feePool.totalSupply_();
+  const feeBalance = await feePool.feeReserve_();
+  return { totalRep: repBalance, totalFees: feeBalance}
+}
+
+interface UserFeePoolBalances {
+  userRep: string;
+  userFees: string;
+}
+
+export async function getUserFeePoolBalances(account: string): Promise<UserFeePoolBalances> {
+  const feePool = await getFeePool();
+  const repBalance = await feePool.balanceOf_(account);
+  const feeBalance = await feePool.withdrawableFeesOf_(account);
+  return { userRep: repBalance, userFees: feeBalance}
+}
+
+export async function feePoolBalance(account: string): Promise<string> {
+  const feePool = await getFeePool();
+  const balance = await feePool.balanceOf_(account);
+  return String(balance);
+}
+
+export async function getEarnedFeesOf(account: string): Promise<string> {
+  const feePool = await getFeePool();
+  const amount = await feePool.earnedFeesOf_(account);
+  return String(amount);
+}
+
+export async function stakeInFeePool(amount: string): Promise<void> {
+  const stakedAmount = convertDisplayValuetoAttoValue(createBigNumber(amount));
+  const feePool = await getFeePool();
+  const staking = await feePool.stake(stakedAmount);
+  return staking;
+}
+
+export async function exitFeePool(amount: string): Promise<void> {
+  const feePool = await getFeePool();
+  const exiting = await feePool.exit(amount);
+  return exiting;
+}
+
+export async function redeemFeePool() {
+  const feePool = await getFeePool();
+  const redeeming = await feePool.redeem();
+  return redeeming;
+}
+
+interface IFeePot {
+    redeem: Function;
+    exit: Function;
+    stake: Function;
+    earnedFeesOf_: Function;
+    balanceOf_: Function;
+    totalSupply_: Function;
+    feeReserve_: Function;
+    withdrawableFeesOf_: Function;
+    address: string;
+}
+
+async function getFeePool(): Promise<IFeePot> {
+  const { contracts } = augurSdk.get();
+  const feePotAddress = await contracts.paraUniverse.getFeePot_();
+  const feePot = contracts.feePotFromAddress(feePotAddress) as IFeePot;
+  return feePot;
 }

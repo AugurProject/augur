@@ -11,7 +11,7 @@ export type SomeTime =
 const RELAY_HUB_ADDRESS = '0xD216153c06E857cD7f72665E0aF1d7D82172F494';
 
 export class Contracts {
-  augur: ContractInterfaces.Augur;
+  augur: ContractInterfaces.ParaAugur;
   augurTrading: ContractInterfaces.AugurTrading;
   universe: ContractInterfaces.Universe;
   cash: ContractInterfaces.Cash;
@@ -42,6 +42,7 @@ export class Contracts {
   weth: ContractInterfaces.WETH9;
   uniswap: ContractInterfaces.UniswapV2Router02;
   auditFunds: ContractInterfaces.AuditFunds;
+  paraUniverse: ContractInterfaces.ParaUniverse;
 
   reputationToken: SomeRepToken | null = null;
   private readonly dependencies: ContractDependenciesEthers;
@@ -51,7 +52,7 @@ export class Contracts {
     dependencies: ContractDependenciesEthers
   ) {
     this.dependencies = dependencies;
-    this.augur = new ContractInterfaces.Augur(dependencies, addresses.Augur);
+    this.augur = new ContractInterfaces.ParaAugur(dependencies, addresses.Augur);
     this.augurTrading = new ContractInterfaces.AugurTrading(
       dependencies,
       addresses.AugurTrading
@@ -151,6 +152,10 @@ export class Contracts {
       dependencies,
       addresses.AuditFunds
     );
+    this.paraUniverse = new ContractInterfaces.ParaUniverse(
+      dependencies,
+      addresses.Universe
+    )
 
     if (typeof addresses.Time !== 'undefined') {
       this.time = new ContractInterfaces.Time(dependencies, addresses.Time);
@@ -210,6 +215,10 @@ export class Contracts {
 
   disputeWindowFromAddress(address: string): ContractInterfaces.DisputeWindow {
     return new ContractInterfaces.DisputeWindow(this.dependencies, address);
+  }
+
+  feePotFromAddress(address: string): ContractInterfaces.FeePot {
+    return new ContractInterfaces.FeePot(this.dependencies, address);
   }
 
   getInitialReporter(

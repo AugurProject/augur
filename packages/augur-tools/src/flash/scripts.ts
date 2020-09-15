@@ -1416,9 +1416,7 @@ export function addScripts(flash: FlashSession) {
 
       const contractEvents = new ContractEvents(
         this.provider,
-        this.config.addresses.Augur,
-        this.config.addresses.AugurTrading,
-        this.config.addresses.ShareToken,
+        this.config.addresses
       );
       let parsedLogs = contractEvents.parseLogs(logsWithBlockNumber);
 
@@ -2713,7 +2711,6 @@ export function addScripts(flash: FlashSession) {
           signer,
           signer.address
         );
-        // const compilerOutput = JSON.parse(await readFile(config.deploy.contractInputPath, 'utf8'));
 
         const deployer = new ParaContractDeployer(
           this.config,

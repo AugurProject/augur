@@ -13,9 +13,10 @@ import {
   SUBMIT_DISPUTE,
   YES_NO,
   ZERO,
+  REPORTING_STATE,
 } from 'modules/common/constants';
 import InvalidLabel from 'modules/common/containers/labels';
-import { CheckCircleIcon } from 'modules/common/icons';
+import { CheckCircleIcon, LoadingEllipse } from 'modules/common/icons';
 import TooltipStyles from 'modules/common/tooltip.styles.less';
 import { SmallSubheadersTooltip } from 'modules/create-market/components/common';
 
@@ -34,7 +35,7 @@ import {
 import React, { Fragment } from 'react';
 import ReactTooltip from 'react-tooltip';
 import { BigNumber, createBigNumber } from 'utils/create-big-number';
-import { formatAttoRep, formatDaiPrice, formatNumber, formatNone, formatOutcomePercentage } from 'utils/format-number';
+import { formatAttoRep, formatDaiPrice, formatNumber, formatNone, formatOutcomePercentage, formatEther } from 'utils/format-number';
 import { getOutcomeNameWithOutcome } from 'utils/get-outcome';
 import { AppState } from 'appStore';
 import { getBestInvalidBid } from 'modules/orders/actions/load-market-orderbook';
@@ -59,10 +60,12 @@ export interface OutcomeProps {
   isScalar: boolean;
   marketId: string;
   outcomeId: string;
+  reportingState?: boolean;
 }
 
 export const OutcomeCmp = (props: OutcomeProps) => {
-  const percent = props.lastPricePercent
+  const isLoading = props.reportingState === REPORTING_STATE.UNKNOWN;
+  const percent = props.lastPricePercent && !isLoading
     ? calculatePosition(props.min, props.max, props.lastPricePercent)
     : 0;
   return (
@@ -78,14 +81,15 @@ export const OutcomeCmp = (props: OutcomeProps) => {
             <InvalidLabel
               text={props.description}
               keyId={`${props.marketId}_${props.description}`}
+              marketId={props.marketId}
             />
           ) : (
             <span>{props.description}</span>
           )}
-          <span className={classNames({ [Styles.Zero]: percent === 0,
-          [Styles.InvalidPrice]: props.invalid
-            && percent >= INVALID_ALERT_PERCENTAGE.toNumber()})}>
-            {percent === 0
+          <span className={classNames({
+            [Styles.Zero]: percent === 0,
+            [Styles.InvalidPrice]: props.invalid && percent >= INVALID_ALERT_PERCENTAGE.toNumber()})}>
+            {isLoading ? LoadingEllipse : percent === 0
               ? `0.00${props.isScalar ? '' : '%'}`
               : `${formatOutcomePercentage(percent).formatted}%`}
           </span>
@@ -274,13 +278,17 @@ export interface ScalarOutcomeProps {
   lastPrice?: FormattedNumber;
   marketId: string;
   outcomeId: string;
+  reportingState: string;
 }
 
 export const ScalarOutcome = (props: ScalarOutcomeProps) => (
   <MarketLink id={props.marketId} outcomeId={props.outcomeId}>
     <div className={Styles.ScalarOutcome}>
       <div>
-        {props.lastPrice !== null && (
+      {props.reportingState === REPORTING_STATE.UNKNOWN ?
+        <span style={{ left: '50%' }}>{LoadingEllipse}</span>
+        :
+        props.lastPrice !== null && (
           <span
             style={{
               left:
@@ -289,12 +297,12 @@ export const ScalarOutcome = (props: ScalarOutcomeProps) => (
           >
             {props.lastPrice.formatted}
           </span>
-        )}
+       )}
       </div>
       <div>
-        {formatDaiPrice(props.min).formatted}
+        {formatEther(props.min).formatted}
         <span>{props.scalarDenomination}</span>
-        {formatDaiPrice(props.max).formatted}
+        {formatEther(props.max).formatted}
       </div>
     </div>
   </MarketLink>
@@ -372,12 +380,14 @@ export const OutcomeGroup = (props: OutcomeGroupProps) => {
             scalarDenomination={props.scalarDenomination}
             marketId={props.marketId}
             outcomeId={String(SCALAR_UP_ID)}
+            reportingState={props.reportingState}
           />
           <Outcome
             description={removedInvalid.description}
             lastPricePercent={
               removedInvalid.price ? removedInvalid.lastPricePercent : null
             }
+            reportingState={props.reportingState}
             invalid={true}
             index={0}
             min={props.min}
@@ -388,7 +398,7 @@ export const OutcomeGroup = (props: OutcomeGroupProps) => {
           />
         </>
       )}
-      {((props.marketType !== SCALAR || inDispute) && props.reportingState !== MarketReportingState.Unknown) &&
+      {(props.marketType !== SCALAR || inDispute) &&
         outcomesShow.map(
           (outcome: OutcomeFormatted, index: number) =>
             ((!props.expanded && index < showOutcomeNumber) ||
@@ -429,6 +439,7 @@ export const OutcomeGroup = (props: OutcomeGroupProps) => {
             ) : (
               <Outcome
                 key={outcome.id}
+                reportingState={props.reportingState}
                 description={outcome.description}
                 lastPricePercent={outcome.lastPricePercent}
                 invalid={outcome.isInvalid}
@@ -458,6 +469,7 @@ export interface LabelValueProps {
   label: string;
   value: number | string;
   condensed?: boolean;
+  loading?: boolean;
 }
 
 export const LabelValue = (props: LabelValueProps) => (
@@ -470,7 +482,7 @@ export const LabelValue = (props: LabelValueProps) => (
       {props.label}
       <span>:</span>
     </span>
-    <span>{props.value}</span>
+    <span>{props.loading ? LoadingEllipse : props.value}</span>
   </div>
 );
 

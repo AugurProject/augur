@@ -38,6 +38,7 @@ const shortMonths = [
 export const NUMBER_OF_SECONDS_IN_A_DAY = 86400;
 const HOURS_IN_A_DAY = 24;
 const MINUTES_IN_A_HOUR = 60;
+let timezoneName = null;
 
 export function formatDate(d, timezone: string = null): DateFormattedObject {
   const date: Date = d instanceof Date ? d : new Date(0);
@@ -59,13 +60,16 @@ export function formatDate(d, timezone: string = null): DateFormattedObject {
   const localOffset: number = (date.getTimezoneOffset() / 60) * -1;
   const localOffsetFormatted: string =
     localOffset > 0 ? `+${localOffset}` : localOffset.toString();
-  const timezoneLocal: string = timezone
+
+  if (!timezoneName) {
+    const timezoneLocal: string = timezone
     ? date.toLocaleTimeString('en-US', {
         timeZone: timezone,
         timeZoneName: 'short',
       })
     : date.toLocaleTimeString('en-us', { timeZoneName: 'short' });
-  const timezoneName: string = `(${timezoneLocal.split(' ')[2]})`;
+    timezoneName = `(${timezoneLocal.split(' ')[2]})`;
+  }
 
   return {
     value: date,

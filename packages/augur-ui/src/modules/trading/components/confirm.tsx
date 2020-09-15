@@ -19,6 +19,7 @@ import {
   GWEI_CONVERSION,
   ETH,
   PUBLICTRADE,
+  WETH,
 } from 'modules/common/constants';
 import ReactTooltip from 'react-tooltip';
 import TooltipStyles from 'modules/common/tooltip.styles.less';
@@ -63,7 +64,7 @@ interface ConfirmProps {
   gasLimit: number;
   normalGasLimit: number;
   availableEth: BigNumber;
-  availableDai: BigNumber;
+  availableWeth: BigNumber;
   outcomeName: string;
   marketType: string;
   maxPrice: BigNumber;
@@ -112,7 +113,7 @@ class Confirm extends Component<ConfirmProps, ConfirmState> {
       trade,
       gasPrice,
       availableEth,
-      availableDai,
+      availableWeth,
       walletStatus,
       sweepStatus,
       postOnlyOrder,
@@ -138,8 +139,8 @@ class Confirm extends Component<ConfirmProps, ConfirmState> {
       !createBigNumber(prevProps.availableEth).eq(
         createBigNumber(availableEth)
       ) ||
-      !createBigNumber(prevProps.availableDai).eq(
-        createBigNumber(availableDai)
+      !createBigNumber(prevProps.availableWeth).eq(
+        createBigNumber(availableWeth)
       ) ||
       allowPostOnlyOrder !== prevProps.allowPostOnlyOrder
     ) {
@@ -157,7 +158,7 @@ class Confirm extends Component<ConfirmProps, ConfirmState> {
       gasLimit,
       normalGasLimit,
       availableEth,
-      availableDai,
+      availableWeth,
       tradingTutorial,
       GsnEnabled,
       initializeGsnWallet,
@@ -176,10 +177,10 @@ class Confirm extends Component<ConfirmProps, ConfirmState> {
     const {
       totalCost,
       selfTrade,
-      potentialDaiLoss,
+      potentialTradeLoss,
       numFills,
       loopLimit,
-      potentialDaiProfit,
+      potentialTradeProfit,
       orderShareProfit,
     } = trade;
 
@@ -191,12 +192,9 @@ class Confirm extends Component<ConfirmProps, ConfirmState> {
     let messages: Message | null = null;
 
     const averageGasLimit = gasLimit ? gasLimit.plus(normalGasLimit).div(2) : createBigNumber(0);
-    const averageGasCost = getGasCost(averageGasLimit, gasPrice, ethToDaiRate);
     const gasCostInEth = gasLimit
       ? createBigNumber(formatGasCostToEther(gasLimit, { decimalsRounded: 4 }, createBigNumber(GWEI_CONVERSION).multipliedBy(gasPrice)))
       : ZERO;
-
-    const gasCostDai = formatDai(createBigNumber(ethToDaiRate?.value || 0).times(createBigNumber(gasCostInEth)));
 
     if (marketType === SCALAR && selectedOutcomeId === INVALID_OUTCOME_ID) {
       messages = {
@@ -220,10 +218,10 @@ class Confirm extends Component<ConfirmProps, ConfirmState> {
     if (
       !isNaN(numTrades) &&
       numTrades > 0 &&
-      ((potentialDaiProfit && potentialDaiProfit.value !== 0 &&
-        createBigNumber(averageGasCost.value).gt(potentialDaiProfit.value)) ||
+      ((potentialTradeProfit && potentialTradeProfit.value !== 0 &&
+        createBigNumber(gasCostInEth.value).gt(potentialTradeProfit.value)) ||
         (orderShareProfit && orderShareProfit.value !== 0 &&
-          createBigNumber(averageGasCost.value).gt(orderShareProfit.value))) &&
+          createBigNumber(gasCostInEth.value).gt(orderShareProfit.value))) &&
       !tradingTutorial
     ) {
       messages = {
@@ -251,7 +249,7 @@ class Confirm extends Component<ConfirmProps, ConfirmState> {
 
     if (
       !tradingTutorial &&
-      totalCost &&
+      totalCost && totalCost.value > 0 &&
       createBigNumber(gasCostInEth).gte(createBigNumber(availableEth))
     ) {
       const ethDo = formatEther(gasCostInEth);
@@ -264,15 +262,16 @@ class Confirm extends Component<ConfirmProps, ConfirmState> {
 
     if (
       !tradingTutorial &&
-      totalCost &&
-      createBigNumber(potentialDaiLoss.fullPrecision).gt(
-        createBigNumber(availableDai)
+      totalCost && totalCost.value > 0 &&
+      createBigNumber(potentialTradeLoss.fullPrecision).gt(
+        createBigNumber(availableWeth)
       )
     ) {
+      const hasEth = createBigNumber(availableEth).gt("0.001")
       messages = {
-        header: 'Insufficient DAI',
+        header: 'Insufficient WETH',
         type: ERROR,
-        message: 'You do not have enough DAI to place this order',
+        message: `You do not have enough WETH${hasEth ? `, wrap some of ${formatEther(availableEth).formatted} ETH`: ''}`,
       };
     }
 
@@ -307,7 +306,7 @@ class Confirm extends Component<ConfirmProps, ConfirmState> {
       initialLiquidity,
       postOnlyOrder,
       tradingTutorial,
-      availableDai,
+      availableWeth,
       showAddFundsModal,
       ethToDaiRate,
       account,
@@ -322,8 +321,8 @@ class Confirm extends Component<ConfirmProps, ConfirmState> {
     const {
       limitPrice,
       numShares,
-      potentialDaiProfit,
-      potentialDaiLoss,
+      potentialTradeProfit,
+      potentialTradeLoss,
       totalCost,
       shareCost,
       side,
@@ -382,9 +381,9 @@ class Confirm extends Component<ConfirmProps, ConfirmState> {
 
     const notProfitable =
       (orderShareProfit && createBigNumber(orderShareProfit.value).lte(0)) ||
-      (potentialDaiLoss.value > 0 &&
-        potentialDaiProfit &&
-        potentialDaiProfit.value <= 0);
+      (potentialTradeLoss.value > 0 &&
+        potentialTradeProfit &&
+        potentialTradeProfit.value <= 0);
 
     return (
       <section className={Styles.TradingConfirm}>
@@ -470,16 +469,16 @@ class Confirm extends Component<ConfirmProps, ConfirmState> {
             </div>
             <LinearPropertyLabel
               label="Max Profit"
-              value={potentialDaiProfit}
+              value={potentialTradeProfit}
               showDenomination={true}
             />
             <LinearPropertyLabel
               label="Max Loss"
-              value={potentialDaiLoss}
+              value={potentialTradeLoss}
               showDenomination={true}
             />
             <TransactionFeeLabelToolTip
-              isError={!tradingTutorial && createBigNumber(gasCostDai.value).gt(createBigNumber(potentialDaiProfit.value))}
+              isError={!tradingTutorial && createBigNumber(gasCostDai.value).gt(createBigNumber(potentialTradeProfit.value))}
               gasEstimate={(tradingTutorial || postOnlyOrder) ? 0 : gasLimit}
               normalGasLimit={numFills > 0 && normalGasLimit}
             />
@@ -531,9 +530,9 @@ class Confirm extends Component<ConfirmProps, ConfirmState> {
               <button onClick={messages.callback ? () => messages.callback() : this.clearErrorMessage}>{XIcon}</button>
             )}
 
-            {!tradingTutorial && isLogged && totalCost && (createBigNumber(potentialDaiLoss.fullPrecision).gt(createBigNumber(availableDai)) ||
+            {!tradingTutorial && isLogged && totalCost && (createBigNumber(potentialTradeLoss.fullPrecision).gt(createBigNumber(availableWeth)) ||
             createBigNumber(gasCostInEth).gte(createBigNumber(availableEth))) &&
-              <PrimaryButton action={() => showAddFundsModal()} text={'Add Funds'} />
+              <PrimaryButton action={() => showAddFundsModal({ tokenToAdd: WETH })} text={'Add Funds'} />
             }
           </div>
         )}

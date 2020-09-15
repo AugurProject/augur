@@ -10,7 +10,7 @@ import {
   CLOSED_LONG,
   CLOSED_SHORT,
 } from 'modules/common/constants';
-import { formatDaiPrice, formatPercent, formatShares, formatNone, formatMarketShares, formatDai } from 'utils/format-number';
+import { formatEther, formatPercent, formatShares, formatNone, formatMarketShares } from 'utils/format-number';
 
 export const positionSummary = memoize(
   (adjustedPosition, outcome, marketType, reportingState, isFullLoss) => {
@@ -63,10 +63,10 @@ export const positionSummary = memoize(
       outcomeId,
       type,
       quantity: formatMarketShares(marketType, quantity),
-      purchasePrice: formatDaiPrice(avgPrice, { decimals: 3, decimalsRounded: 3 }),
-      realizedNet: formatDai(realized),
-      unrealizedNet: formatDai(unrealized),
-      unrealized24Hr: formatDai(unrealized24),
+      purchasePrice: formatEther(avgPrice, { decimals: 3, decimalsRounded: 3 }),
+      realizedNet: formatEther(realized),
+      unrealizedNet: formatEther(unrealized),
+      unrealized24Hr: formatEther(unrealized24),
       realizedPercent: formatPercent(timesHundred(realizedPercent || ZERO), {
         decimalsRounded: 2,
       }),
@@ -78,10 +78,10 @@ export const positionSummary = memoize(
         timesHundred(unrealized24HrPercent || ZERO),
         { decimalsRounded: 2 }
       ),
-      totalCost: formatDai(totalCost),
-      totalValue: formatDai(currentValue),
-      lastPrice: !!outcome.price ? formatDaiPrice(outcome.price) : formatNone(),
-      totalReturns: formatDai(total || ZERO),
+      totalCost: formatEther(totalCost),
+      totalValue: formatEther(currentValue),
+      lastPrice: !!outcome.price ? formatEther(outcome.price) : formatNone(),
+      totalReturns: formatEther(total || ZERO),
       valueChange: formatPercent(
         timesHundred(unrealizedRevenue24hChangePercent),
         {

@@ -3,7 +3,7 @@ variables:
   CORE_IMAGE_BUILD: augurproject/augur-core:$(DOCKER_CI_BUILD_TAG)
   CORE_IMAGE_LATEST: augurproject/augur-core:monorepo
   PRIMARY_NODE_VERSION: 10.16.x
-  GETH_VERSION: v1.9.9
+  GETH_VERSION: v1.9.19
   SOLC_VERSION: v0.5.15
   SOLC_MD5: 884dbc8c8ed01cc34799a6ffab11bc3a
   VM_IMAGE: 'ubuntu-18.04'
@@ -34,7 +34,7 @@ jobs:
           if [[ "$(Build.SourceBranchName)" == "dev" || "$(Build.SourceBranchName)" == "v2" ]]; then
             GIT_COMMAND='git log -m -1 --name-only --pretty="format:" $(Build.SourceVersion)'
           else
-            GIT_COMMAND='git diff --name-only $(System.PullRequest.TargetBranch)..HEAD'
+            GIT_COMMAND='git diff --name-only origin/$(System.PullRequest.TargetBranch)..$(System.SourceVersion)'
           fi
           echo "running git command: $GIT_COMMAND"
           for f in $(eval "$GIT_COMMAND");
@@ -240,7 +240,7 @@ jobs:
           cd packages/augur-tools/ethereum-nodes/geth-poa && docker image build --tag augurproject/dev-node-geth:$(GETH_VERSION) .
           docker tag augurproject/dev-node-geth:$(GETH_VERSION) augurproject/dev-node-geth:latest
           docker push augurproject/dev-node-geth:$(GETH_VERSION)
-          docker push augurproject/dev-node-geth:latest
+          #docker push augurproject/dev-node-geth:latest
         displayName: 'build and push dev-node-geth image'
       - task: Docker@1
         displayName: docker logout
@@ -452,6 +452,15 @@ jobs:
       deployBucketName: dev.augur.net
       triggerBranch: refs/heads/dev
       cloudfrontDistributionId: E2K6239JF3WYG6
+
+  - template: .azure-templates/ui-build-to-s3.yml
+    parameters:
+      name: deploy_para_deploys_to_para
+      environment: v2
+      deployBucketName: para.augur.net
+      triggerBranch: refs/heads/para_deploys
+      paraDeployTokenName: 'WETH'
+      cloudfrontDistributionId: E2XU7PSKOBRVV4
 
   - job: github_release
     displayName: github release

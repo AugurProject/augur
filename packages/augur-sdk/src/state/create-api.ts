@@ -20,7 +20,7 @@ import { WarpSyncStrategy } from './sync/WarpSyncStrategy';
 
 export async function buildSyncStrategies(client:Augur, db:Promise<DB>, provider: EthersProvider, logFilterAggregator: LogFilterAggregator, config: SDKConfiguration) {
   const warpController = new WarpController((await db), client, provider,
-    config.uploadBlockNumber);
+    config.uploadBlockNumber, config.warpSync.ipfsEndpoint);
 
   client.warpController = warpController;
   return async () => {
@@ -51,10 +51,14 @@ export async function buildSyncStrategies(client:Augur, db:Promise<DB>, provider
     const warpSyncStrategy = new WarpSyncStrategy(warpController,
       logFilterAggregator.onLogsAdded, await db, provider);
 
-    const { warpSyncHash } = await client.warpSync.getLastWarpSyncData(
-      client.contracts.universe.address);
+    try {
+      const { warpSyncHash } = await client.warpSync.getLastWarpSyncData(
+        client.contracts.universe.address);
 
-    await warpSyncStrategy.start(currentBlock, warpSyncHash);
+      await warpSyncStrategy.start(currentBlock, warpSyncHash);
+    } catch (e) {
+      logger.error('Unable to load warp sync file.', e);
+    }
 
     if (config.warpSync && config.warpSync.createCheckpoints) {
       client.events.once(SubscriptionEventName.SDKReady, () => {
@@ -174,17 +178,8 @@ export async function createServer(config: SDKConfiguration, client?: Augur): Pr
   }
 
   const ethersProvider: EthersProvider = client.provider as EthersProvider;
-  const contractEvents = new ContractEvents(
-    ethersProvider,
-    client.config.addresses.Augur,
-    client.config.addresses.AugurTrading,
-    client.config.addresses.ShareToken,
-  );
 
-  const logFilterAggregator = LogFilterAggregator.create(
-    contractEvents.getEventTopics,
-    contractEvents.parseLogs,
-  );
+  const logFilterAggregator = LogFilterAggregator.create();
   const db = DB.createAndInitializeDB(
     Number(config.networkId),
     config.uploadBlockNumber,
@@ -192,8 +187,6 @@ export async function createServer(config: SDKConfiguration, client?: Augur): Pr
     client,
     config.zeroX?.mesh?.enabled || config.zeroX?.rpc?.enabled
   );
-
-  await db;
 
   if(config.warpSync?.createCheckpoints && config.warpSync?.autoReport) {
     client.events.on(SubscriptionEventName.WarpSyncHashUpdated,
