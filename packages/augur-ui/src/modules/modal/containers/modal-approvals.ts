@@ -44,7 +44,7 @@ const mergeProps = (sP: any, dP: any, oP: any) => ({
   ],
   buttons: [
     {
-      text: 'Next',
+      text: 'Please sign all approvals',
       disabled: false,
       action: () => {
         dP.testBetModal();
