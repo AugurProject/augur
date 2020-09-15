@@ -22,7 +22,7 @@ import {
   LoadingEllipse,
 } from 'modules/common/icons';
 import { MY_POSITIONS } from 'modules/routes/constants/views';
-import { LinearPropertyLabel } from 'modules/common/labels';
+import { LinearPropertyLabel, TextLabel } from 'modules/common/labels';
 import { calculateBetslipTotals } from 'modules/trading/store/betslip-hooks';
 import { useBetslipStore } from 'modules/trading/store/betslip';
 import { BET_STATUS, BETSLIP_SELECTED } from 'modules/trading/store/constants';
@@ -115,7 +115,7 @@ export const SportsMarketBets = ({ market }) => {
   }));
   return (
     <div className={Styles.SportsMarketBets}>
-      <h4>{convertToCaps(description)}</h4>
+      <h4><TextLabel text={convertToCaps(description)}/></h4>
       <>
         {bets.map(bet => (
           <SportsBet
@@ -145,7 +145,7 @@ export const SportsMarketMyBets = ({ market }) => {
   }));
   return (
     <div className={Styles.SportsMarketBets}>
-      <h4>{convertToCaps(description)}</h4>
+      <h4><TextLabel text={convertToCaps(description)}/></h4>
       <>
         {bets.map(bet => (
           <SportsMyBet key={bet.orderId} bet={bet} />

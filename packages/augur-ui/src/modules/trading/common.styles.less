@@ -126,7 +126,7 @@
       margin-top: @size-8;
     }
 
-    > h4 {
+    > h4 > span > label {
       .text-10-bold;
 
       background: var(--color-page-background);
@@ -139,13 +139,14 @@
       word-break: break-all;
       text-overflow: ellipsis;
       overflow: hidden;
+      margin-bottom: 0;
     }
   }
 
   .SportsBet {
     border-top: @size-1 solid var(--color-dark-grey);
     display: grid;
-    grid-gap: @size-8;
+    grid-gap: 0 @size-8;
     grid-template-columns: 1fr 1fr;
     padding: @size-12;
 
@@ -155,8 +156,11 @@
     }
 
     &.Review {
+      grid-gap: @size-8;
+      
       > header {
         grid-template-columns: 1fr 0fr;
+        margin-bottom: @size-4;
 
         > span:last-of-type {
           display: none;
@@ -190,6 +194,7 @@
       grid-column: span 2;
       grid-template-columns: 1fr 0fr 0fr;
       grid-gap: 0 @size-10;
+      margin-bottom: @size-12;
 
       > span {
         .text-12-bold;
@@ -233,6 +238,10 @@
 
   .SportsMyBet {
     .SportsBet;
+
+    > header {
+      margin-bottom: @size-4;
+    }
 
     &.Review {
       > header {

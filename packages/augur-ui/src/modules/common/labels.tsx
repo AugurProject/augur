@@ -695,7 +695,7 @@ export const TextLabel = ({ text, keyId }: TextLabelProps) => {
     setState({ ...state, clientWidth, scrollWidth });
   }, [labelRef.current.clientWidth, labelRef.current.scrollWidth, text]);
   const { theme } = useAppStatusStore();
-  const { isDisabled } = state;
+  const { isDisabled, scrollWidth, clientWidth } = state;
 
   return (
     <span className={Styles.TextLabel}>
@@ -707,7 +707,7 @@ export const TextLabel = ({ text, keyId }: TextLabelProps) => {
       >
         {text}
       </label>
-      {!isDisabled && (
+      {!isDisabled && scrollWidth > clientWidth && (
         <ReactTooltip
           id={`${keyId}-${text ? text.replace(/\s+/g, '-') : ''}`}
           className={TooltipStyles.Tooltip}
