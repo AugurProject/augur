@@ -44,6 +44,7 @@
 :root[theme="SPORTS"] {
   .MarketsView {
     margin: 0;
+    padding: 0 0 0 @size-40;
 
     > section:not([class*='LandingHero']) {
       // this is the sportsbook/betting-ui topsection
@@ -70,7 +71,7 @@
 
       @media @breakpoint-mobile-tablet {
         grid-template-columns: 1fr auto;
-        
+
         > button {
           display: flex;
         }
@@ -79,6 +80,18 @@
 
     div[class*='Search'] {
       height: @size-38;
+    }
+
+    @media @breakpoint-max-desktop {
+      padding: 0 0 0 @size-24;
+    }
+
+    @media @breakpoint-mobile-tablet {
+      padding: @size-32;
+    }
+
+    @media @breakpoint-mobile {
+      padding: @size-24 @size-12;
     }
   }
 }
