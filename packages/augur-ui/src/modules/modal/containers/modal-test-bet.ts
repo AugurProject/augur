@@ -25,8 +25,6 @@ const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({
 });
 
 const mergeProps = (sP: any, dP: any, oP: any) => ({
-  icon: TestBet,
-  showAccountStatus: true,
   goBack: dP.goBack,
   title: 'Congratulations! You’re now ready to start trading',
   content: [
@@ -38,7 +36,9 @@ const mergeProps = (sP: any, dP: any, oP: any) => ({
     },
   ],
   currentStep: 7,
+  showTestBet: true,
   closeModal: dP.closeModal,
+  skipAction: dP.closeModal,
   setCurrentOnboardingStep: dP.setCurrentOnboardingStep,
   buttons: [
     {
