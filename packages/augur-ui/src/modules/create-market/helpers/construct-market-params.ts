@@ -31,7 +31,7 @@ export function constructMarketParams(
     new BigNumber(100)
   );
   const feePerCashInAttoCash = fee.multipliedBy(TEN_TO_THE_EIGHTEENTH_POWER);
-  const affiliateFeeDivisor = newMarket.affiliateFee ? Number(ONE.div(new BigNumber(newMarket.affiliateFee || 0).div(100)).decimalPlaces(0)) : 0;
+  const affiliateFeeDivisor = Number(newMarket.affiliateFee) !== 0 ? Number(ONE.div(new BigNumber(newMarket.affiliateFee || 0).div(100)).decimalPlaces(0)) : 0;
   const marketEndTime = new BigNumber(
     newMarket.endTime ? newMarket.endTime : newMarket.endTimeFormatted.timestamp
   );
