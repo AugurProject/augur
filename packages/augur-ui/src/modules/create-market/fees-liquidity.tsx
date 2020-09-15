@@ -109,10 +109,11 @@ export default class FeesLiquidity extends React.Component<
   }
 
   localSettlementFeeChange = value => {
-    const fee = this.state.reportingFeePercent.value
+    console.log('localSettlementFeeChange', value);
+    const reportingFee = this.state.reportingFeePercent.value
     let creatorFee = value;
     if (!isNaN(value)) {
-      creatorFee = Number(value) - fee;
+      creatorFee = Number(value) - reportingFee;
       this.setState({ creatorFeePercent: formatPercent(creatorFee < 0 ? 0 : creatorFee) });
     }
     value === "0" ?
@@ -120,7 +121,7 @@ export default class FeesLiquidity extends React.Component<
     :
       this.props.onChange("settlementFee", creatorFee)
 
-    this.props.onChange('settlementFeePercent', formatPercent((fee + creatorFee), {
+    this.props.onChange('settlementFeePercent', formatPercent((reportingFee + creatorFee), {
       positiveSign: false,
       decimals: 4,
       decimalsRounded: 4,
@@ -199,16 +200,12 @@ export default class FeesLiquidity extends React.Component<
     const s = this.state;
 
     const {
-      settlementFee,
       affiliateFee,
       orderBook,
       validations,
     } = newMarket;
 
-    const marketTradingFee =
-      !isNaN(settlementFee) && settlementFee !== 0
-        ? s.reportingFeePercent.value + Number(settlementFee)
-        : settlementFee;
+
     return (
       <div
         className={Styles.FeesLiquidity}
@@ -227,7 +224,7 @@ export default class FeesLiquidity extends React.Component<
             subheader={`The Market Creator fee is the percentage amount the market creator receives whenever market shares are settled, either during trading or upon market resolution. This fee will be ${s.creatorFeePercent.formatted}%.`}
           />
           <TextInput
-            value={String(marketTradingFee)}
+            value={String(s.creatorFeePercent.value)}
             type="number"
             placeholder="0"
             innerLabel="%"
@@ -246,7 +243,7 @@ export default class FeesLiquidity extends React.Component<
           />
           <FormDropdown
             onChange={(value: string) => onChange("affiliateFee", value)}
-            defaultValue={'0'}
+            defaultValue={affiliateFee || '0'}
             options={this.state.affiliateFeeOptions}
             staticLabel={'Select Affiliate Fee'}
           />
