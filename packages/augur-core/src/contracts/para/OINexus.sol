@@ -5,12 +5,13 @@ import 'ROOT/reporting/Reporting.sol';
 import 'ROOT/reporting/IUniverse.sol';
 import 'ROOT/para/interfaces/IParaAugur.sol';
 import 'ROOT/para/interfaces/IParaUniverse.sol';
+import 'ROOT/para/interfaces/IOINexus.sol';
 import 'ROOT/libraries/math/SafeMathUint256.sol';
 
 
-contract OINexus is Ownable {
+contract OINexus is Ownable, IOINexus {
     using SafeMathUint256 for uint256;
-    
+
     mapping(address => bool) public registeredParaAugur;
     mapping(address => uint256) public numParaUniverses;
     mapping(address => bool) public knownParaUniverse;
@@ -18,18 +19,18 @@ contract OINexus is Ownable {
     mapping(address => uint256) public totalUniverseContributions;
     mapping(address => uint256) public universeReportingFeeDivisor;
 
-    function addParaAugur(IParaAugur _paraAugur) public onlyOwner returns (bool) {
+    function addParaAugur(IParaAugur _paraAugur) external onlyOwner returns (bool) {
         registeredParaAugur[address(_paraAugur)] = true;
         return true;
     }
 
-    function registerParaUniverse(IUniverse _universe, IParaUniverse _paraUniverse) public {
+    function registerParaUniverse(IUniverse _universe, IParaUniverse _paraUniverse) external {
         require(registeredParaAugur[msg.sender]);
         numParaUniverses[address(_universe)] += 1;
         knownParaUniverse[address(_paraUniverse)] = true;
     }
 
-    function recordParaUniverseValuesAndUpdateReportingFee(IUniverse _universe, uint256 _targetRepMarketCapInAttoCash, uint256 _repMarketCapInAttoCash) public returns (uint256) {
+    function recordParaUniverseValuesAndUpdateReportingFee(IUniverse _universe, uint256 _targetRepMarketCapInAttoCash, uint256 _repMarketCapInAttoCash) external returns (uint256) {
         require(knownParaUniverse[msg.sender]);
         IParaUniverse _paraUniverse = IParaUniverse(msg.sender);
         // Before applying the para universe values we update/apply the core universe values first
@@ -48,7 +49,7 @@ contract OINexus is Ownable {
         if (_reportingFeeDivisor == 0) {
             _reportingFeeDivisor = Reporting.getDefaultReportingFeeDivisor();
         }
-        
+
         // Derive a new total para universe factor by subtracting this ones old value then adding its new value
         uint256 _magnifiedReportingDivisorFactorContribution = _targetRepMarketCapInAttoCash.mul(10**18).div(_repMarketCapInAttoCash);
         uint256 _totalMagnifiedUniverseContributions = totalUniverseContributions[address(_universe)];

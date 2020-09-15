@@ -13,7 +13,7 @@ import 'ROOT/para/interfaces/IParaAugur.sol';
  * @dev Should not be used directly. Only intended to be used by Universe contracts
  */
 contract ParaOICashFactory is CloneFactory {
-    function createParaOICash(IParaAugur _augur) public returns (IParaOICash) {
+    function createParaOICash(IParaAugur _augur) external returns (IParaOICash) {
         IParaUniverse _universe = IParaUniverse(msg.sender);
         IParaOICash _openInterestCash = IParaOICash(createClone(_augur.lookup("ParaOICash")));
         _openInterestCash.initialize(_augur, _universe);

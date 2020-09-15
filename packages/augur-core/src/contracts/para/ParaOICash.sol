@@ -35,7 +35,7 @@ contract ParaOICash is VariableSupplyToken, Initializable, IParaOICash {
         cash.approve(address(_universe.getFeePot()), MAX_APPROVAL_AMOUNT);
     }
 
-    function approveFeePot() public {
+    function approveFeePot() external {
         cash.approve(address(universe.getFeePot()), MAX_APPROVAL_AMOUNT);
     }
 
