@@ -1592,7 +1592,6 @@ export const ApprovalTxButtonLabelCmp = ({
 
   function doCheckApprovals(init: boolean = false) {
     checkApprovals(account).then(approvalsNeeded => {
-      console.log('approvalsNeeded', approvalsNeeded);
       setApprovalsNeeded(approvalsNeeded);
       isApprovalCallback(approvalsNeeded === 0);
       if (approvalsNeeded === 0 && !init) {
