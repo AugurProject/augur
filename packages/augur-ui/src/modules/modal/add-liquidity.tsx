@@ -17,6 +17,7 @@ import { BetslipInput } from 'modules/trading/common';
 import { PrimaryButton } from 'modules/common/buttons';
 import { updateTradeCost } from 'modules/trades/actions/update-trade-cost-shares';
 import { createBigNumber } from 'utils/create-big-number';
+import * as classNames from 'classnames';
 
 const getOutcomeOptions = outcomesFormatted => {
   const options = outcomesFormatted
@@ -280,44 +281,46 @@ export const ModalAddLiquidity = () => {
               </button>
             </li>
           </ul>
-          {Object.keys(orderBook).map(outcomeId => {
-            const displayingOutcome = outcomesFormatted[outcomeId];
-            return (orderBook[outcomeId] || []).map((order, orderId) => {
-              const key = `${order.limitPrice}-${displayingOutcome.id}`;
-              return (
-                <ul key={key}>
-                  <li>{displayingOutcome.description}</li>
-                  <li>
-                    {
-                      formatDai(order.totalCost.roundedFormatted, {
-                        bigUnitPostfix: true,
-                      }).full
-                    }
-                  </li>
-                  <li>
-                    {
-                      convertToOdds(
-                        convertToNormalizedPrice({
-                          price: order.limitPrice,
-                          min,
-                          max,
-                        })
-                      ).full
-                    }
-                  </li>
-                  <li>
-                    <button
-                      onClick={() => {
-                        removeLiquidity({ txParamHash, outcomeId, orderId });
-                      }}
-                    >
-                      {Trash}
-                    </button>
-                  </li>
-                </ul>
-              );
-            });
-          })}
+          <section className={classNames({ [Styles.notEmpty]: Object.keys(orderBook).length > 0 })}>
+            {Object.keys(orderBook).map(outcomeId => {
+              const displayingOutcome = outcomesFormatted[outcomeId];
+              return (orderBook[outcomeId] || []).map((order, orderId) => {
+                const key = `${order.limitPrice}-${displayingOutcome.id}`;
+                return (
+                  <ul key={key}>
+                    <li>{displayingOutcome.description}</li>
+                    <li>
+                      {
+                        formatDai(order.totalCost.roundedFormatted, {
+                          bigUnitPostfix: true,
+                        }).full
+                      }
+                    </li>
+                    <li>
+                      {
+                        convertToOdds(
+                          convertToNormalizedPrice({
+                            price: order.limitPrice,
+                            min,
+                            max,
+                          })
+                        ).full
+                      }
+                    </li>
+                    <li>
+                      <button
+                        onClick={() => {
+                          removeLiquidity({ txParamHash, outcomeId, orderId });
+                        }}
+                      >
+                        {Trash}
+                      </button>
+                    </li>
+                  </ul>
+                );
+              });
+            })}
+          </section>
         </div>
       </main>
       <ButtonsRow buttons={buttons} />

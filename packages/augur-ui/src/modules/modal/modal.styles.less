@@ -3034,7 +3034,18 @@ div.ButtonsRow:last-of-type {
         }
       }
 
-      > ul {
+      > section {
+        height: auto;
+        max-height: @size-276;
+        overflow-y: auto;
+
+        &.notEmpty {
+          border-top: @size-1 solid var(--color-dark-grey);
+        }
+      }
+
+      > ul,
+      > section > ul {
         display: flex;
         flex-flow: row nowrap;
 
