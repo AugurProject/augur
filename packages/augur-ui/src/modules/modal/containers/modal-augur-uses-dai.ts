@@ -62,7 +62,7 @@ const mergeProps = (sP: any, dP: any, oP: any) => ({
     {
       text: 'Next',
       disabled: false,
-      action: () => null,
+      action: () => dP.gotoDeposit(),
     },
   ],
 });
