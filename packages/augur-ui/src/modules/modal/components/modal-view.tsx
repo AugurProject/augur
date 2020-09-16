@@ -27,6 +27,7 @@ import { ModalAugurP2P } from 'modules/modal/onboarding-modals';
 import { ModalAugurUsesDai } from 'modules/modal/onboarding-modals';
 import { ModalTutorialOutro } from 'modules/modal/onboarding-modals';
 import { ModalTutorialIntro } from 'modules/modal/onboarding-modals';
+import { ModalAddLiquidity } from 'modules/modal/add-liquidity';
 import { Scalar as ModalScalar } from 'modules/modal/scalar';
 import { useHistory } from 'react-router';
 import { ModalFrozenFunds } from 'modules/modal/components/modal-frozen-funds';
@@ -65,6 +66,8 @@ const ESCAPE_KEYCODE = 27;
 
 function selectModal(type, props, closeModal, modal) {
   switch (type) {
+    case TYPES.MODAL_ADD_LIQUIDITY: 
+      return <ModalAddLiquidity />;
     case TYPES.MODAL_CLAIM_MARKETS_PROCEEDS:
       return <ModalClaimMarketsProceeds {...props} />;
     case TYPES.MODAL_GAS_PRICE:

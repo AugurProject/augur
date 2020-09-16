@@ -95,7 +95,7 @@ export const updateTradeShares = ({
     Find Quantity:
     MaxCostLong / scaledPrice = quantityLong => 50 / 5 = 10
     MaxCostShort /(range - scaledPrice) = quantityShort => 100 / (15 - 5) = 10
-    */
+  */
   const {
     minPriceBigNumber,
     maxPriceBigNumber,

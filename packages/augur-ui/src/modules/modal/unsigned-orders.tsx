@@ -133,7 +133,7 @@ const orderRow = (
       )}
       <span>{formatMarketShares(marketType, quantity).formatted}</span>
       <span>{formatDai(Number(price)).formatted}</span>
-      <span>{formatDai(Number(orderEstimate)).formatted}</span>
+      <span>{formatDai(Number(orderEstimate)).full}</span>
       <span>{status && <PendingLabel status={status} />}</span>
       <div>
         {buttons.map((Button: DefaultButtonProps, index: number) => {
@@ -146,6 +146,7 @@ const orderRow = (
               />
             ) : (
               <TextIconButton
+                key={Button.text}
                 disabled={status && status !== TXEventName.Failure}
                 action={() => Button.action}
                 icon={Trash}

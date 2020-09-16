@@ -41,6 +41,7 @@ import {
   GWEI_CONVERSION,
   AUTO_ETH_REPLENISH,
   BUY,
+  MODAL_ADD_LIQUIDITY,
 } from 'modules/common/constants';
 import { useAppStatusStore, AppStatus } from 'modules/app/store/app-status';
 import { ViewTransactionDetailsButton } from 'modules/common/buttons';
@@ -1025,33 +1026,41 @@ interface LiquidityDepletedLabelProps {
 export const LiquidityDepletedLabel = ({
   market,
 }: LiquidityDepletedLabelProps) => {
-  if (
+  const { theme, actions: { setModal } } = useAppStatusStore();
+  const isSports = theme === THEMES.SPORTS;
+  const showLabel = (
     market.passDefaultLiquiditySpread ||
     market.hasPendingLiquidityOrders ||
     market.marketStatus === constants.MARKET_CLOSED
-  )
-    return null;
+  );
   return (
-    <span
-      className={classNames(Styles.LiquidityDepletedLabel)}
-      data-tip
-      data-for={'liquidityDepleted' + market.id}
-      data-iscapture={true}
-    >
-      LIQUIDITY DEPLETED
-      <ReactTooltip
-        id={'liquidityDepleted' + market.id}
-        className={TooltipStyles.Tooltip}
-        effect="solid"
-        place="top"
-        type="light"
-        event="mouseover mouseenter"
-        eventOff="mouseleave mouseout scroll mousewheel blur"
+    <>
+      {showLabel && (<span
+        className={classNames(Styles.LiquidityDepletedLabel)}
+        data-tip
+        data-for={'liquidityDepleted' + market.id}
+        data-iscapture={true}
       >
-        No longer passing the Liquidity spread filter, add more liquidity to
-        have your market seen. Liquidity indicator updates every minute.
-      </ReactTooltip>
-    </span>
+        LIQUIDITY DEPLETED
+        <ReactTooltip
+          id={'liquidityDepleted' + market.id}
+          className={TooltipStyles.Tooltip}
+          effect="solid"
+          place="top"
+          type="light"
+          event="mouseover mouseenter"
+          eventOff="mouseleave mouseout scroll mousewheel blur"
+        >
+          No longer passing the Liquidity spread filter, add more liquidity to
+          have your market seen. Liquidity indicator updates every minute.
+        </ReactTooltip>
+      </span>)}
+      {isSports && (
+          <button className={Styles.AddLiquidityButton} onClick={() => setModal({ type: MODAL_ADD_LIQUIDITY, market })}>
+            Add more liquidity
+          </button>
+      )}
+    </>
   );
 };
 export interface MarketStatusLabelProps {
