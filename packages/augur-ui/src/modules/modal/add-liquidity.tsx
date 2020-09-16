@@ -175,6 +175,8 @@ export const ModalAddLiquidity = () => {
             }`
           : `Raise total to ${formatDai(raiseTo).full}.`;
           shareAmountMessage = `This amount will fail due to system limitaitons. ${customPart}`;
+      } else {
+        shares.current = curNumShares.toFixed();
       }
     }
     const messageToSet =
