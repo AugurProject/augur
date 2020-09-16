@@ -453,7 +453,7 @@
   .StatusErrorMessage {
     > span {
       .text-12;
-      
+
       color: var(--color-primary-text);
       text-transform: unset;
       width: 100%;
@@ -461,7 +461,7 @@
       background: var(--color-module-background);
       border: @size-1 solid var(--color-outcome-invalid);
       align-items: center;
-      
+
       > svg {
         height: @size-20;
         width: @size-20;
@@ -609,7 +609,7 @@ div.LinearPropertyViewTransaction {
   flex-flow: row nowrap;
   align-items: center;
 
-  &.MarketScalarLabel {   
+  &.MarketScalarLabel {
     background: var(--color-scalar-20);
     color: var(--color-scalar);
     display: inline-block;
@@ -885,6 +885,11 @@ span.PendingLabel {
     fill: none;
     height: @size-9;
     width: @size-14;
+
+    > path {
+      stroke-width: @size-2;
+      -webkit-text-stroke-width: @size-2;
+    }
   }
 
   &_small {
@@ -907,7 +912,7 @@ span.PendingLabel {
 
   &_positive {
     > svg > path:nth-child(1) {
-      fill: var(--color-positive);
+      stroke: var(--color-positive);
     }
 
     > svg > path:nth-child(2) {
@@ -921,7 +926,7 @@ span.PendingLabel {
     }
 
     > svg > path:nth-child(1) {
-      fill: var(--color-negative);
+      stroke: var(--color-negative);
     }
 
     > svg > path:nth-child(2) {
@@ -1317,7 +1322,7 @@ span.PendingLabel {
 
     &_positive {
       > svg > path:nth-child(1) {
-        fill: var(--color-open);
+        stroke: var(--color-open);
       }
 
       > svg > path:nth-child(2) {
@@ -1327,7 +1332,7 @@ span.PendingLabel {
 
     &_negative {
       > svg > path:nth-child(1) {
-        fill: var(--color-resolved);
+        stroke: var(--color-resolved);
       }
 
       > svg > path:nth-child(2) {
