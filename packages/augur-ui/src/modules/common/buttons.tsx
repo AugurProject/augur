@@ -53,6 +53,7 @@ export interface DefaultButtonProps {
   failed?: boolean;
   submitTextButtton?: boolean;
   customConfirmedButtonText?: string;
+  hideConfirm?: boolean;
   customPendingButtonText?: string;
   phantom?: boolean;
 }
@@ -235,6 +236,13 @@ const ProcessingButtonComponent = (props: DefaultButtonProps) => {
     icon = XIcon;
     isDisabled = false;
   }
+
+  if (props.hideConfirm) {
+    if (confirmed) {
+      return null;
+    }
+  }
+
   return (
     <>
       {props.secondaryButton && (

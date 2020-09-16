@@ -6,7 +6,7 @@ import {
   MovementLabel,
   LinearPropertyLabel,
 } from 'modules/common/labels';
-import { CoreStats } from 'modules/types';
+import { CoreStats, FormattedNumber } from 'modules/types';
 import { Link } from 'react-router-dom';
 import makePath from 'modules/routes/helpers/make-path';
 import Logo from 'modules/app/components/logo';
@@ -76,6 +76,7 @@ interface TopBarProps {
   walletStatus: string;
   handleShowOnboarding: Function;
   currentOnboardingStep: number;
+  ethToDaiRate: FormattedNumber;
 }
 
 const TopBar: React.FC<TopBarProps> = ({
@@ -96,6 +97,7 @@ const TopBar: React.FC<TopBarProps> = ({
   handleShowOnboarding,
   currentOnboardingStep,
   address,
+  ethToDaiRate,
 }) => {
 
   const [isZeroXApproved, setIsZeroXApproved] = useState(false);
@@ -148,7 +150,7 @@ const TopBar: React.FC<TopBarProps> = ({
         tradingAccountCreated={!showAddFundsButton }
       />
       <div>
-        {(isLogged || restoredAccount) && !accountSetup && currentOnboardingStep < TOTAL_ONBOARDING_STEPS && (
+        {(isLogged || restoredAccount) && !accountSetup && currentOnboardingStep < TOTAL_ONBOARDING_STEPS && ethToDaiRate && (
           <PrimaryButton text={'Continue account setup'} action={() => handleShowOnboarding(currentOnboardingStep)} />
         )}
 

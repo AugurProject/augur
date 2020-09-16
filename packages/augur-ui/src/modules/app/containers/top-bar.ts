@@ -40,6 +40,7 @@ const mapStateToProps = (state: AppState) => {
     walletStatus: appStatus.walletStatus,
     currentOnboardingStep,
     address: state.loginAccount.address,
+    ethToDaiRate: state.appStatus?.ethToDaiRate,
   };
 };
 

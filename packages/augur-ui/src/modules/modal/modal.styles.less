@@ -186,6 +186,31 @@ div.Onboarding {
       }
     }
 
+    > span:first-of-type {
+      .text-12;
+
+      align-items: center;
+      background: @color-module-background-action-focus;
+      border-radius: @border-radius-full-round;
+      color: @color-primary-text;
+      display: flex;
+      height: @size-50;
+      margin: @size-16 0 0 0;
+      padding: @size-8 @size-12;
+      text-align: center;
+
+      > div:first-of-type svg {
+        height: @size-16;
+
+        > circle {
+          fill: @color-primary-text;
+        }
+      }
+
+      > div:last-of-type {
+        margin: @size-8;
+      }
+    }
 
     > main {
       display: flex;
@@ -508,6 +533,10 @@ div.Onboarding {
       }
     }
   }
+
+  > div:hover {
+    border-color: @color-outcome-seven;
+  }
 }
 
 .OnboardingBankroll {
@@ -534,6 +563,10 @@ div.Onboarding {
     margin: @size-12 auto 0 auto;
     justify-content: center;
     height: @size-52;
+  }
+
+  > div[class*='NotSelected']:hover {
+    border-color: @color-outcome-seven;
   }
 
   > span:last-of-type {
@@ -1403,11 +1436,12 @@ div.ButtonsRow:last-of-type {
 
   > button:first-of-type {
     margin: 0;
-    background: darken(@color-primary-action, 15%);
+    background: fade(@color-primary-action, 40%);
+    border: 2px solid @color-primary-action;
   }
 
   > button:first-of-type:hover {
-    background: darken(@color-primary-action, 5%);
+    background: @color-primary-action;
   }
 
   > button:last-of-type {

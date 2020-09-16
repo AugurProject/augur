@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-
 import {
   ETH,
   DAI,
@@ -13,7 +12,7 @@ import {
   USDC,
   USDT,
 } from "modules/common/constants";
-import { AccountBalances, FormattedNumber } from "modules/types";
+import { AccountBalances, FormattedNumber, PendingQueue } from "modules/types";
 import {
   SwapArrow,
 } from "modules/common/icons";
@@ -34,6 +33,7 @@ import {
 import {
   ProcessingButton,
   ExternalLinkButton,
+  PrimaryButton,
 } from "modules/common/buttons";
 import type { SDKConfiguration } from "@augurproject/artifacts";
 import { augurSdk } from "services/augursdk";
@@ -54,7 +54,8 @@ interface SwapProps {
   usdcToDaiRate: FormattedNumber;
   usdtToDaiRate: FormattedNumber;
   gasPrice: number;
-  onboarding: boolean;
+  onboarding?: boolean;
+  onboardingAction?: Function;
 }
 
 const tokenOptions = {
@@ -123,6 +124,7 @@ export const Swap = ({
   repToDaiRate,
   gasPrice,
   onboarding = false,
+  onboardingAction,
 }: SwapProps) => {
 
   // SDK not loadeds
@@ -472,6 +474,12 @@ export const Swap = ({
     }
   }, [fromTokenType, balances]);
 
+  const queueId = fromTokenType === ETH ?
+    SWAPETHFOREXACTTOKENS :
+    toTokenType === ETH ?
+    SWAPTOKENSFOREXACTETH :
+    SWAPEXACTTOKENSFORTOKENS
+
   return (
     <div className={Styles.Swap}>
       <>
@@ -533,7 +541,12 @@ export const Swap = ({
       }
 
       <div>
+        {onboarding && hasDai &&
+          <PrimaryButton action={onboardingAction} text={'Continue'} />
+        }
+
         {tokenUnlocked &&
+        (!onboarding || onboarding && !hasDai) &&
           <ProcessingButton
             text={'Convert'}
             action={() => makeTrade()}
@@ -543,13 +556,7 @@ export const Swap = ({
               outputAmount.value <= 0 ||
               (errorMessage && errorMessage.indexOf('Liquidity') === -1)
             }
-            queueId={
-              fromTokenType === ETH
-                ? SWAPETHFOREXACTTOKENS
-                : toTokenType === ETH
-                ? SWAPTOKENSFOREXACTETH
-                : SWAPEXACTTOKENSFORTOKENS
-            }
+            queueId={queueId}
           />
         }
 
