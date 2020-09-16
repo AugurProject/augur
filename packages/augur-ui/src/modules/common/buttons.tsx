@@ -34,7 +34,7 @@ import {
   AddIcon,
   LoadingEllipse,
   Trash,
-  CheckMark,
+  AlternateCheckMark
 } from 'modules/common/icons';
 import classNames from 'classnames';
 import { getNetworkId, placeTrade } from 'modules/contracts/actions/contractCalls';
@@ -237,7 +237,8 @@ export const ProcessingButton = ({
   nonMatchingIds = null,
   ...props,
 }: ProcessingButtonProps) => {
-  const { pendingQueue } = useAppStatusStore();
+  const { pendingQueue, theme } = useAppStatusStore();
+  const isSports = theme === THEMES.SPORTS;
   let disabled = false;
   const pendingData =
     pendingQueue[queueName] &&
@@ -284,6 +285,14 @@ export const ProcessingButton = ({
     buttonAction = e => cancel(e);
     icon = XIcon;
     isDisabled = false;
+  }
+  
+  if (confirmed && isSports) {
+    return (
+      <div className={Styles.ProcessingCheckmark}>
+        {AlternateCheckMark}
+      </div>
+    );
   }
   return (
     <>
@@ -771,7 +780,7 @@ export const PendingIconButton = ({
   let iconAction = () => null;
   switch (status) {
     case FILLED:
-      icon = isRecentUpdate ? CheckMark : null;
+      icon = isRecentUpdate ? AlternateCheckMark : null;
       classToApply = isRecentUpdate ? Styles.NEWFILL : Styles.FILLED;
       break;
     case PARTIALLY_FILLED:
