@@ -23,6 +23,7 @@ import {
   CheckMark,
   MobileNavBackIcon,
   MobileNavCloseIcon,
+  ExclamationCircle,
 } from 'modules/common/icons';
 import { Swap } from 'modules/swap/components/swap';
 import {
@@ -170,10 +171,6 @@ export const Onboarding = ({
       buttons[0].action();
     }
 
-    if (showApprovals && isZeroXApproved && isShareTokenApproved && isFillOrderApproved) {
-      buttons[0].text = 'Next';
-    }
-
     if (showApprovals) {
       checkIsZeroXApproved();
       checkIsShareTokenApproved();
@@ -225,6 +222,7 @@ export const Onboarding = ({
 
   if (showApprovals) {
     buttons[0].disabled = (!isZeroXApproved || !isShareTokenApproved || !isFillOrderApproved);
+    buttons[0].text = (!isZeroXApproved || !isShareTokenApproved || !isFillOrderApproved) ? 'Please sign all approvals' : 'Next';
   }
 
   if (currentStep === 1) {
@@ -286,12 +284,23 @@ export const Onboarding = ({
           </div>
         )}
 
+        {showSwapper &&
+          <span>
+            <div>{ExclamationCircle}</div>
+            <div>
+              Due to current high gas prices it’s recommended you maintain a $50
+              minimum worth of ETH.
+            </div>
+          </span>
+        }
+
         {showSwapper && swapOptions && (
           <Swap
             {...swapOptions}
             toToken={DAI}
             fromToken={token || ETH}
             onboarding={true}
+            onboardingAction={() => skipAction()}
           />
         )}
 

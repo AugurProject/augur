@@ -549,6 +549,7 @@ export const Bankroll = ({
 }: BankrollProps) => {
   const [show1InchExchange, setShow1InchExchange] = useState(false);
   const [showWalletOnRamp, setShowWalletOnRamp] = useState(false);
+  const [showSwap, setShowSwap] = useState(false);
 
   if (!hasBalanceOver50k) {
     swapModal();
@@ -564,17 +565,31 @@ export const Bankroll = ({
         for use within Augur){' '}
       </span>
       <div
+        className={showSwap || showWalletOnRamp ? 'Selected' : 'NotSelected'}
         onClick={() => {
           if (isWalletProvider) {
             setShowWalletOnRamp(true);
             setShow1InchExchange(false);
+            setShowSwap(false);
           } else {
-            swapModal();
+            setShowSwap(true);
+            setShowWalletOnRamp(false);
+            setShow1InchExchange(false);
           }
         }}
       >
         $0 - 50k
       </div>
+      {showSwap && (
+        <div className={Styles.OnboardingBankroll1Inch}>
+          <div>Use the in-app converter to convert {token} to DAI</div>
+          <div>This is simpler to use but may have greater slippage</div>
+          <PrimaryButton
+            action={() => swapModal()}
+            text={'In-app converter'}
+          />
+        </div>
+      )}
       {showWalletOnRamp && (
         <div className={Styles.OnboardingBankroll1Inch}>
           <div>Buy DAI through your ETH wallet</div>
@@ -588,8 +603,10 @@ export const Bankroll = ({
       )}
       {hasBalanceOver50k && (
         <div
+          className={show1InchExchange ? 'Selected' : 'NotSelected'}
           onClick={() => {
             setShowWalletOnRamp(false);
+            setShowSwap(false);
             setShow1InchExchange(true);
           }}
         >
@@ -602,7 +619,7 @@ export const Bankroll = ({
           <div>Convert quantities greater than $50k at a lower slippage.</div>
           <ExternalLinkButton
             URL={'https://1inch.exchange'}
-            label="1inch.exchange"
+            label='1inch.exchange'
           />
           <div onClick={() => approveModal()}>Continue</div>
         </div>
@@ -647,6 +664,7 @@ export const Approvals = ({ currentApprovalStep, approvalData }: ApprovalsProps)
             action={() => handleApprove()}
             queueName={TRANSACTIONS}
             queueId={APPROVE}
+            skipConfirm={true}
           />
         : idx === 1 && currentApprovalStep === 1 ?
           <ProcessingButton
@@ -654,6 +672,7 @@ export const Approvals = ({ currentApprovalStep, approvalData }: ApprovalsProps)
             action={() => handleApprove()}
             queueName={TRANSACTIONS}
             queueId={SETAPPROVALFORALL}
+            skipConfirm={true}
           />
         : idx === 2 && currentApprovalStep === 2 ?
           <ProcessingButton
@@ -661,6 +680,7 @@ export const Approvals = ({ currentApprovalStep, approvalData }: ApprovalsProps)
             action={() => handleApprove()}
             queueName={TRANSACTIONS}
             queueId={APPROVE}
+            skipConfirm={true}
           />
         : <PrimaryButton disabled action={() => null} text={'Approve'} />
       )}
