@@ -117,7 +117,7 @@ export const ModalAddLiquidity = () => {
     oddsValidation.current.errorMessage = null;
     if (!!newVal) {
       const normalizedPrice = convertOddsToPrice(odds.current);
-      const priceBN = createBigNumber(normalizedPrice.fullPrecision);
+      const priceBN = createBigNumber(normalizedPrice.roundedFormatted);
       const maxValid = max.minus(tickSize);
       if (isNaN(normalizedPrice.formatted) || priceBN.gt(maxValid) || priceBN.lt(tickSize)) {
         const minOdds = convertToOdds(
@@ -154,22 +154,19 @@ export const ModalAddLiquidity = () => {
       ? createBigNumber(formatDai(wager.current).formatted)
       : wager.current;
     const price = odds.current
-      ? createBigNumber(convertOddsToPrice(odds.current).fullPrecision)
+      ? createBigNumber(convertOddsToPrice(odds.current).roundedFormatted)
       : odds.current;
-
     if (!oddsMessage && !wagerMessage && price && total) {
       const marketRange = max.minus(min);
       const askPrice = marketRange.minus(price);
       const curNumShares = total.dividedBy(askPrice);
       const numSharesMod = curNumShares.modulo(10);
       const isValidShares = numSharesMod.eq(0);
+      const sharesLessMod = curNumShares.minus(numSharesMod);
+      const tenShareCost = createBigNumber(10).times(askPrice);
       if (!isValidShares) {
-        const costOfMod = numSharesMod.times(askPrice);
-        const tenShareCost = createBigNumber(10).times(askPrice);
-        const raiseTo = costOfMod.eq(total)
-          ? tenShareCost
-          : total.plus(tenShareCost.minus(costOfMod));
-        const lowerTo = total.minus(costOfMod);
+        const lowerTo = sharesLessMod.times(askPrice);
+        const raiseTo = lowerTo.plus(tenShareCost);
         const customPart = lowerTo.gt(0)
           ? `Raise total to ${formatDai(raiseTo).full} or lower total to ${
               formatDai(lowerTo).full
