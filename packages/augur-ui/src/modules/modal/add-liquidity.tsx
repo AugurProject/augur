@@ -65,8 +65,9 @@ export const ModalAddLiquidity = () => {
   } = modal;
   const orderBook = pendingLiquidityOrders[txParamHash] || {};
   const [errorMessage, setErrorMessage] = useState(null);
+  const [warningMessage, setWarningMessage] = useState(null);
   const odds = useRef(null);
-  const oddsValidation = useRef({ checkError: false, errorMessage: null });
+  const oddsValidation = useRef({ checkError: false, errorMessage: null, warningMessage: null });
   const wager = useRef(null);
   const wagerValidation = useRef({ checkError: false, errorMessage: null });
   const shares = useRef('10');
@@ -115,10 +116,21 @@ export const ModalAddLiquidity = () => {
     odds.current = newVal;
     oddsValidation.current.checkError = false;
     oddsValidation.current.errorMessage = null;
+    oddsValidation.current.warningMessage = null;
     if (!!newVal) {
       const normalizedPrice = convertOddsToPrice(odds.current);
       const priceBN = createBigNumber(normalizedPrice.roundedFormatted);
       const maxValid = max.minus(tickSize);
+      if (!isNaN(normalizedPrice.formatted) && normalizedPrice.rounded !== normalizedPrice.formatted && !(priceBN.gt(maxValid) || priceBN.lt(tickSize))) {
+        const displayOdds = convertToOdds(
+          convertToNormalizedPrice({
+            price: normalizedPrice.roundedFormatted,
+            min,
+            max,
+          })
+        ).full;
+        oddsValidation.current.warningMessage = `Your odds will actually be ${displayOdds} due to current system limitions.`;
+      }
       if (isNaN(normalizedPrice.formatted) || priceBN.gt(maxValid) || priceBN.lt(tickSize)) {
         const minOdds = convertToOdds(
           convertToNormalizedPrice({
@@ -177,10 +189,14 @@ export const ModalAddLiquidity = () => {
         shares.current = curNumShares.toFixed();
       }
     }
+    const warningToSet = oddsValidation.current.warningMessage || null;
     const messageToSet =
       oddsMessage || wagerMessage || shareAmountMessage || null;
     if (errorMessage !== messageToSet) {
       setErrorMessage(messageToSet);
+    }
+    if (warningToSet !== warningMessage) {
+      setWarningMessage(warningToSet);
     }
   };
   const modifyBet = v => {};
@@ -266,6 +282,7 @@ export const ModalAddLiquidity = () => {
             disabled={errorMessage}
           />
           {errorMessage && <span>{errorMessage}</span>}
+          {warningMessage && <p>{warningMessage}</p>}
         </section>
         <div>
           <ul key={`tableheader`}>
