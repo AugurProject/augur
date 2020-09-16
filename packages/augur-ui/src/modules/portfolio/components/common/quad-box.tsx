@@ -149,7 +149,7 @@ const QuadBox = ({
 
   return (
     <div
-      className={classNames(Styles.NewQuadBox, {
+      className={classNames(Styles.QuadBox, {
         [Styles.HideToggle]: hide,
         [Styles.ExtendToggle]: extend,
         [customClass]: customClass,
