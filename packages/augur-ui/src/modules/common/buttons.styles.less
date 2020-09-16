@@ -786,6 +786,18 @@
 
 :root[theme='BETTING'],
 :root[theme='SPORTS'] {
+  .ProcessingCheckmark {
+    > svg {
+      margin: 0;
+      width: @size-12;
+      height: @size-10;
+
+      > path {
+        fill: var(--color-open);
+      }
+    }
+  }
+  
   .PendingIconButton {
     &.NEWFILL {
       > svg {
@@ -803,7 +815,7 @@
         height: @size-16;
 
         > path {
-          stroke: var(--color-error);
+          fill: var(--color-error);
         }
       }
     }
