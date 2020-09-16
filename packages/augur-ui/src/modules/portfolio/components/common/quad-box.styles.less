@@ -102,7 +102,7 @@
   opacity: 0.5;
 }
 
-.NewQuadBox {
+.QuadBox {
   color: var(--color-primary-text);
   display: grid;
   min-height: 50%;
@@ -298,8 +298,11 @@
 
 :root[theme='BETTING'],
 :root[theme='SPORTS'] {
-  .NewQuadBox {
+  .QuadBox {
     .Container {
+      border-bottom-left-radius: @border-radius-rounded;
+      border-bottom-right-radius: @border-radius-rounded;
+
       .Header {
         background: transparent;
         min-height: @size-56;

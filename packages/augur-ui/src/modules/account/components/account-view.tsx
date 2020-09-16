@@ -119,6 +119,7 @@ const AccountView = () => {
                       <MyMarkets />
                     </ModulePane>
                   </ModuleTabs>
+                  <TermsAndConditions />
                 </div>
               )
             )}
@@ -165,14 +166,16 @@ const AccountView = () => {
                     [Styles.HideActiveMarkets]: extendNotifications,
                   })}
                 >
-                  <h1>My Account</h1>
-                  <Notifications />
-                  <OpenMarkets />
-                  <Overview hideHeader={false} />
-                  <AugurStatus hideHeader={false} />
-                  <Transactions />
-                  <Favorites />
-                  <MyMarkets />
+                  <div>
+                    <h1>My Account</h1>
+                    <Notifications />
+                    <OpenMarkets />
+                    <Overview hideHeader={false} />
+                    <AugurStatus hideHeader={false} />
+                    <Transactions />
+                    <Favorites />
+                    <MyMarkets />
+                  </div>
                   <TermsAndConditions />
                 </div>
               )
