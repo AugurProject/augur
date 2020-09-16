@@ -7,7 +7,7 @@
     border-radius: @border-radius-rounded;
 
     > div:first-of-type {
-        padding: @size-18 @size-16 @size-6;
+        padding: @size-18 @size-16;
         display: grid;
         grid-template-rows: auto auto;
         grid-template-columns: auto auto auto 1fr;
@@ -17,10 +17,11 @@
             display: flex;
             margin-top: auto;
             margin-bottom: auto;
+            margin-right: @size-4;
         }
 
         > span:nth-of-type(1) {
-            margin: 0 @size-4;
+            margin-right: @size-4;
         }
 
         > span:nth-of-type(2) {
@@ -47,7 +48,6 @@
             .text-16-bold;
 
             color: var(--color-primary-text);
-            line-height: 140%;
             grid-column: 1 / span 4;
             grid-row: 2;   
             margin-top: @size-8;     
@@ -140,7 +140,7 @@
 
 .BetsHeader {
     display: grid;
-    grid-template-columns: 2fr repeat(3, 1fr) 12.5rem 1fr;
+    grid-template-columns: 2fr repeat(3, 1fr) 14.5rem 1fr;
     
     &:first-of-type {
         .text-10-medium;
