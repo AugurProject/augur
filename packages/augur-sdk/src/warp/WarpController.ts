@@ -226,7 +226,7 @@ export class WarpController {
     const mostRecentCheckpoint = await this.db.warpCheckpoints.getMostRecentCheckpoint();
     if (!mostRecentCheckpoint) {
       const market = await this.augur.warpSync.getWarpSyncMarket(
-        this.augur.contracts.universe.address
+        await this.augur.contracts.paraUniverse.originUniverse_()
       );
 
       if (market.address === NULL_ADDRESS) {
