@@ -60,13 +60,16 @@
 
   > div:nth-of-type(3) {
     display: flex;
-    justify-content: space-between;
     flex-flow: row wrap;
     align-items: flex-end;
     margin: @size-40 0;
 
-    > div:not(:first-of-type) {
+    > div {
       margin-top: @size-24;
+    }
+
+    > div:not(:first-of-type) {
+      margin-left: @size-24;
     }
   }
 

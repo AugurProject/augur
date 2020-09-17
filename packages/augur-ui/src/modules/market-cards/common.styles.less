@@ -826,6 +826,15 @@
 				}
 			}
 		}
+
+		&.futures {
+			> .MatchedLine,
+			> button[class*="FavoriteButton"], 
+			> div[class*='DotSelection'] {
+				display: none;
+			}
+
+		}
 	}
 
 	.MatchedLine {
@@ -858,6 +867,7 @@
 		display: flex;
     flex-flow: row nowrap;
 		height: @size-18;
+		text-transform: uppercase;
 		
 		@media @breakpoint-mobile-tablet {
 			grid-column: 3;
@@ -1031,6 +1041,16 @@
 		border-radius: @border-radius-default;
 
 		> header { 
+			> span:first-of-type[class*="ProgressLabel"] {
+				> span:first-of-type {
+					.text-12;
+				}
+
+				> span:last-of-type {
+					.text-12-semi-bold;
+				}
+			}
+
 			> svg {
 			height: @size-20;
 			width: @size-20;
@@ -1192,10 +1212,7 @@
 			}
 
 			> span[class*="MatchedLine"],
-			> div[class*="DotSelection"] {
-				margin-left: @size-12;
-			}
-
+			> div[class*="DotSelection"],
 			> button[class*="FavoriteButton"] {
 				margin-left: @size-12;
 			}
