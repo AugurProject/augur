@@ -1417,15 +1417,17 @@ export const TopRow = ({ market, categoriesWithClick }) => {
     isTemplate,
     mostLikelyInvalid,
     isWarpSync,
+    sportsBook: { groupType }
   } = market;
   const isScalar = marketType === SCALAR;
-
+  const isFutures = groupType === SPORTS_GROUP_TYPES.FUTURES;
   return (
     <div
       className={classNames(Styles.TopRow, {
         [Styles.scalar]: isScalar,
         [Styles.template]: isTemplate,
         [Styles.invalid]: mostLikelyInvalid,
+        [Styles.futures]: isFutures,
       })}
     >
       {marketStatus === MARKET_REPORTING && (

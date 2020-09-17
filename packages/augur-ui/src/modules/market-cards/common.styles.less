@@ -826,6 +826,15 @@
 				}
 			}
 		}
+
+		&.futures {
+			> .MatchedLine,
+			> button[class*="FavoriteButton"], 
+			> div[class*='DotSelection'] {
+				display: none;
+			}
+
+		}
 	}
 
 	.MatchedLine {
@@ -858,6 +867,7 @@
 		display: flex;
     flex-flow: row nowrap;
 		height: @size-18;
+		text-transform: uppercase;
 		
 		@media @breakpoint-mobile-tablet {
 			grid-column: 3;
