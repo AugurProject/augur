@@ -54,7 +54,7 @@
     "@augurproject/utils": "^2.1.10",
     "@metamask/detect-provider": "1.1.0",
     "@portis/web3": "2.0.0-beta.57",
-    "@toruslabs/torus-embed": "1.7.1",
+    "@toruslabs/torus-embed": "1.8.3",
     "analytics": "0.3.0",
     "bignumber.js": "9.0.0",
     "classnames": "2.2.6",
