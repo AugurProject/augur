@@ -244,7 +244,6 @@ export const CountdownProgress = ({
   const breakpointOne =
     timeLeft <= firstBreakpoint && timeLeft > secondBreakpoint && countdown;
   const breakpointTwo = timeLeft <= secondBreakpoint && countdown;
-  console.log(label, value, valueString);
   return (
     <span
       className={classNames(Styles.ProgressLabel, {

@@ -879,10 +879,9 @@ export const SportsMarketContainer = ({
   }
   if (isFutures) {
     // futures
-    console.log('is futures', market.endTimeFormatted);
     const { tradingPositionsPerMarket = null } =
       accountPositions[marketId] || {};
-    // {tradingPositionsPerMarket && tradingPositionsPerMarket.current !== "0" && PositionIcon}
+   
     headingContent = (
       <Fragment key={`${marketId}-heading`}>
         <CountdownProgress
@@ -891,7 +890,7 @@ export const SportsMarketContainer = ({
           reportingState={market.reportingState}
           forceLongDate
         />
-        {PositionIcon}
+        {tradingPositionsPerMarket && tradingPositionsPerMarket.current !== "0" && PositionIcon}
         <span className={Styles.MatchedLine}>
           Matched<b>{market.volumeFormatted.full}</b>
         </span>
