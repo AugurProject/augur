@@ -16,6 +16,7 @@ export interface CountdownProgressProps {
   alignRight?: boolean;
   reportingState?: string;
   value?: string;
+  forceLongDate?: boolean;
 }
 
 export interface TimeProgressBarProps {
@@ -143,7 +144,7 @@ const reportingStateToLabelTime = (
   }
 
   if (forkingMarket) {
-    label = 'Time Left in Fork Window'
+    label = 'Time Left in Fork Window';
     time = formatTime(forkingEndTime);
   }
 
@@ -157,7 +158,7 @@ export const MarketProgress = ({
   customLabel,
   alignRight,
   forkingEndTime,
-  forkingMarket
+  forkingMarket,
 }: MarketProgressProps) => {
   const reportingEndTime = formatTime(reportingWindowEndTime);
   const { label, time } = reportingStateToLabelTime(
@@ -166,7 +167,7 @@ export const MarketProgress = ({
     reportingEndTime,
     alignRight,
     forkingMarket,
-    forkingEndTime,
+    forkingEndTime
   );
 
   return (
@@ -200,7 +201,8 @@ export const CountdownProgress = ({
   finalColorBreakpoint,
   alignRight,
   reportingState,
-  value
+  value,
+  forceLongDate = false,
 }: CountdownProgressProps) => {
   const currentTime = useTimer();
 
@@ -227,22 +229,22 @@ export const CountdownProgress = ({
 
     timeLeft = time.timestamp - currentTime;
     countdown = (countdownBreakpoint || OneWeek) >= timeLeft && timeLeft > 0;
-    valueString =
-      countdown && reportingState !== REPORTING_STATE.AWAITING_FINALIZATION &&
-          reportingState !== REPORTING_STATE.FINALIZED
-        ? `${daysRemaining}:${
-            hoursRemaining >= 10 ? hoursRemaining : '0' + hoursRemaining
-          }:${
-            minutesRemaining >= 10 ? minutesRemaining : '0' + minutesRemaining
-          }:${
-            secondsRemaining >= 10 ? secondsRemaining : '0' + secondsRemaining
-          }`
-        : time.formattedLocalShortDateSecondary;
+    valueString = forceLongDate
+      ? time.formattedLocalShortDateTimeNoTimezone
+      : countdown &&
+        reportingState !== REPORTING_STATE.AWAITING_FINALIZATION &&
+        reportingState !== REPORTING_STATE.FINALIZED
+      ? `${daysRemaining}:${
+          hoursRemaining >= 10 ? hoursRemaining : '0' + hoursRemaining
+        }:${
+          minutesRemaining >= 10 ? minutesRemaining : '0' + minutesRemaining
+        }:${secondsRemaining >= 10 ? secondsRemaining : '0' + secondsRemaining}`
+      : time.formattedLocalShortDateSecondary;
   }
   const breakpointOne =
     timeLeft <= firstBreakpoint && timeLeft > secondBreakpoint && countdown;
   const breakpointTwo = timeLeft <= secondBreakpoint && countdown;
-
+  console.log(label, value, valueString);
   return (
     <span
       className={classNames(Styles.ProgressLabel, {
@@ -258,8 +260,13 @@ export const CountdownProgress = ({
   );
 };
 
-export const TimeProgressBar = ({ startTime, endTime }: TimeProgressBarProps) => {
-  const { blockchain: { currentAugurTimestamp: currentTime } } = useAppStatusStore();
+export const TimeProgressBar = ({
+  startTime,
+  endTime,
+}: TimeProgressBarProps) => {
+  const {
+    blockchain: { currentAugurTimestamp: currentTime },
+  } = useAppStatusStore();
   const { percentageDone, percentageToGo } = determineProgress(
     startTime,
     endTime,
@@ -299,12 +306,13 @@ export interface WindowProgressProps {
   description: string;
 }
 
-export const WindowProgress = ({
-  description,
-}: WindowProgressProps) => {
-  const title = "Current Dispute Window";
-  const countdownLabel = "Time Remaining in Window";
-  const { blockchain: { currentAugurTimestamp: currentTime }, universe: { disputeWindow }} = useAppStatusStore();
+export const WindowProgress = ({ description }: WindowProgressProps) => {
+  const title = 'Current Dispute Window';
+  const countdownLabel = 'Time Remaining in Window';
+  const {
+    blockchain: { currentAugurTimestamp: currentTime },
+    universe: { disputeWindow },
+  } = useAppStatusStore();
   const { startTime, endTime } = disputeWindow;
   const {
     formattedStartTime,
@@ -322,7 +330,10 @@ export const WindowProgress = ({
     <div className={Styles.WindowProgress}>
       <h4>{title}</h4>
       <p>{description}</p>
-      <TimeProgressBar startTime={formattedStartTime} endTime={formattedEndTime} />
+      <TimeProgressBar
+        startTime={formattedStartTime}
+        endTime={formattedEndTime}
+      />
       <ul>
         <li>{startLabel}</li>
         {dayLabels.map(label => (

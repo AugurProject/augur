@@ -481,9 +481,10 @@ export const SportsOutcome = ({
     description,
     minPrice,
     maxPrice,
-    consensusFormatted
+    consensusFormatted,
   } = market;
-  const isWinningOutcome = consensusFormatted?.winningOutcome === String(outcomeId);
+  const isWinningOutcome =
+    consensusFormatted?.winningOutcome === String(outcomeId);
   const poolId = sportsBook?.liquidityPool;
   const bestAsk =
     poolId && liquidityPools[poolId] && liquidityPools[poolId][outcomeId];
@@ -532,9 +533,11 @@ export const SportsOutcome = ({
     };
   }
   return (
-    <div className={classNames(Styles.SportsOutcome, {
-      [Styles.Winner]: isWinningOutcome,
-    })}>
+    <div
+      className={classNames(Styles.SportsOutcome, {
+        [Styles.Winner]: isWinningOutcome,
+      })}
+    >
       {title && <h6>{title}</h6>}
       <button
         title={
@@ -859,13 +862,13 @@ export const SportsMarketContainer = ({
   const { isGroupPage, marketId: queryId } = isMarketView(location);
   const isFutures = sportsGroup.type === FUTURES;
   const forceCollapse = isFutures && isGroupPage && marketId !== queryId;
+  const marketAmount = sportsGroup.markets.length;
   useEffect(() => {
     if (isFutures) {
       const clipboardMarketId = new Clipboard('#copy_marketId');
       const clipboardAuthor = new Clipboard('#copy_author');
     }
   }, [market.id, market.author]);
-
   let innerContent = null;
   let headingContent = <h6>{title}</h6>;
   const isGrid = data.length > 4;
@@ -876,20 +879,22 @@ export const SportsMarketContainer = ({
   }
   if (isFutures) {
     // futures
+    console.log('is futures', market.endTimeFormatted);
     const { tradingPositionsPerMarket = null } =
       accountPositions[marketId] || {};
+    // {tradingPositionsPerMarket && tradingPositionsPerMarket.current !== "0" && PositionIcon}
     headingContent = (
       <Fragment key={`${marketId}-heading`}>
         <CountdownProgress
           label="Event Expiration Date"
           time={market.endTimeFormatted}
           reportingState={market.reportingState}
+          forceLongDate
         />
-        {tradingPositionsPerMarket && tradingPositionsPerMarket.current !== "0" && PositionIcon}
+        {PositionIcon}
         <span className={Styles.MatchedLine}>
           Matched<b>{market.volumeFormatted.full}</b>
         </span>
-        <FavoritesButton marketId={marketId} hideText disabled={!isLogged} />
         <DotSelection>
           <SocialMediaButtons
             listView
@@ -907,6 +912,7 @@ export const SportsMarketContainer = ({
             {Person} {COPY_AUTHOR}
           </div>
         </DotSelection>
+        <FavoritesButton marketId={marketId} hideText disabled={!isLogged} />
       </Fragment>
     );
   }
@@ -923,7 +929,7 @@ export const SportsMarketContainer = ({
         {headingContent}
         {isFutures && isGroupPage ? (
           <MarketLink id={marketId}>{ThickChevron}</MarketLink>
-        ) : (
+        ) : isFutures && !isGroupPage && marketAmount < 2 ? null : (
           <button
             onClick={e => {
               e.preventDefault();
@@ -1417,7 +1423,7 @@ export const TopRow = ({ market, categoriesWithClick }) => {
     isTemplate,
     mostLikelyInvalid,
     isWarpSync,
-    sportsBook: { groupType }
+    sportsBook: { groupType },
   } = market;
   const isScalar = marketType === SCALAR;
   const isFutures = groupType === SPORTS_GROUP_TYPES.FUTURES;
