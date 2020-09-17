@@ -42,7 +42,7 @@ interface FeesLiquidityState {
   selectedOrderProperties: DefaultOrderPropertiesMap;
   reportingFeePercent: FormattedNumber;
   creatorFeePercent: FormattedNumber;
-  fullMarketOIFeePercent: FormattedNumber;
+  fullMarketOIFeePercent: string;
   affiliateFeeOptions: NameValuePair[];
   affiliateFeeOptionsDefault: NameValuePair;
 }
@@ -63,7 +63,7 @@ export default class FeesLiquidity extends React.Component<
     selectedOrderProperties: this.DEFAULT_ORDER_PROPERTIES,
     reportingFeePercent: formatPercent(0),
     creatorFeePercent: formatPercent(0),
-    fullMarketOIFeePercent: formatPercent(0),
+    fullMarketOIFeePercent: "0",
     affiliateFeeOptions: [{
       label: '100 %',
       value: '100'
@@ -101,8 +101,9 @@ export default class FeesLiquidity extends React.Component<
     const reportingFeePercent = await getReportingFeePercentage();
     this.setState({ reportingFeePercent });
     if (this.props.newMarket.settlementFee) {
-      const creatorFee = Number(this.props.newMarket.settlementFee) - reportingFeePercent.value
-      this.setState({ fullMarketOIFeePercent: this.props.newMarket.settlementFee, creatorFeePercent: formatPercent((!isNaN(creatorFee) && creatorFee < 0) ? 0 : creatorFee) });
+      const creatorFee = Number(this.props.newMarket.settlementFee);
+      const totalFee = Number(this.props.newMarket.settlementFee) + Number(reportingFeePercent.value);
+      this.setState({ fullMarketOIFeePercent: String(totalFee), creatorFeePercent: formatPercent((!isNaN(creatorFee) && creatorFee < 0) ? 0 : creatorFee) });
     }
   }
 
