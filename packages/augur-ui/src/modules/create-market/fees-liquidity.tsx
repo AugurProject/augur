@@ -42,6 +42,7 @@ interface FeesLiquidityState {
   selectedOrderProperties: DefaultOrderPropertiesMap;
   reportingFeePercent: FormattedNumber;
   creatorFeePercent: FormattedNumber;
+  fullMarketOIFeePercent: FormattedNumber;
   affiliateFeeOptions: NameValuePair[];
   affiliateFeeOptionsDefault: NameValuePair;
 }
@@ -62,6 +63,7 @@ export default class FeesLiquidity extends React.Component<
     selectedOrderProperties: this.DEFAULT_ORDER_PROPERTIES,
     reportingFeePercent: formatPercent(0),
     creatorFeePercent: formatPercent(0),
+    fullMarketOIFeePercent: formatPercent(0),
     affiliateFeeOptions: [{
       label: '100 %',
       value: '100'
@@ -100,7 +102,7 @@ export default class FeesLiquidity extends React.Component<
     this.setState({ reportingFeePercent });
     if (this.props.newMarket.settlementFee) {
       const creatorFee = Number(this.props.newMarket.settlementFee) - reportingFeePercent.value
-      this.setState({ creatorFeePercent: formatPercent((!isNaN(creatorFee) && creatorFee < 0) ? 0 : creatorFee) });
+      this.setState({ fullMarketOIFeePercent: this.props.newMarket.settlementFee, creatorFeePercent: formatPercent((!isNaN(creatorFee) && creatorFee < 0) ? 0 : creatorFee) });
     }
   }
 
@@ -109,23 +111,23 @@ export default class FeesLiquidity extends React.Component<
   }
 
   localSettlementFeeChange = value => {
-    console.log('localSettlementFeeChange', value);
     const reportingFee = this.state.reportingFeePercent.value
     let creatorFee = value;
     if (!isNaN(value)) {
       creatorFee = Number(value) - reportingFee;
-      this.setState({ creatorFeePercent: formatPercent(creatorFee < 0 ? 0 : creatorFee) });
-    }
-    value === "0" ?
-      this.props.onChange("settlementFee", 0)
-    :
-      this.props.onChange("settlementFee", creatorFee)
+      this.setState({ fullMarketOIFeePercent: value, creatorFeePercent: formatPercent(creatorFee < 0 ? 0 : creatorFee) });
 
-    this.props.onChange('settlementFeePercent', formatPercent((reportingFee + creatorFee), {
-      positiveSign: false,
-      decimals: 4,
-      decimalsRounded: 4,
-    }));
+      String(value) === "0" ?
+        this.props.onChange("settlementFee", 0)
+        :
+        this.props.onChange("settlementFee", creatorFee)
+
+      this.props.onChange('settlementFeePercent', formatPercent((value), {
+        positiveSign: false,
+        decimals: 4,
+        decimalsRounded: 4,
+      }));
+    }
   }
 
   updateSelectedOrderProperties = (selectedOrderProperties) => {
@@ -205,7 +207,6 @@ export default class FeesLiquidity extends React.Component<
       validations,
     } = newMarket;
 
-
     return (
       <div
         className={Styles.FeesLiquidity}
@@ -224,7 +225,7 @@ export default class FeesLiquidity extends React.Component<
             subheader={`The Market Creator fee is the percentage amount the market creator receives whenever market shares are settled, either during trading or upon market resolution. This fee will be ${s.creatorFeePercent.formatted}%.`}
           />
           <TextInput
-            value={String(s.creatorFeePercent.value)}
+            value={String(s.fullMarketOIFeePercent)}
             type="number"
             placeholder="0"
             innerLabel="%"
