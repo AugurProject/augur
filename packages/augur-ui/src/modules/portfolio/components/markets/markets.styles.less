@@ -109,7 +109,7 @@
     position: absolute;
     bottom: 0;
     width: 100%;
-    padding: @size-16;
+    padding: @size-14;
     align-items: center;
 
     > span {
@@ -122,19 +122,24 @@
 
     > a {
       margin-left: auto;
+      padding-left: @size-16;
 
       > button {
         .mono-10-semi-bold;
 
         border: none;
         text-transform: uppercase;
-        padding-right: 0;
+        margin-right: 0;
+        height: @size-30;
 
         > svg {
           margin-right: @size-8;
+          width: @size-10;
+          height: @size-10;
 
           > path {
             fill: var(--color-primary-text);
+            stroke-width: @size-2;
           }
         }
 
