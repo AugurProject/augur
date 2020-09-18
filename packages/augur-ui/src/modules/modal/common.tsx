@@ -12,9 +12,9 @@ import {
   OnboardingCheckIcon,
   QRCodeIcon,
   InformationIcon,
-  tokenEth,
   tokenUSDC,
   tokenUSDT,
+  tokenEth,
   MobileNavCloseIcon,
   ExclamationCircle,
 } from 'modules/common/icons';
@@ -39,7 +39,7 @@ import ReactTooltip from 'react-tooltip';
 import { BigNumber, createBigNumber } from 'utils/create-big-number';
 import titleCase from 'utils/title-case';
 import { checkIfMainnet } from 'modules/app/actions/check-if-mainnet';
-import { formatDai, formatNumber } from 'utils/format-number';
+import { formatDai, formatDai } from 'utils/format-number';
 import { swap } from 'modules/swap/components/index.styles.less';
 
 export interface TitleProps {
@@ -515,7 +515,7 @@ export const TokenSelect = ({
         <div>{tokenUSDC} USDC</div>
         <div>
           <div>Wallet Balance:</div>
-          <div>${formatNumber(usdcAmount).formattedValue}</div>
+          <div>${formatDai(usdcAmount).formatted}</div>
         </div>
       </div>}
 
@@ -523,7 +523,7 @@ export const TokenSelect = ({
         <div>{tokenUSDT} USDT</div>
         <div>
           <div>Wallet Balance:</div>
-          <div>${formatNumber(usdtAmount).formattedValue}</div>
+          <div>${formatDai(usdtAmount).formatted}</div>
         </div>
       </div>}
     </div>

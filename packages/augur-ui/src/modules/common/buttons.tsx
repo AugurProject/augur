@@ -53,7 +53,7 @@ export interface DefaultButtonProps {
   failed?: boolean;
   submitTextButtton?: boolean;
   customConfirmedButtonText?: string;
-  hideConfirm?: boolean;
+  autoHideConfirm?: boolean;
   customPendingButtonText?: string;
   phantom?: boolean;
 }
@@ -237,9 +237,12 @@ const ProcessingButtonComponent = (props: DefaultButtonProps) => {
     isDisabled = false;
   }
 
-  if (props.hideConfirm) {
+  if (props.autoHideConfirm) {
     if (confirmed) {
-      return null;
+      icon = null;
+      setTimeout(() => {
+        props.cancel();
+      }, 3000);
     }
   }
 

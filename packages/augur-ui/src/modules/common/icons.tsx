@@ -2948,10 +2948,16 @@ export const oneInchExchageIcon = (
 );
 
 export const tokenEth = (
-  <svg viewBox="0 0 24 24" fill="none">
+  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
     <circle cx="12" cy="12" r="12" fill="#6580E3"/>
-    <path d="M11.821 15.8817L12.2916 16.1327L12.7622 15.8817L13.5026 15.4868L12.2916 17.2399L11.0805 15.4868L11.821 15.8817Z" fill="white" stroke="white" strokeWidth="2"/>
-    <path d="M12.2916 13.2L9.33225 11.6217L12.2916 6.8868L15.2509 11.6217L12.2916 13.2Z" fill="white" stroke="white" strokeWidth="2"/>
+    <g clip-path="url(#clip0)">
+      <path fill-rule="evenodd" clip-rule="evenodd" d="M11.9802 5.00008L11.9802 5L16.2772 12.1298L11.9803 14.6697V14.6698L11.9802 14.6697L7.68326 12.1298L7.68323 12.1298L11.9802 5.00008ZM11.9802 19L11.9802 18.9998L7.68323 12.9447L11.9803 15.4834L16.2798 12.9448L11.9803 19L11.9802 19Z" fill="#D7DDE0"/>
+    </g>
+    <defs>
+      <clipPath id="clip0">
+        <rect width="14" height="14" fill="white" transform="translate(4.99988 5)"/>
+      </clipPath>
+    </defs>
   </svg>
 );
 
