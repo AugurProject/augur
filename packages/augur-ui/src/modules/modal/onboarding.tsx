@@ -178,7 +178,7 @@ export const Onboarding = ({
       checkIsShareTokenApproved();
       checkIsFillOrderApproved();
 
-      intervalId = setInterval(async() => {
+      intervalId = setInterval(async(isZeroXApproved, isShareTokenApproved, isFillOrderApproved) => {
         if (!isZeroXApproved) {
           await checkIsZeroXApproved();
         } else if (!isShareTokenApproved) {
@@ -188,7 +188,7 @@ export const Onboarding = ({
         } else {
           clearInterval(intervalId);
         }
-      }, 5000);
+      }, 0);
     }
     return () => clearInterval(intervalId);
   }, [balances]);
