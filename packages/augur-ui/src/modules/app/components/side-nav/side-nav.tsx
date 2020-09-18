@@ -6,7 +6,7 @@ import classNames from 'classnames';
 import { ThemeSwitch } from 'modules/app/components/theme-switch';
 import makePath from 'modules/routes/helpers/make-path';
 import ConnectDropdown from 'modules/auth/connect-dropdown';
-import { Dot, helpIcon, MobileNavCloseIcon, LogoutIcon, AddIcon } from 'modules/common/icons';
+import { Dot, helpIcon, MobileNavCloseIcon, LogoutIcon, AddIcon, ShortChevron } from 'modules/common/icons';
 import { NavMenuItem } from 'modules/types';
 import Styles from 'modules/app/components/side-nav/side-nav.styles.less';
 import { HelpIcon } from 'modules/app/components/help-resources';
@@ -213,7 +213,7 @@ const SideNav = ({
                   <SecondaryButton
                     action={() => setModal({ type: MODAL_GLOBAL_CHAT })}
                     text="Global Chat"
-                    icon={Chevron}
+                    icon={ShortChevron}
                   />
                 </div>
               }

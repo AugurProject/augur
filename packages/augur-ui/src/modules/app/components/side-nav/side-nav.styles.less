@@ -363,6 +363,19 @@
         background: var(--color-primary-text);
         border-top: @size-1 solid var(--color-secondary-text-50);
         padding: 0;
+        height: @size-64;
+
+        > div:nth-of-type(1),
+        > div:nth-of-type(2) {
+          display: flex;
+          height: 100%;
+          width: @size-64;
+
+          > span {
+            width: @size-64;
+            justify-content: center;
+          }
+        }
 
         > div:nth-of-type(2) {
           > button {
@@ -403,12 +416,16 @@
             color: var(--color-module-background);
             background: var(--color-primary-text);
             border: @size-1 solid var(--color-dark-grey);
+            text-transform: uppercase;
 
             > svg {
               fill: var(--color-module-background);
+              transform: rotate(180deg);
+              height: @size-16;
+              width: @size-16;
 
               path {
-                fill: var(--color-module-background);
+                stroke: var(--color-module-background);
               }
             }
           }
