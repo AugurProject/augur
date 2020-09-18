@@ -182,7 +182,7 @@ export const getNotifications = (): Notification[] => {
   const unsignedOrders = selectUnsignedOrders();
   const mostLikelyInvalidMarkets = selectMostLikelyInvalidMarkets();
   const finalizeMarkets = selectFinalizeMarkets();
-  const { notifications: notificationsState } = AppStatus.get();
+  const { notifications: notificationsState, loginAccount: { reporting }, accountPositions } = AppStatus.get();
   // Generate non-unquie notifications
   const reportOnMarketsNotifications = generateCards(
     reportOnMarkets,
