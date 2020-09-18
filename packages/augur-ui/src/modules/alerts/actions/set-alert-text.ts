@@ -53,6 +53,7 @@ import {
   MIGRATE_FROM_LEG_REP_TOKEN,
   DOINITIALREPORTWARPSYNC,
   SCALAR,
+  REDEEMPARTICIPATIONTOKENS,
 } from 'modules/common/constants';
 import { MarketData } from 'modules/types';
 import { createBigNumber, BigNumber } from 'utils/create-big-number';
@@ -203,6 +204,7 @@ export default function setAlertText(alert: any, callback: Function) {
       break;
 
     case REDEEMSTAKE:
+    case REDEEMPARTICIPATIONTOKENS:
       let participation = false;
       if (alert.params && alert.params.attoParticipationTokens) {
         participation = true;
