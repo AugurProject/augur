@@ -244,6 +244,10 @@ export const ProcessingButton = ({
     pendingQueue[queueName] &&
     pendingQueue[queueName][queueId];
 
+    // if (queueName === 'TRANSACTIONS' && queueId === 'REDEEMSTAKE') {
+    //   console.log(pendingData)
+    // };
+
   let status = pendingData && pendingData.status;
   if (pendingData) {
     if (

@@ -508,7 +508,7 @@ export const handleTradingProceedsClaimedLog = (
       status: TXEventName.Success,
       params: { ...log },
     });
-    removePendingTransaction(CLAIMMARKETSPROCEEDS);
+    //removePendingTransaction(CLAIMMARKETSPROCEEDS);
   }
 };
 
@@ -540,7 +540,7 @@ export const handleInitialReporterRedeemedLog = (
   const reporterLogs = logs.filter(log => isSameAddress(log.reporter, address));
   if (reporterLogs.length > 0) {
     loadAccountReportingHistory();
-    removePendingTransaction(REDEEMSTAKE);
+    //removePendingTransaction(REDEEMSTAKE);
     reporterLogs.map(log => {
       handleAlert(log, REDEEMSTAKE, false);
     });
@@ -584,7 +584,7 @@ export const handleParticipationTokensRedeemedLog = (
   if (logs.filter(log => isSameAddress(log.account, address)).length > 0) {
     logs.map(log => handleAlert({ ...log, marketId: 1 }, REDEEMSTAKE, false));
     loadAccountReportingHistory();
-    removePendingTransaction(REDEEMSTAKE);
+    //removePendingTransaction(REDEEMSTAKE);
   }
 };
 
@@ -678,7 +678,7 @@ export const handleDisputeCrowdsourcerRedeemedLog = (
     loadAccountReportingHistory();
     userLogs.map(log => handleAlert(log, REDEEMSTAKE, false));
   }
-  removePendingTransaction(REDEEMSTAKE);
+  //removePendingTransaction(REDEEMSTAKE);
 };
 // ---- ------------ ----- //
 

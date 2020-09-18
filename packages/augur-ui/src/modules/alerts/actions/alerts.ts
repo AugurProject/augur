@@ -12,6 +12,7 @@ import {
   ETH_RESERVE_INCREASE,
   NULL_ADDRESS,
   CANCELORDERS,
+  INITIALREPORTERREDEEMED,
 } from 'modules/common/constants';
 import {
   getNetworkId,
@@ -109,7 +110,7 @@ export function updateAlert(
         ? alerts.find(
             findAlert =>
               findAlert.id === alert.id &&
-              findAlert.name.toUpperCase() === REDEEMSTAKE
+              findAlert.params.name.toUpperCase() === INITIALREPORTERREDEEMED
           )
         : alerts.find(
             findAlert =>
@@ -117,7 +118,9 @@ export function updateAlert(
               findAlert.name.toUpperCase() === alert.name.toUpperCase()
           );
 
+    console.log(alert);
     if (foundAlert) {
+      console.log(foundAlert);
       updateExistingAlert(alert.uniqueId, {
         ...foundAlert,
         ...alert,
