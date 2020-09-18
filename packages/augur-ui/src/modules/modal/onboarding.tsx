@@ -82,6 +82,7 @@ interface OnboardingProps {
   accountType: string;
   setCurrentOnboardingStep: Function;
   skipAction: Function;
+  hasDai: boolean;
 }
 
 export const Onboarding = ({
@@ -114,6 +115,7 @@ export const Onboarding = ({
   accountType,
   setCurrentOnboardingStep,
   skipAction,
+  hasDai,
 }: OnboardingProps) => {
   const [ethRecieved, setEthRecieved] = useState(false);
   const [isZeroXApproved, setIsZeroXApproved] = useState(false);
@@ -188,7 +190,6 @@ export const Onboarding = ({
         }
       }, 5000);
     }
-
     return () => clearInterval(intervalId);
   }, [balances]);
 
@@ -237,13 +238,14 @@ export const Onboarding = ({
     }
   }
 
+
   const navControls = (
     <>
       <div>
         {showDeposit && !ethRecieved && <span>Waiting for your deposit (transfer may take time)</span>}
         {showDeposit && ethRecieved && <span>{CheckMark} Deposit recieved</span>}
         {buttons.length > 0 && <ButtonsRow buttons={buttons} />}
-        {showSkipButton && <span onClick={() => skipAction()}>skip this step</span>}
+        {showSkipButton && <span onClick={() => skipAction()}>{ showSwapper && hasDai ? 'next step' : 'skip this step'}</span>}
         {showTestBet && <span onClick={() => skipAction()}>explore markets</span>}
 
       </div>
@@ -277,8 +279,8 @@ export const Onboarding = ({
         {showSwapper && title && (
           <div>
             <h2>
-              {title.split('##').map((dom, idx) => {
-                return idx === 1 ? <span key={idx}>{dom}</span> : dom;
+              {title.split('##').map((stringChunk, idx) => {
+                return idx === 1 ? <span key={idx}>{stringChunk}</span> : stringChunk;
               })}
             </h2>
           </div>
@@ -300,7 +302,6 @@ export const Onboarding = ({
             toToken={DAI}
             fromToken={token || ETH}
             onboarding={true}
-            onboardingAction={() => skipAction()}
           />
         )}
 

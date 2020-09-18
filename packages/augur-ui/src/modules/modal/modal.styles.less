@@ -195,9 +195,9 @@ div.Onboarding {
       color: @color-primary-text;
       display: flex;
       height: @size-50;
-      margin: @size-16 0 0 0;
+      margin: @size-16 0 @size-8 0;
       padding: @size-8 @size-12;
-      text-align: center;
+      text-align: left;
 
       > div:first-of-type svg {
         height: @size-16;
@@ -558,11 +558,14 @@ div.Onboarding {
     border: @size-1 solid @color-secondary-action-outline;
     border-radius: @size-3;
     color: @color-primary-text;
-    cursor: pointer;
     display: flex;
     margin: @size-12 auto 0 auto;
     justify-content: center;
     height: @size-52;
+  }
+
+  > div[class*='NotSelected'] {
+    cursor: pointer;
   }
 
   > div[class*='NotSelected']:hover {
@@ -580,7 +583,7 @@ div.Onboarding {
     height: @size-50;
     margin: @size-16 0 0 0;
     padding: @size-8 @size-12;
-    text-align: center;
+    text-align: left;
 
     > div:first-of-type svg {
       height: @size-16;
@@ -626,6 +629,7 @@ div.Onboarding {
 
       border-bottom: @size-1 dashed @color-primary-text;
       color: @color-primary-text;
+      cursor: pointer;
       display: table;
       font-weight: 600;
       margin: auto;
@@ -665,6 +669,10 @@ div.Onboarding {
       p {
         fill: @color-dark-grey;
       }
+    }
+
+    > button[class*='ExternalLinkButton']:hover {
+      background: fade(@color-primary-action, 90%);
     }
 
     > a, > button {
