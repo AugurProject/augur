@@ -55,7 +55,6 @@ interface SwapProps {
   usdtToDaiRate: FormattedNumber;
   gasPrice: number;
   onboarding?: boolean;
-  onboardingAction?: Function;
 }
 
 const tokenOptions = {
@@ -124,7 +123,6 @@ export const Swap = ({
   repToDaiRate,
   gasPrice,
   onboarding = false,
-  onboardingAction,
 }: SwapProps) => {
 
   // SDK not loadeds
@@ -359,7 +357,7 @@ export const Swap = ({
       'Have USDC, USDT, DAI or ETH and looking to get a large quantity of REPv2 at lower slippage?';
   }
 
-  if (!inputAmount.lt || inputAmount.lt(0)) {
+  if (!inputAmount || inputAmount.lt(0)) {
     outputAmount = formatEther(0);
   } else {
     const rateUSDT = createBigNumber(usdtToDaiRate.value / 10**12);
@@ -541,14 +539,9 @@ export const Swap = ({
       }
 
       <div>
-        {onboarding && hasDai &&
-          <PrimaryButton action={onboardingAction} text={'Continue'} />
-        }
-
         {tokenUnlocked &&
-        (!onboarding || onboarding && !hasDai) &&
           <ProcessingButton
-            text={'Convert'}
+            text={!inputAmount || inputAmount.lte(0) ? 'Enter an amount' : 'Convert'}
             action={() => makeTrade()}
             queueName={TRANSACTIONS}
             disabled={
@@ -557,6 +550,8 @@ export const Swap = ({
               (errorMessage && errorMessage.indexOf('Liquidity') === -1)
             }
             queueId={queueId}
+            autoHideConfirm={true}
+            customConfirmedButtonText={'Conversion Confirmed!'}
           />
         }
 
