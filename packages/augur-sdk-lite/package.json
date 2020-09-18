@@ -1,6 +1,6 @@
 {
   "name": "@augurproject/sdk-lite",
-  "version": "2.1.10",
+  "version": "2.1.11",
   "description": "Augur SDK Lite",
   "author": "The Augur Developers <team@augur.net>",
   "license": "MIT",
@@ -25,8 +25,8 @@
   },
   "homepage": "https://github.com/AugurProject/augur-lite#readme",
   "dependencies": {
-    "@augurproject/artifacts": "^2.1.10",
-    "@augurproject/utils": "^2.1.10",
+    "@augurproject/artifacts": "^2.1.11",
+    "@augurproject/utils": "^2.1.11",
     "async": "3.1.0",
     "ethers": "4.0.47",
     "lz-string": "1.4.4"
