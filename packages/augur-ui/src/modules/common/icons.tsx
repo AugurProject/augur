@@ -709,6 +709,12 @@ export const AlternateCheckMark = (
   </svg>
 );
 
+export const ShortChevron = (
+  <svg  viewBox="0 0 16 16" fill="none">
+  <path d="M11.3327 9.61111L7.99935 6L4.66602 9.61111" strokeWidth="2" strokeLinecap="round"/>
+  </svg>
+);
+
 export const CheckMark = (
   <svg viewBox="0 0 11 9" fill="none">
     <path
