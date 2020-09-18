@@ -76,7 +76,7 @@ export const findProceeds = (realizedPercent, realizedCost, settlementFee) => {
   const b = bnRealizedPercentPlusOne
     .times(bnRealizedCost)
     .times(bnSettlementFee);
-  return a.plus(b);
+  return a.minus(b); 
 };
 
 const { FILLED, FAILED } = BET_STATUS;
