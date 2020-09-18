@@ -2970,6 +2970,13 @@ div.ButtonsRow:last-of-type {
   > header {
     border-top-left-radius: @size-8;
     border-top-right-radius: @size-8;
+    padding: @size-16 @size-24;
+
+    > h1 {
+      .text-16-bold;
+
+      text-transform: none;
+    }
   }
   
   > main {
@@ -2996,6 +3003,11 @@ div.ButtonsRow:last-of-type {
       > div:first-of-type {
         height: @size-36;
         min-width: @size-240;
+
+        > button,
+        > div > div > button { 
+          text-transform: none;
+        }
       }
 
       > span {
