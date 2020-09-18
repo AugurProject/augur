@@ -1029,9 +1029,11 @@ export const LiquidityDepletedLabel = ({
   const { theme, actions: { setModal } } = useAppStatusStore();
   const isSports = theme === THEMES.SPORTS;
   const showLabel = (
-    market.passDefaultLiquiditySpread ||
-    market.hasPendingLiquidityOrders ||
-    market.marketStatus === constants.MARKET_CLOSED
+    !isSports && (
+      market.passDefaultLiquiditySpread ||
+      market.hasPendingLiquidityOrders ||
+      market.marketStatus === constants.MARKET_CLOSED
+    )
   );
   return (
     <>
@@ -1057,7 +1059,7 @@ export const LiquidityDepletedLabel = ({
       </span>)}
       {isSports && (
           <button className={Styles.AddLiquidityButton} onClick={() => setModal({ type: MODAL_ADD_LIQUIDITY, market })}>
-            Add more liquidity
+            {market.hasPendingLiquidityOrders ? 'Sign to approve your orders' : 'Add more liquidity'}
           </button>
       )}
     </>
