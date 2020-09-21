@@ -16,6 +16,7 @@ import { Getters } from '@augurproject/sdk';
 import { createBigNumber } from 'utils/create-big-number';
 import { AppStatus } from 'modules/app/store/app-status';
 import { Markets } from 'modules/markets/store/markets';
+import { formatNumber } from 'utils/format-number';
 
 export const selectMarket = (marketId): MarketData | null => {
   const { marketInfos } = Markets.get();
