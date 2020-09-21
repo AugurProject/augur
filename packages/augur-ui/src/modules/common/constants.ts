@@ -460,6 +460,7 @@ export const DISPUTE_ENDS = 'Dispute ends';
 export const MARKET_STATUS_MESSAGES = {
   OPEN: 'Open',
   IN_REPORTING: 'In Reporting',
+  IN_SETTLEMENT: 'In Settlement',
   RESOLVED: 'Resolved',
   AWAITING_RESOLVED: 'Awaiting Finalization',
   FORKING: 'Forking',
