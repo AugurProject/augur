@@ -241,6 +241,21 @@
       margin-left: auto;
     }
   }
+
+  .CopyButton > div {
+    .text-12-medium;
+
+    background: var(--color-primary-text-80);
+    border: @size-1 solid transparent;
+    color: var(--color-module-background);
+    padding: @size-8;
+    max-width: @size-60;
+
+    &:before {
+      border-bottom: @size-5 solid var(--color-primary-text-80);
+      top: -@size-6;
+    }
+  }
 }
 
 .InfoTicket {

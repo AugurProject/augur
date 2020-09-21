@@ -59,7 +59,7 @@ import {
   formatAttoDai,
 } from 'utils/format-number';
 import { MarketProgress } from 'modules/common/progress';
-import { InfoIcon, InformationIcon, XIcon } from 'modules/common/icons';
+import { InfoIcon, InformationIcon, QuestionIcon, XIcon } from 'modules/common/icons';
 import ChevronFlip from 'modules/common/chevron-flip';
 import FormStyles from 'modules/common/form.styles.less';
 import TooltipStyles from 'modules/common/tooltip.styles.less';
@@ -277,7 +277,7 @@ export const Subheaders = (props: SubheadersProps) => (
             data-for={'tooltip--' + props.header}
             data-iscapture={true}
           >
-            {InfoIcon}
+            {QuestionIcon}
           </label>
           <ReactTooltip
             id={'tooltip--' + props.header}

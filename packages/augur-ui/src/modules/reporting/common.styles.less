@@ -224,9 +224,8 @@ div.ReportingSubheaders {
         width: @size-12;
 
         > circle {
-          fill: var(--color-secondary-action);
+          fill: none;
           stroke: var(--color-secondary-action-outline);
-          stroke-width: 1.5;
         }
 
         > path {
@@ -296,6 +295,22 @@ div.ReportingSubheaders {
 
         > label {
           margin-bottom: 0;
+
+          > svg {
+            fill: none;
+            height: @size-14;
+            margin-left: @size-4;
+            width: @size-14;
+    
+            > circle {
+              fill: none;
+              stroke: var(--color-secondary-text);
+            }
+    
+            > path {
+              fill: var(--color-secondary-text);
+            }
+          }
         }
       }
 
