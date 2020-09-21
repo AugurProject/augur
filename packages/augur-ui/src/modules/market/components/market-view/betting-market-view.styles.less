@@ -4,6 +4,10 @@
   width: 100%;
   padding: @size-32 @size-40 @size-32 @size-32;
 
+  @media @breakpoint-mobile-tablet {
+    padding: @size-32 @size-12;
+  }
+
   > section[class*='SportsMarketContainer'] {
     margin-bottom: @size-8;
   }
@@ -24,6 +28,15 @@
       display: flex;
       justify-content: space-between;
       max-width: 70%;
+
+      @media @breakpoint-mobile-tablet {
+        flex-flow: column nowrap;
+        max-width: 100%;
+
+        > div:not(:first-of-type) {
+          margin-top: @size-8;
+        }
+      }
 
       > div > span {
         align-items: center;
@@ -70,6 +83,14 @@
 
     > div:not(:first-of-type) {
       margin-left: @size-24;
+    }
+
+    @media @breakpoint-mobile-tablet {
+      > div,
+      > div:not(:first-of-type) {
+        margin-left: 0;
+        width: 100%;
+      }
     }
   }
 
