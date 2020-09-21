@@ -26,11 +26,18 @@ import { augurSdk } from 'services/augursdk';
 import { SportsGroupCharts } from 'modules/market-charts/sports-group-charts';
 import { MarketComments } from 'modules/market/components/common/comments/market-comments';
 import { getNetworkId } from 'modules/contracts/actions/contractCalls';
-import { MARKET_STATUS_MESSAGES, REPORTING_STATE } from 'modules/common/constants';
+import {
+  MARKET_STATUS_MESSAGES,
+  REPORTING_STATE,
+  THEMES,
+} from 'modules/common/constants';
+import { FilterNotice } from 'modules/common/filter-notice';
+import { ParagraphButton } from 'modules/common/buttons';
+import { useAppStatus } from 'modules/app/store/app-status-hooks';
+import { useAppStatusStore } from 'modules/app/store/app-status';
+import { ClaimWinnings } from 'modules/portfolio/components/common/common';
 
-const {
-  FINALIZED,
-} = REPORTING_STATE;
+const { FINALIZED } = REPORTING_STATE;
 
 export const isMarketView = location => {
   const isGroupPage = parsePath(location.pathname)[0] === MARKET;
@@ -49,6 +56,9 @@ const BettingMarketView = () => {
     marketTradingHistory,
     actions: { updateMarketsData, bulkMarketTradingHistory },
   } = useMarketsStore();
+  const {
+    actions: { setTheme }
+  } = useAppStatusStore();
   const location = useLocation();
   const [showCopied, setShowCopied] = useState(false);
   const totalBets = useRef(0);
@@ -136,6 +146,7 @@ const BettingMarketView = () => {
     template,
     sportsBook,
     reportingState,
+    mostLikelyInvalid,
   } = market;
   const header = sportsBook ? sportsBook.header : description;
   const estDateTime = sportsBook?.estTimestamp;
@@ -189,6 +200,25 @@ const BettingMarketView = () => {
           )}
         </div>
       </div>
+      <span>
+        <ClaimWinnings onlyCheckMarketId={marketId} />
+        {mostLikelyInvalid ? (
+          <FilterNotice
+            showDismissButton={false}
+            show
+            content={
+              <div className={Styles.SpreadRisk}>
+                <span>
+                  Spread market has a High risk of being resolve as invalid. If
+                  you want to exit your position, you must go to Trading and place
+                  lorem ipsum dolor sit amet.
+                </span>
+                <ParagraphButton text="Go to trading" action={() => setTheme(THEMES.TRADING)} />
+              </div>
+            }
+          />
+        ) : null}
+      </span>
       {sportsGroup.current && (
         <SportsGroupMarkets sportsGroup={sportsGroup.current} />
       )}

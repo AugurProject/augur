@@ -36,7 +36,7 @@ export const BetsHeader = () => (
   </ul>
 );
 
-export const ClaimWinnings = () => {
+export const ClaimWinnings = ({onlyCheckMarketId}) => {
   const { matched } = useBetslipStore();
   const {
     accountPositions: positions,
@@ -46,7 +46,7 @@ export const ClaimWinnings = () => {
   let totalProceeds = ZERO;
   let claimableMarkets = [];
 
-  Object.keys(matched.items).map(marketId => {
+  Object.keys(matched.items).filter(marketId => onlyCheckMarketId && marketId === onlyCheckMarketId).map(marketId => {
     let marketIsClaimable = false;
     const market = matched.items[marketId];
     if (positions[marketId]) {

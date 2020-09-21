@@ -572,6 +572,18 @@ export const SubmitTextButton = (props: DefaultButtonProps) => (
   </button>
 );
 
+export const ParagraphButton = (props: DefaultButtonProps) => (
+  <button
+    onClick={e => props.action(e)}
+    className={classNames(Styles.ParagraphButton)}
+    disabled={props.disabled}
+    title={props.title}
+  >
+    {props.text}
+  </button>
+);
+
+
 export const DepositButton = (props: DefaultActionButtonProps) => (
   <button
     onClick={e => props.action(e)}
