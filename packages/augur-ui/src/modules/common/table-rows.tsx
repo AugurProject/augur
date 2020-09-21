@@ -73,7 +73,7 @@ export const MyBetsRow = ({
     {
       key: 'wager',
       columnType: COLUMN_TYPES.VALUE,
-      value: formatNumber(outcome && outcome.wager),
+      value: formatDai(outcome && outcome.wager),
       useFull: true,
       keyId: 'outcome-wager-' + outcome.outcome,
     },
@@ -89,6 +89,7 @@ export const MyBetsRow = ({
       key: 'toWin',
       columnType: COLUMN_TYPES.VALUE,
       value: formatDai(outcome && outcome.toWin),
+      useFull: true,
       keyId: 'outcome-toWin-' + outcome.outcome,
     },
     {
