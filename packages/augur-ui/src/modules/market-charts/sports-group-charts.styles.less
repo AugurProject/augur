@@ -4,6 +4,10 @@
   margin-top: @size-40;
   display: flex;
   flex-flow: row nowrap;
+
+  @media @breakpoint-mobile-tablet {
+    flex-flow: row wrap;
+  }
 }
 
 .ChartArea {
@@ -15,6 +19,13 @@
   display: grid;
   grid-template-columns: 1fr 0fr;
   grid-template-rows: @size-20 0fr;
+
+  @media @breakpoint-mobile-tablet {
+    align-items: center;
+    display: flex;
+    flex-flow: column nowrap;
+    max-width: 100%;
+  }
 
   > h4 {
     .text-16-bold;
@@ -133,6 +144,22 @@
         background: var(--color-outcome-seven);
       }
       
+    }
+  }
+
+  @media @breakpoint-mobile-tablet {
+    flex: 1 100%;
+    padding-left: 0;
+
+    > h5 {
+      display: none;
+    }
+
+    > ul {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      grid-gap: @size-8 @size-12;
+      margin-top: @size-24;
     }
   }
 }

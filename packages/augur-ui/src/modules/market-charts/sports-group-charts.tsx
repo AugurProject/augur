@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import classNames from 'classnames';
 import PriceHistory from 'modules/market-charts/components/price-history/price-history';
 import Styles from 'modules/market-charts/sports-group-charts.styles';
@@ -28,12 +28,24 @@ const RANGE_OPTIONS = [
 ];
 
 export const SportsGroupCharts = ({ sportsGroup }) => {
+  const [selectedMarket, setSelectedMarket] = useState(
+    sportsGroup.markets[0].id
+  );
   const [rangeSelection, setRangeSelection] = useState(3);
   const currentRangeValue = RANGE_OPTIONS[rangeSelection].value;
-  const market = selectMarket(sportsGroup.markets[0].id);
-  const outcomes = market.outcomesFormatted;
-  const invalid = outcomes.shift();
-  outcomes.push(invalid);
+  const marketNum = sportsGroup.markets.length;
+  const { market, outcomes, invalid } = useMemo(() => {
+    const market = selectMarket(selectedMarket);
+    const outcomes = market.outcomesFormatted;
+    const invalid = outcomes.shift();
+    outcomes.push(invalid);
+    return {
+      market,
+      outcomes,
+      invalid,
+    };
+  }, [selectedMarket]);
+  console.log('SG.Markets:', marketNum, sportsGroup.markets);
   return (
     <section className={Styles.Container}>
       <div className={Styles.ChartArea}>
@@ -52,7 +64,11 @@ export const SportsGroupCharts = ({ sportsGroup }) => {
             </li>
           ))}
         </ul>
-        <PriceHistory marketId={market.id} market={market} rangeValue={currentRangeValue} />
+        <PriceHistory
+          marketId={selectedMarket}
+          market={market}
+          rangeValue={currentRangeValue}
+        />
       </div>
       <div className={Styles.Legend}>
         <h5>References:</h5>
