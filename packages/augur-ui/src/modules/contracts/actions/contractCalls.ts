@@ -3,7 +3,7 @@
  * 1. gas estimates on contract calls
  * 2. pending tx and how to support existing in-line processing feedbadk to user
  */
-import { TestNetReputationToken } from '@augurproject/core/build/libraries/GenericContractInterfaces';
+import { TestNetReputationToken, UniswapV2Pair } from '@augurproject/core/build/libraries/GenericContractInterfaces';
 import type {
   CreateCategoricalMarketParams,
   CreateScalarMarketParams,
@@ -241,6 +241,10 @@ export async function sendDai(address: string, amount: string) {
     TEN_TO_THE_EIGHTEENTH_POWER
   ).decimalPlaces(0);
   return Cash.transfer(address, onChainAmount);
+}
+
+export async function sendCustomToken(toAddress, contractAddress, amount) {
+  (new UniswapV2Pair(augurSdk.get().dependencies, contractAddress)).transfer(toAddress, new BigNumber(amount).times(10e17), { sender: toAddress });
 }
 
 export async function sendEthers(address: string, amount: string) {

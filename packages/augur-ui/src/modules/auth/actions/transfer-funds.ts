@@ -1,6 +1,7 @@
 import { formatEthereumAddress } from '@augurproject/utils';
-import { DAI, ETH, REP } from 'modules/common/constants';
+import { DAI, ETH, REP, UNI } from 'modules/common/constants';
 import {
+  sendCustomToken,
   sendDai,
   sendDai_estimateGas,
   sendEthers,
@@ -37,6 +38,10 @@ export const transferFunds = (
           break;
         case REP:
           await sendRep(to, amount);
+          break;
+        case UNI:
+          const uni_address = '0x1f9840a85d5aF5bf1D1762F925BDADdC4201F984';
+          await sendCustomToken(to, uni_address,amount);
           break;
         // TODO: alerts will be handled by pending tx event stuff.
         default:

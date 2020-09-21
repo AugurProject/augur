@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 
 import { Breakdown } from 'modules/modal/common';
-import { DAI, ETH, REP, ZERO, GWEI_CONVERSION, MAX_DECIMALS, TRANSACTIONS, TRANSFER, SENDETHER } from 'modules/common/constants';
+import { DAI, ETH, REP, ZERO, GWEI_CONVERSION, MAX_DECIMALS, TRANSACTIONS, TRANSFER, SENDETHER, UNI } from 'modules/common/constants';
 import {
   formatEther,
   formatRep,
@@ -91,10 +91,14 @@ export const TransferForm = ({
         label: ETH,
         value: ETH,
       },
+      [UNI]: {
+        label: UNI,
+        value: UNI,
+      }
     };
     if (useSigner && !tokenName) return [tokenOptions[DAI]];
     if (useSigner && tokenName) return [tokenOptions[tokenName]];
-    return [tokenOptions[DAI], tokenOptions[ETH], tokenOptions[REP]];
+    return [tokenOptions[DAI], tokenOptions[ETH], tokenOptions[REP], tokenOptions[UNI]];
   };
   const [state, setState] = useState({
     address: useSigner ? account : '',
