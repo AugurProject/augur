@@ -1076,6 +1076,7 @@ export const MarketStatusLabel = ({
   mini = false,
   isWarpSync = false,
 }: MarketStatusLabelProps) => {
+  const { theme } = useAppStatusStore();
   let open = false;
   let resolved = false;
   let reporting = false;
@@ -1096,7 +1097,7 @@ export const MarketStatusLabel = ({
       break;
     default:
       reporting = true;
-      text = constants.MARKET_STATUS_MESSAGES.IN_REPORTING;
+      text = theme === constants.THEMES.SPORTS ? constants.MARKET_STATUS_MESSAGES.IN_SETTLEMENT : constants.MARKET_STATUS_MESSAGES.IN_REPORTING;
       break;
   }
 
