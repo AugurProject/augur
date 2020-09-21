@@ -3,6 +3,7 @@ import classNames from 'classnames';
 import PriceHistory from 'modules/market-charts/components/price-history/price-history';
 import Styles from 'modules/market-charts/sports-group-charts.styles';
 import { selectMarket } from 'modules/markets/selectors/market';
+import { SquareDropdown } from 'modules/common/selection';
 
 const RANGE_OPTIONS = [
   {
@@ -34,22 +35,39 @@ export const SportsGroupCharts = ({ sportsGroup }) => {
   const [rangeSelection, setRangeSelection] = useState(3);
   const currentRangeValue = RANGE_OPTIONS[rangeSelection].value;
   const marketNum = sportsGroup.markets.length;
-  const { market, outcomes, invalid } = useMemo(() => {
+  const { market, outcomes, options } = useMemo(() => {
     const market = selectMarket(selectedMarket);
     const outcomes = market.outcomesFormatted;
     const invalid = outcomes.shift();
     outcomes.push(invalid);
+    const options = sportsGroup.markets.map(m => {
+      return {
+        value: m.id,
+        label: m.description,
+        name: m.description,
+      };
+    });
     return {
       market,
       outcomes,
-      invalid,
+      options,
     };
   }, [selectedMarket]);
-  console.log('SG.Markets:', marketNum, sportsGroup.markets);
   return (
     <section className={Styles.Container}>
       <div className={Styles.ChartArea}>
-        <h4>Price History</h4>
+        {marketNum <= 1 ? (
+          <h4>Price History</h4>
+        ) : (
+          <SquareDropdown
+            defaultValue={selectedMarket}
+            options={options}
+            minimalStyle
+            preLabel="Price History"
+            onChange={sortOption => setSelectedMarket(sortOption)}
+            stretchOutOnMobile
+          />
+        )}
         <ul className={Styles.RangeSelection}>
           {RANGE_OPTIONS.map(({ value, id, label }) => (
             <li key={`range-option-${id}`}>

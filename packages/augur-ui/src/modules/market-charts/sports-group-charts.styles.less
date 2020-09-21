@@ -18,7 +18,7 @@
 
   display: grid;
   grid-template-columns: 1fr 0fr;
-  grid-template-rows: @size-20 0fr;
+  grid-template-rows: @size-24 0fr;
 
   @media @breakpoint-mobile-tablet {
     align-items: center;
@@ -36,7 +36,25 @@
     grid-row: 1;
   }
 
-  > div {
+  > div:first-of-type:not(:last-of-type) {
+    grid-column: 1;
+    grid-row: 1;
+
+    > span:first-of-type {
+      .text-16-bold;
+
+      color: var(--color-primary-text);
+      text-transform: capitalize;
+    }
+
+    > button:first-of-type > span:first-of-type {
+      .text-16-bold;
+
+      color: var(--color-primary-text);
+    }
+  }
+
+  > div:last-of-type {
     grid-column: span 2;
     grid-row: 2;
   } 
