@@ -67,6 +67,7 @@ import {
   WALLET_STATUS_VALUES,
   SUBMIT_REPORT,
   THEMES,
+  REDEEMPARTICIPATIONTOKENS,
 } from 'modules/common/constants';
 import { getCategoryStats } from 'modules/create-market/actions/get-category-stats';
 import { loadMarketsInfo } from 'modules/markets/actions/load-markets-info';
@@ -580,7 +581,7 @@ export const handleParticipationTokensRedeemedLog = (
     loginAccount: { address },
   } = AppStatus.get();
   if (logs.filter(log => isSameAddress(log.account, address)).length > 0) {
-    logs.map(log => handleAlert({ ...log, marketId: 1 }, REDEEMSTAKE, false));
+    logs.map(log => handleAlert({ ...log, marketId: 1 }, REDEEMPARTICIPATIONTOKENS, false));
     loadAccountReportingHistory();
   }
 };
