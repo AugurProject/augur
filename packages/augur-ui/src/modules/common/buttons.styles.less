@@ -786,6 +786,16 @@
 
 :root[theme='BETTING'],
 :root[theme='SPORTS'] {
+  .ParagraphButton {
+    .text-14-bold;
+
+    border-bottom: @size-1 dotted var(--color-primary-text);
+    color: var(--color-primary-text);
+
+    &:hover {
+      border-bottom: @size-1 solid var(--color-primary-text);
+    }
+  }
   .ProcessingCheckmark {
     > svg {
       margin: 0;
