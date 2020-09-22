@@ -27,13 +27,11 @@ import { SportsGroupCharts } from 'modules/market-charts/sports-group-charts';
 import { MarketComments } from 'modules/market/components/common/comments/market-comments';
 import { getNetworkId } from 'modules/contracts/actions/contractCalls';
 import {
-  MARKET_STATUS_MESSAGES,
   REPORTING_STATE,
   THEMES,
 } from 'modules/common/constants';
 import { FilterNotice } from 'modules/common/filter-notice';
 import { ParagraphButton } from 'modules/common/buttons';
-import { useAppStatus } from 'modules/app/store/app-status-hooks';
 import { useAppStatusStore } from 'modules/app/store/app-status';
 import { ClaimWinnings } from 'modules/portfolio/components/common/common';
 
@@ -238,7 +236,7 @@ const BettingMarketView = () => {
         )}
       </div>
       {sportsGroup.current && (
-        <SportsGroupCharts sportsGroup={sportsGroup.current} />
+        <SportsGroupCharts sportsGroup={sportsGroup.current} marketId={marketId} />
       )}
       <div>
         <InfoTicket
