@@ -5,11 +5,6 @@ import { ExternalLinkButton, PrimaryButton } from 'modules/common/buttons';
 import { MODAL_SIGNUP, THEMES } from 'modules/common/constants';
 import { useAppStatusStore } from 'modules/app/store/app-status';
 import { Slider } from 'modules/markets-list/components/slider';
-
-import Image1Mobile from '../../../assets/images/banner-1-1011x741.png';
-import Image1Tablet from '../../../assets/images/banner-1-1486x494.png';
-import Image1Medium from '../../../assets/images/banner-1-1522x456.png';
-import Image1Big from '../../../assets/images/banner-1-1920x456.png';
 import Image2Mobile from '../../../assets/images/banner-2-1011x741.png';
 import Image2Tablet from '../../../assets/images/banner-2-1486x494.png';
 import Image2Medium from '../../../assets/images/banner-2-1522x456.png';

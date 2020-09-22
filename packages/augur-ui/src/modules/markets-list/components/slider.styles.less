@@ -12,6 +12,7 @@
     z-index: @above-all-content-above;
     top: 50%;
     transform: translateY(-50%);
+    height: 100%;
 
     > svg {
       width: @size-24;
@@ -20,11 +21,13 @@
     }
 
     &.LeftArrow {
-      left: @size-16;
+      left: 0;
+      padding-left: @size-16;
     }
 
     &.RightArrow {
-      right: @size-16;
+      right: 0;
+      padding-right: @size-16;
     }
   }
 }
