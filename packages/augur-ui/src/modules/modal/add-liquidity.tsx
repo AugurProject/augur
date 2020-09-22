@@ -129,7 +129,7 @@ export const ModalAddLiquidity = () => {
             max,
           })
         ).full;
-        oddsValidation.current.warningMessage = `Your odds will actually be ${displayOdds} due to current system limitions.`;
+        oddsValidation.current.warningMessage = `Your odds will actually be ${displayOdds} due to current system limitations.`;
       }
       if (isNaN(normalizedPrice.formatted) || priceBN.gt(maxValid) || priceBN.lt(tickSize)) {
         const minOdds = convertToOdds(
@@ -200,6 +200,7 @@ export const ModalAddLiquidity = () => {
     }
   };
   const modifyBet = v => {};
+  const notEmpty = Object.keys(orderBook).length > 0;
   return (
     <div className={Styles.AddLiquidityModal}>
       <Title title="Add more liquidity" closeAction={() => closeModal()} />
@@ -284,7 +285,7 @@ export const ModalAddLiquidity = () => {
           {errorMessage && <span>{errorMessage}</span>}
           {warningMessage && <p>{warningMessage}</p>}
         </section>
-        <div>
+        <div className={classNames({ [Styles.notEmpty]: notEmpty })}>
           <ul key={`tableheader`}>
             <li>Outcome</li>
             <li>Wager</li>
@@ -295,7 +296,7 @@ export const ModalAddLiquidity = () => {
               </button>
             </li>
           </ul>
-          <section className={classNames({ [Styles.notEmpty]: Object.keys(orderBook).length > 0 })}>
+          <section className={classNames({ [Styles.notEmpty]: notEmpty })}>
             {Object.keys(orderBook).map(outcomeId => {
               const displayingOutcome = outcomesFormatted[outcomeId];
               return (orderBook[outcomeId] || []).map((order, orderId) => {

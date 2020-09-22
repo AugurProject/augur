@@ -1,9 +1,10 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import classNames from 'classnames';
 import PriceHistory from 'modules/market-charts/components/price-history/price-history';
 import Styles from 'modules/market-charts/sports-group-charts.styles';
 import { selectMarket } from 'modules/markets/selectors/market';
 import { SquareDropdown } from 'modules/common/selection';
+import { SPORTS_GROUP_TYPES } from 'modules/common/constants';
 
 const RANGE_OPTIONS = [
   {
@@ -28,10 +29,8 @@ const RANGE_OPTIONS = [
   },
 ];
 
-export const SportsGroupCharts = ({ sportsGroup }) => {
-  const [selectedMarket, setSelectedMarket] = useState(
-    sportsGroup.markets[0].id
-  );
+export const SportsGroupCharts = ({ sportsGroup, marketId }) => {
+  const [selectedMarket, setSelectedMarket] = useState(marketId);
   const [rangeSelection, setRangeSelection] = useState(3);
   const currentRangeValue = RANGE_OPTIONS[rangeSelection].value;
   const marketNum = sportsGroup.markets.length;
@@ -53,10 +52,15 @@ export const SportsGroupCharts = ({ sportsGroup }) => {
       options,
     };
   }, [selectedMarket]);
+
+  useEffect(() => {
+    if (marketId !== selectedMarket) setSelectedMarket(marketId);
+  }, [marketId]);
+
   return (
     <section className={Styles.Container}>
       <div className={Styles.ChartArea}>
-        {marketNum <= 1 ? (
+        {marketNum <= 1 || sportsGroup.type === SPORTS_GROUP_TYPES.FUTURES ? (
           <h4>Price History</h4>
         ) : (
           <SquareDropdown

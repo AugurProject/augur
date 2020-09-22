@@ -3,7 +3,7 @@ import classNames from 'classnames';
 import { Link } from 'react-router-dom';
 import makePath from 'modules/routes/helpers/make-path';
 
-import BannerSportsbook from '../../assets/images/banner-sportsbook.png';
+import BannerSportsbook from '../../assets/images/banner-2-1011x741.png';
 import BannerTrading from '../../assets/images/banner-trading.png';
 import SmallBannerSportsbook from '../../assets/images/small-banner-sportsbook.png';
 import SmallBannerTrading from '../../assets/images/small-banner-trading.png';

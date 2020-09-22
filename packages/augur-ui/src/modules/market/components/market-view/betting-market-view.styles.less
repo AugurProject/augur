@@ -73,7 +73,7 @@
 
   > div:nth-of-type(3) {
     display: flex;
-    flex-flow: row wrap;
+    flex-flow: row nowrap;
     align-items: flex-end;
     margin: @size-40 0;
 
@@ -85,7 +85,9 @@
       margin-left: @size-24;
     }
 
-    @media @breakpoint-mobile-tablet {
+    @media @breakpoint-mobile {
+      flex-flow: column nowrap;
+
       > div,
       > div:not(:first-of-type) {
         margin-left: 0;
