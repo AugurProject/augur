@@ -23,13 +23,14 @@
   &:before {
     border-radius: 50%;
     background:
-      linear-gradient(  0deg, rgba(#09CFE1,   0) 50%, rgba(#09CFE1, 0.3) 100%)   0%   0%,
-      linear-gradient( 90deg, rgba(#09CFE1, 0.3)  0%, rgba(#09CFE1, 0.5) 100%) 100%   0%,
-      linear-gradient(180deg, rgba(#09CFE1, 0.5)  0%, rgba(#09CFE1, 0.7) 100%) 100% 100%,
-      linear-gradient(270deg, rgba(#09CFE1, 0.7)  0%, rgba(#09CFE1,   1) 100%)   0% 100%
+      linear-gradient(  0deg, var(--color-primary-action-0) 50%, var(--color-primary-action-20) 100%)   0%   0%,
+      linear-gradient( 90deg, var(--color-primary-action-20)  0%, var(--color-primary-action-40) 100%) 100%   0%,
+      linear-gradient(180deg, var(--color-primary-action-40)  0%, var(--color-primary-action-70) 100%) 100% 100%,
+      linear-gradient(270deg, var(--color-primary-action-70) 0%, var(--color-primary-action) 100%)   0% 100%
     ;
     background-repeat: no-repeat;
     background-size: 50% 50%;
+    color: rgba(var(--color-primary-action), 0.5);
     top: -@size-1;
     bottom: -@size-1;
     left: -@size-1;
@@ -51,17 +52,6 @@
 :root[theme='BETTING'],
 :root[theme='SPORTS'] {
   .Spinner {
-    &:before {
-      background:
-        linear-gradient(  0deg, rgba(#0CCE8D,   0) 50%, rgba(#0CCE8D, 0.3) 100%)   0%   0%,
-        linear-gradient( 90deg, rgba(#0CCE8D, 0.3)  0%, rgba(#0CCE8D, 0.5) 100%) 100%   0%,
-        linear-gradient(180deg, rgba(#0CCE8D, 0.5)  0%, rgba(#0CCE8D, 0.7) 100%) 100% 100%,
-        linear-gradient(270deg, rgba(#0CCE8D, 0.7)  0%, rgba(#0CCE8D,   1) 100%)   0% 100%
-      ;
-      background-repeat: no-repeat;
-      background-size: 50% 50%;
-    }
-
     &:after {
       // had to use the opaque hex representation of the transparent color --color-primary-action-15, otherwise
       // it wouldn't work
