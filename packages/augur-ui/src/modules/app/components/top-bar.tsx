@@ -8,6 +8,7 @@ import {
   LinearPropertyLabelUnderlineTooltip,
 } from 'modules/common/labels';
 import Styles from 'modules/app/components/top-bar.styles.less';
+import ButtonStyles from 'modules/common/buttons.styles.less';
 import { Link } from 'react-router-dom';
 import makePath from 'modules/routes/helpers/make-path';
 import { NewLogo } from 'modules/app/components/logo';
@@ -131,6 +132,8 @@ const TopBar = () => {
             queueName={TRANSACTIONS}
             queueId={MIGRATE_FROM_LEG_REP_TOKEN}
             primaryButton
+            spinner
+            className={ButtonStyles.ProcessingSpinnerButton}
           />
         )}
         {(showActivationButton || showAddFundsButton) && (

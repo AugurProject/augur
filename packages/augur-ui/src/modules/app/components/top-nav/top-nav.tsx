@@ -27,6 +27,7 @@ import Styles from 'modules/app/components/top-nav/top-nav.styles.less';
 import { LinearPropertyLabelUnderlineTooltip } from 'modules/common/labels';
 import { formatNumber } from 'utils/format-number';
 import { getEthReserveInDai } from 'modules/auth/helpers/get-eth-reserve';
+import ButtonStyles from 'modules/common/buttons.styles.less';
 
 interface TopNavProps {
   isLogged: boolean;
@@ -111,6 +112,8 @@ const TopNav = ({ isLogged, menuData }: TopNavProps) => {
                       queueName={TRANSACTIONS}
                       queueId={MIGRATE_FROM_LEG_REP_TOKEN}
                       primaryButton
+                      spinner
+                      className={ButtonStyles.ProcessingSpinnerButton}
                     />
                   </div>
                   <span>
