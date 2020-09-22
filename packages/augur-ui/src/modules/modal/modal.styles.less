@@ -518,10 +518,19 @@ div.Onboarding {
   }
 
   .TitleHeader {
+    padding: @size-16 @size-20;
+    
     > button:first-of-type {
       > svg {
         height: @size-16;
         width: @size-16;
+      }
+    }
+    &.Bright {
+      > h1 {
+        .text-16-bold;
+
+        color: var(--color-primary-text);
       }
     }
   }
