@@ -325,6 +325,17 @@
   }
 }
 
+.referral {
+  .GasEdit;
+
+  > span > button[class*="SecondaryButton"] {
+    > svg:first-of-type > path:first-of-type {
+      stroke: none;
+      fill: var(--color-primary-text);
+    }
+  }
+}
+
 :root[theme="BETTING"],
 :root[theme="SPORTS"] {
   .AccountInfo {
@@ -334,6 +345,37 @@
   .GasEdit > button,
   .WalletProvider > button {
     height: unset;
+  }
+
+  .referral {
+    > span {
+      > button[class*="SecondaryButton"] {
+        > svg:first-of-type > path:first-of-type {
+          stroke: none;
+          fill: var(--color-primary-text);
+        }
+  
+        &:focus,
+        &:focus:hover,
+        &:focus:hover:active {
+          outline: none;
+          border: @size-1 solid var(--color-primary-text);
+  
+          > svg:first-of-type > path:first-of-type {
+            stroke: none;
+            fill: var(--color-primary-text);
+          }
+        }
+  
+        &:hover:not(:focus),
+        &:active {
+          > svg:first-of-type > path:first-of-type {
+            stroke: none;
+            fill: var(--color-module-background);
+          }
+        }
+      }
+    }
   }
 
   .AccountFunds {
@@ -429,7 +471,7 @@
 .ShowConfirmaiton:after {
   content: '';
 
-  border-top: solid @size-12 var(--color-primary-text);
+  border-top: solid @size-12 var(--color-primary-text-80);
   border-left: solid @size-12 transparent;
   border-right: solid @size-12 transparent;
   position: absolute;
@@ -447,8 +489,8 @@
 
   content: 'Copied!';
   align-items: center;
-  color: var(--color-inactive-text);
-  background: var(--color-primary-text);
+  color: var(--color-module-background);
+  background: var(--color-primary-text-80);
   border-radius: @border-radius-default;
   display: flex;
   justify-content: center;
