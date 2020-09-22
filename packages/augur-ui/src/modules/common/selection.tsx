@@ -495,7 +495,7 @@ export const DotSelection = ({ children, customClass = null }) => {
   const menuIcon = useRef(null);
   const menu = useRef(null);
   useEffect(() => {
-    function handleWindowOnClick = (event: React.MouseEvent<HTMLElement>) => {
+    function handleWindowOnClick (event: React.MouseEvent<HTMLElement>) {
       if (
         !refMenu?.current?.contains(event.target) &&
         !refMenuIcon?.current?.contains(event.target)
