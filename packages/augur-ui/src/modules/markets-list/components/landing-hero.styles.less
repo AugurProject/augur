@@ -208,8 +208,11 @@
 
     > div:nth-of-type(2) {
       border-radius: @border-radius-rounded;
-      display: block;
-      height: 193px;
+      display: flex;
+      flex-flow: column nowrap;
+      align-items: center;
+      justify-content: center;
+      height: 228px;
       width: 100%;
       background-size: cover;
       background-position: center center;
@@ -217,22 +220,12 @@
 
       .SliderInfoOverlay;
 
-      > div > h2 {
-        .text-20-bold;
+      > h2 {
+        .text-30-bold;
 
-        margin-bottom: @size-30;
-      }
-    }
-  }
-
-  @media @breakpoint-min-desktop {
-    > div:nth-of-type(2) {
-      height: 247px;
-
-      > div > h2 {
-        .text-36-medium;
-
-        margin-bottom: @size-50;
+        color: var(--color-module-background);
+        margin-bottom: @size-24;
+        text-align: center;
       }
     }
   }
@@ -241,7 +234,7 @@
 :root[theme='BETTING'],
 :root[theme='SPORTS'] {
   .LandingHeroSlider {
-    > div > div > a > button {
+    > div > a > button {
       color: var(--color-secondary-action);
     }
   }
