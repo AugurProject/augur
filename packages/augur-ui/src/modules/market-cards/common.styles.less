@@ -1266,6 +1266,38 @@
 		}
 	}
 
+	.ShowCopied {
+		position: relative;
+		
+	  &:before {
+			.text-10;
+		
+			content: 'Copied!';
+			align-items: center;
+			color: var(--color-module-background);
+			background: var(--color-primary-text-80);
+			border-radius: @border-radius-default;
+			display: flex;
+			justify-content: center;
+			padding: @size-8 @size-12;
+			position: absolute;
+			left: -@size-16;
+			right: -@size-16;
+			text-transform: capitalize;
+			top: -@size-36;
+		}
+
+		&:after {
+			content: '';
+		
+			border-top: solid @size-8 var(--color-primary-text-80);
+			border-left: solid @size-8 transparent;
+			border-right: solid @size-8 transparent;
+			position: absolute;
+			top: -@size-8;
+		}
+	}
+	
 	div.ReportedOutcome {
 		max-width: @size-106;
 
