@@ -213,4 +213,8 @@ contract ParaAugur is IParaAugur, IAugurCreationDataGetter, Ownable {
     }
 
     function onTransferOwnership(address, address) internal {}
+
+    function getOriginCash() public view returns (address) {
+        return address(augur.cash);
+    }
 }

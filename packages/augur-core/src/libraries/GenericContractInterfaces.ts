@@ -8889,6 +8889,13 @@ export class ParaAugur<TBigNumber> extends Contract<TBigNumber> {
 		return <TBigNumber>result[0]
 	}
 
+	public getOriginCash_ = async (options?: { sender?: string }): Promise<string> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":true,"inputs":[],"name":"getOriginCash","outputs":[{"internalType":"address","name":"","type":"address"}],"payable":false,"stateMutability":"view","type":"function"}
+		const result = await this.localCall(abi, [], options.sender)
+		return <string>result[0]
+	}
+
 	public getOwner_ = async (options?: { sender?: string }): Promise<string> => {
 		options = options || {}
 		const abi: AbiFunction = {"constant":true,"inputs":[],"name":"getOwner","outputs":[{"internalType":"address","name":"","type":"address"}],"payable":false,"stateMutability":"view","type":"function"}
