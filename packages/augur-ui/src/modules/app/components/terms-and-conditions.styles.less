@@ -35,17 +35,8 @@
     padding: 0 0 0 @size-16;
 
     > a {
-      text-decoration: none;
-      position: relative;
-
-      &:after {
-        content: '';
-        position: absolute;
-        bottom: -@size-2;
-        left: @size-16;
-        right: @size-16;
-        border-bottom: @size-1 dotted var(--color-primary-text);
-      }
+      text-decoration: underline dotted var(--color-primary-text);
+      text-underline-position: under;
     }
 
     > a:last-of-type {
