@@ -98,7 +98,7 @@ export const Slider = ({ images }: SliderProps) => {
               const responsiveImage = image[whichBreakpointToChoose(width)];
 
               return noOverlay ? (
-                <a href={button.link} target="_blank" rel="noopener noreferrer">
+                <a key={`${text}`} href={button.link} target="_blank" rel="noopener noreferrer">
                   <img
                     src={
                       typeof image === 'string'

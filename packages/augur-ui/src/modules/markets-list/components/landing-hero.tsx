@@ -5,7 +5,6 @@ import { ExternalLinkButton, PrimaryButton } from 'modules/common/buttons';
 import { MODAL_SIGNUP, THEMES } from 'modules/common/constants';
 import { useAppStatusStore } from 'modules/app/store/app-status';
 import { Slider } from 'modules/markets-list/components/slider';
-import classNames from 'classnames';
 
 import Image1Mobile from '../../../assets/images/banner-1-1011x741.png';
 import Image1Tablet from '../../../assets/images/banner-1-1486x494.png';
@@ -103,7 +102,7 @@ export const LandingHero = () => {
           <section className={Styles.LandingHeroSlider}>
             <Slider images={images} />
             <div style={{backgroundImage: `url(${ImageDesktop})`}}>
-              <div className={Styles.LeftAligned}>
+              <div>
                 <h2>{images[0].text}</h2>
                 {images[0].button && (
                   <PrimaryButton URL={images[0].button.link} text={images[0].button.text} action={() => {}} />
