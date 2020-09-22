@@ -9,6 +9,7 @@ ATTO = 10 ** 18
 INVALID = 0
 NO = 1
 YES = 2
+FEE = 3 # 3 / 1000
 
 
 @fixture
@@ -68,20 +69,37 @@ def test_amm_position(contractsFixture, market, shareToken, cash, amm, account0)
 
     cash.faucet(100000 * ATTO)
     cash.approve(amm.address, 10 ** 48)
+    shareToken.setApprovalForAll(amm.address, True)
     amm.addLiquidity(100 * ATTO)
 
-    SHARES_TO_BUY = 10 * ATTO
+    cost = 10000 * ATTO
 
-    cost = amm.rateEnterPosition(SHARES_TO_BUY, True)
-    print(cost)
-    assert cost < SHARES_TO_BUY * market.getNumTicks() # must cost less than buying complete sets
+    sharesReceived = amm.rateEnterPosition(cost, True)
+    print(sharesReceived)
+    assert sharesReceived > 10 * ATTO
+    # TODO verify sharesReceived precisely
     cash.faucet(cost)
-    amm.enterPosition(SHARES_TO_BUY, True, cost)
+    amm.enterPosition(cost, True, sharesReceived)
 
     assert cash.balanceOf(account0) == 0
     assert shareToken.balanceOfMarketOutcome(market.address, INVALID, account0) == cost // market.getNumTicks()
     assert shareToken.balanceOfMarketOutcome(market.address, NO, account0) == 0
-    assert shareToken.balanceOfMarketOutcome(market.address, YES, account0) == SHARES_TO_BUY
+    assert shareToken.balanceOfMarketOutcome(market.address, YES, account0) == sharesReceived
+
+    (payoutAll, inv, no, yes) = amm.rateExitAll()
+    applyFeeForEntryAndExit = (cost * (1000 - FEE) // 1000) * (1000 - FEE) // 1000
+    assert payoutAll < applyFeeForEntryAndExit # swap also has a cost
+    assert payoutAll == inv * market.getNumTicks() # invalids relate to sets which relate to cash
+
+    amm.exitAll(payoutAll)
+
+    assert cash.balanceOf(account0) == payoutAll
+    assert shareToken.balanceOfMarketOutcome(market.address, INVALID, account0) > 0
+    assert shareToken.balanceOfMarketOutcome(market.address, INVALID, account0) < 10 * ATTO
+    assert shareToken.balanceOfMarketOutcome(market.address, NO, account0) == 0
+    assert shareToken.balanceOfMarketOutcome(market.address, YES, account0) == 0
+
+
 
 
 # TODO tests
