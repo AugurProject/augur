@@ -335,7 +335,11 @@ export class WarpController {
 
       clearTimeout(timeout);
       const decompressedResult = await LZString.decompressFromUint8Array(fileResult);
-      resolve(JSON.parse(decompressedResult));
+      try {
+        resolve(JSON.parse(decompressedResult));
+      } catch(e) {
+        reject(e);
+      }
     });
   }
 
