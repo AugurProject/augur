@@ -1,0 +1,71 @@
+@import (reference) '~assets/styles/shared';
+
+@keyframes rotate {
+  from { transform: rotate(0deg);   }
+  to   { transform: rotate(360deg); }
+}
+
+.Spinner {
+  animation: rotate 1s linear infinite;
+  background: transparent;
+  border-radius: 50%;
+  height: @size-24;
+  width: @size-24;
+  position: relative;
+  margin: 0 @size-56;
+
+  &:before,
+  &:after {
+    content: '';
+    position: absolute;
+  }
+
+  &:before {
+    border-radius: 50%;
+    background:
+      linear-gradient(  0deg, rgba(#09CFE1,   0) 50%, rgba(#09CFE1, 0.3) 100%)   0%   0%,
+      linear-gradient( 90deg, rgba(#09CFE1, 0.3)  0%, rgba(#09CFE1, 0.5) 100%) 100%   0%,
+      linear-gradient(180deg, rgba(#09CFE1, 0.5)  0%, rgba(#09CFE1, 0.7) 100%) 100% 100%,
+      linear-gradient(270deg, rgba(#09CFE1, 0.7)  0%, rgba(#09CFE1,   1) 100%)   0% 100%
+    ;
+    background-repeat: no-repeat;
+    background-size: 50% 50%;
+    top: -@size-1;
+    bottom: -@size-1;
+    left: -@size-1;
+    right: -@size-1;
+  }
+
+  &:after {
+    // had to use the opaque hex representation of the transparent color --color-primary-action-40, otherwise
+    // it wouldn't work
+    background-color: #11686c;
+    border-radius: 50%;
+    top: @size-1;
+    bottom: @size-1;
+    left: @size-1;
+    right: @size-1;
+  }
+}
+
+:root[theme='BETTING'],
+:root[theme='SPORTS'] {
+  .Spinner {
+    &:before {
+      background:
+        linear-gradient(  0deg, rgba(#0CCE8D,   0) 50%, rgba(#0CCE8D, 0.3) 100%)   0%   0%,
+        linear-gradient( 90deg, rgba(#0CCE8D, 0.3)  0%, rgba(#0CCE8D, 0.5) 100%) 100%   0%,
+        linear-gradient(180deg, rgba(#0CCE8D, 0.5)  0%, rgba(#0CCE8D, 0.7) 100%) 100% 100%,
+        linear-gradient(270deg, rgba(#0CCE8D, 0.7)  0%, rgba(#0CCE8D,   1) 100%)   0% 100%
+      ;
+      background-repeat: no-repeat;
+      background-size: 50% 50%;
+    }
+
+    &:after {
+      // had to use the opaque hex representation of the transparent color --color-primary-action-15, otherwise
+      // it wouldn't work
+      background-color: #0c2a31;
+    }
+  }
+}

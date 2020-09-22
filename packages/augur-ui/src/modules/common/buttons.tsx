@@ -54,6 +54,7 @@ import { createBigNumber } from 'utils/create-big-number';
 import { formatDai } from 'utils/format-number';
 import { convertToOdds } from 'utils/get-odds';
 import { BET_STATUS } from 'modules/trading/store/constants';
+import { Spinner } from 'modules/common/spinner';
 
 export interface DefaultButtonProps {
   id?: string;
@@ -235,7 +236,7 @@ export const ProcessingButton = ({
   queueId = null,
   matchingId = null,
   nonMatchingIds = null,
-  ...props,
+  ...props
 }: ProcessingButtonProps) => {
   const { pendingQueue, theme } = useAppStatusStore();
   const isSports = theme === THEMES.SPORTS;
@@ -267,7 +268,7 @@ export const ProcessingButton = ({
     status === TXEventName.Pending ||
     status === TXEventName.AwaitingSigning
   ) {
-    buttonText = 'Processing...';
+    buttonText = props.spinner ? <Spinner /> : 'Processing...';
     isDisabled = true;
   }
   const failed = status === TXEventName.Failure;
@@ -286,7 +287,7 @@ export const ProcessingButton = ({
     icon = XIcon;
     isDisabled = false;
   }
-  
+
   if (confirmed && isSports) {
     return (
       <div className={Styles.ProcessingCheckmark}>
@@ -318,6 +319,7 @@ export const ProcessingButton = ({
             text={buttonText}
             action={buttonAction}
             disabled={isDisabled}
+            className={props.className}
           />
         )}
       {props.submitTextButtton && (
@@ -886,8 +888,8 @@ export const CashoutButton = ({
       cashoutDisabled = false;
       cashout = () => {
         setModal({
-          type: MODAL_CASHOUT_BET, 
-          wager: bet.wager, 
+          type: MODAL_CASHOUT_BET,
+          wager: bet.wager,
           odds: convertToOdds(bet.normalizedPrice).full,
           cashOut: bet.orderCost,
           positive: bet.potentialDaiProfit.gt(ZERO),

@@ -33,6 +33,7 @@ import { NewLogo } from 'modules/app/components/logo';
 import { OddsMenu } from 'modules/app/components/odds-menu';
 import { logout } from 'modules/auth/actions/logout';
 import CategoryFilters from '../inner-nav/category-filters';
+import ButtonStyles from 'modules/common/buttons.styles.less';
 
 interface SideNavProps {
   isLogged: boolean;
@@ -150,6 +151,8 @@ const SideNav = ({
                     queueName={TRANSACTIONS}
                     queueId={MIGRATE_FROM_LEG_REP_TOKEN}
                     primaryButton
+                    spinner
+                    className={ButtonStyles.ProcessingSpinnerButton}
                   />
                   <label
                     className={classNames(Styles.SideNavMigrateTooltipHint)}

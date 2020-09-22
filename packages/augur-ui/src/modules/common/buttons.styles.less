@@ -127,6 +127,13 @@
     text-decoration: underline;
   }
 }
+
+.ProcessingSpinnerButton {
+  &:disabled {
+    opacity: 1;
+  }
+}
+
 :root[theme='BETTING'],
 :root[theme='SPORTS'] {
   .Button {
@@ -410,6 +417,22 @@
 
   .FilterButton {
     text-transform: uppercase;
+  }
+
+  .ProcessingSpinnerButton {
+    > svg {
+      width: @size-8;
+      height: @size-8;
+      margin: 0 @size-10 0 0;
+
+      > path {
+        stroke: var(--color-module-background);
+      }
+    }
+
+    &:disabled {
+      opacity: 1;
+    }
   }
 }
 
@@ -797,7 +820,7 @@
       }
     }
   }
-  
+
   .PendingIconButton {
     &.NEWFILL {
       > svg {
