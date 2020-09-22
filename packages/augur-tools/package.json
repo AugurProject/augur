@@ -69,8 +69,8 @@
     "levelup": "4.2.0",
     "memdown": "4.1.0",
     "options-parser": "0.4.0",
-    "ts-node": "7.0.1",
-    "typescript": "3.8.3"
+    "ts-node": "9.0.0",
+    "typescript": "3.9.7"
   },
   "resolutions": {
     "**/memdown": "4.1.0"
