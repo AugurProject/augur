@@ -215,13 +215,13 @@ See {_burn} and {_approve}.
 
 
 
-<h4><a class="anchor" aria-hidden="true" id="FeePot.stake(uint256)"></a><code class="function-signature">stake(uint256 _amount) <span class="return-arrow">→</span> <span class="return-type">bool</span></code><span class="function-visibility">public</span></h4>
+<h4><a class="anchor" aria-hidden="true" id="FeePot.stake(uint256)"></a><code class="function-signature">stake(uint256 _amount) <span class="return-arrow">→</span> <span class="return-type">bool</span></code><span class="function-visibility">external</span></h4>
 
 
 
 
 
-<h4><a class="anchor" aria-hidden="true" id="FeePot.exit(uint256)"></a><code class="function-signature">exit(uint256 _amount) <span class="return-arrow">→</span> <span class="return-type">bool</span></code><span class="function-visibility">public</span></h4>
+<h4><a class="anchor" aria-hidden="true" id="FeePot.exit(uint256)"></a><code class="function-signature">exit(uint256 _amount) <span class="return-arrow">→</span> <span class="return-type">bool</span></code><span class="function-visibility">external</span></h4>
 
 
 
@@ -255,7 +255,7 @@ See {_burn} and {_approve}.
 
 
 
-<h4><a class="anchor" aria-hidden="true" id="FeePotFactory.createFeePot(contract IParaAugur)"></a><code class="function-signature">createFeePot(contract IParaAugur _paraAugur) <span class="return-arrow">→</span> <span class="return-type">contract IFeePot</span></code><span class="function-visibility">public</span></h4>
+<h4><a class="anchor" aria-hidden="true" id="FeePotFactory.createFeePot(contract IParaAugur)"></a><code class="function-signature">createFeePot(contract IParaAugur _paraAugur) <span class="return-arrow">→</span> <span class="return-type">contract IFeePot</span></code><span class="function-visibility">external</span></h4>
 
 
 
@@ -1409,13 +1409,13 @@ MUST emit when the URI is updated for a token ID.
 
 
 
-<h4><a class="anchor" aria-hidden="true" id="IParaAugur.lookup(bytes32)"></a><code class="function-signature">lookup(bytes32 _key) <span class="return-arrow">→</span> <span class="return-type">address</span></code><span class="function-visibility">public</span></h4>
+<h4><a class="anchor" aria-hidden="true" id="IParaAugur.lookup(bytes32)"></a><code class="function-signature">lookup(bytes32 _key) <span class="return-arrow">→</span> <span class="return-type">address</span></code><span class="function-visibility">external</span></h4>
 
 
 
 
 
-<h4><a class="anchor" aria-hidden="true" id="IParaAugur.isKnownUniverse(contract IUniverse)"></a><code class="function-signature">isKnownUniverse(contract IUniverse _universe) <span class="return-arrow">→</span> <span class="return-type">bool</span></code><span class="function-visibility">public</span></h4>
+<h4><a class="anchor" aria-hidden="true" id="IParaAugur.isKnownUniverse(contract IUniverse)"></a><code class="function-signature">isKnownUniverse(contract IUniverse _universe) <span class="return-arrow">→</span> <span class="return-type">bool</span></code><span class="function-visibility">external</span></h4>
 
 
 
@@ -1433,37 +1433,37 @@ MUST emit when the URI is updated for a token ID.
 
 
 
-<h4><a class="anchor" aria-hidden="true" id="IParaAugur.logCompleteSetsPurchased(contract IUniverse,contract IMarket,address,uint256)"></a><code class="function-signature">logCompleteSetsPurchased(contract IUniverse _universe, contract IMarket _market, address _account, uint256 _numCompleteSets) <span class="return-arrow">→</span> <span class="return-type">bool</span></code><span class="function-visibility">public</span></h4>
+<h4><a class="anchor" aria-hidden="true" id="IParaAugur.logCompleteSetsPurchased(contract IUniverse,contract IMarket,address,uint256)"></a><code class="function-signature">logCompleteSetsPurchased(contract IUniverse _universe, contract IMarket _market, address _account, uint256 _numCompleteSets) <span class="return-arrow">→</span> <span class="return-type">bool</span></code><span class="function-visibility">external</span></h4>
 
 
 
 
 
-<h4><a class="anchor" aria-hidden="true" id="IParaAugur.logCompleteSetsSold(contract IUniverse,contract IMarket,address,uint256,uint256)"></a><code class="function-signature">logCompleteSetsSold(contract IUniverse _universe, contract IMarket _market, address _account, uint256 _numCompleteSets, uint256 _fees) <span class="return-arrow">→</span> <span class="return-type">bool</span></code><span class="function-visibility">public</span></h4>
+<h4><a class="anchor" aria-hidden="true" id="IParaAugur.logCompleteSetsSold(contract IUniverse,contract IMarket,address,uint256,uint256)"></a><code class="function-signature">logCompleteSetsSold(contract IUniverse _universe, contract IMarket _market, address _account, uint256 _numCompleteSets, uint256 _fees) <span class="return-arrow">→</span> <span class="return-type">bool</span></code><span class="function-visibility">external</span></h4>
 
 
 
 
 
-<h4><a class="anchor" aria-hidden="true" id="IParaAugur.logMarketOIChanged(contract IUniverse,contract IMarket)"></a><code class="function-signature">logMarketOIChanged(contract IUniverse _universe, contract IMarket _market) <span class="return-arrow">→</span> <span class="return-type">bool</span></code><span class="function-visibility">public</span></h4>
+<h4><a class="anchor" aria-hidden="true" id="IParaAugur.logMarketOIChanged(contract IUniverse,contract IMarket)"></a><code class="function-signature">logMarketOIChanged(contract IUniverse _universe, contract IMarket _market) <span class="return-arrow">→</span> <span class="return-type">bool</span></code><span class="function-visibility">external</span></h4>
 
 
 
 
 
-<h4><a class="anchor" aria-hidden="true" id="IParaAugur.logTradingProceedsClaimed(contract IUniverse,address,address,uint256,uint256,uint256,uint256)"></a><code class="function-signature">logTradingProceedsClaimed(contract IUniverse _universe, address _sender, address _market, uint256 _outcome, uint256 _numShares, uint256 _numPayoutTokens, uint256 _fees) <span class="return-arrow">→</span> <span class="return-type">bool</span></code><span class="function-visibility">public</span></h4>
+<h4><a class="anchor" aria-hidden="true" id="IParaAugur.logTradingProceedsClaimed(contract IUniverse,address,address,uint256,uint256,uint256,uint256)"></a><code class="function-signature">logTradingProceedsClaimed(contract IUniverse _universe, address _sender, address _market, uint256 _outcome, uint256 _numShares, uint256 _numPayoutTokens, uint256 _fees) <span class="return-arrow">→</span> <span class="return-type">bool</span></code><span class="function-visibility">external</span></h4>
 
 
 
 
 
-<h4><a class="anchor" aria-hidden="true" id="IParaAugur.logShareTokensBalanceChanged(address,contract IMarket,uint256,uint256)"></a><code class="function-signature">logShareTokensBalanceChanged(address _account, contract IMarket _market, uint256 _outcome, uint256 _balance) <span class="return-arrow">→</span> <span class="return-type">bool</span></code><span class="function-visibility">public</span></h4>
+<h4><a class="anchor" aria-hidden="true" id="IParaAugur.logShareTokensBalanceChanged(address,contract IMarket,uint256,uint256)"></a><code class="function-signature">logShareTokensBalanceChanged(address _account, contract IMarket _market, uint256 _outcome, uint256 _balance) <span class="return-arrow">→</span> <span class="return-type">bool</span></code><span class="function-visibility">external</span></h4>
 
 
 
 
 
-<h4><a class="anchor" aria-hidden="true" id="IParaAugur.logReportingFeeChanged(uint256)"></a><code class="function-signature">logReportingFeeChanged(uint256 _reportingFee) <span class="return-arrow">→</span> <span class="return-type">bool</span></code><span class="function-visibility">public</span></h4>
+<h4><a class="anchor" aria-hidden="true" id="IParaAugur.logReportingFeeChanged(uint256)"></a><code class="function-signature">logReportingFeeChanged(uint256 _reportingFee) <span class="return-arrow">→</span> <span class="return-type">bool</span></code><span class="function-visibility">external</span></h4>
 
 
 
@@ -2623,7 +2623,7 @@ MUST emit when the URI is updated for a token ID.
 
 
 
-<h4><a class="anchor" aria-hidden="true" id="IParaOICash.approveFeePot()"></a><code class="function-signature">approveFeePot()</code><span class="function-visibility">public</span></h4>
+<h4><a class="anchor" aria-hidden="true" id="IParaOICash.approveFeePot()"></a><code class="function-signature">approveFeePot()</code><span class="function-visibility">external</span></h4>
 
 
 
@@ -2639,7 +2639,7 @@ MUST emit when the URI is updated for a token ID.
 
 
 
-<h4><a class="anchor" aria-hidden="true" id="ParaOICashFactory.createParaOICash(contract IParaAugur)"></a><code class="function-signature">createParaOICash(contract IParaAugur _augur) <span class="return-arrow">→</span> <span class="return-type">contract IParaOICash</span></code><span class="function-visibility">public</span></h4>
+<h4><a class="anchor" aria-hidden="true" id="ParaOICashFactory.createParaOICash(contract IParaAugur)"></a><code class="function-signature">createParaOICash(contract IParaAugur _augur) <span class="return-arrow">→</span> <span class="return-type">contract IParaOICash</span></code><span class="function-visibility">external</span></h4>
 
 
 
@@ -2701,13 +2701,13 @@ MUST emit when the URI is updated for a token ID.
 
 
 
-<h4><a class="anchor" aria-hidden="true" id="IOINexus.registerParaUniverse(contract IUniverse,contract IParaUniverse)"></a><code class="function-signature">registerParaUniverse(contract IUniverse _universe, contract IParaUniverse _paraUniverse)</code><span class="function-visibility">public</span></h4>
+<h4><a class="anchor" aria-hidden="true" id="IOINexus.registerParaUniverse(contract IUniverse,contract IParaUniverse)"></a><code class="function-signature">registerParaUniverse(contract IUniverse _universe, contract IParaUniverse _paraUniverse)</code><span class="function-visibility">external</span></h4>
 
 
 
 
 
-<h4><a class="anchor" aria-hidden="true" id="IOINexus.recordParaUniverseValuesAndUpdateReportingFee(contract IUniverse,uint256,uint256)"></a><code class="function-signature">recordParaUniverseValuesAndUpdateReportingFee(contract IUniverse _universe, uint256 _targetRepMarketCapInAttoCash, uint256 _repMarketCapInAttoCash) <span class="return-arrow">→</span> <span class="return-type">uint256</span></code><span class="function-visibility">public</span></h4>
+<h4><a class="anchor" aria-hidden="true" id="IOINexus.recordParaUniverseValuesAndUpdateReportingFee(contract IUniverse,uint256,uint256)"></a><code class="function-signature">recordParaUniverseValuesAndUpdateReportingFee(contract IUniverse _universe, uint256 _targetRepMarketCapInAttoCash, uint256 _repMarketCapInAttoCash) <span class="return-arrow">→</span> <span class="return-type">uint256</span></code><span class="function-visibility">external</span></h4>
 
 
 
@@ -2723,7 +2723,7 @@ MUST emit when the URI is updated for a token ID.
 
 
 
-<h4><a class="anchor" aria-hidden="true" id="IParaOICashFactory.createParaOICash(contract IParaAugur)"></a><code class="function-signature">createParaOICash(contract IParaAugur _augur) <span class="return-arrow">→</span> <span class="return-type">contract IParaOICash</span></code><span class="function-visibility">public</span></h4>
+<h4><a class="anchor" aria-hidden="true" id="IParaOICashFactory.createParaOICash(contract IParaAugur)"></a><code class="function-signature">createParaOICash(contract IParaAugur _augur) <span class="return-arrow">→</span> <span class="return-type">contract IParaOICash</span></code><span class="function-visibility">external</span></h4>
 
 
 
@@ -2859,13 +2859,13 @@ MUST emit when the URI is updated for a token ID.
 
 
 
-<h4><a class="anchor" aria-hidden="true" id="ParaUniverse.isOpenInterestCash(address)"></a><code class="function-signature">isOpenInterestCash(address _address) <span class="return-arrow">→</span> <span class="return-type">bool</span></code><span class="function-visibility">public</span></h4>
+<h4><a class="anchor" aria-hidden="true" id="ParaUniverse.isOpenInterestCash(address)"></a><code class="function-signature">isOpenInterestCash(address _address) <span class="return-arrow">→</span> <span class="return-type">bool</span></code><span class="function-visibility">external</span></h4>
 
 
 
 
 
-<h4><a class="anchor" aria-hidden="true" id="ParaUniverse.getReputationToken()"></a><code class="function-signature">getReputationToken() <span class="return-arrow">→</span> <span class="return-type">contract IV2ReputationToken</span></code><span class="function-visibility">public</span></h4>
+<h4><a class="anchor" aria-hidden="true" id="ParaUniverse.getReputationToken()"></a><code class="function-signature">getReputationToken() <span class="return-arrow">→</span> <span class="return-type">contract IV2ReputationToken</span></code><span class="function-visibility">external</span></h4>
 
 
 
@@ -2877,13 +2877,13 @@ MUST emit when the URI is updated for a token ID.
 
 
 
-<h4><a class="anchor" aria-hidden="true" id="ParaUniverse.setOrigin(contract IUniverse)"></a><code class="function-signature">setOrigin(contract IUniverse _originUniverse)</code><span class="function-visibility">public</span></h4>
+<h4><a class="anchor" aria-hidden="true" id="ParaUniverse.setOrigin(contract IUniverse)"></a><code class="function-signature">setOrigin(contract IUniverse _originUniverse)</code><span class="function-visibility">external</span></h4>
 
 
 
 
 
-<h4><a class="anchor" aria-hidden="true" id="ParaUniverse.deposit(address,uint256,address)"></a><code class="function-signature">deposit(address _sender, uint256 _amount, address _market) <span class="return-arrow">→</span> <span class="return-type">bool</span></code><span class="function-visibility">public</span></h4>
+<h4><a class="anchor" aria-hidden="true" id="ParaUniverse.deposit(address,uint256,address)"></a><code class="function-signature">deposit(address _sender, uint256 _amount, address _market) <span class="return-arrow">→</span> <span class="return-type">bool</span></code><span class="function-visibility">external</span></h4>
 
 
 
@@ -2895,13 +2895,13 @@ MUST emit when the URI is updated for a token ID.
 
 
 
-<h4><a class="anchor" aria-hidden="true" id="ParaUniverse.decrementOpenInterest(uint256)"></a><code class="function-signature">decrementOpenInterest(uint256 _amount) <span class="return-arrow">→</span> <span class="return-type">bool</span></code><span class="function-visibility">public</span></h4>
+<h4><a class="anchor" aria-hidden="true" id="ParaUniverse.decrementOpenInterest(uint256)"></a><code class="function-signature">decrementOpenInterest(uint256 _amount) <span class="return-arrow">→</span> <span class="return-type">bool</span></code><span class="function-visibility">external</span></h4>
 
 
 
 
 
-<h4><a class="anchor" aria-hidden="true" id="ParaUniverse.incrementOpenInterest(uint256)"></a><code class="function-signature">incrementOpenInterest(uint256 _amount) <span class="return-arrow">→</span> <span class="return-type">bool</span></code><span class="function-visibility">public</span></h4>
+<h4><a class="anchor" aria-hidden="true" id="ParaUniverse.incrementOpenInterest(uint256)"></a><code class="function-signature">incrementOpenInterest(uint256 _amount) <span class="return-arrow">→</span> <span class="return-type">bool</span></code><span class="function-visibility">external</span></h4>
 
 
 
@@ -2913,7 +2913,7 @@ MUST emit when the URI is updated for a token ID.
 
 
 
-<h4><a class="anchor" aria-hidden="true" id="ParaUniverse.setMarketFinalized(contract IMarket,uint256)"></a><code class="function-signature">setMarketFinalized(contract IMarket _market, uint256 _totalSupply) <span class="return-arrow">→</span> <span class="return-type">bool</span></code><span class="function-visibility">public</span></h4>
+<h4><a class="anchor" aria-hidden="true" id="ParaUniverse.setMarketFinalized(contract IMarket,uint256)"></a><code class="function-signature">setMarketFinalized(contract IMarket _market, uint256 _totalSupply) <span class="return-arrow">→</span> <span class="return-type">bool</span></code><span class="function-visibility">external</span></h4>
 
 
 
@@ -2931,21 +2931,21 @@ MUST emit when the URI is updated for a token ID.
 
 
 
-<h4><a class="anchor" aria-hidden="true" id="ParaUniverse.getOrCacheReportingFeeDivisor()"></a><code class="function-signature">getOrCacheReportingFeeDivisor() <span class="return-arrow">→</span> <span class="return-type">uint256</span></code><span class="function-visibility">public</span></h4>
+<h4><a class="anchor" aria-hidden="true" id="ParaUniverse.getOrCacheReportingFeeDivisor()"></a><code class="function-signature">getOrCacheReportingFeeDivisor() <span class="return-arrow">→</span> <span class="return-type">uint256</span></code><span class="function-visibility">external</span></h4>
 
 this should be used in contracts so that the fee is actually set
 
 
 
 
-<h4><a class="anchor" aria-hidden="true" id="ParaUniverse.getReportingFeeDivisor()"></a><code class="function-signature">getReportingFeeDivisor() <span class="return-arrow">→</span> <span class="return-type">uint256</span></code><span class="function-visibility">public</span></h4>
+<h4><a class="anchor" aria-hidden="true" id="ParaUniverse.getReportingFeeDivisor()"></a><code class="function-signature">getReportingFeeDivisor() <span class="return-arrow">→</span> <span class="return-type">uint256</span></code><span class="function-visibility">external</span></h4>
 
 this should be used for estimation purposes as it is a view and does not actually freeze or recalculate the rate
 
 
 
 
-<h4><a class="anchor" aria-hidden="true" id="ParaUniverse.getMarketOpenInterest(contract IMarket)"></a><code class="function-signature">getMarketOpenInterest(contract IMarket _market) <span class="return-arrow">→</span> <span class="return-type">uint256</span></code><span class="function-visibility">public</span></h4>
+<h4><a class="anchor" aria-hidden="true" id="ParaUniverse.getMarketOpenInterest(contract IMarket)"></a><code class="function-signature">getMarketOpenInterest(contract IMarket _market) <span class="return-arrow">→</span> <span class="return-type">uint256</span></code><span class="function-visibility">external</span></h4>
 
 
 
@@ -3021,7 +3021,7 @@ this should be used for estimation purposes as it is a view and does not actuall
 
 
 
-<h4><a class="anchor" aria-hidden="true" id="ParaUniverseFactory.createParaUniverse(contract IParaAugur,contract IUniverse)"></a><code class="function-signature">createParaUniverse(contract IParaAugur _paraAugur, contract IUniverse _originUniverse) <span class="return-arrow">→</span> <span class="return-type">contract IParaUniverse</span></code><span class="function-visibility">public</span></h4>
+<h4><a class="anchor" aria-hidden="true" id="ParaUniverseFactory.createParaUniverse(contract IParaAugur,contract IUniverse)"></a><code class="function-signature">createParaUniverse(contract IParaAugur _paraAugur, contract IUniverse _originUniverse) <span class="return-arrow">→</span> <span class="return-type">contract IParaUniverse</span></code><span class="function-visibility">external</span></h4>
 
 
 

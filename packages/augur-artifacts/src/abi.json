@@ -21527,7 +21527,7 @@
 			"inputs": [
 				{
 					"internalType": "uint256",
-					"name": "_sharesToBuy",
+					"name": "_cashCost",
 					"type": "uint256"
 				},
 				{
@@ -21537,7 +21537,7 @@
 				},
 				{
 					"internalType": "uint256",
-					"name": "_maxCashCost",
+					"name": "_minShares",
 					"type": "uint256"
 				}
 			],
@@ -21731,7 +21731,7 @@
 			"inputs": [
 				{
 					"internalType": "uint256",
-					"name": "_sharesToBuy",
+					"name": "_cashToSpend",
 					"type": "uint256"
 				},
 				{
@@ -22116,13 +22116,24 @@
 		},
 		{
 			"constant": true,
-			"inputs": [],
-			"name": "fee",
+			"inputs": [
+				{
+					"internalType": "address",
+					"name": "",
+					"type": "address"
+				},
+				{
+					"internalType": "address",
+					"name": "",
+					"type": "address"
+				}
+			],
+			"name": "exchanges",
 			"outputs": [
 				{
-					"internalType": "uint256",
+					"internalType": "address",
 					"name": "",
-					"type": "uint256"
+					"type": "address"
 				}
 			],
 			"payable": false,
@@ -22131,24 +22142,13 @@
 		},
 		{
 			"constant": true,
-			"inputs": [
-				{
-					"internalType": "contract IMarket",
-					"name": "_market",
-					"type": "address"
-				},
-				{
-					"internalType": "contract IParaShareToken",
-					"name": "_para",
-					"type": "address"
-				}
-			],
-			"name": "getAMM",
+			"inputs": [],
+			"name": "fee",
 			"outputs": [
 				{
-					"internalType": "contract AMMExchange",
+					"internalType": "uint256",
 					"name": "",
-					"type": "address"
+					"type": "uint256"
 				}
 			],
 			"payable": false,
@@ -28111,7 +28111,7 @@
 				},
 				{
 					"internalType": "uint256",
-					"name": "_maxProtocolFeeDai",
+					"name": "_unused",
 					"type": "uint256"
 				}
 			],
@@ -29337,7 +29337,7 @@
 				},
 				{
 					"internalType": "uint256",
-					"name": "_maxProtocolFeeDai",
+					"name": "_unused",
 					"type": "uint256"
 				},
 				{
