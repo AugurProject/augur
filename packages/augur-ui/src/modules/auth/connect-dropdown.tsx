@@ -88,8 +88,8 @@ const ConnectDropdown = () => {
     ethToDaiRate,
     actions: { setModal },
   } = useAppStatusStore();
-  const showTransferMyDai = balances.signerBalances.dai !== "0";
-  const showTransferMyRep = balances.signerBalances.rep !== "0";
+  const showTransferMyDai = balances.signerBalances.dai !== '0';
+  const showTransferMyRep = balances.signerBalances.rep !== '0';
   const { gasPriceTime, gasPriceSpeed, userDefinedGasPrice } = useGasInfo();
   const parentUniverseId = parentUniId !== NULL_ADDRESS ? parentUniId : null;
   let gasCostTrade;
@@ -109,14 +109,13 @@ const ConnectDropdown = () => {
     timeoutId = setTimeout(() => {
       setIsCopied(false);
     }, 2000);
+    return () => {
+      clearTimeout(timeoutId);
+    };
   };
 
   useEffect(() => {
-    new Clipboard('#copy_referral');
-
-    return function() {
-      clearTimeout(timeoutId);
-    };
+    const referralClipboard = new Clipboard('#copy_referral');
   }, []);
 
   if (!isLogged && !restoredAccount) return null;
@@ -166,7 +165,7 @@ const ConnectDropdown = () => {
       }).formatted,
       name: 'ETH',
       logo: EthIcon,
-      disabled: gsnEnabled ? balances.eth === "0" : false,
+      disabled: gsnEnabled ? balances.eth === '0' : false,
     },
     {
       name: 'REP',
@@ -175,7 +174,7 @@ const ConnectDropdown = () => {
         zeroStyled: false,
         decimalsRounded: 4,
       }).formatted,
-      disabled: gsnEnabled ? balances.rep === "0" : false,
+      disabled: gsnEnabled ? balances.rep === '0' : false,
     },
   ];
 
@@ -233,20 +232,13 @@ const ConnectDropdown = () => {
     },
   ];
 
-  const referralTooltipContent = (
-    <span>
-      <span>Referral Link</span>
-      <div>
-        Invite friends to Augur using this link and collect a portion of the
-        market fees whenever they trade in markets.
-      </div>
-    </span>
-  );
-
   return (
     <div onClick={event => event.stopPropagation()}>
       {showMetaMaskHelper && (
-        <article onClick={() => setShowMetaMaskHelper(false)} className={CommonModalStyles.ModalMetaMaskFinder}>
+        <article
+          onClick={() => setShowMetaMaskHelper(false)}
+          className={CommonModalStyles.ModalMetaMaskFinder}
+        >
           <div>
             <img src="images/metamask-help.png" />
           </div>
@@ -271,17 +263,13 @@ const ConnectDropdown = () => {
             icon={AddIcon}
           />
         </div>
-{/* 
-        {showTransferMyDai && <TransferMyTokens condensed={true} tokenName={DAI} />}
-        {showTransferMyRep && <TransferMyTokens condensed={true} tokenName={REP} />} */}
-
         {accountFunds
           .filter(fundType => !fundType.disabled)
           .map((fundType, idx) => (
             <div key={idx} className={Styles.AccountFunds}>
               {fundType.logo} {fundType.name}
               <div>
-                  {fundType.value} {fundType.name}
+                {fundType.value} {fundType.name}
               </div>
             </div>
           ))}
@@ -348,23 +336,35 @@ const ConnectDropdown = () => {
           </div>
         )}
 
-        <div className={Styles.GasEdit}>
+        <div className={Styles.referral}>
           <div>
             <div>
               Refer a friend
-              {renderToolTip('tooltip--referral', referralTooltipContent)}
+              {renderToolTip(
+                'tooltip--referral',
+                <span>
+                  <span>Referral Link</span>
+                  <div>
+                    Invite friends to Augur using this link and collect a
+                    portion of the market fees whenever they trade in markets.
+                  </div>
+                </span>
+              )}
             </div>
             <div>{referralLink}</div>
           </div>
-          <SecondaryButton
-            small
+          <span
             id="copy_referral"
             data-clipboard-text={referralLink}
-            action={() => copyClicked()}
-            text='Copy'
-            icon={ClipboardCopy}
             className={isCopied ? Styles.ShowConfirmaiton : null}
-          />
+          >
+            <SecondaryButton
+              small
+              action={() => copyClicked()}
+              text="Copy"
+              icon={ClipboardCopy}
+            />
+          </span>
         </div>
 
         {(parentUniverseId !== null || !!forkingInfo) && (

@@ -1,4 +1,4 @@
-import React, { Component, useState, useEffect } from 'react';
+import React, { Component, useState, useEffect, useRef } from 'react';
 import classNames from 'classnames';
 import Styles from 'modules/common/selection.styles';
 import { ThickChevron, Chevron, ShareIcon, SlimArrow, AlternateCheckMark } from 'modules/common/icons';
@@ -490,72 +490,51 @@ export const Tab = ({
   );
 }
 
-export class DotSelection extends Component<
-  DotSelectionProps,
-  DotSelectionState
-> {
-  state: DotSelectionState = {
-    toggleMenu: false,
-  };
+export const DotSelection = ({ children, customClass = null }) => {
+  const [toggleMenu, setToggleMenu] = useState(false);
+  const menuIcon = useRef(null);
+  const menu = useRef(null);
+  useEffect(() => {
+    function handleWindowOnClick (event: React.MouseEvent<HTMLElement>) {
+      if (
+        !menu?.current?.contains(event.target) &&
+        !menuIcon?.current?.contains(event.target)
+      ) {
+        setToggleMenu(false);
+      }
+    };
 
-  componentDidMount() {
-    document.addEventListener('mousedown', this.handleWindowOnClick);
-  }
+    document.addEventListener('mousedown', handleWindowOnClick);
 
-  componentWillUnmount() {
-    document.removeEventListener('mousedown', this.handleWindowOnClick);
-  }
+    return () => document.removeEventListener('mousedown', handleWindowOnClick);
+  }, []);
 
-  refMenu: any = null;
-  refMenuIcon: any = null;
-
-  handleWindowOnClick = (event: React.MouseEvent<HTMLElement>) => {
-    if (
-      this.refMenu &&
-      !this.refMenu.contains(event.target) &&
-      !this.refMenuIcon.contains(event.target)
-    ) {
-      this.setState({ toggleMenu: false });
-    }
-  };
-
-  toggleMenu() {
-    this.setState({
-      toggleMenu: !this.state.toggleMenu,
-    });
-  }
-
-  render() {
-    return (
-      <div
-        className={classNames(Styles.DotSelection, {
-          [Styles.MenuOpen]: this.state.toggleMenu,
-        })}
+  return (
+    <div
+      className={classNames(Styles.DotSelection, {
+        [Styles.MenuOpen]: toggleMenu,
+        [customClass]: !!customClass,
+      })}
+    >
+      <button
+        ref={menuIcon}
+        onClick={() => setToggleMenu(!toggleMenu)}
       >
-        <button
-          ref={menuIcon => {
-            this.refMenuIcon = menuIcon;
-          }}
-          onClick={() => this.toggleMenu()}
+        {ShareIcon}
+      </button>
+      {toggleMenu && (
+        <div
+          role="Menu"
+          ref={menu}
+          onClick={() => setToggleMenu(!toggleMenu)}
+          tabIndex={0}
+          className={Styles.MenuItems}
         >
-          {ShareIcon}
-        </button>
-        {this.state.toggleMenu && (
-          <div
-            role="Menu"
-            ref={menu => {
-              this.refMenu = menu;
-            }}
-            onClick={() => this.toggleMenu()}
-            tabIndex={0}
-            className={Styles.MenuItems}
-          >
-            {this.props.children}
-          </div>
-        )}
-      </div>
-    );
-  }
+          {children}
+        </div>
+      )}
+    </div>
+  );
 }
 
 export interface CategorySelectorProps {
