@@ -7,6 +7,8 @@ import 'ROOT/reporting/IMarket.sol';
 
 contract AMMFactory is CloneFactory2 {
     // market -> para -> amm
+    mapping (address => mapping (address => address)) public exchanges;
+
     AMMExchange internal proxyToClone;
     uint256 public fee; // [0-1000] how many thousandths of swaps should be kept as fees
 
@@ -19,11 +21,8 @@ contract AMMFactory is CloneFactory2 {
     function addAMM(IMarket _market, IParaShareToken _para) external returns (AMMExchange) {
         AMMExchange _amm = AMMExchange(createClone2(address(proxyToClone), salt(_market, _para)));
         _amm.initialize(_market, _para, fee);
+        exchanges[address(_market)][address(_para)] = address(_amm);
         return _amm;
-    }
-
-    function getAMM(IMarket _market, IParaShareToken _para) external view returns (AMMExchange) {
-        return AMMExchange(clone2Address(address(proxyToClone), salt(_market, _para), address(this)));
     }
 
     function salt(IMarket _market, IParaShareToken _para) public pure returns (uint256) {
