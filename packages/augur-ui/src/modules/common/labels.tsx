@@ -1572,7 +1572,7 @@ export const ApprovalTxButtonLabelCmp = ({
             setDescription(`Approval requires ${approvalsNeeded} signing${approvalsNeeded > 1 ? 's' : ''}. Once confirmed you can submit your orders.`)
           break;
           case constants.APPROVE:
-            setDescription(`Approval requires ${approvalsNeeded} signing${approvalsNeeded > 1 ? 's' : ''}. Once confirmed you can swap your tokens.`)
+            setDescription('Approval required before converting (to enable your wallet to interact with the Ethereum network)')
           break;
           default:
             setDescription(`Approval requires ${approvalsNeeded} signing${approvalsNeeded > 1 ? 's' : ''}. Once confirmed you can place your order.`)
