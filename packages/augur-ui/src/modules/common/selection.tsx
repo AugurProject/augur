@@ -497,8 +497,8 @@ export const DotSelection = ({ children, customClass = null }) => {
   useEffect(() => {
     function handleWindowOnClick (event: React.MouseEvent<HTMLElement>) {
       if (
-        !refMenu?.current?.contains(event.target) &&
-        !refMenuIcon?.current?.contains(event.target)
+        !menu?.current?.contains(event.target) &&
+        !menuIcon?.current?.contains(event.target)
       ) {
         setToggleMenu(false);
       }
