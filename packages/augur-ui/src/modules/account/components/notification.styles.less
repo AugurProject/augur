@@ -96,6 +96,8 @@
 
   > span {
     .limit-lines(2);
+
+    margin-right: @size-80;
   }
 }
 
@@ -240,6 +242,9 @@ div.DarkBackgroundMobile {
 
   .Importance {
     > svg {
+      width: @size-16;
+      height: @size-16;
+
       > circle {
         fill: var(--color-resolved);
         stroke: none;
@@ -274,6 +279,8 @@ div.DarkBackgroundMobile {
 
   .Title {
     color: var(--color-primary-text);
+    align-items: center;
+    display: flex;
   }
 
   .Message {
@@ -313,7 +320,7 @@ div.DarkBackgroundMobile {
       }
 
       > span:last-of-type {
-        .mono-12-semi-bold;
+        .mono-12-bold;
 
         color: var(--color-reporting);
       }
