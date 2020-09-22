@@ -30,8 +30,8 @@
     "ethers": "4.0.47"
   },
   "devDependencies": {
-    "ts-node": "8.4.1",
-    "typescript": "3.8.3"
+    "ts-node": "9.0.0",
+    "typescript": "3.9.7"
   },
   "buildDependencies": [
     "typescript"

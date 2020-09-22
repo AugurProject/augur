@@ -14,4 +14,4 @@ export { blockchain };
 
 export * from './libs/ganache';
 
-export { Account, ACCOUNTS, NULL_ADDRESS, DEADBEEF_ADDRESS } from './constants';
+export { Account, ACCOUNTS, DEADBEEF_ADDRESS } from './constants';
