@@ -89,7 +89,7 @@
     height: 100%;
     width: min-content;
     padding: @size-6 @size-20;
-    
+
     > span:first-of-type {
       display: flex;
       justify-content: center;
@@ -137,7 +137,7 @@
     }
   }
 
-  // P/I
+  // P/L
   > div:last-of-type {
     align-items: flex-start;
     border: @size-1 solid var(--color-dark-grey);
@@ -163,15 +163,13 @@
 
       > div {
         .mono-11-medium;
-
-        color: var(--color-positive);
       }
     }
 
     @media @breakpoint-mobile-tablet {
       align-items: normal;
       flex-direction: row;
-      justify-content: center; 
+      justify-content: center;
       padding: 0 @size-20;
       flex: 1;
       justify-content: space-between;
@@ -262,18 +260,18 @@
         color: var(--color-secondary-action);
         background: transparent;
         order: 2;
-  
+
         &:hover {
           border: @size-1 solid var(--color-secondary-action);
           background: var(--color-secondary-action);
           color: var(--color-primary-text);
         }
       }
-  
+
       > button[class*="PrimaryButton"][title*="Signup"] {
         color: var(--color-module-background);
         order: 2;
-      
+
         &:hover {
           border: @size-1 solid var(--color-secondary-action);
           background: var(--color-secondary-action);
@@ -340,7 +338,7 @@
         margin-left: @size-16;
       }
     }
-  
+
     &:hover {
       border-top: @size-3 solid var(--color-primary-action);
       background: var(--color-secondary-text-25);
