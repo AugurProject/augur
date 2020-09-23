@@ -1,7 +1,7 @@
-import React, { ReactNode } from "react";
+import React, { ReactNode } from 'react';
 
-import Styles from "modules/portfolio/components/common/empty-display.styles.less";
-import { SearchIcon } from "modules/common/icons";
+import Styles from 'modules/portfolio/components/common/empty-display.styles.less';
+import { SearchIcon } from 'modules/common/icons';
 
 export interface EmptyDisplayProps {
   filterLabel: string;
@@ -15,6 +15,7 @@ export interface EmptyDisplayProps {
   searchObject?: string;
   notTradingEmptyTitle?: string;
   searchQuery?: string;
+  actionable?: any;
 }
 
 const EmptyDisplay = ({
@@ -28,20 +29,19 @@ const EmptyDisplay = ({
   button,
   searchObject = 'markets',
   notTradingEmptyTitle,
-  searchQuery = 'keyword'
+  searchQuery = 'keyword',
+  actionable,
 }: EmptyDisplayProps) => {
-  let tradingEmptyTitle =  `No ${selectedTab} ${filterLabel.toLowerCase()}`;
+  let tradingEmptyTitle = `No ${selectedTab} ${filterLabel.toLowerCase()}`;
   notTradingEmptyTitle = notTradingEmptyTitle || `No ${title}`;
 
-  let defaultEmptyText = `You don't have any ${
-    selectedTab.toLowerCase()
-  } ${filterLabel.toLowerCase()} yet!`;
+  let defaultEmptyText = `You don't have any ${selectedTab.toLowerCase()} ${filterLabel.toLowerCase()} yet!`;
 
-  const searchActive = search !== "" && search !== undefined;
+  const searchActive = search !== '' && search !== undefined;
   if (searchActive) {
     tradingEmptyTitle = `No results found for '${search}'`;
     notTradingEmptyTitle = `No ${searchObject} found`;
-    emptyText = `Try a different ${searchQuery}`;
+    emptyText = `Try a different keyword.`;
   } else if (emptyTitle) {
     notTradingEmptyTitle = emptyTitle;
   }
@@ -51,9 +51,17 @@ const EmptyDisplay = ({
       <span>{searchActive ? SearchIcon : icon}</span>
       <span>{tradingEmptyTitle}</span>
       <span>{notTradingEmptyTitle}</span>
-      <span>{emptyText ? emptyText : defaultEmptyText}</span>
+      <span>
+        {emptyText ? emptyText : defaultEmptyText}
+        {actionable && (
+          <button onClick={actionable.action} className={Styles.actionable}>
+            {actionable.text}
+          </button>
+        )}
+      </span>
       {button ? button : null}
-    </div>);
+    </div>
+  );
 };
 
 export default EmptyDisplay;

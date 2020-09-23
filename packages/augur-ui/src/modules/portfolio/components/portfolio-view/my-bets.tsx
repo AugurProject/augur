@@ -32,24 +32,33 @@ import { FilterSearchPure } from 'modules/filter-sort/filter-search';
 import { AppStatus } from 'modules/app/store/app-status';
 import { useMarketsStore } from 'modules/markets/store/markets';
 import { useBetslipStore } from 'modules/trading/store/betslip';
-import { convertInputs, findStartTime } from 'modules/market/components/common/market-title';
+import {
+  convertInputs,
+  findStartTime,
+} from 'modules/market/components/common/market-title';
 import EmptyDisplay from '../common/empty-display';
 import { getOutcomeNameWithOutcome } from 'utils/get-outcome';
 
-export const outcomesData = (myBets) => myBets.reduce(
-  (p, game) => [
-    ...p,
-    ...Object.values(game.orders).map(outcome => {
-      return {
-        ...game,
-        outcomes: null,
-        ...outcome,
-        outcomeName: getOutcomeNameWithOutcome(game, outcome.outcomeId, false, false)
-      };
-    }),
-  ],
-  []
-);
+export const outcomesData = myBets =>
+  myBets.reduce(
+    (p, game) => [
+      ...p,
+      ...Object.values(game.orders).map(outcome => {
+        return {
+          ...game,
+          outcomes: null,
+          ...outcome,
+          outcomeName: getOutcomeNameWithOutcome(
+            game,
+            outcome.outcomeId,
+            false,
+            false
+          ),
+        };
+      }),
+    ],
+    []
+  );
 
 export function processRows(
   viewBy,
@@ -64,13 +73,14 @@ export function processRows(
   let myBetsArray = Object.keys(myBets).map(function(key) {
     const marketInfo = marketInfos[key];
 
-    const convertedInputs = marketInfo?.template && convertInputs(marketInfo.template.inputs);
+    const convertedInputs =
+      marketInfo?.template && convertInputs(marketInfo.template.inputs);
     const estDateTime = convertedInputs && findStartTime(convertedInputs);
     return {
       ...myBets[key],
       ...marketInfo,
       startTime: estDateTime?.timestamp,
-      marketId: key
+      marketId: key,
     };
   });
   let futureRows = myBetsArray.filter(market => {
@@ -83,7 +93,8 @@ export function processRows(
 
   if (MY_BETS_VIEW_BY[viewBy].label === EVENT) {
     rows =
-      SPORTS_MARKET_TYPES[selectedMarketCardType].header === SPORTS_GROUP_TYPES.DAILY
+      SPORTS_MARKET_TYPES[selectedMarketCardType].header ===
+      SPORTS_GROUP_TYPES.DAILY
         ? dailyRows
         : futureRows;
     rows = rows
@@ -126,7 +137,8 @@ export function processRows(
         return currentAugurTimestamp / 1000 - data.dateUpdated < interval;
       })
       .filter(
-        data => data.outcomeName.toLowerCase().indexOf(search.toLowerCase()) >= 0
+        data =>
+          data.outcomeName.toLowerCase().indexOf(search.toLowerCase()) >= 0
       )
       .sort((a, b) => b.dateUpdated - a.dateUpdated);
   }
@@ -172,13 +184,17 @@ export const MyBets = () => {
       selectedMarketCardType,
       selectedMarketStateType,
       search,
-      matched.items
+      matched.items,
     ]
   );
 
   const showEvents = MY_BETS_VIEW_BY[viewBy].label === EVENT;
   return (
-    <div className={classNames(Styles.MyBets, {[Styles.Searching]: search !== '' && search !== undefined})}>
+    <div
+      className={classNames(Styles.MyBets, {
+        [Styles.Searching]: search !== '' && search !== undefined,
+      })}
+    >
       <HelmetTag {...PORTFOLIO_VIEW_HEAD_TAGS} />
       <div>
         <div>
@@ -198,7 +214,7 @@ export const MyBets = () => {
             options={MY_BETS_VIEW_BY}
             defaultValue={viewBy}
             onChange={viewBy => setViewBy(viewBy)}
-            preLabel='view by'
+            preLabel="view by"
             minimalStyle
             dontCheckInvalid
           />
@@ -208,7 +224,7 @@ export const MyBets = () => {
               defaultValue={marketStatus}
               onChange={marketStatus => setMarketStatus(marketStatus)}
               minimalStyle
-              preLabel='market status'
+              preLabel="market status"
               dontCheckInvalid
             />
           )}
@@ -218,7 +234,7 @@ export const MyBets = () => {
               defaultValue={betDate}
               onChange={betDate => setBetDate(betDate)}
               minimalStyle
-              preLabel='Bet Date'
+              preLabel="Bet Date"
               dontCheckInvalid
             />
           )}
@@ -253,14 +269,16 @@ export const MyBets = () => {
       <div>
         {rows.length === 0 && (
           <EmptyDisplay
-              selectedTab={''}
-              search={search}
-              notTradingEmptyTitle={'You don\'t have any bets'}
-              emptyText={'Once you start betting your bets will appear in this page'}
-              icon={BetsIcon}
-              filterLabel= 'events'
-              searchObject='events'
-              searchQuery='date range'
+            selectedTab=""
+            search={search}
+            notTradingEmptyTitle="You don't have any bets"
+            emptyText="Once you start betting your bets will appear in this page"
+            icon={BetsIcon}
+            filterLabel="events"
+            searchObject="events"
+            actionable={
+              search && { text: 'Clear Search', action: () => setSearch('') }
+            }
           />
         )}
         {showEvents &&
