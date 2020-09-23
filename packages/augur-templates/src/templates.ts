@@ -722,10 +722,9 @@ export const populateTemplateTitle = (
       (p, abbr) => p.replace(abbr, ReplaceAbbreviations[abbr]),
       title
     );
-    title = Object.keys(ReplaceAbbreviations).reduce(
-      (p, abbr) => p.replace((abbr), ReplaceAbbreviations[abbr]),
-      title
-    );
+    // needed because templates have already been released
+    // more information https://github.com/AugurProject/augur/issues/9088
+    title = title.replace('((', '(').replace('))', ')');
   }
   return title;
 };
