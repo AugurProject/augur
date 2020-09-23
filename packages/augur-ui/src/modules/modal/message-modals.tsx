@@ -22,41 +22,37 @@ import { selectMarket } from 'modules/markets/selectors/market';
 import { sendFinalizeMarket } from 'modules/markets/actions/finalize-market';
 import isMetaMask from 'modules/auth/helpers/is-meta-mask';
 import { Message } from './message';
-import {
-  formatGasCostToEther,
-  formatAttoEth,
-  formatDai,
-  formatNumber,
-} from 'utils/format-number';
+import { formatGasCostToEther, formatDai } from 'utils/format-number';
 import { DISMISSABLE_NOTICE_BUTTON_TYPES } from 'modules/reporting/common';
-import { FormattedNumber } from 'modules/types';
 import { createFundedGsnWallet } from 'modules/auth/actions/update-sdk';
 
 export const ModalCreateMarket = () => {
   const {
     newMarket,
     modal,
-    loginAccount: { address },
     actions: { closeModal },
   } = useAppStatusStore();
 
   return (
     <Message
-      title={'Final confirmation'}
-      subheaders={[{
-        header: 'Are you sure you want to proceeed?',
-        subheaders: [
-          'Once you create the market you can’t make any changes to the market or resolution details. Ensure that all market details are accurate before proceeding.',
-        ],
-      }, {
-        header: 'Ready to proceed? Here’s what happens next, you will:',
-        numbered: true,
-        subheaders: [
-          'Be taken to the portfolio page where your market will be listed as “Pending”',
-          'Receive an alert when the market has been processed',
-          'Receive a notification in your Account Summary to submit any initial liquidity previously entered',
-        ],
-      }]}
+      title="Final confirmation"
+      subheaders={[
+        {
+          header: 'Are you sure you want to proceeed?',
+          subheaders: [
+            'Once you create the market you can’t make any changes to the market or resolution details. Ensure that all market details are accurate before proceeding.',
+          ],
+        },
+        {
+          header: 'Ready to proceed? Here’s what happens next, you will:',
+          numbered: true,
+          subheaders: [
+            'Be taken to the portfolio page where your market will be listed as “Pending”',
+            'Receive an alert when the market has been processed',
+            'Receive a notification in your Account Summary to submit any initial liquidity previously entered',
+          ],
+        },
+      ]}
       closeAction={() => closeModal()}
       buttons={[
         {
@@ -80,14 +76,12 @@ export const ModalCreateMarket = () => {
 
 export const ModalCreationHelp = ({ copyType }) => {
   const {
-    modal,
-    loginAccount: account,
     actions: { closeModal },
   } = useAppStatusStore();
 
   return (
     <Message
-      title={'Market Creation Help'}
+      title="Market Creation Help"
       description={copyType && MARKET_CREATION_COPY[copyType].subheader}
       closeAction={() => {
         closeModal();
@@ -112,7 +106,7 @@ export const ModalDaiFaucet = () => {
 
   return (
     <Message
-      title={'DAI Faucet'}
+      title="DAI Faucet"
       description={[
         'Get test net DAI, it will be sent to your connected wallet.',
       ]}
@@ -144,7 +138,7 @@ export const ModalDiscard = () => {
 
   return (
     <Message
-      title={'Discard draft?'}
+      title="Discard draft?"
       description={['You will lose any data you have entered.']}
       closeAction={() => {
         closeModal();
@@ -189,8 +183,8 @@ export const ModalDrQuickGuide = () => {
   const subheaders = guide.content.map(content => {
     return {
       header: content.header,
-      subheaders: content.paragraphs
-    }
+      subheaders: content.paragraphs,
+    };
   });
 
   return (
@@ -230,7 +224,7 @@ export const ModalFinalize = () => {
 
   return (
     <Message
-      title={'Finalize Warp Sync Market'}
+      title="Finalize Warp Sync Market"
       marketTitle={marketDescription}
       callToAction={
         'Please finalize warp sync market to claim REP reward. The reward will be transferred to your signing wallet'
@@ -261,8 +255,8 @@ export const ModalHelp = () => {
 
   return (
     <Message
-      showHelp={true}
-      title={'Popular help resources'}
+      showHelp
+      title="Popular help resources"
       closeAction={() => {
         closeModal();
       }}
@@ -301,8 +295,8 @@ export const ModalInvalidMarketRules = () => {
 
   return (
     <Message
-      invalidMarketRules={true}
-      title={'Invalid Outcome'}
+      invalidMarketRules
+      title="Invalid Outcome"
       closeAction={() => {
         closeModal();
         if (modal.cb) {
@@ -356,13 +350,12 @@ export const ModalSignTransaction = () => {
 
 export const ModalRepFaucet = () => {
   const {
-    modal,
     actions: { closeModal },
   } = useAppStatusStore();
 
   return (
     <Message
-      title={'REP Faucet'}
+      title="REP Faucet"
       closeAction={() => closeModal()}
       description={[
         'Get test net REP, it will be sent to your connected wallet.',
@@ -391,8 +384,8 @@ export const ModalOdds = () => {
 
   return (
     <Message
-      showOdds={true}
-      title={'Settings'}
+      showOdds
+      title="Settings"
       closeAction={() => {
         closeModal();
       }}
@@ -402,13 +395,12 @@ export const ModalOdds = () => {
 
 export const ModalMarketLoading = () => {
   const {
-    modal,
     actions: { closeModal },
   } = useAppStatusStore();
 
   return (
     <Message
-      title={`Market Loading`}
+      title="Market Loading"
       buttons={[]}
       description={['Please wait, Market is loading...']}
       closeAction={() => {
@@ -435,46 +427,48 @@ export const ModalNetworkMismatch = () => {
   }
 
   return (
-    <Message
-      title={'Network Mismatch'}
-      buttons={[]}
-      description={description}
-    />
+    <Message title="Network Mismatch" buttons={[]} description={description} />
   );
 };
 
-export const ModalNetworkDisabled = () => {
-  const { modal } = useAppStatusStore();
-
-  return (
-    <Message
-      title={'Network Disabled'}
-      description={['Connecting to mainnet through this UI is disabled.']}
-    />
-  );
-};
+export const ModalNetworkDisabled = () => (
+  <Message
+    title="Network Disabled"
+    description={['Connecting to mainnet through this UI is disabled.']}
+  />
+);
 
 export const ModalWalletError = () => {
   const {
-    modal,
+    modal: {
+      link,
+      linkLabel,
+      error,
+      title,
+      showAddFundsHelp,
+      showDiscordLink,
+      walletType,
+    },
     actions: { closeModal, setModal },
   } = useAppStatusStore();
 
   const linkContent = {
-    link: modal.link,
-    label: modal.linkLabel,
-    description: modal.error,
+    link,
+    label: linkLabel,
+    description: error,
   };
 
   return (
     <Message
-      title={modal.title ? modal.title : 'Something went wrong'}
+      {...{
+        showDiscordLink,
+        showAddFundsHelp,
+        walletType,
+      }}
+      title={title ? title : 'Something went wrong'}
       buttons={[{ text: 'Close', action: () => closeModal() }]}
-      description={modal.link ? null : [modal.error ? modal.error : '']}
-      descriptionWithLink={modal.link ? linkContent : null}
-      showDiscordLink={modal.showDiscordLink}
-      showAddFundsHelp={modal.showAddFundsHelp}
-      walletType={modal.walletType}
+      description={link ? null : [error ? error : '']}
+      descriptionWithLink={link ? linkContent : null}
       closeAction={() => closeModal()}
       showAddFundsModal={() => setModal({ type: MODAL_ADD_FUNDS })}
     />
@@ -508,8 +502,8 @@ export const ModalMigrateMarket = () => {
 
   return (
     <Message
-      migrateMarket={true}
-      title={'Migrate Market'}
+      migrateMarket
+      title="Migrate Market"
       description={[
         'This market will be migrated to the winning universe and will no longer be viewable in the current universe.',
       ]}
@@ -549,19 +543,8 @@ export const ModalMigrateMarket = () => {
 export const ModalInitializeAccounts = () => {
   const {
     modal,
-    env: {
-      gsn: { desiredSignerBalanceInETH },
-    },
-    ethToDaiRate: { roundedValue: ethToDaiRate },
     actions: { closeModal },
   } = useAppStatusStore();
-
-  const desiredSignerEthBalance = formatAttoEth(
-    desiredSignerBalanceInETH * 10 ** 18
-  ).value;
-  const reserveAmount: FormattedNumber = formatDai(
-    ethToDaiRate.multipliedBy(desiredSignerEthBalance)
-  );
 
   const closeAction = () => {
     closeModal();
@@ -575,9 +558,9 @@ export const ModalInitializeAccounts = () => {
 
   return (
     <Message
-      title={'Activate Account'}
+      title="Activate Account"
       description={[
-        `Augur is a peer-to-peer system, and certain actions require paying a small fee to other users of the system. The cost of these fees will be included in the total fees displayed when taking that action. Trades, Creating Markets, and Reporting on the market outcome are examples of such actions.\n Augur will reserve $${reserveAmount.formattedValue} of your funds in order to pay these fees, but your total balance can be cashed out at any time. To see the total amount reserved for fees, click on the Account menu.\n Until the account is activated you will be unable to place an order.`,
+        `Augur is a peer-to-peer system, and certain actions require paying a small fee to other users of the system. The cost of these fees will be included in the total fees displayed when taking that action. Trades, Creating Markets, and Reporting on the market outcome are examples of such actions.\n Until the account is activated you will be unable to place an order.`,
       ]}
       buttons={
         modal.customAction
@@ -618,18 +601,14 @@ export const ModalCashoutBet = () => {
     actions: { closeModal },
   } = useAppStatusStore();
 
-  const {
-    wager, 
-    cashOut,
-    odds,
-    positive,
-    cb
-  } = modal;
+  const { wager, cashOut, odds, positive, cb } = modal;
 
   return (
     <Message
-      title='Are you sure you want to cash out?'
-      description={['If the odds or orderbook change during submission, the amount may be rejected. ']}
+      title="Are you sure you want to cash out?"
+      description={[
+        'If the odds or orderbook change during submission, the amount may be rejected. ',
+      ]}
       closeAction={() => {
         closeModal();
       }}
@@ -646,7 +625,7 @@ export const ModalCashoutBet = () => {
           label: 'Cash out',
           value: formatDai(cashOut).full,
           positive: positive,
-          showColor: true
+          showColor: true,
         },
       ]}
       buttons={[
@@ -676,14 +655,14 @@ export const ModalCancelAllBets = () => {
     actions: { closeModal },
   } = useAppStatusStore();
 
-  const {
-    cb
-  } = modal;
+  const { cb } = modal;
 
   return (
     <Message
-      title='Are you sure you want to cancel all your unmatched bets?'
-      description={['Nobody matched your bets yet. Use this option if you want to get your money back, or wait a little longer. It can still be matched.']}
+      title="Are you sure you want to cancel all your unmatched bets?"
+      description={[
+        'Nobody matched your bets yet. Use this option if you want to get your money back, or wait a little longer. It can still be matched.',
+      ]}
       closeAction={() => {
         closeModal();
       }}
