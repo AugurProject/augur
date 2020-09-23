@@ -38,8 +38,18 @@ contract AMMExchange is ERC20 {
     }
 
     // Adds shares to the liquidity pool by minting complete sets.
-    function addLiquidity(uint256 _setsToBuy) external {
-        uint256 _lpTokensGained = rateAddLiquidity(_setsToBuy);
+    function addLiquidity(uint256 _setsToBuy) public {
+        uint256 _lpTokensGained = rateAddLiquidity(_setsToBuy, _setsToBuy);
+
+        cash.transferFrom(msg.sender, address(this), _setsToBuy.mul(numTicks));
+        shareToken.publicBuyCompleteSets(augurMarket, _setsToBuy);
+        _mint(msg.sender, _lpTokensGained);
+    }
+
+    // Add shares to the liquidity pool by minting complete sets...
+    // But then swap away some of those shares for the opposed shares.
+    function addLiquidityThenSwap(uint256 _setsToBuy, bool _swapForYes, uint256 _swapHowMuch) external {
+        uint256 _lpTokensGained = rateAddLiquidityThenSwap(_setsToBuy, _swapForYes, _swapHowMuch);
 
         cash.transferFrom(msg.sender, address(this), _setsToBuy.mul(numTicks));
         shareToken.publicBuyCompleteSets(augurMarket, _setsToBuy);
@@ -47,12 +57,12 @@ contract AMMExchange is ERC20 {
     }
 
     // returns how many LP tokens you get for providing the given number of sets
-    function rateAddLiquidity(uint256 _setsToBuy) public view returns (uint256) {
+    function rateAddLiquidity(uint256 _yesses, uint256 _nos) public view returns (uint256) {
         uint256 _yesBalance = shareToken.balanceOf(address(this), YES);
         uint256 _noBalance = shareToken.balanceOf(address(this), NO);
 
         uint256 _priorLiquidityConstant = SafeMathUint256.sqrt(_yesBalance * _noBalance);
-        uint256 _newLiquidityConstant = SafeMathUint256.sqrt((_yesBalance + _setsToBuy) * (_noBalance + _setsToBuy));
+        uint256 _newLiquidityConstant = SafeMathUint256.sqrt((_yesBalance + _yesses) * (_noBalance + _nos));
 
         if (_priorLiquidityConstant == 0) {
             return _newLiquidityConstant;
@@ -60,6 +70,22 @@ contract AMMExchange is ERC20 {
             uint256 _totalSupply = totalSupply;
             return _totalSupply.mul(_newLiquidityConstant).div(_priorLiquidityConstant).sub(_totalSupply);
         }
+    }
+
+    function rateAddLiquidityThenSwap(uint256 _setsToBuy, bool _swapForYes, uint256 _swapHowMuch) public view returns (uint256) {
+        uint256 _keptSets = _setsToBuy.subS(_swapHowMuch, "AugurCP: When adding liquidity, tried to swap away more sets than you bought");
+        uint256 _gainedShares = rateSwap(_swapHowMuch, !_swapForYes);
+
+        uint256 _yesses; uint256 _nos;
+        if (_swapForYes) {
+            uint256 _yesses = _keptSets.add(_gainedShares);
+            uint256 _nos = _keptSets;
+        } else {
+            uint256 _yesses = _keptSets;
+            uint256 _nos = _keptSets.add(_gainedShares);
+        }
+
+        return rateAddLiquidity(_yesses, _nos);
     }
 
     // Removes shares from the liquidity pool.
