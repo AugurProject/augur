@@ -976,14 +976,24 @@ export async function isContractApproval(account, contract, approvalContract): P
 
 export async function approvalsNeededMarketCreation(address) {
   const { contracts } = augurSdk.get();
-  const isApproved = await isContractApproval(address, contracts.augur.address, contracts.cash);
-  return Number(!isApproved); // true is 1, so negating. false is 0 so negating.
+  const augurContract = await contracts.augur.augur_();
+  const originCash = await contracts.getOriginCash();
+
+  // true is 1, so negating. false is 0 so negating.
+  let approvalsNeeded = 0;
+  approvalsNeeded += Number(!await isContractApproval(address, augurContract, originCash));
+  approvalsNeeded += Number(!await isContractApproval(address, augurContract, contracts.cash));
+
+  return approvalsNeeded
 }
 
-export async function approveMarketCreation(): Promise<void> {
+export async function approveMarketCreation(address): Promise<void> {
   const { contracts } = augurSdk.get();
-  const augurContract = contracts.augur.address;
-  return await contracts.cash.approve(augurContract, APPROVAL_AMOUNT);
+  const augurContract = await contracts.augur.augur_();
+
+  const originCash = await contracts.getOriginCash();
+  await contracts.cash.approve(augurContract, APPROVAL_AMOUNT);
+  await originCash.approve(augurContract, APPROVAL_AMOUNT);
 }
 
 export async function approvalsNeededToTrade(address): Promise<number> {

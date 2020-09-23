@@ -23767,7 +23767,7 @@
 			"name": "getOriginCash",
 			"outputs": [
 				{
-					"internalType": "address",
+					"internalType": "contract ICash",
 					"name": "",
 					"type": "address"
 				}

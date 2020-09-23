@@ -266,4 +266,9 @@ export class Contracts {
   ): ContractInterfaces.UniswapV2Pair {
     return new ContractInterfaces.UniswapV2Pair(this.dependencies, address);
   }
+
+  async getOriginCash(): Promise<ContractInterfaces.Cash> {
+    const originCash = await this.augur.getOriginCash_();
+    return new ContractInterfaces.Cash(this.dependencies, originCash);
+  }
 }

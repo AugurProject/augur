@@ -13,6 +13,7 @@ import 'ROOT/libraries/ContractExists.sol';
 import 'ROOT/IAugurMarketDataGetter.sol';
 import 'ROOT/IAugurCreationDataGetter.sol';
 import 'ROOT/para/interfaces/IOINexus.sol';
+import 'ROOT/ICash.sol';
 
 
 contract ParaAugur is IParaAugur, IAugurCreationDataGetter, Ownable {
@@ -214,7 +215,7 @@ contract ParaAugur is IParaAugur, IAugurCreationDataGetter, Ownable {
 
     function onTransferOwnership(address, address) internal {}
 
-    function getOriginCash() public view returns (address) {
-        return address(augur.cash);
+    function getOriginCash() public view returns (ICash) {
+        return augur.cash();
     }
 }

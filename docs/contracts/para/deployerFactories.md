@@ -3354,7 +3354,7 @@ Allows the current owner to transfer control of the contract to a newOwner.
 
 
 
-<h4><a class="anchor" aria-hidden="true" id="ParaAugur.getOriginCash()"></a><code class="function-signature">getOriginCash() <span class="return-arrow">→</span> <span class="return-type">address</span></code><span class="function-visibility">public</span></h4>
+<h4><a class="anchor" aria-hidden="true" id="ParaAugur.getOriginCash()"></a><code class="function-signature">getOriginCash() <span class="return-arrow">→</span> <span class="return-type">contract ICash</span></code><span class="function-visibility">public</span></h4>
 
 
 
