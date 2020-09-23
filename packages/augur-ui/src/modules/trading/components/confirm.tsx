@@ -37,9 +37,7 @@ import { createBigNumber } from 'utils/create-big-number';
 import { Trade, MarketData, OutcomeFormatted } from 'modules/types';
 import {
   LinearPropertyLabel,
-  EthReserveNotice,
   TransactionFeeLabelToolTip,
-  EthReserveAutomaticTopOff,
 } from 'modules/common/labels';
 import { ExternalLinkButton, ProcessingButton } from 'modules/common/buttons';
 import { getGasInDai } from 'modules/app/actions/get-ethToDai-rate';
@@ -458,9 +456,7 @@ export const Confirm = ({
           )}
         </div>
       )}
-      {hasFills && !postOnlyOrder && <EthReserveAutomaticTopOff />}
       {messages && <MessageContainer {...messages} />}
-      {!postOnlyOrder && <EthReserveNotice gasLimit={gasLimit} />}
     </section>
   );
 };

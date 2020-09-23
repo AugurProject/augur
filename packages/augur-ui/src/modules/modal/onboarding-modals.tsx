@@ -149,7 +149,7 @@ export const ModalBuyDai = () => {
   return (
     <Onboarding
       icon={signerHasDAI ? null : OnboardingPaymentIcon}
-      largeHeader={'Add Dai to your trading account'}
+      largeHeader='Add Dai to your trading account'
       showAccountStatus={true}
       currentStep={3}
       changeCurrentStep={step => {
