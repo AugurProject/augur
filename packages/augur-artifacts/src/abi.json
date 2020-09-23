@@ -21759,22 +21759,22 @@
 			"outputs": [
 				{
 					"internalType": "uint256",
-					"name": "",
+					"name": "_cashPayout",
 					"type": "uint256"
 				},
 				{
 					"internalType": "uint256",
-					"name": "",
+					"name": "_invalidFromUser",
 					"type": "uint256"
 				},
 				{
 					"internalType": "int256",
-					"name": "",
+					"name": "_noFromUser",
 					"type": "int256"
 				},
 				{
 					"internalType": "int256",
-					"name": "",
+					"name": "_yesFromUser",
 					"type": "int256"
 				}
 			],

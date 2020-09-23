@@ -2722,4 +2722,31 @@ export function addScripts(flash: FlashSession) {
         await deployer.deploy(this.network, cash);
       }
     });
+
+    flash.addScript({
+      name: 'make-amm-market',
+      options: [
+        {
+          name: 'market',
+          abbr: 'm',
+          description: 'Address of Market.',
+          required: true,
+        },
+        {
+          name: 'paraShareToken',
+          abbr: 'p',
+          description: 'Address of ParaShareToken.',
+          required: true,
+        }
+      ],
+      async call(this: FlashSession, args: FlashArguments) {
+        const market = args.market as string;
+        const paraShareToken = args.paraShareToken as string;
+
+        const user = await this.createUser(this.getAccount(), this.config);
+        const factory = user.augur.contracts.ammFactory;
+        const addr = await factory.addAMM(market, paraShareToken);
+        console.log(`AMM Exchange ${addr}`);
+      }
+    })
 }

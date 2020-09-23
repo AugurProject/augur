@@ -83,6 +83,10 @@ export class RelayHubV2 extends c.RelayHubV2<BigNumber> {
 }
 export class StakeManager extends c.StakeManager<BigNumber> {
 }
+export class AMMExchange extends c.AMMExchange<BigNumber> {
+}
+export class AMMFactory extends c.AMMFactory<BigNumber> {
+}
 export class FeePot extends c.FeePot<BigNumber> {
 }
 export class OINexus extends c.OINexus<BigNumber> {
@@ -146,6 +150,10 @@ export class SimulateTrade extends c.SimulateTrade<BigNumber> {
 export class Trade extends c.Trade<BigNumber> {
 }
 export class ZeroXTrade extends c.ZeroXTrade<BigNumber> {
+}
+export class ERC20Proxy1155 extends c.ERC20Proxy1155<BigNumber> {
+}
+export class ERC20Proxy1155Nexus extends c.ERC20Proxy1155Nexus<BigNumber> {
 }
 export class UniswapV2Factory extends c.UniswapV2Factory<BigNumber> {
 }

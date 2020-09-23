@@ -173,7 +173,7 @@ contract AMMExchange is ERC20 {
         cash.transfer(msg.sender, _cashPayout);
     }
 
-    function rateExitAll() public view returns (uint256, uint256, int256, int256) {
+    function rateExitAll() public view returns (uint256 _cashPayout, uint256 _invalidFromUser, int256 _noFromUser, int256 _yesFromUser) {
         (uint256 _userInvalid, uint256 _userNo, uint256 _userYes) = shareBalances(msg.sender);
         return rateExitPosition(_userInvalid, _userNo, _userYes);
     }

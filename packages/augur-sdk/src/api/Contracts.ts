@@ -43,6 +43,8 @@ export class Contracts {
   uniswap: ContractInterfaces.UniswapV2Router02;
   auditFunds: ContractInterfaces.AuditFunds;
   paraUniverse: ContractInterfaces.ParaUniverse;
+  erc20Proxy1155: ContractInterfaces.ERC20Proxy1155Nexus;
+  ammFactory: ContractInterfaces.AMMFactory;
 
   reputationToken: SomeRepToken | null = null;
   private readonly dependencies: ContractDependenciesEthers;
@@ -155,6 +157,14 @@ export class Contracts {
     this.paraUniverse = new ContractInterfaces.ParaUniverse(
       dependencies,
       addresses.Universe
+    )
+    this.erc20Proxy1155 = new ContractInterfaces.ERC20Proxy1155Nexus(
+      dependencies,
+      addresses.ERC20Proxy1155Nexus
+    )
+    this.ammFactory = new ContractInterfaces.AMMFactory(
+      dependencies,
+      addresses.AMMFactory
     )
 
     if (typeof addresses.Time !== 'undefined') {
