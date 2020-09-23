@@ -2912,7 +2912,7 @@ export const TEMPLATES = {
                 marketType: CATEGORICAL,
                 question: `Men's [0]: Which team will win: [1] vs. [2]?`,
                 example: `Men's English Premier League: Which team will win: Manchester City vs. Manchester United?\nEstimated schedule start time: Sept 19, 2019 8:20 pm EST`,
-                header: `(Men's) [0] [1] vs. [2]`,
+                header: `Men's [0] [1] vs. [2]`,
                 title: `Money Line`,
                 groupName: groupTypes.MONEY_LINE,
                 inputs: [
@@ -2993,7 +2993,7 @@ export const TEMPLATES = {
                 marketType: CATEGORICAL,
                 question: `Men's [0] (Point Spread): [1] to win by more than [2].5 goals over [3]?`,
                 example: `Men's Ligue 1 (France): Marseille to win by more than 1.5 goals over Lyon?\nEstimated schedule start time: Sept 19, 2019 1:00 pm EST`,
-                header: `(Men's) [0] [1] vs. [3]`,
+                header: `Men's [0] [1] vs. [3]`,
                 title: `Spread [2].5`,
                 groupName: groupTypes.SPREAD,
                 groupLineId: 2,
@@ -3076,7 +3076,7 @@ export const TEMPLATES = {
                 marketType: CATEGORICAL,
                 question: `Men's [0] (O/U): [1] vs. [2]: Total goals scored; Over/Under [3].5?`,
                 example: `Men's MLS (USA) (O/U): Real Madrid vs. Manchester United: Total goals scored Over/Under 4.5?\nEstimated schedule start time: Sept 19, 2019 1:00 pm EST`,
-                header: `(Men's) [0] [1] vs. [2]`,
+                header: `Men's [0] [1] vs. [2]`,
                 title: `Over/Under [3].5`,
                 groupName: groupTypes.OVER_UNDER,
                 groupLineId: 3,
@@ -3159,7 +3159,7 @@ export const TEMPLATES = {
                 marketType: CATEGORICAL,
                 question: `Men's [0] [1] Champion?`,
                 example: `Men's English Premier League Champion?`,
-                header: `(Men's) [0] [1] Champion`,
+                header: `Men's [0] [1] Champion`,
                 groupName: groupTypes.FUTURES,
                 inputs: [
                   {
@@ -3221,7 +3221,7 @@ export const TEMPLATES = {
                 marketType: CATEGORICAL,
                 question: `[0] [1]: Which team will win: [2] vs. [3]?`,
                 example: `Men's World Cup: Which team will win: Real Madrid vs. Manchester United?\nEstimated schedule start time: Sept 19, 2019 8:20 pm EST`,
-                header: `([0]) [2] vs. [3]`,
+                header: `[0] [2] vs. [3]`,
                 title: `Money Line`,
                 groupName: groupTypes.MONEY_LINE,
                 inputs: [
@@ -3294,7 +3294,7 @@ export const TEMPLATES = {
                 marketType: CATEGORICAL,
                 question: `[0] [1] (Point Spread): [2] to win by more than [3].5 goals over [4]?`,
                 example: `Men's World Cup (Point Spread): Real Madrid to win by more than 1.5 goals over Manchester United?\nEstimated schedule start time: Sept 19, 2019 1:00 pm EST`,
-                header: `([0]) [2] vs. [4]`,
+                header: `[0] [2] vs. [4]`,
                 title: `Spread [3].5`,
                 groupName: groupTypes.SPREAD,
                 groupLineId: 3,
@@ -3379,7 +3379,7 @@ export const TEMPLATES = {
                 marketType: CATEGORICAL,
                 question: `[0] [1] (O/U): [2] vs. [3]: Total goals scored; Over/Under [4].5?`,
                 example: `Men's World Cup (O/U): Real Madrid vs. Manchester United: Total goals scored Over/Under 4.5?\nEstimated schedule start time: Sept 19, 2019 1:00 pm EST`,
-                header: `([0]) [2] vs. [3]`,
+                header: `[0] [2] vs. [3]`,
                 title: `Over/Under [4].5`,
                 groupName: groupTypes.OVER_UNDER,
                 groupLineId: 4,
@@ -3462,7 +3462,7 @@ export const TEMPLATES = {
                 marketType: CATEGORICAL,
                 question: `[0] [1] [2] Winner?`,
                 example: `Men's UEFA Europa League 2020/2021 Winner?`,
-                header: `([0]) [1] [2] Winner`,
+                header: `[0] [1] [2] Winner`,
                 groupName: groupTypes.FUTURES,
                 inputs: [
                   {

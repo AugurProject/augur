@@ -90,6 +90,6 @@ export const FRIDAY_DAY_OF_WEEK = 5;
 export const SATURDAY_DAY_OF_WEEK = 6;
 export const SUNDAY_DAY_OF_WEEK = 0;
 export const ReplaceAbbreviations = {
-  [MENS] : 'M',
-  [WOMENS]: 'W'
+  [MENS]: '(M)',
+  [WOMENS]: '(W)',
 }
