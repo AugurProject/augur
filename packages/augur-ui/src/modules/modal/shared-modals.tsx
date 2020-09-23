@@ -64,12 +64,9 @@ export const ModalClaimFees = () => {
     universe: { forkingInfo },
     modal,
     gsnEnabled: GsnEnabled,
-    gasPriceInfo,
     actions: { closeModal },
   } = useAppStatusStore();
-  const gasPrice = gasPriceInfo.userDefinedGasPrice || gasPriceInfo.average;
 
-  const gasCost = CLAIM_FEES_GAS_COST.multipliedBy(gasPrice);
   const claimReportingFees = selectReportingWinningsByMarket();
   const transactionLabel = getTransactionLabel();
 
@@ -365,16 +362,12 @@ export const ModalClaimMarketsProceeds = () => {
     loginAccount: { address: account },
     modal,
     gsnEnabled: GsnEnabled,
-    blockchain: { currentAugurTimestamp: currentTimestamp },
     actions: { closeModal },
   } = useAppStatusStore();
   const accountMarketClaimablePositions: MarketClaimablePositions = getLoginAccountClaimableWinnings();
 
-  const totalUnclaimedProfit =
-    accountMarketClaimablePositions.totals.totalUnclaimedProfit;
   const totalUnclaimedProceeds =
     accountMarketClaimablePositions.totals.totalUnclaimedProceeds;
-  const totalFees = accountMarketClaimablePositions.totals.totalFees;
   const transactionLabel = getTransactionLabel();
   const showBreakdown = accountMarketClaimablePositions.markets.length > 1;
   let claimableMarkets = [];
@@ -511,7 +504,6 @@ export const ModalClaimMarketsProceeds = () => {
 
 export const ModalOpenOrders = () => {
   const {
-    loginAccount,
     modal,
     actions: { closeModal },
   } = useAppStatusStore();
@@ -560,8 +552,6 @@ export const ModalUnsignedOrders = () => {
   const {
     loginAccount,
     modal,
-    gsnEnabled: GsnEnabled,
-    gasPriceInfo,
     actions: { closeModal },
   } = useAppStatusStore();
   const {
@@ -569,8 +559,6 @@ export const ModalUnsignedOrders = () => {
   } = usePendingOrdersStore();
   const market = selectMarket(modal.marketId);
   let availableDai = totalTradingBalance();
-  const gasPrice = gasPriceInfo.userDefinedGasPrice || gasPriceInfo.average;
-
   const liquidity = pendingLiquidityOrders[market.transactionHash];
   let numberOfTransactions = 0;
   let totalCost = ZERO;
@@ -583,14 +571,6 @@ export const ModalUnsignedOrders = () => {
         numberOfTransactions += 1;
       });
   });
-
-  const gasCost = GsnEnabled
-    ? NEW_ORDER_GAS_ESTIMATE.times(numberOfTransactions).multipliedBy(gasPrice)
-    : formatGasCostToEther(
-        NEW_ORDER_GAS_ESTIMATE.times(numberOfTransactions).toFixed(),
-        { decimalsRounded: 4 },
-        gasPrice
-      );
 
   const bnAllowance = createBigNumber(loginAccount.allowance, 10);
   const needsApproval = bnAllowance.lte(ZERO);

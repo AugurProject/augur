@@ -391,8 +391,8 @@ export const ModalOdds = () => {
 
   return (
     <Message
-      showOdds={true}
-      title={'Settings'}
+      showOdds
+      title='Settings'
       closeAction={() => {
         closeModal();
       }}
@@ -549,19 +549,8 @@ export const ModalMigrateMarket = () => {
 export const ModalInitializeAccounts = () => {
   const {
     modal,
-    env: {
-      gsn: { desiredSignerBalanceInETH },
-    },
-    ethToDaiRate: { roundedValue: ethToDaiRate },
     actions: { closeModal },
   } = useAppStatusStore();
-
-  const desiredSignerEthBalance = formatAttoEth(
-    desiredSignerBalanceInETH * 10 ** 18
-  ).value;
-  const reserveAmount: FormattedNumber = formatDai(
-    ethToDaiRate.multipliedBy(desiredSignerEthBalance)
-  );
 
   const closeAction = () => {
     closeModal();
@@ -575,10 +564,10 @@ export const ModalInitializeAccounts = () => {
 
   return (
     <Message
-      title={'Activate Account'}
+      title='Activate Account'
       description={[
-        `Augur is a peer-to-peer system, and certain actions require paying a small fee to other users of the system. The cost of these fees will be included in the total fees displayed when taking that action. Trades, Creating Markets, and Reporting on the market outcome are examples of such actions.\n Augur will reserve $${reserveAmount.formattedValue} of your funds in order to pay these fees, but your total balance can be cashed out at any time. To see the total amount reserved for fees, click on the Account menu.\n Until the account is activated you will be unable to place an order.`,
-      ]}
+        `Augur is a peer-to-peer system, and certain actions require paying a small fee to other users of the system. The cost of these fees will be included in the total fees displayed when taking that action. Trades, Creating Markets, and Reporting on the market outcome are examples of such actions.\n Until the account is activated you will be unable to place an order.`,
+      ]}ß
       buttons={
         modal.customAction
           ? [

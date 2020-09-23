@@ -14,7 +14,6 @@ import {
   MODAL_UNIVERSE_SELECTOR,
   GAS_SPEED_LABELS,
   GAS_TIME_LEFT_LABELS,
-  FEE_RESERVES_LABEL,
 } from 'modules/common/constants';
 import {
   DaiLogoIcon,
@@ -28,7 +27,6 @@ import {
   DirectionArrow,
   AddIcon,
 } from 'modules/common/icons';
-import { EthReserveAutomaticTopOff } from 'modules/common/labels';
 import { PrimaryButton, SecondaryButton } from 'modules/common/buttons';
 import { formatDai, formatEther, formatRep } from 'utils/format-number';
 import { AFFILIATE_NAME } from 'modules/routes/constants/param-names';
@@ -40,9 +38,7 @@ import { logout } from 'modules/auth/actions/logout';
 import TooltipStyles from 'modules/common/tooltip.styles.less';
 import CommonModalStyles from 'modules/modal/common.styles.less';
 import Styles from 'modules/auth/connect-dropdown.styles.less';
-import { createBigNumber } from 'utils/create-big-number';
 import { useAppStatusStore } from 'modules/app/store/app-status';
-import { getEthReserve } from 'modules/auth/helpers/login-account';
 
 const useGasInfo = () => {
   const {
@@ -88,12 +84,9 @@ const ConnectDropdown = () => {
     ethToDaiRate,
     actions: { setModal },
   } = useAppStatusStore();
-  const showTransferMyDai = balances.signerBalances.dai !== '0';
-  const showTransferMyRep = balances.signerBalances.rep !== '0';
   const { gasPriceTime, gasPriceSpeed, userDefinedGasPrice } = useGasInfo();
   const parentUniverseId = parentUniId !== NULL_ADDRESS ? parentUniId : null;
   let gasCostTrade;
-  const reserveEthAmount = getEthReserve();
   if (gsnEnabled && ethToDaiRate) {
     gasCostTrade = displayGasInDai(
       NEW_ORDER_GAS_ESTIMATE,
@@ -143,11 +136,6 @@ const ConnectDropdown = () => {
     </span>
   );
 
-  const ethReserveInDai = ethToDai(
-    reserveEthAmount.value,
-    createBigNumber(ethToDaiRate?.value || 0)
-  ).formattedValue;
-
   const accountFunds = [
     {
       value: formatDai(balances.dai, {
@@ -177,43 +165,6 @@ const ConnectDropdown = () => {
       disabled: gsnEnabled ? balances.rep === '0' : false,
     },
   ];
-
-  const feeReserveFunds = (
-    <div className={Styles.EthReserves}>
-      <div className={Styles.AccountFunds}>
-        {FEE_RESERVES_LABEL}
-        {renderToolTip(
-          'tooltip--ethReserve',
-          <div>
-            <p>
-              Augur runs on a peer-to-peer network, transaction fees are paid in
-              ETH. These fees go entirely to the network. Augur doesn’t collect
-              any of these fees.
-            </p>
-            <p>
-              If your account balance exceeds $40, 0.04 ETH equivalent in DAI
-              will be held in your Fee reserve to cover transaction fees, which
-              results in cheaper transaction fees.
-            </p>
-            <p>
-              As long as your available account balance remains over $40 Dai,
-              your Fee reserve will automatically be replenished.
-            </p>
-            <p>
-              Your Fee reserve can easily be cashed out at anytime using the
-              withdraw button in the transactions section of your account
-              summary.
-            </p>
-          </div>
-        )}
-        <div>
-          <span>{ethReserveInDai} DAI</span>
-          <span>{reserveEthAmount.formattedValue} ETH</span>
-        </div>
-      </div>
-      <EthReserveAutomaticTopOff />
-    </div>
-  );
 
   const walletProviders = [
     {
@@ -273,7 +224,6 @@ const ConnectDropdown = () => {
               </div>
             </div>
           ))}
-        {reserveEthAmount.value !== 0 && feeReserveFunds}
         {walletProviders
           .filter(wallet => wallet.accountType === meta?.accountType)
           .map((wallet, idx) => {
