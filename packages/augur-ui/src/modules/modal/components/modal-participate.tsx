@@ -2,25 +2,20 @@ import React, { useState, useEffect } from 'react';
 import { createBigNumber } from 'utils/create-big-number';
 import { TextInput } from 'modules/common/form';
 import Styles from 'modules/modal/common.styles.less';
-import { formatRep, formatGasCostToEther } from 'utils/format-number';
+import { formatRep } from 'utils/format-number';
 import {
   BUY_PARTICIPATION_TOKENS_GAS_LIMIT,
   REP,
-  GWEI_CONVERSION,
 } from 'modules/common/constants';
 import {
   Title,
   DescriptionMessage,
-  AlertMessageProps,
   Breakdown, ButtonsRow,
 } from '../common';
-import { displayGasInDai } from 'modules/app/actions/get-ethToDai-rate';
-import getValueFromlocalStorage from 'utils/get-local-storage-value';
 import { useAppStatusStore } from 'modules/app/store/app-status';
 import { getTransactionLabel } from 'modules/auth/helpers/get-gas-price';
 import { purchaseParticipationTokens } from 'modules/reporting/actions/participation-tokens-management';
-import { getGasCost } from '../gas';
-
+import { getGasCost } from 'modules/modal/gas';
 export const ModalParticipate = () => {
   const {
     loginAccount: {

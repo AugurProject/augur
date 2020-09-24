@@ -57,7 +57,7 @@ import { createBigNumber } from 'utils/create-big-number';
 import { startOrderSending } from 'modules/orders/actions/liquidity-management';
 import { Getters } from '@augurproject/sdk';
 import getUserOpenOrders from 'modules/orders/selectors/user-open-orders';
-import { getGasCost } from './gas';
+import { getGasCost } from 'modules/modal/gas';
 
 export const ModalClaimFees = () => {
   const {
