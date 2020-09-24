@@ -75,10 +75,8 @@ import {
 import { hasTemplateTextInputs } from '@augurproject/templates';
 import { getDurationBetween } from 'utils/format-date';
 import { useTimer } from 'modules/common/progress';
-import { isGSNUnavailable } from 'modules/app/selectors/is-gsn-unavailable';
 import { ethToDai } from 'modules/app/actions/get-ethToDai-rate';
 import { getEthForDaiRate } from 'modules/contracts/actions/contractCalls';
-import { getEthReserve } from 'modules/auth/helpers/get-eth-reserve';
 import { getTransactionLabel } from 'modules/auth/helpers/get-gas-price';
 import { augurSdk } from 'services/augursdk';
 
@@ -485,7 +483,7 @@ export const FullTimeLabel = ({
   hideContent = false,
 }: FullTimeLabelProps) => (
     <div className={classNames(Styles.FullTimeLabel, { [Styles.Large]: large })}>
-      {!hideContent && 
+      {!hideContent &&
         <>
           <span>
             {label}
@@ -1068,7 +1066,7 @@ export const LiquidityDepletedLabel = ({
 export interface MarketStatusLabelProps {
   reportingState: string;
   mini?: boolean;
-  isWarpSync?: boolean; 
+  isWarpSync?: boolean;
 };
 
 export const MarketStatusLabel = ({
@@ -1613,127 +1611,6 @@ export const ModalLabelNotice = (props: DismissableNoticeProps) => (
     <DismissableNotice {...props} />
   </div>
 );
-
-export const InitializeWalletModalNotice = () => {
-  const gsnUnavailable = isGSNUnavailable();
-
-  return (
-    <>
-      {gsnUnavailable && (
-        <div className={classNames(Styles.ModalMessageLabelInitWallet)}>
-          <DismissableNotice
-            show
-            buttonType={DISMISSABLE_NOTICE_BUTTON_TYPES.NONE}
-            title={`The fee displayed is higher than normal because it includes a one time only account activation.`}
-          />
-        </div>
-      )}
-    </>
-  );
-};
-
-interface EthReseveProps {
-  gasLimit: FormattedNumber;
-}
-
-export const EthReserveNotice = ({ gasLimit }: EthReseveProps) => {
-  const {
-    gasPriceInfo,
-    loginAccount: {
-      balances: { dai },
-    },
-    env,
-  } = AppStatus.get();
-  const aboveCutoff = createBigNumber(dai).isGreaterThan(
-    createBigNumber(env.gsn.minDaiForSignerETHBalanceInDAI)
-  );
-  let show = true;
-  if (aboveCutoff) {
-    show = false;
-  }
-
-  const ethInReserve = getEthReserve();
-  const gasPrice = gasPriceInfo.userDefinedGasPrice || gasPriceInfo.average;
-  const estTransactionFee = createBigNumber(
-    formatGasCostToEther(
-      gasLimit,
-      { decimalsRounded: 4 },
-      createBigNumber(GWEI_CONVERSION).multipliedBy(gasPrice)
-    )
-  );
-
-  show = createBigNumber(estTransactionFee)
-    .minus(createBigNumber(ethInReserve.value))
-    .gt(0);
-
-  let reserve = formatBlank();
-  if (show) {
-    const attoEthToDaiRate: BigNumber = getEthForDaiRate();
-    const attoEthReserve = formatAttoEth(env.gsn.desiredSignerBalanceInETH)
-      .value;
-    const diffReserve = createBigNumber(attoEthReserve).minus(
-      createBigNumber(ethInReserve.value).div(10 ** 18)
-    );
-    reserve = ethToDai(
-      diffReserve.lte(0) ? attoEthReserve : diffReserve,
-      createBigNumber(attoEthToDaiRate || 0)
-    );
-  }
-  return (
-    <>
-      {show && (
-        <div className={classNames(Styles.EthReserveNotice)}>
-          <DismissableNotice
-            show
-            buttonType={DISMISSABLE_NOTICE_BUTTON_TYPES.NONE}
-            title={`Replenish Fee reserves`}
-            description={`$${reserve.formatted} DAI will be added to your Fee reserves`}
-          />
-        </div>
-      )}
-    </>
-  );
-};
-
-export const EthReserveAutomaticTopOff = () => {
-  const {
-    loginAccount: { balances },
-    env: { gsn },
-  } = useAppStatusStore();
-  // top off buffer is used to determine to show automatic top off checkbox
-  const topoffBuffer = createBigNumber(1.2);
-  const tradingAccountDai = createBigNumber(balances.dai);
-  const signerEth = createBigNumber(balances.signerBalances.eth);
-  const aboveCutoff = tradingAccountDai.gt(
-    createBigNumber(gsn.minDaiForSignerETHBalanceInDAI)
-  );
-  const aboveTopOff = signerEth.gt(
-    createBigNumber(gsn.desiredSignerBalanceInETH).times(topoffBuffer)
-  );
-  const show = aboveCutoff && !aboveTopOff;
-  // using useState b/c lag in setting/getting property from sdk.
-  const [checked, setChecked] = useState(
-    augurSdk?.client?.getUseDesiredEthBalance()
-  );
-  if (!show) return null;
-  return (
-    <div
-      className={classNames(Styles.Checkbox, {
-        [Styles.CheckboxChecked]: checked,
-      })}
-      role="button"
-      onClick={e => {
-        if (checked !== null) {
-          augurSdk?.client?.setUseDesiredEthBalance(!checked);
-          setChecked(!checked);
-        }
-      }}
-    >
-      {checked ? FilledCheckbox : EmptyCheckbox}
-      {AUTO_ETH_REPLENISH}
-    </div>
-  );
-};
 
 export const AutoCancelOrdersNotice = () => (
   <div className={classNames(Styles.ModalMessageAutoCancel)}>

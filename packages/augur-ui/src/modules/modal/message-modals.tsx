@@ -15,7 +15,6 @@ import {
   MODAL_TREZOR,
   MODAL_ADD_FUNDS,
   MIGRATE_MARKET_GAS_ESTIMATE,
-  GSN_WALLET_SEEN,
   REPORTING_ONLY_DESC,
 } from 'modules/common/constants';
 import { selectMarket } from 'modules/markets/selectors/market';
@@ -30,7 +29,6 @@ import {
 } from 'utils/format-number';
 import { DISMISSABLE_NOTICE_BUTTON_TYPES } from 'modules/reporting/common';
 import { FormattedNumber } from 'modules/types';
-import { createFundedGsnWallet } from 'modules/auth/actions/update-sdk';
 
 export const ModalCreateMarket = () => {
   const {
@@ -546,72 +544,6 @@ export const ModalMigrateMarket = () => {
   );
 };
 
-export const ModalInitializeAccounts = () => {
-  const {
-    modal,
-    env: {
-      gsn: { desiredSignerBalanceInETH },
-    },
-    ethToDaiRate: { roundedValue: ethToDaiRate },
-    actions: { closeModal },
-  } = useAppStatusStore();
-
-  const desiredSignerEthBalance = formatAttoEth(
-    desiredSignerBalanceInETH * 10 ** 18
-  ).value;
-  const reserveAmount: FormattedNumber = formatDai(
-    ethToDaiRate.multipliedBy(desiredSignerEthBalance)
-  );
-
-  const closeAction = () => {
-    closeModal();
-
-    const localStorageRef =
-      typeof window !== 'undefined' && window.localStorage;
-    if (localStorageRef && localStorageRef.setItem) {
-      localStorageRef.setItem(GSN_WALLET_SEEN, 'true');
-    }
-  };
-
-  return (
-    <Message
-      title={'Activate Account'}
-      description={[
-        `Augur is a peer-to-peer system, and certain actions require paying a small fee to other users of the system. The cost of these fees will be included in the total fees displayed when taking that action. Trades, Creating Markets, and Reporting on the market outcome are examples of such actions.\n Augur will reserve $${reserveAmount.formattedValue} of your funds in order to pay these fees, but your total balance can be cashed out at any time. To see the total amount reserved for fees, click on the Account menu.\n Until the account is activated you will be unable to place an order.`,
-      ]}
-      buttons={
-        modal.customAction
-          ? [
-              {
-                text: 'OK',
-                action: () => {
-                  if (modal.customAction) {
-                    modal.customAction();
-                  }
-                  closeAction();
-                },
-              },
-            ]
-          : [
-              {
-                text: 'Activate Account',
-                action: () => {
-                  closeAction();
-                  createFundedGsnWallet();
-                },
-              },
-              {
-                text: 'Do it later',
-                action: () => {
-                  closeAction();
-                },
-              },
-            ]
-      }
-    />
-  );
-};
-
 export const ModalCashoutBet = () => {
   const {
     modal,
@@ -619,7 +551,7 @@ export const ModalCashoutBet = () => {
   } = useAppStatusStore();
 
   const {
-    wager, 
+    wager,
     cashOut,
     odds,
     positive,

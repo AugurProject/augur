@@ -11,11 +11,11 @@ import {
   unListenToEvents,
 } from 'modules/events/actions/listen-to-updates';
 import { BigNumber } from 'utils/create-big-number';
-import { getFingerprint } from 'utils/get-fingerprint';
 import { isEmpty } from 'utils/is-empty';
 import { isLocalHost } from 'utils/is-localhost';
 import { analytics } from './analytics';
 import { createBrowserMeshWorker } from './browser-mesh';
+import { isMobileSafari, isSafari } from 'utils/is-safari';
 
 window.BigNumber = BigNumber;
 
@@ -45,6 +45,10 @@ export class SDK {
 
     this.config = config;
 
+    if ((isSafari() || isMobileSafari()) && this.config.zeroX) {
+      this.config.zeroX.delayTillSDKReady = true;
+    }
+
     const ethersProvider = new EthersProvider(
       provider,
       this.config.ethereum.rpcRetryCount,
@@ -58,13 +62,44 @@ export class SDK {
       this.connector = new Connectors.SingleThreadConnector();
     }
 
+    // PG: BEGIN HACK
+    try {
+      await new Promise((resolve, reject) => {
+        try {
+          const request = indexedDB.open('0x-mesh/mesh_dexie_db');
+          request.onsuccess = () => {
+            try {
+              const db = request.result;
+              const transaction = db.transaction('orders', "readwrite");
+              const objectStore = transaction.objectStore("orders");
+
+              transaction.onerror = () => {
+                console.log("There was an error clearing orders table");
+                reject();
+              }
+
+              const objectStoreRequest = objectStore.clear();
+              objectStoreRequest.onsuccess = function(event) {
+                console.log('Orders table clear complete');
+                resolve();
+              };
+            } catch(e) {
+              reject();
+            }
+          }
+        } catch(e) {
+          reject();
+        }
+      });
+    } catch(e) {
+
+    }
+    // PG: END HACK
+
     this.client = await createClient(this.config, this.connector, signer, ethersProvider, enableFlexSearch, createBrowserMeshWorker);
 
-    this.client.dependencies.setReferralAddress(affiliate);
-    this.client.dependencies.setFingerprint(getFingerprint());
-
     if (!isEmpty(account)) {
-      this.syncUserData(account, provider, signer, this.networkId, this.config.gsn && this.config.gsn.enabled).catch((error) => {
+      this.syncUserData(account, provider, signer, this.networkId).catch((error) => {
         console.log('Wallet create error during create: ', error);
       });
     }
@@ -80,7 +115,7 @@ export class SDK {
     provider: JsonRpcProvider,
     signer: EthersSigner,
     expectedNetworkId: NetworkId,
-    useGSN: boolean,
+    primaryProvider: string,
   ) {
     if (!this.client) {
       throw new Error('Trying to sync user data before Augur is initialized');
@@ -95,16 +130,12 @@ export class SDK {
     }
 
     this.client.signer = signer;
-    this.client.setProvider(provider);
-
-    if (useGSN && account) {
-      // TODO: In Dev this may be annoying as you can't faucet cash if these are on and you havent ever done a tx with the GSN relay
-      this.client.setUseRelay(true);
-      this.client.setUseWallet(true);
+    if (primaryProvider === 'wallet') {
+      this.client.setProvider(provider);
     }
 
     if (!isLocalHost()) {
-      analytics.identify(account, { networkId: this.networkId, useGSN });
+      analytics.identify(account, { networkId: this.networkId });
     }
   }
 

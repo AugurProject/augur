@@ -4,17 +4,13 @@ import Clipboard from 'clipboard';
 import classNames from 'classnames';
 import {
   ACCOUNT_TYPES,
-  NEW_ORDER_GAS_ESTIMATE,
-  ETH,
-  DAI,
-  REP,
   NULL_ADDRESS,
   MODAL_ADD_FUNDS,
   MODAL_GAS_PRICE,
   MODAL_UNIVERSE_SELECTOR,
   GAS_SPEED_LABELS,
   GAS_TIME_LEFT_LABELS,
-  FEE_RESERVES_LABEL,
+  TRADE_ORDER_GAS_MODAL_ESTIMATE
 } from 'modules/common/constants';
 import {
   DaiLogoIcon,
@@ -28,21 +24,16 @@ import {
   DirectionArrow,
   AddIcon,
 } from 'modules/common/icons';
-import { EthReserveAutomaticTopOff } from 'modules/common/labels';
 import { PrimaryButton, SecondaryButton } from 'modules/common/buttons';
 import { formatDai, formatEther, formatRep } from 'utils/format-number';
 import { AFFILIATE_NAME } from 'modules/routes/constants/param-names';
-import {
-  displayGasInDai,
-  ethToDai,
-} from 'modules/app/actions/get-ethToDai-rate';
 import { logout } from 'modules/auth/actions/logout';
+import { useAppStatusStore } from 'modules/app/store/app-status';
+import { getGasCost } from 'modules/modal/gas';
+
 import TooltipStyles from 'modules/common/tooltip.styles.less';
 import CommonModalStyles from 'modules/modal/common.styles.less';
 import Styles from 'modules/auth/connect-dropdown.styles.less';
-import { createBigNumber } from 'utils/create-big-number';
-import { useAppStatusStore } from 'modules/app/store/app-status';
-import { getEthReserve } from 'modules/auth/helpers/login-account';
 
 const useGasInfo = () => {
   const {
@@ -75,6 +66,7 @@ const useGasInfo = () => {
 const ConnectDropdown = () => {
   const [showMetaMaskHelper, setShowMetaMaskHelper] = useState(false);
   const [isCopied, setIsCopied] = useState(false);
+
   const {
     loginAccount: { address, meta, balances },
     universe: {
@@ -84,22 +76,15 @@ const ConnectDropdown = () => {
     },
     isLogged,
     restoredAccount,
-    gsnEnabled,
+    gasPriceInfo,
     ethToDaiRate,
     actions: { setModal },
   } = useAppStatusStore();
-  const showTransferMyDai = balances.signerBalances.dai !== "0";
-  const showTransferMyRep = balances.signerBalances.rep !== "0";
   const { gasPriceTime, gasPriceSpeed, userDefinedGasPrice } = useGasInfo();
+  const gasPrice = gasPriceInfo.userDefinedGasPrice || gasPriceInfo.average;
+  const gasCostDai = getGasCost(TRADE_ORDER_GAS_MODAL_ESTIMATE, gasPrice, ethToDaiRate);
+
   const parentUniverseId = parentUniId !== NULL_ADDRESS ? parentUniId : null;
-  let gasCostTrade;
-  const reserveEthAmount = getEthReserve();
-  if (gsnEnabled && ethToDaiRate) {
-    gasCostTrade = displayGasInDai(
-      NEW_ORDER_GAS_ESTIMATE,
-      userDefinedGasPrice * 10 ** 9
-    );
-  }
 
   let timeoutId = null;
   const referralLink = `${window.location.origin}?${AFFILIATE_NAME}=${address}`;
@@ -144,11 +129,6 @@ const ConnectDropdown = () => {
     </span>
   );
 
-  const ethReserveInDai = ethToDai(
-    reserveEthAmount.value,
-    createBigNumber(ethToDaiRate?.value || 0)
-  ).formattedValue;
-
   const accountFunds = [
     {
       value: formatDai(balances.dai, {
@@ -166,7 +146,7 @@ const ConnectDropdown = () => {
       }).formatted,
       name: 'ETH',
       logo: EthIcon,
-      disabled: gsnEnabled ? balances.eth === "0" : false,
+      disabled: balances.eth === "0",
     },
     {
       name: 'REP',
@@ -175,46 +155,9 @@ const ConnectDropdown = () => {
         zeroStyled: false,
         decimalsRounded: 4,
       }).formatted,
-      disabled: gsnEnabled ? balances.rep === "0" : false,
+      disabled: balances.rep === "0",
     },
   ];
-
-  const feeReserveFunds = (
-    <div className={Styles.EthReserves}>
-      <div className={Styles.AccountFunds}>
-        {FEE_RESERVES_LABEL}
-        {renderToolTip(
-          'tooltip--ethReserve',
-          <div>
-            <p>
-              Augur runs on a peer-to-peer network, transaction fees are paid in
-              ETH. These fees go entirely to the network. Augur doesn’t collect
-              any of these fees.
-            </p>
-            <p>
-              If your account balance exceeds $40, 0.04 ETH equivalent in DAI
-              will be held in your Fee reserve to cover transaction fees, which
-              results in cheaper transaction fees.
-            </p>
-            <p>
-              As long as your available account balance remains over $40 Dai,
-              your Fee reserve will automatically be replenished.
-            </p>
-            <p>
-              Your Fee reserve can easily be cashed out at anytime using the
-              withdraw button in the transactions section of your account
-              summary.
-            </p>
-          </div>
-        )}
-        <div>
-          <span>{ethReserveInDai} DAI</span>
-          <span>{reserveEthAmount.formattedValue} ETH</span>
-        </div>
-      </div>
-      <EthReserveAutomaticTopOff />
-    </div>
-  );
 
   const walletProviders = [
     {
@@ -271,9 +214,6 @@ const ConnectDropdown = () => {
             icon={AddIcon}
           />
         </div>
-{/* 
-        {showTransferMyDai && <TransferMyTokens condensed={true} tokenName={DAI} />}
-        {showTransferMyRep && <TransferMyTokens condensed={true} tokenName={REP} />} */}
 
         {accountFunds
           .filter(fundType => !fundType.disabled)
@@ -285,7 +225,6 @@ const ConnectDropdown = () => {
               </div>
             </div>
           ))}
-        {reserveEthAmount.value !== 0 && feeReserveFunds}
         {walletProviders
           .filter(wallet => wallet.accountType === meta?.accountType)
           .map((wallet, idx) => {
@@ -324,8 +263,8 @@ const ConnectDropdown = () => {
             );
           })}
 
-        {gasCostTrade && (
-          <div className={Styles.GasEdit}>
+        {gasCostDai.value && <div className={Styles.GasEdit}>
+          <div>
             <div>
               <div>
                 Transaction fee
@@ -335,19 +274,16 @@ const ConnectDropdown = () => {
                 )}
               </div>
               <div>
-                {gasCostTrade} / Trade ({gasPriceSpeed} {gasPriceTime})
+                ${gasCostDai.formattedValue} / Trade ({gasPriceSpeed} {gasPriceTime})
               </div>
             </div>
-            <SecondaryButton
-              action={() => setModal({ type: MODAL_GAS_PRICE })}
-              text="Edit"
-              title="Edit"
-              icon={Pencil}
-              small
-            />
           </div>
-        )}
-
+          <SecondaryButton
+            action={() => setModal({ type: MODAL_GAS_PRICE })}
+            text='Edit'
+            icon={Pencil}
+          />
+        </div>}
         <div className={Styles.GasEdit}>
           <div>
             <div>

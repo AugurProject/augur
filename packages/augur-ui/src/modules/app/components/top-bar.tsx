@@ -18,7 +18,6 @@ import { HelpResources } from 'modules/app/components/help-resources';
 import { OddsMenu } from 'modules/app/components/odds-menu';
 import {
   TOTAL_FUNDS_TOOLTIP,
-  WALLET_STATUS_VALUES,
   MODAL_BUY_DAI,
   MODAL_AUGUR_P2P,
   MODAL_MIGRATE_REP,
@@ -30,7 +29,6 @@ import {
 } from 'modules/common/constants';
 import { useAppStatusStore } from 'modules/app/store/app-status';
 import { getInfoAlertsAndSeenCount } from 'modules/alerts/helpers/alerts';
-import { getEthReserveInDai } from 'modules/auth/helpers/get-eth-reserve';
 import AlertsContainer from 'modules/alerts/components/alerts-view';
 
 import HelpResources from 'modules/app/containers/help-resources';
@@ -44,18 +42,10 @@ export const Stats = () => {
     restoredAccount,
     isMobile,
     loginAccount,
-    walletStatus,
   } = useAppStatusStore();
-
-  const showAddFundsButton =
-    isLogged && walletStatus === WALLET_STATUS_VALUES.WAITING_FOR_FUNDING;
-  const showActivationButton =
-    isLogged && walletStatus === WALLET_STATUS_VALUES.FUNDED_NEED_CREATE;
-  const tradingAccountCreated = !showActivationButton && !showAddFundsButton;
   const stats = getCoreStats(isLogged, loginAccount);
   if (!stats) return null;
   const { availableFunds, frozenFunds, totalFunds, realizedPL } = stats;
-  const ethReserveInDai = getEthReserveInDai();
 
   return (
     <>
@@ -64,16 +54,11 @@ export const Stats = () => {
           <div>
             <LinearPropertyLabel {...availableFunds} highlightAlternateBolded />
             <LinearPropertyLabel {...frozenFunds} highlightAlternateBolded />
-            {tradingAccountCreated ? (
-              <LinearPropertyLabelUnderlineTooltip
-                {...totalFunds}
-                highlightAlternateBolded
-                id={isMobile ? 'totalFundsMobile' : 'totalFunds_top_bar'}
-                tipText={`${TOTAL_FUNDS_TOOLTIP} of $${ethReserveInDai.formatted} DAI`}
-              />
-            ) : (
-              <LinearPropertyLabel {...totalFunds} highlightAlternateBolded />
-            )}
+            <LinearPropertyLabelUnderlineTooltip
+              {...totalFunds}
+              highlightAlternateBolded
+              id={isMobile ? 'totalFundsMobile' : 'totalFunds_top_bar'}
+            />
             <div>
               <span>{realizedPL.label}</span>
               <MovementLabel value={realizedPL.value} useFull />
@@ -99,16 +84,11 @@ const TopBar = () => {
     isMobile,
     isAlertsMenuOpen,
     actions: { setIsAlertsMenuOpen, setModal },
-    walletStatus,
   } = useAppStatusStore();
   const isSports = theme === THEMES.SPORTS;
   const { unseenCount } = getInfoAlertsAndSeenCount();
   const LoggedOrRestored = isLogged || restoredAccount;
   const notLoggedAndRestored = !isLogged && !restoredAccount;
-  const showAddFundsButton =
-    isLogged && walletStatus === WALLET_STATUS_VALUES.WAITING_FOR_FUNDING;
-  const showActivationButton =
-    isLogged && walletStatus === WALLET_STATUS_VALUES.FUNDED_NEED_CREATE;
   const pending =
     pendingQueue[TRANSACTIONS] &&
     pendingQueue[TRANSACTIONS][MIGRATE_FROM_LEG_REP_TOKEN];
@@ -133,20 +113,6 @@ const TopBar = () => {
             primaryButton
           />
         )}
-        {(showActivationButton || showAddFundsButton) && (
-          <div className={Styles.AccountActivation}>
-            <PrimaryButton
-              action={() => {
-                if (showAddFundsButton) {
-                  setModal({ type: MODAL_BUY_DAI });
-                } else {
-                  setModal({ type: MODAL_AUGUR_P2P });
-                }
-              }}
-              text="Complete account activation"
-            />
-          </div>
-        )}
         {(!isLogged || (!isMobile && LoggedOrRestored)) && <HelpResources />}
         {!isMobile && <OddsMenu />}
         {notLoggedAndRestored && (
@@ -163,9 +129,7 @@ const TopBar = () => {
             />
           </>
         )}
-        {LoggedOrRestored &&
-          ((isMobile && walletStatus === WALLET_STATUS_VALUES.CREATED) ||
-            !isMobile) && (
+        {LoggedOrRestored && (
             <div className={Styles.AlertsDiv}>
               <button
                 className={classNames(Styles.alerts, {

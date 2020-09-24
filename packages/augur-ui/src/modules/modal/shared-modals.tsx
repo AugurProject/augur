@@ -63,7 +63,6 @@ export const ModalClaimFees = () => {
     pendingQueue = [],
     universe: { forkingInfo },
     modal,
-    gsnEnabled: GsnEnabled,
     gasPriceInfo,
     actions: { closeModal },
   } = useAppStatusStore();
@@ -364,7 +363,8 @@ export const ModalClaimMarketsProceeds = () => {
     pendingQueue = [],
     loginAccount: { address: account },
     modal,
-    gsnEnabled: GsnEnabled,
+    gasPriceInfo,
+    ethToDaiRate,
     blockchain: { currentAugurTimestamp: currentTimestamp },
     actions: { closeModal },
   } = useAppStatusStore();
@@ -560,7 +560,7 @@ export const ModalUnsignedOrders = () => {
   const {
     loginAccount,
     modal,
-    gsnEnabled: GsnEnabled,
+    ethToDaiRate,
     gasPriceInfo,
     actions: { closeModal },
   } = useAppStatusStore();

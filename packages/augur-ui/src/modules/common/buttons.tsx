@@ -286,7 +286,7 @@ export const ProcessingButton = ({
     icon = XIcon;
     isDisabled = false;
   }
-  
+
   if (confirmed && isSports) {
     return (
       <div className={Styles.ProcessingCheckmark}>
@@ -645,17 +645,6 @@ export const REPFaucetButton = (props: DefaultActionButtonProps) => (
   </button>
 );
 
-export const FundGSNWalletButton = (props: DefaultActionButtonProps) => (
-  <button
-    onClick={e => props.action(e)}
-    className={Styles.SecondaryButton}
-    disabled={props.disabled}
-    title={props.title ? props.title : 'Fund GSN Wallet'}
-  >
-    <span>{props.title}</span>
-  </button>
-);
-
 export const DAIFaucetButton = (props: DefaultActionButtonProps) => (
   <button
     onClick={e => props.action(e)}
@@ -886,8 +875,8 @@ export const CashoutButton = ({
       cashoutDisabled = false;
       cashout = () => {
         setModal({
-          type: MODAL_CASHOUT_BET, 
-          wager: bet.wager, 
+          type: MODAL_CASHOUT_BET,
+          wager: bet.wager,
           odds: convertToOdds(bet.normalizedPrice).full,
           cashOut: bet.orderCost,
           positive: bet.potentialDaiProfit.gt(ZERO),

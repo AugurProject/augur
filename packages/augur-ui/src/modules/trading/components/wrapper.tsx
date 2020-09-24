@@ -10,7 +10,6 @@ import {
   BUY,
   SELL,
   DISCLAIMER_SEEN,
-  GSN_WALLET_SEEN,
   MODAL_LOGIN,
   MODAL_ADD_FUNDS,
   MODAL_INITIALIZE_ACCOUNT,
@@ -33,7 +32,6 @@ import { useAppStatusStore } from 'modules/app/store/app-status';
 import { totalTradingBalance } from 'modules/auth/helpers/login-account';
 import getValueFromlocalStorage from 'utils/get-local-storage-value';
 import { getGasPrice } from 'modules/contracts/actions/contractCalls';
-import { isGSNUnavailable } from 'modules/app/selectors/is-gsn-unavailable';
 import {
   updateTradeCost,
   updateTradeShares,
@@ -154,7 +152,6 @@ const Wrapper = ({
       balances: { dai, eth },
     },
     theme,
-    gsnEnabled,
     isLogged,
     restoredAccount,
     blockchain: { currentAugurTimestamp: currentTimestamp },
@@ -181,9 +178,7 @@ const Wrapper = ({
   const availableDai = initialLiquidity
     ? totalTradingBalance().minus(newMarket.initialLiquidityDai)
     : totalTradingBalance();
-  const gsnUnavailable = isGSNUnavailable();
   const disclaimerSeen = !!getValueFromlocalStorage(DISCLAIMER_SEEN);
-  const gsnWalletInfoSeen = !!getValueFromlocalStorage(GSN_WALLET_SEEN);
 
   const hasHistory = !!accountPositions[marketId] || !!userOpenOrders[marketId];
   // if outcome id changes we clear form
@@ -401,8 +396,7 @@ const Wrapper = ({
 
   function getActionButton() {
     const { selectedNav, allowPostOnlyOrder, postOnlyOrder } = orderProperties;
-    const noGSN = gsnUnavailable && !gsnWalletInfoSeen;
-    const hasFunds = gsnEnabled ? !!dai : !!eth && !!dai;
+    const hasFunds = !!dai;
     let actionButton: any = (
       <OrderButton
         type={selectedNav}
@@ -420,28 +414,12 @@ const Wrapper = ({
             tutorialNext();
           } else {
             if (disclaimerSeen) {
-              if (noGSN) {
-                setModal({
-                  customAction: () =>
-                    handlePlaceMarketTrade(market, selectedOutcome),
-                  type: MODAL_INITIALIZE_ACCOUNT,
-                });
-              } else {
-                handlePlaceMarketTrade(market, selectedOutcome);
-              }
+              handlePlaceMarketTrade(market, selectedOutcome);
             } else {
               setModal({
                 type: MODAL_DISCLAIMER,
                 onApprove: () => {
-                  if (noGSN) {
-                    setModal({
-                      customAction: () =>
-                        handlePlaceMarketTrade(market, selectedOutcome),
-                      type: MODAL_INITIALIZE_ACCOUNT,
-                    });
-                  } else {
-                    handlePlaceMarketTrade(market, selectedOutcome);
-                  }
+                  handlePlaceMarketTrade(market, selectedOutcome);
                 },
               });
             }
@@ -449,7 +427,7 @@ const Wrapper = ({
         }}
         disabled={
           !trade?.limitPrice ||
-          (gsnUnavailable && isOpenOrder) ||
+          (isOpenOrder) ||
           insufficientFunds ||
           (postOnlyOrder && trade.numFills > 0) ||
           !allowPostOnlyOrder ||

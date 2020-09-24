@@ -206,6 +206,17 @@ export function formatBestPrice(
   });
 }
 
+export function formatDaiPrice(
+  num: NumStrBigNumber,
+  opts: FormattedNumberOptions = {}
+): FormattedNumber {
+  return formatDai(num, {
+    decimals: 3,
+    decimalsRounded: 3,
+    ...opts,
+  });
+}
+
 export function formatDai(
   num: NumStrBigNumber,
   opts: FormattedNumberOptions = {}

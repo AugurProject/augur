@@ -1,7 +1,5 @@
 import { updateAlert } from 'modules/alerts/actions/alerts';
 import { loadAnalytics } from 'modules/app/actions/analytics-management';
-import { getEthToDaiRate } from 'modules/app/actions/get-ethToDai-rate';
-import { getRepToDaiRate } from 'modules/app/actions/get-repToDai-rate';
 import {
   loadAllAccountPositions,
   loadAccountOnChainFrozenFundsTotals,
@@ -59,12 +57,9 @@ import {
   REDEEMSTAKE,
   SUBMIT_DISPUTE,
   CLAIMMARKETSPROCEEDS,
-  DISAVOWCROWDSOURCERS,
   DOINITIALREPORTWARPSYNC,
   ZEROX_STATUSES,
-  MODAL_ERROR,
   PUBLICTRADE,
-  WALLET_STATUS_VALUES,
   SUBMIT_REPORT,
   THEMES,
 } from 'modules/common/constants';
@@ -153,7 +148,6 @@ export const handleTxEvents = (txStatus: Events.TXStatus) => {
     `${txStatus.eventName} for ${txStatus.transaction.name} Transaction.`
   );
   if (txStatus.eventName === 'Success') {
-    AppStatus.actions.setWalletStatus(WALLET_STATUS_VALUES.CREATED);
     // for faucets we have to treat it like an inital login to pull latest info.
     updateAssets(txStatus?.transaction?.name === 'faucet');
   } else if (txStatus.eventName === 'FeeTooLow') {
@@ -228,8 +222,6 @@ export const handleNewBlockLog = async (log: Events.NewBlock) => {
     findAndSetTransactionsTimeouts(log.highestAvailableBlockNumber);
   }
   // update ETH/REP rate and gasPrice each block
-  getEthToDaiRate();
-  getRepToDaiRate();
   loadGasPriceInfo();
 
   if (log.logs && log.logs.length > 0) {
