@@ -23,7 +23,7 @@ import {
   Open,
   Pencil,
   v2AugurLogo,
-  ClipboardCopy,
+  CopyAlternateIcon,
   DirectionArrow,
   AddIcon,
 } from 'modules/common/icons';
@@ -306,13 +306,13 @@ const ConnectDropdown = () => {
           <span
             id="copy_referral"
             data-clipboard-text={referralLink}
-            className={isCopied ? Styles.ShowConfirmaiton : null}
+            className={isCopied ? Styles.ShowCopied : null}
           >
             <SecondaryButton
               small
               action={() => copyClicked()}
               text="Copy"
-              icon={ClipboardCopy}
+              icon={CopyAlternateIcon}
             />
           </span>
         </div>
