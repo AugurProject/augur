@@ -11,13 +11,14 @@ import {
   ERROR,
   UPPER_FIXED_PRECISION_BOUND,
   ZERO,
-  WALLET_STATUS_VALUES,
   INVALID_OUTCOME_ID,
   HELP_CENTER,
   CREATEAUGURWALLET,
   TRANSACTIONS,
   GWEI_CONVERSION,
-  MODAL_INITIALIZE_ACCOUNT,
+  PUBLICTRADE,
+  MODAL_ADD_FUNDS,
+  ETH
 } from 'modules/common/constants';
 import ReactTooltip from 'react-tooltip';
 import TooltipStyles from 'modules/common/tooltip.styles.less';
@@ -37,9 +38,7 @@ import { createBigNumber } from 'utils/create-big-number';
 import { Trade, MarketData, OutcomeFormatted } from 'modules/types';
 import {
   LinearPropertyLabel,
-  EthReserveNotice,
   TransactionFeeLabelToolTip,
-  EthReserveAutomaticTopOff,
 } from 'modules/common/labels';
 import { ExternalLinkButton, ProcessingButton } from 'modules/common/buttons';
 import { getGasInDai } from 'modules/app/actions/get-ethToDai-rate';
@@ -48,6 +47,8 @@ import { removePendingTransaction } from 'modules/pending-queue/actions/pending-
 import { useAppStatusStore } from 'modules/app/store/app-status';
 import { totalTradingBalance } from 'modules/auth/helpers/login-account';
 import { useTradingStore } from 'modules/trading/store/trading';
+import { getGasCost } from 'modules/modal/gas';
+import { approvalsNeededToTrade, approveToTrade } from 'modules/contracts/actions/contractCalls';
 
 interface MessageButton {
   action: Function;
@@ -122,9 +123,10 @@ export const Confirm = ({
     loginAccount: {
       balances: { eth },
       allowance: allowanceBigNumber,
+      tradingApproved,
+      address,
     },
-    gsnEnabled,
-    walletStatus,
+    ethToDaiRate,
     gasPriceInfo,
     actions: { setModal },
   } = useAppStatusStore();
@@ -169,15 +171,6 @@ export const Confirm = ({
   const isBuy = side === BUY;
   const hasFills = numFills > 0;
 
-  useEffect(() => {
-    if (
-      walletStatus === WALLET_STATUS_VALUES.CREATED &&
-      sweepStatus === TXEventName.Success
-    ) {
-      removePendingTransaction(CREATEAUGURWALLET);
-    }
-  }, []);
-
   const gasCostInEth = gasLimit
   ? createBigNumber(
       formatGasCostToEther(
@@ -188,14 +181,13 @@ export const Confirm = ({
     )
   : ZERO;
 
+  const gasCostDai = getGasCost(gasLimit, gasPrice, ethToDaiRate);
+  const displayfee = `$${gasCostDai.formattedValue}`;
+
   const messages = (() => {
     let numTrades = loopLimit ? Math.ceil(numFills / loopLimit) : numFills;
     numTrades = isNaN(numTrades) ? 0 : numTrades;
     let messages: Message | null = null;
-
-    const gasCostDai = gsnEnabled
-      ? getGasInDai(Number(createBigNumber(gasLimit))).fullPrecision
-      : '0';
 
     if (isScalar && selectedOutcomeId === INVALID_OUTCOME_ID) {
       messages = {
@@ -242,17 +234,8 @@ export const Confirm = ({
       }
 
       if (totalCost && potentialDaiLoss) {
-        // GAS error in DAI [Gsn]
-        if (gsnEnabled && createBigNumber(gasCostDai).gte(availableDai)) {
-          messages = {
-            header: 'Insufficient DAI',
-            type: ERROR,
-            message: `You do not have enough funds to place this order. ${gasCostDai} DAI required for gas.`,
-          };
-        }
-
         // GAS error in ETH
-        if (!gsnEnabled && gasCostInEth.gte(availableEth)) {
+        if (gasCostInEth.gte(availableEth)) {
           messages = {
             header: 'Insufficient ETH',
             type: ERROR,
@@ -267,40 +250,6 @@ export const Confirm = ({
             message: 'You do not have enough DAI to place this order',
           };
         }
-      }
-
-      // Show when GSN wallet activation is successful
-      if (
-        walletStatus === WALLET_STATUS_VALUES.CREATED &&
-        sweepStatus === TXEventName.Success &&
-        hasFills
-      ) {
-        messages = {
-          header: 'Confirmed',
-          type: WARNING,
-          message: 'You can now place your trade',
-          callback: () => {
-            removePendingTransaction(CREATEAUGURWALLET);
-            // clearErrorMessage();
-          },
-        };
-      } else if (
-        walletStatus === WALLET_STATUS_VALUES.FUNDED_NEED_CREATE &&
-        hasFills
-      ) {
-        // Show if OpenOrder and GSN wallet still needs to be activated
-        messages = {
-          header: '',
-          type: WARNING,
-          message: 'Activation of your account is needed',
-          button: {
-            text: 'Activate Account',
-            action: () =>
-              setModal({
-                type: MODAL_INITIALIZE_ACCOUNT,
-              }),
-          },
-        };
       }
 
       if (!allowPostOnlyOrder) {
@@ -322,7 +271,7 @@ export const Confirm = ({
 
     return messages;
   })();
- 
+
   const limitPricePercentage = (isBuy
     ? createBigNumber(limitPrice)
     : maxPrice.minus(createBigNumber(limitPrice))
@@ -330,10 +279,6 @@ export const Confirm = ({
     .dividedBy(maxPrice.minus(minPrice).abs())
     .times(100)
     .toFixed(0);
-
-  const gasCostDai = gsnEnabled
-    ? getGasInDai(Number(createBigNumber(gasLimit)))
-    : formatNumber(0);
 
   const tooltip = isScalar
     ? `You believe the outcome of this event will be ${isBuy ? 'greater' : 'less'}
@@ -385,7 +330,7 @@ export const Confirm = ({
               isError={createBigNumber(gasCostDai.value).gt(
                 createBigNumber(orderShareProfit.value)
               )}
-              gasCostDai={gasCostDai}
+              gasCostDai={displayfee}
             />
           )}
           <LinearPropertyLabel
@@ -458,9 +403,7 @@ export const Confirm = ({
           )}
         </div>
       )}
-      {hasFills && !postOnlyOrder && <EthReserveAutomaticTopOff />}
       {messages && <MessageContainer {...messages} />}
-      {!postOnlyOrder && <EthReserveNotice gasLimit={gasLimit} />}
     </section>
   );
 };

@@ -44,9 +44,9 @@ import Styles from 'modules/create-market/components/review.styles.less';
 import { buildResolutionDetails } from 'modules/create-market/get-template';
 import { displayGasInDai } from 'modules/app/actions/get-ethToDai-rate';
 import { useAppStatusStore } from 'modules/app/store/app-status';
-import { ActivateWalletButton } from 'modules/reporting/common';
 import { totalTradingBalance } from 'modules/auth/helpers/login-account';
 import { estimateSubmitNewMarket } from 'modules/markets/actions/estimate-submit-new-market';
+import { getGasCost } from 'modules/modal/gas';
 
 interface ReviewProps {
   setDisableCreate: Function;
@@ -55,13 +55,13 @@ interface ReviewProps {
 const Review = ({ setDisableCreate }: ReviewProps) => {
   const {
     newMarket,
-    gsnEnabled,
-    gasPriceInfo: { userDefinedGasPrice, average },
+    ethToDaiRate,
+    gasPriceInfo,
     loginAccount: {
       balances: { eth, rep },
     },
   } = useAppStatusStore();
-  const gasPrice = userDefinedGasPrice || average;
+  const gasPrice = gasPriceInfo.userDefinedGasPrice || gasPriceInfo.average;
   const availableEthFormatted = formatEther(eth);
   const availableDaiFormatted = formatDai(totalTradingBalance());
   const availableRepFormatted = formatRep(rep);
@@ -82,6 +82,7 @@ const Review = ({ setDisableCreate }: ReviewProps) => {
       )
     ),
   });
+
   const {
     categories,
     marketType,
@@ -172,7 +173,6 @@ const Review = ({ setDisableCreate }: ReviewProps) => {
         createBigNumber(availableDaiFormatted.value || 0),
         formattedInitialLiquidityGas || '0',
         formattedInitialLiquidityDai || '0',
-        gsnEnabled
       );
     }
     return insufficientFunds;
@@ -196,7 +196,10 @@ const Review = ({ setDisableCreate }: ReviewProps) => {
   );
 
   // Total Gas in DAI
-  const totalGasInDai = displayGasInDai(gasCost.multipliedBy(gasPrice));
+
+  const gasCostDai = getGasCost(gasCost, gasPrice, ethToDaiRate);
+  const displayfee = `$${gasCostDai.formattedValue}`;
+
 
   const noEth = insufficientFunds[ETH];
   const noRep = insufficientFunds[REP];
@@ -338,18 +341,14 @@ const Review = ({ setDisableCreate }: ReviewProps) => {
 
         <Subheaders
           header="Totals"
-          subheader={
-            gsnEnabled
-              ? 'Sum total of DAI and REP required to create this market'
-              : 'Sum total of DAI, ETH and REP required to create this market'
-          }
+          subheader={'Sum total of DAI and REP required to create this market'}
         />
         <span>
           <LinearPropertyLabel
             label="Total DAI"
             value={`${totalDai.formattedValue} DAI`}
           />
-          <TransactionFeeLabel gasCostDai={totalGasInDai} />
+          <TransactionFeeLabel gasCostDai={displayfee} />
           <LinearPropertyLabel
             label="TOTAL REP"
             value={
@@ -369,7 +368,6 @@ const Review = ({ setDisableCreate }: ReviewProps) => {
           totalEth={totalEth}
           totalRep={designatedReportNoShowReputationBond}
         />
-        <ActivateWalletButton />
       </div>
     </div>
   );

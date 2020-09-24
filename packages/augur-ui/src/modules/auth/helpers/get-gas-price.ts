@@ -1,5 +1,5 @@
 import { createBigNumber } from 'utils/create-big-number';
-import { GWEI_CONVERSION, NOT_USE_ETH_RESERVE, USE_ETH_RESERVE } from 'modules/common/constants';
+import { GWEI_CONVERSION } from 'modules/common/constants';
 import { AppStatus } from 'modules/app/store/app-status';
 
 export default function() {
@@ -11,15 +11,5 @@ export default function() {
 }
 
 export const getTransactionLabel = () => {
-  const {
-    loginAccount: { balances },
-    env: {
-      gsn: { minDaiForSignerETHBalanceInDAI },
-    },
-  } = AppStatus.get();
-  const useEthReserve = createBigNumber(balances.dai).isGreaterThan(
-    createBigNumber(minDaiForSignerETHBalanceInDAI)
-  );
-  if (useEthReserve) return USE_ETH_RESERVE;
-  return NOT_USE_ETH_RESERVE;
+  return 'Est. TX Fee';
 };

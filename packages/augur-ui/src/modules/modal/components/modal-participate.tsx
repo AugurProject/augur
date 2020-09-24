@@ -7,8 +7,6 @@ import {
   BUY_PARTICIPATION_TOKENS_GAS_LIMIT,
   REP,
   GWEI_CONVERSION,
-  GSN_WALLET_SEEN,
-  MODAL_INITIALIZE_ACCOUNT,
 } from 'modules/common/constants';
 import {
   Title,
@@ -17,23 +15,20 @@ import {
   Breakdown, ButtonsRow,
 } from '../common';
 import { displayGasInDai } from 'modules/app/actions/get-ethToDai-rate';
-import { InitializeWalletModalNotice } from 'modules/common/labels';
 import getValueFromlocalStorage from 'utils/get-local-storage-value';
 import { useAppStatusStore } from 'modules/app/store/app-status';
-import { isGSNUnavailable } from 'modules/app/selectors/is-gsn-unavailable';
 import { getTransactionLabel } from 'modules/auth/helpers/get-gas-price';
 import { purchaseParticipationTokens } from 'modules/reporting/actions/participation-tokens-management';
+import { getGasCost } from '../gas';
 
 export const ModalParticipate = () => {
-  const gsnWalletInfoSeen =
-    getValueFromlocalStorage(GSN_WALLET_SEEN) === 'true' ? true : false;
   const {
     loginAccount: {
       balances: { rep },
     },
     modal,
-    gsnEnabled: GsnEnabled,
     gasPriceInfo,
+    ethToDaiRate,
     actions: { closeModal, setModal }
   } = useAppStatusStore();
 
@@ -45,26 +40,16 @@ export const ModalParticipate = () => {
     },
   ];
   const title = 'Buy Participation Tokens';
-  const gsnUnavailable = isGSNUnavailable();
   const transactionLabel = getTransactionLabel();
 
-  const initializeGsnWallet = (customAction = null) =>
-    setModal({
-      customAction,
-      type: MODAL_INITIALIZE_ACCOUNT,
-    });
   const [isValid, setIsValid] = useState(false);
   const [quantity, setQuantity] = useState('');
   const [gasLimit, setGasLimit] = useState(BUY_PARTICIPATION_TOKENS_GAS_LIMIT);
   const [errors, setErrors] = useState([]);
 
   const formattedQuantity = formatRep(quantity || 0);
-
-  const gasEstimateInEth = formatGasCostToEther(
-    gasLimit,
-    { decimalsRounded: 4 },
-    createBigNumber(GWEI_CONVERSION).multipliedBy(gasPrice)
-  );
+  const gasCostDai = getGasCost(gasLimit, gasPrice, ethToDaiRate);
+  const displayfee = `$${gasCostDai.formattedValue}`;
 
   useEffect(() => {
     purchaseParticipationTokens(1, true, (err, gasLimit) => {
@@ -75,19 +60,10 @@ export const ModalParticipate = () => {
   }, []);
 
   const submitForm = () => {
-    if (gsnUnavailable && !gsnWalletInfoSeen) {
-      initializeGsnWallet(() => {
-        purchaseParticipationTokens(quantity, false, err => {
-          if (err) console.log('ERR for purchaseParticipationTokens', err);
-          closeModal();
-        });
-      });
-    } else {
-      purchaseParticipationTokens(quantity, false, err => {
-        if (err) console.log('ERR for purchaseParticipationTokens', err);
-        closeModal();
-      });
-    }
+    purchaseParticipationTokens(quantity, false, err => {
+      if (err) console.log('ERR for purchaseParticipationTokens', err);
+      closeModal();
+    });
   };
 
   const validateForm = quantity => {
@@ -143,8 +119,8 @@ export const ModalParticipate = () => {
     },
     {
       label: transactionLabel,
-      value: GsnEnabled ? displayGasInDai(gasLimit) : gasEstimateInEth,
-      denomination: GsnEnabled ? 'DAI' : 'ETH',
+      value: displayfee,
+      denomination: 'DAI',
       showDenomination: true,
     },
   ];
@@ -171,7 +147,6 @@ export const ModalParticipate = () => {
           innerLabel={REP}
         />
         <Breakdown rows={items} />
-        <InitializeWalletModalNotice />
         <ButtonsRow buttons={buttons}/>
       </div>
     </section>
