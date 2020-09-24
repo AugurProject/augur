@@ -269,7 +269,7 @@ export const ModalClaimFees = () => {
 
   return (
     <Proceeds
-      title={isForking ? 'Release REP' : 'Claim Stake & Fees'}
+      title={isForking ? 'Release REP' : 'Claim stake & fees'}
       submitAllTxCount={isForking ? 0 : submitAllTxCount}
       descriptionMessage={
         participationTokensOnly

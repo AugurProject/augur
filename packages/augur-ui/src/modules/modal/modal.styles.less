@@ -456,6 +456,60 @@ div.Onboarding {
 
 :root[theme='BETTING'],
 :root[theme='SPORTS'] {
+  .DescriptionMessage {
+    > span {
+      .text-14;
+
+      > b {
+        font-weight: 400;
+      }
+    }
+  }
+
+  .Proceeds {
+    border: 0;
+    
+    > main {
+      border-bottom: 0;
+      padding-top: @size-24;
+      padding-bottom: @size-24;
+
+      > section:first-of-type {
+        margin-top: @size-16;
+      }
+
+      > section:last-of-type {
+        margin-bottom: @size-18;
+      }
+    }
+  }
+  .DefaultModalBorder {
+    border: 0;
+    border-radius: @border-radius-rounded;
+  
+    @media @breakpoint-mobile {
+      border: 0;
+      border-radius: @border-radius-default;
+    }
+  }
+  
+  .ActionRow {
+    background: #F5F5F8;
+    border: 1px solid #D1D1D9;
+    border-radius: 3px;
+
+    > section {
+      > h2 {
+        .text-14-bold;
+
+        color: var(--color-primary-text);
+      }
+    }
+
+    &:not(:first-of-type) {
+      margin-top: @size-8;
+    }
+  }
 
   .ModalReporting {
     > main {
@@ -528,6 +582,12 @@ div.Onboarding {
 
   .TitleHeader {
     padding: @size-16 @size-20;
+
+    > h1 {
+      .text-16-bold;
+
+      text-transform: unset;
+    }
     
     > button:first-of-type {
       > svg {

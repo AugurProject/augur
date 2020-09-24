@@ -665,6 +665,10 @@ export const Breakdown = (props: BreakdownProps) => (
 
 export const ActionRows = ({ rows }: ActionRowsProps) => {
   const [estimatedRows, setEstimatedRows] = useState(rows);
+  const {
+    theme,
+  } = useAppStatusStore();
+  const isSports = theme === THEMES.SPORTS;
   useEffect(() => {
     const timer = setTimeout(async () => {
       Promise.all(rows.map(async row => await row.estimateGas())).then(
@@ -703,7 +707,10 @@ export const ActionRows = ({ rows }: ActionRowsProps) => {
             queueName={row.queueName}
             queueId={row.queueId}
             action={row.action}
-            submitTextButtton={true}
+            submitTextButtton={isSports ? false : true}
+            secondaryButton={!isSports ? false : true}
+            tiny={isSports}
+            smallSpinner={isSports}
           />
         )}
       </div>
