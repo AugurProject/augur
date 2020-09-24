@@ -2,7 +2,7 @@ import React from 'react';
 import MarketRow from 'modules/portfolio/components/common/market-row';
 import { MovementLabel } from 'modules/common/labels';
 import { ActiveMarketsIcon } from 'modules/common/icons';
-import { SizeTypes, FormattedNumber, MarketData } from 'modules/types';
+import { FormattedNumber, MarketData, SizeTypes } from 'modules/types';
 import { THEMES } from 'modules/common/constants';
 import { formatNumber } from 'utils/format-number';
 import { useAppStatusStore } from 'modules/app/store/app-status';
@@ -63,7 +63,7 @@ const OpenMarkets = ({ toggle }: OpenMarketsProps) => {
             showIcon
             showPlusMinus
             value={positionValueChange}
-            size={SizeTypes.LARGE}
+            size={isTrading ? SizeTypes.LARGE : SizeTypes.NORMAL}
           />
         }
         toggleContent={
@@ -74,12 +74,12 @@ const OpenMarkets = ({ toggle }: OpenMarketsProps) => {
                 <div key={position.outcomeId}>
                   <span>{position.outcomeName}</span>
                   <MovementLabel
-                    showBrackets
+                    showBrackets={isTrading}
                     useFull
                     showIcon
                     showPlusMinus
                     value={position.unrealized24HrPercent}
-                    size={SizeTypes.SMALL}
+                    size={isTrading ? SizeTypes.SMALL : SizeTypes.NORMAL}
                   />
                 </div>
               ))}
