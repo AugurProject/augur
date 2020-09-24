@@ -36,7 +36,6 @@ import isMetaMaskPresent from 'modules/auth/helpers/is-meta-mask';
 export const SignIn = ({ isLogin }) => {
   const {
     modal,
-    walletStatus,
     actions: { closeModal, setModal },
   } = useAppStatusStore();
   const loginModal = () => setModal({ type: MODAL_LOGIN });

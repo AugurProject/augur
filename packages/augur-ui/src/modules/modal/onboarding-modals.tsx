@@ -9,9 +9,7 @@ import {
   MODAL_AUGUR_P2P,
   MODAL_ADD_FUNDS,
   HELP_CENTER_ADD_FUNDS,
-  WALLET_STATUS_VALUES,
   TRANSACTIONS,
-  CREATEAUGURWALLET,
   HELP_CENTER_LEARN_ABOUT_ADDRESS,
   MODAL_ACCOUNT_CREATED,
   MODAL_TEST_BET,
@@ -37,7 +35,6 @@ import { Onboarding } from './onboarding';
 import { TestBet } from './common';
 import makePath from 'modules/routes/helpers/make-path';
 import { MARKETS, MARKET } from 'modules/routes/constants/views';
-import { createFundedGsnWallet } from 'modules/auth/actions/update-sdk';
 import { formatDai } from 'utils/format-number';
 import { createBigNumber } from 'utils/create-big-number';
 import makeQuery from 'modules/routes/helpers/make-query';
@@ -267,98 +264,6 @@ export const ModalTutorialOutro = ({ next, back }) => {
 
 const DAI_HIGH_VALUE_AMOUNT = 40;
 const RESERVE_IN_ETH = 0.04;
-
-export const ModalAugurP2P = () => {
-  const {
-    actions: { setModal, closeModal },
-    env,
-    loginAccount,
-    pendingQueue,
-    ethToDaiRate,
-    walletStatus,
-  } = useAppStatusStore();
-  const { balances } = loginAccount;
-
-  const daiHighValueAmount =
-    env.gsn?.minDaiForSignerETHBalanceInDAI || DAI_HIGH_VALUE_AMOUNT;
-  const ethInReserveAmount =
-    env.gsn?.desiredSignerBalanceInETH || RESERVE_IN_ETH;
-  const ethRate = ethToDaiRate?.value || 0;
-  const reserveInDai = formatDai(
-    createBigNumber(ethInReserveAmount).multipliedBy(ethRate)
-  );
-  const highBalance = balances.dai > daiHighValueAmount;
-
-  const gotoOnboardingStep = step =>
-    setModal({ type: getOnboardingStep(step) });
-  const testBet = () => setModal({ type: MODAL_TEST_BET });
-  return (
-    <Onboarding
-      icon={null}
-      largeHeader={'Augur runs on a peer-to-peer network'}
-      showAccountStatus={true}
-      currentStep={4}
-      changeCurrentStep={step => {
-        gotoOnboardingStep(step);
-      }}
-      analyticsEvent={() => track(AUGUR_IS_P2P, {})}
-      showActivationButton={
-        walletStatus === WALLET_STATUS_VALUES.FUNDED_NEED_CREATE ||
-        (walletStatus === WALLET_STATUS_VALUES.CREATED &&
-          pendingQueue[TRANSACTIONS] &&
-          pendingQueue[TRANSACTIONS][CREATEAUGURWALLET] &&
-          pendingQueue[TRANSACTIONS][CREATEAUGURWALLET].status === 'Success')
-      }
-      createFundedGsnWallet={() => createFundedGsnWallet()}
-      linkContent={[
-        {
-          content:
-            'This network requires transaction fees to operate which are paid in ETH. This goes entirely to the network and Augur doesn’t collect any of these fees.',
-        },
-        {
-          content: `Account activation is required before making your first transaction.There will be a small transaction fee to activate your account. ${
-            highBalance
-              ? `$${reserveInDai.formattedValue} worth of ETH, from your total funds will be held in your Fee reserve to cover further transactions.`
-              : `If your account balance exceeds $${daiHighValueAmount}, a portion of this equivilant to 0.04ETH will be held in your Fee reserve to cover further transactions.`
-          }`,
-        },
-        {
-          content: `So long as your available account balance remains over $${daiHighValueAmount} Dai, your Fee reserve will replenish automatically.`,
-        },
-        {
-          content: 'Your Fee reserve can easily be cashed out at anytime.',
-        },
-        {
-          content: 'LEARN MORE',
-          link: HELP_CENTER_LEARN_ABOUT_ADDRESS,
-        },
-      ]}
-      buttons={
-        walletStatus === WALLET_STATUS_VALUES.FUNDED_NEED_CREATE
-          ? [
-              {
-                text: '',
-                // Activate Account placeholder
-              },
-              {
-                text: 'Do it later',
-                action: () => {
-                  testBet();
-                },
-              },
-            ]
-          : [
-              {
-                text: 'Continue',
-                action: () => {
-                  testBet();
-                },
-              },
-            ]
-      }
-    />
-  );
-};
 
 export const ModalTestBet = () => {
   const {

@@ -605,8 +605,8 @@ export interface AppStatus {
   isHelpMenuOpen: boolean;
   ethToDaiRate: FormattedNumber;
   repToDaiRate: FormattedNumber;
-  gsnEnabled: boolean;
-  walletStatus: string;
+  usdcToDaiRate: FormattedNumber;
+  usdtToDaiRate: FormattedNumber;
 }
 
 export interface AccountPositionAction {
@@ -687,6 +687,7 @@ export interface LoginAccount {
   totalOpenOrdersFrozenFunds?: string;
   tradingPositionsTotal?: UnrealizedRevenue;
   timeframeData?: TimeframeData;
+  tradingApproved?: boolean;
   allowanceFormatted?: FormattedNumber;
   allowance?: BigNumber;
   balances: AccountBalances;

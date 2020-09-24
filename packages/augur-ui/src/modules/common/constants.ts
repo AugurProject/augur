@@ -178,12 +178,6 @@ export const GAS_TIME_LEFT_LABELS = {
   SLOW: '30 min or more',
 };
 
-export const WALLET_STATUS_VALUES = {
-  WAITING_FOR_FUNDING: 'WAITING_FOR_FUNDING',
-  FUNDED_NEED_CREATE: 'FUNDED_NEED_CREATE',
-  CREATED: 'CREATED',
-};
-
 export const ON_BORDING_STATUS_STEP = {
   ONE: 1,
   TWO: 2,
@@ -634,7 +628,6 @@ export const MODAL_FINALIZE_MARKET = 'MODAL_FINALIZE_MARKET';
 export const MODAL_DISCARD = 'MODAL_DISCARD';
 export const MODAL_FROZEN_FUNDS = 'MODAL_FROZEN_FUNDS';
 export const DISCLAIMER_SEEN = 'disclaimerSeen';
-export const GSN_WALLET_SEEN = 'gsnWalletInfoSeen';
 export const MARKET_REVIEW_SEEN = 'marketReviewSeen';
 export const MODAL_OPEN_ORDERS = 'MODAL_OPEN_ORDERS';
 export const MODAL_MARKET_LOADING = 'MODAL_MARKET_LOADING';
@@ -731,6 +724,7 @@ export const GETORCREATENEXTFEEWINDOW = 'GETORCREATENEXTFEEWINDOW';
 export const GETORCREATEPREVIOUSFEEWINDOW = 'GETORCREATEPREVIOUSFEEWINDOW';
 export const UPDATEFORKVALUES = 'UPDATEFORKVALUES';
 export const APPROVE = 'APPROVE';
+export const APPROVALS = 'APPROVALS';
 export const DECREASEAPPROVAL = 'DECREASEAPPROVAL';
 export const DEPOSITETHER = 'DEPOSITETHER';
 export const DEPOSITETHERFOR = 'DEPOSITETHERFOR';
@@ -750,7 +744,6 @@ export const CUSTOM = 'Custom';
 export const PREFILLEDSTAKE = 'PREFILLEDSTAKE';
 export const MIGRATE_FROM_LEG_REP_TOKEN = 'MIGRATEFROMLEGACYREPUTATIONTOKEN';
 export const CREATEAUGURWALLET = 'RUNPERIODICALS';
-export const WITHDRAWALLFUNDSASDAI = 'WITHDRAWALLFUNDSASDAI';
 export const SWAPEXACTTOKENSFORTOKENS = 'SWAPEXACTTOKENSFORTOKENS';
 export const SWAPETHFOREXACTTOKENS = 'SWAPETHFOREXACTTOKENS';
 export const ADDLIQUIDITY = 'ADDLIQUIDITY';
@@ -790,6 +783,7 @@ export const ZERO = createBigNumber(0);
 export const ONE = createBigNumber(1, 10);
 export const TWO = createBigNumber(2, 10);
 export const FIVE = createBigNumber(5, 10);
+export const APPROVE_GAS_ESTIMATE = createBigNumber(40000);
 export const TEN = createBigNumber(10, 10);
 export const TWENTY_FIVE = createBigNumber(25, 10);
 export const FIFTY = createBigNumber(50, 10);
@@ -797,15 +791,16 @@ export const HUNDRED = createBigNumber(100, 10);
 export const TEN_TO_THE_EIGHTEENTH_POWER = TEN.exponentiatedBy(18);
 export const MIN_QUANTITY = createBigNumber('0.01');
 export const DISPUTE_GAS_COST = createBigNumber(480000);
-export const INITAL_REPORT_GAS_COST = createBigNumber(1094412);
+export const INITAL_REPORT_GAS_COST = createBigNumber(570050);
 export const V1_REP_MIGRATE_ESTIMATE = createBigNumber(303000);
 export const NEW_ORDER_GAS_ESTIMATE = createBigNumber(675334);
-export const NEW_MARKET_GAS_ESTIMATE = createBigNumber(2000000);
-export const MIGRATE_MARKET_GAS_ESTIMATE = createBigNumber(3000000); // TODO: Get actual gas estimate for migrating a market
-export const CLAIM_MARKETS_PROCEEDS_GAS_ESTIMATE = createBigNumber(600000); // Gas cost for claiming proceeds from a categorical market with 8 outcomes (worst-case gas cost)
+export const TRADE_ORDER_GAS_MODAL_ESTIMATE = createBigNumber(800000);
+export const NEW_MARKET_GAS_ESTIMATE = createBigNumber(1200000);
+export const MIGRATE_MARKET_GAS_ESTIMATE = createBigNumber(1600000);
+export const CLAIM_MARKETS_PROCEEDS_GAS_ESTIMATE = createBigNumber(350000);
 export const CLAIM_MARKETS_PROCEEDS_GAS_LIMIT = createBigNumber(3000000);
 export const CLAIM_FEES_GAS_COST = createBigNumber(500000);
-export const BUY_PARTICIPATION_TOKENS_GAS_LIMIT = createBigNumber(290000);
+export const BUY_PARTICIPATION_TOKENS_GAS_LIMIT = createBigNumber(200000);
 export const MAX_BULK_CLAIM_MARKETS_PROCEEDS_COUNT = 5;
 export const MAX_BULK_ORDER_COUNT = 5;
 export const ETHER = createBigNumber(10).pow(18);
@@ -832,10 +827,6 @@ export const COMMITTING = 'committing';
 export const SUBMITTED = 'submitted';
 export const INTERRUPTED = 'interrupted';
 
-// transcation fee
-export const USE_ETH_RESERVE = 'Est. TX Fee (paid by Fee reserve)';
-export const NOT_USE_ETH_RESERVE = 'Est. TX Fee';
-export const FEE_RESERVES_LABEL = 'Fee reserves';
 // Market Creation
 export const CREATING_MARKET = 'creating market...';
 

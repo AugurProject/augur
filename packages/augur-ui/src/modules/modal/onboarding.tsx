@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 
-import { DefaultButtonProps, ProcessingButton } from 'modules/common/buttons';
+import { DefaultButtonProps } from 'modules/common/buttons';
 import {
   ButtonsRow,
   LargeSubheader,
@@ -9,11 +9,9 @@ import {
   LinkContentSection,
   Stepper,
 } from 'modules/modal/common';
-import { AccountStatusTracker } from 'modules/modal/common';
-import { TransferMyTokens } from 'modules/modal/common';
 import { LinkContent } from 'modules/types';
 import classNames from 'classnames';
-import { ONBOARDING_MAX_STEPS, TRANSACTIONS, CREATEAUGURWALLET, DAI } from 'modules/common/constants';
+import { ONBOARDING_MAX_STEPS, DAI } from 'modules/common/constants';
 import { LeftChevron } from 'modules/common/icons';
 
 import Styles from 'modules/modal/modal.styles.less';
@@ -32,8 +30,6 @@ interface OnboardingProps {
   analyticsEvent?: Function;
   showAccountStatus?: boolean;
   showTransferMyDai?: boolean;
-  showActivationButton?: boolean;
-  createFundedGsnWallet?: Function;
   showAugurP2PModal?: Function;
 }
 
@@ -51,8 +47,6 @@ export const Onboarding = ({
   showAccountStatus,
   showTransferMyDai,
   showAugurP2PModal,
-  showActivationButton,
-  createFundedGsnWallet,
 }: OnboardingProps) => {
   useEffect(() => {
     analyticsEvent && analyticsEvent();
@@ -62,16 +56,6 @@ export const Onboarding = ({
     <>
       <div>
         {buttons.length > 0 && <ButtonsRow buttons={buttons} />}
-        {showActivationButton &&
-          <ProcessingButton
-            small
-            text={'Activate Account'}
-            action={() => createFundedGsnWallet()}
-            queueName={TRANSACTIONS}
-            queueId={CREATEAUGURWALLET}
-            customConfirmedButtonText={'Account Activated!'}
-          />
-        }
       </div>
       {currentStep && <Stepper changeCurrentStep={changeCurrentStep} currentStep={currentStep} maxSteps={ONBOARDING_MAX_STEPS} /> }
     </>
@@ -84,15 +68,12 @@ export const Onboarding = ({
       })}
     >
       <div>
-        {showAccountStatus && <AccountStatusTracker />}
-
         <main>
           {icon && <div>{icon}</div>}
           {largeHeader && <LargeSubheader text={largeHeader} />}
           {smallHeader && <SmallSubheader text={smallHeader} />}
           {mediumHeader && <MediumSubheader text={mediumHeader} />}
           {linkContent && <LinkContentSection linkContent={linkContent} />}
-          {showTransferMyDai && <TransferMyTokens tokenName={DAI} callBack={() => showAugurP2PModal()}/>}
         </main>
 
         <div className={Styles.OnboardingNav}>{NavControls}</div>

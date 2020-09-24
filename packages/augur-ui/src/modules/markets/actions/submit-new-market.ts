@@ -28,7 +28,6 @@ export const submitNewMarket = async (
 ) => {
   const {
     loginAccount: { address, allowance },
-    gsnEnabled,
   } = AppStatus.get();
   market.orderBook = sortOrders(market.orderBook);
   market.endTime = market.endTimeFormatted.timestamp;
@@ -41,8 +40,7 @@ export const submitNewMarket = async (
   const sortOrderBook = hasOrders && sortOrders(market.orderBook);
   const hashId = getConstructedMarketId(market);
 
-  // If GSN is enabled no need to call the below since this will be handled by the proxy contract during initalization
-  if (!gsnEnabled && allowance.lte(ZERO)) {
+  if (allowance.lte(ZERO)) {
     await approveToTrade();
   }
 

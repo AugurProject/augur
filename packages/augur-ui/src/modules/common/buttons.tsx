@@ -671,17 +671,6 @@ export const REPFaucetButton = (props: DefaultActionButtonProps) => (
   </button>
 );
 
-export const FundGSNWalletButton = (props: DefaultActionButtonProps) => (
-  <button
-    onClick={e => props.action(e)}
-    className={Styles.SecondaryButton}
-    disabled={props.disabled}
-    title={props.title ? props.title : 'Fund GSN Wallet'}
-  >
-    <span>{props.title}</span>
-  </button>
-);
-
 export const DAIFaucetButton = (props: DefaultActionButtonProps) => (
   <button
     onClick={e => props.action(e)}

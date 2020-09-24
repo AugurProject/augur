@@ -17,7 +17,6 @@ import {
   TRANSACTIONS,
   MIGRATE_FROM_LEG_REP_TOKEN,
   TOTAL_FUNDS_TOOLTIP,
-  WALLET_STATUS_VALUES,
   MODAL_MIGRATE_REP,
   THEMES,
 } from 'modules/common/constants';
@@ -26,7 +25,6 @@ import { useAppStatusStore } from 'modules/app/store/app-status';
 import Styles from 'modules/app/components/top-nav/top-nav.styles.less';
 import { LinearPropertyLabelUnderlineTooltip } from 'modules/common/labels';
 import { formatNumber } from 'utils/format-number';
-import { getEthReserveInDai } from 'modules/auth/helpers/get-eth-reserve';
 import ButtonStyles from 'modules/common/buttons.styles.less';
 
 interface TopNavProps {
@@ -39,7 +37,6 @@ const SPREAD_INDEX = 3;
 const TopNav = ({ isLogged, menuData }: TopNavProps) => {
   const {
     env: { ui: { reportingOnly: disableMarketCreation } },
-    walletStatus,
     currentBasePath,
     pendingQueue,
     loginAccount: { balances: walletBalances },
@@ -53,10 +50,6 @@ const TopNav = ({ isLogged, menuData }: TopNavProps) => {
     walletBalances.legacyRep !== '0' ||
     walletBalances.signerBalances.legacyRep !== '0' ||
     !!pending;
-  const showCreateAccountButton =
-    walletStatus === WALLET_STATUS_VALUES.WAITING_FOR_FUNDING ||
-    walletStatus === WALLET_STATUS_VALUES.FUNDED_NEED_CREATE;
-  const ethReserveInDai = getEthReserveInDai();
   const isCurrentItem = item => {
     if (item.route === 'markets' && currentBasePath === 'market') return true;
     return item.route === currentBasePath;
@@ -94,15 +87,6 @@ const TopNav = ({ isLogged, menuData }: TopNavProps) => {
                 <li key="fill-space" className={Styles.FillSpace} />
               )}
 
-              <div className={Styles.ToolTip}>
-                <LinearPropertyLabelUnderlineTooltip
-                  {...formatNumber(0)}
-                  highlightAlternateBolded
-                  id="totalFunds_top_nav"
-                  tipText={`${TOTAL_FUNDS_TOOLTIP} of $${ethReserveInDai.formatted} DAI`}
-                />
-              </div>
-
               {index === SPREAD_INDEX && showMigrateRepButton && (
                 <li className={Styles.MigrateRepItem} key="migrate-rep-button">
                   <div className={Styles.MigrateRep}>
@@ -112,7 +96,6 @@ const TopNav = ({ isLogged, menuData }: TopNavProps) => {
                       queueName={TRANSACTIONS}
                       queueId={MIGRATE_FROM_LEG_REP_TOKEN}
                       primaryButton
-                      spinner
                       className={ButtonStyles.ProcessingSpinnerButton}
                     />
                   </div>

@@ -873,10 +873,10 @@ export const NoFundsErrors = ({
   availableRepFormatted,
   availableDaiFormatted,
 }: NoFundsErrorsProps) => {
-  const { actions: { setModal }, gsnEnabled } = useAppStatusStore();
+  const { actions: { setModal } } = useAppStatusStore();
   return (
     <div className={classNames({ [Styles.HasError]: noEth || noDai || noRep })}>
-      {noEth && !gsnEnabled && (
+      {noEth && (
         <DismissableNotice
           title="Not enough ETH in your wallet"
           description={`You have ${availableEthFormatted.formatted} ETH of ${totalEth.formatted} required to create this market`}
@@ -1350,7 +1350,7 @@ export const EstimatedStartSelector = ({
     onChange('description', question);
     onChange('template', template);
   }, [endTime, hour, minute, meridiem, timezone, offset, offsetName]);
-  
+
   return (
     <div className={Styles.EstimatedStartSelector}>
       <DateTimeSelector
@@ -1410,7 +1410,7 @@ export interface QuestionBuilderProps {
 export const QuestionBuilder = ({
   onChange,
 }: QuestionBuilderProps) => {
-  const { 
+  const {
     newMarket,
     universe: { maxMarketEndTime: isAfter },
     blockchain: { currentAugurTimestamp: currentTimestamp },

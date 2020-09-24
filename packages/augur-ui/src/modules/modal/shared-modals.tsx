@@ -63,10 +63,12 @@ export const ModalClaimFees = () => {
     pendingQueue = [],
     universe: { forkingInfo },
     modal,
-    gsnEnabled: GsnEnabled,
+    gasPriceInfo,
     actions: { closeModal },
   } = useAppStatusStore();
+  const gasPrice = gasPriceInfo.userDefinedGasPrice || gasPriceInfo.average;
 
+  const gasCost = CLAIM_FEES_GAS_COST.multipliedBy(gasPrice);
   const claimReportingFees = selectReportingWinningsByMarket();
   const transactionLabel = getTransactionLabel();
 
@@ -361,7 +363,9 @@ export const ModalClaimMarketsProceeds = () => {
     pendingQueue = [],
     loginAccount: { address: account },
     modal,
-    gsnEnabled: GsnEnabled,
+    gasPriceInfo,
+    ethToDaiRate,
+    blockchain: { currentAugurTimestamp: currentTimestamp },
     actions: { closeModal },
   } = useAppStatusStore();
   const accountMarketClaimablePositions: MarketClaimablePositions = getLoginAccountClaimableWinnings();
@@ -552,6 +556,8 @@ export const ModalUnsignedOrders = () => {
   const {
     loginAccount,
     modal,
+    ethToDaiRate,
+    gasPriceInfo,
     actions: { closeModal },
   } = useAppStatusStore();
   const {
