@@ -10550,63 +10550,6 @@ export class ParaUniverse<TBigNumber> extends Contract<TBigNumber> {
 		return <string>result[0]
 	}
 
-	public createCategoricalMarket = async (endTime: TBigNumber, feePerCashInAttoCash: TBigNumber, affiliateValidator: string, affiliateFeeDivisor: TBigNumber, designatedReporterAddress: string, outcomes: Array<string>, extraInfo: string, options?: { sender?: string }): Promise<Array<Event>> => {
-		options = options || {}
-		const abi: AbiFunction = {"constant":false,"inputs":[{"internalType":"uint256","name":"_endTime","type":"uint256"},{"internalType":"uint256","name":"_feePerCashInAttoCash","type":"uint256"},{"internalType":"contract IAffiliateValidator","name":"_affiliateValidator","type":"address"},{"internalType":"uint256","name":"_affiliateFeeDivisor","type":"uint256"},{"internalType":"address","name":"_designatedReporterAddress","type":"address"},{"internalType":"bytes32[]","name":"_outcomes","type":"bytes32[]"},{"internalType":"string","name":"_extraInfo","type":"string"}],"name":"createCategoricalMarket","outputs":[{"internalType":"contract IMarket","name":"_newMarket","type":"address"}],"payable":false,"stateMutability":"nonpayable","type":"function"}
-		return await this.remoteCall(abi, [endTime, feePerCashInAttoCash, affiliateValidator, affiliateFeeDivisor, designatedReporterAddress, outcomes, extraInfo], 'createCategoricalMarket', options.sender)
-	}
-	
-	public createCategoricalMarket_estimateGas = async (endTime: TBigNumber, feePerCashInAttoCash: TBigNumber, affiliateValidator: string, affiliateFeeDivisor: TBigNumber, designatedReporterAddress: string, outcomes: Array<string>, extraInfo: string, options?: { sender?: string }): Promise<TBigNumber> => {
-		options = options || {}
-		const abi: AbiFunction = {"constant":false,"inputs":[{"internalType":"uint256","name":"_endTime","type":"uint256"},{"internalType":"uint256","name":"_feePerCashInAttoCash","type":"uint256"},{"internalType":"contract IAffiliateValidator","name":"_affiliateValidator","type":"address"},{"internalType":"uint256","name":"_affiliateFeeDivisor","type":"uint256"},{"internalType":"address","name":"_designatedReporterAddress","type":"address"},{"internalType":"bytes32[]","name":"_outcomes","type":"bytes32[]"},{"internalType":"string","name":"_extraInfo","type":"string"}],"name":"createCategoricalMarket","outputs":[{"internalType":"contract IMarket","name":"_newMarket","type":"address"}],"payable":false,"stateMutability":"nonpayable","type":"function"}
-		return await this.estimateGas(abi, [endTime, feePerCashInAttoCash, affiliateValidator, affiliateFeeDivisor, designatedReporterAddress, outcomes, extraInfo], 'createCategoricalMarket', options.sender)
-	}
-
-	public createCategoricalMarket_ = async (endTime: TBigNumber, feePerCashInAttoCash: TBigNumber, affiliateValidator: string, affiliateFeeDivisor: TBigNumber, designatedReporterAddress: string, outcomes: Array<string>, extraInfo: string, options?: { sender?: string }): Promise<string> => {
-		options = options || {}
-		const abi: AbiFunction = {"constant":false,"inputs":[{"internalType":"uint256","name":"_endTime","type":"uint256"},{"internalType":"uint256","name":"_feePerCashInAttoCash","type":"uint256"},{"internalType":"contract IAffiliateValidator","name":"_affiliateValidator","type":"address"},{"internalType":"uint256","name":"_affiliateFeeDivisor","type":"uint256"},{"internalType":"address","name":"_designatedReporterAddress","type":"address"},{"internalType":"bytes32[]","name":"_outcomes","type":"bytes32[]"},{"internalType":"string","name":"_extraInfo","type":"string"}],"name":"createCategoricalMarket","outputs":[{"internalType":"contract IMarket","name":"_newMarket","type":"address"}],"payable":false,"stateMutability":"nonpayable","type":"function"}
-		const result = await this.localCall(abi, [endTime, feePerCashInAttoCash, affiliateValidator, affiliateFeeDivisor, designatedReporterAddress, outcomes, extraInfo], options.sender)
-		return <string>result[0]
-	}
-
-	public createScalarMarket = async (endTime: TBigNumber, feePerCashInAttoCash: TBigNumber, affiliateValidator: string, affiliateFeeDivisor: TBigNumber, designatedReporterAddress: string, prices: Array<TBigNumber>, numTicks: TBigNumber, extraInfo: string, options?: { sender?: string }): Promise<Array<Event>> => {
-		options = options || {}
-		const abi: AbiFunction = {"constant":false,"inputs":[{"internalType":"uint256","name":"_endTime","type":"uint256"},{"internalType":"uint256","name":"_feePerCashInAttoCash","type":"uint256"},{"internalType":"contract IAffiliateValidator","name":"_affiliateValidator","type":"address"},{"internalType":"uint256","name":"_affiliateFeeDivisor","type":"uint256"},{"internalType":"address","name":"_designatedReporterAddress","type":"address"},{"internalType":"int256[]","name":"_prices","type":"int256[]"},{"internalType":"uint256","name":"_numTicks","type":"uint256"},{"internalType":"string","name":"_extraInfo","type":"string"}],"name":"createScalarMarket","outputs":[{"internalType":"contract IMarket","name":"_newMarket","type":"address"}],"payable":false,"stateMutability":"nonpayable","type":"function"}
-		return await this.remoteCall(abi, [endTime, feePerCashInAttoCash, affiliateValidator, affiliateFeeDivisor, designatedReporterAddress, prices, numTicks, extraInfo], 'createScalarMarket', options.sender)
-	}
-	
-	public createScalarMarket_estimateGas = async (endTime: TBigNumber, feePerCashInAttoCash: TBigNumber, affiliateValidator: string, affiliateFeeDivisor: TBigNumber, designatedReporterAddress: string, prices: Array<TBigNumber>, numTicks: TBigNumber, extraInfo: string, options?: { sender?: string }): Promise<TBigNumber> => {
-		options = options || {}
-		const abi: AbiFunction = {"constant":false,"inputs":[{"internalType":"uint256","name":"_endTime","type":"uint256"},{"internalType":"uint256","name":"_feePerCashInAttoCash","type":"uint256"},{"internalType":"contract IAffiliateValidator","name":"_affiliateValidator","type":"address"},{"internalType":"uint256","name":"_affiliateFeeDivisor","type":"uint256"},{"internalType":"address","name":"_designatedReporterAddress","type":"address"},{"internalType":"int256[]","name":"_prices","type":"int256[]"},{"internalType":"uint256","name":"_numTicks","type":"uint256"},{"internalType":"string","name":"_extraInfo","type":"string"}],"name":"createScalarMarket","outputs":[{"internalType":"contract IMarket","name":"_newMarket","type":"address"}],"payable":false,"stateMutability":"nonpayable","type":"function"}
-		return await this.estimateGas(abi, [endTime, feePerCashInAttoCash, affiliateValidator, affiliateFeeDivisor, designatedReporterAddress, prices, numTicks, extraInfo], 'createScalarMarket', options.sender)
-	}
-
-	public createScalarMarket_ = async (endTime: TBigNumber, feePerCashInAttoCash: TBigNumber, affiliateValidator: string, affiliateFeeDivisor: TBigNumber, designatedReporterAddress: string, prices: Array<TBigNumber>, numTicks: TBigNumber, extraInfo: string, options?: { sender?: string }): Promise<string> => {
-		options = options || {}
-		const abi: AbiFunction = {"constant":false,"inputs":[{"internalType":"uint256","name":"_endTime","type":"uint256"},{"internalType":"uint256","name":"_feePerCashInAttoCash","type":"uint256"},{"internalType":"contract IAffiliateValidator","name":"_affiliateValidator","type":"address"},{"internalType":"uint256","name":"_affiliateFeeDivisor","type":"uint256"},{"internalType":"address","name":"_designatedReporterAddress","type":"address"},{"internalType":"int256[]","name":"_prices","type":"int256[]"},{"internalType":"uint256","name":"_numTicks","type":"uint256"},{"internalType":"string","name":"_extraInfo","type":"string"}],"name":"createScalarMarket","outputs":[{"internalType":"contract IMarket","name":"_newMarket","type":"address"}],"payable":false,"stateMutability":"nonpayable","type":"function"}
-		const result = await this.localCall(abi, [endTime, feePerCashInAttoCash, affiliateValidator, affiliateFeeDivisor, designatedReporterAddress, prices, numTicks, extraInfo], options.sender)
-		return <string>result[0]
-	}
-
-	public createYesNoMarket = async (endTime: TBigNumber, feePerCashInAttoCash: TBigNumber, affiliateValidator: string, affiliateFeeDivisor: TBigNumber, designatedReporterAddress: string, extraInfo: string, options?: { sender?: string }): Promise<Array<Event>> => {
-		options = options || {}
-		const abi: AbiFunction = {"constant":false,"inputs":[{"internalType":"uint256","name":"_endTime","type":"uint256"},{"internalType":"uint256","name":"_feePerCashInAttoCash","type":"uint256"},{"internalType":"contract IAffiliateValidator","name":"_affiliateValidator","type":"address"},{"internalType":"uint256","name":"_affiliateFeeDivisor","type":"uint256"},{"internalType":"address","name":"_designatedReporterAddress","type":"address"},{"internalType":"string","name":"_extraInfo","type":"string"}],"name":"createYesNoMarket","outputs":[{"internalType":"contract IMarket","name":"_newMarket","type":"address"}],"payable":false,"stateMutability":"nonpayable","type":"function"}
-		return await this.remoteCall(abi, [endTime, feePerCashInAttoCash, affiliateValidator, affiliateFeeDivisor, designatedReporterAddress, extraInfo], 'createYesNoMarket', options.sender)
-	}
-	
-	public createYesNoMarket_estimateGas = async (endTime: TBigNumber, feePerCashInAttoCash: TBigNumber, affiliateValidator: string, affiliateFeeDivisor: TBigNumber, designatedReporterAddress: string, extraInfo: string, options?: { sender?: string }): Promise<TBigNumber> => {
-		options = options || {}
-		const abi: AbiFunction = {"constant":false,"inputs":[{"internalType":"uint256","name":"_endTime","type":"uint256"},{"internalType":"uint256","name":"_feePerCashInAttoCash","type":"uint256"},{"internalType":"contract IAffiliateValidator","name":"_affiliateValidator","type":"address"},{"internalType":"uint256","name":"_affiliateFeeDivisor","type":"uint256"},{"internalType":"address","name":"_designatedReporterAddress","type":"address"},{"internalType":"string","name":"_extraInfo","type":"string"}],"name":"createYesNoMarket","outputs":[{"internalType":"contract IMarket","name":"_newMarket","type":"address"}],"payable":false,"stateMutability":"nonpayable","type":"function"}
-		return await this.estimateGas(abi, [endTime, feePerCashInAttoCash, affiliateValidator, affiliateFeeDivisor, designatedReporterAddress, extraInfo], 'createYesNoMarket', options.sender)
-	}
-
-	public createYesNoMarket_ = async (endTime: TBigNumber, feePerCashInAttoCash: TBigNumber, affiliateValidator: string, affiliateFeeDivisor: TBigNumber, designatedReporterAddress: string, extraInfo: string, options?: { sender?: string }): Promise<string> => {
-		options = options || {}
-		const abi: AbiFunction = {"constant":false,"inputs":[{"internalType":"uint256","name":"_endTime","type":"uint256"},{"internalType":"uint256","name":"_feePerCashInAttoCash","type":"uint256"},{"internalType":"contract IAffiliateValidator","name":"_affiliateValidator","type":"address"},{"internalType":"uint256","name":"_affiliateFeeDivisor","type":"uint256"},{"internalType":"address","name":"_designatedReporterAddress","type":"address"},{"internalType":"string","name":"_extraInfo","type":"string"}],"name":"createYesNoMarket","outputs":[{"internalType":"contract IMarket","name":"_newMarket","type":"address"}],"payable":false,"stateMutability":"nonpayable","type":"function"}
-		const result = await this.localCall(abi, [endTime, feePerCashInAttoCash, affiliateValidator, affiliateFeeDivisor, designatedReporterAddress, extraInfo], options.sender)
-		return <string>result[0]
-	}
-
 	public currentReportingFeeDivisor_ = async (options?: { sender?: string }): Promise<TBigNumber> => {
 		options = options || {}
 		const abi: AbiFunction = {"constant":true,"inputs":[],"name":"currentReportingFeeDivisor","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"}
