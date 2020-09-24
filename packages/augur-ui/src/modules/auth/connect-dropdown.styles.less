@@ -503,7 +503,7 @@
   position: relative;
 
   &:before {
-    .text-10;
+    .text-12;
 
     content: 'Copied!';
     align-items: center;
@@ -512,12 +512,10 @@
     border-radius: @border-radius-default;
     display: flex;
     justify-content: center;
-    padding: @size-8 @size-12;
+    padding: @size-8;
     position: absolute;
-    left: -@size-16;
-    right: -@size-16;
     text-transform: capitalize;
-    top: -@size-36;
+    top: -@size-39;
   }
 
   &:after {
@@ -528,6 +526,7 @@
     border-right: solid @size-8 transparent;
     position: absolute;
     top: -@size-8;
+    left: 32%;
   }
 }
 
