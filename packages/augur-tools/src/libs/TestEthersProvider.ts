@@ -1,4 +1,5 @@
 import { ContractAddresses, SDKConfiguration, RecursivePartial } from '@augurproject/utils';
+import { BigNumber } from 'ethers/utils';
 import { MemDown } from 'memdown';
 import { ethers } from 'ethers';
 import { createSeed } from './ganache';

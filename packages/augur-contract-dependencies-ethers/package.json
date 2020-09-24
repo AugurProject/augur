@@ -1,6 +1,6 @@
 {
   "name": "@augurproject/contract-dependencies-ethers",
-  "version": "2.0.0-alpha.2",
+  "version": "2.1.10",
   "description": "Contract Dependencies For EthersJS",
   "author": "The Augur Developers <team@augur.net>",
   "license": "MIT",
@@ -14,7 +14,7 @@
     "build": "tsc -b",
     "watch": "tsc -w",
     "nuke": "rm -f package-lock.json; rm -f yarn.lock; rm -rf node_modules; yarn clean",
-    "prepare": "tsc",
+    "prepare": "tsc -b",
     "prepush": "yarn lint"
   },
   "repository": {
@@ -30,9 +30,13 @@
     "ethers": "4.0.47"
   },
   "devDependencies": {
-    "ts-node": "8.4.1"
+    "ts-node": "8.4.1",
+    "typescript": "3.8.3"
   },
   "buildDependencies": [
     "typescript"
-  ]
+  ],
+  "publishConfig": {
+    "access": "public"
+  }
 }

@@ -41,13 +41,13 @@ describe('State API :: Accounts :: ', () => {
     // Submit initial report
     const noPayoutSet = [
       new BigNumber(0),
-      new BigNumber(100),
+      new BigNumber(1000),
       new BigNumber(0),
     ];
     const yesPayoutSet = [
       new BigNumber(0),
       new BigNumber(0),
-      new BigNumber(100),
+      new BigNumber(1000),
     ];
     await john.doInitialReport(yesNoMarket1, noPayoutSet);
 

@@ -1,28 +1,30 @@
-import { NetworkId } from '@augurproject/utils';
-import {
-  EthersProvider as EProvider,
-  Transaction,
-} from '@augurproject/contract-dependencies-ethers';
-import { Log, LogValues } from '@augurproject/types';
-import { logger, LoggerLevels } from '@augurproject/utils';
 import { AsyncQueue, queue, retry } from 'async';
 import { BigNumber } from 'bignumber.js';
 import { Abi } from 'ethereum';
 import { JSONRPCErrorCallback, JSONRPCRequestPayload } from 'ethereum-types';
 import { ethers } from 'ethers';
 import * as _ from 'lodash';
+
+import {
+  EthersProvider as EProvider,
+  Transaction,
+} from '@augurproject/contract-dependencies-ethers';
+import { Log, LogValues } from '@augurproject/types';
+import { logger, LoggerLevels, NetworkId, getGasStation } from '@augurproject/utils';
+
 import { FasterAbiInterface } from './FasterAbiInterface';
 import { Counter, isInstanceOfArray, isInstanceOfBigNumber } from './utils';
 
+
 declare global {
   interface Array<T> {
-    toLowerCase(): Array<T>;
+    toLowerCase(): T[];
   }
 }
 
 Array.prototype.toLowerCase = function () {
   return this.map((item) => item.toLowerCase());
-}
+};
 
 interface MultiAddressFilter {
   blockhash?: string;
@@ -55,7 +57,6 @@ export class EthersProvider extends ethers.providers.BaseProvider
   get overrideGasPrice() {
     return this._overrideGasPrice;
   }
-
   set overrideGasPrice(gasPrice: ethers.utils.BigNumber | null) {
     if (gasPrice !== null && gasPrice.eq(new ethers.utils.BigNumber(0))) {
       this._overrideGasPrice = null;
@@ -93,21 +94,35 @@ export class EthersProvider extends ethers.providers.BaseProvider
       ) => {
         const _this = this;
         retry(
-          { times, interval },
+          {
+            times,
+            interval (retryCount) {
+              return interval * Math.pow(2, retryCount);
+            },
+            errorFilter (err) {
+              return (
+                err.message.includes('Rate limit') ||
+                err['code'] === -32000 ||
+                err.message.includes('429')
+              );
+            },
+          },
           async () => {
             let result: Promise<any>;
             const itemString = JSON.stringify(item);
-            if ((item.message === "call" ||
-                 item.message === "getBalance" ||
-                 (item.message === "getBlock" && item.params.blockTag !== 'latest')
-                ) &&
-                process.env.NODE_ENV !== 'test' &&
-                this._callCache.has(itemString)) {
+            if (
+              (item.message === 'call' ||
+                item.message === 'getBalance' ||
+                (item.message === 'getBlock' &&
+                  item.params.blockTag !== 'latest')) &&
+              process.env.NODE_ENV !== 'test' &&
+              this._callCache.has(itemString)
+            ) {
               this.cacheCount.increment(item.message);
               return this._callCache.get(itemString);
             }
             if (item.message === 'send') {
-              if (typeof item.params.params === "undefined") {
+              if (typeof item.params.params === 'undefined') {
                 item.params.params = [];
               }
               const {
@@ -129,16 +144,20 @@ export class EthersProvider extends ethers.providers.BaseProvider
                   );
                 } else {
                   this.callCount.decrement(method);
-                  this.cacheCount.increment("eth_getBlockByNumber");
+                  this.cacheCount.increment('eth_getBlockByNumber');
                 }
                 return _this._mostRecentLatestBlockHeaders;
               }
-              result = _this.providerSend(item.params.method, item.params.params);
+              result = _this.providerSend(
+                item.params.method,
+                item.params.params
+              );
             } else {
               const { blockTag, includeTransactions } = item.params;
               this.callCount.increment(item.message);
               if (
-                (item.message === 'getBlockNumber' || item.message === "getBlock") &&
+                (item.message === 'getBlockNumber' ||
+                  item.message === 'getBlock') &&
                 blockTag === 'latest' &&
                 !!includeTransactions === false &&
                 _this.polling &&
@@ -157,10 +176,13 @@ export class EthersProvider extends ethers.providers.BaseProvider
               }
               result = _this.providerPerform(item.message, item.params);
             }
-            if ((item.message === "call" ||
-                item.message === "getBalance" ||
-                (item.message === "getBlock" && item.params.blockTag !== 'latest')) &&
-                process.env.NODE_ENV !== 'test') {
+            if (
+              (item.message === 'call' ||
+                item.message === 'getBalance' ||
+                (item.message === 'getBlock' &&
+                  item.params.blockTag !== 'latest')) &&
+              process.env.NODE_ENV !== 'test'
+            ) {
               this._callCache.set(itemString, result);
             }
             return result;
@@ -208,16 +230,36 @@ export class EthersProvider extends ethers.providers.BaseProvider
     return super.getBlockNumber();
   }
 
-  async getGasPrice(): Promise<ethers.utils.BigNumber> {
+  async getGasPrice(networkId?: NetworkId): Promise<ethers.utils.BigNumber> {
     if (this.overrideGasPrice !== null) {
       return this.overrideGasPrice;
     }
-    return super.getGasPrice();
+
+    const viaProviderPromise = super.getGasPrice();
+
+    networkId = networkId || await this.getNetworkId();
+    const viaGasStation = await getGasStation(networkId)
+      .then((gasStation) => {
+        return new ethers.utils.BigNumber(gasStation.standard);
+      }).catch((err) => {
+        console.warn('gas station query failed:', err);
+        return null;
+      });
+
+    const viaProvider = await viaProviderPromise; // delays await for simultaneity
+
+    // prefer higher estimate
+    if (viaGasStation === null || viaProvider.gt(viaGasStation)) {
+      return viaProvider;
+    } else {
+      return viaGasStation;
+    }
   }
 
   async estimateGas(
     transaction: ethers.providers.TransactionRequest
   ): Promise<ethers.utils.BigNumber> {
+    transaction.gasPrice = await this.getGasPrice();
     let gasEstimate = new BigNumber(
       (await super.estimateGas(transaction)).toString()
     );
@@ -269,7 +311,7 @@ export class EthersProvider extends ethers.providers.BaseProvider
         `Contract name ${contractName} did not have function ${functionName}`
       );
     }
-    const ethersParams = _.map(funcParams, param => {
+    const ethersParams = _.map(funcParams, (param) => {
       if (isInstanceOfBigNumber(param)) {
         return new ethers.utils.BigNumber(param.toFixed());
       } else if (
@@ -279,7 +321,7 @@ export class EthersProvider extends ethers.providers.BaseProvider
       ) {
         return _.map(
           param,
-          value => new ethers.utils.BigNumber(value.toFixed())
+          (value) => new ethers.utils.BigNumber(value.toFixed())
         );
       }
       return param;
@@ -290,7 +332,7 @@ export class EthersProvider extends ethers.providers.BaseProvider
   parseLogValues(contractName: string, log: Log): LogValues {
     const contractInterface = this.getContractInterface(contractName);
     const parsedLog = contractInterface.fastParseLog(log);
-    const omittedValues = _.map(_.range(parsedLog.values.length), n =>
+    const omittedValues = _.map(_.range(parsedLog.values.length), (n) =>
       n.toString()
     );
     omittedValues.push('length');
@@ -301,7 +343,7 @@ export class EthersProvider extends ethers.providers.BaseProvider
         if (val._hex) {
           return val._hex;
         } else if (Array.isArray(val)) {
-          val = _.map(val, innerVal => {
+          val = _.map(val, (innerVal) => {
             if (innerVal._hex) {
               return innerVal._hex;
             }
@@ -324,7 +366,7 @@ export class EthersProvider extends ethers.providers.BaseProvider
   }
 
   // We're primarily hacking this and bypassing ethers to support multiple addresses in the filter but this also allows us to cut out some expensive behavior we don't care about for the address
-  async getMultiAddressLogs(filter: MultiAddressFilter): Promise<Array<Log>> {
+  async getMultiAddressLogs(filter: MultiAddressFilter): Promise<Log[]> {
     await this.ready;
     if (filter.fromBlock !== undefined) {
       filter.fromBlock = ethers.utils.hexStripZeros(
@@ -357,22 +399,58 @@ export class EthersProvider extends ethers.providers.BaseProvider
     } catch (e) {
       // Check if infura log limit error.
       // See https://infura.io/docs/ethereum/json-rpc/eth_getLogs.
-      if (e.code !== -32005) {
-        throw e;
+      if (e.code === -32005) return this.getSplitLogs(filter, 2);
+
+      // -32600 is an invalid request... hence the message check.
+      if (
+        e.code === -32600 &&
+        (e.message?.includes('Requested block range for eth_getLogs is greater than the limit of 1000 blocks.') ||
+         e.reponseText?.includes('Requested block range for eth_getLogs is greater than the limit of 1000 blocks.'))
+      ) {
+        return this.getLogsWithLimitedBlockRange(filter);
       }
 
-      return this.getSplitLogs(filter, 2);
+      throw e;
     }
   }
 
-  getSplitLogs = async (filter: MultiAddressFilter, desiredDepth: number): Promise<ethers.providers.Log[]> => {
+  getLogsWithLimitedBlockRange = async (
+    filter: MultiAddressFilter,
+    blockRangeLimit = 1000
+  ): Promise<ethers.providers.Log[]> => {
+    const fromBlock = Number(filter.fromBlock);
+    const toBlock = Number(filter.toBlock || await this.getBlockNumber());
+
+    let currentBlock = fromBlock;
+    let logs = [];
+    while(currentBlock < toBlock) {
+      const nextEndBlock = Math.min(currentBlock + blockRangeLimit, toBlock);
+      logs = [
+        ...logs,
+        ...await this.getMultiAddressLogs({
+          ...filter,
+          fromBlock: currentBlock,
+          toBlock: nextEndBlock
+        })
+      ];
+
+      currentBlock = nextEndBlock + 1;
+    }
+
+    return logs;
+  };
+
+  getSplitLogs = async (
+    filter: MultiAddressFilter,
+    desiredDepth: number
+  ): Promise<ethers.providers.Log[]> => {
     // bisect the block window.
     const midBlock = Math.floor(
       (Number(filter.toBlock) + Number(filter.fromBlock)) / 2
     );
 
     // Presumably we would never have more than 10k logs in one block but just in case.
-    if (Number(filter.fromBlock) === midBlock) throw new Error("Log Limit encountered in a single block");
+    if (Number(filter.fromBlock) === midBlock) throw new Error('Log Limit encountered in a single block');
 
     const firstFilter = {
       ...filter,
@@ -396,12 +474,12 @@ export class EthersProvider extends ethers.providers.BaseProvider
     return [
       ...(await this.getSplitLogs(firstFilter, desiredDepth)),
       ...(await this.getSplitLogs(secondFilter, desiredDepth)),
-    ]
-  }
+    ];
+  };
 
   getLogs = async (filter: MultiAddressFilter): Promise<Log[]> => {
     const logs = await this._getLogs(filter);
-    return logs.map<Log>(log => ({
+    return logs.map<Log>((log) => ({
       name: '',
       transactionHash: '',
       blockNumber: 0,
@@ -421,12 +499,13 @@ export class EthersProvider extends ethers.providers.BaseProvider
     this.performQueue.push(
       { message: 'send', params: payload },
       (error, result) => {
-        if (callback)
+        if (callback) {
           callback(error, {
             result,
             id: payload.id,
             jsonrpc: payload.jsonrpc,
           });
+        }
       }
     );
   }

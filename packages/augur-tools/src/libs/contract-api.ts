@@ -21,7 +21,7 @@ import {
   MarketList,
   TemplateFilters,
 } from '@augurproject/sdk-lite';
-import { SDKConfiguration } from '@augurproject/sdk-lite';
+import { SDKConfiguration } from '@augurproject/utils';
 import { BigNumber } from 'bignumber.js';
 import { formatBytes32String } from 'ethers/utils';
 import moment from 'moment';
@@ -340,7 +340,7 @@ export class ContractAPI {
     await this.placeZeroXTrade({
       direction,
       market,
-      numTicks: new BigNumber(100),
+      numTicks: new BigNumber(1000),
       numOutcomes: 3,
       outcome,
       tradeGroupId: formatBytes32String('42'),
@@ -496,6 +496,7 @@ export class ContractAPI {
   ): Promise<ZeroXSimulateTradeData> {
     return this.simulateZeroXTrade({
       direction,
+      takerAddress: this.account.address,
       market: market.address,
       numTicks: await market.getNumTicks_(),
       numOutcomes: ((await market.getNumberOfOutcomes_()) as unknown) as
@@ -1061,19 +1062,6 @@ export class ContractAPI {
     return this.augur.getGasPrice();
   }
 
-  setUseWallet(useSafe: boolean): void {
-    this.augur.setUseWallet(useSafe);
-  }
-
-  setUseRelay(useRelay: boolean): void {
-    this.augur.setUseRelay(useRelay);
-  }
-
-  async getWalletAddress(account?: string): Promise<string> {
-    if (!account) account = await this.augur.getAccount();
-    return this.augur.gsn.calculateWalletAddress(account);
-  }
-
   async getHotLoadingMarketData(market: string): Promise<HotLoadMarketInfo> {
     return this.augur.hotLoading.getMarketDataParams({ market });
   }
@@ -1118,23 +1106,6 @@ export class ContractAPI {
     }
 
     return safe;
-  }
-
-  async getOrCreateWallet(): Promise<string> {
-    const walletFromRegistry = await this.augur.contracts.augurWalletRegistry.getWallet_(
-      this.account.address
-    );
-    if (walletFromRegistry !== NULL_ADDRESS) {
-      console.log(`Found wallet: ${walletFromRegistry}`);
-      return walletFromRegistry;
-    }
-
-    const walletAddress = await this.augur.gsn.calculateWalletAddress(
-      this.account.address
-    );
-    console.log('Funding Wallet Address');
-    await this.fundSafe(walletAddress);
-    return walletAddress;
   }
 
   async initializeUniverseForWarpSync(): Promise<void> {

@@ -145,7 +145,7 @@ def test_publicSellCompleteSets(contractsFixture, universe, cash, market):
         "market": market.address,
         "account": account,
         "numCompleteSets": 9,
-        "fees": 9,
+        "fees": 90,
     }
 
     marketOIChanged = {
@@ -164,9 +164,9 @@ def test_publicSellCompleteSets(contractsFixture, universe, cash, market):
     assert shareToken.balanceOfMarketOutcome(market.address, NO, contractsFixture.accounts[0]) == 1, "Should have 1 share of outcome no"
     assert shareToken.totalSupplyForMarketOutcome(market.address, YES) == 1
     assert shareToken.totalSupplyForMarketOutcome(market.address, NO) == 1
-    assert cash.balanceOf(contractsFixture.accounts[0]) == 891
-    assert universe.marketBalance(market.address) == universe.getOrCacheValidityBond() + 100 + 9
-    assert market.marketCreatorFeesAttoCash() == 9
+    assert cash.balanceOf(contractsFixture.accounts[0]) == 8910
+    assert universe.marketBalance(market.address) == universe.getOrCacheValidityBond() + 1000 + 90
+    assert market.marketCreatorFeesAttoCash() == 90
 
 def test_sellCompleteSets_failure(contractsFixture, universe, cash, market):
     shareToken = contractsFixture.contracts["ShareToken"]

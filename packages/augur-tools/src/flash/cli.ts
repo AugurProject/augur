@@ -1,20 +1,22 @@
-import { FlashSession } from './flash';
-import program from 'commander';
-import { addScripts } from './scripts';
-import { addGanacheScripts } from './ganache-scripts';
-import { Account, ACCOUNTS } from '../constants';
-import { computeAddress } from 'ethers/utils';
-import * as fs from 'fs';
-import {
-  buildConfig,
-} from '@augurproject/artifacts';
+import { buildConfig } from '@augurproject/artifacts';
 
 import {
-  validConfigOrDie,
-  SDKConfiguration,
   mergeConfig,
   RecursivePartial,
+  SDKConfiguration,
+  validConfigOrDie,
 } from '@augurproject/utils';
+import program from 'commander';
+
+import ethereumKeyfileRecognizer from 'ethereum-keyfile-recognizer';
+import { ethers } from 'ethers';
+import { computeAddress } from 'ethers/utils';
+import * as fs from 'fs';
+import * as readlineSync from 'readline-sync';
+import { Account, ACCOUNTS } from '../constants';
+import { FlashSession } from './flash';
+import { addGanacheScripts } from './ganache-scripts';
+import { addScripts } from './scripts';
 
 import { addWarpSyncScripts } from './warp-sync';
 
@@ -26,7 +28,26 @@ async function processAccounts(flash: FlashSession, args: any) {
     } else if (args.key) {
       flash.accounts = [ accountFromPrivateKey(args.key) ];
     } else if (args.keyfile) {
-      const key = await fs.readFileSync(args.keyfile).toString();
+      let key = await fs.readFileSync(args.keyfile).toString();
+
+      try {
+        if (ethereumKeyfileRecognizer(JSON.parse(key))) {
+          const password = readlineSync.question(
+            'Keystore file found! Please enter passphrase: ', {
+              hideEchoBack: true // The typed text on screen is hidden by `*` (default).
+            });
+
+          const wallet = await ethers.Wallet.fromEncryptedJson(key, password);
+          key = wallet.privateKey;
+        }
+      } catch(e) {
+        // If we have a JSON parse error, we continue.
+        if(!(e instanceof  SyntaxError)) {
+          console.error(e);
+          process.exit(1);
+        }
+      }
+
       flash.accounts = [ accountFromPrivateKey(key) ];
     } else if (process.env.ETHEREUM_PRIVATE_KEY) {
       flash.accounts = [ accountFromPrivateKey(process.env.ETHEREUM_PRIVATE_KEY) ];
@@ -48,8 +69,7 @@ async function run() {
     .passCommandToAction(false)
     .option('--key <key>', 'Private key to use, Overrides ETHEREUM_PRIVATE_KEY environment variable, if set.')
     .option('--keyfile <keyfile>', 'File containing private key to use. Overrides ETHEREUM_PRIVATE_KEY environment variable, if set.')
-    .option('--network <network>', `Name of network to run on. Use "none" for commands that don't use a network.`, 'local')
-    .option('--use-gsn <useGsn>', 'Use GSN instead of making contract calls directly', 'false')
+    .option('--network <network>', `Name of network to run on. Use "none" for commands that don't use a network. Environmental variable "ETHEREUM_PRIVATE_KEY" will take precedence if set.`, 'local')
     .option('--skip-approval <skipApproval>', 'Do not approve', 'false')
     .option('--config <config>', 'JSON of configuration')
     .option('--configFile <configFile>', 'Path to configuration file');
@@ -63,18 +83,22 @@ async function run() {
       const args = [ `--${opt.name} ${opt.flag ? '' : `<${opt.name}>`}`];
       if (opt.abbr) args.unshift(`-${opt.abbr}`);
       opt.required
-        ? subcommand.requiredOption(args.join(', '))
-        : subcommand.option(args.join(', ')).description(opt.description || '')
+        ? subcommand.requiredOption(args.join(', '), opt.description)
+        : subcommand.option(args.join(', '), opt.description)
     }
     subcommand.action(async (args) => {
       try {
         const opts = {...program.opts(), ...args};
         await processAccounts(flash, opts);
-        flash.network = opts.network;
+
+        if(process.env.ETHEREUM_NETWORK) {
+          flash.network = process.env.ETHEREUM_NETWORK;
+        } else {
+          flash.network = opts.network;
+        }
 
         let specified: RecursivePartial<SDKConfiguration> = {
           flash: {
-            useGSN: Boolean(opts.useGsn?.toLowerCase() === 'true'),
             skipApproval: Boolean(opts.skipApproval?.toLowerCase() === 'true'),
           }
         };

@@ -184,6 +184,7 @@ function ignoreOrdersBasedOnSizeTtl(
   )
     ? bestAsk
     : bestBid;
+
   if (bestAsk.amount === bestBid.amount) {
     if (bestAsk.expirationTimeSeconds === bestBid.expirationTimeSeconds) {
       ignoreOrder =
@@ -192,7 +193,7 @@ function ignoreOrdersBasedOnSizeTtl(
           : bestBid;
     } else {
       ignoreOrder =
-        bestAsk.expirationTimeSeconds > bestBid.expirationTimeSeconds
+        bestAsk.creationTime > bestBid.creationTime
           ? bestAsk
           : bestBid;
     }

@@ -50,8 +50,8 @@ describe('State API :: Trading :: ', () => {
     // Place an order
     const bid = new BigNumber(0);
     const outcome = new BigNumber(0);
-    const numShares = new BigNumber(10000000000000);
-    const price = new BigNumber(22);
+    const numShares = new BigNumber(1000000000000);
+    const price = new BigNumber(220);
     await john.placeOrder(
       market1.address,
       bid,
@@ -118,7 +118,7 @@ describe('State API :: Trading :: ', () => {
     await john.setTimestamp(newTime);
 
     const noPayoutSet = [
-      new BigNumber(100),
+      new BigNumber(1000),
       new BigNumber(0),
       new BigNumber(0),
     ];
@@ -152,8 +152,8 @@ describe('State API :: Trading :: ', () => {
     // Place an order
     const bid = new BigNumber(0);
     const outcome = new BigNumber(0);
-    const numShares = new BigNumber(10000000000000);
-    const price = new BigNumber(22);
+    const numShares = new BigNumber(1000000000000);
+    const price = new BigNumber(220);
     await john.placeOrder(
       market.address,
       bid,

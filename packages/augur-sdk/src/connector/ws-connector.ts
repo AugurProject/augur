@@ -1,4 +1,4 @@
-import { SDKConfiguration } from '@augurproject/sdk-lite';
+import { SDKConfiguration } from '@augurproject/utils';
 import {
   SubscriptionEventName,
   SubscriptionType,

@@ -7,7 +7,7 @@ import {
   OrderData,
   parseAssetData
 } from '@augurproject/sdk-lite';
-import { logger, LoggerLevels } from '@augurproject/utils';
+import { logger, LoggerLevels, DEFAULT_TRADE_INTERVAL } from '@augurproject/utils';
 import { getAddress } from 'ethers/utils/address';
 import * as _ from 'lodash';
 import { Augur } from '../../Augur';
@@ -23,7 +23,6 @@ import { SyncStatus } from './SyncStatus';
 
 const EXPECTED_ASSET_DATA_LENGTH = 2122;
 
-const DEFAULT_TRADE_INTERVAL = new BigNumber(10**17);
 
 export interface Document extends BaseDocument {
   blockNumber: number;
@@ -124,7 +123,9 @@ export class ZeroXOrders extends AbstractTable {
     if (orderEvents.length < 1) return;
     const bulkOrderEvents = [];
     const filteredOrders = orderEvents.filter(this.validateOrder, this);
+    console.log("Filtered Orders", filteredOrders);
     let documents: StoredOrder[] = filteredOrders.map(this.processOrder, this);
+    console.log("Processed Orders: ", documents);
 
     // Remove Canceled, Expired, and Invalid Orders and emit event
     const canceledOrders = _.keyBy(
@@ -167,14 +168,13 @@ export class ZeroXOrders extends AbstractTable {
   async sync(): Promise<void> {
     logger.info('Syncing ZeroX Orders');
     const orders: OrderInfo[] = await this.augur.zeroX.getOrders();
-    let bulkOrderEvents = [];
+    const bulkOrderEvents = [];
     let documents = [];
     if (orders?.length > 0) {
       documents = orders.filter(this.validateOrder, this).map(this.processOrder, this);
       const marketIds: string[] = _.uniq(documents.map((d) => d.market));
       const markets = _.keyBy(await this.stateDB.Markets.where('market').anyOf(marketIds).toArray(), 'market');
       documents = documents.filter((d) => this.validateStoredOrder(d, markets));
-      documents.forEach((doc) => delete this.pastOrders[doc.orderHash])
       await this.saveDocuments(documents);
       for (const d of documents) {
         const event = {eventType: OrderEventType.Create, ...d};
@@ -206,11 +206,31 @@ export class ZeroXOrders extends AbstractTable {
       logger.table(LoggerLevels.debug, _.countBy(documents, 'market'));
     });
 
+    const statusToEndState = {
+      'OrderCancelled': 'CANCELLED',
+      'OrderExpired': 'EXPIRED',
+      'OrderUnfunded': 'UNFUNDED',
+      'OrderFullyFilled': 'FULLY_FILLED'
+    };
     if (ordersToAdd.length > 0) {
       // PG: Purposefully not awaiting here
-      this.augur.zeroX.addOrders(ordersToAdd).catch((e) => {
+      console.log("Adding orders back to mesh", ordersToAdd);
+      this.augur.zeroX.addOrders(ordersToAdd).then((r) => {
+        console.log("Add orders result: ", r);
+        try {
+          if(r.rejected.length > 0) {
+            this.handleOrderEvent(r.rejected.map((order) => {
+              order.endState = statusToEndState[order.status.code] || 'INVALID';
+              order.fillableTakerAssetAmount = new BigNumber("0");
+              return order;
+            }));
+          }
+        } catch(e) {
+          console.log("Error with order events", e);
+        }
+      }).catch((e) => {
         console.error("Error adding cached orders: ", e);
-      })
+      });
     }
     this.pastOrders = {};
   }

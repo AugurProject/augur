@@ -61,7 +61,7 @@ describe('State API :: Liquidity', () => {
             asks: [],
           },
         },
-        numTicks: '100',
+        numTicks: '1000',
         marketType: 0,
         reportingFeeDivisor: '0',
         feePerCashInAttoCash: '0',
@@ -159,13 +159,13 @@ describe('State API :: Liquidity', () => {
       liquidityRankingParams.orderBook[1] = {
         bids: [
           {
-            price: '51',
+            price: '510',
             amount: new BigNumber(10 ** 18 / 2).toFixed(),
           },
         ],
         asks: [
           {
-            price: '49',
+            price: '490',
             amount: new BigNumber(10 ** 18 / 2).toFixed(),
           },
         ],
@@ -184,13 +184,13 @@ describe('State API :: Liquidity', () => {
       liquidityRankingParams.orderBook[1] = {
         bids: [
           {
-            price: '51',
+            price: '510',
             amount: new BigNumber(10 ** 18 * 10).toFixed(),
           },
         ],
         asks: [
           {
-            price: '49',
+            price: '490',
             amount: new BigNumber(10 ** 18 * 10).toFixed(),
           },
         ],

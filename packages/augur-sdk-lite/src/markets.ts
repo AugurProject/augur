@@ -1,10 +1,15 @@
+import { convertAttoValueToDisplayValue } from '@augurproject/utils';
 import { BigNumber } from 'bignumber.js';
-import { convertAttoValueToDisplayValue } from "@augurproject/utils";
-import type { ExtraInfoTemplate } from './templates/types';
+import {
+  CommonOutcomes,
+  MarketType,
+  MarketTypeName,
+  YesNoOutcomes,
+} from './constants';
 import { OrderBookType } from './liquidity';
-import { Address, NumOutcomes, MarketData } from './logs';
+import { Address, MarketData, NumOutcomes } from './logs';
+import { ExtraInfoTemplate } from './templates/types';
 import { countNonZeroes } from './utils';
-import { MarketTypeName, MarketType, CommonOutcomes, YesNoOutcomes } from './constants';
 
 export interface MarketListMetaCategories {
   [key: string]: {

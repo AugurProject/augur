@@ -9,9 +9,6 @@
   ],
   "references": [
     {
-      "path": "../augur-utils"
-    },
-    {
       "path": "../augur-artifacts"
     },
     {

@@ -1,6 +1,6 @@
 {
   "name": "@augurproject/sdk",
-  "version": "2.0.0-alpha.2",
+  "version": "2.1.10",
   "description": "Augur SDK",
   "author": "The Augur Developers <team@augur.net>",
   "license": "MIT",
@@ -24,7 +24,8 @@
     "start-kovan": "ETHEREUM_HTTP=https://kovan.augur.net/ethereum-http yarn start",
     "build:documentation": "yarn typedoc --theme markdown --disableOutputCheck --ignoreCompilerErrors --out ../../docs/sdk ./src",
     "check": "gts check",
-    "fix": "gts fix"
+    "fix": "gts fix",
+    "prepare": "tsc -b"
   },
   "repository": {
     "type": "git",
@@ -36,19 +37,22 @@
   "homepage": "https://github.com/AugurProject/augur#readme",
   "dependencies": {
     "@0x/mesh-browser": "9.4.0",
-    "@0x/mesh-browser-lite": "10.0.0-unstable-4",
+    "@0x/mesh-browser-lite": "10.0.0-unstable-8",
     "@0x/mesh-rpc-client": "9.4.0",
     "@0x/order-utils": "10.2.4",
-    "@augurproject/artifacts": "2.0.0-alpha.2",
-    "@augurproject/templates": "2.0.0-alpha.2",
-    "@augurproject/contract-dependencies-ethers": "2.0.0-alpha.2",
-    "@augurproject/core": "2.0.0-alpha.2",
+    "@augurproject/artifacts": "^2.1.10",
+    "@augurproject/contract-dependencies-ethers": "^2.1.10",
+    "@augurproject/core": "^2.1.10",
+    "@augurproject/ethersjs-provider": "^2.1.10",
     "@augurproject/indexeddbshim": "6.1.1",
-    "@augurproject/utils": "2.0.0-alpha.2",
-    "@augurproject/sdk-lite": "2.0.0-alpha.2",
+    "@augurproject/sdk-lite": "^2.1.10",
+    "@augurproject/templates": "^2.1.10",
+    "@augurproject/utils": "^2.1.10",
     "abi-decoder": "2.3.0",
     "async": "3.1.0",
+    "axios": "0.19.2",
     "bs58": "4.0.1",
+    "cid-tool": "0.4.0",
     "comlink": "^4.3.0",
     "cors": "2.8.5",
     "cross-fetch": "3.0.4",
@@ -60,6 +64,7 @@
     "ethers": "4.0.47",
     "express": "4.17.1",
     "flexsearch": "0.6.32",
+    "helmet": "3.23.3",
     "io-ts": "1.10.4",
     "ipfs": "0.40.0",
     "ipld-dag-pb": "0.18.1",
@@ -72,7 +77,7 @@
   },
   "devDependencies": {
     "@0x/mesh-browser": "9.3.0",
-    "@augurproject/types": "2.0.0-alpha.2",
+    "@augurproject/types": "^2.1.1",
     "@types/async": "3.0.1",
     "@types/cors": "2.8.6",
     "@types/dexie": "1.3.1",
@@ -82,9 +87,12 @@
     "@types/node-fetch": "2.5.1",
     "@types/web3": "1.0.19",
     "ganache-core": "2.9.1",
+    "jest": "24.9.0",
+    "ts-jest": "24.0.2",
     "ts-node": "8.4.1",
     "typedoc": "0.17.4",
     "typedoc-plugin-markdown": "2.2.17",
+    "typescript": "3.8.3",
     "yarn": "1.22.0"
   },
   "buildDependencies": [
@@ -92,5 +100,8 @@
   ],
   "resolutions": {
     "**/sha3": "2.0.1"
+  },
+  "publishConfig": {
+    "access": "public"
   }
 }

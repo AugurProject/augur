@@ -47,7 +47,6 @@
     "Cash": "0x498aE5e84b900b63bCC8FD1BFca4f23E0a2205a7",
     "ProxyFactory": "0x929CF3F7f8bC73c17Ca6238F8408379A91Ee1f6F",
     "GnosisSafe": "0x321fd7D3097190492CFf384F48d6d9f3B862c67F",
-    "CashFaucet": "0x498aE5e84b900b63bCC8FD1BFca4f23E0a2205a7",
     "BuyParticipationTokens": "0x3a8914BCd3FCE32bDc0C42b45E4dDEF7Ee1710F8",
     "RedeemStake": "0x4E5D3C25f91Cf66c86DCA0294F9ce79A252BE76e",
     "GnosisSafeRegistry": "0xca3C2C3246902222C5f770729AE1A63C01f2d57A",
@@ -115,5 +114,5 @@
   "showReloadModal": true,
   "averageBlocktime": 2000,
   "trackBestOffer": false,
-  "reportingOnly": false
+  "trackMarketInvalidBids": true
 }

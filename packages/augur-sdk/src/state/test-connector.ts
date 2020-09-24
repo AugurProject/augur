@@ -1,16 +1,14 @@
 // An example how to use Augur to retrieve data
-//
-//
-import { NetworkId, SDKConfiguration } from '@augurproject/sdk-lite';
 import {
   MarketCreated,
   NewBlock,
   SubscriptionEventName,
 } from '@augurproject/sdk-lite';
+//
+//
+import { NetworkId, SDKConfiguration } from '@augurproject/utils';
 import { SingleThreadConnector } from '../connector';
 import { startServer } from './create-api';
-
-const settings = require('@augurproject/sdk/src/state/settings.json');
 
 console.log('Starting web worker');
 (async () => {
@@ -19,13 +17,10 @@ console.log('Starting web worker');
       networkId: NetworkId.Kovan,
       uploadBlockNumber: 16622921,
       ethereum: {
-        http: settings.ethNodeURLs[4],
+        http: 'https://eth-rinkeby.alchemyapi.io/v2/Kd37_uEmJGwU6pYq6jrXaJXXi8u9IoOM',
         rpcRetryCount: 5,
         rpcRetryInterval: 0,
         rpcConcurrency: 40,
-      },
-      gsn: {
-        enabled: true,
       },
       syncing: {
         enabled: false,

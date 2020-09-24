@@ -1,22 +1,40 @@
 version: '3.7'
 
 services:
-  0x-mesh-standalone:
-    image: 0xorg/mesh:${MESH_VERSION}
+  0x-mesh-bootstrap:
+    image: 0xorg/mesh-bootstrap:${MESH_VERSION}
     restart: on-failure
-    hostname: 0x
     ports:
-      - 60557:60557 # rpc_port_number
       - 60558:60558 # P2PTCPPort
       - 60559:60559 # P2PWebSocketsPort
     environment:
       - ETHEREUM_CHAIN_ID=${ETHEREUM_CHAIN_ID}
+      - USE_BOOTSTRAP_LIST=false
+      - VERBOSITY=${MESH_VERBOSITY:-4} # 5=debug 6=trace
+      - P2P_BIND_ADDRS=/ip4/0.0.0.0/tcp/60558,/ip4/0.0.0.0/tcp/60559/ws
+      - P2P_ADVERTISE_ADDRS=/ip4/127.0.0.1/tcp/60558/ipfs/16Uiu2HAmRMgvPQV2UYKXuuCnNaFLpc36PhLp2UKVcL1ePseVcz4y,/ip4/127.0.0.1/tcp/60559/ws/ipfs/16Uiu2HAmRMgvPQV2UYKXuuCnNaFLpc36PhLp2UKVcL1ePseVcz4y
+    volumes:
+      - ./keys:/usr/mesh/0x_mesh/keys
+
+  0x-mesh-standalone:
+    image: 0xorg/mesh:${MESH_VERSION}
+    restart: on-failure
+    hostname: 0x
+    depends_on:
+      - "0x-mesh-bootstrap"
+    ports:
+      - 60557:60557 # rpc_port_number
+      - 59558:59558 # P2PTCPPort
+      - 59559:59559 # P2PWebSocketsPort
+    environment:
+      - ETHEREUM_CHAIN_ID=${ETHEREUM_CHAIN_ID}
       - CUSTOM_CONTRACT_ADDRESSES=${CUSTOM_CONTRACT_ADDRESSES}
       - VERBOSITY=${MESH_VERBOSITY:-4} # 5=debug 6=trace
-      - CUSTOM_ORDER_FILTER={"properties":{"makerAssetData":{"pattern":".*${ZEROX_CONTRACT_ADDRESS}.*"}}}
       - ETHEREUM_RPC_URL=${ETHEREUM_RPC_HTTP}
       - USE_BOOTSTRAP_LIST=true
+      - BOOTSTRAP_LIST=/dns4/0x-mesh-bootstrap/tcp/60558/ipfs/16Uiu2HAmRMgvPQV2UYKXuuCnNaFLpc36PhLp2UKVcL1ePseVcz4y,/dns4/0x-mesh-bootstrap/tcp/60559/ws/ipfs/16Uiu2HAmRMgvPQV2UYKXuuCnNaFLpc36PhLp2UKVcL1ePseVcz4y
       - BLOCK_POLLING_INTERVAL=1s
       - ETHEREUM_RPC_MAX_REQUESTS_PER_24_HR_UTC=169120 # needed when polling interval is 1s
       - WS_RPC_ADDR=0.0.0.0:60557
-
+      - P2P_TCP_PORT=59558
+      - P2P_WEBSOCKETS_PORT=59559

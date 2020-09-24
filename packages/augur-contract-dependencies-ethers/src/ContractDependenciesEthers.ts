@@ -1,3 +1,11 @@
+import { getAddress } from 'ethers/utils/address';
+import * as _ from 'lodash';
+import { ethers } from 'ethers';
+import { BigNumber } from 'bignumber.js';
+import { TransactionRequest, TransactionResponse } from 'ethers/providers';
+
+import { getGasStation, NetworkId } from '@augurproject/utils';
+
 import {
   Dependencies,
   AbiFunction,
@@ -5,17 +13,13 @@ import {
   Transaction,
   TransactionReceipt,
 } from './types';
-import { ethers } from 'ethers';
-import { BigNumber } from 'bignumber.js';
-import { TransactionRequest, TransactionResponse } from 'ethers/providers';
 import {
   isInstanceOfBigNumber,
   isInstanceOfEthersBigNumber,
   isInstanceOfArray,
   isObject,
 } from './utils';
-import { getAddress } from 'ethers/utils/address';
-import * as _ from 'lodash';
+
 
 export interface EthersSigner {
   sendTransaction(
@@ -30,14 +34,17 @@ export interface EthersProvider {
   estimateGas(transaction: TransactionRequest): Promise<ethers.utils.BigNumber>;
   listAccounts(): Promise<string[]>;
   getBalance(address: string): Promise<ethers.utils.BigNumber>;
-  getGasPrice(): Promise<ethers.utils.BigNumber>;
+  getGasPrice(networkId?: NetworkId): Promise<ethers.utils.BigNumber>;
   getTransaction(hash: string): Promise<TransactionResponse>;
   waitForTransaction(
     hash: string,
     confirmations?: number
   ): Promise<ethers.providers.TransactionReceipt>;
+
   //sendAsync(payload: JSONRPCRequestPayload): Promise<any>;
 }
+
+const MIN_GAS_PRICE = new BigNumber(1e9); // Min: 1 Gwei
 
 export enum TransactionStatus {
   AWAITING_SIGNING,
@@ -82,6 +89,14 @@ export class ContractDependenciesEthers implements Dependencies<BigNumber> {
 
   setSigner(signer: EthersSigner) {
     this.signer = signer;
+  }
+
+  setGasPrice(gasPrice: BigNumber): void {
+    if (gasPrice.lt(MIN_GAS_PRICE)) gasPrice = MIN_GAS_PRICE;
+    // @ts-ignore
+    this.provider.overrideGasPrice = new ethers.utils.BigNumber(
+      gasPrice.toNumber()
+    );
   }
 
   transactionToEthersTransaction(
@@ -219,10 +234,9 @@ export class ContractDependenciesEthers implements Dependencies<BigNumber> {
   async submitTransaction(
     transaction: Transaction<BigNumber>
   ): Promise<TransactionReceipt> {
-    if (!this.signer)
-      throw new Error(
-        'Attempting to sign a transaction while not providing a signer'
-      );
+    if (!this.signer) {
+      throw new Error('Attempting to sign a transaction while not providing a signer');
+    }
     // @TODO: figure out a way to propagate a warning up to the user in this scenario, we don't currently have a mechanism for error propagation, so will require infrastructure work
     const tx = this.transactionToEthersTransaction(transaction);
     const txMetadataKey = `0x${transaction.data.substring(10)}`;
@@ -258,16 +272,14 @@ export class ContractDependenciesEthers implements Dependencies<BigNumber> {
     tx: Transaction<ethers.utils.BigNumber>,
     txMetadata: TransactionMetadata
   ): Promise<ethers.providers.TransactionReceipt> {
-    const gasLimit = tx.gasLimit || (await this.provider.estimateGas(tx));
+    tx.gasLimit = tx.gasLimit || await this.provider.estimateGas(tx);
+    tx.gasPrice = tx.gasPrice || await this.provider.getGasPrice();
 
     // @BODY https://github.com/ethers-io/ethers.js/issues/321
     // the 'from field is required to estimate gas but will fail if present when the transaction is sent.
     delete tx.from;
 
-    const response = await this.signer.sendTransaction({
-      ...tx,
-      gasLimit,
-    });
+    const response = await this.signer.sendTransaction(tx);
     const hash = response.hash;
     this.onTransactionStatusChanged(
       txMetadata,

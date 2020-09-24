@@ -121,7 +121,13 @@ if (error) return error;
     async verifyInitializations(): Promise<string> {
         for (const name of INITIALIZED_CONTRACTS) {
             let contractAddress = this.config.addresses[name];
-            if (!contractAddress) contractAddress = await this.augur.lookup_(stringTo32ByteHex(name));
+            if (!contractAddress) {
+                if (TRADING_CONTRACTS.includes(name)) {
+                    contractAddress = await this.augurTrading.lookup_(stringTo32ByteHex(name));
+                } else {
+                    contractAddress = await this.augur.lookup_(stringTo32ByteHex(name));
+                }
+            }
             const contract = new Initializable(this.dependencies, contractAddress);
             console.log(`Verifying initialization of ${name} at ${contract.address}`);
             const initialized = await contract.getInitialized_();

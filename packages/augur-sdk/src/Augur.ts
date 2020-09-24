@@ -6,24 +6,26 @@ import {
 import { ContractInterfaces } from '@augurproject/core';
 import {
   isSubscriptionEventName,
-  NETWORK_IDS,
   NULL_ADDRESS,
   SubscriptionEventName,
   TXEventName,
   TXStatus,
 } from '@augurproject/sdk-lite';
-import type { SDKConfiguration } from '@augurproject/utils';
-import { logger, LoggerLevels, NetworkId } from '@augurproject/utils';
-import axios from 'axios';
+import {
+  logger,
+  LoggerLevels,
+  NetworkId,
+  SDKConfiguration,
+  getGasStation,
+} from '@augurproject/utils';
 import { BigNumber } from 'bignumber.js';
-import { TransactionResponse, JsonRpcProvider } from 'ethers/providers';
+import { JsonRpcProvider, TransactionResponse } from 'ethers/providers';
 import { Arrayish } from 'ethers/utils';
 import { getAddress } from 'ethers/utils/address';
 import { EventEmitter } from 'events';
 import { BestOffer } from './api/BestOffer';
 import { ContractEvents } from './api/ContractEvents';
 import { Contracts } from './api/Contracts';
-import { GSN } from './api/GSN';
 import {
   DisputeWindow,
   GetDisputeWindowParams,
@@ -37,6 +39,7 @@ import {
   CreateYesNoMarketParams,
   Market,
 } from './api/Market';
+import { MarketInvalidBids } from './api/MarketInvalidBids';
 import { OnChainTrade } from './api/OnChainTrade';
 import { PlaceTradeDisplayParams, SimulateTradeData, Trade } from './api/Trade';
 import { Uniswap } from './api/Uniswap';
@@ -49,7 +52,7 @@ import {
 } from './connector';
 import { Provider } from './ethereum/Provider';
 import { Callback, EventNameEmitter, TXStatusCallback } from './events';
-import { ContractDependenciesGSN } from './lib/contract-deps';
+import { ContractDependenciesEthers } from '@augurproject/contract-dependencies-ethers';
 import { SyncableFlexSearch } from './state/db/SyncableFlexSearch';
 import { Accounts } from './state/getter/Accounts';
 import { Liquidity as LiquidityGetter } from './state/getter/Liquidity';
@@ -73,14 +76,16 @@ export class Augur<TProvider extends Provider = Provider> {
   readonly trade: Trade;
   readonly market: Market;
   readonly warpSync: WarpSync;
-  readonly gsn: GSN;
   readonly uniswap: Uniswap;
 
   readonly universe: Universe;
   readonly liquidity: Liquidity;
   readonly hotLoading: HotLoading;
   readonly bestOffer: BestOffer;
+  readonly marketInvalidBids: MarketInvalidBids;
   readonly events: EventEmitter;
+
+  private ethExchangetoken0IsCash: Boolean;
 
   private _sdkReady = false;
 
@@ -95,6 +100,10 @@ export class Augur<TProvider extends Provider = Provider> {
 
   set warpController(_warpController: WarpController) {
     this._warpController = _warpController;
+  }
+
+  get warpController() {
+    return this._warpController;
   }
 
   get zeroX(): ZeroX {
@@ -115,7 +124,7 @@ export class Augur<TProvider extends Provider = Provider> {
 
   constructor(
     readonly provider: TProvider,
-    readonly dependencies: ContractDependenciesGSN,
+    readonly dependencies: ContractDependenciesEthers,
     public config: SDKConfiguration,
     public connector: BaseConnector = new EmptyConnector(),
     private _zeroX = null,
@@ -155,15 +164,22 @@ export class Augur<TProvider extends Provider = Provider> {
     this.hotLoading = new HotLoading(this);
     this.onChainTrade = new OnChainTrade(this);
     this.trade = new Trade(this);
-    this.gsn = new GSN(this.provider, this);
     this.uniswap = new Uniswap(this);
 
     if (this.config.ui?.trackBestOffer) {
       this.bestOffer = new BestOffer(this);
     }
+    if (this.config.ui?.trackMarketInvalidBids) {
+      this.marketInvalidBids = new MarketInvalidBids(this);
+    }
     if (enableFlexSearch && !this.syncableFlexSearch) {
       this.syncableFlexSearch = new SyncableFlexSearch();
     }
+
+    this.ethExchangetoken0IsCash = new BigNumber(config.addresses.Cash.toLowerCase()).lt(
+      config.addresses.WETH9.toLowerCase()
+    );
+
     this.txSuccessCallbacks = [];
 
     this.registerTransactionStatusEvents();
@@ -171,7 +187,7 @@ export class Augur<TProvider extends Provider = Provider> {
 
   static async create<TProvider extends Provider = Provider>(
     provider: TProvider,
-    dependencies: ContractDependenciesGSN,
+    dependencies: ContractDependenciesEthers,
     config: SDKConfiguration,
     connector: BaseConnector = new SingleThreadConnector(),
     zeroX: ZeroX = null,
@@ -216,8 +232,8 @@ export class Augur<TProvider extends Provider = Provider> {
   }
 
   async getGasPrice(): Promise<BigNumber> {
-    const balance = await this.dependencies.provider.getGasPrice();
-    return new BigNumber(balance.toString());
+    const gasPrice = await this.dependencies.provider.getGasPrice(this.networkId);
+    return new BigNumber(gasPrice.toString()); // ethers.utils.BigNumber => bignumber.js
   }
 
   async getAccount(): Promise<string | null> {
@@ -226,13 +242,14 @@ export class Augur<TProvider extends Provider = Provider> {
       return NULL_ADDRESS;
     }
     const signer = await this.dependencies.signer.getAddress();
-    if (this.dependencies.useWallet) {
-      account = await this.gsn.calculateWalletAddress(signer);
-    } else if (!account) {
-      account = signer;
-    }
+    account = signer;
     if (!account) return NULL_ADDRESS;
     return getAddress(account);
+  }
+
+  async getAccountEthBalance() {
+    const account = await this.getAccount();
+    return this.getEthBalance(account);
   }
 
   async sendETH(address: string, value: BigNumber): Promise<void> {
@@ -242,58 +259,11 @@ export class Augur<TProvider extends Provider = Provider> {
       value,
       from: await this.dependencies.getDefaultAddress(),
     };
-    await this.dependencies.submitTransaction(transaction, {
-      name: 'Send Ether',
-      params: {},
-    });
-  }
-
-  setUseWallet(useSafe: boolean): void {
-    this.dependencies.setUseWallet(useSafe);
-  }
-
-  setUseRelay(useRelay: boolean): void {
-    this.dependencies.setUseRelay(useRelay);
-  }
-
-  setUseDesiredEthBalance(useDesiredEthBalance: boolean): void {
-    this.dependencies.setUseDesiredEthBalance(useDesiredEthBalance);
-  }
-
-  getUseWallet(): boolean {
-    return this.dependencies.useWallet;
-  }
-
-  getUseRelay(): boolean {
-    return this.dependencies.useRelay;
-  }
-
-  getUseDesiredEthBalance(): boolean {
-    return this.dependencies.useDesiredSignerETHBalance;
-  }
-
-  async getGasStation() {
-    try {
-      const networkId = this.config.networkId;
-
-      if (networkId !== NETWORK_IDS.Mainnet) {
-        return {
-          fast: '4000000000',
-          standard: '1000000000'
-        }
-      }
-
-      const result = await axios.get(
-        'https://safe-relay.gnosis.io/api/v1/gas-station/'
-      );
-      return result.data;
-    } catch (error) {
-      throw error;
-    }
+    await this.dependencies.submitTransaction(transaction);
   }
 
   async getGasConfirmEstimate() {
-    const gasLevels = await this.getGasStation();
+    const gasLevels = await getGasStation(this.networkId);
     const recommended = parseInt(gasLevels['standard']) + 1000000000;
     const fast = parseInt(gasLevels['fast']) + 1000000000;
     const gasPrice = await this.getGasPrice();
@@ -324,15 +294,38 @@ export class Augur<TProvider extends Provider = Provider> {
     );
   }
 
-  convertGasEstimateToDaiCost(
+  async convertGasEstimateToDaiCost(
     gasEstimate: BigNumber,
     manualGasPrice?: number
-  ): BigNumber {
-    return this.dependencies.getDisplayCostInDaiForGasEstimate(
-      gasEstimate,
-      manualGasPrice
-    );
+  ): Promise<BigNumber> {
+    const gasPrice = manualGasPrice ? manualGasPrice : await this.getGasPrice();
+    const exchangeRate = await this.getExchangeRate();
+    return gasEstimate.multipliedBy(gasPrice).multipliedBy(exchangeRate);
   }
+
+  async getExchangeRate(max?: Boolean): Promise<BigNumber> {
+    const reservesData = await this.contracts.ethExchange.getReserves_();
+    const cashReserves: BigNumber = new BigNumber(
+      (this.ethExchangetoken0IsCash ? reservesData[0] : reservesData[1]).toString()
+    );
+    const ethReserves: BigNumber = new BigNumber(
+      (this.ethExchangetoken0IsCash ? reservesData[1] : reservesData[0]).toString()
+    );
+    const ethToDaiRate = cashReserves
+      .div(ethReserves)
+      .multipliedBy(10 ** 18)
+      .decimalPlaces(0);
+
+    if (max) {
+      return ethToDaiRate
+        .multipliedBy(this.config.uniswap.exchangeRateBufferMultiplier)
+        .decimalPlaces(0);
+    }
+
+    return ethToDaiRate;
+  }
+
+
 
   registerTransactionStatusCallback(
     key: string,
@@ -505,6 +498,12 @@ export class Augur<TProvider extends Provider = Provider> {
     typeof WarpSyncGetter.getMostRecentWarpSync
   > => {
     return this.bindTo(WarpSyncGetter.getMostRecentWarpSync)(undefined);
+  };
+
+  getWarpSyncStatus = (): ReturnType<
+    typeof WarpSyncGetter.getWarpSyncStatus
+  > => {
+    return this.bindTo(WarpSyncGetter.getWarpSyncStatus)(undefined);
   };
 
   getPayoutFromWarpSyncHash = (hash: string): Promise<BigNumber[]> => {

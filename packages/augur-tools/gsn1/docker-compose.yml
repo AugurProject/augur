@@ -1,0 +1,24 @@
+version: '3.7'
+
+services:
+  caddy:
+    image: caddy:2.1.1-alpine
+    ports:
+      - '80:80'
+      - '443:443'
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile
+      - ./caddy_data:/data
+    restart: always
+    environment:
+      HOST: ${HOST}
+
+  gsn:
+    image: tabookey/gsn-dev-server:v0.4.1
+    restart: always
+    ports:
+      - '8090:8090' #needed for debugging without https frontend
+    volumes:
+      - ./gsndata:/data
+    entrypoint: ["./RelayHttpServer", "-RelayHubAddress", "${RELAY_HUB}", "-Workdir", "/data", "-GasPricePercent", "${GAS_PRICE_PERCENT}", "-EthereumNodeUrl", "${NODE_URL}", "-Url", "https://${HOST}", "-Fee", "${FEE}", "-Port", "${PORT}"]
+

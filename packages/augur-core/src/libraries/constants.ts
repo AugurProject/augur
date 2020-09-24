@@ -34,6 +34,7 @@ export const INTERNAL_CONTRACTS = [
     'RedeemStake',
     'RepSymbol',
     'AuditFunds',
+    'AccountLoader',
     // factories
     'DisputeCrowdsourcerFactory',
     'DisputeWindowFactory',
@@ -58,7 +59,8 @@ export const TRADING_CONTRACTS = [
     'AugurWalletRegistry',
     'AugurWalletRegistryV2',
     'RelayHubV2',
-    'WETH9'
+    'AccountLoader',
+    'WETH9',
 ];
 
 export const TEST_CONTRACTS = [
@@ -95,7 +97,10 @@ export const EXTERNAL_CONTRACTS = [
     'RelayHub',
     'RelayHubV2',
     'Penalizer',
-    'StakeManager'
+    'StakeManager',
+    // Token Proxying
+    'ERC20Proxy1155',
+    'ERC20Proxy1155Nexus',
 ];
 
 export const REGISTERED_EXTERNAL_CONTRACTS = [
@@ -105,9 +110,6 @@ export const REGISTERED_EXTERNAL_CONTRACTS = [
     'WETH9',
     // Maker
     'Cash',
-    // USDx
-    'USDC',
-    'USDT',
     // Uniswap
     "UniswapV2Factory",
     // GSN
@@ -167,7 +169,8 @@ export const INITIALIZED_CONTRACTS = [
     'AugurWalletFactory',
     'AugurWalletRegistry',
     'AugurWalletRegistryV2',
-    'RepOracle'
+    'RepOracle',
+    'AccountLoader'
 ];
 
 export const RELAY_HUB_ADDRESS = '0xD216153c06E857cD7f72665E0aF1d7D82172F494';

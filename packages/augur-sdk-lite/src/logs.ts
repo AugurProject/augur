@@ -1,5 +1,5 @@
-import type { ExtraInfoTemplate } from './templates/types';
 import { MarketReportingState, MarketType, OrderEventType } from './constants';
+import { ExtraInfoTemplate } from './templates/types';
 
 export type Address = string;
 export type Bytes32 = string;

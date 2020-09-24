@@ -1,12 +1,14 @@
 import { Market } from '@augurproject/core/build/libraries/ContractInterfaces';
+import { ORDER_TYPES, SECONDS_IN_A_DAY } from '@augurproject/sdk-lite';
 import {
-  ORDER_TYPES,
-  SECONDS_IN_A_DAY,
-} from '@augurproject/sdk-lite';
-import { stringTo32ByteHex } from '@augurproject/utils';
+  MarketReportingState,
+  NullWarpSyncHash,
+  SubscriptionEventName,
+} from '@augurproject/sdk-lite/build';
 import { databasesToSync } from '@augurproject/sdk/build/warp/WarpController';
 import { ACCOUNTS, defaultSeedPath, loadSeed, Seed } from '@augurproject/tools';
 import { TestEthersProvider } from '@augurproject/tools/build/libs/TestEthersProvider';
+import { stringTo32ByteHex } from '@augurproject/utils';
 import { BigNumber } from 'bignumber.js';
 import * as IPFS from 'ipfs';
 import { tmpdir } from 'os';
@@ -84,150 +86,109 @@ describe('Warp Sync markets', () => {
   });
 
   describe('initialized market', () => {
-    describe('with reported and finalized market', () => {
-      beforeEach(async () => {
-        await john.faucetCash(new BigNumber(1e18)); // faucet enough cash for the various fill orders
-        await mary.faucetCash(new BigNumber(1e18)); // faucet enough cash for the various fill orders
+    beforeEach(async () => {
+      await john.faucetCash(new BigNumber(1e18)); // faucet enough cash for the various fill orders
+      await mary.faucetCash(new BigNumber(1e18)); // faucet enough cash for the various fill orders
 
-        await john.createReasonableYesNoMarket();
-        await john.createReasonableYesNoMarket();
+      await john.createReasonableYesNoMarket();
+      await john.createReasonableYesNoMarket();
 
-        const yesNoMarket = await john.createReasonableYesNoMarket();
-        const categoricalMarket = await john.createReasonableMarket([
-          stringTo32ByteHex('A'),
-          stringTo32ByteHex('B'),
-          stringTo32ByteHex('C'),
-        ]);
+      const yesNoMarket = await john.createReasonableYesNoMarket();
+      const categoricalMarket = await john.createReasonableMarket([
+        stringTo32ByteHex('A'),
+        stringTo32ByteHex('B'),
+        stringTo32ByteHex('C'),
+      ]);
 
+      // Move timestamp ahead 12 hours.
+      await provider.provider.send('evm_increaseTime', [
+        SECONDS_IN_A_DAY.toNumber() / 2,
+      ]);
+
+      // Place orders
+      const numShares = new BigNumber(10000000000000);
+      const price = new BigNumber(22);
+      await john.placeOrder(
+        yesNoMarket.address,
+        ORDER_TYPES.BID,
+        numShares,
+        price,
+        outcome0,
+        stringTo32ByteHex(''),
+        stringTo32ByteHex(''),
+        stringTo32ByteHex('42')
+      );
+
+      await john.sync();
+
+      await john.placeOrder(
+        yesNoMarket.address,
+        ORDER_TYPES.BID,
+        numShares,
+        price,
+        outcome1,
+        stringTo32ByteHex(''),
+        stringTo32ByteHex(''),
+        stringTo32ByteHex('42')
+      );
+
+      // Move timestamp ahead 12 hours.
+      await provider.provider.send('evm_increaseTime', [
+        SECONDS_IN_A_DAY.toNumber() / 2,
+      ]);
+
+      await john.placeOrder(
+        categoricalMarket.address,
+        ORDER_TYPES.BID,
+        numShares,
+        price,
+        outcome0,
+        stringTo32ByteHex(''),
+        stringTo32ByteHex(''),
+        stringTo32ByteHex('42')
+      );
+
+      await john.placeOrder(
+        categoricalMarket.address,
+        ORDER_TYPES.BID,
+        numShares,
+        price,
+        outcome1,
+        stringTo32ByteHex(''),
+        stringTo32ByteHex(''),
+        stringTo32ByteHex('42')
+      );
+
+      // Fill orders
+      await john.getBestOrderId(
+        ORDER_TYPES.BID,
+        yesNoMarket.address,
+        outcome0
+      );
+
+      await john.getBestOrderId(
+        ORDER_TYPES.BID,
+        yesNoMarket.address,
+        outcome1
+      );
+
+      for (let i = 0; i < 3; i++) {
         // Move timestamp ahead 12 hours.
         await provider.provider.send('evm_increaseTime', [
           SECONDS_IN_A_DAY.toNumber() / 2,
         ]);
+      }
 
-        // Place orders
-        const numShares = new BigNumber(10000000000000);
-        const price = new BigNumber(22);
-        await john.placeOrder(
-          yesNoMarket.address,
-          ORDER_TYPES.BID,
-          numShares,
-          price,
-          outcome0,
-          stringTo32ByteHex(''),
-          stringTo32ByteHex(''),
-          stringTo32ByteHex('42')
-        );
+      // Deal with 30 block warp sync buffer.
+      for (let i = 0; i < 30; i++) {
+        await provider.providerSend('evm_mine', []);
+      }
+    });
 
-        await john.placeOrder(
-          yesNoMarket.address,
-          ORDER_TYPES.BID,
-          numShares,
-          price,
-          outcome1,
-          stringTo32ByteHex(''),
-          stringTo32ByteHex(''),
-          stringTo32ByteHex('42')
-        );
-
-        // Move timestamp ahead 12 hours.
-        await provider.provider.send('evm_increaseTime', [
-          SECONDS_IN_A_DAY.toNumber() / 2,
-        ]);
-
-        await john.placeOrder(
-          categoricalMarket.address,
-          ORDER_TYPES.BID,
-          numShares,
-          price,
-          outcome0,
-          stringTo32ByteHex(''),
-          stringTo32ByteHex(''),
-          stringTo32ByteHex('42')
-        );
-
-        await john.placeOrder(
-          categoricalMarket.address,
-          ORDER_TYPES.BID,
-          numShares,
-          price,
-          outcome1,
-          stringTo32ByteHex(''),
-          stringTo32ByteHex(''),
-          stringTo32ByteHex('42')
-        );
-
-        // Fill orders
-        const yesNoOrderId0 = await john.getBestOrderId(
-          ORDER_TYPES.BID,
-          yesNoMarket.address,
-          outcome0
-        );
-        const yesNoOrderId1 = await john.getBestOrderId(
-          ORDER_TYPES.BID,
-          yesNoMarket.address,
-          outcome1
-        );
-
-        // Move timestamp ahead 12 hours.
-        await provider.provider.send('evm_increaseTime', [
-          SECONDS_IN_A_DAY.toNumber() / 2,
-        ]);
-
-        const categoricalOrderId0 = await john.getBestOrderId(
-          ORDER_TYPES.BID,
-          categoricalMarket.address,
-          outcome0
-        );
-        const categoricalOrderId1 = await john.getBestOrderId(
-          ORDER_TYPES.BID,
-          categoricalMarket.address,
-          outcome1
-        );
-        await john.fillOrder(
-          yesNoOrderId0,
-          numShares.div(10).multipliedBy(2),
-          '42'
-        );
-
-        // Move timestamp ahead 12 hours.
-        await provider.provider.send('evm_increaseTime', [
-          SECONDS_IN_A_DAY.toNumber() / 2,
-        ]);
-        await mary.fillOrder(
-          yesNoOrderId1,
-          numShares.div(10).multipliedBy(3),
-          '43'
-        );
-
-        // Move timestamp ahead 12 hours.
-        await provider.provider.send('evm_increaseTime', [
-          SECONDS_IN_A_DAY.toNumber() / 2,
-        ]);
-        await mary.fillOrder(
-          categoricalOrderId0,
-          numShares.div(10).multipliedBy(2),
-          '43'
-        );
-
-        // Move timestamp ahead 12 hours.
-        await provider.provider.send('evm_increaseTime', [
-          SECONDS_IN_A_DAY.toNumber() / 2,
-        ]);
-        await mary.fillOrder(
-          categoricalOrderId1,
-          numShares.div(10).multipliedBy(4),
-          '43'
-        );
-
+    describe('WarpSyncHashUpdated event', () => {
+      test('should emit when hash is updated', async (done) => {
+        john.augur.events.once(SubscriptionEventName.WarpSyncHashUpdated, () => done());
         await john.sync();
-      });
-
-      describe('db is empty ', () => {
-        describe('load current hash', () => {
-          it('should populate dbs', async () => {
-            await mary.sync();
-          });
-        });
       });
     });
   });
@@ -254,7 +215,13 @@ describe('Warp Sync markets', () => {
           market: market.address,
         },
       ]);
+
+      await expect(john.api.route('getWarpSyncStatus', undefined)).resolves.toEqual({
+        hash: NullWarpSyncHash,
+        state: MarketReportingState.Unknown,
+      });
     });
+
     // Giant omnibus test because speed.
     test('should create subsequent checkpoints after warp market end time', async () => {
       const amountToTransfer = new BigNumber(1000);
@@ -307,6 +274,11 @@ describe('Warp Sync markets', () => {
         }),
       ]);
 
+      await expect(john.api.route('getWarpSyncStatus', undefined)).resolves.toEqual({
+        hash: expect.not.stringMatching(NullWarpSyncHash),
+        state: MarketReportingState.PreReporting,
+      });
+
       const { hash } = await john.api.route('getMostRecentWarpSync', undefined);
 
       const currentBlock = await john.provider.getBlock('latest');
@@ -327,10 +299,29 @@ describe('Warp Sync markets', () => {
 
       expect(otherJohnLogs).toEqual(johnLogs);
 
-      const warpSyncMarket = await john.reportWarpSyncMarket(hash);
-      await john.finalizeWarpSyncMarket(warpSyncMarket);
-
+      await john.advanceTimestamp(SECONDS_IN_A_DAY);
       await john.sync();
+
+      await expect(john.api.route('getWarpSyncStatus', undefined)).resolves.toEqual({
+        hash: expect.not.stringMatching(NullWarpSyncHash),
+        state: MarketReportingState.DesignatedReporting,
+      });
+
+      const warpSyncMarket = await john.reportWarpSyncMarket(hash);
+      await john.sync();
+
+      await expect(john.api.route('getWarpSyncStatus', undefined)).resolves.toEqual({
+        hash: expect.not.stringMatching(NullWarpSyncHash),
+        state: MarketReportingState.CrowdsourcingDispute,
+      });
+
+      await john.finalizeWarpSyncMarket(warpSyncMarket);
+      await john.sync();
+
+      await expect(john.api.route('getWarpSyncStatus', undefined)).resolves.toEqual({
+        hash,
+        state: MarketReportingState.PreReporting,
+      });
 
       const newMarket = await john.getWarpSyncMarket();
       const newEndTimestamp = (await newMarket.getEndTime_()).toNumber();
@@ -353,6 +344,11 @@ describe('Warp Sync markets', () => {
         }),
       ]);
 
+      await expect(john.api.route('getWarpSyncStatus', undefined)).resolves.toEqual({
+        hash: expect.not.stringMatching(NullWarpSyncHash),
+        state: MarketReportingState.PreReporting,
+      });
+
       // advance 8 days to force a full reload.
       for (let i = 0; i < 8; i++) {
         await john.advanceTimestamp(SECONDS_IN_A_DAY);
@@ -366,11 +362,6 @@ describe('Warp Sync markets', () => {
         await provider.provider.send('evm_mine', []);
         await john.sync();
       }
-
-      console.log(
-        '(await john.getTimestamp()).toNumber()',
-        JSON.stringify((await john.getTimestamp()).toNumber())
-      );
 
       await expect(john.db.warpCheckpoints.table.toArray()).resolves.toEqual([
         expect.objectContaining({
@@ -390,6 +381,11 @@ describe('Warp Sync markets', () => {
           end: expect.any(Object),
         }),
       ]);
+
+      await expect(john.api.route('getWarpSyncStatus', undefined)).resolves.toEqual({
+        hash: expect.not.stringMatching(NullWarpSyncHash),
+        state: MarketReportingState.OpenReporting,
+      });
 
       const { timestamp: newCurrentBlockTimestamp } = await provider.getBlock(
         'latest'
@@ -475,7 +471,7 @@ describe('Warp Sync markets', () => {
 
       const yesPayoutSet = [
         new BigNumber(0),
-        new BigNumber(100),
+        new BigNumber(1000),
         new BigNumber(0),
       ];
       await john.doInitialReport(market, yesPayoutSet);

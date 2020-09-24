@@ -33,17 +33,17 @@ def test_publicCreateOrder_ask(contractsFixture, cash, market, universe):
     orders = contractsFixture.contracts['Orders']
     createOrder = contractsFixture.contracts['CreateOrder']
 
-    with BuyWithCash(cash, fix(1, 60), contractsFixture.accounts[0], "create order"):
+    with BuyWithCash(cash, fix(1, 1000-40), contractsFixture.accounts[0], "create order"):
         orderID = createOrder.publicCreateOrder(ASK, fix(1), 40, market.address, 0, longTo32Bytes(0), longTo32Bytes(0), longTo32Bytes(7))
 
     assert orders.getAmount(orderID) == fix(1)
     assert orders.getPrice(orderID) == 40
     assert orders.getOrderCreator(orderID) == contractsFixture.accounts[0]
-    assert orders.getOrderMoneyEscrowed(orderID) == fix(1, 60)
+    assert orders.getOrderMoneyEscrowed(orderID) == fix(1, 960)
     assert orders.getOrderSharesEscrowed(orderID) == 0
     assert orders.getBetterOrderId(orderID) == bytearray(32)
     assert orders.getWorseOrderId(orderID) == bytearray(32)
-    assert orders.getTotalEscrowed(market.address) == fix(1, 60)
+    assert orders.getTotalEscrowed(market.address) == fix(1, 960)
 
 def test_publicCreateOrder_List_Logic(contractsFixture, cash, market):
     orders = contractsFixture.contracts['Orders']
@@ -164,9 +164,9 @@ def test_ask_withPartialShares(contractsFixture, universe, cash, market):
     orderCreatedEventLog = {
 	    "eventType": 0,
 	    "addressData": [contractsFixture.accounts[1] , nullAddress],
-	    "uint256Data": [40, fix(3), YES, 0, 0, 0, 0,  contractsFixture.contracts['Time'].getTimestamp(), fix(2), fix(60)],
+	    "uint256Data": [40, fix(3), YES, 0, 0, 0, 0,  contractsFixture.contracts['Time'].getTimestamp(), fix(2), fix(960)],
     }
-    with BuyWithCash(cash, fix('60'), contractsFixture.accounts[1], "buy complete set"):
+    with BuyWithCash(cash, fix(1000-40), contractsFixture.accounts[1], "buy complete set"):
         with AssertLog(contractsFixture, "OrderEvent", orderCreatedEventLog):
             orderID = createOrder.publicCreateOrder(ASK, fix(3), 40, market.address, YES, longTo32Bytes(0), longTo32Bytes(0), longTo32Bytes(42), nullAddress, sender=contractsFixture.accounts[1])
     assert cash.balanceOf(contractsFixture.accounts[1]) == fix('0')
@@ -178,7 +178,7 @@ def test_ask_withPartialShares(contractsFixture, universe, cash, market):
     assert orders.getAmount(orderID) == fix(3)
     assert orders.getPrice(orderID) == 40
     assert orders.getOrderCreator(orderID) == contractsFixture.accounts[1]
-    assert orders.getOrderMoneyEscrowed(orderID) == fix('60')
+    assert orders.getOrderMoneyEscrowed(orderID) == fix('960')
     assert orders.getOrderSharesEscrowed(orderID) == fix(2)
 
 def test_duplicate_creation_transaction(contractsFixture, cash, market):
@@ -201,7 +201,7 @@ def test_publicCreateOrders(contractsFixture, cash, market):
     outcomes = [0, 1, 2, 0, 1, 2]
     attoshareAmounts = [100, 200, 300, 100, 200, 300]
     prices = [40, 41, 42, 70, 71, 72]
-    value = 40 * 100 + 41 * 200 + 42 * 300 + 30 * 100 + 29 * 200 + 28 * 300
+    value = 40 * 100 + 41 * 200 + 42 * 300 + (1000-70) * 100 + (1000-71) * 200 + (1000-72) * 300
     with BuyWithCash(cash, value, contractsFixture.accounts[0], "create order"):
         orderIDs = createOrder.publicCreateOrders(outcomes, types, attoshareAmounts, prices, market.address, longTo32Bytes(42))
         assert orderIDs

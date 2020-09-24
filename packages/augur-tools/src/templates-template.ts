@@ -1099,7 +1099,7 @@ export const isTemplateMarket = (
     const marketResolutionRules = hashResolutionRules(longDescription);
     if (marketResolutionRules !== validation.templateValidationResRules) {
       errors.push(
-        'hash of resolution details is different than validation resolution rules hash'
+        'hash of resolution details  is different than validation resolution rules hash'
       );
       return false;
     }
@@ -1107,6 +1107,11 @@ export const isTemplateMarket = (
     // verify template market is in correct categories
     if (!isMarketInAllCorrectCategories(categories, validation.reqCats)) {
       errors.push('templated market does not have correct categories');
+      // https://github.com/AugurProject/augur/issues/8761 full details
+      // only applies to markets created after Thursday, July 30, 2020 7:00:00 PM
+      if (new BigNumber(creationTime).gt(1596135600)) {
+        return false;
+      }
     }
 
     return true;
