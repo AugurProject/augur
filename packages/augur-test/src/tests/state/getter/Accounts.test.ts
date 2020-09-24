@@ -95,8 +95,8 @@ describe('State API :: Accounts :: ', () => {
     const outcome0 = new BigNumber(0);
     const outcome1 = new BigNumber(1);
     const outcome2 = new BigNumber(2);
-    const numShares = new BigNumber(10).pow(18);
-    const price = new BigNumber(22);
+    const numShares = new BigNumber(10).pow(17);
+    const price = new BigNumber(220);
     await john.placeOrder(
       johnYesNoMarket.address,
       bid,
@@ -192,7 +192,7 @@ describe('State API :: Accounts :: ', () => {
 
     // Fill orders
     const cost = numShares
-      .times(78)
+      .times(780)
       .div(10)
       .times(1e18);
     await mary.fillOrder(
@@ -335,9 +335,9 @@ describe('State API :: Accounts :: ', () => {
         marketDescription: 'Scalar market description',
         outcome: 0,
         outcomeDescription: 'Invalid',
-        price: '50.22',
-        quantity: '20',
-        total: '3995.6',
+        price: '52.2',
+        quantity: '2',
+        total: '395.6',
       },
       {
         action: 'Sell',
@@ -347,9 +347,9 @@ describe('State API :: Accounts :: ', () => {
         marketDescription: 'Scalar market description',
         outcome: 1,
         outcomeDescription: 'scalar denom 1',
-        price: '50.22',
-        quantity: '30',
-        total: '5993.4',
+        price: '52.2',
+        quantity: '3',
+        total: '593.4',
       },
     ]);
 
@@ -364,13 +364,13 @@ describe('State API :: Accounts :: ', () => {
     // Submit initial report
     const noPayoutSet = [
       new BigNumber(0),
-      new BigNumber(100),
+      new BigNumber(1000),
       new BigNumber(0),
     ];
     const yesPayoutSet = [
       new BigNumber(0),
       new BigNumber(0),
-      new BigNumber(100),
+      new BigNumber(1000),
     ];
     await john.doInitialReport(johnYesNoMarket, noPayoutSet);
 
@@ -605,7 +605,7 @@ describe('State API :: Accounts :: ', () => {
         outcome: 1,
         outcomeDescription: 'No',
         price: '0',
-        quantity: '0.1',
+        quantity: '0.01',
         total: '0',
       },
       {
@@ -616,8 +616,8 @@ describe('State API :: Accounts :: ', () => {
         marketDescription: 'YesNo market description',
         outcome: 2,
         outcomeDescription: 'Yes',
-        price: '98.99',
-        quantity: '0.1',
+        price: '989.9',
+        quantity: '0.01',
         total: '9.899',
       },
     ]);
@@ -653,19 +653,19 @@ describe('State API :: Accounts :: ', () => {
 
     // Submit initial report
     const invalidPayoutSet = [
-      new BigNumber(100),
+      new BigNumber(1000),
       new BigNumber(0),
       new BigNumber(0),
     ];
     const noPayoutSet = [
       new BigNumber(0),
-      new BigNumber(100),
+      new BigNumber(1000),
       new BigNumber(0),
     ];
     const yesPayoutSet = [
       new BigNumber(0),
       new BigNumber(0),
-      new BigNumber(100),
+      new BigNumber(1000),
     ];
 
     await john.faucetRep(new BigNumber(1e25));
@@ -691,7 +691,7 @@ describe('State API :: Accounts :: ', () => {
       outcome: '0',
       isInvalid: true,
       malformed: undefined,
-      payoutNumerators: ['100', '0', '0'],
+      payoutNumerators: ['1000', '0', '0'],
       userStakeCurrent: '4',
     });
 
@@ -699,7 +699,7 @@ describe('State API :: Accounts :: ', () => {
       outcome: '1',
       isInvalid: undefined,
       malformed: undefined,
-      payoutNumerators: ['0', '100', '0'],
+      payoutNumerators: ['0', '1000', '0'],
       userStakeCurrent: '12',
     });
   });

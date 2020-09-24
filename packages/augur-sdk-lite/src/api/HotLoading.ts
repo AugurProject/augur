@@ -50,6 +50,7 @@ export interface HotLoadMarketInfo {
   settlementFee: string;
   reportingFeeRate: string;
   categories: string[];
+  affiliateFee: string;
 }
 
 export class HotLoading {
@@ -94,6 +95,7 @@ export class HotLoading {
     } else {
       displayPrices = displayPrices.map(price => new BigNumber(price._hex));
     }
+    const affiliateFee = new BigNumber(marketData.affiliateFeeDivisor).gt(new BigNumber(0)) ? new BigNumber(1).div(new BigNumber(marketData.affiliateFeeDivisor)) : '0';
     const designatedReporter = marketData[6];
     const reportingStateNumber: number = marketData[7];
     const winningPayout = marketData[9];
@@ -225,6 +227,7 @@ export class HotLoading {
       reportingFeeRate: reportingFeeRate.toFixed(),
       settlementFee: settlementFee.toFixed(),
       outcomes: outcomeInfo,
+      affiliateFee: String(affiliateFee),
     };
 
     return marketsInfo;

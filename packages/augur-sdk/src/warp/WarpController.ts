@@ -1,3 +1,4 @@
+import * as CIDTool from 'cid-tool';
 import {
   Log,
   MarketReportingState,
@@ -5,20 +6,22 @@ import {
   SubscriptionEventName,
 } from '@augurproject/sdk-lite';
 import { Log as SerializedLog } from '@augurproject/types';
+import { IPFSEndpointInfo, IPFSHashVersion, logger } from '@augurproject/utils';
 import Dexie from 'dexie';
 import { Block } from 'ethers/providers';
+import { BigNumber } from 'ethers/utils';
 import * as IPFS from 'ipfs';
 import * as Unixfs from 'ipfs-unixfs';
 import { DAGNode } from 'ipld-dag-pb';
 import _ from 'lodash';
 import LZString from 'lz-string';
+import fetch from 'cross-fetch';
 import { Augur, Provider } from '..';
 
 import { DB } from '../state/db/DB';
 import { IpfsInfo } from '../state/db/WarpSyncCheckpointsDB';
 import { Markets } from '../state/getter/Markets';
 import { Checkpoints } from './Checkpoints';
-import { BigNumber } from 'ethers/utils';
 
 export const WARPSYNC_VERSION = '1';
 const FILE_FETCH_TIMEOUT = 10000; // 10 seconds
@@ -103,21 +106,15 @@ export interface CheckpointInterface {
 export class WarpController {
   private static DEFAULT_NODE_TYPE = { format: 'dag-pb', hashAlg: 'sha2-256' };
   checkpoints: Checkpoints;
-  private ipfs: Promise<IPFS>;
+  ipfs: Promise<IPFS>;
 
   constructor(
     private db: DB,
     private augur: Augur<Provider>,
     private provider: Provider,
     private uploadBlockNumber: number,
+    private ipfsEndpointInfo:IPFSEndpointInfo,
     ipfs?: Promise<IPFS>,
-    // This is to simplify swapping out file retrieval mechanism.
-    private _fileRetrievalFn: (ipfsPath: string) => Promise<any> = (
-      ipfsPath: string
-    ) =>
-      fetch(`https://cloudflare-ipfs.com/ipfs/${ipfsPath}`)
-        .then(item => item.arrayBuffer())
-        .then(item => new Uint8Array(item))
   ) {
     this.checkpoints = new Checkpoints(provider);
     if (ipfs) {
@@ -307,11 +304,35 @@ export class WarpController {
     return hash;
   }
 
-  getFile(ipfsPath: string) {
-    const self = this;
-    return new Promise<CheckpointInterface>(async function(resolve, reject) {
-      const timeout = setTimeout(function() {reject(new Error('Request timed out'));}, FILE_FETCH_TIMEOUT);
-      const fileResult = await self._fileRetrievalFn(ipfsPath);
+  getFile(ipfsHash: string, ipfsPath: string) {
+    return new Promise<CheckpointInterface>(async (resolve, reject) => {
+      const timeout = setTimeout(() => {reject(new Error('Request timed out'));}, FILE_FETCH_TIMEOUT);
+      let fileResult;
+      switch (this.ipfsEndpointInfo.version) {
+        case IPFSHashVersion.CIDv0:
+          fileResult = await fetch(`${this.ipfsEndpointInfo.url}/ipfs/${ipfsHash}${ipfsPath}`)
+          .then(item => item.arrayBuffer())
+          .then(item => new Uint8Array(item))
+          break;
+        case IPFSHashVersion.CIDv1:
+          const base32Hash = CIDTool.base32(ipfsHash)
+          fileResult = await fetch(`https://cloudflare-ipfs.com/ipfs/${base32Hash}${ipfsPath}`)
+          .then(item => item.arrayBuffer())
+          .then(item => new Uint8Array(item))
+          break;
+        case IPFSHashVersion.IPFS:
+          try {
+            fileResult = await (await this.ipfs).cat(`${ipfsHash}${ipfsPath}`);
+          } catch(err) {
+            if (err.message === 'this dag node is a directory') {
+              throw Error(`IPFS: tried to read directory as if it were a file: hash=${ipfsHash} path=${ipfsPath}`)
+            }
+          }
+          break;
+        default:
+          throw new Error('No IPFS gateway configured');
+      }
+
       clearTimeout(timeout);
       const decompressedResult = await LZString.decompressFromUint8Array(fileResult);
       resolve(JSON.parse(decompressedResult));
@@ -319,16 +340,21 @@ export class WarpController {
   }
 
   async getCheckpointFile(ipfsRootHash: string): Promise<CheckpointInterface> {
-    return this.getFile(`${ipfsRootHash}/index`);
+    return this.getFile(ipfsRootHash, '/index');
   }
 
   async pinHashByGatewayUrl(urlString: string) {
     const url = new URL(urlString);
     try {
-      await (await this.ipfs).pin.add(url.pathname);
+      const matches = /^(\w+)\.ipfs\..+$/.exec(url.hostname);
+      const thingToPin = (matches) ? matches[1] : url.pathname;
+
+      await (await this.ipfs).pin.add(thingToPin);
+
+      logger.info(`Client pinned with ipfs hash: ${thingToPin}`)
+
       return true;
     } catch (e) {
-      console.error(e);
       return false;
     }
   }

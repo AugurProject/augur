@@ -129,7 +129,6 @@ export class LiquidityPool {
 
     const bucketsByPrice = _.groupBy(unsortedOffers, (order) => order.price);
     const bestPrice = LiquidityPool.getOutcomesBestOffer(bucketsByPrice);
-
     return {
       [liquidityPoolId]: {
         [Number(new BigNumber(outcome))]: bestPrice,

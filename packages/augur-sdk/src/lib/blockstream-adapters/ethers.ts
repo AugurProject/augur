@@ -61,8 +61,8 @@ export async function createAdapter(
   const ethersProvider = new EthersProvider(
     new JsonRpcProvider(httpAddress),
     5,
-    0,
-    40
+    50,
+    10
   );
   return new EthersProviderBlockStreamAdapter(ethersProvider);
 }

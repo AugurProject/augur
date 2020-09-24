@@ -22,9 +22,9 @@ contract RepOracle is Initializable {
 
     mapping(address => RepData) repData;
 
-    uint256 constant public PERIOD = 3 days; // TODO: revisit if this is an appropriate period
+    uint256 constant public PERIOD = 3 days;
 
-    uint256 constant public genesisInitialRepPriceinAttoCash = 7 * 10**18;
+    uint256 constant public genesisInitialRepPriceinAttoCash = 23 * 10**18;
 
     address public augur;
     address public cash;

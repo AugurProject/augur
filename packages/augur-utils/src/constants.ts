@@ -1,4 +1,4 @@
-import BigNumber from "bignumber.js";
+import BigNumber from 'bignumber.js';
 
 export const ZERO = new BigNumber(0);
 export const ONE = new BigNumber(1, 10);
@@ -10,6 +10,7 @@ export const BYTES_32 =  TWO.exponentiatedBy(252);
 export const INT256_MIN_VALUE = TWO.exponentiatedBy(255).negated();
 export const INT256_MAX_VALUE = TWO.exponentiatedBy(255).minus(ONE);
 export const UINT256_MAX_VALUE = TWO.exponentiatedBy(256);
+export const DEFAULT_TRADE_INTERVAL = new BigNumber(10**16);
 
 export enum NetworkId {
   Mainnet = '1',

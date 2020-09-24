@@ -1,4 +1,4 @@
-import { EthersSigner } from '@augurproject/contract-dependencies-ethers';
+import { EthersSigner, ContractDependenciesEthers } from '@augurproject/contract-dependencies-ethers';
 import { EthersProvider } from '@augurproject/ethersjs-provider';
 import { SubscriptionEventName } from '@augurproject/sdk-lite';
 import { logger, LoggerLevels, SDKConfiguration } from '@augurproject/utils';
@@ -9,7 +9,6 @@ import { ContractEvents } from '../api/ContractEvents';
 import { ZeroX } from '../api/ZeroX';
 import { Augur } from '../Augur';
 import { BaseConnector, EmptyConnector } from '../connector';
-import { ContractDependenciesGSN } from '../lib/contract-deps';
 import { WarpController } from '../warp/WarpController';
 import { Controller } from './Controller';
 import { DB } from './db/DB';
@@ -19,11 +18,15 @@ import { BlockAndLogStreamerSyncStrategy } from './sync/BlockAndLogStreamerSyncS
 import { BulkSyncStrategy } from './sync/BulkSyncStrategy';
 import { WarpSyncStrategy } from './sync/WarpSyncStrategy';
 
-export function buildSyncStrategies(client:Augur, db:Promise<DB>, provider: EthersProvider, logFilterAggregator: LogFilterAggregator, config: SDKConfiguration) {
+export async function buildSyncStrategies(client:Augur, db:Promise<DB>, provider: EthersProvider, logFilterAggregator: LogFilterAggregator, config: SDKConfiguration) {
+  const warpController = new WarpController((await db), client, provider,
+    config.uploadBlockNumber, config.warpSync.ipfsEndpoint);
+
+  client.warpController = warpController;
   return async () => {
+    const contractAddresses = client.contractEvents.getAugurContractAddresses();
     const uploadBlockNumber = config.uploadBlockNumber;
     const currentBlockNumber = await provider.getBlockNumber();
-    const contractAddresses = client.contractEvents.getAugurContractAddresses();
 
     const bulkSyncStrategy = new BulkSyncStrategy(provider.getLogs,
       contractAddresses, logFilterAggregator.onLogsAdded,
@@ -36,8 +39,6 @@ export function buildSyncStrategies(client:Augur, db:Promise<DB>, provider: Ethe
     );
 
     const currentBlock = await provider.getBlock('latest');
-    const warpController = new WarpController((await db), client, provider,
-      uploadBlockNumber);
 
     const marketCreatedCB = async (blockNumber, logs) => {
       client.events.emit(SubscriptionEventName.MarketsUpdated, logs);
@@ -50,10 +51,14 @@ export function buildSyncStrategies(client:Augur, db:Promise<DB>, provider: Ethe
     const warpSyncStrategy = new WarpSyncStrategy(warpController,
       logFilterAggregator.onLogsAdded, await db, provider);
 
-    const { warpSyncHash } = await client.warpSync.getLastWarpSyncData(
-      client.contracts.universe.address);
+    try {
+      const { warpSyncHash } = await client.warpSync.getLastWarpSyncData(
+        client.contracts.universe.address);
 
-    await warpSyncStrategy.start(currentBlock, warpSyncHash);
+      await warpSyncStrategy.start(currentBlock, warpSyncHash);
+    } catch (e) {
+      logger.error('Unable to load warp sync file.', e);
+    }
 
     if (config.warpSync && config.warpSync.createCheckpoints) {
       client.events.once(SubscriptionEventName.SDKReady, () => {
@@ -103,7 +108,7 @@ export async function createClient(
   if (provider) {
     ethersProvider = provider
   } else if (config.ethereum?.http) {
-    ethersProvider = new EthersProvider( new JsonRpcProvider(config.ethereum.http), 10, 0, 40);
+    ethersProvider = new EthersProvider( new JsonRpcProvider(config.ethereum.http), 5, 50, 10);
   } else {
     throw Error('No ethereum http endpoint provided');
   }
@@ -111,7 +116,7 @@ export async function createClient(
     throw Error('Config must include addresses');
   }
 
-  const contractDependencies = await ContractDependenciesGSN.create(ethersProvider, signer, config);
+  const contractDependencies = new ContractDependenciesEthers(ethersProvider, signer);
 
   let zeroX: ZeroX = null;
   if (config.zeroX) {
@@ -136,7 +141,14 @@ export async function createClient(
     // interface instead of actually import @0x/mesh-browser -- since
     // that would attempt to start the wasm client in nodejs and cause
     // everything to die.
-    createBrowserMesh(config, ethersProvider, zeroX);
+    if (config.zeroX?.delayTillSDKReady) {
+      client.events.once(SubscriptionEventName.SDKReady, () => {
+        console.log(`DELAYED 0x CREATION`);
+        createBrowserMesh(config, ethersProvider, zeroX);
+      });
+    } else {
+      createBrowserMesh(config, ethersProvider, zeroX);
+    }
   }
 
   return client;
@@ -188,6 +200,14 @@ export async function createServer(config: SDKConfiguration, client?: Augur): Pr
   if(config.warpSync?.createCheckpoints && config.warpSync?.autoReport) {
     client.events.on(SubscriptionEventName.WarpSyncHashUpdated,
       async ({ hash }) => {
+        const result  = await client.getAccountEthBalance();
+        const balance = new BigNumber(result);
+
+        if (balance.eq(0)) {
+          console.log(`Please deposit eth to account ${await client.getAccount()} to autoreport`);
+          return;
+        }
+
         if (hash) {
           const market = await client.warpSync.getWarpSyncMarket(
             config.addresses.Universe);
@@ -199,7 +219,7 @@ export async function createServer(config: SDKConfiguration, client?: Augur): Pr
       });
   }
 
-  const sync = buildSyncStrategies(client, db, ethersProvider, logFilterAggregator, config);
+  const sync = await buildSyncStrategies(client, db, ethersProvider, logFilterAggregator, config);
 
   const controller = new Controller(client, db, logFilterAggregator);
   const api = new API(client, db);
@@ -225,7 +245,6 @@ export async function startServerFromClient(config: SDKConfiguration, client?: A
 export async function startServer(config: SDKConfiguration): Promise<API> {
   const { api, sync } = await createServer(config, undefined);
 
-  // TODO should this await?
   sync();
 
   return api;

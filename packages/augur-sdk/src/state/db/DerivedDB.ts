@@ -19,7 +19,7 @@ export class DerivedDB extends RollbackTable {
   private mergeEventNames: string[];
   private name: string;
   protected requiresOrder: boolean = false;
-  protected augur;
+  protected augur: Augur;
 
   constructor(
     db: DB,

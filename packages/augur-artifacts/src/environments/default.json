@@ -68,8 +68,9 @@
   "averageBlocktime": 2000,
   "ui": {
     "showReloadModal": true,
-    "trackBestOffer": true,
-    "reportingOnly": false,
-    "fallbackProvider": "torus"
+    "trackBestOffer": false,
+    "trackMarketInvalidBids": true,
+    "fallbackProvider": "torus",
+    "primaryProvider" : "wallet"
   }
 }

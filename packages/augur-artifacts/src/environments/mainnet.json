@@ -4,9 +4,12 @@
     "http": "https://eth-mainnet.alchemyapi.io/v2/Kd37_uEmJGwU6pYq6jrXaJXXi8u9IoOM",
     "rpcRetryCount": 5,
     "rpcRetryInterval": 0,
-    "rpcConcurrency": 40
+    "rpcConcurrency": 40,
+    "ws": "ws://localhost:8546"
   },
   "gas": {
+    "price": 1000000000,
+    "limit": 9500000
   },
   "deploy": {
     "isProduction": true,
@@ -19,7 +22,9 @@
       "WETH9": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
       "UniswapV2Factory": "0x5C69bEe701ef814a2B6a3EDD4B1652CB9cc5aA6f",
       "UniswapV2Router02": "0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D",
-      "RelayHubV2": "XXX"
+      "RelayHubV2": "0x5648B6306380689AF8d2DE7Bdd23D916b9eE0db5",
+      "USDC": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+      "USDT": "0xdAC17F958D2ee523a2206206994597C13D831ec7"
     },
     "writeArtifacts": true,
     "serial": true
@@ -28,70 +33,106 @@
     "exchangeRateBufferMultiplier": 1.05
   },
   "gsn": {
-    "enabled": true
+    "enabled": true,
+    "minDaiForSignerETHBalanceInDAI": 50,
+    "desiredSignerBalanceInETH": 0.1
   },
   "zeroX": {
     "rpc": {
       "enabled": false,
-      "ws": "wss://v2.augur.net/0x-ws"
+      "ws": null
     },
     "mesh": {
       "verbosity": 1,
       "enabled": true,
       "useBootstrapList": true,
       "bootstrapList": [
-        "/dns4/demo-bootstrap.augur.net/tcp/443/wss/ipfs/16Uiu2HAmRMgvPQV2UYKXuuCnNaFLpc36PhLp2UKVcL1ePseVcz4y"
+        "/ip4/3.214.190.67/tcp/60558/ipfs/16Uiu2HAmGx8Z6gdq5T5AQE54GMtqDhDFhizywTy1o28NJbAMMumF",
+        "/ip4/3.214.190.67/tcp/60559/ws/ipfs/16Uiu2HAmGx8Z6gdq5T5AQE54GMtqDhDFhizywTy1o28NJbAMMumF",
+        "/dns4/bootstrap-0.mesh.0x.org/tcp/60558/ipfs/16Uiu2HAmGx8Z6gdq5T5AQE54GMtqDhDFhizywTy1o28NJbAMMumF",
+        "/dns4/bootstrap-0.mesh.0x.org/tcp/60559/ws/ipfs/16Uiu2HAmGx8Z6gdq5T5AQE54GMtqDhDFhizywTy1o28NJbAMMumF",
+        "/dns4/bootstrap-0.mesh.0x.org/tcp/443/wss/ipfs/16Uiu2HAmGx8Z6gdq5T5AQE54GMtqDhDFhizywTy1o28NJbAMMumF",
+        "/ip4/18.200.96.60/tcp/60558/ipfs/16Uiu2HAkwsDZk4LzXy2rnWANRsyBjB4fhjnsNeJmjgsBqxPGTL32",
+        "/ip4/18.200.96.60/tcp/60559/ws/ipfs/16Uiu2HAkwsDZk4LzXy2rnWANRsyBjB4fhjnsNeJmjgsBqxPGTL32",
+        "/dns4/bootstrap-1.mesh.0x.org/tcp/60558/ipfs/16Uiu2HAkwsDZk4LzXy2rnWANRsyBjB4fhjnsNeJmjgsBqxPGTL32",
+        "/dns4/bootstrap-1.mesh.0x.org/tcp/60559/ws/ipfs/16Uiu2HAkwsDZk4LzXy2rnWANRsyBjB4fhjnsNeJmjgsBqxPGTL32",
+        "/dns4/bootstrap-1.mesh.0x.org/tcp/443/wss/ipfs/16Uiu2HAkwsDZk4LzXy2rnWANRsyBjB4fhjnsNeJmjgsBqxPGTL32",
+        "/ip4/13.232.193.142/tcp/60558/ipfs/16Uiu2HAkykwoBxwyvoEbaEkuKMeKrmJDPZ2uKFPUKtqd2JbGHUNH",
+        "/ip4/13.232.193.142/tcp/60559/ws/ipfs/16Uiu2HAkykwoBxwyvoEbaEkuKMeKrmJDPZ2uKFPUKtqd2JbGHUNH",
+        "/dns4/bootstrap-2.mesh.0x.org/tcp/60558/ipfs/16Uiu2HAkykwoBxwyvoEbaEkuKMeKrmJDPZ2uKFPUKtqd2JbGHUNH",
+        "/dns4/bootstrap-2.mesh.0x.org/tcp/60559/ws/ipfs/16Uiu2HAkykwoBxwyvoEbaEkuKMeKrmJDPZ2uKFPUKtqd2JbGHUNH",
+        "/dns4/bootstrap-2.mesh.0x.org/tcp/443/wss/ipfs/16Uiu2HAkykwoBxwyvoEbaEkuKMeKrmJDPZ2uKFPUKtqd2JbGHUNH",
+        "/ip4/167.172.201.142/tcp/60558/ipfs/16Uiu2HAkzuS8DfyZ2CPzZbxGCXLSHvvbvh8nvGCHjY6wEXe2jhAm",
+        "/dns4/fra1.relayer.mesh.0x.org/tcp/443/wss/ipfs/16Uiu2HAkzuS8DfyZ2CPzZbxGCXLSHvvbvh8nvGCHjY6wEXe2jhAm",
+        "/ip4/167.172.201.142/tcp/60558/ipfs/16Uiu2HAmM1dkXwZK5HsnknGFxzPBLuCw4EboiC2sdwKrPJZ6kcio",
+        "/dns4/sfo2.relayer.mesh.0x.org/tcp/443/wss/ipfs/16Uiu2HAmM1dkXwZK5HsnknGFxzPBLuCw4EboiC2sdwKrPJZ6kcio",
+        "/ip4/159.65.4.82/tcp/60558/ipfs/16Uiu2HAm9brLYhoM1wCTRtGRR7ZqXhk8kfEt6a2rSFSZpeV8eB7L",
+        "/dns4/sgp1.relayer.mesh.0x.org/tcp/443/wss/ipfs/16Uiu2HAm9brLYhoM1wCTRtGRR7ZqXhk8kfEt6a2rSFSZpeV8eB7L",
+        "/ip4/34.201.54.78/tcp/4001/ipfs/12D3KooWHwJDdbx73qiBpSCJfg4RuYyzqnLUwfLBqzn77TSy7kRX",
+        "/ip4/18.204.221.103/tcp/4001/ipfs/12D3KooWQS6Gsr2kLZvF7DVtoRFtj24aar5jvz88LvJePrawM3EM",
+        "/dns4/arcpt.peers.mesh.0x.org/tcp/443/wss/ipfs/16Uiu2HAmNiUFpexTLsur1RdGtQDACi41MoQoA2bQE2VFDWeArCPT",
+        "/dns4/s8anm.peers.mesh.0x.org/tcp/443/wss/ipfs/16Uiu2HAmVCeTcAGpYWeKdM6k1a46XwAGi1Kx7B8HKi9udYAS8aNm",
+        "/dns4/jcudy.peers.mesh.0x.org/tcp/443/wss/ipfs/16Uiu2HAmHC2vnGs272SVmF81fJ31pEdWLdj2uEhRc4jbpiRjcuDy",
+        "/ip4/45.55.56.13/tcp/60558/ipfs/16Uiu2HAmSjks7LPhagF6bEY7DsejVX69UcVGMvyBgZsKE5eEZHbK",
+        "/dns4/derym.peers.mesh.0x.org/tcp/443/wss/ipfs/16Uiu2HAmApD67frnyrNKj5ZZtET1Y1JZPNFk2XcKNtW88URdeRyM"
       ]
     }
   },
-  "uploadBlockNumber": 9914232,
+  "uploadBlockNumber": 10543755,
   "addresses": {
-    "Augur": "0xF6678C1e3b4FAedB48F1e30B8717D98bb21dB5d3",
-    "Universe": "0x4BF796bab945B7F7e283Ff4413e2374A3625B31D",
+    "Augur": "0x23916a8F5C3846e3100e5f587FF14F3098722F5d",
+    "Universe": "0x49244BD018Ca9fd1f06ecC07B9E9De773246e5AA",
     "LegacyReputationToken": "0x1985365e9f78359a9B6AD760e32412f4a445E862",
     "Cash": "0x6B175474E89094C44Da98b954EedeAC495271d0F",
-    "BuyParticipationTokens": "0x57C64125Ffc4A603eEB2AbfB68b596743EeBd6b1",
-    "RedeemStake": "0x1E4fC27FA515629a9A73C75D1c8d7a890B381F04",
-    "WarpSync": "0xFB517E73007cEC5e5D30Fff32571037304a1be52",
-    "ShareToken": "0x0FFbb6caDA44E049CE635686c423A5d467a01B7b",
-    "HotLoading": "0x3dB48A90a884cBDf96D36d40bA7869e2F804Afd6",
-    "EthExchange": "0x54AB5acab926B4268bbB12e8981c36D463837a79",
-    "Affiliates": "0x374CdCd0aE6072971Cf4aa44E7646C53b426F315",
-    "AffiliateValidator": "0x1108d4bEB6B819fF315B32eD8E6397A4589BDD7E",
+    "BuyParticipationTokens": "0x1aaCc93f3Ee47D7DE20171468D9C2458D5602483",
+    "RedeemStake": "0x9ac7B28A7e684d1b2776d6b9045E8f9150F58401",
+    "WarpSync": "0xE0C69AEfAa7611dE493bCe9525abf2A2c3C7Fc4D",
+    "ShareToken": "0x9e4799ff2023819b1272eee430eadf510eDF85f0",
+    "HotLoading": "0x5836BEdB48834474C8e11fBc005E7fB2C2a35D7d",
+    "EthExchange": "0xA478c2975Ab1Ea89e8196811F51A7B7Ade33eB11",
+    "Affiliates": "0x3a4131E478992CD856D2f8bE4CB5cD8E56e635B3",
+    "AffiliateValidator": "0x2A256518DDdCe6E2e95B56a95991d4FA990Be659",
     "Exchange": "0x61935CbDd02287B511119DDb11Aeb42F1593b7Ef",
-    "Time": "0x849C309B65B60AD06ef019E5e1148878eeF9CE2c",
-    "AugurTrading": "0x5Ae43E4ac2cF97EF82cb0AC023576fe16Ab8B435",
-    "CancelOrder": "0x03AE7e41f8286C4D8E4E73d3e2e9FC3CD83F4547",
-    "CreateOrder": "0x34db70b79a006187B5480885a4F9536061CFc338",
-    "FillOrder": "0xc4f45935D259A9e5D788e77001304f922d8fe090",
-    "Orders": "0xb9ca4ECBFc2FA801c1136C97B1edd85e8751d1E2",
-    "ProfitLoss": "0xfc2b8ddFC0cD0313B64C71451F5A531ce353CA24",
-    "SimulateTrade": "0xa0feeab8491615B3b915dF39147AC62C540c18b4",
-    "Trade": "0xc9Bc43684281cf3e468FEAd1a89DdE86aD43339D",
-    "ZeroXTrade": "0x429eA12DF8C3AB5413022d43eB04c9240029af2d",
-    "OICash": "0xFB76788b58AFBeF298DE9cAdC48b49351A5db946",
-    "AugurWalletRegistry": "0xD7a236fB3a079f360315cC6be14F45eFe654C65A",
-    "UniswapV2Factory": "0x68cB4F6bABAd10e84793dBDC25c12F5394B84ca3",
-    "UniswapV2Router02": "0x567Ca100fe41A3A6BEa190fb6e18f62B3454293F",
-    "AuditFunds": "0x6F6f18131226E21d463afeDcFEa59B40e22fF251",
+    "Time": "0xd2a04E60A4b7f6077Ac2a87a8CfD81722B75B9cF",
+    "AugurTrading": "0x63A1eed178323C5eE0aD72fbD8a8cF1a7902881e",
+    "CancelOrder": "0x465bF82912497A424A4669e92319D9355dCFb0d0",
+    "CreateOrder": "0x8a97CBe557F1153b04d4eDbE4ECa0159B8138937",
+    "FillOrder": "0xc42E71b9A6E38DD05cFB51Be6751a4d10d66ba35",
+    "Orders": "0x483156fE50F752c63aA671a806dB10d5Cabd7A8f",
+    "ProfitLoss": "0x2c167231cF521AAABc8AbE09F4e2bCB728f26C01",
+    "REPv2": "0x221657776846890989a759BA2973e427DfF5C9bB",
+    "SimulateTrade": "0xC2930a5EB22e8D8812934d59508Fe940E9F91C4E",
+    "Trade": "0x0CD32f92E3eA33D81d8Cf60e20DdDFdeF4915667",
+    "ZeroXTrade": "0x8346F3074994FD9A813c735D629B257D93780Eed",
+    "OICash": "0xd2486eD7Fdb3F2325d95e4E648F2c92aA2948fF5",
+    "AugurWalletRegistry": "0x9Fa160f92A10b431F255BF1a70a1c1e5808E5128",
+    "UniswapV2Factory": "0x5C69bEe701ef814a2B6a3EDD4B1652CB9cc5aA6f",
+    "UniswapV2Router02": "0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D",
+    "AuditFunds": "0x73961558c6d1E8C5df845975d4D49dcA3db18887",
     "WETH9": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
-    "DaiVat": "0x35D1b3F3D7966A1DFe207aa4514C12a259A0492B",
-    "DaiPot": "0x197E90f9FAD81970bA7976f33CbD77088E5D7cf7",
-    "DaiJoin": "0x9759A6Ac90977b93B58547b4A71c78317f391A28"
+    "USDC": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+    "USDT": "0xdAC17F958D2ee523a2206206994597C13D831ec7",
+    "AugurWalletRegistryV2": "0x1dD864Ed6F291b31C86aAF228DB387cd60a20e18",
+    "RelayHubV2": "0x5648B6306380689AF8d2DE7Bdd23D916b9eE0db5",
+    "AccountLoader": "0x3A1b0Dde9Bf5Ff6C1C5d115b12B036EDFD3bF32a"
   },
   "plugins": {
     "chat": "orbit"
   },
   "warpSync": {
     "enabled": true,
-    "autoReport": false
+    "autoReport": false,
+    "createCheckpoints": true
+
   },
   "syncing": {
     "enabled": true
+
   },
   "sdk": {
     "enabled": false,
     "ws": "ws://localhost:60557"
+
   },
   "server": {
     "httpPort": 9003,
@@ -102,8 +143,18 @@
     "startWS": true,
     "wssPort": 9002,
     "startWSS": true
+
   },
   "logLevel": 2,
   "showReloadModal": false,
-  "averageBlocktime": 15000
+  "averageBlocktime": 15000,
+  "ui": {
+    "showReloadModal": false,
+    "trackBestOffer": false,
+    "trackMarketInvalidBids": true,
+    "reportingOnly": false,
+    "fallbackProvider": "torus",
+    "liteProvider": "torus",
+    "primaryProvider": "wallet"
+  }
 }

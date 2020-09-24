@@ -1,0 +1,3 @@
+{$HOST}
+
+reverse_proxy http://gsn:8090

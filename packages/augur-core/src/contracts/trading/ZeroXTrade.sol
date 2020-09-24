@@ -254,7 +254,7 @@ contract ZeroXTrade is Initializable, IZeroXTrade, IERC1155 {
         transferFromAllowed = true;
 
         uint256 _protocolFee = exchange.protocolFeeMultiplier().mul(tx.gasprice);
-        coverProtocolFee(_protocolFee.mul(_orders.length), _maxProtocolFeeDai);
+        coverProtocolFee(_protocolFee.mul(_maxTrades), _maxProtocolFeeDai);
 
         // Do the actual asset exchanges
         for (uint256 i = 0; i < _orders.length && _fillAmountRemaining != 0; i++) {

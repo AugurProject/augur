@@ -114,6 +114,7 @@ export class Markets {
       outcomeId: t.union([outcomeIdType, t.array(outcomeIdType)]),
       account: t.string,
       onChain: t.boolean, // if false or not present, use 0x orderbook
+      orderType: t.string,
       expirationCutoffSeconds: t.number,
       ignoreCrossOrders: t.boolean,
     }),
@@ -516,6 +517,7 @@ export class Markets {
               params.templateFilter === TemplateFilters.sportsBook &&
               !market.groupHash
             ) {
+              filteredOutCount += 1;
               return false;
             }
         }
@@ -525,18 +527,21 @@ export class Markets {
             params.marketTypeFilter === MarketTypeName.YesNo &&
             market.marketType !== MarketType.YesNo
           ) {
+            filteredOutCount += 1;
             return false;
           }
           if (
             params.marketTypeFilter === MarketTypeName.Categorical &&
             market.marketType !== MarketType.Categorical
           ) {
+            filteredOutCount += 1;
             return false;
           }
           if (
             params.marketTypeFilter === MarketTypeName.Scalar &&
             market.marketType !== MarketType.Scalar
           ) {
+            filteredOutCount += 1;
             return false;
           }
         }
@@ -545,12 +550,14 @@ export class Markets {
           params.designatedReporter &&
           market.designatedReporter !== params.designatedReporter
         ) {
+          filteredOutCount += 1;
           return false;
         }
         // Apply max Fee
         if (params.maxFee && market.feePercent > feePercent) return false;
         // Apply invalid filter
         if (params.includeInvalidMarkets !== true && market.invalidFilter) {
+          filteredOutCount += 1;
           return false;
         }
         // Liquidity filtering
@@ -558,6 +565,7 @@ export class Markets {
           if (params.maxLiquiditySpread === MaxLiquiditySpread.ZeroPercent) {
             // return hasRecentlyDepletedLiquidity on ZeroPercent spread
             if (!market.hasRecentlyDepletedLiquidity) {
+              filteredOutCount += 1;
               return false;
             }
           } else if (
@@ -567,15 +575,18 @@ export class Markets {
               market.liquidity[params.maxLiquiditySpread] ===
               '000000000000000000000000000000'
             ) {
+              filteredOutCount += 1;
               return false;
             }
             if (market.invalidFilter && market.hasRecentlyDepletedLiquidity) {
+              filteredOutCount += 1;
               return false;
             }
           }
         }
 
         if (!params.includeWarpSyncMarkets && market.isWarpSync) {
+          // don't tell user that this market is hidden, there is no filter to turn on
           return false;
         } else if (market.isWarpSync) {
           return !tentativeWinningHashMatch;
@@ -585,9 +596,53 @@ export class Markets {
       })
       .toArray();
 
-    return params.templateFilter === TemplateFilters.sportsBook
-      ? await processSportsbookMarketData(augur, db, marketData, reportingFeeDivisor, params)
-      : await processTradingMarketData(augur, db, marketData, filteredOutCount, reportingFeeDivisor, params);
+    if (params.templateFilter === TemplateFilters.sportsBook)  {
+      return await processSportsbookMarketData(augur, db, marketData, reportingFeeDivisor, params);
+    }
+
+    const meta = {
+      filteredOutCount,
+      marketCount: marketData.length,
+    };
+
+    if (params.sortBy) {
+      const sortBy = params.sortBy;
+      marketData = _.orderBy(
+        marketData,
+        item =>
+          sortBy === 'liquidity'
+            ? item[sortBy][params.maxLiquiditySpread]
+            : item[sortBy],
+        params.isSortDescending ? 'desc' : 'asc'
+      );
+    }
+
+    // If returning Recently Depleted Liquidity (spread===0)
+    if (params.maxLiquiditySpread === MaxLiquiditySpread.ZeroPercent) {
+      // Have invalid markets appear at the bottom
+      marketData = _.sortBy(marketData, 'invalidFilter');
+    }
+
+    // Get category meta data before slicing for pagination
+    const categories = getMarketsCategoriesMeta(marketData);
+
+    marketData = marketData.slice(params.offset, params.offset + params.limit);
+
+    // Get markets info to return
+    const marketsInfo: MarketInfo[] = await getMarketsInfo(
+      db,
+      marketData,
+      reportingFeeDivisor,
+      augur
+    );
+
+    return {
+      markets: marketsInfo,
+      meta: {
+        ...meta,
+        categories,
+      },
+    };
   }
 
   @Getter('getMarketOrderBookParams')
@@ -611,6 +666,8 @@ export class Markets {
         orderState: OrderState.OPEN,
         expirationCutoffSeconds: params.expirationCutoffSeconds,
         ignoreCrossOrders: params.ignoreCrossOrders,
+        orderType: params.orderType,
+        outcome: params.outcomeId as 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7,
         account: params.account,
       });
     }
@@ -1283,7 +1340,6 @@ async function getMarketsInfo(
         title: marketData.groupTitle,
         estTimestamp: marketData.groupEstDatetime,
         liquidityPool: marketData.liquidityPool,
-        liquidityRank: marketData.liquidity['10'],
         placeholderOutcomes: marketData.groupPlaceholderOutcomes,
       }
     };
@@ -1352,60 +1408,6 @@ function formatStakeDetails(
     }
   }
   return formattedStakeDetails;
-}
-
-async function processTradingMarketData(
-  augur: Augur,
-  db: DB,
-  marketData: MarketData[],
-  filteredOutCount: number,
-  reportingFeeDivisor: BigNumber,
-  params: t.TypeOf<typeof Markets.getMarketsParams>,
-): Promise<MarketList> {
-
-const meta = {
-  filteredOutCount,
-  marketCount: marketData.length,
-};
-
-if (params.sortBy) {
-  const sortBy = params.sortBy;
-  marketData = _.orderBy(
-    marketData,
-    item =>
-      sortBy === 'liquidity'
-        ? item[sortBy][params.maxLiquiditySpread]
-        : item[sortBy],
-    params.isSortDescending ? 'desc' : 'asc'
-  );
-}
-
-// If returning Recently Depleted Liquidity (spread===0)
-if (params.maxLiquiditySpread === MaxLiquiditySpread.ZeroPercent) {
-  // Have invalid markets appear at the bottom
-  marketData = _.sortBy(marketData, 'invalidFilter');
-}
-
-// Get category meta data before slicing for pagination
-const categories = getMarketsCategoriesMeta(marketData);
-
-marketData = marketData.slice(params.offset, params.offset + params.limit);
-
-// Get markets info to return
-const marketsInfo: MarketInfo[] = await getMarketsInfo(
-  db,
-  marketData,
-  reportingFeeDivisor,
-  augur
-);
-
-return {
-  markets: marketsInfo,
-  meta: {
-    ...meta,
-    categories,
-  },
-};
 }
 
 async function processSportsbookMarketData(

@@ -1,6 +1,6 @@
-import { EventEmitter } from 'events';
-import { SDKConfiguration } from '@augurproject/sdk-lite';
 import { SubscriptionEventName } from '@augurproject/sdk-lite';
+import { SDKConfiguration } from '@augurproject/utils';
+import { EventEmitter } from 'events';
 import { Callback } from '../events';
 import { startServerFromClient } from '../state/create-api';
 import { API } from '../state/getter/API';
@@ -14,6 +14,9 @@ export class SingleThreadConnector extends BaseConnector {
   private _api: API;
   get api() {
     return this._api;
+  }
+  set api(api: API) {
+    this._api = api;
   }
 
   async connect(config: SDKConfiguration, account?: string): Promise<void> {
