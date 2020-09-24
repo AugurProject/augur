@@ -159,7 +159,7 @@ const FilterBox = ({
     if (updateTabs) setTabs(nextTabs);
     if (updateFilteredData) setFilteredData(nextFilteredData);
   };
-
+  const isTrading = theme === THEMES.TRADING;
   return (
     <QuadBox
       title={title}
@@ -187,7 +187,7 @@ const FilterBox = ({
       extend={extend}
       subheader={
         <>
-          {theme === THEMES.TRADING ? (
+          {isTrading ? (
             <SwitchLabelsGroup
               tabs={tabs}
               selectedTab={selectedTab}

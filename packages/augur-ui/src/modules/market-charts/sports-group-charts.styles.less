@@ -18,7 +18,7 @@
 
   display: grid;
   grid-template-columns: 1fr 0fr;
-  grid-template-rows: @size-24 0fr;
+  grid-template-rows: @size-32 0fr;
 
   @media @breakpoint-mobile-tablet {
     align-items: center;
@@ -34,6 +34,10 @@
     text-transform: capitalize;
     grid-column: 1;
     grid-row: 1;
+
+    @media @breakpoint-mobile-tablet {
+      margin-bottom: @size-8;
+    }
   }
 
   > div:first-of-type:not(:last-of-type) {
