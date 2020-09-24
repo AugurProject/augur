@@ -17,13 +17,9 @@ import {
   TRANSACTIONS,
   REDEEMSTAKE,
   HELP_CENTER_PARTICIPATION_TOKENS,
-  CREATEAUGURWALLET,
-  MODAL_INITIALIZE_ACCOUNT,
-  WALLET_STATUS_VALUES,
   MODAL_ADD_FUNDS,
   ADD_FUNDS_SWAP,
   MODAL_REPORTING,
-  GSN_WALLET_SEEN,
   MODAL_PARTICIPATE,
   MODAL_CLAIM_FEES,
 } from 'modules/common/constants';
@@ -47,7 +43,6 @@ import {
   RepBalance,
   MovementLabel,
   InReportingLabel,
-  InitializeWalletModalNotice,
   TransactionFeeLabel,
 } from 'modules/common/labels';
 import { ButtonActionType } from 'modules/types';
@@ -80,13 +75,13 @@ import {
 } from 'modules/app/actions/get-ethToDai-rate';
 import { useAppStatusStore, AppStatus } from 'modules/app/store/app-status';
 import { removePendingTransaction } from 'modules/pending-queue/actions/pending-queue-management';
-import { isGSNUnavailable } from 'modules/app/selectors/is-gsn-unavailable';
 import {
   selectReportingBalances,
   selectDefaultReportingBalances,
 } from 'modules/account/helpers/common';
 import getValueFromlocalStorage from 'utils/get-local-storage-value';
 import { isSameAddress } from 'utils/isSameAddress';
+import { getGasCost } from 'modules/modal/gas';
 
 export enum DISMISSABLE_NOTICE_BUTTON_TYPES {
   BUTTON = 'PrimaryButton',
@@ -151,43 +146,6 @@ export const DismissableNotice = ({
           )}
         </div>
       ) : null}
-    </>
-  );
-};
-
-export const ActivateWalletButton = () => {
-  const {
-    walletStatus,
-    actions: { setModal },
-  } = useAppStatusStore();
-  const gsnUnavailable = isGSNUnavailable();
-  let showMessage = gsnUnavailable;
-  let buttonAction = () => setModal({ type: MODAL_INITIALIZE_ACCOUNT });
-  if (walletStatus === WALLET_STATUS_VALUES.CREATED) {
-    buttonAction = () => removePendingTransaction(CREATEAUGURWALLET);
-  }
-  if (
-    walletStatus !== WALLET_STATUS_VALUES.FUNDED_NEED_CREATE &&
-    walletStatus !== WALLET_STATUS_VALUES.CREATED
-  ) {
-    showMessage = false;
-  }
-  return (
-    <>
-      {showMessage && (
-        <div className={classNames(Styles.ActivateWalletButton)}>
-          <DismissableNotice
-            show
-            title={'Account Activation'}
-            buttonText={'Activate Account'}
-            buttonAction={() => buttonAction}
-            queueName={TRANSACTIONS}
-            queueId={CREATEAUGURWALLET}
-            buttonType={DISMISSABLE_NOTICE_BUTTON_TYPES.BUTTON}
-            description={`Activation of your account is needed`}
-          />
-        </div>
-      )}
     </>
   );
 };
@@ -490,39 +448,25 @@ export const DisputingBondsView = ({
     loginAccount: {
       balances: { rep: userAvailableRep },
     },
+    ethToDaiRate,
+    gasPriceInfo,
     universe: { warpSyncHash },
-    gsnEnabled: GsnEnabled,
   } = useAppStatusStore();
+  const gasPrice = gasPriceInfo.userDefinedGasPrice || gasPriceInfo.average;
+  const gasCostDai = getGasCost(DISPUTE_GAS_COST, gasPrice, ethToDaiRate);
 
-  const gsnWalletInfoSeen = getValueFromlocalStorage(GSN_WALLET_SEEN);
-
-  const gasPrice = getGasPrice();
-  const gsnUnavailable = isGSNUnavailable();
+  const displayfee = `$${gasCostDai.formattedValue}`;
 
   const [state, setState] = useState({
     disabled: true,
     scalarError: '',
     stakeError: '',
     isScalar: market.marketType === SCALAR,
-    gasEstimate: formatGasCostToEther(
-      DISPUTE_GAS_COST,
-      { decimalsRounded: 4 },
-      gasPrice
-    ),
+    gasEstimate: gasCostDai,
   });
   const { disabled, scalarError, stakeError, isScalar, gasEstimate } = state;
 
   useEffect(() => {
-    if (GsnEnabled) {
-      (async function setGasLimit() {
-        const gasLimit = await reportAction(true);
-        setState({
-          ...state,
-          gasEstimate: gasLimit,
-        });
-      })();
-    }
-
     if (isWarpSync) {
       updateScalarOutcome(warpSyncHash);
       updateInputtedStakeLocal('0');
@@ -673,21 +617,11 @@ export const DisputingBondsView = ({
         }
         value={formatRep(stakeValue || ZERO).formatted + ' REP'}
       />
-      <TransactionFeeLabel gasCostDai={displayGasInDai(gasEstimate)} />
-      <InitializeWalletModalNotice />
+      <TransactionFeeLabel gasCostDai={displayfee} />
       <PrimaryButton
         text="Confirm"
         action={() => {
-          if (gsnUnavailable && !gsnWalletInfoSeen) {
-            setModal({
-              customAction: () => {
-                reportAction(false);
-              },
-              type: MODAL_INITIALIZE_ACCOUNT,
-            });
-          } else {
-            reportAction(false);
-          }
+          reportAction(false);
         }}
         disabled={disabled}
       />
@@ -711,7 +645,6 @@ export interface ReportingBondsViewProps {
   openReporting: boolean;
   enoughRepBalance: boolean;
   userFunds: BigNumber;
-  initializeGsnWallet: Function;
 }
 
 export const ReportingBondsView = ({
@@ -720,7 +653,6 @@ export const ReportingBondsView = ({
   reportAction,
   inputtedReportingStake,
   id,
-  initializeGsnWallet,
   updateInputtedStake,
   updateScalarOutcome,
 }: ReportingBondsViewProps) => {
@@ -728,12 +660,11 @@ export const ReportingBondsView = ({
     actions: { setModal },
     loginAccount: { balances, address },
     universe: { forkingInfo },
-    gsnEnabled: GsnEnabled,
+    gasPriceInfo,
+    ethToDaiRate,
   } = useAppStatusStore();
   let userAttoRep = createBigNumber((balances && balances.attoRep) || ZERO);
-  const userFunds = GsnEnabled
-    ? createBigNumber((balances && balances.dai) || ZERO)
-    : createBigNumber((balances && balances.eth) || ZERO);
+  const userFunds = createBigNumber((balances && balances.dai) || ZERO);
   const hasForked = !!forkingInfo;
   const migrateRep = hasForked && forkingInfo?.forkingMarket === market.id;
   const migrateMarket = hasForked && !!forkingInfo.winningChildUniverseId;
@@ -748,11 +679,12 @@ export const ReportingBondsView = ({
   const enoughRepBalance = owesRep
     ? userAttoRep.gte(createBigNumber(market.noShowBondAmount))
     : true;
-  const gsnWalletInfoSeen = getValueFromlocalStorage(GSN_WALLET_SEEN);
-
   userAttoRep = convertAttoValueToDisplayValue(userAttoRep);
-  const gasPrice = getGasPrice();
-  const gsnUnavailable = isGSNUnavailable();
+
+  const gasPrice = gasPriceInfo.userDefinedGasPrice || gasPriceInfo.average;
+  const gasCostDai = getGasCost(INITAL_REPORT_GAS_COST, gasPrice, ethToDaiRate);
+  const displayfee = `$${gasCostDai.formattedValue}`;
+
   const [state, setState] = useState({
     showInput: false,
     disabled: market.marketType === SCALAR && migrateRep ? true : false,
@@ -760,11 +692,7 @@ export const ReportingBondsView = ({
     isScalar: market.marketType === SCALAR,
     threshold: userAttoRep.toString(),
     readAndAgreedCheckbox: false,
-    gasEstimate: formatGasCostToEther(
-      INITAL_REPORT_GAS_COST,
-      { decimalsRounded: 4 },
-      gasPrice
-    ),
+    gasEstimate: gasCostDai,
   });
   const [stakeError, setStakeError] = useState('');
 
@@ -786,15 +714,13 @@ export const ReportingBondsView = ({
           ...state,
           threshold: String(convertAttoValueToDisplayValue(threshold)),
         });
-        if (GsnEnabled) {
-          const gasLimit = await reportAction(true).catch(e =>
-            console.error(e)
-          );
-          setState({
-            ...state,
-            gasEstimate: gasLimit || INITAL_REPORT_GAS_COST,
-          });
-        }
+        const gasLimit = await reportAction(true).catch(e =>
+          console.error(e)
+        );
+        setState({
+          ...state,
+          gasEstimate: gasLimit || INITAL_REPORT_GAS_COST,
+        });
       }
     })();
   }, []);
@@ -962,13 +888,12 @@ export const ReportingBondsView = ({
         </div>
       )}
       <div>
-        <TransactionFeeLabel gasCostDai={displayGasInDai(gasEstimate)} />
+        <TransactionFeeLabel gasCostDai={displayfee} />
         {insufficientFunds && (
           <span className={FormStyles.ErrorText}>
             Insufficient Funds to complete transaction
           </span>
         )}
-        <InitializeWalletModalNotice />
       </div>
 
       {migrateRep &&
@@ -1011,16 +936,7 @@ export const ReportingBondsView = ({
           migrateRep ? buttonDisabled || !readAndAgreedCheckbox : buttonDisabled
         }
         action={() => {
-          if (gsnUnavailable && !gsnWalletInfoSeen) {
-            setModal({
-              customAction: () => {
-                reportAction();
-              },
-              type: MODAL_INITIALIZE_ACCOUNT,
-            });
-          } else {
-            reportAction();
-          }
+          reportAction();
         }}
       />
     </div>
