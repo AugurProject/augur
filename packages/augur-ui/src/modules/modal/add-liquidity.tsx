@@ -215,6 +215,7 @@ export const ModalAddLiquidity = () => {
             defaultValue={defaultOutcome}
             options={options}
             onChange={setSelectedOutcome}
+            large
           />
           <BetslipInput
             label="Wager"

@@ -887,16 +887,14 @@ span.PendingLabel {
 
 .MovementLabel_Icon {
   margin: 0 @size-8 0 0;
+  height: 100%;
+  display: flex;
+  align-items: center;
 
   > svg {
     fill: none;
-    height: @size-9;
-    width: @size-14;
-
-    > path {
-      stroke-width: @size-2;
-      -webkit-text-stroke-width: @size-2;
-    }
+    height: @size-8;
+    width: @size-13;
   }
 
   &_small {
@@ -918,12 +916,8 @@ span.PendingLabel {
   }
 
   &_positive {
-    > svg > path:nth-child(1) {
-      stroke: var(--color-positive);
-    }
-
-    > svg > path:nth-child(2) {
-      stroke: var(--color-positive);
+    > svg > path {
+      fill: var(--color-positive);
     }
   }
 
@@ -932,12 +926,8 @@ span.PendingLabel {
       transform: rotateX(180deg);
     }
 
-    > svg > path:nth-child(1) {
-      stroke: var(--color-negative);
-    }
-
-    > svg > path:nth-child(2) {
-      stroke: var(--color-negative);
+    > svg > path {
+      fill: var(--color-negative);
     }
   }
 }
@@ -1306,8 +1296,12 @@ span.PendingLabel {
   }
 
   .MovementLabel_Text {
+    &_normal {
+      .mono-12-semi-bold;
+    }
+
     &_positive {
-      color: var(--color-open);
+      color: var(--color-primary-action);
     }
 
     &_negative {
@@ -1320,30 +1314,17 @@ span.PendingLabel {
   }
 
   .MovementLabel_Icon {
-    &_normal {
-      > svg {
-        height: @size-7;
-        width: @size-12;
-      }
-    }
+    margin: 0 @size-4 0 0;
 
     &_positive {
-      > svg > path:nth-child(1) {
-        stroke: var(--color-open);
-      }
-
-      > svg > path:nth-child(2) {
-        stroke: var(--color-open);
+      > svg > path {
+        fill: var(--color-primary-action);
       }
     }
 
     &_negative {
-      > svg > path:nth-child(1) {
-        stroke: var(--color-resolved);
-      }
-
-      > svg > path:nth-child(2) {
-        stroke: var(--color-resolved);
+      > svg > path {
+        fill: var(--color-resolved);
       }
     }
   }
@@ -1428,14 +1409,6 @@ span.PendingLabel {
         fill: var(--color-error);
       }
     }
-  }
-}
-
-.EthReserveNotice {
-  margin: @size-8 @size-12;
-
-  > div {
-    padding: @size-5;
   }
 }
 

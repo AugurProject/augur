@@ -19,7 +19,6 @@ import {
   TRANSACTIONS,
   NOT_USE_ETH_RESERVE,
   TRANSFER,
-  FEE_RESERVES_LABEL,
   GWEI_CONVERSION,
 } from 'modules/common/constants';
 import { AutoCancelOrdersNotice } from 'modules/common/labels';
@@ -123,14 +122,6 @@ export const ModalCashOut = () => {
     breakdown.push({
       label: 'Open Orders (Funds Held)',
       value: totalOpenOrderFundsFormatted,
-      showDenomination: true,
-    });
-  }
-
-  if (reserveInDaiFormatted.value > 0) {
-    breakdown.push({
-      label: FEE_RESERVES_LABEL,
-      value: reserveInDaiFormatted,
       showDenomination: true,
     });
   }

@@ -197,7 +197,7 @@ export const SecondaryButton = ({
   title,
   text,
   icon,
-  lightBorder
+  lightBorder,
 }: DefaultButtonProps) => (
   <button
     onClick={e => action(e)}

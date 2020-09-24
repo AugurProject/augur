@@ -3018,43 +3018,6 @@ div.ButtonsRow:last-of-type {
       margin: @size-24 0;
       padding: @size-24;
 
-      > div:first-of-type {
-        height: @size-36;
-        min-width: @size-240;
-        border: @size-1 solid var(--color-dark-text);
-
-        > button,
-        > div > div > button { 
-          text-transform: none;
-
-          &:first-of-type {
-            border-top-left-radius: @border-radius-default;
-            border-top-right-radius: @border-radius-default;
-          }
-
-          &:last-of-type {
-            border-bottom-left-radius: @border-radius-default;
-            border-bottom-right-radius: @border-radius-default;
-          }
-        }
-
-        > div {
-          border-radius: @border-radius-default;
-          box-shadow: 0 @size-2 @size-8 var(--color-dark-text);
-
-          > div {
-            border-radius: @border-radius-default;
-            margin: 0;
-          }
-        }
-
-        > button > span {
-          align-items: center;
-          height: 100%;
-          border-right: @size-1 solid var(--color-dark-text);
-        }
-      }
-
       > span {
         .text-12-semi-bold;
 

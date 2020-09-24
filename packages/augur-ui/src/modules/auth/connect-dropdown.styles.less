@@ -101,7 +101,6 @@
     }
 
     > span label {
-
       margin: 0px 4px;
 
       svg {
@@ -325,15 +324,93 @@
   }
 }
 
-:root[theme="BETTING"],
-:root[theme="SPORTS"] {
+.referral {
+  .GasEdit;
+
+  > span > button[class*='SecondaryButton'] {
+    > svg:first-of-type > path:first-of-type {
+      stroke: none;
+      fill: var(--color-primary-text);
+    }
+  }
+}
+
+:root[theme='BETTING'],
+:root[theme='SPORTS'] {
   .AccountInfo {
     border: 0;
   }
 
-  .GasEdit > button,
-  .WalletProvider > button {
-    height: unset;
+  .referral {
+    > span {
+      > button[class*='SecondaryButton'] {
+        .SportsConnectionButton;
+
+        > svg:first-of-type {
+          height: @size-14;
+          width: @size-14;
+
+          > path:first-of-type {
+            stroke: none;
+            fill: var(--color-primary-text);
+          }
+        }
+
+        &:focus,
+        &:hover,
+        &:focus:hover,
+        &:focus:hover:active {
+          > svg:first-of-type > path:first-of-type {
+            stroke: none;
+            fill: var(--color-primary-text);
+          }
+        }
+      }
+    }
+  }
+
+  .WalletProvider {
+    > button[class*='SecondaryButton'] {
+      .SportsConnectionButton;
+
+      > svg:first-of-type {
+        height: @size-14;
+        width: @size-14;
+
+        > path,
+        > path:last-of-type,
+        > path:first-of-type {
+          stroke: none;
+          fill: var(--color-primary-text);
+        }
+      }
+    }
+  }
+
+  .GasEdit {
+    > button[class*='SecondaryButton'] {
+      .SportsConnectionButton;
+
+      > svg:first-of-type {
+        height: @size-14;
+        width: @size-14;
+
+        > path {
+          fill: none;
+          stroke: var(--color-primary-text);
+        }
+      }
+
+      &:focus,
+      &:hover,
+      &:focus:hover,
+      &:focus:hover:active {
+        > svg:first-of-type > path {
+          fill: none;
+          stroke: var(--color-primary-text);
+        }
+      }
+    }
   }
 
   .AccountFunds {
@@ -342,7 +419,7 @@
     > svg {
       width: @size-22;
       height: @size-18;
-      
+
       > g > path {
         fill: var(--color-primary-text);
       }
@@ -379,7 +456,8 @@
   }
 
   div.WalletProvider,
-  div.GasEdit {
+  div.GasEdit,
+  div.referral {
     background: var(--color-page-background);
 
     div:first-of-type > div {
@@ -421,44 +499,58 @@
   }
 }
 
-
-.ShowConfirmaiton {
+.ShowCopied {
   position: relative;
-}
 
-.ShowConfirmaiton:after {
-  content: '';
+  &:before {
+    .text-12;
 
-  border-top: solid @size-12 var(--color-primary-text);
-  border-left: solid @size-12 transparent;
-  border-right: solid @size-12 transparent;
-  position: absolute;
-  right: @size-16;
-  top: -@size-16;
+    content: 'Copied!';
+    align-items: center;
+    color: var(--color-module-background);
+    background: var(--color-primary-text-80);
+    border-radius: @border-radius-default;
+    display: flex;
+    justify-content: center;
+    padding: @size-8;
+    position: absolute;
+    text-transform: capitalize;
+    top: -@size-39;
+  }
 
-  @media @breakpoint-mobile-tablet {
-    bottom: @size-25;
-    left: @size-8;
+  &:after {
+    content: '';
+
+    border-top: solid @size-8 var(--color-primary-text-80);
+    border-left: solid @size-8 transparent;
+    border-right: solid @size-8 transparent;
+    position: absolute;
+    top: -@size-8;
+    left: 32%;
   }
 }
 
-.ShowConfirmaiton:before {
-  .text-10;
+.SportsConnectionButton {
+  .text-10-semi-bold;
 
-  content: 'Copied!';
-  align-items: center;
-  color: var(--color-inactive-text);
-  background: var(--color-primary-text);
+  background: var(--color-module-background);
+  border: @size-1 solid var(--color-dark-text);
   border-radius: @border-radius-default;
+  color: var(--color-primary-text);
   display: flex;
-  justify-content: center;
-  padding: @size-8 @size-12;
-  position: absolute;
-  right: 0;
-  text-transform: capitalize;
-  top: -39px;
+  flex-flow: row-reverse nowrap;
+  height: @size-30;
+  max-height: @size-30;
+  padding: @size-7 @size-8;
+  text-transform: uppercase;
 
-  @media @breakpoint-mobile-tablet {
-    bottom: @size-32;
+  &:focus,
+  &:hover,
+  &:focus:hover,
+  &:focus:hover:active {
+    outline: none;
+    background: var(--color-module-background);
+    color: var(--color-primary-text);
+    border: @size-1 solid var(--color-primary-text);
   }
 }

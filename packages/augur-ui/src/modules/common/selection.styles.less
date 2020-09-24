@@ -367,34 +367,32 @@
     }
   }
 
-  .Large {
+  .Normal {
+    align-items: center;
+
     > button {
       .text-12;
+      
+      text-transform: none;
+      display: flex;
+      flex-flow: row nowrap;
+      height: 100%;
+      align-items: center;
+      justify-content: center;
+
+      > span {
+        height: 100%;
+        align-items: center;
+        justify-content: center;
+      }
 
       @media @breakpoint-mobile {
         .text-12;
       }
     }
 
-    > div > div > button {
-      .text-12;
-    }
-  }
-
-  .Normal {
-    > button {
-      .text-10;
-
-      @media @breakpoint-mobile {
-        .text-10;
-      }
-    }
-
-    > div > div > button {
-      .text-10;
-    }
-
     &.Minimal {
+      height: @size-24;
       border: 0;
 
       > span {
@@ -451,12 +449,14 @@
           }
         }
       }
+    }
+
+
+    > div {
+      max-height: unset;
 
       > div {
-        max-height: unset;
-
-      > div {
-        margin-top: @size-12;
+        margin-top: @size-4;
         border: @size-1 solid var(--color-secondary-action-outline);
         box-shadow: 0px 0px @size-4 var(--color-primary-text-15);
         border-radius: @border-radius-default;
@@ -486,8 +486,31 @@
           &.Selected {
             color: var(--color-primary-text);
           }
+
+          &:hover {
+            background-color: var(--color-active-background);
+          }
         }
       }
+    }
+  }
+
+  .Large {
+    height: @size-36;
+
+    .Normal;
+
+    > button {
+      background-color: var(--color-secondary-action);
+    }
+
+    &:hover,
+    &:focus,
+    &:hover:focus {
+      border: @size-1 solid var(--color-dark-text);
+
+      > button > span {
+        border-right: @size-1 solid vaR(--color-dark-text);
       }
     }
   }

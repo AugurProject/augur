@@ -855,11 +855,21 @@ export const SportsMarketContainer = ({
   const { FUTURES } = SPORTS_GROUP_TYPES;
   const { isLogged, accountPositions } = useAppStatusStore();
   const [isCollapsed, setIsCollapsed] = useState(!startOpen);
+  const [isCopied, setIsCopied] = useState(false);
   const location = useLocation();
   const { isGroupPage, marketId: queryId } = isMarketView(location);
   const isFutures = sportsGroup.type === FUTURES;
   const forceCollapse = isFutures && isGroupPage && marketId !== queryId;
   const marketAmount = sportsGroup.markets.length;
+  const copyClicked = () => {
+    setIsCopied(true);
+    const timeoutId = setTimeout(() => {
+      setIsCopied(false);
+    }, 2500);
+    return () => {
+      clearTimeout(timeoutId);
+    };
+  };
   useEffect(() => {
     if (isFutures) {
       const clipboardMarketId = new Clipboard('#copy_marketId');
@@ -878,7 +888,7 @@ export const SportsMarketContainer = ({
     // futures
     const { tradingPositionsPerMarket = null } =
       accountPositions[marketId] || {};
-   
+
     headingContent = (
       <Fragment key={`${marketId}-heading`}>
         <CountdownProgress
@@ -887,11 +897,15 @@ export const SportsMarketContainer = ({
           reportingState={market.reportingState}
           forceLongDate
         />
-        {tradingPositionsPerMarket && tradingPositionsPerMarket.current !== "0" && PositionIcon}
+        {tradingPositionsPerMarket &&
+          tradingPositionsPerMarket.current !== '0' &&
+          PositionIcon}
         <span className={Styles.MatchedLine}>
           Matched<b>{market.volumeFormatted.full}</b>
         </span>
-        <DotSelection>
+        <DotSelection
+          customClass={classNames({ [Styles.ShowCopied]: isCopied })}
+        >
           <SocialMediaButtons
             listView
             marketDescription={market.description}
@@ -900,11 +914,18 @@ export const SportsMarketContainer = ({
           <div
             id="copy_marketId"
             data-clipboard-text={marketId}
-            onClick={() => marketLinkCopied(marketId, MARKET_LIST_CARD)}
+            onClick={() => {
+              copyClicked();
+              marketLinkCopied(marketId, MARKET_LIST_CARD);
+            }}
           >
             {CopyAlternateIcon} {COPY_MARKET_ID}
           </div>
-          <div id="copy_author" data-clipboard-text={market.author}>
+          <div
+            id="copy_author"
+            data-clipboard-text={market.author}
+            onClick={() => copyClicked()}
+          >
             {Person} {COPY_AUTHOR}
           </div>
         </DotSelection>
