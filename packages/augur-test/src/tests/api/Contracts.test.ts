@@ -82,7 +82,7 @@ test('Contract :: Cash', async () => {
 });
 
 test('Contract :: Universe :: Create Market', async () => {
-  const universe = contracts.universe;
+  const universe = await contracts.getOriginUniverse();
 
   const marketCreationCost = await universe.getOrCacheValidityBond_();
   const cash = contracts.cash;

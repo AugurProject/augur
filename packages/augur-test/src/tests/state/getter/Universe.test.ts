@@ -87,11 +87,12 @@ describe('State API :: Universe :: ', () => {
     const noNumerators = getPayoutNumerators(marketInfo, 1);
 
     await john.faucetRep(new BigNumber(1e21));
-    await john.augur.contracts.universe.createChildUniverse(invalidNumerators);
+
+    await (await john.augur.contracts.getOriginUniverse()).createChildUniverse(invalidNumerators);
     await repToken.migrateOutByPayout(invalidNumerators, new BigNumber(1e21));
 
     await john.faucetRep(new BigNumber(1e21));
-    await john.augur.contracts.universe.createChildUniverse(noNumerators);
+    await (await john.augur.contracts.getOriginUniverse()).createChildUniverse(noNumerators);
     await repToken.migrateOutByPayout(noNumerators, new BigNumber(1e21));
 
     await john.sync();
@@ -148,11 +149,11 @@ describe('State API :: Universe :: ', () => {
     const fooNumerators = getPayoutNumerators(marketInfo, 1);
 
     await john.faucetRep(new BigNumber(1e21));
-    await john.augur.contracts.universe.createChildUniverse(invalidNumerators);
+    await (await john.augur.contracts.getOriginUniverse()).createChildUniverse(invalidNumerators);
     await repToken.migrateOutByPayout(invalidNumerators, new BigNumber(1e21));
 
     await john.faucetRep(new BigNumber(1e21));
-    await john.augur.contracts.universe.createChildUniverse(fooNumerators);
+    await (await john.augur.contracts.getOriginUniverse()).createChildUniverse(fooNumerators);
     await repToken.migrateOutByPayout(fooNumerators, new BigNumber(1e21));
 
     await john.sync();
@@ -210,10 +211,10 @@ describe('State API :: Universe :: ', () => {
 
     await john.faucetRep(new BigNumber(1e21));
 
-    await john.augur.contracts.universe.createChildUniverse(invalidNumerators);
+    await (await john.augur.contracts.getOriginUniverse()).createChildUniverse(invalidNumerators);
     await repToken.migrateOutByPayout(invalidNumerators, new BigNumber(1e21));
     await john.faucetRep(new BigNumber(1e21));
-    await john.augur.contracts.universe.createChildUniverse(fooNumerators);
+    await (await john.augur.contracts.getOriginUniverse()).createChildUniverse(fooNumerators);
     await repToken.migrateOutByPayout(fooNumerators, new BigNumber(1e21));
     await john.sync();
     migrationTotals = await john.api.route('getForkMigrationTotals', {
@@ -345,7 +346,7 @@ describe('State API :: Universe :: ', () => {
     const invalidNumerators = getPayoutNumerators(marketInfo, 'invalid');
     const childUniverseRep = johnRep;
     // Call twice because there's a bug when the first migration meets the goal.
-    await john.augur.contracts.universe.createChildUniverse(invalidNumerators);
+    await (await john.augur.contracts.getOriginUniverse()).createChildUniverse(invalidNumerators);
     await repToken.migrateOutByPayout(invalidNumerators, new BigNumber(1));
     await repToken.migrateOutByPayout(
       invalidNumerators,

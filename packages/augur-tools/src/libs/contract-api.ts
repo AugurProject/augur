@@ -660,11 +660,13 @@ export class ContractAPI {
   }
 
   async isForking(): Promise<boolean> {
-    return this.augur.contracts.universe.isForking_();
+    const origin = await this.augur.contracts.getOriginUniverse();
+    return origin.isForking_();
   }
 
   async getDisputeThresholdForFork_(): Promise<BigNumber> {
-    return this.augur.contracts.universe.getDisputeThresholdForFork_();
+    const origin = await this.augur.contracts.getOriginUniverse();
+    return origin.getDisputeThresholdForFork_();
   }
 
   async getDisputeThresholdForDisputePacing(): Promise<BigNumber> {
@@ -672,7 +674,8 @@ export class ContractAPI {
   }
 
   async getInitialReportMinValue(): Promise<BigNumber> {
-    return this.augur.contracts.universe.getInitialReportMinValue_();
+    const origin = await this.augur.contracts.getOriginUniverse();
+    return origin.getInitialReportMinValue_();
   }
 
   migrateOutByPayout(
@@ -703,11 +706,12 @@ export class ContractAPI {
   }
 
   async getOrCreateCurrentDisputeWindow(initial = false): Promise<string> {
+    const origin = await this.augur.contracts.getOriginUniverse();
     // Must make 2 calls because the first call is necessary but doesn't always return the dispute window.
-    await this.augur.contracts.universe.getOrCreateCurrentDisputeWindow(
+    await origin.getOrCreateCurrentDisputeWindow(
       initial
     );
-    return this.augur.contracts.universe.getOrCreateCurrentDisputeWindow_(
+    return origin.getOrCreateCurrentDisputeWindow_(
       initial
     );
   }
@@ -1023,7 +1027,8 @@ export class ContractAPI {
   }
 
   async getChildUniverseReputationToken(parentPayoutDistributionHash: string) {
-    const childUniverseAddress = await this.augur.contracts.universe!.getChildUniverse_(
+    const origin = await this.augur.contracts.getOriginUniverse();
+    const childUniverseAddress = await origin.getChildUniverse_(
       parentPayoutDistributionHash
     );
     const childUniverse = this.augur.contracts.universeFromAddress(
