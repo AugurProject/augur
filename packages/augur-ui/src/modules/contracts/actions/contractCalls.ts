@@ -14,6 +14,7 @@ import type {
 import {
   calculatePayoutNumeratorsArray,
   ExtraInfoTemplate,
+  AccountData,
 } from '@augurproject/sdk-lite';
 import {
   convertDisplayAmountToOnChainAmount,
@@ -105,54 +106,51 @@ export async function getMaxMarketEndTime(): Promise<number> {
   return new BigNumber(maxEndTime).toNumber();
 }
 
-export async function convertV1ToV2Approve(useSigningWallet: boolean = false) {
-  const { contracts, dependencies } = augurSdk.get();
+export async function isRepV2Approved(account): Promise<boolean> {
+  const { contracts } = augurSdk.get();
+  try {
+    const currentAllowance = await contracts.legacyReputationToken.allowance_(
+      account,
+      contracts.reputationToken.address
+    );
+    if (currentAllowance.lte(0)) {
+      return false;
+    }
+    return true;
+  } catch (error) {
+    throw error;
+  }
+}
+
+export async function convertV1ToV2Approve() {
+  const { contracts } = augurSdk.get();
 
   const allowance = createBigNumber(99999999999999999999).times(
     TEN_TO_THE_EIGHTEENTH_POWER
   );
   let response = null;
-  const useWallet = dependencies.useWallet;
-  const useRelay = dependencies.useRelay;
   try {
-    if (useSigningWallet) {
-      dependencies.setUseWallet(false);
-      dependencies.setUseRelay(false);
-    }
     const getReputationToken = await contracts.universe.getReputationToken_();
     response = await contracts.legacyReputationToken.approve(getReputationToken, allowance);
   } catch (e) {
     console.error(e);
-  } finally {
-    dependencies.setUseWallet(useWallet);
-    dependencies.setUseRelay(useRelay);
   }
   return response;
 }
 
-export async function convertV1ToV2(useSigningWallet: boolean = false) {
-  const { contracts, dependencies } = augurSdk.get();
+export async function convertV1ToV2() {
+  const { contracts } = augurSdk.get();
   let response = false;
-  const useWallet = dependencies.useWallet;
-  const useRelay = dependencies.useRelay;
   try {
-    if (useSigningWallet) {
-      dependencies.setUseWallet(false);
-      dependencies.setUseRelay(false);
-    }
     response = await contracts.reputationToken.migrateFromLegacyReputationToken();
   } catch (e) {
     console.error(e);
-  } finally {
-    dependencies.setUseWallet(useWallet);
-    dependencies.setUseRelay(useRelay);
   }
   return response;
 }
 
-export async function convertV1ToV2_estimate(useSigningWallet: boolean = false) {
-  const { contracts, dependencies } = augurSdk.get();
-  const useWallet = dependencies.useWallet;
+export async function convertV1ToV2_estimate() {
+  const { contracts } = augurSdk.get();
   const allowance = createBigNumber(99999999999999999999).times(
     TEN_TO_THE_EIGHTEENTH_POWER
   );
@@ -161,8 +159,6 @@ export async function convertV1ToV2_estimate(useSigningWallet: boolean = false) 
   let migrationGas = ZERO;
 
   try {
-    if (useSigningWallet) dependencies.setUseWallet(false);
-
     const getReputationToken = await contracts.universe.getReputationToken_();
     approvalGas = await contracts.legacyReputationToken.approve_estimateGas(
       getReputationToken,
@@ -172,8 +168,6 @@ export async function convertV1ToV2_estimate(useSigningWallet: boolean = false) 
     migrationGas = await contracts.reputationToken.migrateFromLegacyReputationToken_estimateGas();
   } catch (e) {
     console.error(e);
-  } finally {
-    dependencies.setUseWallet(useWallet);
   }
 
   return approvalGas.plus(migrationGas);
@@ -344,28 +338,6 @@ export function getDai() {
   const { contracts } = augurSdk.get();
   return contracts.cash.faucet(new BigNumber('1000000000000000000000'));
 }
-
-export function fundGsnWallet() {
-  const amount = new BigNumber('1000000000000000000000');
-  const { contracts } = augurSdk.get();
-  contracts.cash.faucet(amount);
-}
-
-export async function withdrawAllFunds(destination: string): Promise<void> {
-  const { gsn } = augurSdk.get();
-  await gsn.withdrawAllFunds(destination);
-}
-
-export async function withdrawAllFundsEstimateGas(destination: string): Promise<BigNumber> {
-  const { gsn } = augurSdk.get();
-  try {
-    return await gsn.withdrawAllFundsEstimateGas(destination);
-  } catch(error) {
-    console.error('withdrawAllFundsEstimateGas', error);
-    throw error;
-  }
-}
-
 
 export async function getRepRate(): Promise<BigNumber> {
   const { uniswap, contracts } = augurSdk.get();
@@ -822,17 +794,106 @@ export function createMarketRetry(market: CreateMarketData) {
   return createMarket(newMarket, true);
 }
 
-export async function approveToTrade() {
+const APPROVAL_AMOUNT = new BigNumber(2**255).minus(1);
+const APPROVAL_TEST_AMOUNT = new BigNumber(0);
+export async function isContractApproval(account, contract, approvalContract): Promise<boolean> {
+  try {
+    const currentAllowance = await approvalContract.allowance_(account, contract);
+    return currentAllowance.gt(APPROVAL_TEST_AMOUNT);
+  }
+  catch(error) {
+    throw error;
+  }
+}
+
+export async function approvalsNeededMarketCreation(address) {
+  const { contracts } = augurSdk.get();
+  const isApproved = await isContractApproval(address, contracts.augur.address, contracts.cash);
+  return Number(!isApproved); // true is 1, so negating. false is 0 so negating.
+}
+
+export async function approveMarketCreation(): Promise<void> {
   const { contracts } = augurSdk.get();
   const augurContract = contracts.augur.address;
-  const allowance = new BigNumber(2).pow(256).minus(1);
-  await Promise.all([
-    contracts.cash.approve(augurContract, allowance),
-    contracts.shareToken.setApprovalForAll(contracts.fillOrder.address, true),
-    contracts.shareToken.setApprovalForAll(contracts.createOrder.address, true),
-    contracts.cash.approve(contracts.fillOrder.address, allowance),
-    contracts.cash.approve(contracts.createOrder.address, allowance),
-   ]);
+  return await contracts.cash.approve(augurContract, APPROVAL_AMOUNT);
+}
+
+
+export async function approveToTrade(address, referalAddress = NULL_ADDRESS) {
+  const { contracts } = augurSdk.get();
+  const approvals = [];
+  if (!(await isContractApproval(address, contracts.ZeroXTrade.address, contracts.cash))) {
+    approvals.push(contracts.cash.approve(contracts.ZeroXTrade.address, APPROVAL_AMOUNT));
+  }
+  approvals.push(contracts.affiliates.setReferrer(referalAddress));
+  if (!(await contracts.shareToken.isApprovedForAll_(address, contracts.fillOrder.address))) {
+    approvals.push(contracts.shareToken.setApprovalForAll(contracts.fillOrder.address, true));
+  }
+  if (!(await isContractApproval(address, contracts.fillOrder.address, contracts.cash))) {
+    approvals.push(contracts.cash.approve(contracts.fillOrder.address, APPROVAL_AMOUNT));
+  }
+  return Promise.all(approvals);
+}
+
+export async function approvalsNeededToTrade(address): Promise<number> {
+  const { contracts } = augurSdk.get();
+  const cashContractApproval = await isContractApproval(address, contracts.ZeroXTrade.address, contracts.cash);
+  const fillContractApproval = await isContractApproval(address, contracts.fillOrder.address, contracts.cash);
+  const fillShareAllContractApproval = await contracts.shareToken.isApprovedForAll_(address, contracts.fillOrder.address);
+  console.log(fillContractApproval, cashContractApproval, fillShareAllContractApproval);
+  const approvals = [fillContractApproval, cashContractApproval, fillShareAllContractApproval].filter(a => !a);
+  return (approvals.length > 0 ? approvals.length + 1 : 0); // add additional 1 for referral address
+}
+
+export async function approveZeroX(address, ) {
+  const { contracts } = augurSdk.get();
+  try {
+    if (!(await isContractApproval(address, contracts.ZeroXTrade.address, contracts.cash))) {
+      return await contracts.cash.approve(contracts.ZeroXTrade.address, APPROVAL_AMOUNT);
+    }
+  } catch(error) {
+    console.error('approveZeroX', error);
+    return false;
+  }
+}
+
+export async function approveShareToken(address, ) {
+  const { contracts } = augurSdk.get();
+  try {
+    if (!(await contracts.shareToken.isApprovedForAll_(address, contracts.fillOrder.address))) {
+      return await contracts.shareToken.setApprovalForAll(contracts.fillOrder.address, true);
+    }
+  } catch(error) {
+    console.error('approveShareToken', error);
+    return false;
+  }
+}
+
+export async function approveFillOrder(address, ) {
+  const { contracts } = augurSdk.get();
+  try {
+    if (!(await isContractApproval(address, contracts.fillOrder.address, contracts.cash))) {
+      return await contracts.cash.approve(contracts.fillOrder.address, APPROVAL_AMOUNT);
+    }
+  } catch(error) {
+    console.error('approveFillOrder', error);
+    return false;
+  }
+}
+
+export async function approveZeroXCheck(address) {
+  const { contracts } = augurSdk.get();
+  return await isContractApproval(address, contracts.ZeroXTrade.address, contracts.cash);
+}
+
+export async function approveShareTokenCheck(address) {
+  const { contracts } = augurSdk.get();
+  return await contracts.shareToken.isApprovedForAll_(address, contracts.fillOrder.address);
+}
+
+export async function approveFillOrderCheck(address) {
+  const { contracts } = augurSdk.get();
+  return await isContractApproval(address, contracts.fillOrder.address, contracts.cash);
 }
 
 export async function getAllowance(account: string): Promise<BigNumber> {
@@ -1156,4 +1217,14 @@ export async function migrateRepToUniverse(migration: doReportDisputeAddStake) {
   } catch (e) {
     console.error('Could not migrate REP to universe', e);
   }
+}
+
+export async function loadAccountData_exchangeRates(account: string) {
+  const { contracts } = augurSdk.get();
+  const sdk = await augurSdkLite.get();
+  const repToken = contracts.getReputationToken();
+  const usdc = contracts.usdc.address;
+  const usdt = contracts.usdt.address;
+  const values: AccountData = await sdk.loadAccountData(account, repToken.address, usdc, usdt);
+  return values;
 }
