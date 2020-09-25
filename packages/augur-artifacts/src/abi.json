@@ -21759,22 +21759,22 @@
 			"outputs": [
 				{
 					"internalType": "uint256",
-					"name": "",
+					"name": "_cashPayout",
 					"type": "uint256"
 				},
 				{
 					"internalType": "uint256",
-					"name": "",
+					"name": "_invalidFromUser",
 					"type": "uint256"
 				},
 				{
 					"internalType": "int256",
-					"name": "",
+					"name": "_noFromUser",
 					"type": "int256"
 				},
 				{
 					"internalType": "int256",
-					"name": "",
+					"name": "_yesFromUser",
 					"type": "int256"
 				}
 			],
@@ -23461,6 +23461,21 @@
 		},
 		{
 			"constant": true,
+			"inputs": [],
+			"name": "genesisUniverse",
+			"outputs": [
+				{
+					"internalType": "address",
+					"name": "",
+					"type": "address"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": true,
 			"inputs": [
 				{
 					"internalType": "contract IMarket",
@@ -23588,6 +23603,21 @@
 			],
 			"payable": false,
 			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [],
+			"name": "getOwner",
+			"outputs": [
+				{
+					"internalType": "address",
+					"name": "",
+					"type": "address"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
 			"type": "function"
 		},
 		{
@@ -24024,6 +24054,27 @@
 			"inputs": [
 				{
 					"internalType": "address",
+					"name": "_newOwner",
+					"type": "address"
+				}
+			],
+			"name": "transferOwnership",
+			"outputs": [
+				{
+					"internalType": "bool",
+					"name": "",
+					"type": "bool"
+				}
+			],
+			"payable": false,
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"constant": false,
+			"inputs": [
+				{
+					"internalType": "address",
 					"name": "_from",
 					"type": "address"
 				},
@@ -24065,21 +24116,6 @@
 					"internalType": "bool",
 					"name": "",
 					"type": "bool"
-				}
-			],
-			"payable": false,
-			"stateMutability": "view",
-			"type": "function"
-		},
-		{
-			"constant": true,
-			"inputs": [],
-			"name": "uploader",
-			"outputs": [
-				{
-					"internalType": "address",
-					"name": "",
-					"type": "address"
 				}
 			],
 			"payable": false,
@@ -24449,6 +24485,21 @@
 			],
 			"payable": false,
 			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [],
+			"name": "getOwner",
+			"outputs": [
+				{
+					"internalType": "address",
+					"name": "",
+					"type": "address"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
 			"type": "function"
 		},
 		{
@@ -24845,6 +24896,27 @@
 			"type": "function"
 		},
 		{
+			"constant": false,
+			"inputs": [
+				{
+					"internalType": "address",
+					"name": "_newOwner",
+					"type": "address"
+				}
+			],
+			"name": "transferOwnership",
+			"outputs": [
+				{
+					"internalType": "bool",
+					"name": "",
+					"type": "bool"
+				}
+			],
+			"payable": false,
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
 			"constant": true,
 			"inputs": [
 				{
@@ -24864,11 +24936,443 @@
 			"payable": false,
 			"stateMutability": "view",
 			"type": "function"
+		}
+	],
+	"ParaDeployer": [
+		{
+			"inputs": [
+				{
+					"internalType": "contract IAugur",
+					"name": "_augur",
+					"type": "address"
+				},
+				{
+					"internalType": "address",
+					"name": "_feePotFactory",
+					"type": "address"
+				},
+				{
+					"internalType": "address",
+					"name": "_paraUniverseFactory",
+					"type": "address"
+				},
+				{
+					"internalType": "address",
+					"name": "_openInterestCashFactory",
+					"type": "address"
+				},
+				{
+					"internalType": "address",
+					"name": "_OICash",
+					"type": "address"
+				},
+				{
+					"internalType": "contract IOINexus",
+					"name": "_OINexus",
+					"type": "address"
+				},
+				{
+					"internalType": "address",
+					"name": "_zeroXExchange",
+					"type": "address"
+				},
+				{
+					"internalType": "address",
+					"name": "_WETH9",
+					"type": "address"
+				},
+				{
+					"components": [
+						{
+							"internalType": "contract IParaAugurFactory",
+							"name": "paraAugurFactory",
+							"type": "address"
+						},
+						{
+							"internalType": "contract IParaAugurTradingFactory",
+							"name": "paraAugurTradingFactory",
+							"type": "address"
+						},
+						{
+							"internalType": "contract IParaShareTokenFactory",
+							"name": "paraShareTokenFactory",
+							"type": "address"
+						},
+						{
+							"internalType": "contract IParaRepOracleFactory",
+							"name": "paraRepOracleFactory",
+							"type": "address"
+						},
+						{
+							"internalType": "contract ICancelOrderFactory",
+							"name": "cancelOrderFactory",
+							"type": "address"
+						},
+						{
+							"internalType": "contract ICreateOrderFactory",
+							"name": "createOrderFactory",
+							"type": "address"
+						},
+						{
+							"internalType": "contract IFillOrderFactory",
+							"name": "fillOrderFactory",
+							"type": "address"
+						},
+						{
+							"internalType": "contract IOrdersFactory",
+							"name": "ordersFactory",
+							"type": "address"
+						},
+						{
+							"internalType": "contract IProfitLossFactory",
+							"name": "profitLossFactory",
+							"type": "address"
+						},
+						{
+							"internalType": "contract ISimulateTradeFactory",
+							"name": "simulateTradeFactory",
+							"type": "address"
+						},
+						{
+							"internalType": "contract ITradeFactory",
+							"name": "tradeFactory",
+							"type": "address"
+						},
+						{
+							"internalType": "contract IZeroXTradeFactory",
+							"name": "zeroXTradeFactory",
+							"type": "address"
+						}
+					],
+					"internalType": "struct ParaDeployer.Factories",
+					"name": "_factories",
+					"type": "tuple"
+				}
+			],
+			"payable": false,
+			"stateMutability": "nonpayable",
+			"type": "constructor"
 		},
 		{
 			"constant": true,
 			"inputs": [],
-			"name": "uploader",
+			"name": "OICash",
+			"outputs": [
+				{
+					"internalType": "address",
+					"name": "",
+					"type": "address"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [],
+			"name": "OINexus",
+			"outputs": [
+				{
+					"internalType": "contract IOINexus",
+					"name": "",
+					"type": "address"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [],
+			"name": "WETH9",
+			"outputs": [
+				{
+					"internalType": "address",
+					"name": "",
+					"type": "address"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": false,
+			"inputs": [
+				{
+					"internalType": "address",
+					"name": "_token",
+					"type": "address"
+				}
+			],
+			"name": "addToken",
+			"outputs": [
+				{
+					"internalType": "bool",
+					"name": "",
+					"type": "bool"
+				}
+			],
+			"payable": false,
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [],
+			"name": "augur",
+			"outputs": [
+				{
+					"internalType": "contract IAugur",
+					"name": "",
+					"type": "address"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [],
+			"name": "factories",
+			"outputs": [
+				{
+					"internalType": "contract IParaAugurFactory",
+					"name": "paraAugurFactory",
+					"type": "address"
+				},
+				{
+					"internalType": "contract IParaAugurTradingFactory",
+					"name": "paraAugurTradingFactory",
+					"type": "address"
+				},
+				{
+					"internalType": "contract IParaShareTokenFactory",
+					"name": "paraShareTokenFactory",
+					"type": "address"
+				},
+				{
+					"internalType": "contract IParaRepOracleFactory",
+					"name": "paraRepOracleFactory",
+					"type": "address"
+				},
+				{
+					"internalType": "contract ICancelOrderFactory",
+					"name": "cancelOrderFactory",
+					"type": "address"
+				},
+				{
+					"internalType": "contract ICreateOrderFactory",
+					"name": "createOrderFactory",
+					"type": "address"
+				},
+				{
+					"internalType": "contract IFillOrderFactory",
+					"name": "fillOrderFactory",
+					"type": "address"
+				},
+				{
+					"internalType": "contract IOrdersFactory",
+					"name": "ordersFactory",
+					"type": "address"
+				},
+				{
+					"internalType": "contract IProfitLossFactory",
+					"name": "profitLossFactory",
+					"type": "address"
+				},
+				{
+					"internalType": "contract ISimulateTradeFactory",
+					"name": "simulateTradeFactory",
+					"type": "address"
+				},
+				{
+					"internalType": "contract ITradeFactory",
+					"name": "tradeFactory",
+					"type": "address"
+				},
+				{
+					"internalType": "contract IZeroXTradeFactory",
+					"name": "zeroXTradeFactory",
+					"type": "address"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [],
+			"name": "feePotFactory",
+			"outputs": [
+				{
+					"internalType": "address",
+					"name": "",
+					"type": "address"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [],
+			"name": "getOwner",
+			"outputs": [
+				{
+					"internalType": "address",
+					"name": "",
+					"type": "address"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [],
+			"name": "openInterestCashFactory",
+			"outputs": [
+				{
+					"internalType": "address",
+					"name": "",
+					"type": "address"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [
+				{
+					"internalType": "address",
+					"name": "",
+					"type": "address"
+				}
+			],
+			"name": "paraAugurTradings",
+			"outputs": [
+				{
+					"internalType": "contract IParaAugurTrading",
+					"name": "",
+					"type": "address"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [
+				{
+					"internalType": "address",
+					"name": "",
+					"type": "address"
+				}
+			],
+			"name": "paraAugurs",
+			"outputs": [
+				{
+					"internalType": "contract IParaAugur",
+					"name": "",
+					"type": "address"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [
+				{
+					"internalType": "address",
+					"name": "",
+					"type": "address"
+				}
+			],
+			"name": "paraDeployProgress",
+			"outputs": [
+				{
+					"internalType": "enum ParaDeployer.DeployProgress",
+					"name": "",
+					"type": "uint8"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [],
+			"name": "paraUniverseFactory",
+			"outputs": [
+				{
+					"internalType": "address",
+					"name": "",
+					"type": "address"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": false,
+			"inputs": [
+				{
+					"internalType": "address",
+					"name": "_token",
+					"type": "address"
+				}
+			],
+			"name": "progressDeployment",
+			"outputs": [
+				{
+					"internalType": "bool",
+					"name": "",
+					"type": "bool"
+				}
+			],
+			"payable": false,
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"constant": false,
+			"inputs": [
+				{
+					"internalType": "address",
+					"name": "_newOwner",
+					"type": "address"
+				}
+			],
+			"name": "transferOwnership",
+			"outputs": [
+				{
+					"internalType": "bool",
+					"name": "",
+					"type": "bool"
+				}
+			],
+			"payable": false,
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [],
+			"name": "zeroXExchange",
 			"outputs": [
 				{
 					"internalType": "address",
@@ -28111,7 +28615,7 @@
 				},
 				{
 					"internalType": "uint256",
-					"name": "_maxProtocolFeeDai",
+					"name": "_unused",
 					"type": "uint256"
 				}
 			],
@@ -29337,7 +29841,7 @@
 				},
 				{
 					"internalType": "uint256",
-					"name": "_maxProtocolFeeDai",
+					"name": "_unused",
 					"type": "uint256"
 				},
 				{
@@ -29474,6 +29978,222 @@
 			],
 			"payable": false,
 			"stateMutability": "pure",
+			"type": "function"
+		}
+	],
+	"CancelOrderFactory": [
+		{
+			"constant": false,
+			"inputs": [],
+			"name": "createCancelOrder",
+			"outputs": [
+				{
+					"internalType": "address",
+					"name": "",
+					"type": "address"
+				}
+			],
+			"payable": false,
+			"stateMutability": "nonpayable",
+			"type": "function"
+		}
+	],
+	"CreateOrderFactory": [
+		{
+			"constant": false,
+			"inputs": [],
+			"name": "createCreateOrder",
+			"outputs": [
+				{
+					"internalType": "address",
+					"name": "",
+					"type": "address"
+				}
+			],
+			"payable": false,
+			"stateMutability": "nonpayable",
+			"type": "function"
+		}
+	],
+	"FillOrderFactory": [
+		{
+			"constant": false,
+			"inputs": [],
+			"name": "createFillOrder",
+			"outputs": [
+				{
+					"internalType": "address",
+					"name": "",
+					"type": "address"
+				}
+			],
+			"payable": false,
+			"stateMutability": "nonpayable",
+			"type": "function"
+		}
+	],
+	"OrdersFactory": [
+		{
+			"constant": false,
+			"inputs": [],
+			"name": "createOrders",
+			"outputs": [
+				{
+					"internalType": "address",
+					"name": "",
+					"type": "address"
+				}
+			],
+			"payable": false,
+			"stateMutability": "nonpayable",
+			"type": "function"
+		}
+	],
+	"ParaAugurFactory": [
+		{
+			"constant": false,
+			"inputs": [
+				{
+					"internalType": "contract IAugur",
+					"name": "_augur",
+					"type": "address"
+				}
+			],
+			"name": "createParaAugur",
+			"outputs": [
+				{
+					"internalType": "address",
+					"name": "",
+					"type": "address"
+				}
+			],
+			"payable": false,
+			"stateMutability": "nonpayable",
+			"type": "function"
+		}
+	],
+	"ParaAugurTradingFactory": [
+		{
+			"constant": false,
+			"inputs": [
+				{
+					"internalType": "contract IAugur",
+					"name": "_augur",
+					"type": "address"
+				}
+			],
+			"name": "createParaAugurTrading",
+			"outputs": [
+				{
+					"internalType": "address",
+					"name": "",
+					"type": "address"
+				}
+			],
+			"payable": false,
+			"stateMutability": "nonpayable",
+			"type": "function"
+		}
+	],
+	"ParaRepOracleFactory": [
+		{
+			"constant": false,
+			"inputs": [],
+			"name": "createParaRepOracle",
+			"outputs": [
+				{
+					"internalType": "address",
+					"name": "",
+					"type": "address"
+				}
+			],
+			"payable": false,
+			"stateMutability": "nonpayable",
+			"type": "function"
+		}
+	],
+	"ParaShareTokenFactory": [
+		{
+			"constant": false,
+			"inputs": [],
+			"name": "createParaShareToken",
+			"outputs": [
+				{
+					"internalType": "address",
+					"name": "",
+					"type": "address"
+				}
+			],
+			"payable": false,
+			"stateMutability": "nonpayable",
+			"type": "function"
+		}
+	],
+	"ProfitLossFactory": [
+		{
+			"constant": false,
+			"inputs": [],
+			"name": "createProfitLoss",
+			"outputs": [
+				{
+					"internalType": "address",
+					"name": "",
+					"type": "address"
+				}
+			],
+			"payable": false,
+			"stateMutability": "nonpayable",
+			"type": "function"
+		}
+	],
+	"SimulateTradeFactory": [
+		{
+			"constant": false,
+			"inputs": [],
+			"name": "createSimulateTrade",
+			"outputs": [
+				{
+					"internalType": "address",
+					"name": "",
+					"type": "address"
+				}
+			],
+			"payable": false,
+			"stateMutability": "nonpayable",
+			"type": "function"
+		}
+	],
+	"TradeFactory": [
+		{
+			"constant": false,
+			"inputs": [],
+			"name": "createTrade",
+			"outputs": [
+				{
+					"internalType": "address",
+					"name": "",
+					"type": "address"
+				}
+			],
+			"payable": false,
+			"stateMutability": "nonpayable",
+			"type": "function"
+		}
+	],
+	"ZeroXTradeFactory": [
+		{
+			"constant": false,
+			"inputs": [],
+			"name": "createZeroXTrade",
+			"outputs": [
+				{
+					"internalType": "address",
+					"name": "",
+					"type": "address"
+				}
+			],
+			"payable": false,
+			"stateMutability": "nonpayable",
 			"type": "function"
 		}
 	],

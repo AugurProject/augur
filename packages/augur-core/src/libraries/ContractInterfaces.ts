@@ -83,6 +83,10 @@ export class RelayHubV2 extends c.RelayHubV2<BigNumber> {
 }
 export class StakeManager extends c.StakeManager<BigNumber> {
 }
+export class AMMExchange extends c.AMMExchange<BigNumber> {
+}
+export class AMMFactory extends c.AMMFactory<BigNumber> {
+}
 export class FeePot extends c.FeePot<BigNumber> {
 }
 export class OINexus extends c.OINexus<BigNumber> {
@@ -90,6 +94,8 @@ export class OINexus extends c.OINexus<BigNumber> {
 export class ParaAugur extends c.ParaAugur<BigNumber> {
 }
 export class ParaAugurTrading extends c.ParaAugurTrading<BigNumber> {
+}
+export class ParaDeployer extends c.ParaDeployer<BigNumber> {
 }
 export class ParaOICash extends c.ParaOICash<BigNumber> {
 }
@@ -100,6 +106,30 @@ export class ParaShareToken extends c.ParaShareToken<BigNumber> {
 export class ParaUniverse extends c.ParaUniverse<BigNumber> {
 }
 export class ParaZeroXTrade extends c.ParaZeroXTrade<BigNumber> {
+}
+export class CancelOrderFactory extends c.CancelOrderFactory<BigNumber> {
+}
+export class CreateOrderFactory extends c.CreateOrderFactory<BigNumber> {
+}
+export class FillOrderFactory extends c.FillOrderFactory<BigNumber> {
+}
+export class OrdersFactory extends c.OrdersFactory<BigNumber> {
+}
+export class ParaAugurFactory extends c.ParaAugurFactory<BigNumber> {
+}
+export class ParaAugurTradingFactory extends c.ParaAugurTradingFactory<BigNumber> {
+}
+export class ParaRepOracleFactory extends c.ParaRepOracleFactory<BigNumber> {
+}
+export class ParaShareTokenFactory extends c.ParaShareTokenFactory<BigNumber> {
+}
+export class ProfitLossFactory extends c.ProfitLossFactory<BigNumber> {
+}
+export class SimulateTradeFactory extends c.SimulateTradeFactory<BigNumber> {
+}
+export class TradeFactory extends c.TradeFactory<BigNumber> {
+}
+export class ZeroXTradeFactory extends c.ZeroXTradeFactory<BigNumber> {
 }
 export class FeePotFactory extends c.FeePotFactory<BigNumber> {
 }
@@ -146,6 +176,10 @@ export class SimulateTrade extends c.SimulateTrade<BigNumber> {
 export class Trade extends c.Trade<BigNumber> {
 }
 export class ZeroXTrade extends c.ZeroXTrade<BigNumber> {
+}
+export class ERC20Proxy1155 extends c.ERC20Proxy1155<BigNumber> {
+}
+export class ERC20Proxy1155Nexus extends c.ERC20Proxy1155Nexus<BigNumber> {
 }
 export class UniswapV2Factory extends c.UniswapV2Factory<BigNumber> {
 }

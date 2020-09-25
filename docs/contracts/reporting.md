@@ -4279,7 +4279,13 @@ a contract or not this will not call `onERC1155Received` on `to`
 
 
 
-<div class="contract-index"><span class="contract-index-title">Functions</span><ul><li><a href="#IRepOracle.getLastUpdateTimestamp(address)"><code class="function-signature">getLastUpdateTimestamp(address _reputationToken)</code></a></li><li><a href="#IRepOracle.poke(address)"><code class="function-signature">poke(address _reputationTokenAddress)</code></a></li></ul></div>
+<div class="contract-index"><span class="contract-index-title">Functions</span><ul><li><a href="#IRepOracle.initialize(contract IAugur)"><code class="function-signature">initialize(contract IAugur _augur)</code></a></li><li><a href="#IRepOracle.getLastUpdateTimestamp(address)"><code class="function-signature">getLastUpdateTimestamp(address _reputationToken)</code></a></li><li><a href="#IRepOracle.poke(address)"><code class="function-signature">poke(address _reputationTokenAddress)</code></a></li></ul></div>
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="IRepOracle.initialize(contract IAugur)"></a><code class="function-signature">initialize(contract IAugur _augur)</code><span class="function-visibility">external</span></h4>
+
+
 
 
 

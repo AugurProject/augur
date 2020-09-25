@@ -8,6 +8,7 @@ import 'ROOT/trading/Order.sol';
 
 
 contract IAugur {
+    IUniverse public genesisUniverse;
     function createChildUniverse(bytes32 _parentPayoutDistributionHash, uint256[] memory _parentPayoutNumerators) public returns (IUniverse);
     function isKnownUniverse(IUniverse _universe) public view returns (bool);
     function trustedCashTransfer(address _from, address _to, uint256 _amount) public returns (bool);

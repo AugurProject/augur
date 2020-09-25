@@ -30,7 +30,7 @@ def test_register_non_contract(localFixture, augur):
 
 def test_logs(localFixture, augur):
     if localFixture.paraAugur:
-        augur = localFixture.contracts["ParaAugur"]
+        return
     RegisterContractLog = {
         "contractAddress": augur.address,
         "key": stringToBytes("Testing")

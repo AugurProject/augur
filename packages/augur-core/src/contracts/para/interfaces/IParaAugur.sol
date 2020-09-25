@@ -2,10 +2,14 @@ pragma solidity 0.5.15;
 
 import 'ROOT/reporting/IUniverse.sol';
 import 'ROOT/reporting/IMarket.sol';
+import 'ROOT/para/interfaces/IParaUniverse.sol';
+
 
 contract IParaAugur {
     mapping(address => address) public getParaUniverse;
 
+    function generateParaUniverse(IUniverse _universe) external returns (IParaUniverse);
+    function registerContract(bytes32 _key, address _address) external returns (bool);
     function lookup(bytes32 _key) external view returns (address);
     function isKnownUniverse(IUniverse _universe) external view returns (bool);
     function trustedCashTransfer(address _from, address _to, uint256 _amount) public returns (bool);

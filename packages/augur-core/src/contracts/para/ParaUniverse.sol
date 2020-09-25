@@ -161,7 +161,7 @@ contract ParaUniverse is Initializable, IParaUniverse {
      * @return The reporting fee for this window
      */
     function getOrCacheReportingFeeDivisor() external returns (uint256) {
-        uint256 _currentFeeDivisor = currentReportingFeeDivisor;
+        uint256 _currentFeeDivisor = getReportingFeeDivisor();
         uint256 _currentTime = augur.getTimestamp();
         if ((_currentTime - lastReportingFeeUpdateTimestamp) < MIN_TIME_BETWEEN_REPORTING_FEE_RECALC) {
             return _currentFeeDivisor;
@@ -178,7 +178,7 @@ contract ParaUniverse is Initializable, IParaUniverse {
      * @dev this should be used for estimation purposes as it is a view and does not actually freeze or recalculate the rate
      * @return The reporting fee for this dispute window
      */
-    function getReportingFeeDivisor() external view returns (uint256) {
+    function getReportingFeeDivisor() public view returns (uint256) {
         if (currentReportingFeeDivisor != 0) {
             return currentReportingFeeDivisor;
         }

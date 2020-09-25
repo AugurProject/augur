@@ -2,7 +2,7 @@
 
 import { ethers } from 'ethers';
 import { ContractDependenciesEthers } from '@augurproject/contract-dependencies-ethers';
-import { ParaContractDeployer } from '../libraries/ParaContractDeployer';
+import { ParaAugurDeployer } from '../libraries/ParaAugurDeployer';
 import { EthersFastSubmitWallet } from '../libraries/EthersFastSubmitWallet';
 import { buildConfig } from '@augurproject/artifacts';
 
@@ -22,7 +22,7 @@ export async function deployToNetwork(networkName: string) {
         signer,
         signer.address
     );
-    await ParaContractDeployer.deployToNetwork(
+    await ParaAugurDeployer.deployToNetwork(
         networkName,
         config,
         dependencies,

@@ -12,9 +12,10 @@ import 'ROOT/trading/IOrders.sol';
 import 'ROOT/trading/Order.sol';
 import 'ROOT/trading/IProfitLoss.sol';
 import 'ROOT/libraries/ContractExists.sol';
+import 'ROOT/libraries/Ownable.sol';
 
 
-contract ParaAugurTrading is IAugurTrading {
+contract ParaAugurTrading is IAugurTrading, Ownable {
     using SafeMathUint256 for uint256;
     using ContractExists for address;
 
@@ -56,7 +57,6 @@ contract ParaAugurTrading is IAugurTrading {
 
     mapping(address => bool) public trustedSender;
 
-    address public uploader;
     mapping(bytes32 => address) internal registry;
 
     IAugur public augur;
@@ -64,24 +64,19 @@ contract ParaAugurTrading is IAugurTrading {
 
     uint256 private constant MAX_APPROVAL_AMOUNT = 2 ** 256 - 1;
 
-    modifier onlyUploader() {
-        require(msg.sender == uploader);
-        _;
-    }
-
     constructor(IAugur _augur) public {
-        uploader = msg.sender;
+        owner = msg.sender;
         augur = _augur;
     }
 
-    function registerContract(bytes32 _key, address _address) public onlyUploader returns (bool) {
+    function registerContract(bytes32 _key, address _address) public onlyOwner returns (bool) {
         require(registry[_key] == address(0), "Augur.registerContract: key has already been used in registry");
         require(_address.exists());
         registry[_key] = _address;
         return true;
     }
 
-    function doApprovals() public onlyUploader returns (bool) {
+    function doApprovals() public onlyOwner returns (bool) {
         bytes32[3] memory _names = [bytes32("CancelOrder"), bytes32("FillOrder"), bytes32("CreateOrder")];
 
         shareToken = IShareToken(augur.lookup("ShareToken"));
@@ -106,8 +101,8 @@ contract ParaAugurTrading is IAugurTrading {
         return registry[_key];
     }
 
-    function finishDeployment() public onlyUploader returns (bool) {
-        uploader = address(1);
+    function finishDeployment() public onlyOwner returns (bool) {
+        owner = address(1);
         return true;
     }
 
@@ -202,4 +197,6 @@ contract ParaAugurTrading is IAugurTrading {
         require(augur.isKnownMarket(IMarket(_market)));
         emit CancelZeroXOrder(_universe, _market, _account, _outcome, _price, _amount, _type, _orderHash, registry['Cash']);
     }
+
+    function onTransferOwnership(address, address) internal {}
 }

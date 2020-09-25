@@ -8,13 +8,14 @@ import 'ROOT/para/interfaces/IParaAugur.sol';
 import 'ROOT/para/interfaces/IParaUniverseFactory.sol';
 import 'ROOT/para/interfaces/IParaShareToken.sol';
 import 'ROOT/libraries/Initializable.sol';
+import 'ROOT/libraries/Ownable.sol';
 import 'ROOT/libraries/ContractExists.sol';
 import 'ROOT/IAugurMarketDataGetter.sol';
 import 'ROOT/IAugurCreationDataGetter.sol';
 import 'ROOT/para/interfaces/IOINexus.sol';
 
 
-contract ParaAugur is IParaAugur, IAugurCreationDataGetter {
+contract ParaAugur is IParaAugur, IAugurCreationDataGetter, Ownable {
     using SafeMathUint256 for uint256;
     using ContractExists for address;
 
@@ -28,7 +29,6 @@ contract ParaAugur is IParaAugur, IAugurCreationDataGetter {
     event RegisterContract(address contractAddress, bytes32 key);
     event FinishDeployment();
 
-    address public uploader;
     mapping(bytes32 => address) private registry;
 
     mapping(address => bool) public universes;
@@ -42,13 +42,8 @@ contract ParaAugur is IParaAugur, IAugurCreationDataGetter {
     IParaUniverseFactory public paraUniverseFactory;
     IOINexus public OINexus;
 
-    modifier onlyUploader() {
-        require(msg.sender == uploader);
-        _;
-    }
-
     constructor(IAugur _augur) public {
-        uploader = msg.sender;
+        owner = msg.sender;
         augur = _augur;
     }
 
@@ -56,7 +51,7 @@ contract ParaAugur is IParaAugur, IAugurCreationDataGetter {
     // Registry
     //
 
-    function registerContract(bytes32 _key, address _address) external onlyUploader returns (bool) {
+    function registerContract(bytes32 _key, address _address) external onlyOwner returns (bool) {
         require(registry[_key] == address(0), "Augur.registerContract: key has already been used in registry");
         require(_address.exists());
         registry[_key] = _address;
@@ -79,16 +74,21 @@ contract ParaAugur is IParaAugur, IAugurCreationDataGetter {
      * @return the address of the registered contract if one exists for the given key
      */
     function lookup(bytes32 _key) external view returns (address) {
-        if (_key == "ShareToken" || _key == "Cash" || _key == "ParaRepOracle" || _key == "FeePotFactory" || _key == "ParaUniverseFactory" || _key == "ParaOICashFactory" || _key == "ParaOICash" || _key == "OINexus") {
+        if (_key == "ShareToken" || _key == "Cash" || _key == "ParaRepOracle" || _key == "FeePotFactory" || _key == "ParaUniverseFactory" || _key == "ParaOICashFactory" || _key == "OINexus" || _key == "ParaOICash") {
             return registry[_key];
         }
         return augur.lookup(_key);
     }
 
-    function finishDeployment() external onlyUploader returns (bool) {
-        uploader = address(1);
+    function finishDeployment() external onlyOwner returns (bool) {
+        owner = address(1);
         emit FinishDeployment();
         return true;
+    }
+
+    function genesisUniverse() public view returns (address) {
+        IUniverse _universe = augur.genesisUniverse();
+        return getParaUniverse[address(_universe)];
     }
 
     function isKnownUniverse(IUniverse _universe) public view returns (bool) {
@@ -211,4 +211,6 @@ contract ParaAugur is IParaAugur, IAugurCreationDataGetter {
     function getMarketOutcomes(IMarket _market) public view returns (bytes32[] memory _outcomes) {
         return augur.getMarketOutcomes(_market);
     }
+
+    function onTransferOwnership(address, address) internal {}
 }

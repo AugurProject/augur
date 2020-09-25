@@ -15,7 +15,9 @@ import 'ROOT/para/interfaces/IParaAugur.sol';
 contract ParaOICashFactory is CloneFactory {
     function createParaOICash(IParaAugur _augur) external returns (IParaOICash) {
         IParaUniverse _universe = IParaUniverse(msg.sender);
-        IParaOICash _openInterestCash = IParaOICash(createClone(_augur.lookup("ParaOICash")));
+        address _paraOICashReference = _augur.lookup("ParaOICash");
+        require(_paraOICashReference != address(0));
+        IParaOICash _openInterestCash = IParaOICash(createClone(_paraOICashReference));
         _openInterestCash.initialize(_augur, _universe);
         return _openInterestCash;
     }

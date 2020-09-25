@@ -3,6 +3,7 @@ import { BigNumber } from 'bignumber.js';
 import { ContractCompiler } from '../libraries/ContractCompiler';
 import { ContractDeployer } from '../libraries/ContractDeployer';
 import { ParaContractDeployer } from '../libraries/ParaContractDeployer';
+import { ParaAugurDeployer } from '../libraries/ParaAugurDeployer';
 import { GovernanceDeployer } from '../libraries/GovernanceDeployer';
 import { CompilerConfiguration } from '../libraries/CompilerConfiguration';
 import { ContractDependenciesEthers } from '@augurproject/contract-dependencies-ethers';
@@ -110,8 +111,19 @@ export class TestFixture {
             signer,
             compiledContracts
         );
-        await paraContractDeployer.deploy('test', config.addresses.WETH9);
+        await paraContractDeployer.deploy('test');
 
+        config = buildConfig('test');
+        const paraAugurDeployer = new ParaAugurDeployer(
+            config,
+            dependencies,
+            provider,
+            signer,
+            compiledContracts
+        );
+        await paraAugurDeployer.deploy('test', config.addresses.WETH9);
+
+        /*
         config = buildConfig('test');
         const govContractDeployer = new GovernanceDeployer(
             config,
@@ -121,6 +133,7 @@ export class TestFixture {
             compiledContracts
         );
         await govContractDeployer.deploy('test', config.addresses.WETH9);
+        */
 
         return new TestFixture(
             dependencies,

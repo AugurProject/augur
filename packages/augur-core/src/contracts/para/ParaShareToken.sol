@@ -304,7 +304,6 @@ contract ParaShareToken is ITyped, Initializable, ERC1155, ReentrancyGuard {
             _paraUniverse.recordMarketCreatorFees(_market, _creatorFee, _sourceAccount);
         }
 
-
         _paraUniverse.withdraw(address(this), _payout.add(_reportingFee), address(_market));
 
         if (_reportingFee != 0) {

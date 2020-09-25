@@ -4,6 +4,7 @@ import 'ROOT/reporting/RepOracle.sol';
 
 
 contract ParaRepOracle is RepOracle {
+    // TODO This needs to be generated on creation
     uint256 constant public genesisInitialRepPriceinAttoCash = 5 * 10**16;
 
     function getInitialPrice(address _reputationToken) private view returns (uint256) {
