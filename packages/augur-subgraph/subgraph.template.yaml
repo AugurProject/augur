@@ -158,11 +158,12 @@ templates:
         - name: AMMExchange
           file: ./abis/AMMExchange.json
       callHandlers:
-        - function: addLiquidity(uint256,bool,uint256)
+        - function: addLiquidity(uint256)
           handler: handleAddLiquidity
         - function: removeLiquidity(address,uint256,bool,uint256)
           handler: handleRemoveLiquidity
-        - function: swap()
+        - function: swap(uin256,bool,uint256)
+          handle: handleSwap
 
 
 # Markets
