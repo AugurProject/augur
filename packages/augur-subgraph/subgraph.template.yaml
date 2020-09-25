@@ -160,11 +160,10 @@ templates:
       callHandlers:
         - function: addLiquidity(uint256)
           handler: handleAddLiquidity
-        - function: removeLiquidity(address,uint256,bool,uint256)
+        - function: removeLiquidity(uint256,uint256)
           handler: handleRemoveLiquidity
         - function: swap(uin256,bool,uint256)
-          handle: handleSwap
-
+          handler: handleSwap
 
 # Markets
   # - MarketParticipantsDisavowed(indexed address,indexed address)
