@@ -356,6 +356,16 @@
   }
 
   @media @breakpoint-mobile {
+    .SearchAndFilters {
+      button[class*="FilterButton"] {
+        flex-flow: row-reverse;
+
+        > svg {
+          margin: 0 @size-4 0 0;
+        }
+      }
+    }
+
     .Container {
       background: var(--color-module-background);
       border: @size-1 solid var(--color-dark-grey);

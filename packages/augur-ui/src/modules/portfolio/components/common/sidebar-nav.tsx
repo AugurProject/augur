@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
 import ButtonStyles from 'modules/common/buttons.styles.less';
 import Styles from 'modules/portfolio/components/common/sidebar-nav.styles.less';
-import { Filter, XIcon } from 'modules/common/icons';
+import { Filter, MobileNavCloseIcon, SportsbookFilter } from 'modules/common/icons';
 import classNames from 'classnames';
 import { PillSelection } from 'modules/common/selection';
 import { RadioBarGroup } from 'modules/common/form';
-import { SecondaryButton } from 'modules/common/buttons';
+import { useAppStatusStore } from 'modules/app/store/app-status';
+import { THEMES } from 'modules/common/constants';
 
 export enum OPTIONTYPE {
   PILLS = 'pills',
@@ -55,16 +56,20 @@ const SidebarNav = ({
   filters,
 }: SidebarNavProps) => {
   const [showSidebar, setShowSidebar] = useState(false);
+  const { theme } = useAppStatusStore();
+  const isTrading = theme === THEMES.TRADING;
 
   return (
     <div className={Styles.Sidebar}>
       <button
         onClick={() => setShowSidebar(true)}
-        className={ButtonStyles.FilterButton}
+        className={classNames(ButtonStyles.FilterButton, {
+          [Styles.SportsbookFilterIcon]: !isTrading
+        })}
         disabled={disabled}
       >
         {headerTitle}
-        {Filter}
+        {isTrading ? Filter : SportsbookFilter}
       </button>
       <div
         className={classNames(Styles.SidebarMenu, {
@@ -73,7 +78,9 @@ const SidebarNav = ({
       >
         <div>
           <span>{headerTitle}</span>
-          <button onClick={() => setShowSidebar(false)}>{XIcon}</button>
+          <button onClick={() => setShowSidebar(false)}>
+            <MobileNavCloseIcon />
+          </button>
         </div>
         <div>
           {filters && filters.map(({ type, sectionTitle, options, selected, action }, index) => {
