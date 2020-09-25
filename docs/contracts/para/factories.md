@@ -2968,7 +2968,7 @@ this should be used in contracts so that the fee is actually set
 
 
 
-<h4><a class="anchor" aria-hidden="true" id="ParaUniverse.getReportingFeeDivisor()"></a><code class="function-signature">getReportingFeeDivisor() <span class="return-arrow">→</span> <span class="return-type">uint256</span></code><span class="function-visibility">public</span></h4>
+<h4><a class="anchor" aria-hidden="true" id="ParaUniverse.getReportingFeeDivisor()"></a><code class="function-signature">getReportingFeeDivisor() <span class="return-arrow">→</span> <span class="return-type">uint256</span></code><span class="function-visibility">external</span></h4>
 
 this should be used for estimation purposes as it is a view and does not actually freeze or recalculate the rate
 

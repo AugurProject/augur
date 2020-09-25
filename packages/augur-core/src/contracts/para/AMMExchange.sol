@@ -38,21 +38,33 @@ contract AMMExchange is ERC20 {
     }
 
     // Adds shares to the liquidity pool by minting complete sets.
-    function addLiquidity(uint256 _setsToBuy) external {
-        uint256 _lpTokensGained = rateAddLiquidity(_setsToBuy);
+    function addLiquidity(uint256 _setsToBuy) public returns (uint256) {
+        uint256 _lpTokensGained = rateAddLiquidity(_setsToBuy, _setsToBuy);
 
         cash.transferFrom(msg.sender, address(this), _setsToBuy.mul(numTicks));
         shareToken.publicBuyCompleteSets(augurMarket, _setsToBuy);
         _mint(msg.sender, _lpTokensGained);
+        return _lpTokensGained;
+    }
+
+    // Add shares to the liquidity pool by minting complete sets...
+    // But then swap away some of those shares for the opposed shares.
+    function addLiquidityThenSwap(uint256 _setsToBuy, bool _swapForYes, uint256 _swapHowMuch) external returns (uint256) {
+        uint256 _lpTokensGained = rateAddLiquidityThenSwap(_setsToBuy, _swapForYes, _swapHowMuch);
+
+        cash.transferFrom(msg.sender, address(this), _setsToBuy.mul(numTicks));
+        shareToken.publicBuyCompleteSets(augurMarket, _setsToBuy);
+        _mint(msg.sender, _lpTokensGained);
+        return _lpTokensGained;
     }
 
     // returns how many LP tokens you get for providing the given number of sets
-    function rateAddLiquidity(uint256 _setsToBuy) public view returns (uint256) {
+    function rateAddLiquidity(uint256 _yesses, uint256 _nos) public view returns (uint256) {
         uint256 _yesBalance = shareToken.balanceOf(address(this), YES);
         uint256 _noBalance = shareToken.balanceOf(address(this), NO);
 
         uint256 _priorLiquidityConstant = SafeMathUint256.sqrt(_yesBalance * _noBalance);
-        uint256 _newLiquidityConstant = SafeMathUint256.sqrt((_yesBalance + _setsToBuy) * (_noBalance + _setsToBuy));
+        uint256 _newLiquidityConstant = SafeMathUint256.sqrt((_yesBalance + _yesses) * (_noBalance + _nos));
 
         if (_priorLiquidityConstant == 0) {
             return _newLiquidityConstant;
@@ -62,10 +74,27 @@ contract AMMExchange is ERC20 {
         }
     }
 
+    function rateAddLiquidityThenSwap(uint256 _setsToBuy, bool _swapForYes, uint256 _swapHowMuch) public view returns (uint256) {
+        uint256 _keptSets = _setsToBuy.subS(_swapHowMuch, "AugurCP: When adding liquidity, tried to swap away more sets than you bought");
+        uint256 _gainedShares = rateSwap(_swapHowMuch, !_swapForYes);
+
+        uint256 _yesses; uint256 _nos;
+        if (_swapForYes) {
+            uint256 _yesses = _keptSets.add(_gainedShares);
+            uint256 _nos = _keptSets;
+        } else {
+            uint256 _yesses = _keptSets;
+            uint256 _nos = _keptSets.add(_gainedShares);
+        }
+
+        return rateAddLiquidity(_yesses, _nos);
+    }
+
     // Removes shares from the liquidity pool.
     // If _minSetsSold > 0 then also sell complete sets through burning and through swapping in the pool.
-    function removeLiquidity(uint256 _poolTokensToSell, uint256 _minSetsSold) external {
-        (uint256 _invalidShare, uint256 _noShare, uint256 _yesShare, uint256 _cashShare, uint256 _setsSold) = rateRemoveLiquidity(_poolTokensToSell, _minSetsSold);
+    function removeLiquidity(uint256 _poolTokensToSell, uint256 _minSetsSold) external returns (uint256 _invalidShare, uint256 _noShare, uint256 _yesShare, uint256 _cashShare){
+        uint256 _setsSold;
+        (_invalidShare, _noShare, _yesShare, _cashShare, _setsSold) = rateRemoveLiquidity(_poolTokensToSell, _minSetsSold);
 
         require(_setsSold == 0 || _setsSold >= _minSetsSold, "AugurCP: Would not receive the minimum number of sets");
 
@@ -113,13 +142,14 @@ contract AMMExchange is ERC20 {
         }
     }
 
-    function enterPosition(uint256 _sharesToBuy, bool _buyYes, uint256 _maxCashCost) public returns (uint256){
-        uint256 _cashCost = rateEnterPosition(_sharesToBuy, _buyYes);
-        uint256 _setsToBuy = _cashCost.div(numTicks);
+    function enterPosition(uint256 _cashCost, bool _buyYes, uint256 _minShares) public returns (uint256) {
+        uint256 _sharesToBuy = rateEnterPosition(_cashCost, _buyYes);
 
-        require(_cashCost <= _maxCashCost, "AugurCP: Cost to enter position is greater than specified max cash cost.");
+        require(_sharesToBuy >= _minShares, "AugurCP: Too few shares would be received for given cash.");
 
         cash.transferFrom(msg.sender, address(this), _cashCost);
+
+        uint256 _setsToBuy = _cashCost.div(numTicks);
 
         if (_buyYes) {
             shareTransfer(address(this), msg.sender, _setsToBuy, 0, _sharesToBuy);
@@ -127,32 +157,37 @@ contract AMMExchange is ERC20 {
             shareTransfer(address(this), msg.sender, _setsToBuy, _sharesToBuy, 0);
         }
 
-        return _cashCost;
+        return _sharesToBuy;
     }
 
-    // Tells you have much cash you need to acquire the shares you want.
-    function rateEnterPosition(uint256 _sharesToBuy, bool _buyYes) public view returns (uint256) {
+    // Tells you how many shares you get for given cash.
+    function rateEnterPosition(uint256 _cashToSpend, bool _buyYes) public view returns (uint256) {
+        uint256 _setsToBuy = _cashToSpend.div(numTicks);
         (uint256 _poolInvalid, uint256 _poolNo, uint256 _poolYes) = shareBalances(address(this));
 
-        uint256 _setsToBuy;
-        if (_buyYes) {
-            _setsToBuy = quadratic(1, -int256(_sharesToBuy.add(_poolYes).add(_poolNo)), int256(_sharesToBuy.mul(_poolNo)), _sharesToBuy);
-        } else { // buy Yes shares
-            _setsToBuy = quadratic(1, -int256(_sharesToBuy.add(_poolYes).add(_poolNo)), int256(_sharesToBuy.mul(_poolYes)), _sharesToBuy);
-        }
+        _poolInvalid = _poolInvalid.subS(_setsToBuy, "AugurCP: The pool doesn't have enough INVALID tokens to fulfill the request.");
+        _poolNo = _poolNo.subS(_setsToBuy, "AugurCP: The pool doesn't have enough NO tokens to fulfill the request.");
+        _poolYes = _poolYes.subS(_setsToBuy, "AugurCP: The pool doesn't have enough YES tokens to fulfill the request.");
 
-        return _setsToBuy.mul(numTicks);
+        // simulate user swapping YES to NO or NO to YES
+        uint256 _poolConstant = poolConstant(_poolYes, _poolNo);
+        if (_buyYes) {
+            // yesToUser + poolYes - poolConstant / (poolNo + _setsToBuy)
+            return _setsToBuy.add(_poolYes.sub(_poolConstant.div(_poolNo.add(_setsToBuy))));
+        } else {
+            return _setsToBuy.add(_poolNo.sub(_poolConstant.div(_poolYes.add(_setsToBuy))));
+        }
     }
 
     // Exits as much of the position as possible.
-	function exitAll(uint256 _minCashPayout) external {
+	function exitAll(uint256 _minCashPayout) external returns (uint256) {
 		(uint256 _userInvalid, uint256 _userNo, uint256 _userYes) = shareBalances(msg.sender);
-		exitPosition(_userInvalid, _userNo, _userYes, _minCashPayout);
+		return exitPosition(_userInvalid, _userNo, _userYes, _minCashPayout);
 	}
 
     // Sell as many of the given shares as possible, swapping yes<->no as-needed.
-    function exitPosition(uint256 _invalidShares, uint256 _noShares, uint256 _yesShares, uint256 _minCashPayout) public {
-        (uint256 _cashPayout, uint256 _invalidFromUser, int256 _noFromUser, int256 _yesFromUser) = rateExitPosition(_yesShares, _noShares, _invalidShares);
+    function exitPosition(uint256 _invalidShares, uint256 _noShares, uint256 _yesShares, uint256 _minCashPayout) public returns (uint256) {
+        (uint256 _cashPayout, uint256 _invalidFromUser, int256 _noFromUser, int256 _yesFromUser) = rateExitPosition(_invalidShares, _noShares, _yesShares);
 
         require(_cashPayout >= _minCashPayout, "Proceeds were less than the required payout");
         if (_noFromUser < 0) {
@@ -165,6 +200,7 @@ contract AMMExchange is ERC20 {
 
         shareTransfer(msg.sender, address(this), _invalidFromUser, uint256(_noFromUser), uint256(_yesFromUser));
         cash.transfer(msg.sender, _cashPayout);
+        return _cashPayout;
     }
 
     function rateExitAll() public view returns (uint256 _cashPayout, uint256 _invalidFromUser, int256 _noFromUser, int256 _yesFromUser) {
@@ -268,14 +304,14 @@ contract AMMExchange is ERC20 {
 
     function yesNoShareBalances(address _owner) private view returns (uint256 _no, uint256 _yes) {
         uint256[] memory _tokenIds = new uint256[](2);
-        _tokenIds[1] = NO;
-        _tokenIds[2] = YES;
+        _tokenIds[0] = NO;
+        _tokenIds[1] = YES;
         address[] memory _owners = new address[](2);
+        _owners[0] = _owner;
         _owners[1] = _owner;
-        _owners[2] = _owner;
         uint256[] memory _balances = shareToken.balanceOfBatch(_owners, _tokenIds);
-        _no = _balances[1];
-        _yes = _balances[2];
+        _no = _balances[0];
+        _yes = _balances[1];
         return (_no, _yes);
     }
 

@@ -30,7 +30,7 @@ export function getConfigForNetwork(networkId: NetworkId, breakOnMulti=true, val
 export function buildParaAddresses(config:SDKConfiguration): ContractAddresses {
   if(config.paraDeploy) {
     const paraDeployAddresses = config.paraDeploys[config.paraDeploy];
-    if(!paraDeployAddresses) throw new Error('Specified ParaDeploy doe not exist in config.');
+    if(!paraDeployAddresses) throw new Error('Specified ParaDeploy does not exist in config.');
     return {
       ...config.addresses,
       ...paraDeployAddresses.addresses

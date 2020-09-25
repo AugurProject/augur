@@ -29,14 +29,15 @@ def test_amm_liquidity(contractsFixture, market, cash, shareToken, amm, account0
     if not contractsFixture.paraAugur:
         return
 
-    cash.faucet(100000 * ATTO)
+    sets = 100 * ATTO
+    cost = sets * 1000
+
+    cash.faucet(cost)
     cash.approve(amm.address, 10 ** 48)
 
-    assert cash.balanceOf(account0) == 100000 * ATTO
-    assert cash.allowance(account0, amm.address) == 10 ** 48
+    amm.addLiquidity(sets)
 
-    amm.addLiquidity(100 * ATTO)
-
+    # all cash was used to buy complete sets
     assert cash.balanceOf(account0) == 0
     assert cash.balanceOf(amm.address) == 0
     # user did not get any shares themselves: they go to the AMM
@@ -44,23 +45,25 @@ def test_amm_liquidity(contractsFixture, market, cash, shareToken, amm, account0
     assert shareToken.balanceOfMarketOutcome(market.address, YES, account0) == 0
     assert shareToken.balanceOfMarketOutcome(market.address, NO, account0) == 0
     # AMM has 100 of each share
-    assert shareToken.balanceOfMarketOutcome(market.address, INVALID, amm.address) == 100 * ATTO
-    assert shareToken.balanceOfMarketOutcome(market.address, YES, amm.address) == 100 * ATTO
-    assert shareToken.balanceOfMarketOutcome(market.address, NO, amm.address) == 100 * ATTO
+    assert shareToken.balanceOfMarketOutcome(market.address, INVALID, amm.address) == sets
+    assert shareToken.balanceOfMarketOutcome(market.address, YES, amm.address) == sets
+    assert shareToken.balanceOfMarketOutcome(market.address, NO, amm.address) == sets
 
-    amm.removeLiquidity(10 * ATTO, 0)
+    removedSets = 10 * ATTO
+    remainingSets = sets - removedSets
+    amm.removeLiquidity(removedSets, 0)
 
     assert cash.balanceOf(account0) == 0  # user did not receive cash, just shares
     assert cash.balanceOf(amm.address) == 0  # shares are just passed along to user; no cash suddenly appears
 
     # user receives 10 of each share
-    assert shareToken.balanceOfMarketOutcome(market.address, INVALID, account0) == 10 * ATTO
-    assert shareToken.balanceOfMarketOutcome(market.address, NO, account0) == 10 * ATTO
-    assert shareToken.balanceOfMarketOutcome(market.address, YES, account0) == 10 * ATTO
+    assert shareToken.balanceOfMarketOutcome(market.address, INVALID, account0) == removedSets
+    assert shareToken.balanceOfMarketOutcome(market.address, NO, account0) == removedSets
+    assert shareToken.balanceOfMarketOutcome(market.address, YES, account0) == removedSets
     # AMM still has 90 of each share
-    assert shareToken.balanceOfMarketOutcome(market.address, INVALID, amm.address) == 90 * ATTO
-    assert shareToken.balanceOfMarketOutcome(market.address, NO, amm.address) == 90 * ATTO
-    assert shareToken.balanceOfMarketOutcome(market.address, YES, amm.address) == 90 * ATTO
+    assert shareToken.balanceOfMarketOutcome(market.address, INVALID, amm.address) == remainingSets
+    assert shareToken.balanceOfMarketOutcome(market.address, NO, amm.address) == remainingSets
+    assert shareToken.balanceOfMarketOutcome(market.address, YES, amm.address) == remainingSets
 
 def test_amm_position(contractsFixture, market, shareToken, cash, amm, account0):
     if not contractsFixture.paraAugur:
@@ -68,20 +71,64 @@ def test_amm_position(contractsFixture, market, shareToken, cash, amm, account0)
 
     cash.faucet(100000 * ATTO)
     cash.approve(amm.address, 10 ** 48)
+    shareToken.setApprovalForAll(amm.address, True)
     amm.addLiquidity(100 * ATTO)
 
-    SHARES_TO_BUY = 10 * ATTO
+    cost = 10000 * ATTO
+    sets = cost // market.getNumTicks()
 
-    cost = amm.rateEnterPosition(SHARES_TO_BUY, True)
-    print(cost)
-    assert cost < SHARES_TO_BUY * market.getNumTicks() # must cost less than buying complete sets
+    # Enter position
+    sharesReceived = amm.rateEnterPosition(cost, True)
+    assert sharesReceived > 10 * ATTO
     cash.faucet(cost)
-    amm.enterPosition(SHARES_TO_BUY, True, cost)
+    amm.enterPosition(cost, True, sharesReceived)
 
     assert cash.balanceOf(account0) == 0
-    assert shareToken.balanceOfMarketOutcome(market.address, INVALID, account0) == cost // market.getNumTicks()
+    assert shareToken.balanceOfMarketOutcome(market.address, INVALID, account0) == sets
     assert shareToken.balanceOfMarketOutcome(market.address, NO, account0) == 0
-    assert shareToken.balanceOfMarketOutcome(market.address, YES, account0) == SHARES_TO_BUY
+    assert shareToken.balanceOfMarketOutcome(market.address, YES, account0) == sharesReceived
+
+    (payoutAll, inv, no, yes) = amm.rateExitAll()
+    applyFeeForEntryAndExit = (cost * (1000 - contractsFixture.amm_fee) // 1000) * (1000 - contractsFixture.amm_fee) // 1000
+    assert payoutAll < applyFeeForEntryAndExit # swap also has a cost
+    assert payoutAll == inv * market.getNumTicks() # invalids relate to sets which relate to cash
+
+    amm.exitAll(payoutAll)
+
+    assert cash.balanceOf(account0) == payoutAll
+    assert shareToken.balanceOfMarketOutcome(market.address, INVALID, account0) > 0
+    assert shareToken.balanceOfMarketOutcome(market.address, INVALID, account0) < 10 * ATTO
+    assert shareToken.balanceOfMarketOutcome(market.address, NO, account0) == 0
+    assert shareToken.balanceOfMarketOutcome(market.address, YES, account0) == 0
+
+def test_amm_swap(contractsFixture, market, shareToken, cash, amm, account0):
+    if not contractsFixture.paraAugur:
+        return
+
+    cash.faucet(100000 * ATTO)
+    cash.approve(amm.address, 10 ** 48)
+    shareToken.setApprovalForAll(amm.address, True)
+    amm.addLiquidity(100 * ATTO)
+
+    cost = 10000 * ATTO
+    sets = cost // market.getNumTicks()
+
+    yesShares = amm.rateEnterPosition(cost, True)
+    cash.faucet(cost)
+    amm.enterPosition(cost, True, yesShares)
+
+    noSharesReceived = amm.rateSwap(1 * ATTO, True) # trade away 1 Yes share
+
+    # Spent 1 Yes share to receive fewer than 1 No share
+    assert noSharesReceived > 0
+    assert noSharesReceived < 1 * ATTO
+
+    amm.swap(1 * ATTO, True, noSharesReceived)
+
+    assert shareToken.balanceOfMarketOutcome(market.address, INVALID, account0) == sets
+    assert shareToken.balanceOfMarketOutcome(market.address, NO, account0) == noSharesReceived
+    assert shareToken.balanceOfMarketOutcome(market.address, YES, account0) == yesShares - ATTO # spent one Yes share to buy some No shares
+
 
 
 # TODO tests

@@ -110,7 +110,7 @@ export async function createBrowserMeshWorker(
   let addresses;
   if(config.paraDeploy) {
     const paraDeployAddresses = config.paraDeploys[config.paraDeploy];
-    if(!paraDeployAddresses) throw new Error('Specified ParaDeploy doe not exist in config.');
+    if(!paraDeployAddresses) throw new Error('Specified ParaDeploy does not exist in config.');
     addresses = {
       ...config.addresses,
       ...paraDeployAddresses.addresses

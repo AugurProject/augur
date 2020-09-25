@@ -21690,7 +21690,44 @@
 							}
 						],
 						"name": "addLiquidity",
-						"outputs": [],
+						"outputs": [
+							{
+								"internalType": "uint256",
+								"name": "",
+								"type": "uint256"
+							}
+						],
+						"payable": false,
+						"stateMutability": "nonpayable",
+						"type": "function"
+					},
+					{
+						"constant": false,
+						"inputs": [
+							{
+								"internalType": "uint256",
+								"name": "_setsToBuy",
+								"type": "uint256"
+							},
+							{
+								"internalType": "bool",
+								"name": "_swapForYes",
+								"type": "bool"
+							},
+							{
+								"internalType": "uint256",
+								"name": "_swapHowMuch",
+								"type": "uint256"
+							}
+						],
+						"name": "addLiquidityThenSwap",
+						"outputs": [
+							{
+								"internalType": "uint256",
+								"name": "",
+								"type": "uint256"
+							}
+						],
 						"payable": false,
 						"stateMutability": "nonpayable",
 						"type": "function"
@@ -21891,7 +21928,7 @@
 						"inputs": [
 							{
 								"internalType": "uint256",
-								"name": "_sharesToBuy",
+								"name": "_cashCost",
 								"type": "uint256"
 							},
 							{
@@ -21901,7 +21938,7 @@
 							},
 							{
 								"internalType": "uint256",
-								"name": "_maxCashCost",
+								"name": "_minShares",
 								"type": "uint256"
 							}
 						],
@@ -21927,7 +21964,13 @@
 							}
 						],
 						"name": "exitAll",
-						"outputs": [],
+						"outputs": [
+							{
+								"internalType": "uint256",
+								"name": "",
+								"type": "uint256"
+							}
+						],
 						"payable": false,
 						"stateMutability": "nonpayable",
 						"type": "function"
@@ -21957,7 +22000,13 @@
 							}
 						],
 						"name": "exitPosition",
-						"outputs": [],
+						"outputs": [
+							{
+								"internalType": "uint256",
+								"name": "",
+								"type": "uint256"
+							}
+						],
 						"payable": false,
 						"stateMutability": "nonpayable",
 						"type": "function"
@@ -22074,7 +22123,12 @@
 						"inputs": [
 							{
 								"internalType": "uint256",
-								"name": "_setsToBuy",
+								"name": "_yesses",
+								"type": "uint256"
+							},
+							{
+								"internalType": "uint256",
+								"name": "_nos",
 								"type": "uint256"
 							}
 						],
@@ -22095,7 +22149,38 @@
 						"inputs": [
 							{
 								"internalType": "uint256",
-								"name": "_sharesToBuy",
+								"name": "_setsToBuy",
+								"type": "uint256"
+							},
+							{
+								"internalType": "bool",
+								"name": "_swapForYes",
+								"type": "bool"
+							},
+							{
+								"internalType": "uint256",
+								"name": "_swapHowMuch",
+								"type": "uint256"
+							}
+						],
+						"name": "rateAddLiquidityThenSwap",
+						"outputs": [
+							{
+								"internalType": "uint256",
+								"name": "",
+								"type": "uint256"
+							}
+						],
+						"payable": false,
+						"stateMutability": "view",
+						"type": "function"
+					},
+					{
+						"constant": true,
+						"inputs": [
+							{
+								"internalType": "uint256",
+								"name": "_cashToSpend",
 								"type": "uint256"
 							},
 							{
@@ -22279,7 +22364,28 @@
 							}
 						],
 						"name": "removeLiquidity",
-						"outputs": [],
+						"outputs": [
+							{
+								"internalType": "uint256",
+								"name": "_invalidShare",
+								"type": "uint256"
+							},
+							{
+								"internalType": "uint256",
+								"name": "_noShare",
+								"type": "uint256"
+							},
+							{
+								"internalType": "uint256",
+								"name": "_yesShare",
+								"type": "uint256"
+							},
+							{
+								"internalType": "uint256",
+								"name": "_cashShare",
+								"type": "uint256"
+							}
+						],
 						"payable": false,
 						"stateMutability": "nonpayable",
 						"type": "function"
@@ -22489,13 +22595,24 @@
 					},
 					{
 						"constant": true,
-						"inputs": [],
-						"name": "fee",
+						"inputs": [
+							{
+								"internalType": "address",
+								"name": "",
+								"type": "address"
+							},
+							{
+								"internalType": "address",
+								"name": "",
+								"type": "address"
+							}
+						],
+						"name": "exchanges",
 						"outputs": [
 							{
-								"internalType": "uint256",
+								"internalType": "address",
 								"name": "",
-								"type": "uint256"
+								"type": "address"
 							}
 						],
 						"payable": false,
@@ -22504,24 +22621,13 @@
 					},
 					{
 						"constant": true,
-						"inputs": [
-							{
-								"internalType": "contract IMarket",
-								"name": "_market",
-								"type": "address"
-							},
-							{
-								"internalType": "contract IParaShareToken",
-								"name": "_para",
-								"type": "address"
-							}
-						],
-						"name": "getAMM",
+						"inputs": [],
+						"name": "fee",
 						"outputs": [
 							{
-								"internalType": "contract AMMExchange",
+								"internalType": "uint256",
 								"name": "",
-								"type": "address"
+								"type": "uint256"
 							}
 						],
 						"payable": false,
