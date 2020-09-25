@@ -164,6 +164,24 @@ templates:
           handler: handleRemoveLiquidity
         - function: swap(uin256,bool,uint256)
           handler: handleSwap
+  - kind: ethereum/contract
+    name: Cash
+    network: {{ ethereum.network }}
+    source:
+      abi: ERC20
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.4
+      language: wasm/assemblyscript
+      file: ./src/index.ts
+      entities:
+        - ERC20
+      abis:
+        - name: ERC20
+          file: ./abis/ERC20.json
+      eventHandlers:
+        - event: Transfer(indexed address,indexed address,uint256)
+          handler: handleCashTransfer
 
 # Markets
   # - MarketParticipantsDisavowed(indexed address,indexed address)
