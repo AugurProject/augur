@@ -571,6 +571,17 @@
 
 :root[theme="BETTING"],
 :root[theme="SPORTS"] {
+  .ReportingRadioBar {
+    &.Checked {
+      border: var(--color-primary-text);
+
+      > svg {
+        > circle:last-of-type {
+          fill: var(--color-primary-text);
+        }
+      }
+    }
+  }
   .RadioBarGroup {
     > div {
       > h5,
