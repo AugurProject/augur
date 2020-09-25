@@ -9,7 +9,6 @@ ATTO = 10 ** 18
 INVALID = 0
 NO = 1
 YES = 2
-FEE = 3 # 3 / 1000
 
 
 @fixture
@@ -73,21 +72,21 @@ def test_amm_position(contractsFixture, market, shareToken, cash, amm, account0)
     amm.addLiquidity(100 * ATTO)
 
     cost = 10000 * ATTO
+    sets = cost // market.getNumTicks()
 
+    # Enter position
     sharesReceived = amm.rateEnterPosition(cost, True)
-    print(sharesReceived)
     assert sharesReceived > 10 * ATTO
-    # TODO verify sharesReceived precisely
     cash.faucet(cost)
     amm.enterPosition(cost, True, sharesReceived)
 
     assert cash.balanceOf(account0) == 0
-    assert shareToken.balanceOfMarketOutcome(market.address, INVALID, account0) == cost // market.getNumTicks()
+    assert shareToken.balanceOfMarketOutcome(market.address, INVALID, account0) == sets
     assert shareToken.balanceOfMarketOutcome(market.address, NO, account0) == 0
     assert shareToken.balanceOfMarketOutcome(market.address, YES, account0) == sharesReceived
 
     (payoutAll, inv, no, yes) = amm.rateExitAll()
-    applyFeeForEntryAndExit = (cost * (1000 - FEE) // 1000) * (1000 - FEE) // 1000
+    applyFeeForEntryAndExit = (cost * (1000 - contractsFixture.amm_fee) // 1000) * (1000 - contractsFixture.amm_fee) // 1000
     assert payoutAll < applyFeeForEntryAndExit # swap also has a cost
     assert payoutAll == inv * market.getNumTicks() # invalids relate to sets which relate to cash
 
@@ -99,7 +98,33 @@ def test_amm_position(contractsFixture, market, shareToken, cash, amm, account0)
     assert shareToken.balanceOfMarketOutcome(market.address, NO, account0) == 0
     assert shareToken.balanceOfMarketOutcome(market.address, YES, account0) == 0
 
+def test_amm_swap(contractsFixture, market, shareToken, cash, amm, account0):
+    if not contractsFixture.paraAugur:
+        return
 
+    cash.faucet(100000 * ATTO)
+    cash.approve(amm.address, 10 ** 48)
+    shareToken.setApprovalForAll(amm.address, True)
+    amm.addLiquidity(100 * ATTO)
+
+    cost = 10000 * ATTO
+    sets = cost // market.getNumTicks()
+
+    yesShares = amm.rateEnterPosition(cost, True)
+    cash.faucet(cost)
+    amm.enterPosition(cost, True, yesShares)
+
+    noSharesReceived = amm.rateSwap(1 * ATTO, True) # trade away 1 Yes share
+
+    # Spent 1 Yes share to receive fewer than 1 No share
+    assert noSharesReceived > 0
+    assert noSharesReceived < 1 * ATTO
+
+    amm.swap(1 * ATTO, True, noSharesReceived)
+
+    assert shareToken.balanceOfMarketOutcome(market.address, INVALID, account0) == sets
+    assert shareToken.balanceOfMarketOutcome(market.address, NO, account0) == noSharesReceived
+    assert shareToken.balanceOfMarketOutcome(market.address, YES, account0) == yesShares - ATTO # spent one Yes share to buy some No shares
 
 
 # TODO tests
