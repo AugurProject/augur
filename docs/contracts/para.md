@@ -20,13 +20,13 @@ title: Para
 
 
 
-<h4><a class="anchor" aria-hidden="true" id="AMMExchange.addLiquidity(uint256)"></a><code class="function-signature">addLiquidity(uint256 _setsToBuy)</code><span class="function-visibility">public</span></h4>
+<h4><a class="anchor" aria-hidden="true" id="AMMExchange.addLiquidity(uint256)"></a><code class="function-signature">addLiquidity(uint256 _setsToBuy) <span class="return-arrow">→</span> <span class="return-type">uint256</span></code><span class="function-visibility">public</span></h4>
 
 
 
 
 
-<h4><a class="anchor" aria-hidden="true" id="AMMExchange.addLiquidityThenSwap(uint256,bool,uint256)"></a><code class="function-signature">addLiquidityThenSwap(uint256 _setsToBuy, bool _swapForYes, uint256 _swapHowMuch)</code><span class="function-visibility">external</span></h4>
+<h4><a class="anchor" aria-hidden="true" id="AMMExchange.addLiquidityThenSwap(uint256,bool,uint256)"></a><code class="function-signature">addLiquidityThenSwap(uint256 _setsToBuy, bool _swapForYes, uint256 _swapHowMuch) <span class="return-arrow">→</span> <span class="return-type">uint256</span></code><span class="function-visibility">external</span></h4>
 
 
 
@@ -44,7 +44,7 @@ title: Para
 
 
 
-<h4><a class="anchor" aria-hidden="true" id="AMMExchange.removeLiquidity(uint256,uint256)"></a><code class="function-signature">removeLiquidity(uint256 _poolTokensToSell, uint256 _minSetsSold)</code><span class="function-visibility">external</span></h4>
+<h4><a class="anchor" aria-hidden="true" id="AMMExchange.removeLiquidity(uint256,uint256)"></a><code class="function-signature">removeLiquidity(uint256 _poolTokensToSell, uint256 _minSetsSold) <span class="return-arrow">→</span> <span class="return-type">uint256,uint256,uint256,uint256</span></code><span class="function-visibility">external</span></h4>
 
 
 
@@ -68,13 +68,13 @@ title: Para
 
 
 
-<h4><a class="anchor" aria-hidden="true" id="AMMExchange.exitAll(uint256)"></a><code class="function-signature">exitAll(uint256 _minCashPayout)</code><span class="function-visibility">external</span></h4>
+<h4><a class="anchor" aria-hidden="true" id="AMMExchange.exitAll(uint256)"></a><code class="function-signature">exitAll(uint256 _minCashPayout) <span class="return-arrow">→</span> <span class="return-type">uint256</span></code><span class="function-visibility">external</span></h4>
 
 
 
 
 
-<h4><a class="anchor" aria-hidden="true" id="AMMExchange.exitPosition(uint256,uint256,uint256,uint256)"></a><code class="function-signature">exitPosition(uint256 _invalidShares, uint256 _noShares, uint256 _yesShares, uint256 _minCashPayout)</code><span class="function-visibility">public</span></h4>
+<h4><a class="anchor" aria-hidden="true" id="AMMExchange.exitPosition(uint256,uint256,uint256,uint256)"></a><code class="function-signature">exitPosition(uint256 _invalidShares, uint256 _noShares, uint256 _yesShares, uint256 _minCashPayout) <span class="return-arrow">→</span> <span class="return-type">uint256</span></code><span class="function-visibility">public</span></h4>
 
 
 

@@ -38,22 +38,24 @@ contract AMMExchange is ERC20 {
     }
 
     // Adds shares to the liquidity pool by minting complete sets.
-    function addLiquidity(uint256 _setsToBuy) public {
+    function addLiquidity(uint256 _setsToBuy) public returns (uint256) {
         uint256 _lpTokensGained = rateAddLiquidity(_setsToBuy, _setsToBuy);
 
         cash.transferFrom(msg.sender, address(this), _setsToBuy.mul(numTicks));
         shareToken.publicBuyCompleteSets(augurMarket, _setsToBuy);
         _mint(msg.sender, _lpTokensGained);
+        return _lpTokensGained;
     }
 
     // Add shares to the liquidity pool by minting complete sets...
     // But then swap away some of those shares for the opposed shares.
-    function addLiquidityThenSwap(uint256 _setsToBuy, bool _swapForYes, uint256 _swapHowMuch) external {
+    function addLiquidityThenSwap(uint256 _setsToBuy, bool _swapForYes, uint256 _swapHowMuch) external returns (uint256) {
         uint256 _lpTokensGained = rateAddLiquidityThenSwap(_setsToBuy, _swapForYes, _swapHowMuch);
 
         cash.transferFrom(msg.sender, address(this), _setsToBuy.mul(numTicks));
         shareToken.publicBuyCompleteSets(augurMarket, _setsToBuy);
         _mint(msg.sender, _lpTokensGained);
+        return _lpTokensGained;
     }
 
     // returns how many LP tokens you get for providing the given number of sets
@@ -90,8 +92,9 @@ contract AMMExchange is ERC20 {
 
     // Removes shares from the liquidity pool.
     // If _minSetsSold > 0 then also sell complete sets through burning and through swapping in the pool.
-    function removeLiquidity(uint256 _poolTokensToSell, uint256 _minSetsSold) external {
-        (uint256 _invalidShare, uint256 _noShare, uint256 _yesShare, uint256 _cashShare, uint256 _setsSold) = rateRemoveLiquidity(_poolTokensToSell, _minSetsSold);
+    function removeLiquidity(uint256 _poolTokensToSell, uint256 _minSetsSold) external returns (uint256 _invalidShare, uint256 _noShare, uint256 _yesShare, uint256 _cashShare){
+        uint256 _setsSold;
+        (_invalidShare, _noShare, _yesShare, _cashShare, _setsSold) = rateRemoveLiquidity(_poolTokensToSell, _minSetsSold);
 
         require(_setsSold == 0 || _setsSold >= _minSetsSold, "AugurCP: Would not receive the minimum number of sets");
 
@@ -177,13 +180,13 @@ contract AMMExchange is ERC20 {
     }
 
     // Exits as much of the position as possible.
-	function exitAll(uint256 _minCashPayout) external {
+	function exitAll(uint256 _minCashPayout) external returns (uint256) {
 		(uint256 _userInvalid, uint256 _userNo, uint256 _userYes) = shareBalances(msg.sender);
-		exitPosition(_userInvalid, _userNo, _userYes, _minCashPayout);
+		return exitPosition(_userInvalid, _userNo, _userYes, _minCashPayout);
 	}
 
     // Sell as many of the given shares as possible, swapping yes<->no as-needed.
-    function exitPosition(uint256 _invalidShares, uint256 _noShares, uint256 _yesShares, uint256 _minCashPayout) public {
+    function exitPosition(uint256 _invalidShares, uint256 _noShares, uint256 _yesShares, uint256 _minCashPayout) public returns (uint256) {
         (uint256 _cashPayout, uint256 _invalidFromUser, int256 _noFromUser, int256 _yesFromUser) = rateExitPosition(_invalidShares, _noShares, _yesShares);
 
         require(_cashPayout >= _minCashPayout, "Proceeds were less than the required payout");
@@ -197,6 +200,7 @@ contract AMMExchange is ERC20 {
 
         shareTransfer(msg.sender, address(this), _invalidFromUser, uint256(_noFromUser), uint256(_yesFromUser));
         cash.transfer(msg.sender, _cashPayout);
+        return _cashPayout;
     }
 
     function rateExitAll() public view returns (uint256 _cashPayout, uint256 _invalidFromUser, int256 _noFromUser, int256 _yesFromUser) {
