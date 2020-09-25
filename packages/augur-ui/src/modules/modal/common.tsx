@@ -707,8 +707,8 @@ export const ActionRows = ({ rows }: ActionRowsProps) => {
             queueName={row.queueName}
             queueId={row.queueId}
             action={row.action}
-            submitTextButtton={isSports ? false : true}
-            secondaryButton={!isSports ? false : true}
+            submitTextButtton={!isSports}
+            secondaryButton={isSports}
             tiny={isSports}
             smallSpinner={isSports}
           />
