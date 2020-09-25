@@ -512,10 +512,16 @@ div.Onboarding {
   }
 
   .ModalReporting {
+    border: 0;
+    
     > main {
       > div:nth-of-type(2) {
         border: 0;
-        padding: @size-24;
+        padding: 0 @size-24 @size-16;
+      }
+
+      > div:last-of-type {
+        padding: @size-16 @size-24;
       }
     }
   }
@@ -3737,7 +3743,7 @@ div.ButtonsRow:last-of-type {
     > div:nth-of-type(3) {
       border-bottom: @size-1 solid var(--color-dark-grey);
       display: flex;
-      padding: @size-16 @size-40;
+      margin: 0 @size-24;
 
       > button {
         margin-left: @size-38;
