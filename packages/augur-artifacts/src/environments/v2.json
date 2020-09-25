@@ -3,6 +3,7 @@
   "logLevel": 0,
   "uploadBlockNumber": 21151770,
   "ethereum": {
+    "network": "kovan",
     "http": "https://kovan.infura.io/v3/595111ad66e2410784d484708624f7b1",
     "rpcRetryCount": 5,
     "rpcRetryInterval": 0,

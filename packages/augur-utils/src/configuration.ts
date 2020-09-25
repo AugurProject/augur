@@ -49,6 +49,7 @@ export interface SDKConfiguration {
   averageBlocktime?: number,
   logLevel?: LoggerLevels, // In the JSON configs an integer will need to be used.
   ethereum?: {
+    network?: string,
     http?: string,
     ws?: string,
     rpcRetryCount: number,
@@ -245,6 +246,7 @@ export const DEFAULT_SDK_CONFIGURATION: SDKConfiguration = {
   logLevel: LoggerLevels.warn,
   averageBlocktime: 2000,
   ethereum: {
+    network: "private",
     http: 'http://localhost:8545',
     ws: 'ws://localhost:8546',
     rpcRetryCount: 5,

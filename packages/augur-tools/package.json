@@ -27,6 +27,7 @@
     "deploy": "ts-node ./src/flash/cli deploy",
     "deploy:merge": "scripts/deploy-merge-addresses.py",
     "flash": "ts-node ./src/flash/cli",
+    "flash-built": "node ./build/flash/cli.js",
     "blockstream-console": "ts-node ./src/blockstream-console.ts",
     "run:gsn": "oz-gsn run-relayer",
     "prepare": "tsc -b"
