@@ -198,6 +198,8 @@ export const SecondaryButton = ({
   text,
   icon,
   lightBorder,
+  tiny,
+  processing
 }: DefaultButtonProps) => (
   <button
     onClick={e => action(e)}
@@ -205,7 +207,9 @@ export const SecondaryButton = ({
       [Styles.Small]: small,
       [Styles.Confirmed]: confirmed,
       [Styles.Failed]: failed,
-      [Styles.LightBorder]: lightBorder
+      [Styles.LightBorder]: lightBorder,
+      [Styles.Tiny]: tiny,
+      [Styles.Processing]: processing
     })}
     disabled={disabled}
     title={title || text}
@@ -264,16 +268,23 @@ export const ProcessingButton = ({
   let icon = props.icon;
   let buttonText = props.text;
   let buttonAction = props.action;
+  let processing = false;
   if (
     status === TXEventName.Pending ||
     status === TXEventName.AwaitingSigning
   ) {
     buttonText = props.spinner ? <Spinner /> : 'Processing...';
+    if (props.smallSpinner) {
+      buttonText = <span className={Styles.LoadingEllipse}>{LoadingEllipse}</span>;
+    }
     isDisabled = true;
+    processing = true;
   }
   const failed = status === TXEventName.Failure;
   const confirmed = status === TXEventName.Success;
-  if (failed) buttonText = 'Failed';
+  if (failed) {
+    buttonText = props.smallSpinner ? (<span>Error Message.<b>Retry</b></span>) : 'Failed';
+  }
   if (confirmed) {
     buttonText = 'Confirmed';
 
@@ -283,7 +294,7 @@ export const ProcessingButton = ({
   }
   const cancel = () => removePendingData(queueId, queueName);
   if (failed || confirmed) {
-    buttonAction = e => cancel(e);
+    buttonAction = props.smallSpinner ? e => props.action(e) : e => cancel(e);
     icon = XIcon;
     isDisabled = false;
   }
@@ -306,6 +317,7 @@ export const ProcessingButton = ({
           text={buttonText}
           action={buttonAction}
           disabled={isDisabled}
+          processing={processing}
         />
       )}
       {!props.secondaryButton &&
