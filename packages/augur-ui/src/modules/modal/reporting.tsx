@@ -436,7 +436,7 @@ const ModalReporting = ({
               <MarkdownRenderer text={details} hideLabel />
             </div>
           )}
-          <CoreProperties market={market} reportingBarShowing={false} />
+          <CoreProperties market={market} onlyShowDates reportingBarShowing={false} />
         </div>
         {isDisputing && (
           <div>

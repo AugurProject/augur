@@ -17,7 +17,7 @@
       margin: @size-12;
       flex: 1;
 
-      > div[class*="PropertyLabel"] > {
+      > div[class*='PropertyLabel'] > {
         span:first-of-type {
           .mono-10-bold;
 
@@ -65,7 +65,7 @@
         grid-gap: @size-12 @size-20;
         margin: 0;
 
-        > div[class*="TimeLabel"] {
+        > div[class*='TimeLabel'] {
           align-items: flex-end;
 
           > span:first-of-type {
@@ -77,7 +77,7 @@
 
           span:nth-of-type(2) {
             .mono-12-medium;
-      
+
             color: var(--color-primary-text);
           }
 
@@ -91,11 +91,38 @@
     }
   }
 
+  &.OnlyShowDates {
+    border: 0;
+
+    > div:first-of-type {
+      > div:first-of-type {
+        display: none;
+      }
+      > div:last-of-type {
+        border: 0;
+        padding: 0;
+        margin: 0;
+        margin-top: @size-16;
+        min-width: 100%;
+        display: flex;
+        
+        > div {
+          flex-direction: column;
+
+          &:first-of-type {
+            margin-bottom: 0;
+            margin-right: @size-40
+          }
+        }
+      }
+    }
+  }
+
   @media @breakpoint-mobile {
     > div:first-of-type {
       flex-flow: column nowrap;
       border-top: 1px solid var(--color-dark-grey);
-      
+
       > div:first-of-type {
         grid-template-rows: auto auto;
         margin: @size-12;
@@ -162,7 +189,7 @@
     margin-bottom: @size-8;
   }
 
-  > div[class*="TimeLabel"] {
+  > div[class*='TimeLabel'] {
     span:first-of-type {
       .mono-10-bold;
 
