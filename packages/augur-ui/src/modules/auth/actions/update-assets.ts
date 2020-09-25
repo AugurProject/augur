@@ -4,12 +4,14 @@ import {
   getDaiBalance,
   getRepBalance,
   getLegacyRepBalance,
+  loadAccountData_exchangeRates,
 } from 'modules/contracts/actions/contractCalls';
 import { createBigNumber } from 'utils/create-big-number';
-import { WALLET_STATUS_VALUES, FIVE, ETHER } from 'modules/common/constants';
+import { FIVE, ETHER } from 'modules/common/constants';
 import { AppStatus } from 'modules/app/store/app-status';
 import { addedDaiEvent } from 'services/analytics/helpers';
 import { addEthIncreaseAlert } from 'modules/alerts/actions/alerts';
+import { formatAttoDai } from 'utils/format-number';
 
 export const updateAssets = async (initialLogin: boolean = false,) => {
   const {
@@ -22,91 +24,76 @@ export const updateAssets = async (initialLogin: boolean = false,) => {
     },
   } = AppStatus.get();
   const nonSafeWallet = await meta.signer.getAddress();
+  const values = await loadAccountData_exchangeRates(nonSafeWallet);
 
-  updateBalances(address, nonSafeWallet, String(eth), initialLogin, (err, balances) => {
-    const { walletStatus } = AppStatus.get();
-    // TODO: set min amount of DAI, for testing need a real values
-    if (
-      createBigNumber(balances.dai).gt(FIVE) &&
-      walletStatus !== WALLET_STATUS_VALUES.CREATED
-    ) {
-      AppStatus.actions.setWalletStatus(
-        WALLET_STATUS_VALUES.FUNDED_NEED_CREATE
-      );
-    }
-  });
+  updateBalances(address, nonSafeWallet, values, initialLogin);
 };
 
 function updateBalances(
   address: string,
   nonSafeWallet: string,
-  ethNonSafeBalance: string,
+  values: any,
   initialLogin: boolean,
-  callback: NodeStyleCallback
 ) {
   const {
     loginAccount: { balances },
     universe: { id: universe },
   } = AppStatus.get();
-  let allPromises = initialLogin
-  ? Promise.all([
-      getRepBalance(universe, address),
-      getDaiBalance(address),
-      getEthBalance(address),
-      getLegacyRepBalance(address),
-      getLegacyRepBalance(nonSafeWallet),
-      getEthBalance(nonSafeWallet),
-      getDaiBalance(nonSafeWallet),
-      getRepBalance(universe, nonSafeWallet),
-    ])
-  : Promise.all([
-      getRepBalance(universe, address),
-      getDaiBalance(address),
-      getEthBalance(address),
-      null,
-      null,
-      getEthBalance(nonSafeWallet),
-      null,
-      null,
-    ]);
 
+  const {
+    attoDAIperREP,
+    attoDAIperETH,
+    attoDAIperUSDT,
+    attoDAIperUSDC,
+    signerETH,
+    signerDAI,
+    signerREP,
+    signerUSDT,
+    signerUSDC,
+    signerLegacyREP,
+    walletETH,
+    walletDAI,
+    walletREP,
+    walletLegacyREP,
+  } = values;
+  const dai2Eth = formatAttoDai(attoDAIperETH);
+  AppStatus.actions.setEthToDaiRate(dai2Eth);
+  AppStatus.actions.setRepToDaiRate(formatAttoDai(attoDAIperREP));
+  AppStatus.actions.setUsdcToDaiRate(formatAttoDai(attoDAIperUSDT));
+  AppStatus.actions.setUsdtToDaiRate(formatAttoDai(attoDAIperUSDC));
 
-  allPromises.then(async (amounts) => {
-    const attoRep = String(amounts[0]);
-    const dai = String(amounts[1]);
-    const eth = amounts[2];
-    const legacyAttoRep = initialLogin ? String(amounts[3]) : balances.legacyAttoRep;
-    const legacyAttoRepNonSafe = initialLogin && String(amounts[4]);
-    const rep = String(createBigNumber(attoRep).dividedBy(ETHER));
-    const ethNonSafe = amounts[5];
-    const daiNonSafe = initialLogin ? String(amounts[6]) : balances.signerBalances.dai;
-    const repNonSafe = initialLogin
-      ? String(createBigNumber(String(amounts[7])).dividedBy(ETHER))
-      : balances.signerBalances.rep;
-    const legacyRep = String(createBigNumber(String(legacyAttoRep)).dividedBy(ETHER));
-    const legacyRepNonSafe = initialLogin
-      ? String(createBigNumber(String(legacyAttoRepNonSafe)).dividedBy(ETHER))
-      : balances.signerBalances.legacyRep;
-
-    const updatedBalances = {
-      attoRep,
-      rep,
-      dai,
-      eth,
-      legacyAttoRep,
-      legacyRep,
+  const daiBalance = String(createBigNumber(String(signerDAI)).dividedBy(ETHER));
+  const signerEthBalance = String(
+    createBigNumber(String(signerETH)).dividedBy(ETHER)
+  );
+  addedDaiEvent(daiBalance);
+  AppStatus.actions.updateLoginAccount({
+    balances: {
+      attoRep: String(signerREP),
+      rep: String(createBigNumber(signerREP).dividedBy(ETHER)),
+      dai: daiBalance,
+      eth: String(createBigNumber(String(signerETH)).dividedBy(ETHER)),
+      legacyAttoRep: String(signerLegacyREP),
+      legacyRep: String(
+        createBigNumber(String(signerLegacyREP)).dividedBy(ETHER)
+      ),
       signerBalances: {
-        eth: ethNonSafe,
-        dai: daiNonSafe,
-        rep: repNonSafe,
-        legacyRep: legacyRepNonSafe,
+        eth: signerEthBalance,
+        usdt: String(createBigNumber(String(signerUSDT)).dividedBy(10**6)),
+        usdc: String(createBigNumber(String(signerUSDC)).dividedBy(10**6)),
+        dai: String(createBigNumber(String(signerDAI)).dividedBy(ETHER)),
+        rep: String(createBigNumber(String(signerREP)).dividedBy(ETHER)),
+        legacyRep: String(
+          createBigNumber(String(signerLegacyREP)).dividedBy(ETHER)
+        ),
       },
-    };
-    addedDaiEvent(dai);
-    addEthIncreaseAlert(dai, ethNonSafeBalance, ethNonSafe);
-    AppStatus.actions.updateLoginAccount({
-      balances: updatedBalances,
-    });
-    return callback(null, { rep, dai, eth });
+    },
   });
+
+  addedDaiEvent(daiBalance);
+  return {
+    rep: String(createBigNumber(signerREP).dividedBy(ETHER)),
+    dai: daiBalance,
+    eth: String(createBigNumber(String(signerETH)).dividedBy(ETHER))
+  };
 }

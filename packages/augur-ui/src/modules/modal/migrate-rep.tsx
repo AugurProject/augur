@@ -28,7 +28,8 @@ import Styles from 'modules/modal/modal.styles.less';
 import { createBigNumber } from 'utils/create-big-number';
 import { useAppStatusStore } from 'modules/app/store/app-status';
 import { DISMISSABLE_NOTICE_BUTTON_TYPES, DismissableNotice } from 'modules/reporting/common';
-import { getGasCost } from './gas';
+import { getGasCost } from 'modules/modal/gas';
+
 
 export const MigrateRep = () => {
   const {

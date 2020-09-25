@@ -28,7 +28,7 @@ import {
   ProcessingButton,
 } from 'modules/common/buttons';
 import getPrecision from 'utils/get-number-precision';
-import { getGasCost } from './gas';
+import { getGasCost } from 'modules/modal/gas';
 import { useAppStatusStore } from 'modules/app/store/app-status';
 import { transferFunds, TRANSFER_DAI_GAS_COST, TRANSFER_ETH_GAS_COST, TRANSFER_REP_GAS_COST } from 'modules/auth/actions/transfer-funds';
 import { getTransactionLabel } from 'modules/auth/helpers/get-gas-price';
