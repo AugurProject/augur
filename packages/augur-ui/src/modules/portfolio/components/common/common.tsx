@@ -46,7 +46,7 @@ export const ClaimWinnings = ({onlyCheckMarketId}) => {
   let totalProceeds = ZERO;
   let claimableMarkets = [];
 
-  Object.keys(matched.items).filter(marketId => onlyCheckMarketId && marketId === onlyCheckMarketId).map(marketId => {
+  Object.keys(matched.items).filter(marketId => onlyCheckMarketId ? marketId === onlyCheckMarketId : true).map(marketId => {
     let marketIsClaimable = false;
     const market = matched.items[marketId];
     if (positions[marketId]) {
