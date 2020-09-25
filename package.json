@@ -86,7 +86,8 @@
     ],
     "nohoist": [
       "@augurproject/ui/react-dates",
-      "@augurproject/ui/normalize.css"
+      "@augurproject/ui/normalize.css",
+      "@augurproject/subgraph/@graphprotocol/**"
     ]
   },
   "resolutions": {

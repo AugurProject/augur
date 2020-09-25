@@ -1,6 +1,7 @@
 {
   "networkId": "1",
   "ethereum": {
+    "network": "mainnet",
     "http": "https://eth-mainnet.alchemyapi.io/v2/Kd37_uEmJGwU6pYq6jrXaJXXi8u9IoOM",
     "rpcRetryCount": 5,
     "rpcRetryInterval": 0,

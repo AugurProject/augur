@@ -1,4 +1,4 @@
-import { abiV1, buildConfig, refreshSDKConfig } from '@augurproject/artifacts';
+import { abi, abiV1, buildConfig, refreshSDKConfig } from '@augurproject/artifacts';
 import { ContractInterfaces } from '@augurproject/core';
 import {
   ContractEvents,
@@ -96,6 +96,26 @@ export function addScripts(flash: FlashSession) {
     name: 'show-config',
     async call(this: FlashSession) {
       printConfig(this.config);
+    }
+  });
+
+  flash.addScript({
+    name: 'abi',
+    description: 'Print out the augur ABI',
+    options: [
+      {
+        name: 'contract',
+        abbr: 'c',
+        description: 'The contract which ABI you would like to print, default: all',
+      }
+    ],
+    async call(this: FlashSession, args: FlashArguments) {
+      let output = abi;
+      if (args.contract) {
+        output = abi[String(args.contract)] || [];
+      }
+
+      console.log(JSON.stringify(output, null, 2));
     }
   });
 
