@@ -39,3 +39,7 @@ export {
   handleTimestampSet,
   handleRegisterContract
 } from "./mappings/augur";
+
+export {
+  handleCashTransfer
+} from "./mappings/cash";
