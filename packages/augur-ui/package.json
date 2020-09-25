@@ -1,6 +1,6 @@
 {
   "name": "@augurproject/ui",
-  "version": "2.0.0-alpha.2",
+  "version": "2.1.10",
   "description": "Augur UI",
   "author": "The Augur Developers <team@augur.net>",
   "license": "AAL",
@@ -8,6 +8,7 @@
     "node": ">= 8"
   },
   "main": "src/index.js",
+  "private": true,
   "repository": {
     "type": "git",
     "url": "https://github.com/AugurProject/augur-ui"
@@ -41,7 +42,8 @@
     "docker:spin-up": "npm run docker:pull && npm run docker:start",
     "git:push:protected": "PUSH_PROTECTED_BRANCHES=true git push",
     "prepush": "yarn test && node scripts/pre-push.js",
-    "sitemap": "node src/modules/sitemap/react-sitemap.js"
+    "sitemap": "node src/modules/sitemap/react-sitemap.js",
+    "prepare": "tsc -b"
   },
   "dependencies": {
     "3box": "1.20.3",
@@ -50,10 +52,11 @@
     "3id-blockchain-utils": "0.3.3",
     "@0x/order-utils": "10.2.4",
     "@analytics/segment": "0.4.0",
-    "@augurproject/sdk": "2.0.0-alpha.2",
-    "@augurproject/sdk-lite": "2.0.0-alpha.2",
-    "@augurproject/utils": "2.0.0-alpha.2",
+    "@augurproject/sdk": "^2.1.10",
+    "@augurproject/sdk-lite": "^2.1.10",
+    "@augurproject/utils": "^2.1.10",
     "@metamask/detect-provider": "1.1.0",
+    "@portis/web3": "2.0.0-beta.57",
     "@toruslabs/torus-embed": "1.7.1",
     "analytics": "0.3.0",
     "bignumber.js": "9.0.0",
@@ -101,7 +104,7 @@
     "web3": "1.2.1"
   },
   "devDependencies": {
-    "@augurproject/tools": "2.0.0-alpha.2",
+    "@augurproject/tools": "^2.1.10",
     "@babel/core": "7.9.0",
     "@babel/preset-env": "7.9.5",
     "@babel/preset-react": "7.9.4",
