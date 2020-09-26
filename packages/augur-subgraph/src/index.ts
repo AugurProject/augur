@@ -12,7 +12,6 @@ export {
   handleUniverseCreated,
   handleNoShowBondChanged,
   handleReportingFeeChanged,
-  handleReportingFeeChanged,
   handleValidityBondChanged,
   handleWarpSyncDataUpdated,
   handleDesignatedReportStakeChanged
@@ -39,6 +38,10 @@ export {
   handleTimestampSet,
   handleRegisterContract
 } from "./mappings/augur";
+
+export {
+  handleAddAMMExchange
+} from "./mappings/ammFactory"
 
 export {
   handleCashTransfer
