@@ -1,11 +1,11 @@
-import { AddAMMCall } from "../generated/Augur/Augur";
+import { AddAMMCall } from "../../generated/AMMFactory/AMMFactory";
 import {
   getOrCreateMarket,
   createAndSaveAMMExchange
 } from "../utils/helpers";
 import { AMMExchange } from "../generated/schema";
 
-export function handleAddAMM(call: AddAMMCall) {
+export function handleAddAMMExchange(call: AddAMMCall) {
   const id = call.outputs.value0.toHexString();
   const marketId = call.inputs._market.toHexString();
   const shareTokenId = call.inputs._para.toHexString();

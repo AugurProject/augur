@@ -140,7 +140,7 @@ dataSources:
           file: ./abis/AMMFactory.json
       callHandlers:
         - function: addAMM(address,address)
-          handler: handleAddAMM
+          handler: handleAddAMMExchange
 templates:
   - kind: ethereum/contract
     name: AMMExchange
