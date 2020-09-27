@@ -4,16 +4,13 @@ import Clipboard from 'clipboard';
 import classNames from 'classnames';
 import {
   ACCOUNT_TYPES,
-  NEW_ORDER_GAS_ESTIMATE,
-  ETH,
-  DAI,
-  REP,
   NULL_ADDRESS,
   MODAL_ADD_FUNDS,
   MODAL_GAS_PRICE,
   MODAL_UNIVERSE_SELECTOR,
   GAS_SPEED_LABELS,
   GAS_TIME_LEFT_LABELS,
+  TRADE_ORDER_GAS_MODAL_ESTIMATE
 } from 'modules/common/constants';
 import {
   DaiLogoIcon,
@@ -30,15 +27,13 @@ import {
 import { PrimaryButton, SecondaryButton } from 'modules/common/buttons';
 import { formatDai, formatEther, formatRep } from 'utils/format-number';
 import { AFFILIATE_NAME } from 'modules/routes/constants/param-names';
-import {
-  displayGasInDai,
-  ethToDai,
-} from 'modules/app/actions/get-ethToDai-rate';
 import { logout } from 'modules/auth/actions/logout';
+import { useAppStatusStore } from 'modules/app/store/app-status';
+import { getGasCost } from 'modules/modal/gas';
+
 import TooltipStyles from 'modules/common/tooltip.styles.less';
 import CommonModalStyles from 'modules/modal/common.styles.less';
 import Styles from 'modules/auth/connect-dropdown.styles.less';
-import { useAppStatusStore } from 'modules/app/store/app-status';
 
 const useGasInfo = () => {
   const {
@@ -71,6 +66,7 @@ const useGasInfo = () => {
 const ConnectDropdown = () => {
   const [showMetaMaskHelper, setShowMetaMaskHelper] = useState(false);
   const [isCopied, setIsCopied] = useState(false);
+
   const {
     loginAccount: { address, meta, balances },
     universe: {
@@ -80,19 +76,15 @@ const ConnectDropdown = () => {
     },
     isLogged,
     restoredAccount,
-    gsnEnabled,
+    gasPriceInfo,
     ethToDaiRate,
     actions: { setModal },
   } = useAppStatusStore();
   const { gasPriceTime, gasPriceSpeed, userDefinedGasPrice } = useGasInfo();
+  const gasPrice = gasPriceInfo.userDefinedGasPrice || gasPriceInfo.average;
+  const gasCostDai = getGasCost(TRADE_ORDER_GAS_MODAL_ESTIMATE, gasPrice, ethToDaiRate);
+
   const parentUniverseId = parentUniId !== NULL_ADDRESS ? parentUniId : null;
-  let gasCostTrade;
-  if (gsnEnabled && ethToDaiRate) {
-    gasCostTrade = displayGasInDai(
-      NEW_ORDER_GAS_ESTIMATE,
-      userDefinedGasPrice * 10 ** 9
-    );
-  }
 
   let timeoutId = null;
   const referralLink = `${window.location.origin}?${AFFILIATE_NAME}=${address}`;
@@ -153,7 +145,7 @@ const ConnectDropdown = () => {
       }).formatted,
       name: 'ETH',
       logo: EthIcon,
-      disabled: gsnEnabled ? balances.eth === '0' : false,
+      disabled: balances.eth === "0",
     },
     {
       name: 'REP',
@@ -162,7 +154,7 @@ const ConnectDropdown = () => {
         zeroStyled: false,
         decimalsRounded: 4,
       }).formatted,
-      disabled: gsnEnabled ? balances.rep === '0' : false,
+      disabled: balances.rep === "0",
     },
   ];
 
@@ -262,8 +254,8 @@ const ConnectDropdown = () => {
             );
           })}
 
-        {gasCostTrade && (
-          <div className={Styles.GasEdit}>
+        {gasCostDai.value && <div className={Styles.GasEdit}>
+          <div>
             <div>
               <div>
                 Transaction fee
@@ -273,20 +265,17 @@ const ConnectDropdown = () => {
                 )}
               </div>
               <div>
-                {gasCostTrade} / Trade ({gasPriceSpeed} {gasPriceTime})
+                ${gasCostDai.formattedValue} / Trade ({gasPriceSpeed} {gasPriceTime})
               </div>
             </div>
-            <SecondaryButton
-              action={() => setModal({ type: MODAL_GAS_PRICE })}
-              text="Edit"
-              title="Edit"
-              icon={Pencil}
-              small
-            />
           </div>
-        )}
-
-        <div className={Styles.referral}>
+          <SecondaryButton
+            action={() => setModal({ type: MODAL_GAS_PRICE })}
+            text='Edit'
+            icon={Pencil}
+          />
+        </div>}
+        <div className={Styles.GasEdit}>
           <div>
             <div>
               Refer a friend

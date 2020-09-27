@@ -3,7 +3,6 @@ import React, { useEffect, useState } from 'react';
 import classNames from 'classnames';
 import ModalReporting from 'modules/modal/reporting';
 import { TransferForm as ModalWithdraw } from 'modules/modal/transfer-form';
-import { ModalCashOut } from 'modules/modal/cash-out-form';
 import { MigrateRep as ModalMigrateRep } from 'modules/modal/migrate-rep';
 import { Transactions as ModalTransactions } from 'modules/modal/transactions';
 import ModalNetworkDisconnected from 'modules/modal/components/modal-network-disconnected';
@@ -23,7 +22,6 @@ import { SignIn as ModalSignin } from 'modules/modal/signin';
 import { Loading as ModalLoading } from 'modules/modal/loading';
 import { ModalUniverseSelector } from 'modules/modal/components/modal-universe-selector';
 import { ModalTestBet } from 'modules/modal/onboarding-modals';
-import { ModalAugurP2P } from 'modules/modal/onboarding-modals';
 import { ModalAugurUsesDai } from 'modules/modal/onboarding-modals';
 import { ModalTutorialOutro } from 'modules/modal/onboarding-modals';
 import { ModalTutorialIntro } from 'modules/modal/onboarding-modals';
@@ -54,7 +52,6 @@ import {
   ModalNetworkDisabled,
   ModalMigrateMarket,
   ModalWalletError,
-  ModalInitializeAccounts,
   ReportingOnly,
   ModalCashoutBet,
   ModalCancelAllBets,
@@ -66,7 +63,7 @@ const ESCAPE_KEYCODE = 27;
 
 function selectModal(type, props, closeModal, modal) {
   switch (type) {
-    case TYPES.MODAL_ADD_LIQUIDITY: 
+    case TYPES.MODAL_ADD_LIQUIDITY:
       return <ModalAddLiquidity />;
     case TYPES.MODAL_CLAIM_MARKETS_PROCEEDS:
       return <ModalClaimMarketsProceeds {...props} />;
@@ -152,7 +149,7 @@ function selectModal(type, props, closeModal, modal) {
     case TYPES.MODAL_TEST_BET:
       return <ModalTestBet />;
     case TYPES.MODAL_AUGUR_P2P:
-      return <ModalAugurP2P />;
+      return <ModalTestBet />; // TODO fix onboarding
     case TYPES.MODAL_TUTORIAL_OUTRO:
       return <ModalTutorialOutro {...modal} />;
     case TYPES.MODAL_TUTORIAL_INTRO:
@@ -167,10 +164,6 @@ function selectModal(type, props, closeModal, modal) {
       return <ModalScalar {...modal} />;
     case TYPES.MODAL_INVALID_MARKET_RULES:
       return <ModalInvalidMarketRules />;
-    case TYPES.MODAL_CASHOUT:
-      return <ModalCashOut />;
-    case TYPES.MODAL_INITIALIZE_ACCOUNT:
-      return <ModalInitializeAccounts />;
     case TYPES.MODAL_FROZEN_FUNDS:
       return <ModalFrozenFunds />;
     case TYPES.MODAL_REPORTING_ONLY:

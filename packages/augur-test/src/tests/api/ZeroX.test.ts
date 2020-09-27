@@ -171,8 +171,8 @@ describe('Augur API :: ZeroX :: ', () => {
         new BigNumber(0)
       );
 
-      await expect(johnShares.toNumber()).toEqual(10 ** 17);
-      await expect(maryShares.toNumber()).toEqual(10 ** 17);
+      await expect(johnShares.toNumber()).toEqual(10 ** 16);
+      await expect(maryShares.toNumber()).toEqual(10 ** 16);
     });
 
     test('Trade :: simulateTrade', async () => {

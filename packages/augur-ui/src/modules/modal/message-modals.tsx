@@ -15,7 +15,6 @@ import {
   MODAL_TREZOR,
   MODAL_ADD_FUNDS,
   MIGRATE_MARKET_GAS_ESTIMATE,
-  GSN_WALLET_SEEN,
   REPORTING_ONLY_DESC,
 } from 'modules/common/constants';
 import { selectMarket } from 'modules/markets/selectors/market';
@@ -24,7 +23,7 @@ import isMetaMask from 'modules/auth/helpers/is-meta-mask';
 import { Message } from './message';
 import { formatGasCostToEther, formatDai } from 'utils/format-number';
 import { DISMISSABLE_NOTICE_BUTTON_TYPES } from 'modules/reporting/common';
-import { createFundedGsnWallet } from 'modules/auth/actions/update-sdk';
+import { FormattedNumber } from 'modules/types';
 
 export const ModalCreateMarket = () => {
   const {
@@ -540,68 +539,19 @@ export const ModalMigrateMarket = () => {
   );
 };
 
-export const ModalInitializeAccounts = () => {
-  const {
-    modal,
-    actions: { closeModal },
-  } = useAppStatusStore();
-
-  const closeAction = () => {
-    closeModal();
-
-    const localStorageRef =
-      typeof window !== 'undefined' && window.localStorage;
-    if (localStorageRef && localStorageRef.setItem) {
-      localStorageRef.setItem(GSN_WALLET_SEEN, 'true');
-    }
-  };
-
-  return (
-    <Message
-      title="Activate Account"
-      description={[
-        `Augur is a peer-to-peer system, and certain actions require paying a small fee to other users of the system. The cost of these fees will be included in the total fees displayed when taking that action. Trades, Creating Markets, and Reporting on the market outcome are examples of such actions.\n Until the account is activated you will be unable to place an order.`,
-      ]}
-      buttons={
-        modal.customAction
-          ? [
-              {
-                text: 'OK',
-                action: () => {
-                  if (modal.customAction) {
-                    modal.customAction();
-                  }
-                  closeAction();
-                },
-              },
-            ]
-          : [
-              {
-                text: 'Activate Account',
-                action: () => {
-                  closeAction();
-                  createFundedGsnWallet();
-                },
-              },
-              {
-                text: 'Do it later',
-                action: () => {
-                  closeAction();
-                },
-              },
-            ]
-      }
-    />
-  );
-};
-
 export const ModalCashoutBet = () => {
   const {
     modal,
     actions: { closeModal },
   } = useAppStatusStore();
 
-  const { wager, cashOut, odds, positive, cb } = modal;
+  const {
+    wager,
+    cashOut,
+    odds,
+    positive,
+    cb
+  } = modal;
 
   return (
     <Message

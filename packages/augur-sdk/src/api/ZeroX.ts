@@ -15,8 +15,8 @@ import {
   OrderEventUint256Value,
   OrderType,
   SubscriptionEventName,
-  TRADE_GAS_BUFFER,
   WORST_CASE_FILL,
+  NORMAL_FILL
 } from '@augurproject/sdk-lite';
 import { BigNumber } from 'bignumber.js';
 import { ethers } from 'ethers';
@@ -37,7 +37,7 @@ import {
   TradeTransactionLimits,
 } from './OnChainTrade';
 
-export const MAX_PROTOCOL_FEE_MULTIPLIER = 1.1;
+export const MAX_PROTOCOL_FEE_MULTIPLIER = 2;
 export enum Verbosity {
   Panic = 0,
   Fatal = 1,
@@ -325,22 +325,22 @@ export class ZeroX {
         // We send this just to remove the pending order display
         this.client.events.emit(SubscriptionEventName.BulkOrderEvent, {
           logs: [{
-              eventType: OrderEventType.Fill,
-              orderCreator: account,
-              ...params
-            }]
-          });
+            eventType: OrderEventType.Fill,
+            orderCreator: account,
+            ...params
+          }]
+        });
       }
       return false;
     }
 
     const gasPrice = await this.client.getGasPrice();
     const exchangeFeeMultiplier = await this.client.contracts.zeroXExchange.protocolFeeMultiplier_();
-    const protocolFee = gasPrice.multipliedBy(exchangeFeeMultiplier).multipliedBy(new BigNumber(loopLimit));
+    const protocolFee = gasPrice.multipliedBy(exchangeFeeMultiplier).multipliedBy(new BigNumber(loopLimit)).multipliedBy(MAX_PROTOCOL_FEE_MULTIPLIER);
     const walletEthBalance = await this.client.getEthBalance(account);
     const remainingToPay = protocolFee.gt(walletEthBalance) ? protocolFee.minus(walletEthBalance) : new BigNumber(0);
-    let maxProtocolFeeInDai = remainingToPay.multipliedBy(this.client.dependencies.maxExchangeRate).div(QUINTILLION);
-    maxProtocolFeeInDai = maxProtocolFeeInDai.multipliedBy(MAX_PROTOCOL_FEE_MULTIPLIER).decimalPlaces(0);
+    let maxProtocolFeeInDai = remainingToPay.multipliedBy(await this.client.getExchangeRate(true)).div(QUINTILLION);
+    maxProtocolFeeInDai = maxProtocolFeeInDai.decimalPlaces(0);
 
     const result: Event[] = await this.client.contracts.ZeroXTrade.trade(
       params.amount,
@@ -466,7 +466,7 @@ export class ZeroX {
     const signature = await this.signOrder(
       order,
       hash,
-      this.client.getUseWallet()
+      false
     );
 
     return {
@@ -573,11 +573,9 @@ export class ZeroX {
 
     const gasPrice = await this.client.getGasPrice();
     const exchangeFeeMultiplier = await this.client.contracts.zeroXExchange.protocolFeeMultiplier_();
-    const protocolFee = gasPrice.multipliedBy(exchangeFeeMultiplier).multipliedBy(orders.length);
-    const walletEthBalance = await this.client.getEthBalance(await this.client.getAccount());
-    const remainingToPay = protocolFee.gt(walletEthBalance) ? protocolFee.minus(walletEthBalance) : new BigNumber(0);
-    let maxProtocolFeeInDai = remainingToPay.multipliedBy(this.client.dependencies.maxExchangeRate).div(QUINTILLION);
-    maxProtocolFeeInDai = maxProtocolFeeInDai.multipliedBy(MAX_PROTOCOL_FEE_MULTIPLIER).decimalPlaces(0);
+    const protocolFee = gasPrice.multipliedBy(exchangeFeeMultiplier).multipliedBy(orders.length).multipliedBy(MAX_PROTOCOL_FEE_MULTIPLIER);
+    let maxProtocolFeeInDai = protocolFee.multipliedBy(await this.client.getExchangeRate(true)).div(QUINTILLION);
+    maxProtocolFeeInDai = maxProtocolFeeInDai.decimalPlaces(0);
 
     return this.client.contracts.ZeroXTrade.cancelOrders(orders, signatures, maxProtocolFeeInDai);
   }
@@ -602,7 +600,7 @@ export class ZeroX {
         : false;
     if (orders.length < 1 && !params.doNotCreateOrders) {
       simulationData = await this.simulateMakeOrder(onChainTradeParams);
-    } else if (orders.length < 1) {
+    } else if (orders.length < 1 || !params.takerAddress) {
       return {
         sharesFilled: new BigNumber(0),
         tokensDepleted: new BigNumber(0),
@@ -673,13 +671,15 @@ export class ZeroX {
     const outcome = params.outcome.toString();
     const price = new BN(params.price.toString()).toHexString().substr(2);
 
-    const zeroXOrders = await this.client.getZeroXOrders({
-      marketId: params.market,
-      outcome: params.outcome,
-      orderType,
-      matchPrice: `0x${price.padStart(20, '0')}`,
-      ignoreOrders,
-    });
+    let zeroXOrders = params.postOnly
+      ? []
+      : await this.client.getZeroXOrders({
+          marketId: params.market,
+          outcome: params.outcome,
+          orderType,
+          matchPrice: `0x${price.padStart(20, '0')}`,
+          ignoreOrders,
+        });
 
     if (_.size(zeroXOrders) < 1) {
       return { orders: [], signatures: [], orderIds: [], loopLimit: new BigNumber(0), gasLimit: new BigNumber(0)};
@@ -818,16 +818,15 @@ export class ZeroX {
     numOrders--;
     while (
       gasLimit
-        .plus(WORST_CASE_FILL[params.numOutcomes])
+        .plus(NORMAL_FILL[params.numOutcomes])
         .lt(MAX_GAS_LIMIT_FOR_TRADE) &&
       loopLimit.lt(MAX_FILLS_PER_TX) &&
       numOrders > 0
     ) {
       loopLimit = loopLimit.plus(1);
-      gasLimit = gasLimit.plus(WORST_CASE_FILL[params.numOutcomes]);
+      gasLimit = gasLimit.plus(NORMAL_FILL[params.numOutcomes]);
       numOrders--;
     }
-    gasLimit = gasLimit.plus(TRADE_GAS_BUFFER);
     return {
       loopLimit,
       gasLimit,

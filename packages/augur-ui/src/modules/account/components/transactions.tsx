@@ -3,7 +3,6 @@ import React from 'react';
 import {
   DepositButton,
   TransferButton,
-  WithdrawButton,
   ViewTransactionsButton,
   REPFaucetButton,
   DAIFaucetButton,
@@ -70,7 +69,6 @@ export const Transactions = () => {
             <h4>Your funds</h4>
             <DepositButton action={() => setModal({ type: MODAL_ADD_FUNDS })} />
             <TransferButton action={() => setModal({ type: MODAL_TRANSFER })} />
-            <WithdrawButton action={() => setModal({ type: MODAL_CASHOUT })} />
           </div>
           {showFaucets && (
             <>

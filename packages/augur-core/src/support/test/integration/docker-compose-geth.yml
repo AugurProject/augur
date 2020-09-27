@@ -1,7 +1,7 @@
 version: "3.2"
 services:
   geth-dev-node:
-    image: augurproject/dev-node-geth:v1.9.19
+    image: augurproject/dev-node-geth:v1.9.9
     ports:
       - "47624:8545"
       - "47625:8546"

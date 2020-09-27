@@ -40,7 +40,6 @@ export const placeMarketTrade = async ({
   const {
     loginAccount: { allowance },
     zeroXStatus,
-    gsnEnabled,
     blockchain: { currentAugurTimestamp },
   } = AppStatus.get();
   const autoFailOrder = zeroXStatus === ZEROX_STATUSES.ERROR;
@@ -51,14 +50,10 @@ export const placeMarketTrade = async ({
     );
   }
 
-  // If GSN is enabled no need to call the below since this will be handled by the proxy contract during initalization
   let needsApproval = false;
-
-  if (!gsnEnabled) {
-    needsApproval = createBigNumber(allowance).lt(
-      tradeInProgress.totalCost.value
-    );
-  }
+  needsApproval = createBigNumber(allowance).lt(
+    tradeInProgress.totalCost.value
+  );
 
   if (needsApproval) await approveToTrade();
   // we need to make sure approvals went through before doing trade / the rest of this function

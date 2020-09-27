@@ -1,4 +1,4 @@
-import { SDKConfiguration } from '@augurproject/sdk-lite';
+import { SDKConfiguration } from '@augurproject/utils';
 import { Market } from '@augurproject/core/build/libraries/ContractInterfaces';
 import { BigNumber } from 'bignumber.js';
 import { ContractAPI } from '..';

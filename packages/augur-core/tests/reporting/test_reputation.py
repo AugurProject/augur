@@ -46,7 +46,7 @@ def test_forked_symbol(contractsFixture, universe, market, scalarMarket):
     proceedToFork(contractsFixture, categoricalMarket, newUniverse)
 
     # Create a child universe and check its REP symbol:
-    newUniverse = contractsFixture.applySignature("Universe", newUniverse.createChildUniverse([0, 100, 0, 0]))
+    newUniverse = contractsFixture.applySignature("Universe", newUniverse.createChildUniverse([0, 1000, 0, 0]))
     fork3ReputationToken = contractsFixture.applySignature("ReputationToken", newUniverse.getReputationToken())
 
     assert fork3ReputationToken.symbol() == "REPv2_Trump_3"

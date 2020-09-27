@@ -8,7 +8,6 @@ import {
   OutcomeNumber,
   PLACE_ORDER_NO_SHARES,
   PLACE_ORDER_WITH_SHARES,
-  TRADE_GAS_BUFFER,
   TradeDirection,
   WORST_CASE_FILL,
 } from '@augurproject/sdk-lite';
@@ -284,7 +283,6 @@ export class OnChainTrade {
       loopLimit = loopLimit.plus(1);
       gasLimit = gasLimit.plus(WORST_CASE_FILL[params.numOutcomes]);
     }
-    gasLimit = gasLimit.plus(TRADE_GAS_BUFFER);
     return {
       loopLimit,
       gasLimit,

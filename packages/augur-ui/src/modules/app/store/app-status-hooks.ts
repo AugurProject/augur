@@ -11,11 +11,11 @@ import {
   IS_ALERTS_MENU_OPEN,
   IS_MOBILE,
   Ox_ENABLED,
-  GSN_ENABLED,
   ETH_TO_DAI_RATE,
   REP_TO_DAI_RATE,
+  USDT_TO_DAI_RATE,
+  USDC_TO_DAI_RATE,
   Ox_STATUS,
-  WALLET_STATUS,
   RESTORED_ACCOUNT,
   IS_LOGGED,
   IS_CONNECTED,
@@ -63,11 +63,11 @@ const {
   CLOSE_APP_MENUS,
   SET_IS_MOBILE,
   SET_Ox_ENABLED,
-  SET_GSN_ENABLED,
   SET_ETH_TO_DAI_RATE,
   SET_REP_TO_DAI_RATE,
+  SET_USDT_TO_DAI_RATE,
+  SET_USDC_TO_DAI_RATE,
   SET_Ox_STATUS,
-  SET_WALLET_STATUS,
   SET_RESTORED_ACCOUNT,
   SET_IS_LOGGED,
   SET_IS_CONNECTED,
@@ -214,10 +214,6 @@ export function AppStatusReducer(state, action) {
       updatedState[Ox_ENABLED] = action.isOxEnabled;
       break;
     }
-    case SET_GSN_ENABLED: {
-      updatedState[GSN_ENABLED] = action.isGSNEnabled;
-      break;
-    }
     case SET_ETH_TO_DAI_RATE: {
       updatedState[ETH_TO_DAI_RATE] = action.ethToDaiRate;
       break;
@@ -226,12 +222,16 @@ export function AppStatusReducer(state, action) {
       updatedState[REP_TO_DAI_RATE] = action.repToDaiRate;
       break;
     }
-    case SET_Ox_STATUS: {
-      updatedState[Ox_STATUS] = action.OxStatus;
+    case SET_USDT_TO_DAI_RATE: {
+      updatedState[USDT_TO_DAI_RATE] = action.usdtToDaiRate;
       break;
     }
-    case SET_WALLET_STATUS: {
-      updatedState[WALLET_STATUS] = action.walletStatus;
+    case SET_USDC_TO_DAI_RATE: {
+      updatedState[USDC_TO_DAI_RATE] = action.usdcToDaiRate;
+      break;
+    }
+    case SET_Ox_STATUS: {
+      updatedState[Ox_STATUS] = action.OxStatus;
       break;
     }
     case SET_RESTORED_ACCOUNT: {
@@ -348,8 +348,6 @@ export function AppStatusReducer(state, action) {
       updatedState[USER_OPEN_ORDERS] = {};
       updatedState[ACCOUNT_POSITIONS] = {};
       updatedState[MOBILE_MENU_STATE] = 0;
-      updatedState[WALLET_STATUS] = null;
-      updatedState[GSN_ENABLED] = false;
       updatedState[IS_LOGGED] = false;
       updatedState[RESTORED_ACCOUNT] = false;
       updatedState[IS_CONNECTION_TRAY_OPEN] = false;
@@ -704,15 +702,15 @@ export const useAppStatus = (defaultState = DEFAULT_APP_STATUS) => {
       setIsMobile: isMobile => dispatch({ type: SET_IS_MOBILE, isMobile }),
       setOxEnabled: isOxEnabled =>
         dispatch({ type: SET_Ox_ENABLED, isOxEnabled }),
-      setGSNEnabled: isGSNEnabled =>
-        dispatch({ type: SET_GSN_ENABLED, isGSNEnabled }),
       setEthToDaiRate: ethToDaiRate =>
         dispatch({ type: SET_ETH_TO_DAI_RATE, ethToDaiRate }),
       setRepToDaiRate: repToDaiRate =>
         dispatch({ type: SET_REP_TO_DAI_RATE, repToDaiRate }),
+      setUsdtToDaiRate: usdtToDaiRate =>
+        dispatch({ type: SET_USDT_TO_DAI_RATE, usdtToDaiRate }),
+      setUsdcToDaiRate: usdcToDaiRate =>
+        dispatch({ type: SET_USDC_TO_DAI_RATE, usdcToDaiRate }),
       setOxStatus: OxStatus => dispatch({ type: SET_Ox_STATUS, OxStatus }),
-      setWalletStatus: walletStatus =>
-        dispatch({ type: SET_WALLET_STATUS, walletStatus }),
       setRestoredAccount: restoredAccount =>
         dispatch({ type: SET_RESTORED_ACCOUNT, restoredAccount }),
       setIsLogged: isLogged => dispatch({ type: SET_IS_LOGGED, isLogged }),

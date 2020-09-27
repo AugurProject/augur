@@ -1,9 +1,10 @@
-import { Block, BlockTag, JsonRpcProvider } from 'ethers/providers';
-import { ContractEvents } from './ContractEvents';
+import { Filter, Log, LogValues } from '@augurproject/types';
 import { NetworkId } from '@augurproject/utils';
-import { Filter, Log, LogValues, Provider } from '..';
 import { Abi } from 'ethereum';
 import { JSONRPCRequestPayload } from 'ethereum-types';
+import { Block, BlockTag, JsonRpcProvider } from 'ethers/providers';
+import { Provider } from '..';
+import { ContractEvents } from './ContractEvents';
 
 function makeProviderMock(opts?: any): Provider {
   const networkId = opts.networkId || '4';

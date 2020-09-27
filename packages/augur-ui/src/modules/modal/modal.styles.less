@@ -486,13 +486,13 @@ div.Onboarding {
   .DefaultModalBorder {
     border: 0;
     border-radius: @border-radius-rounded;
-  
+
     @media @breakpoint-mobile {
       border: 0;
       border-radius: @border-radius-default;
     }
   }
-  
+
   .ActionRow {
     background: #F5F5F8;
     border: 1px solid #D1D1D9;
@@ -540,7 +540,7 @@ div.Onboarding {
           .text-10-semi-bold;
         }
       }
-      
+
 
       > p {
         margin-bottom: @size-8;
@@ -594,7 +594,7 @@ div.Onboarding {
 
       text-transform: unset;
     }
-    
+
     > button:first-of-type {
       > svg {
         height: @size-16;
@@ -3062,7 +3062,7 @@ div.ButtonsRow:last-of-type {
       text-transform: none;
     }
   }
-  
+
   > main {
     > h2 {
       margin-bottom: 0;
@@ -3083,6 +3083,16 @@ div.ButtonsRow:last-of-type {
       justify-content: center;
       margin: @size-24 0;
       padding: @size-24;
+
+      > div:first-of-type {
+        height: @size-36;
+        min-width: @size-240;
+
+        > button,
+        > div > div > button {
+          text-transform: none;
+        }
+      }
 
       > span {
         .text-12-semi-bold;
@@ -4169,127 +4179,6 @@ div.ButtonsRow:last-of-type {
   > ul > li:last-of-type {
     border-bottom-right-radius: @size-24;
     border-top-right-radius: @size-24;
-  }
-}
-
-.AccountStatusTracker {
-  display: flex;
-  flex-direction: column;
-  width: 346px;
-  align-items: center;
-
-  > div:first-of-type {
-    display: flex;
-    flex-direction: row;
-    margin: 0 0 @size-4 0;
-
-    div.AccountStep {
-      display: inline-block;
-      border: @size-2 solid var(--color-secondary-text);
-      border-radius: 50%;
-      width: @size-26;
-      height: @size-26;
-    }
-
-    div.AccountStepCompleted {
-      > svg {
-        width: @size-14;
-        height: @size-14;
-        transform: translate(@size-4, @size-3);
-      }
-    }
-
-    div.line {
-      border-top: @size-2 solid var(--color-secondary-text);
-      display: inline-block;
-      margin: auto;
-      width: @size-106;
-    }
-  }
-
-  > div:last-of-type {
-    display: flex;
-    text-align: center;
-
-    width: 100%;
-
-    > div {
-      .text-10-semi-bold;
-
-      color: var(--color-secondary-text);
-      flex: 2;
-    }
-
-    > div:first-of-type,
-    > div:last-of-type {
-      flex: 1;
-    }
-  }
-}
-
-.TransferMyTokens {
-  align-items: center;
-  display: flex;
-  border: @size-2 solid var(--color-secondary-action-outline);
-  border-radius: @size-3;
-  justify-content: space-between;
-  margin: @size-16 0 @size-24 0;
-  padding: @size-12 @size-16;
-  width: 100%;
-
-  @media @breakpoint-mobile {
-    flex-direction: column;
-    text-align: center;
-
-  }
-
-  > div:first-of-type {
-    display: flex;
-    flex-direction: column;
-    text-align: left;
-
-    > span:first-of-type {
-      .text-14-bold;
-
-      color: var(--color-primary-text);
-    }
-
-    > span:last-of-type {
-      .text-14;
-
-      color: var(--color-secondary-text);
-    }
-
-    @media @breakpoint-mobile {
-      > span {
-        margin: 0 0 @size-6 0;
-      }
-    }
-  }
-}
-
-.TransferMyDaiCondensed {
-  align-items: center;
-  background: var(--color-module-background);
-  display: flex;
-  justify-content: space-between;
-  padding: @size-16;
-
-  > div:first-of-type {
-    display: flex;
-    flex-direction: column;
-
-    > span:first-of-type {
-      .text-12-bold;
-
-      color: var(--color-primary-text);
-    }
-
-    > span:last-of-type {
-      .text-12;
-
-      color: var(--color-secondary-text);
-    }
   }
 }
 

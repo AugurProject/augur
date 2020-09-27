@@ -5,7 +5,7 @@ import { BigNumber } from 'bignumber.js';
 import { formatBytes32String } from 'ethers/utils';
 import { EthersProvider } from '@augurproject/ethersjs-provider';
 import { ethers } from 'ethers';
-import { SDKConfiguration } from '@augurproject/sdk-lite';
+import { SDKConfiguration } from '@augurproject/utils';
 
 interface AddressMapping { [addr1: string]: string; }
 interface IdMapping { [id1: string]: string; }

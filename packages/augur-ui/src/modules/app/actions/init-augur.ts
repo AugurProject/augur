@@ -190,11 +190,10 @@ export const connectAugur = async (
       break;
     }
 
-  // Disable mesh/gsn for googleBot
+  // Disable mesh for googleBot
   if (isGoogleBot()) {
     config = mergeConfig(config, {
       zeroX: { mesh: { enabled: false } },
-      gsn: { enabled: false },
       warpSync: {
         createCheckpoints: false
       }

@@ -13,7 +13,7 @@ def test_simple_simulate(contractsFixture, cash, market, universe):
     direction = LONG
     outcome = YES
     amount = fix(1)
-    price = 40
+    price = 400
     ignoreShares = False
     fillOnly = False
 
@@ -33,7 +33,7 @@ def test_simple_trades_and_fees(contractsFixture, cash, market, universe):
     direction = LONG
     outcome = YES
     amount = fix(1)
-    price = 40
+    price = 400
     fillOnly = False
     numTicks = market.getNumTicks()
     cost = amount * price
@@ -89,7 +89,7 @@ def test_simple_trades_and_fees(contractsFixture, cash, market, universe):
 def test_partial_fill(contractsFixture, cash, market, universe):
     outcome = YES
     amount = fix(1)
-    price = 40
+    price = 400
     fillOnly = False
 
     account1 = contractsFixture.accounts[1]
@@ -112,7 +112,7 @@ def test_multiple_trades(contractsFixture, cash, market, universe):
 def test_self_trade(contractsFixture, cash, market, universe):
     outcome = YES
     amount = fix(1)
-    price = 40
+    price = 400
     fillOnly = False
 
     simulate_then_trade(contractsFixture, LONG, market, outcome, amount, price, fillOnly)
@@ -121,7 +121,7 @@ def test_self_trade(contractsFixture, cash, market, universe):
 def test_fill_only(contractsFixture, cash, market, universe):
     outcome = YES
     amount = fix(1)
-    price = 40
+    price = 400
 
     account1 = contractsFixture.accounts[1]
 
@@ -131,7 +131,7 @@ def test_fill_only(contractsFixture, cash, market, universe):
 def test_fees(contractsFixture, cash, market, universe):
     outcome = YES
     amount = fix(1)
-    price = 40
+    price = 400
     fillOnly = False
 
     account1 = contractsFixture.accounts[1]
@@ -149,7 +149,7 @@ def test_fees(contractsFixture, cash, market, universe):
 def test_use_shares_multiple(contractsFixture, cash, market, universe):
     outcome = YES
     amount = fix(1)
-    price = 40
+    price = 400
     fillOnly = False
 
     account1 = contractsFixture.accounts[1]

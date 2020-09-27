@@ -1,6 +1,6 @@
 {
   "name": "@augurproject/sdk-lite",
-  "version": "2.0.0-alpha.2",
+  "version": "2.1.10",
   "description": "Augur SDK Lite",
   "author": "The Augur Developers <team@augur.net>",
   "license": "MIT",
@@ -13,7 +13,8 @@
     "nuke": "rm -f package-lock.json; rm -f yarn.lock; rm -rf node_modules; yarn clean",
     "check": "gts check",
     "fix": "gts fix",
-    "hotload-kovan-test": "node -r ts-node/register src/utils/hotloadKovanTest.ts"
+    "hotload-kovan-test": "node -r ts-node/register src/utils/hotloadKovanTest.ts",
+    "prepare": "tsc -b"
   },
   "repository": {
     "type": "git",
@@ -24,8 +25,8 @@
   },
   "homepage": "https://github.com/AugurProject/augur-lite#readme",
   "dependencies": {
-    "@augurproject/artifacts": "2.0.0-alpha.2",
-    "@augurproject/utils": "2.0.0-alpha.2",
+    "@augurproject/artifacts": "^2.1.10",
+    "@augurproject/utils": "^2.1.10",
     "async": "3.1.0",
     "ethers": "4.0.47",
     "lz-string": "1.4.4"
@@ -39,6 +40,7 @@
     "ts-node": "8.4.1",
     "typedoc": "0.17.4",
     "typedoc-plugin-markdown": "2.2.17",
+    "typescript": "3.8.3",
     "yarn": "1.22.0"
   },
   "buildDependencies": [
@@ -46,5 +48,8 @@
   ],
   "resolutions": {
     "**/sha3": "2.0.1"
+  },
+  "publishConfig": {
+    "access": "public"
   }
 }

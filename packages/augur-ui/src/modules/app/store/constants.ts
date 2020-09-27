@@ -46,11 +46,11 @@ export const IS_HELP_MENU_OPEN = 'isHelpMenuOpen';
 export const IS_CONNECTION_TRAY_OPEN = 'isConnectionTrayOpen';
 export const IS_ALERTS_MENU_OPEN = 'isAlertsMenuOpen';
 export const Ox_ENABLED = 'zeroXEnabled';
-export const GSN_ENABLED = 'gsnEnabled';
 export const ETH_TO_DAI_RATE = 'ethToDaiRate';
 export const REP_TO_DAI_RATE = 'repToDaiRate';
+export const USDT_TO_DAI_RATE = 'usdtToDaiRate';
+export const USDC_TO_DAI_RATE = 'usdcToDaiRate';
 export const Ox_STATUS = 'zeroXStatus';
-export const WALLET_STATUS = 'walletStatus';
 export const RESTORED_ACCOUNT = 'restoredAccount';
 export const IS_LOGGED = 'isLogged';
 export const IS_CONNECTED = 'isConnected';
@@ -143,6 +143,7 @@ export const DEFAULT_LOGIN_ACCOUNT_STATE: LoginAccount = {
     participationTokens: null,
   },
   allowance: ZERO,
+  tradingApproved: false,
   totalOpenOrdersFrozenFunds: '0',
   allowanceFormatted: formatAttoDai(ZERO),
   tradingPositionsTotal: {
@@ -258,11 +259,11 @@ export const DEFAULT_APP_STATUS = {
   [IS_ODDS_MENU_OPEN]: false,
   [IS_ALERTS_MENU_OPEN]: false,
   [Ox_ENABLED]: false,
-  [GSN_ENABLED]: false,
   [ETH_TO_DAI_RATE]: null,
   [REP_TO_DAI_RATE]: null,
+  [USDC_TO_DAI_RATE]: null,
+  [USDT_TO_DAI_RATE]: null,
   [Ox_STATUS]: null,
-  [WALLET_STATUS]: null,
   [RESTORED_ACCOUNT]: false,
   [IS_LOGGED]: false,
   [IS_CONNECTED]: false,
@@ -305,11 +306,11 @@ export const APP_STATUS_ACTIONS = {
   SET_IS_ALERTS_MENU_OPEN: 'SET_IS_ALERTS_MENU_OPEN',
   CLOSE_APP_MENUS: 'CLOSE_APP_MENUS',
   SET_Ox_ENABLED: 'SET_Ox_ENABLED',
-  SET_GSN_ENABLED: 'SET_GSN_ENABLED',
   SET_ETH_TO_DAI_RATE: 'SET_ETH_TO_DAI_RATE',
   SET_REP_TO_DAI_RATE: 'SET_REP_TO_DAI_RATE',
+  SET_USDC_TO_DAI_RATE: 'SET_USDC_TO_DAI_RATE',
+  SET_USDT_TO_DAI_RATE: 'SET_USDT_TO_DAI_RATE',
   SET_Ox_STATUS: 'SET_Ox_STATUS',
-  SET_WALLET_STATUS: 'SET_WALLET_STATUS',
   SET_RESTORED_ACCOUNT: 'SET_RESTORED_ACCOUNT',
   SET_IS_LOGGED: 'SET_IS_LOGGED',
   SET_IS_CONNECTED: 'SET_IS_CONNECTED',
@@ -367,11 +368,11 @@ export const STUBBED_APP_STATUS_ACTIONS = {
   closeAppMenus: () => {},
   setIsMobile: isMobile => {},
   setOxEnabled: isOxEnabled => {},
-  setGSNEnabled: isGSNEnabled => {},
   setEthToDaiRate: ethToDaiRate => {},
   setRepToDaiRate: repToDaiRate => {},
+  setUsdcToDaiRate: repToDaiRate => {},
+  setUsdtToDaiRate: repToDaiRate => {},
   setOxStatus: OxStatus => {},
-  setWalletStatus: walletStatus => {},
   setRestoredAccount: restoredAccount => {},
   setIsLogged: isLogged => {},
   setIsConnected: isConnected => {},

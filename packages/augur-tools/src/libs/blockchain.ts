@@ -8,7 +8,7 @@ import { HDNode } from 'ethers/utils';
 import { Wallet } from 'ethers';
 
 import { Account } from '../constants';
-import { SDKConfiguration } from '@augurproject/sdk-lite';
+import { SDKConfiguration } from '@augurproject/utils';
 
 export interface UsefulContractObjects {
   addresses: ContractAddresses;

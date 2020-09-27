@@ -57,16 +57,20 @@ import { createBigNumber } from 'utils/create-big-number';
 import { startOrderSending } from 'modules/orders/actions/liquidity-management';
 import { Getters } from '@augurproject/sdk';
 import getUserOpenOrders from 'modules/orders/selectors/user-open-orders';
+import { getGasCost } from 'modules/modal/gas';
 
 export const ModalClaimFees = () => {
   const {
     pendingQueue = [],
     universe: { forkingInfo },
     modal,
-    gsnEnabled: GsnEnabled,
+    gasPriceInfo,
+    ethToDaiRate,
     actions: { closeModal },
   } = useAppStatusStore();
+  const gasPrice = gasPriceInfo.userDefinedGasPrice || gasPriceInfo.average;
 
+  const gasCost = CLAIM_FEES_GAS_COST.multipliedBy(gasPrice);
   const claimReportingFees = selectReportingWinningsByMarket();
   const transactionLabel = getTransactionLabel();
 
@@ -114,9 +118,9 @@ export const ModalClaimFees = () => {
         let action = () => redeemStake(redeemStakeOptions);
         let estimateGas = async () => {
           const gas = await redeemStakeGas(redeemStakeOptions);
-          const displayfee = GsnEnabled
-            ? displayGasInDai(gas)
-            : formatEther(gas).formattedValue;
+          const gasCostDai = getGasCost(gas, gasPrice, ethToDaiRate);
+          const displayfee = `$${gasCostDai.formattedValue}`;
+
           return {
             label: transactionLabel,
             value: String(displayfee),
@@ -235,9 +239,8 @@ export const ModalClaimFees = () => {
           reportingParticipants: [],
         };
         const gas = await redeemStakeGas(redeemStakeOptions);
-        const displayfee = GsnEnabled
-          ? displayGasInDai(gas)
-          : formatEther(gas).formattedValue;
+        const gasCostDai = getGasCost(gas, gasPrice, ethToDaiRate);
+        const displayfee = `$${gasCostDai.formattedValue}`;
         return {
           label: transactionLabel,
           value: String(displayfee),
@@ -314,9 +317,9 @@ export const ModalClaimFees = () => {
       estimateGas={async () => {
         if (!!breakdown) {
           const gas = await redeemStakeGas(allRedeemStakeOptions);
-          const displayfee = GsnEnabled
-            ? displayGasInDai(gas)
-            : formatEther(gas).formattedValue;
+          const gasCostDai = getGasCost(gas, gasPrice, ethToDaiRate);
+          const displayfee = `$${gasCostDai.formattedValue}`;
+
           return {
             label: transactionLabel,
             value: String(displayfee),
@@ -361,9 +364,12 @@ export const ModalClaimMarketsProceeds = () => {
     pendingQueue = [],
     loginAccount: { address: account },
     modal,
-    gsnEnabled: GsnEnabled,
+    gasPriceInfo,
+    ethToDaiRate,
+    blockchain: { currentAugurTimestamp: currentTimestamp },
     actions: { closeModal },
   } = useAppStatusStore();
+  const gasPrice = gasPriceInfo.userDefinedGasPrice || gasPriceInfo.average;
   const accountMarketClaimablePositions: MarketClaimablePositions = getLoginAccountClaimableWinnings();
 
   const totalUnclaimedProceeds =
@@ -403,9 +409,8 @@ export const ModalClaimMarketsProceeds = () => {
             : null,
           estimateGas: async () => {
             const gas = await claimMarketsProceedsGas([marketId], account);
-            const displayfee = GsnEnabled
-              ? displayGasInDai(gas)
-              : formatEther(gas).formattedValue;
+            const gasCostDai = getGasCost(gas, gasPrice, ethToDaiRate);
+            const displayfee = `$${gasCostDai.formattedValue}`;
             return {
               label: transactionLabel,
               value: String(displayfee),
@@ -456,9 +461,8 @@ export const ModalClaimMarketsProceeds = () => {
             claimableMarkets.map(m => m.marketId),
             account
           );
-          const displayfee = GsnEnabled
-            ? displayGasInDai(gas)
-            : formatEther(gas).formattedValue;
+          const gasCostDai = getGasCost(gas, gasPrice, ethToDaiRate);
+          const displayfee = `$${gasCostDai.formattedValue}`;
           return {
             label: transactionLabel,
             value: String(displayfee),
@@ -552,6 +556,8 @@ export const ModalUnsignedOrders = () => {
   const {
     loginAccount,
     modal,
+    ethToDaiRate,
+    gasPriceInfo,
     actions: { closeModal },
   } = useAppStatusStore();
   const {
@@ -572,6 +578,7 @@ export const ModalUnsignedOrders = () => {
       });
   });
 
+  const gasCost = NEW_ORDER_GAS_ESTIMATE.times(numberOfTransactions).multipliedBy(gasPrice)
   const bnAllowance = createBigNumber(loginAccount.allowance, 10);
   const needsApproval = bnAllowance.lte(ZERO);
   const insufficientFunds = availableDai.lt(totalCost);

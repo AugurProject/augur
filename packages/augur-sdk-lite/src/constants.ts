@@ -1,6 +1,5 @@
 import { TransactionMetadata } from '@augurproject/contract-dependencies-ethers';
 import { BigNumber } from 'bignumber.js';
-import { utils as ethersUtils } from 'ethers';
 import { Order } from './onChainTrading';
 
 export {
@@ -13,7 +12,7 @@ export const NULL_ADDRESS = '0x0000000000000000000000000000000000000000';
 
 export const MALFORMED_OUTCOME = 'malformed outcome';
 
-export const ETHER = new ethersUtils.BigNumber(10).pow(18);
+export const ETHER = new BigNumber(10).pow(18);
 
 export const SECONDS_IN_AN_HOUR = new BigNumber(3600, 10);
 
@@ -145,6 +144,7 @@ export enum SubscriptionEventName {
   WarpSyncHashUpdated = 'WarpSyncHashUpdated',
   LiquidityPoolUpdated = 'LiquidityPoolUpdated',
   DBUpdatedZeroXOrders = 'DB:updated:ZeroXOrders',
+  MarketInvalidBids = 'MarketInvalidBids',
 }
 
 export const NETWORK_IDS = {
@@ -187,9 +187,8 @@ export function isSubscriptionEventName(eventName: string): string | null {
   return null;
 }
 
-export const TRADE_GAS_BUFFER = new BigNumber('600000', 10);
-export const MAX_FILLS_PER_TX = new BigNumber('3', 10);
-export const MAX_GAS_LIMIT_FOR_TRADE = new BigNumber('3500000', 10);
+export const MAX_FILLS_PER_TX = new BigNumber('4', 10);
+export const MAX_GAS_LIMIT_FOR_TRADE = new BigNumber('4500000', 10);
 export const PLACE_ORDER_NO_SHARES = {
   2: new BigNumber('547694', 10),
   3: new BigNumber('562138', 10),
@@ -209,13 +208,22 @@ export const PLACE_ORDER_WITH_SHARES = {
   8: new BigNumber('1292814', 10),
 };
 export const WORST_CASE_FILL = {
-  2: new BigNumber('935219', 10),
-  3: new BigNumber('996763', 10),
-  4: new BigNumber('1058302', 10),
-  5: new BigNumber('1119834', 10),
-  6: new BigNumber('1181369', 10),
-  7: new BigNumber('1242902', 10),
-  8: new BigNumber('1242902', 10),
+  2: new BigNumber('922754', 10),
+  3: new BigNumber('984220', 10),
+  4: new BigNumber('1045693', 10),
+  5: new BigNumber('1107159', 10),
+  6: new BigNumber('1168632', 10),
+  7: new BigNumber('1230111', 10),
+  8: new BigNumber('1230111', 10),
+};
+export const NORMAL_FILL = {
+  2: new BigNumber('668530', 10),
+  3: new BigNumber('699996', 10),
+  4: new BigNumber('731457', 10),
+  5: new BigNumber('762935', 10),
+  6: new BigNumber('794396', 10),
+  7: new BigNumber('825887', 10),
+  8: new BigNumber('825887', 10),
 };
 export const CLAIM_GAS_COST = new BigNumber(794379);
 export const ORDER_TYPES = {
@@ -225,6 +233,7 @@ export const ORDER_TYPES = {
 export const INVALID_OUTCOME = 0;
 export const MAX_TRADE_GAS_PERCENTAGE_DIVISOR = 100;
 export const DEFAULT_GAS_PRICE_IN_GWEI = 4;
+
 export const EULERS_NUMBER = 2.71828182845905;
 export const MINIMUM_INVALID_ORDER_VALUE_IN_ATTO_DAI = new BigNumber(
   10
@@ -287,3 +296,4 @@ export interface ZeroXOrders {
   [marketId: string]: OutcomeOrders;
 }
 
+export const NullWarpSyncHash = 'QmNLei78zWmzUdbeRB3CiUfAizWUrbeeZh5K1rhAQKCh51';

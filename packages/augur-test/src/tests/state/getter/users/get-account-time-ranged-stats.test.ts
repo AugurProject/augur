@@ -41,7 +41,7 @@ describe('State API :: Users :: ', () => {
     const outcome1 = new BigNumber(1);
     const outcome2 = new BigNumber(2);
     const numShares = new BigNumber(10).pow(12);
-    const price = new BigNumber(22);
+    const price = new BigNumber(220);
     await john.placeOrder(
       johnYesNoMarket.address,
       bid,
@@ -203,13 +203,13 @@ describe('State API :: Users :: ', () => {
     // Submit initial report
     const noPayoutSet = [
       new BigNumber(0),
-      new BigNumber(100),
+      new BigNumber(1000),
       new BigNumber(0),
     ];
     const yesPayoutSet = [
       new BigNumber(0),
       new BigNumber(0),
-      new BigNumber(100),
+      new BigNumber(1000),
     ];
     // implicitly creates dispute window
     await john.doInitialReport(johnYesNoMarket, noPayoutSet);

@@ -3,6 +3,7 @@ import {
   SDKConfiguration,
   ContractAddresses
 } from '@augurproject/utils';
+import { BigNumber } from 'ethers/utils';
 import { Account, ACCOUNTS } from '../../constants';
 import { deployContracts } from '../blockchain';
 import { ContractAPI } from '../contract-api';
@@ -17,6 +18,7 @@ export async function generateDoubleDeploy(
   network: string
 ) {
   const [db, provider] = await makeProviderWithDB(seed, ACCOUNTS);
+  provider.overrideGasPrice = new BigNumber(100);
 
   const john = await ContractAPI.userWrapper(ACCOUNTS[0], provider, config);
 

@@ -46,11 +46,8 @@ import {
   ONE,
   SCALAR,
   SCALAR_OUTCOMES,
-  WALLET_STATUS_VALUES,
-  GSN_WALLET_SEEN,
   MODAL_DISCARD,
   MODAL_CREATE_MARKET,
-  MODAL_INITIALIZE_ACCOUNT,
   YES_NO_OUTCOMES,
   ZERO,
 } from 'modules/common/constants';
@@ -119,7 +116,6 @@ import {
   getTemplateWednesdayAfterOpeningDay,
 } from '@augurproject/templates';
 import { useAppStatusStore, AppStatus } from 'modules/app/store/app-status';
-import { isGSNUnavailable } from 'modules/app/selectors/is-gsn-unavailable';
 import {
   marketCreationStarted,
   marketCreationSaved,
@@ -144,11 +140,6 @@ interface FormProps {
   marketCreationStarted: Function;
   marketCreationSaved: Function;
   maxMarketEndTime: number;
-  GsnEnabled: boolean;
-  gsnUnavailable: boolean;
-  gsnWalletInfoSeen: boolean;
-  initializeGsnWallet: Function;
-  walletStatus: string;
 }
 
 interface FormState {
@@ -508,9 +499,7 @@ export const Form = ({ isTemplate, updatePage }) => {
     newMarket,
     drafts,
     loginAccount: { allowance },
-    gsnEnabled: GsnEnabled,
     blockchain: { currentAugurTimestamp: currentTimestamp },
-    walletStatus,
     actions: {
       setModal,
       clearNewMarket,
@@ -540,8 +529,6 @@ export const Form = ({ isTemplate, updatePage }) => {
   )
     ? 3
     : 4;
-  const gsnUnavailable = isGSNUnavailable();
-  const gsnWalletInfoSeen = getValueFromlocalStorage(GSN_WALLET_SEEN);
   const contentPages = isTemplate
     ? hasNoTemplateCategoryChildren(newMarket.navCategories[0])
       ? NO_CAT_TEMPLATE_CONTENT_PAGES
@@ -562,8 +549,7 @@ export const Form = ({ isTemplate, updatePage }) => {
     useBullets,
   } = contentPages[currentStep];
 
-  const disableCreateButton =
-    walletStatus !== WALLET_STATUS_VALUES.CREATED || disableCreate;
+  const disableCreateButton = disableCreate;
   let savedDraft = drafts[uniqueId];
   if (savedDraft) savedDraft.validations = [];
   let comparableNewMarket = deepClone<NewMarket>(newMarket);
@@ -876,7 +862,7 @@ export const Form = ({ isTemplate, updatePage }) => {
                 subheader="You must complete all required fields highlighted above before you can continue"
               />
             )}
-            {secondButton === CREATE && !GsnEnabled && (
+            {secondButton === CREATE && (
               <BulkTxLabel
                 className={Styles.MultipleTransactions}
                 buttonName="Create"
@@ -910,21 +896,10 @@ export const Form = ({ isTemplate, updatePage }) => {
                     disabled={disableCreateButton}
                     action={() => {
                       setBlockShown(true);
-                      gsnUnavailable && !gsnWalletInfoSeen
-                        ? setModal({
-                            customAction: () =>
-                              setTimeout(() => {
-                                setModal({
-                                  type: MODAL_CREATE_MARKET,
-                                  cb: createModalCallback,
-                                });
-                              }),
-                            type: MODAL_INITIALIZE_ACCOUNT,
-                          })
-                        : setModal({
-                            type: MODAL_CREATE_MARKET,
-                            cb: createModalCallback,
-                          });
+                      setModal({
+                        type: MODAL_CREATE_MARKET,
+                        cb: createModalCallback,
+                      });
                     }}
                   />
                 )}

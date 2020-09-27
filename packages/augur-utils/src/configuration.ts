@@ -1,7 +1,8 @@
-import { LoggerLevels } from './logger';
-import { NetworkId } from './constants';
-import path from 'path';
 import deepmerge from 'deepmerge';
+import path from 'path';
+import { NetworkId } from './constants';
+import { IPFSEndpointInfo, IPFSHashVersion } from './extract-ipfs-url';
+import { LoggerLevels } from './logger';
 
 export type RecursivePartial<T> = {
   [P in keyof T]?:
@@ -41,6 +42,7 @@ export interface SDKConfiguration {
     rpcConcurrency: number
   },
   gas?: {
+    override?: boolean,
     limit?: number,
     price?: number
   },
@@ -58,15 +60,11 @@ export interface SDKConfiguration {
   warpSync?: {
     createCheckpoints?: boolean,
     autoReport?: boolean
+    ipfsEndpoint?: IPFSEndpointInfo
   },
   uniswap?: {
     exchangeRateBufferMultiplier: number;
   }
-  gsn?: {
-    enabled: boolean,
-    minDaiForSignerETHBalanceInDAI?: number,
-    desiredSignerBalanceInETH?: number,
-  },
   zeroX?: {
     rpc?: {
       enabled: boolean,
@@ -78,6 +76,7 @@ export interface SDKConfiguration {
       useBootstrapList?: boolean,
       bootstrapList?: string[]
     }
+    delayTillSDKReady?: boolean
   },
   syncing?: {
     enabled: boolean,
@@ -103,18 +102,19 @@ export interface SDKConfiguration {
     comments?: 'facebook',
   },
   flash?: {
-    useGSN?: boolean,
     syncSDK?: boolean,
     skipApproval?: boolean,
   },
   ui?: {
     showReloadModal?: boolean,
     trackBestOffer?: boolean,
-    reportingOnly?: boolean,
-    fallbackProvider?: "jsonrpc" | "torus",
-    liteProvider?: "jsonrpc" | "default"
-  }
-};
+    trackMarketInvalidBids?: boolean,
+    fallbackProvider?: 'jsonrpc' | 'torus',
+    liteProvider?: 'jsonrpc' | 'default',
+    primaryProvider?: 'jsonrpc' | 'wallet'
+  },
+  concurrentDBOperationsLimit?: number
+}
 
 export interface ContractAddresses {
   Universe: string;
@@ -157,6 +157,8 @@ export interface ContractAddresses {
   AuditFunds?: string;
   RelayHubV2?: string;
   AugurWalletRegistryV2?: string;
+  AccountLoader?: string;
+  ERC20Proxy1155Nexus?: string;
 
   // 0x
   //   The 0x contract names must be what 0x mesh expects.
@@ -209,6 +211,7 @@ export const DEFAULT_SDK_CONFIGURATION: SDKConfiguration = {
     rpcConcurrency: 40
   },
   gas: {
+    override: false,
     price: 1e9,
     limit: 95e5
   },
@@ -224,15 +227,14 @@ export const DEFAULT_SDK_CONFIGURATION: SDKConfiguration = {
   warpSync: {
     createCheckpoints: false,
     autoReport: false,
+    ipfsEndpoint: {
+      version: IPFSHashVersion.CIDv0,
+      url: 'https://cloudflare-ipfs.com/ipfs/'
+    }
   },
   uniswap: {
     // mainnet will be <= 1.005 but for dev we can get away with a wide spread
     exchangeRateBufferMultiplier: 1.075,
-  },
-  gsn: {
-    enabled: true,
-    minDaiForSignerETHBalanceInDAI: 40,
-    desiredSignerBalanceInETH: .04,
   },
   zeroX: {
     rpc: {
@@ -267,10 +269,11 @@ export const DEFAULT_SDK_CONFIGURATION: SDKConfiguration = {
   },
   ui: {
     showReloadModal: true,
-    trackBestOffer: true,
-    reportingOnly: false,
-    fallbackProvider: "torus",
-    liteProvider: "jsonrpc"
+    trackBestOffer: false,
+    trackMarketInvalidBids: true,
+    fallbackProvider: 'torus',
+    liteProvider: 'jsonrpc',
+    primaryProvider: 'wallet'
   }
 };
 
@@ -326,7 +329,6 @@ export function isValidConfig(suspect: RecursivePartial<SDKConfiguration>): susp
   if (suspect.uniswap && typeof suspect.uniswap.exchangeRateBufferMultiplier === 'undefined') {
     return fail('uniswap.exchangeRateBufferMultiplier');
   }
-  if (suspect.gsn && typeof suspect.gsn.enabled === 'undefined') return fail('gsn.enabled');
 
   if (suspect.zeroX) {
     if (suspect.zeroX.rpc) {
@@ -383,6 +385,7 @@ export function configFromEnvvars(): RecursivePartial<SDKConfiguration> {
   if (t(e.ETHEREUM_RPC_RETRY_INTERVAL)) config = d(config, { ethereum: { rpcRetryInterval: Number(e.ETHEREUM_RPC_RETRY_INTERVAL) }});
   if (t(e.ETHEREUM_RPC_CONCURRENCY)) config = d(config, { ethereum: { rpcConcurrency: Number(e.ETHEREUM_RPC_CONCURRENCY) }});
 
+  if (t(e.GAS_OVERRIDE)) config = d(config, { gas: { override: bool(e.GAS_OVERRIDE) }});
   if (t(e.GAS_LIMIT)) config = d(config, { gas: { limit: Number(e.GAS_LIMIT) }});
   if (t(e.GAS_PRICE)) config = d(config, { gas: { price: Number(e.GAS_PRICE) }});
 
@@ -393,8 +396,6 @@ export function configFromEnvvars(): RecursivePartial<SDKConfiguration> {
   if (t(e.CONTRACT_INPUT_PATH)) config = d(config, { deploy: { contractInputPath: e.CONTRACT_INPUT_PATH }});
   if (t(e.WRITE_ARTIFACTS)) config = d(config, { deploy: { writeArtifacts: bool(e.WRITE_ARTIFACTS) }});
   if (t(e.DEPLOY_SERIAL)) config = d(config, { deploy: { serial: bool(e.DEPLOY_SERIAL) }});
-
-  if (t(e.GSN_ENABLED)) config = d(config, { gsn: { enabled: bool(e.GSN_ENABLED) }});
 
   if (t(e.UNISWAP_EXCHANGE_RATE_BUFFER_MULTIPLIER)) config = d(config, { uniswap: { exchangeRateBufferMultiplier: Number(e.UNISWAP_EXCHANGE_RATE_BUFFER_MULTIPLIER) }});
 

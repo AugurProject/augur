@@ -1,6 +1,6 @@
 {
   "name": "@augurproject/core",
-  "version": "2.0.0-alpha.2",
+  "version": "2.1.10",
   "description": "Core augur contracts and deployment process",
   "author": "The Augur Developers <team@augur.net>",
   "repository": "http://github.com/AugurProject/augur-core",
@@ -20,7 +20,7 @@
     "build:documentation": "yarn solidity-docgen -s ./output/contracts/contracts_full.json -o ../../docs/contracts",
     "test:unit": "python3 -m pytest -vv",
     "test:unit:all": "python3 -m pytest tests -vv",
-    "test:integration": "jest --detectOpenHandles --verbose=true",
+    "test:integration": "jest --forceExit --detectOpenHandles --verbose=true",
     "test:coverage": "node --max-old-space-size=12288 src/tools/generateCoverageReport.js",
     "deploy:net": "bash src/support/deploy/run.sh direct",
     "deploy:local": "npm run deploy:net -- environment",
@@ -65,11 +65,12 @@
     "docker:deploy:rinkeby": "npm run docker:deploy:net -- rinkeby",
     "docker:deploy:ropsten": "npm run docker:deploy:net -- ropsten",
     "docker:deploy:foundation": "npm run docker:deploy:net -- foundation",
-    "docker:deploy": "npm run docker:deploy:net -- aura clique rinkeby"
+    "docker:deploy": "npm run docker:deploy:net -- aura clique rinkeby",
+    "prepare": "tsc -b"
   },
   "dependencies": {
-    "@augurproject/artifacts": "2.0.0-alpha.2",
-    "@augurproject/contract-dependencies-ethers": "2.0.0-alpha.2",
+    "@augurproject/artifacts": "^2.1.10",
+    "@augurproject/contract-dependencies-ethers": "^2.1.10",
     "@augurproject/solidity-docgen": "0.2.0-alpha.3",
     "bignumber.js": "9.0.0",
     "ethers": "4.0.47",
@@ -94,5 +95,8 @@
     "ts-node": "7.0.1",
     "typescript": "3.8.3",
     "util": "0.12.1"
+  },
+  "publishConfig": {
+    "access": "public"
   }
 }

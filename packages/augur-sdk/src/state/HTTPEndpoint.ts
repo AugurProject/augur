@@ -9,7 +9,7 @@ import { API } from './getter/API';
 import { JsonRpcRequest } from './getter/types';
 import { JsonRpcErrorCode, MakeJsonRpcError } from './MakeJsonRpcError';
 import { MakeJsonRpcResponse } from './MakeJsonRpcResponse';
-import { SDKConfiguration } from '@augurproject/sdk-lite';
+import { SDKConfiguration } from '@augurproject/utils';
 
 export function createApp(api: API): express.Application {
   const app = express();

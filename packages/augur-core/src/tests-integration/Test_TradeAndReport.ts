@@ -37,7 +37,7 @@ describe('TradeAndReport', () => {
         const type = new BigNumber(0); // BID
         const outcome = new BigNumber(0);
         const numShares = new BigNumber(10000000000000);
-        const price = new BigNumber(21);
+        const price = new BigNumber(210);
 
         console.log("Placing an Order");
         await fixture.placeOrder(market.address, type, numShares, price, outcome, stringTo32ByteHex(''), stringTo32ByteHex(''), stringTo32ByteHex('42'));

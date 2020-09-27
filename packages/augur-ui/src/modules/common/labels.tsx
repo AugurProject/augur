@@ -75,10 +75,8 @@ import {
 import { hasTemplateTextInputs } from '@augurproject/templates';
 import { getDurationBetween } from 'utils/format-date';
 import { useTimer } from 'modules/common/progress';
-import { isGSNUnavailable } from 'modules/app/selectors/is-gsn-unavailable';
 import { ethToDai } from 'modules/app/actions/get-ethToDai-rate';
 import { getEthForDaiRate } from 'modules/contracts/actions/contractCalls';
-import { getEthReserve } from 'modules/auth/helpers/get-eth-reserve';
 import { getTransactionLabel } from 'modules/auth/helpers/get-gas-price';
 import { augurSdk } from 'services/augursdk';
 
@@ -485,7 +483,7 @@ export const FullTimeLabel = ({
   hideContent = false,
 }: FullTimeLabelProps) => (
     <div className={classNames(Styles.FullTimeLabel, { [Styles.Large]: large })}>
-      {!hideContent && 
+      {!hideContent &&
         <>
           <span>
             {label}
@@ -1068,7 +1066,7 @@ export const LiquidityDepletedLabel = ({
 export interface MarketStatusLabelProps {
   reportingState: string;
   mini?: boolean;
-  isWarpSync?: boolean; 
+  isWarpSync?: boolean;
 };
 
 export const MarketStatusLabel = ({
@@ -1614,24 +1612,6 @@ export const ModalLabelNotice = (props: DismissableNoticeProps) => (
     <DismissableNotice {...props} />
   </div>
 );
-
-export const InitializeWalletModalNotice = () => {
-  const gsnUnavailable = isGSNUnavailable();
-
-  return (
-    <>
-      {gsnUnavailable && (
-        <div className={classNames(Styles.ModalMessageLabelInitWallet)}>
-          <DismissableNotice
-            show
-            buttonType={DISMISSABLE_NOTICE_BUTTON_TYPES.NONE}
-            title={`The fee displayed is higher than normal because it includes a one time only account activation.`}
-          />
-        </div>
-      )}
-    </>
-  );
-};
 
 export const AutoCancelOrdersNotice = () => (
   <div className={classNames(Styles.ModalMessageAutoCancel)}>

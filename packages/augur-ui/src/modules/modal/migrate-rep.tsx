@@ -28,13 +28,14 @@ import Styles from 'modules/modal/modal.styles.less';
 import { createBigNumber } from 'utils/create-big-number';
 import { useAppStatusStore } from 'modules/app/store/app-status';
 import { DISMISSABLE_NOTICE_BUTTON_TYPES, DismissableNotice } from 'modules/reporting/common';
+import { getGasCost } from 'modules/modal/gas';
+
 
 export const MigrateRep = () => {
   const {
     loginAccount,
-    modal,
-    gsnEnabled: GsnEnabled,
     gasPriceInfo,
+    ethToDaiRate,
     actions: { closeModal },
   } = useAppStatusStore();
 
@@ -46,13 +47,13 @@ export const MigrateRep = () => {
   const inSigningWallet = walletBalances.signerBalances.legacyRep !== '0';
   const inTradingWallet = walletBalances.legacyRep !== '0';
   const ethForGas = walletBalances.signerBalances.eth;
+  const gasCostDai = getGasCost(gasLimit, gasPrice, ethToDaiRate);
+  const displayfee = `$${gasCostDai.formattedValue}`;
 
   useEffect(() => {
-    if (GsnEnabled) {
-      convertV1ToV2Estimate().then(gasLimit => {
-        setGasLimit(gasLimit);
-      });
-    }
+    convertV1ToV2Estimate().then(gasLimit => {
+      setGasLimit(gasLimit);
+    });
   }, []);
 
   const gasEstimateInEth = formatGasCostToEther(
@@ -81,7 +82,7 @@ export const MigrateRep = () => {
         </span>
       </div>
       <div>
-        <TransactionFeeLabel gasCostDai={displayGasInDai(gasLimit)} />
+        <TransactionFeeLabel gasCostDai={displayfee} />
       </div>
       {!hasEnoughEthForGas && inSigningWallet && (
         <span className={Styles.Error}>

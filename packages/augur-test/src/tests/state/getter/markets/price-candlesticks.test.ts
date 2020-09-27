@@ -36,11 +36,11 @@ describe('State API :: Markets :: GetMarkets', () => {
 
     // Place orders
 
-    const numShares = new BigNumber(10000000000000);
-    const price0 = new BigNumber(10);
-    const price1 = new BigNumber(20);
-    const price2 = new BigNumber(30);
-    const price3 = new BigNumber(40);
+    const numShares = new BigNumber(1000000000000);
+    const price0 = new BigNumber(100);
+    const price1 = new BigNumber(200);
+    const price2 = new BigNumber(300);
+    const price3 = new BigNumber(400);
     await john.placeOrder(
       yesNoMarket.address,
       ORDER_TYPES.BID,
@@ -126,16 +126,16 @@ describe('State API :: Markets :: GetMarkets', () => {
     mary.faucetCash(new BigNumber(1e18)); // faucet enough
 
     const cost0 = numShares
-      .multipliedBy(new BigNumber(100).minus(price0))
+      .multipliedBy(new BigNumber(1000).minus(price0))
       .div(10);
     const cost1 = numShares
-      .multipliedBy(new BigNumber(100).minus(price1))
+      .multipliedBy(new BigNumber(1000).minus(price1))
       .div(10);
     const cost2 = numShares
-      .multipliedBy(new BigNumber(100).minus(price2))
+      .multipliedBy(new BigNumber(1000).minus(price2))
       .div(10);
     const cost3 = numShares
-      .multipliedBy(new BigNumber(100).minus(price3))
+      .multipliedBy(new BigNumber(1000).minus(price3))
       .div(10);
     let yesNoOrderId0 = await john.getBestOrderId(
       ORDER_TYPES.BID,

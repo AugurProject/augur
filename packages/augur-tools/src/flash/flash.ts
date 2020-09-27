@@ -128,11 +128,7 @@ export class FlashSession {
     const client = await createClient(config, connector, signer, provider);
     const user = new ContractAPI(client, provider, account);
 
-    if (config.flash?.useGSN) {
-      await user.getOrCreateWallet();
-      user.setUseWallet(true);
-      user.setUseRelay(true);
-    } else if (!config.flash?.skipApproval) {
+    if (!config.flash?.skipApproval) {
       await user.approveIfNecessary();
     }
 

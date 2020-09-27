@@ -5,7 +5,6 @@ import {
   ETHEREUM,
   ECONOMICS,
   GOLF,
-  INDEXES,
   MENS_LEAGUES,
   NBA,
   NFL,
@@ -58,14 +57,14 @@ export interface OrderBook {
 }
 
 export const singleOutcomeAsks: AskBid[] = [
-  { shares: '100.00', price: '0.31' },
-  { shares: '200.00', price: '0.35' },
-  { shares: '300.00', price: '0.40' },
+  { shares: '100.00', price: '0.311' },
+  { shares: '200.00', price: '0.351' },
+  { shares: '300.00', price: '0.401' },
 ];
 export const singleOutcomeBids: AskBid[] = [
-  { shares: '100.00', price: '0.30' },
-  { shares: '200.00', price: '0.25' },
-  { shares: '300.00', price: '0.19' },
+  { shares: '100.00', price: '0.301' },
+  { shares: '200.00', price: '0.251' },
+  { shares: '300.00', price: '0.191' },
 ];
 const yesNoOrderBook: OrderBook = {
   1: {
@@ -379,36 +378,6 @@ export const templatedCannedMarkets = (): CannedMarket[] => {
         question: template1.question,
         inputs: getFilledInputs(template1, usInputValues),
       },
-    },
-    orderBook: yesNoOrderBook,
-  });
-
-  const finTemplates = TEMPLATES[ECONOMICS].children[INDEXES]
-    .templates as Template[];
-  const finTemplate: Template = finTemplates[0];
-  const wed = 3;
-  const finExpDate = moment()
-    .day(wed)
-    .add(1, 'weeks')
-    .add(6, 'hours');
-  const date = finExpDate.format('MMMM DD, YYYY');
-  const finInputValues = ['Dow Jones Industrial Average', '15000', date];
-  let finInputs = getFilledInputs(finTemplate, finInputValues);
-  finInputs[2].timestamp = finExpDate.unix();
-  markets.push({
-    marketType: 'yesNo',
-    endTime: finExpDate.add(1, 'days').unix(),
-    affiliateFeeDivisor: 0,
-    creatorFeeDecimal: '0.015',
-    extraInfo: {
-      categories: [ECONOMICS, INDEXES, 'Dow Jones Industrial Average'],
-      description: fillInQuestion(finTemplate, finInputValues),
-      longDescription: getLongDescription(finTemplate),
-      template: {
-        hash: finTemplate.hash,
-        question: finTemplate.question,
-        inputs: finInputs
-      }
     },
     orderBook: yesNoOrderBook,
   });
@@ -937,38 +906,6 @@ export const templatedCannedBettingMarkets = (): CannedMarket[] => {
   return massageMarkets(markets.concat(hockeyFutures).concat(mmaMarkets).concat(soccerMarkets));
 };
 
-const badFinancialMarket = (): CannedMarket[] => {
-  const finTemplates = TEMPLATES[ECONOMICS].children[INDEXES]
-    .templates as Template[];
-  const finTemplate: Template = finTemplates[0];
-  const wed = 3;
-  const finExpDate = moment().day(wed).add(1, 'weeks').add(6, 'hours');
-  const date = finExpDate.format('YYYY DD, MMMM');
-  const finInputValues = ['Dow Jones Industrial Average', '5', date];
-  let finInputs = getFilledInputs(finTemplate, finInputValues);
-  finInputs[2].timestamp = finExpDate.unix() - 10000;
-  return [
-    {
-      marketType: 'yesNo',
-      endTime: finExpDate.add(1, 'days').unix(),
-      affiliateFeeDivisor: 0,
-      creatorFeeDecimal: '0.015',
-      extraInfo: {
-        categories: [ECONOMICS, INDEXES, 'Dow Jones Industrial Average'],
-        description: fillInQuestion(finTemplate, finInputValues),
-        longDescription: getLongDescription(finTemplate),
-        tags: [],
-        template: {
-          hash: finTemplate.hash,
-          question: finTemplate.question,
-          inputs: finInputs,
-        },
-      },
-      orderBook: yesNoOrderBook,
-    },
-  ];
-};
-
 const badCryptoMarket = (): CannedMarket[] => {
   const cryptoTemplates = TEMPLATES[CRYPTO].children[ETHEREUM]
     .templates as Template[];
@@ -1003,6 +940,5 @@ const badCryptoMarket = (): CannedMarket[] => {
   }];
 }
 export const testBadTemplateMarkets = (): CannedMarket[] => {
-  const markets = badFinancialMarket();
-  return markets.concat(badCryptoMarket());
+  return badCryptoMarket();
 }

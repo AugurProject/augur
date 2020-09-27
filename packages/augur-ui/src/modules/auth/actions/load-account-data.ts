@@ -5,9 +5,10 @@ import { windowRef } from 'utils/window-ref';
 import logError from 'utils/log-error';
 import { NodeStyleCallback, WindowApp } from 'modules/types';
 import { registerUserDefinedGasPriceFunction } from 'modules/app/actions/register-user-defined-gasPrice-function';
-import { getEthToDaiRate } from 'modules/app/actions/get-ethToDai-rate';
-import { getRepToDaiRate } from 'modules/app/actions/get-repToDai-rate';
 import { AppStatus } from 'modules/app/store/app-status';
+import { loadGasPriceInfo } from 'modules/app/actions/load-gas-price-info';
+import { getTradePageMarketId } from 'modules/trades/helpers/get-trade-page-market-id';
+import { loadMarketOrderBook } from 'modules/orders/helpers/load-market-orderbook';
 
 export const loadAccountData = async (
   callback: NodeStyleCallback = logError
@@ -34,12 +35,16 @@ export const loadAccountData = async (
     }
     loadAccountHistory();
     checkAccountAllowance();
-    loadUniverseDetails(universe.id, address);
-    getEthToDaiRate();
-    getRepToDaiRate();
+    loadGasPriceInfo();
+    const marketId = getTradePageMarketId();
+    if (marketId) {
+      loadMarketOrderBook(marketId);
+    }
     registerUserDefinedGasPriceFunction(
       gasPriceInfo.userDefinedGasPrice,
       gasPriceInfo.average
     );
+
+    loadUniverseDetails(universe.id, address);
   }
 };

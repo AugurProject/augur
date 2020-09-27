@@ -110,7 +110,7 @@ export async function _beforeEach(allState: AllState): Promise<SomeState> {
   const { baseProvider } = allState;
 
   const provider = await baseProvider.fork();
-  const config = baseProvider.getConfig({ gsn: { enabled: true } });
+  const config = baseProvider.getConfig();
   const john = await TestContractAPI.userWrapper(ACCOUNTS[0], provider, config);
   const mary = await TestContractAPI.userWrapper(ACCOUNTS[1], provider, config);
   const bob = await TestContractAPI.userWrapper(ACCOUNTS[2], provider, config);

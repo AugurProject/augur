@@ -121,6 +121,8 @@ export class UniswapV2Pair extends c.UniswapV2Pair<BigNumber> {
 }
 export class UniswapV2Router02 extends c.UniswapV2Router02<BigNumber> {
 }
+export class AccountLoader extends c.AccountLoader<BigNumber> {
+}
 export class AuditFunds extends c.AuditFunds<BigNumber> {
 }
 export class BuyParticipationTokens extends c.BuyParticipationTokens<BigNumber> {

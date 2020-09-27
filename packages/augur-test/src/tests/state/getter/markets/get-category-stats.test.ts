@@ -106,14 +106,14 @@ describe('State API :: Markets :: Categories', () => {
       common: {
         category: 'common',
         numberOfMarkets: 2,
-        volume: '110000.00',
-        openInterest: '90000.00',
+        volume: '650000.00',
+        openInterest: '450000.00',
         categories: {
           'yesno 1 secondary': {
             category: 'yesno 1 secondary',
             numberOfMarkets: 1,
-            volume: '60000.00',
-            openInterest: '40000.00',
+            volume: '600000.00',
+            openInterest: '400000.00',
             categories: {},
           },
           'scalar 1 secondary': {
