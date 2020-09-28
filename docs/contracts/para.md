@@ -3967,6 +3967,40 @@ Allows the current owner to transfer control of the contract to a newOwner.
 
 
 
+### `ITrade`
+
+
+
+<div class="contract-index"><span class="contract-index-title">Functions</span><ul><li><a href="#ITrade.publicTrade(enum Order.TradeDirections,contract IMarket,uint256,uint256,uint256,bytes32,bytes32,uint256)"><code class="function-signature">publicTrade(enum Order.TradeDirections _direction, contract IMarket _market, uint256 _outcome, uint256 _amount, uint256 _price, bytes32 _betterOrderId, bytes32 _worseOrderId, uint256 _tradeGroupID)</code></a></li><li><a href="#ITrade.publicFillBestOrder(enum Order.TradeDirections,contract IMarket,uint256,uint256,uint256,uint256)"><code class="function-signature">publicFillBestOrder(enum Order.TradeDirections _direction, contract IMarket _market, uint256 _outcome, uint256 _amount, uint256 _price, uint256 _tradeGroupID)</code></a></li><li><a href="#ITrade.trade(address,enum Order.TradeDirections,contract IMarket,uint256,uint256,uint256,bytes32,bytes32,uint256)"><code class="function-signature">trade(address _sender, enum Order.TradeDirections _direction, contract IMarket _market, uint256 _outcome, uint256 _amount, uint256 _price, bytes32 _betterOrderId, bytes32 _worseOrderId, uint256 _tradeGroupID)</code></a></li><li><a href="#ITrade.fillBestOrder(address,enum Order.TradeDirections,contract IMarket,uint256,uint256,uint256,uint256)"><code class="function-signature">fillBestOrder(address _sender, enum Order.TradeDirections _direction, contract IMarket _market, uint256 _outcome, uint256 _amount, uint256 _price, uint256 _tradeGroupID)</code></a></li></ul></div>
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="ITrade.publicTrade(enum Order.TradeDirections,contract IMarket,uint256,uint256,uint256,bytes32,bytes32,uint256)"></a><code class="function-signature">publicTrade(enum Order.TradeDirections _direction, contract IMarket _market, uint256 _outcome, uint256 _amount, uint256 _price, bytes32 _betterOrderId, bytes32 _worseOrderId, uint256 _tradeGroupID) <span class="return-arrow">→</span> <span class="return-type">bytes32</span></code><span class="function-visibility">external</span></h4>
+
+
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="ITrade.publicFillBestOrder(enum Order.TradeDirections,contract IMarket,uint256,uint256,uint256,uint256)"></a><code class="function-signature">publicFillBestOrder(enum Order.TradeDirections _direction, contract IMarket _market, uint256 _outcome, uint256 _amount, uint256 _price, uint256 _tradeGroupID) <span class="return-arrow">→</span> <span class="return-type">uint256</span></code><span class="function-visibility">external</span></h4>
+
+
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="ITrade.trade(address,enum Order.TradeDirections,contract IMarket,uint256,uint256,uint256,bytes32,bytes32,uint256)"></a><code class="function-signature">trade(address _sender, enum Order.TradeDirections _direction, contract IMarket _market, uint256 _outcome, uint256 _amount, uint256 _price, bytes32 _betterOrderId, bytes32 _worseOrderId, uint256 _tradeGroupID) <span class="return-arrow">→</span> <span class="return-type">bytes32</span></code><span class="function-visibility">internal</span></h4>
+
+
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="ITrade.fillBestOrder(address,enum Order.TradeDirections,contract IMarket,uint256,uint256,uint256,uint256)"></a><code class="function-signature">fillBestOrder(address _sender, enum Order.TradeDirections _direction, contract IMarket _market, uint256 _outcome, uint256 _amount, uint256 _price, uint256 _tradeGroupID) <span class="return-arrow">→</span> <span class="return-type">uint256</span></code><span class="function-visibility">internal</span></h4>
+
+
+
+
+
+
+
 ### `ITradeFactory`
 
 
@@ -4019,7 +4053,7 @@ Allows the current owner to transfer control of the contract to a newOwner.
 
 
 
-<div class="contract-index"><span class="contract-index-title">Functions</span><ul><li><a href="#ParaDeployer.constructor(contract IAugur,address,address,address,address,contract IOINexus,address,address,struct ParaDeployer.Factories)"><code class="function-signature">constructor(contract IAugur _augur, address _feePotFactory, address _paraUniverseFactory, address _openInterestCashFactory, address _OICash, contract IOINexus _OINexus, address _zeroXExchange, address _WETH9, struct ParaDeployer.Factories _factories)</code></a></li><li><a href="#ParaDeployer.addToken(address)"><code class="function-signature">addToken(address _token)</code></a></li><li><a href="#ParaDeployer.progressDeployment(address)"><code class="function-signature">progressDeployment(address _token)</code></a></li><li><a href="#ParaDeployer.onTransferOwnership(address,address)"><code class="function-signature">onTransferOwnership(address, address)</code></a></li><li class="inherited"><a href="para#Ownable.constructor()"><code class="function-signature">constructor()</code></a></li><li class="inherited"><a href="para#Ownable.getOwner()"><code class="function-signature">getOwner()</code></a></li><li class="inherited"><a href="para#Ownable.transferOwnership(address)"><code class="function-signature">transferOwnership(address _newOwner)</code></a></li></ul><span class="contract-index-title">Events</span><ul><li><a href="#ParaDeployer.ParaAugurDeployFinished(contract IParaShareToken,contract ICash,contract IOINexus)"><code class="function-signature">ParaAugurDeployFinished(contract IParaShareToken shareToken, contract ICash cash, contract IOINexus OINexus)</code></a></li></ul></div>
+<div class="contract-index"><span class="contract-index-title">Functions</span><ul><li><a href="#ParaDeployer.constructor(contract IAugur,address,address,address,address,contract IOINexus,address,address,struct ParaDeployer.Factories)"><code class="function-signature">constructor(contract IAugur _augur, address _feePotFactory, address _paraUniverseFactory, address _openInterestCashFactory, address _OICash, contract IOINexus _OINexus, address _zeroXExchange, address _WETH9, struct ParaDeployer.Factories _factories)</code></a></li><li><a href="#ParaDeployer.addToken(address)"><code class="function-signature">addToken(address _token)</code></a></li><li><a href="#ParaDeployer.progressDeployment(address)"><code class="function-signature">progressDeployment(address _token)</code></a></li><li><a href="#ParaDeployer.onTransferOwnership(address,address)"><code class="function-signature">onTransferOwnership(address, address)</code></a></li><li class="inherited"><a href="para#Ownable.constructor()"><code class="function-signature">constructor()</code></a></li><li class="inherited"><a href="para#Ownable.getOwner()"><code class="function-signature">getOwner()</code></a></li><li class="inherited"><a href="para#Ownable.transferOwnership(address)"><code class="function-signature">transferOwnership(address _newOwner)</code></a></li></ul><span class="contract-index-title">Events</span><ul><li><a href="#ParaDeployer.ParaAugurDeployFinished(contract IParaAugur,contract IParaShareToken,contract ICash,contract IOINexus)"><code class="function-signature">ParaAugurDeployFinished(contract IParaAugur paraAugur, contract IParaShareToken shareToken, contract ICash cash, contract IOINexus OINexus)</code></a></li><li><a href="#ParaDeployer.ParaAugurTradingDeployed(contract IParaAugurTrading,contract ICash)"><code class="function-signature">ParaAugurTradingDeployed(contract IParaAugurTrading paraAugur, contract ICash cash)</code></a></li></ul></div>
 
 
 
@@ -4049,7 +4083,13 @@ Allows the current owner to transfer control of the contract to a newOwner.
 
 
 
-<h4><a class="anchor" aria-hidden="true" id="ParaDeployer.ParaAugurDeployFinished(contract IParaShareToken,contract ICash,contract IOINexus)"></a><code class="function-signature">ParaAugurDeployFinished(contract IParaShareToken shareToken, contract ICash cash, contract IOINexus OINexus)</code><span class="function-visibility"></span></h4>
+<h4><a class="anchor" aria-hidden="true" id="ParaDeployer.ParaAugurDeployFinished(contract IParaAugur,contract IParaShareToken,contract ICash,contract IOINexus)"></a><code class="function-signature">ParaAugurDeployFinished(contract IParaAugur paraAugur, contract IParaShareToken shareToken, contract ICash cash, contract IOINexus OINexus)</code><span class="function-visibility"></span></h4>
+
+
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="ParaDeployer.ParaAugurTradingDeployed(contract IParaAugurTrading,contract ICash)"></a><code class="function-signature">ParaAugurTradingDeployed(contract IParaAugurTrading paraAugur, contract ICash cash)</code><span class="function-visibility"></span></h4>
 
 
 

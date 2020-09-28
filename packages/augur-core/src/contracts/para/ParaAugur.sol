@@ -43,6 +43,7 @@ contract ParaAugur is IParaAugur, IAugurCreationDataGetter, Ownable {
     IParaUniverseFactory public paraUniverseFactory;
     IOINexus public OINexus;
 
+
     constructor(IAugur _augur) public {
         owner = msg.sender;
         augur = _augur;

@@ -25229,6 +25229,12 @@
 			"inputs": [
 				{
 					"indexed": false,
+					"internalType": "contract IParaAugur",
+					"name": "paraAugur",
+					"type": "address"
+				},
+				{
+					"indexed": false,
 					"internalType": "contract IParaShareToken",
 					"name": "shareToken",
 					"type": "address"
@@ -25247,6 +25253,25 @@
 				}
 			],
 			"name": "ParaAugurDeployFinished",
+			"type": "event"
+		},
+		{
+			"anonymous": false,
+			"inputs": [
+				{
+					"indexed": false,
+					"internalType": "contract IParaAugurTrading",
+					"name": "paraAugur",
+					"type": "address"
+				},
+				{
+					"indexed": false,
+					"internalType": "contract ICash",
+					"name": "cash",
+					"type": "address"
+				}
+			],
+			"name": "ParaAugurTradingDeployed",
 			"type": "event"
 		},
 		{
