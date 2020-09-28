@@ -39,10 +39,12 @@ function updateBalances(values) {
     walletLegacyREP,
   } = values;
   const dai2Eth = formatAttoDai(attoDAIperETH);
-  AppStatus.actions.setEthToDaiRate(dai2Eth);
-  AppStatus.actions.setRepToDaiRate(formatAttoDai(attoDAIperREP));
-  AppStatus.actions.setUsdcToDaiRate(formatAttoDai(attoDAIperUSDT));
-  AppStatus.actions.setUsdtToDaiRate(formatAttoDai(attoDAIperUSDC));
+  AppStatus.actions.updateDaiRates({
+    ethToDaiRate: dai2Eth,
+    repToDaiRate: formatAttoDai(attoDAIperREP),
+    usdcToDaiRate: formatAttoDai(attoDAIperUSDC),
+    usdtToDaiRate: formatAttoDai(attoDAIperUSDT)
+  })
 
   const daiBalance = String(createBigNumber(String(signerDAI)).dividedBy(ETHER));
   const signerEthBalance = String(

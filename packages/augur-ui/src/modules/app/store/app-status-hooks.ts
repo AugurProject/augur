@@ -43,7 +43,7 @@ import {
   DRAFTS,
   NEW_MARKET,
   MARKETS_LIST,
-  INITIALIZED_3BOX
+  INITIALIZED_3BOX,
 } from 'modules/app/store/constants';
 import { EMPTY_STATE } from 'modules/create-market/constants';
 import { ZERO, NEW_ORDER_GAS_ESTIMATE, THEMES } from 'modules/common/constants';
@@ -67,6 +67,7 @@ const {
   SET_REP_TO_DAI_RATE,
   SET_USDT_TO_DAI_RATE,
   SET_USDC_TO_DAI_RATE,
+  UPDATE_DAI_RATES,
   SET_Ox_STATUS,
   SET_RESTORED_ACCOUNT,
   SET_IS_LOGGED,
@@ -110,7 +111,7 @@ const {
   UPDATE_NEW_MARKET,
   CLEAR_NEW_MARKET,
   UPDATE_MARKETS_LIST,
-  SET_BETSLIP_MINIMIZED
+  SET_BETSLIP_MINIMIZED,
 } = APP_STATUS_ACTIONS;
 
 export const setHTMLTheme = theme =>
@@ -230,6 +231,17 @@ export function AppStatusReducer(state, action) {
       updatedState[USDC_TO_DAI_RATE] = action.usdcToDaiRate;
       break;
     }
+    case UPDATE_DAI_RATES: {
+      updatedState[ETH_TO_DAI_RATE] =
+        action.ethToDaiRate || updatedState[ETH_TO_DAI_RATE];
+      updatedState[REP_TO_DAI_RATE] =
+        action.repToDaiRate || updatedState[REP_TO_DAI_RATE];
+      updatedState[USDT_TO_DAI_RATE] =
+        action.usdtToDaiRate || updatedState[USDT_TO_DAI_RATE];
+      updatedState[USDC_TO_DAI_RATE] =
+        action.usdcToDaiRate || updatedState[USDC_TO_DAI_RATE];
+      break;
+    }
     case SET_Ox_STATUS: {
       updatedState[Ox_STATUS] = action.OxStatus;
       break;
@@ -296,7 +308,7 @@ export function AppStatusReducer(state, action) {
       if (updatedState[IS_LOGGED]) {
         updatedState[LOGIN_ACCOUNT].settings = {
           ...updatedState[LOGIN_ACCOUNT].settings,
-          ...action.filterSortOptions
+          ...action.filterSortOptions,
         };
         delete updatedState[LOGIN_ACCOUNT].settings.limit;
         delete updatedState[LOGIN_ACCOUNT].settings.offset;
@@ -544,7 +556,8 @@ export function AppStatusReducer(state, action) {
         outcomeName,
         outcomeId,
       } = orderToAdd;
-      const existingOrders = updatedState[NEW_MARKET].orderBook[outcomeId] || [];
+      const existingOrders =
+        updatedState[NEW_MARKET].orderBook[outcomeId] || [];
 
       let orderAdded = false;
 
@@ -661,11 +674,9 @@ export function AppStatusReducer(state, action) {
       break;
     }
     default:
-      console.error(
-        `Error: ${action.type} not caught by App Status reducer.`
-      );
+      console.error(`Error: ${action.type} not caught by App Status reducer.`);
   }
-  // console.log(action.type, updatedState, action);
+  console.log('appStatus update:', action.type, updatedState, action);
   window.appStatus = updatedState;
   window.stores.appStatus = updatedState;
   return updatedState;
@@ -689,7 +700,8 @@ export const useAppStatus = (defaultState = DEFAULT_APP_STATUS) => {
         dispatch({ type: SET_THEME, theme });
       },
       setOdds: odds => dispatch({ type: SET_ODDS, odds }),
-      setTimeFormat: timeFormat => dispatch({ type: SET_TIME_FORMAT, timeFormat }),
+      setTimeFormat: timeFormat =>
+        dispatch({ type: SET_TIME_FORMAT, timeFormat }),
       setIsOddsMenuOpen: isOpen =>
         dispatch({ type: SET_IS_ODDS_MENU_OPEN, isOpen }),
       setIsHelpMenuOpen: isOpen =>
@@ -702,6 +714,7 @@ export const useAppStatus = (defaultState = DEFAULT_APP_STATUS) => {
       setIsMobile: isMobile => dispatch({ type: SET_IS_MOBILE, isMobile }),
       setOxEnabled: isOxEnabled =>
         dispatch({ type: SET_Ox_ENABLED, isOxEnabled }),
+      updateDaiRates: rates => dispatch({ type: UPDATE_DAI_RATES, ...rates }),
       setEthToDaiRate: ethToDaiRate =>
         dispatch({ type: SET_ETH_TO_DAI_RATE, ethToDaiRate }),
       setRepToDaiRate: repToDaiRate =>
@@ -737,7 +750,7 @@ export const useAppStatus = (defaultState = DEFAULT_APP_STATUS) => {
       closeModal: () => dispatch({ type: CLOSE_MODAL }),
       updateUniverse: universe => dispatch({ type: UPDATE_UNIVERSE, universe }),
       switchUniverse: () => dispatch({ type: SWITCH_UNIVERSE }),
-      updateLoginAccount: (loginAccount) =>
+      updateLoginAccount: loginAccount =>
         dispatch({ type: UPDATE_LOGIN_ACCOUNT, loginAccount }),
       clearLoginAccount: () => dispatch({ type: CLEAR_LOGIN_ACCOUNT }),
       loadFavorites: favorites => dispatch({ type: LOAD_FAVORITES, favorites }),
@@ -748,15 +761,9 @@ export const useAppStatus = (defaultState = DEFAULT_APP_STATUS) => {
       updateAlert: (id, alert) => dispatch({ type: UPDATE_ALERT, alert, id }),
       removeAlert: (id, name) => dispatch({ type: REMOVE_ALERT, id, name }),
       clearAlerts: level => dispatch({ type: CLEAR_ALERTS, level }),
-      setInitialized3Box: initialized3Box => dispatch({ type: SET_INITIALIZED_3BOX, initialized3Box }),
-      addPendingData: (
-        pendingId,
-        queueName,
-        status,
-        blockNumber,
-        hash,
-        info,
-      ) =>
+      setInitialized3Box: initialized3Box =>
+        dispatch({ type: SET_INITIALIZED_3BOX, initialized3Box }),
+      addPendingData: (pendingId, queueName, status, blockNumber, hash, info) =>
         dispatch({
           type: ADD_PENDING_DATA,
           pendingId,
@@ -781,7 +788,8 @@ export const useAppStatus = (defaultState = DEFAULT_APP_STATUS) => {
           blockNumber,
           queueName,
         }),
-      setBetslipMinimized: (betslipMinimized) => dispatch({ type: SET_BETSLIP_MINIMIZED, betslipMinimized }),
+      setBetslipMinimized: betslipMinimized =>
+        dispatch({ type: SET_BETSLIP_MINIMIZED, betslipMinimized }),
       removePendingData: ({ pendingId, queueName, hash }) =>
         dispatch({ type: REMOVE_PENDING_DATA, pendingId, queueName, hash }),
       refreshUserOpenOrders: userOpenOrders =>
