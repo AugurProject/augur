@@ -24,7 +24,7 @@ def account0(sessionFixture):
     return sessionFixture.accounts[0]
 
 
-def test_amm_liquidity(contractsFixture, market, cash, shareToken, amm, account0, kitchenSinkSnapshot):
+def test_amm_liquidity(contractsFixture, market, cash, shareToken, factory, amm, account0, kitchenSinkSnapshot):
     if not contractsFixture.paraAugur:
         return skip("Test is only for para augur")
 
@@ -32,7 +32,7 @@ def test_amm_liquidity(contractsFixture, market, cash, shareToken, amm, account0
     cost = sets * 1000
 
     cash.faucet(cost)
-    cash.approve(amm.address, 10 ** 48)
+    cash.approve(factory.address, 10 ** 48)
 
     amm.addLiquidity(sets)
 
@@ -64,12 +64,12 @@ def test_amm_liquidity(contractsFixture, market, cash, shareToken, amm, account0
     assert shareToken.balanceOfMarketOutcome(market.address, NO, amm.address) == remainingSets
     assert shareToken.balanceOfMarketOutcome(market.address, YES, amm.address) == remainingSets
 
-def test_amm_position(contractsFixture, market, shareToken, cash, amm, account0):
+def test_amm_position(contractsFixture, market, shareToken, cash, factory, amm, account0):
     if not contractsFixture.paraAugur:
         return skip("Test is only for para augur")
 
     cash.faucet(100000 * ATTO)
-    cash.approve(amm.address, 10 ** 48)
+    cash.approve(factory.address, 10 ** 48)
     shareToken.setApprovalForAll(amm.address, True)
     amm.addLiquidity(100 * ATTO)
 
@@ -100,12 +100,12 @@ def test_amm_position(contractsFixture, market, shareToken, cash, amm, account0)
     assert shareToken.balanceOfMarketOutcome(market.address, NO, account0) == 0
     assert shareToken.balanceOfMarketOutcome(market.address, YES, account0) == 0
 
-def test_amm_swap(contractsFixture, market, shareToken, cash, amm, account0):
+def test_amm_swap(contractsFixture, market, shareToken, cash, factory, amm, account0):
     if not contractsFixture.paraAugur:
         return skip("Test is only for para augur")
 
     cash.faucet(100000 * ATTO)
-    cash.approve(amm.address, 10 ** 48)
+    cash.approve(factory.address, 10 ** 48)
     shareToken.setApprovalForAll(amm.address, True)
     amm.addLiquidity(100 * ATTO)
 
@@ -128,14 +128,14 @@ def test_amm_swap(contractsFixture, market, shareToken, cash, amm, account0):
     assert shareToken.balanceOfMarketOutcome(market.address, NO, account0) == noSharesReceived
     assert shareToken.balanceOfMarketOutcome(market.address, YES, account0) == yesShares - ATTO # spent one Yes share to buy some No shares
 
-def test_amm_fees(contractsFixture, market, shareToken, cash, amm, account0):
+def test_amm_fees(contractsFixture, market, shareToken, cash, factory, amm, account0):
     if not contractsFixture.paraAugur:
         return skip("Test is only for para augur")
 
     cost = 100000 * ATTO
     sets = cost // market.getNumTicks()
     cash.faucet(cost)
-    cash.approve(amm.address, 10 ** 48)
+    cash.approve(factory.address, 10 ** 48)
     shareToken.setApprovalForAll(amm.address, True)
 
     lpTokens = amm.rateAddLiquidity(sets, sets)
@@ -169,14 +169,14 @@ def test_amm_fees(contractsFixture, market, shareToken, cash, amm, account0):
 #       I tried adding cash to the average of the shares. It ended up with ~10.07 avg shares and ~1003 cash.
 #           Need to calculate the actual value of the shares, not just their average quantities.
 @mark.skip("TODO")
-def test_amm_lp_fee_lp_withdraw(contractsFixture, market, shareToken, cash, amm):
+def test_amm_lp_fee_lp_withdraw(contractsFixture, market, shareToken, cash, factory, amm):
     if not contractsFixture.paraAugur:
         return skip("Test is only for para augur")
 
     cost = 100000 * ATTO
     sets = cost // market.getNumTicks()
     cash.faucet(cost)
-    cash.approve(amm.address, 10 ** 48)
+    cash.approve(factory.address, 10 ** 48)
     shareToken.setApprovalForAll(amm.address, True)
     lpTokens = amm.addLiquidity(sets)
 

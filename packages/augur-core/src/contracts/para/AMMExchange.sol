@@ -1,30 +1,24 @@
 pragma solidity 0.5.15;
 
-import 'ROOT/libraries/math/SafeMathUint256.sol';
-import 'ROOT/libraries/math/SafeMathInt256.sol';
-import 'ROOT/libraries/token/ERC20.sol';
-import 'ROOT/para/interfaces/IParaShareToken.sol';
-import 'ROOT/reporting/IMarket.sol';
 import 'ROOT/ICash.sol';
+import 'ROOT/reporting/IMarket.sol';
+import 'ROOT/libraries/token/ERC20.sol';
+import 'ROOT/libraries/math/SafeMathInt256.sol';
+import 'ROOT/libraries/math/SafeMathUint256.sol';
+import 'ROOT/para/interfaces/IParaShareToken.sol';
+import "ROOT/para/interfaces/IAMMFactory.sol";
+import "ROOT/para/interfaces/IAMMExchange.sol";
 
 
-contract AMMExchange is ERC20 {
+contract AMMExchange is IAMMExchange, ERC20 {
     using SafeMathUint256 for uint256;
 	using SafeMathInt256 for int256;
-
-    ICash public cash;
-    IParaShareToken public shareToken;
-    IMarket public augurMarket;
-    uint256 public numTicks;
-    uint256 public INVALID;
-    uint256 public NO;
-    uint256 public YES;
-    uint256 public fee; // [0-1000] how many thousandths of swaps should be kept as fees
 
     function initialize(IMarket _market, IParaShareToken _shareToken, uint256 _fee) public {
         require(cash == ICash(0)); // can only initialize once
         require(_fee <= 1000); // fee must be [0,1000]
 
+        factory = IAMMFactory(msg.sender);
         cash = _shareToken.cash();
         shareToken = _shareToken;
         augurMarket = _market;
@@ -41,7 +35,7 @@ contract AMMExchange is ERC20 {
     function addLiquidity(uint256 _setsToBuy) public returns (uint256) {
         uint256 _lpTokensGained = rateAddLiquidity(_setsToBuy, _setsToBuy);
 
-        cash.transferFrom(msg.sender, address(this), _setsToBuy.mul(numTicks));
+        factory.transferCash(augurMarket, shareToken, msg.sender, address(this), _setsToBuy.mul(numTicks));
         shareToken.publicBuyCompleteSets(augurMarket, _setsToBuy);
         _mint(msg.sender, _lpTokensGained);
         return _lpTokensGained;
@@ -52,7 +46,7 @@ contract AMMExchange is ERC20 {
     function addLiquidityThenSwap(uint256 _setsToBuy, bool _swapForYes, uint256 _swapHowMuch) external returns (uint256) {
         uint256 _lpTokensGained = rateAddLiquidityThenSwap(_setsToBuy, _swapForYes, _swapHowMuch);
 
-        cash.transferFrom(msg.sender, address(this), _setsToBuy.mul(numTicks));
+        factory.transferCash(augurMarket, shareToken, msg.sender, address(this), _setsToBuy.mul(numTicks));
         shareToken.publicBuyCompleteSets(augurMarket, _setsToBuy);
         _mint(msg.sender, _lpTokensGained);
         return _lpTokensGained;
@@ -80,11 +74,11 @@ contract AMMExchange is ERC20 {
 
         uint256 _yesses; uint256 _nos;
         if (_swapForYes) {
-            uint256 _yesses = _keptSets.add(_gainedShares);
-            uint256 _nos = _keptSets;
+            _yesses = _keptSets.add(_gainedShares);
+            _nos = _keptSets;
         } else {
-            uint256 _yesses = _keptSets;
-            uint256 _nos = _keptSets.add(_gainedShares);
+            _yesses = _keptSets;
+            _nos = _keptSets.add(_gainedShares);
         }
 
         return rateAddLiquidity(_yesses, _nos);
@@ -147,7 +141,7 @@ contract AMMExchange is ERC20 {
 
         require(_sharesToBuy >= _minShares, "AugurCP: Too few shares would be received for given cash.");
 
-        cash.transferFrom(msg.sender, address(this), _cashCost);
+        factory.transferCash(augurMarket, shareToken, msg.sender, address(this), _cashCost);
 
         uint256 _setsToBuy = _cashCost.div(numTicks);
 

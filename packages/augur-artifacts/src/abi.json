@@ -21650,6 +21650,21 @@
 		{
 			"constant": true,
 			"inputs": [],
+			"name": "factory",
+			"outputs": [
+				{
+					"internalType": "contract IAMMFactory",
+					"name": "",
+					"type": "address"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [],
 			"name": "fee",
 			"outputs": [
 				{
@@ -22180,7 +22195,7 @@
 			"name": "addAMM",
 			"outputs": [
 				{
-					"internalType": "contract AMMExchange",
+					"internalType": "address",
 					"name": "",
 					"type": "address"
 				}
@@ -22285,6 +22300,41 @@
 			],
 			"payable": false,
 			"stateMutability": "pure",
+			"type": "function"
+		},
+		{
+			"constant": false,
+			"inputs": [
+				{
+					"internalType": "contract IMarket",
+					"name": "_market",
+					"type": "address"
+				},
+				{
+					"internalType": "contract IParaShareToken",
+					"name": "_para",
+					"type": "address"
+				},
+				{
+					"internalType": "address",
+					"name": "sender",
+					"type": "address"
+				},
+				{
+					"internalType": "address",
+					"name": "recipient",
+					"type": "address"
+				},
+				{
+					"internalType": "uint256",
+					"name": "quantity",
+					"type": "uint256"
+				}
+			],
+			"name": "transferCash",
+			"outputs": [],
+			"payable": false,
+			"stateMutability": "nonpayable",
 			"type": "function"
 		}
 	],
