@@ -873,7 +873,6 @@ export const SportsMarketContainer = ({
   useEffect(() => {
     if (isFutures) {
       const clipboardMarketId = new Clipboard('#copy_marketId');
-      const clipboardAuthor = new Clipboard('#copy_author');
     }
   }, [market.id, market.author]);
   let innerContent = null;
@@ -921,13 +920,6 @@ export const SportsMarketContainer = ({
           >
             {CopyAlternateIcon} {COPY_MARKET_LINK}
           </div>
-          {/* <div
-            id="copy_author"
-            data-clipboard-text={market.author}
-            onClick={() => copyClicked()}
-          >
-            {Person} {COPY_AUTHOR}
-          </div> */}
         </DotSelection>
         <FavoritesButton marketId={marketId} hideText disabled={!isLogged} />
       </Fragment>
