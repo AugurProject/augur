@@ -19,14 +19,15 @@ import 'ROOT/para/deployerFactories/interfaces/ISimulateTradeFactory.sol';
 import 'ROOT/para/deployerFactories/interfaces/ITradeFactory.sol';
 import 'ROOT/para/deployerFactories/interfaces/IZeroXTradeFactory.sol';
 import 'ROOT/libraries/Ownable.sol';
+import "ROOT/trading/ITrade.sol";
 
 interface ITradingInitializable {
     function initialize(IParaAugur, IParaAugurTrading) external;
 }
 
-
 contract ParaDeployer is Ownable {
-    event ParaAugurDeployFinished(IParaShareToken shareToken, ICash cash, IOINexus OINexus);
+    event ParaAugurDeployFinished(IParaAugur paraAugur, IParaShareToken shareToken, ICash cash, IOINexus OINexus);
+    event ParaAugurTradingDeployed(IParaAugurTrading paraAugur, ICash cash);
 
     enum DeployProgress {
         NOT_ALLOWED,
@@ -138,7 +139,7 @@ contract ParaDeployer is Ownable {
 
         if(paraDeployProgress[_token] == DeployProgress.FINISHED) {
             IParaAugur _paraAugur =  paraAugurs[_token];
-            emit ParaAugurDeployFinished(_paraAugur.shareToken(), _paraAugur.cash(), _paraAugur.OINexus());
+            emit ParaAugurDeployFinished(_paraAugur, _paraAugur.shareToken(), _paraAugur.cash(), _paraAugur.OINexus());
         }
 
         return true;
@@ -171,6 +172,8 @@ contract ParaDeployer is Ownable {
         paraAugurTradings[_token] = _paraAugurTrading;
         _paraAugurTrading.registerContract("ZeroXExchange", zeroXExchange);
         _paraAugurTrading.registerContract("WETH9", WETH9);
+
+        emit ParaAugurTradingDeployed(_paraAugurTrading, ICash(_token));
     }
 
     function deployCreateOrder(address _token) private {
@@ -206,6 +209,7 @@ contract ParaDeployer is Ownable {
     function deployTrade(address _token) private {
         address _trade = factories.tradeFactory.createTrade();
         paraAugurTradings[_token].registerContract("Trade", _trade);
+        IParaAugur _paraAugur =  paraAugurs[_token];
     }
 
     function deployZeroXTrade(address _token) private {
