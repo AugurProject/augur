@@ -26,10 +26,7 @@ import { augurSdk } from 'services/augursdk';
 import { SportsGroupCharts } from 'modules/market-charts/sports-group-charts';
 import { MarketComments } from 'modules/market/components/common/comments/market-comments';
 import { getNetworkId } from 'modules/contracts/actions/contractCalls';
-import {
-  REPORTING_STATE,
-  THEMES,
-} from 'modules/common/constants';
+import { REPORTING_STATE, THEMES } from 'modules/common/constants';
 import { FilterNotice } from 'modules/common/filter-notice';
 import { ParagraphButton } from 'modules/common/buttons';
 import { useAppStatusStore } from 'modules/app/store/app-status';
@@ -55,10 +52,11 @@ const BettingMarketView = () => {
     actions: { updateMarketsData, bulkMarketTradingHistory },
   } = useMarketsStore();
   const {
-    actions: { setTheme }
+    actions: { setTheme },
   } = useAppStatusStore();
   const location = useLocation();
   const [showCopied, setShowCopied] = useState(false);
+  const [forceLoad, setForceLoad] = useState(false);
   const totalBets = useRef(0);
   const totalBettors = useRef(0);
   const uniqueAddresses = useRef([]);
@@ -72,9 +70,12 @@ const BettingMarketView = () => {
 
   useEffect(() => {
     if (!market?.sportsBook) {
-      updateMarketsData(null, loadMarketsInfo([marketId]));
+      updateMarketsData(
+        null,
+        loadMarketsInfo([marketId], () => setForceLoad(false))
+      );
     }
-  }, [augurSdk.client]);
+  }, [augurSdk.client, forceLoad]);
 
   useEffect(() => {
     let isMounted = true;
@@ -131,6 +132,9 @@ const BettingMarketView = () => {
   }, [marketTradingHistory[marketId]]);
 
   if (!market) {
+    if (augurSdk.client && market === null && !forceLoad) {
+      setForceLoad(true);
+    }
     return <div />;
   }
 
@@ -208,10 +212,13 @@ const BettingMarketView = () => {
               <div className={Styles.SpreadRisk}>
                 <span>
                   Spread market has a High risk of being resolve as invalid. If
-                  you want to exit your position, you must go to Trading and place
-                  lorem ipsum dolor sit amet.
+                  you want to exit your position, you must go to Trading and
+                  place lorem ipsum dolor sit amet.
                 </span>
-                <ParagraphButton text="Go to trading" action={() => setTheme(THEMES.TRADING)} />
+                <ParagraphButton
+                  text="Go to trading"
+                  action={() => setTheme(THEMES.TRADING)}
+                />
               </div>
             }
           />
@@ -236,7 +243,10 @@ const BettingMarketView = () => {
         )}
       </div>
       {sportsGroup.current && (
-        <SportsGroupCharts sportsGroup={sportsGroup.current} marketId={marketId} />
+        <SportsGroupCharts
+          sportsGroup={sportsGroup.current}
+          marketId={marketId}
+        />
       )}
       <div>
         <InfoTicket

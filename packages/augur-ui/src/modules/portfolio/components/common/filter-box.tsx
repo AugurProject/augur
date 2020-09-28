@@ -197,16 +197,16 @@ const FilterBox = ({
             />
           ) : (
             <div className={Styles.SportsAndBettingFilters}>
-              <span>Status:</span>
               <SquareDropdown
                 defaultValue={selectedTab}
+                minimalStyle
+                preLabel='status'
                 options={tabs}
-                onChange={(tab) => {
-                  setSelectedTab(tab);
-                }}
+                onChange={(tab) => setSelectedTab(tab)}
               />
-              <span>Sort by:</span>
               <SquareDropdown
+                minimalStyle
+                preLabel='sort by'
                 defaultValue={sortByOptions[0].value}
                 options={sortByOptions}
                 onChange={(sortBy) => setSortBy(sortBy)}
