@@ -344,6 +344,8 @@ type ParaShareToken @entity {
 
   "The share token contract from the core augur deploy "
   originalShareToken: ShareToken!
+
+  cash: Cash!
 }
 
 interface TokenEvent {
@@ -707,14 +709,6 @@ type Cash @entity {
   id: ID!
 }
 
-type CashBalance @entity {
-  id: ID!
-
-  amount: BigInt!
-
-  cash: Cash!
-}
-
 type AMMExchange @entity {
   id: ID!
 
@@ -722,6 +716,8 @@ type AMMExchange @entity {
   market: Market!
 
   cash: Cash!
+
+  cashBalance: BigInt!
 
   "The shareToken to be created, this will specify which para-augur is collateraizing the trading on the AMM"
   shareToken: ParaShareToken!
