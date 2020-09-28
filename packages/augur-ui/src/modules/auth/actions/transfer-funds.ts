@@ -42,7 +42,7 @@ export const transferFunds = (
     };
 
     await sendFunds(currency);
-    setTimeout(() => dispatch(updateAssets(true)), 1000);
+    setTimeout(() => dispatch(updateAssets()), 1000);
   };
 };
 
