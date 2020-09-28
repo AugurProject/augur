@@ -26,6 +26,7 @@ interface ITradingInitializable {
 
 
 contract ParaDeployer is Ownable {
+    event ParaAugurDeployFinished(IParaShareToken shareToken, ICash cash, IOINexus OINexus);
 
     enum DeployProgress {
         NOT_ALLOWED,
@@ -134,6 +135,12 @@ contract ParaDeployer is Ownable {
             createGenesisUniverse(_token);
         }
         paraDeployProgress[_token] = DeployProgress(uint256(_tokenProgress) + 1);
+
+        if(paraDeployProgress[_token] == DeployProgress.FINISHED) {
+            IParaAugur _paraAugur =  paraAugurs[_token];
+            emit ParaAugurDeployFinished(_paraAugur.shareToken(), _paraAugur.cash(), _paraAugur.OINexus());
+        }
+
         return true;
     }
 

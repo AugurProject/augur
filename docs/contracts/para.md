@@ -1229,6 +1229,34 @@ MUST emit when the URI is updated for a token ID.
 
 
 
+### `IOINexus`
+
+
+
+<div class="contract-index"><span class="contract-index-title">Functions</span><ul><li><a href="#IOINexus.addParaAugur(contract IParaAugur)"><code class="function-signature">addParaAugur(contract IParaAugur _paraAugur)</code></a></li><li><a href="#IOINexus.registerParaUniverse(contract IUniverse,contract IParaUniverse)"><code class="function-signature">registerParaUniverse(contract IUniverse _universe, contract IParaUniverse _paraUniverse)</code></a></li><li><a href="#IOINexus.recordParaUniverseValuesAndUpdateReportingFee(contract IUniverse,uint256,uint256)"><code class="function-signature">recordParaUniverseValuesAndUpdateReportingFee(contract IUniverse _universe, uint256 _targetRepMarketCapInAttoCash, uint256 _repMarketCapInAttoCash)</code></a></li></ul></div>
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="IOINexus.addParaAugur(contract IParaAugur)"></a><code class="function-signature">addParaAugur(contract IParaAugur _paraAugur) <span class="return-arrow">→</span> <span class="return-type">bool</span></code><span class="function-visibility">external</span></h4>
+
+
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="IOINexus.registerParaUniverse(contract IUniverse,contract IParaUniverse)"></a><code class="function-signature">registerParaUniverse(contract IUniverse _universe, contract IParaUniverse _paraUniverse)</code><span class="function-visibility">external</span></h4>
+
+
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="IOINexus.recordParaUniverseValuesAndUpdateReportingFee(contract IUniverse,uint256,uint256)"></a><code class="function-signature">recordParaUniverseValuesAndUpdateReportingFee(contract IUniverse _universe, uint256 _targetRepMarketCapInAttoCash, uint256 _repMarketCapInAttoCash) <span class="return-arrow">→</span> <span class="return-type">uint256</span></code><span class="function-visibility">external</span></h4>
+
+
+
+
+
+
+
 ### `IOrders`
 
 
@@ -2905,34 +2933,6 @@ MUST emit when the URI is updated for a token ID.
 
 
 
-### `IOINexus`
-
-
-
-<div class="contract-index"><span class="contract-index-title">Functions</span><ul><li><a href="#IOINexus.addParaAugur(contract IParaAugur)"><code class="function-signature">addParaAugur(contract IParaAugur _paraAugur)</code></a></li><li><a href="#IOINexus.registerParaUniverse(contract IUniverse,contract IParaUniverse)"><code class="function-signature">registerParaUniverse(contract IUniverse _universe, contract IParaUniverse _paraUniverse)</code></a></li><li><a href="#IOINexus.recordParaUniverseValuesAndUpdateReportingFee(contract IUniverse,uint256,uint256)"><code class="function-signature">recordParaUniverseValuesAndUpdateReportingFee(contract IUniverse _universe, uint256 _targetRepMarketCapInAttoCash, uint256 _repMarketCapInAttoCash)</code></a></li></ul></div>
-
-
-
-<h4><a class="anchor" aria-hidden="true" id="IOINexus.addParaAugur(contract IParaAugur)"></a><code class="function-signature">addParaAugur(contract IParaAugur _paraAugur) <span class="return-arrow">→</span> <span class="return-type">bool</span></code><span class="function-visibility">external</span></h4>
-
-
-
-
-
-<h4><a class="anchor" aria-hidden="true" id="IOINexus.registerParaUniverse(contract IUniverse,contract IParaUniverse)"></a><code class="function-signature">registerParaUniverse(contract IUniverse _universe, contract IParaUniverse _paraUniverse)</code><span class="function-visibility">external</span></h4>
-
-
-
-
-
-<h4><a class="anchor" aria-hidden="true" id="IOINexus.recordParaUniverseValuesAndUpdateReportingFee(contract IUniverse,uint256,uint256)"></a><code class="function-signature">recordParaUniverseValuesAndUpdateReportingFee(contract IUniverse _universe, uint256 _targetRepMarketCapInAttoCash, uint256 _repMarketCapInAttoCash) <span class="return-arrow">→</span> <span class="return-type">uint256</span></code><span class="function-visibility">external</span></h4>
-
-
-
-
-
-
-
 ### `OINexus`
 
 
@@ -3873,7 +3873,7 @@ Allows the current owner to transfer control of the contract to a newOwner.
 
 
 
-<div class="contract-index"><span class="contract-index-title">Functions</span><ul><li><a href="#ParaDeployer.constructor(contract IAugur,address,address,address,address,contract IOINexus,address,address,struct ParaDeployer.Factories)"><code class="function-signature">constructor(contract IAugur _augur, address _feePotFactory, address _paraUniverseFactory, address _openInterestCashFactory, address _OICash, contract IOINexus _OINexus, address _zeroXExchange, address _WETH9, struct ParaDeployer.Factories _factories)</code></a></li><li><a href="#ParaDeployer.addToken(address)"><code class="function-signature">addToken(address _token)</code></a></li><li><a href="#ParaDeployer.progressDeployment(address)"><code class="function-signature">progressDeployment(address _token)</code></a></li><li><a href="#ParaDeployer.onTransferOwnership(address,address)"><code class="function-signature">onTransferOwnership(address, address)</code></a></li><li class="inherited"><a href="para#Ownable.constructor()"><code class="function-signature">constructor()</code></a></li><li class="inherited"><a href="para#Ownable.getOwner()"><code class="function-signature">getOwner()</code></a></li><li class="inherited"><a href="para#Ownable.transferOwnership(address)"><code class="function-signature">transferOwnership(address _newOwner)</code></a></li></ul></div>
+<div class="contract-index"><span class="contract-index-title">Functions</span><ul><li><a href="#ParaDeployer.constructor(contract IAugur,address,address,address,address,contract IOINexus,address,address,struct ParaDeployer.Factories)"><code class="function-signature">constructor(contract IAugur _augur, address _feePotFactory, address _paraUniverseFactory, address _openInterestCashFactory, address _OICash, contract IOINexus _OINexus, address _zeroXExchange, address _WETH9, struct ParaDeployer.Factories _factories)</code></a></li><li><a href="#ParaDeployer.addToken(address)"><code class="function-signature">addToken(address _token)</code></a></li><li><a href="#ParaDeployer.progressDeployment(address)"><code class="function-signature">progressDeployment(address _token)</code></a></li><li><a href="#ParaDeployer.onTransferOwnership(address,address)"><code class="function-signature">onTransferOwnership(address, address)</code></a></li><li class="inherited"><a href="para#Ownable.constructor()"><code class="function-signature">constructor()</code></a></li><li class="inherited"><a href="para#Ownable.getOwner()"><code class="function-signature">getOwner()</code></a></li><li class="inherited"><a href="para#Ownable.transferOwnership(address)"><code class="function-signature">transferOwnership(address _newOwner)</code></a></li></ul><span class="contract-index-title">Events</span><ul><li><a href="#ParaDeployer.ParaAugurDeployFinished(contract IParaShareToken,contract ICash,contract IOINexus)"><code class="function-signature">ParaAugurDeployFinished(contract IParaShareToken shareToken, contract ICash cash, contract IOINexus OINexus)</code></a></li></ul></div>
 
 
 
@@ -3898,6 +3898,12 @@ Allows the current owner to transfer control of the contract to a newOwner.
 <h4><a class="anchor" aria-hidden="true" id="ParaDeployer.onTransferOwnership(address,address)"></a><code class="function-signature">onTransferOwnership(address, address)</code><span class="function-visibility">internal</span></h4>
 
 
+
+
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="ParaDeployer.ParaAugurDeployFinished(contract IParaShareToken,contract ICash,contract IOINexus)"></a><code class="function-signature">ParaAugurDeployFinished(contract IParaShareToken shareToken, contract ICash cash, contract IOINexus OINexus)</code><span class="function-visibility"></span></h4>
 
 
 
