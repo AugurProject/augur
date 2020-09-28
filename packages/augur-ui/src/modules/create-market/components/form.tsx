@@ -50,6 +50,8 @@ import {
   MODAL_CREATE_MARKET,
   YES_NO_OUTCOMES,
   ZERO,
+  MODAL_ADD_FUNDS,
+  ETH
 } from 'modules/common/constants';
 import { PrimaryButton, SecondaryButton } from 'modules/common/buttons';
 import {
@@ -85,7 +87,7 @@ import {
   convertUnixToFormattedDate,
 } from 'utils/format-date';
 import TemplatePicker from 'modules/create-market/components/template-picker';
-import { BulkTxLabel } from 'modules/common/labels';
+import { ApprovalTxButtonLabel, BulkTxLabel } from 'modules/common/labels';
 import Styles from 'modules/create-market/components/form.styles.less';
 import { MarketType } from 'modules/create-market/components/market-type';
 import {
@@ -122,6 +124,7 @@ import {
 } from 'services/analytics/helpers';
 import getValueFromlocalStorage from 'utils/get-local-storage-value';
 import parsePath from 'modules/routes/helpers/parse-path';
+import { approvalsNeededMarketCreation, approveMarketCreation } from 'modules/contracts/actions/contractCalls';
 
 interface FormProps {
   newMarket: NewMarket;
@@ -498,7 +501,8 @@ export const Form = ({ isTemplate, updatePage }) => {
   const {
     newMarket,
     drafts,
-    loginAccount: { allowance },
+    loginAccount: { address, allowance, balances },
+    gasPriceInfo,
     blockchain: { currentAugurTimestamp: currentTimestamp },
     actions: {
       setModal,
@@ -511,6 +515,9 @@ export const Form = ({ isTemplate, updatePage }) => {
   const [blockShown, setBlockShown] = useState(false);
   const [showPreview, setShowPreview] = useState(false);
   const [disableCreate, setDisableCreate] = useState(false);
+  const [isApproved, setIsApproved] = useState(false);
+  const gasPrice = gasPriceInfo.userDefinedGasPrice || gasPriceInfo.average;
+
   const history = useHistory();
   useEffect(() => {
     node?.current?.scrollIntoView();
@@ -863,11 +870,19 @@ export const Form = ({ isTemplate, updatePage }) => {
               />
             )}
             {secondButton === CREATE && (
-              <BulkTxLabel
+              <ApprovalTxButtonLabel
                 className={Styles.MultipleTransactions}
-                buttonName="Create"
-                count={1}
-                needsApproval={allowance.lte(ZERO)}
+                ignore={Boolean(process.env.REPORTING_ONLY)}
+                title={'Approve to create the market'}
+                buttonName={'Approve'}
+                userEthBalance={balances.eth}
+                gasPrice={gasPrice}
+                hideAddFunds
+                checkApprovals={approvalsNeededMarketCreation}
+                doApprovals={approveMarketCreation}
+                account={address}
+                isApprovalCallback={(isApproved) => { setIsApproved(isApproved)}}
+                approvalType={CREATE_MARKET}
               />
             )}
             <div>
@@ -893,7 +908,7 @@ export const Form = ({ isTemplate, updatePage }) => {
                 {secondButton === CREATE && (
                   <PrimaryButton
                     text="Create"
-                    disabled={disableCreateButton}
+                    disabled={disableCreateButton || !isApproved}
                     action={() => {
                       setBlockShown(true);
                       setModal({

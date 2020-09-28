@@ -1,5 +1,5 @@
 /* eslint react/prop-types: 0 */
-import React from 'react';
+import React, { useState } from 'react';
 
 import {
   CancelTextButton,
@@ -21,8 +21,9 @@ import {
   BulkTxLabel,
   ModalLabelNotice,
   TypeLabel,
+  ApprovalTxButtonLabel
 } from 'modules/common/labels';
-import { BUY, MAX_BULK_ORDER_COUNT, THEMES } from 'modules/common/constants';
+import { ADDLIQUIDITY, BUY, MAX_BULK_ORDER_COUNT, THEMES } from 'modules/common/constants';
 import { formatDai, formatMarketShares } from 'utils/format-number';
 import Styles from 'modules/modal/modal.styles.less';
 import OpenOrdersTable from 'modules/market/components/market-orders-positions-table/open-orders-table';
@@ -33,6 +34,7 @@ import { useAppStatusStore } from 'modules/app/store/app-status';
 import { usePendingOrdersStore } from 'modules/app/store/pending-orders';
 import { sendLiquidityOrder } from 'modules/orders/actions/liquidity-management';
 import { Trash } from 'modules/common/icons';
+import { approvalsNeededToTrade, approveToTrade } from 'modules/contracts/actions/contractCalls';
 
 interface UnsignedOrdersProps {
   closeAction: Function;
@@ -195,10 +197,32 @@ export const UnsignedOrders = ({
   header,
   description,
 }: UnsignedOrdersProps) => {
-  const { zeroXEnabled } = useAppStatusStore();
+  const { loginAccount, gasPriceInfo, zeroXEnabled } = useAppStatusStore();
+  const [processing, setProcessing] = useState(false);
+  const gasPrice = gasPriceInfo.userDefinedGasPrice || gasPriceInfo.average;
+  const [isApproved , setIsApproved] = useState(false);
+  const actionForSubmitAllButton = async () => {
+    setProcessing(true);
+    await buttons[0].action();
+    setProcessing(false);
+  }
+
   const submitAllTxCount = !zeroXEnabled
     ? Math.ceil(numberOfTransactions / MAX_BULK_ORDER_COUNT)
     : numberOfTransactions;
+
+
+  const newButtons = [
+    {
+      ...buttons[0],
+      text: processing ? 'Processing...' : buttons[0].text,
+      disabled: !isApproved || buttons[0].disabled || processing,
+      action: actionForSubmitAllButton,
+    },
+    {
+      ...buttons[1],
+    },
+  ];
 
   return (
     <div className={Styles.Orders}>
@@ -242,6 +266,21 @@ export const UnsignedOrders = ({
         )}
         {breakdown && <Breakdown rows={breakdown} short />}
       </main>
+      <ApprovalTxButtonLabel
+        className={Styles.MultipleTransactions}
+        ignore={Boolean(process.env.REPORTING_ONLY)}
+        title={'Approve to create orders'}
+        buttonName={'Approve'}
+        checkApprovals={approvalsNeededToTrade}
+        doApprovals={() => approveToTrade(loginAccount.address)}
+        account={loginAccount.address}
+        userEthBalance={loginAccount.balances.eth}
+        gasPrice={gasPrice}
+        approvalType={ADDLIQUIDITY}
+        isApprovalCallback={value => {
+          value && setIsApproved(value);
+        }}
+      />
       <BulkTxLabel
         buttonName="Submit All"
         count={submitAllTxCount}
@@ -256,7 +295,7 @@ export const UnsignedOrders = ({
           }`}
         />
       )}
-      <ButtonsRow buttons={buttons} />
+      <ButtonsRow buttons={newButtons} />
     </div>
   );
 };

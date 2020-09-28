@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import classNames from 'classnames';
 import {
   SCALAR,
@@ -37,13 +37,11 @@ import {
 import { createBigNumber } from 'utils/create-big-number';
 import { Trade, MarketData, OutcomeFormatted } from 'modules/types';
 import {
+  ApprovalTxButtonLabel,
   LinearPropertyLabel,
   TransactionFeeLabelToolTip,
 } from 'modules/common/labels';
 import { ExternalLinkButton, ProcessingButton } from 'modules/common/buttons';
-import { getGasInDai } from 'modules/app/actions/get-ethToDai-rate';
-import { TXEventName } from '@augurproject/sdk-lite';
-import { removePendingTransaction } from 'modules/pending-queue/actions/pending-queue-management';
 import { useAppStatusStore } from 'modules/app/store/app-status';
 import { totalTradingBalance } from 'modules/auth/helpers/login-account';
 import { useTradingStore } from 'modules/trading/store/trading';
@@ -392,6 +390,24 @@ export const Confirm = ({
             value={potentialDaiLoss}
             showDenomination
           />
+
+        { !tradingApproved && address && !tradingTutorial && !initialLiquidity &&
+          <ApprovalTxButtonLabel
+            title={'One time approval needed'}
+            buttonName={'Approve'}
+            userEthBalance={String(availableEth)}
+            gasPrice={gasPrice}
+            checkApprovals={() => approvalsNeededToTrade(address)}
+            doApprovals={() => approveToTrade(address)}
+            account={address}
+            approvalType={PUBLICTRADE}
+            isApprovalCallback={async () => {
+              const neededApprovals = await approvalsNeededToTrade(address);
+              return neededApprovals;
+            }}
+            addFunds={() => setModal({ TYPE: MODAL_ADD_FUNDS, fundType: ETH })}
+          />
+        }
 
           {gasCostDai.roundedValue.gt(0) > 0 && hasFills && (
             <TransactionFeeLabelToolTip
