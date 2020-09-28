@@ -17,9 +17,6 @@
     "normalTime": false,
     "writeArtifacts": false
   },
-  "gsn": {
-    "enabled": false
-  },
   "zeroX": {
     "rpc": {
       "enabled": false,

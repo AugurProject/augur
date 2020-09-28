@@ -31,7 +31,7 @@ export const approveAndConvertV1ToV2 = async (
       TXEventName.Failure
     );
   });
-  updateAssets(true);
+  updateAssets();
   callback(null);
 };
 

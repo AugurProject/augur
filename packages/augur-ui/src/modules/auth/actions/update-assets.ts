@@ -1,45 +1,27 @@
-import { NodeStyleCallback } from 'modules/types';
 import {
-  getEthBalance,
-  getDaiBalance,
-  getRepBalance,
-  getLegacyRepBalance,
   loadAccountData_exchangeRates,
 } from 'modules/contracts/actions/contractCalls';
 import { createBigNumber } from 'utils/create-big-number';
-import { FIVE, ETHER } from 'modules/common/constants';
+import { ETHER } from 'modules/common/constants';
 import { AppStatus } from 'modules/app/store/app-status';
 import { addedDaiEvent } from 'services/analytics/helpers';
-import { addEthIncreaseAlert } from 'modules/alerts/actions/alerts';
 import { formatAttoDai } from 'utils/format-number';
 
-export const updateAssets = async (initialLogin: boolean = false,) => {
+export const updateAssets = async () => {
   const {
     loginAccount: {
-      address,
       meta,
-      balances: {
-        signerBalances: { eth },
-      },
     },
   } = AppStatus.get();
   const nonSafeWallet = await meta.signer.getAddress();
   const values = await loadAccountData_exchangeRates(nonSafeWallet);
 
-  updateBalances(address, nonSafeWallet, values, initialLogin);
+  if (values) {
+    updateBalances(values);
+  }
 };
 
-function updateBalances(
-  address: string,
-  nonSafeWallet: string,
-  values: any,
-  initialLogin: boolean,
-) {
-  const {
-    loginAccount: { balances },
-    universe: { id: universe },
-  } = AppStatus.get();
-
+function updateBalances(values) {
   const {
     attoDAIperREP,
     attoDAIperETH,

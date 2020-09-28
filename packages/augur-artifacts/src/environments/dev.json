@@ -6,7 +6,7 @@
     "http": "https://kovan.augur.net/ethereum-http",
     "rpcRetryCount": 5,
     "rpcRetryInterval": 0,
-    "rpcConcurrency": 40,
+    "rpcConcurrency": 8,
     "ws": "ws://localhost:8546"
   },
   "gas": {
@@ -25,11 +25,6 @@
   },
   "uniswap": {
     "exchangeRateBufferMultiplier": 1.075
-  },
-  "gsn": {
-    "enabled": true,
-    "minDaiForSignerETHBalanceInDAI": 40,
-    "desiredSignerBalanceInETH": 0.04
   },
   "zeroX": {
     "rpc": {
@@ -139,8 +134,8 @@
   "ui": {
     "showReloadModal": true,
     "averageBlocktime": 2000,
-    "liteProvider": "jsonrpc",
-    "trackBestOffer": true,
+    "liteProvider": "torus",
+    "trackBestOffer": false,
     "trackMarketInvalidBids": true,
     "fallbackProvider": "torus",
     "primaryProvider": "wallet"

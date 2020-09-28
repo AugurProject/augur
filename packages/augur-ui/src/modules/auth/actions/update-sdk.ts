@@ -43,7 +43,7 @@ export const updateSdk = async (
     AppStatus.actions.updateLoginAccount({ tradingApproved: neededApprovals === 0 })
     setIsLogged(true);
     loadAccountData();
-    updateAssets(true);
+    updateAssets();
     if (AppStatus.get().modal.type === MODAL_LOADING) closeModal();
   } catch (error) {
     logError(error);

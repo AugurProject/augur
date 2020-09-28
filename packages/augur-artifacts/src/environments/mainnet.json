@@ -32,11 +32,6 @@
   "uniswap": {
     "exchangeRateBufferMultiplier": 1.05
   },
-  "gsn": {
-    "enabled": true,
-    "minDaiForSignerETHBalanceInDAI": 50,
-    "desiredSignerBalanceInETH": 0.1
-  },
   "zeroX": {
     "rpc": {
       "enabled": false,
