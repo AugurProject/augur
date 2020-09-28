@@ -28,7 +28,7 @@ import {
   BETTING_BACK,
   BETTING_LAY,
   MARKET_REPORTING,
-  COPY_MARKET_ID,
+  COPY_MARKET_LINK,
   COPY_AUTHOR,
   REPORTING_STATE,
   MODAL_REPORTING,
@@ -81,7 +81,7 @@ import { calculatePosition } from 'modules/market/components/market-scalar-outco
 import { getOutcomeNameWithOutcome } from 'utils/get-outcome';
 import { SmallSubheadersTooltip } from 'modules/create-market/components/common';
 import { Betslip } from 'modules/trading/store/betslip';
-import { MARKETS } from 'modules/routes/constants/views';
+import { MARKET, MARKETS } from 'modules/routes/constants/views';
 import makePath from 'modules/routes/helpers/make-path';
 import toggleCategory from 'modules/routes/helpers/toggle-category';
 import { useMarketsStore } from 'modules/markets/store/markets';
@@ -888,7 +888,7 @@ export const SportsMarketContainer = ({
     // futures
     const { tradingPositionsPerMarket = null } =
       accountPositions[marketId] || {};
-
+    const newBase = window.location.href.replace('markets', 'market?id=');
     headingContent = (
       <Fragment key={`${marketId}-heading`}>
         <CountdownProgress
@@ -913,21 +913,21 @@ export const SportsMarketContainer = ({
           />
           <div
             id="copy_marketId"
-            data-clipboard-text={marketId}
+            data-clipboard-text={`${newBase}${marketId}`}
             onClick={() => {
               copyClicked();
               marketLinkCopied(marketId, MARKET_LIST_CARD);
             }}
           >
-            {CopyAlternateIcon} {COPY_MARKET_ID}
+            {CopyAlternateIcon} {COPY_MARKET_LINK}
           </div>
-          <div
+          {/* <div
             id="copy_author"
             data-clipboard-text={market.author}
             onClick={() => copyClicked()}
           >
             {Person} {COPY_AUTHOR}
-          </div>
+          </div> */}
         </DotSelection>
         <FavoritesButton marketId={marketId} hideText disabled={!isLogged} />
       </Fragment>
@@ -1444,6 +1444,7 @@ export const TopRow = ({ market, categoriesWithClick }) => {
   } = market;
   const isScalar = marketType === SCALAR;
   const isFutures = groupType === SPORTS_GROUP_TYPES.FUTURES;
+  const newBase = window.location.href.replace('markets', 'market?id=');
   return (
     <div
       className={classNames(Styles.TopRow, {
@@ -1493,10 +1494,10 @@ export const TopRow = ({ market, categoriesWithClick }) => {
         />
         <div
           id="copy_marketId"
-          data-clipboard-text={id}
+          data-clipboard-text={`${newBase}${id}`}
           onClick={() => marketLinkCopied(id, MARKET_LIST_CARD)}
         >
-          {CopyAlternateIcon} {COPY_MARKET_ID}
+          {CopyAlternateIcon} {COPY_MARKET_LINK}
         </div>
         <div id="copy_author" data-clipboard-text={author}>
           {Person} {COPY_AUTHOR}

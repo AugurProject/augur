@@ -465,6 +465,7 @@ export const MARKET_STATUS_MESSAGES = {
 
 // Market Header
 export const COPY_MARKET_ID = 'Copy Market ID';
+export const COPY_MARKET_LINK = 'Copy Market Link';
 export const COPY_AUTHOR = 'Copy Market Creator ID';
 
 // # Search/Filter Param Names
