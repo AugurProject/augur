@@ -44,7 +44,6 @@
           align-content: center;
           align-items: center;
           color: var(--color-module-background);
-          background: transparent;
           cursor: pointer;
           display: flex;
           flex-flow: row nowrap;
@@ -53,6 +52,8 @@
           text-transform: uppercase;
           transform: rotate(-0.25turn) translate(-@size-125, @size-36);
           width: @size-106;
+          border-top-left-radius: @border-radius-default;
+          border-top-right-radius: @border-radius-default;
 
           > svg {
             height: @size-8;
@@ -84,12 +85,15 @@
           width: @size-36;
           height: @size-106;
           display: block;
+          background: transparent;
 
           > button:first-of-type {
             background: var(--color-primary-text);
             transform: rotate(-0.25turn) translate(-@size-17, -@size-17);
             transform-origin: bottom;
             width: @size-106;
+            border-top-left-radius: @border-radius-default;
+            border-top-right-radius: @border-radius-default;
 
             > svg {
               transform: rotate(0.5turn);
