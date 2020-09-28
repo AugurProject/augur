@@ -3,18 +3,16 @@ import {
   getOrCreateMarket,
   createAndSaveAMMExchange
 } from "../utils/helpers";
-import { AMMExchange } from "../generated/schema";
 
-export function handleAddAMMExchange(call: AddAMMCall) {
+export function handleAddAMMExchange(call: AddAMMCall): void {
   const id = call.outputs.value0.toHexString();
   const marketId = call.inputs._market.toHexString();
   const shareTokenId = call.inputs._para.toHexString();
 
-  createAndSaveAMMExchange(id, marketId, shareTokenId);
+  // @todo The hardcoded cash will eventually come from the ShareToken pending ShareToken creation event.
+  createAndSaveAMMExchange(id, marketId, shareTokenId, '0xDb4FeE45f9D8C9241e8ff42ADe3daa83405C8766');
 
   const market = getOrCreateMarket(marketId);
-  market.amm.push(id);
+  market.amms.push(id);
   market.save();
-
-  AMMExchange.create(id);
 }
