@@ -25225,6 +25225,31 @@
 			"type": "constructor"
 		},
 		{
+			"anonymous": false,
+			"inputs": [
+				{
+					"indexed": false,
+					"internalType": "contract IParaShareToken",
+					"name": "shareToken",
+					"type": "address"
+				},
+				{
+					"indexed": false,
+					"internalType": "contract ICash",
+					"name": "cash",
+					"type": "address"
+				},
+				{
+					"indexed": false,
+					"internalType": "contract IOINexus",
+					"name": "OINexus",
+					"type": "address"
+				}
+			],
+			"name": "ParaAugurDeployFinished",
+			"type": "event"
+		},
+		{
 			"constant": true,
 			"inputs": [],
 			"name": "OICash",
