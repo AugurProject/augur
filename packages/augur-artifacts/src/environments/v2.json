@@ -156,26 +156,6 @@
   },
   "averageBlocktime": 2000,
   "paraDeploys": {
-    "0x1D95FdEf20DB8272B8f25899D32691229e4A135b": {
-      "name": "WETH",
-      "uploadBlockNumber": 21095999,
-      "addresses": {
-        "Augur": "0x03F8b80a19118e4e389866f44E3b026054Fd92D6",
-        "AugurTrading": "0x0a00dd2BA353a0f4203b4f0C65f31B45278b9759",
-        "Universe": "0xEf9D1340F2B0FD3Bd1F27F86375EDB36557b8258",
-        "Cash": "0x1D95FdEf20DB8272B8f25899D32691229e4A135b",
-        "ShareToken": "0x0DCb474769d44bA7C12770d46207AA0c1C072A99",
-        "OICash": "0x0286D545415Ffef09406841D42B27Ed729cC021E",
-        "CancelOrder": "0xb058f87f0ee609d1A7fC91bE885d466d5f19259f",
-        "CreateOrder": "0xaEB00dF8Fe3dA5d622A734A5cD578682f185673e",
-        "FillOrder": "0x100aF9C7715e2548a2965Fe5f058bf03104Cc849",
-        "Orders": "0x486236801e67E88d67EF2d600696979065c80477",
-        "Trade": "0xBFFCaE89c3DA7de7BFf9A066aD9Bae8273615190",
-        "SimulateTrade": "0xE8C7391A04AE6e5aD37748C93A8075aEA7F96549",
-        "ZeroXTrade": "0x598Ce51bf508f65644a9D3591C62f70507f844bD",
-        "ProfitLoss": "0x802F2A1Ac2DEb259A850063f9122475622876237"
-      }
-    },
     "0xDb4FeE45f9D8C9241e8ff42ADe3daa83405C8766": {
       "name": "WETH",
       "uploadBlockNumber": 21152688,
