@@ -135,7 +135,7 @@
     "showReloadModal": true,
     "averageBlocktime": 2000,
     "liteProvider": "torus",
-    "trackBestOffer": false,
+    "trackBestOffer": true,
     "trackMarketInvalidBids": true,
     "fallbackProvider": "torus",
     "primaryProvider": "wallet"
