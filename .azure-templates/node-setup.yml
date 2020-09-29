@@ -1,7 +1,7 @@
 steps:
   - task: NodeTool@0
     inputs:
-      versionSpec: 12.18s.x
+      versionSpec: 12.18.x
   - script: yarn --frozen-lockfile
     displayName: Install Dependencies
   - script: yarn build
