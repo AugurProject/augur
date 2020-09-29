@@ -575,7 +575,6 @@ export const ModalUnsignedOrders = () => {
         numberOfTransactions += 1;
       });
   });
-  const gasPrice = gasPriceInfo.userDefinedGasPrice || gasPriceInfo.average;
   const bnAllowance = createBigNumber(loginAccount.allowance, 10);
   const needsApproval = bnAllowance.lte(ZERO);
   const insufficientFunds = availableDai.lt(totalCost);
