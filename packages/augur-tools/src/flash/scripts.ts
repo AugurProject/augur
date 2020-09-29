@@ -2697,8 +2697,8 @@ export function addScripts(flash: FlashSession) {
         {
           name: 'cash',
           abbr: 'c',
-          description: 'address of ERC20 cash contract to point this para-augur at',
-          required: true,
+          description: 'address of ERC20 cash contract to point this para-augur at: THIS IS ONLY WETH RIGHT NOW',
+          required: false,
         }
       ],
       async call(this: FlashSession, args: FlashArguments) {
@@ -2719,7 +2719,7 @@ export function addScripts(flash: FlashSession) {
           signer,
           compilerOutput,
         )
-        await deployer.deploy(this.network, cash);
+        await deployer.deploy(this.network);
       }
     });
 
