@@ -10,6 +10,10 @@ import { RetiredTemplate } from "./templates-template";
 */
 export const retiredTemplates: RetiredTemplate[] = [
   {
+    hash: '0x21926c3b691aacad3679802bf3ef07b1a1967cb1779cd4e67c3f644b56fd35e5',
+    autoFail: false
+  },
+  {
     hash: '0xa03f74512ccf232268bef522ffe9ea39c47773e79fa95c4f3f3b69ed61bf4061',
     autoFail: false,
   },

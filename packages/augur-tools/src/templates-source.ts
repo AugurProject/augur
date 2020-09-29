@@ -3422,11 +3422,13 @@ export const TEMPLATES = {
                     id: 2,
                     type: TemplateInputType.TEXT,
                     placeholder: `Team A`,
+                    groupKey: TEAM_A,
                   },
                   {
                     id: 3,
                     type: TemplateInputType.TEXT,
                     placeholder: `Team B`,
+                    groupKey: TEAM_B,
                   },
                   {
                     id: 4,
