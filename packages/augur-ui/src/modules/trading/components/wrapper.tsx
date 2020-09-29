@@ -150,6 +150,7 @@ const Wrapper = ({
     userOpenOrders,
     loginAccount: {
       balances: { dai, eth },
+      tradingApproved,
     },
     theme,
     isLogged,
@@ -427,10 +428,10 @@ const Wrapper = ({
         }}
         disabled={
           !trade?.limitPrice ||
-          (isOpenOrder) ||
           insufficientFunds ||
           (postOnlyOrder && trade.numFills > 0) ||
           !allowPostOnlyOrder ||
+          (!tradingApproved && initialLiquidity && tradingTutorial) ||
           disableTrading
         }
       />

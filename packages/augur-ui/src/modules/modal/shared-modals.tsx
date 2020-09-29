@@ -69,8 +69,6 @@ export const ModalClaimFees = () => {
     actions: { closeModal },
   } = useAppStatusStore();
   const gasPrice = gasPriceInfo.userDefinedGasPrice || gasPriceInfo.average;
-
-  const gasCost = CLAIM_FEES_GAS_COST.multipliedBy(gasPrice);
   const claimReportingFees = selectReportingWinningsByMarket();
   const transactionLabel = getTransactionLabel();
 
@@ -577,8 +575,6 @@ export const ModalUnsignedOrders = () => {
         numberOfTransactions += 1;
       });
   });
-
-  const gasCost = NEW_ORDER_GAS_ESTIMATE.times(numberOfTransactions).multipliedBy(gasPriceInfo.userDefinedGasPrice)
   const bnAllowance = createBigNumber(loginAccount.allowance, 10);
   const needsApproval = bnAllowance.lte(ZERO);
   const insufficientFunds = availableDai.lt(totalCost);

@@ -19,6 +19,10 @@ import {
   EmptyCheckbox,
 } from 'modules/common/icons';
 import ReactTooltip from 'react-tooltip';
+import {
+  addPendingData,
+} from 'modules/pending-queue/actions/pending-queue-management';
+
 import TooltipStyles from 'modules/common/tooltip.styles.less';
 import { createBigNumber, BigNumber } from 'utils/create-big-number';
 import {
@@ -50,6 +54,7 @@ import {
   formatBlank,
   formatGasCostToEther,
   formatAttoEth,
+  formatEther,
 } from 'utils/format-number';
 import {
   DateFormattedObject,
@@ -1581,6 +1586,117 @@ export const CategoryTagTrail = ({ categories }: CategoryTagTrailProps) => (
     <WordTrail items={categories} typeLabel="Category" />
   </div>
 );
+
+export const ApprovalTxButtonLabel = ({
+  title,
+  buttonName,
+  account,
+  userEthBalance = "0",
+  gasPrice,
+  checkApprovals,
+  doApprovals,
+  approvalType,
+  isApprovalCallback,
+  addFunds,
+  className = null,
+  disabled = false,
+  ignore = false,
+  hideAddFunds = false,
+}) => {
+
+  const [approvalsNeeded, setApprovalsNeeded] = useState(0);
+  const [insufficientEth, setInsufficientEth] = useState(false);
+  const [description, setDescription] = useState('');
+  const [isProcessing, setIsProcessing] = useState(false);
+
+  useEffect(() => {
+      const gasNeeded = constants.APPROVE_GAS_ESTIMATE.times(approvalsNeeded);
+      const ethNeededForGas = createBigNumber(
+        formatGasCostToEther(
+          gasNeeded,
+          { decimalsRounded: 4 },
+          createBigNumber(GWEI_CONVERSION).multipliedBy(gasPrice)
+        )
+      );
+      const notEnoughEth = createBigNumber(userEthBalance).lt(createBigNumber(ethNeededForGas)) && !hideAddFunds;
+      setInsufficientEth(notEnoughEth);
+      if (notEnoughEth) {
+        const ethDo = formatEther(ethNeededForGas);
+        setDescription(`Insufficient ETH to approve trading. ${ethDo.formatted} ETH cost.`);
+      } else {
+        switch(approvalType) {
+          case constants.CREATEMARKET:
+          setDescription('Approval requires one signing. Once confirmed, click create.');
+          break;
+          case constants.PUBLICTRADE:
+            setDescription(`Approval requires ${approvalsNeeded} signing${approvalsNeeded > 1 ? 's' : ''} before you can place your order.`)
+          break;
+          case constants.ADDLIQUIDITY:
+            setDescription(`Approval requires ${approvalsNeeded} signing${approvalsNeeded > 1 ? 's' : ''}. Once confirmed you can submit your orders.`)
+          break;
+          case constants.APPROVE:
+            setDescription('Approval required before converting (to enable your wallet to interact with the Ethereum network)')
+          break;
+          default:
+            setDescription(`Approval requires ${approvalsNeeded} signing${approvalsNeeded > 1 ? 's' : ''}. Once confirmed you can place your order.`)
+          break;
+        }
+
+      }
+  }, [userEthBalance, gasPrice, approvalsNeeded])
+
+  const handleAddPendingData = (status) => {
+    addPendingData(constants.APPROVALS, constants.TRANSACTIONS, status, '', { })
+  }
+
+  function doCheckApprovals() {
+    checkApprovals(account).then(approvalsNeeded => {
+      setApprovalsNeeded(approvalsNeeded);
+      isApprovalCallback(approvalsNeeded === 0);
+      if (approvalsNeeded === 0) {
+        handleAddPendingData(TXEventName.Success);
+      }
+    });
+  }
+
+  useEffect(() => {
+    doCheckApprovals();
+  }, []);
+
+  return (
+    (!ignore && approvalsNeeded > 0) ? (
+      <div className={classNames(className)}>
+        <DismissableNotice
+          show={true}
+          title={title}
+          buttonAction={(account) => {
+            if (insufficientEth) {
+              addFunds();
+            } else {
+              handleAddPendingData(TXEventName.Pending);
+              setIsProcessing(true)
+              doApprovals(account).then(() => {
+                doCheckApprovals();
+                setIsProcessing(false);
+              }).catch(() => {
+                handleAddPendingData(TXEventName.Failure);
+                setIsProcessing(false)
+              });
+            }
+          }}
+          buttonText={insufficientEth ? 'Add Funds' : buttonName}
+          queueName={constants.TRANSACTIONS}
+          disabled={disabled || isProcessing}
+          error={insufficientEth}
+          queueId={constants.APPROVALS}
+          description={description}
+          customPendingButtonText={'Process...'}
+          buttonType={DISMISSABLE_NOTICE_BUTTON_TYPES.BUTTON}
+        />
+      </div>
+    ) : null
+  )
+}
 
 interface BulkTxLabelProps {
   count: number;
