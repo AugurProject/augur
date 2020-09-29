@@ -104,7 +104,13 @@
       }
     ],
     "name": "addLiquidity",
-    "outputs": [],
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
     "payable": false,
     "stateMutability": "nonpayable",
     "type": "function"
@@ -129,7 +135,13 @@
       }
     ],
     "name": "addLiquidityThenSwap",
-    "outputs": [],
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
     "payable": false,
     "stateMutability": "nonpayable",
     "type": "function"
@@ -366,7 +378,13 @@
       }
     ],
     "name": "exitAll",
-    "outputs": [],
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
     "payable": false,
     "stateMutability": "nonpayable",
     "type": "function"
@@ -396,7 +414,13 @@
       }
     ],
     "name": "exitPosition",
-    "outputs": [],
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
     "payable": false,
     "stateMutability": "nonpayable",
     "type": "function"
@@ -754,7 +778,28 @@
       }
     ],
     "name": "removeLiquidity",
-    "outputs": [],
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "_invalidShare",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "_noShare",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "_yesShare",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "_cashShare",
+        "type": "uint256"
+      }
+    ],
     "payable": false,
     "stateMutability": "nonpayable",
     "type": "function"
