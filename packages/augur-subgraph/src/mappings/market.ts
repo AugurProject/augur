@@ -1,9 +1,5 @@
 import {
-  Address,
-  BigInt,
   Bytes,
-  Value,
-  log,
   json,
   JSONValueKind,
   JSONValue
@@ -18,6 +14,7 @@ import {
 import {
   MarketVolumeChanged
 } from "../../generated/AugurTrading/AugurTrading"
+import { Universe } from '../../generated/schema';
 import {
   getOrCreateUniverse,
   getOrCreateUser,
@@ -36,16 +33,9 @@ import {
   getOrCreateMarketTemplate
 } from "../utils/helpers";
 import {
-  ZERO_ADDRESS,
-  BIGINT_ONE,
-  BIGINT_ZERO,
-  STATUS_SETTLED,
   STATUS_TRADING,
-  STATUS_DISPUTING,
   STATUS_FINALIZED,
-  STATUS_REPORTING
 } from "../utils/constants";
-import { toDecimal } from "../utils/decimals";
 
 // - event: MarketCreated(indexed address,uint256,string,address,indexed address,address,uint256,int256[],uint8,uint256,bytes32[],uint256,uint256)
 //   handler: handleMarketCreated
@@ -56,7 +46,12 @@ import { toDecimal } from "../utils/decimals";
 // uint256 numTicks, bytes32[] outcomes, uint256 noShowBond, uint256 timestamp)
 
 export function handleMarketCreated(event: MarketCreated): void {
-  let universe = getOrCreateUniverse(event.params.universe.toHexString());
+  let universe = Universe.load(event.params.universe.toHexString());
+  if (universe == null) {
+    // Universe is in another deploy. Ignore it.
+    return;
+  }
+
   let market = getOrCreateMarket(event.params.market.toHexString());
   let creator = getOrCreateUser(event.params.marketCreator.toHexString());
   let designatedReporter = getOrCreateUser(
