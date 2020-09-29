@@ -230,10 +230,26 @@
         width: @size-16;
         height: @size-16;
         padding: @size-4;
+
+        > path {
+          stroke: var(--color-primary-text);
+        }
       }
 
       > span {
         display: none;
+      }
+
+      &:not(:disabled):hover {
+        border: @size-1 solid var(--color-primary-text);
+      }
+
+      &:not(:disabled):focus {
+        background: transparent;
+      }
+
+      &:disabled {
+        opacity: 0.25;
       }
     }
 

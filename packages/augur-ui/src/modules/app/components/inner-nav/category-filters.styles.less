@@ -232,7 +232,7 @@
       text-transform: capitalize;
     }
 
-    > .CategoriesGroup:first-of-type {  
+    > .CategoriesGroup:first-of-type {
       > div {
         height: auto;
 
@@ -257,6 +257,47 @@
     border-bottom: @size-1 solid var(--color-secondary-action-outline);
   }
 
+  .BackButtonForCategories {
+    .text-14;
+
+    color: var(--color-secondary-text);
+    display: flex;
+    align-items: center;
+
+    > svg {
+      width: @size-20;
+      height: @size-20;
+      padding: @size-4;
+      border: @size-1 solid var(--color-dark-text);
+      border-radius: @border-radius-default;
+      background-color: var(--color-module-background);
+      margin-right: @size-8;
+      fill: var(--color-primary-text);
+    }
+
+    &:not(:disabled):hover {
+      color: var(--color-primary-text);
+
+      > svg {
+        border: @size-1 solid var(--color-primary-text);
+      }
+    }
+
+    &:not(:disabled):focus > svg {
+      background-color: transparent;
+    }
+
+    &:not(:disabled):active {
+      .text-14-bold;
+
+      color: var(--color-primary-text);
+    }
+
+    &:disabled {
+      opacity: 0.25;
+    }
+  }
+
   .AllCategories {
     margin: 0;
 
@@ -266,20 +307,7 @@
     }
 
     > div {
-      .text-14;
-      display: flex;
-      align-items: center;
-      
-      > svg {
-        width: @size-20;
-        height: @size-20;
-        padding: @size-4;
-        border: @size-1 solid var(--color-dark-text);
-        border-radius: @border-radius-default;
-        background: var(--color-secondary-action);
-        margin-right: @size-8;
-        fill: var(--color-primary-text);
-      }
+      .BackButtonForCategories;
     }
   }
 
@@ -301,31 +329,9 @@
   }
 
   .SelectedCategories > .backToCategory {
-    .text-14;
+    .BackButtonForCategories;
 
-    color: var(--color-secondary-text);
-    display: flex;
     margin: @size-13 0;
-    text-transform: capitalize;
-
-    > svg {
-      width: @size-20;
-      height: @size-20;
-      padding: @size-4;
-      border: @size-1 solid var(--color-dark-text);
-      border-radius: @border-radius-default;
-      background: var(--color-secondary-action);
-      margin-right: @size-8;
-      fill: var(--color-primary-text);
-    }
-
-    &:hover {
-      color: var(--color-primary-text);
-
-      > svg {
-        fill: var(--color-primary-text);
-      }
-    }
   }
 
   .SelectedCategory {
@@ -341,7 +347,7 @@
       margin: 0;
       margin-bottom: @size-80;
       padding: 0 @size-12;
-      
+
       > h3 {
         margin-bottom: 0;
 
@@ -349,7 +355,7 @@
           margin: 0;
           > span:first-of-type {
             .text-14-bold;
-            
+
             margin-bottom: 0;
           }
         }
@@ -363,7 +369,7 @@
       }
     }
 
-    > .CategoriesGroup:first-of-type {  
+    > .CategoriesGroup:first-of-type {
       > div {
         > section {
           padding-left: @size-40;
