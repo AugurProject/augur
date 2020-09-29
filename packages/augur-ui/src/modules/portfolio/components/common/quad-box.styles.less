@@ -346,22 +346,34 @@
         justify-content: space-between;
       }
     }
-  }
 
-  @media @breakpoint-mobile {
-    .Container {
-      background: var(--color-module-background);
-      border: @size-1 solid var(--color-dark-grey);
-      min-height: unset;
-    }
+    @media @breakpoint-mobile {
+      padding: @size-16 @size-12;
 
-    .Header {
-      display: none;
-    }
+      .SearchAndFilters {
+        button[class*="FilterButton"] {
+          flex-flow: row-reverse;
 
-    .MarketBox {
-      border: none;
-      margin-top: 0;
+          > svg {
+            margin: 0 @size-4 0 0;
+          }
+        }
+      }
+
+      .Container {
+        background: var(--color-module-background);
+        border: @size-1 solid var(--color-dark-grey);
+        min-height: unset;
+      }
+
+      .Header {
+        display: none;
+      }
+
+      .MarketBox {
+        border: none;
+        margin-top: 0;
+      }
     }
   }
 }
