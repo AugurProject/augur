@@ -414,10 +414,6 @@
       }
     }
 
-    &:last-of-type {
-      display: flex;
-    }
-
     @media @breakpoint-mobile-tablet {
       > div > div:first-of-type {
         display: block;
@@ -430,6 +426,11 @@
             margin-left: @size-4;
           }
         }
+      }
+
+
+      &:last-of-type > div > div:first-of-type{
+        display: flex;
       }
     }
   }
