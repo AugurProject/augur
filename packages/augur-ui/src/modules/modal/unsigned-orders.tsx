@@ -6,6 +6,7 @@ import {
   DefaultButtonProps,
   SubmitTextButton,
   TextIconButton,
+  ProcessingButton,
 } from 'modules/common/buttons';
 import {
   Breakdown,
@@ -136,7 +137,6 @@ const orderRow = (
       <span>{formatMarketShares(marketType, quantity).formatted}</span>
       <span>{formatDai(Number(price)).formatted}</span>
       <span>{formatDai(Number(orderEstimate)).full}</span>
-      <span>{status && <PendingLabel status={status} />}</span>
       <div>
         {buttons.map((Button: DefaultButtonProps, index: number) => {
           if (index === 0)
@@ -156,15 +156,21 @@ const orderRow = (
               />
             );
           return isTrading ? (
-            <SubmitTextButton
+            <ProcessingButton
               key={Button.text}
               {...Button}
+              propsStatus={status}
+              submitTextButtton
               disabled={status && status !== TXEventName.Failure}
             />
           ) : (
-            <CancelTextButton
+            <ProcessingButton
               key={Button.text}
               {...Button}
+              smallSpinner
+              secondaryButton
+              tiny
+              propsStatus={status}
               disabled={status && status !== TXEventName.Failure}
             />
           );
