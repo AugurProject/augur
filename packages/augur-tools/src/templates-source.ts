@@ -3478,6 +3478,88 @@ export const TEMPLATES = {
               },
               {
                 marketType: CATEGORICAL,
+                question: `[0] [1] (O/U): [2] vs. [3]: Total goals scored; Over/Under [4].5?`,
+                example: `Men's World Cup (O/U): Real Madrid vs. Manchester United: Total goals scored Over/Under 4.5?\nEstimated schedule start time: Sept 19, 2019 1:00 pm EST`,
+                header: `([0]) [2] vs. [3]`,
+                title: `Over/Under [4].5`,
+                groupName: groupTypes.OVER_UNDER,
+                groupLineId: 4,
+                inputs: [
+                  {
+                    id: 0,
+                    type: TemplateInputType.DROPDOWN_QUESTION_DEP,
+                    placeholder: `Men's/Women's`,
+                    groupKey: GENDER,
+                    inputDestIds: [1],
+                    values: LIST_VALUES.MENS_WOMENS,
+                    inputDestValues: SOCCER_GENDER_EVENTS,
+                  },
+                  {
+                    id: 1,
+                    type: TemplateInputType.DROPDOWN,
+                    defaultLabel: `Select Men's/Women's First`,
+                    placeholder: `Event`,
+                    groupKey: EVENT,
+                    values: [],
+                  },
+                  {
+                    id: 2,
+                    type: TemplateInputType.TEXT,
+                    placeholder: `Team A`,
+                  },
+                  {
+                    id: 3,
+                    type: TemplateInputType.TEXT,
+                    placeholder: `Team B`,
+                  },
+                  {
+                    id: 4,
+                    type: TemplateInputType.TEXT,
+                    validationType: ValidationType.WHOLE_NUMBER,
+                    placeholder: `Whole #`,
+                  },
+                  {
+                    id: 5,
+                    type: TemplateInputType.ESTDATETIME,
+                    hoursAfterEst: 6,
+                    groupKey: START_TIME,
+                    placeholder: `Date time`,
+                  },
+                  {
+                    id: 6,
+                    type: TemplateInputType.SUBSTITUTE_USER_OUTCOME,
+                    placeholder: `Over [4].5`,
+                  },
+                  {
+                    id: 7,
+                    type: TemplateInputType.SUBSTITUTE_USER_OUTCOME,
+                    placeholder: `Under [4].5`,
+                  },
+                  {
+                    id: 8,
+                    type: TemplateInputType.ADDED_OUTCOME,
+                    placeholder: `No Contest`,
+                  },
+                ],
+                resolutionRules: {
+                  [REQUIRED]: [
+                    {
+                      text: `Includes Regulation and any added injury or stoppage time only. Does NOT include any Overtime or Penalty shoot-out`,
+                    },
+                    {
+                      text: `If the game is NOT played or is not deemed an official game, meaning, less than 90% of the scheduled match had been completed, the market should resolve as 'No Contest'`,
+                    },
+                    {
+                      text: `This market is intended to be about a Single Team verse Single Team, if this is not the case, this market should settle as 'Invalid'.`,
+                    },
+                    {
+                      text: `If the game is postponed and concludes after markets event expiration the market should resolve as 'No Contest'`,
+                    },
+                  ],
+                },
+              },
+              {
+                marketType: CATEGORICAL,
                 question: `[0] [1] [2] Winner?`,
                 example: `Men's UEFA Europa League 2020/2021 Winner?`,
                 header: `([0]) [1] [2] Winner`,
