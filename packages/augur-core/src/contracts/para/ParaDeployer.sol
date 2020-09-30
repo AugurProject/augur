@@ -154,7 +154,7 @@ contract ParaDeployer is Ownable {
         _paraAugur.registerContract("ParaOICash", OICash);
         _paraAugur.registerContract("OINexus", address(OINexus));
         _paraAugur.registerContract("Cash", _token);
-        OINexus.addParaAugur(paraAugurs[_token]);
+        OINexus.addParaAugur(address(paraAugurs[_token]));
     }
 
     function deployParaShareToken(address _token) private {
@@ -220,7 +220,7 @@ contract ParaDeployer is Ownable {
         IParaAugur _paraAugur = paraAugurs[_token];
         IParaAugurTrading _paraAugurTrading = paraAugurTradings[_token];
         address _originalShareToken = augur.lookup("ShareToken");
-        IParaShareToken(_paraAugur.lookup("ShareToken")).initialize(_paraAugur, _originalShareToken);
+        IParaShareToken(_paraAugur.lookup("ShareToken")).initialize(address(_paraAugur), _originalShareToken);
         IRepOracle(_paraAugur.lookup("ParaRepOracle")).initialize(IAugur(address(_paraAugur)));
         ITradingInitializable(_paraAugurTrading.lookup("CreateOrder")).initialize(_paraAugur, _paraAugurTrading);
         ITradingInitializable(_paraAugurTrading.lookup("CancelOrder")).initialize(_paraAugur, _paraAugurTrading);
