@@ -339,6 +339,7 @@
 :root[theme='SPORTS'] {
   .AccountInfo {
     border: 0;
+    background-color: var(--color-primary-text-80);
   }
 
   .referral {
@@ -388,12 +389,14 @@
   }
 
   .GasEdit {
+    > span > button[class*='SecondaryButton'],
     > button[class*='SecondaryButton'] {
       .SportsConnectionButton;
 
       > svg:first-of-type {
         height: @size-14;
         width: @size-14;
+        margin-right: @size-4;
 
         > path {
           fill: none;
@@ -409,6 +412,26 @@
           fill: none;
           stroke: var(--color-primary-text);
         }
+      }
+    }
+
+    @media @breakpoint-mobile-tablet {
+      > div > div:first-of-type {
+        display: block;
+
+        > div:first-of-type {
+          display: flex;
+
+          > span {
+            width: @size-12;
+            margin-left: @size-4;
+          }
+        }
+      }
+
+
+      &:last-of-type > div > div:first-of-type{
+        display: flex;
       }
     }
   }
