@@ -1,6 +1,6 @@
 import React from 'react';
 import classNames from 'classnames';
-import { Link, Redirect } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { CREATE_MARKET } from 'modules/routes/constants/views';
 import makePath from 'modules/routes/helpers/make-path';
 import { SecondaryButton, TextIconButton, TextUnderlineButton } from 'modules/common/buttons';
