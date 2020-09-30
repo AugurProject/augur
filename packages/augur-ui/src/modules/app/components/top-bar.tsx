@@ -18,9 +18,6 @@ import { MARKETS } from 'modules/routes/constants/views';
 import { HelpResources } from 'modules/app/components/help-resources';
 import { OddsMenu } from 'modules/app/components/odds-menu';
 import {
-  TOTAL_FUNDS_TOOLTIP,
-  MODAL_BUY_DAI,
-  MODAL_AUGUR_P2P,
   MODAL_MIGRATE_REP,
   TRANSACTIONS,
   MODAL_LOGIN,

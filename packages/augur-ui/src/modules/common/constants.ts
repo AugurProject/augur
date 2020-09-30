@@ -940,7 +940,6 @@ export const SYNC_MESSAGE_BLOCKSBEHIND =
   'Market data such as price and orderbooks may be considerably out of date.';
 export const SYNC_BEHIND = 'Blocks behind';
 export const SYNC_PROCESSED = 'Blocks Processed';
-export const AUTO_ETH_REPLENISH = `Automatically replenish fee reserves`;
 
 // Account Summary - Notifications
 export const NOTIFICATIONS_TITLE = 'Notifications';
@@ -1299,8 +1298,6 @@ export const EVENT_EXPIRATION_TOOLTIP = {
   header: 'Event expiration',
   content: 'This date time indicates when the settlement process begins.',
 };
-export const TOTAL_FUNDS_TOOLTIP =
-  'Your total funds does not include the Fee reserve';
 export const TUTORIAL_OUTCOME = 1;
 export const TUTORIAL_QUANTITY = 100;
 export const TUTORIAL_PRICE = 0.4;

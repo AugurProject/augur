@@ -43,7 +43,6 @@ import {
   CLOSED_SHORT,
   MODAL_INVALID_MARKET_RULES,
   GWEI_CONVERSION,
-  AUTO_ETH_REPLENISH,
   BUY,
   MODAL_ADD_LIQUIDITY,
 } from 'modules/common/constants';
