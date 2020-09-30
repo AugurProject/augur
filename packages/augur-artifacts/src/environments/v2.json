@@ -116,7 +116,7 @@
     "HotLoadingUniversal": "0xd73cDFd5c252E43e4f932490f184071b59746B5D",
     "AMMFactory": "0x667C97e2783fc2A014fA8Bca82bf0Bd9bbb38E4d",
     "ERC20Proxy1155Nexus": "0x0C36119c5F31E661581F66113B6B741CB83240a1",
-    "ParaDeployer": "0xaF6C260cB833e84c8bFB1aA1d2F2C60161a3B63E"
+    "ParaDeployer": "0x3A41e30f865B8d6415526397dB7667d53b22d9b8"
   },
   "server": {
     "httpPort": 9003,
@@ -160,22 +160,22 @@
   "paraDeploys": {
     "0xDb4FeE45f9D8C9241e8ff42ADe3daa83405C8766": {
       "name": "WETH",
-      "uploadBlockNumber": 21152688,
+      "uploadBlockNumber": 21249877,
       "addresses": {
-        "Augur": "0x64cc79c3324EA29F1dd73C0455FC588572DF64fc",
-        "AugurTrading": "0xDb3FCa48EC7983CB5ED02e6b2FCcda4cA4B39443",
-        "Universe": "0x454E032bD6980aCfBD2b6EEe63036E4920c362d4",
+        "Augur": "0xA9901EDA9949FA22087C01E2Ca04e90595308c84",
+        "AugurTrading": "0x6BA86ecfE5d61B54932F447BdC5b5b6F88560e4c",
+        "Universe": "0x9DA332b0b2508068b4E7bdd8253Be31AD2C66495",
         "Cash": "0xDb4FeE45f9D8C9241e8ff42ADe3daa83405C8766",
-        "ShareToken": "0x17ec401a3466a93E8B736722ac1DA54AbE83Fd11",
-        "OICash": "0x4A6Fa2668744853Bf28C01b6A2A95125d22eF594",
-        "CancelOrder": "0x7F3c2cFcED17b3903107317eE67D356E4e131A99",
-        "CreateOrder": "0xd140bb4148252A92Fc3DD17b0Dc619E28F95320E",
-        "FillOrder": "0xDF5788A4cc89AD1CD7E2e9D4f45236d0e48BbF89",
-        "Orders": "0x27f1EbAFFA56e7c8824A2BA42534d01B24d81d62",
-        "Trade": "0x9877EceBBfaf22Ad7c44539Da170a27f4Cd043c8",
-        "SimulateTrade": "0xD3B76298e9d981a7F3B95A574e2ddF9ED2cC8237",
-        "ZeroXTrade": "0x8f39e97ef5FA648c5C5e45499048A271d0c1B65F",
-        "ProfitLoss": "0x2E76BFE04Afb36c8941E3fc6208B164f5b7CfD9b"
+        "ShareToken": "0x42fFA66A5d281b6E54E2b8EAd1e3b5cF580ea5C8",
+        "OICash": "0xfd68f0B9a71CBE7DAedE6260c5040602598669e2",
+        "CancelOrder": "0x69344edbEE70b821950418E615639ed4F71885B6",
+        "CreateOrder": "0x4f8f65421293914F59C5E10a8eD81A2EDA794221",
+        "FillOrder": "0x1aB6BDb6Ae1ef486A549cc5191f6425BC3A469e4",
+        "Orders": "0xE1c2BB27308ba7df30d55bE4efa0Bd8D1992a8Fb",
+        "Trade": "0x9EB73f378Fbd56835aE13b89D5470607B992C5e6",
+        "SimulateTrade": "0x79D4E1Ac2b3E81a153d63Bd9E9e5FCbBa69AE30D",
+        "ZeroXTrade": "0xfB26dA346D9154012cB491e36a07E6ad5676f9D5",
+        "ProfitLoss": "0x103EAC53bd12bf88425C0c3ef4815b81b435f318"
       }
     }
   }
