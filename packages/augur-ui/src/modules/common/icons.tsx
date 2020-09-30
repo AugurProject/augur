@@ -317,6 +317,34 @@ export const BetsIcon = (
   </svg>
 );
 
+export const BetsIconCount = (unseenCount = 0) => {
+  const hasUnseen = unseenCount > 0;
+  const displayCount = unseenCount > 99 ? '99+' : unseenCount;
+  const xPos = unseenCount < 10 ? '40' : unseenCount > 99 ? '30' : '36.5';
+  const rectW = unseenCount < 10 ? '24' : unseenCount > 99 ? '33' : '26';
+  const rectX = unseenCount > 99 ? '26' : '32'; 
+  return (
+    <svg name="BetsIconCounts" viewBox="0 0 48 48" fill="none">
+    <g clipPath="url(#clip0)">
+      <path
+        d="M6.04725 24.2109L24.2098 6.04837C26.2157 7.11701 28.6414 7.11701 30.6474 6.04837L41.9528 17.3537C40.8841 19.3597 40.8841 21.7854 41.9527 23.7914L23.7902 41.9539C21.7843 40.8852 19.3586 40.8852 17.3526 41.9539L6.04725 30.6485C7.11589 28.6425 7.11589 26.2168 6.04725 24.2109Z"
+        strokeWidth="4"
+      />
+      <path d="M35.7143 28.0002L20 13" strokeWidth="4" />
+    </g>
+    {hasUnseen && <rect x={rectX} y="4" width={rectW} height="24" rx="30" />}
+    {hasUnseen && (
+      <text>
+        <tspan x={xPos} y="21">
+          {displayCount}
+        </tspan>
+      </text>
+    )}
+  </svg>
+  );
+};
+
+
 export const QRCodeIcon = (
   <svg viewBox="0 0 16 16">
     <path d="M0 16.0001H7.27271V8.72729H0V16.0001ZM1.45443 10.182H5.81812V14.5343H1.45443V10.182Z" />

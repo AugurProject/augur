@@ -10,7 +10,7 @@
 
   @media @breakpoint-mobile-tablet {
     height: @top-bar-height-mobile;
-    > ul[class*="ThemeSwitch"] {
+    > ul[class*='ThemeSwitch'] {
       display: none;
     }
   }
@@ -34,12 +34,12 @@
       height: @size-24;
     }
 
-    > button[class*="SecondaryButton"] {
+    > button[class*='SecondaryButton'] {
       margin-left: @size-24;
       margin-right: @size-12;
     }
 
-    > button[class*="PrimaryButton"] {
+    > button[class*='PrimaryButton'] {
       margin-right: @size-24;
     }
   }
@@ -249,13 +249,22 @@
   background-color: var(--color-module-background);
 }
 
-:root[theme="BETTING"],
-:root[theme="SPORTS"] {
+.ActiveBets {
+  display: none;
+}
+
+:root[theme='BETTING'],
+:root[theme='SPORTS'] {
   .TopBar {
     background: var(--color-primary-text);
 
     > div:last-of-type {
-      > button[class*="SecondaryButton"][title*="Login"] {
+      @media @breakpoint-mobile-tablet {
+        padding: 0;
+        max-width: none;
+      }
+
+      > button[class*='SecondaryButton'][title*='Login'] {
         border: @size-1 solid var(--color-secondary-action);
         color: var(--color-secondary-action);
         background: transparent;
@@ -268,7 +277,7 @@
         }
       }
 
-      > button[class*="PrimaryButton"][title*="Signup"] {
+      > button[class*='PrimaryButton'][title*='Signup'] {
         color: var(--color-module-background);
         order: 2;
 
@@ -279,12 +288,12 @@
         }
       }
 
-      > button:not([title*="Signup"]),
-      > button:not([title*="Login"]) {
+      > button:not([title*='Signup']),
+      > button:not([title*='Login']) {
         order: 0;
         color: var(--color-module-background);
 
-        &[class*="Confirmed"] {
+        &[class*='Confirmed'] {
           > svg {
             width: @size-10;
             height: @size-10;
@@ -313,6 +322,48 @@
 
   .AlertsDiv {
     order: 3;
+  }
+
+  .ActiveBets {
+    .AlertsDiv;
+
+    order: 2;
+    display: none;
+    height: 100%;
+    width: @size-56;
+
+    @media @breakpoint-mobile-tablet {
+      display: flex;
+
+      &.Empty {
+        > button > svg > g {
+          transform: none;
+        }
+      }
+
+      > button {
+        .alerts;
+
+        border-right: 0;
+        flex: 1;
+
+        > svg {
+          margin-left: 0;
+
+          > g {
+            transform: translate(-@size-10, 0);
+
+            > path {
+              stroke: var(--color-module-background);
+            }
+          }
+
+          > text > tspan {
+            fill: var(--color-module-background);
+          }
+        }
+      }
+    }
   }
 
   .alerts {
