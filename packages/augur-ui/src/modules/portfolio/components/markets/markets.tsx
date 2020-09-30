@@ -191,15 +191,13 @@ const MyMarkets = ({ toggle, hide, extend }: MyMarketsProps) => {
         emptyTitle: isTrading ? "You didn't create any market yet" : "No markets",
         emptyText: isTrading ? "Create your first market now!" : "To create a market you need to go to the Trading Exchange",
         icon: CreatedMarketsIcon,
-        button: isTrading ? (
+        button: (
           <Link to={makePath(CREATE_MARKET)}>
-            <SecondaryButton text="Create Market" action={() => null} />
+            <SecondaryButton
+              text={isTrading ? "Create Market" : "Go to trading"}
+              action={() => isTrading ? null : setTheme(THEMES.TRADING)}
+            />
           </Link>
-        ) : (
-          <SecondaryButton
-            text="Go to trading"
-            action={() => setTheme(THEMES.TRADING)}
-          />
         )
       }}
     />
