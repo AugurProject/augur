@@ -101,6 +101,7 @@ const MarketsView = () => {
       meta,
       selectedCategories,
       sportsGroupTypeFilter,
+      selectedCategory,
     },
     loginAccount: {
       settings: {
@@ -128,6 +129,10 @@ const MarketsView = () => {
     isConnected,
     marketsList: { marketCardFormat },
   } = useAppStatusStore();
+
+  const {
+    actions: { updateMarketsData },
+  } = useMarketsStore();
   const searchPhrase = buildSearchString(keywords, selectedTagNames);
   const autoSetupMarketCardFormat = marketCardFormat
     ? marketCardFormat
@@ -155,9 +160,6 @@ const MarketsView = () => {
   const [offset, setOffset] = useState(1);
   const [limit, setLimit] = useState(PAGINATION_COUNT);
 
-  const {
-    actions: { updateOrderBook, updateMarketsData },
-  } = useMarketsStore();
 
   useEffect(() => {
     if (offset !== 1) {
@@ -184,7 +186,7 @@ const MarketsView = () => {
     showPagination,
     selectedMarketCardType,
   } = state;
-
+  const isSports = theme === THEMES.SPORTS;
   useEffect(() => {
     updateFilteredMarkets();
   }, [marketsInReportingState.length]);
@@ -221,7 +223,7 @@ const MarketsView = () => {
     state.marketCount,
   ]);
   useEffect(() => {
-    if (theme === THEMES.SPORTS) {
+    if (isSports) {
       updateFilterSortOptions({
         [MARKET_SORT]: SORT_OPTIONS_SPORTS[0].value,
       })
@@ -233,7 +235,6 @@ const MarketsView = () => {
   }, [
     theme
   ])
-  const isSports = theme === THEMES.SPORTS;
   const sortByStartTime = sortBy === MARKET_SORT_PARAMS.ESTIMATED_START_TIME ;
 
   function updateFilteredMarkets() {
@@ -358,7 +359,8 @@ const MarketsView = () => {
       !displayFee ? '“Fee”' : '“Liquidity Spread”'
     } filter is set to “All”. This puts you at risk of trading on invalid markets.`;
   }
-
+  const sportsMobileView = isMobile && isSports;
+  const sportsTitle = selectedCategory && !sportsMobileView ? selectedCategory : 'Popular Markets';
   return (
     <section className={Styles.MarketsView} ref={componentWrapper}>
       <HelmetTag {...MARKETS_VIEW_HEAD_TAGS} />
@@ -388,6 +390,7 @@ const MarketsView = () => {
       )}
       {!isTrading && (
         <section>
+          <h3>{sportsTitle}</h3>
           <PillSelection
             options={SPORTS_MARKET_TYPES}
             defaultSelection={
