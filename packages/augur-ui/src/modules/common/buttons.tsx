@@ -240,6 +240,7 @@ export const ProcessingButton = ({
   queueId = null,
   matchingId = null,
   nonMatchingIds = null,
+  propsStatus,
   ...props
 }: ProcessingButtonProps) => {
   const { pendingQueue, theme } = useAppStatusStore();
@@ -249,7 +250,7 @@ export const ProcessingButton = ({
     pendingQueue[queueName] &&
     pendingQueue[queueName][queueId];
 
-  let status = pendingData && pendingData.status;
+  let status = propsStatus ? propsStatus : pendingData && pendingData.status;
   if (pendingData) {
     if (
       (matchingId !== null &&
