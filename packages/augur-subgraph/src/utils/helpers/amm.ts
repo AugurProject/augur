@@ -10,6 +10,7 @@ export function getOrCreateAMMExchange(
   if (amm == null && createIfNotFound) {
     amm = new AMMExchange(id);
     amm.cashBalance = BigInt.fromI32(0);
+    amm.liquidity = BigInt.fromI32(0);
   }
 
   return amm as AMMExchange;
@@ -21,7 +22,7 @@ export function createAndSaveAMMExchange(
   shareToken: string,
   cash: string
 ): AMMExchange {
-  const amm = getOrCreateAMMExchange(id);
+  let amm = getOrCreateAMMExchange(id);
   amm.market = market;
   amm.shareToken = shareToken;
   amm.cash = cash;

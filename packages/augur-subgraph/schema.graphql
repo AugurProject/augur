@@ -723,5 +723,5 @@ type AMMExchange @entity {
   shareToken: ParaShareToken!
 
   "Liquidity in exchange"
-  liquidity: BigInt
+  liquidity: BigInt!
 }

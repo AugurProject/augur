@@ -6,7 +6,7 @@ export function handleCashTransfer(event: Transfer): void {
   const _to = event.params.to.toHexString()
   const _amount = event.params.value;
 
-  const _fromExchange = AMMExchange.load(_from);
+  let _fromExchange = AMMExchange.load(_from);
   if(_fromExchange != null) {
     _fromExchange.cashBalance = _fromExchange.cashBalance.minus(_amount);
   }
