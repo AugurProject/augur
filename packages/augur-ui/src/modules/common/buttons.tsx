@@ -664,9 +664,9 @@ export const REPFaucetButton = (props: DefaultActionButtonProps) => (
     onClick={e => props.action(e)}
     className={Styles.REPFaucetButton}
     disabled={props.disabled}
-    title={props.title || 'REP Faucet'}
+    title={props.title || 'REPv2 Faucet'}
   >
-    <span>{props.title ? props.title : 'REP Faucet'}</span>
+    <span>{props.title ? props.title : 'REPv2 Faucet'}</span>
     {RepLogoIcon}
   </button>
 );

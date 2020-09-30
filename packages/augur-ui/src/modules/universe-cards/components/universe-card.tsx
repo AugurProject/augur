@@ -14,11 +14,11 @@ interface UniverseCardProps {
 }
 const useBreakdown = (universe) => [
   {
-    label: 'Your REP',
+    label: 'Your REPv2',
     value: formatAttoRep(universe.usersRep).formatted,
   },
   {
-    label: 'Total REP Supply',
+    label: 'Total REPv2 Supply',
     value: formatAttoRep(universe.totalRepSupply).formatted,
   },
   {

@@ -40,7 +40,7 @@ const DEFAULT_PAGINATION = {
 
 const sortByOptions = [
   {
-    label: 'Amount REP Staked',
+    label: 'Amount REPv2 Staked',
     value: SORT_REP_STAKED,
   },
   {

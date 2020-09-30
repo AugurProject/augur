@@ -91,7 +91,7 @@ const TopNav = ({ isLogged, menuData }: TopNavProps) => {
                 <li className={Styles.MigrateRepItem} key="migrate-rep-button">
                   <div className={Styles.MigrateRep}>
                     <ProcessingButton
-                      text="Migrate V1 to V2 REP"
+                      text="Migrate V1 to REPv2"
                       action={() => setModal({ type: MODAL_MIGRATE_REP })}
                       queueName={TRANSACTIONS}
                       queueId={MIGRATE_FROM_LEG_REP_TOKEN}
@@ -118,8 +118,8 @@ const TopNav = ({ isLogged, menuData }: TopNavProps) => {
                     >
                       <p>
                         {walletBalances.legacyRep > 0
-                          ? 'You have V1 REP in your User account address. Migrate it to V2 REP to use it in Augur V2.'
-                          : 'You have V1 REP in your wallet. Migrate it to V2 REP to use it in Augur V2.'}
+                          ? 'You have V1 REP in your User account address. Migrate it to REPv2 to use it in Augur V2.'
+                          : 'You have V1 REP in your wallet. Migrate it to REPv2 to use it in Augur V2.'}
                       </p>
                     </ReactTooltip>
                   </span>

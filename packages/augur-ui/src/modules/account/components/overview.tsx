@@ -43,10 +43,10 @@ const Overview = ({ hideHeader }: OverviewProps) => {
         <div className={Styles.AccountOverview}>
           <Funds />
           <div className={Styles.RepBalances}>
-            <PropertyLabel label="REP Balance" value={repBalance.formatted} />
+            <PropertyLabel label="REPv2 Balance" value={repBalance.formatted} />
             {v2AugurLogo}
             <PropertyLabel
-              label="REP Staked"
+              label="REPv2 Staked"
               value={repTotalAmountStaked.formatted}
             />
           </div>

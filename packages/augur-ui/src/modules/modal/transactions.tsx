@@ -70,7 +70,7 @@ const coinOptions = [
     value: DAI,
   },
   {
-    label: REP,
+    label: 'REPv2',
     value: REP,
   },
   {
@@ -101,7 +101,7 @@ const actionOptions = [
     value: 'CLAIM_PARTICIPATION_TOKENS',
   },
   {
-    label: 'Claim Staked REP & Reporting Fees',
+    label: 'Claim Staked REPv2 & Reporting Fees',
     value: 'CLAIM_WINNING_CROWDSOURCERS',
   },
   {

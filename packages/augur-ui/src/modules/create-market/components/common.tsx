@@ -888,8 +888,8 @@ export const NoFundsErrors = ({
       )}
       {noRep && (
         <DismissableNotice
-          title="Not enough REP in your wallet"
-          description={`You have ${availableRepFormatted.formatted} V2 REP of ${totalRep.formatted} required to create this market.`}
+          title="Not enough REPv2 in your wallet"
+          description={`You have ${availableRepFormatted.formatted} REPv2 of ${totalRep.formatted} required to create this market.`}
           show={true}
           buttonText="Add Funds"
           buttonAction={() => setModal({ type: MODAL_ADD_FUNDS, fundType: REP })}
@@ -1585,7 +1585,7 @@ export const MigrateMarketNotice = ({marketId}) => {
 
   if (marketNeedsMigrating && !canMigrateMarkets) {
     title =
-      'Fork has finalized. REP on Winning Universe is needed to migrate markets ';
+      'Fork has finalized. REPv2 on Winning Universe is needed to migrate markets ';
     buttonType = DISMISSABLE_NOTICE_BUTTON_TYPES.NONE;
   }
 
@@ -1593,8 +1593,8 @@ export const MigrateMarketNotice = ({marketId}) => {
     title =
       'Disputing is paused on this market. Disputing can continue once the fork has finalised.';
     description =
-      'As you hold REP in this market’s dispute, please release it now to migrate in the fork.';
-    buttonText = 'Release REP';
+      'As you hold REPv2 in this market’s dispute, please release it now to migrate in the fork.';
+    buttonText = 'Release REPv2';
     buttonType = DISMISSABLE_NOTICE_BUTTON_TYPES.BUTTON;
   }
 
