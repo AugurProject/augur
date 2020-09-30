@@ -86,16 +86,15 @@ export const FilterSearch = ({
   }, [search]);
 
   return (
-    <article ref={parent}>
-      <FilterSearchPure
-        placeholder={placeholder}
-        search={search}
-        onChange={value => onChange(value)}
-        onFocus={() => setPlaceholder('')}
-        onBlur={() => setPlaceholder(placeholderProp)}
-        isSearchingMarkets={isSearchingMarkets}
-      />
-    </article>
+    <FilterSearchPure
+      forwardRef={parent}
+      placeholder={placeholder}
+      search={search}
+      onChange={value => onChange(value)}
+      onFocus={() => setPlaceholder('')}
+      onBlur={() => setPlaceholder(placeholderProp)}
+      isSearchingMarkets={isSearchingMarkets}
+    />
   );
 };
 

@@ -55,6 +55,14 @@
       margin-top: @size-32;
       margin-bottom: @size-24;
 
+      > h3 {
+        .text-24-bold;
+
+        color: var(--color-primary-text);
+        display: none;
+        text-transform: capitalize;
+      }
+
       > button {
         display: none;
       }
@@ -70,10 +78,27 @@
       }
 
       @media @breakpoint-mobile-tablet {
-        grid-template-columns: 1fr auto;
+        grid-template-columns: auto 1fr auto;
+        grid-gap: @size-16 @size-6;
+        margin-top: 0;
+
+        > h3 {
+          display: block;
+        }
 
         > button {
           display: flex;
+          width: auto;
+          height: @size-38;
+          padding: @size-8;
+        }
+      }
+
+      @media @breakpoint-mobile {
+        grid-template-columns: 1fr auto;
+
+        > h3 {
+          grid-column: span 2;
         }
       }
     }

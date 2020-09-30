@@ -11,7 +11,6 @@
   height: @size-40;
   min-height: @size-40;
   justify-content: flex-end;
-  // padding-right needs to be more than the size of global chat button
   padding: 0 @size-130 0 @size-40;
 
   > a {
@@ -33,6 +32,11 @@
     color: var(--color-primary-text);
     justify-content: initial;
     padding: 0 0 0 @size-16;
+
+    @media @breakpoint-mobile {
+      justify-content: center;
+      padding: 0;
+    }
 
     > a {
       text-decoration: none;

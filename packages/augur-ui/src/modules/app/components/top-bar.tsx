@@ -1,6 +1,6 @@
 import React from 'react';
 import classNames from 'classnames';
-import { Alerts } from 'modules/common/icons';
+import { Alerts, BetsIconCount } from 'modules/common/icons';
 import ConnectAccount from 'modules/auth/connect-account';
 import {
   MovementLabel,
@@ -13,7 +13,11 @@ import { Link } from 'react-router-dom';
 import makePath from 'modules/routes/helpers/make-path';
 import { NewLogo } from 'modules/app/components/logo';
 import { ThemeSwitch } from 'modules/app/components/theme-switch';
-import { PrimaryButton, SecondaryButton, ProcessingButton } from 'modules/common/buttons';
+import {
+  PrimaryButton,
+  SecondaryButton,
+  ProcessingButton,
+} from 'modules/common/buttons';
 import { MARKETS } from 'modules/routes/constants/views';
 import { HelpResources } from 'modules/app/components/help-resources';
 import { OddsMenu } from 'modules/app/components/odds-menu';
@@ -28,9 +32,9 @@ import {
 import { useAppStatusStore } from 'modules/app/store/app-status';
 import { getInfoAlertsAndSeenCount } from 'modules/alerts/helpers/alerts';
 import AlertsContainer from 'modules/alerts/components/alerts-view';
-
+import { useBetslipStore } from 'modules/trading/store/betslip';
 import HelpResources from 'modules/app/containers/help-resources';
-
+import { BETSLIP_SELECTED } from 'modules/trading/store/constants';
 import Styles from 'modules/app/components/top-bar.styles.less';
 import { getCoreStats } from 'modules/auth/helpers/login-account';
 
@@ -81,8 +85,12 @@ const TopBar = () => {
     restoredAccount,
     isMobile,
     isAlertsMenuOpen,
-    actions: { setIsAlertsMenuOpen, setModal },
+    actions: { setIsAlertsMenuOpen, setBetslipMinimized, setModal },
   } = useAppStatusStore();
+  const {
+    matched: { count: MyBetsCount },
+    actions: { toggleHeader },
+  } = useBetslipStore();
   const isSports = theme === THEMES.SPORTS;
   const { unseenCount } = getInfoAlertsAndSeenCount();
   const LoggedOrRestored = isLogged || restoredAccount;
@@ -91,7 +99,7 @@ const TopBar = () => {
     pendingQueue[TRANSACTIONS] &&
     pendingQueue[TRANSACTIONS][MIGRATE_FROM_LEG_REP_TOKEN];
   const showMigrateRepButton =
-    balances?.legacyRep !== "0" || balances?.legacyAttoRep !== "0" || !!pending;
+    balances?.legacyRep !== '0' || balances?.legacyAttoRep !== '0' || !!pending;
   return (
     <header className={Styles.TopBar}>
       <div className={Styles.Logo}>
@@ -130,22 +138,38 @@ const TopBar = () => {
           </>
         )}
         {LoggedOrRestored && (
-            <div className={Styles.AlertsDiv}>
-              <button
-                className={classNames(Styles.alerts, {
-                  [Styles.alertsDark]: isAlertsMenuOpen,
-                  [Styles.Empty]: unseenCount < 1,
-                })}
-                onClick={() => {
-                  setIsAlertsMenuOpen(!isAlertsMenuOpen);
-                }}
-                tabIndex={-1}
-              >
-                {Alerts(unseenCount)}
-              </button>
-              <AlertsContainer />
-            </div>
-          )}
+          <div
+            className={classNames(Styles.ActiveBets, {
+              [Styles.Empty]: MyBetsCount === 0,
+            })}
+          >
+            <button
+              onClick={() => {
+                toggleHeader(BETSLIP_SELECTED.MY_BETS);
+                setBetslipMinimized(false);
+              }}
+            >
+              {BetsIconCount(MyBetsCount)}
+            </button>
+          </div>
+        )}
+        {LoggedOrRestored && (
+          <div className={Styles.AlertsDiv}>
+            <button
+              className={classNames(Styles.alerts, {
+                [Styles.alertsDark]: isAlertsMenuOpen,
+                [Styles.Empty]: unseenCount < 1,
+              })}
+              onClick={() => {
+                setIsAlertsMenuOpen(!isAlertsMenuOpen);
+              }}
+              tabIndex={-1}
+            >
+              {Alerts(unseenCount)}
+            </button>
+            <AlertsContainer />
+          </div>
+        )}
         <ConnectAccount />
       </div>
     </header>
