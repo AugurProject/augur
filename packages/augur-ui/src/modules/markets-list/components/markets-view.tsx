@@ -359,8 +359,7 @@ const MarketsView = () => {
       !displayFee ? '“Fee”' : '“Liquidity Spread”'
     } filter is set to “All”. This puts you at risk of trading on invalid markets.`;
   }
-  const sportsMobileView = isMobile && isSports;
-  const sportsTitle = selectedCategory && !sportsMobileView ? selectedCategory : 'Popular Markets';
+  const sportsTitle = selectedCategory ? selectedCategory : 'Popular Markets';
   return (
     <section className={Styles.MarketsView} ref={componentWrapper}>
       <HelmetTag {...MARKETS_VIEW_HEAD_TAGS} />
