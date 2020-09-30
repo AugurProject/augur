@@ -8623,19 +8623,19 @@ export class OINexus<TBigNumber> extends Contract<TBigNumber> {
 
 	public addParaAugur = async (paraAugur: string, options?: { sender?: string }): Promise<Array<Event>> => {
 		options = options || {}
-		const abi: AbiFunction = {"constant":false,"inputs":[{"internalType":"contract IParaAugur","name":"_paraAugur","type":"address"}],"name":"addParaAugur","outputs":[{"internalType":"bool","name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"}
+		const abi: AbiFunction = {"constant":false,"inputs":[{"internalType":"address","name":"_paraAugur","type":"address"}],"name":"addParaAugur","outputs":[{"internalType":"bool","name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"}
 		return await this.remoteCall(abi, [paraAugur], 'addParaAugur', options.sender)
 	}
 	
 	public addParaAugur_estimateGas = async (paraAugur: string, options?: { sender?: string }): Promise<TBigNumber> => {
 		options = options || {}
-		const abi: AbiFunction = {"constant":false,"inputs":[{"internalType":"contract IParaAugur","name":"_paraAugur","type":"address"}],"name":"addParaAugur","outputs":[{"internalType":"bool","name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"}
+		const abi: AbiFunction = {"constant":false,"inputs":[{"internalType":"address","name":"_paraAugur","type":"address"}],"name":"addParaAugur","outputs":[{"internalType":"bool","name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"}
 		return await this.estimateGas(abi, [paraAugur], 'addParaAugur', options.sender)
 	}
 
 	public addParaAugur_ = async (paraAugur: string, options?: { sender?: string }): Promise<boolean> => {
 		options = options || {}
-		const abi: AbiFunction = {"constant":false,"inputs":[{"internalType":"contract IParaAugur","name":"_paraAugur","type":"address"}],"name":"addParaAugur","outputs":[{"internalType":"bool","name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"}
+		const abi: AbiFunction = {"constant":false,"inputs":[{"internalType":"address","name":"_paraAugur","type":"address"}],"name":"addParaAugur","outputs":[{"internalType":"bool","name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"}
 		const result = await this.localCall(abi, [paraAugur], options.sender)
 		return <boolean>result[0]
 	}
@@ -10254,19 +10254,19 @@ export class ParaShareToken<TBigNumber> extends Contract<TBigNumber> {
 
 	public initialize = async (augur: string, originalShareToken: string, options?: { sender?: string }): Promise<Array<Event>> => {
 		options = options || {}
-		const abi: AbiFunction = {"constant":false,"inputs":[{"internalType":"contract IParaAugur","name":"_augur","type":"address"},{"internalType":"contract ShareToken","name":"_originalShareToken","type":"address"}],"name":"initialize","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"}
+		const abi: AbiFunction = {"constant":false,"inputs":[{"internalType":"address","name":"_augur","type":"address"},{"internalType":"contract ShareToken","name":"_originalShareToken","type":"address"}],"name":"initialize","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"}
 		return await this.remoteCall(abi, [augur, originalShareToken], 'initialize', options.sender)
 	}
 	
 	public initialize_estimateGas = async (augur: string, originalShareToken: string, options?: { sender?: string }): Promise<TBigNumber> => {
 		options = options || {}
-		const abi: AbiFunction = {"constant":false,"inputs":[{"internalType":"contract IParaAugur","name":"_augur","type":"address"},{"internalType":"contract ShareToken","name":"_originalShareToken","type":"address"}],"name":"initialize","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"}
+		const abi: AbiFunction = {"constant":false,"inputs":[{"internalType":"address","name":"_augur","type":"address"},{"internalType":"contract ShareToken","name":"_originalShareToken","type":"address"}],"name":"initialize","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"}
 		return await this.estimateGas(abi, [augur, originalShareToken], 'initialize', options.sender)
 	}
 
 	public initialize_ = async (augur: string, originalShareToken: string, options?: { sender?: string }): Promise<void> => {
 		options = options || {}
-		const abi: AbiFunction = {"constant":false,"inputs":[{"internalType":"contract IParaAugur","name":"_augur","type":"address"},{"internalType":"contract ShareToken","name":"_originalShareToken","type":"address"}],"name":"initialize","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"}
+		const abi: AbiFunction = {"constant":false,"inputs":[{"internalType":"address","name":"_augur","type":"address"},{"internalType":"contract ShareToken","name":"_originalShareToken","type":"address"}],"name":"initialize","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"}
 		await this.localCall(abi, [augur, originalShareToken], options.sender)
 	}
 

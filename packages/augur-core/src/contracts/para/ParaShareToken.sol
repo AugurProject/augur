@@ -13,7 +13,7 @@ import 'ROOT/libraries/TokenId.sol';
 
 
 contract ParaShareToken is ITyped, Initializable, ERC1155, ReentrancyGuard {
-    
+
     IParaAugur public augur;
     ICash public cash;
     ShareToken public originalShareToken;
@@ -30,11 +30,11 @@ contract ParaShareToken is ITyped, Initializable, ERC1155, ReentrancyGuard {
 
     mapping(address => MarketData) markets;
 
-    function initialize(IParaAugur _augur, ShareToken _originalShareToken) external beforeInitialized {
+    function initialize(address _augur, ShareToken _originalShareToken) external beforeInitialized {
         endInitialization();
-        augur = _augur;
+        augur = IParaAugur(_augur);
         originalShareToken = _originalShareToken;
-        cash = ICash(_augur.lookup("Cash"));
+        cash = ICash(IParaAugur(_augur).lookup("Cash"));
 
         require(cash != ICash(0));
     }
@@ -225,7 +225,7 @@ contract ParaShareToken is ITyped, Initializable, ERC1155, ReentrancyGuard {
      */
     function sellCompleteSets(IMarket _market, address _holder, address _recipient, uint256 _amount, bytes32 _fingerprint) external returns (uint256 _creatorFee, uint256 _reportingFee) {
         require(_holder == msg.sender || isApprovedForAll(_holder, msg.sender) == true, "ERC1155: need operator approval to sell complete sets");
-        
+
         (uint256 _payout, uint256 _creatorFee, uint256 _reportingFee) = burnCompleteSets(_market, _holder, _amount, _holder, _fingerprint);
 
         require(cash.transfer(_recipient, _payout));
@@ -268,7 +268,7 @@ contract ParaShareToken is ITyped, Initializable, ERC1155, ReentrancyGuard {
         if (!isMarketInitialized(_market)) {
             initializeMarket(_market);
         }
-        
+
         uint256 _numOutcomes = markets[address(_market)].numOutcomes;
         uint256 _numTicks = markets[address(_market)].numTicks;
 

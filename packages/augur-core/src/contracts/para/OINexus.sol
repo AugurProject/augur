@@ -19,8 +19,8 @@ contract OINexus is Ownable, IOINexus {
     mapping(address => uint256) public totalUniverseContributions;
     mapping(address => uint256) public universeReportingFeeDivisor;
 
-    function addParaAugur(IParaAugur _paraAugur) external onlyOwner returns (bool) {
-        registeredParaAugur[address(_paraAugur)] = true;
+    function addParaAugur(address _paraAugur) external onlyOwner returns (bool) {
+        registeredParaAugur[_paraAugur] = true;
         return true;
     }
 
