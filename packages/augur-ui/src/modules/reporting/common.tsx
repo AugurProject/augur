@@ -200,7 +200,7 @@ export const ReportingPercent = (props: ReportingPercentProps) => {
         eventOff="mouseleave mouseout scroll mousewheel blur"
       >
         My Existing Stake
-        <p>{props.userValue.formattedValue} REP</p>
+        <p>{props.userValue.formattedValue} REPv2</p>
       </ReactTooltip>
       {thirdPercent > 100
         ? ''
@@ -304,7 +304,7 @@ export class PreFilledStake extends Component<PreFilledStakeProps, {}> {
         <span>Add Pre-Filled Stake?</span>
         <span>
           Pre-fund future dispute rounds to accelerate market resolution. Any
-          contributed REP will automatically go toward disputing in favor of
+          contributed REPv2 will automatically go toward disputing in favor of
           this outcome, if it is no longer the tentative winning outcome in
           future rounds
         </span>
@@ -321,13 +321,13 @@ export class PreFilledStake extends Component<PreFilledStakeProps, {}> {
               updateStakeAmount={updateInputtedStake}
               stakeError={stakeError}
               max={threshold}
-              maxLabel="MAX (REP THRESHOLD)"
+              maxLabel="MAX (REPv2 THRESHOLD)"
             />
             <span>Review Pre-Filled Stake</span>
             <LinearPropertyLabel
               key="totalRep"
-              label="Total Rep"
-              value={formatRep(preFilledStake).formatted + ' REP'}
+              label="Total REPv2"
+              value={formatRep(preFilledStake).formatted + ' REPv2'}
             />
           </>
         )}
@@ -351,7 +351,7 @@ export const InputRepStake = (props: InputRepStakeProps) => {
         value={props.stakeAmount}
         onChange={value => props.updateStakeAmount(value)}
         errorMessage={props.stakeError}
-        innerLabel="REP"
+        innerLabel="REPv2"
       />
       <div>
         <CancelTextButton
@@ -383,7 +383,7 @@ export const DisputingButtonView = (props: DisputingButtonViewProps) => (
       <span>
         {props.fullBond && props.fullBond.formatted}
         <span>
-          / {props.bondSizeCurrent && props.bondSizeCurrent.formatted} REP
+          / {props.bondSizeCurrent && props.bondSizeCurrent.formatted} REPv2
         </span>
       </span>
     </div>
@@ -527,7 +527,7 @@ export const DisputingBondsView = ({
     ) {
       setState({
         ...state,
-        stakeError: `Value is bigger than REP balance: ${userAvailableRep} REP`,
+        stakeError: `Value is bigger than REPv2 balance: ${userAvailableRep} REPv2`,
         disabled: true,
       });
     } else if (
@@ -537,7 +537,7 @@ export const DisputingBondsView = ({
     ) {
       setState({
         ...state,
-        stakeError: `Value is bigger than needed: ${remaining} REP`,
+        stakeError: `Value is bigger than needed: ${remaining} REPv2`,
         disabled: true,
       });
     } else if (
@@ -549,7 +549,7 @@ export const DisputingBondsView = ({
     ) {
       setState({
         ...state,
-        stakeError: `Value is smaller than minimum: ${min} REP`,
+        stakeError: `Value is smaller than minimum: ${min} REPv2`,
         disabled: true,
       });
     } else {
@@ -592,7 +592,7 @@ export const DisputingBondsView = ({
         value={String(stakeValue)}
         onChange={value => updateInputtedStakeLocal(value)}
         errorMessage={stakeError}
-        innerLabel="REP"
+        innerLabel="REPv2"
       />
       {!tentativeWinning && (
         <section>
@@ -615,7 +615,7 @@ export const DisputingBondsView = ({
         label={
           tentativeWinning ? 'Contribute to Next Round' : 'Dispute Round Stake'
         }
-        value={formatRep(stakeValue || ZERO).formatted + ' REP'}
+        value={formatRep(stakeValue || ZERO).formatted + ' REPv2'}
       />
       <TransactionFeeLabel gasCostDai={displayfee} />
       <PrimaryButton
@@ -763,12 +763,12 @@ export const ReportingBondsView = ({
       createBigNumber(userAttoRep).lt(createBigNumber(inputStakeValue))
     ) {
       disabled = true;
-      setStakeError('Value is bigger than user REP balance');
+      setStakeError('Value is bigger than user REPv2 balance');
     } else if (
       createBigNumber(threshold).lt(createBigNumber(inputStakeValue))
     ) {
       disabled = true;
-      setStakeError(`Value is bigger than the REP threshold: ${threshold}`);
+      setStakeError(`Value is bigger than the REPv2 threshold: ${threshold}`);
     } else {
       setStakeError('');
     }
@@ -789,14 +789,14 @@ export const ReportingBondsView = ({
   const repAmount = migrateRep
     ? formatAttoRep(inputtedReportingStake.inputToAttoRep).formatted
     : formatAttoRep(market.noShowBondAmount).formatted;
-  let repLabel = migrateRep ? 'REP to migrate' : 'Initial Reporter Stake';
+  let repLabel = migrateRep ? 'REPv2 to migrate' : 'Initial Reporter Stake';
 
   repLabel = openReporting ? 'Open Reporting winning Stake' : repLabel;
   if (owesRep) {
-    repLabel = 'REP needed';
+    repLabel = 'REPv2 needed';
   }
   const reviewLabel = migrateRep
-    ? 'Review REP to migrate'
+    ? 'Review REPv2 to migrate'
     : 'Review Initial Reporting Stake';
   const totalRep = owesRep
     ? formatAttoRep(
@@ -826,7 +826,7 @@ export const ReportingBondsView = ({
 
   let insufficientRep = '';
   if (!enoughRepBalance) {
-    (insufficientRep = 'Not enough REP to report'), (buttonDisabled = true);
+    (insufficientRep = 'Not enough REPv2 to report'), (buttonDisabled = true);
   }
   return (
     <div
@@ -857,7 +857,7 @@ export const ReportingBondsView = ({
       <LinearPropertyLabel
         key="initial"
         label={repLabel}
-        value={`${repAmount} REP`}
+        value={`${repAmount} REPv2`}
       />
       {initialReport && !market.isWarpSync && (
         <PreFilledStake
@@ -879,7 +879,7 @@ export const ReportingBondsView = ({
           )}
           <LinearPropertyLabel
             key="totalRep"
-            label="Total REP Needed"
+            label="Total REPv2 Needed"
             value={totalRep}
           />
           {insufficientRep && (
@@ -903,8 +903,8 @@ export const ReportingBondsView = ({
           <DismissableNotice
             show={true}
             description=""
-            title="Are you sure you only want to migrate a portion of your REP to this universe?
-          If not, go back and select the ‘Max’ button to migrate your full REP amount."
+            title="Are you sure you only want to migrate a portion of your REPv2 to this universe?
+          If not, go back and select the ‘Max’ button to migrate your full REPv2 amount."
             buttonType={DISMISSABLE_NOTICE_BUTTON_TYPES.NONE}
           />
         )}
@@ -926,12 +926,12 @@ export const ReportingBondsView = ({
               disabled={false}
             />
             I have carefully read all the information and fully acknowledge the
-            consequences of migrating my REP to an unsuccessful universe
+            consequences of migrating my REPv2 to an unsuccessful universe
           </label>
         </div>
       )}
       <PrimaryButton
-        text={migrateRep ? 'Confirm and Migrate REP' : 'Confirm'}
+        text={migrateRep ? 'Confirm and Migrate REPv2' : 'Confirm'}
         disabled={
           migrateRep ? buttonDisabled || !readAndAgreedCheckbox : buttonDisabled
         }
@@ -1099,11 +1099,11 @@ export const UserRepDisplay = () => {
                 initialAddFundsFlow: ADD_FUNDS_SWAP,
               })
             }
-            text="Get REP"
+            text="Get REPv2"
             id="get-rep"
           />
         </div>
-        {!isLogged && <p>Connect a wallet to see your Available REP Balance</p>}
+        {!isLogged && <p>Connect a wallet to see your Available REPv2 Balance</p>}
         {isLogged && hasStakedRep && (
           <>
             <div />
@@ -1328,7 +1328,7 @@ export const ReleasableRepNotice = () => {
       show={true}
       buttonType={DISMISSABLE_NOTICE_BUTTON_TYPES.NONE}
       title={
-        'You Still have REP locked up in dispute Bonds and Participation Tokens.'
+        'You Still have REPv2 locked up in dispute Bonds and Participation Tokens.'
       }
       description={
         'Please follow the instructions given in the banner at the top of this site or the notification in your account summary.'

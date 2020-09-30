@@ -148,7 +148,7 @@ const ConnectDropdown = () => {
       disabled: balances.eth === "0",
     },
     {
-      name: 'REP',
+      name: 'REPv2',
       logo: v2AugurLogo,
       value: formatRep(balances.rep, {
         zeroStyled: false,

@@ -57,11 +57,11 @@ const ForkingBanner = () => {
       <div>
         <span>A fork has been initiated. The Universe is now Locked</span>
         <span>
-          If you are a REP holder, please release any outstanding REP. Then,
-          migrate your REP to your chosen child universe. The forking period
+          If you are a REPv2 holder, please release any outstanding REPv2. Then,
+          migrate your REPv2 to your chosen child universe. The forking period
           will end on {forkTime ? forkTime.formattedSimpleData : '[date]'} or
-          when more than 50% of all REP has been migrated to a child universe.
-          REP migration must happen before the 60 days cut-off. If not your REP
+          when more than 50% of all REPv2 has been migrated to a child universe.
+          REPv2 migration must happen before the 60 days cut-off. If not your REPv2
           will be stuck in the current universe (Genesis Universe).
           <a
             href="https://augur.gitbook.io/help-center/forking-explained"
@@ -80,7 +80,7 @@ const ForkingBanner = () => {
                   releasableRep,
                 })
               }
-              text={'Release my REP'}
+              text={'Release my REPv2'}
             />
           )}
           {hasRepBalance && isForking && (
@@ -89,7 +89,7 @@ const ForkingBanner = () => {
                 type: MODAL_REPORTING,
                 market,
               })}
-              text="Migrate REP"
+              text="Migrate REPv2"
               queueName={TRANSACTIONS}
               queueId={MIGRATEOUTBYPAYOUT}
             />

@@ -288,12 +288,12 @@ export const DisputeOutcome = ({
               {stake?.tentativeWinning ? (
                 <span>
                   {stake ? stakeCurrent.formatted : 0}
-                  <span> REP</span>
+                  <span> REPv2</span>
                 </span>
               ) : (
                 <span>
                   {stake ? stakeCurrent.formatted : 0}
-                  <span>/ {stake ? bondSizeCurrent.formatted : 0} REP</span>
+                  <span>/ {stake ? bondSizeCurrent.formatted : 0} REPv2</span>
                 </span>
               )}
             </div>

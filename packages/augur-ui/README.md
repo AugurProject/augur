@@ -116,7 +116,7 @@ Full instructions are here [dev-local-node](https://github.com/AugurProject/augu
 
 ## Contributing
 
-We use Clubhouse.io for our issue tracker. If you would like to contribute, please join us on [Discord](https://discordapp.com/invite/JwEtX9P) and provide us with your email address so we can grant you access to our Clubhouse.
+We use Clubhouse.io for our issue tracker. If you would like to contribute, please join us on [Discord](https://invite.augur.net) and provide us with your email address so we can grant you access to our Clubhouse.
 
 
 ## Development Tips

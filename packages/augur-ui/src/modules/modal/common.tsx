@@ -577,7 +577,7 @@ export const ReadableAddress = (props: ReadableAddressProps) => (
 
 // for 1.13 we don't need the help section because we haven't written it up in the docs yet.
 // <h3>Need Help?</h3>
-// <p>Read our help articles on "How to buy eth and rep"</p>
+// <p>Read our help articles on "How to buy eth and repv2"</p>
 export const DepositInfo = (props: DepositInfoProps) => (
   <section className={Styles.DepositInfo}>
     <h3>How to (ETH):</h3>
@@ -594,10 +594,10 @@ export const DepositInfo = (props: DepositInfoProps) => (
       <li>Copy your connected wallet address shown here</li>
       <li>Transfer the ETH purchased to the copied address</li>
     </ul>
-    <h3>How to (REP):</h3>
+    <h3>How to (REPv2):</h3>
     <ul>
       <li>
-        Buy REP using{' '}
+        Buy REPv2 using{' '}
         {props.show0xInstant && (
           <ExternalLinkButton
             label="0x Instant"
@@ -610,7 +610,7 @@ export const DepositInfo = (props: DepositInfoProps) => (
         )}
       </li>
       <li>
-        Your purchased REP will automatically appear in your connected wallet
+        Your purchased REPv2 will automatically appear in your connected wallet
       </li>
     </ul>
   </section>

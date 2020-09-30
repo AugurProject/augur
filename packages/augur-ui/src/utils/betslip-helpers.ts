@@ -22,9 +22,11 @@ import { totalTradingBalance } from 'modules/auth/helpers/login-account';
 import { runSimulateTrade } from 'modules/trades/actions/update-trade-cost-shares';
 import { calcOrderShareProfitLoss } from 'modules/trades/helpers/calc-order-profit-loss-percents';
 import {
-  DEFAULT_TRADE_INTERVAL,
   findMultipleOf,
 } from 'modules/trading/helpers/form-helpers';
+import {
+  DEFAULT_TRADE_INTERVAL
+} from '@augurproject/utils';
 import { convertDisplayAmountToOnChainAmount } from '@augurproject/sdk';
 
 export const convertPositionToBet = (position, marketInfo) => {
@@ -76,7 +78,7 @@ export const findProceeds = (realizedPercent, realizedCost, settlementFee) => {
   const b = bnRealizedPercentPlusOne
     .times(bnRealizedCost)
     .times(bnSettlementFee);
-  return a.minus(b); 
+  return a.minus(b);
 };
 
 const { FILLED, FAILED } = BET_STATUS;
@@ -232,7 +234,7 @@ export const checkForConsumingOwnOrderError = (marketId, order, orderId) => {
       Betslip.actions.modifyBet(marketId, orderId, {
       ...order,
       selfTrade: simulateTradeData.selfTrade,
-      errorMessage: simulateTradeData.selfTrade && order.errorMessage === '' ? 'Consuming own order' : order.errorMessage 
+      errorMessage: simulateTradeData.selfTrade && order.errorMessage === '' ? 'Consuming own order' : order.errorMessage
     });
   });
 }

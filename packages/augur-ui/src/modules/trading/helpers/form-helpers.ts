@@ -11,16 +11,18 @@ import { FORM_INPUT_TYPES } from 'modules/trading/store/constants';
 import { createBigNumber, BigNumber } from 'utils/create-big-number';
 import { calcPercentageFromPrice } from 'utils/format-number';
 import getPrecision from 'utils/get-number-precision';
+import type { Getters } from "@augurproject/sdk";
 import {
-  convertDisplayAmountToOnChainAmount,
-  tickSizeToNumTickWithDisplayPrices,
   getTradeInterval,
+} from '@augurproject/sdk-lite';
+import {
+  tickSizeToNumTickWithDisplayPrices,
+  convertDisplayAmountToOnChainAmount,
   QUINTILLION,
-  Getters
-} from '@augurproject/sdk';
-import { MarketData } from 'modules/types';
+  DEFAULT_TRADE_INTERVAL
+} from '@augurproject/utils';
 
-export const DEFAULT_TRADE_INTERVAL = new BigNumber(10 ** 17);
+import { MarketData } from 'modules/types';
 
 interface TestResults {
   isOrderValid: boolean;

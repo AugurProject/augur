@@ -117,9 +117,9 @@ export const MigrateRep = () => {
         {inSigningWallet && <h1>You have V1 REP in your wallet</h1>}
 
         <h2>
-          Migrate your V1 REP to V2 REP to use it in Augur V2. The quantity of
-          V1 REP shown below will migrate to an equal amount of V2 REP. For
-          example 100 V1 REP will migrate to 100 V2 REP.
+          Migrate your V1 REP to REPv2 to use it in Augur V2. The quantity of
+          V1 REP shown below will migrate to an equal amount of REPv2. For
+          example 100 V1 REP will migrate to 100 REPv2.
           <ExternalLinkButton
             label="Learn more"
             URL={HELP_CENTER_MIGRATE_REP}

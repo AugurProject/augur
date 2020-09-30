@@ -89,7 +89,7 @@ export const selectReportOnMarkets = () => {
   return [];
 };
 
-// Tell user they can get REP if they finalize warp sync market
+// Tell user they can get REPv2 if they finalize warp sync market
 export const selectFinalizeMarkets = () => {
   const { marketInfos } = Markets.get();
   const marketId = Object.keys(marketInfos).filter(

@@ -317,7 +317,7 @@ const Review = ({ setDisableCreate }: ReviewProps) => {
             label='No-Show Bond'
             value={
               designatedReportNoShowReputationBond &&
-              designatedReportNoShowReputationBond.formattedValue + ' REP'
+              designatedReportNoShowReputationBond.formattedValue + ' REPv2'
             }
           />
         </span>
@@ -341,7 +341,7 @@ const Review = ({ setDisableCreate }: ReviewProps) => {
 
         <Subheaders
           header="Totals"
-          subheader={'Sum total of DAI and REP required to create this market'}
+          subheader={'Sum total of DAI and REPv2 required to create this market'}
         />
         <span>
           <LinearPropertyLabel
@@ -350,10 +350,10 @@ const Review = ({ setDisableCreate }: ReviewProps) => {
           />
           <TransactionFeeLabel gasCostDai={displayfee} />
           <LinearPropertyLabel
-            label="TOTAL REP"
+            label="TOTAL REPv2"
             value={
               designatedReportNoShowReputationBond &&
-              designatedReportNoShowReputationBond.formattedValue + ' REP'
+              designatedReportNoShowReputationBond.formattedValue + ' REPv2'
             }
           />
         </span>

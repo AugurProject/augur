@@ -640,6 +640,8 @@ export interface AccountBalances {
   eth: string;
   rep: string;
   dai: string;
+  usdt: string;
+  usdc: string;
   legacyRep: string;
   attoRep: string;
   legacyAttoRep?: string;
@@ -647,6 +649,8 @@ export interface AccountBalances {
     eth: string;
     rep: string;
     dai: string;
+    usdc: string;
+    usdt: string
     legacyRep: string;
   }
 }

@@ -441,7 +441,7 @@ const ModalReporting = ({
         {isDisputing && (
           <div>
             <RepBalance alternate rep={rep} />
-            <SecondaryButton text="Get REP" action={() => getRepModal()} />
+            <SecondaryButton text="Get REPv2" action={() => getRepModal()} />
           </div>
         )}
         <ReleasableRepNotice />

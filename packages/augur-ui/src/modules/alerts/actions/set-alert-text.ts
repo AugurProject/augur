@@ -211,7 +211,7 @@ export default function setAlertText(alert: any, callback: Function) {
       }
       alert.title = participation
         ? 'Redeem participation tokens'
-        : 'REP Stake Redeemed';
+        : 'REPv2 Stake Redeemed';
       if (alert.params) {
         if (participation) {
           const tokens = formatRep(
@@ -230,7 +230,7 @@ export default function setAlertText(alert: any, callback: Function) {
               createBigNumber(alert.params.repReceived)
             ).toString()
           );
-          alert.description = `${REPVal.formatted} REP stake redeemed`;
+          alert.description = `${REPVal.formatted} REPv2 stake redeemed`;
         }
       }
       break;
@@ -376,7 +376,7 @@ export default function setAlertText(alert: any, callback: Function) {
       ).formatted;
 
       if (!marketId) {
-        alert.details = `${repAmount} REP contributed"`;
+        alert.details = `${repAmount} REPv2 contributed"`;
         break;
       }
       loadMarketsInfoIfNotLoaded([marketId], () => {
@@ -406,7 +406,7 @@ export default function setAlertText(alert: any, callback: Function) {
               true
             );
         alert.description = marketInfo.description;
-        alert.details = `${repAmount} REP added to "${outcomeDescription}"`;
+        alert.details = `${repAmount} REPv2 added to "${outcomeDescription}"`;
       });
       break;
     case DOINITIALREPORT:
@@ -488,8 +488,8 @@ export default function setAlertText(alert: any, callback: Function) {
       const amount = formatRep(
         convertAttoValueToDisplayValue(createBigNumber(alert.params.amount))
       );
-      alert.title = 'REP transferred to your address';
-      alert.description = `You have received ${amount.formatted} REP`;
+      alert.title = 'REPv2 transferred to your address';
+      alert.description = `You have received ${amount.formatted} REPv2`;
       break;
     default: {
       break;

@@ -271,7 +271,7 @@ export const ClaimReportingFeesTemplate = (
 
   return (
     <Template
-      message={`You have ${unclaimedREP} REP available to be claimed from your reporting stake and $${unclaimedDai} of reporting fees to collect.`}
+      message={`You have ${unclaimedREP} REPv2 available to be claimed from your reporting stake and $${unclaimedDai} of reporting fees to collect.`}
       {...props}
     />
   );
@@ -316,7 +316,7 @@ export const FinalizeWarpSyncMarketTemplate = (
 
   return (
     <Template
-      message={`Get ${reward} REP Reward, please finalize warp sync market: "${description}"`}
+      message={`Get ${reward} REPv2 Reward, please finalize warp sync market: "${description}"`}
       {...props}
     />
   );

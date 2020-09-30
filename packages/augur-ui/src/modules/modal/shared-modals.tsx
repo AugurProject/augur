@@ -93,7 +93,7 @@ export const ModalClaimFees = () => {
     claimableMarkets.marketContracts.length + reportingParticipants.length > 1;
   const totalRep = `${
     formatAttoRep(claimReportingFees.totalUnclaimedRep).formatted
-  } REP`;
+  } REPv2`;
 
   if (!participationTokensOnly) {
     claimableMarkets.marketContracts.map(marketObj => {
@@ -130,9 +130,9 @@ export const ModalClaimFees = () => {
 
         if (isForking) {
           if (!market.disavowed) {
-            buttonText = 'Disavow Market REP';
+            buttonText = 'Disavow Market REPv2';
             notice =
-              'Disavow Market disputing REP in order to release REP, releasing REP will be in a separate transaction';
+              'Disavow Market disputing REPv2 in order to release REPv2, releasing REPv2 will be in a separate transaction';
             queueName = DISAVOWCROWDSOURCERS;
             queueId = market.id;
             action = () => {
@@ -154,22 +154,22 @@ export const ModalClaimFees = () => {
               });
             };
           } else if (market.disavowed && marketTxCount > 1) {
-            notice = `Releasing REP will take ${marketTxCount} Transactions`;
-            buttonText = 'Release REP';
+            notice = `Releasing REPv2 will take ${marketTxCount} Transactions`;
+            buttonText = 'Release REPv2';
           }
 
           if (isForkingMarket) {
-            buttonText = 'Release and Migrate REP';
+            buttonText = 'Release and Migrate REPv2';
             queueName = TRANSACTIONS;
             queueId = FORKANDREDEEM;
             notice =
               marketTxCount > 1
-                ? `Forking market, releasing REP will take ${marketTxCount} Transactions and be sent to corresponding child universe`
-                : 'Forking market, release REP will be sent to corresponding child universe';
+                ? `Forking market, releasing REPv2 will take ${marketTxCount} Transactions and be sent to corresponding child universe`
+                : 'Forking market, release REPv2 will be sent to corresponding child universe';
           }
         }
 
-        if (market.disavowed) buttonText = 'Release REP';
+        if (market.disavowed) buttonText = 'Release REPv2';
         modalRows.push({
           title: market.description,
           text: buttonText,
@@ -181,7 +181,7 @@ export const ModalClaimFees = () => {
           properties: [
             {
               label: 'Reporting stake',
-              value: `${marketRep.formatted || 0} REP`,
+              value: `${marketRep.formatted || 0} REPv2`,
               addExtraSpace: true,
             },
           ],
@@ -207,7 +207,7 @@ export const ModalClaimFees = () => {
     );
     modalRows.push({
       title: isForking
-        ? 'Release Participation REP'
+        ? 'Release Participation REPv2'
         : 'Reedeem all participation tokens',
       queueName: REDEEMSTAKE,
       queueId: claimReportingFees.participationContracts.contracts[0],
@@ -216,7 +216,7 @@ export const ModalClaimFees = () => {
       properties: [
         {
           label: 'Reporting Stake',
-          value: `${repFormatted.formatted} REP`,
+          value: `${repFormatted.formatted} REPv2`,
           addExtraSpace: true,
         },
         {
@@ -258,7 +258,7 @@ export const ModalClaimFees = () => {
   const breakdown = showBreakdown
     ? [
         {
-          label: 'Total REP',
+          label: 'Total REPv2',
           value: totalRep,
         },
         {
@@ -270,7 +270,7 @@ export const ModalClaimFees = () => {
 
   return (
     <Proceeds
-      title={isForking ? 'Release REP' : 'Claim stake & fees'}
+      title={isForking ? 'Release REPv2' : 'Claim stake & fees'}
       submitAllTxCount={isForking ? 0 : submitAllTxCount}
       descriptionMessage={
         participationTokensOnly
@@ -281,7 +281,7 @@ export const ModalClaimFees = () => {
                   formatAttoRep(
                     claimReportingFees.participationContracts.unclaimedRep
                   ).formatted
-                } REP`,
+                } REPv2`,
                 postText: 'available to be claimed from your reporting stake ',
               },
               {
@@ -294,7 +294,7 @@ export const ModalClaimFees = () => {
           : [
               {
                 preText: 'You have',
-                boldText: `${claimReportingFees.totalUnclaimedRepFormatted.formatted} REP`,
+                boldText: `${claimReportingFees.totalUnclaimedRepFormatted.formatted} REPv2`,
                 postText: 'available to be claimed from your reporting stake ',
               },
               {

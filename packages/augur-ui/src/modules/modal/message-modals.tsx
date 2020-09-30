@@ -226,7 +226,7 @@ export const ModalFinalize = () => {
       title="Finalize Warp Sync Market"
       marketTitle={marketDescription}
       callToAction={
-        'Please finalize warp sync market to claim REP reward. The reward will be transferred to your signing wallet'
+        'Please finalize warp sync market to claim REPv2 reward. The reward will be transferred to your signing wallet'
       }
       closeAction={() => {
         closeModal();
@@ -354,14 +354,14 @@ export const ModalRepFaucet = () => {
 
   return (
     <Message
-      title="REP Faucet"
+      title="REPv2 Faucet"
       closeAction={() => closeModal()}
       description={[
-        'Get test net REP, it will be sent to your connected wallet.',
+        'Get test net REPv2, it will be sent to your connected wallet.',
       ]}
       buttons={[
         {
-          text: 'Get REP',
+          text: 'Get REPv2',
           action: () => {
             getRep();
             closeModal();

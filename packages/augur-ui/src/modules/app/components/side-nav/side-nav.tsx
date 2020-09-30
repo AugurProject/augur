@@ -146,7 +146,7 @@ const SideNav = ({
               {showMigrateRepButton && (
                 <span className={Styles.SideNavMigrateRep}>
                   <ProcessingButton
-                    text='Migrate V1 to V2 REP'
+                    text='Migrate V1 to REPv2'
                     action={() => setModal({ type: MODAL_MIGRATE_REP })}
                     queueName={TRANSACTIONS}
                     queueId={MIGRATE_FROM_LEG_REP_TOKEN}
@@ -174,8 +174,8 @@ const SideNav = ({
                     <p>
                       {
                         Number(balances.legacyRep)
-                          ? 'You have V1 REP in your trading account. Migrate it to V2 REP to use it in Augur V2.'
-                          : 'You have V1 REP in your wallet. Migrate it to V2 REP to use it in Augur V2.'
+                          ? 'You have V1 REP in your trading account. Migrate it to REPv2 to use it in Augur V2.'
+                          : 'You have V1 REP in your wallet. Migrate it to REPv2 to use it in Augur V2.'
                       }
                     </p>
                   </ReactTooltip>

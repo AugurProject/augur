@@ -221,6 +221,7 @@ export const ADD_FUNDS_SWAP = '3';
 export const ACCOUNT_TYPES = {
   FORTMATIC: 'Fortmatic',
   TORUS: 'Torus',
+  PORTIS: 'Portis',
   LEDGER: 'Ledger',
   METAMASK: 'MetaMask',
   TREZOR: 'Trezor',
@@ -234,6 +235,8 @@ export const WALLET_TYPE = {
 };
 
 export const SIGNIN_LOADING_TEXT = 'Sit tight - loading your account.';
+export const SIGNIN_LOADING_TEXT_PORTIS =
+  'Connecting to our partners at Portis to log you in to your secure account.';
 export const SIGNIN_LOADING_TEXT_FORTMATIC =
   'Connecting to our partners at Fortmatic to log you in to your secure account.';
 export const SIGNIN_LOADING_TEXT_TORUS =
@@ -746,6 +749,7 @@ export const PREFILLEDSTAKE = 'PREFILLEDSTAKE';
 export const MIGRATE_FROM_LEG_REP_TOKEN = 'MIGRATEFROMLEGACYREPUTATIONTOKEN';
 export const CREATEAUGURWALLET = 'RUNPERIODICALS';
 export const SWAPEXACTTOKENSFORTOKENS = 'SWAPEXACTTOKENSFORTOKENS';
+export const SWAPTOKENSFOREXACTETH = 'SWAPTOKENSFOREXACTETH';
 export const SWAPETHFOREXACTTOKENS = 'SWAPETHFOREXACTTOKENS';
 export const ADDLIQUIDITY = 'ADDLIQUIDITY';
 export const ETH_RESERVE_INCREASE = 'ETH_RESERVE_INCREASE';
@@ -920,12 +924,12 @@ export const AVAILABLE_TRADING_BALANCE = 'Available Trading Balance';
 export const AVAILABLE_BETTING_BALANCE = 'Available Betting Balance';
 export const TOTAL_FROZEN_FUNDS = 'Total Frozen Funds';
 export const TOTAL_EXPOSURE = 'Total Exposure';
-export const REP_BALANCE = 'REP Balance';
-export const REP_STAKED = 'REP Staked';
+export const REP_BALANCE = 'REPv2 Balance';
+export const REP_STAKED = 'REPv2 Staked';
 export const TOTAL_ACCOUNT_VALUE_IN_DAI = 'Total Account Value';
-export const TOTAL_ACCOUNT_VALUE_IN_REP = 'My Available REP Balance ';
+export const TOTAL_ACCOUNT_VALUE_IN_REP = 'MY AVAILABLE REPv2 BALANCE';
 export const ALL_TIME_PROFIT_AND_LOSS_REP = 'All Time Profit and Loss';
-export const MY_TOTOL_REP_STAKED = 'My Total REP Staked';
+export const MY_TOTOL_REP_STAKED = 'MY TOTAL REPv2 STAKED';
 
 // Account Summary - Augur Status
 export const AUGUR_STATUS_TITLE = 'Augur Status';
@@ -1337,7 +1341,7 @@ export const DISPUTING_GUIDE = {
     {
       header: 'How to dispute an outcome',
       paragraphs: [
-        'A market has to have one of of its non-tentative outcomes bonds filled in order to successfully dispute the current tentative outcome. Choose a non-tentative outcome to either fill the bond completely using your own REP or contribute a smaller amount as part of a crowd sourced bond. If a bond for a non-tentative outcome is successfully filled then that outcome will become the new tentative outcome and the market waits for the next dispute round. This process can repeat itself until a Tentative Outcome is unsuccessfully disputed during a round. Each round the REP stake required to fill a dispute bond is increased.',
+        'A market has to have one of of its non-tentative outcomes bonds filled in order to successfully dispute the current tentative outcome. Choose a non-tentative outcome to either fill the bond completely using your own REPv2 or contribute a smaller amount as part of a crowd sourced bond. If a bond for a non-tentative outcome is successfully filled then that outcome will become the new tentative outcome and the market waits for the next dispute round. This process can repeat itself until a Tentative Outcome is unsuccessfully disputed during a round. Each round the REPv2 stake required to fill a dispute bond is increased.',
       ],
     },
     {
@@ -1349,13 +1353,13 @@ export const DISPUTING_GUIDE = {
     {
       header: 'The benefits of reporting',
       paragraphs: [
-        'Users who correctly staked on the Winning Outcome get to take a share of the REP that was staked on the incorrect outcome(s). This means you can potentially earn 40% ROI by disputing (i.e staking) against liars and reporting the truth. This keeps the Augur oracle secure and ultimately the Augur platform working how it should.',
+        'Users who correctly staked on the Winning Outcome get to take a share of the REPv2 that was staked on the incorrect outcome(s). This means you can potentially earn 40% ROI by disputing (i.e staking) against liars and reporting the truth. This keeps the Augur oracle secure and ultimately the Augur platform working how it should.',
       ],
     },
     {
       header: 'Pre-filled Stake',
       paragraphs: [
-        'Users can add extra support for a Tentative Winning Outcome by pre-staking REP that will be used to dispute in that outcome’s favor in the event that is no longer the Tentative Winning Outcome. Pre-filling can help accelerate a market’s resolution.',
+        'Users can add extra support for a Tentative Winning Outcome by pre-staking REPv2 that will be used to dispute in that outcome’s favor in the event that is no longer the Tentative Winning Outcome. Pre-filling can help accelerate a market’s resolution.',
         'Pre-filled Stake yields ROI if and only if: ',
         '1) the market resolves to the staked-on outcome and',
         '2) the pre-stake ends up being used to dispute in that outcome’s favor',
@@ -1366,7 +1370,7 @@ export const DISPUTING_GUIDE = {
       header: 'Dispute Window',
       paragraphs: [
         'The dispute window is a week-long cycle. Reporting fees from settled shares are deposited into the next upcoming window.',
-        'At the end of the dispute window, those fees are allocated to REP holders who exchange their REP for participation tokens. When the disputing window ends, users can redeem their participation tokens for a proportional amount of the fees generated.',
+        'At the end of the dispute window, those fees are allocated to REPv2 holders who exchange their REPv2 for participation tokens. When the disputing window ends, users can redeem their participation tokens for a proportional amount of the fees generated.',
       ],
     },
   ],
@@ -1388,13 +1392,13 @@ export const REPORTING_GUIDE = {
       header: 'Designated Reporting',
       paragraphs: [
         'Once a market enters reporting, the Designated Reporter (DR) has 24 hours to submit a report on the market’s outcome. If the DR does not submit a report within 24 hours, the market will enter Open Reporting, and the market creator will not receive the No-Show Bond back.',
-        'The DR does not unilaterally decide on a market’s outcome. Once a DR submits an outcome, it is open to dispute. If the market ends up resolving to another outcome, the DR will lose their REP stake.',
+        'The DR does not unilaterally decide on a market’s outcome. Once a DR submits an outcome, it is open to dispute. If the market ends up resolving to another outcome, the DR will lose their REPv2 stake.',
       ],
     },
     {
       header: 'Open Reporting',
       paragraphs: [
-        'A market enters Open Reporting if the Designated Reporter does not submit a report within 24 hours of a market’s Reporting Start Time. At this time, any user may report on the outcome and will receive the forfeited No-Show Bond if the market ends up resolving to the outcome that they report. Open Reporting does not require any staked REP on the part of the reporter.',
+        'A market enters Open Reporting if the Designated Reporter does not submit a report within 24 hours of a market’s Reporting Start Time. At this time, any user may report on the outcome and will receive the forfeited No-Show Bond if the market ends up resolving to the outcome that they report. Open Reporting does not require any staked REPv2 on the part of the reporter.',
       ],
     },
   ],
@@ -1478,7 +1482,7 @@ export const TUTORIAL_TRADING_HISTORY = {
   ],
 };
 
-export const DISCORD_LINK = 'https://discord.gg/wWMumZr';
+export const DISCORD_LINK = 'https://invite.augur.net/';
 
 export enum HEADER_TYPE {
   H1 = 'h1',

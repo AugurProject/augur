@@ -5,7 +5,6 @@ import Styles from 'modules/modal/common.styles.less';
 import { formatRep } from 'utils/format-number';
 import {
   BUY_PARTICIPATION_TOKENS_GAS_LIMIT,
-  REP,
 } from 'modules/common/constants';
 import {
   Title,
@@ -31,7 +30,7 @@ export const ModalParticipate = () => {
   const messages = [
     {
       key: 'quant',
-      preText: 'Quantity (1 token @ 1 REP)',
+      preText: 'Quantity (1 token @ 1 REPv2)',
     },
   ];
   const title = 'Buy Participation Tokens';
@@ -81,7 +80,7 @@ export const ModalParticipate = () => {
     }
 
     if (bnQuantity.gt(bnRep)) {
-      errors.push(`Value is bigger than REP balance: ${rep} REP`);
+      errors.push(`Value is bigger than REPv2 balance: ${rep} REPv2`);
       isValid = false;
     }
 
@@ -109,7 +108,7 @@ export const ModalParticipate = () => {
     {
       label: 'price',
       value: formattedQuantity,
-      denomination: 'REP',
+      denomination: 'REPv2',
       showDenomination: true,
     },
     {
@@ -139,7 +138,7 @@ export const ModalParticipate = () => {
           value={quantity}
           onChange={value => updateQuantity(value)}
           errorMessage={errors[0]}
-          innerLabel={REP}
+          innerLabel={'REPv2'}
         />
         <Breakdown rows={items} />
         <ButtonsRow buttons={buttons}/>

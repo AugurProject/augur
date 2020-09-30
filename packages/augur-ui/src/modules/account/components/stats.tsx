@@ -91,7 +91,7 @@ const usePlatform = (isPlatform: boolean) => {
       },
       {
         key: 5,
-        label: 'REP in dispute',
+        label: 'REPv2 in dispute',
         value: formatAttoRep(amountStaked, {
           decimals: 4,
         }).fullPrecision,
