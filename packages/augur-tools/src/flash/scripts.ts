@@ -87,6 +87,8 @@ import {
   waitForSync,
 } from './util';
 import { ParaContractDeployer } from '@augurproject/core/build/libraries/ParaContractDeployer';
+import { ParaAugurDeployer } from '@augurproject/core/build/libraries/ParaAugurDeployer';
+
 import { ContractDependenciesEthers } from '@augurproject/contract-dependencies-ethers';
 
 const compilerOutput = require('@augurproject/artifacts/build/contracts.json');
@@ -2713,6 +2715,29 @@ export function addScripts(flash: FlashSession) {
 
     flash.addScript({
       name: 'deploy-para-augur',
+      options: [],
+      async call(this: FlashSession, args: FlashArguments) {
+        const provider = await providerFromConfig(this.config);
+        const signer = await makeSigner(this.accounts[0], provider);
+        const dependencies = new ContractDependenciesEthers(
+          provider,
+          signer,
+          signer.address
+        );
+
+        const deployer = new ParaContractDeployer(
+          this.config,
+          dependencies,
+          provider,
+          signer,
+          compilerOutput,
+        )
+        await deployer.deploy(this.network);
+      }
+    });
+
+    flash.addScript({
+      name: 'para-deploy',
       options: [
         {
           name: 'cash',
@@ -2732,14 +2757,14 @@ export function addScripts(flash: FlashSession) {
           signer.address
         );
 
-        const deployer = new ParaContractDeployer(
+        const deployer = new ParaAugurDeployer(
           this.config,
           dependencies,
           provider,
           signer,
           compilerOutput,
         )
-        await deployer.deploy(this.network);
+        await deployer.deploy(this.network, cash);
       }
     });
 
