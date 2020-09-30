@@ -161,13 +161,6 @@ export const ModalBuyDai = () => {
             'Buy Dai ($) directly or transfer Dai ($) to your trading account to start placing bets.',
         },
         {
-          content:
-            'Adding more than 40 Dai ($) allows for 0.04 ETH will be converted for your Fee reserve resulting in cheaper transaction fees.',
-        },
-        {
-          content: 'Your Fee reserve can easily be cashed out at anytime.',
-        },
-        {
           content: 'LEARN MORE',
           link: HELP_CENTER_ADD_FUNDS,
         },

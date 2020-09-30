@@ -16,15 +16,12 @@ import { helpIcon, Dot } from 'modules/common/icons';
 import {
   TRANSACTIONS,
   MIGRATE_FROM_LEG_REP_TOKEN,
-  TOTAL_FUNDS_TOOLTIP,
   MODAL_MIGRATE_REP,
   THEMES,
 } from 'modules/common/constants';
 import { CREATE_MARKET } from 'modules/routes/constants/views';
 import { useAppStatusStore } from 'modules/app/store/app-status';
 import Styles from 'modules/app/components/top-nav/top-nav.styles.less';
-import { LinearPropertyLabelUnderlineTooltip } from 'modules/common/labels';
-import { formatNumber } from 'utils/format-number';
 import ButtonStyles from 'modules/common/buttons.styles.less';
 
 interface TopNavProps {
