@@ -1,7 +1,7 @@
 import React from 'react';
 import classNames from 'classnames';
 
-import { Close } from 'modules/common/icons';
+import { Close, MobileNavCloseIcon } from 'modules/common/icons';
 import { FAILURE } from 'modules/common/constants';
 import Styles from 'modules/alerts/components/alert.styles.less';
 import { ViewTransactionDetailsButton } from 'modules/common/buttons';
@@ -54,7 +54,7 @@ const Alert = ({
               removeAlert();
             }}
           >
-            {Close}
+            <MobileNavCloseIcon />
           </button>
         </div>
         <div className={Styles.Row}>

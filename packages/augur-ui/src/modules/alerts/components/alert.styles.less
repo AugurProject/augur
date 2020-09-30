@@ -128,10 +128,10 @@
   margin-left: auto;
 
   > svg {
-    width: @size-8;
-    height: @size-8;
+    width: @size-16;
+    height: @size-16;
     > path {
-      fill: var(--color-inactive-text);
+      stroke: var(--color-inactive-text);
     }
   }
 }
@@ -164,9 +164,13 @@
   .Alert {
     background-color: var(--color-module-background);
     padding: @size-8;
-    border: @size-1 solid var(--color-dark-grey);
+    border: @size-1 solid var(--color-dark-text);
     border-radius: @border-radius-rounded;
     margin: @size-4 @size-8;
+
+    &:not(:disabled):hover {
+      background-color: var(--color-active-background);
+    }
   }
 
   .Timestamp {
@@ -206,13 +210,13 @@
 
   .Status {
     .mono-12-semi-bold;
-  
+
     color: var(--color-primary-text);
   }
 
   .EtherLink {
     .text-10-semi-bold;
-  
+
     color: var(--color-primary-text);
     text-decoration: none;
     margin-top: @size-6;
@@ -240,11 +244,19 @@
         }
       }
     }
+
+    &:hover {
+      text-decoration: underline;
+    }
   }
 
   .Close {
     margin-top: auto;
     margin-bottom: auto;
+
+    &:not(:disabled):active > svg > path {
+      stroke: var(--color-primary-text);
+    }
   }
 
   .Description {

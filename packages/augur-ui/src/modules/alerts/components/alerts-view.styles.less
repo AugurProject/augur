@@ -94,7 +94,7 @@
   display: flex;
   justify-content: flex-end;
   margin-top: auto;
-  padding: @size-10 @size-12;
+  padding: 0 @size-9;
 
   > span {
     display: none;
@@ -112,6 +112,7 @@
     display: flex;
     justify-content: center;
     padding: @size-4;
+    margin: @size-6 0;
     text-transform: uppercase;
 
     &:hover {
@@ -169,6 +170,9 @@
     border-bottom: @size-1 solid var(--color-dark-grey);
     border-radius: 0;
     justify-content: space-between;
+    align-items: center;
+    padding: 0 @size-12;
+    margin: 0;
 
     > span {
       .mono-12-semi-bold;
@@ -176,7 +180,7 @@
       display: initial;
       color: var(--color-primary-text);
       text-transform: uppercase;
-      margin: auto 0;
+      padding: @size-14 0;
     }
 
     > button {
@@ -186,9 +190,24 @@
       text-transform: capitalize;
       background-color: var(--color-page-background);
       border: none;
-      text-decoration: underline;
-      text-decoration-color: var(--color-primary-text);
-      text-decoration-style: dashed;
+      text-decoration: none;
+      position: relative;
+      padding: 0;
+      margin: 0;
+      align-self: center;
+
+      &:after {
+        content: '';
+        position: absolute;
+        bottom: -@size-1;
+        left: 0;
+        right: 0;
+        border-bottom: @size-1 dotted var(--color-primary-text);
+      }
+
+      &:hover:after {
+        border-bottom: @size-1 solid var(--color-primary-text);
+      }
     }
   }
 }
