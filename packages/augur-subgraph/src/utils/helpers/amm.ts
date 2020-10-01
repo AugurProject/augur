@@ -24,7 +24,6 @@ export function createAndSaveAMMExchange(
   cash: string
 ): AMMExchange {
   // This just create the entity.
-
   getOrCreateCash(cash);
 
   let amm = getOrCreateAMMExchange(id);
