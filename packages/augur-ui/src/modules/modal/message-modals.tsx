@@ -25,6 +25,63 @@ import { formatGasCostToEther, formatDai } from 'utils/format-number';
 import { DISMISSABLE_NOTICE_BUTTON_TYPES } from 'modules/reporting/common';
 import { FormattedNumber } from 'modules/types';
 
+export const ModalMarketRules = () => {
+  const {
+    modal: { endTime, description },
+    actions: { closeModal },
+  } = useAppStatusStore();
+
+  return (
+    <Message
+      title="Market Rules"
+      subheaders={[
+        {
+          header:  `${description}`,
+          subheaders: [
+            `Event Expiration date: ${endTime}`
+          ],
+        },
+        {
+          header: 'Moneyline Market',
+          bullets: true,
+          subheaders: [
+            'Include Regulation and Overtime',
+            'At least 55 minutes of play must have elapsed for the game to be deemed official. If less than 55 minutes of play have been completed, there is no official winner of the game and the market should resolve as "Tie/No Winner"',
+            'If the game is not played market should resolve as "Tie/No Winner"',
+          ],
+        },
+        {
+          header: 'Spread Market',
+          bullets: true,
+          subheaders: [
+            'Include Regulation and Overtime',
+            'At least 55 minutes of play must have elapsed for the game to be deemed official. If less than 55 minutes of play have been completed, there is no official winner of the game and the market should resolve as "No Winner"',
+            'If the game is not played market should resolve as "No Winner"',
+          ],
+        },
+        {
+          header: 'Over / Under Market',
+          bullets: true,
+          subheaders: [
+            'Include Regulation and Overtime',
+            'At least 55 minutes of play must have elapsed for the game to be deemed official. If less than 55 minutes of play have been completed, there is no official winner of the game and the market should resolve as "No Winner"',
+            'If the game is not played market should resolve as "No Winner"',
+          ],
+        },
+      ]}
+      closeAction={() => closeModal()}
+      buttons={[
+        {
+          text: 'Ok!',
+          action: () => {
+            closeModal();
+          },
+        },
+      ]}
+    />
+  );
+};
+
 export const ModalCreateMarket = () => {
   const {
     newMarket,
@@ -44,7 +101,7 @@ export const ModalCreateMarket = () => {
         },
         {
           header: 'Ready to proceed? Here’s what happens next, you will:',
-          numbered: true,
+          numbered: false,
           subheaders: [
             'Be taken to the portfolio page where your market will be listed as “Pending”',
             'Receive an alert when the market has been processed',

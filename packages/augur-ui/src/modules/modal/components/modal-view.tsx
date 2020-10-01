@@ -55,6 +55,7 @@ import {
   ReportingOnly,
   ModalCashoutBet,
   ModalCancelAllBets,
+  ModalMarketRules
 } from 'modules/modal/message-modals';
 import { HardwareWallet } from 'modules/modal/hardware-wallet';
 import { ModalGlobalChat } from 'modules/modal/components/modal-global-chat';
@@ -77,6 +78,8 @@ function selectModal(type, props, closeModal, modal) {
       return <ModalTransactions />;
     case TYPES.MODAL_REP_FAUCET:
       return <ModalRepFaucet />;
+    case TYPES.MODAL_MARKET_RULES:
+      return <ModalMarketRules />;
     case TYPES.MODAL_CREATE_MARKET:
       return <ModalCreateMarket />;
     case TYPES.MODAL_ADD_FUNDS:
