@@ -18,7 +18,6 @@ contract AMMExchange is IAMMExchange, ERC20 {
     event ExitPosition(address sender, uint256 invalidShares, uint256 noShares, uint256 yesShares, uint256 cashPayout);
     event SwapPosition(address sender, uint256 inputShares, uint256 outputShares, bool inputYes);
 
-
     function initialize(IMarket _market, IParaShareToken _shareToken, uint256 _fee) public {
         require(cash == ICash(0)); // can only initialize once
         require(_fee <= 1000); // fee must be [0,1000]
@@ -203,6 +202,7 @@ contract AMMExchange is IAMMExchange, ERC20 {
         cash.transfer(msg.sender, _cashPayout);
 
         emit ExitPosition(msg.sender, _invalidShares, _noShares, _yesShares, _cashPayout);
+
         return _cashPayout;
     }
 
