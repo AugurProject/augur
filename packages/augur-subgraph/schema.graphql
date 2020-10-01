@@ -724,6 +724,9 @@ type AMMExchange @entity {
 
   "Liquidity in exchange"
   liquidity: BigInt!
+
+  "The all time volume in the exchange."
+  volume: BigInt!
 }
 
 type ParaAugurDeployFinishedEvent @entity {
