@@ -39,7 +39,7 @@ import {
   MODAL_ADD_FUNDS,
   MODAL_CANCEL_ALL_BETS,
   MODAL_SIGNUP,
-  MODAL_LOGIN,
+  MODAL_LOGIN,, THEMES
 } from 'modules/common/constants';
 import {
   checkMultipleOfShares,
@@ -587,26 +587,31 @@ export const BetslipFooter = () => {
 };
 
 export const SideImages = () => {
-  const { betslipMinimized, isLogged } = useAppStatusStore();
-
+  const { betslipMinimized, isLogged, theme, actions: { setTheme } } = useAppStatusStore();
+  const Betting = () => {
+    if (theme !== THEMES.BETTING) setTheme(THEMES.BETTING);
+  };
+  const Trading = () => {
+    if (theme !== THEMES.TRADING) setTheme(THEMES.TRADING);
+  };
   return (
     <section
       className={classNames(Styles.SideImages, {
         [Styles.Hide]: isLogged || !betslipMinimized,
       })}
     >
-      <a href="" target="_blank" rel="noopener noreferrer">
+      <button onClick={Betting}>
         <img src={BannerSportsbook} />
-      </a>
-      <a href="" target="_blank" rel="noopener noreferrer">
+      </button>
+      <button onClick={Trading}>
         <img src={BannerTrading} />
-      </a>
-      <a href="" target="_blank" rel="noopener noreferrer">
+      </button>
+      <button onClick={Betting}>
         <img src={SmallBannerSportsbook} />
-      </a>
-      <a href="" target="_blank" rel="noopener noreferrer">
+      </button>
+      <button onClick={Trading}>
         <img src={SmallBannerTrading} />
-      </a>
+      </button>
     </section>
   );
 };
