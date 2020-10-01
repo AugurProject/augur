@@ -284,7 +284,7 @@ export const ProcessingButton = ({
   const failed = status === TXEventName.Failure;
   const confirmed = status === TXEventName.Success;
   if (failed) {
-    buttonText = props.smallSpinner ? (<span>Error Message.<b>Retry</b></span>) : 'Failed';
+    buttonText = props.smallSpinner ? (<span>Failed.<b>Retry</b></span>) : 'Failed';
   }
   if (confirmed) {
     buttonText = 'Confirmed';
