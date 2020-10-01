@@ -427,12 +427,7 @@ const Wrapper = ({
           }
         }}
         disabled={
-          !trade?.limitPrice ||
-          insufficientFunds ||
-          (postOnlyOrder && trade.numFills > 0) ||
-          !allowPostOnlyOrder ||
-          (!tradingApproved && initialLiquidity && tradingTutorial) ||
-          disableTrading
+          !trade || !tradingApproved || !trade.limitPrice || insufficientFunds || disableTrading || (!tradingApproved && initialLiquidity && tradingTutorial) || !allowPostOnlyOrder
         }
       />
     );
@@ -467,9 +462,11 @@ const Wrapper = ({
     return actionButton;
   }
 
+
   const insufficientFunds =
-    trade?.costInDai &&
-    createBigNumber(trade.costInDai.value).gte(createBigNumber(availableDai));
+    trade &&
+    (trade.costInDai && createBigNumber(trade.costInDai.value).gte(createBigNumber(availableDai)) ||
+    (trade.totalCost && initialLiquidity && createBigNumber(trade.totalCost.value).gte(createBigNumber(availableDai))));
   const isOpenOrder = trade?.numFills === 0;
   const orderEmpty =
     orderProperties.orderPrice === '' &&

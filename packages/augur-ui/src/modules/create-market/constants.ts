@@ -131,7 +131,7 @@ export const EMPTY_STATE: NewMarket = {
 };
 
 export const WarpSyncErrorHeader = 'Universe Warp Sync Hash is undefined';
-export const WarpSyncErrorSubheader = 'Wait until warp sunc hash is defined to report or dispute';
+export const WarpSyncErrorSubheader = 'Wait until warp sync hash is defined to report or dispute';
 export const InvalidRules = [
   'The market question, resolution details or its outcomes are ambiguous, subjective or unknown.',
   'The result of the event was known at market creation time.',
@@ -145,6 +145,7 @@ export const InvalidRules = [
   'Player or team is not in the correct league, division or conference, at the time the market was created.',
 ];
 export const AugurMarkets = [
+  'Invalid outcome pays $1.00 per share for Yes/No and Categorical markets if the market resolves as Invalid. Scalar markets pay out the upper bound. A lower price indicates a lower probability of the market resolving as invalid.',
   'Should resolve using general knowledge if the market does not have a resolution source in market question.',
   'Cover events that occur between market start time and end time in the market question. If start time is not specified in the market question, market creation date/time is used. If no end time is specified in market question, the event expiration is to be used. If the event occurs outside of these bounds, the market should resolve as invalid',
   'Outcomes must be unique from one and other within a market.  If multiple outcomes share a common name, they must be easily distinguishable (ie. Serena Williams and Venus Williams)',
@@ -746,7 +747,7 @@ export const MARKET_CREATION_COPY = {
   },
   [MARKET_COPY_LIST.NO_SHOW_BOND]: {
     subheader: [
-      'You must put up a No-Show bond, denominated in REP that will be returned upon market resolution if and only if the Designated Reporter submits a report within 24 hours of the market’s Reporting Start Time. If the Designated Reporter does not submit a report within 24 hours, the bond is forfeited to the first person to report the outcome in open reporting.'
+      'You must put up a No-Show bond, denominated in REPv2 that will be returned upon market resolution if and only if the Designated Reporter submits a report within 24 hours of the market’s Reporting Start Time. If the Designated Reporter does not submit a report within 24 hours, the bond is forfeited to the first person to report the outcome in open reporting.'
     ],
   },
   [MARKET_COPY_LIST.UNIT_OF_MEASURMENT]: {

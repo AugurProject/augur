@@ -17,8 +17,6 @@ import { analytics } from './analytics';
 import { createBrowserMeshWorker } from './browser-mesh';
 import { isMobileSafari, isSafari } from 'utils/is-safari';
 
-window.BigNumber = BigNumber;
-
 export class SDK {
   client: Augur | null = null;
   isSubscribed = false;

@@ -32,6 +32,7 @@ import { loginWithTorus } from 'modules/auth/actions/login-with-torus';
 import { loginWithFortmatic } from 'modules/auth/actions/login-with-fortmatic';
 import { windowRef } from 'utils/window-ref';
 import isMetaMaskPresent from 'modules/auth/helpers/is-meta-mask';
+import { isSafari } from 'utils/is-safari';
 
 export const SignIn = ({ isLogin }) => {
   const {
@@ -114,18 +115,55 @@ export const SignIn = ({ isLogin }) => {
 
   const connectMethods = [
     {
-      // type: ACCOUNT_TYPES.PORTIS,
+      type: ACCOUNT_TYPES.WEB3WALLET,
+      icon: MetaMaskLogin,
+      text: `${LOGIN_OR_SIGNUP} with ${ACCOUNT_TYPES.WEB3WALLET}`,
+      subText: '',
+      disabled: false,
+      primary: true,
+      hidden: !isMetaMaskPresent(),
+      action: async () => {
+        const accounts =
+          windowRef.ethereum && windowRef.ethereum.selectedAddress;
+        const msg = accounts ? SIGNIN_LOADING_TEXT : SIGNIN_SIGN_WALLET;
+        const showMetaMaskHelper = accounts ? false : true;
+        loadingModal(msg, () => login(), showMetaMaskHelper);
+        try {
+          await connectMetaMask();
+        } catch (error) {
+          onError(error, ACCOUNT_TYPES.WEB3WALLET);
+        }
+      },
+    },
+    {
+      type: ACCOUNT_TYPES.FORTMATIC,
       icon: EmailLogin,
       text: `${LOGIN_OR_SIGNUP} with Email`,
       subText: `Powered by ${ACCOUNT_TYPES.FORTMATIC}`,
       hidden: false,
-      primary: true,
+      primary: !isMetaMaskPresent() ? true : false,
       action: async () => {
         loadingModal(SIGNIN_LOADING_TEXT_FORTMATIC, () => login());
         try {
-          await connectFortmatic(true);
+          await connectFortmatic(false);
         } catch (error) {
           onError(error, ACCOUNT_TYPES.FORTMATIC);
+        }
+      },
+    },
+    {
+      type: ACCOUNT_TYPES.PORTIS,
+      icon: EmailLogin,
+      text: `${LOGIN_OR_SIGNUP} with Email`,
+      subText: `Powered by ${ACCOUNT_TYPES.PORTIS}`,
+      hidden: isSafari() ? true : false,
+      action: async () => {
+        loadingModal(SIGNIN_LOADING_TEXT_TORUS, () => login());
+        try {
+          const forceRegisterPage = isLogin ? false : true;
+          // await connectPortis(forceRegisterPage);
+        } catch (error) {
+          onError(error, ACCOUNT_TYPES.PORTIS);
         }
       },
     },
@@ -141,42 +179,6 @@ export const SignIn = ({ isLogin }) => {
           await connectTorus();
         } catch (error) {
           onError(error, ACCOUNT_TYPES.TORUS);
-        }
-      },
-    },
-    {
-      type: ACCOUNT_TYPES.FORTMATIC,
-      icon: PhoneLogin,
-      text: `${LOGIN_OR_SIGNUP} with Phone Number`,
-      subText: `Powered by ${ACCOUNT_TYPES.FORTMATIC}`,
-      hidden: false,
-      action: async () => {
-        loadingModal(SIGNIN_LOADING_TEXT_FORTMATIC, () => login());
-        try {
-          await connectFortmatic(false);
-        } catch (error) {
-          onError(error, ACCOUNT_TYPES.FORTMATIC);
-        }
-      },
-    },
-    {
-      type: ACCOUNT_TYPES.WEB3WALLET,
-      icon: MetaMaskLogin,
-      text: `${LOGIN_OR_SIGNUP} with ${ACCOUNT_TYPES.WEB3WALLET}`,
-      subText: '',
-      disabled: false,
-      hidden: !isMetaMaskPresent(),
-      action: async () => {
-        const accounts =
-          windowRef.ethereum && windowRef.ethereum.selectedAddress;
-        const msg = accounts ? SIGNIN_LOADING_TEXT : SIGNIN_SIGN_WALLET;
-        const showMetaMaskHelper = accounts ? false : true;
-        loadingModal(msg, () => login(), showMetaMaskHelper);
-        try {
-          await connectMetaMask();
-          login();
-        } catch (error) {
-          onError(error, ACCOUNT_TYPES.WEB3WALLET);
         }
       },
     },

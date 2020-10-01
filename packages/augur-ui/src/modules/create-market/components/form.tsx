@@ -51,7 +51,9 @@ import {
   YES_NO_OUTCOMES,
   ZERO,
   MODAL_ADD_FUNDS,
-  ETH
+  ETH,
+  CREATEMARKET,
+  APPROVE,
 } from 'modules/common/constants';
 import { PrimaryButton, SecondaryButton } from 'modules/common/buttons';
 import {
@@ -882,7 +884,7 @@ export const Form = ({ isTemplate, updatePage }) => {
                 doApprovals={approveMarketCreation}
                 account={address}
                 isApprovalCallback={(isApproved) => { setIsApproved(isApproved)}}
-                approvalType={CREATE_MARKET}
+                approvalType={APPROVE}
               />
             )}
             <div>

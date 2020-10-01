@@ -36,7 +36,6 @@ export const AddFunds = ({
     loginAccount: {
       address,
       meta: accountMeta,
-      balances,
     },
     modal: {
       initialAddFundsFlow = null,
@@ -46,15 +45,23 @@ export const AddFunds = ({
     actions: { closeModal },
   } = useAppStatusStore();
 
+  const BUY_MIN = 20;
+  const BUY_MAX = 250;
+  const SWAP_ID = 0;
+  const pillOptions = [{ label: 'Convert', id: SWAP_ID }];
   const usingOnRampSupportedWallet = accountMeta &&
     accountMeta.accountType === ACCOUNT_TYPES.TORUS ||
     accountMeta.accountType === ACCOUNT_TYPES.FORTMATIC;
 
+
+  const fundTypeLabel = tokenToAdd === DAI ?  'DAI ($)' : tokenToAdd === REP ? 'REPv2' : tokenToAdd;
+
   const [selectedOption, setSelectedOption] = useState(
-    initialAddFundsFlow ? initialAddFundsFlow : usingOnRampSupportedWallet && tokenToAdd === DAI ? ADD_FUNDS_CREDIT_CARD : ADD_FUNDS_COINBASE
+    initialAddFundsFlow ? initialAddFundsFlow : usingOnRampSupportedWallet && tokenToAdd === DAI ? ADD_FUNDS_CREDIT_CARD : tokenToAdd === ETH ? ADD_FUNDS_TRANSFER : ADD_FUNDS_SWAP
   );
 
-      const closeAction = () => {
+
+  const closeAction = () => {
     if (modal.cb) {
       modal.cb();
     }
@@ -65,7 +72,6 @@ export const AddFunds = ({
         return null;
   }
 
-  const fundTypeLabel = tokenToAdd === DAI ?  'Dai ($)' : tokenToAdd;
 
   const FUND_OTPIONS = [
     {
@@ -74,19 +80,19 @@ export const AddFunds = ({
       value: ADD_FUNDS_CREDIT_CARD,
     },
     {
+      header: 'Convert',
+      description: tokenToAdd === DAI ? 'Trade ETH or REPv2 for DAI ($)' : tokenToAdd === ETH ? 'Trade DAI ($) or REPv2 for ETH' : 'Trade ETH or DAI ($) for REPv2',
+      value: ADD_FUNDS_SWAP,
+    },
+    {
       header: 'Coinbase',
       description: 'Send funds from a Coinbase account ',
       value: ADD_FUNDS_COINBASE,
     },
     {
       header: 'Transfer',
-      description: 'Send funds to your trading account',
+      description: 'Send funds to your wallet address',
       value: ADD_FUNDS_TRANSFER,
-    },
-    {
-      header: 'Convert',
-      description: `Trade another token currency for ${tokenToAdd === DAI ? 'DAI ($)' : tokenToAdd}`,
-      value: ADD_FUNDS_SWAP,
     },
   ];
 
@@ -97,18 +103,9 @@ export const AddFunds = ({
     addFundsOptions = addFundsOptions.slice(1, addFundsOptions.length);
   }
 
-  // If Add REP flow show SWAP at the top
-  if (tokenToAdd === REP) {
-    addFundsOptions = addFundsOptions.filter(
-      option => option.value !== ADD_FUNDS_SWAP
-    );
-    addFundsOptions.unshift(
-      FUND_OTPIONS.find(option => option.value === ADD_FUNDS_SWAP)
-    );
+  if (tokenToAdd === ETH) {
+    addFundsOptions = addFundsOptions.filter(options => options.value !== ADD_FUNDS_SWAP)
   }
-
-  const SWAP_ID = 0;
-  const pillOptions = [{ label: 'Convert', id: SWAP_ID }];
 
   return (
     <div
@@ -124,7 +121,7 @@ export const AddFunds = ({
           <CloseButton action={() => closeAction()} />
         </div>
         <div>
-          <h1>{tokenToAdd === REP ? 'Get REP' : 'Add Funds'}</h1>
+          <h1>{tokenToAdd === REP ? 'Get REPv2' : 'Add Funds'}</h1>
           <h2>Choose a method</h2>
           <RadioTwoLineBarGroup
             radioButtons={addFundsOptions}
@@ -155,8 +152,10 @@ export const AddFunds = ({
               <h1>Convert</h1>
               <h2>
                 {tokenToAdd === REP
-                  ? 'Trade a currency for REP'
-                  : 'Trade ETH or REP for DAI ($) and vice versa'}
+                  ? 'Trade ETH or DAI ($) for REPv2'
+                  : tokenToAdd === DAI
+                    ? 'Trade ETH or REPv2 for DAI ($)'
+                    :'Trade DAI ($) or REPv2 for ETH'}
               </h2>
 
               <div className={Styles.AddFundsSwap}>
@@ -166,7 +165,7 @@ export const AddFunds = ({
                 />
               </div>
 
-              <Swap/>
+              <Swap />
             </>
           )}
 
@@ -192,6 +191,7 @@ export const AddFunds = ({
         {tokenToAdd !== ETH && selectedOption !== ADD_FUNDS_SWAP && (
           <FundsHelp fundType={tokenToAdd} />
         )}
+
         <div>
           <button onClick={() => closeAction()}>Done</button>
         </div>

@@ -56,6 +56,7 @@ import { withRouter } from 'react-router-dom';
 import { RewriteUrlParams } from '../hocs/rewrite-url-params/index';
 import { windowRef } from 'utils/window-ref';
 import { SideImages } from 'modules/trading/common';
+import Footer from 'modules/app/components/footer';
 
 interface AppProps {
   config: SDKConfiguration;
@@ -420,6 +421,7 @@ const MainAppContent = ({
         <MarketsProvider>
           <ForkingBanner />
           <Routes isLogged={isLogged || restoredAccount} />
+          <Footer />
           <div className={Styles.Betslip}>
             <Betslip />
             <SideImages />

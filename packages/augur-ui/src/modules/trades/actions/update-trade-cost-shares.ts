@@ -9,7 +9,6 @@ import {
   simulateTradeGasLimit,
 } from 'modules/contracts/actions/contractCalls';
 import type { Getters, SimulateTradeData } from '@augurproject/sdk';
-import { checkAccountAllowance } from 'modules/auth/actions/approve-account';
 import { AppStatus } from 'modules/app/store/app-status';
 import { Markets } from 'modules/markets/store/markets';
 
@@ -31,7 +30,6 @@ export const updateTradeCost = ({
     loginAccount: { address },
   } = AppStatus.get();
   const { marketInfos } = Markets.get();
-  checkAccountAllowance();
   const market = marketInfos[marketId];
   const newTradeDetails = {
     side,
@@ -71,7 +69,6 @@ export const updateTradeShares = ({
     loginAccount: { address },
   } = AppStatus.get();
   // const { marketInfos } = Markets.get();
-  checkAccountAllowance();
   // const market = marketInfos[marketId];
   const newTradeDetails: any = {
     side,

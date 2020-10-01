@@ -2,21 +2,20 @@ import React from 'react';
 
 import { FormattedNumber } from 'modules/types';
 import { createBigNumber } from 'utils/create-big-number';
+import { FormDropdown, TextInput } from 'modules/common/form';
+import { NameValuePair } from 'modules/portfolio/types';
 
 import Styles from 'modules/swap/components/swap-row.styles.less';
-import { TextInput } from 'modules/common/form';
-import { ChevronDown } from 'modules/common/icons';
 
 interface SwapBlockProps {
   token: string;
   label: string;
   balance: FormattedNumber;
   amount: FormattedNumber;
+  tokenOptions: NameValuePair[];
   setMaxAmount?: Function;
   setToken?: Function;
   setAmount?: Function;
-  logo?: React.ReactFragment;
-  showChevron?: boolean
 }
 
 export const SwapRow = ({
@@ -27,8 +26,7 @@ export const SwapRow = ({
   setMaxAmount,
   setAmount,
   setToken,
-  logo = null,
-  showChevron = false,
+  tokenOptions,
 }: SwapBlockProps) => (
   <div className={Styles.SwapRow}>
     <div>
@@ -51,19 +49,20 @@ export const SwapRow = ({
           placeholder={'0.0000'}
           value={String(amount.formattedValue)}
           onChange={value => {
-            setAmount(
-              createBigNumber(value),
-              createBigNumber(balance.value)
-            );
+            setAmount(createBigNumber(value), createBigNumber(balance.value));
           }}
           errorMessage={''}
           innerLabel={' '}
         />
       )}
       <div>
-        <div onClick={setToken ? () => setToken() : null}>
-          {logo} {token} {showChevron && ChevronDown}
-        </div>
+        <FormDropdown
+          id='currency'
+          options={tokenOptions}
+          defaultValue={token}
+          disabled={false}
+          onChange={token => setToken(token)}
+        />
       </div>
     </div>
   </div>

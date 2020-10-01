@@ -383,7 +383,7 @@ const MarketsView = () => {
             />
 
             <MarketCardFormatSwitcher />
-            <FilterDropDowns />
+            <FilterDropDowns refresh={updateFilteredMarkets} />
           </section>
         </>
       )}

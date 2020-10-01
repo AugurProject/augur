@@ -14,7 +14,7 @@ import type {
 import {
   calculatePayoutNumeratorsArray,
   ExtraInfoTemplate,
-  AccountData,
+  AccountData
 } from '@augurproject/sdk-lite';
 import {
   convertDisplayAmountToOnChainAmount,
@@ -35,6 +35,8 @@ import {
   TEN_TO_THE_EIGHTEENTH_POWER,
   ZERO,
   NETWORK_IDS,
+  ACCOUNT_ACTIVATION_GAS_COST,
+  DISPUTE_GAS_COST,
 } from 'modules/common/constants';
 import { constructMarketParams } from 'modules/create-market/helpers/construct-market-params';
 import {
@@ -345,89 +347,237 @@ export async function getRepRate(): Promise<BigNumber> {
   return rate;
 }
 
-export function getEthForDaiRate(): BigNumber {
-  const { dependencies } = augurSdk.get();
-  const ethToDaiRate = dependencies.ethToDaiRate
+export async function getUsdtRate(): Promise<BigNumber> {
+  const { uniswap, contracts } = augurSdk.get();
+  const rate = await uniswap.getExchangeRate(contracts.usdt.address, contracts.cash.address);
+  return rate;
+}
+
+export async function getUsdcRate(): Promise<BigNumber> {
+  const { uniswap, contracts } = augurSdk.get();
+  const rate = await uniswap.getExchangeRate(contracts.usdc.address, contracts.cash.address);
+  return rate;
+}
+
+export async function getEthForDaiRate(): BigNumber {
+  const augur = augurSdk.get();
+  const ethToDaiRate = await augur.getExchangeRate();
   return ethToDaiRate;
 }
 
-export async function addLiquidityRepDai(dai: BigNumber, rep: BigNumber): Promise<void> {
+export async function addLiquidityRepDai(
+  dai: BigNumber,
+  rep: BigNumber
+): Promise<void> {
   const { contracts, uniswap } = augurSdk.get();
   const cashAmount = dai.multipliedBy(ETHER);
   const repAmount = rep.multipliedBy(ETHER);
 
-  uniswap.addLiquidity(contracts.reputationToken.address, contracts.cash.address, repAmount, cashAmount, new BigNumber(0), new BigNumber(0));
+  uniswap.addLiquidity(
+    contracts.reputationToken.address,
+    contracts.cash.address,
+    repAmount,
+    cashAmount,
+    new BigNumber(0),
+    new BigNumber(0)
+  );
+}
+
+export async function checkTokenApproval(account, contract): Promise<boolean> {
+  const { contracts } = augurSdk.get();
+  try {
+    const currentAllowance = await contract.allowance_(
+      account,
+      contracts.uniswap.address
+    );
+
+    if (currentAllowance.lte(0)) {
+      return false
+    }
+    return true;
+  } catch (error) {
+    throw error;
+  }
+}
+
+export async function setTokenApproval(account, contract): Promise<void> {
+  const { contracts } = augurSdk.get();
+  try {
+    const currentAllowance = await contract.allowance_(
+      account,
+      contracts.uniswap.address
+    );
+    if (currentAllowance.lte(0)) {
+      await contract.approve(contracts.uniswap.address, APPROVAL_AMOUNT);
+    }
+  } catch (error) {
+    throw error;
+  }
 }
 
 export async function checkSetApprovalAmount(account, contract): Promise<void> {
   const { contracts } = augurSdk.get();
   try {
-    const APPROVAL_AMOUNT = new BigNumber(2**255);
-    const currentAllowance = await contract.allowance_(account, contracts.uniswap.address);
-    if (currentAllowance.toNumber() <= 0) {
+    const APPROVAL_AMOUNT = new BigNumber(2 ** 255);
+    const currentAllowance = await contract.allowance_(
+      account,
+      contracts.uniswap.address
+    );
+    if (currentAllowance.lte(0)) {
       await contract.approve(contracts.uniswap.address, APPROVAL_AMOUNT);
     }
-  }
-  catch(error) {
+  } catch (error) {
     throw error;
   }
 }
 
-export async function uniswapDaiForRep(dai: BigNumber, rep: BigNumber, tradeSpread: number): Promise<void> {
+export async function uniswapTokenForDai(
+  tokenAddress: string,
+  tokenAmount: BigNumber,
+  dai: BigNumber,
+  tradeSpread: number
+): Promise<void> {
   const { contracts, uniswap } = augurSdk.get();
 
-  const exactDai = dai.multipliedBy(10**18);
-  const minRep = rep.minus(rep.multipliedBy(createBigNumber(tradeSpread).minus(1))).multipliedBy(10**18);
+  let exactTokenAmount;
+  let minDai;
+
+  if (
+    [contracts.reputationToken.address, contracts.cash.address].includes(
+      tokenAddress
+    )
+  ) {
+    exactTokenAmount = tokenAmount.multipliedBy(10 ** 18);
+    minDai = createBigNumber(
+      dai
+        .minus(dai.multipliedBy(createBigNumber(tradeSpread).minus(1)))
+        .multipliedBy(10 ** 18)
+        .toNumber()
+    );
+  } else if (
+    [contracts.usdc.address, contracts.usdt.address].includes(tokenAddress)
+  ) {
+    exactTokenAmount = tokenAmount.multipliedBy(10 ** 6);
+    minDai = createBigNumber(
+      Math.floor(
+        dai
+          .minus(dai.multipliedBy(createBigNumber(tradeSpread).minus(1)))
+          .multipliedBy(10 ** 6)
+          .toNumber()
+      )
+    );
+  } else {
+    throw new Error("provided tokenAddress not supported");
+  }
 
   try {
-    await uniswap.swapExactTokensForTokens(contracts.cash.address, contracts.reputationToken.address, exactDai, createBigNumber(minRep.toNumber()));
-  }
-  catch(error) {
-    console.error('uniswapDaiForRep', error);
+    await uniswap.swapExactTokensForTokens(
+      tokenAddress,
+      contracts.cash.address,
+      exactTokenAmount,
+      minDai
+    );
+  } catch (error) {
+    console.error("uniswapTokenForDai", error);
     throw error;
   }
 }
 
-export async function uniswapRepForDai(rep: BigNumber, dai: BigNumber, tradeSpread: number): Promise<void> {
+export async function uniswapTokenForRep(
+  tokenAddress: string,
+  tokenAmount: BigNumber,
+  rep: BigNumber,
+  tradeSpread: number
+): Promise<void> {
   const { contracts, uniswap } = augurSdk.get();
 
-  const exactRep = rep.multipliedBy(10**18);
-  const minDai = dai.minus(dai.multipliedBy(createBigNumber(tradeSpread).minus(1))).multipliedBy(10**18);
+  const exactTokenAmount = tokenAmount.multipliedBy(10 ** 18);
+  const minRep = createBigNumber(
+    rep
+      .minus(rep.multipliedBy(createBigNumber(tradeSpread).minus(1)))
+      .multipliedBy(10 ** 18)
+      .toNumber()
+  );
 
   try {
-    await uniswap.swapExactTokensForTokens(contracts.reputationToken.address, contracts.cash.address, exactRep, createBigNumber(minDai.toNumber()));
-  }
-  catch(error) {
-    console.error('uniswapRepForDai', error);
+    await uniswap.swapExactTokensForTokens(
+      tokenAddress,
+      contracts.reputationToken.address,
+      exactTokenAmount,
+      createBigNumber(minRep.toNumber())
+    );
+  } catch (error) {
+    console.error("uniswapTokenForRep", error);
     throw error;
   }
 }
 
-
-export async function uniswapEthForDai(eth: BigNumber, dai: BigNumber, exchangeRateBufferMultiplier: number): Promise<void> {
+export async function uniswapTokenForETH(
+  tokenAddress: string,
+  tokenAmount: BigNumber,
+  eth: BigNumber,
+  tradeSpread: number
+): Promise<void> {
   const { contracts, uniswap } = augurSdk.get();
-  const exactDai = dai.multipliedBy(10**18);
-  const maxEth = eth.multipliedBy(10**18).multipliedBy(exchangeRateBufferMultiplier);
+  const exactTokenAmount = tokenAmount.multipliedBy(10 ** 18);
+  const minETH = eth
+    .minus(eth.multipliedBy(createBigNumber(tradeSpread).minus(1)))
+    .multipliedBy(10 ** 18);
 
   try {
-    await uniswap.swapETHForExactTokens(contracts.cash.address, exactDai, maxEth);
-  }
-  catch(error) {
-    console.error('uniswapEthForDai', error);
+    await uniswap.swapTokensForExactETH(
+      tokenAddress,
+      exactTokenAmount,
+      createBigNumber(minETH.toNumber())
+    );
+  } catch (error) {
+    console.error("uniswapDaiForETH", error);
     throw error;
   }
 }
 
-export async function uniswapEthForRep(eth: BigNumber, rep: BigNumber, exchangeRateBufferMultiplier: number): Promise<void> {
+export async function uniswapEthForRep(
+  eth: BigNumber,
+  rep: BigNumber,
+  exchangeRateBufferMultiplier: number
+): Promise<void> {
   const { contracts, uniswap } = augurSdk.get();
-  const exactRep = rep.multipliedBy(10**18);
-  const maxEth = eth.multipliedBy(10**18).multipliedBy(exchangeRateBufferMultiplier);
+  const exactRep = rep.multipliedBy(10 ** 18);
+  const maxEth = eth
+    .multipliedBy(10 ** 18)
+    .multipliedBy(exchangeRateBufferMultiplier);
 
   try {
-    await uniswap.swapETHForExactTokens(contracts.reputationToken.address, exactRep, maxEth);
+    await uniswap.swapETHForExactTokens(
+      contracts.reputationToken.address,
+      exactRep,
+      maxEth
+    );
+  } catch (error) {
+    console.error("uniswapEthForRep", error);
+    throw error;
   }
-  catch(error) {
-    console.error('uniswapEthForRep', error);
+}
+
+export async function uniswapEthForDai(
+  eth: BigNumber,
+  dai: BigNumber,
+  exchangeRateBufferMultiplier: number
+): Promise<void> {
+  const { contracts, uniswap } = augurSdk.get();
+  const exactDai = dai.multipliedBy(10 ** 18);
+  const maxEth = eth
+    .multipliedBy(10 ** 18)
+    .multipliedBy(exchangeRateBufferMultiplier);
+
+  try {
+    await uniswap.swapETHForExactTokens(
+      contracts.cash.address,
+      exactDai,
+      maxEth
+    );
+  } catch (error) {
+    console.error("uniswapEthForDai", error);
     throw error;
   }
 }
@@ -522,7 +672,7 @@ export async function redeemUserStakes(
       disputeWindows
     );
   } catch (e) {
-    console.error('Could not redeem REP', e);
+    console.error('Could not redeem REPv2', e);
   }
 }
 
@@ -641,11 +791,16 @@ export async function contribute_estimateGas(dispute: doReportDisputeAddStake) {
   const market = getMarket(dispute.marketId);
   if (!market) return false;
   const payoutNumerators = await getPayoutNumerators(dispute);
-  return market.contribute_estimateGas(
-    payoutNumerators,
-    createBigNumber(dispute.attoRepAmount),
-    dispute.description
-  );
+  try {
+    return await market.contribute_estimateGas(
+      payoutNumerators,
+      createBigNumber(dispute.attoRepAmount),
+      dispute.description
+    );
+  } catch (e) {
+    console.error('estimate gas for dispute failed using default');
+    return DISPUTE_GAS_COST;
+  }
 }
 
 export async function contribute(dispute: doReportDisputeAddStake) {
@@ -793,7 +948,6 @@ export function createMarketRetry(market: CreateMarketData) {
 
   return createMarket(newMarket, true);
 }
-
 const APPROVAL_AMOUNT = new BigNumber(2**255).minus(1);
 const APPROVAL_TEST_AMOUNT = new BigNumber(0);
 export async function isContractApproval(account, contract, approvalContract): Promise<boolean> {
@@ -816,23 +970,6 @@ export async function approveMarketCreation(): Promise<void> {
   const { contracts } = augurSdk.get();
   const augurContract = contracts.augur.address;
   return await contracts.cash.approve(augurContract, APPROVAL_AMOUNT);
-}
-
-
-export async function approveToTrade(address, referalAddress = NULL_ADDRESS) {
-  const { contracts } = augurSdk.get();
-  const approvals = [];
-  if (!(await isContractApproval(address, contracts.ZeroXTrade.address, contracts.cash))) {
-    approvals.push(contracts.cash.approve(contracts.ZeroXTrade.address, APPROVAL_AMOUNT));
-  }
-  approvals.push(contracts.affiliates.setReferrer(referalAddress));
-  if (!(await contracts.shareToken.isApprovedForAll_(address, contracts.fillOrder.address))) {
-    approvals.push(contracts.shareToken.setApprovalForAll(contracts.fillOrder.address, true));
-  }
-  if (!(await isContractApproval(address, contracts.fillOrder.address, contracts.cash))) {
-    approvals.push(contracts.cash.approve(contracts.fillOrder.address, APPROVAL_AMOUNT));
-  }
-  return Promise.all(approvals);
 }
 
 export async function approvalsNeededToTrade(address): Promise<number> {
@@ -902,6 +1039,22 @@ export async function getAllowance(account: string): Promise<BigNumber> {
   const allowanceRaw = await contracts.cash.allowance_(account, augurContract);
   const allowance = allowanceRaw.dividedBy(TEN_TO_THE_EIGHTEENTH_POWER);
   return allowance;
+}
+
+export async function approveToTrade(address, referalAddress = NULL_ADDRESS) {
+  const { contracts } = augurSdk.get();
+  const approvals = [];
+  if (!(await isContractApproval(address, contracts.ZeroXTrade.address, contracts.cash))) {
+    approvals.push(contracts.cash.approve(contracts.ZeroXTrade.address, APPROVAL_AMOUNT));
+  }
+  approvals.push(contracts.affiliates.setReferrer(referalAddress));
+  if (!(await contracts.shareToken.isApprovedForAll_(address, contracts.fillOrder.address))) {
+    approvals.push(contracts.shareToken.setApprovalForAll(contracts.fillOrder.address, true));
+  }
+  if (!(await isContractApproval(address, contracts.fillOrder.address, contracts.cash))) {
+    approvals.push(contracts.cash.approve(contracts.fillOrder.address, APPROVAL_AMOUNT));
+  }
+  return Promise.all(approvals);
 }
 
 export async function getReportingDivisor(): Promise<BigNumber> {
@@ -1058,6 +1211,7 @@ export async function simulateTrade(
   displayPrice: BigNumber | string,
   displayShares: BigNumber | string,
   address: string,
+  postOnly?: boolean,
 ): Promise<SimulateTradeData> {
   const Augur = augurSdk.get();
   const tradeGroupId = generateTradeGroupId();
@@ -1076,6 +1230,7 @@ export async function simulateTrade(
     displayPrice: createBigNumber(displayPrice),
     displayShares: createBigNumber(displayShares),
     takerAddress: address,
+    postOnly,
   };
 
   return Augur.simulateTrade(params);
@@ -1137,7 +1292,7 @@ export async function claimMarketsProceeds(
   fingerprint: string = formatBytes32String('11'),
 ) {
   const augur = augurSdk.get();
-  return augur.contracts.augurTrading.claimMarketsProceeds(
+  augur.contracts.augurTrading.claimMarketsProceeds(
     markets,
     shareHolder,
     fingerprint
@@ -1215,7 +1370,7 @@ export async function migrateRepToUniverse(migration: doReportDisputeAddStake) {
       createBigNumber(migration.attoRepAmount)
     );
   } catch (e) {
-    console.error('Could not migrate REP to universe', e);
+    console.error('Could not migrate REPv2 to universe', e);
   }
 }
 

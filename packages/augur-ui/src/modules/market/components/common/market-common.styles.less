@@ -26,3 +26,28 @@
     bottom: 0;
   }
 }
+
+.CustomMarket {
+  .mono-10-bold;
+
+  background: rgba(var(--color-error), 0.15);
+  border-radius: @size-3;
+  color: var(--color-error);
+  margin: 0 0 @size-8 0;
+  text-transform: uppercase;
+  width: max-content;
+
+  &.TopMargin {
+    margin-top: @size-8;
+  }
+
+  > svg {
+    width: @size-8;
+    height: @size-8;
+    margin-right: @size-4;
+
+    > circle {
+      fill: var(--color-error);
+    }
+  }
+}

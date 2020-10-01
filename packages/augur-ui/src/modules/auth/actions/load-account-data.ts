@@ -1,4 +1,4 @@
-import { checkAccountAllowance } from 'modules/auth/actions/approve-account';
+import { checkAccountAllowance, checkAccountApproval } from 'modules/auth/actions/approve-account';
 import { loadAccountHistory } from 'modules/auth/actions/load-account-history';
 import { loadUniverseDetails } from 'modules/universe/actions/load-universe-details';
 import { windowRef } from 'utils/window-ref';
@@ -34,6 +34,7 @@ export const loadAccountData = async (
       );
     }
     loadAccountHistory();
+    checkAccountApproval();
     checkAccountAllowance();
     loadGasPriceInfo();
     const marketId = getTradePageMarketId();

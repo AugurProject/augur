@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   EVENT_EXPIRATION_TOOLTIP,
   SCALAR,
@@ -10,11 +10,14 @@ import {
   formatDai,
   formatRep,
   formatAttoRep,
+  formatNumber,
 } from 'utils/format-number';
 import MarketScalarOutcomeDisplay from '../market-scalar-outcome-display/market-scalar-outcome-display';
 import ChevronFlip from 'modules/common/chevron-flip';
 import classNames from 'classnames';
 import { MarketData } from 'modules/types';
+import { createBigNumber } from 'utils/create-big-number';
+import { augurSdkLite } from 'services/augursdklite';
 
 interface CorePropertiesProps {
   market: MarketData;
@@ -23,15 +26,29 @@ interface CorePropertiesProps {
   onlyShowDates?: boolean;
 }
 
-// TODO: Get market 24 hour volume, currently just using volume
 const CoreProperties: React.FC<CorePropertiesProps> = ({
   market,
   reportingBarShowing,
   showExtraDetailsChevron,
-  onlyShowDates
+  onlyShowDates,
 }) => {
   const [showExtraDetails, setShowExtraDetails] = useState(false);
   const isScalar = market.marketType === SCALAR;
+  const [affiliateFee, setAffiliateFee] = useState(formatNumber(0));
+
+  const loadAffiliateFee = (id: string) => {
+    const augurLite = augurSdkLite.get();
+    return augurLite.hotloadMarket(id);
+  }
+
+  useEffect(() => {
+    if (market) {
+      loadAffiliateFee && loadAffiliateFee(market.id).then(marketInfo => {
+        setAffiliateFee(formatPercent(marketInfo?.affiliateFee ? createBigNumber(marketInfo.affiliateFee).times(100).decimalPlaces(0) : '0', { decimals: 0}));
+      })
+    }
+  }, []);
+
   return (
     <div
       className={classNames(Styles.CoreProperties, {
@@ -90,14 +107,6 @@ const CoreProperties: React.FC<CorePropertiesProps> = ({
                 }
               />
               <PropertyLabel
-                label="24hr Volume"
-                value={
-                  market.volumeFormatted
-                    ? market.volumeFormatted.full
-                    : formatDai(0).full
-                }
-              />
-              <PropertyLabel
                 label="Market OI Fee"
                 value={
                   market.settlementFeePercent
@@ -147,6 +156,27 @@ const CoreProperties: React.FC<CorePropertiesProps> = ({
               }
             </>
           )}
+          {loadAffiliateFee && <PropertyLabel
+            label="Affiliate Fee"
+            value={affiliateFee.full}
+            hint={
+              <>
+                <h4>Affiliate Fee</h4>
+                <p>
+                  The Affiliate fee is a percentage of the Market
+                  Creator fee (
+                  <b>
+                    {
+                      formatPercent(
+                        Number(market.marketCreatorFeeRate) * 100
+                      ).full
+                    }
+                  </b>
+                  ), which occurs when shares are closed
+                </p>
+              </>
+            }
+          />}
         </div>
         {!reportingBarShowing && (
           <div className={Styles.TimeSection}>
