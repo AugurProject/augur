@@ -15,6 +15,7 @@ import Image3Medium from '../../../assets/images/banner-3-1522x456.png';
 import Image3Big from '../../../assets/images/banner-3-1920x456.png';
 import SportsbookBanner from 'assets/images/sportsbook-banner.png';
 import ImageDesktop from '../../../assets/images/banner-desktop-1920x456.png';
+import AmericanFootball from '../../../assets/images/american-football.png';
 import noop from 'utils/noop';
 
 const images = [
@@ -34,22 +35,23 @@ const images = [
     },
   },
   {
-    alignment: 'center',
-    noOverlay: true,
+    alignment: 'right',
+    noOverlay: false,
     image: {
-      mobile: Image2Mobile,
-      tablet: Image2Tablet,
-      medium: Image2Medium,
-      big: Image2Big,
+      mobile: AmericanFootball,
+      tablet: AmericanFootball,
+      medium: AmericanFootball,
+      big: AmericanFootball,
     },
-    text: 'No Limits. Lower Fees.\nBet on anything you want. 2',
+    text: '+1000\nMarkets',
     button: {
-      text: 'Sign up to start betting',
+      text: 'Explore Betting Exchange',
       link: 'https://dev.augur.net/',
+      secondary: true,
     },
   },
   {
-    alignment: 'right',
+    alignment: 'center',
     noOverlay: true,
     image: {
       mobile: Image3Mobile,
