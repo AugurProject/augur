@@ -13,14 +13,17 @@ import {
   YES_NO,
   PUBLICFILLORDER,
   CREATEAUGURWALLET,
+  WITHDRAWALLFUNDSASDAI,
   ADDLIQUIDITY,
   SWAPEXACTTOKENSFORTOKENS,
   SWAPETHFOREXACTTOKENS,
+  SWAPTOKENSFOREXACTETH,
   SENDETHER,
   BUYPARTICIPATIONTOKENS,
   TRANSFER,
   MODAL_ERROR,
   MIGRATE_FROM_LEG_REP_TOKEN,
+  APPROVE_FROM_LEG_REP_TOKEN,
   REDEEMSTAKE,
   MIGRATEOUTBYPAYOUT,
   TRADINGPROCEEDSCLAIMED,
@@ -30,6 +33,9 @@ import {
   DOINITIALREPORT,
   CONTRIBUTE,
   APPROVE,
+  SETREFERRER,
+  SETAPPROVALFORALL,
+  TRANSACTIONS,
 } from 'modules/common/constants';
 import { CreateMarketData } from 'modules/types';
 import {
@@ -43,6 +49,7 @@ import {
   addCanceledOrder,
   updatePendingReportHash,
   updatePendingDisputeHash,
+  removePendingDataByHash,
 } from 'modules/pending-queue/actions/pending-queue-management';
 import { convertUnixToFormattedDate } from 'utils/format-date';
 import { TransactionMetadataParams } from '@augurproject/contract-dependencies-ethers';
@@ -56,19 +63,24 @@ const ADD_PENDING_QUEUE_METHOD_CALLS = [
   BUYPARTICIPATIONTOKENS,
   REDEEMSTAKE,
   MIGRATE_FROM_LEG_REP_TOKEN,
+  APPROVE_FROM_LEG_REP_TOKEN,
   BATCHCANCELORDERS,
   TRADINGPROCEEDSCLAIMED,
   MIGRATEOUTBYPAYOUT,
   FORKANDREDEEM,
   CREATEAUGURWALLET,
+  WITHDRAWALLFUNDSASDAI,
   ADDLIQUIDITY,
   SWAPEXACTTOKENSFORTOKENS,
+  SWAPTOKENSFOREXACTETH,
   SWAPETHFOREXACTTOKENS,
   SENDETHER,
   TRANSFER,
   CLAIMMARKETSPROCEEDS,
   FINALIZE,
   APPROVE,
+  SETREFERRER,
+  SETAPPROVALFORALL,
 ];
 export const getRelayerDownErrorMessage = (walletType, hasEth) => {
   const errorMessage =
@@ -294,6 +306,12 @@ export const addUpdateTransaction = async (txStatus: Events.TXStatus) => {
       }
       case CONTRIBUTE: {
         hash && updatePendingDisputeHash(transaction.params, hash, eventName);
+        break;
+      }
+      case APPROVE: {
+        if (eventName === TXEventName.Success) {
+          removePendingDataByHash(hash, TRANSACTIONS);
+        }
         break;
       }
 

@@ -214,8 +214,8 @@ export const findAndSetTransactionsTimeouts = (blockNumber: number) => {
   const { pendingOrders } = PendingOrders.get();
   const thresholdBlockNumber = blockNumber - TX_CHECK_BLOCKNUMBER_LIMIT;
 
-  processingPendingQueue(thresholdBlockNumber, pendingQueue);
-  processingPendingOrders(thresholdBlockNumber, pendingOrders);
+  // processingPendingQueue(thresholdBlockNumber, pendingQueue);
+  // processingPendingOrders(thresholdBlockNumber, pendingOrders);
 };
 
 const processingPendingQueue = (

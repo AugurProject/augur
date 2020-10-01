@@ -38,7 +38,7 @@ import {
 import { logger } from '@augurproject/utils';
 import { addUpdateTransaction } from 'modules/events/actions/add-update-transaction';
 import { augurSdk } from 'services/augursdk';
-import { checkAccountAllowance } from 'modules/auth/actions/approve-account';
+import { checkAccountApproval } from 'modules/auth/actions/approve-account';
 import { loadAccountReportingHistory } from 'modules/auth/actions/load-account-reporting';
 import { loadDisputeWindow } from 'modules/auth/actions/load-dispute-window';
 import {
@@ -218,7 +218,7 @@ export const handleNewBlockLog = async (log: Events.NewBlock) => {
   // update assets each block
   if (isLogged) {
     updateAssets();
-    checkAccountAllowance();
+    checkAccountApproval();
     loadAnalytics(analytics, currentAugurTimestamp);
     findAndSetTransactionsTimeouts(log.highestAvailableBlockNumber);
   }
@@ -423,17 +423,12 @@ export const handleOrderCreatedLog = (log: ParsedOrderEventLog) => {
     handleAlert(log, PUBLICTRADE, false);
     throttleLoadUserOpenOrders();
     const pendingOrderId = constructPendingOrderid(
-      log.amount,
       log.price,
       log.outcome,
       log.market,
       log.orderType
     );
-    const { pendingOrders } = PendingOrders.get();
-    const marketPendingOrders = pendingOrders[log.market];
-    if (marketPendingOrders?.find(pending => pending.id === pendingOrderId)) {
-      removePendingOrder(pendingOrderId, log.market);
-    }
+    removePendingOrder(pendingOrderId, log.market);
   }
 };
 
@@ -483,7 +478,27 @@ export const handleOrderFilledLog = (log: ParsedOrderEventLog) => {
     orderFilled(marketId, log, isSameAddress(log.orderCreator, address));
     throttleLoadUserOpenOrders();
     if (log.orderFiller) handleAlert(log, PUBLICFILLORDER, true);
-    removePendingOrder(log.tradeGroupId, marketId);
+
+    if (log.orderFiller) {
+      if (log.tradeGroupId) {
+        removePendingOrder(log.tradeGroupId, marketId);
+      } else {
+        const makePendingOrderId = constructPendingOrderid(
+          log.price,
+          log.outcome,
+          log.market,
+          log.orderType
+        );
+        const takePendingOrderId = constructPendingOrderid(
+          log.price,
+          log.outcome,
+          log.market,
+          log.orderType === "0x00" ? "0x01" : "0x00"
+        );
+        removePendingOrder(makePendingOrderId, marketId);
+        removePendingOrder(takePendingOrderId, marketId);
+      }
+    }
   }
 };
 

@@ -25,6 +25,7 @@ import {
   NETWORK_NAMES,
   SIGNIN_SIGN_WALLET,
   MODAL_REPORTING_ONLY,
+  DISCLAIMER_SEEN
 } from 'modules/common/constants';
 import { listenForStartUpEvents } from 'modules/events/actions/listen-to-updates';
 import { windowRef } from 'utils/window-ref';
@@ -34,13 +35,15 @@ import { getFingerprint } from 'utils/get-fingerprint';
 import { getNetwork } from 'utils/get-network-name';
 import { isEmpty } from 'utils/is-empty';
 import { isGoogleBot } from 'utils/is-google-bot';
-import { isMobileSafari } from 'utils/is-safari';
+import { isMobileSafari, isSafari } from 'utils/is-safari';
 import { AppStatus } from 'modules/app/store/app-status';
 import { showIndexedDbSize } from 'utils/show-indexed-db-size';
 import { tryToPersistStorage } from 'utils/storage-manager';
 import { createBigNumber } from 'utils/create-big-number';
 import detectEthereumProvider from '@metamask/detect-provider'
 import { isPrivateNetwork } from 'modules/app/actions/is-private-network.ts';
+import { isFirefox } from 'utils/is-firefox';
+import getValueFromlocalStorage from 'utils/get-local-storage-value';
 
 
 const NETWORK_ID_POLL_INTERVAL_DURATION = 10000;
@@ -98,6 +101,24 @@ const isNetworkMismatch = async config => {
   return privateNetwork ?
     web3NetworkId !== "NaN" : // MM returns NaN for local networks
     config.networkId !== web3NetworkId;
+}
+
+const isCorrectNetwork = async (config) => {
+  const { setModal } = AppStatus.actions;
+  const chainId = await ethereum.request({ method: 'eth_chainId' });
+  const web3NetworkId = String(createBigNumber(chainId));
+  const privateNetwork = isPrivateNetwork(config.networkId);
+  const isMisMatched  = privateNetwork ?
+    !(isPrivateNetwork(web3NetworkId) || web3NetworkId === 'NaN') : // MM can return NaN for local networks
+    config.networkId !== web3NetworkId;
+
+  if (isMisMatched) {
+    setModal({
+      type: MODAL_NETWORK_MISMATCH,
+      expectedNetwork: NETWORK_NAMES[Number(config.networkId)],
+    });
+  }
+  return !isMisMatched;
 }
 
 async function createDefaultProvider(config: SDKConfiguration) {
@@ -200,14 +221,6 @@ export const connectAugur = async (
     })
   }
 
-  if ((windowRef.ethereum || windowRef.web3) && await isNetworkMismatch(config)) {
-    if (callback) callback(null);
-    return AppStatus.actions.setModal({
-        type: MODAL_NETWORK_MISMATCH,
-        expectedNetwork: NETWORK_NAMES[Number(config.networkId)],
-      });
-  }
-
   if (isMobileSafari()) {
     config = mergeConfig(config, {
       warpSync: {
@@ -215,6 +228,28 @@ export const connectAugur = async (
         createCheckpoints: false,
       },
     })
+  }
+
+  let useWeb3 = false;
+  const we3Provider = await detectEthereumProvider();
+  if (we3Provider) {
+    try {
+      const correctNetwork = await isCorrectNetwork(config);
+      if (!correctNetwork) {
+        return callback(null);
+      }
+    useWeb3 = correctNetwork;
+    } catch(e) {
+      console.error('Error with web3 provider, moving on');
+    }
+  }
+
+  // Force jsonrpc for every user agent but Safari and FF.
+  if (!isSafari() && !isMobileSafari() && !isFirefox()) {
+    config.ui = {
+      liteProvider: 'jsonrpc',
+      ...(config.ui ? config.ui : {})
+    };
   }
 
   // Optimize for the case where we can just use a JSON endpoint.
@@ -253,7 +288,7 @@ export const connectAugur = async (
     }
 
 
-  if (config?.ui?.reportingOnly) {
+  if (process.env.REPORTING_ONLY && !getValueFromlocalStorage(DISCLAIMER_SEEN)) {
     const { setModal } = AppStatus.actions;
     setModal({
       type: MODAL_REPORTING_ONLY
@@ -285,7 +320,12 @@ export const connectAugur = async (
   // wire up start up events for sdk
   listenForStartUpEvents(Augur);
 
-  await augurSdk.connect();
+  try {
+    await augurSdk.connect();
+  } catch(e) {
+    console.error(e);
+    return callback(`Fatal Error while starting augur: `, e);
+  }
 
   // IPFS pin the UI hash.
   augurSdk.client.pinHashByGatewayUrl(windowApp.location.href);

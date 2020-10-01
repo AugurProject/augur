@@ -88,22 +88,9 @@ export const loadAccountDataFromLocalStorage = (address: string) => {
         loadDrafts(drafts);
       }
       if (alerts) {
-        // get all market ids and load markets then process alerts
-        const marketIds = Array.from(
-          new Set(
-            alerts.reduce((p, alert) => {
-              const marketId =
-                alert.marketId ||
-                (alert.params && alert.params.market) ||
-                alert.params._market;
-              return marketId ? [...p, marketId] : p;
-            }, [])
-          )
-        ) as string[];
-        loadMarketsInfoIfNotLoaded(marketIds, () => {
-          alerts.map(n => updateAlert(n.id, n, true));
-        });
+        alerts.map(n => updateAlert(n.id, n, true));
       }
+
       if (pendingLiquidityOrders) {
         loadPendingLiquidityOrders(pendingLiquidityOrders);
       }

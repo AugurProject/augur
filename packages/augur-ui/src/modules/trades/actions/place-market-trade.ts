@@ -7,8 +7,8 @@ import {
   ZEROX_STATUSES,
 } from 'modules/common/constants';
 import {
-  placeTrade,
   approveToTrade,
+  placeTrade,
 } from 'modules/contracts/actions/contractCalls';
 import type { Getters } from '@augurproject/sdk';
 import { TXEventName } from '@augurproject/sdk-lite'
@@ -26,6 +26,7 @@ import { getOutcomeNameWithOutcome } from 'utils/get-outcome';
 import { AppStatus } from 'modules/app/store/app-status';
 import { Markets } from 'modules/markets/store/markets';
 import { updateAlert } from 'modules/alerts/actions/alerts';
+import { checkAccountApproval } from 'modules/auth/actions/approve-account';
 
 export const placeMarketTrade = async ({
   marketId,
@@ -38,7 +39,7 @@ export const placeMarketTrade = async ({
   const { marketInfos } = Markets.get();
   // numFills is 0 and zerox mesh client has error auto fail processing order label
   const {
-    loginAccount: { allowance },
+    loginAccount: { address, affiliate, tradingApproved },
     zeroXStatus,
     blockchain: { currentAugurTimestamp },
   } = AppStatus.get();
@@ -50,12 +51,9 @@ export const placeMarketTrade = async ({
     );
   }
 
-  let needsApproval = false;
-  needsApproval = createBigNumber(allowance).lt(
-    tradeInProgress.totalCost.value
-  );
+  await checkAccountApproval();
 
-  if (needsApproval) await approveToTrade();
+  if (!tradingApproved) await approveToTrade(address, affiliate);
   // we need to make sure approvals went through before doing trade / the rest of this function
   const userShares = createBigNumber(tradeInProgress.shareCost || 0, 10);
   const { tickSize, minPrice } = market;
@@ -66,7 +64,6 @@ export const placeMarketTrade = async ({
     ? createBigNumber(tradeInProgress.expirationTime)
     : undefined;
   const tradeGroupId = generatePendingOrderId(
-    displayAmount,
     displayPrice,
     outcomeId,
     marketId,

@@ -72,14 +72,12 @@ export const loadPendingOrdersTransactions = (pendingOrders: UIOrder[]) => {
 };
 
 export const constructPendingOrderid = (
-  onChainAmount: string,
   onChainPrice: string,
   onchainOutcome: string,
   market: string,
   orderType: string,
 ) => {
   const params: TransactionMetadataParams = {
-    amount: createBigNumber(onChainAmount).toString(),
     price: createBigNumber(onChainPrice).toString(16),
     outcome: onchainOutcome,
     market,
@@ -89,7 +87,6 @@ export const constructPendingOrderid = (
 };
 
 export const generatePendingOrderId = (
-  amount: string,
   price: string,
   outcome: string,
   marketId: string,
@@ -99,12 +96,7 @@ export const generatePendingOrderId = (
 ) => {
   const bnTickSize = createBigNumber(tickSize);
   const bnMinPrice = createBigNumber(minPrice);
-  const bnAmount = createBigNumber(amount);
   const bnPrice = createBigNumber(price);
-  const onChainAmount = convertDisplayAmountToOnChainAmount(
-    bnAmount,
-    bnTickSize
-  );
   const onChainPrice = convertDisplayPriceToOnChainPrice(
     bnPrice,
     bnMinPrice,
@@ -114,7 +106,6 @@ export const generatePendingOrderId = (
   const hexOrderType = `0x0${orderType}`;
 
   const params: TransactionMetadataParams = {
-    amount: onChainAmount.toString(),
     price: onChainPrice.toString(16),
     outcome: hexOutcome,
     market: marketId,

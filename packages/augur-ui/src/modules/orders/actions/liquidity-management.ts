@@ -7,6 +7,7 @@ import {
   isTransactionConfirmed,
   approveToTrade,
   placeTrade,
+  approvalsNeededToTrade
 } from 'modules/contracts/actions/contractCalls';
 import type { Getters } from '@augurproject/sdk';
 import { TXEventName } from '@augurproject/sdk-lite';
@@ -15,10 +16,11 @@ import {
   convertDisplayAmountToOnChainAmount,
   convertDisplayPriceToOnChainPrice,
 } from "@augurproject/utils"
-import { AppStatus } from 'modules/app/store/app-status';
+import { AppStatus, useAppStatusStore } from 'modules/app/store/app-status';
 import { Markets } from 'modules/markets/store/markets';
 import { PendingOrders } from 'modules/app/store/pending-orders';
 import { updateAlert } from 'modules/alerts/actions/alerts';
+import { checkAccountApproval } from 'modules/auth/actions/approve-account';
 // liquidity should be an orderbook, example with yesNo:
 // { 1: [{ type, quantity, price, orderEstimate }, ...], ... }
 
@@ -74,8 +76,12 @@ export const sendLiquidityOrder = async (options: any) => {
     eventName: TXEventName.Pending,
   });
 
-  if (bnAllowance.lte(0) || bnAllowance.lte(createBigNumber(orderEstimate))) {
-    await approveToTrade();
+  const {
+    loginAccount,
+  } = useAppStatusStore();
+
+  if ((await approvalsNeededToTrade(loginAccount.address)) > 0) {
+    await approveToTrade(loginAccount.address, loginAccount?.affiliate);
     isZeroX
       ? createZeroXLiquidityOrders(market, [options.order])
       : sendOrder(options);
@@ -109,9 +115,8 @@ export const startOrderSending = async ({
 }: CreateLiquidityOrders) => {
   const { marketInfos } = Markets.get();
   const { pendingLiquidityOrders } = PendingOrders.get();
-  const { loginAccount, zeroXEnabled } = AppStatus.get();
+  const {  zeroXEnabled } = AppStatus.get();
   const chunkOrders = !zeroXEnabled;
-  if (loginAccount.allowance.lte(ZERO)) await approveToTrade();
 
   const market = marketInfos[marketId];
   let orders = [];
@@ -123,6 +128,7 @@ export const startOrderSending = async ({
     orders = [...orders, ...liquidity[outcomeId]];
   });
 
+  await checkAccountApproval();
   if (!chunkOrders) {
     await createZeroXLiquidityOrders(market, orders);
   } else {

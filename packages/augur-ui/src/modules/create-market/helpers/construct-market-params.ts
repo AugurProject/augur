@@ -15,6 +15,7 @@ import {
   SCALAR,
   CATEGORICAL,
   TEN_TO_THE_EIGHTEENTH_POWER,
+  ONE,
 } from 'modules/common/constants';
 import { CreateNewMarketParams } from 'modules/contracts/actions/contractCalls';
 import { generateTxParameterId } from 'utils/generate-tx-parameter-id';
@@ -30,7 +31,7 @@ export function constructMarketParams(
     new BigNumber(100)
   );
   const feePerCashInAttoCash = fee.multipliedBy(TEN_TO_THE_EIGHTEENTH_POWER);
-  const affiliateFeeDivisor = new BigNumber(newMarket.affiliateFee || 0);
+  const affiliateFeeDivisor = newMarket.affiliateFee ? Number(ONE.div(new BigNumber(newMarket.affiliateFee || 0).div(100)).decimalPlaces(0)) : 0;
   const marketEndTime = new BigNumber(
     newMarket.endTime ? newMarket.endTime : newMarket.endTimeFormatted.timestamp
   );

@@ -47,6 +47,7 @@ import { totalTradingBalance } from 'modules/auth/helpers/login-account';
 import { useTradingStore } from 'modules/trading/store/trading';
 import { getGasCost } from 'modules/modal/gas';
 import { approvalsNeededToTrade, approveToTrade } from 'modules/contracts/actions/contractCalls';
+import { checkAccountApproval } from 'modules/auth/actions/approve-account';
 
 interface MessageButton {
   action: Function;
@@ -123,6 +124,7 @@ export const Confirm = ({
       allowance: allowanceBigNumber,
       tradingApproved,
       address,
+      affiliate,
     },
     ethToDaiRate,
     gasPriceInfo,
@@ -227,7 +229,7 @@ export const Confirm = ({
         messages = {
           header: 'UNPROFITABLE TRADE',
           type: ERROR,
-          message: `Est. TX Fee is higher than profit`,
+          message: `Est. TX Fee is higher than profit. Placing an unmatched order will not have a tx fee.`,
         };
       }
 
@@ -398,13 +400,10 @@ export const Confirm = ({
             userEthBalance={String(availableEth)}
             gasPrice={gasPrice}
             checkApprovals={() => approvalsNeededToTrade(address)}
-            doApprovals={() => approveToTrade(address)}
+            doApprovals={() => approveToTrade(address, affiliate)}
             account={address}
             approvalType={PUBLICTRADE}
-            isApprovalCallback={async () => {
-              const neededApprovals = await approvalsNeededToTrade(address);
-              return neededApprovals;
-            }}
+            isApprovalCallback={() => checkAccountApproval()}
             addFunds={() => setModal({ TYPE: MODAL_ADD_FUNDS, fundType: ETH })}
           />
         }

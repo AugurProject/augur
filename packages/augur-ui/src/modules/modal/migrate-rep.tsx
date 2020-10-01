@@ -1,60 +1,61 @@
 import React, { useState, useEffect } from 'react';
 
-import { Title, ButtonsRow } from 'modules/modal/common';
+import { Title } from 'modules/modal/common';
 import {
   formatRep,
   formatGasCostToEther,
   formatEther,
-  formatDai,
 } from 'utils/format-number';
-import { ExternalLinkButton } from 'modules/common/buttons';
+import { ExternalLinkButton, ProcessingButton, SecondaryButton } from 'modules/common/buttons';
 import { TransactionFeeLabel } from 'modules/common/labels';
-import {
-  displayGasInDai,
-  getGasInDai,
-} from 'modules/app/actions/get-ethToDai-rate';
 import {
   V1_REP_MIGRATE_ESTIMATE,
   HELP_CENTER_MIGRATE_REP,
   GWEI_CONVERSION,
   TRANSACTIONS,
+  APPROVE, MIGRATE_FROM_LEG_REP_TOKEN
 } from 'modules/common/constants';
 import {
-  approveAndConvertV1ToV2,
-  convertV1ToV2Estimate,
+  approveRepV2,
+  convertRepV2,
 } from 'modules/account/actions/convert-v1-rep-to-v2';
-
-import Styles from 'modules/modal/modal.styles.less';
 import { createBigNumber } from 'utils/create-big-number';
 import { useAppStatusStore } from 'modules/app/store/app-status';
 import { DISMISSABLE_NOTICE_BUTTON_TYPES, DismissableNotice } from 'modules/reporting/common';
 import { getGasCost } from 'modules/modal/gas';
+import { isRepV2Approved } from 'modules/contracts/actions/contractCalls';
 
+import Styles from 'modules/modal/modal.styles.less';
 
 export const MigrateRep = () => {
   const {
-    loginAccount,
+    loginAccount: { address, balances },
     gasPriceInfo,
     ethToDaiRate,
     actions: { closeModal },
   } = useAppStatusStore();
 
   const gasPrice = gasPriceInfo.userDefinedGasPrice || gasPriceInfo.average;
-  const walletBalances = loginAccount.balances;
-  const showForSafeWallet = Number(walletBalances.legacyRep) > 0;
-
   const [gasLimit, setGasLimit] = useState(V1_REP_MIGRATE_ESTIMATE);
-  const inSigningWallet = walletBalances.signerBalances.legacyRep !== '0';
-  const inTradingWallet = walletBalances.legacyRep !== '0';
-  const ethForGas = walletBalances.signerBalances.eth;
+  const [isApproved, setIsApproved] = useState(false);
+  const ethForGas = balances.signerBalances.eth;
   const gasCostDai = getGasCost(gasLimit, gasPrice, ethToDaiRate);
   const displayfee = `$${gasCostDai.formattedValue}`;
 
+  const showApproval = async () => {
+    const approved = await isRepV2Approved(address);
+    return approved;
+  };
+
   useEffect(() => {
-    convertV1ToV2Estimate().then(gasLimit => {
-      setGasLimit(gasLimit);
-    });
-  }, []);
+    if (!isApproved) {
+      const checkApproval = async () => {
+        const tokenUnlocked = await showApproval();
+        setIsApproved(tokenUnlocked);
+      };
+      checkApproval();
+    }
+  }, [balances]);
 
   const gasEstimateInEth = formatGasCostToEther(
     gasLimit,
@@ -66,94 +67,80 @@ export const MigrateRep = () => {
     createBigNumber(gasEstimateInEth)
   );
 
-  const gasInDai = getGasInDai(gasLimit).value;
-  const hasEnoughDaiForGas = createBigNumber(walletBalances.dai).gte(
-    createBigNumber(gasInDai)
-  );
-
   const safeWalletContent = (
     <>
       <div>
         <span>V1 REP to migrate</span>
         <span>
-          {inSigningWallet
-            ? formatRep(walletBalances.signerBalances.legacyRep).formattedValue
-            : formatRep(walletBalances.legacyRep).formattedValue}
+          {formatRep(balances.signerBalances.legacyRep).formattedValue}
         </span>
       </div>
       <div>
         <TransactionFeeLabel gasCostDai={displayfee} />
       </div>
-      {!hasEnoughEthForGas && inSigningWallet && (
+      {!hasEnoughEthForGas && (
         <span className={Styles.Error}>
           {formatEther(gasEstimateInEth).formatted} ETH is needed for
           transaction fee
         </span>
       )}
-      {!hasEnoughDaiForGas && !hasEnoughEthForGas && inTradingWallet && (
-        <span className={Styles.Error}>
-          ${formatDai(gasInDai).formatted} DAI is needed for transaction fee
-        </span>
-      )}
       <DismissableNotice
         show
-        title={'Your wallet will need to sign 2 transactions'}
+        title={`Your wallet will need to sign ${
+          isApproved ? '1' : '2'
+        } transactions`}
         buttonType={DISMISSABLE_NOTICE_BUTTON_TYPES.CLOSE}
       />
     </>
   );
 
   return (
-    <div
-      className={showForSafeWallet ? Styles.MigrateRep : Styles.MigrateRepInfo}
-    >
-      <Title
-        title={showForSafeWallet ? 'Migrate Rep' : 'Migrate V1 REP'}
-        closeAction={closeModal}
-      />
+    <div className={Styles.MigrateRep}>
+      <Title title={'Migrate REP'} closeAction={closeModal} />
 
       <main>
-        {!inSigningWallet && <h1>You have V1 REP in your trading account</h1>}
-        {inSigningWallet && <h1>You have V1 REP in your wallet</h1>}
+        <h1>You have REP in your wallet</h1>
 
         <h2>
-          Migrate your V1 REP to REPv2 to use it in Augur V2. The quantity of
-          V1 REP shown below will migrate to an equal amount of REPv2. For
-          example 100 V1 REP will migrate to 100 REPv2.
+          Migrate your REP to REPv2 to use it in Augur v2. The quantity of REP
+          shown below will migrate to an equal amount of REPv2. For example 100
+          REP will migrate to 100 REPv2.
           <ExternalLinkButton
             label="Learn more"
             URL={HELP_CENTER_MIGRATE_REP}
           />
-          {inSigningWallet && (
-            <p>
-              After migrating your REP, in order to use it for reporting,
-              disputing or buying participation tokens transfer it to your
-              trading account.
-            </p>
-          )}
         </h2>
 
         {safeWalletContent}
       </main>
-      <ButtonsRow
-        buttons={[
-          {
-            text: showForSafeWallet ? 'Migrate' : 'OK',
-            action: showForSafeWallet
-              ? () => {
-                  closeModal();
-                  approveAndConvertV1ToV2();
-                }
-              : () => closeModal(),
-            disabled:
-              formatRep(loginAccount.balances.legacyRep).fullPrecision < 0,
-          },
-          {
-            text: 'Close',
-            action: closeModal,
-          },
-        ]}
-      />
+      <div className={Styles.ButtonsRow}>
+        {!isApproved && (
+          <ProcessingButton
+            small
+            text={'Approve'}
+            action={() => approveRepV2()}
+            queueName={TRANSACTIONS}
+            queueId={APPROVE}
+            disabled={isApproved}
+          />
+        )}
+
+        {isApproved && (
+          <ProcessingButton
+            small
+            text={'Migrate'}
+            action={() => convertRepV2()}
+            queueName={TRANSACTIONS}
+            queueId={MIGRATE_FROM_LEG_REP_TOKEN}
+            disabled={
+              balances.signerBalances.legacyRep === '0' ||
+              !hasEnoughEthForGas ||
+              !isApproved
+            }
+          />
+        )}
+        <SecondaryButton text={'Cancel'} action={closeModal} />
+      </div>
     </div>
   );
 };

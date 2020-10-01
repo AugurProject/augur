@@ -517,7 +517,7 @@ export const MARKET_FULLY_LOADED = 'MARKET_FULLY_LOADED';
 // # Market Outcome Constants
 export const INVALID_OUTCOME_ID = 0;
 export const INVALID_OUTCOME_COMPARE = 'Invalid';
-export const INVALID_OUTCOME_LABEL = 'Invalid Market';
+export const INVALID_OUTCOME_LABEL = 'Invalid';
 export const YES_NO_NO_ID = 1;
 export const YES_NO_NO_OUTCOME_NAME = 'No';
 export const YES_NO_YES_ID = 2;
@@ -632,6 +632,7 @@ export const MODAL_FINALIZE_MARKET = 'MODAL_FINALIZE_MARKET';
 export const MODAL_DISCARD = 'MODAL_DISCARD';
 export const MODAL_FROZEN_FUNDS = 'MODAL_FROZEN_FUNDS';
 export const DISCLAIMER_SEEN = 'disclaimerSeen';
+export const GAS_INFO_MODAL_SEEN = 'gasInfoSeen';
 export const MARKET_REVIEW_SEEN = 'marketReviewSeen';
 export const MODAL_OPEN_ORDERS = 'MODAL_OPEN_ORDERS';
 export const MODAL_MARKET_LOADING = 'MODAL_MARKET_LOADING';
@@ -708,6 +709,8 @@ export const FAUCET = 'FAUCET';
 export const CLAIMSHARESINUPDATE = 'CLAIMSHARESINUPDATE';
 export const GETFROZENSHAREVALUEINMARKET = 'GETFROZENSHAREVALUEINMARKET';
 export const CREATEMARKET = 'CREATEMARKET';
+export const MIGRATE_FROM_LEG_REP_TOKEN = 'MIGRATEFROMLEGACYREPUTATIONTOKEN';
+export const APPROVE_FROM_LEG_REP_TOKEN = 'APPROVEFROMLEGACYREPUTATIONTOKEN';
 export const CREATECATEGORICALMARKET = 'CREATECATEGORICALMARKET';
 export const CREATESCALARMARKET = 'CREATESCALARMARKET';
 export const CREATEYESNOMARKET = 'CREATEYESNOMARKET';
@@ -746,13 +749,16 @@ export const SENDETHER = 'SEND ETHER';
 export const SENDREPUTATION = 'SENDREPUTATION';
 export const CUSTOM = 'Custom';
 export const PREFILLEDSTAKE = 'PREFILLEDSTAKE';
-export const MIGRATE_FROM_LEG_REP_TOKEN = 'MIGRATEFROMLEGACYREPUTATIONTOKEN';
 export const CREATEAUGURWALLET = 'RUNPERIODICALS';
+export const WITHDRAWALLFUNDSASDAI = 'WITHDRAWALLFUNDSASDAI';
 export const SWAPEXACTTOKENSFORTOKENS = 'SWAPEXACTTOKENSFORTOKENS';
-export const SWAPTOKENSFOREXACTETH = 'SWAPTOKENSFOREXACTETH';
 export const SWAPETHFOREXACTTOKENS = 'SWAPETHFOREXACTTOKENS';
+export const SWAPTOKENSFOREXACTETH = 'SWAPTOKENSFOREXACTETH';
 export const ADDLIQUIDITY = 'ADDLIQUIDITY';
 export const ETH_RESERVE_INCREASE = 'ETH_RESERVE_INCREASE';
+export const SETREFERRER = 'SETREFERRER'
+export const SETAPPROVALFORALL = 'SETAPPROVALFORALL'
+
 // # Orders/Trade Constants
 export const ORDER_BOOK_TABLE = 'ORDER_BOOK_TABLE';
 export const ORDER_BOOK_CHART = 'ORDER_BOOK_CHART';
@@ -1281,7 +1287,7 @@ export const TRADING_TUTORIAL_COPY = {
     subheader: [
       {
         text:
-          "Once an order is partially or completley filled, you'll get a notification in the top right. 'My Fills' are where you can track all filled or partially-filled orders.",
+          "Once an order is partially or completely filled, you'll get a notification in the top right. 'My Fills' are where you can track all filled or partially-filled orders.",
       },
     ],
   },
