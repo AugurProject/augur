@@ -21,6 +21,11 @@ export {
 } from "./amm";
 
 export {
+  createAndSaveParaAugurDeployFinishedEvent,
+  getOrCreateParaShareToken
+} from "./paraDeployer";
+
+export {
   getOrCreateToken,
   getOrCreateShareToken,
   createAndSaveTokenMintedEvent,

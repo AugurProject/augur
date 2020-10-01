@@ -46,3 +46,7 @@ export {
 export {
   handleCashTransfer
 } from "./mappings/cash";
+
+export {
+  handleParaAugurDeployFinished
+} from "./mappings/paraDeployer";

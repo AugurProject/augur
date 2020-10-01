@@ -143,9 +143,10 @@ dataSources:
           handler: handleAddAMMExchange
   - kind: ethereum/contract
     name: ParaDeployer
+    network: {{ ethereum.network }}
     source:
       address: '{{ addresses.ParaDeployer }}'
-      abi: ParaDeployerr
+      abi: ParaDeployer
       startBlock: {{ uploadBlockNumber }}
     mapping:
       kind: ethereum/events
@@ -158,8 +159,8 @@ dataSources:
         - name: ParaDeployer
           file: ./abis/ParaDeployer.json
       eventHandlers:
-        - event: MarketVolumeChanged(indexed address,indexed address,uint256,uint256[],uint256,uint256)
-          handler: handleMarketVolumeChanged
+        - event: ParaAugurDeployFinished(address,address,address,address)
+          handler: handleParaAugurDeployFinished
 
 templates:
   - kind: ethereum/contract
