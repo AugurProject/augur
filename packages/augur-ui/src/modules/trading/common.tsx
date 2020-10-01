@@ -39,7 +39,8 @@ import {
   MODAL_ADD_FUNDS,
   MODAL_CANCEL_ALL_BETS,
   MODAL_SIGNUP,
-  MODAL_LOGIN,, THEMES
+  MODAL_LOGIN,
+  THEMES,
 } from 'modules/common/constants';
 import {
   checkMultipleOfShares,
@@ -115,7 +116,9 @@ export const SportsMarketBets = ({ market }) => {
   }));
   return (
     <div className={Styles.SportsMarketBets}>
-      <h4><TextLabel text={convertToCaps(description)}/></h4>
+      <h4>
+        <TextLabel text={convertToCaps(description)} />
+      </h4>
       <>
         {bets.map(bet => (
           <SportsBet
@@ -145,7 +148,9 @@ export const SportsMarketMyBets = ({ market }) => {
   }));
   return (
     <div className={Styles.SportsMarketBets}>
-      <h4><TextLabel text={convertToCaps(description)}/></h4>
+      <h4>
+        <TextLabel text={convertToCaps(description)} />
+      </h4>
       <>
         {bets.map(bet => (
           <SportsMyBet key={bet.orderId} bet={bet} />
@@ -547,7 +552,9 @@ export const BetslipFooter = () => {
                 icon={Trash}
               />
               <PrimaryButton
-                text={`${!isReview ? 'Place Bet' : 'Confirm Bet'}${betslip.count > 1 ? 's' : ''}`}
+                text={`${!isReview ? 'Place Bet' : 'Confirm Bet'}${
+                  betslip.count > 1 ? 's' : ''
+                }`}
                 disabled={placeBetsDisabled}
                 action={() => {
                   if (!isReview) {
@@ -587,7 +594,12 @@ export const BetslipFooter = () => {
 };
 
 export const SideImages = () => {
-  const { betslipMinimized, isLogged, theme, actions: { setTheme } } = useAppStatusStore();
+  const {
+    betslipMinimized,
+    isLogged,
+    theme,
+    actions: { setTheme },
+  } = useAppStatusStore();
   const Betting = () => {
     if (theme !== THEMES.BETTING) setTheme(THEMES.BETTING);
   };
