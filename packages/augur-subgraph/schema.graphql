@@ -159,7 +159,7 @@ type Market @entity {
   dispute: Dispute
 
   "List of AMM Exchanges for this Market"
-  amms: [AMMExchange!]
+  amms: [AMMExchange!]! @derivedFrom(field: "market")
 }
 
 interface MarketEvent {
@@ -713,8 +713,10 @@ type AMMExchange @entity {
   "The market whose outcomes this AMMExchange will trade"
   market: Market!
 
-  cash: Token!
+  "The collateral type for this exchange"
+  cash: Cash!
 
+  "Balance of Cash on the Exchange"
   cashBalance: BigInt!
 
   "The shareToken to be created, this will specify which para-augur is collateraizing the trading on the AMM"

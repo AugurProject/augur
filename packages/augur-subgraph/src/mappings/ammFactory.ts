@@ -12,13 +12,4 @@ export function handleAddAMMExchange(call: AddAMMCall): void {
 
   // @todo The hardcoded cash will eventually come from the ShareToken pending ShareToken creation event.
   createAndSaveAMMExchange(id, marketId, shareTokenId, '0xDb4FeE45f9D8C9241e8ff42ADe3daa83405C8766');
-
-  let market = Market.load(id);
-  if (market == null) {
-    // Market is in another deploy. Ignore it.
-    return;
-  }
-
-  market.amms.push(id);
-  market.save();
 }
