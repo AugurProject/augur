@@ -34,7 +34,7 @@ import {
   AddIcon,
   LoadingEllipse,
   Trash,
-  AlternateCheckMark
+  AlternateCheckMark, RefreshIcon
 } from 'modules/common/icons';
 import classNames from 'classnames';
 import { getNetworkId, placeTrade } from 'modules/contracts/actions/contractCalls';
@@ -55,6 +55,8 @@ import { formatDai } from 'utils/format-number';
 import { convertToOdds } from 'utils/get-odds';
 import { BET_STATUS } from 'modules/trading/store/constants';
 import { Spinner } from 'modules/common/spinner';
+import ReactTooltip from 'react-tooltip';
+import TooltipStyles from 'modules/common/tooltip.styles.less';
 
 export interface DefaultButtonProps {
   id?: string;
@@ -77,6 +79,7 @@ export interface DefaultButtonProps {
   submitTextButtton?: boolean;
   customConfirmedButtonText?: string;
   className?: string;
+  phantom?: boolean;
 }
 
 export interface SortButtonProps {
@@ -188,6 +191,42 @@ export const PrimaryButton = ({
   </>
 );
 
+export const RefreshButton = ({
+  action,
+  disabled,
+  title,
+  text,
+}: DefaultButtonProps) => (
+  <>
+    <button
+      onClick={e => action(e)}
+      className={classNames(Styles.SecondaryButton,
+        Styles.Small,
+        Styles.Phantom,
+      )}
+      data-tip
+      data-for={'refresh-tooltip'}
+      data-place="top"
+      data-iscapture={true}
+      disabled={disabled}
+      title={title || text}
+    >
+      {RefreshIcon}
+    </button>
+    <ReactTooltip
+      id='refresh-tooltip'
+      className={classNames(TooltipStyles.Tooltip, TooltipStyles.RefreshSort)}
+      effect="solid"
+      place="top"
+      type="dark"
+      event="mouseover mouseenter"
+      eventOff="mouseleave mouseout scroll mousewheel blur"
+    >
+        <p>{'Refresh market sort by'}</p>
+    </ReactTooltip>
+  </>
+);
+
 export const SecondaryButton = ({
   action,
   small,
@@ -199,7 +238,8 @@ export const SecondaryButton = ({
   icon,
   lightBorder,
   tiny,
-  processing
+  processing,
+  phantom,
 }: DefaultButtonProps) => (
   <button
     onClick={e => action(e)}
@@ -207,6 +247,7 @@ export const SecondaryButton = ({
       [Styles.Small]: small,
       [Styles.Confirmed]: confirmed,
       [Styles.Failed]: failed,
+      [Styles.Phantom]: phantom,
       [Styles.LightBorder]: lightBorder,
       [Styles.Tiny]: tiny,
       [Styles.Processing]: processing

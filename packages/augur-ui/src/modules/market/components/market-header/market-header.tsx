@@ -112,8 +112,8 @@ export const MarketHeader = ({
   useEffect(() => {
     let isMounted = true;
     if (showCopied && isMounted) setTimeout(() => {
-      if (isMounted) { 
-        setShowCopied(false); 
+      if (isMounted) {
+        setShowCopied(false);
       }
     }, 4000);
     return () => isMounted = false;
@@ -195,7 +195,7 @@ export const MarketHeader = ({
               {preview ? (
                 <PreviewMarketTitle market={market} />
               ) : (
-                <MarketTitle id={id} noLink headerType={HEADER_TYPE.H1} />
+                <MarketTitle id={id} noLink headerType={HEADER_TYPE.H1} topPadding={true} />
               )}
               {mostLikelyInvalid ? (
                 <div className={Styles.ResolvingInvalid}>

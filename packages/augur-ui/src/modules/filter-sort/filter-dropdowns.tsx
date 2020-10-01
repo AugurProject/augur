@@ -9,6 +9,7 @@ import { SquareDropdown } from 'modules/common/selection';
 import { useAppStatusStore } from 'modules/app/store/app-status';
 import { MARKET_SORT, MARKET_OFFSET } from 'modules/app/store/constants';
 import updateMultipleQueries from 'modules/routes/helpers/update-multiple-queries';
+import { RefreshButton } from 'modules/common/buttons';
 
 const convertSortOptions = (sortOptions) => sortOptions.map(option => {
   return {
@@ -17,10 +18,10 @@ const convertSortOptions = (sortOptions) => sortOptions.map(option => {
   };
 });
 
-export const FilterSearch = () => {
+export const FilterSearch = ({ refresh }) => {
   const {
     filterSortOptions: { sortBy: defaultSort },
-    actions: { updateFilterSortOptions },
+    actions: { updateFilterSortOptions  },
     theme
   } = useAppStatusStore();
   const history = useHistory();
@@ -56,6 +57,7 @@ export const FilterSearch = () => {
         }}
         stretchOutOnMobile
       />
+      <RefreshButton action={refresh} />
     </div>
   );
 };
