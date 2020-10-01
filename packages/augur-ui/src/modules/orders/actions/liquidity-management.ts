@@ -207,11 +207,12 @@ const createZeroXLiquidityOrders = async (
             },
           };
           updateAlert(undefined, alert, false);
-          PendingOrders.actions.updateSuccessfulLiquidity({
+          PendingOrders.actions.updateLiquidityStatus({
             txParamHash: market.transactionHash,
             outcomeId: o.outcomeId,
             type: o.type,
             price: o.price,
+            eventName: TXEventName.Success,
           });
         })
         .catch(err => {

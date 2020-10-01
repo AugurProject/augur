@@ -6,6 +6,7 @@ import {
   PENDING_LIQUIDITY_ORDERS,
 } from 'modules/app/store/constants';
 import { LiquidityOrder } from 'modules/types';
+import { TXEventName } from '@augurproject/sdk-lite';
 
 const {
   UPDATE_PENDING_ORDER,
@@ -19,6 +20,7 @@ const {
   UPDATE_TX_PARAM_HASH_TX_HASH,
   UPDATE_LIQUIDITY_ORDER_STATUS,
   DELETE_SUCCESSFUL_LIQUIDITY_ORDER,
+  DELETE_SUCCESSFUL_LIQUIDITY_ORDERS
 } = PENDING_ORDERS_ACTIONS;
 
 export function PendingOrdersReducer(state, action) {
@@ -45,6 +47,29 @@ export function PendingOrdersReducer(state, action) {
       updatedState[PENDING_LIQUIDITY_ORDERS] = {
         ...updatedState[PENDING_LIQUIDITY_ORDERS],
         [txParamHash]: updatedOrderBook,
+      };
+      break;
+    }
+    case DELETE_SUCCESSFUL_LIQUIDITY_ORDERS: {
+      const pendingLiquidityOrders = updatedState[PENDING_LIQUIDITY_ORDERS];
+      Object.keys(pendingLiquidityOrders).map(marketId => {
+        Object.keys(pendingLiquidityOrders[marketId]).map(outcome => {
+          pendingLiquidityOrders[marketId][outcome].map((order, key) => {
+            if (order.status === TXEventName.Success) {
+              delete pendingLiquidityOrders[marketId][outcome][key];
+            }
+          });
+          if (pendingLiquidityOrders[marketId][outcome].length == 0) {
+            delete pendingLiquidityOrders[marketId][outcome];
+          }
+        });
+        if (Object.keys(pendingLiquidityOrders[marketId]).length == 0) {
+          delete pendingLiquidityOrders[marketId];
+        }
+      });
+      
+      updatedState[PENDING_LIQUIDITY_ORDERS] = {
+        ...pendingLiquidityOrders,
       };
       break;
     }
@@ -244,6 +269,7 @@ export const usePendingOrders = (defaultState = DEFAULT_PENDING_ORDERS) => {
           type: LOAD_PENDING_LIQUIDITY_ORDERS,
           pendingLiquidityOrders,
         }),
+      deleteSuccessfulOrders: () => dispatch({type: DELETE_SUCCESSFUL_LIQUIDITY_ORDERS}),
       clearAllMarketLiquidity: ({ txParamHash }) =>
         dispatch({ type: CLEAR_ALL_MARKET_ORDERS, txParamHash }),
       updateLiquidityHash: ({ txParamHash, txHash }) =>

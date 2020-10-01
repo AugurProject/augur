@@ -560,6 +560,7 @@ export const ModalUnsignedOrders = () => {
   } = useAppStatusStore();
   const {
     pendingLiquidityOrders,
+    actions: {deleteSuccessfulOrders}
   } = usePendingOrdersStore();
   const market = selectMarket(modal.marketId);
   let availableDai = totalTradingBalance();
@@ -648,11 +649,13 @@ export const ModalUnsignedOrders = () => {
         {
           text: 'Close',
           action: () => {
+            deleteSuccessfulOrders();
             closeModal();
           },
         },
       ]}
       closeAction={() => {
+        deleteSuccessfulOrders();
         closeModal();
       }}
     />

@@ -571,6 +571,13 @@ div.Onboarding {
             height: unset;
             background: transparent;
 
+            > div {
+              > button:last-of-type,  
+              > div {
+                min-width: @size-70;
+              }
+            }
+
             > span:first-of-type {
               > span {
                 margin-right: @size-8;
@@ -1653,11 +1660,10 @@ div.ButtonsRow:last-of-type {
       align-items: center;
       background: var(--color-module-background);
       border-top: @size-1 solid var(--color-dark-grey);
-      display: flex;
-      flex-flow: row nowrap;
       height: @size-40;
-      justify-content: space-between;
       padding: @size-12 @size-24;
+      display: grid;
+      grid-template-columns: @size-248 repeat(3,1fr) @size-168;
 
       > span {
         .text-10-medium;
@@ -1669,10 +1675,6 @@ div.ButtonsRow:last-of-type {
 
       > span:first-of-type {
         flex: 0 1 @size-248;
-      }
-
-      > span:last-of-type {
-        flex: 1 0 @size-200;
       }
 
       @media @breakpoint-mobile {
@@ -1708,11 +1710,10 @@ div.ButtonsRow:last-of-type {
         background: var(--color-module-background);
         border-top: @size-1 solid var(--color-dark-grey);
         color: var(--color-primary-text);
-        display: flex;
-        flex-flow: row nowrap;
         height: @size-32;
-        justify-content: space-between;
         padding: @size-8 @size-24;
+        display: grid;
+        grid-template-columns: @size-248 repeat(3,1fr) @size-168;
 
         > span:first-of-type {
           .mono-12-bold;
@@ -1742,7 +1743,6 @@ div.ButtonsRow:last-of-type {
         > div {
           align-items: center;
           display: flex;
-          flex: 1 0 @size-200;
         }
       }
 
