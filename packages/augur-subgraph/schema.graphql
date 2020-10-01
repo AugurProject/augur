@@ -342,10 +342,8 @@ type ShareToken @entity {
 type ParaShareToken @entity {
   id: ID!
 
-  "The share token contract from the core augur deploy "
-  originalShareToken: ShareToken!
-
-  cash: String!
+  "The collateral used for purchasing shares"
+  cash: Cash!
 }
 
 interface TokenEvent {
