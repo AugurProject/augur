@@ -1433,7 +1433,7 @@ export const TopRow = ({ market, categoriesWithClick }) => {
     isTemplate,
     mostLikelyInvalid,
     isWarpSync,
-    sportsBook: { groupType },
+    sportsBook: { groupType, header },
   } = market;
   const isScalar = marketType === SCALAR;
   const isFutures = groupType === SPORTS_GROUP_TYPES.FUTURES;
@@ -1466,7 +1466,7 @@ export const TopRow = ({ market, categoriesWithClick }) => {
           </span>
           <button
             className={Styles.RulesButton}
-            onClick={() => setModal({type: MODAL_MARKET_RULES, description, endTime: endTimeFormatted})}
+            onClick={() => setModal({type: MODAL_MARKET_RULES, description: header, endTime: endTimeFormatted.formattedUtc})}
           >
             {Rules} Rules
           </button>
