@@ -276,7 +276,7 @@ contract AMMExchange is IAMMExchange, ERC20 {
         if (beforeFee == 0) {
             return 0;
         } else {
-            return beforeFee.mul(1000).div(1000 - fee);
+            return beforeFee.mul(1000 - fee).div(1000);
         }
     }
 

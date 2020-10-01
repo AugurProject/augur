@@ -219,6 +219,10 @@ export class Contracts {
     return new ContractInterfaces.Market(this.dependencies, address);
   }
 
+  ammFromAddress(address: string): ContractInterfaces.AMMExchange {
+    return new ContractInterfaces.AMMExchange(this.dependencies, address);
+  }
+
   shareTokenFromAddress(address: string): ContractInterfaces.ShareToken {
     return new ContractInterfaces.ShareToken(this.dependencies, address);
   }
