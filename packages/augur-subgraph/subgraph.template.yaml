@@ -141,6 +141,26 @@ dataSources:
       callHandlers:
         - function: addAMM(address,address)
           handler: handleAddAMMExchange
+  - kind: ethereum/contract
+    name: ParaDeployer
+    source:
+      address: '{{ addresses.ParaDeployer }}'
+      abi: ParaDeployerr
+      startBlock: {{ uploadBlockNumber }}
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.4
+      language: wasm/assemblyscript
+      file: ./src/index.ts
+      entities:
+        - ShareToken
+      abis:
+        - name: ParaDeployer
+          file: ./abis/ParaDeployer.json
+      eventHandlers:
+        - event: MarketVolumeChanged(indexed address,indexed address,uint256,uint256[],uint256,uint256)
+          handler: handleMarketVolumeChanged
+
 templates:
   - kind: ethereum/contract
     name: AMMExchange
