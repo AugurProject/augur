@@ -156,7 +156,6 @@ const AccountView = () => {
                     }
                   />
                   <Transactions />
-                  <TermsAndConditions />
                 </div>
               ) : (
                 <div

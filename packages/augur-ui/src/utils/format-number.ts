@@ -141,7 +141,7 @@ export function formatShares(
   const formattedShares = formatNumber(num, {
     decimals: SHARES_NUMBER_OF_DECIMALS,
     decimalsRounded: SHARES_NUMBER_OF_DECIMALS,
-    denomination: v => `${v} Shares`,
+    denomination: v => `${v}`,
     minimized: false,
     zeroStyled: false,
     blankZero: false,

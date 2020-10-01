@@ -351,3 +351,35 @@ h6 {
     }
   }
 }
+
+.Footer {
+  .text-12;
+
+  display: flex;
+  justify-content: space-between;
+  color: var(--color-secondary-text);
+  border-top: @size-1 solid var(--color-dark-grey);
+
+  > div {
+    display: flex;
+    justify-content: flex-start;
+    padding: @size-12 @size-16;
+
+    > span {
+      color: var(--color-primary-text);
+      margin-left: @size-4;
+    }
+  }
+
+  @media @breakpoint-mobile {
+    > div:last-of-type {
+      display: none;
+    }
+  }
+}
+
+:root[theme="SPORTS"] {
+  .Footer {
+    display: none;
+  }
+}
