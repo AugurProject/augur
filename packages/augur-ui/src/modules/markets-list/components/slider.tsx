@@ -7,7 +7,8 @@ import { useWindowDimensions } from 'utils/use-window-dimensions';
 
 interface SliderButton {
   text: string;
-  link: string;
+  link?: string;
+  action: Function;
   secondary?: boolean;
 }
 
@@ -99,20 +100,15 @@ export const Slider = ({ images }: SliderProps) => {
               const responsiveImage = image[whichBreakpointToChoose(width)];
 
               return noOverlay ? (
-                <a
-                  key={`${text}`}
-                  href={button.link}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
+                <button key={text} onClick={button.action}>
                   <img
                     src={typeof image === 'string' ? image : responsiveImage}
                     alt={altText}
                   />
-                </a>
+                </button>
               ) : (
                 <div
-                  key={`${text}`}
+                  key={text}
                   style={{
                     backgroundImage: `url(${
                       typeof image === 'string' ? image : responsiveImage
@@ -128,15 +124,13 @@ export const Slider = ({ images }: SliderProps) => {
                     <h2>{text}</h2>
                     {button && button.secondary ? (
                       <SecondaryButton
-                        URL={button.link}
                         text={button.text}
-                        action={() => {}}
+                        action={button.action}
                       />
                     ) : (
                       <PrimaryButton
-                        URL={button.link}
                         text={button.text}
-                        action={() => {}}
+                        action={button.action}
                       />
                     )}
                   </div>

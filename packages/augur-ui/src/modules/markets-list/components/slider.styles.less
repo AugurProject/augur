@@ -92,7 +92,9 @@
   }
 
   > a,
-  > a > img {
+  > a > img,
+  > button,
+  > button > img {
     min-width: 100%;
     width: 100%;
     height: 100%;
@@ -102,8 +104,8 @@
 :root[theme='BETTING'],
 :root[theme='SPORTS'] {
   .Slider {
-    > div > div > a > button {
-      color: var(--color-secondary-action);
+    > div > div > button[class*="PrimaryButton"] {
+      color: var(--color-module-background);
     }
 
     > div > div > button[class*="SecondaryButton"] {
