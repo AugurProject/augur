@@ -27,7 +27,7 @@ import {
   runWsServer,
   runWssServer,
 } from '@augurproject/sdk/build/state/WebsocketEndpoint';
-import { printConfig, sanitizeConfig } from '@augurproject/utils';
+import { printConfig, sanitizeConfig, binarySearch } from '@augurproject/utils';
 import { BigNumber } from 'bignumber.js';
 import { spawn, spawnSync } from 'child_process';
 import { ethers } from 'ethers';
@@ -2856,12 +2856,6 @@ export function addScripts(flash: FlashSession) {
       name: 'amm-approve-factory',
       options: [
         {
-          name: 'paraShareToken',
-          abbr: 'p',
-          description: 'Address of ParaShareToken. TODO this just does WETH for now.',
-          required: true,
-        },
-        {
           name: 'amount',
           abbr: 'a',
           description: 'How many atto to approve for. Defaults to 1e48 (1e18 atto = 1 ETH, so that\'s a lot)',
@@ -2869,9 +2863,9 @@ export function addScripts(flash: FlashSession) {
       ],
       async call(this: FlashSession, args: FlashArguments) {
         const user = await this.createUser(this.getAccount(), this.config);
-        const paraShareToken = args.paraShareToken as string;
         const amount = new BigNumber(args.amount as string || 1e48);
 
+        // TODO support more than just weth
         const weth = user.augur.contracts.weth;
         const factory = user.augur.contracts.ammFactory;
         await weth.approve(factory.address, amount);
@@ -2887,17 +2881,11 @@ export function addScripts(flash: FlashSession) {
           description: 'Address of Market.',
           required: true,
         },
-        {
-          name: 'paraShareToken',
-          abbr: 'p',
-          description: 'Address of ParaShareToken.',
-          required: true,
-        }
       ],
       async call(this: FlashSession, args: FlashArguments) {
         const market = args.market as string;
-        const paraShareToken = args.paraShareToken as string;
 
+        const paraShareToken = this.config.paraDeploys[this.config.paraDeploy].addresses.ShareToken;
         const user = await this.createUser(this.getAccount(), this.config);
         const factory = user.augur.contracts.ammFactory;
         const addr = await factory.addAMM_(market, paraShareToken);
@@ -2916,12 +2904,6 @@ export function addScripts(flash: FlashSession) {
           required: true,
         },
         {
-          name: 'paraShareToken',
-          abbr: 'p',
-          description: 'Address of ParaShareToken.',
-          required: true,
-        },
-        {
           name: 'sets',
           abbr: 's',
           description: 'How many sets you will mint then add to the LP. Cost in cash is sets * market.numticks.',
@@ -2932,9 +2914,9 @@ export function addScripts(flash: FlashSession) {
         const user = await this.createUser(this.getAccount(), this.config);
 
         const market = user.augur.contracts.marketFromAddress(args.market as string);
-        const paraShareToken = args.paraShareToken as string;
         const sets = new BigNumber(args.sets as string);
 
+        const paraShareToken = this.config.paraDeploys[this.config.paraDeploy].addresses.ShareToken;
         const factory = user.augur.contracts.ammFactory;
         const addr = await factory.exchanges_(market.address, paraShareToken);
         const amm = user.augur.contracts.ammFromAddress(addr);
@@ -2957,9 +2939,50 @@ export function addScripts(flash: FlashSession) {
           required: true,
         },
         {
-          name: 'paraShareToken',
-          abbr: 'p',
-          description: 'Address of ParaShareToken.',
+          name: 'shares',
+          abbr: 's',
+          description: 'How many atto shares you want.',
+          required: true,
+        },
+        {
+          name: 'yes',
+          abbr: 'y',
+          description: 'Specify if you want to buy Yes shares. Else, you get No shares.',
+          flag: true,
+        },
+      ],
+      async call(this: FlashSession, args: FlashArguments) {
+        const user = await this.createUser(this.getAccount(), this.config);
+
+        const market = user.augur.contracts.marketFromAddress(args.market as string);
+        const shares = new BigNumber(args.shares as string);
+        const yes = Boolean(args.yes);
+
+        const paraShareToken = this.config.paraDeploys[this.config.paraDeploy].addresses.ShareToken;
+        const factory = user.augur.contracts.ammFactory;
+        const addr = await factory.exchanges_(market.address, paraShareToken);
+        const amm = user.augur.contracts.ammFromAddress(addr);
+        const numTicks = await market.getNumTicks_();
+
+        const cash = await binarySearch(
+          shares.times(numTicks),
+          new BigNumber(1),
+          new BigNumber(shares.times(numTicks)),
+          100,
+          (cash) => amm.rateEnterPosition_(cash, yes).then(s => s.times(numTicks))
+        );
+
+        console.log(`Cash needed to get "${shares.toFixed()}" shares: ${cash.toFixed()}`);
+      }
+    });
+
+    flash.addScript({
+      name: 'amm-enter-position',
+      options: [
+        {
+          name: 'market',
+          abbr: 'm',
+          description: 'Address of Market. Used to calculate AMM address.',
           required: true,
         },
         {
@@ -2979,22 +3002,26 @@ export function addScripts(flash: FlashSession) {
         const user = await this.createUser(this.getAccount(), this.config);
 
         const market = user.augur.contracts.marketFromAddress(args.market as string);
-        const paraShareToken = args.paraShareToken as string;
         const shares = new BigNumber(args.shares as string);
         const yes = Boolean(args.yes);
 
+        const paraShareToken = this.config.paraDeploys[this.config.paraDeploy].addresses.ShareToken;
         const factory = user.augur.contracts.ammFactory;
         const addr = await factory.exchanges_(market.address, paraShareToken);
         const amm = user.augur.contracts.ammFromAddress(addr);
+        const numTicks = await market.getNumTicks_();
 
-        const minCash = new BigNumber(1); // 1 atto cash aka much, much less than a penny
-        // can't pay more than you could pay for just minting sets and throwing away the other side
-        const maxCash = shares.times(await market.getNumTicks_());
-        const midCash = minCash.plus(maxCash).idiv(2);
+        const cash = await binarySearch(
+          shares.times(numTicks),
+          new BigNumber(1),
+          new BigNumber(shares.times(numTicks)),
+          100,
+          (cash) => amm.rateEnterPosition_(cash, yes).then(s => s.times(numTicks))
+        );
 
-        const s = await amm.rateEnterPosition_(midCash, yes);
+        const events = await amm.enterPosition(cash, yes, shares);
 
-        console.log(`AMM Exchange ${s.toFixed()}`);
+        console.log(`You paid ${cash.toFixed()} cash for ${shares.toFixed()} ${yes ? 'yes' : 'no'} shares`);
       }
     });
 
