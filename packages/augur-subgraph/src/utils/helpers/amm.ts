@@ -1,5 +1,6 @@
 import { AMMExchange } from "../../../generated/schema";
 import { BigInt } from '@graphprotocol/graph-ts'
+import { getOrCreateCash } from './cash';
 
 export function getOrCreateAMMExchange(
   id: string,
@@ -22,6 +23,10 @@ export function createAndSaveAMMExchange(
   shareToken: string,
   cash: string
 ): AMMExchange {
+  // This just create the entity.
+
+  getOrCreateCash(cash);
+
   let amm = getOrCreateAMMExchange(id);
   amm.market = market;
   amm.shareToken = shareToken;
