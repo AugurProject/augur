@@ -1810,13 +1810,19 @@ div.ButtonsRow:last-of-type {
     color: var(--color-primary-text);
   }
 
-  > ol {
+  > ul {
+    list-style: disc;
+  }
+
+  > ol,
+  > ul {
     margin: 0;
     padding-left: @size-14;
   }
 
   > span:not(:first-of-type),
-  > ol > li {
+  > ol > li,
+  > ul > li {
     .text-14;
 
     color: var(--color-secondary-text);

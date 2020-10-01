@@ -90,6 +90,7 @@ interface SubheaderContent {
   header: string;
   subheaders: Array<string>;
   numbered?: Boolean;
+  bullets?: Boolean;
 }
 
 export interface SubheaderProps {
@@ -370,10 +371,17 @@ export const Subheader = (props: SubheaderProps) => (
         ))}
       </ol>
     )}
-    {!props.subheaderContent.numbered &&
+    {!props.subheaderContent.numbered && !props.subheaderContent.bullets &&
       props.subheaderContent.subheaders.map((subheader, index) => (
         <span key={index}>{subheader}</span>
       ))}
+    {props.subheaderContent.bullets && (
+      <ul>
+        {props.subheaderContent.subheaders.map((subheader, index) => (
+          <li key={index}>{subheader}</li>
+        ))}
+      </ul>
+    )}
   </div>
 );
 

@@ -34,6 +34,7 @@ import {
   MODAL_REPORTING,
   SPORTS_GROUP_TYPES,
   SPORTS_GROUP_MARKET_TYPES,
+  MODAL_MARKET_RULES,
 } from 'modules/common/constants';
 import { convertToOdds, convertToNormalizedPrice } from 'utils/get-odds';
 import { MARKET_LIST_CARD, marketLinkCopied } from 'services/analytics/helpers';
@@ -1418,7 +1419,7 @@ export const TopRow = ({ market, categoriesWithClick }) => {
     const clipboardMarketId = new Clipboard('#copy_marketId');
     const clipboardAuthor = new Clipboard('#copy_author');
   }, [market.id, market.author]);
-  const { theme, isLogged } = useAppStatusStore();
+  const { theme, isLogged, actions: {setModal} } = useAppStatusStore();
   const {
     marketType,
     id,
@@ -1432,7 +1433,7 @@ export const TopRow = ({ market, categoriesWithClick }) => {
     isTemplate,
     mostLikelyInvalid,
     isWarpSync,
-    sportsBook: { groupType },
+    sportsBook: { groupType, header },
   } = market;
   const isScalar = marketType === SCALAR;
   const isFutures = groupType === SPORTS_GROUP_TYPES.FUTURES;
@@ -1465,7 +1466,7 @@ export const TopRow = ({ market, categoriesWithClick }) => {
           </span>
           <button
             className={Styles.RulesButton}
-            onClick={() => console.log('pop up a rules modal')}
+            onClick={() => setModal({type: MODAL_MARKET_RULES, description: header, endTime: endTimeFormatted.formattedUtc})}
           >
             {Rules} Rules
           </button>
