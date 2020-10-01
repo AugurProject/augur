@@ -38,15 +38,15 @@
     width: 100%;
     display: flex;
     flex-direction: column;
-    align-items: center;
+    align-items: flex-start;
     justify-content: center;
     color: var(--color-secondary-action);
-    padding: 0 @size-32;
+    padding: 0 @size-64;
 
     > h2 {
       .text-30-bold;
 
-      text-align: center;
+      text-align: left;
       margin-bottom: @size-24;
       white-space: pre-wrap;
 
@@ -92,7 +92,9 @@
   }
 
   > a,
-  > a > img {
+  > a > img,
+  > button,
+  > button > img {
     min-width: 100%;
     width: 100%;
     height: 100%;
@@ -102,8 +104,14 @@
 :root[theme='BETTING'],
 :root[theme='SPORTS'] {
   .Slider {
-    > div > div > a > button {
-      color: var(--color-secondary-action);
+    > div > div > button[class*="PrimaryButton"] {
+      color: var(--color-module-background);
+    }
+
+    > div > div > button[class*="SecondaryButton"] {
+      background: transparent;
+      border: @size-1 solid var(--color-module-background);
+      color: var(--color-module-background);
     }
   }
 }

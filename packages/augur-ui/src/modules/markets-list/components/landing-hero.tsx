@@ -5,19 +5,16 @@ import { ExternalLinkButton, PrimaryButton } from 'modules/common/buttons';
 import { MODAL_SIGNUP, THEMES } from 'modules/common/constants';
 import { useAppStatusStore } from 'modules/app/store/app-status';
 import { Slider } from 'modules/markets-list/components/slider';
-import Image2Mobile from '../../../assets/images/banner-2-1011x741.png';
-import Image2Tablet from '../../../assets/images/banner-2-1486x494.png';
-import Image2Medium from '../../../assets/images/banner-2-1522x456.png';
-import Image2Big from '../../../assets/images/banner-2-1920x456.png';
 import Image3Mobile from '../../../assets/images/banner-3-1011x741.png';
 import Image3Tablet from '../../../assets/images/banner-3-1486x494.png';
 import Image3Medium from '../../../assets/images/banner-3-1522x456.png';
 import Image3Big from '../../../assets/images/banner-3-1920x456.png';
 import SportsbookBanner from 'assets/images/sportsbook-banner.png';
 import ImageDesktop from '../../../assets/images/banner-desktop-1920x456.png';
+import AmericanFootball from '../../../assets/images/american-football.png';
 import noop from 'utils/noop';
 
-const images = [
+const imagesBase = [
   {
     alignment: 'center',
     noOverlay: false,
@@ -30,26 +27,27 @@ const images = [
     text: 'No Limits. Lower Fees.\nBet on anything you want.',
     button: {
       text: 'Sign up to start betting',
-      link: 'https://dev.augur.net/',
-    },
-  },
-  {
-    alignment: 'center',
-    noOverlay: true,
-    image: {
-      mobile: Image2Mobile,
-      tablet: Image2Tablet,
-      medium: Image2Medium,
-      big: Image2Big,
-    },
-    text: 'No Limits. Lower Fees.\nBet on anything you want. 2',
-    button: {
-      text: 'Sign up to start betting',
-      link: 'https://dev.augur.net/',
+      action: noop,
     },
   },
   {
     alignment: 'right',
+    noOverlay: false,
+    image: {
+      mobile: AmericanFootball,
+      tablet: AmericanFootball,
+      medium: AmericanFootball,
+      big: AmericanFootball,
+    },
+    text: '+1000\nMarkets',
+    button: {
+      text: 'Explore Betting Exchange',
+      secondary: true,
+      action: noop,
+    },
+  },
+  {
+    alignment: 'center',
     noOverlay: true,
     image: {
       mobile: Image3Mobile,
@@ -57,10 +55,10 @@ const images = [
       medium: Image3Medium,
       big: Image3Big,
     },
-    text: 'No Limits. Lower Fees.\nBet on anything you want. 3',
+    text: '',
     button: {
-      text: 'Sign up to start betting',
-      link: 'https://dev.augur.net/',
+      text: 'Trade Now',
+      action: noop,
     },
   },
 ];
@@ -68,9 +66,18 @@ const images = [
 export const LandingHero = () => {
   const {
     theme,
-    actions: { setModal },
+    actions: { setModal, setTheme },
   } = useAppStatusStore();
-
+  const images = imagesBase;
+  const isTrading = theme === THEMES.TRADING;
+  const signup = () => setModal({ type: MODAL_SIGNUP });
+  images[0].button.action = signup;
+  images[1].button.action = () => {
+    if (theme !== THEMES.BETTING) setTheme(THEMES.BETTING);
+  };
+  images[2].button.action = () => {
+    if (!isTrading) setTheme(THEMES.TRADING);
+  };
   return (
     <>
       {theme === THEMES.TRADING ? (
@@ -87,7 +94,7 @@ export const LandingHero = () => {
             <div>
               <PrimaryButton
                 text="Sign up to start trading"
-                action={() => setModal({ type: MODAL_SIGNUP })}
+                action={signup}
               />
               <ExternalLinkButton
                 light
@@ -113,9 +120,8 @@ export const LandingHero = () => {
             </h2>
             {images[0].button && (
               <PrimaryButton
-                URL="https://dev.augur.net/"
                 text="Sign up to start betting"
-                action={noop}
+                action={signup}
               />
             )}
           </div>

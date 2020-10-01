@@ -109,7 +109,9 @@ export const getShares = (wager, price) => {
 
 export const getOddsObject = (normalizedValue: BigNumber, toDecimals = 4) => {
   const percentage: BigNumber = convertToPercentage(
-    createBigNumber(normalizedValue)
+    createBigNumber(
+      normalizedValue.gt(1) ? normalizedValue.dividedBy(10) : normalizedValue
+    )
   );
   const decimal: BigNumber = convertToDecimal(percentage);
   const fractional: BigNumber = convertToFractional(decimal);
@@ -128,7 +130,10 @@ export const getOddsObject = (normalizedValue: BigNumber, toDecimals = 4) => {
 export const convertOddsToPrice = (odds: string) => {
   const { oddsType } = AppStatus.get();
   let result = null;
-  const cleanOdds = odds.replace(',', '').replace('%', '').trim();
+  const cleanOdds = odds
+    .replace(',', '')
+    .replace('%', '')
+    .trim();
   switch (oddsType) {
     case DECIMAL: {
       result = convertPercentToNormalizedPrice(
@@ -158,9 +163,7 @@ export const convertOddsToPrice = (odds: string) => {
       break;
     }
     case PERCENT: {
-      result = convertPercentToNormalizedPrice(
-        createBigNumber(cleanOdds)
-      );
+      result = convertPercentToNormalizedPrice(createBigNumber(cleanOdds));
       break;
     }
     default:

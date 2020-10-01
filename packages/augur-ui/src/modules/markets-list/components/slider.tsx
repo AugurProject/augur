@@ -2,12 +2,14 @@ import React, { useState } from 'react';
 import Styles from 'modules/markets-list/components/slider.styles.less';
 import { LeftArrow, RightArrow } from 'modules/common/icons';
 import classNames from 'classnames';
-import { PrimaryButton } from 'modules/common/buttons';
+import { PrimaryButton, SecondaryButton } from 'modules/common/buttons';
 import { useWindowDimensions } from 'utils/use-window-dimensions';
 
 interface SliderButton {
   text: string;
-  link: string;
+  link?: string;
+  action: Function;
+  secondary?: boolean;
 }
 
 interface SliderImage {
@@ -76,7 +78,7 @@ export const Slider = ({ images }: SliderProps) => {
     setActiveSlide(activeSlide + 1);
   };
 
-  const whichBreakpointToChoose = (width) => {
+  const whichBreakpointToChoose = width => {
     if (width <= 767) return 'mobile';
     if (width > 767 && width <= 1023) return 'tablet';
     if (width > 1024 && width <= 1199) return 'medium';
@@ -98,24 +100,18 @@ export const Slider = ({ images }: SliderProps) => {
               const responsiveImage = image[whichBreakpointToChoose(width)];
 
               return noOverlay ? (
-                <a key={`${text}`} href={button.link} target="_blank" rel="noopener noreferrer">
+                <button key={text} onClick={button.action}>
                   <img
-                    src={
-                      typeof image === 'string'
-                        ? image
-                        : responsiveImage
-                    }
+                    src={typeof image === 'string' ? image : responsiveImage}
                     alt={altText}
                   />
-                </a>
+                </button>
               ) : (
                 <div
-                  key={`${text}`}
+                  key={text}
                   style={{
                     backgroundImage: `url(${
-                      typeof image === 'string'
-                        ? image
-                        : responsiveImage
+                      typeof image === 'string' ? image : responsiveImage
                     })`,
                   }}
                 >
@@ -126,11 +122,15 @@ export const Slider = ({ images }: SliderProps) => {
                     })}
                   >
                     <h2>{text}</h2>
-                    {button && (
-                      <PrimaryButton
-                        URL={button.link}
+                    {button && button.secondary ? (
+                      <SecondaryButton
                         text={button.text}
-                        action={() => {}}
+                        action={button.action}
+                      />
+                    ) : (
+                      <PrimaryButton
+                        text={button.text}
+                        action={button.action}
                       />
                     )}
                   </div>

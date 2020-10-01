@@ -193,6 +193,11 @@
 .LandingHeroSlider {
   margin-top: @size-32;
 
+  @media @breakpoint-mobile-tablet {
+    margin-bottom: @size-32;
+    margin-top: 0;
+  }
+
   > div:first-of-type {
     display: block;
   }
@@ -210,8 +215,9 @@
       border-radius: @border-radius-rounded;
       display: flex;
       flex-flow: column nowrap;
-      align-items: center;
+      align-items: flex-start;
       justify-content: center;
+      padding: 0 @size-62;
       height: 228px;
       width: 100%;
       background-size: cover;
@@ -225,6 +231,36 @@
 
         color: var(--color-module-background);
         margin-bottom: @size-24;
+        text-align: left;
+      }
+    }
+  }
+
+  @media @breakpoint-mobile {
+    > div:first-of-type {
+      display: none;
+    }
+
+    > div:nth-of-type(2) {
+      border-radius: @border-radius-rounded;
+      display: flex;
+      flex-flow: column nowrap;
+      align-items: center;
+      justify-content: center;
+      padding: 0;
+      height: 228px;
+      width: 100%;
+      background-size: cover;
+      background-position: center center;
+      background-repeat: no-repeat;
+
+      .SliderInfoOverlay;
+
+      > h2 {
+        .text-20-bold;
+
+        color: var(--color-module-background);
+        margin-bottom: @size-24;
         text-align: center;
       }
     }
@@ -234,6 +270,11 @@
 :root[theme='BETTING'],
 :root[theme='SPORTS'] {
   .LandingHeroSlider {
+
+    > div > button[class*="PrimaryButton"] {
+      color: var(--color-module-background);
+    }
+
     > div > a > button {
       color: var(--color-secondary-action);
     }
