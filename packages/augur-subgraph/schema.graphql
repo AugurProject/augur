@@ -727,5 +727,5 @@ type AMMExchange @entity {
 type ParaAugurDeployFinishedEvent @entity {
   id: ID!
 
-  shareToken: ShareToken!
+  shareToken: ParaShareToken!
 }
