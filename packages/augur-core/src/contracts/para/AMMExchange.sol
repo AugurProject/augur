@@ -14,6 +14,11 @@ contract AMMExchange is IAMMExchange, ERC20 {
     using SafeMathUint256 for uint256;
 	using SafeMathInt256 for int256;
 
+    event EnterPosition(address sender, uint256 cash, uint256 outputShares, bool buyYes);
+    event ExitPosition(address sender, uint256 invalidShares, uint256 noShares, uint256 yesShares, uint256 cashPayout);
+    event SwapPosition(address sender, uint256 inputShares, uint256 outputShares, bool inputYes);
+
+
     function initialize(IMarket _market, IParaShareToken _shareToken, uint256 _fee) public {
         require(cash == ICash(0)); // can only initialize once
         require(_fee <= 1000); // fee must be [0,1000]
@@ -151,6 +156,8 @@ contract AMMExchange is IAMMExchange, ERC20 {
             shareTransfer(address(this), msg.sender, _setsToBuy, _sharesToBuy, 0);
         }
 
+        emit EnterPosition(msg.sender, _cashCost, _sharesToBuy, _buyYes);
+
         return _sharesToBuy;
     }
 
@@ -194,6 +201,8 @@ contract AMMExchange is IAMMExchange, ERC20 {
 
         shareTransfer(msg.sender, address(this), _invalidFromUser, uint256(_noFromUser), uint256(_yesFromUser));
         cash.transfer(msg.sender, _cashPayout);
+
+        emit ExitPosition(msg.sender, _invalidShares, _noShares, _yesShares, _cashPayout);
         return _cashPayout;
     }
 
@@ -253,6 +262,8 @@ contract AMMExchange is IAMMExchange, ERC20 {
             shareToken.unsafeTransferFrom(address(this), msg.sender, YES, _outputShares);
             shareToken.unsafeTransferFrom(msg.sender, address(this), NO, _inputShares);
         }
+
+        emit SwapPosition(msg.sender, _inputShares, _outputShares, _inputYes);
 
         return _outputShares;
     }
