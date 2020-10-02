@@ -19,13 +19,15 @@ import 'ROOT/para/deployerFactories/interfaces/ISimulateTradeFactory.sol';
 import 'ROOT/para/deployerFactories/interfaces/ITradeFactory.sol';
 import 'ROOT/para/deployerFactories/interfaces/IZeroXTradeFactory.sol';
 import 'ROOT/libraries/Ownable.sol';
+import "ROOT/trading/ITrade.sol";
 
 interface ITradingInitializable {
     function initialize(IParaAugur, IParaAugurTrading) external;
 }
 
-
 contract ParaDeployer is Ownable {
+    event ParaAugurDeployFinished(IParaAugur paraAugur, IParaShareToken shareToken, ICash cash, IOINexus OINexus);
+    event ParaAugurTradingDeployed(IParaAugurTrading paraAugur, ICash cash);
 
     enum DeployProgress {
         NOT_ALLOWED,
@@ -134,6 +136,12 @@ contract ParaDeployer is Ownable {
             createGenesisUniverse(_token);
         }
         paraDeployProgress[_token] = DeployProgress(uint256(_tokenProgress) + 1);
+
+        if(paraDeployProgress[_token] == DeployProgress.FINISHED) {
+            IParaAugur _paraAugur =  paraAugurs[_token];
+            emit ParaAugurDeployFinished(_paraAugur, _paraAugur.shareToken(), _paraAugur.cash(), _paraAugur.OINexus());
+        }
+
         return true;
     }
 
@@ -146,7 +154,7 @@ contract ParaDeployer is Ownable {
         _paraAugur.registerContract("ParaOICash", OICash);
         _paraAugur.registerContract("OINexus", address(OINexus));
         _paraAugur.registerContract("Cash", _token);
-        OINexus.addParaAugur(paraAugurs[_token]);
+        OINexus.addParaAugur(address(paraAugurs[_token]));
     }
 
     function deployParaShareToken(address _token) private {
@@ -164,6 +172,8 @@ contract ParaDeployer is Ownable {
         paraAugurTradings[_token] = _paraAugurTrading;
         _paraAugurTrading.registerContract("ZeroXExchange", zeroXExchange);
         _paraAugurTrading.registerContract("WETH9", WETH9);
+
+        emit ParaAugurTradingDeployed(_paraAugurTrading, ICash(_token));
     }
 
     function deployCreateOrder(address _token) private {
@@ -210,7 +220,7 @@ contract ParaDeployer is Ownable {
         IParaAugur _paraAugur = paraAugurs[_token];
         IParaAugurTrading _paraAugurTrading = paraAugurTradings[_token];
         address _originalShareToken = augur.lookup("ShareToken");
-        IParaShareToken(_paraAugur.lookup("ShareToken")).initialize(_paraAugur, _originalShareToken);
+        IParaShareToken(_paraAugur.lookup("ShareToken")).initialize(address(_paraAugur), _originalShareToken);
         IRepOracle(_paraAugur.lookup("ParaRepOracle")).initialize(IAugur(address(_paraAugur)));
         ITradingInitializable(_paraAugurTrading.lookup("CreateOrder")).initialize(_paraAugur, _paraAugurTrading);
         ITradingInitializable(_paraAugurTrading.lookup("CancelOrder")).initialize(_paraAugur, _paraAugurTrading);

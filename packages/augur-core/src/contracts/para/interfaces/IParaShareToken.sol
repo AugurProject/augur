@@ -1,13 +1,12 @@
 pragma solidity 0.5.15;
 
 import 'ROOT/para/interfaces/IParaUniverse.sol';
-import 'ROOT/para/interfaces/IParaAugur.sol';
 import 'ROOT/ICash.sol';
 
 interface IParaShareToken {
     function cash() external view returns (ICash);
     function augur() external view returns (address);
-    function initialize(IParaAugur _augur, address _originalShareToken) external;
+    function initialize(address _augur, address _originalShareToken) external;
     function approveUniverse(IParaUniverse _paraUniverse) external;
     function buyCompleteSets(IMarket _market, address _account, uint256 _amount) external returns (bool);
     function publicSellCompleteSets(IMarket _market, uint256 _amount) external returns (uint256 _creatorFee, uint256 _reportingFee);

@@ -147,6 +147,9 @@ export const eventDescriptions: { [signatureHash: string]: EventDescription } = 
 	'0x2f2ba0bf4c9bedc2210a4da5b5811c2a4fd28e62c51bb90c3ea6fdce00808eb0': {"name":"StakePenalized","signature":"StakePenalized(address,address,uint256)","signatureHash":"0x2f2ba0bf4c9bedc2210a4da5b5811c2a4fd28e62c51bb90c3ea6fdce00808eb0","parameters":[{"indexed":true,"internalType":"address","name":"relayManager","type":"address"},{"indexed":true,"internalType":"address","name":"beneficiary","type":"address"},{"indexed":false,"internalType":"uint256","name":"reward","type":"uint256"}]},
 	'0x9ffc6168de1eb7f1d16200f614753cd7edce5a2186aab1c612199dd7316cd7c4': {"name":"StakeUnlocked","signature":"StakeUnlocked(address,address,uint256)","signatureHash":"0x9ffc6168de1eb7f1d16200f614753cd7edce5a2186aab1c612199dd7316cd7c4","parameters":[{"indexed":true,"internalType":"address","name":"relayManager","type":"address"},{"indexed":true,"internalType":"address","name":"owner","type":"address"},{"indexed":false,"internalType":"uint256","name":"withdrawBlock","type":"uint256"}]},
 	'0xb7c918e0e249f999e965cafeb6c664271b3f4317d296461500e71da39f0cbda3': {"name":"StakeWithdrawn","signature":"StakeWithdrawn(address,address,uint256)","signatureHash":"0xb7c918e0e249f999e965cafeb6c664271b3f4317d296461500e71da39f0cbda3","parameters":[{"indexed":true,"internalType":"address","name":"relayManager","type":"address"},{"indexed":true,"internalType":"address","name":"owner","type":"address"},{"indexed":false,"internalType":"uint256","name":"amount","type":"uint256"}]},
+	'0x1eb65d4391a619035fdd11356179bcb36097abd0c8545b9d2184cf205eff2c72': {"name":"EnterPosition","signature":"EnterPosition(address,uint256,uint256,bool)","signatureHash":"0x1eb65d4391a619035fdd11356179bcb36097abd0c8545b9d2184cf205eff2c72","parameters":[{"indexed":false,"internalType":"address","name":"sender","type":"address"},{"indexed":false,"internalType":"uint256","name":"cash","type":"uint256"},{"indexed":false,"internalType":"uint256","name":"outputShares","type":"uint256"},{"indexed":false,"internalType":"bool","name":"buyYes","type":"bool"}]},
+	'0xbfa7eff06f2d1a600b7725cb2b5f436cdbc004219e1da9652a55f84ae41c1998': {"name":"ExitPosition","signature":"ExitPosition(address,uint256,uint256,uint256,uint256)","signatureHash":"0xbfa7eff06f2d1a600b7725cb2b5f436cdbc004219e1da9652a55f84ae41c1998","parameters":[{"indexed":false,"internalType":"address","name":"sender","type":"address"},{"indexed":false,"internalType":"uint256","name":"invalidShares","type":"uint256"},{"indexed":false,"internalType":"uint256","name":"noShares","type":"uint256"},{"indexed":false,"internalType":"uint256","name":"yesShares","type":"uint256"},{"indexed":false,"internalType":"uint256","name":"cashPayout","type":"uint256"}]},
+	'0xb6c699f6b5288bc206eaee35c3e0fe3ffa35ef715f8ebbaa9d0157df3f57c31a': {"name":"SwapPosition","signature":"SwapPosition(address,uint256,uint256,bool)","signatureHash":"0xb6c699f6b5288bc206eaee35c3e0fe3ffa35ef715f8ebbaa9d0157df3f57c31a","parameters":[{"indexed":false,"internalType":"address","name":"sender","type":"address"},{"indexed":false,"internalType":"uint256","name":"inputShares","type":"uint256"},{"indexed":false,"internalType":"uint256","name":"outputShares","type":"uint256"},{"indexed":false,"internalType":"bool","name":"inputYes","type":"bool"}]},
 	'0xcf387c24607bb8f2113f15487a6be6a6ea89f7359d98d64f32407a168fa24576': {"name":"CompleteSetsPurchased","signature":"CompleteSetsPurchased(address,address,address,uint256,uint256,address)","signatureHash":"0xcf387c24607bb8f2113f15487a6be6a6ea89f7359d98d64f32407a168fa24576","parameters":[{"indexed":true,"internalType":"address","name":"universe","type":"address"},{"indexed":true,"internalType":"address","name":"market","type":"address"},{"indexed":true,"internalType":"address","name":"account","type":"address"},{"indexed":false,"internalType":"uint256","name":"numCompleteSets","type":"uint256"},{"indexed":false,"internalType":"uint256","name":"timestamp","type":"uint256"},{"indexed":false,"internalType":"address","name":"para","type":"address"}]},
 	'0xd57f8e2a65dd0df631b96ef9fb08bf2229810ea2e516fbe9ae2b8c47e443cab0': {"name":"CompleteSetsSold","signature":"CompleteSetsSold(address,address,address,uint256,uint256,uint256,address)","signatureHash":"0xd57f8e2a65dd0df631b96ef9fb08bf2229810ea2e516fbe9ae2b8c47e443cab0","parameters":[{"indexed":true,"internalType":"address","name":"universe","type":"address"},{"indexed":true,"internalType":"address","name":"market","type":"address"},{"indexed":true,"internalType":"address","name":"account","type":"address"},{"indexed":false,"internalType":"uint256","name":"numCompleteSets","type":"uint256"},{"indexed":false,"internalType":"uint256","name":"fees","type":"uint256"},{"indexed":false,"internalType":"uint256","name":"timestamp","type":"uint256"},{"indexed":false,"internalType":"address","name":"para","type":"address"}]},
 	'0xfaf7daaabe2362e28acbff4bb45e861181a99e7b446e46aaea82a5d0b16884ea': {"name":"MarketOIChanged","signature":"MarketOIChanged(address,address,uint256,address)","signatureHash":"0xfaf7daaabe2362e28acbff4bb45e861181a99e7b446e46aaea82a5d0b16884ea","parameters":[{"indexed":true,"internalType":"address","name":"universe","type":"address"},{"indexed":true,"internalType":"address","name":"market","type":"address"},{"indexed":false,"internalType":"uint256","name":"marketOI","type":"uint256"},{"indexed":false,"internalType":"address","name":"para","type":"address"}]},
@@ -157,6 +160,8 @@ export const eventDescriptions: { [signatureHash: string]: EventDescription } = 
 	'0x9afb43b78634e91575d6d588574012613edd79fd4228b5b4b257963c46875b83': {"name":"MarketVolumeChanged","signature":"MarketVolumeChanged(address,address,uint256,uint256[],uint256,uint256,address)","signatureHash":"0x9afb43b78634e91575d6d588574012613edd79fd4228b5b4b257963c46875b83","parameters":[{"indexed":true,"internalType":"address","name":"universe","type":"address"},{"indexed":true,"internalType":"address","name":"market","type":"address"},{"indexed":false,"internalType":"uint256","name":"volume","type":"uint256"},{"indexed":false,"internalType":"uint256[]","name":"outcomeVolumes","type":"uint256[]"},{"indexed":false,"internalType":"uint256","name":"totalTrades","type":"uint256"},{"indexed":false,"internalType":"uint256","name":"timestamp","type":"uint256"},{"indexed":false,"internalType":"address","name":"para","type":"address"}]},
 	'0xf1eb4f858f627233c00b82dd8dd3024ed7f2a30d50ab4104632ccad4dc5c8e9a': {"name":"OrderEvent","signature":"OrderEvent(address,address,uint8,uint8,bytes32,bytes32,address[],uint256[],address)","signatureHash":"0xf1eb4f858f627233c00b82dd8dd3024ed7f2a30d50ab4104632ccad4dc5c8e9a","parameters":[{"indexed":true,"internalType":"address","name":"universe","type":"address"},{"indexed":true,"internalType":"address","name":"market","type":"address"},{"indexed":true,"internalType":"enum ParaAugurTrading.OrderEventType","name":"eventType","type":"uint8"},{"indexed":false,"internalType":"uint8","name":"orderType","type":"uint8"},{"indexed":false,"internalType":"bytes32","name":"orderId","type":"bytes32"},{"indexed":false,"internalType":"bytes32","name":"tradeGroupId","type":"bytes32"},{"indexed":false,"internalType":"address[]","name":"addressData","type":"address[]"},{"indexed":false,"internalType":"uint256[]","name":"uint256Data","type":"uint256[]"},{"indexed":false,"internalType":"address","name":"para","type":"address"}]},
 	'0xf3b306d0de9c04a6f95bff7d1c7eaf3b82e92c9d3797f331729e07dc704d5755': {"name":"ProfitLossChanged","signature":"ProfitLossChanged(address,address,address,uint256,int256,uint256,int256,int256,int256,uint256,address)","signatureHash":"0xf3b306d0de9c04a6f95bff7d1c7eaf3b82e92c9d3797f331729e07dc704d5755","parameters":[{"indexed":true,"internalType":"address","name":"universe","type":"address"},{"indexed":true,"internalType":"address","name":"market","type":"address"},{"indexed":true,"internalType":"address","name":"account","type":"address"},{"indexed":false,"internalType":"uint256","name":"outcome","type":"uint256"},{"indexed":false,"internalType":"int256","name":"netPosition","type":"int256"},{"indexed":false,"internalType":"uint256","name":"avgPrice","type":"uint256"},{"indexed":false,"internalType":"int256","name":"realizedProfit","type":"int256"},{"indexed":false,"internalType":"int256","name":"frozenFunds","type":"int256"},{"indexed":false,"internalType":"int256","name":"realizedCost","type":"int256"},{"indexed":false,"internalType":"uint256","name":"timestamp","type":"uint256"},{"indexed":false,"internalType":"address","name":"para","type":"address"}]},
+	'0x8401b2b4e19be1cbdadc2909538746deecc4aae352793944d00dde541b52b9b1': {"name":"ParaAugurDeployFinished","signature":"ParaAugurDeployFinished(address,address,address,address)","signatureHash":"0x8401b2b4e19be1cbdadc2909538746deecc4aae352793944d00dde541b52b9b1","parameters":[{"indexed":false,"internalType":"contract IParaAugur","name":"paraAugur","type":"address"},{"indexed":false,"internalType":"contract IParaShareToken","name":"shareToken","type":"address"},{"indexed":false,"internalType":"contract ICash","name":"cash","type":"address"},{"indexed":false,"internalType":"contract IOINexus","name":"OINexus","type":"address"}]},
+	'0x8661db3c862df3c00daeb231cf978fbc419cf87273025c083336b5751f1506d2': {"name":"ParaAugurTradingDeployed","signature":"ParaAugurTradingDeployed(address,address)","signatureHash":"0x8661db3c862df3c00daeb231cf978fbc419cf87273025c083336b5751f1506d2","parameters":[{"indexed":false,"internalType":"contract IParaAugurTrading","name":"paraAugur","type":"address"},{"indexed":false,"internalType":"contract ICash","name":"cash","type":"address"}]},
 	'0x17307eab39ab6107e8899845ad3d59bd9653f200f220920489ca2b5937696c31': {"name":"ApprovalForAll","signature":"ApprovalForAll(address,address,bool)","signatureHash":"0x17307eab39ab6107e8899845ad3d59bd9653f200f220920489ca2b5937696c31","parameters":[{"indexed":true,"internalType":"address","name":"owner","type":"address"},{"indexed":true,"internalType":"address","name":"operator","type":"address"},{"indexed":false,"internalType":"bool","name":"approved","type":"bool"}]},
 	'0x4a39dc06d4c0dbc64b70af90fd698a233a518aa5d07e595d983b8c0526c8f7fb': {"name":"TransferBatch","signature":"TransferBatch(address,address,address,uint256[],uint256[])","signatureHash":"0x4a39dc06d4c0dbc64b70af90fd698a233a518aa5d07e595d983b8c0526c8f7fb","parameters":[{"indexed":true,"internalType":"address","name":"operator","type":"address"},{"indexed":true,"internalType":"address","name":"from","type":"address"},{"indexed":true,"internalType":"address","name":"to","type":"address"},{"indexed":false,"internalType":"uint256[]","name":"ids","type":"uint256[]"},{"indexed":false,"internalType":"uint256[]","name":"values","type":"uint256[]"}]},
 	'0xc3d58168c5ae7397731d063d5bbf3d657854427343f4c083240f7aacaa2d0f62': {"name":"TransferSingle","signature":"TransferSingle(address,address,address,uint256,uint256)","signatureHash":"0xc3d58168c5ae7397731d063d5bbf3d657854427343f4c083240f7aacaa2d0f62","parameters":[{"indexed":true,"internalType":"address","name":"operator","type":"address"},{"indexed":true,"internalType":"address","name":"from","type":"address"},{"indexed":true,"internalType":"address","name":"to","type":"address"},{"indexed":false,"internalType":"uint256","name":"id","type":"uint256"},{"indexed":false,"internalType":"uint256","name":"value","type":"uint256"}]},
@@ -8021,6 +8026,13 @@ export class AMMExchange<TBigNumber> extends Contract<TBigNumber> {
 		return <TBigNumber>result[0]
 	}
 
+	public factory_ = async (options?: { sender?: string }): Promise<string> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":true,"inputs":[],"name":"factory","outputs":[{"internalType":"contract IAMMFactory","name":"","type":"address"}],"payable":false,"stateMutability":"view","type":"function"}
+		const result = await this.localCall(abi, [], options.sender)
+		return <string>result[0]
+	}
+
 	public fee_ = async (options?: { sender?: string }): Promise<TBigNumber> => {
 		options = options || {}
 		const abi: AbiFunction = {"constant":true,"inputs":[],"name":"fee","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"}
@@ -8227,19 +8239,19 @@ export class AMMFactory<TBigNumber> extends Contract<TBigNumber> {
 
 	public addAMM = async (market: string, para: string, options?: { sender?: string }): Promise<Array<Event>> => {
 		options = options || {}
-		const abi: AbiFunction = {"constant":false,"inputs":[{"internalType":"contract IMarket","name":"_market","type":"address"},{"internalType":"contract IParaShareToken","name":"_para","type":"address"}],"name":"addAMM","outputs":[{"internalType":"contract AMMExchange","name":"","type":"address"}],"payable":false,"stateMutability":"nonpayable","type":"function"}
+		const abi: AbiFunction = {"constant":false,"inputs":[{"internalType":"contract IMarket","name":"_market","type":"address"},{"internalType":"contract IParaShareToken","name":"_para","type":"address"}],"name":"addAMM","outputs":[{"internalType":"address","name":"","type":"address"}],"payable":false,"stateMutability":"nonpayable","type":"function"}
 		return await this.remoteCall(abi, [market, para], 'addAMM', options.sender)
 	}
 	
 	public addAMM_estimateGas = async (market: string, para: string, options?: { sender?: string }): Promise<TBigNumber> => {
 		options = options || {}
-		const abi: AbiFunction = {"constant":false,"inputs":[{"internalType":"contract IMarket","name":"_market","type":"address"},{"internalType":"contract IParaShareToken","name":"_para","type":"address"}],"name":"addAMM","outputs":[{"internalType":"contract AMMExchange","name":"","type":"address"}],"payable":false,"stateMutability":"nonpayable","type":"function"}
+		const abi: AbiFunction = {"constant":false,"inputs":[{"internalType":"contract IMarket","name":"_market","type":"address"},{"internalType":"contract IParaShareToken","name":"_para","type":"address"}],"name":"addAMM","outputs":[{"internalType":"address","name":"","type":"address"}],"payable":false,"stateMutability":"nonpayable","type":"function"}
 		return await this.estimateGas(abi, [market, para], 'addAMM', options.sender)
 	}
 
 	public addAMM_ = async (market: string, para: string, options?: { sender?: string }): Promise<string> => {
 		options = options || {}
-		const abi: AbiFunction = {"constant":false,"inputs":[{"internalType":"contract IMarket","name":"_market","type":"address"},{"internalType":"contract IParaShareToken","name":"_para","type":"address"}],"name":"addAMM","outputs":[{"internalType":"contract AMMExchange","name":"","type":"address"}],"payable":false,"stateMutability":"nonpayable","type":"function"}
+		const abi: AbiFunction = {"constant":false,"inputs":[{"internalType":"contract IMarket","name":"_market","type":"address"},{"internalType":"contract IParaShareToken","name":"_para","type":"address"}],"name":"addAMM","outputs":[{"internalType":"address","name":"","type":"address"}],"payable":false,"stateMutability":"nonpayable","type":"function"}
 		const result = await this.localCall(abi, [market, para], options.sender)
 		return <string>result[0]
 	}
@@ -8270,6 +8282,24 @@ export class AMMFactory<TBigNumber> extends Contract<TBigNumber> {
 		const abi: AbiFunction = {"constant":true,"inputs":[{"internalType":"contract IMarket","name":"_market","type":"address"},{"internalType":"contract IParaShareToken","name":"_para","type":"address"}],"name":"salt","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"payable":false,"stateMutability":"pure","type":"function"}
 		const result = await this.localCall(abi, [market, para], options.sender)
 		return <TBigNumber>result[0]
+	}
+
+	public transferCash = async (market: string, para: string, sender: string, recipient: string, quantity: TBigNumber, options?: { sender?: string }): Promise<Array<Event>> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":false,"inputs":[{"internalType":"contract IMarket","name":"_market","type":"address"},{"internalType":"contract IParaShareToken","name":"_para","type":"address"},{"internalType":"address","name":"sender","type":"address"},{"internalType":"address","name":"recipient","type":"address"},{"internalType":"uint256","name":"quantity","type":"uint256"}],"name":"transferCash","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"}
+		return await this.remoteCall(abi, [market, para, sender, recipient, quantity], 'transferCash', options.sender)
+	}
+	
+	public transferCash_estimateGas = async (market: string, para: string, sender: string, recipient: string, quantity: TBigNumber, options?: { sender?: string }): Promise<TBigNumber> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":false,"inputs":[{"internalType":"contract IMarket","name":"_market","type":"address"},{"internalType":"contract IParaShareToken","name":"_para","type":"address"},{"internalType":"address","name":"sender","type":"address"},{"internalType":"address","name":"recipient","type":"address"},{"internalType":"uint256","name":"quantity","type":"uint256"}],"name":"transferCash","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"}
+		return await this.estimateGas(abi, [market, para, sender, recipient, quantity], 'transferCash', options.sender)
+	}
+
+	public transferCash_ = async (market: string, para: string, sender: string, recipient: string, quantity: TBigNumber, options?: { sender?: string }): Promise<void> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":false,"inputs":[{"internalType":"contract IMarket","name":"_market","type":"address"},{"internalType":"contract IParaShareToken","name":"_para","type":"address"},{"internalType":"address","name":"sender","type":"address"},{"internalType":"address","name":"recipient","type":"address"},{"internalType":"uint256","name":"quantity","type":"uint256"}],"name":"transferCash","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"}
+		await this.localCall(abi, [market, para, sender, recipient, quantity], options.sender)
 	}
 }
 
@@ -8596,19 +8626,19 @@ export class OINexus<TBigNumber> extends Contract<TBigNumber> {
 
 	public addParaAugur = async (paraAugur: string, options?: { sender?: string }): Promise<Array<Event>> => {
 		options = options || {}
-		const abi: AbiFunction = {"constant":false,"inputs":[{"internalType":"contract IParaAugur","name":"_paraAugur","type":"address"}],"name":"addParaAugur","outputs":[{"internalType":"bool","name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"}
+		const abi: AbiFunction = {"constant":false,"inputs":[{"internalType":"address","name":"_paraAugur","type":"address"}],"name":"addParaAugur","outputs":[{"internalType":"bool","name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"}
 		return await this.remoteCall(abi, [paraAugur], 'addParaAugur', options.sender)
 	}
 	
 	public addParaAugur_estimateGas = async (paraAugur: string, options?: { sender?: string }): Promise<TBigNumber> => {
 		options = options || {}
-		const abi: AbiFunction = {"constant":false,"inputs":[{"internalType":"contract IParaAugur","name":"_paraAugur","type":"address"}],"name":"addParaAugur","outputs":[{"internalType":"bool","name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"}
+		const abi: AbiFunction = {"constant":false,"inputs":[{"internalType":"address","name":"_paraAugur","type":"address"}],"name":"addParaAugur","outputs":[{"internalType":"bool","name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"}
 		return await this.estimateGas(abi, [paraAugur], 'addParaAugur', options.sender)
 	}
 
 	public addParaAugur_ = async (paraAugur: string, options?: { sender?: string }): Promise<boolean> => {
 		options = options || {}
-		const abi: AbiFunction = {"constant":false,"inputs":[{"internalType":"contract IParaAugur","name":"_paraAugur","type":"address"}],"name":"addParaAugur","outputs":[{"internalType":"bool","name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"}
+		const abi: AbiFunction = {"constant":false,"inputs":[{"internalType":"address","name":"_paraAugur","type":"address"}],"name":"addParaAugur","outputs":[{"internalType":"bool","name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"}
 		const result = await this.localCall(abi, [paraAugur], options.sender)
 		return <boolean>result[0]
 	}
@@ -8862,6 +8892,13 @@ export class ParaAugur<TBigNumber> extends Contract<TBigNumber> {
 		const abi: AbiFunction = {"constant":false,"inputs":[],"name":"getMaximumMarketEndDate","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"payable":false,"stateMutability":"nonpayable","type":"function"}
 		const result = await this.localCall(abi, [], options.sender)
 		return <TBigNumber>result[0]
+	}
+
+	public getOriginCash_ = async (options?: { sender?: string }): Promise<string> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":true,"inputs":[],"name":"getOriginCash","outputs":[{"internalType":"contract ICash","name":"","type":"address"}],"payable":false,"stateMutability":"view","type":"function"}
+		const result = await this.localCall(abi, [], options.sender)
+		return <string>result[0]
 	}
 
 	public getOwner_ = async (options?: { sender?: string }): Promise<string> => {
@@ -10220,19 +10257,19 @@ export class ParaShareToken<TBigNumber> extends Contract<TBigNumber> {
 
 	public initialize = async (augur: string, originalShareToken: string, options?: { sender?: string }): Promise<Array<Event>> => {
 		options = options || {}
-		const abi: AbiFunction = {"constant":false,"inputs":[{"internalType":"contract IParaAugur","name":"_augur","type":"address"},{"internalType":"contract ShareToken","name":"_originalShareToken","type":"address"}],"name":"initialize","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"}
+		const abi: AbiFunction = {"constant":false,"inputs":[{"internalType":"address","name":"_augur","type":"address"},{"internalType":"contract ShareToken","name":"_originalShareToken","type":"address"}],"name":"initialize","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"}
 		return await this.remoteCall(abi, [augur, originalShareToken], 'initialize', options.sender)
 	}
 	
 	public initialize_estimateGas = async (augur: string, originalShareToken: string, options?: { sender?: string }): Promise<TBigNumber> => {
 		options = options || {}
-		const abi: AbiFunction = {"constant":false,"inputs":[{"internalType":"contract IParaAugur","name":"_augur","type":"address"},{"internalType":"contract ShareToken","name":"_originalShareToken","type":"address"}],"name":"initialize","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"}
+		const abi: AbiFunction = {"constant":false,"inputs":[{"internalType":"address","name":"_augur","type":"address"},{"internalType":"contract ShareToken","name":"_originalShareToken","type":"address"}],"name":"initialize","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"}
 		return await this.estimateGas(abi, [augur, originalShareToken], 'initialize', options.sender)
 	}
 
 	public initialize_ = async (augur: string, originalShareToken: string, options?: { sender?: string }): Promise<void> => {
 		options = options || {}
-		const abi: AbiFunction = {"constant":false,"inputs":[{"internalType":"contract IParaAugur","name":"_augur","type":"address"},{"internalType":"contract ShareToken","name":"_originalShareToken","type":"address"}],"name":"initialize","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"}
+		const abi: AbiFunction = {"constant":false,"inputs":[{"internalType":"address","name":"_augur","type":"address"},{"internalType":"contract ShareToken","name":"_originalShareToken","type":"address"}],"name":"initialize","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"}
 		await this.localCall(abi, [augur, originalShareToken], options.sender)
 	}
 
@@ -10515,63 +10552,6 @@ export class ParaUniverse<TBigNumber> extends Contract<TBigNumber> {
 		options = options || {}
 		const abi: AbiFunction = {"constant":true,"inputs":[],"name":"cash","outputs":[{"internalType":"contract ICash","name":"","type":"address"}],"payable":false,"stateMutability":"view","type":"function"}
 		const result = await this.localCall(abi, [], options.sender)
-		return <string>result[0]
-	}
-
-	public createCategoricalMarket = async (endTime: TBigNumber, feePerCashInAttoCash: TBigNumber, affiliateValidator: string, affiliateFeeDivisor: TBigNumber, designatedReporterAddress: string, outcomes: Array<string>, extraInfo: string, options?: { sender?: string }): Promise<Array<Event>> => {
-		options = options || {}
-		const abi: AbiFunction = {"constant":false,"inputs":[{"internalType":"uint256","name":"_endTime","type":"uint256"},{"internalType":"uint256","name":"_feePerCashInAttoCash","type":"uint256"},{"internalType":"contract IAffiliateValidator","name":"_affiliateValidator","type":"address"},{"internalType":"uint256","name":"_affiliateFeeDivisor","type":"uint256"},{"internalType":"address","name":"_designatedReporterAddress","type":"address"},{"internalType":"bytes32[]","name":"_outcomes","type":"bytes32[]"},{"internalType":"string","name":"_extraInfo","type":"string"}],"name":"createCategoricalMarket","outputs":[{"internalType":"contract IMarket","name":"_newMarket","type":"address"}],"payable":false,"stateMutability":"nonpayable","type":"function"}
-		return await this.remoteCall(abi, [endTime, feePerCashInAttoCash, affiliateValidator, affiliateFeeDivisor, designatedReporterAddress, outcomes, extraInfo], 'createCategoricalMarket', options.sender)
-	}
-	
-	public createCategoricalMarket_estimateGas = async (endTime: TBigNumber, feePerCashInAttoCash: TBigNumber, affiliateValidator: string, affiliateFeeDivisor: TBigNumber, designatedReporterAddress: string, outcomes: Array<string>, extraInfo: string, options?: { sender?: string }): Promise<TBigNumber> => {
-		options = options || {}
-		const abi: AbiFunction = {"constant":false,"inputs":[{"internalType":"uint256","name":"_endTime","type":"uint256"},{"internalType":"uint256","name":"_feePerCashInAttoCash","type":"uint256"},{"internalType":"contract IAffiliateValidator","name":"_affiliateValidator","type":"address"},{"internalType":"uint256","name":"_affiliateFeeDivisor","type":"uint256"},{"internalType":"address","name":"_designatedReporterAddress","type":"address"},{"internalType":"bytes32[]","name":"_outcomes","type":"bytes32[]"},{"internalType":"string","name":"_extraInfo","type":"string"}],"name":"createCategoricalMarket","outputs":[{"internalType":"contract IMarket","name":"_newMarket","type":"address"}],"payable":false,"stateMutability":"nonpayable","type":"function"}
-		return await this.estimateGas(abi, [endTime, feePerCashInAttoCash, affiliateValidator, affiliateFeeDivisor, designatedReporterAddress, outcomes, extraInfo], 'createCategoricalMarket', options.sender)
-	}
-
-	public createCategoricalMarket_ = async (endTime: TBigNumber, feePerCashInAttoCash: TBigNumber, affiliateValidator: string, affiliateFeeDivisor: TBigNumber, designatedReporterAddress: string, outcomes: Array<string>, extraInfo: string, options?: { sender?: string }): Promise<string> => {
-		options = options || {}
-		const abi: AbiFunction = {"constant":false,"inputs":[{"internalType":"uint256","name":"_endTime","type":"uint256"},{"internalType":"uint256","name":"_feePerCashInAttoCash","type":"uint256"},{"internalType":"contract IAffiliateValidator","name":"_affiliateValidator","type":"address"},{"internalType":"uint256","name":"_affiliateFeeDivisor","type":"uint256"},{"internalType":"address","name":"_designatedReporterAddress","type":"address"},{"internalType":"bytes32[]","name":"_outcomes","type":"bytes32[]"},{"internalType":"string","name":"_extraInfo","type":"string"}],"name":"createCategoricalMarket","outputs":[{"internalType":"contract IMarket","name":"_newMarket","type":"address"}],"payable":false,"stateMutability":"nonpayable","type":"function"}
-		const result = await this.localCall(abi, [endTime, feePerCashInAttoCash, affiliateValidator, affiliateFeeDivisor, designatedReporterAddress, outcomes, extraInfo], options.sender)
-		return <string>result[0]
-	}
-
-	public createScalarMarket = async (endTime: TBigNumber, feePerCashInAttoCash: TBigNumber, affiliateValidator: string, affiliateFeeDivisor: TBigNumber, designatedReporterAddress: string, prices: Array<TBigNumber>, numTicks: TBigNumber, extraInfo: string, options?: { sender?: string }): Promise<Array<Event>> => {
-		options = options || {}
-		const abi: AbiFunction = {"constant":false,"inputs":[{"internalType":"uint256","name":"_endTime","type":"uint256"},{"internalType":"uint256","name":"_feePerCashInAttoCash","type":"uint256"},{"internalType":"contract IAffiliateValidator","name":"_affiliateValidator","type":"address"},{"internalType":"uint256","name":"_affiliateFeeDivisor","type":"uint256"},{"internalType":"address","name":"_designatedReporterAddress","type":"address"},{"internalType":"int256[]","name":"_prices","type":"int256[]"},{"internalType":"uint256","name":"_numTicks","type":"uint256"},{"internalType":"string","name":"_extraInfo","type":"string"}],"name":"createScalarMarket","outputs":[{"internalType":"contract IMarket","name":"_newMarket","type":"address"}],"payable":false,"stateMutability":"nonpayable","type":"function"}
-		return await this.remoteCall(abi, [endTime, feePerCashInAttoCash, affiliateValidator, affiliateFeeDivisor, designatedReporterAddress, prices, numTicks, extraInfo], 'createScalarMarket', options.sender)
-	}
-	
-	public createScalarMarket_estimateGas = async (endTime: TBigNumber, feePerCashInAttoCash: TBigNumber, affiliateValidator: string, affiliateFeeDivisor: TBigNumber, designatedReporterAddress: string, prices: Array<TBigNumber>, numTicks: TBigNumber, extraInfo: string, options?: { sender?: string }): Promise<TBigNumber> => {
-		options = options || {}
-		const abi: AbiFunction = {"constant":false,"inputs":[{"internalType":"uint256","name":"_endTime","type":"uint256"},{"internalType":"uint256","name":"_feePerCashInAttoCash","type":"uint256"},{"internalType":"contract IAffiliateValidator","name":"_affiliateValidator","type":"address"},{"internalType":"uint256","name":"_affiliateFeeDivisor","type":"uint256"},{"internalType":"address","name":"_designatedReporterAddress","type":"address"},{"internalType":"int256[]","name":"_prices","type":"int256[]"},{"internalType":"uint256","name":"_numTicks","type":"uint256"},{"internalType":"string","name":"_extraInfo","type":"string"}],"name":"createScalarMarket","outputs":[{"internalType":"contract IMarket","name":"_newMarket","type":"address"}],"payable":false,"stateMutability":"nonpayable","type":"function"}
-		return await this.estimateGas(abi, [endTime, feePerCashInAttoCash, affiliateValidator, affiliateFeeDivisor, designatedReporterAddress, prices, numTicks, extraInfo], 'createScalarMarket', options.sender)
-	}
-
-	public createScalarMarket_ = async (endTime: TBigNumber, feePerCashInAttoCash: TBigNumber, affiliateValidator: string, affiliateFeeDivisor: TBigNumber, designatedReporterAddress: string, prices: Array<TBigNumber>, numTicks: TBigNumber, extraInfo: string, options?: { sender?: string }): Promise<string> => {
-		options = options || {}
-		const abi: AbiFunction = {"constant":false,"inputs":[{"internalType":"uint256","name":"_endTime","type":"uint256"},{"internalType":"uint256","name":"_feePerCashInAttoCash","type":"uint256"},{"internalType":"contract IAffiliateValidator","name":"_affiliateValidator","type":"address"},{"internalType":"uint256","name":"_affiliateFeeDivisor","type":"uint256"},{"internalType":"address","name":"_designatedReporterAddress","type":"address"},{"internalType":"int256[]","name":"_prices","type":"int256[]"},{"internalType":"uint256","name":"_numTicks","type":"uint256"},{"internalType":"string","name":"_extraInfo","type":"string"}],"name":"createScalarMarket","outputs":[{"internalType":"contract IMarket","name":"_newMarket","type":"address"}],"payable":false,"stateMutability":"nonpayable","type":"function"}
-		const result = await this.localCall(abi, [endTime, feePerCashInAttoCash, affiliateValidator, affiliateFeeDivisor, designatedReporterAddress, prices, numTicks, extraInfo], options.sender)
-		return <string>result[0]
-	}
-
-	public createYesNoMarket = async (endTime: TBigNumber, feePerCashInAttoCash: TBigNumber, affiliateValidator: string, affiliateFeeDivisor: TBigNumber, designatedReporterAddress: string, extraInfo: string, options?: { sender?: string }): Promise<Array<Event>> => {
-		options = options || {}
-		const abi: AbiFunction = {"constant":false,"inputs":[{"internalType":"uint256","name":"_endTime","type":"uint256"},{"internalType":"uint256","name":"_feePerCashInAttoCash","type":"uint256"},{"internalType":"contract IAffiliateValidator","name":"_affiliateValidator","type":"address"},{"internalType":"uint256","name":"_affiliateFeeDivisor","type":"uint256"},{"internalType":"address","name":"_designatedReporterAddress","type":"address"},{"internalType":"string","name":"_extraInfo","type":"string"}],"name":"createYesNoMarket","outputs":[{"internalType":"contract IMarket","name":"_newMarket","type":"address"}],"payable":false,"stateMutability":"nonpayable","type":"function"}
-		return await this.remoteCall(abi, [endTime, feePerCashInAttoCash, affiliateValidator, affiliateFeeDivisor, designatedReporterAddress, extraInfo], 'createYesNoMarket', options.sender)
-	}
-	
-	public createYesNoMarket_estimateGas = async (endTime: TBigNumber, feePerCashInAttoCash: TBigNumber, affiliateValidator: string, affiliateFeeDivisor: TBigNumber, designatedReporterAddress: string, extraInfo: string, options?: { sender?: string }): Promise<TBigNumber> => {
-		options = options || {}
-		const abi: AbiFunction = {"constant":false,"inputs":[{"internalType":"uint256","name":"_endTime","type":"uint256"},{"internalType":"uint256","name":"_feePerCashInAttoCash","type":"uint256"},{"internalType":"contract IAffiliateValidator","name":"_affiliateValidator","type":"address"},{"internalType":"uint256","name":"_affiliateFeeDivisor","type":"uint256"},{"internalType":"address","name":"_designatedReporterAddress","type":"address"},{"internalType":"string","name":"_extraInfo","type":"string"}],"name":"createYesNoMarket","outputs":[{"internalType":"contract IMarket","name":"_newMarket","type":"address"}],"payable":false,"stateMutability":"nonpayable","type":"function"}
-		return await this.estimateGas(abi, [endTime, feePerCashInAttoCash, affiliateValidator, affiliateFeeDivisor, designatedReporterAddress, extraInfo], 'createYesNoMarket', options.sender)
-	}
-
-	public createYesNoMarket_ = async (endTime: TBigNumber, feePerCashInAttoCash: TBigNumber, affiliateValidator: string, affiliateFeeDivisor: TBigNumber, designatedReporterAddress: string, extraInfo: string, options?: { sender?: string }): Promise<string> => {
-		options = options || {}
-		const abi: AbiFunction = {"constant":false,"inputs":[{"internalType":"uint256","name":"_endTime","type":"uint256"},{"internalType":"uint256","name":"_feePerCashInAttoCash","type":"uint256"},{"internalType":"contract IAffiliateValidator","name":"_affiliateValidator","type":"address"},{"internalType":"uint256","name":"_affiliateFeeDivisor","type":"uint256"},{"internalType":"address","name":"_designatedReporterAddress","type":"address"},{"internalType":"string","name":"_extraInfo","type":"string"}],"name":"createYesNoMarket","outputs":[{"internalType":"contract IMarket","name":"_newMarket","type":"address"}],"payable":false,"stateMutability":"nonpayable","type":"function"}
-		const result = await this.localCall(abi, [endTime, feePerCashInAttoCash, affiliateValidator, affiliateFeeDivisor, designatedReporterAddress, extraInfo], options.sender)
 		return <string>result[0]
 	}
 

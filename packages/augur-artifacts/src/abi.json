@@ -21250,6 +21250,105 @@
 			"anonymous": false,
 			"inputs": [
 				{
+					"indexed": false,
+					"internalType": "address",
+					"name": "sender",
+					"type": "address"
+				},
+				{
+					"indexed": false,
+					"internalType": "uint256",
+					"name": "cash",
+					"type": "uint256"
+				},
+				{
+					"indexed": false,
+					"internalType": "uint256",
+					"name": "outputShares",
+					"type": "uint256"
+				},
+				{
+					"indexed": false,
+					"internalType": "bool",
+					"name": "buyYes",
+					"type": "bool"
+				}
+			],
+			"name": "EnterPosition",
+			"type": "event"
+		},
+		{
+			"anonymous": false,
+			"inputs": [
+				{
+					"indexed": false,
+					"internalType": "address",
+					"name": "sender",
+					"type": "address"
+				},
+				{
+					"indexed": false,
+					"internalType": "uint256",
+					"name": "invalidShares",
+					"type": "uint256"
+				},
+				{
+					"indexed": false,
+					"internalType": "uint256",
+					"name": "noShares",
+					"type": "uint256"
+				},
+				{
+					"indexed": false,
+					"internalType": "uint256",
+					"name": "yesShares",
+					"type": "uint256"
+				},
+				{
+					"indexed": false,
+					"internalType": "uint256",
+					"name": "cashPayout",
+					"type": "uint256"
+				}
+			],
+			"name": "ExitPosition",
+			"type": "event"
+		},
+		{
+			"anonymous": false,
+			"inputs": [
+				{
+					"indexed": false,
+					"internalType": "address",
+					"name": "sender",
+					"type": "address"
+				},
+				{
+					"indexed": false,
+					"internalType": "uint256",
+					"name": "inputShares",
+					"type": "uint256"
+				},
+				{
+					"indexed": false,
+					"internalType": "uint256",
+					"name": "outputShares",
+					"type": "uint256"
+				},
+				{
+					"indexed": false,
+					"internalType": "bool",
+					"name": "inputYes",
+					"type": "bool"
+				}
+			],
+			"name": "SwapPosition",
+			"type": "event"
+		},
+		{
+			"anonymous": false,
+			"inputs": [
+				{
 					"indexed": true,
 					"internalType": "address",
 					"name": "from",
@@ -21645,6 +21744,21 @@
 			],
 			"payable": false,
 			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [],
+			"name": "factory",
+			"outputs": [
+				{
+					"internalType": "contract IAMMFactory",
+					"name": "",
+					"type": "address"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
 			"type": "function"
 		},
 		{
@@ -22180,7 +22294,7 @@
 			"name": "addAMM",
 			"outputs": [
 				{
-					"internalType": "contract AMMExchange",
+					"internalType": "address",
 					"name": "",
 					"type": "address"
 				}
@@ -22285,6 +22399,41 @@
 			],
 			"payable": false,
 			"stateMutability": "pure",
+			"type": "function"
+		},
+		{
+			"constant": false,
+			"inputs": [
+				{
+					"internalType": "contract IMarket",
+					"name": "_market",
+					"type": "address"
+				},
+				{
+					"internalType": "contract IParaShareToken",
+					"name": "_para",
+					"type": "address"
+				},
+				{
+					"internalType": "address",
+					"name": "sender",
+					"type": "address"
+				},
+				{
+					"internalType": "address",
+					"name": "recipient",
+					"type": "address"
+				},
+				{
+					"internalType": "uint256",
+					"name": "quantity",
+					"type": "uint256"
+				}
+			],
+			"name": "transferCash",
+			"outputs": [],
+			"payable": false,
+			"stateMutability": "nonpayable",
 			"type": "function"
 		}
 	],
@@ -22891,7 +23040,7 @@
 			"constant": false,
 			"inputs": [
 				{
-					"internalType": "contract IParaAugur",
+					"internalType": "address",
 					"name": "_paraAugur",
 					"type": "address"
 				}
@@ -23709,6 +23858,21 @@
 			],
 			"payable": false,
 			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [],
+			"name": "getOriginCash",
+			"outputs": [
+				{
+					"internalType": "contract ICash",
+					"name": "",
+					"type": "address"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
 			"type": "function"
 		},
 		{
@@ -25158,6 +25322,56 @@
 			"payable": false,
 			"stateMutability": "nonpayable",
 			"type": "constructor"
+		},
+		{
+			"anonymous": false,
+			"inputs": [
+				{
+					"indexed": false,
+					"internalType": "contract IParaAugur",
+					"name": "paraAugur",
+					"type": "address"
+				},
+				{
+					"indexed": false,
+					"internalType": "contract IParaShareToken",
+					"name": "shareToken",
+					"type": "address"
+				},
+				{
+					"indexed": false,
+					"internalType": "contract ICash",
+					"name": "cash",
+					"type": "address"
+				},
+				{
+					"indexed": false,
+					"internalType": "contract IOINexus",
+					"name": "OINexus",
+					"type": "address"
+				}
+			],
+			"name": "ParaAugurDeployFinished",
+			"type": "event"
+		},
+		{
+			"anonymous": false,
+			"inputs": [
+				{
+					"indexed": false,
+					"internalType": "contract IParaAugurTrading",
+					"name": "paraAugur",
+					"type": "address"
+				},
+				{
+					"indexed": false,
+					"internalType": "contract ICash",
+					"name": "cash",
+					"type": "address"
+				}
+			],
+			"name": "ParaAugurTradingDeployed",
+			"type": "event"
 		},
 		{
 			"constant": true,
@@ -26907,7 +27121,7 @@
 			"constant": false,
 			"inputs": [
 				{
-					"internalType": "contract IParaAugur",
+					"internalType": "address",
 					"name": "_augur",
 					"type": "address"
 				},
@@ -27524,159 +27738,6 @@
 			],
 			"payable": false,
 			"stateMutability": "view",
-			"type": "function"
-		},
-		{
-			"constant": false,
-			"inputs": [
-				{
-					"internalType": "uint256",
-					"name": "_endTime",
-					"type": "uint256"
-				},
-				{
-					"internalType": "uint256",
-					"name": "_feePerCashInAttoCash",
-					"type": "uint256"
-				},
-				{
-					"internalType": "contract IAffiliateValidator",
-					"name": "_affiliateValidator",
-					"type": "address"
-				},
-				{
-					"internalType": "uint256",
-					"name": "_affiliateFeeDivisor",
-					"type": "uint256"
-				},
-				{
-					"internalType": "address",
-					"name": "_designatedReporterAddress",
-					"type": "address"
-				},
-				{
-					"internalType": "bytes32[]",
-					"name": "_outcomes",
-					"type": "bytes32[]"
-				},
-				{
-					"internalType": "string",
-					"name": "_extraInfo",
-					"type": "string"
-				}
-			],
-			"name": "createCategoricalMarket",
-			"outputs": [
-				{
-					"internalType": "contract IMarket",
-					"name": "_newMarket",
-					"type": "address"
-				}
-			],
-			"payable": false,
-			"stateMutability": "nonpayable",
-			"type": "function"
-		},
-		{
-			"constant": false,
-			"inputs": [
-				{
-					"internalType": "uint256",
-					"name": "_endTime",
-					"type": "uint256"
-				},
-				{
-					"internalType": "uint256",
-					"name": "_feePerCashInAttoCash",
-					"type": "uint256"
-				},
-				{
-					"internalType": "contract IAffiliateValidator",
-					"name": "_affiliateValidator",
-					"type": "address"
-				},
-				{
-					"internalType": "uint256",
-					"name": "_affiliateFeeDivisor",
-					"type": "uint256"
-				},
-				{
-					"internalType": "address",
-					"name": "_designatedReporterAddress",
-					"type": "address"
-				},
-				{
-					"internalType": "int256[]",
-					"name": "_prices",
-					"type": "int256[]"
-				},
-				{
-					"internalType": "uint256",
-					"name": "_numTicks",
-					"type": "uint256"
-				},
-				{
-					"internalType": "string",
-					"name": "_extraInfo",
-					"type": "string"
-				}
-			],
-			"name": "createScalarMarket",
-			"outputs": [
-				{
-					"internalType": "contract IMarket",
-					"name": "_newMarket",
-					"type": "address"
-				}
-			],
-			"payable": false,
-			"stateMutability": "nonpayable",
-			"type": "function"
-		},
-		{
-			"constant": false,
-			"inputs": [
-				{
-					"internalType": "uint256",
-					"name": "_endTime",
-					"type": "uint256"
-				},
-				{
-					"internalType": "uint256",
-					"name": "_feePerCashInAttoCash",
-					"type": "uint256"
-				},
-				{
-					"internalType": "contract IAffiliateValidator",
-					"name": "_affiliateValidator",
-					"type": "address"
-				},
-				{
-					"internalType": "uint256",
-					"name": "_affiliateFeeDivisor",
-					"type": "uint256"
-				},
-				{
-					"internalType": "address",
-					"name": "_designatedReporterAddress",
-					"type": "address"
-				},
-				{
-					"internalType": "string",
-					"name": "_extraInfo",
-					"type": "string"
-				}
-			],
-			"name": "createYesNoMarket",
-			"outputs": [
-				{
-					"internalType": "contract IMarket",
-					"name": "_newMarket",
-					"type": "address"
-				}
-			],
-			"payable": false,
-			"stateMutability": "nonpayable",
 			"type": "function"
 		},
 		{

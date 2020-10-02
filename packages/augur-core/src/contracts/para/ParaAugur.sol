@@ -13,6 +13,7 @@ import 'ROOT/libraries/ContractExists.sol';
 import 'ROOT/IAugurMarketDataGetter.sol';
 import 'ROOT/IAugurCreationDataGetter.sol';
 import 'ROOT/para/interfaces/IOINexus.sol';
+import 'ROOT/ICash.sol';
 
 
 contract ParaAugur is IParaAugur, IAugurCreationDataGetter, Ownable {
@@ -41,6 +42,7 @@ contract ParaAugur is IParaAugur, IAugurCreationDataGetter, Ownable {
     IParaShareToken public shareToken;
     IParaUniverseFactory public paraUniverseFactory;
     IOINexus public OINexus;
+
 
     constructor(IAugur _augur) public {
         owner = msg.sender;
@@ -213,4 +215,8 @@ contract ParaAugur is IParaAugur, IAugurCreationDataGetter, Ownable {
     }
 
     function onTransferOwnership(address, address) internal {}
+
+    function getOriginCash() public view returns (ICash) {
+        return augur.cash();
+    }
 }

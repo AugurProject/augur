@@ -173,7 +173,7 @@
     "stylelint-order": "0.8.1",
     "terser-webpack-plugin": "2.1.0",
     "ts-loader": "6.1.1",
-    "typescript": "3.8.3",
+    "typescript": "3.9.7",
     "typings-for-css-modules-loader": "1.7.0",
     "watchify": "3.11.1",
     "webpack": "4.42.1",

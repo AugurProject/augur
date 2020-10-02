@@ -13,7 +13,7 @@ const RELAY_HUB_ADDRESS = '0xD216153c06E857cD7f72665E0aF1d7D82172F494';
 export class Contracts {
   augur: ContractInterfaces.ParaAugur;
   augurTrading: ContractInterfaces.AugurTrading;
-  universe: ContractInterfaces.Universe;
+  universe: ContractInterfaces.ParaUniverse;
   cash: ContractInterfaces.Cash;
   usdc: ContractInterfaces.USDC;
   usdt: ContractInterfaces.USDT;
@@ -60,7 +60,7 @@ export class Contracts {
       addresses.AugurTrading
     );
 
-    this.universe = new ContractInterfaces.Universe(
+    this.universe = new ContractInterfaces.ParaUniverse(
       dependencies,
       addresses.Universe
     );
@@ -219,6 +219,10 @@ export class Contracts {
     return new ContractInterfaces.Market(this.dependencies, address);
   }
 
+  ammFromAddress(address: string): ContractInterfaces.AMMExchange {
+    return new ContractInterfaces.AMMExchange(this.dependencies, address);
+  }
+
   shareTokenFromAddress(address: string): ContractInterfaces.ShareToken {
     return new ContractInterfaces.ShareToken(this.dependencies, address);
   }
@@ -265,5 +269,15 @@ export class Contracts {
     address: string
   ): ContractInterfaces.UniswapV2Pair {
     return new ContractInterfaces.UniswapV2Pair(this.dependencies, address);
+  }
+
+  async getOriginCash(): Promise<ContractInterfaces.Cash> {
+    const originCash = await this.augur.getOriginCash_();
+    return new ContractInterfaces.Cash(this.dependencies, originCash);
+  }
+
+  async getOriginUniverse(): Promise<ContractInterfaces.Universe> {
+    const originUniverse = await this.universe.originUniverse_();
+    return new ContractInterfaces.Universe(this.dependencies, originUniverse);
   }
 }

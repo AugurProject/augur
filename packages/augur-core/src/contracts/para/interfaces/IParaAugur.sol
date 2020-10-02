@@ -4,9 +4,17 @@ import 'ROOT/reporting/IUniverse.sol';
 import 'ROOT/reporting/IMarket.sol';
 import 'ROOT/para/interfaces/IParaUniverse.sol';
 
+import 'ROOT/ICash.sol';
+import 'ROOT/para/interfaces/IParaShareToken.sol';
+import 'ROOT/para/interfaces/IOINexus.sol';
+
 
 contract IParaAugur {
     mapping(address => address) public getParaUniverse;
+
+    ICash public cash;
+    IParaShareToken public shareToken;
+    IOINexus public OINexus;
 
     function generateParaUniverse(IUniverse _universe) external returns (IParaUniverse);
     function registerContract(bytes32 _key, address _address) external returns (bool);

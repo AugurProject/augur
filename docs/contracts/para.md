@@ -10,7 +10,7 @@ title: Para
 
 
 
-<div class="contract-index"><span class="contract-index-title">Functions</span><ul><li><a href="#AMMExchange.initialize(contract IMarket,contract IParaShareToken,uint256)"><code class="function-signature">initialize(contract IMarket _market, contract IParaShareToken _shareToken, uint256 _fee)</code></a></li><li><a href="#AMMExchange.addLiquidity(uint256)"><code class="function-signature">addLiquidity(uint256 _setsToBuy)</code></a></li><li><a href="#AMMExchange.addLiquidityThenSwap(uint256,bool,uint256)"><code class="function-signature">addLiquidityThenSwap(uint256 _setsToBuy, bool _swapForYes, uint256 _swapHowMuch)</code></a></li><li><a href="#AMMExchange.rateAddLiquidity(uint256,uint256)"><code class="function-signature">rateAddLiquidity(uint256 _yesses, uint256 _nos)</code></a></li><li><a href="#AMMExchange.rateAddLiquidityThenSwap(uint256,bool,uint256)"><code class="function-signature">rateAddLiquidityThenSwap(uint256 _setsToBuy, bool _swapForYes, uint256 _swapHowMuch)</code></a></li><li><a href="#AMMExchange.removeLiquidity(uint256,uint256)"><code class="function-signature">removeLiquidity(uint256 _poolTokensToSell, uint256 _minSetsSold)</code></a></li><li><a href="#AMMExchange.rateRemoveLiquidity(uint256,uint256)"><code class="function-signature">rateRemoveLiquidity(uint256 _poolTokensToSell, uint256 _minSetsSold)</code></a></li><li><a href="#AMMExchange.enterPosition(uint256,bool,uint256)"><code class="function-signature">enterPosition(uint256 _cashCost, bool _buyYes, uint256 _minShares)</code></a></li><li><a href="#AMMExchange.rateEnterPosition(uint256,bool)"><code class="function-signature">rateEnterPosition(uint256 _cashToSpend, bool _buyYes)</code></a></li><li><a href="#AMMExchange.exitAll(uint256)"><code class="function-signature">exitAll(uint256 _minCashPayout)</code></a></li><li><a href="#AMMExchange.exitPosition(uint256,uint256,uint256,uint256)"><code class="function-signature">exitPosition(uint256 _invalidShares, uint256 _noShares, uint256 _yesShares, uint256 _minCashPayout)</code></a></li><li><a href="#AMMExchange.rateExitAll()"><code class="function-signature">rateExitAll()</code></a></li><li><a href="#AMMExchange.rateExitPosition(uint256,uint256,uint256)"><code class="function-signature">rateExitPosition(uint256 _invalidShares, uint256 _noShares, uint256 _yesShares)</code></a></li><li><a href="#AMMExchange.swap(uint256,bool,uint256)"><code class="function-signature">swap(uint256 _inputShares, bool _inputYes, uint256 _minOutputShares)</code></a></li><li><a href="#AMMExchange.rateSwap(uint256,bool)"><code class="function-signature">rateSwap(uint256 _inputShares, bool _inputYes)</code></a></li><li><a href="#AMMExchange.poolConstant(uint256,uint256)"><code class="function-signature">poolConstant(uint256 _poolYes, uint256 _poolNo)</code></a></li><li><a href="#AMMExchange.quadratic(int256,int256,int256,uint256)"><code class="function-signature">quadratic(int256 _a, int256 _b, int256 _c, uint256 _maximum)</code></a></li><li><a href="#AMMExchange.onTokenTransfer(address,address,uint256)"><code class="function-signature">onTokenTransfer(address _from, address _to, uint256 _value)</code></a></li><li class="inherited"><a href="#ERC20.balanceOf(address)"><code class="function-signature">balanceOf(address _account)</code></a></li><li class="inherited"><a href="#ERC20.transfer(address,uint256)"><code class="function-signature">transfer(address _recipient, uint256 _amount)</code></a></li><li class="inherited"><a href="#ERC20.allowance(address,address)"><code class="function-signature">allowance(address _owner, address _spender)</code></a></li><li class="inherited"><a href="#ERC20.approve(address,uint256)"><code class="function-signature">approve(address _spender, uint256 _amount)</code></a></li><li class="inherited"><a href="#ERC20.transferFrom(address,address,uint256)"><code class="function-signature">transferFrom(address _sender, address _recipient, uint256 _amount)</code></a></li><li class="inherited"><a href="#ERC20.increaseAllowance(address,uint256)"><code class="function-signature">increaseAllowance(address _spender, uint256 _addedValue)</code></a></li><li class="inherited"><a href="#ERC20.decreaseAllowance(address,uint256)"><code class="function-signature">decreaseAllowance(address _spender, uint256 _subtractedValue)</code></a></li><li class="inherited"><a href="#ERC20._transfer(address,address,uint256)"><code class="function-signature">_transfer(address _sender, address _recipient, uint256 _amount)</code></a></li><li class="inherited"><a href="#ERC20._mint(address,uint256)"><code class="function-signature">_mint(address _account, uint256 _amount)</code></a></li><li class="inherited"><a href="#ERC20._burn(address,uint256)"><code class="function-signature">_burn(address _account, uint256 _amount)</code></a></li><li class="inherited"><a href="#ERC20._approve(address,address,uint256)"><code class="function-signature">_approve(address _owner, address _spender, uint256 _amount)</code></a></li><li class="inherited"><a href="#ERC20._burnFrom(address,uint256)"><code class="function-signature">_burnFrom(address _account, uint256 _amount)</code></a></li><li class="inherited"><a href="#IERC20.totalSupply()"><code class="function-signature">totalSupply()</code></a></li></ul><span class="contract-index-title">Events</span><ul><li class="inherited"><a href="#IERC20.Transfer(address,address,uint256)"><code class="function-signature">Transfer(address from, address to, uint256 value)</code></a></li><li class="inherited"><a href="#IERC20.Approval(address,address,uint256)"><code class="function-signature">Approval(address owner, address spender, uint256 value)</code></a></li></ul></div>
+<div class="contract-index"><span class="contract-index-title">Functions</span><ul><li><a href="#AMMExchange.initialize(contract IMarket,contract IParaShareToken,uint256)"><code class="function-signature">initialize(contract IMarket _market, contract IParaShareToken _shareToken, uint256 _fee)</code></a></li><li><a href="#AMMExchange.addLiquidity(uint256)"><code class="function-signature">addLiquidity(uint256 _setsToBuy)</code></a></li><li><a href="#AMMExchange.addLiquidityThenSwap(uint256,bool,uint256)"><code class="function-signature">addLiquidityThenSwap(uint256 _setsToBuy, bool _swapForYes, uint256 _swapHowMuch)</code></a></li><li><a href="#AMMExchange.rateAddLiquidity(uint256,uint256)"><code class="function-signature">rateAddLiquidity(uint256 _yesses, uint256 _nos)</code></a></li><li><a href="#AMMExchange.rateAddLiquidityThenSwap(uint256,bool,uint256)"><code class="function-signature">rateAddLiquidityThenSwap(uint256 _setsToBuy, bool _swapForYes, uint256 _swapHowMuch)</code></a></li><li><a href="#AMMExchange.removeLiquidity(uint256,uint256)"><code class="function-signature">removeLiquidity(uint256 _poolTokensToSell, uint256 _minSetsSold)</code></a></li><li><a href="#AMMExchange.rateRemoveLiquidity(uint256,uint256)"><code class="function-signature">rateRemoveLiquidity(uint256 _poolTokensToSell, uint256 _minSetsSold)</code></a></li><li><a href="#AMMExchange.enterPosition(uint256,bool,uint256)"><code class="function-signature">enterPosition(uint256 _cashCost, bool _buyYes, uint256 _minShares)</code></a></li><li><a href="#AMMExchange.rateEnterPosition(uint256,bool)"><code class="function-signature">rateEnterPosition(uint256 _cashToSpend, bool _buyYes)</code></a></li><li><a href="#AMMExchange.exitAll(uint256)"><code class="function-signature">exitAll(uint256 _minCashPayout)</code></a></li><li><a href="#AMMExchange.exitPosition(uint256,uint256,uint256,uint256)"><code class="function-signature">exitPosition(uint256 _invalidShares, uint256 _noShares, uint256 _yesShares, uint256 _minCashPayout)</code></a></li><li><a href="#AMMExchange.rateExitAll()"><code class="function-signature">rateExitAll()</code></a></li><li><a href="#AMMExchange.rateExitPosition(uint256,uint256,uint256)"><code class="function-signature">rateExitPosition(uint256 _invalidShares, uint256 _noShares, uint256 _yesShares)</code></a></li><li><a href="#AMMExchange.swap(uint256,bool,uint256)"><code class="function-signature">swap(uint256 _inputShares, bool _inputYes, uint256 _minOutputShares)</code></a></li><li><a href="#AMMExchange.rateSwap(uint256,bool)"><code class="function-signature">rateSwap(uint256 _inputShares, bool _inputYes)</code></a></li><li><a href="#AMMExchange.poolConstant(uint256,uint256)"><code class="function-signature">poolConstant(uint256 _poolYes, uint256 _poolNo)</code></a></li><li><a href="#AMMExchange.quadratic(int256,int256,int256,uint256)"><code class="function-signature">quadratic(int256 _a, int256 _b, int256 _c, uint256 _maximum)</code></a></li><li><a href="#AMMExchange.onTokenTransfer(address,address,uint256)"><code class="function-signature">onTokenTransfer(address _from, address _to, uint256 _value)</code></a></li><li class="inherited"><a href="#ERC20.balanceOf(address)"><code class="function-signature">balanceOf(address _account)</code></a></li><li class="inherited"><a href="#ERC20.transfer(address,uint256)"><code class="function-signature">transfer(address _recipient, uint256 _amount)</code></a></li><li class="inherited"><a href="#ERC20.allowance(address,address)"><code class="function-signature">allowance(address _owner, address _spender)</code></a></li><li class="inherited"><a href="#ERC20.approve(address,uint256)"><code class="function-signature">approve(address _spender, uint256 _amount)</code></a></li><li class="inherited"><a href="#ERC20.transferFrom(address,address,uint256)"><code class="function-signature">transferFrom(address _sender, address _recipient, uint256 _amount)</code></a></li><li class="inherited"><a href="#ERC20.increaseAllowance(address,uint256)"><code class="function-signature">increaseAllowance(address _spender, uint256 _addedValue)</code></a></li><li class="inherited"><a href="#ERC20.decreaseAllowance(address,uint256)"><code class="function-signature">decreaseAllowance(address _spender, uint256 _subtractedValue)</code></a></li><li class="inherited"><a href="#ERC20._transfer(address,address,uint256)"><code class="function-signature">_transfer(address _sender, address _recipient, uint256 _amount)</code></a></li><li class="inherited"><a href="#ERC20._mint(address,uint256)"><code class="function-signature">_mint(address _account, uint256 _amount)</code></a></li><li class="inherited"><a href="#ERC20._burn(address,uint256)"><code class="function-signature">_burn(address _account, uint256 _amount)</code></a></li><li class="inherited"><a href="#ERC20._approve(address,address,uint256)"><code class="function-signature">_approve(address _owner, address _spender, uint256 _amount)</code></a></li><li class="inherited"><a href="#ERC20._burnFrom(address,uint256)"><code class="function-signature">_burnFrom(address _account, uint256 _amount)</code></a></li><li class="inherited"><a href="#IERC20.totalSupply()"><code class="function-signature">totalSupply()</code></a></li></ul><span class="contract-index-title">Events</span><ul><li><a href="#AMMExchange.EnterPosition(address,uint256,uint256,bool)"><code class="function-signature">EnterPosition(address sender, uint256 cash, uint256 outputShares, bool buyYes)</code></a></li><li><a href="#AMMExchange.ExitPosition(address,uint256,uint256,uint256,uint256)"><code class="function-signature">ExitPosition(address sender, uint256 invalidShares, uint256 noShares, uint256 yesShares, uint256 cashPayout)</code></a></li><li><a href="#AMMExchange.SwapPosition(address,uint256,uint256,bool)"><code class="function-signature">SwapPosition(address sender, uint256 inputShares, uint256 outputShares, bool inputYes)</code></a></li><li class="inherited"><a href="#IERC20.Transfer(address,address,uint256)"><code class="function-signature">Transfer(address from, address to, uint256 value)</code></a></li><li class="inherited"><a href="#IERC20.Approval(address,address,uint256)"><code class="function-signature">Approval(address owner, address spender, uint256 value)</code></a></li></ul></div>
 
 
 
@@ -119,6 +119,24 @@ title: Para
 <h4><a class="anchor" aria-hidden="true" id="AMMExchange.onTokenTransfer(address,address,uint256)"></a><code class="function-signature">onTokenTransfer(address _from, address _to, uint256 _value)</code><span class="function-visibility">internal</span></h4>
 
 
+
+
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="AMMExchange.EnterPosition(address,uint256,uint256,bool)"></a><code class="function-signature">EnterPosition(address sender, uint256 cash, uint256 outputShares, bool buyYes)</code><span class="function-visibility"></span></h4>
+
+
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="AMMExchange.ExitPosition(address,uint256,uint256,uint256,uint256)"></a><code class="function-signature">ExitPosition(address sender, uint256 invalidShares, uint256 noShares, uint256 yesShares, uint256 cashPayout)</code><span class="function-visibility"></span></h4>
+
+
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="AMMExchange.SwapPosition(address,uint256,uint256,bool)"></a><code class="function-signature">SwapPosition(address sender, uint256 inputShares, uint256 outputShares, bool inputYes)</code><span class="function-visibility"></span></h4>
 
 
 
@@ -282,6 +300,140 @@ See {_burn} and {_approve}.
 
 
 <h4><a class="anchor" aria-hidden="true" id="ERC20.onTokenTransfer(address,address,uint256)"></a><code class="function-signature">onTokenTransfer(address _from, address _to, uint256 _value)</code><span class="function-visibility">internal</span></h4>
+
+
+
+
+
+
+
+### `IAMMExchange`
+
+
+
+<div class="contract-index"><span class="contract-index-title">Functions</span><ul><li><a href="#IAMMExchange.initialize(contract IMarket,contract IParaShareToken,uint256)"><code class="function-signature">initialize(contract IMarket _market, contract IParaShareToken _shareToken, uint256 _fee)</code></a></li><li><a href="#IAMMExchange.addLiquidity(uint256)"><code class="function-signature">addLiquidity(uint256 _setsToBuy)</code></a></li><li><a href="#IAMMExchange.rateAddLiquidity(uint256,uint256)"><code class="function-signature">rateAddLiquidity(uint256 _yesses, uint256 _nos)</code></a></li><li><a href="#IAMMExchange.addLiquidityThenSwap(uint256,bool,uint256)"><code class="function-signature">addLiquidityThenSwap(uint256 _setsToBuy, bool _swapForYes, uint256 _swapHowMuch)</code></a></li><li><a href="#IAMMExchange.rateAddLiquidityThenSwap(uint256,bool,uint256)"><code class="function-signature">rateAddLiquidityThenSwap(uint256 _setsToBuy, bool _swapForYes, uint256 _swapHowMuch)</code></a></li><li><a href="#IAMMExchange.removeLiquidity(uint256,uint256)"><code class="function-signature">removeLiquidity(uint256 _poolTokensToSell, uint256 _minSetsSold)</code></a></li><li><a href="#IAMMExchange.rateRemoveLiquidity(uint256,uint256)"><code class="function-signature">rateRemoveLiquidity(uint256 _poolTokensToSell, uint256 _minSetsSold)</code></a></li><li><a href="#IAMMExchange.enterPosition(uint256,bool,uint256)"><code class="function-signature">enterPosition(uint256 _cashCost, bool _buyYes, uint256 _minShares)</code></a></li><li><a href="#IAMMExchange.rateEnterPosition(uint256,bool)"><code class="function-signature">rateEnterPosition(uint256 _cashToSpend, bool _buyYes)</code></a></li><li><a href="#IAMMExchange.exitPosition(uint256,uint256,uint256,uint256)"><code class="function-signature">exitPosition(uint256 _invalidShares, uint256 _noShares, uint256 _yesShares, uint256 _minCashPayout)</code></a></li><li><a href="#IAMMExchange.exitAll(uint256)"><code class="function-signature">exitAll(uint256 _minCashPayout)</code></a></li><li><a href="#IAMMExchange.rateExitPosition(uint256,uint256,uint256)"><code class="function-signature">rateExitPosition(uint256 _invalidShares, uint256 _noShares, uint256 _yesShares)</code></a></li><li><a href="#IAMMExchange.rateExitAll()"><code class="function-signature">rateExitAll()</code></a></li><li><a href="#IAMMExchange.swap(uint256,bool,uint256)"><code class="function-signature">swap(uint256 _inputShares, bool _inputYes, uint256 _minOutputShares)</code></a></li><li><a href="#IAMMExchange.rateSwap(uint256,bool)"><code class="function-signature">rateSwap(uint256 _inputShares, bool _inputYes)</code></a></li><li><a href="#IAMMExchange.poolConstant(uint256,uint256)"><code class="function-signature">poolConstant(uint256 _poolYes, uint256 _poolNo)</code></a></li><li class="inherited"><a href="#IERC20.totalSupply()"><code class="function-signature">totalSupply()</code></a></li><li class="inherited"><a href="#IERC20.balanceOf(address)"><code class="function-signature">balanceOf(address owner)</code></a></li><li class="inherited"><a href="#IERC20.transfer(address,uint256)"><code class="function-signature">transfer(address to, uint256 amount)</code></a></li><li class="inherited"><a href="#IERC20.transferFrom(address,address,uint256)"><code class="function-signature">transferFrom(address from, address to, uint256 amount)</code></a></li><li class="inherited"><a href="#IERC20.approve(address,uint256)"><code class="function-signature">approve(address spender, uint256 amount)</code></a></li><li class="inherited"><a href="#IERC20.allowance(address,address)"><code class="function-signature">allowance(address owner, address spender)</code></a></li></ul><span class="contract-index-title">Events</span><ul><li class="inherited"><a href="#IERC20.Transfer(address,address,uint256)"><code class="function-signature">Transfer(address from, address to, uint256 value)</code></a></li><li class="inherited"><a href="#IERC20.Approval(address,address,uint256)"><code class="function-signature">Approval(address owner, address spender, uint256 value)</code></a></li></ul></div>
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="IAMMExchange.initialize(contract IMarket,contract IParaShareToken,uint256)"></a><code class="function-signature">initialize(contract IMarket _market, contract IParaShareToken _shareToken, uint256 _fee)</code><span class="function-visibility">public</span></h4>
+
+
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="IAMMExchange.addLiquidity(uint256)"></a><code class="function-signature">addLiquidity(uint256 _setsToBuy) <span class="return-arrow">→</span> <span class="return-type">uint256</span></code><span class="function-visibility">public</span></h4>
+
+
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="IAMMExchange.rateAddLiquidity(uint256,uint256)"></a><code class="function-signature">rateAddLiquidity(uint256 _yesses, uint256 _nos) <span class="return-arrow">→</span> <span class="return-type">uint256</span></code><span class="function-visibility">public</span></h4>
+
+
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="IAMMExchange.addLiquidityThenSwap(uint256,bool,uint256)"></a><code class="function-signature">addLiquidityThenSwap(uint256 _setsToBuy, bool _swapForYes, uint256 _swapHowMuch) <span class="return-arrow">→</span> <span class="return-type">uint256</span></code><span class="function-visibility">external</span></h4>
+
+
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="IAMMExchange.rateAddLiquidityThenSwap(uint256,bool,uint256)"></a><code class="function-signature">rateAddLiquidityThenSwap(uint256 _setsToBuy, bool _swapForYes, uint256 _swapHowMuch) <span class="return-arrow">→</span> <span class="return-type">uint256</span></code><span class="function-visibility">public</span></h4>
+
+
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="IAMMExchange.removeLiquidity(uint256,uint256)"></a><code class="function-signature">removeLiquidity(uint256 _poolTokensToSell, uint256 _minSetsSold) <span class="return-arrow">→</span> <span class="return-type">uint256,uint256,uint256,uint256</span></code><span class="function-visibility">external</span></h4>
+
+
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="IAMMExchange.rateRemoveLiquidity(uint256,uint256)"></a><code class="function-signature">rateRemoveLiquidity(uint256 _poolTokensToSell, uint256 _minSetsSold) <span class="return-arrow">→</span> <span class="return-type">uint256,uint256,uint256,uint256,uint256</span></code><span class="function-visibility">public</span></h4>
+
+
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="IAMMExchange.enterPosition(uint256,bool,uint256)"></a><code class="function-signature">enterPosition(uint256 _cashCost, bool _buyYes, uint256 _minShares) <span class="return-arrow">→</span> <span class="return-type">uint256</span></code><span class="function-visibility">public</span></h4>
+
+
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="IAMMExchange.rateEnterPosition(uint256,bool)"></a><code class="function-signature">rateEnterPosition(uint256 _cashToSpend, bool _buyYes) <span class="return-arrow">→</span> <span class="return-type">uint256</span></code><span class="function-visibility">public</span></h4>
+
+
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="IAMMExchange.exitPosition(uint256,uint256,uint256,uint256)"></a><code class="function-signature">exitPosition(uint256 _invalidShares, uint256 _noShares, uint256 _yesShares, uint256 _minCashPayout) <span class="return-arrow">→</span> <span class="return-type">uint256</span></code><span class="function-visibility">public</span></h4>
+
+
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="IAMMExchange.exitAll(uint256)"></a><code class="function-signature">exitAll(uint256 _minCashPayout) <span class="return-arrow">→</span> <span class="return-type">uint256</span></code><span class="function-visibility">external</span></h4>
+
+
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="IAMMExchange.rateExitPosition(uint256,uint256,uint256)"></a><code class="function-signature">rateExitPosition(uint256 _invalidShares, uint256 _noShares, uint256 _yesShares) <span class="return-arrow">→</span> <span class="return-type">uint256,uint256,int256,int256</span></code><span class="function-visibility">public</span></h4>
+
+
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="IAMMExchange.rateExitAll()"></a><code class="function-signature">rateExitAll() <span class="return-arrow">→</span> <span class="return-type">uint256,uint256,int256,int256</span></code><span class="function-visibility">public</span></h4>
+
+
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="IAMMExchange.swap(uint256,bool,uint256)"></a><code class="function-signature">swap(uint256 _inputShares, bool _inputYes, uint256 _minOutputShares) <span class="return-arrow">→</span> <span class="return-type">uint256</span></code><span class="function-visibility">external</span></h4>
+
+
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="IAMMExchange.rateSwap(uint256,bool)"></a><code class="function-signature">rateSwap(uint256 _inputShares, bool _inputYes) <span class="return-arrow">→</span> <span class="return-type">uint256</span></code><span class="function-visibility">public</span></h4>
+
+
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="IAMMExchange.poolConstant(uint256,uint256)"></a><code class="function-signature">poolConstant(uint256 _poolYes, uint256 _poolNo) <span class="return-arrow">→</span> <span class="return-type">uint256</span></code><span class="function-visibility">public</span></h4>
+
+
+
+
+
+
+
+### `IAMMFactory`
+
+
+
+<div class="contract-index"><span class="contract-index-title">Functions</span><ul><li><a href="#IAMMFactory.addAMM(contract IMarket,contract IParaShareToken)"><code class="function-signature">addAMM(contract IMarket _market, contract IParaShareToken _para)</code></a></li><li><a href="#IAMMFactory.salt(contract IMarket,contract IParaShareToken)"><code class="function-signature">salt(contract IMarket _market, contract IParaShareToken _para)</code></a></li><li><a href="#IAMMFactory.transferCash(contract IMarket,contract IParaShareToken,address,address,uint256)"><code class="function-signature">transferCash(contract IMarket _market, contract IParaShareToken _para, address sender, address recipient, uint256 quantity)</code></a></li></ul></div>
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="IAMMFactory.addAMM(contract IMarket,contract IParaShareToken)"></a><code class="function-signature">addAMM(contract IMarket _market, contract IParaShareToken _para) <span class="return-arrow">→</span> <span class="return-type">address</span></code><span class="function-visibility">external</span></h4>
+
+
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="IAMMFactory.salt(contract IMarket,contract IParaShareToken)"></a><code class="function-signature">salt(contract IMarket _market, contract IParaShareToken _para) <span class="return-arrow">→</span> <span class="return-type">uint256</span></code><span class="function-visibility">public</span></h4>
+
+
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="IAMMFactory.transferCash(contract IMarket,contract IParaShareToken,address,address,uint256)"></a><code class="function-signature">transferCash(contract IMarket _market, contract IParaShareToken _para, address sender, address recipient, uint256 quantity)</code><span class="function-visibility">public</span></h4>
 
 
 
@@ -1411,99 +1563,11 @@ MUST emit when the URI is updated for a token ID.
 
 
 
-### `IParaAugur`
-
-
-
-<div class="contract-index"><span class="contract-index-title">Functions</span><ul><li><a href="#IParaAugur.generateParaUniverse(contract IUniverse)"><code class="function-signature">generateParaUniverse(contract IUniverse _universe)</code></a></li><li><a href="#IParaAugur.registerContract(bytes32,address)"><code class="function-signature">registerContract(bytes32 _key, address _address)</code></a></li><li><a href="#IParaAugur.lookup(bytes32)"><code class="function-signature">lookup(bytes32 _key)</code></a></li><li><a href="#IParaAugur.isKnownUniverse(contract IUniverse)"><code class="function-signature">isKnownUniverse(contract IUniverse _universe)</code></a></li><li><a href="#IParaAugur.trustedCashTransfer(address,address,uint256)"><code class="function-signature">trustedCashTransfer(address _from, address _to, uint256 _amount)</code></a></li><li><a href="#IParaAugur.isKnownMarket(contract IMarket)"><code class="function-signature">isKnownMarket(contract IMarket _market)</code></a></li><li><a href="#IParaAugur.logCompleteSetsPurchased(contract IUniverse,contract IMarket,address,uint256)"><code class="function-signature">logCompleteSetsPurchased(contract IUniverse _universe, contract IMarket _market, address _account, uint256 _numCompleteSets)</code></a></li><li><a href="#IParaAugur.logCompleteSetsSold(contract IUniverse,contract IMarket,address,uint256,uint256)"><code class="function-signature">logCompleteSetsSold(contract IUniverse _universe, contract IMarket _market, address _account, uint256 _numCompleteSets, uint256 _fees)</code></a></li><li><a href="#IParaAugur.logMarketOIChanged(contract IUniverse,contract IMarket)"><code class="function-signature">logMarketOIChanged(contract IUniverse _universe, contract IMarket _market)</code></a></li><li><a href="#IParaAugur.logTradingProceedsClaimed(contract IUniverse,address,address,uint256,uint256,uint256,uint256)"><code class="function-signature">logTradingProceedsClaimed(contract IUniverse _universe, address _sender, address _market, uint256 _outcome, uint256 _numShares, uint256 _numPayoutTokens, uint256 _fees)</code></a></li><li><a href="#IParaAugur.logShareTokensBalanceChanged(address,contract IMarket,uint256,uint256)"><code class="function-signature">logShareTokensBalanceChanged(address _account, contract IMarket _market, uint256 _outcome, uint256 _balance)</code></a></li><li><a href="#IParaAugur.logReportingFeeChanged(uint256)"><code class="function-signature">logReportingFeeChanged(uint256 _reportingFee)</code></a></li><li><a href="#IParaAugur.getTimestamp()"><code class="function-signature">getTimestamp()</code></a></li></ul></div>
-
-
-
-<h4><a class="anchor" aria-hidden="true" id="IParaAugur.generateParaUniverse(contract IUniverse)"></a><code class="function-signature">generateParaUniverse(contract IUniverse _universe) <span class="return-arrow">→</span> <span class="return-type">contract IParaUniverse</span></code><span class="function-visibility">external</span></h4>
-
-
-
-
-
-<h4><a class="anchor" aria-hidden="true" id="IParaAugur.registerContract(bytes32,address)"></a><code class="function-signature">registerContract(bytes32 _key, address _address) <span class="return-arrow">→</span> <span class="return-type">bool</span></code><span class="function-visibility">external</span></h4>
-
-
-
-
-
-<h4><a class="anchor" aria-hidden="true" id="IParaAugur.lookup(bytes32)"></a><code class="function-signature">lookup(bytes32 _key) <span class="return-arrow">→</span> <span class="return-type">address</span></code><span class="function-visibility">external</span></h4>
-
-
-
-
-
-<h4><a class="anchor" aria-hidden="true" id="IParaAugur.isKnownUniverse(contract IUniverse)"></a><code class="function-signature">isKnownUniverse(contract IUniverse _universe) <span class="return-arrow">→</span> <span class="return-type">bool</span></code><span class="function-visibility">external</span></h4>
-
-
-
-
-
-<h4><a class="anchor" aria-hidden="true" id="IParaAugur.trustedCashTransfer(address,address,uint256)"></a><code class="function-signature">trustedCashTransfer(address _from, address _to, uint256 _amount) <span class="return-arrow">→</span> <span class="return-type">bool</span></code><span class="function-visibility">public</span></h4>
-
-
-
-
-
-<h4><a class="anchor" aria-hidden="true" id="IParaAugur.isKnownMarket(contract IMarket)"></a><code class="function-signature">isKnownMarket(contract IMarket _market) <span class="return-arrow">→</span> <span class="return-type">bool</span></code><span class="function-visibility">public</span></h4>
-
-
-
-
-
-<h4><a class="anchor" aria-hidden="true" id="IParaAugur.logCompleteSetsPurchased(contract IUniverse,contract IMarket,address,uint256)"></a><code class="function-signature">logCompleteSetsPurchased(contract IUniverse _universe, contract IMarket _market, address _account, uint256 _numCompleteSets) <span class="return-arrow">→</span> <span class="return-type">bool</span></code><span class="function-visibility">external</span></h4>
-
-
-
-
-
-<h4><a class="anchor" aria-hidden="true" id="IParaAugur.logCompleteSetsSold(contract IUniverse,contract IMarket,address,uint256,uint256)"></a><code class="function-signature">logCompleteSetsSold(contract IUniverse _universe, contract IMarket _market, address _account, uint256 _numCompleteSets, uint256 _fees) <span class="return-arrow">→</span> <span class="return-type">bool</span></code><span class="function-visibility">external</span></h4>
-
-
-
-
-
-<h4><a class="anchor" aria-hidden="true" id="IParaAugur.logMarketOIChanged(contract IUniverse,contract IMarket)"></a><code class="function-signature">logMarketOIChanged(contract IUniverse _universe, contract IMarket _market) <span class="return-arrow">→</span> <span class="return-type">bool</span></code><span class="function-visibility">external</span></h4>
-
-
-
-
-
-<h4><a class="anchor" aria-hidden="true" id="IParaAugur.logTradingProceedsClaimed(contract IUniverse,address,address,uint256,uint256,uint256,uint256)"></a><code class="function-signature">logTradingProceedsClaimed(contract IUniverse _universe, address _sender, address _market, uint256 _outcome, uint256 _numShares, uint256 _numPayoutTokens, uint256 _fees) <span class="return-arrow">→</span> <span class="return-type">bool</span></code><span class="function-visibility">external</span></h4>
-
-
-
-
-
-<h4><a class="anchor" aria-hidden="true" id="IParaAugur.logShareTokensBalanceChanged(address,contract IMarket,uint256,uint256)"></a><code class="function-signature">logShareTokensBalanceChanged(address _account, contract IMarket _market, uint256 _outcome, uint256 _balance) <span class="return-arrow">→</span> <span class="return-type">bool</span></code><span class="function-visibility">external</span></h4>
-
-
-
-
-
-<h4><a class="anchor" aria-hidden="true" id="IParaAugur.logReportingFeeChanged(uint256)"></a><code class="function-signature">logReportingFeeChanged(uint256 _reportingFee) <span class="return-arrow">→</span> <span class="return-type">bool</span></code><span class="function-visibility">external</span></h4>
-
-
-
-
-
-<h4><a class="anchor" aria-hidden="true" id="IParaAugur.getTimestamp()"></a><code class="function-signature">getTimestamp() <span class="return-arrow">→</span> <span class="return-type">uint256</span></code><span class="function-visibility">public</span></h4>
-
-
-
-
-
-
-
 ### `IParaShareToken`
 
 
 
-<div class="contract-index"><span class="contract-index-title">Functions</span><ul><li><a href="#IParaShareToken.cash()"><code class="function-signature">cash()</code></a></li><li><a href="#IParaShareToken.augur()"><code class="function-signature">augur()</code></a></li><li><a href="#IParaShareToken.initialize(contract IParaAugur,address)"><code class="function-signature">initialize(contract IParaAugur _augur, address _originalShareToken)</code></a></li><li><a href="#IParaShareToken.approveUniverse(contract IParaUniverse)"><code class="function-signature">approveUniverse(contract IParaUniverse _paraUniverse)</code></a></li><li><a href="#IParaShareToken.buyCompleteSets(contract IMarket,address,uint256)"><code class="function-signature">buyCompleteSets(contract IMarket _market, address _account, uint256 _amount)</code></a></li><li><a href="#IParaShareToken.publicSellCompleteSets(contract IMarket,uint256)"><code class="function-signature">publicSellCompleteSets(contract IMarket _market, uint256 _amount)</code></a></li><li><a href="#IParaShareToken.publicBuyCompleteSets(contract IMarket,uint256)"><code class="function-signature">publicBuyCompleteSets(contract IMarket _market, uint256 _amount)</code></a></li><li><a href="#IParaShareToken.getTokenId(contract IMarket,uint256)"><code class="function-signature">getTokenId(contract IMarket _market, uint256 _outcome)</code></a></li><li><a href="#IParaShareToken.unsafeTransferFrom(address,address,uint256,uint256)"><code class="function-signature">unsafeTransferFrom(address _from, address _to, uint256 _id, uint256 _value)</code></a></li><li><a href="#IParaShareToken.balanceOf(address,uint256)"><code class="function-signature">balanceOf(address owner, uint256 id)</code></a></li><li><a href="#IParaShareToken.balanceOfBatch(address[],uint256[])"><code class="function-signature">balanceOfBatch(address[] owners, uint256[] ids)</code></a></li><li><a href="#IParaShareToken.unsafeBatchTransferFrom(address,address,uint256[],uint256[])"><code class="function-signature">unsafeBatchTransferFrom(address _from, address _to, uint256[] _ids, uint256[] _values)</code></a></li></ul></div>
+<div class="contract-index"><span class="contract-index-title">Functions</span><ul><li><a href="#IParaShareToken.cash()"><code class="function-signature">cash()</code></a></li><li><a href="#IParaShareToken.augur()"><code class="function-signature">augur()</code></a></li><li><a href="#IParaShareToken.initialize(address,address)"><code class="function-signature">initialize(address _augur, address _originalShareToken)</code></a></li><li><a href="#IParaShareToken.approveUniverse(contract IParaUniverse)"><code class="function-signature">approveUniverse(contract IParaUniverse _paraUniverse)</code></a></li><li><a href="#IParaShareToken.buyCompleteSets(contract IMarket,address,uint256)"><code class="function-signature">buyCompleteSets(contract IMarket _market, address _account, uint256 _amount)</code></a></li><li><a href="#IParaShareToken.publicSellCompleteSets(contract IMarket,uint256)"><code class="function-signature">publicSellCompleteSets(contract IMarket _market, uint256 _amount)</code></a></li><li><a href="#IParaShareToken.publicBuyCompleteSets(contract IMarket,uint256)"><code class="function-signature">publicBuyCompleteSets(contract IMarket _market, uint256 _amount)</code></a></li><li><a href="#IParaShareToken.getTokenId(contract IMarket,uint256)"><code class="function-signature">getTokenId(contract IMarket _market, uint256 _outcome)</code></a></li><li><a href="#IParaShareToken.unsafeTransferFrom(address,address,uint256,uint256)"><code class="function-signature">unsafeTransferFrom(address _from, address _to, uint256 _id, uint256 _value)</code></a></li><li><a href="#IParaShareToken.balanceOf(address,uint256)"><code class="function-signature">balanceOf(address owner, uint256 id)</code></a></li><li><a href="#IParaShareToken.balanceOfBatch(address[],uint256[])"><code class="function-signature">balanceOfBatch(address[] owners, uint256[] ids)</code></a></li><li><a href="#IParaShareToken.unsafeBatchTransferFrom(address,address,uint256[],uint256[])"><code class="function-signature">unsafeBatchTransferFrom(address _from, address _to, uint256[] _ids, uint256[] _values)</code></a></li></ul></div>
 
 
 
@@ -1519,7 +1583,7 @@ MUST emit when the URI is updated for a token ID.
 
 
 
-<h4><a class="anchor" aria-hidden="true" id="IParaShareToken.initialize(contract IParaAugur,address)"></a><code class="function-signature">initialize(contract IParaAugur _augur, address _originalShareToken)</code><span class="function-visibility">external</span></h4>
+<h4><a class="anchor" aria-hidden="true" id="IParaShareToken.initialize(address,address)"></a><code class="function-signature">initialize(address _augur, address _originalShareToken)</code><span class="function-visibility">external</span></h4>
 
 
 
@@ -2727,7 +2791,7 @@ MUST emit when the URI is updated for a token ID.
 
 
 
-<div class="contract-index"><span class="contract-index-title">Functions</span><ul><li><a href="#AMMFactory.constructor(address,uint256)"><code class="function-signature">constructor(address _proxyToClone, uint256 _fee)</code></a></li><li><a href="#AMMFactory.addAMM(contract IMarket,contract IParaShareToken)"><code class="function-signature">addAMM(contract IMarket _market, contract IParaShareToken _para)</code></a></li><li><a href="#AMMFactory.salt(contract IMarket,contract IParaShareToken)"><code class="function-signature">salt(contract IMarket _market, contract IParaShareToken _para)</code></a></li><li class="inherited"><a href="para#CloneFactory2.createClone2(address,uint256)"><code class="function-signature">createClone2(address target, uint256 salt)</code></a></li><li class="inherited"><a href="para#CloneFactory2.clone2Address(address,uint256,address)"><code class="function-signature">clone2Address(address target, uint256 salt, address creator)</code></a></li></ul></div>
+<div class="contract-index"><span class="contract-index-title">Functions</span><ul><li><a href="#AMMFactory.constructor(address,uint256)"><code class="function-signature">constructor(address _proxyToClone, uint256 _fee)</code></a></li><li><a href="#AMMFactory.addAMM(contract IMarket,contract IParaShareToken)"><code class="function-signature">addAMM(contract IMarket _market, contract IParaShareToken _para)</code></a></li><li><a href="#AMMFactory.salt(contract IMarket,contract IParaShareToken)"><code class="function-signature">salt(contract IMarket _market, contract IParaShareToken _para)</code></a></li><li><a href="#AMMFactory.transferCash(contract IMarket,contract IParaShareToken,address,address,uint256)"><code class="function-signature">transferCash(contract IMarket _market, contract IParaShareToken _para, address sender, address recipient, uint256 quantity)</code></a></li><li class="inherited"><a href="para#CloneFactory2.createClone2(address,uint256)"><code class="function-signature">createClone2(address target, uint256 salt)</code></a></li><li class="inherited"><a href="para#CloneFactory2.clone2Address(address,uint256,address)"><code class="function-signature">clone2Address(address target, uint256 salt, address creator)</code></a></li></ul></div>
 
 
 
@@ -2737,13 +2801,19 @@ MUST emit when the URI is updated for a token ID.
 
 
 
-<h4><a class="anchor" aria-hidden="true" id="AMMFactory.addAMM(contract IMarket,contract IParaShareToken)"></a><code class="function-signature">addAMM(contract IMarket _market, contract IParaShareToken _para) <span class="return-arrow">→</span> <span class="return-type">contract AMMExchange</span></code><span class="function-visibility">external</span></h4>
+<h4><a class="anchor" aria-hidden="true" id="AMMFactory.addAMM(contract IMarket,contract IParaShareToken)"></a><code class="function-signature">addAMM(contract IMarket _market, contract IParaShareToken _para) <span class="return-arrow">→</span> <span class="return-type">address</span></code><span class="function-visibility">external</span></h4>
 
 
 
 
 
 <h4><a class="anchor" aria-hidden="true" id="AMMFactory.salt(contract IMarket,contract IParaShareToken)"></a><code class="function-signature">salt(contract IMarket _market, contract IParaShareToken _para) <span class="return-arrow">→</span> <span class="return-type">uint256</span></code><span class="function-visibility">public</span></h4>
+
+
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="AMMFactory.transferCash(contract IMarket,contract IParaShareToken,address,address,uint256)"></a><code class="function-signature">transferCash(contract IMarket _market, contract IParaShareToken _para, address sender, address recipient, uint256 quantity)</code><span class="function-visibility">public</span></h4>
 
 
 
@@ -2849,6 +2919,122 @@ MUST emit when the URI is updated for a token ID.
 
 
 
+### `IOINexus`
+
+
+
+<div class="contract-index"><span class="contract-index-title">Functions</span><ul><li><a href="#IOINexus.addParaAugur(address)"><code class="function-signature">addParaAugur(address _paraAugur)</code></a></li><li><a href="#IOINexus.registerParaUniverse(contract IUniverse,contract IParaUniverse)"><code class="function-signature">registerParaUniverse(contract IUniverse _universe, contract IParaUniverse _paraUniverse)</code></a></li><li><a href="#IOINexus.recordParaUniverseValuesAndUpdateReportingFee(contract IUniverse,uint256,uint256)"><code class="function-signature">recordParaUniverseValuesAndUpdateReportingFee(contract IUniverse _universe, uint256 _targetRepMarketCapInAttoCash, uint256 _repMarketCapInAttoCash)</code></a></li></ul></div>
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="IOINexus.addParaAugur(address)"></a><code class="function-signature">addParaAugur(address _paraAugur) <span class="return-arrow">→</span> <span class="return-type">bool</span></code><span class="function-visibility">external</span></h4>
+
+
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="IOINexus.registerParaUniverse(contract IUniverse,contract IParaUniverse)"></a><code class="function-signature">registerParaUniverse(contract IUniverse _universe, contract IParaUniverse _paraUniverse)</code><span class="function-visibility">external</span></h4>
+
+
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="IOINexus.recordParaUniverseValuesAndUpdateReportingFee(contract IUniverse,uint256,uint256)"></a><code class="function-signature">recordParaUniverseValuesAndUpdateReportingFee(contract IUniverse _universe, uint256 _targetRepMarketCapInAttoCash, uint256 _repMarketCapInAttoCash) <span class="return-arrow">→</span> <span class="return-type">uint256</span></code><span class="function-visibility">external</span></h4>
+
+
+
+
+
+
+
+### `IParaAugur`
+
+
+
+<div class="contract-index"><span class="contract-index-title">Functions</span><ul><li><a href="#IParaAugur.generateParaUniverse(contract IUniverse)"><code class="function-signature">generateParaUniverse(contract IUniverse _universe)</code></a></li><li><a href="#IParaAugur.registerContract(bytes32,address)"><code class="function-signature">registerContract(bytes32 _key, address _address)</code></a></li><li><a href="#IParaAugur.lookup(bytes32)"><code class="function-signature">lookup(bytes32 _key)</code></a></li><li><a href="#IParaAugur.isKnownUniverse(contract IUniverse)"><code class="function-signature">isKnownUniverse(contract IUniverse _universe)</code></a></li><li><a href="#IParaAugur.trustedCashTransfer(address,address,uint256)"><code class="function-signature">trustedCashTransfer(address _from, address _to, uint256 _amount)</code></a></li><li><a href="#IParaAugur.isKnownMarket(contract IMarket)"><code class="function-signature">isKnownMarket(contract IMarket _market)</code></a></li><li><a href="#IParaAugur.logCompleteSetsPurchased(contract IUniverse,contract IMarket,address,uint256)"><code class="function-signature">logCompleteSetsPurchased(contract IUniverse _universe, contract IMarket _market, address _account, uint256 _numCompleteSets)</code></a></li><li><a href="#IParaAugur.logCompleteSetsSold(contract IUniverse,contract IMarket,address,uint256,uint256)"><code class="function-signature">logCompleteSetsSold(contract IUniverse _universe, contract IMarket _market, address _account, uint256 _numCompleteSets, uint256 _fees)</code></a></li><li><a href="#IParaAugur.logMarketOIChanged(contract IUniverse,contract IMarket)"><code class="function-signature">logMarketOIChanged(contract IUniverse _universe, contract IMarket _market)</code></a></li><li><a href="#IParaAugur.logTradingProceedsClaimed(contract IUniverse,address,address,uint256,uint256,uint256,uint256)"><code class="function-signature">logTradingProceedsClaimed(contract IUniverse _universe, address _sender, address _market, uint256 _outcome, uint256 _numShares, uint256 _numPayoutTokens, uint256 _fees)</code></a></li><li><a href="#IParaAugur.logShareTokensBalanceChanged(address,contract IMarket,uint256,uint256)"><code class="function-signature">logShareTokensBalanceChanged(address _account, contract IMarket _market, uint256 _outcome, uint256 _balance)</code></a></li><li><a href="#IParaAugur.logReportingFeeChanged(uint256)"><code class="function-signature">logReportingFeeChanged(uint256 _reportingFee)</code></a></li><li><a href="#IParaAugur.getTimestamp()"><code class="function-signature">getTimestamp()</code></a></li></ul></div>
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="IParaAugur.generateParaUniverse(contract IUniverse)"></a><code class="function-signature">generateParaUniverse(contract IUniverse _universe) <span class="return-arrow">→</span> <span class="return-type">contract IParaUniverse</span></code><span class="function-visibility">external</span></h4>
+
+
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="IParaAugur.registerContract(bytes32,address)"></a><code class="function-signature">registerContract(bytes32 _key, address _address) <span class="return-arrow">→</span> <span class="return-type">bool</span></code><span class="function-visibility">external</span></h4>
+
+
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="IParaAugur.lookup(bytes32)"></a><code class="function-signature">lookup(bytes32 _key) <span class="return-arrow">→</span> <span class="return-type">address</span></code><span class="function-visibility">external</span></h4>
+
+
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="IParaAugur.isKnownUniverse(contract IUniverse)"></a><code class="function-signature">isKnownUniverse(contract IUniverse _universe) <span class="return-arrow">→</span> <span class="return-type">bool</span></code><span class="function-visibility">external</span></h4>
+
+
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="IParaAugur.trustedCashTransfer(address,address,uint256)"></a><code class="function-signature">trustedCashTransfer(address _from, address _to, uint256 _amount) <span class="return-arrow">→</span> <span class="return-type">bool</span></code><span class="function-visibility">public</span></h4>
+
+
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="IParaAugur.isKnownMarket(contract IMarket)"></a><code class="function-signature">isKnownMarket(contract IMarket _market) <span class="return-arrow">→</span> <span class="return-type">bool</span></code><span class="function-visibility">public</span></h4>
+
+
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="IParaAugur.logCompleteSetsPurchased(contract IUniverse,contract IMarket,address,uint256)"></a><code class="function-signature">logCompleteSetsPurchased(contract IUniverse _universe, contract IMarket _market, address _account, uint256 _numCompleteSets) <span class="return-arrow">→</span> <span class="return-type">bool</span></code><span class="function-visibility">external</span></h4>
+
+
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="IParaAugur.logCompleteSetsSold(contract IUniverse,contract IMarket,address,uint256,uint256)"></a><code class="function-signature">logCompleteSetsSold(contract IUniverse _universe, contract IMarket _market, address _account, uint256 _numCompleteSets, uint256 _fees) <span class="return-arrow">→</span> <span class="return-type">bool</span></code><span class="function-visibility">external</span></h4>
+
+
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="IParaAugur.logMarketOIChanged(contract IUniverse,contract IMarket)"></a><code class="function-signature">logMarketOIChanged(contract IUniverse _universe, contract IMarket _market) <span class="return-arrow">→</span> <span class="return-type">bool</span></code><span class="function-visibility">external</span></h4>
+
+
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="IParaAugur.logTradingProceedsClaimed(contract IUniverse,address,address,uint256,uint256,uint256,uint256)"></a><code class="function-signature">logTradingProceedsClaimed(contract IUniverse _universe, address _sender, address _market, uint256 _outcome, uint256 _numShares, uint256 _numPayoutTokens, uint256 _fees) <span class="return-arrow">→</span> <span class="return-type">bool</span></code><span class="function-visibility">external</span></h4>
+
+
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="IParaAugur.logShareTokensBalanceChanged(address,contract IMarket,uint256,uint256)"></a><code class="function-signature">logShareTokensBalanceChanged(address _account, contract IMarket _market, uint256 _outcome, uint256 _balance) <span class="return-arrow">→</span> <span class="return-type">bool</span></code><span class="function-visibility">external</span></h4>
+
+
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="IParaAugur.logReportingFeeChanged(uint256)"></a><code class="function-signature">logReportingFeeChanged(uint256 _reportingFee) <span class="return-arrow">→</span> <span class="return-type">bool</span></code><span class="function-visibility">external</span></h4>
+
+
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="IParaAugur.getTimestamp()"></a><code class="function-signature">getTimestamp() <span class="return-arrow">→</span> <span class="return-type">uint256</span></code><span class="function-visibility">public</span></h4>
+
+
+
+
+
+
+
 ### `Initializable`
 
 
@@ -2905,43 +3091,15 @@ MUST emit when the URI is updated for a token ID.
 
 
 
-### `IOINexus`
-
-
-
-<div class="contract-index"><span class="contract-index-title">Functions</span><ul><li><a href="#IOINexus.addParaAugur(contract IParaAugur)"><code class="function-signature">addParaAugur(contract IParaAugur _paraAugur)</code></a></li><li><a href="#IOINexus.registerParaUniverse(contract IUniverse,contract IParaUniverse)"><code class="function-signature">registerParaUniverse(contract IUniverse _universe, contract IParaUniverse _paraUniverse)</code></a></li><li><a href="#IOINexus.recordParaUniverseValuesAndUpdateReportingFee(contract IUniverse,uint256,uint256)"><code class="function-signature">recordParaUniverseValuesAndUpdateReportingFee(contract IUniverse _universe, uint256 _targetRepMarketCapInAttoCash, uint256 _repMarketCapInAttoCash)</code></a></li></ul></div>
-
-
-
-<h4><a class="anchor" aria-hidden="true" id="IOINexus.addParaAugur(contract IParaAugur)"></a><code class="function-signature">addParaAugur(contract IParaAugur _paraAugur) <span class="return-arrow">→</span> <span class="return-type">bool</span></code><span class="function-visibility">external</span></h4>
-
-
-
-
-
-<h4><a class="anchor" aria-hidden="true" id="IOINexus.registerParaUniverse(contract IUniverse,contract IParaUniverse)"></a><code class="function-signature">registerParaUniverse(contract IUniverse _universe, contract IParaUniverse _paraUniverse)</code><span class="function-visibility">external</span></h4>
-
-
-
-
-
-<h4><a class="anchor" aria-hidden="true" id="IOINexus.recordParaUniverseValuesAndUpdateReportingFee(contract IUniverse,uint256,uint256)"></a><code class="function-signature">recordParaUniverseValuesAndUpdateReportingFee(contract IUniverse _universe, uint256 _targetRepMarketCapInAttoCash, uint256 _repMarketCapInAttoCash) <span class="return-arrow">→</span> <span class="return-type">uint256</span></code><span class="function-visibility">external</span></h4>
-
-
-
-
-
-
-
 ### `OINexus`
 
 
 
-<div class="contract-index"><span class="contract-index-title">Functions</span><ul><li><a href="#OINexus.addParaAugur(contract IParaAugur)"><code class="function-signature">addParaAugur(contract IParaAugur _paraAugur)</code></a></li><li><a href="#OINexus.registerParaUniverse(contract IUniverse,contract IParaUniverse)"><code class="function-signature">registerParaUniverse(contract IUniverse _universe, contract IParaUniverse _paraUniverse)</code></a></li><li><a href="#OINexus.recordParaUniverseValuesAndUpdateReportingFee(contract IUniverse,uint256,uint256)"><code class="function-signature">recordParaUniverseValuesAndUpdateReportingFee(contract IUniverse _universe, uint256 _targetRepMarketCapInAttoCash, uint256 _repMarketCapInAttoCash)</code></a></li><li><a href="#OINexus.applyReportingFeeChanges(contract IUniverse,contract IParaUniverse,uint256,uint256,bool)"><code class="function-signature">applyReportingFeeChanges(contract IUniverse _universe, contract IParaUniverse _paraUniverse, uint256 _targetRepMarketCapInAttoCash, uint256 _repMarketCapInAttoCash, bool recalculate)</code></a></li><li><a href="#OINexus.onTransferOwnership(address,address)"><code class="function-signature">onTransferOwnership(address, address)</code></a></li><li class="inherited"><a href="#Ownable.constructor()"><code class="function-signature">constructor()</code></a></li><li class="inherited"><a href="#Ownable.getOwner()"><code class="function-signature">getOwner()</code></a></li><li class="inherited"><a href="#Ownable.transferOwnership(address)"><code class="function-signature">transferOwnership(address _newOwner)</code></a></li></ul></div>
+<div class="contract-index"><span class="contract-index-title">Functions</span><ul><li><a href="#OINexus.addParaAugur(address)"><code class="function-signature">addParaAugur(address _paraAugur)</code></a></li><li><a href="#OINexus.registerParaUniverse(contract IUniverse,contract IParaUniverse)"><code class="function-signature">registerParaUniverse(contract IUniverse _universe, contract IParaUniverse _paraUniverse)</code></a></li><li><a href="#OINexus.recordParaUniverseValuesAndUpdateReportingFee(contract IUniverse,uint256,uint256)"><code class="function-signature">recordParaUniverseValuesAndUpdateReportingFee(contract IUniverse _universe, uint256 _targetRepMarketCapInAttoCash, uint256 _repMarketCapInAttoCash)</code></a></li><li><a href="#OINexus.applyReportingFeeChanges(contract IUniverse,contract IParaUniverse,uint256,uint256,bool)"><code class="function-signature">applyReportingFeeChanges(contract IUniverse _universe, contract IParaUniverse _paraUniverse, uint256 _targetRepMarketCapInAttoCash, uint256 _repMarketCapInAttoCash, bool recalculate)</code></a></li><li><a href="#OINexus.onTransferOwnership(address,address)"><code class="function-signature">onTransferOwnership(address, address)</code></a></li><li class="inherited"><a href="#Ownable.constructor()"><code class="function-signature">constructor()</code></a></li><li class="inherited"><a href="#Ownable.getOwner()"><code class="function-signature">getOwner()</code></a></li><li class="inherited"><a href="#Ownable.transferOwnership(address)"><code class="function-signature">transferOwnership(address _newOwner)</code></a></li></ul></div>
 
 
 
-<h4><a class="anchor" aria-hidden="true" id="OINexus.addParaAugur(contract IParaAugur)"></a><code class="function-signature">addParaAugur(contract IParaAugur _paraAugur) <span class="return-arrow">→</span> <span class="return-type">bool</span></code><span class="function-visibility">external</span></h4>
+<h4><a class="anchor" aria-hidden="true" id="OINexus.addParaAugur(address)"></a><code class="function-signature">addParaAugur(address _paraAugur) <span class="return-arrow">→</span> <span class="return-type">bool</span></code><span class="function-visibility">external</span></h4>
 
 
 
@@ -3231,7 +3389,7 @@ Allows the current owner to transfer control of the contract to a newOwner.
 
 
 
-<div class="contract-index"><span class="contract-index-title">Functions</span><ul><li><a href="#ParaAugur.constructor(contract IAugur)"><code class="function-signature">constructor(contract IAugur _augur)</code></a></li><li><a href="#ParaAugur.registerContract(bytes32,address)"><code class="function-signature">registerContract(bytes32 _key, address _address)</code></a></li><li><a href="#ParaAugur.lookup(bytes32)"><code class="function-signature">lookup(bytes32 _key)</code></a></li><li><a href="#ParaAugur.finishDeployment()"><code class="function-signature">finishDeployment()</code></a></li><li><a href="#ParaAugur.genesisUniverse()"><code class="function-signature">genesisUniverse()</code></a></li><li><a href="#ParaAugur.isKnownUniverse(contract IUniverse)"><code class="function-signature">isKnownUniverse(contract IUniverse _universe)</code></a></li><li><a href="#ParaAugur.generateParaUniverse(contract IUniverse)"><code class="function-signature">generateParaUniverse(contract IUniverse _universe)</code></a></li><li><a href="#ParaAugur.isKnownParaUniverse(contract IParaUniverse)"><code class="function-signature">isKnownParaUniverse(contract IParaUniverse _universe)</code></a></li><li><a href="#ParaAugur.trustedCashTransfer(address,address,uint256)"><code class="function-signature">trustedCashTransfer(address _from, address _to, uint256 _amount)</code></a></li><li><a href="#ParaAugur.isKnownMarket(contract IMarket)"><code class="function-signature">isKnownMarket(contract IMarket _market)</code></a></li><li><a href="#ParaAugur.logCompleteSetsPurchased(contract IUniverse,contract IMarket,address,uint256)"><code class="function-signature">logCompleteSetsPurchased(contract IUniverse _universe, contract IMarket _market, address _account, uint256 _numCompleteSets)</code></a></li><li><a href="#ParaAugur.logCompleteSetsSold(contract IUniverse,contract IMarket,address,uint256,uint256)"><code class="function-signature">logCompleteSetsSold(contract IUniverse _universe, contract IMarket _market, address _account, uint256 _numCompleteSets, uint256 _fees)</code></a></li><li><a href="#ParaAugur.logMarketOIChanged(contract IUniverse,contract IMarket)"><code class="function-signature">logMarketOIChanged(contract IUniverse _universe, contract IMarket _market)</code></a></li><li><a href="#ParaAugur.logTradingProceedsClaimed(contract IUniverse,address,address,uint256,uint256,uint256,uint256)"><code class="function-signature">logTradingProceedsClaimed(contract IUniverse _universe, address _sender, address _market, uint256 _outcome, uint256 _numShares, uint256 _numPayoutTokens, uint256 _fees)</code></a></li><li><a href="#ParaAugur.logShareTokensBalanceChanged(address,contract IMarket,uint256,uint256)"><code class="function-signature">logShareTokensBalanceChanged(address _account, contract IMarket _market, uint256 _outcome, uint256 _balance)</code></a></li><li><a href="#ParaAugur.logReportingFeeChanged(uint256)"><code class="function-signature">logReportingFeeChanged(uint256 _reportingFee)</code></a></li><li><a href="#ParaAugur.getTimestamp()"><code class="function-signature">getTimestamp()</code></a></li><li><a href="#ParaAugur.getMarketRecommendedTradeInterval(contract IMarket)"><code class="function-signature">getMarketRecommendedTradeInterval(contract IMarket _market)</code></a></li><li><a href="#ParaAugur.getMarketCreationData(contract IMarket)"><code class="function-signature">getMarketCreationData(contract IMarket _market)</code></a></li><li><a href="#ParaAugur.getMaximumMarketEndDate()"><code class="function-signature">getMaximumMarketEndDate()</code></a></li><li><a href="#ParaAugur.getUniverseForkIndex(contract IUniverse)"><code class="function-signature">getUniverseForkIndex(contract IUniverse _universe)</code></a></li><li><a href="#ParaAugur.isKnownFeeSender(address)"><code class="function-signature">isKnownFeeSender(address _feeSender)</code></a></li><li><a href="#ParaAugur.derivePayoutDistributionHash(uint256[],uint256,uint256)"><code class="function-signature">derivePayoutDistributionHash(uint256[] _payoutNumerators, uint256 _numTicks, uint256 _numOutcomes)</code></a></li><li><a href="#ParaAugur.getMarketType(contract IMarket)"><code class="function-signature">getMarketType(contract IMarket _market)</code></a></li><li><a href="#ParaAugur.getMarketOutcomes(contract IMarket)"><code class="function-signature">getMarketOutcomes(contract IMarket _market)</code></a></li><li><a href="#ParaAugur.onTransferOwnership(address,address)"><code class="function-signature">onTransferOwnership(address, address)</code></a></li><li class="inherited"><a href="#Ownable.constructor()"><code class="function-signature">constructor()</code></a></li><li class="inherited"><a href="#Ownable.getOwner()"><code class="function-signature">getOwner()</code></a></li><li class="inherited"><a href="#Ownable.transferOwnership(address)"><code class="function-signature">transferOwnership(address _newOwner)</code></a></li></ul><span class="contract-index-title">Events</span><ul><li><a href="#ParaAugur.CompleteSetsPurchased(address,address,address,uint256,uint256,address)"><code class="function-signature">CompleteSetsPurchased(address universe, address market, address account, uint256 numCompleteSets, uint256 timestamp, address para)</code></a></li><li><a href="#ParaAugur.CompleteSetsSold(address,address,address,uint256,uint256,uint256,address)"><code class="function-signature">CompleteSetsSold(address universe, address market, address account, uint256 numCompleteSets, uint256 fees, uint256 timestamp, address para)</code></a></li><li><a href="#ParaAugur.TradingProceedsClaimed(address,address,address,uint256,uint256,uint256,uint256,uint256,address)"><code class="function-signature">TradingProceedsClaimed(address universe, address sender, address market, uint256 outcome, uint256 numShares, uint256 numPayoutTokens, uint256 fees, uint256 timestamp, address para)</code></a></li><li><a href="#ParaAugur.MarketOIChanged(address,address,uint256,address)"><code class="function-signature">MarketOIChanged(address universe, address market, uint256 marketOI, address para)</code></a></li><li><a href="#ParaAugur.ReportingFeeChanged(address,uint256,address)"><code class="function-signature">ReportingFeeChanged(address universe, uint256 reportingFee, address para)</code></a></li><li><a href="#ParaAugur.ShareTokenBalanceChanged(address,address,address,uint256,uint256,address)"><code class="function-signature">ShareTokenBalanceChanged(address universe, address account, address market, uint256 outcome, uint256 balance, address para)</code></a></li><li><a href="#ParaAugur.RegisterContract(address,bytes32)"><code class="function-signature">RegisterContract(address contractAddress, bytes32 key)</code></a></li><li><a href="#ParaAugur.FinishDeployment()"><code class="function-signature">FinishDeployment()</code></a></li></ul></div>
+<div class="contract-index"><span class="contract-index-title">Functions</span><ul><li><a href="#ParaAugur.constructor(contract IAugur)"><code class="function-signature">constructor(contract IAugur _augur)</code></a></li><li><a href="#ParaAugur.registerContract(bytes32,address)"><code class="function-signature">registerContract(bytes32 _key, address _address)</code></a></li><li><a href="#ParaAugur.lookup(bytes32)"><code class="function-signature">lookup(bytes32 _key)</code></a></li><li><a href="#ParaAugur.finishDeployment()"><code class="function-signature">finishDeployment()</code></a></li><li><a href="#ParaAugur.genesisUniverse()"><code class="function-signature">genesisUniverse()</code></a></li><li><a href="#ParaAugur.isKnownUniverse(contract IUniverse)"><code class="function-signature">isKnownUniverse(contract IUniverse _universe)</code></a></li><li><a href="#ParaAugur.generateParaUniverse(contract IUniverse)"><code class="function-signature">generateParaUniverse(contract IUniverse _universe)</code></a></li><li><a href="#ParaAugur.isKnownParaUniverse(contract IParaUniverse)"><code class="function-signature">isKnownParaUniverse(contract IParaUniverse _universe)</code></a></li><li><a href="#ParaAugur.trustedCashTransfer(address,address,uint256)"><code class="function-signature">trustedCashTransfer(address _from, address _to, uint256 _amount)</code></a></li><li><a href="#ParaAugur.isKnownMarket(contract IMarket)"><code class="function-signature">isKnownMarket(contract IMarket _market)</code></a></li><li><a href="#ParaAugur.logCompleteSetsPurchased(contract IUniverse,contract IMarket,address,uint256)"><code class="function-signature">logCompleteSetsPurchased(contract IUniverse _universe, contract IMarket _market, address _account, uint256 _numCompleteSets)</code></a></li><li><a href="#ParaAugur.logCompleteSetsSold(contract IUniverse,contract IMarket,address,uint256,uint256)"><code class="function-signature">logCompleteSetsSold(contract IUniverse _universe, contract IMarket _market, address _account, uint256 _numCompleteSets, uint256 _fees)</code></a></li><li><a href="#ParaAugur.logMarketOIChanged(contract IUniverse,contract IMarket)"><code class="function-signature">logMarketOIChanged(contract IUniverse _universe, contract IMarket _market)</code></a></li><li><a href="#ParaAugur.logTradingProceedsClaimed(contract IUniverse,address,address,uint256,uint256,uint256,uint256)"><code class="function-signature">logTradingProceedsClaimed(contract IUniverse _universe, address _sender, address _market, uint256 _outcome, uint256 _numShares, uint256 _numPayoutTokens, uint256 _fees)</code></a></li><li><a href="#ParaAugur.logShareTokensBalanceChanged(address,contract IMarket,uint256,uint256)"><code class="function-signature">logShareTokensBalanceChanged(address _account, contract IMarket _market, uint256 _outcome, uint256 _balance)</code></a></li><li><a href="#ParaAugur.logReportingFeeChanged(uint256)"><code class="function-signature">logReportingFeeChanged(uint256 _reportingFee)</code></a></li><li><a href="#ParaAugur.getTimestamp()"><code class="function-signature">getTimestamp()</code></a></li><li><a href="#ParaAugur.getMarketRecommendedTradeInterval(contract IMarket)"><code class="function-signature">getMarketRecommendedTradeInterval(contract IMarket _market)</code></a></li><li><a href="#ParaAugur.getMarketCreationData(contract IMarket)"><code class="function-signature">getMarketCreationData(contract IMarket _market)</code></a></li><li><a href="#ParaAugur.getMaximumMarketEndDate()"><code class="function-signature">getMaximumMarketEndDate()</code></a></li><li><a href="#ParaAugur.getUniverseForkIndex(contract IUniverse)"><code class="function-signature">getUniverseForkIndex(contract IUniverse _universe)</code></a></li><li><a href="#ParaAugur.isKnownFeeSender(address)"><code class="function-signature">isKnownFeeSender(address _feeSender)</code></a></li><li><a href="#ParaAugur.derivePayoutDistributionHash(uint256[],uint256,uint256)"><code class="function-signature">derivePayoutDistributionHash(uint256[] _payoutNumerators, uint256 _numTicks, uint256 _numOutcomes)</code></a></li><li><a href="#ParaAugur.getMarketType(contract IMarket)"><code class="function-signature">getMarketType(contract IMarket _market)</code></a></li><li><a href="#ParaAugur.getMarketOutcomes(contract IMarket)"><code class="function-signature">getMarketOutcomes(contract IMarket _market)</code></a></li><li><a href="#ParaAugur.onTransferOwnership(address,address)"><code class="function-signature">onTransferOwnership(address, address)</code></a></li><li><a href="#ParaAugur.getOriginCash()"><code class="function-signature">getOriginCash()</code></a></li><li class="inherited"><a href="#Ownable.constructor()"><code class="function-signature">constructor()</code></a></li><li class="inherited"><a href="#Ownable.getOwner()"><code class="function-signature">getOwner()</code></a></li><li class="inherited"><a href="#Ownable.transferOwnership(address)"><code class="function-signature">transferOwnership(address _newOwner)</code></a></li></ul><span class="contract-index-title">Events</span><ul><li><a href="#ParaAugur.CompleteSetsPurchased(address,address,address,uint256,uint256,address)"><code class="function-signature">CompleteSetsPurchased(address universe, address market, address account, uint256 numCompleteSets, uint256 timestamp, address para)</code></a></li><li><a href="#ParaAugur.CompleteSetsSold(address,address,address,uint256,uint256,uint256,address)"><code class="function-signature">CompleteSetsSold(address universe, address market, address account, uint256 numCompleteSets, uint256 fees, uint256 timestamp, address para)</code></a></li><li><a href="#ParaAugur.TradingProceedsClaimed(address,address,address,uint256,uint256,uint256,uint256,uint256,address)"><code class="function-signature">TradingProceedsClaimed(address universe, address sender, address market, uint256 outcome, uint256 numShares, uint256 numPayoutTokens, uint256 fees, uint256 timestamp, address para)</code></a></li><li><a href="#ParaAugur.MarketOIChanged(address,address,uint256,address)"><code class="function-signature">MarketOIChanged(address universe, address market, uint256 marketOI, address para)</code></a></li><li><a href="#ParaAugur.ReportingFeeChanged(address,uint256,address)"><code class="function-signature">ReportingFeeChanged(address universe, uint256 reportingFee, address para)</code></a></li><li><a href="#ParaAugur.ShareTokenBalanceChanged(address,address,address,uint256,uint256,address)"><code class="function-signature">ShareTokenBalanceChanged(address universe, address account, address market, uint256 outcome, uint256 balance, address para)</code></a></li><li><a href="#ParaAugur.RegisterContract(address,bytes32)"><code class="function-signature">RegisterContract(address contractAddress, bytes32 key)</code></a></li><li><a href="#ParaAugur.FinishDeployment()"><code class="function-signature">FinishDeployment()</code></a></li></ul></div>
 
 
 
@@ -3386,6 +3544,12 @@ Allows the current owner to transfer control of the contract to a newOwner.
 
 
 <h4><a class="anchor" aria-hidden="true" id="ParaAugur.onTransferOwnership(address,address)"></a><code class="function-signature">onTransferOwnership(address, address)</code><span class="function-visibility">internal</span></h4>
+
+
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="ParaAugur.getOriginCash()"></a><code class="function-signature">getOriginCash() <span class="return-arrow">→</span> <span class="return-type">contract ICash</span></code><span class="function-visibility">public</span></h4>
 
 
 
@@ -3821,6 +3985,40 @@ Allows the current owner to transfer control of the contract to a newOwner.
 
 
 
+### `ITrade`
+
+
+
+<div class="contract-index"><span class="contract-index-title">Functions</span><ul><li><a href="#ITrade.publicTrade(enum Order.TradeDirections,contract IMarket,uint256,uint256,uint256,bytes32,bytes32,uint256)"><code class="function-signature">publicTrade(enum Order.TradeDirections _direction, contract IMarket _market, uint256 _outcome, uint256 _amount, uint256 _price, bytes32 _betterOrderId, bytes32 _worseOrderId, uint256 _tradeGroupID)</code></a></li><li><a href="#ITrade.publicFillBestOrder(enum Order.TradeDirections,contract IMarket,uint256,uint256,uint256,uint256)"><code class="function-signature">publicFillBestOrder(enum Order.TradeDirections _direction, contract IMarket _market, uint256 _outcome, uint256 _amount, uint256 _price, uint256 _tradeGroupID)</code></a></li><li><a href="#ITrade.trade(address,enum Order.TradeDirections,contract IMarket,uint256,uint256,uint256,bytes32,bytes32,uint256)"><code class="function-signature">trade(address _sender, enum Order.TradeDirections _direction, contract IMarket _market, uint256 _outcome, uint256 _amount, uint256 _price, bytes32 _betterOrderId, bytes32 _worseOrderId, uint256 _tradeGroupID)</code></a></li><li><a href="#ITrade.fillBestOrder(address,enum Order.TradeDirections,contract IMarket,uint256,uint256,uint256,uint256)"><code class="function-signature">fillBestOrder(address _sender, enum Order.TradeDirections _direction, contract IMarket _market, uint256 _outcome, uint256 _amount, uint256 _price, uint256 _tradeGroupID)</code></a></li></ul></div>
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="ITrade.publicTrade(enum Order.TradeDirections,contract IMarket,uint256,uint256,uint256,bytes32,bytes32,uint256)"></a><code class="function-signature">publicTrade(enum Order.TradeDirections _direction, contract IMarket _market, uint256 _outcome, uint256 _amount, uint256 _price, bytes32 _betterOrderId, bytes32 _worseOrderId, uint256 _tradeGroupID) <span class="return-arrow">→</span> <span class="return-type">bytes32</span></code><span class="function-visibility">external</span></h4>
+
+
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="ITrade.publicFillBestOrder(enum Order.TradeDirections,contract IMarket,uint256,uint256,uint256,uint256)"></a><code class="function-signature">publicFillBestOrder(enum Order.TradeDirections _direction, contract IMarket _market, uint256 _outcome, uint256 _amount, uint256 _price, uint256 _tradeGroupID) <span class="return-arrow">→</span> <span class="return-type">uint256</span></code><span class="function-visibility">external</span></h4>
+
+
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="ITrade.trade(address,enum Order.TradeDirections,contract IMarket,uint256,uint256,uint256,bytes32,bytes32,uint256)"></a><code class="function-signature">trade(address _sender, enum Order.TradeDirections _direction, contract IMarket _market, uint256 _outcome, uint256 _amount, uint256 _price, bytes32 _betterOrderId, bytes32 _worseOrderId, uint256 _tradeGroupID) <span class="return-arrow">→</span> <span class="return-type">bytes32</span></code><span class="function-visibility">internal</span></h4>
+
+
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="ITrade.fillBestOrder(address,enum Order.TradeDirections,contract IMarket,uint256,uint256,uint256,uint256)"></a><code class="function-signature">fillBestOrder(address _sender, enum Order.TradeDirections _direction, contract IMarket _market, uint256 _outcome, uint256 _amount, uint256 _price, uint256 _tradeGroupID) <span class="return-arrow">→</span> <span class="return-type">uint256</span></code><span class="function-visibility">internal</span></h4>
+
+
+
+
+
+
+
 ### `ITradeFactory`
 
 
@@ -3873,7 +4071,7 @@ Allows the current owner to transfer control of the contract to a newOwner.
 
 
 
-<div class="contract-index"><span class="contract-index-title">Functions</span><ul><li><a href="#ParaDeployer.constructor(contract IAugur,address,address,address,address,contract IOINexus,address,address,struct ParaDeployer.Factories)"><code class="function-signature">constructor(contract IAugur _augur, address _feePotFactory, address _paraUniverseFactory, address _openInterestCashFactory, address _OICash, contract IOINexus _OINexus, address _zeroXExchange, address _WETH9, struct ParaDeployer.Factories _factories)</code></a></li><li><a href="#ParaDeployer.addToken(address)"><code class="function-signature">addToken(address _token)</code></a></li><li><a href="#ParaDeployer.progressDeployment(address)"><code class="function-signature">progressDeployment(address _token)</code></a></li><li><a href="#ParaDeployer.onTransferOwnership(address,address)"><code class="function-signature">onTransferOwnership(address, address)</code></a></li><li class="inherited"><a href="para#Ownable.constructor()"><code class="function-signature">constructor()</code></a></li><li class="inherited"><a href="para#Ownable.getOwner()"><code class="function-signature">getOwner()</code></a></li><li class="inherited"><a href="para#Ownable.transferOwnership(address)"><code class="function-signature">transferOwnership(address _newOwner)</code></a></li></ul></div>
+<div class="contract-index"><span class="contract-index-title">Functions</span><ul><li><a href="#ParaDeployer.constructor(contract IAugur,address,address,address,address,contract IOINexus,address,address,struct ParaDeployer.Factories)"><code class="function-signature">constructor(contract IAugur _augur, address _feePotFactory, address _paraUniverseFactory, address _openInterestCashFactory, address _OICash, contract IOINexus _OINexus, address _zeroXExchange, address _WETH9, struct ParaDeployer.Factories _factories)</code></a></li><li><a href="#ParaDeployer.addToken(address)"><code class="function-signature">addToken(address _token)</code></a></li><li><a href="#ParaDeployer.progressDeployment(address)"><code class="function-signature">progressDeployment(address _token)</code></a></li><li><a href="#ParaDeployer.onTransferOwnership(address,address)"><code class="function-signature">onTransferOwnership(address, address)</code></a></li><li class="inherited"><a href="para#Ownable.constructor()"><code class="function-signature">constructor()</code></a></li><li class="inherited"><a href="para#Ownable.getOwner()"><code class="function-signature">getOwner()</code></a></li><li class="inherited"><a href="para#Ownable.transferOwnership(address)"><code class="function-signature">transferOwnership(address _newOwner)</code></a></li></ul><span class="contract-index-title">Events</span><ul><li><a href="#ParaDeployer.ParaAugurDeployFinished(contract IParaAugur,contract IParaShareToken,contract ICash,contract IOINexus)"><code class="function-signature">ParaAugurDeployFinished(contract IParaAugur paraAugur, contract IParaShareToken shareToken, contract ICash cash, contract IOINexus OINexus)</code></a></li><li><a href="#ParaDeployer.ParaAugurTradingDeployed(contract IParaAugurTrading,contract ICash)"><code class="function-signature">ParaAugurTradingDeployed(contract IParaAugurTrading paraAugur, contract ICash cash)</code></a></li></ul></div>
 
 
 
@@ -3898,6 +4096,18 @@ Allows the current owner to transfer control of the contract to a newOwner.
 <h4><a class="anchor" aria-hidden="true" id="ParaDeployer.onTransferOwnership(address,address)"></a><code class="function-signature">onTransferOwnership(address, address)</code><span class="function-visibility">internal</span></h4>
 
 
+
+
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="ParaDeployer.ParaAugurDeployFinished(contract IParaAugur,contract IParaShareToken,contract ICash,contract IOINexus)"></a><code class="function-signature">ParaAugurDeployFinished(contract IParaAugur paraAugur, contract IParaShareToken shareToken, contract ICash cash, contract IOINexus OINexus)</code><span class="function-visibility"></span></h4>
+
+
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="ParaDeployer.ParaAugurTradingDeployed(contract IParaAugurTrading,contract ICash)"></a><code class="function-signature">ParaAugurTradingDeployed(contract IParaAugurTrading paraAugur, contract ICash cash)</code><span class="function-visibility"></span></h4>
 
 
 
@@ -4514,11 +4724,11 @@ This function call must use less than 30 000 gas.
 
 
 
-<div class="contract-index"><span class="contract-index-title">Functions</span><ul><li><a href="#ParaShareToken.initialize(contract IParaAugur,contract ShareToken)"><code class="function-signature">initialize(contract IParaAugur _augur, contract ShareToken _originalShareToken)</code></a></li><li><a href="#ParaShareToken.approveUniverse(contract IParaUniverse)"><code class="function-signature">approveUniverse(contract IParaUniverse _paraUniverse)</code></a></li><li><a href="#ParaShareToken.unsafeTransferFrom(address,address,uint256,uint256)"><code class="function-signature">unsafeTransferFrom(address _from, address _to, uint256 _id, uint256 _value)</code></a></li><li><a href="#ParaShareToken.unsafeBatchTransferFrom(address,address,uint256[],uint256[])"><code class="function-signature">unsafeBatchTransferFrom(address _from, address _to, uint256[] _ids, uint256[] _values)</code></a></li><li><a href="#ParaShareToken.initializeMarket(contract IMarket)"><code class="function-signature">initializeMarket(contract IMarket _market)</code></a></li><li><a href="#ParaShareToken.isMarketInitialized(contract IMarket)"><code class="function-signature">isMarketInitialized(contract IMarket _market)</code></a></li><li><a href="#ParaShareToken.publicBuyCompleteSets(contract IMarket,uint256)"><code class="function-signature">publicBuyCompleteSets(contract IMarket _market, uint256 _amount)</code></a></li><li><a href="#ParaShareToken.buyCompleteSets(contract IMarket,address,uint256)"><code class="function-signature">buyCompleteSets(contract IMarket _market, address _account, uint256 _amount)</code></a></li><li><a href="#ParaShareToken.buyCompleteSetsInternal(contract IMarket,address,uint256)"><code class="function-signature">buyCompleteSetsInternal(contract IMarket _market, address _account, uint256 _amount)</code></a></li><li><a href="#ParaShareToken.buyCompleteSetsForTrade(contract IMarket,uint256,uint256,address,address)"><code class="function-signature">buyCompleteSetsForTrade(contract IMarket _market, uint256 _amount, uint256 _longOutcome, address _longRecipient, address _shortRecipient)</code></a></li><li><a href="#ParaShareToken.publicSellCompleteSets(contract IMarket,uint256)"><code class="function-signature">publicSellCompleteSets(contract IMarket _market, uint256 _amount)</code></a></li><li><a href="#ParaShareToken.sellCompleteSets(contract IMarket,address,address,uint256,bytes32)"><code class="function-signature">sellCompleteSets(contract IMarket _market, address _holder, address _recipient, uint256 _amount, bytes32 _fingerprint)</code></a></li><li><a href="#ParaShareToken.sellCompleteSetsForTrade(contract IMarket,uint256,uint256,address,address,address,address,uint256,address,bytes32)"><code class="function-signature">sellCompleteSetsForTrade(contract IMarket _market, uint256 _outcome, uint256 _amount, address _shortParticipant, address _longParticipant, address _shortRecipient, address _longRecipient, uint256 _price, address _sourceAccount, bytes32 _fingerprint)</code></a></li><li><a href="#ParaShareToken.claimTradingProceeds(contract IMarket,address,bytes32)"><code class="function-signature">claimTradingProceeds(contract IMarket _market, address _shareHolder, bytes32 _fingerprint)</code></a></li><li><a href="#ParaShareToken.claimTradingProceedsInternal(contract IMarket,address,bytes32)"><code class="function-signature">claimTradingProceedsInternal(contract IMarket _market, address _shareHolder, bytes32 _fingerprint)</code></a></li><li><a href="#ParaShareToken.divideUpWinnings(contract IMarket,contract IParaUniverse,uint256,uint256)"><code class="function-signature">divideUpWinnings(contract IMarket _market, contract IParaUniverse _paraUniverse, uint256 _outcome, uint256 _numberOfShares)</code></a></li><li><a href="#ParaShareToken.calculateProceeds(contract IMarket,uint256,uint256)"><code class="function-signature">calculateProceeds(contract IMarket _market, uint256 _outcome, uint256 _numberOfShares)</code></a></li><li><a href="#ParaShareToken.calculateReportingFee(contract IParaUniverse,uint256)"><code class="function-signature">calculateReportingFee(contract IParaUniverse _paraUniverse, uint256 _amount)</code></a></li><li><a href="#ParaShareToken.calculateCreatorFee(contract IMarket,uint256)"><code class="function-signature">calculateCreatorFee(contract IMarket _market, uint256 _amount)</code></a></li><li><a href="#ParaShareToken.getTypeName()"><code class="function-signature">getTypeName()</code></a></li><li><a href="#ParaShareToken.getMarket(uint256)"><code class="function-signature">getMarket(uint256 _tokenId)</code></a></li><li><a href="#ParaShareToken.getOutcome(uint256)"><code class="function-signature">getOutcome(uint256 _tokenId)</code></a></li><li><a href="#ParaShareToken.totalSupplyForMarketOutcome(contract IMarket,uint256)"><code class="function-signature">totalSupplyForMarketOutcome(contract IMarket _market, uint256 _outcome)</code></a></li><li><a href="#ParaShareToken.balanceOfMarketOutcome(contract IMarket,uint256,address)"><code class="function-signature">balanceOfMarketOutcome(contract IMarket _market, uint256 _outcome, address _account)</code></a></li><li><a href="#ParaShareToken.lowestBalanceOfMarketOutcomes(contract IMarket,uint256[],address)"><code class="function-signature">lowestBalanceOfMarketOutcomes(contract IMarket _market, uint256[] _outcomes, address _account)</code></a></li><li><a href="#ParaShareToken.getTokenId(contract IMarket,uint256)"><code class="function-signature">getTokenId(contract IMarket _market, uint256 _outcome)</code></a></li><li><a href="#ParaShareToken.getTokenIds(contract IMarket,uint256[])"><code class="function-signature">getTokenIds(contract IMarket _market, uint256[] _outcomes)</code></a></li><li><a href="#ParaShareToken.unpackTokenId(uint256)"><code class="function-signature">unpackTokenId(uint256 _tokenId)</code></a></li><li><a href="#ParaShareToken.onTokenTransfer(uint256,address,address,uint256)"><code class="function-signature">onTokenTransfer(uint256 _tokenId, address _from, address _to, uint256 _value)</code></a></li><li><a href="#ParaShareToken.onMint(uint256,address,uint256)"><code class="function-signature">onMint(uint256 _tokenId, address _target, uint256 _amount)</code></a></li><li><a href="#ParaShareToken.onBurn(uint256,address,uint256)"><code class="function-signature">onBurn(uint256 _tokenId, address _target, uint256 _amount)</code></a></li><li class="inherited"><a href="para#ERC1155.constructor()"><code class="function-signature">constructor()</code></a></li><li class="inherited"><a href="para#ERC1155.balanceOf(address,uint256)"><code class="function-signature">balanceOf(address account, uint256 id)</code></a></li><li class="inherited"><a href="para#ERC1155.totalSupply(uint256)"><code class="function-signature">totalSupply(uint256 id)</code></a></li><li class="inherited"><a href="para#ERC1155.balanceOfBatch(address[],uint256[])"><code class="function-signature">balanceOfBatch(address[] accounts, uint256[] ids)</code></a></li><li class="inherited"><a href="para#ERC1155.setApprovalForAll(address,bool)"><code class="function-signature">setApprovalForAll(address operator, bool approved)</code></a></li><li class="inherited"><a href="para#ERC1155.isApprovedForAll(address,address)"><code class="function-signature">isApprovedForAll(address account, address operator)</code></a></li><li class="inherited"><a href="para#ERC1155.safeTransferFrom(address,address,uint256,uint256,bytes)"><code class="function-signature">safeTransferFrom(address from, address to, uint256 id, uint256 value, bytes data)</code></a></li><li class="inherited"><a href="para#ERC1155._transferFrom(address,address,uint256,uint256,bytes,bool)"><code class="function-signature">_transferFrom(address from, address to, uint256 id, uint256 value, bytes data, bool doAcceptanceCheck)</code></a></li><li class="inherited"><a href="para#ERC1155._internalTransferFrom(address,address,uint256,uint256,bytes,bool)"><code class="function-signature">_internalTransferFrom(address from, address to, uint256 id, uint256 value, bytes data, bool doAcceptanceCheck)</code></a></li><li class="inherited"><a href="para#ERC1155.safeBatchTransferFrom(address,address,uint256[],uint256[],bytes)"><code class="function-signature">safeBatchTransferFrom(address from, address to, uint256[] ids, uint256[] values, bytes data)</code></a></li><li class="inherited"><a href="para#ERC1155._batchTransferFrom(address,address,uint256[],uint256[],bytes,bool)"><code class="function-signature">_batchTransferFrom(address from, address to, uint256[] ids, uint256[] values, bytes data, bool doAcceptanceCheck)</code></a></li><li class="inherited"><a href="para#ERC1155._internalBatchTransferFrom(address,address,uint256[],uint256[],bytes,bool)"><code class="function-signature">_internalBatchTransferFrom(address from, address to, uint256[] ids, uint256[] values, bytes data, bool doAcceptanceCheck)</code></a></li><li class="inherited"><a href="para#ERC1155._mint(address,uint256,uint256,bytes,bool)"><code class="function-signature">_mint(address to, uint256 id, uint256 value, bytes data, bool doAcceptanceCheck)</code></a></li><li class="inherited"><a href="para#ERC1155._mintBatch(address,uint256[],uint256[],bytes,bool)"><code class="function-signature">_mintBatch(address to, uint256[] ids, uint256[] values, bytes data, bool doAcceptanceCheck)</code></a></li><li class="inherited"><a href="para#ERC1155._burn(address,uint256,uint256,bytes,bool)"><code class="function-signature">_burn(address account, uint256 id, uint256 value, bytes data, bool doAcceptanceCheck)</code></a></li><li class="inherited"><a href="para#ERC1155._burnBatch(address,uint256[],uint256[],bytes,bool)"><code class="function-signature">_burnBatch(address account, uint256[] ids, uint256[] values, bytes data, bool doAcceptanceCheck)</code></a></li><li class="inherited"><a href="para#ERC1155._doSafeTransferAcceptanceCheck(address,address,address,uint256,uint256,bytes)"><code class="function-signature">_doSafeTransferAcceptanceCheck(address operator, address from, address to, uint256 id, uint256 value, bytes data)</code></a></li><li class="inherited"><a href="para#ERC1155._doSafeBatchTransferAcceptanceCheck(address,address,address,uint256[],uint256[],bytes)"><code class="function-signature">_doSafeBatchTransferAcceptanceCheck(address operator, address from, address to, uint256[] ids, uint256[] values, bytes data)</code></a></li><li class="inherited"><a href="para#ERC165.supportsInterface(bytes4)"><code class="function-signature">supportsInterface(bytes4 interfaceId)</code></a></li><li class="inherited"><a href="para#ERC165._registerInterface(bytes4)"><code class="function-signature">_registerInterface(bytes4 interfaceId)</code></a></li><li class="inherited"><a href="#Initializable.endInitialization()"><code class="function-signature">endInitialization()</code></a></li><li class="inherited"><a href="#Initializable.getInitialized()"><code class="function-signature">getInitialized()</code></a></li></ul><span class="contract-index-title">Events</span><ul><li class="inherited"><a href="#IERC1155.TransferSingle(address,address,address,uint256,uint256)"><code class="function-signature">TransferSingle(address operator, address from, address to, uint256 id, uint256 value)</code></a></li><li class="inherited"><a href="#IERC1155.TransferBatch(address,address,address,uint256[],uint256[])"><code class="function-signature">TransferBatch(address operator, address from, address to, uint256[] ids, uint256[] values)</code></a></li><li class="inherited"><a href="#IERC1155.ApprovalForAll(address,address,bool)"><code class="function-signature">ApprovalForAll(address owner, address operator, bool approved)</code></a></li><li class="inherited"><a href="#IERC1155.URI(string,uint256)"><code class="function-signature">URI(string value, uint256 id)</code></a></li></ul></div>
+<div class="contract-index"><span class="contract-index-title">Functions</span><ul><li><a href="#ParaShareToken.initialize(address,contract ShareToken)"><code class="function-signature">initialize(address _augur, contract ShareToken _originalShareToken)</code></a></li><li><a href="#ParaShareToken.approveUniverse(contract IParaUniverse)"><code class="function-signature">approveUniverse(contract IParaUniverse _paraUniverse)</code></a></li><li><a href="#ParaShareToken.unsafeTransferFrom(address,address,uint256,uint256)"><code class="function-signature">unsafeTransferFrom(address _from, address _to, uint256 _id, uint256 _value)</code></a></li><li><a href="#ParaShareToken.unsafeBatchTransferFrom(address,address,uint256[],uint256[])"><code class="function-signature">unsafeBatchTransferFrom(address _from, address _to, uint256[] _ids, uint256[] _values)</code></a></li><li><a href="#ParaShareToken.initializeMarket(contract IMarket)"><code class="function-signature">initializeMarket(contract IMarket _market)</code></a></li><li><a href="#ParaShareToken.isMarketInitialized(contract IMarket)"><code class="function-signature">isMarketInitialized(contract IMarket _market)</code></a></li><li><a href="#ParaShareToken.publicBuyCompleteSets(contract IMarket,uint256)"><code class="function-signature">publicBuyCompleteSets(contract IMarket _market, uint256 _amount)</code></a></li><li><a href="#ParaShareToken.buyCompleteSets(contract IMarket,address,uint256)"><code class="function-signature">buyCompleteSets(contract IMarket _market, address _account, uint256 _amount)</code></a></li><li><a href="#ParaShareToken.buyCompleteSetsInternal(contract IMarket,address,uint256)"><code class="function-signature">buyCompleteSetsInternal(contract IMarket _market, address _account, uint256 _amount)</code></a></li><li><a href="#ParaShareToken.buyCompleteSetsForTrade(contract IMarket,uint256,uint256,address,address)"><code class="function-signature">buyCompleteSetsForTrade(contract IMarket _market, uint256 _amount, uint256 _longOutcome, address _longRecipient, address _shortRecipient)</code></a></li><li><a href="#ParaShareToken.publicSellCompleteSets(contract IMarket,uint256)"><code class="function-signature">publicSellCompleteSets(contract IMarket _market, uint256 _amount)</code></a></li><li><a href="#ParaShareToken.sellCompleteSets(contract IMarket,address,address,uint256,bytes32)"><code class="function-signature">sellCompleteSets(contract IMarket _market, address _holder, address _recipient, uint256 _amount, bytes32 _fingerprint)</code></a></li><li><a href="#ParaShareToken.sellCompleteSetsForTrade(contract IMarket,uint256,uint256,address,address,address,address,uint256,address,bytes32)"><code class="function-signature">sellCompleteSetsForTrade(contract IMarket _market, uint256 _outcome, uint256 _amount, address _shortParticipant, address _longParticipant, address _shortRecipient, address _longRecipient, uint256 _price, address _sourceAccount, bytes32 _fingerprint)</code></a></li><li><a href="#ParaShareToken.claimTradingProceeds(contract IMarket,address,bytes32)"><code class="function-signature">claimTradingProceeds(contract IMarket _market, address _shareHolder, bytes32 _fingerprint)</code></a></li><li><a href="#ParaShareToken.claimTradingProceedsInternal(contract IMarket,address,bytes32)"><code class="function-signature">claimTradingProceedsInternal(contract IMarket _market, address _shareHolder, bytes32 _fingerprint)</code></a></li><li><a href="#ParaShareToken.divideUpWinnings(contract IMarket,contract IParaUniverse,uint256,uint256)"><code class="function-signature">divideUpWinnings(contract IMarket _market, contract IParaUniverse _paraUniverse, uint256 _outcome, uint256 _numberOfShares)</code></a></li><li><a href="#ParaShareToken.calculateProceeds(contract IMarket,uint256,uint256)"><code class="function-signature">calculateProceeds(contract IMarket _market, uint256 _outcome, uint256 _numberOfShares)</code></a></li><li><a href="#ParaShareToken.calculateReportingFee(contract IParaUniverse,uint256)"><code class="function-signature">calculateReportingFee(contract IParaUniverse _paraUniverse, uint256 _amount)</code></a></li><li><a href="#ParaShareToken.calculateCreatorFee(contract IMarket,uint256)"><code class="function-signature">calculateCreatorFee(contract IMarket _market, uint256 _amount)</code></a></li><li><a href="#ParaShareToken.getTypeName()"><code class="function-signature">getTypeName()</code></a></li><li><a href="#ParaShareToken.getMarket(uint256)"><code class="function-signature">getMarket(uint256 _tokenId)</code></a></li><li><a href="#ParaShareToken.getOutcome(uint256)"><code class="function-signature">getOutcome(uint256 _tokenId)</code></a></li><li><a href="#ParaShareToken.totalSupplyForMarketOutcome(contract IMarket,uint256)"><code class="function-signature">totalSupplyForMarketOutcome(contract IMarket _market, uint256 _outcome)</code></a></li><li><a href="#ParaShareToken.balanceOfMarketOutcome(contract IMarket,uint256,address)"><code class="function-signature">balanceOfMarketOutcome(contract IMarket _market, uint256 _outcome, address _account)</code></a></li><li><a href="#ParaShareToken.lowestBalanceOfMarketOutcomes(contract IMarket,uint256[],address)"><code class="function-signature">lowestBalanceOfMarketOutcomes(contract IMarket _market, uint256[] _outcomes, address _account)</code></a></li><li><a href="#ParaShareToken.getTokenId(contract IMarket,uint256)"><code class="function-signature">getTokenId(contract IMarket _market, uint256 _outcome)</code></a></li><li><a href="#ParaShareToken.getTokenIds(contract IMarket,uint256[])"><code class="function-signature">getTokenIds(contract IMarket _market, uint256[] _outcomes)</code></a></li><li><a href="#ParaShareToken.unpackTokenId(uint256)"><code class="function-signature">unpackTokenId(uint256 _tokenId)</code></a></li><li><a href="#ParaShareToken.onTokenTransfer(uint256,address,address,uint256)"><code class="function-signature">onTokenTransfer(uint256 _tokenId, address _from, address _to, uint256 _value)</code></a></li><li><a href="#ParaShareToken.onMint(uint256,address,uint256)"><code class="function-signature">onMint(uint256 _tokenId, address _target, uint256 _amount)</code></a></li><li><a href="#ParaShareToken.onBurn(uint256,address,uint256)"><code class="function-signature">onBurn(uint256 _tokenId, address _target, uint256 _amount)</code></a></li><li class="inherited"><a href="para#ERC1155.constructor()"><code class="function-signature">constructor()</code></a></li><li class="inherited"><a href="para#ERC1155.balanceOf(address,uint256)"><code class="function-signature">balanceOf(address account, uint256 id)</code></a></li><li class="inherited"><a href="para#ERC1155.totalSupply(uint256)"><code class="function-signature">totalSupply(uint256 id)</code></a></li><li class="inherited"><a href="para#ERC1155.balanceOfBatch(address[],uint256[])"><code class="function-signature">balanceOfBatch(address[] accounts, uint256[] ids)</code></a></li><li class="inherited"><a href="para#ERC1155.setApprovalForAll(address,bool)"><code class="function-signature">setApprovalForAll(address operator, bool approved)</code></a></li><li class="inherited"><a href="para#ERC1155.isApprovedForAll(address,address)"><code class="function-signature">isApprovedForAll(address account, address operator)</code></a></li><li class="inherited"><a href="para#ERC1155.safeTransferFrom(address,address,uint256,uint256,bytes)"><code class="function-signature">safeTransferFrom(address from, address to, uint256 id, uint256 value, bytes data)</code></a></li><li class="inherited"><a href="para#ERC1155._transferFrom(address,address,uint256,uint256,bytes,bool)"><code class="function-signature">_transferFrom(address from, address to, uint256 id, uint256 value, bytes data, bool doAcceptanceCheck)</code></a></li><li class="inherited"><a href="para#ERC1155._internalTransferFrom(address,address,uint256,uint256,bytes,bool)"><code class="function-signature">_internalTransferFrom(address from, address to, uint256 id, uint256 value, bytes data, bool doAcceptanceCheck)</code></a></li><li class="inherited"><a href="para#ERC1155.safeBatchTransferFrom(address,address,uint256[],uint256[],bytes)"><code class="function-signature">safeBatchTransferFrom(address from, address to, uint256[] ids, uint256[] values, bytes data)</code></a></li><li class="inherited"><a href="para#ERC1155._batchTransferFrom(address,address,uint256[],uint256[],bytes,bool)"><code class="function-signature">_batchTransferFrom(address from, address to, uint256[] ids, uint256[] values, bytes data, bool doAcceptanceCheck)</code></a></li><li class="inherited"><a href="para#ERC1155._internalBatchTransferFrom(address,address,uint256[],uint256[],bytes,bool)"><code class="function-signature">_internalBatchTransferFrom(address from, address to, uint256[] ids, uint256[] values, bytes data, bool doAcceptanceCheck)</code></a></li><li class="inherited"><a href="para#ERC1155._mint(address,uint256,uint256,bytes,bool)"><code class="function-signature">_mint(address to, uint256 id, uint256 value, bytes data, bool doAcceptanceCheck)</code></a></li><li class="inherited"><a href="para#ERC1155._mintBatch(address,uint256[],uint256[],bytes,bool)"><code class="function-signature">_mintBatch(address to, uint256[] ids, uint256[] values, bytes data, bool doAcceptanceCheck)</code></a></li><li class="inherited"><a href="para#ERC1155._burn(address,uint256,uint256,bytes,bool)"><code class="function-signature">_burn(address account, uint256 id, uint256 value, bytes data, bool doAcceptanceCheck)</code></a></li><li class="inherited"><a href="para#ERC1155._burnBatch(address,uint256[],uint256[],bytes,bool)"><code class="function-signature">_burnBatch(address account, uint256[] ids, uint256[] values, bytes data, bool doAcceptanceCheck)</code></a></li><li class="inherited"><a href="para#ERC1155._doSafeTransferAcceptanceCheck(address,address,address,uint256,uint256,bytes)"><code class="function-signature">_doSafeTransferAcceptanceCheck(address operator, address from, address to, uint256 id, uint256 value, bytes data)</code></a></li><li class="inherited"><a href="para#ERC1155._doSafeBatchTransferAcceptanceCheck(address,address,address,uint256[],uint256[],bytes)"><code class="function-signature">_doSafeBatchTransferAcceptanceCheck(address operator, address from, address to, uint256[] ids, uint256[] values, bytes data)</code></a></li><li class="inherited"><a href="para#ERC165.supportsInterface(bytes4)"><code class="function-signature">supportsInterface(bytes4 interfaceId)</code></a></li><li class="inherited"><a href="para#ERC165._registerInterface(bytes4)"><code class="function-signature">_registerInterface(bytes4 interfaceId)</code></a></li><li class="inherited"><a href="#Initializable.endInitialization()"><code class="function-signature">endInitialization()</code></a></li><li class="inherited"><a href="#Initializable.getInitialized()"><code class="function-signature">getInitialized()</code></a></li></ul><span class="contract-index-title">Events</span><ul><li class="inherited"><a href="#IERC1155.TransferSingle(address,address,address,uint256,uint256)"><code class="function-signature">TransferSingle(address operator, address from, address to, uint256 id, uint256 value)</code></a></li><li class="inherited"><a href="#IERC1155.TransferBatch(address,address,address,uint256[],uint256[])"><code class="function-signature">TransferBatch(address operator, address from, address to, uint256[] ids, uint256[] values)</code></a></li><li class="inherited"><a href="#IERC1155.ApprovalForAll(address,address,bool)"><code class="function-signature">ApprovalForAll(address owner, address operator, bool approved)</code></a></li><li class="inherited"><a href="#IERC1155.URI(string,uint256)"><code class="function-signature">URI(string value, uint256 id)</code></a></li></ul></div>
 
 
 
-<h4><a class="anchor" aria-hidden="true" id="ParaShareToken.initialize(contract IParaAugur,contract ShareToken)"></a><code class="function-signature">initialize(contract IParaAugur _augur, contract ShareToken _originalShareToken)</code><span class="function-visibility">external</span></h4>
+<h4><a class="anchor" aria-hidden="true" id="ParaShareToken.initialize(address,contract ShareToken)"></a><code class="function-signature">initialize(address _augur, contract ShareToken _originalShareToken)</code><span class="function-visibility">external</span></h4>
 
 
 
@@ -5030,7 +5240,7 @@ a contract or not this will not call `onERC1155Received` on `to`
 
 
 
-<div class="contract-index"><span class="contract-index-title">Functions</span><ul><li><a href="#ParaUniverse.initialize(contract IParaAugur,contract IUniverse)"><code class="function-signature">initialize(contract IParaAugur _augur, contract IUniverse _originUniverse)</code></a></li><li><a href="#ParaUniverse.isOpenInterestCash(address)"><code class="function-signature">isOpenInterestCash(address _address)</code></a></li><li><a href="#ParaUniverse.getReputationToken()"><code class="function-signature">getReputationToken()</code></a></li><li><a href="#ParaUniverse.getFeePot()"><code class="function-signature">getFeePot()</code></a></li><li><a href="#ParaUniverse.setOrigin(contract IUniverse)"><code class="function-signature">setOrigin(contract IUniverse _originUniverse)</code></a></li><li><a href="#ParaUniverse.deposit(address,uint256,address)"><code class="function-signature">deposit(address _sender, uint256 _amount, address _market)</code></a></li><li><a href="#ParaUniverse.withdraw(address,uint256,address)"><code class="function-signature">withdraw(address _recipient, uint256 _amount, address _market)</code></a></li><li><a href="#ParaUniverse.decrementOpenInterest(uint256)"><code class="function-signature">decrementOpenInterest(uint256 _amount)</code></a></li><li><a href="#ParaUniverse.incrementOpenInterest(uint256)"><code class="function-signature">incrementOpenInterest(uint256 _amount)</code></a></li><li><a href="#ParaUniverse.getOpenInterestInAttoCash()"><code class="function-signature">getOpenInterestInAttoCash()</code></a></li><li><a href="#ParaUniverse.setMarketFinalized(contract IMarket,uint256)"><code class="function-signature">setMarketFinalized(contract IMarket _market, uint256 _totalSupply)</code></a></li><li><a href="#ParaUniverse.pokeRepMarketCapInAttoCash()"><code class="function-signature">pokeRepMarketCapInAttoCash()</code></a></li><li><a href="#ParaUniverse.getTargetRepMarketCapInAttoCash()"><code class="function-signature">getTargetRepMarketCapInAttoCash()</code></a></li><li><a href="#ParaUniverse.getOrCacheReportingFeeDivisor()"><code class="function-signature">getOrCacheReportingFeeDivisor()</code></a></li><li><a href="#ParaUniverse.getReportingFeeDivisor()"><code class="function-signature">getReportingFeeDivisor()</code></a></li><li><a href="#ParaUniverse.getMarketOpenInterest(contract IMarket)"><code class="function-signature">getMarketOpenInterest(contract IMarket _market)</code></a></li><li><a href="#ParaUniverse.recordMarketCreatorFees(contract IMarket,uint256,address)"><code class="function-signature">recordMarketCreatorFees(contract IMarket _market, uint256 _marketCreatorFees, address _sourceAccount)</code></a></li><li><a href="#ParaUniverse.getForkingMarket()"><code class="function-signature">getForkingMarket()</code></a></li><li><a href="#ParaUniverse.getDisputeThresholdForDisputePacing()"><code class="function-signature">getDisputeThresholdForDisputePacing()</code></a></li><li><a href="#ParaUniverse.getOrCacheDesignatedReportStake()"><code class="function-signature">getOrCacheDesignatedReportStake()</code></a></li><li><a href="#ParaUniverse.runPeriodicals()"><code class="function-signature">runPeriodicals()</code></a></li><li><a href="#ParaUniverse.createYesNoMarket(uint256,uint256,contract IAffiliateValidator,uint256,address,string)"><code class="function-signature">createYesNoMarket(uint256 _endTime, uint256 _feePerCashInAttoCash, contract IAffiliateValidator _affiliateValidator, uint256 _affiliateFeeDivisor, address _designatedReporterAddress, string _extraInfo)</code></a></li><li><a href="#ParaUniverse.createCategoricalMarket(uint256,uint256,contract IAffiliateValidator,uint256,address,bytes32[],string)"><code class="function-signature">createCategoricalMarket(uint256 _endTime, uint256 _feePerCashInAttoCash, contract IAffiliateValidator _affiliateValidator, uint256 _affiliateFeeDivisor, address _designatedReporterAddress, bytes32[] _outcomes, string _extraInfo)</code></a></li><li><a href="#ParaUniverse.createScalarMarket(uint256,uint256,contract IAffiliateValidator,uint256,address,int256[],uint256,string)"><code class="function-signature">createScalarMarket(uint256 _endTime, uint256 _feePerCashInAttoCash, contract IAffiliateValidator _affiliateValidator, uint256 _affiliateFeeDivisor, address _designatedReporterAddress, int256[] _prices, uint256 _numTicks, string _extraInfo)</code></a></li><li><a href="#ParaUniverse.getOrCacheValidityBond()"><code class="function-signature">getOrCacheValidityBond()</code></a></li><li><a href="#ParaUniverse.getOrCacheMarketRepBond()"><code class="function-signature">getOrCacheMarketRepBond()</code></a></li><li class="inherited"><a href="para#IParaUniverse.originUniverse()"><code class="function-signature">originUniverse()</code></a></li><li class="inherited"><a href="#Initializable.endInitialization()"><code class="function-signature">endInitialization()</code></a></li><li class="inherited"><a href="#Initializable.getInitialized()"><code class="function-signature">getInitialized()</code></a></li></ul></div>
+<div class="contract-index"><span class="contract-index-title">Functions</span><ul><li><a href="#ParaUniverse.initialize(contract IParaAugur,contract IUniverse)"><code class="function-signature">initialize(contract IParaAugur _augur, contract IUniverse _originUniverse)</code></a></li><li><a href="#ParaUniverse.isOpenInterestCash(address)"><code class="function-signature">isOpenInterestCash(address _address)</code></a></li><li><a href="#ParaUniverse.getReputationToken()"><code class="function-signature">getReputationToken()</code></a></li><li><a href="#ParaUniverse.getFeePot()"><code class="function-signature">getFeePot()</code></a></li><li><a href="#ParaUniverse.setOrigin(contract IUniverse)"><code class="function-signature">setOrigin(contract IUniverse _originUniverse)</code></a></li><li><a href="#ParaUniverse.deposit(address,uint256,address)"><code class="function-signature">deposit(address _sender, uint256 _amount, address _market)</code></a></li><li><a href="#ParaUniverse.withdraw(address,uint256,address)"><code class="function-signature">withdraw(address _recipient, uint256 _amount, address _market)</code></a></li><li><a href="#ParaUniverse.decrementOpenInterest(uint256)"><code class="function-signature">decrementOpenInterest(uint256 _amount)</code></a></li><li><a href="#ParaUniverse.incrementOpenInterest(uint256)"><code class="function-signature">incrementOpenInterest(uint256 _amount)</code></a></li><li><a href="#ParaUniverse.getOpenInterestInAttoCash()"><code class="function-signature">getOpenInterestInAttoCash()</code></a></li><li><a href="#ParaUniverse.setMarketFinalized(contract IMarket,uint256)"><code class="function-signature">setMarketFinalized(contract IMarket _market, uint256 _totalSupply)</code></a></li><li><a href="#ParaUniverse.pokeRepMarketCapInAttoCash()"><code class="function-signature">pokeRepMarketCapInAttoCash()</code></a></li><li><a href="#ParaUniverse.getTargetRepMarketCapInAttoCash()"><code class="function-signature">getTargetRepMarketCapInAttoCash()</code></a></li><li><a href="#ParaUniverse.getOrCacheReportingFeeDivisor()"><code class="function-signature">getOrCacheReportingFeeDivisor()</code></a></li><li><a href="#ParaUniverse.getReportingFeeDivisor()"><code class="function-signature">getReportingFeeDivisor()</code></a></li><li><a href="#ParaUniverse.getMarketOpenInterest(contract IMarket)"><code class="function-signature">getMarketOpenInterest(contract IMarket _market)</code></a></li><li><a href="#ParaUniverse.recordMarketCreatorFees(contract IMarket,uint256,address)"><code class="function-signature">recordMarketCreatorFees(contract IMarket _market, uint256 _marketCreatorFees, address _sourceAccount)</code></a></li><li><a href="#ParaUniverse.getForkingMarket()"><code class="function-signature">getForkingMarket()</code></a></li><li><a href="#ParaUniverse.getDisputeThresholdForDisputePacing()"><code class="function-signature">getDisputeThresholdForDisputePacing()</code></a></li><li><a href="#ParaUniverse.getOrCacheDesignatedReportStake()"><code class="function-signature">getOrCacheDesignatedReportStake()</code></a></li><li><a href="#ParaUniverse.runPeriodicals()"><code class="function-signature">runPeriodicals()</code></a></li><li><a href="#ParaUniverse.getOrCacheValidityBond()"><code class="function-signature">getOrCacheValidityBond()</code></a></li><li><a href="#ParaUniverse.getOrCacheMarketRepBond()"><code class="function-signature">getOrCacheMarketRepBond()</code></a></li><li class="inherited"><a href="para#IParaUniverse.originUniverse()"><code class="function-signature">originUniverse()</code></a></li><li class="inherited"><a href="#Initializable.endInitialization()"><code class="function-signature">endInitialization()</code></a></li><li class="inherited"><a href="#Initializable.getInitialized()"><code class="function-signature">getInitialized()</code></a></li></ul></div>
 
 
 
@@ -5157,24 +5367,6 @@ this should be used for estimation purposes as it is a view and does not actuall
 
 
 <h4><a class="anchor" aria-hidden="true" id="ParaUniverse.runPeriodicals()"></a><code class="function-signature">runPeriodicals() <span class="return-arrow">→</span> <span class="return-type">bool</span></code><span class="function-visibility">external</span></h4>
-
-
-
-
-
-<h4><a class="anchor" aria-hidden="true" id="ParaUniverse.createYesNoMarket(uint256,uint256,contract IAffiliateValidator,uint256,address,string)"></a><code class="function-signature">createYesNoMarket(uint256 _endTime, uint256 _feePerCashInAttoCash, contract IAffiliateValidator _affiliateValidator, uint256 _affiliateFeeDivisor, address _designatedReporterAddress, string _extraInfo) <span class="return-arrow">→</span> <span class="return-type">contract IMarket</span></code><span class="function-visibility">public</span></h4>
-
-
-
-
-
-<h4><a class="anchor" aria-hidden="true" id="ParaUniverse.createCategoricalMarket(uint256,uint256,contract IAffiliateValidator,uint256,address,bytes32[],string)"></a><code class="function-signature">createCategoricalMarket(uint256 _endTime, uint256 _feePerCashInAttoCash, contract IAffiliateValidator _affiliateValidator, uint256 _affiliateFeeDivisor, address _designatedReporterAddress, bytes32[] _outcomes, string _extraInfo) <span class="return-arrow">→</span> <span class="return-type">contract IMarket</span></code><span class="function-visibility">public</span></h4>
-
-
-
-
-
-<h4><a class="anchor" aria-hidden="true" id="ParaUniverse.createScalarMarket(uint256,uint256,contract IAffiliateValidator,uint256,address,int256[],uint256,string)"></a><code class="function-signature">createScalarMarket(uint256 _endTime, uint256 _feePerCashInAttoCash, contract IAffiliateValidator _affiliateValidator, uint256 _affiliateFeeDivisor, address _designatedReporterAddress, int256[] _prices, uint256 _numTicks, string _extraInfo) <span class="return-arrow">→</span> <span class="return-type">contract IMarket</span></code><span class="function-visibility">public</span></h4>
 
 
 

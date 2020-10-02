@@ -104,8 +104,8 @@
     "solidity-coverage": "0.6.7",
     "solium": "1.2.5",
     "source-map-support": "0.5.13",
-    "ts-node": "7.0.1",
-    "typescript": "3.8.3",
+    "ts-node": "9.0.0",
+    "typescript": "3.9.7",
     "util": "0.12.1"
   },
   "publishConfig": {

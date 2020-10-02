@@ -5,7 +5,7 @@ import 'ROOT/reporting/IUniverse.sol';
 import 'ROOT/reporting/IMarket.sol';
 import 'ROOT/reporting/IDisputeWindow.sol';
 import 'ROOT/trading/Order.sol';
-
+import 'ROOT/ICash.sol';
 
 contract IAugur {
     IUniverse public genesisUniverse;
@@ -61,4 +61,5 @@ contract IAugur {
     function getUniverseForkIndex(IUniverse _universe) public view returns (uint256);
     function getMarketType(IMarket _market) public view returns (IMarket.MarketType);
     function getMarketOutcomes(IMarket _market) public view returns (bytes32[] memory _outcomes);
+    ICash public cash;
 }
