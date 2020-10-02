@@ -159,6 +159,20 @@ export class ShareToken extends c.ShareToken<BigNumber> {
 }
 export class Universe extends c.Universe<BigNumber> {
 }
+export class SideChainAugur extends c.SideChainAugur<BigNumber> {
+}
+export class SideChainAugurTrading extends c.SideChainAugurTrading<BigNumber> {
+}
+export class SideChainFillOrder extends c.SideChainFillOrder<BigNumber> {
+}
+export class SideChainProfitLoss extends c.SideChainProfitLoss<BigNumber> {
+}
+export class SideChainShareToken extends c.SideChainShareToken<BigNumber> {
+}
+export class SideChainSimulateTrade extends c.SideChainSimulateTrade<BigNumber> {
+}
+export class SideChainZeroXTrade extends c.SideChainZeroXTrade<BigNumber> {
+}
 export class AugurTrading extends c.AugurTrading<BigNumber> {
 }
 export class CancelOrder extends c.CancelOrder<BigNumber> {

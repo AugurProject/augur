@@ -333,6 +333,7 @@ Deploying to: ${env}
             if (contract.relativeFilePath.startsWith('uniswap/')) continue;
             if (contract.relativeFilePath.startsWith('para/')) continue;
             if (contract.relativeFilePath.startsWith('gov/')) continue;
+            if (contract.relativeFilePath.startsWith('sidechain/')) continue;
 
             // 0x
             if (this.configuration.deploy.externalAddresses.Exchange && [
@@ -557,6 +558,7 @@ Deploying to: ${env}
         if (contract.relativeFilePath.startsWith('uniswap/')) return;
         if (contract.relativeFilePath.startsWith('gsn/')) return;
         if (contract.relativeFilePath.startsWith('gov/')) return;
+        if (contract.relativeFilePath.startsWith('sidechain/')) return;
         if (contractName !== 'OINexus' && contract.relativeFilePath.startsWith('para/')) return;
         if (contractName === 'LegacyReputationToken') return;
         if (contractName === 'Cash') return;

@@ -212,7 +212,7 @@ contract SideChainShareToken is ITyped, Initializable, ERC1155, ReentrancyGuard 
      * @param _price The price of the trade being done. This determines how much each recipient recieves from the sale proceeds
      * @return (uint256 _creatorFee, uint256 _reportingFee) The fees taken for the market creator and reporting respectively
      */
-    function sellCompleteSetsForTrade(address _market, uint256 _outcome, uint256 _amount, address _shortParticipant, address _longParticipant, address _shortRecipient, address _longRecipient, uint256 _price, address _sourceAccount) external returns (uint256, uint256) {
+    function sellCompleteSetsForTrade(address _market, uint256 _outcome, uint256 _amount, address _shortParticipant, address _longParticipant, address _shortRecipient, address _longRecipient, uint256 _price, address _sourceAccount) external returns (uint256 _creatorFee, uint256 _reportingFee) {
         require(isApprovedForAll(_shortParticipant, msg.sender) == true, "ERC1155: need operator approval to burn short account shares");
         require(isApprovedForAll(_longParticipant, msg.sender) == true, "ERC1155: need operator approval to burn long account shares");
 
@@ -328,7 +328,7 @@ contract SideChainShareToken is ITyped, Initializable, ERC1155, ReentrancyGuard 
         augur.logTradingProceedsClaimed(marketGetter.getUniverse(_market), _sender, _market, _outcome, _numShares, _numPayoutTokens, _fees);
     }
 
-    function divideUpWinnings(address _market, uint256 _outcome, uint256 _numberOfShares) public returns (uint256 _proceeds, uint256 _shareHolderShare, uint256 _creatorShare, uint256 _reporterShare) {
+    function divideUpWinnings(address _market, uint256 _outcome, uint256 _numberOfShares) public view returns (uint256 _proceeds, uint256 _shareHolderShare, uint256 _creatorShare, uint256 _reporterShare) {
         _proceeds = calculateProceeds(_market, _outcome, _numberOfShares);
         _creatorShare = calculateCreatorFee(_market, _proceeds);
         _reporterShare = calculateReportingFee(_market, _proceeds);
@@ -341,7 +341,7 @@ contract SideChainShareToken is ITyped, Initializable, ERC1155, ReentrancyGuard 
         return _numberOfShares.mul(_payoutNumerator);
     }
 
-    function calculateReportingFee(address _market, uint256 _amount) public returns (uint256) {
+    function calculateReportingFee(address _market, uint256 _amount) public view returns (uint256) {
         uint256 _reportingFeeDivisor = marketGetter.getOrCacheReportingFeeDivisor();
         return _amount.div(_reportingFeeDivisor);
     }
@@ -357,7 +357,7 @@ contract SideChainShareToken is ITyped, Initializable, ERC1155, ReentrancyGuard 
     /**
      * @return The market associated with this Share Token ID
      */
-    function getMarket(uint256 _tokenId) external view returns(address) {
+    function getMarket(uint256 _tokenId) external pure returns(address) {
         (address _market, uint256 _outcome) = TokenId.unpackTokenId(_tokenId);
         return _market;
     }
@@ -370,7 +370,7 @@ contract SideChainShareToken is ITyped, Initializable, ERC1155, ReentrancyGuard 
     /**
      * @return The outcome associated with this Share Token ID
      */
-    function getOutcome(uint256 _tokenId) external view returns(uint256) {
+    function getOutcome(uint256 _tokenId) external pure returns(uint256) {
         (address _market, uint256 _outcome) = TokenId.unpackTokenId(_tokenId);
         return _outcome;
     }

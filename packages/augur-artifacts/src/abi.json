@@ -38018,6 +38018,5260 @@
 			"type": "function"
 		}
 	],
+	"SideChainAugur": [
+		{
+			"inputs": [],
+			"payable": false,
+			"stateMutability": "nonpayable",
+			"type": "constructor"
+		},
+		{
+			"anonymous": false,
+			"inputs": [
+				{
+					"indexed": true,
+					"internalType": "address",
+					"name": "universe",
+					"type": "address"
+				},
+				{
+					"indexed": true,
+					"internalType": "address",
+					"name": "market",
+					"type": "address"
+				},
+				{
+					"indexed": true,
+					"internalType": "address",
+					"name": "account",
+					"type": "address"
+				},
+				{
+					"indexed": false,
+					"internalType": "uint256",
+					"name": "numCompleteSets",
+					"type": "uint256"
+				},
+				{
+					"indexed": false,
+					"internalType": "uint256",
+					"name": "timestamp",
+					"type": "uint256"
+				}
+			],
+			"name": "CompleteSetsPurchased",
+			"type": "event"
+		},
+		{
+			"anonymous": false,
+			"inputs": [
+				{
+					"indexed": true,
+					"internalType": "address",
+					"name": "universe",
+					"type": "address"
+				},
+				{
+					"indexed": true,
+					"internalType": "address",
+					"name": "market",
+					"type": "address"
+				},
+				{
+					"indexed": true,
+					"internalType": "address",
+					"name": "account",
+					"type": "address"
+				},
+				{
+					"indexed": false,
+					"internalType": "uint256",
+					"name": "numCompleteSets",
+					"type": "uint256"
+				},
+				{
+					"indexed": false,
+					"internalType": "uint256",
+					"name": "fees",
+					"type": "uint256"
+				},
+				{
+					"indexed": false,
+					"internalType": "uint256",
+					"name": "timestamp",
+					"type": "uint256"
+				}
+			],
+			"name": "CompleteSetsSold",
+			"type": "event"
+		},
+		{
+			"anonymous": false,
+			"inputs": [],
+			"name": "FinishDeployment",
+			"type": "event"
+		},
+		{
+			"anonymous": false,
+			"inputs": [
+				{
+					"indexed": true,
+					"internalType": "address",
+					"name": "universe",
+					"type": "address"
+				},
+				{
+					"indexed": true,
+					"internalType": "address",
+					"name": "market",
+					"type": "address"
+				},
+				{
+					"indexed": false,
+					"internalType": "uint256",
+					"name": "marketOI",
+					"type": "uint256"
+				}
+			],
+			"name": "MarketOIChanged",
+			"type": "event"
+		},
+		{
+			"anonymous": false,
+			"inputs": [
+				{
+					"indexed": false,
+					"internalType": "address",
+					"name": "contractAddress",
+					"type": "address"
+				},
+				{
+					"indexed": false,
+					"internalType": "bytes32",
+					"name": "key",
+					"type": "bytes32"
+				}
+			],
+			"name": "RegisterContract",
+			"type": "event"
+		},
+		{
+			"anonymous": false,
+			"inputs": [
+				{
+					"indexed": true,
+					"internalType": "address",
+					"name": "universe",
+					"type": "address"
+				},
+				{
+					"indexed": true,
+					"internalType": "address",
+					"name": "account",
+					"type": "address"
+				},
+				{
+					"indexed": true,
+					"internalType": "address",
+					"name": "market",
+					"type": "address"
+				},
+				{
+					"indexed": false,
+					"internalType": "uint256",
+					"name": "outcome",
+					"type": "uint256"
+				},
+				{
+					"indexed": false,
+					"internalType": "uint256",
+					"name": "balance",
+					"type": "uint256"
+				}
+			],
+			"name": "ShareTokenBalanceChanged",
+			"type": "event"
+		},
+		{
+			"anonymous": false,
+			"inputs": [
+				{
+					"indexed": true,
+					"internalType": "address",
+					"name": "universe",
+					"type": "address"
+				},
+				{
+					"indexed": true,
+					"internalType": "address",
+					"name": "sender",
+					"type": "address"
+				},
+				{
+					"indexed": false,
+					"internalType": "address",
+					"name": "market",
+					"type": "address"
+				},
+				{
+					"indexed": false,
+					"internalType": "uint256",
+					"name": "outcome",
+					"type": "uint256"
+				},
+				{
+					"indexed": false,
+					"internalType": "uint256",
+					"name": "numShares",
+					"type": "uint256"
+				},
+				{
+					"indexed": false,
+					"internalType": "uint256",
+					"name": "numPayoutTokens",
+					"type": "uint256"
+				},
+				{
+					"indexed": false,
+					"internalType": "uint256",
+					"name": "fees",
+					"type": "uint256"
+				},
+				{
+					"indexed": false,
+					"internalType": "uint256",
+					"name": "timestamp",
+					"type": "uint256"
+				}
+			],
+			"name": "TradingProceedsClaimed",
+			"type": "event"
+		},
+		{
+			"constant": true,
+			"inputs": [],
+			"name": "cash",
+			"outputs": [
+				{
+					"internalType": "contract ICash",
+					"name": "",
+					"type": "address"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": false,
+			"inputs": [],
+			"name": "finishDeployment",
+			"outputs": [
+				{
+					"internalType": "bool",
+					"name": "",
+					"type": "bool"
+				}
+			],
+			"payable": false,
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [
+				{
+					"internalType": "address",
+					"name": "_market",
+					"type": "address"
+				}
+			],
+			"name": "isKnownMarket",
+			"outputs": [
+				{
+					"internalType": "bool",
+					"name": "",
+					"type": "bool"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [
+				{
+					"internalType": "address",
+					"name": "_address",
+					"type": "address"
+				}
+			],
+			"name": "isTrustedSender",
+			"outputs": [
+				{
+					"internalType": "bool",
+					"name": "",
+					"type": "bool"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": false,
+			"inputs": [
+				{
+					"internalType": "contract IUniverse",
+					"name": "_universe",
+					"type": "address"
+				},
+				{
+					"internalType": "address",
+					"name": "_market",
+					"type": "address"
+				},
+				{
+					"internalType": "address",
+					"name": "_account",
+					"type": "address"
+				},
+				{
+					"internalType": "uint256",
+					"name": "_numCompleteSets",
+					"type": "uint256"
+				}
+			],
+			"name": "logCompleteSetsPurchased",
+			"outputs": [
+				{
+					"internalType": "bool",
+					"name": "",
+					"type": "bool"
+				}
+			],
+			"payable": false,
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"constant": false,
+			"inputs": [
+				{
+					"internalType": "contract IUniverse",
+					"name": "_universe",
+					"type": "address"
+				},
+				{
+					"internalType": "address",
+					"name": "_market",
+					"type": "address"
+				},
+				{
+					"internalType": "address",
+					"name": "_account",
+					"type": "address"
+				},
+				{
+					"internalType": "uint256",
+					"name": "_numCompleteSets",
+					"type": "uint256"
+				},
+				{
+					"internalType": "uint256",
+					"name": "_fees",
+					"type": "uint256"
+				}
+			],
+			"name": "logCompleteSetsSold",
+			"outputs": [
+				{
+					"internalType": "bool",
+					"name": "",
+					"type": "bool"
+				}
+			],
+			"payable": false,
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"constant": false,
+			"inputs": [
+				{
+					"internalType": "contract IUniverse",
+					"name": "_universe",
+					"type": "address"
+				},
+				{
+					"internalType": "address",
+					"name": "_market",
+					"type": "address"
+				},
+				{
+					"internalType": "uint256",
+					"name": "_openInterest",
+					"type": "uint256"
+				}
+			],
+			"name": "logMarketOIChanged",
+			"outputs": [
+				{
+					"internalType": "bool",
+					"name": "",
+					"type": "bool"
+				}
+			],
+			"payable": false,
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"constant": false,
+			"inputs": [
+				{
+					"internalType": "address",
+					"name": "_account",
+					"type": "address"
+				},
+				{
+					"internalType": "address",
+					"name": "_market",
+					"type": "address"
+				},
+				{
+					"internalType": "uint256",
+					"name": "_outcome",
+					"type": "uint256"
+				},
+				{
+					"internalType": "uint256",
+					"name": "_balance",
+					"type": "uint256"
+				}
+			],
+			"name": "logShareTokensBalanceChanged",
+			"outputs": [
+				{
+					"internalType": "bool",
+					"name": "",
+					"type": "bool"
+				}
+			],
+			"payable": false,
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"constant": false,
+			"inputs": [
+				{
+					"internalType": "contract IUniverse",
+					"name": "_universe",
+					"type": "address"
+				},
+				{
+					"internalType": "address",
+					"name": "_sender",
+					"type": "address"
+				},
+				{
+					"internalType": "address",
+					"name": "_market",
+					"type": "address"
+				},
+				{
+					"internalType": "uint256",
+					"name": "_outcome",
+					"type": "uint256"
+				},
+				{
+					"internalType": "uint256",
+					"name": "_numShares",
+					"type": "uint256"
+				},
+				{
+					"internalType": "uint256",
+					"name": "_numPayoutTokens",
+					"type": "uint256"
+				},
+				{
+					"internalType": "uint256",
+					"name": "_fees",
+					"type": "uint256"
+				}
+			],
+			"name": "logTradingProceedsClaimed",
+			"outputs": [
+				{
+					"internalType": "bool",
+					"name": "",
+					"type": "bool"
+				}
+			],
+			"payable": false,
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [
+				{
+					"internalType": "bytes32",
+					"name": "_key",
+					"type": "bytes32"
+				}
+			],
+			"name": "lookup",
+			"outputs": [
+				{
+					"internalType": "address",
+					"name": "",
+					"type": "address"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [],
+			"name": "marketGetter",
+			"outputs": [
+				{
+					"internalType": "contract IMarketGetter",
+					"name": "",
+					"type": "address"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": false,
+			"inputs": [
+				{
+					"internalType": "bytes32",
+					"name": "_key",
+					"type": "bytes32"
+				},
+				{
+					"internalType": "address",
+					"name": "_address",
+					"type": "address"
+				}
+			],
+			"name": "registerContract",
+			"outputs": [
+				{
+					"internalType": "bool",
+					"name": "",
+					"type": "bool"
+				}
+			],
+			"payable": false,
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"constant": false,
+			"inputs": [
+				{
+					"internalType": "address",
+					"name": "_from",
+					"type": "address"
+				},
+				{
+					"internalType": "address",
+					"name": "_to",
+					"type": "address"
+				},
+				{
+					"internalType": "uint256",
+					"name": "_amount",
+					"type": "uint256"
+				}
+			],
+			"name": "trustedCashTransfer",
+			"outputs": [
+				{
+					"internalType": "bool",
+					"name": "",
+					"type": "bool"
+				}
+			],
+			"payable": false,
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [],
+			"name": "uploader",
+			"outputs": [
+				{
+					"internalType": "address",
+					"name": "",
+					"type": "address"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		}
+	],
+	"SideChainAugurTrading": [
+		{
+			"inputs": [
+				{
+					"internalType": "contract ISideChainAugur",
+					"name": "_augur",
+					"type": "address"
+				}
+			],
+			"payable": false,
+			"stateMutability": "nonpayable",
+			"type": "constructor"
+		},
+		{
+			"anonymous": false,
+			"inputs": [
+				{
+					"indexed": true,
+					"internalType": "address",
+					"name": "universe",
+					"type": "address"
+				},
+				{
+					"indexed": true,
+					"internalType": "address",
+					"name": "market",
+					"type": "address"
+				},
+				{
+					"indexed": true,
+					"internalType": "address",
+					"name": "account",
+					"type": "address"
+				},
+				{
+					"indexed": false,
+					"internalType": "uint256",
+					"name": "outcome",
+					"type": "uint256"
+				},
+				{
+					"indexed": false,
+					"internalType": "uint256",
+					"name": "price",
+					"type": "uint256"
+				},
+				{
+					"indexed": false,
+					"internalType": "uint256",
+					"name": "amount",
+					"type": "uint256"
+				},
+				{
+					"indexed": false,
+					"internalType": "uint8",
+					"name": "orderType",
+					"type": "uint8"
+				},
+				{
+					"indexed": false,
+					"internalType": "bytes32",
+					"name": "orderHash",
+					"type": "bytes32"
+				}
+			],
+			"name": "CancelZeroXOrder",
+			"type": "event"
+		},
+		{
+			"anonymous": false,
+			"inputs": [
+				{
+					"indexed": true,
+					"internalType": "address",
+					"name": "universe",
+					"type": "address"
+				},
+				{
+					"indexed": true,
+					"internalType": "address",
+					"name": "market",
+					"type": "address"
+				},
+				{
+					"indexed": false,
+					"internalType": "uint256",
+					"name": "volume",
+					"type": "uint256"
+				},
+				{
+					"indexed": false,
+					"internalType": "uint256[]",
+					"name": "outcomeVolumes",
+					"type": "uint256[]"
+				},
+				{
+					"indexed": false,
+					"internalType": "uint256",
+					"name": "totalTrades",
+					"type": "uint256"
+				},
+				{
+					"indexed": false,
+					"internalType": "uint256",
+					"name": "timestamp",
+					"type": "uint256"
+				}
+			],
+			"name": "MarketVolumeChanged",
+			"type": "event"
+		},
+		{
+			"anonymous": false,
+			"inputs": [
+				{
+					"indexed": true,
+					"internalType": "address",
+					"name": "universe",
+					"type": "address"
+				},
+				{
+					"indexed": true,
+					"internalType": "address",
+					"name": "market",
+					"type": "address"
+				},
+				{
+					"indexed": true,
+					"internalType": "enum SideChainAugurTrading.OrderEventType",
+					"name": "eventType",
+					"type": "uint8"
+				},
+				{
+					"indexed": false,
+					"internalType": "uint8",
+					"name": "orderType",
+					"type": "uint8"
+				},
+				{
+					"indexed": false,
+					"internalType": "bytes32",
+					"name": "orderId",
+					"type": "bytes32"
+				},
+				{
+					"indexed": false,
+					"internalType": "bytes32",
+					"name": "tradeGroupId",
+					"type": "bytes32"
+				},
+				{
+					"indexed": false,
+					"internalType": "address[]",
+					"name": "addressData",
+					"type": "address[]"
+				},
+				{
+					"indexed": false,
+					"internalType": "uint256[]",
+					"name": "uint256Data",
+					"type": "uint256[]"
+				}
+			],
+			"name": "OrderEvent",
+			"type": "event"
+		},
+		{
+			"anonymous": false,
+			"inputs": [
+				{
+					"indexed": true,
+					"internalType": "address",
+					"name": "universe",
+					"type": "address"
+				},
+				{
+					"indexed": true,
+					"internalType": "address",
+					"name": "market",
+					"type": "address"
+				},
+				{
+					"indexed": true,
+					"internalType": "address",
+					"name": "account",
+					"type": "address"
+				},
+				{
+					"indexed": false,
+					"internalType": "uint256",
+					"name": "outcome",
+					"type": "uint256"
+				},
+				{
+					"indexed": false,
+					"internalType": "int256",
+					"name": "netPosition",
+					"type": "int256"
+				},
+				{
+					"indexed": false,
+					"internalType": "uint256",
+					"name": "avgPrice",
+					"type": "uint256"
+				},
+				{
+					"indexed": false,
+					"internalType": "int256",
+					"name": "realizedProfit",
+					"type": "int256"
+				},
+				{
+					"indexed": false,
+					"internalType": "int256",
+					"name": "frozenFunds",
+					"type": "int256"
+				},
+				{
+					"indexed": false,
+					"internalType": "int256",
+					"name": "realizedCost",
+					"type": "int256"
+				},
+				{
+					"indexed": false,
+					"internalType": "uint256",
+					"name": "timestamp",
+					"type": "uint256"
+				}
+			],
+			"name": "ProfitLossChanged",
+			"type": "event"
+		},
+		{
+			"constant": true,
+			"inputs": [],
+			"name": "augur",
+			"outputs": [
+				{
+					"internalType": "contract ISideChainAugur",
+					"name": "",
+					"type": "address"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": false,
+			"inputs": [
+				{
+					"internalType": "address[]",
+					"name": "_markets",
+					"type": "address[]"
+				},
+				{
+					"internalType": "address",
+					"name": "_shareHolder",
+					"type": "address"
+				}
+			],
+			"name": "claimMarketsProceeds",
+			"outputs": [
+				{
+					"internalType": "bool",
+					"name": "",
+					"type": "bool"
+				}
+			],
+			"payable": false,
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"constant": false,
+			"inputs": [
+				{
+					"internalType": "address",
+					"name": "_market",
+					"type": "address"
+				},
+				{
+					"internalType": "address",
+					"name": "_shareHolder",
+					"type": "address"
+				}
+			],
+			"name": "claimTradingProceeds",
+			"outputs": [
+				{
+					"internalType": "bool",
+					"name": "",
+					"type": "bool"
+				}
+			],
+			"payable": false,
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"constant": false,
+			"inputs": [],
+			"name": "finishDeployment",
+			"outputs": [
+				{
+					"internalType": "bool",
+					"name": "",
+					"type": "bool"
+				}
+			],
+			"payable": false,
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"constant": false,
+			"inputs": [
+				{
+					"internalType": "contract IUniverse",
+					"name": "_universe",
+					"type": "address"
+				},
+				{
+					"internalType": "address",
+					"name": "_market",
+					"type": "address"
+				},
+				{
+					"internalType": "uint256",
+					"name": "_volume",
+					"type": "uint256"
+				},
+				{
+					"internalType": "uint256[]",
+					"name": "_outcomeVolumes",
+					"type": "uint256[]"
+				},
+				{
+					"internalType": "uint256",
+					"name": "_totalTrades",
+					"type": "uint256"
+				}
+			],
+			"name": "logMarketVolumeChanged",
+			"outputs": [
+				{
+					"internalType": "bool",
+					"name": "",
+					"type": "bool"
+				}
+			],
+			"payable": false,
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"constant": false,
+			"inputs": [
+				{
+					"internalType": "contract IUniverse",
+					"name": "_universe",
+					"type": "address"
+				},
+				{
+					"internalType": "address",
+					"name": "_creator",
+					"type": "address"
+				},
+				{
+					"internalType": "address",
+					"name": "_filler",
+					"type": "address"
+				},
+				{
+					"internalType": "uint256",
+					"name": "_price",
+					"type": "uint256"
+				},
+				{
+					"internalType": "uint256",
+					"name": "_fees",
+					"type": "uint256"
+				},
+				{
+					"internalType": "uint256",
+					"name": "_amountFilled",
+					"type": "uint256"
+				},
+				{
+					"internalType": "bytes32",
+					"name": "_orderId",
+					"type": "bytes32"
+				},
+				{
+					"internalType": "bytes32",
+					"name": "_tradeGroupId",
+					"type": "bytes32"
+				}
+			],
+			"name": "logOrderFilled",
+			"outputs": [
+				{
+					"internalType": "bool",
+					"name": "",
+					"type": "bool"
+				}
+			],
+			"payable": false,
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"constant": false,
+			"inputs": [
+				{
+					"internalType": "address",
+					"name": "_market",
+					"type": "address"
+				},
+				{
+					"internalType": "address",
+					"name": "_account",
+					"type": "address"
+				},
+				{
+					"internalType": "uint256",
+					"name": "_outcome",
+					"type": "uint256"
+				},
+				{
+					"internalType": "int256",
+					"name": "_netPosition",
+					"type": "int256"
+				},
+				{
+					"internalType": "uint256",
+					"name": "_avgPrice",
+					"type": "uint256"
+				},
+				{
+					"internalType": "int256",
+					"name": "_realizedProfit",
+					"type": "int256"
+				},
+				{
+					"internalType": "int256",
+					"name": "_frozenFunds",
+					"type": "int256"
+				},
+				{
+					"internalType": "int256",
+					"name": "_realizedCost",
+					"type": "int256"
+				}
+			],
+			"name": "logProfitLossChanged",
+			"outputs": [
+				{
+					"internalType": "bool",
+					"name": "",
+					"type": "bool"
+				}
+			],
+			"payable": false,
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"constant": false,
+			"inputs": [
+				{
+					"internalType": "address",
+					"name": "_universe",
+					"type": "address"
+				},
+				{
+					"internalType": "address",
+					"name": "_market",
+					"type": "address"
+				},
+				{
+					"internalType": "address",
+					"name": "_account",
+					"type": "address"
+				},
+				{
+					"internalType": "uint256",
+					"name": "_outcome",
+					"type": "uint256"
+				},
+				{
+					"internalType": "uint256",
+					"name": "_price",
+					"type": "uint256"
+				},
+				{
+					"internalType": "uint256",
+					"name": "_amount",
+					"type": "uint256"
+				},
+				{
+					"internalType": "uint8",
+					"name": "_type",
+					"type": "uint8"
+				},
+				{
+					"internalType": "bytes32",
+					"name": "_orderHash",
+					"type": "bytes32"
+				}
+			],
+			"name": "logZeroXOrderCanceled",
+			"outputs": [],
+			"payable": false,
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"constant": false,
+			"inputs": [
+				{
+					"internalType": "contract IUniverse",
+					"name": "_universe",
+					"type": "address"
+				},
+				{
+					"internalType": "address",
+					"name": "_market",
+					"type": "address"
+				},
+				{
+					"internalType": "bytes32",
+					"name": "_orderHash",
+					"type": "bytes32"
+				},
+				{
+					"internalType": "bytes32",
+					"name": "_tradeGroupId",
+					"type": "bytes32"
+				},
+				{
+					"internalType": "uint8",
+					"name": "_orderType",
+					"type": "uint8"
+				},
+				{
+					"internalType": "address[]",
+					"name": "_addressData",
+					"type": "address[]"
+				},
+				{
+					"internalType": "uint256[]",
+					"name": "_uint256Data",
+					"type": "uint256[]"
+				}
+			],
+			"name": "logZeroXOrderFilled",
+			"outputs": [
+				{
+					"internalType": "bool",
+					"name": "",
+					"type": "bool"
+				}
+			],
+			"payable": false,
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [
+				{
+					"internalType": "bytes32",
+					"name": "_key",
+					"type": "bytes32"
+				}
+			],
+			"name": "lookup",
+			"outputs": [
+				{
+					"internalType": "address",
+					"name": "",
+					"type": "address"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [],
+			"name": "marketGetter",
+			"outputs": [
+				{
+					"internalType": "contract IMarketGetter",
+					"name": "",
+					"type": "address"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": false,
+			"inputs": [
+				{
+					"internalType": "bytes32",
+					"name": "_key",
+					"type": "bytes32"
+				},
+				{
+					"internalType": "address",
+					"name": "_address",
+					"type": "address"
+				}
+			],
+			"name": "registerContract",
+			"outputs": [
+				{
+					"internalType": "bool",
+					"name": "",
+					"type": "bool"
+				}
+			],
+			"payable": false,
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [],
+			"name": "shareToken",
+			"outputs": [
+				{
+					"internalType": "contract ISideChainShareToken",
+					"name": "",
+					"type": "address"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [
+				{
+					"internalType": "address",
+					"name": "",
+					"type": "address"
+				}
+			],
+			"name": "trustedSender",
+			"outputs": [
+				{
+					"internalType": "bool",
+					"name": "",
+					"type": "bool"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [],
+			"name": "uploader",
+			"outputs": [
+				{
+					"internalType": "address",
+					"name": "",
+					"type": "address"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		}
+	],
+	"SideChainFillOrder": [
+		{
+			"constant": true,
+			"inputs": [],
+			"name": "augur",
+			"outputs": [
+				{
+					"internalType": "contract ISideChainAugur",
+					"name": "",
+					"type": "address"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [],
+			"name": "augurTrading",
+			"outputs": [
+				{
+					"internalType": "contract ISideChainAugurTrading",
+					"name": "",
+					"type": "address"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": false,
+			"inputs": [
+				{
+					"internalType": "address",
+					"name": "_market",
+					"type": "address"
+				},
+				{
+					"internalType": "uint256",
+					"name": "_outcome",
+					"type": "uint256"
+				},
+				{
+					"internalType": "uint256",
+					"name": "_price",
+					"type": "uint256"
+				},
+				{
+					"internalType": "enum Order.Types",
+					"name": "_orderType",
+					"type": "uint8"
+				},
+				{
+					"internalType": "address",
+					"name": "_creator",
+					"type": "address"
+				},
+				{
+					"internalType": "uint256",
+					"name": "_amount",
+					"type": "uint256"
+				},
+				{
+					"internalType": "bytes32",
+					"name": "_tradeGroupId",
+					"type": "bytes32"
+				},
+				{
+					"internalType": "address",
+					"name": "_filler",
+					"type": "address"
+				}
+			],
+			"name": "fillZeroXOrder",
+			"outputs": [
+				{
+					"internalType": "uint256",
+					"name": "_amountRemaining",
+					"type": "uint256"
+				},
+				{
+					"internalType": "uint256",
+					"name": "_fees",
+					"type": "uint256"
+				}
+			],
+			"payable": false,
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [],
+			"name": "getInitialized",
+			"outputs": [
+				{
+					"internalType": "bool",
+					"name": "",
+					"type": "bool"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [
+				{
+					"internalType": "address",
+					"name": "_market",
+					"type": "address"
+				}
+			],
+			"name": "getMarketOutcomeValues",
+			"outputs": [
+				{
+					"internalType": "uint256[]",
+					"name": "",
+					"type": "uint256[]"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [
+				{
+					"internalType": "address",
+					"name": "_market",
+					"type": "address"
+				}
+			],
+			"name": "getMarketVolume",
+			"outputs": [
+				{
+					"internalType": "uint256",
+					"name": "",
+					"type": "uint256"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": false,
+			"inputs": [
+				{
+					"internalType": "contract ISideChainAugur",
+					"name": "_augur",
+					"type": "address"
+				},
+				{
+					"internalType": "contract ISideChainAugurTrading",
+					"name": "_augurTrading",
+					"type": "address"
+				}
+			],
+			"name": "initialize",
+			"outputs": [],
+			"payable": false,
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [],
+			"name": "marketGetter",
+			"outputs": [
+				{
+					"internalType": "contract IMarketGetter",
+					"name": "",
+					"type": "address"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [
+				{
+					"internalType": "address",
+					"name": "",
+					"type": "address"
+				},
+				{
+					"internalType": "uint256",
+					"name": "",
+					"type": "uint256"
+				}
+			],
+			"name": "marketOutcomeVolumes",
+			"outputs": [
+				{
+					"internalType": "uint256",
+					"name": "",
+					"type": "uint256"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [
+				{
+					"internalType": "address",
+					"name": "",
+					"type": "address"
+				}
+			],
+			"name": "marketTotalTrades",
+			"outputs": [
+				{
+					"internalType": "uint256",
+					"name": "",
+					"type": "uint256"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [],
+			"name": "zeroXTrade",
+			"outputs": [
+				{
+					"internalType": "address",
+					"name": "",
+					"type": "address"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		}
+	],
+	"SideChainProfitLoss": [
+		{
+			"constant": false,
+			"inputs": [
+				{
+					"internalType": "address",
+					"name": "_market",
+					"type": "address"
+				},
+				{
+					"internalType": "address",
+					"name": "_trader",
+					"type": "address"
+				},
+				{
+					"internalType": "uint256",
+					"name": "_outcome",
+					"type": "uint256"
+				},
+				{
+					"internalType": "uint256",
+					"name": "_fees",
+					"type": "uint256"
+				}
+			],
+			"name": "adjustTraderProfitForFees",
+			"outputs": [
+				{
+					"internalType": "bool",
+					"name": "",
+					"type": "bool"
+				}
+			],
+			"payable": false,
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [],
+			"name": "augur",
+			"outputs": [
+				{
+					"internalType": "contract IAugur",
+					"name": "",
+					"type": "address"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [],
+			"name": "augurTrading",
+			"outputs": [
+				{
+					"internalType": "contract ISideChainAugurTrading",
+					"name": "",
+					"type": "address"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [],
+			"name": "fillOrder",
+			"outputs": [
+				{
+					"internalType": "address",
+					"name": "",
+					"type": "address"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [
+				{
+					"internalType": "address",
+					"name": "_market",
+					"type": "address"
+				},
+				{
+					"internalType": "address",
+					"name": "_account",
+					"type": "address"
+				},
+				{
+					"internalType": "uint256",
+					"name": "_outcome",
+					"type": "uint256"
+				}
+			],
+			"name": "getAvgPrice",
+			"outputs": [
+				{
+					"internalType": "int256",
+					"name": "",
+					"type": "int256"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [
+				{
+					"internalType": "address",
+					"name": "_market",
+					"type": "address"
+				},
+				{
+					"internalType": "address",
+					"name": "_account",
+					"type": "address"
+				},
+				{
+					"internalType": "uint256",
+					"name": "_outcome",
+					"type": "uint256"
+				}
+			],
+			"name": "getFrozenFunds",
+			"outputs": [
+				{
+					"internalType": "int256",
+					"name": "",
+					"type": "int256"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [],
+			"name": "getInitialized",
+			"outputs": [
+				{
+					"internalType": "bool",
+					"name": "",
+					"type": "bool"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [
+				{
+					"internalType": "address",
+					"name": "_market",
+					"type": "address"
+				},
+				{
+					"internalType": "address",
+					"name": "_account",
+					"type": "address"
+				},
+				{
+					"internalType": "uint256",
+					"name": "_outcome",
+					"type": "uint256"
+				}
+			],
+			"name": "getNetPosition",
+			"outputs": [
+				{
+					"internalType": "int256",
+					"name": "",
+					"type": "int256"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [
+				{
+					"internalType": "address",
+					"name": "_market",
+					"type": "address"
+				},
+				{
+					"internalType": "address",
+					"name": "_account",
+					"type": "address"
+				},
+				{
+					"internalType": "uint256",
+					"name": "_outcome",
+					"type": "uint256"
+				}
+			],
+			"name": "getRealizedCost",
+			"outputs": [
+				{
+					"internalType": "int256",
+					"name": "",
+					"type": "int256"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [
+				{
+					"internalType": "address",
+					"name": "_market",
+					"type": "address"
+				},
+				{
+					"internalType": "address",
+					"name": "_account",
+					"type": "address"
+				},
+				{
+					"internalType": "uint256",
+					"name": "_outcome",
+					"type": "uint256"
+				}
+			],
+			"name": "getRealizedProfit",
+			"outputs": [
+				{
+					"internalType": "int256",
+					"name": "",
+					"type": "int256"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": false,
+			"inputs": [
+				{
+					"internalType": "contract IAugur",
+					"name": "_augur",
+					"type": "address"
+				},
+				{
+					"internalType": "contract ISideChainAugurTrading",
+					"name": "_augurTrading",
+					"type": "address"
+				}
+			],
+			"name": "initialize",
+			"outputs": [],
+			"payable": false,
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [],
+			"name": "marketGetter",
+			"outputs": [
+				{
+					"internalType": "contract IMarketGetter",
+					"name": "",
+					"type": "address"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": false,
+			"inputs": [
+				{
+					"internalType": "address",
+					"name": "_market",
+					"type": "address"
+				},
+				{
+					"internalType": "address",
+					"name": "_account",
+					"type": "address"
+				},
+				{
+					"internalType": "uint256[]",
+					"name": "_outcomeFees",
+					"type": "uint256[]"
+				}
+			],
+			"name": "recordClaim",
+			"outputs": [
+				{
+					"internalType": "bool",
+					"name": "",
+					"type": "bool"
+				}
+			],
+			"payable": false,
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"constant": false,
+			"inputs": [
+				{
+					"internalType": "contract IUniverse",
+					"name": "_universe",
+					"type": "address"
+				},
+				{
+					"internalType": "address",
+					"name": "_market",
+					"type": "address"
+				},
+				{
+					"internalType": "address",
+					"name": "_account",
+					"type": "address"
+				},
+				{
+					"internalType": "uint256",
+					"name": "_outcome",
+					"type": "uint256"
+				},
+				{
+					"internalType": "int256",
+					"name": "_frozenFundDelta",
+					"type": "int256"
+				}
+			],
+			"name": "recordFrozenFundChange",
+			"outputs": [
+				{
+					"internalType": "bool",
+					"name": "",
+					"type": "bool"
+				}
+			],
+			"payable": false,
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"constant": false,
+			"inputs": [
+				{
+					"internalType": "contract IUniverse",
+					"name": "_universe",
+					"type": "address"
+				},
+				{
+					"internalType": "address",
+					"name": "_market",
+					"type": "address"
+				},
+				{
+					"internalType": "address",
+					"name": "_longAddress",
+					"type": "address"
+				},
+				{
+					"internalType": "address",
+					"name": "_shortAddress",
+					"type": "address"
+				},
+				{
+					"internalType": "uint256",
+					"name": "_outcome",
+					"type": "uint256"
+				},
+				{
+					"internalType": "int256",
+					"name": "_amount",
+					"type": "int256"
+				},
+				{
+					"internalType": "int256",
+					"name": "_price",
+					"type": "int256"
+				},
+				{
+					"internalType": "uint256",
+					"name": "_numLongTokens",
+					"type": "uint256"
+				},
+				{
+					"internalType": "uint256",
+					"name": "_numShortTokens",
+					"type": "uint256"
+				},
+				{
+					"internalType": "uint256",
+					"name": "_numLongShares",
+					"type": "uint256"
+				},
+				{
+					"internalType": "uint256",
+					"name": "_numShortShares",
+					"type": "uint256"
+				}
+			],
+			"name": "recordTrade",
+			"outputs": [
+				{
+					"internalType": "bool",
+					"name": "",
+					"type": "bool"
+				}
+			],
+			"payable": false,
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [],
+			"name": "shareToken",
+			"outputs": [
+				{
+					"internalType": "address",
+					"name": "",
+					"type": "address"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		}
+	],
+	"SideChainShareToken": [
+		{
+			"anonymous": false,
+			"inputs": [
+				{
+					"indexed": true,
+					"internalType": "address",
+					"name": "owner",
+					"type": "address"
+				},
+				{
+					"indexed": true,
+					"internalType": "address",
+					"name": "operator",
+					"type": "address"
+				},
+				{
+					"indexed": false,
+					"internalType": "bool",
+					"name": "approved",
+					"type": "bool"
+				}
+			],
+			"name": "ApprovalForAll",
+			"type": "event"
+		},
+		{
+			"anonymous": false,
+			"inputs": [
+				{
+					"indexed": true,
+					"internalType": "address",
+					"name": "operator",
+					"type": "address"
+				},
+				{
+					"indexed": true,
+					"internalType": "address",
+					"name": "from",
+					"type": "address"
+				},
+				{
+					"indexed": true,
+					"internalType": "address",
+					"name": "to",
+					"type": "address"
+				},
+				{
+					"indexed": false,
+					"internalType": "uint256[]",
+					"name": "ids",
+					"type": "uint256[]"
+				},
+				{
+					"indexed": false,
+					"internalType": "uint256[]",
+					"name": "values",
+					"type": "uint256[]"
+				}
+			],
+			"name": "TransferBatch",
+			"type": "event"
+		},
+		{
+			"anonymous": false,
+			"inputs": [
+				{
+					"indexed": true,
+					"internalType": "address",
+					"name": "operator",
+					"type": "address"
+				},
+				{
+					"indexed": true,
+					"internalType": "address",
+					"name": "from",
+					"type": "address"
+				},
+				{
+					"indexed": true,
+					"internalType": "address",
+					"name": "to",
+					"type": "address"
+				},
+				{
+					"indexed": false,
+					"internalType": "uint256",
+					"name": "id",
+					"type": "uint256"
+				},
+				{
+					"indexed": false,
+					"internalType": "uint256",
+					"name": "value",
+					"type": "uint256"
+				}
+			],
+			"name": "TransferSingle",
+			"type": "event"
+		},
+		{
+			"anonymous": false,
+			"inputs": [
+				{
+					"indexed": false,
+					"internalType": "string",
+					"name": "value",
+					"type": "string"
+				},
+				{
+					"indexed": true,
+					"internalType": "uint256",
+					"name": "id",
+					"type": "uint256"
+				}
+			],
+			"name": "URI",
+			"type": "event"
+		},
+		{
+			"constant": true,
+			"inputs": [
+				{
+					"internalType": "uint256",
+					"name": "",
+					"type": "uint256"
+				},
+				{
+					"internalType": "address",
+					"name": "",
+					"type": "address"
+				}
+			],
+			"name": "_balances",
+			"outputs": [
+				{
+					"internalType": "uint256",
+					"name": "",
+					"type": "uint256"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [
+				{
+					"internalType": "address",
+					"name": "",
+					"type": "address"
+				},
+				{
+					"internalType": "address",
+					"name": "",
+					"type": "address"
+				}
+			],
+			"name": "_operatorApprovals",
+			"outputs": [
+				{
+					"internalType": "bool",
+					"name": "",
+					"type": "bool"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [
+				{
+					"internalType": "uint256",
+					"name": "",
+					"type": "uint256"
+				}
+			],
+			"name": "_supplys",
+			"outputs": [
+				{
+					"internalType": "uint256",
+					"name": "",
+					"type": "uint256"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [],
+			"name": "affiliates",
+			"outputs": [
+				{
+					"internalType": "contract IAffiliates",
+					"name": "",
+					"type": "address"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [],
+			"name": "augur",
+			"outputs": [
+				{
+					"internalType": "contract ISideChainAugur",
+					"name": "",
+					"type": "address"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [
+				{
+					"internalType": "address",
+					"name": "account",
+					"type": "address"
+				},
+				{
+					"internalType": "uint256",
+					"name": "id",
+					"type": "uint256"
+				}
+			],
+			"name": "balanceOf",
+			"outputs": [
+				{
+					"internalType": "uint256",
+					"name": "",
+					"type": "uint256"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [
+				{
+					"internalType": "address[]",
+					"name": "accounts",
+					"type": "address[]"
+				},
+				{
+					"internalType": "uint256[]",
+					"name": "ids",
+					"type": "uint256[]"
+				}
+			],
+			"name": "balanceOfBatch",
+			"outputs": [
+				{
+					"internalType": "uint256[]",
+					"name": "",
+					"type": "uint256[]"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [
+				{
+					"internalType": "address",
+					"name": "_market",
+					"type": "address"
+				},
+				{
+					"internalType": "uint256",
+					"name": "_outcome",
+					"type": "uint256"
+				},
+				{
+					"internalType": "address",
+					"name": "_account",
+					"type": "address"
+				}
+			],
+			"name": "balanceOfMarketOutcome",
+			"outputs": [
+				{
+					"internalType": "uint256",
+					"name": "",
+					"type": "uint256"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": false,
+			"inputs": [
+				{
+					"internalType": "address",
+					"name": "_market",
+					"type": "address"
+				},
+				{
+					"internalType": "address",
+					"name": "_account",
+					"type": "address"
+				},
+				{
+					"internalType": "uint256",
+					"name": "_amount",
+					"type": "uint256"
+				}
+			],
+			"name": "buyCompleteSets",
+			"outputs": [
+				{
+					"internalType": "bool",
+					"name": "",
+					"type": "bool"
+				}
+			],
+			"payable": false,
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"constant": false,
+			"inputs": [
+				{
+					"internalType": "address",
+					"name": "_market",
+					"type": "address"
+				},
+				{
+					"internalType": "uint256",
+					"name": "_amount",
+					"type": "uint256"
+				},
+				{
+					"internalType": "uint256",
+					"name": "_longOutcome",
+					"type": "uint256"
+				},
+				{
+					"internalType": "address",
+					"name": "_longRecipient",
+					"type": "address"
+				},
+				{
+					"internalType": "address",
+					"name": "_shortRecipient",
+					"type": "address"
+				}
+			],
+			"name": "buyCompleteSetsForTrade",
+			"outputs": [
+				{
+					"internalType": "bool",
+					"name": "",
+					"type": "bool"
+				}
+			],
+			"payable": false,
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [
+				{
+					"internalType": "address",
+					"name": "_market",
+					"type": "address"
+				},
+				{
+					"internalType": "uint256",
+					"name": "_amount",
+					"type": "uint256"
+				}
+			],
+			"name": "calculateCreatorFee",
+			"outputs": [
+				{
+					"internalType": "uint256",
+					"name": "",
+					"type": "uint256"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [
+				{
+					"internalType": "address",
+					"name": "_market",
+					"type": "address"
+				},
+				{
+					"internalType": "uint256",
+					"name": "_outcome",
+					"type": "uint256"
+				},
+				{
+					"internalType": "uint256",
+					"name": "_numberOfShares",
+					"type": "uint256"
+				}
+			],
+			"name": "calculateProceeds",
+			"outputs": [
+				{
+					"internalType": "uint256",
+					"name": "",
+					"type": "uint256"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [
+				{
+					"internalType": "address",
+					"name": "_market",
+					"type": "address"
+				},
+				{
+					"internalType": "uint256",
+					"name": "_amount",
+					"type": "uint256"
+				}
+			],
+			"name": "calculateReportingFee",
+			"outputs": [
+				{
+					"internalType": "uint256",
+					"name": "",
+					"type": "uint256"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [],
+			"name": "cash",
+			"outputs": [
+				{
+					"internalType": "contract ICash",
+					"name": "",
+					"type": "address"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": false,
+			"inputs": [
+				{
+					"internalType": "address",
+					"name": "_market",
+					"type": "address"
+				},
+				{
+					"internalType": "address",
+					"name": "_shareHolder",
+					"type": "address"
+				}
+			],
+			"name": "claimTradingProceeds",
+			"outputs": [
+				{
+					"internalType": "uint256[]",
+					"name": "_outcomeFees",
+					"type": "uint256[]"
+				}
+			],
+			"payable": false,
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [
+				{
+					"internalType": "address",
+					"name": "_market",
+					"type": "address"
+				},
+				{
+					"internalType": "uint256",
+					"name": "_amount",
+					"type": "uint256"
+				}
+			],
+			"name": "deriveMarketCreatorFeeAmount",
+			"outputs": [
+				{
+					"internalType": "uint256",
+					"name": "",
+					"type": "uint256"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": false,
+			"inputs": [
+				{
+					"internalType": "address",
+					"name": "_market",
+					"type": "address"
+				}
+			],
+			"name": "distributeMarketCreatorFees",
+			"outputs": [],
+			"payable": false,
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [
+				{
+					"internalType": "address",
+					"name": "_market",
+					"type": "address"
+				},
+				{
+					"internalType": "uint256",
+					"name": "_outcome",
+					"type": "uint256"
+				},
+				{
+					"internalType": "uint256",
+					"name": "_numberOfShares",
+					"type": "uint256"
+				}
+			],
+			"name": "divideUpWinnings",
+			"outputs": [
+				{
+					"internalType": "uint256",
+					"name": "_proceeds",
+					"type": "uint256"
+				},
+				{
+					"internalType": "uint256",
+					"name": "_shareHolderShare",
+					"type": "uint256"
+				},
+				{
+					"internalType": "uint256",
+					"name": "_creatorShare",
+					"type": "uint256"
+				},
+				{
+					"internalType": "uint256",
+					"name": "_reporterShare",
+					"type": "uint256"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [],
+			"name": "getInitialized",
+			"outputs": [
+				{
+					"internalType": "bool",
+					"name": "",
+					"type": "bool"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [
+				{
+					"internalType": "uint256",
+					"name": "_tokenId",
+					"type": "uint256"
+				}
+			],
+			"name": "getMarket",
+			"outputs": [
+				{
+					"internalType": "address",
+					"name": "",
+					"type": "address"
+				}
+			],
+			"payable": false,
+			"stateMutability": "pure",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [
+				{
+					"internalType": "uint256",
+					"name": "_tokenId",
+					"type": "uint256"
+				}
+			],
+			"name": "getOutcome",
+			"outputs": [
+				{
+					"internalType": "uint256",
+					"name": "",
+					"type": "uint256"
+				}
+			],
+			"payable": false,
+			"stateMutability": "pure",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [
+				{
+					"internalType": "address",
+					"name": "_market",
+					"type": "address"
+				},
+				{
+					"internalType": "uint256",
+					"name": "_outcome",
+					"type": "uint256"
+				}
+			],
+			"name": "getTokenId",
+			"outputs": [
+				{
+					"internalType": "uint256",
+					"name": "_tokenId",
+					"type": "uint256"
+				}
+			],
+			"payable": false,
+			"stateMutability": "pure",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [
+				{
+					"internalType": "address",
+					"name": "_market",
+					"type": "address"
+				},
+				{
+					"internalType": "uint256[]",
+					"name": "_outcomes",
+					"type": "uint256[]"
+				}
+			],
+			"name": "getTokenIds",
+			"outputs": [
+				{
+					"internalType": "uint256[]",
+					"name": "_tokenIds",
+					"type": "uint256[]"
+				}
+			],
+			"payable": false,
+			"stateMutability": "pure",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [],
+			"name": "getTypeName",
+			"outputs": [
+				{
+					"internalType": "bytes32",
+					"name": "",
+					"type": "bytes32"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": false,
+			"inputs": [
+				{
+					"internalType": "contract ISideChainAugur",
+					"name": "_augur",
+					"type": "address"
+				}
+			],
+			"name": "initialize",
+			"outputs": [],
+			"payable": false,
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [
+				{
+					"internalType": "address",
+					"name": "account",
+					"type": "address"
+				},
+				{
+					"internalType": "address",
+					"name": "operator",
+					"type": "address"
+				}
+			],
+			"name": "isApprovedForAll",
+			"outputs": [
+				{
+					"internalType": "bool",
+					"name": "",
+					"type": "bool"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [
+				{
+					"internalType": "address",
+					"name": "_market",
+					"type": "address"
+				},
+				{
+					"internalType": "uint256[]",
+					"name": "_outcomes",
+					"type": "uint256[]"
+				},
+				{
+					"internalType": "address",
+					"name": "_account",
+					"type": "address"
+				}
+			],
+			"name": "lowestBalanceOfMarketOutcomes",
+			"outputs": [
+				{
+					"internalType": "uint256",
+					"name": "",
+					"type": "uint256"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [],
+			"name": "marketGetter",
+			"outputs": [
+				{
+					"internalType": "contract IMarketGetter",
+					"name": "",
+					"type": "address"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [],
+			"name": "name",
+			"outputs": [
+				{
+					"internalType": "string",
+					"name": "",
+					"type": "string"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": false,
+			"inputs": [
+				{
+					"internalType": "address",
+					"name": "_market",
+					"type": "address"
+				},
+				{
+					"internalType": "uint256",
+					"name": "_amount",
+					"type": "uint256"
+				}
+			],
+			"name": "publicBuyCompleteSets",
+			"outputs": [
+				{
+					"internalType": "bool",
+					"name": "",
+					"type": "bool"
+				}
+			],
+			"payable": false,
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"constant": false,
+			"inputs": [
+				{
+					"internalType": "address",
+					"name": "_market",
+					"type": "address"
+				},
+				{
+					"internalType": "uint256",
+					"name": "_amount",
+					"type": "uint256"
+				}
+			],
+			"name": "publicSellCompleteSets",
+			"outputs": [
+				{
+					"internalType": "uint256",
+					"name": "_creatorFee",
+					"type": "uint256"
+				},
+				{
+					"internalType": "uint256",
+					"name": "_reportingFee",
+					"type": "uint256"
+				}
+			],
+			"payable": false,
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"constant": false,
+			"inputs": [],
+			"name": "pushRepFees",
+			"outputs": [
+				{
+					"internalType": "bool",
+					"name": "",
+					"type": "bool"
+				}
+			],
+			"payable": false,
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [],
+			"name": "repFeeTarget",
+			"outputs": [
+				{
+					"internalType": "address",
+					"name": "",
+					"type": "address"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [],
+			"name": "repFees",
+			"outputs": [
+				{
+					"internalType": "uint256",
+					"name": "",
+					"type": "uint256"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": false,
+			"inputs": [
+				{
+					"internalType": "address",
+					"name": "from",
+					"type": "address"
+				},
+				{
+					"internalType": "address",
+					"name": "to",
+					"type": "address"
+				},
+				{
+					"internalType": "uint256[]",
+					"name": "ids",
+					"type": "uint256[]"
+				},
+				{
+					"internalType": "uint256[]",
+					"name": "values",
+					"type": "uint256[]"
+				},
+				{
+					"internalType": "bytes",
+					"name": "data",
+					"type": "bytes"
+				}
+			],
+			"name": "safeBatchTransferFrom",
+			"outputs": [],
+			"payable": false,
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"constant": false,
+			"inputs": [
+				{
+					"internalType": "address",
+					"name": "from",
+					"type": "address"
+				},
+				{
+					"internalType": "address",
+					"name": "to",
+					"type": "address"
+				},
+				{
+					"internalType": "uint256",
+					"name": "id",
+					"type": "uint256"
+				},
+				{
+					"internalType": "uint256",
+					"name": "value",
+					"type": "uint256"
+				},
+				{
+					"internalType": "bytes",
+					"name": "data",
+					"type": "bytes"
+				}
+			],
+			"name": "safeTransferFrom",
+			"outputs": [],
+			"payable": false,
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"constant": false,
+			"inputs": [
+				{
+					"internalType": "address",
+					"name": "_market",
+					"type": "address"
+				},
+				{
+					"internalType": "address",
+					"name": "_holder",
+					"type": "address"
+				},
+				{
+					"internalType": "address",
+					"name": "_recipient",
+					"type": "address"
+				},
+				{
+					"internalType": "uint256",
+					"name": "_amount",
+					"type": "uint256"
+				}
+			],
+			"name": "sellCompleteSets",
+			"outputs": [
+				{
+					"internalType": "uint256",
+					"name": "_creatorFee",
+					"type": "uint256"
+				},
+				{
+					"internalType": "uint256",
+					"name": "_reportingFee",
+					"type": "uint256"
+				}
+			],
+			"payable": false,
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"constant": false,
+			"inputs": [
+				{
+					"internalType": "address",
+					"name": "_market",
+					"type": "address"
+				},
+				{
+					"internalType": "uint256",
+					"name": "_outcome",
+					"type": "uint256"
+				},
+				{
+					"internalType": "uint256",
+					"name": "_amount",
+					"type": "uint256"
+				},
+				{
+					"internalType": "address",
+					"name": "_shortParticipant",
+					"type": "address"
+				},
+				{
+					"internalType": "address",
+					"name": "_longParticipant",
+					"type": "address"
+				},
+				{
+					"internalType": "address",
+					"name": "_shortRecipient",
+					"type": "address"
+				},
+				{
+					"internalType": "address",
+					"name": "_longRecipient",
+					"type": "address"
+				},
+				{
+					"internalType": "uint256",
+					"name": "_price",
+					"type": "uint256"
+				},
+				{
+					"internalType": "address",
+					"name": "_sourceAccount",
+					"type": "address"
+				}
+			],
+			"name": "sellCompleteSetsForTrade",
+			"outputs": [
+				{
+					"internalType": "uint256",
+					"name": "_creatorFee",
+					"type": "uint256"
+				},
+				{
+					"internalType": "uint256",
+					"name": "_reportingFee",
+					"type": "uint256"
+				}
+			],
+			"payable": false,
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"constant": false,
+			"inputs": [
+				{
+					"internalType": "address",
+					"name": "operator",
+					"type": "address"
+				},
+				{
+					"internalType": "bool",
+					"name": "approved",
+					"type": "bool"
+				}
+			],
+			"name": "setApprovalForAll",
+			"outputs": [],
+			"payable": false,
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [
+				{
+					"internalType": "bytes4",
+					"name": "interfaceId",
+					"type": "bytes4"
+				}
+			],
+			"name": "supportsInterface",
+			"outputs": [
+				{
+					"internalType": "bool",
+					"name": "",
+					"type": "bool"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [],
+			"name": "symbol",
+			"outputs": [
+				{
+					"internalType": "string",
+					"name": "",
+					"type": "string"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [
+				{
+					"internalType": "uint256",
+					"name": "id",
+					"type": "uint256"
+				}
+			],
+			"name": "totalSupply",
+			"outputs": [
+				{
+					"internalType": "uint256",
+					"name": "",
+					"type": "uint256"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [
+				{
+					"internalType": "address",
+					"name": "_market",
+					"type": "address"
+				},
+				{
+					"internalType": "uint256",
+					"name": "_outcome",
+					"type": "uint256"
+				}
+			],
+			"name": "totalSupplyForMarketOutcome",
+			"outputs": [
+				{
+					"internalType": "uint256",
+					"name": "",
+					"type": "uint256"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [
+				{
+					"internalType": "uint256",
+					"name": "_tokenId",
+					"type": "uint256"
+				}
+			],
+			"name": "unpackTokenId",
+			"outputs": [
+				{
+					"internalType": "address",
+					"name": "_market",
+					"type": "address"
+				},
+				{
+					"internalType": "uint256",
+					"name": "_outcome",
+					"type": "uint256"
+				}
+			],
+			"payable": false,
+			"stateMutability": "pure",
+			"type": "function"
+		},
+		{
+			"constant": false,
+			"inputs": [
+				{
+					"internalType": "address",
+					"name": "_from",
+					"type": "address"
+				},
+				{
+					"internalType": "address",
+					"name": "_to",
+					"type": "address"
+				},
+				{
+					"internalType": "uint256[]",
+					"name": "_ids",
+					"type": "uint256[]"
+				},
+				{
+					"internalType": "uint256[]",
+					"name": "_values",
+					"type": "uint256[]"
+				}
+			],
+			"name": "unsafeBatchTransferFrom",
+			"outputs": [],
+			"payable": false,
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"constant": false,
+			"inputs": [
+				{
+					"internalType": "address",
+					"name": "_from",
+					"type": "address"
+				},
+				{
+					"internalType": "address",
+					"name": "_to",
+					"type": "address"
+				},
+				{
+					"internalType": "uint256",
+					"name": "_id",
+					"type": "uint256"
+				},
+				{
+					"internalType": "uint256",
+					"name": "_value",
+					"type": "uint256"
+				}
+			],
+			"name": "unsafeTransferFrom",
+			"outputs": [],
+			"payable": false,
+			"stateMutability": "nonpayable",
+			"type": "function"
+		}
+	],
+	"SideChainSimulateTrade": [
+		{
+			"constant": true,
+			"inputs": [],
+			"name": "augur",
+			"outputs": [
+				{
+					"internalType": "contract ISideChainAugur",
+					"name": "",
+					"type": "address"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [],
+			"name": "augurTrading",
+			"outputs": [
+				{
+					"internalType": "contract ISideChainAugurTrading",
+					"name": "",
+					"type": "address"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [],
+			"name": "getInitialized",
+			"outputs": [
+				{
+					"internalType": "bool",
+					"name": "",
+					"type": "bool"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [
+				{
+					"internalType": "enum Order.TradeDirections",
+					"name": "_direction",
+					"type": "uint8"
+				},
+				{
+					"internalType": "address",
+					"name": "_market",
+					"type": "address"
+				},
+				{
+					"internalType": "uint256",
+					"name": "_outcome",
+					"type": "uint256"
+				},
+				{
+					"internalType": "address",
+					"name": "_sender",
+					"type": "address"
+				}
+			],
+			"name": "getNumberOfAvaialableShares",
+			"outputs": [
+				{
+					"internalType": "uint256",
+					"name": "",
+					"type": "uint256"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": false,
+			"inputs": [
+				{
+					"internalType": "contract ISideChainAugur",
+					"name": "_augur",
+					"type": "address"
+				},
+				{
+					"internalType": "contract ISideChainAugurTrading",
+					"name": "_augurTrading",
+					"type": "address"
+				}
+			],
+			"name": "initialize",
+			"outputs": [],
+			"payable": false,
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [],
+			"name": "marketGetter",
+			"outputs": [
+				{
+					"internalType": "contract IMarketGetter",
+					"name": "",
+					"type": "address"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [],
+			"name": "shareToken",
+			"outputs": [
+				{
+					"internalType": "contract ISideChainShareToken",
+					"name": "",
+					"type": "address"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [
+				{
+					"components": [
+						{
+							"internalType": "address",
+							"name": "makerAddress",
+							"type": "address"
+						},
+						{
+							"internalType": "address",
+							"name": "takerAddress",
+							"type": "address"
+						},
+						{
+							"internalType": "address",
+							"name": "feeRecipientAddress",
+							"type": "address"
+						},
+						{
+							"internalType": "address",
+							"name": "senderAddress",
+							"type": "address"
+						},
+						{
+							"internalType": "uint256",
+							"name": "makerAssetAmount",
+							"type": "uint256"
+						},
+						{
+							"internalType": "uint256",
+							"name": "takerAssetAmount",
+							"type": "uint256"
+						},
+						{
+							"internalType": "uint256",
+							"name": "makerFee",
+							"type": "uint256"
+						},
+						{
+							"internalType": "uint256",
+							"name": "takerFee",
+							"type": "uint256"
+						},
+						{
+							"internalType": "uint256",
+							"name": "expirationTimeSeconds",
+							"type": "uint256"
+						},
+						{
+							"internalType": "uint256",
+							"name": "salt",
+							"type": "uint256"
+						},
+						{
+							"internalType": "bytes",
+							"name": "makerAssetData",
+							"type": "bytes"
+						},
+						{
+							"internalType": "bytes",
+							"name": "takerAssetData",
+							"type": "bytes"
+						},
+						{
+							"internalType": "bytes",
+							"name": "makerFeeAssetData",
+							"type": "bytes"
+						},
+						{
+							"internalType": "bytes",
+							"name": "takerFeeAssetData",
+							"type": "bytes"
+						}
+					],
+					"internalType": "struct IExchange.Order[]",
+					"name": "_orders",
+					"type": "tuple[]"
+				},
+				{
+					"internalType": "uint256",
+					"name": "_amount",
+					"type": "uint256"
+				},
+				{
+					"internalType": "bool",
+					"name": "_fillOnly",
+					"type": "bool"
+				}
+			],
+			"name": "simulateZeroXTrade",
+			"outputs": [
+				{
+					"internalType": "uint256",
+					"name": "_sharesFilled",
+					"type": "uint256"
+				},
+				{
+					"internalType": "uint256",
+					"name": "_tokensDepleted",
+					"type": "uint256"
+				},
+				{
+					"internalType": "uint256",
+					"name": "_sharesDepleted",
+					"type": "uint256"
+				},
+				{
+					"internalType": "uint256",
+					"name": "_settlementFees",
+					"type": "uint256"
+				},
+				{
+					"internalType": "uint256",
+					"name": "_numFills",
+					"type": "uint256"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [],
+			"name": "zeroXTrade",
+			"outputs": [
+				{
+					"internalType": "contract ISideChainZeroXTrade",
+					"name": "",
+					"type": "address"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		}
+	],
+	"SideChainZeroXTrade": [
+		{
+			"anonymous": false,
+			"inputs": [
+				{
+					"indexed": true,
+					"internalType": "address",
+					"name": "owner",
+					"type": "address"
+				},
+				{
+					"indexed": true,
+					"internalType": "address",
+					"name": "operator",
+					"type": "address"
+				},
+				{
+					"indexed": false,
+					"internalType": "bool",
+					"name": "approved",
+					"type": "bool"
+				}
+			],
+			"name": "ApprovalForAll",
+			"type": "event"
+		},
+		{
+			"anonymous": false,
+			"inputs": [
+				{
+					"indexed": true,
+					"internalType": "address",
+					"name": "operator",
+					"type": "address"
+				},
+				{
+					"indexed": true,
+					"internalType": "address",
+					"name": "from",
+					"type": "address"
+				},
+				{
+					"indexed": true,
+					"internalType": "address",
+					"name": "to",
+					"type": "address"
+				},
+				{
+					"indexed": false,
+					"internalType": "uint256[]",
+					"name": "ids",
+					"type": "uint256[]"
+				},
+				{
+					"indexed": false,
+					"internalType": "uint256[]",
+					"name": "values",
+					"type": "uint256[]"
+				}
+			],
+			"name": "TransferBatch",
+			"type": "event"
+		},
+		{
+			"anonymous": false,
+			"inputs": [
+				{
+					"indexed": true,
+					"internalType": "address",
+					"name": "operator",
+					"type": "address"
+				},
+				{
+					"indexed": true,
+					"internalType": "address",
+					"name": "from",
+					"type": "address"
+				},
+				{
+					"indexed": true,
+					"internalType": "address",
+					"name": "to",
+					"type": "address"
+				},
+				{
+					"indexed": false,
+					"internalType": "uint256",
+					"name": "id",
+					"type": "uint256"
+				},
+				{
+					"indexed": false,
+					"internalType": "uint256",
+					"name": "value",
+					"type": "uint256"
+				}
+			],
+			"name": "TransferSingle",
+			"type": "event"
+		},
+		{
+			"anonymous": false,
+			"inputs": [
+				{
+					"indexed": false,
+					"internalType": "string",
+					"name": "value",
+					"type": "string"
+				},
+				{
+					"indexed": true,
+					"internalType": "uint256",
+					"name": "id",
+					"type": "uint256"
+				}
+			],
+			"name": "URI",
+			"type": "event"
+		},
+		{
+			"payable": true,
+			"stateMutability": "payable",
+			"type": "fallback"
+		},
+		{
+			"constant": true,
+			"inputs": [],
+			"name": "EIP1271_ORDER_WITH_HASH_SELECTOR",
+			"outputs": [
+				{
+					"internalType": "bytes4",
+					"name": "",
+					"type": "bytes4"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [],
+			"name": "EIP712_DOMAIN_HASH",
+			"outputs": [
+				{
+					"internalType": "bytes32",
+					"name": "",
+					"type": "bytes32"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [
+				{
+					"internalType": "address",
+					"name": "_owner",
+					"type": "address"
+				},
+				{
+					"internalType": "address",
+					"name": "_market",
+					"type": "address"
+				},
+				{
+					"internalType": "uint8",
+					"name": "_outcome",
+					"type": "uint8"
+				},
+				{
+					"internalType": "uint256",
+					"name": "_price",
+					"type": "uint256"
+				}
+			],
+			"name": "askBalance",
+			"outputs": [
+				{
+					"internalType": "uint256",
+					"name": "",
+					"type": "uint256"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [],
+			"name": "augur",
+			"outputs": [
+				{
+					"internalType": "contract ISideChainAugur",
+					"name": "",
+					"type": "address"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [],
+			"name": "augurTrading",
+			"outputs": [
+				{
+					"internalType": "contract ISideChainAugurTrading",
+					"name": "",
+					"type": "address"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [
+				{
+					"internalType": "address",
+					"name": "owner",
+					"type": "address"
+				},
+				{
+					"internalType": "uint256",
+					"name": "id",
+					"type": "uint256"
+				}
+			],
+			"name": "balanceOf",
+			"outputs": [
+				{
+					"internalType": "uint256",
+					"name": "",
+					"type": "uint256"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [
+				{
+					"internalType": "address[]",
+					"name": "owners",
+					"type": "address[]"
+				},
+				{
+					"internalType": "uint256[]",
+					"name": "ids",
+					"type": "uint256[]"
+				}
+			],
+			"name": "balanceOfBatch",
+			"outputs": [
+				{
+					"internalType": "uint256[]",
+					"name": "balances_",
+					"type": "uint256[]"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [
+				{
+					"internalType": "address",
+					"name": "_owner",
+					"type": "address"
+				},
+				{
+					"internalType": "address",
+					"name": "_market",
+					"type": "address"
+				},
+				{
+					"internalType": "uint8",
+					"name": "_outcome",
+					"type": "uint8"
+				},
+				{
+					"internalType": "uint256",
+					"name": "_price",
+					"type": "uint256"
+				}
+			],
+			"name": "bidBalance",
+			"outputs": [
+				{
+					"internalType": "uint256",
+					"name": "",
+					"type": "uint256"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": false,
+			"inputs": [
+				{
+					"components": [
+						{
+							"internalType": "address",
+							"name": "makerAddress",
+							"type": "address"
+						},
+						{
+							"internalType": "address",
+							"name": "takerAddress",
+							"type": "address"
+						},
+						{
+							"internalType": "address",
+							"name": "feeRecipientAddress",
+							"type": "address"
+						},
+						{
+							"internalType": "address",
+							"name": "senderAddress",
+							"type": "address"
+						},
+						{
+							"internalType": "uint256",
+							"name": "makerAssetAmount",
+							"type": "uint256"
+						},
+						{
+							"internalType": "uint256",
+							"name": "takerAssetAmount",
+							"type": "uint256"
+						},
+						{
+							"internalType": "uint256",
+							"name": "makerFee",
+							"type": "uint256"
+						},
+						{
+							"internalType": "uint256",
+							"name": "takerFee",
+							"type": "uint256"
+						},
+						{
+							"internalType": "uint256",
+							"name": "expirationTimeSeconds",
+							"type": "uint256"
+						},
+						{
+							"internalType": "uint256",
+							"name": "salt",
+							"type": "uint256"
+						},
+						{
+							"internalType": "bytes",
+							"name": "makerAssetData",
+							"type": "bytes"
+						},
+						{
+							"internalType": "bytes",
+							"name": "takerAssetData",
+							"type": "bytes"
+						},
+						{
+							"internalType": "bytes",
+							"name": "makerFeeAssetData",
+							"type": "bytes"
+						},
+						{
+							"internalType": "bytes",
+							"name": "takerFeeAssetData",
+							"type": "bytes"
+						}
+					],
+					"internalType": "struct IExchange.Order[]",
+					"name": "_orders",
+					"type": "tuple[]"
+				},
+				{
+					"internalType": "bytes[]",
+					"name": "_signatures",
+					"type": "bytes[]"
+				},
+				{
+					"internalType": "uint256",
+					"name": "_maxProtocolFeeDai",
+					"type": "uint256"
+				}
+			],
+			"name": "cancelOrders",
+			"outputs": [
+				{
+					"internalType": "bool",
+					"name": "",
+					"type": "bool"
+				}
+			],
+			"payable": false,
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [],
+			"name": "cash",
+			"outputs": [
+				{
+					"internalType": "contract ICash",
+					"name": "",
+					"type": "address"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [
+				{
+					"internalType": "address",
+					"name": "_owner",
+					"type": "address"
+				},
+				{
+					"internalType": "address",
+					"name": "_sender",
+					"type": "address"
+				}
+			],
+			"name": "cashAvailableForTransferFrom",
+			"outputs": [
+				{
+					"internalType": "uint256",
+					"name": "",
+					"type": "uint256"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [
+				{
+					"internalType": "uint8",
+					"name": "_type",
+					"type": "uint8"
+				},
+				{
+					"internalType": "uint256",
+					"name": "_attoshares",
+					"type": "uint256"
+				},
+				{
+					"internalType": "uint256",
+					"name": "_price",
+					"type": "uint256"
+				},
+				{
+					"internalType": "address",
+					"name": "_market",
+					"type": "address"
+				},
+				{
+					"internalType": "uint8",
+					"name": "_outcome",
+					"type": "uint8"
+				},
+				{
+					"internalType": "uint256",
+					"name": "_expirationTimeSeconds",
+					"type": "uint256"
+				},
+				{
+					"internalType": "uint256",
+					"name": "_salt",
+					"type": "uint256"
+				}
+			],
+			"name": "createZeroXOrder",
+			"outputs": [
+				{
+					"components": [
+						{
+							"internalType": "address",
+							"name": "makerAddress",
+							"type": "address"
+						},
+						{
+							"internalType": "address",
+							"name": "takerAddress",
+							"type": "address"
+						},
+						{
+							"internalType": "address",
+							"name": "feeRecipientAddress",
+							"type": "address"
+						},
+						{
+							"internalType": "address",
+							"name": "senderAddress",
+							"type": "address"
+						},
+						{
+							"internalType": "uint256",
+							"name": "makerAssetAmount",
+							"type": "uint256"
+						},
+						{
+							"internalType": "uint256",
+							"name": "takerAssetAmount",
+							"type": "uint256"
+						},
+						{
+							"internalType": "uint256",
+							"name": "makerFee",
+							"type": "uint256"
+						},
+						{
+							"internalType": "uint256",
+							"name": "takerFee",
+							"type": "uint256"
+						},
+						{
+							"internalType": "uint256",
+							"name": "expirationTimeSeconds",
+							"type": "uint256"
+						},
+						{
+							"internalType": "uint256",
+							"name": "salt",
+							"type": "uint256"
+						},
+						{
+							"internalType": "bytes",
+							"name": "makerAssetData",
+							"type": "bytes"
+						},
+						{
+							"internalType": "bytes",
+							"name": "takerAssetData",
+							"type": "bytes"
+						},
+						{
+							"internalType": "bytes",
+							"name": "makerFeeAssetData",
+							"type": "bytes"
+						},
+						{
+							"internalType": "bytes",
+							"name": "takerFeeAssetData",
+							"type": "bytes"
+						}
+					],
+					"internalType": "struct IExchange.Order",
+					"name": "_zeroXOrder",
+					"type": "tuple"
+				},
+				{
+					"internalType": "bytes32",
+					"name": "_orderHash",
+					"type": "bytes32"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [
+				{
+					"internalType": "address",
+					"name": "_maker",
+					"type": "address"
+				},
+				{
+					"internalType": "uint8",
+					"name": "_type",
+					"type": "uint8"
+				},
+				{
+					"internalType": "uint256",
+					"name": "_attoshares",
+					"type": "uint256"
+				},
+				{
+					"internalType": "uint256",
+					"name": "_price",
+					"type": "uint256"
+				},
+				{
+					"internalType": "address",
+					"name": "_market",
+					"type": "address"
+				},
+				{
+					"internalType": "uint8",
+					"name": "_outcome",
+					"type": "uint8"
+				},
+				{
+					"internalType": "uint256",
+					"name": "_expirationTimeSeconds",
+					"type": "uint256"
+				},
+				{
+					"internalType": "uint256",
+					"name": "_salt",
+					"type": "uint256"
+				}
+			],
+			"name": "createZeroXOrderFor",
+			"outputs": [
+				{
+					"components": [
+						{
+							"internalType": "address",
+							"name": "makerAddress",
+							"type": "address"
+						},
+						{
+							"internalType": "address",
+							"name": "takerAddress",
+							"type": "address"
+						},
+						{
+							"internalType": "address",
+							"name": "feeRecipientAddress",
+							"type": "address"
+						},
+						{
+							"internalType": "address",
+							"name": "senderAddress",
+							"type": "address"
+						},
+						{
+							"internalType": "uint256",
+							"name": "makerAssetAmount",
+							"type": "uint256"
+						},
+						{
+							"internalType": "uint256",
+							"name": "takerAssetAmount",
+							"type": "uint256"
+						},
+						{
+							"internalType": "uint256",
+							"name": "makerFee",
+							"type": "uint256"
+						},
+						{
+							"internalType": "uint256",
+							"name": "takerFee",
+							"type": "uint256"
+						},
+						{
+							"internalType": "uint256",
+							"name": "expirationTimeSeconds",
+							"type": "uint256"
+						},
+						{
+							"internalType": "uint256",
+							"name": "salt",
+							"type": "uint256"
+						},
+						{
+							"internalType": "bytes",
+							"name": "makerAssetData",
+							"type": "bytes"
+						},
+						{
+							"internalType": "bytes",
+							"name": "takerAssetData",
+							"type": "bytes"
+						},
+						{
+							"internalType": "bytes",
+							"name": "makerFeeAssetData",
+							"type": "bytes"
+						},
+						{
+							"internalType": "bytes",
+							"name": "takerFeeAssetData",
+							"type": "bytes"
+						}
+					],
+					"internalType": "struct IExchange.Order",
+					"name": "_zeroXOrder",
+					"type": "tuple"
+				},
+				{
+					"internalType": "bytes32",
+					"name": "_orderHash",
+					"type": "bytes32"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [
+				{
+					"components": [
+						{
+							"internalType": "address",
+							"name": "makerAddress",
+							"type": "address"
+						},
+						{
+							"internalType": "address",
+							"name": "takerAddress",
+							"type": "address"
+						},
+						{
+							"internalType": "address",
+							"name": "feeRecipientAddress",
+							"type": "address"
+						},
+						{
+							"internalType": "address",
+							"name": "senderAddress",
+							"type": "address"
+						},
+						{
+							"internalType": "uint256",
+							"name": "makerAssetAmount",
+							"type": "uint256"
+						},
+						{
+							"internalType": "uint256",
+							"name": "takerAssetAmount",
+							"type": "uint256"
+						},
+						{
+							"internalType": "uint256",
+							"name": "makerFee",
+							"type": "uint256"
+						},
+						{
+							"internalType": "uint256",
+							"name": "takerFee",
+							"type": "uint256"
+						},
+						{
+							"internalType": "uint256",
+							"name": "expirationTimeSeconds",
+							"type": "uint256"
+						},
+						{
+							"internalType": "uint256",
+							"name": "salt",
+							"type": "uint256"
+						},
+						{
+							"internalType": "bytes",
+							"name": "makerAssetData",
+							"type": "bytes"
+						},
+						{
+							"internalType": "bytes",
+							"name": "takerAssetData",
+							"type": "bytes"
+						},
+						{
+							"internalType": "bytes",
+							"name": "makerFeeAssetData",
+							"type": "bytes"
+						},
+						{
+							"internalType": "bytes",
+							"name": "takerFeeAssetData",
+							"type": "bytes"
+						}
+					],
+					"internalType": "struct IExchange.Order",
+					"name": "_order",
+					"type": "tuple"
+				},
+				{
+					"internalType": "uint256",
+					"name": "_amount",
+					"type": "uint256"
+				}
+			],
+			"name": "creatorHasFundsForTrade",
+			"outputs": [
+				{
+					"internalType": "bool",
+					"name": "",
+					"type": "bool"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [
+				{
+					"internalType": "bytes",
+					"name": "_assetData",
+					"type": "bytes"
+				}
+			],
+			"name": "decodeAssetData",
+			"outputs": [
+				{
+					"internalType": "bytes4",
+					"name": "_assetProxyId",
+					"type": "bytes4"
+				},
+				{
+					"internalType": "address",
+					"name": "_tokenAddress",
+					"type": "address"
+				},
+				{
+					"internalType": "uint256[]",
+					"name": "_tokenIds",
+					"type": "uint256[]"
+				},
+				{
+					"internalType": "uint256[]",
+					"name": "_tokenValues",
+					"type": "uint256[]"
+				},
+				{
+					"internalType": "bytes",
+					"name": "_callbackData",
+					"type": "bytes"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [
+				{
+					"internalType": "bytes",
+					"name": "_assetData",
+					"type": "bytes"
+				}
+			],
+			"name": "decodeTradeAssetData",
+			"outputs": [
+				{
+					"internalType": "bytes4",
+					"name": "_assetProxyId",
+					"type": "bytes4"
+				},
+				{
+					"internalType": "address",
+					"name": "_tokenAddress",
+					"type": "address"
+				},
+				{
+					"internalType": "uint256[]",
+					"name": "_tokenIds",
+					"type": "uint256[]"
+				},
+				{
+					"internalType": "uint256[]",
+					"name": "_tokenValues",
+					"type": "uint256[]"
+				},
+				{
+					"internalType": "bytes",
+					"name": "_callbackData",
+					"type": "bytes"
+				}
+			],
+			"payable": false,
+			"stateMutability": "pure",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [
+				{
+					"internalType": "address",
+					"name": "_market",
+					"type": "address"
+				},
+				{
+					"internalType": "uint256",
+					"name": "_price",
+					"type": "uint256"
+				},
+				{
+					"internalType": "uint8",
+					"name": "_outcome",
+					"type": "uint8"
+				},
+				{
+					"internalType": "uint8",
+					"name": "_type",
+					"type": "uint8"
+				}
+			],
+			"name": "encodeAssetData",
+			"outputs": [
+				{
+					"internalType": "bytes",
+					"name": "_assetData",
+					"type": "bytes"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [
+				{
+					"components": [
+						{
+							"internalType": "address",
+							"name": "makerAddress",
+							"type": "address"
+						},
+						{
+							"internalType": "address",
+							"name": "takerAddress",
+							"type": "address"
+						},
+						{
+							"internalType": "address",
+							"name": "feeRecipientAddress",
+							"type": "address"
+						},
+						{
+							"internalType": "address",
+							"name": "senderAddress",
+							"type": "address"
+						},
+						{
+							"internalType": "uint256",
+							"name": "makerAssetAmount",
+							"type": "uint256"
+						},
+						{
+							"internalType": "uint256",
+							"name": "takerAssetAmount",
+							"type": "uint256"
+						},
+						{
+							"internalType": "uint256",
+							"name": "makerFee",
+							"type": "uint256"
+						},
+						{
+							"internalType": "uint256",
+							"name": "takerFee",
+							"type": "uint256"
+						},
+						{
+							"internalType": "uint256",
+							"name": "expirationTimeSeconds",
+							"type": "uint256"
+						},
+						{
+							"internalType": "uint256",
+							"name": "salt",
+							"type": "uint256"
+						},
+						{
+							"internalType": "bytes",
+							"name": "makerAssetData",
+							"type": "bytes"
+						},
+						{
+							"internalType": "bytes",
+							"name": "takerAssetData",
+							"type": "bytes"
+						},
+						{
+							"internalType": "bytes",
+							"name": "makerFeeAssetData",
+							"type": "bytes"
+						},
+						{
+							"internalType": "bytes",
+							"name": "takerFeeAssetData",
+							"type": "bytes"
+						}
+					],
+					"internalType": "struct IExchange.Order",
+					"name": "_zeroXOrder",
+					"type": "tuple"
+				},
+				{
+					"internalType": "bytes32",
+					"name": "_orderHash",
+					"type": "bytes32"
+				}
+			],
+			"name": "encodeEIP1271OrderWithHash",
+			"outputs": [
+				{
+					"internalType": "bytes",
+					"name": "encoded",
+					"type": "bytes"
+				}
+			],
+			"payable": false,
+			"stateMutability": "pure",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [],
+			"name": "exchange",
+			"outputs": [
+				{
+					"internalType": "contract IExchange",
+					"name": "",
+					"type": "address"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [],
+			"name": "fillOrder",
+			"outputs": [
+				{
+					"internalType": "contract ISideChainFillOrder",
+					"name": "",
+					"type": "address"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [],
+			"name": "getInitialized",
+			"outputs": [
+				{
+					"internalType": "bool",
+					"name": "",
+					"type": "bool"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [
+				{
+					"internalType": "address",
+					"name": "_market",
+					"type": "address"
+				},
+				{
+					"internalType": "uint256",
+					"name": "_price",
+					"type": "uint256"
+				},
+				{
+					"internalType": "uint8",
+					"name": "_outcome",
+					"type": "uint8"
+				},
+				{
+					"internalType": "uint8",
+					"name": "_type",
+					"type": "uint8"
+				}
+			],
+			"name": "getTokenId",
+			"outputs": [
+				{
+					"internalType": "uint256",
+					"name": "_tokenId",
+					"type": "uint256"
+				}
+			],
+			"payable": false,
+			"stateMutability": "pure",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [
+				{
+					"components": [
+						{
+							"internalType": "address",
+							"name": "makerAddress",
+							"type": "address"
+						},
+						{
+							"internalType": "address",
+							"name": "takerAddress",
+							"type": "address"
+						},
+						{
+							"internalType": "address",
+							"name": "feeRecipientAddress",
+							"type": "address"
+						},
+						{
+							"internalType": "address",
+							"name": "senderAddress",
+							"type": "address"
+						},
+						{
+							"internalType": "uint256",
+							"name": "makerAssetAmount",
+							"type": "uint256"
+						},
+						{
+							"internalType": "uint256",
+							"name": "takerAssetAmount",
+							"type": "uint256"
+						},
+						{
+							"internalType": "uint256",
+							"name": "makerFee",
+							"type": "uint256"
+						},
+						{
+							"internalType": "uint256",
+							"name": "takerFee",
+							"type": "uint256"
+						},
+						{
+							"internalType": "uint256",
+							"name": "expirationTimeSeconds",
+							"type": "uint256"
+						},
+						{
+							"internalType": "uint256",
+							"name": "salt",
+							"type": "uint256"
+						},
+						{
+							"internalType": "bytes",
+							"name": "makerAssetData",
+							"type": "bytes"
+						},
+						{
+							"internalType": "bytes",
+							"name": "takerAssetData",
+							"type": "bytes"
+						},
+						{
+							"internalType": "bytes",
+							"name": "makerFeeAssetData",
+							"type": "bytes"
+						},
+						{
+							"internalType": "bytes",
+							"name": "takerFeeAssetData",
+							"type": "bytes"
+						}
+					],
+					"internalType": "struct IExchange.Order",
+					"name": "_order",
+					"type": "tuple"
+				}
+			],
+			"name": "getTokenIdFromOrder",
+			"outputs": [
+				{
+					"internalType": "uint256",
+					"name": "_tokenId",
+					"type": "uint256"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [],
+			"name": "getTransferFromAllowed",
+			"outputs": [
+				{
+					"internalType": "bool",
+					"name": "",
+					"type": "bool"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [
+				{
+					"internalType": "bytes",
+					"name": "_assetData",
+					"type": "bytes"
+				}
+			],
+			"name": "getZeroXTradeTokenData",
+			"outputs": [
+				{
+					"internalType": "contract IERC1155",
+					"name": "_token",
+					"type": "address"
+				},
+				{
+					"internalType": "uint256",
+					"name": "_tokenId",
+					"type": "uint256"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": false,
+			"inputs": [
+				{
+					"internalType": "contract ISideChainAugur",
+					"name": "_augur",
+					"type": "address"
+				},
+				{
+					"internalType": "contract ISideChainAugurTrading",
+					"name": "_augurTrading",
+					"type": "address"
+				}
+			],
+			"name": "initialize",
+			"outputs": [],
+			"payable": false,
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [
+				{
+					"internalType": "address",
+					"name": "owner",
+					"type": "address"
+				},
+				{
+					"internalType": "address",
+					"name": "operator",
+					"type": "address"
+				}
+			],
+			"name": "isApprovedForAll",
+			"outputs": [
+				{
+					"internalType": "bool",
+					"name": "",
+					"type": "bool"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [],
+			"name": "marketGetter",
+			"outputs": [
+				{
+					"internalType": "contract IMarketGetter",
+					"name": "",
+					"type": "address"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [
+				{
+					"components": [
+						{
+							"internalType": "address",
+							"name": "makerAddress",
+							"type": "address"
+						},
+						{
+							"internalType": "address",
+							"name": "takerAddress",
+							"type": "address"
+						},
+						{
+							"internalType": "address",
+							"name": "feeRecipientAddress",
+							"type": "address"
+						},
+						{
+							"internalType": "address",
+							"name": "senderAddress",
+							"type": "address"
+						},
+						{
+							"internalType": "uint256",
+							"name": "makerAssetAmount",
+							"type": "uint256"
+						},
+						{
+							"internalType": "uint256",
+							"name": "takerAssetAmount",
+							"type": "uint256"
+						},
+						{
+							"internalType": "uint256",
+							"name": "makerFee",
+							"type": "uint256"
+						},
+						{
+							"internalType": "uint256",
+							"name": "takerFee",
+							"type": "uint256"
+						},
+						{
+							"internalType": "uint256",
+							"name": "expirationTimeSeconds",
+							"type": "uint256"
+						},
+						{
+							"internalType": "uint256",
+							"name": "salt",
+							"type": "uint256"
+						},
+						{
+							"internalType": "bytes",
+							"name": "makerAssetData",
+							"type": "bytes"
+						},
+						{
+							"internalType": "bytes",
+							"name": "takerAssetData",
+							"type": "bytes"
+						},
+						{
+							"internalType": "bytes",
+							"name": "makerFeeAssetData",
+							"type": "bytes"
+						},
+						{
+							"internalType": "bytes",
+							"name": "takerFeeAssetData",
+							"type": "bytes"
+						}
+					],
+					"internalType": "struct IExchange.Order",
+					"name": "_order",
+					"type": "tuple"
+				}
+			],
+			"name": "parseOrderData",
+			"outputs": [
+				{
+					"components": [
+						{
+							"internalType": "address",
+							"name": "marketAddress",
+							"type": "address"
+						},
+						{
+							"internalType": "uint256",
+							"name": "price",
+							"type": "uint256"
+						},
+						{
+							"internalType": "uint8",
+							"name": "outcome",
+							"type": "uint8"
+						},
+						{
+							"internalType": "uint8",
+							"name": "orderType",
+							"type": "uint8"
+						}
+					],
+					"internalType": "struct IZeroXTrade.AugurOrderData",
+					"name": "_data",
+					"type": "tuple"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": false,
+			"inputs": [
+				{
+					"internalType": "address",
+					"name": "from",
+					"type": "address"
+				},
+				{
+					"internalType": "address",
+					"name": "to",
+					"type": "address"
+				},
+				{
+					"internalType": "uint256[]",
+					"name": "ids",
+					"type": "uint256[]"
+				},
+				{
+					"internalType": "uint256[]",
+					"name": "values",
+					"type": "uint256[]"
+				},
+				{
+					"internalType": "bytes",
+					"name": "data",
+					"type": "bytes"
+				}
+			],
+			"name": "safeBatchTransferFrom",
+			"outputs": [],
+			"payable": false,
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"constant": false,
+			"inputs": [
+				{
+					"internalType": "address",
+					"name": "from",
+					"type": "address"
+				},
+				{
+					"internalType": "address",
+					"name": "to",
+					"type": "address"
+				},
+				{
+					"internalType": "uint256",
+					"name": "id",
+					"type": "uint256"
+				},
+				{
+					"internalType": "uint256",
+					"name": "value",
+					"type": "uint256"
+				},
+				{
+					"internalType": "bytes",
+					"name": "data",
+					"type": "bytes"
+				}
+			],
+			"name": "safeTransferFrom",
+			"outputs": [],
+			"payable": false,
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"constant": false,
+			"inputs": [
+				{
+					"internalType": "address",
+					"name": "operator",
+					"type": "address"
+				},
+				{
+					"internalType": "bool",
+					"name": "approved",
+					"type": "bool"
+				}
+			],
+			"name": "setApprovalForAll",
+			"outputs": [],
+			"payable": false,
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [],
+			"name": "shareToken",
+			"outputs": [
+				{
+					"internalType": "contract ISideChainShareToken",
+					"name": "",
+					"type": "address"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [],
+			"name": "token0IsCash",
+			"outputs": [
+				{
+					"internalType": "bool",
+					"name": "",
+					"type": "bool"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [
+				{
+					"internalType": "uint256",
+					"name": "id",
+					"type": "uint256"
+				}
+			],
+			"name": "totalSupply",
+			"outputs": [
+				{
+					"internalType": "uint256",
+					"name": "",
+					"type": "uint256"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": false,
+			"inputs": [
+				{
+					"internalType": "uint256",
+					"name": "_requestedFillAmount",
+					"type": "uint256"
+				},
+				{
+					"internalType": "bytes32",
+					"name": "_fingerprint",
+					"type": "bytes32"
+				},
+				{
+					"internalType": "bytes32",
+					"name": "_tradeGroupId",
+					"type": "bytes32"
+				},
+				{
+					"internalType": "uint256",
+					"name": "_maxProtocolFeeDai",
+					"type": "uint256"
+				},
+				{
+					"internalType": "uint256",
+					"name": "_maxTrades",
+					"type": "uint256"
+				},
+				{
+					"components": [
+						{
+							"internalType": "address",
+							"name": "makerAddress",
+							"type": "address"
+						},
+						{
+							"internalType": "address",
+							"name": "takerAddress",
+							"type": "address"
+						},
+						{
+							"internalType": "address",
+							"name": "feeRecipientAddress",
+							"type": "address"
+						},
+						{
+							"internalType": "address",
+							"name": "senderAddress",
+							"type": "address"
+						},
+						{
+							"internalType": "uint256",
+							"name": "makerAssetAmount",
+							"type": "uint256"
+						},
+						{
+							"internalType": "uint256",
+							"name": "takerAssetAmount",
+							"type": "uint256"
+						},
+						{
+							"internalType": "uint256",
+							"name": "makerFee",
+							"type": "uint256"
+						},
+						{
+							"internalType": "uint256",
+							"name": "takerFee",
+							"type": "uint256"
+						},
+						{
+							"internalType": "uint256",
+							"name": "expirationTimeSeconds",
+							"type": "uint256"
+						},
+						{
+							"internalType": "uint256",
+							"name": "salt",
+							"type": "uint256"
+						},
+						{
+							"internalType": "bytes",
+							"name": "makerAssetData",
+							"type": "bytes"
+						},
+						{
+							"internalType": "bytes",
+							"name": "takerAssetData",
+							"type": "bytes"
+						},
+						{
+							"internalType": "bytes",
+							"name": "makerFeeAssetData",
+							"type": "bytes"
+						},
+						{
+							"internalType": "bytes",
+							"name": "takerFeeAssetData",
+							"type": "bytes"
+						}
+					],
+					"internalType": "struct IExchange.Order[]",
+					"name": "_orders",
+					"type": "tuple[]"
+				},
+				{
+					"internalType": "bytes[]",
+					"name": "_signatures",
+					"type": "bytes[]"
+				}
+			],
+			"name": "trade",
+			"outputs": [
+				{
+					"internalType": "uint256",
+					"name": "",
+					"type": "uint256"
+				}
+			],
+			"payable": true,
+			"stateMutability": "payable",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [
+				{
+					"internalType": "uint256",
+					"name": "_tokenId",
+					"type": "uint256"
+				}
+			],
+			"name": "unpackTokenId",
+			"outputs": [
+				{
+					"internalType": "address",
+					"name": "_market",
+					"type": "address"
+				},
+				{
+					"internalType": "uint256",
+					"name": "_price",
+					"type": "uint256"
+				},
+				{
+					"internalType": "uint8",
+					"name": "_outcome",
+					"type": "uint8"
+				},
+				{
+					"internalType": "uint8",
+					"name": "_type",
+					"type": "uint8"
+				}
+			],
+			"payable": false,
+			"stateMutability": "pure",
+			"type": "function"
+		}
+	],
 	"AugurTrading": [
 		{
 			"inputs": [

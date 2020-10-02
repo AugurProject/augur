@@ -76,6 +76,14 @@ export const INTERNAL_CONTRACTS = [
     'GovToken',
     'Timelock',
     'FeePotStakingRewards',
+    // SideChain
+    'SideChainAugur',
+    'SideChainShareToken',
+    'SideChainAugurTrading',
+    'SideChainFillOrder',
+    'SideChainProfitLoss',
+    'SideChainZeroXTrade',
+    'SideChainSimulateTrade'
 ];
 
 export const TRADING_CONTRACTS = [

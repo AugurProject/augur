@@ -4,6 +4,7 @@ import { ContractCompiler } from '../libraries/ContractCompiler';
 import { ContractDeployer } from '../libraries/ContractDeployer';
 import { ParaContractDeployer } from '../libraries/ParaContractDeployer';
 import { ParaAugurDeployer } from '../libraries/ParaAugurDeployer';
+import { SideChainDeployer } from '../libraries/SideChainDeployer';
 import { GovernanceDeployer } from '../libraries/GovernanceDeployer';
 import { CompilerConfiguration } from '../libraries/CompilerConfiguration';
 import { ContractDependenciesEthers } from '@augurproject/contract-dependencies-ethers';
@@ -122,6 +123,16 @@ export class TestFixture {
             compiledContracts
         );
         await paraAugurDeployer.deploy('test', config.addresses.WETH9);
+
+        config = buildConfig('test');
+        const sideChainDeployer = new SideChainDeployer(
+            config,
+            dependencies,
+            provider,
+            signer,
+            compiledContracts
+        );
+        await sideChainDeployer.deploy('test');
 
         /*
         config = buildConfig('test');

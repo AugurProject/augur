@@ -36,12 +36,18 @@ export interface ParaDeploys {
   };
 }
 
+export interface SideChainDeploy {
+    uploadBlockNumber?: number,
+    addresses: SideChainAddresses
+}
+
 export interface SDKConfiguration {
   networkId: NetworkId,
   uploadBlockNumber?: number,
   addresses?: ContractAddresses,
   paraDeploys?: ParaDeploys
   paraDeploy?: string; // cashAddress of paraDeploy to use instead of base augur deploy
+  sideChain?: SideChainDeploy,
   governance?: {
     uploadBlockNumber?: number,
     addresses: GovernanceAddresses
@@ -71,6 +77,7 @@ export interface SDKConfiguration {
     serial?: boolean,
     writeArtifacts?: boolean,
     externalAddresses?: ExternalAddresses,
+    sideChainExternalAddresses?: SideChainExternalAddresses,
   },
   warpSync?: {
     createCheckpoints?: boolean,
@@ -207,6 +214,21 @@ export interface ParaAddresses extends TradingAddresses {
   OICash?: string;
 }
 
+export interface SideChainAddresses {
+  Augur: string;
+  Universe: string;
+  ShareToken: string;
+  Cash: string;
+  Affiliates?: string;
+  AugurTrading: string;
+  FillOrder: string;
+  SimulateTrade: string;
+  ZeroXTrade?: string;
+  ProfitLoss?: string;
+  MarketGetter?: string;
+  RepFeeTarget?: string;
+}
+
 export interface GovernanceAddresses {
   GovToken: string;
   Timelock: string;
@@ -225,6 +247,13 @@ export interface ExternalAddresses {
   UniswapV2Factory?: string;
   UniswapV2Router02?: string;
   RelayHubV2?: string;
+}
+
+export interface SideChainExternalAddresses {
+  Cash: string;
+  MarketGetter: string;
+  RepFeeTarget: string;
+  ZeroXExchange: string;
 }
 
 // TS doesn't allow mapping of any type but string or number so we list it out manually

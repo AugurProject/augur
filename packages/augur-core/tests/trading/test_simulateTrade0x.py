@@ -15,7 +15,7 @@ def signOrder(orderHash, private_key):
 def test_simple_simulate(contractsFixture, cash, market, universe):
     ZeroXTrade = contractsFixture.getZeroXTrade()
     zeroXExchange = contractsFixture.contracts["ZeroXExchange"]
-    simulateTrade = contractsFixture.contracts["SimulateTrade"]
+    simulateTrade = contractsFixture.contracts["SideChainSimulateTrade"] if contractsFixture.sideChain else contractsFixture.contracts["SimulateTrade"]
     expirationTime = contractsFixture.contracts['Time'].getTimestamp() + 10000
     salt = 5
 
@@ -49,7 +49,7 @@ def test_simple_simulate(contractsFixture, cash, market, universe):
 def test_simple_trades_and_fees(long, contractsFixture, cash, market, universe):
     ZeroXTrade = contractsFixture.getZeroXTrade()
     zeroXExchange = contractsFixture.contracts["ZeroXExchange"]
-    simulateTrade = contractsFixture.contracts["SimulateTrade"]
+    simulateTrade = contractsFixture.contracts["SideChainSimulateTrade"] if contractsFixture.sideChain else contractsFixture.contracts["SimulateTrade"]
     account0 = contractsFixture.accounts[0]
     senderPrivateKey0 = contractsFixture.privateKeys[0]
     account1 = contractsFixture.accounts[1]
@@ -110,7 +110,7 @@ def test_simple_trades_and_fees(long, contractsFixture, cash, market, universe):
 def test_repro_shares_depleted_case(contractsFixture, cash, market, universe):
     ZeroXTrade = contractsFixture.getZeroXTrade()
     zeroXExchange = contractsFixture.contracts["ZeroXExchange"]
-    simulateTrade = contractsFixture.contracts["SimulateTrade"]
+    simulateTrade = contractsFixture.contracts["SideChainSimulateTrade"] if contractsFixture.sideChain else contractsFixture.contracts["SimulateTrade"]
     account0 = contractsFixture.accounts[0]
     senderPrivateKey0 = contractsFixture.privateKeys[0]
     account1 = contractsFixture.accounts[1]
@@ -156,7 +156,7 @@ def test_repro_shares_depleted_case(contractsFixture, cash, market, universe):
 def test_partial_fill(contractsFixture, cash, market, universe):
     ZeroXTrade = contractsFixture.getZeroXTrade()
     zeroXExchange = contractsFixture.contracts["ZeroXExchange"]
-    simulateTrade = contractsFixture.contracts["SimulateTrade"]
+    simulateTrade = contractsFixture.contracts["SideChainSimulateTrade"] if contractsFixture.sideChain else contractsFixture.contracts["SimulateTrade"]
     expirationTime = contractsFixture.contracts['Time'].getTimestamp() + 10000
     
     direction = LONG
@@ -182,7 +182,7 @@ def test_partial_fill(contractsFixture, cash, market, universe):
 def test_multiple_trades(contractsFixture, cash, market, universe):
     ZeroXTrade = contractsFixture.getZeroXTrade()
     zeroXExchange = contractsFixture.contracts["ZeroXExchange"]
-    simulateTrade = contractsFixture.contracts["SimulateTrade"]
+    simulateTrade = contractsFixture.contracts["SideChainSimulateTrade"] if contractsFixture.sideChain else contractsFixture.contracts["SimulateTrade"]
     expirationTime = contractsFixture.contracts['Time'].getTimestamp() + 10000
     
     direction = LONG
@@ -212,7 +212,7 @@ def test_multiple_trades(contractsFixture, cash, market, universe):
 def test_kyc_token(contractsFixture, cash, market, universe):
     ZeroXTrade = contractsFixture.getZeroXTrade()
     zeroXExchange = contractsFixture.contracts["ZeroXExchange"]
-    simulateTrade = contractsFixture.contracts["SimulateTrade"]
+    simulateTrade = contractsFixture.contracts["SideChainSimulateTrade"] if contractsFixture.sideChain else contractsFixture.contracts["SimulateTrade"]
     expirationTime = contractsFixture.contracts['Time'].getTimestamp() + 10000
     
     direction = LONG
@@ -238,7 +238,7 @@ def test_kyc_token(contractsFixture, cash, market, universe):
 def test_self_trade(contractsFixture, cash, market, universe):
     ZeroXTrade = contractsFixture.getZeroXTrade()
     zeroXExchange = contractsFixture.contracts["ZeroXExchange"]
-    simulateTrade = contractsFixture.contracts["SimulateTrade"]
+    simulateTrade = contractsFixture.contracts["SideChainSimulateTrade"] if contractsFixture.sideChain else contractsFixture.contracts["SimulateTrade"]
     expirationTime = contractsFixture.contracts['Time'].getTimestamp() + 10000
     
     direction = LONG
@@ -264,7 +264,7 @@ def test_self_trade(contractsFixture, cash, market, universe):
 def test_fill_only(contractsFixture, cash, market, universe):
     ZeroXTrade = contractsFixture.getZeroXTrade()
     zeroXExchange = contractsFixture.contracts["ZeroXExchange"]
-    simulateTrade = contractsFixture.contracts["SimulateTrade"]
+    simulateTrade = contractsFixture.contracts["SideChainSimulateTrade"] if contractsFixture.sideChain else contractsFixture.contracts["SimulateTrade"]
     expirationTime = contractsFixture.contracts['Time'].getTimestamp() + 10000
     
     direction = LONG
@@ -290,7 +290,7 @@ def test_fill_only(contractsFixture, cash, market, universe):
 def test_fees(contractsFixture, cash, market, universe):
     ZeroXTrade = contractsFixture.getZeroXTrade()
     zeroXExchange = contractsFixture.contracts["ZeroXExchange"]
-    simulateTrade = contractsFixture.contracts["SimulateTrade"]
+    simulateTrade = contractsFixture.contracts["SideChainSimulateTrade"] if contractsFixture.sideChain else contractsFixture.contracts["SimulateTrade"]
     shareToken = contractsFixture.getShareToken()
     expirationTime = contractsFixture.contracts['Time'].getTimestamp() + 10000
     
@@ -329,7 +329,7 @@ def test_fees(contractsFixture, cash, market, universe):
 def simulate_then_trade(contractsFixture, cash, market, outcome, orderDirection, orders, signatures, fillAmount, fillOnly, fillerAccount, expectedFees=0):
     ZeroXTrade = contractsFixture.getZeroXTrade()
     zeroXExchange = contractsFixture.contracts["ZeroXExchange"]
-    simulateTrade = contractsFixture.contracts["SimulateTrade"]
+    simulateTrade = contractsFixture.contracts["SideChainSimulateTrade"] if contractsFixture.sideChain else contractsFixture.contracts["SimulateTrade"]
     shareToken = contractsFixture.getShareToken()
     shareTokenOutcome = outcome if orderDirection == LONG else ((outcome + 1) % 3)
     tradeGroupID = longTo32Bytes(42)
@@ -354,7 +354,8 @@ def simulate_then_trade(contractsFixture, cash, market, outcome, orderDirection,
 
     expectedSharesFilled = 0
     expectedNumFills = 0
-    orderEventLogs = contractsFixture.contracts["AugurTrading"].getLogs("OrderEvent")
+    augurTrading = contractsFixture.contracts["SideChainAugurTrading"] if contractsFixture.sideChain else contractsFixture.contracts["AugurTrading"]
+    orderEventLogs = augurTrading.getLogs("OrderEvent")
     for log in orderEventLogs:
         if log.args.eventType == 2: # Fill Event
             expectedSharesFilled += log.args.uint256Data[6]

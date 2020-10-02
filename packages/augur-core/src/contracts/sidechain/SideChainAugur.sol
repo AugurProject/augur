@@ -89,7 +89,7 @@ contract SideChainAugur {
         return true;
     }
 
-    function isTrustedSender(address _address) public returns (bool) {
+    function isTrustedSender(address _address) public view returns (bool) {
         return trustedSender[_address];
     }
 

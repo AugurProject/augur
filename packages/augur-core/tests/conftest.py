@@ -611,6 +611,7 @@ class ContractsFixture:
         sideChainFillOrder = self.upload("../src/contracts/sidechain/SideChainFillOrder.sol")
         sideChainZeroXTrade = self.upload("../src/contracts/sidechain/SideChainZeroXTrade.sol")
         sideChainProfitLoss = self.upload("../src/contracts/sidechain/SideChainProfitLoss.sol")
+        sideChainSimulateTrade = self.upload("../src/contracts/sidechain/SideChainSimulateTrade.sol")
         
         sideChainAugurTrading.registerContract("FillOrder".ljust(32, '\x00').encode('utf-8'), sideChainFillOrder.address)
         sideChainAugurTrading.registerContract("ZeroXTrade".ljust(32, '\x00').encode('utf-8'), sideChainZeroXTrade.address)
@@ -623,6 +624,7 @@ class ContractsFixture:
         sideChainFillOrder.initialize(sideChainAugur.address, sideChainAugurTrading.address)
         sideChainZeroXTrade.initialize(sideChainAugur.address, sideChainAugurTrading.address)
         sideChainProfitLoss.initialize(sideChainAugur.address, sideChainAugurTrading.address)
+        sideChainSimulateTrade.initialize(sideChainAugur.address, sideChainAugurTrading.address)
 
         # Doing approvals here
         contractsNeedingApproval = ['SideChainAugur','SideChainFillOrder','SideChainZeroXTrade']
