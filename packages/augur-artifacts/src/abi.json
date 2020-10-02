@@ -46078,6 +46078,11 @@
 					"internalType": "contract IERC20",
 					"name": "_USDT",
 					"type": "address"
+				},
+				{
+					"internalType": "contract IERC20",
+					"name": "_collateral",
+					"type": "address"
 				}
 			],
 			"name": "loadAccountData",
@@ -46156,12 +46161,22 @@
 						},
 						{
 							"internalType": "uint256",
+							"name": "attoETHperCollateral",
+							"type": "uint256"
+						},
+						{
+							"internalType": "uint256",
 							"name": "signerUSDC",
 							"type": "uint256"
 						},
 						{
 							"internalType": "uint256",
 							"name": "signerUSDT",
+							"type": "uint256"
+						},
+						{
+							"internalType": "uint256",
+							"name": "signerCollateral",
 							"type": "uint256"
 						}
 					],

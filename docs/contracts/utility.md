@@ -10,7 +10,7 @@ title: Utility
 
 
 
-<div class="contract-index"><span class="contract-index-title">Functions</span><ul><li><a href="#AccountLoader.initialize(contract Augur,contract IAugurTrading)"><code class="function-signature">initialize(contract Augur _augur, contract IAugurTrading _augurTrading)</code></a></li><li><a href="#AccountLoader.loadAccountData(address,contract IERC20,contract IERC20,contract IERC20)"><code class="function-signature">loadAccountData(address _account, contract IERC20 _reputationToken, contract IERC20 _USDC, contract IERC20 _USDT)</code></a></li><li><a href="#AccountLoader.getExchangeRate(address,address)"><code class="function-signature">getExchangeRate(address _firstToken, address _secondToken)</code></a></li><li class="inherited"><a href="#Initializable.endInitialization()"><code class="function-signature">endInitialization()</code></a></li><li class="inherited"><a href="#Initializable.getInitialized()"><code class="function-signature">getInitialized()</code></a></li></ul></div>
+<div class="contract-index"><span class="contract-index-title">Functions</span><ul><li><a href="#AccountLoader.initialize(contract Augur,contract IAugurTrading)"><code class="function-signature">initialize(contract Augur _augur, contract IAugurTrading _augurTrading)</code></a></li><li><a href="#AccountLoader.loadAccountData(address,contract IERC20,contract IERC20,contract IERC20,contract IERC20)"><code class="function-signature">loadAccountData(address _account, contract IERC20 _reputationToken, contract IERC20 _USDC, contract IERC20 _USDT, contract IERC20 _collateral)</code></a></li><li><a href="#AccountLoader.getExchangeRate(address,address)"><code class="function-signature">getExchangeRate(address _firstToken, address _secondToken)</code></a></li><li class="inherited"><a href="#Initializable.endInitialization()"><code class="function-signature">endInitialization()</code></a></li><li class="inherited"><a href="#Initializable.getInitialized()"><code class="function-signature">getInitialized()</code></a></li></ul></div>
 
 
 
@@ -20,7 +20,7 @@ title: Utility
 
 
 
-<h4><a class="anchor" aria-hidden="true" id="AccountLoader.loadAccountData(address,contract IERC20,contract IERC20,contract IERC20)"></a><code class="function-signature">loadAccountData(address _account, contract IERC20 _reputationToken, contract IERC20 _USDC, contract IERC20 _USDT) <span class="return-arrow">→</span> <span class="return-type">struct AccountLoader.AccountData</span></code><span class="function-visibility">public</span></h4>
+<h4><a class="anchor" aria-hidden="true" id="AccountLoader.loadAccountData(address,contract IERC20,contract IERC20,contract IERC20,contract IERC20)"></a><code class="function-signature">loadAccountData(address _account, contract IERC20 _reputationToken, contract IERC20 _USDC, contract IERC20 _USDT, contract IERC20 _collateral) <span class="return-arrow">→</span> <span class="return-type">struct AccountLoader.AccountData</span></code><span class="function-visibility">public</span></h4>
 
 
 
