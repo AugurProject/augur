@@ -30,17 +30,26 @@ export const loadPendingLiquidityOrders = (
   const ordersWithHashes = [];
   Object.keys(pendingLiquidityOrders).map((txMarketHashId: string) => {
     Object.keys(pendingLiquidityOrders[txMarketHashId]).map(outcomeId => {
+      pendingLiquidityOrders[txMarketHashId][outcomeId] = pendingLiquidityOrders[txMarketHashId][outcomeId].filter(o => o);
       const orders = pendingLiquidityOrders[txMarketHashId][outcomeId];
       orders.map((o: LiquidityOrder) => {
-        if (!o.hash && o.status) delete o.status;
-        if (o.hash) ordersWithHashes.push({ ...o, txMarketHashId });
+        if (o === null) {
+          delete pendingLiquidityOrders[txMarketHashId][outcomeId];
+        } else {
+          if (!o.hash && o.status) delete o.status;
+          if (o.hash) ordersWithHashes.push({ ...o, txMarketHashId });
+        }
       });
-      if (pendingLiquidityOrders[txMarketHashId][outcomeId].length === 0)
+      if (pendingLiquidityOrders[txMarketHashId][outcomeId]?.length === 0) {
         delete pendingLiquidityOrders[txMarketHashId][outcomeId];
+      }
     });
-    if (Object.keys(pendingLiquidityOrders[txMarketHashId]).length === 0)
+
+    if (Object.keys(pendingLiquidityOrders[txMarketHashId])?.length === 0) {
       delete pendingLiquidityOrders[txMarketHashId];
+    }
   });
+
   PendingOrders.actions.loadLiquidity(pendingLiquidityOrders);
 
   // remove orders that have been confirmed
@@ -55,8 +64,8 @@ export const loadPendingLiquidityOrders = (
   });
 };
 
-export const sendLiquidityOrder = async (options: any) => {
-  const { order, bnAllowance, marketId } = options;
+export const sendLiquidityOrder = async (options) => {
+  const { order, bnAllowance, marketId, loginAccount } = options;
   const { marketInfos } = Markets.get();
   const market = marketInfos[marketId];
   const isZeroX = options.zeroXEnabled;
@@ -75,10 +84,6 @@ export const sendLiquidityOrder = async (options: any) => {
     ...properties,
     eventName: TXEventName.Pending,
   });
-
-  const {
-    loginAccount,
-  } = useAppStatusStore();
 
   if ((await approvalsNeededToTrade(loginAccount.address)) > 0) {
     await approveToTrade(loginAccount.address, loginAccount?.affiliate);
