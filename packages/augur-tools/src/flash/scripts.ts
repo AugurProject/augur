@@ -1,5 +1,5 @@
 import { abi, abiV1, buildConfig, refreshSDKConfig } from '@augurproject/artifacts';
-import { ContractInterfaces } from '@augurproject/core';
+import { ContractInterfaces, ContractDeployer } from '@augurproject/core';
 import {
   ContractEvents,
   convertDisplayAmountToOnChainAmount,
@@ -45,7 +45,7 @@ import {
   makeSigner,
   providerFromConfig,
   startGanacheServer,
-  NULL_ADDRESS,
+  NULL_ADDRESS, makeDependencies,
 } from '..';
 import { _1_ETH, BASE_MNEMONIC } from '../constants';
 import { runChaosMonkey } from './chaos-monkey';
@@ -2713,6 +2713,31 @@ export function addScripts(flash: FlashSession) {
         console.log(`MARKET IDS: ${JSON.stringify(marketIds)}`);
       },
     });
+
+    flash.addScript({
+      name: 'deploy-amm',
+      options: [],
+      async call(this: FlashSession, args: FlashArguments) {
+        const serial = !Boolean(args.parallel);
+        if (this.noProvider()) return;
+
+        this.pushConfig({ deploy: { serial }});
+        console.log('Deploying: ', sanitizeConfig(this.config).deploy);
+
+        const signer = await makeSigner(this.accounts[0], this.provider);
+        const dependencies = makeDependencies(this.accounts[0], this.provider, signer);
+
+        const contractDeployer = new ContractDeployer(
+          this.config,
+          dependencies,
+          this.provider.provider,
+          signer,
+          compilerOutput
+        );
+
+        await contractDeployer.uploadAMMContracts();
+      }
+    })
 
     flash.addScript({
       name: 'deploy-para-augur',
