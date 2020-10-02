@@ -80,7 +80,7 @@ export const convertToNormalizedPrice = ({
   const bnMax = createBigNumber(max);
   let normalizedPrice = bnPrice.minus(bnMin).dividedBy(bnMax.minus(bnMin));
   normalizedPrice =
-    type === BID ? normalizedPrice : createBigNumber(1).minus(normalizedPrice);
+    type === BID ? normalizedPrice : createBigNumber(bnMax).minus(normalizedPrice);
 
   return normalizedPrice;
 };
@@ -109,9 +109,7 @@ export const getShares = (wager, price) => {
 
 export const getOddsObject = (normalizedValue: BigNumber, toDecimals = 4) => {
   const percentage: BigNumber = convertToPercentage(
-    createBigNumber(
-      normalizedValue.gt(1) ? normalizedValue.dividedBy(10) : normalizedValue
-    )
+    createBigNumber(normalizedValue.dividedBy(10))
   );
   const decimal: BigNumber = convertToDecimal(percentage);
   const fractional: BigNumber = convertToFractional(decimal);
