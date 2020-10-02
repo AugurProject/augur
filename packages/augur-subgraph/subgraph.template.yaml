@@ -177,7 +177,7 @@ templates:
         - AMMExchange
       abis:
         - name: AMMExchange
-          file: ./abis/AMMExchange.jsonk
+          file: ./abis/AMMExchange.json
       eventHandlers:
         - event: EnterPosition(address,uint256,uint256,bool)
           handler: handleEnterPosition
