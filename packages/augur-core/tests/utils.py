@@ -131,9 +131,14 @@ class AssertLog():
         self.contract = contract
         if not self.contract:
             if eventName in TRADE_EVENTS:
-                self.contract = fixture.contracts['AugurTrading']
+                if fixture.sideChain:
+                    self.contract = fixture.contracts['SideChainAugurTrading']
+                else:
+                    self.contract = fixture.contracts['AugurTrading']
             elif fixture.paraAugur and eventName in AUGUR_ETH_EVENTS:
                 self.contract = fixture.contracts['ParaAugur']
+            elif fixture.sideChain and eventName in AUGUR_ETH_EVENTS:
+                self.contract = fixture.contracts['SideChainAugur']
             else:
                 self.contract = fixture.contracts['Augur']
 

@@ -137,6 +137,7 @@ def pytest_addoption(parser):
     parser.addoption("--cover", action="store_true", help="Use the coverage enabled contracts. Meant to be used with the tools/generateCoverageReport.js script")
     parser.addoption("--subFork", action="store_true", help="Run tests in the context of a forked universe child")
     parser.addoption("--paraAugur", action="store_true", help="Run tests in the context of the ETH sub-version of Augur")
+    parser.addoption("--sideChain", action="store_true", help="Run tests in the context of a sidechain deployment of Augur")
 
 def pytest_configure(config):
     # register an additional marker
@@ -171,6 +172,7 @@ class ContractsFixture:
         self.coverageMode = request.config.option.cover
         self.subFork = request.config.option.subFork
         self.paraAugur = request.config.option.paraAugur
+        self.sideChain = request.config.option.sideChain
         self.logListener = None
         if self.coverageMode:
             self.logListener = self.writeLogToFile
@@ -406,6 +408,7 @@ class ContractsFixture:
             if 'gsn/v2' in directory: continue # uploaded separately
             if 'gov' in directory: continue # uploaded separately
             if 'trading/erc20proxy' in directory: continue # uploaded separately
+            if 'sidechain' in directory: continue # uploaded separately
             for filename in filenames:
                 name = path.splitext(filename)[0]
                 extension = path.splitext(filename)[1]
@@ -591,6 +594,51 @@ class ContractsFixture:
             accountLoader.initialize(paraAugur.address, paraAugurTrading.address)
             self.contracts["AccountLoader"] = accountLoader
 
+    def uploadSideChainAugur(self):
+        sideChainAugur = self.upload("../src/contracts/sidechain/SideChainAugur.sol")
+        sideChainCash = self.upload("../src/contracts/Cash.sol", "SideChainCash", "Cash")
+        sideChainShareToken = self.upload("../src/contracts/sidechain/SideChainShareToken.sol")
+        marketGetter = self.upload("solidity_test_helpers/SideChainMarketGetter.sol")
+        sideChainAffiliates = self.upload("../src/contracts/reporting/Affiliates.sol", "SideChainAffiliates", "Affiliates")
+
+        sideChainAugur.registerContract("Cash".ljust(32, '\x00').encode('utf-8'), sideChainCash.address)
+        sideChainAugur.registerContract("ShareToken".ljust(32, '\x00').encode('utf-8'), sideChainShareToken.address)
+        sideChainAugur.registerContract("MarketGetter".ljust(32, '\x00').encode('utf-8'), marketGetter.address)
+        sideChainAugur.registerContract("Affiliates".ljust(32, '\x00').encode('utf-8'), sideChainAffiliates.address)
+        sideChainAugur.registerContract("RepFeeTarget".ljust(32, '\x00').encode('utf-8'), marketGetter.address)
+
+        sideChainAugurTrading = self.upload("../src/contracts/sidechain/SideChainAugurTrading.sol", constructorArgs=[sideChainAugur.address])
+        sideChainFillOrder = self.upload("../src/contracts/sidechain/SideChainFillOrder.sol")
+        sideChainZeroXTrade = self.upload("../src/contracts/sidechain/SideChainZeroXTrade.sol")
+        sideChainProfitLoss = self.upload("../src/contracts/sidechain/SideChainProfitLoss.sol")
+        
+        sideChainAugurTrading.registerContract("FillOrder".ljust(32, '\x00').encode('utf-8'), sideChainFillOrder.address)
+        sideChainAugurTrading.registerContract("ZeroXTrade".ljust(32, '\x00').encode('utf-8'), sideChainZeroXTrade.address)
+        sideChainAugurTrading.registerContract("ProfitLoss".ljust(32, '\x00').encode('utf-8'), sideChainProfitLoss.address)
+        sideChainAugurTrading.registerContract("ZeroXExchange".ljust(32, '\x00').encode('utf-8'), self.contracts["ZeroXExchange"].address)
+
+        # Simulate Trade in real TS deploy as well
+
+        sideChainShareToken.initialize(sideChainAugur.address)
+        sideChainFillOrder.initialize(sideChainAugur.address, sideChainAugurTrading.address)
+        sideChainZeroXTrade.initialize(sideChainAugur.address, sideChainAugurTrading.address)
+        sideChainProfitLoss.initialize(sideChainAugur.address, sideChainAugurTrading.address)
+
+        # Doing approvals here
+        contractsNeedingApproval = ['SideChainAugur','SideChainFillOrder','SideChainZeroXTrade']
+        contractsToApprove = ['SideChainCash']
+        testersGivingApproval = [self.accounts[x] for x in range(0,8)]
+        for testerKey in testersGivingApproval:
+            for contractName in contractsToApprove:
+                for authorityName in contractsNeedingApproval:
+                    self.contracts[contractName].approve(self.contracts[authorityName].address, 2**254, sender=testerKey)
+        contractsToSetApproval = ['SideChainShareToken']
+        for testerKey in testersGivingApproval:
+            for contractName in contractsToSetApproval:
+                for authorityName in contractsNeedingApproval:
+                    self.contracts[contractName].setApprovalForAll(self.contracts[authorityName].address, True, sender=testerKey)
+
+
     def uploadAugurTrading(self):
         # We have to upload Augur Trading before trading contracts
         augurAddress = self.contracts["Augur"].address
@@ -717,10 +765,18 @@ class ContractsFixture:
         return tester.get_balance(account)
 
     def getShareToken(self):
-        return self.contracts["ParaShareToken"] if self.paraAugur else self.contracts["ShareToken"]
+        if self.paraAugur:
+            return self.contracts["ParaShareToken"]
+        if self.sideChain:
+            return self.contracts["SideChainShareToken"]
+        return self.contracts["ShareToken"]
 
     def getZeroXTrade(self):
-        return self.contracts["ParaZeroXTrade"] if self.paraAugur else self.contracts["ZeroXTrade"]
+        if self.paraAugur:
+            return self.contracts["ParaZeroXTrade"]
+        if self.sideChain:
+            return self.contracts["SideChainZeroXTrade"]
+        return self.contracts["ZeroXTrade"]
 
     def marketBalance(self, market):
         universe = self.applySignature("Universe", market.getUniverse())
@@ -770,6 +826,7 @@ def augurInitializedSnapshot(fixture, baseSnapshot):
     fixture.uploadUniswapContracts()
     fixture.initializeAllContracts()
     fixture.uploadParaAugur()
+    fixture.uploadSideChainAugur()
     fixture.uploadERC20Proxy1155()
     fixture.uploadAMMContracts()
     if not fixture.paraAugur:
@@ -789,6 +846,8 @@ def kitchenSinkSnapshot(fixture, augurInitializedSnapshot):
     shareToken = fixture.contracts['ShareToken']
     augur = fixture.contracts['Augur']
     paraShareToken = fixture.contracts['ParaShareToken']
+    sideChainCash = fixture.contracts['SideChainCash']
+    sideChainShareToken = fixture.contracts['SideChainShareToken']
     fixture.distributeRep(universe)
 
     if fixture.subFork:
@@ -811,6 +870,8 @@ def kitchenSinkSnapshot(fixture, augurInitializedSnapshot):
     snapshot['cash'] = cash
     snapshot['paraAugurCash'] = paraAugurCash
     snapshot['paraShareToken'] = paraShareToken
+    snapshot['sideChainCash'] = sideChainCash
+    snapshot['sideChainShareToken'] = sideChainShareToken
     snapshot['shareToken'] = shareToken
     snapshot['augur'] = augur
     snapshot['yesNoMarket'] = yesNoMarket
@@ -831,12 +892,20 @@ def universe(kitchenSinkFixture, kitchenSinkSnapshot):
 
 @pytest.fixture
 def cash(kitchenSinkFixture, kitchenSinkSnapshot):
-    cash = kitchenSinkSnapshot['paraAugurCash'] if kitchenSinkFixture.paraAugur else kitchenSinkSnapshot['cash']
+    cash = kitchenSinkSnapshot['cash']
+    if kitchenSinkFixture.paraAugur:
+        cash = kitchenSinkSnapshot['paraAugurCash']
+    if kitchenSinkFixture.sideChain:
+        cash = kitchenSinkSnapshot['sideChainCash']
     return kitchenSinkFixture.applySignature(None, cash.address, cash.abi)
 
 @pytest.fixture
 def shareToken(kitchenSinkFixture, kitchenSinkSnapshot):
-    shareToken = kitchenSinkSnapshot['paraShareToken'] if kitchenSinkFixture.paraAugur else kitchenSinkSnapshot['shareToken']
+    shareToken = kitchenSinkSnapshot['shareToken']
+    if kitchenSinkFixture.paraAugur:
+        shareToken = kitchenSinkSnapshot['paraShareToken']
+    if kitchenSinkFixture.sideChain:
+        shareToken = kitchenSinkSnapshot['sideChainShareToken']
     return kitchenSinkFixture.applySignature(None, shareToken.address, shareToken.abi)
 
 @pytest.fixture

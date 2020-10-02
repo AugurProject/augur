@@ -22,7 +22,7 @@ def signMessage(messageHash, private_key):
 def test_trade_1155_behavior(contractsFixture, augur, cash, market, categoricalMarket, universe):
     ZeroXTrade = contractsFixture.getZeroXTrade()
     shareToken = contractsFixture.getShareToken()
-    fillOrder = contractsFixture.contracts['FillOrder']
+    fillOrder = contractsFixture.contracts['SideChainFillOrder'] if contractsFixture.sideChain else contractsFixture.contracts['FillOrder']
 
     account = contractsFixture.accounts[0]
     account2 = contractsFixture.accounts[1]
@@ -275,7 +275,6 @@ def test_one_bid_on_books_buy_full_order(withSelf, contractsFixture, cash, marke
 	    "eventType": 2,
         "orderId": orderHash,
 	    "addressData": [contractsFixture.accounts[2] if withSelf else contractsFixture.accounts[1] , contractsFixture.accounts[2]],
-	    "uint256Data": [60, 0, YES, 0, 0, 0, fix(2),  contractsFixture.contracts['Time'].getTimestamp(), 0, 0],
     }
     orders = [rawZeroXOrderData]
     signatures = [signature]
@@ -309,7 +308,6 @@ def test_one_bid_on_books_buy_partial_order(contractsFixture, cash, market):
 	    "eventType": 2,
         "orderId": orderHash,
 	    "addressData": [contractsFixture.accounts[1], contractsFixture.accounts[2]],
-	    "uint256Data": [60, 0, YES, 0, 0, 0, fix(1),  contractsFixture.contracts['Time'].getTimestamp(), 0, 0],
     }
     orders = [rawZeroXOrderData]
     signatures = [signature]
@@ -356,7 +354,7 @@ def test_two_bids_on_books_buy_both(contractsFixture, cash, market):
     assert shareToken.balanceOfMarketOutcome(market.address, NO, contractsFixture.accounts[2]) == fix(5)
 
 def test_three_bids_on_books_buy_first_2_cover_protocol_fee(contractsFixture, cash, market):
-    if contractsFixture.paraAugur:
+    if contractsFixture.paraAugur or contractsFixture.sideChain:
         return
     ZeroXTrade = contractsFixture.getZeroXTrade()
     zeroXExchange = contractsFixture.contracts["ZeroXExchange"]
@@ -461,7 +459,6 @@ def test_one_ask_on_books_buy_full_order(contractsFixture, cash, market, univers
     orderEventLog = {
         "eventType": 2,
         "addressData": [contractsFixture.accounts[1] , contractsFixture.accounts[2]],
-        "uint256Data": [60, 0, YES, 0, 0, 0, fix(2),  contractsFixture.contracts['Time'].getTimestamp(), 0, 0],
     }
     orders = [rawZeroXOrderData]
     signatures = [signature]
@@ -493,7 +490,6 @@ def test_one_ask_on_books_buy_partial_order(contractsFixture, cash, market, univ
     orderEventLog = {
         "eventType": 2,
         "addressData": [contractsFixture.accounts[1] , contractsFixture.accounts[2]],
-        "uint256Data": [60, 0, YES, 0, 0, 0, fix(2),  contractsFixture.contracts['Time'].getTimestamp(), 0, 0],
     }
     orders = [rawZeroXOrderData]
     signatures = [signature]
@@ -631,7 +627,7 @@ def test_take_best_order_with_shares_escrowed_buy_with_shares_categorical(contra
     signatures = [signature]
     totalProceeds = fix(1, numTicks)
     totalProceeds -= fix(1, numTicks) / market.getMarketCreatorSettlementFeeDivisor()
-    totalProceeds -= fix(1, numTicks) / universe.getOrCacheReportingFeeDivisor()
+    totalProceeds -= fix(1, numTicks) / (10000 if contractsFixture.sideChain else universe.getOrCacheReportingFeeDivisor())
     expectedTester1Payout = totalProceeds * 60 / numTicks
     expectedTester2Payout = totalProceeds * (numTicks - 60) / numTicks
     with TokenDelta(cash, expectedTester1Payout, contractsFixture.accounts[1], "Tester 1 Cash delta wrong"):
@@ -797,6 +793,9 @@ def test_dev_utils(contractsFixture, cash, market, universe):
     assert isValidSignature[0], 'signature must be valid'
 
 def test_order_non_valid_market(contractsFixture, cash, market, universe):
+    if contractsFixture.sideChain:
+        return
+
     ZeroXTrade = contractsFixture.getZeroXTrade()
     shareToken = contractsFixture.getShareToken()
     expirationTime = contractsFixture.contracts['Time'].getTimestamp() + 10000
@@ -817,7 +816,7 @@ def test_fill_nothing_failure(contractsFixture, cash, market, universe):
         ZeroXTrade.trade(fix(1), longTo32Bytes(11), tradeGroupID, 0, 10, [], [], sender=contractsFixture.accounts[2], value=150000) == fix(1)
 
 def test_augur_wallet_trade(contractsFixture, augur, cash, market, universe, reputationToken):
-    if contractsFixture.paraAugur:
+    if contractsFixture.paraAugur or contractsFixture.sideChain:
         return
     RELAY_HUB_ADDRESS = "0xD216153c06E857cD7f72665E0aF1d7D82172F494"
     ZeroXTrade = contractsFixture.getZeroXTrade()
@@ -1027,7 +1026,7 @@ def test_augur_wallet_trade(contractsFixture, augur, cash, market, universe, rep
     assert noShareTokenBalance == fix(1)
 
 def test_protocol_fee_coverage(contractsFixture, cash, market):
-    if contractsFixture.paraAugur:
+    if contractsFixture.paraAugur or contractsFixture.sideChain:
         return
     ZeroXTrade = contractsFixture.getZeroXTrade()
     zeroXExchange = contractsFixture.contracts["ZeroXExchange"]

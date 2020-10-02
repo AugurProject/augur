@@ -19,9 +19,9 @@ C = 3
 ])
 def test_binary_and_claim(taker, contractsFixture, cash, market, universe):
     zeroXTrade = contractsFixture.getZeroXTrade()
-    profitLoss = contractsFixture.contracts["ProfitLoss"]
+    profitLoss = contractsFixture.contracts["SideChainProfitLoss"] if contractsFixture.sideChain else contractsFixture.contracts["ProfitLoss"]
     shareToken = contractsFixture.getShareToken()
-    augurTrading = contractsFixture.contracts['AugurTrading']
+    augurTrading = contractsFixture.contracts["SideChainAugurTrading"] if contractsFixture.sideChain else contractsFixture.contracts["AugurTrading"]
     test_data = [
         {
             "direction": SHORT,
@@ -102,7 +102,7 @@ def test_binary_and_claim(taker, contractsFixture, cash, market, universe):
 ])
 def test_cat3_1(taker, contractsFixture, cash, categoricalMarket, universe):
     zeroXTrade = contractsFixture.getZeroXTrade()
-    profitLoss = contractsFixture.contracts["ProfitLoss"]
+    profitLoss = contractsFixture.contracts["SideChainProfitLoss"] if contractsFixture.sideChain else contractsFixture.contracts["ProfitLoss"]
     test_data = [
         {
             "direction": LONG,
@@ -151,7 +151,7 @@ def test_cat3_1(taker, contractsFixture, cash, categoricalMarket, universe):
 ])
 def test_cat3_2(taker, contractsFixture, cash, categoricalMarket, universe):
     zeroXTrade = contractsFixture.getZeroXTrade()
-    profitLoss = contractsFixture.contracts["ProfitLoss"]
+    profitLoss = contractsFixture.contracts["SideChainProfitLoss"] if contractsFixture.sideChain else contractsFixture.contracts["ProfitLoss"]
     test_data = [
         {
             "direction": SHORT,
@@ -200,7 +200,7 @@ def test_cat3_2(taker, contractsFixture, cash, categoricalMarket, universe):
 ])
 def test_cat3_3(taker, contractsFixture, cash, categoricalMarket, universe):
     zeroXTrade = contractsFixture.getZeroXTrade()
-    profitLoss = contractsFixture.contracts["ProfitLoss"]
+    profitLoss = contractsFixture.contracts["SideChainProfitLoss"] if contractsFixture.sideChain else contractsFixture.contracts["ProfitLoss"]
     test_data = [
         {
             "direction": LONG,
@@ -279,7 +279,7 @@ def test_cat3_3(taker, contractsFixture, cash, categoricalMarket, universe):
 def test_scalar(taker, contractsFixture, cash, universe):
     scalarMarket = contractsFixture.createReasonableScalarMarket(universe, 250 * 10**18, 50 * 10**18, 2000000)
     zeroXTrade = contractsFixture.getZeroXTrade()
-    profitLoss = contractsFixture.contracts["ProfitLoss"]
+    profitLoss = contractsFixture.contracts["SideChainProfitLoss"] if contractsFixture.sideChain else contractsFixture.contracts["ProfitLoss"]
     test_data = [
         {
             "direction": LONG,
@@ -350,11 +350,8 @@ def process_trades(contractsFixture, trade_data, cash, market, zeroXTrade, profi
         rawZeroXOrderData, orderHash = zeroXTrade.createZeroXOrder(direction, quantity, onChainLongPrice, market.address, trade['outcome'], expirationTime, salt, sender = contractsFixture.accounts[1])
         signature = signOrder(orderHash, contractsFixture.privateKeys[1])
 
-        timestamp = contractsFixture.contracts["Augur"].getTimestamp()
-
         profitLossChangedLog = {
             "outcome": trade['outcome'],
-            "timestamp": timestamp,
         }
 
         fingerprint = longTo32Bytes(11)

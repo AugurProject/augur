@@ -5,11 +5,19 @@ import 'ROOT/reporting/IMarket.sol';
 
 library TokenId {
 
+    function getTokenId(address _market, uint256 _outcome) internal pure returns (uint256 _tokenId) {
+        return getTokenId(IMarket(_market), _outcome);
+    }
+
     function getTokenId(IMarket _market, uint256 _outcome) internal pure returns (uint256 _tokenId) {
         bytes memory _tokenIdBytes = abi.encodePacked(_market, uint8(_outcome));
         assembly {
             _tokenId := mload(add(_tokenIdBytes, add(0x20, 0)))
         }
+    }
+
+    function getTokenIds(address _market, uint256[] memory _outcomes) internal pure returns (uint256[] memory _tokenIds) {
+        return getTokenIds(IMarket(_market), _outcomes);
     }
 
     function getTokenIds(IMarket _market, uint256[] memory _outcomes) internal pure returns (uint256[] memory _tokenIds) {
