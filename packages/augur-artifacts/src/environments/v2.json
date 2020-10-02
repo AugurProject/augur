@@ -116,7 +116,7 @@
     "HotLoadingUniversal": "0xb36bc408c5933c9e8AC77FD3B8a09905789D8B3F",
     "AMMFactory": "0x722adfb2ceCbbBD59a9B58F4204539eEC459dFAE",
     "ERC20Proxy1155Nexus": "0x403d2fB80bc80a003072E756Cfe6362997742460",
-    "ParaDeployer": "0xCF3cA306050B284a34D68b3B5aC7FE662944E397"
+    "ParaDeployer": "0xc1d650eaB058B9c4b744A851F8B015c0EEC5568C"
   },
   "server": {
     "httpPort": 9003,
@@ -158,24 +158,24 @@
   },
   "averageBlocktime": 2000,
   "paraDeploys": {
-    "0xFc0075Bc131ee6E03d3Dc8bbf52a87dDfAF99f45": {
+    "0xEdE64699532c2b19Cf12eb58b4cC7f977dE43112": {
       "name": "WETH",
-      "uploadBlockNumber": 21266906,
+      "uploadBlockNumber": 21303764,
       "addresses": {
-        "Augur": "0x4A85a2c5e3f92eC617eeB6066257e0C3EF4bEFE8",
-        "AugurTrading": "0x0Ef41ed25a4b0d9674eeB72f4eE3365612eF4c77",
-        "Universe": "0xf25c4e7828f8b07c42C3c62d76156eE719637679",
-        "Cash": "0xFc0075Bc131ee6E03d3Dc8bbf52a87dDfAF99f45",
-        "ShareToken": "0xF92FBb4e400B6C201a79373dCE36B0Ca552e58d6",
-        "OICash": "0x2A95E4B9e5a44002c0e97AC1BA22a76E98Ae8ec6",
-        "CancelOrder": "0x207a0ECDb6daeD819b4bE1BC570733d0F765a6d9",
-        "CreateOrder": "0x3F91FAEc1456dbE168C07aB8BBAC66F7DDC5Fe47",
-        "FillOrder": "0xd8Dbeba57d8A2D654121afbb7CCFa55741d2B6Da",
-        "Orders": "0x5f4231cf86095E14a7962BD47eb2419d7C520A4e",
-        "Trade": "0xCB4f665589cc669B1b3a709571CC79D3530f6af5",
-        "SimulateTrade": "0xa64a9310A0e90765D196e90C6BD4a31be1d11888",
-        "ZeroXTrade": "0xeBFc678EAD99b2a0e18456A0D8843467C1CC422f",
-        "ProfitLoss": "0x55ef57A86Dd520bae275277DF37d2BeF10432D3d"
+        "Augur": "0x8724Dffe0CC5c36fA7dFe638ce67e26B62c02CDb",
+        "AugurTrading": "0xCDE11c0e5441bfEe3478A077B49efB2c6bCd037B",
+        "Universe": "0x5B370cdb9d1c8f19Fa88201334284a68b2d7fEC4",
+        "Cash": "0xEdE64699532c2b19Cf12eb58b4cC7f977dE43112",
+        "ShareToken": "0x2CCAd657234ec36bBf971Ee26ec405F0906e8771",
+        "OICash": "0x465d5c50928A1F6E61771F64d54410Caa36A9890",
+        "CancelOrder": "0xB68eDdEeB725FEE0283CB291D19f56dbeE356bd8",
+        "CreateOrder": "0xc56Da63aeAB1dE2fE6A0e70f5ed985ef6533A14d",
+        "FillOrder": "0xf3a938DA210a49a4F2d754384C441FcfF5E000b2",
+        "Orders": "0xb0caB549bC0df86A6e07905Adaa80B87fE3Ff6C4",
+        "Trade": "0x8677F83fEb0aE9F9C68082a0d749eFAfCAE7275c",
+        "SimulateTrade": "0x3e4834ae56312d16418F15F08B6569f67c7f0587",
+        "ZeroXTrade": "0x4c8145edeFbA1B8ABa5fF7034033e2c2A23f5150",
+        "ProfitLoss": "0x07Aad3D93327EB2e253fb97874a32b5Da8b9a6C5"
       }
     }
   }
