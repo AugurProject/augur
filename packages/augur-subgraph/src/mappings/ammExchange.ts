@@ -1,9 +1,12 @@
 import {
+  EnterPosition as EnterPositionEvent,
+  ExitPosition as ExitPositionEvent,
+  SwapPosition as SwapPositionEvent,
+} from '../../generated/templates/AMMExchange/AMMExchange';
+import {
   AddLiquidityCall,
   RemoveLiquidityCall,
-  SwapCall,
 } from '../../generated/templates/AMMExchange/AMMExchange';
-import { getOrCreateAMMExchange } from '../utils/helpers';
 
 export function handleAddLiquidity(call: AddLiquidityCall) {
 
@@ -14,10 +17,14 @@ export function handleRemoveLiquidity(call: RemoveLiquidityCall) {
 }
 
 // Volume = tokens * cash
-export function handleSwap(call: SwapCall) {
-  let ammExchange = getOrCreateAMMExchange(call.to);
-  let outputShares = call.outputs.value0;
+export function handleEnterPosition(event: EnterPositionEvent) {
 
-  ammExchange.liquidity = ammExchange.liquidity.plus(outputShares);
-  ammExchange.save();
+}
+
+export function handleExitPosition(event: ExitPositionEvent) {
+
+}
+
+export function handleSwapPosition(event: SwapPositionEvent) {
+
 }

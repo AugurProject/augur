@@ -177,14 +177,19 @@ templates:
         - AMMExchange
       abis:
         - name: AMMExchange
-          file: ./abis/AMMExchange.json
+          file: ./abis/AMMExchange.jsonk
+      eventHandlers:
+        - event: EnterPosition(address,uint256,uint256,bool)
+          handler: handleEnterPosition
+        - event: ExitPosition(address,uint256,uint256,uint256,uint256)
+          handler: handleExitPosition
+        - event: SwapPosition(address,uint256,uint256,bool)
+          handler: handleSwapPosition
       callHandlers:
         - function: addLiquidity(uint256)
           handler: handleAddLiquidity
         - function: removeLiquidity(uint256,uint256)
           handler: handleRemoveLiquidity
-        - function: swap(uin256,bool,uint256)
-          handler: handleSwap
   - kind: ethereum/contract
     name: Cash
     network: {{ ethereum.network }}
