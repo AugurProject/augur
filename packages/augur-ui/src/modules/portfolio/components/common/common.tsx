@@ -76,7 +76,7 @@ export const ClaimWinnings = ({onlyCheckMarketId}) => {
             claim.
           </span>
           <PrimaryButton
-            text="Claim Bets"
+            text="Claim Winnings"
             action={() =>
               startClaimingMarketsProceeds(claimableMarkets, account, () => {})
             }
