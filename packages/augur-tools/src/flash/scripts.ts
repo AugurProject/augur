@@ -10,6 +10,7 @@ import {
   NativePlaceTradeDisplayParams,
   QUINTILLION,
   stringTo32ByteHex,
+  AMM,
 } from '@augurproject/sdk';
 import {
   MarketList,
@@ -45,7 +46,7 @@ import {
   makeSigner,
   providerFromConfig,
   startGanacheServer,
-  NULL_ADDRESS, makeDependencies,
+  makeDependencies,
 } from '..';
 import { _1_ETH, BASE_MNEMONIC } from '../constants';
 import { runChaosMonkey } from './chaos-monkey';
@@ -93,6 +94,8 @@ import { ParaAugurDeployer } from '@augurproject/core/build/libraries/ParaAugurD
 import { ContractDependenciesEthers } from '@augurproject/contract-dependencies-ethers';
 
 const compilerOutput = require('@augurproject/artifacts/build/contracts.json');
+
+const MILLION = QUINTILLION.multipliedBy(1e7);
 
 export function addScripts(flash: FlashSession) {
   flash.addScript({
@@ -480,12 +483,13 @@ export function addScripts(flash: FlashSession) {
     name: 'create-canned-markets',
     async call(this: FlashSession) {
       const user = await this.createUser(this.getAccount(), this.config);
-      const million = QUINTILLION.multipliedBy(1e7);
-      await user.faucetRepUpTo(million, million);
-      await user.faucetCashUpTo(million, million);
+
+      await user.faucetRepUpTo(MILLION, MILLION);
+      await user.faucetCashUpTo(MILLION, MILLION);
       await user.approveIfNecessary();
 
-      await user.initWarpSync(user.augur.contracts.universe.address);
+      await user.initWarpSync(user.augur.contracts.universe.address)
+        .catch((err) => console.error(`Initializing warp sync failed: ${err}`));
       await user.addEthExchangeLiquidity(new BigNumber(600e18), new BigNumber(4e18));
       await user.addTokenExchangeLiquidity(new BigNumber(100e18), new BigNumber(10e18));
       await createCannedMarkets(user, false);
@@ -2944,11 +2948,10 @@ export function addScripts(flash: FlashSession) {
         const paraShareToken = this.config.paraDeploys[this.config.paraDeploy].addresses.ShareToken;
         const factory = user.augur.contracts.ammFactory;
         const addr = await factory.exchanges_(market.address, paraShareToken);
-        const amm = user.augur.contracts.ammFromAddress(addr);
+        const numTicks = await market.getNumTicks_();
+        const amm = new AMM(user.augur.contracts.ammFromAddress(addr), numTicks);
 
-        const events = await amm.addLiquidity(sets);
-        const mintEvent = events.filter((event) => event.name === 'Transfer' && (event.parameters as any).from === NULL_ADDRESS)[0];
-        const lpTokens = (mintEvent as any).value;
+        const lpTokens = await amm.addLiquidity(sets);
 
         console.log(`LP Tokens acquired: ${lpTokens}`);
       }
@@ -2986,16 +2989,10 @@ export function addScripts(flash: FlashSession) {
         const paraShareToken = this.config.paraDeploys[this.config.paraDeploy].addresses.ShareToken;
         const factory = user.augur.contracts.ammFactory;
         const addr = await factory.exchanges_(market.address, paraShareToken);
-        const amm = user.augur.contracts.ammFromAddress(addr);
         const numTicks = await market.getNumTicks_();
+        const amm = new AMM(user.augur.contracts.ammFromAddress(addr), numTicks);
 
-        const cash = await binarySearch(
-          shares.times(numTicks),
-          new BigNumber(1),
-          new BigNumber(shares.times(numTicks)),
-          100,
-          (cash) => amm.rateEnterPosition_(cash, yes).then(s => s.times(numTicks))
-        );
+        const cash = await amm.enterPosition(shares, yes, true);
 
         console.log(`Cash needed to get "${shares.toFixed()}" shares: ${cash.toFixed()}`);
       }
@@ -3033,18 +3030,10 @@ export function addScripts(flash: FlashSession) {
         const paraShareToken = this.config.paraDeploys[this.config.paraDeploy].addresses.ShareToken;
         const factory = user.augur.contracts.ammFactory;
         const addr = await factory.exchanges_(market.address, paraShareToken);
-        const amm = user.augur.contracts.ammFromAddress(addr);
         const numTicks = await market.getNumTicks_();
+        const amm = new AMM(user.augur.contracts.ammFromAddress(addr), numTicks);
 
-        const cash = await binarySearch(
-          shares.times(numTicks),
-          new BigNumber(1),
-          new BigNumber(shares.times(numTicks)),
-          100,
-          (cash) => amm.rateEnterPosition_(cash, yes).then(s => s.times(numTicks))
-        );
-
-        const events = await amm.enterPosition(cash, yes, shares);
+        const cash = await amm.enterPosition(shares, yes);
 
         console.log(`You paid ${cash.toFixed()} cash for ${shares.toFixed()} ${yes ? 'yes' : 'no'} shares`);
       }

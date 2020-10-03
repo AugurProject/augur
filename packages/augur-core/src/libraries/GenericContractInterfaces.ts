@@ -8166,6 +8166,13 @@ export class AMMExchange<TBigNumber> extends Contract<TBigNumber> {
 		return <string>result[0]
 	}
 
+	public sharesRateForAddLiquidityThenSwap_ = async (setsToBuy: TBigNumber, swapForYes: boolean, swapHowMuch: TBigNumber, options?: { sender?: string }): Promise<{_yesses: TBigNumber, _nos: TBigNumber}> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":true,"inputs":[{"internalType":"uint256","name":"_setsToBuy","type":"uint256"},{"internalType":"bool","name":"_swapForYes","type":"bool"},{"internalType":"uint256","name":"_swapHowMuch","type":"uint256"}],"name":"sharesRateForAddLiquidityThenSwap","outputs":[{"internalType":"uint256","name":"_yesses","type":"uint256"},{"internalType":"uint256","name":"_nos","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"}
+		const result = await this.localCall(abi, [setsToBuy, swapForYes, swapHowMuch], options.sender)
+		return <{_yesses: TBigNumber, _nos: TBigNumber}>result
+	}
+
 	public swap = async (inputShares: TBigNumber, inputYes: boolean, minOutputShares: TBigNumber, options?: { sender?: string }): Promise<Array<Event>> => {
 		options = options || {}
 		const abi: AbiFunction = {"constant":false,"inputs":[{"internalType":"uint256","name":"_inputShares","type":"uint256"},{"internalType":"bool","name":"_inputYes","type":"bool"},{"internalType":"uint256","name":"_minOutputShares","type":"uint256"}],"name":"swap","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"payable":false,"stateMutability":"nonpayable","type":"function"}
@@ -8253,6 +8260,25 @@ export class AMMFactory<TBigNumber> extends Contract<TBigNumber> {
 		options = options || {}
 		const abi: AbiFunction = {"constant":false,"inputs":[{"internalType":"contract IMarket","name":"_market","type":"address"},{"internalType":"contract IParaShareToken","name":"_para","type":"address"}],"name":"addAMM","outputs":[{"internalType":"address","name":"","type":"address"}],"payable":false,"stateMutability":"nonpayable","type":"function"}
 		const result = await this.localCall(abi, [market, para], options.sender)
+		return <string>result[0]
+	}
+
+	public addAMMWithLiquidity = async (market: string, para: string, setsToBuy: TBigNumber, swapForYes: boolean, swapHowMuch: TBigNumber, options?: { sender?: string }): Promise<Array<Event>> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":false,"inputs":[{"internalType":"contract IMarket","name":"_market","type":"address"},{"internalType":"contract IParaShareToken","name":"_para","type":"address"},{"internalType":"uint256","name":"_setsToBuy","type":"uint256"},{"internalType":"bool","name":"_swapForYes","type":"bool"},{"internalType":"uint256","name":"_swapHowMuch","type":"uint256"}],"name":"addAMMWithLiquidity","outputs":[{"internalType":"address","name":"","type":"address"}],"payable":false,"stateMutability":"nonpayable","type":"function"}
+		return await this.remoteCall(abi, [market, para, setsToBuy, swapForYes, swapHowMuch], 'addAMMWithLiquidity', options.sender)
+	}
+	
+	public addAMMWithLiquidity_estimateGas = async (market: string, para: string, setsToBuy: TBigNumber, swapForYes: boolean, swapHowMuch: TBigNumber, options?: { sender?: string }): Promise<TBigNumber> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":false,"inputs":[{"internalType":"contract IMarket","name":"_market","type":"address"},{"internalType":"contract IParaShareToken","name":"_para","type":"address"},{"internalType":"uint256","name":"_setsToBuy","type":"uint256"},{"internalType":"bool","name":"_swapForYes","type":"bool"},{"internalType":"uint256","name":"_swapHowMuch","type":"uint256"}],"name":"addAMMWithLiquidity","outputs":[{"internalType":"address","name":"","type":"address"}],"payable":false,"stateMutability":"nonpayable","type":"function"}
+		return await this.estimateGas(abi, [market, para, setsToBuy, swapForYes, swapHowMuch], 'addAMMWithLiquidity', options.sender)
+	}
+
+	public addAMMWithLiquidity_ = async (market: string, para: string, setsToBuy: TBigNumber, swapForYes: boolean, swapHowMuch: TBigNumber, options?: { sender?: string }): Promise<string> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":false,"inputs":[{"internalType":"contract IMarket","name":"_market","type":"address"},{"internalType":"contract IParaShareToken","name":"_para","type":"address"},{"internalType":"uint256","name":"_setsToBuy","type":"uint256"},{"internalType":"bool","name":"_swapForYes","type":"bool"},{"internalType":"uint256","name":"_swapHowMuch","type":"uint256"}],"name":"addAMMWithLiquidity","outputs":[{"internalType":"address","name":"","type":"address"}],"payable":false,"stateMutability":"nonpayable","type":"function"}
+		const result = await this.localCall(abi, [market, para, setsToBuy, swapForYes, swapHowMuch], options.sender)
 		return <string>result[0]
 	}
 
