@@ -485,13 +485,10 @@ export function addScripts(flash: FlashSession) {
       const user = await this.createUser(this.getAccount(), this.config);
 
       await user.faucetRepUpTo(MILLION, MILLION);
+      await user.faucetOriginCashUpTo(MILLION, MILLION);
       await user.faucetCashUpTo(MILLION, MILLION);
-      await user.approveIfNecessary();
 
-      await user.initWarpSync(user.augur.contracts.universe.address)
-        .catch((err) => console.error(`Initializing warp sync failed: ${err}`));
-      await user.addEthExchangeLiquidity(new BigNumber(600e18), new BigNumber(4e18));
-      await user.addTokenExchangeLiquidity(new BigNumber(100e18), new BigNumber(10e18));
+      await user.approveIfNecessary();
       await createCannedMarkets(user, false);
     },
   });
