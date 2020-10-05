@@ -18,6 +18,7 @@ export interface AccountData {
   signerLegacyREP: string;
   signerUSDC: string;
   signerUSDT: string;
+  signerCollateral: string;
   attoDAIperREP: string;
   attoDAIperETH: string;
   attoDAIperUSDC: string;
@@ -28,6 +29,7 @@ export interface AccountData {
   attoREPperUSDC: string;
   attoREPperUSDT: string;
   attoUSDCperUSDT: string;
+  attoETHperCollateral: string;
 }
 
 export class AccountLoader {
@@ -38,16 +40,19 @@ export class AccountLoader {
   }
 
   async getAccountData(params: GetAccountDataParams): Promise<AccountData> {
-    const accountAddress = params.accountAddress;
-    const reputationTokenAddress = params.reputationTokenAddress;
-    const USDCAddress = params.USDCAddress;
-    const USDTAddress = params.USDTAddress;
-    const collateralAddress = params.collateralAddress;
+    const {
+      accountLoaderAddress,
+      accountAddress,
+      reputationTokenAddress,
+      USDCAddress,
+      USDTAddress,
+      collateralAddress
+    } = params;
 
     let accountData = null;
 
     const accountLoader = new ethers.Contract(
-      params.accountLoaderAddress,
+      accountLoaderAddress,
       AccountLoaderAbi,
       this.provider
     );
@@ -80,8 +85,10 @@ export class AccountLoader {
         attoREPperUSDC: new BigNumber(accountData[11]._hex).toFixed(),
         attoREPperUSDT: new BigNumber(accountData[12]._hex).toFixed(),
         attoUSDCperUSDT: new BigNumber(accountData[13]._hex).toFixed(),
-        signerUSDC: new BigNumber(accountData[14]._hex).toFixed(),
-        signerUSDT: new BigNumber(accountData[15]._hex).toFixed(),
+        attoETHperCollateral: new BigNumber(accountData[14]._hex).toFixed(),
+        signerUSDC: new BigNumber(accountData[15]._hex).toFixed(),
+        signerUSDT: new BigNumber(accountData[16]._hex).toFixed(),
+        signerCollateral: new BigNumber(accountData[17]._hex).toFixed(),
     };
   }
 }
