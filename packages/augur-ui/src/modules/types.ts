@@ -194,6 +194,7 @@ export interface FormattedNumberOptions {
   blankZero?: boolean;
   bigUnitPostfix?: boolean;
   removeComma?: boolean;
+  precisionFullLabel?: boolean;
 }
 
 export interface CreateMarketData {

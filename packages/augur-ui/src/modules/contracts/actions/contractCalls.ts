@@ -977,7 +977,7 @@ export async function approvalsNeededToTrade(address): Promise<number> {
   const cashContractApproval = await isContractApproval(address, contracts.ZeroXTrade.address, contracts.cash);
   const fillContractApproval = await isContractApproval(address, contracts.fillOrder.address, contracts.cash);
   const fillShareAllContractApproval = await contracts.shareToken.isApprovedForAll_(address, contracts.fillOrder.address);
-  console.log(fillContractApproval, cashContractApproval, fillShareAllContractApproval);
+  // console.log(fillContractApproval, cashContractApproval, fillShareAllContractApproval);
   const approvals = [fillContractApproval, cashContractApproval, fillShareAllContractApproval].filter(a => !a);
   return (approvals.length > 0 ? approvals.length + 1 : 0); // add additional 1 for referral address
 }
