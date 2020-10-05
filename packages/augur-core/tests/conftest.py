@@ -563,7 +563,7 @@ class ContractsFixture:
         OINexus.transferOwnership(paraDeployer.address)
 
         paraAugurCash = self.upload("../src/contracts/Cash.sol", "ParaAugurCash", "Cash")
-        paraDeployer.addToken(paraAugurCash.address)
+        paraDeployer.addToken(paraAugurCash.address, 10**19)
         while paraDeployer.paraDeployProgress(paraAugurCash.address) < 14:
             with PrintGasUsed(self, "PARA DEPLOY STAGE: %i" % paraDeployer.paraDeployProgress(paraAugurCash.address), 0):
                 paraDeployer.progressDeployment(paraAugurCash.address)

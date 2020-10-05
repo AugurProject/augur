@@ -36,6 +36,7 @@ contract ParaAugur is IParaAugur, IAugurCreationDataGetter, Ownable {
 
     address private constant NULL_ADDRESS = address(0);
     uint256 private constant MAX_NUM_TICKS = 2 ** 256 - 2;
+    uint256 public tradeIntervalModifier;
 
     IAugur public augur;
     ICash public cash;
@@ -44,9 +45,10 @@ contract ParaAugur is IParaAugur, IAugurCreationDataGetter, Ownable {
     IOINexus public OINexus;
 
 
-    constructor(IAugur _augur) public {
+    constructor(IAugur _augur, uint256 _tradeIntervalModifier) public {
         owner = msg.sender;
         augur = _augur;
+        tradeIntervalModifier = _tradeIntervalModifier;
     }
 
     //
@@ -183,7 +185,7 @@ contract ParaAugur is IParaAugur, IAugurCreationDataGetter, Ownable {
     }
 
     function getMarketRecommendedTradeInterval(IMarket _market) external view returns (uint256) {
-        return IAugurMarketDataGetter(address(augur)).getMarketRecommendedTradeInterval(_market) / 10;
+        return IAugurMarketDataGetter(address(augur)).getMarketRecommendedTradeInterval(_market) * 10**18 / tradeIntervalModifier;
     }
 
     function getMarketCreationData(IMarket _market) public view returns (MarketCreationData memory) {

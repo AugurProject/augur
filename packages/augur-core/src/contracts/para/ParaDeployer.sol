@@ -66,6 +66,7 @@ contract ParaDeployer is Ownable {
     mapping (address => IParaAugur) public paraAugurs;
     mapping (address => IParaAugurTrading) public paraAugurTradings;
     mapping (address => DeployProgress) public paraDeployProgress;
+    mapping (address => uint256) public tokenTradeIntervalModifier;
     Factories public factories;
     IAugur public augur;
     address public feePotFactory;
@@ -96,9 +97,15 @@ contract ParaDeployer is Ownable {
         OINexus = _OINexus;
     }
 
-    function addToken(address _token) public onlyOwner returns (bool) {
+    function addToken(address _token, uint256 _tradeIntervalModifier) public onlyOwner returns (bool) {
         require(paraDeployProgress[_token] == DeployProgress.NOT_ALLOWED, "Token is already allowed");
         paraDeployProgress[_token] = DeployProgress.NOT_STARTED;
+        tokenTradeIntervalModifier[_token] = _tradeIntervalModifier;
+        return true;
+    }
+
+    function burnOwnership() public onlyOwner returns (bool) {
+        owner = address(0);
         return true;
     }
 
@@ -146,7 +153,7 @@ contract ParaDeployer is Ownable {
     }
 
     function deployParaAugur(address _token) private {
-        IParaAugur _paraAugur = factories.paraAugurFactory.createParaAugur(augur);
+        IParaAugur _paraAugur = factories.paraAugurFactory.createParaAugur(augur, tokenTradeIntervalModifier[_token]);
         paraAugurs[_token] = _paraAugur;
         _paraAugur.registerContract("FeePotFactory", feePotFactory);
         _paraAugur.registerContract("ParaUniverseFactory", paraUniverseFactory);

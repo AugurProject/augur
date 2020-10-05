@@ -5,5 +5,5 @@ import 'ROOT/para/interfaces/IParaAugur.sol';
 
 
 contract IParaAugurFactory {
-    function createParaAugur(IAugur _augur) public returns (IParaAugur);
+    function createParaAugur(IAugur _augur, uint256 _tradeIntervalModifier) public returns (IParaAugur);
 }

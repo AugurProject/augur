@@ -6,8 +6,8 @@ import 'ROOT/para/ParaAugur.sol';
 
 
 contract ParaAugurFactory {
-    function createParaAugur(IAugur _augur) public returns (address) {
-        ParaAugur _paraAugur = new ParaAugur(_augur);
+    function createParaAugur(IAugur _augur, uint256 _tradeIntervalModifier) public returns (address) {
+        ParaAugur _paraAugur = new ParaAugur(_augur, _tradeIntervalModifier);
         _paraAugur.transferOwnership(msg.sender);
         return address(_paraAugur);
     }

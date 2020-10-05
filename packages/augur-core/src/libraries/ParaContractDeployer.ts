@@ -109,7 +109,7 @@ Deploying to: ${env}
         oiNexus.transferOwnership(paraDeployerAddress)
         const paraDeployer = new ParaDeployer(this.dependencies, paraDeployerAddress);
         // TODO add more tokens?
-        await paraDeployer.addToken(this.configuration.addresses.WETH9);
+        await paraDeployer.addToken(this.configuration.addresses.WETH9, new BigNumber(10**19));
 
         if (!this.configuration.deploy.writeArtifacts) return;
 
