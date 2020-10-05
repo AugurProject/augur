@@ -21,6 +21,7 @@ def test_market_hot_loading_basic(kitchenSinkFixture, augur, cash, reputationTok
     assert accountData.signerLegacyREP == 0
     assert accountData.attoDAIperREP == 0
     assert accountData.attoDAIperETH == 0
+    assert accountData.attoETHperCollateral == 0
 
     # Now lets make some data happen
 
@@ -35,7 +36,7 @@ def test_market_hot_loading_basic(kitchenSinkFixture, augur, cash, reputationTok
     assert accountData.signerREP == 9 * 10**18
     assert accountData.signerLegacyREP == 8 * 10**18
 
-    # Now lets create some Uniswap exchanges, provide initial liquidity and confirm we get current prices 
+    # Now lets create some Uniswap exchanges, provide initial liquidity and confirm we get current prices
     repOracle = kitchenSinkFixture.contracts["ParaRepOracle"] if kitchenSinkFixture.paraAugur else kitchenSinkFixture.contracts["RepOracle"]
     repExchange = kitchenSinkFixture.applySignature("UniswapV2Pair", repOracle.getExchange(reputationToken.address))
 
@@ -73,6 +74,7 @@ def test_market_hot_loading_basic(kitchenSinkFixture, augur, cash, reputationTok
     # It provides the balances of the last two tokens provided
     assert accountData.signerUSDC == 8 * 10**18
     assert accountData.signerUSDT == 10 * 10**18
+    assert accountData.signerCollateral == 10 * 10**18 # collateral is USDT
 
 
 class AccountData:
@@ -84,8 +86,10 @@ class AccountData:
         self.signerLegacyREP = accountData[3]
         self.attoDAIperREP = accountData[4]
         self.attoDAIperETH = accountData[5]
-        self.signerUSDC = accountData[14]
-        self.signerUSDT = accountData[15]
+        self.attoETHperCollateral = accountData[15]
+        self.signerUSDC = accountData[15]
+        self.signerUSDT = accountData[16]
+        self.signerCollateral = accountData[17]
 
 def getAccountData(accountLoader, account, reputationToken, USDC, USDT):
-    return AccountData(accountLoader.loadAccountData(account, reputationToken, USDC, USDT))
+    return AccountData(accountLoader.loadAccountData(account, reputationToken, USDC, USDT, USDT))
