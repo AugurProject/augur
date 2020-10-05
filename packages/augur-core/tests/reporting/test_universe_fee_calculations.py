@@ -55,6 +55,16 @@ def test_reporter_fees(contractsFixture, universe, market, cash):
 
     assert OIUniverse.getOrCacheReportingFeeDivisor() == defaultValue
 
+    # Initialize the Uniswap oracle
+    reputationTokenAddress = universe.getReputationToken()
+    reputationToken = contractsFixture.applySignature('TestNetReputationToken', reputationTokenAddress)
+    repOracle = contractsFixture.contracts["ParaRepOracle"] if contractsFixture.paraAugur else contractsFixture.contracts["RepOracle"]
+    repExchange = contractsFixture.applySignature("UniswapV2Pair", repOracle.getExchange(reputationTokenAddress))
+    account = contractsFixture.accounts[0]
+    cashAmount = 20 * 10**18
+    repAmount = 1 * 10**18
+    addLiquidity(repExchange, cash, reputationToken, cashAmount, repAmount, account)
+
     # Generate an enormous amount of OI
     assert contractsFixture.getOpenInterestInAttoCash(universe) == 0
     cost = market.getNumTicks() * 10**30
@@ -482,3 +492,12 @@ def reportingSnapshot(fixture, kitchenSinkSnapshot):
 def reportingFixture(fixture, reportingSnapshot):
     fixture.resetToSnapshot(reportingSnapshot)
     return fixture
+
+def addLiquidity(exchange, cash, reputationToken, cashAmount, repAmount, address):
+    cash.faucet(cashAmount)
+    reputationToken.faucet(repAmount)
+
+    cash.transfer(exchange.address, cashAmount)
+    reputationToken.transfer(exchange.address, repAmount)
+
+    exchange.mint(address)

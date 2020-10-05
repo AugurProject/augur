@@ -14,7 +14,7 @@ def test_rep_oracle(contractsFixture, augur, cash, market, universe):
     account = contractsFixture.accounts[0]
 
     # Initially the price will just be the initialization value
-    initialPrice = repOracle.genesisInitialRepPriceinAttoCash()
+    initialPrice = 0 if contractsFixture.paraAugur else repOracle.genesisInitialRepPriceinAttoCash()
     assert roughlyEqual(repOracle.poke(reputationTokenAddress), initialPrice)
 
     token0IsCash = cash.address < reputationTokenAddress

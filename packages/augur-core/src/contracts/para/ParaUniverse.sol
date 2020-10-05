@@ -186,12 +186,16 @@ contract ParaUniverse is Initializable, IParaUniverse {
         return Reporting.getDefaultReportingFeeDivisor();
     }
 
-    function calculateReportingFeeDivisorInternal() private returns (uint256) {
+    function calculateReportingFeeDivisorInternal() private returns (uint256 _reportingFeeDivisor) {
         uint256 _repMarketCapInAttoCash = pokeRepMarketCapInAttoCash();
+        if (_repMarketCapInAttoCash == 0) {
+            _reportingFeeDivisor = OINexus.universeReportingFeeDivisor(address(originUniverse));
+            if (_reportingFeeDivisor == 0) {
+                return getReportingFeeDivisor();
+            }
+        }
         uint256 _targetRepMarketCapInAttoCash = getTargetRepMarketCapInAttoCash();
-        uint256 _reportingFeeDivisor = OINexus.recordParaUniverseValuesAndUpdateReportingFee(originUniverse, _targetRepMarketCapInAttoCash, _repMarketCapInAttoCash);
-
-        return _reportingFeeDivisor;
+        return OINexus.recordParaUniverseValuesAndUpdateReportingFee(originUniverse, _targetRepMarketCapInAttoCash, _repMarketCapInAttoCash);
     }
 
     function getMarketOpenInterest(IMarket _market) external view returns (uint256) {
