@@ -734,8 +734,11 @@ type AMMExchange @entity {
   "Liquidity in exchange"
   liquidity: BigInt!
 
-  "The all time volume in the exchange."
-  volume: BigInt!
+  "The all time yes volume in the exchange."
+  volumeYes: BigInt!
+
+  "The all time no volume in the exchange."
+  volumeNo: BigInt!
 
   swaps: [SwapPosition!]! @derivedFrom(field: "ammExchange")
 
