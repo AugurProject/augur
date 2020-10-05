@@ -1356,7 +1356,9 @@ export async function loadAccountData_exchangeRates(account: string) {
   const repToken = contracts.getReputationToken();
   const usdc = contracts.usdc.address;
   const usdt = contracts.usdt.address;
-  const values: AccountData = await sdk.loadAccountData(account, repToken.address, usdc, usdt);
+  const collateral = contracts.cash.address;
+
+  const values: AccountData = await sdk.loadAccountData(account, repToken.address, usdc, usdt, collateral);
   return values;
 }
 

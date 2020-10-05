@@ -8,6 +8,7 @@ export interface GetAccountDataParams {
     reputationTokenAddress: string;
     USDCAddress: string;
     USDTAddress: string;
+    collateralAddress: string;
   }
 
 export interface AccountData {
@@ -41,6 +42,7 @@ export class AccountLoader {
     const reputationTokenAddress = params.reputationTokenAddress;
     const USDCAddress = params.USDCAddress;
     const USDTAddress = params.USDTAddress;
+    const collateralAddress = params.collateralAddress;
 
     let accountData = null;
 
@@ -55,7 +57,8 @@ export class AccountLoader {
         accountAddress,
         reputationTokenAddress,
         USDCAddress,
-        USDTAddress
+        USDTAddress,
+        collateralAddress
       );
     } catch (e) {
       console.error('Can not load account data', e);

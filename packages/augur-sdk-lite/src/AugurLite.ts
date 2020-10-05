@@ -80,13 +80,14 @@ export class AugurLite {
     });
   }
 
-  async loadAccountData(account: string, reputationToken: string, USDC: string, USDT: string): Promise<AccountData> {
+  async loadAccountData(account: string, reputationToken: string, USDC: string, USDT: string, collateralAddress: string): Promise<AccountData> {
     return this.accountLoader.getAccountData({
       accountLoaderAddress: this.addresses.AccountLoader,
       accountAddress: account,
       reputationTokenAddress: reputationToken,
       USDCAddress: USDC,
       USDTAddress: USDT,
+      collateralAddress
     });
   }
 
