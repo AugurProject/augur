@@ -13,6 +13,7 @@ async function doWork(): Promise<void> {
         "FillOrder": "0x431A0376274dCb5612bBD96491946d55cA0215f1",
         "Orders": "0x245f942add87Ba2f2b524b8D27eA1c891E514960",
         "AccountLoader": NULL_ADDRESS,
+        "AMMFactory": NULL_ADDRESS,
     }
     const augurLite = new AugurLite(provider, addresses, NetworkId.Kovan);
     const hotloadData = await augurLite.hotloadMarket("0x04CE01200a0A47f1198A0134330369ADEf44a92d");

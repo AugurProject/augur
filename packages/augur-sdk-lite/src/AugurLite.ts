@@ -1,7 +1,8 @@
-import { logger, NetworkId, QUINTILLION, numTicksToTickSize } from '@augurproject/utils';
+import { logger, NetworkId, QUINTILLION } from '@augurproject/utils';
 import { BigNumber } from 'bignumber.js';
 import { ethers } from 'ethers';
 import LZString from 'lz-string';
+import { AMMFactory } from './api/AMMFactory';
 import { HotLoading, HotLoadMarketInfo } from './api/HotLoading';
 import { AccountLoader, AccountData } from './api/AccountLoader';
 import { WarpSync } from './api/WarpSync';
@@ -27,6 +28,7 @@ export interface Addresses {
   FillOrder: string;
   Orders: string;
   WarpSync: string;
+  AMMFactory: string;
 }
 
 const FILE_FETCH_TIMEOUT = 10000; // 10 seconds
@@ -35,6 +37,7 @@ export class AugurLite {
   readonly hotLoading: HotLoading;
   readonly warpSync: WarpSync;
   readonly accountLoader: AccountLoader;
+  readonly ammFactory: AMMFactory;
 
   constructor(
     readonly provider: ethers.providers.Provider,
@@ -45,6 +48,7 @@ export class AugurLite {
     this.hotLoading = new HotLoading(this.provider);
     this.accountLoader = new AccountLoader(this.provider);
     this.warpSync = new WarpSync(this.provider, addresses.WarpSync);
+    this.ammFactory = new AMMFactory(this.provider, addresses.AMMFactory);
     this.addresses = addresses;
   }
 
