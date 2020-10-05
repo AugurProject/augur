@@ -20,12 +20,17 @@
   .TermsAndConditions {
     .text-12-semi-bold;
 
+    align-items: center;
     background: var(--color-module-background);
     color: var(--color-primary-text);
     justify-content: initial;
-    padding: 0 0 0 @size-16;
+    height: @size-40;
+    display: flex;
+    flex-flow: row nowrap;
+    padding: @size-12;
+    margin-right: 0;
 
-    @media @breakpoint-mobile {
+    @media @breakpoint-mobile-tablet {
       justify-content: center;
       padding: 0;
     }

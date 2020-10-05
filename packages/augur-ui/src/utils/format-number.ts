@@ -317,6 +317,7 @@ export function optionsBlank(): FormattedNumberOptions {
     minimized: false,
     blankZero: false,
     bigUnitPostfix: false,
+    precisionFullLabel: false,
   };
 }
 export function sumAndformatGasCostToEther(
@@ -465,6 +466,7 @@ export function formatNumber(
     zeroStyled,
     blankZero,
     removeComma = false,
+    precisionFullLabel = false,
   } = opts;
 
   decimals = decimals || 0;
@@ -584,7 +586,7 @@ export function formatNumber(
   }
 
   o.denomination = denomination('');
-  o.full = denomination(o.formatted);
+  o.full = precisionFullLabel ? denomination(createBigNumber(o.formatted).toPrecision()) : denomination(o.formatted);
 
   if (
     (typeof num === 'string' && isNaN(parseFloat(num))) ||

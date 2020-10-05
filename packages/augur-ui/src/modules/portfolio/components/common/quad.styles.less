@@ -78,3 +78,15 @@
     }
   }
 }
+
+:root[theme="SPORTS"] {
+  .InfoParent > div {
+    @media @breakpoint-mobile-tablet {
+      padding: @size-8 0;
+
+      > div {
+        max-width: unset;
+      }
+    }
+  }
+}

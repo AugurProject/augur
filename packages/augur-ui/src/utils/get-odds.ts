@@ -80,7 +80,9 @@ export const convertToNormalizedPrice = ({
   const bnMax = createBigNumber(max);
   let normalizedPrice = bnPrice.minus(bnMin).dividedBy(bnMax.minus(bnMin));
   normalizedPrice =
-    type === BID ? normalizedPrice : createBigNumber(bnMax).minus(normalizedPrice);
+    type === BID
+      ? normalizedPrice
+      : createBigNumber(bnMax).minus(normalizedPrice);
 
   return normalizedPrice;
 };
@@ -118,10 +120,16 @@ export const getOddsObject = (normalizedValue: BigNumber, toDecimals = 4) => {
   return {
     [DECIMAL]: formatNumber(decimal, {
       decimals: toDecimals,
+      precisionFullLabel: true,
     }),
-    [FRACTIONAL]: formatFractional(fractional),
+    [FRACTIONAL]: formatFractional(fractional, {
+      precisionFullLabel: true,
+    }),
     [AMERICAN]: formatAmerican(american),
-    [PERCENT]: formatPercent(percentage, { decimalsRounded: 2 }),
+    [PERCENT]: formatPercent(percentage, {
+      decimalsRounded: 2,
+      precisionFullLabel: true,
+    }),
   };
 };
 
