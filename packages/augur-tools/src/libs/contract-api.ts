@@ -76,6 +76,9 @@ export class ContractAPI {
     const authority = this.augur.config.addresses.Augur;
     await this.augur.contracts.cash.approve(authority, wei);
 
+    const originCash = await this.augur.contracts.getOriginCash();
+    await originCash.approve(authority, wei);
+
     const fillOrder = this.augur.config.addresses.FillOrder;
     await this.augur.contracts.cash.approve(fillOrder, wei);
     await this.augur.contracts.shareToken.setApprovalForAll(fillOrder, true);
@@ -88,6 +91,14 @@ export class ContractAPI {
     await this.augur.contracts.cash.approve(zeroXTrade, wei);
   }
 
+  async getOriginCashAllowance(): Promise<BigNumber> {
+    const owner = this.account.address;
+    const authority = this.augur.config.addresses.Augur;
+
+    const cash = await this.augur.contracts.getOriginCash();
+    return cash.allowance_(owner, authority);
+  }
+
   async getCashAllowance(): Promise<BigNumber> {
     const owner = this.account.address;
     const authority = this.augur.config.addresses.Augur;
@@ -96,7 +107,9 @@ export class ContractAPI {
 
   async approveIfNecessary(wei = MAX_APPROVAL): Promise<void> {
     const current = await this.getCashAllowance();
-    if (current.lt(wei)) {
+    const originCurrent = await this.getOriginCashAllowance();
+
+    if (current.lt(wei) || originCurrent.lt(wei)) {
       await this.approve(wei);
     }
   }
@@ -891,6 +904,30 @@ export class ContractAPI {
     await market.finalize();
   }
 
+  async faucetOriginCash(attoCash: BigNumber, targetAddress?: string): Promise<void> {
+    const userAddress = await this.augur.getAccount();
+    const account = targetAddress || userAddress;
+    const cash = await this.augur.contracts.getOriginCash();
+    await cash.faucet(attoCash)
+    if (account !== userAddress) {
+      await cash.transfer(account, attoCash);
+    }
+  }
+
+  async faucetOriginCashUpTo(
+    attoCash: BigNumber,
+    extra = new BigNumber(0),
+    targetAddress: string = null
+  ): Promise<void> {
+    targetAddress = targetAddress || (await this.augur.getAccount());
+    const balance = await this.getOriginCashBalance(targetAddress);
+    const leftToFaucet = attoCash.minus(balance);
+    if (leftToFaucet.gt(0)) {
+      const totalToFaucet = leftToFaucet.plus(extra);
+      await this.faucetOriginCash(totalToFaucet, targetAddress);
+    }
+  }
+
   async faucetCash(attoCash: BigNumber, targetAddress?: string): Promise<void> {
     const userAddress = await this.augur.getAccount();
     const account = targetAddress || userAddress;
@@ -1052,6 +1089,12 @@ export class ContractAPI {
   async getRepBalance(owner?: string): Promise<BigNumber> {
     if (!owner) owner = await this.augur.getAccount();
     return this.augur.contracts.getReputationToken().balanceOf_(owner);
+  }
+
+  async getOriginCashBalance(owner?: string): Promise<BigNumber> {
+    if (!owner) owner = await this.augur.getAccount();
+    const cash = await this.augur.contracts.getOriginCash();
+    return cash.balanceOf_(owner);
   }
 
   async getCashBalance(owner?: string): Promise<BigNumber> {

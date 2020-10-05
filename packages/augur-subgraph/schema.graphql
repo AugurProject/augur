@@ -32,6 +32,15 @@ type User @entity {
 
   "Share tokens that this user has"
   shareTokens: [ShareToken!]! @derivedFrom(field: "owner")
+
+  "Swaps this user has executed with any AMMExchange"
+  swaps: [SwapPosition!]! @derivedFrom(field: "sender")
+
+  "Positions entered by this user has executed with any AMMExchange"
+  enters: [EnterPosition!]! @derivedFrom(field: "sender")
+
+  "Positions exited by this user has executed with any AMMExchange"
+  exits: [ExitPosition!]! @derivedFrom(field: "sender")
 }
 
 type Universe @entity {
@@ -727,6 +736,12 @@ type AMMExchange @entity {
 
   "The all time volume in the exchange."
   volume: BigInt!
+
+  swaps: [SwapPosition!]! @derivedFrom(field: "ammExchange")
+
+  enters: [EnterPosition!]! @derivedFrom(field: "ammExchange")
+
+  exits: [ExitPosition!]! @derivedFrom(field: "ammExchange")
 }
 
 type ParaAugurDeployFinishedEvent @entity {
@@ -734,3 +749,63 @@ type ParaAugurDeployFinishedEvent @entity {
 
   shareToken: ParaShareToken!
 }
+
+type SwapPosition @entity {
+  "This is the tx hash + log index."
+  id: ID!
+
+  ammExchange: AMMExchange!
+
+  "The 'from' field of the swap tx."
+  sender: User!
+
+  "Number of yes shares recieved or sent in swap. Negative values are from the user's prospective."
+  yesShares: BigInt!
+
+  "Number of no shares recieved or sent in swap. Negative values are from the user's prospective."
+  noShares: BigInt!
+}
+
+type EnterPosition @entity {
+  "This is the tx hash + log index."
+  id: ID!
+
+  ammExchange: AMMExchange!
+
+  "The 'from' field of the swap tx."
+  sender: User!
+
+  "Amount of cash user passed to enter the position."
+  cash: BigInt!
+
+  "Number of yes shares the user recieved. User will recieve only yes or no."
+  yesShares: BigInt!
+
+  "Number of no shares the user recieved. User will recieve only yes or no."
+  noShares: BigInt!
+}
+
+type ExitPosition @entity {
+  "This is the tx hash + log index."
+  id: ID!
+
+  ammExchange: AMMExchange!
+
+  "The 'from' field of the swap tx."
+  sender: User!
+
+  "Number of invalid shares user is exiting"
+  invalidShares: BigInt!
+
+  "Number of no shares user is exiting"
+  noShares: BigInt!
+
+  "Number of yes shares user is exiting"
+  yesShares: BigInt!
+
+  "Amount of cash user recieved exiting position."
+  cash: BigInt!
+}
+
+
+

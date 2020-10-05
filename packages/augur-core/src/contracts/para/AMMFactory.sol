@@ -2,12 +2,15 @@ pragma solidity 0.5.15;
 
 import 'ROOT/reporting/IMarket.sol';
 import 'ROOT/libraries/CloneFactory2.sol';
+import 'ROOT/libraries/math/SafeMathUint256.sol';
 import 'ROOT/para/interfaces/IParaShareToken.sol';
 import 'ROOT/para/interfaces/IAMMFactory.sol';
 import 'ROOT/para/interfaces/IAMMExchange.sol';
 
 
 contract AMMFactory is IAMMFactory, CloneFactory2 {
+    using SafeMathUint256 for uint256;
+
     IAMMExchange internal proxyToClone;
 
     constructor(address _proxyToClone, uint256 _fee) public {
@@ -20,6 +23,18 @@ contract AMMFactory is IAMMFactory, CloneFactory2 {
         IAMMExchange _amm = IAMMExchange(createClone2(address(proxyToClone), salt(_market, _para)));
         _amm.initialize(_market, _para, fee);
         exchanges[address(_market)][address(_para)] = address(_amm);
+        return address(_amm);
+    }
+
+    function addAMMWithLiquidity(IMarket _market, IParaShareToken _para, uint256 _setsToBuy, bool _swapForYes, uint256 _swapHowMuch) external returns (address) {
+        IAMMExchange _amm = IAMMExchange(createClone2(address(proxyToClone), salt(_market, _para)));
+        _amm.initialize(_market, _para, fee);
+        exchanges[address(_market)][address(_para)] = address(_amm);
+
+        // User sends cash to factory, which turns cash into LP tokens, then returns the tokens returns to the user.
+        _para.cash().transferFrom(msg.sender, address(this), _setsToBuy.mul(_market.getNumTicks()));
+        uint256 _lpTokens = _amm.addLiquidityThenSwap(_setsToBuy, _swapForYes, _swapHowMuch);
+        _amm.transfer(msg.sender, _lpTokens);
         return address(_amm);
     }
 

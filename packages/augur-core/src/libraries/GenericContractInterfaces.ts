@@ -8166,6 +8166,13 @@ export class AMMExchange<TBigNumber> extends Contract<TBigNumber> {
 		return <string>result[0]
 	}
 
+	public sharesRateForAddLiquidityThenSwap_ = async (setsToBuy: TBigNumber, swapForYes: boolean, swapHowMuch: TBigNumber, options?: { sender?: string }): Promise<{_yesses: TBigNumber, _nos: TBigNumber}> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":true,"inputs":[{"internalType":"uint256","name":"_setsToBuy","type":"uint256"},{"internalType":"bool","name":"_swapForYes","type":"bool"},{"internalType":"uint256","name":"_swapHowMuch","type":"uint256"}],"name":"sharesRateForAddLiquidityThenSwap","outputs":[{"internalType":"uint256","name":"_yesses","type":"uint256"},{"internalType":"uint256","name":"_nos","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"}
+		const result = await this.localCall(abi, [setsToBuy, swapForYes, swapHowMuch], options.sender)
+		return <{_yesses: TBigNumber, _nos: TBigNumber}>result
+	}
+
 	public swap = async (inputShares: TBigNumber, inputYes: boolean, minOutputShares: TBigNumber, options?: { sender?: string }): Promise<Array<Event>> => {
 		options = options || {}
 		const abi: AbiFunction = {"constant":false,"inputs":[{"internalType":"uint256","name":"_inputShares","type":"uint256"},{"internalType":"bool","name":"_inputYes","type":"bool"},{"internalType":"uint256","name":"_minOutputShares","type":"uint256"}],"name":"swap","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"payable":false,"stateMutability":"nonpayable","type":"function"}
@@ -8253,6 +8260,25 @@ export class AMMFactory<TBigNumber> extends Contract<TBigNumber> {
 		options = options || {}
 		const abi: AbiFunction = {"constant":false,"inputs":[{"internalType":"contract IMarket","name":"_market","type":"address"},{"internalType":"contract IParaShareToken","name":"_para","type":"address"}],"name":"addAMM","outputs":[{"internalType":"address","name":"","type":"address"}],"payable":false,"stateMutability":"nonpayable","type":"function"}
 		const result = await this.localCall(abi, [market, para], options.sender)
+		return <string>result[0]
+	}
+
+	public addAMMWithLiquidity = async (market: string, para: string, setsToBuy: TBigNumber, swapForYes: boolean, swapHowMuch: TBigNumber, options?: { sender?: string }): Promise<Array<Event>> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":false,"inputs":[{"internalType":"contract IMarket","name":"_market","type":"address"},{"internalType":"contract IParaShareToken","name":"_para","type":"address"},{"internalType":"uint256","name":"_setsToBuy","type":"uint256"},{"internalType":"bool","name":"_swapForYes","type":"bool"},{"internalType":"uint256","name":"_swapHowMuch","type":"uint256"}],"name":"addAMMWithLiquidity","outputs":[{"internalType":"address","name":"","type":"address"}],"payable":false,"stateMutability":"nonpayable","type":"function"}
+		return await this.remoteCall(abi, [market, para, setsToBuy, swapForYes, swapHowMuch], 'addAMMWithLiquidity', options.sender)
+	}
+	
+	public addAMMWithLiquidity_estimateGas = async (market: string, para: string, setsToBuy: TBigNumber, swapForYes: boolean, swapHowMuch: TBigNumber, options?: { sender?: string }): Promise<TBigNumber> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":false,"inputs":[{"internalType":"contract IMarket","name":"_market","type":"address"},{"internalType":"contract IParaShareToken","name":"_para","type":"address"},{"internalType":"uint256","name":"_setsToBuy","type":"uint256"},{"internalType":"bool","name":"_swapForYes","type":"bool"},{"internalType":"uint256","name":"_swapHowMuch","type":"uint256"}],"name":"addAMMWithLiquidity","outputs":[{"internalType":"address","name":"","type":"address"}],"payable":false,"stateMutability":"nonpayable","type":"function"}
+		return await this.estimateGas(abi, [market, para, setsToBuy, swapForYes, swapHowMuch], 'addAMMWithLiquidity', options.sender)
+	}
+
+	public addAMMWithLiquidity_ = async (market: string, para: string, setsToBuy: TBigNumber, swapForYes: boolean, swapHowMuch: TBigNumber, options?: { sender?: string }): Promise<string> => {
+		options = options || {}
+		const abi: AbiFunction = {"constant":false,"inputs":[{"internalType":"contract IMarket","name":"_market","type":"address"},{"internalType":"contract IParaShareToken","name":"_para","type":"address"},{"internalType":"uint256","name":"_setsToBuy","type":"uint256"},{"internalType":"bool","name":"_swapForYes","type":"bool"},{"internalType":"uint256","name":"_swapHowMuch","type":"uint256"}],"name":"addAMMWithLiquidity","outputs":[{"internalType":"address","name":"","type":"address"}],"payable":false,"stateMutability":"nonpayable","type":"function"}
+		const result = await this.localCall(abi, [market, para, setsToBuy, swapForYes, swapHowMuch], options.sender)
 		return <string>result[0]
 	}
 
@@ -20196,11 +20222,11 @@ export class AccountLoader<TBigNumber> extends Contract<TBigNumber> {
 		return <string>result[0]
 	}
 
-	public loadAccountData_ = async (account: string, reputationToken: string, USDC: string, USDT: string, options?: { sender?: string }): Promise<{ signerETH: TBigNumber, signerDAI: TBigNumber, signerREP: TBigNumber, signerLegacyREP: TBigNumber, attoDAIperREP: TBigNumber, attoDAIperETH: TBigNumber, attoDAIperUSDC: TBigNumber, attoDAIperUSDT: TBigNumber, attoETHperREP: TBigNumber, attoETHperUSDC: TBigNumber, attoETHperUSDT: TBigNumber, attoREPperUSDC: TBigNumber, attoREPperUSDT: TBigNumber, attoUSDCperUSDT: TBigNumber, signerUSDC: TBigNumber, signerUSDT: TBigNumber }> => {
+	public loadAccountData_ = async (account: string, reputationToken: string, USDC: string, USDT: string, collateral: string, options?: { sender?: string }): Promise<{ signerETH: TBigNumber, signerDAI: TBigNumber, signerREP: TBigNumber, signerLegacyREP: TBigNumber, attoDAIperREP: TBigNumber, attoDAIperETH: TBigNumber, attoDAIperUSDC: TBigNumber, attoDAIperUSDT: TBigNumber, attoETHperREP: TBigNumber, attoETHperUSDC: TBigNumber, attoETHperUSDT: TBigNumber, attoREPperUSDC: TBigNumber, attoREPperUSDT: TBigNumber, attoUSDCperUSDT: TBigNumber, attoETHperCollateral: TBigNumber, signerUSDC: TBigNumber, signerUSDT: TBigNumber, signerCollateral: TBigNumber }> => {
 		options = options || {}
-		const abi: AbiFunction = {"constant":true,"inputs":[{"internalType":"address","name":"_account","type":"address"},{"internalType":"contract IERC20","name":"_reputationToken","type":"address"},{"internalType":"contract IERC20","name":"_USDC","type":"address"},{"internalType":"contract IERC20","name":"_USDT","type":"address"}],"name":"loadAccountData","outputs":[{"components":[{"internalType":"uint256","name":"signerETH","type":"uint256"},{"internalType":"uint256","name":"signerDAI","type":"uint256"},{"internalType":"uint256","name":"signerREP","type":"uint256"},{"internalType":"uint256","name":"signerLegacyREP","type":"uint256"},{"internalType":"uint256","name":"attoDAIperREP","type":"uint256"},{"internalType":"uint256","name":"attoDAIperETH","type":"uint256"},{"internalType":"uint256","name":"attoDAIperUSDC","type":"uint256"},{"internalType":"uint256","name":"attoDAIperUSDT","type":"uint256"},{"internalType":"uint256","name":"attoETHperREP","type":"uint256"},{"internalType":"uint256","name":"attoETHperUSDC","type":"uint256"},{"internalType":"uint256","name":"attoETHperUSDT","type":"uint256"},{"internalType":"uint256","name":"attoREPperUSDC","type":"uint256"},{"internalType":"uint256","name":"attoREPperUSDT","type":"uint256"},{"internalType":"uint256","name":"attoUSDCperUSDT","type":"uint256"},{"internalType":"uint256","name":"signerUSDC","type":"uint256"},{"internalType":"uint256","name":"signerUSDT","type":"uint256"}],"internalType":"struct AccountLoader.AccountData","name":"_data","type":"tuple"}],"payable":false,"stateMutability":"view","type":"function"}
-		const result = await this.localCall(abi, [account, reputationToken, USDC, USDT], options.sender)
-		return <{ signerETH: TBigNumber, signerDAI: TBigNumber, signerREP: TBigNumber, signerLegacyREP: TBigNumber, attoDAIperREP: TBigNumber, attoDAIperETH: TBigNumber, attoDAIperUSDC: TBigNumber, attoDAIperUSDT: TBigNumber, attoETHperREP: TBigNumber, attoETHperUSDC: TBigNumber, attoETHperUSDT: TBigNumber, attoREPperUSDC: TBigNumber, attoREPperUSDT: TBigNumber, attoUSDCperUSDT: TBigNumber, signerUSDC: TBigNumber, signerUSDT: TBigNumber }>result[0]
+		const abi: AbiFunction = {"constant":true,"inputs":[{"internalType":"address","name":"_account","type":"address"},{"internalType":"contract IERC20","name":"_reputationToken","type":"address"},{"internalType":"contract IERC20","name":"_USDC","type":"address"},{"internalType":"contract IERC20","name":"_USDT","type":"address"},{"internalType":"contract IERC20","name":"_collateral","type":"address"}],"name":"loadAccountData","outputs":[{"components":[{"internalType":"uint256","name":"signerETH","type":"uint256"},{"internalType":"uint256","name":"signerDAI","type":"uint256"},{"internalType":"uint256","name":"signerREP","type":"uint256"},{"internalType":"uint256","name":"signerLegacyREP","type":"uint256"},{"internalType":"uint256","name":"attoDAIperREP","type":"uint256"},{"internalType":"uint256","name":"attoDAIperETH","type":"uint256"},{"internalType":"uint256","name":"attoDAIperUSDC","type":"uint256"},{"internalType":"uint256","name":"attoDAIperUSDT","type":"uint256"},{"internalType":"uint256","name":"attoETHperREP","type":"uint256"},{"internalType":"uint256","name":"attoETHperUSDC","type":"uint256"},{"internalType":"uint256","name":"attoETHperUSDT","type":"uint256"},{"internalType":"uint256","name":"attoREPperUSDC","type":"uint256"},{"internalType":"uint256","name":"attoREPperUSDT","type":"uint256"},{"internalType":"uint256","name":"attoUSDCperUSDT","type":"uint256"},{"internalType":"uint256","name":"attoETHperCollateral","type":"uint256"},{"internalType":"uint256","name":"signerUSDC","type":"uint256"},{"internalType":"uint256","name":"signerUSDT","type":"uint256"},{"internalType":"uint256","name":"signerCollateral","type":"uint256"}],"internalType":"struct AccountLoader.AccountData","name":"_data","type":"tuple"}],"payable":false,"stateMutability":"view","type":"function"}
+		const result = await this.localCall(abi, [account, reputationToken, USDC, USDT, collateral], options.sender)
+		return <{ signerETH: TBigNumber, signerDAI: TBigNumber, signerREP: TBigNumber, signerLegacyREP: TBigNumber, attoDAIperREP: TBigNumber, attoDAIperETH: TBigNumber, attoDAIperUSDC: TBigNumber, attoDAIperUSDT: TBigNumber, attoETHperREP: TBigNumber, attoETHperUSDC: TBigNumber, attoETHperUSDT: TBigNumber, attoREPperUSDC: TBigNumber, attoREPperUSDT: TBigNumber, attoUSDCperUSDT: TBigNumber, attoETHperCollateral: TBigNumber, signerUSDC: TBigNumber, signerUSDT: TBigNumber, signerCollateral: TBigNumber }>result[0]
 	}
 
 	public uniswapFactory_ = async (options?: { sender?: string }): Promise<string> => {

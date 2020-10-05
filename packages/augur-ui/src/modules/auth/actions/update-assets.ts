@@ -20,7 +20,6 @@ import { createBigNumber } from 'utils/create-big-number';
 import { ETHER, WALLET_STATUS_VALUES, FIVE, ZERO, GWEI_CONVERSION } from 'modules/common/constants';
 import { formatAttoDai } from 'utils/format-number';
 import { augurSdk } from 'services/augursdk';
-import { FeePoolBalances } from 'modules/types';
 
 
 export const updateAssets = (): ThunkAction<any, any, any, any> => async (

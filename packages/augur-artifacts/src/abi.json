@@ -22156,6 +22156,42 @@
 			"type": "function"
 		},
 		{
+			"constant": true,
+			"inputs": [
+				{
+					"internalType": "uint256",
+					"name": "_setsToBuy",
+					"type": "uint256"
+				},
+				{
+					"internalType": "bool",
+					"name": "_swapForYes",
+					"type": "bool"
+				},
+				{
+					"internalType": "uint256",
+					"name": "_swapHowMuch",
+					"type": "uint256"
+				}
+			],
+			"name": "sharesRateForAddLiquidityThenSwap",
+			"outputs": [
+				{
+					"internalType": "uint256",
+					"name": "_yesses",
+					"type": "uint256"
+				},
+				{
+					"internalType": "uint256",
+					"name": "_nos",
+					"type": "uint256"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
 			"constant": false,
 			"inputs": [
 				{
@@ -22292,6 +22328,47 @@
 				}
 			],
 			"name": "addAMM",
+			"outputs": [
+				{
+					"internalType": "address",
+					"name": "",
+					"type": "address"
+				}
+			],
+			"payable": false,
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"constant": false,
+			"inputs": [
+				{
+					"internalType": "contract IMarket",
+					"name": "_market",
+					"type": "address"
+				},
+				{
+					"internalType": "contract IParaShareToken",
+					"name": "_para",
+					"type": "address"
+				},
+				{
+					"internalType": "uint256",
+					"name": "_setsToBuy",
+					"type": "uint256"
+				},
+				{
+					"internalType": "bool",
+					"name": "_swapForYes",
+					"type": "bool"
+				},
+				{
+					"internalType": "uint256",
+					"name": "_swapHowMuch",
+					"type": "uint256"
+				}
+			],
+			"name": "addAMMWithLiquidity",
 			"outputs": [
 				{
 					"internalType": "address",
@@ -51332,6 +51409,11 @@
 					"internalType": "contract IERC20",
 					"name": "_USDT",
 					"type": "address"
+				},
+				{
+					"internalType": "contract IERC20",
+					"name": "_collateral",
+					"type": "address"
 				}
 			],
 			"name": "loadAccountData",
@@ -51410,12 +51492,22 @@
 						},
 						{
 							"internalType": "uint256",
+							"name": "attoETHperCollateral",
+							"type": "uint256"
+						},
+						{
+							"internalType": "uint256",
 							"name": "signerUSDC",
 							"type": "uint256"
 						},
 						{
 							"internalType": "uint256",
 							"name": "signerUSDT",
+							"type": "uint256"
+						},
+						{
+							"internalType": "uint256",
+							"name": "signerCollateral",
 							"type": "uint256"
 						}
 					],

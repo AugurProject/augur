@@ -10,6 +10,7 @@ contract IAMMFactory {
     uint256 public fee; // [0-1000] how many thousandths of swaps should be kept as fees
 
     function addAMM(IMarket _market, IParaShareToken _para) external returns (address);
+    function addAMMWithLiquidity(IMarket _market, IParaShareToken _para, uint256 _setsToBuy, bool _swapForYes, uint256 _swapHowMuch) external returns (address);
     function salt(IMarket _market, IParaShareToken _para) public pure returns (uint256);
     function transferCash(IMarket _market, IParaShareToken _para, address sender, address recipient, uint256 quantity) public;
 }

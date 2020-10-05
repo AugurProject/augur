@@ -73,19 +73,21 @@ contract AMMExchange is IAMMExchange, ERC20 {
     }
 
     function rateAddLiquidityThenSwap(uint256 _setsToBuy, bool _swapForYes, uint256 _swapHowMuch) public view returns (uint256) {
+        (uint256 _yesses, uint256 _nos) = sharesRateForAddLiquidityThenSwap(_setsToBuy, _swapForYes, _swapHowMuch);
+        return rateAddLiquidity(_yesses, _nos);
+    }
+
+    function sharesRateForAddLiquidityThenSwap(uint256 _setsToBuy, bool _swapForYes, uint256 _swapHowMuch) public view returns (uint256 _yesses, uint256 _nos) {
         uint256 _keptSets = _setsToBuy.subS(_swapHowMuch, "AugurCP: When adding liquidity, tried to swap away more sets than you bought");
         uint256 _gainedShares = rateSwap(_swapHowMuch, !_swapForYes);
 
-        uint256 _yesses; uint256 _nos;
         if (_swapForYes) {
-            _yesses = _keptSets.add(_gainedShares);
+            _yesses = _setsToBuy.add(_gainedShares);
             _nos = _keptSets;
         } else {
             _yesses = _keptSets;
-            _nos = _keptSets.add(_gainedShares);
+            _nos = _setsToBuy.add(_gainedShares);
         }
-
-        return rateAddLiquidity(_yesses, _nos);
     }
 
     // Removes shares from the liquidity pool.
