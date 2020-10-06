@@ -20,15 +20,15 @@ import { AddFunds as ModalAddFunds } from 'modules/modal/add-funds';
 import { SignIn as ModalSignin } from 'modules/modal/signin';
 import { Loading as ModalLoading } from 'modules/modal/loading';
 import { ModalUniverseSelector } from 'modules/modal/components/modal-universe-selector';
-import { ModalTestBet } from 'modules/modal/onboarding-modals';
-import { ModalAugurUsesDai } from 'modules/modal/onboarding-modals';
-import { ModalApprovals } from 'modules/modal/onboarding-modals';
-import { ModalEthDeposit } from 'modules/modal/onboarding-modals';
-import { ModalSwap } from 'modules/modal/onboarding-modals';
-import { ModalBankroll } from 'modules/modal/onboarding-modals';
-import { ModalTokenSelect } from 'modules/modal/onboarding-modals';
-import { ModalTutorialOutro } from 'modules/modal/onboarding-modals';
-import { ModalTutorialIntro } from 'modules/modal/onboarding-modals';
+import {
+  ModalTestBet,
+  ModalAugurUsesDai,
+  ModalApprovals,
+  ModalEthDeposit,
+  ModalSwap,
+  ModalBankroll,
+  ModalTokenSelect
+} from 'modules/modal/onboarding-modals';
 import { ModalAddLiquidity } from 'modules/modal/add-liquidity';
 import { Scalar as ModalScalar } from 'modules/modal/scalar';
 import { useHistory } from 'react-router';
