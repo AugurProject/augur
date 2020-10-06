@@ -144,6 +144,7 @@ export const DEFAULT_LOGIN_ACCOUNT_STATE: LoginAccount = {
     disputing: null,
     participationTokens: null,
   },
+  currentOnboardingStep: 0,
   allowance: ZERO,
   tradingApproved: false,
   totalOpenOrdersFrozenFunds: '0',

@@ -274,6 +274,7 @@ export interface ProcessingButtonProps extends DefaultButtonProps {
   queueId: string;
   matchingId?: string;
   nonMatchingIds?: Array<String>;
+  autoHideConfirm?: boolean;
 }
 
 export const ProcessingButton = ({
@@ -282,6 +283,7 @@ export const ProcessingButton = ({
   matchingId = null,
   nonMatchingIds = null,
   propsStatus,
+  autoHideConfirm = false,
   ...props
 }: ProcessingButtonProps) => {
   const { pendingQueue, theme } = useAppStatusStore();
@@ -339,6 +341,15 @@ export const ProcessingButton = ({
     buttonAction = props.smallSpinner ? e => props.action(e) : e => cancel(e);
     icon = XIcon;
     isDisabled = false;
+  }
+
+  if (autoHideConfirm) {
+    if (confirmed) {
+      icon = null;
+      setTimeout(() => {
+        cancel();
+      }, 3000);
+    }
   }
 
   if (confirmed && isSports) {

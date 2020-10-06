@@ -62,7 +62,7 @@ import { loadMarketsInfo } from 'modules/markets/actions/load-markets-info';
 import { addAlert } from 'modules/alerts/actions/alerts';
 import OrderBook from 'modules/market-charts/components/order-book/order-book';
 import { handleStyleCalculation, findType, getTutorialPreview, handleTutorialInfo, handleTutorialMocks } from 'modules/market/store/market-utils';
-import { 
+import {
   MARKET_INFO,
   TUTORIAL_FILL_ALERT,
   TRADING_TUTORIAL_MARKET,
@@ -119,8 +119,8 @@ const MarketView = ({
     preview
   } = getTutorialPreview(queryId, location);
   const marketId = (preview) ? queryId : getAddress(queryId);
-  const market = tradingTutorial ? 
-    TRADING_TUTORIAL_MARKET : 
+  const market = tradingTutorial ?
+    TRADING_TUTORIAL_MARKET :
     defaultMarket || convertMarketInfoToMarketData(marketInfos[marketId], currentAugurTimestamp * 1000);
   const defaultOutcomeId = market?.defaultSelectedOutcomeId;
   const cat5 = findType(market);
@@ -178,8 +178,8 @@ const MarketView = ({
     OrdersPaneStyle,
     OrderBookStyle,
     HistoryStyle,
-  } = useMemo(() => 
-    handleStyleCalculation(preview, tradingTutorial, tutorialStep, extendOrderBook, extendTradeHistory, extendOutcomesList, extendOrders, cat5), 
+  } = useMemo(() =>
+    handleStyleCalculation(preview, tradingTutorial, tutorialStep, extendOrderBook, extendTradeHistory, extendOutcomesList, extendOrders, cat5),
   [preview, tradingTutorial, tutorialStep, extendOrderBook, extendTradeHistory, extendOutcomesList, extendOrders, cat5]);
 
   const {
@@ -187,7 +187,7 @@ const MarketView = ({
     orders,
     fills,
     positions,
-  } = useMemo(() => 
+  } = useMemo(() =>
     handleTutorialMocks(
       selectedOutcomeId,
       market?.description,
@@ -196,7 +196,7 @@ const MarketView = ({
       isOpenOrders,
       isFills,
       isPositions
-    ), 
+    ),
     [isOpenOrders, isFills, isPositions]);
 
   useEffect(() => {
@@ -236,10 +236,7 @@ const MarketView = ({
   useEffect(() => {
     if (tradingTutorial) {
       if (!introShowing && isIntro) {
-        setModal({
-          type: MODAL_TUTORIAL_INTRO,
-          next,
-        });
+        next();
         setState({
           ...state,
           introShowing: true
@@ -324,11 +321,11 @@ const MarketView = ({
     groupedTradeHistory,
   } = market;
   const parsedMarketDescription = parseMarketTitle(description);
-  const outcomeOrderBook = preview ? 
+  const outcomeOrderBook = preview ?
     formatOrderBook(orderBook[selectedOutcomeId]) :
-    (isFills || isPositions) ? 
+    (isFills || isPositions) ?
       FORMATTED_TUTORIAL_BOOK :
-      orderBook[selectedOutcomeId] ? 
+      orderBook[selectedOutcomeId] ?
         orderBook[selectedOutcomeId] : orderBook;
   function tradingTutorialWidthCheck() {
     if (tradingTutorial && window.innerWidth < 1150) {
@@ -343,7 +340,7 @@ const MarketView = ({
     setState({
       ...state,
       extendOrderBook: false,
-      extendTradeHistory: 
+      extendTradeHistory:
         (extendOrderBook && !extendTradeHistory) ? false : !extendTradeHistory,
     })
   }
@@ -352,7 +349,7 @@ const MarketView = ({
     setState({
       ...state,
       extendTradeHistory: false,
-      extendOrderBook: 
+      extendOrderBook:
         (!extendOrderBook && extendTradeHistory) ? false : !extendOrderBook,
     })
   }

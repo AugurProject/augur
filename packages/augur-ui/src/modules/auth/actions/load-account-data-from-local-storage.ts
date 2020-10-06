@@ -48,6 +48,7 @@ export const loadAccountDataFromLocalStorage = (address: string) => {
         drafts,
         analytics,
         theme,
+        currentOnboardingStep,
       } = storedAccountData;
       if (settings) {
         const filterOptions = Object.keys(settings).reduce(
@@ -58,6 +59,10 @@ export const loadAccountDataFromLocalStorage = (address: string) => {
           ...filterSortOptions,
           ...filterOptions,
         });
+      }
+
+      if (currentOnboardingStep) {
+        updateLoginAccount({ currentOnboardingStep });
       }
 
       if (!!affiliate && isAddress(affiliate))

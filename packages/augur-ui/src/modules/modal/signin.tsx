@@ -17,7 +17,7 @@ import {
   MODAL_LOGIN,
   MODAL_HARDWARE_WALLET,
   MODAL_SIGNUP,
-  MODAL_ACCOUNT_CREATED,
+  MODAL_AUGUR_USES_DAI,
   MODAL_LOADING,
   MODAL_ERROR,
   ACCOUNT_TYPES,
@@ -43,7 +43,7 @@ export const SignIn = ({ isLogin }) => {
   const hardwareWalletModal = isLogin =>
     setModal({ type: MODAL_HARDWARE_WALLET, isLogin });
   const signupModal = () => setModal({ type: MODAL_SIGNUP });
-  const accountCreatedModal = () => setModal({ type: MODAL_ACCOUNT_CREATED });
+  const accountCreatedModal = () => setModal({ type: MODAL_AUGUR_USES_DAI });
   const loadingModal = (message, callback, showMetaMaskHelper = false) => {
     setModal({
       type: MODAL_LOADING,
@@ -103,9 +103,8 @@ export const SignIn = ({ isLogin }) => {
   };
 
   const login = () => {
+    closeModal();
     setTimeout(() => {
-      closeModal();
-
       if (LOGIN_OR_SIGNUP === 'Signup') {
         // Kicks off onboarding
         accountCreatedModal();

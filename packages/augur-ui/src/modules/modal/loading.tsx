@@ -10,8 +10,8 @@ import { useAppStatusStore } from 'modules/app/store/app-status';
 const FIFTEEN_SECONDS = 15000;
 
 export const Loading = () => {
-  const { isLogged, modal, loginAccount, actions: {closeModal} } = useAppStatusStore();
-  const shouldClose = isLogged && loginAccount.meta && !loginAccount.meta.preloaded;
+  const { isLogged, ethToDaiRate, modal, loginAccount, actions: {closeModal} } = useAppStatusStore();
+  const shouldClose = isLogged && loginAccount.meta && !loginAccount.meta.preloaded && ethToDaiRate;
   const {
     message,
     callback,

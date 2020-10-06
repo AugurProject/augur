@@ -16,7 +16,7 @@ export const handleLocalStorage = () => {
   ) {
     return;
   }
-  const { address, affiliate, settings } = loginAccount;
+  const { address, affiliate, settings, currentOnboardingStep } = loginAccount;
   const windowApp: WindowApp = windowRef as WindowApp;
   if (windowApp?.localStorage?.setItem) {
     const { localStorage } = windowApp;
@@ -60,6 +60,7 @@ export const handleLocalStorage = () => {
         selectedUniverse: {
           ...storedAccountData.selectedUniverse,
         },
+        currentOnboardingStep,
         settings,
         affiliate,
         theme,
