@@ -498,7 +498,7 @@ export const REMOVE_DIALOG_NO_ORDERS = 'REMOVE_DIALOG_NO_ORDERS';
 export const TYPE_MARKET = 'market';
 export const TYPE_REPORT = 'report';
 export const TYPE_DISPUTE = 'dispute';
-export const TYPE_CLAIM_PROCEEDS = 'claim proceeds';
+export const TYPE_CLAIM_PROCEEDS = 'claim winnings';
 export const TYPE_TRADE = 'trade';
 export const TYPE_VIEW = 'view';
 export const TYPE_VIEW_ORDERS = 'view orders';
@@ -961,7 +961,7 @@ export const RESOLVED_MARKETS_OPEN_ORDERS_TITLE =
 export const REPORTING_ENDS_SOON_TITLE = 'You need to report';
 export const SIGN_SEND_ORDERS = 'Sign to approve your orders';
 export const CLAIM_REPORTING_FEES_TITLE = 'Claim Stake and Fees';
-export const PROCEEDS_TO_CLAIM_TITLE = 'Claim Proceeds';
+export const PROCEEDS_TO_CLAIM_TITLE = 'Claim Winnings';
 export const CLAIM_ALL_TITLE = 'Claim All';
 export const MARKET_IS_MOST_LIKELY_INVALID_TITLE =
   'Market is Failing Invalid Filter';

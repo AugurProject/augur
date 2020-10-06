@@ -533,6 +533,8 @@ div.Onboarding {
       padding: @size-24;
 
       > div > .OrdersHeader {
+        grid-template-columns: @size-248 repeat(3,1fr) @size-168;
+  
         > span:nth-of-type(2) {
           display: none;
         }
@@ -570,6 +572,7 @@ div.Onboarding {
             padding: @size-10 @size-24;
             height: unset;
             background: transparent;
+            grid-template-columns: @size-248 repeat(3,1fr) @size-168;    
 
             > div {
               > button:last-of-type,  
@@ -1663,7 +1666,7 @@ div.ButtonsRow:last-of-type {
       height: @size-40;
       padding: @size-12 @size-24;
       display: grid;
-      grid-template-columns: @size-248 repeat(3,1fr) @size-168;
+      grid-template-columns: @size-248 repeat(4,1fr) @size-168;
 
       > span {
         .text-10-medium;
@@ -1710,10 +1713,9 @@ div.ButtonsRow:last-of-type {
         background: var(--color-module-background);
         border-top: @size-1 solid var(--color-dark-grey);
         color: var(--color-primary-text);
-        height: @size-32;
         padding: @size-8 @size-24;
         display: grid;
-        grid-template-columns: @size-248 repeat(3,1fr) @size-168;
+        grid-template-columns: @size-248 repeat(4,1fr) @size-168;
 
         > span:first-of-type {
           .mono-12-bold;
@@ -1743,6 +1745,7 @@ div.ButtonsRow:last-of-type {
         > div {
           align-items: center;
           display: flex;
+          justify-content: space-around;
         }
       }
 

@@ -160,7 +160,7 @@ export default function setAlertText(alert: any, callback: Function) {
 
     // ClaimTradingProceeds
     case CLAIMTRADINGPROCEEDS:
-      alert.title = 'Claim Proceeds';
+      alert.title = 'Claim Winnings';
       loadMarketsInfoIfNotLoaded([marketId], () => {
         const marketInfo = selectMarket(marketId);
         if (marketInfo === null) return;
