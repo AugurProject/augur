@@ -5,13 +5,12 @@ import { isNewFavoritesStyle } from 'modules/markets/helpers/favorites-processor
 import { loadPendingQueue } from 'modules/pending-queue/actions/pending-queue-management';
 import { setSelectedUniverse } from './selected-universe-management';
 import { getNetworkId } from 'modules/contracts/actions/contractCalls';
-import { loadMarketsInfoIfNotLoaded } from 'modules/markets/actions/load-markets-info';
 import { loadAnalytics } from 'modules/app/actions/analytics-management';
 import { AppStatus } from 'modules/app/store/app-status';
 import isAddress from 'modules/auth/helpers/is-address';
 import { getHTMLTheme } from 'modules/app/store/app-status-hooks';
 import { THEME_NAME } from 'modules/routes/constants/param-names';
-import parseQuery, { parseLocation } from 'modules/routes/helpers/parse-query';
+import { parseLocation } from 'modules/routes/helpers/parse-query';
 
 export const loadAccountDataFromLocalStorage = (address: string) => {
   const localStorageRef = typeof window !== 'undefined' && window.localStorage;
