@@ -3,6 +3,7 @@
 from eth_tester.exceptions import TransactionFailed
 from pytest import raises, mark
 from utils import fix, AssertLog, nullAddress, TokenDelta
+from reporting_utils import proceedToFork, finalize
 from constants import YES, NO
 
 def getOpenInterestCashAddress(contractsFixture, universe):
@@ -128,6 +129,39 @@ def test_completeSets(contractsFixture, augur, universe, cash, market):
         assert openInterestCash.deposit(depositAmount)
 
     # Now that OI Cash has been deposited we can choose to use it to buy complete sets rather than taking the money out and paying fees
+    numCompleteSets = 10**14
+    initialFeesPaid = openInterestCash.feesPaid()
+    assert openInterestCash.buyCompleteSets(market.address, numCompleteSets)
+
+    for i in range(0, 3):
+        assert shareToken.balanceOfMarketOutcome(market.address, i, account1) == numCompleteSets
+
+    assert openInterestCash.feesPaid() == initialFeesPaid
+
+def test_completeSets_fork(contractsFixture, augur, universe, cash, market, scalarMarket):
+    if not contractsFixture.paraAugur:
+        return
+
+    shareToken = contractsFixture.getShareToken()
+    openInterestCashAddress = getOpenInterestCashAddress(contractsFixture, universe)
+    openInterestCash = contractsFixture.applySignature("ParaOICash", openInterestCashAddress)
+
+    account1 = contractsFixture.accounts[0]
+
+    depositAmount = 10 * 10**18
+    assert cash.faucet(depositAmount)
+
+    with TokenDelta(cash, -depositAmount, account1):
+        assert openInterestCash.deposit(depositAmount)
+
+    # Now we'll cause a fork and migrate the market
+    paraAugur = contractsFixture.contracts["ParaAugur"]
+    proceedToFork(contractsFixture, scalarMarket, universe)
+    finalize(contractsFixture, scalarMarket, universe, True)
+    market.migrateThroughOneFork([0,0,market.getNumTicks()], "")
+    paraAugur.generateParaUniverse(market.getUniverse())
+
+    # We are still able to purchase complete sets in a child universe's market
     numCompleteSets = 10**14
     initialFeesPaid = openInterestCash.feesPaid()
     assert openInterestCash.buyCompleteSets(market.address, numCompleteSets)

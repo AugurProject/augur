@@ -77,7 +77,11 @@ contract ParaOICash is VariableSupplyToken, Initializable, IParaOICash {
     }
 
     function buyCompleteSets(IMarket _market, uint256 _amount) external returns (bool) {
-        require(universe.originUniverse().isContainerForMarket(_market), "Market does not belong to universe");
+        IUniverse _marketUniverse = _market.getUniverse();
+        IUniverse _originUniverse = universe.originUniverse();
+        require(augur.isKnownUniverse(_marketUniverse), "Malicious market provided");
+        require(_marketUniverse == _originUniverse || _marketUniverse.getParentUniverse() == _originUniverse, "Universe not valid for this OI");
+        require(_marketUniverse.isContainerForMarket(_market), "Market does not belong to universe");
         uint256 _cost = _amount.mul(_market.getNumTicks());
         burn(msg.sender, _cost);
         universe.withdraw(address(this), _cost, address(0));
