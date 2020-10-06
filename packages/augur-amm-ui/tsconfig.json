@@ -18,5 +18,17 @@
     "types": ["react-spring", "jest"]
   },
   "exclude": ["node_modules", "cypress"],
-  "include": ["**/*.js", "**/*.ts", "**/*.tsx"]
+  "include": ["**/*.js", "**/*.ts", "**/*.tsx"],
+  "references": [
+    {
+      "path": "../augur-sdk"
+    },
+    {
+      "path": "../augur-sdk-lite"
+    },
+    {
+      "path": "../augur-utils"
+    }
+
+  ]
 }
