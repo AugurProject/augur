@@ -236,10 +236,10 @@ const MarketView = ({
   useEffect(() => {
     if (tradingTutorial) {
       if (!introShowing && isIntro) {
-        next();
         setState({
           ...state,
-          introShowing: true
+          introShowing: false,
+          tutorialStep: tutorialStep + 1,
         });
         Trading.actions.clearOrderProperties();
       }

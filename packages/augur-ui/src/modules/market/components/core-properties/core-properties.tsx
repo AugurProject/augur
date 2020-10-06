@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import {
   EVENT_EXPIRATION_TOOLTIP,
   SCALAR,
+  TRADING_TUTORIAL,
 } from 'modules/common/constants';
 import Styles from 'modules/market/components/core-properties/core-properties.styles.less';
 import { PropertyLabel, TimeLabel } from 'modules/common/labels';
@@ -38,12 +39,14 @@ const CoreProperties: React.FC<CorePropertiesProps> = ({
 
   const loadAffiliateFee = (id: string) => {
     const augurLite = augurSdkLite.get();
-    return augurLite.hotloadMarket(id);
+    if (id !== TRADING_TUTORIAL) {
+      return augurLite.hotloadMarket(id);
+    }
   }
 
   useEffect(() => {
-    if (market) {
-      loadAffiliateFee && loadAffiliateFee(market.id).then(marketInfo => {
+    if (market && market.id !== TRADING_TUTORIAL) {
+      loadAffiliateFee(market.id).then(marketInfo => {
         setAffiliateFee(formatPercent(marketInfo?.affiliateFee ? createBigNumber(marketInfo.affiliateFee).times(100).decimalPlaces(0) : '0', { decimals: 0}));
       })
     }
