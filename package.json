@@ -33,7 +33,7 @@
     "sdk": "yarn workspace @augurproject/sdk",
     "tools": "yarn workspace @augurproject/tools",
     "ui": "yarn workspace @augurproject/ui",
-    "amm": "yarn workspace @augurproject/amm-ui",
+    "amm": "yarn --cwd packages/augur-amm-ui",
     "flash": "yarn workspace @augurproject/tools --silent flash",
     "flash-util": "yarn workspace @augurproject/tools --silent flash --network none",
     "check": "gts check",
@@ -52,15 +52,6 @@
     "@types/uuid": "3.4.5",
     "@types/web3": "1.0.19",
     "@types/ws": "6.0.3",
-    "eslint": "5.16.0",
-    "eslint-config-airbnb": "17.1.1",
-    "eslint-config-prettier": "3.6.0",
-    "eslint-import-resolver-webpack": "0.11.1",
-    "eslint-plugin-import": "2.18.2",
-    "eslint-plugin-jest": "22.17.0",
-    "eslint-plugin-jsx-a11y": "6.2.3",
-    "eslint-plugin-prettier": "3.1.1",
-    "eslint-plugin-react": "7.14.3",
     "execa": "1.0.0",
     "gts": "1.1.0",
     "jest": "24.9.0",
@@ -73,12 +64,7 @@
     "ts-jest": "24.0.2",
     "ts-node": "9.0.0",
     "typescript": "3.9.7",
-    "uglifyjs-webpack-plugin": "1.3.0",
-    "url-loader": "1.1.2",
-    "webpack": "4.42.1",
-    "webpack-dev-middleware": "3.7.1",
-    "webpack-dev-server": "3.8.1",
-    "webpack-hot-middleware": "2.25.0"
+    "url-loader": "1.1.2"
   },
   "workspaces": {
     "packages": [
@@ -87,8 +73,14 @@
     "nohoist": [
       "@augurproject/ui/react-dates",
       "@augurproject/ui/normalize.css",
+      "@augurproject/ui/@uniswap/*",
       "@augurproject/subgraph/@graphprotocol/**",
-      "@augurproject/amm-ui/*"
+      "@augurproject/amm-ui/**",
+      "@augurproject/amm-ui/ethers",
+      "@augurproject/amm-ui/@uniswap/**",
+      "**/webpack",
+      "**/eslint*",
+      "**/react*"
     ]
   },
   "resolutions": {
@@ -97,7 +89,7 @@
     "**/bignumber.js": "9.0.0",
     "**/puppeteer": "https://github.com/AugurProject/blackhole.git",
     "**/scrypt": "https://github.com/AugurProject/blackhole.git",
-    "ethers": "4.0.47",
+    "@augurproject/**/ethers": "4.0.47",
     "lodash": "4.17.15",
     "@0x/mesh-browser-lite": "v10.0.0-unstable-8"
   },
