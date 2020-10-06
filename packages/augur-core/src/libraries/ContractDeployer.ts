@@ -309,7 +309,6 @@ Deploying to: ${env}
         mapping['USDTExchange'] = await uniswapV2Factory.getPair_(USDTAddress, this.getContractAddress('Cash'));
         mapping['AuditFunds'] = this.contracts.get('AuditFunds').address!;
         mapping['AccountLoader'] = this.contracts.get('AccountLoader').address!;
-        mapping['OINexus'] = this.contracts.get('OINexus').address!;
 
         mapping['OICash'] = this.contracts.get('OICash').address!;
         mapping['AugurWalletRegistry'] = this.contracts.get('AugurWalletRegistry').address!;
@@ -559,7 +558,7 @@ Deploying to: ${env}
         if (contract.relativeFilePath.startsWith('gsn/')) return;
         if (contract.relativeFilePath.startsWith('gov/')) return;
         if (contract.relativeFilePath.startsWith('sidechain/')) return;
-        if (contractName !== 'OINexus' && contract.relativeFilePath.startsWith('para/')) return;
+        if (contract.relativeFilePath.startsWith('para/')) return;
         if (contractName === 'LegacyReputationToken') return;
         if (contractName === 'Cash') return;
         if (contractName === 'USDC') return;
@@ -873,7 +872,6 @@ Deploying to: ${env}
         mapping['EthExchange'] = await uniswapV2Factory.getPair_(this.getContractAddress('WETH9'), this.getContractAddress('Cash'));
         mapping['AuditFunds'] = this.contracts.get('AuditFunds').address!;
         mapping['AccountLoader'] = this.contracts.get('AccountLoader').address!;
-        mapping['OINexus'] = this.contracts.get('OINexus').address!;
         mapping['HotLoadingUniversal'] = this.contracts.get('HotLoadingUniversal').address!;
 
         // 0x

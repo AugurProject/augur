@@ -2868,7 +2868,19 @@ MUST emit when the URI is updated for a token ID.
 
 
 
-<div class="contract-index"><span class="contract-index-title">Functions</span><ul><li><a href="#IOINexus.addParaAugur(address)"><code class="function-signature">addParaAugur(address _paraAugur)</code></a></li><li><a href="#IOINexus.registerParaUniverse(contract IUniverse,contract IParaUniverse)"><code class="function-signature">registerParaUniverse(contract IUniverse _universe, contract IParaUniverse _paraUniverse)</code></a></li><li><a href="#IOINexus.recordParaUniverseValuesAndUpdateReportingFee(contract IUniverse,uint256,uint256)"><code class="function-signature">recordParaUniverseValuesAndUpdateReportingFee(contract IUniverse _universe, uint256 _targetRepMarketCapInAttoCash, uint256 _repMarketCapInAttoCash)</code></a></li></ul></div>
+<div class="contract-index"><span class="contract-index-title">Functions</span><ul><li><a href="#IOINexus.getAttoCashPerRep(address,address)"><code class="function-signature">getAttoCashPerRep(address _cash, address _reputationToken)</code></a></li><li><a href="#IOINexus.universeReportingFeeDivisor(address)"><code class="function-signature">universeReportingFeeDivisor(address _universe)</code></a></li><li><a href="#IOINexus.addParaAugur(address)"><code class="function-signature">addParaAugur(address _paraAugur)</code></a></li><li><a href="#IOINexus.registerParaUniverse(contract IUniverse,contract IParaUniverse)"><code class="function-signature">registerParaUniverse(contract IUniverse _universe, contract IParaUniverse _paraUniverse)</code></a></li><li><a href="#IOINexus.recordParaUniverseValuesAndUpdateReportingFee(contract IUniverse,uint256,uint256)"><code class="function-signature">recordParaUniverseValuesAndUpdateReportingFee(contract IUniverse _universe, uint256 _targetRepMarketCapInAttoCash, uint256 _repMarketCapInAttoCash)</code></a></li></ul></div>
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="IOINexus.getAttoCashPerRep(address,address)"></a><code class="function-signature">getAttoCashPerRep(address _cash, address _reputationToken) <span class="return-arrow">→</span> <span class="return-type">uint256</span></code><span class="function-visibility">public</span></h4>
+
+
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="IOINexus.universeReportingFeeDivisor(address)"></a><code class="function-signature">universeReportingFeeDivisor(address _universe) <span class="return-arrow">→</span> <span class="return-type">uint256</span></code><span class="function-visibility">external</span></h4>
+
+
 
 
 
@@ -3206,11 +3218,11 @@ Allows the current owner to transfer control of the contract to a newOwner.
 
 
 
-<div class="contract-index"><span class="contract-index-title">Functions</span><ul><li><a href="#ParaAugur.constructor(contract IAugur)"><code class="function-signature">constructor(contract IAugur _augur)</code></a></li><li><a href="#ParaAugur.registerContract(bytes32,address)"><code class="function-signature">registerContract(bytes32 _key, address _address)</code></a></li><li><a href="#ParaAugur.lookup(bytes32)"><code class="function-signature">lookup(bytes32 _key)</code></a></li><li><a href="#ParaAugur.finishDeployment()"><code class="function-signature">finishDeployment()</code></a></li><li><a href="#ParaAugur.genesisUniverse()"><code class="function-signature">genesisUniverse()</code></a></li><li><a href="#ParaAugur.isKnownUniverse(contract IUniverse)"><code class="function-signature">isKnownUniverse(contract IUniverse _universe)</code></a></li><li><a href="#ParaAugur.generateParaUniverse(contract IUniverse)"><code class="function-signature">generateParaUniverse(contract IUniverse _universe)</code></a></li><li><a href="#ParaAugur.isKnownParaUniverse(contract IParaUniverse)"><code class="function-signature">isKnownParaUniverse(contract IParaUniverse _universe)</code></a></li><li><a href="#ParaAugur.trustedCashTransfer(address,address,uint256)"><code class="function-signature">trustedCashTransfer(address _from, address _to, uint256 _amount)</code></a></li><li><a href="#ParaAugur.isKnownMarket(contract IMarket)"><code class="function-signature">isKnownMarket(contract IMarket _market)</code></a></li><li><a href="#ParaAugur.logCompleteSetsPurchased(contract IUniverse,contract IMarket,address,uint256)"><code class="function-signature">logCompleteSetsPurchased(contract IUniverse _universe, contract IMarket _market, address _account, uint256 _numCompleteSets)</code></a></li><li><a href="#ParaAugur.logCompleteSetsSold(contract IUniverse,contract IMarket,address,uint256,uint256)"><code class="function-signature">logCompleteSetsSold(contract IUniverse _universe, contract IMarket _market, address _account, uint256 _numCompleteSets, uint256 _fees)</code></a></li><li><a href="#ParaAugur.logMarketOIChanged(contract IUniverse,contract IMarket)"><code class="function-signature">logMarketOIChanged(contract IUniverse _universe, contract IMarket _market)</code></a></li><li><a href="#ParaAugur.logTradingProceedsClaimed(contract IUniverse,address,address,uint256,uint256,uint256,uint256)"><code class="function-signature">logTradingProceedsClaimed(contract IUniverse _universe, address _sender, address _market, uint256 _outcome, uint256 _numShares, uint256 _numPayoutTokens, uint256 _fees)</code></a></li><li><a href="#ParaAugur.logShareTokensBalanceChanged(address,contract IMarket,uint256,uint256)"><code class="function-signature">logShareTokensBalanceChanged(address _account, contract IMarket _market, uint256 _outcome, uint256 _balance)</code></a></li><li><a href="#ParaAugur.logReportingFeeChanged(uint256)"><code class="function-signature">logReportingFeeChanged(uint256 _reportingFee)</code></a></li><li><a href="#ParaAugur.getTimestamp()"><code class="function-signature">getTimestamp()</code></a></li><li><a href="#ParaAugur.getMarketRecommendedTradeInterval(contract IMarket)"><code class="function-signature">getMarketRecommendedTradeInterval(contract IMarket _market)</code></a></li><li><a href="#ParaAugur.getMarketCreationData(contract IMarket)"><code class="function-signature">getMarketCreationData(contract IMarket _market)</code></a></li><li><a href="#ParaAugur.getMaximumMarketEndDate()"><code class="function-signature">getMaximumMarketEndDate()</code></a></li><li><a href="#ParaAugur.getUniverseForkIndex(contract IUniverse)"><code class="function-signature">getUniverseForkIndex(contract IUniverse _universe)</code></a></li><li><a href="#ParaAugur.isKnownFeeSender(address)"><code class="function-signature">isKnownFeeSender(address _feeSender)</code></a></li><li><a href="#ParaAugur.derivePayoutDistributionHash(uint256[],uint256,uint256)"><code class="function-signature">derivePayoutDistributionHash(uint256[] _payoutNumerators, uint256 _numTicks, uint256 _numOutcomes)</code></a></li><li><a href="#ParaAugur.getMarketType(contract IMarket)"><code class="function-signature">getMarketType(contract IMarket _market)</code></a></li><li><a href="#ParaAugur.getMarketOutcomes(contract IMarket)"><code class="function-signature">getMarketOutcomes(contract IMarket _market)</code></a></li><li><a href="#ParaAugur.onTransferOwnership(address,address)"><code class="function-signature">onTransferOwnership(address, address)</code></a></li><li><a href="#ParaAugur.getOriginCash()"><code class="function-signature">getOriginCash()</code></a></li><li class="inherited"><a href="#Ownable.constructor()"><code class="function-signature">constructor()</code></a></li><li class="inherited"><a href="#Ownable.getOwner()"><code class="function-signature">getOwner()</code></a></li><li class="inherited"><a href="#Ownable.transferOwnership(address)"><code class="function-signature">transferOwnership(address _newOwner)</code></a></li></ul><span class="contract-index-title">Events</span><ul><li><a href="#ParaAugur.CompleteSetsPurchased(address,address,address,uint256,uint256,address)"><code class="function-signature">CompleteSetsPurchased(address universe, address market, address account, uint256 numCompleteSets, uint256 timestamp, address para)</code></a></li><li><a href="#ParaAugur.CompleteSetsSold(address,address,address,uint256,uint256,uint256,address)"><code class="function-signature">CompleteSetsSold(address universe, address market, address account, uint256 numCompleteSets, uint256 fees, uint256 timestamp, address para)</code></a></li><li><a href="#ParaAugur.TradingProceedsClaimed(address,address,address,uint256,uint256,uint256,uint256,uint256,address)"><code class="function-signature">TradingProceedsClaimed(address universe, address sender, address market, uint256 outcome, uint256 numShares, uint256 numPayoutTokens, uint256 fees, uint256 timestamp, address para)</code></a></li><li><a href="#ParaAugur.MarketOIChanged(address,address,uint256,address)"><code class="function-signature">MarketOIChanged(address universe, address market, uint256 marketOI, address para)</code></a></li><li><a href="#ParaAugur.ReportingFeeChanged(address,uint256,address)"><code class="function-signature">ReportingFeeChanged(address universe, uint256 reportingFee, address para)</code></a></li><li><a href="#ParaAugur.ShareTokenBalanceChanged(address,address,address,uint256,uint256,address)"><code class="function-signature">ShareTokenBalanceChanged(address universe, address account, address market, uint256 outcome, uint256 balance, address para)</code></a></li><li><a href="#ParaAugur.RegisterContract(address,bytes32)"><code class="function-signature">RegisterContract(address contractAddress, bytes32 key)</code></a></li><li><a href="#ParaAugur.FinishDeployment()"><code class="function-signature">FinishDeployment()</code></a></li></ul></div>
+<div class="contract-index"><span class="contract-index-title">Functions</span><ul><li><a href="#ParaAugur.constructor(contract IAugur,uint256)"><code class="function-signature">constructor(contract IAugur _augur, uint256 _tradeIntervalModifier)</code></a></li><li><a href="#ParaAugur.registerContract(bytes32,address)"><code class="function-signature">registerContract(bytes32 _key, address _address)</code></a></li><li><a href="#ParaAugur.lookup(bytes32)"><code class="function-signature">lookup(bytes32 _key)</code></a></li><li><a href="#ParaAugur.finishDeployment()"><code class="function-signature">finishDeployment()</code></a></li><li><a href="#ParaAugur.genesisUniverse()"><code class="function-signature">genesisUniverse()</code></a></li><li><a href="#ParaAugur.isKnownUniverse(contract IUniverse)"><code class="function-signature">isKnownUniverse(contract IUniverse _universe)</code></a></li><li><a href="#ParaAugur.generateParaUniverse(contract IUniverse)"><code class="function-signature">generateParaUniverse(contract IUniverse _universe)</code></a></li><li><a href="#ParaAugur.isKnownParaUniverse(contract IParaUniverse)"><code class="function-signature">isKnownParaUniverse(contract IParaUniverse _universe)</code></a></li><li><a href="#ParaAugur.trustedCashTransfer(address,address,uint256)"><code class="function-signature">trustedCashTransfer(address _from, address _to, uint256 _amount)</code></a></li><li><a href="#ParaAugur.isKnownMarket(contract IMarket)"><code class="function-signature">isKnownMarket(contract IMarket _market)</code></a></li><li><a href="#ParaAugur.logCompleteSetsPurchased(contract IUniverse,contract IMarket,address,uint256)"><code class="function-signature">logCompleteSetsPurchased(contract IUniverse _universe, contract IMarket _market, address _account, uint256 _numCompleteSets)</code></a></li><li><a href="#ParaAugur.logCompleteSetsSold(contract IUniverse,contract IMarket,address,uint256,uint256)"><code class="function-signature">logCompleteSetsSold(contract IUniverse _universe, contract IMarket _market, address _account, uint256 _numCompleteSets, uint256 _fees)</code></a></li><li><a href="#ParaAugur.logMarketOIChanged(contract IUniverse,contract IMarket)"><code class="function-signature">logMarketOIChanged(contract IUniverse _universe, contract IMarket _market)</code></a></li><li><a href="#ParaAugur.logTradingProceedsClaimed(contract IUniverse,address,address,uint256,uint256,uint256,uint256)"><code class="function-signature">logTradingProceedsClaimed(contract IUniverse _universe, address _sender, address _market, uint256 _outcome, uint256 _numShares, uint256 _numPayoutTokens, uint256 _fees)</code></a></li><li><a href="#ParaAugur.logShareTokensBalanceChanged(address,contract IMarket,uint256,uint256)"><code class="function-signature">logShareTokensBalanceChanged(address _account, contract IMarket _market, uint256 _outcome, uint256 _balance)</code></a></li><li><a href="#ParaAugur.logReportingFeeChanged(uint256)"><code class="function-signature">logReportingFeeChanged(uint256 _reportingFee)</code></a></li><li><a href="#ParaAugur.getTimestamp()"><code class="function-signature">getTimestamp()</code></a></li><li><a href="#ParaAugur.getMarketRecommendedTradeInterval(contract IMarket)"><code class="function-signature">getMarketRecommendedTradeInterval(contract IMarket _market)</code></a></li><li><a href="#ParaAugur.getMarketCreationData(contract IMarket)"><code class="function-signature">getMarketCreationData(contract IMarket _market)</code></a></li><li><a href="#ParaAugur.getMaximumMarketEndDate()"><code class="function-signature">getMaximumMarketEndDate()</code></a></li><li><a href="#ParaAugur.getUniverseForkIndex(contract IUniverse)"><code class="function-signature">getUniverseForkIndex(contract IUniverse _universe)</code></a></li><li><a href="#ParaAugur.isKnownFeeSender(address)"><code class="function-signature">isKnownFeeSender(address _feeSender)</code></a></li><li><a href="#ParaAugur.derivePayoutDistributionHash(uint256[],uint256,uint256)"><code class="function-signature">derivePayoutDistributionHash(uint256[] _payoutNumerators, uint256 _numTicks, uint256 _numOutcomes)</code></a></li><li><a href="#ParaAugur.getMarketType(contract IMarket)"><code class="function-signature">getMarketType(contract IMarket _market)</code></a></li><li><a href="#ParaAugur.getMarketOutcomes(contract IMarket)"><code class="function-signature">getMarketOutcomes(contract IMarket _market)</code></a></li><li><a href="#ParaAugur.onTransferOwnership(address,address)"><code class="function-signature">onTransferOwnership(address, address)</code></a></li><li><a href="#ParaAugur.getOriginCash()"><code class="function-signature">getOriginCash()</code></a></li><li class="inherited"><a href="#Ownable.constructor()"><code class="function-signature">constructor()</code></a></li><li class="inherited"><a href="#Ownable.getOwner()"><code class="function-signature">getOwner()</code></a></li><li class="inherited"><a href="#Ownable.transferOwnership(address)"><code class="function-signature">transferOwnership(address _newOwner)</code></a></li></ul><span class="contract-index-title">Events</span><ul><li><a href="#ParaAugur.CompleteSetsPurchased(address,address,address,uint256,uint256,address)"><code class="function-signature">CompleteSetsPurchased(address universe, address market, address account, uint256 numCompleteSets, uint256 timestamp, address para)</code></a></li><li><a href="#ParaAugur.CompleteSetsSold(address,address,address,uint256,uint256,uint256,address)"><code class="function-signature">CompleteSetsSold(address universe, address market, address account, uint256 numCompleteSets, uint256 fees, uint256 timestamp, address para)</code></a></li><li><a href="#ParaAugur.TradingProceedsClaimed(address,address,address,uint256,uint256,uint256,uint256,uint256,address)"><code class="function-signature">TradingProceedsClaimed(address universe, address sender, address market, uint256 outcome, uint256 numShares, uint256 numPayoutTokens, uint256 fees, uint256 timestamp, address para)</code></a></li><li><a href="#ParaAugur.MarketOIChanged(address,address,uint256,address)"><code class="function-signature">MarketOIChanged(address universe, address market, uint256 marketOI, address para)</code></a></li><li><a href="#ParaAugur.ReportingFeeChanged(address,uint256,address)"><code class="function-signature">ReportingFeeChanged(address universe, uint256 reportingFee, address para)</code></a></li><li><a href="#ParaAugur.ShareTokenBalanceChanged(address,address,address,uint256,uint256,address)"><code class="function-signature">ShareTokenBalanceChanged(address universe, address account, address market, uint256 outcome, uint256 balance, address para)</code></a></li><li><a href="#ParaAugur.RegisterContract(address,bytes32)"><code class="function-signature">RegisterContract(address contractAddress, bytes32 key)</code></a></li><li><a href="#ParaAugur.FinishDeployment()"><code class="function-signature">FinishDeployment()</code></a></li></ul></div>
 
 
 
-<h4><a class="anchor" aria-hidden="true" id="ParaAugur.constructor(contract IAugur)"></a><code class="function-signature">constructor(contract IAugur _augur)</code><span class="function-visibility">public</span></h4>
+<h4><a class="anchor" aria-hidden="true" id="ParaAugur.constructor(contract IAugur,uint256)"></a><code class="function-signature">constructor(contract IAugur _augur, uint256 _tradeIntervalModifier)</code><span class="function-visibility">public</span></h4>
 
 
 
@@ -3426,11 +3438,11 @@ Allows the current owner to transfer control of the contract to a newOwner.
 
 
 
-<div class="contract-index"><span class="contract-index-title">Functions</span><ul><li><a href="#ParaAugurFactory.createParaAugur(contract IAugur)"><code class="function-signature">createParaAugur(contract IAugur _augur)</code></a></li></ul></div>
+<div class="contract-index"><span class="contract-index-title">Functions</span><ul><li><a href="#ParaAugurFactory.createParaAugur(contract IAugur,uint256)"><code class="function-signature">createParaAugur(contract IAugur _augur, uint256 _tradeIntervalModifier)</code></a></li></ul></div>
 
 
 
-<h4><a class="anchor" aria-hidden="true" id="ParaAugurFactory.createParaAugur(contract IAugur)"></a><code class="function-signature">createParaAugur(contract IAugur _augur) <span class="return-arrow">→</span> <span class="return-type">address</span></code><span class="function-visibility">public</span></h4>
+<h4><a class="anchor" aria-hidden="true" id="ParaAugurFactory.createParaAugur(contract IAugur,uint256)"></a><code class="function-signature">createParaAugur(contract IAugur _augur, uint256 _tradeIntervalModifier) <span class="return-arrow">→</span> <span class="return-type">address</span></code><span class="function-visibility">public</span></h4>
 
 
 
@@ -3571,176 +3583,6 @@ Allows the current owner to transfer control of the contract to a newOwner.
 
 
 <h4><a class="anchor" aria-hidden="true" id="ParaAugurTradingFactory.createParaAugurTrading(contract IAugur)"></a><code class="function-signature">createParaAugurTrading(contract IAugur _augur) <span class="return-arrow">→</span> <span class="return-type">address</span></code><span class="function-visibility">public</span></h4>
-
-
-
-
-
-
-
-### `IUniswapV2Factory`
-
-
-
-<div class="contract-index"><span class="contract-index-title">Functions</span><ul><li><a href="#IUniswapV2Factory.feeTo()"><code class="function-signature">feeTo()</code></a></li><li><a href="#IUniswapV2Factory.feeToSetter()"><code class="function-signature">feeToSetter()</code></a></li><li><a href="#IUniswapV2Factory.getPair(address,address)"><code class="function-signature">getPair(address tokenA, address tokenB)</code></a></li><li><a href="#IUniswapV2Factory.allPairs(uint256)"><code class="function-signature">allPairs(uint256)</code></a></li><li><a href="#IUniswapV2Factory.allPairsLength()"><code class="function-signature">allPairsLength()</code></a></li><li><a href="#IUniswapV2Factory.createPair(address,address)"><code class="function-signature">createPair(address tokenA, address tokenB)</code></a></li><li><a href="#IUniswapV2Factory.setFeeTo(address)"><code class="function-signature">setFeeTo(address)</code></a></li><li><a href="#IUniswapV2Factory.setFeeToSetter(address)"><code class="function-signature">setFeeToSetter(address)</code></a></li></ul><span class="contract-index-title">Events</span><ul><li><a href="#IUniswapV2Factory.PairCreated(address,address,address,uint256)"><code class="function-signature">PairCreated(address token0, address token1, address pair, uint256)</code></a></li></ul></div>
-
-
-
-<h4><a class="anchor" aria-hidden="true" id="IUniswapV2Factory.feeTo()"></a><code class="function-signature">feeTo() <span class="return-arrow">→</span> <span class="return-type">address</span></code><span class="function-visibility">external</span></h4>
-
-
-
-
-
-<h4><a class="anchor" aria-hidden="true" id="IUniswapV2Factory.feeToSetter()"></a><code class="function-signature">feeToSetter() <span class="return-arrow">→</span> <span class="return-type">address</span></code><span class="function-visibility">external</span></h4>
-
-
-
-
-
-<h4><a class="anchor" aria-hidden="true" id="IUniswapV2Factory.getPair(address,address)"></a><code class="function-signature">getPair(address tokenA, address tokenB) <span class="return-arrow">→</span> <span class="return-type">address</span></code><span class="function-visibility">external</span></h4>
-
-
-
-
-
-<h4><a class="anchor" aria-hidden="true" id="IUniswapV2Factory.allPairs(uint256)"></a><code class="function-signature">allPairs(uint256) <span class="return-arrow">→</span> <span class="return-type">address</span></code><span class="function-visibility">external</span></h4>
-
-
-
-
-
-<h4><a class="anchor" aria-hidden="true" id="IUniswapV2Factory.allPairsLength()"></a><code class="function-signature">allPairsLength() <span class="return-arrow">→</span> <span class="return-type">uint256</span></code><span class="function-visibility">external</span></h4>
-
-
-
-
-
-<h4><a class="anchor" aria-hidden="true" id="IUniswapV2Factory.createPair(address,address)"></a><code class="function-signature">createPair(address tokenA, address tokenB) <span class="return-arrow">→</span> <span class="return-type">address</span></code><span class="function-visibility">external</span></h4>
-
-
-
-
-
-<h4><a class="anchor" aria-hidden="true" id="IUniswapV2Factory.setFeeTo(address)"></a><code class="function-signature">setFeeTo(address)</code><span class="function-visibility">external</span></h4>
-
-
-
-
-
-<h4><a class="anchor" aria-hidden="true" id="IUniswapV2Factory.setFeeToSetter(address)"></a><code class="function-signature">setFeeToSetter(address)</code><span class="function-visibility">external</span></h4>
-
-
-
-
-
-
-
-<h4><a class="anchor" aria-hidden="true" id="IUniswapV2Factory.PairCreated(address,address,address,uint256)"></a><code class="function-signature">PairCreated(address token0, address token1, address pair, uint256)</code><span class="function-visibility"></span></h4>
-
-
-
-
-
-### `ParaRepOracle`
-
-
-
-<div class="contract-index"><span class="contract-index-title">Functions</span><ul><li class="inherited"><a href="deployerFactories#RepOracle.initialize(contract IAugur)"><code class="function-signature">initialize(contract IAugur _augur)</code></a></li><li class="inherited"><a href="deployerFactories#RepOracle.poke(address)"><code class="function-signature">poke(address _reputationToken)</code></a></li><li class="inherited"><a href="deployerFactories#RepOracle.getExchange(address)"><code class="function-signature">getExchange(address _reputationToken)</code></a></li><li class="inherited"><a href="deployerFactories#RepOracle.getLastUpdateTimestamp(address)"><code class="function-signature">getLastUpdateTimestamp(address _reputationToken)</code></a></li><li class="inherited"><a href="deployerFactories#RepOracle.getPriceCumulativeLast(address)"><code class="function-signature">getPriceCumulativeLast(address _reputationToken)</code></a></li><li class="inherited"><a href="deployerFactories#RepOracle.getPrice(address)"><code class="function-signature">getPrice(address _reputationToken)</code></a></li><li class="inherited"><a href="#Initializable.endInitialization()"><code class="function-signature">endInitialization()</code></a></li><li class="inherited"><a href="#Initializable.getInitialized()"><code class="function-signature">getInitialized()</code></a></li></ul></div>
-
-
-
-
-
-### `ParaRepOracleFactory`
-
-
-
-<div class="contract-index"><span class="contract-index-title">Functions</span><ul><li><a href="#ParaRepOracleFactory.createParaRepOracle()"><code class="function-signature">createParaRepOracle()</code></a></li></ul></div>
-
-
-
-<h4><a class="anchor" aria-hidden="true" id="ParaRepOracleFactory.createParaRepOracle()"></a><code class="function-signature">createParaRepOracle() <span class="return-arrow">→</span> <span class="return-type">address</span></code><span class="function-visibility">public</span></h4>
-
-
-
-
-
-
-
-### `RepOracle`
-
-
-
-<div class="contract-index"><span class="contract-index-title">Functions</span><ul><li><a href="#RepOracle.initialize(contract IAugur)"><code class="function-signature">initialize(contract IAugur _augur)</code></a></li><li><a href="#RepOracle.poke(address)"><code class="function-signature">poke(address _reputationToken)</code></a></li><li><a href="#RepOracle.getExchange(address)"><code class="function-signature">getExchange(address _reputationToken)</code></a></li><li><a href="#RepOracle.getLastUpdateTimestamp(address)"><code class="function-signature">getLastUpdateTimestamp(address _reputationToken)</code></a></li><li><a href="#RepOracle.getPriceCumulativeLast(address)"><code class="function-signature">getPriceCumulativeLast(address _reputationToken)</code></a></li><li><a href="#RepOracle.getPrice(address)"><code class="function-signature">getPrice(address _reputationToken)</code></a></li><li class="inherited"><a href="#Initializable.endInitialization()"><code class="function-signature">endInitialization()</code></a></li><li class="inherited"><a href="#Initializable.getInitialized()"><code class="function-signature">getInitialized()</code></a></li></ul></div>
-
-
-
-<h4><a class="anchor" aria-hidden="true" id="RepOracle.initialize(contract IAugur)"></a><code class="function-signature">initialize(contract IAugur _augur)</code><span class="function-visibility">public</span></h4>
-
-
-
-
-
-<h4><a class="anchor" aria-hidden="true" id="RepOracle.poke(address)"></a><code class="function-signature">poke(address _reputationToken) <span class="return-arrow">→</span> <span class="return-type">uint256</span></code><span class="function-visibility">external</span></h4>
-
-
-
-
-
-<h4><a class="anchor" aria-hidden="true" id="RepOracle.getExchange(address)"></a><code class="function-signature">getExchange(address _reputationToken) <span class="return-arrow">→</span> <span class="return-type">contract IUniswapV2Pair</span></code><span class="function-visibility">public</span></h4>
-
-
-
-
-
-<h4><a class="anchor" aria-hidden="true" id="RepOracle.getLastUpdateTimestamp(address)"></a><code class="function-signature">getLastUpdateTimestamp(address _reputationToken) <span class="return-arrow">→</span> <span class="return-type">uint256</span></code><span class="function-visibility">external</span></h4>
-
-
-
-
-
-<h4><a class="anchor" aria-hidden="true" id="RepOracle.getPriceCumulativeLast(address)"></a><code class="function-signature">getPriceCumulativeLast(address _reputationToken) <span class="return-arrow">→</span> <span class="return-type">uint256</span></code><span class="function-visibility">external</span></h4>
-
-
-
-
-
-<h4><a class="anchor" aria-hidden="true" id="RepOracle.getPrice(address)"></a><code class="function-signature">getPrice(address _reputationToken) <span class="return-arrow">→</span> <span class="return-type">uint256</span></code><span class="function-visibility">external</span></h4>
-
-
-
-
-
-
-
-### `UQ112x112`
-
-
-
-<div class="contract-index"><span class="contract-index-title">Functions</span><ul><li><a href="#UQ112x112.encode(uint112)"><code class="function-signature">encode(uint112 y)</code></a></li><li><a href="#UQ112x112.uqdiv(uint224,uint112)"><code class="function-signature">uqdiv(uint224 x, uint112 y)</code></a></li><li><a href="#UQ112x112.uqmul(uint224,uint256)"><code class="function-signature">uqmul(uint224 x, uint256 y)</code></a></li><li><a href="#UQ112x112.decode(uint256)"><code class="function-signature">decode(uint256 y)</code></a></li></ul></div>
-
-
-
-<h4><a class="anchor" aria-hidden="true" id="UQ112x112.encode(uint112)"></a><code class="function-signature">encode(uint112 y) <span class="return-arrow">→</span> <span class="return-type">uint224</span></code><span class="function-visibility">internal</span></h4>
-
-
-
-
-
-<h4><a class="anchor" aria-hidden="true" id="UQ112x112.uqdiv(uint224,uint112)"></a><code class="function-signature">uqdiv(uint224 x, uint112 y) <span class="return-arrow">→</span> <span class="return-type">uint224</span></code><span class="function-visibility">internal</span></h4>
-
-
-
-
-
-<h4><a class="anchor" aria-hidden="true" id="UQ112x112.uqmul(uint224,uint256)"></a><code class="function-signature">uqmul(uint224 x, uint256 y) <span class="return-arrow">→</span> <span class="return-type">uint256</span></code><span class="function-visibility">internal</span></h4>
-
-
-
-
-
-<h4><a class="anchor" aria-hidden="true" id="UQ112x112.decode(uint256)"></a><code class="function-signature">decode(uint256 y) <span class="return-arrow">→</span> <span class="return-type">uint256</span></code><span class="function-visibility">internal</span></h4>
 
 
 
@@ -4753,6 +4595,70 @@ Fills the input order.
 <h4><a class="anchor" aria-hidden="true" id="TradeFactory.createTrade()"></a><code class="function-signature">createTrade() <span class="return-arrow">→</span> <span class="return-type">address</span></code><span class="function-visibility">public</span></h4>
 
 
+
+
+
+
+
+### `IUniswapV2Factory`
+
+
+
+<div class="contract-index"><span class="contract-index-title">Functions</span><ul><li><a href="#IUniswapV2Factory.feeTo()"><code class="function-signature">feeTo()</code></a></li><li><a href="#IUniswapV2Factory.feeToSetter()"><code class="function-signature">feeToSetter()</code></a></li><li><a href="#IUniswapV2Factory.getPair(address,address)"><code class="function-signature">getPair(address tokenA, address tokenB)</code></a></li><li><a href="#IUniswapV2Factory.allPairs(uint256)"><code class="function-signature">allPairs(uint256)</code></a></li><li><a href="#IUniswapV2Factory.allPairsLength()"><code class="function-signature">allPairsLength()</code></a></li><li><a href="#IUniswapV2Factory.createPair(address,address)"><code class="function-signature">createPair(address tokenA, address tokenB)</code></a></li><li><a href="#IUniswapV2Factory.setFeeTo(address)"><code class="function-signature">setFeeTo(address)</code></a></li><li><a href="#IUniswapV2Factory.setFeeToSetter(address)"><code class="function-signature">setFeeToSetter(address)</code></a></li></ul><span class="contract-index-title">Events</span><ul><li><a href="#IUniswapV2Factory.PairCreated(address,address,address,uint256)"><code class="function-signature">PairCreated(address token0, address token1, address pair, uint256)</code></a></li></ul></div>
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="IUniswapV2Factory.feeTo()"></a><code class="function-signature">feeTo() <span class="return-arrow">→</span> <span class="return-type">address</span></code><span class="function-visibility">external</span></h4>
+
+
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="IUniswapV2Factory.feeToSetter()"></a><code class="function-signature">feeToSetter() <span class="return-arrow">→</span> <span class="return-type">address</span></code><span class="function-visibility">external</span></h4>
+
+
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="IUniswapV2Factory.getPair(address,address)"></a><code class="function-signature">getPair(address tokenA, address tokenB) <span class="return-arrow">→</span> <span class="return-type">address</span></code><span class="function-visibility">external</span></h4>
+
+
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="IUniswapV2Factory.allPairs(uint256)"></a><code class="function-signature">allPairs(uint256) <span class="return-arrow">→</span> <span class="return-type">address</span></code><span class="function-visibility">external</span></h4>
+
+
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="IUniswapV2Factory.allPairsLength()"></a><code class="function-signature">allPairsLength() <span class="return-arrow">→</span> <span class="return-type">uint256</span></code><span class="function-visibility">external</span></h4>
+
+
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="IUniswapV2Factory.createPair(address,address)"></a><code class="function-signature">createPair(address tokenA, address tokenB) <span class="return-arrow">→</span> <span class="return-type">address</span></code><span class="function-visibility">external</span></h4>
+
+
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="IUniswapV2Factory.setFeeTo(address)"></a><code class="function-signature">setFeeTo(address)</code><span class="function-visibility">external</span></h4>
+
+
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="IUniswapV2Factory.setFeeToSetter(address)"></a><code class="function-signature">setFeeToSetter(address)</code><span class="function-visibility">external</span></h4>
+
+
+
+
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="IUniswapV2Factory.PairCreated(address,address,address,uint256)"></a><code class="function-signature">PairCreated(address token0, address token1, address pair, uint256)</code><span class="function-visibility"></span></h4>
 
 
 

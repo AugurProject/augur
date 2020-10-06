@@ -23114,6 +23114,23 @@
 	],
 	"OINexus": [
 		{
+			"inputs": [
+				{
+					"internalType": "address",
+					"name": "_weth",
+					"type": "address"
+				},
+				{
+					"internalType": "address",
+					"name": "_uniswapFactory",
+					"type": "address"
+				}
+			],
+			"payable": false,
+			"stateMutability": "nonpayable",
+			"type": "constructor"
+		},
+		{
 			"constant": false,
 			"inputs": [
 				{
@@ -23176,6 +23193,32 @@
 			"type": "function"
 		},
 		{
+			"constant": false,
+			"inputs": [
+				{
+					"internalType": "address",
+					"name": "_cash",
+					"type": "address"
+				},
+				{
+					"internalType": "address",
+					"name": "_reputationToken",
+					"type": "address"
+				}
+			],
+			"name": "getAttoCashPerRep",
+			"outputs": [
+				{
+					"internalType": "uint256",
+					"name": "",
+					"type": "uint256"
+				}
+			],
+			"payable": false,
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
 			"constant": true,
 			"inputs": [],
 			"name": "getOwner",
@@ -23226,6 +23269,21 @@
 					"internalType": "uint256",
 					"name": "",
 					"type": "uint256"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [],
+			"name": "oracle",
+			"outputs": [
+				{
+					"internalType": "contract ParaOracle",
+					"name": "",
+					"type": "address"
 				}
 			],
 			"payable": false,
@@ -23396,6 +23454,11 @@
 					"internalType": "contract IAugur",
 					"name": "_augur",
 					"type": "address"
+				},
+				{
+					"internalType": "uint256",
+					"name": "_tradeIntervalModifier",
+					"type": "uint256"
 				}
 			],
 			"payable": false,
@@ -24397,6 +24460,21 @@
 			"type": "function"
 		},
 		{
+			"constant": true,
+			"inputs": [],
+			"name": "tradeIntervalModifier",
+			"outputs": [
+				{
+					"internalType": "uint256",
+					"name": "",
+					"type": "uint256"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
 			"constant": false,
 			"inputs": [
 				{
@@ -25346,11 +25424,6 @@
 							"type": "address"
 						},
 						{
-							"internalType": "contract IParaRepOracleFactory",
-							"name": "paraRepOracleFactory",
-							"type": "address"
-						},
-						{
 							"internalType": "contract ICancelOrderFactory",
 							"name": "cancelOrderFactory",
 							"type": "address"
@@ -25502,6 +25575,11 @@
 					"internalType": "address",
 					"name": "_token",
 					"type": "address"
+				},
+				{
+					"internalType": "uint256",
+					"name": "_tradeIntervalModifier",
+					"type": "uint256"
 				}
 			],
 			"name": "addToken",
@@ -25532,6 +25610,21 @@
 			"type": "function"
 		},
 		{
+			"constant": false,
+			"inputs": [],
+			"name": "burnOwnership",
+			"outputs": [
+				{
+					"internalType": "bool",
+					"name": "",
+					"type": "bool"
+				}
+			],
+			"payable": false,
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
 			"constant": true,
 			"inputs": [],
 			"name": "factories",
@@ -25549,11 +25642,6 @@
 				{
 					"internalType": "contract IParaShareTokenFactory",
 					"name": "paraShareTokenFactory",
-					"type": "address"
-				},
-				{
-					"internalType": "contract IParaRepOracleFactory",
-					"name": "paraRepOracleFactory",
 					"type": "address"
 				},
 				{
@@ -25743,6 +25831,27 @@
 			],
 			"payable": false,
 			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [
+				{
+					"internalType": "address",
+					"name": "",
+					"type": "address"
+				}
+			],
+			"name": "tokenTradeIntervalModifier",
+			"outputs": [
+				{
+					"internalType": "uint256",
+					"name": "",
+					"type": "uint256"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
 			"type": "function"
 		},
 		{
@@ -26298,218 +26407,6 @@
 			],
 			"payable": false,
 			"stateMutability": "nonpayable",
-			"type": "function"
-		}
-	],
-	"ParaRepOracle": [
-		{
-			"constant": true,
-			"inputs": [],
-			"name": "PERIOD",
-			"outputs": [
-				{
-					"internalType": "uint256",
-					"name": "",
-					"type": "uint256"
-				}
-			],
-			"payable": false,
-			"stateMutability": "view",
-			"type": "function"
-		},
-		{
-			"constant": true,
-			"inputs": [],
-			"name": "augur",
-			"outputs": [
-				{
-					"internalType": "address",
-					"name": "",
-					"type": "address"
-				}
-			],
-			"payable": false,
-			"stateMutability": "view",
-			"type": "function"
-		},
-		{
-			"constant": true,
-			"inputs": [],
-			"name": "cash",
-			"outputs": [
-				{
-					"internalType": "address",
-					"name": "",
-					"type": "address"
-				}
-			],
-			"payable": false,
-			"stateMutability": "view",
-			"type": "function"
-		},
-		{
-			"constant": true,
-			"inputs": [],
-			"name": "genesisInitialRepPriceinAttoCash",
-			"outputs": [
-				{
-					"internalType": "uint256",
-					"name": "",
-					"type": "uint256"
-				}
-			],
-			"payable": false,
-			"stateMutability": "view",
-			"type": "function"
-		},
-		{
-			"constant": false,
-			"inputs": [
-				{
-					"internalType": "address",
-					"name": "_reputationToken",
-					"type": "address"
-				}
-			],
-			"name": "getExchange",
-			"outputs": [
-				{
-					"internalType": "contract IUniswapV2Pair",
-					"name": "",
-					"type": "address"
-				}
-			],
-			"payable": false,
-			"stateMutability": "nonpayable",
-			"type": "function"
-		},
-		{
-			"constant": true,
-			"inputs": [],
-			"name": "getInitialized",
-			"outputs": [
-				{
-					"internalType": "bool",
-					"name": "",
-					"type": "bool"
-				}
-			],
-			"payable": false,
-			"stateMutability": "view",
-			"type": "function"
-		},
-		{
-			"constant": true,
-			"inputs": [
-				{
-					"internalType": "address",
-					"name": "_reputationToken",
-					"type": "address"
-				}
-			],
-			"name": "getLastUpdateTimestamp",
-			"outputs": [
-				{
-					"internalType": "uint256",
-					"name": "",
-					"type": "uint256"
-				}
-			],
-			"payable": false,
-			"stateMutability": "view",
-			"type": "function"
-		},
-		{
-			"constant": true,
-			"inputs": [
-				{
-					"internalType": "address",
-					"name": "_reputationToken",
-					"type": "address"
-				}
-			],
-			"name": "getPrice",
-			"outputs": [
-				{
-					"internalType": "uint256",
-					"name": "",
-					"type": "uint256"
-				}
-			],
-			"payable": false,
-			"stateMutability": "view",
-			"type": "function"
-		},
-		{
-			"constant": true,
-			"inputs": [
-				{
-					"internalType": "address",
-					"name": "_reputationToken",
-					"type": "address"
-				}
-			],
-			"name": "getPriceCumulativeLast",
-			"outputs": [
-				{
-					"internalType": "uint256",
-					"name": "",
-					"type": "uint256"
-				}
-			],
-			"payable": false,
-			"stateMutability": "view",
-			"type": "function"
-		},
-		{
-			"constant": false,
-			"inputs": [
-				{
-					"internalType": "contract IAugur",
-					"name": "_augur",
-					"type": "address"
-				}
-			],
-			"name": "initialize",
-			"outputs": [],
-			"payable": false,
-			"stateMutability": "nonpayable",
-			"type": "function"
-		},
-		{
-			"constant": false,
-			"inputs": [
-				{
-					"internalType": "address",
-					"name": "_reputationToken",
-					"type": "address"
-				}
-			],
-			"name": "poke",
-			"outputs": [
-				{
-					"internalType": "uint256",
-					"name": "",
-					"type": "uint256"
-				}
-			],
-			"payable": false,
-			"stateMutability": "nonpayable",
-			"type": "function"
-		},
-		{
-			"constant": true,
-			"inputs": [],
-			"name": "uniswapFactory",
-			"outputs": [
-				{
-					"internalType": "contract IUniswapV2Factory",
-					"name": "",
-					"type": "address"
-				}
-			],
-			"payable": false,
-			"stateMutability": "view",
 			"type": "function"
 		}
 	],
@@ -28314,21 +28211,6 @@
 			],
 			"payable": false,
 			"stateMutability": "nonpayable",
-			"type": "function"
-		},
-		{
-			"constant": true,
-			"inputs": [],
-			"name": "repOracle",
-			"outputs": [
-				{
-					"internalType": "contract IRepOracle",
-					"name": "",
-					"type": "address"
-				}
-			],
-			"payable": false,
-			"stateMutability": "view",
 			"type": "function"
 		},
 		{
@@ -30301,6 +30183,11 @@
 					"internalType": "contract IAugur",
 					"name": "_augur",
 					"type": "address"
+				},
+				{
+					"internalType": "uint256",
+					"name": "_tradeIntervalModifier",
+					"type": "uint256"
 				}
 			],
 			"name": "createParaAugur",
@@ -30327,23 +30214,6 @@
 				}
 			],
 			"name": "createParaAugurTrading",
-			"outputs": [
-				{
-					"internalType": "address",
-					"name": "",
-					"type": "address"
-				}
-			],
-			"payable": false,
-			"stateMutability": "nonpayable",
-			"type": "function"
-		}
-	],
-	"ParaRepOracleFactory": [
-		{
-			"constant": false,
-			"inputs": [],
-			"name": "createParaRepOracle",
 			"outputs": [
 				{
 					"internalType": "address",

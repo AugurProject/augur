@@ -74,7 +74,11 @@ Deploying to: ${env}
         for (const contractName of CONTRACTS) {
             console.log(`Deploying ${contractName}.`);
             const contract = this.contracts.get(contractName);
-            const address = await this.construct(contract, []);
+            let constructorArgs = [];
+            if (contractName == "OINexus") {
+                constructorArgs = [this.configuration.addresses.WETH9, this.configuration.addresses.UniswapV2Factory]
+            }
+            const address = await this.construct(contract, constructorArgs);
             addresses[contractName] = address;
             console.log(`${contractName} uploaded at address: ${address}`);
         }
@@ -111,7 +115,10 @@ Deploying to: ${env}
 
         if (!this.configuration.deploy.writeArtifacts) return;
 
-        await updateConfig(env, mergeConfig(this.configuration, {'addresses': {"ParaDeployer": paraDeployerAddress}}));
+        await updateConfig(env, mergeConfig(this.configuration, {'addresses': {
+            "ParaDeployer": paraDeployerAddress,
+            "OINexus": addresses["OINexus"]
+        }}));
     }
 
     getContractAddress = (contractName: string): string => {
