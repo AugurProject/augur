@@ -15,6 +15,8 @@ import { updateExistingAlert } from '../actions/alerts';
 const AlertsView = () => {
   const { alerts } = getInfoAlertsAndSeenCount();
   const {
+    theme,
+    oddsType,
     isLogged,
     isAlertsMenuOpen,
     actions: { setIsAlertsMenuOpen, clearAlerts, removeAlert },
@@ -22,11 +24,13 @@ const AlertsView = () => {
   const alertsVisible = isLogged && isAlertsMenuOpen;
   useEffect(() => {
     if (alertsVisible) {
-      alerts.forEach(alert => {
-        updateExistingAlert(alert.uniqueId, { ...alert, seen: true });
-      });
+      alerts.forEach(alert =>
+        updateExistingAlert(alert.uniqueId, { ...alert, seen: true })
+      );
+    } else {
+      alerts.forEach(alert => updateExistingAlert(alert.uniqueId, { ...alert }));
     }
-  }, [alertsVisible]);
+  }, [alertsVisible, theme, oddsType]);
 
   return (
     <div

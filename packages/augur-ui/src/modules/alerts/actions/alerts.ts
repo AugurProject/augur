@@ -25,7 +25,6 @@ import {
 import { BigNumber, createBigNumber } from 'utils/create-big-number';
 import { ethToDai } from 'modules/app/actions/get-ethToDai-rate';
 import { Alert } from 'modules/types';
-import { convertAttoValueToDisplayValue } from '@augurproject/utils';
 
 export const ADD_ALERT = 'ADD_ALERT';
 export const REMOVE_ALERT = 'REMOVE_ALERT';

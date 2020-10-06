@@ -53,18 +53,21 @@ import {
   MIGRATE_FROM_LEG_REP_TOKEN,
   DOINITIALREPORTWARPSYNC,
   SCALAR,
-  REDEEMPARTICIPATIONTOKENS,
+  REDEEMPARTICIPATIONTOKENS, 
+  THEMES
 } from 'modules/common/constants';
 import { MarketData } from 'modules/types';
 import { createBigNumber, BigNumber } from 'utils/create-big-number';
 import { convertUnixToFormattedDate } from 'utils/format-date';
 import { AppStatus } from 'modules/app/store/app-status';
-import getPrecision from 'utils/get-number-precision';
+import { convertToOdds, convertToNormalizedPrice } from 'utils/get-odds';
 
 function toCapitalizeCase(label) {
   return label.charAt(0).toUpperCase() + label.slice(1);
 }
 export function getInfo(params: any, status: string, marketInfo: MarketData, isOrder: boolean = true) {
+  const { theme } = AppStatus.get();
+  const isTrading = theme === THEMES.TRADING;
   const outcome = new BigNumber(params.outcome || params._outcome).toString();
   const outcomeDescription = getOutcomeNameWithOutcome(marketInfo, outcome);
   let orderType =
@@ -101,9 +104,12 @@ export function getInfo(params: any, status: string, marketInfo: MarketData, isO
     tickSize
   ).toString();
 
-  const priceFormatted = formatDai(price, {decimals: getPrecision(String(tickSize), 2)});
+  const priceFormatted = isTrading ? formatDai(price) : convertToOdds(createBigNumber(price).times(10));
+
+  const cost = formatDai(createBigNumber(convertToNormalizedPrice({ price, min: marketInfo.minPrice, max: marketInfo.maxPrice, type: orderType })).times(amount));
 
   return {
+    cost,
     priceFormatted,
     price,
     amount,
@@ -125,6 +131,8 @@ export default function setAlertText(alert: any, callback: Function) {
 
   const marketId = alert.params.marketId || alert.params.market;
   if (!marketId) return;
+  // const { theme } = AppStatus.get();
+  // const isTrading = theme === THEMES.TRADING;
   switch (alert.name.toUpperCase()) {
     // CancelOrder
     case CANCELORDER:
@@ -285,7 +293,7 @@ export default function setAlertText(alert: any, callback: Function) {
             orderType: updatedOrderType,
             amount: alert.params.amountFilled,
           };
-          const { orderType, amount, price, outcomeDescription } = getInfo(
+          const { orderType, amount, priceFormatted, outcomeDescription } = getInfo(
             params,
             alert.status,
             marketInfo,
@@ -293,7 +301,7 @@ export default function setAlertText(alert: any, callback: Function) {
           );
           alert.details = `${orderType} ${
             formatShares(amount).formatted
-          } of ${outcomeDescription} @ ${formatDai(price).formatted}`;
+          } of ${outcomeDescription} @ ${priceFormatted.full}`;
         });
         loadMarketsInfoIfNotLoaded([marketId], () => {
           const marketInfo = selectMarket(marketId);
@@ -329,7 +337,7 @@ export default function setAlertText(alert: any, callback: Function) {
             orderType: updatedOrderType,
             amount: alert.params.amountFilled,
           };
-          const { orderType, amount, price, outcomeDescription } = getInfo(
+          const { orderType, amount, priceFormatted, outcomeDescription } = getInfo(
             params,
             alert.status,
             marketInfo,
@@ -339,7 +347,7 @@ export default function setAlertText(alert: any, callback: Function) {
             originalQuantity
               ? ` of ${formatShares(originalQuantity).formatted}`
               : ''
-          } of ${outcomeDescription} @ ${formatDai(price).formatted}`;
+          } of ${outcomeDescription} @ ${priceFormatted.full}`;
         });
       }
       break;
@@ -449,17 +457,17 @@ export default function setAlertText(alert: any, callback: Function) {
       loadMarketsInfoIfNotLoaded([marketId], () => {
         const marketInfo = selectMarket(marketId);
         if (marketInfo === null) return;
+        
         alert.description = marketInfo.description;
-        const { orderType, amount, price, outcomeDescription } = getInfo(
+        const { orderType, amount, priceFormatted, outcomeDescription } = getInfo(
           alert.params,
           alert.status,
           marketInfo,
           marketInfo.marketType !== SCALAR
         );
-
-        alert.details = `${orderType}  ${
+        alert.details = `${orderType} ${
           formatShares(amount).formatted
-        } of ${outcomeDescription} @ ${formatDai(price).formatted}`;
+        } of ${outcomeDescription} @ ${priceFormatted.full}`;
       });
       break;
     }

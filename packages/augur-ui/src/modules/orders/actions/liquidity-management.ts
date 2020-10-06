@@ -16,7 +16,7 @@ import {
   convertDisplayAmountToOnChainAmount,
   convertDisplayPriceToOnChainPrice,
 } from "@augurproject/utils"
-import { AppStatus, useAppStatusStore } from 'modules/app/store/app-status';
+import { AppStatus } from 'modules/app/store/app-status';
 import { Markets } from 'modules/markets/store/markets';
 import { PendingOrders } from 'modules/app/store/pending-orders';
 import { updateAlert } from 'modules/alerts/actions/alerts';
