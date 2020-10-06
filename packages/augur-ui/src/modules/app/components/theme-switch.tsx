@@ -6,7 +6,7 @@ import { useAppStatusStore } from 'modules/app/store/app-status';
 
 import Styles from 'modules/app/components/theme-switch.styles';
 import makePath from 'modules/routes/helpers/make-path';
-import { MARKETS } from 'modules/routes/constants/views';
+import { MARKETS, CREATE_MARKET } from 'modules/routes/constants/views';
 import parsePath from 'modules/routes/helpers/parse-path';
 
 export const ThemeSwitch = () => {
@@ -17,6 +17,7 @@ export const ThemeSwitch = () => {
     actions: { setTheme },
   } = useAppStatusStore();
   const notMarkets = parsePath(location.pathname)[0] !== MARKETS;
+  const disabled = parsePath(location.pathname)[0] === CREATE_MARKET;
   const marketsPath = { pathname: makePath(MARKETS, null) };
   return (
     <ul className={Styles.ThemeSwitch}>
@@ -29,6 +30,7 @@ export const ThemeSwitch = () => {
               if (notMarkets) history.push(marketsPath);
             }
           }}
+          disabled={disabled}
         >
           Trading
         </button>
@@ -50,6 +52,7 @@ export const ThemeSwitch = () => {
               if (notMarkets) history.push(marketsPath);
             }
           }}
+          disabled={disabled}
         >
           Sportsbook
         </button>
