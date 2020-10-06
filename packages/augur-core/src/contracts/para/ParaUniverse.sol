@@ -23,7 +23,6 @@ contract ParaUniverse is Initializable, IParaUniverse {
     uint256 private constant MAX_APPROVAL_AMOUNT = 2 ** 256 - 1;
 
     IParaAugur public augur;
-    IRepOracle public repOracle;
     IUniverse public originUniverse;
     IParaShareToken public shareToken;
     ICash public cash;
@@ -53,7 +52,6 @@ contract ParaUniverse is Initializable, IParaUniverse {
         feePot = IFeePotFactory(_augur.lookup("FeePotFactory")).createFeePot(_augur);
         openInterestCash = IParaOICashFactory(_augur.lookup("ParaOICashFactory")).createParaOICash(_augur);
         shareToken = IParaShareToken(_augur.lookup("ShareToken"));
-        repOracle = IRepOracle(_augur.lookup("ParaRepOracle"));
         cash = ICash(_augur.lookup("Cash"));
         affiliates = IAffiliates(_augur.lookup("Affiliates"));
         OINexus = IOINexus(_augur.lookup("OINexus"));
@@ -139,7 +137,7 @@ contract ParaUniverse is Initializable, IParaUniverse {
      * @return The Market Cap of this Universe's REP
      */
     function pokeRepMarketCapInAttoCash() public returns (uint256) {
-        uint256 _attoCashPerRep = repOracle.poke(address(reputationToken));
+        uint256 _attoCashPerRep = OINexus.getAttoCashPerRep(address(cash), address(reputationToken));
         return getRepMarketCapInAttoCashInternal(_attoCashPerRep);
     }
 

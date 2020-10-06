@@ -419,14 +419,14 @@ class ContractsFixture:
                 if name == 'Time': continue # In testing and development we swap the Time library for a ControlledTime version which lets us manage block timestamp
                 if name == 'ReputationTokenFactory': continue # In testing and development we use the TestNetReputationTokenFactory which lets us faucet
                 if name == 'Cash': continue # We upload the Test Dai contracts manually after this process
-                if name in ['ParaDeployer', 'ParaAugur', 'FeePot', 'ParaUniverse', 'ParaAugurTrading','AMMExchange', 'AMMFactory', 'ParaRepOracle', 'ParaShareToken', 'ParaZeroXTrade']: continue # We upload ParaAugur explicitly and the others are generated via contract
+                if name in ['ParaDeployer', 'ParaAugur', 'FeePot', 'ParaUniverse', 'ParaAugurTrading','AMMExchange', 'AMMFactory', 'ParaShareToken', 'ParaZeroXTrade', 'OINexus']: continue # We upload ParaAugur explicitly and the others are generated via contract
                 if name in ['IAugur', 'IDisputeCrowdsourcer', 'IDisputeWindow', 'IUniverse', 'IMarket', 'IReportingParticipant', 'IReputationToken', 'IOrders', 'IShareToken', 'Order', 'IInitialReporter']: continue # Don't compile interfaces or libraries
                 # TODO these four are necessary for test_universe but break everything else
                 # if name == 'MarketFactory': continue # tests use mock
                 # if name == 'ReputationTokenFactory': continue # tests use mock
                 # if name == 'DisputeWindowFactory': continue # tests use mock
                 # if name == 'UniverseFactory': continue # tests use mock
-                onlySignatures = ["ReputationToken", "TestNetReputationToken", "Universe"]
+                onlySignatures = ["ReputationToken", "TestNetReputationToken", "Universe", "ParaOracle"]
                 if name in onlySignatures:
                     self.generateAndStoreSignature(path.join(directory, filename))
                 elif name == "TimeControlled":
@@ -537,18 +537,17 @@ class ContractsFixture:
             return self.upload("../src/contracts/Augur.sol")
 
     def uploadParaAugur(self):
+        OINexus = self.upload("../src/contracts/para/OINexus.sol", constructorArgs=[self.contracts["WETH9"].address, self.contracts["UniswapV2Factory"].address])
         feePotFactory = self.contracts["FeePotFactory"].address
         paraUniverseFactory = self.contracts["ParaUniverseFactory"].address
         paraOICashFactory = self.contracts["ParaOICashFactory"].address
         paraOICash = self.contracts["ParaOICash"].address
-        OINexus = self.contracts["OINexus"]
         zeroXExchange = self.contracts["ZeroXExchange"].address
         WETH9 = self.contracts["WETH9"].address
         factories = [
             self.contracts["ParaAugurFactory"].address,
             self.contracts["ParaAugurTradingFactory"].address,
             self.contracts["ParaShareTokenFactory"].address,
-            self.contracts["ParaRepOracleFactory"].address,
             self.contracts["CancelOrderFactory"].address,
             self.contracts["CreateOrderFactory"].address,
             self.contracts["FillOrderFactory"].address,
@@ -564,7 +563,7 @@ class ContractsFixture:
 
         paraAugurCash = self.upload("../src/contracts/Cash.sol", "ParaAugurCash", "Cash")
         paraDeployer.addToken(paraAugurCash.address, 10**19)
-        while paraDeployer.paraDeployProgress(paraAugurCash.address) < 14:
+        while paraDeployer.paraDeployProgress(paraAugurCash.address) < 13:
             with PrintGasUsed(self, "PARA DEPLOY STAGE: %i" % paraDeployer.paraDeployProgress(paraAugurCash.address), 0):
                 paraDeployer.progressDeployment(paraAugurCash.address)
 

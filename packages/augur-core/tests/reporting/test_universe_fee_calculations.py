@@ -55,15 +55,33 @@ def test_reporter_fees(contractsFixture, universe, market, cash):
 
     assert OIUniverse.getOrCacheReportingFeeDivisor() == defaultValue
 
-    # Initialize the Uniswap oracle
+    account = contractsFixture.accounts[0]
     reputationTokenAddress = universe.getReputationToken()
     reputationToken = contractsFixture.applySignature('TestNetReputationToken', reputationTokenAddress)
-    repOracle = contractsFixture.contracts["ParaRepOracle"] if contractsFixture.paraAugur else contractsFixture.contracts["RepOracle"]
-    repExchange = contractsFixture.applySignature("UniswapV2Pair", repOracle.getExchange(reputationTokenAddress))
-    account = contractsFixture.accounts[0]
-    cashAmount = 20 * 10**18
-    repAmount = 1 * 10**18
-    addLiquidity(repExchange, cash, reputationToken, cashAmount, repAmount, account)
+
+    # Initialize the Uniswap oracle
+    if contractsFixture.paraAugur:
+        oracleAddress = contractsFixture.contracts["OINexus"].oracle()
+        oracle = contractsFixture.applySignature("ParaOracle", oracleAddress)
+        repExchange = contractsFixture.applySignature("UniswapV2Pair", oracle.getExchange(reputationTokenAddress))
+        cashExchange =  contractsFixture.applySignature("UniswapV2Pair", oracle.getExchange(cash.address))
+        weth = contractsFixture.applySignature("WETH9", oracle.weth())
+        wethAmount = 1 * 10**18
+        repAmount = 25 * 10**18
+        addLiquidityWETH(repExchange, weth, reputationToken, wethAmount, repAmount, account)
+        addLiquidityWETH(repExchange, weth, reputationToken, wethAmount, repAmount, account)
+
+        wethAmount = 1 * 10**18
+        cashAmount = 350 * 10**18
+        addLiquidityWETH(cashExchange, weth, cash, wethAmount, cashAmount, account)
+        addLiquidityWETH(cashExchange, weth, cash, wethAmount, cashAmount, account)
+    else:
+        repOracle = contractsFixture.contracts["ParaRepOracle"] if contractsFixture.paraAugur else contractsFixture.contracts["RepOracle"]
+        repExchange = contractsFixture.applySignature("UniswapV2Pair", repOracle.getExchange(reputationTokenAddress))
+        account = contractsFixture.accounts[0]
+        cashAmount = 20 * 10**18
+        repAmount = 1 * 10**18
+        addLiquidity(repExchange, cash, reputationToken, cashAmount, repAmount, account)
 
     # Generate an enormous amount of OI
     assert contractsFixture.getOpenInterestInAttoCash(universe) == 0
@@ -499,5 +517,14 @@ def addLiquidity(exchange, cash, reputationToken, cashAmount, repAmount, address
 
     cash.transfer(exchange.address, cashAmount)
     reputationToken.transfer(exchange.address, repAmount)
+
+    exchange.mint(address)
+
+def addLiquidityWETH(exchange, weth, token, wethAmount, tokenAmount, address):
+    weth.deposit(value=wethAmount)
+    token.faucet(tokenAmount)
+
+    weth.transfer(exchange.address, wethAmount)
+    token.transfer(exchange.address, tokenAmount)
 
     exchange.mint(address)

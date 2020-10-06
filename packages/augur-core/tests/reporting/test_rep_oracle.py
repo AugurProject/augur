@@ -6,15 +6,17 @@ import functools
 from old_eth_utils import sha3
 
 def test_rep_oracle(contractsFixture, augur, cash, market, universe):
+    if contractsFixture.paraAugur:
+        return
     reputationTokenAddress = universe.getReputationToken()
     reputationToken = contractsFixture.applySignature('TestNetReputationToken', reputationTokenAddress)
-    repOracle = contractsFixture.contracts["ParaRepOracle"] if contractsFixture.paraAugur else contractsFixture.contracts["RepOracle"]
+    repOracle = contractsFixture.contracts["RepOracle"]
     repExchange = contractsFixture.applySignature("UniswapV2Pair", repOracle.getExchange(reputationTokenAddress))
 
     account = contractsFixture.accounts[0]
 
     # Initially the price will just be the initialization value
-    initialPrice = 0 if contractsFixture.paraAugur else repOracle.genesisInitialRepPriceinAttoCash()
+    initialPrice = repOracle.genesisInitialRepPriceinAttoCash()
     assert roughlyEqual(repOracle.poke(reputationTokenAddress), initialPrice)
 
     token0IsCash = cash.address < reputationTokenAddress

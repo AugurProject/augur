@@ -64,7 +64,7 @@ Deploying to: ${env}
 
         this.paraDeployer = new ParaDeployer(this.dependencies, this.configuration.addresses.ParaDeployer);
         let deployProgress = new BigNumber(await this.paraDeployer.paraDeployProgress_(cashAddress));
-        while (deployProgress.lt(15)) {
+        while (deployProgress.lt(14)) {
             console.log(`Deploy Progress: ${deployProgress}`);
             await this.paraDeployer.progressDeployment(cashAddress);
             deployProgress = new BigNumber(await this.paraDeployer.paraDeployProgress_(cashAddress));

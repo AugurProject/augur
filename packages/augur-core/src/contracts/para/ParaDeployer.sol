@@ -9,7 +9,6 @@ import 'ROOT/para/interfaces/IOINexus.sol';
 import 'ROOT/para/deployerFactories/interfaces/IParaAugurFactory.sol';
 import 'ROOT/para/deployerFactories/interfaces/IParaAugurTradingFactory.sol';
 import 'ROOT/para/deployerFactories/interfaces/IParaShareTokenFactory.sol';
-import 'ROOT/para/deployerFactories/interfaces/IParaRepOracleFactory.sol';
 import 'ROOT/para/deployerFactories/interfaces/ICancelOrderFactory.sol';
 import 'ROOT/para/deployerFactories/interfaces/ICreateOrderFactory.sol';
 import 'ROOT/para/deployerFactories/interfaces/IFillOrderFactory.sol';
@@ -33,7 +32,6 @@ contract ParaDeployer is Ownable {
         NOT_ALLOWED,
         NOT_STARTED,
         SHARE_TOKEN,
-        REP_ORACLE,
         AUGUR_TRADING,
         CREATE_ORDER,
         CANCEL_ORDER,
@@ -52,7 +50,6 @@ contract ParaDeployer is Ownable {
         IParaAugurFactory paraAugurFactory;
         IParaAugurTradingFactory paraAugurTradingFactory;
         IParaShareTokenFactory paraShareTokenFactory;
-        IParaRepOracleFactory paraRepOracleFactory;
         ICancelOrderFactory cancelOrderFactory;
         ICreateOrderFactory createOrderFactory;
         IFillOrderFactory fillOrderFactory;
@@ -117,8 +114,6 @@ contract ParaDeployer is Ownable {
             deployParaAugur(_token);
         } else if (_tokenProgress == DeployProgress.SHARE_TOKEN) {
             deployParaShareToken(_token);
-        } else if (_tokenProgress == DeployProgress.REP_ORACLE) {
-            deployParaRepOracle(_token);
         } else if (_tokenProgress == DeployProgress.AUGUR_TRADING) {
             deployParaAugurTrading(_token);
         } else if (_tokenProgress == DeployProgress.CREATE_ORDER) {
@@ -167,11 +162,6 @@ contract ParaDeployer is Ownable {
     function deployParaShareToken(address _token) private {
         address _paraShareToken = factories.paraShareTokenFactory.createParaShareToken();
         paraAugurs[_token].registerContract("ShareToken", _paraShareToken);
-    }
-
-    function deployParaRepOracle(address _token) private {
-        address _paraRepOracle = factories.paraRepOracleFactory.createParaRepOracle();
-        paraAugurs[_token].registerContract("ParaRepOracle", _paraRepOracle);
     }
 
     function deployParaAugurTrading(address _token) private {
@@ -228,7 +218,6 @@ contract ParaDeployer is Ownable {
         IParaAugurTrading _paraAugurTrading = paraAugurTradings[_token];
         address _originalShareToken = augur.lookup("ShareToken");
         IParaShareToken(_paraAugur.lookup("ShareToken")).initialize(address(_paraAugur), _originalShareToken);
-        IRepOracle(_paraAugur.lookup("ParaRepOracle")).initialize(IAugur(address(_paraAugur)));
         ITradingInitializable(_paraAugurTrading.lookup("CreateOrder")).initialize(_paraAugur, _paraAugurTrading);
         ITradingInitializable(_paraAugurTrading.lookup("CancelOrder")).initialize(_paraAugur, _paraAugurTrading);
         ITradingInitializable(_paraAugurTrading.lookup("FillOrder")).initialize(_paraAugur, _paraAugurTrading);

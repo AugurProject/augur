@@ -78,7 +78,7 @@ contract ParaAugur is IParaAugur, IAugurCreationDataGetter, Ownable {
      * @return the address of the registered contract if one exists for the given key
      */
     function lookup(bytes32 _key) external view returns (address) {
-        if (_key == "ShareToken" || _key == "Cash" || _key == "ParaRepOracle" || _key == "FeePotFactory" || _key == "ParaUniverseFactory" || _key == "ParaOICashFactory" || _key == "OINexus" || _key == "ParaOICash") {
+        if (_key == "ShareToken" || _key == "Cash" || _key == "FeePotFactory" || _key == "ParaUniverseFactory" || _key == "ParaOICashFactory" || _key == "OINexus" || _key == "ParaOICash") {
             return registry[_key];
         }
         return augur.lookup(_key);

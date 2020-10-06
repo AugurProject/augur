@@ -7,6 +7,7 @@ import 'ROOT/para/interfaces/IParaAugur.sol';
 import 'ROOT/para/interfaces/IParaUniverse.sol';
 import 'ROOT/para/interfaces/IOINexus.sol';
 import 'ROOT/libraries/math/SafeMathUint256.sol';
+import 'ROOT/para/ParaOracle.sol';
 
 
 contract OINexus is Ownable, IOINexus {
@@ -18,9 +19,18 @@ contract OINexus is Ownable, IOINexus {
     mapping(address => uint256) public paraUniversePreviousContribution;
     mapping(address => uint256) public totalUniverseContributions;
     mapping(address => uint256) public universeReportingFeeDivisor;
+    
+    // WETH / TOKEN oracle
+    ParaOracle public oracle;
+
+    constructor(address _weth, address _uniswapFactory) public {
+        owner = msg.sender;
+        oracle = new ParaOracle(_weth, _uniswapFactory);
+    }
 
     function addParaAugur(address _paraAugur) external onlyOwner returns (bool) {
         registeredParaAugur[_paraAugur] = true;
+        oracle.poke(IParaAugur(_paraAugur).lookup("Cash"));
         return true;
     }
 
@@ -28,6 +38,7 @@ contract OINexus is Ownable, IOINexus {
         require(registeredParaAugur[msg.sender]);
         numParaUniverses[address(_universe)] += 1;
         knownParaUniverse[address(_paraUniverse)] = true;
+        oracle.poke(address(_universe.getReputationToken()));
     }
 
     function recordParaUniverseValuesAndUpdateReportingFee(IUniverse _universe, uint256 _targetRepMarketCapInAttoCash, uint256 _repMarketCapInAttoCash) external returns (uint256) {
@@ -52,6 +63,9 @@ contract OINexus is Ownable, IOINexus {
 
         // Derive a new total para universe factor by subtracting this ones old value then adding its new value
         uint256 _magnifiedReportingDivisorFactorContribution = _targetRepMarketCapInAttoCash.mul(10**18).div(_repMarketCapInAttoCash);
+        if (_magnifiedReportingDivisorFactorContribution == 0) {
+            return _reportingFeeDivisor;
+        }
         uint256 _totalMagnifiedUniverseContributions = totalUniverseContributions[address(_universe)];
         uint256 _paraUniversePreviousContribution = paraUniversePreviousContribution[address(_paraUniverse)];
         _totalMagnifiedUniverseContributions = _totalMagnifiedUniverseContributions.sub(_paraUniversePreviousContribution);
@@ -75,6 +89,15 @@ contract OINexus is Ownable, IOINexus {
 
         universeReportingFeeDivisor[address(_universe)] = _reportingFeeDivisor;
         return _reportingFeeDivisor;
+    }
+
+    function getAttoCashPerRep(address _cash, address _reputationToken) public returns (uint256) {
+        uint256 _attoWethPerRep = oracle.poke(_reputationToken);
+        uint256 _attoWethPerCash = oracle.poke(_cash);
+        if (_attoWethPerRep == 0 || _attoWethPerCash == 0) {
+            return 0;
+        }
+        return _attoWethPerRep * 10**18 / _attoWethPerCash;
     }
 
     function onTransferOwnership(address, address) internal {}
