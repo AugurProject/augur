@@ -1,0 +1,412 @@
+{
+  "name": "CoinGecko DeFi 100",
+  "logoURI": "https://www.coingecko.com/assets/thumbnail-007177f3eca19695592f0b8b0eabbdae282b54154e1be912285c9034ea6cbaf2.png",
+  "keywords": ["defi"],
+  "timestamp": "2020-09-17T17:41:59.220+00:00",
+  "tokens": [
+    {
+      "chainId": 1,
+      "address": "0xdd974d5c2e2928dea5f71b9825b8b646686bd200",
+      "name": "Kyber Network",
+      "symbol": "KNC",
+      "decimals": 18
+    },
+    {
+      "chainId": 1,
+      "address": "0x1f573d6fb3f13d689ff844b4ce37794d79a7ff1c",
+      "name": "Bancor Network Toke",
+      "symbol": "BNT",
+      "decimals": 18
+    },
+    {
+      "chainId": 1,
+      "address": "0x408e41876cccdc0f92210600ef50372656052a38",
+      "name": "REN",
+      "symbol": "REN",
+      "decimals": 18
+    },
+    {
+      "chainId": 1,
+      "address": "0x8762db106b2c2a0bccb3a80d1ed41273552616e8",
+      "name": "Reserve Rights Toke",
+      "symbol": "RSR",
+      "decimals": 18
+    },
+    {
+      "chainId": 1,
+      "address": "0x0ae055097c6d159879521c384f1d2123d1f195e6",
+      "name": "xDAI Stake",
+      "symbol": "STAKE",
+      "decimals": 18
+    },
+    {
+      "chainId": 1,
+      "address": "0xb705268213d593b8fd88d3fdeff93aff5cbdcfae",
+      "name": "IDEX",
+      "symbol": "IDEX",
+      "decimals": 18
+    },
+    {
+      "chainId": 1,
+      "address": "0xa1d65e8fb6e87b60feccbc582f7f97804b725521",
+      "name": "DXDao",
+      "symbol": "DXD",
+      "decimals": 18
+    },
+    {
+      "chainId": 1,
+      "address": "0x514910771af9ca656af840dff83e8264ecf986ca",
+      "name": "Chainlink",
+      "symbol": "LINK",
+      "decimals": 18
+    },
+    {
+      "chainId": 1,
+      "address": "0xc12d099be31567add4e4e4d0d45691c3f58f5663",
+      "name": "Auctus",
+      "symbol": "AUC",
+      "decimals": 18
+    },
+    {
+      "chainId": 1,
+      "address": "0xd46ba6d942050d489dbd938a2c909a5d5039a161",
+      "name": "Ampleforth",
+      "symbol": "AMPL",
+      "decimals": 9
+    },
+    {
+      "chainId": 1,
+      "address": "0x0d438f3b5175bebc262bf23753c1e53d03432bde",
+      "name": "Wrapped NXM",
+      "symbol": "WNXM",
+      "decimals": 18
+    },
+    {
+      "chainId": 1,
+      "address": "0xcc80c051057b774cd75067dc48f8987c4eb97a5e",
+      "name": "Nectar Token",
+      "symbol": "NEC",
+      "decimals": 18
+    },
+    {
+      "chainId": 1,
+      "address": "0xc011a73ee8576fb46f5e1c5751ca3b9fe0af2a6f",
+      "name": "Synthetix Network T",
+      "symbol": "SNX",
+      "decimals": 18
+    },
+    {
+      "chainId": 1,
+      "address": "0x04fa0d235c4abf4bcf4787af4cf447de572ef828",
+      "name": "UMA",
+      "symbol": "UMA",
+      "decimals": 18
+    },
+    {
+      "chainId": 1,
+      "address": "0xdf5e0e81dff6faf3a7e52ba697820c5e32d806a8",
+      "name": "LP yCurve",
+      "symbol": "YCURVE",
+      "decimals": 18
+    },
+    {
+      "chainId": 1,
+      "address": "0xfe18be6b3bd88a2d2a7f928d00292e7a9963cfc6",
+      "name": "sBTC",
+      "symbol": "SBTC",
+      "decimals": 18
+    },
+    {
+      "chainId": 1,
+      "address": "0x8ab7404063ec4dbcfd4598215992dc3f8ec853d7",
+      "name": "Akropolis",
+      "symbol": "AKRO",
+      "decimals": 18
+    },
+    {
+      "chainId": 1,
+      "address": "0x0bc529c00c6401aef6d220be8c6ea1667f6ad93e",
+      "name": "yearn finance",
+      "symbol": "YFI",
+      "decimals": 18
+    },
+    {
+      "chainId": 1,
+      "address": "0xba100000625a3754423978a60c9317c58a424e3d",
+      "name": "Balancer",
+      "symbol": "BAL",
+      "decimals": 18
+    },
+    {
+      "chainId": 1,
+      "address": "0x80fb784b7ed66730e8b1dbd9820afd29931aab03",
+      "name": "Aave",
+      "symbol": "LEND",
+      "decimals": 18
+    },
+    {
+      "chainId": 1,
+      "address": "0x476c5e26a75bd202a9683ffd34359c0cc15be0ff",
+      "name": "Serum",
+      "symbol": "SRM",
+      "decimals": 6
+    },
+    {
+      "chainId": 1,
+      "address": "0xaaaf91d9b90df800df4f55c205fd6989c977e73a",
+      "name": "Monolith",
+      "symbol": "TKN",
+      "decimals": 8
+    },
+    {
+      "chainId": 1,
+      "address": "0x8a9c67fee641579deba04928c4bc45f66e26343a",
+      "name": "Jarvis Reward Token",
+      "symbol": "JRT",
+      "decimals": 18
+    },
+    {
+      "chainId": 1,
+      "address": "0xc00e94cb662c3520282e6f5717214004a7f26888",
+      "name": "Compound",
+      "symbol": "COMP",
+      "decimals": 18
+    },
+    {
+      "chainId": 1,
+      "address": "0x56d811088235f11c8920698a204a5010a788f4b3",
+      "name": "bZx Protocol",
+      "symbol": "BZRX",
+      "decimals": 18
+    },
+    {
+      "chainId": 1,
+      "address": "0x14d10003807ac60d07bb0ba82caeac8d2087c157",
+      "name": "iDeFi",
+      "symbol": "IDEFI",
+      "decimals": 18
+    },
+    {
+      "chainId": 1,
+      "address": "0xba11d00c5f74255f56a5e366f4f77f5a186d7f55",
+      "name": "Band Protocol",
+      "symbol": "BAND",
+      "decimals": 18
+    },
+    {
+      "chainId": 1,
+      "address": "0x89ab32156e46f46d02ade3fecbe5fc4243b9aaed",
+      "name": "pNetwork",
+      "symbol": "PNT",
+      "decimals": 18
+    },
+    {
+      "chainId": 1,
+      "address": "0xe41d2489571d322189246dafa5ebde1f4699f498",
+      "name": "0x",
+      "symbol": "ZRX",
+      "decimals": 18
+    },
+    {
+      "chainId": 1,
+      "address": "0x0ba45a8b5d5575935b8158a88c631e9f9c95a2e5",
+      "name": "Tellor",
+      "symbol": "TRB",
+      "decimals": 18
+    },
+    {
+      "chainId": 1,
+      "address": "0x6b175474e89094c44da98b954eedeac495271d0f",
+      "name": "Dai",
+      "symbol": "DAI",
+      "decimals": 18
+    },
+    {
+      "chainId": 1,
+      "address": "0x5228a22e72ccc52d415ecfd199f99d0665e7733b",
+      "name": "pTokens BTC",
+      "symbol": "PBTC",
+      "decimals": 18
+    },
+    {
+      "chainId": 1,
+      "address": "0x9af839687f6c94542ac5ece2e317daae355493a1",
+      "name": "Hydro Protocol",
+      "symbol": "HOT",
+      "decimals": 18
+    },
+    {
+      "chainId": 1,
+      "address": "0xd533a949740bb3306d119cc777fa900ba034cd52",
+      "name": "Curve DAO Token",
+      "symbol": "CRV",
+      "decimals": 18
+    },
+    {
+      "chainId": 1,
+      "address": "0x261b45d85ccfeabb11f022eba346ee8d1cd488c0",
+      "name": "rDAI",
+      "symbol": "RDAI",
+      "decimals": 18
+    },
+    {
+      "chainId": 1,
+      "address": "0x9a48bd0ec040ea4f1d3147c025cd4076a2e71e3e",
+      "name": "PieDAO USD  ",
+      "symbol": "USD++",
+      "decimals": 18
+    },
+    {
+      "chainId": 1,
+      "address": "0x0327112423f3a68efdf1fcf402f6c5cb9f7c33fd",
+      "name": "PieDAO BTC  ",
+      "symbol": "BTC++",
+      "decimals": 18
+    },
+    {
+      "chainId": 1,
+      "address": "0x1776e1f26f98b1a5df9cd347953a26dd3cb46671",
+      "name": "Numeraire",
+      "symbol": "NMR",
+      "decimals": 18
+    },
+    {
+      "chainId": 1,
+      "address": "0xa9859874e1743a32409f75bb11549892138bba1e",
+      "name": "iETH",
+      "symbol": "IETH",
+      "decimals": 18
+    },
+    {
+      "chainId": 1,
+      "address": "0x5e74c9036fb86bd7ecdcb084a0673efc32ea31cb",
+      "name": "sETH",
+      "symbol": "SETH",
+      "decimals": 18
+    },
+    {
+      "chainId": 1,
+      "address": "0x845838df265dcd2c412a1dc9e959c7d08537f8a2",
+      "name": "LP cCurve",
+      "symbol": "CCURVE",
+      "decimals": 18
+    },
+    {
+      "chainId": 1,
+      "address": "0xe1afe1fd76fd88f78cbf599ea1846231b8ba3b6b",
+      "name": "sDEFI",
+      "symbol": "SDEFI",
+      "decimals": 18
+    },
+    {
+      "chainId": 1,
+      "address": "0xc25a3a3b969415c80451098fa907ec722572917f",
+      "name": "LP sCurve",
+      "symbol": "SCURVE",
+      "decimals": 18
+    },
+    {
+      "chainId": 1,
+      "address": "0xec67005c4e498ec7f55e092bd1d35cbc47c91892",
+      "name": "Melon",
+      "symbol": "MLN",
+      "decimals": 18
+    },
+    {
+      "chainId": 1,
+      "address": "0x196f4727526ea7fb1e17b2071b3d8eaa38486988",
+      "name": "Reserve",
+      "symbol": "RSV",
+      "decimals": 18
+    },
+    {
+      "chainId": 1,
+      "address": "0x3212b29e33587a00fb1c83346f5dbfa69a458923",
+      "name": "The Tokenized Bitco",
+      "symbol": "IMBTC",
+      "decimals": 8
+    },
+    {
+      "chainId": 1,
+      "address": "0x89d24a6b4ccb1b6faa2625fe562bdd9a23260359",
+      "name": "Sai",
+      "symbol": "SAI",
+      "decimals": 18
+    },
+    {
+      "chainId": 1,
+      "address": "0x8fb00fdebb4e83f2c58b3bcd6732ac1b6a7b7221",
+      "name": "Orion Protocol",
+      "symbol": "ORN",
+      "decimals": 8
+    },
+    {
+      "chainId": 1,
+      "address": "0x27054b13b1b798b345b591a4d22e6562d47ea75a",
+      "name": "AirSwap",
+      "symbol": "AST",
+      "decimals": 4
+    },
+    {
+      "chainId": 1,
+      "address": "0xbbbbca6a901c926f240b89eacb641d8aec7aeafd",
+      "name": "Loopring",
+      "symbol": "LRC",
+      "decimals": 18
+    },
+    {
+      "chainId": 1,
+      "address": "0x2260fac5e5542a773aa44fbcfedf7c193bc2c599",
+      "name": "Wrapped Bitcoin",
+      "symbol": "WBTC",
+      "decimals": 8
+    },
+    {
+      "chainId": 1,
+      "address": "0x57ab1ec28d129707052df4df418d58a2d46d5f51",
+      "name": "sUSD",
+      "symbol": "SUSD",
+      "decimals": 18
+    },
+    {
+      "chainId": 1,
+      "address": "0xa3bed4e1c75d00fa6f4e5e6922db7261b5e9acd2",
+      "name": "Meta",
+      "symbol": "MTA",
+      "decimals": 18
+    },
+    {
+      "chainId": 1,
+      "address": "0xeb4c2781e4eba804ce9a9803c67d0893436bb27d",
+      "name": "renBTC",
+      "symbol": "RENBTC",
+      "decimals": 8
+    },
+    {
+      "chainId": 1,
+      "address": "0x4e352cf164e64adcbad318c3a1e222e9eba4ce42",
+      "name": "MCDex",
+      "symbol": "MCB",
+      "decimals": 18
+    },
+    {
+      "chainId": 1,
+      "address": "0x9f8f72aa9304c8b593d555f12ef6589cc3a579a2",
+      "name": "Maker",
+      "symbol": "MKR",
+      "decimals": 18
+    },
+    {
+      "chainId": 1,
+      "address": "0xed91879919b71bb6905f23af0a68d231ecf87b14",
+      "name": "DMM  Governance",
+      "symbol": "DMG",
+      "decimals": 18
+    }
+  ],
+  "version": {
+    "major": 0,
+    "minor": 0,
+    "patch": 0
+  }
+}
