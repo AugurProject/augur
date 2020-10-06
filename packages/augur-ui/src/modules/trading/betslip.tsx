@@ -19,17 +19,38 @@ import { PrimaryButton } from 'modules/common/buttons';
 export const Betslip = () => {
   const {
     theme,
+    accountPositions: positions,
     betslipMinimized,
     actions: { setBetslipMinimized },
   } = useAppStatusStore();
   const {
     selected: { header, subHeader },
     betslip: { count: betslipCount, items: betslipItems },
-    unmatched: { count: unmatchedCount, items: unmatchedItems },
-    matched: { count: matchedCount, items: matchedItems },
+    matched: { items: matchedItems },
     actions: { toggleSubHeader },
     step,
   } = useBetslipStore();
+
+  let filteredMatchedItems = matchedItems;
+  let matchedCount = 0;
+
+  Object.keys(matchedItems).map(marketId => {
+    const orders = matchedItems[marketId].orders;
+    const filteredOrders = orders.filter(order => {
+      const marketPositions = positions[marketId];
+      const position = marketPositions?.tradingPositions[order.outcomeId];
+      return !position?.priorPosition;
+    });
+    if (filteredOrders.length > 0) {
+      filteredMatchedItems[marketId] = {
+        ...filteredMatchedItems[marketId],
+        orders: filteredOrders
+      };
+      matchedCount += filteredOrders.length;
+    } else {
+      delete filteredMatchedItems[marketId];
+    }
+  });
 
   useEffect(() => {
     // this has to be done as useAnything must go above any other declarations.
@@ -41,13 +62,10 @@ export const Betslip = () => {
 
   const isSportsBook = theme === THEMES.SPORTS;
   const isMyBets = header === BETSLIP_SELECTED.MY_BETS;
-  const isUnmatched = subHeader === BETSLIP_SELECTED.UNMATCHED;
-  const myBetsCount = isSportsBook
-    ? matchedCount
-    : unmatchedCount + matchedCount;
+  const myBetsCount = matchedCount;
   const isSelectedEmpty = isMyBets ? myBetsCount === 0 : betslipCount === 0;
   let marketItems = isMyBets
-    ? Object.entries(isUnmatched ? unmatchedItems : matchedItems)
+    ? Object.entries(filteredMatchedItems)
     : Object.entries(betslipItems);
   if (isMyBets) {
     marketItems.map(item => item[1].orders = item[1].orders.sort((a, b) => b.timestamp - a.timestamp));
