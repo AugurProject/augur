@@ -99,8 +99,6 @@ export class ParaDeployer extends c.ParaDeployer<BigNumber> {
 }
 export class ParaOICash extends c.ParaOICash<BigNumber> {
 }
-export class ParaRepOracle extends c.ParaRepOracle<BigNumber> {
-}
 export class ParaShareToken extends c.ParaShareToken<BigNumber> {
 }
 export class ParaUniverse extends c.ParaUniverse<BigNumber> {
@@ -118,8 +116,6 @@ export class OrdersFactory extends c.OrdersFactory<BigNumber> {
 export class ParaAugurFactory extends c.ParaAugurFactory<BigNumber> {
 }
 export class ParaAugurTradingFactory extends c.ParaAugurTradingFactory<BigNumber> {
-}
-export class ParaRepOracleFactory extends c.ParaRepOracleFactory<BigNumber> {
 }
 export class ParaShareTokenFactory extends c.ParaShareTokenFactory<BigNumber> {
 }
