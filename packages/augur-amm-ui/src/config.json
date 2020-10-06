@@ -1,0 +1,36 @@
+{
+  "1": {
+    "Multicall": "0xeefba1e63905ef1d7acba5a8513c70307c1ce441",
+    "AmmFactory": "",
+    "Cashes": [
+      { "address": "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2", "name": "wrapped ETH", "symbol": "wETH" },
+      {
+        "address": "0x6b175474e89094c44da98b954eedeac495271d0f",
+        "name": "DAI",
+        "symbol": "DAI"
+      }
+    ],
+    "augurClient": "https://api.thegraph.com/subgraphs/name/augurproject/augur-v2",
+    "network": "mainnet"
+  },
+  "42": {
+    "Multicall": "0x2cc8688c5f75e365aaeeb4ea8d6a480405a48d2a",
+    "AmmFactory": "0x667C97e2783fc2A014fA8Bca82bf0Bd9bbb38E4d",
+    "Cashes": [
+      {
+        "address": "0x7290c2b7D5Fc91a112d462fe06aBBB8948668f56",
+        "name": "wrapped ETH",
+        "symbol": "wETH",
+        "asset": "weth.svg"
+      },
+      {
+        "address": "0x5bc0ceB4d813282C4468288C8AB42Af5e7a43B27",
+        "name": "DAI",
+        "symbol": "DAI",
+        "asset": "dai.svg"
+      }
+    ],
+    "augurClient": "https://api.thegraph.com/subgraphs/name/augurproject/augur-v2-staging",
+    "network": "kovan"
+  }
+}
