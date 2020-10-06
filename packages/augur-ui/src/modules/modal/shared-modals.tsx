@@ -16,6 +16,7 @@ import {
   PROCEEDS_TO_CLAIM_TITLE,
   MAX_BULK_CLAIM_MARKETS_PROCEEDS_COUNT,
   NEW_ORDER_GAS_ESTIMATE,
+  THEMES,
 } from 'modules/common/constants';
 import { selectReportingWinningsByMarket } from 'modules/positions/selectors/select-reporting-winnings-by-market';
 import { getTransactionLabel } from 'modules/auth/helpers/get-gas-price';
@@ -58,6 +59,7 @@ import { startOrderSending } from 'modules/orders/actions/liquidity-management';
 import { Getters } from '@augurproject/sdk';
 import getUserOpenOrders from 'modules/orders/selectors/user-open-orders';
 import { getGasCost } from 'modules/modal/gas';
+import { getWager } from 'utils/get-odds';
 
 export const ModalClaimFees = () => {
   const {
@@ -366,7 +368,11 @@ export const ModalClaimMarketsProceeds = () => {
     ethToDaiRate,
     blockchain: { currentAugurTimestamp: currentTimestamp },
     actions: { closeModal },
+    theme,
+    accountPositions
   } = useAppStatusStore();
+
+  const isSportsTheme = theme === THEMES.SPORTS;
   const gasPrice = gasPriceInfo.userDefinedGasPrice || gasPriceInfo.average;
   const accountMarketClaimablePositions: MarketClaimablePositions = getLoginAccountClaimableWinnings();
 
@@ -381,6 +387,7 @@ export const ModalClaimMarketsProceeds = () => {
   ) {
     claimableMarkets = accountMarketClaimablePositions.markets.map(
       (market: MarketData) => {
+        const winningOutcomeId = parseInt(market.consensusFormatted.outcome);
         const marketId = market.id;
         const claimablePosition =
           accountMarketClaimablePositions.positions[marketId];
@@ -391,17 +398,35 @@ export const ModalClaimMarketsProceeds = () => {
         const unclaimedProceeds = formatDai(
           claimablePosition.unclaimedProceeds
         );
+        const unclaimedProfit = formatDai(
+          claimablePosition.unclaimedProfit
+        );
+        let properties = [];
+        if (isSportsTheme) {
+         const position = accountPositions[marketId]?.tradingPositions[winningOutcomeId];
+         const wager = getWager(position.netPosition, position.averagePrice);
+          properties.push({
+            label: 'Wager',
+            value: formatDai(wager).full,
+          })
+          properties.push({
+            label: 'Winnings',
+            value: unclaimedProfit.full,
+          });
+        };
+        properties.push(
+          {
+            label: isSportsTheme ? 'Total returns after market fees' : 'Proceeds after market fees',
+            value: unclaimedProceeds.full,
+          },
+        );
+
         return {
           marketId,
           title: market.description,
           status: pending && pending.status,
-          properties: [
-            {
-              label: 'Proceeds after market fees',
-              value: unclaimedProceeds.full,
-            },
-          ],
-          text: PROCEEDS_TO_CLAIM_TITLE,
+          properties,
+          text: 'Claim',
           action: showBreakdown
             ? () => startClaimingMarketsProceeds([marketId], account, () => {})
             : null,

@@ -195,7 +195,7 @@ const ModalReporting = ({
     let radioButtons = sortedOutcomes
       .filter(outcome => (marketType === SCALAR ? outcome.id === 0 : true))
       .map(outcome => {
-        let stake = disputeInfo.stakes.find(
+        let stake = disputeInfo?.stakes.find(
           stake => parseFloat(stake.outcome) === outcome.id
         );
 
@@ -340,7 +340,7 @@ const ModalReporting = ({
     } else {
       // disputing
       let contributeToTentativeWinner = false;
-      const tentativeWinningStake = disputeInfo.stakes.find(
+      const tentativeWinningStake = disputeInfo?.stakes.find(
         s => s.tentativeWinning
       );
       if (isSelectedOutcomeInvalid && tentativeWinningStake.isInvalidOutcome) {
@@ -350,7 +350,7 @@ const ModalReporting = ({
         contributeToTentativeWinner = true;
       }
       if (marketType === SCALAR) {
-        const selectedOutcome = disputeInfo.stakes.find(
+        const selectedOutcome = disputeInfo?.stakes.find(
           s => s.outcome === selectedRadio.id
         );
         if (selectedOutcome && selectedOutcome.tentativeWinning)
