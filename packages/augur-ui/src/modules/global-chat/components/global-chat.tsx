@@ -1,9 +1,10 @@
-import React, { lazy, Suspense, useState } from 'react';
+import React, { lazy, Suspense, useState, useEffect, useReducer } from 'react';
 import Styles from 'modules/global-chat/components/global-chat.styles.less';
 import { SecondaryButton } from 'modules/common/buttons';
 import { useAppStatusStore } from 'modules/app/store/app-status';
 import { Close, ThickChevron } from 'modules/common/icons';
 import classNames from 'classnames';
+import { THEMES } from 'modules/common/constants';
 
 const ThreeBoxChat = lazy(() =>
   import(/* webpackChunkName: '3box-chat' */ 'modules/global-chat/components/three-box-chat')
@@ -11,17 +12,18 @@ const ThreeBoxChat = lazy(() =>
 
 export const GlobalChat = () => {
   const [show, setShow] = useState(false);
-    const {
-      isLogged,
-      loginAccount: {
-        meta: { signer } = { signer: null },
-      },
-      env: {
-        plugins: { chat } = { chat: null },
-      },
-      initialized3box,
-      actions: { setInitialized3Box },
-    } = useAppStatusStore();
+  const {
+    isLogged,
+    loginAccount: {
+      meta: { signer } = { signer: null },
+    },
+    env: {
+      plugins: { chat } = { chat: null },
+    },
+    initialized3box,
+    actions: { setInitialized3Box },
+    theme,
+  } = useAppStatusStore();
   const provider = signer ? signer.provider?._web3Provider : false;
 
   return (
@@ -48,7 +50,9 @@ export const GlobalChat = () => {
             <span>Global Chat</span>
             <button onClick={() => setShow(!show)}>{Close}</button>
           </div>
-          <iframe src="./chat/index.html#/channel/augur" />
+          {theme === THEMES.TRADING && <iframe src="./chat/index.html#/channel/augur" name={theme} />}
+          {theme === THEMES.BETTING && <iframe src="./chat/index.html#/channel/augur" name={theme} />}
+          {theme === THEMES.SPORTS && <iframe src="./chat/index.html#/channel/augur" name={theme} />}
         </div>
       )}
       {isLogged && chat === '3box' && (
