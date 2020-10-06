@@ -42,7 +42,6 @@ import {
   MarketClaimablePositions,
   MarketReportClaimableContracts,
 } from 'modules/types';
-import { createSelector } from 'reselect';
 import { isSameAddress } from 'utils/isSameAddress';
 import { AppStatus } from 'modules/app/store/app-status';
 import { Markets } from 'modules/markets/store/markets';
