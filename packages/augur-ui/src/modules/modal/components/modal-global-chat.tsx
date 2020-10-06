@@ -36,7 +36,7 @@ export const ModalGlobalChat = () => {
           <button onClick={() => closeModal()}>{Close}</button>
         </div>
         {chat === 'orbit' && (
-          <iframe src="./chat/index.html#/channel/augur" name={theme} />
+          <iframe src="./chat/index.html#/channel/augur" name={theme} key={theme} />
         )}
         {isLogged && chat === '3box' && (
           <Suspense fallback={null}>

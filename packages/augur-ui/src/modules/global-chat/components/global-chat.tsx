@@ -1,4 +1,4 @@
-import React, { lazy, Suspense, useState, useEffect, useReducer } from 'react';
+import React, { lazy, Suspense, useState, useEffect, useReducer, useMemo } from 'react';
 import Styles from 'modules/global-chat/components/global-chat.styles.less';
 import { SecondaryButton } from 'modules/common/buttons';
 import { useAppStatusStore } from 'modules/app/store/app-status';
@@ -12,6 +12,7 @@ const ThreeBoxChat = lazy(() =>
 
 export const GlobalChat = () => {
   const [show, setShow] = useState(false);
+
   const {
     isLogged,
     loginAccount: {
@@ -50,9 +51,7 @@ export const GlobalChat = () => {
             <span>Global Chat</span>
             <button onClick={() => setShow(!show)}>{Close}</button>
           </div>
-          {theme === THEMES.TRADING && <iframe src="./chat/index.html#/channel/augur" name={theme} />}
-          {theme === THEMES.BETTING && <iframe src="./chat/index.html#/channel/augur" name={theme} />}
-          {theme === THEMES.SPORTS && <iframe src="./chat/index.html#/channel/augur" name={theme} />}
+          <iframe src="./chat/index.html#/channel/augur" name={theme} key={theme} />
         </div>
       )}
       {isLogged && chat === '3box' && (
