@@ -474,6 +474,7 @@ export const ModalClaimMarketsProceeds = () => {
         {
           preText: 'You currently have a total of',
           boldText: totalUnclaimedProceedsFormatted.full,
+          postText: 'to be claimed'
         },
       ]}
       rows={claimableMarkets}
