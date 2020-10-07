@@ -1,5 +1,4 @@
 import React, { createContext, useContext, useReducer, useMemo, useCallback } from 'react'
-import { AugurLite } from "@augurproject/sdk-lite";
 
 import { ethers } from 'ethers'
 
@@ -85,15 +84,7 @@ export function useAccountWeb3() {
       let chainId = 42 // default to kovan for testing
       // provide chainId here
       if (network === 'mainnet') chainId = 1
-
-      const augurLiteClient = await AugurLite.makeLiteClient(
-        provider,
-        {'AMMFactory': {address: ammFactoryAddress}},
-        String(chainId)
-      );
-      // needed for calling amm factory
-      const ammFactory = augurLiteClient.ammFactory.connect(provider.getSigner());
-      updateWeb3({ address, provider, signer, network, chainId, library: provider, client: augurLiteClient, ammFactory })
+      updateWeb3({ address, provider, signer, network, chainId, library: provider })
     }
 
     window.ethereum
