@@ -14,6 +14,7 @@ import {
   loginWithInjectedWeb3,
 } from 'modules/auth/actions/login-with-injected-web3';
 import { loginWithTorus } from 'modules/auth/actions/login-with-torus';
+import { loginWithPortis } from 'modules/auth/actions/login-with-portis';
 import { logout } from 'modules/auth/actions/logout';
 import {
   ACCOUNT_TYPES,
@@ -74,6 +75,11 @@ async function loadAccountIfStored() {
         }
         await loginWithInjectedWeb3();
       }
+
+      if (loggedInAccountType === ACCOUNT_TYPES.PORTIS) {
+        await loginWithPortis(false, setModal);
+      }
+
       if (loggedInAccountType === ACCOUNT_TYPES.FORTMATIC) {
         await loginWithFortmatic();
       }

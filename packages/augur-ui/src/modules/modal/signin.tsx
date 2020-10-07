@@ -24,12 +24,14 @@ import {
   HELP_CENTER_THIRD_PARTY_COOKIES,
   SIGNIN_LOADING_TEXT_TORUS,
   SIGNIN_LOADING_TEXT_FORTMATIC,
+  SIGNIN_LOADING_TEXT_PORTIS,
   SIGNIN_LOADING_TEXT,
   SIGNIN_SIGN_WALLET,
 } from 'modules/common/constants';
 import { loginWithInjectedWeb3 } from 'modules/auth/actions/login-with-injected-web3';
 import { loginWithTorus } from 'modules/auth/actions/login-with-torus';
 import { loginWithFortmatic } from 'modules/auth/actions/login-with-fortmatic';
+import { loginWithPortis } from 'modules/auth/actions/login-with-portis';
 import { windowRef } from 'utils/window-ref';
 import isMetaMaskPresent from 'modules/auth/helpers/is-meta-mask';
 import { isSafari } from 'utils/is-safari';
@@ -57,6 +59,7 @@ export const SignIn = ({ isLogin }) => {
   const connectMetaMask = () => loginWithInjectedWeb3();
   const connectTorus = () => loginWithTorus();
   const connectFortmatic = (withEmail) => loginWithFortmatic(withEmail);
+  const connectPortis = (showRegister) => loginWithPortis(showRegister, setModal);
   const errorModal = (error, title = null, link = null, linkLabel = null) =>
     setModal({
       type: MODAL_ERROR,
@@ -71,6 +74,7 @@ export const SignIn = ({ isLogin }) => {
   const onError = (error, accountType) => {
     console.error(`ERROR:${accountType}`, error);
 
+    const isPortisCancelError = accountType === ACCOUNT_TYPES.PORTIS && error.message.indexOf('User denied login') !== -1;
     const isFortmaticCancelError =
       accountType === ACCOUNT_TYPES.FORTMATIC &&
       error.message.indexOf('User denied account access') !== -1;
@@ -81,6 +85,7 @@ export const SignIn = ({ isLogin }) => {
     // If the error we get back from the wallet SDK is "User denied access", aka Cancel/Close wallet window, we should just close the modal
     if (
       isTorusExitCancelError ||
+      isPortisCancelError ||
       isFortmaticCancelError
     ) {
       closeModal();
@@ -158,10 +163,10 @@ export const SignIn = ({ isLogin }) => {
       subText: `Powered by ${ACCOUNT_TYPES.PORTIS}`,
       hidden: isSafari() ? true : false,
       action: async () => {
-        loadingModal(SIGNIN_LOADING_TEXT_TORUS, () => login());
+        loadingModal(SIGNIN_LOADING_TEXT_PORTIS, () => login());
         try {
           const forceRegisterPage = isLogin ? false : true;
-          // await connectPortis(forceRegisterPage);
+          await connectPortis(forceRegisterPage);
         } catch (error) {
           onError(error, ACCOUNT_TYPES.PORTIS);
         }
