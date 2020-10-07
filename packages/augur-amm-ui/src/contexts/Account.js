@@ -1,9 +1,11 @@
 import React, { createContext, useContext, useReducer, useMemo, useCallback } from 'react'
+import { AugurLite } from "@augurproject/sdk-lite";
+
 import { ethers } from 'ethers'
 
 import dayjs from 'dayjs'
 import utc from 'dayjs/plugin/utc'
-//import getLibrary from '../utils/getLibrary'
+import { getAmmFactoryAddress } from './Application';
 
 const WEB3 = 'web3'
 const UPDATE_WEB3 = ' UPDATE_WEB3'
@@ -73,6 +75,7 @@ export function useAccountWeb3() {
   }
 
   async function getWeb3() {
+    const ammFactoryAddress = getAmmFactoryAddress()
     const login = async addresses => {
       console.log('login', addresses[0])
       const address = addresses[0]
@@ -82,7 +85,15 @@ export function useAccountWeb3() {
       let chainId = 42 // default to kovan for testing
       // provide chainId here
       if (network === 'mainnet') chainId = 1
-      updateWeb3({ address, provider, signer, network, chainId, library: provider })
+
+      const augurLiteClient = await AugurLite.makeLiteClient(
+        provider,
+        {'AMMFactory': {address: ammFactoryAddress}},
+        String(chainId)
+      );
+      // needed for calling amm factory
+      const ammFactory = augurLiteClient.ammFactory.connect(provider.getSigner());
+      updateWeb3({ address, provider, signer, network, chainId, library: provider, client: augurLiteClient, ammFactory })
     }
 
     window.ethereum
