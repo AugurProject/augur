@@ -114,7 +114,7 @@ Deploying to: ${env}
             || externalAddresses.Cash
             || externalAddresses.WETH9) {
             if (!(externalAddresses.Cash && externalAddresses.WETH9)) {
-                throw new Error('Must provide ALL Maker contracts if any are provided');
+                throw new Error('Must provide ALL Maker contracts if any are provided, or if deploying to production.');
             }
 
             console.log(`Registering Cash Contract at ${externalAddresses.Cash}`);
@@ -123,8 +123,25 @@ Deploying to: ${env}
             // WETH 9
             console.log(`Registering WETH9 Contract at ${externalAddresses.WETH9}`);
             await this.augurTrading!.registerContract(stringTo32ByteHex('WETH9'), externalAddresses.WETH9);
+
         } else {
             await this.uploadTestDaiContracts();
+        }
+
+        if (this.configuration.deploy.isProduction
+            || externalAddresses.USDC
+            || externalAddresses.USDT
+        ) {
+            if (!(externalAddresses.Cash && externalAddresses.WETH9)) {
+                throw new Error('Must provide USDC and USDT addresses if either is provided, or if deploying to production.');
+            }
+
+            console.log(`Registering USDC Contract at ${externalAddresses.USDC}`);
+            await this.augur!.registerContract(stringTo32ByteHex('USDC'), externalAddresses.USDC);
+
+            console.log(`Registering USDT Contract at ${externalAddresses.USDT}`);
+            await this.augur!.registerContract(stringTo32ByteHex('USDT'), externalAddresses.USDT);
+        } else {
             await this.uploadTestUSDxContracts();
         }
 
@@ -235,10 +252,11 @@ Deploying to: ${env}
           await this.generateLocalEnvFile(env, blockNumber, this.configuration);
         }
 
-        console.log('Finalizing deployment');
+        console.log('Finalizing deployment: Augur');
         await this.augur.finishDeployment();
+        console.log('Finalizing deployment: AugurTrading');
         await this.augurTrading.finishDeployment();
-
+        console.log('Generating address mapping');
         return await this.generateCompleteAddressMapping();
     }
 
@@ -292,8 +310,8 @@ Deploying to: ${env}
         mapping['Augur'] = this.contracts.get('Augur').address!;
         mapping['LegacyReputationToken'] = this.contracts.get('LegacyReputationToken').address!;
         mapping['Cash'] = this.getContractAddress('Cash');
-        const USDCAddress = this.configuration.deploy.externalAddresses.USDC || this.getContractAddress('USDC');
-        const USDTAddress = this.configuration.deploy.externalAddresses.USDT || this.getContractAddress('USDT');
+        const USDCAddress = this.getContractAddress('USDC');
+        const USDTAddress = this.getContractAddress('USDT');
         mapping['USDC'] = USDCAddress;
         mapping['USDT'] = USDTAddress;
         mapping['BuyParticipationTokens'] = this.contracts.get('BuyParticipationTokens').address!;
@@ -304,15 +322,17 @@ Deploying to: ${env}
         mapping['UniswapV2Factory'] = this.contracts.get('UniswapV2Factory').address!;
         mapping['UniswapV2Router02'] = this.contracts.get('UniswapV2Router02').address!;
         const uniswapV2Factory = new UniswapV2Factory(this.dependencies, this.getContractAddress('UniswapV2Factory'));
+        console.log('Acquiring uniswap pair for WETH and Cash');
         mapping['EthExchange'] = await uniswapV2Factory.getPair_(this.getContractAddress('WETH9'), this.getContractAddress('Cash'));
+        console.log('Acquiring uniswap pair for USDC and Cash');
         mapping['USDCExchange'] = await uniswapV2Factory.getPair_(USDCAddress, this.getContractAddress('Cash'));
+        console.log('Acquiring uniswap pair for USDT and Cash');
         mapping['USDTExchange'] = await uniswapV2Factory.getPair_(USDTAddress, this.getContractAddress('Cash'));
+
         mapping['AuditFunds'] = this.contracts.get('AuditFunds').address!;
         mapping['AccountLoader'] = this.contracts.get('AccountLoader').address!;
-
         mapping['OICash'] = this.contracts.get('OICash').address!;
         mapping['AugurWalletRegistry'] = this.contracts.get('AugurWalletRegistry').address!;
-
         mapping['AMMFactory'] = this.contracts.get('AMMFactory').address!;
 
         for (let contract of this.contracts) {
@@ -362,7 +382,8 @@ Deploying to: ${env}
     }
 
     getContractAddress = (contractName: string): string => {
-        if (this.configuration.deploy.externalAddresses[contractName]) return this.configuration.deploy.externalAddresses[contractName];
+        const external = this.configuration.deploy.externalAddresses[contractName];
+        if (external) return external;
         if (!this.contracts.has(contractName)) throw new Error(`Contract named ${contractName} does not exist.`);
         const contract = this.contracts.get(contractName);
         if (contract.address === undefined) throw new Error(`Contract name ${contractName} has not yet been uploaded.`);
