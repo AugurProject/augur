@@ -85,7 +85,7 @@
     "@augurproject/contract-dependencies-ethers": "^2.1.9",
     "@augurproject/solidity-docgen": "0.2.0-alpha.3",
     "bignumber.js": "9.0.0",
-    "ethers": "5.0.8",
+    "ethers": "4.0.47",
     "path": "0.12.7"
   },
   "devDependencies": {
