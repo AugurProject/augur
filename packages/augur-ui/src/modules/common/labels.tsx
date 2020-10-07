@@ -1079,6 +1079,7 @@ export const MarketStatusLabel = ({
   isWarpSync = false,
 }: MarketStatusLabelProps) => {
   const { theme } = useAppStatusStore();
+  const isSportsbook = theme === constants.THEMES.SPORTS;
   let open = false;
   let resolved = false;
   let reporting = false;
@@ -1091,7 +1092,7 @@ export const MarketStatusLabel = ({
       break;
     case REPORTING_STATE.AWAITING_FINALIZATION:
       resolved = true;
-      text = constants.MARKET_STATUS_MESSAGES.AWAITING_RESOLVED;
+      text = isSportsbook ? constants.MARKET_STATUS_MESSAGES.RESOLVED : constants.MARKET_STATUS_MESSAGES.AWAITING_RESOLVED;
       break;
     case REPORTING_STATE.FINALIZED:
       resolved = true;
@@ -1099,7 +1100,7 @@ export const MarketStatusLabel = ({
       break;
     default:
       reporting = true;
-      text = theme === constants.THEMES.SPORTS ? constants.MARKET_STATUS_MESSAGES.IN_SETTLEMENT : constants.MARKET_STATUS_MESSAGES.IN_REPORTING;
+      text = isSportsbook ? constants.MARKET_STATUS_MESSAGES.IN_SETTLEMENT : constants.MARKET_STATUS_MESSAGES.IN_REPORTING;
       break;
   }
 
