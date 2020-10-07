@@ -2,8 +2,9 @@ import React from 'react';
 import classNames from 'classnames';
 import FilterSearch from 'modules/filter-sort/filter-search';
 import MarketCardFormatSwitcher from 'modules/filter-sort/market-card-format-switcher';
+import { THEMES } from 'modules/common/constants';
 import Styles from 'modules/markets-list/components/markets-header.styles.less';
-import { FilterButton } from 'modules/common/buttons';
+import { FilterButton, SportsSortButton } from 'modules/common/buttons';
 import FilterDropDowns from 'modules/filter-sort/filter-dropdowns';
 import { useAppStatusStore } from 'modules/app/store/app-status';
 
@@ -13,6 +14,7 @@ interface MarketsHeaderProps {
 
 const MarketsHeader: React.FC<MarketsHeaderProps> = ({ headerTitle }) => {
   const {
+    theme,
     marketsList: { isSearching },
   } = useAppStatusStore();
   return (
@@ -24,7 +26,7 @@ const MarketsHeader: React.FC<MarketsHeaderProps> = ({ headerTitle }) => {
       <div>
         <FilterSearch />
         {/* MOBILE FILTERS TOGGLE */}
-        <FilterButton />
+        {theme === THEMES.TRADING ? <FilterButton /> : <SportsSortButton />}
       </div>
       <div>
         <h2>{headerTitle}</h2>

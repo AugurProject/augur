@@ -26,6 +26,7 @@ import {
   DownloadIcon,
   RotatableChevron,
   Filter,
+  SportsbookFilter,
   TwoArrowsOutline,
   XIcon,
   BackIcon,
@@ -1104,6 +1105,23 @@ export const FilterButton = ({
     >
       {title || 'Filters'}
       {Filter}
+    </button>
+  );
+};
+
+export const SportsSortButton = ({
+  action = () => {},
+  disabled = false,
+  title = 'Sort By',
+}) => {
+  return (
+    <button
+      onClick={action}
+      className={Styles.SportsSortButton}
+      disabled={disabled}
+    >
+      {SportsbookFilter}
+      {title}
     </button>
   );
 };
