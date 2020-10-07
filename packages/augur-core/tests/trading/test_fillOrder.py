@@ -47,6 +47,11 @@ def test_publicFillOrder_bid(contractsFixture, cash, market, universe):
         "frozenFunds": fix(fillerCost),
     }
 
+    if contractsFixture.paraAugur:
+        orderEventLog['para'] = cash.address
+        marketVolumeChangedLog['para'] = cash.address
+        profitLossChangedLog['para'] = cash.address
+
     with BuyWithCash(cash, fillerCost, contractsFixture.accounts[2], "filling order"):
         with AssertLog(contractsFixture, "ProfitLossChanged", profitLossChangedLog):
             with AssertLog(contractsFixture, "OrderEvent", orderEventLog):

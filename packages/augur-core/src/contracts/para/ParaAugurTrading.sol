@@ -61,12 +61,14 @@ contract ParaAugurTrading is IAugurTrading, Ownable {
 
     IAugur public augur;
     IShareToken public shareToken;
+    ICash public cash;
 
     uint256 private constant MAX_APPROVAL_AMOUNT = 2 ** 256 - 1;
 
     constructor(IAugur _augur) public {
         owner = msg.sender;
         augur = _augur;
+        cash = ICash(_augur.lookup("Cash"));
     }
 
     function registerContract(bytes32 _key, address _address) public onlyOwner returns (bool) {
@@ -80,7 +82,7 @@ contract ParaAugurTrading is IAugurTrading, Ownable {
         bytes32[3] memory _names = [bytes32("CancelOrder"), bytes32("FillOrder"), bytes32("CreateOrder")];
 
         shareToken = IShareToken(augur.lookup("ShareToken"));
-        ICash _cash = ICash(augur.lookup("Cash"));
+        ICash _cash = cash;
 
         require(shareToken != IShareToken(0));
         require(_cash != ICash(0));
@@ -140,7 +142,7 @@ contract ParaAugurTrading is IAugurTrading, Ownable {
 
     function logProfitLossChanged(IMarket _market, address _account, uint256 _outcome, int256 _netPosition, uint256 _avgPrice, int256 _realizedProfit, int256 _frozenFunds, int256 _realizedCost) public returns (bool) {
         require(msg.sender == registry["ProfitLoss"]);
-        emit ProfitLossChanged(address(_market.getUniverse()), address(_market), _account, _outcome, _netPosition, _avgPrice, _realizedProfit, _frozenFunds, _realizedCost, augur.getTimestamp(), registry['Cash']);
+        emit ProfitLossChanged(address(_market.getUniverse()), address(_market), _account, _outcome, _netPosition, _avgPrice, _realizedProfit, _frozenFunds, _realizedCost, augur.getTimestamp(), address(cash));
         return true;
     }
 
@@ -152,7 +154,7 @@ contract ParaAugurTrading is IAugurTrading, Ownable {
         _uint256Data[3] = _tokenRefund;
         _uint256Data[4] = _sharesRefund;
         _uint256Data[7] = augur.getTimestamp();
-        emit OrderEvent(address(_universe), address(_market), OrderEventType.Cancel, uint8(_orderType), _orderId, 0, _addressData, _uint256Data, registry['Cash']);
+        emit OrderEvent(address(_universe), address(_market), OrderEventType.Cancel, uint8(_orderType), _orderId, 0, _addressData, _uint256Data, address(cash));
         return true;
     }
 
@@ -161,7 +163,7 @@ contract ParaAugurTrading is IAugurTrading, Ownable {
         IOrders _orders = IOrders(registry["Orders"]);
         (Order.Types _orderType, address[] memory _addressData, uint256[] memory _uint256Data) = _orders.getOrderDataForLogs(_orderId);
         _uint256Data[7] = augur.getTimestamp();
-        emit OrderEvent(address(_universe), address(_orders.getMarket(_orderId)), OrderEventType.Create, uint8(_orderType), _orderId, _tradeGroupId, _addressData, _uint256Data, registry['Cash']);
+        emit OrderEvent(address(_universe), address(_orders.getMarket(_orderId)), OrderEventType.Create, uint8(_orderType), _orderId, _tradeGroupId, _addressData, _uint256Data, address(cash));
         return true;
     }
 
@@ -175,27 +177,27 @@ contract ParaAugurTrading is IAugurTrading, Ownable {
         _uint256Data[5] = _fees;
         _uint256Data[6] = _amountFilled;
         _uint256Data[7] = augur.getTimestamp();
-        emit OrderEvent(address(_universe), address(_orders.getMarket(_orderId)), OrderEventType.Fill, uint8(_orderType), _orderId, _tradeGroupId, _addressData, _uint256Data, registry['Cash']);
+        emit OrderEvent(address(_universe), address(_orders.getMarket(_orderId)), OrderEventType.Fill, uint8(_orderType), _orderId, _tradeGroupId, _addressData, _uint256Data, address(cash));
         return true;
     }
 
     function logMarketVolumeChanged(IUniverse _universe, address _market, uint256 _volume, uint256[] memory _outcomeVolumes, uint256 _totalTrades) public returns (bool) {
         require(msg.sender == registry["FillOrder"]);
-        emit MarketVolumeChanged(address(_universe), _market, _volume, _outcomeVolumes, _totalTrades, augur.getTimestamp(), registry['Cash']);
+        emit MarketVolumeChanged(address(_universe), _market, _volume, _outcomeVolumes, _totalTrades, augur.getTimestamp(), address(cash));
         return true;
     }
 
     function logZeroXOrderFilled(IUniverse _universe, IMarket _market, bytes32 _orderHash, bytes32 _tradeGroupId, uint8 _orderType, address[] memory _addressData, uint256[] memory _uint256Data) public returns (bool) {
         require(msg.sender == registry["ZeroXTrade"]);
         _uint256Data[7] = augur.getTimestamp();
-        emit OrderEvent(address(_universe), address(_market), OrderEventType.Fill, _orderType, _orderHash, _tradeGroupId, _addressData, _uint256Data, registry['Cash']);
+        emit OrderEvent(address(_universe), address(_market), OrderEventType.Fill, _orderType, _orderHash, _tradeGroupId, _addressData, _uint256Data, address(cash));
         return true;
     }
     
     function logZeroXOrderCanceled(address _universe, address _market, address _account, uint256 _outcome, uint256 _price, uint256 _amount, uint8 _type, bytes32 _orderHash) public {
         require(msg.sender == registry["ZeroXTrade"]);
         require(augur.isKnownMarket(IMarket(_market)));
-        emit CancelZeroXOrder(_universe, _market, _account, _outcome, _price, _amount, _type, _orderHash, registry['Cash']);
+        emit CancelZeroXOrder(_universe, _market, _account, _outcome, _price, _amount, _type, _orderHash, address(cash));
     }
 
     function onTransferOwnership(address, address) internal {}
