@@ -19,6 +19,7 @@ export const ModalGlobalChat = () => {
     },
     initialized3box,
     actions: { closeModal, setInitialized3Box },
+    theme,
   } = useAppStatusStore();
   const provider = signer ? signer.provider?._web3Provider : false;
 
@@ -35,7 +36,7 @@ export const ModalGlobalChat = () => {
           <button onClick={() => closeModal()}>{Close}</button>
         </div>
         {chat === 'orbit' && (
-          <iframe src="./chat/index.html#/channel/augur" />
+          <iframe src="./chat/index.html#/channel/augur" name={theme} key={theme} />
         )}
         {isLogged && chat === '3box' && (
           <Suspense fallback={null}>

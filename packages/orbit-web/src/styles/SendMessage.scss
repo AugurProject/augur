@@ -9,6 +9,7 @@
   max-width: 100%;
   margin-top: 0;
   height: 100%;
+  padding: 0.1875rem 0 0.1875rem 0.1875rem; // 3px
 
   form {
     display: flex;
@@ -22,11 +23,11 @@
     margin-bottom: 0.5em;
     flex: 1 1 100%;
 
-    font-family: "Roboto";
+    font-family: 'Inter', sans-serif;
     font-weight: 400;
 
     color: $input-text-color;
-    background-color: #0E0E0F;
+    background-color: var(--orbit-dark-grey);
 
     border: 1px solid #252429;
 
@@ -36,12 +37,12 @@
   }
 
   textarea {
-    font-family: "Roboto";
+    font-family: 'Inter', sans-serif;
     font-weight: 400;
     font-size: 0.75rem; // 12px
 
-    color: $orbit-color-primary-text;
-    background-color: #0E0E0F;
+    color: var(--orbit-color-primary-text);
+    background-color: var(--orbit-dark-grey);
 
     border: 1px solid #252429;
     border-radius: 0.1875rem; // 3px
@@ -60,7 +61,7 @@
   }
 
   textarea::placeholder {
-    color: $orbit-color-secondary-text;
+    color: var(--orbit-color-secondary-text);
     opacity: 1;
   }
 
@@ -74,5 +75,17 @@
     color: $main-text-color;
     margin-right: 0.5em;
     padding: 0em 0.25em;
+  }
+}
+
+:root[theme='BETTING'],
+:root[theme='SPORTS'] {
+  .SendMessage {
+    padding: 1rem 0 1rem 1rem; // 16px
+
+    > form > textarea {
+      border: 0.0625rem solid var(--color-outline); // 1px
+      padding: 0.625rem 0.75rem; // 10px & 12px
+    }
   }
 }

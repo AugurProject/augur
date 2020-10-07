@@ -61,6 +61,8 @@ function AppView ({ isAuthenticated }) {
   const location = useLocation()
   const redirectToLogin = usePrivateRoutes(['/', '/settings', '/channel/:channel'], isAuthenticated)
 
+  document.getElementsByTagName("html")[0].setAttribute("theme", typeof window !== "undefined" && window.name);
+
   return (
     <div className='App view'>
       <React.Suspense fallback={<BigSpinner />}>

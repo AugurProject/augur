@@ -8,8 +8,7 @@ input {
 }
 
 ::placeholder {
-  color: $placeholder-color;
-  font-style: italic;
+  color: var(--orbit-color-secondary-text);
 }
 
 .App {
@@ -26,7 +25,7 @@ $channel-name-max-height: 5.5vmin;
 $channel-name-min-height: 1.5em;
 
 .view {
-  background-color: $orbit-page-background;
+  background-color: var(--orbit-page-background);
   padding: 0;
   margin: 0;
 }
