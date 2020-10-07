@@ -1050,7 +1050,7 @@ export class ReportingRadioBar extends Component<ReportingRadioBarProps, {}> {
       >
         {checked ? FilledRadio : EmptyRadio}
         <h5>{isInvalid ? INVALID_OUTCOME_LABEL : header}</h5>
-        <div onClick={e => e.stopPropagation()}>
+        {(isDisputing || checked) && <div onClick={e => e.stopPropagation()}>
           {isDisputing && ( // for disputing or for scalar
             <>
               {!stake.tentativeWinning && checked && (
@@ -1132,6 +1132,7 @@ export class ReportingRadioBar extends Component<ReportingRadioBarProps, {}> {
             />
           )}
         </div>
+        }
       </div>
     );
   }
