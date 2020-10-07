@@ -47,14 +47,14 @@ export class AMMFactory {
       100,
       async (setsToBuy) => {
         const setsToSell = setsToBuy.minus(minBuy);
-        const {_yesses, _nos} = await this.contract.static.sharesRateForAddLiquidityThenSwap(setsToBuy, swapForYes, setsToSell);
+        const {_yesses, _nos} = await this.contract.sharesRateForAddLiquidityThenSwap(setsToBuy, swapForYes, setsToSell);
         return swapForYes ? bnDirection(yesShares, _yesses) : bnDirection(noShares, _nos);
       }
     );
 
     const setsSwapped = setsBought.minus(minBuy);
 
-    const lpTokens = await this.contract.static.rateAddLiquidityThenSwap(setsBought, swapForYes, setsSwapped);
+    const lpTokens = await this.contract.rateAddLiquidityThenSwap(setsBought, swapForYes, setsSwapped);
     await this.contract.addAMMWithLiquidity(marketAddress, collateralAddress, setsBought, swapForYes, setsSwapped);
 
     return { amm, lpTokens };
