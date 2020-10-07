@@ -4,17 +4,17 @@ export const AMMFactoryAbi = [
       {
         'internalType': 'address',
         'name': '_proxyToClone',
-        'type': 'address',
+        'type': 'address'
       },
       {
         'internalType': 'uint256',
         'name': '_fee',
-        'type': 'uint256',
-      },
+        'type': 'uint256'
+      }
     ],
     'payable': false,
     'stateMutability': 'nonpayable',
-    'type': 'constructor',
+    'type': 'constructor'
   },
   {
     'constant': false,
@@ -22,25 +22,25 @@ export const AMMFactoryAbi = [
       {
         'internalType': 'contract IMarket',
         'name': '_market',
-        'type': 'address',
+        'type': 'address'
       },
       {
         'internalType': 'contract IParaShareToken',
         'name': '_para',
-        'type': 'address',
-      },
+        'type': 'address'
+      }
     ],
     'name': 'addAMM',
     'outputs': [
       {
         'internalType': 'address',
         'name': '',
-        'type': 'address',
-      },
+        'type': 'address'
+      }
     ],
     'payable': false,
     'stateMutability': 'nonpayable',
-    'type': 'function',
+    'type': 'function'
   },
   {
     'constant': false,
@@ -48,40 +48,66 @@ export const AMMFactoryAbi = [
       {
         'internalType': 'contract IMarket',
         'name': '_market',
-        'type': 'address',
+        'type': 'address'
       },
       {
         'internalType': 'contract IParaShareToken',
         'name': '_para',
-        'type': 'address',
+        'type': 'address'
       },
       {
         'internalType': 'uint256',
         'name': '_setsToBuy',
-        'type': 'uint256',
+        'type': 'uint256'
       },
       {
         'internalType': 'bool',
         'name': '_swapForYes',
-        'type': 'bool',
+        'type': 'bool'
       },
       {
         'internalType': 'uint256',
         'name': '_swapHowMuch',
-        'type': 'uint256',
-      },
+        'type': 'uint256'
+      }
     ],
     'name': 'addAMMWithLiquidity',
     'outputs': [
       {
         'internalType': 'address',
         'name': '',
-        'type': 'address',
-      },
+        'type': 'address'
+      }
     ],
     'payable': false,
     'stateMutability': 'nonpayable',
-    'type': 'function',
+    'type': 'function'
+  },
+  {
+    'constant': true,
+    'inputs': [
+      {
+        'internalType': 'contract IMarket',
+        'name': '_market',
+        'type': 'address'
+      },
+      {
+        'internalType': 'contract IParaShareToken',
+        'name': '_para',
+        'type': 'address'
+      }
+    ],
+    'name': 'calculateAMMAddress',
+    'outputs': [
+      {
+        'internalType': 'address',
+        'name': '',
+        'type': 'address'
+      }
+    ],
+    'payable': false,
+    'stateMutability': 'view',
+    'type': 'function'
   },
   {
     'constant': true,
@@ -89,30 +115,30 @@ export const AMMFactoryAbi = [
       {
         'internalType': 'address',
         'name': 'target',
-        'type': 'address',
+        'type': 'address'
       },
       {
         'internalType': 'uint256',
         'name': 'salt',
-        'type': 'uint256',
+        'type': 'uint256'
       },
       {
         'internalType': 'address',
         'name': 'creator',
-        'type': 'address',
-      },
+        'type': 'address'
+      }
     ],
     'name': 'clone2Address',
     'outputs': [
       {
         'internalType': 'address',
         'name': '',
-        'type': 'address',
-      },
+        'type': 'address'
+      }
     ],
     'payable': false,
     'stateMutability': 'pure',
-    'type': 'function',
+    'type': 'function'
   },
   {
     'constant': true,
@@ -120,25 +146,25 @@ export const AMMFactoryAbi = [
       {
         'internalType': 'address',
         'name': '',
-        'type': 'address',
+        'type': 'address'
       },
       {
         'internalType': 'address',
         'name': '',
-        'type': 'address',
-      },
+        'type': 'address'
+      }
     ],
     'name': 'exchanges',
     'outputs': [
       {
         'internalType': 'address',
         'name': '',
-        'type': 'address',
-      },
+        'type': 'address'
+      }
     ],
     'payable': false,
     'stateMutability': 'view',
-    'type': 'function',
+    'type': 'function'
   },
   {
     'constant': true,
@@ -148,12 +174,12 @@ export const AMMFactoryAbi = [
       {
         'internalType': 'uint256',
         'name': '',
-        'type': 'uint256',
-      },
+        'type': 'uint256'
+      }
     ],
     'payable': false,
     'stateMutability': 'view',
-    'type': 'function',
+    'type': 'function'
   },
   {
     'constant': true,
@@ -161,25 +187,25 @@ export const AMMFactoryAbi = [
       {
         'internalType': 'contract IMarket',
         'name': '_market',
-        'type': 'address',
+        'type': 'address'
       },
       {
         'internalType': 'contract IParaShareToken',
         'name': '_para',
-        'type': 'address',
-      },
+        'type': 'address'
+      }
     ],
     'name': 'salt',
     'outputs': [
       {
         'internalType': 'uint256',
         'name': '',
-        'type': 'uint256',
-      },
+        'type': 'uint256'
+      }
     ],
     'payable': false,
     'stateMutability': 'pure',
-    'type': 'function',
+    'type': 'function'
   },
   {
     'constant': false,
@@ -187,33 +213,33 @@ export const AMMFactoryAbi = [
       {
         'internalType': 'contract IMarket',
         'name': '_market',
-        'type': 'address',
+        'type': 'address'
       },
       {
         'internalType': 'contract IParaShareToken',
         'name': '_para',
-        'type': 'address',
+        'type': 'address'
       },
       {
         'internalType': 'address',
         'name': 'sender',
-        'type': 'address',
+        'type': 'address'
       },
       {
         'internalType': 'address',
         'name': 'recipient',
-        'type': 'address',
+        'type': 'address'
       },
       {
         'internalType': 'uint256',
         'name': 'quantity',
-        'type': 'uint256',
-      },
+        'type': 'uint256'
+      }
     ],
     'name': 'transferCash',
     'outputs': [],
     'payable': false,
     'stateMutability': 'nonpayable',
-    'type': 'function',
-  },
-];
+    'type': 'function'
+  }
+]

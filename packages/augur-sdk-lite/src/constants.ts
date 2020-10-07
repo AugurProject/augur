@@ -1,6 +1,7 @@
 import { TransactionMetadata } from '@augurproject/contract-dependencies-ethers';
 import { BigNumber } from 'bignumber.js';
 import { Order } from './onChainTrading';
+import { ethers } from 'ethers';
 
 export {
   ZERO,
@@ -297,3 +298,7 @@ export interface ZeroXOrders {
 }
 
 export const NullWarpSyncHash = 'QmNLei78zWmzUdbeRB3CiUfAizWUrbeeZh5K1rhAQKCh51';
+
+export const YES_NO_NUMTICKS = 10000;
+
+export type SignerOrProvider = ethers.Signer | ethers.providers.Provider;

@@ -309,7 +309,7 @@ contract AMMExchange is IAMMExchange, ERC20 {
         return (_invalid, _no, _yes);
     }
 
-    function yesNoShareBalances(address _owner) private view returns (uint256 _no, uint256 _yes) {
+    function yesNoShareBalances(address _owner) public view returns (uint256 _no, uint256 _yes) {
         uint256[] memory _tokenIds = new uint256[](2);
         _tokenIds[0] = NO;
         _tokenIds[1] = YES;

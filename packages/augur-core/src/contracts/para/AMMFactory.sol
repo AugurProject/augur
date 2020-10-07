@@ -47,4 +47,8 @@ contract AMMFactory is IAMMFactory, CloneFactory2 {
         require(msg.sender == address(amm), "AugurCP: non-exchange tried to send cash");
         amm.cash().transferFrom(sender, recipient, quantity);
     }
+
+    function calculateAMMAddress(IMarket _market, IParaShareToken _para) public view returns (address) {
+        return clone2Address(address(proxyToClone), salt(_market, _para), address(this));
+    }
 }

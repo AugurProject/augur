@@ -45,6 +45,7 @@ export class Contracts {
   paraUniverse: ContractInterfaces.ParaUniverse;
   erc20Proxy1155: ContractInterfaces.ERC20Proxy1155Nexus;
   ammFactory: ContractInterfaces.AMMFactory;
+  wethWrapperForAMMExchange: ContractInterfaces.WethWrapperForAMMExchange;
 
   reputationToken: SomeRepToken | null = null;
   private readonly dependencies: ContractDependenciesEthers;
@@ -269,6 +270,12 @@ export class Contracts {
     address: string
   ): ContractInterfaces.UniswapV2Pair {
     return new ContractInterfaces.UniswapV2Pair(this.dependencies, address);
+  }
+
+  wethWrapperForAMMExchangeFromAddress(
+    address: string
+  ): ContractInterfaces.WethWrapperForAMMExchange {
+    return new ContractInterfaces.WethWrapperForAMMExchange(this.dependencies, address);
   }
 
   async getOriginCash(): Promise<ContractInterfaces.Cash> {

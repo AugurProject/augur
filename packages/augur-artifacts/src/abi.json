@@ -22293,6 +22293,32 @@
 			"payable": false,
 			"stateMutability": "nonpayable",
 			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [
+				{
+					"internalType": "address",
+					"name": "_owner",
+					"type": "address"
+				}
+			],
+			"name": "yesNoShareBalances",
+			"outputs": [
+				{
+					"internalType": "uint256",
+					"name": "_no",
+					"type": "uint256"
+				},
+				{
+					"internalType": "uint256",
+					"name": "_yes",
+					"type": "uint256"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
 		}
 	],
 	"AMMFactory": [
@@ -22378,6 +22404,32 @@
 			],
 			"payable": false,
 			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [
+				{
+					"internalType": "contract IMarket",
+					"name": "_market",
+					"type": "address"
+				},
+				{
+					"internalType": "contract IParaShareToken",
+					"name": "_para",
+					"type": "address"
+				}
+			],
+			"name": "calculateAMMAddress",
+			"outputs": [
+				{
+					"internalType": "address",
+					"name": "",
+					"type": "address"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
 			"type": "function"
 		},
 		{
@@ -30104,6 +30156,295 @@
 			],
 			"payable": false,
 			"stateMutability": "pure",
+			"type": "function"
+		}
+	],
+	"WethWrapperForAMMExchange": [
+		{
+			"inputs": [
+				{
+					"internalType": "contract IAMMExchange",
+					"name": "_amm",
+					"type": "address"
+				},
+				{
+					"internalType": "contract WETH9",
+					"name": "_weth",
+					"type": "address"
+				}
+			],
+			"payable": false,
+			"stateMutability": "nonpayable",
+			"type": "constructor"
+		},
+		{
+			"constant": true,
+			"inputs": [],
+			"name": "INVALID",
+			"outputs": [
+				{
+					"internalType": "uint256",
+					"name": "",
+					"type": "uint256"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [],
+			"name": "NO",
+			"outputs": [
+				{
+					"internalType": "uint256",
+					"name": "",
+					"type": "uint256"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [],
+			"name": "YES",
+			"outputs": [
+				{
+					"internalType": "uint256",
+					"name": "",
+					"type": "uint256"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": false,
+			"inputs": [],
+			"name": "addLiquidity",
+			"outputs": [
+				{
+					"internalType": "uint256",
+					"name": "",
+					"type": "uint256"
+				}
+			],
+			"payable": true,
+			"stateMutability": "payable",
+			"type": "function"
+		},
+		{
+			"constant": false,
+			"inputs": [
+				{
+					"internalType": "bool",
+					"name": "_swapForYes",
+					"type": "bool"
+				},
+				{
+					"internalType": "uint256",
+					"name": "_swapHowMuch",
+					"type": "uint256"
+				}
+			],
+			"name": "addLiquidityThenSwap",
+			"outputs": [
+				{
+					"internalType": "uint256",
+					"name": "",
+					"type": "uint256"
+				}
+			],
+			"payable": true,
+			"stateMutability": "payable",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [],
+			"name": "amm",
+			"outputs": [
+				{
+					"internalType": "contract IAMMExchange",
+					"name": "",
+					"type": "address"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": false,
+			"inputs": [
+				{
+					"internalType": "bool",
+					"name": "_buyYes",
+					"type": "bool"
+				},
+				{
+					"internalType": "uint256",
+					"name": "_minShares",
+					"type": "uint256"
+				}
+			],
+			"name": "enterPosition",
+			"outputs": [
+				{
+					"internalType": "uint256",
+					"name": "",
+					"type": "uint256"
+				}
+			],
+			"payable": true,
+			"stateMutability": "payable",
+			"type": "function"
+		},
+		{
+			"constant": false,
+			"inputs": [
+				{
+					"internalType": "uint256",
+					"name": "_minCashPayout",
+					"type": "uint256"
+				}
+			],
+			"name": "exitAll",
+			"outputs": [
+				{
+					"internalType": "uint256",
+					"name": "",
+					"type": "uint256"
+				}
+			],
+			"payable": false,
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"constant": false,
+			"inputs": [
+				{
+					"internalType": "uint256",
+					"name": "_invalidShares",
+					"type": "uint256"
+				},
+				{
+					"internalType": "uint256",
+					"name": "_noShares",
+					"type": "uint256"
+				},
+				{
+					"internalType": "uint256",
+					"name": "_yesShares",
+					"type": "uint256"
+				},
+				{
+					"internalType": "uint256",
+					"name": "_minCashPayout",
+					"type": "uint256"
+				}
+			],
+			"name": "exitPosition",
+			"outputs": [
+				{
+					"internalType": "uint256",
+					"name": "",
+					"type": "uint256"
+				}
+			],
+			"payable": false,
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [],
+			"name": "numTicks",
+			"outputs": [
+				{
+					"internalType": "uint256",
+					"name": "",
+					"type": "uint256"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": false,
+			"inputs": [
+				{
+					"internalType": "uint256",
+					"name": "_poolTokensToSell",
+					"type": "uint256"
+				},
+				{
+					"internalType": "uint256",
+					"name": "_minSetsSold",
+					"type": "uint256"
+				}
+			],
+			"name": "removeLiquidity",
+			"outputs": [
+				{
+					"internalType": "uint256",
+					"name": "_invalidShare",
+					"type": "uint256"
+				},
+				{
+					"internalType": "uint256",
+					"name": "_noShare",
+					"type": "uint256"
+				},
+				{
+					"internalType": "uint256",
+					"name": "_yesShare",
+					"type": "uint256"
+				},
+				{
+					"internalType": "uint256",
+					"name": "_cashShare",
+					"type": "uint256"
+				}
+			],
+			"payable": false,
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [],
+			"name": "shareToken",
+			"outputs": [
+				{
+					"internalType": "contract IParaShareToken",
+					"name": "",
+					"type": "address"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [],
+			"name": "weth",
+			"outputs": [
+				{
+					"internalType": "contract WETH9",
+					"name": "",
+					"type": "address"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
 			"type": "function"
 		}
 	],

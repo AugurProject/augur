@@ -105,6 +105,8 @@ export class ParaUniverse extends c.ParaUniverse<BigNumber> {
 }
 export class ParaZeroXTrade extends c.ParaZeroXTrade<BigNumber> {
 }
+export class WethWrapperForAMMExchange extends c.WethWrapperForAMMExchange<BigNumber> {
+}
 export class CancelOrderFactory extends c.CancelOrderFactory<BigNumber> {
 }
 export class CreateOrderFactory extends c.CreateOrderFactory<BigNumber> {
