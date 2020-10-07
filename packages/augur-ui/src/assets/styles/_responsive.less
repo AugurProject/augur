@@ -52,14 +52,22 @@
 // new breakpoints
 @mobile: 767px;
 @tablet-min: 768px;
-@tablet-max: 1150px;
-@desktop-min: 1151px;
-@desktop-max: 1680px;
-@desktop-large: 2000px;
+@tablet-max: 1023px;
+@tiny-min: 1024px;
+@tiny-max: 1199px;
+@desktop-min: 1200px;
+@desktop-max: 1440px;
+@desktop-large: 1441px;
+
+// @tablet-max: 1150px;
+// @desktop-min: 1151px;
+// @desktop-max: 1680px;
+// @desktop-large: 2000px;
 
 @breakpoint-mobile: ~"all and (max-width: @{mobile})";
 @breakpoint-tablet: ~"all and (min-width: @{tablet-min}) and (max-width: @{tablet-max})";
 @breakpoint-mobile-tablet: ~"all and (max-width: @{tablet-max})";
+@breakpoint-tiny: ~"all and (min-width: @{tiny-min}) and (max-width: @{tiny-max})";
 @breakpoint-desktop: ~"all and (min-width: @{desktop-min}) and (max-width: @{desktop-max})";
 @breakpoint-min-desktop-min: ~"all and (min-width: @{desktop-min})";
 @breakpoint-max-desktop-min: ~"all and (max-width: @{desktop-min})";
