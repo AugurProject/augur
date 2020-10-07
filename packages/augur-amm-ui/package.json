@@ -4,6 +4,9 @@
   "private": true,
   "homepage": "https://uniswap.info",
   "dependencies": {
+    "@augurproject/sdk": "^2.1.9",
+    "@augurproject/sdk-lite": "^2.1.9",
+    "@augurproject/utils": "^2.1.9",
     "@popperjs/core": "^2.4.2",
     "@reach/portal": "^0.10.3",
     "@reach/router": "^1.2.1",
