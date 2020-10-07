@@ -13249,7 +13249,7 @@ ethers@4.0.47, ethers@^4.0.20, ethers@^4.0.27, ethers@~4.0.4:
     uuid "2.0.1"
     xmlhttprequest "1.8.0"
 
-ethers@^5.0.13, ethers@^5.0.7:
+ethers@5.0.15, ethers@^5.0.13:
   version "5.0.15"
   resolved "https://registry.yarnpkg.com/ethers/-/ethers-5.0.15.tgz#958818605ea1bfe5a745bbe6b6f4f2c5c0e4637c"
   integrity sha512-ODBTkK+dg44d4yzLgD/w3IxDBa9nLFBF4z8OgICISvkVO2uLLmlR5boqv61PtTMTIPydT9wTn5C1cUntHKFkqQ==
@@ -26610,7 +26610,7 @@ react-router@^4.3.1:
     prop-types "^15.6.1"
     warning "^4.0.1"
 
-react-scripts@^3.1.1:
+react-scripts@3.4.3:
   version "3.4.3"
   resolved "https://registry.yarnpkg.com/react-scripts/-/react-scripts-3.4.3.tgz#21de5eb93de41ee92cd0b85b0e1298d0bb2e6c51"
   integrity sha512-oSnoWmii/iKdeQiwaO6map1lUaZLmG0xIUyb/HwCVFLT7gNbj8JZ9RmpvMCZ4fB98ZUMRfNmp/ft8uy/xD1RLA==
