@@ -33,7 +33,7 @@ import { HelmetTag } from 'modules/seo/helmet-tag';
 import { MARKETS_VIEW_HEAD_TAGS } from 'modules/seo/helmet-configs';
 import FilterSearch from 'modules/filter-sort/filter-search';
 import { useAppStatusStore } from 'modules/app/store/app-status';
-import { FilterButton } from 'modules/common/buttons';
+import { SportsSortButton } from 'modules/common/buttons';
 import parseQuery from 'modules/routes/helpers/parse-query';
 import { useMarketsStore } from 'modules/markets/store/markets';
 import { getMarkets } from 'modules/markets/selectors/markets-all';
@@ -407,7 +407,7 @@ const MarketsView = () => {
           />
           <FilterDropDowns />
           <FilterSearch search={search} />
-          <FilterButton />
+          <SportsSortButton />
         </section>
       )}
       {isTrading && (

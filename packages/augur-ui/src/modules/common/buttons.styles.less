@@ -1663,6 +1663,30 @@
   }
 }
 
+.SportsSortButton {
+  .Button;
+  .text-10-semi-bold;
+
+  align-items: center;
+  border: @size-1 solid var(--color-secondary-action-outline);
+  border-radius: @border-radius-default;
+  color: var(--color-primary-text);
+  display: flex;
+  flex-flow: row nowrap;
+  justify-content: center;
+  text-transform: uppercase;
+
+  > svg {
+    height: @size-16;
+    width: @size-16;
+    margin-right: @size-4;
+
+    > path {
+      fill: var(--color-primary-text);
+    }
+  }
+}
+
 .CategoryButtons {
   display: grid;
   grid-template-columns: repeat(5, @size-168);
