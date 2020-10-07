@@ -24,6 +24,7 @@ import {
 import { SDKConfiguration } from '@augurproject/utils';
 import { BigNumber } from 'bignumber.js';
 import { formatBytes32String } from 'ethers/utils';
+import { ethers } from 'ethers';
 import moment from 'moment';
 import { Account } from '../constants';
 import { makeSigner } from './blockchain';
@@ -61,7 +62,8 @@ export class ContractAPI {
   constructor(
     readonly augur: Augur,
     readonly provider: EthersProvider,
-    public account: Account
+    public account: Account,
+    readonly signer?: ethers.Signer
   ) {}
 
   get dependencies() {

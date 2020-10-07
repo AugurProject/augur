@@ -3,25 +3,30 @@ import { ethers } from 'ethers';
 
 import { binarySearch, bnDirection } from '@augurproject/utils';
 import { AMMExchangeAbi } from '../abi/AMMExchangeAbi';
-import { NULL_ADDRESS } from '../constants';
+import {NULL_ADDRESS, SignerOrProvider, YES_NO_NUMTICKS} from '../constants';
 
 export class AMMExchange {
-  private readonly provider: ethers.providers.Provider;
-  private readonly contract: ethers.Contract;
+  readonly contract: ethers.Contract;
+  readonly address: string;
 
-  constructor(provider: ethers.providers.Provider, address: string) {
-    this.contract = new ethers.Contract(address, AMMExchangeAbi, provider);
+  constructor(signerOrProvider: SignerOrProvider, address: string) {
+    this.contract = new ethers.Contract(address, AMMExchangeAbi, signerOrProvider);
+    this.address = address;
+  }
 
-    this.provider = provider;
+  // Ratio of Yes:No shares.
+  async price(): Promise<BigNumber> {
+    const { _no, _yes } = this.contract.yesNoShareBalances(this.contract.address);
+    return _yes.div(_no);
   }
 
   async enterPosition(shares: Shares, yes: boolean, rate = false): Promise<BigNumber> {
     const cash = await binarySearch(
       new BigNumber(1),
-      new BigNumber(shares.times(10000)),
+      new BigNumber(shares.times(YES_NO_NUMTICKS)),
       100,
       async (cash) => {
-        const yesShares = await this.contract.rateEnterPosition_(cash, yes);
+        const yesShares = await this.contract.rateEnterPosition(cash, yes);
         return bnDirection(shares, yesShares);
       }
     );
@@ -30,25 +35,27 @@ export class AMMExchange {
   }
 
   async exitPosition(invalidShares: Shares, noShares: Shares, yesShares: Shares) {
-    const { _cashPayout } = await this.contract.rateExitPosition_(invalidShares, noShares, yesShares);
+    const { _cashPayout } = await this.contract.rateExitPosition(invalidShares, noShares, yesShares);
     await this.contract.exitPosition(invalidShares, noShares, yesShares, _cashPayout);
   }
 
   async exitAll(): Promise<Cash> {
-    const { _cashPayout } = await this.contract.rateExitAll_();
+    const { _cashPayout } = await this.contract.rateExitAll();
     await this.contract.exitAll(_cashPayout);
     return _cashPayout;
   }
 
   async swapForYes(noShares: Shares): Promise<Shares> {
-    const yesShares = await this.contract.rateSwap_(noShares, false);
-    await this.contract.swap(noShares, false, yesShares);
-    return yesShares;
+    return this.swap(noShares, false);
   }
 
   async swapForNo(yesShares: Shares): Promise<Shares> {
-    const noShares = await this.contract.rateSwap_(yesShares, false);
-    await this.contract.swap(yesShares, false, noShares);
+    return this.swap(yesShares, true);
+  }
+
+  async swap(inputShares: Shares, inputYes: boolean): Promise<Shares> {
+    const noShares = await this.contract.rateSwap(inputShares, inputYes);
+    await this.contract.swap(inputShares, inputYes, noShares);
     return noShares;
   }
 
@@ -71,14 +78,14 @@ export class AMMExchange {
       100,
       async (setsToBuy) => {
         const setsToSell = setsToBuy.minus(minBuy);
-        const {_yesses, _nos} = await this.contract.sharesRateForAddLiquidityThenSwap_(setsToBuy, swapForYes, setsToSell);
+        const {_yesses, _nos} = await this.contract.sharesRateForAddLiquidityThenSwap(setsToBuy, swapForYes, setsToSell);
         return swapForYes ? bnDirection(yesShares, _yesses) : bnDirection(noShares, _nos);
       }
     );
 
     const setsSwapped = setsBought.minus(minBuy);
 
-    const lpTokens = await this.contract.rateAddLiquidityThenSwap_(setsBought, swapForYes, setsSwapped);
+    const lpTokens = await this.contract.rateAddLiquidityThenSwap(setsBought, swapForYes, setsSwapped);
     await this.contract.addLiquidityThenSwap(setsBought, swapForYes, setsSwapped);
     return lpTokens;
   }
@@ -90,13 +97,13 @@ export class AMMExchange {
     let minSetsSold: Sets;
     if (alsoSell) {
       // Selling more than zero sets sells as many sets as possible. So one atto set is enough to get the rate.
-      const { _setsSold } = await this.contract.rateRemoveLiquidity_(lpTokens, new BigNumber(1));
+      const { _setsSold } = await this.contract.rateRemoveLiquidity(lpTokens, new BigNumber(1));
       minSetsSold = _setsSold;
     } else {
       minSetsSold = new BigNumber(0);
     }
 
-    const removedLiquidity = await this.contract.rateRemoveLiquidity_(lpTokens, minSetsSold);
+    const removedLiquidity = await this.contract.rateRemoveLiquidity(lpTokens, minSetsSold);
     await this.contract.removeLiquidity(lpTokens, minSetsSold);
     return removedLiquidity;
   }

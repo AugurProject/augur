@@ -5,6 +5,12 @@ import { AbstractConnector } from '@web3-react/abstract-connector'
 
 import { fortmatic, injected, portis, walletconnect, walletlink } from '../connectors'
 
+import * as AMMFactory from "./abis/AMMFactory.json";
+import * as AMMExchange from "./abis/AMMExchange.json";
+
+export const AMMFactoryAbi = AMMFactory;
+export const AMMExchangeAbi = AMMExchange;
+
 export const FACTORY_ADDRESS = '0x5C69bEe701ef814a2B6a3EDD4B1652CB9cc5aA6f'
 export const AMM_FACTORY_ADDRESS = '0x2966D979e66FcEA3ED9c41281149836bB420d15D'
 
@@ -53,9 +59,6 @@ export const PAIR_BLACKLIST = ['0xb6a741f37d6e455ebcc9f17e2c16d0586c3f57a5']
  * For tokens that cause erros on fee calculations
  */
 export const FEE_WARNING_TOKENS = ['0xd46ba6d942050d489dbd938a2c909a5d5039a161']
-
-export const AMMExchangeAbi = abi.AMMExchange
-export const AMMFactoryAbi = abi.AMMFactory
 
 type TagDetails = Tags[keyof Tags]
 export interface TagInfo extends TagDetails {

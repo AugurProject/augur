@@ -10,12 +10,13 @@ import {
   NativePlaceTradeDisplayParams,
   QUINTILLION,
   stringTo32ByteHex,
-  AMM,
 } from '@augurproject/sdk';
 import {
   MarketList,
   NumOutcomes,
   SubscriptionEventName,
+  AMMExchange,
+  AMMFactory,
 } from '@augurproject/sdk-lite';
 import { SingleThreadConnector } from '@augurproject/sdk/build/connector';
 import { flattenZeroXOrders } from '@augurproject/sdk/build/state/getter/ZeroXOrdersGetters';
@@ -28,7 +29,7 @@ import {
   runWsServer,
   runWssServer,
 } from '@augurproject/sdk/build/state/WebsocketEndpoint';
-import { printConfig, sanitizeConfig, binarySearch } from '@augurproject/utils';
+import { printConfig, sanitizeConfig } from '@augurproject/utils';
 import { BigNumber } from 'bignumber.js';
 import { spawn, spawnSync } from 'child_process';
 import { ethers } from 'ethers';
@@ -2913,10 +2914,13 @@ export function addScripts(flash: FlashSession) {
 
         const paraShareToken = this.config.paraDeploys[this.config.paraDeploy].addresses.ShareToken;
         const user = await this.createUser(this.getAccount(), this.config);
-        const factory = user.augur.contracts.ammFactory;
-        const addr = await factory.addAMM_(market, paraShareToken);
+
+
+        const factory = new AMMFactory(user.signer, this.config.addresses.AMMFactory);
+
+        const { amm } = await factory.addAMM(market, paraShareToken);
         await factory.addAMM(market, paraShareToken);
-        console.log(`AMM Exchange ${addr}`);
+        console.log(`AMM Exchange ${amm.address}`);
       }
     });
 
@@ -2945,8 +2949,7 @@ export function addScripts(flash: FlashSession) {
         const paraShareToken = this.config.paraDeploys[this.config.paraDeploy].addresses.ShareToken;
         const factory = user.augur.contracts.ammFactory;
         const addr = await factory.exchanges_(market.address, paraShareToken);
-        const numTicks = await market.getNumTicks_();
-        const amm = new AMM(user.augur.contracts.ammFromAddress(addr), numTicks);
+        const amm = new AMMExchange(user.provider, addr);
 
         const lpTokens = await amm.addLiquidity(sets);
 
@@ -2986,8 +2989,7 @@ export function addScripts(flash: FlashSession) {
         const paraShareToken = this.config.paraDeploys[this.config.paraDeploy].addresses.ShareToken;
         const factory = user.augur.contracts.ammFactory;
         const addr = await factory.exchanges_(market.address, paraShareToken);
-        const numTicks = await market.getNumTicks_();
-        const amm = new AMM(user.augur.contracts.ammFromAddress(addr), numTicks);
+        const amm = new AMMExchange(user.provider, addr);
 
         const cash = await amm.enterPosition(shares, yes, true);
 
@@ -3027,8 +3029,7 @@ export function addScripts(flash: FlashSession) {
         const paraShareToken = this.config.paraDeploys[this.config.paraDeploy].addresses.ShareToken;
         const factory = user.augur.contracts.ammFactory;
         const addr = await factory.exchanges_(market.address, paraShareToken);
-        const numTicks = await market.getNumTicks_();
-        const amm = new AMM(user.augur.contracts.ammFromAddress(addr), numTicks);
+        const amm = new AMMExchange(user.provider, addr);
 
         const cash = await amm.enterPosition(shares, yes);
 
@@ -3036,4 +3037,46 @@ export function addScripts(flash: FlashSession) {
       }
     });
 
+    flash.addScript({
+      name: 'amm-price',
+      options: [
+        {
+          name: 'market',
+          abbr: 'm',
+          description: 'Address of Market. Used to calculate AMM address.',
+          required: true,
+        },
+      ],
+      async call(this: FlashSession, args: FlashArguments) {
+        const user = await this.createUser(this.getAccount(), this.config);
+
+        const market = user.augur.contracts.marketFromAddress(args.market as string);
+        const paraShareToken = this.config.paraDeploys[this.config.paraDeploy].addresses.ShareToken;
+        const factory = new AMMFactory(this.provider, this.config.addresses.AMMFactory);
+        const amm = await factory.getAMMExchange(market.address, paraShareToken);
+        const price = await amm.price()
+        console.log(`AMM Price: ${price.toString()}`)
+      }
+    });
+
+  flash.addScript({
+    name: 'amm-address',
+    options: [
+      {
+        name: 'market',
+        abbr: 'm',
+        description: 'Address of Market. Used to calculate AMM address.',
+        required: true,
+      },
+    ],
+    async call(this: FlashSession, args: FlashArguments) {
+      const user = await this.createUser(this.getAccount(), this.config);
+
+      const market = user.augur.contracts.marketFromAddress(args.market as string);
+      const paraShareToken = this.config.paraDeploys[this.config.paraDeploy].addresses.ShareToken;
+      const factory = new AMMFactory(this.provider, this.config.addresses.AMMFactory);
+      const amm = await factory.getAMMExchange(market.address, paraShareToken);
+      console.log(`AMM address: ${amm.contract.address}`);
+    }
+  });
 }

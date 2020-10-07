@@ -204,6 +204,7 @@ export interface ContractAddresses extends TradingAddresses {
 
   // AMM
   AMMFactory?: string;
+  WethWrapperForAMMExchange?: string;
 }
 
 export interface ParaAddresses extends TradingAddresses {

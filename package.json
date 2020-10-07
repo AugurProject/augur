@@ -80,7 +80,8 @@
       "@augurproject/amm-ui/@uniswap/**",
       "**/webpack",
       "**/eslint*",
-      "**/react*"
+      "**/react*",
+      "**/ethers"
     ]
   },
   "resolutions": {

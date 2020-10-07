@@ -145,6 +145,7 @@ export const EXTERNAL_CONTRACTS = [
     // AMM
     'AMMExchange',
     'AMMFactory',
+    'WethWrapperForAMMExchange',
 ];
 
 export const REGISTERED_EXTERNAL_CONTRACTS = [
