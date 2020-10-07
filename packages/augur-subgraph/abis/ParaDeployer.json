@@ -59,11 +59,6 @@
             "type": "address"
           },
           {
-            "internalType": "contract IParaRepOracleFactory",
-            "name": "paraRepOracleFactory",
-            "type": "address"
-          },
-          {
             "internalType": "contract ICancelOrderFactory",
             "name": "cancelOrderFactory",
             "type": "address"
@@ -215,6 +210,11 @@
         "internalType": "address",
         "name": "_token",
         "type": "address"
+      },
+      {
+        "internalType": "uint256",
+        "name": "_tradeIntervalModifier",
+        "type": "uint256"
       }
     ],
     "name": "addToken",
@@ -245,6 +245,21 @@
     "type": "function"
   },
   {
+    "constant": false,
+    "inputs": [],
+    "name": "burnOwnership",
+    "outputs": [
+      {
+        "internalType": "bool",
+        "name": "",
+        "type": "bool"
+      }
+    ],
+    "payable": false,
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
     "constant": true,
     "inputs": [],
     "name": "factories",
@@ -262,11 +277,6 @@
       {
         "internalType": "contract IParaShareTokenFactory",
         "name": "paraShareTokenFactory",
-        "type": "address"
-      },
-      {
-        "internalType": "contract IParaRepOracleFactory",
-        "name": "paraRepOracleFactory",
         "type": "address"
       },
       {
@@ -456,6 +466,27 @@
     ],
     "payable": false,
     "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "constant": true,
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "name": "tokenTradeIntervalModifier",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "payable": false,
+    "stateMutability": "view",
     "type": "function"
   },
   {

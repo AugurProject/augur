@@ -4,6 +4,7 @@ import {
   JSONValueKind,
   JSONValue
 } from "@graphprotocol/graph-ts";
+import { BigInt } from '@graphprotocol/graph-ts';
 import {
   MarketCreated,
   MarketTransferred,
@@ -76,6 +77,7 @@ export function handleMarketCreated(event: MarketCreated): void {
     market.id
   );
   market.extraInfoRaw = event.params.extraInfo;
+  market.volume = BigInt.fromI32(0);
 
   // Parsing the JSON data, safe check of every parsed value before saving.
   let extraInfoParsed = json.try_fromBytes(
