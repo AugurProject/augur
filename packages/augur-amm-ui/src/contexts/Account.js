@@ -5,6 +5,7 @@ import { ethers } from 'ethers'
 import dayjs from 'dayjs'
 import utc from 'dayjs/plugin/utc'
 import { getAmmFactoryAddress } from './Application';
+import { AMMFactoryAbi } from "../constants";
 
 const WEB3 = 'web3'
 const UPDATE_WEB3 = ' UPDATE_WEB3'
@@ -84,8 +85,12 @@ export function useAccountWeb3() {
       let chainId = 42 // default to kovan for testing
       // provide chainId here
       if (network === 'mainnet') chainId = 1
-
-      updateWeb3({ address, provider, signer, network, chainId, library: provider })
+      const ammFactory = new ethers.Contract(
+        getAmmFactoryAddress(),
+        AMMFactoryAbi,
+        provider.getSigner()
+      );
+      updateWeb3({ address, provider, signer, network, chainId, library: provider, ammFactory })
     }
 
     window.ethereum
