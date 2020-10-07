@@ -8,6 +8,7 @@
   > div:first-of-type {
     > div:nth-of-type(2) div {
       cursor: pointer;
+      min-width: 100px;
     }
 
     > div:nth-of-type(2) > div:nth-of-type(2) > div:hover {
@@ -38,10 +39,14 @@
     display: flex;
     flex-direction: column;
     justify-content: center;
-    margin: auto;
 
     > button {
+      .text-12-bold;
+
       margin-top: @size-16;
+      border-radius: @size-3;
+      padding: @size-9 @size-12;
+      width: 100%;
     }
   }
 }

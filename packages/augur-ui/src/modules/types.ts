@@ -693,6 +693,7 @@ export interface LoginAccount {
   tradingPositionsTotal?: UnrealizedRevenue;
   timeframeData?: TimeframeData;
   tradingApproved?: boolean;
+  currentOnboardingStep?: number;
   allowanceFormatted?: FormattedNumber;
   allowance?: BigNumber;
   balances: AccountBalances;

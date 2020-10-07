@@ -3,123 +3,188 @@ import { useHistory } from 'react-router';
 
 import { useAppStatusStore } from 'modules/app/store/app-status';
 import {
-  MODAL_AUGUR_USES_DAI,
-  MODAL_BUY_DAI,
-  HELP_CENTER_WHAT_IS_DAI,
-  MODAL_AUGUR_P2P,
-  MODAL_ADD_FUNDS,
-  HELP_CENTER_ADD_FUNDS,
-  TRANSACTIONS,
-  HELP_CENTER_LEARN_ABOUT_ADDRESS,
-  MODAL_ACCOUNT_CREATED,
   MODAL_TEST_BET,
   TRADING_TUTORIAL,
+  MODAL_APPROVALS,
+  MODAL_TOKEN_SELECT,
+  MODAL_ETH_DEPOSIT,
+  MODAL_BANKROLL,
+  USDC,
+  USDT,
+  ETH,
 } from 'modules/common/constants';
 import {
-  OnboardingCheckIcon,
+  EthIcon,
   OnboardingDollarDaiIcon,
-  OnboardingPaymentIcon,
 } from 'modules/common/icons';
-import {
-  track,
-  ACCOUNT_CREATED,
-  AUGUR_USES_DAI,
-  BUY_DAI,
-  FINISHED_TEST_TRADE,
-  AUGUR_IS_P2P,
-  DO_A_TEST_BET,
-  START_TEST_TRADE,
-  SKIPPED_TEST_TRADE,
-} from 'services/analytics/helpers';
 import { Onboarding } from './onboarding';
 import { TestBet } from './common';
 import makePath from 'modules/routes/helpers/make-path';
-import { MARKETS, MARKET } from 'modules/routes/constants/views';
+import { MARKET } from 'modules/routes/constants/views';
 import { formatDai } from 'utils/format-number';
 import { createBigNumber } from 'utils/create-big-number';
 import makeQuery from 'modules/routes/helpers/make-query';
 import { MARKET_ID_PARAM_NAME } from 'modules/routes/constants/param-names';
 
-export const getOnboardingStep = (step: number): string => {
-  if (step === 1) {
-    return MODAL_ACCOUNT_CREATED;
-  } else if (step === 2) {
-    return MODAL_AUGUR_USES_DAI;
-  } else if (step === 3) {
-    return MODAL_BUY_DAI;
-  } else if (step === 4) {
-    return MODAL_AUGUR_P2P;
-  } else {
-    return MODAL_TEST_BET;
-  }
-};
-
-export const ModalAccountCreated = () => {
-  const {
-    actions: { setModal },
-  } = useAppStatusStore();
-  const augurUsesDaiModal = () => setModal({ type: MODAL_AUGUR_USES_DAI });
-  const gotoOnboardingStep = step =>
-    setModal({ type: getOnboardingStep(step) });
-  return (
-    <Onboarding
-      icon={OnboardingCheckIcon}
-      analyticsEvent={() => track(ACCOUNT_CREATED, {})}
-      largeHeader={'Log-in created'}
-      smallHeader={
-        'The next two steps are adding funds and activating your account. Once done you can start betting!'
-      }
-      showAccountStatus={true}
-      currentStep={1}
-      changeCurrentStep={step => {
-        gotoOnboardingStep(step);
-      }}
-      buttons={[
-        {
-          text: 'Continue',
-          disabled: false,
-          action: () => {
-            augurUsesDaiModal();
-          },
-        },
-      ]}
-    />
-  );
-};
-
 export const ModalAugurUsesDai = () => {
   const {
     actions: { setModal },
   } = useAppStatusStore();
-  const buyDaiModal = () => setModal({ type: MODAL_BUY_DAI });
-  const gotoOnboardingStep = step =>
-    setModal({ type: getOnboardingStep(step) });
+  const gotoDeposit = () => setModal({ type: MODAL_ETH_DEPOSIT });
+
   return (
     <Onboarding
-      icon={OnboardingDollarDaiIcon}
-      analyticsEvent={() => track(AUGUR_USES_DAI, {})}
-      largeHeader={'Augur uses Dai for betting'}
-      showAccountStatus={true}
-      currentStep={2}
-      changeCurrentStep={step => {
-        gotoOnboardingStep(step);
-      }}
-      linkContent={[
+      title={'Augur requires both DAI & ETH '}
+      content={[
         {
+          icon: OnboardingDollarDaiIcon,
+          header: 'Augur uses DAI for betting',
           content:
-            'Dai is a pegged currency that mirrors the value of the US dollar. This means that ‘1 Dai’ is equivalent to ‘1 USD’. We refer to Dai using the $ symbol.',
+            'DAI is a pegged currency that mirrors the value of the US dollar. This means that ‘1 DAI’ is equivalent to ‘1 USD’. DAI is referred to with $ symbol.',
         },
         {
-          content: 'Learn more about DAI',
-          link: HELP_CENTER_WHAT_IS_DAI,
+          icon: EthIcon,
+          header: 'ETH is used for transaction costs',
+          content:
+            'Gas costs are transaction fees which are payed in ETH. These are required to process any transactions on the Ethereum network.',
+        },
+      ]}
+      currentStep={1}
+      buttons={[
+        {
+          text: 'Next',
+          disabled: false,
+          action: () => gotoDeposit(),
+        },
+      ]}
+    />
+  );
+};
+
+export const ModalEthDeposit = () => {
+  const {
+    loginAccount: { balances },
+    actions: { setModal }
+  } = useAppStatusStore();
+  const tokenSelectModal = () => setModal({ type: MODAL_TOKEN_SELECT });
+
+  return (
+    <Onboarding
+      title={'First you need to deposit ETH to pay for transaction fees.'}
+      showDeposit={true}
+      showSkipButton={true}
+      skipAction={tokenSelectModal}
+      currentStep={2}
+      content={[
+        {
+          content:
+            'Before you can start trading, you need to fund your wallet with ETH to process transactions on the Ethereum network.',
         },
       ]}
       buttons={[
         {
-          text: 'Continue',
+          text: 'Next',
+          disabled: !(Number(balances?.signerBalances?.eth) > 0),
+          action: () => {
+            tokenSelectModal();
+          },
+        },
+      ]}
+    />
+  );
+};
+
+export const ModalTokenSelect = () => {
+  const {
+    actions: { setModal },
+  } = useAppStatusStore();
+  const bankrollModal = (token) => setModal({ type: MODAL_BANKROLL, token});
+
+  return (
+    <Onboarding
+      title={'DAI is required for trading. Which currency would you like to convert to DAI?'}
+      content={[]}
+      showCompoundToolTip={true}
+      currentStep={3}
+      modalAction={token => {
+        bankrollModal(token);
+      }}
+      buttons={[]}
+    />
+  );
+};
+
+export const ModalBankroll = () => {
+  const {
+    ethToDaiRate,
+    loginAccount: { balances },
+    modal,
+    actions: { setModal },
+  } = useAppStatusStore();
+  const approvalModal = () => setModal({ type: MODAL_APPROVALS });
+
+  const MIN_AMOUNT = 50000;
+  let hasBalanceOver50k = false;
+
+  if (modal?.token === USDC) {
+    const totalUSDC = createBigNumber(Number(balances.signerBalances.usdc));
+    if (totalUSDC.gt(MIN_AMOUNT)) {
+      hasBalanceOver50k = true;
+    }
+  } else if (modal?.token === USDT) {
+    const totalUSDT = createBigNumber(Number(balances.signerBalances.usdt));
+    if (totalUSDT.gt(MIN_AMOUNT)) {
+      hasBalanceOver50k = true;
+    }
+  } else {
+    const totalETHinDai = createBigNumber(Number(balances.signerBalances.eth)).times(ethToDaiRate?.value);
+    if (totalETHinDai.gt(MIN_AMOUNT)) {
+      hasBalanceOver50k = true;
+    }
+  }
+
+  return (
+    <Onboarding
+      hasBalanceOver50k={hasBalanceOver50k}
+      title={'How much money do you wish to begin your bankroll with?'}
+      showBankroll={true}
+      content={[]}
+      currentStep={4}
+      modalAction={() => {
+        approvalModal();
+      }}
+      buttons={[]}
+    />
+  );
+};
+
+export const ModalApprovals = () => {
+  const {
+    actions: { setModal },
+  } = useAppStatusStore();
+  const testBetModal = () => setModal({ type: MODAL_TEST_BET });
+
+  return (
+    <Onboarding
+      title={'Please approve your wallet to interact with the Ethereum network'}
+      showApprovals={true}
+      currentStep={6}
+      content={[
+        {
+          content:
+            'This is a one time action that’s necesary in order to transact on Augur. It is advised to use the recommended gas price when doing these approvals to prevent any delay.',
+        },
+        {
+          content:
+            'Once all approvals are confirmed you can begin making transactions on Augur. If skipped you will be prompted later when required.',
+        },
+      ]}
+      buttons={[
+        {
+          text: 'Next',
           disabled: false,
           action: () => {
-            buyDaiModal();
+            testBetModal();
           },
         },
       ]}
@@ -127,185 +192,80 @@ export const ModalAugurUsesDai = () => {
   );
 };
 
-export const ModalBuyDai = () => {
+export const ModalSwap = () => {
   const {
-    actions: { setModal, closeModal },
-    loginAccount: {
-      balances: {
-        signerBalances: { dai },
-      },
-    },
+    loginAccount,
+    ethToDaiRate,
+    modal,
+    actions: { setModal },
   } = useAppStatusStore();
-  const signerHasDAI = dai !== '0';
-  const showAugurP2PModal = () => setModal({ type: MODAL_AUGUR_P2P });
-  const addFunds = callback =>
-    setModal({ type: MODAL_ADD_FUNDS, cb: callback });
 
-  const gotoOnboardingStep = step =>
-    setModal({ type: getOnboardingStep(step) });
-  return (
-    <Onboarding
-      icon={signerHasDAI ? null : OnboardingPaymentIcon}
-      largeHeader='Add Dai to your trading account'
-      showAccountStatus={true}
-      currentStep={3}
-      changeCurrentStep={step => {
-        gotoOnboardingStep(step);
-      }}
-      analyticsEvent={() => track(BUY_DAI, {})}
-      showTransferMyDai={signerHasDAI}
-      showAugurP2PModal={() => showAugurP2PModal()}
-      linkContent={[
-        {
-          content:
-            'Buy Dai ($) directly or transfer Dai ($) to your trading account to start placing bets.',
-        },
-        {
-          content: 'LEARN MORE',
-          link: HELP_CENTER_ADD_FUNDS,
-        },
-      ]}
-      buttons={[
-        {
-          text: 'Add Dai',
-          action: () => {
-            addFunds(() => setTimeout(() => showAugurP2PModal()));
-          },
-        },
-        {
-          text: 'Do it later',
-          action: () => {
-            showAugurP2PModal();
-          },
-        },
-      ]}
-    />
-  );
-};
+  const balances = loginAccount.balances.signerBalances;
+  const ethAmountInDai =
+    Number(balances.eth) * ethToDaiRate?.value || createBigNumber(0);
+  const token = modal?.token || ETH;
+  const approvalsModal = () => setModal({ type: MODAL_APPROVALS });
 
-export const ModalTutorialIntro = ({ next, back }) => {
-  const {
-    actions: { closeModal },
-  } = useAppStatusStore();
-  const history = useHistory();
+  let title = null;
+
+  if (token === ETH) {
+    title = `You have ##$${formatDai(ethAmountInDai).formatted} worth of ETH## in your wallet, would you like to convert a portion of this to DAI?`;
+  } else if (token === USDC) {
+    title = `You have ##$${formatDai(balances?.usdc).formatted} worth of USDC## in your wallet, would you like to convert a portion of this to DAI?`;
+  } else if (token === USDT) {
+    title = `You have ##$${formatDai(balances?.usdt).formatted} worth of USDT## in your wallet, would you like to convert a portion of this to DAI?`;
+  }
 
   return (
     <Onboarding
-      icon={TestBet}
-      largeHeader={'Welcome to our test market'}
-      condensed={true}
-      smallHeader={
-        "Here we're going to take you through each step of placing a trade on Augur. You can exit this walkthrough at any time and access it again via the help menu"
-      }
-      buttons={[
-        {
-          text: 'Lets go!',
-          action: () => {
-            next();
-            closeModal();
-          },
-        },
-        {
-          text: 'Not now',
-          action: () => {
-            history.push({
-              pathname: makePath(MARKETS),
-            });
-            closeModal();
-          },
-        },
-      ]}
+      show1InchToolTip={true}
+      showSwapper={true}
+      currentStep={5}
+      title={title}
+      showSkipButton={true}
+      skipAction={approvalsModal}
+      content={[]}
+      buttons={[]}
     />
   );
 };
-
-export const ModalTutorialOutro = ({ next, back }) => {
-  const {
-    actions: { closeModal },
-  } = useAppStatusStore();
-  const history = useHistory();
-
-  return (
-    <Onboarding
-      largeHeader={'Congratulations on making your first test trade!'}
-      condensed={true}
-      analyticsEvent={() => track(FINISHED_TEST_TRADE, {})}
-      smallHeader={
-        "Now you're all set! You can view this walkthrough at any time from the help menu (question mark icon on the top right). Additionally, our Knowledge Center is there to help you with more in depth guidance"
-      }
-      buttons={[
-        {
-          text: 'Explore Augur Markets',
-          action: () => {
-            history.push({
-              pathname: makePath(MARKETS),
-            });
-            closeModal();
-          },
-        },
-        {
-          text: 'View again',
-          action: () => {
-            back();
-            closeModal();
-          },
-        },
-      ]}
-    />
-  );
-};
-
-const DAI_HIGH_VALUE_AMOUNT = 40;
-const RESERVE_IN_ETH = 0.04;
 
 export const ModalTestBet = () => {
   const {
-    actions: { setModal, closeModal },
+    actions: { closeModal },
   } = useAppStatusStore();
   const isTablet = window.innerWidth <= 1280;
-  const gotoOnboardingStep = step =>
-    setModal({ type: getOnboardingStep(step) });
   const history = useHistory();
 
   return (
     <Onboarding
-      icon={TestBet}
-      analyticsEvent={() => track(DO_A_TEST_BET, {})}
-      largeHeader={
-        isTablet ? 'Learn how to bet on Augur' : 'Lastly, run a test bet!'
-      }
-      showAccountStatus={true}
-      currentStep={5}
-      changeCurrentStep={step => {
-        gotoOnboardingStep(step);
-      }}
-      linkContent={[
+      title={'Congratulations! You’re now ready to start trading'}
+      content={[
         {
+          icon: TestBet,
           content: isTablet
-            ? 'Watch our quick start video to learn how to place a bet using our trading app.'
-            : 'Learn how betting works on Augur by placing a pretend bet. Get tips and guidance and start betting for real today.',
+            ? ''
+            : 'Learn how betting works on Augur by placing a pretend bet. Get tips and guidance and start betting for real today',
         },
       ]}
+      currentStep={7}
+      showTestBet={true}
+      skipAction={closeModal}
       buttons={[
         {
-          text: isTablet ? 'Watch video' : 'Place test bet',
-          disabled: isTablet,
+          text: isTablet ? 'Continue' : 'Place test bet',
           action: () => {
-            history.push({
-              pathname: makePath(MARKET),
-              search: makeQuery({
-                [MARKET_ID_PARAM_NAME]: TRADING_TUTORIAL,
-              }),
-            });
-            !isTablet && track(START_TEST_TRADE, {});
-            closeModal();
-          },
-        },
-        {
-          text: 'Finish',
-          action: () => {
-            !isTablet && track(SKIPPED_TEST_TRADE, {});
-            closeModal();
+            if (!isTablet) {
+              closeModal();
+              history.push({
+                pathname: makePath(MARKET),
+                search: makeQuery({
+                  [MARKET_ID_PARAM_NAME]: TRADING_TUTORIAL,
+                }),
+              });
+            } else {
+              closeModal();
+            }
           },
         },
       ]}

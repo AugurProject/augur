@@ -6,7 +6,6 @@ import { TransferForm as ModalWithdraw } from 'modules/modal/transfer-form';
 import { MigrateRep as ModalMigrateRep } from 'modules/modal/migrate-rep';
 import { Transactions as ModalTransactions } from 'modules/modal/transactions';
 import ModalNetworkDisconnected from 'modules/modal/components/modal-network-disconnected';
-import { ModalBuyDai } from 'modules/modal/onboarding-modals';
 import {
   ModalClaimFees,
   ModalUnsignedOrders,
@@ -21,10 +20,15 @@ import { AddFunds as ModalAddFunds } from 'modules/modal/add-funds';
 import { SignIn as ModalSignin } from 'modules/modal/signin';
 import { Loading as ModalLoading } from 'modules/modal/loading';
 import { ModalUniverseSelector } from 'modules/modal/components/modal-universe-selector';
-import { ModalTestBet } from 'modules/modal/onboarding-modals';
-import { ModalAugurUsesDai } from 'modules/modal/onboarding-modals';
-import { ModalTutorialOutro } from 'modules/modal/onboarding-modals';
-import { ModalTutorialIntro } from 'modules/modal/onboarding-modals';
+import {
+  ModalTestBet,
+  ModalAugurUsesDai,
+  ModalApprovals,
+  ModalEthDeposit,
+  ModalSwap,
+  ModalBankroll,
+  ModalTokenSelect
+} from 'modules/modal/onboarding-modals';
 import { ModalAddLiquidity } from 'modules/modal/add-liquidity';
 import { Scalar as ModalScalar } from 'modules/modal/scalar';
 import { useHistory } from 'react-router';
@@ -34,7 +38,6 @@ import * as TYPES from 'modules/common/constants';
 import Styles from 'modules/modal/common.styles.less';
 import { useAppStatusStore } from 'modules/app/store/app-status';
 import { track, MODAL_VIEWED } from 'services/analytics/helpers';
-import { ModalAccountCreated } from 'modules/modal/onboarding-modals';
 import {
   ModalCreateMarket,
   ModalDaiFaucet,
@@ -123,8 +126,6 @@ function selectModal(type, props, closeModal, modal) {
       return <ModalNetworkDisconnected {...props} />;
     case TYPES.MODAL_FINALIZE_MARKET:
       return <ModalFinalize />;
-    case TYPES.MODAL_BUY_DAI:
-      return <ModalBuyDai />;
     case TYPES.MODAL_DISCARD:
       return <ModalDiscard />;
     case TYPES.MODAL_CLAIM_FEES:
@@ -151,14 +152,20 @@ function selectModal(type, props, closeModal, modal) {
       return <ModalUniverseSelector />;
     case TYPES.MODAL_TEST_BET:
       return <ModalTestBet />;
-    case TYPES.MODAL_AUGUR_P2P:
-      return <ModalTestBet />; // TODO fix onboarding
+    case TYPES.MODAL_APPROVALS:
+      return <ModalApprovals />;
+    case TYPES.MODAL_ETH_DEPOSIT:
+      return <ModalEthDeposit />;
+    case TYPES.MODAL_BANKROLL:
+      return <ModalBankroll />;
+    case TYPES.MODAL_TOKEN_SELECT:
+      return <ModalTokenSelect />;
+    case TYPES.MODAL_SWAP:
+      return <ModalSwap />;
     case TYPES.MODAL_TUTORIAL_OUTRO:
       return <ModalTutorialOutro {...modal} />;
     case TYPES.MODAL_TUTORIAL_INTRO:
       return <ModalTutorialIntro {...modal} />;
-    case TYPES.MODAL_ACCOUNT_CREATED:
-      return <ModalAccountCreated />;
     case TYPES.MODAL_AUGUR_USES_DAI:
       return <ModalAugurUsesDai />;
     case TYPES.MODAL_ERROR:

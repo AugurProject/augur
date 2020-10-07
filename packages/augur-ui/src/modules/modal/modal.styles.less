@@ -165,18 +165,41 @@ div.Onboarding {
 
   align-items: center;
   border: @size-3 solid var(--color-secondary-action-outline);
-  height: 598px;
-  justify-content: center;
-  padding: @size-32 @size-28 @size-32;
+  max-height: 700px;
+  height: 100%;
+  justify-content: flex-start;
+  padding: @size-50 @size-72;
   width: 568px;
 
   @media @breakpoint-mobile {
-    border: @size-2 solid var(--color-secondary-action-outline);
+    border: 2px solid var(--color-secondary-action-outline);
     height: 100%;
-    margin: @size-32 @size-8 @size-72;
     max-width: 100%;
-    padding: 0;
+    padding: @size-40 @size-12 0 @size-12;
+    overflow: scroll;
+  }
+
+  > nav {
+    display: flex;
+    color: var(--color-primary-text);
+    cursor: pointer;
     justify-content: space-between;
+    width: 100%;
+
+    svg {
+      height: @size-11;
+
+      > g {
+        stroke-width: @size-2;
+      }
+    }
+
+    > div:last-of-type {
+      position: absolute;
+      top: 0;
+      right: 0;
+      margin: @size-16;
+    }
   }
 
   > div {
@@ -184,23 +207,60 @@ div.Onboarding {
     flex-flow: column nowrap;
     align-items: center;
     height: 100%;
+    justify-content: space-between;
 
-    @media @breakpoint-mobile {
+
+    > div:first-of-type {
       display: flex;
       flex-direction: column;
-      overflow: auto;
-      padding: @size-16 @size-22 0 @size-22;
+      align-items: center;
 
-      > div:first-of-type {
-        margin: 0 0 @size-16 0;
+      > h2 {
+        font-weight: bold;
+        text-align: center;
+        color: var(--color-primary-text);
+
+        > span {
+          color: var(--color-brand);
+        }
+      }
+
+      > hr {
+        margin: @size-24 0;
+        width: @size-40;
+        border: @size-1 solid var(--color-primary-text);
+      }
+    }
+
+    > span:first-of-type {
+      .text-12;
+
+      align-items: center;
+      background: var(--color-module-background-action-focus);
+      border-radius: @border-radius-full-round;
+      color: var(--color-primary-text);
+      display: flex;
+      height: @size-50;
+      margin: @size-16 0 @size-8 0;
+      padding: @size-8 @size-12;
+      text-align: left;
+
+      > div:first-of-type svg {
+        height: @size-16;
+
+        > circle {
+          fill: var(--color-primary-text);
+        }
+      }
+
+      > div:last-of-type {
+        margin: @size-8;
       }
     }
 
     > main {
       display: flex;
-      flex: 2;
       flex-direction: column;
-      justify-content: center;
 
       @media @breakpoint-mobile {
         margin: 0 @size-16;
@@ -208,75 +268,94 @@ div.Onboarding {
 
       > div {
         text-align: center;
-      }
 
-      > div:nth-of-type(1) {
+        > img {
+          height: 250px;
+
+          @media @breakpoint-mobile {
+            height: 120px;
+          }
+       }
+
         > svg {
           height: 62px;
-          fill: var(--color-primary-text);
+
+          > circle {
+            fill: none;
+          }
+
+          path {
+            fill: var(--color-primary-text);
+          }
         }
       }
 
       > div[class*='LargeSubheader'] {
+        .text-16-bold;
+
         margin: @size-16 0 0 0;
       }
 
-
       > div[class*="LinkContentSection"] {
         margin: @size-12 0 0 0;
+        font-weight: 500;
         text-align: center;
 
         > div {
           margin: @size-16 0 0 0;
         }
+      }
 
-        button {
-          .text-10-semi-bold;
+    }
 
-          color: var(--color-primary-text);
-          background: none;
-          border: none;
-
-          > svg path:first-of-type {
-            fill: var(--color-primary-text);
-          }
-
-          > svg path:last-of-type {
-            stroke: var(--color-primary-text);
-          }
-        }
+    > main:last-of-type {
+      > div > svg {
+        height: @size-32;
       }
     }
 
     > div.OnboardingNav {
-      display: flex;
-      align-items: center;
-      flex-direction: column;
-
-      @media @breakpoint-mobile {
-        display: none;
-      }
+      width: 100%;
+      margin: @size-21 @size-72;
 
       > div:first-of-type {
-        display: flex;
-        flex-direction: row;
+        > span:first-of-type {
+          .text-12-bold;
 
-        > div:first-of-type {
+          color: var(--color-primary-text);
           display: flex;
-          flex-direction: row-reverse;
-          padding: 0;
+          justify-content: center;
+          align-items: center;
+          margin: 0 0 @size-16 0;
 
-          > button:first-of-type {
-            margin-left: @size-16;
-          }
-
-          > button:only-of-type {
-            margin: 0;
+          > svg {
+            stroke: var(--color-open);
+            margin: 0 @size-8 0 0;
+            width: @size-12
           }
         }
 
-        > button {
-          margin-left: @size-16;
+        > span:last-of-type {
+          .text-12-bold;
+
+          display: table;
+          text-align: center;
+          border-bottom: @size-1 dashed var(--color-primary-text);
+          width: fit-content;
+          align-items: center;
+          justify-content: center;
+          color: var(--color-primary-text);
+          margin: @size-16 auto 0;
+          text-transform: uppercase;
+          cursor: pointer;
+        }
+
+        > div:first-of-type {
+          padding: 0;
+
+          > button {
+            width: 100%;
+          }
         }
       }
     }
@@ -284,105 +363,426 @@ div.Onboarding {
 
   > div.OnboardingMobileNav {
     display: none;
-
-    @media @breakpoint-mobile {
-      border-top: 1px solid var(--color-secondary-action-outline);
-      display: flex;
-      flex-direction: row;
-      justify-content: space-between;
-      max-height: 100px;
-      width: 100%;
-    }
-
-    > div:first-of-type,
-    > div:last-of-type {
-      height: @size-6;
-      width: @size-6;
-      margin: 0;
-
-      > svg {
-        stroke: var(--color-secondary-text);
-      }
-    }
-
-    > div:last-of-type > svg {
-      transform: rotate(-180deg);
-    }
-
-    > div:nth-of-type(2) {
-      align-items: center;
-      display: flex;
-      flex-direction: column;
-
-      > div:first-of-type {
-        display: flex;
-        align-items: center;
-      }
-
-      div[class*="ButtonsRow"] {
-        display: flex;
-        flex-direction: row-reverse;
-      }
-    }
-
-    button[class*="SecondaryButton"] {
-      margin: 0 @size-12 0 0;
-    }
-
-    div[class*="Stepper"] {
-      margin-top: @size-6;
-    }
   }
 
-  &.Condensed {
-    min-height: 200px;
-    width: 445px;
-    padding: @size-32 @size-24 @size-12;
+  .InfoBubble {
+    .text-12;
 
-    > main {
-      > div:nth-of-type(1) {
-        .text-18-bold;
+    align-items: center;
+    display: flex;
+    flex-direction: row;
+    background: var(--color-active-background);
+    border-radius: @size-80;
+    line-height: 140%;
+    color: var(--color-secondary-text);
+    padding: @size-12 @size-16 @size-12 0;
+
+    > svg {
+      margin: 0 @size-16;
+      width: @size-44;
+    }
+
+    > div > button[class*='ExternalLinkButton'] {
+      border: none;
+      padding: 0;
+      background: var(--color-active-background);
+
+      > a {
+        text-transform: lowercase;
+        color: var(--color-primary-text);
+        font-size: @size-12;
+        font-weight: 100;
       }
 
-      > div:nth-of-type(2) {
-        .text-12;
+      > svg > path:first-of-type {
+        fill: var(--color-primary-text);
+      }
 
-        margin-top: @size-16;
-        line-height: 140%;
+      > svg > path:last-of-type {
+        stroke: var(--color-primary-text);
       }
     }
   }
 }
 
-.Stepper {
-  align-items: center;
-  display: flex;
-  height: @size-12;
-  margin-top: @size-32;
+.OnboardingDeposit {
+  .text-14-bold;
 
-  > span {
-    background: var(--color-inactive-text);
-    border-radius: 50%;
-    cursor: pointer;
-    height: @size-8;
-    margin: @size-4;
-    width: @size-8;
+  border: @size-1 solid var(--color-secondary-action-outline);
+  border-radius: @size-3;
+  color: var(--color-primary-text);
+  flex: 2;
+  margin: @size-32 0 @size-32 0;
+  padding: @size-16 @size-14;
+  text-align: center;
 
-    &:hover {
-      background: var(--color-dark-text);
-      height: @size-12;
-      margin: @size-2;
-      width: @size-12;
-    }
+  > div:first-of-type {
+    > div {
+      background: #1B1A1E;
+      position: absolute;
+      padding: 42px;
+      border: 1px solid var(--color-secondary-action-outline);
+      top: 50%;
+      left: 0;
+      right: 0;
+      margin-left: auto;
+      margin-right: auto;
+      width: 225px;
 
-    &.Current {
-      background: var(--color-primary-text);
+      > svg {
+        cursor: pointer;
+        height: @size-12;
+        position: absolute;
+        margin: @size-16;
+        right: 0;
+        top: 0;
+
+        > g {
+          stroke-width: @size-2;
+        }
+      }
     }
   }
 
+  > div:nth-of-type(2) {
+    .text-14-semi-bold;
+
+    align-items: center;
+    color: var(--color-inactive-text);
+    display: flex;
+    margin: @size-12 0;
+
+    > div:first-of-type > svg {
+      cursor: pointer;
+      fill: var(--color-primary-text);
+      height: @size-32;
+      margin: 0 @size-16;
+    }
+
+    > div:last-of-type {
+      align-items: center;
+      background: var(--color-secondary-action);
+      border-radius: @size-3;
+      display: flex;
+      justify-content: center;
+      height: @size-38;
+      width: 100%;
+    }
+  }
+
+  > button {
+    .text-12-bold;
+
+    color: var(--color-primary-text);
+    border: @size-1 solid var(--color-secondary-action-outline);
+    border-radius: @size-3;
+    margin: 0 0 @size-12 0;
+    padding: @size-8;
+    width: 100%;
+  }
+
+  > div:last-of-type {
+    .text-11-semi-bold;
+
+    color: var(--color-secondary-text);
+
+    > a {
+      color: var(--color-primary-text);
+      border-bottom: @size-1 dotted var(--color-primary-text);
+    }
+  }
+}
+
+
+.OnboardingDepositWalletOnRamp {
+  margin: 0 0 @size-32 0;
+  width: 100%;
+  text-align: center;
+
+  > div:first-of-type  {
+    align-items: center;
+    color: var(--color-secondary-text);
+    display: flex;
+    margin: 0 0 @size-8 0;
+
+    > hr:first-of-type {
+      border-color: var(--color-secondary-text);
+      margin: 0 @size-8 0 0;
+      width: 50%;
+    }
+
+    > hr:last-of-type {
+      border-color: var(--color-secondary-text);
+      margin: 0 0 0 0@size-8;
+      width: 50%;
+    }
+  }
+
+  > div:last-of-type {
+    .text-12-bold;
+
+    color: var(--color-primary-text);
+    cursor: pointer;
+    border-bottom: @size-1 dotted var(--color-primary-text);
+    width: max-content;
+    margin: auto;
+    text-transform: uppercase;
+  }
+}
+
+.OnboardingTokenSelect {
+  flex: 2;
+  width: 100%;
+
+
+  > div {
+    align-items: center;
+    border: @size-1 solid var(--color-secondary-action-outline);
+    border-radius: @size-3;
+    cursor: pointer;
+    display: flex;
+    margin: @size-12 auto 0 auto;
+    justify-content: space-between;
+    height: @size-52;
+
+    > div:first-of-type {
+      .text-14-bold;
+
+      display: flex;
+      align-items: center;
+      margin: 0 0 0 @size-12;
+
+      color: var(--color-primary-text);
+
+      > svg {
+        fill: var(--color-primary-text);
+        margin: 0 @size-8 0 0;
+        width: @size-24;
+      }
+    }
+
+    > div:last-of-type {
+      text-align: right;
+      margin: 0 @size-12 0 0;
+
+      > div:first-of-type {
+        .text-10;
+
+        color: var(--color-secondary-text);
+      }
+
+      > div:last-of-type {
+        .text-12-semi-bold;
+
+        color: var(--color-primary-text);
+        margin: @size-4 0 0 0;
+      }
+    }
+  }
+
+  > div:hover {
+    border-color: var(--color-outcome-seven);
+  }
+}
+
+.OnboardingBankroll {
+  flex: 2;
+
+  > span:first-of-type {
+    .text-14-semi-bold;
+
+    color: var(--color-secondary-text);
+    display: flex;
+    text-align: center;
+    margin: 0 0 @size-24 0;
+  }
+
+  > div {
+    .text-16-bold;
+
+    align-items: center;
+    border: @size-1 solid var(--color-secondary-action-outline);
+    border-radius: @size-3;
+    color: var(--color-primary-text);
+    display: flex;
+    margin: @size-12 auto 0 auto;
+    justify-content: center;
+    height: @size-52;
+  }
+
+  > div[class*='NotSelected'] {
+    cursor: pointer;
+  }
+
+  > div[class*='NotSelected']:hover {
+    border-color: var(--color-outcome-seven);
+  }
+
   > span:last-of-type {
-    &:hover {
-      margin-left: @size-2;
+    .text-12;
+
+    align-items: center;
+    background: var(--color-module-background-action-focus);
+    border-radius: @border-radius-full-round;
+    color: var(--color-primary-text);
+    display: flex;
+    height: @size-50;
+    margin: @size-16 0 0 0;
+    padding: @size-8 @size-12;
+    text-align: left;
+
+    > div:first-of-type svg {
+      height: @size-16;
+
+      > circle {
+        fill: var(--color-primary-text);
+      }
+    }
+
+    > div:last-of-type {
+      margin: @size-8;
+    }
+  }
+
+  .OnboardingBankroll1Inch {
+    background: var(--color-module-background);
+    border-top: none;
+    flex-direction: column;
+    height: fit-content;
+    margin: 0;
+    padding: @size-24 @size-24 @size-16 @size-24;
+    transform: translateY(-4px);
+    display: table;
+    width: 100%;
+    text-align: center;
+
+    > div:first-of-type {
+      .text-14-bold;
+
+      color: var(--color-primary-text);
+      margin: @size-6 0 0 0;
+    }
+
+    > div:nth-of-type(2) {
+      .text-12;
+
+      color: var(--color-secondary-text);
+      margin: @size-6 0 0 0;
+    }
+
+    > div:nth-of-type(3) {
+      .text-12;
+
+      border-bottom: @size-1 dashed var(--color-primary-text);
+      color: var(--color-primary-text);
+      cursor: pointer;
+      display: table;
+      font-weight: 600;
+      margin: auto;
+      text-transform: uppercase;
+    }
+
+    > button[class*='ExternalLinkButton'] {
+      .text-12-bold;
+
+      background: var(--color-primary-action);
+      border: none;
+      padding: @size-8 @size-12;
+
+      > a {
+        color: var(--color-dark-grey);
+        display: inline-block;
+        margin: -16px;
+        outline: none;
+        padding: @size-16 8rem;
+        position: relative;
+        z-index: 1;
+      }
+
+      > svg {
+        transform: translateX(-6rem);
+      }
+
+      svg > path {
+        stroke: var(--color-dark-grey);
+      }
+
+      svg > path:nth-child(odd) {
+        fill: var(--color-dark-grey);
+        stroke: none;
+      }
+
+      p {
+        fill: var(--color-dark-grey);
+      }
+    }
+
+    > button[class*='ExternalLinkButton']:hover {
+      background: var(--color-primary-action-90);
+    }
+
+    > a, > button {
+      margin: @size-16 0;
+      width: 100%;
+
+      > button {
+        width: 100%;
+      }
+    }
+  }
+}
+
+.OnboardingApprovals {
+  flex: 2;
+  margin: @size-16 0 0 0;
+
+  > div > span {
+    .text-12;
+
+    color: var(--color-primary-text);
+  }
+
+  > div > svg {
+    width: @size-32
+  }
+
+  > .ApproveBox {
+    .text-12;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: 48px;
+    border: @size-1 solid var(--color-secondary-action-outline);
+    border-radius: @size-8;
+    font-weight: 500;
+    margin: 0 0 @size-8 0;
+    padding: @size-8 @size-12;
+  }
+
+  > .ApproveBoxCompleted {
+    > span {
+      .text-12;
+
+      color: var(--color-inactive-text);
+    }
+
+    > svg {
+      width: @size-32
+    }
+  }
+
+  > div:last-of-type {
+    .text-12;
+
+    align-items: center;
+    color: var(--color-primary-text);
+    display: flex;
+    font-weight: 500;
+
+    > svg {
+      height: @size-14;
+      fill: var(--color-primary-text);
+      margin: 0 @size-8 0 0;
     }
   }
 }
@@ -513,7 +913,7 @@ div.Onboarding {
 
   .ModalReporting {
     border: 0;
-    
+
     > main {
       > div:nth-of-type(2) {
         border: 0;
@@ -575,7 +975,7 @@ div.Onboarding {
             grid-template-columns: @size-248 repeat(3,1fr) @size-168;    
 
             > div {
-              > button:last-of-type,  
+              > button:last-of-type,
               > div {
                 min-width: @size-70;
               }
@@ -1014,45 +1414,6 @@ div.ButtonsRow:last-of-type {
   .text-12;
 
   color: var(--color-error);
-}
-
-.DaiEthSelector {
-  display: flex;
-
-  > div {
-    .text-16-bold;
-
-    align-items: center;
-    background: var(--color-secondary-action);
-    border: @size-2 solid var(--color-secondary-action-outline);
-    border-radius: @border-radius-rounded;
-    cursor: pointer;
-    color: var(--color-primary-text);
-    display: flex;
-    height: @size-48;
-    justify-content: center;
-    padding: @size-14 @size-12 @size-14 @size-4;
-    width: @size-87;
-
-    &.selected {
-      border: @size-2 solid var(--color-primary-action);
-    }
-
-    > svg {
-      height: @size-28;
-      width: @size-28;
-      fill: var(--color-primary-text);
-    }
-  }
-
-  > div:last-of-type {
-    margin-left: @size-12;
-
-    > svg {
-      height: @size-21;
-      width: @size-21;
-    }
-  }
 }
 
 .DescriptionWithLink {

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import classNames from 'classnames';
 import { Alerts, BetsIconCount } from 'modules/common/icons';
 import ConnectAccount from 'modules/auth/connect-account';
@@ -7,7 +7,6 @@ import {
   LinearPropertyLabel,
   LinearPropertyLabelUnderlineTooltip,
 } from 'modules/common/labels';
-import Styles from 'modules/app/components/top-bar.styles.less';
 import ButtonStyles from 'modules/common/buttons.styles.less';
 import { Link } from 'react-router-dom';
 import makePath from 'modules/routes/helpers/make-path';
@@ -28,15 +27,42 @@ import {
   MODAL_SIGNUP,
   MIGRATE_FROM_LEG_REP_TOKEN,
   THEMES,
+  MODAL_AUGUR_USES_DAI,
+  MODAL_ETH_DEPOSIT,
+  MODAL_TOKEN_SELECT,
+  MODAL_APPROVALS,
+  MODAL_TEST_BET
 } from 'modules/common/constants';
 import { useAppStatusStore } from 'modules/app/store/app-status';
 import { getInfoAlertsAndSeenCount } from 'modules/alerts/helpers/alerts';
 import AlertsContainer from 'modules/alerts/components/alerts-view';
 import { useBetslipStore } from 'modules/trading/store/betslip';
-import HelpResources from 'modules/app/containers/help-resources';
 import { BETSLIP_SELECTED } from 'modules/trading/store/constants';
 import Styles from 'modules/app/components/top-bar.styles.less';
 import { getCoreStats } from 'modules/auth/helpers/login-account';
+import { TOTAL_ONBOARDING_STEPS } from 'modules/modal/onboarding';
+import { approveFillOrderCheck, approveShareTokenCheck, approveZeroXCheck } from 'modules/contracts/actions/contractCalls';
+
+
+const handleShowOnboarding = (currentOnboardingStep, setModal) => {
+  let nextStep = MODAL_AUGUR_USES_DAI;
+  if (currentOnboardingStep === 1) {
+    nextStep = MODAL_AUGUR_USES_DAI;
+  } else if (currentOnboardingStep === 2) {
+    nextStep = MODAL_ETH_DEPOSIT;
+  } else if (currentOnboardingStep === 3) {
+    nextStep = MODAL_TOKEN_SELECT;
+  } else if (currentOnboardingStep === 4) {
+    nextStep = MODAL_TOKEN_SELECT;
+  } else if (currentOnboardingStep === 5) {
+    nextStep = MODAL_TOKEN_SELECT;
+  } else if (currentOnboardingStep === 6) {
+    nextStep = MODAL_APPROVALS;
+  } else if (currentOnboardingStep === 7) {
+    nextStep = MODAL_TEST_BET;
+  }
+  setModal({ type: nextStep });
+};
 
 export const Stats = () => {
   const {
@@ -77,14 +103,16 @@ export const Stats = () => {
 };
 
 const TopBar = () => {
+
   const {
     pendingQueue,
-    loginAccount: { balances },
+    loginAccount: { address, currentOnboardingStep, balances },
     theme,
     isLogged,
     restoredAccount,
     isMobile,
     isAlertsMenuOpen,
+    ethToDaiRate,
     actions: { setIsAlertsMenuOpen, setBetslipMinimized, setModal },
   } = useAppStatusStore();
   const {
@@ -100,6 +128,41 @@ const TopBar = () => {
     pendingQueue[TRANSACTIONS][MIGRATE_FROM_LEG_REP_TOKEN];
   const showMigrateRepButton =
     balances?.legacyRep !== '0' || balances?.legacyAttoRep !== '0' || !!pending;
+
+    const [isZeroXApproved, setIsZeroXApproved] = useState(false);
+    const [isShareTokenApproved, setIsShareTokenApproved] = useState(false);
+    const [isFillOrderAprpoved, setIsFillOrderApproved] = useState(false);
+
+    useEffect(() => {
+      if (
+        isLogged &&
+        address &&
+        currentOnboardingStep < TOTAL_ONBOARDING_STEPS &&
+        (!isZeroXApproved || !isShareTokenApproved || !isFillOrderAprpoved)
+      ) {
+        const checkIsZeroXApproved = async () => {
+          const approved = await approveZeroXCheck(address);
+          setIsZeroXApproved(approved);
+        };
+
+        const checkIsShareTokenApproved = async () => {
+          const approved = await approveShareTokenCheck(address);
+          setIsShareTokenApproved(approved);
+        };
+
+        const checkIsFillOrderApproved = async () => {
+          const approved = await approveFillOrderCheck(address);
+          setIsFillOrderApproved(approved);
+        };
+
+        checkIsZeroXApproved();
+        checkIsShareTokenApproved();
+        checkIsFillOrderApproved();
+      }
+    }, [isLogged, address]);
+
+
+  const accountSetup = isZeroXApproved && isShareTokenApproved && isFillOrderAprpoved;
   return (
     <header className={Styles.TopBar}>
       <div className={Styles.Logo}>
@@ -121,14 +184,19 @@ const TopBar = () => {
             className={ButtonStyles.ProcessingSpinnerButton}
           />
         )}
+
+        {(isLogged || restoredAccount) && !accountSetup && currentOnboardingStep < TOTAL_ONBOARDING_STEPS && ethToDaiRate && (
+          <PrimaryButton text={'Continue account setup'} action={() => handleShowOnboarding(currentOnboardingStep, setModal)} />
+        )}
+
         {(!isLogged || (!isMobile && LoggedOrRestored)) && <HelpResources />}
         {!isMobile && <OddsMenu />}
         {notLoggedAndRestored && (
           <>
             <SecondaryButton
               action={() => setModal({ type: MODAL_LOGIN })}
-              title="Login"
-              text="Login"
+              title="Connect"
+              text="Connect"
             />
             <PrimaryButton
               action={() => setModal({ type: MODAL_SIGNUP })}
