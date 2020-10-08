@@ -1,4 +1,4 @@
-import { Filter, Log, ParsedLog } from '@augurproject/types';
+import { ParsedLog, Filter, Log } from '@augurproject/types';
 import {
   EthersProviderBlockStreamAdapter,
   ExtendedLog,
@@ -62,7 +62,7 @@ export class BlockAndLogStreamerSyncStrategy extends AbstractSyncStrategy
   constructor(
     getLogs: (filter: Filter) => Promise<Log[]>,
     contractAddresses: string[],
-    onLogsAdded: (blockNumber: number, logs: Log[]) => Promise<void>,
+    onLogsAdded: (blockNumber: number, logs: ParsedLog[]) => Promise<void>,
     private blockAndLogStreamer: BlockAndLogStreamerInterface<
       Block,
       ExtendedLog

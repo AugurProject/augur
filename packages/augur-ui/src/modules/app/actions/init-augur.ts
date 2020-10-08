@@ -3,7 +3,7 @@ import { extractIPFSUrl, IPFSHashVersion, isDevNetworkId, mergeConfig } from '@a
 import detectEthereumProvider from '@metamask/detect-provider';
 import { AppState } from 'appStore';
 import { toChecksumAddress } from 'ethereumjs-util';
-import { JsonRpcProvider, Web3Provider } from 'ethers/providers';
+import { JsonRpcProvider, Web3Provider } from '@ethersproject/providers';
 import { updateLoginAccount } from 'modules/account/actions/login-account';
 import { checkIfMainnet } from 'modules/app/actions/check-if-mainnet';
 import { isPrivateNetwork } from 'modules/app/actions/is-private-network.ts';

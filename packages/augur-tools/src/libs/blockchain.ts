@@ -4,7 +4,7 @@ import { EthersFastSubmitWallet } from '@augurproject/core';
 import { ContractAddresses } from '@augurproject/utils';
 import { ContractDependenciesEthers } from '@augurproject/contract-dependencies-ethers';
 import { ContractDeployer } from '@augurproject/core';
-import { HDNode } from 'ethers/utils';
+import { HDNode } from '@ethersproject/hdnode';
 import { Wallet } from 'ethers';
 
 import { Account } from '../constants';
@@ -49,7 +49,7 @@ export function makeDependencies(
 }
 
 export class HDWallet {
-  readonly node: HDNode.HDNode;
+  readonly node: HDNode;
   constructor(readonly mnemonic: string) {
     this.node = HDNode.fromMnemonic(mnemonic);
   }
@@ -66,6 +66,6 @@ export class HDWallet {
   }
 
   static randomMnemonic(): string {
-    return Wallet.createRandom().mnemonic;
+    return Wallet.createRandom().mnemonic.phrase;
   }
 }

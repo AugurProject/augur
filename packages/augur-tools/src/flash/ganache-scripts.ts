@@ -2,7 +2,7 @@ const compilerOutput = require('@augurproject/artifacts/build/contracts.json');
 import { EthersProvider } from '@augurproject/ethersjs-provider';
 import { SDKConfiguration } from '@augurproject/utils';
 import * as fs from 'async-file';
-import { BigNumber } from 'ethers/utils';
+import { ethers } from 'ethers';
 import { MemDown } from 'memdown';
 import {
   createDb,
@@ -72,7 +72,7 @@ export function addGanacheScripts(flash: FlashSession) {
       const web3Provider = await makeGanacheProvider(db, this.accounts);
       const provider = new EthersProvider(web3Provider, 10, 0, 40);
 
-      provider.overrideGasPrice = new BigNumber(100);
+      provider.overrideGasPrice = ethers.BigNumber.from(100);
 
       const config = this.deriveConfig({
         deploy: { normalTime: false, writeArtifacts: true },

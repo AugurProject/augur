@@ -17,8 +17,8 @@ export function providerFromConfig(config: SDKConfiguration) {
     config.ethereum.rpcRetryInterval,
     config.ethereum.rpcConcurrency);
   if (config.gas?.override) {
-    if (config.gas?.price) ethersProvider.overrideGasPrice = new ethers.utils.BigNumber(config.gas.price);
-    if (config.gas?.limit) ethersProvider.gasLimit = new ethers.utils.BigNumber(config.gas.limit);
+    if (config.gas?.price) ethersProvider.overrideGasPrice = ethers.BigNumber.from(config.gas.price);
+    if (config.gas?.limit) ethersProvider.gasLimit = ethers.BigNumber.from(config.gas.limit);
   }
   return ethersProvider;
 }
@@ -27,5 +27,6 @@ export function jsonProviderFromConfig(config: SDKConfiguration): providers.Json
   if (!config.ethereum || !config.ethereum.http) {
     throw Error(`cannot create provider from config lacking ethereum and ethereum.http. Config: ${serializeConfig(config)}`);
   }
+
   return new providers.JsonRpcProvider(config.ethereum.http);
 }

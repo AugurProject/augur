@@ -22,7 +22,7 @@ import {
   convertDisplayValuetoAttoValue,
   numTicksToTickSizeWithDisplayPrices,
 } from '@augurproject/utils';
-import { TransactionResponse } from 'ethers/providers';
+import { TransactionResponse } from '@ethersproject/providers';
 import { formatBytes32String } from 'ethers/utils';
 import {
   BUY,

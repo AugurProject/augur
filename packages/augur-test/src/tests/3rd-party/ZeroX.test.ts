@@ -1,17 +1,16 @@
 import { WSClient } from '@0x/mesh-rpc-client';
 import { buildConfig } from '@augurproject/artifacts';
 import { SDKConfiguration } from '@augurproject/utils';
-import { sleep } from '@augurproject/core/build/libraries/HelperFunctions';
 import { EthersProvider } from '@augurproject/ethersjs-provider';
 import { Connectors } from '@augurproject/sdk';
 import { ACCOUNTS } from '@augurproject/tools';
 import { TestContractAPI } from '@augurproject/tools';
 import { stringTo32ByteHex } from '@augurproject/tools/build/libs/Utils';
 import { BigNumber } from 'bignumber.js';
-import { JsonRpcProvider } from 'ethers/providers';
-import { formatBytes32String } from 'ethers/utils';
+import { JsonRpcProvider } from '@ethersproject/providers';
 import * as _ from 'lodash';
 import { ZeroXOrders, ZeroXOrder } from '@augurproject/sdk-lite';
+import {ethers} from 'ethers';
 
 describe('3rd Party :: ZeroX :: ', () => {
   let john: TestContractAPI;
@@ -81,7 +80,7 @@ describe('3rd Party :: ZeroX :: ', () => {
         numOutcomes: 3,
         outcome,
         tradeGroupId: '42',
-        fingerprint: formatBytes32String('11'),
+        fingerprint: ethers.utils.formatBytes32String('11'),
         doNotCreateOrders: false,
         displayMinPrice: new BigNumber(0),
         displayMaxPrice: new BigNumber(1),

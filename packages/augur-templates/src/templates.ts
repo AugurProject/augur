@@ -1,5 +1,5 @@
 import { ethers } from 'ethers';
-import { BigNumber } from 'ethers/utils';
+const BigNumber = ethers.BigNumber;
 import moment from 'moment';
 import {
   REQUIRED,
@@ -912,7 +912,7 @@ export const isTemplateMarket = (
       estimatedDateTimeAfterMarketEndTime(
         template.inputs,
         validation.hoursAfterEstimatedStartTime,
-        new BigNumber(endTime).toNumber()
+        ethers.BigNumber.from(endTime).toNumber()
       )
     ) {
       errors.push(
@@ -924,7 +924,7 @@ export const isTemplateMarket = (
       !daysRequiredAfterStartDate(
         template.inputs,
         validation.daysAfterStartDate,
-        new BigNumber(endTime).toNumber()
+        ethers.BigNumber.from(endTime).toNumber()
       )
     ) {
       errors.push(
@@ -937,7 +937,7 @@ export const isTemplateMarket = (
       !daysRequiredAfterMonthDate(
         template.inputs,
         validation.eventExpEndNextMonthValues,
-        new BigNumber(endTime).toNumber()
+        ethers.BigNumber.from(endTime).toNumber()
       )
     ) {
       errors.push(
@@ -950,8 +950,8 @@ export const isTemplateMarket = (
     if (
       !isDateInQuestionValid(
         template.inputs,
-        new BigNumber(endTime).toNumber(),
-        new BigNumber(creationTime).toNumber()
+        ethers.BigNumber.from(endTime).toNumber(),
+        ethers.BigNumber.from(creationTime).toNumber()
       )
     ) {
       errors.push(
@@ -963,8 +963,8 @@ export const isTemplateMarket = (
       !isValidYearYearRangeInQuestion(
         template.inputs,
         validation.yrs,
-        new BigNumber(endTime).toNumber(),
-        new BigNumber(creationTime).toNumber()
+        ethers.BigNumber.from(endTime).toNumber(),
+        ethers.BigNumber.from(creationTime).toNumber()
       )
     ) {
       errors.push(
@@ -996,8 +996,8 @@ export const isTemplateMarket = (
     if (
       !closingDateDependenciesCheck(
         template.inputs,
-        new BigNumber(endTime).toNumber(),
-        new BigNumber(creationTime).toNumber(),
+        ethers.BigNumber.from(endTime).toNumber(),
+        ethers.BigNumber.from(creationTime).toNumber(),
         validation.closingDateDependencies
       )
     ) {
@@ -1010,7 +1010,7 @@ export const isTemplateMarket = (
     if (
       !IsOnOrAfterWednesdayAfterOpeningOnOpeningFriday(
         template.inputs,
-        new BigNumber(endTime).toNumber(),
+        ethers.BigNumber.from(endTime).toNumber(),
         validation.afterTuesdayDateNoFriday
       )
     ) {
@@ -1109,7 +1109,7 @@ export const isTemplateMarket = (
       errors.push('templated market does not have correct categories');
       // https://github.com/AugurProject/augur/issues/8761 full details
       // only applies to markets created after Thursday, July 30, 2020 7:00:00 PM
-      if (new BigNumber(creationTime).gt(1596135600)) {
+      if (ethers.BigNumber.from(creationTime).gt(1596135600)) {
         return false;
       }
     }

@@ -20,7 +20,6 @@ import {
 } from '@augurproject/sdk-lite';
 import { BigNumber } from 'bignumber.js';
 import { ethers } from 'ethers';
-import { BigNumber as BN } from 'ethers/utils';
 import * as _ from 'lodash';
 import {
   convertDisplayAmountToOnChainAmount,
@@ -669,7 +668,7 @@ export class ZeroX {
   ): Promise<MatchingOrders> {
     const orderType = params.direction === 0 ? '1' : '0';
     const outcome = params.outcome.toString();
-    const price = new BN(params.price.toString()).toHexString().substr(2);
+    const price = ethers.BigNumber.from(params.price.toString()).toHexString().substr(2);
 
     let zeroXOrders = params.postOnly
       ? []
@@ -839,7 +838,7 @@ export class ZeroX {
     const onChainTradeParams = this.getOnChainTradeParams(params);
 
     const orderType = params.direction === 0 ? '1' : '0';
-    const price = new BN(onChainTradeParams.price.toString()).toHexString().substr(2);
+    const price = ethers.BigNumber.from(onChainTradeParams.price.toString()).toHexString().substr(2);
 
     const zeroXOrders = await this.client.getZeroXOrders({
       marketId: params.market,

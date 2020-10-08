@@ -20,9 +20,8 @@ import {
   getGasStation,
 } from '@augurproject/utils';
 import { BigNumber } from 'bignumber.js';
-import { JsonRpcProvider, TransactionResponse } from 'ethers/providers';
-import { Arrayish } from 'ethers/utils';
-import { getAddress } from 'ethers/utils/address';
+import { JsonRpcProvider, TransactionResponse } from '@ethersproject/providers';
+import { BytesLike } from '@ethersproject/bytes';
 import { EventEmitter } from 'events';
 import { BestOffer } from './api/BestOffer';
 import { ContractEvents } from './api/ContractEvents';
@@ -67,6 +66,7 @@ import { Users } from './state/getter/Users';
 import { WarpSyncGetter } from './state/getter/WarpSyncGetter';
 import { ZeroXOrdersGetters } from './state/getter/ZeroXOrdersGetters';
 import { WarpController } from './warp/WarpController';
+import {ethers} from 'ethers';
 
 export class Augur<TProvider extends Provider = Provider> {
   syncableFlexSearch: SyncableFlexSearch;
@@ -224,7 +224,7 @@ export class Augur<TProvider extends Provider = Provider> {
     return this.dependencies.provider.listAccounts();
   }
 
-  async signMessage(message: Arrayish) {
+  async signMessage(message: BytesLike) {
     return this.dependencies.signer.signMessage(message);
   }
 
@@ -239,7 +239,7 @@ export class Augur<TProvider extends Provider = Provider> {
 
   async getGasPrice(): Promise<BigNumber> {
     const gasPrice = await this.dependencies.provider.getGasPrice(this.networkId);
-    return new BigNumber(gasPrice.toString()); // ethers.utils.BigNumber => bignumber.js
+    return new BigNumber(gasPrice.toString()); // ethers.BigNumber => bignumber.js
   }
 
   async getAccount(): Promise<string | null> {
@@ -250,7 +250,7 @@ export class Augur<TProvider extends Provider = Provider> {
     const signer = await this.dependencies.signer.getAddress();
     account = signer;
     if (!account) return NULL_ADDRESS;
-    return getAddress(account);
+    return ethers.utils.getAddress(account);
   }
 
   async getAccountEthBalance() {

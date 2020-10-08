@@ -12,8 +12,8 @@ import {
 import { NULL_ADDRESS } from '@augurproject/tools/build/libs/Utils';
 import { BigNumber } from 'bignumber.js';
 import { ContractDependenciesEthers } from '@augurproject/contract-dependencies-ethers';
-import { formatBytes32String } from 'ethers/utils';
 import { makeProvider } from '../../libs';
+import { ethers } from 'ethers';
 
 interface MarketCreatedEvent {
   name: 'MarketCreated';
@@ -103,8 +103,8 @@ test('Contract :: Universe :: Create Market', async () => {
   const fee = new BigNumber(10).pow(16);
   const affiliateFeeDivisor = new BigNumber(25);
   const outcomes: string[] = [
-    formatBytes32String('big'),
-    formatBytes32String('small'),
+    ethers.utils.formatBytes32String('big'),
+    ethers.utils.formatBytes32String('small'),
   ];
   const categories: string[] = ['boba'];
   const description = 'Will big or small boba be the most popular in 2019?';

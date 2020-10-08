@@ -11,10 +11,10 @@ import {
 import { TestEthersProvider } from '@augurproject/tools/build/libs/TestEthersProvider';
 import { stringTo32ByteHex } from '@augurproject/tools/build/libs/Utils';
 import { BigNumber } from 'bignumber.js';
-import { formatBytes32String } from 'ethers/utils';
 import { makeProvider } from '../../../libs';
 import { MockBrowserMesh } from '../../../libs/MockBrowserMesh';
 import { MockMeshServer, stopServer } from '../../../libs/MockMeshServer';
+import { ethers } from 'ethers';
 
 describe('State API :: Market Sorts', () => {
   let john: TestContractAPI;
@@ -99,7 +99,7 @@ describe('State API :: Market Sorts', () => {
         numOutcomes: 3,
         outcome: outcomeA,
         tradeGroupId: '42',
-        fingerprint: formatBytes32String('11'),
+        fingerprint: ethers.utils.formatBytes32String('11'),
         doNotCreateOrders: false,
         displayMinPrice: new BigNumber(0),
         displayMaxPrice: new BigNumber(1),
@@ -116,7 +116,7 @@ describe('State API :: Market Sorts', () => {
         numOutcomes: 3,
         outcome: outcomeA,
         tradeGroupId: '42',
-        fingerprint: formatBytes32String('11'),
+        fingerprint: ethers.utils.formatBytes32String('11'),
         doNotCreateOrders: false,
         displayMinPrice: new BigNumber(0),
         displayMaxPrice: new BigNumber(1),
@@ -152,7 +152,7 @@ describe('State API :: Market Sorts', () => {
         numOutcomes: 3,
         outcome: outcomeA,
         tradeGroupId: '42',
-        fingerprint: formatBytes32String('11'),
+        fingerprint: ethers.utils.formatBytes32String('11'),
         doNotCreateOrders: false,
         displayMinPrice: new BigNumber(0),
         displayMaxPrice: new BigNumber(1),
@@ -178,7 +178,7 @@ describe('State API :: Market Sorts', () => {
         numOutcomes: 3,
         outcome: outcomeB,
         tradeGroupId: '42',
-        fingerprint: formatBytes32String('11'),
+        fingerprint: ethers.utils.formatBytes32String('11'),
         doNotCreateOrders: false,
         displayMinPrice: new BigNumber(0),
         displayMaxPrice: new BigNumber(1),
@@ -195,7 +195,7 @@ describe('State API :: Market Sorts', () => {
         numOutcomes: 3,
         outcome: outcomeC,
         tradeGroupId: '42',
-        fingerprint: formatBytes32String('11'),
+        fingerprint: ethers.utils.formatBytes32String('11'),
         doNotCreateOrders: false,
         displayMinPrice: new BigNumber(0),
         displayMaxPrice: new BigNumber(1),

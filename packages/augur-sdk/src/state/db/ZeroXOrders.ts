@@ -8,13 +8,13 @@ import {
   parseAssetData
 } from '@augurproject/sdk-lite';
 import { ContractAddresses, logger, LoggerLevels, DEFAULT_TRADE_INTERVAL } from '@augurproject/utils';
-import { getAddress } from 'ethers/utils/address';
 import * as _ from 'lodash';
 import { Augur } from '../../Augur';
 import { getTradeInterval } from '../../utils';
 import { AbstractTable, BaseDocument } from './AbstractTable';
 import { DB } from './DB';
 import { SyncStatus } from './SyncStatus';
+import { ethers } from 'ethers';
 
 // This database clears its contents on every sync.
 // The primary purposes for even storing this data are:
@@ -22,7 +22,6 @@ import { SyncStatus } from './SyncStatus';
 // 2. To cache market orderbooks so a complete pull isnt needed on every subsequent load.
 
 const EXPECTED_ASSET_DATA_LENGTH = 2122;
-
 
 export interface Document extends BaseDocument {
   blockNumber: number;
@@ -127,9 +126,9 @@ export class ZeroXOrders extends AbstractTable {
     if (orderEvents.length < 1) return;
     const bulkOrderEvents = [];
     const filteredOrders = orderEvents.filter(this.validateOrder, this);
-    console.log("Filtered Orders", filteredOrders);
+    console.log('Filtered Orders', filteredOrders);
     let documents: StoredOrder[] = filteredOrders.map(this.processOrder, this);
-    console.log("Processed Orders: ", documents);
+    console.log('Processed Orders: ', documents);
 
     // Remove Canceled, Expired, and Invalid Orders and emit event
     const canceledOrders = _.keyBy(
@@ -141,7 +140,7 @@ export class ZeroXOrders extends AbstractTable {
     for (const d of documents) {
       if (!canceledOrders[d.orderHash]) continue;
       // Spread this once to avoid extra copies
-      const eventType = canceledOrders[d.orderHash].endState === "EXPIRED" ? OrderEventType.Expire : OrderEventType.Cancel;
+      const eventType = canceledOrders[d.orderHash].endState === 'EXPIRED' ? OrderEventType.Expire : OrderEventType.Cancel;
       const event = {eventType, orderId: d.orderHash, ...d};
       bulkOrderEvents.push(event);
       this.augur.events.emit(SubscriptionEventName.DBUpdatedZeroXOrders, event);
@@ -199,14 +198,14 @@ export class ZeroXOrders extends AbstractTable {
 
     setImmediate(() => {
       logger.info(`Synced ${orders.length} Orders from ZeroX Peers`);
-      logger.debug("ZeroX Sync Summary: ")
+      logger.debug('ZeroX Sync Summary: ')
       logger.table(LoggerLevels.debug, [{
-        "Received from Mesh": orders.length,
-        "Valid orders from Mesh": documents.length,
-        "Cached Local Orders not Received": ordersToAdd.length
+        'Received from Mesh': orders.length,
+        'Valid orders from Mesh': documents.length,
+        'Cached Local Orders not Received': ordersToAdd.length
       }]);
 
-      logger.debug("Orders Per Market")
+      logger.debug('Orders Per Market')
       logger.table(LoggerLevels.debug, _.countBy(documents, 'market'));
     });
 
@@ -218,22 +217,22 @@ export class ZeroXOrders extends AbstractTable {
     };
     if (ordersToAdd.length > 0) {
       // PG: Purposefully not awaiting here
-      console.log("Adding orders back to mesh", ordersToAdd);
+      console.log('Adding orders back to mesh', ordersToAdd);
       this.augur.zeroX.addOrders(ordersToAdd).then((r) => {
-        console.log("Add orders result: ", r);
+        console.log('Add orders result: ', r);
         try {
           if(r.rejected.length > 0) {
             this.handleOrderEvent(r.rejected.map((order) => {
               order.endState = statusToEndState[order.status.code] || 'INVALID';
-              order.fillableTakerAssetAmount = new BigNumber("0");
+              order.fillableTakerAssetAmount = new BigNumber('0');
               return order;
             }));
           }
         } catch(e) {
-          console.log("Error with order events", e);
+          console.log('Error with order events', e);
         }
       }).catch((e) => {
-        console.error("Error adding cached orders: ", e);
+        console.error('Error adding cached orders: ', e);
       });
     }
     this.pastOrders = {};
@@ -251,7 +250,7 @@ export class ZeroXOrders extends AbstractTable {
     let tradeInterval = DEFAULT_TRADE_INTERVAL;
     const marketData = markets[storedOrder.market];
     if (storedOrder.invalidOrder) return false;
-    if (marketData && marketData.marketType == MarketType.Scalar) {
+    if (marketData && marketData.marketType === MarketType.Scalar) {
       tradeInterval = getTradeInterval(new BigNumber(marketData.prices[0]), new BigNumber(marketData.prices[1]), new BigNumber(marketData.numTicks));
     }
     if (!storedOrder['numberAmount'].mod(tradeInterval).isEqualTo(0)) return false;
@@ -279,12 +278,12 @@ export class ZeroXOrders extends AbstractTable {
       orderHash: order.orderHash,
       amount: order.fillableTakerAssetAmount.toFixed(),
       numberAmount: order.fillableTakerAssetAmount,
-      orderCreator: getAddress(signedOrder.makerAddress),
+      orderCreator: ethers.utils.getAddress(signedOrder.makerAddress),
       signedOrder: {
         signature: signedOrder.signature,
-        senderAddress: getAddress(signedOrder.senderAddress),
-        makerAddress: getAddress(signedOrder.makerAddress),
-        takerAddress: getAddress(signedOrder.takerAddress),
+        senderAddress: ethers.utils.getAddress(signedOrder.senderAddress),
+        makerAddress: ethers.utils.getAddress(signedOrder.makerAddress),
+        takerAddress: ethers.utils.getAddress(signedOrder.takerAddress),
         makerFee: signedOrder.makerFee.toFixed(),
         takerFee: signedOrder.takerFee.toFixed(),
         makerAssetAmount: signedOrder.makerAssetAmount.toFixed(),
@@ -292,7 +291,7 @@ export class ZeroXOrders extends AbstractTable {
         makerAssetData: signedOrder.makerAssetData,
         takerAssetData: signedOrder.takerAssetData,
         salt: signedOrder.salt.toFixed(),
-        exchangeAddress: getAddress(signedOrder.exchangeAddress),
+        exchangeAddress: ethers.utils.getAddress(signedOrder.exchangeAddress),
         feeRecipientAddress: signedOrder.feeRecipientAddress,
         expirationTimeSeconds: signedOrder.expirationTimeSeconds.toFixed(),
       },

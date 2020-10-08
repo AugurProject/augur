@@ -3,7 +3,7 @@ import type { EthersSigner } from '@augurproject/contract-dependencies-ethers';
 import type { Augur, Connectors } from '@augurproject/sdk';
 
 import { logger, NetworkId } from '@augurproject/utils';
-import type { JsonRpcProvider } from 'ethers/providers';
+import type { JsonRpcProvider } from '@ethersproject/providers';
 import { NULL_ADDRESS } from 'modules/common/constants';
 
 import {

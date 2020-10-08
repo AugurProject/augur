@@ -1,17 +1,21 @@
 import { ethers } from 'ethers';
+import { BytesLike } from '@ethersproject/bytes';
+import { ExternallyOwnedAccount } from '@ethersproject/abstract-signer';
+import { SigningKey } from '@ethersproject/signing-key';
+
 
 export class EthersFastSubmitWallet extends ethers.Wallet {
   private nonce = 0;
   private gasPrice = 35e9;
 
   static async create(
-    privateKey: ethers.utils.Arrayish,
+    privateKey: BytesLike | ExternallyOwnedAccount | SigningKey,
     provider: ethers.providers.Provider
   ): Promise<EthersFastSubmitWallet> {
     const wallet = new EthersFastSubmitWallet(privateKey, provider);
     const nonce = await provider.getTransactionCount(wallet.address, 'pending');
     wallet.setNonce(nonce);
-    wallet.startGasPriceCheck();
+    wallet.startGasPriceCheck(); // intentionally hanging promise
     return wallet;
   }
 
@@ -26,7 +30,7 @@ export class EthersFastSubmitWallet extends ethers.Wallet {
   }
 
   // If we ever have a use case for a different kind of message signing split this into `signMessage` (new) and `signBinaryMessage` (below)
-  signMessage(message: ethers.utils.Arrayish | string): Promise<string> {
+  signMessage(message: BytesLike): Promise<string> {
     const hashmessage = ethers.utils.arrayify(message);
     return Promise.resolve(super.signMessage(hashmessage));
   }
@@ -42,8 +46,8 @@ export class EthersFastSubmitWallet extends ethers.Wallet {
 
       // https://github.com/ethers-io/ethers.js/issues/321
     delete transaction.from;
-    const populatedTx = await ethers.utils.populateTransaction(transaction, this.provider, this.address);
-    const signedTransaction = await this.sign(populatedTx);
+    const populatedTx = await this.populateTransaction(transaction);
+    const signedTransaction = await this.signTransaction(populatedTx);
     return this.provider.sendTransaction(signedTransaction);
   }
 }

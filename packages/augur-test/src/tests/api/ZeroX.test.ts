@@ -11,12 +11,12 @@ import {
 import { TestEthersProvider } from '@augurproject/tools/build/libs/TestEthersProvider';
 import { stringTo32ByteHex } from '@augurproject/tools/build/libs/Utils';
 import { BigNumber } from 'bignumber.js';
-import { formatBytes32String } from 'ethers/utils';
 import * as _ from 'lodash';
 import { enableZeroX, makeProvider } from '../../libs';
 import { MockBrowserMesh } from '../../libs/MockBrowserMesh';
 import { MockMeshServer, stopServer } from '../../libs/MockMeshServer';
 import { ZeroXOrders } from '@augurproject/sdk-lite/build';
+import { ethers } from 'ethers';
 
 describe('Augur API :: ZeroX :: ', () => {
   let john: TestContractAPI;
@@ -96,7 +96,7 @@ describe('Augur API :: ZeroX :: ', () => {
         numOutcomes: 3,
         outcome: 0,
         tradeGroupId: '42',
-        fingerprint: formatBytes32String('11'),
+        fingerprint: ethers.utils.formatBytes32String('11'),
         doNotCreateOrders: false,
         displayMinPrice: new BigNumber(0),
         displayMaxPrice: new BigNumber(1),

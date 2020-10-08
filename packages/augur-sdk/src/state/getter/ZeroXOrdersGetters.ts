@@ -1,7 +1,6 @@
 import { MarketData, ZeroXOrder, ZeroXOrders, OrderState, ignoreCrossedOrders } from '@augurproject/sdk-lite';
 import { BigNumber } from 'bignumber.js';
 import Dexie from 'dexie';
-import { getAddress } from 'ethers/utils/address';
 import * as t from 'io-ts';
 import * as _ from 'lodash';
 import {
@@ -14,6 +13,7 @@ import { DB } from '../db/DB';
 import { StoredOrder } from '../db/ZeroXOrders';
 import { getMarkets} from './OnChainTrading';
 import { Getter } from './Router';
+import { ethers } from 'ethers';
 
 
 export const ZeroXOrdersParams = t.partial({
@@ -69,7 +69,7 @@ export class ZeroXOrdersGetters {
     const ignoreCrossOrders = params.ignoreCrossOrders
     const outcome = params.outcome !== undefined ? `0x0${params.outcome.toString()}` : null;
     const orderType = params.orderType !== undefined ? `0x0${params.orderType}` : null;
-    const account = params.account ? getAddress(params.account) : null;
+    const account = params.account ? ethers.utils.getAddress(params.account) : null;
     const accountOnly = account && !ignoreCrossOrders;
 
     let storedOrders: StoredOrder[];

@@ -10,7 +10,6 @@ import program from 'commander';
 
 import ethereumKeyfileRecognizer from 'ethereum-keyfile-recognizer';
 import { ethers } from 'ethers';
-import { computeAddress } from 'ethers/utils';
 import * as fs from 'fs';
 import * as readlineSync from 'readline-sync';
 import { Account, ACCOUNTS } from '../constants';
@@ -150,7 +149,7 @@ function accountFromPrivateKey(key: string): Account {
   key = cleanKey(key);
   return {
     privateKey: key,
-    address: computeAddress(key),
+    address: ethers.utils.computeAddress(key),
     initialBalance: 0, // not used here; only for ganache premining
   }
 }

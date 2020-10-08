@@ -33,7 +33,6 @@ import { printConfig, sanitizeConfig } from '@augurproject/utils';
 import { BigNumber } from 'bignumber.js';
 import { spawn, spawnSync } from 'child_process';
 import { ethers } from 'ethers';
-import { formatBytes32String } from 'ethers/utils';
 import * as CIDTool from 'cid-tool';
 
 import * as fs from 'fs';
@@ -400,7 +399,7 @@ export function addScripts(flash: FlashSession) {
         }
       }
       if (cat) {
-        const outcomes = ['first', 'second', 'third', 'fourth', 'fifth'].map(formatBytes32String);
+        const outcomes = ['first', 'second', 'third', 'fourth', 'fifth'].map(ethers.utils.formatBytes32String);
         const market = await user.createReasonableMarket(outcomes, title);
         console.log(`Created Categorical market "${market.address}".`);
         if (orders) {
@@ -455,7 +454,7 @@ export function addScripts(flash: FlashSession) {
       const user = await this.createUser(this.getAccount(), this.config);
       const outcomes: string[] = (args.outcomes as string)
         .split(',')
-        .map(formatBytes32String);
+        .map(ethers.utils.formatBytes32String);
       const title = args.title as string || 'Categorical market description';
       const market = await user.createReasonableMarket(outcomes, title);
       console.log(`Created Categorical market "${market.address}".`);
@@ -1164,7 +1163,7 @@ export function addScripts(flash: FlashSession) {
           numOutcomes: 3 as NumOutcomes,
           outcome: Number(args.outcome) as 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7,
           tradeGroupId,
-          fingerprint: formatBytes32String('11'),
+          fingerprint: ethers.utils.formatBytes32String('11'),
           doNotCreateOrders: false,
           displayMinPrice: new BigNumber(0),
           displayMaxPrice: new BigNumber(1),

@@ -2,7 +2,7 @@ import { Block, Log, FilterOptions } from 'ethereumjs-blockstream';
 import * as _ from 'lodash';
 import { EthersProvider } from '@augurproject/ethersjs-provider';
 import { BlockAndLogStreamerDependencies, ExtendedLog } from './index';
-import { JsonRpcProvider } from 'ethers/providers';
+import { JsonRpcProvider } from '@ethersproject/providers';
 
 export class EthersProviderBlockStreamAdapter
   implements BlockAndLogStreamerDependencies<ExtendedLog, Block> {
@@ -32,7 +32,7 @@ export class EthersProviderBlockStreamAdapter
   };
 
   getBlockByHashOrTag = async (hashOrTag: string): Promise<Block> => {
-    const block = await this.provider.getBlock(hashOrTag, false);
+    const block = await this.provider.getBlock(hashOrTag);
     return {
       number: '0x' + block.number.toString(16),
       hash: block.hash,

@@ -2,7 +2,7 @@ import { EthersProvider } from '@augurproject/ethersjs-provider';
 import { NullWarpSyncHash, SECONDS_IN_A_DAY } from '@augurproject/sdk-lite';
 import { Log } from '@augurproject/types';
 import { logger } from '@augurproject/utils';
-import { Block } from 'ethers/providers';
+import { Block } from '@ethersproject/providers';
 import _ from 'lodash';
 import { WarpController } from '../../warp/WarpController';
 import { DB } from '../db/DB';

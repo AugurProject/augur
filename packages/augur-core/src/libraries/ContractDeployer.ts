@@ -86,7 +86,7 @@ Deploying to: ${env}
     }
 
     async getBlockNumber(): Promise<number> {
-        return this.provider.getBlock('latest', false).then( (block) => block.number);
+        return this.provider.getBlock('latest').then( (block) => block.number);
     }
 
     async deploy(env: string): Promise<ContractAddresses> {

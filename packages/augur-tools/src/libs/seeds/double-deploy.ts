@@ -3,12 +3,12 @@ import {
   SDKConfiguration,
   ContractAddresses
 } from '@augurproject/utils';
-import { BigNumber } from 'ethers/utils';
 import { Account, ACCOUNTS } from '../../constants';
 import { deployContracts } from '../blockchain';
 import { ContractAPI } from '../contract-api';
 import { createSeed, Seed } from './../ganache';
 import { makeProviderWithDB } from './../LocalAugur';
+import { ethers } from 'ethers';
 
 export async function generateDoubleDeploy(
   config: SDKConfiguration,
@@ -18,7 +18,7 @@ export async function generateDoubleDeploy(
   network: string
 ) {
   const [db, provider] = await makeProviderWithDB(seed, ACCOUNTS);
-  provider.overrideGasPrice = new BigNumber(100);
+  provider.overrideGasPrice = ethers.BigNumber.from(100);
 
   const john = await ContractAPI.userWrapper(ACCOUNTS[0], provider, config);
 

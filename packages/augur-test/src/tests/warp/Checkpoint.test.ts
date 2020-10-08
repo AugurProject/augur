@@ -2,7 +2,7 @@ import { ACCOUNTS, defaultSeedPath, loadSeed } from '@augurproject/tools';
 import { Checkpoints } from '@augurproject/sdk/build/warp/Checkpoints';
 import { TestContractAPI } from '@augurproject/tools';
 import { BigNumber } from 'bignumber.js';
-import { Block } from 'ethers/providers';
+import { Block } from '@ethersproject/providers';
 import { makeProvider } from '../../libs';
 
 describe('Checkpoint', () => {

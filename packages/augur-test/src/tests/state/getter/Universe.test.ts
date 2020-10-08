@@ -13,10 +13,10 @@ import {
 import { TestEthersProvider } from '@augurproject/tools/build/libs/TestEthersProvider';
 import { NULL_ADDRESS } from '@augurproject/tools/build/libs/Utils';
 import { BigNumber } from 'bignumber.js';
-import { formatBytes32String } from 'ethers/utils';
 import { makeProvider } from '../../../libs';
 import { SDKConfiguration } from '@augurproject/utils';
 import { MarketInfo } from "@augurproject/sdk-lite";
+import { ethers } from 'ethers';
 
 describe('State API :: Universe :: ', () => {
   let john: TestContractAPI;
@@ -130,7 +130,7 @@ describe('State API :: Universe :: ', () => {
     expect(migrationTotals).toEqual({});
 
     const market = await john.createReasonableMarket(
-      ['foo', 'bar', 'happiness', 'smile'].map(formatBytes32String)
+      ['foo', 'bar', 'happiness', 'smile'].map(ethers.utils.formatBytes32String)
     );
     await john.sync();
     const marketInfo = (await john.api.route('getMarketsInfo', {

@@ -14,7 +14,7 @@
   ],
   "dependencies": {
     "@augurproject/sdk-lite": "^2.1.9",
-    "ethers": "4.0.47",
+    "ethers": "5.0.15",
     "moment": "2.26.0"
   },
   "devDependencies": {

@@ -5,7 +5,6 @@ import { ContractDeployer } from '../libraries/ContractDeployer';
 import { ParaContractDeployer } from '../libraries/ParaContractDeployer';
 import { ParaAugurDeployer } from '../libraries/ParaAugurDeployer';
 import { SideChainDeployer } from '../libraries/SideChainDeployer';
-import { GovernanceDeployer } from '../libraries/GovernanceDeployer';
 import { CompilerConfiguration } from '../libraries/CompilerConfiguration';
 import { ContractDependenciesEthers } from '@augurproject/contract-dependencies-ethers';
 import {
@@ -25,7 +24,6 @@ import {
 } from '../libraries/ContractInterfaces';
 import { Dependencies } from '../libraries/GenericContractInterfaces';
 import { EthersFastSubmitWallet } from '../libraries/EthersFastSubmitWallet';
-import { formatBytes32String } from 'ethers/utils';
 import { buildConfig } from '@augurproject/artifacts';
 
 const NULL_ADDRESS = '0x0000000000000000000000000000000000000000';
@@ -337,7 +335,7 @@ export class TestFixture {
     async claimTradingProceeds(
         market: Market,
         shareholder: string,
-        fingerprint = formatBytes32String('')
+        fingerprint = ethers.utils.formatBytes32String('')
     ): Promise<void> {
         const shareTokenContract = await this.contractDeployer.getContractAddress(
             'ShareToken'
