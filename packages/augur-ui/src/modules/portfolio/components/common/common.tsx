@@ -13,7 +13,12 @@ import { convertUnixToFormattedDate } from 'utils/format-date';
 import { MyBetsRow } from 'modules/common/table-rows';
 
 import Styles from 'modules/portfolio/components/common/common.styles.less';
-import { SPORTS_GROUP_TYPES, TABLET_MAX, ZERO } from 'modules/common/constants';
+import {
+  SPORTS_GROUP_TYPES,
+  TABLET_MAX,
+  ZERO,
+  MODAL_CLAIM_MARKETS_PROCEEDS,
+} from 'modules/common/constants';
 import Media from 'react-media';
 import { CashoutButton, PrimaryButton } from 'modules/common/buttons';
 import MarketLink from 'modules/market/components/market-link/market-link';
@@ -36,31 +41,36 @@ export const BetsHeader = () => (
   </ul>
 );
 
-export const ClaimWinnings = ({onlyCheckMarketId}) => {
+export const ClaimWinnings = ({ onlyCheckMarketId }) => {
   const { matched } = useBetslipStore();
   const {
     accountPositions: positions,
     loginAccount: { address: account },
+    actions: { setModal },
   } = useAppStatusStore();
 
   let totalProceeds = ZERO;
   let claimableMarkets = [];
 
-  Object.keys(matched.items).filter(marketId => onlyCheckMarketId ? marketId === onlyCheckMarketId : true).map(marketId => {
-    let marketIsClaimable = false;
-    const market = matched.items[marketId];
-    if (positions[marketId]) {
-      const marketPosition = positions[marketId];
-      const unclaimedProceeds = createBigNumber(
-        marketPosition.tradingPositionsPerMarket.unclaimedProceeds
-      );
-      if (unclaimedProceeds.gt(ZERO)) {
-        totalProceeds = totalProceeds.plus(unclaimedProceeds);
-        marketIsClaimable = true;
+  Object.keys(matched.items)
+    .filter(marketId =>
+      onlyCheckMarketId ? marketId === onlyCheckMarketId : true
+    )
+    .map(marketId => {
+      let marketIsClaimable = false;
+      const market = matched.items[marketId];
+      if (positions[marketId]) {
+        const marketPosition = positions[marketId];
+        const unclaimedProceeds = createBigNumber(
+          marketPosition.tradingPositionsPerMarket.unclaimedProceeds
+        );
+        if (unclaimedProceeds.gt(ZERO)) {
+          totalProceeds = totalProceeds.plus(unclaimedProceeds);
+          marketIsClaimable = true;
+        }
       }
-    }
-    if (marketIsClaimable) claimableMarkets.push(marketId);
-  });
+      if (marketIsClaimable) claimableMarkets.push(marketId);
+    });
 
   if (totalProceeds.lte(ZERO)) return <div />;
 
@@ -78,7 +88,15 @@ export const ClaimWinnings = ({onlyCheckMarketId}) => {
           <PrimaryButton
             text="Claim Winnings"
             action={() =>
-              startClaimingMarketsProceeds(claimableMarkets, account, () => {})
+              onlyCheckMarketId
+                ? startClaimingMarketsProceeds(
+                    claimableMarkets,
+                    account,
+                    () => {}
+                  )
+                : setModal({
+                    type: MODAL_CLAIM_MARKETS_PROCEEDS,
+                  })
             }
           />
         </div>
