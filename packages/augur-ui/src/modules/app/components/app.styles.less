@@ -129,7 +129,7 @@ h6 {
         > div:last-of-type {
           > div {
             > div:first-of-type {
-              top: calc(~"@{top-bar-height-mobile} + 42px");
+              top: calc(~'@{top-bar-height-mobile} + 42px');
             }
           }
         }
@@ -153,7 +153,7 @@ h6 {
 }
 
 .Content {
-  height: calc(~"100vh - @{multi-top-bar-height}");
+  height: calc(~'100vh - @{multi-top-bar-height}');
   -webkit-overflow-scrolling: touch;
   overflow-x: hidden;
   overflow-y: auto;
@@ -195,7 +195,9 @@ h6 {
   }
 
   &.Tutorial {
-    height: calc(~"100vh - @{multi-top-bar-height} - @{tutorial-banner-height}");
+    height: calc(
+      ~'100vh - @{multi-top-bar-height} - @{tutorial-banner-height}'
+    );
   }
 
   &.ModalShowing {
@@ -205,11 +207,12 @@ h6 {
   }
 }
 
-:root[theme="BETTING"],
-:root[theme="SPORTS"] {
+:root[theme='BETTING'],
+:root[theme='SPORTS'] {
   .Wrap {
     @media @breakpoint-min-desktop {
       margin: 0 auto;
+      max-width: 1440px;
       width: 100%;
     }
   }
@@ -237,6 +240,11 @@ h6 {
       background: var(--color-page-background);
       padding-bottom: 0;
     }
+
+    @media @breakpoint-min-desktop {
+      max-width: 1198px;
+      width: 100%;
+    }
   }
 
   .HideBetslip > div:last-of-type {
@@ -263,7 +271,6 @@ h6 {
     padding-top: 0;
   }
 }
-
 
 .MobileBars {
   top: 0;
@@ -307,8 +314,8 @@ h6 {
   z-index: @mask-above;
 }
 
-:root[theme="BETTING"],
-:root[theme="SPORTS"] {
+:root[theme='BETTING'],
+:root[theme='SPORTS'] {
   .TopBar {
     @media @breakpoint-mobile {
       height: @size-64;
@@ -378,7 +385,7 @@ h6 {
   }
 }
 
-:root[theme="SPORTS"] {
+:root[theme='SPORTS'] {
   .Footer {
     display: none;
   }

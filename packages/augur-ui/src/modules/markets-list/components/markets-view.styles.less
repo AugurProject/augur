@@ -46,6 +46,15 @@
     margin: 0;
     padding: 0 0 0 @size-40;
 
+    > article {
+      max-width: 760px;
+      width: 100%;
+
+      @media @breakpoint-mobile-tiny {
+        max-width: none;
+      }
+    }
+
     > section:not([class*='LandingHero']) {
       // this is the sportsbook/betting-ui topsection
       align-items: center;
@@ -54,6 +63,11 @@
       grid-template-columns: 0fr 1fr minmax(270px, 1fr);
       margin-top: @size-32;
       margin-bottom: @size-24;
+      max-width: 760px;
+
+      @media @breakpoint-mobile-tiny {
+        max-width: none;
+      }
 
       > h3 {
         .text-24-bold;
@@ -107,12 +121,8 @@
       height: @size-38;
     }
 
-    @media @breakpoint-max-desktop {
-      padding: 0 0 0 @size-24;
-    }
-
-    @media @breakpoint-mobile-tablet {
-      padding: @size-32 @size-48;
+    @media @breakpoint-tablet {
+      padding: @size-32;
     }
 
     @media @breakpoint-mobile {

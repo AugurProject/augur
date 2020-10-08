@@ -16,7 +16,7 @@
       display: none;
     }
 
-    @media @breakpoint-mobile-tablet {
+    @media @breakpoint-mobile-tiny {
       background: var(--color-module-background);
       position: absolute;
       top: 0;
@@ -89,7 +89,7 @@
 
           > button:first-of-type {
             background: var(--color-primary-text);
-            transform: rotate(-0.25turn) translate(-@size-32, -@size-17);
+            transform: rotate(-0.25turn) translate(-@size-78, -@size-17);
             transform-origin: bottom;
             width: @size-106;
             border-top-left-radius: @border-radius-default;
@@ -111,7 +111,7 @@
       }
     }
 
-    @media @breakpoint-mobile {
+    @media @breakpoint-mobile-tablet {
       flex-direction: column;
 
       > div {
@@ -148,18 +148,6 @@
           > button:last-of-type {
             display: flex;
           }
-        }
-      }
-    }
-
-    @media @breakpoint-tablet {
-      background: transparent; 
-
-      > div {
-        background: var(--color-primary-text-80);
-
-        > button {
-          background: var(--color-primary-text);
         }
       }
     }
