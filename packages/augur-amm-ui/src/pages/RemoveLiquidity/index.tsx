@@ -44,6 +44,7 @@ import { BigNumber } from '@ethersproject/bignumber'
 import { getAmmFactoryAddress } from '../../contexts/Application'
 import { withRouter } from 'react-router-dom'
 import LiquidityPage from '../LiquidityPage'
+import { useWalletModalToggle } from '../../state/application/hooks'
 
 function RemoveLiquidity({
   history,
@@ -52,7 +53,7 @@ function RemoveLiquidity({
   marketId
 }: RouteComponentProps<{ currencyIdA: string; currencyIdB: string; marketId: string }>) {
   const [currencyA, currencyB] = [useCurrency(currencyIdA) ?? undefined, useCurrency(currencyIdB) ?? undefined]
-  const { account, chainId, library, getWeb3 } = useActiveWeb3React()
+  const { account, chainId, library } = useActiveWeb3React()
   const [tokenA, tokenB] = useMemo(() => [wrappedCurrency(currencyA, chainId), wrappedCurrency(currencyB, chainId)], [
     currencyA,
     currencyB,
@@ -76,6 +77,8 @@ function RemoveLiquidity({
   const [txHash, setTxHash] = useState<string>('')
   const deadline = useTransactionDeadline()
   const [allowedSlippage] = useUserSlippageTolerance()
+
+  const toggleWalletModal = useWalletModalToggle() // toggle wallet when disconnected
 
   const formattedAmounts = {
     [Field.LIQUIDITY_PERCENT]: parsedAmounts[Field.LIQUIDITY_PERCENT].equalTo('0')
@@ -643,7 +646,7 @@ function RemoveLiquidity({
             )}
             <div style={{ position: 'relative' }}>
               {!account ? (
-                <ButtonGray onClick={getWeb3}>Connect Wallet</ButtonGray>
+                <ButtonGray onClick={toggleWalletModal}>Connect Wallet</ButtonGray>
               ) : (
                 <RowBetween>
                   <ButtonConfirmed

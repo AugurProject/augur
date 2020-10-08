@@ -8,6 +8,7 @@ import { TYPE } from '../../Theme'
 
 const TitleWrapper = styled.div`
   text-decoration: none;
+  width: 200px;
 
   &:hover {
     cursor: pointer;

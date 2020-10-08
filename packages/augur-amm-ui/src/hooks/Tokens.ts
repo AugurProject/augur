@@ -56,7 +56,6 @@ export function useToken(tokenAddress?: string): Token | undefined | null {
   const tokens = useAllTokens()
 
   const address = isAddress(tokenAddress)
-  console.log('useToken: is address', address)
   const tokenContract = useTokenContract(address ? address : undefined, false)
   const tokenContractBytes32 = useBytes32TokenContract(address ? address : undefined, false)
   const token: Token | undefined = address ? tokens[address] : undefined
