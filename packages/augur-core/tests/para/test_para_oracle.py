@@ -1,10 +1,15 @@
 from eth_tester.exceptions import TransactionFailed
 from utils import longToHexString, nullAddress, stringToBytes
-from pytest import raises
+from pytest import raises, mark
 import codecs
 import functools
 
-def test_oracle(contractsFixture, augur, cash, market, universe):
+
+@mark.parametrize('sixdecimals', [
+    False,
+    True
+])
+def test_oracle(sixdecimals, contractsFixture, augur, cash, market, universe):
     if not contractsFixture.paraAugur:
         return
 
@@ -12,6 +17,12 @@ def test_oracle(contractsFixture, augur, cash, market, universe):
     oracleAddress = nexus.oracle()
     oracle = contractsFixture.applySignature("ParaOracle", oracleAddress)
     weth = contractsFixture.applySignature("WETH9", oracle.weth())
+
+    cashPrecision = 10 ** 18
+    if sixdecimals:
+        cash = contractsFixture.upload('../src/contracts/Cash.sol', "SixDecimalsCash")
+        cash.setDecimals(6)
+        cashPrecision = 10 ** 6
     
     reputationTokenAddress = universe.getReputationToken()
     reputationToken = contractsFixture.applySignature('TestNetReputationToken', reputationTokenAddress)
@@ -71,7 +82,7 @@ def test_oracle(contractsFixture, augur, cash, market, universe):
 
     # Now lets get a price set up on the ETH / CASH oracle
     wethAmount = 1 * 10**18
-    cashAmount = 350 * 10**18
+    cashAmount = 350 * cashPrecision
     addLiquidity(cashExchange, weth, cash, wethAmount, cashAmount, account)
     addLiquidity(cashExchange, weth, cash, wethAmount, cashAmount, account)
 
@@ -86,7 +97,7 @@ def test_oracle(contractsFixture, augur, cash, market, universe):
 
     # Now get the Cash / REP price from the OINexus
     attoCashPerRep = nexus.getAttoCashPerRep(cash.address, reputationTokenAddress)
-    assert roughlyEqual(attoCashPerRep, 14 * 10**18)
+    assert roughlyEqual(attoCashPerRep, 14 * cashPrecision)
 
 
 def addLiquidity(exchange, weth, reputationToken, wethAmount, repAmount, address):

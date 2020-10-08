@@ -2,6 +2,7 @@ pragma solidity 0.5.15;
 
 
 contract IERC20 {
+    uint8 public decimals = 18;
     function totalSupply() external view returns (uint256);
     function balanceOf(address owner) public view returns (uint256);
     function transfer(address to, uint256 amount) public returns (bool);

@@ -426,6 +426,7 @@ class ContractsFixture:
                 # if name == 'ReputationTokenFactory': continue # tests use mock
                 # if name == 'DisputeWindowFactory': continue # tests use mock
                 # if name == 'UniverseFactory': continue # tests use mock
+                if name  == 'WethWrapperForAMMExchange': continue
                 onlySignatures = ["ReputationToken", "TestNetReputationToken", "Universe", "ParaOracle"]
                 if name in onlySignatures:
                     self.generateAndStoreSignature(path.join(directory, filename))
