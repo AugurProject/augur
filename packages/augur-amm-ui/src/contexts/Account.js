@@ -87,7 +87,7 @@ export function useAccountWeb3() {
       // provide chainId here
       if (network === 'mainnet') chainId = 1
       const augurLite = new AugurLite(provider, {AMMFactory: getAmmFactoryAddress()}, chainId);
-      const ammFactory = augurLite.ammFactory.connect(provider.getSigner());
+      const ammFactory = augurLite.ammFactory.contract.connect(provider.getSigner());
       window.ammFactory = ammFactory;
       updateWeb3({ address, provider, signer, network, chainId, library: provider, ammFactory })
     }

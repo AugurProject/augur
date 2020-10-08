@@ -27,7 +27,7 @@
   "homepage": "https://github.com/AugurProject/augur#readme",
   "dependencies": {
     "bignumber.js": "9.0.0",
-    "ethers": "5.0.15"
+    "ethers": "5.0.17"
   },
   "devDependencies": {
     "ts-node": "9.0.0",
