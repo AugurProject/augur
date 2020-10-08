@@ -163,6 +163,7 @@ const MyMarkets = ({ toggle, hide, extend }: MyMarketsProps) => {
       renderToggleContent={renderToggleContent}
       filterLabel="markets"
       showLiquidityDepleted
+      showPending
       toggle={toggle}
       hide={hide}
       extend={extend}
