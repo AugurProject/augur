@@ -136,7 +136,7 @@ export const loadMarketsByFilter = async (
     categories: filterOptions.categories,
     search: filterOptions.search ? filterOptions.search : '',
     maxFee: filterOptions.maxFee,
-    includeInvalidMarkets: filterOptions.includeInvalidMarkets,
+    includeInvalidMarkets: theme === THEMES.SPORTS ? false : filterOptions.includeInvalidMarkets,
     limit: Number(filterOptions.limit),
     offset: paginationOffset * Number(filterOptions.limit),
     reportingStates,

@@ -63,11 +63,10 @@ export const selectResolvedMarketsOpenOrders = () => {
 };
 
 export const selectMostLikelyInvalidMarkets = () => {
-  const { userOpenOrders: openOrders } = AppStatus.get();
-  return Object.keys(openOrders)
+  const { accountPositions } = AppStatus.get();
+  return Object.keys(accountPositions)
     .map(id => selectMarket(id))
     .filter(market => market && market.mostLikelyInvalid)
-    .filter(market => userOpenOrders(market.id).length > 0)
     .map(getRequiredMarketData);
 };
 
