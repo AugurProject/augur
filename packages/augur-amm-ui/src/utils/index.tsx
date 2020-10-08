@@ -16,6 +16,9 @@ import { ChainId, JSBI, Percent, Token, CurrencyAmount, Currency, ETHER } from '
 import { JsonRpcSigner, Web3Provider } from '@ethersproject/providers'
 import { Contract } from '@ethersproject/contracts'
 import { AddressZero } from '@ethersproject/constants'
+import { getAmmFactoryAddress } from '../contexts/Application'
+import AmmFactoryAbi from '../constants/abis/AMMFactory.json'
+import AmmExchangeAbi from '../constants/abis/AMMExchange.json'
 
 // format libraries
 const Decimal = toFormat(_Decimal)
@@ -582,6 +585,17 @@ export function getContract(address: string, ABI: any, library: Web3Provider, ac
   }
   console.log('get contract', address, account)
   return new Contract(address, ABI, getProviderOrSigner(library, account) as any)
+}
+
+// account is optional
+export function getAMMFactoryContract(library: Web3Provider, account?: string): Contract {
+  const ammFactory = getAmmFactoryAddress()
+  return getContract(ammFactory, AmmFactoryAbi, library, account)
+}
+
+// account is optional
+export function getAMMExchangeContract(ammExchangeAddress: string, library: Web3Provider, account?: string): Contract {
+  return getContract(ammExchangeAddress, AmmExchangeAbi, library, account)
 }
 
 export function escapeRegExp(string: string): string {

@@ -11,56 +11,27 @@ import AccountPage from './pages/AccountPage'
 import AllMarketsPage from './pages/AllMarketsPage'
 import SideNav from './components/SideNav'
 import AccountLookup from './pages/AccountLookup'
-import { OVERVIEW_TOKEN_BLACKLIST } from './constants'
 import LocalLoader from './components/LocalLoader'
 import { useLatestBlock } from './contexts/Application'
 import RemoveLiquidity from './pages/RemoveLiquidity'
 import Swap from './pages/Swap'
 import AddLiquidity from './pages/AddLiquidity'
+import URLWarning from './components/Header/URLWarning'
+import Header from './components/Header'
+import Web3ReactManager from './components/Web3ReactManager'
+import Popups from './components/Popups'
 
 const AppWrapper = styled.div`
-  position: relative;
   width: 100%;
 `
 const ContentWrapper = styled.div`
-  display: grid;
-  grid-template-columns: '220px 1fr';
-
-  @media screen and (max-width: 1800px) {
-    grid-template-columns: 220px 1fr;
-  }
-
-  @media screen and (max-width: 1080px) {
-    grid-template-columns: 1fr;
-    max-width: 100vw;
-    overflow: hidden;
-    grid-gap: 0;
-  }
-`
-/*
-const Right = styled.div`
-  position: fixed;
-  right: 0;
-  bottom: 0rem;
-  z-index: 99;
-  width: ${({ open }) => (open ? '220px' : '64px')};
-  height: ${({ open }) => (open ? 'fit-content' : '64px')};
-  overflow: scroll;
-  background-color: ${({ theme }) => theme.bg1};
-  @media screen and (max-width: 1400px) {
-    display: none;
-  }
-`
-*/
-const Center = styled.div`
   display: flex;
-  justify-content: center;
-  align-self: center;
-  padding-top: 2rem;
-  height: 100%;
-  z-index: 9999;
-  transition: width 0.25s ease;
-  background-color: ${({ theme }) => theme.onlyLight};
+  padding: 1rem;
+`
+
+const HeaderWrapper = styled.div`
+  ${({ theme }) => theme.flexRowNoWrap}
+  width: 100%;
 `
 
 /**
@@ -68,19 +39,29 @@ const Center = styled.div`
  */
 const LayoutWrapper = ({ children, savedOpen, setSavedOpen }) => {
   return (
-    <>
       <ContentWrapper>
-        <SideNav />
-        <Center id="center">{children}</Center>
-        {/*
-        <Right open={savedOpen}>
-          <PinnedData open={savedOpen} setSavedOpen={setSavedOpen} />
-        </Right>
-        */}
+        {children}
       </ContentWrapper>
-    </>
   )
 }
+
+const BodyWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  align-items: center;
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+  z-index: 10;
+
+  ${({ theme }) => theme.mediaWidth.upToSmall`
+    padding: 16px;
+    padding-top: 2rem;
+  `};
+
+  z-index: 1;
+`
 
 function App() {
   const [savedOpen, setSavedOpen] = useState(false)
@@ -91,12 +72,19 @@ function App() {
   return (
     <ApolloProvider client={client}>
       <AppWrapper>
+        <URLWarning />
+        <HeaderWrapper>
+          <Header />
+        </HeaderWrapper>
+        <BodyWrapper>
+        <Popups />
+        <Web3ReactManager>
         {latestBlock &&
         globalData &&
         Object.keys(globalData).length > 0 &&
         globalChartData &&
         Object.keys(globalChartData).length > 0 ? (
-          <BrowserRouter>
+
             <Switch>
               <Route
                 exacts
@@ -132,9 +120,7 @@ function App() {
                 }}
               />
               <Route path="/home">
-                <LayoutWrapper savedOpen={savedOpen} setSavedOpen={setSavedOpen}>
                   <GlobalPage />
-                </LayoutWrapper>
               </Route>
 
               <Route path="/markets">
@@ -196,13 +182,13 @@ function App() {
                   }
                 }}
               />
-              {/* 
+              {/*
               <Route path="/tokens">
                 <LayoutWrapper savedOpen={savedOpen} setSavedOpen={setSavedOpen}>
                   <AllTokensPage />
                 </LayoutWrapper>
               </Route>
-              
+
               <Route path="/pairs">
                 <LayoutWrapper savedOpen={savedOpen} setSavedOpen={setSavedOpen}>
                   <AllPairsPage />
@@ -217,10 +203,11 @@ function App() {
 
               <Redirect to="/home" />
             </Switch>
-          </BrowserRouter>
         ) : (
           <LocalLoader fill="true" />
         )}
+        </Web3ReactManager>
+        </BodyWrapper>
       </AppWrapper>
     </ApolloProvider>
   )

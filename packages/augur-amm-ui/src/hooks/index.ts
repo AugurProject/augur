@@ -14,7 +14,13 @@ import { Currency, CurrencyAmount, ETHER, JSBI, Token, TokenAmount } from '@unis
 import { useMulticallContract } from './useContract'
 import ERC20_INTERFACE from '../constants/abis/erc20'
 import { AppDispatch, AppState } from '../state'
-import { useAccountWeb3 } from '../contexts/Account'
+import { injected } from '../connectors'
+import { Web3Provider } from '@ethersproject/providers'
+import { ChainId } from '@uniswap/sdk'
+import { useWeb3React as useWeb3ReactCore } from '@web3-react/core'
+import { Web3ReactContextInterface } from '@web3-react/core/dist/types'
+import { NetworkContextName } from '../constants'
+import { isMobile } from 'react-device-detect'
 
 export function useColor(tokenAddress, token) {
   const [color, setColor] = useState('#2172E5')
@@ -41,29 +47,6 @@ export function useColor(tokenAddress, token) {
     }
   }
   return color
-}
-
-export function useCopyClipboard(timeout = 500) {
-  const [isCopied, setIsCopied] = useState(false)
-
-  const staticCopy = useCallback(text => {
-    const didCopy = copy(text)
-    setIsCopied(didCopy)
-  }, [])
-
-  useEffect(() => {
-    if (isCopied) {
-      const hide = setTimeout(() => {
-        setIsCopied(false)
-      }, timeout)
-
-      return () => {
-        clearTimeout(hide)
-      }
-    }
-  }, [isCopied, setIsCopied, timeout])
-
-  return [isCopied, staticCopy]
 }
 
 export const useOutsideClick = (ref, ref2, callback) => {
@@ -108,6 +91,12 @@ export default function useInterval(callback: () => void, delay: null | number) 
   }, [delay])
 }
 
+export function useActiveWeb3React(): Web3ReactContextInterface<Web3Provider> & { chainId?: ChainId } {
+  const context = useWeb3ReactCore<Web3Provider>()
+  const contextNetwork = useWeb3ReactCore<Web3Provider>(NetworkContextName)
+  return context.active ? context : contextNetwork
+}
+/*
 export function useActiveWeb3React() {
   //: Web3ReactContextInterface<Web3Provider> & { chainId?: ChainId } {
   //const context = useWeb3ReactCore<Web3Provider>()
@@ -118,6 +107,38 @@ export function useActiveWeb3React() {
   const KOVAN = 42 // default network for testing
   const [web3, getWeb3] = useAccountWeb3()
   return { getWeb3, account: web3?.address, library: web3?.library, chainId: web3?.chainId ? web3?.chainId : KOVAN }
+}
+*/
+export function useEagerConnect() {
+  const { activate, active } = useWeb3ReactCore() // specifically using useWeb3ReactCore because of what this hook does
+  const [tried, setTried] = useState(false)
+
+  useEffect(() => {
+    injected.isAuthorized().then(isAuthorized => {
+      if (isAuthorized) {
+        activate(injected, undefined, true).catch(() => {
+          setTried(true)
+        })
+      } else {
+        if (isMobile && window['ethereum']) {
+          activate(injected, undefined, true).catch(() => {
+            setTried(true)
+          })
+        } else {
+          setTried(true)
+        }
+      }
+    })
+  }, [activate]) // intentionally only running on mount (make sure it's only mounted once :))
+
+  // if the connection worked, wait until we get confirmation of that to flip the flag
+  useEffect(() => {
+    if (active) {
+      setTried(true)
+    }
+  }, [active])
+
+  return tried
 }
 
 interface CallResult {
@@ -461,11 +482,9 @@ export function useTokenBalancesWithLoadingIndicator(
     () => tokens?.filter((t?: Token): t is Token => isAddress(t?.address) !== false) ?? [],
     [tokens]
   )
-  console.log('useTokenBalancesWithLoadingIndicator', validatedTokens)
-  const validatedTokenAddresses = useMemo(() => validatedTokens.map(vt => vt.address), [validatedTokens])
 
+  const validatedTokenAddresses = useMemo(() => validatedTokens.map(vt => vt.address), [validatedTokens])
   const balances = useMultipleContractSingleData(validatedTokenAddresses, ERC20_INTERFACE, 'balanceOf', [address])
-  console.log('balances', balances)
   const anyLoading: boolean = useMemo(() => balances.some(callState => callState.loading), [balances])
 
   return [
@@ -520,4 +539,45 @@ export function useCurrencyBalances(
 
 export function useCurrencyBalance(account?: string, currency?: Currency): CurrencyAmount | undefined {
   return useCurrencyBalances(account, [currency])[0]
+}
+
+/**
+ * Use for network and injected - logs user in
+ * and out after checking what network theyre on
+ */
+export function useInactiveListener(suppress = false) {
+  const { active, error, activate } = useWeb3ReactCore() // specifically using useWeb3React because of what this hook does
+
+  useEffect(() => {
+    const ethereum = window['ethereum']
+
+    if (ethereum && ethereum.on && !active && !error && !suppress) {
+      const handleChainChanged = () => {
+        // eat errors
+        activate(injected, undefined, true).catch(error => {
+          console.error('Failed to activate after chain changed', error)
+        })
+      }
+
+      const handleAccountsChanged = (accounts: string[]) => {
+        if (accounts.length > 0) {
+          // eat errors
+          activate(injected, undefined, true).catch(error => {
+            console.error('Failed to activate after accounts changed', error)
+          })
+        }
+      }
+
+      ethereum.on('chainChanged', handleChainChanged)
+      ethereum.on('accountsChanged', handleAccountsChanged)
+
+      return () => {
+        if (ethereum.removeListener) {
+          ethereum.removeListener('chainChanged', handleChainChanged)
+          ethereum.removeListener('accountsChanged', handleAccountsChanged)
+        }
+      }
+    }
+    return undefined
+  }, [active, error, suppress, activate])
 }

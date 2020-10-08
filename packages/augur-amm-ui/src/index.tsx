@@ -21,6 +21,7 @@ import MulticallUpdater from './state/multicall/updater'
 import TransactionUpdater from './state/transactions/updater'
 import ApplicationUpdater from './state/application/updater'
 import UserUpdater from './state/user/updater'
+import { BrowserRouter } from 'react-router-dom'
 
 const Web3ProviderNetwork = createWeb3ReactRoot(NetworkContextName)
 
@@ -73,10 +74,10 @@ ReactDOM.render(
         <ContextProviders>
           <Updaters />
           <ThemeProvider>
-            <>
+          <BrowserRouter>
               <GlobalStyle />
               <App />
-            </>
+              </BrowserRouter>
           </ThemeProvider>
         </ContextProviders>
       </Provider>

@@ -23,7 +23,7 @@ import { TYPE } from '../../Theme'
 
 const Container = styled.div`
   height: 48px;
-  z-index: 30;
+  z-index: 1;
   position: relative;
 
   @media screen and (max-width: 600px) {
@@ -43,7 +43,7 @@ const Wrapper = styled.div`
     small ? (open ? transparentize(0.4, theme.bg1) : 'none') : transparentize(0.4, theme.bg6)};
   border-bottom-right-radius: ${({ open }) => (open ? '0px' : '12px')};
   border-bottom-left-radius: ${({ open }) => (open ? '0px' : '12px')};
-  z-index: 9999;
+  z-index: 1;
   width: 100%;
   min-width: 300px;
   box-sizing: border-box;
