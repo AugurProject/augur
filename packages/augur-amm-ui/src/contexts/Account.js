@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useReducer, useMemo, useCallback } from 'react'
 
 import { ethers } from 'ethers'
+import { AugurLite } from "@augurproject/sdk-lite";
 
 import dayjs from 'dayjs'
 import utc from 'dayjs/plugin/utc'
@@ -85,11 +86,9 @@ export function useAccountWeb3() {
       let chainId = 42 // default to kovan for testing
       // provide chainId here
       if (network === 'mainnet') chainId = 1
-      const ammFactory = new ethers.Contract(
-        getAmmFactoryAddress(),
-        AMMFactoryAbi,
-        provider.getSigner()
-      );
+      const augurLite = new AugurLite(provider, {AMMFactory: getAmmFactoryAddress()}, chainId);
+      const ammFactory = augurLite.ammFactory.connect(provider.getSigner());
+      window.ammFactory = ammFactory;
       updateWeb3({ address, provider, signer, network, chainId, library: provider, ammFactory })
     }
 

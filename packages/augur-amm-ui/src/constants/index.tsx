@@ -1,12 +1,11 @@
-import abi from './abi.json'
 import { Tags, TokenInfo } from '@uniswap/token-lists'
 import { ChainId, JSBI, Percent, Token, WETH } from '@uniswap/sdk'
 import { AbstractConnector } from '@web3-react/abstract-connector'
 
 import { fortmatic, injected, portis, walletconnect, walletlink } from '../connectors'
 
-import * as AMMFactory from "./abis/AMMFactory.json";
-import * as AMMExchange from "./abis/AMMExchange.json";
+import AMMFactory from "./abis/AMMFactory.json";
+import AMMExchange from "./abis/AMMExchange.json";
 
 export const AMMFactoryAbi = AMMFactory;
 export const AMMExchangeAbi = AMMExchange;
