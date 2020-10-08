@@ -461,7 +461,7 @@ export const ModalClaimMarketsProceeds = () => {
   const breakdown = showBreakdown
     ? [
         {
-          label: 'Total Proceeds',
+          label:  isSportsTheme ? 'Total returns after market fees' : 'Total Proceeds',
           value: totalUnclaimedProceedsFormatted.formatted,
         },
       ]
