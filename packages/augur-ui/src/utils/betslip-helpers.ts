@@ -56,6 +56,7 @@ export const convertPositionToBet = (position, marketInfo) => {
     outcome: getOutcomeNameWithOutcome(marketInfo, position.outcome.toString()),
     shares: netPosition,
     wager,
+    highRisk: marketInfo.mostLikelyInvalid,
     dateUpdated: position.timestamp,
     closedOrderCost: position.priorPosition
       ? findProceeds(
