@@ -918,10 +918,30 @@ div.Onboarding {
       > div:nth-of-type(2) {
         border: 0;
         padding: 0 @size-24 @size-16;
+
+        > section {
+          > span {
+            padding: 0;
+          }
+        }
       }
 
       > div:last-of-type {
         padding: @size-16 @size-24;
+      }
+      
+      .Details {
+        > h2 {
+          .text-10-semi-bold;
+        }
+
+        > span {
+          > p {
+            .text-14;
+
+            color: var(--color-primary-text);
+          }
+        }
       }
     }
   }

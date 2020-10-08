@@ -364,9 +364,10 @@
   .RadioBar;
 
   border-radius: @size-6;
-  grid-template-columns: 52px auto;
+  grid-template-columns: @size-28 auto;
   grid-template-rows: auto;
   height: auto;
+  padding: @size-16;
 
   &.Checked {
     border: @size-1 solid var(--color-negative);
@@ -382,14 +383,6 @@
     > svg {
       display: none;
     }
-  }
-
-  > svg {
-    margin-top: @size-16;
-  }
-
-  > h5 {
-    margin-top: @size-16;
   }
 
   > div {
@@ -412,6 +405,11 @@
     > h5 {
       color: var(--color-outcome-invalid);
     }
+  }
+
+  > svg {
+    padding: 0;
+    margin: 0;
   }
 
   @media @breakpoint-mobile {
@@ -572,14 +570,25 @@
 :root[theme="BETTING"],
 :root[theme="SPORTS"] {
   .ReportingRadioBar {
+    background: var(--color-active-background);
+
     &.Checked {
       border: @size-1 solid var(--color-primary-text);
+      background: var(--color-secondary-action);
 
       > svg {
         > circle:last-of-type {
           fill: var(--color-primary-text);
         }
       }
+
+      > div {
+        margin-bottom: @size-8;
+      }
+    }
+
+    &:hover {
+      border: @size-1 solid var(--color-dark-text);
     }
   }
   .RadioBarGroup {
