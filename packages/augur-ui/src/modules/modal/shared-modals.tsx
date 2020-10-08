@@ -42,7 +42,7 @@ import {
 import { displayGasInDai } from 'modules/app/actions/get-ethToDai-rate';
 import { addPendingData } from 'modules/pending-queue/actions/pending-queue-management';
 import { disavowMarket } from 'modules/contracts/actions/contractCalls';
-import { TXEventName } from '@augurproject/sdk/src';
+import { TXEventName } from '@augurproject/sdk-lite';
 import { getLoginAccountClaimableWinnings } from 'modules/positions/selectors/login-account-claimable-winnings';
 import { labelWithTooltip } from 'modules/common/labels.styles.less';
 import {
@@ -588,6 +588,7 @@ export const ModalUnsignedOrders = () => {
     pendingLiquidityOrders,
     actions: {deleteSuccessfulOrders}
   } = usePendingOrdersStore();
+  let initialProcessing = false;
   const market = selectMarket(modal.marketId);
   let availableDai = totalTradingBalance();
   const liquidity = pendingLiquidityOrders[market.transactionHash];
@@ -602,6 +603,9 @@ export const ModalUnsignedOrders = () => {
         numberOfTransactions += 1;
       });
   });
+  const liquidityArray = [].concat.apply([], Object.values(liquidity));
+  const liquidityStatuses = liquidityArray.filter(liquidityOrder => liquidityOrder?.status !== TXEventName.Pending);
+  initialProcessing = liquidityStatuses.length === 0;
   const bnAllowance = createBigNumber(loginAccount.allowance, 10);
   const needsApproval = bnAllowance.lte(ZERO);
   const insufficientFunds = availableDai.lt(totalCost);
@@ -658,6 +662,7 @@ export const ModalUnsignedOrders = () => {
       liquidity={liquidity}
       outcomes={liquidity && Object.keys(liquidity)}
       bnAllowance={bnAllowance}
+      initialProcessing={initialProcessing}
       buttons={[
         {
           disabled: insufficientFunds,

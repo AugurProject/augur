@@ -36,6 +36,7 @@ import { usePendingOrdersStore } from 'modules/app/store/pending-orders';
 import { sendLiquidityOrder } from 'modules/orders/actions/liquidity-management';
 import { Trash } from 'modules/common/icons';
 import { approvalsNeededToTrade, approveToTrade } from 'modules/contracts/actions/contractCalls';
+import { useEffect } from 'react';
 
 interface UnsignedOrdersProps {
   closeAction: Function;
@@ -62,6 +63,7 @@ interface UnsignedOrdersProps {
   insufficientFunds: boolean;
   orders: any;
   zeroXEnabled?: boolean;
+  initialProcessing?: boolean;
 }
 
 const orderRow = (
@@ -202,11 +204,17 @@ export const UnsignedOrders = ({
   marketTitle,
   header,
   description,
+  initialProcessing
 }: UnsignedOrdersProps) => {
   const { loginAccount, gasPriceInfo, zeroXEnabled } = useAppStatusStore();
-  const [processing, setProcessing] = useState(false);
+  const [processing, setProcessing] = useState(initialProcessing);
   const gasPrice = gasPriceInfo.userDefinedGasPrice || gasPriceInfo.average;
   const [isApproved , setIsApproved] = useState(false);
+
+  useEffect(() => {
+    if (!processing) setProcessing(initialProcessing);
+  },[initialProcessing]);
+
   const actionForSubmitAllButton = async () => {
     setProcessing(true);
     await buttons[0].action();
@@ -216,7 +224,6 @@ export const UnsignedOrders = ({
   const submitAllTxCount = !zeroXEnabled
     ? Math.ceil(numberOfTransactions / MAX_BULK_ORDER_COUNT)
     : numberOfTransactions;
-
 
   const newButtons = [
     {
