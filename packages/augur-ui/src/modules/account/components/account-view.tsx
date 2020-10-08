@@ -14,6 +14,7 @@ import ModulePane from 'modules/market/components/common/module-tabs/module-pane
 import {
   SMALL_MOBILE,
   TABLET,
+  TINY,
   DESKTOP,
   LARGE_DESKTOP,
   YOUR_OVERVIEW_TITLE,
@@ -58,6 +59,7 @@ const AccountView = () => {
       <Media queries={{
         smallMobile: SMALL_MOBILE,
         tablet: TABLET,
+        tiny: TINY,
         desktop: DESKTOP,
         largeDesktop: LARGE_DESKTOP
       }}>
@@ -123,7 +125,7 @@ const AccountView = () => {
                 </div>
               )
             )}
-            {(matches.tablet || matches.desktop || matches.largeDesktop) && (
+            {(matches.tablet || matches.tiny || matches.desktop || matches.largeDesktop) && (
               theme === THEMES.TRADING ? (
                 <div
                   className={classNames(Styles.AccountView, {
