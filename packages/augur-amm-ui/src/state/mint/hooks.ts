@@ -61,11 +61,12 @@ export function useDerivedMintInfo(
     currencies[Field.CURRENCY_A],
     currencies[Field.CURRENCY_B]
   ])
+
   const currencyBalances: { [field in Field]?: CurrencyAmount } = {
     [Field.CURRENCY_A]: balances[0],
     [Field.CURRENCY_B]: balances[1]
   }
-
+  console.log('check token balances', JSON.stringify(currencyBalances))
   // amounts
   const independentAmount: CurrencyAmount | undefined = tryParseAmount(typedValue, currencies[independentField])
   const dependentAmount: CurrencyAmount | undefined = useMemo(() => {
@@ -135,12 +136,8 @@ export function useDerivedMintInfo(
   if (!account) {
     error = 'Connect Wallet'
   }
-  /*
-  if (pairState === PairState.INVALID) {
-    error = error ?? 'Invalid pair'
-  }
-*/
-  if (!parsedAmounts[Field.CURRENCY_A] || !parsedAmounts[Field.CURRENCY_B]) {
+
+  if (!parsedAmounts[Field.CURRENCY_A]) {
     error = error ?? 'Enter an amount'
   }
 
@@ -148,10 +145,6 @@ export function useDerivedMintInfo(
 
   if (currencyAAmount && currencyBalances?.[Field.CURRENCY_A]?.lessThan(currencyAAmount)) {
     error = 'Insufficient ' + currencies[Field.CURRENCY_A]?.symbol + ' balance'
-  }
-
-  if (currencyBAmount && currencyBalances?.[Field.CURRENCY_B]?.lessThan(currencyBAmount)) {
-    error = 'Insufficient ' + currencies[Field.CURRENCY_B]?.symbol + ' balance'
   }
 
   return {

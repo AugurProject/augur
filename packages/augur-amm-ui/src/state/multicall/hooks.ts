@@ -195,6 +195,7 @@ export function useMultipleContractSingleData(
   callInputs?: OptionalMethodInputs,
   options?: ListenerOptions
 ): CallState[] {
+  console.log("useMultipleContractSingleData", methodName)
   const fragment = useMemo(() => contractInterface.getFunction(methodName), [contractInterface, methodName])
   const callData: string | undefined = useMemo(
     () =>
@@ -203,7 +204,7 @@ export function useMultipleContractSingleData(
         : undefined,
     [callInputs, contractInterface, fragment]
   )
-
+  console.log('callData', JSON.stringify(callData))
   const calls = useMemo(
     () =>
       fragment && addresses && addresses.length > 0 && callData

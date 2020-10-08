@@ -74,9 +74,7 @@ export function useAccountWeb3() {
   }
 
   async function getWeb3() {
-    const ammFactoryAddress = getAmmFactoryAddress()
     const login = async addresses => {
-      console.log('login', addresses[0])
       const address = addresses[0]
       const provider = new ethers.providers.Web3Provider(window.web3.currentProvider)
       const signer = provider.getSigner()

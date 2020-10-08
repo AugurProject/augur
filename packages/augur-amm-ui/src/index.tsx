@@ -24,16 +24,12 @@ import UserUpdater from './state/user/updater'
 
 const Web3ProviderNetwork = createWeb3ReactRoot(NetworkContextName)
 
-// initialize GA
-const GOOGLE_ANALYTICS_ID = process.env.REACT_APP_GOOGLE_ANALYTICS_ID
-if (typeof GOOGLE_ANALYTICS_ID === 'string') {
-  ReactGA.initialize(GOOGLE_ANALYTICS_ID)
-  ReactGA.set({
-    customBrowserType: !isMobile ? 'desktop' : 'web3' in window || 'ethereum' in window ? 'mobileWeb3' : 'mobileRegular'
+window.addEventListener('error', error => {
+  ReactGA.exception({
+    description: `${error.message} @ ${error.filename}:${error.lineno}:${error.colno}`,
+    fatal: true
   })
-} else {
-  ReactGA.initialize('test', { testMode: true, debug: true })
-}
+})
 
 function ContextProviders({ children }) {
   return (
