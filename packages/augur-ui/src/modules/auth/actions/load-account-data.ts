@@ -1,4 +1,4 @@
-import { checkAccountAllowance, checkAccountApproval } from 'modules/auth/actions/approve-account';
+import { checkAccountApproval } from 'modules/auth/actions/approve-account';
 import { loadAccountHistory } from 'modules/auth/actions/load-account-history';
 import { loadUniverseDetails } from 'modules/universe/actions/load-universe-details';
 import { windowRef } from 'utils/window-ref';
@@ -14,7 +14,7 @@ export const loadAccountData = async (
   callback: NodeStyleCallback = logError
 ) => {
   const {
-    loginAccount: { meta, mixedCaseAddress: address },
+    loginAccount: { meta, mixedCaseAddress: address, tradingApproved },
     universe,
     isLogged,
     isConnected,
@@ -34,8 +34,11 @@ export const loadAccountData = async (
       );
     }
     loadAccountHistory();
-    checkAccountApproval();
-    checkAccountAllowance();
+
+    if (!tradingApproved) {
+      checkAccountApproval();
+    }
+
     loadGasPriceInfo();
     const marketId = getTradePageMarketId();
     if (marketId) {

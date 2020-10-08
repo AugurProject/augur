@@ -606,8 +606,7 @@ export const ModalUnsignedOrders = () => {
   const liquidityArray = [].concat.apply([], Object.values(liquidity));
   const liquidityStatuses = liquidityArray.filter(liquidityOrder => liquidityOrder?.status !== TXEventName.Pending);
   initialProcessing = liquidityStatuses.length === 0;
-  const bnAllowance = createBigNumber(loginAccount.allowance, 10);
-  const needsApproval = bnAllowance.lte(ZERO);
+  const needsApproval = !loginAccount?.tradingApproved;
   const insufficientFunds = availableDai.lt(totalCost);
   const {
     marketType,
@@ -661,7 +660,6 @@ export const ModalUnsignedOrders = () => {
       ]}
       liquidity={liquidity}
       outcomes={liquidity && Object.keys(liquidity)}
-      bnAllowance={bnAllowance}
       initialProcessing={initialProcessing}
       buttons={[
         {

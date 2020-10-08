@@ -45,7 +45,6 @@ interface UnsignedOrdersProps {
   description: DescriptionProps;
   breakdown: Array<LinearPropertyLabelProps>;
   loginAccount: object;
-  bnAllowance: object;
   needsApproval: boolean;
   header: Array<string>;
   liquidity: object;
@@ -74,7 +73,6 @@ const orderRow = (
     maxPrice,
     minPrice,
     outcomes,
-    bnAllowance,
     transactionHash,
     marketId,
     zeroXEnabled,
@@ -119,7 +117,6 @@ const orderRow = (
           maxPrice,
           numTicks,
           orderId: index,
-          bnAllowance,
           loginAccount,
           orderCB: () => {},
           seriesCB: () => {},
@@ -188,7 +185,6 @@ export const UnsignedOrders = ({
   maxPrice,
   minPrice,
   outcomes,
-  bnAllowance,
   transactionHash,
   marketId,
   title,
@@ -263,7 +259,6 @@ export const UnsignedOrders = ({
                     maxPrice,
                     minPrice,
                     outcomes,
-                    bnAllowance,
                     transactionHash,
                     marketId,
                     zeroXEnabled,

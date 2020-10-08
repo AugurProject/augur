@@ -145,10 +145,8 @@ export const DEFAULT_LOGIN_ACCOUNT_STATE: LoginAccount = {
     participationTokens: null,
   },
   currentOnboardingStep: 0,
-  allowance: ZERO,
   tradingApproved: false,
   totalOpenOrdersFrozenFunds: '0',
-  allowanceFormatted: formatAttoDai(ZERO),
   tradingPositionsTotal: {
     unrealizedRevenue24hChangePercent: '0',
   },
