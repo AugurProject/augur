@@ -1123,6 +1123,8 @@ export const MarketStatusLabel = ({
 };
 
 export const InReportingLabel = ({ reportingState, disputeInfo, isWarpSync, isForkingMarket }: InReportingLabelProps) => {
+  const { theme } = useAppStatusStore();
+  const isSportsbook = theme === THEMES.SPORTS;
 
   const reportingStates = [
     REPORTING_STATE.DESIGNATED_REPORTING,
@@ -1144,9 +1146,9 @@ export const InReportingLabel = ({ reportingState, disputeInfo, isWarpSync, isFo
   } else if (reportingState === REPORTING_STATE.OPEN_REPORTING) {
     reportingExtraText = constants.OPEN_REPORTING;
   } else if (disputeInfo && disputeInfo.disputePacingOn) {
-    reportingExtraText = constants.SLOW_DISPUTE;
+    reportingExtraText = isSportsbook ? constants.MARKET_STATUS_MESSAGES.IN_SETTLEMENT : constants.SLOW_DISPUTE;
   } else if (disputeInfo && !disputeInfo.disputePacingOn) {
-    reportingExtraText = constants.FAST_DISPUTE;
+    reportingExtraText = isSportsbook ? constants.MARKET_STATUS_MESSAGES.IN_SETTLEMENT : constants.FAST_DISPUTE;
   } else {
     reportingExtraText = null;
   }

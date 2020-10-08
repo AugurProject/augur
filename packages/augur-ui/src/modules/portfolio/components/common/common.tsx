@@ -100,7 +100,7 @@ export const Game = ({ row, type }: GameProps) => {
         <TemplateShield market={row} />
         <InReportingLabel
           reportingState={row.reportingState}
-          disputeInfo={null}
+          disputeInfo={row.disputeInfo}
         />
         <CategoryTagTrail
           categories={getCategoriesWithClick(row.categories, history)}
