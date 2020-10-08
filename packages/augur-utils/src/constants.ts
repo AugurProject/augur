@@ -21,8 +21,8 @@ export enum NetworkId {
   Private2 = '102',
   Private3 = '103',
   Private4 = '104',
-  PrivateGanache = '123456',
-};
+  PrivateGanache = '1337',
+}
 
 export function isDevNetworkId(id: NetworkId): boolean {
   return [

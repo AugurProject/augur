@@ -77,7 +77,7 @@ export const NETWORK_NAMES = {
   3: 'Ropsten',
   4: 'Rinkeby',
   42: 'Kovan',
-  123456: 'Local',
+  1337: 'Local',
   101: 'Local',
   102: 'Local',
   103: 'Local',
