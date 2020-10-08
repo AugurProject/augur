@@ -81,6 +81,7 @@ export const GET_MARKETS = gql`
         volumeYes
         volumeNo
         liquidity
+        cashBalance
         swaps {
           id
           yesShares

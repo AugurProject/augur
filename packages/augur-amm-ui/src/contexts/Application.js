@@ -335,6 +335,6 @@ export function getCashInfo(address) {
 
 export function getAmmFactoryAddress() {
   const contracts = getConfig()
-  const ammFactory = contracts.ammFactory
+  const ammFactory = contracts.AmmFactory
   return ammFactory
 }

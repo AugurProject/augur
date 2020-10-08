@@ -2,7 +2,7 @@ import { ChainId } from '@uniswap/sdk'
 import React, { useContext } from 'react'
 import styled, { ThemeContext } from 'styled-components'
 import Modal from '../Modal'
-import { ExternalLink } from '../../Theme'
+import { ExternalLink, TYPE } from '../../Theme'
 import { Text } from 'rebass'
 import { CloseIcon, CustomLightSpinner } from '../../Theme'
 import { RowBetween } from '../Row'
@@ -118,9 +118,9 @@ export function ConfirmationModalContent({
     <Wrapper>
       <Section>
         <RowBetween>
-          <Text fontWeight={500} fontSize={20}>
+          <TYPE.header fontWeight={500} fontSize={20}>
             {title}
-          </Text>
+          </TYPE.header>
           <CloseIcon onClick={onDismiss} />
         </RowBetween>
         {topContent()}

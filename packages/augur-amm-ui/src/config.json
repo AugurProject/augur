@@ -15,7 +15,7 @@
   },
   "42": {
     "Multicall": "0x2cc8688c5f75e365aaeeb4ea8d6a480405a48d2a",
-    "AmmFactory": "0x667C97e2783fc2A014fA8Bca82bf0Bd9bbb38E4d",
+    "AmmFactory": "0x10C31bC06A7634020946e80B8844c2E1f8f4c6e4",
     "Cashes": [
       {
         "address": "0x7290c2b7D5Fc91a112d462fe06aBBB8948668f56",
@@ -24,7 +24,7 @@
         "asset": "weth.svg"
       },
       {
-        "address": "0x5bc0ceB4d813282C4468288C8AB42Af5e7a43B27",
+        "address": "0x25e27c08B7B3f2159aC23e4711801e0F7aD270A3",
         "name": "DAI",
         "symbol": "DAI",
         "asset": "dai.svg"

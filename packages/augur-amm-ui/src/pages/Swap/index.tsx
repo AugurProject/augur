@@ -26,7 +26,7 @@ import { ApprovalState, useApproveCallbackFromTrade } from '../../hooks/useAppro
 import useENSAddress from '../../hooks/useENSAddress'
 import { useSwapCallback } from '../../hooks/useSwapCallback'
 import useWrapCallback, { WrapType } from '../../hooks/useWrapCallback'
-import { useToggleSettingsMenu } from '../../state/application/hooks'
+import { useToggleSettingsMenu, useWalletModalToggle } from '../../state/application/hooks'
 import { Field } from '../../state/swap/actions'
 import { useDerivedSwapInfo, useSwapActionHandlers, useSwapState } from '../../state/swap/hooks'
 import { useExpertModeManager, useUserSlippageTolerance } from '../../state/user/hooks'
@@ -72,9 +72,8 @@ function Swap({
 
   const theme = useContext(ThemeContext)
 
-  // toggle wallet when disconnected
-  //  const toggleWalletModal = useWalletModalToggle()
-  const { account, getWeb3 } = useActiveWeb3React()
+  const toggleWalletModal = useWalletModalToggle() // toggle wallet when disconnected
+  const { account } = useActiveWeb3React()
 
   // for expert mode
   const toggleSettings = useToggleSettingsMenu()
@@ -357,7 +356,7 @@ function Swap({
           </AutoColumn>
           <BottomGrouping>
             {!account ? (
-              <ButtonGray onClick={getWeb3}>Connect Wallet</ButtonGray>
+              <ButtonGray onClick={toggleWalletModal}>Connect Wallet</ButtonGray>
             ) : showWrap ? (
               <ButtonPrimary disabled={Boolean(wrapInputError)} onClick={onWrap}>
                 {wrapInputError ??
