@@ -8197,10 +8197,10 @@ export class AMMExchange<TBigNumber> extends Contract<TBigNumber> {
 		return <{_cashPayout: TBigNumber, _invalidFromUser: TBigNumber, _noFromUser: TBigNumber, _yesFromUser: TBigNumber}>result
 	}
 
-	public rateExitPosition_ = async (invalidShares: TBigNumber, noShares: TBigNumber, yesShares: TBigNumber, options?: { sender?: string }): Promise<{_cashPayout: TBigNumber, _invalidFromUser: TBigNumber, _noFromUser: TBigNumber, _yesFromUser: TBigNumber}> => {
+	public rateExitPosition_ = async (invalidShares: TBigNumber, noSharesToSell: TBigNumber, yesSharesToSell: TBigNumber, options?: { sender?: string }): Promise<{_cashPayout: TBigNumber, _invalidFromUser: TBigNumber, _noFromUser: TBigNumber, _yesFromUser: TBigNumber}> => {
 		options = options || {}
-		const abi: AbiFunction = {"constant":true,"inputs":[{"internalType":"uint256","name":"_invalidShares","type":"uint256"},{"internalType":"uint256","name":"_noShares","type":"uint256"},{"internalType":"uint256","name":"_yesShares","type":"uint256"}],"name":"rateExitPosition","outputs":[{"internalType":"uint256","name":"_cashPayout","type":"uint256"},{"internalType":"uint256","name":"_invalidFromUser","type":"uint256"},{"internalType":"int256","name":"_noFromUser","type":"int256"},{"internalType":"int256","name":"_yesFromUser","type":"int256"}],"payable":false,"stateMutability":"view","type":"function"}
-		const result = await this.localCall(abi, [invalidShares, noShares, yesShares], options.sender)
+		const abi: AbiFunction = {"constant":true,"inputs":[{"internalType":"uint256","name":"_invalidShares","type":"uint256"},{"internalType":"uint256","name":"_noSharesToSell","type":"uint256"},{"internalType":"uint256","name":"_yesSharesToSell","type":"uint256"}],"name":"rateExitPosition","outputs":[{"internalType":"uint256","name":"_cashPayout","type":"uint256"},{"internalType":"uint256","name":"_invalidFromUser","type":"uint256"},{"internalType":"int256","name":"_noFromUser","type":"int256"},{"internalType":"int256","name":"_yesFromUser","type":"int256"}],"payable":false,"stateMutability":"view","type":"function"}
+		const result = await this.localCall(abi, [invalidShares, noSharesToSell, yesSharesToSell], options.sender)
 		return <{_cashPayout: TBigNumber, _invalidFromUser: TBigNumber, _noFromUser: TBigNumber, _yesFromUser: TBigNumber}>result
 	}
 

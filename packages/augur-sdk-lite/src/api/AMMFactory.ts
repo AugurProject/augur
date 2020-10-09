@@ -3,7 +3,9 @@ import { BigNumber } from 'bignumber.js';
 import { binarySearch, bnDirection } from '@augurproject/utils';
 import { AMMFactoryAbi } from '../abi/AMMFactoryAbi';
 import { AMMExchange } from './AMMExchange';
-import { SignerOrProvider } from '../constants';
+import { SignerOrProvider, YES_NO_NUMTICKS } from '../constants';
+import { TransactionResponse } from '@ethersproject/abstract-provider';
+
 
 export class AMMFactory {
   private readonly signerOrProvider: SignerOrProvider;
@@ -15,53 +17,85 @@ export class AMMFactory {
     this.signerOrProvider = signerOrProvider;
   }
 
-  async getAMMExchange(marketAddress: string, collateralAddress: string): Promise<AMMExchange> {
-    const amm = await this.contract.exchanges(marketAddress, collateralAddress);
+  async getAMMExchange(marketAddress: string, paraShareToken: string): Promise<AMMExchange> {
+    const amm = await this.contract.exchanges(marketAddress, paraShareToken);
 
-    if(typeof amm === 'undefined') {
-      throw new Error(`Market/Collateral pair ${marketAddress}/${collateralAddress} does not exist.`);
+    if (typeof amm === 'undefined') {
+      throw new Error(`Market/Collateral pair ${marketAddress}/${paraShareToken} does not exist.`);
     }
 
     return new AMMExchange(this.signerOrProvider, amm);
   }
 
-  async addAMM(marketAddress: string, collateralAddress: string, yesShares: BigNumber = null, noShares: BigNumber = null): Promise<AddAMMReturn> {
-    const ammAddress = await this.ammAddress(marketAddress, collateralAddress);
+  async addAMM(market: string, paraShareToken: string, cash: BigNumber = new BigNumber(0), ratioYN: BigNumber = new BigNumber(1)): Promise<AddAMMReturn> {
+    const ammAddress = await this.ammAddress(market, paraShareToken);
     const amm = new AMMExchange(this.signerOrProvider, ammAddress);
 
-    if (yesShares === null && noShares === null) {
-      await this.contract.addAMM(marketAddress, collateralAddress);
+    if (cash.eq(0)) {
+      const txr: TransactionResponse = await this.contract.addAMM(market, paraShareToken);
+      const tx = await txr.wait();
+      const logs = tx.logs
+        .filter((log) => log.address === amm.address)
+        .map((log) =>  amm.contract.interface.parseLog(log));
+      console.log(JSON.stringify(logs, null, 2))
       return { amm, lpTokens: new BigNumber(0) };
-    } else if (yesShares === null || noShares === null) {
-      throw Error('Must specify both yes and no shares, or neither.');
     }
-    // else, add AMM with initial liquidity:
 
-    const swapForYes = yesShares.gt(noShares);
-    const minBuy = BigNumber.min(noShares, yesShares);
-    const maxBuy = BigNumber.max(noShares, yesShares);
+    // TODO this isn't even trying to make liquidity.
+    const txr: TransactionResponse = await this.contract.addAMM(market, paraShareToken);
+    const tx = await txr.wait();
+    const logs = tx.logs
+      .filter((log) => log.address === amm.address)
+      .map((log) =>  amm.contract.interface.parseLog(log));
+    console.log(JSON.stringify(logs, null, 2))
+    return { amm, lpTokens: cash.div(YES_NO_NUMTICKS) };
 
-    const setsBought = await binarySearch(
-      minBuy,
-      maxBuy,
-      100,
-      async (setsToBuy) => {
-        const setsToSell = setsToBuy.minus(minBuy);
-        const {_yesses, _nos} = await this.contract.sharesRateForAddLiquidityThenSwap(setsToBuy, swapForYes, setsToSell);
-        return swapForYes ? bnDirection(yesShares, _yesses) : bnDirection(noShares, _nos);
-      }
-    );
 
-    const setsSwapped = setsBought.minus(minBuy);
+    // const setsToBuy = cash.div(YES_NO_NUMTICKS);
+    // const swapForYes = ratioYN.gt(1);
+    // const setsToSwap = new BigNumber(0); // TODO calculate to achieve ratio
+    //
+    // const txr: TransactionResponse = await this.contract.addAMMWithLiquidity(market, paraShareToken, setsToBuy.toFixed(), swapForYes, setsToSwap.toFixed());
+    // const tx = await txr.wait();
+    // const logs = tx.logs
+    //   .filter((log) => log.address === amm.address)
+    //   .map((log) =>  amm.contract.interface.parseLog(log));
+    // console.log(JSON.stringify(logs, null, 2))
 
-    const lpTokens = await this.contract.rateAddLiquidityThenSwap(setsBought, swapForYes, setsSwapped);
-    await this.contract.addAMMWithLiquidity(marketAddress, collateralAddress, setsBought, swapForYes, setsSwapped);
 
-    return { amm, lpTokens };
+    // return { amm, lpTokens: new BigNumber(42) }; // TODO actual lpTokens gained (check logs)
+    //
+    // const swapForYes = ratioYN.gt(1);
+    // const minSwap = new BigNumber(0);
+    // const maxSwap = new BigNumber(setsToBuy);
+    // console.log('MARINA', 0)
+    // const setsToSwap = await binarySearch(
+    //   minSwap,
+    //   maxSwap,
+    //   100,
+    //   async (setsToSwap) => {
+    //     console.log('MARINA', 1, setsToBuy.toString(), swapForYes, setsToSwap.toString())
+    //     const { _yesses, _nos } = await amm.contract.sharesRateForAddLiquidityThenSwap(setsToBuy.toString(), swapForYes, setsToSwap.toString());
+    //     console.log('MARINA', 2)
+    //     const foundRatio: BigNumber = _yesses.div(_nos);
+    //     return bnDirection(ratioYN, foundRatio);
+    //   }
+    // );
+
+    // console.log(`setsToBuy: ${setsToBuy.toString()}`)
+    // console.log(`swapForYes: ${swapForYes}`)
+    // console.log(`setsToSwap: ${setsToSwap.toString()}`)
+    //
+    // const txr: TransactionResponse = await this.contract.addAMMWithLiquidity(market, paraShareToken, setsToBuy, swapForYes, setsToSwap);
+    // const tx = await txr.wait();
+    // const logs = tx.logs.map(this.contract.interface.parseLog.bind(this));
+    // console.log(JSON.stringify(logs, null, 2))
+    //
+    // return { amm, lpTokens: new BigNumber(42) };
   }
 
-  async ammAddress(marketAddress: string, collateralAddress: string): Promise<string> {
-    return this.contract.calculateAMMAddress(marketAddress, collateralAddress);
+  async ammAddress(marketAddress: string, paraShareToken: string): Promise<string> {
+    return this.contract.calculateAMMAddress(marketAddress, paraShareToken);
   }
 }
 

@@ -1,9 +1,10 @@
 import { BigNumber } from 'bignumber.js';
 import { ethers } from 'ethers';
+import { TransactionResponse } from '@ethersproject/abstract-provider';
 
 import { binarySearch, bnDirection } from '@augurproject/utils';
 import { AMMExchangeAbi } from '../abi/AMMExchangeAbi';
-import {NULL_ADDRESS, SignerOrProvider, YES_NO_NUMTICKS} from '../constants';
+import { NULL_ADDRESS, SignerOrProvider, YES_NO_NUMTICKS } from '../constants';
 
 export class AMMExchange {
   readonly contract: ethers.Contract;
@@ -30,7 +31,10 @@ export class AMMExchange {
         return bnDirection(shares, yesShares);
       }
     );
-    if (!rate) await this.contract.enterPosition(cash, yes, shares);
+    if (!rate) {
+      const txr: TransactionResponse = await this.contract.enterPosition(cash, yes, shares);
+      const tx = await txr.wait();
+    }
     return cash;
   }
 
