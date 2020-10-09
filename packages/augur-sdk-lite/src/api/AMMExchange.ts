@@ -107,6 +107,33 @@ export class AMMExchange {
     await this.contract.removeLiquidity(lpTokens, minSetsSold);
     return removedLiquidity;
   }
+
+  calculateCashForSharesInSwap(desiredShares: Shares, yes: boolean): BigNumber {
+    // X**2 - (PN + PY)X + (2PN(PY) - PN(Y))
+    // Where X = cash required; Y = desired Shares, PN = pool No, PY = pool Yes
+    const a = new BigNumber(1);
+    const { _no, _yes } = this.contract.yesNoShareBalances(this.contract.address);
+    const b = new BigNumber(_yes).plus(_no);
+    const c = new BigNumber(2).multipliedBy(_no).multipliedBy(_yes).minus(desiredShares.multipliedBy(yes ? _no : _yes));
+    return this.solveQuadratic(a, b, c);
+  }
+
+  solveQuadratic(a: BigNumber, b: BigNumber, c: BigNumber): BigNumber {
+    const piece =  (b.multipliedBy(b).minus(a.multipliedBy(c).multipliedBy(4))).abs().sqrt();
+    let resultPlus = b.multipliedBy(-1).plus(piece).dividedBy(a.multipliedBy(2));
+    let resultMinus = b.multipliedBy(-1).plus(piece).dividedBy(a.multipliedBy(2));
+
+    // Choose correct answer.
+    if (resultPlus.lt(0)) {
+      return resultMinus;
+    } else if (resultMinus.lt(0)) {
+      return resultPlus;
+    } else if (resultPlus.lt(resultMinus)) {
+      return resultPlus;
+    } else {
+      return resultMinus;
+    }
+  }
 }
 
 export interface RemoveLiquidityReturn {
