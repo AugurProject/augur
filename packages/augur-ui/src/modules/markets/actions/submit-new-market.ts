@@ -27,7 +27,7 @@ export const submitNewMarket = async (
   callback: NodeStyleCallback = noop
 ) => {
   const {
-    loginAccount: { address, allowance },
+    loginAccount: { address },
   } = AppStatus.get();
   market.orderBook = sortOrders(market.orderBook);
   market.endTime = market.endTimeFormatted.timestamp;
@@ -39,10 +39,6 @@ export const submitNewMarket = async (
   const hasOrders = market.orderBook && Object.keys(market.orderBook).length;
   const sortOrderBook = hasOrders && sortOrders(market.orderBook);
   const hashId = getConstructedMarketId(market);
-
-  if (allowance.lte(ZERO)) {
-    await approveToTrade();
-  }
 
   if (!!hasOrders) {
     PendingOrders.actions.addLiquidity({

@@ -65,7 +65,7 @@ export const loadPendingLiquidityOrders = (
 };
 
 export const sendLiquidityOrder = async (options) => {
-  const { order, bnAllowance, marketId, loginAccount } = options;
+  const { order, marketId, loginAccount } = options;
   const { marketInfos } = Markets.get();
   const market = marketInfos[marketId];
   const isZeroX = options.zeroXEnabled;

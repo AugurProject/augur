@@ -694,8 +694,6 @@ export interface LoginAccount {
   timeframeData?: TimeframeData;
   tradingApproved?: boolean;
   currentOnboardingStep?: number;
-  allowanceFormatted?: FormattedNumber;
-  allowance?: BigNumber;
   balances: AccountBalances;
   reporting: Getters.Accounts.AccountReportingHistory;
   settings?: LoginAccountSettings;

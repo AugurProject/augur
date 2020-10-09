@@ -121,7 +121,6 @@ export const Confirm = ({
     pendingQueue,
     loginAccount: {
       balances: { eth },
-      allowance: allowanceBigNumber,
       tradingApproved,
       address,
       affiliate,
@@ -203,11 +202,7 @@ export const Confirm = ({
         messages = {
           header: 'MULTIPLE TRANSACTIONS',
           type: WARNING,
-          message: `This trade will take ${numTrades} Transactions${
-            createBigNumber(potentialDaiLoss.value).gt(allowanceBigNumber || 0)
-              ? ' and approvals.'
-              : '.'
-          }`,
+          message: `This trade will take ${numTrades} Transactions.`,
         };
       }
       // self trade warning

@@ -503,7 +503,7 @@ export const Form = ({ isTemplate, updatePage }) => {
   const {
     newMarket,
     drafts,
-    loginAccount: { address, allowance, balances },
+    loginAccount: { address, balances, tradingApproved },
     gasPriceInfo,
     blockchain: { currentAugurTimestamp: currentTimestamp },
     actions: {
@@ -558,7 +558,7 @@ export const Form = ({ isTemplate, updatePage }) => {
     useBullets,
   } = contentPages[currentStep];
 
-  const disableCreateButton = disableCreate;
+  const disableCreateButton = disableCreate || !tradingApproved;
   let savedDraft = drafts[uniqueId];
   if (savedDraft) savedDraft.validations = [];
   let comparableNewMarket = deepClone<NewMarket>(newMarket);
@@ -910,7 +910,7 @@ export const Form = ({ isTemplate, updatePage }) => {
                 {secondButton === CREATE && (
                   <PrimaryButton
                     text="Create"
-                    disabled={disableCreateButton || !isApproved}
+                    disabled={disableCreateButton}
                     action={() => {
                       setBlockShown(true);
                       setModal({

@@ -340,7 +340,6 @@ export function AppStatusReducer(state, action) {
       delete updatedState[UNIVERSE].forkingInfo;
       delete updatedState[UNIVERSE].disputeWindow;
       delete updatedState[LOGIN_ACCOUNT].reporting;
-      delete updatedState[LOGIN_ACCOUNT].allowance;
       delete updatedState[LOGIN_ACCOUNT].tradingPositionsTotal;
       break;
     }
