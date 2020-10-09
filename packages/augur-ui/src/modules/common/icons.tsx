@@ -2663,6 +2663,35 @@ export const CategoryPolitics = (
   </svg>
 );
 
+export const CategoryMedical = (
+  <svg viewBox="0 0 16 16" fill="none">
+    <path
+      d="M3.5 0.5H12.5"
+      stroke="white"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+    <path
+      d="M5.5 2.5V5.5C4.43913 5.5 3.42172 5.92143 2.67157 6.67157C1.92143 7.42172 1.5 8.43913 1.5 9.5V14.5C1.5 14.7652 1.60536 15.0196 1.79289 15.2071C1.98043 15.3946 2.23478 15.5 2.5 15.5H13.5C13.7652 15.5 14.0196 15.3946 14.2071 15.2071C14.3946 15.0196 14.5 14.7652 14.5 14.5V9.5C14.5 8.43913 14.0786 7.42172 13.3284 6.67157C12.5783 5.92143 11.5609 5.5 10.5 5.5V2.5"
+      stroke="white"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+    <path
+      d="M8 7.5V12.5"
+      stroke="#2AE7A8"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+    <path
+      d="M5.5 10H10.5"
+      stroke="#2AE7A8"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+  </svg>
+);
+
 export const MMA = (
   <svg
     width="40"
