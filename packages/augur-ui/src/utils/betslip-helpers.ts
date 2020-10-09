@@ -84,7 +84,7 @@ export const findProceeds = (realizedPercent, realizedCost, settlementFee) => {
 
 const { FILLED, FAILED } = BET_STATUS;
 
-export const placeBet = async (marketId, order, orderId) => {
+export const placeBet = async (marketId, matchedId, order, orderId) => {
   const { marketInfos } = Markets.get();
   const market = marketInfos[marketId];
   // todo: need to add user shares
@@ -105,10 +105,10 @@ export const placeBet = async (marketId, order, orderId) => {
     undefined
   )
     .then(() => {
-      Betslip.actions.trash(marketId, orderId);
+      Betslip.actions.trash(marketId, matchedId, orderId);
     })
     .catch(err => {
-      Betslip.actions.updateMatched(marketId, orderId, {
+      Betslip.actions.updateMatched(marketId, matchedId, orderId, {
         ...order,
         marketId,
         status: FAILED,
@@ -230,9 +230,9 @@ const getTopBid = (orderBooks, bet, tickSize) => {
   };
 };
 
-export const checkForConsumingOwnOrderError = (marketId, order, orderId) => {
+export const checkForConsumingOwnOrderError = (marketId, matchedId, order, orderId) => {
   runBetslipTrade(marketId, order, false, simulateTradeData => {
-      Betslip.actions.modifyBet(marketId, orderId, {
+      Betslip.actions.modifyBet(marketId, matchedId, orderId, {
       ...order,
       selfTrade: simulateTradeData.selfTrade,
       errorMessage: simulateTradeData.selfTrade && order.errorMessage === '' ? 'Consuming own order' : order.errorMessage

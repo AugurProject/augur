@@ -88,6 +88,7 @@ export function BetslipReducer(state, action) {
     case ADD_BET: {
       const {
         marketId,
+        matchedId,
         description,
         min,
         max,
@@ -99,13 +100,14 @@ export function BetslipReducer(state, action) {
       } = action;
       updatedState.selected.header = BETSLIP;
       updatedState.step = 0;
-      if (!betslipItems[marketId]) {
-        betslipItems[marketId] = {
+      if (!betslipItems[matchedId]) {
+        betslipItems[matchedId] = {
           description,
+          marketId,
           orders: [],
         };
       } else {
-        const matchingBet = betslipItems[marketId].orders.find(
+        const matchingBet = betslipItems[matchedId].orders.find(
           order => order.outcomeId === outcomeId && order.price === price
         );
         if (matchingBet) {
@@ -125,11 +127,11 @@ export function BetslipReducer(state, action) {
         amountFilled: '0',
         status: UNSENT,
         dateUpdated: null,
-        orderId: betslipItems[marketId].orders.length,
+        orderId: betslipItems[matchedId].orders.length,
       };
       updatedState.placeBetsDisabled = true;
 
-      betslipItems[marketId].orders.push(order);
+      betslipItems[matchedId].orders.push(order);
       updatedState.betslip.count++;
       break;
     }
@@ -138,26 +140,27 @@ export function BetslipReducer(state, action) {
       break;
     }
     case SEND_ALL_BETS: {
-      for (let [marketId, { description, orders }] of Object.entries(
+      for (let [matchedId, { marketId, description, orders }] of Object.entries(
         betslipItems
       )) {
         const ordersAmount = orders.length;
-        if (!matchedItems[marketId]) {
-          matchedItems[marketId] = {
+        if (!matchedItems[matchedId]) {
+          matchedItems[matchedId] = {
             description,
+            marketId, 
             orders: [],
           };
         }
         orders.forEach(order => {
-          const orderId = matchedItems[marketId].orders.length;
-          matchedItems[marketId].orders.push({
+          const orderId = matchedItems[matchedId].orders.length;
+          matchedItems[matchedId].orders.push({
             ...order,
             orderId,
             amountFilled: order.wager,
             timestamp: currentAugurTimestamp,
             status: PENDING,
           });
-          placeBet(marketId, order, orderId);
+          placeBet(marketId, matchedId, order, orderId);
         });
         updatedState.matched.count += ordersAmount;
       }
@@ -165,23 +168,27 @@ export function BetslipReducer(state, action) {
       break;
     }
     case ADD_MATCHED: {
-      const { fromList, marketId, description, order } = action;
-      if (!matchedItems[marketId]) {
-        matchedItems[marketId] = {
+      const { fromList, marketId, sportsBook, description, order } = action;
+      //const matchedId = sportsBook.groupId;
+      const matchedId = marketId;
+      if (!matchedItems[matchedId]) {
+        matchedItems[matchedId] = {
           description,
+          sportsBook,
+          marketId,
           orders: [],
         };
       }
-      const match = matchedItems[marketId].orders.findIndex(
+      const match = matchedItems[matchedId].orders.findIndex(
         lOrder => lOrder.outcomeId === order.outcomeId
       );
       if (match > -1) {
-        matchedItems[marketId].orders[match] = {
-          ...matchedItems[marketId].orders[match],
+        matchedItems[matchedId].orders[match] = {
+          ...matchedItems[matchedId].orders[match],
           ...order,
         };
       } else {
-        matchedItems[marketId].orders.push({
+        matchedItems[matchedId].orders.push({
           ...order,
           orderId: matchedItems[marketId].orders.length,
           amountFilled: order.wager,
@@ -192,26 +199,26 @@ export function BetslipReducer(state, action) {
       break;
     }
     case RETRY: {
-      const { marketId, orderId } = action;
+      const { marketId, matchedId, orderId } = action;
       // TODO: send bet again but for now...
-      const order = matchedItems[marketId].orders[orderId];
+      const order = matchedItems[matchedId].orders[orderId];
       order.status = PENDING;
       order.amountFilled = order.wager;
-      placeBet(marketId, order, orderId);
+      placeBet(marketId, matchedId, order, orderId);
       break;
     }
     case CASH_OUT: {
-      const { marketId, orderId } = action;
+      const { marketId, matchedId, orderId } = action;
       // TODO: sell order, but for now...
-      const cashedOutOrder = matchedItems[marketId].orders[orderId];
+      const cashedOutOrder = matchedItems[matchedId].orders[orderId];
       cashedOutOrder.status = CLOSED;
       break;
     }
     case UPDATE_MATCHED: {
-      const { marketId, orderId, updates } = action;
-      if (matchedItems[marketId]) {
-        matchedItems[marketId].orders[orderId] = {
-          ...matchedItems[marketId].orders[orderId],
+      const { marketId, matchedId, orderId, updates } = action;
+      if (matchedItems[matchedId]) {
+        matchedItems[matchedId].orders[orderId] = {
+          ...matchedItems[matchedId].orders[orderId],
           ...updates,
           orderId,
           dateUpdated: currentAugurTimestamp,
@@ -221,24 +228,25 @@ export function BetslipReducer(state, action) {
       break;
     }
     case TRASH: {
-      const { marketId, orderId } = action;
-      matchedItems[marketId].orders.splice(orderId, 1);
-      if (matchedItems[marketId].orders.length === 0) {
-        delete matchedItems[marketId];
+      const { marketId, matchedId, orderId } = action;
+      matchedItems[matchedId].orders.splice(orderId, 1);
+      if (matchedItems[matchedId].orders.length === 0) {
+        delete matchedItems[matchedId];
       }
       updatedState.matched.count--;
       break;
     }
     case MODIFY_BET: {
-      const { marketId, orderId, order } = action;
+      const { marketId, matchedId, orderId, order } = action;
       const shares = getShares(order.wager, order.price);
       const toWin = convertToWin(order.max, shares);
-      const prevWager = betslipItems[marketId].orders[orderId].wager;
-      if (betslipItems[marketId]?.orders)
-        betslipItems[marketId].orders[orderId] = { ...order, orderId, shares, toWin };
+      const prevWager = betslipItems[matchedId].orders[orderId].wager;
+      if (betslipItems[matchedId]?.orders)
+        betslipItems[matchedId].orders[orderId] = { ...order, marketId, orderId, shares, toWin };
       if (prevWager !== order.wager) {
         checkForConsumingOwnOrderError(
           marketId,
+          matchedId,
           { ...order, shares: shares },
           orderId
         );
@@ -247,11 +255,11 @@ export function BetslipReducer(state, action) {
       break;
     }
     case CANCEL_BET: {
-      const { marketId, orderId } = action;
-      const market = betslipItems[marketId];
+      const { marketId, matchedId, orderId } = action;
+      const market = betslipItems[matchedId];
       market.orders.splice(orderId, 1);
       if (market.orders.length === 0) {
-        delete betslipItems[marketId];
+        delete betslipItems[matchedId];
       }
       updatedState.placeBetsDisabled = checkForDisablingPlaceBets(betslipItems);
       updatedState.betslip.count--;
@@ -301,6 +309,7 @@ export const useBetslip = (defaultState = MOCK_BETSLIP_STATE) => {
       toggleStep: () => dispatch({ type: TOGGLE_STEP }),
       addBet: (
         marketId,
+        matchedId,
         description,
         max,
         min,
@@ -313,6 +322,7 @@ export const useBetslip = (defaultState = MOCK_BETSLIP_STATE) => {
         dispatch({
           type: ADD_BET,
           marketId,
+          matchedId,
           description,
           max,
           min,
@@ -322,22 +332,22 @@ export const useBetslip = (defaultState = MOCK_BETSLIP_STATE) => {
           outcomeId,
           price,
         }),
-      modifyBet: (marketId, orderId, order) =>
-        dispatch({ type: MODIFY_BET, marketId, orderId, order }),
-      cancelBet: (marketId, orderId) =>
-        dispatch({ type: CANCEL_BET, marketId, orderId }),
+      modifyBet: (marketId, matchedId, orderId, order) =>
+        dispatch({ type: MODIFY_BET, marketId, matchedId, orderId, order }),
+      cancelBet: (marketId, matchedId, orderId) =>
+        dispatch({ type: CANCEL_BET, marketId, matchedId, orderId }),
       sendAllBets: () => dispatch({ type: SEND_ALL_BETS }),
       cancelAllBets: () => dispatch({ type: CANCEL_ALL_BETS }),
-      retry: (marketId, orderId) =>
-        dispatch({ type: RETRY, marketId, orderId }),
-      cashOut: (marketId, orderId) =>
-        dispatch({ type: CASH_OUT, marketId, orderId }),
-      updateMatched: (marketId, orderId, updates) =>
-        dispatch({ type: UPDATE_MATCHED, marketId, orderId, updates }),
-      addMatched: (fromList, marketId, description, order) =>
-        dispatch({ type: ADD_MATCHED, fromList, marketId, description, order }),
-      trash: (marketId, orderId) =>
-        dispatch({ type: TRASH, marketId, orderId }),
+      retry: (marketId, matchedId, orderId) =>
+        dispatch({ type: RETRY, marketId, matchedId, orderId }),
+      cashOut: (marketId, matchedId, orderId) =>
+        dispatch({ type: CASH_OUT, marketId, matchedId, orderId }),
+      updateMatched: (marketId, matchedId, orderId, updates) =>
+        dispatch({ type: UPDATE_MATCHED, marketId, matchedId, orderId, updates }),
+      addMatched: (fromList, marketId, matchedId, sportsBook, description, order) =>
+        dispatch({ type: ADD_MATCHED, fromList, marketId, matchedId, sportsBook, description, order }),
+      trash: (marketId, matchedId, orderId) =>
+        dispatch({ type: TRASH, marketId, matchedId, orderId }),
       cancelAllUnmatched: () => dispatch({ type: CANCEL_ALL_UNMATCHED }),
     },
   };
