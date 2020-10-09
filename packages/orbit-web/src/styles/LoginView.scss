@@ -244,7 +244,7 @@ $text-color: rgba(228, 228, 228, 0.9);
     form {
       input[type='text'],
       input[type='password'] {
-        border: 0.0625rem solid var(--color-outline); // 1px
+        border: 0.125rem solid var(--color-outline); // 2px
         height: 2.25rem; // 36px
         font-size: 0.75rem; // 12px
         text-align: left;
@@ -256,6 +256,28 @@ $text-color: rgba(228, 228, 228, 0.9);
         input[type='submit'] {
           color: var(--orbit-color-secondary-text);
           padding: 0.5rem 0.53125rem; // 8px & 8.5px
+          margin: 0.06125rem;
+
+          &:not(:disabled):hover {
+            background-color: var(--orbit-color-primary-text);
+            color: var(--orbit-dark-grey);
+            border: 0.125rem solid var(--orbit-color-primary-text); // 2px
+            margin: auto;
+          }
+
+          &:not(:disabled):focus {
+            background-color: var(--orbit-dark-grey);
+            color: var(--orbit-color-secondary-text);
+            border: 0.125rem solid var(--color-focused); // 2px
+            margin: auto;
+          }
+
+          &:not(:disabled):active {
+            background-color: var(--orbit-dark-grey);
+            color: var(--orbit-color-primary-text);
+            border: 0.06125rem solid var(--orbit-color-primary-text); // 1px
+            margin: 0.06125rem;
+          }
         }
       }
     }
