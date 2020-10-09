@@ -30,13 +30,14 @@ function buildEvent(EventConstructor: EventConstructor, event: PositionEventType
   positionEvent.sender = event.params.sender;
   positionEvent.save();
 
-  let ammExchange = AMMExchange.load(event.address);
+
   let market = ammExchange.market;
   market.volume = market.volume.plus(noShares.abs());
   market.volume = market.volume.plus(yesShares.abs());
 
   market.save();
 
+  let ammExchange = AMMExchange.load(event.address);
   ammExchange.liquidityCash = ammExchange.liquidityCash.plus(cash);
   ammExchange.liquidityNo = ammExchange.liquidityNo.plus(noShares);
   ammExchange.liquidityYes = ammExchange.liquidityYes.plus(yesShares);
