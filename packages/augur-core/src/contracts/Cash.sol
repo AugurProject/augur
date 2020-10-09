@@ -7,7 +7,7 @@ import 'ROOT/libraries/token/VariableSupplyToken.sol';
 
 /**
  * @title Cash
- * @dev Test contract for CASH (Dai)
+ * @dev Test contract for CASH
  */
 contract Cash is VariableSupplyToken, ITyped, ICash {
     using SafeMathUint256 for uint256;
@@ -15,8 +15,17 @@ contract Cash is VariableSupplyToken, ITyped, ICash {
     string constant public name = "Cash";
     string constant public symbol = "CASH";
 
+    bool public canSetDecimals = true;
+
     function faucet(uint256 _amount) public returns (bool) {
         mint(msg.sender, _amount);
+        canSetDecimals = false;
+        return true;
+    }
+
+    function setDecimals(uint8 _decimals) public returns (bool) {
+        require(canSetDecimals, "Go away!");
+        decimals = _decimals;
         return true;
     }
 

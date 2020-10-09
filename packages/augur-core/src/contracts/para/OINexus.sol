@@ -7,6 +7,7 @@ import 'ROOT/para/interfaces/IParaAugur.sol';
 import 'ROOT/para/interfaces/IParaUniverse.sol';
 import 'ROOT/para/interfaces/IOINexus.sol';
 import 'ROOT/libraries/math/SafeMathUint256.sol';
+import 'ROOT/libraries/token/IERC20.sol';
 import 'ROOT/para/ParaOracle.sol';
 
 
@@ -91,13 +92,16 @@ contract OINexus is Ownable, IOINexus {
         return _reportingFeeDivisor;
     }
 
+    // Atto no longer properly describes this but I don't want to change it everywhere. It is a euphamism now for "smallest unit" :(
     function getAttoCashPerRep(address _cash, address _reputationToken) public returns (uint256) {
         uint256 _attoWethPerRep = oracle.poke(_reputationToken);
         uint256 _attoWethPerCash = oracle.poke(_cash);
+        uint256 _decimals = IERC20(_cash).decimals();
+        uint256 _tokenPrecision = 10 ** _decimals;
         if (_attoWethPerRep == 0 || _attoWethPerCash == 0) {
             return 0;
         }
-        return _attoWethPerRep * 10**18 / _attoWethPerCash;
+        return _attoWethPerRep * _tokenPrecision / _attoWethPerCash;
     }
 
     function onTransferOwnership(address, address) internal {}

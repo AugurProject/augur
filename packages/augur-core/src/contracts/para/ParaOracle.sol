@@ -4,6 +4,7 @@ import 'ROOT/uniswap/libraries/UQ112x112.sol';
 import 'ROOT/uniswap/interfaces/IUniswapV2Factory.sol';
 import 'ROOT/uniswap/interfaces/IUniswapV2Pair.sol';
 import 'ROOT/libraries/math/SafeMathUint256.sol';
+import 'ROOT/libraries/token/IERC20.sol';
 
 
 contract ParaOracle {
@@ -15,6 +16,7 @@ contract ParaOracle {
         uint256 priceCumulativeLast;
         uint256 price;
         bool token0IsWeth;
+        uint256 precision;
     }
 
     mapping(address => TokenData) public tokenData;
@@ -72,7 +74,7 @@ contract ParaOracle {
 
         // underflow desired, casting never truncates
         uint256 _price = (_priceCumulative - tokenData[_token].priceCumulativeLast) / _timeElapsed;
-        _price = UQ112x112.decode(_price * 10**18);
+        _price = UQ112x112.decode(_price * tokenData[_token].precision);
 
         if (_timeElapsed < PERIOD) {
             _price = tokenData[_token].price.mul(PERIOD.sub(_timeElapsed)).add(_price.mul(_timeElapsed)) / PERIOD;
@@ -96,11 +98,14 @@ contract ParaOracle {
         IUniswapV2Pair _exchange = getExchange(_token);
         (uint112 _reserve0, uint112 _reserve1, uint32 _blockTimestampLast) = _exchange.getReserves();
         bool _token0IsWeth = _exchange.token0() == address(weth);
+        uint256 _decimals = IERC20(_token).decimals();
+        uint256 _precision  = 10 ** _decimals;
         tokenData[_token].token0IsWeth = _token0IsWeth;
+        tokenData[_token].precision = _precision;
         if (_reserve0 == 0 || _reserve1 == 0) {
             return 0;
         }
-        return _token0IsWeth ? (_reserve0 * 10**18 / _reserve1) : (_reserve1 * 10**18 / _reserve0);
+        return _token0IsWeth ? (_reserve0 * _precision / _reserve1) : (_reserve1 * _precision / _reserve0);
     }
 
     function getLastUpdateTimestamp(address _token) external view returns (uint256) {
