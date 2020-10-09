@@ -15,7 +15,7 @@
     flex-direction: column;
   }
 
-  @media @breakpoint-tablet {
+  @media @breakpoint-tablet-tiny {
     grid-gap: @size-16;
     grid-template-columns: 50% 50%;
     grid-template-rows: auto;
@@ -54,7 +54,7 @@
     display: flex;
     flex-flow: column nowrap;
 
-    @media @breakpoint-tablet {
+    @media @breakpoint-tablet-tiny {
       button[class*="ToggleExtendButton"] {
         display: none;
       }
@@ -65,7 +65,7 @@
   > div:nth-of-type(3) {
     grid-row: 1 / span 2;
 
-    @media @breakpoint-tablet {
+    @media @breakpoint-tablet-tiny {
       grid-row: unset;
     }
   }
@@ -73,7 +73,7 @@
   > div:nth-of-type(2) {
     grid-row: 1 / span 4;
 
-    @media @breakpoint-tablet {
+    @media @breakpoint-tablet-tiny {
       grid-row: unset;
     }
 
@@ -91,7 +91,7 @@
   > div:nth-of-type(5) {
     grid-row: 3 / span 2;
 
-    @media @breakpoint-tablet {
+    @media @breakpoint-tablet-tiny {
       grid-row: unset;
     }
   }
@@ -277,7 +277,7 @@
         grid-row: 18;
       }
 
-      @media @breakpoint-tablet {
+      @media @breakpoint-tablet-tiny {
         grid-template-columns: repeat(2, 1fr);
         width: unset;
         margin-bottom: 0;

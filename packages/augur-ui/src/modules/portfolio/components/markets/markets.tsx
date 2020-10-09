@@ -3,9 +3,13 @@ import classNames from 'classnames';
 import { Link } from 'react-router-dom';
 import { CREATE_MARKET } from 'modules/routes/constants/views';
 import makePath from 'modules/routes/helpers/make-path';
-import { SecondaryButton, TextIconButton, TextUnderlineButton } from 'modules/common/buttons';
+import {
+  SecondaryButton,
+  TextIconButton,
+  TextUnderlineButton,
+} from 'modules/common/buttons';
 import { THEMES } from 'modules/common/constants';
-import { AddIcon } from 'modules/common/icons';
+import { AddIcon, MenuChevron } from 'modules/common/icons';
 import { useAppStatusStore } from 'modules/app/store/app-status';
 import { LinearPropertyLabel, PendingLabel } from 'modules/common/labels';
 import { MarketProgress } from 'modules/common/progress';
@@ -95,6 +99,9 @@ const MyMarkets = ({ toggle, hide, extend }: MyMarketsProps) => {
             alignRight
           />
         )}
+        {theme === THEMES.SPORTS && (
+          <div className={marketStyles.downArrow}>{MenuChevron}</div>
+        )}
       </>
     );
   }
@@ -176,30 +183,46 @@ const MyMarkets = ({ toggle, hide, extend }: MyMarketsProps) => {
         'creationTime',
         'endTime',
       ]}
-      footer={(myMarkets.length !== 0 && !isTrading) && (
-        <div className={marketStyles.BottomContent}>
-          <span>You are viewing Sportsbook markets only.<br />To view all your created markets, visit <TextUnderlineButton text="Trading" action={() => setTheme(THEMES.TRADING)} />.</span>
-          <Link to={makePath(CREATE_MARKET)}>
-            <TextIconButton
-              text="Create Market"
-              action={() => setTheme(THEMES.TRADING)}
-              icon={AddIcon}
-            />
-          </Link>
-        </div>
-      )}
+      footer={
+        myMarkets.length !== 0 &&
+        !isTrading && (
+          <div className={marketStyles.BottomContent}>
+            <span>
+              You are viewing Sportsbook markets only.
+              <br />
+              To view all your created markets, visit{' '}
+              <TextUnderlineButton
+                text="Trading"
+                action={() => setTheme(THEMES.TRADING)}
+              />
+              .
+            </span>
+            <Link to={makePath(CREATE_MARKET)}>
+              <TextIconButton
+                text="Create Market"
+                action={() => setTheme(THEMES.TRADING)}
+                icon={AddIcon}
+              />
+            </Link>
+          </div>
+        )
+      }
       emptyDisplayConfig={{
-        emptyTitle: isTrading ? "You didn't create any market yet" : "No markets",
-        emptyText: isTrading ? "Create your first market now!" : "To create a market you need to go to the Trading Exchange",
+        emptyTitle: isTrading
+          ? "You didn't create any market yet"
+          : 'No markets',
+        emptyText: isTrading
+          ? 'Create your first market now!'
+          : 'To create a market you need to go to the Trading Exchange',
         icon: CreatedMarketsIcon,
         button: (
           <Link to={makePath(CREATE_MARKET)}>
             <SecondaryButton
-              text={isTrading ? "Create Market" : "Go to trading"}
-              action={() => isTrading ? null : setTheme(THEMES.TRADING)}
+              text={isTrading ? 'Create Market' : 'Go to trading'}
+              action={() => (isTrading ? null : setTheme(THEMES.TRADING))}
             />
           </Link>
-        )
+        ),
       }}
     />
   );
