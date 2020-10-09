@@ -2,7 +2,7 @@ import React from 'react'
 import ReactDOM from 'react-dom'
 import ReactGA from 'react-ga'
 import { isMobile } from 'react-device-detect'
-import ThemeProvider, { GlobalStyle } from './Theme'
+import ThemeProvider, { ThemedGlobalStyle, GlobalStyle } from './Theme'
 import LocalStorageContextProvider, { Updater as LocalStorageContextUpdater } from './contexts/LocalStorage'
 import AccountContextProvider from './contexts/Account'
 import TokenDataContextProvider, { Updater as TokenDataContextUpdater } from './contexts/TokenData'
@@ -75,7 +75,7 @@ ReactDOM.render(
           <Updaters />
           <ThemeProvider>
           <BrowserRouter>
-              <GlobalStyle />
+              <ThemedGlobalStyle />
               <App />
               </BrowserRouter>
           </ThemeProvider>

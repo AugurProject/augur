@@ -54,13 +54,13 @@ const HeaderControls = styled.div`
     justify-self: center;
     width: 100%;
     max-width: 960px;
-    padding: 1rem;
+    padding: 1rem 0;
     position: fixed;
     bottom: 0px;
     left: 0px;
     width: 100%;
     z-index: 99;
-    height: 72px;
+    height: 32px;
     border-radius: 12px 12px 0 0;
     background-color: ${({ theme }) => theme.bg1};
   `};

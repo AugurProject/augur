@@ -37,6 +37,8 @@ const List = styled(Box)`
 `
 
 const DashGrid = styled.div`
+  display: grid;
+  grid-gap: 0.5em;
   grid-template-columns: 70% 1fr 1fr;
   grid-template-areas: 'name status timestamp';
   padding: 0 1.125rem;

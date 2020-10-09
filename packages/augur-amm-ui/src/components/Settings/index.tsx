@@ -195,9 +195,9 @@ export default function SettingsTab() {
       {open && (
         <MenuFlyout>
           <AutoColumn gap="md" style={{ padding: '1rem' }}>
-            <Text fontWeight={600} fontSize={14}>
+            <TYPE.light fontWeight={600} fontSize={14}>
               Transaction Settings
-            </Text>
+            </TYPE.light>
             <TransactionSettings
               rawSlippage={userSlippageTolerance}
               setRawSlippage={setUserslippageTolerance}

@@ -22,11 +22,11 @@ import { ButtonSecondary } from '../ButtonStyled'
 import { ExternalLink as LinkIcon } from 'react-feather'
 import { ExternalLink, LinkStyledButton, TYPE } from '../../Theme'
 
-const HeaderRow = styled.div`
+const HeaderRow = styled.div<{ theme }>`
   ${({ theme }) => theme.flexRowNoWrap};
   padding: 1rem 1rem;
   font-weight: 500;
-  color: ${props => (props.color === 'blue' ? ({ theme }) => theme.primary1 : 'inherit')};
+  color: ${({ theme }) => theme.primary1};
   ${({ theme }) => theme.mediaWidth.upToMedium`
     padding: 1rem;
   `};
@@ -63,6 +63,7 @@ const InfoCard = styled.div`
 `
 
 const AccountGroupingRow = styled.div`
+  display: flex;
   ${({ theme }) => theme.flexRowNoWrap};
   justify-content: space-between;
   align-items: center;
@@ -111,7 +112,8 @@ const LowerSection = styled.div`
 
 const AccountControl = styled.div`
   display: flex;
-  justify-content: space-between;
+  justify-content: flex-start;
+  align-content: flex-start;
   min-width: 0;
   width: 100%;
 
@@ -154,7 +156,7 @@ const CloseIcon = styled.div`
 
 const CloseColor = styled(Close)`
   path {
-    stroke: ${({ theme }) => theme.text4};
+    stroke: ${({ theme }) => theme.text2};
   }
 `
 
@@ -326,17 +328,13 @@ export default function AccountDetails({
                 <AccountControl>
                   {ENSName ? (
                     <>
-                      <div>
-                        {getStatusIcon()}
-                        <p> {ENSName}</p>
-                      </div>
+                      {getStatusIcon()}
+                      <p> {ENSName}</p>
                     </>
                   ) : (
                     <>
-                      <div>
-                        {getStatusIcon()}
-                        <p> {account && shortenAddress(account)}</p>
-                      </div>
+                      {getStatusIcon()}
+                      <p> {account && shortenAddress(account)}</p>
                     </>
                   )}
                 </AccountControl>
@@ -345,7 +343,7 @@ export default function AccountDetails({
                 {ENSName ? (
                   <>
                     <AccountControl>
-                      <div>
+                      <>
                         {account && (
                           <Copy toCopy={account}>
                             <span style={{ marginLeft: '4px' }}>Copy Address</span>
@@ -361,13 +359,13 @@ export default function AccountDetails({
                             <span style={{ marginLeft: '4px' }}>View on Etherscan</span>
                           </AddressLink>
                         )}
-                      </div>
+                      </>
                     </AccountControl>
                   </>
                 ) : (
                   <>
                     <AccountControl>
-                      <div>
+                      <>
                         {account && (
                           <Copy toCopy={account}>
                             <span style={{ marginLeft: '4px' }}>Copy Address</span>
@@ -383,7 +381,7 @@ export default function AccountDetails({
                             <span style={{ marginLeft: '4px' }}>View on Etherscan</span>
                           </AddressLink>
                         )}
-                      </div>
+                      </>
                     </AccountControl>
                   </>
                 )}
