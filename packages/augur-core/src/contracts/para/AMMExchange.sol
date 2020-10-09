@@ -202,7 +202,8 @@ contract AMMExchange is IAMMExchange, ERC20 {
         if (_noFromUser < 0) {
             shareToken.unsafeTransferFrom(address(this), msg.sender, NO, uint256(-_noFromUser));
             _noFromUser = 0;
-        } else if (_yesFromUser < 0) {
+        }
+        if (_yesFromUser < 0) {
             shareToken.unsafeTransferFrom(address(this), msg.sender, YES, uint256(-_yesFromUser));
             _yesFromUser = 0;
         }
@@ -220,22 +221,22 @@ contract AMMExchange is IAMMExchange, ERC20 {
         return rateExitPosition(_userInvalid, _userNo, _userYes);
     }
 
-    function rateExitPosition(uint256 _invalidShares, uint256 _noShares, uint256 _yesShares) public view returns (uint256 _cashPayout, uint256 _invalidFromUser, int256 _noFromUser, int256 _yesFromUser) {
+    function rateExitPosition(uint256 _invalidShares, uint256 _noSharesToSell, uint256 _yesSharesToSell) public view returns (uint256 _cashPayout, uint256 _invalidFromUser, int256 _noFromUser, int256 _yesFromUser) {
         (uint256 _poolNo, uint256 _poolYes) = yesNoShareBalances(address(this));
         _invalidFromUser = _invalidShares;
-        _yesFromUser = int256(_yesShares);
-        _noFromUser = int256(_noShares);
+        _yesFromUser = int256(_yesSharesToSell);
+        _noFromUser = int256(_noSharesToSell);
         uint256 _setsToSell = _invalidShares;
 
         // Figure out how many shares we're buying in our synthetic swap and use that to figure out the final balance of Yes/No (setsToSell)
-        if (_yesShares > _noShares) {
-            uint256 _delta = _yesShares.sub(_noShares);
-            uint256 _noSharesToBuy = quadratic(1, -int256(_delta.add(_poolYes).add(_poolNo)), int256(_delta.mul(_poolNo)), _yesShares);
-            _setsToSell = _noShares.add(_noSharesToBuy);
-        } else if (_noShares > _yesShares) {
-            uint256 _delta = _noShares.sub(_yesShares);
-            uint256 _yesSharesToBuy = quadratic(1, -int256(_delta.add(_poolYes).add(_poolNo)), int256(_delta.mul(_poolYes)), _noShares);
-            _setsToSell = _yesShares.add(_yesSharesToBuy);
+        if (_yesSharesToSell > _noSharesToSell) {
+            uint256 _delta = _yesSharesToSell.sub(_noSharesToSell);
+            uint256 _noSharesToBuy = quadratic(1, -int256(_delta.add(_poolYes).add(_poolNo)), int256(_delta.mul(_poolNo)), _yesSharesToSell);
+            _setsToSell = _noSharesToSell.add(_noSharesToBuy);
+        } else if (_noSharesToSell > _yesSharesToSell) {
+            uint256 _delta = _noSharesToSell.sub(_yesSharesToSell);
+            uint256 _yesSharesToBuy = quadratic(1, -int256(_delta.add(_poolYes).add(_poolNo)), int256(_delta.mul(_poolYes)), _noSharesToSell);
+            _setsToSell = _yesSharesToSell.add(_yesSharesToBuy);
         }
 
         if (_invalidShares > _setsToSell) {
@@ -244,19 +245,19 @@ contract AMMExchange is IAMMExchange, ERC20 {
         } else {
             // We don't have enough Invalid to actually close out the Yes/No shares. They will be kept by the user.
             // Need to actually receive yes or no shares here since we are swapping to get partial complete sets but dont have enough yes/no to make full complete sets
-            if (_yesShares > _noShares) {
-                uint256 _noSharesToBuy = _setsToSell.sub(_noShares);
+            if (_yesSharesToSell > _noSharesToSell) {
+                uint256 _noSharesToBuy = _setsToSell.sub(_noSharesToSell);
                 _noFromUser = _noFromUser.sub(int256(_noSharesToBuy));
-                _yesFromUser = int256(_yesShares.sub(_noShares).sub(_noSharesToBuy).sub(_invalidShares));
+                _yesFromUser = int256(_yesSharesToSell.sub(_noSharesToSell.add(_noSharesToBuy).sub(_invalidShares)));
             } else {
-                uint256 _yesSharesToBuy = _setsToSell.sub(_yesShares);
+                uint256 _yesSharesToBuy = _setsToSell.sub(_yesSharesToSell);
                 _yesFromUser = _yesFromUser.sub(int256(_yesSharesToBuy));
-                _noFromUser = int256(_noShares.sub(_yesShares.add(_yesSharesToBuy).sub(_invalidShares)));
+                _noFromUser = int256(_noSharesToSell.sub(_yesSharesToSell.add(_yesSharesToBuy).sub(_invalidShares)));
             }
             _setsToSell = _invalidFromUser;
         }
 
-        _cashPayout = _setsToSell.mul(numTicks);
+        _cashPayout = _setsToSell.mul(numTicks).mul(1000 - fee).div(1000);
     }
 
     function swap(uint256 _inputShares, bool _inputYes, uint256 _minOutputShares) external returns (uint256) {
