@@ -28,7 +28,7 @@ def test_amm_add_with_liquidity(contractsFixture, market, cash, shareToken, fact
     swapForYes = True
     swapHowMuch = 0
 
-    cost = setsToBuy * 10000 * 100000
+    cost = setsToBuy * 10000
     cash.faucet(cost)
     cash.approve(factory.address, 10 ** 48)
 

@@ -27,13 +27,17 @@ export class AMMExchange {
       new BigNumber(shares.times(YES_NO_NUMTICKS)),
       100,
       async (cash) => {
-        const yesShares = await this.contract.rateEnterPosition(cash, yes);
+        const yesShares = await this.contract.rateEnterPosition(cash.toFixed(), yes);
         return bnDirection(shares, yesShares);
       }
     );
     if (!rate) {
-      const txr: TransactionResponse = await this.contract.enterPosition(cash, yes, shares);
+      const txr: TransactionResponse = await this.contract.enterPosition(cash.toFixed(), yes, shares.toFixed());
       const tx = await txr.wait();
+      const logs = tx.logs
+        .filter((log) => log.address === this.address)
+        .map((log) =>  this.contract.interface.parseLog(log));
+      console.log(JSON.stringify(logs, null, 2));
     }
     return cash;
   }
@@ -66,10 +70,14 @@ export class AMMExchange {
   async addLiquidity(yesShares: Shares, noShares: Shares = null): Promise<LPTokens> {
     if (noShares === null || yesShares.eq(noShares)) { // buy into liquidity at 1:1 ratio
       const sets = yesShares;
-      const events = await this.contract.addLiquidity(sets);
-      const mintEvent = events.filter((event) => event.name === 'Transfer' && (event.parameters as any).from === NULL_ADDRESS)[0];
-      const lpTokens = (mintEvent as any).value;
-      return lpTokens;
+      const txr: TransactionResponse = await this.contract.addLiquidity(sets.toFixed());
+      const tx = await txr.wait();
+      const logs = tx.logs
+        .filter((log) => log.address === this.address)
+        .map((log) =>  this.contract.interface.parseLog(log));
+      console.log(JSON.stringify(logs, null, 2));
+
+      return new BigNumber(1337);
     }
 
     const swapForYes = yesShares.gt(noShares);
@@ -94,6 +102,13 @@ export class AMMExchange {
     return lpTokens;
   }
 
+
+  async rateAddLiquidity(yesShares: Shares, noShares: Shares = null): Promise<LPTokens> {
+    noShares = noShares || yesShares;
+    return this.contract.rateAddLiquidity(yesShares.toFixed(), noShares.toFixed());
+  }
+
+
   async removeLiquidity(lpTokens: LPTokens, alsoSell = false): Promise<RemoveLiquidityReturn> {
     // if not selling them minSetsSold is 0
     // if selling them calculate how many sets you could get, then sell that many
@@ -110,6 +125,11 @@ export class AMMExchange {
     const removedLiquidity = await this.contract.rateRemoveLiquidity(lpTokens, minSetsSold);
     await this.contract.removeLiquidity(lpTokens, minSetsSold);
     return removedLiquidity;
+  }
+
+  async totalLiquidity(): Promise<LPTokens> {
+    const lpTokens = await this.contract.totalSupply()
+    return new BigNumber(lpTokens.toString());
   }
 }
 
