@@ -211,9 +211,7 @@ const BettingMarketView = () => {
             content={
               <div className={Styles.SpreadRisk}>
                 <span>
-                  Spread market has a High risk of being resolve as invalid. If
-                  you want to exit your position, you must go to Trading and
-                  place lorem ipsum dolor sit amet.
+                  Spread market has a high risk of being resolved as Invalid. You can go to Trading and try to sell out your current position.
                 </span>
                 <ParagraphButton
                   text="Go to trading"
