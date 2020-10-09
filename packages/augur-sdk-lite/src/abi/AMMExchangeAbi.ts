@@ -769,12 +769,12 @@ export const AMMExchangeAbi = [
       },
       {
         "internalType": "uint256",
-        "name": "_noShares",
+        "name": "_noSharesToSell",
         "type": "uint256"
       },
       {
         "internalType": "uint256",
-        "name": "_yesShares",
+        "name": "_yesSharesToSell",
         "type": "uint256"
       }
     ],

@@ -41,21 +41,30 @@ export class AMMFactory {
       return { amm, lpTokens: new BigNumber(0) };
     }
 
-
-    const setsToBuy = cash.div(YES_NO_NUMTICKS);
-    const swapForYes = ratioYN.gt(1);
-    const setsToSwap = new BigNumber(10 ** 18); // TODO calculate to achieve ratio
-
-    const txr: TransactionResponse = await this.contract.addAMMWithLiquidity(market, paraShareToken, setsToBuy.toFixed(), swapForYes, setsToSwap.toFixed());
+    // TODO this isn't even trying to make liquidity.
+    const txr: TransactionResponse = await this.contract.addAMM(market, paraShareToken);
     const tx = await txr.wait();
     const logs = tx.logs
       .filter((log) => log.address === amm.address)
       .map((log) =>  amm.contract.interface.parseLog(log));
     console.log(JSON.stringify(logs, null, 2))
+    return { amm, lpTokens: cash.div(YES_NO_NUMTICKS) };
 
 
-    return { amm, lpTokens: new BigNumber(42) }; // TODO actual lpTokens gained (check logs)
+    // const setsToBuy = cash.div(YES_NO_NUMTICKS);
+    // const swapForYes = ratioYN.gt(1);
+    // const setsToSwap = new BigNumber(0); // TODO calculate to achieve ratio
+    //
+    // const txr: TransactionResponse = await this.contract.addAMMWithLiquidity(market, paraShareToken, setsToBuy.toFixed(), swapForYes, setsToSwap.toFixed());
+    // const tx = await txr.wait();
+    // const logs = tx.logs
+    //   .filter((log) => log.address === amm.address)
+    //   .map((log) =>  amm.contract.interface.parseLog(log));
+    // console.log(JSON.stringify(logs, null, 2))
 
+
+    // return { amm, lpTokens: new BigNumber(42) }; // TODO actual lpTokens gained (check logs)
+    //
     // const swapForYes = ratioYN.gt(1);
     // const minSwap = new BigNumber(0);
     // const maxSwap = new BigNumber(setsToBuy);
