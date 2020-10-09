@@ -43,7 +43,7 @@ export const setCategories: SortedGroup[] = [
             value: 'Spanish Primera Division',
             label: 'Spanish Primera Division',
           },
-          { value: 'Italian Series A', label: 'Italian Series A' },
+          { value: 'Italian Series ', label: 'Italian Series A' },
           {
             value: 'FIFA Under-20 World Cup',
             label: 'FIFA Under-20 World Cup',

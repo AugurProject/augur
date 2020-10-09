@@ -35,15 +35,14 @@ import {
   NCAA,
   US_POLITICS,
   WORLD,
-  STOCKS,
   STATISTICS,
-  INDEXES,
   BITCOIN,
   ETHEREUM,
   COMPOUND,
   BALANCER,
   AUGUR,
   MAKER,
+  AMPLE,
   ZEROX,
   CHAINLINK,
   ADDITIONAL_TOKENS,
@@ -55,6 +54,7 @@ import {
   SOCIAL_MEDIA,
 } from '@augurproject/sdk-lite';
 import { formatPercent } from 'utils/format-number';
+import { denomination } from 'modules/common/labels.styles.less';
 
 
 // Button Types
@@ -74,7 +74,7 @@ export const REVIEW = 'review';
 export const FEES_LIQUIDITY = 'feesLiquidity';
 export const FORM_DETAILS = 'formDetails';
 export const TEMPLATE_FORM_DETAILS = 'templateFormDetails';
-export const DEFAULT_TICK_SIZE = 0.01;
+export const DEFAULT_TICK_SIZE = 0.001;
 export const OUTCOME_MAX_LENGTH = 32;
 
 export const EMPTY_STATE: NewMarket = {
@@ -133,23 +133,25 @@ export const EMPTY_STATE: NewMarket = {
 export const WarpSyncErrorHeader = 'Universe Warp Sync Hash is undefined';
 export const WarpSyncErrorSubheader = 'Wait until warp sync hash is defined to report or dispute';
 export const InvalidRules = [
-  'The market question, resolution details or its outcomes are ambiguous, subjective or unknown.',
+  'The market question, resolution details  or its outcomes are ambiguous, subjective or unknown.',
   'The result of the event was known at market creation time.',
   'The outcome was not known at event expiration time.',
-  'It can resolve without at least one of the outcomes listed being the winner, unless it is explicitly stated how the market will otherwise resolve in the resolution details.',
+  'It can resolve without at least one of the outcomes listed being the winner, unless it is explicitly stated how the market will otherwise resolve in the resolution details .',
   'The title, details and outcomes are in direct conflict with each other.',
   'Any of the outcomes are duplicates',
   'The market can resolve with more than one winning outcome.',
   'Any of the outcomes don’t answer the market question ONLY. (outcomes cannot introduce a secondary question)',
-  'If using a resolution source, it is not referenced consistently between the Market Question and Resolution Details e.g. as either a URL or its full name.',
+  'If using a resolution source, it is not referenced consistently between the market question  and resolution details  e.g. as either a URL or its full name.',
   'Player or team is not in the correct league, division or conference, at the time the market was created.',
 ];
 export const AugurMarkets = [
   'Invalid outcome pays $1.00 per share for Yes/No and Categorical markets if the market resolves as Invalid. Scalar markets pay out the upper bound. A lower price indicates a lower probability of the market resolving as invalid.',
-  'Should resolve using general knowledge if the market does not have a resolution source in market question.',
+  'Should resolve using general knowledge if the market does not have a resolution source.',
   'Cover events that occur between market start time and end time in the market question. If start time is not specified in the market question, market creation date/time is used. If no end time is specified in market question, the event expiration is to be used. If the event occurs outside of these bounds, the market should resolve as invalid',
   'Outcomes must be unique from one and other within a market.  If multiple outcomes share a common name, they must be easily distinguishable (ie. Serena Williams and Venus Williams)',
 ];
+export const InvalidTradingTooltip = 'Invalid outcome pays $1.00 per share if the market resolves as Invalid. Click here to learn what makes a market Invalid';
+export const InvalidTradingScalarTooltip = (maxPrice, denomination) => `Invalid outcome resolves at ${maxPrice} ${denomination} if the market resolves as Invalid. Click here to learn what makes a market Invalid`;
 export const AugurMarketsContent = () => ({
   explainerBlockTitle: 'Augur Markets:',
   explainerBlockSubtexts: AugurMarkets,
@@ -374,18 +376,6 @@ export const MARKET_SUB_TEMPLATES = {
   ],
   [ECONOMICS]: [
     {
-      value: STOCKS,
-      header: STOCKS,
-      description: defaultDescription,
-      icon: icons.Stocks,
-    },
-    {
-      value: INDEXES,
-      header: INDEXES,
-      description: defaultDescription,
-      icon: icons.Indexes,
-    },
-    {
       value: STATISTICS,
       header: STATISTICS,
       description: defaultDescription,
@@ -433,11 +423,19 @@ export const MARKET_SUB_TEMPLATES = {
       inverseFill: true,
       icon: icons.MKR,
     },
+/*
     {
       value: AUGUR,
       header: AUGUR,
       description: defaultDescription,
       icon: icons.REP,
+    },
+*/
+    {
+      value: AMPLE,
+      header: AMPLE,
+      description: defaultDescription,
+      icon: icons.AMPL,
     },
     {
       value: COMPOUND,
@@ -663,7 +661,7 @@ export enum MARKET_COPY_LIST {
 export const MARKET_CREATION_COPY = {
   [MARKET_COPY_LIST.USE_A_TEMPLATE]: {
     subheader: [
-      'These are templates of the most popular markets across different market categories. Templates simplify the creation of new markets by reducing the number of decisions and possible errors users can make. Each template is carefully structured so users have to choose or enter the variable aspect of their market.',
+      'These are templates of the most popular markets across different market categories. Templates simplify the creation of new markets and reduce errors in the market creation process. Each template is carefully structured so users have to choose or enter the variable aspect of their market.',
       'For example, a popular sports market template is: Which team will win: [Team Name A] vs [Team Name B]. In this template the user only needs to enter the two team names and doesn’t need to worry about how the wording of the market should be structured.',
     ],
   },
@@ -716,13 +714,13 @@ export const MARKET_CREATION_COPY = {
   },
   [MARKET_COPY_LIST.CREATOR_FEE]: {
     subheader: [
-      'The Market Creator Fee is the percentage amount the market creator receives whenever market shares are settled, either during trading or upon market resolution.',
+      'The Market Creator fee is the percentage amount the market creator receives whenever market shares are settled, either during trading or upon market resolution.',
       'Set fees to under 2% in order for your market to show up to traders, by default. If you set your fees to zero or near zero, that may provide less incentive for affiliates to promote your market. However, if you set fees too high, that may dissuade traders. Markets currently average around 1% fees.',
     ],
   },
   [MARKET_COPY_LIST.AFFILIATE_FEE]: {
     subheader: [
-      'This is the percentage of the Market Creator Fee that Affiliates collect. The Affiliate Allocation helps markets get promoted and acquire more traders. Affiliate marketers share links to Augur and then collect a portion of fees whenever someone follows that link and trades in a market. So the Affiliate Allocation incentivizes marketers to spread your market.',
+      'This is the percentage of the Market Creator fee that Affiliates collect. The Affiliate Allocation helps markets get promoted and acquire more traders. Affiliate marketers share links to Augur and then collect a portion of fees whenever someone follows that link and trades in a market. So the Affiliate Allocation incentivizes marketers to spread your market.',
     ],
   },
   [MARKET_COPY_LIST.INITIAL_LIQUIDITY]: {
@@ -741,7 +739,7 @@ export const MARKET_CREATION_COPY = {
   },
   [MARKET_COPY_LIST.VALIDITY_BOND]: {
     subheader: [
-      'You must put up a “Validity Bond” denominated in Dai that will be returned upon market resolution if and only if the market does not resolve Invalid. A market may resolve Invalid if its outcome is ambiguous, subjective, unverifiable, or if the market’s listed outcomes do not include the actual outcome that occurred.',
+      'You must put up a “Validity Bond” denominated in DAI that will be returned upon market resolution if and only if the market does not resolve Invalid. A market may resolve Invalid if its outcome is ambiguous, subjective, unverifiable, or if the market’s listed outcomes do not include the actual outcome that occurred.',
       'If the market resolves Invalid, the Validity Bond is forfeited to reporters. The Validity Bond is set dynamically based on the recent rate of Invalid markets.'
     ],
   },
@@ -759,7 +757,7 @@ export const MARKET_CREATION_COPY = {
   [MARKET_COPY_LIST.NUMERIC_RANGE]: {
     subheader: [
       'The Numeric Range spans from the minimum to maximum price at which traders can buy or sell shares and determines how the end payout for long and short shares is calculated. Unlike other types of markets, Scalar markets are not winner takes all. The payout for long and short shares is the difference between the purchase price and settlement price.',
-      'For instance, let’s say there’s a market on how many points will be scored in a basketball game with a range from 80 to 120 points. If 1 share is purchased at 90 and 100 points are scored in the game, 10 Dai is earned per share purchased. If 1 share is sold at 90 and the final score is 100 points, 10 Dai is lost per share purchased.'
+      'For instance, let’s say there’s a market on how many points will be scored in a basketball game with a range from 80 to 120 points. If 1 share is purchased at 90 and 100 points are scored in the game, 10 DAI is earned per share purchased. If 1 share is sold at 90 and the final score is 100 points, 10 DAI is lost per share purchased.'
     ],
   },
   [MARKET_COPY_LIST.PRECISION]: {
