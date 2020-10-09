@@ -93,11 +93,11 @@ function selectColumn(columnType: string, properties: Properties) {
           {templateShield &&
             <TemplateShield market={outcome} />
           }
-          {showExtraNumber && highRisk && (
-            <RedFlag market={{ mostLikelyInvalid: true, id: 0 }} />
-          )}
-          {showExtraNumber && templateShield && <MarketLink id={marketId}>{value}</MarketLink>}
-          {showExtraNumber && !templateShield && <span>{value}</span>}
+          {(showExtraNumber && highRisk) ? (
+            <RedFlag market={{ mostLikelyInvalid: highRisk, id: 0 }} />
+          ): null}
+          {showExtraNumber && templateShield && value !== undefined && <MarketLink id={marketId}>{value}</MarketLink>}
+          {showExtraNumber && !templateShield && value !== undefined && <span>{value}</span>}
           {!!retryFnc && <span>Order failed when processing. <button onClick={() => retryFnc()}>Retry</button></span>}
         </>
       );

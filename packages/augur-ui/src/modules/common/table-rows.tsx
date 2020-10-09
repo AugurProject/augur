@@ -63,7 +63,7 @@ export const MyBetsRow = ({
       text: outcome.outcome,
       keyId: outcome.outcome,
       showExtraNumber: showExtraRow,
-      value: isEvent ? outcome.description : outcome.sportsBook?.title,
+      value: outcome.sportsBook?.title,
       highRisk: outcome.highRisk,
       templateShield: isEvent,
       outcome: outcome,

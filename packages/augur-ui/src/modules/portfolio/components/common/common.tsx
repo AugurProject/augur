@@ -148,7 +148,7 @@ export const Game = ({ row, type }: GameProps) => {
             <BetRow
               key={`${order.outcomeId}_${index}`}
               outcome={order}
-              showExtraRow={isDaily}
+              showExtraRow
             />
           ))}
       </div>
