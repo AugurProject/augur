@@ -12,6 +12,9 @@ export function getOrCreateAMMExchange(
     amm = new AMMExchange(id);
     amm.cashBalance = BigInt.fromI32(0);
     amm.liquidity = BigInt.fromI32(0);
+    amm.liquidityCash = BigInt.fromI32(0);
+    amm.liquidityNo = BigInt.fromI32(0);
+    amm.liquidityYes = BigInt.fromI32(0);
     amm.volumeNo = BigInt.fromI32(0);
     amm.volumeYes = BigInt.fromI32(0);
   }

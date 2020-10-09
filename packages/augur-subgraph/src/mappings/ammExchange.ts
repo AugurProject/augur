@@ -31,17 +31,20 @@ function buildEvent(EventConstructor: EventConstructor, event: PositionEventType
   positionEvent.save();
 
   let ammExchange = AMMExchange.load(event.address);
-
-  ammExchange.volumeNo = ammExchange.volumeNo.plus(noShares.abs());
-  ammExchange.volumeYes = ammExchange.volumeYes.plus(yesShares.abs());
-
-  ammExchange.save();
-
   let market = ammExchange.market;
   market.volume = market.volume.plus(noShares.abs());
   market.volume = market.volume.plus(yesShares.abs());
 
   market.save();
+
+  ammExchange.liquidityCash = ammExchange.liquidityCash.plus(cash);
+  ammExchange.liquidityNo = ammExchange.liquidityNo.plus(noShares);
+  ammExchange.liquidityYes = ammExchange.liquidityYes.plus(yesShares);
+
+  ammExchange.volumeNo = ammExchange.volumeNo.plus(noShares.abs());
+  ammExchange.volumeYes = ammExchange.volumeYes.plus(yesShares.abs());
+
+  ammExchange.save();
 
   return positionEvent;
 }

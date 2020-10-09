@@ -734,6 +734,15 @@ type AMMExchange @entity {
   "Liquidity in exchange"
   liquidity: BigInt!
 
+  "balance of cash"
+  liquidityCash: BigInt!
+
+  "balance of no shares"
+  liquidityNo: BigInt!
+
+  "balance of yes shares"
+  liquidityYes: BigInt!
+
   "The all time yes volume in the exchange."
   volumeYes: BigInt!
 
