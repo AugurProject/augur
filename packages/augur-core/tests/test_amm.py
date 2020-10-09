@@ -23,6 +23,18 @@ def amm(sessionFixture, factory, market, shareToken):
 def account0(sessionFixture):
     return sessionFixture.accounts[0]
 
+def test_amm_add_with_liquidity(contractsFixture, market, cash, shareToken, factory, account0):
+    setsToBuy = 10 * ATTO
+    swapForYes = True
+    swapHowMuch = 0
+
+    cost = setsToBuy * 10000 * 100000
+    cash.faucet(cost)
+    cash.approve(factory.address, 10 ** 48)
+
+    ammAddress = factory.addAMMWithLiquidity(market.address, shareToken.address, setsToBuy, swapForYes, swapHowMuch)
+
+
 
 def test_amm_liquidity(contractsFixture, market, cash, shareToken, factory, amm, account0, kitchenSinkSnapshot):
     if not contractsFixture.paraAugur:

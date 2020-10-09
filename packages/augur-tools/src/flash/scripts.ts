@@ -2829,19 +2829,29 @@ export function addScripts(flash: FlashSession) {
           description: 'Address of Market.',
           required: true,
         },
+        {
+          name: 'cash',
+          abbr: 'c',
+          description: 'How much cash to add as initial liquidity. Denominated in 1e18.',
+        },
+        {
+          name: 'ratio',
+          abbr: 'r',
+          description: 'Ratio of Y:N shares to add as initial liquidity. Defaults to 1.',
+        },
       ],
       async call(this: FlashSession, args: FlashArguments) {
         const market = args.market as string;
+        const cash = args.cash ? new BigNumber(args.cash as string).times(1e18) : new BigNumber(0);
+        const ratio = args.ratio ? new BigNumber(args.ratio as string) : new BigNumber(1);
 
         const paraShareToken = this.config.paraDeploys[this.config.paraDeploy].addresses.ShareToken;
         const user = await this.createUser(this.getAccount(), this.config);
 
-
         const factory = new AMMFactory(user.signer, this.config.addresses.AMMFactory);
 
-        const { amm } = await factory.addAMM(market, paraShareToken);
-        await factory.addAMM(market, paraShareToken);
-        console.log(`AMM Exchange ${amm.address}`);
+        const { amm, lpTokens } = await factory.addAMM(market, paraShareToken, cash, ratio);
+        console.log(`AMM Exchange ${amm.address}; received ${lpTokens.toString()} LP tokens`);
       }
     });
 

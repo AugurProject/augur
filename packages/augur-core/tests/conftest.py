@@ -415,6 +415,7 @@ class ContractsFixture:
                 if extension != '.sol': continue
                 if name == 'augur': continue
                 if name == 'Augur': continue
+                if name == 'WethWrapperForAMMExchange': continue # TODO
                 if name == 'Orders': continue # In testing we use the TestOrders version which lets us call protected methods
                 if name == 'Time': continue # In testing and development we swap the Time library for a ControlledTime version which lets us manage block timestamp
                 if name == 'ReputationTokenFactory': continue # In testing and development we use the TestNetReputationTokenFactory which lets us faucet
@@ -612,7 +613,7 @@ class ContractsFixture:
         sideChainZeroXTrade = self.upload("../src/contracts/sidechain/SideChainZeroXTrade.sol")
         sideChainProfitLoss = self.upload("../src/contracts/sidechain/SideChainProfitLoss.sol")
         sideChainSimulateTrade = self.upload("../src/contracts/sidechain/SideChainSimulateTrade.sol")
-        
+
         sideChainAugurTrading.registerContract("FillOrder".ljust(32, '\x00').encode('utf-8'), sideChainFillOrder.address)
         sideChainAugurTrading.registerContract("ZeroXTrade".ljust(32, '\x00').encode('utf-8'), sideChainZeroXTrade.address)
         sideChainAugurTrading.registerContract("ProfitLoss".ljust(32, '\x00').encode('utf-8'), sideChainProfitLoss.address)

@@ -32,8 +32,16 @@ contract AMMFactory is IAMMFactory, CloneFactory2 {
         exchanges[address(_market)][address(_para)] = address(_amm);
 
         // User sends cash to factory, which turns cash into LP tokens, then returns the tokens returns to the user.
-        _para.cash().transferFrom(msg.sender, address(this), _setsToBuy.mul(_market.getNumTicks()));
-        uint256 _lpTokens = _amm.addLiquidityThenSwap(_setsToBuy, _swapForYes, _swapHowMuch);
+        uint256 _cashAmount = _setsToBuy.mul(_market.getNumTicks());
+        _para.cash().transferFrom(msg.sender, address(this), _cashAmount);
+
+        uint256 _lpTokens;
+        if (_swapHowMuch == 0) {
+            _lpTokens = _amm.addLiquidity(_setsToBuy);
+        } else {
+            _lpTokens = _amm.addLiquidityThenSwap(_setsToBuy, _swapForYes, _swapHowMuch);
+        }
+
         _amm.transfer(msg.sender, _lpTokens);
         return address(_amm);
     }
@@ -45,7 +53,11 @@ contract AMMFactory is IAMMFactory, CloneFactory2 {
     function transferCash(IMarket _market, IParaShareToken _para, address sender, address recipient, uint256 quantity) public {
         IAMMExchange amm = IAMMExchange(exchanges[address(_market)][address(_para)]);
         require(msg.sender == address(amm), "AugurCP: non-exchange tried to send cash");
-        amm.cash().transferFrom(sender, recipient, quantity);
+        if (sender == address(this)) {
+            _para.cash().transfer(recipient, quantity);
+        } else {
+            _para.cash().transferFrom(sender, recipient, quantity);
+        }
     }
 
     function calculateAMMAddress(IMarket _market, IParaShareToken _para) public view returns (address) {
