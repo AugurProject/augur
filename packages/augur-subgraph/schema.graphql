@@ -147,7 +147,7 @@ type Market @entity {
   openInterest: BigInt
 
   "The the total trading volume for this market"
-  volume: BigInt
+  volume: BigInt!
 
   "The total trading volume per outcome of this market"
   outcomeVolumes: [BigInt!]
@@ -734,6 +734,15 @@ type AMMExchange @entity {
   "Liquidity in exchange"
   liquidity: BigInt!
 
+  "balance of cash"
+  liquidityCash: BigInt!
+
+  "balance of no shares"
+  liquidityNo: BigInt!
+
+  "balance of yes shares"
+  liquidityYes: BigInt!
+
   "The all time yes volume in the exchange."
   volumeYes: BigInt!
 
@@ -810,5 +819,40 @@ type ExitPosition @entity {
   cash: BigInt!
 }
 
+type AddLiquidity @entity {
+  "This is the tx hash + log index."
+  id: ID!
 
+  ammExchange: AMMExchange!
 
+  "The 'from' field of the swap tx."
+  sender: User!
+
+  "Number of no shares user is recieving"
+  noShares: BigInt!
+
+  "Number of yes shares user is recieving"
+  yesShares: BigInt!
+
+  "Amount of cash user transferred to the amm."
+  cash: BigInt!
+}
+
+type RemoveLiquidity @entity {
+  "This is the tx hash + log index."
+  id: ID!
+
+  ammExchange: AMMExchange!
+
+  "The 'from' field of the swap tx."
+  sender: User!
+
+  "Number of no shares user is redeeming"
+  noShares: BigInt!
+
+  "Number of yes shares user is redeeming"
+  yesShares: BigInt!
+
+  "Amount of cash user recieves for redeemed shares"
+  cash: BigInt!
+}

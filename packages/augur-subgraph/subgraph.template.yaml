@@ -185,10 +185,9 @@ templates:
           handler: handleExitPosition
         - event: SwapPosition(address,uint256,uint256,bool)
           handler: handleSwapPosition
-      callHandlers:
-        - function: addLiquidity(uint256)
+        - event: AddLiquidity(address,uint256,uint256,uint256)
           handler: handleAddLiquidity
-        - function: removeLiquidity(uint256,uint256)
+        - event: RemoveLiquidity(address,uint256,uint256,uint256)
           handler: handleRemoveLiquidity
   - kind: ethereum/contract
     name: Cash

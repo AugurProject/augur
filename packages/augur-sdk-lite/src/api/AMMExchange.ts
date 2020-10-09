@@ -1,9 +1,10 @@
 import { BigNumber } from 'bignumber.js';
 import { ethers } from 'ethers';
+import { TransactionResponse } from '@ethersproject/abstract-provider';
 
 import { binarySearch, bnDirection } from '@augurproject/utils';
 import { AMMExchangeAbi } from '../abi/AMMExchangeAbi';
-import {NULL_ADDRESS, SignerOrProvider, YES_NO_NUMTICKS} from '../constants';
+import { NULL_ADDRESS, SignerOrProvider, YES_NO_NUMTICKS } from '../constants';
 
 export class AMMExchange {
   readonly contract: ethers.Contract;
@@ -26,11 +27,18 @@ export class AMMExchange {
       new BigNumber(shares.times(YES_NO_NUMTICKS)),
       100,
       async (cash) => {
-        const yesShares = await this.contract.rateEnterPosition(cash, yes);
+        const yesShares = await this.contract.rateEnterPosition(cash.toFixed(), yes);
         return bnDirection(shares, yesShares);
       }
     );
-    if (!rate) await this.contract.enterPosition(cash, yes, shares);
+    if (!rate) {
+      const txr: TransactionResponse = await this.contract.enterPosition(cash.toFixed(), yes, shares.toFixed());
+      const tx = await txr.wait();
+      const logs = tx.logs
+        .filter((log) => log.address === this.address)
+        .map((log) =>  this.contract.interface.parseLog(log));
+      console.log(JSON.stringify(logs, null, 2));
+    }
     return cash;
   }
 
@@ -62,10 +70,14 @@ export class AMMExchange {
   async addLiquidity(yesShares: Shares, noShares: Shares = null): Promise<LPTokens> {
     if (noShares === null || yesShares.eq(noShares)) { // buy into liquidity at 1:1 ratio
       const sets = yesShares;
-      const events = await this.contract.addLiquidity(sets);
-      const mintEvent = events.filter((event) => event.name === 'Transfer' && (event.parameters as any).from === NULL_ADDRESS)[0];
-      const lpTokens = (mintEvent as any).value;
-      return lpTokens;
+      const txr: TransactionResponse = await this.contract.addLiquidity(sets.toFixed());
+      const tx = await txr.wait();
+      const logs = tx.logs
+        .filter((log) => log.address === this.address)
+        .map((log) =>  this.contract.interface.parseLog(log));
+      console.log(JSON.stringify(logs, null, 2));
+
+      return new BigNumber(1337);
     }
 
     const swapForYes = yesShares.gt(noShares);
@@ -89,6 +101,13 @@ export class AMMExchange {
     await this.contract.addLiquidityThenSwap(setsBought, swapForYes, setsSwapped);
     return lpTokens;
   }
+
+
+  async rateAddLiquidity(yesShares: Shares, noShares: Shares = null): Promise<LPTokens> {
+    noShares = noShares || yesShares;
+    return this.contract.rateAddLiquidity(yesShares.toFixed(), noShares.toFixed());
+  }
+
 
   async removeLiquidity(lpTokens: LPTokens, alsoSell = false): Promise<RemoveLiquidityReturn> {
     // if not selling them minSetsSold is 0
@@ -133,6 +152,11 @@ export class AMMExchange {
     } else {
       return resultMinus;
     }
+  }
+  
+  async totalLiquidity(): Promise<LPTokens> {
+    const lpTokens = await this.contract.totalSupply()
+    return new BigNumber(lpTokens.toString());
   }
 }
 
