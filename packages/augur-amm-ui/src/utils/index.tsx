@@ -16,9 +16,10 @@ import { ChainId, JSBI, Percent, Token, CurrencyAmount, Currency, ETHER } from '
 import { JsonRpcSigner, Web3Provider } from '@ethersproject/providers'
 import { Contract } from '@ethersproject/contracts'
 import { AddressZero } from '@ethersproject/constants'
-import { getAmmFactoryAddress } from '../contexts/Application'
+import { getAmmFactoryAddress, useAugurClient } from '../contexts/Application'
 import AmmFactoryAbi from '../constants/abis/AMMFactory.json'
 import AmmExchangeAbi from '../constants/abis/AMMExchange.json'
+import { useActiveWeb3React } from '../hooks'
 
 // format libraries
 const Decimal = toFormat(_Decimal)
@@ -593,6 +594,28 @@ export function getAMMFactoryContract(library: Web3Provider, account?: string): 
   return getContract(ammFactory, AmmFactoryAbi, library, account)
 }
 
+export function useAmmFactory() {
+  const { library } = useActiveWeb3React()
+  const augurClient = useAugurClient()
+  if (!augurClient) return;
+  return augurClient ?? augurClient.ammFactory.contract.connect(library.getSigner());
+}
+
+export function addAmmLiquidity(augurClient, marketId, sharetoken, yesAttoShares, noAttoShares) {
+  if (!augurClient || !augurClient.ammFactory) return console.error('augurClient is null')
+  console.log('addAmmLiquidity', marketId, sharetoken, String(yesAttoShares), String(noAttoShares))
+  return augurClient.ammFactory.addAMM(marketId, sharetoken, yesAttoShares, noAttoShares)
+}
+
+export function calcShareAmounts(odds, amount) {
+    console.log('calcShareAmounts', amount, odds[0])
+    const bnAmount = BigNumber.from(amount);
+    const yesOdds = BigNumber.from(Math.floor(100 / Number(odds[0])))
+    const yesShareAmount = bnAmount.div(yesOdds)
+    const noSharesAmount = bnAmount.sub(yesShareAmount)
+    console.log('calcShareAmounts', String(yesShareAmount), String(noSharesAmount))
+    return [yesShareAmount, noSharesAmount]
+}
 // account is optional
 export function getAMMExchangeContract(ammExchangeAddress: string, library: Web3Provider, account?: string): Contract {
   return getContract(ammExchangeAddress, AmmExchangeAbi, library, account)

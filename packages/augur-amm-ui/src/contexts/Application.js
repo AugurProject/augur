@@ -7,6 +7,10 @@ import getTokenList from '../utils/tokenLists'
 import { healthClient } from '../apollo/client'
 import { SUBGRAPH_HEALTH } from '../apollo/queries'
 import config from '../config.json'
+import { useActiveWeb3React } from '../hooks'
+import { AugurLite } from "@augurproject/sdk-lite";
+import { getProviderOrSigner } from '../utils'
+
 dayjs.extend(utc)
 
 const UPDATE = 'UPDATE'
@@ -16,6 +20,7 @@ const UPDATE_WEB3 = 'UPDATE_WEB3'
 const UPDATED_SUPPORTED_TOKENS = 'UPDATED_SUPPORTED_TOKENS'
 const UPDATE_LATEST_BLOCK = 'UPDATE_LATEST_BLOCK'
 const UPDATE_CONTRACTS = 'UPDATE_CONTRACTS'
+const UPDATE_AUGUR_CLIENT = 'UPDATE_AUGUR_CLIENT'
 
 const SUPPORTED_TOKENS = 'SUPPORTED_TOKENS'
 const TIME_KEY = 'TIME_KEY'
@@ -24,6 +29,7 @@ const SESSION_START = 'SESSION_START'
 const WEB3 = 'WEB3'
 const LATEST_BLOCK = 'LATEST_BLOCK'
 const CONTRACTS = 'CONTRACTS'
+const AUGUR_CLIENT = 'AUGUR_CLIENT'
 
 const ApplicationContext = createContext()
 
@@ -83,6 +89,14 @@ function reducer(state, { type, payload }) {
       return {
         ...state,
         [CONTRACTS]: contracts
+      }
+    }
+
+    case UPDATE_AUGUR_CLIENT: {
+      const { augurClient } = payload
+      return {
+        ...state,
+        [AUGUR_CLIENT]: augurClient
       }
     }
 
@@ -164,6 +178,15 @@ export default function Provider({ children }) {
     })
   }, [])
 
+  const updateAugurClient = useCallback(augurClient => {
+    dispatch({
+      type: UPDATE_AUGUR_CLIENT,
+      payload: {
+        augurClient
+      }
+    })
+  })
+
   return (
     <ApplicationContext.Provider
       value={useMemo(
@@ -176,7 +199,8 @@ export default function Provider({ children }) {
             updateWeb3,
             updateSupportedTokens,
             updateLatestBlock,
-            updateContracts
+            updateContracts,
+            updateAugurClient
           }
         ],
         [
@@ -187,7 +211,8 @@ export default function Provider({ children }) {
           updateSessionStart,
           updateSupportedTokens,
           updateLatestBlock,
-          updateContracts
+          updateContracts,
+          updateAugurClient
         ]
       )}
     >
@@ -208,12 +233,11 @@ export function useLatestBlock() {
           query: SUBGRAPH_HEALTH
         })
         const block = res.data.indexingStatusForCurrentVersion.chains[0].latestBlock.number
-        console.log('block', block)
         if (block) {
           updateLatestBlock(block)
         }
       } catch (e) {
-        console.log(e)
+        console.error(e)
       }
     }
     if (!latestBlock) {
@@ -311,6 +335,30 @@ export function useListedTokens() {
   return supportedTokens
 }
 
+export function useAugurClient() {
+  const [state, { updateAugurClient }] = useApplicationContext()
+  const { account, library, chainId } = useActiveWeb3React()
+  const augurClient = state?.[AUGUR_CLIENT]
+  const config = getConfig()
+  useEffect(() => {
+    async function createAugurClient() {
+      if (!library || !chainId || !account) return
+      console.info('building/getting augur client')
+      const addresses = {
+          "WarpSync": config.WarpSync,
+          "AMMFactory": config.AmmFactory
+      }
+      const augurLite = new AugurLite(getProviderOrSigner(library, account), addresses, chainId);
+      updateAugurClient(augurLite)
+    }
+    if (!augurClient) {
+      createAugurClient()
+    }
+  }, [updateAugurClient, augurClient, library, chainId, config])
+
+  return augurClient
+}
+
 function getConfig() {
   const network = process.env.network || DEFAULT_NETWORK
   return config[String(network)]
@@ -328,7 +376,6 @@ export function getCashAddress(symbol) {
 export function getCashInfo(address) {
   if (!address) return null
   const contracts = getConfig()
-  console.log('getCashInfo(address)', address)
   const cash = contracts.Cashes.find(c => c.address?.toLowerCase() === address?.toLowerCase())
   return cash
 }

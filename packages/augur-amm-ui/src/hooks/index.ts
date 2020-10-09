@@ -96,19 +96,7 @@ export function useActiveWeb3React(): Web3ReactContextInterface<Web3Provider> & 
   const contextNetwork = useWeb3ReactCore<Web3Provider>(NetworkContextName)
   return context.active ? context : contextNetwork
 }
-/*
-export function useActiveWeb3React() {
-  //: Web3ReactContextInterface<Web3Provider> & { chainId?: ChainId } {
-  //const context = useWeb3ReactCore<Web3Provider>()
-  //const contextNetwork = useWeb3ReactCore<Web3Provider>(NetworkContextName)
-  //return context.active ? context : contextNetwork
 
-  // using existing web3 context
-  const KOVAN = 42 // default network for testing
-  const [web3, getWeb3] = useAccountWeb3()
-  return { getWeb3, account: web3?.address, library: web3?.library, chainId: web3?.chainId ? web3?.chainId : KOVAN }
-}
-*/
 export function useEagerConnect() {
   const { activate, active } = useWeb3ReactCore() // specifically using useWeb3ReactCore because of what this hook does
   const [tried, setTried] = useState(false)

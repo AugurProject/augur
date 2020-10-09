@@ -25,17 +25,15 @@ import { Field } from '../../state/mint/actions'
 import { useDerivedMintInfo, useMintActionHandlers, useMintState } from '../../state/mint/hooks'
 
 import { useTransactionAdder } from '../../state/transactions/hooks'
-import { useIsExpertMode, useUserSlippageTolerance } from '../../state/user/hooks'
+import { useUserSlippageTolerance } from '../../state/user/hooks'
 import { TYPE } from '../../Theme'
-import { calculateGasMargin, calculateSlippageAmount, getAMMExchangeContract, getAMMFactoryContract } from '../../utils'
+import { calculateSlippageAmount, getAMMExchangeContract, getAMMFactoryContract, addAmmLiquidity, useAmmFactory, calcShareAmounts } from '../../utils'
 import { maxAmountSpend } from '../../utils/maxAmountSpend'
-import { wrappedCurrency } from '../../utils/wrappedCurrency'
 import AppBody from '../AppBody'
 import { Dots, Wrapper } from '../../components/swap/styleds'
 import { ConfirmAddModalBottom } from './ConfirmAddModalBottom'
-import { currencyId } from '../../utils/currencyId'
 import { PoolPriceBar } from './PoolPriceBar'
-import { getAmmFactoryAddress } from '../../contexts/Application'
+import { getAmmFactoryAddress, useAugurClient } from '../../contexts/Application'
 import { withRouter } from 'react-router-dom'
 import LiquidityPage from '../LiquidityPage'
 import { useMarketAmm, useShareTokens, useMarket } from '../../contexts/Markets'
@@ -50,6 +48,8 @@ function AddLiquidity({
   history
 }: RouteComponentProps<{ amm?: string; marketId: string; cash: string }>) {
   const { account, chainId, library } = useActiveWeb3React()
+  const ammFactoryContract = useAmmFactory()
+  const augurClient = useAugurClient()
   const ammFactory = getAmmFactoryAddress()
   const theme = useContext(ThemeContext)
   // share token is undefined for isCreate
@@ -57,7 +57,6 @@ function AddLiquidity({
   const ammData = useMarketAmm(marketId, amm)
   const market = useMarket(marketId)
   const isCreate = !ammData.id
-
   const currencyA = useCurrency(cash)
   console.log('currencyA token', JSON.stringify(currencyA))
 
@@ -124,7 +123,7 @@ function AddLiquidity({
 
   async function onAdd() {
     console.log('onAdd called')
-    if (!chainId || !account || !library || !sharetoken) return
+    if (!chainId || !account || !library || !sharetoken || !augurClient) return
 
     const { [Field.CURRENCY_A]: parsedAmountA } = parsedAmounts
     if (!parsedAmountA || !currencyA || !deadline) {
@@ -139,6 +138,7 @@ function AddLiquidity({
       method: (...args: any) => Promise<TransactionResponse>,
       args: Array<string | string[] | number>,
       value: BigNumber | null
+
     if (isCreate) {
       contract = getAMMFactoryContract(library, account)
       estimate = contract.estimateGas.addAMMWithLiquidity
@@ -170,7 +170,35 @@ function AddLiquidity({
     }
 
     setAttemptingTxn(true)
-    console.log('args', JSON.stringify(args), 'isCreate', isCreate)
+    const [yesShares, noShares] = calcShareAmounts(currentDistribution, parsedAmountA.raw.toString())
+    await addAmmLiquidity(augurClient, marketId, sharetoken, yesShares, noShares)
+    .then(response => {
+      setAttemptingTxn(false)
+
+      addTransaction(response, {
+        summary:
+          'Add ' +
+          parsedAmounts[Field.CURRENCY_A]?.toSignificant(3) +
+          ' ' +
+          currencies[Field.CURRENCY_A]?.symbol
+      })
+
+      setTxHash(response.hash)
+
+      ReactGA.event({
+        category: 'Liquidity',
+        action: 'Add',
+        label: [currencies[Field.CURRENCY_A]?.symbol].join('/')
+      })
+    })
+    .catch(error => {
+      setAttemptingTxn(false)
+      // we only care if the error is something _other_ than the user rejected the tx
+      if (error?.code !== 4001) {
+        console.error(error)
+      }
+    })
+/*
     await estimate(...args, value ? { value } : {})
       .then(estimatedGasLimit =>
         method(...args, {
@@ -205,6 +233,7 @@ function AddLiquidity({
           console.error(error)
         }
       })
+      */
   }
 
   const modalHeader = () => (
@@ -212,7 +241,7 @@ function AddLiquidity({
         <LightCard mt="20px" borderRadius="20px">
           <RowFlat>
             <TYPE.body fontSize="12px" fontWeight={500} marginRight={10}>
-              {market.description}
+              {market?.description}
             </TYPE.body>
           </RowFlat>
         </LightCard>
@@ -247,9 +276,7 @@ function AddLiquidity({
     setTxHash('')
   }, [onFieldAInput, txHash])
 
-  const updateDistribution = (distriubtions: number[]) => {
-    console.log(distriubtions)
-  }
+
   return (
     <LiquidityPage>
       <AppBody>
@@ -306,7 +333,7 @@ function AddLiquidity({
               <TYPE.small>Distribution</TYPE.small>
             </ColumnCenter>
             <DistributionPanel
-              updateDistribution={updateDistribution}
+              updateDistribution={setCurrentDistribution}
               disableInputs={!isCreate}
               currentDistribution={currentDistribution}
               id={marketId}
