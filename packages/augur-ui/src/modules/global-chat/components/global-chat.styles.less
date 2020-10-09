@@ -247,17 +247,8 @@
       font-size: @size-10;
       height: @size-36;
 
-      &:hover:enabled,
-      &:focus:hover:enabled,
-      &:active:hover:enabled {
-        background: var(--color-primary-text-90);
-        color: var(--color-module-background);
-      }
-
-      &:focus:enabled,
-      &:active:enabled {
-        background: var(--color-primary-text-80);
-        color: var(--color-module-background);
+      &:hover {
+        text-decoration: underline;
       }
 
       > svg {
