@@ -5,7 +5,7 @@ import { ButtonActionType } from 'modules/types';
 import { ReportingModalButton } from 'modules/reporting/common';
 import { Paginator as ReportingList} from 'modules/reporting/reporting-list';
 import { UserRepDisplay } from 'modules/reporting/common';
-import { REPORTING_STATE, SMALL_MOBILE, TABLET, DESKTOP, LARGE_DESKTOP, MODAL_DR_QUICK_GUIDE } from "modules/common/constants";
+import { REPORTING_STATE, SMALL_MOBILE, TABLET, TINY, DESKTOP, LARGE_DESKTOP, MODAL_DR_QUICK_GUIDE } from "modules/common/constants";
 import ModuleTabs from "modules/market/components/common/module-tabs/module-tabs";
 import ModulePane from "modules/market/components/common/module-tabs/module-pane";
 
@@ -24,6 +24,7 @@ const Reporting = () => {
       <Media queries={{
         smallMobile: SMALL_MOBILE,
         tablet: TABLET,
+        tiny: TINY,
         desktop: DESKTOP,
         largeDesktop: LARGE_DESKTOP
       }}>
@@ -70,7 +71,7 @@ const Reporting = () => {
                 </ModulePane>
               </ModuleTabs>
             )}
-            {matches.tablet && (
+            {matches.tiny || matches.tablet && (
               <>
                 <div>
                   <ReportingList
