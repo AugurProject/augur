@@ -38,27 +38,59 @@ contract AMMExchange is IAMMExchange, ERC20 {
     }
 
     // Adds shares to the liquidity pool by minting complete sets.
-    function addLiquidity(uint256 _setsToBuy) public returns (uint256) {
-        uint256 _lpTokensGained = rateAddLiquidity(_setsToBuy, _setsToBuy);
+    function addLiquidity(uint256 _cash, address _recipient) public returns (uint256) {
+        (uint256 _poolNo, uint256 _poolYes) = yesNoShareBalances(address(this));
+        require(_poolNo != 0, "To add initial liquidity pleae use addRatioLiquidity");
+        uint256 _ratioFactor = 0;
+        bool _keepYes = true;
+        if (_poolNo > _poolYes) {
+            _ratioFactor = _poolNo * 10**18 / _poolYes;
+            _keepYes = true;
+        } else {
+            _ratioFactor = _poolYes * 10**18 / _poolNo;
+            _keepYes = false;
+        }
 
-        factory.transferCash(augurMarket, shareToken, msg.sender, address(this), _setsToBuy.mul(numTicks));
-        shareToken.publicBuyCompleteSets(augurMarket, _setsToBuy);
-        _mint(msg.sender, _lpTokensGained);
-
-        emit AddLiquidity(msg.sender, _setsToBuy.mul(numTicks), _setsToBuy, _setsToBuy);
-
-        return _lpTokensGained;
+        return addLiquidityInternal(msg.sender, _cash, _ratioFactor, _keepYes, _recipient);
     }
 
-    // Add shares to the liquidity pool by minting complete sets...
-    // But then swap away some of those shares for the opposed shares.
-    function addLiquidityThenSwap(uint256 _setsToBuy, bool _swapForYes, uint256 _swapHowMuch) external returns (uint256) {
-        uint256 _lpTokensGained = rateAddLiquidityThenSwap(_setsToBuy, _swapForYes, _swapHowMuch);
+    function addInitialLiquidity(uint256 _cash, uint256 _ratioFactor, bool _keepYes, address _recipient) external returns (uint256) {
+        (uint256 _poolNo, uint256 _poolYes) = yesNoShareBalances(address(this));
+        require(_poolNo == 0, "Cannot add a specified ratio liquidity after initial liquidity has been provided");
+        return addLiquidityInternal(msg.sender, _cash, _ratioFactor, _keepYes, _recipient);
+    }
 
-        factory.transferCash(augurMarket, shareToken, msg.sender, address(this), _setsToBuy.mul(numTicks));
+    function addLiquidityInternal(address _user, uint256 _cash, uint256 _ratioFactor, bool _keepYes, address _recipient) internal returns (uint256) {
+        require(_ratioFactor <= 10**18, "Ratio should be an amount relative to 10**18 (e.g 9 * 10**17 == .9)");
+        require(_ratioFactor >= 10**17, "Ratio of 1:10 is the minimum");
+        uint256 _setsToBuy = _cash.div(numTicks);
+        factory.transferCash(augurMarket, shareToken, _user, address(this), _cash);
+        uint256 _yesShares = _setsToBuy;
+        uint256 _noShares = _setsToBuy;
+        uint256 _yesSharesToUser = 0;
+        uint256 _noSharesToUser = 0;
+
+        if (_ratioFactor != 10**18) {
+            if (_keepYes) {
+                _yesShares = _noShares * _ratioFactor / 10**18;
+                _yesSharesToUser = _noShares.sub(_yesShares);
+            } else {
+                _noShares = _yesShares * _ratioFactor / 10**18;
+                _noSharesToUser = _yesShares.sub(_noShares);
+            }
+        }
+
+        uint256 _lpTokens = rateAddLiquidity(_yesShares, _noShares);
         shareToken.publicBuyCompleteSets(augurMarket, _setsToBuy);
-        _mint(msg.sender, _lpTokensGained);
-        return _lpTokensGained;
+        if (_ratioFactor != 10**18) {
+            shareTransfer(address(this), _recipient, 0, _noSharesToUser, _yesSharesToUser);
+        }
+        _mint(_recipient, _lpTokens);
+
+
+        emit AddLiquidity(_user, _cash, _noShares, _yesShares);
+
+        return _lpTokens;
     }
 
     // returns how many LP tokens you get for providing the given number of sets
@@ -74,24 +106,6 @@ contract AMMExchange is IAMMExchange, ERC20 {
         } else {
             uint256 _totalSupply = totalSupply;
             return _totalSupply.mul(_newLiquidityConstant).div(_priorLiquidityConstant).sub(_totalSupply);
-        }
-    }
-
-    function rateAddLiquidityThenSwap(uint256 _setsToBuy, bool _swapForYes, uint256 _swapHowMuch) public view returns (uint256) {
-        (uint256 _yesses, uint256 _nos) = sharesRateForAddLiquidityThenSwap(_setsToBuy, _swapForYes, _swapHowMuch);
-        return rateAddLiquidity(_yesses, _nos);
-    }
-
-    function sharesRateForAddLiquidityThenSwap(uint256 _setsToBuy, bool _swapForYes, uint256 _swapHowMuch) public view returns (uint256 _yesses, uint256 _nos) {
-        uint256 _keptSets = _setsToBuy.subS(_swapHowMuch, "AugurCP: When adding liquidity, tried to swap away more sets than you bought");
-        uint256 _gainedShares = rateSwap(_swapHowMuch, !_swapForYes);
-
-        if (_swapForYes) {
-            _yesses = _setsToBuy.add(_gainedShares);
-            _nos = _keptSets;
-        } else {
-            _yesses = _keptSets;
-            _nos = _setsToBuy.add(_gainedShares);
         }
     }
 

@@ -21,15 +21,11 @@ contract IAMMExchange is IERC20 {
     function initialize(IMarket _market, IParaShareToken _shareToken, uint256 _fee) public;
 
     // Adds shares to the liquidity pool by minting complete sets.
-    function addLiquidity(uint256 _setsToBuy) public returns (uint256);
+    function addLiquidity(uint256 _cash, address _recipient) public returns (uint256);
+    // Add initial liquidity confirming to a specified ratio, giving the LP shares in addition to LP tokens if not 50:50
+    function addInitialLiquidity(uint256 _cash, uint256 _ratioFactor, bool _keepYes, address _recipient) external returns (uint256);
     // returns how many LP tokens you get for providing the given number of sets
     function rateAddLiquidity(uint256 _yesses, uint256 _nos) public view returns (uint256);
-
-    // Add shares to the liquidity pool by minting complete sets...
-    // But then swap away some of those shares for the opposed shares.
-    function addLiquidityThenSwap(uint256 _setsToBuy, bool _swapForYes, uint256 _swapHowMuch) external returns (uint256);
-    function rateAddLiquidityThenSwap(uint256 _setsToBuy, bool _swapForYes, uint256 _swapHowMuch) public view returns (uint256);
-    function sharesRateForAddLiquidityThenSwap(uint256 _setsToBuy, bool _swapForYes, uint256 _swapHowMuch) public view returns (uint256 _yesses, uint256 _nos);
 
     // Removes shares from the liquidity pool.
     // If _minSetsSold > 0 then also sell complete sets through burning and through swapping in the pool.

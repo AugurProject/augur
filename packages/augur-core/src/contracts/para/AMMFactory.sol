@@ -26,23 +26,16 @@ contract AMMFactory is IAMMFactory, CloneFactory2 {
         return address(_amm);
     }
 
-    function addAMMWithLiquidity(IMarket _market, IParaShareToken _para, uint256 _setsToBuy, bool _swapForYes, uint256 _swapHowMuch) external returns (address) {
+    function addAMMWithLiquidity(IMarket _market, IParaShareToken _para, uint256 _cash, uint256 _ratioFactor, bool _keepYes) external returns (address) {
         IAMMExchange _amm = IAMMExchange(createClone2(address(proxyToClone), salt(_market, _para)));
         _amm.initialize(_market, _para, fee);
         exchanges[address(_market)][address(_para)] = address(_amm);
 
-        // User sends cash to factory, which turns cash into LP tokens, then returns the tokens returns to the user.
-        uint256 _cashAmount = _setsToBuy.mul(_market.getNumTicks());
-        _para.cash().transferFrom(msg.sender, address(this), _cashAmount);
+        // User sends cash to factory, which turns cash into LP tokens and shares which it gives to the user.
+        _para.cash().transferFrom(msg.sender, address(this), _cash);
 
-        uint256 _lpTokens;
-        if (_swapHowMuch == 0) {
-            _lpTokens = _amm.addLiquidity(_setsToBuy);
-        } else {
-            _lpTokens = _amm.addLiquidityThenSwap(_setsToBuy, _swapForYes, _swapHowMuch);
-        }
+        _amm.addInitialLiquidity(_cash, _ratioFactor, _keepYes, msg.sender);
 
-        _amm.transfer(msg.sender, _lpTokens);
         return address(_amm);
     }
 

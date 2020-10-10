@@ -25,15 +25,14 @@ def account0(sessionFixture):
 
 def test_amm_add_with_liquidity(contractsFixture, market, cash, shareToken, factory, account0):
     setsToBuy = 10 * ATTO
-    swapForYes = True
-    swapHowMuch = 0
+    keepYes = True
+    ratioFactor = 10**18
 
     cost = setsToBuy * 10000
     cash.faucet(cost)
     cash.approve(factory.address, 10 ** 48)
 
-    ammAddress = factory.addAMMWithLiquidity(market.address, shareToken.address, setsToBuy, swapForYes, swapHowMuch)
-
+    ammAddress = factory.addAMMWithLiquidity(market.address, shareToken.address, cost, ratioFactor, keepYes)
 
 
 def test_amm_liquidity(contractsFixture, market, cash, shareToken, factory, amm, account0, kitchenSinkSnapshot):
@@ -46,7 +45,7 @@ def test_amm_liquidity(contractsFixture, market, cash, shareToken, factory, amm,
     cash.faucet(cost)
     cash.approve(factory.address, 10 ** 48)
 
-    amm.addLiquidity(sets)
+    amm.addInitialLiquidity(cost, 10**18, True, account0)
 
     # all cash was used to buy complete sets
     assert cash.balanceOf(account0) == 0
@@ -59,6 +58,8 @@ def test_amm_liquidity(contractsFixture, market, cash, shareToken, factory, amm,
     assert shareToken.balanceOfMarketOutcome(market.address, INVALID, amm.address) == sets
     assert shareToken.balanceOfMarketOutcome(market.address, YES, amm.address) == sets
     assert shareToken.balanceOfMarketOutcome(market.address, NO, amm.address) == sets
+
+    assert amm.balanceOf(account0) > 0
 
     removedSets = 10 * ATTO
     remainingSets = sets - removedSets
@@ -83,7 +84,7 @@ def test_amm_position(contractsFixture, market, shareToken, cash, factory, amm, 
     cash.faucet(100000 * ATTO)
     cash.approve(factory.address, 10 ** 48)
     shareToken.setApprovalForAll(amm.address, True)
-    amm.addLiquidity(100 * ATTO)
+    amm.addInitialLiquidity(100000 * ATTO, 10**18, True, account0)
 
     cost = 10000 * ATTO
     sets = cost // market.getNumTicks()
@@ -124,7 +125,7 @@ def test_amm_swap(contractsFixture, market, shareToken, cash, factory, amm, acco
     cash.faucet(100000 * ATTO)
     cash.approve(factory.address, 10 ** 48)
     shareToken.setApprovalForAll(amm.address, True)
-    amm.addLiquidity(100 * ATTO)
+    amm.addInitialLiquidity(100000 * ATTO, 10**18, True, account0)
 
     cost = 10000 * ATTO
     sets = cost // market.getNumTicks()
@@ -157,7 +158,7 @@ def test_amm_fees(contractsFixture, market, shareToken, cash, factory, amm, acco
     shareToken.setApprovalForAll(amm.address, True)
 
     lpTokens = amm.rateAddLiquidity(sets, sets)
-    assert lpTokens == amm.addLiquidity(sets)
+    assert lpTokens == amm.addInitialLiquidity(cost, 10**18, True, account0)
     assert lpTokens == sets
 
     addedCash = 10000 * ATTO
@@ -196,7 +197,7 @@ def test_amm_lp_fee_lp_withdraw(contractsFixture, market, shareToken, cash, fact
     cash.faucet(cost)
     cash.approve(factory.address, 10 ** 48)
     shareToken.setApprovalForAll(amm.address, True)
-    lpTokens = amm.addLiquidity(sets)
+    lpTokens = amm.addInitialLiquidity(cost, 10**18, True, account0)
 
     addedCash = 10000 * ATTO
     invalidFromPosition = addedCash // market.getNumTicks()
