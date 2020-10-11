@@ -83,38 +83,9 @@ function GlobalPage() {
     <PageWrapper>
       <ThemedBackground backgroundColor={transparentize(0.8, '#ff007a')} />
       <ContentWrapper>
-        <div>
-          <AutoColumn gap="24px" style={{ paddingBottom: below800 ? '0' : '24px' }}>
-            <Search />
-            <GlobalStats />
-          </AutoColumn>
-          <ListOptions gap="10px" style={{ marginTop: '2rem', marginBottom: '.5rem' }}>
-            <RowBetween>
-              <ClickableText
-                style={{ opacity: cashFilter === null ? '1' : '0.4' }}
-                fontSize={'1.125rem'}
-                onClick={() => updateCashFilter(null)}
-              >
-                All Markets
-              </ClickableText>
-              {cashes &&
-                cashes.map(cash => (
-                  <ClickableText disabled={cash === cashFilter} key={cash} onClick={() => updateCashFilter(cash)}>
-                    <TokenLogo
-                      tokenInfo={cash}
-                      size={'20px'}
-                      showSymbol
-                      style={{ paddingRight: '0.25rem', opacity: cash === cashFilter ? '1' : '0.4' }}
-                    />
-                  </ClickableText>
-                ))}
-            </RowBetween>
-          </ListOptions>
-
-          <Panel style={{ marginTop: '6px', padding: '1.125rem 0 ' }}>
-            <TopMarketList markets={filteredMarkets || []} />
-          </Panel>
-        </div>
+        <Panel style={{ marginTop: '6px', padding: '1.125rem 0 ' }}>
+          <TopMarketList markets={filteredMarkets || []} />
+        </Panel>
       </ContentWrapper>
     </PageWrapper>
   )

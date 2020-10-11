@@ -56,6 +56,7 @@ export const loginWithInjectedWeb3 = () => async (
 
     // Listen for MetaMask account switch
     if (windowRef.ethereum?.on) {
+      windowRef.ethereum.autoRefreshOnNetworkChange = false
       windowRef.ethereum.on('accountsChanged', async accounts => {
         const loginAccount = getState().loginAccount;
         if (loginAccount.address) {

@@ -150,7 +150,7 @@ const StyledNavLink = styled(NavLink).attrs({
   outline: none;
   cursor: pointer;
   text-decoration: none;
-  color: ${({ theme }) => theme.text2};
+  color: ${({ theme }) => theme.text1};
   font-size: 1rem;
   width: fit-content;
   margin: 0 12px;
@@ -158,13 +158,12 @@ const StyledNavLink = styled(NavLink).attrs({
 
   &.${activeClassName} {
     border-radius: 12px;
-    font-weight: 600;
-    color: ${({ theme }) => theme.text1};
+    color: ${({ theme }) => theme.primaryText1};
   }
 
   :hover,
   :focus {
-    color: ${({ theme }) => darken(0.1, theme.text1)};
+    color: ${({ theme }) => darken(0.1, theme.primaryText1)};
   }
 `
 
@@ -189,6 +188,12 @@ function Header({ history }: { history: any }) {
         <HeaderLinks>
           <StyledNavLink id={`swap-nav-link`} to={'/home'} isActive={() => history.location.pathname.includes('/home')}>
             {t('Markets')}
+          </StyledNavLink>
+          <StyledNavLink id={`swap-nav-link`} to={'/pools'} isActive={() => history.location.pathname.includes('/pools')}>
+            {t('Pools')}
+          </StyledNavLink>
+          <StyledNavLink id={`swap-nav-link`} to={'/positions'} isActive={() => history.location.pathname.includes('/positions')}>
+            {t('Positions')}
           </StyledNavLink>
         </HeaderLinks>
       </HeaderRow>
