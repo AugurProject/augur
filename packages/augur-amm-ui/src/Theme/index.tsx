@@ -1,11 +1,11 @@
 import React, { HTMLProps } from 'react'
-import { ThemeProvider as StyledComponentsThemeProvider, createGlobalStyle, css } from 'styled-components'
+import styled, { ThemeProvider as StyledComponentsThemeProvider, createGlobalStyle, css, keyframes } from 'styled-components'
 import { useDarkModeManager } from '../contexts/LocalStorage'
 import { Text, TextProps } from 'rebass'
 import { Link } from 'react-router-dom'
 import { ArrowLeft, X } from 'react-feather'
-import styled, { keyframes } from 'styled-components'
 import { darken } from 'polished'
+import { transparentize } from 'polished'
 
 export default function ThemeProvider({ children }) {
   const [darkMode] = useDarkModeManager()
@@ -63,7 +63,7 @@ const theme = (darkMode, color = 'white') => ({
   bg3: darkMode ? '#40444F' : '#EDEEF2',
   bg4: darkMode ? '#565A69' : '#CED0D9',
   bg5: darkMode ? '#565A69' : '#888D9B',
-  bg6: darkMode ? '#222124' : '#FFFFFF',
+  bg6: darkMode ? '#222124' : '#CFCFCFCF',
 
   //specialty colors
   modalBG: darkMode ? 'rgba(0,0,0,0.85)' : 'rgba(0,0,0,0.6)',
@@ -241,49 +241,6 @@ export const GlobalStyle = createGlobalStyle<{ theme }>`
     }
   }
 
-
-.three-line-legend {
-	width: 100%;
-	height: 70px;
-	position: absolute;
-	padding: 8px;
-	font-size: 12px;
-	color: #20262E;
-	background-color: rgba(255, 255, 255, 0.23);
-	text-align: left;
-	z-index: 10;
-  pointer-events: none;
-}
-
-.three-line-legend-dark {
-	width: 100%;
-	height: 70px;
-	position: absolute;
-	padding: 8px;
-	font-size: 12px;
-	color: white;
-	background-color: rgba(255, 255, 255, 0.23);
-	text-align: left;
-	z-index: 10;
-  pointer-events: none;
-}
-
-@media screen and (max-width: 800px) {
-  .three-line-legend {
-    display: none !important;
-  }
-}
-
-.tv-lightweight-charts{
-  width: 100% !important;
-
-
-  & > * {
-    width: 100% !important;
-  }
-}
-
-
   html {
     font-size: 1rem;
     font-variant: none;
@@ -418,4 +375,38 @@ export const LinkStyledButton = styled.button<{ disabled?: boolean; primary?: bo
   :active {
     text-decoration: none;
   }
+`
+export const ThemedGlobalStyle = createGlobalStyle<{ theme }>`
+
+html {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+  font-size: 14px;
+  color: ${({ theme }) => theme.text1};
+  background-color: ${({ theme }) => theme.bg6};
+  font-family: 'Inter', sans-serif;
+}
+
+a {
+  text-decoration: none;
+
+  :hover {
+    text-decoration: none
+  }
+}
+
+body {
+  min-height: 100vh;
+  margin: 1rem;
+  background-position: 0 -30vh;
+  background-repeat: no-repeat;
+  background-image: ${({ theme }) =>
+    `radial-gradient(50% 50% at 50% 50%, ${transparentize(0.9, theme.primary1)} 0%, ${transparentize(
+      1,
+      theme.bg1
+    )} 100%)`};
+  overflow: hidden;
+}
 `

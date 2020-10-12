@@ -5,8 +5,6 @@ import utc from 'dayjs/plugin/utc'
 
 import { augurV2Client } from '../apollo/client'
 import { GET_MARKETS } from '../apollo/queries'
-//import { getAMMAddressForMarketShareToken } from '../utils/contractCalls'
-//import { PARA_AUGUR_TOKENS } from '../contexts/TokenData'
 import { useConfig } from '../contexts/Application'
 
 const UPDATE = 'UPDATE'

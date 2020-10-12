@@ -385,3 +385,8 @@ export function getAmmFactoryAddress() {
   const ammFactory = contracts.AmmFactory
   return ammFactory
 }
+
+export function getUsdtAddress() {
+  const contracts = getConfig()
+  return contracts.Usdt
+}

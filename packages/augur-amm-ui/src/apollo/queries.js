@@ -825,6 +825,24 @@ export const TOKEN_DATA = (tokenAddress, block) => {
   return gql(queryString)
 }
 
+export const CASH_TOKEN_DATA = (cashAddress, usdtAddress, block) => {
+  const queryString = `
+    ${TokenFields}
+    query tokens {
+      tokens(${block ? `block : {number: ${block}}` : ``} where: {id:"${cashAddress}"}) {
+        ...TokenFields
+      }
+      pairs0: pairs(where: {token0: "${cashAddress}"}, first: 50, orderBy: reserveUSD, orderDirection: desc){
+        id
+      }
+      pairs1: pairs(where: {token1: "${usdtAddress}"}, first: 50, orderBy: reserveUSD, orderDirection: desc){
+        id
+      }
+    }
+  `
+  return gql(queryString)
+}
+
 export const FILTERED_TRANSACTIONS = gql`
   query($allPairs: [Bytes]!) {
     mints(first: 20, where: { pair_in: $allPairs }, orderBy: timestamp, orderDirection: desc) {

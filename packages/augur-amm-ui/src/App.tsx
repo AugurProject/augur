@@ -20,6 +20,8 @@ import URLWarning from './components/Header/URLWarning'
 import Header from './components/Header'
 import Web3ReactManager from './components/Web3ReactManager'
 import Popups from './components/Popups'
+import UserPools from './pages/UserPools'
+import UserPositions from './pages/UserPositions'
 
 const AppWrapper = styled.div`
   width: 100%;
@@ -122,7 +124,12 @@ function App() {
               <Route path="/home">
                   <GlobalPage />
               </Route>
-
+              <Route path="/pools">
+                  <UserPools />
+              </Route>
+              <Route path="/positions">
+                  <UserPositions />
+              </Route>
               <Route path="/markets">
                 <LayoutWrapper savedOpen={savedOpen} setSavedOpen={setSavedOpen}>
                   <AllMarketsPage />

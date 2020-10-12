@@ -1,6 +1,6 @@
 import React, { useState, useRef, useContext } from 'react'
 import styled, { ThemeContext } from 'styled-components'
-
+import { Text } from 'rebass'
 import QuestionHelper from '../QuestionHelper'
 import { TYPE } from '../../Theme'
 import { AutoColumn } from '../Column'
@@ -202,7 +202,7 @@ export default function SlippageTabs({ rawSlippage, setRawSlippage, deadline, se
                 onChange={e => parseCustomSlippage(e.target.value)}
                 color={!slippageInputIsValid ? 'red' : ''}
               />
-              %
+              <Text style={{padingLeft: '0.25rem'}}>%</Text>
             </RowBetween>
           </OptionCustom>
         </RowBetween>
