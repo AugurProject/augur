@@ -2,6 +2,7 @@ import React, { createContext, useContext, useReducer, useMemo, useCallback, use
 
 import { client } from '../apollo/client'
 import {
+  CASH_TOKEN_DATA,
   TOKEN_DATA,
   FILTERED_TRANSACTIONS,
   TOKEN_CHART,
@@ -24,14 +25,9 @@ import {
   splitQuery
 } from '../utils'
 import { timeframeOptions } from '../constants'
-import { useConfig, useLatestBlock, getCashInfo } from './Application'
-import { useMarket } from './Markets'
+import { useConfig, useLatestBlock, getCashInfo, getUsdtAddress } from './Application'
+import { useMarket, useAllMarketCashes } from './Markets'
 
-// TODO move to config
-export const PARA_AUGUR_TOKENS = [
-  '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2', // WETH
-  '0x6b175474e89094c44da98b954eedeac495271d0f' // DAI
-]
 
 const UPDATE = 'UPDATE'
 const UPDATE_TOKEN_TXNS = 'UPDATE_TOKEN_TXNS'
@@ -39,8 +35,10 @@ const UPDATE_CHART_DATA = 'UPDATE_CHART_DATA'
 const UPDATE_PRICE_DATA = 'UPDATE_PRICE_DATA'
 const UPDATE_TOP_TOKENS = ' UPDATE_TOP_TOKENS'
 const UPDATE_ALL_PAIRS = 'UPDATE_ALL_PAIRS'
+const UPDATE_CASH_USDT = 'UPDATE_CASH_USDT'
 
 const TOKEN_PAIRS_KEY = 'TOKEN_PAIRS_KEY'
+const CASH_USDT_PAIRS = 'CASH_USDT_PAIRS'
 
 dayjs.extend(utc)
 
@@ -121,6 +119,21 @@ function reducer(state, { type, payload }) {
         }
       }
     }
+
+    case UPDATE_CASH_USDT: {
+      const { cashes } = payload
+      let addedCashes = {}
+      cashes &&
+        cashes.map(token => {
+          return (addedCashes[token.id] = token)
+        })
+
+      return {
+        ...state,
+        [CASH_USDT_PAIRS]: addedCashes
+      }
+    }
+
     default: {
       throw Error(`Unexpected action type in DataContext reducer: '${type}'.`)
     }
@@ -176,6 +189,15 @@ export default function Provider({ children }) {
     })
   }, [])
 
+  const updateCashTokens = useCallback(cashes => {
+    dispatch({
+      type: UPDATE_CASH_USDT,
+      payload: {
+        cashes
+      }
+    })
+  }, [])
+
   return (
     <TokenDataContext.Provider
       value={useMemo(
@@ -187,10 +209,11 @@ export default function Provider({ children }) {
             updateChartData,
             updateTopTokens,
             updateAllPairs,
-            updatePriceData
+            updatePriceData,
+            updateCashTokens
           }
         ],
-        [state, update, updateTokenTxns, updateChartData, updateTopTokens, updateAllPairs, updatePriceData]
+        [state, update, updateTokenTxns, updateChartData, updateTopTokens, updateAllPairs, updatePriceData, updateCashTokens]
       )}
     >
       {children}
@@ -309,123 +332,48 @@ const getTopTokens = async (ethPrice, ethPriceOld) => {
     console.log(e)
   }
 }
-/*
-const getTokenData = async (market, address, ethPrice, ethPriceOld) => {
+
+const getCashTokenData = async (cashes = []) => {
   const utcCurrentTime = dayjs()
   const utcOneDayBack = utcCurrentTime
     .subtract(1, 'day')
     .startOf('minute')
     .unix()
-  const utcTwoDaysBack = utcCurrentTime
-    .subtract(2, 'day')
-    .startOf('minute')
-    .unix()
+  const usdtAddress = getUsdtAddress()
   let oneDayBlock = await getBlockFromTimestamp(utcOneDayBack)
-  let twoDayBlock = await getBlockFromTimestamp(utcTwoDaysBack)
 
   // initialize data arrays
   let data = {}
   let oneDayData = {}
-  let twoDayData = {}
-
+  let bulkResults = {}
   try {
-    // fetch all current and historical data
-    let result = await client.query({
-      query: TOKEN_DATA(address),
-      fetchPolicy: 'cache-first'
-    })
-    data = result?.data?.tokens?.[0]
-
-    // get results from 24 hours in past
-    let oneDayResult = await client.query({
-      query: TOKEN_DATA(address, oneDayBlock),
-      fetchPolicy: 'cache-first'
-    })
-    oneDayData = oneDayResult.data.tokens[0]
-
-    // get results from 48 hours in past
-    let twoDayResult = await client.query({
-      query: TOKEN_DATA(address, twoDayBlock),
-      fetchPolicy: 'cache-first'
-    })
-    twoDayData = twoDayResult.data.tokens[0]
-
-    // catch the case where token wasnt in top list in previous days
-    if (!oneDayData) {
+    bulkResults = await Promise.all(cashes.map(async cash => {
+      // get results from 24 hours in past
       let oneDayResult = await client.query({
-        query: TOKEN_DATA(address, oneDayBlock),
+        query: CASH_TOKEN_DATA(cash.id, usdtAddress, oneDayBlock),
         fetchPolicy: 'cache-first'
       })
       oneDayData = oneDayResult.data.tokens[0]
-    }
-    if (!twoDayData) {
-      let twoDayResult = await client.query({
-        query: TOKEN_DATA(address, twoDayBlock),
-        fetchPolicy: 'cache-first'
-      })
-      twoDayData = twoDayResult.data.tokens[0]
-    }
+      console.log('cash token data', JSON.stringify(oneDayResult))
 
-    // calculate percentage changes and daily changes
-    const [oneDayVolumeUSD, volumeChangeUSD] = get2DayPercentChange(
-      data.tradeVolumeUSD,
-      oneDayData?.tradeVolumeUSD ?? 0,
-      twoDayData?.tradeVolumeUSD ?? 0
-    )
+      // new tokens
+      if (!oneDayData && data) {
+        data.oneDayVolumeUSD = data.tradeVolumeUSD
+        data.oneDayVolumeETH = data.tradeVolume * data.derivedETH
+        data.oneDayTxns = data.txCount
+      }
 
-    // calculate percentage changes and daily changes
-    const [oneDayVolumeUT, volumeChangeUT] = get2DayPercentChange(
-      data.untrackedVolumeUSD,
-      oneDayData?.untrackedVolumeUSD ?? 0,
-      twoDayData?.untrackedVolumeUSD ?? 0
-    )
+      return { id: cash.id }
+    }))
 
-    // calculate percentage changes and daily changes
-    const [oneDayTxns, txnChange] = get2DayPercentChange(
-      data.txCount,
-      oneDayData?.txCount ?? 0,
-      twoDayData?.txCount ?? 0
-    )
 
-    const priceChangeUSD = getPercentChange(
-      data?.derivedETH * ethPrice,
-      parseFloat(oneDayData?.derivedETH ?? 0) * ethPriceOld
-    )
-
-    const currentLiquidityUSD = data?.totalLiquidity * ethPrice * data?.derivedETH
-    const oldLiquidityUSD = oneDayData?.totalLiquidity * ethPriceOld * oneDayData?.derivedETH
-
-    // set data
-    data.priceUSD = data?.derivedETH * ethPrice
-    data.totalLiquidityUSD = currentLiquidityUSD
-    data.oneDayVolumeUSD = oneDayVolumeUSD
-    data.volumeChangeUSD = volumeChangeUSD
-    data.priceChangeUSD = priceChangeUSD
-    data.oneDayVolumeUT = oneDayVolumeUT
-    data.volumeChangeUT = volumeChangeUT
-    const liquidityChangeUSD = getPercentChange(currentLiquidityUSD ?? 0, oldLiquidityUSD ?? 0)
-    data.liquidityChangeUSD = liquidityChangeUSD
-    data.oneDayTxns = oneDayTxns
-    data.txnChange = txnChange
-
-    // new tokens
-    if (!oneDayData && data) {
-      data.oneDayVolumeUSD = data.tradeVolumeUSD
-      data.oneDayVolumeETH = data.tradeVolume * data.derivedETH
-      data.oneDayTxns = data.txCount
-    }
-
-    // fix for WETH
-    if (data.id === '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2') {
-      data.name = 'ETH (Wrapped)'
-      data.symbol = 'ETH'
-    }
   } catch (e) {
     console.log(e)
   }
-  return data
+  return bulkResults
 }
-*/
+
+
 const getTokenTransactions = async allPairsFormatted => {
   const transactions = {}
   try {
@@ -604,21 +552,19 @@ const getTokenChartData = async tokenAddress => {
 }
 
 export function Updater() {
-  const [, { updateTopTokens }] = useTokenDataContext()
-  const [ethPrice, ethPriceOld] = useEthPrice()
-  const config = useConfig()
+  const [STATE, { updateCashTokens }] = useTokenDataContext()
+  const cashTokens = STATE[CASH_USDT_PAIRS]
+  const cashes = useAllMarketCashes()
+
   useEffect(() => {
     async function getData() {
-      // get top pairs for overview list
-      let topTokens = await getTopTokens(ethPrice, ethPriceOld)
-      if (topTokens) {
-        const addresses = config.Cashes.map(c => c.address)
-        const filteredTokens = topTokens.filter(token => addresses.includes(token.id))
-        updateTopTokens(filteredTokens)
+      let cashTokens = await getCashTokenData(cashes)
+      if (cashTokens) {
+        updateCashTokens(cashTokens)
       }
     }
-    ethPrice && ethPriceOld && getData()
-  }, [ethPrice, ethPriceOld, updateTopTokens, config])
+    if (!cashTokens) getData()
+  }, [cashTokens, updateCashTokens, cashes])
   return null
 }
 
