@@ -197,6 +197,7 @@ const TopBar = () => {
               action={() => setModal({ type: MODAL_LOGIN })}
               title="Connect"
               text="Connect"
+              dark
             />
             <PrimaryButton
               action={() => setModal({ type: MODAL_SIGNUP })}

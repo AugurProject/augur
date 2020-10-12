@@ -241,6 +241,7 @@ export const SecondaryButton = ({
   tiny,
   processing,
   phantom,
+  dark
 }: DefaultButtonProps) => (
   <button
     onClick={e => action(e)}
@@ -251,7 +252,8 @@ export const SecondaryButton = ({
       [Styles.Phantom]: phantom,
       [Styles.LightBorder]: lightBorder,
       [Styles.Tiny]: tiny,
-      [Styles.Processing]: processing
+      [Styles.Processing]: processing,
+      [Styles.Dark]: dark
     })}
     disabled={disabled}
     title={title || text}
