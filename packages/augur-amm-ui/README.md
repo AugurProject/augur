@@ -13,8 +13,14 @@ Extracts needed abis and puts in src/constants/abi folder
 ```bash
 yarn amm prepare:abis
 ```
-### Running locally dev server
+### Running dev server locally
 
 ```bash
-yarn amm start
+AUGUR_ENV=v2 yarn amm start
+```
+
+### Building for production / with a specific config
+
+```bash
+AUGUR_ENV=config-name yarn amm start
 ```
