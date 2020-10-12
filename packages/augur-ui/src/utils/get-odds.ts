@@ -111,7 +111,7 @@ export const getShares = (wager, price) => {
 
 export const getOddsObject = (normalizedValue: BigNumber, toDecimals = 4) => {
   const percentage: BigNumber = convertToPercentage(
-    createBigNumber(normalizedValue.dividedBy(10))
+    createBigNumber(normalizedValue)
   );
   const decimal: BigNumber = convertToDecimal(percentage);
   const fractional: BigNumber = convertToFractional(decimal);

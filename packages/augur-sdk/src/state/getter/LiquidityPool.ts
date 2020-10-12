@@ -32,7 +32,7 @@ export const MarketOutcomeBestOfferParam = t.type({
   outcome: t.string,
 });
 
-const CAT_TICK_SIZE = new BigNumber(0.01);
+const CAT_TICK_SIZE = new BigNumber(0.001);
 const CAT_MIN_PRICE = new BigNumber(0);
 
 export class LiquidityPool {
