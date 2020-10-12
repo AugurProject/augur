@@ -68,48 +68,6 @@ export default function Provider({ children }) {
   )
 }
 
-export function useAccountWeb3() {
-  const [state, { updateWeb3 }] = useAccountContext()
-  const clearWeb3 = () => {
-    updateWeb3({})
-  }
-
-  async function getWeb3() {
-    const login = async addresses => {
-      const address = addresses[0]
-      const provider = new ethers.providers.Web3Provider(window.web3.currentProvider)
-      const signer = provider.getSigner()
-      const network = await provider.getNetwork()
-      let chainId = 42 // default to kovan for testing
-      // provide chainId here
-      if (network === 'mainnet') chainId = 1
-      const augurLite = new AugurLite(provider, {AMMFactory: getAmmFactoryAddress()}, chainId);
-      const ammFactory = augurLite.ammFactory.contract.connect(provider.getSigner());
-      window.ammFactory = ammFactory;
-      updateWeb3({ address, provider, signer, network, chainId, library: provider, ammFactory })
-    }
-
-    window.ethereum
-      .request({ method: 'eth_requestAccounts' })
-      .then(login)
-      .catch(error => {
-        if (error.code === 4001) {
-          // EIP-1193 userRejectedRequest error
-          console.log('Please connect to MetaMask.')
-        } else {
-          console.error(error)
-        }
-      })
-
-    window.ethereum.on('accountsChanged', async accounts => {
-      login(accounts[0])
-    })
-  }
-
-  const web3 = state[WEB3]
-  return [web3, getWeb3, clearWeb3]
-}
-
 export function useAllAccountData() {
   const [state] = useAccountContext()
   return state

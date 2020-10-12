@@ -14,11 +14,11 @@ import FormattedName from '../FormattedName'
 import { TYPE, StyledInternalLink } from '../../Theme'
 //import { Type } from 'react-feather'
 import { RowFixed } from '../Row'
-import { useAccountWeb3 } from '../../contexts/Account'
 import { useConfig } from '../../contexts/Application'
 import { useMarketAmm } from '../../contexts/Markets'
-import { formatNumber, greaterThanZero } from '../../utils'
+import { greaterThanZero } from '../../utils'
 import { ButtonLight, ButtonPrimary } from '../ButtonStyled'
+import { useActiveWeb3React } from '../../hooks'
 
 dayjs.extend(utc)
 
@@ -116,7 +116,7 @@ function PairList({ pairs, color, disbaleLinks, marketId, maxItems = 10 }) {
   const below600 = useMedia('(max-width: 600px)')
   const below740 = useMedia('(max-width: 740px)')
   const below800 = useMedia('(max-width: 800px)')
-  const { address } = useAccountWeb3()
+  const { account } = useActiveWeb3React()
   const config = useConfig()
   // pagination
   const [page, setPage] = useState(1)
@@ -130,8 +130,8 @@ function PairList({ pairs, color, disbaleLinks, marketId, maxItems = 10 }) {
 
   useEffect(() => {
     const getHasLPTokens = async () => {
-      // TODO get AMM exchange address from theGraph call
-      const balance = await userLPBalanceOf(config.network, '', address)
+      // TODO get AMM exchange account from theGraph call
+      const balance = await userLPBalanceOf(config.network, '', account)
       if (greaterThanZero(balance)) {
         setHasLpTokens(true)
       }
@@ -139,7 +139,7 @@ function PairList({ pairs, color, disbaleLinks, marketId, maxItems = 10 }) {
     setMaxPage(1) // edit this to do modular
     setPage(1)
     getHasLPTokens()
-  }, [config, address])
+  }, [config, account])
 
   useEffect(() => {
     if (pairs) {

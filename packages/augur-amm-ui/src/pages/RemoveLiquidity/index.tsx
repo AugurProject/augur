@@ -41,7 +41,7 @@ import { useDerivedBurnInfo, useBurnState } from '../../state/burn/hooks'
 import { Field } from '../../state/burn/actions'
 import { useUserSlippageTolerance } from '../../state/user/hooks'
 import { BigNumber } from '@ethersproject/bignumber'
-import { getAmmFactoryAddress } from '../../contexts/Application'
+import { useAmmFactoryAddress } from '../../contexts/Application'
 import { withRouter } from 'react-router-dom'
 import LiquidityPage from '../LiquidityPage'
 import { useWalletModalToggle } from '../../state/application/hooks'
@@ -61,7 +61,7 @@ function RemoveLiquidity({
   ])
 
   const theme = useContext(ThemeContext)
-
+  const ammFactory = useAmmFactoryAddress()
   // burn state
   const { independentField, typedValue } = useBurnState()
   const { pair, parsedAmounts, error } = useDerivedBurnInfo(currencyA ?? undefined, currencyB ?? undefined)
@@ -193,7 +193,6 @@ function RemoveLiquidity({
     if (!currencyAmountA || !currencyAmountB) {
       throw new Error('missing currency amounts')
     }
-    const ammFactory = getAmmFactoryAddress() //getRouterContract(chainId, library, account)
 
     const amountsMin = {
       [Field.CURRENCY_A]: calculateSlippageAmount(currencyAmountA, allowedSlippage)[0],

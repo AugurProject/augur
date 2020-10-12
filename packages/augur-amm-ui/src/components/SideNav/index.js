@@ -93,7 +93,7 @@ function SideNav({ history }) {
 
   const [isDark, toggleDarkMode] = useDarkModeManager()
 
-  const [web3, getWeb3, clearWeb3] = useAccountWeb3()
+  const [web3, clearWeb3] = useAccountWeb3()
   const { address } = web3
   const config = useConfig()
 
@@ -124,7 +124,7 @@ function SideNav({ history }) {
                     Markets
                   </Option>
                 </BasicLink>
-                
+
                 <BasicLink to="/tokens">
                   <Option
                     activeText={
@@ -177,7 +177,7 @@ function SideNav({ history }) {
             )}
             {!address && (
               <div>
-                <Option style={{ cursor: 'pointer' }} onClick={async () => getWeb3()}>
+                <Option style={{ cursor: 'pointer' }} onClick={async () => {}}>
                   <User size={20} style={{ marginRight: '.75rem' }} />
                   Connect
                 </Option>

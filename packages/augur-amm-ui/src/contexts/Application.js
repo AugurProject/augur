@@ -30,6 +30,7 @@ const WEB3 = 'WEB3'
 const LATEST_BLOCK = 'LATEST_BLOCK'
 const CONTRACTS = 'CONTRACTS'
 const AUGUR_CLIENT = 'AUGUR_CLIENT'
+const AUGUR_CONFIG = 'AUGUR_CONFIG'
 
 const ApplicationContext = createContext()
 
@@ -340,22 +341,19 @@ export function useAugurClient() {
   const [state, { updateAugurClient }] = useApplicationContext()
   const { account, library, chainId } = useActiveWeb3React()
   const augurClient = state?.[AUGUR_CLIENT]
-  const config = getConfig()
+  const augurConfig = state?.[AUGUR_CONFIG]
+
   useEffect(() => {
     async function createAugurClient() {
       if (!library || !chainId || !account) return
-      console.info('building/getting augur client')
-      const addresses = {
-          "WarpSync": config.WarpSync,
-          "AMMFactory": config.AmmFactory
-      }
-      const augurLite = new AugurLite(getProviderOrSigner(library, account), addresses, chainId);
+      console.info('building/getting augur client', augurConfig.addresses)
+      const augurLite = new AugurLite(getProviderOrSigner(library, account), augurConfig.addresses, chainId);
       updateAugurClient(augurLite)
     }
     if (!augurClient) {
       createAugurClient()
     }
-  }, [updateAugurClient, augurClient, library, chainId, config])
+  }, [updateAugurClient, augurClient, library, chainId, augurConfig])
 
   return augurClient
 }
@@ -364,6 +362,7 @@ function getConfig() {
   const network = process.env.network || DEFAULT_NETWORK
   return config[String(network)]
 }
+
 export function useConfig() {
   return getConfig()
 }
@@ -381,13 +380,8 @@ export function getCashInfo(address) {
   return cash
 }
 
-export function getAmmFactoryAddress() {
-  const contracts = getConfig()
-  const ammFactory = contracts.AmmFactory
-  return ammFactory
-}
-
-export function getUsdtAddress() {
-  const contracts = getConfig()
-  return contracts.Usdt
+export function useAmmFactoryAddress() {
+  const [state] = useApplicationContext()
+  const addresses = state[AUGUR_CONFIG]?.addresses
+  return addresses?.AMMFactory
 }

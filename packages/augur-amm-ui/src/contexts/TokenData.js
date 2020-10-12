@@ -25,9 +25,8 @@ import {
   splitQuery
 } from '../utils'
 import { timeframeOptions } from '../constants'
-import { useConfig, useLatestBlock, getCashInfo, getUsdtAddress } from './Application'
+import { useLatestBlock, getCashInfo } from './Application'
 import { useMarket, useAllMarketCashes } from './Markets'
-
 
 const UPDATE = 'UPDATE'
 const UPDATE_TOKEN_TXNS = 'UPDATE_TOKEN_TXNS'
@@ -213,7 +212,16 @@ export default function Provider({ children }) {
             updateCashTokens
           }
         ],
-        [state, update, updateTokenTxns, updateChartData, updateTopTokens, updateAllPairs, updatePriceData, updateCashTokens]
+        [
+          state,
+          update,
+          updateTokenTxns,
+          updateChartData,
+          updateTopTokens,
+          updateAllPairs,
+          updatePriceData,
+          updateCashTokens
+        ]
       )}
     >
       {children}
@@ -339,44 +347,37 @@ const getCashTokenData = async (cashes = []) => {
     .subtract(1, 'day')
     .startOf('minute')
     .unix()
-  const usdtAddress = getUsdtAddress()
-  let oneDayBlock = await getBlockFromTimestamp(utcOneDayBack)
 
-  // initialize data arrays
-  let data = {}
-  let oneDayData = {}
   let bulkResults = {}
   try {
-    console.log('cashes', JSON.stringify(cashes))
-    bulkResults = await Promise.all(cashes.map(async cash => {
-      console.log("CASH_TOKEN_DATA", JSON.stringify(CASH_TOKEN_DATA))
-      let usdPrice = await client.query({
-        query: CASH_TOKEN_DATA,
-        variables: {
-          tokenAddr: cash,
-        },
-        fetchPolicy: 'cache-first'
+    bulkResults = await Promise.all(
+      cashes.map(async cash => {
+        let usdPrice = await client.query({
+          query: CASH_TOKEN_DATA,
+          variables: {
+            tokenAddr: cash
+          },
+          fetchPolicy: 'cache-first'
+        })
+        console.log('cash token data', JSON.stringify(usdPrice))
+        let tokenData = { ...usdPrice?.data?.tokenDayDatas[0], id: cash }
+
+        if (!tokenData) {
+          // TOOD remove this, used only form kovan testing
+          tokenData = {
+            date: 1602460800,
+            id: cash,
+            priceUSD: '400'
+          }
+        }
+        return tokenData
       })
-      console.log('cash token data', JSON.stringify(usdPrice))
-      oneDayData = usdPrice.data.tokenDayDatas[0]
-
-      // new tokens
-      if (!oneDayData && data) {
-        data.oneDayVolumeUSD = data.tradeVolumeUSD
-        data.oneDayVolumeETH = data.tradeVolume * data.derivedETH
-        data.oneDayTxns = data.txCount
-      }
-
-      return { id: cash.id }
-    }))
-
-
+    )
   } catch (e) {
     console.log(e)
   }
   return bulkResults
 }
-
 
 const getTokenTransactions = async allPairsFormatted => {
   const transactions = {}

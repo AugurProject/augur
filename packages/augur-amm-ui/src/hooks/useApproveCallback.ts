@@ -8,7 +8,7 @@ import { computeSlippageAdjustedAmounts } from '../utils/prices'
 import { calculateGasMargin } from '../utils'
 import { useTokenContract } from './useContract'
 import { useActiveWeb3React } from './index'
-import { getAmmFactoryAddress } from '../contexts/Application'
+import { useAmmFactoryAddress } from '../contexts/Application'
 import { useSingleCallResult } from '../state/multicall/hooks'
 
 export enum ApprovalState {
@@ -114,6 +114,6 @@ export function useApproveCallbackFromTrade(trade?: Trade, allowedSlippage = 0) 
     () => (trade ? computeSlippageAdjustedAmounts(trade, allowedSlippage)[Field.INPUT] : undefined),
     [trade, allowedSlippage]
   )
-  const ammFactory = getAmmFactoryAddress()
+  const ammFactory = useAmmFactoryAddress()
   return useApproveCallback(amountToApprove, ammFactory)
 }

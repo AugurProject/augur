@@ -1,6 +1,4 @@
-import { BigNumber } from '@ethersproject/bignumber'
-import { TransactionResponse } from '@ethersproject/providers'
-import { Currency, ETHER, TokenAmount } from '@uniswap/sdk'
+import { TokenAmount } from '@uniswap/sdk'
 import React, { useCallback, useContext, useState } from 'react'
 import ReactGA from 'react-ga'
 import { RouteComponentProps } from 'react-router-dom'
@@ -10,11 +8,9 @@ import { ButtonError, ButtonGray, ButtonPrimary } from '../../components/ButtonS
 import { BlueCard, LightCard } from '../../components/Card'
 import { AutoColumn, ColumnCenter } from '../../components/Column'
 import TransactionConfirmationModal, { ConfirmationModalContent } from '../../components/TransactionConfirmationModal'
-import CurrencyInputPanel from '../../components/CurrencyInputPanel'
-import DoubleCurrencyLogo from '../../components/DoubleLogo'
 import { AddRemoveTabs } from '../../components/NavigationTabs'
 //import { MinimalPositionCard } from '../../components/PositionCard'
-import Row, { RowBetween, RowFlat } from '../../components/Row'
+import { RowBetween, RowFlat } from '../../components/Row'
 
 import { PairState } from '../../data/Reserves'
 import { useActiveWeb3React } from '../../hooks'
@@ -27,13 +23,13 @@ import { useDerivedMintInfo, useMintActionHandlers, useMintState } from '../../s
 import { useTransactionAdder } from '../../state/transactions/hooks'
 import { useUserSlippageTolerance } from '../../state/user/hooks'
 import { TYPE } from '../../Theme'
-import { calculateSlippageAmount, getAMMExchangeContract, getAMMFactoryContract, addAmmLiquidity, useAmmFactory } from '../../utils'
+import { addAmmLiquidity, useAmmFactory } from '../../utils'
 import { maxAmountSpend } from '../../utils/maxAmountSpend'
 import AppBody from '../AppBody'
 import { Dots, Wrapper } from '../../components/swap/styleds'
 import { ConfirmAddModalBottom } from './ConfirmAddModalBottom'
 import { PoolPriceBar } from './PoolPriceBar'
-import { getAmmFactoryAddress, useAugurClient } from '../../contexts/Application'
+import { useAmmFactoryAddress, useAugurClient } from '../../contexts/Application'
 import { withRouter } from 'react-router-dom'
 import LiquidityPage from '../LiquidityPage'
 import { useMarketAmm, useShareTokens, useMarket } from '../../contexts/Markets'
@@ -45,12 +41,11 @@ function AddLiquidity({
   amm,
   marketId,
   cash,
-  history
 }: RouteComponentProps<{ amm?: string; marketId: string; cash: string }>) {
   const { account, chainId, library } = useActiveWeb3React()
   const ammFactoryContract = useAmmFactory()
   const augurClient = useAugurClient()
-  const ammFactory = getAmmFactoryAddress()
+  const ammFactory = useAmmFactoryAddress()
   const theme = useContext(ThemeContext)
   // share token is undefined for isCreate
   const sharetoken = useShareTokens(cash)

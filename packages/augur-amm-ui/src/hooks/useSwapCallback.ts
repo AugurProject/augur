@@ -9,7 +9,6 @@ import isZero from '../utils/isZero'
 import { useActiveWeb3React } from './index'
 import useTransactionDeadline from './useTransactionDeadline'
 import useENS from './useENS'
-import { getAmmFactoryAddress } from '../contexts/Application'
 
 export enum SwapCallbackState {
   INVALID,
@@ -54,7 +53,8 @@ function useSwapCallArguments(
   return useMemo(() => {
     if (!trade || !recipient || !library || !account || !chainId || !deadline) return []
 
-    const contract: Contract | null = getAmmFactoryAddress()
+    // TODO need to just use augurClient
+    const contract: Contract | null = null // useAmmFactoryAddress()
     if (!contract) {
       return []
     }

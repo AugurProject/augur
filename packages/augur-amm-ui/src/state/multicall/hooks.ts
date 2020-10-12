@@ -203,7 +203,7 @@ export function useMultipleContractSingleData(
         : undefined,
     [callInputs, contractInterface, fragment]
   )
-  console.log('callData', addresses, JSON.stringify(callData))
+
   const calls = useMemo(
     () =>
       fragment && addresses && addresses.length > 0 && callData
