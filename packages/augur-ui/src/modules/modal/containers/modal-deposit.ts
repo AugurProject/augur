@@ -1,7 +1,7 @@
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import { Message } from 'modules/modal/message';
-import { BigNumber } from 'ethers/utils';
+import { BigNumber } from 'ethers';
 import { NETWORK_IDS, NULL_ADDRESS } from 'modules/common/constants';
 import { getNetworkId } from 'modules/contracts/actions/contractCalls';
 import { AppState } from 'appStore';

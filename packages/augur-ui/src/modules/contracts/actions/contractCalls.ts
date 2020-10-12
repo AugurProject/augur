@@ -23,7 +23,7 @@ import {
   numTicksToTickSizeWithDisplayPrices,
 } from '@augurproject/utils';
 import { TransactionResponse } from '@ethersproject/providers';
-import { formatBytes32String } from 'ethers/utils';
+import { formatBytes32String } from 'ethers';
 import {
   BUY,
   CATEGORICAL,

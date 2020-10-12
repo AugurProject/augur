@@ -1,4 +1,4 @@
-import { formatBytes32String } from 'ethers/utils';
+import { formatBytes32String } from 'ethers';
 import Fingerprint2 from 'fingerprintjs2';
 
 let fingerprint = null;

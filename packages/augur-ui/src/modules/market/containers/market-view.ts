@@ -1,7 +1,7 @@
 import type { Getters } from '@augurproject/sdk';
 import { AppState } from 'appStore';
 import { selectCurrentTimestampInSeconds } from 'appStore/select-state';
-import { getAddress } from 'ethers/utils/address';
+import { getAddress } from 'ethers';
 import { addAlert, removeAlert } from 'modules/alerts/actions/alerts';
 import { Ox_STATUS } from 'modules/app/actions/update-app-status';
 import {
