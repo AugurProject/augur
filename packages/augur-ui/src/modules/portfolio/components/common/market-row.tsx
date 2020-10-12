@@ -66,19 +66,7 @@ const MarketRow = ({
     theme,
     actions: { setModal },
   } = useAppStatusStore();
-  const { liquidityPools } = useMarketsStore();
-  let renderLiquidityDepletedLabel = showLiquidityDepleted;
-  if (theme === THEMES.SPORTS) {
-    const {
-      sportsBook: { liquidityPool },
-    } = market;
-    const marketPool = liquidityPools[liquidityPool];
-    Object.keys(marketPool || {}).forEach(outcomeId => {
-      if (marketPool[outcomeId]) {
-        renderLiquidityDepletedLabel = false;
-      }
-    });
-  }
+  const renderLiquidityDepletedLabel = theme === THEMES.SPORTS || showLiquidityDepleted;
   const content = (
     <div
       className={classNames(Styles.MarketRowContent, addedClass, {
@@ -124,17 +112,7 @@ const MarketRow = ({
             {theme === THEMES.SPORTS
               ? ''
               : 'You have pending initial liquidity.'}
-            {theme === THEMES.SPORTS ? (
-              <TextUnderlineButton
-                action={() =>
-                  setModal({
-                    type: MODAL_UNSIGNED_ORDERS,
-                    marketId: market.marketId,
-                  })
-                }
-                text={SIGN_SEND_ORDERS}
-              />
-            ) : (
+            {theme !== THEMES.SPORTS && (
               <SubmitTextButton
                 action={() =>
                   setModal({
