@@ -211,6 +211,18 @@
       opacity: 0.25;
     }
 
+
+    &.Dark {
+      background: transparent;
+      color: var(--color-module-background);
+      border: @size-1 solid var(--color-module-background);
+
+      &:hover {
+        color: var(--color-primary-text);
+        background: var(--color-module-background);
+      }
+    }
+
     &.Small,
     &.Tiny {
       .text-10-semi-bold;
