@@ -11,6 +11,10 @@ import { useActiveWeb3React } from '../hooks'
 import { AugurLite } from "@augurproject/sdk-lite";
 import { getProviderOrSigner } from '../utils'
 
+// PG: THIS IS A HACK FIX IT
+import AUGUR_CONFIG from "@augurproject/artifacts/build/environments/v2.json";
+// PG: THIS IS A HACK FIX IT
+
 dayjs.extend(utc)
 
 const UPDATE = 'UPDATE'
@@ -108,7 +112,8 @@ function reducer(state, { type, payload }) {
 
 const INITIAL_STATE = {
   CURRENCY: 'USD',
-  TIME_KEY: timeframeOptions.ALL_TIME
+  TIME_KEY: timeframeOptions.ALL_TIME,
+  AUGUR_CONFIG
 }
 
 export default function Provider({ children }) {
@@ -223,6 +228,7 @@ export default function Provider({ children }) {
 
 export function useLatestBlock() {
   const [state, { updateLatestBlock }] = useApplicationContext()
+  console.log("CONFIGURATION: ", state?.AUGUR_CONFIG)
 
   const latestBlock = state?.[LATEST_BLOCK]
 
