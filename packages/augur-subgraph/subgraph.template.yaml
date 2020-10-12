@@ -135,9 +135,15 @@ dataSources:
       file: ./src/index.ts
       entities:
         - AMMExchange
+        - ParaShareToken
+        - ERC20
       abis:
         - name: AMMFactory
           file: ./abis/AMMFactory.json
+        - name: ParaShareToken
+          file: ./abis/ParaShareToken.json
+        - name: ERC20
+          file: ./abis/ERC20.json
       callHandlers:
         - function: addAMM(address,address)
           handler: handleAddAMMExchange
@@ -207,6 +213,22 @@ templates:
       eventHandlers:
         - event: Transfer(indexed address,indexed address,uint256)
           handler: handleCashTransfer
+  - kind: ethereum/contract
+    name: ParaShareToken
+    network: {{ ethereum.network }}
+    source:
+      abi: ParaShareToken
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.4
+      language: wasm/assemblyscript
+      file: ./src/index.ts
+      entities:
+        - ERC20
+      abis:
+        - name: ParaShareToken
+          file: ./abis/ParaShareToken.json
+
 
 # Markets
   # - MarketParticipantsDisavowed(indexed address,indexed address)

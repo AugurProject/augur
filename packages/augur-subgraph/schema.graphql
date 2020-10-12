@@ -737,6 +737,9 @@ type AMMExchange @entity {
   "balance of cash"
   liquidityCash: BigInt!
 
+  "balance of invalid shares"
+  liquidityInvalid: BigInt!
+
   "balance of no shares"
   liquidityNo: BigInt!
 
