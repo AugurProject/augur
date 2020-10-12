@@ -347,14 +347,18 @@ const getCashTokenData = async (cashes = []) => {
   let oneDayData = {}
   let bulkResults = {}
   try {
+    console.log('cashes', JSON.stringify(cashes))
     bulkResults = await Promise.all(cashes.map(async cash => {
-      // get results from 24 hours in past
-      let oneDayResult = await client.query({
-        query: CASH_TOKEN_DATA(cash.id, usdtAddress, oneDayBlock),
+      console.log("CASH_TOKEN_DATA", JSON.stringify(CASH_TOKEN_DATA))
+      let usdPrice = await client.query({
+        query: CASH_TOKEN_DATA,
+        variables: {
+          tokenAddr: cash,
+        },
         fetchPolicy: 'cache-first'
       })
-      oneDayData = oneDayResult.data.tokens[0]
-      console.log('cash token data', JSON.stringify(oneDayResult))
+      console.log('cash token data', JSON.stringify(usdPrice))
+      oneDayData = usdPrice.data.tokenDayDatas[0]
 
       // new tokens
       if (!oneDayData && data) {
@@ -558,12 +562,14 @@ export function Updater() {
 
   useEffect(() => {
     async function getData() {
-      let cashTokens = await getCashTokenData(cashes)
-      if (cashTokens) {
-        updateCashTokens(cashTokens)
+      if (cashes && cashes.length > 0) {
+        let cashTokens = await getCashTokenData(cashes)
+        if (cashTokens && Object.keys(cashTokens) > 0) {
+          updateCashTokens(cashTokens)
+        }
       }
     }
-    if (!cashTokens) getData()
+    if (!cashTokens || Object.keys(cashTokens) === 0) getData()
   }, [cashTokens, updateCashTokens, cashes])
   return null
 }
@@ -631,9 +637,9 @@ export function useTokenTransactions(tokenAddress) {
 }
 
 export function useTokenPairs(marketId) {
-  const market = useMarket(marketId)
-  const { amms } = market
   const [state, { updateAllPairs }] = useTokenDataContext()
+  const market = useMarket(marketId)
+  const { amms } = market || {}
   const tokenPairs = state?.[marketId]?.[TOKEN_PAIRS_KEY]
 
   useEffect(() => {

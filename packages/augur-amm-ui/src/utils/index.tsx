@@ -601,21 +601,12 @@ export function useAmmFactory() {
   return augurClient ?? augurClient.ammFactory.contract.connect(library.getSigner());
 }
 
-export function addAmmLiquidity(augurClient, marketId, sharetoken, yesAttoShares, noAttoShares) {
+export function addAmmLiquidity(augurClient, marketId, sharetoken, cashAmount, distroPercentage) {
   if (!augurClient || !augurClient.ammFactory) return console.error('augurClient is null')
-  console.log('addAmmLiquidity', marketId, sharetoken, String(yesAttoShares), String(noAttoShares))
-  return augurClient.ammFactory.addAMM(marketId, sharetoken, yesAttoShares, noAttoShares)
+  console.log('addAmmLiquidity', marketId, sharetoken, String(cashAmount), String(distroPercentage))
+  return augurClient.ammFactory.addAMM(marketId, sharetoken, new BN(cashAmount), new BN(distroPercentage[0]), new BN(distroPercentage[1]))
 }
 
-export function calcShareAmounts(odds, amount) {
-    console.log('calcShareAmounts', amount, odds[0])
-    const bnAmount = BigNumber.from(amount);
-    const yesOdds = BigNumber.from(Math.floor(100 / Number(odds[0])))
-    const yesShareAmount = bnAmount.div(yesOdds)
-    const noSharesAmount = bnAmount.sub(yesShareAmount)
-    console.log('calcShareAmounts', String(yesShareAmount), String(noSharesAmount))
-    return [yesShareAmount, noSharesAmount]
-}
 // account is optional
 export function getAMMExchangeContract(ammExchangeAddress: string, library: Web3Provider, account?: string): Contract {
   return getContract(ammExchangeAddress, AmmExchangeAbi, library, account)

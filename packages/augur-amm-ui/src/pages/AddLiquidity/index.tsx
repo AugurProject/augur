@@ -27,7 +27,7 @@ import { useDerivedMintInfo, useMintActionHandlers, useMintState } from '../../s
 import { useTransactionAdder } from '../../state/transactions/hooks'
 import { useUserSlippageTolerance } from '../../state/user/hooks'
 import { TYPE } from '../../Theme'
-import { calculateSlippageAmount, getAMMExchangeContract, getAMMFactoryContract, addAmmLiquidity, useAmmFactory, calcShareAmounts } from '../../utils'
+import { calculateSlippageAmount, getAMMExchangeContract, getAMMFactoryContract, addAmmLiquidity, useAmmFactory } from '../../utils'
 import { maxAmountSpend } from '../../utils/maxAmountSpend'
 import AppBody from '../AppBody'
 import { Dots, Wrapper } from '../../components/swap/styleds'
@@ -130,48 +130,8 @@ function AddLiquidity({
       return
     }
 
-    const amountsMin = {
-      [Field.CURRENCY_A]: calculateSlippageAmount(parsedAmountA, noLiquidity ? 0 : allowedSlippage)[0],
-    }
-    let contract = null
-    let estimate,
-      method: (...args: any) => Promise<TransactionResponse>,
-      args: Array<string | string[] | number>,
-      value: BigNumber | null
-
-    if (isCreate) {
-      contract = getAMMFactoryContract(library, account)
-      estimate = contract.estimateGas.addAMMWithLiquidity
-      method = contract.addAMMWithLiquidity
-      args = [
-        marketId,
-        sharetoken,
-        //amountsMin[Field.CURRENCY_A].toString(), // token min
-        parsedAmountA.raw.toString(), // setsToBuy
-        false, // swapForYes
-        BigNumber.from(0).toString(), // swapHowMuch
-      ]
-      // this will be needed for using ETHER
-      //value = BigNumber.from((parsedAmountA).raw.toString())
-      value = null
-    } else {
-      console.log('sets to buy', parsedAmountA.raw.toString())
-      contract = getAMMExchangeContract(ammData.id, library, account)
-      estimate = contract.estimateGas.addLiquidity
-      method = contract.addLiquidity
-      args = [
-        marketId,
-        parsedAmountA.raw.toString(),
-        //amountsMin[Field.CURRENCY_A].toString(),
-        false, // swapForYes
-        BigNumber.from(0).toString(), // swapHowMuch
-      ]
-      value = null
-    }
-
     setAttemptingTxn(true)
-    const [yesShares, noShares] = calcShareAmounts(currentDistribution, parsedAmountA.raw.toString())
-    await addAmmLiquidity(augurClient, marketId, sharetoken, yesShares, noShares)
+    await addAmmLiquidity(augurClient, marketId, sharetoken, parsedAmountA.raw.toString(), currentDistribution)
     .then(response => {
       setAttemptingTxn(false)
 

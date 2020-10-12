@@ -175,7 +175,7 @@ export function useMarketAmm(marketId, amm) {
 export function useMarketNonExistingAmms(marketId) {
   const [state] = useMarketDataContext()
   const market = useMarket(marketId)
-  const ammCashes = market.amms && market.amms.length > 0 ? market.amms.map(a => a.shareToken.cash.id) : []
+  const ammCashes = market && market.amms && market.amms.length > 0 ? market.amms.map(a => a.shareToken.cash.id) : []
   const uncreatedAmms =
     state?.paraShareTokens && state.paraShareTokens.length > 0
       ? state.paraShareTokens.reduce((p, s) => (ammCashes.includes(s.cash.id) ? p : [...p, s.cash.id]), [])
