@@ -13,7 +13,7 @@ variables:
 pr:
   branches:
     include:
-    - '*' 
+    - '*'
 
 trigger:
   batch: false
@@ -54,6 +54,11 @@ jobs:
               then
                 echo "found a core change: $f"
                 echo "##vso[task.setvariable variable=JOB_TRIGGER_CORE;isOutput=true]true"
+              fi
+              if [[ $f =~ .*augur-subgraph/.* ]] || [[ $f =~ .*packages/augur-artifacts/src/environments/* ]]
+              then
+                echo "found a subgraph-related change: $f"
+                echo "##vso[task.setvariable variable=JOB_TRIGGER_SUBGRAPH;isOutput=true]true"
               fi
               if [[ $f =~ .*augur-artifacts/src/contracts.json ]]
               then
