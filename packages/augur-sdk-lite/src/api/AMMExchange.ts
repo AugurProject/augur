@@ -80,34 +80,23 @@ export class AMMExchange {
     cash = cash.idiv(1);
     ratio = ratio.idiv(1);
 
-    console.log(`addInitialLiquidity(${cash.toFixed()}, ${ratio.toFixed()}, ${keepYes}, ${recipient})`);
-
     const txr: TransactionResponse = await this.contract.addInitialLiquidity(cash.toFixed(), ratio.toFixed(), keepYes, recipient);
     const tx = await txr.wait();
-    const logs = tx.logs
-      .filter((log) => log.address === this.address)
-      .map((log) =>  this.contract.interface.parseLog(log));
-    console.log(JSON.stringify(logs, null, 2));
-
-    return new BigNumber(1337);
+    const liquidityLog = this.extractLiquidityLog(tx);
+    return liquidityLog.lpTokens;
   }
 
   async addLiquidity(recipient: string, cash: Cash): Promise<LPTokens> {
     const txr: TransactionResponse = await this.contract.addLiquidity(cash.toFixed(), recipient);
     const tx = await txr.wait();
-    const logs = tx.logs
-      .filter((log) => log.address === this.address)
-      .map((log) =>  this.contract.interface.parseLog(log));
-    console.log(JSON.stringify(logs, null, 2));
-
-    return new BigNumber(1337);
+    const liquidityLog = this.extractLiquidityLog(tx);
+    return liquidityLog.lpTokens;
   }
 
   async rateAddLiquidity(yesShares: Shares, noShares: Shares = null): Promise<LPTokens> {
     noShares = noShares || yesShares;
     return this.contract.rateAddLiquidity(yesShares.toFixed(), noShares.toFixed());
   }
-
 
   async removeLiquidity(lpTokens: LPTokens, alsoSell = false): Promise<RemoveLiquidityReturn> {
     // if not selling them minSetsSold is 0
@@ -158,6 +147,22 @@ export class AMMExchange {
     const lpTokens = await this.contract.totalSupply()
     return new BigNumber(lpTokens.toString());
   }
+
+  extractLiquidityLog(tx: ethers.providers.TransactionReceipt): LiquidityLog {
+    const logs = tx.logs
+      .filter((log) => log.address === this.address)
+      .map((log) => this.contract.interface.parseLog(log))
+      .filter((log) => log.name === 'AddLiquidity')
+      .map((log) => ({
+        sender: log.args.sender,
+        cash: new BigNumber(log.args.cash.toString()),
+        noShares: new BigNumber(log.args.noShares.toString()),
+        yesShares: new BigNumber(log.args.yesShares.toString()),
+        lpTokens: new BigNumber(log.args.lpTokens.toString()),
+      }));
+    if (logs.length !== 1) throw Error(`Expected one log but got ${logs.length} logs.`);
+    return logs[0];
+  }
 }
 
 export interface RemoveLiquidityReturn {
@@ -165,6 +170,14 @@ export interface RemoveLiquidityReturn {
   _noShare: Shares,
   _yesShare: Shares,
   _setsSold: Sets,
+}
+
+export interface LiquidityLog {
+  sender: string,
+  cash: BigNumber,
+  noShares: BigNumber,
+  yesShares: BigNumber,
+  lpTokens: BigNumber,
 }
 
 export type LPTokens = BigNumber;

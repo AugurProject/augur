@@ -25,6 +25,12 @@ export const AMMExchangeAbi = [
         "internalType": "uint256",
         "name": "yesShares",
         "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "lpTokens",
+        "type": "uint256"
       }
     ],
     "name": "AddLiquidity",

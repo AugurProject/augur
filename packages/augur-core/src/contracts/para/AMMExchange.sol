@@ -16,7 +16,7 @@ contract AMMExchange is IAMMExchange, ERC20 {
 
     event EnterPosition(address sender, uint256 cash, uint256 outputShares, bool buyYes);
     event ExitPosition(address sender, uint256 invalidShares, uint256 noShares, uint256 yesShares, uint256 cashPayout);
-    event AddLiquidity(address sender, uint256 cash, uint256 noShares, uint256 yesShares);
+    event AddLiquidity(address sender, uint256 cash, uint256 noShares, uint256 yesShares, uint256 lpTokens);
     event RemoveLiquidity(address sender, uint256 cash, uint256 noShares, uint256 yesShares);
     event SwapPosition(address sender, uint256 inputShares, uint256 outputShares, bool inputYes);
 
@@ -87,8 +87,7 @@ contract AMMExchange is IAMMExchange, ERC20 {
         }
         _mint(_recipient, _lpTokens);
 
-
-        emit AddLiquidity(_user, _cash, _noShares, _yesShares);
+        emit AddLiquidity(_user, _cash, _noShares, _yesShares, _lpTokens);
 
         return _lpTokens;
     }

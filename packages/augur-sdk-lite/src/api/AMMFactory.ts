@@ -38,11 +38,7 @@ export class AMMFactory {
 
     if (cash.eq(0)) {
       const txr: TransactionResponse = await this.contract.addAMM(market, paraShareToken);
-      const tx = await txr.wait();
-      const logs = tx.logs
-        .filter((log) => log.address === amm.address)
-        .map((log) =>  amm.contract.interface.parseLog(log));
-      console.log(JSON.stringify(logs, null, 2))
+      await txr.wait();
       return { amm, lpTokens: new BigNumber(0) };
     }
 
@@ -60,16 +56,10 @@ export class AMMFactory {
     cash = cash.idiv(1);
     ratio = ratio.idiv(1);
 
-    console.log(`addAMMWithLiquidity(${market}, ${paraShareToken}, ${cash.toFixed()}, ${ratio.toFixed()}, ${keepYes})`);
-
     const txr: TransactionResponse = await this.contract.addAMMWithLiquidity(market, paraShareToken, cash.toFixed(), ratio.toFixed(), keepYes);
     const tx = await txr.wait();
-    const logs = tx.logs
-      .filter((log) => log.address === amm.address)
-      .map((log) =>  amm.contract.interface.parseLog(log));
-    console.log(JSON.stringify(logs, null, 2))
-
-    return { amm, lpTokens: new BigNumber(12) };
+    const liquidityLog = amm.extractLiquidityLog(tx);
+    return { amm, lpTokens: liquidityLog.lpTokens };
   }
 
   async ammAddress(marketAddress: string, paraShareToken: string): Promise<string> {
