@@ -88,7 +88,7 @@ const AccountView = () => {
                   </ModulePane>
                 </ModuleTabs>
               ) : (
-                <div>
+                <div className={Styles.MobileAccountView}>
                   <h1>My Account</h1>
                   <ModuleTabs selected={0} fillWidth noBorder>
                     <ModulePane label={YOUR_OVERVIEW_TITLE}>
