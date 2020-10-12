@@ -2,9 +2,9 @@ import { AMMExchange } from '../../generated/schema';
 import {  Transfer } from '../../generated/templates/Cash/ERC20';
 
 export function handleCashTransfer(event: Transfer): void {
-  const _from = event.params.from.toHexString();
-  const _to = event.params.to.toHexString()
-  const _amount = event.params.value;
+  let _from = event.params.from.toHexString();
+  let _to = event.params.to.toHexString()
+  let _amount = event.params.value;
 
   let _fromExchange = AMMExchange.load(_from);
   if(_fromExchange != null) {

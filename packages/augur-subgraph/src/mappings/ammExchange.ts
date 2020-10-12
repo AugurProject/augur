@@ -5,7 +5,6 @@ import {
   SwapPosition as SwapPositionEvent,
   AddLiquidity as AddLiquidityEvent,
   RemoveLiquidity as RemoveLiquidityEvent,
-
 } from '../../generated/templates/AMMExchange/AMMExchange';
 import {
   AMMExchange,
@@ -13,8 +12,9 @@ import {
   ExitPosition,
   AddLiquidity,
   RemoveLiquidity,
-  SwapPosition
-} from "../../generated/schema";
+  SwapPosition,
+} from '../../generated/schema';
+import { updateAMM } from '../utils/helpers/amm';
 
 type PositionEventType = AddLiquidityEvent | RemoveLiquidityEvent | EnterPositionEvent | ExitPositionEvent | SwapPositionEvent;
 type EventConstructor  = AddLiquidity | RemoveLiquidity | EnterPosition | ExitPosition | SwapPosition;
@@ -30,22 +30,19 @@ function buildEvent(EventConstructor: EventConstructor, event: PositionEventType
   positionEvent.sender = event.params.sender;
   positionEvent.save();
 
-
+  let ammExchange = AMMExchange.load(event.address);
   let market = ammExchange.market;
   market.volume = market.volume.plus(noShares.abs());
   market.volume = market.volume.plus(yesShares.abs());
 
   market.save();
 
-  let ammExchange = AMMExchange.load(event.address);
-  ammExchange.liquidityCash = ammExchange.liquidityCash.plus(cash);
-  ammExchange.liquidityNo = ammExchange.liquidityNo.plus(noShares);
-  ammExchange.liquidityYes = ammExchange.liquidityYes.plus(yesShares);
-
   ammExchange.volumeNo = ammExchange.volumeNo.plus(noShares.abs());
   ammExchange.volumeYes = ammExchange.volumeYes.plus(yesShares.abs());
 
   ammExchange.save();
+
+  updateAMM(event.address);
 
   return positionEvent;
 }
