@@ -2800,6 +2800,32 @@ export function addScripts(flash: FlashSession) {
       }
     });
 
+  flash.addScript({
+    name: 'wrapped-eth-allowance',
+    options: [
+      {
+        name: 'target',
+        abbr: 't',
+        description: 'Address that has an allowance granted by the approver.',
+        required: true,
+      },
+      {
+        name: 'approver',
+        abbr: 'a',
+        description: 'Address of the token owner. Default to you.',
+      },
+    ],
+    async call(this: FlashSession, args: FlashArguments) {
+      const user = await this.createUser(this.getAccount(), this.config);
+      const target = args.target as string;
+      const approver = args.approver as string || user.account.address;
+
+      const weth = user.augur.contracts.weth;
+      const allowance = await weth.allowance_(approver, target);
+      console.log(allowance.toFixed())
+    }
+  });
+
     flash.addScript({
       name: 'amm-approve-factory',
       options: [
@@ -2815,8 +2841,10 @@ export function addScripts(flash: FlashSession) {
 
         // TODO support more than just weth
         const weth = user.augur.contracts.weth;
-        const factory = user.augur.contracts.ammFactory;
-        await weth.approve(factory.address, amount);
+        const factory = new AMMFactory(user.signer, this.config.addresses.AMMFactory);
+        await weth.approve(factory.contract.address, amount);
+
+        console.log(`Approved ${factory.contract.address} for ${amount.toFixed()} of ${weth.address}`);
       }
     });
 
@@ -2837,20 +2865,22 @@ export function addScripts(flash: FlashSession) {
         {
           name: 'ratio',
           abbr: 'r',
-          description: 'Ratio of Y:N shares to add as initial liquidity. Defaults to 1.',
+          description: 'Percentage of YES shares for initial liquidity. [0,100]. Defaults to 50.',
         },
       ],
       async call(this: FlashSession, args: FlashArguments) {
         const market = args.market as string;
         const cash = args.cash ? new BigNumber(args.cash as string) : new BigNumber(0);
-        const ratio = args.ratio ? new BigNumber(args.ratio as string) : new BigNumber(1);
+        const yesPercent = args.ratio ? new BigNumber(args.ratio as string) : new BigNumber(50);
+
+        if (yesPercent.lt(0) || yesPercent.gt(100)) throw Error(`make-amm-market --ratio must be between 0 and 100 (inclusive), not ${args.ratio as string}`);
+        const noPercent = new BigNumber(100).minus(yesPercent);
 
         const paraShareToken = this.config.paraDeploys[this.config.paraDeploy].addresses.ShareToken;
         const user = await this.createUser(this.getAccount(), this.config);
-
         const factory = new AMMFactory(user.signer, this.config.addresses.AMMFactory);
 
-        const { amm, lpTokens } = await factory.addAMM(market, paraShareToken, cash, ratio);
+        const { amm, lpTokens } = await factory.addAMM(market, paraShareToken, cash, yesPercent, noPercent);
         console.log(`AMM Exchange ${amm.address}; received ${lpTokens.toString()} LP tokens`);
       }
     });
@@ -2865,27 +2895,80 @@ export function addScripts(flash: FlashSession) {
           required: true,
         },
         {
-          name: 'sets',
-          abbr: 's',
-          description: 'How many sets you will mint then add to the LP. Cost in cash is sets * market.numticks.',
+          name: 'cash',
+          abbr: 'c',
+          description: 'How much cash to add as liquidity. Denominated in atto (like wei but for any collateral type).',
           required: true,
+        },
+        {
+          name: 'recipient',
+          abbr: 'r',
+          description: 'Which address to send LP tokens to. Defaults to you.'
         },
       ],
       async call(this: FlashSession, args: FlashArguments) {
         const user = await this.createUser(this.getAccount(), this.config);
 
         const market = user.augur.contracts.marketFromAddress(args.market as string);
-        const sets = new BigNumber(args.sets as string);
+        const cash = new BigNumber(args.cash as string);
+        const recipient = args.recipient as string || user.account.address;
 
         const paraShareToken = this.config.paraDeploys[this.config.paraDeploy].addresses.ShareToken;
         const factory = new AMMFactory(user.signer, this.config.addresses.AMMFactory);
         const amm = await factory.getAMMExchange(market.address, paraShareToken);
 
-        const lpTokens = await amm.addLiquidity(sets);
+        const lpTokens = await amm.addLiquidity(recipient, cash);
 
         console.log(`LP Tokens acquired: ${lpTokens}`);
       }
     });
+
+  flash.addScript({
+    name: 'amm-add-initial-liquidity',
+    options: [
+      {
+        name: 'market',
+        abbr: 'm',
+        description: 'Address of Market. Used to calculate AMM address.',
+        required: true,
+      },
+      {
+        name: 'cash',
+        abbr: 'c',
+        description: 'How much cash to add as liquidity. Denominated in atto (like wei but for any collateral type).',
+        required: true,
+      },
+      {
+        name: 'ratio',
+        abbr: 'r',
+        description: 'Percentage of YES shares for initial liquidity. [0,100]. Defaults to 50.',
+      },
+      {
+        name: 'target',
+        abbr: 't',
+        description: 'Which address to send LP tokens to. Defaults to you.'
+      },
+    ],
+    async call(this: FlashSession, args: FlashArguments) {
+      const user = await this.createUser(this.getAccount(), this.config);
+
+      const market = user.augur.contracts.marketFromAddress(args.market as string);
+      const cash = new BigNumber(args.cash as string);
+      const yesPercent = args.ratio ? new BigNumber(args.ratio as string) : new BigNumber(50);
+      const recipient = args.target as string || user.account.address;
+
+      if (yesPercent.lt(0) || yesPercent.gt(100)) throw Error(`make-amm-market --ratio must be between 0 and 100 (inclusive), not ${args.ratio as string}`);
+      const noPercent = new BigNumber(100).minus(yesPercent);
+
+      const paraShareToken = this.config.paraDeploys[this.config.paraDeploy].addresses.ShareToken;
+      const factory = new AMMFactory(user.signer, this.config.addresses.AMMFactory);
+      const amm = await factory.getAMMExchange(market.address, paraShareToken);
+
+      const lpTokens = await amm.addInitialLiquidity(recipient, cash, yesPercent, noPercent);
+
+      console.log(`LP Tokens acquired: ${lpTokens}`);
+    }
+  });
 
   flash.addScript({
     name: 'amm-calc-add-liquidity',

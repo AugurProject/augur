@@ -8,8 +8,8 @@ import { TransactionResponse } from '@ethersproject/abstract-provider';
 
 
 export class AMMFactory {
-  private readonly signerOrProvider: SignerOrProvider;
-  private readonly contract: ethers.Contract;
+  readonly signerOrProvider: SignerOrProvider;
+  readonly contract: ethers.Contract;
 
   constructor(signerOrProvider: SignerOrProvider, address: string) {
     this.contract = new ethers.Contract(address, AMMFactoryAbi, signerOrProvider);
@@ -27,7 +27,12 @@ export class AMMFactory {
     return new AMMExchange(this.signerOrProvider, amm);
   }
 
-  async addAMM(market: string, paraShareToken: string, cash: BigNumber = new BigNumber(0), ratioYN: BigNumber = new BigNumber(1)): Promise<AddAMMReturn> {
+  // The ratioYN paremeter is between 1e17 and 1e18 inclusive.
+  // 9e17 == 0.9
+
+  // The ratioYN parameter is how much YES tokens are worth out of 1.0. Its value is between 0.1 and 1.0.
+  //
+  async addAMM(market: string, paraShareToken: string, cash: BigNumber = new BigNumber(0), yesPercent = new BigNumber(50), noPercent = new BigNumber(50)): Promise<AddAMMReturn> {
     const ammAddress = await this.ammAddress(market, paraShareToken);
     const amm = new AMMExchange(this.signerOrProvider, ammAddress);
 
@@ -41,21 +46,23 @@ export class AMMFactory {
       return { amm, lpTokens: new BigNumber(0) };
     }
 
-    // // TODO this isn't even trying to make liquidity.
-    // const txr: TransactionResponse = await this.contract.addAMM(market, paraShareToken);
-    // const tx = await txr.wait();
-    // const logs = tx.logs
-    //   .filter((log) => log.address === amm.address)
-    //   .map((log) =>  amm.contract.interface.parseLog(log));
-    // console.log(JSON.stringify(logs, null, 2))
-    // return { amm, lpTokens: cash.div(YES_NO_NUMTICKS) };
+    // The kept shares are the more expensive shares.
+    // Because price is based on the ratio and the more scarce shares are therefore worth more.
+    // The initial liquidity ratio is created by keeping either yse or no shares.
+    // So if you want there to be more NO shares than YES shares, you have to keep YES shares.
+    const keepYes = noPercent.gt(yesPercent);
 
+    let ratio = keepYes // more NO shares than YES shares
+      ? new BigNumber(10**18).times(yesPercent).div(noPercent)
+      : new BigNumber(10**18).times(noPercent).div(yesPercent);
 
-    const setsToBuy = cash.div(YES_NO_NUMTICKS);
-    const swapForYes = ratioYN.gt(1);
-    const setsToSwap = new BigNumber(0); // TODO calculate to achieve ratio
+    // must be integers
+    cash = cash.idiv(1);
+    ratio = ratio.idiv(1);
 
-    const txr: TransactionResponse = await this.contract.addAMMWithLiquidity(market, paraShareToken, setsToBuy.toFixed(), swapForYes, setsToSwap.toFixed());
+    console.log(`addAMMWithLiquidity(${market}, ${paraShareToken}, ${cash.toFixed()}, ${ratio.toFixed()}, ${keepYes})`);
+
+    const txr: TransactionResponse = await this.contract.addAMMWithLiquidity(market, paraShareToken, cash.toFixed(), ratio.toFixed(), keepYes);
     const tx = await txr.wait();
     const logs = tx.logs
       .filter((log) => log.address === amm.address)
@@ -63,37 +70,6 @@ export class AMMFactory {
     console.log(JSON.stringify(logs, null, 2))
 
     return { amm, lpTokens: new BigNumber(12) };
-
-
-    // return { amm, lpTokens: new BigNumber(42) }; // TODO actual lpTokens gained (check logs)
-    //
-    // const swapForYes = ratioYN.gt(1);
-    // const minSwap = new BigNumber(0);
-    // const maxSwap = new BigNumber(setsToBuy);
-    // console.log('MARINA', 0)
-    // const setsToSwap = await binarySearch(
-    //   minSwap,
-    //   maxSwap,
-    //   100,
-    //   async (setsToSwap) => {
-    //     console.log('MARINA', 1, setsToBuy.toString(), swapForYes, setsToSwap.toString())
-    //     const { _yesses, _nos } = await amm.contract.sharesRateForAddLiquidityThenSwap(setsToBuy.toString(), swapForYes, setsToSwap.toString());
-    //     console.log('MARINA', 2)
-    //     const foundRatio: BigNumber = _yesses.div(_nos);
-    //     return bnDirection(ratioYN, foundRatio);
-    //   }
-    // );
-
-    // console.log(`setsToBuy: ${setsToBuy.toString()}`)
-    // console.log(`swapForYes: ${swapForYes}`)
-    // console.log(`setsToSwap: ${setsToSwap.toString()}`)
-    //
-    // const txr: TransactionResponse = await this.contract.addAMMWithLiquidity(market, paraShareToken, setsToBuy, swapForYes, setsToSwap);
-    // const tx = await txr.wait();
-    // const logs = tx.logs.map(this.contract.interface.parseLog.bind(this));
-    // console.log(JSON.stringify(logs, null, 2))
-    //
-    // return { amm, lpTokens: new BigNumber(42) };
   }
 
   async ammAddress(marketAddress: string, paraShareToken: string): Promise<string> {

@@ -21590,11 +21590,26 @@
 			"inputs": [
 				{
 					"internalType": "uint256",
-					"name": "_setsToBuy",
+					"name": "_cash",
 					"type": "uint256"
+				},
+				{
+					"internalType": "uint256",
+					"name": "_ratioFactor",
+					"type": "uint256"
+				},
+				{
+					"internalType": "bool",
+					"name": "_keepYes",
+					"type": "bool"
+				},
+				{
+					"internalType": "address",
+					"name": "_recipient",
+					"type": "address"
 				}
 			],
-			"name": "addLiquidity",
+			"name": "addInitialLiquidity",
 			"outputs": [
 				{
 					"internalType": "uint256",
@@ -21611,21 +21626,16 @@
 			"inputs": [
 				{
 					"internalType": "uint256",
-					"name": "_setsToBuy",
+					"name": "_cash",
 					"type": "uint256"
 				},
 				{
-					"internalType": "bool",
-					"name": "_swapForYes",
-					"type": "bool"
-				},
-				{
-					"internalType": "uint256",
-					"name": "_swapHowMuch",
-					"type": "uint256"
+					"internalType": "address",
+					"name": "_recipient",
+					"type": "address"
 				}
 			],
-			"name": "addLiquidityThenSwap",
+			"name": "addLiquidity",
 			"outputs": [
 				{
 					"internalType": "uint256",
@@ -22069,37 +22079,6 @@
 			"inputs": [
 				{
 					"internalType": "uint256",
-					"name": "_setsToBuy",
-					"type": "uint256"
-				},
-				{
-					"internalType": "bool",
-					"name": "_swapForYes",
-					"type": "bool"
-				},
-				{
-					"internalType": "uint256",
-					"name": "_swapHowMuch",
-					"type": "uint256"
-				}
-			],
-			"name": "rateAddLiquidityThenSwap",
-			"outputs": [
-				{
-					"internalType": "uint256",
-					"name": "",
-					"type": "uint256"
-				}
-			],
-			"payable": false,
-			"stateMutability": "view",
-			"type": "function"
-		},
-		{
-			"constant": true,
-			"inputs": [
-				{
-					"internalType": "uint256",
 					"name": "_cashToSpend",
 					"type": "uint256"
 				},
@@ -22326,42 +22305,6 @@
 			"type": "function"
 		},
 		{
-			"constant": true,
-			"inputs": [
-				{
-					"internalType": "uint256",
-					"name": "_setsToBuy",
-					"type": "uint256"
-				},
-				{
-					"internalType": "bool",
-					"name": "_swapForYes",
-					"type": "bool"
-				},
-				{
-					"internalType": "uint256",
-					"name": "_swapHowMuch",
-					"type": "uint256"
-				}
-			],
-			"name": "sharesRateForAddLiquidityThenSwap",
-			"outputs": [
-				{
-					"internalType": "uint256",
-					"name": "_yesses",
-					"type": "uint256"
-				},
-				{
-					"internalType": "uint256",
-					"name": "_nos",
-					"type": "uint256"
-				}
-			],
-			"payable": false,
-			"stateMutability": "view",
-			"type": "function"
-		},
-		{
 			"constant": false,
 			"inputs": [
 				{
@@ -22550,18 +22493,18 @@
 				},
 				{
 					"internalType": "uint256",
-					"name": "_setsToBuy",
+					"name": "_cash",
+					"type": "uint256"
+				},
+				{
+					"internalType": "uint256",
+					"name": "_ratioFactor",
 					"type": "uint256"
 				},
 				{
 					"internalType": "bool",
-					"name": "_swapForYes",
+					"name": "_keepYes",
 					"type": "bool"
-				},
-				{
-					"internalType": "uint256",
-					"name": "_swapHowMuch",
-					"type": "uint256"
 				}
 			],
 			"name": "addAMMWithLiquidity",
@@ -30409,8 +30352,24 @@
 		},
 		{
 			"constant": false,
-			"inputs": [],
-			"name": "addLiquidity",
+			"inputs": [
+				{
+					"internalType": "uint256",
+					"name": "_ratioFactor",
+					"type": "uint256"
+				},
+				{
+					"internalType": "bool",
+					"name": "_keepYes",
+					"type": "bool"
+				},
+				{
+					"internalType": "address",
+					"name": "_recipient",
+					"type": "address"
+				}
+			],
+			"name": "addInitialLiquidity",
 			"outputs": [
 				{
 					"internalType": "uint256",
@@ -30426,17 +30385,12 @@
 			"constant": false,
 			"inputs": [
 				{
-					"internalType": "bool",
-					"name": "_swapForYes",
-					"type": "bool"
-				},
-				{
-					"internalType": "uint256",
-					"name": "_swapHowMuch",
-					"type": "uint256"
+					"internalType": "address",
+					"name": "recipient",
+					"type": "address"
 				}
 			],
-			"name": "addLiquidityThenSwap",
+			"name": "addLiquidity",
 			"outputs": [
 				{
 					"internalType": "uint256",

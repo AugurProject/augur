@@ -30,18 +30,16 @@ contract WethWrapperForAMMExchange {
         YES = shareToken.getTokenId(_market, 2);
     }
 
-    function addLiquidity() public payable returns (uint256) {
-        uint256 _setsToBuy = msg.value / numTicks;
+    function addLiquidity(address recipient) public payable returns (uint256) {
         weth.deposit.value(msg.value);
-        uint256 lpTokens = amm.addLiquidity(_setsToBuy);
+        uint256 lpTokens = amm.addLiquidity(msg.value, recipient);
         amm.transfer(msg.sender, lpTokens);
         return lpTokens;
     }
 
-    function addLiquidityThenSwap(bool _swapForYes, uint256 _swapHowMuch) external payable returns (uint256) {
-        uint256 _setsToBuy = msg.value / numTicks;
+    function addInitialLiquidity(uint256 _ratioFactor, bool _keepYes, address _recipient) external payable returns (uint256) {
         weth.deposit.value(msg.value);
-        uint256 lpTokens = amm.addLiquidityThenSwap(_setsToBuy, _swapForYes, _swapHowMuch);
+        uint256 lpTokens = amm.addInitialLiquidity(msg.value, _ratioFactor, _keepYes, _recipient);
         amm.transfer(msg.sender, lpTokens);
         return lpTokens;
     }

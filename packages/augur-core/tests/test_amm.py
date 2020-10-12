@@ -35,6 +35,17 @@ def test_amm_add_with_liquidity(contractsFixture, market, cash, shareToken, fact
     ammAddress = factory.addAMMWithLiquidity(market.address, shareToken.address, cost, ratioFactor, keepYes)
 
 
+def test_amm_add_with_liquidity2(contractsFixture, market, cash, shareToken, factory, account0):
+    cost = 10**18
+    keepYes = False
+    ratioFactor = 10**18
+
+    cash.faucet(cost)
+    cash.approve(factory.address, 10 ** 48)
+
+    ammAddress = factory.addAMMWithLiquidity(market.address, shareToken.address, cost, ratioFactor, keepYes)
+
+
 def test_amm_liquidity(contractsFixture, market, cash, shareToken, factory, amm, account0, kitchenSinkSnapshot):
     if not contractsFixture.paraAugur:
         return skip("Test is only for para augur")

@@ -3,6 +3,37 @@ export const AMMExchangeAbi = [
     "anonymous": false,
     "inputs": [
       {
+        "indexed": false,
+        "internalType": "address",
+        "name": "sender",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "cash",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "noShares",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "yesShares",
+        "type": "uint256"
+      }
+    ],
+    "name": "AddLiquidity",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
         "indexed": true,
         "internalType": "address",
         "name": "owner",
@@ -90,6 +121,37 @@ export const AMMExchangeAbi = [
       }
     ],
     "name": "ExitPosition",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": false,
+        "internalType": "address",
+        "name": "sender",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "cash",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "noShares",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "yesShares",
+        "type": "uint256"
+      }
+    ],
+    "name": "RemoveLiquidity",
     "type": "event"
   },
   {
@@ -198,11 +260,26 @@ export const AMMExchangeAbi = [
     "inputs": [
       {
         "internalType": "uint256",
-        "name": "_setsToBuy",
+        "name": "_cash",
         "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "_ratioFactor",
+        "type": "uint256"
+      },
+      {
+        "internalType": "bool",
+        "name": "_keepYes",
+        "type": "bool"
+      },
+      {
+        "internalType": "address",
+        "name": "_recipient",
+        "type": "address"
       }
     ],
-    "name": "addLiquidity",
+    "name": "addInitialLiquidity",
     "outputs": [
       {
         "internalType": "uint256",
@@ -219,21 +296,16 @@ export const AMMExchangeAbi = [
     "inputs": [
       {
         "internalType": "uint256",
-        "name": "_setsToBuy",
+        "name": "_cash",
         "type": "uint256"
       },
       {
-        "internalType": "bool",
-        "name": "_swapForYes",
-        "type": "bool"
-      },
-      {
-        "internalType": "uint256",
-        "name": "_swapHowMuch",
-        "type": "uint256"
+        "internalType": "address",
+        "name": "_recipient",
+        "type": "address"
       }
     ],
-    "name": "addLiquidityThenSwap",
+    "name": "addLiquidity",
     "outputs": [
       {
         "internalType": "uint256",
@@ -677,37 +749,6 @@ export const AMMExchangeAbi = [
     "inputs": [
       {
         "internalType": "uint256",
-        "name": "_setsToBuy",
-        "type": "uint256"
-      },
-      {
-        "internalType": "bool",
-        "name": "_swapForYes",
-        "type": "bool"
-      },
-      {
-        "internalType": "uint256",
-        "name": "_swapHowMuch",
-        "type": "uint256"
-      }
-    ],
-    "name": "rateAddLiquidityThenSwap",
-    "outputs": [
-      {
-        "internalType": "uint256",
-        "name": "",
-        "type": "uint256"
-      }
-    ],
-    "payable": false,
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "constant": true,
-    "inputs": [
-      {
-        "internalType": "uint256",
         "name": "_cashToSpend",
         "type": "uint256"
       },
@@ -927,42 +968,6 @@ export const AMMExchangeAbi = [
         "internalType": "contract IParaShareToken",
         "name": "",
         "type": "address"
-      }
-    ],
-    "payable": false,
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "constant": true,
-    "inputs": [
-      {
-        "internalType": "uint256",
-        "name": "_setsToBuy",
-        "type": "uint256"
-      },
-      {
-        "internalType": "bool",
-        "name": "_swapForYes",
-        "type": "bool"
-      },
-      {
-        "internalType": "uint256",
-        "name": "_swapHowMuch",
-        "type": "uint256"
-      }
-    ],
-    "name": "sharesRateForAddLiquidityThenSwap",
-    "outputs": [
-      {
-        "internalType": "uint256",
-        "name": "_yesses",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint256",
-        "name": "_nos",
-        "type": "uint256"
       }
     ],
     "payable": false,

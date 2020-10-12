@@ -9,10 +9,12 @@ import { NULL_ADDRESS, SignerOrProvider, YES_NO_NUMTICKS } from '../constants';
 export class AMMExchange {
   readonly contract: ethers.Contract;
   readonly address: string;
+  readonly signerOrProvider: SignerOrProvider;
 
   constructor(signerOrProvider: SignerOrProvider, address: string) {
     this.contract = new ethers.Contract(address, AMMExchangeAbi, signerOrProvider);
     this.address = address;
+    this.signerOrProvider = signerOrProvider;
   }
 
   // Ratio of Yes:No shares.
@@ -67,41 +69,39 @@ export class AMMExchange {
     return noShares;
   }
 
-  async addLiquidity(yesShares: Shares, noShares: Shares = null): Promise<LPTokens> {
-    if (noShares === null || yesShares.eq(noShares)) { // buy into liquidity at 1:1 ratio
-      const sets = yesShares;
-      const txr: TransactionResponse = await this.contract.addLiquidity(sets.toFixed());
-      const tx = await txr.wait();
-      const logs = tx.logs
-        .filter((log) => log.address === this.address)
-        .map((log) =>  this.contract.interface.parseLog(log));
-      console.log(JSON.stringify(logs, null, 2));
+  async addInitialLiquidity(recipient: string, cash: Cash, yesPercent = new BigNumber(50), noPercent = new BigNumber(50)): Promise<LPTokens> {
+    const keepYes = noPercent.gt(yesPercent);
 
-      return new BigNumber(1337);
-    }
+    let ratio = keepYes // more NO shares than YES shares
+      ? new BigNumber(10**18).times(yesPercent).div(noPercent)
+      : new BigNumber(10**18).times(noPercent).div(yesPercent);
 
-    const swapForYes = yesShares.gt(noShares);
-    const minBuy = BigNumber.min(noShares, yesShares);
-    const maxBuy = BigNumber.max(noShares, yesShares);
+    // must be integers
+    cash = cash.idiv(1);
+    ratio = ratio.idiv(1);
 
-    const setsBought = await binarySearch(
-      minBuy,
-      maxBuy,
-      100,
-      async (setsToBuy) => {
-        const setsToSell = setsToBuy.minus(minBuy);
-        const {_yesses, _nos} = await this.contract.sharesRateForAddLiquidityThenSwap(setsToBuy, swapForYes, setsToSell);
-        return swapForYes ? bnDirection(yesShares, _yesses) : bnDirection(noShares, _nos);
-      }
-    );
+    console.log(`addInitialLiquidity(${cash.toFixed()}, ${ratio.toFixed()}, ${keepYes}, ${recipient})`);
 
-    const setsSwapped = setsBought.minus(minBuy);
+    const txr: TransactionResponse = await this.contract.addInitialLiquidity(cash.toFixed(), ratio.toFixed(), keepYes, recipient);
+    const tx = await txr.wait();
+    const logs = tx.logs
+      .filter((log) => log.address === this.address)
+      .map((log) =>  this.contract.interface.parseLog(log));
+    console.log(JSON.stringify(logs, null, 2));
 
-    const lpTokens = await this.contract.rateAddLiquidityThenSwap(setsBought, swapForYes, setsSwapped);
-    await this.contract.addLiquidityThenSwap(setsBought, swapForYes, setsSwapped);
-    return lpTokens;
+    return new BigNumber(1337);
   }
 
+  async addLiquidity(recipient: string, cash: Cash): Promise<LPTokens> {
+    const txr: TransactionResponse = await this.contract.addLiquidity(cash.toFixed(), recipient);
+    const tx = await txr.wait();
+    const logs = tx.logs
+      .filter((log) => log.address === this.address)
+      .map((log) =>  this.contract.interface.parseLog(log));
+    console.log(JSON.stringify(logs, null, 2));
+
+    return new BigNumber(1337);
+  }
 
   async rateAddLiquidity(yesShares: Shares, noShares: Shares = null): Promise<LPTokens> {
     noShares = noShares || yesShares;
@@ -153,7 +153,7 @@ export class AMMExchange {
       return resultMinus;
     }
   }
-  
+
   async totalLiquidity(): Promise<LPTokens> {
     const lpTokens = await this.contract.totalSupply()
     return new BigNumber(lpTokens.toString());
