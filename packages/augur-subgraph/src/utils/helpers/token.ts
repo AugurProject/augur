@@ -6,8 +6,8 @@ import {
   TokenMintedEvent,
   TokenBurnedEvent,
   TokenTransferredEvent,
-  Token
-} from "../../../generated/schema";
+  Token, ParaShareToken,
+} from '../../../generated/schema';
 import {
   TokensMinted,
   TokensBurned,
@@ -208,4 +208,15 @@ export function getOrCreateShareToken(
 
 export function getTokenTypeFromInt(numericalType: i32): String {
   return tokenTypes[numericalType];
+}
+
+export function getOrCreateParaShareToken(id: string, cash: string): ParaShareToken {
+  let token = ParaShareToken.load(id);
+
+  if (token == null) {
+    token = new ParaShareToken(id);
+    token.cash = cash;
+  }
+
+  return token as ParaShareToken;
 }

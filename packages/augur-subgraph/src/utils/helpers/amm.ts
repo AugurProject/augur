@@ -7,6 +7,7 @@ import { ERC20 } from '../../../generated/templates/Cash/ERC20';
 import { ParaShareToken } from '../../../generated/templates/ShareToken/ParaShareToken';
 
 import { getOrCreateCash } from './cash';
+import { getOrCreateParaShareToken } from './token';
 
 export function getOrCreateAMMExchange(
   id: string,
@@ -37,8 +38,10 @@ export function createAndSaveAMMExchange(
 ): AMMExchange {
   // This just create the entity.
   getOrCreateCash(cash);
+  getOrCreateParaShareToken(shareToken, cash);
 
   let amm = getOrCreateAMMExchange(id);
+
   amm.market = market;
   amm.shareToken = shareToken;
   amm.cash = cash;
