@@ -382,7 +382,7 @@
 
     > button {
       .text-12;
-      
+
       text-transform: none;
       display: flex;
       flex-flow: row nowrap;
@@ -424,12 +424,21 @@
         > span {
           .text-14;
 
-          border: 0;
+          border: none;
           color: var(--color-primary-text);
           text-transform: capitalize;
-          border-bottom: @size-1 dotted;
-          border-color: var(--color-primary-text);
           padding: 0;
+          position: relative;
+
+          &:after {
+            content: "";
+            display: block;
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+            height: @size-2;
+            border-bottom: @size-1 dotted var(--color-primary-text);
+          }
         }
 
         > svg {
@@ -644,7 +653,7 @@
       > li > button {
         padding: @size-12 @size-24;
         height: @size-40;
-      }  
+      }
     }
   }
 }
