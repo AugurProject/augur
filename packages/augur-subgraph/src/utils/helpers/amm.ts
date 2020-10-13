@@ -4,7 +4,7 @@ import {
 } from '../../../generated/schema';
 import { Address, BigInt } from '@graphprotocol/graph-ts'
 import { ERC20 } from '../../../generated/templates/Cash/ERC20';
-import { ParaShareToken } from '../../../generated/templates/ShareToken/ParaShareToken';
+import { ParaShareToken } from '../../../generated/templates/ParaShareToken/ParaShareToken';
 
 import { getOrCreateCash } from './cash';
 import { getOrCreateParaShareToken } from './token';
