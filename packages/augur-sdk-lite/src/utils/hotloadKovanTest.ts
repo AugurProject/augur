@@ -1,5 +1,6 @@
 import { NetworkId } from '@augurproject/utils';
 import { ethers } from 'ethers';
+import { BigNumber } from 'bignumber.js';
 import { AugurLite } from '../AugurLite';
 import { NULL_ADDRESS } from '../constants';
 
@@ -15,7 +16,8 @@ async function doWork(): Promise<void> {
         "AccountLoader": NULL_ADDRESS,
         "AMMFactory": NULL_ADDRESS,
     }
-    const augurLite = new AugurLite(provider, addresses, NetworkId.Kovan);
+    const precision = new BigNumber(10**18);
+    const augurLite = new AugurLite(provider, addresses, NetworkId.Kovan, precision);
     const hotloadData = await augurLite.hotloadMarket("0x04CE01200a0A47f1198A0134330369ADEf44a92d");
     console.log(`HOT LOAD DATA: ${JSON.stringify(hotloadData)}`);
 }

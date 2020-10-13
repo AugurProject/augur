@@ -1299,10 +1299,10 @@ async function getMarketsInfo(
       creationTime: marketData.creationTime,
       categories,
       volume: new BigNumber(marketData.volume || 0)
-        .dividedBy(QUINTILLION)
+        .dividedBy(augur.precision)
         .toString(),
       openInterest: new BigNumber(marketData.marketOI || 0)
-        .dividedBy(QUINTILLION)
+        .dividedBy(augur.precision)
         .toString(),
       reportingState,
       needsMigration,

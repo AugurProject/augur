@@ -102,11 +102,13 @@ Deploying to: ${env}
         };
 
         const name = await cash.symbol_();
+        const decimals = await (await cash.decimals_()).toNumber();
 
         const configUpdate = {
             paraDeploys: {
                 [cash.address]: {
                     name,
+                    decimals,
                     uploadBlockNumber,
                     addresses,
                 }

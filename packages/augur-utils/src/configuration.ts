@@ -32,6 +32,7 @@ export interface ParaDeploys {
   [cashAddress: string]: {
     uploadBlockNumber?: number,
     name: string,
+    decimals: number,
     addresses: ParaAddresses
   };
 }

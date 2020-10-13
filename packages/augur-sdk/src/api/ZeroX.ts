@@ -630,8 +630,8 @@ export class ZeroX {
       simulationData[2],
       tickSize
     );
-    const displayTokensDepleted = simulationData[1].dividedBy(QUINTILLION);
-    const displaySettlementFees = simulationData[3].dividedBy(QUINTILLION);
+    const displayTokensDepleted = simulationData[1].dividedBy(this.client.precision);
+    const displaySettlementFees = simulationData[3].dividedBy(this.client.precision);
     const numFills = simulationData[4];
     return {
       sharesFilled: displaySharesFilled,

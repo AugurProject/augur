@@ -55,9 +55,11 @@ export interface HotLoadMarketInfo {
 
 export class HotLoading {
   private readonly provider: ethers.providers.Provider;
+  private readonly precision: BigNumber;
 
-  constructor(provider: ethers.providers.Provider) {
+  constructor(provider: ethers.providers.Provider, precision: BigNumber) {
     this.provider = provider;
+    this.precision = precision;
   }
 
   async getMarketData(params: GetMarketDataParams): Promise<HotLoadMarketInfo> {
@@ -100,10 +102,10 @@ export class HotLoading {
     const reportingStateNumber: number = marketData[7];
     const winningPayout = marketData[9];
     const volume = new BigNumber(marketData[10]._hex)
-      .dividedBy(QUINTILLION)
+      .dividedBy(this.precision)
       .toFixed();
     const openInterest = new BigNumber(marketData[11]._hex)
-      .dividedBy(QUINTILLION)
+      .dividedBy(this.precision)
       .toFixed();
     const lastTradedPrices = marketData[12];
     const universe = marketData[13];
@@ -196,7 +198,7 @@ export class HotLoading {
         volume:
           outcomeVolumes.length > 0
             ? new BigNumber(outcomeVolumes[i]._hex)
-                .dividedBy(QUINTILLION)
+                .dividedBy(this.precision)
                 .toFixed()
             : 0,
       };

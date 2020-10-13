@@ -487,7 +487,7 @@ export class Users {
     };
 
     // positions
-    const frozenFundsPerMarket = await getFrozenFundsPerMarket(db, params.account, params.universe);
+    const frozenFundsPerMarket = await getFrozenFundsPerMarket(db, params.account, params.universe, augur.precision);
     frozenFundsBreakdown.positions = {
       total: String(convertAttoValueToDisplayValue(frozenFundsPerMarket.frozenFundsTotal)),
       markets: frozenFundsPerMarket.frozenFundsPerMarket
@@ -1140,7 +1140,7 @@ export class Users {
       );
     }
 
-    const frozenFundsPerMarket = await getFrozenFundsPerMarket(db, params.account, params.universe);
+    const frozenFundsPerMarket = await getFrozenFundsPerMarket(db, params.account, params.universe, augur.precision);
 
     // includes validity bonds for market creations
     const ownedMarketsResponse = await db.Markets.where('marketCreator')
@@ -1155,7 +1155,7 @@ export class Users {
     return {
       totalFrozenFunds: totalValidityBonds
         .plus(frozenFundsPerMarket.frozenFundsTotal)
-        .dividedBy(QUINTILLION)
+        .dividedBy(augur.precision)
         .toFixed(),
     };
   }
@@ -1930,7 +1930,8 @@ async function getFullMarketPositionLoss(
 async function getFrozenFundsPerMarket(
   db: DB,
   account: string,
-  universe: string
+  universe: string,
+  precision: BigNumber
 ) {
   const profitLossRecords = await db.ProfitLossChanged.where('account')
     .equals(account)
@@ -1987,7 +1988,7 @@ async function getFrozenFundsPerMarket(
     ([market, ff]) =>
       ff.gt(ZERO) && !fullTotalLossMarketsPositions.includes(market)
   )
-  .reduce((accum, [market, ff]) => ({...accum, [market]: String(convertAttoValueToDisplayValue(ff.div(QUINTILLION)))}), {})
+  .reduce((accum, [market, ff]) => ({...accum, [market]: String(convertAttoValueToDisplayValue(ff.div(precision)))}), {})
 
   const frozenFundsTotal = Object.entries(totalFrozenFundsByMarket)
   .filter(
@@ -1995,7 +1996,7 @@ async function getFrozenFundsPerMarket(
       ff.gt(ZERO) && !fullTotalLossMarketsPositions.includes(market)
   )
   .reduce((accum, [market, ff]) => accum.plus(ff), ZERO)
-  .dividedBy(QUINTILLION);
+  .dividedBy(precision);
 
   return {
     frozenFundsTotal,

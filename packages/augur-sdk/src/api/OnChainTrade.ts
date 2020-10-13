@@ -212,8 +212,8 @@ export class OnChainTrade {
       simulationData[2],
       tickSize
     );
-    const displayTokensDepleted = simulationData[1].dividedBy(QUINTILLION);
-    const displaySettlementFees = simulationData[3].dividedBy(QUINTILLION);
+    const displayTokensDepleted = simulationData[1].dividedBy(this.augur.precision);
+    const displaySettlementFees = simulationData[3].dividedBy(this.augur.precision);
     const { loopLimit } = await this.getTradeTransactionLimits(
       onChainTradeParams
     );

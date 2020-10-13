@@ -42,10 +42,12 @@ export class AugurLite {
   constructor(
     readonly provider: ethers.providers.Provider,
     readonly addresses: Addresses,
-    readonly networkId: NetworkId
+    readonly networkId: NetworkId,
+    readonly precision: BigNumber
   ) {
     this.provider = provider;
-    this.hotLoading = new HotLoading(this.provider);
+    this.precision = precision;
+    this.hotLoading = new HotLoading(this.provider, precision);
     this.accountLoader = new AccountLoader(this.provider);
     this.warpSync = new WarpSync(this.provider, addresses.WarpSync);
     this.ammFactory = new AMMFactory(this.provider, addresses.AMMFactory);

@@ -86,6 +86,8 @@ export class Augur<TProvider extends Provider = Provider> {
   readonly marketInvalidBids: MarketInvalidBids;
   readonly events: EventEmitter;
 
+  readonly precision: BigNumber;
+
   private ethExchangetoken0IsCash: boolean;
 
   private _sdkReady = false;
@@ -185,6 +187,8 @@ export class Augur<TProvider extends Provider = Provider> {
     this.ethExchangetoken0IsCash = new BigNumber(config.addresses.Cash.toLowerCase()).lt(
       config.addresses.WETH9.toLowerCase()
     );
+
+    this.precision = new BigNumber(10).pow(this.config.paraDeploy ? this.config.paraDeploys[this.config.paraDeploy].decimals : 18);
 
     this.txSuccessCallbacks = [];
 
