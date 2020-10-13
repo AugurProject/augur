@@ -1,6 +1,7 @@
 import { log } from '@graphprotocol/graph-ts';
 import {
   AMMExchange,
+  Market
 } from '../../../generated/schema';
 import { Address, BigInt } from '@graphprotocol/graph-ts'
 import { ERC20 } from '../../../generated/templates/Cash/ERC20';
@@ -45,14 +46,14 @@ export function createAndSaveAMMExchange(
   amm.market = market;
   amm.shareToken = shareToken;
   amm.cash = cash;
+  amm.save()
 
-  amm.save();
-
-  return amm;
+  return updateAMM(id);
 }
 
-export function updateAMM(id: string):void {
+export function updateAMM(id: string):AMMExchange {
   let amm = AMMExchange.load(id);
+  let market = Market.load(amm.market);
 
   let shareTokenInstance = ParaShareToken.bind(
     Address.fromString(amm.shareToken));
@@ -67,11 +68,12 @@ export function updateAMM(id: string):void {
     Address.fromString(amm.market), BigInt.fromI32(2), Address.fromString(id));
 
   let totalShares = amm.liquidityNo.plus(amm.liquidityYes);
-  let numTicks = amm.market.numTicks;
 
   // @todo confirm this is correct.
-  amm.liquidity = totalShares.div(numTicks);
+  amm.liquidity = totalShares.div(market.numTicks);
 
   amm.save();
+
+  return amm as AMMExchange;
 }
 

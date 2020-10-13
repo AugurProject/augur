@@ -11,7 +11,7 @@ export function handleCashTransfer(event: Transfer): void {
     _fromExchange.cashBalance = _fromExchange.cashBalance.minus(_amount);
   }
 
-  const _toExchange = AMMExchange.load(_to);
+  let _toExchange = AMMExchange.load(_to);
   if(_toExchange != null) {
     _fromExchange.cashBalance = _fromExchange.cashBalance.plus(_amount);
   }
