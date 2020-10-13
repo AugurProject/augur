@@ -340,7 +340,7 @@ export class EthersProvider extends ethers.providers.BaseProvider
     const omittedValues = _.map(_.range(parsedLog.values.length), (n) =>
       n.toString()
     );
-    omittedValues.push('length');
+    omittedValues.push('length', 'toLowerCase');
     const logValues = _.omit(parsedLog.values, omittedValues);
     return {
       name: parsedLog.name,
