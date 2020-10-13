@@ -44,16 +44,16 @@ export class SDK {
     const { Connectors, EthersProvider, createClient } = await import(/* webpackChunkName: 'augur-sdk' */ '@augurproject/sdk');
 
     this.config = config;
-
-    if(process.env.PARA_DEPLOY_TOKEN_NAME && process.env.PARA_DEPLOY_TOKEN_NAME !== '') {
-      for(const key of Object.keys(config.paraDeploys)) {
-        if(config.paraDeploys[key].name === process.env.PARA_DEPLOY_TOKEN_NAME) {
-          config.paraDeploy = key;
-          logger.log(`Setting paraDeploy name ${process.env.PARA_DEPLOY_TOKEN_NAME} with address ${key}.`)
-          break;
-        }
+    let paraOfChoice = process.env.PARA_DEPLOY_TOKEN_NAME
+    for(const key of Object.keys(config.paraDeploys)) {
+      if (!paraOfChoice) paraOfChoice = key;
+      if(config.paraDeploys[key].name === paraOfChoice) {
+        config.paraDeploy = key;
+        logger.log(`Setting paraDeploy name ${paraOfChoice} with address ${key}.`)
+        break;
       }
     }
+
 
     if ((isSafari() || isMobileSafari()) && this.config.zeroX) {
       this.config.zeroX.delayTillSDKReady = true;
