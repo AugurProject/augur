@@ -94,9 +94,22 @@ export class AMMExchange {
     return liquidityLog.lpTokens;
   }
 
-  async rateAddLiquidity(yesShares: Shares, noShares: Shares = null): Promise<LPTokens> {
-    noShares = noShares || yesShares;
-    return this.contract.rateAddLiquidity(yesShares.toFixed(), noShares.toFixed());
+  async rateAddInitialLiquidity(recipient: string, cash: Cash, yesPercent: BigNumber, noPercent: BigNumber): Promise<LPTokens> {
+    const keepYes = noPercent.gt(yesPercent);
+
+    let ratio = keepYes // more NO shares than YES shares
+      ? new BigNumber(10**18).times(yesPercent).div(noPercent)
+      : new BigNumber(10**18).times(noPercent).div(yesPercent);
+
+    // must be integers
+    cash = cash.idiv(1);
+    ratio = ratio.idiv(1);
+
+    return this.contract.callStatic.addInitialLiquidity(cash.toFixed(), ratio.toFixed(), keepYes, recipient);
+  }
+
+  async rateAddLiquidity(recipient: string, cash: BigNumber): Promise<LPTokens> {
+    return this.contract.callStatic.addLiquidity(cash.toFixed(), recipient);
   }
 
   async removeLiquidity(lpTokens: LPTokens, alsoSell = false): Promise<RemoveLiquidityReturn> {

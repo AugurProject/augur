@@ -2971,7 +2971,7 @@ export function addScripts(flash: FlashSession) {
   });
 
   flash.addScript({
-    name: 'amm-calc-add-liquidity',
+    name: 'amm-calc-initial-liquidity',
     options: [
       {
         name: 'market',
@@ -2980,23 +2980,33 @@ export function addScripts(flash: FlashSession) {
         required: true,
       },
       {
-        name: 'sets',
-        abbr: 's',
-        description: 'How many sets you will mint then add to the LP. Cost in cash is sets * market.numticks.',
+        name: 'cash',
+        abbr: 'c',
+        description: 'How much cash to add.',
         required: true,
+      },
+      {
+        name: 'ratio',
+        abbr: 'r',
+        description: 'Percentage of YES shares for initial liquidity. [0,100]. Defaults to 50.',
       },
     ],
     async call(this: FlashSession, args: FlashArguments) {
       const user = await this.createUser(this.getAccount(), this.config);
 
       const market = user.augur.contracts.marketFromAddress(args.market as string);
-      const sets = new BigNumber(args.sets as string);
+      const cash = new BigNumber(args.cash as string);
+      const yesPercent = args.ratio ? new BigNumber(args.ratio as string) : new BigNumber(50);
+      const recipient = args.target as string || user.account.address;
+
+      if (yesPercent.lt(0) || yesPercent.gt(100)) throw Error(`make-amm-market --ratio must be between 0 and 100 (inclusive), not ${args.ratio as string}`);
+      const noPercent = new BigNumber(100).minus(yesPercent);
 
       const paraShareToken = this.config.paraDeploys[this.config.paraDeploy].addresses.ShareToken;
       const factory = new AMMFactory(user.signer, this.config.addresses.AMMFactory);
       const amm = await factory.getAMMExchange(market.address, paraShareToken);
 
-      const lpTokens = await amm.rateAddLiquidity(sets);
+      const lpTokens = await amm.rateAddInitialLiquidity(recipient, cash, yesPercent, noPercent);
 
       console.log(`LP Tokens you would acquire: ${lpTokens}`);
     }
