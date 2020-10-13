@@ -2809,7 +2809,7 @@ MUST emit when the URI is updated for a token ID.
 
 
 
-<div class="contract-index"><span class="contract-index-title">Functions</span><ul><li><a href="#AMMFactory.constructor(address,uint256)"><code class="function-signature">constructor(address _proxyToClone, uint256 _fee)</code></a></li><li><a href="#AMMFactory.addAMM(contract IMarket,contract IParaShareToken)"><code class="function-signature">addAMM(contract IMarket _market, contract IParaShareToken _para)</code></a></li><li><a href="#AMMFactory.addAMMWithLiquidity(contract IMarket,contract IParaShareToken,uint256,uint256,bool)"><code class="function-signature">addAMMWithLiquidity(contract IMarket _market, contract IParaShareToken _para, uint256 _cash, uint256 _ratioFactor, bool _keepYes)</code></a></li><li><a href="#AMMFactory.salt(contract IMarket,contract IParaShareToken)"><code class="function-signature">salt(contract IMarket _market, contract IParaShareToken _para)</code></a></li><li><a href="#AMMFactory.transferCash(contract IMarket,contract IParaShareToken,address,address,uint256)"><code class="function-signature">transferCash(contract IMarket _market, contract IParaShareToken _para, address sender, address recipient, uint256 quantity)</code></a></li><li><a href="#AMMFactory.calculateAMMAddress(contract IMarket,contract IParaShareToken)"><code class="function-signature">calculateAMMAddress(contract IMarket _market, contract IParaShareToken _para)</code></a></li><li class="inherited"><a href="para#CloneFactory2.createClone2(address,uint256)"><code class="function-signature">createClone2(address target, uint256 salt)</code></a></li><li class="inherited"><a href="para#CloneFactory2.clone2Address(address,uint256,address)"><code class="function-signature">clone2Address(address target, uint256 salt, address creator)</code></a></li></ul></div>
+<div class="contract-index"><span class="contract-index-title">Functions</span><ul><li><a href="#AMMFactory.constructor(address,uint256)"><code class="function-signature">constructor(address _proxyToClone, uint256 _fee)</code></a></li><li><a href="#AMMFactory.addAMM(contract IMarket,contract IParaShareToken)"><code class="function-signature">addAMM(contract IMarket _market, contract IParaShareToken _para)</code></a></li><li><a href="#AMMFactory.addAMMWithLiquidity(contract IMarket,contract IParaShareToken,uint256,uint256,bool)"><code class="function-signature">addAMMWithLiquidity(contract IMarket _market, contract IParaShareToken _para, uint256 _cash, uint256 _ratioFactor, bool _keepYes)</code></a></li><li><a href="#AMMFactory.addInitialLiquidity(contract IMarket,contract IParaShareToken,uint256,uint256,bool)"><code class="function-signature">addInitialLiquidity(contract IMarket _market, contract IParaShareToken _para, uint256 _cash, uint256 _ratioFactor, bool _keepYes)</code></a></li><li><a href="#AMMFactory.addLiquidity(contract IMarket,contract IParaShareToken,uint256)"><code class="function-signature">addLiquidity(contract IMarket _market, contract IParaShareToken _para, uint256 _cash)</code></a></li><li><a href="#AMMFactory.salt(contract IMarket,contract IParaShareToken)"><code class="function-signature">salt(contract IMarket _market, contract IParaShareToken _para)</code></a></li><li><a href="#AMMFactory.transferCash(contract IMarket,contract IParaShareToken,address,address,uint256)"><code class="function-signature">transferCash(contract IMarket _market, contract IParaShareToken _para, address sender, address recipient, uint256 quantity)</code></a></li><li><a href="#AMMFactory.calculateAMMAddress(contract IMarket,contract IParaShareToken)"><code class="function-signature">calculateAMMAddress(contract IMarket _market, contract IParaShareToken _para)</code></a></li><li class="inherited"><a href="para#CloneFactory2.createClone2(address,uint256)"><code class="function-signature">createClone2(address target, uint256 salt)</code></a></li><li class="inherited"><a href="para#CloneFactory2.clone2Address(address,uint256,address)"><code class="function-signature">clone2Address(address target, uint256 salt, address creator)</code></a></li></ul></div>
 
 
 
@@ -2826,6 +2826,18 @@ MUST emit when the URI is updated for a token ID.
 
 
 <h4><a class="anchor" aria-hidden="true" id="AMMFactory.addAMMWithLiquidity(contract IMarket,contract IParaShareToken,uint256,uint256,bool)"></a><code class="function-signature">addAMMWithLiquidity(contract IMarket _market, contract IParaShareToken _para, uint256 _cash, uint256 _ratioFactor, bool _keepYes) <span class="return-arrow">→</span> <span class="return-type">address</span></code><span class="function-visibility">external</span></h4>
+
+
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="AMMFactory.addInitialLiquidity(contract IMarket,contract IParaShareToken,uint256,uint256,bool)"></a><code class="function-signature">addInitialLiquidity(contract IMarket _market, contract IParaShareToken _para, uint256 _cash, uint256 _ratioFactor, bool _keepYes) <span class="return-arrow">→</span> <span class="return-type">uint256</span></code><span class="function-visibility">external</span></h4>
+
+
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="AMMFactory.addLiquidity(contract IMarket,contract IParaShareToken,uint256)"></a><code class="function-signature">addLiquidity(contract IMarket _market, contract IParaShareToken _para, uint256 _cash) <span class="return-arrow">→</span> <span class="return-type">uint256</span></code><span class="function-visibility">external</span></h4>
 
 
 
