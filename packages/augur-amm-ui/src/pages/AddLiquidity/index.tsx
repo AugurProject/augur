@@ -254,7 +254,7 @@ function AddLiquidity({ amm, marketId, cash }: RouteComponentProps<{ amm?: strin
             </ColumnCenter>
             <DistributionPanel
               updateDistribution={setCurrentDistribution}
-              disableInputs={!hasLiquidity}
+              disableInputs={hasLiquidity}
               distroPercentage={distroPercentage}
               id={marketId}
             />

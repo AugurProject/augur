@@ -152,7 +152,7 @@ export function useAllMarketCashes() {
 export function useShareTokens(cash) {
   const [state] = useMarketDataContext()
   const shareToken =
-    state?.paraShareTokens ?? state?.paraShareTokens.find(s => s.cash.id.toLowerCase() === cash?.toLowerCase())
+    state?.paraShareTokens ?? (state?.paraShareTokens || []).find(s => s.cash.id.toLowerCase() === cash?.toLowerCase())
   return shareToken[0].id
 }
 
