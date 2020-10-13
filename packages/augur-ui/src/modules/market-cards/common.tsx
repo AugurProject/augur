@@ -744,20 +744,23 @@ export const ReportedOutcome = ({
   );
 };
 
-export const MultiOutcomeMarketRow = ({ data }) => (
-  <section
-    className={classNames(Styles.MultiOutcomeMarketRow, {
-      [Styles.FourOutcomes]: data.length === 4,
-    })}
-  >
-    {data.map(outcomeData => (
-      <article key={outcomeData.title}>
-        <SportsOutcome {...outcomeData} />
-      </article>
-    ))}
-  </section>
-);
-
+export const MultiOutcomeMarketRow = ({ data }) => {
+  const isFourOutcomes = data.length === 4;
+  const items = isFourOutcomes ? [data[0], data[2], data[1], data[3]] : data;
+  return (
+    <section
+      className={classNames(Styles.MultiOutcomeMarketRow, {
+        [Styles.FourOutcomes]: isFourOutcomes,
+      })}
+    >
+      {items.map(outcomeData => (
+        <article key={outcomeData.title}>
+          <SportsOutcome {...outcomeData} />
+        </article>
+      ))}
+    </section>
+  );
+}
 export const MultiOutcomeMarketGrid = ({ data }) => (
   <section className={Styles.MultiOutcomeMarketGrid}>
     {data.map(({ title, ...outcomeData }) => (
@@ -877,7 +880,15 @@ export const SportsMarketContainer = ({
     }
   }, [market.id, market.author]);
   let innerContent = null;
-  let headingContent = <h6>{title}</h6>;
+  let headingContent = <button
+    onClick={e => {
+      e.preventDefault();
+      setIsCollapsed(!isCollapsed);
+    }}
+  >
+    <h6>{title}</h6>
+    {ThickChevron}
+  </button>;
   const isGrid = data.length > 4;
   if (isGrid) {
     innerContent = <MultiOutcomeMarketGrid key={marketId} data={data} />;
@@ -939,8 +950,9 @@ export const SportsMarketContainer = ({
         {headingContent}
         {isFutures && isGroupPage ? (
           <MarketLink id={marketId}>{ThickChevron}</MarketLink>
-        ) : isFutures && !isGroupPage && marketAmount < 2 ? null : (
+        ) : isFutures && !isGroupPage && marketAmount > 1 ? (
           <button
+            className={Styles.toggleCollapsed}
             onClick={e => {
               e.preventDefault();
               setIsCollapsed(!isCollapsed);
@@ -948,7 +960,7 @@ export const SportsMarketContainer = ({
           >
             {ThickChevron}
           </button>
-        )}
+        ): null}
       </header>
       <div>{innerContent}</div>
       {isGrid && <OutcomeGroupFooter market={market} />}
@@ -979,17 +991,20 @@ export const prepareSportsGroup = (
   isGroupPage = false,
   marketId = null
 ) => {
-  const { markets } = sportsGroup;
+  const { markets, type } = sportsGroup;
   const { COMBO, FUTURES } = SPORTS_GROUP_TYPES;
   const { MONEY_LINE } = SPORTS_GROUP_MARKET_TYPES;
   const { additionalMarkets, topComboMarkets, numMarkets } = prepareCombo(
     sportsGroup
   );
   let marketGroups = [];
-  let sortedMarkets = sortByPriorityGroupType(markets, MONEY_LINE).reduce(
-    reduceToUniquePools,
-    []
-  );
+  let sortedMarkets = sortByPriorityGroupType(markets, MONEY_LINE);
+  if (type == FUTURES) {
+    sortedMarkets.reduce(
+      reduceToUniquePools,
+      []
+    );
+  }
   if (marketId) {
     const index = sortedMarkets.findIndex(m => m.id === marketId);
     if (index >= 0) {

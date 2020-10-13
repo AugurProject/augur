@@ -90,14 +90,8 @@ export const SportsMarketCard = ({
       <SportsGroupMarkets sportsGroup={sportsGroup} />
       {!isFutures && (
         <CountdownProgress
-          label={
-            type === FUTURES ? 'Event Expiration Date' : 'Estimated Start Time'
-          }
-          time={
-            type === FUTURES
-              ? endTimeFormatted
-              : formatTime(market.sportsBook.estTimestamp)
-          }
+          label="Estimated Start Time"
+          time={formatTime(market.sportsBook.estTimestamp)}
           reportingState={reportingState}
         />
       )}
