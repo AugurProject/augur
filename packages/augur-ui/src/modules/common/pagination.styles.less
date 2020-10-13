@@ -123,6 +123,8 @@
 :root[theme="BETTING"],
 :root[theme="SPORTS"] {
   .Pagination {
+    margin-bottom: @size-48;
+
     section > button {
       .mono-12-semi-bold;
 
@@ -166,6 +168,8 @@
       margin-left: @size-16;
       height: @size-40;
       border: none;
+      margin-bottom: 0;
+      align-self: center;
 
       > button {
         background: transparent;
@@ -176,22 +180,11 @@
           .mono-14;
 
           color: var(--color-primary-text);
-          text-transform: capitalize;
           border-right: none;
 
           &::before {
-            .mono-14;
-
-            color: var(--color-secondary-text);
-          }
-
-          &::after {
-            .mono-14;
-
-            content: 'per page';
-            text-transform: lowercase;
-            padding-left: @size-4;
-            color: var(--color-primary-text);
+            content: '';
+            padding: unset;
           }
         }
 

@@ -2,8 +2,9 @@ import React from 'react';
 import classNames from 'classnames';
 import { DirectionButton } from 'modules/common/buttons';
 import { SquareDropdown } from 'modules/common/selection';
-import { PAGINATION_VIEW_OPTIONS } from 'modules/common/constants';
-import Styles from 'modules/common/pagination.styles.less';
+import { PAGINATION_VIEW_OPTIONS, THEMES } from 'modules/common/constants';
+import Styles, { pagination } from 'modules/common/pagination.styles.less';
+import { useAppStatusStore } from 'modules/app/store/app-status';
 
 interface PaginationProps {
   page: number;
@@ -95,23 +96,24 @@ const renderPageButtons = (
 
 const getLimitOptions = (itemCount: number, maxLimit: number) => {
   let paginationOptions = [
-    { value: maxLimit, label: PAGINATION_VIEW_OPTIONS.ALL },
-    { value: 10, label: PAGINATION_VIEW_OPTIONS.TEN },
+    { value: 10, label: `${PAGINATION_VIEW_OPTIONS.TEN} per page` },
   ];
 
   if (itemCount >= 50) {
     paginationOptions = paginationOptions.concat({
       value: 50,
-      label: PAGINATION_VIEW_OPTIONS.FIFTY,
+      label: `${PAGINATION_VIEW_OPTIONS.FIFTY} per page`,
     });
   }
 
   if (itemCount >= 100) {
     paginationOptions = paginationOptions.concat({
       value: 100,
-      label: PAGINATION_VIEW_OPTIONS.HUNDRED,
+      label: `${PAGINATION_VIEW_OPTIONS.HUNDRED} per page`,
     });
   }
+
+  paginationOptions = paginationOptions.concat({ value: maxLimit, label: PAGINATION_VIEW_OPTIONS.ALL });
 
   return paginationOptions;
 };
@@ -126,6 +128,8 @@ export const Pagination = ({
   maxLimit,
   showPagination = true,
 }: PaginationProps) => {
+  const { theme } = useAppStatusStore();
+  const isTrading = theme === THEMES.TRADING;
   const totalPages =
     itemsPerPage === 1 ? 1 : Math.ceil(itemCount / (itemsPerPage || 10)) || 1;
 
@@ -151,10 +155,11 @@ export const Pagination = ({
 
       {showLimitChanger && (
         <SquareDropdown
-          large
           defaultValue={itemsPerPage}
           options={getLimitOptions(itemCount, maxLimit)}
           onChange={updateLimit}
+          minimalStyle={!isTrading}
+          preLabel={!isTrading ? "Show" : null}
         />
       )}
     </div>
