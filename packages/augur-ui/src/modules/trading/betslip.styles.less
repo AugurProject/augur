@@ -151,6 +151,18 @@
         }
       }
     }
+
+    @media @breakpoint-tiny {
+      background: transparent;
+      > div {
+        background: var(--color-primary-text-50);
+
+        > button:first-of-type {
+          background: var(--color-primary-text);
+        }
+      }
+    }
+
   }
 
   .Container {
@@ -160,6 +172,7 @@
     border: @size-1 solid var(--color-secondary-action-outline);
     border-radius: @border-radius-rounded;
     box-shadow: 0 0 @size-4 var(--color-primary-text-15);
+
 
     @media @breakpoint-mobile-tablet {
       height: 100%;
