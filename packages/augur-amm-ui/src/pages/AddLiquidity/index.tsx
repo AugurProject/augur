@@ -23,7 +23,7 @@ import { useDerivedMintInfo, useMintActionHandlers, useMintState } from '../../s
 import { useTransactionAdder } from '../../state/transactions/hooks'
 import { useUserSlippageTolerance } from '../../state/user/hooks'
 import { TYPE } from '../../Theme'
-import { addAmmLiquidity, useAmmFactory } from '../../utils'
+import { addAmmLiquidity } from '../../utils'
 import { maxAmountSpend } from '../../utils/maxAmountSpend'
 import AppBody from '../AppBody'
 import { Dots, Wrapper } from '../../components/swap/styleds'
@@ -37,21 +37,20 @@ import CashInputPanel from '../../components/CashInputPanel'
 import DistributionPanel from '../../components/DistributionPanel'
 import { useWalletModalToggle } from '../../state/application/hooks'
 
-function AddLiquidity({
-  amm,
-  marketId,
-  cash,
-}: RouteComponentProps<{ amm?: string; marketId: string; cash: string }>) {
+function AddLiquidity({ amm, marketId, cash }: RouteComponentProps<{ amm?: string; marketId: string; cash: string }>) {
   const { account, chainId, library } = useActiveWeb3React()
-  const ammFactoryContract = useAmmFactory()
   const augurClient = useAugurClient()
   const ammFactory = useAmmFactoryAddress()
   const theme = useContext(ThemeContext)
-  // share token is undefined for isCreate
+
+  // share token is undefined then AMM hasn't bee created
   const sharetoken = useShareTokens(cash)
-  const ammData = useMarketAmm(marketId, amm)
   const market = useMarket(marketId)
-  const isCreate = !ammData.id
+
+  // TODO disabled initial liq for testing only
+  const ammData = useMarketAmm(marketId, amm)
+  const hasLiquidity = ammData?.hasLiquidity
+
   const currencyA = useCurrency(cash)
   console.log('currencyA token', JSON.stringify(currencyA))
 
@@ -82,7 +81,7 @@ function AddLiquidity({
   const deadline = useTransactionDeadline() // custom from users settings
   const [allowedSlippage] = useUserSlippageTolerance() // custom from users
   const [txHash, setTxHash] = useState<string>('')
-  const [currentDistribution, setCurrentDistribution] = useState<number[]>([50, 50])
+  const [distroPercentage, setCurrentDistribution] = useState<number[]>([50, 50])
 
   // get formatted amounts
   const formattedAmounts = {
@@ -113,7 +112,7 @@ function AddLiquidity({
 
   // check whether the user has approved the router on the tokens
   const [approvalA, approveACallback] = useApproveCallback(parsedAmounts[Field.CURRENCY_A], ammFactory)
-
+  console.log('add liq approvalA', String(approvalA), ammFactory, parsedAmounts[Field.CURRENCY_A])
   const addTransaction = useTransactionAdder()
 
   async function onAdd() {
@@ -126,61 +125,30 @@ function AddLiquidity({
     }
 
     setAttemptingTxn(true)
-    await addAmmLiquidity(augurClient, marketId, sharetoken, parsedAmountA.raw.toString(), currentDistribution)
-    .then(response => {
-      setAttemptingTxn(false)
-
-      addTransaction(response, {
-        summary:
-          'Add ' +
-          parsedAmounts[Field.CURRENCY_A]?.toSignificant(3) +
-          ' ' +
-          currencies[Field.CURRENCY_A]?.symbol
-      })
-
-      setTxHash(response.hash)
-
-      ReactGA.event({
-        category: 'Liquidity',
-        action: 'Add',
-        label: [currencies[Field.CURRENCY_A]?.symbol].join('/')
-      })
+    await addAmmLiquidity({
+      hasLiquidity,
+      augurClient,
+      marketId,
+      sharetoken,
+      cashAmount: parsedAmountA.raw.toString(),
+      distroPercentage
     })
-    .catch(error => {
-      setAttemptingTxn(false)
-      // we only care if the error is something _other_ than the user rejected the tx
-      if (error?.code !== 4001) {
-        console.error(error)
-      }
-    })
-/*
-    await estimate(...args, value ? { value } : {})
-      .then(estimatedGasLimit =>
-        method(...args, {
-          ...(value ? { value } : {}),
-          gasLimit: calculateGasMargin(estimatedGasLimit)
-        }).then(response => {
-          setAttemptingTxn(false)
+      .then(response => {
+        setAttemptingTxn(false)
 
-          addTransaction(response, {
-            summary:
-              'Add ' +
-              parsedAmounts[Field.CURRENCY_A]?.toSignificant(3) +
-              ' ' +
-              currencies[Field.CURRENCY_A]?.symbol +
-              ' ' +
-              currencies[Field.CURRENCY_B]?.symbol
-          })
-
-          setTxHash(response.hash)
-
-          ReactGA.event({
-            category: 'Liquidity',
-            action: 'Add',
-            label: [currencies[Field.CURRENCY_A]?.symbol].join('/')
-          })
+        addTransaction(response, {
+          summary:
+            'Add ' + parsedAmounts[Field.CURRENCY_A]?.toSignificant(3) + ' ' + currencies[Field.CURRENCY_A]?.symbol
         })
-      )
+
+        setTxHash(response.hash)
+
+        ReactGA.event({
+          category: 'Liquidity',
+          action: 'Add',
+          label: [currencies[Field.CURRENCY_A]?.symbol].join('/')
+        })
+      })
       .catch(error => {
         setAttemptingTxn(false)
         // we only care if the error is something _other_ than the user rejected the tx
@@ -188,21 +156,19 @@ function AddLiquidity({
           console.error(error)
         }
       })
-      */
   }
 
   const modalHeader = () => (
-      <AutoColumn gap="20px" justify="center">
-        <LightCard mt="20px" borderRadius="20px">
-          <RowFlat>
-            <TYPE.body fontSize="12px" fontWeight={500} marginRight={10}>
-              {market?.description}
-            </TYPE.body>
-          </RowFlat>
-        </LightCard>
-      </AutoColumn>
-    )
-
+    <AutoColumn gap="20px" justify="center">
+      <LightCard mt="20px" borderRadius="20px">
+        <RowFlat>
+          <TYPE.body fontSize="12px" fontWeight={500} marginRight={10}>
+            {market?.description}
+          </TYPE.body>
+        </RowFlat>
+      </LightCard>
+    </AutoColumn>
+  )
 
   const modalBottom = () => {
     return (
@@ -210,10 +176,10 @@ function AddLiquidity({
         price={price}
         currencies={currencies}
         parsedAmounts={parsedAmounts}
-        noLiquidity={isCreate}
+        noLiquidity={!hasLiquidity}
         onAdd={onAdd}
         poolTokenPercentage={poolTokenPercentage}
-        distribution={currentDistribution}
+        distribution={distroPercentage}
       />
     )
   }
@@ -231,11 +197,10 @@ function AddLiquidity({
     setTxHash('')
   }, [onFieldAInput, txHash])
 
-
   return (
     <LiquidityPage>
       <AppBody>
-        <AddRemoveTabs creating={isCreate} adding={true} token={marketId} />
+        <AddRemoveTabs creating={!hasLiquidity} adding={true} token={marketId} />
         <Wrapper>
           <TransactionConfirmationModal
             isOpen={showConfirm}
@@ -244,7 +209,7 @@ function AddLiquidity({
             hash={txHash}
             content={() => (
               <ConfirmationModalContent
-                title={isCreate ? 'You are creating a pool and supplying liquidity' : 'You are adding liquidity'}
+                title={!hasLiquidity ? 'You are creating a pool and supplying liquidity' : 'You are adding liquidity'}
                 onDismiss={handleDismissConfirmation}
                 topContent={modalHeader}
                 bottomContent={modalBottom}
@@ -289,8 +254,8 @@ function AddLiquidity({
             </ColumnCenter>
             <DistributionPanel
               updateDistribution={setCurrentDistribution}
-              disableInputs={!isCreate}
-              currentDistribution={currentDistribution}
+              disableInputs={hasLiquidity}
+              distroPercentage={distroPercentage}
               id={marketId}
             />
             {currencies[Field.CURRENCY_A] && currencies[Field.CURRENCY_B] && pairState !== PairState.INVALID && (
@@ -318,22 +283,22 @@ function AddLiquidity({
             ) : (
               <AutoColumn gap={'md'}>
                 {isValid && (
-                    <RowBetween>
-                      {approvalA !== ApprovalState.APPROVED && (
-                        <ButtonPrimary
-                          onClick={approveACallback}
-                          disabled={approvalA === ApprovalState.PENDING}
-                          width={'100%'}
-                        >
-                          {approvalA === ApprovalState.PENDING ? (
-                            <Dots>Approving {currencies[Field.CURRENCY_A]?.symbol}</Dots>
-                          ) : (
-                            'Approve ' + currencies[Field.CURRENCY_A]?.symbol
-                          )}
-                        </ButtonPrimary>
-                      )}
-                    </RowBetween>
-                  )}
+                  <RowBetween>
+                    {approvalA !== ApprovalState.APPROVED && (
+                      <ButtonPrimary
+                        onClick={approveACallback}
+                        disabled={approvalA === ApprovalState.PENDING}
+                        width={'100%'}
+                      >
+                        {approvalA === ApprovalState.PENDING ? (
+                          <Dots>Approving {currencies[Field.CURRENCY_A]?.symbol}</Dots>
+                        ) : (
+                          'Approve ' + currencies[Field.CURRENCY_A]?.symbol
+                        )}
+                      </ButtonPrimary>
+                    )}
+                  </RowBetween>
+                )}
                 <ButtonError
                   onClick={() => {
                     setShowConfirm(true)
