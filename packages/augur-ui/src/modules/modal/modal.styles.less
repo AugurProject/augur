@@ -929,7 +929,7 @@ div.Onboarding {
       > div:last-of-type {
         padding: @size-16 @size-24;
       }
-      
+
       .Details {
         > h2 {
           .text-10-semi-bold;
@@ -2032,7 +2032,7 @@ div.ButtonsRow:last-of-type {
 .Orders {
   .Message;
 
-  background: var(--color-dark-grey);
+  background: var(--color-module-background);
   min-width: 842px;
 
   @media @breakpoint-mobile {
@@ -2042,8 +2042,8 @@ div.ButtonsRow:last-of-type {
   > main {
     > div > .OrdersHeader {
       align-items: center;
-      background: var(--color-module-background);
-      border-top: @size-1 solid var(--color-dark-grey);
+      background: var(--color-table-header);
+      border-top: @size-1 solid var(--color-table-header);
       height: @size-40;
       padding: @size-12 @size-24;
       display: grid;
@@ -2062,7 +2062,7 @@ div.ButtonsRow:last-of-type {
       }
 
       @media @breakpoint-mobile {
-        border-bottom: @size-1 solid var(--color-dark-grey);
+        border-bottom: @size-1 solid var(--color-table-header);
         height: @size-32;
         margin: 0 -@size-16 @size-4;
         padding: @size-10 @size-16;
@@ -2083,7 +2083,7 @@ div.ButtonsRow:last-of-type {
     }
 
     > div > section {
-      border-bottom: @size-1 solid var(--color-dark-grey);
+      border: @size-1 solid var(--color-table-header);
       color: var(--color-primary-text);
       margin-bottom: @size-24;
       max-height: 450px;
@@ -2092,7 +2092,7 @@ div.ButtonsRow:last-of-type {
       > div {
         align-items: center;
         background: var(--color-module-background);
-        border-top: @size-1 solid var(--color-dark-grey);
+        border-top: @size-1 solid var(--color-table-header);
         color: var(--color-primary-text);
         padding: @size-8 @size-24;
         display: grid;
