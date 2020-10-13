@@ -169,10 +169,14 @@ const AccountView = () => {
                 >
                   <div>
                     <h1>My Account</h1>
-                    <Notifications />
-                    <OpenMarkets />
-                    <Overview hideHeader={false} />
-                    <AugurStatus hideHeader={false} />
+                    <section>
+                      <Notifications />
+                      <OpenMarkets />
+                    </section>
+                    <section>
+                      <Overview hideHeader={false} />
+                      <AugurStatus hideHeader={false} />
+                    </section>
                     <Transactions />
                     <Favorites />
                     <MyMarkets />

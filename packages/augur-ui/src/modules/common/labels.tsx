@@ -1061,12 +1061,14 @@ export const LiquidityDepletedLabel = ({
       </span>)}
       {isSports && (
           <button className={Styles.AddLiquidityButton} onClick={() => setModal({ type: MODAL_ADD_LIQUIDITY, market })}>
-            {market.hasPendingLiquidityOrders ? 'Sign to approve your orders' : 'Add more liquidity'}
+            Add more liquidity
           </button>
       )}
     </>
   );
 };
+
+// {market.hasPendingLiquidityOrders ? 'Sign to approve your orders' : 'Add more liquidity'}
 export interface MarketStatusLabelProps {
   reportingState: string;
   mini?: boolean;
