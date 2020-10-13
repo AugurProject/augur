@@ -59,6 +59,8 @@
 @desktop-max: 1440px;
 @desktop-large: 1441px;
 
+@desktop-min-height: 975px;
+
 // @tablet-max: 1150px;
 // @desktop-min: 1151px;
 // @desktop-max: 1680px;
@@ -76,3 +78,5 @@
 @breakpoint-min-desktop: ~"all and (min-width: @{desktop-min})";
 @breakpoint-max-desktop: ~"all and (max-width: @{desktop-max})";
 @breakpoint-desktop-large: ~"all and (min-width: @{desktop-large})";
+
+@breakpoint-min-desktop-min-height: ~"all and (min-height: @{desktop-min-height})";
