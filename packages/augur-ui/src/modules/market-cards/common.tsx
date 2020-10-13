@@ -888,7 +888,7 @@ export const SportsMarketContainer = ({
   >
     <h6>{title}</h6>
     {ThickChevron}
-  </button>
+  </button>;
   const isGrid = data.length > 4;
   if (isGrid) {
     innerContent = <MultiOutcomeMarketGrid key={marketId} data={data} />;
@@ -950,7 +950,17 @@ export const SportsMarketContainer = ({
         {headingContent}
         {isFutures && isGroupPage ? (
           <MarketLink id={marketId}>{ThickChevron}</MarketLink>
-        ) : null}
+        ) : isFutures && !isGroupPage && marketAmount > 1 ? (
+          <button
+            className={Styles.toggleCollapsed}
+            onClick={e => {
+              e.preventDefault();
+              setIsCollapsed(!isCollapsed);
+            }}
+          >
+            {ThickChevron}
+          </button>
+        ): null}
       </header>
       <div>{innerContent}</div>
       {isGrid && <OutcomeGroupFooter market={market} />}
@@ -981,17 +991,20 @@ export const prepareSportsGroup = (
   isGroupPage = false,
   marketId = null
 ) => {
-  const { markets } = sportsGroup;
+  const { markets, type } = sportsGroup;
   const { COMBO, FUTURES } = SPORTS_GROUP_TYPES;
   const { MONEY_LINE } = SPORTS_GROUP_MARKET_TYPES;
   const { additionalMarkets, topComboMarkets, numMarkets } = prepareCombo(
     sportsGroup
   );
   let marketGroups = [];
-  let sortedMarkets = sortByPriorityGroupType(markets, MONEY_LINE).reduce(
-    reduceToUniquePools,
-    []
-  );
+  let sortedMarkets = sortByPriorityGroupType(markets, MONEY_LINE);
+  if (type == FUTURES) {
+    sortedMarkets.reduce(
+      reduceToUniquePools,
+      []
+    );
+  }
   if (marketId) {
     const index = sortedMarkets.findIndex(m => m.id === marketId);
     if (index >= 0) {
