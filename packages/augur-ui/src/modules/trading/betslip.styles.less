@@ -19,7 +19,6 @@
     @media @breakpoint-mobile-tiny {
       background: var(--color-module-background);
       position: absolute;
-      top: 0;
       bottom: 0;
       right: 0;
       left: 0;
@@ -29,6 +28,7 @@
       align-items: flex-start;
       justify-content: flex-end;
       z-index: @mask-toast;
+      top: @size-64;
 
       > div {
         align-items: flex-end;
@@ -59,7 +59,6 @@
             height: @size-8;
             width: @size-10;
             margin-left: @size-8;
-            // transform: rotate(180deg);
 
             > path {
               fill: var(--color-module-background);
@@ -74,10 +73,8 @@
 
       &.Minimized {
         background: transparent;
-        padding: @size-32 0;
         max-width: @size-36;
         left: unset;
-        top: @size-32;
         z-index: @above-all-content;
         position: fixed;
 
@@ -106,7 +103,8 @@
         }
 
         > section {
-          display: none;
+          min-width: 0;
+          right: -@size-1;
         }
       }
     }
@@ -172,8 +170,15 @@
     border: @size-1 solid var(--color-secondary-action-outline);
     border-radius: @border-radius-rounded;
     box-shadow: 0 0 @size-4 var(--color-primary-text-15);
+    position: relative;
+    top: 0;
+    transition: all .3s cubic-bezier(0.44, 0, 0.56, 1);
 
-
+    > ul, 
+    > section {
+      min-width: @size-326;
+    }
+    
     @media @breakpoint-mobile-tablet {
       height: 100%;
       border: 0;
