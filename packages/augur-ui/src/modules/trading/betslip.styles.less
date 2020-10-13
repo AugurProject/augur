@@ -151,6 +151,18 @@
         }
       }
     }
+
+    @media @breakpoint-tiny {
+      background: transparent;
+      > div {
+        background: var(--color-primary-text-50);
+
+        > button:first-of-type {
+          background: var(--color-primary-text);
+        }
+      }
+    }
+
   }
 
   .Container {
@@ -161,7 +173,8 @@
     border-radius: @border-radius-rounded;
     box-shadow: 0 0 @size-4 var(--color-primary-text-15);
 
-    @media @breakpoint-mobile {
+
+    @media @breakpoint-mobile-tablet {
       height: 100%;
       border: 0;
       border-radius: 0;
@@ -170,7 +183,7 @@
       min-width: unset;
     }
 
-    @media @breakpoint-tablet-tiny {
+    @media @breakpoint-tiny {
       height: 100%;
       border-radius: 0;
       border: 0;
@@ -195,7 +208,7 @@
       color: var(--color-primary-text);
     }
 
-    @media @breakpoint-tablet-tiny {
+    @media @breakpoint-tiny {
       height: 100%;
     }
 
@@ -259,7 +272,7 @@
     flex-flow: column nowrap;
     justify-content: center;
 
-    @media @breakpoint-mobile {
+    @media @breakpoint-mobile-tablet {
       height: 100%;
 
       > section {
@@ -276,7 +289,7 @@
       }
     }
 
-    @media @breakpoint-tablet-tiny {
+    @media @breakpoint-tiny {
       justify-content: flex-start;
     }
   }
