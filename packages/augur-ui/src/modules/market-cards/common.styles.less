@@ -1185,13 +1185,6 @@
 				}
 			}
 
-			> h6 {
-				.text-10-semi-bold;
-
-				color: var(--color-secondary-text);
-				text-transform: uppercase;
-			}
-
 			> span[class*="ProgressLabel"] {
 				flex-flow: row nowrap;
 				flex: 0;
@@ -1216,10 +1209,16 @@
 			> button:not([class*="FavoriteButton"]) {
 				align-items: center;
 				display: flex;
-				margin-left: auto;
-				width: @size-24;
+				width: 100%;
 				height: 100%;
 				justify-content: space-between;
+
+				> h6 {
+					.text-10-semi-bold;
+	
+					color: var(--color-secondary-text);
+					text-transform: uppercase;
+				}
 
 				> svg {
 					height: @size-6;
