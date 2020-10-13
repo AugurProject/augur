@@ -744,20 +744,23 @@ export const ReportedOutcome = ({
   );
 };
 
-export const MultiOutcomeMarketRow = ({ data }) => (
-  <section
-    className={classNames(Styles.MultiOutcomeMarketRow, {
-      [Styles.FourOutcomes]: data.length === 4,
-    })}
-  >
-    {data.map(outcomeData => (
-      <article key={outcomeData.title}>
-        <SportsOutcome {...outcomeData} />
-      </article>
-    ))}
-  </section>
-);
-
+export const MultiOutcomeMarketRow = ({ data }) => {
+  const isFourOutcomes = data.length === 4;
+  const items = isFourOutcomes ? [data[0], data[2], data[1], data[3]] : data;
+  return (
+    <section
+      className={classNames(Styles.MultiOutcomeMarketRow, {
+        [Styles.FourOutcomes]: isFourOutcomes,
+      })}
+    >
+      {items.map(outcomeData => (
+        <article key={outcomeData.title}>
+          <SportsOutcome {...outcomeData} />
+        </article>
+      ))}
+    </section>
+  );
+}
 export const MultiOutcomeMarketGrid = ({ data }) => (
   <section className={Styles.MultiOutcomeMarketGrid}>
     {data.map(({ title, ...outcomeData }) => (
