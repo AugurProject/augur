@@ -17,6 +17,11 @@ export class AMMFactory {
     this.signerOrProvider = signerOrProvider;
   }
 
+  async ammExists(marketAddress: string, paraShareToken: string): Promise<boolean> {
+    const amm = await this.contract.exchanges(marketAddress, paraShareToken);
+    return typeof amm !== 'undefined';
+  }
+
   async getAMMExchange(marketAddress: string, paraShareToken: string): Promise<AMMExchange> {
     const amm = await this.contract.exchanges(marketAddress, paraShareToken);
 
