@@ -10,17 +10,13 @@ variables:
   YARN_REGISTRY: https://pkgs.dev.azure.com/augurproject/_packaging/npmPackages/npm/registry/
   System.debug: true
 
-pr:
-  branches:
-    include:
-    - '*'
-
 trigger:
   batch: false
   branches:
     include:
       - dev
       - v2
+      - para_deploys
       - release/*
       - azure/*
       - refs/tags/*
