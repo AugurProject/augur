@@ -647,7 +647,7 @@ export function useTokenPairs(marketId) {
     async function fetchData() {
       let allPairs = []
       if (amms && amms.length > 0) {
-        allPairs = amms.reduce((p, amm) => {
+        allPairs = amms.filter(a => a.hasLiquidity).reduce((p, amm) => {
           const { shareToken, id: ammId } = amm
           const { id, cash } = shareToken
           return [

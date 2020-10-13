@@ -4,12 +4,6 @@ import { AbstractConnector } from '@web3-react/abstract-connector'
 
 import { fortmatic, injected, portis, walletconnect, walletlink } from '../connectors'
 
-import AMMFactory from "./abis/AMMFactory.json";
-import AMMExchange from "./abis/AMMExchange.json";
-
-export const AMMFactoryAbi = AMMFactory;
-export const AMMExchangeAbi = AMMExchange;
-
 export const FACTORY_ADDRESS = '0x5C69bEe701ef814a2B6a3EDD4B1652CB9cc5aA6f'
 export const AMM_FACTORY_ADDRESS = '0x2966D979e66FcEA3ED9c41281149836bB420d15D'
 

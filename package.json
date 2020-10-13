@@ -71,13 +71,11 @@
       "packages/*"
     ],
     "nohoist": [
-      "@augurproject/ui/react-dates",
-      "@augurproject/ui/normalize.css",
-      "@augurproject/ui/@uniswap/*",
-      "@augurproject/subgraph/@graphprotocol/**",
+      "@augurproject/ui/*/react-datetime",
+      "@augurproject/ui/*/create-react-class",
+      "@augurproject/ui/*/@uniswap/*",
+      "@augurproject/subgraph/*/@graphprotocol/**",
       "@augurproject/amm-ui/**",
-      "@augurproject/amm-ui/ethers",
-      "@augurproject/amm-ui/@uniswap/**",
       "**/webpack",
       "**/eslint*",
       "**/react*"

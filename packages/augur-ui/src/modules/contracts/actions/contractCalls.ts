@@ -23,7 +23,7 @@ import {
   numTicksToTickSizeWithDisplayPrices,
 } from '@augurproject/utils';
 import { TransactionResponse } from '@ethersproject/providers';
-import { formatBytes32String } from 'ethers';
+import { ethers } from 'ethers';
 import {
   BUY,
   CATEGORICAL,
@@ -1061,8 +1061,8 @@ export async function createLiquidityOrder(order: MarketLiquidityOrder) {
     orderProperties.attoPrice,
     order.marketId,
     createBigNumber(order.outcomeId),
-    formatBytes32String(''),
-    formatBytes32String(''),
+    ethers.utils.formatBytes32String(''),
+    ethers.utils.formatBytes32String(''),
     orderProperties.tradeGroupId,
   );
 }
