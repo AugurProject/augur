@@ -86,11 +86,9 @@ export class AMMExchange {
     return liquidityLog.lpTokens;
   }
 
-  async addLiquidity(recipient: string, cash: Cash): Promise<LPTokens> {
-    const txr: TransactionResponse = await this.contract.addLiquidity(cash.toFixed(), recipient);
-    const tx = await txr.wait();
-    const liquidityLog = this.extractLiquidityLog(tx);
-    return liquidityLog.lpTokens;
+  async addLiquidity(recipient: string, cash: Cash): Promise<TransactionResponse> {
+    console.log(String(cash), recipient)
+    return this.contract.addLiquidity(cash.toFixed(), recipient);
   }
 
   async rateAddLiquidity(yesShares: Shares, noShares: Shares = null): Promise<LPTokens> {

@@ -27,6 +27,33 @@ export class AMMFactory {
     return new AMMExchange(this.signerOrProvider, amm);
   }
 
+  async addLiquidity(hasLiquidity: boolean, market: string, paraShareToken: string, cash: BigNumber = new BigNumber(0), yesPercent = new BigNumber(50), noPercent = new BigNumber(50)): Promise<TransactionResponse> {
+    const ammAddress = await this.ammAddress(market, paraShareToken);
+    console.log('addLiquidity', market, ammAddress)
+    const amm = new AMMExchange(this.signerOrProvider, ammAddress);
+
+    if (cash.eq(0)) {
+      return this.contract.addAMM(market, paraShareToken);
+    }
+
+    const keepYes = noPercent.gt(yesPercent);
+
+    let ratio = keepYes // more NO shares than YES shares
+      ? new BigNumber(10**18).times(yesPercent).div(noPercent)
+      : new BigNumber(10**18).times(noPercent).div(yesPercent);
+
+    // must be integers
+    cash = cash.idiv(1);
+    ratio = ratio.idiv(1);
+    if (hasLiquidity) {
+      console.log('amm exists add liquidity')
+      return this.contract.addLiquidity(market, paraShareToken, cash)
+    }
+    return this.contract.addAMMWithLiquidity(market, paraShareToken, cash.toFixed(), ratio.toFixed(), keepYes);
+  }
+
+
+
   // The ratioYN paremeter is between 1e17 and 1e18 inclusive.
   // 9e17 == 0.9
 

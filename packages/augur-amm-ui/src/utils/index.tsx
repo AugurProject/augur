@@ -17,8 +17,6 @@ import { JsonRpcSigner, Web3Provider } from '@ethersproject/providers'
 import { Contract } from '@ethersproject/contracts'
 import { AddressZero } from '@ethersproject/constants'
 import { useAugurClient } from '../contexts/Application'
-import AmmFactoryAbi from '../constants/abis/AMMFactory.json'
-import AmmExchangeAbi from '../constants/abis/AMMExchange.json'
 import { useActiveWeb3React } from '../hooks'
 
 // format libraries
@@ -588,27 +586,17 @@ export function getContract(address: string, ABI: any, library: Web3Provider, ac
   return new Contract(address, ABI, getProviderOrSigner(library, account) as any)
 }
 
-// account is optional
-export function getAMMFactoryContract(ammFactory: string, library: Web3Provider, account?: string): Contract {
-  return getContract(ammFactory, AmmFactoryAbi, library, account)
-}
-
-export function useAmmFactory() {
-  const { library } = useActiveWeb3React()
-  const augurClient = useAugurClient()
-  if (!augurClient) return;
-  return augurClient ?? augurClient.ammFactory.contract.connect(library.getSigner());
-}
-
-export function addAmmLiquidity(augurClient, marketId, sharetoken, cashAmount, distroPercentage) {
+export function addAmmLiquidity({ hasLiquidity, augurClient, marketId, sharetoken, cashAmount, distroPercentage }) {
   if (!augurClient || !augurClient.ammFactory) return console.error('augurClient is null')
   console.log('addAmmLiquidity', marketId, sharetoken, String(cashAmount), String(distroPercentage))
-  return augurClient.ammFactory.addAMM(marketId, sharetoken, new BN(cashAmount), new BN(distroPercentage[0]), new BN(distroPercentage[1]))
-}
-
-// account is optional
-export function getAMMExchangeContract(ammExchangeAddress: string, library: Web3Provider, account?: string): Contract {
-  return getContract(ammExchangeAddress, AmmExchangeAbi, library, account)
+  return augurClient.ammFactory.addLiquidity(
+    hasLiquidity,
+    marketId,
+    sharetoken,
+    new BN(cashAmount),
+    new BN(distroPercentage[0]),
+    new BN(distroPercentage[1])
+  )
 }
 
 export function escapeRegExp(string: string): string {
