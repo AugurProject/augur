@@ -3164,11 +3164,7 @@ export function addScripts(flash: FlashSession) {
       const paraShareToken = this.config.paraDeploys[this.config.paraDeploy].addresses.ShareToken;
       const factory = new AMMFactory(this.provider, this.config.addresses.AMMFactory);
 
-      let exists;
-      const amm = await factory.getAMMExchange(market.address, paraShareToken)
-        .then(() => exists = true)
-        .catch(() => exists = false);
-
+      const exists = await factory.ammExists(market.address, paraShareToken);
       const ammAddress = await factory.ammAddress(market.address, paraShareToken);
       console.log(`AMM ${ammAddress} ${exists? 'exists' : 'does not exist'}`);
     }
