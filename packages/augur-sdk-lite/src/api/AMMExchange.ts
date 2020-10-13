@@ -19,7 +19,8 @@ export class AMMExchange {
 
   // Ratio of Yes:No shares.
   async price(): Promise<BigNumber> {
-    const { _no, _yes } = this.contract.yesNoShareBalances(this.contract.address);
+    const { _no, _yes } = await this.contract.yesNoShareBalances(this.contract.address);
+    if (_no.eq(0)) return new BigNumber(0);
     return _yes.div(_no);
   }
 

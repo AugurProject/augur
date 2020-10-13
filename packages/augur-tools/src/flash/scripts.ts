@@ -3146,4 +3146,31 @@ export function addScripts(flash: FlashSession) {
       console.log(`AMM address: ${amm.contract.address}`);
     }
   });
+
+  flash.addScript({
+    name: 'amm-exists',
+    options: [
+      {
+        name: 'market',
+        abbr: 'm',
+        description: 'Address of Market. Used to calculate AMM address.',
+        required: true,
+      },
+    ],
+    async call(this: FlashSession, args: FlashArguments) {
+      const user = await this.createUser(this.getAccount(), this.config);
+
+      const market = user.augur.contracts.marketFromAddress(args.market as string);
+      const paraShareToken = this.config.paraDeploys[this.config.paraDeploy].addresses.ShareToken;
+      const factory = new AMMFactory(this.provider, this.config.addresses.AMMFactory);
+
+      let exists;
+      const amm = await factory.getAMMExchange(market.address, paraShareToken)
+        .then(() => exists = true)
+        .catch(() => exists = false);
+
+      const ammAddress = await factory.ammAddress(market.address, paraShareToken);
+      console.log(`AMM ${ammAddress} ${exists? 'exists' : 'does not exist'}`);
+    }
+  });
 }

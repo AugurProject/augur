@@ -17,6 +17,11 @@ export class AMMFactory {
     this.signerOrProvider = signerOrProvider;
   }
 
+  async ammExists(marketAddress: string, paraShareToken: string): Promise<boolean> {
+    const amm = await this.contract.exchanges(marketAddress, paraShareToken);
+    return typeof amm !== 'undefined';
+  }
+
   async getAMMExchange(marketAddress: string, paraShareToken: string): Promise<AMMExchange> {
     const amm = await this.contract.exchanges(marketAddress, paraShareToken);
 
@@ -27,11 +32,6 @@ export class AMMFactory {
     return new AMMExchange(this.signerOrProvider, amm);
   }
 
-  // The ratioYN paremeter is between 1e17 and 1e18 inclusive.
-  // 9e17 == 0.9
-
-  // The ratioYN parameter is how much YES tokens are worth out of 1.0. Its value is between 0.1 and 1.0.
-  //
   async addAMM(market: string, paraShareToken: string, cash: BigNumber = new BigNumber(0), yesPercent = new BigNumber(50), noPercent = new BigNumber(50)): Promise<AddAMMReturn> {
     const ammAddress = await this.ammAddress(market, paraShareToken);
     const amm = new AMMExchange(this.signerOrProvider, ammAddress);
