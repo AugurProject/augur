@@ -102,7 +102,7 @@ Deploying to: ${env}
         };
 
         const name = await cash.symbol_();
-        const decimals = await (await cash.decimals_()).toNumber();
+        const decimals = await cash.decimals_() as undefined as number; // Contract interfaces are giving uint8 a BigNumber type incorrectly
 
         const configUpdate = {
             paraDeploys: {
