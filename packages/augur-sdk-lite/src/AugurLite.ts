@@ -2,6 +2,7 @@ import { logger, NetworkId, QUINTILLION } from '@augurproject/utils';
 import { BigNumber } from 'bignumber.js';
 import { ethers } from 'ethers';
 import LZString from 'lz-string';
+import { ParaShareToken } from './api/ParaShareToken';
 import { AMMFactory } from './api/AMMFactory';
 import { HotLoading, HotLoadMarketInfo } from './api/HotLoading';
 import { AccountLoader, AccountData } from './api/AccountLoader';
@@ -38,20 +39,22 @@ export class AugurLite {
   readonly warpSync: WarpSync;
   readonly accountLoader: AccountLoader;
   readonly ammFactory: AMMFactory;
+  readonly paraShareToken?: ParaShareToken;
 
   constructor(
     readonly provider: ethers.providers.Provider,
     readonly addresses: Addresses,
     readonly networkId: NetworkId,
-    readonly precision: BigNumber
+    readonly precision: BigNumber,
+    readonly paraShareTokenAddress?: string
   ) {
-    this.provider = provider;
-    this.precision = precision;
     this.hotLoading = new HotLoading(this.provider, precision);
     this.accountLoader = new AccountLoader(this.provider);
     this.warpSync = new WarpSync(this.provider, addresses.WarpSync);
     this.ammFactory = new AMMFactory(this.provider, addresses.AMMFactory);
-    this.addresses = addresses;
+    if(this.paraShareTokenAddress) {
+      this.paraShareToken = new ParaShareToken(this.provider, this.paraShareTokenAddress);
+    }
   }
 
   async doesDBAlreadyExist() {

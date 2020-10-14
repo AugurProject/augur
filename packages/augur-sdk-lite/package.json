@@ -9,6 +9,8 @@
     "src": "src"
   },
   "scripts": {
+    "prepare:abi:ParaShareToken": "node ../augur-tools/build/flash/cli.js abi -c ParaShareToken > src/abi/ParaShareToken.json",
+    "prepare:abi": "yarn prepare:abi:ParaShareToken",
     "build": "tsc -b",
     "nuke": "rm -f package-lock.json; rm -f yarn.lock; rm -rf node_modules; yarn clean",
     "check": "gts check",
