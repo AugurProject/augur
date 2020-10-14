@@ -30,6 +30,7 @@ import { createBigNumber } from 'utils/create-big-number';
 import { startClaimingMarketsProceeds } from 'modules/positions/actions/claim-markets-proceeds';
 import { FilterNotice } from 'modules/common/filter-notice';
 import { BET_STATUS } from 'modules/trading/store/constants';
+import { useMarketsStore } from 'modules/markets/store/markets';
 
 export const BetsHeader = () => (
   <ul className={Styles.BetsHeader}>
@@ -112,6 +113,10 @@ export interface GameProps {
 export const Game = ({ row, type }: GameProps) => {
   const history = useHistory();
   const isDaily = type !== SPORTS_GROUP_TYPES.FUTURES;
+  const {
+    marketInfos
+  } = useMarketsStore();
+  const marketInfo = marketInfos[row.marketId];
   return (
     <div className={Styles.Game}>
       <div>
@@ -120,6 +125,9 @@ export const Game = ({ row, type }: GameProps) => {
           reportingState={row.reportingState}
           disputeInfo={row.disputeInfo}
         />
+        {(!isDaily && marketInfo.mostLikelyInvalid) ?
+          <RedFlag market={{ mostLikelyInvalid: true, id: 0 }} /> : null
+        }
         <CategoryTagTrail
           categories={getCategoriesWithClick(row.categories, history)}
         />
@@ -148,7 +156,7 @@ export const Game = ({ row, type }: GameProps) => {
             <BetRow
               key={`${order.outcomeId}_${index}`}
               outcome={order}
-              showExtraRow
+              showExtraRow={isDaily}
               isEvent
             />
           ))}
