@@ -77,9 +77,9 @@ export const convertInputs = (inputs) => {
     userInput:
       i.type === TemplateInputType.ESTDATETIME ||
       i.type === TemplateInputType.DATETIME
-        ? convertUnixToFormattedDate(Number(i.userInput))
+        ? convertUnixToFormattedDate(Number(i.timestamp || i.userInput))
             .formattedLocalShortDateTimeWithTimezone
-        : i.userInput,
+        : i.value || i.userInput,
     id: i.id,
     type: i.type as TemplateInputType,
     placeholder: i.placeholder,
