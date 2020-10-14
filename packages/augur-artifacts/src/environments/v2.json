@@ -164,28 +164,29 @@
   "paraDeploys": {
     "0x7290c2b7D5Fc91a112d462fe06aBBB8948668f56": {
       "name": "WETH",
-      "uploadBlockNumber": 21493855,
+      "uploadBlockNumber": 21532730,
       "addresses": {
-        "Augur": "0x8f9Fe2F442473e8d5cc3FbAbf2C7dA5867d412c8",
-        "AugurTrading": "0xB3AD305f8e14e59e533579Abd06359786A16F534",
-        "Universe": "0x75A2eC11716C6ddC1BC568cC17D38886995b3aD8",
+        "Augur": "0x7a998F5b557Fe3F959745e6A30c3407075c0c9A3",
+        "AugurTrading": "0x1c6320aFb90475ED7e2b721426b78779e92638FA",
+        "Universe": "0xD13Ac2E9a40bCC17fb4D7788B7316FEFDF5b3caE",
         "Cash": "0x7290c2b7D5Fc91a112d462fe06aBBB8948668f56",
-        "ShareToken": "0x89B00A5EC703325C58F7693994f1fB966C4C3A45",
-        "OICash": "0x12ed47b2E16ee548EEaF6a739ecDDe3f48F8087E",
-        "CancelOrder": "0xE8c3846Df8688F811819B91A5c446A5150e1f7b5",
-        "CreateOrder": "0xAbF873cD836058f82B73350e46DfDE27649c9F23",
-        "FillOrder": "0x01eD3CD361c4a99DCdaa2632EAA5b2503233f3b4",
-        "Orders": "0x7132D3Ad944D047BcB7A73Ea12ee6EeeD5544ef4",
-        "Trade": "0x7Ba4D6104C78FBA0070989A2FF4a3B1Fa7D49678",
-        "SimulateTrade": "0x7ec98d95Ac47f888B0F1bdf6996e61bd0209A5ce",
-        "ZeroXTrade": "0xAc6287f7f59c6B426Be0E319d9705f08b11b31f9",
-        "ProfitLoss": "0x23e5214E36440b55Ce36b3ED9BA815f013929704"
-      }
+        "ShareToken": "0xA95200EB76e4dc404489b65EB2FD18749B1A0986",
+        "OICash": "0xD8859Ea5f0D13cD4025C144778C937E9DF11e7FD",
+        "CancelOrder": "0x4BaC6D704A06D45B8295e4563dBcB05F63FF9B9B",
+        "CreateOrder": "0xA43230318d6Fa0fCb0a519bbDB2a07C0F8004Eb8",
+        "FillOrder": "0x9670B831EeE30997f795c72435aEe146e108d757",
+        "Orders": "0x4d4F1aAcef7774c7d19B69569F03b7B0f1F5D795",
+        "Trade": "0xE590D230194d5C53A4eBAE39ffb26c7DB2A241aD",
+        "SimulateTrade": "0x96eB10640B86B16883A502880633517A718AC32B",
+        "ZeroXTrade": "0x92a03538956fd216731E4bc2F2d6DD5309d98DAf",
+        "ProfitLoss": "0xEc2700DdfB87e5CFf71B7835305a90C8b6fF365d"
+      },
+      "decimals": 18
     },
     "0x1997d08B1a9aeD5143b995e929707400625D5f6C": {
       "name": "USDT",
       "decimals": 6,
-      "uploadBlockNumber": 21529756,
+      "uploadBlockNumber": 21532719,
       "addresses": {
         "Augur": "0x1FAf1f790cfDB2BcFCEf62221c559685760F4bE0",
         "AugurTrading": "0xaa85423f0f8Ad66a6bEd90d2Eb5C3DCB190d42B9",
