@@ -16,6 +16,7 @@ import {
   INVALID_OUTCOME_COMPARE,
   SHORT,
   ODDS_TYPE,
+  SPORTS_GROUP_MARKET_TYPES,
 } from './constants';
 import {
   formatNumber,
@@ -56,6 +57,10 @@ export const MyBetsRow = ({
   const {
     actions: { retry },
   } = useBetslipStore();
+  let value = isEvent ? outcome.sportsBook?.title : outcome.description;
+  if (isEvent && outcome.sportsBook?.groupType === SPORTS_GROUP_MARKET_TYPES.COMBO_MONEY_LINE) {
+    value = 'Moneyline';
+  }
   const columnProperties = [
     {
       key: 'outcomeName',
@@ -63,7 +68,7 @@ export const MyBetsRow = ({
       text: outcome.outcome,
       keyId: outcome.outcome,
       showExtraNumber: showExtraRow,
-      value: isEvent ? outcome.sportsBook?.title : outcome.description,
+      value,
       highRisk: outcome.highRisk,
       templateShield: isEvent,
       outcome: outcome,

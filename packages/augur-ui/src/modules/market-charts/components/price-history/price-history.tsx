@@ -156,7 +156,7 @@ const handleSeries = (
   priceTimeArray.forEach((priceTimeData, index) => {
     const length = priceTimeData.length;
     const isInvalidEmpty =
-      index === 0 && !isTrading && priceTimeData[length - 1].price === '0';
+      index === 0 && !isTrading && priceTimeData[length - 1]?.price === '0';
     const isSelected = selectedOutcomeId == index;
     if (
       length > 0 &&
