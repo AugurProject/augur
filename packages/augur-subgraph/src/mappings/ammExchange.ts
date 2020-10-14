@@ -1,4 +1,4 @@
-import { BigInt } from '@graphprotocol/graph-ts/index';
+import { BigInt } from '@graphprotocol/graph-ts';
 import {
   EnterPosition as EnterPositionEvent,
   ExitPosition as ExitPositionEvent,
