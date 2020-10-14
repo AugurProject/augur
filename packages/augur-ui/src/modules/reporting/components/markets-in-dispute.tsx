@@ -215,22 +215,6 @@ const MarketsInDispute = () => {
         onSearchChange={onSearchChange}
         sortByOptions={sortByOptions}
         updateDropdown={updateDropdown}
-        headerComplement={
-          userAddress && (
-            <label className={Styles.OnlyPortfolio} htmlFor="checkbox">
-              <Checkbox
-                id="checkbox"
-                value={checkBox.didCheck}
-                isChecked={checkBox.didCheck}
-                onClick={(e: React.SyntheticEvent) => {
-                  e.preventDefault();
-                  checkBox.action();
-                }}
-              />
-              {checkBox.label}
-            </label>
-          )
-        }
         subheader={
           <SwitchLabelsGroup
             tabs={tabs}
