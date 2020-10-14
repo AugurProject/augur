@@ -145,7 +145,7 @@ export const Game = ({ row, type }: GameProps) => {
           />
         )}
         <MarketLink id={row.id}>
-          <span>{row.description}</span>
+          <span>{row?.sportsBook?.header}</span>
         </MarketLink>
       </div>
       <div>

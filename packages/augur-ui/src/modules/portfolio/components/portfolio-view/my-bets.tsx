@@ -128,7 +128,7 @@ export function processRows(
       let updatedRows = [];
       rows.forEach(row => {
         const existing = updatedRows.filter(v => {
-          return v.sportsBook.groupId === row.sportsBook.groupId;
+          return v.sportsBook?.groupId === row.sportsBook?.groupId;
         });
         if (existing.length > 0) {
           const existingIndex = updatedRows.indexOf(existing[0]);
