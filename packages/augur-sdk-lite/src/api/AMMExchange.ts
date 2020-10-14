@@ -7,6 +7,7 @@ import { AMMExchangeAbi } from '../abi/AMMExchangeAbi';
 import { NULL_ADDRESS, SignerOrProvider, YES_NO_NUMTICKS } from '../constants';
 
 export class AMMExchange {
+  static readonly ABI = AMMExchangeAbi;
   readonly contract: ethers.Contract;
   readonly address: string;
   readonly signerOrProvider: SignerOrProvider;

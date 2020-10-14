@@ -8,6 +8,7 @@ import { TransactionResponse } from '@ethersproject/abstract-provider';
 
 
 export class AMMFactory {
+  static readonly ABI = AMMFactoryAbi;
   readonly signerOrProvider: SignerOrProvider;
   readonly contract: ethers.Contract;
 

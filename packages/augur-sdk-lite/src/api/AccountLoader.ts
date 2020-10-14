@@ -33,6 +33,7 @@ export interface AccountData {
 }
 
 export class AccountLoader {
+  static readonly ABI = AccountLoaderAbi;
   private readonly provider: ethers.providers.Provider;
 
   constructor(provider: ethers.providers.Provider) {

@@ -54,6 +54,7 @@ export interface HotLoadMarketInfo {
 }
 
 export class HotLoading {
+  static readonly ABI = HotLoadingAbi;
   private readonly provider: ethers.providers.Provider;
   private readonly precision: BigNumber;
 
