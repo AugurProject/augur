@@ -493,7 +493,7 @@ jobs:
       GRAPH_TOKEN: $(GRAPH_TOKEN)
     steps:
       - template: .azure-templates/node-setup.yml
-      - bash |
+      - bash: |
           yarn prepare:abi
           yarn prepare:staging
           yarn codegen
