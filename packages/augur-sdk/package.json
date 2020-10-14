@@ -22,7 +22,7 @@
     "clean-start": "yarn rebuild && yarn start",
     "clean-start-local": "yarn rebuild && ETHEREUM_HTTP=http://127.0.0.1:8545 ETHEREUM_WS=ws://127.0.0.1:8546 yarn start",
     "start-kovan": "ETHEREUM_HTTP=https://kovan.augur.net/ethereum-http yarn start",
-    "build:documentation": "yarn typedoc --theme markdown --disableOutputCheck --ignoreCompilerErrors --out ../../docs/sdk ./src",
+    "build:documentation": "yarn typedoc --theme markdown --disableOutputCheck --ignoreCompilerErrors --out ../../docs/api/sdk ./src",
     "check": "gts check",
     "fix": "gts fix",
     "prepare": "tsc -b"
