@@ -2,14 +2,11 @@ import React from 'react';
 import MarketLink from 'modules/market/components/market-link/market-link';
 import { buildMarketDescription } from 'modules/create-market/get-template';
 import { convertUnixToFormattedDate } from 'utils/format-date';
-import type {
-  TemplateInput,
-  ExtraInfoTemplate,
-} from '@augurproject/templates';
 import {
-  TemplateInputType,
+  ExtraInfoTemplate,
   getTemplatePlaceholderById,
   hasTemplateTextInputs,
+  TemplateInputType,
 } from '@augurproject/templates';
 import Styles from 'modules/market/components/common/market-common.styles.less';
 import classNames from 'classnames';
@@ -80,14 +77,14 @@ export const convertInputs = (inputs) => {
     userInput:
       i.type === TemplateInputType.ESTDATETIME ||
       i.type === TemplateInputType.DATETIME
-        ? convertUnixToFormattedDate(Number(i.timestamp))
+        ? convertUnixToFormattedDate(Number(i.timestamp || i.userInput))
             .formattedLocalShortDateTimeWithTimezone
-        : i.value,
+        : i.value || i.userInput,
     id: i.id,
     type: i.type as TemplateInputType,
-    placeholder: '',
+    placeholder: i.placeholder,
   }));
-}
+};
 
 export const findStartTime = (convertedInputs) => {
   return convertedInputs.find(
