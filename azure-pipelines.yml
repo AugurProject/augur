@@ -489,8 +489,7 @@ jobs:
       )
     pool:
       vmImage: $(VM_IMAGE)
-    env:
-      GRAPH_TOKEN: $(GRAPH_TOKEN)
+
     steps:
       - template: .azure-templates/node-setup.yml
       - bash: |
@@ -499,6 +498,8 @@ jobs:
           yarn codegen
           yarn build
           yarn deploy:staging
+        env:
+          GRAPH_TOKEN: $(GRAPH_TOKEN)
   - job: github_release
     displayName: github release
     dependsOn: PreFlightCheck
