@@ -1,15 +1,25 @@
 variables:
   - group: thegraph-credentials
-  DOCKER_CI_BUILD_TAG: monorepo.$(Build.BuildID)
-  CORE_IMAGE_BUILD: augurproject/augur-core:$(DOCKER_CI_BUILD_TAG)
-  CORE_IMAGE_LATEST: augurproject/augur-core:monorepo
-  PRIMARY_NODE_VERSION: 12.18.x
-  GETH_VERSION: v1.9.19
-  SOLC_VERSION: v0.5.15
-  SOLC_MD5: 884dbc8c8ed01cc34799a6ffab11bc3a
-  VM_IMAGE: 'ubuntu-18.04'
-  YARN_REGISTRY: https://pkgs.dev.azure.com/augurproject/_packaging/npmPackages/npm/registry/
-  System.debug: true
+  - name: DOCKER_CI_BUILD_TAG
+    value: monorepo.$(Build.BuildID)
+  - name: CORE_IMAGE_BUILD
+    value: augurproject/augur-core:$(DOCKER_CI_BUILD_TAG)
+  - name: CORE_IMAGE_LATEST
+    value: augurproject/augur-core:monorepo
+  - name: PRIMARY_NODE_VERSION
+    value: 12.18.x
+  - name: GETH_VERSION
+    value: v1.9.19
+  - name: SOLC_VERSION
+    value: v0.5.15
+  - name: SOLC_MD5
+    value: 884dbc8c8ed01cc34799a6ffab11bc3a
+  - name: VM_IMAGE
+    value: 'ubuntu-18.04'
+  - name: YARN_REGISTRY
+    value: https://pkgs.dev.azure.com/augurproject/_packaging/npmPackages/npm/registry/
+  - name: System.debug
+    value: true
 
 trigger:
   batch: false
