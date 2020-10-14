@@ -13,6 +13,7 @@ import { ethers } from 'ethers';
 import * as fs from 'fs';
 import * as readlineSync from 'readline-sync';
 import { Account, ACCOUNTS } from '../constants';
+import { addAMMScripts } from './amm';
 import { FlashSession } from './flash';
 import { addGanacheScripts } from './ganache-scripts';
 import { addScripts } from './scripts';
@@ -59,6 +60,7 @@ async function run() {
   const flash = new FlashSession([]);
 
   addScripts(flash);
+  addAMMScripts(flash);
   addGanacheScripts(flash);
   addWarpSyncScripts(flash);
 
