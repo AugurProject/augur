@@ -533,9 +533,10 @@ export function useTokenPairs(marketId) {
 
   useEffect(() => {
     async function fetchData() {
+      console.log('user token pairs', amms)
       let allPairs = []
       if (amms && amms.length > 0) {
-        allPairs = amms.filter(a => a.hasLiquidity).reduce((p, amm) => {
+        allPairs = amms.filter(a => a.liquidity !== "0").reduce((p, amm) => {
           const { shareToken, id: ammId } = amm
           const { id, cash } = shareToken
           return [

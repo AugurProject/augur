@@ -107,7 +107,12 @@ export class AMMExchange {
     return this.contract.callStatic.addLiquidity(cash.toFixed(), recipient);
   }
 
-  async removeLiquidity(lpTokens: LPTokens, alsoSell = false): Promise<RemoveLiquidityReturn> {
+  async getRemoveLiquidity(lpTokens: LPTokens, alsoSell = false): Promise<{noShares: BigNumber, yesShare: BigNumber, cashPayout: BigNumber}> {
+    const { _noShare, _yesShare, _cashPayout } = await this.contract.rateRemoveLiquidity(lpTokens, alsoSell ? new BigNumber(1) : new BigNumber(0));
+    return { noShares: _noShare, yesShare: _yesShare, cashPayout: _cashPayout}
+  }
+
+  async removeLiquidity(lpTokens: LPTokens, alsoSell = false): Promise<TransactionResponse> {
     // if not selling them minSetsSold is 0
     // if selling them calculate how many sets you could get, then sell that many
 
@@ -120,9 +125,7 @@ export class AMMExchange {
       minSetsSold = new BigNumber(0);
     }
 
-    const removedLiquidity = await this.contract.rateRemoveLiquidity(lpTokens, minSetsSold);
-    await this.contract.removeLiquidity(lpTokens, minSetsSold);
-    return removedLiquidity;
+    return this.contract.removeLiquidity(lpTokens, minSetsSold);
   }
 
   calculateCashForSharesInSwap(desiredShares: Shares, yes: boolean): BigNumber {
@@ -152,7 +155,7 @@ export class AMMExchange {
     }
   }
 
-  async totalLiquidity(): Promise<LPTokens> {
+  async totalSupply(): Promise<LPTokens> {
     const lpTokens = await this.contract.totalSupply()
     return new BigNumber(lpTokens.toString());
   }

@@ -340,7 +340,7 @@ export function addAMMScripts(flash: FlashSession) {
       const factory = new AMMFactory(user.signer, this.config.addresses.AMMFactory);
       const amm = await factory.getAMMExchange(market.address, paraShareToken);
 
-      const lpTokens = await amm.totalLiquidity()
+      const lpTokens = await amm.totalSupply()
 
       console.log(`Total LP tokens for ${amm.address}: ${lpTokens.toString()}`);
     }

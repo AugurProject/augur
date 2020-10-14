@@ -45,6 +45,7 @@ import { useAmmFactoryAddress } from '../../contexts/Application'
 import { withRouter } from 'react-router-dom'
 import LiquidityPage from '../LiquidityPage'
 import { useWalletModalToggle } from '../../state/application/hooks'
+import { useLPTokenBalances } from '../../state/wallet/hooks'
 
 function RemoveLiquidity({
   history,
@@ -52,6 +53,8 @@ function RemoveLiquidity({
   currencyIdB,
   marketId
 }: RouteComponentProps<{ currencyIdA: string; currencyIdB: string; marketId: string }>) {
+  console.log('RemoveLiquidity', currencyIdA, currencyIdB, marketId)
+  const [userTokenBalances, loading] = useLPTokenBalances()
   const [currencyA, currencyB] = [useCurrency(currencyIdA) ?? undefined, useCurrency(currencyIdB) ?? undefined]
   const { account, chainId, library } = useActiveWeb3React()
   const [tokenA, tokenB] = useMemo(() => [wrappedCurrency(currencyA, chainId), wrappedCurrency(currencyB, chainId)], [
@@ -492,22 +495,12 @@ function RemoveLiquidity({
                   <Text color={theme.text2} fontWeight={500}>
                     Amount
                   </Text>
-                  {/*<ClickableText
-                    fontWeight={500}
-                    onClick={() => {
-                      setShowDetailed(!showDetailed)
-                    }}
-                  >
-                    {showDetailed ? 'Simple' : 'Detailed'}
-                  </ClickableText>
-                  */}
                 </RowBetween>
                 <Row style={{ alignItems: 'flex-end' }}>
                   <Text color={theme.text2} fontSize={72} fontWeight={500}>
                     {formattedAmounts[Field.LIQUIDITY_PERCENT]}%
                   </Text>
                 </Row>
-                {!showDetailed && (
                   <>
                     <Slider value={innerLiquidityPercentage} onChange={setInnerLiquidityPercentage} />
                     <RowBetween>
@@ -525,7 +518,6 @@ function RemoveLiquidity({
                       </MaxButton>
                     </RowBetween>
                   </>
-                )}
               </AutoColumn>
             </LightCard>
             {!showDetailed && (
@@ -539,23 +531,11 @@ function RemoveLiquidity({
                       <Text fontSize={24} fontWeight={500}>
                         {formattedAmounts[Field.CURRENCY_A] || '-'}
                       </Text>
-                      <RowFixed>
-                        <TokenLogo tokenInfo={currencyA} style={{ marginRight: '12px' }} />
-                        <Text fontSize={24} fontWeight={500} id="remove-liquidity-tokena-symbol">
-                          {currencyA?.symbol}
-                        </Text>
-                      </RowFixed>
                     </RowBetween>
                     <RowBetween>
                       <Text fontSize={24} fontWeight={500}>
                         {formattedAmounts[Field.CURRENCY_B] || '-'}
                       </Text>
-                      <RowFixed>
-                        <TokenLogo tokenInfo={currencyB} style={{ marginRight: '12px' }} />
-                        <Text fontSize={24} fontWeight={500} id="remove-liquidity-tokenb-symbol">
-                          {currencyB?.symbol}
-                        </Text>
-                      </RowFixed>
                     </RowBetween>
                     {chainId && (oneCurrencyIsWETH || oneCurrencyIsETH) ? (
                       <RowBetween style={{ justifyContent: 'flex-end' }}>

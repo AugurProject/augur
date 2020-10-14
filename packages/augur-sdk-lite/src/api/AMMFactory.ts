@@ -55,11 +55,20 @@ export class AMMFactory {
       }
       return amm.addInitialLiquidity(account, cash, new BigNumber(yesPercent), new BigNumber(noPercent));
     }
-
     return this.contract.addAMMWithLiquidity(market, paraShareToken, cash.toFixed(), ratio.toFixed(), keepYes);
   }
 
+  async getRemoveLiquidity(ammAddress: string, lpTokens: BigNumber): Promise<{noShares: BigNumber, yesShare: BigNumber, cashPayout: BigNumber}> {
+    if (!ammAddress) return null;
+    const amm = new AMMExchange(this.signerOrProvider, ammAddress);
+    return amm.getRemoveLiquidity(new BigNumber(lpTokens));
+  }
 
+  async removeLiquidity(ammAddress: string, lpTokens: BigNumber): Promise<TransactionResponse> {
+    if (!ammAddress) return null;
+    const amm = new AMMExchange(this.signerOrProvider, ammAddress);
+    return amm.removeLiquidity(new BigNumber(lpTokens));
+  }
 
   // The ratioYN paremeter is between 1e17 and 1e18 inclusive.
   // 9e17 == 0.9

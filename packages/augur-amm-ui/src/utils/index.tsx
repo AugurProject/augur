@@ -601,6 +601,24 @@ export function addAmmLiquidity({ account, ammAddress, hasLiquidity, augurClient
   )
 }
 
+export function getRemoveLiquidity({ ammAddress, augurClient, lpTokens }) {
+  if (!augurClient || !ammAddress) return console.error('augurClient is null or amm address')
+  console.log('getRemoveLiquidity', ammAddress, String(lpTokens))
+  return augurClient.ammFactory.getRemoveLiquidity(
+    ammAddress,
+    new BN(lpTokens),
+  )
+}
+
+export function removeAmmLiquidity({ ammAddress, augurClient, lpTokens }) {
+  if (!augurClient || !ammAddress) return console.error('augurClient is null or amm address')
+  console.log('removeAmmLiquidity', ammAddress, String(lpTokens))
+  return augurClient.ammFactory.removeLiquidity(
+    ammAddress,
+    new BN(lpTokens),
+  )
+}
+
 export function escapeRegExp(string: string): string {
   return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') // $& means the whole matched string
 }

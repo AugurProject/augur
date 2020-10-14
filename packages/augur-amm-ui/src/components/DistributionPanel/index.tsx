@@ -38,22 +38,24 @@ export default function DistributionPanel({
   const [noInput, setNoInput] = useState(distroPercentage[NO_ID])
 
   const setDistributionInput = (value: number, type) => {
-    console.log(value)
+    let yes, no = 0
     if (isNaN(value) || value > 100) {
       setYesInput(0)
       setNoInput(0)
       return
     }
     if (type === YES) {
-      setYesInput(value)
-      setNoInput(100 - value)
+      yes = value
+      no = 100 - value
     }
 
     if (type === NO) {
-      setNoInput(value)
-      setYesInput(100 - value)
+      no = value
+      yes = 100 - value
     }
-    updateDistribution([yesInput, noInput])
+    setYesInput(yes)
+    setNoInput(no)
+    updateDistribution([yes, no])
   }
   return (
     <>

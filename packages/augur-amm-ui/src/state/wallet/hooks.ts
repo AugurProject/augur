@@ -7,6 +7,7 @@ import { useMulticallContract } from '../../hooks/useContract'
 import { isAddress } from '../../utils'
 import { useSingleContractMultipleData, useMultipleContractSingleData } from '../multicall/hooks'
 import { useUserAddedTokens } from '../user/hooks'
+import { useAllMarketData } from '../../contexts/Markets'
 
 /**
  * Returns a map of the given addresses to their eventually consistent ETH balances.
@@ -79,20 +80,20 @@ export function useTokenBalancesWithLoadingIndicator(
   ]
 }
 
-export function useLPTokenBalances(
-  address: string,
-  ammAddresses: string[]
-): [{ [tokenAddress: string]: string | undefined }, boolean] {
-
-  console.log('useLPTokenBalances is called')
+export function useLPTokenBalances(): [{ [tokenAddress: string]: string | undefined }, boolean] {
+  const { markets } = useAllMarketData()
+  const { account } = useActiveWeb3React()
+  const ammAddresses: string[] = markets
+    ? markets.reduce((p, m) => (m.amms.length > 0 ? [...p, ...m.amms.map(a => a.id)] : p), [])
+    : []
   const validatedTokenAddresses = useMemo(() => ammAddresses.map(address => address), [ammAddresses])
-  const balances = useMultipleContractSingleData(validatedTokenAddresses, ERC20_INTERFACE, 'balanceOf', [address])
+  const balances = useMultipleContractSingleData(validatedTokenAddresses, ERC20_INTERFACE, 'balanceOf', [account])
   const anyLoading: boolean = useMemo(() => balances.some(callState => callState.loading), [balances])
 
   return [
     useMemo(
       () =>
-        address && ammAddresses.length > 0
+        account && ammAddresses.length > 0
           ? ammAddresses.reduce<{ [tokenAddress: string]: string | undefined }>((memo, address, i) => {
               const value = balances?.[i]?.result?.[0]
               const amount = value ? value.toString() : undefined
@@ -102,7 +103,7 @@ export function useLPTokenBalances(
               return memo
             }, {})
           : {},
-      [address, ammAddresses, balances]
+      [account, ammAddresses, balances]
     ),
     anyLoading
   ]

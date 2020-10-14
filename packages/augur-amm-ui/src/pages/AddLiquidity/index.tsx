@@ -110,11 +110,9 @@ function AddLiquidity({ amm, marketId, cash }: RouteComponentProps<{ amm?: strin
 
   // check whether the user has approved the router on the tokens
   const [approvalA, approveACallback] = useApproveCallback(parsedAmounts[Field.CURRENCY_A], ammFactory)
-  console.log('add liq approvalA', String(approvalA), ammFactory, parsedAmounts[Field.CURRENCY_A])
   const addTransaction = useTransactionAdder()
 
   async function onAdd() {
-    console.log('onAdd called')
     if (!chainId || !account || !library || !sharetoken || !augurClient) return
 
     const { [Field.CURRENCY_A]: parsedAmountA } = parsedAmounts

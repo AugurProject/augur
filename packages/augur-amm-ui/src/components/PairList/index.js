@@ -5,7 +5,6 @@ import LocalLoader from '../LocalLoader'
 import utc from 'dayjs/plugin/utc'
 import { Box } from 'rebass'
 import styled from 'styled-components'
-import { userLPBalanceOf } from '../../utils/contractCalls'
 //import { CustomLink } from '../Link'
 import { Divider } from '../../components'
 import { withRouter } from 'react-router-dom'
@@ -19,6 +18,7 @@ import { useMarketAmm } from '../../contexts/Markets'
 import { greaterThanZero } from '../../utils'
 import { ButtonLight, ButtonPrimary } from '../ButtonStyled'
 import { useActiveWeb3React } from '../../hooks'
+import { useLPTokenBalances } from '../../state/wallet/hooks'
 
 dayjs.extend(utc)
 
@@ -126,19 +126,11 @@ function PairList({ pairs, color, disbaleLinks, marketId, maxItems = 10 }) {
   // sorting
   const [sortDirection] = useState(true)
   const [sortedColumn] = useState(SORT_FIELD.LIQ)
-  const [hasLPTokens, setHasLpTokens] = useState(false)
+  const [userTokenBalances, loading] = useLPTokenBalances()
 
   useEffect(() => {
-    const getHasLPTokens = async () => {
-      // TODO get AMM exchange account from theGraph call
-      const balance = await userLPBalanceOf(config.network, '', account)
-      if (greaterThanZero(balance)) {
-        setHasLpTokens(true)
-      }
-    }
     setMaxPage(1) // edit this to do modular
     setPage(1)
-    getHasLPTokens()
   }, [config, account])
 
   useEffect(() => {
@@ -154,6 +146,13 @@ function PairList({ pairs, color, disbaleLinks, marketId, maxItems = 10 }) {
   const ListItem = ({ pairAddress, index }) => {
     const pairData = pairs[pairAddress]
     const amm = useMarketAmm(marketId, pairData.ammId)
+    const [hasLPTokens, setHasLpTokens] = useState(false)
+
+    useEffect(() => {
+      if (userTokenBalances) {
+        setHasLpTokens(greaterThanZero(userTokenBalances[amm.id]))
+      }
+    }, [userTokenBalances, amm])
     console.log(amm)
     if (pairData && pairData.token0 && pairData.token1) {
       return (

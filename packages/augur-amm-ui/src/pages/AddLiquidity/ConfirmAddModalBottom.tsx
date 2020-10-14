@@ -34,9 +34,15 @@ export function ConfirmAddModalBottom({
         </RowFixed>
       </RowBetween>
       <RowBetween>
-        <TYPE.body>Odds</TYPE.body>
+        <TYPE.body>Yes</TYPE.body>
         <TYPE.body>
-          {`Yes: ${distribution[0]} No: ${distribution[1]}`}
+          {`${distribution[0]} %`}
+        </TYPE.body>
+      </RowBetween>
+      <RowBetween>
+        <TYPE.body>No</TYPE.body>
+        <TYPE.body>
+          {`${distribution[1]} %`}
         </TYPE.body>
       </RowBetween>
       <RowBetween>
