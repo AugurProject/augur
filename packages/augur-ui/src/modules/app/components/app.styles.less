@@ -210,10 +210,23 @@ h6 {
 :root[theme='BETTING'],
 :root[theme='SPORTS'] {
   .Wrap {
-    @media @breakpoint-min-desktop {
-      margin: 0 auto;
-      max-width: @desktop-max;
-      width: 100%;
+    width: 100%;
+  }
+
+  @media @breakpoint-desktop-large {
+    .WrapMarkets {
+      display: flex;
+      justify-content: center;
+
+      > section[class*="Content"] > section[class*="MarketsView"] {
+        min-width: 800px;
+        max-width: 800px;
+      }
+
+      > aside {
+        min-width: 242px;
+        max-width: 242px;
+      }
     }
   }
 
@@ -242,8 +255,20 @@ h6 {
     }
 
     @media @breakpoint-min-desktop {
-      max-width: @desktop-max;
-      width: 100%;
+      > div[class*="AccountView"] {
+        max-width: @desktop-max;
+        margin: 0 auto;
+        width: 100%;
+      }
+  
+      > div[class*="BettingMarketView"] {
+        margin: 0 0 0 auto;
+        max-width: 1042px;
+      }
+
+      > div[class*="Betslip"] {
+        margin-right: auto;
+      }
     }
   }
 
