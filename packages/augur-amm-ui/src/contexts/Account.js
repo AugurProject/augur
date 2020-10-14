@@ -1,11 +1,6 @@
 import React, { createContext, useContext, useReducer, useMemo, useCallback } from 'react'
-
-import { ethers } from 'ethers'
-import { AugurLite } from "@augurproject/sdk-lite";
-
 import dayjs from 'dayjs'
 import utc from 'dayjs/plugin/utc'
-import { getAmmFactoryAddress } from './Application';
 
 const WEB3 = 'web3'
 const UPDATE_WEB3 = ' UPDATE_WEB3'

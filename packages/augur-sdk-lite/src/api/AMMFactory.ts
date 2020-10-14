@@ -32,9 +32,8 @@ export class AMMFactory {
     return new AMMExchange(this.signerOrProvider, amm);
   }
 
-  async addLiquidity(hasLiquidity: boolean, market: string, paraShareToken: string, cash: BigNumber = new BigNumber(0), yesPercent = new BigNumber(50), noPercent = new BigNumber(50)): Promise<TransactionResponse> {
-    const ammAddress = await this.ammAddress(market, paraShareToken);
-    console.log('addLiquidity', market, ammAddress)
+  async addLiquidity(account: string, existingAmmAddress: string, hasLiquidity: boolean, market: string, paraShareToken: string, cash: BigNumber = new BigNumber(0), yesPercent = new BigNumber(50), noPercent = new BigNumber(50)): Promise<TransactionResponse> {
+    const ammAddress = existingAmmAddress ? existingAmmAddress : await this.ammAddress(market, paraShareToken);
     const amm = new AMMExchange(this.signerOrProvider, ammAddress);
 
     if (cash.eq(0)) {
@@ -50,10 +49,13 @@ export class AMMFactory {
     // must be integers
     cash = cash.idiv(1);
     ratio = ratio.idiv(1);
-    if (hasLiquidity) {
-      console.log('amm exists add liquidity')
-      return this.contract.addLiquidity(market, paraShareToken, cash)
+    if (existingAmmAddress) {
+      if (hasLiquidity) {
+        return amm.addLiquidity(account, cash)
+      }
+      return amm.addInitialLiquidity(account, cash, new BigNumber(yesPercent), new BigNumber(noPercent));
     }
+
     return this.contract.addAMMWithLiquidity(market, paraShareToken, cash.toFixed(), ratio.toFixed(), keepYes);
   }
 

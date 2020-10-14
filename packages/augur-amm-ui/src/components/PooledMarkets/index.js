@@ -6,7 +6,7 @@ import utc from 'dayjs/plugin/utc'
 import { Box, Flex, Text } from 'rebass'
 import { Divider } from '..'
 import { useDarkModeManager } from '../../contexts/LocalStorage'
-import { formatTime } from '../../utils'
+import { formatTime, formattedNum } from '../../utils'
 import { useMedia } from 'react-use'
 import { withRouter } from 'react-router-dom'
 import { TYPE } from '../../Theme'
@@ -103,7 +103,7 @@ const SORT_FIELD = {
   ENDTIMESTAMP: 'endTimestamp'
 }
 
-function MarketList({ markets, itemMax = 10 }) {
+function PooledMarketList({ markets, balances, itemMax = 10 }) {
   // page state
   const [page, setPage] = useState(1)
   const [maxPage, setMaxPage] = useState(1)
@@ -114,8 +114,6 @@ function MarketList({ markets, itemMax = 10 }) {
   const [sortedColumn, setSortedColumn] = useState(SORT_FIELD.STATUS)
 
   const below680 = useMedia('(max-width: 680px)')
-
-  console.log('market list page render')
 
   useEffect(() => {
     setMaxPage(1) // edit this to do modular
@@ -151,6 +149,7 @@ function MarketList({ markets, itemMax = 10 }) {
         <BasicLink style={{ width: '100%' }} to={'/token/' + item.id} key={item.id}>
           {item.description}
         </BasicLink>
+        <DataText area="balance">{formattedNum(balances[item.id]?.amount, false)}</DataText>
         <DataText area="status">
           <span
             style={
@@ -192,7 +191,17 @@ function MarketList({ markets, itemMax = 10 }) {
             {sortedColumn === SORT_FIELD.DESCRIPTION ? (!sortDirection ? '↑' : '↓') : ''}
           </ClickableText>
         </Flex>
-
+        <Flex alignItems="center">
+          <Text
+            area="Balance"
+            onClick={e => {
+              setSortedColumn(SORT_FIELD.STATUS)
+              setSortDirection(sortedColumn !== SORT_FIELD.STATUS ? true : !sortDirection)
+            }}
+          >
+            Balance
+          </Text>
+        </Flex>
         <Flex alignItems="center">
           <ClickableText
             area="status"
@@ -242,4 +251,4 @@ function MarketList({ markets, itemMax = 10 }) {
   )
 }
 
-export default withRouter(MarketList)
+export default withRouter(PooledMarketList)

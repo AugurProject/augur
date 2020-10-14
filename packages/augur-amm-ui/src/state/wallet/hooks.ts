@@ -6,6 +6,7 @@ import { useActiveWeb3React } from '../../hooks'
 import { useMulticallContract } from '../../hooks/useContract'
 import { isAddress } from '../../utils'
 import { useSingleContractMultipleData, useMultipleContractSingleData } from '../multicall/hooks'
+import { useUserAddedTokens } from '../user/hooks'
 
 /**
  * Returns a map of the given addresses to their eventually consistent ETH balances.
@@ -54,6 +55,7 @@ export function useTokenBalancesWithLoadingIndicator(
     () => tokens?.filter((t?: Token): t is Token => isAddress(t?.address) !== false) ?? [],
     [tokens]
   )
+
   const validatedTokenAddresses = useMemo(() => validatedTokens.map(vt => vt.address), [validatedTokens])
   const balances = useMultipleContractSingleData(validatedTokenAddresses, ERC20_INTERFACE, 'balanceOf', [address])
   const anyLoading: boolean = useMemo(() => balances.some(callState => callState.loading), [balances])
@@ -72,6 +74,35 @@ export function useTokenBalancesWithLoadingIndicator(
             }, {})
           : {},
       [address, validatedTokens, balances]
+    ),
+    anyLoading
+  ]
+}
+
+export function useLPTokenBalances(
+  address: string,
+  ammAddresses: string[]
+): [{ [tokenAddress: string]: string | undefined }, boolean] {
+
+  console.log('useLPTokenBalances is called')
+  const validatedTokenAddresses = useMemo(() => ammAddresses.map(address => address), [ammAddresses])
+  const balances = useMultipleContractSingleData(validatedTokenAddresses, ERC20_INTERFACE, 'balanceOf', [address])
+  const anyLoading: boolean = useMemo(() => balances.some(callState => callState.loading), [balances])
+
+  return [
+    useMemo(
+      () =>
+        address && ammAddresses.length > 0
+          ? ammAddresses.reduce<{ [tokenAddress: string]: string | undefined }>((memo, address, i) => {
+              const value = balances?.[i]?.result?.[0]
+              const amount = value ? value.toString() : undefined
+              if (amount) {
+                memo[address] = amount
+              }
+              return memo
+            }, {})
+          : {},
+      [address, ammAddresses, balances]
     ),
     anyLoading
   ]
@@ -116,13 +147,4 @@ export function useCurrencyBalances(
 
 export function useCurrencyBalance(account?: string, currency?: Currency): CurrencyAmount | undefined {
   return useCurrencyBalances(account, [currency])[0]
-}
-
-// mimics useAllBalances
-export function useAllTokenBalances(): { [tokenAddress: string]: TokenAmount | undefined } {
-  const { account } = useActiveWeb3React()
-  const allTokens = useAllTokens()
-  const allTokensArray = useMemo(() => Object.values(allTokens ?? {}), [allTokens])
-  const balances = useTokenBalances(account ?? undefined, allTokensArray)
-  return balances ?? {}
 }

@@ -1,49 +1,35 @@
-import React, { useEffect, useState } from 'react'
 import { withRouter } from 'react-router-dom'
-// import { Box } from 'rebass'
-import styled from 'styled-components'
-
-import { AutoRow } from '../components/Row'
-import { AutoColumn } from '../components/Column'
-import TopMarketList from '../components/MarketList'
-import Search from '../components/Search'
-import GlobalStats from '../components/GlobalStats'
-import { Text } from 'rebass'
-// import { useGlobalData } from '../contexts/GlobalData'
-import { useMedia } from 'react-use'
+import React, { useEffect, useState, useContext } from 'react'
+import { ThemeContext } from 'styled-components'
+import PooledMarketList from '../components/PooledMarkets'
 import Panel from '../components/Panel'
-import { useAllMarketData, useMarketCashes } from '../contexts/Markets'
+import { useAllMarketData } from '../contexts/Markets'
 // import { formattedNum, formattedPercent } from '../utils'
 import { ThemedBackground, TYPE } from '../Theme'
+import { Dots } from '../components/swap/styleds'
 import { transparentize } from 'polished'
-import { RowBetween } from '../components/Row'
 import { PageWrapper, ContentWrapper } from '../components'
-import TokenLogo from '../components/TokenLogo'
-
+import { useLPTokenBalances } from '../state/wallet/hooks'
+import { useActiveWeb3React } from '../hooks'
 
 function UserPoolsPage() {
+  const theme = useContext(ThemeContext)
   // get data for lists and totals
   const { markets } = useAllMarketData()
-  const cashes = useMarketCashes()
-  // const { totalLiquidityUSD, oneDayVolumeUSD, volumeChangeUSD, liquidityChangeUSD } = useGlobalData()
-
+  const { account } = useActiveWeb3React()
   // breakpoints
-  const below800 = useMedia('(max-width: 800px)')
-  const [cashFilter, setCashFilter] = useState(null)
-  const [filteredMarkets, setFilteredMarkets] = useState(markets)
-  // scrolling refs
+  const [filteredMarkets, setFilteredMarkets] = useState([])
+  const amms = markets.reduce((p, m) => (m.amms.length > 0 ? [...p, ...m.amms.map(a => a.id)] : p), [])
+  const [userTokenBalances, loading] = useLPTokenBalances(account, amms)
+  const [hasLoaded, setHasLoaded] = useState(false)
+  console.log('render user pool', JSON.stringify(userTokenBalances))
 
-  const updateCashFilter = cash => {
-    setCashFilter(cash)
-    if (!cash) {
-      return setFilteredMarkets(markets)
-    }
+  if (!loading && !hasLoaded) {
+    setHasLoaded(true)
+    const amms = Object.keys(userTokenBalances)
     const newMarkets = markets.reduce((p, m) => {
-      if (!m.amms || m.amms.length === 0) return p
-      if (m.amms.find(m => m.shareToken.cash.id === cash)) {
-        return [...p, m]
-      }
-      return p
+      const included = m.amms.map(a => a.id).find(id => amms.includes(id))
+      return included ? [...p, m] : p
     }, [])
     setFilteredMarkets(newMarkets)
   }
@@ -55,13 +41,27 @@ function UserPoolsPage() {
     })
   }, [])
 
+  /*
+  useEffect(() => {
+    console.log('use effect called')
+    // check if finish loading
+    if (!userTokenBalances[1]) {
+      const amms = Object.keys(userTokenBalances[0])
+      const newMarkets = markets.reduce((p, m) => {
+        const included = m.amms.map(a => a.id).find(id => amms.includes(id))
+        return included ? [...p, m] : p
+      }, [])
+      setFilteredMarkets(newMarkets)
+    }
+  }, [userTokenBalances, markets])
+*/
   return (
     <PageWrapper>
       <ThemedBackground backgroundColor={transparentize(0.8, '#ff007a')} />
       <ContentWrapper>
         <div>
           <Panel style={{ marginTop: '6px', padding: '1.125rem 0 ' }}>
-            <TopMarketList markets={filteredMarkets || []} />
+            <PooledMarketList markets={filteredMarkets || []} balances={userTokenBalances} />
           </Panel>
         </div>
       </ContentWrapper>
