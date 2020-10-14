@@ -450,11 +450,11 @@ export class ZeroX {
     const salt = new BigNumber(Date.now());
     const sender = await this.client.getAccount();
     const result = await this.client.contracts.ZeroXTrade.createZeroXOrder_(
-      new BigNumber(params.direction),
+      params.direction,
       params.amount,
       params.price,
       params.market,
-      new BigNumber(params.outcome),
+      params.outcome,
       params.expirationTime,
       salt,
       { sender }

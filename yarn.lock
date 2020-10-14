@@ -384,10 +384,10 @@
     react-dom "^16.8.3"
     solc "0.5.4"
 
-"@augurproject/solidity-typescript-generator@1.1.14":
-  version "1.1.14"
-  resolved "https://registry.yarnpkg.com/@augurproject/solidity-typescript-generator/-/solidity-typescript-generator-1.1.14.tgz#6171d79834ad346e1e19f86ad5b3be0a0e7a0ad9"
-  integrity sha512-EZxu92SFHvs+Gz4cT6AMjBRURIVS9WTWiGx839HBXISX1lFqxpHAhU+EeiKkYuEE3XxN1mNXZi5T5vc8dSmR2A==
+"@augurproject/solidity-typescript-generator@1.1.16":
+  version "1.1.16"
+  resolved "https://registry.yarnpkg.com/@augurproject/solidity-typescript-generator/-/solidity-typescript-generator-1.1.16.tgz#790b683e14041848406309e2a068ef394ae08775"
+  integrity sha512-MeE0A8nW/VG/N0oh1KFbRU428wb5tSF2h3vqmAo2gN/F1GHZdVWgaeiRgOkO1nVyg88cKd53Com/1HOTg/rS4Q==
   dependencies:
     js-sha3 "0.8.0"
 

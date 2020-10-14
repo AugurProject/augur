@@ -257,7 +257,7 @@ export class TestFixture {
 
         await this.cash.faucet(ethValue);
         await createOrder.publicCreateOrder(
-            type,
+            type.toNumber(),
             numShares,
             price,
             market,
@@ -293,7 +293,7 @@ export class TestFixture {
         await this.cash.faucet(ethValue);
 
         const bestPriceAmount = await trade.publicFillBestOrder_(
-            type,
+            type.toNumber(),
             marketAddress,
             outcome,
             numShares,
@@ -307,7 +307,7 @@ export class TestFixture {
         }
 
         await trade.publicFillBestOrder(
-            type,
+            type.toNumber(),
             marketAddress,
             outcome,
             numShares,
@@ -383,7 +383,7 @@ export class TestFixture {
         );
         const orders = new Orders(this.dependencies, ordersContract);
 
-        const orderID = await orders.getBestOrderId_(type, market, outcome);
+        const orderID = await orders.getBestOrderId_(type.toNumber(), market, outcome);
         if (!orderID) {
             throw new Error('Unable to get order price');
         }

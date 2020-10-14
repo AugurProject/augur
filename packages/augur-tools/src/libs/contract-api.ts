@@ -250,7 +250,7 @@ export class ContractAPI {
     }
 
     const events = await this.augur.contracts.createOrder.publicCreateOrder(
-      type,
+      type.toNumber(),
       numShares,
       price,
       market,
@@ -380,7 +380,7 @@ export class ContractAPI {
     const cost = numShares.multipliedBy(price);
     await this.faucetCashUpTo(cost);
     const bestPriceAmount = await this.augur.contracts.trade.publicFillBestOrder_(
-      type,
+      type.toNumber(),
       marketAddress,
       outcome,
       numShares,
@@ -394,7 +394,7 @@ export class ContractAPI {
     }
 
     await this.augur.contracts.trade.publicFillBestOrder(
-      type,
+      type.toNumber(),
       marketAddress,
       outcome,
       numShares,
@@ -563,7 +563,7 @@ export class ContractAPI {
     outcome: BigNumber
   ): Promise<string> {
     const orderID = await this.augur.contracts.orders.getBestOrderId_(
-      type,
+      type.toNumber(),
       market,
       outcome
     );

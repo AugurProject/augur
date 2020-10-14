@@ -152,7 +152,7 @@ export class OnChainTrade {
     // @TODO: Use the calculated gasLimit above instead of relying on an estimate once we can send an override gasLimit
     if (params.doNotCreateOrders) {
       result = await this.augur.contracts.trade.publicFillBestOrder(
-        new BigNumber(params.direction),
+        params.direction,
         params.market,
         new BigNumber(params.outcome),
         params.amount,
@@ -165,7 +165,7 @@ export class OnChainTrade {
       // @TODO: Use the state provided better worse orders
       const nullOrderId = stringTo32ByteHex('');
       result = await this.augur.contracts.trade.publicTrade(
-        new BigNumber(params.direction),
+        params.direction,
         params.market,
         new BigNumber(params.outcome),
         params.amount,
@@ -197,7 +197,7 @@ export class OnChainTrade {
       params.displayMaxPrice
     );
     const simulationData: BigNumber[] = ((await this.augur.contracts.simulateTrade.simulateTrade_(
-      new BigNumber(params.direction),
+      params.direction,
       params.market,
       new BigNumber(params.outcome),
       onChainTradeParams.amount,

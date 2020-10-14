@@ -91,7 +91,7 @@
     "path": "0.12.7"
   },
   "devDependencies": {
-    "@augurproject/solidity-typescript-generator": "1.1.14",
+    "@augurproject/solidity-typescript-generator": "1.1.16",
     "@types/chai": "4.2.3",
     "@types/mkdirp": "0.5.2",
     "@types/node": "10.14.18",
