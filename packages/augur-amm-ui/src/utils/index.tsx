@@ -586,10 +586,12 @@ export function getContract(address: string, ABI: any, library: Web3Provider, ac
   return new Contract(address, ABI, getProviderOrSigner(library, account) as any)
 }
 
-export function addAmmLiquidity({ hasLiquidity, augurClient, marketId, sharetoken, cashAmount, distroPercentage }) {
+export function addAmmLiquidity({ account, ammAddress, hasLiquidity, augurClient, marketId, sharetoken, cashAmount, distroPercentage }) {
   if (!augurClient || !augurClient.ammFactory) return console.error('augurClient is null')
-  console.log('addAmmLiquidity', hasLiquidity, marketId, sharetoken, String(cashAmount), String(distroPercentage))
+  console.log('addAmmLiquidity', account, ammAddress, hasLiquidity, marketId, sharetoken, String(cashAmount), String(distroPercentage))
   return augurClient.ammFactory.addLiquidity(
+    account,
+    ammAddress,
     hasLiquidity,
     marketId,
     sharetoken,

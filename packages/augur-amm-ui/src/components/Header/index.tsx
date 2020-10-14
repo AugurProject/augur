@@ -183,18 +183,30 @@ function Header({ history }: { history: any }) {
 
   return (
     <HeaderFrame>
-      <HeaderRow style={{flexFlow: 'row nowrap'}}>
+      <HeaderRow style={{ flexFlow: 'row nowrap' }}>
         <Title />
         <HeaderLinks>
           <StyledNavLink id={`swap-nav-link`} to={'/home'} isActive={() => history.location.pathname.includes('/home')}>
             {t('Markets')}
           </StyledNavLink>
-          <StyledNavLink id={`swap-nav-link`} to={'/pools'} isActive={() => history.location.pathname.includes('/pools')}>
-            {t('Pools')}
-          </StyledNavLink>
-          <StyledNavLink id={`swap-nav-link`} to={'/positions'} isActive={() => history.location.pathname.includes('/positions')}>
-            {t('Positions')}
-          </StyledNavLink>
+          {account && (
+            <StyledNavLink
+              id={`swap-nav-link`}
+              to={'/pools'}
+              isActive={() => history.location.pathname.includes('/pools')}
+            >
+              {t('Pools')}
+            </StyledNavLink>
+          )}
+          {account && (
+            <StyledNavLink
+              id={`swap-nav-link`}
+              to={'/positions'}
+              isActive={() => history.location.pathname.includes('/positions')}
+            >
+              {t('Positions')}
+            </StyledNavLink>
+          )}
         </HeaderLinks>
       </HeaderRow>
       <HeaderControls>

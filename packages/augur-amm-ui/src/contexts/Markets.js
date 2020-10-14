@@ -105,28 +105,27 @@ export default function Provider({ children }) {
   )
 }
 
+async function getMarketsData(updateMarkets, config) {
+  let response = null
+  try {
+    console.log('call the graph to get market data')
+    response = await augurV2Client(config.augurClient).query({ query: GET_MARKETS })
+  } catch (e) {
+    console.error(e)
+  }
+
+  if (response) {
+    console.log(JSON.stringify(response.data, null, 1))
+    updateMarkets(response.data)
+  }
+}
+
 export function Updater() {
   const config = useConfig()
-  const [, { updateMarkets, updateParaShareTokens }] = useMarketDataContext()
+  const [, { updateMarkets }] = useMarketDataContext()
   useEffect(() => {
-    async function getData() {
-      let response = null
-      try {
-        console.log('call the graph to get market data')
-        response = await augurV2Client(config.augurClient).query({ query: GET_MARKETS })
-      } catch (e) {
-        console.error(e)
-      }
-
-      if (response) {
-        console.log(JSON.stringify(response.data, null, 1))
-        updateMarkets(response.data)
-        //const ammExchangePairs = await getAMMExchangePairs(config.network, response.data)
-        //updateParaShareTokens(ammExchangePairs)
-      }
-    }
-    getData()
-  }, [updateMarkets, updateParaShareTokens, config])
+    getMarketsData(updateMarkets, config)
+  }, [updateMarkets, config])
   return null
 }
 
@@ -189,4 +188,21 @@ export function useMarketCashes() {
   const [state] = useMarketDataContext()
   const cashes = state?.paraShareTokens ? state?.paraShareTokens.reduce((p, s) => [...p, s.cash.id], []) : []
   return cashes
+}
+
+export function useAmmMarkets(balances) {
+  const [state] = useMarketDataContext()
+  const { markets } = state
+  const ammMarkets = []
+  if (markets) {
+    console.log(JSON.stringify(Object.keys(balances)))
+    Object.keys(balances).map(ammId => {
+      const balance = balances[ammId];
+      const market = markets.find(m => m.amms.map(a => a.id).includes(ammId))
+      if (market) {
+        ammMarkets.push({...market, balance})
+      }
+    })
+  }
+  return ammMarkets
 }

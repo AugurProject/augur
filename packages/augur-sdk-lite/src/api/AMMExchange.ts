@@ -70,7 +70,7 @@ export class AMMExchange {
     return noShares;
   }
 
-  async addInitialLiquidity(recipient: string, cash: Cash, yesPercent = new BigNumber(50), noPercent = new BigNumber(50)): Promise<LPTokens> {
+  async addInitialLiquidity(recipient: string, cash: Cash, yesPercent = new BigNumber(50), noPercent = new BigNumber(50)): Promise<TransactionResponse> {
     const keepYes = noPercent.gt(yesPercent);
 
     let ratio = keepYes // more NO shares than YES shares
@@ -81,10 +81,7 @@ export class AMMExchange {
     cash = cash.idiv(1);
     ratio = ratio.idiv(1);
 
-    const txr: TransactionResponse = await this.contract.addInitialLiquidity(cash.toFixed(), ratio.toFixed(), keepYes, recipient);
-    const tx = await txr.wait();
-    const liquidityLog = this.extractLiquidityLog(tx);
-    return liquidityLog.lpTokens;
+    return this.contract.addInitialLiquidity(cash.toFixed(), ratio.toFixed(), keepYes, recipient);
   }
 
   async addLiquidity(recipient: string, cash: Cash): Promise<TransactionResponse> {

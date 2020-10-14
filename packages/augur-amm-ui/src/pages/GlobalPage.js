@@ -51,6 +51,7 @@ function GlobalPage() {
   const cashes = useMarketCashes()
   // const { totalLiquidityUSD, oneDayVolumeUSD, volumeChangeUSD, liquidityChangeUSD } = useGlobalData()
 
+  console.log('global page render')
   // breakpoints
   const below800 = useMedia('(max-width: 800px)')
   const [cashFilter, setCashFilter] = useState(null)

@@ -41,7 +41,6 @@ function AddLiquidity({ amm, marketId, cash }: RouteComponentProps<{ amm?: strin
   const { account, chainId, library } = useActiveWeb3React()
   const augurClient = useAugurClient()
   const ammFactory = useAmmFactoryAddress()
-  const theme = useContext(ThemeContext)
 
   // share token is undefined then AMM hasn't bee created
   const sharetoken = useShareTokens(cash)
@@ -65,7 +64,6 @@ function AddLiquidity({ amm, marketId, cash }: RouteComponentProps<{ amm?: strin
     parsedAmounts,
     price,
     noLiquidity,
-    liquidityMinted,
     poolTokenPercentage,
     error
   } = useDerivedMintInfo(currencyA ?? undefined)
@@ -79,7 +77,7 @@ function AddLiquidity({ amm, marketId, cash }: RouteComponentProps<{ amm?: strin
 
   // txn values
   const deadline = useTransactionDeadline() // custom from users settings
-  const [allowedSlippage] = useUserSlippageTolerance() // custom from users
+  //const [allowedSlippage] = useUserSlippageTolerance() // custom from users
   const [txHash, setTxHash] = useState<string>('')
   const [distroPercentage, setCurrentDistribution] = useState<number[]>([50, 50])
 
@@ -126,6 +124,8 @@ function AddLiquidity({ amm, marketId, cash }: RouteComponentProps<{ amm?: strin
 
     setAttemptingTxn(true)
     await addAmmLiquidity({
+      account,
+      ammAddress: ammData?.id,
       hasLiquidity,
       augurClient,
       marketId,
