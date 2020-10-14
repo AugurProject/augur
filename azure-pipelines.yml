@@ -1,4 +1,5 @@
 variables:
+  - group: thegraph-credentials
   DOCKER_CI_BUILD_TAG: monorepo.$(Build.BuildID)
   CORE_IMAGE_BUILD: augurproject/augur-core:$(DOCKER_CI_BUILD_TAG)
   CORE_IMAGE_LATEST: augurproject/augur-core:monorepo
@@ -468,6 +469,26 @@ jobs:
       paraDeployTokenName: 'WETH'
       cloudfrontDistributionId: E2XU7PSKOBRVV4
 
+  - job: deploy_thegraph
+    displayName: deploy thegraph
+    condition: |
+      and
+      (
+          succeeded(),
+          eq(variables['Build.SourceBranch'], 'refs/heads/para_deploys')
+      )
+    pool:
+      vmImage: $(VM_IMAGE)
+    env:
+      GRAPH_TOKEN: $(GRAPH_TOKEN)
+    steps:
+      - template: .azure-templates/node-setup.yml
+      - bash |
+          yarn prepare:abi
+          yarn prepare:staging
+          yarn codegen
+          yarn build
+          yarn deploy:staging
   - job: github_release
     displayName: github release
     dependsOn: PreFlightCheck
