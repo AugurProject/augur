@@ -121,6 +121,26 @@ export function processRows(
           data.description.toLowerCase().indexOf(search.toLowerCase()) >= 0
       )
       .sort((a, b) => b.startTime - a.startTime);
+    if (
+      SPORTS_MARKET_TYPES[selectedMarketCardType].header ===
+      SPORTS_GROUP_TYPES.DAILY
+    ) {
+      let updatedRows = [];
+      rows.forEach(row => {
+        const existing = updatedRows.filter(v => {
+          return v.sportsBook.groupId === row.sportsBook.groupId;
+        });
+        if (existing.length > 0) {
+          const existingIndex = updatedRows.indexOf(existing[0]);
+          updatedRows[existingIndex].orders = updatedRows[
+            existingIndex
+          ].orders.concat(row.orders);
+        } else {
+          updatedRows.push(row);
+        }
+      });
+      rows = updatedRows;
+    }
   } else {
     rows = outcomesData(myBetsArray).filter(data =>
       MARKET_STATE_TYPES[selectedMarketStateType].label === RESOLVED
@@ -189,6 +209,7 @@ export const MyBets = () => {
   );
 
   const showEvents = MY_BETS_VIEW_BY[viewBy].label === EVENT;
+
   return (
     <div
       className={classNames(Styles.MyBets, {

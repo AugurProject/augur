@@ -149,6 +149,7 @@ export const Game = ({ row, type }: GameProps) => {
               key={`${order.outcomeId}_${index}`}
               outcome={order}
               showExtraRow
+              isEvent
             />
           ))}
       </div>
@@ -165,7 +166,7 @@ export const Outcomes = ({ rows }: OutcomesProps) => (
     {rows
       .sort((a, b) => b.timestamp - a.timestamp)
       .map(row => (
-        <BetRow key={row.outcome} outcome={row} showExtraRow isEvent />
+        <BetRow key={row.outcome} outcome={row} showExtraRow isEvent={false} />
       ))}
   </div>
 );
