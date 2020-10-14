@@ -1,4 +1,3 @@
-import { log } from '@graphprotocol/graph-ts';
 import {
   AMMExchange,
   Market
@@ -6,6 +5,7 @@ import {
 import { Address, BigInt } from '@graphprotocol/graph-ts'
 import { ERC20 } from '../../../generated/templates/Cash/ERC20';
 import { ParaShareToken } from '../../../generated/templates/ParaShareToken/ParaShareToken';
+import { AMMExchange as AMMExchangeContract } from "../../../generated/templates/AMMExchange/AMMExchange";
 
 import { getOrCreateCash } from './cash';
 import { getOrCreateParaShareToken } from './token';
@@ -26,6 +26,7 @@ export function getOrCreateAMMExchange(
     amm.liquidityYes = BigInt.fromI32(0);
     amm.percentageNo = BigInt.fromI32(0);
     amm.percentageYes = BigInt.fromI32(0);
+    amm.totalSupply =  BigInt.fromI32(0);
     amm.volumeNo = BigInt.fromI32(0);
     amm.volumeYes = BigInt.fromI32(0);
   }
@@ -55,6 +56,7 @@ export function createAndSaveAMMExchange(
 
 export function updateAMM(id: string):AMMExchange {
   let amm = AMMExchange.load(id);
+  let ammExchangeInstance = AMMExchangeContract.bind(Address.fromString(id));
   let market = Market.load(amm.market);
 
   let shareTokenInstance = ParaShareToken.bind(
@@ -76,6 +78,8 @@ export function updateAMM(id: string):AMMExchange {
 
   amm.percentageNo = amm.liquidityNo.div(totalShares);
   amm.percentageYes = amm.liquidityYes.div(totalShares);
+
+  amm.totalSupply = ammExchangeInstance.totalSupply();
 
   amm.save();
 
