@@ -493,6 +493,7 @@ jobs:
     steps:
       - template: .azure-templates/node-setup.yml
       - bash: |
+          cd ./packages/augur-subgraph
           yarn prepare:abi
           yarn prepare:staging
           yarn codegen
