@@ -190,6 +190,16 @@ export function useMarketCashes() {
   return cashes
 }
 
+export function usePositionMarkets(positions) {
+  const [state] = useMarketDataContext()
+  const { markets } = state
+  const marketPositions = Object.keys(positions).map(marketId => {
+    const market = markets.find(m => m.id === marketId)
+    return { market, ...positions[marketId]}
+  })
+  return marketPositions;
+}
+
 export function useAmmMarkets(balances) {
   const [state] = useMarketDataContext()
   const { markets } = state

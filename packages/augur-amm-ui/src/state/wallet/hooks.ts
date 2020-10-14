@@ -109,6 +109,35 @@ export function useLPTokenBalances(): [{ [tokenAddress: string]: string | undefi
   ]
 }
 
+export function useMarketShareBalances(): [{ [tokenAddress: string]: string | undefined }, boolean] {
+  const { markets } = useAllMarketData()
+  const { account } = useActiveWeb3React()
+  const ammAddresses: string[] = markets
+    ? markets.reduce((p, m) => (m.amms.length > 0 ? [...p, ...m.amms.map(a => a.id)] : p), [])
+    : []
+  const validatedTokenAddresses = useMemo(() => ammAddresses.map(address => address), [ammAddresses])
+  const balances = useMultipleContractSingleData(validatedTokenAddresses, ERC20_INTERFACE, 'balanceOf', [account])
+  const anyLoading: boolean = useMemo(() => balances.some(callState => callState.loading), [balances])
+
+  return [
+    useMemo(
+      () =>
+        account && ammAddresses.length > 0
+          ? ammAddresses.reduce<{ [tokenAddress: string]: string | undefined }>((memo, address, i) => {
+              const value = balances?.[i]?.result?.[0]
+              const amount = value ? value.toString() : undefined
+              if (amount) {
+                memo[address] = amount
+              }
+              return memo
+            }, {})
+          : {},
+      [account, ammAddresses, balances]
+    ),
+    anyLoading
+  ]
+}
+
 export function useTokenBalances(
   address?: string,
   tokens?: (Token | undefined)[]

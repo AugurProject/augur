@@ -1,76 +1,14 @@
 import React, { useEffect, useState } from 'react'
 import { withRouter } from 'react-router-dom'
-// import { Box } from 'rebass'
-import styled from 'styled-components'
-
+import { TYPE } from '../Theme'
 import { AutoRow } from '../components/Row'
-import { AutoColumn } from '../components/Column'
-import TopMarketList from '../components/MarketList'
-import Search from '../components/Search'
-import GlobalStats from '../components/GlobalStats'
-import { Text } from 'rebass'
-// import { useGlobalData } from '../contexts/GlobalData'
-import { useMedia } from 'react-use'
+import PositionMarkets from '../components/PositionMarkets'
+import { useMarketShareBalances } from '../state/wallet/hooks'
 import Panel from '../components/Panel'
-import { useAllMarketData, useMarketCashes } from '../contexts/Markets'
-// import { formattedNum, formattedPercent } from '../utils'
-import { ThemedBackground } from '../Theme'
-import { transparentize } from 'polished'
-import { RowBetween } from '../components/Row'
 import { PageWrapper, ContentWrapper } from '../components'
-import TokenLogo from '../components/TokenLogo'
 
-const ClickableText = styled(Text)`
-  text-align: end;
-  &:hover {
-    cursor: ${({ disabled }) => disabled ? 'default' : 'pointer' };
-    opacity: ${({ disabled }) => disabled ? '1' : '0.6' };
-  }
-  user-select: none;
-  color: ${({ theme }) => theme.text1};
-
-  @media screen and (max-width: 640px) {
-    font-size: 0.85rem;
-  }
-`
-
-const ListOptions = styled(AutoRow)`
-  height: 40px;
-  width: 100%;
-  font-size: 1.25rem;
-  font-weight: 600;
-
-  @media screen and (max-width: 640px) {
-    font-size: 1rem;
-  }
-`
-
-function GlobalPage() {
-  // get data for lists and totals
-  const { markets } = useAllMarketData()
-  const cashes = useMarketCashes()
-  // const { totalLiquidityUSD, oneDayVolumeUSD, volumeChangeUSD, liquidityChangeUSD } = useGlobalData()
-
-  // breakpoints
-  const below800 = useMedia('(max-width: 800px)')
-  const [cashFilter, setCashFilter] = useState(null)
-  const [filteredMarkets, setFilteredMarkets] = useState(markets)
-  // scrolling refs
-
-  const updateCashFilter = cash => {
-    setCashFilter(cash)
-    if (!cash) {
-      return setFilteredMarkets(markets)
-    }
-    const newMarkets = markets.reduce((p, m) => {
-      if (!m.amms || m.amms.length === 0) return p
-      if (m.amms.find(m => m.shareToken.cash.id === cash)) {
-        return [...p, m]
-      }
-      return p
-    }, [])
-    setFilteredMarkets(newMarkets)
-  }
+function UserPositions() {
+  const [userMarketShareBalances, loading] = useMarketShareBalances()
 
   useEffect(() => {
     document.querySelector('body').scrollTo({
@@ -81,14 +19,19 @@ function GlobalPage() {
 
   return (
     <PageWrapper>
-      <ThemedBackground backgroundColor={transparentize(0.8, '#ff007a')} />
       <ContentWrapper>
         <Panel style={{ marginTop: '6px', padding: '1.125rem 0 ' }}>
-          <TopMarketList markets={filteredMarkets || []} />
+          {Object.keys(userMarketShareBalances).length > 0 ? (
+            <PositionMarkets positions={userMarketShareBalances || {}} />
+          ) : (
+            <AutoRow justify={'center'}>
+              <TYPE.light>No Liquidity Pools</TYPE.light>
+            </AutoRow>
+          )}
         </Panel>
       </ContentWrapper>
     </PageWrapper>
   )
 }
 
-export default withRouter(GlobalPage)
+export default withRouter(UserPositions)

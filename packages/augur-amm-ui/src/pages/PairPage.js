@@ -220,7 +220,6 @@ function PairPage({ pairAddress, history }) {
 
   return (
     <PageWrapper>
-      <ThemedBackground backgroundColor={transparentize(0.6, backgroundColor)} />
       <span />
       <ContentWrapperLarge>
         <RowBetween style={{ justifyContent: 'flex-end' }}>{!below600 && <Search small={true} />}</RowBetween>

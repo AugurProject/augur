@@ -141,7 +141,6 @@ function TokenPage({ marketId, history }) {
 
   return (
     <PageWrapper>
-      <ThemedBackground backgroundColor={transparentize(0.6, backgroundColor)} />
       <ContentWrapper>
         <RowBetween style={{ flexWrap: 'wrap', alingItems: 'start', justifyContent: 'flex-end' }}>
           {!below600 && <Search small={true} />}
