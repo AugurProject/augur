@@ -758,6 +758,9 @@ type AMMExchange @entity {
   "Percentage of shares that are yes."
   percentageYes: BigInt!
 
+  "Number of LP token outstanding."
+  totalSupply: BigInt!
+
   swaps: [SwapPosition!]! @derivedFrom(field: "ammExchange")
 
   enters: [EnterPosition!]! @derivedFrom(field: "ammExchange")
