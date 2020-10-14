@@ -1055,6 +1055,7 @@ div.ButtonsRow:last-of-type {
     background: var(--color-table-header-50);
     padding: @size-14 @size-16;
     border-top: @size-1 solid var(--color-outline);
+    border-radius: 0 0 @border-radius-extra-rounded @border-radius-extra-rounded;
   }
 }
 
@@ -2676,7 +2677,7 @@ div.ButtonsRow:last-of-type {
 .Gas {
   .Container;
 
-  max-width: @size-480;
+  max-width: @size-512;
   @media @breakpoint-mobile-mid {
     max-width: @size-340;
   }
@@ -2717,26 +2718,26 @@ div.ButtonsRow:last-of-type {
       max-height: @button-height-default;
       padding: @size-8 @size-12;
 
+      &:not(:disabled):hover {
+        background-color: var(--color-primary-action-5);
+      }
+
+      &:not(:disabled):focus {
+        background-color: var(--color-primary-action-10);
+      }
+
+      &:not(:disabled):active {
+        background-color: var(--color-primary-action-15);
+      }
+
       &:disabled {
-        background: var(--color-inactive-text);
-      }
-
-      &:hover:enabled {
-        background: var(--color-primary-action-5);
-      }
-
-      &:focus:enabled {
-        background: var(--color-primary-action-10);
-      }
-
-      &:active:enabled {
-        background: var(--color-primary-action-15);
+        background-color: var(--color-inactive-text);
       }
 
       .mono-10-bold;
 
       align-items: center;
-      background: var(--color-secondary-action);
+      background-color: var(--color-secondary-action);
       display: flex;
       text-transform: uppercase;
       margin-left: auto;
@@ -2931,6 +2932,67 @@ div.ButtonsRow:last-of-type {
 
     > div:nth-of-type(3) {
       margin-top: @size-12;
+    }
+  }
+}
+
+:root[theme='BETTING'],
+:root[theme='SPORTS'] {
+  .Gas {
+    border: none;
+
+    > main {
+      > button {
+        background-color: transparent;
+        border: @size-1 solid var(--color-dark-grey);
+        border-radius: @border-radius-default;
+        color: var(--color-secondary-text);
+
+        > span > svg > path {
+          stroke: var(--color-primary-text);
+        }
+
+        &:not(:disabled):hover,
+        &:not(:disabled):focus,
+        &:not(:disabled):active {
+          background-color: transparent;
+        }
+
+        &:not(:disabled):hover {
+          border: @size-1 solid var(--color-primary-text);
+          color: var(--color-primary-text);
+        }
+
+        &:not(:disabled):focus {
+          border: @size-2 solid var(--color-focused);
+        }
+
+        &:not(:disabled):active {
+          border: @size-1 solid var(--color-primary-text);
+          color: var(--color-primary-text);
+        }
+
+        &:disabled {
+          opacity: 0.5;
+        }
+      }
+
+      > div:nth-of-type(2) > div:first-of-type > input[type='number'] {
+        background-color: var(--color-module-background);
+        border: @size-1 solid var(--color-outline);
+        border-radius: @border-radius-default;
+
+        &:not(:disabled):hover,
+        &:not(:disabled):focus,
+        &:not(:disabled):active {
+          border: @size-1 solid var(--color-dark-text);
+          color: var(--color-secondary-text);
+        }
+
+        &:disabled {
+          opacity: 0.5;
+        }
+      }
     }
   }
 }
