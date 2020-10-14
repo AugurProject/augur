@@ -16,6 +16,7 @@ import { Account, ACCOUNTS } from '../constants';
 import { addAMMScripts } from './amm';
 import { FlashSession } from './flash';
 import { addGanacheScripts } from './ganache-scripts';
+import { addParaScripts } from './para';
 import { addScripts } from './scripts';
 
 import { addWarpSyncScripts } from './warp-sync';
@@ -62,6 +63,7 @@ async function run() {
   addScripts(flash);
   addAMMScripts(flash);
   addGanacheScripts(flash);
+  addParaScripts(flash);
   addWarpSyncScripts(flash);
 
   program
