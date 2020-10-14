@@ -24,6 +24,8 @@ export function getOrCreateAMMExchange(
     amm.liquidityInvalid = BigInt.fromI32(0);
     amm.liquidityNo = BigInt.fromI32(0);
     amm.liquidityYes = BigInt.fromI32(0);
+    amm.percentageNo = BigInt.fromI32(0);
+    amm.percentageYes = BigInt.fromI32(0);
     amm.volumeNo = BigInt.fromI32(0);
     amm.volumeYes = BigInt.fromI32(0);
   }
@@ -71,6 +73,9 @@ export function updateAMM(id: string):AMMExchange {
 
   // @todo confirm this is correct.
   amm.liquidity = totalShares.div(market.numTicks);
+
+  amm.percentageNo = amm.liquidityNo.div(totalShares);
+  amm.percentageYes = amm.liquidityYes.div(totalShares);
 
   amm.save();
 

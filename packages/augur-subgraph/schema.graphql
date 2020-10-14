@@ -752,6 +752,12 @@ type AMMExchange @entity {
   "The all time no volume in the exchange."
   volumeNo: BigInt!
 
+  "Percentage of shares that are no."
+  percentageNo: BigInt!
+
+  "Percentage of shares that are yes."
+  percentageYes: BigInt!
+
   swaps: [SwapPosition!]! @derivedFrom(field: "ammExchange")
 
   enters: [EnterPosition!]! @derivedFrom(field: "ammExchange")
