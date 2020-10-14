@@ -212,3 +212,25 @@
 .ScalarBox {
   border-top: 1px solid var(--color-dark-grey);
 }
+
+:root[theme='BETTING'],
+:root[theme='SPORTS'] {
+
+.TimeSection {
+  > div[class*='TimeLabel'] {
+    span:first-of-type {
+      .text-10-semi-bold;
+      
+      text-transform: uppercase;
+    }
+
+    span:nth-of-type(2) {
+      .text-14-bold;
+    }
+
+    span:nth-of-type(3) {
+      .text-12;
+    }
+  }
+}
+}
