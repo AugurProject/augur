@@ -6,11 +6,12 @@ import utc from 'dayjs/plugin/utc'
 import { Box, Flex, Text } from 'rebass'
 import { Divider } from '..'
 import { useDarkModeManager } from '../../contexts/LocalStorage'
-import { formatTime, formattedNum } from '../../utils'
+import { formatTime } from '../../utils'
 import { useMedia } from 'react-use'
 import { withRouter } from 'react-router-dom'
 import { TYPE } from '../../Theme'
 import { BasicLink } from '../Link'
+import { useAmmMarkets } from '../../contexts/Markets'
 
 dayjs.extend(utc)
 
@@ -39,8 +40,8 @@ const List = styled(Box)`
 const DashGrid = styled.div`
   display: grid;
   grid-gap: 0.5em;
-  grid-template-columns: 70% 1fr 1fr;
-  grid-template-areas: 'name status timestamp';
+  grid-template-columns: 30% 1fr 1fr;
+  grid-template-areas: 'name balance status timestamp';
   padding: 0 1.125rem;
 
   > * {
@@ -56,7 +57,7 @@ const DashGrid = styled.div`
   @media screen and (min-width: 1080px) {
     display: grid;
     grid-gap: 0.5em;
-    grid-template-columns: 5fr 1fr 1fr;
+    grid-template-columns: 2fr 1fr 1fr 1fr;
     grid-template-areas: 'name status timestamp';
   }
 `
@@ -103,7 +104,7 @@ const SORT_FIELD = {
   ENDTIMESTAMP: 'endTimestamp'
 }
 
-function PooledMarketList({ markets, balances, itemMax = 10 }) {
+function PooledMarketList({ balances, itemMax = 20 }) {
   // page state
   const [page, setPage] = useState(1)
   const [maxPage, setMaxPage] = useState(1)
@@ -113,6 +114,7 @@ function PooledMarketList({ markets, balances, itemMax = 10 }) {
   const [sortDirection, setSortDirection] = useState(true)
   const [sortedColumn, setSortedColumn] = useState(SORT_FIELD.STATUS)
 
+  const markets = useAmmMarkets(balances)
   const below680 = useMedia('(max-width: 680px)')
 
   useEffect(() => {
@@ -149,7 +151,7 @@ function PooledMarketList({ markets, balances, itemMax = 10 }) {
         <BasicLink style={{ width: '100%' }} to={'/token/' + item.id} key={item.id}>
           {item.description}
         </BasicLink>
-        <DataText area="balance">{formattedNum(balances[item.id]?.amount, false)}</DataText>
+        <DataText area="balance">{item.balance}</DataText>
         <DataText area="status">
           <span
             style={
