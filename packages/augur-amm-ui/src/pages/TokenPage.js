@@ -8,7 +8,7 @@ import Panel from '../components/Panel'
 import TokenLogo from '../components/TokenLogo'
 import PairList from '../components/PairList'
 import Loader from '../components/LocalLoader'
-import { RowBetween, RowFixed } from '../components/Row'
+import { RowBetween, RowFixed, RowStart } from '../components/Row'
 import { AutoColumn } from '../components/Column'
 import TxnList from '../components/TxnList'
 //import TokenChart from '../components/TokenChart'
@@ -29,7 +29,7 @@ import { PageWrapper, ContentWrapper } from '../components'
 import FormattedName from '../components/FormattedName'
 //import { getCashAddress } from '../contexts/Application'
 //import { WETH } from '../constants'
-import { useMarketNonExistingAmms } from '../contexts/Markets'
+import { useMarketNonExistingAmms, useMarketAmmExchanges } from '../contexts/Markets'
 import { ButtonOutlined } from '../components/ButtonStyled'
 
 const DashboardWrapper = styled.div`
@@ -88,10 +88,8 @@ function TokenPage({ marketId, history }) {
   // detect color from token
   const backgroundColor = useColor(id, symbol)
 
-  const allPairs = useTokenPairs(marketId)
-
-  // pairs to show in pair list
-  //const fetchedPairsList = useDataForList(allPairs)
+  //const allPairs = useTokenPairs(marketId)
+  const allExchanges = useMarketAmmExchanges(marketId)
 
   // all transactions with this token
   //const transactions = useTokenTransactions(marketId)
@@ -142,16 +140,11 @@ function TokenPage({ marketId, history }) {
   return (
     <PageWrapper>
       <ContentWrapper>
-        <RowBetween style={{ flexWrap: 'wrap', alingItems: 'start', justifyContent: 'flex-end' }}>
-          {!below600 && <Search small={true} />}
-        </RowBetween>
-
-        <WarningGrouping>
+       <WarningGrouping>
           <DashboardWrapper style={{ marginTop: below1080 ? '0' : '1rem' }}>
             <RowBetween style={{ flexWrap: 'wrap', marginBottom: '2rem', alignItems: 'flex-start' }}>
               <RowFixed style={{ flexWrap: 'wrap' }}>
                 <RowFixed style={{ flexFlow: 'row nowrap', alignItems: 'flex-start', justifyContent: 'flex-start' }}>
-                  <TokenLogo tokenInfo={marketId} />
                   <TYPE.main fontSize={below1080 ? '1.5rem' : '2rem'} fontWeight={500} style={{ margin: '0 1rem' }}>
                     <RowFixed gap="6px">
                       <FormattedName
@@ -171,7 +164,7 @@ function TokenPage({ marketId, history }) {
                     </>
                   )}
                 </RowFixed>
-                <RowFixed>
+                <RowStart>
                   {cashes &&
                     cashes.map(cash => (
                       <StyledInternalLink key={cash} to={`/add/${marketId}/${cash}/undefined`}>
@@ -181,7 +174,7 @@ function TokenPage({ marketId, history }) {
                         </ButtonOutlined>
                       </StyledInternalLink>
                     ))}
-                </RowFixed>
+                </RowStart>
               </RowFixed>
             </RowBetween>
 
@@ -258,7 +251,7 @@ function TokenPage({ marketId, history }) {
 
             <span>
               <TYPE.main fontSize={'1.125rem'} style={{ marginTop: '3rem' }}>
-                Outcomes
+                AMM Exchanges
               </TYPE.main>
             </span>
             <Panel
@@ -268,8 +261,8 @@ function TokenPage({ marketId, history }) {
                 padding: '1.125rem 0 '
               }}
             >
-              {marketId && allPairs ? (
-                <PairList color={backgroundColor} marketId={marketId} pairs={allPairs} />
+              {marketId && allExchanges ? (
+                <PairList color={backgroundColor} marketId={marketId} allExchanges={allExchanges} />
               ) : (
                 <Loader />
               )}

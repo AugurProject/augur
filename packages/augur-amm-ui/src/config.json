@@ -26,6 +26,12 @@
         "name": "DAI",
         "symbol": "DAI",
         "asset": "dai.svg"
+      },
+      {
+        "address": "0x1997d08B1a9aeD5143b995e929707400625D5f6C",
+        "name": "USDT",
+        "symbol": "USDT",
+        "asset": "usdt.svg"
       }
     ],
     "augurClient": "https://api.thegraph.com/subgraphs/name/augurproject/augur-v2-staging",

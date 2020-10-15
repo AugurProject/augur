@@ -172,6 +172,19 @@ export function useMarketAmm(marketId, amm) {
   }
 }
 
+export function useMarketAmmExchanges(marketId) {
+  const market = useMarket(marketId)
+  const ammExchanges = market && market.amms && market.amms.length > 0 ? market.amms : []
+
+  return ammExchanges.map(ammExchange => ({
+    ...ammExchange,
+    hasLiquidity: ammExchange?.liquidity  && ammExchange?.liquidity !== "0",
+    id: ammExchange?.id,
+    cash: ammExchange?.shareToken?.cash?.id,
+    sharetoken: ammExchange?.shareToken?.id
+  }))
+}
+
 export function useMarketNonExistingAmms(marketId) {
   const [state] = useMarketDataContext()
   const market = useMarket(marketId)

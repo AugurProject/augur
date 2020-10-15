@@ -1,21 +1,16 @@
 import React, { useEffect, useState } from 'react'
 import { withRouter } from 'react-router-dom'
-// import { Box } from 'rebass'
 import styled from 'styled-components'
 
-import { AutoRow } from '../components/Row'
+import { AutoRow, RowFlat } from '../components/Row'
 import { AutoColumn } from '../components/Column'
 import TopMarketList from '../components/MarketList'
 import Search from '../components/Search'
 import GlobalStats from '../components/GlobalStats'
 import { Text } from 'rebass'
-// import { useGlobalData } from '../contexts/GlobalData'
 import { useMedia } from 'react-use'
 import Panel from '../components/Panel'
 import { useAllMarketData, useMarketCashes } from '../contexts/Markets'
-// import { formattedNum, formattedPercent } from '../utils'
-import { ThemedBackground } from '../Theme'
-import { transparentize } from 'polished'
 import { RowBetween } from '../components/Row'
 import { PageWrapper, ContentWrapper } from '../components'
 import TokenLogo from '../components/TokenLogo'
@@ -23,8 +18,8 @@ import TokenLogo from '../components/TokenLogo'
 const ClickableText = styled(Text)`
   text-align: end;
   &:hover {
-    cursor: ${({ disabled }) => disabled ? 'default' : 'pointer' };
-    opacity: ${({ disabled }) => disabled ? '1' : '0.6' };
+    cursor: ${({ disabled }) => (disabled ? 'default' : 'pointer')};
+    opacity: ${({ disabled }) => (disabled ? '1' : '0.6')};
   }
   user-select: none;
   color: ${({ theme }) => theme.text1};
@@ -96,17 +91,19 @@ function GlobalPage() {
               >
                 All Markets
               </ClickableText>
-              {cashes &&
-                cashes.map(cash => (
-                  <ClickableText disabled={cash === cashFilter} key={cash} onClick={() => updateCashFilter(cash)}>
-                    <TokenLogo
-                      tokenInfo={cash}
-                      size={'20px'}
-                      showSymbol
-                      style={{ paddingRight: '0.25rem', opacity: cash === cashFilter ? '1' : '0.4' }}
-                    />
-                  </ClickableText>
-                ))}
+              <RowFlat>
+                {cashes &&
+                  cashes.map(cash => (
+                    <ClickableText disabled={cash === cashFilter} key={cash} onClick={() => updateCashFilter(cash)}>
+                      <TokenLogo
+                        tokenInfo={cash}
+                        size={'20px'}
+                        showSymbol
+                        style={{ paddingRight: '0.5rem', opacity: cash === cashFilter ? '1' : '0.4' }}
+                      />
+                    </ClickableText>
+                  ))}
+              </RowFlat>
             </RowBetween>
           </ListOptions>
 

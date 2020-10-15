@@ -17,6 +17,11 @@ export const RowBetween = styled(Row)`
   justify-content: space-between;
 `
 
+export const RowStart = styled.div`
+  display: flex;
+  align-items: flex-start;
+`
+
 export const RowFlat = styled.div`
   display: flex;
   align-items: flex-end;

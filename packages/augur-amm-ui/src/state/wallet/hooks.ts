@@ -139,21 +139,22 @@ export function useMarketShareBalances(): [
       () =>
         account && inputs.length > 0
           ? paraShareTokenAddresses.reduce((memo, paraSharetokenAddress, i) => {
-              const value = balances?.[i]?.result?.[0]
-              const params = inputs[i]
-              if (value) {
+              inputs.forEach((params, j) => {
+                const value = balances?.[j]?.result?.[0]
                 const marketId = params[0]
                 const outcome = params[1]
-                const amount = value ? new BN(value) : undefined
-                if (amount && amount.isGreaterThan(0)) {
-                  console.log('added balanace', JSON.stringify(value), 'params', params)
-                  const market = markets.find(m => m.id.toLowerCase() === String(marketId).toLowerCase())
-                  const paraShareToken = paraShareTokens.find(p => p.id.toLowerCase() === paraSharetokenAddress)
-                  if (!memo[paraSharetokenAddress]) memo[paraSharetokenAddress] = {}
-                  if (!memo[paraSharetokenAddress][marketId]) memo[paraSharetokenAddress][marketId] = {}
-                  memo = [...memo, { paraSharetokenAddress, marketId, outcome, amount, market, paraShareToken }]
+                if (value) {
+                  const amount = value ? new BN(value) : undefined
+                  if (amount && amount.isGreaterThan(0)) {
+                    console.log('added balanace', JSON.stringify(value), 'params', params)
+                    const market = markets.find(m => m.id.toLowerCase() === String(marketId).toLowerCase())
+                    const paraShareToken = paraShareTokens.find(p => p.id.toLowerCase() === paraSharetokenAddress)
+                    if (!memo[paraSharetokenAddress]) memo[paraSharetokenAddress] = {}
+                    if (!memo[paraSharetokenAddress][marketId]) memo[paraSharetokenAddress][marketId] = {}
+                    memo = [...memo, { paraSharetokenAddress, marketId, outcome, amount, market, paraShareToken }]
+                  }
                 }
-              }
+              } )
               return memo
             }, [])
           : [],

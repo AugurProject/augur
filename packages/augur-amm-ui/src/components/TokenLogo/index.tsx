@@ -38,6 +38,8 @@ export default function TokenLogo({ tokenInfo, showSymbol = false, size = '24px'
   const address = cashtoken ? cashtoken.address : tokenInfo
   const [error, setError] = useState(false)
 
+  console.log('cashtoken', cashtoken, tokenInfo)
+
   useEffect(() => {
     setError(false)
   }, [address])
@@ -47,7 +49,7 @@ export default function TokenLogo({ tokenInfo, showSymbol = false, size = '24px'
       <StyledEthereumLogo size={size} {...rest}>
         <img src={require(`../../assets/${cashtoken.asset}`)} style={{ borderRadius: '24px' }} alt="Trading token" />
         <TYPE.light style={{ fontSize: size, paddingLeft: '0.25rem', fontWeight: '500' }}>
-          {showSymbol ? cashtoken.symbol : ''}
+          {showSymbol ? <span style={{paddingLeft: '0.5rem'}}>{cashtoken.symbol}</span> : ''}
         </TYPE.light>
       </StyledEthereumLogo>
     )

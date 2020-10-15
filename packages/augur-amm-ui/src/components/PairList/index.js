@@ -5,20 +5,14 @@ import LocalLoader from '../LocalLoader'
 import utc from 'dayjs/plugin/utc'
 import { Box } from 'rebass'
 import styled from 'styled-components'
-//import { CustomLink } from '../Link'
 import { Divider } from '../../components'
 import { withRouter } from 'react-router-dom'
-import DoubleTokenLogo from '../DoubleLogo'
-import FormattedName from '../FormattedName'
-import { TYPE, StyledInternalLink } from '../../Theme'
-//import { Type } from 'react-feather'
-import { RowFixed } from '../Row'
-import { useConfig } from '../../contexts/Application'
-import { useMarketAmm } from '../../contexts/Markets'
-import { greaterThanZero } from '../../utils'
+import TokenLogo from '../TokenLogo'
+import { RowFixed, AutoRow } from '../Row'
 import { ButtonLight, ButtonPrimary } from '../ButtonStyled'
-import { useActiveWeb3React } from '../../hooks'
 import { useLPTokenBalances } from '../../state/wallet/hooks'
+import { TYPE, StyledInternalLink } from '../../Theme'
+import { greaterThanZero } from '../../utils'
 
 dayjs.extend(utc)
 
@@ -46,10 +40,10 @@ const List = styled(Box)`
 
 const DashGrid = styled.div`
   display: grid;
-  grid-gap: 1em;
-  grid-template-columns: 50px 1fr 1fr 1fr 1fr 1.5fr;
+  grid-gap: 0.25rem;
+  grid-template-columns: 1.5fr 1fr 1fr 1fr 1fr 1.5fr;
   grid-template-areas: 'name';
-  padding: 0 1.125rem;
+  padding: 0 0.75rem;
 
   > * {
     justify-content: flex-end;
@@ -62,40 +56,24 @@ const DashGrid = styled.div`
   }
 
   @media screen and (max-width: 800px) {
-    padding: 0 1.125rem;
+    padding: 0 0.75rem;
     grid-template-columns: 50px 1fr 1fr 1fr 1.5fr;
     grid-template-areas: ' name';
   }
 
   @media screen and (min-width: 1080px) {
-    padding: 0 1.125rem;
-    grid-template-columns: 50px 1fr 1fr 1fr 1fr 1.5fr;
+    padding: 0 0.75rem;
+    grid-template-columns: 1.5fr 1fr 1fr 1fr 1fr 1fr 1.5fr;
     grid-template-areas: ' name';
   }
 
   @media screen and (min-width: 1200px) {
-    grid-template-columns: 50px 1fr 1fr 1fr 1fr 1.5fr;
+    grid-template-columns: 1.5fr 1fr 1fr 1fr 1fr 1fr 1.5fr;
     grid-template-areas: ' name';
   }
 `
 
 const ListWrapper = styled.div``
-
-/*
-const DataText = styled(Flex)`
-  align-items: center;
-  text-align: center;
-  color: ${({ theme }) => theme.text1};
-
-  & > * {
-    font-size: 14px;
-  }
-
-  @media screen and (max-width: 600px) {
-    font-size: 12px;
-  }
-`
-*/
 
 const SORT_FIELD = {
   LIQ: 0,
@@ -105,101 +83,60 @@ const SORT_FIELD = {
   APY: 5
 }
 
-const FIELD_TO_VALUE = {
-  [SORT_FIELD.LIQ]: 'trackedReserveUSD', // sort with tracked volume only
-  [SORT_FIELD.VOL]: 'oneDayVolumeUSD',
-  [SORT_FIELD.VOL_7DAYS]: 'oneWeekVolumeUSD',
-  [SORT_FIELD.FEES]: 'oneDayVolumeUSD'
-}
-
-function PairList({ pairs, color, disbaleLinks, marketId, maxItems = 10 }) {
+function PairList({ allExchanges, color, disbaleLinks, marketId, maxItems = 10 }) {
   const below600 = useMedia('(max-width: 600px)')
   const below740 = useMedia('(max-width: 740px)')
   const below800 = useMedia('(max-width: 800px)')
-  const { account } = useActiveWeb3React()
-  const config = useConfig()
-  // pagination
-  const [page, setPage] = useState(1)
-  const [maxPage, setMaxPage] = useState(1)
-  const ITEMS_PER_PAGE = maxItems
-
-  // sorting
-  const [sortDirection] = useState(true)
-  const [sortedColumn] = useState(SORT_FIELD.LIQ)
+  const below1080 = useMedia('(max-width: 1080px)')
   const [userTokenBalances, loading] = useLPTokenBalances()
 
-  useEffect(() => {
-    setMaxPage(1) // edit this to do modular
-    setPage(1)
-  }, [config, account])
-
-  useEffect(() => {
-    if (pairs) {
-      let extraPages = 1
-      if (Object.keys(pairs).length % ITEMS_PER_PAGE === 0) {
-        extraPages = 0
-      }
-      setMaxPage(Math.floor(Object.keys(pairs).length / ITEMS_PER_PAGE) + extraPages)
-    }
-  }, [ITEMS_PER_PAGE, pairs])
-
-  const ListItem = ({ pairAddress, index }) => {
-    const pairData = pairs[pairAddress]
-    const amm = useMarketAmm(marketId, pairData.ammId)
+  const ListItem = ({ ammExchange, index }) => {
     const [hasLPTokens, setHasLpTokens] = useState(false)
 
     useEffect(() => {
       if (userTokenBalances) {
-        setHasLpTokens(greaterThanZero(userTokenBalances[amm.id]))
+        setHasLpTokens(greaterThanZero(userTokenBalances[ammExchange.id]))
       }
-    }, [userTokenBalances, amm])
-    console.log(amm)
-    if (pairData && pairData.token0 && pairData.token1) {
+    }, [userTokenBalances, ammExchange])
+
+    if (ammExchange) {
       return (
         <DashGrid style={{ height: '48px', alignItems: 'center' }} disbaleLinks={disbaleLinks} focus={true}>
-          <DoubleTokenLogo
-            size={below600 ? 16 : 24}
-            token0={pairData.token0.id}
-            token1={pairData.token1.id}
-            margin={!below740}
-          />
-          <TYPE.header style={{ marginLeft: '20px', whiteSpace: 'nowrap' }}>
-            <FormattedName
-              text={pairData.token0.symbol + ' - ' + pairData.token1.symbol}
-              maxCharacters={below600 ? 75 : 100}
-              adjustSize={true}
-              link={false}
-            />
+          <TokenLogo size={below600 ? 16 : 18} tokenInfo={ammExchange.cash} showSymbol margin={!below740} />
+          <TYPE.header area="name" fontWeight="500">
+            {ammExchange.liquidity}
           </TYPE.header>
           <TYPE.header area="name" fontWeight="500">
-            $0
+            {ammExchange.volumeYes}
           </TYPE.header>
           <TYPE.header area="name" fontWeight="500">
-            $0
+            {ammExchange.volumeNo}
           </TYPE.header>
-          {!below800 && (
+          {!below1080 && (
+            <TYPE.header area="name" fontWeight="500">
+              $0
+            </TYPE.header>
+          )}
+          {!below1080 && (
             <TYPE.header area="name" fontWeight="500">
               $0
             </TYPE.header>
           )}
           <TYPE.header area="name" fontWeight="500">
             <RowFixed style={{ flexFlow: 'row nowrap', justifyContent: 'space-between', marginTop: '0.5rem' }}>
-              <StyledInternalLink
-                disabled={!hasLPTokens}
-                to={`/remove/${marketId}/${pairData.token0.id}/${pairData.ammId}`}
-              >
+              <StyledInternalLink disabled={!hasLPTokens} to={`/remove/${marketId}/${ammExchange.id}`}>
                 <ButtonLight disabled={!hasLPTokens} textAlign="center">
                   Remove
                 </ButtonLight>
               </StyledInternalLink>
-              <StyledInternalLink to={`/add/${marketId}/${pairData.token0.id}/${pairData.ammId}`}>
+              <StyledInternalLink to={`/add/${marketId}/${ammExchange.cash.id}/${ammExchange.id}`}>
                 <ButtonLight textAlign="center">Add</ButtonLight>
               </StyledInternalLink>
               <StyledInternalLink
-                disabled={!pairData.ammId}
-                to={`/swap/${marketId}/${pairData.token0.id}/${pairData.ammId}`}
+                disabled={!ammExchange && !ammExchange.id}
+                to={`/swap/${marketId}/${ammExchange.cash.id}/${ammExchange.id}`}
               >
-                <ButtonPrimary disabled={!pairData.ammId} textAlign="center">
+                <ButtonPrimary disabled={!ammExchange && !ammExchange.id} textAlign="center">
                   Trade
                 </ButtonPrimary>
               </StyledInternalLink>
@@ -212,66 +149,42 @@ function PairList({ pairs, color, disbaleLinks, marketId, maxItems = 10 }) {
     }
   }
 
-  const pairList =
-    pairs &&
-    Object.keys(pairs)
-      .sort((addressA, addressB) => {
-        const pairA = pairs[addressA]
-        const pairB = pairs[addressB]
-        if (sortedColumn === SORT_FIELD.APY) {
-          const apy0 = parseFloat(pairA.oneDayVolumeUSD * 0.003 * 356 * 100) / parseFloat(pairA.reserveUSD)
-          const apy1 = parseFloat(pairB.oneDayVolumeUSD * 0.003 * 356 * 100) / parseFloat(pairB.reserveUSD)
-          return apy0 > apy1 ? (sortDirection ? -1 : 1) * 1 : (sortDirection ? -1 : 1) * -1
-        }
-        return parseFloat(pairA[FIELD_TO_VALUE[sortedColumn]]) > parseFloat(pairB[FIELD_TO_VALUE[sortedColumn]])
-          ? (sortDirection ? -1 : 1) * 1
-          : (sortDirection ? -1 : 1) * -1
-      })
-      .slice(ITEMS_PER_PAGE * (page - 1), page * ITEMS_PER_PAGE)
-      .map((pairAddress, index) => {
-        return (
-          pairAddress && (
-            <div key={index}>
-              <ListItem key={index} index={(page - 1) * ITEMS_PER_PAGE + index + 1} pairAddress={pairAddress} />
-              <Divider />
-            </div>
-          )
-        )
-      })
+  const exchangeList = allExchanges.map((exchange, index) => {
+    return (
+      exchange && (
+        <div key={index}>
+          <ListItem key={index} ammExchange={exchange} />
+          <Divider />
+        </div>
+      )
+    )
+  })
 
   return (
     <ListWrapper>
-      <DashGrid
-        center={true}
-        disbaleLinks={disbaleLinks}
-        style={{ height: 'fit-content', padding: '0 1.125rem 1rem 1.125rem' }}
-      >
-        <TYPE.header area="uniswap"></TYPE.header>
-        <TYPE.header area="uniswap"></TYPE.header>
-        <TYPE.header area="uniswap">Liquidity</TYPE.header>
-        <TYPE.header area="uniswap">Volume (24 hour)</TYPE.header>
-        {!below800 && <TYPE.header area="uniswap">Volume (7 day)</TYPE.header>}
-        <TYPE.header area="uniswap"></TYPE.header>
-      </DashGrid>
-      <Divider />
-      <List p={0}>{!pairList ? <LocalLoader /> : pairList}</List>
-      <PageButtons>
-        <div
-          onClick={e => {
-            setPage(page === 1 ? page : page - 1)
-          }}
-        >
-          <Arrow faded={page === 1 ? true : false}>←</Arrow>
-        </div>
-        <TYPE.body>{'Page ' + page + ' of ' + maxPage}</TYPE.body>
-        <div
-          onClick={e => {
-            setPage(page === maxPage ? page : page + 1)
-          }}
-        >
-          <Arrow faded={page === maxPage ? true : false}>→</Arrow>
-        </div>
-      </PageButtons>
+      {allExchanges.length > 0 ? (
+        <>
+          <DashGrid
+            center={true}
+            disbaleLinks={disbaleLinks}
+            style={{ height: 'fit-content', padding: '0 1.125rem 1rem 1.125rem' }}
+          >
+            <TYPE.header area="uniswap"></TYPE.header>
+            <TYPE.header area="uniswap">Liquidity</TYPE.header>
+            <TYPE.header area="uniswap">Volume Yes</TYPE.header>
+            <TYPE.header area="uniswap">Volume No</TYPE.header>
+            {!below1080 && <TYPE.header area="uniswap">Volume (24 hour)</TYPE.header>}
+            {!below1080 && <TYPE.header area="uniswap">Volume (7 day)</TYPE.header>}
+            <TYPE.header area="uniswap"></TYPE.header>
+          </DashGrid>
+          <Divider />
+          <List p={0}>{!exchangeList ? <LocalLoader /> : exchangeList}</List>
+        </>
+      ) : (
+        <AutoRow justify={'center'}>
+          <TYPE.light>No Exchanges Created</TYPE.light>
+        </AutoRow>
+      )}
     </ListWrapper>
   )
 }
