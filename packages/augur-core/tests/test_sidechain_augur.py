@@ -68,3 +68,21 @@ def test_rep_fees(kitchenSinkFixture, universe, cash, market):
 
     with TokenDelta(cash, expectedReporterFees, shareToken.repFeeTarget(), "Reporting fees not pushed to configured target"):
         shareToken.pushRepFees()
+
+def test_augur_bridge(kitchenSinkFixture, universe, market):
+    bridge = kitchenSinkFixture.upload('../src/contracts/sidechain/AugurPushBridge.sol')
+
+    marketData = bridge.bridgeMarket(market.address)
+    (finalized, invalid, owner, feeDivisor, marketUniverse, numTicks, numOutcomes, winningPayout,  affiliateFeeDivisor) = marketData
+    assert finalized == False
+    assert invalid == False
+    assert owner == market.getOwner()
+    assert feeDivisor == market.getMarketCreatorSettlementFeeDivisor()
+    assert marketUniverse == universe.address
+    assert numTicks == market.getNumTicks()
+    assert numOutcomes == market.getNumberOfOutcomes()
+    assert winningPayout == []
+    assert affiliateFeeDivisor == market.affiliateFeeDivisor()
+
+    reportingFeeDivisor = bridge.bridgeReportingFee(universe.address)
+    assert reportingFeeDivisor == universe.getReportingFeeDivisor()
