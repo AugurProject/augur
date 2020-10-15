@@ -138,6 +138,8 @@ dataSources:
         - ParaShareToken
         - ERC20
       abis:
+        - name: AMMExchange
+          file: ./abis/AMMExchange.json
         - name: AMMFactory
           file: ./abis/AMMFactory.json
         - name: ParaShareToken
