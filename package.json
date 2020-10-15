@@ -96,8 +96,7 @@
     "**/puppeteer": "https://github.com/AugurProject/blackhole.git",
     "**/scrypt": "https://github.com/AugurProject/blackhole.git",
     "ethers": "4.0.47",
-    "lodash": "4.17.15",
-    "@0x/mesh-browser-lite": "v10.0.0-unstable-8"
+    "lodash": "4.17.15"
   },
   "dependencies": {
     "docusaurus-init": "1.12.0"

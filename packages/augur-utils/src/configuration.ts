@@ -229,7 +229,7 @@ export const DEFAULT_SDK_CONFIGURATION: SDKConfiguration = {
     autoReport: false,
     ipfsEndpoint: {
       version: IPFSHashVersion.CIDv0,
-      url: 'https://cloudflare-ipfs.com/ipfs/'
+      url: 'https://cloudflare-ipfs.com/'
     }
   },
   uniswap: {
