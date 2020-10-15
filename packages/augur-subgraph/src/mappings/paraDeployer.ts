@@ -1,3 +1,4 @@
+import { log } from '@graphprotocol/graph-ts'
 import { ParaAugurDeployFinished} from "../../generated/ParaDeployer/ParaDeployer";
 import { ShareToken } from '../../generated/schema';
 import {
@@ -14,8 +15,9 @@ export function handleParaAugurDeployFinished(
   // This just create the entity.
   getOrCreateCash(cash);
 
-  paraShareToken.cash = cash
+  paraShareToken.cash = cash;
   paraShareToken.save();
+  log.debug("Added ParaShareToken: {}", [paraShareToken.id]);
 
   createAndSaveParaAugurDeployFinishedEvent(event);
 }

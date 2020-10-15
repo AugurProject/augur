@@ -21,7 +21,7 @@ export function createAndSaveParaAugurDeployFinishedEvent(
 }
 
 export function getOrCreateParaShareToken(
-  id: String,
+  id: string,
   createIfNotFound: boolean = true
 ): ParaShareToken {
   let paraShareToken: ParaShareToken = ParaShareToken.load(id) as ParaShareToken;

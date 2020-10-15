@@ -21,6 +21,7 @@ type EventConstructor  = AddLiquidity | RemoveLiquidity | EnterPosition | ExitPo
 
 function buildEvent(EventConstructor: EventConstructor, event: PositionEventType, cash: BigInt, noShares: BigInt, yesShares: BigInt) {
   const id = `${event.transaction.hash.toHex()}-${event.logIndex.toString()}`;
+  console.log("Handling event on ammExchange", id)
 
   let positionEvent = new EventConstructor(id);
   positionEvent.ammExchange = event.address;

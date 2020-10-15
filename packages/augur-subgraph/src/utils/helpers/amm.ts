@@ -7,8 +7,8 @@ import { ERC20 } from '../../../generated/templates/Cash/ERC20';
 import { ParaShareToken } from '../../../generated/templates/ParaShareToken/ParaShareToken';
 import { AMMExchange as AMMExchangeContract } from "../../../generated/templates/AMMExchange/AMMExchange";
 
+import { getOrCreateParaShareToken } from './paraDeployer';
 import { getOrCreateCash } from './cash';
-import { getOrCreateParaShareToken } from './token';
 
 export function getOrCreateAMMExchange(
   id: string,
@@ -37,18 +37,19 @@ export function getOrCreateAMMExchange(
 export function createAndSaveAMMExchange(
   id: string,
   market: string,
-  shareToken: string,
-  cash: string
+  shareTokenId: string,
+  cashId: string
 ): AMMExchange {
   // This just create the entity.
-  getOrCreateCash(cash);
-  getOrCreateParaShareToken(shareToken, cash);
+  let cash = getOrCreateCash(cashId);
+  let shareToken = getOrCreateParaShareToken(shareTokenId);
+  shareToken.cash = cashId;
+  shareToken.save()
 
   let amm = getOrCreateAMMExchange(id);
-
   amm.market = market;
-  amm.shareToken = shareToken;
-  amm.cash = cash;
+  amm.shareToken = shareTokenId;
+  amm.cash = cashId;
   amm.save()
 
   return updateAMM(id);
