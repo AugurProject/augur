@@ -16,6 +16,7 @@ import {
   MODAL_ADD_FUNDS,
   MIGRATE_MARKET_GAS_ESTIMATE,
   REPORTING_ONLY_DESC,
+  SPORTS_GROUP_MARKET_TYPES_READABLE,
 } from 'modules/common/constants';
 import { selectMarket } from 'modules/markets/selectors/market';
 import { sendFinalizeMarket } from 'modules/markets/actions/finalize-market';
@@ -23,52 +24,42 @@ import isMetaMask from 'modules/auth/helpers/is-meta-mask';
 import { Message } from './message';
 import { formatGasCostToEther, formatDai } from 'utils/format-number';
 import { DISMISSABLE_NOTICE_BUTTON_TYPES } from 'modules/reporting/common';
-import { FormattedNumber } from 'modules/types';
 
 export const ModalMarketRules = () => {
   const {
-    modal: { endTime, description },
+    modal: { endTime, description, sportMarkets },
     actions: { closeModal },
   } = useAppStatusStore();
 
+  let resolutionDetailsArray = [];
+  sportMarkets.forEach(details => {
+      const dupes = resolutionDetailsArray.filter(v => {
+        return v.details === details.details && v.sportsBook?.groupType === details.sportsBook?.groupType
+      });
+      if (dupes.length === 0) {
+        resolutionDetailsArray.push(details);
+      }
+    }
+  );
+
+  let headers = [
+    {
+      header: `${description}`,
+      subheaders: [`Event Expiration date: ${endTime}`],
+    },
+  ];
+
+  resolutionDetailsArray.map(details => {
+    headers.push({
+      header: SPORTS_GROUP_MARKET_TYPES_READABLE[details.sportsBook?.groupType],
+      bullets: true,
+      subheaders: details.details.split('\n'),
+    })
+  });
   return (
     <Message
       title="Market Rules"
-      subheaders={[
-        {
-          header:  `${description}`,
-          subheaders: [
-            `Event Expiration date: ${endTime}`
-          ],
-        },
-        {
-          header: 'Moneyline Market',
-          bullets: true,
-          subheaders: [
-            'Include Regulation and Overtime',
-            'At least 55 minutes of play must have elapsed for the game to be deemed official. If less than 55 minutes of play have been completed, there is no official winner of the game and the market should resolve as "Tie/No Winner"',
-            'If the game is not played market should resolve as "Tie/No Winner"',
-          ],
-        },
-        {
-          header: 'Spread Market',
-          bullets: true,
-          subheaders: [
-            'Include Regulation and Overtime',
-            'At least 55 minutes of play must have elapsed for the game to be deemed official. If less than 55 minutes of play have been completed, there is no official winner of the game and the market should resolve as "No Winner"',
-            'If the game is not played market should resolve as "No Winner"',
-          ],
-        },
-        {
-          header: 'Over / Under Market',
-          bullets: true,
-          subheaders: [
-            'Include Regulation and Overtime',
-            'At least 55 minutes of play must have elapsed for the game to be deemed official. If less than 55 minutes of play have been completed, there is no official winner of the game and the market should resolve as "No Winner"',
-            'If the game is not played market should resolve as "No Winner"',
-          ],
-        },
-      ]}
+      subheaders={headers}
       closeAction={() => closeModal()}
       buttons={[
         {
@@ -602,13 +593,7 @@ export const ModalCashoutBet = () => {
     actions: { closeModal },
   } = useAppStatusStore();
 
-  const {
-    wager,
-    cashOut,
-    odds,
-    positive,
-    cb
-  } = modal;
+  const { wager, cashOut, odds, positive, cb } = modal;
 
   return (
     <Message
