@@ -1427,9 +1427,10 @@ export const LoadingMarketCard = () => (
 export interface TopRowProps {
   market: MarketData;
   categoriesWithClick: Array<{ label: string; onClick: Function }>;
+  sportMarkets: MarketData;
 }
 
-export const TopRow = ({ market, categoriesWithClick }) => {
+export const TopRow = ({ market, categoriesWithClick, sportMarkets }) => {
   useEffect(() => {
     const clipboardMarketId = new Clipboard('#copy_marketId');
     const clipboardAuthor = new Clipboard('#copy_author');
@@ -1481,7 +1482,7 @@ export const TopRow = ({ market, categoriesWithClick }) => {
           </span>
           <button
             className={Styles.RulesButton}
-            onClick={() => setModal({type: MODAL_MARKET_RULES, description: header, endTime: endTimeFormatted.formattedUtc})}
+            onClick={() => setModal({type: MODAL_MARKET_RULES, sportMarkets, description: header, endTime: endTimeFormatted.formattedUtc})}
           >
             {Rules} Rules
           </button>

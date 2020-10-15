@@ -111,6 +111,16 @@ export const SPORTS_GROUP_MARKET_TYPES = {
   COMBO_SPREAD: "COMBO_SPREAD",
   FUTURES: "FUTURES",
 };
+export const SPORTS_GROUP_MARKET_TYPES_READABLE = {
+  MONEY_LINE: "Moneyline",
+  OVER_UNDER: "Over / Under",
+  SPREAD: "Spread",
+  ADDITIONAL: "Additional",
+  COMBO_MONEY_LINE: "Combo Moneyline",
+  COMBO_OVER_UNDER: "Combo Over / Under",
+  COMBO_SPREAD: "Combo Spread",
+  FUTURES: "Futures",
+};
 // DAILY
 //   MONEY_LINE,
 //   OVER_UNDER,

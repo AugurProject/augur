@@ -84,6 +84,7 @@ export const SportsMarketCard = ({
     >
       <TopRow
         market={market}
+        sportMarkets={markets}
         categoriesWithClick={getCategoriesWithClick(categories, history)}
       />
       <MarketTitle id={market.id} headerType={headerType} />
