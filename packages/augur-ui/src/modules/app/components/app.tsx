@@ -141,6 +141,8 @@ const AppView = ({
   const history = useHistory();
   const currentPath = parsePath(locationProp.pathname)[0];
   const navShowing = mobileMenuState === MOBILE_MENU_STATES.SIDEBAR_OPEN;
+  const isTrading = theme === THEMES.TRADING;
+  const isMarketsView = currentPath === MARKETS;
   const ModalShowing = Object.keys(modal).length !== 0;
   const onTradingTutorial =
     parseQuery(locationProp.search)[MARKET_ID_PARAM_NAME] === TRADING_TUTORIAL;
@@ -299,20 +301,20 @@ const AppView = ({
           {forkEndTime !== '0' &&
             currentAugurTimestamp &&
             currentPath !== ACCOUNT_SUMMARY &&
-            theme === THEMES.TRADING && (
+            isTrading && (
               <section className={Styles.TopBar} />
             )}
           <StatusErrorMessage />
           <section
             className={classNames(Styles.Wrap, {
-              [Styles.WrapMarkets]: currentPath === MARKETS,
+              [Styles.WrapMarkets]: isMarketsView,
               [Styles.TopBarOpen]: navShowing,
             })}
           >
-            {currentPath === MARKETS && <MarketsInnerNav />}
+            {isMarketsView && isTrading && <MarketsInnerNav />}
             <MyBetsProvider>
               {currentPath === MY_POSITIONS && <MyBetsInnerNav />}
-              {currentPath !== MARKETS && currentPath !== MY_POSITIONS && (
+              {(isMarketsView && !isTrading) || (!isMarketsView && currentPath !== MY_POSITIONS) && (
                 <div className="no-nav-placehold" />
               )}
               <MainAppContent
@@ -388,10 +390,13 @@ const MainAppContent = ({
   mainSectionClickHandler,
 }) => {
   const {
+    theme,
     isLogged,
     restoredAccount,
     actions: { closeAppMenus },
   } = useAppStatusStore();
+  const isTrading = theme === THEMES.TRADING;
+  const isMarketsView = currentPath === MARKETS;
   const hideBetslip = !currentPath?.includes(MARKET);
   return (
     <section
@@ -408,12 +413,13 @@ const MainAppContent = ({
       role="presentation"
       id="mainContent"
     >
+      {isMarketsView && !isTrading && <MarketsInnerNav />}
       {!isLogged && currentPath === MARKETS && (
         <div className={Styles.BettingUI}>
           <ExternalLinkText
-            title={'Betting UI'}
-            label={' - Coming Soon!'}
-            URL={'https://augur.net'}
+            title='Betting UI'
+            label=' - Coming Soon!'
+            URL='https://augur.net'
           />
         </div>
       )}

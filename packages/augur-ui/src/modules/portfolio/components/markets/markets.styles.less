@@ -49,6 +49,10 @@
         }
       }
     }
+
+    div[class*="RowActive"] > div:first-of-type > div:first-of-type > div:first-of-type > div:first-of-type > span > div.downArrow > svg {
+      transform: rotate(90deg);
+    }
   }
 
   .downArrow {
@@ -57,27 +61,27 @@
     color: var(--color-secondary-text);
     display: flex;
     align-items: center;
+    justify-content: center;
+    width: @size-20;
+    height: @size-20;
+    border: @size-1 solid var(--color-dark-text);
+    border-radius: @border-radius-default;
+    background-color: var(--color-module-background);
 
     > svg {
-      width: @size-20;
-      height: @size-20;
-      padding: @size-4;
-      border: @size-1 solid var(--color-dark-text);
-      border-radius: @border-radius-default;
-      background-color: var(--color-module-background);
+      width: @size-8;
+      height: @size-12;
       fill: var(--color-primary-text);
       transform: rotate(-90deg);
+      transition: all ease-in-out .2s;
     }
 
     &:not(:disabled):hover {
       color: var(--color-primary-text);
-
-      > svg {
-        border: @size-1 solid var(--color-primary-text);
-      }
+      border: @size-1 solid var(--color-primary-text);
     }
 
-    &:not(:disabled):focus > svg {
+    &:not(:disabled):focus {
       background-color: transparent;
     }
 
