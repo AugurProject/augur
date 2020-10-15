@@ -158,6 +158,7 @@
       padding: @size-22 @size-32 @size-82;
       display: grid;
       grid-gap: @size-24;
+      grid-auto-rows: 1fr;
       grid-template-columns: repeat(auto-fill, minmax(30%, 1fr));
       grid-template-rows: @size-64 @size-128;
       min-height: calc(@size-16 * 101);
@@ -230,9 +231,10 @@
         grid-column: 1 / span 3;
         grid-row: 1;
       }
+
       > section:first-of-type {
         grid-column: 1;
-        grid-row: 2 / span 5;
+        grid-row: 2 / span 10;
 
         > div {
           min-height: @size-420;
@@ -249,7 +251,7 @@
 
       > section:last-of-type {
         grid-column: 2;
-        grid-row: 2 / span 5;
+        grid-row: 2 / span 10;
 
         > div:first-of-type {
           min-height: @size-744;
@@ -276,12 +278,12 @@
 
       > div:nth-of-type(2) {
         grid-column: 3;
-        grid-row: 3;
+        grid-row: 3 / span 3;
       }
 
       > div:last-of-type {
         grid-column: 3;
-        grid-row: 4;
+        grid-row: 6 / span 5;
       }
 
       > footer {
@@ -293,6 +295,7 @@
         grid-template-columns: repeat(2, 1fr);
         width: unset;
         margin-bottom: 0;
+        grid-auto-rows: auto;
 
         > h1 {
           grid-column: 1 / span 2;
@@ -301,12 +304,12 @@
 
         > section:first-of-type {
           grid-column: 1;
-          grid-row: 2 / span 2;
+          grid-row: span 4;
         }
 
         > section:last-of-type {
           grid-column: 2;
-          grid-row: 3 / span 4;
+          grid-row: span 5;
         }
 
         > div:first-of-type {
@@ -316,7 +319,7 @@
 
         > div:nth-of-type(2) {
           grid-column: 1;
-          grid-row: 4 / span 2;
+          grid-row: auto;
         }
 
         > div:last-of-type {

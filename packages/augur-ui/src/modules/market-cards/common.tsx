@@ -883,17 +883,15 @@ export const SportsMarketContainer = ({
     }
   }, [market.id, market.author]);
   let innerContent = null;
-  let headingContent = (
-    <button
-      onClick={e => {
-        e.preventDefault();
-        setIsCollapsed(!isCollapsed);
-      }}
-    >
-      <h6>{title}</h6>
-      {ThickChevron}
-    </button>
-  );
+  let headingContent = marketAmount > 1 ? <button
+    onClick={e => {
+      e.preventDefault();
+      setIsCollapsed(!isCollapsed);
+    }}
+  >
+    <h6>{title}</h6>
+    {ThickChevron}
+  </button> : <h6>{title}</h6>;
   const isGrid = data.length > 4;
   if (isGrid) {
     innerContent = <MultiOutcomeMarketGrid key={marketId} data={data} />;
