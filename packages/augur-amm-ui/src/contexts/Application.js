@@ -114,6 +114,16 @@ const INITIAL_STATE = {
 }
 
 export default function Provider({ children }) {
+  console.log(
+    JSON.stringify(
+      {
+        addresses: INITIAL_STATE.AUGUR_CONFIG.addresses,
+        paraDeploys: INITIAL_STATE.AUGUR_CONFIG.paraDeploys
+      },
+      null,
+      1
+    )
+  )
   const [state, dispatch] = useReducer(reducer, INITIAL_STATE)
   const update = useCallback(currency => {
     dispatch({

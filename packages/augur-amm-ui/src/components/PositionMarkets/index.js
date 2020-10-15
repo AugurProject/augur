@@ -40,8 +40,8 @@ const List = styled(Box)`
 const DashGrid = styled.div`
   display: grid;
   grid-gap: 0.5em;
-  grid-template-columns: 30% 1fr 1fr;
-  grid-template-areas: 'name balance status timestamp';
+  grid-template-columns: 30% 1fr 1fr 1fr 1fr;
+  grid-template-areas: 'name yesShares noShares status timestamp';
   padding: 0 1.125rem;
 
   > * {
@@ -57,7 +57,7 @@ const DashGrid = styled.div`
   @media screen and (min-width: 1080px) {
     display: grid;
     grid-gap: 0.5em;
-    grid-template-columns: 2fr 1fr 1fr 1fr;
+    grid-template-columns: 2fr 1fr 1fr 1fr 1fr;
     grid-template-areas: 'name status timestamp';
   }
 `
@@ -100,11 +100,12 @@ const SORT_FIELD = {
   PRICE: 'priceUSD',
   CHANGE: 'priceChangeUSD',
   DESCRIPTION: 'description',
+  SHARES: 'shares',
   STATUS: 'status',
   ENDTIMESTAMP: 'endTimestamp'
 }
 
-function PositionMarketList({ positions, itemMax = 20 }) {
+function PositionMarketList({ positions, loading, itemMax = 20 }) {
   // page state
   const [page, setPage] = useState(1)
   const [maxPage, setMaxPage] = useState(1)
@@ -151,7 +152,7 @@ function PositionMarketList({ positions, itemMax = 20 }) {
         <BasicLink style={{ width: '100%' }} to={'/token/' + item.id} key={item.id}>
           {item.market.description}
         </BasicLink>
-        <DataText area="balance">{item.balance}</DataText>
+        <DataText area="shares">{`${item.amount} ${item.outcome === 1 ? 'No Shares' : 'Yes Shares'}`}</DataText>
         <DataText area="status">
           <span
             style={
@@ -168,10 +169,10 @@ function PositionMarketList({ positions, itemMax = 20 }) {
                 : {}
             }
           >
-            {item.status}
+            {item.market.status}
           </span>
         </DataText>
-        <DataText area="timestamp">{formatTime(item.endTimestamp)}</DataText>
+        <DataText area="timestamp">{formatTime(item.market.endTimestamp)}</DataText>
       </DashGrid>
     )
   }
@@ -195,13 +196,13 @@ function PositionMarketList({ positions, itemMax = 20 }) {
         </Flex>
         <Flex alignItems="center">
           <Text
-            area="Balance"
+            area="Shares"
             onClick={e => {
-              setSortedColumn(SORT_FIELD.STATUS)
+              setSortedColumn(SORT_FIELD.SHARES)
               setSortDirection(sortedColumn !== SORT_FIELD.STATUS ? true : !sortDirection)
             }}
           >
-            Balance
+            Yes Shares
           </Text>
         </Flex>
         <Flex alignItems="center">

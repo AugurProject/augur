@@ -1,14 +1,18 @@
-import { Currency, CurrencyAmount, ETHER, JSBI, Token, TokenAmount, WETH } from '@uniswap/sdk'
-import { useMemo } from 'react'
+import { Currency, CurrencyAmount, ETHER, JSBI, Token, TokenAmount } from '@uniswap/sdk'
+import { memo, useMemo } from 'react'
 import ERC20_INTERFACE from '../../constants/abis/erc20'
-import { useAllTokens } from '../../hooks/Tokens'
 import { useActiveWeb3React } from '../../hooks'
 import { useMulticallContract } from '../../hooks/useContract'
 import { isAddress } from '../../utils'
-import { useSingleContractMultipleData, useMultipleContractSingleData } from '../multicall/hooks'
-import { useUserAddedTokens } from '../user/hooks'
+import {
+  useSingleContractMultipleData,
+  useMultipleContractSingleData,
+  useMultipleContractMultipleData
+} from '../multicall/hooks'
 import { useAllMarketData } from '../../contexts/Markets'
-
+import { ParaShareToken } from '@augurproject/sdk-lite'
+import { Interface } from 'ethers/lib/utils'
+import { BigNumber as BN } from 'bignumber.js'
 /**
  * Returns a map of the given addresses to their eventually consistent ETH balances.
  */
@@ -109,30 +113,51 @@ export function useLPTokenBalances(): [{ [tokenAddress: string]: string | undefi
   ]
 }
 
-export function useMarketShareBalances(): [{ [tokenAddress: string]: string | undefined }, boolean] {
-  const { markets } = useAllMarketData()
+export function useMarketShareBalances(): [
+  { paraShareToken: string; marketid: string; outcome: number; amount: CurrencyAmount }[],
+  boolean
+] {
+  const { markets, paraShareTokens } = useAllMarketData()
   const { account } = useActiveWeb3React()
-  const ammAddresses: string[] = markets
-    ? markets.reduce((p, m) => (m.amms.length > 0 ? [...p, ...m.amms.map(a => a.id)] : p), [])
-    : []
-  const validatedTokenAddresses = useMemo(() => ammAddresses.map(address => address), [ammAddresses])
-  const balances = useMultipleContractSingleData(validatedTokenAddresses, ERC20_INTERFACE, 'balanceOf', [account])
+  const paraShareTokenAddresses: string[] = paraShareTokens.map(p => p.id)
+
+  const inputs: [] = useMemo(
+    () => (markets ? markets.reduce((p, m) => [...p, [m.id, 1, account], [m.id, 2, account]], []) : []),
+    [markets]
+  )
+
+  const balances = useMultipleContractMultipleData(
+    paraShareTokenAddresses,
+    new Interface(ParaShareToken.ABI),
+    'balanceOfMarketOutcome',
+    inputs
+  )
   const anyLoading: boolean = useMemo(() => balances.some(callState => callState.loading), [balances])
 
   return [
     useMemo(
       () =>
-        account && ammAddresses.length > 0
-          ? ammAddresses.reduce<{ [tokenAddress: string]: string | undefined }>((memo, address, i) => {
+        account && inputs.length > 0
+          ? paraShareTokenAddresses.reduce((memo, paraSharetokenAddress, i) => {
               const value = balances?.[i]?.result?.[0]
-              const amount = value ? value.toString() : undefined
-              if (amount) {
-                memo[address] = amount
+              const params = inputs[i]
+              if (value) {
+                const marketId = params[0]
+                const outcome = params[1]
+                const amount = value ? new BN(value) : undefined
+                if (amount && amount.isGreaterThan(0)) {
+                  console.log('added balanace', JSON.stringify(value), 'params', params)
+                  const market = markets.find(m => m.id.toLowerCase() === String(marketId).toLowerCase())
+                  const paraShareToken = paraShareTokens.find(p => p.id.toLowerCase() === paraSharetokenAddress)
+                  if (!memo[paraSharetokenAddress]) memo[paraSharetokenAddress] = {}
+                  if (!memo[paraSharetokenAddress][marketId]) memo[paraSharetokenAddress][marketId] = {}
+                  memo = [...memo, { paraSharetokenAddress, marketId, outcome, amount, market, paraShareToken }]
+                }
               }
               return memo
-            }, {})
-          : {},
-      [account, ammAddresses, balances]
+            }, [])
+          : [],
+      [account, inputs, balances, markets, paraShareTokenAddresses]
     ),
     anyLoading
   ]

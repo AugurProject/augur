@@ -22,10 +22,10 @@ function UserPositions() {
       <ContentWrapper>
         <Panel style={{ marginTop: '6px', padding: '1.125rem 0 ' }}>
           {Object.keys(userMarketShareBalances).length > 0 ? (
-            <PositionMarkets positions={userMarketShareBalances || {}} />
+            <PositionMarkets positions={userMarketShareBalances || {}} loading={loading} />
           ) : (
             <AutoRow justify={'center'}>
-              <TYPE.light>No Liquidity Pools</TYPE.light>
+              <TYPE.light>No Market Positions</TYPE.light>
             </AutoRow>
           )}
         </Panel>

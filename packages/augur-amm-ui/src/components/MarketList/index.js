@@ -115,8 +115,6 @@ function MarketList({ markets, itemMax = 10 }) {
 
   const below680 = useMedia('(max-width: 680px)')
 
-  console.log('market list page render')
-
   useEffect(() => {
     setMaxPage(1) // edit this to do modular
     setPage(1)

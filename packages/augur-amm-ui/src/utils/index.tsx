@@ -16,8 +16,7 @@ import { ChainId, JSBI, Percent, Token, CurrencyAmount, Currency, ETHER } from '
 import { JsonRpcSigner, Web3Provider } from '@ethersproject/providers'
 import { Contract } from '@ethersproject/contracts'
 import { AddressZero } from '@ethersproject/constants'
-import { useAugurClient } from '../contexts/Application'
-import { useActiveWeb3React } from '../hooks'
+import { ParaShareToken } from "@augurproject/sdk-lite";
 
 // format libraries
 const Decimal = toFormat(_Decimal)
@@ -584,6 +583,10 @@ export function getContract(address: string, ABI: any, library: Web3Provider, ac
   }
   console.log('get contract', address, account)
   return new Contract(address, ABI, getProviderOrSigner(library, account) as any)
+}
+
+export function getParaShareTokenContract(tokenAddress, library, account) {
+  return getContract(tokenAddress, ParaShareToken.ABI, library, account)
 }
 
 export function addAmmLiquidity({ account, ammAddress, hasLiquidity, augurClient, marketId, sharetoken, cashAmount, distroPercentage }) {
