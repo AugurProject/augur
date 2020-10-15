@@ -746,7 +746,10 @@ export const ReportedOutcome = ({
 
 export const MultiOutcomeMarketRow = ({ data }) => {
   const isFourOutcomes = data.length === 4;
-  const items = isFourOutcomes ? [data[0], data[2], data[1], data[3]] : data;
+  const items =
+    isFourOutcomes && data[2].title === 'Draw'
+      ? [data[0], data[2], data[1], data[3]]
+      : data;
   return (
     <section
       className={classNames(Styles.MultiOutcomeMarketRow, {
@@ -760,7 +763,7 @@ export const MultiOutcomeMarketRow = ({ data }) => {
       ))}
     </section>
   );
-}
+};
 export const MultiOutcomeMarketGrid = ({ data }) => (
   <section className={Styles.MultiOutcomeMarketGrid}>
     {data.map(({ title, ...outcomeData }) => (
@@ -880,15 +883,17 @@ export const SportsMarketContainer = ({
     }
   }, [market.id, market.author]);
   let innerContent = null;
-  let headingContent = <button
-    onClick={e => {
-      e.preventDefault();
-      setIsCollapsed(!isCollapsed);
-    }}
-  >
-    <h6>{title}</h6>
-    {ThickChevron}
-  </button>;
+  let headingContent = (
+    <button
+      onClick={e => {
+        e.preventDefault();
+        setIsCollapsed(!isCollapsed);
+      }}
+    >
+      <h6>{title}</h6>
+      {ThickChevron}
+    </button>
+  );
   const isGrid = data.length > 4;
   if (isGrid) {
     innerContent = <MultiOutcomeMarketGrid key={marketId} data={data} />;
@@ -960,7 +965,7 @@ export const SportsMarketContainer = ({
           >
             {ThickChevron}
           </button>
-        ): null}
+        ) : null}
       </header>
       <div>{innerContent}</div>
       {isGrid && <OutcomeGroupFooter market={market} />}
@@ -1000,10 +1005,7 @@ export const prepareSportsGroup = (
   let marketGroups = [];
   let sortedMarkets = sortByPriorityGroupType(markets, MONEY_LINE);
   if (type == FUTURES) {
-    sortedMarkets.reduce(
-      reduceToUniquePools,
-      []
-    );
+    sortedMarkets.reduce(reduceToUniquePools, []);
   }
   if (marketId) {
     const index = sortedMarkets.findIndex(m => m.id === marketId);
@@ -1434,7 +1436,11 @@ export const TopRow = ({ market, categoriesWithClick }) => {
     const clipboardMarketId = new Clipboard('#copy_marketId');
     const clipboardAuthor = new Clipboard('#copy_author');
   }, [market.id, market.author]);
-  const { theme, isLogged, actions: {setModal} } = useAppStatusStore();
+  const {
+    theme,
+    isLogged,
+    actions: { setModal },
+  } = useAppStatusStore();
   const {
     marketType,
     id,
@@ -1481,7 +1487,13 @@ export const TopRow = ({ market, categoriesWithClick }) => {
           </span>
           <button
             className={Styles.RulesButton}
-            onClick={() => setModal({type: MODAL_MARKET_RULES, description: header, endTime: endTimeFormatted.formattedUtc})}
+            onClick={() =>
+              setModal({
+                type: MODAL_MARKET_RULES,
+                description: header,
+                endTime: endTimeFormatted.formattedUtc,
+              })
+            }
           >
             {Rules} Rules
           </button>
