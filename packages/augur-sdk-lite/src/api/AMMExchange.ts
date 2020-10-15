@@ -108,9 +108,11 @@ export class AMMExchange {
     return this.contract.callStatic.addLiquidity(cash.toFixed(), recipient);
   }
 
-  async getRemoveLiquidity(lpTokens: LPTokens, alsoSell = false): Promise<{noShares: BigNumber, yesShare: BigNumber, cashPayout: BigNumber}> {
+  async getRemoveLiquidity(lpTokens: LPTokens, alsoSell = false): Promise<{noShares: BigNumber, yesShares: BigNumber, cashPayout: BigNumber}> {
+    console.log('getRemoveLiquidity lptokens', String(lpTokens));
     const { _noShare, _yesShare, _cashPayout } = await this.contract.rateRemoveLiquidity(lpTokens, alsoSell ? new BigNumber(1) : new BigNumber(0));
-    return { noShares: _noShare, yesShare: _yesShare, cashPayout: _cashPayout}
+    console.log('lptokens', String(lpTokens), _noShare, _yesShare, _cashPayout);
+    return { noShares: _noShare, yesShares: _yesShare, cashPayout: _cashPayout}
   }
 
   async removeLiquidity(lpTokens: LPTokens, alsoSell = false): Promise<TransactionResponse> {

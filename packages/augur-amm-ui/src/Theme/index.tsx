@@ -379,10 +379,6 @@ export const LinkStyledButton = styled.button<{ disabled?: boolean; primary?: bo
 export const ThemedGlobalStyle = createGlobalStyle<{ theme }>`
 
 html {
-  margin: 0;
-  padding: 0;
-  width: 100%;
-  height: 100%;
   font-size: 14px;
   color: ${({ theme }) => theme.text1};
   background-color: ${({ theme }) => theme.bg6};

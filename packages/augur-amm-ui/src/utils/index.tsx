@@ -16,7 +16,7 @@ import { ChainId, JSBI, Percent, Token, CurrencyAmount, Currency, ETHER } from '
 import { JsonRpcSigner, Web3Provider } from '@ethersproject/providers'
 import { Contract } from '@ethersproject/contracts'
 import { AddressZero } from '@ethersproject/constants'
-import { ParaShareToken } from "@augurproject/sdk-lite";
+import { ParaShareToken } from '@augurproject/sdk-lite'
 
 // format libraries
 const Decimal = toFormat(_Decimal)
@@ -589,9 +589,27 @@ export function getParaShareTokenContract(tokenAddress, library, account) {
   return getContract(tokenAddress, ParaShareToken.ABI, library, account)
 }
 
-export function addAmmLiquidity({ account, ammAddress, hasLiquidity, augurClient, marketId, sharetoken, cashAmount, distroPercentage }) {
+export function addAmmLiquidity({
+  account,
+  ammAddress,
+  hasLiquidity,
+  augurClient,
+  marketId,
+  sharetoken,
+  cashAmount,
+  distroPercentage
+}) {
   if (!augurClient || !augurClient.ammFactory) return console.error('augurClient is null')
-  console.log('addAmmLiquidity', account, ammAddress, hasLiquidity, marketId, sharetoken, String(cashAmount), String(distroPercentage))
+  console.log(
+    'addAmmLiquidity',
+    account,
+    ammAddress,
+    hasLiquidity,
+    marketId,
+    sharetoken,
+    String(cashAmount),
+    String(distroPercentage)
+  )
   return augurClient.ammFactory.addLiquidity(
     account,
     ammAddress,
@@ -604,22 +622,23 @@ export function addAmmLiquidity({ account, ammAddress, hasLiquidity, augurClient
   )
 }
 
-export function getRemoveLiquidity({ ammAddress, augurClient, lpTokens }) {
-  if (!augurClient || !ammAddress) return console.error('augurClient is null or amm address')
+export function getRemoveLiquidity({
+  ammAddress,
+  augurClient,
+  lpTokens
+}): Promise<{ noShares: string; yesShares: string; cashPayout: string}  | null> {
+  if (!augurClient || !ammAddress) {
+    console.error('augurClient is null or amm address')
+    return null
+  }
   console.log('getRemoveLiquidity', ammAddress, String(lpTokens))
-  return augurClient.ammFactory.getRemoveLiquidity(
-    ammAddress,
-    new BN(lpTokens),
-  )
+  return augurClient.ammFactory.getRemoveLiquidity(ammAddress, String(lpTokens))
 }
 
 export function removeAmmLiquidity({ ammAddress, augurClient, lpTokens }) {
   if (!augurClient || !ammAddress) return console.error('augurClient is null or amm address')
   console.log('removeAmmLiquidity', ammAddress, String(lpTokens))
-  return augurClient.ammFactory.removeLiquidity(
-    ammAddress,
-    new BN(lpTokens),
-  )
+  return augurClient.ammFactory.removeLiquidity(ammAddress, new BN(lpTokens))
 }
 
 export function escapeRegExp(string: string): string {

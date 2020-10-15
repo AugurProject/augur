@@ -38,8 +38,6 @@ export default function TokenLogo({ tokenInfo, showSymbol = false, size = '24px'
   const address = cashtoken ? cashtoken.address : tokenInfo
   const [error, setError] = useState(false)
 
-  console.log('cashtoken', cashtoken, tokenInfo)
-
   useEffect(() => {
     setError(false)
   }, [address])

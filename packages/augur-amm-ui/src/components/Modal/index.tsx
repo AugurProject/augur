@@ -91,6 +91,7 @@ export default function Modal({
   initialFocusRef,
   children
 }: ModalProps) {
+
   const fadeTransition = useTransition(isOpen, null, {
     config: { duration: 200 },
     from: { opacity: 0 },

@@ -21,7 +21,7 @@ const MobilePopupWrapper = styled.div<{ height: string | number }>`
 const MobilePopupInner = styled.div`
   height: 99%;
   overflow-x: auto;
-  overflow-y: hidden;
+  overflow-y: scroll;
   display: flex;
   flex-direction: row;
   -webkit-overflow-scrolling: touch;
