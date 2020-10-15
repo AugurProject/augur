@@ -1,7 +1,7 @@
 import type { Getters } from '@augurproject/sdk';
 import { AppState } from 'appStore';
 import { selectCurrentTimestampInSeconds } from 'appStore/select-state';
-import { getAddress } from 'ethers';
+import { utils } from 'ethers';
 import { addAlert, removeAlert } from 'modules/alerts/actions/alerts';
 import { Ox_STATUS } from 'modules/app/actions/update-app-status';
 import {
@@ -55,7 +55,7 @@ const mapStateToProps = (state: AppState, ownProps) => {
   let marketId = null;
   let marketNotFound = false;
   try {
-    marketId = queryId === TRADING_TUTORIAL ? queryId : getAddress(queryId);
+    marketId = queryId === TRADING_TUTORIAL ? queryId : utils.getAddress(queryId);
   } catch (e) {
     console.error('MarketId is not a valid ethereum address');
     marketNotFound = true;
