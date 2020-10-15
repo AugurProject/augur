@@ -963,7 +963,7 @@ export const SportsMarketContainer = ({
         ): null}
       </header>
       <div>{innerContent}</div>
-      {isGrid && <OutcomeGroupFooter market={market} />}
+      {isFutures && <OutcomeGroupFooter market={market} />}
     </section>
   );
 };
