@@ -136,7 +136,7 @@ div.HasCheckbox {
   align-items: flex-end;
   display: flex;
   justify-content: space-between;
-  
+
   @media @breakpoint-mobile {
     flex-flow: column-reverse nowrap;
 
@@ -343,9 +343,18 @@ div.DarkBackgroundMobile {
   }
 
   @media @breakpoint-mobile {
-    .NotificationCard:last-of-type {
-      margin-bottom: 0;
-      border-bottom: none;
+    .NotificationCard {
+      border: @size-1 solid var(--color-dark-grey);
+
+      button {
+        margin-top: @size-8;
+        width: 100%;
+      }
+    }
+
+    .NoBorderAndBgOnMobile > div[class$="Container"] {
+      background-color: transparent;
+      border: none;
     }
   }
 }

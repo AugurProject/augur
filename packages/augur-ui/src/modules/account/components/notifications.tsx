@@ -48,6 +48,7 @@ import { selectMarket } from 'modules/markets/selectors/market';
 import { getNotifications } from 'modules/notifications/selectors/notification-state';
 import { getHTMLTheme } from 'modules/app/store/app-status-hooks';
 import QuadBox from 'modules/portfolio/components/common/quad-box';
+import classNames from 'classnames';
 
 export interface NotificationsProps {
   toggle?: Function;
@@ -377,7 +378,9 @@ const Notifications = ({ toggle }: NotificationsProps) => {
       title={NOTIFICATIONS_TITLE}
       headerComplement={labelContent}
       toggle={toggle}
-      customClass={notificationCount !== 0 && Styles.DarkBackgroundMobile}
+      customClass={classNames(Styles.NoBorderAndBgOnMobile, {
+        [Styles.DarkBackgroundMobile]: notificationCount !== 0
+      })}
       content={
         notificationCount === 0 ? (
           <EmptyDisplay
