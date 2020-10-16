@@ -222,7 +222,7 @@ export function useAmmMarkets(balances) {
     Object.keys(balances).map(ammId => {
       const balance = balances[ammId];
       const market = markets.find(m => m.amms.map(a => a.id).includes(ammId))
-      if (market) {
+      if (market && balance !== "0") {
         ammMarkets.push({...market, balance})
       }
     })
