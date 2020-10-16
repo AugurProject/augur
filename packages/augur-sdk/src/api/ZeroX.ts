@@ -394,7 +394,8 @@ export class ZeroX {
       }
 
       const tradeInterval = getTradeInterval(minPrice, maxPrice, new BigNumber(market.numTicks));
-      const multipleOf = tradeInterval.dividedBy(market.tickSize).dividedBy(10 ** 18)
+      let multipleOf = tradeInterval.dividedBy(market.tickSize).dividedBy(QUINTILLION);
+      multipleOf = multipleOf.dividedBy(QUINTILLION.dividedBy(this.client.precision));
       if (!order.amount.mod(multipleOf).eq(0)) {
         throw new Error(`Order not multiple of ${multipleOf.toNumber()}`);
       }

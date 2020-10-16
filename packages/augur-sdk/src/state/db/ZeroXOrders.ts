@@ -10,7 +10,7 @@ import {
 import { ContractAddresses, logger, LoggerLevels, DEFAULT_TRADE_INTERVAL } from '@augurproject/utils';
 import * as _ from 'lodash';
 import { Augur } from '../../Augur';
-import { getTradeInterval } from '../../utils';
+import { getTradeInterval, QUINTILLION } from '../../utils';
 import { AbstractTable, BaseDocument } from './AbstractTable';
 import { DB } from './DB';
 import { SyncStatus } from './SyncStatus';
@@ -253,6 +253,7 @@ export class ZeroXOrders extends AbstractTable {
     if (marketData && marketData.marketType === MarketType.Scalar) {
       tradeInterval = getTradeInterval(new BigNumber(marketData.prices[0]), new BigNumber(marketData.prices[1]), new BigNumber(marketData.numTicks));
     }
+    tradeInterval = tradeInterval.dividedBy(QUINTILLION.dividedBy(this.augur.precision));
     if (!storedOrder['numberAmount'].mod(tradeInterval).isEqualTo(0)) return false;
 
     if (storedOrder.numberAmount.isEqualTo(0)) {
