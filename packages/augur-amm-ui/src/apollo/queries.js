@@ -80,6 +80,8 @@ export const GET_MARKETS = gql`
         }
         volumeYes
         volumeNo
+        percentageYes
+        percentageNo
         liquidity
         cashBalance
         swaps {
