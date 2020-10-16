@@ -28,6 +28,7 @@ import {
   CLAIMMARKETSPROCEEDS,
   CANCELORDERS,
   FINALIZE,
+  THEMES,
 } from 'modules/common/constants';
 import { selectMarket } from 'modules/markets/selectors/market';
 import { selectMarkets } from 'modules/markets/selectors/markets-all';
@@ -106,7 +107,9 @@ export const selectMarketsInDispute = () => {
   const {
     accountPositions: positions,
     loginAccount: { address },
+    theme
   } = AppStatus.get();
+  if (theme === THEMES.SPORTS) return [];
   const { marketInfos } = Markets.get();
   let marketIds = Object.keys(positions);
   const {
