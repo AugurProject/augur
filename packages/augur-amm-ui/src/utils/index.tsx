@@ -14,6 +14,7 @@ import Numeral from 'numeral'
 import { BigNumber } from '@ethersproject/bignumber'
 import { ChainId, JSBI, Percent, Token, CurrencyAmount, Currency, ETHER } from '@uniswap/sdk'
 import { JsonRpcSigner, Web3Provider } from '@ethersproject/providers'
+import { EthersProvider } from '@augurproject/ethersjs-provider';
 import { Contract } from '@ethersproject/contracts'
 import { AddressZero } from '@ethersproject/constants'
 import { ParaShareToken } from '@augurproject/sdk-lite'
@@ -572,8 +573,13 @@ export function getSigner(library: Web3Provider, account: string): JsonRpcSigner
 }
 
 // account is optional
-export function getProviderOrSigner(library: Web3Provider, account?: string): Web3Provider | JsonRpcSigner {
-  return account ? getSigner(library, account) : library
+export function getProviderOrSigner(library: Web3Provider, account?: string) {
+  if(account) {
+    // This just connects the account if necessary.
+    getSigner(library, account);
+  }
+
+  return new EthersProvider(library, 5, 50, 10);
 }
 
 // account is optional

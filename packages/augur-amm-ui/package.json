@@ -4,6 +4,7 @@
   "private": true,
   "homepage": "https://uniswap.info",
   "dependencies": {
+    "@augurproject/ethersjs-provider": "^2.1.9",
     "@augurproject/sdk": "^2.1.9",
     "@augurproject/sdk-lite": "^2.1.9",
     "@augurproject/utils": "^2.1.9",
