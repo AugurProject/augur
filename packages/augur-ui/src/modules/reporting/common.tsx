@@ -1368,9 +1368,9 @@ export const FeePoolView = (
 
   return (
     <div className={Styles.FeePoolView}>
-      <h3>Fee Pool</h3>
+      <h3>REP Staking Pool</h3>
       <span>
-        Stake <b>REP</b> to recieve Staking REP (<b>SREP</b>) to earn a portion of the reporting fees.
+        Stake <b>REP</b> to recieve Staking REP (<b>SREP</b>) to earn a portion of the reporting fees in wETH.
       </span>
       <Subheaders
         large
@@ -1393,7 +1393,7 @@ export const FeePoolView = (
         info
         header="Claimable Fees"
         subheader={formatAttoEth(userTotalFees).formatted}
-        secondSubheader={`ETH`}
+        secondSubheader={`wETH`}
         tooltipText="The fee's owed because of percentage of staked REPv2 in the fee pool"
       />
       { isLoggedIn &&
