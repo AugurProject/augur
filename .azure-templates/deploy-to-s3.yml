@@ -1,8 +1,6 @@
 parameters:
   - name: deployBucketName
     displayName: 'Environment domain used for this deploy (e.g. staging.augur.net)'
-  - name: triggerBranch
-    displayName: 'The branch name that will trigger this build and deploy (e.g. "dev")'
   - name: cloudfrontDistributionId
     displayName: 'The cloudfront distribution id in order to clear the cache on deploy (e.g. E2K6239JF3WYG6)'
 

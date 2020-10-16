@@ -55,5 +55,5 @@ jobs:
         parameters:
           AWS_ACCESS_KEY_ID: $(AWS_KEY_ID)
           AWS_SECRET_ACCESS_KEY: $(AWS_SECRET_KEY)
-          BUCKET_NAME: ${{ parameters.deployBucketName }}
-          DISTRIBUTION_ID: ${{ parameters.cloudfrontDistributionId }}
+          deployBucketName: ${{ parameters.deployBucketName }}
+          cloudfrontDistributionId: ${{ parameters.cloudfrontDistributionId }}
