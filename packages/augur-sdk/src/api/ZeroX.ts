@@ -5,7 +5,7 @@ import {
   ValidationResults,
 } from '@0x/mesh-browser-lite';
 import { OrderEvent, OrderInfo, WSClient } from '@0x/mesh-rpc-client';
-import { Event } from '@augurproject/core/build/libraries/ContractInterfaces';
+import { Event, ParaZeroXTrade } from '@augurproject/core/build/libraries/ContractInterfaces';
 import {
   MAX_FILLS_PER_TX,
   MAX_GAS_LIMIT_FOR_TRADE,
@@ -573,11 +573,18 @@ export class ZeroX {
 
     const gasPrice = await this.client.getGasPrice();
     const exchangeFeeMultiplier = await this.client.contracts.zeroXExchange.protocolFeeMultiplier_();
-    const protocolFee = gasPrice.multipliedBy(exchangeFeeMultiplier).multipliedBy(orders.length).multipliedBy(MAX_PROTOCOL_FEE_MULTIPLIER);
-    let maxProtocolFeeInDai = protocolFee.multipliedBy(await this.client.getExchangeRate(true)).div(QUINTILLION);
-    maxProtocolFeeInDai = maxProtocolFeeInDai.decimalPlaces(0);
+    let protocolFee = gasPrice.multipliedBy(exchangeFeeMultiplier).multipliedBy(orders.length);
+    let attachedEth = undefined;
 
-    return this.client.contracts.ZeroXTrade.cancelOrders(orders, signatures, maxProtocolFeeInDai);
+    if (this.client.config.paraDeploy) {
+      const walletEthBalance = await this.client.getEthBalance(await this.client.getAccount());
+      attachedEth = BigNumber.min(protocolFee, walletEthBalance);
+      protocolFee = protocolFee.gt(walletEthBalance) ? protocolFee.minus(walletEthBalance) : new BigNumber(0);
+    }
+
+    const maxProtocolFeeInDai = protocolFee.multipliedBy(await this.client.getExchangeRate(true)).multipliedBy(MAX_PROTOCOL_FEE_MULTIPLIER).div(QUINTILLION).decimalPlaces(0);
+
+    return (this.client.contracts.ZeroXTrade as ParaZeroXTrade).cancelOrders(orders, signatures, maxProtocolFeeInDai, { attachedEth });
   }
 
   async simulateTrade(
