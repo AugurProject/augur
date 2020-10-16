@@ -469,6 +469,9 @@ export const SportsOutcome = ({
   market = {},
 }: SportsOutcomeProps) => {
   const { liquidityPools } = useMarketsStore();
+  const {
+    actions: { setBetslipMinimized },
+  } = useAppStatusStore();
   const { addBet } = Betslip.actions;
   const {
     sportsBook,
@@ -517,6 +520,7 @@ export const SportsOutcome = ({
     label = OddToUse.full;
     disabled = false;
     action = () => {
+      setBetslipMinimized(false);
       addBet(
         id,
         description,
