@@ -628,17 +628,23 @@ export function addAmmLiquidity({
   )
 }
 
-export function getRemoveLiquidity({
+export async function getRemoveLiquidity({
   ammAddress,
   augurClient,
   lpTokens
-}): Promise<{ noShares: string; yesShares: string; cashPayout: string}  | null> {
+}): Promise<{ noShares: string; yesShares: string; cashPayout: string } | null> {
   if (!augurClient || !ammAddress) {
     console.error('augurClient is null or amm address')
     return null
   }
   console.log('getRemoveLiquidity', ammAddress, String(lpTokens))
-  return augurClient.ammFactory.getRemoveLiquidity(ammAddress, String(lpTokens))
+  const results = await augurClient.ammFactory.getRemoveLiquidity(ammAddress, String(lpTokens))
+  console.log(results)
+  return {
+    noShares: new BN(results.noShares).toString(10),
+    yesShares: new BN(results.yesShares).toString(10),
+    cashPayout: new BN(results.cashPayout).toString(10)
+  }
 }
 
 export function removeAmmLiquidity({ ammAddress, augurClient, lpTokens }) {

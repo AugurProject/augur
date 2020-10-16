@@ -51,7 +51,6 @@ function AddLiquidity({ amm, marketId, cash }: RouteComponentProps<{ amm?: strin
   const hasLiquidity = ammData?.hasLiquidity
 
   const currencyA = useCurrency(cash)
-  console.log('currencyA token', JSON.stringify(currencyA))
 
   const toggleWalletModal = useWalletModalToggle() // toggle wallet when disconnected
   // mint state

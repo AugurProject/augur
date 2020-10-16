@@ -109,9 +109,7 @@ export class AMMExchange {
   }
 
   async getRemoveLiquidity(lpTokens: LPTokens, alsoSell = false): Promise<{noShares: BigNumber, yesShares: BigNumber, cashPayout: BigNumber}> {
-    console.log('getRemoveLiquidity lptokens', String(lpTokens));
-    const { _noShare, _yesShare, _cashPayout } = await this.contract.rateRemoveLiquidity(lpTokens, alsoSell ? new BigNumber(1) : new BigNumber(0));
-    console.log('lptokens', String(lpTokens), _noShare, _yesShare, _cashPayout);
+    const { _noShare, _yesShare, _cashPayout } = await this.contract.rateRemoveLiquidity(lpTokens.toFixed(), alsoSell ? 1 : 0);
     return { noShares: _noShare, yesShares: _yesShare, cashPayout: _cashPayout}
   }
 

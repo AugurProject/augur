@@ -1,6 +1,5 @@
 import { TransactionResponse } from '@ethersproject/providers'
-import { CurrencyAmount, JSBI, Percent, TokenAmount } from '@uniswap/sdk'
-import React, { useCallback, useContext, useMemo, useState } from 'react'
+import React, { useCallback, useContext, useState } from 'react'
 import { ArrowDown, Plus } from 'react-feather'
 import ReactGA from 'react-ga'
 import { RouteComponentProps } from 'react-router'
@@ -21,7 +20,6 @@ import useTransactionDeadline from '../../hooks/useTransactionDeadline'
 
 import { useTransactionAdder } from '../../state/transactions/hooks'
 
-import useDebouncedChangeHandler from '../../utils/useDebouncedChangeHandler'
 import AppBody from '../AppBody'
 import { MaxButton, Wrapper } from '../../components/swap/styleds'
 import { useApproveCallback, ApprovalState } from '../../hooks/useApproveCallback'
@@ -183,6 +181,7 @@ function RemoveLiquidity({
   const pendingText = `Removing ${liquidity} ${currencyA?.symbol}`
 
   const updateLiquidityPercent = (value: number) => {
+    if (value === 0) return setError('Enter an amount')
     const fullLiquidity = userTokenBalances[ammExchangeId]
     console.log('value value', value, fullLiquidity)
     const liqudity = String(
@@ -205,11 +204,6 @@ function RemoveLiquidity({
     }
     setTxHash('')
   }, [setLiquidityPercentage, txHash])
-
-  /*const [innerLiquidityPercentage, setInnerLiquidityPercentage] = useDebouncedChangeHandler(
-    Number.parseInt(liquidityPercentage),
-    liquidityPercentChangeCallback
-  )*/
 
   if (!account) {
     setError('Connect Wallet')
