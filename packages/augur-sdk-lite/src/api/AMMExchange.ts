@@ -126,7 +126,7 @@ export class AMMExchange {
       minSetsSold = new BigNumber(0);
     }
 
-    return this.contract.removeLiquidity(lpTokens, minSetsSold);
+    return this.contract.removeLiquidity(lpTokens.toFixed(), minSetsSold.toFixed());
   }
 
   calculateCashForSharesInSwap(desiredShares: Shares, yes: boolean): BigNumber {
