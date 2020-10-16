@@ -27,6 +27,7 @@ jobs:
           succeeded(),
           eq(variables['Build.SourceBranch'], '${{ parameters.triggerBranch }}')
       )
+
     pool:
       vmImage: $(VM_IMAGE)
     steps:
@@ -58,7 +59,7 @@ jobs:
           aws s3 sync packages/augur-ui/build/ s3://${BUCKET_NAME}/ --metadata-directive REPLACE --metadata '{"Cache-Control": "max-age=31536000,public"}'
           aws s3 cp s3://${BUCKET_NAME}/index.html s3://${BUCKET_NAME}/index.html --metadata-directive REPLACE --metadata '{"Cache-Control": "max-age=60,public"}'
           aws s3 cp s3://${BUCKET_NAME}/zerox.wasm s3://${BUCKET_NAME}/zerox.wasm --metadata-directive REPLACE --metadata '{"Cache-Control": "max-age=31536000,public"}' --content-type "application/wasm"
-          aws cloudfront create-invalidation --distribution-id ${DISTRIBUTION_ID} --paths "/index.html"
+          aws cloudfront create-invalidation --distribution-id ${DISTRIBUTION_ID} --paths "/index.html" "/zerox.wasm"
         displayName: 'push build to S3'
         env:
           AWS_ACCESS_KEY_ID: $(AWS_KEY_ID)
