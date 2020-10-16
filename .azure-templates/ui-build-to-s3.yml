@@ -53,7 +53,5 @@ jobs:
           PARA_DEPLOY_TOKEN_NAME: ${{ parameters.paraDeployTokenName }}
       - template: deploy-to-s3.yml
         parameters:
-          AWS_ACCESS_KEY_ID: $(AWS_KEY_ID)
-          AWS_SECRET_ACCESS_KEY: $(AWS_SECRET_KEY)
           deployBucketName: ${{ parameters.deployBucketName }}
           cloudfrontDistributionId: ${{ parameters.cloudfrontDistributionId }}
