@@ -404,10 +404,10 @@ export const ModalClaimMarketsProceeds = () => {
         let properties = [];
         if (isSportsTheme) {
          const position = accountPositions[marketId]?.tradingPositions[winningOutcomeId];
-         const wager = getWager(position?.netPosition, position.averagePrice);
+         const wager = getWager(position?.netPosition, position?.averagePrice);
           properties.push({
             label: 'Wager',
-            value: formatDai(wager).full,
+            value: formatDai(wager || 0).full,
           })
           properties.push({
             label: 'Winnings',
