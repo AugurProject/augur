@@ -192,6 +192,15 @@
   optionalDependencies:
     "@ledgerhq/hw-transport-node-hid" "^4.3.0"
 
+"@0x/types@3.2.0", "@0x/types@^3.2.0":
+  version "3.2.0"
+  resolved "https://registry.yarnpkg.com/@0x/types/-/types-3.2.0.tgz#490627e9440c3ff4e4660b0c10960ccd02d7105f"
+  integrity sha512-HcYXmz7gYtibJmZQjrQCnzV2FjRoo5b/Ul1QoTeQFAZ2M2ggt1wHspQ7vOkEAZEK/7TE4TKA4MlRwRLa4isL1Q==
+  dependencies:
+    "@types/node" "*"
+    bignumber.js "~9.0.0"
+    ethereum-types "^3.2.0"
+
 "@0x/types@^2.4.1", "@0x/types@^2.4.3":
   version "2.4.3"
   resolved "https://registry.yarnpkg.com/@0x/types/-/types-2.4.3.tgz#ea014889789e9013fdf48ce97b79f2c016e10fb3"
@@ -209,15 +218,6 @@
     "@types/node" "*"
     bignumber.js "~9.0.0"
     ethereum-types "^3.1.0"
-
-"@0x/types@^3.2.0":
-  version "3.2.0"
-  resolved "https://registry.yarnpkg.com/@0x/types/-/types-3.2.0.tgz#490627e9440c3ff4e4660b0c10960ccd02d7105f"
-  integrity sha512-HcYXmz7gYtibJmZQjrQCnzV2FjRoo5b/Ul1QoTeQFAZ2M2ggt1wHspQ7vOkEAZEK/7TE4TKA4MlRwRLa4isL1Q==
-  dependencies:
-    "@types/node" "*"
-    bignumber.js "~9.0.0"
-    ethereum-types "^3.2.0"
 
 "@0x/typescript-typings@^4.2.4", "@0x/typescript-typings@^4.3.0":
   version "4.3.0"
@@ -12879,7 +12879,7 @@ ethereum-types@2.1.6, ethereum-types@^2.1.4, ethereum-types@^2.1.6:
     "@types/node" "*"
     bignumber.js "~8.0.2"
 
-ethereum-types@^3.0.0, ethereum-types@^3.2.0:
+ethereum-types@^3.0.0, ethereum-types@^3.1.0, ethereum-types@^3.2.0:
   version "3.2.0"
   resolved "https://registry.yarnpkg.com/ethereum-types/-/ethereum-types-3.2.0.tgz#5bd27cadc3c1b3c2e2bf94654fa2bc3618a4520f"
   integrity sha512-osxikvWF2CuHauo2jiBpGalLXbCj5xWm2WcNr+Z4sNTk7z6DArPNXwsgANu2bA+aAsqSSF4NgsNx8JS1d3xdOQ==
