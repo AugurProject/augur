@@ -55,8 +55,6 @@ function RemoveLiquidity({
     ammFactory
   )
 
-  console.log('approval', approval, liquidity)
-
   const theme = useContext(ThemeContext)
 
   // modal and loading
