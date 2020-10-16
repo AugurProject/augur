@@ -64,11 +64,7 @@ export function getRemoveLiquidityBreakdown(augurClient, currencyLp: Token, user
     lpTokens: userLiquidity
   }).then(results => {
     console.log(JSON.stringify(results))
-    setMethod({
-      [Field.YES_SHARES]: results ? String(results.yesShares) : undefined,
-      [Field.NO_SHARES]: results ? String(results.noShares) : undefined,
-      [Field.COLLATERAL]: results ? String(results.cashPayout) : undefined
-    })
+    setMethod(results)
   })
 }
 

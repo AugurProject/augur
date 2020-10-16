@@ -59,7 +59,7 @@ export class AMMFactory {
     return this.contract.addAMMWithLiquidity(market, paraShareToken, cash.toFixed(), ratio.toFixed(), keepYes);
   }
 
-  async getRemoveLiquidity(ammAddress: string, lpTokens: string): Promise<{noShares: BigNumber, yesShares: BigNumber, cashPayout: BigNumber}> {
+  async getRemoveLiquidity(ammAddress: string, lpTokens: string): Promise<{noShares: BigNumber, yesShares: BigNumber, cashShares: BigNumber}> {
     if (!ammAddress) return null;
     const amm = new AMMExchange(this.signerOrProvider, ammAddress);
     return amm.getRemoveLiquidity(new BigNumber(lpTokens));

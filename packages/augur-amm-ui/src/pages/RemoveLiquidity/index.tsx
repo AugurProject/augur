@@ -17,7 +17,7 @@ import TokenLogo from '../../components/TokenLogo'
 import { useActiveWeb3React } from '../../hooks'
 import { useCurrency, useToken } from '../../hooks/Tokens'
 import useTransactionDeadline from '../../hooks/useTransactionDeadline'
-
+import { TYPE } from '../../Theme'
 import { useTransactionAdder } from '../../state/transactions/hooks'
 
 import AppBody from '../AppBody'
@@ -47,13 +47,16 @@ function RemoveLiquidity({
   const tokenLp = useToken(ammExchangeId)
   const ammFactory = useAmmFactoryAddress()
   const [liquidity, setLiquidity] = useState('0')
-  const [breakdown, setBreakdown] = useState({})
+  const [breakdown, setBreakdown] = useState({ noShares: '0', yesShares: '0', cashShares: '0' })
   const [liquidityPercentage, setLiquidityPercentage] = useState('0')
   const [error, setError] = useState('Enter an amount')
   const [approval, approveCallback] = useApproveCallback(
     tryParseAmount(userTokenBalances[ammExchangeId], currencyLP),
     ammFactory
   )
+
+  console.log('approval', approval, liquidity)
+
   const theme = useContext(ThemeContext)
 
   // modal and loading
@@ -110,29 +113,30 @@ function RemoveLiquidity({
     return (
       <AutoColumn gap={'md'} style={{ marginTop: '20px' }}>
         <RowBetween align="flex-end">
-          <Text fontSize={24} fontWeight={500}>
-            {liquidity}
+          <Text fontSize={12} fontWeight={500}>
+            Yes Shares:
           </Text>
-          <RowFixed gap="4px">
-            <TokenLogo tokenInfo={currencyA} showSymbol size={'24px'} />
-            <Text fontSize={24} fontWeight={500} style={{ marginLeft: '10px' }}>
-              {currencyA?.symbol}
-            </Text>
-          </RowFixed>
+          <Text fontSize={24} fontWeight={500} style={{ marginLeft: '10px' }}>
+            {breakdown.yesShares}
+          </Text>
         </RowBetween>
-        <RowFixed>
-          <Plus size="16" color={theme.text2} />
-        </RowFixed>
+
         <RowBetween align="flex-end">
-          <Text fontSize={24} fontWeight={500}>
-            {/*parsedAmounts[Field.CURRENCY_B]?.toSignificant(6)*/}
-            {'shares a'}
+          <Text fontSize={12} fontWeight={500}>
+            No Shares:
           </Text>
-          <RowFixed gap="4px">
-            <Text fontSize={24} fontWeight={500} style={{ marginLeft: '10px' }}>
-              {'shares b'}
-            </Text>
-          </RowFixed>
+          <Text fontSize={24} fontWeight={500} style={{ marginLeft: '10px' }}>
+            {breakdown.noShares}
+          </Text>
+        </RowBetween>
+
+        <RowBetween align="flex-end">
+          <Text fontSize={12} fontWeight={500}>
+            <TokenLogo tokenInfo={ammExchange.cash} showSymbol size={'12px'} />
+          </Text>
+          <Text fontSize={24} fontWeight={500} style={{ marginLeft: '10px' }}>
+            {breakdown.cashShares}
+          </Text>
         </RowBetween>
       </AutoColumn>
     )
@@ -143,31 +147,12 @@ function RemoveLiquidity({
       <>
         <RowBetween>
           <Text color={theme.text2} fontWeight={500} fontSize={16}>
-            {userTokenBalances[ammExchangeId]} Burned
+            LP Tokens Burned
           </Text>
-          <RowFixed>
-            <Text fontWeight={500} fontSize={16}>
-              {liquidity}
-            </Text>
-          </RowFixed>
+          <Text fontWeight={500} fontSize={16}>
+            {liquidity}
+          </Text>
         </RowBetween>
-
-        <>
-          <RowBetween>
-            <Text color={theme.text2} fontWeight={500} fontSize={16}>
-              Receive:
-            </Text>
-            <Text fontWeight={500} fontSize={16} color={theme.text1}>
-              Yes Shares {'xxxxxx'}
-            </Text>
-          </RowBetween>
-          <RowBetween>
-            <div />
-            <Text fontWeight={500} fontSize={16} color={theme.text1}>
-              No Shares {'yyyyyy'}
-            </Text>
-          </RowBetween>
-        </>
 
         <ButtonPrimary disabled={!(approval === ApprovalState.APPROVED || signatureData !== null)} onClick={onRemove}>
           <Text fontWeight={500} fontSize={20}>
@@ -182,17 +167,19 @@ function RemoveLiquidity({
 
   const updateLiquidityPercent = (value: number) => {
     if (value === 0) return setError('Enter an amount')
+    setLiquidityPercentage(String(value))
     const fullLiquidity = userTokenBalances[ammExchangeId]
-    console.log('value value', value, fullLiquidity)
-    const liqudity = String(
-      new BN(value)
-        .div(100)
-        .times(new BN(fullLiquidity))
-        .decimalPlaces(0)
-    )
-    setLiquidity(liquidity)
-    getRemoveLiquidityBreakdown(augurClient, tokenLp, liqudity, setBreakdown)
-    if (liquidity === '0') setError('Enter an amount')
+    const fraction = Number(value) / 100
+    console.log('value value', fraction, value, fullLiquidity)
+    const newLiquidity = String(Math.floor(fraction * Number(fullLiquidity)))
+
+    console.log('setting liquidity', newLiquidity)
+    setLiquidity(newLiquidity)
+    getRemoveLiquidityBreakdown(augurClient, tokenLp, newLiquidity, result => {
+      setBreakdown(result)
+      setError(null)
+    })
+    if (newLiquidity === '0') setError('Enter an amount')
   }
 
   const handleDismissConfirmation = useCallback(() => {
@@ -269,13 +256,25 @@ function RemoveLiquidity({
                 <AutoColumn gap="10px">
                   <RowBetween>
                     <Text fontSize={12} fontWeight={500}>
-                      Liquitidy Tokens to return
+                      LP Tokens:
                     </Text>
+                    <Text fontSize={12}>{liquidity}</Text>
                   </RowBetween>
                   <RowBetween>
                     <Text fontSize={12} fontWeight={500}>
-                      {liquidity}
+                      Yes Shares:
                     </Text>
+                    <Text fontSize={12}>{breakdown?.yesShares}</Text>
+                  </RowBetween>
+                  <RowBetween>
+                    <Text fontSize={12} fontWeight={500}>
+                      No Shares:
+                    </Text>
+                    <Text fontSize={12}>{breakdown?.noShares}</Text>
+                  </RowBetween>
+                  <RowBetween>
+                    <TokenLogo showSymbol size={'12px'} tokenInfo={ammExchange.cash} />
+                    <Text fontSize={12}>{breakdown?.cashShares}</Text>
                   </RowBetween>
                 </AutoColumn>
               </LightCard>
@@ -305,7 +304,7 @@ function RemoveLiquidity({
                     onClick={() => {
                       setShowConfirm(true)
                     }}
-                    disabled={approval !== ApprovalState.APPROVED || !!liquidity}
+                    disabled={approval !== ApprovalState.APPROVED || liquidity === '0'}
                     error={false}
                   >
                     <Text fontSize={16} fontWeight={500}>

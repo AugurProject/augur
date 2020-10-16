@@ -632,7 +632,7 @@ export async function getRemoveLiquidity({
   ammAddress,
   augurClient,
   lpTokens
-}): Promise<{ noShares: string; yesShares: string; cashPayout: string } | null> {
+}): Promise<{ noShares: string; yesShares: string; cashShares: string } | null> {
   if (!augurClient || !ammAddress) {
     console.error('augurClient is null or amm address')
     return null
@@ -641,9 +641,9 @@ export async function getRemoveLiquidity({
   const results = await augurClient.ammFactory.getRemoveLiquidity(ammAddress, String(lpTokens))
   console.log(results)
   return {
-    noShares: new BN(results.noShares).toString(10),
-    yesShares: new BN(results.yesShares).toString(10),
-    cashPayout: new BN(results.cashPayout).toString(10)
+    noShares: String(results.noShares),
+    yesShares: String(results.yesShares),
+    cashShares: String(results.cashShares)
   }
 }
 
