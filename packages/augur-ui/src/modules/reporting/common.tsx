@@ -1368,7 +1368,6 @@ export const FeePoolView = (
 
   return (
     <div className={Styles.FeePoolView}>
-      <h3>REP Staking Pool</h3>
       <span>
         Stake <b>REP</b> to recieve Staking REP (<b>SREP</b>) to earn a portion of the reporting fees in wETH.
       </span>
@@ -1434,55 +1433,6 @@ export const FeePoolView = (
         queueName={TRANSACTIONS}
         queueId={EXIT}
       />
-      <section />
-      {false /* TODO: when governance comes in wire this up */&&
-      <>
-      <h3>Governance</h3>
-      <span>
-      You can stake your <b>SREP</b> to get Governance REP (<b>GREP</b>) which can be used for voting power.
-      </span>
-      <Subheaders
-        info
-        header="Total SREP staked in Goverance"
-        subheader={pastParticipationTokensPurchased.formatted}
-        tooltipText={
-          "The total amount of SREP staked in the Governance contract"
-        }
-      />
-      <Subheaders
-        info
-        header="My SREP staked (${} GREP)"
-        subheader={participationTokensClaimableFees.formatted}
-        secondSubheader="SREP"
-        tooltipText={
-          "The total SREP you have staked in the governance contract"
-        }
-      />
-      <ProcessingButton
-        text="Stake SREP"
-        disabled={!isLoggedIn || !isGovApproved}
-        action={() => openStakeSrepModal(userTotalRep)}
-        queueName={TRANSACTIONS}
-        queueId={STAKE}
-      />
-      <ProcessingButton
-        secondaryButton
-        text="Claim GREP"
-        disabled={!isLoggedIn || !isGovApproved}
-        action={openUnstakeSrepModal}
-        queueName={TRANSACTIONS}
-        queueId={REDEEMSTAKE}
-      />
-      <ProcessingButton
-        secondaryButton
-        text="Unstake & Claim GREP"
-        disabled={!isLoggedIn || !isGovApproved}
-        action={openExitUnstakeGovModal}
-        queueName={TRANSACTIONS}
-        queueId={REDEEMSTAKE}
-      />
-      </>
-      }
     </div>
   );
 };

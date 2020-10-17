@@ -49,6 +49,8 @@ const mapStateToProps = (state: AppState) => {
     walletStatus === WALLET_STATUS_VALUES.FUNDED_NEED_CREATE;
   const showMigrateRepButton =
     balances.legacyRep !== "0" || balances.signerBalances.legacyRep !== "0" || !!pending;
+  const marketCreationEnabled = env?.ui?.marketCreationEnabled;
+  const reportingEnabled = env?.ui?.reportingEnabled;
 
   return {
     notifications,
@@ -72,7 +74,8 @@ const mapStateToProps = (state: AppState) => {
     showMigrateRepButton,
     whichChatPlugin: state.env.plugins?.chat,
     appStatus: state.appStatus,
-    disableMarketCreation: process.env.REPORTING_ONLY,
+    marketCreationEnabled: !process.env.REPORTING_ONLY && marketCreationEnabled,
+    reportingEnabled
   }
 };
 

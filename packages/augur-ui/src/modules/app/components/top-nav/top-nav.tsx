@@ -32,7 +32,6 @@ interface TopNavProps {
   showMigrateRepButton: boolean;
   walletBalances: AccountBalances;
   updateModal: Function;
-  disableMarketCreation: boolean;
 }
 
 const SPREAD_INDEX = 3;
@@ -44,7 +43,6 @@ const TopNav = ({
   migrateV1Rep,
   showMigrateRepButton = false,
   walletBalances,
-  disableMarketCreation,
 }: TopNavProps) => {
   const isCurrentItem = item => {
     if (item.route === 'markets' && currentBasePath === 'market') return true;
@@ -52,7 +50,7 @@ const TopNav = ({
   };
 
   const accessFilteredMenu = menuData.filter(
-    item => !(item.requireLogin && !isLogged)
+    item => !(item.requireLogin && !isLogged) && !item.hidden
   );
 
   return (
@@ -65,7 +63,7 @@ const TopNav = ({
               <li className={Styles.CreateButton} key={item.title}>
                 <Link to={item.route || !item.disabled ? makePath(item.route) : null}>
                   <SecondaryButton
-                    disabled={item.disabled || disableMarketCreation}
+                    disabled={item.disabled}
                     text={'Create Market'}
                     action={() => null}
                   />

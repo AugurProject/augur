@@ -158,7 +158,9 @@
     "trackBestOffer": false,
     "trackMarketInvalidBids": true,
     "fallbackProvider": "torus",
-    "primaryProvider": "wallet"
+    "primaryProvider": "wallet",
+    "marketCreationEnabled": false,
+    "reportingEnabled": false
   },
   "averageBlocktime": 2000,
   "paraDeploys": {

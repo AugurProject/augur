@@ -70,7 +70,8 @@
   }
 
   > div:nth-of-type(2) {
-    grid-row: 1 / span 4;
+    grid-row: 1 / span 2;
+    overflow-y: scroll;
 
     @media @breakpoint-tablet {
       grid-row: unset;
@@ -88,6 +89,14 @@
 
   > div:nth-of-type(4),
   > div:nth-of-type(5) {
+    grid-row: 3 / span 2;
+
+    @media @breakpoint-tablet {
+      grid-row: unset;
+    }
+  }
+
+  > div:nth-of-type(6) {
     grid-row: 3 / span 2;
 
     @media @breakpoint-tablet {

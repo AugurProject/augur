@@ -78,7 +78,7 @@ const SideNav = ({
   }, [isHelpMenuOpen]);
 
   const accessFilteredMenu = menuData.filter(
-    item => !(item.requireLogin && !isLogged)
+    item => !(item.requireLogin && !isLogged) && !item.hidden
   );
   return (
     <aside
