@@ -17,6 +17,7 @@ import {
   TX_DIRECTION,
 } from 'modules/common/constants';
 import { createBigNumber } from 'utils/create-big-number';
+import { augurSdk } from 'services/augursdk';
 
 export function convertTransactionOrderToUIOrder(
   hash: string,
@@ -24,6 +25,9 @@ export function convertTransactionOrderToUIOrder(
   status: string,
   market: Getters.Markets.MarketInfo
 ): UIOrder {
+
+  const Augur = augurSdk ? augurSdk.get() : undefined;
+
   console.log(JSON.stringify(onChainOrder));
   const outcomeId = onChainOrder[TX_OUTCOME_ID].toNumber();
   const outcome = market.outcomes.find(o => o.id === outcomeId);
@@ -46,7 +50,8 @@ export function convertTransactionOrderToUIOrder(
   ).toString(10);
   const amount = convertOnChainAmountToDisplayAmount(
     onChainOrder[TX_AMOUNT],
-    tickSize
+    tickSize,
+    Augur.precision,
   ).toString();
   return {
     id: onChainOrder[TX_TRADE_GROUP_ID],

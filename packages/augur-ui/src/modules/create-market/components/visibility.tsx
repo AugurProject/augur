@@ -163,6 +163,8 @@ export default class Visibility extends Component<
     const marketTypeNumber = marketNameToType(marketType);
     let formattedOrderBook = {};
 
+    const Augur = augurSdk ? augurSdk.get() : undefined;
+
     Object.entries(orderBook).forEach(([outcome, orders]: Array<any>) => {
       formattedOrderBook[outcome] = { bids: [], asks: [] };
       orders.forEach(order => {
@@ -174,7 +176,8 @@ export default class Visibility extends Component<
           ).toFixed(),
           amount: convertDisplayAmountToOnChainAmount(
             createBigNumber(order.quantity),
-            createBigNumber(tickSize)
+            createBigNumber(tickSize),
+            Augur.precision,
           ).toFixed(),
         };
         if (order.type === BUY) {

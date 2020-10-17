@@ -1053,7 +1053,8 @@ export async function createLiquidityOrder(order: MarketLiquidityOrder) {
     order.quantity,
     order.price,
     order.minPrice,
-    order.maxPrice
+    order.maxPrice,
+    Augur.precision,
   );
   return Augur.contracts.createOrder.publicCreateOrder(
     createBigNumber(order.orderType),
@@ -1086,7 +1087,8 @@ export async function createLiquidityOrders(
       o.quantity,
       o.price,
       minPrice,
-      maxPrice
+      maxPrice,
+      Augur.precision,
     );
     const orderType = o.type === BUY ? 0 : 1;
     outcomes.push(createBigNumber(o.outcomeId));
@@ -1105,7 +1107,7 @@ export async function createLiquidityOrders(
   );
 }
 
-function createOrderParameters(numTicks, numShares, price, minPrice, maxPrice) {
+function createOrderParameters(numTicks, numShares, price, minPrice, maxPrice, precision) {
   const tickSizeBigNumber = numTicksToTickSizeWithDisplayPrices(
     createBigNumber(numTicks),
     createBigNumber(minPrice),
@@ -1115,7 +1117,8 @@ function createOrderParameters(numTicks, numShares, price, minPrice, maxPrice) {
     tradeGroupId: generateTradeGroupId(),
     attoShares: convertDisplayAmountToOnChainAmount(
       createBigNumber(numShares),
-      tickSizeBigNumber
+      tickSizeBigNumber,
+      precision,
     ),
     attoPrice: convertDisplayPriceToOnChainPrice(
       createBigNumber(price),

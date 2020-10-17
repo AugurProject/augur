@@ -121,7 +121,8 @@ export class OnChainTrade {
     );
     const onChainAmount = convertDisplayAmountToOnChainAmount(
       params.displayAmount,
-      tickSize
+      tickSize,
+      this.augur.precision,
     );
     const onChainPrice = convertDisplayPriceToOnChainPrice(
       params.displayPrice,
@@ -130,7 +131,8 @@ export class OnChainTrade {
     );
     const onChainShares = convertDisplayAmountToOnChainAmount(
       params.displayShares,
-      tickSize
+      tickSize,
+      this.augur.precision,
     );
     return Object.assign(params, {
       amount: onChainAmount,
@@ -206,11 +208,13 @@ export class OnChainTrade {
     )) as unknown) as BigNumber[];
     const displaySharesFilled = convertOnChainAmountToDisplayAmount(
       simulationData[0],
-      tickSize
+      tickSize,
+      this.augur.precision,
     );
     const displaySharesDepleted = convertOnChainAmountToDisplayAmount(
       simulationData[2],
-      tickSize
+      tickSize,
+      this.augur.precision,
     );
     const displayTokensDepleted = simulationData[1].dividedBy(this.augur.precision);
     const displaySettlementFees = simulationData[3].dividedBy(this.augur.precision);

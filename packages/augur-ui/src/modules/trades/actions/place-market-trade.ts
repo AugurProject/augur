@@ -32,6 +32,7 @@ import { updateModal } from 'modules/modal/actions/update-modal';
 import { Ox_STATUS } from 'modules/app/actions/update-app-status';
 import { updateAlert } from 'modules/alerts/actions/alerts';
 import { checkAccountApproval } from 'modules/auth/actions/approve-account';
+import { augurSdk } from 'services/augursdk';
 
 export const placeMarketTrade = ({
   marketId,
@@ -97,6 +98,8 @@ export const placeMarketTrade = ({
     )
   );
 
+  const Augur = augurSdk ? augurSdk.get() : undefined;
+
   placeTrade(
     orderType,
     market.id,
@@ -131,7 +134,8 @@ export const placeMarketTrade = ({
             orderType,
             amount: convertDisplayAmountToOnChainAmount(
               createBigNumber(tradeInProgress.numShares),
-              createBigNumber(tickSize)
+              createBigNumber(tickSize),
+              Augur.precision,
             ),
             marketId,
           },

@@ -50,7 +50,7 @@ export class ZeroXOrdersGetters {
       .equals(params.orderHash)
       .last();
     const markets = await getMarkets([storedOrder.market], db, false);
-    return ZeroXOrdersGetters.storedOrderToZeroXOrder(markets, storedOrder);
+    return ZeroXOrdersGetters.storedOrderToZeroXOrder(markets, storedOrder, augur.precision);
   }
 
   // TODO: Split this into a getter for orderbooks and a getter to get matching orders
@@ -120,6 +120,7 @@ export class ZeroXOrdersGetters {
       typeof params.expirationCutoffSeconds === 'number'
         ? params.expirationCutoffSeconds
         : 0,
+      augur.precision,
     );
     return ignoreCrossOrders ? ignoreCrossedOrders(book, account) : book;
   }
@@ -129,13 +130,15 @@ export class ZeroXOrdersGetters {
     storedOrders: StoredOrder[],
     ignoredOrderIds: string[],
     expirationCutoffSeconds: number,
+    precision: BigNumber,
   ): ZeroXOrders {
     let orders = storedOrders.map(storedOrder => {
       return {
         storedOrder,
         zeroXOrder: ZeroXOrdersGetters.storedOrderToZeroXOrder(
           markets,
-          storedOrder
+          storedOrder,
+          precision
         ),
       };
     });
@@ -181,7 +184,8 @@ export class ZeroXOrdersGetters {
 
   static storedOrderToZeroXOrder(
     markets: _.Dictionary<MarketData>,
-    storedOrder: StoredOrder
+    storedOrder: StoredOrder,
+    precision: BigNumber,
   ): ZeroXOrder {
     const market = markets[storedOrder.market];
     if (!market) {
@@ -194,13 +198,15 @@ export class ZeroXOrdersGetters {
     const tickSize = numTicksToTickSize(numTicks, minPrice, maxPrice);
     const amount = convertOnChainAmountToDisplayAmount(
       new BigNumber(storedOrder.amount),
-      tickSize
+      tickSize,
+      precision,
     ).toString(10);
     const amountFilled = convertOnChainAmountToDisplayAmount(
       new BigNumber(storedOrder.signedOrder.makerAssetAmount).minus(
         new BigNumber(storedOrder.amount)
       ),
-      tickSize
+      tickSize,
+      precision
     ).toString(10);
     const price = convertOnChainPriceToDisplayPrice(
       new BigNumber(storedOrder.price, 16),

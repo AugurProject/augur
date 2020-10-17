@@ -7,10 +7,10 @@ import {
   OrderData,
   parseAssetData
 } from '@augurproject/sdk-lite';
-import { ContractAddresses, logger, LoggerLevels, DEFAULT_TRADE_INTERVAL } from '@augurproject/utils';
+import { ContractAddresses, logger, LoggerLevels, DEFAULT_TRADE_INTERVAL, QUINTILLION } from '@augurproject/utils';
 import * as _ from 'lodash';
 import { Augur } from '../../Augur';
-import { getTradeInterval, QUINTILLION } from '../../utils';
+import { getTradeInterval } from '../../utils';
 import { AbstractTable, BaseDocument } from './AbstractTable';
 import { DB } from './DB';
 import { SyncStatus } from './SyncStatus';

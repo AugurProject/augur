@@ -93,7 +93,8 @@ async function placeOrder(person: ContractAPI,
     : numTicksToTickSize(new BigNumber('100'), new BigNumber('0'), new BigNumber('0x0de0b6b3a7640000'));
 
   const minDisplayPrice = new BigNumber(can.minPrice || '0');
-  const attoShares = convertDisplayAmountToOnChainAmount(shares, tickSize);
+  const precison = new BigNumber(10**18);
+  const attoShares = convertDisplayAmountToOnChainAmount(shares, tickSize, precison);
   const attoPrice = convertDisplayPriceToOnChainPrice(price, minDisplayPrice, tickSize);
   const betterOrderId = ethers.utils.formatBytes32String('');
   const worseOrderId = ethers.utils.formatBytes32String('');

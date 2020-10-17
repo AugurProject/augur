@@ -233,7 +233,8 @@ export class Markets {
               (totalVolume: BigNumber, tradeRow: ParsedOrderEventLog) => {
                 const amount = convertOnChainAmountToDisplayAmount(
                   new BigNumber(tradeRow.amountFilled),
-                  tickSize
+                  tickSize,
+                  augur.precision,
                 );
 
                 const displayPrice = convertOnChainPriceToDisplayPrice(
@@ -258,7 +259,8 @@ export class Markets {
                   totalShareVolume.plus(tradeRow.amountFilled),
                 new BigNumber(0)
               ),
-              tickSize
+              tickSize,
+              augur.precision,
             ).toString(10), // the business definition of shareVolume should be the same as used with markets/outcomes.shareVolume (which currently is just summation of trades.amount)
           };
           return {

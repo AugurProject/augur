@@ -22,6 +22,7 @@ import { TXEventName } from '@augurproject/sdk-lite';
 import { setLiquidityOrderStatus } from 'modules/events/actions/liquidity-transactions';
 import { updateAlert } from 'modules/alerts/actions/alerts';
 import { checkAccountApproval } from 'modules/auth/actions/approve-account';
+import { augurSdk } from 'services/augursdk';
 export const UPDATE_LIQUIDITY_ORDER = 'UPDATE_LIQUIDITY_ORDER';
 export const ADD_MARKET_LIQUIDITY_ORDERS = 'ADD_MARKET_LIQUIDITY_ORDERS';
 export const REMOVE_LIQUIDITY_ORDER = 'REMOVE_LIQUIDITY_ORDER';
@@ -248,6 +249,7 @@ const createZeroXLiquidityOrders = async (
 ) => {
   try {
     const fingerprint = undefined; // TODO: get this from state
+    const Augur = augurSdk ? augurSdk.get() : undefined;
     let i = 0;
     // set all orders to pending before processing them.
     for (i; i < orders.length; i++) {
@@ -297,7 +299,8 @@ const createZeroXLiquidityOrders = async (
               orderType: o.type === BUY ? 0 : 1,
               amount: convertDisplayAmountToOnChainAmount(
                 createBigNumber(o.shares),
-                createBigNumber(market.tickSize)
+                createBigNumber(market.tickSize),
+                Augur.precision,
               ),
               marketId: market.id,
             },
