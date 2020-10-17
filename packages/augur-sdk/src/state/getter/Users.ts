@@ -507,7 +507,8 @@ export class Users {
       const validityBond = await augur.contracts.hotLoading.getTotalValidityBonds_(
         [marketId]
       );
-      createdMarkets.total = createdMarkets.total.plus(validityBond)
+      // don't include validity bond in total for para augurs
+      createdMarkets.total = createdMarkets.total; //.plus(validityBond)
       createdMarkets.markets[marketId] = String(convertAttoValueToDisplayValue(validityBond));
     }
     frozenFundsBreakdown.createdMarkets = {
@@ -1143,18 +1144,20 @@ export class Users {
     const frozenFundsPerMarket = await getFrozenFundsPerMarket(db, params.account, params.universe, augur.precision);
 
     // includes validity bonds for market creations
+    // don't include dai validity bond in para auugurs
+    /*
     const ownedMarketsResponse = await db.Markets.where('marketCreator')
       .equals(params.account)
       .and(log => !log.finalized)
       .toArray();
     const ownedMarkets = _.map(ownedMarketsResponse, 'market');
+
     const totalValidityBonds = await augur.contracts.hotLoading.getTotalValidityBonds_(
       ownedMarkets
     );
-
+    */
     return {
-      totalFrozenFunds: totalValidityBonds
-        .plus(frozenFundsPerMarket.frozenFundsTotal)
+      totalFrozenFunds: frozenFundsPerMarket.frozenFundsTotal
         .dividedBy(augur.precision)
         .toFixed(),
     };
