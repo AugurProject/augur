@@ -26,7 +26,7 @@ export class Contracts {
   time: SomeTime | void;
   legacyReputationToken: ContractInterfaces.LegacyReputationToken;
   simulateTrade: ContractInterfaces.SimulateTrade;
-  ZeroXTrade: ContractInterfaces.ZeroXTrade;
+  ZeroXTrade: ContractInterfaces.ParaZeroXTrade;
   buyParticipationTokens: ContractInterfaces.BuyParticipationTokens;
   redeemStake: ContractInterfaces.RedeemStake;
   hotLoading: ContractInterfaces.HotLoading;
@@ -94,7 +94,7 @@ export class Contracts {
       dependencies,
       addresses.SimulateTrade
     );
-    this.ZeroXTrade = new ContractInterfaces.ZeroXTrade(
+    this.ZeroXTrade = new ContractInterfaces.ParaZeroXTrade(
       dependencies,
       addresses.ZeroXTrade
     );

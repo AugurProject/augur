@@ -479,6 +479,13 @@ jobs:
       paraDeployTokenName: 'WETH'
       cloudfrontDistributionId: E2XU7PSKOBRVV4
 
+  - template: .azure-templates/amm-build-to-s3.yml
+    parameters:
+      name: deploy_amm_deploys_to_amm
+      deployBucketName: amm.augur.sh
+      cloudfrontDistributionId: E1833GTELJSE42
+      triggerBranch: refs/heads/para_deploys
+
   - job: deploy_thegraph
     displayName: deploy thegraph
     condition: |
