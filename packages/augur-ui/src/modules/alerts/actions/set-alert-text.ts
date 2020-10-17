@@ -60,6 +60,7 @@ import { MarketData } from 'modules/types';
 import { createBigNumber, BigNumber } from 'utils/create-big-number';
 import { convertUnixToFormattedDate } from 'utils/format-date';
 import getPrecision from 'utils/get-number-precision';
+import { augurSdk } from 'services/augursdk';
 
 function toCapitalizeCase(label) {
   return label.charAt(0).toUpperCase() + label.slice(1);
@@ -95,10 +96,12 @@ export function getInfo(params: any, status: string, marketInfo: MarketData, isO
         onChainMinPrice,
         tickSize
       ).toString(10);
+  const Augur = augurSdk ? augurSdk.get() : undefined;
 
   const amount = convertOnChainAmountToDisplayAmount(
     createBigNumber(params.amount || params._amount),
-    tickSize
+    tickSize,
+    Augur.precision,
   ).toString();
 
   const priceFormatted = formatEther(price, {decimals: getPrecision(String(tickSize), 2)})
@@ -116,6 +119,8 @@ export default function setAlertText(alert: any, callback: Function) {
     dispatch: ThunkDispatch<void, any, Action>,
     getState: () => AppState
   ): void => {
+    const Augur = augurSdk ? augurSdk.get() : undefined;
+
     if (!alert || isEmpty(alert)) {
       return dispatch(callback(alert));
     }
@@ -147,7 +152,8 @@ export default function setAlertText(alert: any, callback: Function) {
               ? alert.params.unmatchedShares.value
               : convertOnChainAmountToDisplayAmount(
                   alert.params.amount,
-                  createBigNumber(marketInfo.tickSize)
+                  createBigNumber(marketInfo.tickSize),
+                  Augur.precision,
                 );
 
             alert.title =
@@ -261,7 +267,8 @@ export default function setAlertText(alert: any, callback: Function) {
               const { loginAccount, userOpenOrders } = getState() as AppState;
               let originalQuantity = convertOnChainAmountToDisplayAmount(
                 createBigNumber(alert.params.amountFilled),
-                createBigNumber(marketInfo.tickSize)
+                createBigNumber(marketInfo.tickSize),
+                Augur.precision,
               );
               let updatedOrderType = alert.params.orderType;
               if (

@@ -61,9 +61,9 @@ export class Trade implements TradeAPI {
 
   private getOnChainTradeParams(params: PlaceTradeDisplayParams): NativePlaceTradeChainParams {
     const tickSize = numTicksToTickSizeWithDisplayPrices(params.numTicks, params.displayMinPrice, params.displayMaxPrice);
-    const onChainAmount = convertDisplayAmountToOnChainAmount(params.displayAmount, tickSize);
+    const onChainAmount = convertDisplayAmountToOnChainAmount(params.displayAmount, tickSize, this.augur.precision);
     const onChainPrice = convertDisplayPriceToOnChainPrice(params.displayPrice, params.displayMinPrice, tickSize);
-    const onChainShares = convertDisplayAmountToOnChainAmount(params.displayShares, tickSize);
+    const onChainShares = convertDisplayAmountToOnChainAmount(params.displayShares, tickSize, this.augur.precision);
     return Object.assign(params, {
       amount: onChainAmount,
       price: onChainPrice,

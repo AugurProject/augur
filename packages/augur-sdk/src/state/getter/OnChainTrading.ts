@@ -153,7 +153,8 @@ export class OnChainTrading {
         const tickSize = numTicksToTickSize(numTicks, minPrice, maxPrice);
         const amount = convertOnChainAmountToDisplayAmount(
           new BigNumber(orderFilledDoc.amountFilled, 16),
-          tickSize
+          tickSize,
+          augur.precision,
         );
         const price = convertOnChainPriceToDisplayPrice(
           new BigNumber(orderFilledDoc.price, 16),
@@ -302,11 +303,13 @@ export class OnChainTrading {
         const tickSize = numTicksToTickSize(numTicks, minPrice, maxPrice);
         const amount = convertOnChainAmountToDisplayAmount(
           new BigNumber(orderEventDoc.amount, 16),
-          tickSize
+          tickSize,
+          augur.precision,
         ).toString(10);
         const amountFilled = convertOnChainAmountToDisplayAmount(
           new BigNumber(orderEventDoc.amountFilled, 16),
-          tickSize
+          tickSize,
+          augur.precision,
         ).toString(10);
         const price = convertOnChainPriceToDisplayPrice(
           new BigNumber(orderEventDoc.price, 16),
@@ -319,7 +322,8 @@ export class OnChainTrading {
         const orderId = orderEventDoc.orderId;
         const sharesEscrowed = convertOnChainAmountToDisplayAmount(
           new BigNumber(orderEventDoc.sharesEscrowed, 16),
-          tickSize
+          tickSize,
+          augur.precision,
         ).toString(10);
         const tokensEscrowed = new BigNumber(orderEventDoc.tokensEscrowed, 16)
           .dividedBy(10 ** 18)
@@ -367,7 +371,8 @@ export class OnChainTrading {
             originalFullPrecisionAmount: originalOrderDoc
               ? convertOnChainAmountToDisplayAmount(
                   new BigNumber(originalOrderDoc.amount, 16),
-                  tickSize
+                  tickSize,
+                  augur.precision,
                 ).toString(10)
               : 0,
           }

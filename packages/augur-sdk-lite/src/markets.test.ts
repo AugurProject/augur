@@ -54,16 +54,18 @@ test('numTicksToTickSizeWithDisplayPrices', () => {
 test('convertOnChainAmountToDisplayAmount', () => {
   const onChainAmount = new BigNumber(1e18).times(23);
   const tickSize = new BigNumber('0.001');
+  const precison = new BigNumber(10**18);
   expect(
-    convertOnChainAmountToDisplayAmount(onChainAmount, tickSize).toString()
+    convertOnChainAmountToDisplayAmount(onChainAmount, tickSize, precison).toString()
   ).toEqual('23000');
 });
 
 test('convertDisplayAmountToOnChainAmount', () => {
   const displayAmount = new BigNumber(23);
   const tickSize = new BigNumber('0.001');
+  const precison = new BigNumber(10**18);
   expect(
-    convertDisplayAmountToOnChainAmount(displayAmount, tickSize).toString()
+    convertDisplayAmountToOnChainAmount(displayAmount, tickSize, precison).toString()
   ).toEqual('23000000000000000');
 });
 

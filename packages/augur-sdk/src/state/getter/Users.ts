@@ -933,7 +933,7 @@ export class Users {
                 profitLossResultsByMarketAndOutcomePrior[
                   profitLossResult.market
                 ][profitLossResult.outcome];
-              priorPosition = getDisplayValuesForPosition(prior, marketDoc);
+              priorPosition = getDisplayValuesForPosition(prior, marketDoc, augur.precision);
             }
             const tradingPosition = {
               ...getTradingPositionFromProfitLossFrame(
@@ -943,7 +943,8 @@ export class Users {
                 outcomeValue24Hr,
                 new BigNumber(profitLossResult.timestamp).toNumber(),
                 shareTokenBalancesByMarketAndOutcome,
-                !!marketFinalizedByMarket[profitLossResult.market]
+                !!marketFinalizedByMarket[profitLossResult.market],
+                augur.precision
               ),
               priorPosition,
             };
@@ -1100,7 +1101,8 @@ export class Users {
                     new BigNumber(marketData.numTicks),
                     new BigNumber(marketData.prices[0]),
                     new BigNumber(marketData.prices[1])
-                  )
+                  ),
+                  augur.precision,
                 )
               );
               return p;
@@ -1335,7 +1337,8 @@ export class Users {
                 undefined,
                 bucketTimestamp.toNumber(),
                 finalized ? shareTokenBalancesByMarketAndOutcome : null,
-                finalized
+                finalized,
+                augur.precision,
               );
             }
           );
@@ -1715,7 +1718,8 @@ function getTradingPositionFromProfitLossFrame(
   onChain24HrOutcomeValue: BigNumber | undefined,
   timestamp: number,
   shareTokenBalancesByMarketAndOutcome,
-  finalized: boolean
+  finalized: boolean,
+  precision: BigNumber,
 ): TradingPosition {
   const minPrice = new BigNumber(marketDoc.prices[0]);
   const maxPrice = new BigNumber(marketDoc.prices[1]);
@@ -1757,11 +1761,13 @@ function getTradingPositionFromProfitLossFrame(
   const frozenFunds = onChainFrozenFunds.dividedBy(10 ** 18);
   const netPosition: BigNumber = convertOnChainAmountToDisplayAmount(
     onChainNetPosition,
-    tickSize
+    tickSize,
+    precision
   );
   const rawPosition: BigNumber = convertOnChainAmountToDisplayAmount(
     onChainRawPosition,
-    tickSize
+    tickSize,
+    precision
   );
   let realizedProfit = onChainRealizedProfit.dividedBy(10 ** 18);
   let avgPrice: BigNumber = convertOnChainPriceToDisplayPrice(
@@ -1858,7 +1864,8 @@ function getTradingPositionFromProfitLossFrame(
 
 function getDisplayValuesForPosition(
   profitLossFrame: ProfitLossChangedLog,
-  marketDoc: MarketData
+  marketDoc: MarketData,
+  precision: BigNumber,
 ) {
   const minPrice = new BigNumber(marketDoc.prices[0]);
   const maxPrice = new BigNumber(marketDoc.prices[1]);
@@ -1869,7 +1876,8 @@ function getDisplayValuesForPosition(
   // convert prior to display values
   const netPosition = convertOnChainAmountToDisplayAmount(
     new BigNumber(profitLossFrame.netPosition),
-    tickSize
+    tickSize,
+    precision
   );
   const avgPrice: BigNumber = convertOnChainPriceToDisplayPrice(
     onChainAvgPrice,

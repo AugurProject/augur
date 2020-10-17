@@ -1129,7 +1129,8 @@ export function addScripts(flash: FlashSession) {
 
       const onChainShares = convertDisplayAmountToOnChainAmount(
         new BigNumber(String(args.amount)),
-        new BigNumber(1000)
+        new BigNumber(1000),
+        new BigNumber(10**18),
       );
       const onChainPrice = convertDisplayPriceToOnChainPrice(
         new BigNumber(String(Number(args.price).toFixed(2))),
