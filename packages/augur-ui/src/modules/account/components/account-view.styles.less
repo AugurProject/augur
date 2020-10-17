@@ -31,16 +31,24 @@
     }
 
     > div:nth-of-type(3) {
-      grid-column: 1 / span 2;
+      grid-column: 1;
+      grid-row: 2;
       order: 4;
     }
     > div:nth-of-type(4) {
-      grid-column: 1 / span 2;
+      grid-column: 2;
+      grid-row: 2;
       order: 3;
     }
     > div:nth-of-type(5) {
-      grid-column: 1 / span 2;
+      grid-column: 1;
+      grid-row: 3;
       order: 5;
+    }
+    > div:nth-of-type(6) {
+      grid-column: 2;
+      grid-row: 3;
+      order: 6;
     }
 
     > footer {
@@ -63,18 +71,11 @@
   > div:first-of-type,
   > div:nth-of-type(3) {
     grid-row: 1 / span 2;
-
-    @media @breakpoint-tablet {
-      grid-row: unset;
-    }
   }
 
   > div:nth-of-type(2) {
-    grid-row: 1 / span 4;
-
-    @media @breakpoint-tablet {
-      grid-row: unset;
-    }
+    grid-row: 1 / span 2;
+    overflow-y: scroll;
 
     > div[class*='Headers'] {
       background: @color-dark-grey;
@@ -89,10 +90,10 @@
   > div:nth-of-type(4),
   > div:nth-of-type(5) {
     grid-row: 3 / span 2;
+  }
 
-    @media @breakpoint-tablet {
-      grid-row: unset;
-    }
+  > div:nth-of-type(6) {
+    grid-row: 3 / span 2;
   }
 
   > footer {

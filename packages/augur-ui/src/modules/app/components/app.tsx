@@ -109,7 +109,8 @@ interface AppProps {
   showMigrateRepButton: boolean;
   whichChatPlugin: string;
   appStatus: AppStatus;
-  disableMarketCreation: boolean;
+  marketCreationEnabled: boolean;
+  reportingEnabled: boolean;
   env: SDKConfiguration;
   showCreateAccountButton: boolean;
 }
@@ -127,6 +128,7 @@ export default class AppView extends Component<AppProps> {
       route: MARKETS,
       requireLogin: false,
       disabled: false,
+      hidden: false,
     },
     {
       title: 'Account Summary',
@@ -144,12 +146,14 @@ export default class AppView extends Component<AppProps> {
       route: DISPUTING,
       requireLogin: true,
       alternateStyle: true,
+      hidden: false,
     },
     {
       title: 'Reporting',
       route: REPORTING,
       requireLogin: true,
       alternateStyle: true,
+      hidden: false,
     },
     {
       title: 'Create Market',
@@ -158,6 +162,7 @@ export default class AppView extends Component<AppProps> {
       button: true,
       alternateStyle: true,
       disabled: !!this.props.universe.forkingInfo,
+      hidden: false,
     },
   ];
 
@@ -212,6 +217,15 @@ export default class AppView extends Component<AppProps> {
     if (affiliate) {
       this.props.saveAffilateAddress(affiliate);
     }
+
+    if (!this.props.reportingEnabled) {
+      this.sideNavMenuData[3].hidden = !this.props.reportingEnabled
+      this.sideNavMenuData[4].hidden = !this.props.reportingEnabled
+    }
+
+    if (!this.props.marketCreationEnabled) {
+      this.sideNavMenuData[5].hidden = !this.props.marketCreationEnabled;
+    }
   }
 
   compomentWillUnmount() {
@@ -227,16 +241,22 @@ export default class AppView extends Component<AppProps> {
       updateMobileMenuState,
       sidebarStatus,
       modal,
-      disableMarketCreation,
+      marketCreationEnabled,
+      reportingEnabled,
     } = this.props;
+
     if (isMobile !== prevProps.isMobile) {
       updateMobileMenuState(MOBILE_MENU_STATES.CLOSED);
     }
     if (universe.forkingInfo !== prevProps.universe.forkingInfo) {
-      this.sideNavMenuData[5].disabled = !!universe.forkingInfo;
+      this.sideNavMenuData[5].hidden = !!universe.forkingInfo;
     }
-    if (disableMarketCreation !== prevProps.disableMarketCreation) {
-      this.sideNavMenuData[5].disabled = disableMarketCreation;
+    if (reportingEnabled !== prevProps.reportingEnabled) {
+      this.sideNavMenuData[3].hidden = !reportingEnabled;
+      this.sideNavMenuData[4].hidden = !reportingEnabled;
+    }
+    if (marketCreationEnabled !== prevProps.marketCreationEnabled) {
+      this.sideNavMenuData[5].hidden = !marketCreationEnabled;
     }
     if (location !== prevProps.location) {
       const nextBasePath = parsePath(location.pathname)[0];
@@ -412,7 +432,6 @@ export default class AppView extends Component<AppProps> {
       whichChatPlugin,
       isMobile,
       appStatus,
-      disableMarketCreation,
       showCreateAccountButton,
     } = this.props;
     this.sideNavMenuData[1].showAlert =
@@ -518,7 +537,6 @@ export default class AppView extends Component<AppProps> {
                 showMigrateRepButton={showMigrateRepButton}
                 walletBalances={walletBalances}
                 updateModal={updateModal}
-                disableMarketCreation={disableMarketCreation}
               />
             </section>
             {!isMobile && <StatusErrorMessage />}
@@ -580,7 +598,7 @@ export default class AppView extends Component<AppProps> {
                 )}
 
                 <ForkingBanner />
-                <Routes isLogged={isLogged || restoredAccount} disableMarketCreation={disableMarketCreation}/>
+                <Routes isLogged={isLogged || restoredAccount} />
                 <Footer />
               </section>
             </section>

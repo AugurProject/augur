@@ -51,18 +51,7 @@ jobs:
           ETHEREUM_NETWORK: ${{ parameters.environment }}
           REPORTING_ONLY: ${{ parameters.reportingOnly }}
           PARA_DEPLOY_TOKEN_NAME: ${{ parameters.paraDeployTokenName }}
-      - script: |
-          set -euo pipefail
-          python3 -m venv venv && \
-          source venv/bin/activate && \
-          python3 -m pip install --no-cache-dir awscli
-          aws s3 sync packages/augur-ui/build/ s3://${BUCKET_NAME}/ --metadata-directive REPLACE --metadata '{"Cache-Control": "max-age=31536000,public"}'
-          aws s3 cp s3://${BUCKET_NAME}/index.html s3://${BUCKET_NAME}/index.html --metadata-directive REPLACE --metadata '{"Cache-Control": "max-age=60,public"}'
-          aws s3 cp s3://${BUCKET_NAME}/zerox.wasm s3://${BUCKET_NAME}/zerox.wasm --metadata-directive REPLACE --metadata '{"Cache-Control": "max-age=31536000,public"}' --content-type "application/wasm"
-          aws cloudfront create-invalidation --distribution-id ${DISTRIBUTION_ID} --paths "/index.html" "/zerox.wasm"
-        displayName: 'push build to S3'
-        env:
-          AWS_ACCESS_KEY_ID: $(AWS_KEY_ID)
-          AWS_SECRET_ACCESS_KEY: $(AWS_SECRET_KEY)
-          BUCKET_NAME: ${{ parameters.deployBucketName }}
-          DISTRIBUTION_ID: ${{ parameters.cloudfrontDistributionId }}
+      - template: deploy-to-s3.yml
+        parameters:
+          deployBucketName: ${{ parameters.deployBucketName }}
+          cloudfrontDistributionId: ${{ parameters.cloudfrontDistributionId }}

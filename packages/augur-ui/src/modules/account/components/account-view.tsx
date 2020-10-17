@@ -6,6 +6,7 @@ import Notifications from 'modules/account/containers/notifications';
 import Transactions from 'modules/account/containers/transactions';
 import AugurStatus from 'modules/account/components/augur-status';
 import Favorites from 'modules/portfolio/containers/favorites';
+import StakingPool from 'modules/account/containers/staking-pool';
 import OpenMarkets from 'modules/account/containers/open-markets';
 import Overview from 'modules/account/containers/overview';
 import ModuleTabs from 'modules/market/components/common/module-tabs/module-tabs';
@@ -78,6 +79,9 @@ export default class AccountView extends React.Component<
                 <ModulePane label={AUGUR_STATUS_TITLE}>
                   <AugurStatus />
                 </ModulePane>
+                <ModulePane label="REP Staking Pool">
+                  <StakingPool />
+                </ModulePane>
               </ModuleTabs>
             ) : (
               <div
@@ -106,6 +110,11 @@ export default class AccountView extends React.Component<
                   }
                 />
                 <OpenMarkets
+                  toggle={() =>
+                    this.toggle('extendNotifications', 'extendActiveMarkets')
+                  }
+                />
+                <StakingPool
                   toggle={() =>
                     this.toggle('extendNotifications', 'extendActiveMarkets')
                   }

@@ -848,6 +848,7 @@ export interface NavMenuItem {
   showAlert?: boolean;
   button?: boolean;
   alternateStyle?: boolean;
+  hidden?: boolean
 }
 
 export interface SortedGroup {

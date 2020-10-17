@@ -15,7 +15,10 @@ import { AppState } from 'appStore';
 import { connect } from 'react-redux';
 import { page } from 'services/analytics/helpers';
 
-const mapStateToProps = (state: AppState) => ({});
+const mapStateToProps = (state: AppState) => ({
+  marketCreationEnabled: state?.env?.ui?.marketCreationEnabled,
+  reportingEnabled: state?.env?.ui?.reportingEnabled
+});
 
 const mapDispatchToProps = (dispatch: ThunkDispatch<void, any, Action>) => ({
   page: (eventName, payload) => dispatch(page(eventName, payload)),
@@ -59,18 +62,19 @@ const Routes = p => {
         path={makePath(VIEWS.TRANSACTIONS)}
         component={COMPONENTS.Account}
       />
-      {!p.disableMarketCreation && <AuthenticatedRoute
+      {p.marketCreationEnabled && <AuthenticatedRoute
         path={makePath(VIEWS.CREATE_MARKET)}
         component={COMPONENTS.CreateMarket}
       />}
-      <Route
+      {p.reportingEnabled && <Route
         path={makePath(VIEWS.DISPUTING)}
         component={COMPONENTS.Disputing}
-      />
-      <Route
+      />}
+      {p.reportingEnabled && <Route
         path={makePath(VIEWS.REPORTING)}
         component={COMPONENTS.Reporting}
       />
+      }
       <Redirect to={makePath(VIEWS.MARKETS)} />
     </Switch>
   );
