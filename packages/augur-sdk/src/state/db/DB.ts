@@ -272,7 +272,7 @@ export class DB {
 
         if(this.paraEventNames.includes(genericEventDBDescription.EventName)) {
           const dbName = `Para${genericEventDBDescription.EventName}Rollup`;
-          this.syncableDatabases[dbName] = new DelayedSyncableDB(
+          const delayedSyncableDB = new DelayedSyncableDB(
             this.augur,
             this,
             this.networkId,
@@ -282,6 +282,9 @@ export class DB {
             true
           );
 
+          // Clear para rollups to accommodate switching collateral.
+          this.syncableDatabases[dbName] = delayedSyncableDB;
+          await delayedSyncableDB.reset();
         }
       }
     }
@@ -298,9 +301,11 @@ export class DB {
       ],
       this.augur
     );
+    await this.disputeDatabase.reset();
 
     this._marketDatabase = new MarketDB(this, this.networkId, this.augur);
     this._paraMarketDatabase = new MarketDB(this, this.networkId, this.augur, true);
+    await this._paraMarketDatabase.reset();
 
     this.parsedOrderEventDatabase = new ParsedOrderEventDB(
       this,

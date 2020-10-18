@@ -118,8 +118,7 @@ export class DerivedDB extends RollbackTable {
     return this.stateDB.dexieDB[eventName]
       .where('blockNumber')
       .aboveOrEqual(highestSyncedBlockNumber)
-      // @ts-ignore
-      .toArrayOriginal();
+      .toArray();
   }
 
   // For a group of documents/logs for a particular event type get the latest per id and update the DB documents for the corresponding ids
@@ -171,5 +170,10 @@ export class DerivedDB extends RollbackTable {
   // No-op by default. Can be overriden to provide custom document processing before being upserted into the DB.
   protected processDoc(log: ParsedLog): ParsedLog {
     return log;
+  }
+
+  async reset() {
+    await this.syncStatus.setHighestSyncBlock(this.dbName, 0, false);
+    await this.stateDB.dexieDB[this.dbName].clear();
   }
 }
