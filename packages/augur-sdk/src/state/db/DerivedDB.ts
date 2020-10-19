@@ -73,6 +73,8 @@ export class DerivedDB extends RollbackTable {
     const highestSyncedBlockNumber = await this.syncStatus.getHighestSyncBlock(
       this.dbName
     );
+
+    console.log('highestSyncedBlockNumber', this.dbName, highestSyncedBlockNumber);
     const documentById = {};
     for (const eventName of this.mergeEventNames) {
       const result = await this.getEvents(highestSyncedBlockNumber, eventName);
@@ -173,6 +175,7 @@ export class DerivedDB extends RollbackTable {
   }
 
   async reset() {
+    console.log('reset-checkpoint-1', this.dbName);
     await this.syncStatus.setHighestSyncBlock(this.dbName, 0, false);
     await this.stateDB.dexieDB[this.dbName].clear();
   }
