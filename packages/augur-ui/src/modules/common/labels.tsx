@@ -1618,7 +1618,7 @@ export const ApprovalTxButtonLabelCmp = ({
               addPendingData(TXEventName.Pending);
               setIsProcessing(true)
               doApprovals(account).then(() => {
-                doCheckApprovals();
+                //doCheckApprovals(); assume all transactions are done
                 setIsProcessing(false);
               }).catch(() => {
                 addPendingData(TXEventName.Failure);

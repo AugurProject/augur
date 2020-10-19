@@ -38,7 +38,7 @@ const Overview = ({
             />
             {AugurLogo}
             <PropertyLabel
-              label="REPv2 Staked"
+              label="REPv2 Reporting"
               value={repTotalAmountStakedFormatted.formatted}
             />
           </div>
