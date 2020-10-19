@@ -1,10 +1,9 @@
-import type { Getters } from '@augurproject/sdk';
 import { REPORTING_STATE } from 'modules/common/constants';
 import { Archived, InReportingLabel } from 'modules/common/labels';
 import { MarketProgress } from 'modules/common/progress';
 import Styles
   from 'modules/market/components/market-header/market-header-bar.styles.less';
-import { DateFormattedObject, MarketData } from 'modules/types';
+import { MarketData } from 'modules/types';
 import React from 'react';
 
 export interface MarketHeaderBarProps {
