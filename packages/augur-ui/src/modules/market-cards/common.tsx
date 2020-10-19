@@ -1059,16 +1059,17 @@ export const prepareSportsGroup = (
   sortedMarkets.forEach((market, index, array) => {
     const data = createOutcomesData(market);
     const startOpen = marketGroups.length === 0;
+    const extraMarkets = array.length - marketGroups.length;
+    const dividerText = `There are ${extraMarkets} more market${
+      extraMarkets > 1 ? 's' : ''
+    } related to this future event with different expiration date:`;
     if (index === 1 && sportsGroup.type === FUTURES && !isGroupPage) {
-      const extraMarkets = array.length - marketGroups.length;
       marketGroups.push(
         <div
           className={Styles.FuturesDivider}
           key={`futuresDivider-${sportsGroup.id}`}
         >
-          {`There are ${extraMarkets} more market${
-            extraMarkets > 1 ? 's' : ''
-          } related to this future event with different expiration date:`}
+          {dividerText}
           {QuestionIcon}
         </div>
       );
@@ -1078,7 +1079,8 @@ export const prepareSportsGroup = (
           key="relatedMarketsDivider"
           className={Styles.RelatedMarketsDivider}
         >
-          <h6>Related Markets</h6>
+          {dividerText}
+          {QuestionIcon}
         </section>
       );
     }

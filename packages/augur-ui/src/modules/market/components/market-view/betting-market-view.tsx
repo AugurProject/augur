@@ -135,7 +135,7 @@ const BettingMarketView = () => {
     if (augurSdk.client && market === null && !forceLoad) {
       setForceLoad(true);
     }
-    return <div />;
+    return <div className={Styles.EmptyMarket} />;
   }
 
   const {
