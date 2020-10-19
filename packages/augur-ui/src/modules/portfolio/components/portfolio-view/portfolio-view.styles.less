@@ -1,16 +1,14 @@
 @import (reference) '~assets/styles/shared';
 
 .PortfolioView {
-  display: flex;
-  flex: 1;
-  height: 100%;
-  max-width: 2000px;
-  margin: 0 auto;
+  height: calc(~'100vh - @{multi-top-bar-height}');
+  overflow-y: auto;
 
   > section {
     display: flex;
     flex: 1;
-    margin-bottom: 0;
+    margin: 0 auto;
+    max-width: 2000px;
   
     > div {
       flex: 1;
