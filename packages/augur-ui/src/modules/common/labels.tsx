@@ -1590,14 +1590,18 @@ export const ApprovalTxButtonLabelCmp = ({
       }
   }, [userEthBalance, gasPrice, approvalsNeeded])
 
+  function resetApprovalState(approvalsCount, init: boolean = false) {
+    setApprovalsNeeded(approvalsCount);
+    isApprovalCallback(approvalsCount === 0);
+    if (approvalsCount === 0 && !init) {
+      addPendingData(TXEventName.Success);
+      setTimeout(() => removePendingData(), 500);
+    }
+  }
+
   function doCheckApprovals(init: boolean = false) {
-    checkApprovals(account).then(approvalsNeeded => {
-      setApprovalsNeeded(approvalsNeeded);
-      isApprovalCallback(approvalsNeeded === 0);
-      if (approvalsNeeded === 0 && !init) {
-        addPendingData(TXEventName.Success);
-        setTimeout(() => removePendingData(), 500);
-      }
+    checkApprovals(account).then(approvalsCount => {
+      resetApprovalState(approvalsCount, init)
     }).catch(() => {
       addPendingData(TXEventName.Failure);
       setIsProcessing(false)
@@ -1621,8 +1625,8 @@ export const ApprovalTxButtonLabelCmp = ({
               addPendingData(TXEventName.Pending);
               setIsProcessing(true)
               doApprovals(account).then(() => {
-                setIsProcessing(false);
-                setTimeout(() => removePendingData(), 500);
+                setIsProcessing(false)
+                resetApprovalState(0)
               }).catch(() => {
                 addPendingData(TXEventName.Failure);
                 setIsProcessing(false)
