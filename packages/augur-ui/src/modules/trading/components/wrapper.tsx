@@ -46,7 +46,9 @@ import {
 import { canPostOrder } from 'modules/trades/actions/can-post-order';
 import { getIsTutorial, getIsPreview } from 'modules/market/store/market-utils';
 import { useTradingStore } from 'modules/trading/store/trading';
-
+import {
+  orderValidation,
+} from 'modules/trading/helpers/form-helpers';
 const getMarketPath = (id, theme) => ({
   pathname: makePath(MARKET),
   search: makeQuery({
@@ -396,8 +398,23 @@ const Wrapper = ({
   }
 
   function getActionButton() {
-    const { selectedNav, allowPostOnlyOrder, postOnlyOrder } = orderProperties;
+    const { selectedNav } = orderProperties;
     const hasFunds = !!dai;
+    const validation = orderValidation(
+      {...orderProperties},
+      null,
+      {
+        maxPrice: market.maxPriceBigNumber,
+        minPrice: market.minPriceBigNumber,
+        market,
+        initialLiquidity,
+        selectedNav,
+        orderBook,
+        selectedOutcome,
+        currentTimestamp,
+      },
+      0
+    );
     let actionButton: any = (
       <OrderButton
         type={selectedNav}
@@ -427,7 +444,7 @@ const Wrapper = ({
           }
         }}
         disabled={
-          !trade || !tradingApproved || !trade.limitPrice || insufficientFunds || disableTrading || (!tradingApproved && initialLiquidity && tradingTutorial) || !allowPostOnlyOrder
+          !validation.isOrderValid
         }
       />
     );
@@ -462,12 +479,10 @@ const Wrapper = ({
     return actionButton;
   }
 
-
   const insufficientFunds =
     trade &&
     (trade.costInDai && createBigNumber(trade.costInDai.value).gte(createBigNumber(availableDai)) ||
     (trade.totalCost && initialLiquidity && createBigNumber(trade.totalCost.value).gte(createBigNumber(availableDai))));
-  const isOpenOrder = trade?.numFills === 0;
   const orderEmpty =
     orderProperties.orderPrice === '' &&
     orderProperties.orderQuantity === '' &&

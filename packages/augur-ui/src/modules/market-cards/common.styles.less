@@ -1019,14 +1019,30 @@
 	}
 
 	.RelatedMarketsDivider {
-		margin-bottom: @size-8;
-		margin-top: @size-16;
+		.text-14;
 
-		> h6 {
-			.text-12-semi-bold;
-			
-			color: var(--color-primary-text);
-			text-transform: uppercase;
+		align-items: center;
+		color: var(--color-primary-text);
+		display: flex;
+		flex-flow: row nowrap;
+		grid-column: span 2;
+		height: @size-20;
+		margin: @size-24 0;
+
+		> svg {
+			height: @size-14;
+			width: @size-14;
+			margin-left: @size-4;
+
+			> circle {
+				stroke: var(--color-dark-text);
+				fill: none;
+			}
+
+			> path {
+				fill: var(--color-dark-text);
+				stroke: none;
+			}
 		}
 	}
 
@@ -1427,7 +1443,6 @@
 		flex-flow: row nowrap;
 		grid-column: span 2;
 		height: @size-20;
-
 
 		> svg {
 			height: @size-14;

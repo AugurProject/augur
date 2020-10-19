@@ -1,6 +1,29 @@
 @import (reference) '~assets/styles/shared';
 @import (reference) '~modules/market/components/market-view/market-view.styles';
 
+.BackButton {
+  .mono-10;
+
+  align-items: center;
+  color: var(--color-primary-text);
+  display: flex;
+  text-transform: uppercase;
+  margin-right: @size-10;
+
+  span {
+    color: var(--color-primary-text);
+  }
+
+  svg {
+    height: @size-6;
+    width: @size-10;
+
+    path {
+      stroke: var(--color-primary-text);
+    }
+  }
+}
+
 .MarketHeader {
   background: var(--color-module-background);
   border: 1px solid var(--color-dark-grey);

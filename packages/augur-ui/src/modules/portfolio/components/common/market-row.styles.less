@@ -207,16 +207,24 @@
   }
 
   .Arrow {
-    border: @size-1 solid var(--color-dark-text);
+    background: var(--color-module-background);
     border-radius: @border-radius-default;
     margin-top: auto;
     margin-bottom: auto;
 
     > span {
+      border: @size-1 solid var(--color-dark-text);
+      border-radius: @border-radius-default;
       padding: @size-7 @size-5;
-
+     
       > svg > path {
         stroke: var(--color-primary-text);
+      }
+    }
+
+    &:not(:disabled):hover {
+      > span {
+        border: @size-1 solid var(--color-primary-text);
       }
     }
   }
