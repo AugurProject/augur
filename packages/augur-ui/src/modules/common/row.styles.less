@@ -311,13 +311,17 @@ div.SingleRow3 {
     }
 
     > ul > li {
-      .text-12;
+      > span > label {
+        .text-12;
+      }
 
       border: 0;
 
       &:first-of-type {
-        .text-14-bold;
-        
+        > span > label {
+          .text-14-bold;
+        }
+
         > span:first-of-type {
           margin-right: @size-8;
         }
