@@ -350,10 +350,13 @@ div.DarkBackgroundMobile {
     .NotificationCard {
       border: @size-1 solid var(--color-dark-grey);
 
-      // TODO: bottomRow.noMarginLeft > button
-      button {
-        margin-top: @size-8;
-        width: 100%;
+      div.BottomRow {
+        margin-left: unset;
+
+        button {
+          margin-top: @size-8;
+          width: 100%;
+        }
       }
     }
 
