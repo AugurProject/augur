@@ -188,9 +188,7 @@ const MyMarkets = ({ toggle, hide, extend }: MyMarketsProps) => {
         !isTrading && (
           <div className={marketStyles.BottomContent}>
             <span>
-              You are viewing Sportsbook markets only.
-              <br />
-              To view all your created markets, visit{' '}
+              You are viewing Sportsbook markets only. To view all your created markets, visit{' '}
               <TextUnderlineButton
                 text="Trading"
                 action={() => setTheme(THEMES.TRADING)}
