@@ -287,8 +287,12 @@ div.DarkBackgroundMobile {
   .Message {
     color: var(--color-primary-text);
 
-    > span > span {
-      .text-12-semi-bold;
+    > span {
+      margin-right: 0;
+
+      > span {
+        .text-12-semi-bold;
+      }
     }
   }
 
@@ -346,9 +350,13 @@ div.DarkBackgroundMobile {
     .NotificationCard {
       border: @size-1 solid var(--color-dark-grey);
 
-      button {
-        margin-top: @size-8;
-        width: 100%;
+      div.BottomRow {
+        margin-left: unset;
+
+        button {
+          margin-top: @size-8;
+          width: 100%;
+        }
       }
     }
 

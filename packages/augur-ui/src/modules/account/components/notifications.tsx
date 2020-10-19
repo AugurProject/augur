@@ -4,43 +4,33 @@ import { orderBy } from 'lodash';
 import EmptyDisplay from 'modules/portfolio/components/common/empty-display';
 import makePath from 'modules/routes/helpers/make-path';
 import makeQuery from 'modules/routes/helpers/make-query';
-
 import { NotificationCard } from 'modules/account/components/notification-card';
 import { PillLabel } from 'modules/common/labels';
 import { MARKET } from 'modules/routes/constants/views';
+import { MARKET_ID_PARAM_NAME, THEME_NAME, } from 'modules/routes/constants/param-names';
 import {
-  MARKET_ID_PARAM_NAME, THEME_NAME,
-} from 'modules/routes/constants/param-names';
-import {
-  OpenOrdersResolvedMarketsTemplate,
-  ReportEndingSoonTemplate,
-  DisputeTemplate,
   ClaimReportingFeesTemplate,
-  UnsignedOrdersTemplate,
-  ProceedsToClaimTemplate,
-  MostLikelyInvalidMarketsTemplate,
+  DisputeTemplate,
   FinalizeWarpSyncMarketTemplate,
+  MostLikelyInvalidMarketsTemplate,
+  OpenOrdersResolvedMarketsTemplate,
+  ProceedsToClaimTemplate,
+  ReportEndingSoonTemplate,
+  UnsignedOrdersTemplate,
 } from 'modules/account/components/notifications-templates';
-
+import { Notification, QueryEndpoints, } from 'modules/types';
 import {
-  Notification,
-  DateFormattedObject,
-  QueryEndpoints,
-} from 'modules/types';
-
-import {
-  NOTIFICATION_TYPES,
-  NOTIFICATIONS_TITLE,
-  NOTIFICATIONS_LABEL,
-  NEW,
-  MODAL_OPEN_ORDERS,
-  MODAL_REPORTING,
-  MODAL_UNSIGNED_ORDERS,
   MODAL_CLAIM_FEES,
   MODAL_CLAIM_MARKETS_PROCEEDS,
   MODAL_FINALIZE_MARKET,
+  MODAL_OPEN_ORDERS,
+  MODAL_REPORTING,
+  MODAL_UNSIGNED_ORDERS,
+  NEW,
+  NOTIFICATION_TYPES,
+  NOTIFICATIONS_LABEL,
+  NOTIFICATIONS_TITLE,
 } from 'modules/common/constants';
-
 import { MessagesIcon } from 'modules/common/icons';
 import Styles from 'modules/account/components/notification.styles.less';
 import { useAppStatusStore } from 'modules/app/store/app-status';
@@ -68,25 +58,23 @@ function getRows(
 ) {
   return orderBy(notifications, 'isNew', ['desc'])
     .filter(notification => !notification.hideNotification)
-    .map(notification => {
-      const {
-        id,
-        isImportant,
-        redIcon,
-        isNew,
-        title,
-        buttonLabel,
-        buttonAction,
-        market,
-        markets,
-        claimReportingFees,
-        totalProceeds,
-        type,
-        queueName,
-        queueId,
-        hideCheckbox,
-      } = notification;
-
+    .map(({
+      buttonAction,
+      buttonLabel,
+      claimReportingFees,
+      hideCheckbox,
+      id,
+      isImportant,
+      isNew,
+      market,
+      markets,
+      queueId,
+      queueName,
+      redIcon,
+      title,
+      totalProceeds,
+      type,
+    }) => {
       const templateProps = {
         claimReportingFees,
         totalProceeds,
@@ -378,8 +366,9 @@ const Notifications = ({ toggle }: NotificationsProps) => {
       title={NOTIFICATIONS_TITLE}
       headerComplement={labelContent}
       toggle={toggle}
-      customClass={classNames(Styles.NoBorderAndBgOnMobile, {
-        [Styles.DarkBackgroundMobile]: notificationCount !== 0
+      customClass={classNames({
+        [Styles.DarkBackgroundMobile]: notificationCount !== 0,
+        [Styles.NoBorderAndBgOnMobile]: notificationCount === 0,
       })}
       content={
         notificationCount === 0 ? (
