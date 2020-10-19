@@ -18,7 +18,7 @@ import {
   GWEI_CONVERSION,
   PUBLICTRADE,
   MODAL_ADD_FUNDS,
-  ETH
+  ETH,
 } from 'modules/common/constants';
 import ReactTooltip from 'react-tooltip';
 import TooltipStyles from 'modules/common/tooltip.styles.less';
@@ -46,7 +46,10 @@ import { useAppStatusStore } from 'modules/app/store/app-status';
 import { totalTradingBalance } from 'modules/auth/helpers/login-account';
 import { useTradingStore } from 'modules/trading/store/trading';
 import { getGasCost } from 'modules/modal/gas';
-import { approvalsNeededToTrade, approveToTrade } from 'modules/contracts/actions/contractCalls';
+import {
+  approvalsNeededToTrade,
+  approveToTrade,
+} from 'modules/contracts/actions/contractCalls';
 import { checkAccountApproval } from 'modules/auth/actions/approve-account';
 
 interface MessageButton {
@@ -130,10 +133,7 @@ export const Confirm = ({
     actions: { setModal },
   } = useAppStatusStore();
   const {
-    orderProperties: {
-      postOnlyOrder,
-      allowPostOnlyOrder,
-    },
+    orderProperties: { postOnlyOrder, allowPostOnlyOrder },
   } = useTradingStore();
   let availableDai = totalTradingBalance();
   if (initialLiquidity) {
@@ -171,14 +171,14 @@ export const Confirm = ({
   const hasFills = numFills > 0;
 
   const gasCostInEth = gasLimit
-  ? createBigNumber(
-      formatGasCostToEther(
-        gasLimit,
-        { decimalsRounded: 4 },
-        createBigNumber(GWEI_CONVERSION).multipliedBy(gasPrice)
+    ? createBigNumber(
+        formatGasCostToEther(
+          gasLimit,
+          { decimalsRounded: 4 },
+          createBigNumber(GWEI_CONVERSION).multipliedBy(gasPrice)
+        )
       )
-    )
-  : ZERO;
+    : ZERO;
 
   const gasCostDai = getGasCost(gasLimit, gasPrice, ethToDaiRate);
   const displayfee = `$${gasCostDai.formattedValue}`;
@@ -276,9 +276,13 @@ export const Confirm = ({
     .toFixed(0);
 
   const tooltip = isScalar
-    ? `You believe the outcome of this event will be ${isBuy ? 'greater' : 'less'}
+    ? `You believe the outcome of this event will be ${
+        isBuy ? 'greater' : 'less'
+      }
   than ${limitPrice} ${scalarDenomination}`
-    : `You believe ${outcomeName} has a ${isBuy ? 'greater' : 'less'} than ${limitPricePercentage}% chance to occur.`;
+    : `You believe ${outcomeName} has a ${
+        isBuy ? 'greater' : 'less'
+      } than ${limitPricePercentage}% chance to occur.`;
 
   let newOrderAmount = formatShares('0').rounded;
   if (numShares && totalCost.fullPrecision && shareCost.fullPrecision) {
@@ -387,22 +391,6 @@ export const Confirm = ({
             value={potentialDaiLoss}
             showDenomination
           />
-
-        { !tradingApproved && address && !tradingTutorial && !initialLiquidity &&
-          <ApprovalTxButtonLabel
-            title={'One time approval needed'}
-            buttonName={'Approve'}
-            userEthBalance={String(availableEth)}
-            gasPrice={gasPrice}
-            checkApprovals={() => approvalsNeededToTrade(address)}
-            doApprovals={() => approveToTrade(address, affiliate)}
-            account={address}
-            approvalType={PUBLICTRADE}
-            isApprovalCallback={() => checkAccountApproval()}
-            addFunds={() => setModal({ TYPE: MODAL_ADD_FUNDS, fundType: ETH })}
-          />
-        }
-
           {gasCostDai.roundedValue.gt(0) > 0 && hasFills && (
             <TransactionFeeLabelToolTip
               isError={createBigNumber(gasCostDai.value).gt(
@@ -411,6 +399,25 @@ export const Confirm = ({
               gasCostDai={postOnlyOrder ? `0.00` : gasCostDai}
             />
           )}
+          {!tradingApproved &&
+            address &&
+            !tradingTutorial &&
+            !initialLiquidity && (
+              <ApprovalTxButtonLabel
+                title="One time approval needed"
+                buttonName="Approve"
+                userEthBalance={String(availableEth)}
+                gasPrice={gasPrice}
+                checkApprovals={() => approvalsNeededToTrade(address)}
+                doApprovals={() => approveToTrade(address, affiliate)}
+                account={address}
+                approvalType={PUBLICTRADE}
+                isApprovalCallback={() => checkAccountApproval()}
+                addFunds={() =>
+                  setModal({ TYPE: MODAL_ADD_FUNDS, fundType: ETH })
+                }
+              />
+            )}
         </div>
       )}
       {messages && <MessageContainer {...messages} />}

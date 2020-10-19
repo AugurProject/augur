@@ -409,8 +409,6 @@ export const orderValidation = (
 
   errors = { ...errors, ...comboErrors };
   errorCount += comboErrorCount;
-
-  isOrderValid =
-    ((quantityValid && priceValid) || (priceValid && totalValid)) && comboValid;
+  isOrderValid = quantityValid && priceValid && totalValid && comboValid;
   return { isOrderValid, errors, errorCount };
 };
