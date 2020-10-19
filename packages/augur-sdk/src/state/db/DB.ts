@@ -72,7 +72,6 @@ export class DB {
   private syncableDatabases: { [dbName: string]: BaseSyncableDB } = {};
   private disputeDatabase: DisputeDatabase;
   private _marketDatabase: MarketDB;
-  private _paraMarketDatabase: MarketDB;
   private parsedOrderEventDatabase: ParsedOrderEventDB;
   private zeroXOrders: ZeroXOrders;
   getterCache: GetterCache;
@@ -245,6 +244,7 @@ export class DB {
     this.syncStatus = new SyncStatus(this.networkId, this.uploadBlockNumber, this);
     this.warpCheckpoints = new WarpSyncCheckpointsDB(this.networkId, this);
     this.getterCache = GetterCache.create(this, this.networkId, this.augur);
+    await this.getterCache.reset();
 
     // Create SyncableDBs for generic event types & UserSyncableDBs for user-specific event types
     for (const genericEventDBDescription of this.genericEventDBDescriptions) {
@@ -304,8 +304,8 @@ export class DB {
     await this.disputeDatabase.reset();
 
     this._marketDatabase = new MarketDB(this, this.networkId, this.augur);
-    this._paraMarketDatabase = new MarketDB(this, this.networkId, this.augur, true);
-    await this._paraMarketDatabase.reset();
+    console.log('initializeDB-checkpoint-1');
+    await this._marketDatabase.reset();
 
     this.parsedOrderEventDatabase = new ParsedOrderEventDB(
       this,
@@ -340,7 +340,7 @@ export class DB {
   }
 
   get marketDatabase(): MarketDB {
-    return (this.isParaDeploy) ? this._paraMarketDatabase : this._marketDatabase;
+    return this._marketDatabase;
   }
 
   // Remove databases and unregister event handlers.
@@ -354,7 +354,6 @@ export class DB {
 
     this.disputeDatabase = undefined;
     this._marketDatabase = undefined;
-    this._paraMarketDatabase = undefined;
     this.parsedOrderEventDatabase = undefined;
     this.getterCache = undefined;
 
@@ -470,8 +469,7 @@ export class DB {
     await this.parsedOrderEventDatabase.sync(highestAvailableBlockNumber);
 
     // The Market DB syncs after the derived DBs, as it depends on a derived DB
-    await this._marketDatabase.sync(highestAvailableBlockNumber);
-    await this._paraMarketDatabase.sync(highestAvailableBlockNumber);
+    await this._marketDatabase.sync(0);
   }
 
   async prune(timestamp: number) {
@@ -530,9 +528,8 @@ export class DB {
       }
     }
 
+    // Market and Dispute dbs are cleared on load.
     // Perform rollback on derived DBs
-    dbRollbackPromises.push(this.disputeDatabase.rollback(blockNumber));
-    dbRollbackPromises.push(this.marketDatabase.rollback(blockNumber));
     dbRollbackPromises.push(
       this.parsedOrderEventDatabase.rollback(blockNumber)
     );
