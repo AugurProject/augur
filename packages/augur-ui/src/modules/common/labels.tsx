@@ -1621,8 +1621,8 @@ export const ApprovalTxButtonLabelCmp = ({
               addPendingData(TXEventName.Pending);
               setIsProcessing(true)
               doApprovals(account).then(() => {
-                doCheckApprovals();
                 setIsProcessing(false);
+                setTimeout(() => removePendingData(), 500);
               }).catch(() => {
                 addPendingData(TXEventName.Failure);
                 setIsProcessing(false)
