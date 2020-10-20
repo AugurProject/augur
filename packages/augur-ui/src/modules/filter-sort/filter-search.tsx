@@ -129,6 +129,6 @@ export const FilterSearchPure = forwardRef(({
       isLoading={isSearchingMarkets}
     />
   </article>
-);
+));
 
 export default FilterSearch;
