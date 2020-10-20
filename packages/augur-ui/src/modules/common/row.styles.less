@@ -329,6 +329,106 @@ div.SingleRow3 {
     }
   }
 
+  .MyBetRow {
+    padding: 0;
+    min-height: @size-64;
+    max-height: @size-64;
+  
+    &.Failed {
+      background: var(--color-error-10);
+  
+      > ul > li:first-child {
+        > span:nth-of-type(2) {
+          .text-12;
+  
+          color: var(--color-error);
+  
+          > button {
+            .text-12-bold;
+  
+            text-decoration: underline;
+            margin-left: @size-4;
+          }
+        }
+      }
+  
+      &:hover {
+        background: var(--color-error-20);
+      }
+    }
+  
+    > ul {
+      grid-template-columns: 2fr repeat(3, 1fr) 15.5rem 10rem;
+      border-top: @size-1 solid var(--color-dark-grey);
+      padding: 0 0 0 @size-16;
+  
+      > li {
+        border-bottom: 0;
+
+        &:nth-of-type(2) {
+          display: flex;
+        }
+  
+        &:first-child {
+          display: grid;
+          grid-template-columns: auto auto 1fr;
+          padding: @size-12 0; 
+          grid-row-gap: @size-4;
+  
+          > span:nth-of-type(1), 
+          > span:nth-of-type(1) > label {
+            .text-14-bold;
+  
+            color: var(--color-primary-text);
+            grid-column: 1 / span 3;
+            max-width: fit-content;
+          }
+  
+          > label {
+            display: flex;
+            grid-row: 2;
+            margin: auto @size-4 auto 0;
+          }
+  
+          > span:nth-of-type(2), 
+          > a {
+            .text-12;
+  
+            color: var(--color-secondary-text);
+            grid-row: 2;
+          }
+  
+          > a:hover {
+            text-decoration: underline;
+          }
+        }
+  
+        &:not(:first-child) {
+          .text-12;
+  
+          color: var(--color-primary-text);
+  
+          > span > label {
+            .text-12;
+  
+            color: var(--color-primary-text);  
+          }
+        }
+  
+        &:last-child {
+          justify-content: center;
+        }
+      }
+    }
+  
+    &:hover {
+      &:last-of-type {
+        border-bottom-right-radius: @border-radius-rounded;
+        border-bottom-left-radius: @border-radius-rounded;
+      }
+    }
+  }
+
   .Row4 {
     .generate-betting-indexed-color-outcome-classes({
       &.Row4-@{newIndex} {
@@ -342,102 +442,6 @@ div.SingleRow3 {
         };
       }
     });
-  }
-}
-
-.MyBetRow {
-  padding: 0;
-  min-height: @size-64;
-  max-height: @size-64;
-
-  &.Failed {
-    background: var(--color-error-10);
-
-    > ul > li:first-child {
-      > span:nth-of-type(2) {
-        .text-12;
-
-        color: var(--color-error);
-
-        > button {
-          .text-12-bold;
-
-          text-decoration: underline;
-          margin-left: @size-4;
-        }
-      }
-    }
-
-    &:hover {
-      background: var(--color-error-20);
-    }
-  }
-
-  > ul {
-    grid-template-columns: 2fr repeat(3, 1fr) 15.5rem 10rem;
-    border-top: @size-1 solid var(--color-dark-grey);
-    padding: 0 0 0 @size-16;
-
-    > li {
-      border-bottom: 0;
-
-      &:first-child {
-        display: grid;
-        grid-template-columns: auto auto 1fr;
-        padding: @size-12 0; 
-        grid-row-gap: @size-4;
-
-        > span:nth-of-type(1), 
-        > span:nth-of-type(1) > label {
-          .text-14-bold;
-
-          color: var(--color-primary-text);
-          grid-column: 1 / span 3;
-          max-width: fit-content;
-        }
-
-        > label {
-          display: flex;
-          grid-row: 2;
-          margin: auto @size-4 auto 0;
-        }
-
-        > span:nth-of-type(2), 
-        > a {
-          .text-12;
-
-          color: var(--color-secondary-text);
-          grid-row: 2;
-        }
-
-        > a:hover {
-          text-decoration: underline;
-        }
-      }
-
-      &:not(:first-child) {
-        .text-12;
-
-        color: var(--color-primary-text);
-
-        > span > label {
-          .text-12;
-
-          color: var(--color-primary-text);  
-        }
-      }
-
-      &:last-child {
-        justify-content: center;
-      }
-    }
-  }
-
-  &:hover {
-    &:last-of-type {
-      border-bottom-right-radius: @border-radius-rounded;
-      border-bottom-left-radius: @border-radius-rounded;
-    }
   }
 }
 

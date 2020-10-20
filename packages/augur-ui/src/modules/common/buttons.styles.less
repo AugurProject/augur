@@ -170,6 +170,35 @@
   }
 }
 
+.SportsBookFailedButton {
+  opacity: 1;
+  background: transparent;
+  border: 0;
+  padding: 0;
+
+  > svg {
+    display: none;
+  }
+
+  > span {
+    .text-12;
+
+    color: var(--color-error);
+    text-transform: capitalize;
+
+    > b {
+      margin-left: @size-4;
+      font-weight: 500;
+    }
+  }
+
+  &:not(:disabled):focus,
+  &:not(:disabled):focus:hover {
+    background: transparent;
+    border: 0;
+  }
+}
+
 :root[theme='BETTING'],
 :root[theme='SPORTS'] {
   .Button {
@@ -210,7 +239,6 @@
     &:disabled {
       opacity: 0.25;
     }
-
 
     &.Dark {
       background: transparent;
@@ -299,34 +327,8 @@
       }
 
       &.Failed {
-        opacity: 1;
-        background: transparent;
-        border: 0;
-        padding: 0;
-
-        > svg {
-          display: none;
-        }
-
-        > span {
-          .text-12;
-
-          color: var(--color-error);
-          text-transform: capitalize;
-
-          > b {
-            margin-left: @size-4;
-            font-weight: 500;
-          }
-        }
-
-        &:not(:disabled):focus,
-        &:not(:disabled):focus:hover {
-          background: transparent;
-          border: 0;
-        }
+        .SportsBookFailedButton;
       }
-
     }
   }
 
@@ -1236,6 +1238,17 @@
   .CancelTextButton {
     &:hover {
       border: @size-1 solid var(--color-primary-text);
+    }
+    &.Processing,
+    &.Confirmed {
+      border: 0;
+      justify-content: flex-end;
+    }
+
+    &.Failed {
+      .SportsBookFailedButton;
+
+      justify-content: flex-end;
     }
   }
 }

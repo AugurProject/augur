@@ -409,6 +409,7 @@ export const ProcessingButton = ({
           text={buttonText}
           action={buttonAction}
           disabled={isDisabled}
+          processing={processing}
         />
       )}
     </>
@@ -563,6 +564,7 @@ export const CancelTextButton = ({
   confirmed,
   failed,
   icon,
+  processing
 }: DefaultButtonProps) => (
   <button
     onClick={e => action(e)}
@@ -570,6 +572,7 @@ export const CancelTextButton = ({
       [Styles.IconButton]: !text,
       [Styles.Confirmed]: confirmed,
       [Styles.Failed]: failed,
+      [Styles.Processing]: processing,
     })}
     disabled={disabled}
     title={title}
@@ -993,6 +996,8 @@ export const CashoutButton = ({
           queueName={CASHOUT}
           queueId={queueId}
           cancelButton
+          smallSpinner
+          action={() => cashout()}
         />
         :
         <button
