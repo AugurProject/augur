@@ -111,6 +111,7 @@ contract ParaShareToken is ITyped, Initializable, ERC1155, ReentrancyGuard {
         uint256 _numTicks = markets[address(_market)].numTicks;
         if (_numTicks == 0) { // !isMarketInitialized(_market)
             initializeMarket(_market);
+            _numTicks = markets[address(_market)].numTicks;
         }
 
         uint256 _numOutcomes = markets[address(_market)].numOutcomes;
@@ -157,6 +158,7 @@ contract ParaShareToken is ITyped, Initializable, ERC1155, ReentrancyGuard {
         uint256 _numTicks = markets[address(_market)].numTicks;
         if (_numTicks == 0) { // !isMarketInitialized(_market)
             initializeMarket(_market);
+            _numTicks = markets[address(_market)].numTicks;
         }
 
         uint256 _numOutcomes = markets[address(_market)].numOutcomes;
@@ -266,6 +268,7 @@ contract ParaShareToken is ITyped, Initializable, ERC1155, ReentrancyGuard {
         uint256 _numTicks = markets[address(_market)].numTicks;
         if (_numTicks == 0) { // !isMarketInitialized(_market)
             initializeMarket(_market);
+            _numTicks = markets[address(_market)].numTicks;
         }
 
         uint256 _numOutcomes = markets[address(_market)].numOutcomes;
