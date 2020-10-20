@@ -1,4 +1,4 @@
-import React, { useRef, useState, useEffect } from 'react';
+import React, { useRef, useState, useEffect, forwardRef } from 'react';
 import { useLocation, useHistory } from 'react-router';
 import { Input } from 'modules/common/form';
 import parseQuery from 'modules/routes/helpers/parse-query';
@@ -87,7 +87,7 @@ export const FilterSearch = ({
 
   return (
     <FilterSearchPure
-      forwardRef={parent}
+      ref={parent}
       placeholder={placeholder}
       search={search}
       onChange={value => onChange(value)}
@@ -107,15 +107,15 @@ interface FilterSearchPureProps {
   isSearchingMarkets?: boolean;
 }
 
-export const FilterSearchPure = ({
+export const FilterSearchPure = forwardRef(({
   placeholder = SEARCH_PLACEHOLDER,
   search = '',
   onChange,
   onFocus,
   onBlur,
   isSearchingMarkets = false,
-}: FilterSearchPureProps) => (
-  <article className={Styles.FilterSearch}>
+}: FilterSearchPureProps, ref) => (
+  <article ref={ref} className={Styles.FilterSearch}>
     <Input
       className={Styles.Search}
       isSearch
