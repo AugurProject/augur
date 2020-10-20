@@ -235,7 +235,7 @@ const MarketsView = () => {
   }, [
     theme
   ])
-  const sortByStartTime = sortBy === MARKET_SORT_PARAMS.ESTIMATED_START_TIME ;
+  const sortByStartTime = sortBy === MARKET_SORT_PARAMS.ESTIMATED_START_TIME;
 
   function updateFilteredMarkets() {
     window.scrollTo(0, 1);
@@ -295,8 +295,15 @@ const MarketsView = () => {
                 ? SPORTS_MARKET_TYPES[1].header
                 : sportsGroupTypeFilter;
           }
-          if (sortByStartTime && isSports) {
-            sportsFilterSortedMarkets = sportsFilterSortedMarkets.sort((market1, market2) => market2?.sportsBook?.estTimestamp - market1?.sportsBook?.estTimestamp);
+          if (isSports) {
+            sportsGroups.sort((a, b) => {
+              const aComp = a.estStartTime ? a.estStartTime : a.earlestEndTime;
+              const bComp = b.estStartTime ? b.estStartTime : b.earlestEndTime;
+              return aComp - bComp;
+            });
+            sportsFilterSortedMarkets = sportsGroups.map(
+              sportGroup => sportGroup.id
+            );
           }
           const sportsShowPagination = sportsGroupCount > limit;
           const marketInfos = result.markets
@@ -405,9 +412,7 @@ const MarketsView = () => {
             large
             hide={!(selectedCategories.length > 1)}
           />
-          <FilterDropDowns />
           <FilterSearch search={search} />
-          <SportsSortButton />
         </section>
       )}
       {isTrading && (

@@ -50,6 +50,13 @@ export const groupSportsMarkets = (filteredMarkets, markets) =>
       const uniqueType = `${market.sportsBook.groupType}-${market.sportsBook.title}`;
       if (existingGroup) {
         existingGroup.markets.push(market);
+        if (existingGroup.earliestEndTime > market.endTime) {
+          existingGroup.earliestEndtime = market.endTime;
+        }
+        const marketEstStart = market.sportsBook.estTimestamp;
+        if (!existingGroup.estStartTime !== marketEstStart) {
+          existingGroup.estStartTime = marketEstStart;
+        }
         existingGroup.totalVolume = existingGroup.totalVolume.plus(
           market.volume
         );
@@ -63,6 +70,8 @@ export const groupSportsMarkets = (filteredMarkets, markets) =>
           id: groupId,
           marketTypes: [uniqueType],
           markets: [market],
+          earliestEndTime: market.endTime,
+          estStartTime: market.sportsBook.estTimestamp,
           totalVolume: ZERO.plus(market.volume),
         });
       }

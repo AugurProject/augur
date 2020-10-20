@@ -1,8 +1,7 @@
 @import (reference) '~assets/styles/shared';
 
 .PortfolioView {
-  height: calc(~'100vh - @{multi-top-bar-height}');
-  overflow-y: auto;
+  min-height: calc(~'100vh - @{multi-top-bar-height} - @{footer-height}');
 
   > section {
     display: flex;
