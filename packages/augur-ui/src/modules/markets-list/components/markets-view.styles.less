@@ -5,6 +5,7 @@
   max-width: @desktop-min;
   margin: auto;
   padding: 0 @size-16;
+  min-height: calc(~'100vh - @{multi-top-bar-height} - @{footer-height}');
 
   @media @breakpoint-mobile-tablet {
     margin: 0 @size-14;
@@ -45,6 +46,7 @@
   .MarketsView {
     margin: 0;
     padding: 0 0 0 @size-40;
+    min-height: unset;
 
     > article {
       max-width: 760px;
