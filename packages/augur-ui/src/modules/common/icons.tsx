@@ -1832,8 +1832,8 @@ export const ETH = (
 
 export const WethIcon = (
   <svg viewBox="0 0 24 24" fill="none">
-    <path fillRule="evenodd" clipRule="evenodd" d="M11.9108 4.00009L11.9109 4L16.8217 12.1483L11.9109 15.0511V15.0512L11.9108 15.0511L7.00004 12.1483L7 12.1483L11.9108 4.00009ZM11.9109 20L11.9108 19.9998L7 13.0797L11.9109 15.9811L16.8247 13.0797L11.9109 19.9999L11.9109 20Z" fill="#D7DDE0"/>
-    <circle cx="12" cy="12" r="11.5" stroke="#D7DDE0" strokeDasharray="1 1"/>
+    <path fillRule="evenodd" clipRule="evenodd" d="M11.9108 4.00009L11.9109 4L16.8217 12.1483L11.9109 15.0511V15.0512L11.9108 15.0511L7.00004 12.1483L7 12.1483L11.9108 4.00009ZM11.9109 20L11.9108 19.9998L7 13.0797L11.9109 15.9811L16.8247 13.0797L11.9109 19.9999L11.9109 20Z" />
+    <circle cx="12" cy="12" r="11.5" strokeDasharray="1 1"/>
   </svg>
 );
 

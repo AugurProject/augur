@@ -596,6 +596,16 @@
 
 .Ether {
   > svg {
-    fill: @color-secondary-text;
+    fill: transparent;
+    height: @size-16;
+    width: @size-16;
+
+    > path {
+      fill: @color-primary-text;
+    }
+
+    > circle {
+      stroke: @color-primary-text;
+    }
   }
 }
