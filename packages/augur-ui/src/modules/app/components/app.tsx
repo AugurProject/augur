@@ -18,7 +18,6 @@ import {
   ZEROX_STATUSES,
   MODAL_ERROR,
   REPORTING_ONLY_BANNER,
-  TRADING_ETH_VERSION,
 } from 'modules/common/constants';
 
 import {
@@ -541,7 +540,6 @@ export default class AppView extends Component<AppProps> {
             </section>
             {!isMobile && <StatusErrorMessage />}
             {!isMobile && process.env.REPORTING_ONLY && <DismissableNotice show center title={REPORTING_ONLY_BANNER} buttonType={DISMISSABLE_NOTICE_BUTTON_TYPES.NONE} />}
-            {!isMobile && <DismissableNotice show center className={Styles.TradingEth} title={TRADING_ETH_VERSION} buttonType={DISMISSABLE_NOTICE_BUTTON_TYPES.NONE} />}
             <AlertsContainer
               alertsVisible={isLogged && sidebarStatus.isAlertsVisible}
               toggleAlerts={() => this.toggleAlerts()}
@@ -574,7 +572,6 @@ export default class AppView extends Component<AppProps> {
               )}
               {isMobile && <StatusErrorMessage />}
               {isMobile && process.env.REPORTING_ONLY && <DismissableNotice show center title={REPORTING_ONLY_BANNER} buttonType={DISMISSABLE_NOTICE_BUTTON_TYPES.NONE} />}
-              {isMobile && <DismissableNotice show center className={Styles.TradingEth} title={TRADING_ETH_VERSION} buttonType={DISMISSABLE_NOTICE_BUTTON_TYPES.NONE} />}
               <section
                 className={classNames(Styles.Main__content, {
                   [Styles.Tutorial]: onTradingTutorial,

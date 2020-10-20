@@ -4,7 +4,7 @@ import Styles from "modules/app/components/logo.styles";
 
 const Logo = () => (
   <section className={Styles.Logo}>
-    {AugurLogoWithText}
+    {AugurLogoWithText} <span>ETH</span>
   </section>
 );
 

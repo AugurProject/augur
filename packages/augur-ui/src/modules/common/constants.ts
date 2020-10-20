@@ -945,7 +945,6 @@ export const TOTAL_ACCOUNT_VALUE_IN_REP = 'MY AVAILABLE REPv2 BALANCE';
 export const ALL_TIME_PROFIT_AND_LOSS_REP = 'All Time Profit and Loss';
 export const MY_TOTOL_REP_STAKED = 'MY TOTAL REPv2 STAKED';
 export const REPORTING_ONLY_BANNER = 'Reporting only, trading is disabled ';
-export const TRADING_ETH_VERSION = 'THIS VERSION OF AUGUR TRADES IN wETH ONLY';
 
 // Account Summary - Augur Status
 export const AUGUR_STATUS_TITLE = 'Augur Status';
