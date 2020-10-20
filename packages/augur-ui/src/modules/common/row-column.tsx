@@ -9,6 +9,7 @@ import {
   RedFlag,
   TemplateShield,
   InvalidLabel,
+  TypeLabel,
 } from 'modules/common/labels';
 import { CancelTextButton, CashoutButton, PendingIconButton } from 'modules/common/buttons';
 import OutcomeTradingIndicator from "modules/market/components/common/outcome-trading-indicator/outcome-trading-indicator";
@@ -51,6 +52,7 @@ export interface Properties {
   templateShield?: boolean;
   marketId?: string;
   retryFnc?: Function;
+  showTypeLabel?: boolean;
 }
 
 function selectColumn(columnType: string, properties: Properties) {
@@ -82,13 +84,15 @@ function selectColumn(columnType: string, properties: Properties) {
     showDenomination,
     templateShield,
     marketId,
-    retryFnc
+    retryFnc,
+    showTypeLabel
   } = properties;
 
   switch (columnType) {
     case COLUMN_TYPES.TEXT:
       return (
         <>
+          {showTypeLabel && <TypeLabel type={type} />}
           <TextLabel text={text} keyId={keyId} />
           {templateShield &&
             <TemplateShield market={outcome} />

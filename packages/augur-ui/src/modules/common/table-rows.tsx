@@ -17,6 +17,7 @@ import {
   SHORT,
   ODDS_TYPE,
   SPORTS_GROUP_MARKET_TYPES,
+  THEMES,
 } from './constants';
 import {
   formatNumber,
@@ -340,7 +341,8 @@ export const OpenOrder = ({
     outcomeName,
     expiry,
   } = openOrder;
-
+  const { theme } = useAppStatusStore();
+  const isTrading = theme === THEMES.TRADING;
   let { avgPrice } = openOrder;
   const {
     pendingQueue,
@@ -379,6 +381,8 @@ export const OpenOrder = ({
       columnType: COLUMN_TYPES.TEXT,
       text: orderLabel,
       keyId: openOrder.id,
+      showTypeLabel: !isTrading,
+      type: openOrder.type,
     },
     {
       key: 'orderType',

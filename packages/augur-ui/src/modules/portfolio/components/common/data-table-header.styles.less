@@ -194,3 +194,26 @@
   }
 }
 
+:root[theme='BETTING'],
+:root[theme='SPORTS'] {
+  .DataTableHeader {
+    grid-template-columns: @size-248 repeat(5,1fr);
+    border-top-left-radius: @border-radius-rounded;
+    border-top-right-radius: @border-radius-rounded;
+    min-height: @size-40;
+    max-height: @size-40;
+    border-bottom: @size-1 solid var(--color-dark-grey);
+
+    > li:nth-of-type(2) {
+      display: none;
+    }
+
+    > li {
+      .text-10-semi-bold;
+
+      background: var(--color-table-header);
+      border-top: 0;
+      border-radius: @border-radius-rounded;
+    }
+  }
+}

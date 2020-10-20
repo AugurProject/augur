@@ -22,9 +22,14 @@ import {
   BulkTxLabel,
   ModalLabelNotice,
   TypeLabel,
-  ApprovalTxButtonLabel
+  ApprovalTxButtonLabel,
 } from 'modules/common/labels';
-import { ADDLIQUIDITY, BUY, MAX_BULK_ORDER_COUNT, THEMES } from 'modules/common/constants';
+import {
+  ADDLIQUIDITY,
+  BUY,
+  MAX_BULK_ORDER_COUNT,
+  THEMES,
+} from 'modules/common/constants';
 import { formatDai, formatMarketShares } from 'utils/format-number';
 import Styles from 'modules/modal/modal.styles.less';
 import OpenOrdersTable from 'modules/market/components/market-orders-positions-table/open-orders-table';
@@ -35,7 +40,10 @@ import { useAppStatusStore } from 'modules/app/store/app-status';
 import { usePendingOrdersStore } from 'modules/app/store/pending-orders';
 import { sendLiquidityOrder } from 'modules/orders/actions/liquidity-management';
 import { Trash } from 'modules/common/icons';
-import { approvalsNeededToTrade, approveToTrade } from 'modules/contracts/actions/contractCalls';
+import {
+  approvalsNeededToTrade,
+  approveToTrade,
+} from 'modules/contracts/actions/contractCalls';
 import { useEffect } from 'react';
 
 interface UnsignedOrdersProps {
@@ -200,22 +208,22 @@ export const UnsignedOrders = ({
   marketTitle,
   header,
   description,
-  initialProcessing
+  initialProcessing,
 }: UnsignedOrdersProps) => {
   const { loginAccount, gasPriceInfo, zeroXEnabled } = useAppStatusStore();
   const [processing, setProcessing] = useState(initialProcessing);
   const gasPrice = gasPriceInfo.userDefinedGasPrice || gasPriceInfo.average;
-  const [isApproved , setIsApproved] = useState(false);
+  const [isApproved, setIsApproved] = useState(false);
 
   useEffect(() => {
     if (!processing) setProcessing(initialProcessing);
-  },[initialProcessing]);
+  }, [initialProcessing]);
 
   const actionForSubmitAllButton = async () => {
     setProcessing(true);
     await buttons[0].action();
     setProcessing(false);
-  }
+  };
 
   const submitAllTxCount = !zeroXEnabled
     ? Math.ceil(numberOfTransactions / MAX_BULK_ORDER_COUNT)
@@ -241,33 +249,35 @@ export const UnsignedOrders = ({
           // @ts-ignore */}
         <Description description={description} />
         <MarketTitle title={marketTitle} />
-        <div>
-          {header && (
-            <div className={Styles.OrdersHeader}>
-              {header.map((headerLabel: string, index) => (
-                <span key={headerLabel + index}>{headerLabel}</span>
-              ))}
-            </div>
-          )}
-          {outcomes && (
-            <section>
-              {outcomes.map((outcome: string) =>
-                (liquidity[outcome] || []).map((order: LiquidityOrder) =>
-                  orderRow(order, {
-                    marketType,
-                    numTicks,
-                    maxPrice,
-                    minPrice,
-                    outcomes,
-                    transactionHash,
-                    marketId,
-                    zeroXEnabled,
-                  })
-                )
-              )}
-            </section>
-          )}
-        </div>
+        {!openOrders && (
+          <div>
+            {header && (
+              <div className={Styles.OrdersHeader}>
+                {header.map((headerLabel: string, index) => (
+                  <span key={headerLabel + index}>{headerLabel}</span>
+                ))}
+              </div>
+            )}
+            {outcomes && (
+              <section>
+                {outcomes.map((outcome: string) =>
+                  (liquidity[outcome] || []).map((order: LiquidityOrder) =>
+                    orderRow(order, {
+                      marketType,
+                      numTicks,
+                      maxPrice,
+                      minPrice,
+                      outcomes,
+                      transactionHash,
+                      marketId,
+                      zeroXEnabled,
+                    })
+                  )
+                )}
+              </section>
+            )}
+          </div>
+        )}
         {openOrders && (
           // @ts-ignore
           <OpenOrdersTable relative openOrders={orders} marketId={marketId} />
