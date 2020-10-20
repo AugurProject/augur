@@ -405,9 +405,7 @@ const MarketsView = () => {
             large
             hide={!(selectedCategories.length > 1)}
           />
-          <FilterDropDowns />
           <FilterSearch search={search} />
-          <SportsSortButton />
         </section>
       )}
       {isTrading && (

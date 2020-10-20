@@ -59,8 +59,7 @@
       // this is the sportsbook/betting-ui topsection
       align-items: center;
       display: grid;
-      grid-gap: 0 @size-8;
-      grid-template-columns: 0fr 1fr minmax(270px, 1fr);
+      grid-template-columns: 0fr 1fr;
       margin-top: @size-32;
       margin-bottom: @size-24;
       max-width: 760px;
@@ -75,6 +74,7 @@
         color: var(--color-primary-text);
         display: none;
         text-transform: capitalize;
+        grid-column: span 2;
       }
 
       > button {
@@ -83,6 +83,11 @@
 
       > ul {
         grid-column: 1;
+        margin-right: @size-8;
+      }
+
+      > article {
+        grid-column: 2;
       }
 
       > div {
@@ -92,33 +97,30 @@
       }
 
       @media @breakpoint-mobile-tablet {
-        grid-template-columns: 1fr 1fr auto;
-        grid-gap: @size-16 @size-6;
+        grid-gap: @size-16 0;
         margin-top: 0;
 
         > h3 {
           display: block;
         }
-
-        > button {
-          display: flex;
-          width: auto;
-          height: @size-38;
-          padding: @size-8;
-        }
       }
 
       @media @breakpoint-mobile {
-        grid-template-columns: 1fr auto;
-
-        > h3 {
+        > h3,
+        > ul,
+        > article {
           grid-column: span 2;
+          margin-right: 0;
+
+          > li {
+            flex: 1;
+          }
         }
       }
     }
 
     div[class*='Search'] {
-      height: @size-38;
+      height: @size-40;
     }
 
     @media @breakpoint-tablet {
