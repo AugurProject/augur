@@ -218,6 +218,19 @@ h6 {
 
     > section.Content {
       width: 100%;
+
+      > aside[class*="InnerNav"] {
+        position: sticky;
+        top: 0;
+        width: @size-242;
+        max-width: @size-242;
+        min-width: @size-242;
+        margin-left: auto;
+
+        @media @breakpoint-mobile-tablet {
+          display: none;
+        }
+      }
     }
   }
 
@@ -227,15 +240,6 @@ h6 {
       flex-flow: row nowrap;
 
       > section.Content {
-        > aside[class*="InnerNav"] {
-          width: @size-242;
-          max-width: @size-242;
-          min-width: @size-242;
-          position: sticky;
-          top: 0;
-          margin-left: auto;
-        }
-
         > section[class*="MarketsView"] {
           min-width: @size-800;
           max-width: @size-800;
