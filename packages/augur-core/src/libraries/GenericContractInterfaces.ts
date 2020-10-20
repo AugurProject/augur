@@ -8787,25 +8787,6 @@ export class OINexus<TBigNumber> extends Contract<TBigNumber> {
 		return <boolean>result[0]
 	}
 
-	public applyReportingFeeChanges = async (universe: string, paraUniverse: string, targetRepMarketCapInAttoCash: TBigNumber, repMarketCapInAttoCash: TBigNumber, recalculate: boolean, options?: { sender?: string }): Promise<Array<Event>> => {
-		options = options || {}
-		const abi: AbiFunction = {"constant":false,"inputs":[{"internalType":"contract IUniverse","name":"_universe","type":"address"},{"internalType":"contract IParaUniverse","name":"_paraUniverse","type":"address"},{"internalType":"uint256","name":"_targetRepMarketCapInAttoCash","type":"uint256"},{"internalType":"uint256","name":"_repMarketCapInAttoCash","type":"uint256"},{"internalType":"bool","name":"recalculate","type":"bool"}],"name":"applyReportingFeeChanges","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"payable":false,"stateMutability":"nonpayable","type":"function"}
-		return await this.remoteCall(abi, [universe, paraUniverse, targetRepMarketCapInAttoCash, repMarketCapInAttoCash, recalculate], 'applyReportingFeeChanges', options.sender)
-	}
-
-	public applyReportingFeeChanges_estimateGas = async (universe: string, paraUniverse: string, targetRepMarketCapInAttoCash: TBigNumber, repMarketCapInAttoCash: TBigNumber, recalculate: boolean, options?: { sender?: string }): Promise<TBigNumber> => {
-		options = options || {}
-		const abi: AbiFunction = {"constant":false,"inputs":[{"internalType":"contract IUniverse","name":"_universe","type":"address"},{"internalType":"contract IParaUniverse","name":"_paraUniverse","type":"address"},{"internalType":"uint256","name":"_targetRepMarketCapInAttoCash","type":"uint256"},{"internalType":"uint256","name":"_repMarketCapInAttoCash","type":"uint256"},{"internalType":"bool","name":"recalculate","type":"bool"}],"name":"applyReportingFeeChanges","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"payable":false,"stateMutability":"nonpayable","type":"function"}
-		return await this.estimateGas(abi, [universe, paraUniverse, targetRepMarketCapInAttoCash, repMarketCapInAttoCash, recalculate], 'applyReportingFeeChanges', options.sender)
-	}
-
-	public applyReportingFeeChanges_ = async (universe: string, paraUniverse: string, targetRepMarketCapInAttoCash: TBigNumber, repMarketCapInAttoCash: TBigNumber, recalculate: boolean, options?: { sender?: string }): Promise<TBigNumber> => {
-		options = options || {}
-		const abi: AbiFunction = {"constant":false,"inputs":[{"internalType":"contract IUniverse","name":"_universe","type":"address"},{"internalType":"contract IParaUniverse","name":"_paraUniverse","type":"address"},{"internalType":"uint256","name":"_targetRepMarketCapInAttoCash","type":"uint256"},{"internalType":"uint256","name":"_repMarketCapInAttoCash","type":"uint256"},{"internalType":"bool","name":"recalculate","type":"bool"}],"name":"applyReportingFeeChanges","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"payable":false,"stateMutability":"nonpayable","type":"function"}
-		const result = await this.localCall(abi, [universe, paraUniverse, targetRepMarketCapInAttoCash, repMarketCapInAttoCash, recalculate], options.sender)
-		return <TBigNumber>result[0]
-	}
-
 	public getAttoCashPerRep = async (cash: string, reputationToken: string, options?: { sender?: string }): Promise<Array<Event>> => {
 		options = options || {}
 		const abi: AbiFunction = {"constant":false,"inputs":[{"internalType":"address","name":"_cash","type":"address"},{"internalType":"address","name":"_reputationToken","type":"address"}],"name":"getAttoCashPerRep","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"payable":false,"stateMutability":"nonpayable","type":"function"}

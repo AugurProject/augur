@@ -31,12 +31,12 @@ contract ParaOICash is VariableSupplyToken, Initializable, IParaOICash {
         require(shareToken != IParaShareToken(0));
         universe = _universe;
 
-        cash.approve(address(_augur), MAX_APPROVAL_AMOUNT);
-        cash.approve(address(_universe.getFeePot()), MAX_APPROVAL_AMOUNT);
+        require(cash.approve(address(_augur), MAX_APPROVAL_AMOUNT), "Cash approval of augur failed");
+        require(cash.approve(address(_universe.getFeePot()), MAX_APPROVAL_AMOUNT), "Cash approval of fee pot failed");
     }
 
     function approveFeePot() external {
-        cash.approve(address(universe.getFeePot()), MAX_APPROVAL_AMOUNT);
+        require(cash.approve(address(universe.getFeePot()), MAX_APPROVAL_AMOUNT), "Cash approval of fee pot failed");
     }
 
     function deposit(uint256 _amount) external returns (bool) {

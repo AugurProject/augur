@@ -37,8 +37,8 @@ contract FeePot is VariableSupplyToken, Initializable, IFeePot {
     }
 
     function depositFees(uint256 _amount) public returns (bool) {
-        uint256 _totalSupply = totalSupply;
         cash.transferFrom(msg.sender, address(this), _amount);
+        uint256 _totalSupply = totalSupply; // after cash.transferFrom to prevent reentrancy causing stale totalSupply
         if (_totalSupply == 0) {
             feeReserve = feeReserve.add(_amount);
             return true;

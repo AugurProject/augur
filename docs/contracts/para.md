@@ -3241,7 +3241,7 @@ MUST emit when the URI is updated for a token ID.
 
 
 
-<h4><a class="anchor" aria-hidden="true" id="OINexus.applyReportingFeeChanges(contract IUniverse,contract IParaUniverse,uint256,uint256,bool)"></a><code class="function-signature">applyReportingFeeChanges(contract IUniverse _universe, contract IParaUniverse _paraUniverse, uint256 _targetRepMarketCapInAttoCash, uint256 _repMarketCapInAttoCash, bool recalculate) <span class="return-arrow">→</span> <span class="return-type">uint256</span></code><span class="function-visibility">public</span></h4>
+<h4><a class="anchor" aria-hidden="true" id="OINexus.applyReportingFeeChanges(contract IUniverse,contract IParaUniverse,uint256,uint256,bool)"></a><code class="function-signature">applyReportingFeeChanges(contract IUniverse _universe, contract IParaUniverse _paraUniverse, uint256 _targetRepMarketCapInAttoCash, uint256 _repMarketCapInAttoCash, bool recalculate) <span class="return-arrow">→</span> <span class="return-type">uint256</span></code><span class="function-visibility">internal</span></h4>
 
 
 
