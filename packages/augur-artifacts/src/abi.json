@@ -23410,47 +23410,6 @@
 			"constant": false,
 			"inputs": [
 				{
-					"internalType": "contract IUniverse",
-					"name": "_universe",
-					"type": "address"
-				},
-				{
-					"internalType": "contract IParaUniverse",
-					"name": "_paraUniverse",
-					"type": "address"
-				},
-				{
-					"internalType": "uint256",
-					"name": "_targetRepMarketCapInAttoCash",
-					"type": "uint256"
-				},
-				{
-					"internalType": "uint256",
-					"name": "_repMarketCapInAttoCash",
-					"type": "uint256"
-				},
-				{
-					"internalType": "bool",
-					"name": "recalculate",
-					"type": "bool"
-				}
-			],
-			"name": "applyReportingFeeChanges",
-			"outputs": [
-				{
-					"internalType": "uint256",
-					"name": "",
-					"type": "uint256"
-				}
-			],
-			"payable": false,
-			"stateMutability": "nonpayable",
-			"type": "function"
-		},
-		{
-			"constant": false,
-			"inputs": [
-				{
 					"internalType": "address",
 					"name": "_cash",
 					"type": "address"

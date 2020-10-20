@@ -20,7 +20,7 @@ contract OINexus is Ownable, IOINexus {
     mapping(address => uint256) public paraUniversePreviousContribution;
     mapping(address => uint256) public totalUniverseContributions;
     mapping(address => uint256) public universeReportingFeeDivisor;
-    
+
     // WETH / TOKEN oracle
     ParaOracle public oracle;
 
@@ -56,7 +56,7 @@ contract OINexus is Ownable, IOINexus {
         return applyReportingFeeChanges(_universe, _paraUniverse, _targetRepMarketCapInAttoCash, _repMarketCapInAttoCash, true);
     }
 
-    function applyReportingFeeChanges(IUniverse _universe, IParaUniverse _paraUniverse, uint256 _targetRepMarketCapInAttoCash, uint256 _repMarketCapInAttoCash, bool recalculate) public returns (uint256) {
+    function applyReportingFeeChanges(IUniverse _universe, IParaUniverse _paraUniverse, uint256 _targetRepMarketCapInAttoCash, uint256 _repMarketCapInAttoCash, bool recalculate) internal returns (uint256) {
         uint256 _reportingFeeDivisor = universeReportingFeeDivisor[address(_universe)];
         if (_reportingFeeDivisor == 0) {
             _reportingFeeDivisor = Reporting.getDefaultReportingFeeDivisor();

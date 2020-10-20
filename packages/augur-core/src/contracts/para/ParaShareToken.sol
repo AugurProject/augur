@@ -108,12 +108,13 @@ contract ParaShareToken is ITyped, Initializable, ERC1155, ReentrancyGuard {
     }
 
     function buyCompleteSetsInternal(IMarket _market, address _account, uint256 _amount) internal returns (bool) {
-        if (!isMarketInitialized(_market)) {
+        uint256 _numTicks = markets[address(_market)].numTicks;
+        if (_numTicks == 0) { // !isMarketInitialized(_market)
             initializeMarket(_market);
+            _numTicks = markets[address(_market)].numTicks;
         }
 
         uint256 _numOutcomes = markets[address(_market)].numOutcomes;
-        uint256 _numTicks = markets[address(_market)].numTicks;
 
         require(_numOutcomes != 0, "Invalid Market provided");
 
@@ -154,11 +155,13 @@ contract ParaShareToken is ITyped, Initializable, ERC1155, ReentrancyGuard {
      * @return Bool True
      */
     function buyCompleteSetsForTrade(IMarket _market, uint256 _amount, uint256 _longOutcome, address _longRecipient, address _shortRecipient) external returns (bool) {
-        if (!isMarketInitialized(_market)) {
+        uint256 _numTicks = markets[address(_market)].numTicks;
+        if (_numTicks == 0) { // !isMarketInitialized(_market)
             initializeMarket(_market);
+            _numTicks = markets[address(_market)].numTicks;
         }
-        uint256 _numOutcomes = markets[address(_market)].numOutcomes;
 
+        uint256 _numOutcomes = markets[address(_market)].numOutcomes;
         require(_numOutcomes != 0, "Invalid Market provided");
         require(_longOutcome < _numOutcomes);
 
@@ -166,7 +169,6 @@ contract ParaShareToken is ITyped, Initializable, ERC1155, ReentrancyGuard {
         IParaUniverse _paraUniverse = IParaUniverse(IParaAugur(address(augur)).getParaUniverse(address(_market.getUniverse())));
 
         {
-            uint256 _numTicks = markets[address(_market)].numTicks;
             uint256 _cost = _amount.mul(_numTicks);
             _paraUniverse.deposit(msg.sender, _cost, address(_market));
 
@@ -204,14 +206,13 @@ contract ParaShareToken is ITyped, Initializable, ERC1155, ReentrancyGuard {
      * @return (uint256 _creatorFee, uint256 _reportingFee) The fees taken for the market creator and reporting respectively
      */
     function publicSellCompleteSets(IMarket _market, uint256 _amount) external returns (uint256 _creatorFee, uint256 _reportingFee) {
-        (uint256 _payout, uint256 _creatorFee, uint256 _reportingFee) = burnCompleteSets(_market, msg.sender, _amount, msg.sender, bytes32(0));
+        uint256 _payout;
+        (_payout, _creatorFee, _reportingFee) = burnCompleteSets(_market, msg.sender, _amount, msg.sender, bytes32(0));
 
         require(cash.transfer(msg.sender, _payout));
 
         IUniverse _universe = _market.getUniverse();
         augur.logCompleteSetsSold(_universe, _market, msg.sender, _amount, _creatorFee.add(_reportingFee));
-
-        return (_creatorFee, _reportingFee);
     }
 
     /**
@@ -226,11 +227,10 @@ contract ParaShareToken is ITyped, Initializable, ERC1155, ReentrancyGuard {
     function sellCompleteSets(IMarket _market, address _holder, address _recipient, uint256 _amount, bytes32 _fingerprint) external returns (uint256 _creatorFee, uint256 _reportingFee) {
         require(_holder == msg.sender || isApprovedForAll(_holder, msg.sender) == true, "ERC1155: need operator approval to sell complete sets");
 
-        (uint256 _payout, uint256 _creatorFee, uint256 _reportingFee) = burnCompleteSets(_market, _holder, _amount, _holder, _fingerprint);
+        uint256 _payout;
+        (_payout, _creatorFee, _reportingFee) = burnCompleteSets(_market, _holder, _amount, _holder, _fingerprint);
 
         require(cash.transfer(_recipient, _payout));
-
-        return (_creatorFee, _reportingFee);
     }
 
     /**
@@ -252,25 +252,26 @@ contract ParaShareToken is ITyped, Initializable, ERC1155, ReentrancyGuard {
         _internalTransferFrom(_shortParticipant, _longParticipant, getTokenId(_market, _outcome), _amount, bytes(""), false);
 
         // NOTE: burnCompleteSets will validate the market provided is legitimate
-        (uint256 _payout, uint256 _creatorFee, uint256 _reportingFee) = burnCompleteSets(_market, _longParticipant, _amount, _sourceAccount, _fingerprint);
+        uint256 _payout;
+        (_payout, _creatorFee, _reportingFee) = burnCompleteSets(_market, _longParticipant, _amount, _sourceAccount, _fingerprint);
 
         {
             uint256 _longPayout = _payout.mul(_price) / _market.getNumTicks();
             require(cash.transfer(_longRecipient, _longPayout));
             require(cash.transfer(_shortRecipient, _payout.sub(_longPayout)));
         }
-
-        return (_creatorFee, _reportingFee);
     }
 
     function burnCompleteSets(IMarket _market, address _account, uint256 _amount, address _sourceAccount, bytes32 _fingerprint) private returns (uint256 _payout, uint256 _creatorFee, uint256 _reportingFee) {
         _fingerprint;
-        if (!isMarketInitialized(_market)) {
+
+        uint256 _numTicks = markets[address(_market)].numTicks;
+        if (_numTicks == 0) { // !isMarketInitialized(_market)
             initializeMarket(_market);
+            _numTicks = markets[address(_market)].numTicks;
         }
 
         uint256 _numOutcomes = markets[address(_market)].numOutcomes;
-        uint256 _numTicks = markets[address(_market)].numTicks;
 
         require(_numOutcomes != 0, "Invalid Market provided");
 
@@ -335,14 +336,14 @@ contract ParaShareToken is ITyped, Initializable, ERC1155, ReentrancyGuard {
         _paraUniverse.setMarketFinalized(_market, totalSupplyForMarketOutcome(_market, 0));
         _outcomeFees = new uint256[](8);
         for (uint256 _outcome = 0; _outcome < _market.getNumberOfOutcomes(); ++_outcome) {
-            uint256 _numberOfShares = balanceOfMarketOutcome(_market, _outcome, _shareHolder);
+            uint256 _tokenId = TokenId.getTokenId(_market, _outcome);
+            uint256 _numberOfShares = balanceOf(_shareHolder, _tokenId);
 
             if (_numberOfShares > 0) {
                 uint256 _proceeds;
                 uint256 _shareHolderShare;
                 uint256 _creatorShare;
                 uint256 _reporterShare;
-                uint256 _tokenId = TokenId.getTokenId(_market, _outcome);
                 (_proceeds, _shareHolderShare, _creatorShare, _reporterShare) = divideUpWinnings(_market, _paraUniverse, _outcome, _numberOfShares);
 
                 // always destroy shares as it gives a minor gas refund and is good for the network
@@ -380,7 +381,6 @@ contract ParaShareToken is ITyped, Initializable, ERC1155, ReentrancyGuard {
         _creatorShare = calculateCreatorFee(_market, _proceeds);
         _reporterShare = calculateReportingFee(_paraUniverse, _proceeds);
         _shareHolderShare = _proceeds.sub(_creatorShare).sub(_reporterShare);
-        return (_proceeds, _shareHolderShare, _creatorShare, _reporterShare);
     }
 
     function calculateProceeds(IMarket _market, uint256 _outcome, uint256 _numberOfShares) public view returns (uint256) {

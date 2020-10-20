@@ -165,6 +165,8 @@ contract ParaUniverse is Initializable, IParaUniverse {
             return _currentFeeDivisor;
         }
 
+        lastReportingFeeUpdateTimestamp = _currentTime;
+
         _currentFeeDivisor = calculateReportingFeeDivisorInternal();
 
         currentReportingFeeDivisor = _currentFeeDivisor;
