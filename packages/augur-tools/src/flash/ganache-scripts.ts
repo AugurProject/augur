@@ -88,17 +88,8 @@ export function addGanacheScripts(flash: FlashSession) {
 
       const defaultSeed = await createSeed(provider, db, addresses, {});
 
-      const doubleDeploy = await generateDoubleDeploy(
-        config,
-        defaultSeed,
-        addresses,
-        this.getAccount(),
-        this.network
-      );
-
       const seeds = {
         [name]: defaultSeed,
-        doubleDeploy,
       };
 
       await writeSeeds(seeds, filepath);
