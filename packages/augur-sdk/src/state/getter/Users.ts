@@ -607,7 +607,7 @@ export class Users {
     const startTime = params.startTime ? params.startTime : 0;
     const endTime = params.endTime
       ? params.endTime
-      : await augur.contracts.augur.getTimestamp_();
+      : await augur.getTimestamp();
 
     if (params.startTime > params.endTime) {
       throw new Error('startTime must be less than or equal to endTime');
@@ -847,7 +847,7 @@ export class Users {
       .toArray();
     const marketFinalizedByMarket = _.keyBy(marketFinalizedResults, 'market');
 
-    const endTime = await augur.contracts.augur.getTimestamp_();
+    const endTime = await augur.getTimestamp();
     const periodInterval = ONE_DAY * 60 * 60 * 24;
     const startTime = endTime.minus(periodInterval);
 
@@ -1241,7 +1241,7 @@ export class Users {
     }
     const ignoreAwaitingAndFinalizedMarkets =
       params.ignoreAwaitingAndFinalizedMarkets;
-    const now = await augur.contracts.augur.getTimestamp_();
+    const now = await augur.getTimestamp();
     const startTime = params.startTime!;
     const endTime = params.endTime || now.toNumber();
     const periodInterval =
@@ -1426,7 +1426,7 @@ export class Users {
     params: t.TypeOf<typeof Users.getProfitLossSummaryParams>
   ): Promise<NumericDictionary<MarketTradingPosition>> {
     const result: NumericDictionary<MarketTradingPosition> = {};
-    const now = await augur.contracts.augur.getTimestamp_();
+    const now = await augur.getTimestamp();
     const endTime = params.endTime || now.toNumber();
 
     for (const days of [ONE_DAY, DAYS_IN_MONTH]) {

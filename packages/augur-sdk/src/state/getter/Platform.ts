@@ -56,7 +56,7 @@ export class Platform {
     const startTime = params.startTime || 0;
     const endTime =
       params.endTime ||
-      (await augur.contracts.augur.getTimestamp_()).toNumber();
+      (await augur.getTimestamp()).toNumber();
 
     if (Number(startTime) > Number(endTime)) {
       throw new Error('startTime must be less than or equal to endTime');

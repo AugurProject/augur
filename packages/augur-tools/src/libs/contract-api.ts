@@ -824,7 +824,7 @@ export class ContractAPI {
   }
 
   async getTimestamp(): Promise<BigNumber> {
-    return this.augur.contracts.augur.getTimestamp_();
+    return this.augur.getTimestamp();
   }
 
   async printTimestamp() {
