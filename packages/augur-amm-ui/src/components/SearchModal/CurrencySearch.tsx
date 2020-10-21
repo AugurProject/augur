@@ -143,7 +143,13 @@ export function CurrencySearch({
           <CommonBases chainId={chainId} onSelect={handleCurrencySelect} selectedCurrency={selectedCurrency} />
         )}
       </PaddedColumn>
-
+      <RowBetween>
+          <Text fontWeight={500} fontSize={16}>
+            Select a token
+            <QuestionHelper text="Find a token by searching for its name or symbol or by pasting its address below." />
+          </Text>
+          <CloseIcon onClick={onDismiss} />
+        </RowBetween>
       <Separator />
 
       <div style={{ flex: '1' }}>

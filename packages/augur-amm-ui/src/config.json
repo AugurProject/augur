@@ -1,6 +1,5 @@
 {
   "1": {
-    "Multicall": "0xeefba1e63905ef1d7acba5a8513c70307c1ce441",
     "Cashes": [
       { "address": "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2", "name": "wrapped ETH", "symbol": "wETH" },
       {
@@ -13,7 +12,6 @@
     "network": "mainnet"
   },
   "42": {
-    "Multicall": "0x2cc8688c5f75e365aaeeb4ea8d6a480405a48d2a",
     "Cashes": [
       {
         "address": "0x7290c2b7D5Fc91a112d462fe06aBBB8948668f56",
