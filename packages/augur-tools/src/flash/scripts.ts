@@ -90,6 +90,7 @@ import { ParaContractDeployer } from '@augurproject/core/build/libraries/ParaCon
 import { ParaAugurDeployer } from '@augurproject/core/build/libraries/ParaAugurDeployer';
 
 import { ContractDependenciesEthers } from '@augurproject/contract-dependencies-ethers';
+import {deploySideChainContracts} from '../libs/blockchain';
 
 const compilerOutput = require('@augurproject/artifacts/build/contracts.json');
 
@@ -143,6 +144,76 @@ export function addScripts(flash: FlashSession) {
       console.log('Deploying: ', sanitizeConfig(this.config).deploy);
 
       await deployContracts(
+        this.network,
+        this.provider,
+        this.accounts[0],
+        compilerOutput,
+        this.config
+      );
+    },
+  });
+
+  flash.addScript({
+    name: 'deploy-side-chain',
+    description:
+      'Upload contracts to sidechain and register them.',
+    options: [
+      {
+        name: 'parallel',
+        abbr: 'p',
+        description: 'deploy contracts non-serially',
+        flag: true,
+      },
+      {
+        name: 'cash',
+        abbr: 'C',
+        description: 'Cash address for sidechain. Can specify in config under deploy.sideChainExternalAddresses',
+      },
+      {
+        name: 'marketGetter',
+        abbr: 'M',
+        description: 'MarketGetter address for sidechain. Can specify in config under deploy.sideChainExternalAddresses',
+      },
+      {
+        name: 'repFeeTarget',
+        abbr: 'R',
+        description: 'RepFeeTarget address for sidechain. Can specify in config under deploy.sideChainExternalAddresses',
+      },
+      {
+        name: 'zeroXExchange',
+        abbr: 'Z',
+        description: 'ZeroXExchange address for sidechain. Can specify in config under deploy.sideChainExternalAddresses',
+      },
+    ],
+    async call(this: FlashSession, args: FlashArguments) {
+      const serial = !Boolean(args.parallel);
+      const cash = args.cash as string;
+      const marketGetter = args.marketGetter as string;
+      const repFeeTarget = args.repFeeTarget as string;
+      const zeroXExchange = args.zeroXExchange as string;
+
+      if (this.noProvider()) return;
+
+      this.pushConfig({ deploy: { serial }});
+
+      if (cash && marketGetter && repFeeTarget && zeroXExchange) {
+        this.pushConfig({
+          deploy: {
+            sideChainExternalAddresses: {
+              Cash: cash,
+              MarketGetter: marketGetter,
+              RepFeeTarget: repFeeTarget,
+              ZeroXExchange: zeroXExchange,
+            }
+          }
+        })
+      } else if (cash || marketGetter || repFeeTarget || zeroXExchange) {
+        throw Error(`Must specify all of or none of the sidechain external addresses, not some.`);
+      }
+
+      console.log('Deploying: ', sanitizeConfig(this.config).deploy);
+
+      await deploySideChainContracts(
         this.network,
         this.provider,
         this.accounts[0],

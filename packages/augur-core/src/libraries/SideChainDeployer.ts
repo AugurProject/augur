@@ -3,10 +3,10 @@ import { BigNumber } from 'bignumber.js';
 import { readFile } from 'async-file';
 import { CompilerOutput } from 'solc';
 import { SideChainAugur, SideChainShareToken, SideChainAugurTrading, SideChainFillOrder, SideChainProfitLoss, SideChainZeroXTrade, SideChainSimulateTrade } from './ContractInterfaces';
-import { stringTo32ByteHex, resolveAll, sleep } from './HelperFunctions';
+import { stringTo32ByteHex } from './HelperFunctions';
 import { Contracts, ContractData } from './Contracts';
 import { Dependencies } from './GenericContractInterfaces';
-import { SDKConfiguration, mergeConfig } from '@augurproject/utils';
+import { SDKConfiguration, mergeConfig, SideChainDeploy } from '@augurproject/utils';
 import { updateConfig } from '@augurproject/artifacts';
 import { Block, BlockTag } from '@ethersproject/providers';
 
@@ -59,7 +59,7 @@ Deploying to: ${env}
         return this.provider.getBlock('latest').then( (block) => block.number);
     }
 
-    async deploy(env: string): Promise<void> {
+    async deploy(env: string): Promise<SideChainDeploy> {
         const blockNumber = await this.getBlockNumber();
 
         let sideChainExternalAddresses = this.configuration.deploy.sideChainExternalAddresses;
@@ -114,27 +114,31 @@ Deploying to: ${env}
         await sideChainProfitLoss.initialize(sideChainAugur.address, sideChainAugurTrading.address);
         await sideChainSimulateTrade.initialize(sideChainAugur.address, sideChainAugurTrading.address);
 
-        if (!this.configuration.deploy.writeArtifacts) return;
-
-        await updateConfig(env, mergeConfig(this.configuration, {
-            sideChain: {
-                uploadBlockNumber: blockNumber,
-                addresses: {
-                    Augur: addresses["SideChainAugur"],
-                    Universe: this.configuration.addresses.Universe,
-                    ShareToken: addresses["SideChainShareToken"],
-                    Cash: sideChainExternalAddresses.Cash,
-                    Affiliates: addresses["Affiliates"],
-                    AugurTrading: addresses["SideChainAugurTrading"],
-                    FillOrder: addresses["SideChainFillOrder"],
-                    SimulateTrade: addresses["SideChainSimulateTrade"],
-                    ZeroXTrade: addresses["SideChainZeroXTrade"],
-                    ProfitLoss: addresses["SideChainProfitLoss"],
-                    MarketGetter: sideChainExternalAddresses.MarketGetter,
-                    RepFeeTarget: sideChainExternalAddresses.RepFeeTarget
-                }
+        const sideChain: SideChainDeploy = {
+            uploadBlockNumber: blockNumber,
+            addresses: {
+                Augur: addresses["SideChainAugur"],
+                Universe: this.configuration.addresses.Universe,
+                ShareToken: addresses["SideChainShareToken"],
+                Cash: sideChainExternalAddresses.Cash,
+                Affiliates: addresses["Affiliates"],
+                AugurTrading: addresses["SideChainAugurTrading"],
+                FillOrder: addresses["SideChainFillOrder"],
+                SimulateTrade: addresses["SideChainSimulateTrade"],
+                ZeroXTrade: addresses["SideChainZeroXTrade"],
+                ProfitLoss: addresses["SideChainProfitLoss"],
+                MarketGetter: sideChainExternalAddresses.MarketGetter,
+                RepFeeTarget: sideChainExternalAddresses.RepFeeTarget
             }
-        }));
+        }
+
+        if (this.configuration.deploy.writeArtifacts) {
+            await updateConfig(env, mergeConfig(this.configuration, {
+                sideChain
+            }));
+        }
+
+        return sideChain;
     }
 
     getContractAddress = (contractName: string): string => {
