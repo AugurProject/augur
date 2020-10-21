@@ -152,11 +152,11 @@ function PositionMarketList({ positions, loading, itemMax = 20 }) {
     return (
       <DashGrid style={{ height: '48px' }} focus={true}>
         <TokenLogo tokenInfo={item?.cash} />
-        <BasicLink style={{ width: '100%' }} to={'/token/' + item.id} key={item.id}>
+        <BasicLink style={{ width: '100%' }} to={'/token/' + item.marketId} key={item.id}>
           {item?.market?.description}
         </BasicLink>
-        <DataText area="noShares">{item.noAmount}</DataText>
-        <DataText area="yesShares">{item.yesAmount}</DataText>
+        <DataText area="noShares">{item.noAmount || "0"}</DataText>
+        <DataText area="yesShares">{item.yesAmount || "0"}</DataText>
         <DataText area="status">
           <span
             style={
