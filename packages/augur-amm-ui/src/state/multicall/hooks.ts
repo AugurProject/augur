@@ -213,6 +213,7 @@ export function useMultipleContractMultipleData(
         : [],
     [addresses, callInputs, fragment]
   )
+
   const results = useCallsData(calls, options)
   const latestBlockNumber = useBlockNumber()
   return useMemo(() => {

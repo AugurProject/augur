@@ -12,6 +12,7 @@ import { withRouter } from 'react-router-dom'
 import { TYPE } from '../../Theme'
 import { BasicLink } from '../Link'
 import { useAmmMarkets } from '../../contexts/Markets'
+import TokenLogo from '../TokenLogo'
 
 dayjs.extend(utc)
 
@@ -40,7 +41,7 @@ const List = styled(Box)`
 const DashGrid = styled.div`
   display: grid;
   grid-gap: 0.5em;
-  grid-template-columns: 30% 1fr 1fr;
+  grid-template-columns: .5fr 30% 1fr 1fr;
   grid-template-areas: 'name balance status timestamp';
   padding: 0 1.125rem;
 
@@ -57,7 +58,7 @@ const DashGrid = styled.div`
   @media screen and (min-width: 1080px) {
     display: grid;
     grid-gap: 0.5em;
-    grid-template-columns: 2fr 1fr 1fr 1fr;
+    grid-template-columns: .5fr 2fr 1fr 1fr 1fr;
     grid-template-areas: 'name status timestamp';
   }
 `
@@ -148,6 +149,7 @@ function PooledMarketList({ balances, itemMax = 20 }) {
   const ListItem = ({ item, index }) => {
     return (
       <DashGrid style={{ height: '48px' }} focus={true}>
+        <TokenLogo tokenInfo={item?.shareToken?.cash?.id} />
         <BasicLink style={{ width: '100%' }} to={'/token/' + item.id} key={item.id}>
           {item.description}
         </BasicLink>
@@ -179,6 +181,13 @@ function PooledMarketList({ balances, itemMax = 20 }) {
   return (
     <ListWrapper>
       <DashGrid center={true} style={{ height: 'fit-content', padding: '0 1.125rem 1rem 1.125rem' }}>
+        <Flex alignItems="center">
+          <Text
+            area="Currency"
+          >
+            Currency
+          </Text>
+        </Flex>
         <Flex alignItems="center" justifyContent="flexStart">
           <ClickableText
             color="text"

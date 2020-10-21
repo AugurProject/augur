@@ -126,33 +126,38 @@ export function useMarketShareBalances(): [
     [markets]
   )
 
+  console.log(inputs)
   const balances = useMultipleContractMultipleData(
     paraShareTokenAddresses,
     new Interface(ParaShareToken.ABI),
     'balanceOfMarketOutcome',
     inputs
   )
+
   const anyLoading: boolean = useMemo(() => balances.some(callState => callState.loading), [balances])
 
   return [
     useMemo(
       () =>
         account && inputs.length > 0
-          ? paraShareTokenAddresses.reduce((memo, paraSharetokenAddress, i) => {
-              inputs.forEach((params, j) => {
-                const value = balances?.[j]?.result?.[0]
+          ? inputs.reduce((memo, params, i) => {
+              console.log('balances', JSON.stringify(balances[i].result))
+              paraShareTokenAddresses.forEach((paraSharetokenAddress, j) => {
+                const index = i + j;
+                const amount = balances?.[i]?.result?.[0]
                 const marketId = params[0]
                 const outcome = params[1]
-                if (value) {
-                  const amount = value ? new BN(value) : undefined
-                  if (amount && amount.isGreaterThan(0)) {
-                    console.log('added balanace', JSON.stringify(value), 'params', params)
-                    const market = markets.find(m => m.id.toLowerCase() === String(marketId).toLowerCase())
-                    const paraShareToken = paraShareTokens.find(p => p.id.toLowerCase() === paraSharetokenAddress)
-                    if (!memo[paraSharetokenAddress]) memo[paraSharetokenAddress] = {}
-                    if (!memo[paraSharetokenAddress][marketId]) memo[paraSharetokenAddress][marketId] = {}
-                    memo = [...memo, { paraSharetokenAddress, marketId, outcome, amount, market, paraShareToken }]
+                if (amount > 0) {
+                  const market = markets.find(m => m.id.toLowerCase() === String(marketId).toLowerCase())
+                  const paraShareToken = paraShareTokens.find(p => p.id.toLowerCase() === paraSharetokenAddress)
+                  let item = memo.find(i => i.paraSharetokenAddress === paraSharetokenAddress && i.marketId === marketId)
+                  const amountName = outcome === 1 ? 'noAmount' : 'yesAmount'
+                  if (item === undefined) {
+                    item = { cash: paraShareToken.cash.id, paraSharetokenAddress, marketId, [amountName]: String(amount), market, paraShareToken }
+                  } else {
+                    item = { ...item, [amountName]: String(amount) }
                   }
+                  memo = [...memo, item]
                 }
               } )
               return memo

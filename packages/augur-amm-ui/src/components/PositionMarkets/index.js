@@ -12,6 +12,7 @@ import { withRouter } from 'react-router-dom'
 import { TYPE } from '../../Theme'
 import { BasicLink } from '../Link'
 import { usePositionMarkets } from '../../contexts/Markets'
+import TokenLogo from '../TokenLogo'
 
 dayjs.extend(utc)
 
@@ -40,7 +41,7 @@ const List = styled(Box)`
 const DashGrid = styled.div`
   display: grid;
   grid-gap: 0.5em;
-  grid-template-columns: 30% 1fr 1fr 1fr 1fr;
+  grid-template-columns: .25fr 30% 1fr 1fr 1fr 1fr;
   grid-template-areas: 'name yesShares noShares status timestamp';
   padding: 0 1.125rem;
 
@@ -57,7 +58,7 @@ const DashGrid = styled.div`
   @media screen and (min-width: 1080px) {
     display: grid;
     grid-gap: 0.5em;
-    grid-template-columns: 2fr 1fr 1fr 1fr 1fr;
+    grid-template-columns: .25fr 2fr 1fr 1fr 1fr 1fr;
     grid-template-areas: 'name status timestamp';
   }
 `
@@ -100,7 +101,8 @@ const SORT_FIELD = {
   PRICE: 'priceUSD',
   CHANGE: 'priceChangeUSD',
   DESCRIPTION: 'description',
-  SHARES: 'shares',
+  NO_SHARES: 'no shares',
+  YES_SHARES: 'yes shares',
   STATUS: 'status',
   ENDTIMESTAMP: 'endTimestamp'
 }
@@ -149,30 +151,32 @@ function PositionMarketList({ positions, loading, itemMax = 20 }) {
   const ListItem = ({ item, index }) => {
     return (
       <DashGrid style={{ height: '48px' }} focus={true}>
+        <TokenLogo tokenInfo={item?.cash} />
         <BasicLink style={{ width: '100%' }} to={'/token/' + item.id} key={item.id}>
-          {item.market.description}
+          {item?.market?.description}
         </BasicLink>
-        <DataText area="shares">{`${item.amount} ${item.outcome === 1 ? 'No Shares' : 'Yes Shares'}`}</DataText>
+        <DataText area="noShares">{item.noAmount}</DataText>
+        <DataText area="yesShares">{item.yesAmount}</DataText>
         <DataText area="status">
           <span
             style={
               !darkMode
                 ? {}
-                : item.status === 'TRADING'
+                : item?.market?.status === 'TRADING'
                 ? { color: '#7DFFA8' }
-                : item.status === 'DISPUTING'
+                : item?.market?.status === 'DISPUTING'
                 ? { color: '#F1E700' }
-                : item.status === 'REPORTING'
+                : item?.market?.status === 'REPORTING'
                 ? { color: '#F1E700' }
-                : item.status === 'FINALIZED'
+                : item?.market?.status === 'FINALIZED'
                 ? { color: '#F12B00' }
                 : {}
             }
           >
-            {item.market.status}
+            {item?.market?.status}
           </span>
         </DataText>
-        <DataText area="timestamp">{formatTime(item.market.endTimestamp)}</DataText>
+        <DataText area="timestamp">{formatTime(item?.market?.endTimestamp)}</DataText>
       </DashGrid>
     )
   }
@@ -180,6 +184,13 @@ function PositionMarketList({ positions, loading, itemMax = 20 }) {
   return (
     <ListWrapper>
       <DashGrid center={true} style={{ height: 'fit-content', padding: '0 1.125rem 1rem 1.125rem' }}>
+      <Flex alignItems="center">
+          <Text
+            area="Currency"
+          >
+            Currency
+          </Text>
+        </Flex>
         <Flex alignItems="center" justifyContent="flexStart">
           <ClickableText
             color="text"
@@ -196,9 +207,20 @@ function PositionMarketList({ positions, loading, itemMax = 20 }) {
         </Flex>
         <Flex alignItems="center">
           <Text
-            area="Shares"
+            area="No Shares"
             onClick={e => {
-              setSortedColumn(SORT_FIELD.SHARES)
+              setSortedColumn(SORT_FIELD.NO_SHARES)
+              setSortDirection(sortedColumn !== SORT_FIELD.STATUS ? true : !sortDirection)
+            }}
+          >
+            Yes Shares
+          </Text>
+        </Flex>
+        <Flex alignItems="center">
+          <Text
+            area="Yes Shares"
+            onClick={e => {
+              setSortedColumn(SORT_FIELD.YES_SHARES)
               setSortDirection(sortedColumn !== SORT_FIELD.STATUS ? true : !sortDirection)
             }}
           >

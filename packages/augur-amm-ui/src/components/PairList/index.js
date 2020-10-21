@@ -129,7 +129,7 @@ function PairList({ allExchanges, color, disbaleLinks, marketId, maxItems = 10 }
                   Remove
                 </ButtonLight>
               </StyledInternalLink>
-              <StyledInternalLink to={`/add/${marketId}/${ammExchange.cash.id}/${ammExchange.id}`}>
+              <StyledInternalLink to={`/add/${marketId}/${ammExchange.cash}/${ammExchange.id}`}>
                 <ButtonLight textAlign="center">Add</ButtonLight>
               </StyledInternalLink>
               <StyledInternalLink
