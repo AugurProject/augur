@@ -292,7 +292,7 @@ function PositionList({ positions }) {
     <ListWrapper>
       <DashGrid center={true} style={{ height: '32px', padding: 0 }}>
         {!below740 && (
-          <Flex alignItems="flex-start" justifyContent="flexStart">
+          <Flex alignItems="flex-start" justifyContent="flex-start">
             <TYPE.main area="number">#</TYPE.main>
           </Flex>
         )}

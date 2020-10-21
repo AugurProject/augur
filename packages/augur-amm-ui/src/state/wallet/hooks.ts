@@ -119,7 +119,7 @@ export function useMarketShareBalances(): [
 ] {
   const { markets, paraShareTokens } = useAllMarketData()
   const { account } = useActiveWeb3React()
-  const paraShareTokenAddresses: string[] = paraShareTokens.map(p => p.id)
+  const paraTokenAdds: string[] = paraShareTokens.map(p => p.id)
 
   const inputs: [] = useMemo(
     () => (markets ? markets.reduce((p, m) => [...p, [m.id, 1, account], [m.id, 2, account]], []) : []),
@@ -127,38 +127,49 @@ export function useMarketShareBalances(): [
   )
 
   const balances = useMultipleContractMultipleData(
-    paraShareTokenAddresses,
+    paraTokenAdds,
     new Interface(ParaShareToken.ABI),
     'balanceOfMarketOutcome',
     inputs
   )
+
   const anyLoading: boolean = useMemo(() => balances.some(callState => callState.loading), [balances])
 
   return [
     useMemo(
       () =>
         account && inputs.length > 0
-          ? paraShareTokenAddresses.reduce((memo, paraSharetokenAddress, i) => {
-              inputs.forEach((params, j) => {
-                const value = balances?.[j]?.result?.[0]
-                const marketId = params[0]
-                const outcome = params[1]
-                if (value) {
-                  const amount = value ? new BN(value) : undefined
-                  if (amount && amount.isGreaterThan(0)) {
-                    console.log('added balanace', JSON.stringify(value), 'params', params)
-                    const market = markets.find(m => m.id.toLowerCase() === String(marketId).toLowerCase())
-                    const paraShareToken = paraShareTokens.find(p => p.id.toLowerCase() === paraSharetokenAddress)
-                    if (!memo[paraSharetokenAddress]) memo[paraSharetokenAddress] = {}
-                    if (!memo[paraSharetokenAddress][marketId]) memo[paraSharetokenAddress][marketId] = {}
-                    memo = [...memo, { paraSharetokenAddress, marketId, outcome, amount, market, paraShareToken }]
+          ? inputs.reduce((memo, params, j) => {
+              const marketId = params[0]
+              const outcome = params[1]
+              const pTokenAmounts = paraTokenAdds
+                .map((p, i) => ({ marketId, outcome, ptokenAddr: p, amount: String(balances?.[j]?.result?.[i]) }))
+                .filter(p => p.amount !== '0' && p.amount !== 'undefined')
+              if (pTokenAmounts.length > 0) {
+                pTokenAmounts.map(pTokenAmount => {
+                  const { ptokenAddr, marketId, amount } = pTokenAmount
+                  const market = markets.find(m => m.id.toLowerCase() === String(marketId).toLowerCase())
+                  const paraShareToken = paraShareTokens.find(p => p.id.toLowerCase() === ptokenAddr)
+                  let item = memo.find(i => i.paraSharetokenAddress === ptokenAddr && i.marketId === marketId)
+                  const amountName = outcome === 1 ? 'noAmount' : 'yesAmount'
+                  if (item === undefined) {
+                    item = {
+                      cash: paraShareToken.cash.id,
+                      marketId,
+                      [amountName]: amount,
+                      market,
+                      paraShareToken
+                    }
+                  } else {
+                    item = { ...item, [amountName]: String('0') }
                   }
-                }
-              } )
+                  memo = [...memo, item]
+                })
+              }
               return memo
             }, [])
           : [],
-      [account, inputs, balances, markets, paraShareTokenAddresses]
+      [account, inputs, balances, markets, paraTokenAdds]
     ),
     anyLoading
   ]
