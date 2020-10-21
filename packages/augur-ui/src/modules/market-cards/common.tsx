@@ -923,9 +923,6 @@ export const SportsMarketContainer = ({
         {tradingPositionsPerMarket &&
           tradingPositionsPerMarket.current !== '0' &&
           PositionIcon}
-        {/* <span className={Styles.MatchedLine}>
-          Matched<b>{market.volumeFormatted.full}</b>
-        </span> */}
         <CountdownProgress
           label="Event Expiration"
           time={market.endTimeFormatted}

@@ -893,6 +893,13 @@
 
 		@media @breakpoint-mobile {
 			grid-template-columns: 1fr;
+			grid-gap: 0;
+
+			> article {
+				border: 0;
+				border-radius: 0;
+				border-bottom: @size-1 solid var(--color-outline);
+			}
 		}
 	}
 
@@ -1016,6 +1023,14 @@
 			text-align: center;
 			min-height: @size-12;
 		}
+
+		@media @breakpoint-mobile {
+			grid-gap: 0;
+
+			> span {
+				display: none;
+			}
+		}
 	}
 
 	.RelatedMarketsDivider {
@@ -1085,20 +1100,6 @@
 				> button:not([class*="FavoriteButton"]) > svg {
 					transform: none;
 				}
-
-				// > span:last-of-type:not([class*="MatchedLine"]) {
-				// 	margin-left: @size-8;
-
-				// 	> a > svg {
-				// 		width: @size-12;
-				// 		height: @size-10;
-				// 		transform: rotate(-90deg);
-
-				// 		> path {
-				// 			fill: var(--color-primary-text);
-				// 		}
-				// 	}
-				// }
 			}
 			
 			> div {
@@ -1203,12 +1204,14 @@
 
 			> h6 {
 				.text-10-semi-bold;
+				.limit-lines(2);
 
 				color: var(--color-secondary-text);
 				text-transform: uppercase;
 				display: flex;
 				height: 100%;
 				align-items: center;
+				text-overflow: ellipsis;
 			}
 
 			> span[class*="ProgressLabel"] {
@@ -1217,6 +1220,10 @@
 				align-items: center;
 				height: 100%;
 				margin-left: auto;
+
+				@media @breakpoint-mobile {
+					display: none;
+				}
 
 				> span { 
 					margin: 0;
@@ -1274,6 +1281,12 @@
 			flex-flow: row wrap;
 			align-items: center;
 			justify-content: space-between;
+
+			@media @breakpoint-mobile {
+				&:first-of-type {
+					padding: 0;
+				}
+			}
 
 			> section {
 				width: 100%;
