@@ -9,7 +9,6 @@ import { TYPE } from '../../Theme'
 import { Input as NumericalInput } from '../NumericalInput'
 import { ReactComponent as DropDown } from '../../assets/dropdown.svg'
 import { useActiveWeb3React } from '../../hooks'
-import { useTranslation } from 'react-i18next'
 
 const InputRow = styled.div<{ selected: boolean }>`
   ${({ theme }) => theme.flexRowNoWrap}
@@ -146,7 +145,6 @@ export default function CashInputPanel({
   showCommonBases,
   customBalanceText
 }: CashInputPanelProps) {
-  const { t } = useTranslation()
 
   //const [modalOpen, setModalOpen] = useState(false)
   const { account } = useActiveWeb3React()

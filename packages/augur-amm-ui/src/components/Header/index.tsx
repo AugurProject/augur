@@ -3,7 +3,6 @@ import React, { useState } from 'react'
 import { Text } from 'rebass'
 import { NavLink, withRouter } from 'react-router-dom'
 import { darken } from 'polished'
-import { useTranslation } from 'react-i18next'
 import Title from '../Title'
 import styled from 'styled-components'
 
@@ -176,7 +175,6 @@ const NETWORK_LABELS: { [chainId in ChainId]?: string } = {
 
 function Header({ history }: { history: any }) {
   const { account, chainId } = useActiveWeb3React()
-  const { t } = useTranslation()
 
   const userEthBalance = useETHBalances(account ? [account] : [])?.[account ?? '']
   const [isDark] = useDarkModeManager()
@@ -187,7 +185,7 @@ function Header({ history }: { history: any }) {
         <Title />
         <HeaderLinks>
           <StyledNavLink id={`swap-nav-link`} to={'/home'} isActive={() => history.location.pathname.includes('/home')}>
-            {t('Markets')}
+            Markets
           </StyledNavLink>
           {account && (
             <StyledNavLink
@@ -195,7 +193,7 @@ function Header({ history }: { history: any }) {
               to={'/pools'}
               isActive={() => history.location.pathname.includes('/pools')}
             >
-              {t('Pools')}
+              Pools
             </StyledNavLink>
           )}
           {account && (
@@ -204,7 +202,7 @@ function Header({ history }: { history: any }) {
               to={'/positions'}
               isActive={() => history.location.pathname.includes('/positions')}
             >
-              {t('Positions')}
+              Positions
             </StyledNavLink>
           )}
         </HeaderLinks>

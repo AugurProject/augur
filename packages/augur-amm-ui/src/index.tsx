@@ -10,7 +10,6 @@ import PairDataContextProvider, { Updater as PairDataContextUpdater } from './co
 import ApplicationContextProvider from './contexts/Application'
 import UserContextProvider from './contexts/User'
 import MarketsProvider, { Updater as MarketsProviderContextUpdater } from './contexts/Markets'
-
 import App from './App'
 import { createWeb3ReactRoot, Web3ReactProvider } from '@web3-react/core'
 import { NetworkContextName } from './constants'
