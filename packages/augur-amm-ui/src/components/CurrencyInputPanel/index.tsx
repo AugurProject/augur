@@ -1,8 +1,9 @@
 import { Currency, Pair } from '@uniswap/sdk'
-import React, { useContext } from 'react'
+import React, { useContext, useCallback, useState } from 'react'
 import styled, { ThemeContext } from 'styled-components'
 import { darken } from 'polished'
 import { useCurrencyBalance } from '../../state/wallet/hooks'
+import CurrencySearchModal from '../SearchModal/CurrencySearchModal'
 import TokenLogo from '../TokenLogo'
 import DoubleCurrencyLogo from '../DoubleLogo'
 import { RowBetween } from '../Row'
@@ -138,9 +139,14 @@ export default function CurrencyInputPanel({
 }: CurrencyInputPanelProps) {
   const { t } = useTranslation()
 
+  const [modalOpen, setModalOpen] = useState(false)
   const { account } = useActiveWeb3React()
   const selectedCurrencyBalance = useCurrencyBalance(account ?? undefined, currency ?? undefined)
   const theme = useContext(ThemeContext)
+
+  const handleDismissSearch = useCallback(() => {
+    setModalOpen(false)
+  }, [setModalOpen])
 
   return (
     <InputPanel id={id}>
@@ -186,8 +192,9 @@ export default function CurrencyInputPanel({
             selected={!!currency}
             className="open-currency-select-button"
             onClick={() => {
-              console.log('on click bring up modal')
-              // set modal open
+              if (!disableCurrencySelect) {
+                setModalOpen(true)
+              }
             }}
           >
             <Aligner>
@@ -213,6 +220,16 @@ export default function CurrencyInputPanel({
           </CurrencySelect>
         </InputRow>
       </Container>
+      {!disableCurrencySelect && onCurrencySelect && (
+        <CurrencySearchModal
+          isOpen={modalOpen}
+          onDismiss={handleDismissSearch}
+          onCurrencySelect={onCurrencySelect}
+          selectedCurrency={currency}
+          otherSelectedCurrency={otherCurrency}
+          showCommonBases={showCommonBases}
+        />
+      )}
     </InputPanel>
   )
 }
