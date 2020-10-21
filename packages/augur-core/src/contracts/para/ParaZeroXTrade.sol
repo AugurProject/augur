@@ -245,12 +245,14 @@ contract ParaZeroXTrade is Initializable, IZeroXTrade, IERC1155 {
         returns (uint256)
     {
         _unused;
-        require(_orders.length > 0);
+        require(_orders.length == _signatures.length);
         uint256 _fillAmountRemaining = _requestedFillAmount;
 
         transferFromAllowed = true;
 
         uint256 _protocolFee = exchange.protocolFeeMultiplier().mul(tx.gasprice);
+
+        require(address(this).balance >= _protocolFee * _orders.length, "Insufficient ETH sent for protocol fee");
 
         // Do the actual asset exchanges
         for (uint256 i = 0; i < _orders.length && _fillAmountRemaining != 0; i++) {
@@ -329,6 +331,7 @@ contract ParaZeroXTrade is Initializable, IZeroXTrade, IERC1155 {
         _unused;
         require(_orders.length == _signatures.length);
         uint256 _protocolFee = exchange.protocolFeeMultiplier().mul(tx.gasprice);
+        require(address(this).balance >= _protocolFee * _orders.length, "Insufficient ETH sent for protocol fee");
         transferFromAllowed = true;
         for (uint256 i = 0; i < _orders.length; i++) {
             IExchange.Order memory _order = _orders[i];
@@ -569,7 +572,7 @@ contract ParaZeroXTrade is Initializable, IZeroXTrade, IERC1155 {
         bytes memory _noSelectorAssetData = _assetData.slice(4, _assetData.length);
 
         (_amounts, _nestedAssetData) = abi.decode(_noSelectorAssetData, (uint256[], bytes[]));
-        
+
         // Validate storage refs against the decoded values.
         {
             require(_amounts.length == 3);
