@@ -569,7 +569,13 @@ export const SportsOutcome = ({
 };
 
 export const OutcomeGroupFooter = ({
-  market: { id, outcomesFormatted, volumeFormatted },
+  market: {
+    id,
+    outcomesFormatted,
+    volumeFormatted,
+    endTimeFormatted,
+    reportingState,
+  },
   showLeader = false,
 }) => {
   const location = useLocation();
@@ -599,6 +605,12 @@ export const OutcomeGroupFooter = ({
         <span className={Styles.MatchedLine}>
           Matched<b>{volumeFormatted.full}</b>
         </span>
+        <CountdownProgress
+          label="Event Expiration"
+          time={endTimeFormatted}
+          reportingState={reportingState}
+          forceLongDate
+        />
       </Fragment>
     );
   }
@@ -978,7 +990,7 @@ export const SportsMarketContainer = ({
         ) : null}
       </header>
       <div>{innerContent}</div>
-      <OutcomeGroupFooter market={market} />
+      {isFutures && <OutcomeGroupFooter market={market} />}
     </section>
   );
 };

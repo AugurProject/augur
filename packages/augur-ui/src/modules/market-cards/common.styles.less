@@ -1402,6 +1402,12 @@
 		> span.MatchedLine {
 			margin: 0 @size-8;
 			justify-content: unset;
+			display: flex;
+		}
+
+		> span[class*="ProgressLabel"] {
+			display: none;
+			margin: 0 @size-8;
 		}
 
 		&.NoLeader {
@@ -1452,6 +1458,38 @@
 
 			> b {
 				margin: 0 @size-4;
+			}
+		}
+
+		@media @breakpoint-mobile {
+			height: unset;
+			flex-flow: row-reverse wrap;
+			padding: @size-12 @size-10 @size-10;
+
+			> span,
+			> span[class*="ProgressLabel"] {
+				flex: 1;
+				display: flex;
+				margin: 0;
+
+				&.MatchedLine {
+					height: unset;
+					flex-flow: column nowrap;
+					justify-content: center;
+					align-items: flex-end;
+					margin: 0;
+					margin-left: @size-8;
+				}
+			}
+
+			> span:first-of-type {
+				flex: 1 100%;
+				order: 3;
+				border: @size-1 solid var(--color-outline);
+				border-radius: @border-radius-default;
+				justify-content: center;
+				padding: @size-8;
+				margin-top: @size-10;
 			}
 		}
 	}
