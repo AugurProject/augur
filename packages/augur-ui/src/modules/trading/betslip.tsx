@@ -79,45 +79,50 @@ export const Betslip = () => {
     }
   });
   return (
-    <aside
-      className={classNames(Styles.Betslip, {
-        [Styles.Minimized]: betslipMinimized,
-      })}
-    >
-      <div onClick={() => !betslipMinimized && setBetslipMinimized(true)}>
-        <button onClick={() => setBetslipMinimized(!betslipMinimized)}>
-          Betslip ({betslipCount}) {ThickChevron}
-        </button>
-        <PrimaryButton
-          text={`Betslip (${betslipCount})`}
-          action={() => setBetslipMinimized(!betslipMinimized)}
-        />
-      </div>
-      <section className={Styles.Container}>
-        <BetslipHeader myBetsCount={myBetsCount} />
-        {isMyBets && <MyBetsSubheader />}
-        <section
-          className={classNames(Styles.MainSection, {
-            [Styles.BetslipEmpty]: isSelectedEmpty,
-            [Styles.BetslipList]: !isSelectedEmpty,
-          })}
-        >
-          {isSelectedEmpty ? (
-            <EmptyState />
-          ) : (
-            <>
-              {step !== 0 && !isMyBets && <span>Please review your bets:</span>}
-              <BetslipList marketItems={marketItems} />
-              {oddsChanged && !isMyBets &&
-                <span>
-                  Highlighted odds changed since you selected them.
-                </span>
-              }
-              <BetslipFooter />
-            </>
-          )}
+    <>
+      <aside
+        className={classNames(Styles.Betslip, {
+          [Styles.Minimized]: betslipMinimized,
+        })}
+      >
+        <div onClick={() => !betslipMinimized && setBetslipMinimized(true)}>
+          <button onClick={() => setBetslipMinimized(!betslipMinimized)}>
+            Betslip ({betslipCount}) {ThickChevron}
+          </button>
+        </div>
+        <section className={Styles.Container}>
+          <BetslipHeader myBetsCount={myBetsCount} />
+          {isMyBets && <MyBetsSubheader />}
+          <section
+            className={classNames(Styles.MainSection, {
+              [Styles.BetslipEmpty]: isSelectedEmpty,
+              [Styles.BetslipList]: !isSelectedEmpty,
+            })}
+          >
+            {isSelectedEmpty ? (
+              <EmptyState />
+            ) : (
+              <>
+                {step !== 0 && !isMyBets && <span>Please review your bets:</span>}
+                <BetslipList marketItems={marketItems} />
+                {oddsChanged && !isMyBets &&
+                  <span>
+                    Highlighted odds changed since you selected them.
+                  </span>
+                }
+                <BetslipFooter />
+              </>
+            )}
+          </section>
         </section>
-      </section>
-    </aside>
+      </aside>
+      <PrimaryButton
+        text={`Betslip (${betslipCount})`}
+        action={() => setBetslipMinimized(!betslipMinimized)}
+        className={classNames(Styles.OpenBetslipButton, {
+          [Styles.Minimized]: betslipMinimized,
+        })}
+      />
+    </>
   );
 };
