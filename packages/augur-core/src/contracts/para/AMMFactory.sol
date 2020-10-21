@@ -39,22 +39,6 @@ contract AMMFactory is IAMMFactory, CloneFactory2 {
         return address(_amm);
     }
 
-    function addInitialLiquidity(IMarket _market, IParaShareToken _para, uint256 _cash, uint256 _ratioFactor, bool _keepYes) external returns (uint256) {
-        IAMMExchange _amm = IAMMExchange(createClone2(address(proxyToClone), salt(_market, _para)));
-        // User sends cash to factory, which turns cash into LP tokens and shares which it gives to the user.
-        _para.cash().transferFrom(msg.sender, address(this), _cash);
-
-        return _amm.addInitialLiquidity(_cash, _ratioFactor, _keepYes, msg.sender);
-    }
-
-    function addLiquidity(IMarket _market, IParaShareToken _para, uint256 _cash) external returns (uint256) {
-        IAMMExchange _amm = IAMMExchange(createClone2(address(proxyToClone), salt(_market, _para)));
-        // User sends cash to factory, which turns cash into LP tokens and shares which it gives to the user.
-        _para.cash().transferFrom(msg.sender, address(this), _cash);
-
-        return _amm.addLiquidity(_cash, msg.sender);
-    }
-
     function salt(IMarket _market, IParaShareToken _para) public pure returns (uint256) {
         return uint256(keccak256(abi.encodePacked(_market, _para)));
     }

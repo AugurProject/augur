@@ -1,9 +1,8 @@
 import { ethers } from 'ethers';
 import { BigNumber } from 'bignumber.js';
-import { binarySearch, bnDirection } from '@augurproject/utils';
 import { AMMFactoryAbi } from '../abi/AMMFactoryAbi';
 import { AMMExchange } from './AMMExchange';
-import { SignerOrProvider, YES_NO_NUMTICKS } from '../constants';
+import { SignerOrProvider } from '../constants';
 import { TransactionResponse } from '@ethersproject/abstract-provider';
 
 
@@ -71,11 +70,6 @@ export class AMMFactory {
     return amm.removeLiquidity(new BigNumber(lpTokens));
   }
 
-  // The ratioYN paremeter is between 1e17 and 1e18 inclusive.
-  // 9e17 == 0.9
-
-  // The ratioYN parameter is how much YES tokens are worth out of 1.0. Its value is between 0.1 and 1.0.
-  //
   async addAMM(market: string, paraShareToken: string, cash: BigNumber = new BigNumber(0), yesPercent = new BigNumber(50), noPercent = new BigNumber(50)): Promise<AddAMMReturn> {
     const ammAddress = await this.ammAddress(market, paraShareToken);
     const amm = new AMMExchange(this.signerOrProvider, ammAddress);

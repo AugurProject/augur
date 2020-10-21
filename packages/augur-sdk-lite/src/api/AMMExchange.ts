@@ -4,7 +4,7 @@ import { TransactionResponse } from '@ethersproject/abstract-provider';
 
 import { binarySearch, bnDirection } from '@augurproject/utils';
 import { AMMExchangeAbi } from '../abi/AMMExchangeAbi';
-import { NULL_ADDRESS, SignerOrProvider, YES_NO_NUMTICKS } from '../constants';
+import { SignerOrProvider, YES_NO_NUMTICKS } from '../constants';
 
 export class AMMExchange {
   static readonly ABI = AMMExchangeAbi;
