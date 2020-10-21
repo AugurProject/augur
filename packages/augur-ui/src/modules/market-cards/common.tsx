@@ -562,6 +562,7 @@ export const SportsOutcome = ({
             <span>{label}</span>
           </>
         )}
+        <p>{subLabel}</p>
       </button>
       <span>{subLabel}</span>
     </div>

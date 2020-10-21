@@ -1014,6 +1014,17 @@
 					.text-12;
 				}
 			}
+
+			> p {
+				.text-10;
+
+				display: none;
+				margin: 0;
+				padding: 0;
+				color: var(--color-primary-text);
+				text-align: center;
+				min-height: @size-12;
+			}
 		}
 
 		> span {
@@ -1029,6 +1040,10 @@
 
 			> span {
 				display: none;
+			}
+
+			> button > p {
+				display: block;
 			}
 		}
 	}
