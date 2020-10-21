@@ -594,7 +594,12 @@ export const OutcomeGroupFooter = ({
       ) : null;
   } else {
     content = (
-      <MarketLink id={id}>{ThickChevron} View Market Details</MarketLink>
+      <Fragment key="content">
+        <MarketLink id={id}>{ThickChevron} View Market Details</MarketLink>
+        <span className={Styles.MatchedLine}>
+          Matched<b>{volumeFormatted.full}</b>
+        </span>
+      </Fragment>
     );
   }
   return (
@@ -887,15 +892,20 @@ export const SportsMarketContainer = ({
     }
   }, [market.id, market.author]);
   let innerContent = null;
-  let headingContent = marketAmount > 1 ? <button
-    onClick={e => {
-      e.preventDefault();
-      setIsCollapsed(!isCollapsed);
-    }}
-  >
-    <h6>{title}</h6>
-    {ThickChevron}
-  </button> : <h6>{title}</h6>;
+  let headingContent =
+    marketAmount > 1 ? (
+      <button
+        onClick={e => {
+          e.preventDefault();
+          setIsCollapsed(!isCollapsed);
+        }}
+      >
+        <h6>{title}</h6>
+        {ThickChevron}
+      </button>
+    ) : (
+      <h6>{title}</h6>
+    );
   const isGrid = data.length > 4;
   if (isGrid) {
     innerContent = <MultiOutcomeMarketGrid key={marketId} data={data} />;
@@ -909,18 +919,19 @@ export const SportsMarketContainer = ({
     const newBase = window.location.href.replace('markets', 'market?id=');
     headingContent = (
       <Fragment key={`${marketId}-heading`}>
+        <h6>{market.description}</h6>
+        {tradingPositionsPerMarket &&
+          tradingPositionsPerMarket.current !== '0' &&
+          PositionIcon}
+        {/* <span className={Styles.MatchedLine}>
+          Matched<b>{market.volumeFormatted.full}</b>
+        </span> */}
         <CountdownProgress
-          label="Event Expiration Date"
+          label="Event Expiration"
           time={market.endTimeFormatted}
           reportingState={market.reportingState}
           forceLongDate
         />
-        {tradingPositionsPerMarket &&
-          tradingPositionsPerMarket.current !== '0' &&
-          PositionIcon}
-        <span className={Styles.MatchedLine}>
-          Matched<b>{market.volumeFormatted.full}</b>
-        </span>
         <DotSelection
           customClass={classNames({ [Styles.ShowCopied]: isCopied })}
         >
@@ -1492,7 +1503,14 @@ export const TopRow = ({ market, categoriesWithClick, sportMarkets }) => {
           </span>
           <button
             className={Styles.RulesButton}
-            onClick={() => setModal({type: MODAL_MARKET_RULES, sportMarkets, description: header, endTime: endTimeFormatted.formattedUtc})}
+            onClick={() =>
+              setModal({
+                type: MODAL_MARKET_RULES,
+                sportMarkets,
+                description: header,
+                endTime: endTimeFormatted.formattedUtc,
+              })
+            }
           >
             {Rules} Rules
           </button>

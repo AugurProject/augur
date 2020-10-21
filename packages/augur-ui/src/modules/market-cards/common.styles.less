@@ -1086,19 +1086,19 @@
 					transform: none;
 				}
 
-				> span:last-of-type:not([class*="MatchedLine"]) {
-					margin-left: @size-8;
+				// > span:last-of-type:not([class*="MatchedLine"]) {
+				// 	margin-left: @size-8;
 
-					> a > svg {
-						width: @size-12;
-						height: @size-10;
-						transform: rotate(-90deg);
+				// 	> a > svg {
+				// 		width: @size-12;
+				// 		height: @size-10;
+				// 		transform: rotate(-90deg);
 
-						> path {
-							fill: var(--color-primary-text);
-						}
-					}
-				}
+				// 		> path {
+				// 			fill: var(--color-primary-text);
+				// 		}
+				// 	}
+				// }
 			}
 			
 			> div {
@@ -1206,6 +1206,9 @@
 
 				color: var(--color-secondary-text);
 				text-transform: uppercase;
+				display: flex;
+				height: 100%;
+				align-items: center;
 			}
 
 			> span[class*="ProgressLabel"] {
@@ -1213,6 +1216,7 @@
 				flex: 0;
 				align-items: center;
 				height: 100%;
+				margin-left: auto;
 
 				> span { 
 					margin: 0;
@@ -1223,7 +1227,6 @@
 				}
 			}
 
-			> span[class*="MatchedLine"],
 			> div[class*="DotSelection"],
 			> button[class*="FavoriteButton"] {
 				margin-left: @size-12;
@@ -1236,9 +1239,10 @@
 				height: 100%;
 				justify-content: space-between;
 
-				&.toggleCollapsed { 
-					margin-left: auto;
+				&.toggleCollapsed {
+					// margin-left: auto;
 					width: @size-24;
+					justify-content: flex-end;
 				}
 
 				> h6 {
@@ -1246,11 +1250,11 @@
 	
 					color: var(--color-secondary-text);
 					text-transform: uppercase;
+					margin-right: auto;
 				}
 
 				> svg {
 					height: @size-6;
-					margin-left: auto;
 					transform: rotate(.5turn);
 					width: @size-10;
 
@@ -1381,6 +1385,11 @@
 		height: @size-40;
 		flex-flow: row-reverse nowrap;
 		padding: 0;
+
+		> span.MatchedLine {
+			margin: 0 @size-8;
+			justify-content: unset;
+		}
 
 		&.NoLeader {
 			display: none;
