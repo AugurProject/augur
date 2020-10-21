@@ -15,7 +15,6 @@ import {
   startGanacheServer,
   writeSeeds,
 } from '..';
-import { generateDoubleDeploy } from '../libs/seeds/double-deploy';
 import { FlashArguments, FlashSession } from './flash';
 import { LogReplayer } from './replay-logs';
 import { LogReplayerV1 } from './replay-logs-v1';
