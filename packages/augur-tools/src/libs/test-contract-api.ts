@@ -116,7 +116,7 @@ export class TestContractAPI extends ContractAPI {
 
   async initializeUniverse() {
     return this.augur.warpSync.initializeUniverse(
-      this.augur.contracts.universe.address
+      (await this.augur.contracts.getOriginUniverse()).address
     );
   }
 }

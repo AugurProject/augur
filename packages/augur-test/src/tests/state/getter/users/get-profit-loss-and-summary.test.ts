@@ -910,7 +910,7 @@ async function verifyThirtyDayPL(
   for (const address of _.keys(result)) {
     const plResult = result[address];
     const profitLossSummary = await user.api.route('getProfitLossSummary', {
-      universe: user.augur.contracts.universe.address,
+      universe: await user.augur.contracts.getOriginUniverseAddress(),
       account: address,
     });
 

@@ -322,7 +322,7 @@ export function connectAugur(
     }
 
     let universeId =
-      config.addresses?.Universe || Augur.contracts.universe.address;
+      config.addresses?.Universe || await Augur.contracts.getOriginUniverseAddress();
     console.log('universeId', JSON.stringify(universeId));
 
     if (

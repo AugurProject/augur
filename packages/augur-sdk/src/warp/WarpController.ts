@@ -177,7 +177,7 @@ export class WarpController {
           );
 
           const newWarpSyncMarket = await this.augur.warpSync.getWarpSyncMarket(
-            this.augur.contracts.universe.address
+            await this.augur.contracts.getOriginUniverseAddress()
           );
 
           await this.db.warpCheckpoints.createInitialCheckpoint(
@@ -225,13 +225,14 @@ export class WarpController {
   async createInitialCheckpoint(isWarpSync = false) {
     const mostRecentCheckpoint = await this.db.warpCheckpoints.getMostRecentCheckpoint();
     if (!mostRecentCheckpoint || isWarpSync) {
+      const originUniverseAddress = await this.augur.contracts.getOriginUniverseAddress();
       const market = await this.augur.warpSync.getWarpSyncMarket(
-        await this.augur.contracts.paraUniverse.originUniverse_()
+        originUniverseAddress
       );
 
       if (market.address === NULL_ADDRESS) {
         console.log(
-          `Warp sync market not initialized for current universe ${this.augur.contracts.universe.address}.`
+          `Warp sync market not initialized for current universe ${originUniverseAddress}.`
         );
         return;
       }

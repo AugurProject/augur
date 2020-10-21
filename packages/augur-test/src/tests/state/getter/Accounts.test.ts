@@ -46,7 +46,7 @@ describe('State API :: Accounts :: ', () => {
     let accountTransactionHistory = await john.api.route(
       'getAccountTransactionHistory',
       {
-        universe: john.augur.contracts.universe.address.toLowerCase(), // Test that lower-case addresses can be passed in
+        universe: (await john.augur.contracts.getOriginUniverseAddress()).toLowerCase(), // Test that lower-case addresses can be passed in
         account: ACCOUNTS[0].address,
         action: Action.ALL,
       }
@@ -249,7 +249,7 @@ describe('State API :: Accounts :: ', () => {
     accountTransactionHistory = await john.api.route(
       'getAccountTransactionHistory',
       {
-        universe: john.augur.contracts.universe.address,
+        universe: await john.augur.contracts.getOriginUniverseAddress(),
         account: ACCOUNTS[1].address,
         action: Action.FILLED,
       }
@@ -379,7 +379,7 @@ describe('State API :: Accounts :: ', () => {
     accountTransactionHistory = await john.api.route(
       'getAccountTransactionHistory',
       {
-        universe: john.augur.contracts.universe.address,
+        universe: await john.augur.contracts.getOriginUniverseAddress(),
         account: ACCOUNTS[0].address,
         action: Action.INITIAL_REPORT,
       }
@@ -459,7 +459,7 @@ describe('State API :: Accounts :: ', () => {
     accountTransactionHistory = await john.api.route(
       'getAccountTransactionHistory',
       {
-        universe: john.augur.contracts.universe.address,
+        universe: await john.augur.contracts.getOriginUniverseAddress(),
         account: ACCOUNTS[0].address,
         action: Action.DISPUTE,
       }
@@ -532,7 +532,7 @@ describe('State API :: Accounts :: ', () => {
     accountTransactionHistory = await john.api.route(
       'getAccountTransactionHistory',
       {
-        universe: john.augur.contracts.universe.address,
+        universe: await john.augur.contracts.getOriginUniverseAddress(),
         account: ACCOUNTS[0].address,
         action: Action.CLAIM_PARTICIPATION_TOKENS,
       }
@@ -555,7 +555,7 @@ describe('State API :: Accounts :: ', () => {
     accountTransactionHistory = await john.api.route(
       'getAccountTransactionHistory',
       {
-        universe: john.augur.contracts.universe.address,
+        universe: await john.augur.contracts.getOriginUniverseAddress(),
         account: ACCOUNTS[0].address,
         action: Action.CLAIM_WINNING_CROWDSOURCERS,
       }
@@ -590,7 +590,7 @@ describe('State API :: Accounts :: ', () => {
     accountTransactionHistory = await john.api.route(
       'getAccountTransactionHistory',
       {
-        universe: john.augur.contracts.universe.address,
+        universe: await john.augur.contracts.getOriginUniverseAddress(),
         account: ACCOUNTS[0].address,
         action: Action.CLAIM_TRADING_PROCEEDS,
       }
@@ -626,7 +626,7 @@ describe('State API :: Accounts :: ', () => {
     accountTransactionHistory = await john.api.route(
       'getAccountTransactionHistory',
       {
-        universe: john.augur.contracts.universe.address,
+        universe: await john.augur.contracts.getOriginUniverseAddress(),
         account: ACCOUNTS[0].address,
         action: Action.ALL,
         coin: Coin.ALL,

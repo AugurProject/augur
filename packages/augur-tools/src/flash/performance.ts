@@ -177,7 +177,7 @@ export async function takeOrders(
 
 export async function getAllMarkets(user: ContractAPI, makerAccounts: Account[]): Promise<MarketInfo[]> {
   const marketInfos: MarketInfo[] = (await user.augur.getMarkets({
-    universe: user.augur.contracts.universe.address,
+    universe: await user.augur.contracts.getOriginUniverseAddress(),
     limit: 1e7 // very large number
   })).markets;
   const makerAddresses = makerAccounts.map((account) => account.address.toLowerCase());

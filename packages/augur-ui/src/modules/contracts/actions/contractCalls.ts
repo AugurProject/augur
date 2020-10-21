@@ -737,7 +737,7 @@ export async function doInitialReport(report: doReportDisputeAddStake) {
 
 export async function doInitialReportWarpSync_estimaetGas(report: doReportDisputeAddStake) {
   const Augur = augurSdk.get();
-  const universe = Augur.contracts.universe.address;
+  const universe = await Augur.contracts.getOriginUniverseAddress();
   const payoutNumerators = await getPayoutNumerators(report);
   return Augur.contracts.warpSync.doInitialReport_estimateGas(
     universe,
@@ -748,7 +748,7 @@ export async function doInitialReportWarpSync_estimaetGas(report: doReportDisput
 
 export async function doInitialReportWarpSync(report: doReportDisputeAddStake) {
   const Augur = augurSdk.get();
-  const universe = Augur.contracts.universe.address;
+  const universe = await Augur.contracts.getOriginUniverseAddress();
   const payoutNumerators = await getPayoutNumerators(report);
   return Augur.contracts.warpSync.doInitialReport(
     universe,

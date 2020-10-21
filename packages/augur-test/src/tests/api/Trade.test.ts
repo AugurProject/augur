@@ -41,7 +41,7 @@ test('Trade :: placeTrade', async () => {
     new BigNumber(1)
   );
 
-  let amountInOrder = await john.augur.contracts.orders.getAmount_(orderId);
+  let amountInOrder = await john.getOrderAmount(orderId);
   await expect(amountInOrder.toNumber()).toEqual(10 ** 15);
 
   await mary.placeBasicYesNoTrade(
@@ -53,7 +53,7 @@ test('Trade :: placeTrade', async () => {
     new BigNumber(0)
   );
 
-  amountInOrder = await john.augur.contracts.orders.getAmount_(orderId);
+  amountInOrder = await john.getOrderAmount(orderId);
   await expect(amountInOrder.toNumber()).toEqual(10 ** 15 / 2);
 });
 

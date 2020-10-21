@@ -16,7 +16,7 @@ export const setSelectedUniverse = (selectedUniverseId: string | null = null) =>
   const Augur = augurSdk.get();
   const defaultUniverseId =
     env.universe ||
-    Augur.contracts.universe.address;
+    await Augur.contracts.getOriginUniverseAddress();
     const windowApp = windowRef as WindowApp;
   if (windowApp && windowApp.localStorage) {
     const { localStorage } = windowApp;

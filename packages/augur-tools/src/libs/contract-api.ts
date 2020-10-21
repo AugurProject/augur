@@ -775,7 +775,7 @@ export class ContractAPI {
   }
 
   async simpleBuyParticipationTokens(attoRep: BigNumber): Promise<void> {
-    const universe = this.augur.contracts.universe.address;
+    const universe = await this.augur.contracts.getOriginUniverseAddress();
     await this.augur.contracts.buyParticipationTokens.buyParticipationTokens(
       universe,
       attoRep
@@ -867,14 +867,14 @@ export class ContractAPI {
   }
 
   async getMarkets(): Promise<MarketList> {
-    const universe = this.augur.contracts.universe.address;
+    const universe = await this.augur.contracts.getOriginUniverseAddress();
     return this.augur.getMarkets({ universe });
   }
 
   async getBettingMarkets(
     params = {}
   ): Promise<MarketList> {
-    const universe = this.augur.contracts.universe.address;
+    const universe = await this.augur.contracts.getOriginUniverseAddress();
     return this.augur.getMarkets({ universe, templateFilter: TemplateFilters.sportsBook });
   }
 
@@ -1118,7 +1118,7 @@ export class ContractAPI {
   async getHotLoadingDisputeWindowData(): Promise<DisputeWindow> {
     return this.augur.hotLoading.getCurrentDisputeWindowData({
       augur: this.augur.contracts.augur.address,
-      universe: this.augur.contracts.universe.address,
+      universe: await this.augur.contracts.getOriginUniverseAddress(),
     });
   }
 
@@ -1159,19 +1159,19 @@ export class ContractAPI {
 
   async initializeUniverseForWarpSync(): Promise<void> {
     return this.augur.warpSync.initializeUniverse(
-      this.augur.contracts.universe.address
+      await this.augur.contracts.getOriginUniverseAddress()
     );
   }
 
   async getWarpSyncMarket(): Promise<ContractInterfaces.Market> {
     return this.augur.warpSync.getWarpSyncMarket(
-      this.augur.contracts.universe.address
+      await this.augur.contracts.getOriginUniverseAddress()
     );
   }
 
   async getLastWarpSyncData(): Promise<WarpSyncData> {
     return this.augur.warpSync.getLastWarpSyncData(
-      this.augur.contracts.universe.address
+      await this.augur.contracts.getOriginUniverseAddress()
     );
   }
 

@@ -287,4 +287,8 @@ export class Contracts {
     const originUniverse = await this.universe.originUniverse_();
     return new ContractInterfaces.Universe(this.dependencies, originUniverse);
   }
+
+  async getOriginUniverseAddress(): Promise<string> {
+    return this.universe.originUniverse_();
+  }
 }

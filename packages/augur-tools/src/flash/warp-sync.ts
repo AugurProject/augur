@@ -7,7 +7,7 @@ export function addWarpSyncScripts(flash: FlashSession) {
     name: 'init-warp-sync',
     async call(this: FlashSession) {
       const user = await this.createUser(this.getAccount(), this.config);
-      await user.initWarpSync(user.augur.contracts.universe.address);
+      await user.initWarpSync(await user.augur.contracts.getOriginUniverseAddress());
     },
   });
 

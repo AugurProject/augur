@@ -33,7 +33,7 @@ describe('State API :: Users :: ', () => {
 
   test(':getTotalOnChainFrozenFunds ', async () => {
     const initialFrozenFunds: UserTotalOnChainFrozenFunds = await john.api.route('getTotalOnChainFrozenFunds', {
-      universe: john.augur.contracts.universe.address,
+      universe: await john.augur.contracts.getOriginUniverseAddress(),
       account: john.account.address,
     });
     await expect(initialFrozenFunds.totalFrozenFunds).toEqual('0');
@@ -42,7 +42,7 @@ describe('State API :: Users :: ', () => {
     await john.sync();
 
     const marketCreatedFrozenFunds: UserTotalOnChainFrozenFunds = await john.api.route('getTotalOnChainFrozenFunds', {
-      universe: john.augur.contracts.universe.address,
+      universe: await john.augur.contracts.getOriginUniverseAddress(),
       account: john.account.address,
     });
 
@@ -52,7 +52,7 @@ describe('State API :: Users :: ', () => {
     await john.sync();
 
     const marketCreatedFrozenFunds2: UserTotalOnChainFrozenFunds = await john.api.route('getTotalOnChainFrozenFunds', {
-      universe: john.augur.contracts.universe.address,
+      universe: await john.augur.contracts.getOriginUniverseAddress(),
       account: john.account.address,
     });
 
@@ -99,13 +99,13 @@ describe('State API :: Users :: ', () => {
     await john.sync();
 
     const positions = await john.api.route('getUserTradingPositions', {
-      universe: john.augur.contracts.universe.address,
+      universe: await john.augur.contracts.getOriginUniverseAddress(),
       account: john.account.address,
     });
     console.table(positions);
 
     const afterTradesFrozenFunds: UserTotalOnChainFrozenFunds = await john.api.route('getTotalOnChainFrozenFunds', {
-      universe: john.augur.contracts.universe.address,
+      universe: await john.augur.contracts.getOriginUniverseAddress(),
       account: john.account.address,
     });
 
