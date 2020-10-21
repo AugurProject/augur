@@ -23,7 +23,7 @@ export default function CurrencySearchModal({
   otherSelectedCurrency,
   showCommonBases = false
 }: CurrencySearchModalProps) {
-  const [listView, setListView] = useState<boolean>(false)
+  const [listView, setListView] = useState<boolean>(true)
   const lastOpen = useLast(isOpen)
 
   useEffect(() => {
@@ -56,10 +56,7 @@ export default function CurrencySearchModal({
   }, [])
 
   return (
-    <Modal isOpen={isOpen} onDismiss={onDismiss} maxHeight={80} minHeight={listView ? 40 : 80}>
-      {listView ? (
-        <ListSelect onDismiss={onDismiss} onBack={handleClickBack} />
-      ) : (
+    <Modal isOpen={isOpen} onDismiss={onDismiss} maxHeight={40} minHeight={40}>
         <CurrencySearch
           isOpen={isOpen}
           onDismiss={onDismiss}
@@ -69,7 +66,6 @@ export default function CurrencySearchModal({
           otherSelectedCurrency={otherSelectedCurrency}
           showCommonBases={showCommonBases}
         />
-      )}
     </Modal>
   )
 }

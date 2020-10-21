@@ -117,34 +117,6 @@ function CurrencyRow({
         <Text title={currency.name} fontWeight={500}>
           {currency.symbol}
         </Text>
-        <FadedSpan>
-          {!isOnSelectedList && customAdded ? (
-            <TYPE.main fontWeight={500}>
-              Added by user
-              <LinkStyledButton
-                onClick={event => {
-                  event.stopPropagation()
-                  if (chainId && currency instanceof Token) removeToken(chainId, currency.address)
-                }}
-              >
-                (Remove)
-              </LinkStyledButton>
-            </TYPE.main>
-          ) : null}
-          {!isOnSelectedList && !customAdded ? (
-            <TYPE.main fontWeight={500}>
-              Found by address
-              <LinkStyledButton
-                onClick={event => {
-                  event.stopPropagation()
-                  if (currency instanceof Token) addToken(currency)
-                }}
-              >
-                (Add)
-              </LinkStyledButton>
-            </TYPE.main>
-          ) : null}
-        </FadedSpan>
       </Column>
       <TokenTags currency={currency} />
       <RowFixed style={{ justifySelf: 'flex-end' }}>

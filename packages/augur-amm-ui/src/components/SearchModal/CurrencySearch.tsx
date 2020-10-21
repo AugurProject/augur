@@ -139,31 +139,9 @@ export function CurrencySearch({
   return (
     <Column style={{ width: '100%', flex: '1 1' }}>
       <PaddedColumn gap="14px">
-        <RowBetween>
-          <Text fontWeight={500} fontSize={16}>
-            Select a token
-            <QuestionHelper text="Find a token by searching for its name or symbol or by pasting its address below." />
-          </Text>
-          <CloseIcon onClick={onDismiss} />
-        </RowBetween>
-        <SearchInput
-          type="text"
-          id="token-search-input"
-          placeholder={t('tokenSearchPlaceholder')}
-          value={searchQuery}
-          ref={inputRef as RefObject<HTMLInputElement>}
-          onChange={handleInput}
-          onKeyDown={handleEnter}
-        />
         {showCommonBases && (
           <CommonBases chainId={chainId} onSelect={handleCurrencySelect} selectedCurrency={selectedCurrency} />
         )}
-        <RowBetween>
-          <Text fontSize={14} fontWeight={500}>
-            Token Name
-          </Text>
-          <SortButton ascending={invertSearchOrder} toggleSortOrder={() => setInvertSearchOrder(iso => !iso)} />
-        </RowBetween>
       </PaddedColumn>
 
       <Separator />
@@ -183,19 +161,6 @@ export function CurrencySearch({
           )}
         </AutoSizer>
       </div>
-
-      <Separator />
-      <Card>
-        <RowBetween>
-          <LinkStyledButton
-            style={{ fontWeight: 500, color: theme.text2, fontSize: 16 }}
-            onClick={onChangeList}
-            id="currency-search-change-list-button"
-          >
-            {selectedListInfo.current ? 'Change' : 'Select a list'}
-          </LinkStyledButton>
-        </RowBetween>
-      </Card>
     </Column>
   )
 }
