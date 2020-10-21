@@ -1,15 +1,15 @@
 import { Currency, Pair } from '@uniswap/sdk'
-import React, { useContext } from 'react'
+import React, { useContext, useCallback, useState } from 'react'
 import styled, { ThemeContext } from 'styled-components'
 import { darken } from 'polished'
 import { useCurrencyBalance } from '../../state/wallet/hooks'
+import CurrencySearchModal from '../SearchModal/CurrencySearchModal'
 import TokenLogo from '../TokenLogo'
 import DoubleCurrencyLogo from '../DoubleLogo'
 import { RowBetween } from '../Row'
 import { TYPE } from '../../Theme'
 import { Input as NumericalInput } from '../NumericalInput'
 import { useActiveWeb3React } from '../../hooks'
-import { useTranslation } from 'react-i18next'
 
 const InputRow = styled.div<{ selected: boolean }>`
   ${({ theme }) => theme.flexRowNoWrap}
@@ -136,11 +136,15 @@ export default function CurrencyInputPanel({
   showCommonBases,
   customBalanceText
 }: CurrencyInputPanelProps) {
-  const { t } = useTranslation()
 
+  const [modalOpen, setModalOpen] = useState(false)
   const { account } = useActiveWeb3React()
   const selectedCurrencyBalance = useCurrencyBalance(account ?? undefined, currency ?? undefined)
   const theme = useContext(ThemeContext)
+
+  const handleDismissSearch = useCallback(() => {
+    setModalOpen(false)
+  }, [setModalOpen])
 
   return (
     <InputPanel id={id}>
@@ -186,8 +190,9 @@ export default function CurrencyInputPanel({
             selected={!!currency}
             className="open-currency-select-button"
             onClick={() => {
-              console.log('on click bring up modal')
-              // set modal open
+              if (!disableCurrencySelect) {
+                setModalOpen(true)
+              }
             }}
           >
             <Aligner>
@@ -206,13 +211,23 @@ export default function CurrencyInputPanel({
                     ? currency.symbol.slice(0, 4) +
                       '...' +
                       currency.symbol.slice(currency.symbol.length - 5, currency.symbol.length)
-                    : currency?.symbol) || t('selectToken')}
+                    : currency?.symbol) || 'Select Token'}
                 </StyledTokenName>
               )}
             </Aligner>
           </CurrencySelect>
         </InputRow>
       </Container>
+      {!disableCurrencySelect && onCurrencySelect && (
+        <CurrencySearchModal
+          isOpen={modalOpen}
+          onDismiss={handleDismissSearch}
+          onCurrencySelect={onCurrencySelect}
+          selectedCurrency={currency}
+          otherSelectedCurrency={otherCurrency}
+          showCommonBases={showCommonBases}
+        />
+      )}
     </InputPanel>
   )
 }
