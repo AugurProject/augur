@@ -43,6 +43,9 @@ def prepare_finalize_market(fixture, market, payoutNumerators):
 # Test rep fee collection and periodic push
 
 def test_rep_fees(kitchenSinkFixture, universe, cash, market):
+    if not kitchenSinkFixture.sideChain:
+        return
+
     shareToken = kitchenSinkFixture.getShareToken()
     expectedValue = 100 * market.getNumTicks()
     expectedReporterFees = expectedValue / universe.getOrCacheReportingFeeDivisor()
