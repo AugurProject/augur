@@ -90,21 +90,21 @@ export const SportsMarketCard = ({
       <MarketTitle id={market.id} headerType={headerType} />
       <SportsGroupMarkets sportsGroup={sportsGroup} />
       {!isFutures && (
-        <>
-        <CountdownProgress
-          label="Estimated Start Time"
-          time={formatTime(market.sportsBook.estTimestamp)}
-          reportingState={reportingState}
-        />
-        <span className={Styles.Matched}>
+        <article>
+          {showMoreButtonVisible && (
+            <button onClick={() => setShowMore(!showMore)}>
+              {ThickChevron} {`${showMore ? 'Show Less' : moreWagersText}`}
+            </button>
+          )}
+          <CountdownProgress
+            label="Estimated Start Time"
+            time={formatTime(market.sportsBook.estTimestamp)}
+            reportingState={reportingState}
+          />
+          <span className={Styles.Matched}>
             Matched<b>{` ${market.volumeFormatted.full}`}</b>
           </span>
-        </>
-      )}
-      {showMoreButtonVisible && (
-        <button onClick={() => setShowMore(!showMore)}>
-          {ThickChevron} {`${showMore ? 'Show Less' : moreWagersText}`}
-        </button>
+        </article>
       )}
     </div>
   );

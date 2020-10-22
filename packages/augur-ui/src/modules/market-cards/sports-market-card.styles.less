@@ -45,39 +45,66 @@
     grid-row: auto;
   }
 
-  > span[class*="ProgressLabel"] {
-    flex-flow: row nowrap;
-    grid-column: 1;
-  }
-
-  > span.Matched {
-    .MatchedLine;
-
-    display: none;
+  > article {
+    grid-row: auto;
+    grid-column: 1 / span 2;
+    display: flex;
+    flex-flow: row-reverse nowrap;
+    justify-content: space-between;
 
     @media @breakpoint-mobile {
-      display: flex;
+      flex-flow: row wrap;
     }
-  }
 
-  > button:last-of-type {
-    .text-10-semi-bold;
-
-    color: var(--color-primary-text);
-    grid-row: auto;
-    grid-column: 2;
-    display: flex;
-    flex-flow: row nowrap;
-    align-items: center;
-    justify-content: flex-end;
-
-    > svg {
-      width: @size-10;
-      height: @size-6;
-      margin-right: @size-4;
-
-      > path {
-        fill: var(--color-primary-text);
+    > span[class*="ProgressLabel"] {
+      flex-flow: row nowrap;
+  
+      @media @breakpoint-mobile {
+        flex-flow: column nowrap;
+      }
+    }
+  
+    > span.Matched {
+      .MatchedLine;
+  
+      display: none;
+  
+      @media @breakpoint-mobile {
+        display: flex;
+        flex-flow: column nowrap;
+        height: unset;
+        align-items: flex-end;
+      }
+    }
+  
+    > button:last-of-type {
+      .text-10-semi-bold;
+  
+      color: var(--color-primary-text);
+      grid-row: auto;
+      grid-column: 2;
+      display: flex;
+      flex-flow: row nowrap;
+      align-items: center;
+      justify-content: flex-end;
+  
+      > svg {
+        width: @size-10;
+        height: @size-6;
+        margin-right: @size-4;
+  
+        > path {
+          fill: var(--color-primary-text);
+        }
+      }
+  
+      @media @breakpoint-mobile {
+        padding: @size-8;
+        border: @size-1 solid var(--color-outline);
+        border-radius: @border-radius-default;
+        justify-content: center;
+        flex: 1 100%;
+        margin-bottom: @size-8;
       }
     }
   }
@@ -96,7 +123,7 @@
       display: flex;
     }
 
-    > button:last-of-type > svg {
+    > article > button:last-of-type > svg {
       transform: rotate(.5turn);
     }
   }

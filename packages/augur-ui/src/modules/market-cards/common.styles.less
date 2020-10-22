@@ -737,6 +737,10 @@
 		text-transform: capitalize;
 		white-space: nowrap;
 		flex: 1;
+
+		@media @breakpoint-mobile {
+			margin-left: @size-4;
+		}
 	}
 
 	> div {
@@ -955,6 +959,7 @@
 					> h6 {
 						flex: 1;
 						text-align: left;
+						margin-left: @size-4;
 					}
 				}
 			}
