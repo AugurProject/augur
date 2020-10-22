@@ -111,10 +111,22 @@ Deploying to: ${env}
         oiNexus.transferOwnership(paraDeployerAddress)
         const paraDeployer = new ParaDeployer(this.dependencies, paraDeployerAddress);
         
-        // TODO add more tokens?
-        await paraDeployer.addToken(this.configuration.addresses.WETH9, new BigNumber(10**19));
-        await paraDeployer.addToken(this.configuration.addresses.USDC, new BigNumber(10**30));
-        await paraDeployer.addToken(this.configuration.addresses.USDT, new BigNumber(10**30));
+        await paraDeployer.addToken(this.configuration.addresses.Cash, new BigNumber(10**18));
+        await paraDeployer.addToken(this.configuration.addresses.WETH9, new BigNumber(10**20)); // .1 ETH min
+        await paraDeployer.addToken(this.configuration.addresses.USDC, new BigNumber(10**30)); // 6 decimals
+        await paraDeployer.addToken(this.configuration.addresses.USDT, new BigNumber(10**30)); // 6 decimals
+
+        if (this.configuration.deploy.isProduction) {
+            await paraDeployer.addToken(this.configuration.deploy.externalAddresses.SETH, new BigNumber(10**20)); // .1 ETH min
+            await paraDeployer.addToken(this.configuration.deploy.externalAddresses.BUSD, new BigNumber(10**18));
+            await paraDeployer.addToken(this.configuration.deploy.externalAddresses.TUSD, new BigNumber(10**18));
+            await paraDeployer.addToken(this.configuration.deploy.externalAddresses.SUSD, new BigNumber(10**18));
+            await paraDeployer.addToken(this.configuration.deploy.externalAddresses.MUSD, new BigNumber(10**18));
+            await paraDeployer.addToken(this.configuration.deploy.externalAddresses.WBTC, new BigNumber(10**31)); // 8 decimals // .01 BTC
+            await paraDeployer.addToken(this.configuration.deploy.externalAddresses.renBTC, new BigNumber(10**31)); // 8 decimals // .01 BTC
+            await paraDeployer.addToken(this.configuration.deploy.externalAddresses.SBTC, new BigNumber(10**21)); // .01 BTC
+            await paraDeployer.addToken(this.configuration.deploy.externalAddresses.TBTC, new BigNumber(10**21)); // .01 BTC
+        }
 
         if (!this.configuration.deploy.writeArtifacts) return;
 
