@@ -29,6 +29,11 @@ export enum Field {
   CURRENCY_B = 'CURRENCY_B'
 }
 
+export enum MarketTokens {
+  YES_SHARES = 'Yes Shares',
+  NO_SHARES = 'No Shares'
+}
+
 export const LABEL_WETH = 'wETH'
 export const LABEL_DAI = 'DAI'
 // token list urls to fetch tokens from - use for warnings on tokens and pairs

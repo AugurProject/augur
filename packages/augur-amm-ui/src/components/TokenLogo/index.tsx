@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 import styled from 'styled-components'
 import { isAddress } from '../../utils'
 import market from '../../assets/market.png'
-import { getCashInfo } from '../../contexts/Application'
+import { getCashInfo, getCashInfoBySymbol } from '../../contexts/Application'
 import { TYPE } from '../../Theme'
 
 const BAD_IMAGES = {}
@@ -34,7 +34,10 @@ const StyledEthereumLogo = styled.div<{ size }>`
 `
 
 export default function TokenLogo({ tokenInfo, showSymbol = false, size = '24px', ...rest }) {
-  const cashtoken = getCashInfo(typeof tokenInfo === 'string' ? tokenInfo : tokenInfo ? tokenInfo.address : null)
+  let cashtoken = getCashInfo(typeof tokenInfo === 'string' ? tokenInfo : tokenInfo ? tokenInfo.address : null)
+  if (!cashtoken) {
+    cashtoken = getCashInfoBySymbol(typeof tokenInfo === 'string' ? tokenInfo : tokenInfo ? tokenInfo.symbol : null)
+  }
   const address = cashtoken ? cashtoken.address : tokenInfo
   const [error, setError] = useState(false)
 

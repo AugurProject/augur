@@ -134,7 +134,7 @@ function PairList({ allExchanges, color, disbaleLinks, marketId, maxItems = 10 }
               </StyledInternalLink>
               <StyledInternalLink
                 disabled={!ammExchange && !ammExchange.id}
-                to={`/swap/${marketId}/${ammExchange.cash.id}/${ammExchange.id}`}
+                to={`/swap/${marketId}/${ammExchange.cash}/${ammExchange.id}`}
               >
                 <ButtonPrimary disabled={!ammExchange && !ammExchange.id} textAlign="center">
                   Trade
