@@ -928,6 +928,32 @@
 				flex: 0.25;
 			}
 		}
+
+		@media @breakpoint-mobile {
+			flex-flow: column nowrap;
+
+			> article {
+				margin: 0;
+				border: none;
+				border-bottom: @size-1 solid var(--color-outcome);
+				border-radius: none;
+				
+				&:last-of-type {
+					border-bottom: none;
+				}
+
+				> div {
+					display: flex;
+					flex-flow: row nowrap;
+					justify-content: space-between;
+
+					> h6 {
+						flex: 1;
+						text-align: left;
+					}
+				}
+			}
+		}
 	}
 
 	.SportsOutcome {
@@ -1042,8 +1068,16 @@
 				display: none;
 			}
 
-			> button > p {
-				display: block;
+			> button {
+				min-width: @size-90;
+
+				> span:first-of-type:not(:last-of-type) {
+					display: none;
+				}
+
+				> p {
+					display: block;
+				}
 			}
 		}
 	}
