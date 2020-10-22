@@ -1,4 +1,5 @@
 @import (reference) '~assets/styles/shared';
+@import (reference) '~modules/market-cards/common.styles';
 
 .SportsMarketCard {
   background: var(--color-module-background);
@@ -42,6 +43,21 @@
 
   > span {
     grid-row: auto;
+  }
+
+  > span[class*="ProgressLabel"] {
+    flex-flow: row nowrap;
+    grid-column: 1;
+  }
+
+  > span.Matched {
+    .MatchedLine;
+
+    display: none;
+
+    @media @breakpoint-mobile {
+      display: flex;
+    }
   }
 
   > button:last-of-type {
@@ -89,10 +105,5 @@
   > section[class*="MultiOutcomeMarketGrid"],
   > section {
     grid-column: span 2;
-  }
-
-  > span[class*="ProgressLabel"] {
-    flex-flow: row nowrap;
-    grid-column: 1;
   }
 }

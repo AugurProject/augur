@@ -744,6 +744,28 @@
 	}
 }
 
+.MatchedLine {
+	.text-12;
+
+	align-items: center;
+	color: var(--color-secondary-text);
+	display: flex;
+	flex: 1;
+	justify-content: flex-end;
+	height: @size-18;
+	
+	@media @breakpoint-mobile-tablet {
+		display: none;
+	}
+
+	> b {
+		.text-12-bold;
+
+		color: var(--color-primary-text);
+		margin-left: @size-4;
+	}
+}
+
 :root[theme="BETTING"],
 :root[theme="SPORTS"] {
 	.TopRow {
@@ -832,28 +854,6 @@
 
 		}
 	}
-
-	.MatchedLine {
-		.text-12;
-
-		align-items: center;
-		color: var(--color-secondary-text);
-		display: flex;
-		flex: 1;
-		justify-content: flex-end;
-		height: @size-18;
-		
-		@media @breakpoint-mobile-tablet {
-			display: none;
-		}
-
-    > b {
-      .text-12-bold;
-
-			color: var(--color-primary-text);
-			margin-left: @size-4;
-    }
-  }
 
   .RulesButton {
     .text-10-semi-bold;
