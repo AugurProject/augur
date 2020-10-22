@@ -857,6 +857,17 @@
 			}
 
 		}
+
+		@media @breakpoint-mobile {
+			display: flex;
+			flex-flow: row nowrap;
+			text-overflow: ellipsis;
+			overflow: hidden;
+
+			> div[class*="CategoryTrail"] {
+				flex: 1;
+			}
+		}
 	}
 
   .RulesButton {
@@ -1564,6 +1575,10 @@
 		grid-column: span 2;
 		height: @size-20;
 
+		@media @breakpoint-mobile {
+			height: unset;
+		}
+
 		> svg {
 			height: @size-14;
 			width: @size-14;
@@ -1579,9 +1594,5 @@
 				stroke: none;
 			}
 		}
-	}
-
-	@media @breakpoint-mobile {
-		height: unset;
 	}
 }
