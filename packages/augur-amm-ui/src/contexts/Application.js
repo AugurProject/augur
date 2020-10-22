@@ -390,6 +390,13 @@ export function getCashInfo(address) {
   return cash
 }
 
+export function getCashInfoBySymbol(symbol) {
+  if (!symbol) return null
+  const contracts = getConfig()
+  const cash = contracts.Cashes.find(c => c.symbol?.toLowerCase() === symbol?.toLowerCase())
+  return cash
+}
+
 export function useAmmFactoryAddress() {
   const [state] = useApplicationContext()
   const addresses = state[AUGUR_CONFIG]?.addresses

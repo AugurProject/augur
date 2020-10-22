@@ -13,6 +13,8 @@ import { useAllMarketData } from '../../contexts/Markets'
 import { ParaShareToken } from '@augurproject/sdk-lite'
 import { Interface } from 'ethers/lib/utils'
 import { BigNumber as BN } from 'bignumber.js'
+import { MarketTokens } from '../../constants'
+import { MarketCurrency } from '../../data/MarketCurrency'
 /**
  * Returns a map of the given addresses to their eventually consistent ETH balances.
  */
@@ -114,7 +116,7 @@ export function useLPTokenBalances(): [{ [tokenAddress: string]: string | undefi
 }
 
 export function useMarketShareBalances(): [
-  { paraShareToken: string; marketid: string; outcome: number; amount: CurrencyAmount }[],
+  { paraShareToken: string; marketId: string; outcome: number; amount: CurrencyAmount; noAmount: string; yesAmount: string; cash: string }[],
   boolean
 ] {
   const { markets, paraShareTokens } = useAllMarketData()
@@ -199,16 +201,20 @@ export function useCurrencyBalances(
   const tokenBalances = useTokenBalances(account, tokens)
   const containsETH: boolean = useMemo(() => currencies?.some(currency => currency === ETHER) ?? false, [currencies])
   const ethBalance = useETHBalances(containsETH ? [account] : [])
+  const [userMarketShareBalances] = useMarketShareBalances()
 
   return useMemo(
     () =>
       currencies?.map(currency => {
         if (!account || !currency) return undefined
+        if (currency && currency instanceof MarketCurrency) {
+          return currency as TokenAmount
+        }
         if (currency instanceof Token) return tokenBalances[currency.address]
         if (currency === ETHER) return ethBalance[account]
         return undefined
       }) ?? [],
-    [account, currencies, ethBalance, tokenBalances]
+    [account, currencies, ethBalance, tokenBalances, userMarketShareBalances]
   )
 }
 

@@ -5,7 +5,7 @@ import { ParsedQs } from 'qs'
 import { useCallback, useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useActiveWeb3React } from '../../hooks'
-import { useCurrency } from '../../hooks/Tokens'
+import { useCurrency, useMarketToken } from '../../hooks/Tokens'
 import { useTradeExactIn, useTradeExactOut } from '../../hooks/Trades'
 import useParsedQueryString from '../../hooks/useParsedQueryString'
 import { isAddress } from '../../utils'
@@ -15,6 +15,8 @@ import { Field, replaceSwapState, selectCurrency, setRecipient, switchCurrencies
 import { SwapState } from './reducer'
 import { useUserSlippageTolerance } from '../user/hooks'
 import { computeSlippageAdjustedAmounts } from '../../utils/prices'
+import { useLocation } from 'react-router-dom'
+import { MarketCurrency } from '../../data/MarketCurrency'
 
 export function useSwapState(): AppState['swap'] {
   return useSelector<AppState, AppState['swap']>(state => state.swap)
@@ -32,7 +34,7 @@ export function useSwapActionHandlers(): {
       dispatch(
         selectCurrency({
           field,
-          currencyId: currency instanceof Token ? currency.address : currency === ETHER ? 'ETH' : ''
+          currencyId: currency instanceof MarketCurrency ? currency.name : currency instanceof Token ? currency.address : ''
         })
       )
     },
@@ -121,8 +123,15 @@ export function useDerivedSwapInfo(): {
     recipient
   } = useSwapState()
 
-  const inputCurrency = useCurrency(inputCurrencyId)
-  const outputCurrency = useCurrency(outputCurrencyId)
+  let inputCurrency = useCurrency(inputCurrencyId)
+  let outputCurrency = useCurrency(outputCurrencyId)
+
+  const marketInputCurrency = useMarketToken(inputCurrencyId)
+  const marketOutputCurrency = useMarketToken(outputCurrencyId)
+
+  inputCurrency = inputCurrency ? inputCurrency : marketInputCurrency
+  outputCurrency = outputCurrency ? outputCurrency : marketOutputCurrency
+
   const recipientLookup = useENS(recipient ?? undefined)
   const to: string | null = (recipient === null ? account : recipientLookup.address) ?? null
 
@@ -282,4 +291,13 @@ export function useDefaultsFromURLSearch():
   }, [dispatch, chainId])
 
   return result
+}
+
+export function useSwapQueryParam(): { marketId: string; cash: string, amm: string } {
+  const location = useLocation()
+  const components = location.pathname.split('/')
+  const marketId = components[2]
+  const cash = components[3]
+  const amm = components[4]
+  return { marketId, cash, amm }
 }

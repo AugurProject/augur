@@ -1,9 +1,13 @@
 import { parseBytes32String } from '@ethersproject/strings'
-import { Currency, ETHER, Token, currencyEquals } from '@uniswap/sdk'
+import { Currency, ETHER, Token, currencyEquals, TokenAmount, JSBI } from '@uniswap/sdk'
 import { useMemo } from 'react'
+import { MarketTokens } from '../constants'
+import { MarketCurrency } from '../data/MarketCurrency'
 import { useSelectedTokenList } from '../state/lists/hooks'
 import { NEVER_RELOAD, useSingleCallResult } from '../state/multicall/hooks'
+import { useSwapQueryParam } from '../state/swap/hooks'
 import { useUserAddedTokens } from '../state/user/hooks'
+import { useMarketShareBalances } from '../state/wallet/hooks'
 import { isAddress } from '../utils'
 
 import { useActiveWeb3React } from './index'
@@ -30,6 +34,29 @@ export function useAllTokens(): { [address: string]: Token } {
         )
     )
   }, [chainId, userAddedTokens, allTokens])
+}
+
+export function useAllMarketTokens(marketId: string, cash: string): Currency[] {
+  const [userMarketShareBalances] = useMarketShareBalances()
+  const { chainId } = useActiveWeb3React()
+  const cashToken = useToken(cash)
+
+  return useMemo(() => {
+    const marketInfo = userMarketShareBalances.find(b => b.marketId === marketId && b.cash === cash)
+
+    const tokens = []
+    tokens.push(cashToken)
+    const address = marketId
+
+    const noToken = new Token(chainId, address, 18, MarketTokens.NO_SHARES, MarketTokens.NO_SHARES)
+    const noMarketCurrency = new MarketCurrency(marketId, cash, noToken, String(marketInfo?.noAmount || 0))
+    tokens.push(noMarketCurrency)
+
+    const yesToken = new Token(chainId, address, 18, MarketTokens.YES_SHARES, MarketTokens.YES_SHARES)
+    const yesMarketCurrency = new MarketCurrency(marketId, cash, yesToken, String(marketInfo?.yesAmount || 0))
+    tokens.push(yesMarketCurrency)
+    return tokens
+  }, [userMarketShareBalances, marketId, cash, chainId, cashToken])
 }
 
 // Check if currency is included in custom list from user storage
@@ -98,6 +125,15 @@ export function useToken(tokenAddress?: string): Token | undefined | null {
     tokenName.result,
     tokenNameBytes32.result
   ])
+}
+
+export function useMarketToken(type: string) {
+  const { marketId, cash, amm } = useSwapQueryParam()
+  const allMarketTokens = useAllMarketTokens(marketId, cash)
+  if (type === MarketTokens.NO_SHARES || type === MarketTokens.YES_SHARES) {
+    return allMarketTokens.find(a => a.name === type)
+  }
+  return undefined
 }
 
 export function useCurrency(currencyId: string | undefined): Currency | null | undefined {
