@@ -15,6 +15,32 @@
     > div {
       display: none;
       transition: background .3s ease;
+
+      > button:first-of-type {
+        .text-12-bold;
+
+        align-content: center;
+        align-items: center;
+        background: var(--color-primary-text);
+        color: var(--color-module-background);
+        cursor: pointer;
+        display: flex;
+        flex-flow: row nowrap;
+        justify-content: center;
+        text-transform: uppercase;
+        height: @size-36;
+        width: 100%;
+
+        > svg {
+          height: @size-8;
+          width: @size-10;
+          margin-left: @size-8;
+
+          > path {
+            fill: var(--color-module-background);
+          }
+        }
+      }
     }
 
     @media @breakpoint-mobile-tiny {
@@ -35,14 +61,98 @@
         background: var(--color-primary-text);
         display: flex;
         flex-flow: column;
-        height: 100%;
         width: 100%;
+      }
+
+      &.Minimized {
+        background: transparent;
+        max-width: @size-36;
+        left: unset;
+        z-index: @above-all-content;
+        position: fixed;
+
+        > div {
+          width: @size-36;
+          height: @size-106;
+          display: block;
+          background: transparent;
+        }
+      }
+    }
+
+    @media @breakpoint-mobile-tablet {
+      flex-direction: column;
+      top: 120vh;
+      bottom: -120vh;
+
+      //-webkit-transform: none;
+      //transform: none;
+      //transition: transform .3s cubic-bezier(0.44, 0, 0.56, 1);
+      //will-change: transform;
+
+      -webkit-transform: translateY(-120vh);
+      transform: translateY(-120vh);
+      transition: transform .3s cubic-bezier(0.44, 0, 0.56, 1);
+      will-change: transform;
+
+      > div {
+        align-items: normal;
+
+        > button:first-of-type {
+          width: unset;
+          height: @size-64;
+          transform: unset;
+        }
+      }
+
+      &.Minimized {
+        padding: @size-8;
+        right: 0;
+        left: 0;
+        max-width: unset;
+        top: 120vh;
+        bottom: -120vh;
+
+        //-webkit-transform: translateY(120vh);
+        //transform: translateY(120vh);
+        //transition: transform .3s cubic-bezier(0.44, 0, 0.56, 1);
+
+        -webkit-transform: none;
+        transform: none;
+        transition: transform .3s cubic-bezier(0.44, 0, 0.56, 1);
+
+        > div {
+          background: unset;
+          height: unset;
+          width: 100%;
+          display: flex;
+        }
+      }
+    }
+
+    @media @breakpoint-tiny {
+      background: transparent;
+      position: fixed;
+      bottom: 0;
+      right: -@size-326;
+      left: unset;
+      z-index: @above-all-content;
+
+      -webkit-transform: translateX(-@size-326);
+      transform: translateX(-@size-326);
+      transition: transform .3s cubic-bezier(0.44, 0, 0.56, 1);
+      will-change: transform;
+
+      > div {
+        background: var(--color-primary-text-50);
+        transform: rotate(-0.25turn) translate(-@size-125, @size-36);
 
         > button:first-of-type {
           .text-12-bold;
 
           align-content: center;
           align-items: center;
+          background: var(--color-primary-text);
           color: var(--color-module-background);
           cursor: pointer;
           display: flex;
@@ -50,7 +160,6 @@
           height: @size-36;
           justify-content: center;
           text-transform: uppercase;
-          transform: rotate(-0.25turn) translate(-@size-125, @size-36);
           width: @size-106;
           border-top-left-radius: @border-radius-default;
           border-top-right-radius: @border-radius-default;
@@ -71,90 +180,43 @@
         background: transparent;
         max-width: @size-36;
         left: unset;
-        z-index: @above-all-content;
-        position: fixed;
+        right: -@size-326;
+        z-index: @mask-modal;
+
+        -webkit-transform: none;
+        transform: none;
+        transition: transform .3s cubic-bezier(0.44, 0, 0.56, 1);
 
         > div {
           width: @size-36;
           height: @size-106;
           display: block;
           background: transparent;
+          transform: rotate(-0.25turn) translate(-@size-78, @size-88);
+          transform-origin: bottom;
 
           > button:first-of-type {
             background: var(--color-primary-text);
-            transform: rotate(-0.25turn) translate(-@size-78, -@size-17);
-            transform-origin: bottom;
             width: @size-106;
             border-top-left-radius: @border-radius-default;
             border-top-right-radius: @border-radius-default;
-            margin-top: @size-30;
 
             > svg {
               transform: rotate(0.5turn);
             }
           }
         }
-
-        > section {
-          min-width: 0;
-          right: -@size-1;
-        }
-      }
-    }
-
-    @media @breakpoint-mobile-tablet {
-      flex-direction: column;
-
-      > div {
-        align-items: normal;
-        height: unset;
-
-        > button:first-of-type {
-          width: unset;
-          transform: unset;
-        }
-      }
-
-      &.Minimized {
-        padding: @size-8;
-        right: 0;
-        left: 0;
-        max-width: unset;
-        top: 120vh;
-
-        > div {
-          background: unset;
-          height: unset;
-          width: 100%;
-          display: flex;
-        }
-      }
-    }
-
-    @media @breakpoint-tiny {
-      background: transparent;
-      > div {
-        background: var(--color-primary-text-50);
-
-        > button:first-of-type {
-          background: var(--color-primary-text);
-        }
       }
     }
 
     @media @breakpoint-mobile {
       position: fixed;
-      top: 0;
+      top: 120vh;
+      bottom: -120vh;
       right: 0;
-      bottom: 0;
       left: 0;
       z-index: @mask-toast;
       background-color: var(--color-module-background);
-
-      -webkit-transform: none;
-      transform: none;
-      transition: transform 0.3s ease 0s;
-      will-change: transform;
 
       > div > button:first-of-type {
         height: @size-64;
@@ -168,12 +230,9 @@
       &.Minimized {
         background-color: var(--color-module-background);
         padding: 0;
-        top: 0;
+        top: 120vh;
+        bottom: -120vh;
         z-index: @mask-toast;
-
-        -webkit-transform: translateY(120vh);
-        transform: translateY(120vh);
-        transition: transform 0.3s ease 0s;
 
         > div > button:first-of-type {
           margin-top: 0;
@@ -191,10 +250,10 @@
       &.Minimized {
         display: flex;
         position: fixed;
-        bottom: 0.5rem;
-        left: 0.5rem;
-        right: 0.5rem;
-        width: calc(100% - 1rem);
+        bottom: @size-8;
+        left: @size-8;
+        right: @size-8;
+        width: calc(100% - @size-16);
         padding: 0;
         z-index: @default-above;
       }
@@ -210,7 +269,7 @@
     box-shadow: 0 0 @size-4 var(--color-primary-text-15);
     position: relative;
     top: 0;
-    transition: top .3s cubic-bezier(0.44, 0, 0.56, 1);
+    transition: all .3s cubic-bezier(0.44, 0, 0.56, 1);
 
     > ul,
     > section {
