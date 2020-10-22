@@ -20,6 +20,7 @@ import {
 } from 'modules/account/components/notifications-templates';
 import { Notification, QueryEndpoints, } from 'modules/types';
 import {
+  MARKET_IS_MOST_LIKELY_INVALID_TITLE,
   MODAL_CLAIM_FEES,
   MODAL_CLAIM_MARKETS_PROCEEDS,
   MODAL_FINALIZE_MARKET,
@@ -29,7 +30,12 @@ import {
   NEW,
   NOTIFICATION_TYPES,
   NOTIFICATIONS_LABEL,
-  NOTIFICATIONS_TITLE,
+  NOTIFICATIONS_TITLE, PROCEEDS_TO_CLAIM_TITLE, REPORTING_ENDS_SOON_TITLE,
+  RESOLVED_MARKETS_OPEN_ORDERS_TITLE, SIGN_SEND_ORDERS,
+  TYPE_DISPUTE,
+  TYPE_REPORT,
+  TYPE_VIEW_DETAILS,
+  TYPE_VIEW_ORDERS,
 } from 'modules/common/constants';
 import { MessagesIcon } from 'modules/common/icons';
 import Styles from 'modules/account/components/notification.styles.less';
@@ -368,7 +374,7 @@ const Notifications = ({ toggle }: NotificationsProps) => {
       toggle={toggle}
       customClass={classNames({
         [Styles.DarkBackgroundMobile]: notificationCount !== 0,
-        [Styles.NoBorderAndBgOnMobile]: notificationCount === 0,
+        [Styles.NoBorderAndBgOnMobile]: notificationCount !== 0,
       })}
       content={
         notificationCount === 0 ? (
