@@ -899,6 +899,10 @@
 				border: 0;
 				border-radius: 0;
 				border-bottom: @size-1 solid var(--color-outline);
+
+				&:last-of-type {
+					border-bottom: 0;
+				}
 			}
 		}
 	}
@@ -1515,6 +1519,7 @@
 			height: unset;
 			flex-flow: row-reverse wrap;
 			padding: @size-12 @size-10 @size-10;
+			border-top: @size-1 solid var(--color-outline);
 
 			> span,
 			> span[class*="ProgressLabel"] {
@@ -1569,5 +1574,9 @@
 				stroke: none;
 			}
 		}
+	}
+
+	@media @breakpoint-mobile {
+		height: unset;
 	}
 }
