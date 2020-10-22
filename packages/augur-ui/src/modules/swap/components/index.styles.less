@@ -1,6 +1,7 @@
 @import (reference) '~assets/styles/shared';
 
-.Swap, .Pool {
+.Swap,
+.Pool {
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -64,4 +65,20 @@
 
   color: var(--color-error);
   margin: @size-16 0 0 0;
+}
+
+:root[theme='BETTING'],
+:root[theme='SPORTS'] {
+  .Swap,
+  .Pool {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+
+    > div:first-of-type {
+      > div:nth-of-type(2) div > input {
+        background: var(--color-dark-grey);
+      }
+    }
+  }
 }
