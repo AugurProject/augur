@@ -115,8 +115,18 @@ export function useLPTokenBalances(): [{ [tokenAddress: string]: string | undefi
   ]
 }
 
+const outcomeNames = ['invalidAmount', 'noAmount', 'yesAmount']
+
 export function useMarketShareBalances(): [
-  { paraShareToken: string; marketId: string; outcome: number; amount: CurrencyAmount; noAmount: string; yesAmount: string; cash: string }[],
+  {
+    paraShareToken: string
+    marketId: string
+    outcome: number
+    amount: CurrencyAmount
+    noAmount: string
+    yesAmount: string
+    cash: string
+  }[],
   boolean
 ] {
   const { markets, paraShareTokens } = useAllMarketData()
@@ -124,7 +134,8 @@ export function useMarketShareBalances(): [
   const paraTokenAdds: string[] = paraShareTokens.map(p => p.id)
 
   const inputs: [] = useMemo(
-    () => (markets ? markets.reduce((p, m) => [...p, [m.id, 1, account], [m.id, 2, account]], []) : []),
+    () =>
+      markets ? markets.reduce((p, m) => [...p, [m.id, 0, account], [m.id, 1, account], [m.id, 2, account]], []) : [],
     [markets]
   )
 
@@ -136,42 +147,44 @@ export function useMarketShareBalances(): [
   )
 
   const anyLoading: boolean = useMemo(() => balances.some(callState => callState.loading), [balances])
+  const keyedMarkets = markets.reduce((p, m) => ({ ...p, [m.id]: m }), {})
+  const keyedParaTokens = paraShareTokens.reduce((p, t) => ({ ...p, [t.id]: t }), {})
 
   return [
     useMemo(
       () =>
         account && inputs.length > 0
-          ? inputs.reduce((memo, params, j) => {
-              const marketId = params[0]
-              const outcome = params[1]
-              const pTokenAmounts = paraTokenAdds
-                .map((p, i) => ({ marketId, outcome, ptokenAddr: p, amount: String(balances?.[j]?.result?.[i]) }))
-                .filter(p => p.amount !== '0' && p.amount !== 'undefined')
-              if (pTokenAmounts.length > 0) {
-                pTokenAmounts.map(pTokenAmount => {
-                  const { ptokenAddr, marketId, amount } = pTokenAmount
-                  const market = markets.find(m => m.id.toLowerCase() === String(marketId).toLowerCase())
-                  const paraShareToken = paraShareTokens.find(p => p.id.toLowerCase() === ptokenAddr)
-                  let item = memo.find(i => i.paraSharetokenAddress === ptokenAddr && i.marketId === marketId)
-                  const amountName = outcome === 1 ? 'noAmount' : 'yesAmount'
-                  if (item === undefined) {
-                    item = {
-                      cash: paraShareToken.cash.id,
-                      marketId,
-                      [amountName]: amount,
-                      market,
-                      paraShareToken
+          ? Object.values(
+              inputs.reduce((memo, params, j) => {
+                const marketId = params[0]
+                const outcome = params[1]
+                const pTokenAmounts = paraTokenAdds
+                  .map((p, i) => ({ marketId, outcome, ptokenAddr: p, amount: String(balances?.[j]?.result?.[i]) }))
+                  .filter(p => p.amount !== '0' && p.amount !== 'undefined')
+                if (pTokenAmounts.length > 0) {
+                  pTokenAmounts.map(pTokenAmount => {
+                    const { ptokenAddr, marketId, amount } = pTokenAmount
+                    const key = `${ptokenAddr}-${marketId}`
+                    if (amount === '0') return memo
+                    const amountName = outcomeNames[outcome]
+                    let item = memo[key]
+                    if (item === undefined) {
+                      return (memo[key] = {
+                        cash: keyedParaTokens[ptokenAddr].cash.id,
+                        marketId,
+                        [amountName]: amount,
+                        market: keyedMarkets[marketId],
+                        paraShareToken: keyedParaTokens[ptokenAddr],
+                      })
                     }
-                  } else {
-                    item = { ...item, [amountName]: String('0') }
-                  }
-                  memo = [...memo, item]
-                })
-              }
-              return memo
-            }, [])
+                    return (memo[key] = { ...item, [amountName]: String('0') })
+                  })
+                }
+                return memo
+              }, {})
+            )
           : [],
-      [account, inputs, balances, markets, paraTokenAdds]
+      [account, inputs, balances, keyedMarkets, paraTokenAdds, keyedParaTokens, outcomeNames]
     ),
     anyLoading
   ]
@@ -201,7 +214,6 @@ export function useCurrencyBalances(
   const tokenBalances = useTokenBalances(account, tokens)
   const containsETH: boolean = useMemo(() => currencies?.some(currency => currency === ETHER) ?? false, [currencies])
   const ethBalance = useETHBalances(containsETH ? [account] : [])
-  const [userMarketShareBalances] = useMarketShareBalances()
 
   return useMemo(
     () =>
@@ -214,7 +226,7 @@ export function useCurrencyBalances(
         if (currency === ETHER) return ethBalance[account]
         return undefined
       }) ?? [],
-    [account, currencies, ethBalance, tokenBalances, userMarketShareBalances]
+    [account, currencies, ethBalance, tokenBalances]
   )
 }
 

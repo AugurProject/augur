@@ -25,30 +25,34 @@ export class AMMExchange {
     return _yes.div(_no);
   }
 
-  async enterPosition(shares: Shares, yes: boolean, rate = false): Promise<BigNumber> {
-    const cash = await binarySearch(
-      new BigNumber(1),
-      new BigNumber(shares.times(YES_NO_NUMTICKS)),
-      100,
-      async (cash) => {
-        const yesShares = await this.contract.rateEnterPosition(cash.toFixed(), yes);
-        return bnDirection(shares, yesShares);
-      }
-    );
-    if (!rate) {
-      const txr: TransactionResponse = await this.contract.enterPosition(cash.toFixed(), yes, shares.toFixed());
-      const tx = await txr.wait();
-      const logs = tx.logs
-        .filter((log) => log.address === this.address)
-        .map((log) =>  this.contract.interface.parseLog(log));
-      console.log(JSON.stringify(logs, null, 2));
-    }
-    return cash;
+  async rateEnterPosition(cash: BigNumber, buyYes: boolean): Promise<BigNumber> {
+    return this.contract.rateEnterPosition(cash.toFixed(), buyYes);
   }
 
-  async exitPosition(invalidShares: Shares, noShares: Shares, yesShares: Shares) {
-    const { _cashPayout } = await this.contract.rateExitPosition(invalidShares, noShares, yesShares);
-    await this.contract.exitPosition(invalidShares, noShares, yesShares, _cashPayout);
+  async enterPosition(cash: BigNumber, buyYes: boolean, minShares: BigNumber): Promise<TransactionResponse> {
+    return this.contract.enterPosition(cash.toFixed(), buyYes, minShares.toFixed());
+  }
+
+  async rateCashEnterPosition(shares: Shares, buyYes: boolean): Promise<BigNumber> {
+      const cash = await binarySearch(
+        new BigNumber(1),
+        new BigNumber(shares.times(YES_NO_NUMTICKS)),
+        100,
+        async (cash) => {
+          const yesShares = await this.contract.rateEnterPosition(cash.toFixed(), buyYes);
+          return bnDirection(shares, yesShares);
+        }
+      );
+      return cash;
+    }
+
+
+  async rateExitPosition(invalidShares: BigNumber, noShares: BigNumber, yesShares: BigNumber): Promise<BigNumber> {
+    return this.contract.rateExitPosition(invalidShares.toFixed(), noShares.toFixed(), yesShares.toFixed());
+  }
+
+  async exitPosition(invalidShares: Shares, noShares: Shares, yesShares: Shares, minCash: BigNumber): Promise<TransactionResponse> {
+    return this.contract.exitPosition(invalidShares, noShares, yesShares, minCash);
   }
 
   async exitAll(): Promise<Cash> {

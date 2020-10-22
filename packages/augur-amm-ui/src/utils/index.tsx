@@ -575,7 +575,7 @@ export function getSigner(library: Web3Provider, account: string): JsonRpcSigner
 export function getProviderOrSigner(library: Web3Provider, account?: string) {
   return account ? getSigner(library, account) : library
   // look to use ethers provider if need be.
-/*
+  /*
   if(account) {
     // This just connects the account if necessary.
     getSigner(library, account);
@@ -590,7 +590,6 @@ export function getContract(address: string, ABI: any, library: Web3Provider, ac
   if (!isAddress(address) || address === AddressZero) {
     throw Error(`Invalid 'address' parameter '${address}'.`)
   }
-  console.log('get contract', address, account)
   return new Contract(address, ABI, getProviderOrSigner(library, account) as any)
 }
 
@@ -637,7 +636,7 @@ export async function getRemoveLiquidity({
   lpTokens
 }): Promise<{ noShares: string; yesShares: string; cashShares: string } | null> {
   if (!augurClient || !ammAddress) {
-    console.error('augurClient is null or amm address')
+    console.error('getRemoveLiquidity: augurClient is null or amm address')
     return null
   }
   console.log('getRemoveLiquidity', ammAddress, String(lpTokens))
@@ -651,7 +650,7 @@ export async function getRemoveLiquidity({
 }
 
 export function removeAmmLiquidity({ ammAddress, augurClient, lpTokens }) {
-  if (!augurClient || !ammAddress) return console.error('augurClient is null or amm address')
+  if (!augurClient || !ammAddress) return console.error('removeAmmLiquidity: augurClient is null or amm address')
   console.log('removeAmmLiquidity', ammAddress, String(lpTokens))
   return augurClient.ammFactory.removeLiquidity(ammAddress, new BN(lpTokens))
 }
@@ -663,4 +662,27 @@ export function escapeRegExp(string: string): string {
 export function isTokenOnList(defaultTokens: TokenAddressMap, currency?: Currency): boolean {
   if (currency === ETHER) return true
   return Boolean(currency instanceof Token && defaultTokens[currency.chainId]?.[currency.address])
+}
+
+export function estimateTrade(ammAddress: string, augurClient, input: string, output: string, amount: string) {
+  if (!augurClient || !ammAddress) return console.error('estimateTrade: augurClient is null or amm address')
+
+}
+
+export function estimateEnterPosition(ammAddress: string, augurClient, cash: string, buyYes: boolean) {
+  return augurClient.ammFactory.getRateEnterPosition(ammAddress, cash, buyYes)
+}
+
+export function enterPosition(ammAddress: string, augurClient, cash: string, buyYes: boolean, minShares: string) {
+  if (!augurClient || !ammAddress) return console.error('enterPosition: augurClient is null or amm address')
+  return augurClient.ammFactory.enterPosition(ammAddress, cash, buyYes, minShares)
+}
+
+export function estimateExitPosition(ammAddress: string, augurClient, cash: string, buyYes: boolean) {
+  return augurClient.ammFactory.getRateEnterPosition(ammAddress, cash, buyYes)
+}
+
+export function exitPosition(ammAddress: string, augurClient, cash: string, buyYes: boolean, minShares: string) {
+  if (!augurClient || !ammAddress) return console.error('enterPosition: augurClient is null or amm address')
+  return augurClient.ammFactory.enterPosition(ammAddress, cash, buyYes, minShares)
 }
