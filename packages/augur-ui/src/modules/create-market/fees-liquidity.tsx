@@ -216,6 +216,7 @@ export const FeesLiquidity = ({ onChange }: FeesLiquidityProps) => {
             setSelectedOutcome(value);
             setSelectedOrderProperties({ ...DEFAULT_ORDER_PROPERTIES });
           }}
+          orderBook={formatOrderBook(orderBook[selectedOutcome] || [])}
         />
         <OrderBook
           updateSelectedOrderProperties={value =>

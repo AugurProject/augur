@@ -562,6 +562,7 @@ export const SportsOutcome = ({
             <span>{label}</span>
           </>
         )}
+        <p>{subLabel}</p>
       </button>
       <span>{subLabel}</span>
     </div>
@@ -569,7 +570,13 @@ export const SportsOutcome = ({
 };
 
 export const OutcomeGroupFooter = ({
-  market: { id, outcomesFormatted, volumeFormatted },
+  market: {
+    id,
+    outcomesFormatted,
+    volumeFormatted,
+    endTimeFormatted,
+    reportingState,
+  },
   showLeader = false,
 }) => {
   const location = useLocation();
@@ -594,7 +601,18 @@ export const OutcomeGroupFooter = ({
       ) : null;
   } else {
     content = (
-      <MarketLink id={id}>{ThickChevron} View Market Details</MarketLink>
+      <Fragment key="content">
+        <MarketLink id={id}>{ThickChevron} View Market Details</MarketLink>
+        <span className={Styles.MatchedLine}>
+          Matched<b>{volumeFormatted.full}</b>
+        </span>
+        <CountdownProgress
+          label="Event Expiration"
+          time={endTimeFormatted}
+          reportingState={reportingState}
+          forceLongDate
+        />
+      </Fragment>
     );
   }
   return (
@@ -795,6 +813,9 @@ export const ComboMarketContainer = ({
   isGroupPage = false,
 }: ComboMarketContainerProps) => {
   const { SPREAD, MONEY_LINE, OVER_UNDER } = SPORTS_GROUP_MARKET_TYPES;
+  const [spreadCollapsed, setSpreadCollapsed] = useState(data[SPREAD].length === 0);
+  const [moneyLineCollapsed, setMoneyLineCollapsed] = useState(data[MONEY_LINE].length === 0);
+  const [overUnderCollapsed, setOverUnderCollapsed] = useState(data[OVER_UNDER].length === 0);
   const {
     sportsBook: { placeholderOutcomes },
   } = sportsGroup.markets.find(
@@ -817,30 +838,89 @@ export const ComboMarketContainer = ({
         }
       )}
     >
-      <header>
-        <ul>
-          <li></li>
-          <li>Spread</li>
-          <li>Moneyline</li>
-          <li>Over/Under</li>
-        </ul>
-      </header>
-      <div>
-        {placeholderOutcomes.map((outcomeLabel, index) => (
-          <ul key={outcomeLabel}>
-            <li>{outcomeLabel}</li>
-            <li>
-              <SportsOutcome {...data[SPREAD][index]} title={undefined} />
-            </li>
-            <li>
-              <SportsOutcome {...data[MONEY_LINE][index]} title={undefined} />
-            </li>
-            <li>
-              <SportsOutcome {...data[OVER_UNDER][index]} title={undefined} />
-            </li>
-          </ul>
-        ))}
-      </div>
+      <ul>
+        <li></li>
+        <li>{placeholderOutcomes[0]}</li>
+        <li>{placeholderOutcomes[1]}</li>
+        <li>{placeholderOutcomes[2]}</li>
+      </ul>
+      <ul className={classNames({
+        [Styles.ListCollapse]: spreadCollapsed,
+      })}>
+        <li>
+        <button
+            className={Styles.toggleCollapsed}
+            onClick={e => {
+              e.preventDefault();
+              setSpreadCollapsed(!spreadCollapsed);
+            }}
+          >
+          Spread
+          <span>{`${data[SPREAD][0]?.market?.sportsBook?.marketLine}.5`}</span>
+          {ThickChevron}
+        </button>
+        </li>
+        <li>
+          <SportsOutcome {...data[SPREAD][0]} />
+        </li>
+        <li>
+          <SportsOutcome {...data[SPREAD][1]} />
+        </li>
+        <li>
+          <SportsOutcome {...data[SPREAD][2]} />
+        </li>
+      </ul>
+      <ul className={classNames({
+        [Styles.ListCollapse]: moneyLineCollapsed,
+      })}>
+        <li>
+        <button
+            className={Styles.toggleCollapsed}
+            onClick={e => {
+              e.preventDefault();
+              setMoneyLineCollapsed(!moneyLineCollapsed);
+            }}
+          >
+          Moneyline
+          {ThickChevron}
+        </button>
+        </li>
+        <li>
+          <SportsOutcome {...data[MONEY_LINE][0]} />
+        </li>
+        <li>
+          <SportsOutcome {...data[MONEY_LINE][1]} />
+        </li>
+        <li>
+          <SportsOutcome {...data[MONEY_LINE][2]} />
+        </li>
+      </ul>
+      <ul className={classNames({
+        [Styles.ListCollapse]: overUnderCollapsed,
+      })}>
+        <li>
+        <button
+            className={Styles.toggleCollapsed}
+            onClick={e => {
+              e.preventDefault();
+              setOverUnderCollapsed(!overUnderCollapsed);
+            }}
+          >
+          Over/Under
+          <span>{`${data[OVER_UNDER][0]?.market?.sportsBook?.marketLine}.5`}</span>
+          {ThickChevron}
+        </button>
+        </li>
+        <li>
+          <SportsOutcome {...data[OVER_UNDER][0]} />
+        </li>
+        <li>
+          <SportsOutcome {...data[OVER_UNDER][1]} />
+        </li>
+        <li>
+          <SportsOutcome {...data[OVER_UNDER][2]} />
+        </li>
+      </ul>
     </section>
   );
 };
@@ -887,15 +967,20 @@ export const SportsMarketContainer = ({
     }
   }, [market.id, market.author]);
   let innerContent = null;
-  let headingContent = marketAmount > 1 ? <button
-    onClick={e => {
-      e.preventDefault();
-      setIsCollapsed(!isCollapsed);
-    }}
-  >
-    <h6>{title}</h6>
-    {ThickChevron}
-  </button> : <h6>{title}</h6>;
+  let headingContent =
+    marketAmount > 1 ? (
+      <button
+        onClick={e => {
+          e.preventDefault();
+          setIsCollapsed(!isCollapsed);
+        }}
+      >
+        <h6>{title}</h6>
+        {ThickChevron}
+      </button>
+    ) : (
+      <h6>{title}</h6>
+    );
   const isGrid = data.length > 4;
   if (isGrid) {
     innerContent = <MultiOutcomeMarketGrid key={marketId} data={data} />;
@@ -909,18 +994,16 @@ export const SportsMarketContainer = ({
     const newBase = window.location.href.replace('markets', 'market?id=');
     headingContent = (
       <Fragment key={`${marketId}-heading`}>
+        <h6>{market.description}</h6>
+        {tradingPositionsPerMarket &&
+          tradingPositionsPerMarket.current !== '0' &&
+          PositionIcon}
         <CountdownProgress
-          label="Event Expiration Date"
+          label="Event Expiration"
           time={market.endTimeFormatted}
           reportingState={market.reportingState}
           forceLongDate
         />
-        {tradingPositionsPerMarket &&
-          tradingPositionsPerMarket.current !== '0' &&
-          PositionIcon}
-        <span className={Styles.MatchedLine}>
-          Matched<b>{market.volumeFormatted.full}</b>
-        </span>
         <DotSelection
           customClass={classNames({ [Styles.ShowCopied]: isCopied })}
         >
@@ -970,7 +1053,7 @@ export const SportsMarketContainer = ({
         ) : null}
       </header>
       <div>{innerContent}</div>
-      <OutcomeGroupFooter market={market} />
+      {isFutures && <OutcomeGroupFooter market={market} />}
     </section>
   );
 };
@@ -1492,7 +1575,14 @@ export const TopRow = ({ market, categoriesWithClick, sportMarkets }) => {
           </span>
           <button
             className={Styles.RulesButton}
-            onClick={() => setModal({type: MODAL_MARKET_RULES, sportMarkets, description: header, endTime: endTimeFormatted.formattedUtc})}
+            onClick={() =>
+              setModal({
+                type: MODAL_MARKET_RULES,
+                sportMarkets,
+                description: header,
+                endTime: endTimeFormatted.formattedUtc,
+              })
+            }
           >
             {Rules} Rules
           </button>
