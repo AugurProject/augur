@@ -68,14 +68,13 @@ export function updateAMM(id: string):AMMExchange {
   amm.liquidityInvalid = shareTokenInstance.balanceOfMarketOutcome(
     Address.fromString(amm.market), BigInt.fromI32(0), Address.fromString(id));
   amm.liquidityNo = shareTokenInstance.balanceOfMarketOutcome(
-    Address.fromString(amm.market), BigInt.fromI32(1), Address.fromString(id));
+    Address.fromString(amm.market), BigInt.fromI32(1), Address.fromString(id)).div(market.numTicks);
   amm.liquidityYes = shareTokenInstance.balanceOfMarketOutcome(
-    Address.fromString(amm.market), BigInt.fromI32(2), Address.fromString(id));
+    Address.fromString(amm.market), BigInt.fromI32(2), Address.fromString(id)).div(market.numTicks);
 
   let totalShares = amm.liquidityNo.plus(amm.liquidityYes);
 
-  // @todo confirm this is correct.
-  amm.liquidity = totalShares.div(market.numTicks);
+  amm.liquidity = totalShares;
 
   amm.percentageNo = amm.liquidityNo.div(totalShares);
   amm.percentageYes = amm.liquidityYes.div(totalShares);
