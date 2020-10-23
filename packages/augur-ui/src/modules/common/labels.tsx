@@ -1032,10 +1032,9 @@ export const LiquidityDepletedLabel = ({
   const isSports = theme === THEMES.SPORTS;
   const showLabel = (
     !isSports && (
-      market.passDefaultLiquiditySpread ||
-      market.hasPendingLiquidityOrders ||
-      market.marketStatus === constants.MARKET_CLOSED
-    )
+      !market.passDefaultLiquiditySpread ||
+      market.hasPendingLiquidityOrders
+    ) && market.marketStatus !== constants.MARKET_CLOSED
   );
   return (
     <>

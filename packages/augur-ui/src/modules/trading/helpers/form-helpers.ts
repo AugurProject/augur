@@ -98,17 +98,17 @@ export const testPrice = (
   if (
     initialLiquidity &&
     selectedNav === BUY &&
-    orderBook.asks &&
-    orderBook.asks.length &&
-    value.gte(orderBook.asks[0].price)
+    orderBook?.asks &&
+    orderBook?.asks.length &&
+    value.gte(orderBook?.asks[0].price)
   ) {
     const message = usePercent
       ? `Percent must be less than best ask of ${calcPercentageFromPrice(
-          orderBook.asks[0].price,
+          orderBook?.asks[0].price,
           minPrice,
           maxPrice
         )}`
-      : `Price must be less than best ask of ${orderBook.asks[0].price}`;
+      : `Price must be less than best ask of ${orderBook?.asks[0].price}`;
     errorCount += 1;
     passedTest = false;
     errors[PRICE].push(message);
