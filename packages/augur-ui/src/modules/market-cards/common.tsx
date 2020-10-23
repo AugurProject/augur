@@ -34,7 +34,7 @@ import {
   MODAL_REPORTING,
   SPORTS_GROUP_TYPES,
   SPORTS_GROUP_MARKET_TYPES,
-  MODAL_MARKET_RULES, PROBABLE_INVALID_MARKET,
+  MODAL_MARKET_RULES,
 } from 'modules/common/constants';
 import { convertToOdds, convertToNormalizedPrice } from 'utils/get-odds';
 import { MARKET_LIST_CARD, marketLinkCopied } from 'services/analytics/helpers';
@@ -52,7 +52,7 @@ import {
   WinningMedal,
   ThickChevron,
   FingersCrossed,
-  QuestionIcon, RedFlagIcon,
+  QuestionIcon,
 } from 'modules/common/icons';
 import { isSameAddress } from 'utils/isSameAddress';
 import {
@@ -82,7 +82,7 @@ import { calculatePosition } from 'modules/market/components/market-scalar-outco
 import { getOutcomeNameWithOutcome } from 'utils/get-outcome';
 import { SmallSubheadersTooltip } from 'modules/create-market/components/common';
 import { Betslip } from 'modules/trading/store/betslip';
-import { MARKET, MARKETS } from 'modules/routes/constants/views';
+import { MARKETS } from 'modules/routes/constants/views';
 import makePath from 'modules/routes/helpers/make-path';
 import toggleCategory from 'modules/routes/helpers/toggle-category';
 import { useMarketsStore } from 'modules/markets/store/markets';
@@ -864,7 +864,7 @@ export const SportsMarketContainer = ({
   noHeader = false,
 }) => {
   const { FUTURES } = SPORTS_GROUP_TYPES;
-  const { theme, isLogged, accountPositions } = useAppStatusStore();
+  const { isLogged, accountPositions } = useAppStatusStore();
   const [isCollapsed, setIsCollapsed] = useState(!startOpen);
   const [isCopied, setIsCopied] = useState(false);
   const location = useLocation();
