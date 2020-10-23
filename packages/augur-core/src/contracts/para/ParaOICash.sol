@@ -6,6 +6,7 @@ import 'ROOT/para/interfaces/IParaShareToken.sol';
 import 'ROOT/libraries/Initializable.sol';
 import 'ROOT/libraries/token/VariableSupplyToken.sol';
 import 'ROOT/para/interfaces/IParaOICash.sol';
+import 'ROOT/libraries/token/SafeERC20.sol';
 
 
 /**
@@ -13,6 +14,7 @@ import 'ROOT/para/interfaces/IParaOICash.sol';
  * @dev A Wrapper contract for the deployed Cash contract which Augur considers OI. Cash can be deposited and will count toward OI for reporting fee calculations and will extract a reporting fee on withdrawl
  */
 contract ParaOICash is VariableSupplyToken, Initializable, IParaOICash {
+    using SafeERC20 for IERC20;
     using SafeMathUint256 for uint256;
 
     IParaAugur public augur;
@@ -31,12 +33,12 @@ contract ParaOICash is VariableSupplyToken, Initializable, IParaOICash {
         require(shareToken != IParaShareToken(0));
         universe = _universe;
 
-        require(cash.approve(address(_augur), MAX_APPROVAL_AMOUNT), "Cash approval of augur failed");
-        require(cash.approve(address(_universe.getFeePot()), MAX_APPROVAL_AMOUNT), "Cash approval of fee pot failed");
+        cash.safeApprove(address(_augur), MAX_APPROVAL_AMOUNT);
+        cash.safeApprove(address(_universe.getFeePot()), MAX_APPROVAL_AMOUNT);
     }
 
     function approveFeePot() external {
-        require(cash.approve(address(universe.getFeePot()), MAX_APPROVAL_AMOUNT), "Cash approval of fee pot failed");
+        cash.safeApprove(address(universe.getFeePot()), MAX_APPROVAL_AMOUNT);
     }
 
     function deposit(uint256 _amount) external returns (bool) {

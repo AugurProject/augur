@@ -10,12 +10,14 @@ import 'ROOT/libraries/ReentrancyGuard.sol';
 import 'ROOT/libraries/ITyped.sol';
 import 'ROOT/libraries/Initializable.sol';
 import 'ROOT/libraries/TokenId.sol';
+import 'ROOT/libraries/token/SafeERC20.sol';
 
 
 contract ParaShareToken is ITyped, Initializable, ERC1155, ReentrancyGuard {
+    using SafeERC20 for IERC20;
 
     IParaAugur public augur;
-    ICash public cash;
+    IERC20 public cash;
     ShareToken public originalShareToken;
 
     uint256 private constant MAX_APPROVAL_AMOUNT = 2 ** 256 - 1;
@@ -34,15 +36,15 @@ contract ParaShareToken is ITyped, Initializable, ERC1155, ReentrancyGuard {
         endInitialization();
         augur = IParaAugur(_augur);
         originalShareToken = _originalShareToken;
-        cash = ICash(IParaAugur(_augur).lookup("Cash"));
+        cash = IERC20(IParaAugur(_augur).lookup("Cash"));
 
-        require(cash != ICash(0));
+        require(cash != IERC20(0));
     }
 
     function approveUniverse(IParaUniverse _paraUniverse) external {
         require(msg.sender == address(augur));
-        cash.approve(address(_paraUniverse), MAX_APPROVAL_AMOUNT);
-        cash.approve(address(_paraUniverse.getFeePot()), MAX_APPROVAL_AMOUNT);
+        cash.safeApprove(address(_paraUniverse), MAX_APPROVAL_AMOUNT);
+        cash.safeApprove(address(_paraUniverse.getFeePot()), MAX_APPROVAL_AMOUNT);
     }
 
     /**

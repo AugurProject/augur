@@ -8,9 +8,11 @@ import 'ROOT/libraries/math/SafeMathUint256.sol';
 import 'ROOT/para/interfaces/IParaShareToken.sol';
 import "ROOT/para/interfaces/IAMMFactory.sol";
 import "ROOT/para/interfaces/IAMMExchange.sol";
+import 'ROOT/libraries/token/SafeERC20.sol';
 
 
 contract AMMExchange is IAMMExchange, ERC20 {
+    using SafeERC20 for IERC20;
     using SafeMathUint256 for uint256;
 	using SafeMathInt256 for int256;
 
@@ -29,8 +31,8 @@ contract AMMExchange is IAMMExchange, ERC20 {
         shareToken = _shareToken;
         augurMarket = _market;
         numTicks = _market.getNumTicks();
-        cash.approve(address(_shareToken), 2**256-1);
-        cash.approve(address(_shareToken.augur()), 2**256-1);
+        IERC20(cash).safeApprove(address(_shareToken), 2**256-1);
+        IERC20(cash).safeApprove(address(_shareToken.augur()), 2**256-1);
         INVALID = _shareToken.getTokenId(_market, 0);
         NO = _shareToken.getTokenId(_market, 1);
         YES = _shareToken.getTokenId(_market, 2);

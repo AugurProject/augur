@@ -13,9 +13,11 @@ import 'ROOT/trading/Order.sol';
 import 'ROOT/trading/IProfitLoss.sol';
 import 'ROOT/libraries/ContractExists.sol';
 import 'ROOT/libraries/Ownable.sol';
+import 'ROOT/libraries/token/SafeERC20.sol';
 
 
 contract ParaAugurTrading is IAugurTrading, Ownable {
+    using SafeERC20 for IERC20;
     using SafeMathUint256 for uint256;
     using ContractExists for address;
 
@@ -61,14 +63,14 @@ contract ParaAugurTrading is IAugurTrading, Ownable {
 
     IAugur public augur;
     IShareToken public shareToken;
-    ICash public cash;
+    IERC20 public cash;
 
     uint256 private constant MAX_APPROVAL_AMOUNT = 2 ** 256 - 1;
 
     constructor(IAugur _augur) public {
         owner = msg.sender;
         augur = _augur;
-        cash = ICash(_augur.lookup("Cash"));
+        cash = IERC20(_augur.lookup("Cash"));
     }
 
     function registerContract(bytes32 _key, address _address) public onlyOwner returns (bool) {
@@ -82,15 +84,15 @@ contract ParaAugurTrading is IAugurTrading, Ownable {
         bytes32[3] memory _names = [bytes32("CancelOrder"), bytes32("FillOrder"), bytes32("CreateOrder")];
 
         shareToken = IShareToken(augur.lookup("ShareToken"));
-        ICash _cash = cash;
+        IERC20 _cash = cash;
 
         require(shareToken != IShareToken(0));
-        require(_cash != ICash(0));
+        require(_cash != IERC20(0));
 
         for (uint256 i = 0; i < _names.length; i++) {
             address _address = registry[_names[i]];
             shareToken.setApprovalForAll(_address, true);
-            _cash.approve(_address, MAX_APPROVAL_AMOUNT);
+            _cash.safeApprove(_address, MAX_APPROVAL_AMOUNT);
         }
     }
 
