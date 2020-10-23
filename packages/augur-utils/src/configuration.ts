@@ -231,6 +231,9 @@ export interface SideChainAddresses {
   ProfitLoss?: string;
   MarketGetter?: string;
   RepFeeTarget?: string;
+  // Matic
+  TradingCash?: string;
+  PredicateRegistry?: string;
 }
 
 export interface GovernanceAddresses {

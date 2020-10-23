@@ -45,13 +45,13 @@ contract ParaOICash is VariableSupplyToken, Initializable, IParaOICash {
         return true;
     }
 
-    function withdraw(uint256 _amount) external returns (bool) {
+    function withdraw(uint256 _amount) external returns (bool _alwaysTrue, uint256 _payout) {
         burn(msg.sender, _amount);
 
         // Withdraw cash to this contract
         universe.withdraw(address(this), _amount, address(0));
 
-        uint256 _payout = _amount;
+        _payout = _amount;
         uint256 _reportingFeeDivisor = universe.getOrCacheReportingFeeDivisor();
         uint256 _feesOwed = _amount / _reportingFeeDivisor;
 
@@ -65,7 +65,8 @@ contract ParaOICash is VariableSupplyToken, Initializable, IParaOICash {
         }
 
         require(cash.transfer(msg.sender, _payout));
-        return true;
+
+        _alwaysTrue = true;
     }
 
     function payFees(uint256 _feeAmount) external returns (bool) {

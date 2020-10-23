@@ -83,6 +83,10 @@ export class RelayHubV2 extends c.RelayHubV2<BigNumber> {
 }
 export class StakeManager extends c.StakeManager<BigNumber> {
 }
+export class PredicateRegistry extends c.PredicateRegistry<BigNumber> {
+}
+export class TradingCash extends c.TradingCash<BigNumber> {
+}
 export class AMMExchange extends c.AMMExchange<BigNumber> {
 }
 export class AMMFactory extends c.AMMFactory<BigNumber> {

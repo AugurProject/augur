@@ -146,6 +146,9 @@ export const EXTERNAL_CONTRACTS = [
     'AMMExchange',
     'AMMFactory',
     'WethWrapperForAMMExchange',
+    // Matic
+    'TradingCash',
+    'PredicateRegistry',
 ];
 
 export const REGISTERED_EXTERNAL_CONTRACTS = [
