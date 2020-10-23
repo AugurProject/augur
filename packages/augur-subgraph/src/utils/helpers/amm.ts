@@ -76,8 +76,8 @@ export function updateAMM(id: string):AMMExchange {
 
   amm.liquidity = totalShares;
 
-  amm.percentageNo = amm.liquidityNo.div(totalShares);
-  amm.percentageYes = amm.liquidityYes.div(totalShares);
+  amm.percentageNo = amm.liquidityNo.times(BigInt.fromI32(100)).div(totalShares);
+  amm.percentageYes = amm.liquidityYes.times(BigInt.fromI32(100)).div(totalShares);
 
   amm.totalSupply = ammExchangeInstance.totalSupply();
 
