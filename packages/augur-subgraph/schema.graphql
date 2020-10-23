@@ -753,10 +753,10 @@ type AMMExchange @entity {
   volumeNo: BigInt!
 
   "Percentage of shares that are no."
-  percentageNo: BigInt!
+  percentageNo: BigDecimal!
 
   "Percentage of shares that are yes."
-  percentageYes: BigInt!
+  percentageYes: BigDecimal!
 
   "Number of LP token outstanding."
   totalSupply: BigInt!
