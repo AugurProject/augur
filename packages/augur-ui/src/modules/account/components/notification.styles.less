@@ -205,7 +205,7 @@ div.HasCheckbox {
   margin-right: auto;
 }
 
-div.DarkBackgroundMobile {
+div.HasNotifications {
   @media @breakpoint-mobile {
     > div:last-of-type {
       background: var(--color-dark-grey);
@@ -220,8 +220,22 @@ div.DarkBackgroundMobile {
     border-bottom: @size-1 solid var(--color-dark-grey);
     padding: 0 @size-12;
 
+    button {
+      height: @size-29;
+      padding: @size-8;
+      border: @size-1 solid var(--color-dark-text);
+    }
+
     > section {
       border-bottom: none;
+
+      > .Message > span {
+        margin-bottom: @size-8;
+      }
+    }
+
+    &.noCounter > section > .Message > span{
+      margin-bottom: 0;
     }
   }
 
@@ -306,13 +320,8 @@ div.DarkBackgroundMobile {
     }
   }
 
-  .NotificationCard button {
-    height: @size-29;
-    padding: @size-8;
-    border: @size-1 solid var(--color-dark-text);
-  }
-
   .Countdown {
+    align-self: flex-start;
     margin: @size-4 0 auto;
 
     > span {
@@ -328,6 +337,7 @@ div.DarkBackgroundMobile {
         .mono-12-bold;
 
         color: var(--color-reporting);
+        margin-left: @size-3;
       }
     }
   }
@@ -346,23 +356,38 @@ div.DarkBackgroundMobile {
     }
   }
 
+  .BottomRow {
+    margin-top: 0;
+  }
+
   @media @breakpoint-mobile {
     .NotificationCard {
       border: @size-1 solid var(--color-dark-grey);
 
-      div.BottomRow {
-        margin-left: unset;
-
-        button {
-          margin-top: @size-8;
-          width: 100%;
-        }
+      > section > .Message > span {
+        margin-bottom: 0;
       }
     }
 
-    .NoBorderAndBgOnMobile > div[class$="Container"] {
+    .HasNotifications > div[class$="Container"] {
       background-color: transparent;
       border: none;
+    }
+
+    .noCounter > section > div.Message > div.BottomRow,
+    .BottomRow {
+      flex-flow: column-reverse nowrap;
+      margin: 0;
+
+      > div {
+        margin: @size-8 auto 0 0;
+      }
+
+      > button {
+        justify-content: center;
+        margin: @size-8 0 0;
+        width: 100%;
+      }
     }
   }
 }

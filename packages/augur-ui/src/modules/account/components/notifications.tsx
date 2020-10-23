@@ -367,8 +367,7 @@ const Notifications = ({ toggle }: NotificationsProps) => {
       headerComplement={labelContent}
       toggle={toggle}
       customClass={classNames({
-        [Styles.DarkBackgroundMobile]: notificationCount !== 0,
-        [Styles.NoBorderAndBgOnMobile]: notificationCount === 0,
+        [Styles.HasNotifications]: notificationCount !== 0,
       })}
       content={
         notificationCount === 0 ? (
