@@ -160,6 +160,144 @@ title: Para
 
 
 
+### `Address`
+
+
+
+<div class="contract-index"><span class="contract-index-title">Functions</span><ul><li><a href="#Address.isContract(address)"><code class="function-signature">isContract(address account)</code></a></li><li><a href="#Address.sendValue(address payable,uint256)"><code class="function-signature">sendValue(address payable recipient, uint256 amount)</code></a></li><li><a href="#Address.functionCall(address,bytes)"><code class="function-signature">functionCall(address target, bytes data)</code></a></li><li><a href="#Address.functionCall(address,bytes,string)"><code class="function-signature">functionCall(address target, bytes data, string errorMessage)</code></a></li><li><a href="#Address.functionCallWithValue(address,bytes,uint256)"><code class="function-signature">functionCallWithValue(address target, bytes data, uint256 value)</code></a></li><li><a href="#Address.functionCallWithValue(address,bytes,uint256,string)"><code class="function-signature">functionCallWithValue(address target, bytes data, uint256 value, string errorMessage)</code></a></li><li><a href="#Address.functionStaticCall(address,bytes)"><code class="function-signature">functionStaticCall(address target, bytes data)</code></a></li><li><a href="#Address.functionStaticCall(address,bytes,string)"><code class="function-signature">functionStaticCall(address target, bytes data, string errorMessage)</code></a></li><li><a href="#Address.functionDelegateCall(address,bytes)"><code class="function-signature">functionDelegateCall(address target, bytes data)</code></a></li><li><a href="#Address.functionDelegateCall(address,bytes,string)"><code class="function-signature">functionDelegateCall(address target, bytes data, string errorMessage)</code></a></li></ul></div>
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="Address.isContract(address)"></a><code class="function-signature">isContract(address account) <span class="return-arrow">→</span> <span class="return-type">bool</span></code><span class="function-visibility">internal</span></h4>
+
+Returns true if `account` is a contract.
+
+[IMPORTANT]
+====
+It is unsafe to assume that an address for which this function returns
+false is an externally-owned account (EOA) and not a contract.
+
+Among others, [`isContract`](trading#Address.isContract(address)) will return false for the following
+types of addresses:
+
+- an externally-owned account
+ - a contract in construction
+ - an address where a contract will be created
+ - an address where a contract lived, but was destroyed
+====
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="Address.sendValue(address payable,uint256)"></a><code class="function-signature">sendValue(address payable recipient, uint256 amount)</code><span class="function-visibility">internal</span></h4>
+
+Replacement for Solidity&#x27;s `transfer`: sends `amount` wei to
+`recipient`, forwarding all available gas and reverting on errors.
+
+https://eips.ethereum.org/EIPS/eip-1884[EIP1884] increases the gas cost
+of certain opcodes, possibly making contracts go over the 2300 gas limit
+imposed by `transfer`, making them unable to receive funds via
+`transfer`. {sendValue} removes this limitation.
+
+https://diligence.consensys.net/posts/2019/09/stop-using-soliditys-transfer-now/[Learn more].
+
+IMPORTANT: because control is transferred to `recipient`, care must be
+taken to not create reentrancy vulnerabilities. Consider using
+{ReentrancyGuard} or the
+https://solidity.readthedocs.io/en/v0.5.11/security-considerations.html#use-the-checks-effects-interactions-pattern[checks-effects-interactions pattern].
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="Address.functionCall(address,bytes)"></a><code class="function-signature">functionCall(address target, bytes data) <span class="return-arrow">→</span> <span class="return-type">bytes</span></code><span class="function-visibility">internal</span></h4>
+
+Performs a Solidity function call using a low level `call`. A
+plain`call` is an unsafe replacement for a function call: use this
+function instead.
+
+If `target` reverts with a revert reason, it is bubbled up by this
+function (like regular Solidity function calls).
+
+Returns the raw returned data. To convert to the expected return value,
+use https://solidity.readthedocs.io/en/latest/units-and-global-variables.html?highlight=abi.decode#abi-encoding-and-decoding-functions[`abi.decode`].
+
+Requirements:
+
+- `target` must be a contract.
+- calling `target` with `data` must not revert.
+
+_Available since v3.1._
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="Address.functionCall(address,bytes,string)"></a><code class="function-signature">functionCall(address target, bytes data, string errorMessage) <span class="return-arrow">→</span> <span class="return-type">bytes</span></code><span class="function-visibility">internal</span></h4>
+
+Same as {xref-Address-functionCall-address-bytes-}[[`functionCall`](trading#Address.functionCall(address,bytes))], but with
+`errorMessage` as a fallback revert reason when `target` reverts.
+
+_Available since v3.1._
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="Address.functionCallWithValue(address,bytes,uint256)"></a><code class="function-signature">functionCallWithValue(address target, bytes data, uint256 value) <span class="return-arrow">→</span> <span class="return-type">bytes</span></code><span class="function-visibility">internal</span></h4>
+
+Same as {xref-Address-functionCall-address-bytes-}[[`functionCall`](trading#Address.functionCall(address,bytes))],
+but also transferring `value` wei to `target`.
+
+Requirements:
+
+- the calling contract must have an ETH balance of at least `value`.
+- the called Solidity function must be `payable`.
+
+_Available since v3.1._
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="Address.functionCallWithValue(address,bytes,uint256,string)"></a><code class="function-signature">functionCallWithValue(address target, bytes data, uint256 value, string errorMessage) <span class="return-arrow">→</span> <span class="return-type">bytes</span></code><span class="function-visibility">internal</span></h4>
+
+Same as {xref-Address-functionCallWithValue-address-bytes-uint256-}[[`functionCallWithValue`](trading#Address.functionCallWithValue(address,bytes,uint256))], but
+with `errorMessage` as a fallback revert reason when `target` reverts.
+
+_Available since v3.1._
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="Address.functionStaticCall(address,bytes)"></a><code class="function-signature">functionStaticCall(address target, bytes data) <span class="return-arrow">→</span> <span class="return-type">bytes</span></code><span class="function-visibility">internal</span></h4>
+
+Same as {xref-Address-functionCall-address-bytes-}[[`functionCall`](trading#Address.functionCall(address,bytes))],
+but performing a static call.
+
+_Available since v3.3._
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="Address.functionStaticCall(address,bytes,string)"></a><code class="function-signature">functionStaticCall(address target, bytes data, string errorMessage) <span class="return-arrow">→</span> <span class="return-type">bytes</span></code><span class="function-visibility">internal</span></h4>
+
+Same as {xref-Address-functionCall-address-bytes-string-}[[`functionCall`](trading#Address.functionCall(address,bytes))],
+but performing a static call.
+
+_Available since v3.3._
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="Address.functionDelegateCall(address,bytes)"></a><code class="function-signature">functionDelegateCall(address target, bytes data) <span class="return-arrow">→</span> <span class="return-type">bytes</span></code><span class="function-visibility">internal</span></h4>
+
+Same as {xref-Address-functionCall-address-bytes-}[[`functionCall`](trading#Address.functionCall(address,bytes))],
+but performing a delegate call.
+
+_Available since v3.3._
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="Address.functionDelegateCall(address,bytes,string)"></a><code class="function-signature">functionDelegateCall(address target, bytes data, string errorMessage) <span class="return-arrow">→</span> <span class="return-type">bytes</span></code><span class="function-visibility">internal</span></h4>
+
+Same as {xref-Address-functionCall-address-bytes-string-}[[`functionCall`](trading#Address.functionCall(address,bytes))],
+but performing a delegate call.
+
+_Available since v3.3._
+
+
+
+
+
 ### `ERC20`
 
 
@@ -2628,6 +2766,50 @@ MUST emit when the URI is updated for a token ID.
 
 
 <h4><a class="anchor" aria-hidden="true" id="Order.saveOrder(struct Order.Data,bytes32,contract IOrders)"></a><code class="function-signature">saveOrder(struct Order.Data _orderData, bytes32 _tradeGroupId, contract IOrders _orders) <span class="return-arrow">→</span> <span class="return-type">bytes32</span></code><span class="function-visibility">internal</span></h4>
+
+
+
+
+
+
+
+### `SafeERC20`
+
+
+
+<div class="contract-index"><span class="contract-index-title">Functions</span><ul><li><a href="#SafeERC20.safeTransfer(contract IERC20,address,uint256)"><code class="function-signature">safeTransfer(contract IERC20 token, address to, uint256 value)</code></a></li><li><a href="#SafeERC20.safeTransferFrom(contract IERC20,address,address,uint256)"><code class="function-signature">safeTransferFrom(contract IERC20 token, address from, address to, uint256 value)</code></a></li><li><a href="#SafeERC20.safeApprove(contract IERC20,address,uint256)"><code class="function-signature">safeApprove(contract IERC20 token, address spender, uint256 value)</code></a></li><li><a href="#SafeERC20.safeIncreaseAllowance(contract IERC20,address,uint256)"><code class="function-signature">safeIncreaseAllowance(contract IERC20 token, address spender, uint256 value)</code></a></li><li><a href="#SafeERC20.safeDecreaseAllowance(contract IERC20,address,uint256)"><code class="function-signature">safeDecreaseAllowance(contract IERC20 token, address spender, uint256 value)</code></a></li></ul></div>
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="SafeERC20.safeTransfer(contract IERC20,address,uint256)"></a><code class="function-signature">safeTransfer(contract IERC20 token, address to, uint256 value)</code><span class="function-visibility">internal</span></h4>
+
+
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="SafeERC20.safeTransferFrom(contract IERC20,address,address,uint256)"></a><code class="function-signature">safeTransferFrom(contract IERC20 token, address from, address to, uint256 value)</code><span class="function-visibility">internal</span></h4>
+
+
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="SafeERC20.safeApprove(contract IERC20,address,uint256)"></a><code class="function-signature">safeApprove(contract IERC20 token, address spender, uint256 value)</code><span class="function-visibility">internal</span></h4>
+
+Deprecated. This function has issues similar to the ones found in
+{IERC20-approve}, and its usage is discouraged.
+
+Whenever possible, use {safeIncreaseAllowance} and
+{safeDecreaseAllowance} instead.
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="SafeERC20.safeIncreaseAllowance(contract IERC20,address,uint256)"></a><code class="function-signature">safeIncreaseAllowance(contract IERC20 token, address spender, uint256 value)</code><span class="function-visibility">internal</span></h4>
+
+
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="SafeERC20.safeDecreaseAllowance(contract IERC20,address,uint256)"></a><code class="function-signature">safeDecreaseAllowance(contract IERC20 token, address spender, uint256 value)</code><span class="function-visibility">internal</span></h4>
 
 
 

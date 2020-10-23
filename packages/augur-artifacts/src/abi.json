@@ -24968,7 +24968,7 @@
 			"name": "cash",
 			"outputs": [
 				{
-					"internalType": "contract ICash",
+					"internalType": "contract IERC20",
 					"name": "",
 					"type": "address"
 				}
@@ -27033,7 +27033,7 @@
 			"name": "cash",
 			"outputs": [
 				{
-					"internalType": "contract ICash",
+					"internalType": "contract IERC20",
 					"name": "",
 					"type": "address"
 				}
@@ -27862,7 +27862,7 @@
 			"name": "cash",
 			"outputs": [
 				{
-					"internalType": "contract ICash",
+					"internalType": "contract IERC20",
 					"name": "",
 					"type": "address"
 				}
