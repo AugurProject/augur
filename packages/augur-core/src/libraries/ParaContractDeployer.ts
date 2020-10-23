@@ -148,7 +148,7 @@ Deploying to: ${env}
         const factory = new ethers.ContractFactory(contract.abi, contract.bytecode, this.signer);
         const contractObj = await factory.deploy(...constructorArgs);
         await contractObj.deployed();
-        console.log(`Uploaded contract: ${contract.contractName}: \"${contractObj.address}\"`);
+        console.log(`"${contract.contractName}: \"${contractObj.address}\"`);
         return contractObj.address;
     }
 }

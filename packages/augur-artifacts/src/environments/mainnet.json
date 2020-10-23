@@ -10,7 +10,8 @@
   },
   "gas": {
     "price": 1000000000,
-    "limit": 9500000
+    "limit": 9500000,
+    "override": false
   },
   "deploy": {
     "isProduction": true,
@@ -124,7 +125,9 @@
     "USDT": "0xdAC17F958D2ee523a2206206994597C13D831ec7",
     "AugurWalletRegistryV2": "0x1dD864Ed6F291b31C86aAF228DB387cd60a20e18",
     "RelayHubV2": "0x5648B6306380689AF8d2DE7Bdd23D916b9eE0db5",
-    "AccountLoader": "0x3A1b0Dde9Bf5Ff6C1C5d115b12B036EDFD3bF32a"
+    "AccountLoader": "0x3A1b0Dde9Bf5Ff6C1C5d115b12B036EDFD3bF32a",
+    "ParaDeployer": "0x0348Fa910c6E88Ca77103B96fCc88fa13Bd7cffF",
+    "OINexus": "0x7c5199731cC8C1f0FEccA5daf003e492c5752Ed6"
   },
   "plugins": {
     "chat": "orbit"
@@ -132,17 +135,18 @@
   "warpSync": {
     "enabled": true,
     "autoReport": false,
-    "createCheckpoints": true
-
+    "createCheckpoints": true,
+    "ipfsEndpoint": {
+      "version": 1,
+      "url": "https://cloudflare-ipfs.com/"
+    }
   },
   "syncing": {
     "enabled": true
-
   },
   "sdk": {
     "enabled": false,
     "ws": "ws://localhost:60557"
-
   },
   "server": {
     "httpPort": 9003,
@@ -153,7 +157,6 @@
     "startWS": true,
     "wssPort": 9002,
     "startWSS": true
-
   },
   "logLevel": 2,
   "showReloadModal": false,
@@ -165,6 +168,31 @@
     "reportingOnly": false,
     "fallbackProvider": "torus",
     "liteProvider": "torus",
-    "primaryProvider": "wallet"
+    "primaryProvider": "wallet",
+    "marketCreationEnabled": true,
+    "reportingEnabled": true
+  },
+  "paraDeploys": {
+    "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2": {
+      "name": "WETH",
+      "decimals": 18,
+      "uploadBlockNumber": 11114587,
+      "addresses": {
+        "Augur": "0x8CCd7ae47b50aEA82072aaD78C632C9dc1756b9D",
+        "AugurTrading": "0x5288ff18baA84D25e157812CBe10ad8754245353",
+        "Universe": "0x877685F36C11A9d597f65e6F69Dd9aFe4f8202AB",
+        "Cash": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
+        "ShareToken": "0xdF692D5E0A3af9E7EcbCB38bea8b7199494243A3",
+        "OICash": "0x4b257D89A626C71a4fb72dE3767a6AC3c78bC336",
+        "CancelOrder": "0x7edE06286cF52cA10f1f692F64e1BeDE724dC66B",
+        "CreateOrder": "0x542319BF6a935AF4bA1ebc98138119150d5107F8",
+        "FillOrder": "0x7f7d49919Def674E4dF2FF531958A27228341AAd",
+        "Orders": "0x6c2231d96C98C92a9528CDFfd4BBcdF000957946",
+        "Trade": "0x74f341440DdF342fAb24BEe3bDbC16bE202eEA94",
+        "SimulateTrade": "0x2BF52c8ABb9a6CCfDE7116AdDf2663c60385ba77",
+        "ZeroXTrade": "0x642564360171Bd95d243F110AC9D2Fec03A63158",
+        "ProfitLoss": "0x95182c02a4e6570A8cEaF74a21016Ebb953acb44"
+      }
+    }
   }
 }
