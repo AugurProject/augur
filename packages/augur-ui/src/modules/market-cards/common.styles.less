@@ -1198,41 +1198,67 @@
 		}
 
 		&.ComboContainer {
-			> div {
+			flex-flow: row nowrap;
+
+			> ul {
 				display: flex;
 				flex-flow: column nowrap;
-				background: var(--color-page-background);
-				padding: 0;
-	
-				> ul {
-					align-items: center;
-					display: flex;
-					flex-flow: row nowrap;
+				min-width: @size-100;
+
+				&:first-of-type {
 					flex: 1;
-					padding: @size-8;
-					width: 100%;
-	
-					&:last-of-type {
-						border-bottom-right-radius: @border-radius-default;
-						border-bottom-left-radius: @border-radius-default;
-					}
-					
-					&:not(:last-of-type) {
-						border-bottom: @size-1 solid var(--color-outline);
-					}
-	
-					> li:first-of-type {
-						.text-14-bold;
-	
-						align-self: baseline;
-						color: var(--color-primary-text);
-						flex: 1;
-						margin-left: 0;
-					}
-	
+					border-top-left-radius: @border-radius-default;
+					border-bottom-left-radius: @border-radius-default;
+
 					> li {
-						flex: 0.2;
-						margin-left: @size-8;
+						.text-14-bold;
+
+						color: var(--color-primary-text);
+
+						&:first-of-type {
+							border-top-left-radius: @border-radius-default;
+						}
+
+						&:last-of-type {
+							border-bottom-left-radius: @border-radius-default;
+						}
+					}
+				}
+
+				> li:first-of-type {
+					.text-10-semi-bold;
+
+					background: var(--color-table-header);
+					color: var(--color-secondary-text);
+					text-transform: uppercase;
+					height: @size-30;
+				}
+
+				> li:not(:first-of-type) {
+					flex: 1;
+				}
+
+				> li {
+					background: var(--color-page-background);
+					padding: @size-8;
+				}
+
+				> li:not(:last-of-type) {
+					border-bottom: @size-1 solid var(--color-outline);
+				}
+
+				&:last-of-type {
+					border-top-right-radius: @border-radius-default;
+					border-bottom-right-radius: @border-radius-default;
+
+					> li {
+						&:first-of-type {
+							border-top-right-radius: @border-radius-default;
+						}
+
+						&:last-of-type {
+							border-bottom-right-radius: @border-radius-default;
+						}
 					}
 				}
 			}

@@ -824,7 +824,7 @@ export const ComboMarketContainer = ({
         Something went wrong with loading this combo market container...
       </section>
     );
-
+  console.log(sportsGroup, data, placeholderOutcomes);
   return (
     <section
       className={classNames(
@@ -835,30 +835,48 @@ export const ComboMarketContainer = ({
         }
       )}
     >
-      <header>
-        <ul>
-          <li></li>
-          <li>Spread</li>
-          <li>Moneyline</li>
-          <li>Over/Under</li>
-        </ul>
-      </header>
-      <div>
-        {placeholderOutcomes.map((outcomeLabel, index) => (
-          <ul key={outcomeLabel}>
-            <li>{outcomeLabel}</li>
-            <li>
-              <SportsOutcome {...data[SPREAD][index]} title={undefined} />
-            </li>
-            <li>
-              <SportsOutcome {...data[MONEY_LINE][index]} title={undefined} />
-            </li>
-            <li>
-              <SportsOutcome {...data[OVER_UNDER][index]} title={undefined} />
-            </li>
-          </ul>
-        ))}
-      </div>
+      <ul>
+        <li></li>
+        <li>{placeholderOutcomes[0]}</li>
+        <li>{placeholderOutcomes[1]}</li>
+        <li>{placeholderOutcomes[2]}</li>
+      </ul>
+      <ul>
+        <li>Spread</li>
+        <li>
+          <SportsOutcome {...data[SPREAD][0]} title={undefined} />
+        </li>
+        <li>
+          <SportsOutcome {...data[SPREAD][1]} title={undefined} />
+        </li>
+        <li>
+          <SportsOutcome {...data[SPREAD][2]} title={undefined} />
+        </li>
+      </ul>
+      <ul>
+        <li>Moneyline</li>
+        <li>
+          <SportsOutcome {...data[MONEY_LINE][0]} title={undefined} />
+        </li>
+        <li>
+          <SportsOutcome {...data[MONEY_LINE][1]} title={undefined} />
+        </li>
+        <li>
+          <SportsOutcome {...data[MONEY_LINE][2]} title={undefined} />
+        </li>
+      </ul>
+      <ul>
+        <li>Over/Under</li>
+        <li>
+          <SportsOutcome {...data[OVER_UNDER][0]} title={undefined} />
+        </li>
+        <li>
+          <SportsOutcome {...data[OVER_UNDER][1]} title={undefined} />
+        </li>
+        <li>
+          <SportsOutcome {...data[OVER_UNDER][2]} title={undefined} />
+        </li>
+      </ul>
     </section>
   );
 };
