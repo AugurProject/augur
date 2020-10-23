@@ -34,7 +34,7 @@ import {
   MODAL_REPORTING,
   SPORTS_GROUP_TYPES,
   SPORTS_GROUP_MARKET_TYPES,
-  MODAL_MARKET_RULES,
+  MODAL_MARKET_RULES, PROBABLE_INVALID_MARKET,
 } from 'modules/common/constants';
 import { convertToOdds, convertToNormalizedPrice } from 'utils/get-odds';
 import { MARKET_LIST_CARD, marketLinkCopied } from 'services/analytics/helpers';
@@ -52,7 +52,7 @@ import {
   WinningMedal,
   ThickChevron,
   FingersCrossed,
-  QuestionIcon,
+  QuestionIcon, RedFlagIcon,
 } from 'modules/common/icons';
 import { isSameAddress } from 'utils/isSameAddress';
 import {
@@ -864,7 +864,7 @@ export const SportsMarketContainer = ({
   noHeader = false,
 }) => {
   const { FUTURES } = SPORTS_GROUP_TYPES;
-  const { isLogged, accountPositions } = useAppStatusStore();
+  const { theme, isLogged, accountPositions } = useAppStatusStore();
   const [isCollapsed, setIsCollapsed] = useState(!startOpen);
   const [isCopied, setIsCopied] = useState(false);
   const location = useLocation();
@@ -916,8 +916,14 @@ export const SportsMarketContainer = ({
           forceLongDate
         />
         {tradingPositionsPerMarket &&
-          tradingPositionsPerMarket.current !== '0' &&
-          PositionIcon}
+        tradingPositionsPerMarket.current !== '0' && (
+          <HoverIcon
+            id={`tooltip-${market.id}-youHaveABet`}
+            label="youHaveABetLabel"
+            icon={PositionIcon}
+            hoverText="You have a bet"
+          />
+        )}
         <span className={Styles.MatchedLine}>
           Matched<b>{market.volumeFormatted.full}</b>
         </span>
@@ -1306,7 +1312,7 @@ export const HoverIcon = ({ id, icon, hoverText, label }: HoverIconProps) => (
     className={Styles.HoverIcon}
     data-tip
     data-for={`tooltip-${id}${label}`}
-    data-iscapture={true}
+    data-iscapture={false}
   >
     {icon}
     <ReactTooltip
