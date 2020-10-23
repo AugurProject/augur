@@ -813,6 +813,9 @@ export const ComboMarketContainer = ({
   isGroupPage = false,
 }: ComboMarketContainerProps) => {
   const { SPREAD, MONEY_LINE, OVER_UNDER } = SPORTS_GROUP_MARKET_TYPES;
+  const [spreadCollapsed, setSpreadCollapsed] = useState(data[SPREAD].length === 0);
+  const [moneyLineCollapsed, setMoneyLineCollapsed] = useState(data[MONEY_LINE].length === 0);
+  const [overUnderCollapsed, setOverUnderCollapsed] = useState(data[OVER_UNDER].length === 0);
   const {
     sportsBook: { placeholderOutcomes },
   } = sportsGroup.markets.find(
@@ -824,7 +827,7 @@ export const ComboMarketContainer = ({
         Something went wrong with loading this combo market container...
       </section>
     );
-  console.log(sportsGroup, data, placeholderOutcomes);
+
   return (
     <section
       className={classNames(
@@ -841,40 +844,81 @@ export const ComboMarketContainer = ({
         <li>{placeholderOutcomes[1]}</li>
         <li>{placeholderOutcomes[2]}</li>
       </ul>
-      <ul>
-        <li>Spread</li>
+      <ul className={classNames({
+        [Styles.ListCollapse]: spreadCollapsed,
+      })}>
         <li>
-          <SportsOutcome {...data[SPREAD][0]} title={undefined} />
+        <button
+            className={Styles.toggleCollapsed}
+            onClick={e => {
+              e.preventDefault();
+              setSpreadCollapsed(!spreadCollapsed);
+            }}
+          >
+          Spread
+          <span>{`${data[SPREAD][0]?.market?.sportsBook?.marketLine}.5`}</span>
+          {ThickChevron}
+        </button>
         </li>
         <li>
-          <SportsOutcome {...data[SPREAD][1]} title={undefined} />
+          <SportsOutcome {...data[SPREAD][0]} />
         </li>
         <li>
-          <SportsOutcome {...data[SPREAD][2]} title={undefined} />
+          <SportsOutcome {...data[SPREAD][1]} />
+        </li>
+        <li>
+          <SportsOutcome {...data[SPREAD][2]} />
         </li>
       </ul>
-      <ul>
-        <li>Moneyline</li>
+      <ul className={classNames({
+        [Styles.ListCollapse]: moneyLineCollapsed,
+      })}>
         <li>
-          <SportsOutcome {...data[MONEY_LINE][0]} title={undefined} />
+        <button
+            className={Styles.toggleCollapsed}
+            onClick={e => {
+              e.preventDefault();
+              setMoneyLineCollapsed(!moneyLineCollapsed);
+            }}
+          >
+          Moneyline
+          {ThickChevron}
+        </button>
         </li>
         <li>
-          <SportsOutcome {...data[MONEY_LINE][1]} title={undefined} />
+          <SportsOutcome {...data[MONEY_LINE][0]} />
         </li>
         <li>
-          <SportsOutcome {...data[MONEY_LINE][2]} title={undefined} />
+          <SportsOutcome {...data[MONEY_LINE][1]} />
+        </li>
+        <li>
+          <SportsOutcome {...data[MONEY_LINE][2]} />
         </li>
       </ul>
-      <ul>
-        <li>Over/Under</li>
+      <ul className={classNames({
+        [Styles.ListCollapse]: overUnderCollapsed,
+      })}>
         <li>
-          <SportsOutcome {...data[OVER_UNDER][0]} title={undefined} />
+        <button
+            className={Styles.toggleCollapsed}
+            onClick={e => {
+              e.preventDefault();
+              setOverUnderCollapsed(!overUnderCollapsed);
+            }}
+          >
+          Over/Under
+          <span>{`${data[OVER_UNDER][0]?.market?.sportsBook?.marketLine}.5`}</span>
+          {ThickChevron}
+        </button>
         </li>
         <li>
-          <SportsOutcome {...data[OVER_UNDER][1]} title={undefined} />
+          <SportsOutcome {...data[OVER_UNDER][0]} />
         </li>
         <li>
-          <SportsOutcome {...data[OVER_UNDER][2]} title={undefined} />
+          <SportsOutcome {...data[OVER_UNDER][1]} />
+        </li>
+        <li>
+          <SportsOutcome {...data[OVER_UNDER][2]} />
         </li>
       </ul>
     </section>
