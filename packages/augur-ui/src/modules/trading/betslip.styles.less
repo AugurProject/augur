@@ -7,145 +7,30 @@
 :root[theme="BETTING"],
 :root[theme="SPORTS"] {
   .Betslip {
-    display: flex;
-    flex-flow: column nowrap;
     align-items: center;
+    background: var(--color-module-background);
+    display: flex;
+    flex-flow: row nowrap;
     justify-content: flex-start;
+    padding: 0;
 
     > div {
       display: none;
-      transition: background .3s ease;
-
-      > button:first-of-type {
-        .text-12-bold;
-
-        align-content: center;
-        align-items: center;
-        background: var(--color-primary-text);
-        color: var(--color-module-background);
-        cursor: pointer;
-        display: flex;
-        flex-flow: row nowrap;
-        justify-content: center;
-        text-transform: uppercase;
-        height: @size-36;
-        width: 100%;
-
-        > svg {
-          height: @size-8;
-          width: @size-10;
-          margin-left: @size-8;
-
-          > path {
-            fill: var(--color-module-background);
-          }
-        }
-      }
     }
 
     @media @breakpoint-mobile-tiny {
-      background: var(--color-module-background);
-      position: absolute;
-      bottom: 0;
+      position: fixed;
       right: 0;
       left: 0;
-      padding: 0;
-      flex-flow: row nowrap;
-      align-items: flex-start;
-      justify-content: flex-end;
       z-index: @mask-toast;
-      top: @size-64;
 
       > div {
+        display: flex;
         align-items: flex-end;
         background: var(--color-primary-text);
-        display: flex;
         flex-flow: column;
+        transition: background .3s ease;
         width: 100%;
-      }
-
-      &.Minimized {
-        background: transparent;
-        max-width: @size-36;
-        left: unset;
-        z-index: @above-all-content;
-        position: fixed;
-
-        > div {
-          width: @size-36;
-          height: @size-106;
-          display: block;
-          background: transparent;
-        }
-      }
-    }
-
-    @media @breakpoint-mobile-tablet {
-      flex-direction: column;
-      top: 120vh;
-      bottom: -120vh;
-
-      //-webkit-transform: none;
-      //transform: none;
-      //transition: transform .3s cubic-bezier(0.44, 0, 0.56, 1);
-      //will-change: transform;
-
-      -webkit-transform: translateY(-120vh);
-      transform: translateY(-120vh);
-      transition: transform .3s cubic-bezier(0.44, 0, 0.56, 1);
-      will-change: transform;
-
-      > div {
-        align-items: normal;
-
-        > button:first-of-type {
-          width: unset;
-          height: @size-64;
-          transform: unset;
-        }
-      }
-
-      &.Minimized {
-        padding: @size-8;
-        right: 0;
-        left: 0;
-        max-width: unset;
-        top: 120vh;
-        bottom: -120vh;
-
-        //-webkit-transform: translateY(120vh);
-        //transform: translateY(120vh);
-        //transition: transform .3s cubic-bezier(0.44, 0, 0.56, 1);
-
-        -webkit-transform: none;
-        transform: none;
-        transition: transform .3s cubic-bezier(0.44, 0, 0.56, 1);
-
-        > div {
-          background: unset;
-          height: unset;
-          width: 100%;
-          display: flex;
-        }
-      }
-    }
-
-    @media @breakpoint-tiny {
-      background: transparent;
-      position: fixed;
-      bottom: 0;
-      right: -@size-326;
-      left: unset;
-      z-index: @above-all-content;
-
-      -webkit-transform: translateX(-@size-326);
-      transform: translateX(-@size-326);
-      transition: transform .3s cubic-bezier(0.44, 0, 0.56, 1);
-      will-change: transform;
-
-      > div {
-        background: var(--color-primary-text-50);
-        transform: rotate(-0.25turn) translate(-@size-125, @size-36);
 
         > button:first-of-type {
           .text-12-bold;
@@ -160,9 +45,7 @@
           height: @size-36;
           justify-content: center;
           text-transform: uppercase;
-          width: @size-106;
-          border-top-left-radius: @border-radius-default;
-          border-top-right-radius: @border-radius-default;
+          width: 100%;
 
           > svg {
             height: @size-8;
@@ -173,6 +56,43 @@
               fill: var(--color-module-background);
             }
           }
+        }
+      }
+
+      &.Minimized {
+        z-index: @mask-toast;
+
+        > div {
+          width: @size-36;
+          height: @size-106;
+          display: block;
+          background: transparent;
+        }
+      }
+    }
+
+    @media @breakpoint-tiny {
+      align-items: flex-start;
+      background: transparent;
+      bottom: 0;
+      justify-content: flex-end;
+      left: unset;
+      right: -@size-326;
+      top: @size-56;
+      z-index: @mask-modal;
+
+      -webkit-transform: translateX(-@size-326);
+      transform: translateX(-@size-326);
+      transition: transform .3s cubic-bezier(0.44, 0, 0.56, 1);
+      will-change: transform;
+
+      > div {
+        transform: rotate(-0.25turn) translate(-@size-125, @size-36);
+
+        > button:first-of-type {
+          width: @size-106;
+          border-top-left-radius: @border-radius-default;
+          border-top-right-radius: @border-radius-default;
         }
       }
 
@@ -188,56 +108,50 @@
         transition: transform .3s cubic-bezier(0.44, 0, 0.56, 1);
 
         > div {
-          width: @size-36;
-          height: @size-106;
-          display: block;
-          background: transparent;
-          transform: rotate(-0.25turn) translate(-@size-78, @size-88);
+          transform: rotate(-0.25turn) translate(-@size-72, @size-88);
           transform-origin: bottom;
 
-          > button:first-of-type {
-            background: var(--color-primary-text);
-            width: @size-106;
-            border-top-left-radius: @border-radius-default;
-            border-top-right-radius: @border-radius-default;
-
-            > svg {
-              transform: rotate(0.5turn);
-            }
+          > button:first-of-type > svg {
+            transform: rotate(0.5turn);
           }
         }
       }
     }
 
-    @media @breakpoint-mobile {
-      position: fixed;
+    @media @breakpoint-mobile-tablet {
+      flex-direction: column;
       top: 120vh;
       bottom: -120vh;
-      right: 0;
-      left: 0;
-      z-index: @mask-toast;
-      background-color: var(--color-module-background);
 
-      > div > button:first-of-type {
-        height: @size-64;
+      -webkit-transform: translateY(-120vh);
+      transform: translateY(-120vh);
+      transition: transform .3s cubic-bezier(0.44, 0, 0.56, 1);
+      will-change: transform;
 
-        > svg {
-          position: absolute;
-          right: @size-18;
+      > div {
+        align-items: center;
+
+        > button:first-of-type {
+          height: @size-64;
+
+          > svg {
+            position: absolute;
+            right: @size-18;
+          }
         }
       }
 
       &.Minimized {
-        background-color: var(--color-module-background);
-        padding: 0;
         top: 120vh;
         bottom: -120vh;
-        z-index: @mask-toast;
 
-        > div > button:first-of-type {
-          margin-top: 0;
+        -webkit-transform: none;
+        transform: none;
+        transition: transform .3s cubic-bezier(0.44, 0, 0.56, 1);
+
+        > div {
           width: 100%;
-          transform: none;
+          height: unset;
         }
       }
     }
