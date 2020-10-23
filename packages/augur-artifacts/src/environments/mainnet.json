@@ -193,6 +193,27 @@
         "ZeroXTrade": "0x642564360171Bd95d243F110AC9D2Fec03A63158",
         "ProfitLoss": "0x95182c02a4e6570A8cEaF74a21016Ebb953acb44"
       }
+    },
+    "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48": {
+      "name": "USDC",
+      "decimals": 6,
+      "uploadBlockNumber": 11115179,
+      "addresses": {
+        "Augur": "0x727Eb7C0D14376F90803412b8BE08FE37538f3B3",
+        "AugurTrading": "0x17406c2BE078fe68F44b0FA864d3AC9A9B801256",
+        "Universe": "0x25052CE47F8B1A9096eb8Fef440926e5Af22913B",
+        "Cash": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+        "ShareToken": "0xAcA128030bd2E9f2e2F72018EDAa0d0c0Ed7c9bf",
+        "OICash": "0x2144b30ad2d24666F622B31B8436681FbAB7E5Cf",
+        "CancelOrder": "0xb56F15e9FB03AD93b548058Ad29a68f03930be94",
+        "CreateOrder": "0x96bA0e9C8aC7d4205AcdC5268952c62e447EE2E4",
+        "FillOrder": "0x158Ad871684972354c9986725F66DA9CF8f4B0Aa",
+        "Orders": "0xCE022488be73480A6a5489cA280058619B6407Ac",
+        "Trade": "0xaA55B538462cdE87cAd1f04D30cbAc405F00b053",
+        "SimulateTrade": "0x689B15B9f446f72A8C574A99EA836912fa70DA39",
+        "ZeroXTrade": "0x33e33a43752Dd5d9FA0b14891e81a28202Ea405F",
+        "ProfitLoss": "0x32A37c4943981Da165404BFe13f076b9fA991F26"
+      }
     }
   }
 }
