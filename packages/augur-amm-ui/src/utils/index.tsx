@@ -9,7 +9,7 @@ import { GET_BLOCK, GET_BLOCKS, SHARE_VALUE } from '../apollo/queries'
 import { Text } from 'rebass'
 import _Decimal from 'decimal.js-light'
 import toFormat from 'toformat'
-import { timeframeOptions, TokenAddressMap } from '../constants'
+import { MarketTokens, timeframeOptions, TokenAddressMap } from '../constants'
 import Numeral from 'numeral'
 import { BigNumber } from '@ethersproject/bignumber'
 import { ChainId, JSBI, Percent, Token, CurrencyAmount, Currency, ETHER } from '@uniswap/sdk'
@@ -17,6 +17,8 @@ import { JsonRpcSigner, Web3Provider } from '@ethersproject/providers'
 import { Contract } from '@ethersproject/contracts'
 import { AddressZero } from '@ethersproject/constants'
 import { ParaShareToken } from '@augurproject/sdk-lite'
+import { TradeInfo } from '../hooks/Trades'
+import { MarketCurrency } from '../data/MarketCurrency'
 
 // format libraries
 const Decimal = toFormat(_Decimal)
@@ -664,8 +666,57 @@ export function isTokenOnList(defaultTokens: TokenAddressMap, currency?: Currenc
   return Boolean(currency instanceof Token && defaultTokens[currency.chainId]?.[currency.address])
 }
 
-export function estimateTrade(ammAddress: string, augurClient, input: string, output: string, amount: string) {
-  if (!augurClient || !ammAddress) return console.error('estimateTrade: augurClient is null or amm address')
+export async function estimateTrade(augurClient, trade: TradeInfo) {
+  if (!augurClient || !trade.amm.id) return console.error('estimateTrade: augurClient is null or amm address')
+  let isEntry = !(trade.currencyIn instanceof MarketCurrency) && trade.currencyOut instanceof MarketCurrency
+  let isExit = trade.currencyIn instanceof MarketCurrency && !(trade.currencyOut instanceof MarketCurrency)
+  let isSwap = trade.currencyIn instanceof MarketCurrency && trade.currencyOut instanceof MarketCurrency
+
+  console.log('estimateTrade: isEntry', isEntry, 'isExit', isExit, 'isSwap', isSwap)
+
+  let outputYesShares = false;
+  let breakdown = null;
+
+  if (trade.currencyOut instanceof MarketCurrency) {
+    const out = trade.currencyOut as MarketCurrency
+    outputYesShares = out.name === MarketTokens.YES_SHARES;
+  }
+
+  if (isEntry) {
+    breakdown = await augurClient.ammFactory.getRateEnterPosition(trade.amm.id, String(trade.inputAmount.raw), outputYesShares)
+    return String(breakdown)
+  }
+  if (isExit) {
+    breakdown = await augurClient.ammFactory.getRateExitPosition(trade.amm.id, trade.balance[0], trade.balance[1], trade.balance[2])
+    return String(breakdown)
+  }
+  if (isSwap) {
+    breakdown = await augurClient.ammFactory.getSwapRate(trade.amm.id, String(trade.inputAmount.raw), !outputYesShares)
+    return String(breakdown)
+  }
+  return null;
+
+}
+
+export async function doTrade(augurClient, trade: TradeInfo) {
+  if (!augurClient || !trade.amm) return console.error('estimateTrade: augurClient is null or amm address')
+  const isEntry = !(trade.currencyIn instanceof MarketCurrency) && trade.currencyOut instanceof MarketCurrency
+  const isExit = trade.currencyIn instanceof MarketCurrency && !(trade.currencyOut instanceof MarketCurrency)
+  const isSwap = trade.currencyIn instanceof MarketCurrency && trade.currencyOut instanceof MarketCurrency
+
+  let result = null;
+  let buyYes = false;
+
+  if (trade.currencyOut instanceof MarketCurrency) {
+    const out = trade.currencyOut as MarketCurrency
+    buyYes = out.name === MarketTokens.YES_SHARES;
+  }
+
+  if (isEntry) {
+    return augurClient.ammFactory.enterPosition(trade.amm, trade.inputAmount, buyYes)
+  }
+
+  return null;
 
 }
 

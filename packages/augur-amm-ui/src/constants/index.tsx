@@ -79,6 +79,15 @@ export class WrappedTokenInfo extends Token {
   }
 }
 
+export interface AmmExchangeInfo {
+  id: string;
+  percentageYes: number;
+  percentageNo: number;
+  hasLiquidity: boolean;
+  cash: string;
+  sharetoken: string;
+}
+
 export type TokenAddressMap = Readonly<{ [chainId in ChainId]: Readonly<{ [tokenAddress: string]: WrappedTokenInfo }> }>
 
 export const ROUTER_ADDRESS = '0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D'

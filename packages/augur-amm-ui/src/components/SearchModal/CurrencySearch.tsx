@@ -15,9 +15,6 @@ import QuestionHelper from '../QuestionHelper'
 import Row, { RowBetween } from '../Row'
 import CommonBases from './CommonBases'
 import CurrencyList from './CurrencyList'
-import { filterTokens } from './filtering'
-import SortButton from './SortButton'
-import { useTokenComparator } from './sorting'
 import { PaddedColumn, SearchInput, Separator } from './styleds'
 import AutoSizer from 'react-virtualized-auto-sizer'
 import { useSwapQueryParam } from '../../state/swap/hooks'
@@ -47,7 +44,7 @@ export function CurrencySearch({
   const fixedList = useRef<FixedSizeList>()
   const [searchQuery, setSearchQuery] = useState<string>('')
   const { marketId, cash, amm } = useSwapQueryParam()
-  const allMarketTokens = useAllMarketTokens(marketId, cash)
+  const allMarketTokens = useAllMarketTokens(marketId, cash, amm)
 
   // if they input an address, use it
   const isAddressSearch = isAddress(searchQuery)

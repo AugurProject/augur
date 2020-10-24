@@ -59,7 +59,6 @@ export function getRemoveLiquidityBreakdown(augurClient, currencyLp: Token, user
     augurClient,
     lpTokens: userLiquidity
   }).then(results => {
-    console.log(JSON.stringify(results))
     setMethod(results)
   })
 }

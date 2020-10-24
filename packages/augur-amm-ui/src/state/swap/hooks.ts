@@ -2,13 +2,13 @@ import useENS from '../../hooks/useENS'
 import { parseUnits } from '@ethersproject/units'
 import { Currency, CurrencyAmount, ETHER, JSBI, Token, TokenAmount, Trade } from '@uniswap/sdk'
 import { ParsedQs } from 'qs'
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useActiveWeb3React } from '../../hooks'
 import { useCurrency, useMarketToken } from '../../hooks/Tokens'
-import { useTradeExactIn, useTradeExactOut } from '../../hooks/Trades'
+import { TradeInfo, useTradeExactIn, useTradeExactOut } from '../../hooks/Trades'
 import useParsedQueryString from '../../hooks/useParsedQueryString'
-import { isAddress } from '../../utils'
+import { estimateTrade, isAddress } from '../../utils'
 import { AppDispatch, AppState } from '../index'
 import { useCurrencyBalances } from '../wallet/hooks'
 import { Field, replaceSwapState, selectCurrency, setRecipient, switchCurrencies, typeInput } from './actions'
@@ -17,6 +17,8 @@ import { useUserSlippageTolerance } from '../user/hooks'
 import { computeSlippageAdjustedAmounts } from '../../utils/prices'
 import { useLocation } from 'react-router-dom'
 import { MarketCurrency } from '../../data/MarketCurrency'
+import { useMarketAmm } from '../../contexts/Markets'
+import { useAugurClient } from '../../contexts/Application'
 
 export function useSwapState(): AppState['swap'] {
   return useSelector<AppState, AppState['swap']>(state => state.swap)
@@ -34,7 +36,8 @@ export function useSwapActionHandlers(): {
       dispatch(
         selectCurrency({
           field,
-          currencyId: currency instanceof MarketCurrency ? currency.name : currency instanceof Token ? currency.address : ''
+          currencyId:
+            currency instanceof MarketCurrency ? currency.name : currency instanceof Token ? currency.address : ''
         })
       )
     },
@@ -106,15 +109,18 @@ function involvesAddress(trade: Trade, checksummedAddress: string): boolean {
 }
 
 // from the current swap inputs, compute the best trade and return it.
-export function useDerivedSwapInfo(): {
+export function useDerivedSwapInfo(
+  marketId: string,
+  amm: string
+): {
   currencies: { [field in Field]?: Currency }
   currencyBalances: { [field in Field]?: CurrencyAmount }
   parsedAmount: CurrencyAmount | undefined
-  v2Trade: Trade | undefined
+  v2Trade: TradeInfo | undefined
   inputError?: string
 } {
   const { account } = useActiveWeb3React()
-
+  const ammExchange = useMarketAmm(marketId, amm)
   const {
     independentField,
     typedValue,
@@ -143,13 +149,18 @@ export function useDerivedSwapInfo(): {
   const isExactIn: boolean = independentField === Field.INPUT
   const parsedAmount = tryParseAmount(typedValue, (isExactIn ? inputCurrency : outputCurrency) ?? undefined)
 
-  const bestTradeExactIn = useTradeExactIn(isExactIn ? parsedAmount : undefined, outputCurrency ?? undefined)
-  const bestTradeExactOut = useTradeExactOut(inputCurrency ?? undefined, !isExactIn ? parsedAmount : undefined)
-console.log('relevantTokenBalances', relevantTokenBalances)
-  console.log('parsedAmount', parsedAmount, isExactIn)
-console.log('bestTradeExactIn', bestTradeExactIn)
-console.log('bestTradeExactOut', bestTradeExactOut)
-
+  const bestTradeExactIn = useTradeExactIn(
+    ammExchange,
+    inputCurrency,
+    isExactIn ? parsedAmount : undefined,
+    outputCurrency ?? undefined
+  )
+  const bestTradeExactOut = useTradeExactOut(
+    ammExchange,
+    outputCurrency,
+    inputCurrency ?? undefined,
+    !isExactIn ? parsedAmount : undefined
+  )
   const v2Trade = isExactIn ? bestTradeExactIn : bestTradeExactOut
 
   const currencyBalances = {
@@ -178,27 +189,19 @@ console.log('bestTradeExactOut', bestTradeExactOut)
   const formattedTo = isAddress(to)
   if (!to || !formattedTo) {
     inputError = inputError ?? 'Enter a recipient'
-  } else {
-    if (
-      BAD_RECIPIENT_ADDRESSES.indexOf(formattedTo) !== -1 ||
-      (bestTradeExactIn && involvesAddress(bestTradeExactIn, formattedTo)) ||
-      (bestTradeExactOut && involvesAddress(bestTradeExactOut, formattedTo))
-    ) {
-      inputError = inputError ?? 'Invalid recipient'
-    }
   }
 
   const [allowedSlippage] = useUserSlippageTolerance()
 
   const slippageAdjustedAmounts = v2Trade && allowedSlippage && computeSlippageAdjustedAmounts(v2Trade, allowedSlippage)
   // compare input balance to max input based on version
-  const [balanceIn, amountIn] = [
+  const [balanceIn, inputAmount] = [
     currencyBalances[Field.INPUT],
     slippageAdjustedAmounts ? slippageAdjustedAmounts[Field.INPUT] : undefined
   ]
 
-  if (balanceIn && amountIn && balanceIn.lessThan(amountIn)) {
-    inputError = 'Insufficient ' + amountIn.currency.symbol + ' balance'
+  if (balanceIn && inputAmount && balanceIn.lessThan(inputAmount)) {
+    inputError = 'Insufficient ' + inputAmount.currency.symbol + ' balance'
   }
 
   return {
@@ -208,6 +211,24 @@ console.log('bestTradeExactOut', bestTradeExactOut)
     v2Trade: v2Trade ?? undefined,
     inputError
   }
+}
+
+export function useEstimateTrade(trade, updateEstimateTokenAmount) {
+  const augurClient = useAugurClient()
+  useMemo(() => {
+    if (trade) {
+      estimateTrade(augurClient, trade)
+        .then(result => {
+          if (result) {
+            const estCurrency = new TokenAmount(trade.currencyIn, JSBI.BigInt(String(result)))
+            updateEstimateTokenAmount(estCurrency)
+          }
+        })
+        .catch(e => {
+          updateEstimateTokenAmount(null)
+        })
+    }
+  }, [trade, updateEstimateTokenAmount])
 }
 
 function parseCurrencyFromURLParameter(urlParam: any): string {
@@ -297,7 +318,7 @@ export function useDefaultsFromURLSearch():
   return result
 }
 
-export function useSwapQueryParam(): { marketId: string; cash: string, amm: string } {
+export function useSwapQueryParam(): { marketId: string; cash: string; amm: string } {
   const location = useLocation()
   const components = location.pathname.split('/')
   const marketId = components[2]

@@ -174,14 +174,14 @@ function App() {
               <Route
                 exacts
                 strict
-                path="/swap/:marketId/:amm"
+                path="/swap/:marketId/:cash/:amm"
                 render={({ match }) => {
-                  const { marketId, amm } = match.params
+                  const { marketId, cash, amm } = match.params
 
                   if (isAddress(marketId.toLowerCase())) {
                     return (
                       <LayoutWrapper savedOpen={savedOpen} setSavedOpen={setSavedOpen}>
-                        <Swap marketId={marketId} amm={amm} />
+                        <Swap marketId={marketId} cash={cash} amm={amm} />
                       </LayoutWrapper>
                     )
                   } else {

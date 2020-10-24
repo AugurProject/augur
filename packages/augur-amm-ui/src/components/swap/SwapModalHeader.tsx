@@ -12,6 +12,7 @@ import { AutoColumn } from '../Column'
 import TokenLogo from '../TokenLogo'
 import { RowBetween, RowFixed } from '../Row'
 import { TruncatedText, SwapShowAcceptChanges } from './styleds'
+import { TradeInfo } from '../../hooks/Trades'
 
 export default function SwapModalHeader({
   trade,
@@ -20,7 +21,7 @@ export default function SwapModalHeader({
   showAcceptChanges,
   onAcceptChanges
 }: {
-  trade: Trade
+  trade: TradeInfo
   allowedSlippage: number
   recipient: string | null
   showAcceptChanges: boolean

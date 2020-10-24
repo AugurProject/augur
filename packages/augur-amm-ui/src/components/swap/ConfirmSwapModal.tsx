@@ -1,5 +1,6 @@
 import { currencyEquals, Trade } from '@uniswap/sdk'
 import React, { useCallback, useMemo } from 'react'
+import { TradeInfo } from '../../hooks/Trades'
 import TransactionConfirmationModal, {
   ConfirmationModalContent,
   TransactionErrorContent
@@ -12,7 +13,7 @@ import SwapModalHeader from './SwapModalHeader'
  * @param tradeA trade A
  * @param tradeB trade B
  */
-function tradeMeaningfullyDiffers(tradeA: Trade, tradeB: Trade): boolean {
+function tradeMeaningfullyDiffers(tradeA: TradeInfo, tradeB: TradeInfo): boolean {
   return (
     tradeA.tradeType !== tradeB.tradeType ||
     !currencyEquals(tradeA.inputAmount.currency, tradeB.inputAmount.currency) ||
@@ -36,8 +37,8 @@ export default function ConfirmSwapModal({
   txHash
 }: {
   isOpen: boolean
-  trade: Trade | undefined
-  originalTrade: Trade | undefined
+  trade: TradeInfo | undefined
+  originalTrade: TradeInfo | undefined
   attemptingTxn: boolean
   txHash: string | undefined
   recipient: string | null

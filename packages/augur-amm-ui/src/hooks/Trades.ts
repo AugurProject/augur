@@ -1,117 +1,97 @@
-import { Currency, CurrencyAmount, Pair, Token, Trade } from '@uniswap/sdk'
+import { Currency, CurrencyAmount, Fraction, JSBI, Pair, Percent, Price, Token, Trade, TradeType } from '@uniswap/sdk'
 import flatMap from 'lodash.flatmap'
-import { useMemo } from 'react'
+import { useCallback, useMemo } from 'react'
 
-import { BASES_TO_CHECK_TRADES_AGAINST, CUSTOM_BASES } from '../constants'
-import { PairState, usePairs } from '../data/Reserves'
-import { wrappedCurrency } from '../utils/wrappedCurrency'
+import { AmmExchangeInfo } from '../constants'
+import { useAugurClient } from '../contexts/Application'
+import { MarketCurrency } from '../data/MarketCurrency'
+import { MarketBalance, useMarketBalance } from '../state/wallet/hooks'
 
-import { useActiveWeb3React } from './index'
-
-function useAllCommonPairs(currencyA?: Currency, currencyB?: Currency): Pair[] {
-  const { chainId } = useActiveWeb3React()
-
-  const bases: Token[] = chainId ? BASES_TO_CHECK_TRADES_AGAINST[chainId] : []
-
-  const [tokenA, tokenB] = chainId
-    ? [wrappedCurrency(currencyA, chainId), wrappedCurrency(currencyB, chainId)]
-    : [undefined, undefined]
-
-  const basePairs: [Token, Token][] = useMemo(
-    () =>
-      flatMap(bases, (base): [Token, Token][] => bases.map(otherBase => [base, otherBase])).filter(
-        ([t0, t1]) => t0.address !== t1.address
-      ),
-    [bases]
-  )
-
-  const allPairCombinations: [Token, Token][] = useMemo(
-    () =>
-      tokenA && tokenB
-        ? [
-            // the direct pair
-            [tokenA, tokenB],
-            // token A against all bases
-            ...bases.map((base): [Token, Token] => [tokenA, base]),
-            // token B against all bases
-            ...bases.map((base): [Token, Token] => [tokenB, base]),
-            // each base against all bases
-            ...basePairs
-          ]
-            .filter((tokens): tokens is [Token, Token] => Boolean(tokens[0] && tokens[1]))
-            .filter(([t0, t1]) => t0.address !== t1.address)
-            .filter(([tokenA, tokenB]) => {
-              if (!chainId) return true
-              const customBases = CUSTOM_BASES[chainId]
-              if (!customBases) return true
-
-              const customBasesA: Token[] | undefined = customBases[tokenA.address]
-              const customBasesB: Token[] | undefined = customBases[tokenB.address]
-
-              if (!customBasesA && !customBasesB) return true
-
-              if (customBasesA && !customBasesA.find(base => tokenB.equals(base))) return false
-              if (customBasesB && !customBasesB.find(base => tokenA.equals(base))) return false
-
-              return true
-            })
-        : [],
-    [tokenA, tokenB, bases, basePairs, chainId]
-  )
-
-  const allPairs = usePairs(allPairCombinations)
-
-  // only pass along valid pairs, non-duplicated pairs
-  return useMemo(
-    () =>
-      Object.values(
-        allPairs
-          // filter out invalid pairs
-          .filter((result): result is [PairState.EXISTS, Pair] => Boolean(result[0] === PairState.EXISTS && result[1]))
-          // filter out duplicated pairs
-          .reduce<{ [pairAddress: string]: Pair }>((memo, [, curr]) => {
-            memo[curr.liquidityToken.address] = memo[curr.liquidityToken.address] ?? curr
-            return memo
-          }, {})
-      ),
-    [allPairs]
-  )
+export interface TradeInfo {
+  amm: AmmExchangeInfo
+  tradeType: TradeType
+  currencyIn: Currency
+  currencyOut: Currency
+  inputAmount?: CurrencyAmount
+  outputAmount?: CurrencyAmount
+  balance: MarketBalance
+  maxAmountIn?: number
+  minAmountOut?: number
+  priceImpact?: Percent
+  executionPrice?: Price
 }
 
 /**
  * Returns the best trade for the exact amount of tokens in to the given token out
  */
-export function useTradeExactIn(currencyAmountIn?: CurrencyAmount, currencyOut?: Currency): Trade | null {
-  const allowedPairs = useAllCommonPairs(currencyAmountIn?.currency, currencyOut)
+export function useTradeExactIn(
+  ammExchange: AmmExchangeInfo,
+  inputCurrency: Currency,
+  currencyAmountIn?: CurrencyAmount,
+  currencyOut?: Currency
+): TradeInfo | null {
+  let marketId = null
+  let cash = null
+  if (inputCurrency instanceof MarketCurrency) {
+    const mc = inputCurrency as MarketCurrency
+    marketId = mc.marketId
+    cash = mc.cash
+  }
+  const balance = useMarketBalance(marketId, cash)
+  const augurClient = useAugurClient()
   return useMemo(() => {
-    if (currencyAmountIn && currencyOut) {
-      console.log('exact in', currencyAmountIn, currencyOut)
-
-      return (
-        //Trade.bestTradeExactIn(allowedPairs, currencyAmountIn, currencyOut, { maxHops: 3, maxNumResults: 1 })[0] ?? null
-        null
-      )
+    if (currencyAmountIn && currencyOut && inputCurrency) {
+      console.log('exact in', currencyAmountIn, currencyOut, inputCurrency)
+      // do any amount conversion here
+      const decimals = currencyAmountIn.currency.decimals
+      const amount = String(currencyAmountIn.raw)
+      return {
+        amm: ammExchange,
+        tradeType: TradeType.EXACT_INPUT,
+        currencyIn: inputCurrency,
+        currencyOut,
+        inputAmount: currencyAmountIn,
+        balance,
+        priceImpact: new Percent(JSBI.BigInt(0))
+      }
     }
     return null
-  }, [allowedPairs, currencyAmountIn, currencyOut])
+  }, [inputCurrency, currencyAmountIn, currencyOut, balance, augurClient, ammExchange])
 }
 
 /**
  * Returns the best trade for the token in to the exact amount of token out
  */
-export function useTradeExactOut(currencyIn?: Currency, currencyAmountOut?: CurrencyAmount): Trade | null {
-  const allowedPairs = useAllCommonPairs(currencyIn, currencyAmountOut?.currency)
+export function useTradeExactOut(
+  ammExchange: AmmExchangeInfo,
+  outputCurrency: Currency,
+  currencyIn?: Currency,
+  currencyAmountOut?: CurrencyAmount
+): TradeInfo | null {
+  let marketId = null
+  let cash = null
+  if (outputCurrency instanceof MarketCurrency) {
+    const mc = outputCurrency as MarketCurrency
+    marketId = mc.marketId
+    cash = mc.cash
+  }
+  const balance = useMarketBalance(marketId, cash)
 
   return useMemo(() => {
-    if (currencyIn && currencyAmountOut) {
+    if (currencyIn && currencyAmountOut && outputCurrency) {
       console.log('exact out', currencyIn, currencyAmountOut)
-      return (
-
-        // get estimated trade output
-        //Trade.bestTradeExactOut(allowedPairs, currencyIn, currencyAmountOut, { maxHops: 3, maxNumResults: 1 })[0] ??
-        null
-      )
+      const decimals = currencyAmountOut.currency.decimals
+      const amount = String(currencyAmountOut.raw)
+      return {
+        amm: ammExchange,
+        tradeType: TradeType.EXACT_OUTPUT,
+        currencyOut: outputCurrency,
+        currencyIn,
+        outputAmount: currencyAmountOut,
+        balance,
+        priceImpact: new Percent(JSBI.BigInt(0))
+      }
     }
     return null
-  }, [allowedPairs, currencyIn, currencyAmountOut])
+  }, [outputCurrency, currencyIn, currencyAmountOut, balance, ammExchange])
 }

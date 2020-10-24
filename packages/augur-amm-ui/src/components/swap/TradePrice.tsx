@@ -1,26 +1,34 @@
-import React from 'react'
-import { Price } from '@uniswap/sdk'
+import React, { useEffect, useMemo, useState } from 'react'
+import { TokenAmount } from '@uniswap/sdk'
 import { useContext } from 'react'
 import { Repeat } from 'react-feather'
 import { Text } from 'rebass'
 import { ThemeContext } from 'styled-components'
 import { StyledBalanceMaxMini } from './styleds'
+import { TradeInfo } from '../../hooks/Trades'
+import { formattedNum } from '../../utils'
 
 interface TradePriceProps {
-  price?: Price
-  showInverted: boolean
-  setShowInverted: (showInverted: boolean) => void
+  trade?: TradeInfo
+  estTokenAmount?: TokenAmount
 }
 
-export default function TradePrice({ price, showInverted, setShowInverted }: TradePriceProps) {
+export default function TradePrice({ trade, estTokenAmount }: TradePriceProps) {
   const theme = useContext(ThemeContext)
 
-  const formattedPrice = showInverted ? price?.toSignificant(6) : price?.invert()?.toSignificant(6)
+  const [priceRate, setPriceRate] = useState(null)
+  const [showInverted, setShowInverted] = useState(false)
 
-  const show = Boolean(price?.baseCurrency && price?.quoteCurrency)
-  const label = showInverted
-    ? `${price?.quoteCurrency?.symbol} per ${price?.baseCurrency?.symbol}`
-    : `${price?.baseCurrency?.symbol} per ${price?.quoteCurrency?.symbol}`
+  useMemo(() => {
+    if (!estTokenAmount) return setPriceRate(null)
+    const receivedAmountDisplay = trade.inputAmount.divide(estTokenAmount)
+    const InPerOut = receivedAmountDisplay
+    const OutPerIn = estTokenAmount.divide(trade.inputAmount)
+    const label = showInverted
+      ? `${formattedNum(InPerOut.toSignificant(6))} ${trade.currencyOut.symbol} per ${trade.currencyIn.symbol}`
+      : `${formattedNum(OutPerIn.toSignificant(6))} ${trade.currencyIn.symbol} per ${trade.currencyOut.symbol}`
+    setPriceRate({ label })
+  }, [trade, estTokenAmount, showInverted])
 
   return (
     <Text
@@ -29,9 +37,9 @@ export default function TradePrice({ price, showInverted, setShowInverted }: Tra
       color={theme.text2}
       style={{ justifyContent: 'center', alignItems: 'center', display: 'flex' }}
     >
-      {show ? (
+      {priceRate ? (
         <>
-          {formattedPrice ?? '-'} {label}
+          {priceRate.label}
           <StyledBalanceMaxMini onClick={() => setShowInverted(!showInverted)}>
             <Repeat size={14} />
           </StyledBalanceMaxMini>

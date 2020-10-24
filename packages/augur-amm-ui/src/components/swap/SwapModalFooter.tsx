@@ -3,6 +3,7 @@ import React, { useContext, useMemo, useState } from 'react'
 import { Repeat } from 'react-feather'
 import { Text } from 'rebass'
 import { ThemeContext } from 'styled-components'
+import { TradeInfo } from '../../hooks/Trades'
 import { Field } from '../../state/swap/actions'
 import { TYPE } from '../../Theme'
 import {
@@ -25,7 +26,7 @@ export default function SwapModalFooter({
   swapErrorMessage,
   disabledConfirm
 }: {
-  trade: Trade
+  trade: TradeInfo
   allowedSlippage: number
   onConfirm: () => void
   swapErrorMessage: string | undefined

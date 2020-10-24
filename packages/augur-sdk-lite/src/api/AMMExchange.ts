@@ -26,6 +26,7 @@ export class AMMExchange {
   }
 
   async rateEnterPosition(cash: BigNumber, buyYes: boolean): Promise<BigNumber> {
+    console.log('rateEnterPosition', String(cash), buyYes)
     return this.contract.rateEnterPosition(cash.toFixed(), buyYes);
   }
 
@@ -67,6 +68,10 @@ export class AMMExchange {
 
   async swapForNo(yesShares: Shares): Promise<Shares> {
     return this.swap(yesShares, true);
+  }
+
+  async getRateSwap(inputShares: BigNumber, inputIsYesShares: boolean): Promise<Shares> {
+    return this.contract.rateSwap(inputShares, inputIsYesShares);
   }
 
   async swap(inputShares: Shares, inputYes: boolean): Promise<Shares> {

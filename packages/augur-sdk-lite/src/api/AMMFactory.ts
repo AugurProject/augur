@@ -67,6 +67,7 @@ export class AMMFactory {
   async getRateEnterPosition(ammAddress: string, collateral: string, buyYes: boolean): Promise<BigNumber> {
     if (!ammAddress) return null;
     const amm = new AMMExchange(this.signerOrProvider, ammAddress);
+    console.log('getRateEnterPosition', ammAddress, collateral, buyYes)
     return amm.rateEnterPosition(new BigNumber(collateral), buyYes);
   }
 
@@ -74,6 +75,12 @@ export class AMMFactory {
     if (!ammAddress) return null;
     const amm = new AMMExchange(this.signerOrProvider, ammAddress);
     return amm.rateCashEnterPosition(new BigNumber(shares), buyYes);
+  }
+
+  async getSwapRate(ammAddress: string, inputShares: string, inputIsYesShares: boolean): Promise<BigNumber> {
+    if (!ammAddress) return null;
+    const amm = new AMMExchange(this.signerOrProvider, ammAddress);
+    return amm.getRateSwap(new BigNumber(inputShares), inputIsYesShares);
   }
 
   async enterPosition(ammAddress: string, collateral: string, buyYes: boolean, minShares: string): Promise<TransactionResponse> {

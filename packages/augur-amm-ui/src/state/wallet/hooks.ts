@@ -13,7 +13,7 @@ import { useAllMarketData } from '../../contexts/Markets'
 import { ParaShareToken } from '@augurproject/sdk-lite'
 import { Interface } from 'ethers/lib/utils'
 import { BigNumber as BN } from 'bignumber.js'
-import { MarketTokens } from '../../constants'
+import { MarketTokens, ZERO_ADDRESS } from '../../constants'
 import { MarketCurrency } from '../../data/MarketCurrency'
 /**
  * Returns a map of the given addresses to their eventually consistent ETH balances.
@@ -117,25 +117,29 @@ export function useLPTokenBalances(): [{ [tokenAddress: string]: string | undefi
 
 const outcomeNames = ['invalidAmount', 'noAmount', 'yesAmount']
 
+export interface MarketBalance {
+  paraShareToken: { id: string }
+  marketId: string
+  outcome: number
+  amount: CurrencyAmount
+  noAmount: string
+  yesAmount: string
+  cash: string
+}
+
 export function useMarketShareBalances(): [
-  {
-    paraShareToken: string
-    marketId: string
-    outcome: number
-    amount: CurrencyAmount
-    noAmount: string
-    yesAmount: string
-    cash: string
-  }[],
+  MarketBalance[],
   boolean
 ] {
   const { markets, paraShareTokens } = useAllMarketData()
   const { account } = useActiveWeb3React()
+
+  const userAccount = account ? account : ZERO_ADDRESS
   const paraTokenAdds: string[] = paraShareTokens.map(p => p.id)
 
   const inputs: [] = useMemo(
     () =>
-      markets ? markets.reduce((p, m) => [...p, [m.id, 0, account], [m.id, 1, account], [m.id, 2, account]], []) : [],
+      markets ? markets.reduce((p, m) => [...p, [m.id, 0, userAccount], [m.id, 1, userAccount], [m.id, 2, userAccount]], []) : [],
     [markets]
   )
 
@@ -153,11 +157,11 @@ export function useMarketShareBalances(): [
   return [
     useMemo(
       () =>
-        account && inputs.length > 0
+      userAccount && inputs.length > 0
           ? Object.values(
               inputs.reduce((memo, params, j) => {
                 const marketId = params[0]
-                const outcome = params[1]
+                const outcome = Number(params[1])
                 const pTokenAmounts = paraTokenAdds
                   .map((p, i) => ({ marketId, outcome, ptokenAddr: p, amount: String(balances?.[j]?.result?.[i]) }))
                   .filter(p => p.amount !== '0' && p.amount !== 'undefined')
@@ -169,25 +173,40 @@ export function useMarketShareBalances(): [
                     const amountName = outcomeNames[outcome]
                     let item = memo[key]
                     if (item === undefined) {
+                      const outcomes = ['0', '0', '0']
+                      outcomes[outcome] = String(amount)
                       return (memo[key] = {
                         cash: keyedParaTokens[ptokenAddr].cash.id,
                         marketId,
                         [amountName]: amount,
                         market: keyedMarkets[marketId],
-                        paraShareToken: keyedParaTokens[ptokenAddr],
+                        outcomes,
+                        paraShareToken: keyedParaTokens[ptokenAddr]
                       })
                     }
-                    return (memo[key] = { ...item, [amountName]: String('0') })
+                    const existingItem = { ...item, [amountName]: String(amount) }
+                    existingItem.outcomes[outcome] = String(amount)
+                    return (memo[key] = existingItem)
                   })
                 }
                 return memo
               }, {})
             )
           : [],
-      [account, inputs, balances, keyedMarkets, paraTokenAdds, keyedParaTokens, outcomeNames]
+      [userAccount, inputs, balances, keyedMarkets, paraTokenAdds, keyedParaTokens, outcomeNames]
     ),
     anyLoading
   ]
+}
+
+export function useMarketBalance(marketId: string, cash: string): MarketBalance {
+  const [balances] = useMarketShareBalances()
+
+  return useMemo(() => (!cash || !marketId ? null : balances.find(b => b.marketId === marketId && b.cash === cash)), [
+    marketId,
+    cash,
+    balances
+  ])
 }
 
 export function useTokenBalances(

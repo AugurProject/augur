@@ -117,6 +117,7 @@ interface CurrencyInputPanelProps {
   id: string
   showCommonBases?: boolean
   customBalanceText?: string
+  disableInput?: boolean
 }
 
 export default function CurrencyInputPanel({
@@ -134,7 +135,8 @@ export default function CurrencyInputPanel({
   otherCurrency,
   id,
   showCommonBases,
-  customBalanceText
+  customBalanceText,
+  disableInput = false
 }: CurrencyInputPanelProps) {
 
   const [modalOpen, setModalOpen] = useState(false)
@@ -176,6 +178,7 @@ export default function CurrencyInputPanel({
             <>
               <NumericalInput
                 className="token-amount-input"
+                disabled={disableInput}
                 value={value}
                 onUserInput={val => {
                   onUserInput(val)
