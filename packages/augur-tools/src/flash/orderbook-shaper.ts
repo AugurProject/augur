@@ -5,7 +5,7 @@ import {
   OutcomeOrderBook,
 } from '@augurproject/sdk-lite';
 import { BigNumber } from 'bignumber.js';
-import { formatBytes32String } from 'ethers/utils';
+import { ethers } from 'ethers';
 import { ZeroXPlaceTradeDisplayParams } from '@augurproject/sdk';
 import { ContractAPI } from '..';
 import { sleep } from './util';
@@ -118,7 +118,7 @@ export class OrderBookShaper {
         numTicks: new BigNumber(this.marketInfo.numTicks),
         numOutcomes: this.marketInfo.numOutcomes,
         outcome: order.outcome as 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7,
-        fingerprint: formatBytes32String('11'),
+        fingerprint: ethers.utils.formatBytes32String('11'),
         doNotCreateOrders: false,
         displayMinPrice: new BigNumber(this.marketInfo.minPrice),
         displayMaxPrice: new BigNumber(this.marketInfo.maxPrice),

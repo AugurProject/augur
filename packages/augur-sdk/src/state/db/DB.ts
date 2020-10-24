@@ -1,3 +1,4 @@
+import { buildParaAddresses } from '@augurproject/artifacts';
 import {
   CancelZeroXOrderLog,
   CompleteSetsPurchasedLog,
@@ -57,6 +58,8 @@ import { WarpSyncCheckpointsDB } from './WarpSyncCheckpointsDB';
 import { StoredOrder, ZeroXOrders } from './ZeroXOrders';
 import { GetterCache } from './GetterCache';
 
+import './ParaDBFilterAddOn';
+
 interface Schemas {
   [table: string]: string;
 }
@@ -65,10 +68,10 @@ interface Schemas {
 const PRUNE_HORIZON = SECONDS_IN_A_DAY.multipliedBy(60).toNumber();
 
 export class DB {
+  private isParaDeploy: boolean;
   private syncableDatabases: { [dbName: string]: BaseSyncableDB } = {};
   private disputeDatabase: DisputeDatabase;
-  private currentOrdersDatabase: ParsedOrderEventDB;
-  marketDatabase: MarketDB;
+  private _marketDatabase: MarketDB;
   private parsedOrderEventDatabase: ParsedOrderEventDB;
   private zeroXOrders: ZeroXOrders;
   getterCache: GetterCache;
@@ -146,7 +149,7 @@ export class DB {
     },
     { EventName: 'TokensMinted', indexes: [] },
     { EventName: 'TokensTransferred', indexes: [] },
-    { EventName: 'ReportingFeeChanged', indexes: ['universe'] }, // TODO: add Rollup
+    { EventName: 'ReportingFeeChanged', indexes: ['universe'] },
     { EventName: 'TradingProceedsClaimed', indexes: ['timestamp', 'market'] },
     {
       EventName: 'UniverseCreated',
@@ -158,8 +161,23 @@ export class DB {
     {
       EventName: 'ShareTokenBalanceChanged',
       indexes: ['[universe+account]', 'market'],
-      primaryKey: '[account+market+outcome]',
+      primaryKey: '[account+market+outcome]'
     },
+  ];
+
+  readonly paraEventNames: string[] = [
+    'CompleteSetsPurchased',
+    'CompleteSetsSold',
+    'TradingProceedsClaimed',
+    'MarketOIChanged',
+    'ReportingFeeChanged',
+    'ShareTokenBalanceChanged',
+    'OrderEvent',
+    'ProfitLossChanged',
+    'MarketVolumeChanged',
+
+    // Not strictly a contract event but needs to be filtered for para logs.
+    'ParsedOrderEvents',
   ];
 
   constructor(
@@ -170,6 +188,13 @@ export class DB {
     private uploadBlockNumber: number,
     private enableZeroX: boolean
   ) {
+    // @ts-ignore
+    this.dexieDB.paraEventNames = this.paraEventNames;
+
+    // @ts-ignore
+    this.dexieDB.paraDeploy = augur.config.paraDeploy;
+
+    this.isParaDeploy = typeof augur.config.paraDeploy === 'string';
     logFilters.listenForBlockRemoved(this.rollback.bind(this));
   }
 
@@ -212,13 +237,14 @@ export class DB {
   async initializeDB(): Promise<DB> {
     const schemas = this.generateSchemas();
 
-    this.dexieDB.version(1).stores(schemas);
+    this.dexieDB.version(2).stores(schemas);
 
     await this.dexieDB.open();
 
     this.syncStatus = new SyncStatus(this.networkId, this.uploadBlockNumber, this);
     this.warpCheckpoints = new WarpSyncCheckpointsDB(this.networkId, this);
     this.getterCache = GetterCache.create(this, this.networkId, this.augur);
+    await this.getterCache.reset();
 
     // Create SyncableDBs for generic event types & UserSyncableDBs for user-specific event types
     for (const genericEventDBDescription of this.genericEventDBDescriptions) {
@@ -243,6 +269,23 @@ export class DB {
           dbName,
           genericEventDBDescription.indexes
         );
+
+        if(this.paraEventNames.includes(genericEventDBDescription.EventName)) {
+          const dbName = `Para${genericEventDBDescription.EventName}Rollup`;
+          const delayedSyncableDB = new DelayedSyncableDB(
+            this.augur,
+            this,
+            this.networkId,
+            genericEventDBDescription.EventName,
+            dbName,
+            genericEventDBDescription.indexes,
+            true
+          );
+
+          // Clear para rollups to accommodate switching collateral.
+          this.syncableDatabases[dbName] = delayedSyncableDB;
+          await delayedSyncableDB.reset();
+        }
       }
     }
     // Custom Derived DBs here
@@ -258,14 +301,12 @@ export class DB {
       ],
       this.augur
     );
-    this.currentOrdersDatabase = new ParsedOrderEventDB(
-      this,
-      this.networkId,
-      'CurrentOrders',
-      ['OrderEvent'],
-      this.augur
-    );
-    this.marketDatabase = new MarketDB(this, this.networkId, this.augur);
+    await this.disputeDatabase.reset();
+
+    this._marketDatabase = new MarketDB(this, this.networkId, this.augur);
+    console.log('initializeDB-checkpoint-1');
+    await this._marketDatabase.reset();
+
     this.parsedOrderEventDatabase = new ParsedOrderEventDB(
       this,
       this.networkId,
@@ -275,7 +316,7 @@ export class DB {
     );
 
     if (this.enableZeroX && !this.zeroXOrders) {
-      this.zeroXOrders = ZeroXOrders.create(this, this.networkId, this.augur);
+      this.zeroXOrders = ZeroXOrders.create(this, this.networkId, this.augur, buildParaAddresses(this.augur.config));
       if (this.augur.zeroX?.isReady()) {
         this.zeroXOrders.cacheOrdersAndSync(); // Don't await here -- this happens in the background
       } else {
@@ -295,22 +336,11 @@ export class DB {
       console.log()
     }
 
-    const universeCreatedLogCount = await this.UniverseCreated.count();
-    if (universeCreatedLogCount > 0) {
-      const currentUniverseCreateLogCount = await this.UniverseCreated.where(
-        'childUniverse'
-      )
-        .equalsIgnoreCase(this.augur.contracts.universe.address)
-        .count();
-
-      if (currentUniverseCreateLogCount === 0) {
-        // Need to reset the db if we have universe created logs from a previous deployment.
-        await this.delete();
-        await this.initializeDB();
-      }
-    }
-
     return this;
+  }
+
+  get marketDatabase(): MarketDB {
+    return this._marketDatabase;
   }
 
   // Remove databases and unregister event handlers.
@@ -323,8 +353,7 @@ export class DB {
     this.syncableDatabases = {};
 
     this.disputeDatabase = undefined;
-    this.currentOrdersDatabase = undefined;
-    this.marketDatabase = undefined;
+    this._marketDatabase = undefined;
     this.parsedOrderEventDatabase = undefined;
     this.getterCache = undefined;
 
@@ -339,11 +368,15 @@ export class DB {
           genericEventDBDescription.primaryKey,
           'blockNumber',
         ].concat(genericEventDBDescription.indexes);
+
         schemas[`${genericEventDBDescription.EventName}Rollup`] = fields.join(
           ','
         );
+        if(this.paraEventNames.includes(genericEventDBDescription.EventName)) {
+          schemas[`Para${genericEventDBDescription.EventName}Rollup`] = [ ...fields, 'para'].join(',');
+        }
       }
-      const fields = ['[blockNumber+logIndex]', 'blockNumber'].concat(
+      const fields = ['[blockNumber+logIndex]', 'blockNumber', 'para'].concat(
         genericEventDBDescription.indexes
       );
       schemas[genericEventDBDescription.EventName] = fields.join(',');
@@ -433,11 +466,10 @@ export class DB {
     console.log('Syncing derived DBs');
 
     await this.disputeDatabase.sync(highestAvailableBlockNumber);
-    await this.currentOrdersDatabase.sync(highestAvailableBlockNumber);
     await this.parsedOrderEventDatabase.sync(highestAvailableBlockNumber);
 
     // The Market DB syncs after the derived DBs, as it depends on a derived DB
-    await this.marketDatabase.sync(highestAvailableBlockNumber);
+    await this._marketDatabase.sync(0);
   }
 
   async prune(timestamp: number) {
@@ -496,10 +528,8 @@ export class DB {
       }
     }
 
+    // Market and Dispute dbs are cleared on load.
     // Perform rollback on derived DBs
-    dbRollbackPromises.push(this.disputeDatabase.rollback(blockNumber));
-    dbRollbackPromises.push(this.currentOrdersDatabase.rollback(blockNumber));
-    dbRollbackPromises.push(this.marketDatabase.rollback(blockNumber));
     dbRollbackPromises.push(
       this.parsedOrderEventDatabase.rollback(blockNumber)
     );
@@ -609,6 +639,12 @@ export class DB {
     return this.dexieDB.table<MarketVolumeChangedLog>('MarketVolumeChanged');
   }
   get MarketVolumeChangedRollup() {
+    if(this.isParaDeploy) {
+      return this.dexieDB.table<MarketVolumeChangedLog>(
+        'ParaMarketVolumeChangedRollup'
+      );
+    }
+
     return this.dexieDB.table<MarketVolumeChangedLog>(
       'MarketVolumeChangedRollup'
     );
@@ -617,6 +653,10 @@ export class DB {
     return this.dexieDB.table<MarketOIChangedLog>('MarketOIChanged');
   }
   get MarketOIChangedRollup() {
+    if(this.isParaDeploy) {
+      return this.dexieDB.table<MarketOIChangedLog>('ParaMarketOIChangedRollup');
+    }
+
     return this.dexieDB.table<MarketOIChangedLog>('MarketOIChangedRollup');
   }
   get OrderEvent() {
@@ -681,8 +721,14 @@ export class DB {
     );
   }
   get ShareTokenBalanceChangedRollup() {
+    if(this.isParaDeploy) {
+      return this.dexieDB.table<ShareTokenBalanceChangedLog>(
+        'ShareTokenBalanceChangedRollup'
+      );
+    }
+
     return this.dexieDB.table<ShareTokenBalanceChangedLog>(
-      'ShareTokenBalanceChangedRollup'
+      'ParaShareTokenBalanceChangedRollup'
     );
   }
   get Markets() {

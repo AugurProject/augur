@@ -1,7 +1,7 @@
 import React, { useEffect, useRef } from 'react';
 import Highcharts from 'highcharts/highstock';
 import Styles from 'modules/account/components/overview-chart.styles.less';
-import { formatDai } from 'utils/format-number';
+import { formatDaiPrice, formatDai, formatEther } from 'utils/format-number';
 import { createBigNumber } from 'utils/create-big-number';
 
 const HIGHLIGHTED_LINE_WIDTH = 1;
@@ -82,7 +82,7 @@ const getOptions = () => ({
       style: null,
       format: '${value:.2f}',
       formatter() {
-        return formatDai(this.value, { removeComma: true }).full;
+        return formatEther(this.value, { removeComma: true }).full;
       },
       align: 'left',
       x: 0,
@@ -226,12 +226,12 @@ const ProfitLossChart = ({ width, data }: ChartProps) => {
       )
     );
 
-    const max = formatDai(bnMax)
+    const max = formatEther(bnMax)
       .formattedValue;
-    const min = formatDai(bnMin)
+    const min = formatEther(bnMin)
       .formattedValue;
     const intervalDivision = bnMin.eq(0) || bnMax.eq(0) ? 1.99 : 3;
-    const tickInterval = formatDai(
+    const tickInterval = formatEther(
       bnMax
         .abs()
         .plus(bnMin.abs())

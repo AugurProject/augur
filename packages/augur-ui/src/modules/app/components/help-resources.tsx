@@ -11,6 +11,7 @@ import {
   HELP_CENTER_ADD_FUNDS,
   HELP_CENTER_HOW_TO_TRADE,
   HELP_CENTER_HOW_TO_DISPUTE,
+  DISCORD_LINK,
 } from 'modules/common/constants';
 import { MARKET } from 'modules/routes/constants/views';
 import makeQuery from 'modules/routes/helpers/make-query';
@@ -51,7 +52,7 @@ const HELP_LINKS = [
   },
   {
     label: 'community support',
-    link: 'https://discordapp.com/invite/STswGEF',
+    link: DISCORD_LINK,
   },
 ];
 

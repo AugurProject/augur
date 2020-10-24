@@ -1,3 +1,4 @@
+import { ethers } from 'ethers';
 import * as CIDTool from 'cid-tool';
 import {
   Log,
@@ -8,8 +9,7 @@ import {
 import { Log as SerializedLog } from '@augurproject/types';
 import { IPFSEndpointInfo, IPFSHashVersion, logger } from '@augurproject/utils';
 import Dexie from 'dexie';
-import { Block } from 'ethers/providers';
-import { BigNumber } from 'ethers/utils';
+import { Block } from '@ethersproject/providers';
 import * as IPFS from 'ipfs';
 import * as Unixfs from 'ipfs-unixfs';
 import { DAGNode } from 'ipld-dag-pb';
@@ -168,8 +168,8 @@ export class WarpController {
 
         case MarketReportingState.Finalized:
           const endBlock = Object.assign({}, mostRecentCheckpoint.end, {
-            gasLimit: new BigNumber(mostRecentCheckpoint.end.gasLimit),
-            gasUsed: new BigNumber(mostRecentCheckpoint.end.gasUsed),
+            gasLimit: ethers.BigNumber.from(mostRecentCheckpoint.end.gasLimit),
+            gasUsed: ethers.BigNumber.from(mostRecentCheckpoint.end.gasUsed),
           })
           const [begin, end] = await this.checkpoints.calculateBoundary(
             mostRecentCheckpoint.endTimestamp,
@@ -226,7 +226,7 @@ export class WarpController {
     const mostRecentCheckpoint = await this.db.warpCheckpoints.getMostRecentCheckpoint();
     if (!mostRecentCheckpoint) {
       const market = await this.augur.warpSync.getWarpSyncMarket(
-        this.augur.contracts.universe.address
+        await this.augur.contracts.paraUniverse.originUniverse_()
       );
 
       if (market.address === NULL_ADDRESS) {

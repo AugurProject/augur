@@ -1,6 +1,6 @@
 import { Market } from '@augurproject/core/build/libraries/ContractInterfaces';
 import { Address } from '@augurproject/sdk-lite';
-import { Block } from 'ethers/providers';
+import { Block } from '@ethersproject/providers';
 import { AbstractTable } from './AbstractTable';
 import { DB } from './DB';
 

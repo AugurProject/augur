@@ -5,17 +5,21 @@
     "ws": "ws://localhost:8546",
     "rpcRetryCount": 5,
     "rpcRetryInterval": 0,
-    "rpcConcurrency": 40
+    "rpcConcurrency": 40,
+    "network": "private"
   },
   "gas": {
     "price": 20000000000,
-    "limit": 10000000
+    "limit": 10000000,
+    "override": false
   },
   "deploy": {
     "isProduction": false,
     "enableFaucets": true,
     "normalTime": false,
-    "writeArtifacts": false
+    "writeArtifacts": true,
+    "serial": true,
+    "externalAddresses": {}
   },
   "zeroX": {
     "rpc": {
@@ -45,5 +49,404 @@
     "wssPort": 9002,
     "startWSS": true
   },
-  "uploadBlockNumber": 0
+  "uploadBlockNumber": 591,
+  "logLevel": 3,
+  "averageBlocktime": 2000,
+  "warpSync": {
+    "createCheckpoints": false,
+    "autoReport": false,
+    "ipfsEndpoint": {
+      "version": 1,
+      "url": "https://cloudflare-ipfs.com/ipfs/"
+    }
+  },
+  "uniswap": {
+    "exchangeRateBufferMultiplier": 1.075
+  },
+  "syncing": {
+    "enabled": true
+  },
+  "ui": {
+    "showReloadModal": true,
+    "trackBestOffer": false,
+    "trackMarketInvalidBids": true,
+    "fallbackProvider": "torus",
+    "liteProvider": "jsonrpc",
+    "primaryProvider": "wallet",
+    "marketCreationEnabled": true,
+    "reportingEnabled": true
+  },
+  "addresses": {
+    "Augur": "0x320B76e62a18fCe56AE6906a34F38d26da570475",
+    "Universe": "0x56b176589BfB90fff9B5ef9f0Ed43A598fE09aEc",
+    "LegacyReputationToken": "0xBc7BF3a0dfd547cCd4D6553Db8FB5C64c9d21Eaa",
+    "Cash": "0x03Ed8CC77B73b4F314c3fFfD625610753d27C987",
+    "USDC": "0xf9310BbA3D744A7Fb3CB66Cd5Ee76E8024076c80",
+    "USDT": "0xdfCfB9b5aE43E4982B4Eb8c1Dfa7475d19aE8296",
+    "BuyParticipationTokens": "0x05352eE31cAF40dC80B0a19ED0aC6568adE0c827",
+    "RedeemStake": "0x34abe8122ffe6CF9a1A9b00AD01E11D3a2c2b269",
+    "WarpSync": "0x35D6f33BeE9f3DE3F42810Bd2934b339A2900E8E",
+    "ShareToken": "0x20F0f56Ae841466D55C22d9237518f2e5fEdBA84",
+    "HotLoading": "0xEaAd1B5C683F91115CF3558695E176691504BB0b",
+    "Affiliates": "0xF3549fEc53816c9f14316832fca8ACdf8D0c261e",
+    "AffiliateValidator": "0xafc4Cb8538bA864E40550C633Ea4e57809b59c7A",
+    "OICash": "0x10a785B4E198EE70533F927F8444909ec8ac2422",
+    "AugurWalletRegistry": "0xFCB5386B8E5Aa0677e3651bBa9eA0Ba170dE2A56",
+    "AugurWalletRegistryV2": "0x2305f73E0D4a847F74E333c0AD16edE98F6c8C0c",
+    "UniswapV2Factory": "0xB55B7C8689ac996B98bD2237Bc2FD80d5c535718",
+    "UniswapV2Router02": "0x7905485B11D7faf8987354b4bbEc76842967a090",
+    "RelayHubV2": "0xf1B83B8e043F00874486f53AC0F80c99e3a736f1",
+    "EthExchange": "0xa4fD5eEA8546b0E2FD46b51632c890e52F60eFbD",
+    "AuditFunds": "0xFfFe69D8ab68E6AD63034697b7aFB06046Cd0f67",
+    "AccountLoader": "0x32A6f56D75dE13890D2dEfFa585Fa026cE1256f4",
+    "OINexus": "0xb7BfC27bBc814fDe0a6A18Ddd8Ac9656Ea62fE42",
+    "HotLoadingUniversal": "0x29DcDbb6c3a586cEFf3b299E05437870AB96E486",
+    "ERC20Proxy": "0x32910feAe1A43c09CC0965fcc8B799128AE16592",
+    "ERC721Proxy": "0x5Ed4219AB6f3417a7bc7eF1B27e707Db0366521B",
+    "ERC1155Proxy": "0x304eA460046Cb1d71a639329Ed5aae81C3C0474C",
+    "MultiAssetProxy": "0xebf6afdF1826f7833C056363B25f6E0986D832c8",
+    "Exchange": "0x49D4E0D86FF9164e24CBe84c37cC7f66C360a7d5",
+    "Coordinator": "0xE106d2bFbcDbf54850717e7f98B61E7DCd2e3c02",
+    "CoordinatorRegistry": "0xE7Ca50b35d8DD724DA36c57aC4b9d4293B9CaE5d",
+    "ChaiBridge": "0x9F1F3E048f9d80117C1C4ADB9d3710757D5EECf3",
+    "DevUtils": "0x81E7363580EbB5132dAD2A7c80405163b87692bF",
+    "WETH9": "0x0Edaac07DCDa5aF6C2ee65B80E28B28327FC9382",
+    "ZRXToken": "0x07f315Db0F83B1d1D612d08B1C84611D14DeB777",
+    "TimeControlled": "0x587E73DAccf90FF6C988c792b1277fEB22D7B38C",
+    "AugurTrading": "0x3d064367bD9fF4cE8783BF3e66C565ec77ebFa7f",
+    "CancelOrder": "0xC5a5408fEa166a57F0eF1005515C5A78a855ADf2",
+    "CreateOrder": "0xa731003711fDD8f8D28a8c4E6F996A7889a69641",
+    "FillOrder": "0x81a50dd452Abe4bbF4f36BE90Ad17d00c14732Ee",
+    "Orders": "0xb659bBd215c4b3859790f1e70c3F3e0cA11433f5",
+    "ProfitLoss": "0x0782ECC988e3bd0f1029f6DE0aC25026bef0a85b",
+    "SimulateTrade": "0xe3D87b6be48C73DE6ba86B596d81d1FcdD5E74De",
+    "Trade": "0x355020574886F5A226b31283E16A981219A801c6",
+    "ZeroXTrade": "0x8cE869122dA4e5D6De1073440a6E1507Ba6cF10c",
+    "AMMFactory": "0xc95c5a08Af0B3944396bc96eD356c91f71c695cb",
+    "ERC20Proxy1155Nexus": "0x495dAe15005247a7d4Ef621300033DD4bF43C385",
+    "ParaDeployer": "0x50342Ef130f11252Fc9EDF7B2fb618A541401Dc9"
+  },
+  "paraDeploys": {
+    "0xc14DBfE789ed25366519A8CF7b59f23957657819": {
+      "name": "WETH",
+      "uploadBlockNumber": 1061,
+      "addresses": {
+        "Augur": "0xBa0014c273177F93F190393e4e86B62EdF5BE73b",
+        "AugurTrading": "0xe178a09414980CDF776b94aBec05322A5b866Ae2",
+        "Universe": "0x1B33b6D40654aB5F375bFa495F9BDE3C25566242",
+        "Cash": "0xc14DBfE789ed25366519A8CF7b59f23957657819",
+        "ShareToken": "0x004B08832a0aBDfe78519b14CBDbeD22909fa762",
+        "OICash": "0x79dF5320C926Ea16D9a7C90c87E3f8C5A0Adb7dB",
+        "CancelOrder": "0x922Cd231094699F3280FBFb45653429cb36D2b75",
+        "CreateOrder": "0x6427E9121640dCb70B29fb6FaA4Aef3b84af748E",
+        "FillOrder": "0xCd079218dBbE02bAfaCD24563dD6a4e1feA3174e",
+        "Orders": "0x9180A78D0052F599fc9bD8FF6BBa4D344dc9B6D3",
+        "Trade": "0xFD5F6483ce8f609c3afD7ff0CD7ECcd9e7A36C46",
+        "SimulateTrade": "0xBa602ae7B6a3bb4e083f9C71770eC0699cdbCEDD",
+        "ZeroXTrade": "0x36F08C552621224d1A7f8035a59ade0081650079",
+        "ProfitLoss": "0xee1B404A9868a23d42D1e53A31cBDEeDfc5c685a"
+      }
+    },
+    "0xB37EB6e0E8aC29C9C6146101d42bbA4ee28D7a1d": {
+      "name": "WETH",
+      "uploadBlockNumber": 1438,
+      "addresses": {
+        "Augur": "0xD36F6deF6044AC8A5eD59F6437e05c30DAA4C99c",
+        "AugurTrading": "0xfefbCbe5e440A56DBFc09902eDA32cEb50C76c9f",
+        "Universe": "0x8A6cA372E81eE058c3070A61f926a7B2340D14E7",
+        "Cash": "0xB37EB6e0E8aC29C9C6146101d42bbA4ee28D7a1d",
+        "ShareToken": "0x6e5B7ADF6561D765509B6ed54f4c3ba01718Cefe",
+        "OICash": "0xef9540506bD5A576a0082d93AA4cf8726C0a97e8",
+        "CancelOrder": "0xC65589a607baba1a6f92DEAaED1632b024412dB6",
+        "CreateOrder": "0x41406683c5dB0bf86a3a6ACA32061C05465d987e",
+        "FillOrder": "0xcEF93558F0Db4D3A0F38f6Faa5ce4F94C52af1d2",
+        "Orders": "0x13c6238C5C6F7e2077d2Cb09Fa056c70eFD72Aa0",
+        "Trade": "0x335201ad80339f5De41F33add57E1d177f78d191",
+        "SimulateTrade": "0xC930132ABbdb3DA5382Ce05c552B1925857A6133",
+        "ProfitLoss": "0x492800202a4420f473f33147EACfDE8E7606F535"
+      }
+    },
+    "0xf33A8Abcf994BAFCb28682f08c48015A57EA35d3": {
+      "name": "WETH",
+      "uploadBlockNumber": 202,
+      "addresses": {
+        "Augur": "0x373a27a3D7AAD5ee62D56C90a86681C37f9B9515",
+        "AugurTrading": "0x120F0E88bdF47486B65d34E010b4C382b37eFA4d",
+        "Universe": "0x45096a9633863b684571297c6bB148EFf16DB194",
+        "Cash": "0xf33A8Abcf994BAFCb28682f08c48015A57EA35d3",
+        "ShareToken": "0xCb569666Cf3A1Cbd0E4435c0FD55cE3E4D210598",
+        "OICash": "0xf56892c9D3275e2F083B9FDA2f3533223dE95E0b",
+        "CancelOrder": "0xacf8d413ccF5cadD0770A4CeD06090427817B71F",
+        "CreateOrder": "0x073e413b496295Ae75602eefa93fF0a799A98421",
+        "FillOrder": "0xa28c31409b528fd51aE74e2613604d38ae8Dfba1",
+        "Orders": "0x4B7fFD1181986625312bc3F8f0eFd52191326fD9",
+        "Trade": "0xFbbe789d12F30013481fA3eCF097185E463eE10C",
+        "SimulateTrade": "0x43D2D2e051e67C7E2e98512cc7302895D77b3193",
+        "ProfitLoss": "0xE0f98158713A6BE360bb943CE6323e76112Be959",
+        "ZeroXTrade": "0x1CFe31597179600b51b8C00006957769bc4BdCb7"
+      }
+    },
+    "0x04BeDe00721C357Cd375ab1c4E5AE63600e842f6": {
+      "name": "WETH",
+      "uploadBlockNumber": 585,
+      "addresses": {
+        "Augur": "0xBCc3220dbFD70978035df50586104ee2aD3980ae",
+        "AugurTrading": "0x2c4eB1aE821f7de72A4639215F733f4A0C8e4b41",
+        "Universe": "0x5918b94B953160104618a6d4987351214a03F532",
+        "Cash": "0x04BeDe00721C357Cd375ab1c4E5AE63600e842f6",
+        "ShareToken": "0x15Ec346A079Dc60315df2fE3f1b1703A193c5BF5",
+        "OICash": "0x489a7778935459460f911E71C35d41c1C3531F25",
+        "CancelOrder": "0xe612d1E00D074e7A47cC1126ae8d3f933AAFAfD6",
+        "CreateOrder": "0x5517566049926Af267813f5A48D1ac8146A3b6b9",
+        "FillOrder": "0xDB9Db3129d01930659E414649c797E764269fc94",
+        "Orders": "0xb3b7eafB4FdC6c1a90dBf6BEDBa2e296DD6c962f",
+        "Trade": "0x0b4AD48bE9b67844cb1F62894e6327C18206ce2a",
+        "SimulateTrade": "0x6B921ccDC52beC038959ECB4Ec73Ea994fBB0A75",
+        "ProfitLoss": "0x8A222dF0D4c7d0b5EB64997FA35a56A04ffc9d7B"
+      }
+    },
+    "0x364776C1ca31429Eb20C01572B193ef24227dF7b": {
+      "name": "WETH",
+      "uploadBlockNumber": 961,
+      "addresses": {
+        "Augur": "0x2b751C98058b8dF262c48792C7F2655A229A27aE",
+        "AugurTrading": "0x7ECbC13FFbe1910F13e54e977Be85AC294a82592",
+        "Universe": "0x54a7280a172383a15119043aE412DCe12a6C8b55",
+        "Cash": "0x364776C1ca31429Eb20C01572B193ef24227dF7b",
+        "ShareToken": "0x62f38AFFc10C6459309c200784f6C2A36e5f64F8",
+        "OICash": "0xeF0bF90af7e7696D996A4a81cbaf652d984C7C0B",
+        "CancelOrder": "0x425D570b043b65b6b16E7b6c3098b3B4C1742Ece",
+        "CreateOrder": "0x7FF760CbCEdEaa35CB742797c8375573E422e0F0",
+        "FillOrder": "0xa8B66bc45252B84044b2795816d0271C94Fd1eB9",
+        "Orders": "0x05Be468cb0451dbd67E448144D2D7395758d2db5",
+        "Trade": "0x74092da4B188EC06740B5375667426d968f02F0D",
+        "SimulateTrade": "0xe83c928376591a8B8440a3CA28c55F95Ba4465DC",
+        "ProfitLoss": "0xB6FF05aE11C6A5869CC198cc0a941aC5dEAe7065"
+      }
+    },
+    "0xc1aB43c46B11E664D2529FF56dBd25f5c5F9Ec5E": {
+      "name": "WETH",
+      "uploadBlockNumber": 2778,
+      "addresses": {
+        "Augur": "0x4cb67eE2AC2ba1D7480a76E6d31e3e09272b9BBf",
+        "AugurTrading": "0x48a3C692909FEabE286707E33E505608ddC7680e",
+        "Universe": "0x790A9321E45d288D052634fd9594a658F6b58dF0",
+        "Cash": "0xc1aB43c46B11E664D2529FF56dBd25f5c5F9Ec5E",
+        "ShareToken": "0x95f6B6AB6164CF681E8E2668f25327E43B1b8ADF",
+        "OICash": "0x19dAb51FAbD5C58A2Cc36697cD1fB638AD7d990c",
+        "CancelOrder": "0x9F25AdF770c322f98CfA3a67aFb7D830BE0e2C3C",
+        "CreateOrder": "0xBA8c2Ac471852778E2bb8ea678015aFC7EEE089B",
+        "FillOrder": "0x0dDFD5E82d7B7abeE3c4d1B08e12446053FD293d",
+        "Orders": "0xBaD7daCeDc7b79d1FCA9200AEdD27978A695F137",
+        "Trade": "0x734880222AFb99ac985d3e57f9d0652DC8103727",
+        "SimulateTrade": "0x8Ab1e9184a6b3c26399E1268E244C313515e7ce8",
+        "ProfitLoss": "0x11C23a48C575AC68b58919Baf32151B38e9d7298"
+      }
+    },
+    "0x7a53492648bE0d09160a3e913146668da7d53Fd3": {
+      "name": "WETH",
+      "uploadBlockNumber": 3184,
+      "addresses": {
+        "Augur": "0xd2CfEbB5a0eE99a97E60FC25754B02080A649ffA",
+        "AugurTrading": "0x0f887e24F6139e0398C5FB368617E99a178514B2",
+        "Universe": "0x0D3a64e1708dfC7142734D07e7FE33f940b255a7",
+        "Cash": "0x7a53492648bE0d09160a3e913146668da7d53Fd3",
+        "ShareToken": "0xbD73fA9226B0b467D28aE3FfF928990344938b75",
+        "OICash": "0x627F5cb2e93e91efb107e5F63dbD42CAa1C0622D",
+        "CancelOrder": "0x0A0B25BBF6459e8b086dC7bb980eF88b2D2721DD",
+        "CreateOrder": "0x450eE3881671a382DaCb2010bd0356529A2Cf8B8",
+        "FillOrder": "0xD5C77720C1F5D827e08C8f64D3512f3895d4CCf9",
+        "Orders": "0xb40aaCF1110031f9dce62Ebc6609F1A8113e23B3",
+        "Trade": "0xc400B8b1A5CCC040634f8E015B046c9FdC641DF4",
+        "SimulateTrade": "0xB79F90B02fC56062AD394ac05c2D25B482F98Aca",
+        "ProfitLoss": "0x6622DCDb78A34b912C7680FD55C76baBc7944909"
+      }
+    },
+    "0x937b03c8ae7f2d09eF1c8a0852E620964D393E37": {
+      "name": "WETH",
+      "uploadBlockNumber": 3418,
+      "addresses": {
+        "Augur": "0xB8731Fb9898E134E828A8e27d8246210d58A9B62",
+        "AugurTrading": "0x1C140987D4de76AA26e0550A81a32f361A8280aE",
+        "Universe": "0x35965dbcF1250aa819226C9365FCee8fb5638e00",
+        "Cash": "0x937b03c8ae7f2d09eF1c8a0852E620964D393E37",
+        "ShareToken": "0x084b4570344866B4597156B3fDeC2d86bC8de6d7",
+        "OICash": "0x09bE6Fb4eF750121a2e81A1c24F24ef89991d212",
+        "CancelOrder": "0x0e6DC16cDde3510B887cf218e3fA07BA414932Dd",
+        "CreateOrder": "0x2c7Eb0a006305018BcE658F3851106468b272EE1",
+        "FillOrder": "0x60a37a5337F7D476C591958698626f89E397d947",
+        "Orders": "0x1a26985D3bC6802e597CBC6b6ae367Fe596E71Bd",
+        "Trade": "0x78117f4de5f3ACBc643cD865D44A57dD547F8be2",
+        "SimulateTrade": "0xd37d9028d5DE71F844d44c3890B65d9ddd7cdb5e",
+        "ProfitLoss": "0x35F8B3186eA8606888b6d35FD92b0C23Fe17BD0F"
+      }
+    },
+    "0xDbd04DF93049485eA3956B6B7CEd5a1c2f792bA8": {
+      "name": "WETH",
+      "uploadBlockNumber": 3804,
+      "addresses": {
+        "Augur": "0xE86eE67D16E34cc5dCA1448eEEBF6a5C8d921A2c",
+        "AugurTrading": "0x6573023BEAeEe9A8eF20E4E37e35d7d47Cae747A",
+        "Universe": "0x604b9D60faa77843EaC17a83a04d5625A2A03493",
+        "Cash": "0xDbd04DF93049485eA3956B6B7CEd5a1c2f792bA8",
+        "ShareToken": "0x961B0555Fb044BC9B5a54421a3df6C3f9e640bE3",
+        "OICash": "0x793495b9e4E1bBEAb37095F44B23FdB2e985BD75",
+        "CancelOrder": "0x40F30895062906A3204F9dbF7bbe3c6cf039829b",
+        "CreateOrder": "0xB804e9461215fa95D1378Ee873d136B733f14A6f",
+        "FillOrder": "0x3fBE837a1cF562A1CF69844713d366532e576d3B",
+        "Orders": "0x97e232541B0361baB2374AD56EA45671C48771Ca",
+        "Trade": "0xCca7D77f810507d72FD80e74D384Aa813329C9a1",
+        "SimulateTrade": "0xdbC1C2C5Ab845bD678aBF4dD7d0c66aB88F2657E",
+        "ProfitLoss": "0x980F373AE633A90Bb7Fa8A3660a4f87b79D9ed42"
+      }
+    },
+    "0x6d65afc94C8243E21b5610e9432868d4Ee53982B": {
+      "name": "WETH",
+      "uploadBlockNumber": 8171,
+      "addresses": {
+        "Augur": "0x3F53f5BFBA49415639B1E569b1f030386Cd35193",
+        "AugurTrading": "0xb404b73A01f8d5Bf938b47AEdb398F0F813629D6",
+        "Universe": "0xCB10B40b92931b872cCB88078ffD0b0B53e8Ec6F",
+        "Cash": "0x6d65afc94C8243E21b5610e9432868d4Ee53982B",
+        "ShareToken": "0xc9B473c6592965070264FeD4d8Df0D5bd19Cc774",
+        "OICash": "0x1992131F5A5a0024C72bB82BbeDe730e29cA45ac",
+        "CancelOrder": "0x0F0c862C49dbf53640b96eE37638f7daB8792b6e",
+        "CreateOrder": "0x983b44f9564C85574FA2BEba081E27864f2Fd499",
+        "FillOrder": "0xc15D07670C0a6fDDFEB33717603337BC9F55D15D",
+        "Orders": "0xEF806338d65E82b494498aD7D9E91D18Ad22617b",
+        "Trade": "0x4c4B82800Be7317d9A796B069e99D47B40Ed1EdF",
+        "SimulateTrade": "0x5A60968542Ca2d1F3e866fbf7e776bE47aa167C3",
+        "ZeroXTrade": "0x2CD31F76b3068F5b5DA6ba6a12A28c0357Ff3eB5",
+        "ProfitLoss": "0x4cF615bdCD167e69032c05d27C749b689BFc9649"
+      }
+    },
+    "0xf9a3b85f294770D03fC7910696A72401e6E0F8EC": {
+      "name": "WETH",
+      "uploadBlockNumber": 483,
+      "addresses": {
+        "Augur": "0x67fe69DafC88f543c3644D1652C9E558Ae5DA332",
+        "AugurTrading": "0x702199c657414f8cde0A2C93156BDCaCE7F45e73",
+        "Universe": "0x462651c26926069819e235313d4faAECf113DeAf",
+        "Cash": "0xf9a3b85f294770D03fC7910696A72401e6E0F8EC",
+        "ShareToken": "0x040e1e247eB8FE05472c657b02a36A3d01410dE9",
+        "OICash": "0x4Ea5888936Fa4Db1A19C25B6BfdD1877b0f0Dd36",
+        "CancelOrder": "0x3180FdCb2B53A0db498094BD4013f4a8FDB42cC8",
+        "CreateOrder": "0x3B148Fd4C9E5cbb65DB4A71159227cF95385eFA4",
+        "FillOrder": "0xA3a8db57FB63bf74c2333E9d358176eCCa47050F",
+        "Orders": "0x4854462F19899C5C26eAA660E92C1977a601cd2C",
+        "Trade": "0xa4945A5985f94a812Dc9bB2a36ad586c31c0CDaa",
+        "SimulateTrade": "0x7ABB814035D703564Bc371f5673FAa9482421a75",
+        "ZeroXTrade": "0x04Ce78AC037FE1fD0587586d32fA12AA8cd5bfFF",
+        "ProfitLoss": "0x557CfF5FDBF67266c49dE79F31263Fb9214F1C90"
+      }
+    },
+    "0xF927a19AbFba8D4f3ae0eC29Dd4FfAd09E95Ae4B": {
+      "name": "WETH",
+      "uploadBlockNumber": 705,
+      "addresses": {
+        "Augur": "0xc1e7BAB53d5ac610A56A1F84E7625D95F02489D6",
+        "AugurTrading": "0xbFF8E9c93360ecE4872069b38FA3A78d9274e0FC",
+        "Universe": "0x9711091988fB50A6705ae19e29E4DC4fe1b676aa",
+        "Cash": "0xF927a19AbFba8D4f3ae0eC29Dd4FfAd09E95Ae4B",
+        "ShareToken": "0x89be4DC525B063cf151ECB48A1b4403000A792bb",
+        "OICash": "0x6Ab139A94281e14CB98627Bc8384961fbec9FA0C",
+        "CancelOrder": "0x311eC8b3C867c3aac2c6A5638F4Ae0F81776953c",
+        "CreateOrder": "0x0Ba2819476fBaF00d731B257bA54f864b340c56D",
+        "FillOrder": "0x272010Fee6047E6875289a12ac80c7736fA4B2a6",
+        "Orders": "0xF9593c0429CD8ae85Ed20046B0e67e74375fe825",
+        "Trade": "0x4Fe740F69EF38a5c0435d1386a64DF0cbB6Bc674",
+        "SimulateTrade": "0xa62450720e96812840D8eDe02ea9488F12D26878",
+        "ZeroXTrade": "0x6cf2544a45Bd653DdaA160a4A3E587b5cD18E17e",
+        "ProfitLoss": "0xcc2d38B765AF0EB5Fbb731017e049f499F7a4146"
+      }
+    },
+    "0xb484fea55464cb9F0a8084Ff784f409f8104B9a3": {
+      "name": "WETH",
+      "uploadBlockNumber": 927,
+      "addresses": {
+        "Augur": "0xabAdB34a982e9F566d1Aa9b537572a9811ffD486",
+        "AugurTrading": "0x9f39196a8112423d7F6F711609bd0c42F45Ab6F9",
+        "Universe": "0x573AAb390155896C7d5344CCC4152cec78fa2C00",
+        "Cash": "0xb484fea55464cb9F0a8084Ff784f409f8104B9a3",
+        "ShareToken": "0xFc172AFeC7CdD7b40c0381a82B19FB7bA98ee109",
+        "OICash": "0x23c7bC9a8508FA71A8C541ed2268AfD350eE1b44",
+        "CancelOrder": "0x2FA8d8dbe86c21b4Edc851e5517d6D75447616c5",
+        "CreateOrder": "0x8C0523730f6046F58258E12F62CA530818ef570c",
+        "FillOrder": "0x1b1cb7485313865C0FFD49438a857C5eCD6692dF",
+        "Orders": "0x06DEff7041e77F1aba4946F77aD4104dA049245A",
+        "Trade": "0xeF0A09d04a786FE2406bdB960B7C4fa59ea5c262",
+        "SimulateTrade": "0xa07F6dFf748f140355Bc1583aF6f6a7dbCBe7EE7",
+        "ZeroXTrade": "0xB5195db90145b1317005e0D3Dd646A98dd2e36B5",
+        "ProfitLoss": "0xbA2f82b5C5de9B957e58f5611d2CD3Af5e797e60"
+      }
+    },
+    "0xe5ffd49906fd79c73BE29063407faDB01f1cC6E8": {
+      "name": "WETH",
+      "uploadBlockNumber": 227,
+      "addresses": {
+        "Augur": "0xE37F6901ee128402656145181deF388a244E17Ee",
+        "AugurTrading": "0x8f84192a9B773381d5389eB99AFB18747782b03E",
+        "Universe": "0x9CF47A8a8dE06c0f0016982147B05F6Fc48035d6",
+        "Cash": "0xe5ffd49906fd79c73BE29063407faDB01f1cC6E8",
+        "ShareToken": "0x2e35C6C46374c6d6fD370A00441d3076aa2960c3",
+        "OICash": "0x0a44C65b4CaFa48549865901Be3E427b913c21df",
+        "CancelOrder": "0x90DAE912127b202D05e0F2994ef711F0d59B5e95",
+        "CreateOrder": "0x9753d9CFF80E9F11C8983201b339B5788e228C69",
+        "FillOrder": "0xc6Cc7FEBDdFCCaBd2b25Aa1A5883A235DdC86713",
+        "Orders": "0xF0B844C7dcB43203FceBCc5857ecABFEECfF7EE8",
+        "Trade": "0x82Da55E0400C6D37b80F66F0D48582aa5B5CAaC3",
+        "SimulateTrade": "0x7173227c2697Bc27fa663bE367532066C05Ea7f2",
+        "ZeroXTrade": "0xD99b84F7d955fc65bb5C42134b1424F99B86a5F6",
+        "ProfitLoss": "0xEEE44780706B600f9178E8CdBaB65A082E173ADa"
+      }
+    },
+    "0x0Edaac07DCDa5aF6C2ee65B80E28B28327FC9382": {
+      "name": "WETH",
+      "decimals": 18,
+      "uploadBlockNumber": 791,
+      "addresses": {
+        "Augur": "0xeC5ae49950fe64bfB4C5Ba81dA792816bEF381e3",
+        "AugurTrading": "0x8c7F45D3fA52D45AbA84b56FE780c800E1B7D0fE",
+        "Universe": "0x9406F7775435014E1Fb7af7277839cf96eD120fc",
+        "Cash": "0x0Edaac07DCDa5aF6C2ee65B80E28B28327FC9382",
+        "ShareToken": "0xC3de6DdA8A6ad87AeCc69DE28d19924A5024534F",
+        "OICash": "0x74F8601Ae7F9E222E3Cb75417795B0df20F81a41",
+        "CancelOrder": "0x47d03678d07f4057c6E968F33e092b8649DB948c",
+        "CreateOrder": "0x474659831ad2617597163DcEC8D50f5C45f57624",
+        "FillOrder": "0x2f6FCf7D724B5b40Be9CCcb6Ad051698849DDfD9",
+        "Orders": "0xc9707e7d4D253B60674e4F60AB3a8D3c03FC039F",
+        "Trade": "0x7b8917475a9148F020F188e3cAF72AF644B0742e",
+        "SimulateTrade": "0x7B0cB9754Ea78853515C266FE39bE8fE39Eba0EF",
+        "ZeroXTrade": "0x8908Dd500eEAb09F9607f39773176252F05878b2",
+        "ProfitLoss": "0xa43de58D369411A0279043543f1d20d881BC943D"
+      }
+    }
+  },
+  "governance": {
+    "uploadBlockNumber": 3854,
+    "addresses": {
+      "FeePot": "0xA7f2EfC1C8e020D75BEFBDd255810ef266767289",
+      "GovToken": "0xc34f02478bedF63C8865516f03Cf5B7eaE00762D",
+      "Timelock": "0x88AE1b78f66D46b2be4e0696f302b05B21dfD752",
+      "Governance": "0x24c5Bcb4eb5c7b8311353f44cdd65f6600F28675",
+      "InitialStakingRewards": "0x05B19328Be191131583aC4A3C790fb1E3a42E443"
+    }
+  },
+  "sideChain": {
+    "uploadBlockNumber": 804,
+    "addresses": {
+      "Augur": "0x9f3801Fe2812788Ea3Dc8F5B76195893F3c0d70C",
+      "Universe": "0x56b176589BfB90fff9B5ef9f0Ed43A598fE09aEc",
+      "ShareToken": "0xB06c47edad7503D42051FB12a33f29b80F33222c",
+      "Cash": "0x03Ed8CC77B73b4F314c3fFfD625610753d27C987",
+      "Affiliates": "0x225414202347684c58a93a6aA029098EFce737c0",
+      "AugurTrading": "0x49a3E3087deCF46b72fE34C86b2dD23249F4eA6A",
+      "FillOrder": "0xFDb1984F9785E4EcCE62c40f92109EaCf65D9FD1",
+      "SimulateTrade": "0x954Db344CDCcf34FB8f567999febd300d62d19C5",
+      "ZeroXTrade": "0xA573b37156Ac7f32a179E269b9d38Da95924701D",
+      "ProfitLoss": "0x7651a65D743CC630a5c67DFf004cAF0d8fE4d9C9",
+      "MarketGetter": "0x03Ed8CC77B73b4F314c3fFfD625610753d27C987",
+      "RepFeeTarget": "0x03Ed8CC77B73b4F314c3fFfD625610753d27C987"
+    }
+  }
 }

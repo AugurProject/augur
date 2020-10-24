@@ -1,7 +1,9 @@
-import { logger, NetworkId, QUINTILLION, numTicksToTickSize } from '@augurproject/utils';
+import { logger, NetworkId, QUINTILLION } from '@augurproject/utils';
 import { BigNumber } from 'bignumber.js';
 import { ethers } from 'ethers';
 import LZString from 'lz-string';
+import { ParaShareToken } from './api/ParaShareToken';
+import { AMMFactory } from './api/AMMFactory';
 import { HotLoading, HotLoadMarketInfo } from './api/HotLoading';
 import { AccountLoader, AccountData } from './api/AccountLoader';
 import { WarpSync } from './api/WarpSync';
@@ -27,6 +29,7 @@ export interface Addresses {
   FillOrder: string;
   Orders: string;
   WarpSync: string;
+  AMMFactory: string;
 }
 
 const FILE_FETCH_TIMEOUT = 10000; // 10 seconds
@@ -35,17 +38,22 @@ export class AugurLite {
   readonly hotLoading: HotLoading;
   readonly warpSync: WarpSync;
   readonly accountLoader: AccountLoader;
+  readonly ammFactory: AMMFactory;
 
   constructor(
     readonly provider: ethers.providers.Provider,
     readonly addresses: Addresses,
-    readonly networkId: NetworkId
+    readonly networkId: NetworkId,
+    readonly precision: BigNumber,
   ) {
-    this.provider = provider;
-    this.hotLoading = new HotLoading(this.provider);
+    this.hotLoading = new HotLoading(this.provider, precision);
     this.accountLoader = new AccountLoader(this.provider);
     this.warpSync = new WarpSync(this.provider, addresses.WarpSync);
-    this.addresses = addresses;
+    this.ammFactory = new AMMFactory(this.provider, addresses.AMMFactory);
+  }
+
+  getParaShareToken(paraShareTokenAddress: string) {
+    return new ParaShareToken(this.provider, paraShareTokenAddress);
   }
 
   async doesDBAlreadyExist() {
@@ -80,13 +88,14 @@ export class AugurLite {
     });
   }
 
-  async loadAccountData(account: string, reputationToken: string, USDC: string, USDT: string): Promise<AccountData> {
+  async loadAccountData(account: string, reputationToken: string, USDC: string, USDT: string, collateralAddress: string): Promise<AccountData> {
     return this.accountLoader.getAccountData({
       accountLoaderAddress: this.addresses.AccountLoader,
       accountAddress: account,
       reputationTokenAddress: reputationToken,
       USDCAddress: USDC,
       USDTAddress: USDT,
+      collateralAddress
     });
   }
 

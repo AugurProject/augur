@@ -1,0 +1,870 @@
+enum MarketStatus {
+  TRADING
+  REPORTING
+  DISPUTING
+  FINALIZED
+  SETTLED
+}
+
+enum MarketType {
+  YES_NO
+  CATEGORICAL
+  SCALAR
+}
+
+enum TokenType {
+  REPUTATION_TOKEN
+  DISPUTE_CROWDSOURCER
+  PARTICIPATION_TOKEN
+}
+
+type User @entity {
+  id: ID!
+
+  "Balance entities for tokens such as Reputation and Participation tokens"
+  userTokenBalances: [UserTokenBalance!]! @derivedFrom(field: "user")
+
+  "Markets created by this user"
+  marketsCreated: [Market!]! @derivedFrom(field: "creator")
+
+  "Markets where this user is the designated reporter"
+  marketsAsReporter: [Market!]! @derivedFrom(field: "designatedReporter")
+
+  "Share tokens that this user has"
+  shareTokens: [ShareToken!]! @derivedFrom(field: "owner")
+
+  "Swaps this user has executed with any AMMExchange"
+  swaps: [SwapPosition!]! @derivedFrom(field: "sender")
+
+  "Positions entered by this user has executed with any AMMExchange"
+  enters: [EnterPosition!]! @derivedFrom(field: "sender")
+
+  "Positions exited by this user has executed with any AMMExchange"
+  exits: [ExitPosition!]! @derivedFrom(field: "sender")
+}
+
+type Universe @entity {
+  id: ID!
+
+  parentUniverse: Universe
+
+  payoutNumerators: [BigInt!]
+
+  "Universe creation timestamp"
+  creationTimestamp: BigInt
+
+  "Latest universal value for the noShowBond charged on market creation"
+  noShowBond: BigInt
+
+  "Latest universal value for the validityBond charged on market creation"
+  validityBond: BigInt
+
+  "Latest universal value for the reporting fee charged on settlements"
+  reportingFee: BigInt
+
+  "Latest universal value for the value a designated reported is required to stake on the initial report"
+  designatedReportStake: BigInt
+
+  "Latest warpSync file hash"
+  warpSyncHash: BigInt
+
+  markets: [Market!]! @derivedFrom(field: "universe")
+
+  "Children universe that this universe created when it forked. It can be null if the universe hasn't forked"
+  children: [Universe!] @derivedFrom(field: "parentUniverse")
+}
+
+type Market @entity {
+  id: ID!
+
+  "Universe that this market belongs to"
+  universe: Universe!
+
+  "User that created the market"
+  creator: User!
+
+  "Current owner of the market"
+  owner: User!
+
+  "Extra information in JSON format. Includes market description and possibly other information"
+  extraInfoRaw: String!
+
+  "Description parsed from the extra info field. Could be null if not present in the JSON"
+  description: String
+
+  "Long description parsed from the extra info field. Could be null if not present in the JSON"
+  longDescription: String
+
+  "Category array parsed from the extra info field. Could be null if not present in the JSON"
+  categories: [String!]
+
+  "Scalar denomination parsed from the extra info field. Could be null if not present in the JSON"
+  scalarDenomination: Boolean
+
+  "Offset name parsed from the extra info field. Could be null if not present in the JSON"
+  offsetName: String
+
+  "Market template parsed from the extra info field. Could be null if not present in the JSON"
+  template: MarketTemplate
+
+  "Template inputs selected on market creation. Could be null if not present in the JSON"
+  templateInputs: [MarketTemplateInput!]! @derivedFrom(field: "market")
+
+  "Number of Ticks in a complete set"
+  numTicks: BigInt!
+
+  "The account responsible for performing the initial report on the market within 24 hours of finalization"
+  designatedReporter: User!
+
+  "Timestamp depicting the end of the real world event for that market"
+  endTimestamp: BigInt!
+
+  "Minimum and maximum price for yes/no and categorical markets. For scalar markets it depicts the min and max values of the scalar."
+  prices: [BigInt!]!
+
+  "Internal enum id of the market type"
+  marketTypeRaw: Int!
+
+  "Market type as a string enum"
+  marketType: MarketType!
+
+  "Possible outcomes of the market"
+  outcomes: [Outcome!]! @derivedFrom(field:"market")
+
+  "Amount of different outcomes for the market."
+  numOutcomes: Int!
+
+  "Creation timestamp"
+  timestamp: BigInt!
+
+  "NoShowBond payed on creation"
+  noShowBond: BigInt!
+
+  "Current status of the market"
+  status: MarketStatus!
+
+  "The total amount of value which has been traded for this market"
+  openInterest: BigInt
+
+  "The the total trading volume for this market"
+  volume: BigInt!
+
+  "The total trading volume per outcome of this market"
+  outcomeVolumes: [BigInt!]
+
+  "Total number of trades for the market"
+  totalTrades: BigInt
+
+  "Entity depicting the current tentative or final result of the market"
+  report: MarketReport
+
+  "List of all the market events triggered"
+  events: [MarketEvent!]! @derivedFrom(field: "market")
+
+  "Share tokens traded on this market"
+  shareTokens: [ShareToken!]! @derivedFrom(field: "market")
+
+  "Entity depicting the disputing process"
+  dispute: Dispute
+
+  "List of AMM Exchanges for this Market"
+  amms: [AMMExchange!]! @derivedFrom(field: "market")
+}
+
+interface MarketEvent {
+  id: ID!
+
+  "Market on which this event has been triggered"
+  market: Market!
+
+  "Timestamp of the event"
+  timestamp: BigInt!
+
+  "Block on which the event was triggered"
+  block: BigInt!
+
+  "Transaction hash on which the event triggered"
+  tx_hash: String!
+}
+
+type TransferMarketEvent implements MarketEvent @entity {
+  id: ID!
+
+  market: Market!
+
+  timestamp: BigInt!
+
+  block: BigInt!
+
+  tx_hash: String!
+
+  universe: Universe!
+
+  "Previous owner of the market"
+  from: User!
+
+  "New owner of the market"
+  to: User!
+}
+
+type MigrateMarketEvent implements MarketEvent @entity {
+  id: ID!
+
+  market: Market!
+
+  timestamp: BigInt!
+
+  block: BigInt!
+
+  tx_hash: String!
+
+  "Previous universe on which the market existed"
+  originalUniverse: Universe!
+
+  "New universe on which the market now exists"
+  newUniverse: Universe!
+}
+
+type CreateMarketEvent implements MarketEvent @entity {
+  id: ID!
+
+  market: Market!
+
+  timestamp: BigInt!
+
+  block: BigInt!
+
+  tx_hash: String!
+
+  "Universe on which the market exists"
+  universe: Universe!
+
+  "Timestamp depicting the end of the trading phase for the market"
+  endTime: BigInt!
+
+  "Extra info in JSON format. Can include description and other data"
+  extraInfo: String!
+
+  "User that created the market"
+  marketCreator: User!
+
+  "Original designated reported for the market"
+  designatedReporter: User!
+
+  feePerCashInAttoCash: BigInt!
+
+  "Minimum and maximum price for yes/no and categorical markets. For scalar markets it depicts the min and max values of the scalar."
+  prices: [BigInt!]!
+
+  "Internal enum id of the market type"
+  marketTypeRaw: Int!
+
+  "Market type as a string enum"
+  marketType: MarketType!
+
+  "Number of ticks setted on the market"
+  numTicks: BigInt!
+
+  "Different outcomes possible for categorical markets"
+  outcomes: [Bytes!]!
+
+  "noShowBond payed for market creation"
+  noShowBond: BigInt!
+
+  "Timestamp of the creation of the market"
+  creationTimestamp: BigInt!
+}
+
+type FinalizeMarketEvent implements MarketEvent @entity {
+  id: ID!
+
+  market: Market!
+
+  timestamp: BigInt!
+
+  block: BigInt!
+
+  tx_hash: String!
+
+  "Timestamp of the market finalization"
+  finalizeTimestamp: BigInt!
+
+  "Payout distribution set that won the reporting/dispute process"
+  winningPayoutNumerators: [BigInt!]!
+}
+
+type OIChangeMarketEvent implements MarketEvent @entity {
+  id: ID!
+
+  market: Market!
+
+  timestamp: BigInt!
+
+  block: BigInt!
+
+  tx_hash: String!
+
+  "New open interest for the market"
+  openInterest: BigInt!
+}
+
+type VolumeChangeMarketEvent implements MarketEvent @entity {
+  id: ID!
+
+  market: Market!
+
+  timestamp: BigInt!
+
+  block: BigInt!
+
+  tx_hash: String!
+
+  "New volume for the market"
+  volume: BigInt!
+
+  "New volume for each outcome of the market"
+  outcomeVolumes: [BigInt!]!
+
+  "Total number of trades for the market"
+  totalTrades: BigInt!
+}
+
+type ShareToken @entity {
+  id: ID!
+
+  "Owner of the ShareToken"
+  owner: User!
+
+  "Current balance of the ShareToken"
+  balance: BigInt!
+
+  "Outcome entity that this share represents"
+  outcome: Outcome!
+
+  "Outcome internal ID"
+  outcomeRaw: BigInt!
+
+  "Market that this share is being traded on."
+  market: Market!
+}
+
+type ParaShareToken @entity {
+  id: ID!
+
+  "The collateral used for purchasing shares"
+  cash: Cash!
+}
+
+interface TokenEvent {
+  id: ID!
+
+  "Timestamp when the event was triggered"
+  timestamp: BigInt!
+
+  "Block where the event was triggered"
+  block: BigInt!
+
+  "Transaction hash where the event triggered"
+  tx_hash: String!
+
+  "Universe where the token exists"
+  universe: Universe!
+
+  "Token which triggered the event"
+  token: Token!
+
+  "Balance that was modified by this event"
+  userTokenBalance: UserTokenBalance!
+
+  "Amount of balance modified with this event"
+  amount: BigInt!
+}
+
+type TokenMintedEvent implements TokenEvent @entity {
+  id: ID!
+
+  timestamp: BigInt!
+
+  block: BigInt!
+
+  tx_hash: String!
+
+  universe: Universe!
+
+  token: Token!
+
+  userTokenBalance: UserTokenBalance!
+
+  amount: BigInt!
+}
+
+type TokenBurnedEvent implements TokenEvent @entity {
+  id: ID!
+
+  timestamp: BigInt!
+
+  block: BigInt!
+
+  tx_hash: String!
+
+  universe: Universe!
+
+  token: Token!
+
+  userTokenBalance: UserTokenBalance!
+
+  amount: BigInt!
+}
+
+type TokenTransferredEvent implements TokenEvent @entity {
+  id: ID!
+
+  timestamp: BigInt!
+
+  block: BigInt!
+
+  tx_hash: String!
+
+  universe: Universe!
+
+  token: Token!
+
+  userTokenBalance: UserTokenBalance!
+
+  amount: BigInt!
+
+  "User that sent the amount of tokens specified"
+  from: User!
+
+  "User that received the amount of tokens specified"
+  to: User!
+
+  "In any transfer there will be 2 entities generated since you will have a sender and receiver. The related event is the other event generated for this transfer"
+  relatedEvent: TokenTransferredEvent!
+
+  "Depicts whether the userTokenBalance for this event is the senders' or receivers'"
+  isSender: Boolean!
+}
+
+interface UserTokenBalance {
+  id: ID!
+
+  "Universe in which this balance exists"
+  universe: Universe!
+
+  "User that owns this balance"
+  user: User!
+
+  "Token entity"
+  token: Token!
+
+  "Balance in smallest unit for the token"
+  balance: BigInt!
+
+  "Balance in atto units"
+  attoBalance: BigDecimal!
+
+  "Token events for the balance"
+  events: [TokenEvent!]! @derivedFrom(field: "userTokenBalance")
+}
+
+type UserReputationTokenBalance implements UserTokenBalance @entity {
+  id: ID!
+
+  universe: Universe!
+
+  user: User!
+
+  token: Token!
+
+  balance: BigInt!
+
+  attoBalance: BigDecimal!
+
+  events: [TokenEvent!]! @derivedFrom(field: "userTokenBalance")
+}
+
+type UserDisputeTokenBalance implements UserTokenBalance @entity {
+  id: ID!
+
+  universe: Universe!
+
+  user: User!
+
+  "Market in which the staking takes place"
+  market: Market!
+
+  "Outcome selected for the staking"
+  outcome: BigInt!
+
+  token: Token!
+
+  balance: BigInt!
+
+  attoBalance: BigDecimal!
+
+  events: [TokenEvent!]! @derivedFrom(field: "userTokenBalance")
+}
+
+type UserParticipationTokenBalance implements UserTokenBalance @entity {
+  id: ID!
+
+  universe: Universe!
+
+  user: User!
+
+  token: Token!
+
+  balance: BigInt!
+
+  attoBalance: BigDecimal!
+
+  events: [TokenEvent!]! @derivedFrom(field: "userTokenBalance")
+}
+
+type Token @entity {
+  id: ID!
+
+  "Universe in which the token exists"
+  universe: Universe!
+
+  "Type of token"
+  tokenType: TokenType!
+
+  "All balance entities that use this token"
+  userBalances: [UserTokenBalance!]! @derivedFrom(field: "token")
+}
+
+type MarketReport @entity {
+  id: ID!
+
+  market: Market!
+
+  "Current payout numerators reported. This essentially represents the current tentative outcome but expressed as a payout set"
+  payoutNumerators: [BigInt!]!
+
+  "User that first reported the market result"
+  initialReporter: User!
+
+  "Whether the first reporter was the designated reporter or not"
+  isDesignatedReporter: Boolean!
+
+  "Whether the current report state is the initial report."
+  isInitialReport: Boolean!
+
+  "Whether the current report is final and won't be subject to change because of challenges"
+  isFinal: Boolean!
+
+  "Timestamp when the report was last updated"
+  lastReportedAt: BigInt!
+
+  "Timestamp of the first report"
+  firstReportedAt: BigInt!
+}
+
+type Dispute @entity {
+  id: ID!
+
+  "Updated report for the market"
+  currentReport: MarketReport!
+
+  "Entity for the current dispute round in process"
+  currentDisputeRound: DisputeRound!
+
+  market: Market!
+
+  universe: Universe!
+
+  "Depicts whether the dispute is completed or not. It will be done once the market has finalized because the tentative outcome hasn't been challenged in a whole dispute window"
+  isDone: Boolean!
+
+  "List of all the dispute rounds so far"
+  rounds: [DisputeRound!]! @derivedFrom(field: "dispute")
+
+  creationTimestamp: BigInt!
+
+  block: BigInt!
+
+  tx_hash: String!
+}
+
+type DisputeWindow @entity {
+  id: ID!
+
+  universe: Universe!
+
+  "Timestamp of the start of the window"
+  startTime: BigInt!
+
+  "Timestamp of the end of the window"
+  endTime: BigInt!
+}
+
+type DisputeRound @entity {
+  id: ID!
+
+  dispute: Dispute!
+
+  market: Market!
+
+  universe: Universe!
+
+  "List of all the dispute crowdsourcers active for this round"
+  crowdsourcers: [DisputeCrowdsourcer!]! @derivedFrom(field: "disputeRound")
+}
+
+type DisputeCrowdsourcer @entity {
+  id: ID!
+
+  market: Market!
+
+  universe: Universe!
+
+  "Payout numerators depict all the outcomes and their respective 'share' of the winnings based on the numTick of the market"
+  payoutNumerators: [BigInt!]!
+
+  "Amount of attoREP staked"
+  staked: BigInt!
+
+  "Amount of attoREP needed for the dispute bond to be filled and challenge/dispute the current tentative report"
+  disputeBondSize: BigInt!
+
+  "Whether the bond has been filled or not"
+  bondFilled: Boolean!
+
+  disputeRound: DisputeRound!
+}
+
+type Outcome @entity {
+  id: ID!
+
+  market: Market!
+
+  "String representation of the outcome"
+  value: String!
+
+  "Original bytes for the outcome of a categorical market"
+  valueRaw: Bytes
+
+  "The payout numerator for this outcome. Is available as soon as a report is done and is updated during the dispute and market finalization"
+  payoutNumerator: BigInt
+
+  "Whether the payout numerator is final"
+  isFinalNumerator: Boolean!
+}
+
+type Augur @entity {
+  "Single entity tracking metadata for augur"
+  id: ID!
+
+  deployTimestamp: BigInt
+
+  deployBlock: BigInt
+
+  deployTx_hash: String
+
+  contracts: [Contract!]! @derivedFrom(field: "augur")
+
+  "Latest timestamp value set on the 'TimestampSet' event"
+  timestamp: BigInt
+}
+
+type Contract @entity {
+  "Internal key of the contract"
+  id: ID!
+
+  "Latest Contract address"
+  address: String!
+
+  "Timestamp of last modification"
+  lastModified: BigInt!
+
+  augur: Augur!
+}
+
+type MarketTemplate @entity {
+  "Hash of the market MarketTemplate"
+  id: ID!
+
+  question: String
+
+  "Markets that use this template"
+  markets: [Market!]! @derivedFrom(field: "template")
+
+  "Inputs used with this template on the markets that use it"
+  inputs: [MarketTemplateInput!]! @derivedFrom(field: "template")
+}
+
+type MarketTemplateInput @entity {
+  "Unique id, composed of market template hash + market Id + internal input id"
+  id: ID!
+
+  internalId: BigInt!
+
+  template: MarketTemplate!
+
+  market: Market!
+
+  value: String
+
+  type: String
+
+  timestamp: BigInt
+}
+
+type Cash @entity {
+  id: ID!
+}
+
+type AMMExchange @entity {
+  id: ID!
+
+  "The market whose outcomes this AMMExchange will trade"
+  market: Market!
+
+  "The collateral type for this exchange"
+  cash: Cash!
+
+  "Balance of Cash on the Exchange"
+  cashBalance: BigInt!
+
+  "The shareToken to be created, this will specify which para-augur is collateraizing the trading on the AMM"
+  shareToken: ParaShareToken!
+
+  "Liquidity in exchange"
+  liquidity: BigInt!
+
+  "balance of cash"
+  liquidityCash: BigInt!
+
+  "balance of invalid shares"
+  liquidityInvalid: BigInt!
+
+  "balance of no shares"
+  liquidityNo: BigInt!
+
+  "balance of yes shares"
+  liquidityYes: BigInt!
+
+  "The all time yes volume in the exchange."
+  volumeYes: BigInt!
+
+  "The all time no volume in the exchange."
+  volumeNo: BigInt!
+
+  "Percentage of shares that are no."
+  percentageNo: BigInt!
+
+  "Percentage of shares that are yes."
+  percentageYes: BigInt!
+
+  "Number of LP token outstanding."
+  totalSupply: BigInt!
+
+  swaps: [SwapPosition!]! @derivedFrom(field: "ammExchange")
+
+  enters: [EnterPosition!]! @derivedFrom(field: "ammExchange")
+
+  exits: [ExitPosition!]! @derivedFrom(field: "ammExchange")
+}
+
+type ParaAugurDeployFinishedEvent @entity {
+  id: ID!
+
+  shareToken: ParaShareToken!
+}
+
+type SwapPosition @entity {
+  "This is the tx hash + log index."
+  id: ID!
+
+  ammExchange: AMMExchange!
+
+  "The 'from' field of the swap tx."
+  sender: User!
+
+  "Number of yes shares recieved or sent in swap. Negative values are from the user's prospective."
+  yesShares: BigInt!
+
+  "Number of no shares recieved or sent in swap. Negative values are from the user's prospective."
+  noShares: BigInt!
+}
+
+type EnterPosition @entity {
+  "This is the tx hash + log index."
+  id: ID!
+
+  ammExchange: AMMExchange!
+
+  "The 'from' field of the swap tx."
+  sender: User!
+
+  "Amount of cash user passed to enter the position."
+  cash: BigInt!
+
+  "Number of yes shares the user recieved. User will recieve only yes or no."
+  yesShares: BigInt!
+
+  "Number of no shares the user recieved. User will recieve only yes or no."
+  noShares: BigInt!
+}
+
+type ExitPosition @entity {
+  "This is the tx hash + log index."
+  id: ID!
+
+  ammExchange: AMMExchange!
+
+  "The 'from' field of the swap tx."
+  sender: User!
+
+  "Number of invalid shares user is exiting"
+  invalidShares: BigInt!
+
+  "Number of no shares user is exiting"
+  noShares: BigInt!
+
+  "Number of yes shares user is exiting"
+  yesShares: BigInt!
+
+  "Amount of cash user recieved exiting position."
+  cash: BigInt!
+}
+
+type AddLiquidity @entity {
+  "This is the tx hash + log index."
+  id: ID!
+
+  ammExchange: AMMExchange!
+
+  "The 'from' field of the swap tx."
+  sender: User!
+
+  "Number of no shares user is recieving"
+  noShares: BigInt!
+
+  "Number of yes shares user is recieving"
+  yesShares: BigInt!
+
+  "Amount of cash user transferred to the amm."
+  cash: BigInt!
+}
+
+type RemoveLiquidity @entity {
+  "This is the tx hash + log index."
+  id: ID!
+
+  ammExchange: AMMExchange!
+
+  "The 'from' field of the swap tx."
+  sender: User!
+
+  "Number of no shares user is redeeming"
+  noShares: BigInt!
+
+  "Number of yes shares user is redeeming"
+  yesShares: BigInt!
+
+  "Amount of cash user recieves for redeemed shares"
+  cash: BigInt!
+}

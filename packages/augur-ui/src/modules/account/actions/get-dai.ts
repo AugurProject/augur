@@ -7,7 +7,7 @@ export default function(callback: NodeStyleCallback = logError) {
     // TODO: this will change when pending tx exists
     await getDai().catch((err: Error) => {
       console.log("error could not get dai", err);
-      logError(new Error("get-Dai"));
+      logError(new Error("get-DAI"));
     });
     callback(null);
   };

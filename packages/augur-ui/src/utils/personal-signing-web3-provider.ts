@@ -1,4 +1,4 @@
-import { Web3Provider } from 'ethers/providers';
+import { Web3Provider } from '@ethersproject/providers';
 
 export class PersonalSigningWeb3Provider extends Web3Provider {
   send(method: string, params: any): Promise<any> {

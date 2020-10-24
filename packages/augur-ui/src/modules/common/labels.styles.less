@@ -554,7 +554,6 @@ div.LinearPropertyViewTransaction {
 
     color: var(--color-primary-text);
     flex: 0 auto;
-    text-transform: uppercase;
 
     @media @breakpoint-mobile {
       .mono-14;
@@ -617,7 +616,6 @@ div.LinearPropertyViewTransaction {
     > svg {
       fill: none;
       height: @size-6;
-      margin-left: @size-4;
       width: @size-20;
 
       > rect {
@@ -714,6 +712,10 @@ div.LinearPropertyViewTransaction {
   }
 }
 
+.MarketStatus_isTitle {
+  margin: @size-8 0;
+}
+
 .MarketStatus_forking {
   background: var(--color-error-20);
   color: var(--color-error);
@@ -753,6 +755,10 @@ div.LinearPropertyViewTransaction {
 
   text-decoration: underline;
   margin-left: auto;
+}
+
+.CustomMarketCaution {
+  color: @color-primary-text;
 }
 
 .InReporting_reportingDetails {

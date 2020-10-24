@@ -5,7 +5,7 @@ import {
   ValidationResults,
 } from '@0x/mesh-browser-lite';
 import { OrderEvent, OrderInfo, WSClient } from '@0x/mesh-rpc-client';
-import { Event } from '@augurproject/core/build/libraries/ContractInterfaces';
+import { Event, ParaZeroXTrade } from '@augurproject/core/build/libraries/ContractInterfaces';
 import {
   MAX_FILLS_PER_TX,
   MAX_GAS_LIMIT_FOR_TRADE,
@@ -20,7 +20,6 @@ import {
 } from '@augurproject/sdk-lite';
 import { BigNumber } from 'bignumber.js';
 import { ethers } from 'ethers';
-import { BigNumber as BN } from 'ethers/utils';
 import * as _ from 'lodash';
 import {
   convertDisplayAmountToOnChainAmount,
@@ -274,7 +273,8 @@ export class ZeroX {
     );
     const onChainAmount = convertDisplayAmountToOnChainAmount(
       params.displayAmount,
-      tickSize
+      tickSize,
+      this.client.precision,
     );
     const onChainPrice = convertDisplayPriceToOnChainPrice(
       params.displayPrice,
@@ -283,7 +283,8 @@ export class ZeroX {
     );
     const onChainShares = convertDisplayAmountToOnChainAmount(
       params.displayShares,
-      tickSize
+      tickSize,
+      this.client.precision,
     );
     return Object.assign(params, {
       amount: onChainAmount,
@@ -395,7 +396,8 @@ export class ZeroX {
       }
 
       const tradeInterval = getTradeInterval(minPrice, maxPrice, new BigNumber(market.numTicks));
-      const multipleOf = tradeInterval.dividedBy(market.tickSize).dividedBy(10 ** 18)
+      let multipleOf = tradeInterval.dividedBy(market.tickSize).dividedBy(QUINTILLION);
+      multipleOf = multipleOf.dividedBy(QUINTILLION.dividedBy(this.client.precision));
       if (!order.amount.mod(multipleOf).eq(0)) {
         throw new Error(`Order not multiple of ${multipleOf.toNumber()}`);
       }
@@ -451,11 +453,11 @@ export class ZeroX {
     const salt = new BigNumber(Date.now());
     const sender = await this.client.getAccount();
     const result = await this.client.contracts.ZeroXTrade.createZeroXOrder_(
-      new BigNumber(params.direction),
+      params.direction,
       params.amount,
       params.price,
       params.market,
-      new BigNumber(params.outcome),
+      params.outcome,
       params.expirationTime,
       salt,
       { sender }
@@ -573,11 +575,18 @@ export class ZeroX {
 
     const gasPrice = await this.client.getGasPrice();
     const exchangeFeeMultiplier = await this.client.contracts.zeroXExchange.protocolFeeMultiplier_();
-    const protocolFee = gasPrice.multipliedBy(exchangeFeeMultiplier).multipliedBy(orders.length).multipliedBy(MAX_PROTOCOL_FEE_MULTIPLIER);
-    let maxProtocolFeeInDai = protocolFee.multipliedBy(await this.client.getExchangeRate(true)).div(QUINTILLION);
-    maxProtocolFeeInDai = maxProtocolFeeInDai.decimalPlaces(0);
+    let protocolFee = gasPrice.multipliedBy(exchangeFeeMultiplier).multipliedBy(orders.length);
+    let attachedEth = undefined;
 
-    return this.client.contracts.ZeroXTrade.cancelOrders(orders, signatures, maxProtocolFeeInDai);
+    if (this.client.config.paraDeploy) {
+      const walletEthBalance = await this.client.getEthBalance(await this.client.getAccount());
+      attachedEth = BigNumber.min(protocolFee, walletEthBalance);
+      protocolFee = protocolFee.gt(walletEthBalance) ? protocolFee.minus(walletEthBalance) : new BigNumber(0);
+    }
+
+    const maxProtocolFeeInDai = protocolFee.multipliedBy(await this.client.getExchangeRate(true)).multipliedBy(MAX_PROTOCOL_FEE_MULTIPLIER).div(QUINTILLION).decimalPlaces(0);
+
+    return (this.client.contracts.ZeroXTrade as ParaZeroXTrade).cancelOrders(orders, signatures, maxProtocolFeeInDai, { attachedEth });
   }
 
   async simulateTrade(
@@ -625,14 +634,16 @@ export class ZeroX {
     );
     const displaySharesFilled = convertOnChainAmountToDisplayAmount(
       simulationData[0],
-      tickSize
+      tickSize,
+      this.client.precision,
     );
     const displaySharesDepleted = convertOnChainAmountToDisplayAmount(
       simulationData[2],
-      tickSize
+      tickSize,
+      this.client.precision,
     );
-    const displayTokensDepleted = simulationData[1].dividedBy(QUINTILLION);
-    const displaySettlementFees = simulationData[3].dividedBy(QUINTILLION);
+    const displayTokensDepleted = simulationData[1].dividedBy(this.client.precision);
+    const displaySettlementFees = simulationData[3].dividedBy(this.client.precision);
     const numFills = simulationData[4];
     return {
       sharesFilled: displaySharesFilled,
@@ -669,7 +680,7 @@ export class ZeroX {
   ): Promise<MatchingOrders> {
     const orderType = params.direction === 0 ? '1' : '0';
     const outcome = params.outcome.toString();
-    const price = new BN(params.price.toString()).toHexString().substr(2);
+    const price = ethers.BigNumber.from(params.price.toString()).toHexString().substr(2);
 
     let zeroXOrders = params.postOnly
       ? []
@@ -839,7 +850,7 @@ export class ZeroX {
     const onChainTradeParams = this.getOnChainTradeParams(params);
 
     const orderType = params.direction === 0 ? '1' : '0';
-    const price = new BN(onChainTradeParams.price.toString()).toHexString().substr(2);
+    const price = ethers.BigNumber.from(onChainTradeParams.price.toString()).toHexString().substr(2);
 
     const zeroXOrders = await this.client.getZeroXOrders({
       marketId: params.market,

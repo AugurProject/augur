@@ -1,0 +1,335 @@
+@import (reference) '~assets/styles/shared';
+
+// Used in Betting UI
+.AccountInfo {
+  border: @size-1 solid @color-secondary-action-outline;
+  box-sizing: border-box;
+  border-radius: @size-3;
+  min-width: @account-details-menu-width;
+
+  @media @breakpoint-mobile {
+    border: none;
+    min-width: 100%;
+    height: 100vh;
+    background-color: fade(@color-dark-grey, 90);
+  }
+}
+
+.WalletProvider,
+.GasEdit,
+.TxFee,
+.Logout,
+.AddFunds,
+.AccountFunds  {
+  align-items: center;
+  background: @color-module-background;
+  border-bottom: @size-1 solid @color-dark-grey;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  padding: @size-20 @size-16;
+  height: @size-56;
+}
+
+.AddFunds {
+  @media @breakpoint-mobile {
+    display: none;
+  }
+
+  > div {
+    .mono-11-bold;
+
+    align-items: center;
+    color: @color-primary-text;
+    display: flex;
+    text-transform: uppercase;
+
+    > svg {
+      fill: @color-primary-text;
+      height: @size-16;
+      margin-right: @size-8;
+      width: @size-22;
+    }
+  }
+
+  > button {
+    .text-11-bold;
+
+    padding: @size-9 @size-12;
+  }
+}
+
+.AccountFunds {
+  .mono-11-bold;
+
+  background: @color-table-header;
+
+  @media @breakpoint-mobile {
+    background: @color-table-header;
+  }
+
+  align-items: center;
+  color: @color-primary-text;
+  display: flex;
+  text-transform: uppercase;
+
+  @media @breakpoint-mobile {
+    .mono-12-bold;
+  }
+
+  > span label {
+
+    margin: 0px 4px;
+
+    svg {
+      height: @size-12;
+      width: @size-12;
+
+      > path {
+        fill: @color-secondary-text;
+      }
+    }
+  }
+
+  > svg {
+    fill: @color-primary-text;
+    height: @size-16;
+    margin-right: @size-8;
+    width: @size-16;
+
+    > path {
+      fill: @color-primary-text;
+    }
+
+    > circle {
+      stroke: @color-primary-text;
+    }
+  }
+
+  &.Wrapped {
+    svg {
+      fill: transparent;
+      > path {
+        fill: @color-primary-text;
+      }
+    }
+  }
+
+  > div:last-of-type {
+    .mono-11-bold;
+
+    color: @color-primary-text;
+
+    @media @breakpoint-mobile {
+      .mono-12-medium;
+    }
+
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    flex-grow: 2;
+
+    > span:nth-of-type(2) {
+      .mono-9-bold;
+
+      color: @color-secondary-text;
+    }
+  }
+}
+
+.WalletProvider,
+.GasEdit {
+  > div > div:first-of-type {
+    .mono-10-medium;
+
+    color: @color-secondary-text;
+    margin: @size-4 0;
+    display: flex;
+
+    > span > label {
+      margin: 0;
+      margin-left: @size-4;
+
+      > svg {
+        height: @size-12;
+        width: @size-12;
+
+        > path {
+          fill: @color-secondary-text;
+        }
+      }
+    }
+  }
+
+  > div > div:last-of-type {
+    .text-12;
+
+    color: @color-primary-text;
+    display: flex;
+    margin: 0 0 @size-4;
+  }
+
+  button {
+    .mono-10-semi-bold;
+
+    align-items: center;
+    background: @color-secondary-action;
+    border-radius: @size-3;
+    border: @size-1 solid @color-secondary-action-outline;
+    color: @color-primary-text;
+    display: flex;
+    flex-direction: row;
+    padding: @size-5 @size-6;
+
+    > svg {
+      fill: @color-secondary-text;
+      height: @size-9;
+      margin-left: @size-5;
+    }
+  }
+}
+
+.GasEdit {
+  align-items: center;
+  height: @size-57;
+  padding: @size-12 @size-16;
+
+  > div > div:first-of-type {
+    display: block;
+    cursor: pointer;
+    color: @color-primary-text;
+    width: @size-136;
+    width: -moz-fit-content;
+    width: fit-content;
+
+    // Transation fee
+    > div:first-of-type {
+      .mono-10-medium;
+
+      display: inline-flex;
+      color: @color-secondary-text;
+      margin: @size-4 0;
+
+      // hint tip icon
+      > span {
+        color: @color-secondary-text;
+
+        width: @size-12;
+        height: @size-12;
+        margin-left: @size-4;
+      }
+    }
+
+    // Gas price
+    > div:nth-of-type(2) {
+      .text-12;
+
+      color: @color-primary-text;
+      margin-bottom: @size-4;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      width: 235px;
+      white-space: nowrap;
+
+      @media @breakpoint-mobile {
+        width: calc(100vw - 167px);
+      }
+    }
+  }
+}
+
+.WalletProvider.MetaMask {
+  @media @breakpoint-mobile {
+    display: none;
+  }
+}
+
+.MobileAddFunds {
+  display: none;
+
+  @media @breakpoint-mobile {
+    background: @color-module-background;
+    border-bottom: @size-1 solid @color-dark-grey;
+    display: flex;
+    justify-content: center;
+    flex-direction: row;
+    padding: @size-16 @size-12;
+    width: 100%;
+
+    > button {
+      width: 100%;
+    }
+  }
+}
+
+.Logout {
+  height: 44px;
+  justify-content: flex-end;
+
+  > div {
+    cursor: pointer;
+    display: flex;
+
+    > div:first-of-type {
+      .mono-10;
+
+      text-transform: uppercase;
+    }
+
+    > div:last-of-type {
+      align-items: center;
+      display: flex;
+
+      > svg {
+        height: @size-8;
+        margin: 0 !important;
+      }
+    }
+
+  }
+
+  @media @breakpoint-mobile {
+    border-bottom: @size-1 solid @color-secondary-action-outline;
+  }
+}
+
+.ShowConfirmaiton {
+  position: relative;
+}
+
+.ShowConfirmaiton:after {
+  content: '';
+
+  border-top: solid @size-12 @color-primary-text;
+  border-left: solid @size-12 transparent;
+  border-right: solid @size-12 transparent;
+  position: absolute;
+  right: @size-16;
+  top: -@size-16;
+
+  @media @breakpoint-mobile {
+    bottom: @size-25;
+    left: @size-8;
+  }
+}
+
+.ShowConfirmaiton:before {
+  .text-10;
+
+  content: 'Copied!';
+  align-items: center;
+  color: @color-inactive-text;
+  background: @color-primary-text;
+  border-radius: @border-radius-default;
+  display: flex;
+  justify-content: center;
+  padding: @size-8 @size-12;
+  position: absolute;
+  right: 0;
+  text-transform: capitalize;
+  top: -39px;
+
+  @media @breakpoint-mobile {
+    bottom: @size-32;
+  }
+}

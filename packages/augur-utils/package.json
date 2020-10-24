@@ -1,6 +1,6 @@
 {
   "name": "@augurproject/utils",
-  "version": "2.1.10",
+  "version": "2.1.9",
   "description": "Grab bag of formatting and ABI encoding/decoding functions",
   "author": "The Augur Developers <team@augur.net>",
   "license": "MIT",
@@ -17,7 +17,7 @@
   "devDependencies": {
     "jest": "24.9.0",
     "ts-jest": "24.0.2",
-    "typescript": "3.8.3"
+    "typescript": "3.9.7"
   },
   "publishConfig": {
     "access": "public"

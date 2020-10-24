@@ -32,6 +32,11 @@ library SafeMathUint256 {
         return a - b;
     }
 
+    function subS(uint256 a, uint256 b, string memory message) internal pure returns (uint256) {
+        require(b <= a, message);
+        return a - b;
+    }
+
     function add(uint256 a, uint256 b) internal pure returns (uint256) {
         uint256 c = a + b;
         require(c >= a);

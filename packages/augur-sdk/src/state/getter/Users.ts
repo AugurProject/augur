@@ -487,7 +487,7 @@ export class Users {
     };
 
     // positions
-    const frozenFundsPerMarket = await getFrozenFundsPerMarket(db, params.account, params.universe);
+    const frozenFundsPerMarket = await getFrozenFundsPerMarket(db, params.account, params.universe, augur.precision);
     frozenFundsBreakdown.positions = {
       total: String(convertAttoValueToDisplayValue(frozenFundsPerMarket.frozenFundsTotal)),
       markets: frozenFundsPerMarket.frozenFundsPerMarket
@@ -507,7 +507,8 @@ export class Users {
       const validityBond = await augur.contracts.hotLoading.getTotalValidityBonds_(
         [marketId]
       );
-      createdMarkets.total = createdMarkets.total.plus(validityBond)
+      // don't include validity bond in total for para augurs
+      createdMarkets.total = createdMarkets.total; //.plus(validityBond)
       createdMarkets.markets[marketId] = String(convertAttoValueToDisplayValue(validityBond));
     }
     frozenFundsBreakdown.createdMarkets = {
@@ -933,7 +934,7 @@ export class Users {
                 profitLossResultsByMarketAndOutcomePrior[
                   profitLossResult.market
                 ][profitLossResult.outcome];
-              priorPosition = getDisplayValuesForPosition(prior, marketDoc);
+              priorPosition = getDisplayValuesForPosition(prior, marketDoc, augur.precision);
             }
             const tradingPosition = {
               ...getTradingPositionFromProfitLossFrame(
@@ -943,7 +944,8 @@ export class Users {
                 outcomeValue24Hr,
                 new BigNumber(profitLossResult.timestamp).toNumber(),
                 shareTokenBalancesByMarketAndOutcome,
-                !!marketFinalizedByMarket[profitLossResult.market]
+                !!marketFinalizedByMarket[profitLossResult.market],
+                augur.precision
               ),
               priorPosition,
             };
@@ -1100,7 +1102,8 @@ export class Users {
                     new BigNumber(marketData.numTicks),
                     new BigNumber(marketData.prices[0]),
                     new BigNumber(marketData.prices[1])
-                  )
+                  ),
+                  augur.precision,
                 )
               );
               return p;
@@ -1140,22 +1143,24 @@ export class Users {
       );
     }
 
-    const frozenFundsPerMarket = await getFrozenFundsPerMarket(db, params.account, params.universe);
+    const frozenFundsPerMarket = await getFrozenFundsPerMarket(db, params.account, params.universe, augur.precision);
 
     // includes validity bonds for market creations
+    // don't include dai validity bond in para auugurs
+    /*
     const ownedMarketsResponse = await db.Markets.where('marketCreator')
       .equals(params.account)
       .and(log => !log.finalized)
       .toArray();
     const ownedMarkets = _.map(ownedMarketsResponse, 'market');
+
     const totalValidityBonds = await augur.contracts.hotLoading.getTotalValidityBonds_(
       ownedMarkets
     );
-
+    */
     return {
-      totalFrozenFunds: totalValidityBonds
-        .plus(frozenFundsPerMarket.frozenFundsTotal)
-        .dividedBy(QUINTILLION)
+      totalFrozenFunds: frozenFundsPerMarket.frozenFundsTotal
+        .dividedBy(augur.precision)
         .toFixed(),
     };
   }
@@ -1335,7 +1340,8 @@ export class Users {
                 undefined,
                 bucketTimestamp.toNumber(),
                 finalized ? shareTokenBalancesByMarketAndOutcome : null,
-                finalized
+                finalized,
+                augur.precision,
               );
             }
           );
@@ -1715,7 +1721,8 @@ function getTradingPositionFromProfitLossFrame(
   onChain24HrOutcomeValue: BigNumber | undefined,
   timestamp: number,
   shareTokenBalancesByMarketAndOutcome,
-  finalized: boolean
+  finalized: boolean,
+  precision: BigNumber,
 ): TradingPosition {
   const minPrice = new BigNumber(marketDoc.prices[0]);
   const maxPrice = new BigNumber(marketDoc.prices[1]);
@@ -1757,11 +1764,13 @@ function getTradingPositionFromProfitLossFrame(
   const frozenFunds = onChainFrozenFunds.dividedBy(10 ** 18);
   const netPosition: BigNumber = convertOnChainAmountToDisplayAmount(
     onChainNetPosition,
-    tickSize
+    tickSize,
+    precision
   );
   const rawPosition: BigNumber = convertOnChainAmountToDisplayAmount(
     onChainRawPosition,
-    tickSize
+    tickSize,
+    precision
   );
   let realizedProfit = onChainRealizedProfit.dividedBy(10 ** 18);
   let avgPrice: BigNumber = convertOnChainPriceToDisplayPrice(
@@ -1858,7 +1867,8 @@ function getTradingPositionFromProfitLossFrame(
 
 function getDisplayValuesForPosition(
   profitLossFrame: ProfitLossChangedLog,
-  marketDoc: MarketData
+  marketDoc: MarketData,
+  precision: BigNumber,
 ) {
   const minPrice = new BigNumber(marketDoc.prices[0]);
   const maxPrice = new BigNumber(marketDoc.prices[1]);
@@ -1869,7 +1879,8 @@ function getDisplayValuesForPosition(
   // convert prior to display values
   const netPosition = convertOnChainAmountToDisplayAmount(
     new BigNumber(profitLossFrame.netPosition),
-    tickSize
+    tickSize,
+    precision
   );
   const avgPrice: BigNumber = convertOnChainPriceToDisplayPrice(
     onChainAvgPrice,
@@ -1930,7 +1941,8 @@ async function getFullMarketPositionLoss(
 async function getFrozenFundsPerMarket(
   db: DB,
   account: string,
-  universe: string
+  universe: string,
+  precision: BigNumber
 ) {
   const profitLossRecords = await db.ProfitLossChanged.where('account')
     .equals(account)
@@ -1987,7 +1999,7 @@ async function getFrozenFundsPerMarket(
     ([market, ff]) =>
       ff.gt(ZERO) && !fullTotalLossMarketsPositions.includes(market)
   )
-  .reduce((accum, [market, ff]) => ({...accum, [market]: String(convertAttoValueToDisplayValue(ff.div(QUINTILLION)))}), {})
+  .reduce((accum, [market, ff]) => ({...accum, [market]: String(convertAttoValueToDisplayValue(ff.div(precision)))}), {})
 
   const frozenFundsTotal = Object.entries(totalFrozenFundsByMarket)
   .filter(
@@ -1995,7 +2007,7 @@ async function getFrozenFundsPerMarket(
       ff.gt(ZERO) && !fullTotalLossMarketsPositions.includes(market)
   )
   .reduce((accum, [market, ff]) => accum.plus(ff), ZERO)
-  .dividedBy(QUINTILLION);
+  .dividedBy(precision);
 
   return {
     frozenFundsTotal,

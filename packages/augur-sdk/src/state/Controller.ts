@@ -1,6 +1,6 @@
 import { NULL_ADDRESS, SubscriptionEventName } from '@augurproject/sdk-lite';
 import { ParsedLog } from '@augurproject/types';
-import { Block } from 'ethers/providers';
+import { Block } from '@ethersproject/providers';
 import * as fp from 'lodash/fp';
 import { Augur } from '../Augur';
 import { Subscriptions } from '../subscriptions';

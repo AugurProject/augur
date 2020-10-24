@@ -9,6 +9,7 @@ pragma solidity 0.5.15;
 
 
 import 'ROOT/IAugur.sol';
+import "ROOT/ICash.sol";
 import 'ROOT/libraries/math/SafeMathUint256.sol';
 import 'ROOT/reporting/IMarket.sol';
 import 'ROOT/trading/IAugurTrading.sol';

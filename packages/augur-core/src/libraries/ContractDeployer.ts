@@ -86,7 +86,7 @@ Deploying to: ${env}
     }
 
     async getBlockNumber(): Promise<number> {
-        return this.provider.getBlock('latest', false).then( (block) => block.number);
+        return this.provider.getBlock('latest').then( (block) => block.number);
     }
 
     async deploy(env: string): Promise<ContractAddresses> {
@@ -114,7 +114,7 @@ Deploying to: ${env}
             || externalAddresses.Cash
             || externalAddresses.WETH9) {
             if (!(externalAddresses.Cash && externalAddresses.WETH9)) {
-                throw new Error('Must provide ALL Maker contracts if any are provided');
+                throw new Error('Must provide ALL Maker contracts if any are provided, or if deploying to production.');
             }
 
             console.log(`Registering Cash Contract at ${externalAddresses.Cash}`);
@@ -123,8 +123,25 @@ Deploying to: ${env}
             // WETH 9
             console.log(`Registering WETH9 Contract at ${externalAddresses.WETH9}`);
             await this.augurTrading!.registerContract(stringTo32ByteHex('WETH9'), externalAddresses.WETH9);
+
         } else {
             await this.uploadTestDaiContracts();
+        }
+
+        if (this.configuration.deploy.isProduction
+            || externalAddresses.USDC
+            || externalAddresses.USDT
+        ) {
+            if (!(externalAddresses.Cash && externalAddresses.WETH9)) {
+                throw new Error('Must provide USDC and USDT addresses if either is provided, or if deploying to production.');
+            }
+
+            console.log(`Registering USDC Contract at ${externalAddresses.USDC}`);
+            await this.augur!.registerContract(stringTo32ByteHex('USDC'), externalAddresses.USDC);
+
+            console.log(`Registering USDT Contract at ${externalAddresses.USDT}`);
+            await this.augur!.registerContract(stringTo32ByteHex('USDT'), externalAddresses.USDT);
+        } else {
             await this.uploadTestUSDxContracts();
         }
 
@@ -180,6 +197,7 @@ Deploying to: ${env}
         }
 
         await this.uploadERC20Proxy1155Contracts();
+        await this.uploadAMMContracts();
 
         await this.initializeAllContracts();
         await this.doTradingApprovals();
@@ -229,15 +247,16 @@ Deploying to: ${env}
             await this.setupTokenExchange(new USDT(this.dependencies, this.getContractAddress('USDT')), cash);
         }
 
-        console.log('Writing artifacts');
         if (this.configuration.deploy.writeArtifacts) {
+          console.log('Writing artifacts');
           await this.generateLocalEnvFile(env, blockNumber, this.configuration);
         }
 
-        console.log('Finalizing deployment');
+        console.log('Finalizing deployment: Augur');
         await this.augur.finishDeployment();
+        console.log('Finalizing deployment: AugurTrading');
         await this.augurTrading.finishDeployment();
-
+        console.log('Generating address mapping');
         return await this.generateCompleteAddressMapping();
     }
 
@@ -291,8 +310,8 @@ Deploying to: ${env}
         mapping['Augur'] = this.contracts.get('Augur').address!;
         mapping['LegacyReputationToken'] = this.contracts.get('LegacyReputationToken').address!;
         mapping['Cash'] = this.getContractAddress('Cash');
-        const USDCAddress = this.configuration.deploy.externalAddresses.USDC || this.getContractAddress('USDC');
-        const USDTAddress = this.configuration.deploy.externalAddresses.USDT || this.getContractAddress('USDT');
+        const USDCAddress = this.getContractAddress('USDC');
+        const USDTAddress = this.getContractAddress('USDT');
         mapping['USDC'] = USDCAddress;
         mapping['USDT'] = USDTAddress;
         mapping['BuyParticipationTokens'] = this.contracts.get('BuyParticipationTokens').address!;
@@ -303,17 +322,23 @@ Deploying to: ${env}
         mapping['UniswapV2Factory'] = this.contracts.get('UniswapV2Factory').address!;
         mapping['UniswapV2Router02'] = this.contracts.get('UniswapV2Router02').address!;
         const uniswapV2Factory = new UniswapV2Factory(this.dependencies, this.getContractAddress('UniswapV2Factory'));
+        console.log('Acquiring uniswap pair for WETH and Cash');
         mapping['EthExchange'] = await uniswapV2Factory.getPair_(this.getContractAddress('WETH9'), this.getContractAddress('Cash'));
+        console.log('Acquiring uniswap pair for USDC and Cash');
         mapping['USDCExchange'] = await uniswapV2Factory.getPair_(USDCAddress, this.getContractAddress('Cash'));
+        console.log('Acquiring uniswap pair for USDT and Cash');
         mapping['USDTExchange'] = await uniswapV2Factory.getPair_(USDTAddress, this.getContractAddress('Cash'));
+
         mapping['AuditFunds'] = this.contracts.get('AuditFunds').address!;
         mapping['AccountLoader'] = this.contracts.get('AccountLoader').address!;
-
         mapping['OICash'] = this.contracts.get('OICash').address!;
         mapping['AugurWalletRegistry'] = this.contracts.get('AugurWalletRegistry').address!;
+        mapping['AMMFactory'] = this.contracts.get('AMMFactory').address!;
+
         for (let contract of this.contracts) {
             if (/^I[A-Z].*/.test(contract.contractName)) continue;
             if (contract.contractName === 'ERC20Proxy1155') continue;
+            if (contract.contractName === 'AMMExchange') continue;
             if (contract.contractName === 'TimeControlled') continue;
             if (contract.contractName === 'Universe') continue;
             if (contract.contractName === 'ReputationToken') continue;
@@ -325,6 +350,9 @@ Deploying to: ${env}
             if (contract.relativeFilePath.startsWith('legacy_reputation/')) continue;
             if (contract.relativeFilePath.startsWith('external/')) continue;
             if (contract.relativeFilePath.startsWith('uniswap/')) continue;
+            if (contract.relativeFilePath.startsWith('para/')) continue;
+            if (contract.relativeFilePath.startsWith('gov/')) continue;
+            if (contract.relativeFilePath.startsWith('sidechain/')) continue;
 
             // 0x
             if (this.configuration.deploy.externalAddresses.Exchange && [
@@ -354,7 +382,8 @@ Deploying to: ${env}
     }
 
     getContractAddress = (contractName: string): string => {
-        if (this.configuration.deploy.externalAddresses[contractName]) return this.configuration.deploy.externalAddresses[contractName];
+        const external = this.configuration.deploy.externalAddresses[contractName];
+        if (external) return external;
         if (!this.contracts.has(contractName)) throw new Error(`Contract named ${contractName} does not exist.`);
         const contract = this.contracts.get(contractName);
         if (contract.address === undefined) throw new Error(`Contract name ${contractName} has not yet been uploaded.`);
@@ -507,6 +536,16 @@ Deploying to: ${env}
         return nexus.address;
     }
 
+    // fee is thousandths of a percent; valid values are [0,1000]
+    async uploadAMMContracts(fee = 3): Promise<string> {
+        console.log('Uploading AMM contracts');
+        const factory = this.contracts.get('AMMFactory');
+        const masterProxy = this.contracts.get('AMMExchange');
+        masterProxy.address = await this.construct(masterProxy, []);
+        factory.address = await this.construct(factory, [masterProxy.address, fee]);
+        return factory.address;
+    }
+
     private async uploadAllContracts(): Promise<void> {
         console.log('Uploading contracts...');
 
@@ -538,12 +577,17 @@ Deploying to: ${env}
         if (contract.relativeFilePath.startsWith('legacy_reputation/')) return;
         if (contract.relativeFilePath.startsWith('uniswap/')) return;
         if (contract.relativeFilePath.startsWith('gsn/')) return;
+        if (contract.relativeFilePath.startsWith('gov/')) return;
+        if (contract.relativeFilePath.startsWith('sidechain/')) return;
+        if (contract.relativeFilePath.startsWith('para/')) return;
         if (contractName === 'LegacyReputationToken') return;
         if (contractName === 'Cash') return;
         if (contractName === 'USDC') return;
         if (contractName === 'USDT') return;
         if (contractName === 'ERC20Proxy1155') return;
         if (contractName === 'ERC20Proxy1155Nexus') return;
+        if (contractName === 'AMMExchange') return;
+        if (contractName === 'AMMFactory') return;
         // 0x
         if ([
           'ERC20Proxy',
@@ -590,7 +634,7 @@ Deploying to: ${env}
         }
     }
 
-    private async construct(contract: ContractData, constructorArgs: string[]): Promise<string> {
+    private async construct(contract: ContractData, constructorArgs: Array<string|number>): Promise<string> {
         console.log(`Upload contract: ${contract.contractName}`);
         const factory = new ethers.ContractFactory(contract.abi, contract.bytecode, this.signer);
         const contractObj = await factory.deploy(...constructorArgs);
@@ -849,6 +893,7 @@ Deploying to: ${env}
         mapping['EthExchange'] = await uniswapV2Factory.getPair_(this.getContractAddress('WETH9'), this.getContractAddress('Cash'));
         mapping['AuditFunds'] = this.contracts.get('AuditFunds').address!;
         mapping['AccountLoader'] = this.contracts.get('AccountLoader').address!;
+        mapping['HotLoadingUniversal'] = this.contracts.get('HotLoadingUniversal').address!;
 
         // 0x
         mapping['ERC20Proxy'] = this.contracts.get('ERC20Proxy').address!;
@@ -866,11 +911,14 @@ Deploying to: ${env}
         if (this.contracts.get('TimeControlled')) mapping['TimeControlled'] = this.contracts.get('TimeControlled').address;
         if (this.contracts.get('Time')) mapping['Time'] = this.contracts.get('Time').address;
 
+        if (this.contracts.get('AMMFactory')) mapping['AMMFactory'] = this.contracts.get('AMMFactory').address;
+
         for (const contract of this.contracts) {
             if (!contract.relativeFilePath.startsWith('trading/')) continue;
             if (/^I[A-Z].*/.test(contract.contractName)) continue;
             if (contract.contractName === 'ZeroXTradeToken') continue;
             if (contract.contractName === 'ERC20Proxy1155') continue;
+            if (contract.contractName === 'AMMExchange') continue;
             if (contract.address === undefined) throw new Error(`${contract.contractName} not uploaded.`);
             mapping[contract.contractName] = contract.address;
         }

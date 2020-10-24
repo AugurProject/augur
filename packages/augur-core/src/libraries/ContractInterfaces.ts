@@ -67,6 +67,14 @@ export class TestNetReputationTokenFactory extends c.TestNetReputationTokenFacto
 }
 export class UniverseFactory extends c.UniverseFactory<BigNumber> {
 }
+export class FeePotStakingRewards extends c.FeePotStakingRewards<BigNumber> {
+}
+export class GovToken extends c.GovToken<BigNumber> {
+}
+export class Governance extends c.Governance<BigNumber> {
+}
+export class Timelock extends c.Timelock<BigNumber> {
+}
 export class RelayHub extends c.RelayHub<BigNumber> {
 }
 export class Penalizer extends c.Penalizer<BigNumber> {
@@ -74,6 +82,58 @@ export class Penalizer extends c.Penalizer<BigNumber> {
 export class RelayHubV2 extends c.RelayHubV2<BigNumber> {
 }
 export class StakeManager extends c.StakeManager<BigNumber> {
+}
+export class AMMExchange extends c.AMMExchange<BigNumber> {
+}
+export class AMMFactory extends c.AMMFactory<BigNumber> {
+}
+export class FeePot extends c.FeePot<BigNumber> {
+}
+export class OINexus extends c.OINexus<BigNumber> {
+}
+export class ParaAugur extends c.ParaAugur<BigNumber> {
+}
+export class ParaAugurTrading extends c.ParaAugurTrading<BigNumber> {
+}
+export class ParaDeployer extends c.ParaDeployer<BigNumber> {
+}
+export class ParaOICash extends c.ParaOICash<BigNumber> {
+}
+export class ParaShareToken extends c.ParaShareToken<BigNumber> {
+}
+export class ParaUniverse extends c.ParaUniverse<BigNumber> {
+}
+export class ParaZeroXTrade extends c.ParaZeroXTrade<BigNumber> {
+}
+export class WethWrapperForAMMExchange extends c.WethWrapperForAMMExchange<BigNumber> {
+}
+export class CancelOrderFactory extends c.CancelOrderFactory<BigNumber> {
+}
+export class CreateOrderFactory extends c.CreateOrderFactory<BigNumber> {
+}
+export class FillOrderFactory extends c.FillOrderFactory<BigNumber> {
+}
+export class OrdersFactory extends c.OrdersFactory<BigNumber> {
+}
+export class ParaAugurFactory extends c.ParaAugurFactory<BigNumber> {
+}
+export class ParaAugurTradingFactory extends c.ParaAugurTradingFactory<BigNumber> {
+}
+export class ParaShareTokenFactory extends c.ParaShareTokenFactory<BigNumber> {
+}
+export class ProfitLossFactory extends c.ProfitLossFactory<BigNumber> {
+}
+export class SimulateTradeFactory extends c.SimulateTradeFactory<BigNumber> {
+}
+export class TradeFactory extends c.TradeFactory<BigNumber> {
+}
+export class ZeroXTradeFactory extends c.ZeroXTradeFactory<BigNumber> {
+}
+export class FeePotFactory extends c.FeePotFactory<BigNumber> {
+}
+export class ParaOICashFactory extends c.ParaOICashFactory<BigNumber> {
+}
+export class ParaUniverseFactory extends c.ParaUniverseFactory<BigNumber> {
 }
 export class AffiliateValidator extends c.AffiliateValidator<BigNumber> {
 }
@@ -97,6 +157,20 @@ export class ShareToken extends c.ShareToken<BigNumber> {
 }
 export class Universe extends c.Universe<BigNumber> {
 }
+export class SideChainAugur extends c.SideChainAugur<BigNumber> {
+}
+export class SideChainAugurTrading extends c.SideChainAugurTrading<BigNumber> {
+}
+export class SideChainFillOrder extends c.SideChainFillOrder<BigNumber> {
+}
+export class SideChainProfitLoss extends c.SideChainProfitLoss<BigNumber> {
+}
+export class SideChainShareToken extends c.SideChainShareToken<BigNumber> {
+}
+export class SideChainSimulateTrade extends c.SideChainSimulateTrade<BigNumber> {
+}
+export class SideChainZeroXTrade extends c.SideChainZeroXTrade<BigNumber> {
+}
 export class AugurTrading extends c.AugurTrading<BigNumber> {
 }
 export class CancelOrder extends c.CancelOrder<BigNumber> {
@@ -115,6 +189,10 @@ export class Trade extends c.Trade<BigNumber> {
 }
 export class ZeroXTrade extends c.ZeroXTrade<BigNumber> {
 }
+export class ERC20Proxy1155 extends c.ERC20Proxy1155<BigNumber> {
+}
+export class ERC20Proxy1155Nexus extends c.ERC20Proxy1155Nexus<BigNumber> {
+}
 export class UniswapV2Factory extends c.UniswapV2Factory<BigNumber> {
 }
 export class UniswapV2Pair extends c.UniswapV2Pair<BigNumber> {
@@ -130,6 +208,8 @@ export class BuyParticipationTokens extends c.BuyParticipationTokens<BigNumber> 
 export class Formulas extends c.Formulas<BigNumber> {
 }
 export class HotLoading extends c.HotLoading<BigNumber> {
+}
+export class HotLoadingUniversal extends c.HotLoadingUniversal<BigNumber> {
 }
 export class RedeemStake extends c.RedeemStake<BigNumber> {
 }

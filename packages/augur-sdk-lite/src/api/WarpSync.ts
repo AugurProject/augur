@@ -11,6 +11,7 @@ export interface WarpSyncData {
 }
 
 export class WarpSync {
+  static readonly ABI = WarpSyncAbi;
   private readonly provider: ethers.providers.Provider;
   private readonly contract: ethers.Contract;
 

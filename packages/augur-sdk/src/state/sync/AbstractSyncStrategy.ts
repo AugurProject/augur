@@ -1,9 +1,4 @@
 import { Filter, Log, ParsedLog } from '@augurproject/types';
-import { Block } from 'ethereumjs-blockstream';
-import {
-  BlockAndLogStreamerInterface,
-  ExtendedFilter,
-} from './BlockAndLogStreamerSyncStrategy';
 
 export abstract class AbstractSyncStrategy {
   constructor(

@@ -3,8 +3,8 @@ import { ACCOUNTS, TestContractAPI } from '@augurproject/tools';
 import { TestEthersProvider } from '@augurproject/tools/build/libs/TestEthersProvider';
 import { stringTo32ByteHex } from '@augurproject/tools/build/libs/Utils';
 import { BigNumber } from 'bignumber.js';
-import { formatBytes32String } from 'ethers/utils';
 import { _beforeAll, _beforeEach } from './common';
+import { ethers } from 'ethers';
 
 describe('State API :: Users :: ', () => {
   let john: TestContractAPI;
@@ -302,7 +302,7 @@ describe('State API :: Users :: ', () => {
     await john.augur.contracts.shareToken.claimTradingProceeds(
       johnYesNoMarket.address,
       john.account.address,
-      formatBytes32String('')
+      ethers.utils.formatBytes32String('')
     );
 
     await john.sync();
@@ -663,7 +663,7 @@ describe('State API :: Users :: ', () => {
     await john.augur.contracts.shareToken.claimTradingProceeds(
       johnYesNoMarket2.address,
       john.account.address,
-      formatBytes32String('')
+      ethers.utils.formatBytes32String('')
     );
 
     await john.sync();

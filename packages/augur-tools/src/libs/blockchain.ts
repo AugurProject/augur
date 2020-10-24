@@ -1,14 +1,14 @@
 import { CompilerOutput } from 'solc';
 import { EthersProvider } from '@augurproject/ethersjs-provider';
-import { EthersFastSubmitWallet } from '@augurproject/core';
+import { EthersFastSubmitWallet, SideChainDeployer } from '@augurproject/core';
 import { ContractAddresses } from '@augurproject/utils';
 import { ContractDependenciesEthers } from '@augurproject/contract-dependencies-ethers';
 import { ContractDeployer } from '@augurproject/core';
-import { HDNode } from 'ethers/utils';
+import { HDNode } from '@ethersproject/hdnode';
 import { Wallet } from 'ethers';
 
 import { Account } from '../constants';
-import { SDKConfiguration } from '@augurproject/utils';
+import { SDKConfiguration, SideChainDeploy } from '@augurproject/utils';
 
 export interface UsefulContractObjects {
   addresses: ContractAddresses;
@@ -36,6 +36,25 @@ export async function deployContracts(
   return { addresses };
 }
 
+export async function deploySideChainContracts(
+  env: string,
+  provider: EthersProvider,
+  account: Account,
+  compiledContracts: CompilerOutput,
+  config: SDKConfiguration
+): Promise<SideChainDeploy> {
+  const signer = await makeSigner(account, provider);
+  const dependencies = makeDependencies(account, provider, signer);
+  const deployer = new SideChainDeployer(
+    config,
+    dependencies,
+    provider,
+    signer,
+    compiledContracts
+  );
+  return deployer.deploy(env);
+}
+
 export async function makeSigner(account: Account, provider: EthersProvider) {
   return EthersFastSubmitWallet.create(account.privateKey, provider);
 }
@@ -49,7 +68,7 @@ export function makeDependencies(
 }
 
 export class HDWallet {
-  readonly node: HDNode.HDNode;
+  readonly node: HDNode;
   constructor(readonly mnemonic: string) {
     this.node = HDNode.fromMnemonic(mnemonic);
   }
@@ -66,6 +85,6 @@ export class HDWallet {
   }
 
   static randomMnemonic(): string {
-    return Wallet.createRandom().mnemonic;
+    return Wallet.createRandom().mnemonic.phrase;
   }
 }

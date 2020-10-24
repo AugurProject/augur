@@ -4,7 +4,7 @@ import { SubscriptionEventName } from '@augurproject/sdk-lite';
 import { logger, LoggerLevels, SDKConfiguration } from '@augurproject/utils';
 import { BigNumber } from 'bignumber.js';
 import { SupportedProvider } from 'ethereum-types';
-import { JsonRpcProvider } from 'ethers/providers';
+import { JsonRpcProvider } from '@ethersproject/providers';
 import { ContractEvents } from '../api/ContractEvents';
 import { ZeroX } from '../api/ZeroX';
 import { Augur } from '../Augur';
@@ -178,17 +178,8 @@ export async function createServer(config: SDKConfiguration, client?: Augur): Pr
   }
 
   const ethersProvider: EthersProvider = client.provider as EthersProvider;
-  const contractEvents = new ContractEvents(
-    ethersProvider,
-    client.config.addresses.Augur,
-    client.config.addresses.AugurTrading,
-    client.config.addresses.ShareToken,
-  );
 
-  const logFilterAggregator = LogFilterAggregator.create(
-    contractEvents.getEventTopics,
-    contractEvents.parseLogs,
-  );
+  const logFilterAggregator = LogFilterAggregator.create();
   const db = DB.createAndInitializeDB(
     Number(config.networkId),
     config.uploadBlockNumber,

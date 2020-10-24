@@ -23,7 +23,7 @@ import {
 } from '@augurproject/sdk-lite';
 import { SDKConfiguration } from '@augurproject/utils';
 import { BigNumber } from 'bignumber.js';
-import { formatBytes32String } from 'ethers/utils';
+import { ethers } from 'ethers';
 import moment from 'moment';
 import { Account } from '../constants';
 import { makeSigner } from './blockchain';
@@ -61,7 +61,8 @@ export class ContractAPI {
   constructor(
     readonly augur: Augur,
     readonly provider: EthersProvider,
-    public account: Account
+    public account: Account,
+    readonly signer?: ethers.Signer
   ) {}
 
   get dependencies() {
@@ -76,6 +77,9 @@ export class ContractAPI {
     const authority = this.augur.config.addresses.Augur;
     await this.augur.contracts.cash.approve(authority, wei);
 
+    const originCash = await this.augur.contracts.getOriginCash();
+    await originCash.approve(authority, wei);
+
     const fillOrder = this.augur.config.addresses.FillOrder;
     await this.augur.contracts.cash.approve(fillOrder, wei);
     await this.augur.contracts.shareToken.setApprovalForAll(fillOrder, true);
@@ -88,6 +92,14 @@ export class ContractAPI {
     await this.augur.contracts.cash.approve(zeroXTrade, wei);
   }
 
+  async getOriginCashAllowance(): Promise<BigNumber> {
+    const owner = this.account.address;
+    const authority = this.augur.config.addresses.Augur;
+
+    const cash = await this.augur.contracts.getOriginCash();
+    return cash.allowance_(owner, authority);
+  }
+
   async getCashAllowance(): Promise<BigNumber> {
     const owner = this.account.address;
     const authority = this.augur.config.addresses.Augur;
@@ -96,7 +108,9 @@ export class ContractAPI {
 
   async approveIfNecessary(wei = MAX_APPROVAL): Promise<void> {
     const current = await this.getCashAllowance();
-    if (current.lt(wei)) {
+    const originCurrent = await this.getOriginCashAllowance();
+
+    if (current.lt(wei) || originCurrent.lt(wei)) {
       await this.approve(wei);
     }
   }
@@ -236,7 +250,7 @@ export class ContractAPI {
     }
 
     const events = await this.augur.contracts.createOrder.publicCreateOrder(
-      type,
+      type.toNumber(),
       numShares,
       price,
       market,
@@ -272,9 +286,9 @@ export class ContractAPI {
       numShares,
       price,
       outcome,
-      formatBytes32String(''),
-      formatBytes32String(''),
-      formatBytes32String('42')
+      ethers.utils.formatBytes32String(''),
+      ethers.utils.formatBytes32String(''),
+      ethers.utils.formatBytes32String('42')
     );
   }
 
@@ -290,8 +304,8 @@ export class ContractAPI {
     await this.augur.contracts.fillOrder.publicFillOrder(
       orderId,
       numShares,
-      formatBytes32String(tradeGroupId),
-      formatBytes32String('')
+      ethers.utils.formatBytes32String(tradeGroupId),
+      ethers.utils.formatBytes32String('')
     );
   }
 
@@ -343,8 +357,8 @@ export class ContractAPI {
       numTicks: new BigNumber(1000),
       numOutcomes: 3,
       outcome,
-      tradeGroupId: formatBytes32String('42'),
-      fingerprint: formatBytes32String('11'),
+      tradeGroupId: ethers.utils.formatBytes32String('42'),
+      fingerprint: ethers.utils.formatBytes32String('11'),
       doNotCreateOrders: false,
       displayMinPrice: new BigNumber(0),
       displayMaxPrice: new BigNumber(1),
@@ -366,28 +380,28 @@ export class ContractAPI {
     const cost = numShares.multipliedBy(price);
     await this.faucetCashUpTo(cost);
     const bestPriceAmount = await this.augur.contracts.trade.publicFillBestOrder_(
-      type,
+      type.toNumber(),
       marketAddress,
       outcome,
       numShares,
       price,
       tradeGroupID,
       new BigNumber(3),
-      formatBytes32String('')
+      ethers.utils.formatBytes32String('')
     );
     if (bestPriceAmount === new BigNumber(0)) {
       throw new Error('Could not take best Order');
     }
 
     await this.augur.contracts.trade.publicFillBestOrder(
-      type,
+      type.toNumber(),
       marketAddress,
       outcome,
       numShares,
       price,
       tradeGroupID,
       new BigNumber(3),
-      formatBytes32String('')
+      ethers.utils.formatBytes32String('')
     );
   }
 
@@ -443,8 +457,8 @@ export class ContractAPI {
         | 7
         | 8,
       outcome,
-      tradeGroupId: formatBytes32String('42'),
-      fingerprint: formatBytes32String('11'),
+      tradeGroupId: ethers.utils.formatBytes32String('42'),
+      fingerprint: ethers.utils.formatBytes32String('11'),
       doNotCreateOrders: false,
       displayMinPrice: new BigNumber(0),
       displayMaxPrice: new BigNumber(1),
@@ -474,8 +488,8 @@ export class ContractAPI {
         | 7
         | 8,
       outcome,
-      tradeGroupId: formatBytes32String('42'),
-      fingerprint: formatBytes32String('11'),
+      tradeGroupId: ethers.utils.formatBytes32String('42'),
+      fingerprint: ethers.utils.formatBytes32String('11'),
       doNotCreateOrders: false,
       displayMinPrice: new BigNumber(0),
       displayMaxPrice: new BigNumber(1),
@@ -507,9 +521,9 @@ export class ContractAPI {
         | 7
         | 8,
       outcome,
-      tradeGroupId: formatBytes32String('42'),
+      tradeGroupId: ethers.utils.formatBytes32String('42'),
       expirationTime: new BigNumber(Date.now() + 10000000),
-      fingerprint: formatBytes32String('11'),
+      fingerprint: ethers.utils.formatBytes32String('11'),
       doNotCreateOrders,
       displayMinPrice: new BigNumber(0),
       displayMaxPrice: new BigNumber(1),
@@ -522,7 +536,7 @@ export class ContractAPI {
   async claimTradingProceeds(
     market: ContractInterfaces.Market,
     shareholder = this.account.address,
-    fingerprint = formatBytes32String('11')
+    fingerprint = ethers.utils.formatBytes32String('11')
   ): Promise<void> {
     await this.augur.contracts.shareToken.claimTradingProceeds(
       market.address,
@@ -549,7 +563,7 @@ export class ContractAPI {
     outcome: BigNumber
   ): Promise<string> {
     const orderID = await this.augur.contracts.orders.getBestOrderId_(
-      type,
+      type.toNumber(),
       market,
       outcome
     );
@@ -660,11 +674,13 @@ export class ContractAPI {
   }
 
   async isForking(): Promise<boolean> {
-    return this.augur.contracts.universe.isForking_();
+    const origin = await this.augur.contracts.getOriginUniverse();
+    return origin.isForking_();
   }
 
   async getDisputeThresholdForFork_(): Promise<BigNumber> {
-    return this.augur.contracts.universe.getDisputeThresholdForFork_();
+    const origin = await this.augur.contracts.getOriginUniverse();
+    return origin.getDisputeThresholdForFork_();
   }
 
   async getDisputeThresholdForDisputePacing(): Promise<BigNumber> {
@@ -672,7 +688,8 @@ export class ContractAPI {
   }
 
   async getInitialReportMinValue(): Promise<BigNumber> {
-    return this.augur.contracts.universe.getInitialReportMinValue_();
+    const origin = await this.augur.contracts.getOriginUniverse();
+    return origin.getInitialReportMinValue_();
   }
 
   migrateOutByPayout(
@@ -703,11 +720,12 @@ export class ContractAPI {
   }
 
   async getOrCreateCurrentDisputeWindow(initial = false): Promise<string> {
+    const origin = await this.augur.contracts.getOriginUniverse();
     // Must make 2 calls because the first call is necessary but doesn't always return the dispute window.
-    await this.augur.contracts.universe.getOrCreateCurrentDisputeWindow(
+    await origin.getOrCreateCurrentDisputeWindow(
       initial
     );
-    return this.augur.contracts.universe.getOrCreateCurrentDisputeWindow_(
+    return origin.getOrCreateCurrentDisputeWindow_(
       initial
     );
   }
@@ -887,6 +905,30 @@ export class ContractAPI {
     await market.finalize();
   }
 
+  async faucetOriginCash(attoCash: BigNumber, targetAddress?: string): Promise<void> {
+    const userAddress = await this.augur.getAccount();
+    const account = targetAddress || userAddress;
+    const cash = await this.augur.contracts.getOriginCash();
+    await cash.faucet(attoCash)
+    if (account !== userAddress) {
+      await cash.transfer(account, attoCash);
+    }
+  }
+
+  async faucetOriginCashUpTo(
+    attoCash: BigNumber,
+    extra = new BigNumber(0),
+    targetAddress: string = null
+  ): Promise<void> {
+    targetAddress = targetAddress || (await this.augur.getAccount());
+    const balance = await this.getOriginCashBalance(targetAddress);
+    const leftToFaucet = attoCash.minus(balance);
+    if (leftToFaucet.gt(0)) {
+      const totalToFaucet = leftToFaucet.plus(extra);
+      await this.faucetOriginCash(totalToFaucet, targetAddress);
+    }
+  }
+
   async faucetCash(attoCash: BigNumber, targetAddress?: string): Promise<void> {
     const userAddress = await this.augur.getAccount();
     const account = targetAddress || userAddress;
@@ -1023,7 +1065,8 @@ export class ContractAPI {
   }
 
   async getChildUniverseReputationToken(parentPayoutDistributionHash: string) {
-    const childUniverseAddress = await this.augur.contracts.universe!.getChildUniverse_(
+    const origin = await this.augur.contracts.getOriginUniverse();
+    const childUniverseAddress = await origin.getChildUniverse_(
       parentPayoutDistributionHash
     );
     const childUniverse = this.augur.contracts.universeFromAddress(
@@ -1047,6 +1090,12 @@ export class ContractAPI {
   async getRepBalance(owner?: string): Promise<BigNumber> {
     if (!owner) owner = await this.augur.getAccount();
     return this.augur.contracts.getReputationToken().balanceOf_(owner);
+  }
+
+  async getOriginCashBalance(owner?: string): Promise<BigNumber> {
+    if (!owner) owner = await this.augur.getAccount();
+    const cash = await this.augur.contracts.getOriginCash();
+    return cash.balanceOf_(owner);
   }
 
   async getCashBalance(owner?: string): Promise<BigNumber> {

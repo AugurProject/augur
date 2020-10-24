@@ -35,6 +35,7 @@ export const INTERNAL_CONTRACTS = [
     'RepSymbol',
     'AuditFunds',
     'AccountLoader',
+    'HotLoadingUniversal',
     // factories
     'DisputeCrowdsourcerFactory',
     'DisputeWindowFactory',
@@ -43,6 +44,46 @@ export const INTERNAL_CONTRACTS = [
     'OICashFactory',
     'ReputationTokenFactory',
     'UniverseFactory',
+    // Para
+    'FeePotFactory',
+    'ParaOICashFactory',
+    'ParaUniverseFactory',
+    'ParaAugur',
+    'FeePot',
+    'ParaOICash',
+    'ParaRepOracle',
+    'ParaShareToken',
+    'ParaUniverse',
+    'OINexus',
+    'ParaAugurTrading',
+    'ParaZeroXTrade',
+    'ParaOICashFactory',
+    'ParaDeployer',
+    'ParaAugurFactory',
+    'ParaAugurTradingFactory',
+    'ParaShareTokenFactory',
+    'ParaRepOracleFactory',
+    'CancelOrderFactory',
+    'CreateOrderFactory',
+    'FillOrderFactory',
+    'OrdersFactory',
+    'ProfitLossFactory',
+    'SimulateTradeFactory',
+    'TradeFactory',
+    'ZeroXTradeFactory',
+    // Gov
+    'Governance',
+    'GovToken',
+    'Timelock',
+    'FeePotStakingRewards',
+    // SideChain
+    'SideChainAugur',
+    'SideChainShareToken',
+    'SideChainAugurTrading',
+    'SideChainFillOrder',
+    'SideChainProfitLoss',
+    'SideChainZeroXTrade',
+    'SideChainSimulateTrade'
 ];
 
 export const TRADING_CONTRACTS = [
@@ -101,6 +142,10 @@ export const EXTERNAL_CONTRACTS = [
     // Token Proxying
     'ERC20Proxy1155',
     'ERC20Proxy1155Nexus',
+    // AMM
+    'AMMExchange',
+    'AMMFactory',
+    'WethWrapperForAMMExchange',
 ];
 
 export const REGISTERED_EXTERNAL_CONTRACTS = [

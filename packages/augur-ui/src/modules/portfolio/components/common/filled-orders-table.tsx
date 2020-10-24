@@ -2,7 +2,7 @@
 
 import React from 'react';
 
-import { formatDai, formatMarketShares } from 'utils/format-number';
+import { formatDaiPrice, formatMarketShares, formatEther } from 'utils/format-number';
 import { MarketData } from 'modules/types';
 import {
   LinearPropertyLabel,
@@ -37,7 +37,7 @@ const FilledOrdersTable = (props: FilledOrdersTableProps) => {
               <ValueLabel value={formatMarketShares(filledOrder.marketType, trade.amount)} />
             </li>
             <li>
-              <ValueLabel value={formatDai(trade.price)} />
+              <ValueLabel value={formatEther(trade.price)} />
             </li>
             <li>{trade.timestamp.formattedLocalShortDateTimeNoTimezone}</li>
             <li>
@@ -64,7 +64,7 @@ const FilledOrdersTable = (props: FilledOrdersTableProps) => {
             <LinearPropertyLabel
               highlightFirst
               label="Price"
-              value={formatDai(trade.price).formatted}
+              value={formatEther(trade.price).formatted}
             />
             <LinearPropertyLabel
               highlightFirst
