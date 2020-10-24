@@ -5,7 +5,7 @@
   "description": "Augur Top-Level Monorepo",
   "author": "The Augur Developers <team@augur.net>",
   "engines": {
-    "node": ">=10",
+    "node": ">=12",
     "yarn": ">=1.6.0"
   },
   "scripts": {
