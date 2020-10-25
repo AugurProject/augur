@@ -698,26 +698,32 @@ export async function estimateTrade(augurClient, trade: TradeInfo) {
 
 }
 
-export async function doTrade(augurClient, trade: TradeInfo) {
-  if (!augurClient || !trade.amm) return console.error('estimateTrade: augurClient is null or amm address')
-  const isEntry = !(trade.currencyIn instanceof MarketCurrency) && trade.currencyOut instanceof MarketCurrency
-  const isExit = trade.currencyIn instanceof MarketCurrency && !(trade.currencyOut instanceof MarketCurrency)
-  const isSwap = trade.currencyIn instanceof MarketCurrency && trade.currencyOut instanceof MarketCurrency
+export async function doTrade(augurClient, trade: TradeInfo, minAmount: string) {
+  if (!augurClient || !trade.amm.id) return console.error('estimateTrade: augurClient is null or amm address')
+  let isEntry = !(trade.currencyIn instanceof MarketCurrency) && trade.currencyOut instanceof MarketCurrency
+  let isExit = trade.currencyIn instanceof MarketCurrency && !(trade.currencyOut instanceof MarketCurrency)
+  let isSwap = trade.currencyIn instanceof MarketCurrency && trade.currencyOut instanceof MarketCurrency
 
-  let result = null;
-  let buyYes = false;
+  console.log('estimateTrade: isEntry', isEntry, 'isExit', isExit, 'isSwap', isSwap, 'minAmount', minAmount)
+
+  let outputYesShares = false;
+  let breakdown = null;
 
   if (trade.currencyOut instanceof MarketCurrency) {
     const out = trade.currencyOut as MarketCurrency
-    buyYes = out.name === MarketTokens.YES_SHARES;
+    outputYesShares = out.name === MarketTokens.YES_SHARES;
   }
 
   if (isEntry) {
-    return augurClient.ammFactory.enterPosition(trade.amm, trade.inputAmount, buyYes)
+    return augurClient.ammFactory.enterPosition(trade.amm.id, String(trade.inputAmount.raw), outputYesShares, minAmount)
   }
-
+  if (isExit) {
+    return augurClient.ammFactory.exitPosition(trade.amm.id, trade.balance[0], trade.balance[1], trade.balance[2], minAmount)
+  }
+  if (isSwap) {
+    return augurClient.ammFactory.swap(trade.amm.id, String(trade.inputAmount.raw), !outputYesShares)
+  }
   return null;
-
 }
 
 export function estimateEnterPosition(ammAddress: string, augurClient, cash: string, buyYes: boolean) {

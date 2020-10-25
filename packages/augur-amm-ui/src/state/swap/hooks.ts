@@ -1,14 +1,14 @@
 import useENS from '../../hooks/useENS'
 import { parseUnits } from '@ethersproject/units'
-import { Currency, CurrencyAmount, ETHER, JSBI, Token, TokenAmount, Trade } from '@uniswap/sdk'
+import { Currency, CurrencyAmount, Percent, JSBI, Token, TokenAmount, Trade } from '@uniswap/sdk'
 import { ParsedQs } from 'qs'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useActiveWeb3React } from '../../hooks'
 import { useCurrency, useMarketToken } from '../../hooks/Tokens'
-import { TradeInfo, useTradeExactIn, useTradeExactOut } from '../../hooks/Trades'
+import { TradeInfo, useTradeExactIn } from '../../hooks/Trades'
 import useParsedQueryString from '../../hooks/useParsedQueryString'
-import { estimateTrade, isAddress } from '../../utils'
+import { isAddress } from '../../utils'
 import { AppDispatch, AppState } from '../index'
 import { useCurrencyBalances } from '../wallet/hooks'
 import { Field, replaceSwapState, selectCurrency, setRecipient, switchCurrencies, typeInput } from './actions'
@@ -18,7 +18,6 @@ import { computeSlippageAdjustedAmounts } from '../../utils/prices'
 import { useLocation } from 'react-router-dom'
 import { MarketCurrency } from '../../data/MarketCurrency'
 import { useMarketAmm } from '../../contexts/Markets'
-import { useAugurClient } from '../../contexts/Application'
 
 export function useSwapState(): AppState['swap'] {
   return useSelector<AppState, AppState['swap']>(state => state.swap)
@@ -155,13 +154,8 @@ export function useDerivedSwapInfo(
     isExactIn ? parsedAmount : undefined,
     outputCurrency ?? undefined
   )
-  const bestTradeExactOut = useTradeExactOut(
-    ammExchange,
-    outputCurrency,
-    inputCurrency ?? undefined,
-    !isExactIn ? parsedAmount : undefined
-  )
-  const v2Trade = isExactIn ? bestTradeExactIn : bestTradeExactOut
+
+  const v2Trade = bestTradeExactIn
 
   const currencyBalances = {
     [Field.INPUT]: relevantTokenBalances[0],
@@ -211,24 +205,6 @@ export function useDerivedSwapInfo(
     v2Trade: v2Trade ?? undefined,
     inputError
   }
-}
-
-export function useEstimateTrade(trade, updateEstimateTokenAmount) {
-  const augurClient = useAugurClient()
-  useMemo(() => {
-    if (trade) {
-      estimateTrade(augurClient, trade)
-        .then(result => {
-          if (result) {
-            const estCurrency = new TokenAmount(trade.currencyIn, JSBI.BigInt(String(result)))
-            updateEstimateTokenAmount(estCurrency)
-          }
-        })
-        .catch(e => {
-          updateEstimateTokenAmount(null)
-        })
-    }
-  }, [trade, updateEstimateTokenAmount])
 }
 
 function parseCurrencyFromURLParameter(urlParam: any): string {
@@ -326,3 +302,4 @@ export function useSwapQueryParam(): { marketId: string; cash: string; amm: stri
   const amm = components[4]
   return { marketId, cash, amm }
 }
+

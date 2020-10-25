@@ -174,7 +174,7 @@ export function addAMMScripts(flash: FlashSession) {
       const factory = new AMMFactory(user.signer, this.config.addresses.AMMFactory);
       const amm = await factory.getAMMExchange(market.address, paraShareToken);
 
-      const lpTokens = await amm.addInitialLiquidity(recipient, cash, yesPercent, noPercent);
+      const lpTokens = await amm.doAddInitialLiquidity(recipient, cash, yesPercent, noPercent);
 
       console.log(`LP Tokens acquired: ${lpTokens}`);
     }
@@ -294,7 +294,7 @@ export function addAMMScripts(flash: FlashSession) {
       const factory = new AMMFactory(user.signer, this.config.addresses.AMMFactory);
       const amm = await factory.getAMMExchange(market.address, paraShareToken);
 
-      const tx = await amm.enterPosition(shares, yes, shares);
+      const tx = await amm.doEnterPosition(shares, yes, shares);
       const cash = new BigNumber(tx.data)
 
       console.log(`You paid ${cash.toFixed()} cash for ${shares.toFixed()} ${yes ? 'yes' : 'no'} shares`);

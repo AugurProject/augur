@@ -1,18 +1,18 @@
-import { JSBI, Percent, Trade, TradeType } from '@uniswap/sdk'
+import { ETHER, JSBI, Percent, TokenAmount, Trade, TradeType } from '@uniswap/sdk'
 import React, { useCallback, useContext, useEffect, useState } from 'react'
 import styled, { ThemeContext } from 'styled-components'
-import { useAugurClient } from '../../contexts/Application'
 import { TradeInfo } from '../../hooks/Trades'
 import { Field } from '../../state/swap/actions'
 import { useUserSlippageTolerance } from '../../state/user/hooks'
-import { TYPE, ExternalLink } from '../../Theme'
-import { estimateTrade } from '../../utils'
+import { TYPE } from '../../Theme'
 import { AutoColumn } from '../Column'
 import QuestionHelper from '../QuestionHelper'
 import { RowBetween, RowFixed } from '../Row'
 import FormattedPriceImpact from './FormattedPriceImpact'
+import { BigNumber as BN } from 'bignumber.js'
+import { BIPS_BASE } from '../../constants'
 
-function TradeSummary({ trade, allowedSlippage }: { trade: TradeInfo; allowedSlippage: number }) {
+export function TradeSummary({ trade, allowedSlippage, minAmount }: { trade: TradeInfo; allowedSlippage: number, minAmount: string }) {
   const theme = useContext(ThemeContext)
   const [breakdown, setBreakdown] = useState({
     priceImpactWithoutFee: new Percent(JSBI.BigInt(0)),
@@ -23,26 +23,26 @@ function TradeSummary({ trade, allowedSlippage }: { trade: TradeInfo; allowedSli
     }
   })
   const isExactIn = trade.tradeType === TradeType.EXACT_INPUT
-  const augurClient = useAugurClient()
 
   useEffect(() => {
-    const estimate = (augurClient, trade) => estimateTrade(augurClient, trade).then(result => {
-      console.log('Trade Summary', result)
+    console.log('minAmount', minAmount, 'allowedSlippage', allowedSlippage)
+    if (minAmount) {
+      const calcPrice = new BN(minAmount).div(new BN(String(trade.inputAmount.raw)))
+      // weird math to use Percent object
+      const impact = (calcPrice.minus(new BN(trade.executionPrice.toSignificant(6)))).div(calcPrice).abs().times(100).toFixed(0)
+      const adjMinAmount = String(new BN(minAmount).div(new BN(10).pow(new BN(trade.currencyOut.decimals))).toFixed(8))
 
       const breakdown = {
-        priceImpactWithoutFee: new Percent(JSBI.BigInt(0)),
-        realizedLPFee: "0",
-        slippageAdjustedAmounts: {
-          [Field.OUTPUT]: "0",
-          [Field.INPUT]: "0"
+          priceImpactWithoutFee: new Percent(JSBI.BigInt(impact), BIPS_BASE),
+          realizedLPFee: "0", // ignore this for now
+          slippageAdjustedAmounts: {
+            [Field.OUTPUT]: `${adjMinAmount}`,
+            [Field.INPUT]: "0"
+          }
         }
-      }
-      setBreakdown(breakdown)
-    })
-    if (Boolean(trade)) {
-      estimate(augurClient, trade)
+        setBreakdown(breakdown)
     }
-  }, [trade, augurClient, setBreakdown, allowedSlippage])
+  }, [trade, setBreakdown, allowedSlippage, minAmount])
 
   return (
     <>
@@ -73,7 +73,7 @@ function TradeSummary({ trade, allowedSlippage }: { trade: TradeInfo; allowedSli
           <FormattedPriceImpact priceImpact={breakdown.priceImpactWithoutFee} />
         </RowBetween>
 
-        <RowBetween>
+        {/*<RowBetween>
           <RowFixed>
             <TYPE.black fontSize={14} fontWeight={400} color={theme.text2}>
               Liquidity Provider Fee
@@ -83,7 +83,7 @@ function TradeSummary({ trade, allowedSlippage }: { trade: TradeInfo; allowedSli
           <TYPE.black fontSize={14} color={theme.text1}>
             {breakdown.realizedLPFee ? `${breakdown.realizedLPFee} ${trade.inputAmount.currency.symbol}` : '-'}
           </TYPE.black>
-        </RowBetween>
+        </RowBetween>*/}
       </AutoColumn>
     </>
   )
@@ -91,17 +91,19 @@ function TradeSummary({ trade, allowedSlippage }: { trade: TradeInfo; allowedSli
 
 export interface AdvancedSwapDetailsProps {
   trade?: TradeInfo
+  allowedSlippage?: number
+  minAmount?: string
 }
 
-export function AdvancedSwapDetails({ trade }: AdvancedSwapDetailsProps) {
+export function AdvancedSwapDetails({ trade, minAmount }: AdvancedSwapDetailsProps) {
   const theme = useContext(ThemeContext)
 
   const [allowedSlippage] = useUserSlippageTolerance()
 
   return (
     <AutoColumn gap="md">
-      {trade && (
-        <TradeSummary trade={trade} allowedSlippage={allowedSlippage} />
+      {trade && minAmount && (
+        <TradeSummary trade={trade} minAmount={minAmount} allowedSlippage={allowedSlippage} />
       )}
     </AutoColumn>
   )

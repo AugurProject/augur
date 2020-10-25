@@ -30,7 +30,7 @@ export class AMMExchange {
     return this.contract.rateEnterPosition(cash.toFixed(), buyYes);
   }
 
-  async enterPosition(cash: BigNumber, buyYes: boolean, minShares: BigNumber): Promise<TransactionResponse> {
+  async doEnterPosition(cash: BigNumber, buyYes: boolean, minShares: BigNumber): Promise<TransactionResponse> {
     return this.contract.enterPosition(cash.toFixed(), buyYes, minShares.toFixed());
   }
 
@@ -52,7 +52,7 @@ export class AMMExchange {
     return this.contract.rateExitPosition(invalidShares.toFixed(), noShares.toFixed(), yesShares.toFixed());
   }
 
-  async exitPosition(invalidShares: Shares, noShares: Shares, yesShares: Shares, minCash: BigNumber): Promise<TransactionResponse> {
+  async doExitPosition(invalidShares: Shares, noShares: Shares, yesShares: Shares, minCash: BigNumber): Promise<TransactionResponse> {
     return this.contract.exitPosition(invalidShares, noShares, yesShares, minCash);
   }
 
@@ -80,7 +80,12 @@ export class AMMExchange {
     return noShares;
   }
 
-  async addInitialLiquidity(recipient: string, cash: Cash, yesPercent = new BigNumber(50), noPercent = new BigNumber(50)): Promise<TransactionResponse> {
+  async doSwap(inputShares: Shares, inputYes: boolean): Promise<TransactionResponse> {
+    const noShares = await this.contract.rateSwap(inputShares, inputYes);
+    return this.contract.swap(inputShares, inputYes, noShares);
+  }
+
+  async doAddInitialLiquidity(recipient: string, cash: Cash, yesPercent = new BigNumber(50), noPercent = new BigNumber(50)): Promise<TransactionResponse> {
     const keepYes = noPercent.gt(yesPercent);
 
     let ratio = keepYes // more NO shares than YES shares
@@ -122,7 +127,7 @@ export class AMMExchange {
     return { noShares: _noShare, yesShares: _yesShare, cashShares: _cashShare}
   }
 
-  async removeLiquidity(lpTokens: LPTokens, alsoSell = false): Promise<TransactionResponse> {
+  async doRemoveLiquidity(lpTokens: LPTokens, alsoSell = false): Promise<TransactionResponse> {
     // if not selling them minSetsSold is 0
     // if selling them calculate how many sets you could get, then sell that many
 

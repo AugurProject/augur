@@ -1,4 +1,4 @@
-import { currencyEquals, Trade } from '@uniswap/sdk'
+import { currencyEquals, TokenAmount, Trade } from '@uniswap/sdk'
 import React, { useCallback, useMemo } from 'react'
 import { TradeInfo } from '../../hooks/Trades'
 import TransactionConfirmationModal, {
@@ -34,7 +34,9 @@ export default function ConfirmSwapModal({
   swapErrorMessage,
   isOpen,
   attemptingTxn,
-  txHash
+  txHash,
+  minAmount,
+  outputAmount
 }: {
   isOpen: boolean
   trade: TradeInfo | undefined
@@ -46,12 +48,11 @@ export default function ConfirmSwapModal({
   onAcceptChanges: () => void
   onConfirm: () => void
   swapErrorMessage: string | undefined
-  onDismiss: () => void
+  onDismiss: () => void,
+  minAmount: string,
+  outputAmount: TokenAmount
 }) {
-  const showAcceptChanges = useMemo(
-    () => Boolean(trade && originalTrade && tradeMeaningfullyDiffers(trade, originalTrade)),
-    [originalTrade, trade]
-  )
+  const showAcceptChanges = false
 
   const modalHeader = useCallback(() => {
     return trade ? (
@@ -61,6 +62,7 @@ export default function ConfirmSwapModal({
         recipient={recipient}
         showAcceptChanges={showAcceptChanges}
         onAcceptChanges={onAcceptChanges}
+        outputAmount={outputAmount}
       />
     ) : null
   }, [allowedSlippage, onAcceptChanges, recipient, showAcceptChanges, trade])
@@ -73,6 +75,7 @@ export default function ConfirmSwapModal({
         disabledConfirm={showAcceptChanges}
         swapErrorMessage={swapErrorMessage}
         allowedSlippage={allowedSlippage}
+        minAmount={minAmount}
       />
     ) : null
   }, [allowedSlippage, onConfirm, showAcceptChanges, swapErrorMessage, trade])

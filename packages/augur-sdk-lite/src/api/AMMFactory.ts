@@ -53,7 +53,7 @@ export class AMMFactory {
       if (hasLiquidity) {
         return amm.addLiquidity(account, cash)
       }
-      return amm.addInitialLiquidity(account, cash, new BigNumber(yesPercent), new BigNumber(noPercent));
+      return amm.doAddInitialLiquidity(account, cash, new BigNumber(yesPercent), new BigNumber(noPercent));
     }
     return this.contract.addAMMWithLiquidity(market, paraShareToken, cash.toFixed(), ratio.toFixed(), keepYes);
   }
@@ -86,7 +86,7 @@ export class AMMFactory {
   async enterPosition(ammAddress: string, collateral: string, buyYes: boolean, minShares: string): Promise<TransactionResponse> {
     if (!ammAddress) return null;
     const amm = new AMMExchange(this.signerOrProvider, ammAddress);
-    return amm.enterPosition(new BigNumber(collateral), buyYes, new BigNumber(minShares));
+    return amm.doEnterPosition(new BigNumber(collateral), buyYes, new BigNumber(minShares));
   }
 
   async getRateExitPosition(ammAddress: string, invalidShares: string, noShares: string, yesShares: string): Promise<BigNumber> {
@@ -98,13 +98,19 @@ export class AMMFactory {
   async exitPosition(ammAddress: string, invalidShares: string, noShares: string, yesShares: string, minShares: string): Promise<TransactionResponse> {
     if (!ammAddress) return null;
     const amm = new AMMExchange(this.signerOrProvider, ammAddress);
-    return amm.exitPosition(new BigNumber(invalidShares), new BigNumber(noShares), new BigNumber(yesShares), new BigNumber(minShares));
+    return amm.doExitPosition(new BigNumber(invalidShares), new BigNumber(noShares), new BigNumber(yesShares), new BigNumber(minShares));
+  }
+
+  async swap(ammAddress: string, inputShares: string, buyYes: boolean): Promise<TransactionResponse> {
+    if (!ammAddress) return null;
+    const amm = new AMMExchange(this.signerOrProvider, ammAddress);
+    return amm.doSwap(new BigNumber(inputShares), buyYes)
   }
 
   async removeLiquidity(ammAddress: string, lpTokens: BigNumber): Promise<TransactionResponse> {
     if (!ammAddress) return null;
     const amm = new AMMExchange(this.signerOrProvider, ammAddress);
-    return amm.removeLiquidity(new BigNumber(lpTokens));
+    return amm.doRemoveLiquidity(new BigNumber(lpTokens));
   }
 
   async addAMM(market: string, paraShareToken: string, cash: BigNumber = new BigNumber(0), yesPercent = new BigNumber(50), noPercent = new BigNumber(50)): Promise<AddAMMReturn> {

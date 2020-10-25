@@ -144,9 +144,7 @@ function App() {
 
                   if (isAddress(marketId.toLowerCase()) && isAddress(cash.toLowerCase())) {
                     return (
-                      <LayoutWrapper savedOpen={savedOpen} setSavedOpen={setSavedOpen}>
-                        <AddLiquidity marketId={marketId} amm={amm} cash={cash} />
-                      </LayoutWrapper>
+                      <AddLiquidity marketId={marketId} amm={amm} cash={cash} />
                     )
                   } else {
                     return <Redirect to="/home" />
@@ -162,9 +160,7 @@ function App() {
 
                   if (isAddress(marketId.toLowerCase()) && isAddress(amm.toLowerCase())) {
                     return (
-                      <LayoutWrapper savedOpen={savedOpen} setSavedOpen={setSavedOpen}>
-                        <RemoveLiquidity marketId={marketId} ammExchangeId={amm} />
-                      </LayoutWrapper>
+                      <RemoveLiquidity marketId={marketId} ammExchangeId={amm} />
                     )
                   } else {
                     return <Redirect to="/home" />
@@ -180,9 +176,7 @@ function App() {
 
                   if (isAddress(marketId.toLowerCase())) {
                     return (
-                      <LayoutWrapper savedOpen={savedOpen} setSavedOpen={setSavedOpen}>
-                        <Swap marketId={marketId} cash={cash} amm={amm} />
-                      </LayoutWrapper>
+                      <Swap marketId={marketId} cash={cash} amm={amm} />
                     )
                   } else {
                     return <Redirect to="/home" />

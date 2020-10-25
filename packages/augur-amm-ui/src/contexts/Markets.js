@@ -169,8 +169,6 @@ export function useMarketAmm(marketId, amm) {
     id: ammExchange?.id,
     cash: ammExchange?.shareToken?.cash?.id,
     sharetoken: ammExchange?.shareToken?.id,
-    percentageYes: 0.4, // TODO: hardcoding for testing
-    percentageNo: 0.1, // TOOD: hardcoding for testing
   }
 }
 

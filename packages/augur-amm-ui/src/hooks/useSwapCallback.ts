@@ -1,6 +1,6 @@
 import { BigNumber } from '@ethersproject/bignumber'
 import { Contract } from '@ethersproject/contracts'
-import { JSBI, Percent, Router, SwapParameters, Trade, TradeType } from '@uniswap/sdk'
+import { JSBI, Percent, Router, SwapParameters, TokenAmount, Trade, TradeType } from '@uniswap/sdk'
 import { useMemo } from 'react'
 import { BIPS_BASE, INITIAL_ALLOWED_SLIPPAGE } from '../constants'
 import { useTransactionAdder } from '../state/transactions/hooks'
@@ -11,6 +11,7 @@ import useTransactionDeadline from './useTransactionDeadline'
 import useENS from './useENS'
 import { TradeInfo } from './Trades'
 import { useAugurClient } from '../contexts/Application'
+import { BigNumber as BN } from 'bignumber.js'
 
 export enum SwapCallbackState {
   INVALID,
@@ -90,7 +91,8 @@ function useSwapCallArguments(
 // and the user has approved the slippage adjusted input amount for the trade
 export function useSwapCallback(
   trade: TradeInfo | undefined, // trade to execute, required
-  allowedSlippage: number = INITIAL_ALLOWED_SLIPPAGE, // in bips
+  outputAmount: TokenAmount,
+  minAmount: string
 ): { state: SwapCallbackState; callback: null | (() => Promise<string>); error: string | null } {
   const { account, chainId, library } = useActiveWeb3React()
   const augurClient = useAugurClient()
@@ -100,38 +102,42 @@ export function useSwapCallback(
     if (!trade || !library || !account || !chainId) {
       return { state: SwapCallbackState.INVALID, callback: null, error: 'Missing dependencies' }
     }
+    if (outputAmount) {
 
-    return {
-      state: SwapCallbackState.VALID,
-      callback: async function onSwap(): Promise<string> {
-        return doTrade(augurClient, trade)
-          .then((response: any) => {
-            const inputSymbol = trade.inputAmount.currency.symbol
-            const outputSymbol = trade.outputAmount.currency.symbol
-            const inputAmount = trade.inputAmount.toSignificant(3)
-            const outputAmount = trade.outputAmount.toSignificant(3)
+      return {
+        state: SwapCallbackState.VALID,
+        callback: async function onSwap(): Promise<string> {
+          return doTrade(augurClient, trade, minAmount)
+            .then((response: any) => {
+              const inputSymbol = trade.inputAmount.currency.symbol
+              const outputSymbol = trade.currencyOut?.symbol
+              const inputAmount = trade.inputAmount.toSignificant(6)
+              const oAmount = outputAmount?.toSignificant(6)
 
-            const base = `Swap ${inputAmount} ${inputSymbol} for ${outputAmount} ${outputSymbol}`
-            const withRecipient = base
+              const base = `Swap ${inputAmount} ${inputSymbol} for ${oAmount} ${outputSymbol}`
+              const withRecipient = base
 
-            addTransaction(response, {
-              summary: withRecipient
+              addTransaction(response, {
+                summary: withRecipient
+              })
+
+              return response.hash
             })
-
-            return response.hash
-          })
-          .catch((error: any) => {
-            // if the user rejected the tx, pass this along
-            if (error?.code === 4001) {
-              throw new Error('Transaction rejected.')
-            } else {
-              // otherwise, the error was unexpected and we need to convey that
-              console.error(`Swap failed`, error)
-              throw new Error(`Swap failed: ${error.message}`)
-            }
-          })
-      },
-      error: null
+            .catch((error: any) => {
+              // if the user rejected the tx, pass this along
+              if (error?.code === 4001) {
+                throw new Error('Transaction rejected.')
+              } else {
+                // otherwise, the error was unexpected and we need to convey that
+                console.error(`Swap failed`, error)
+                throw new Error(`Swap failed: ${error.message}`)
+              }
+            })
+        },
+        error: null
+      }
+    } else {
+      return { state: SwapCallbackState.INVALID, callback: null, error: 'Currently Estimating' }
     }
-  }, [trade, library, account, chainId, addTransaction, allowedSlippage])
+  }, [trade, library, account, chainId, addTransaction, outputAmount, minAmount])
 }

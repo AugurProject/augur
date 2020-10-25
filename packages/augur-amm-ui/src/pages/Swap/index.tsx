@@ -1,4 +1,4 @@
-import { CurrencyAmount, JSBI, Token } from '@uniswap/sdk'
+import { CurrencyAmount, JSBI, Token, TokenAmount } from '@uniswap/sdk'
 import React, { useCallback, useContext, useEffect, useMemo, useState } from 'react'
 import { ArrowDown } from 'react-feather'
 import ReactGA from 'react-ga'
@@ -17,14 +17,13 @@ import { ArrowWrapper, BottomGrouping, Wrapper } from '../../components/swap/sty
 import TradePrice from '../../components/swap/TradePrice'
 import ProgressSteps from '../../components/ProgressSteps'
 import { withRouter } from 'react-router-dom'
-
+import { BigNumber as BN } from 'bignumber.js'
 import { useActiveWeb3React } from '../../hooks'
-import { useCurrency } from '../../hooks/Tokens'
 import { ApprovalState, useApproveCallbackFromTrade } from '../../hooks/useApproveCallback'
 import { useSwapCallback } from '../../hooks/useSwapCallback'
 import { useToggleSettingsMenu, useWalletModalToggle } from '../../state/application/hooks'
 import { Field } from '../../state/swap/actions'
-import { useDerivedSwapInfo, useSwapActionHandlers, useSwapState, useEstimateTrade } from '../../state/swap/hooks'
+import { useDerivedSwapInfo, useSwapActionHandlers, useSwapState } from '../../state/swap/hooks'
 import { useUserSlippageTolerance } from '../../state/user/hooks'
 import { TYPE } from '../../Theme'
 import { maxAmountSpend } from '../../utils/maxAmountSpend'
@@ -33,7 +32,8 @@ import AppBody from '../AppBody'
 import Loader from '../../components/Loader'
 import { RouteComponentProps } from 'react-router-dom'
 import { TradeInfo } from '../../hooks/Trades'
-import { useMarketAmm } from '../../contexts/Markets'
+import { estimateTrade } from '../../utils'
+import { useAugurClient } from '../../contexts/Application'
 
 const ClickableText = styled(Text)`
   text-align: end;
@@ -50,15 +50,12 @@ const ClickableText = styled(Text)`
 `
 
 function Swap({
-  inputCurrencyId,
-  outputCurrencyId,
   marketId,
-  cash,
   amm
 }: RouteComponentProps<{ inputCurrencyId?: string; outputCurrencyId?: string }>) {
   console.log('Swap render ...')
-  const [estimatedTokenAmount, updateEstimateTokenAmount] = useState(null)
-
+  const { chainId } = useActiveWeb3React()
+  const augurClient = useAugurClient()
   const theme = useContext(ThemeContext)
 
   const toggleWalletModal = useWalletModalToggle() // toggle wallet when disconnected
@@ -70,6 +67,9 @@ function Swap({
   // get custom setting values for user
   const [allowedSlippage] = useUserSlippageTolerance()
 
+  const [minAmount, setMinAmount] = useState(null)
+  const [outputAmount, setOutputAmount] = useState(null)
+
   // swap state
   const { independentField, typedValue, recipient } = useSwapState()
   const { v2Trade: trade, currencyBalances, parsedAmount, currencies, inputError: swapInputError } = useDerivedSwapInfo(
@@ -77,11 +77,44 @@ function Swap({
     amm
   )
 
-  const estimate = useEstimateTrade(trade, updateEstimateTokenAmount)
+  useEffect(() => {
+    if (trade) {
+      estimateTrade(augurClient, trade)
+        .then(result => {
+          console.log('result', result)
+          if (result) {
+            const outToken = new Token(
+              chainId,
+              trade.marketId,
+              trade.currencyOut.decimals,
+              trade.currencyOut.symbol,
+              trade.currencyOut.name
+            )
+            const estCurrency = new TokenAmount(outToken, JSBI.BigInt(String(result)))
+            setOutputAmount(estCurrency)
+
+            console.log('result', result)
+          }
+        })
+        .catch(e => {
+          setOutputAmount(null)
+        })
+    }
+  }, [augurClient, trade, chainId])
+
+  useEffect(() => {
+    if (outputAmount) {
+      const slippage = new BN(allowedSlippage).div(100).div(100)
+      const slipAmount = new BN(String(outputAmount.raw)).minus(
+        new BN(String(outputAmount.raw)).multipliedBy(slippage)
+      ).decimalPlaces(0)
+      setMinAmount(String(slipAmount))
+    }
+  }, [trade, outputAmount, allowedSlippage, setMinAmount])
 
   const parsedAmounts = {
     [Field.INPUT]: independentField === Field.INPUT ? parsedAmount : trade?.inputAmount,
-    [Field.OUTPUT]: independentField === Field.OUTPUT ? parsedAmount : trade?.outputAmount
+    [Field.OUTPUT]: independentField === Field.OUTPUT ? parsedAmount : outputAmount
   }
 
   const { onCurrencySelection, onUserInput } = useSwapActionHandlers()
@@ -124,7 +157,6 @@ function Swap({
   // check whether the user has approved the router on the input token
   const [approval, approveCallback] = useApproveCallbackFromTrade(trade, allowedSlippage)
 
-  console.log('approval', approval, trade)
   // check if user has gone through approval process, used to show two step buttons, reset on token change
   const [approvalSubmitted, setApprovalSubmitted] = useState<boolean>(false)
 
@@ -139,7 +171,7 @@ function Swap({
   const atMaxAmountInput = Boolean(maxAmountInput && parsedAmounts[Field.INPUT]?.equalTo(maxAmountInput))
 
   // the callback to execute the swap
-  const { callback: swapCallback, error: swapCallbackError } = useSwapCallback(trade, allowedSlippage)
+  const { callback: swapCallback, error: swapCallbackError } = useSwapCallback(trade, outputAmount, minAmount)
 
   const { priceImpactWithoutFee } = computeTradePriceBreakdown(trade)
 
@@ -158,7 +190,7 @@ function Swap({
         ReactGA.event({
           category: 'Swap',
           action: 'Swap w/o Send',
-          label: [trade?.inputAmount?.currency?.symbol, trade?.outputAmount?.currency?.symbol, 'version x.x'].join('/')
+          label: [trade?.inputAmount?.currency?.symbol, trade?.currencyOut?.symbol, 'version x.x'].join('/')
         })
       })
       .catch(error => {
@@ -213,6 +245,7 @@ function Swap({
     onCurrencySelection
   ])
 
+  console.log('minAmount', minAmount)
   return (
     <>
       <AppBody>
@@ -230,6 +263,8 @@ function Swap({
             onConfirm={handleSwap}
             swapErrorMessage={swapErrorMessage}
             onDismiss={handleConfirmDismiss}
+            minAmount={minAmount}
+            outputAmount={outputAmount}
           />
 
           <AutoColumn gap={'md'}>
@@ -259,7 +294,7 @@ function Swap({
               </AutoRow>
             </AutoColumn>
             <CurrencyInputPanel
-              value={Boolean(estimatedTokenAmount) ? estimatedTokenAmount?.toSignificant(6) : ''}
+              value={Boolean(outputAmount) ? outputAmount?.toSignificant(6) : ''}
               onUserInput={handleTypeOutput}
               label={'To (estimated)'}
               showMaxButton={false}
@@ -276,7 +311,7 @@ function Swap({
                     <Text fontWeight={500} fontSize={14} color={theme.text2}>
                       Avg Price
                     </Text>
-                    <TradePrice trade={trade} estTokenAmount={estimatedTokenAmount} />
+                    <TradePrice trade={trade} />
                   </RowBetween>
                 )}
                 <RowBetween align="center">
@@ -293,7 +328,7 @@ function Swap({
           <BottomGrouping>
             {!account ? (
               <ButtonGray onClick={toggleWalletModal}>Connect Wallet</ButtonGray>
-            ) : !Boolean(estimatedTokenAmount) && !swapInputError ? (
+            ) : !Boolean(outputAmount) && !swapInputError ? (
               <GreyCard style={{ textAlign: 'center' }}>
                 <TYPE.main mb="4px">Insufficient liquidity for this trade.</TYPE.main>
               </GreyCard>
@@ -368,7 +403,7 @@ function Swap({
           </BottomGrouping>
         </Wrapper>
       </AppBody>
-      <AdvancedSwapDetailsDropdown trade={trade} />
+      <AdvancedSwapDetailsDropdown trade={trade} allowedSlippage={allowedSlippage} minAmount={minAmount} />
     </>
   )
 }

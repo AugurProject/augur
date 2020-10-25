@@ -1,13 +1,15 @@
-import { Currency, CurrencyAmount, Fraction, JSBI, Pair, Percent, Price, Token, Trade, TradeType } from '@uniswap/sdk'
+import { Currency, CurrencyAmount, Fraction, JSBI, Pair, Percent, Price, Token, TokenAmount, Trade, TradeType } from '@uniswap/sdk'
 import flatMap from 'lodash.flatmap'
 import { useCallback, useMemo } from 'react'
 
-import { AmmExchangeInfo } from '../constants'
+import { AmmExchangeInfo, MarketTokens } from '../constants'
 import { useAugurClient } from '../contexts/Application'
 import { MarketCurrency } from '../data/MarketCurrency'
 import { MarketBalance, useMarketBalance } from '../state/wallet/hooks'
 
 export interface TradeInfo {
+  marketId: string
+  cash: string
   amm: AmmExchangeInfo
   tradeType: TradeType
   currencyIn: Currency
@@ -19,6 +21,7 @@ export interface TradeInfo {
   minAmountOut?: number
   priceImpact?: Percent
   executionPrice?: Price
+  minAmount?: string
 }
 
 /**
@@ -37,61 +40,42 @@ export function useTradeExactIn(
     marketId = mc.marketId
     cash = mc.cash
   }
+  if (currencyOut instanceof MarketCurrency) {
+    const mc = currencyOut as MarketCurrency
+    marketId = mc.marketId
+    cash = mc.cash
+  }
   const balance = useMarketBalance(marketId, cash)
   const augurClient = useAugurClient()
   return useMemo(() => {
     if (currencyAmountIn && currencyOut && inputCurrency) {
       console.log('exact in', currencyAmountIn, currencyOut, inputCurrency)
       // do any amount conversion here
-      const decimals = currencyAmountIn.currency.decimals
-      const amount = String(currencyAmountIn.raw)
+      const no = JSBI.BigInt(String(Number(ammExchange.percentageNo) / 100).substring(6))
+      const yes = JSBI.BigInt(String(Number(ammExchange.percentageYes) / 100).substring(6))
+      let executionPrice = new Price(currencyOut, currencyOut, currencyOut.symbol === MarketTokens.NO_SHARES ? no : yes, JSBI.BigInt(1))
+
+      if (!(currencyOut instanceof MarketCurrency)) {
+        // cash out use inverse of currencyIn percentage
+        const exchange = inputCurrency.symbol === MarketTokens.NO_SHARES ? no : yes
+        // TODO: need to check this rate
+        executionPrice = new Price(currencyOut, currencyOut, JSBI.BigInt(1), exchange)
+      }
+
       return {
+        marketId,
+        cash,
         amm: ammExchange,
         tradeType: TradeType.EXACT_INPUT,
         currencyIn: inputCurrency,
         currencyOut,
         inputAmount: currencyAmountIn,
         balance,
-        priceImpact: new Percent(JSBI.BigInt(0))
+        priceImpact: new Percent(JSBI.BigInt(0)),
+        executionPrice
       }
     }
     return null
   }, [inputCurrency, currencyAmountIn, currencyOut, balance, augurClient, ammExchange])
 }
 
-/**
- * Returns the best trade for the token in to the exact amount of token out
- */
-export function useTradeExactOut(
-  ammExchange: AmmExchangeInfo,
-  outputCurrency: Currency,
-  currencyIn?: Currency,
-  currencyAmountOut?: CurrencyAmount
-): TradeInfo | null {
-  let marketId = null
-  let cash = null
-  if (outputCurrency instanceof MarketCurrency) {
-    const mc = outputCurrency as MarketCurrency
-    marketId = mc.marketId
-    cash = mc.cash
-  }
-  const balance = useMarketBalance(marketId, cash)
-
-  return useMemo(() => {
-    if (currencyIn && currencyAmountOut && outputCurrency) {
-      console.log('exact out', currencyIn, currencyAmountOut)
-      const decimals = currencyAmountOut.currency.decimals
-      const amount = String(currencyAmountOut.raw)
-      return {
-        amm: ammExchange,
-        tradeType: TradeType.EXACT_OUTPUT,
-        currencyOut: outputCurrency,
-        currencyIn,
-        outputAmount: currencyAmountOut,
-        balance,
-        priceImpact: new Percent(JSBI.BigInt(0))
-      }
-    }
-    return null
-  }, [outputCurrency, currencyIn, currencyAmountOut, balance, ammExchange])
-}

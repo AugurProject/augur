@@ -1,4 +1,4 @@
-import { Trade, TradeType } from '@uniswap/sdk'
+import { TokenAmount, Trade, TradeType } from '@uniswap/sdk'
 import React, { useContext, useMemo } from 'react'
 import { ArrowDown, AlertTriangle } from 'react-feather'
 import { Text } from 'rebass'
@@ -19,13 +19,15 @@ export default function SwapModalHeader({
   allowedSlippage,
   recipient,
   showAcceptChanges,
-  onAcceptChanges
+  onAcceptChanges,
+  outputAmount,
 }: {
   trade: TradeInfo
   allowedSlippage: number
   recipient: string | null
   showAcceptChanges: boolean
   onAcceptChanges: () => void
+  outputAmount: TokenAmount
 }) {
   const slippageAdjustedAmounts = useMemo(() => computeSlippageAdjustedAmounts(trade, allowedSlippage), [
     trade,
@@ -60,7 +62,7 @@ export default function SwapModalHeader({
       </RowFixed>
       <RowBetween align="flex-end">
         <RowFixed gap={'0px'}>
-          <TokenLogo tokenInfo={trade.outputAmount.currency} size={'24px'} style={{ marginRight: '12px' }} />
+          <TokenLogo tokenInfo={trade?.currencyOut.symbol} size={'24px'} style={{ marginRight: '12px' }} />
           <TruncatedText
             fontSize={24}
             fontWeight={500}
@@ -72,12 +74,12 @@ export default function SwapModalHeader({
                 : ''
             }
           >
-            {trade.outputAmount.toSignificant(6)}
+            {outputAmount?.toSignificant(6)}
           </TruncatedText>
         </RowFixed>
         <RowFixed gap={'0px'}>
           <Text fontSize={24} fontWeight={500} style={{ marginLeft: '10px' }}>
-            {trade.outputAmount.currency.symbol}
+            {trade?.currencyOut?.symbol}
           </Text>
         </RowFixed>
       </RowBetween>
@@ -102,7 +104,7 @@ export default function SwapModalHeader({
           <TYPE.italic textAlign="left" style={{ width: '100%' }}>
             {`Output is estimated. You will receive at least `}
             <b>
-              {slippageAdjustedAmounts[Field.OUTPUT]?.toSignificant(6)} {trade.outputAmount.currency.symbol}
+              {slippageAdjustedAmounts[Field.OUTPUT]?.toSignificant(6)} {trade?.outputAmount?.currency?.symbol}
             </b>
             {' or the transaction will revert.'}
           </TYPE.italic>
