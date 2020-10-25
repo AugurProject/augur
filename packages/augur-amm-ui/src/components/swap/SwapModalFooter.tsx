@@ -1,13 +1,11 @@
-import { Trade, TradeType } from '@uniswap/sdk'
 import React, { useContext, useMemo, useState } from 'react'
 import { Repeat } from 'react-feather'
 import { Text } from 'rebass'
 import { ThemeContext } from 'styled-components'
-import { Field } from '../../state/swap/actions'
+import { TradeInfo } from '../../hooks/Trades'
 import { TYPE } from '../../Theme'
 import {
-  computeSlippageAdjustedAmounts,
-  computeTradePriceBreakdown,
+  computePriceImpact,
   formatExecutionPrice,
   warningSeverity
 } from '../../utils/prices'
@@ -23,21 +21,19 @@ export default function SwapModalFooter({
   onConfirm,
   allowedSlippage,
   swapErrorMessage,
-  disabledConfirm
+  disabledConfirm,
+  minAmount
 }: {
-  trade: Trade
+  trade: TradeInfo
   allowedSlippage: number
   onConfirm: () => void
   swapErrorMessage: string | undefined
   disabledConfirm: boolean
+  minAmount: string
 }) {
   const [showInverted, setShowInverted] = useState<boolean>(false)
   const theme = useContext(ThemeContext)
-  const slippageAdjustedAmounts = useMemo(() => computeSlippageAdjustedAmounts(trade, allowedSlippage), [
-    allowedSlippage,
-    trade
-  ])
-  const { priceImpactWithoutFee, realizedLPFee } = useMemo(() => computeTradePriceBreakdown(trade), [trade])
+  const { priceImpactWithoutFee, slippageAdjustedAmounts } = useMemo(() => computePriceImpact(trade, minAmount), [trade, minAmount])
   const severity = warningSeverity(priceImpactWithoutFee)
 
   return (
@@ -69,20 +65,16 @@ export default function SwapModalFooter({
         <RowBetween>
           <RowFixed>
             <TYPE.black fontSize={14} fontWeight={400} color={theme.text2}>
-              {trade.tradeType === TradeType.EXACT_INPUT ? 'Minimum received' : 'Maximum sold'}
+              {'Minimum received'}
             </TYPE.black>
             <QuestionHelper text="Your transaction will revert if there is a large, unfavorable price movement before it is confirmed." />
           </RowFixed>
           <RowFixed>
             <TYPE.black fontSize={14}>
-              {trade.tradeType === TradeType.EXACT_INPUT
-                ? slippageAdjustedAmounts[Field.OUTPUT]?.toSignificant(4) ?? '-'
-                : slippageAdjustedAmounts[Field.INPUT]?.toSignificant(4) ?? '-'}
+              {slippageAdjustedAmounts ?? '-'}
             </TYPE.black>
             <TYPE.black fontSize={14} marginLeft={'4px'}>
-              {trade.tradeType === TradeType.EXACT_INPUT
-                ? trade.outputAmount.currency.symbol
-                : trade.inputAmount.currency.symbol}
+              {trade?.currencyOut?.symbol}
             </TYPE.black>
           </RowFixed>
         </RowBetween>
@@ -95,7 +87,7 @@ export default function SwapModalFooter({
           </RowFixed>
           <FormattedPriceImpact priceImpact={priceImpactWithoutFee} />
         </RowBetween>
-        <RowBetween>
+        {/*<RowBetween>
           <RowFixed>
             <TYPE.black fontSize={14} fontWeight={400} color={theme.text2}>
               Liquidity Provider Fee
@@ -105,7 +97,7 @@ export default function SwapModalFooter({
           <TYPE.black fontSize={14}>
             {realizedLPFee ? realizedLPFee?.toSignificant(6) + ' ' + trade.inputAmount.currency.symbol : '-'}
           </TYPE.black>
-        </RowBetween>
+        </RowBetween>*/}
       </AutoColumn>
 
       <AutoRow>

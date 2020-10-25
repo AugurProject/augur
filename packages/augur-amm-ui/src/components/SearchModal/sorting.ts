@@ -1,6 +1,4 @@
 import { Token, TokenAmount } from '@uniswap/sdk'
-import { useMemo } from 'react'
-import { useMarketShareBalances } from '../../state/wallet/hooks'
 
 // compare two token amounts with highest one coming first
 function balanceComparator(balanceA?: TokenAmount, balanceB?: TokenAmount) {
@@ -35,18 +33,4 @@ function getTokenComparator(balances: {
       return tokenA.symbol ? -1 : tokenB.symbol ? -1 : 0
     }
   }
-}
-
-export function useTokenComparator(inverted: boolean): (tokenA: Token, tokenB: Token) => number {
-  const [userMarketShareBalances] = useMarketShareBalances()
-  console.log('format user market shares for useTokenComparator')
-  const balances = {}
-  const comparator = useMemo(() => getTokenComparator(balances ?? {}), [balances])
-  return useMemo(() => {
-    if (inverted) {
-      return (tokenA: Token, tokenB: Token) => comparator(tokenA, tokenB) * -1
-    } else {
-      return comparator
-    }
-  }, [inverted, comparator])
 }

@@ -1,5 +1,6 @@
-import { currencyEquals, Trade } from '@uniswap/sdk'
+import { currencyEquals, TokenAmount, Trade } from '@uniswap/sdk'
 import React, { useCallback, useMemo } from 'react'
+import { TradeInfo } from '../../hooks/Trades'
 import TransactionConfirmationModal, {
   ConfirmationModalContent,
   TransactionErrorContent
@@ -12,7 +13,7 @@ import SwapModalHeader from './SwapModalHeader'
  * @param tradeA trade A
  * @param tradeB trade B
  */
-function tradeMeaningfullyDiffers(tradeA: Trade, tradeB: Trade): boolean {
+function tradeMeaningfullyDiffers(tradeA: TradeInfo, tradeB: TradeInfo): boolean {
   return (
     tradeA.tradeType !== tradeB.tradeType ||
     !currencyEquals(tradeA.inputAmount.currency, tradeB.inputAmount.currency) ||
@@ -33,11 +34,13 @@ export default function ConfirmSwapModal({
   swapErrorMessage,
   isOpen,
   attemptingTxn,
-  txHash
+  txHash,
+  minAmount,
+  outputAmount
 }: {
   isOpen: boolean
-  trade: Trade | undefined
-  originalTrade: Trade | undefined
+  trade: TradeInfo | undefined
+  originalTrade: TradeInfo | undefined
   attemptingTxn: boolean
   txHash: string | undefined
   recipient: string | null
@@ -45,12 +48,11 @@ export default function ConfirmSwapModal({
   onAcceptChanges: () => void
   onConfirm: () => void
   swapErrorMessage: string | undefined
-  onDismiss: () => void
+  onDismiss: () => void,
+  minAmount: string,
+  outputAmount: TokenAmount
 }) {
-  const showAcceptChanges = useMemo(
-    () => Boolean(trade && originalTrade && tradeMeaningfullyDiffers(trade, originalTrade)),
-    [originalTrade, trade]
-  )
+  const showAcceptChanges = false
 
   const modalHeader = useCallback(() => {
     return trade ? (
@@ -60,6 +62,7 @@ export default function ConfirmSwapModal({
         recipient={recipient}
         showAcceptChanges={showAcceptChanges}
         onAcceptChanges={onAcceptChanges}
+        outputAmount={outputAmount}
       />
     ) : null
   }, [allowedSlippage, onAcceptChanges, recipient, showAcceptChanges, trade])
@@ -72,6 +75,7 @@ export default function ConfirmSwapModal({
         disabledConfirm={showAcceptChanges}
         swapErrorMessage={swapErrorMessage}
         allowedSlippage={allowedSlippage}
+        minAmount={minAmount}
       />
     ) : null
   }, [allowedSlippage, onConfirm, showAcceptChanges, swapErrorMessage, trade])

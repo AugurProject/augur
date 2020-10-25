@@ -10,6 +10,7 @@ import { useTokenContract } from './useContract'
 import { useActiveWeb3React } from './index'
 import { useAmmFactoryAddress } from '../contexts/Application'
 import { useSingleCallResult } from '../state/multicall/hooks'
+import { TradeInfo } from './Trades'
 
 export enum ApprovalState {
   UNKNOWN,
@@ -109,7 +110,7 @@ export function useApproveCallback(
 }
 
 // wraps useApproveCallback in the context of a swap
-export function useApproveCallbackFromTrade(trade?: Trade, allowedSlippage = 0) {
+export function useApproveCallbackFromTrade(trade?: TradeInfo, allowedSlippage = 0) {
   const amountToApprove = useMemo(
     () => (trade ? computeSlippageAdjustedAmounts(trade, allowedSlippage)[Field.INPUT] : undefined),
     [trade, allowedSlippage]

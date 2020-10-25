@@ -9,7 +9,7 @@ import { GET_BLOCK, GET_BLOCKS, SHARE_VALUE } from '../apollo/queries'
 import { Text } from 'rebass'
 import _Decimal from 'decimal.js-light'
 import toFormat from 'toformat'
-import { timeframeOptions, TokenAddressMap } from '../constants'
+import { MarketTokens, timeframeOptions, TokenAddressMap } from '../constants'
 import Numeral from 'numeral'
 import { BigNumber } from '@ethersproject/bignumber'
 import { ChainId, JSBI, Percent, Token, CurrencyAmount, Currency, ETHER } from '@uniswap/sdk'
@@ -17,6 +17,8 @@ import { JsonRpcSigner, Web3Provider } from '@ethersproject/providers'
 import { Contract } from '@ethersproject/contracts'
 import { AddressZero } from '@ethersproject/constants'
 import { ParaShareToken } from '@augurproject/sdk-lite'
+import { TradeInfo } from '../hooks/Trades'
+import { MarketCurrency } from '../data/MarketCurrency'
 
 // format libraries
 const Decimal = toFormat(_Decimal)
@@ -575,7 +577,7 @@ export function getSigner(library: Web3Provider, account: string): JsonRpcSigner
 export function getProviderOrSigner(library: Web3Provider, account?: string) {
   return account ? getSigner(library, account) : library
   // look to use ethers provider if need be.
-/*
+  /*
   if(account) {
     // This just connects the account if necessary.
     getSigner(library, account);
@@ -590,7 +592,6 @@ export function getContract(address: string, ABI: any, library: Web3Provider, ac
   if (!isAddress(address) || address === AddressZero) {
     throw Error(`Invalid 'address' parameter '${address}'.`)
   }
-  console.log('get contract', address, account)
   return new Contract(address, ABI, getProviderOrSigner(library, account) as any)
 }
 
@@ -637,7 +638,7 @@ export async function getRemoveLiquidity({
   lpTokens
 }): Promise<{ noShares: string; yesShares: string; cashShares: string } | null> {
   if (!augurClient || !ammAddress) {
-    console.error('augurClient is null or amm address')
+    console.error('getRemoveLiquidity: augurClient is null or amm address')
     return null
   }
   console.log('getRemoveLiquidity', ammAddress, String(lpTokens))
@@ -651,7 +652,7 @@ export async function getRemoveLiquidity({
 }
 
 export function removeAmmLiquidity({ ammAddress, augurClient, lpTokens }) {
-  if (!augurClient || !ammAddress) return console.error('augurClient is null or amm address')
+  if (!augurClient || !ammAddress) return console.error('removeAmmLiquidity: augurClient is null or amm address')
   console.log('removeAmmLiquidity', ammAddress, String(lpTokens))
   return augurClient.ammFactory.removeLiquidity(ammAddress, new BN(lpTokens))
 }
@@ -663,4 +664,82 @@ export function escapeRegExp(string: string): string {
 export function isTokenOnList(defaultTokens: TokenAddressMap, currency?: Currency): boolean {
   if (currency === ETHER) return true
   return Boolean(currency instanceof Token && defaultTokens[currency.chainId]?.[currency.address])
+}
+
+export async function estimateTrade(augurClient, trade: TradeInfo) {
+  if (!augurClient || !trade.amm.id) return console.error('estimateTrade: augurClient is null or amm address')
+  let isEntry = !(trade.currencyIn instanceof MarketCurrency) && trade.currencyOut instanceof MarketCurrency
+  let isExit = trade.currencyIn instanceof MarketCurrency && !(trade.currencyOut instanceof MarketCurrency)
+  let isSwap = trade.currencyIn instanceof MarketCurrency && trade.currencyOut instanceof MarketCurrency
+
+  console.log('estimateTrade: isEntry', isEntry, 'isExit', isExit, 'isSwap', isSwap)
+
+  let outputYesShares = false;
+  let breakdown = null;
+
+  if (trade.currencyOut instanceof MarketCurrency) {
+    const out = trade.currencyOut as MarketCurrency
+    outputYesShares = out.name === MarketTokens.YES_SHARES;
+  }
+
+  if (isEntry) {
+    breakdown = await augurClient.ammFactory.getRateEnterPosition(trade.amm.id, String(trade.inputAmount.raw), outputYesShares)
+    return String(breakdown)
+  }
+  if (isExit) {
+    breakdown = await augurClient.ammFactory.getRateExitPosition(trade.amm.id, trade.balance[0], trade.balance[1], trade.balance[2])
+    return String(breakdown)
+  }
+  if (isSwap) {
+    breakdown = await augurClient.ammFactory.getSwapRate(trade.amm.id, String(trade.inputAmount.raw), !outputYesShares)
+    return String(breakdown)
+  }
+  return null;
+
+}
+
+export async function doTrade(augurClient, trade: TradeInfo, minAmount: string) {
+  if (!augurClient || !trade.amm.id) return console.error('estimateTrade: augurClient is null or amm address')
+  let isEntry = !(trade.currencyIn instanceof MarketCurrency) && trade.currencyOut instanceof MarketCurrency
+  let isExit = trade.currencyIn instanceof MarketCurrency && !(trade.currencyOut instanceof MarketCurrency)
+  let isSwap = trade.currencyIn instanceof MarketCurrency && trade.currencyOut instanceof MarketCurrency
+
+  console.log('estimateTrade: isEntry', isEntry, 'isExit', isExit, 'isSwap', isSwap, 'minAmount', minAmount)
+
+  let outputYesShares = false;
+  let breakdown = null;
+
+  if (trade.currencyOut instanceof MarketCurrency) {
+    const out = trade.currencyOut as MarketCurrency
+    outputYesShares = out.name === MarketTokens.YES_SHARES;
+  }
+
+  if (isEntry) {
+    return augurClient.ammFactory.enterPosition(trade.amm.id, String(trade.inputAmount.raw), outputYesShares, minAmount)
+  }
+  if (isExit) {
+    return augurClient.ammFactory.exitPosition(trade.amm.id, trade.balance[0], trade.balance[1], trade.balance[2], minAmount)
+  }
+  if (isSwap) {
+    return augurClient.ammFactory.swap(trade.amm.id, String(trade.inputAmount.raw), !outputYesShares)
+  }
+  return null;
+}
+
+export function estimateEnterPosition(ammAddress: string, augurClient, cash: string, buyYes: boolean) {
+  return augurClient.ammFactory.getRateEnterPosition(ammAddress, cash, buyYes)
+}
+
+export function enterPosition(ammAddress: string, augurClient, cash: string, buyYes: boolean, minShares: string) {
+  if (!augurClient || !ammAddress) return console.error('enterPosition: augurClient is null or amm address')
+  return augurClient.ammFactory.enterPosition(ammAddress, cash, buyYes, minShares)
+}
+
+export function estimateExitPosition(ammAddress: string, augurClient, cash: string, buyYes: boolean) {
+  return augurClient.ammFactory.getRateEnterPosition(ammAddress, cash, buyYes)
+}
+
+export function exitPosition(ammAddress: string, augurClient, cash: string, buyYes: boolean, minShares: string) {
+  if (!augurClient || !ammAddress) return console.error('enterPosition: augurClient is null or amm address')
+  return augurClient.ammFactory.enterPosition(ammAddress, cash, buyYes, minShares)
 }

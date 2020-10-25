@@ -1,5 +1,5 @@
 import { TokenAmount } from '@uniswap/sdk'
-import React, { useCallback, useContext, useState } from 'react'
+import React, { useCallback, useContext, useMemo, useState } from 'react'
 import ReactGA from 'react-ga'
 import { RouteComponentProps } from 'react-router-dom'
 import { Text } from 'rebass'
@@ -78,7 +78,14 @@ function AddLiquidity({ amm, marketId, cash }: RouteComponentProps<{ amm?: strin
   const deadline = useTransactionDeadline() // custom from users settings
   //const [allowedSlippage] = useUserSlippageTolerance() // custom from users
   const [txHash, setTxHash] = useState<string>('')
-  const [distroPercentage, setCurrentDistribution] = useState<number[]>([50, 50])
+  const distro = useMemo(() =>{
+    if (!ammData) return [50,50]
+    const yesValue = Number(Number(ammData.percentageYes).toFixed(2))
+    const noValue = Number(Number(ammData.percentageNo).toFixed(2))
+    return [yesValue, noValue]
+  }, [ammData])
+
+  const [distroPercentage, setCurrentDistribution] = useState<number[]>(distro)
 
   // get formatted amounts
   const formattedAmounts = {

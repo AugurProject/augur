@@ -83,6 +83,11 @@ export const GET_MARKETS = gql`
         percentageYes
         percentageNo
         liquidity
+        liquidityCash
+        liquidityYes
+        liquidityNo
+        liquidityInvalid
+        totalSupply
         cashBalance
         swaps {
           id

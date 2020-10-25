@@ -14,7 +14,7 @@ import { MenuItem } from './styleds'
 import Loader from '../Loader'
 
 function currencyKey(currency: Currency): string {
-  return currency instanceof Token ? currency.address : currency === ETHER ? 'ETHER' : ''
+  return currency instanceof Token ? currency.address : currency.symbol
 }
 
 const StyledBalanceText = styled(Text)`
@@ -101,6 +101,7 @@ function CurrencyRow({
       onClick={() => (isSelected ? null : onSelect())}
       disabled={isSelected}
       selected={otherSelected}
+      key={key}
     >
       <TokenLogo tokenInfo={currency?.symbol} size={'24px'} />
       <Column>
@@ -143,6 +144,7 @@ export default function CurrencyList({
       const handleSelect = () => onCurrencySelect(currency)
       return (
         <CurrencyRow
+          key={index}
           style={style}
           currency={currency}
           isSelected={isSelected}

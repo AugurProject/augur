@@ -174,7 +174,7 @@ export function addAMMScripts(flash: FlashSession) {
       const factory = new AMMFactory(user.signer, this.config.addresses.AMMFactory);
       const amm = await factory.getAMMExchange(market.address, paraShareToken);
 
-      const lpTokens = await amm.addInitialLiquidity(recipient, cash, yesPercent, noPercent);
+      const lpTokens = await amm.doAddInitialLiquidity(recipient, cash, yesPercent, noPercent);
 
       console.log(`LP Tokens acquired: ${lpTokens}`);
     }
@@ -255,7 +255,7 @@ export function addAMMScripts(flash: FlashSession) {
       const factory = new AMMFactory(user.signer, this.config.addresses.AMMFactory);
       const amm = await factory.getAMMExchange(market.address, paraShareToken);
 
-      const cash = await amm.enterPosition(shares, yes, true);
+      const cash = await amm.rateEnterPosition(shares, yes);
 
       console.log(`Cash needed to get "${shares.toFixed()}" shares: ${cash.toFixed()}`);
     }
@@ -294,7 +294,8 @@ export function addAMMScripts(flash: FlashSession) {
       const factory = new AMMFactory(user.signer, this.config.addresses.AMMFactory);
       const amm = await factory.getAMMExchange(market.address, paraShareToken);
 
-      const cash = await amm.enterPosition(shares, yes);
+      const tx = await amm.doEnterPosition(shares, yes, shares);
+      const cash = new BigNumber(tx.data)
 
       console.log(`You paid ${cash.toFixed()} cash for ${shares.toFixed()} ${yes ? 'yes' : 'no'} shares`);
     }

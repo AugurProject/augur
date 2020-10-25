@@ -1,27 +1,45 @@
-import { BLOCKED_PRICE_IMPACT_NON_EXPERT } from '../constants'
-import { CurrencyAmount, Fraction, JSBI, Percent, TokenAmount, Trade } from '@uniswap/sdk'
+import { BIPS_BASE, BLOCKED_PRICE_IMPACT_NON_EXPERT } from '../constants'
+import { CurrencyAmount, Fraction, JSBI, Percent, TokenAmount, Trade, TradeType } from '@uniswap/sdk'
 import { ALLOWED_PRICE_IMPACT_HIGH, ALLOWED_PRICE_IMPACT_LOW, ALLOWED_PRICE_IMPACT_MEDIUM } from '../constants'
 import { Field } from '../state/swap/actions'
 import { basisPointsToPercent } from './index'
+import { TradeInfo } from '../hooks/Trades'
+import { BigNumber as BN } from 'bignumber.js'
 
 const BASE_FEE = new Percent(JSBI.BigInt(30), JSBI.BigInt(10000))
 const ONE_HUNDRED_PERCENT = new Percent(JSBI.BigInt(10000), JSBI.BigInt(10000))
 const INPUT_FRACTION_AFTER_FEE = ONE_HUNDRED_PERCENT.subtract(BASE_FEE)
 
+export function computePriceImpact(trade, minAmount): { priceImpactWithoutFee: Percent; slippageAdjustedAmounts: string } {
+
+  if (!trade || !minAmount) return {priceImpactWithoutFee: undefined, slippageAdjustedAmounts: undefined}
+  const currencyOutDecimals = trade?.currencyOut?.decimals
+  const executionPrice = trade?.executionPrice
+  const inputAmount = trade?.inputAmount?.raw
+
+  const calcPrice = new BN(minAmount).div(new BN(String(inputAmount)))
+  // weird math to use Percent object
+  const impact = calcPrice
+    .minus(new BN(executionPrice.toSignificant(6)))
+    .div(calcPrice)
+    .abs()
+    .times(100)
+    .toFixed(0)
+  const adjMinAmount = String(new BN(minAmount).div(new BN(10).pow(new BN(currencyOutDecimals))).toFixed(8))
+
+  return {
+    priceImpactWithoutFee: new Percent(JSBI.BigInt(impact), BIPS_BASE),
+    slippageAdjustedAmounts: adjMinAmount
+  }
+}
+
 // computes price breakdown for the trade
 export function computeTradePriceBreakdown(
-  trade?: Trade
+  trade?: TradeInfo
 ): { priceImpactWithoutFee?: Percent; realizedLPFee?: CurrencyAmount } {
   // for each hop in our trade, take away the x*y=k price impact from 0.3% fees
   // e.g. for 3 tokens/2 hops: 1 - ((1 - .03) * (1-.03))
-  const realizedLPFee = !trade
-    ? undefined
-    : ONE_HUNDRED_PERCENT.subtract(
-        trade.route.pairs.reduce<Fraction>(
-          (currentFee: Fraction): Fraction => currentFee.multiply(INPUT_FRACTION_AFTER_FEE),
-          ONE_HUNDRED_PERCENT
-        )
-      )
+  const realizedLPFee = !trade ? undefined : ONE_HUNDRED_PERCENT.subtract(INPUT_FRACTION_AFTER_FEE)
 
   // remove lp fees from price impact
   const priceImpactWithoutFeeFraction = trade && realizedLPFee ? trade.priceImpact.subtract(realizedLPFee) : undefined
@@ -44,13 +62,14 @@ export function computeTradePriceBreakdown(
 
 // computes the minimum amount out and maximum amount in for a trade given a user specified allowed slippage in bips
 export function computeSlippageAdjustedAmounts(
-  trade: Trade | undefined,
+  trade: TradeInfo | undefined,
   allowedSlippage: number
 ): { [field in Field]?: CurrencyAmount } {
   const pct = basisPointsToPercent(allowedSlippage)
+
   return {
-    [Field.INPUT]: trade?.maximumAmountIn(pct),
-    [Field.OUTPUT]: trade?.minimumAmountOut(pct)
+    [Field.INPUT]: trade.inputAmount,
+    [Field.OUTPUT]: trade.outputAmount
   }
 }
 
@@ -62,15 +81,11 @@ export function warningSeverity(priceImpact: Percent | undefined): 0 | 1 | 2 | 3
   return 0
 }
 
-export function formatExecutionPrice(trade?: Trade, inverted?: boolean): string {
+export function formatExecutionPrice(trade?: TradeInfo, inverted?: boolean): string {
   if (!trade) {
     return ''
   }
-  return inverted
-    ? `${trade.executionPrice.invert().toSignificant(6)} ${trade.inputAmount.currency.symbol} / ${
-        trade.outputAmount.currency.symbol
-      }`
-    : `${trade.executionPrice.toSignificant(6)} ${trade.outputAmount.currency.symbol} / ${
-        trade.inputAmount.currency.symbol
+  return `${trade?.executionPrice?.toSignificant(6)} ${trade?.currencyOut?.symbol} / ${
+        trade?.currencyIn?.symbol
       }`
 }

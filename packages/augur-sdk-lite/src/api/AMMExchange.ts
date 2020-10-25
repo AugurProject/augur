@@ -25,30 +25,35 @@ export class AMMExchange {
     return _yes.div(_no);
   }
 
-  async enterPosition(shares: Shares, yes: boolean, rate = false): Promise<BigNumber> {
-    const cash = await binarySearch(
-      new BigNumber(1),
-      new BigNumber(shares.times(YES_NO_NUMTICKS)),
-      100,
-      async (cash) => {
-        const yesShares = await this.contract.rateEnterPosition(cash.toFixed(), yes);
-        return bnDirection(shares, yesShares);
-      }
-    );
-    if (!rate) {
-      const txr: TransactionResponse = await this.contract.enterPosition(cash.toFixed(), yes, shares.toFixed());
-      const tx = await txr.wait();
-      const logs = tx.logs
-        .filter((log) => log.address === this.address)
-        .map((log) =>  this.contract.interface.parseLog(log));
-      console.log(JSON.stringify(logs, null, 2));
-    }
-    return cash;
+  async rateEnterPosition(cash: BigNumber, buyYes: boolean): Promise<BigNumber> {
+    console.log('rateEnterPosition', String(cash), buyYes)
+    return this.contract.rateEnterPosition(cash.toFixed(), buyYes);
   }
 
-  async exitPosition(invalidShares: Shares, noShares: Shares, yesShares: Shares) {
-    const { _cashPayout } = await this.contract.rateExitPosition(invalidShares, noShares, yesShares);
-    await this.contract.exitPosition(invalidShares, noShares, yesShares, _cashPayout);
+  async doEnterPosition(cash: BigNumber, buyYes: boolean, minShares: BigNumber): Promise<TransactionResponse> {
+    return this.contract.enterPosition(cash.toFixed(), buyYes, minShares.toFixed());
+  }
+
+  async rateCashEnterPosition(shares: Shares, buyYes: boolean): Promise<BigNumber> {
+      const cash = await binarySearch(
+        new BigNumber(1),
+        new BigNumber(shares.times(YES_NO_NUMTICKS)),
+        100,
+        async (cash) => {
+          const yesShares = await this.contract.rateEnterPosition(cash.toFixed(), buyYes);
+          return bnDirection(shares, yesShares);
+        }
+      );
+      return cash;
+    }
+
+
+  async rateExitPosition(invalidShares: BigNumber, noShares: BigNumber, yesShares: BigNumber): Promise<BigNumber> {
+    return this.contract.rateExitPosition(invalidShares.toFixed(), noShares.toFixed(), yesShares.toFixed());
+  }
+
+  async doExitPosition(invalidShares: Shares, noShares: Shares, yesShares: Shares, minCash: BigNumber): Promise<TransactionResponse> {
+    return this.contract.exitPosition(invalidShares, noShares, yesShares, minCash);
   }
 
   async exitAll(): Promise<Cash> {
@@ -65,13 +70,22 @@ export class AMMExchange {
     return this.swap(yesShares, true);
   }
 
+  async getRateSwap(inputShares: BigNumber, inputIsYesShares: boolean): Promise<Shares> {
+    return this.contract.rateSwap(inputShares, inputIsYesShares);
+  }
+
   async swap(inputShares: Shares, inputYes: boolean): Promise<Shares> {
     const noShares = await this.contract.rateSwap(inputShares, inputYes);
     await this.contract.swap(inputShares, inputYes, noShares);
     return noShares;
   }
 
-  async addInitialLiquidity(recipient: string, cash: Cash, yesPercent = new BigNumber(50), noPercent = new BigNumber(50)): Promise<TransactionResponse> {
+  async doSwap(inputShares: Shares, inputYes: boolean): Promise<TransactionResponse> {
+    const noShares = await this.contract.rateSwap(inputShares, inputYes);
+    return this.contract.swap(inputShares, inputYes, noShares);
+  }
+
+  async doAddInitialLiquidity(recipient: string, cash: Cash, yesPercent = new BigNumber(50), noPercent = new BigNumber(50)): Promise<TransactionResponse> {
     const keepYes = noPercent.gt(yesPercent);
 
     let ratio = keepYes // more NO shares than YES shares
@@ -113,7 +127,7 @@ export class AMMExchange {
     return { noShares: _noShare, yesShares: _yesShare, cashShares: _cashShare}
   }
 
-  async removeLiquidity(lpTokens: LPTokens, alsoSell = false): Promise<TransactionResponse> {
+  async doRemoveLiquidity(lpTokens: LPTokens, alsoSell = false): Promise<TransactionResponse> {
     // if not selling them minSetsSold is 0
     // if selling them calculate how many sets you could get, then sell that many
 

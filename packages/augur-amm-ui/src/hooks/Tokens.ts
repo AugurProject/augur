@@ -36,7 +36,7 @@ export function useAllTokens(): { [address: string]: Token } {
   }, [chainId, userAddedTokens, allTokens])
 }
 
-export function useAllMarketTokens(marketId: string, cash: string): Currency[] {
+export function useAllMarketTokens(marketId: string, cash: string, amm: string): Currency[] {
   const [userMarketShareBalances] = useMarketShareBalances()
   const { chainId } = useActiveWeb3React()
   const cashToken = useToken(cash)
@@ -45,16 +45,16 @@ export function useAllMarketTokens(marketId: string, cash: string): Currency[] {
     const marketInfo = userMarketShareBalances.find(b => b.marketId === marketId && b.cash === cash)
 
     const tokens = []
-    tokens.push(cashToken)
+    if (cashToken) tokens.push(cashToken)
     const address = marketId
 
     const noToken = new Token(chainId, address, 18, MarketTokens.NO_SHARES, MarketTokens.NO_SHARES)
-    const noMarketCurrency = new MarketCurrency(marketId, cash, noToken, String(marketInfo?.noAmount || 0))
-    tokens.push(noMarketCurrency)
+    const noMarketCurrency = new MarketCurrency(marketId, cash, amm, noToken, String(marketInfo?.noAmount || 0))
+    if (noMarketCurrency) tokens.push(noMarketCurrency)
 
     const yesToken = new Token(chainId, address, 18, MarketTokens.YES_SHARES, MarketTokens.YES_SHARES)
-    const yesMarketCurrency = new MarketCurrency(marketId, cash, yesToken, String(marketInfo?.yesAmount || 0))
-    tokens.push(yesMarketCurrency)
+    const yesMarketCurrency = new MarketCurrency(marketId, cash, amm, yesToken, String(marketInfo?.yesAmount || 0))
+    if (yesMarketCurrency) tokens.push(yesMarketCurrency)
     return tokens
   }, [userMarketShareBalances, marketId, cash, chainId, cashToken])
 }
@@ -129,11 +129,8 @@ export function useToken(tokenAddress?: string): Token | undefined | null {
 
 export function useMarketToken(type: string) {
   const { marketId, cash, amm } = useSwapQueryParam()
-  const allMarketTokens = useAllMarketTokens(marketId, cash)
-  if (type === MarketTokens.NO_SHARES || type === MarketTokens.YES_SHARES) {
-    return allMarketTokens.find(a => a.name === type)
-  }
-  return undefined
+  const allMarketTokens = useAllMarketTokens(marketId, cash, amm)
+  return (allMarketTokens || []).find(a => a.name === type)
 }
 
 export function useCurrency(currencyId: string | undefined): Currency | null | undefined {

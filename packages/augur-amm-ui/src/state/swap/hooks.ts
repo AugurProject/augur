@@ -1,12 +1,12 @@
 import useENS from '../../hooks/useENS'
 import { parseUnits } from '@ethersproject/units'
-import { Currency, CurrencyAmount, ETHER, JSBI, Token, TokenAmount, Trade } from '@uniswap/sdk'
+import { Currency, CurrencyAmount, Percent, JSBI, Token, TokenAmount, Trade } from '@uniswap/sdk'
 import { ParsedQs } from 'qs'
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useActiveWeb3React } from '../../hooks'
 import { useCurrency, useMarketToken } from '../../hooks/Tokens'
-import { useTradeExactIn, useTradeExactOut } from '../../hooks/Trades'
+import { TradeInfo, useTradeExactIn } from '../../hooks/Trades'
 import useParsedQueryString from '../../hooks/useParsedQueryString'
 import { isAddress } from '../../utils'
 import { AppDispatch, AppState } from '../index'
@@ -17,6 +17,7 @@ import { useUserSlippageTolerance } from '../user/hooks'
 import { computeSlippageAdjustedAmounts } from '../../utils/prices'
 import { useLocation } from 'react-router-dom'
 import { MarketCurrency } from '../../data/MarketCurrency'
+import { useMarketAmm } from '../../contexts/Markets'
 
 export function useSwapState(): AppState['swap'] {
   return useSelector<AppState, AppState['swap']>(state => state.swap)
@@ -34,7 +35,8 @@ export function useSwapActionHandlers(): {
       dispatch(
         selectCurrency({
           field,
-          currencyId: currency instanceof MarketCurrency ? currency.name : currency instanceof Token ? currency.address : ''
+          currencyId:
+            currency instanceof MarketCurrency ? currency.name : currency instanceof Token ? currency.address : ''
         })
       )
     },
@@ -106,15 +108,18 @@ function involvesAddress(trade: Trade, checksummedAddress: string): boolean {
 }
 
 // from the current swap inputs, compute the best trade and return it.
-export function useDerivedSwapInfo(): {
+export function useDerivedSwapInfo(
+  marketId: string,
+  amm: string
+): {
   currencies: { [field in Field]?: Currency }
   currencyBalances: { [field in Field]?: CurrencyAmount }
   parsedAmount: CurrencyAmount | undefined
-  v2Trade: Trade | undefined
+  v2Trade: TradeInfo | undefined
   inputError?: string
 } {
   const { account } = useActiveWeb3React()
-
+  const ammExchange = useMarketAmm(marketId, amm)
   const {
     independentField,
     typedValue,
@@ -143,10 +148,14 @@ export function useDerivedSwapInfo(): {
   const isExactIn: boolean = independentField === Field.INPUT
   const parsedAmount = tryParseAmount(typedValue, (isExactIn ? inputCurrency : outputCurrency) ?? undefined)
 
-  const bestTradeExactIn = useTradeExactIn(isExactIn ? parsedAmount : undefined, outputCurrency ?? undefined)
-  const bestTradeExactOut = useTradeExactOut(inputCurrency ?? undefined, !isExactIn ? parsedAmount : undefined)
+  const bestTradeExactIn = useTradeExactIn(
+    ammExchange,
+    inputCurrency,
+    isExactIn ? parsedAmount : undefined,
+    outputCurrency ?? undefined
+  )
 
-  const v2Trade = isExactIn ? bestTradeExactIn : bestTradeExactOut
+  const v2Trade = bestTradeExactIn
 
   const currencyBalances = {
     [Field.INPUT]: relevantTokenBalances[0],
@@ -174,27 +183,19 @@ export function useDerivedSwapInfo(): {
   const formattedTo = isAddress(to)
   if (!to || !formattedTo) {
     inputError = inputError ?? 'Enter a recipient'
-  } else {
-    if (
-      BAD_RECIPIENT_ADDRESSES.indexOf(formattedTo) !== -1 ||
-      (bestTradeExactIn && involvesAddress(bestTradeExactIn, formattedTo)) ||
-      (bestTradeExactOut && involvesAddress(bestTradeExactOut, formattedTo))
-    ) {
-      inputError = inputError ?? 'Invalid recipient'
-    }
   }
 
   const [allowedSlippage] = useUserSlippageTolerance()
 
   const slippageAdjustedAmounts = v2Trade && allowedSlippage && computeSlippageAdjustedAmounts(v2Trade, allowedSlippage)
   // compare input balance to max input based on version
-  const [balanceIn, amountIn] = [
+  const [balanceIn, inputAmount] = [
     currencyBalances[Field.INPUT],
     slippageAdjustedAmounts ? slippageAdjustedAmounts[Field.INPUT] : undefined
   ]
 
-  if (balanceIn && amountIn && balanceIn.lessThan(amountIn)) {
-    inputError = 'Insufficient ' + amountIn.currency.symbol + ' balance'
+  if (balanceIn && inputAmount && balanceIn.lessThan(inputAmount)) {
+    inputError = 'Insufficient ' + inputAmount.currency.symbol + ' balance'
   }
 
   return {
@@ -293,7 +294,7 @@ export function useDefaultsFromURLSearch():
   return result
 }
 
-export function useSwapQueryParam(): { marketId: string; cash: string, amm: string } {
+export function useSwapQueryParam(): { marketId: string; cash: string; amm: string } {
   const location = useLocation()
   const components = location.pathname.split('/')
   const marketId = components[2]

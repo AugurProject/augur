@@ -168,7 +168,7 @@ export function useMarketAmm(marketId, amm) {
     hasLiquidity: ammExchange?.liquidity  && ammExchange?.liquidity !== "0",
     id: ammExchange?.id,
     cash: ammExchange?.shareToken?.cash?.id,
-    sharetoken: ammExchange?.shareToken?.id
+    sharetoken: ammExchange?.shareToken?.id,
   }
 }
 
