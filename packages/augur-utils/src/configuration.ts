@@ -251,6 +251,16 @@ export interface ExternalAddresses {
   UniswapV2Factory?: string;
   UniswapV2Router02?: string;
   RelayHubV2?: string;
+  SETH?: string;
+  BUSD?: string;
+  TUSD?: string;
+  SUSD?: string;
+  MUSD?: string;
+  YUSD?: string;
+  WBTC?: string;
+  renBTC?: string;
+  SBTC?: string;
+  TBTC?: string;
 }
 
 export interface SideChainExternalAddresses {
@@ -295,7 +305,7 @@ export const DEFAULT_SDK_CONFIGURATION: SDKConfiguration = {
     isProduction: false,
     enableFaucets: true,
     normalTime: true,
-    privateKey: 'fae42052f82bed612a724fec3632f325f377120592c75bb78adfcceae6470c5a',
+    privateKey: '0xfae42052f82bed612a724fec3632f325f377120592c75bb78adfcceae6470c5a',
     contractInputPath: path.join(__dirname, '../../augur-artifacts/build/contracts.json'),
     writeArtifacts: true,
     serial: true,

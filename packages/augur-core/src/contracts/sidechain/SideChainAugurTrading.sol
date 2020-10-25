@@ -9,6 +9,7 @@ import 'ROOT/sidechain/interfaces/ISideChainShareToken.sol';
 import 'ROOT/libraries/ContractExists.sol';
 import 'ROOT/sidechain/IMarketGetter.sol';
 import 'ROOT/trading/IProfitLoss.sol';
+import 'ROOT/libraries/token/SafeERC20.sol';
 
 
 // Centralized approval authority and event emissions for trading.
@@ -18,6 +19,7 @@ import 'ROOT/trading/IProfitLoss.sol';
  * @notice The core global contract for the Augur Trading contracts. Provides a contract registry and and authority on which contracts should be trusted within Trading.
  */
 contract SideChainAugurTrading {
+    using SafeERC20 for IERC20;
     using SafeMathUint256 for uint256;
     using ContractExists for address;
 
@@ -89,14 +91,14 @@ contract SideChainAugurTrading {
     function doApproval() private returns (bool) {
         address _fillOrder = registry["FillOrder"];
         shareToken = ISideChainShareToken(augur.lookup("ShareToken"));
-        ICash _cash = ICash(augur.lookup("Cash"));
+        IERC20 _cash = IERC20(augur.lookup("Cash"));
         marketGetter = IMarketGetter(augur.lookup("MarketGetter"));
 
         require(shareToken != ISideChainShareToken(0));
-        require(_cash != ICash(0));
+        require(_cash != IERC20(0));
 
         shareToken.setApprovalForAll(_fillOrder, true);
-        _cash.approve(_fillOrder, MAX_APPROVAL_AMOUNT);
+        _cash.safeApprove(_fillOrder, MAX_APPROVAL_AMOUNT);
     }
 
     /**

@@ -233,6 +233,7 @@ export function useCurrencyBalances(
   const tokenBalances = useTokenBalances(account, tokens)
   const containsETH: boolean = useMemo(() => currencies?.some(currency => currency === ETHER) ?? false, [currencies])
   const ethBalance = useETHBalances(containsETH ? [account] : [])
+  const [userMarketShareBalances] = useMarketShareBalances()
 
   return useMemo(
     () =>
@@ -245,7 +246,7 @@ export function useCurrencyBalances(
         if (currency === ETHER) return ethBalance[account]
         return undefined
       }) ?? [],
-    [account, currencies, ethBalance, tokenBalances]
+    [account, currencies, ethBalance, tokenBalances, userMarketShareBalances]
   )
 }
 

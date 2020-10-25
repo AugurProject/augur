@@ -13,9 +13,11 @@ import 'ROOT/reporting/IRepOracle.sol';
 import 'ROOT/libraries/Initializable.sol';
 import 'ROOT/reporting/IAffiliates.sol';
 import 'ROOT/reporting/Reporting.sol';
+import 'ROOT/libraries/token/SafeERC20.sol';
 
 
 contract ParaUniverse is Initializable, IParaUniverse {
+    using SafeERC20 for IERC20;
     using SafeMathUint256 for uint256;
 
     uint256 private constant MIN_TIME_BETWEEN_REPORTING_FEE_RECALC = 3 days;
@@ -25,7 +27,7 @@ contract ParaUniverse is Initializable, IParaUniverse {
     IParaAugur public augur;
     IUniverse public originUniverse;
     IParaShareToken public shareToken;
-    ICash public cash;
+    IERC20 public cash;
     IAffiliates affiliates;
     IV2ReputationToken private reputationToken;
     IOINexus public OINexus;
@@ -52,11 +54,11 @@ contract ParaUniverse is Initializable, IParaUniverse {
         feePot = IFeePotFactory(_augur.lookup("FeePotFactory")).createFeePot(_augur);
         openInterestCash = IParaOICashFactory(_augur.lookup("ParaOICashFactory")).createParaOICash(_augur);
         shareToken = IParaShareToken(_augur.lookup("ShareToken"));
-        cash = ICash(_augur.lookup("Cash"));
+        cash = IERC20(_augur.lookup("Cash"));
         affiliates = IAffiliates(_augur.lookup("Affiliates"));
         OINexus = IOINexus(_augur.lookup("OINexus"));
 
-        cash.approve(address(feePot), MAX_APPROVAL_AMOUNT);
+        cash.safeApprove(address(feePot), MAX_APPROVAL_AMOUNT);
     }
 
     /**
@@ -80,7 +82,7 @@ contract ParaUniverse is Initializable, IParaUniverse {
         originUniverse = _originUniverse;
         reputationToken = _originUniverse.getReputationToken();
         feePot = IFeePotFactory(_augur.lookup("FeePotFactory")).createFeePot(_augur);
-        cash.approve(address(feePot), MAX_APPROVAL_AMOUNT);
+        cash.safeApprove(address(feePot), MAX_APPROVAL_AMOUNT);
         openInterestCash.approveFeePot();
     }
 

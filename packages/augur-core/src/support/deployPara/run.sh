@@ -12,11 +12,11 @@ case "$environment" in
       -e DEPLOY \
       -e ARTIFACTS \
       --entrypoint "node"  \
-      augurproject/augur-core:monorepo -- /augur/packages/augur-core/output/deployment/deployParaNetworks.js $@
+      augurproject/augur-core:monorepo -- /augur/packages/augur-core/output/deployment/deployParaNetwork.js $@
     ;;
   "direct")
     echo "Deploying para contracts to $@"
-    node -r ts-node/register ./src/deployment/deployParaNetworks.ts $@
+    node -r ts-node/register ./src/deployment/deployParaNetwork.ts $@
     ;;
   *)
     echo "Must specifiy either docker or direct as first argument"

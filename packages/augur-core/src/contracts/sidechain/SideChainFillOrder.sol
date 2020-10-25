@@ -13,6 +13,7 @@ import 'ROOT/sidechain/interfaces/ISideChainAugurTrading.sol';
 import 'ROOT/libraries/TokenId.sol';
 import 'ROOT/sidechain/IMarketGetter.sol';
 import 'ROOT/sidechain/interfaces/ISideChainAugur.sol';
+import 'ROOT/libraries/token/SafeERC20.sol';
 
 
 library Trade {
@@ -26,7 +27,7 @@ library Trade {
     struct StoredContracts {
         ISideChainAugur augur;
         ISideChainAugurTrading augurTrading;
-        ICash denominationToken;
+        IERC20 denominationToken;
         ISideChainProfitLoss profitLoss;
         ISideChainShareToken shareToken;
         IMarketGetter marketGetter;
@@ -34,7 +35,7 @@ library Trade {
 
     struct Contracts {
         address market;
-        ICash denominationToken;
+        IERC20 denominationToken;
         ISideChainShareToken shareToken;
         ISideChainAugur augur;
         IUniverse universe;
@@ -404,6 +405,7 @@ library Trade {
  * @notice Exposes functions to fill an order on the book
  */
 contract SideChainFillOrder is Initializable, ReentrancyGuard {
+    using SafeERC20 for IERC20;
     using SafeMathUint256 for uint256;
     using Trade for Trade.Data;
 
@@ -425,7 +427,7 @@ contract SideChainFillOrder is Initializable, ReentrancyGuard {
         augurTrading = _augurTrading;
         marketGetter = IMarketGetter(_augur.lookup("MarketGetter"));
         require(marketGetter!= IMarketGetter(0));
-        ICash _cash = ICash(augur.lookup("Cash"));
+        IERC20 _cash = IERC20(augur.lookup("Cash"));
         storedContracts = Trade.StoredContracts({
             augur: _augur,
             marketGetter: marketGetter,
@@ -438,7 +440,7 @@ contract SideChainFillOrder is Initializable, ReentrancyGuard {
         require(storedContracts.shareToken != ISideChainShareToken(0));
         zeroXTrade = _augurTrading.lookup("ZeroXTrade");
         require(zeroXTrade != address(0));
-        _cash.approve(address(_augur), MAX_APPROVAL_AMOUNT);
+        _cash.safeApprove(address(_augur), MAX_APPROVAL_AMOUNT);
     }
 
     function fillZeroXOrder(address _market, uint256 _outcome, uint256 _price, Order.Types _orderType, address _creator, uint256 _amount, bytes32 _tradeGroupId, address _filler) external returns (uint256 _amountRemaining, uint256 _fees) {

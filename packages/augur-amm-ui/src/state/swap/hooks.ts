@@ -302,4 +302,3 @@ export function useSwapQueryParam(): { marketId: string; cash: string; amm: stri
   const amm = components[4]
   return { marketId, cash, amm }
 }
-
