@@ -93,7 +93,7 @@ function GlobalPage() {
                         tokenInfo={cash}
                         size={'20px'}
                         showSymbol
-                        style={{ paddingRight: '0.5rem', opacity: cash === cashFilter ? '1' : '0.4' }}
+                        style={{ paddingRight: '1rem', opacity: cash === cashFilter ? '1' : '0.4' }}
                       />
                     </ClickableText>
                   ))}
