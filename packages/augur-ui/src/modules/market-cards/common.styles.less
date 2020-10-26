@@ -737,10 +737,36 @@
 		text-transform: capitalize;
 		white-space: nowrap;
 		flex: 1;
+
+		@media @breakpoint-mobile {
+			margin-left: @size-4;
+		}
 	}
 
 	> div {
 		flex: 0 0 90px;
+	}
+}
+
+.MatchedLine {
+	.text-12;
+
+	align-items: center;
+	color: var(--color-secondary-text);
+	display: flex;
+	flex: 1;
+	justify-content: flex-end;
+	height: @size-18;
+
+	@media @breakpoint-mobile-tablet {
+		display: none;
+	}
+
+	> b {
+		.text-12-bold;
+
+		color: var(--color-primary-text);
+		margin-left: @size-4;
 	}
 }
 
@@ -831,29 +857,18 @@
 			}
 
 		}
-	}
 
-	.MatchedLine {
-		.text-12;
+		@media @breakpoint-mobile {
+			display: flex;
+			flex-flow: row nowrap;
+			text-overflow: ellipsis;
+			overflow: hidden;
 
-		align-items: center;
-		color: var(--color-secondary-text);
-		display: flex;
-		flex: 1;
-		justify-content: flex-end;
-		height: @size-18;
-
-		@media @breakpoint-mobile-tablet {
-			display: none;
+			> div[class*="CategoryTrail"] {
+				flex: 1;
+			}
 		}
-
-    > b {
-      .text-12-bold;
-
-			color: var(--color-primary-text);
-			margin-left: @size-4;
-    }
-  }
+	}
 
   .RulesButton {
     .text-10-semi-bold;
@@ -893,6 +908,17 @@
 
 		@media @breakpoint-mobile {
 			grid-template-columns: 1fr;
+			grid-gap: 0;
+
+			> article {
+				border: 0;
+				border-radius: 0;
+				border-bottom: @size-1 solid var(--color-outline);
+
+				&:last-of-type {
+					border-bottom: 0;
+				}
+			}
 		}
 	}
 
@@ -919,6 +945,34 @@
 		&.FourOutcomes {
 			> article {
 				flex: 0.25;
+			}
+		}
+
+		@media @breakpoint-mobile {
+			flex-flow: column nowrap;
+
+			> article {
+				border-left: none;
+				border-radius: unset;
+				border-right: none;
+				border-top: none;
+				margin: 0;
+
+				&:last-of-type {
+					border-bottom: none;
+				}
+
+				> div {
+					display: flex;
+					flex-flow: row nowrap;
+					justify-content: space-between;
+
+					> h6 {
+						flex: 1;
+						text-align: left;
+						margin-left: @size-4;
+					}
+				}
 			}
 		}
 	}
@@ -1007,6 +1061,17 @@
 					.text-12;
 				}
 			}
+
+			> p {
+				.text-10;
+
+				display: none;
+				margin: 0;
+				padding: 0;
+				color: var(--color-primary-text);
+				text-align: center;
+				min-height: @size-12;
+			}
 		}
 
 		> span {
@@ -1015,6 +1080,26 @@
 			color: var(--color-primary-text);
 			text-align: center;
 			min-height: @size-12;
+		}
+
+		@media @breakpoint-mobile {
+			grid-gap: 0;
+
+			> span {
+				display: none;
+			}
+
+			> button {
+				min-width: @size-90;
+
+				> span:first-of-type:not(:last-of-type) {
+					display: none;
+				}
+
+				> p {
+					display: block;
+				}
+			}
 		}
 	}
 
@@ -1028,6 +1113,12 @@
 		grid-column: span 2;
 		height: @size-20;
 		margin: @size-24 0;
+
+		> h6 {
+			.text-14;
+
+			color: var(--color-primary-text);
+		}
 
 		> svg {
 			height: @size-14;
@@ -1095,20 +1186,6 @@
 				> button:not([class*="FavoriteButton"]) > svg {
 					transform: none;
 				}
-
-				> span:last-of-type:not([class*="MatchedLine"]) {
-					margin-left: @size-8;
-
-					> a > svg {
-						width: @size-12;
-						height: @size-10;
-						transform: rotate(-90deg);
-
-						> path {
-							fill: var(--color-primary-text);
-						}
-					}
-				}
 			}
 
 			> div {
@@ -1134,44 +1211,190 @@
 					background: var(--color-page-background);
 				}
 			}
+
+			> ul {
+				> li:first-of-type {
+					background: var(--color-module-background);
+
+					> button {
+						background: var(--color-module-background);
+					}
+				}
+			}
 		}
 
 		&.ComboContainer {
-			> div {
+			display: flex;
+			flex-flow: row nowrap;
+
+			> ul {
 				display: flex;
 				flex-flow: column nowrap;
-				background: var(--color-page-background);
-				padding: 0;
+				min-width: @size-100;
 
-				> ul {
-					align-items: center;
-					display: flex;
-					flex-flow: row nowrap;
+				&:first-of-type {
 					flex: 1;
-					padding: @size-8;
-					width: 100%;
-
-					&:last-of-type {
-						border-bottom-right-radius: @border-radius-default;
-						border-bottom-left-radius: @border-radius-default;
-					}
-
-					&:not(:last-of-type) {
-						border-bottom: @size-1 solid var(--color-outline);
-					}
-
-					> li:first-of-type {
-						.text-14-bold;
-
-						align-self: baseline;
-						color: var(--color-primary-text);
-						flex: 1;
-						margin-left: 0;
-					}
+					border-top-left-radius: @border-radius-default;
+					border-bottom-left-radius: @border-radius-default;
 
 					> li {
-						flex: 0.2;
-						margin-left: @size-8;
+						.text-14-bold;
+
+						color: var(--color-primary-text);
+
+						&:first-of-type {
+							border-top-left-radius: @border-radius-default;
+						}
+
+						&:last-of-type {
+							border-bottom-left-radius: @border-radius-default;
+						}
+					}
+				}
+
+				> li:first-of-type {
+					background: var(--color-table-header);
+					height: @size-30;
+
+						> button {
+						.text-10-semi-bold;
+
+						align-items: center;
+						background: var(--color-table-header);
+						color: var(--color-secondary-text);
+						text-transform: uppercase;
+						display: flex;
+						flex-flow: row nowrap;
+						width: 100%;
+						justify-content: center;
+
+						> span {
+							.text-10-semi-bold;
+
+							display: none;
+							margin-left: @size-4;
+							margin-right: auto;
+							color: var(--color-secondary-text);
+							text-transform: uppercase;
+						}
+
+						> svg {
+							display: none;
+							height: @size-6;
+							transform: rotate(.5turn);
+							width: @size-10;
+
+							> path {
+								fill: var(--color-primary-text);
+							}
+						}
+					}
+				}
+
+				> li:not(:first-of-type) {
+					flex: 1;
+				}
+
+				> li {
+					background: var(--color-page-background);
+					padding: @size-8;
+
+					> div > h6 {
+						display: none;
+						text-align: left;
+					}
+				}
+
+				> li:not(:last-of-type) {
+					border-bottom: @size-1 solid var(--color-outline);
+				}
+
+				&:last-of-type {
+					border-top-right-radius: @border-radius-default;
+					border-bottom-right-radius: @border-radius-default;
+
+					> li {
+						&:first-of-type {
+							border-top-right-radius: @border-radius-default;
+						}
+
+						&:last-of-type {
+							border-bottom-right-radius: @border-radius-default;
+						}
+					}
+				}
+			}
+
+			@media @breakpoint-mobile {
+				display: grid;
+				grid-gap: @size-10;
+				grid-template-columns: 1fr;
+				grid-template-rows: 1fr;
+				border: none;
+				border-radius: unset;
+
+				> ul:first-of-type {
+					display: none;
+				}
+
+				> ul {
+					border: @size-1 solid var(--color-outline);
+					border-radius: @border-radius-default;
+
+					> li {
+						&:first-of-type {
+							background-color: var(--color-page-background);
+							border-top-left-radius: @border-radius-default;
+							border-top-right-radius: @border-radius-default;
+
+							> button {
+								background-color: var(--color-page-background);
+								justify-content: space-between;
+
+								> span {
+									display: block;
+								}
+
+								> svg {
+									display: flex;
+								}
+							}
+						}
+
+						&:last-of-type {
+							border-bottom-left-radius: @border-radius-default;
+							border-bottom-right-radius: @border-radius-default;
+						}
+
+						> div {
+							display: flex;
+							justify-content: space-between;
+
+							> h6 {
+								display: block;
+								flex: 1;
+							}
+						}
+					}
+
+					&.ListCollapse {
+						> li:not(:first-of-type) {
+							display: none;
+						}
+
+						> li:first-of-type {
+							background: var(--color-page-background);
+							border-radius: @border-radius-default;
+							border-bottom: none;
+
+							> button {
+								background: var(--color-page-background);
+
+								> svg {
+									transform: none;
+								}
+							}
+						}
 					}
 				}
 			}
@@ -1188,34 +1411,16 @@
 			height: @size-30;
 			padding: 0 @size-12;
 
-			> ul {
-				align-items: center;
-				display: flex;
-				flex-flow: row nowrap;
-				height: @size-30;
-				width: 100%;
-				flex: 1;
-
-				> li:first-of-type {
-					flex: 1;
-					margin-left: 0;
-				}
-
-				> li {
-					.text-10-semi-bold;
-					color: var(--color-secondary-text);
-					flex: 0.2;
-					text-align: center;
-					text-transform: uppercase;
-					margin-left: @size-8;
-				}
-			}
-
 			> h6 {
 				.text-10-semi-bold;
+				.limit-lines(2);
 
 				color: var(--color-secondary-text);
 				text-transform: uppercase;
+				display: flex;
+				height: 100%;
+				align-items: center;
+				text-overflow: ellipsis;
 			}
 
 			> span[class*="ProgressLabel"] {
@@ -1223,6 +1428,11 @@
 				flex: 0;
 				align-items: center;
 				height: 100%;
+				margin-left: auto;
+
+				@media @breakpoint-mobile {
+					display: none;
+				}
 
 				> span {
 					margin: 0;
@@ -1233,7 +1443,6 @@
 				}
 			}
 
-			> span[class*="MatchedLine"],
 			> div[class*="DotSelection"],
 			> button[class*="FavoriteButton"] {
 				margin-left: @size-12;
@@ -1247,8 +1456,9 @@
 				justify-content: space-between;
 
 				&.toggleCollapsed {
-					margin-left: auto;
+					// margin-left: auto;
 					width: @size-24;
+					justify-content: flex-end;
 				}
 
 				> h6 {
@@ -1256,11 +1466,11 @@
 
 					color: var(--color-secondary-text);
 					text-transform: uppercase;
+					margin-right: auto;
 				}
 
 				> svg {
 					height: @size-6;
-					margin-left: auto;
 					transform: rotate(.5turn);
 					width: @size-10;
 
@@ -1280,6 +1490,12 @@
 			flex-flow: row wrap;
 			align-items: center;
 			justify-content: space-between;
+
+			@media @breakpoint-mobile {
+				&:first-of-type {
+					padding: 0;
+				}
+			}
 
 			> section {
 				width: 100%;
@@ -1392,6 +1608,17 @@
 		flex-flow: row-reverse nowrap;
 		padding: 0;
 
+		> span.MatchedLine {
+			margin: 0 @size-8;
+			justify-content: unset;
+			display: flex;
+		}
+
+		> span[class*="ProgressLabel"] {
+			display: none;
+			margin: 0 @size-8;
+		}
+
 		&.NoLeader {
 			display: none;
 		}
@@ -1442,6 +1669,39 @@
 				margin: 0 @size-4;
 			}
 		}
+
+		@media @breakpoint-mobile {
+			height: unset;
+			flex-flow: row-reverse wrap;
+			padding: @size-12 @size-10 @size-10;
+			border-top: @size-1 solid var(--color-outline);
+
+			> span,
+			> span[class*="ProgressLabel"] {
+				flex: 1;
+				display: flex;
+				margin: 0;
+
+				&.MatchedLine {
+					height: unset;
+					flex-flow: column nowrap;
+					justify-content: center;
+					align-items: flex-end;
+					margin: 0;
+					margin-left: @size-8;
+				}
+			}
+
+			> span:first-of-type {
+				flex: 1 100%;
+				order: 3;
+				border: @size-1 solid var(--color-outline);
+				border-radius: @border-radius-default;
+				justify-content: center;
+				padding: @size-8;
+				margin-top: @size-10;
+			}
+		}
 	}
 
 	div.FuturesDivider {
@@ -1453,6 +1713,10 @@
 		flex-flow: row nowrap;
 		grid-column: span 2;
 		height: @size-20;
+
+		@media @breakpoint-mobile {
+			height: unset;
+		}
 
 		> svg {
 			height: @size-14;
