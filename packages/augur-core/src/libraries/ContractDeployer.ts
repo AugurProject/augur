@@ -198,6 +198,7 @@ Deploying to: ${env}
 
         await this.uploadERC20Proxy1155Contracts();
         await this.uploadAMMContracts();
+        await this.uploadAccountLoaderContract(this.augur.address, this.augurTrading.address);
 
         await this.initializeAllContracts();
         await this.doTradingApprovals();
@@ -546,6 +547,18 @@ Deploying to: ${env}
         return factory.address;
     }
 
+    async uploadAccountLoaderContract(augurAddress: string, augurTradingAddress: string): Promise<string> {
+        console.log('Uploading Account Loader contract');
+        const contract = this.contracts.get('AccountLoader');
+        contract.address = await this.construct(contract, []);
+
+        const accountLoader = new AccountLoader(this.dependencies, contract.address);
+        console.log('Initializing AccountLoader contract');
+        await accountLoader.initialize(augurAddress, augurTradingAddress);
+        console.log('Initialized AccountLoader contract');
+        return contract.address;
+    }
+
     private async uploadAllContracts(): Promise<void> {
         console.log('Uploading contracts...');
 
@@ -588,6 +601,7 @@ Deploying to: ${env}
         if (contractName === 'ERC20Proxy1155Nexus') return;
         if (contractName === 'AMMExchange') return;
         if (contractName === 'AMMFactory') return;
+        if (contractName === 'AccountLoader') return;
         // 0x
         if ([
           'ERC20Proxy',
@@ -754,15 +768,6 @@ Deploying to: ${env}
                 console.log('Initializing AuditFunds contract');
                 await contract.initialize(this.augur!.address);
                 console.log('Initialized AuditFunds contract');
-            },
-            async () => {
-                const contract = new AccountLoader(this.dependencies, await this.getContractAddress('AccountLoader'));
-                if (await contract.getInitialized_()) {
-                    return;
-                }
-                console.log('Initializing AccountLoader contract');
-                await contract.initialize(this.augur!.address, this.augurTrading!.address);
-                console.log('Initialized AccountLoader contract');
             },
             async () => {
                 const contract = new AugurWalletRegistry(this.dependencies, await this.getContractAddress('AugurWalletRegistry'));
