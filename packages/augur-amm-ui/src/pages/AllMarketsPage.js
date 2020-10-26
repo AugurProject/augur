@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react'
 import 'feather-icons'
 
-import TopMarketList from '../components/MarketList'
+import MarketList from '../components/MarketList'
 import { TYPE } from '../Theme'
 import Panel from '../components/Panel'
 import { PageWrapper, FullWrapper } from '../components'
@@ -27,7 +27,7 @@ function AllMarketsPage() {
           {!below600 && <Search small={true} />}
         </RowBetween>
         <Panel style={{ marginTop: '6px', padding: below600 && '1rem 0 0 0 ' }}>
-          <TopMarketList markets={markets} itemMax={50} />
+          <MarketList markets={markets} itemMax={50} />
         </Panel>
       </FullWrapper>
     </PageWrapper>
