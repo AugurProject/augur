@@ -67,9 +67,7 @@ module.exports = {
         test: /\.tsx?$/,
         loader: 'ts-loader',
         options: {
-          experimentalWatchApi: true,
-          projectReferences: true,
-          transpileOnly: process.env.TYPE_CHECKING !== 'true',
+            transpileOnly: process.env.TYPE_CHECKING !== 'true',
         },
       },
       //{
