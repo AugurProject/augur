@@ -103,7 +103,6 @@ export function useSwapCallback(
       return { state: SwapCallbackState.INVALID, callback: null, error: 'Missing dependencies' }
     }
     if (outputAmount) {
-
       return {
         state: SwapCallbackState.VALID,
         callback: async function onSwap(): Promise<string> {

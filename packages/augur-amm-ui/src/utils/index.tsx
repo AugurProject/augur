@@ -687,11 +687,12 @@ export async function estimateTrade(augurClient, trade: TradeInfo) {
     return String(breakdown)
   }
   if (isExit) {
-    breakdown = await augurClient.ammFactory.getRateExitPosition(trade.amm.id, trade.balance[0], trade.balance[1], trade.balance[2])
-    return String(breakdown)
+    breakdown = await augurClient.ammFactory.getRateExitPosition(trade.amm.id, trade.balance.outcomes[0], trade.balance.outcomes[1], trade.balance.outcomes[2])
+    return String(breakdown["_cashPayout"])
   }
   if (isSwap) {
     breakdown = await augurClient.ammFactory.getSwapRate(trade.amm.id, String(trade.inputAmount.raw), !outputYesShares)
+    console.log('get swap rate', String(breakdown))
     return String(breakdown)
   }
   return null;
@@ -707,7 +708,6 @@ export async function doTrade(augurClient, trade: TradeInfo, minAmount: string) 
   console.log('estimateTrade: isEntry', isEntry, 'isExit', isExit, 'isSwap', isSwap, 'minAmount', minAmount)
 
   let outputYesShares = false;
-  let breakdown = null;
 
   if (trade.currencyOut instanceof MarketCurrency) {
     const out = trade.currencyOut as MarketCurrency
@@ -718,10 +718,10 @@ export async function doTrade(augurClient, trade: TradeInfo, minAmount: string) 
     return augurClient.ammFactory.enterPosition(trade.amm.id, String(trade.inputAmount.raw), outputYesShares, minAmount)
   }
   if (isExit) {
-    return augurClient.ammFactory.exitPosition(trade.amm.id, trade.balance[0], trade.balance[1], trade.balance[2], minAmount)
+    return augurClient.ammFactory.exitPosition(trade.amm.id, trade.balance.outcomes[0], trade.balance.outcomes[1], trade.balance.outcomes[2], minAmount)
   }
   if (isSwap) {
-    return augurClient.ammFactory.swap(trade.amm.id, String(trade.inputAmount.raw), !outputYesShares)
+    return augurClient.ammFactory.swap(trade.amm.id, String(trade.inputAmount.raw), !outputYesShares, minAmount)
   }
   return null;
 }

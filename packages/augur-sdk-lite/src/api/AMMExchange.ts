@@ -72,7 +72,7 @@ export class AMMExchange {
   }
 
   async getRateSwap(inputShares: BigNumber, inputIsYesShares: boolean): Promise<Shares> {
-    return this.contract.rateSwap(inputShares, inputIsYesShares);
+    return this.contract.rateSwap(inputShares.toFixed(), inputIsYesShares);
   }
 
   async swap(inputShares: Shares, inputYes: boolean): Promise<Shares> {
@@ -81,9 +81,8 @@ export class AMMExchange {
     return noShares;
   }
 
-  async doSwap(inputShares: Shares, inputYes: boolean): Promise<TransactionResponse> {
-    const noShares = await this.contract.rateSwap(inputShares, inputYes);
-    return this.contract.swap(inputShares, inputYes, noShares);
+  async doSwap(inputShares: Shares, inputYes: boolean, minShares: Shares): Promise<TransactionResponse> {
+    return this.contract.swap(inputShares.toFixed(), inputYes, minShares.toFixed());
   }
 
   async doAddInitialLiquidity(recipient: string, cash: Cash, yesPercent = new BigNumber(50), noPercent = new BigNumber(50)): Promise<TransactionResponse> {

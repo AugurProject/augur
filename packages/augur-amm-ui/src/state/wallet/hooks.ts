@@ -120,7 +120,7 @@ const outcomeNames = ['invalidAmount', 'noAmount', 'yesAmount']
 export interface MarketBalance {
   paraShareToken: { id: string }
   marketId: string
-  outcome: number
+  outcomes: number[]
   amount: CurrencyAmount
   noAmount: string
   yesAmount: string
