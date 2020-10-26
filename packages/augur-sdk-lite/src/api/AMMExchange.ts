@@ -31,6 +31,7 @@ export class AMMExchange {
   }
 
   async doEnterPosition(cash: BigNumber, buyYes: boolean, minShares: BigNumber): Promise<TransactionResponse> {
+    console.log('cash', cash.toFixed(), 'buyYes', buyYes, 'minShares', minShares.toFixed())
     return this.contract.enterPosition(cash.toFixed(), buyYes, minShares.toFixed());
   }
 

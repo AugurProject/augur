@@ -25,11 +25,11 @@ export function TradeSummary({ trade, allowedSlippage, minAmount }: { trade: Tra
   const isExactIn = trade.tradeType === TradeType.EXACT_INPUT
 
   useEffect(() => {
-    console.log('minAmount', minAmount, 'allowedSlippage', allowedSlippage)
     if (minAmount) {
       const calcPrice = new BN(minAmount).div(new BN(String(trade.inputAmount.raw)))
       // weird math to use Percent object
-      const impact = (calcPrice.minus(new BN(trade.executionPrice.toSignificant(6)))).div(calcPrice).abs().times(100).toFixed(0)
+      const diff = calcPrice.minus(new BN(trade.executionPrice.toSignificant(6)))
+      const impact = diff.div(calcPrice).abs().times(100).toFixed(0)
       const adjMinAmount = String(new BN(minAmount).div(new BN(10).pow(new BN(trade.currencyOut.decimals))).toFixed(8))
 
       const breakdown = {

@@ -49,10 +49,7 @@ const ClickableText = styled(Text)`
   }
 `
 
-function Swap({
-  marketId,
-  amm
-}: RouteComponentProps<{ inputCurrencyId?: string; outputCurrencyId?: string }>) {
+function Swap({ marketId, amm }: RouteComponentProps<{ inputCurrencyId?: string; outputCurrencyId?: string }>) {
   console.log('Swap render ...')
   const { chainId } = useActiveWeb3React()
   const augurClient = useAugurClient()
@@ -77,11 +74,11 @@ function Swap({
     amm
   )
 
-  useEffect(() => {
-    if (trade) {
+  useMemo(
+    () =>
+      trade &&
       estimateTrade(augurClient, trade)
         .then(result => {
-          console.log('result', result)
           if (result) {
             const outToken = new Token(
               chainId,
@@ -92,22 +89,20 @@ function Swap({
             )
             const estCurrency = new TokenAmount(outToken, JSBI.BigInt(String(result)))
             setOutputAmount(estCurrency)
-
-            console.log('result', result)
           }
         })
         .catch(e => {
           setOutputAmount(null)
-        })
-    }
-  }, [augurClient, trade, chainId])
+        }),
+    [trade]
+  )
 
   useEffect(() => {
     if (outputAmount) {
       const slippage = new BN(allowedSlippage).div(100).div(100)
-      const slipAmount = new BN(String(outputAmount.raw)).minus(
-        new BN(String(outputAmount.raw)).multipliedBy(slippage)
-      ).decimalPlaces(0)
+      const slipAmount = new BN(String(outputAmount.raw))
+        .minus(new BN(String(outputAmount.raw)).multipliedBy(slippage))
+        .decimalPlaces(0)
       setMinAmount(String(slipAmount))
     }
   }, [trade, outputAmount, allowedSlippage, setMinAmount])
@@ -245,7 +240,6 @@ function Swap({
     onCurrencySelection
   ])
 
-  console.log('minAmount', minAmount)
   return (
     <>
       <AppBody>

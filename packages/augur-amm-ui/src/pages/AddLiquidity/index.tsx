@@ -79,9 +79,8 @@ function AddLiquidity({ amm, marketId, cash }: RouteComponentProps<{ amm?: strin
   //const [allowedSlippage] = useUserSlippageTolerance() // custom from users
   const [txHash, setTxHash] = useState<string>('')
   const distro = useMemo(() =>{
-    if (!ammData) return [50,50]
-    const yesValue = Number(Number(ammData.percentageYes).toFixed(2))
-    const noValue = Number(Number(ammData.percentageNo).toFixed(2))
+    const yesValue = ammData?.percentageYes ? Number(Number(ammData.percentageYes).toFixed(2)) : 50
+    const noValue = ammData?.percentageNo ? Number(Number(ammData.percentageNo).toFixed(2)) : 50
     return [yesValue, noValue]
   }, [ammData])
 

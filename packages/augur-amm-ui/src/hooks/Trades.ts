@@ -49,11 +49,10 @@ export function useTradeExactIn(
   const augurClient = useAugurClient()
   return useMemo(() => {
     if (currencyAmountIn && currencyOut && inputCurrency) {
-      console.log('exact in', currencyAmountIn, currencyOut, inputCurrency)
       // do any amount conversion here
       const no = JSBI.BigInt(String(Number(ammExchange.percentageNo) / 100).substring(6))
       const yes = JSBI.BigInt(String(Number(ammExchange.percentageYes) / 100).substring(6))
-      let executionPrice = new Price(currencyOut, currencyOut, currencyOut.symbol === MarketTokens.NO_SHARES ? no : yes, JSBI.BigInt(1))
+      let executionPrice = new Price(currencyOut, currencyOut, JSBI.BigInt(1), currencyOut.symbol === MarketTokens.NO_SHARES ? no : yes)
 
       if (!(currencyOut instanceof MarketCurrency)) {
         // cash out use inverse of currencyIn percentage
