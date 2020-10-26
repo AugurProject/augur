@@ -9,6 +9,7 @@
     "noImplicitAny": false,
     "allowSyntheticDefaultImports": true,
     "baseUrl": "src",
+    "moduleResolution": "Node",
     "paths": {
       "assets/*": [
         "./assets/*"
@@ -32,21 +33,20 @@
         "./utils/*"
       ]
     },
-    "typeRoots": [
-      "types",
-      "node_modules/@types"
-    ],
+    "allowSyntheticDefaultImports": true,
     "esModuleInterop": false,
     "resolveJsonModule": false
   },
   "include": [
-    "./src/**/*",
-    "../augur-artifacts/src/environments/*.json"
+    "./src/**/*"
   ],
   "exclude": [
     "./src/**/*.test.ts"
   ],
   "references": [
+    {
+      "path": "../augur-artifacts"
+    },
     {
       "path": "../augur-sdk"
     },

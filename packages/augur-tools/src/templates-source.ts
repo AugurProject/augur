@@ -6139,7 +6139,7 @@ export const TEMPLATES = {
                 marketType: CATEGORICAL,
                 question: `Olympics: Which country will win the most [0] medals at the [1] Summer Olympics?`,
                 example: `Olympics: Which country will win the most Gold medals at the 2020 Summer Olympics`,
-                header: `[1] Summer Olympics most [0] metals`,
+                header: `[1] Summer Olympics most [0] medals`,
                 groupName: groupTypes.FUTURES,
                 inputs: [
                   {
@@ -6175,7 +6175,7 @@ export const TEMPLATES = {
                       text: `If the event does not take place this market should resolve as 'Invalid'`,
                     },
                     {
-                      text: `Metal count is determined at event expiration, if event expiration is before the completion of the games this market should resolve as 'Invalid'`,
+                      text: `Medal count is determined at event expiration, if event expiration is before the completion of the games this market should resolve as 'Invalid'`,
                     },
                   ],
                 },
@@ -6184,7 +6184,7 @@ export const TEMPLATES = {
                 marketType: CATEGORICAL,
                 question: `Olympics [0]: Which country will win the Gold medal in [1] at the [2] Summer Olympics?`,
                 example: `Olympics Tennis: Which country will win the Gold medal in Singles (Men/Women) at the 2020 Summer Olympics`,
-                header: `[2] Summer Olympics [0] [1] gold metal`,
+                header: `[2] Summer Olympics [0] [1] gold medal`,
                 groupName: groupTypes.FUTURES,
                 inputs: [
                   {
@@ -6270,10 +6270,10 @@ export const TEMPLATES = {
                       text: `If the event does not take place this market should resolve as 'Invalid'`,
                     },
                     {
-                      text: `Metal count is determined at event expiration, if event expiration is before the completion of the games this market should resolve as 'Invalid'`,
+                      text: `Medal count is determined at event expiration, if event expiration is before the completion of the games this market should resolve as 'Invalid'`,
                     },
                     {
-                      text: `Market should resolve as whole number value of metals`,
+                      text: `Market should resolve as whole number value of medals`,
                     },
                   ],
                 },
@@ -6485,7 +6485,7 @@ export const TEMPLATES = {
                 marketType: CATEGORICAL,
                 question: `Olympics: Which country will win the most [0] medals at the [1] Winter Olympics?`,
                 example: `Olympics: Which country will win the most Gold medals at the 2020 Winter Olympics`,
-                header: `[1] Winter Olympics most [0] metals`,
+                header: `[1] Winter Olympics most [0] medals`,
                 groupName: groupTypes.FUTURES,
                 inputs: [
                   {
@@ -6521,7 +6521,7 @@ export const TEMPLATES = {
                       text: `If the event does not take place this market should resolve as 'Invalid'`,
                     },
                     {
-                      text: `Metal count is determined at event expiration, if event expiration is before the completion of the games this market should resolve as 'Invalid'`,
+                      text: `Medal count is determined at event expiration, if event expiration is before the completion of the games this market should resolve as 'Invalid'`,
                     },
                   ],
                 },
@@ -6530,7 +6530,7 @@ export const TEMPLATES = {
                 marketType: CATEGORICAL,
                 question: `Olympics [0]: Which country will win the Gold medal in [1] at the [2] Winter Olympics?`,
                 example: `Olympics Curling: Which country will win the Gold medal in mens at the 2020 Winter Olympics`,
-                header: `[2] Winter Olympics [0] [1] gold metal`,
+                header: `[2] Winter Olympics [0] [1] gold medal`,
                 groupName: groupTypes.FUTURES,
                 inputs: [
                   {
@@ -6616,7 +6616,7 @@ export const TEMPLATES = {
                       text: `If the event does not take place this market should resolve as 'Invalid'`,
                     },
                     {
-                      text: `Metal count is determined at event expiration, if event expiration is before the completion of the games this market should resolve as 'Invalid'`,
+                      text: `Medal count is determined at event expiration, if event expiration is before the completion of the games this market should resolve as 'Invalid'`,
                     },
                     {
                       text: `Market should resolve as whole number value of medals`,

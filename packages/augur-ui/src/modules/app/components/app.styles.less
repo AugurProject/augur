@@ -357,6 +357,10 @@ h6 {
   z-index: @mask-above;
 }
 
+.Betslip {
+  display: none;
+}
+
 :root[theme='BETTING'],
 :root[theme='SPORTS'] {
   .TopBar {
@@ -366,6 +370,7 @@ h6 {
   }
 
   .Betslip {
+    display: block;
     padding: @size-32 @size-32 @size-32 @size-40;
     position: static;
     top: 0;

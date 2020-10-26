@@ -66,11 +66,6 @@ module.exports = {
       {
         test: /\.tsx?$/,
         loader: 'ts-loader',
-        options: {
-          experimentalWatchApi: true,
-          projectReferences: false,
-          transpileOnly: false,
-        },
       },
       //{
       //  test: /\.js$/,
