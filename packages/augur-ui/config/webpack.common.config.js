@@ -69,7 +69,7 @@ module.exports = {
         options: {
           experimentalWatchApi: true,
           projectReferences: true,
-          transpileOnly: process.env.TYPE_CHECKING !== 'true',
+          transpileOnly: false,
         },
       },
       //{
