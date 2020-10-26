@@ -137,7 +137,7 @@ export interface PropertyLabelProps {
 
 export interface LinearPropertyLabelProps {
   label: string;
-  value: string | FormattedNumber;
+  value: React.ReactText | string | FormattedNumber;
   accentValue?: boolean;
   highlightFirst?: boolean;
   highlight?: boolean;

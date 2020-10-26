@@ -1,6 +1,6 @@
-import { MarketReportingState } from '@augurproject/sdk-lite';
+import React, { useEffect, useState } from 'react';
 import classNames from 'classnames';
-import Styles from 'modules/account/components/notification.styles.less';
+import { MarketReportingState } from '@augurproject/sdk-lite';
 import { CancelTextButton, ProcessingButton } from 'modules/common/buttons';
 import {
   DISPUTE_ENDS,
@@ -21,20 +21,8 @@ import {
   MarketData,
   MarketReportClaimableContracts,
 } from 'modules/types';
-import React, { useEffect, useState } from 'react';
 import { formatDai } from 'utils/format-number';
 import Styles from 'modules/account/components/notification.styles.less';
-import {
-  DISPUTE_ENDS,
-  MARKET_IN_DISPUTE,
-  MARKET_STATUS_MESSAGES,
-  NOTIFICATION_TYPES,
-  REPORTING_ENDS,
-} from 'modules/common/constants';
-import MarketTitle from 'modules/market/components/common/market-title';
-import { MarketReportingState } from '@augurproject/sdk/build';
-import classNames from 'classnames';
-import { getWarpSyncRepReward } from 'modules/contracts/actions/contractCalls';
 
 interface BaseProps {
   market: MarketData;

@@ -19,7 +19,6 @@ import { THEMES } from 'modules/common/constants';
 
 interface MarketTitleProps {
   id: string;
-  description: string;
   isWrapped?: boolean;
   isTemplate?: boolean;
   template?: ExtraInfoTemplate;

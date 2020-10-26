@@ -3,9 +3,11 @@ interface ModulePane {
   onClickCallback?: Function;
   headerType?: string;
   status?: string;
+  isNew?: boolean;
+  children: any;
 }
 
-const ModulePane: React.FC<ModulePane> = ({ children }) => {
+const ModulePane = ({ children }: ModulePane) => {
   return children
 };
 

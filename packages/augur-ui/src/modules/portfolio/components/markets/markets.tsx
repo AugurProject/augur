@@ -70,9 +70,9 @@ function filterComp(input, market) {
 }
 
 interface MyMarketsProps {
-  toggle: Function;
-  hide: boolean;
-  extend: boolean;
+  toggle?: Function;
+  hide?: boolean;
+  extend?: boolean;
 }
 
 const MyMarkets = ({ toggle, hide, extend }: MyMarketsProps) => {

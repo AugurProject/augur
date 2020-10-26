@@ -32,7 +32,6 @@ import { SubmitTextButton } from 'modules/common/buttons';
 import Styles from 'modules/portfolio/components/common/market-row.styles.less';
 import { MarketData } from 'modules/types';
 import { useAppStatusStore } from 'modules/app/store/app-status';
-import { useMarketsStore } from 'modules/markets/store/markets';
 
 export interface TimeObject {
   formattedUtcShortDate: string;

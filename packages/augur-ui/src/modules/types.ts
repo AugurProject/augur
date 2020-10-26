@@ -110,6 +110,8 @@ export interface OutcomeFormatted extends Getters.Markets.MarketInfoOutcome {
 }
 
 export interface MarketData extends Getters.Markets.MarketInfo {
+  id: string;
+  description: string;
   marketId: string;
   marketStatus: string;
   defaultSelectedOutcomeId: number;
@@ -118,6 +120,8 @@ export interface MarketData extends Getters.Markets.MarketInfo {
   noShowBondAmountFormatted: FormattedNumber;
   creationTimeFormatted: DateFormattedObject;
   endTimeFormatted: DateFormattedObject;
+  endTime: number;
+  reportingState: string;
   reportingFeeRatePercent: FormattedNumber;
   marketCreatorFeeRatePercent: FormattedNumber;
   settlementFeePercent: FormattedNumber;
@@ -126,6 +130,7 @@ export interface MarketData extends Getters.Markets.MarketInfo {
   unclaimedCreatorFeesFormatted: FormattedNumber;
   marketCreatorFeesCollectedFormatted: FormattedNumber;
   finalizationTimeFormatted: DateFormattedObject | null;
+  finalizationTime: number | null;
   isArchived: boolean;
   // TODO: add this to getter Getters.Markets.MarketInfo
   // disputeInfo: object; this needs to get filled in on getter
@@ -135,6 +140,7 @@ export interface MarketData extends Getters.Markets.MarketInfo {
   pending?: boolean;
   status?: string;
   hasPendingLiquidityOrders?: boolean;
+  sportsBook?: any;
 }
 
 export interface ForkingInfo {

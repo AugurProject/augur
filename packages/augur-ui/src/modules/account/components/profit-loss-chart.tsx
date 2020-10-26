@@ -63,7 +63,7 @@ const getOptions = () => ({
     labels: {
       style: null,
       format: '{value:%b %d}',
-      formatter() {
+      formatter: function() {
         if (this.isLast) return 'Today';
         if (this.isFirst) {
           return Highcharts.dateFormat('%d %b %Y', this.value);
@@ -81,7 +81,7 @@ const getOptions = () => ({
     labels: {
       style: null,
       format: '${value:.2f}',
-      formatter() {
+      formatter: function() {
         return formatDai(this.value, { removeComma: true }).full;
       },
       align: 'left',
