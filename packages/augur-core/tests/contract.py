@@ -72,3 +72,7 @@ class Contract():
     def getLogs(self, eventName):
         return self.w3Contract.events.__dict__[eventName].getLogs()
 
+    def getAllLogs(self):
+        logNames = vars(self.w3Contract.events).keys()
+        logNames = [n for n in logNames if n not in ('abi', '_events')]
+        return { name: self.getLogs(name) for name in logNames }

@@ -88,7 +88,7 @@ def test_amm_liquidity(contractsFixture, market, cash, shareToken, factory, amm,
     assert shareToken.balanceOfMarketOutcome(market.address, NO, amm.address) == remainingSets
     assert shareToken.balanceOfMarketOutcome(market.address, YES, amm.address) == remainingSets
 
-def test_amm_position(contractsFixture, market, shareToken, cash, factory, amm, account0):
+def test_amm_yes_position(contractsFixture, market, shareToken, cash, factory, amm, account0):
     if not contractsFixture.paraAugur:
         return skip("Test is only for para augur")
 
@@ -128,6 +128,30 @@ def test_amm_position(contractsFixture, market, shareToken, cash, factory, amm, 
     # assert shareToken.balanceOfMarketOutcome(market.address, INVALID, account0) < 10 * ATTO
     # assert shareToken.balanceOfMarketOutcome(market.address, NO, account0) == 0
     # assert shareToken.balanceOfMarketOutcome(market.address, YES, account0) == 0
+
+def test_amm_no_position(contractsFixture, market, shareToken, cash, factory, amm, account0):
+    if not contractsFixture.paraAugur:
+        return skip("Test is only for para augur")
+
+    cash.faucet(100000 * ATTO)
+    cash.approve(factory.address, 10 ** 48)
+    shareToken.setApprovalForAll(amm.address, True)
+    amm.addInitialLiquidity(100000 * ATTO, 10**18, True, account0)
+
+    cost = 10000 * ATTO
+    sets = cost // market.getNumTicks()
+
+    # Enter NO position
+    sharesReceived = amm.rateEnterPosition(cost, False)
+    assert sharesReceived > 10 * ATTO
+    cash.faucet(cost)
+    amm.enterPosition(cost, False, sharesReceived)
+
+    assert cash.balanceOf(account0) == 0
+    assert shareToken.balanceOfMarketOutcome(market.address, INVALID, account0) == sets
+    assert shareToken.balanceOfMarketOutcome(market.address, NO, account0) == sharesReceived
+    assert shareToken.balanceOfMarketOutcome(market.address, YES, account0) == 0
+
 
 def test_amm_swap(contractsFixture, market, shareToken, cash, factory, amm, account0):
     if not contractsFixture.paraAugur:

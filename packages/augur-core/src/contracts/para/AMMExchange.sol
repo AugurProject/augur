@@ -356,9 +356,9 @@ contract AMMExchange is IAMMExchange, ERC20 {
             _amounts[0] = _invalidAmount != 0 ? _invalidAmount : _noAmount != 0 ? _noAmount : _yesAmount;
         } else if (_size == 2) {
             _tokenIds[0] = _invalidAmount != 0 ? INVALID : NO;
-            _tokenIds[1] = _invalidAmount != 0 ? YES : NO;
+            _tokenIds[1] = _yesAmount != 0 ? YES : NO;
             _amounts[0] = _invalidAmount != 0 ? _invalidAmount : _noAmount;
-            _amounts[1] = _invalidAmount != 0 ? _yesAmount : _noAmount;
+            _amounts[1] = _yesAmount != 0 ? _yesAmount : _noAmount;
         } else {
             _tokenIds[0] = INVALID;
             _tokenIds[1] = NO;
