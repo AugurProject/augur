@@ -4,13 +4,13 @@ import styled from 'styled-components'
 
 import { AutoRow, RowFlat } from '../components/Row'
 import { AutoColumn } from '../components/Column'
-import TopMarketList from '../components/MarketList'
+import MarketList from '../components/MarketList'
 import Search from '../components/Search'
 import GlobalStats from '../components/GlobalStats'
 import { Text } from 'rebass'
 import { useMedia } from 'react-use'
 import Panel from '../components/Panel'
-import { useAllMarketData, useMarketCashes } from '../contexts/Markets'
+import { useMarketsByAMM, useMarketCashes } from '../contexts/Markets'
 import { RowBetween } from '../components/Row'
 import { PageWrapper, ContentWrapper } from '../components'
 import TokenLogo from '../components/TokenLogo'
@@ -42,7 +42,7 @@ const ListOptions = styled(AutoRow)`
 
 function GlobalPage() {
   // get data for lists and totals
-  const { markets } = useAllMarketData()
+  const markets = useMarketsByAMM()
   const cashes = useMarketCashes()
   // const { totalLiquidityUSD, oneDayVolumeUSD, volumeChangeUSD, liquidityChangeUSD } = useGlobalData()
 
@@ -57,13 +57,7 @@ function GlobalPage() {
     if (!cash) {
       return setFilteredMarkets(markets)
     }
-    const newMarkets = markets.reduce((p, m) => {
-      if (!m.amms || m.amms.length === 0) return p
-      if (m.amms.find(m => m.shareToken.cash.id === cash)) {
-        return [...p, m]
-      }
-      return p
-    }, [])
+    const newMarkets = markets.filter(m => m.cash === cash) || []
     setFilteredMarkets(newMarkets)
   }
 
@@ -108,7 +102,7 @@ function GlobalPage() {
           </ListOptions>
 
           <Panel style={{ marginTop: '6px', padding: '1.125rem 0 ' }}>
-            <TopMarketList markets={filteredMarkets || []} />
+            <MarketList markets={filteredMarkets || []} />
           </Panel>
         </div>
       </ContentWrapper>

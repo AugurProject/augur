@@ -11,6 +11,7 @@ import { useMedia } from 'react-use'
 import { withRouter } from 'react-router-dom'
 import { TYPE } from '../../Theme'
 import { BasicLink } from '../Link'
+import TokenLogo from '../TokenLogo'
 
 dayjs.extend(utc)
 
@@ -39,8 +40,8 @@ const List = styled(Box)`
 const DashGrid = styled.div`
   display: grid;
   grid-gap: 0.5em;
-  grid-template-columns: 70% 1fr 1fr;
-  grid-template-areas: 'name status timestamp';
+  grid-template-columns: 0.5fr 70% 0.5fr 0.5fr 1fr 1fr;
+  grid-template-areas: 'logo description noPercent yesPercent status timestamp';
   padding: 0 1.125rem;
 
   > * {
@@ -56,8 +57,22 @@ const DashGrid = styled.div`
   @media screen and (min-width: 1080px) {
     display: grid;
     grid-gap: 0.5em;
-    grid-template-columns: 5fr 1fr 1fr;
-    grid-template-areas: 'name status timestamp';
+    grid-template-columns: 0.5fr 5fr 0.5fr 0.5fr 1fr 1fr;
+    grid-template-areas: 'logo description noPercent yesPercent status timestamp';
+  }
+
+  @media screen and (max-width: 816px) {
+    display: grid;
+    grid-gap: 0.5em;
+    grid-template-columns: 0.25fr 50% 1fr 1fr;
+    grid-template-areas: 'currency description noPercent yesPercent';
+  }
+
+  @media screen and (max-width: 680px) {
+    display: grid;
+    grid-gap: 0.5em;
+    grid-template-columns: 80% 1fr 1fr;
+    grid-template-areas: 'description noPercent yesPercent';
   }
 `
 
@@ -114,6 +129,7 @@ function MarketList({ markets, itemMax = 10 }) {
   const [sortedColumn, setSortedColumn] = useState(SORT_FIELD.STATUS)
 
   const below680 = useMedia('(max-width: 680px)')
+  const below800 = useMedia('(max-width: 816px)')
 
   useEffect(() => {
     setMaxPage(1) // edit this to do modular
@@ -146,29 +162,34 @@ function MarketList({ markets, itemMax = 10 }) {
   const ListItem = ({ item, index }) => {
     return (
       <DashGrid style={{ height: '48px' }} focus={true}>
+        {!below680 && <TokenLogo tokenInfo={item?.cash} />}
         <BasicLink style={{ width: '100%' }} to={'/token/' + item.id} key={item.id}>
           {item.description}
         </BasicLink>
-        <DataText area="status">
-          <span
-            style={
-              !darkMode
-                ? {}
-                : item.status === 'TRADING'
-                ? { color: '#7DFFA8' }
-                : item.status === 'DISPUTING'
-                ? { color: '#F1E700' }
-                : item.status === 'REPORTING'
-                ? { color: '#F1E700' }
-                : item.status === 'FINALIZED'
-                ? { color: '#F12B00' }
-                : {}
-            }
-          >
-            {item.status}
-          </span>
-        </DataText>
-        <DataText area="timestamp">{formatTime(item.endTimestamp)}</DataText>
+        <DataText area="noPercent">{item.amm ? Number(item.amm.percentageNo).toFixed(2) : '-'}</DataText>
+        <DataText area="yesPercent">{item.amm ? Number(item.amm.percentageYes).toFixed(2) : '-'}</DataText>
+        {!below800 && (
+          <DataText area="status">
+            <span
+              style={
+                !darkMode
+                  ? {}
+                  : item.status === 'TRADING'
+                  ? { color: '#7DFFA8' }
+                  : item.status === 'DISPUTING'
+                  ? { color: '#F1E700' }
+                  : item.status === 'REPORTING'
+                  ? { color: '#F1E700' }
+                  : item.status === 'FINALIZED'
+                  ? { color: '#F12B00' }
+                  : {}
+              }
+            >
+              {item.status}
+            </span>
+          </DataText>
+        )}
+        {!below800 && <DataText area="timestamp">{formatTime(item.endTimestamp)}</DataText>}
       </DashGrid>
     )
   }
@@ -176,6 +197,11 @@ function MarketList({ markets, itemMax = 10 }) {
   return (
     <ListWrapper>
       <DashGrid center={true} style={{ height: 'fit-content', padding: '0 1.125rem 1rem 1.125rem' }}>
+        {!below680 && (
+          <Flex alignItems="center">
+            <Text area="Currency">Currency</Text>
+          </Flex>
+        )}
         <Flex alignItems="center" justifyContent="flexStart">
           <ClickableText
             color="text"
@@ -190,30 +216,39 @@ function MarketList({ markets, itemMax = 10 }) {
             {sortedColumn === SORT_FIELD.DESCRIPTION ? (!sortDirection ? '↑' : '↓') : ''}
           </ClickableText>
         </Flex>
-
         <Flex alignItems="center">
-          <ClickableText
-            area="status"
-            onClick={e => {
-              setSortedColumn(SORT_FIELD.STATUS)
-              setSortDirection(sortedColumn !== SORT_FIELD.STATUS ? true : !sortDirection)
-            }}
-          >
-            Status {sortedColumn === SORT_FIELD.STATUS ? (!sortDirection ? '↑' : '↓') : ''}
-          </ClickableText>
+          <Text area="No Percent">{below680 ? 'No' : 'No %'}</Text>
         </Flex>
         <Flex alignItems="center">
-          <ClickableText
-            area="timestamp"
-            onClick={e => {
-              setSortedColumn(SORT_FIELD.ENDTIMESTAMP)
-              setSortDirection(sortedColumn !== SORT_FIELD.ENDTIMESTAMP ? true : !sortDirection)
-            }}
-          >
-            Market Ends
-            {sortedColumn === SORT_FIELD.ENDTIMESTAMP ? (!sortDirection ? '↑' : '↓') : ''}
-          </ClickableText>
+          <Text area="Yes Percent">{below680 ? 'Yes' : 'Yes %'}</Text>
         </Flex>
+        {!below800 && (
+          <Flex alignItems="center">
+            <ClickableText
+              area="status"
+              onClick={e => {
+                setSortedColumn(SORT_FIELD.STATUS)
+                setSortDirection(sortedColumn !== SORT_FIELD.STATUS ? true : !sortDirection)
+              }}
+            >
+              Status {sortedColumn === SORT_FIELD.STATUS ? (!sortDirection ? '↑' : '↓') : ''}
+            </ClickableText>
+          </Flex>
+        )}
+        {!below800 && (
+          <Flex alignItems="center">
+            <ClickableText
+              area="timestamp"
+              onClick={e => {
+                setSortedColumn(SORT_FIELD.ENDTIMESTAMP)
+                setSortDirection(sortedColumn !== SORT_FIELD.ENDTIMESTAMP ? true : !sortDirection)
+              }}
+            >
+              Market Ends
+              {sortedColumn === SORT_FIELD.ENDTIMESTAMP ? (!sortDirection ? '↑' : '↓') : ''}
+            </ClickableText>
+          </Flex>
+        )}
       </DashGrid>
       <Divider />
       <List p={0}>

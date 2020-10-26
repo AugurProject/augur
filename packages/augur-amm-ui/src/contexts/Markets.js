@@ -134,6 +134,19 @@ export function useAllMarketData() {
   return state
 }
 
+export function useMarketsByAMM() {
+  const [state] = useMarketDataContext()
+  const { markets } = state;
+  const marketsByAmm = markets.reduce((p, m) => {
+    if (!m.amms || m.amms.length === 0) return [...p, { ...m, amm: null }]
+    const splitOut = m.amms.map(amm => {
+      return ({...m, amm, cash: amm.shareToken.cash.id})
+    });
+    return p.concat(splitOut)
+  }, [])
+  return marketsByAmm
+}
+
 export function useMarket(marketId) {
   const [state] = useMarketDataContext()
   const markets = state?.markets
