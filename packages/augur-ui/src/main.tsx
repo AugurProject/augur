@@ -1,5 +1,5 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
+import { render } from 'react-dom';
 import { HashRouter } from 'react-router-dom';
 import { AppStatusProvider } from 'modules/app/store/app-status';
 import MainErrorBoundary from 'modules/app/components/main-error-boundary';
@@ -28,9 +28,8 @@ console.log(`
   ${JSON.stringify(process.env.CONFIGURATION, null, 2)}
   *******************************************
 `);
-window.stores = {};
-function render(Root) {
-  ReactDOM.render(
+function renderApp(Root) {
+  render(
     <AppStatusProvider>
       <PendingOrdersProvider>
         <HashRouter hashType="hashbang">
@@ -52,11 +51,11 @@ function handleRender() {
     setHTMLTheme(locationParsed.t.toUpperCase());
   }
   const UpdatedRoot = require('modules/app/components/app').default;
-
+  (window as WindowApp & typeof globalThis).stores = {};
   // NOTE --  These are attached for convenience when built for development or debug
   if (process.env.NODE_ENV === 'development') {
-    (window as WindowApp).app = UpdatedRoot;
+    (window as WindowApp & typeof globalThis).app = UpdatedRoot;
   }
 
-  render(UpdatedRoot);
+  renderApp(UpdatedRoot);
 }

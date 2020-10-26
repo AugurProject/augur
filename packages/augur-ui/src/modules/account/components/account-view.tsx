@@ -21,7 +21,7 @@ import {
   AUGUR_STATUS_TITLE,
   THEMES,
 } from 'modules/common/constants';
-import Styles from 'modules/account/components/account-view.styles.less';
+import * as Styles from 'modules/account/components/account-view.styles.less';
 import classNames from 'classnames';
 import { ACCOUNT_VIEW_HEAD_TAGS } from 'modules/seo/helmet-configs';
 import { HelmetTag } from 'modules/seo/helmet-tag';

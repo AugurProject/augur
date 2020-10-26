@@ -720,6 +720,7 @@ export interface WindowApp extends Window {
   fm?: any;
   torus?: any;
   portis?: any;
+  stores?: any;
   showIndexedDbSize?: Function;
 }
 

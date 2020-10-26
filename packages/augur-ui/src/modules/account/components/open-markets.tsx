@@ -18,7 +18,7 @@ function filterComp(input: any, market: any) {
 }
 
 interface OpenMarketsProps {
-  toggle: Function;
+  toggle?: Function;
 }
 
 interface LoginAcccountPositionsMarketsInfo {
