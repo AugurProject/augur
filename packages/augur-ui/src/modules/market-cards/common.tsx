@@ -82,7 +82,7 @@ import { calculatePosition } from 'modules/market/components/market-scalar-outco
 import { getOutcomeNameWithOutcome } from 'utils/get-outcome';
 import { SmallSubheadersTooltip } from 'modules/create-market/components/common';
 import { Betslip } from 'modules/trading/store/betslip';
-import { MARKET, MARKETS } from 'modules/routes/constants/views';
+import { MARKETS } from 'modules/routes/constants/views';
 import makePath from 'modules/routes/helpers/make-path';
 import toggleCategory from 'modules/routes/helpers/toggle-category';
 import { useMarketsStore } from 'modules/markets/store/markets';
@@ -1004,6 +1004,31 @@ export const SportsMarketContainer = ({
           reportingState={market.reportingState}
           forceLongDate
         />
+        {tradingPositionsPerMarket &&
+        tradingPositionsPerMarket.current !== '0' && (
+          <div
+            className={Styles.HoverIcon}
+            data-tip
+            data-for={`tooltip-${market.id}-youHaveABet`}
+            data-iscapture={false}
+          >
+            {PositionIcon}
+            <ReactTooltip
+              id={`tooltip-${market.id}-youHaveABet`}
+              className={TooltipStyles.Tooltip}
+              effect="solid"
+              place="top"
+              type="light"
+              data-event="mouseover"
+              data-event-off="blur scroll"
+            >
+              You have a bet
+            </ReactTooltip>
+          </div>
+        )}
+        <span className={Styles.MatchedLine}>
+          Matched<b>{market.volumeFormatted.full}</b>
+        </span>
         <DotSelection
           customClass={classNames({ [Styles.ShowCopied]: isCopied })}
         >

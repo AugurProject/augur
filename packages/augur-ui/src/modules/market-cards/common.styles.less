@@ -470,7 +470,7 @@
 
 	> span:last-of-type {
 		.text-12-bold;
-		
+
 		color: var(--color-primary-text);
 	}
 
@@ -757,7 +757,7 @@
 	flex: 1;
 	justify-content: flex-end;
 	height: @size-18;
-	
+
 	@media @breakpoint-mobile-tablet {
 		display: none;
 	}
@@ -851,7 +851,7 @@
 
 		&.futures {
 			> .MatchedLine,
-			> button[class*="FavoriteButton"], 
+			> button[class*="FavoriteButton"],
 			> div[class*='DotSelection'] {
 				display: none;
 			}
@@ -879,7 +879,7 @@
     flex-flow: row nowrap;
 		height: @size-18;
 		text-transform: uppercase;
-		
+
 		@media @breakpoint-mobile-tablet {
 			grid-column: 3;
 		}
@@ -902,7 +902,7 @@
 
 		> article {
 			.OutcomeArticle;
-			
+
 			width: 100%;
 		}
 
@@ -957,7 +957,7 @@
 				border-right: none;
 				border-top: none;
 				margin: 0;
-				
+
 				&:last-of-type {
 					border-bottom: none;
 				}
@@ -989,7 +989,7 @@
 				border-radius: @border-radius-default;
 				flex-flow: row nowrap;
 				justify-content: center;
-				
+
 				> svg {
 					height: @size-16;
 					width: @size-16;
@@ -1009,7 +1009,7 @@
 						text-transform: uppercase;
 					}
 				}
-	
+
 				&:hover:enabled,
 				&:active:enabled {
 					background: var(--color-primary-action-20) !important;
@@ -1019,7 +1019,7 @@
 
 		> h6 {
 			.text-14-bold;
-			
+
 			color: var(--color-primary-text);
 			text-align: center;
 			margin-bottom: @size-4;
@@ -1143,7 +1143,7 @@
 		border: @size-1 solid var(--color-outline);
 		border-radius: @border-radius-default;
 
-		> header { 
+		> header {
 			> span:first-of-type[class*="ProgressLabel"] {
 				> span:first-of-type {
 					.text-12;
@@ -1154,17 +1154,27 @@
 				}
 			}
 
-			> svg {
-			height: @size-20;
-			width: @size-20;
-			padding: @size-2;
-			border: @size-1 solid var(--color-dark-grey);
-			border-radius: @size-16;
-			margin-left: @size-8;
+      > div[class$="HoverIcon"] {
+        margin: 0 0 0 @size-12;
 
-				> g > path {
-					fill: var(--color-secondary-text);
-				}
+        > svg {
+          height: @size-20;
+          width: @size-20;
+          max-height: @size-20;
+          max-width: @size-20;
+          padding: @size-2;
+          border: @size-1 solid var(--color-dark-grey);
+          border-radius: @size-16;
+          margin-left: 0;
+
+          > g > path {
+            fill: var(--color-secondary-text);
+          }
+        }
+
+        &:hover > svg {
+          border-color: var(--color-secondary-text);
+        }
 			}
 		}
 
@@ -1177,7 +1187,7 @@
 					transform: none;
 				}
 			}
-			
+
 			> div {
 				display: none;
 			}
@@ -1355,7 +1365,7 @@
 							border-bottom-left-radius: @border-radius-default;
 							border-bottom-right-radius: @border-radius-default;
 						}
-						
+
 						> div {
 							display: flex;
 							justify-content: space-between;
@@ -1423,7 +1433,11 @@
 					display: none;
 				}
 
-				> span { 
+				@media @breakpoint-mobile {
+					display: none;
+				}
+
+				> span {
 					margin: 0;
 
 					&:last-of-type {
@@ -1452,7 +1466,7 @@
 
 				> h6 {
 					.text-10-semi-bold;
-	
+
 					color: var(--color-secondary-text);
 					text-transform: uppercase;
 					margin-right: auto;
@@ -1506,10 +1520,10 @@
 
 	.ShowCopied {
 		position: relative;
-		
+
 	  &:before {
 			.text-12;
-		
+
 			content: 'Copied!';
 			align-items: center;
 			color: var(--color-module-background);
@@ -1527,7 +1541,7 @@
 
 		&:after {
 			content: '';
-		
+
 			border-top: solid @size-8 var(--color-primary-text-80);
 			border-left: solid @size-8 transparent;
 			border-right: solid @size-8 transparent;
@@ -1535,7 +1549,7 @@
 			top: -@size-8;
 		}
 	}
-	
+
 	div.ReportedOutcome {
 		max-width: @size-106;
 
@@ -1561,11 +1575,11 @@
 
 				> span {
 					.text-12;
-	
+
 					color: var(--color-primary-text);
 					white-space: nowrap;
 				}
-	
+
 				> span:last-of-type {
 					.text-10-semi-bold;
 				}
@@ -1637,7 +1651,7 @@
 
 		> p {
 			.text-14;
-	
+
 			align-items: center;
 			border-top: @size-1 solid var(--color-outline);
 			color: var(--color-primary-text);
