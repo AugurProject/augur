@@ -2975,6 +2975,44 @@ div.ButtonsRow:last-of-type {
         &:disabled {
           opacity: 0.5;
         }
+
+        > p:first-of-type {
+          .text-14;
+        }
+
+        > p:last-of-type {
+          .text-14;
+        }
+      }
+
+      > div:nth-of-type(2) {
+        border: @size-1 solid var(--color-dark-grey);
+        background-color: var(--color-active-background);
+
+        > div:first-of-type {
+          > label {
+            .text-10-semi-bold;
+          }
+        }
+
+        > div:nth-of-type(2) {
+          > div {
+            > span:first-of-type {
+              .text-14-bold;
+            }
+            > span:last-of-type {
+              .text-14;
+
+              color: var(--color-primary-text);
+            }
+          }
+
+          > span {
+            .text-10;
+
+            color: var(--color-primary-text);
+          }
+        }
       }
 
       > div:nth-of-type(2) > div:first-of-type > input[type='number'] {
