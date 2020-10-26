@@ -50,7 +50,7 @@ export default function TokenLogo({ tokenInfo, showSymbol = false, size = '24px'
       <StyledEthereumLogo size={size} {...rest}>
         <img src={require(`../../assets/${cashtoken.asset}`)} style={{ borderRadius: '24px' }} alt="Trading token" />
         <TYPE.light style={{ fontSize: size, paddingLeft: '0.25rem', fontWeight: '500' }}>
-          {showSymbol ? <span style={{paddingLeft: '0.5rem'}}>{cashtoken.symbol}</span> : ''}
+          {showSymbol ? <span style={{paddingLeft: '0.15rem'}}>{cashtoken.symbol}</span> : ''}
         </TYPE.light>
       </StyledEthereumLogo>
     )

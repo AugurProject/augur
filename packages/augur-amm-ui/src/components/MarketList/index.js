@@ -161,7 +161,7 @@ function MarketList({ markets, itemMax = 10 }) {
 
   const ListItem = ({ item, index }) => {
     return (
-      <DashGrid style={{ height: '48px' }} focus={true}>
+      <DashGrid style={{ height: '48px', alignContent: 'center' }} focus={true}>
         {!below680 && <TokenLogo tokenInfo={item?.cash} />}
         <BasicLink style={{ width: '100%' }} to={'/token/' + item.id} key={item.id}>
           {item.description}
