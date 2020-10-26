@@ -1358,7 +1358,7 @@
 								> svg {
 									display: flex;
 								}
-							}
+							} 
 						}
 
 						&:last-of-type {
@@ -1417,10 +1417,9 @@
 
 				color: var(--color-secondary-text);
 				text-transform: uppercase;
-				display: flex;
-				height: 100%;
 				align-items: center;
 				text-overflow: ellipsis;
+				padding-right: @size-16;
 			}
 
 			> span[class*="ProgressLabel"] {
@@ -1429,6 +1428,10 @@
 				align-items: center;
 				height: 100%;
 				margin-left: auto;
+
+				@media @breakpoint-mobile {
+					display: none;
+				}
 
 				@media @breakpoint-mobile {
 					display: none;

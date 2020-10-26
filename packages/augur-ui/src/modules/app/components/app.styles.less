@@ -278,7 +278,7 @@ h6 {
         margin: 0 auto;
         width: 100%;
       }
-  
+
       > div[class*="BettingMarketView"] {
         margin: 0 0 0 auto;
         max-width: 1042px;
@@ -367,11 +367,12 @@ h6 {
 
   .Betslip {
     padding: @size-32 @size-32 @size-32 @size-40;
-    position: sticky;
+    position: static;
     top: 0;
 
     @media @breakpoint-mobile-tablet {
       padding: @size-32 @size-32 @size-32 @size-24;
+      position: unset;
     }
 
     @media @breakpoint-tablet-tiny {

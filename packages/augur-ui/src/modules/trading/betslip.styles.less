@@ -7,36 +7,29 @@
 :root[theme="BETTING"],
 :root[theme="SPORTS"] {
   .Betslip {
-    display: flex;
-    flex-flow: column nowrap;
     align-items: center;
+    background: var(--color-module-background);
+    display: flex;
+    flex-flow: row nowrap;
     justify-content: flex-start;
+    padding: 0;
 
     > div {
       display: none;
-      transition: background .3s ease;
     }
 
     @media @breakpoint-mobile-tiny {
-      background: var(--color-module-background);
-      position: absolute;
-      bottom: 0;
+      position: fixed;
       right: 0;
       left: 0;
-      z-index: @mask-above;
-      padding: 0;
-      flex-flow: row nowrap;
-      align-items: flex-start;
-      justify-content: flex-end;
       z-index: @mask-toast;
-      top: @size-64;
 
       > div {
+        display: flex;
         align-items: flex-end;
         background: var(--color-primary-text);
-        display: flex;
         flex-flow: column;
-        height: 100%;
+        transition: background .3s ease;
         width: 100%;
 
         > button:first-of-type {
@@ -44,6 +37,7 @@
 
           align-content: center;
           align-items: center;
+          background: var(--color-primary-text);
           color: var(--color-module-background);
           cursor: pointer;
           display: flex;
@@ -51,10 +45,7 @@
           height: @size-36;
           justify-content: center;
           text-transform: uppercase;
-          transform: rotate(-0.25turn) translate(-@size-125, @size-36);
-          width: @size-106;
-          border-top-left-radius: @border-radius-default;
-          border-top-right-radius: @border-radius-default;
+          width: 100%;
 
           > svg {
             height: @size-8;
@@ -66,104 +57,126 @@
             }
           }
         }
-
-        > button:last-of-type {
-          display: none;
-        }
       }
 
       &.Minimized {
-        background: transparent;
-        max-width: @size-36;
-        left: unset;
-        z-index: @above-all-content;
-        position: fixed;
+        z-index: @mask-toast;
 
         > div {
           width: @size-36;
           height: @size-106;
           display: block;
           background: transparent;
+          transition: background .3s ease, width 0s ease .3s, height 0s ease .3s;
+        }
+      }
+    }
+
+    @media @breakpoint-tiny {
+      align-items: flex-start;
+      background: transparent;
+      top: calc(@top-bar-height + @size-1);
+      right: -@size-326;
+      bottom: 0;
+      left: 0;
+      justify-content: flex-end;
+      z-index: @mask-modal;
+
+      -webkit-transform: translateX(-@size-326);
+      transform: translateX(-@size-326);
+      transition: transform .3s cubic-bezier(0.44, 0, 0.56, 1);
+      will-change: transform;
+
+      > div {
+        background-color: var(--color-primary-text-50);
+        height: 100%;
+
+        > button:first-of-type {
+          width: @size-106;
+          border-top-left-radius: @border-radius-default;
+          border-top-right-radius: @border-radius-default;
+          transform: rotate(-0.25turn) translate(-@size-125, @size-36);
+        }
+      }
+
+      &.Minimized {
+        background: transparent;
+        left: 0;
+        right: -@size-326;
+        z-index: @mask-modal;
+
+        -webkit-transform: none;
+        transform: none;
+        transition: transform .3s cubic-bezier(0.44, 0, 0.56, 1);
+
+        > div {
+          display: flex;
+          align-items: flex-end;
 
           > button:first-of-type {
-            background: var(--color-primary-text);
-            transform: rotate(-0.25turn) translate(-@size-78, -@size-17);
+            transform: rotate(-0.25turn) translate(-@size-107, @size-54);
             transform-origin: bottom;
-            width: @size-106;
-            border-top-left-radius: @border-radius-default;
-            border-top-right-radius: @border-radius-default;
-            margin-top: @size-30;
 
             > svg {
               transform: rotate(0.5turn);
             }
           }
-
-          > button:last-of-type {
-            display: none;
-          }
-        }
-
-        > section {
-          min-width: 0;
-          right: -@size-1;
         }
       }
     }
 
     @media @breakpoint-mobile-tablet {
       flex-direction: column;
+      top: 120vh;
+      bottom: -120vh;
+
+      -webkit-transform: translateY(-120vh);
+      transform: translateY(-120vh);
+      transition: transform .3s cubic-bezier(0.44, 0, 0.56, 1);
+      will-change: transform;
 
       > div {
-        align-items: normal;
-        height: unset;
+        align-items: center;
 
         > button:first-of-type {
-          width: unset;
-          transform: unset;
-        }
+          height: @size-64;
 
-        > button:last-of-type {
-          display: none;
+          > svg {
+            position: absolute;
+            right: @size-18;
+          }
         }
       }
 
       &.Minimized {
-        padding: @size-8;
-        right: 0;
-        left: 0;
-        max-width: unset;
-        top: unset;
+        top: 120vh;
+        bottom: -120vh;
+
+        -webkit-transform: none;
+        transform: none;
+        transition: transform .3s cubic-bezier(0.44, 0, 0.56, 1);
 
         > div {
-          background: unset;
-          height: unset;
           width: 100%;
-          display: flex;
-
-          > button:first-of-type {
-            display: none;
-          }
-
-          > button:last-of-type {
-            display: flex;
-          }
-        }
-
-        > section {
-          display: none;
+          height: unset;
         }
       }
     }
+  }
 
-    @media @breakpoint-tiny {
-      background: transparent;
-      > div {
-        background: var(--color-primary-text-50);
+  .OpenBetslipButton {
+    display: none;
 
-        > button:first-of-type {
-          background: var(--color-primary-text);
-        }
+    @media @breakpoint-mobile-tablet {
+      &.Minimized {
+        display: flex;
+        position: fixed;
+        bottom: @size-8;
+        left: @size-8;
+        right: @size-8;
+        width: calc(100% - @size-16);
+        padding: 0;
+        z-index: @default-above;
       }
     }
   }
@@ -179,11 +192,11 @@
     top: 0;
     transition: all .3s cubic-bezier(0.44, 0, 0.56, 1);
 
-    > ul, 
+    > ul,
     > section {
       min-width: @size-326;
     }
-    
+
     @media @breakpoint-mobile-tablet {
       height: 100%;
       border: 0;
