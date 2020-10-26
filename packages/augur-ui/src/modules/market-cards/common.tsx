@@ -994,7 +994,7 @@ export const SportsMarketContainer = ({
     const newBase = window.location.href.replace('markets', 'market?id=');
     headingContent = (
       <Fragment key={`${marketId}-heading`}>
-        <h6>{market.description}</h6>
+        <h6 title={market.description}>{market.description}</h6>
         {tradingPositionsPerMarket &&
           tradingPositionsPerMarket.current !== '0' &&
           PositionIcon}
