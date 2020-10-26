@@ -168,7 +168,7 @@
     "stylelint-no-browser-hacks": "1.2.1",
     "stylelint-order": "0.8.1",
     "terser-webpack-plugin": "2.1.0",
-    "ts-loader": "6.1.1",
+    "ts-loader": "8.0.7",
     "typescript": "3.8.3",
     "typings-for-css-modules-loader": "1.7.0",
     "watchify": "3.11.1",
