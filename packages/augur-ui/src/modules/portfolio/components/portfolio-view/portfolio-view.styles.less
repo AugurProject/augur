@@ -1,19 +1,19 @@
 @import (reference) '~assets/styles/shared';
 
 .PortfolioView {
+  display: flex;
   min-height: calc(~'100vh - @{multi-top-bar-height} - @{footer-height}');
 
   > section {
     display: flex;
     flex: 1;
-    margin: 0 auto;
+    margin: 0 auto @size-12;
     max-width: 2000px;
   
     > div {
       flex: 1;
       flex-direction: column;
       margin: @size-8;
-      height: 100%;
   
       > div {
         display: flex;
