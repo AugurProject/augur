@@ -67,6 +67,7 @@
           height: @size-106;
           display: block;
           background: transparent;
+          transition: background .3s ease, width 0s ease .3s, height 0s ease .3s;
         }
       }
     }
@@ -74,11 +75,11 @@
     @media @breakpoint-tiny {
       align-items: flex-start;
       background: transparent;
-      bottom: 0;
-      justify-content: flex-end;
-      left: unset;
+      top: calc(@top-bar-height + @size-1);
       right: -@size-326;
-      top: @size-56;
+      bottom: 0;
+      left: 0;
+      justify-content: flex-end;
       z-index: @mask-modal;
 
       -webkit-transform: translateX(-@size-326);
@@ -87,19 +88,20 @@
       will-change: transform;
 
       > div {
-        transform: rotate(-0.25turn) translate(-@size-125, @size-36);
+        background-color: var(--color-primary-text-50);
+        height: 100%;
 
         > button:first-of-type {
           width: @size-106;
           border-top-left-radius: @border-radius-default;
           border-top-right-radius: @border-radius-default;
+          transform: rotate(-0.25turn) translate(-@size-125, @size-36);
         }
       }
 
       &.Minimized {
         background: transparent;
-        max-width: @size-36;
-        left: unset;
+        left: 0;
         right: -@size-326;
         z-index: @mask-modal;
 
@@ -108,11 +110,16 @@
         transition: transform .3s cubic-bezier(0.44, 0, 0.56, 1);
 
         > div {
-          transform: rotate(-0.25turn) translate(-@size-72, @size-88);
-          transform-origin: bottom;
+          display: flex;
+          align-items: flex-end;
 
-          > button:first-of-type > svg {
-            transform: rotate(0.5turn);
+          > button:first-of-type {
+            transform: rotate(-0.25turn) translate(-@size-107, @size-54);
+            transform-origin: bottom;
+
+            > svg {
+              transform: rotate(0.5turn);
+            }
           }
         }
       }
