@@ -48,6 +48,7 @@ export function useTradeExactIn(
   const balance = useMarketBalance(marketId, cash)
   const augurClient = useAugurClient()
   return useMemo(() => {
+    console.log('constructing trade')
     if (currencyAmountIn && currencyOut && inputCurrency) {
       // do any amount conversion here
       const no = JSBI.BigInt(String(Number(ammExchange.percentageNo) / 100).substring(6))

@@ -121,11 +121,9 @@ export function useDerivedSwapInfo(
   const { account } = useActiveWeb3React()
   const ammExchange = useMarketAmm(marketId, amm)
   const {
-    independentField,
     typedValue,
     [Field.INPUT]: { currencyId: inputCurrencyId },
     [Field.OUTPUT]: { currencyId: outputCurrencyId },
-    recipient
   } = useSwapState()
 
   let inputCurrency = useCurrency(inputCurrencyId)
@@ -137,25 +135,21 @@ export function useDerivedSwapInfo(
   inputCurrency = inputCurrency ? inputCurrency : marketInputCurrency
   outputCurrency = outputCurrency ? outputCurrency : marketOutputCurrency
 
-  const recipientLookup = useENS(recipient ?? undefined)
-  const to: string | null = (recipient === null ? account : recipientLookup.address) ?? null
+  const to: string | null = account ?? null
 
   const relevantTokenBalances = useCurrencyBalances(account ?? undefined, [
     inputCurrency ?? undefined,
     outputCurrency ?? undefined
   ])
 
-  const isExactIn: boolean = independentField === Field.INPUT
-  const parsedAmount = tryParseAmount(typedValue, (isExactIn ? inputCurrency : outputCurrency) ?? undefined)
+  const parsedAmount = tryParseAmount(typedValue, inputCurrency ?? undefined)
 
-  const bestTradeExactIn = useTradeExactIn(
+  const v2Trade = useTradeExactIn(
     ammExchange,
     inputCurrency,
-    isExactIn ? parsedAmount : undefined,
+    parsedAmount,
     outputCurrency ?? undefined
   )
-
-  const v2Trade = bestTradeExactIn
 
   const currencyBalances = {
     [Field.INPUT]: relevantTokenBalances[0],

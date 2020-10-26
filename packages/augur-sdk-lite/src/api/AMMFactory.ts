@@ -101,10 +101,10 @@ export class AMMFactory {
     return amm.doExitPosition(new BigNumber(invalidShares), new BigNumber(noShares), new BigNumber(yesShares), new BigNumber(minShares));
   }
 
-  async swap(ammAddress: string, inputShares: string, buyYes: boolean): Promise<TransactionResponse> {
+  async swap(ammAddress: string, inputShares: string, buyYes: boolean, minShares: string): Promise<TransactionResponse> {
     if (!ammAddress) return null;
     const amm = new AMMExchange(this.signerOrProvider, ammAddress);
-    return amm.doSwap(new BigNumber(inputShares), buyYes)
+    return amm.doSwap(new BigNumber(inputShares), buyYes, new BigNumber(minShares))
   }
 
   async removeLiquidity(ammAddress: string, lpTokens: BigNumber): Promise<TransactionResponse> {

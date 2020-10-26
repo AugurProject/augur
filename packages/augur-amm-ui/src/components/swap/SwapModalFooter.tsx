@@ -1,20 +1,19 @@
+import { JSBI } from '@uniswap/sdk'
 import React, { useContext, useMemo, useState } from 'react'
 import { Repeat } from 'react-feather'
 import { Text } from 'rebass'
 import { ThemeContext } from 'styled-components'
 import { TradeInfo } from '../../hooks/Trades'
 import { TYPE } from '../../Theme'
-import {
-  computePriceImpact,
-  formatExecutionPrice,
-  warningSeverity
-} from '../../utils/prices'
+import { formattedNum } from '../../utils'
+import { computePriceImpact, formatExecutionPrice, warningSeverity } from '../../utils/prices'
 import { ButtonError } from '../ButtonStyled'
 import { AutoColumn } from '../Column'
 import QuestionHelper from '../QuestionHelper'
 import { AutoRow, RowBetween, RowFixed } from '../Row'
 import FormattedPriceImpact from './FormattedPriceImpact'
 import { StyledBalanceMaxMini, SwapCallbackError } from './styleds'
+import { BigNumber as BN } from 'bignumber.js'
 
 export default function SwapModalFooter({
   trade,
@@ -33,8 +32,23 @@ export default function SwapModalFooter({
 }) {
   const [showInverted, setShowInverted] = useState<boolean>(false)
   const theme = useContext(ThemeContext)
-  const { priceImpactWithoutFee, slippageAdjustedAmounts } = useMemo(() => computePriceImpact(trade, minAmount), [trade, minAmount])
+  const { priceImpactWithoutFee, slippageAdjustedAmounts } = useMemo(() => computePriceImpact(trade, minAmount), [
+    trade,
+    minAmount
+  ])
   const severity = warningSeverity(priceImpactWithoutFee)
+  const [priceRate, setPriceRate] = useState(null)
+
+  useMemo(() => {
+    if (!minAmount) return setPriceRate(null)
+    const receivedAmountDisplay = new BN(String(trade.inputAmount.raw)).div(new BN(minAmount))
+    const InPerOut = receivedAmountDisplay
+    const OutPerIn = new BN(minAmount).div(new BN(String(trade.inputAmount.raw)))
+    const label = showInverted
+      ? `${formattedNum(InPerOut.toFixed(6))} ${trade.currencyOut.symbol} per ${trade.currencyIn.symbol}`
+      : `${formattedNum(OutPerIn.toFixed(6))} ${trade.currencyIn.symbol} per ${trade.currencyOut.symbol}`
+    setPriceRate({ label })
+  }, [trade, minAmount, showInverted])
 
   return (
     <>
@@ -55,10 +69,16 @@ export default function SwapModalFooter({
               paddingLeft: '10px'
             }}
           >
-            {formatExecutionPrice(trade, showInverted)}
-            <StyledBalanceMaxMini onClick={() => setShowInverted(!showInverted)}>
-              <Repeat size={14} />
-            </StyledBalanceMaxMini>
+            {priceRate ? (
+              <>
+                {priceRate.label}
+                <StyledBalanceMaxMini onClick={() => setShowInverted(!showInverted)}>
+                  <Repeat size={14} />
+                </StyledBalanceMaxMini>
+              </>
+            ) : (
+              ''
+            )}
           </Text>
         </RowBetween>
 
@@ -70,9 +90,7 @@ export default function SwapModalFooter({
             <QuestionHelper text="Your transaction will revert if there is a large, unfavorable price movement before it is confirmed." />
           </RowFixed>
           <RowFixed>
-            <TYPE.black fontSize={14}>
-              {slippageAdjustedAmounts ?? '-'}
-            </TYPE.black>
+            <TYPE.black fontSize={14}>{slippageAdjustedAmounts ?? '-'}</TYPE.black>
             <TYPE.black fontSize={14} marginLeft={'4px'}>
               {trade?.currencyOut?.symbol}
             </TYPE.black>
