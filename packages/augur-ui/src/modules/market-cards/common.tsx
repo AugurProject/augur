@@ -917,12 +917,25 @@ export const SportsMarketContainer = ({
         />
         {tradingPositionsPerMarket &&
         tradingPositionsPerMarket.current !== '0' && (
-          <HoverIcon
-            id={`tooltip-${market.id}-youHaveABet`}
-            label="youHaveABetLabel"
-            icon={PositionIcon}
-            hoverText="You have a bet"
-          />
+          <div
+            className={Styles.HoverIcon}
+            data-tip
+            data-for={`tooltip-${market.id}-youHaveABet`}
+            data-iscapture={false}
+          >
+            {PositionIcon}
+            <ReactTooltip
+              id={`tooltip-${market.id}-youHaveABet`}
+              className={TooltipStyles.Tooltip}
+              effect="solid"
+              place="top"
+              type="light"
+              data-event="mouseover"
+              data-event-off="blur scroll"
+            >
+              You have a bet
+            </ReactTooltip>
+          </div>
         )}
         <span className={Styles.MatchedLine}>
           Matched<b>{market.volumeFormatted.full}</b>
@@ -1312,7 +1325,7 @@ export const HoverIcon = ({ id, icon, hoverText, label }: HoverIconProps) => (
     className={Styles.HoverIcon}
     data-tip
     data-for={`tooltip-${id}${label}`}
-    data-iscapture={false}
+    data-iscapture={true}
   >
     {icon}
     <ReactTooltip
