@@ -62,7 +62,7 @@ module.exports = {
     symlinks: false,
   },
   module: {
-    rules: (rules = [
+    rules: [
       {
         test: /\.tsx?$/,
         loader: 'ts-loader',
@@ -149,7 +149,7 @@ module.exports = {
           },
         },
       },
-    ]),
+    ],
   },
   optimization: {
     // https://webpack.js.org/configuration/optimization/#optimization-usedexports
