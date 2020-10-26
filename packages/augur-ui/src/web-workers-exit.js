@@ -8,7 +8,7 @@ if (
   window.navigator.serviceWorker.getRegistrations
 ) {
   window.navigator.serviceWorker.getRegistrations().then(registrations => {
-    if (registrations.length === 0) return;
+    if (registrations.length === 0) return null;
     const p = registrations.map(registration => registration.unregister());
 
     return Promise.all(p).then(() => {
@@ -17,3 +17,4 @@ if (
     });
   });
 }
+
