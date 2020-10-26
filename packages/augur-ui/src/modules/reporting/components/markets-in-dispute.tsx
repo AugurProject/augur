@@ -212,9 +212,9 @@ const MarketsInDispute = () => {
       </Media>
       <QuadBox
         title="Markets In Dispute"
-        onSearchChange={onSearchChange}
         sortByOptions={sortByOptions}
         updateDropdown={updateDropdown}
+        setSearch={onSearchChange}
         subheader={
           <SwitchLabelsGroup
             tabs={tabs}

@@ -20,7 +20,6 @@ export interface QuadBoxProps {
   footer?: ReactNode;
   customClass?: string;
   search?: string;
-  onSearchChange?: Function;
   setSearch?: Function;
   sortByOptions?: NameValuePair[];
   updateDropdown?: Function;
