@@ -17,7 +17,6 @@ import { Trading } from 'modules/trading/store/trading';
 
 interface DepthChartProps {
   marketDepth: MarketDepth;
-  orderBookKeys: { max: BigNumber; min: BigNumber; mid: BigNumber };
   pricePrecision: number;
   updateHoveredPrice: Function;
   updateHoveredDepth: Function;

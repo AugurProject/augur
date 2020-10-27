@@ -15,8 +15,6 @@ import {
   YellowTemplateIcon,
   ArchivedIcon,
   ExclamationCircle,
-  FilledCheckbox,
-  EmptyCheckbox,
 } from 'modules/common/icons';
 import ReactTooltip from 'react-tooltip';
 import {
@@ -46,13 +44,11 @@ import {
   BUY,
   MODAL_ADD_LIQUIDITY,
 } from 'modules/common/constants';
-import { useAppStatusStore, AppStatus } from 'modules/app/store/app-status';
+import { useAppStatusStore } from 'modules/app/store/app-status';
 import { ViewTransactionDetailsButton } from 'modules/common/buttons';
 import {
   formatNumber,
-  formatBlank,
   formatGasCostToEther,
-  formatAttoEth,
   formatEther,
 } from 'utils/format-number';
 import {
@@ -61,8 +57,7 @@ import {
   SizeTypes,
   MarketData,
 } from 'modules/types';
-import type { Getters } from '@augurproject/sdk';
-import { TXEventName } from '@augurproject/sdk-lite';
+import { TXEventName, DisputeInfo, MarketInfo } from '@augurproject/sdk-lite';
 import {
   DISMISSABLE_NOTICE_BUTTON_TYPES,
   DismissableNotice,
@@ -73,16 +68,13 @@ import {
   EventDetailsContent,
 } from 'modules/create-market/constants';
 import {
-  ExplainerBlock,
   MultipleExplainerBlock,
 } from 'modules/create-market/components/common';
 import { hasTemplateTextInputs } from '@augurproject/templates';
 import { getDurationBetween } from 'utils/format-date';
 import { useTimer } from 'modules/common/progress';
-import { ethToDai } from 'modules/app/actions/get-ethToDai-rate';
-import { getEthForDaiRate } from 'modules/contracts/actions/contractCalls';
 import { getTransactionLabel } from 'modules/auth/helpers/get-gas-price';
-import { augurSdk } from 'services/augursdk';
+
 
 export interface MarketTypeProps {
   marketType: string;
@@ -98,7 +90,7 @@ export interface MarketStatusProps {
 }
 
 export interface InReportingLabelProps extends MarketStatusProps {
-  disputeInfo: Getters.Markets.DisputeInfo;
+  disputeInfo: DisputeInfo;
   isForkingMarket?: boolean;
 }
 
@@ -302,7 +294,7 @@ export const CountdownLabel = ({ expiry }: CountdownLabelProps) => {
 };
 
 interface RedFlagProps {
-  market: Getters.Markets.MarketInfo;
+  market: MarketInfo;
 }
 
 export const RedFlag = ({ market }: RedFlagProps) => {
@@ -341,7 +333,7 @@ export const TypeLabel = ({type}: TypeLabelProps) => (
 );
 
 interface TemplateShieldProps {
-  market: Getters.Markets.MarketInfo;
+  market: MarketInfo;
 }
 
 export const TemplateShield = ({ market }: TemplateShieldProps) => {

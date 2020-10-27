@@ -1,11 +1,10 @@
-import type { Getters } from '@augurproject/sdk';
 import {
   CATEGORICAL,
   SCALAR,
   SCALAR_OUTCOMES,
   YES_NO,
   YES_NO_OUTCOMES,
-  INVALID_OUTCOME_LABEL
+  INVALID_OUTCOME_LABEL,
 } from 'modules/common/constants';
 import {
   CategoricalMarketIcon,
@@ -16,14 +15,21 @@ import {
   TEMPLATES,
   TEMPLATE_VALIDATIONS,
   RETIRED_TEMPLATES,
+  Template,
+  CategoryTemplate,
   TemplateInputType,
   getExchangeClosingWithBufferGivenDay,
+  TemplateInput,
+  ResolutionRules,
+  TimeOffset,
 } from '@augurproject/templates';
 import {
+  Categories,
+  CategoryStats,
   REQUIRED,
   CHOICE,
   CRYPTO,
-} from '@augurproject/sdk-lite'
+} from '@augurproject/sdk-lite';
 import { NameValuePair } from 'modules/common/selection';
 import {
   MARKET_SUB_TEMPLATES,
@@ -50,10 +56,9 @@ export const getTemplateRadioCardsMarketTypes = (categories: Categories) => {
   if (!templates) return [];
   //const icon = MarketTypeIcons[t.marketType];
   const marketTypes = templates.reduce((p, t) => [...p, t.marketType], []);
-  return [...new Set(marketTypes)].map(m =>
-    MARKET_TYPE_TEMPLATES.find(t => t.value === m)
-  )
-  .map(i => ({...i, icon: MarketTypeIcons[i.value]}));
+  return [...new Set(marketTypes)]
+    .map(m => MARKET_TYPE_TEMPLATES.find(t => t.value === m))
+    .map(i => ({ ...i, icon: MarketTypeIcons[i.value] }));
 };
 
 export const getTemplatesByTertiaryMarketTypes = (categories: Categories) => {
@@ -68,7 +73,7 @@ export const getTemplatesByTertiaryMarketTypes = (categories: Categories) => {
 
 export const getTemplateRadioCards = (
   categories: Categories,
-  categoryStats: Getters.Markets.CategoryStats | null
+  categoryStats: CategoryStats | null
 ): MarketCardTemplate[] => {
   const cats = getTemplateCategories(categories);
   if (cats.length === 0) return [];
@@ -102,7 +107,7 @@ export const getTemplateRadioCards = (
 export const addCategoryStats = (
   categories: Categories | null,
   card: MarketCardTemplate,
-  categoryStats: Getters.Markets.CategoryStats
+  categoryStats: CategoryStats
 ): MarketCardTemplate => {
   if (!categoryStats) return card;
   if (!card) return card;
@@ -137,13 +142,21 @@ export const getTemplateCategories = (categories: Categories): string[] => {
   const primaryCat = TEMPLATES[categories.primary];
   if (!primaryCat) return emptyCats;
   if (!categories.secondary)
-    return primaryCat.children ? noSort ? Object.keys(primaryCat.children) : Object.keys(primaryCat.children).sort() : [];
+    return primaryCat.children
+      ? noSort
+        ? Object.keys(primaryCat.children)
+        : Object.keys(primaryCat.children).sort()
+      : [];
   noSort = NO_SORT_CATEGORIES.includes(categories.secondary);
   const secondaryCat = primaryCat.children
     ? primaryCat.children[categories.secondary]
     : emptyCats;
   if (!secondaryCat) return emptyCats;
-  return secondaryCat.children ? noSort ? Object.keys(secondaryCat.children) : Object.keys(secondaryCat.children).sort() : [];
+  return secondaryCat.children
+    ? noSort
+      ? Object.keys(secondaryCat.children)
+      : Object.keys(secondaryCat.children).sort()
+    : [];
 };
 
 export const getTemplateCategoriesByMarketType = (
@@ -268,9 +281,14 @@ export const getTemplateReadableDescription = (template: Template) => {
   return question;
 };
 
-export const buildMarketDescription = (question: string, inputs: TemplateInput[]) => {
+export const buildMarketDescription = (
+  question: string,
+  inputs: TemplateInput[]
+) => {
   inputs.forEach((input: TemplateInput) => {
-    let value = (input.userInput && String(input.userInput).trim()) || `[${String(input?.placeholder)?.trim()}]`;
+    let value =
+      (input.userInput && String(input.userInput).trim()) ||
+      `[${String(input?.placeholder)?.trim()}]`;
     question = question.replace(`[${input.id}]`, `${value}`);
   });
 
@@ -365,19 +383,41 @@ export const hasNoTemplateCategoryChildren = category => {
   return true;
 };
 
-export const hasNoTemplateCategoryTertiaryChildren = (category, subcategory) => {
-  if (!category || !subcategory || !TEMPLATES[category] || !TEMPLATES[category].children) return true;
-  if (!TEMPLATES[category].children[subcategory] || !TEMPLATES[category].children[subcategory].children) return true;
-  if (TEMPLATES[category].children[subcategory] || TEMPLATES[category].children[subcategory].children) return false;
+export const hasNoTemplateCategoryTertiaryChildren = (
+  category,
+  subcategory
+) => {
+  if (
+    !category ||
+    !subcategory ||
+    !TEMPLATES[category] ||
+    !TEMPLATES[category].children
+  )
+    return true;
+  if (
+    !TEMPLATES[category].children[subcategory] ||
+    !TEMPLATES[category].children[subcategory].children
+  )
+    return true;
+  if (
+    TEMPLATES[category].children[subcategory] ||
+    TEMPLATES[category].children[subcategory].children
+  )
+    return false;
   return true;
 };
 
-export const hasAutoFillCategory = (inputs: TemplateInput[], categoryIndex: number) => {
+export const hasAutoFillCategory = (
+  inputs: TemplateInput[],
+  categoryIndex: number
+) => {
   if (inputs.length === 0) return false;
   const autoFillCategoryInput = inputs.find(i => i.categoryDestId);
-  return autoFillCategoryInput && autoFillCategoryInput.categoryDestId === categoryIndex;
+  return (
+    autoFillCategoryInput &&
+    autoFillCategoryInput.categoryDestId === categoryIndex
+  );
 };
-
 
 export const isValidTemplateMarket = (hash: string, marketTitle: string) => {
   const validation = TEMPLATE_VALIDATIONS[hash];
@@ -407,8 +447,12 @@ export function getEventExpirationForExchangeDayInQuestion(
     );
     // offset has already been applied but needs to be passed out
     return {
-      ...timestampComponents(closingDateTime, timeOffset.offset, timeOffset.timezone),
-      offset: timeOffset.offset
+      ...timestampComponents(
+        closingDateTime,
+        timeOffset.offset,
+        timeOffset.timezone
+      ),
+      offset: timeOffset.offset,
     };
   }
   return null;

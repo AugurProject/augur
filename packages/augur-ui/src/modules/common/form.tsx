@@ -1,4 +1,4 @@
-import { Getters } from '@augurproject/sdk';
+import { StakeDetails } from '@augurproject/sdk-lite';
 import classNames from 'classnames';
 import React, { useState, useEffect, Component } from 'react';
 import { useHistory } from 'react-router';
@@ -33,7 +33,6 @@ import {
   RightAngle,
   SearchIcon,
   XIcon,
-  ExclamationCircle,
   AlternateXIcon,
 } from 'modules/common/icons';
 import debounce from 'utils/debounce';
@@ -48,7 +47,6 @@ import { NameValuePair, SquareDropdown } from 'modules/common/selection';
 import 'react-dates/lib/css/_datepicker.css';
 import { PulseLoader } from 'react-spinners';
 import { BigNumber, createBigNumber } from 'utils/create-big-number';
-import { formatAttoRep } from 'utils/format-number';
 import { getTimezones, UTC_Default } from 'utils/get-timezones';
 import noop from 'utils/noop';
 import {
@@ -261,7 +259,7 @@ interface RadioGroupProps {
   updateInputtedStake?: Function;
   updateScalarOutcome?: Function;
   inputScalarOutcome?: string;
-  stake?: Getters.Markets.StakeDetails;
+  stake?: StakeDetails;
   userCurrentDisputeRound:
     | Getters.Accounts.UserCurrentOutcomeDisputeStake[]
     | [];
@@ -292,7 +290,7 @@ export interface ReportingRadioBarProps extends BaseRadioButtonProp {
   updateChecked?: Function;
   expandable?: boolean;
   error?: boolean;
-  stake: Getters.Markets.StakeDetails | null;
+  stake: StakeDetails | null;
   isInvalid?: boolean;
   inputtedReportingStake?: DisputeInputtedValues;
   updateInputtedStake?: Function;

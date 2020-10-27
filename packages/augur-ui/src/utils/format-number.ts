@@ -1,4 +1,4 @@
-import type { tickSizeToNumTickWithDisplayPrices } from '@augurproject/sdk';
+import { tickSizeToNumTickWithDisplayPrices } from '@augurproject/sdk';
 import {
   encodeNumberAsBase10String,
   encodeNumberAsJSNumber,

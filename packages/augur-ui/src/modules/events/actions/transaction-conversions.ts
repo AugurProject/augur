@@ -1,6 +1,6 @@
 import { UIOrder } from 'modules/types';
-import type { Getters } from '@augurproject/sdk';
 import {
+  MarketInfo,
   convertOnChainPriceToDisplayPrice,
   convertOnChainAmountToDisplayAmount,
   numTicksToTickSize,
@@ -22,7 +22,7 @@ export function convertTransactionOrderToUIOrder(
   hash: string,
   onChainOrder,
   status: string,
-  market: Getters.Markets.MarketInfo
+  market: MarketInfo
 ): UIOrder {
   console.log(JSON.stringify(onChainOrder));
   const outcomeId = onChainOrder[TX_OUTCOME_ID].toNumber();

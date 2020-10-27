@@ -1,4 +1,4 @@
-import { BigNumber, createBigNumber } from 'utils/create-big-number';
+import { createBigNumber } from 'utils/create-big-number';
 import {
   BUY,
   INVALID_OUTCOME_ID,
@@ -10,8 +10,7 @@ import {
   approveToTrade,
   placeTrade,
 } from 'modules/contracts/actions/contractCalls';
-import type { Getters } from '@augurproject/sdk';
-import { TXEventName } from '@augurproject/sdk-lite'
+import { TXEventName, MarketInfo } from '@augurproject/sdk-lite'
 import {
   convertDisplayAmountToOnChainAmount,
   convertDisplayPriceToOnChainPrice,
@@ -44,7 +43,7 @@ export const placeMarketTrade = async ({
     blockchain: { currentAugurTimestamp },
   } = AppStatus.get();
   const autoFailOrder = zeroXStatus === ZEROX_STATUSES.ERROR;
-  const market: Getters.Markets.MarketInfo = marketInfos[marketId];
+  const market: MarketInfo = marketInfos[marketId];
   if (!tradeInProgress || !market || outcomeId == null) {
     return console.error(
       `required parameters not found for market ${marketId} outcome ${outcomeId}`

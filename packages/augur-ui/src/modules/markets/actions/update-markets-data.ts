@@ -1,8 +1,7 @@
-import { Getters } from '@augurproject/sdk';
-import { Markets } from '../store/markets';
+import { MarketInfo } from '@augurproject/sdk-lite';
 
 export const addUpdateMarketInfos = (
-  marketsInfo: Getters.Markets.MarketInfo[]
+  marketsInfo: MarketInfo[]
 ) => {
   const marketInfos = marketsInfo.reduce(
     (p, m) => ({ ...p, [m.id]: m }),

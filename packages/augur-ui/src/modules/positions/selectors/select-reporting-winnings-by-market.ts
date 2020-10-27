@@ -4,6 +4,7 @@ import { ZERO } from 'modules/common/constants';
 import {
   marketsReportingCollection,
 } from 'modules/types';
+import type { Getters } from '@augurproject/sdk';
 import { formatAttoDai, formatAttoRep } from 'utils/format-number';
 import { AppStatus } from 'modules/app/store/app-status';
 

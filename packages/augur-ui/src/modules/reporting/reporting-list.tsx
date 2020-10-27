@@ -2,11 +2,10 @@ import React, { useState, useEffect } from 'react';
 import { ReportingCard } from 'modules/reporting/common';
 
 import Styles from 'modules/reporting/common.styles.less';
-import { Getters } from '@augurproject/sdk';
 import { Pagination } from 'modules/common/pagination';
 import PaginationStyles from 'modules/common/pagination.styles.less';
 import { LoadingMarketCard } from 'modules/market-cards/common';
-import { MarketReportingState } from '@augurproject/sdk-lite';
+import { MarketReportingState, MarketList } from '@augurproject/sdk-lite';
 import { useMarketsStore } from 'modules/markets/store/markets';
 import { selectMarket } from 'modules/markets/selectors/market';
 import { useAppStatusStore } from 'modules/app/store/app-status';
@@ -109,7 +108,7 @@ export const Paginator = ({
     loadMarkets(offset, limit, reportingType, processMarkets);
   }
 
-  function processMarkets(err, marketResults: Getters.Markets.MarketList) {
+  function processMarkets(err, marketResults: MarketList) {
     setIsLoadingMarkets(false);
     if (err) return console.log('error', err);
     if (!marketResults || !marketResults.markets || !marketResults.meta) return;

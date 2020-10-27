@@ -1,4 +1,4 @@
-import { BigNumber, createBigNumber } from 'utils/create-big-number';
+import { createBigNumber } from 'utils/create-big-number';
 
 import { BUY, MAX_BULK_ORDER_COUNT, PUBLICTRADE, ZERO } from 'modules/common/constants';
 import { LiquidityOrder, CreateLiquidityOrders } from 'modules/types';
@@ -9,8 +9,7 @@ import {
   placeTrade,
   approvalsNeededToTrade
 } from 'modules/contracts/actions/contractCalls';
-import type { Getters } from '@augurproject/sdk';
-import { TXEventName } from '@augurproject/sdk-lite';
+import { TXEventName, MarketInfo, OutcomeOrderBook } from '@augurproject/sdk-lite';
 import { processLiquidityOrder } from 'modules/events/actions/liquidity-transactions';
 import {
   convertDisplayAmountToOnChainAmount,
@@ -25,7 +24,7 @@ import { checkAccountApproval } from 'modules/auth/actions/approve-account';
 // { 1: [{ type, quantity, price, orderEstimate }, ...], ... }
 
 export const loadPendingLiquidityOrders = (
-  pendingLiquidityOrders: Getters.Markets.OutcomeOrderBook
+  pendingLiquidityOrders: OutcomeOrderBook
 ) => {
   const ordersWithHashes = [];
   Object.keys(pendingLiquidityOrders).map((txMarketHashId: string) => {
@@ -152,7 +151,7 @@ export const startOrderSending = async ({
 };
 
 const createZeroXLiquidityOrders = async (
-  market: Getters.Markets.MarketInfo,
+  market: MarketInfo,
   orders: LiquidityOrder[]
 ) => {
   const { blockchain: { currentAugurTimestamp: timestamp }} = AppStatus.get();

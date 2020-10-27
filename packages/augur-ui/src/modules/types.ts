@@ -172,7 +172,7 @@ export interface Universe extends Getters.Universe.UniverseDetails {
   children: null | Array<Getters.Universe.UniverseDetails>;
   parentUniverseId: null | string;
   id: null | string;
-  DisputeWindow: {
+  disputeWindow: {
       address: Address;
       startTime: number;
       endTime: number;
@@ -742,7 +742,18 @@ export interface WindowApp extends Window {
   fm?: any;
   torus?: any;
   portis?: any;
-  stores?: any;
+  stores?: {
+    appStatus?: any;
+    markets?: any;
+    betslip?: any;
+    trading?: any;
+    pendingOrders?: any;
+  },
+  appStatus?: any;
+  markets?: any;
+  betslip?: any;
+  trading?: any;
+  pendingOrders?: any;
   showIndexedDbSize?: Function;
 }
 

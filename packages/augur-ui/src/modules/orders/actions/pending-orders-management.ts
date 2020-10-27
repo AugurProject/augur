@@ -1,7 +1,6 @@
 import { UIOrder } from 'modules/types';
 import { isTransactionConfirmed } from 'modules/contracts/actions/contractCalls';
 import {
-  convertDisplayAmountToOnChainAmount,
   convertDisplayPriceToOnChainPrice,
 } from '@augurproject/utils';
 import { createBigNumber } from 'utils/create-big-number';

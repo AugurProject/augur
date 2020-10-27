@@ -8,13 +8,12 @@ import {
   POPULAR_CATEGORIES,
   MODAL_SIGNUP,
 } from 'modules/common/constants';
-import { Getters } from '@augurproject/sdk';
+import { MarketList } from '@augurproject/sdk-lite';
 import { PrimaryButton, CategoryButtons } from 'modules/common/buttons';
 import makePath from 'modules/routes/helpers/make-path';
 import { MARKETS } from 'modules/routes/constants/views';
 import { CategorySelector } from 'modules/common/selection';
 import { AppStatus, useAppStatusStore } from 'modules/app/store/app-status';
-import { selectMarketStats } from '../selectors/markets-list';
 import { selectMarkets } from 'modules/markets/selectors/markets-all';
 import { loadMarketsByFilter } from 'modules/markets/actions/load-markets';
 import { useEffect } from 'react';
@@ -25,7 +24,6 @@ const MarketsView = () => {
   const location = useLocation();
   const history = useHistory();
   const componentWrapper = useRef();
-  const marketStats = selectMarketStats();
   let markets = selectMarkets();
   const {
     marketsList: { isSearching },
@@ -69,7 +67,7 @@ const MarketsView = () => {
         offset: 1,
         limit: 25,
       },
-      (err, result: Getters.Markets.MarketList) => {
+      (err, result: MarketList) => {
         if (err) return console.log('Error loadMarketsFilter:', err);
         if (componentWrapper) {
           const filterSortedMarkets = result.markets.map(m => m.id);

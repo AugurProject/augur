@@ -14,6 +14,8 @@ import getPrecision from 'utils/get-number-precision';
 import type { Getters } from "@augurproject/sdk";
 import {
   getTradeInterval,
+  MarketInfoOutcome,
+  OutcomeOrderBook,
 } from '@augurproject/sdk-lite';
 import {
   tickSizeToNumTickWithDisplayPrices,
@@ -35,10 +37,10 @@ interface Props {
   maxPrice: BigNumber;
   minPrice: BigNumber;
   selectedNav: string;
-  selectedOutcome: Getters.Markets.MarketInfoOutcome;
+  selectedOutcome: MarketInfoOutcome;
   currentTimestamp: number;
-  orderBook: Getters.Markets.OutcomeOrderBook;
-  initialLiquidity?: Boolean;
+  orderBook: OutcomeOrderBook;
+  initialLiquidity?: boolean;
 }
 const {
   PRICE,

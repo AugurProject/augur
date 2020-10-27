@@ -17,7 +17,7 @@ import { TextInput } from 'modules/common/form';
 import getPrecision from 'utils/get-number-precision';
 import convertExponentialToDecimal from 'utils/convert-exponential';
 import { MarketData } from 'modules/types';
-import type { Getters } from "@augurproject/sdk";
+import type { MarketInfoOutcome } from "@augurproject/sdk-lite";
 import { CancelTextButton, SecondaryButton } from 'modules/common/buttons';
 import moment from 'moment';
 import {
@@ -182,13 +182,13 @@ const getGasConfirmEstimate = async () => {
 
 interface FromProps {
   market: MarketData;
-  selectedOutcome: Getters.Markets.MarketInfoOutcome;
+  selectedOutcome: MarketInfoOutcome;
   updateSelectedOutcome: Function;
   clearOrderForm: Function;
   updateTradeTotalCost: Function;
   updateTradeNumShares: Function;
   clearOrderConfirmation: Function;
-  initialLiquidity?: Boolean;
+  initialLiquidity?: boolean;
   tradingTutorial?: boolean;
 }
 

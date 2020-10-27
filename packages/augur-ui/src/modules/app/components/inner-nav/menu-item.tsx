@@ -4,9 +4,9 @@ import classNames from "classnames";
 import Styles from "modules/app/components/inner-nav/inner-nav.styles.less";
 
 interface MenuItemProps {
-  isSelected: Boolean;
-  visible: Boolean;
-  seperator?: Boolean;
+  isSelected: boolean;
+  visible: boolean;
+  seperator?: boolean;
   children?: Array<React.Component> | null;
 }
 
