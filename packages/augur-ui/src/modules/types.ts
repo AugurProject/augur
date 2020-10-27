@@ -12,7 +12,18 @@ import {
   CREATE_MARKET_FORM_PARAM_NAME,
   THEME_NAME,
 } from './routes/constants/param-names';
-import { Getters, PayoutNumeratorValue } from '@augurproject/sdk';
+import { Getters } from '@augurproject/sdk';
+import type {
+  MarketInfo,
+  PayoutNumeratorValue,
+  MarketInfoOutcome,
+  DisputeInfo,
+  MarketOrderBookOrder,
+  OutcomeOrderBook,
+  MarketOrderBook,
+  MarketTradingHistory,
+  Orders,
+} from '@augurproject/sdk-lite';
 import type { TransactionMetadataParams, EthersSigner } from '@augurproject/contract-dependencies-ethers';
 import type { BigNumber } from 'utils/create-big-number';
 import type { Template } from '@augurproject/templates';
@@ -90,9 +101,9 @@ export interface CoreStats {
   realizedPL: ValueLabelPair;
 }
 export interface MarketInfos {
-  [marketId: string]: Getters.Markets.MarketInfo;
+  [marketId: string]: MarketInfo;
 }
-export interface Outcomes extends Getters.Markets.MarketInfoOutcome {
+export interface Outcomes extends MarketInfoOutcome {
   name?: string;
 }
 export interface ConsensusFormatted extends PayoutNumeratorValue {
@@ -100,7 +111,7 @@ export interface ConsensusFormatted extends PayoutNumeratorValue {
   outcomeName: string | null;
 }
 
-export interface OutcomeFormatted extends Getters.Markets.MarketInfoOutcome {
+export interface OutcomeFormatted extends MarketInfoOutcome {
   marketId: string;
   description: string;
   lastPricePercent: FormattedNumber | null;
@@ -109,7 +120,7 @@ export interface OutcomeFormatted extends Getters.Markets.MarketInfoOutcome {
   isTradeable: boolean;
 }
 
-export interface MarketData extends Getters.Markets.MarketInfo {
+export interface MarketData extends MarketInfo {
   id: string;
   description: string;
   marketId: string;
@@ -132,15 +143,13 @@ export interface MarketData extends Getters.Markets.MarketInfo {
   finalizationTimeFormatted: DateFormattedObject | null;
   finalizationTime: number | null;
   isArchived: boolean;
-  // TODO: add this to getter Getters.Markets.MarketInfo
-  // disputeInfo: object; this needs to get filled in on getter
+  disputeInfo: DisputeInfo;
   consensusFormatted: ConsensusFormatted | null;
   outcomesFormatted: OutcomeFormatted[];
   isTemplate: boolean;
   pending?: boolean;
   status?: string;
   hasPendingLiquidityOrders?: boolean;
-  sportsBook?: any;
 }
 
 export interface ForkingInfo {
@@ -152,17 +161,16 @@ export interface ForkingInfo {
   winningChildUniverseId?: string;
 }
 export interface Universe extends Getters.Universe.UniverseDetails {
-  outcomeName?: string;
+  outcomeName: string;
   creationTimestamp: number;
   usersRep: string;
   totalRepSupply: string;
   totalOpenInterest: string;
   numberOfMarkets: number;
-  warpSyncHash?: string;
+  warpSyncHash: string;
   children: null | Array<Getters.Universe.UniverseDetails>;
   parentUniverseId: null | string;
   id: null | string;
-  disputeWindow: Getters.Universe.DisputeWindow;
   forkingInfo?: ForkingInfo;
   forkEndTime?: string;
   timeframeData?: Getters.Platform.PlatformActivityStatsResult;
@@ -214,7 +222,7 @@ export interface CreateMarketData {
   creationTime: DateFormattedObject;
   marketType: string;
   pendingId: string;
-  orderBook?: Getters.Markets.OutcomeOrderBook;
+  orderBook?: OutcomeOrderBook;
 }
 
 export interface PendingQueue {
@@ -233,7 +241,7 @@ export interface PendingOrdersType {
 }
 
 export interface QuantityOrderBookOrder
-  extends Getters.Markets.MarketOrderBookOrder {
+  extends MarketOrderBookOrder {
   quantityScale: number;
   percent: number;
   mySize: string;
@@ -267,12 +275,12 @@ export interface TestTradingOrder {
   unmatchedShares: FormattedNumber;
 }
 export interface OrderBooks {
-  [marketId: string]: Getters.Markets.MarketOrderBook;
+  [marketId: string]: MarketOrderBook;
 }
 export interface IndividualOutcomeOrderBook {
   spread: string | BigNumber | null;
-  bids: Getters.Markets.MarketOrderBookOrder[];
-  asks: Getters.Markets.MarketOrderBookOrder[];
+  bids: MarketOrderBookOrder[];
+  asks: MarketOrderBookOrder[];
 }
 export interface MyPositionsSummary {
   currentValue: FormattedNumber;
@@ -541,11 +549,11 @@ export interface ReportingListState {
   };
 }
 export interface FilledOrders {
-  [account: string]: Getters.Trading.MarketTradingHistory;
+  [account: string]: MarketTradingHistory;
 }
 
 export interface OpenOrders {
-  [account: string]: Getters.Trading.Orders;
+  [account: string]: Orders;
 }
 
 export interface GasPriceInfo {
