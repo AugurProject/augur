@@ -996,25 +996,16 @@ export const SportsMarketContainer = ({
       <Fragment key={`${marketId}-heading`}>
         <h6 title={market.description}>{market.description}</h6>
         {tradingPositionsPerMarket &&
-          tradingPositionsPerMarket.current !== '0' &&
-          PositionIcon}
-        <CountdownProgress
-          label="Event Expiration"
-          time={market.endTimeFormatted}
-          reportingState={market.reportingState}
-          forceLongDate
-        />
-        {tradingPositionsPerMarket &&
         tradingPositionsPerMarket.current !== '0' && (
           <div
             className={Styles.HoverIcon}
             data-tip
-            data-for={`tooltip-${market.id}-youHaveABet`}
+            data-for={`${market.id}-youHaveABet`}
             data-iscapture={false}
           >
             {PositionIcon}
             <ReactTooltip
-              id={`tooltip-${market.id}-youHaveABet`}
+              id={`${market.id}-youHaveABet`}
               className={TooltipStyles.Tooltip}
               effect="solid"
               place="top"
@@ -1026,9 +1017,12 @@ export const SportsMarketContainer = ({
             </ReactTooltip>
           </div>
         )}
-        <span className={Styles.MatchedLine}>
-          Matched<b>{market.volumeFormatted.full}</b>
-        </span>
+        <CountdownProgress
+          label="Event Expiration"
+          time={market.endTimeFormatted}
+          reportingState={market.reportingState}
+          forceLongDate
+        />
         <DotSelection
           customClass={classNames({ [Styles.ShowCopied]: isCopied })}
         >
