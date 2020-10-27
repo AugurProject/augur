@@ -16,7 +16,7 @@ export function showIndexedDbSize() {
           console.log('total:', db.objectStoreNames.length);
           for (var i = 0; i < db.objectStoreNames.length; i++) {
             PromiseArray.push(
-              await getObjectStoreData(db, db.objectStoreNames[i], i)
+              await getObjectStoreData(db, db.objectStoreNames[i])
             );
           }
           console.log('done', JSON.stringify(PromiseArray));

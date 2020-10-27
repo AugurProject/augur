@@ -15,7 +15,7 @@ export interface ToggleRowProps {
 }
 
 interface ToggleRowState {
-  open: Boolean;
+  open: boolean;
 }
 
 export default class ToggleRow extends React.Component<
