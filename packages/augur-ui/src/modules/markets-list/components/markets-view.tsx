@@ -297,8 +297,8 @@ const MarketsView = () => {
           }
           if (isSports) {
             sportsGroups.sort((a, b) => {
-              const aComp = a.estStartTime ? a.estStartTime : a.earlestEndTime;
-              const bComp = b.estStartTime ? b.estStartTime : b.earlestEndTime;
+              const aComp = a.estStartTime ? a.estStartTime : a.earliestEndTime;
+              const bComp = b.estStartTime ? b.estStartTime : b.earliestEndTime;
               return aComp - bComp;
             });
             sportsFilterSortedMarkets = sportsGroups.map(
