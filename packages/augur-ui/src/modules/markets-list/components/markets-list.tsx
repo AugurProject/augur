@@ -54,7 +54,7 @@ export const groupSportsMarkets = (filteredMarkets, markets) =>
           existingGroup.earliestEndtime = market.endTime;
         }
         const marketEstStart = market.sportsBook.estTimestamp;
-        if (!existingGroup.estStartTime !== marketEstStart) {
+        if (marketEstStart && !existingGroup.estStartTime !== marketEstStart) {
           existingGroup.estStartTime = marketEstStart;
         }
         existingGroup.totalVolume = existingGroup.totalVolume.plus(
