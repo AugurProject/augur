@@ -26,13 +26,11 @@ export class AMMExchange {
   }
 
   async rateEnterPosition(cash: BigNumber, buyYes: boolean): Promise<BigNumber> {
-    console.log('rateEnterPosition', String(cash), buyYes)
-    return this.contract.rateEnterPosition(cash.toFixed(), buyYes);
+    return this.contract.rateEnterPosition(cash, buyYes);
   }
 
   async doEnterPosition(cash: BigNumber, buyYes: boolean, minShares: BigNumber): Promise<TransactionResponse> {
-    console.log('cash', cash.toFixed(), 'buyYes', buyYes, 'minShares', minShares.toFixed())
-    return this.contract.enterPosition(cash.toFixed(), buyYes, minShares.toFixed());
+    return this.contract.enterPosition(cash, buyYes, minShares);
   }
 
   async rateCashEnterPosition(shares: Shares, buyYes: boolean): Promise<BigNumber> {
@@ -41,7 +39,7 @@ export class AMMExchange {
         new BigNumber(shares.times(YES_NO_NUMTICKS)),
         100,
         async (cash) => {
-          const yesShares = await this.contract.rateEnterPosition(cash.toFixed(), buyYes);
+          const yesShares = await this.contract.rateEnterPosition(cash, buyYes);
           return bnDirection(shares, yesShares);
         }
       );
@@ -50,7 +48,7 @@ export class AMMExchange {
 
 
   async rateExitPosition(invalidShares: BigNumber, noShares: BigNumber, yesShares: BigNumber): Promise<BigNumber> {
-    return this.contract.rateExitPosition(invalidShares.toFixed(), noShares.toFixed(), yesShares.toFixed());
+    return this.contract.rateExitPosition(invalidShares, noShares, yesShares);
   }
 
   async doExitPosition(invalidShares: Shares, noShares: Shares, yesShares: Shares, minCash: BigNumber): Promise<TransactionResponse> {
@@ -72,7 +70,7 @@ export class AMMExchange {
   }
 
   async getRateSwap(inputShares: BigNumber, inputIsYesShares: boolean): Promise<Shares> {
-    return this.contract.rateSwap(inputShares.toFixed(), inputIsYesShares);
+    return this.contract.rateSwap(inputShares, inputIsYesShares);
   }
 
   async swap(inputShares: Shares, inputYes: boolean): Promise<Shares> {
@@ -82,7 +80,7 @@ export class AMMExchange {
   }
 
   async doSwap(inputShares: Shares, inputYes: boolean, minShares: Shares): Promise<TransactionResponse> {
-    return this.contract.swap(inputShares.toFixed(), inputYes, minShares.toFixed());
+    return this.contract.swap(inputShares, inputYes, minShares);
   }
 
   async doAddInitialLiquidity(recipient: string, cash: Cash, yesPercent = new BigNumber(50), noPercent = new BigNumber(50)): Promise<TransactionResponse> {
@@ -96,12 +94,12 @@ export class AMMExchange {
     cash = cash.idiv(1);
     ratio = ratio.idiv(1);
 
-    return this.contract.addInitialLiquidity(cash.toFixed(), ratio.toFixed(), keepYes, recipient);
+    return this.contract.addInitialLiquidity(cash, ratio, keepYes, recipient);
   }
 
   async addLiquidity(recipient: string, cash: Cash): Promise<TransactionResponse> {
     console.log(String(cash), recipient)
-    return this.contract.addLiquidity(cash.toFixed(), recipient);
+    return this.contract.addLiquidity(cash, recipient);
   }
 
   async rateAddInitialLiquidity(recipient: string, cash: Cash, yesPercent: BigNumber, noPercent: BigNumber): Promise<LPTokens> {
@@ -115,15 +113,15 @@ export class AMMExchange {
     cash = cash.idiv(1);
     ratio = ratio.idiv(1);
 
-    return this.contract.callStatic.addInitialLiquidity(cash.toFixed(), ratio.toFixed(), keepYes, recipient);
+    return this.contract.callStatic.addInitialLiquidity(cash, ratio, keepYes, recipient);
   }
 
   async rateAddLiquidity(recipient: string, cash: BigNumber): Promise<LPTokens> {
-    return this.contract.callStatic.addLiquidity(cash.toFixed(), recipient);
+    return this.contract.callStatic.addLiquidity(cash, recipient);
   }
 
   async getRemoveLiquidity(lpTokens: LPTokens, alsoSell = false): Promise<{noShares: BigNumber, yesShares: BigNumber, cashShares: BigNumber}> {
-    const { _noShare, _yesShare, _cashShare } = await this.contract.rateRemoveLiquidity(lpTokens.toFixed(), alsoSell ? 1 : 0);
+    const { _noShare, _yesShare, _cashShare } = await this.contract.rateRemoveLiquidity(lpTokens, alsoSell ? 1 : 0);
     return { noShares: _noShare, yesShares: _yesShare, cashShares: _cashShare}
   }
 
@@ -140,7 +138,7 @@ export class AMMExchange {
       minSetsSold = new BigNumber(0);
     }
 
-    return this.contract.removeLiquidity(lpTokens.toFixed(), minSetsSold.toFixed());
+    return this.contract.removeLiquidity(lpTokens, minSetsSold);
   }
 
   calculateCashForSharesInSwap(desiredShares: Shares, yes: boolean): BigNumber {

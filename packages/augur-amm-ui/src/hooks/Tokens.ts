@@ -1,5 +1,5 @@
 import { parseBytes32String } from '@ethersproject/strings'
-import { Currency, ETHER, Token, currencyEquals, TokenAmount, JSBI } from '@uniswap/sdk'
+import { Currency, ETHER, Token, currencyEquals } from '@uniswap/sdk'
 import { useMemo } from 'react'
 import { MarketTokens } from '../constants'
 import { MarketCurrency } from '../data/MarketCurrency'
@@ -56,7 +56,7 @@ export function useAllMarketTokens(marketId: string, cash: string, amm: string):
     const yesMarketCurrency = new MarketCurrency(marketId, cash, amm, yesToken, String(marketInfo?.yesAmount || 0))
     if (yesMarketCurrency) tokens.push(yesMarketCurrency)
     return tokens
-  }, [userMarketShareBalances, marketId, cash, chainId, cashToken])
+  }, [userMarketShareBalances, marketId, cash, chainId, cashToken, amm])
 }
 
 // Check if currency is included in custom list from user storage

@@ -1,17 +1,12 @@
 import { BigNumber } from '@ethersproject/bignumber'
 import { Contract } from '@ethersproject/contracts'
-import { JSBI, Percent, Router, SwapParameters, TokenAmount, Trade, TradeType } from '@uniswap/sdk'
+import { SwapParameters, TokenAmount } from '@uniswap/sdk'
 import { useMemo } from 'react'
-import { BIPS_BASE, INITIAL_ALLOWED_SLIPPAGE } from '../constants'
 import { useTransactionAdder } from '../state/transactions/hooks'
-import { calculateGasMargin, doTrade, isAddress, shortenAddress } from '../utils'
-import isZero from '../utils/isZero'
+import { doTrade } from '../utils'
 import { useActiveWeb3React } from './index'
-import useTransactionDeadline from './useTransactionDeadline'
-import useENS from './useENS'
 import { TradeInfo } from './Trades'
 import { useAugurClient } from '../contexts/Application'
-import { BigNumber as BN } from 'bignumber.js'
 
 export enum SwapCallbackState {
   INVALID,
@@ -34,58 +29,6 @@ interface FailedCall {
   error: Error
 }
 
-type EstimatedSwapCall = SuccessfulCall | FailedCall
-
-/**
- * Returns the swap calls that can be used to make the trade
- * @param trade trade to execute
- * @param allowedSlippage user allowed slippage
- * @param recipientAddressOrName
- */
-function useSwapCallArguments(
-  trade: Trade | undefined, // trade to execute, required
-  allowedSlippage: number = INITIAL_ALLOWED_SLIPPAGE, // in bips
-  recipientAddressOrName: string | null // the ENS name or address of the recipient of the trade, or null if swap should be returned to sender
-): SwapCall[] {
-  const { account, chainId, library } = useActiveWeb3React()
-
-  const { address: recipientAddress } = useENS(recipientAddressOrName)
-  const recipient = recipientAddressOrName === null ? account : recipientAddress
-  const deadline = useTransactionDeadline()
-
-  return useMemo(() => {
-    if (!trade || !recipient || !library || !account || !chainId || !deadline) return []
-
-    // TODO need to just use augurClient
-    const contract: Contract | null = null // useAmmFactoryAddress()
-    if (!contract) {
-      return []
-    }
-
-    const swapMethods = []
-
-    swapMethods.push(
-      Router.swapCallParameters(trade, {
-        feeOnTransfer: false,
-        allowedSlippage: new Percent(JSBI.BigInt(allowedSlippage), BIPS_BASE),
-        recipient,
-        deadline: deadline.toNumber()
-      })
-    )
-
-    if (trade.tradeType === TradeType.EXACT_INPUT) {
-      swapMethods.push(
-        Router.swapCallParameters(trade, {
-          feeOnTransfer: true,
-          allowedSlippage: new Percent(JSBI.BigInt(allowedSlippage), BIPS_BASE),
-          recipient,
-          deadline: deadline.toNumber()
-        })
-      )
-    }
-    return swapMethods.map(parameters => ({ parameters, contract }))
-  }, [account, allowedSlippage, chainId, deadline, library, recipient, trade])
-}
 
 // returns a function that will execute a swap, if the parameters are all valid
 // and the user has approved the slippage adjusted input amount for the trade
@@ -108,16 +51,14 @@ export function useSwapCallback(
         callback: async function onSwap(): Promise<string> {
           return doTrade(augurClient, trade, minAmount)
             .then((response: any) => {
-              const inputSymbol = trade.inputAmount.currency.symbol
-              const outputSymbol = trade.currencyOut?.symbol
-              const inputAmount = trade.inputAmount.toSignificant(6)
+              console.error('tx response', JSON.stringify(response))
+              const inputSymbol = trade?.inputAmount?.currency?.symbol
+              const outputSymbol = trade?.currencyOut?.symbol
+              const inputAmount = trade?.inputAmount?.toSignificant(6)
               const oAmount = outputAmount?.toSignificant(6)
 
-              const base = `Swap ${inputAmount} ${inputSymbol} for ${oAmount} ${outputSymbol}`
-              const withRecipient = base
-
               addTransaction(response, {
-                summary: withRecipient
+                summary: `Swap ${inputAmount} ${inputSymbol} for ${oAmount} ${outputSymbol}`
               })
 
               return response.hash
@@ -138,5 +79,5 @@ export function useSwapCallback(
     } else {
       return { state: SwapCallbackState.INVALID, callback: null, error: 'Currently Estimating' }
     }
-  }, [trade, library, account, chainId, addTransaction, outputAmount, minAmount])
+  }, [augurClient, trade, library, account, chainId, addTransaction, outputAmount, minAmount])
 }

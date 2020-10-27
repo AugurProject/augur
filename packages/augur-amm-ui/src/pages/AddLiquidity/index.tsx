@@ -1,9 +1,8 @@
 import { TokenAmount } from '@uniswap/sdk'
-import React, { useCallback, useContext, useMemo, useState } from 'react'
+import React, { useCallback, useMemo, useState } from 'react'
 import ReactGA from 'react-ga'
 import { RouteComponentProps } from 'react-router-dom'
 import { Text } from 'rebass'
-import { ThemeContext } from 'styled-components'
 import { ButtonError, ButtonGray, ButtonPrimary } from '../../components/ButtonStyled'
 import { BlueCard, LightCard } from '../../components/Card'
 import { AutoColumn, ColumnCenter } from '../../components/Column'
@@ -21,7 +20,6 @@ import { Field } from '../../state/mint/actions'
 import { useDerivedMintInfo, useMintActionHandlers, useMintState } from '../../state/mint/hooks'
 
 import { useTransactionAdder } from '../../state/transactions/hooks'
-import { useUserSlippageTolerance } from '../../state/user/hooks'
 import { TYPE } from '../../Theme'
 import { addAmmLiquidity } from '../../utils'
 import { maxAmountSpend } from '../../utils/maxAmountSpend'
@@ -66,7 +64,7 @@ function AddLiquidity({ amm, marketId, cash }: RouteComponentProps<{ amm?: strin
     poolTokenPercentage,
     error
   } = useDerivedMintInfo(currencyA ?? undefined)
-  const { onFieldAInput, onFieldBInput } = useMintActionHandlers(noLiquidity)
+  const { onFieldAInput } = useMintActionHandlers(noLiquidity)
 
   const isValid = !error
 
