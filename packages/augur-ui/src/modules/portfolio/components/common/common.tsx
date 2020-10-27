@@ -8,7 +8,7 @@ import {
 } from 'modules/common/labels';
 import { CategoryTagTrail } from 'modules/common/labels';
 import { getCategoriesWithClick } from 'modules/market-cards/common';
-import { MarketProgress, CountdownProgress } from 'modules/common/progress';
+import { CountdownProgress } from 'modules/common/progress';
 import { convertUnixToFormattedDate } from 'utils/format-date';
 import { MyBetsRow } from 'modules/common/table-rows';
 
@@ -29,7 +29,6 @@ import { useAppStatusStore } from 'modules/app/store/app-status';
 import { createBigNumber } from 'utils/create-big-number';
 import { startClaimingMarketsProceeds } from 'modules/positions/actions/claim-markets-proceeds';
 import { FilterNotice } from 'modules/common/filter-notice';
-import { BET_STATUS } from 'modules/trading/store/constants';
 import { useMarketsStore } from 'modules/markets/store/markets';
 
 export const BetsHeader = () => (

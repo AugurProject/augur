@@ -1,4 +1,8 @@
-import type { Getters } from '@augurproject/sdk';
+import type {
+  MarketInfo,
+  MarketInfoOutcome,
+  DisputeInfo,
+} from '@augurproject/sdk-lite';
 import {
   ARCHIVED_MARKET_LENGTH,
   CATEGORICAL,
@@ -24,14 +28,13 @@ import {
   formatAttoRep,
   formatDai,
   formatNone,
-  formatNumber,
   formatPercent,
 } from './format-number';
 import { getOutcomeNameWithOutcome } from './get-outcome';
 import { keyBy } from './key-by';
 
 export function convertMarketInfoToMarketData(
-  marketInfo: Getters.Markets.MarketInfo,
+  marketInfo: MarketInfo,
   currentTimestamp: number
 ) {
   if (!marketInfo) return null;
@@ -114,10 +117,10 @@ function getMarketStatus(reportingState: string) {
 }
 
 function processOutcomes(
-  market: Getters.Markets.MarketInfo
+  market: MarketInfo
 ): OutcomeFormatted[] {
   const isScalar = market.marketType === SCALAR;
-  const outcomes = deepClone<Getters.Markets.MarketInfoOutcome[]>(market.outcomes);
+  const outcomes = deepClone<MarketInfoOutcome[]>(market.outcomes);
   if (
     market.reportingState === REPORTING_STATE.FINALIZED ||
     market.reportingState === REPORTING_STATE.AWAITING_FINALIZATION
@@ -191,10 +194,10 @@ function getEmptyStake(outcomeId: string | null, bondSizeOfNewStake: string) {
 // fill in missing stakes
 function processDisputeInfo(
   marketType: string,
-  disputeInfo: Getters.Markets.DisputeInfo,
-  outcomes: Getters.Markets.MarketInfoOutcome[],
+  disputeInfo: DisputeInfo,
+  outcomes: MarketInfoOutcome[],
   isWarpSync: boolean,
-): Getters.Markets.DisputeInfo {
+): DisputeInfo {
   if (!disputeInfo) return disputeInfo;
   if (marketType === SCALAR) {
     const invalidIncluded = disputeInfo.stakes.find(
@@ -240,7 +243,7 @@ function processDisputeInfo(
 }
 
 function processConsensus(
-  market: Getters.Markets.MarketInfo
+  market: MarketInfo
 ): ConsensusFormatted | null {
   const isScalar = market.marketType === SCALAR;
   if (market.reportingState === REPORTING_STATE.FINALIZED) {
@@ -277,7 +280,7 @@ function processConsensus(
 }
 
 export const keyMarketInfoCollectionByMarketId = (
-  marketInfos: Getters.Markets.MarketInfo[]
+  marketInfos: MarketInfo[]
 ) => {
   return keyBy(marketInfos, 'id');
 };

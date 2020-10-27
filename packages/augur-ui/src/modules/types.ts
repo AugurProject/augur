@@ -14,6 +14,7 @@ import {
 } from './routes/constants/param-names';
 import { Getters } from '@augurproject/sdk';
 import type {
+  Address,
   MarketInfo,
   PayoutNumeratorValue,
   MarketInfoOutcome,
@@ -171,6 +172,13 @@ export interface Universe extends Getters.Universe.UniverseDetails {
   children: null | Array<Getters.Universe.UniverseDetails>;
   parentUniverseId: null | string;
   id: null | string;
+  DisputeWindow: {
+      address: Address;
+      startTime: number;
+      endTime: number;
+      purchased: string;
+      fees: string;
+  };
   forkingInfo?: ForkingInfo;
   forkEndTime?: string;
   timeframeData?: Getters.Platform.PlatformActivityStatsResult;

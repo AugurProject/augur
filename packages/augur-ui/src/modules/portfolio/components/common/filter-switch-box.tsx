@@ -57,7 +57,7 @@ const FilterSwitchBox = ({
     setFilteredData(filteredData);
   };
 
-  const applySearch = (input: string, filteredData: Market[]) => {
+  const applySearch = (input: string, filteredData: MarketData[]) => {
     return filteredData.filter(filterComp.bind(applySearch, input));
   };
 
