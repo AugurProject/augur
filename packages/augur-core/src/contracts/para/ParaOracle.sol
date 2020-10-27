@@ -54,23 +54,7 @@ contract ParaOracle {
         uint256 _timeElapsed = _blockTimestamp.sub(_tokenData.lastUpdateTimestamp);
         bool _token0IsWeth = tokenData[_token].token0IsWeth;
 
-        uint256 _priceCumulative = _token0IsWeth ? _exchange.price1CumulativeLast() : _exchange.price0CumulativeLast();
-
-        // Edge case where we update multiple times before there is a value on the exchange
-        if (_priceCumulative == 0) {
-            _priceCumulative = tokenData[_token].priceCumulativeLast;
-        }
-
-        // if time has elapsed since the last update, mock the accumulated price values
-        {
-            (uint112 _reserve0, uint112 _reserve1, uint32 _blockTimestampLast) = _exchange.getReserves();
-            // If there is no liquidity we don't need to do anything since there is no uncalculated value to add for this time slice
-            bool _canMock = _reserve0 != 0 && _reserve1 != 0;
-
-            if (_blockTimestampLast != _blockTimestamp && _canMock) {
-                _priceCumulative += uint256(UQ112x112.encode(_token0IsWeth ? _reserve0 : _reserve1).uqdiv(_token0IsWeth ? _reserve1 : _reserve0)) * (_blockTimestamp.sub(_blockTimestampLast));
-            }
-        }
+        uint256 _priceCumulative = getCurrentPriceCumulative(_exchange, _token0IsWeth);
 
         // underflow desired, casting never truncates
         uint256 _price = (_priceCumulative - tokenData[_token].priceCumulativeLast) / _timeElapsed;
@@ -102,10 +86,28 @@ contract ParaOracle {
         uint256 _precision  = 10 ** _decimals;
         tokenData[_token].token0IsWeth = _token0IsWeth;
         tokenData[_token].precision = _precision;
+        tokenData[_token].priceCumulativeLast = getCurrentPriceCumulative(_exchange, _token0IsWeth);
         if (_reserve0 == 0 || _reserve1 == 0) {
             return 0;
         }
         return _token0IsWeth ? (_reserve0 * _precision / _reserve1) : (_reserve1 * _precision / _reserve0);
+    }
+
+    function getCurrentPriceCumulative(IUniswapV2Pair _exchange, bool _token0IsWeth) private view returns (uint256) {
+        uint256 _priceCumulative = _token0IsWeth ? _exchange.price1CumulativeLast() : _exchange.price0CumulativeLast();
+
+        // if time has elapsed since the last update, mock the accumulated price values
+        {
+            (uint112 _reserve0, uint112 _reserve1, uint32 _blockTimestampLast) = _exchange.getReserves();
+            // If there is no liquidity we don't need to do anything since there is no uncalculated value to add for this time slice
+            bool _canMock = _reserve0 != 0 && _reserve1 != 0;
+            uint256 _blockTimestamp = block.timestamp;
+
+            if (_blockTimestampLast != _blockTimestamp && _canMock) {
+                _priceCumulative += uint256(UQ112x112.encode(_token0IsWeth ? _reserve0 : _reserve1).uqdiv(_token0IsWeth ? _reserve1 : _reserve0)) * (_blockTimestamp.sub(_blockTimestampLast));
+            }
+        }
+        return _priceCumulative;
     }
 
     function getLastUpdateTimestamp(address _token) external view returns (uint256) {

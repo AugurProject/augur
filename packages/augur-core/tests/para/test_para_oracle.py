@@ -99,6 +99,42 @@ def test_oracle(sixdecimals, contractsFixture, augur, cash, market, universe):
     attoCashPerRep = nexus.getAttoCashPerRep(cash.address, reputationTokenAddress)
     assert roughlyEqual(attoCashPerRep, 14 * cashPrecision)
 
+def test_oracle_with_pre_existing_exchange(contractsFixture, augur, market, universe):
+    if not contractsFixture.paraAugur:
+        return
+
+    nexus = contractsFixture.contracts["OINexus"]
+    oracleAddress = nexus.oracle()
+    oracle = contractsFixture.applySignature("ParaOracle", oracleAddress)
+    weth = contractsFixture.applySignature("WETH9", oracle.weth())
+
+    cashPrecision = 10 ** 18
+    cash = contractsFixture.upload('../src/contracts/Cash.sol', "NewCash")
+    
+    reputationTokenAddress = universe.getReputationToken()
+    reputationToken = contractsFixture.applySignature('TestNetReputationToken', reputationTokenAddress)
+    repExchange = contractsFixture.applySignature("UniswapV2Pair", oracle.getExchange(reputationTokenAddress))
+
+    account = contractsFixture.accounts[0]
+
+    # Add liquidity to suggest the price is 25 REP = 1 ETH before doing any poke operation
+    wethAmount = 1 * 10**18
+    repAmount = 25 * 10**18
+    addLiquidity(repExchange, weth, reputationToken, wethAmount, repAmount, account)
+
+    mineBlock(contractsFixture, 10000000)
+
+    # Confirm the initial price is correct
+    initialPrice = (10**18) / 25
+    assert roughlyEqual(oracle.poke(reputationTokenAddress), initialPrice)
+
+    mineBlock(contractsFixture, 10000000)
+
+    # The reserves have been modified, however little time has passed so the price will not have diverged much
+    oracle.poke(reputationTokenAddress)
+    assert roughlyEqual(oracle.poke(reputationTokenAddress), initialPrice)
+
+
 
 def addLiquidity(exchange, weth, reputationToken, wethAmount, repAmount, address):
     weth.deposit(value=wethAmount)
