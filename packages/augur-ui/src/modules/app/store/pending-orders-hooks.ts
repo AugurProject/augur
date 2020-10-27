@@ -5,7 +5,7 @@ import {
   PENDING_ORDERS,
   PENDING_LIQUIDITY_ORDERS,
 } from 'modules/app/store/constants';
-import { LiquidityOrder } from 'modules/types';
+import { LiquidityOrder, WindowApp } from 'modules/types';
 import { TXEventName } from '@augurproject/sdk-lite';
 
 const {
@@ -230,15 +230,15 @@ export function PendingOrdersReducer(state, action) {
     default:
       console.error(`Error: ${action.type} not caught by Pending reducer.`);
   }
-  window.pendingOrders = updatedState;
-  window.stores.pendingOrders = updatedState;
+  (window as WindowApp & typeof globalThis).pendingOrders = updatedState;
+  (window as WindowApp & typeof globalThis).stores.pendingOrders = updatedState;
   return updatedState;
 }
 
 export const usePendingOrders = (defaultState = DEFAULT_PENDING_ORDERS) => {
   const [state, dispatch] = useReducer(PendingOrdersReducer, defaultState);
-  window.pendingOrders = state;
-  window.stores.pendingOrders = state;
+  (window as WindowApp & typeof globalThis).pendingOrders = state;
+  (window as WindowApp & typeof globalThis).stores.pendingOrders = state;
   return {
     ...state,
     actions: {

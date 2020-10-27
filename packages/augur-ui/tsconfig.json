@@ -3,8 +3,8 @@
   "compilerOptions": {
     "outDir": "build",
     "rootDir": "src",
-    "target": "ES2017",
-    "module": "ES2015",
+    "target": "es2020",
+    "module": "es2020",
     "jsx": "react",
     "noImplicitAny": false,
     "allowSyntheticDefaultImports": true,
@@ -33,8 +33,7 @@
         "./utils/*"
       ]
     },
-    "allowSyntheticDefaultImports": true,
-    "esModuleInterop": false,
+    "esModuleInterop": true,
     "resolveJsonModule": false
   },
   "include": [

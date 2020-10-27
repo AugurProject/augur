@@ -48,7 +48,7 @@ import {
 import { EMPTY_STATE } from 'modules/create-market/constants';
 import { ZERO, NEW_ORDER_GAS_ESTIMATE, THEMES } from 'modules/common/constants';
 import { createBigNumber } from 'utils/create-big-number';
-import { LiquidityOrder } from 'modules/types';
+import { LiquidityOrder, WindowApp } from 'modules/types';
 import { formatDai, formatShares } from 'utils/format-number';
 import { track, MODAL_CLOSED } from 'services/analytics/helpers';
 const {
@@ -676,8 +676,8 @@ export function AppStatusReducer(state, action) {
       console.error(`Error: ${action.type} not caught by App Status reducer.`);
   }
   // console.log('appStatus update:', action.type, updatedState, action);
-  window.appStatus = updatedState;
-  window.stores.appStatus = updatedState;
+  (window as WindowApp & typeof globalThis).appStatus = updatedState;
+  (window as WindowApp & typeof globalThis).stores.appStatus = updatedState;
   return updatedState;
 }
 
@@ -689,8 +689,8 @@ export const useAppStatus = (defaultState = DEFAULT_APP_STATUS) => {
   }
   const [state, dispatch] = useReducer(AppStatusReducer, defaultState);
   setHTMLTheme(state.theme);
-  window.appStatus = state;
-  window.stores.appStatus = state;
+  (window as WindowApp & typeof globalThis).appStatus = state;
+  (window as WindowApp & typeof globalThis).stores.appStatus = state;
   return {
     ...state,
     actions: {

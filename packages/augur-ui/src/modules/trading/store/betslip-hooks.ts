@@ -1,5 +1,5 @@
 import { useReducer } from 'react';
-import { convertToWin, getWager, getShares } from 'utils/get-odds';
+import { convertToWin, getShares } from 'utils/get-odds';
 
 import { ZERO } from 'modules/common/constants';
 import {
@@ -17,6 +17,7 @@ import {
 } from 'utils/betslip-helpers';
 import { AppStatus } from 'modules/app/store/app-status';
 import deepClone from 'utils/deep-clone';
+import { WindowApp } from 'modules/types';
 
 const {
   CASH_OUT,
@@ -37,7 +38,7 @@ const {
   CLEAR_BETSLIP,
 } = BETSLIP_ACTIONS;
 const { BETSLIP, MY_BETS, MATCHED, UNMATCHED } = BETSLIP_SELECTED;
-const { UNSENT, PENDING, CLOSED, FILLED } = BET_STATUS;
+const { UNSENT, PENDING, CLOSED } = BET_STATUS;
 
 export const calculateBetslipTotals = betslip => {
   let totalWager = ZERO;
@@ -275,15 +276,15 @@ export function BetslipReducer(state, action) {
     default:
       throw new Error(`Error: ${action.type} not caught by Betslip reducer`);
   }
-  window.betslip = updatedState;
-  window.stores.betslip = updatedState;
+  (window as WindowApp & typeof globalThis).betslip = updatedState;
+  (window as WindowApp & typeof globalThis).stores.betslip = updatedState;
   return updatedState;
 }
 
 export const useBetslip = (defaultState = MOCK_BETSLIP_STATE) => {
   const [state, dispatch] = useReducer(BetslipReducer, defaultState);
-  window.betslip = state;
-  window.stores.betslip = state;
+  (window as WindowApp & typeof globalThis).betslip = state;
+  (window as WindowApp & typeof globalThis).stores.betslip = state;
   return {
     ...state,
     actions: {

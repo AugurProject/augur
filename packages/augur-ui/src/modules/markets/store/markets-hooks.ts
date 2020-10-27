@@ -8,6 +8,7 @@ import immutableDelete from 'immutable-delete';
 import { Betslip } from 'modules/trading/store/betslip';
 import { createBigNumber } from 'utils/create-big-number';
 import { getWager, convertToNormalizedPrice, convertToWin } from 'utils/get-odds';
+import { WindowApp } from 'modules/types';
 
 const {
   UPDATE_ORDER_BOOK,
@@ -132,8 +133,8 @@ export function MarketsReducer(state, action) {
       console.error(`Error: ${action.type} not caught by Markets reducer`);
   }
 
-  window.markets = updatedState;
-  window.stores.markets = updatedState;
+  (window as WindowApp & typeof globalThis).markets = updatedState;
+  (window as WindowApp & typeof globalThis).stores.markets = updatedState;
   return updatedState;
 }
 
@@ -173,8 +174,8 @@ export const dispatchMiddleware = dispatch => action =>
 
 export const useMarkets = (defaultState = MOCK_MARKETS_STATE) => {
   const [state, dispatch] = useReducer(MarketsReducer, defaultState);
-  window.markets = state;
-  window.stores.markets = state;
+  (window as WindowApp & typeof globalThis).markets = state;
+  (window as WindowApp & typeof globalThis).stores.markets = state;
   const newDispatch = dispatchMiddleware(dispatch);
 
   return {

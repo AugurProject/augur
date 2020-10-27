@@ -736,6 +736,8 @@ export interface WindowApp extends Window {
     on?: Function;
     enable?: Function;
     send?: Function;
+    request?: Function;
+    chainId?: string;
   };
   localStorage: Storage;
   integrationHelpers: any;

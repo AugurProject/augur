@@ -4,7 +4,7 @@ import {
   TRADING_ACTIONS,
   DEFAULT_ORDER_PROPERTIES,
 } from 'modules/trading/store/constants';
-
+import { WindowApp } from 'modules/types';
 const {
   CLEAR_ORDER_PROPERTIES,
   UPDATE_ORDER_PROPERTIES,
@@ -38,8 +38,8 @@ export function TradingReducer(state, action) {
     default:
       throw new Error(`Error: ${action.type} not caught by Trading reducer`);
   }
-  window.trading = updatedState;
-  window.stores.trading = updatedState;
+  (window as WindowApp & typeof globalThis).trading = updatedState;
+  (window as WindowApp & typeof globalThis).stores.trading = updatedState;
   return updatedState;
 }
 
@@ -51,8 +51,8 @@ export const useTrading = (presetOrderProperties, defaultState = MOCK_TRADING_ST
       ...presetOrderProperties,
     },
   });
-  window.trading = state;
-  window.stores.trading = state;
+  (window as WindowApp & typeof globalThis).trading = state;
+  (window as WindowApp & typeof globalThis).stores.trading = state;
   return {
     ...state,
     actions: {

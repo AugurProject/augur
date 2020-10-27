@@ -45,7 +45,7 @@ export function addAlert(alert: Partial<Alert>) {
     try {
       setAlertText(alert, callback);
     } catch (error) {
-      callback(error, null);
+      callback(error);
     }
   }
 }
@@ -56,7 +56,7 @@ export function updateExistingAlert(id, alert) {
   try {
     setAlertText(alert, callback);
   } catch (error) {
-    return callback(error, null);
+    return callback(error);
   }
 }
 

@@ -1,5 +1,5 @@
 // TODO -- this component needs to be broken up
-import type { SDKConfiguration } from '@augurproject/artifacts';
+import type { SDKConfiguration } from '@augurproject/utils';
 
 import React, { useEffect } from 'react';
 import classNames from 'classnames';
