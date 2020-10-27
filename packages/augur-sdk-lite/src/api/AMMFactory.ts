@@ -53,64 +53,58 @@ export class AMMFactory {
       if (hasLiquidity) {
         return amm.addLiquidity(account, cash)
       }
-      return amm.doAddInitialLiquidity(account, cash, new BigNumber(yesPercent), new BigNumber(noPercent));
+      return amm.doAddInitialLiquidity(account, cash, yesPercent, noPercent);
     }
     return this.contract.addAMMWithLiquidity(market, paraShareToken, cash.toFixed(), ratio.toFixed(), keepYes);
   }
 
-  async getRemoveLiquidity(ammAddress: string, lpTokens: string): Promise<{noShares: BigNumber, yesShares: BigNumber, cashShares: BigNumber}> {
+  async getRemoveLiquidity(ammAddress: string, lpTokens: BigNumber): Promise<{noShares: BigNumber, yesShares: BigNumber, cashShares: BigNumber}> {
     if (!ammAddress) return null;
     const amm = new AMMExchange(this.signerOrProvider, ammAddress);
-    return amm.getRemoveLiquidity(new BigNumber(lpTokens));
+    return amm.getRemoveLiquidity(lpTokens);
   }
 
-  async getRateEnterPosition(ammAddress: string, collateral: string, buyYes: boolean): Promise<BigNumber> {
+  async getRateEnterPosition(ammAddress: string, collateral: BigNumber, buyYes: boolean): Promise<BigNumber> {
     if (!ammAddress) return null;
     const amm = new AMMExchange(this.signerOrProvider, ammAddress);
     console.log('getRateEnterPosition', ammAddress, collateral, buyYes)
-    return amm.rateEnterPosition(new BigNumber(collateral), buyYes);
+    return amm.rateEnterPosition(collateral, buyYes);
   }
 
-  async getCashRateEnterPosition(ammAddress: string, shares: string, buyYes: boolean): Promise<BigNumber> {
+  async getSwapRate(ammAddress: string, inputShares: BigNumber, inputIsYesShares: boolean): Promise<BigNumber> {
     if (!ammAddress) return null;
     const amm = new AMMExchange(this.signerOrProvider, ammAddress);
-    return amm.rateCashEnterPosition(new BigNumber(shares), buyYes);
+    return amm.getRateSwap(inputShares, inputIsYesShares);
   }
 
-  async getSwapRate(ammAddress: string, inputShares: string, inputIsYesShares: boolean): Promise<BigNumber> {
+  async enterPosition(ammAddress: string, collateral: BigNumber, buyYes: boolean, minShares: BigNumber): Promise<TransactionResponse> {
     if (!ammAddress) return null;
     const amm = new AMMExchange(this.signerOrProvider, ammAddress);
-    return amm.getRateSwap(new BigNumber(inputShares), inputIsYesShares);
+    return amm.doEnterPosition(collateral, buyYes, minShares);
   }
 
-  async enterPosition(ammAddress: string, collateral: string, buyYes: boolean, minShares: string): Promise<TransactionResponse> {
+  async getRateExitPosition(ammAddress: string, invalidShares: BigNumber, noShares: BigNumber, yesShares: BigNumber): Promise<BigNumber> {
     if (!ammAddress) return null;
     const amm = new AMMExchange(this.signerOrProvider, ammAddress);
-    return amm.doEnterPosition(new BigNumber(collateral), buyYes, new BigNumber(minShares));
+    return amm.rateExitPosition(invalidShares, noShares, yesShares);
   }
 
-  async getRateExitPosition(ammAddress: string, invalidShares: string, noShares: string, yesShares: string): Promise<BigNumber> {
+  async exitPosition(ammAddress: string, invalidShares: BigNumber, noShares: BigNumber, yesShares: BigNumber, minShares: BigNumber): Promise<TransactionResponse> {
     if (!ammAddress) return null;
     const amm = new AMMExchange(this.signerOrProvider, ammAddress);
-    return amm.rateExitPosition(new BigNumber(invalidShares), new BigNumber(noShares), new BigNumber(yesShares));
+    return amm.doExitPosition(invalidShares, noShares, yesShares, minShares);
   }
 
-  async exitPosition(ammAddress: string, invalidShares: string, noShares: string, yesShares: string, minShares: string): Promise<TransactionResponse> {
+  async swap(ammAddress: string, inputShares: BigNumber, buyYes: boolean, minShares: BigNumber): Promise<TransactionResponse> {
     if (!ammAddress) return null;
     const amm = new AMMExchange(this.signerOrProvider, ammAddress);
-    return amm.doExitPosition(new BigNumber(invalidShares), new BigNumber(noShares), new BigNumber(yesShares), new BigNumber(minShares));
-  }
-
-  async swap(ammAddress: string, inputShares: string, buyYes: boolean, minShares: string): Promise<TransactionResponse> {
-    if (!ammAddress) return null;
-    const amm = new AMMExchange(this.signerOrProvider, ammAddress);
-    return amm.doSwap(new BigNumber(inputShares), buyYes, new BigNumber(minShares))
+    return amm.doSwap(inputShares, buyYes, minShares)
   }
 
   async removeLiquidity(ammAddress: string, lpTokens: BigNumber): Promise<TransactionResponse> {
     if (!ammAddress) return null;
     const amm = new AMMExchange(this.signerOrProvider, ammAddress);
-    return amm.doRemoveLiquidity(new BigNumber(lpTokens));
+    return amm.doRemoveLiquidity(lpTokens);
   }
 
   async addAMM(market: string, paraShareToken: string, cash: BigNumber = new BigNumber(0), yesPercent = new BigNumber(50), noPercent = new BigNumber(50)): Promise<AddAMMReturn> {

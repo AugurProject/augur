@@ -1,11 +1,11 @@
 import { MaxUint256 } from '@ethersproject/constants'
 import { TransactionResponse } from '@ethersproject/providers'
-import { Trade, TokenAmount, CurrencyAmount, ETHER, Token } from '@uniswap/sdk'
+import { TokenAmount, CurrencyAmount, ETHER, Token } from '@uniswap/sdk'
 import { useCallback, useMemo } from 'react'
 import { Field } from '../state/swap/actions'
 import { useTransactionAdder, useHasPendingApproval } from '../state/transactions/hooks'
 import { computeSlippageAdjustedAmounts } from '../utils/prices'
-import { calculateGasMargin } from '../utils'
+import { calculateGasMargin, getTradeType, TradingDirection } from '../utils'
 import { useTokenContract } from './useContract'
 import { useActiveWeb3React } from './index'
 import { useAmmFactoryAddress } from '../contexts/Application'
@@ -116,5 +116,10 @@ export function useApproveCallbackFromTrade(trade?: TradeInfo, allowedSlippage =
     [trade, allowedSlippage]
   )
   const ammFactory = useAmmFactoryAddress()
-  return useApproveCallback(amountToApprove, ammFactory)
+  let addr = ammFactory
+  const direction = getTradeType(trade)
+  if (direction === TradingDirection.EXIT || direction === TradingDirection.SWAP) {
+    addr = trade.amm.id
+  }
+  return useApproveCallback(amountToApprove, addr)
 }

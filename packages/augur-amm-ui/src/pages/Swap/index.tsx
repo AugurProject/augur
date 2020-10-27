@@ -74,12 +74,12 @@ function Swap({ marketId, amm }: RouteComponentProps<{ inputCurrencyId?: string;
     amm
   )
 
-  useMemo(
-    () =>
-      trade &&
+  useEffect(() => {
+    trade &&
       estimateTrade(augurClient, trade)
         .then(result => {
           if (result) {
+            console.log('estimate trade', result)
             const outToken = new Token(
               chainId,
               trade.marketId,
@@ -93,9 +93,8 @@ function Swap({ marketId, amm }: RouteComponentProps<{ inputCurrencyId?: string;
         })
         .catch(e => {
           setOutputAmount(null)
-        }),
-    [trade]
-  )
+        })
+  }, [augurClient, chainId, trade])
 
   useEffect(() => {
     if (outputAmount) {

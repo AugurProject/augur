@@ -3,11 +3,8 @@ import React, { createContext, useContext, useReducer, useMemo, useCallback, use
 import { client } from '../apollo/client'
 import {
   CASH_TOKEN_DATA,
-  TOKEN_DATA,
   FILTERED_TRANSACTIONS,
   TOKEN_CHART,
-  TOKENS_CURRENT,
-  TOKENS_DYNAMIC,
   PRICES_BY_BLOCK
 } from '../apollo/queries'
 
@@ -17,9 +14,6 @@ import dayjs from 'dayjs'
 import utc from 'dayjs/plugin/utc'
 
 import {
-  get2DayPercentChange,
-  getPercentChange,
-  getBlockFromTimestamp,
   isAddress,
   getBlocksFromTimestamps,
   splitQuery

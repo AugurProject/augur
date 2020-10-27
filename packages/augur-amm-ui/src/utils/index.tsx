@@ -19,6 +19,7 @@ import { AddressZero } from '@ethersproject/constants'
 import { ParaShareToken } from '@augurproject/sdk-lite'
 import { TradeInfo } from '../hooks/Trades'
 import { MarketCurrency } from '../data/MarketCurrency'
+import { EthersProvider } from '@augurproject/ethersjs-provider'
 
 // format libraries
 const Decimal = toFormat(_Decimal)
@@ -575,16 +576,15 @@ export function getSigner(library: Web3Provider, account: string): JsonRpcSigner
 
 // account is optional
 export function getProviderOrSigner(library: Web3Provider, account?: string) {
-  return account ? getSigner(library, account) : library
+  //return account ? getSigner(library, account) : library
   // look to use ethers provider if need be.
-  /*
-  if(account) {
+
+  if (account) {
     // This just connects the account if necessary.
-    getSigner(library, account);
+    return getSigner(library, account)
   }
 
-  return new EthersProvider(library, 5, 50, 10);
-  */
+  return new EthersProvider(library, 5, 50, 10)
 }
 
 // account is optional
@@ -641,9 +641,7 @@ export async function getRemoveLiquidity({
     console.error('getRemoveLiquidity: augurClient is null or amm address')
     return null
   }
-  console.log('getRemoveLiquidity', ammAddress, String(lpTokens))
-  const results = await augurClient.ammFactory.getRemoveLiquidity(ammAddress, String(lpTokens))
-  console.log(results)
+  const results = await augurClient.ammFactory.getRemoveLiquidity(ammAddress, new BN(String(lpTokens)))
   return {
     noShares: String(results.noShares),
     yesShares: String(results.yesShares),
@@ -666,80 +664,107 @@ export function isTokenOnList(defaultTokens: TokenAddressMap, currency?: Currenc
   return Boolean(currency instanceof Token && defaultTokens[currency.chainId]?.[currency.address])
 }
 
+export enum TradingDirection {
+  ENTRY = 'ENTRY',
+  EXIT = 'EXIT',
+  SWAP = 'SWAP'
+}
+
+export function getTradeType(trade: TradeInfo): string {
+  if (!trade) return null
+  if (!(trade.currencyIn instanceof MarketCurrency) && trade.currencyOut instanceof MarketCurrency)
+    return TradingDirection.ENTRY
+  if (trade.currencyIn instanceof MarketCurrency && !(trade.currencyOut instanceof MarketCurrency))
+    return TradingDirection.EXIT
+  if (trade.currencyIn instanceof MarketCurrency && trade.currencyOut instanceof MarketCurrency)
+    return TradingDirection.SWAP
+
+  return null
+}
+
 export async function estimateTrade(augurClient, trade: TradeInfo) {
   if (!augurClient || !trade.amm.id) return console.error('estimateTrade: augurClient is null or amm address')
-  let isEntry = !(trade.currencyIn instanceof MarketCurrency) && trade.currencyOut instanceof MarketCurrency
-  let isExit = trade.currencyIn instanceof MarketCurrency && !(trade.currencyOut instanceof MarketCurrency)
-  let isSwap = trade.currencyIn instanceof MarketCurrency && trade.currencyOut instanceof MarketCurrency
+  const tradeDirection = getTradeType(trade)
 
-  console.log('estimateTrade: isEntry', isEntry, 'isExit', isExit, 'isSwap', isSwap)
-
-  let outputYesShares = false;
-  let breakdown = null;
+  let outputYesShares = false
+  let breakdown = null
 
   if (trade.currencyOut instanceof MarketCurrency) {
     const out = trade.currencyOut as MarketCurrency
-    outputYesShares = out.name === MarketTokens.YES_SHARES;
+    outputYesShares = out.name === MarketTokens.YES_SHARES
   }
 
-  if (isEntry) {
-    breakdown = await augurClient.ammFactory.getRateEnterPosition(trade.amm.id, String(trade.inputAmount.raw), outputYesShares)
+  if (tradeDirection === TradingDirection.ENTRY) {
+    breakdown = await augurClient.ammFactory.getRateEnterPosition(
+      trade.amm.id,
+      new BN(String(trade.inputAmount.raw)),
+      outputYesShares
+    )
     return String(breakdown)
   }
-  if (isExit) {
-    breakdown = await augurClient.ammFactory.getRateExitPosition(trade.amm.id, trade.balance.outcomes[0], trade.balance.outcomes[1], trade.balance.outcomes[2])
-    return String(breakdown["_cashPayout"])
+  if (tradeDirection === TradingDirection.EXIT) {
+    let yesShares = new BN('0')
+    let noShares = new BN('0')
+    let invalidShares = new BN(trade.balance.outcomes[0])
+    if (trade.currencyIn.symbol === MarketTokens.NO_SHARES) {
+      noShares = new BN(String(trade.inputAmount.raw))
+      invalidShares = BN.minimum(invalidShares, noShares)
+    } else {
+      yesShares = new BN(String(trade.inputAmount.raw))
+      invalidShares = BN.minimum(invalidShares, yesShares)
+    }
+
+    breakdown = await augurClient.ammFactory.getRateExitPosition(
+      trade.amm.id,
+      String(invalidShares),
+      String(noShares),
+      String(yesShares)
+    )
+    return String(breakdown['_cashPayout'])
   }
-  if (isSwap) {
-    breakdown = await augurClient.ammFactory.getSwapRate(trade.amm.id, String(trade.inputAmount.raw), !outputYesShares)
+  if (tradeDirection === TradingDirection.SWAP) {
+    breakdown = await augurClient.ammFactory.getSwapRate(trade.amm.id, new BN(String(trade.inputAmount.raw)), !outputYesShares)
     console.log('get swap rate', String(breakdown))
     return String(breakdown)
   }
-  return null;
-
+  return null
 }
 
 export async function doTrade(augurClient, trade: TradeInfo, minAmount: string) {
-  if (!augurClient || !trade.amm.id) return console.error('estimateTrade: augurClient is null or amm address')
-  let isEntry = !(trade.currencyIn instanceof MarketCurrency) && trade.currencyOut instanceof MarketCurrency
-  let isExit = trade.currencyIn instanceof MarketCurrency && !(trade.currencyOut instanceof MarketCurrency)
-  let isSwap = trade.currencyIn instanceof MarketCurrency && trade.currencyOut instanceof MarketCurrency
+  if (!augurClient || !trade.amm.id) return console.error('doTrade: augurClient is null or amm address')
+  const tradeDirection = getTradeType(trade)
 
-  console.log('estimateTrade: isEntry', isEntry, 'isExit', isExit, 'isSwap', isSwap, 'minAmount', minAmount)
+  console.log('doTrade: direction', String(tradeDirection))
 
-  let outputYesShares = false;
+  let outputYesShares = false
 
   if (trade.currencyOut instanceof MarketCurrency) {
     const out = trade.currencyOut as MarketCurrency
-    outputYesShares = out.name === MarketTokens.YES_SHARES;
+    outputYesShares = out.name === MarketTokens.YES_SHARES
   }
 
-  if (isEntry) {
-    return augurClient.ammFactory.enterPosition(trade.amm.id, String(trade.inputAmount.raw), outputYesShares, minAmount)
+  if (trade.currencyOut instanceof MarketCurrency) {
+    return augurClient.ammFactory.enterPosition(trade.amm.id, new BN(String(trade.inputAmount.raw)), outputYesShares, new BN(minAmount))
   }
-  if (isExit) {
-    return augurClient.ammFactory.exitPosition(trade.amm.id, trade.balance.outcomes[0], trade.balance.outcomes[1], trade.balance.outcomes[2], minAmount)
+
+  if (tradeDirection === TradingDirection.EXIT) {
+    let yesShares = new BN('0')
+    let noShares = new BN('0')
+    let invalidShares = new BN(trade.balance.outcomes[0])
+    if (trade.currencyIn.symbol === MarketTokens.NO_SHARES) {
+      noShares = new BN(String(trade.inputAmount.raw))
+      invalidShares = BN.minimum(invalidShares, noShares)
+    } else {
+      yesShares = new BN(String(trade.inputAmount.raw))
+      invalidShares = BN.minimum(invalidShares, yesShares)
+    }
+
+    return augurClient.ammFactory.exitPosition(trade.amm.id, invalidShares, noShares, yesShares, new BN(minAmount))
   }
-  if (isSwap) {
-    return augurClient.ammFactory.swap(trade.amm.id, String(trade.inputAmount.raw), !outputYesShares, minAmount)
+
+  if (tradeDirection === TradingDirection.SWAP) {
+    return augurClient.ammFactory.swap(trade.amm.id, new BN(String(trade.inputAmount.raw)), !outputYesShares, new BN(minAmount))
   }
-  return null;
+  return null
 }
 
-export function estimateEnterPosition(ammAddress: string, augurClient, cash: string, buyYes: boolean) {
-  return augurClient.ammFactory.getRateEnterPosition(ammAddress, cash, buyYes)
-}
-
-export function enterPosition(ammAddress: string, augurClient, cash: string, buyYes: boolean, minShares: string) {
-  if (!augurClient || !ammAddress) return console.error('enterPosition: augurClient is null or amm address')
-  return augurClient.ammFactory.enterPosition(ammAddress, cash, buyYes, minShares)
-}
-
-export function estimateExitPosition(ammAddress: string, augurClient, cash: string, buyYes: boolean) {
-  return augurClient.ammFactory.getRateEnterPosition(ammAddress, cash, buyYes)
-}
-
-export function exitPosition(ammAddress: string, augurClient, cash: string, buyYes: boolean, minShares: string) {
-  if (!augurClient || !ammAddress) return console.error('enterPosition: augurClient is null or amm address')
-  return augurClient.ammFactory.enterPosition(ammAddress, cash, buyYes, minShares)
-}
