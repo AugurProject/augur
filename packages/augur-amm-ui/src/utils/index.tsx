@@ -18,7 +18,7 @@ import { Contract } from '@ethersproject/contracts'
 import { AddressZero } from '@ethersproject/constants'
 import { ParaShareToken } from '@augurproject/sdk-lite'
 import { TradeInfo } from '../hooks/Trades'
-import { MarketCurrency } from '../data/MarketCurrency'
+import { MarketCurrency } from '../model/MarketCurrency'
 import { EthersProvider } from '@augurproject/ethersjs-provider'
 
 // format libraries
@@ -759,7 +759,7 @@ export async function doTrade(augurClient, trade: TradeInfo, minAmount: string) 
       invalidShares = BN.minimum(invalidShares, yesShares)
     }
 
-    return augurClient.ammFactory.exitPosition(trade.amm.id, invalidShares, noShares, yesShares, new BN(minAmount))
+    return augurClient.ammFactory.exitPosition(trade.amm.id, invalidShares, noShares, yesShares, new BN(String(minAmount)))
   }
 
   if (tradeDirection === TradingDirection.SWAP) {

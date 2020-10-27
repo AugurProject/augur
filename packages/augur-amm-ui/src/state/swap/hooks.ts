@@ -16,7 +16,7 @@ import { SwapState } from './reducer'
 import { useUserSlippageTolerance } from '../user/hooks'
 import { computeSlippageAdjustedAmounts } from '../../utils/prices'
 import { useLocation } from 'react-router-dom'
-import { MarketCurrency } from '../../data/MarketCurrency'
+import { MarketCurrency } from '../../model/MarketCurrency'
 import { useMarketAmm } from '../../contexts/Markets'
 
 export function useSwapState(): AppState['swap'] {

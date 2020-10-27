@@ -11,8 +11,8 @@ import { useColor } from '../../hooks/useColor'
 import { currencyId } from '../../utils/currencyId'
 import { Break, CardNoise, CardBGImage } from './styled'
 import { unwrappedToken } from '../../utils/wrappedCurrency'
-import { useTotalSupply } from '../../data/TotalSupply'
-import { usePair } from '../../data/Reserves'
+import { useTotalSupply } from '../../model/TotalSupply'
+import { usePair } from '../../model/Reserves'
 import useUSDCPrice from '../../utils/useUSDCPrice'
 
 const StatContainer = styled.div`

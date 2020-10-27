@@ -4,7 +4,7 @@ import { useCallback, useMemo } from 'react'
 
 import { AmmExchangeInfo, MarketTokens } from '../constants'
 import { useAugurClient } from '../contexts/Application'
-import { MarketCurrency } from '../data/MarketCurrency'
+import { MarketCurrency } from '../model/MarketCurrency'
 import { MarketBalance, useMarketBalance } from '../state/wallet/hooks'
 
 export interface TradeInfo {

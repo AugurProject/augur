@@ -11,7 +11,7 @@ import { AddRemoveTabs } from '../../components/NavigationTabs'
 //import { MinimalPositionCard } from '../../components/PositionCard'
 import { RowBetween, RowFlat } from '../../components/Row'
 
-import { PairState } from '../../data/Reserves'
+import { PairState } from '../../model/Reserves'
 import { useActiveWeb3React } from '../../hooks'
 import { useCurrency } from '../../hooks/Tokens'
 import { ApprovalState, useApproveCallback } from '../../hooks/useApproveCallback'

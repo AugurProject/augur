@@ -14,7 +14,7 @@ import { ParaShareToken } from '@augurproject/sdk-lite'
 import { Interface } from 'ethers/lib/utils'
 import { BigNumber as BN } from 'bignumber.js'
 import { MarketTokens, ZERO_ADDRESS } from '../../constants'
-import { MarketCurrency } from '../../data/MarketCurrency'
+import { MarketCurrency } from '../../model/MarketCurrency'
 /**
  * Returns a map of the given addresses to their eventually consistent ETH balances.
  */
