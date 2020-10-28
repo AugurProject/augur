@@ -19,12 +19,10 @@ export function handleAddAMMExchange(call: AddAMMCall): void {
 }
 
 export function handleAddAMMExchangeWithLiquidity(call: AddAMMWithLiquidityCall): void {
-  log.info("Handling addAMMExchangeWithLiquidity", []);
   let id = call.outputs.value0.toHexString();
   let marketId = call.inputs._market.toHexString();
   let shareTokenId = call.inputs._para.toHexString();
   let paraShareToken = getOrCreateParaShareToken(shareTokenId);
 
-  // @todo The hardcoded cash will eventually come from the ShareToken pending ShareToken creation event.
   createAndSaveAMMExchange(id, marketId, shareTokenId, paraShareToken.cash);
 }

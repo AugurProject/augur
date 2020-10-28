@@ -1,4 +1,4 @@
-import { BigInt } from '@graphprotocol/graph-ts';
+import { Address, BigInt, log } from '@graphprotocol/graph-ts';
 import {
   EnterPosition as EnterPositionEvent,
   ExitPosition as ExitPositionEvent,
@@ -7,32 +7,22 @@ import {
   RemoveLiquidity as RemoveLiquidityEvent,
 } from '../../generated/templates/AMMExchange/AMMExchange';
 import {
+  AddLiquidity,
   AMMExchange,
   EnterPosition,
   ExitPosition,
-  AddLiquidity,
+  Market,
   RemoveLiquidity,
   SwapPosition,
 } from '../../generated/schema';
 import { updateAMM } from '../utils/helpers/amm';
 
-type PositionEventType = AddLiquidityEvent | RemoveLiquidityEvent | EnterPositionEvent | ExitPositionEvent | SwapPositionEvent;
-type EventConstructor  = AddLiquidity | RemoveLiquidity | EnterPosition | ExitPosition | SwapPosition;
+function buildEvent(address: Address, cash: BigInt, noShares: BigInt, yesShares: BigInt): void {
+  let ammExchange = AMMExchange.load(
+    address.toHexString()
+  );
 
-function buildEvent(EventConstructor: EventConstructor, event: PositionEventType, cash: BigInt, noShares: BigInt, yesShares: BigInt) {
-  const id = `${event.transaction.hash.toHex()}-${event.logIndex.toString()}`;
-  console.log("Handling event on ammExchange", id)
-
-  let positionEvent = new EventConstructor(id);
-  positionEvent.ammExchange = event.address;
-  positionEvent.cash = cash;
-  positionEvent.noShares = noShares;
-  positionEvent.yesShares = yesShares;
-  positionEvent.sender = event.params.sender;
-  positionEvent.save();
-
-  let ammExchange = AMMExchange.load(event.address);
-  let market = ammExchange.market;
+  let market = Market.load(ammExchange.market);
   market.volume = market.volume.plus(noShares.abs());
   market.volume = market.volume.plus(yesShares.abs());
 
@@ -43,68 +33,103 @@ function buildEvent(EventConstructor: EventConstructor, event: PositionEventType
 
   ammExchange.save();
 
-  updateAMM(event.address);
-
-  return positionEvent;
+  updateAMM(address.toHexString());
 }
 
-export function handleAddLiquidity(event: AddLiquidityEvent) {
-  const {
-    cash,
-    noShares,
-    yesShares
-  } = event.params;
-  buildEvent(AddLiquidity, event, cash, noShares, yesShares);
+export function handleAddLiquidity(event: AddLiquidityEvent): void {
+  const id = event.transaction.hash.toHexString() + "-" + event.logIndex.toString();
+  let addLiquidity = new AddLiquidity(id);
+  addLiquidity.ammExchange = event.address.toHexString();
+  addLiquidity.cash = event.params.cash;
+  addLiquidity.noShares = event.params.noShares;
+  addLiquidity.yesShares = event.params.yesShares;
+  addLiquidity.sender = event.params.sender.toHexString();
+  addLiquidity.save();
+
+  buildEvent(
+    event.address,
+    event.params.cash,
+    event.params.noShares,
+    event.params.yesShares
+  );
 }
 
-export function handleRemoveLiquidity(event: RemoveLiquidityEvent) {
-  const {
-    cash,
-    noShares,
-    yesShares
-  } = event.params;
-  buildEvent(RemoveLiquidity, event, cash.times(BigInt.fromI32(-1)), noShares.times(BigInt.fromI32(-1)), yesShares.times(BigInt.fromI32(-1)));
+export function handleRemoveLiquidity(event: RemoveLiquidityEvent): void {
+  const id = event.transaction.hash.toHexString() + "-" + event.logIndex.toString();
+  let removeLiquidity = new RemoveLiquidity(id);
+  removeLiquidity.ammExchange = event.address.toHexString();
+  removeLiquidity.cash = event.params.cash;
+  removeLiquidity.noShares = event.params.noShares;
+  removeLiquidity.yesShares = event.params.yesShares;
+  removeLiquidity.sender = event.params.sender.toHexString();
+  removeLiquidity.save();
+
+  buildEvent(
+    event.address,
+    event.params.cash.times(BigInt.fromI32(-1)),
+    event.params.noShares.times(BigInt.fromI32(-1)),
+    event.params.yesShares.times(BigInt.fromI32(-1))
+  );
 }
 
-export function handleEnterPosition(event: EnterPositionEvent) {
-  const {
-    buyYes,
-    cash,
-    outputShares
-  } = event.params;
+export function handleEnterPosition(event: EnterPositionEvent): void {
+  const id = event.transaction.hash.toHexString() + "-" + event.logIndex.toString();
+  let enterPosition = new EnterPosition(id);
+  enterPosition.ammExchange = event.address.toHexString();
+  enterPosition.cash = event.params.cash;
 
-  if(buyYes) {
-    buildEvent(EnterPosition, event, cash, BigInt.fromI32(0), outputShares);
+  if(event.params.buyYes) {
+    buildEvent(event.address, event.params.cash, BigInt.fromI32(0), event.params.outputShares);
+    enterPosition.noShares = BigInt.fromI32(0);
+    enterPosition.yesShares = event.params.outputShares;
   } else {
-    buildEvent(EnterPosition, event, cash, outputShares, BigInt.fromI32(0));
+    buildEvent(event.address, event.params.cash, event.params.outputShares, BigInt.fromI32(0));
+    enterPosition.noShares = event.params.outputShares;
+    enterPosition.yesShares = BigInt.fromI32(0);
   }
+
+  enterPosition.sender = event.params.sender.toHexString();
+  enterPosition.save();
 }
 
-export function handleExitPosition(event: ExitPositionEvent) {
-  const {
-    cashPayout,
-    invalidShares,
-    noShares,
-    yesShares
-  } = event.params;
+export function handleExitPosition(event: ExitPositionEvent): void {
+  const id = event.transaction.hash.toHexString() + "-" + event.logIndex.toString();
+  let exitPosition = new ExitPosition(id);
 
-  let exitPosition = buildEvent(ExitPosition, event,
-    cashPayout.times(BigInt.fromI32(-1)), noShares, yesShares);
-  exitPosition.invalidShares = invalidShares;
+  exitPosition.ammExchange = event.address.toHexString();
+  exitPosition.cash = event.params.cashPayout.times(BigInt.fromI32(-1));
+  exitPosition.invalidShares = event.params.invalidShares;
+  exitPosition.noShares = event.params.noShares;
+  exitPosition.yesShares = event.params.yesShares;
+  exitPosition.sender = event.params.sender.toHexString();
   exitPosition.save();
+
+  buildEvent(
+    event.address,
+    event.params.cashPayout.times(BigInt.fromI32(-1)),
+    event.params.noShares,
+    event.params.yesShares
+  );
 }
 
-export function handleSwapPosition(event: SwapPositionEvent) {
-  const {
-    inputShares,
-    outputShares
-  } = event.params;
+export function handleSwapPosition(event: SwapPositionEvent): void {
+  const id = event.transaction.hash.toHexString() + "-" + event.logIndex.toString();
+  let swapPosition = new SwapPosition(id);
+  swapPosition.ammExchange = event.address.toHexString();
 
   if (event.params.inputYes) {
-    buildEvent(SwapPosition, event, BigInt.fromI32(0), outputShares,
-      inputShares.times(BigInt.fromI32(-1)));
+    buildEvent(
+      event.address,
+      BigInt.fromI32(0),
+      event.params.outputShares,
+      event.params.inputShares.times(BigInt.fromI32(-1))
+    );
   } else {
-    buildEvent(SwapPosition, event, BigInt.fromI32(0),
-      inputShares.times(BigInt.fromI32(-1)), outputShares);
+    buildEvent(
+      event.address,
+      BigInt.fromI32(0),
+      event.params.inputShares.times(BigInt.fromI32(-1)),
+      event.params.outputShares
+    );
   }
 }

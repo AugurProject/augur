@@ -45,6 +45,14 @@ export {
 } from "./mappings/ammFactory"
 
 export {
+  handleAddLiquidity,
+  handleEnterPosition,
+  handleExitPosition,
+  handleRemoveLiquidity,
+  handleSwapPosition
+} from "./mappings/ammExchange";
+
+export {
   handleCashTransfer
 } from "./mappings/cash";
 
