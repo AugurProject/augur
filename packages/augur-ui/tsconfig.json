@@ -3,8 +3,8 @@
   "compilerOptions": {
     "outDir": "build",
     "rootDir": "src",
-    "target": "es2020",
-    "module": "es2020",
+    "target": "ES6",
+    "module": "ESNEXT",
     "jsx": "react",
     "noImplicitAny": false,
     "allowSyntheticDefaultImports": true,

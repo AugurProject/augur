@@ -23,7 +23,7 @@ import {
   DEFAULT_SDK_CONFIGURATION,
   SDKConfiguration,
 } from '@augurproject/utils';
-import { formatGasCostGwei, formatAttoDai } from 'utils/format-number';
+import { formatGasCostGwei } from 'utils/format-number';
 import {
   GasPriceInfo,
   Blockchain,

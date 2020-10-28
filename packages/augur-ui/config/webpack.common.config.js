@@ -66,6 +66,9 @@ module.exports = {
       {
         test: /\.tsx?$/,
         loader: 'ts-loader',
+        options: {
+          transpileOnly: false,
+        }
       },
       //{
       //  test: /\.js$/,

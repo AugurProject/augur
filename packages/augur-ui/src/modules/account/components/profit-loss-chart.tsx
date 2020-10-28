@@ -67,8 +67,13 @@ const getOptions = () => ({
         if (this.isLast) return 'Today';
         if (this.isFirst) {
           return Highcharts.dateFormat('%d %b %Y', this.value);
+        } else {
+          return '';
         }
       },
+      isLast: false,
+      isFirst: false,
+      value: null,
     },
     crosshair: false,
   },
@@ -87,6 +92,7 @@ const getOptions = () => ({
       align: 'left',
       x: 0,
       y: -2,
+      value: null,
     },
     tickPositioner: (min, max) => {
       let arr = []

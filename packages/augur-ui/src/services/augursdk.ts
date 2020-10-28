@@ -18,6 +18,7 @@ import { isMobileSafari, isSafari } from 'utils/is-safari';
 export class SDK {
   client: Augur | null = null;
   isSubscribed = false;
+  sdk = null;
   private connector:Connectors.BaseConnector;
   private config: SDKConfiguration;
 
@@ -111,7 +112,7 @@ export class SDK {
     provider: JsonRpcProvider,
     signer: EthersSigner,
     expectedNetworkId: NetworkId,
-    primaryProvider: string,
+    primaryProvider: string = '',
   ) {
     if (!this.client) {
       throw new Error('Trying to sync user data before Augur is initialized');

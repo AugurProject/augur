@@ -47,7 +47,7 @@ function renderApp(Root) {
 handleRender();
 
 function handleRender() {
-  const locationParsed = parseLocation(window?.location?.href || '');
+  const locationParsed = parseLocation(windowRef?.location?.href || '');
   if (locationParsed.t) {
     setHTMLTheme(locationParsed.t.toUpperCase());
   }
