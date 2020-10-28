@@ -111,6 +111,11 @@ export const toWeeklyDate = date => {
   return dayjs.utc(wkStart).format('MMM DD') + ' - ' + dayjs.utc(wkEnd).format('MMM DD')
 }
 
+export const formatShares = (num = 0) => {
+  const displayValue = new BN(num).div(new BN(10).pow(18))
+  return toSignificant(String(displayValue), 6)
+}
+
 export function getTimestampsForChanges() {
   const utcCurrentTime = dayjs()
   const t1 = utcCurrentTime
@@ -651,7 +656,6 @@ export async function getRemoveLiquidity({
 
 export function removeAmmLiquidity({ ammAddress, augurClient, lpTokens }) {
   if (!augurClient || !ammAddress) return console.error('removeAmmLiquidity: augurClient is null or amm address')
-  console.log('removeAmmLiquidity', ammAddress, String(lpTokens))
   return augurClient.ammFactory.removeLiquidity(ammAddress, new BN(lpTokens))
 }
 
@@ -663,6 +667,13 @@ export function isTokenOnList(defaultTokens: TokenAddressMap, currency?: Currenc
   if (currency === ETHER) return true
   return Boolean(currency instanceof Token && defaultTokens[currency.chainId]?.[currency.address])
 }
+
+export function calculateLiquidity(decimals: number, liquidity: string, price: string) {
+  if (!decimals || !liquidity || !price) return "0"
+  const liqNormalized = new BN(liquidity).div(new BN(10).exponentiatedBy(decimals))
+  return String(liqNormalized.times(new BN(price)))
+}
+
 
 export enum TradingDirection {
   ENTRY = 'ENTRY',

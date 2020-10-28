@@ -25,7 +25,7 @@ function UserPositions() {
             <PositionMarkets positions={userMarketShareBalances || {}} loading={loading} />
           ) : (
             <AutoRow justify={'center'}>
-              <TYPE.light>No Market Positions</TYPE.light>
+              <TYPE.light>{loading ? 'Loading ...' : 'No Market Positions'}</TYPE.light>
             </AutoRow>
           )}
         </Panel>

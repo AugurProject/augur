@@ -6,12 +6,14 @@ import utc from 'dayjs/plugin/utc'
 import { Box, Flex, Text } from 'rebass'
 import { Divider } from '..'
 import { useDarkModeManager } from '../../contexts/LocalStorage'
-import { formatTime } from '../../utils'
+import { formatTime, formattedNum, calculateLiquidity } from '../../utils'
 import { useMedia } from 'react-use'
 import { withRouter } from 'react-router-dom'
 import { TYPE } from '../../Theme'
 import { BasicLink } from '../Link'
 import TokenLogo from '../TokenLogo'
+import { useTokenDayPriceData } from '../../contexts/TokenData'
+import { useCashTokens } from '../../state/wallet/hooks'
 
 dayjs.extend(utc)
 
@@ -23,9 +25,9 @@ const PageButtons = styled.div`
   margin-bottom: 2em;
 `
 
-const Arrow = styled.div`
+const Arrow = styled.div<{ faded: boolean }>`
   color: ${({ theme }) => theme.primary1};
-  opacity: ${props => (props.faded ? 0.3 : 1)};
+  opacity: ${faded => (faded ? 0.3 : 1)};
   padding: 0 20px;
   user-select: none;
   :hover {
@@ -40,8 +42,8 @@ const List = styled(Box)`
 const DashGrid = styled.div`
   display: grid;
   grid-gap: 0.5em;
-  grid-template-columns: 0.5fr 70% 0.5fr 0.5fr 1fr 1fr;
-  grid-template-areas: 'logo description noPercent yesPercent status timestamp';
+  grid-template-columns: 0.5fr 50% 1fr 0.5fr 0.5fr 1fr 1fr;
+  grid-template-areas: 'logo description liquidity noPercent yesPercent status timestamp';
   padding: 0 1.125rem;
 
   > * {
@@ -57,8 +59,8 @@ const DashGrid = styled.div`
   @media screen and (min-width: 1080px) {
     display: grid;
     grid-gap: 0.5em;
-    grid-template-columns: 0.5fr 5fr 0.5fr 0.5fr 1fr 1fr;
-    grid-template-areas: 'logo description noPercent yesPercent status timestamp';
+    grid-template-columns: 0.5fr 5fr 1fr 0.5fr 0.5fr 1fr 1fr;
+    grid-template-areas: 'logo description liquidity noPercent yesPercent status timestamp';
   }
 
   @media screen and (max-width: 816px) {
@@ -159,50 +161,67 @@ function MarketList({ markets, itemMax = 10 }) {
       .slice(itemMax * (page - 1), page * itemMax)
   }, [markets, itemMax, page, sortDirection, sortedColumn])
 
-  const ListItem = ({ item, index }) => {
+  const ListItem = ({ marketData, index }) => {
+    const ammExchange = marketData?.amm
+    const [cashTokens, loading] = useCashTokens()
+    const cashData = useTokenDayPriceData()
+    let liquidityUSD = '-'
+    if (ammExchange?.liquidity && cashTokens && cashData?.[marketData?.cash] && cashData?.[marketData?.cash]?.priceUSD) {
+      const cashToken = cashTokens[marketData.cash]
+      const displayUsd = calculateLiquidity(
+        Number(cashToken?.decimals),
+        String(ammExchange?.liquidity),
+        String(cashData[marketData?.cash]?.priceUSD)
+      )
+      liquidityUSD = String(formattedNum(String(displayUsd), true))
+    }
+
     return (
-      <DashGrid style={{ height: '48px', alignContent: 'center' }} focus={true}>
-        {!below680 && <TokenLogo tokenInfo={item?.cash} />}
-        <BasicLink style={{ width: '100%' }} to={'/token/' + item.id} key={item.id}>
-          {item.description}
-        </BasicLink>
-        <DataText area="noPercent">{item.amm ? Number(item.amm.percentageNo).toFixed(2) : '-'}</DataText>
-        <DataText area="yesPercent">{item.amm ? Number(item.amm.percentageYes).toFixed(2) : '-'}</DataText>
+      <DashGrid style={{ height: '48px', alignContent: 'center' }} >
+        {!below680 && <TokenLogo tokenInfo={marketData?.cash} />}
+        <DataText style={{ justifyContent: 'flex-start', alignItems: 'center', textAlign: 'left' }}>
+          <BasicLink style={{ width: '100%', fontWeight: '400' }} to={'/token/' + marketData?.id} key={marketData?.id}>
+            {marketData.description}
+          </BasicLink>
+        </DataText>
+        {!below680 && <DataText area="liquidity">{liquidityUSD}</DataText>}
+        <DataText area="noPercent">{marketData.amm ? Number(marketData.amm.percentageNo).toFixed(2) : '-'}</DataText>
+        <DataText area="yesPercent">{marketData.amm ? Number(marketData.amm.percentageYes).toFixed(2) : '-'}</DataText>
         {!below800 && (
           <DataText area="status">
             <span
               style={
                 !darkMode
                   ? {}
-                  : item.status === 'TRADING'
+                  : marketData.status === 'TRADING'
                   ? { color: '#7DFFA8' }
-                  : item.status === 'DISPUTING'
+                  : marketData.status === 'DISPUTING'
                   ? { color: '#F1E700' }
-                  : item.status === 'REPORTING'
+                  : marketData.status === 'REPORTING'
                   ? { color: '#F1E700' }
-                  : item.status === 'FINALIZED'
+                  : marketData.status === 'FINALIZED'
                   ? { color: '#F12B00' }
                   : {}
               }
             >
-              {item.status}
+              {marketData.status}
             </span>
           </DataText>
         )}
-        {!below800 && <DataText area="timestamp">{formatTime(item.endTimestamp)}</DataText>}
+        {!below800 && <DataText area="timestamp">{formatTime(marketData.endTimestamp)}</DataText>}
       </DashGrid>
     )
   }
 
   return (
     <ListWrapper>
-      <DashGrid center={true} style={{ height: 'fit-content', padding: '0 1.125rem 1rem 1.125rem' }}>
+      <DashGrid style={{ height: 'fit-content', padding: '0 1.125rem 1rem 1.125rem' }}>
         {!below680 && (
           <Flex alignItems="center">
             <Text area="Currency">Currency</Text>
           </Flex>
         )}
-        <Flex alignItems="center" justifyContent="flexStart">
+        <Flex alignItems="center" justifyContent="flex-start">
           <ClickableText
             color="text"
             area="name"
@@ -216,6 +235,11 @@ function MarketList({ markets, itemMax = 10 }) {
             {sortedColumn === SORT_FIELD.DESCRIPTION ? (!sortDirection ? '↑' : '↓') : ''}
           </ClickableText>
         </Flex>
+        {!below680 && (
+          <Flex alignItems="center">
+            <Text area="liquidity">Liquidity</Text>
+          </Flex>
+        )}
         <Flex alignItems="center">
           <Text area="No Percent">{below680 ? 'No' : 'No %'}</Text>
         </Flex>
@@ -256,7 +280,7 @@ function MarketList({ markets, itemMax = 10 }) {
           filteredList.map((item, index) => {
             return (
               <div key={index}>
-                <ListItem key={index} index={(page - 1) * itemMax + index + 1} item={item} />
+                <ListItem key={index} index={(page - 1) * itemMax + index + 1} marketData={item} />
                 <Divider />
               </div>
             )

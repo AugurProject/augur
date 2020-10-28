@@ -2,7 +2,7 @@ import React, { createContext, useContext, useReducer, useMemo, useCallback, use
 
 import dayjs from 'dayjs'
 import utc from 'dayjs/plugin/utc'
-
+import { BigNumber as BN } from 'bignumber.js'
 import { augurV2Client } from '../apollo/client'
 import { GET_MARKETS } from '../apollo/queries'
 import { useConfig } from '../contexts/Application'
@@ -136,12 +136,12 @@ export function useAllMarketData() {
 
 export function useMarketsByAMM() {
   const [state] = useMarketDataContext()
-  const { markets } = state;
-  const marketsByAmm = markets.reduce((p, m) => {
+  const { markets } = state
+  const marketsByAmm = (markets || []).reduce((p, m) => {
     if (!m.amms || m.amms.length === 0) return [...p, { ...m, amm: null }]
     const splitOut = m.amms.map(amm => {
-      return ({...m, amm, cash: amm.shareToken.cash.id})
-    });
+      return { ...m, amm, cash: amm.shareToken.cash.id }
+    })
     return p.concat(splitOut)
   }, [])
   return marketsByAmm
@@ -156,7 +156,7 @@ export function useMarket(marketId) {
 export function useAllMarketCashes() {
   const [state] = useMarketDataContext()
   const shareTokens = state?.paraShareTokens
-  if (!shareTokens) return []
+  if (!shareTokens || shareTokens.length === 0) return []
   const cashes = shareTokens.map(s => s.cash.id)
   return cashes
 }
@@ -178,10 +178,10 @@ export function useMarketAmm(marketId, amm) {
 
   return {
     ...ammExchange,
-    hasLiquidity: ammExchange?.liquidity  && ammExchange?.liquidity !== "0",
+    hasLiquidity: ammExchange?.liquidity && ammExchange?.liquidity !== '0',
     id: ammExchange?.id,
     cash: ammExchange?.shareToken?.cash?.id,
-    sharetoken: ammExchange?.shareToken?.id,
+    sharetoken: ammExchange?.shareToken?.id
   }
 }
 
@@ -191,10 +191,10 @@ export function useMarketAmmExchanges(marketId) {
 
   return ammExchanges.map(ammExchange => ({
     ...ammExchange,
-    hasLiquidity: ammExchange?.liquidity  && ammExchange?.liquidity !== "0",
+    hasLiquidity: ammExchange?.liquidity && ammExchange?.liquidity !== '0',
     id: ammExchange?.id,
     cash: ammExchange?.shareToken?.cash?.id,
-    sharetoken: ammExchange?.shareToken?.id
+    sharetoken: ammExchange?.shareToken?.id,
   }))
 }
 
@@ -221,9 +221,9 @@ export function usePositionMarkets(positions) {
   const { markets } = state
   const marketPositions = Object.keys(positions).map(marketId => {
     const market = markets.find(m => m.id === marketId)
-    return { market, ...positions[marketId]}
+    return { market, ...positions[marketId] }
   })
-  return marketPositions;
+  return marketPositions
 }
 
 export function useAmmMarkets(balances) {
@@ -232,13 +232,28 @@ export function useAmmMarkets(balances) {
   const ammMarkets = []
   if (markets) {
     Object.keys(balances).map(ammId => {
-      const balance = balances[ammId];
+      const balance = balances[ammId]
       const market = markets.find(m => m.amms.map(a => a.id).includes(ammId))
-      const groupedAmms = market ? market.amms.reduce((group, a) => ({...group, [a.id]: a}), {}) : {}
-      if (market && balance !== "0") {
-        ammMarkets.push({...market, balance, shareToken: groupedAmms[ammId]?.shareToken})
+      const groupedAmms = market ? market.amms.reduce((group, a) => ({ ...group, [a.id]: a }), {}) : {}
+      if (market && balance !== '0') {
+        ammMarkets.push({ ...market, balance, shareToken: groupedAmms[ammId]?.shareToken })
       }
     })
   }
   return ammMarkets
+}
+
+export function useTotalLiquidity() {
+  const markets = useMarketsByAMM()
+  return useMemo(
+    () =>
+      markets.reduce((p, m) => {
+        if (!m.amm) return p
+        const currentCash = p[m.cash]
+        return currentCash
+          ? { ...p, [m.cash]: new BN(m.amm.liquidity).plus(currentCash) }
+          : { ...p, [m.cash]: new BN(m.amm.liquidity) }
+      }, {}),
+    [markets]
+  )
 }

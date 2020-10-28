@@ -80,12 +80,12 @@ export class WrappedTokenInfo extends Token {
 }
 
 export interface AmmExchangeInfo {
-  id: string;
-  percentageYes: number;
-  percentageNo: number;
-  hasLiquidity: boolean;
-  cash: string;
-  sharetoken: string;
+  id: string
+  percentageYes: number
+  percentageNo: number
+  hasLiquidity: boolean
+  cash: string
+  sharetoken: string
 }
 
 export type TokenAddressMap = Readonly<{ [chainId in ChainId]: Readonly<{ [tokenAddress: string]: WrappedTokenInfo }> }>
@@ -268,3 +268,41 @@ export const BLOCKED_PRICE_IMPACT_NON_EXPERT: Percent = new Percent(JSBI.BigInt(
 // used to ensure the user doesn't send so much ETH so they end up with <.01
 export const MIN_ETH: JSBI = JSBI.exponentiate(JSBI.BigInt(10), JSBI.BigInt(16)) // .01 ETH
 export const BETTER_TRADE_LINK_THRESHOLD = new Percent(JSBI.BigInt(75), JSBI.BigInt(10000))
+
+export interface SwapEvent {
+  id: string
+  sender: string
+  yesShares: string
+  noShares: string
+}
+export interface EnterEvent {
+  id: string
+  sender: string
+  cash: string
+  yesShares: string
+  noShares: string
+}
+export interface ExitEvent {
+  id: string
+  sender: string
+  cash: string
+  yesShares: string
+  noShares: string
+}
+export interface MarketAmmExchange {
+  id: string
+  volumeYes: string
+  volumeNo: string
+  percentageYes: string
+  percentageNo: string
+  liquidity: string
+  liquidityCash: string
+  liquidityYes: string
+  liquidityNo: string
+  liquidityInvalid: string
+  totalSupply: string
+  cashBalance: string
+  swaps: SwapEvent[]
+  enters: EnterEvent[]
+  exits: ExitEvent[]
+}
