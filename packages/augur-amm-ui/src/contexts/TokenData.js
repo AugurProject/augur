@@ -5,7 +5,8 @@ import {
   CASH_TOKEN_DATA,
   FILTERED_TRANSACTIONS,
   TOKEN_CHART,
-  PRICES_BY_BLOCK
+  PRICES_BY_BLOCK,
+  DAILY_DERIVED_ETH
 } from '../apollo/queries'
 
 import { useEthPrice } from './GlobalData'
@@ -28,10 +29,10 @@ const UPDATE_CHART_DATA = 'UPDATE_CHART_DATA'
 const UPDATE_PRICE_DATA = 'UPDATE_PRICE_DATA'
 const UPDATE_TOP_TOKENS = ' UPDATE_TOP_TOKENS'
 const UPDATE_ALL_PAIRS = 'UPDATE_ALL_PAIRS'
-const UPDATE_CASH_USDT = 'UPDATE_CASH_USDT'
+const UPDATE_CASH_DATA = 'UPDATE_CASH_DATA'
 
 const TOKEN_PAIRS_KEY = 'TOKEN_PAIRS_KEY'
-const CASH_USDT_PAIRS = 'CASH_USDT_PAIRS'
+const CASH_DATA = 'CASH_DATA'
 
 dayjs.extend(utc)
 
@@ -113,17 +114,11 @@ function reducer(state, { type, payload }) {
       }
     }
 
-    case UPDATE_CASH_USDT: {
+    case UPDATE_CASH_DATA: {
       const { cashes } = payload
-      let addedCashes = {}
-      cashes &&
-        cashes.map(token => {
-          return (addedCashes[token.id] = token)
-        })
-
       return {
         ...state,
-        [CASH_USDT_PAIRS]: addedCashes
+        [CASH_DATA]: cashes
       }
     }
 
@@ -184,7 +179,7 @@ export default function Provider({ children }) {
 
   const updateCashTokens = useCallback(cashes => {
     dispatch({
-      type: UPDATE_CASH_USDT,
+      type: UPDATE_CASH_DATA,
       payload: {
         cashes
       }
@@ -241,13 +236,11 @@ const getCashTokenData = async (cashes = []) => {
           },
           fetchPolicy: 'cache-first'
         })
-        console.log('cash token data', JSON.stringify(usdPrice))
-        let tokenData = { ...usdPrice?.data?.tokenDayDatas[0], id: cash }
+        let tokenData = {usdPrice: usdPrice?.data?.tokenDayDatas[0], id: cash }
 
-        if (!tokenData) {
+        if (!tokenData.usdPrice) {
           // TOOD remove this, used only form kovan testing
           tokenData = {
-            date: 1602460800,
             id: cash,
             priceUSD: '400'
           }
@@ -258,7 +251,7 @@ const getCashTokenData = async (cashes = []) => {
   } catch (e) {
     console.log(e)
   }
-  return bulkResults
+  return bulkResults.reduce((p, a) => ({...p, [a.id]: a}), {})
 }
 
 const getTokenTransactions = async allPairsFormatted => {
@@ -439,8 +432,8 @@ const getTokenChartData = async tokenAddress => {
 }
 
 export function Updater() {
-  const [STATE, { updateCashTokens }] = useTokenDataContext()
-  const cashTokens = STATE[CASH_USDT_PAIRS]
+  const [state, { updateCashTokens }] = useTokenDataContext()
+  const cashTokens = state[CASH_DATA]
   const cashes = useAllMarketCashes()
 
   useEffect(() => {
@@ -453,7 +446,7 @@ export function Updater() {
       }
     }
     if (!cashTokens || Object.keys(cashTokens) === 0) getData()
-  }, [cashTokens, updateCashTokens, cashes])
+  }, [updateCashTokens, cashes])
   return null
 }
 
@@ -614,6 +607,26 @@ export function useTokenPriceData(tokenAddress, timeWindow, interval = 3600) {
   }, [chartData, interval, timeWindow, tokenAddress, updatePriceData, latestBlock])
 
   return chartData
+}
+
+export function useTokenDayPriceData(tokenAddress) {
+  const [state, { updateCashTokens }] = useTokenDataContext()
+  const cashTokens = state[CASH_DATA]
+  const cashes = useAllMarketCashes()
+
+  useEffect(() => {
+    async function getData() {
+      if (cashes && cashes.length > 0) {
+        let cashTokens = await getCashTokenData(cashes)
+        // TOOD: should get values using mainnet token addresses
+        console.log('mainnet addresses should have data, cashTokens result', cashTokens)
+        updateCashTokens(cashTokens)
+      }
+    }
+    if (!cashTokens || Object.keys(cashTokens) === 0) getData()
+  }, [updateCashTokens, cashes])
+
+  return cashTokens?.[tokenAddress]
 }
 
 export function useAllTokenData() {

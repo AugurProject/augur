@@ -137,7 +137,7 @@ export function useAllMarketData() {
 export function useMarketsByAMM() {
   const [state] = useMarketDataContext()
   const { markets } = state;
-  const marketsByAmm = markets.reduce((p, m) => {
+  const marketsByAmm = (markets || []).reduce((p, m) => {
     if (!m.amms || m.amms.length === 0) return [...p, { ...m, amm: null }]
     const splitOut = m.amms.map(amm => {
       return ({...m, amm, cash: amm.shareToken.cash.id})
@@ -156,7 +156,7 @@ export function useMarket(marketId) {
 export function useAllMarketCashes() {
   const [state] = useMarketDataContext()
   const shareTokens = state?.paraShareTokens
-  if (!shareTokens) return []
+  if (!shareTokens || shareTokens.length === 0) return []
   const cashes = shareTokens.map(s => s.cash.id)
   return cashes
 }

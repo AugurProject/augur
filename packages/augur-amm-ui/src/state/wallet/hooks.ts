@@ -151,7 +151,7 @@ export function useMarketShareBalances(): [
   )
 
   const anyLoading: boolean = useMemo(() => balances.some(callState => callState.loading), [balances])
-  const keyedMarkets = markets.reduce((p, m) => ({ ...p, [m.id]: m }), {})
+  const keyedMarkets = (markets || []).reduce((p, m) => ({ ...p, [m.id]: m }), {})
   const keyedParaTokens = paraShareTokens.reduce((p, t) => ({ ...p, [t.id]: t }), {})
 
   return [

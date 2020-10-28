@@ -63,7 +63,7 @@ const WarningGrouping = styled.div`
   pointer-events: ${({ disabled }) => disabled && 'none'};
 `
 
-function TokenPage({ marketId, history }) {
+function TokenPage({ marketId }) {
   const {
     id,
     name,
@@ -240,12 +240,6 @@ function TokenPage({ marketId, history }) {
                     </RowBetween>
                   </AutoColumn>
                 </Panel>
-
-                {/*
-                <Panel style={{ gridColumn: below1080 ? '1' : '2/4', gridRow: below1080 ? '' : '1/4' }}>
-                  <TokenChart marketId={marketId} color={backgroundColor} base={priceUSD} />
-                </Panel>
-                */}
               </PanelWrapper>
             </>
 

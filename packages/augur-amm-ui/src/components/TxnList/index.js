@@ -365,7 +365,7 @@ function TxnList({ transactions, symbol0Override, symbol1Override, color }) {
           </RowFixed>
         )}
 
-        <Flex alignItems="center" justifyContent="flexStart">
+        <Flex alignItems="center" justifyContent="flex-start">
           <ClickableText
             color="textDim"
             area="value"
