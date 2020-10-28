@@ -4,10 +4,9 @@ import { RowFixed, RowBetween } from '../Row'
 import { useMedia } from 'react-use'
 import { useGlobalData, useEthPrice } from '../../contexts/GlobalData'
 import { calculateLiquidity, formattedNum, localNumber } from '../../utils'
-import { useCashTokens } from '../../state/wallet/hooks'
 import UniPrice from '../UniPrice'
 import { TYPE } from '../../Theme'
-import { useTotalLiquidity } from '../../contexts/Markets'
+import { useMarketCashTokens, useTotalLiquidity } from '../../contexts/Markets'
 import { useTokenDayPriceData } from '../../contexts/TokenData'
 import { BigNumber as BN } from 'bignumber.js'
 
@@ -29,8 +28,8 @@ export default function GlobalStats() {
   const below816 = useMedia('(max-width: 816px)')
 
   const [showPriceCard] = useState(false)
-  const [globalLiquidity, setGlobalLiquidity] = useState("0")
-  const [cashTokens, loading] = useCashTokens()
+  const [globalLiquidity, setGlobalLiquidity] = useState("-")
+  const cashTokens = useMarketCashTokens()
   const cashData = useTokenDayPriceData()
   const { oneDayVolumeUSD, oneDayTxns } = useGlobalData()
   const [ethPrice] = useEthPrice()
@@ -38,15 +37,17 @@ export default function GlobalStats() {
   const liquidities = useTotalLiquidity()
 
   useEffect(() => {
-    if (!loading) {
-      const total = Object.keys(liquidities).reduce((p, cash) => {
-        return p.plus(new BN(calculateLiquidity(Number(cashTokens[cash]?.decimals), String(liquidities[cash]), String(cashData[cash]?.priceUSD))))
+    let total = new BN("0")
+    if (cashData && Object.keys(cashData).length > 0) {
+      total = Object.keys(liquidities).reduce((p, cash) => {
+        const cashValue = calculateLiquidity(Number(cashTokens[cash]?.decimals), String(liquidities[cash]), String(cashData[cash]?.priceUSD))
+        return p.plus(new BN(cashValue))
       }, new BN(0))
-
-      const liq = formattedNum(String(total), true);
-      setGlobalLiquidity(String(liq))
     }
-  }, [loading, liquidities, cashData, cashTokens, setGlobalLiquidity])
+    console.log('total', String(total))
+    const liq = formattedNum(String(total), true);
+    setGlobalLiquidity(String(liq))
+  }, [liquidities, cashData, cashTokens, setGlobalLiquidity])
 
   return (
     <Header>
@@ -68,7 +69,7 @@ export default function GlobalStats() {
           <TYPE.boxed mb={'0.5rem'} mr={'0.25rem'}>
             <TYPE.boxedRow>Total Liquidity</TYPE.boxedRow>
             <TYPE.boxedRow>
-              <TYPE.largeHeader>{loading ? '-' : globalLiquidity}</TYPE.largeHeader>
+              <TYPE.largeHeader>{globalLiquidity}</TYPE.largeHeader>
             </TYPE.boxedRow>
           </TYPE.boxed>
           <TYPE.boxed mb={'0.5rem'} mr={'0.25rem'}>

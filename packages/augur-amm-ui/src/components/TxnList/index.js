@@ -13,7 +13,7 @@ import Link from '../Link'
 import { Divider, EmptyCard } from '..'
 import DropdownSelect from '../DropdownSelect'
 import { TYPE } from '../../Theme'
-import { useCashTokens } from '../../state/wallet/hooks'
+import { useMarketCashTokens } from '../../contexts/Markets'
 import { useTokenDayPriceData } from '../../contexts/TokenData'
 import { BigNumber as BN } from 'bignumber.js'
 
@@ -162,7 +162,7 @@ function getTransactionType(event, symbol0, symbol1) {
 }
 
 // @TODO rework into virtualized list
-function TxnList({ allExchanges, symbol0Override, symbol1Override, color }) {
+function TxnList({ allExchanges, color }) {
   // page state
   const [page, setPage] = useState(1)
   const [maxPage, setMaxPage] = useState(1)
@@ -172,7 +172,7 @@ function TxnList({ allExchanges, symbol0Override, symbol1Override, color }) {
   const [sortedColumn, setSortedColumn] = useState(SORT_FIELD.TIMESTAMP)
   const [filteredItems, setFilteredItems] = useState()
   const [txFilter, setTxFilter] = useState(TXN_TYPE.ALL)
-  const [cashTokens, loading] = useCashTokens()
+  const cashTokens = useMarketCashTokens()
   const cashData = useTokenDayPriceData()
 
   useEffect(() => {
@@ -197,7 +197,7 @@ function TxnList({ allExchanges, symbol0Override, symbol1Override, color }) {
           const decimals = cashTokens ? cashTokens[e.cash]?.decimals : 18
           e.enters.map(mint => {
             let newTxn = {}
-            newTxn.hash = mint.id
+            newTxn.hash = mint.tx_hash
             newTxn.timestamp = mint.timestamp || 0
             newTxn.type = TXN_TYPE.ADD
             newTxn.token0Amount = formatShares(mint.noShares)
@@ -216,7 +216,7 @@ function TxnList({ allExchanges, symbol0Override, symbol1Override, color }) {
           const decimals = cashTokens ? cashTokens[e.cash]?.decimals : 18
           e.exits.map(burn => {
             let newTxn = {}
-            newTxn.hash = burn.id
+            newTxn.hash = burn.tx_hash
             newTxn.timestamp = burn.timestamp || 0
             newTxn.type = TXN_TYPE.REMOVE
             newTxn.token0Amount = formatShares(burn.noShares)
@@ -251,7 +251,7 @@ function TxnList({ allExchanges, symbol0Override, symbol1Override, color }) {
               newTxn.token1Amount = Math.abs(netToken0)
             }
 
-            newTxn.hash = swap.id
+            newTxn.hash = swap.tx_hash
             newTxn.timestamp = swap.timestamp || 0
             newTxn.type = TXN_TYPE.SWAP
 
