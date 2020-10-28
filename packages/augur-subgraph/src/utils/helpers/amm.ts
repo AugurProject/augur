@@ -6,6 +6,7 @@ import { Address, BigInt, BigDecimal } from '@graphprotocol/graph-ts'
 import { ERC20 } from '../../../generated/templates/Cash/ERC20';
 import { ParaShareToken } from '../../../generated/templates/ParaShareToken/ParaShareToken';
 import { AMMExchange as AMMExchangeContract } from "../../../generated/templates/AMMExchange/AMMExchange";
+import { AMMExchange as AMMExchangeTemplate } from '../../../generated/templates';
 
 import { getOrCreateParaShareToken } from './paraDeployer';
 import { getOrCreateCash } from './cash';
@@ -29,6 +30,7 @@ export function getOrCreateAMMExchange(
     amm.totalSupply =  BigInt.fromI32(0);
     amm.volumeNo = BigInt.fromI32(0);
     amm.volumeYes = BigInt.fromI32(0);
+    AMMExchangeTemplate.create(Address.fromString(id));
   }
 
   return amm as AMMExchange;
@@ -76,8 +78,13 @@ export function updateAMM(id: string):AMMExchange {
 
   amm.liquidity = totalShares;
 
-  amm.percentageNo = amm.liquidityNo.toBigDecimal().times(BigDecimal.fromString('100')).div(totalShares.toBigDecimal());
-  amm.percentageYes = amm.liquidityYes.toBigDecimal().times(BigDecimal.fromString('100')).div(totalShares.toBigDecimal());
+  if(totalShares.gt(BigInt.fromI32(0))) {
+    amm.percentageNo = amm.liquidityNo.toBigDecimal().times(BigDecimal.fromString('100')).div(totalShares.toBigDecimal());
+    amm.percentageYes = amm.liquidityYes.toBigDecimal().times(BigDecimal.fromString('100')).div(totalShares.toBigDecimal());
+  } else {
+    amm.percentageNo = BigDecimal.fromString('0');
+    amm.percentageYes = BigDecimal.fromString('0');
+  }
 
   amm.totalSupply = ammExchangeInstance.totalSupply();
 

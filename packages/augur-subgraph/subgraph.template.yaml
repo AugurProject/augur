@@ -182,12 +182,16 @@ templates:
       kind: ethereum/events
       apiVersion: 0.0.4
       language: wasm/assemblyscript
-      file: ./src/index.ts
+      file: ./src/mappings/ammExchange.ts
       entities:
         - AMMExchange
       abis:
         - name: AMMExchange
           file: ./abis/AMMExchange.json
+        - name: ERC20
+          file: ./abis/ERC20.json
+        - name: ParaShareToken
+          file: ./abis/ParaShareToken.json
       eventHandlers:
         - event: EnterPosition(address,uint256,uint256,bool)
           handler: handleEnterPosition
@@ -232,7 +236,6 @@ templates:
       abis:
         - name: ParaShareToken
           file: ./abis/ParaShareToken.json
-
 
 # Markets
   # - MarketParticipantsDisavowed(indexed address,indexed address)
