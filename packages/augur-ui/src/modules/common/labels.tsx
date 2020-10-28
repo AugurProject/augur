@@ -89,9 +89,11 @@ export interface MarketStatusProps {
   mini?: boolean;
 }
 
-export interface InReportingLabelProps extends MarketStatusProps {
+export interface InReportingLabelProps {
   disputeInfo: DisputeInfo;
-  isForkingMarket?: boolean;
+  reportingState: string;
+  endTimeFormatted: DateFormattedObject;
+  isWarpSync?: boolean;
 }
 
 export interface MovementLabelProps {
@@ -893,7 +895,7 @@ export const PropertyLabel = ({
 
 interface TransactionFeeLabelProps {
   gasCostDai: FormattedNumber;
-  isError: boolean;
+  isError?: boolean;
 }
 
 export const TransactionFeeLabel = ({
@@ -904,7 +906,7 @@ export const TransactionFeeLabel = ({
     <LinearPropertyLabel
       label={label}
       value={gasCostDai}
-      showDenomination={true}
+      showDenomination
     />
   );
 };
@@ -918,11 +920,11 @@ export const TransactionFeeLabelToolTip = ({
     <LinearPropertyLabelUnderlineTooltip
       label={label}
       value={gasCostDai}
-      showDenomination={true}
+      showDenomination
       highlight
       accentValue={isError}
-      id={'transaction_fee'}
-      tipText={`Est. TX Fee is not included in profit and loss`}
+      id='transaction_fee'
+      tipText="Est. TX Fee is not included in profit and loss"
     />
   );
 };

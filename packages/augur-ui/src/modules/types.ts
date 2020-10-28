@@ -126,7 +126,12 @@ export interface MarketData extends MarketInfo {
   description: string;
   marketId: string;
   marketStatus: string;
+  marketType: string;
+  tickSize: string;
+  numTicks: string;
   defaultSelectedOutcomeId: number;
+  minPrice: string;
+  maxPrice: string;
   minPriceBigNumber: BigNumber;
   maxPriceBigNumber: BigNumber;
   noShowBondAmountFormatted: FormattedNumber;
@@ -151,6 +156,11 @@ export interface MarketData extends MarketInfo {
   pending?: boolean;
   status?: string;
   hasPendingLiquidityOrders?: boolean;
+  noShowBondAmount?: string;
+  isWarpSync?: boolean;
+  scalarDenomination?: string;
+  author?: string;
+  isForking?: boolean;
 }
 
 export interface ForkingInfo {
