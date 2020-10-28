@@ -1,6 +1,6 @@
 {
   "name": "@augurproject/contract-dependencies-ethers",
-  "version": "2.1.9",
+  "version": "2.2.0",
   "description": "Contract Dependencies For EthersJS",
   "author": "The Augur Developers <team@augur.net>",
   "license": "MIT",
