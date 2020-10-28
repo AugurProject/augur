@@ -732,19 +732,19 @@ type AMMExchange @entity {
   shareToken: ParaShareToken!
 
   "Liquidity in exchange"
-  liquidity: BigInt!
+  liquidity: BigDecimal!
 
   "balance of cash"
-  liquidityCash: BigInt!
+  liquidityCash: BigDecimal!
 
   "balance of invalid shares"
-  liquidityInvalid: BigInt!
+  liquidityInvalid: BigDecimal!
 
   "balance of no shares"
-  liquidityNo: BigInt!
+  liquidityNo: BigDecimal!
 
   "balance of yes shares"
-  liquidityYes: BigInt!
+  liquidityYes: BigDecimal!
 
   "The all time yes volume in the exchange."
   volumeYes: BigInt!
