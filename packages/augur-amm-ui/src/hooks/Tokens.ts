@@ -3,7 +3,6 @@ import { Currency, ETHER, Token, currencyEquals } from '@uniswap/sdk'
 import { useMemo } from 'react'
 import { MarketTokens } from '../constants'
 import { MarketCurrency } from '../model/MarketCurrency'
-import { useSelectedTokenList } from '../state/lists/hooks'
 import { NEVER_RELOAD, useSingleCallResult } from '../state/multicall/hooks'
 import { useSwapQueryParam } from '../state/swap/hooks'
 import { useUserAddedTokens } from '../state/user/hooks'
@@ -12,29 +11,6 @@ import { isAddress } from '../utils'
 
 import { useActiveWeb3React } from './index'
 import { useBytes32TokenContract, useTokenContract } from './useContract'
-
-export function useAllTokens(): { [address: string]: Token } {
-  const { chainId } = useActiveWeb3React()
-  const userAddedTokens = useUserAddedTokens()
-  const allTokens = useSelectedTokenList()
-
-  return useMemo(() => {
-    if (!chainId) return {}
-    return (
-      userAddedTokens
-        // reduce into all ALL_TOKENS filtered by the current chain
-        .reduce<{ [address: string]: Token }>(
-          (tokenMap, token) => {
-            tokenMap[token.address] = token
-            return tokenMap
-          },
-          // must make a copy because reduce modifies the map, and we do not
-          // want to make a copy in every iteration
-          { ...allTokens[chainId] }
-        )
-    )
-  }, [chainId, userAddedTokens, allTokens])
-}
 
 export function useAllMarketTokens(marketId: string, cash: string, amm: string): Currency[] {
   const [userMarketShareBalances] = useMarketShareBalances()
@@ -80,12 +56,10 @@ function parseStringOrBytes32(str: string | undefined, bytes32: string | undefin
 // otherwise returns the token
 export function useToken(tokenAddress?: string): Token | undefined | null {
   const { chainId } = useActiveWeb3React()
-  const tokens = useAllTokens()
-
   const address = isAddress(tokenAddress)
   const tokenContract = useTokenContract(address ? address : undefined, false)
   const tokenContractBytes32 = useBytes32TokenContract(address ? address : undefined, false)
-  const token: Token | undefined = address ? tokens[address] : undefined
+  const token: Token | undefined = undefined
 
   const tokenName = useSingleCallResult(token ? undefined : tokenContract, 'name', undefined, NEVER_RELOAD)
   const tokenNameBytes32 = useSingleCallResult(

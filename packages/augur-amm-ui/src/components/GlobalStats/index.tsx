@@ -1,15 +1,15 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import styled from 'styled-components'
 import { RowFixed, RowBetween } from '../Row'
 import { useMedia } from 'react-use'
 import { useGlobalData, useEthPrice } from '../../contexts/GlobalData'
-import { formattedNum, localNumber } from '../../utils'
-
+import { calculateLiquidity, formattedNum, localNumber } from '../../utils'
+import { useCashTokens } from '../../state/wallet/hooks'
 import UniPrice from '../UniPrice'
 import { TYPE } from '../../Theme'
-//import TokenLogo from '../TokenLogo'
-//import { getCashAddress } from '../../contexts/Application'
-//import { WETH } from '../../constants'
+import { useTotalLiquidity } from '../../contexts/Markets'
+import { useTokenDayPriceData } from '../../contexts/TokenData'
+import { BigNumber as BN } from 'bignumber.js'
 
 const Header = styled.div`
   width: 100%;
@@ -29,11 +29,24 @@ export default function GlobalStats() {
   const below816 = useMedia('(max-width: 816px)')
 
   const [showPriceCard] = useState(false)
-
+  const [globalLiquidity, setGlobalLiquidity] = useState("0")
+  const [cashTokens, loading] = useCashTokens()
+  const cashData = useTokenDayPriceData()
   const { oneDayVolumeUSD, oneDayTxns } = useGlobalData()
   const [ethPrice] = useEthPrice()
   const formattedEthPrice = ethPrice ? formattedNum(ethPrice, true) : '-'
-  const totalLiquidity = 0 // TODO get this or calculate this
+  const liquidities = useTotalLiquidity()
+
+  useEffect(() => {
+    if (!loading) {
+      const total = Object.keys(liquidities).reduce((p, cash) => {
+        return p.plus(new BN(calculateLiquidity(Number(cashTokens[cash]?.decimals), String(liquidities[cash]), String(cashData[cash]?.priceUSD))))
+      }, new BN(0))
+
+      const liq = formattedNum(String(total), true);
+      setGlobalLiquidity(String(liq))
+    }
+  }, [loading, liquidities, cashData, cashTokens, setGlobalLiquidity])
 
   return (
     <Header>
@@ -55,7 +68,7 @@ export default function GlobalStats() {
           <TYPE.boxed mb={'0.5rem'} mr={'0.25rem'}>
             <TYPE.boxedRow>Total Liquidity</TYPE.boxedRow>
             <TYPE.boxedRow>
-              <TYPE.largeHeader>{localNumber(totalLiquidity)}</TYPE.largeHeader>
+              <TYPE.largeHeader>{loading ? '-' : globalLiquidity}</TYPE.largeHeader>
             </TYPE.boxedRow>
           </TYPE.boxed>
           <TYPE.boxed mb={'0.5rem'} mr={'0.25rem'}>

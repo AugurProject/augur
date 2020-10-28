@@ -99,7 +99,7 @@ export class AMMExchange {
 
   async addLiquidity(recipient: string, cash: Cash): Promise<TransactionResponse> {
     console.log(String(cash), recipient)
-    return this.contract.addLiquidity(cash, recipient);
+    return this.contract.addLiquidity(cash.toFixed(), recipient);
   }
 
   async rateAddInitialLiquidity(recipient: string, cash: Cash, yesPercent: BigNumber, noPercent: BigNumber): Promise<LPTokens> {

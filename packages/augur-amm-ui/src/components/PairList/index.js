@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useMemo } from 'react'
 import { useMedia } from 'react-use'
 import dayjs from 'dayjs'
 import LocalLoader from '../LocalLoader'
@@ -13,6 +13,10 @@ import { ButtonLight, ButtonPrimary } from '../ButtonStyled'
 import { useLPTokenBalances } from '../../state/wallet/hooks'
 import { TYPE, StyledInternalLink } from '../../Theme'
 import { greaterThanZero } from '../../utils'
+import { useTokenDayPriceData } from '../../contexts/TokenData'
+import { useToken } from '../../hooks/Tokens'
+import { calculateLiquidity, formattedNum } from '../../utils'
+import { BigNumber as BN } from 'bignumber.js'
 
 dayjs.extend(utc)
 
@@ -41,7 +45,7 @@ const List = styled(Box)`
 const DashGrid = styled.div`
   display: grid;
   grid-gap: 0.25rem;
-  grid-template-columns: 1.5fr 1fr 1fr 1fr 1fr 1.5fr;
+  grid-template-columns: 0.5fr 1fr 1fr 1fr 1fr 1.5fr;
   grid-template-areas: 'name';
   padding: 0 0.75rem;
 
@@ -57,18 +61,18 @@ const DashGrid = styled.div`
 
   @media screen and (max-width: 800px) {
     padding: 0 0.75rem;
-    grid-template-columns: 50px 1fr 1fr 1fr 1.5fr;
+    grid-template-columns: 0.5fr 1fr 1fr 1fr 1.5fr;
     grid-template-areas: ' name';
   }
 
   @media screen and (min-width: 1080px) {
     padding: 0 0.75rem;
-    grid-template-columns: 1.5fr 1fr 1fr 1fr 1fr 1fr 1.5fr;
+    grid-template-columns: 0.5fr 1fr 1fr 1fr 1fr 1fr 1.5fr;
     grid-template-areas: ' name';
   }
 
   @media screen and (min-width: 1200px) {
-    grid-template-columns: 1.5fr 1fr 1fr 1fr 1fr 1fr 1.5fr;
+    grid-template-columns: 0.5fr 1fr 1fr 1fr 1fr 1fr 1.5fr;
     grid-template-areas: ' name';
   }
 `
@@ -92,36 +96,49 @@ function PairList({ allExchanges, color, disbaleLinks, marketId, maxItems = 10 }
 
   const ListItem = ({ ammExchange, index }) => {
     const [hasLPTokens, setHasLpTokens] = useState(false)
+    const cashData = useTokenDayPriceData()
+    const cashToken = useToken(ammExchange.cash)
 
     useEffect(() => {
       if (userTokenBalances) {
         setHasLpTokens(greaterThanZero(userTokenBalances[ammExchange.id]))
       }
     }, [userTokenBalances, ammExchange])
+    // calculate USD value from eth price
+    let liquidityUSD = 0;
+    let yesVolumeUSD = "0";
+    let noVolumeUSD = "0";
+    if (ammExchange?.liquidity && cashToken?.decimals && cashData[ammExchange.cash]?.priceUSD) {
+      const collUSD = String(cashData[ammExchange.cash].priceUSD)
+      const liq = calculateLiquidity(Number(cashToken?.decimals), String(ammExchange.liquidity), collUSD)
+      liquidityUSD = formattedNum(String(liq), true)
+      const yesPrice = new BN(ammExchange.percentageYes).div(100)
+      const noPrice = new BN(ammExchange.percentageNo).div(100)
+      const yesVolUSD =  (new BN(ammExchange.volumeYes).div(new BN(10).pow(18))).times(yesPrice).times(collUSD)
+      const noVolUSD = (new BN(ammExchange.volumeNo).div(new BN(10).pow(18))).times(noPrice).times(collUSD)
+      yesVolumeUSD = formattedNum(yesVolUSD, true)
+      noVolumeUSD = formattedNum(noVolUSD, true)
+    }
 
     if (ammExchange) {
       return (
         <DashGrid style={{ height: '48px', alignItems: 'center' }} disbaleLinks={disbaleLinks} focus={true}>
-          <TokenLogo size={below600 ? 16 : 18} tokenInfo={ammExchange.cash} showSymbol margin={!below740} />
+          <TokenLogo size={below600 ? 16 : 18} tokenInfo={ammExchange.cash} margin={!below740} />
           <TYPE.header area="name" fontWeight="500">
-            {ammExchange.liquidity}
+            {Number(ammExchange.percentageNo).toFixed(2)}
           </TYPE.header>
           <TYPE.header area="name" fontWeight="500">
-            {ammExchange.volumeYes}
+            {Number(ammExchange.percentageYes).toFixed(2)}
           </TYPE.header>
           <TYPE.header area="name" fontWeight="500">
-            {ammExchange.volumeNo}
+            {liquidityUSD}
           </TYPE.header>
-          {!below1080 && (
-            <TYPE.header area="name" fontWeight="500">
-              $0
-            </TYPE.header>
-          )}
-          {!below1080 && (
-            <TYPE.header area="name" fontWeight="500">
-              $0
-            </TYPE.header>
-          )}
+          <TYPE.header area="name" fontWeight="500">
+            {noVolumeUSD}
+          </TYPE.header>
+          <TYPE.header area="name" fontWeight="500">
+            {yesVolumeUSD}
+          </TYPE.header>
           <TYPE.header area="name" fontWeight="500">
             <RowFixed style={{ flexFlow: 'row nowrap', justifyContent: 'space-between', marginTop: '0.5rem' }}>
               <StyledInternalLink disabled={!hasLPTokens} to={`/remove/${marketId}/${ammExchange.id}`}>
@@ -169,12 +186,12 @@ function PairList({ allExchanges, color, disbaleLinks, marketId, maxItems = 10 }
             disbaleLinks={disbaleLinks}
             style={{ height: 'fit-content', padding: '0 1.125rem 1rem 1.125rem' }}
           >
-            <TYPE.header area="uniswap"></TYPE.header>
-            <TYPE.header area="uniswap">Liquidity</TYPE.header>
-            <TYPE.header area="uniswap">Volume Yes</TYPE.header>
-            <TYPE.header area="uniswap">Volume No</TYPE.header>
-            {!below1080 && <TYPE.header area="uniswap">Volume (24 hour)</TYPE.header>}
-            {!below1080 && <TYPE.header area="uniswap">Volume (7 day)</TYPE.header>}
+            <TYPE.header area="collateral"></TYPE.header>
+            <TYPE.header area="YesPercent">Yes %</TYPE.header>
+            <TYPE.header area="NoPercent">No %</TYPE.header>
+            <TYPE.header area="liquidity">Liquidity</TYPE.header>
+            <TYPE.header area="volumeYes">Yes Vol (24h)</TYPE.header>
+            <TYPE.header area="volumeNo">No Vol (24h)</TYPE.header>
             <TYPE.header area="uniswap"></TYPE.header>
           </DashGrid>
           <Divider />
