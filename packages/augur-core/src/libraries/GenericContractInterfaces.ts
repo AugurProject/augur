@@ -189,7 +189,8 @@ class ContractError extends Error {
     this.setAbi(abi);
     this.setParameters(parameters);
 
-    Error.captureStackTrace(this, ContractError);
+    // This does not exist in certain environments.
+    if(Error.captureStackTrace) Error.captureStackTrace(this, ContractError);
   }
 
   setAbi = (abi: AbiFunction) => {
