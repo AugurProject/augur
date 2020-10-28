@@ -13,10 +13,9 @@ import { ButtonLight, ButtonPrimary } from '../ButtonStyled'
 import { useLPTokenBalances } from '../../state/wallet/hooks'
 import { TYPE, StyledInternalLink } from '../../Theme'
 import { greaterThanZero } from '../../utils'
-import { BigNumber as BN } from 'bignumber.js'
 import { useTokenDayPriceData } from '../../contexts/TokenData'
 import { useToken } from '../../hooks/Tokens'
-import { formattedNum } from '../../utils'
+import { calculateLiquidity, formattedNum } from '../../utils'
 
 dayjs.extend(utc)
 
@@ -96,7 +95,7 @@ function PairList({ allExchanges, color, disbaleLinks, marketId, maxItems = 10 }
 
   const ListItem = ({ ammExchange, index }) => {
     const [hasLPTokens, setHasLpTokens] = useState(false)
-    const cashData = useTokenDayPriceData(ammExchange.cash)
+    const cashData = useTokenDayPriceData()
     const cashToken = useToken(ammExchange.cash)
 
     useEffect(() => {
@@ -106,10 +105,9 @@ function PairList({ allExchanges, color, disbaleLinks, marketId, maxItems = 10 }
     }, [userTokenBalances, ammExchange])
     // calculate USD value from eth price
     let liquidityUSD = 0;
-    if (ammExchange?.liquidity && cashToken?.decimals && cashData?.priceUSD) {
-      const displayValue = new BN(ammExchange.liquidity).div(new BN(10).pow(cashToken?.decimals || 1))
-      const displayUsd = displayValue.times(new BN(cashData.priceUSD))
-      liquidityUSD = formattedNum(String(displayUsd), true)
+    if (ammExchange?.liquidity && cashToken?.decimals && cashData[ammExchange.cash]?.priceUSD) {
+      const liq = calculateLiquidity(Number(cashToken?.decimals), String(ammExchange.liquidity), String(cashData[ammExchange.cash].priceUSD))
+      liquidityUSD = formattedNum(String(liq), true)
     }
 
     if (ammExchange) {

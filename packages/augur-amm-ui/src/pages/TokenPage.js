@@ -1,9 +1,7 @@
 import React, { useState } from 'react'
 import 'feather-icons'
 import { withRouter } from 'react-router-dom'
-//import { Text } from 'rebass'
 import styled from 'styled-components'
-//import Link from '../components/Link'
 import Panel from '../components/Panel'
 import TokenLogo from '../components/TokenLogo'
 import PairList from '../components/PairList'
@@ -11,26 +9,18 @@ import Loader from '../components/LocalLoader'
 import { RowBetween, RowFixed, RowStart } from '../components/Row'
 import { AutoColumn } from '../components/Column'
 import TxnList from '../components/TxnList'
-//import TokenChart from '../components/TokenChart'
-//import { BasicLink } from '../components/Link'
-import Search from '../components/Search'
-import { formattedNum, formattedPercent, localNumber } from '../utils'
-import { useTokenData, useTokenPairs } from '../contexts/TokenData'
-import { TYPE, ThemedBackground, StyledInternalLink } from '../Theme'
-import { transparentize } from 'polished'
+import { formattedNum, formattedPercent, localNumber, calculateLiquidity } from '../utils'
+import { useTokenData, useTokenDayPriceData } from '../contexts/TokenData'
+import { TYPE, StyledInternalLink } from '../Theme'
 import { useColor } from '../hooks'
-//import CopyHelper from '../components/Copy'
 import { useMedia } from 'react-use'
-//import { useDataForList } from '../contexts/PairData'
 import { useEffect } from 'react'
-//import { usePathDismissed, useSavedTokens } from '../contexts/LocalStorage'
 import { PageWrapper, ContentWrapper } from '../components'
-//import { PlusCircle, Bookmark } from 'react-feather'
 import FormattedName from '../components/FormattedName'
-//import { getCashAddress } from '../contexts/Application'
-//import { WETH } from '../constants'
 import { useMarketNonExistingAmms, useMarketAmmExchanges } from '../contexts/Markets'
 import { ButtonOutlined } from '../components/ButtonStyled'
+import { BigNumber as BN } from 'bignumber.js'
+import { useCashTokens } from '../state/wallet/hooks'
 
 const DashboardWrapper = styled.div`
   width: 100%;
@@ -70,29 +60,40 @@ function TokenPage({ marketId }) {
     symbol,
     priceUSD,
     oneDayVolumeUSD,
-    totalLiquidityUSD,
     volumeChangeUSD,
     oneDayVolumeUT,
     volumeChangeUT,
     priceChangeUSD,
-    liquidityChangeUSD,
     oneDayTxns,
-    txnChange
   } = useTokenData(marketId)
   const cashes = useMarketNonExistingAmms(marketId)
+  const [totalLiquidity, setTotalLiquidity] = useState("0")
+  const [cashTokens, loading] = useCashTokens()
+  const cashData = useTokenDayPriceData()
+  const allExchanges = useMarketAmmExchanges(marketId)
 
   useEffect(() => {
     document.querySelector('body').scrollTo(0, 0)
   }, [])
 
+  useEffect(() => {
+    if (!loading && allExchanges && allExchanges.length > 0) {
+      const total = allExchanges.reduce((p, e) => {
+        const cashToken = cashTokens[e.cash]
+        const liq = calculateLiquidity(
+          Number(cashToken?.decimals),
+          String(e.liquidity),
+          String(cashData[e.cash].priceUSD)
+        )
+        return p.plus(liq)
+      }, new BN(0))
+      setTotalLiquidity(formattedNum(String(total), true))
+    }
+  },[allExchanges, cashData, cashTokens, loading, setTotalLiquidity])
   // detect color from token
   const backgroundColor = useColor(id, symbol)
 
-  //const allPairs = useTokenPairs(marketId)
-  const allExchanges = useMarketAmmExchanges(marketId)
-
   // all transactions with this token
-  //const transactions = useTokenTransactions(marketId)
   const transactions = null
 
   // price
@@ -115,12 +116,6 @@ function TokenPage({ marketId }) {
 
   const volumeChange = formattedPercent(!usingUtVolume ? volumeChangeUSD : volumeChangeUT)
 
-  // liquidity
-  const liquidity = totalLiquidityUSD ? formattedNum(totalLiquidityUSD, true) : totalLiquidityUSD === 0 ? '$0' : '-'
-  const liquidityChange = formattedPercent(liquidityChangeUSD)
-
-  // transactions
-  const txnChangeFormatted = formattedPercent(txnChange)
 
   const below1080 = useMedia('(max-width: 1080px)')
   const below800 = useMedia('(max-width: 800px)')
@@ -205,23 +200,21 @@ function TokenPage({ marketId }) {
                     </RowBetween>
                     <RowBetween align="flex-end">
                       <TYPE.main fontSize={'1.5rem'} lineHeight={1} fontWeight={500}>
-                        {liquidity}
+                        {totalLiquidity}
                       </TYPE.main>
-                      <TYPE.main>{liquidityChange}</TYPE.main>
                     </RowBetween>
                   </AutoColumn>
                 </Panel>
                 <Panel>
                   <AutoColumn gap="20px">
                     <RowBetween>
-                      <TYPE.main>Volume (24hrs) {usingUtVolume && '(Untracked)'}</TYPE.main>
+                      <TYPE.main>Volume (24hrs) {usingUtVolume}</TYPE.main>
                       <div />
                     </RowBetween>
                     <RowBetween align="flex-end">
                       <TYPE.main fontSize={'1.5rem'} lineHeight={1} fontWeight={500}>
                         {volume}
                       </TYPE.main>
-                      <TYPE.main>{volumeChange}</TYPE.main>
                     </RowBetween>
                   </AutoColumn>
                 </Panel>
@@ -236,7 +229,6 @@ function TokenPage({ marketId }) {
                       <TYPE.main fontSize={'1.5rem'} lineHeight={1} fontWeight={500}>
                         {oneDayTxns ? localNumber(oneDayTxns) : oneDayTxns === 0 ? 0 : '-'}
                       </TYPE.main>
-                      <TYPE.main>{txnChangeFormatted}</TYPE.main>
                     </RowBetween>
                   </AutoColumn>
                 </Panel>

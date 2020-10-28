@@ -9,7 +9,7 @@ import {
   useMultipleContractSingleData,
   useMultipleContractMultipleData
 } from '../multicall/hooks'
-import { useAllMarketData } from '../../contexts/Markets'
+import { useAllMarketData, useMarketCashes } from '../../contexts/Markets'
 import { ParaShareToken } from '@augurproject/sdk-lite'
 import { Interface } from 'ethers/lib/utils'
 import { BigNumber as BN } from 'bignumber.js'
@@ -127,10 +127,7 @@ export interface MarketBalance {
   cash: string
 }
 
-export function useMarketShareBalances(): [
-  MarketBalance[],
-  boolean
-] {
+export function useMarketShareBalances(): [MarketBalance[], boolean] {
   const { markets, paraShareTokens } = useAllMarketData()
   const { account } = useActiveWeb3React()
 
@@ -139,7 +136,9 @@ export function useMarketShareBalances(): [
 
   const inputs: [] = useMemo(
     () =>
-      markets ? markets.reduce((p, m) => [...p, [m.id, 0, userAccount], [m.id, 1, userAccount], [m.id, 2, userAccount]], []) : [],
+      markets
+        ? markets.reduce((p, m) => [...p, [m.id, 0, userAccount], [m.id, 1, userAccount], [m.id, 2, userAccount]], [])
+        : [],
     [markets]
   )
 
@@ -157,7 +156,7 @@ export function useMarketShareBalances(): [
   return [
     useMemo(
       () =>
-      userAccount && inputs.length > 0
+        userAccount && inputs.length > 0
           ? Object.values(
               inputs.reduce((memo, params, j) => {
                 const marketId = params[0]
@@ -196,6 +195,40 @@ export function useMarketShareBalances(): [
       [userAccount, inputs, balances, keyedMarkets, paraTokenAdds, keyedParaTokens, outcomeNames]
     ),
     anyLoading
+  ]
+}
+
+export function useCashTokens(): [{ [key: string]: Token }, boolean] {
+  const cashes = useMarketCashes()
+  const { chainId } = useActiveWeb3React()
+  const cashesTokenAdds: string[] = cashes.map(p => p)
+
+  const names = useMultipleContractSingleData(cashesTokenAdds, ERC20_INTERFACE, 'name')
+  const symbols = useMultipleContractSingleData(cashesTokenAdds, ERC20_INTERFACE, 'symbol')
+  const decimalss = useMultipleContractSingleData(cashesTokenAdds, ERC20_INTERFACE, 'decimals')
+
+  const anyLoading: boolean = useMemo(() => names.some(callState => callState.loading), [names])
+  const anyLoading2: boolean = useMemo(() => symbols.some(callState => callState.loading), [symbols])
+  const anyLoading3: boolean = useMemo(() => decimalss.some(callState => callState.loading), [decimalss])
+
+  const keyedCashes = (cashesTokenAdds || []).reduce((p, c) => ({ ...p, [c]: {} }), {})
+
+  return [
+    useMemo(
+      () =>
+        keyedCashes && Object.keys(keyedCashes).length > 0
+          ? Object.keys(keyedCashes).reduce((memo, cash, j) => {
+              const name = names?.[j]?.result?.[0]
+              const symbol = symbols?.[j]?.result?.[0]
+              const decimals = decimalss?.[j]?.result?.[0]
+              if (!chainId || !decimals || !symbol || !name) return memo
+              const outToken = new Token(chainId, cash, decimals, symbol, name)
+              return { ...memo, [cash]: outToken }
+            }, {})
+          : {},
+      [names, symbols, decimalss, keyedCashes, chainId]
+    ),
+    anyLoading || anyLoading2 || anyLoading3
   ]
 }
 

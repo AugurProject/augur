@@ -6,15 +6,14 @@ import utc from 'dayjs/plugin/utc'
 import { Box, Flex, Text } from 'rebass'
 import { Divider } from '..'
 import { useDarkModeManager } from '../../contexts/LocalStorage'
-import { formatTime, formattedNum } from '../../utils'
+import { formatTime, formattedNum, calculateLiquidity } from '../../utils'
 import { useMedia } from 'react-use'
 import { withRouter } from 'react-router-dom'
 import { TYPE } from '../../Theme'
 import { BasicLink } from '../Link'
 import TokenLogo from '../TokenLogo'
-import { useToken } from '../../hooks/Tokens'
 import { useTokenDayPriceData } from '../../contexts/TokenData'
-import { BigNumber as BN } from 'bignumber.js'
+import { useCashTokens } from '../../state/wallet/hooks'
 
 dayjs.extend(utc)
 
@@ -26,9 +25,9 @@ const PageButtons = styled.div`
   margin-bottom: 2em;
 `
 
-const Arrow = styled.div`
+const Arrow = styled.div<{ faded: boolean }>`
   color: ${({ theme }) => theme.primary1};
-  opacity: ${props => (props.faded ? 0.3 : 1)};
+  opacity: ${faded => (faded ? 0.3 : 1)};
   padding: 0 20px;
   user-select: none;
   :hover {
@@ -164,17 +163,21 @@ function MarketList({ markets, itemMax = 10 }) {
 
   const ListItem = ({ marketData, index }) => {
     const ammExchange = marketData?.amm
-    const cashToken = useToken(marketData?.cash)
-    const cashData = useTokenDayPriceData(marketData?.cash)
+    const [cashTokens, loading] = useCashTokens()
+    const cashData = useTokenDayPriceData()
     let liquidityUSD = '-'
-    if (ammExchange?.liquidity && cashToken?.decimals && cashData?.priceUSD) {
-      const displayValue = new BN(ammExchange.liquidity).div(new BN(10).pow(cashToken?.decimals || 1))
-      const displayUsd = displayValue.times(new BN(cashData.priceUSD))
-      liquidityUSD = formattedNum(String(displayUsd), true)
+    if (ammExchange?.liquidity && cashTokens && cashData[marketData?.cash]?.priceUSD) {
+      const cashToken = cashTokens[marketData.cash]
+      const displayUsd = calculateLiquidity(
+        Number(cashToken.decimals),
+        String(ammExchange.liquidity),
+        String(cashData[ammExchange.cash].priceUSD)
+      )
+      liquidityUSD = String(formattedNum(String(displayUsd), true))
     }
 
     return (
-      <DashGrid style={{ height: '48px', alignContent: 'center' }} focus={true}>
+      <DashGrid style={{ height: '48px', alignContent: 'center' }} >
         {!below680 && <TokenLogo tokenInfo={marketData?.cash} />}
         <DataText style={{ justifyContent: 'flex-start', alignItems: 'center', textAlign: 'left' }}>
           <BasicLink style={{ width: '100%', fontWeight: '400' }} to={'/token/' + marketData?.id} key={marketData?.id}>
@@ -212,7 +215,7 @@ function MarketList({ markets, itemMax = 10 }) {
 
   return (
     <ListWrapper>
-      <DashGrid center={true} style={{ height: 'fit-content', padding: '0 1.125rem 1rem 1.125rem' }}>
+      <DashGrid style={{ height: 'fit-content', padding: '0 1.125rem 1rem 1.125rem' }}>
         {!below680 && (
           <Flex alignItems="center">
             <Text area="Currency">Currency</Text>

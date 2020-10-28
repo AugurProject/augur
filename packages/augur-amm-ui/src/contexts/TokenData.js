@@ -609,7 +609,7 @@ export function useTokenPriceData(tokenAddress, timeWindow, interval = 3600) {
   return chartData
 }
 
-export function useTokenDayPriceData(tokenAddress) {
+export function useTokenDayPriceData() {
   const [state, { updateCashTokens }] = useTokenDataContext()
   const cashTokens = state[CASH_DATA]
   const cashes = useAllMarketCashes()
@@ -626,7 +626,7 @@ export function useTokenDayPriceData(tokenAddress) {
     if (!cashTokens || Object.keys(cashTokens) === 0) getData()
   }, [updateCashTokens, cashes])
 
-  return cashTokens?.[tokenAddress]
+  return cashTokens
 }
 
 export function useAllTokenData() {
