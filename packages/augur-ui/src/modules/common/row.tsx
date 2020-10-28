@@ -10,7 +10,7 @@ import PositionExpandedContent from 'modules/portfolio/components/common/positio
 import RowColumn, { Properties } from 'modules/common/row-column';
 import { SMALL_MOBILE } from 'modules/common/constants';
 
-import Styles from 'modules/common/row.styles';
+import Styles from 'modules/common/row.styles.less';
 
 export interface StyleOptions {
   position?: boolean;

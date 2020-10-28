@@ -4,7 +4,7 @@ import classNames from 'classnames';
 import { THEMES } from 'modules/common/constants';
 import { useAppStatusStore } from 'modules/app/store/app-status';
 
-import Styles from 'modules/app/components/theme-switch.styles';
+import Styles from 'modules/app/components/theme-switch.styles.less';
 import makePath from 'modules/routes/helpers/make-path';
 import { MARKETS, CREATE_MARKET } from 'modules/routes/constants/views';
 import parsePath from 'modules/routes/helpers/parse-path';

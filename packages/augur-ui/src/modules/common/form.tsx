@@ -1,3 +1,4 @@
+import type { Getters } from '@augurproject/sdk';
 import { StakeDetails } from '@augurproject/sdk-lite';
 import classNames from 'classnames';
 import React, { useState, useEffect, Component } from 'react';
@@ -272,7 +273,7 @@ export interface RadioGroupState {
 }
 
 export interface RadioBarProps extends BaseRadioButtonProp {
-  header: string;
+  header?: string;
   onChange?: Function;
   expandable?: boolean;
   error?: boolean;
@@ -1137,7 +1138,7 @@ export class ReportingRadioBar extends Component<ReportingRadioBarProps, {}> {
 }
 
 export const RadioBar = ({
-  header,
+  header = '',
   onChange,
   checked,
   value,

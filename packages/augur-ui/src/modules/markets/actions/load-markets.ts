@@ -268,9 +268,9 @@ const loadReportingMarkets = (
     reportingState,
     null,
     filterOptions,
-    false,
-    getMarkets(reportingState, params, cb)
+    false
   );
+  getMarkets(reportingState, params, cb);
 };
 
 const getMarkets = (reportingState, params, cb) => async () => {
@@ -288,6 +288,8 @@ const getMarkets = (reportingState, params, cb) => async () => {
     return {
       marketIds,
     };
+  } else {
+    return {};
   }
 };
 

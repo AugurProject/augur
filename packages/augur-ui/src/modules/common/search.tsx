@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import classNames from 'classnames';
-import Styles from 'modules/common/search.styles';
+import Styles from 'modules/common/search.styles.less';
 import { SearchIcon, XIcon, SmallXIcon } from 'modules/common/icons';
 import { THEMES } from 'modules/common/constants';
 import { useAppStatusStore } from 'modules/app/store/app-status';

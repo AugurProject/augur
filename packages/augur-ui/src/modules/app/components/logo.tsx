@@ -5,7 +5,7 @@ import {
   v2AugurLogo,
   AugurTextLogo,
 } from 'modules/common/icons';
-import Styles from 'modules/app/components/logo.styles';
+import Styles from 'modules/app/components/logo.styles.less';
 
 interface LogoProps {
   isLoading: Boolean;

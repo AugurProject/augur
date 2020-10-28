@@ -2,15 +2,9 @@ import React, { useState, useEffect, useRef } from 'react';
 import classNames from 'classnames';
 import { Link } from 'react-router-dom';
 import makePath from 'modules/routes/helpers/make-path';
-
-import BannerSportsbook from '../../assets/images/banner-2-1011x741.png';
-import BannerTrading from '../../assets/images/banner-trading.png';
-import SmallBannerSportsbook from '../../assets/images/small-banner-sportsbook.png';
-import SmallBannerTrading from '../../assets/images/small-banner-trading.png';
 import {
   SecondaryButton,
   PrimaryButton,
-  ExternalLinkButton,
   CashoutButton,
   PendingIconButton,
 } from 'modules/common/buttons';
@@ -18,8 +12,6 @@ import {
   BetsIcon,
   Trash,
   ThickChevron,
-  CheckMark,
-  LoadingEllipse,
 } from 'modules/common/icons';
 import { MY_POSITIONS } from 'modules/routes/constants/views';
 import { LinearPropertyLabel, TextLabel } from 'modules/common/labels';
@@ -28,7 +20,7 @@ import { useBetslipStore } from 'modules/trading/store/betslip';
 import { BET_STATUS, BETSLIP_SELECTED } from 'modules/trading/store/constants';
 import { formatDai } from 'utils/format-number';
 
-import Styles from 'modules/trading/common.styles';
+import Styles from 'modules/trading/common.styles.less';
 import { convertToOdds, getWager, getShares } from 'utils/get-odds';
 import { convertUnixToFormattedDate } from 'utils/format-date';
 import { useAppStatusStore } from 'modules/app/store/app-status';
@@ -613,16 +605,16 @@ export const SideImages = () => {
       })}
     >
       <button onClick={Betting}>
-        <img src={BannerSportsbook} />
+        <img src="images/banner-2-1011x741.png" />
       </button>
       <button onClick={Trading}>
-        <img src={BannerTrading} />
+        <img src="images/banner-trading.png" />
       </button>
       <button onClick={Betting}>
-        <img src={SmallBannerSportsbook} />
+        <img src="images/small-banner-sportsbook.png" />
       </button>
       <button onClick={Trading}>
-        <img src={SmallBannerTrading} />
+        <img src="images/small-banner-trading.png" />
       </button>
     </section>
   );

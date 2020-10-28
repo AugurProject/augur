@@ -13,7 +13,7 @@ import { THEMES } from 'modules/common/constants';
 import { BETSLIP_SELECTED } from 'modules/trading/store/constants';
 import { useBetslipStore } from 'modules/trading/store/betslip';
 
-import Styles from 'modules/trading/betslip.styles';
+import Styles from 'modules/trading/betslip.styles.less';
 import { PrimaryButton } from 'modules/common/buttons';
 
 export const Betslip = () => {
