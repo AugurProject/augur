@@ -254,7 +254,8 @@ function TokenPage({ marketId }) {
               <TYPE.main fontSize={'1.125rem'}>Transactions</TYPE.main> <div />
             </RowBetween>
             <Panel rounded>
-              {(allExchanges && allExchanges.length > 0) ? <TxnList color={backgroundColor} allExchanges={allExchanges} /> : <Loader />}
+            // TODO -- this is blowing up the UI now
+            {/* {(allExchanges && allExchanges.length > 0) ? <TxnList color={backgroundColor} allExchanges={allExchanges} /> : <Loader />} */}
             </Panel>
           </DashboardWrapper>
         </WarningGrouping>
