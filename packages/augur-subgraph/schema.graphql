@@ -778,6 +778,10 @@ type SwapPosition @entity {
   "This is the tx hash + log index."
   id: ID!
 
+  tx_hash: String!
+
+  timestamp: BigInt!
+
   ammExchange: AMMExchange!
 
   "The 'from' field of the swap tx."
@@ -793,6 +797,10 @@ type SwapPosition @entity {
 type EnterPosition @entity {
   "This is the tx hash + log index."
   id: ID!
+
+  tx_hash: String!
+
+  timestamp: BigInt!
 
   ammExchange: AMMExchange!
 
@@ -812,6 +820,10 @@ type EnterPosition @entity {
 type ExitPosition @entity {
   "This is the tx hash + log index."
   id: ID!
+
+  tx_hash: String!
+
+  timestamp: BigInt!
 
   ammExchange: AMMExchange!
 
@@ -835,6 +847,10 @@ type AddLiquidity @entity {
   "This is the tx hash + log index."
   id: ID!
 
+  tx_hash: String!
+
+  timestamp: BigInt!
+
   ammExchange: AMMExchange!
 
   "The 'from' field of the swap tx."
@@ -853,6 +869,10 @@ type AddLiquidity @entity {
 type RemoveLiquidity @entity {
   "This is the tx hash + log index."
   id: ID!
+
+  tx_hash: String!
+
+  timestamp: BigInt!
 
   ammExchange: AMMExchange!
 
