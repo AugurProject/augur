@@ -29,7 +29,7 @@ export const Scalar = ({ cb = () => { } }: ScalarProps) => {
   return (
     <div className={Styles.Scalar}>
       <Title
-        title={'A note on Scalar Markets'}
+        title='A note on Scalar Markets'
         closeAction={handleclose}
       />
       <main>

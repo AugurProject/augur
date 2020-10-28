@@ -1,6 +1,5 @@
 import logError from 'utils/log-error';
 import { NodeStyleCallback } from 'modules/types';
-import { formatDai } from 'utils/format-number';
 import { AppStatus } from 'modules/app/store/app-status';
 import { approvalsNeededToTrade } from 'modules/contracts/actions/contractCalls';
 

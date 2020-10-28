@@ -17,7 +17,7 @@ import {
 } from 'utils/betslip-helpers';
 import { AppStatus } from 'modules/app/store/app-status';
 import deepClone from 'utils/deep-clone';
-import { WindowApp } from 'modules/types';
+import { windowRef } from 'utils/window-ref';
 
 const {
   CASH_OUT,
@@ -276,15 +276,15 @@ export function BetslipReducer(state, action) {
     default:
       throw new Error(`Error: ${action.type} not caught by Betslip reducer`);
   }
-  (window as WindowApp & typeof globalThis).betslip = updatedState;
-  (window as WindowApp & typeof globalThis).stores.betslip = updatedState;
+  windowRef.betslip = updatedState;
+  windowRef.stores.betslip = updatedState;
   return updatedState;
 }
 
 export const useBetslip = (defaultState = MOCK_BETSLIP_STATE) => {
   const [state, dispatch] = useReducer(BetslipReducer, defaultState);
-  (window as WindowApp & typeof globalThis).betslip = state;
-  (window as WindowApp & typeof globalThis).stores.betslip = state;
+  windowRef.betslip = state;
+  windowRef.stores.betslip = state;
   return {
     ...state,
     actions: {
