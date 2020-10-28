@@ -13,7 +13,7 @@ import { TYPE } from '../../Theme'
 import { BasicLink } from '../Link'
 import TokenLogo from '../TokenLogo'
 import { useTokenDayPriceData } from '../../contexts/TokenData'
-import { useCashTokens } from '../../state/wallet/hooks'
+import { useMarketCashTokens } from '../../contexts/Markets'
 
 dayjs.extend(utc)
 
@@ -163,11 +163,12 @@ function MarketList({ markets, itemMax = 10 }) {
 
   const ListItem = ({ marketData, index }) => {
     const ammExchange = marketData?.amm
-    const [cashTokens, loading] = useCashTokens()
+    const cashTokens = useMarketCashTokens()
     const cashData = useTokenDayPriceData()
     let liquidityUSD = '-'
     if (ammExchange?.liquidity && cashTokens && cashData?.[marketData?.cash] && cashData?.[marketData?.cash]?.priceUSD) {
       const cashToken = cashTokens[marketData.cash]
+      console.log('calculate liquidity', cashTokens, cashToken, marketData.cash)
       const displayUsd = calculateLiquidity(
         Number(cashToken?.decimals),
         String(ammExchange?.liquidity),

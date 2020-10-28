@@ -10,7 +10,7 @@ import GlobalStats from '../components/GlobalStats'
 import { Text } from 'rebass'
 import { useMedia } from 'react-use'
 import Panel from '../components/Panel'
-import { useMarketsByAMM, useMarketCashes } from '../contexts/Markets'
+import { useMarketsByAMM, useMarketCashAddresses } from '../contexts/Markets'
 import { RowBetween } from '../components/Row'
 import { PageWrapper, ContentWrapper } from '../components'
 import TokenLogo from '../components/TokenLogo'
@@ -43,7 +43,7 @@ const ListOptions = styled(AutoRow)`
 function GlobalPage() {
   // get data for lists and totals
   const markets = useMarketsByAMM()
-  const cashes = useMarketCashes()
+  const cashes = useMarketCashAddresses()
   // const { totalLiquidityUSD, oneDayVolumeUSD, volumeChangeUSD, liquidityChangeUSD } = useGlobalData()
 
   // breakpoints
