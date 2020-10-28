@@ -25,7 +25,7 @@ function UserPoolsPage() {
             <PooledMarketList balances={userTokenBalances} loading={loading} />
           ) : (
             <AutoRow justify={'center'}>
-              <TYPE.light>No Liquidity Pools</TYPE.light>
+              <TYPE.light>{loading ? 'Loading ...' : 'No Liquidity Pools'}</TYPE.light>
             </AutoRow>
           )}
         </Panel>
