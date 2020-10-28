@@ -17,10 +17,9 @@ import { useMedia } from 'react-use'
 import { useEffect } from 'react'
 import { PageWrapper, ContentWrapper } from '../components'
 import FormattedName from '../components/FormattedName'
-import { useMarketNonExistingAmms, useMarketAmmExchanges } from '../contexts/Markets'
+import { useMarketNonExistingAmms, useMarketAmmExchanges, useMarketCashTokens } from '../contexts/Markets'
 import { ButtonOutlined } from '../components/ButtonStyled'
 import { BigNumber as BN } from 'bignumber.js'
-import { useCashTokens } from '../state/wallet/hooks'
 
 const DashboardWrapper = styled.div`
   width: 100%;
@@ -68,7 +67,7 @@ function TokenPage({ marketId }) {
   } = useTokenData(marketId)
   const cashes = useMarketNonExistingAmms(marketId)
   const [totalLiquidity, setTotalLiquidity] = useState("0")
-  const [cashTokens, loading] = useCashTokens()
+  const cashTokens = useMarketCashTokens()
   const cashData = useTokenDayPriceData()
   const allExchanges = useMarketAmmExchanges(marketId)
 
@@ -77,7 +76,7 @@ function TokenPage({ marketId }) {
   }, [])
 
   useEffect(() => {
-    if (!loading && allExchanges && allExchanges.length > 0) {
+    if (allExchanges && allExchanges.length > 0) {
       const total = allExchanges.reduce((p, e) => {
         const cashToken = cashTokens[e.cash]
         const liq = calculateLiquidity(
@@ -89,7 +88,7 @@ function TokenPage({ marketId }) {
       }, new BN(0))
       setTotalLiquidity(formattedNum(String(total), true))
     }
-  },[allExchanges, cashData, cashTokens, loading, setTotalLiquidity])
+  },[allExchanges, cashData, cashTokens, setTotalLiquidity])
   // detect color from token
   const backgroundColor = useColor(id, symbol)
 
@@ -254,7 +253,7 @@ function TokenPage({ marketId }) {
               <TYPE.main fontSize={'1.125rem'}>Transactions</TYPE.main> <div />
             </RowBetween>
             <Panel rounded>
-              {(allExchanges && allExchanges.length > 0) ? <TxnList color={backgroundColor} allExchanges={allExchanges} /> : <Loader />}
+              {/*(allExchanges && allExchanges.length > 0) ? <TxnList color={backgroundColor} allExchanges={allExchanges} /> : <Loader />*/}
             </Panel>
           </DashboardWrapper>
         </WarningGrouping>

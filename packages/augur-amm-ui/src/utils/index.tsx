@@ -670,8 +670,8 @@ export function isTokenOnList(defaultTokens: TokenAddressMap, currency?: Currenc
 
 export function calculateLiquidity(decimals: number, liquidity: string, price: string) {
   if (!decimals || !liquidity || !price) return "0"
-  const liqNormalized = new BN(liquidity).div(new BN(10).exponentiatedBy(decimals))
-  return String(liqNormalized.times(new BN(price)))
+  const liqNormalized = new BN(liquidity).times(new BN(price))
+  return String(liqNormalized)
 }
 
 

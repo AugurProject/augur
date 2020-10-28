@@ -5,7 +5,8 @@ import utc from 'dayjs/plugin/utc'
 import { BigNumber as BN } from 'bignumber.js'
 import { augurV2Client } from '../apollo/client'
 import { GET_MARKETS } from '../apollo/queries'
-import { useConfig } from '../contexts/Application'
+import { useConfig, useParaDeploys } from '../contexts/Application'
+import { getBlockFromTimestamp } from '../utils'
 
 const UPDATE = 'UPDATE'
 const UPDATE_MARKETS = ' UPDATE_MARKETS'
@@ -109,7 +110,12 @@ async function getMarketsData(updateMarkets, config) {
   let response = null
   try {
     console.log('call the graph to get market data')
-    response = await augurV2Client(config.augurClient).query({ query: GET_MARKETS })
+    const utcCurrentTime = dayjs.utc()
+    const utcOneDayBack = utcCurrentTime.subtract(1, 'day').unix()
+    const block = await getBlockFromTimestamp(utcOneDayBack)
+    console.log('utcOneDayBack', utcOneDayBack, block)
+    const query = GET_MARKETS(block)
+    response = await augurV2Client(config.augurClient).query({ query })
   } catch (e) {
     console.error(e)
   }
@@ -194,7 +200,7 @@ export function useMarketAmmExchanges(marketId) {
     hasLiquidity: ammExchange?.liquidity && ammExchange?.liquidity !== '0',
     id: ammExchange?.id,
     cash: ammExchange?.shareToken?.cash?.id,
-    sharetoken: ammExchange?.shareToken?.id,
+    sharetoken: ammExchange?.shareToken?.id
   }))
 }
 
@@ -210,9 +216,23 @@ export function useMarketNonExistingAmms(marketId) {
   return uncreatedAmms
 }
 
-export function useMarketCashes() {
+export function useMarketCashAddresses() {
   const [state] = useMarketDataContext()
   const cashes = state?.paraShareTokens ? state?.paraShareTokens.reduce((p, s) => [...p, s.cash.id], []) : []
+  return cashes
+}
+
+export function useMarketCashTokens() {
+  const deploys = useParaDeploys()
+  const cashes = Object.keys(deploys).reduce((p, address) => ({
+    ...p,
+    [address.toLowerCase()]: {
+      address: address.toLowerCase(),
+      decimals: deploys[address].decimals,
+      name: deploys[address]?.name,
+      symbol: deploys[address]?.name
+    }
+  }), {})
   return cashes
 }
 
@@ -249,10 +269,10 @@ export function useTotalLiquidity() {
     () =>
       markets.reduce((p, m) => {
         if (!m.amm) return p
-        const currentCash = p[m.cash]
+        const currentCash = p[m.cash.toLowerCase()]
         return currentCash
-          ? { ...p, [m.cash]: new BN(m.amm.liquidity).plus(currentCash) }
-          : { ...p, [m.cash]: new BN(m.amm.liquidity) }
+          ? { ...p, [m.cash.toLowerCase()]: new BN(m.amm.liquidity).plus(currentCash) }
+          : { ...p, [m.cash.toLowerCase()]: new BN(m.amm.liquidity) }
       }, {}),
     [markets]
   )

@@ -63,61 +63,70 @@ export const GET_BLOCK = gql`
 
 // Get all markets except CATEGORICAL
 // https://thegraph.com/explorer/subgraph/augurproject/augur-v2-staging
-export const GET_MARKETS = gql`
+export const GET_MARKETS = blockNumber => {
+ const queryString = `
   {
-    markets(where: { marketType: YES_NO, description_not: null }) {
-      description
+  markets(where: { marketType: YES_NO, description_not: null }) {
+    description
+    id
+    endTimestamp
+    status
+    amms {
       id
-      endTimestamp
-      status
-      amms {
+      shareToken {
         id
-        shareToken {
+        cash {
           id
-          cash {
-            id
-          }
-        }
-        volumeYes
-        volumeNo
-        percentageYes
-        percentageNo
-        volumeNo
-        volumeYes
-        liquidity
-        liquidityCash
-        liquidityYes
-        liquidityNo
-        liquidityInvalid
-        totalSupply
-        cashBalance
-        swaps {
-          id
-          yesShares
-          noShares
-        }
-        enters {
-          id
-          yesShares
-          noShares
-          cash
-        }
-        exits {
-          id
-          yesShares
-          noShares
-          cash
         }
       }
-    }
-    paraShareTokens {
-      id
-      cash {
+      volumeYes
+      volumeNo
+      percentageYes
+      percentageNo
+      liquidity
+      liquidityCash
+      liquidityYes
+      liquidityNo
+      liquidityInvalid
+      totalSupply
+      cashBalance
+      swaps {
         id
+        tx_hash
+        timestamp
+        yesShares
+        noShares
+      }
+      enters {
+        id
+        tx_hash
+        timestamp
+        yesShares
+        noShares
+        cash
+      }
+      exits {
+        id
+        tx_hash
+        timestamp
+        yesShares
+        noShares
+        cash
       }
     }
   }
-`
+  paraShareTokens {
+    id
+    cash {
+      id
+    }
+  }
+}
+ `
+ return gql(queryString)
+}
+
+
 export const GET_BLOCKS = timestamps => {
   let queryString = 'query blocks {'
   queryString += timestamps.map(timestamp => {
@@ -857,17 +866,6 @@ query tokenDayDatas($tokenAddr: String!) {
   }
 }
 `
-
-export const CASH_TOKEN_DERIVED_ETH = gql`
-{
-  token(id: $tokenAddr){
-    id
-   symbol
-   derivedETH
-  }
- }
- `
-
 
 export const FILTERED_TRANSACTIONS = gql`
   query($allPairs: [Bytes]!) {

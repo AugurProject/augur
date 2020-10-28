@@ -402,3 +402,8 @@ export function useAmmFactoryAddress() {
   const addresses = state[AUGUR_CONFIG]?.addresses
   return addresses?.AMMFactory
 }
+
+export function useParaDeploys() {
+  const [state] = useApplicationContext()
+  return state[AUGUR_CONFIG]?.paraDeploys
+}
