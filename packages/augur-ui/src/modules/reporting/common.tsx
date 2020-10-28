@@ -599,7 +599,7 @@ export const DisputingBondsView = ({
         />
       )}
       <TextInput
-        placeholder='0.0000'
+        placeholder="0.0000"
         value={String(stakeValue)}
         onChange={value => updateInputtedStakeLocal(value)}
         errorMessage={stakeError}
@@ -610,13 +610,13 @@ export const DisputingBondsView = ({
           <CancelTextButton
             noIcon
             action={() => updateInputtedStakeLocal(String(min))}
-            text='MIN'
+            text="MIN"
           />
           |
           <CancelTextButton
             noIcon
             action={() => updateInputtedStakeLocal(String(remaining))}
-            text='FILL DISPUTE BOND'
+            text="FILL DISPUTE BOND"
           />
         </section>
       )}
@@ -693,7 +693,11 @@ export const ReportingBondsView = ({
   userAttoRep = convertAttoValueToDisplayValue(userAttoRep);
 
   const gasPrice = gasPriceInfo.userDefinedGasPrice || gasPriceInfo.average;
-  const gasCostDai = getGasCost(INITAL_REPORT_GAS_COST.toNumber(), createBigNumber(gasPrice), ethToDaiRate);
+  const gasCostDai = getGasCost(
+    INITAL_REPORT_GAS_COST.toNumber(),
+    createBigNumber(gasPrice),
+    ethToDaiRate
+  );
   const displayfee = `$${gasCostDai.formattedValue}`;
 
   const [state, setState] = useState({
@@ -1251,9 +1255,7 @@ export const ParticipationTokensView = () => {
         info
         header="Total Participation Tokens Purchased"
         subheader={purchasedParticipationTokens.formatted}
-        tooltipText={
-          'The total amount of participation tokens purchased by reporters in the current window'
-        }
+        tooltipText="The total amount of participation tokens purchased by reporters in the current window"
       />
       <Subheaders
         info
@@ -1336,14 +1338,10 @@ export const ReleasableRepNotice = () => {
 
   return (
     <DismissableNotice
-      show={true}
+      show
       buttonType={DISMISSABLE_NOTICE_BUTTON_TYPES.NONE}
-      title={
-        'You Still have REPv2 locked up in dispute Bonds and Participation Tokens.'
-      }
-      description={
-        'Please follow the instructions given in the banner at the top of this site or the notification in your account summary.'
-      }
+      title="You Still have REPv2 locked up in dispute Bonds and Participation Tokens."
+      description="Please follow the instructions given in the banner at the top of this site or the notification in your account summary."
     />
   );
 };
