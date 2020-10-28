@@ -93,9 +93,6 @@ function TokenPage({ marketId }) {
   // detect color from token
   const backgroundColor = useColor(id, symbol)
 
-  // all transactions with this token
-  const transactions = null
-
   // price
   const price = priceUSD ? formattedNum(priceUSD, true) : ''
   const priceChange = priceChangeUSD ? formattedPercent(priceChangeUSD) : ''
@@ -257,7 +254,7 @@ function TokenPage({ marketId }) {
               <TYPE.main fontSize={'1.125rem'}>Transactions</TYPE.main> <div />
             </RowBetween>
             <Panel rounded>
-              {transactions ? <TxnList color={backgroundColor} transactions={transactions} /> : <Loader />}
+              {(allExchanges && allExchanges.length > 0) ? <TxnList color={backgroundColor} allExchanges={allExchanges} /> : <Loader />}
             </Panel>
           </DashboardWrapper>
         </WarningGrouping>

@@ -16,6 +16,7 @@ import { greaterThanZero } from '../../utils'
 import { useTokenDayPriceData } from '../../contexts/TokenData'
 import { useToken } from '../../hooks/Tokens'
 import { calculateLiquidity, formattedNum } from '../../utils'
+import { BigNumber as BN } from 'bignumber.js'
 
 dayjs.extend(utc)
 
@@ -105,9 +106,18 @@ function PairList({ allExchanges, color, disbaleLinks, marketId, maxItems = 10 }
     }, [userTokenBalances, ammExchange])
     // calculate USD value from eth price
     let liquidityUSD = 0;
+    let yesVolumeUSD = "0";
+    let noVolumeUSD = "0";
     if (ammExchange?.liquidity && cashToken?.decimals && cashData[ammExchange.cash]?.priceUSD) {
-      const liq = calculateLiquidity(Number(cashToken?.decimals), String(ammExchange.liquidity), String(cashData[ammExchange.cash].priceUSD))
+      const collUSD = String(cashData[ammExchange.cash].priceUSD)
+      const liq = calculateLiquidity(Number(cashToken?.decimals), String(ammExchange.liquidity), collUSD)
       liquidityUSD = formattedNum(String(liq), true)
+      const yesPrice = new BN(ammExchange.percentageYes).div(100)
+      const noPrice = new BN(ammExchange.percentageNo).div(100)
+      const yesVolUSD =  (new BN(ammExchange.volumeYes).div(new BN(10).pow(18))).times(yesPrice).times(collUSD)
+      const noVolUSD = (new BN(ammExchange.volumeNo).div(new BN(10).pow(18))).times(noPrice).times(collUSD)
+      yesVolumeUSD = formattedNum(yesVolUSD, true)
+      noVolumeUSD = formattedNum(noVolUSD, true)
     }
 
     if (ammExchange) {
@@ -124,10 +134,10 @@ function PairList({ allExchanges, color, disbaleLinks, marketId, maxItems = 10 }
             {liquidityUSD}
           </TYPE.header>
           <TYPE.header area="name" fontWeight="500">
-            {ammExchange.volumeNo}
+            {noVolumeUSD}
           </TYPE.header>
           <TYPE.header area="name" fontWeight="500">
-            {ammExchange.volumeYes}
+            {yesVolumeUSD}
           </TYPE.header>
           <TYPE.header area="name" fontWeight="500">
             <RowFixed style={{ flexFlow: 'row nowrap', justifyContent: 'space-between', marginTop: '0.5rem' }}>

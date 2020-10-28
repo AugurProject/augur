@@ -14,7 +14,6 @@ import { useMarketsByAMM, useMarketCashes } from '../contexts/Markets'
 import { RowBetween } from '../components/Row'
 import { PageWrapper, ContentWrapper } from '../components'
 import TokenLogo from '../components/TokenLogo'
-import { useCashTokens } from '../state/wallet/hooks'
 
 const ClickableText = styled(Text)`
   text-align: end;
