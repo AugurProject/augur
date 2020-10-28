@@ -26558,8 +26558,13 @@
 			"outputs": [
 				{
 					"internalType": "bool",
-					"name": "",
+					"name": "_alwaysTrue",
 					"type": "bool"
+				},
+				{
+					"internalType": "uint256",
+					"name": "_payout",
+					"type": "uint256"
 				}
 			],
 			"payable": false,

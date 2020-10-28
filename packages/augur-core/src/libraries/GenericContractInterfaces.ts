@@ -10033,21 +10033,21 @@ export class ParaOICash<TBigNumber> extends Contract<TBigNumber> {
 
 	public withdraw = async (amount: TBigNumber, options?: { sender?: string }): Promise<Array<Event>> => {
 		options = options || {}
-		const abi: AbiFunction = {"constant":false,"inputs":[{"internalType":"uint256","name":"_amount","type":"uint256"}],"name":"withdraw","outputs":[{"internalType":"bool","name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"}
+		const abi: AbiFunction = {"constant":false,"inputs":[{"internalType":"uint256","name":"_amount","type":"uint256"}],"name":"withdraw","outputs":[{"internalType":"bool","name":"_alwaysTrue","type":"bool"},{"internalType":"uint256","name":"_payout","type":"uint256"}],"payable":false,"stateMutability":"nonpayable","type":"function"}
 		return await this.remoteCall(abi, [amount], 'withdraw', options.sender)
 	}
 
 	public withdraw_estimateGas = async (amount: TBigNumber, options?: { sender?: string }): Promise<TBigNumber> => {
 		options = options || {}
-		const abi: AbiFunction = {"constant":false,"inputs":[{"internalType":"uint256","name":"_amount","type":"uint256"}],"name":"withdraw","outputs":[{"internalType":"bool","name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"}
+		const abi: AbiFunction = {"constant":false,"inputs":[{"internalType":"uint256","name":"_amount","type":"uint256"}],"name":"withdraw","outputs":[{"internalType":"bool","name":"_alwaysTrue","type":"bool"},{"internalType":"uint256","name":"_payout","type":"uint256"}],"payable":false,"stateMutability":"nonpayable","type":"function"}
 		return await this.estimateGas(abi, [amount], 'withdraw', options.sender)
 	}
 
-	public withdraw_ = async (amount: TBigNumber, options?: { sender?: string }): Promise<boolean> => {
+	public withdraw_ = async (amount: TBigNumber, options?: { sender?: string }): Promise<{_alwaysTrue: boolean, _payout: TBigNumber}> => {
 		options = options || {}
-		const abi: AbiFunction = {"constant":false,"inputs":[{"internalType":"uint256","name":"_amount","type":"uint256"}],"name":"withdraw","outputs":[{"internalType":"bool","name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"}
+		const abi: AbiFunction = {"constant":false,"inputs":[{"internalType":"uint256","name":"_amount","type":"uint256"}],"name":"withdraw","outputs":[{"internalType":"bool","name":"_alwaysTrue","type":"bool"},{"internalType":"uint256","name":"_payout","type":"uint256"}],"payable":false,"stateMutability":"nonpayable","type":"function"}
 		const result = await this.localCall(abi, [amount], options.sender)
-		return <boolean>result[0]
+		return <{_alwaysTrue: boolean, _payout: TBigNumber}>result
 	}
 }
 
