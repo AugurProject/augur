@@ -29,6 +29,7 @@ const ContentWrapper = styled.div`
   display: flex;
   padding: 1rem;
   height: 100vh;
+  width: 100vw;
 `
 
 const HeaderWrapper = styled.div`

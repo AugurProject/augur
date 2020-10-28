@@ -1,5 +1,10 @@
 import React, { HTMLProps } from 'react'
-import styled, { ThemeProvider as StyledComponentsThemeProvider, createGlobalStyle, css, keyframes } from 'styled-components'
+import styled, {
+  ThemeProvider as StyledComponentsThemeProvider,
+  createGlobalStyle,
+  css,
+  keyframes
+} from 'styled-components'
 import { useDarkModeManager } from '../contexts/LocalStorage'
 import { Text, TextProps } from 'rebass'
 import { Link } from 'react-router-dom'
@@ -407,6 +412,6 @@ body {
       1,
       theme.bg1
     )} 100%)`};
-  overflow: hidden;
+  overflow: auto;
 }
 `

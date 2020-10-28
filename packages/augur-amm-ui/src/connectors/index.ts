@@ -8,11 +8,16 @@ import { FortmaticConnector } from './Fortmatic'
 import { NetworkConnector } from './NetworkConnector'
 
 const NETWORK_URL = process.env.REACT_APP_NETWORK_URL
-const FORMATIC_KEY = process.env.REACT_APP_FORTMATIC_KEY
-const PORTIS_ID = process.env.REACT_APP_PORTIS_ID
+const PORTIS_ID = 'ede221f9-710f-44c9-a429-ed28bbb54376'
+const FORTMATIC_API_KEY = 'pk_live_8001A50CCA35D8CB'
+const FORTMATIC_API_TEST_KEY = 'pk_test_5185BE42CA372148'
 
 export const NETWORK_CHAIN_ID: number = parseInt(process.env.REACT_APP_CHAIN_ID ?? '1')
 
+let FORMATIC_KEY = FORTMATIC_API_TEST_KEY
+if (NETWORK_CHAIN_ID === 1) {
+  FORMATIC_KEY = FORTMATIC_API_KEY
+}
 if (typeof NETWORK_URL === 'undefined') {
   throw new Error(`REACT_APP_NETWORK_URL must be a defined environment variable`)
 }
