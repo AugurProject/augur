@@ -9,7 +9,7 @@
     "yarn": ">=1.6.0"
   },
   "scripts": {
-    "build": "tsc -b",
+    "build": "NODE_OPTIONS='--max-old-space-size=12288' tsc -b",
     "build:clean": "tsc -b --clean",
     "build:watch": "tsc -b -w",
     "build:release": "tsc -b tsconfig.release.json",

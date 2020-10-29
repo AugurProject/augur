@@ -6,6 +6,8 @@ node_modules
 tsconfig.tsbuildinfo
 .git
 
+packages/augur-amm-ui/*
+packages/augur-subgraph/*
 packages/orbit-web/*
 !packages/orbit-web/dist/**
 packages/**/node_modules
