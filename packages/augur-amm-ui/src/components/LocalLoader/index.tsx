@@ -19,21 +19,14 @@ const Loader = styled.div`
   & > * {
     width: 72px;
   }
-  ${props =>
-    props.fill && !props.height
-      ? css`
-          height: 100vh;
-        `
-      : css`
-          height: 180px;
-        `}
+  height: 100vh;
 `
 
-const LocalLoader = ({ fill }) => {
+const LocalLoader = () => {
   const [darkMode] = useDarkModeManager()
 
   return (
-    <Loader fill={fill}>
+    <Loader >
       <img src={require(darkMode ? '../../assets/logo_white.svg' : '../../assets/logo.svg')} alt="loading-icon" />
     </Loader>
   )

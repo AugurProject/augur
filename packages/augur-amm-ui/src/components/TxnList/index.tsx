@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useMemo } from 'react'
 import styled from 'styled-components'
 import dayjs from 'dayjs'
 import utc from 'dayjs/plugin/utc'
@@ -27,7 +27,7 @@ const PageButtons = styled.div`
   margin-bottom: 0.5em;
 `
 
-const Arrow = styled.div`
+const Arrow = styled.div<{ faded }>`
   color: #2f80ed;
   opacity: ${props => (props.faded ? 0.3 : 1)};
   padding: 0 20px;
@@ -41,7 +41,7 @@ const List = styled(Box)`
   -webkit-overflow-scrolling: touch;
 `
 
-const DashGrid = styled.div`
+const DashGrid = styled.div<{ center }>`
   display: grid;
   grid-gap: 1em;
   grid-template-columns: 100px 1fr 1fr;
@@ -114,7 +114,7 @@ const DataText = styled(Flex)`
   }
 `
 
-const SortText = styled.button`
+const SortText = styled.button<{ active }>`
   cursor: pointer;
   font-weight: ${({ active, theme }) => (active ? 500 : 400)};
   margin-right: 0.75rem !important;
@@ -146,6 +146,87 @@ const TXN_TYPE = {
 
 const ITEMS_PER_PAGE = 10
 
+function processTransactions(allExchanges, cashData, cashTokens) {
+  const displayValue = (num, decimals) => {
+    return new BN(num).div(new BN(10).pow(Number(decimals)))
+  }
+  const calcCash = (num, decimals, price) => {
+    const displayVal = displayValue(num, decimals)
+    return displayVal.times(new BN(price))
+  }
+  let txns = []
+  if (allExchanges.length > 0) {
+    return allExchanges.map(e => {
+      const price = e.cash ? cashData[e.cash]?.priceUSD : 1
+      const decimals = cashTokens ? cashTokens[e.cash]?.decimals : 18
+      const enters = e.enters.map(mint => ({
+        hash: mint.tx_hash,
+        timestamp: mint.timestamp || 0,
+        type: TXN_TYPE.ADD,
+        token0Amount: formatShares(mint.noShares),
+        token1Amount: formatShares(mint.yesShares),
+        cashAmount: String(displayValue(mint.cash, decimals)),
+        token0Symbol: 'No Shares',
+        token1Symbol: 'Yes Shares',
+        amountUSD: String(calcCash(mint.cash, decimals, price)),
+      }))
+
+      const exits = e.exits.map(burn => ({
+        hash: burn.tx_hash,
+        timestamp: burn.timestamp || 0,
+        type: TXN_TYPE.REMOVE,
+        token0Amount: formatShares(burn.noShares),
+        token1Amount: formatShares(burn.yesShares),
+        cashAmount: String(displayValue(burn.cash, decimals)),
+        token0Symbol: 'No Shares',
+        token1Symbol: 'Yes Shares',
+        amountUSD: String(calcCash(burn.cash, decimals, price)),
+      }))
+
+      const swaps = e.swaps.map(swap => {
+        const netToken0 = swap.yesShares - swap.noShares
+        const netToken1 = swap.noShares - swap.yesShares
+
+        const hash = swap.tx_hash
+        const timestamp = swap.timestamp || 0
+        const type = TXN_TYPE.SWAP
+
+        const amountUSD = String(calcCash(swap.cash, decimals, price))
+        const cashAmount = String(displayValue(swap.cash, decimals))
+
+        let newTxn = {
+          hash,
+          timestamp,
+          type,
+          amountUSD,
+          cashAmount,
+          token0Symbol: 'No Shares',
+          token1Symbol: 'Yes Shares',
+          token0Amount: Math.abs(netToken0),
+          token1Amount: Math.abs(netToken1),
+        }
+
+        if (netToken1 < 0) {
+          newTxn = {
+            hash,
+            timestamp,
+            type,
+            amountUSD,
+            cashAmount,
+            token0Symbol: 'No Shares',
+            token1Symbol: 'Yes Shares',
+            token0Amount: Math.abs(netToken1),
+            token1Amount: Math.abs(netToken0),
+          }
+        }
+        return newTxn;
+      })
+      return [...enters, ...exits, ...swaps];
+    }).flat()
+  }
+  return []
+}
+
 function getTransactionType(event, symbol0, symbol1) {
   const formattedS0 = symbol0?.length > 8 ? symbol0.slice(0, 7) + '...' : symbol0
   const formattedS1 = symbol1?.length > 8 ? symbol1.slice(0, 7) + '...' : symbol1
@@ -162,7 +243,7 @@ function getTransactionType(event, symbol0, symbol1) {
 }
 
 // @TODO rework into virtualized list
-function TxnList({ allExchanges, color }) {
+function TxnList({ allExchanges, color, cashTokens, cashData }) {
   // page state
   const [page, setPage] = useState(1)
   const [maxPage, setMaxPage] = useState(1)
@@ -170,10 +251,9 @@ function TxnList({ allExchanges, color }) {
   // sorting
   const [sortDirection, setSortDirection] = useState(true)
   const [sortedColumn, setSortedColumn] = useState(SORT_FIELD.TIMESTAMP)
-  const [filteredItems, setFilteredItems] = useState()
   const [txFilter, setTxFilter] = useState(TXN_TYPE.ALL)
-  const cashTokens = useMarketCashTokens()
-  const cashData = useTokenDayPriceData()
+  const [transactions, setTransactions] = useState([])
+  const [filteredList, setFilteredList] = useState([])
 
   useEffect(() => {
     setMaxPage(1) // edit this to do modular
@@ -182,133 +262,54 @@ function TxnList({ allExchanges, color }) {
 
   // parse the txns and format for UI
   useEffect(() => {
-    const displayValue = (num, decimals) => {
-      return new BN(num).div(new BN(10).pow(Number(decimals)))
-    }
-    const calcCash = (num, decimals, price) => {
-      const displayVal = displayValue(num, decimals)
-      return displayVal.times(new BN(price))
-    }
+    let newTxns = []
     if (allExchanges && cashTokens && cashData) {
-      let newTxns = []
-      if (allExchanges.length > 0) {
-        allExchanges.map(e => {
-          const price = e.cash ? cashData[e.cash]?.priceUSD : 1
-          const decimals = cashTokens ? cashTokens[e.cash]?.decimals : 18
-          e.enters.map(mint => {
-            let newTxn = {}
-            newTxn.hash = mint.tx_hash
-            newTxn.timestamp = mint.timestamp || 0
-            newTxn.type = TXN_TYPE.ADD
-            newTxn.token0Amount = formatShares(mint.noShares)
-            newTxn.token1Amount = formatShares(mint.yesShares)
-            newTxn.cashAmount = String(displayValue(mint.cash, decimals))
-            newTxn.token0Symbol = 'No Shares'
-            newTxn.token1Symbol = 'Yes Shares'
-            newTxn.amountUSD = String(calcCash(mint.cash, decimals, price))
-            return newTxns.push(newTxn)
-          })
-        })
-      }
-      if (allExchanges.length > 0) {
-        allExchanges.map(e => {
-          const price = e.cash ? cashData[e.cash]?.priceUSD : 1
-          const decimals = cashTokens ? cashTokens[e.cash]?.decimals : 18
-          e.exits.map(burn => {
-            let newTxn = {}
-            newTxn.hash = burn.tx_hash
-            newTxn.timestamp = burn.timestamp || 0
-            newTxn.type = TXN_TYPE.REMOVE
-            newTxn.token0Amount = formatShares(burn.noShares)
-            newTxn.token1Amount = formatShares(burn.yesShares)
-            newTxn.cashAmount = String(displayValue(burn.cash, decimals))
-            newTxn.token0Symbol = 'No Shares'
-            newTxn.token1Symbol = 'Yes Shares'
-            newTxn.amountUSD = String(calcCash(burn.cash, decimals, price))
-            return newTxns.push(newTxn)
-          })
-        })
-      }
-      if (allExchanges.length > 0) {
-        allExchanges.map(e => {
-          const price = e.cash ? cashData[e.cash]?.priceUSD : 1
-          const decimals = cashTokens ? cashTokens[e.cash]?.decimals : 18
-          e.swaps.map(swap => {
-            const netToken0 = swap.yesShares - swap.noShares
-            const netToken1 = swap.noShares - swap.yesShares
-
-            let newTxn = {}
-
-            if (netToken0 < 0) {
-              newTxn.token0Symbol = 'No Shares'
-              newTxn.token1Symbol = 'Yes Shares'
-              newTxn.token0Amount = Math.abs(netToken0)
-              newTxn.token1Amount = Math.abs(netToken1)
-            } else if (netToken1 < 0) {
-              newTxn.token0Symbol = 'No Shares'
-              newTxn.token1Symbol = 'Yes Shares'
-              newTxn.token0Amount = Math.abs(netToken1)
-              newTxn.token1Amount = Math.abs(netToken0)
-            }
-
-            newTxn.hash = swap.tx_hash
-            newTxn.timestamp = swap.timestamp || 0
-            newTxn.type = TXN_TYPE.SWAP
-
-            newTxn.amountUSD = String(calcCash(swap.cash, decimals, price))
-            newTxn.cashAmount = String(displayValue(swap.cash, decimals))
-            return newTxns.push(newTxn)
-          })
-        })
-      }
-
-      const filtered = newTxns.filter(item => {
-        if (txFilter !== TXN_TYPE.ALL) {
-          return item.type === txFilter
-        }
-        return true
-      })
-      setFilteredItems(filtered)
-      let extraPages = 1
-      if (filtered.length % ITEMS_PER_PAGE === 0) {
-        extraPages = 0
-      }
-      if (filtered.length === 0) {
-        setMaxPage(1)
-      } else {
-        setMaxPage(Math.floor(filtered.length / ITEMS_PER_PAGE) + extraPages)
-      }
+      newTxns = processTransactions(allExchanges, cashData, cashTokens)
     }
-  }, [allExchanges, txFilter, cashTokens, cashData])
+    setTransactions(newTxns)
+  }, [allExchanges, cashTokens, cashData])
+
+  useEffect(() => {
+    const filtered = transactions.filter(item => {
+      if (txFilter !== TXN_TYPE.ALL) {
+        return item.type === txFilter
+      }
+      return true
+    })
+
+    let extraPages = 1
+    if (filtered.length % ITEMS_PER_PAGE === 0) {
+      extraPages = 0
+    }
+    if (filtered.length === 0) {
+      setMaxPage(1)
+    } else {
+      setMaxPage(Math.floor(filtered.length / ITEMS_PER_PAGE) + extraPages)
+    }
+
+    const filteredList =
+      filtered &&
+      filtered
+        .sort((a, b) => {
+          return parseFloat(a[sortedColumn]) > parseFloat(b[sortedColumn])
+            ? (sortDirection ? -1 : 1) * 1
+            : (sortDirection ? -1 : 1) * -1
+        })
+        .slice(ITEMS_PER_PAGE * (page - 1), page * ITEMS_PER_PAGE)
+    setFilteredList(filteredList)
+  }, [transactions, setFilteredList, txFilter])
 
   useEffect(() => {
     setPage(1)
   }, [txFilter])
 
-  const filteredList =
-    filteredItems &&
-    filteredItems
-      .sort((a, b) => {
-        return parseFloat(a[sortedColumn]) > parseFloat(b[sortedColumn])
-          ? (sortDirection ? -1 : 1) * 1
-          : (sortDirection ? -1 : 1) * -1
-      })
-      .slice(ITEMS_PER_PAGE * (page - 1), page * ITEMS_PER_PAGE)
-
   const below1080 = useMedia('(max-width: 1080px)')
   const below780 = useMedia('(max-width: 780px)')
 
-  const ListItem = ({ item }) => {
-    if (item.token0Symbol === 'WETH') {
-      item.token0Symbol = 'ETH'
-    }
-
-    if (item.token1Symbol === 'WETH') {
-      item.token1Symbol = 'ETH'
-    }
+  const ListItem = ({ item, index }) => {
 
     return (
-      <DashGrid style={{ height: '48px' }}>
+      <DashGrid center={false} style={{ height: '48px' }}>
         <DataText area="txn" fontWeight="500">
           <Link color={color} external href={urls.showTransaction(item.hash)}>
             {getTransactionType(item.type, item.token1Symbol, item.token0Symbol)}
@@ -335,41 +336,41 @@ function TxnList({ allExchanges, color }) {
             <DropdownSelect options={TXN_TYPE} active={txFilter} setActive={setTxFilter} color={color} />
           </RowBetween>
         ) : (
-          <RowFixed area="txn" gap="10px" pl={4}>
-            <SortText
-              onClick={() => {
-                setTxFilter(TXN_TYPE.ALL)
-              }}
-              active={txFilter === TXN_TYPE.ALL}
-            >
-              All
+            <RowFixed area="txn" gap="10px" pl={4}>
+              <SortText
+                onClick={() => {
+                  setTxFilter(TXN_TYPE.ALL)
+                }}
+                active={txFilter === TXN_TYPE.ALL}
+              >
+                All
             </SortText>
-            <SortText
-              onClick={() => {
-                setTxFilter(TXN_TYPE.SWAP)
-              }}
-              active={txFilter === TXN_TYPE.SWAP}
-            >
-              Swaps
+              <SortText
+                onClick={() => {
+                  setTxFilter(TXN_TYPE.SWAP)
+                }}
+                active={txFilter === TXN_TYPE.SWAP}
+              >
+                Swaps
             </SortText>
-            <SortText
-              onClick={() => {
-                setTxFilter(TXN_TYPE.ADD)
-              }}
-              active={txFilter === TXN_TYPE.ADD}
-            >
-              Adds
+              <SortText
+                onClick={() => {
+                  setTxFilter(TXN_TYPE.ADD)
+                }}
+                active={txFilter === TXN_TYPE.ADD}
+              >
+                Adds
             </SortText>
-            <SortText
-              onClick={() => {
-                setTxFilter(TXN_TYPE.REMOVE)
-              }}
-              active={txFilter === TXN_TYPE.REMOVE}
-            >
-              Removes
+              <SortText
+                onClick={() => {
+                  setTxFilter(TXN_TYPE.REMOVE)
+                }}
+                active={txFilter === TXN_TYPE.REMOVE}
+              >
+                Removes
             </SortText>
-          </RowFixed>
-        )}
+            </RowFixed>
+          )}
 
         <Flex alignItems="center" justifyContent="flex-start">
           <ClickableText
@@ -440,15 +441,15 @@ function TxnList({ allExchanges, color }) {
         ) : filteredList.length === 0 ? (
           <EmptyCard>No recent transactions found.</EmptyCard>
         ) : (
-          filteredList.map((item, index) => {
-            return (
-              <div key={index}>
-                <ListItem key={index} index={index + 1} item={item} />
-                <Divider />
-              </div>
-            )
-          })
-        )}
+              filteredList.map((item, index) => {
+                return (
+                  <div key={index}>
+                    <ListItem key={index} index={index + 1} item={item} />
+                    <Divider />
+                  </div>
+                )
+              })
+            )}
       </List>
       <PageButtons>
         <div

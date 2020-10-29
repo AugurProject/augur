@@ -206,7 +206,7 @@ function App() {
               <Redirect to="/home" />
             </Switch>
         ) : (
-          <LocalLoader fill="true" />
+          <LocalLoader />
         )}
         </Web3ReactManager>
         </BodyWrapper>

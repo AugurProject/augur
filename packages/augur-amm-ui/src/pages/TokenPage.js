@@ -63,10 +63,10 @@ function TokenPage({ marketId }) {
     oneDayVolumeUT,
     volumeChangeUT,
     priceChangeUSD,
-    oneDayTxns,
+    oneDayTxns
   } = useTokenData(marketId)
   const cashes = useMarketNonExistingAmms(marketId)
-  const [totalLiquidity, setTotalLiquidity] = useState("0")
+  const [totalLiquidity, setTotalLiquidity] = useState('0')
   const cashTokens = useMarketCashTokens()
   const cashData = useTokenDayPriceData()
   const allExchanges = useMarketAmmExchanges(marketId)
@@ -77,18 +77,18 @@ function TokenPage({ marketId }) {
 
   useEffect(() => {
     if (allExchanges && allExchanges.length > 0) {
-      const total = allExchanges.reduce((p, e) => {
-        const cashToken = cashTokens[e.cash]
+      const total = (allExchanges || []).reduce((p, e) => {
+        const cashToken = cashTokens?.[e.cash]
         const liq = calculateLiquidity(
           Number(cashToken?.decimals),
-          String(e.liquidity),
-          String(cashData[e.cash].priceUSD)
+          String(e?.liquidity),
+          String(cashData?.[e.cash]?.priceUSD)
         )
         return p.plus(liq)
       }, new BN(0))
       setTotalLiquidity(formattedNum(String(total), true))
     }
-  },[allExchanges, cashData, cashTokens, setTotalLiquidity])
+  }, [allExchanges, cashData, cashTokens, setTotalLiquidity])
   // detect color from token
   const backgroundColor = useColor(id, symbol)
 
@@ -112,7 +112,6 @@ function TokenPage({ marketId }) {
 
   const volumeChange = formattedPercent(!usingUtVolume ? volumeChangeUSD : volumeChangeUT)
 
-
   const below1080 = useMedia('(max-width: 1080px)')
   const below800 = useMedia('(max-width: 800px)')
   const below600 = useMedia('(max-width: 600px)')
@@ -131,7 +130,7 @@ function TokenPage({ marketId }) {
   return (
     <PageWrapper>
       <ContentWrapper>
-       <WarningGrouping>
+        <WarningGrouping>
           <DashboardWrapper style={{ marginTop: below1080 ? '0' : '1rem' }}>
             <RowBetween style={{ flexWrap: 'wrap', marginBottom: '2rem', alignItems: 'flex-start' }}>
               <RowFixed style={{ flexWrap: 'wrap' }}>
@@ -253,9 +252,11 @@ function TokenPage({ marketId }) {
               <TYPE.main fontSize={'1.125rem'}>Transactions</TYPE.main> <div />
             </RowBetween>
             <Panel rounded>
-            // TODO -- this is blowing up the UI now
-            {/* {(allExchanges && allExchanges.length > 0) ? <TxnList color={backgroundColor} allExchanges={allExchanges} /> : <Loader />} */}
-
+              {allExchanges && allExchanges.length > 0 ? (
+                <TxnList color={backgroundColor} allExchanges={allExchanges} cashData={cashData} cashTokens={cashTokens} />
+              ) : (
+                <Loader />
+              )}
             </Panel>
           </DashboardWrapper>
         </WarningGrouping>

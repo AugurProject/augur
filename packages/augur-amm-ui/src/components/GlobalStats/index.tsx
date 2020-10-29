@@ -44,7 +44,6 @@ export default function GlobalStats() {
         return p.plus(new BN(cashValue))
       }, new BN(0))
     }
-    console.log('total', String(total))
     const liq = formattedNum(String(total), true);
     setGlobalLiquidity(String(liq))
   }, [liquidities, cashData, cashTokens, setGlobalLiquidity])
