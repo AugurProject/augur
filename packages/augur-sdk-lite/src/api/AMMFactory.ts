@@ -67,7 +67,6 @@ export class AMMFactory {
   async getRateEnterPosition(ammAddress: string, collateral: BigNumber, buyYes: boolean): Promise<BigNumber> {
     if (!ammAddress) return null;
     const amm = new AMMExchange(this.signerOrProvider, ammAddress);
-    console.log('getRateEnterPosition', ammAddress, collateral, buyYes)
     return amm.rateEnterPosition(collateral, buyYes);
   }
 

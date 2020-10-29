@@ -53,7 +53,8 @@ export function useTradeExactIn(
       const no = JSBI.BigInt(String(Number(ammExchange.percentageNo) / 100).substring(6))
       const yes = JSBI.BigInt(String(Number(ammExchange.percentageYes) / 100).substring(6))
       let executionPrice = new Price(currencyOut, currencyOut, JSBI.BigInt(1), currencyOut.symbol === MarketTokens.NO_SHARES ? no : yes)
-
+      console.log('no price', String(no))
+      console.log('yes price', String(yes))
       if (!(currencyOut instanceof MarketCurrency)) {
         // cash out use inverse of currencyIn percentage
         const exchange = inputCurrency.symbol === MarketTokens.NO_SHARES ? no : yes

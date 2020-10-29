@@ -763,33 +763,6 @@ export const PAIRS_HISTORICAL_BULK = (block, pairs) => {
   return gql(queryString)
 }
 
-export const TOKEN_CHART = gql`
-  query tokenDayDatas($tokenAddr: String!, $skip: Int!) {
-    tokenDayDatas(first: 1000, skip: $skip, orderBy: date, orderDirection: asc, where: { token: $tokenAddr }) {
-      id
-      date
-      priceUSD
-      totalLiquidityToken
-      totalLiquidityUSD
-      totalLiquidityETH
-      dailyVolumeETH
-      dailyVolumeToken
-      dailyVolumeUSD
-      mostLiquidPairs {
-        id
-        token0 {
-          id
-          derivedETH
-        }
-        token1 {
-          id
-          derivedETH
-        }
-      }
-    }
-  }
-`
-
 const TokenFields = `
   fragment TokenFields on Token {
     id
