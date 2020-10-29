@@ -168,7 +168,6 @@ function MarketList({ markets, itemMax = 10 }) {
     let liquidityUSD = '-'
     if (ammExchange?.liquidity && cashTokens && cashData?.[marketData?.cash] && cashData?.[marketData?.cash]?.priceUSD) {
       const cashToken = cashTokens[marketData.cash]
-      console.log('calculate liquidity', cashTokens, cashToken, marketData.cash)
       const displayUsd = calculateLiquidity(
         Number(cashToken?.decimals),
         String(ammExchange?.liquidity),
