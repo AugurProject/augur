@@ -31,18 +31,21 @@ import {
   MODAL_ETH_DEPOSIT,
   MODAL_TOKEN_SELECT,
   MODAL_APPROVALS,
-  MODAL_TEST_BET
+  MODAL_TEST_BET,
 } from 'modules/common/constants';
 import { useAppStatusStore } from 'modules/app/store/app-status';
 import { getInfoAlertsAndSeenCount } from 'modules/alerts/helpers/alerts';
 import AlertsContainer from 'modules/alerts/components/alerts-view';
-import { useBetslipStore } from 'modules/trading/store/betslip';
+import { Betslip, useBetslipStore } from 'modules/trading/store/betslip';
 import { BETSLIP_SELECTED } from 'modules/trading/store/constants';
 import Styles from 'modules/app/components/top-bar.styles.less';
 import { getCoreStats } from 'modules/auth/helpers/login-account';
 import { TOTAL_ONBOARDING_STEPS } from 'modules/modal/onboarding';
-import { approveFillOrderCheck, approveShareTokenCheck, approveZeroXCheck } from 'modules/contracts/actions/contractCalls';
-
+import {
+  approveFillOrderCheck,
+  approveShareTokenCheck,
+  approveZeroXCheck,
+} from 'modules/contracts/actions/contractCalls';
 
 const handleShowOnboarding = (currentOnboardingStep, setModal) => {
   let nextStep = MODAL_AUGUR_USES_DAI;
@@ -103,7 +106,6 @@ export const Stats = () => {
 };
 
 const TopBar = () => {
-
   const {
     pendingQueue,
     loginAccount: { address, currentOnboardingStep, balances },
@@ -117,8 +119,7 @@ const TopBar = () => {
   } = useAppStatusStore();
   const {
     matched: { count: MyBetsCount },
-    actions: { toggleHeader },
-  } = useBetslipStore();
+  } = Betslip.get();
   const isSports = theme === THEMES.SPORTS;
   const { unseenCount } = getInfoAlertsAndSeenCount();
   const LoggedOrRestored = isLogged || restoredAccount;
@@ -129,40 +130,40 @@ const TopBar = () => {
   const showMigrateRepButton =
     balances?.legacyRep !== '0' || balances?.legacyAttoRep !== '0' || !!pending;
 
-    const [isZeroXApproved, setIsZeroXApproved] = useState(false);
-    const [isShareTokenApproved, setIsShareTokenApproved] = useState(false);
-    const [isFillOrderAprpoved, setIsFillOrderApproved] = useState(false);
+  const [isZeroXApproved, setIsZeroXApproved] = useState(false);
+  const [isShareTokenApproved, setIsShareTokenApproved] = useState(false);
+  const [isFillOrderAprpoved, setIsFillOrderApproved] = useState(false);
 
-    useEffect(() => {
-      if (
-        isLogged &&
-        address &&
-        currentOnboardingStep < TOTAL_ONBOARDING_STEPS &&
-        (!isZeroXApproved || !isShareTokenApproved || !isFillOrderAprpoved)
-      ) {
-        const checkIsZeroXApproved = async () => {
-          const approved = await approveZeroXCheck(address);
-          setIsZeroXApproved(approved);
-        };
+  useEffect(() => {
+    if (
+      isLogged &&
+      address &&
+      currentOnboardingStep < TOTAL_ONBOARDING_STEPS &&
+      (!isZeroXApproved || !isShareTokenApproved || !isFillOrderAprpoved)
+    ) {
+      const checkIsZeroXApproved = async () => {
+        const approved = await approveZeroXCheck(address);
+        setIsZeroXApproved(approved);
+      };
 
-        const checkIsShareTokenApproved = async () => {
-          const approved = await approveShareTokenCheck(address);
-          setIsShareTokenApproved(approved);
-        };
+      const checkIsShareTokenApproved = async () => {
+        const approved = await approveShareTokenCheck(address);
+        setIsShareTokenApproved(approved);
+      };
 
-        const checkIsFillOrderApproved = async () => {
-          const approved = await approveFillOrderCheck(address);
-          setIsFillOrderApproved(approved);
-        };
+      const checkIsFillOrderApproved = async () => {
+        const approved = await approveFillOrderCheck(address);
+        setIsFillOrderApproved(approved);
+      };
 
-        checkIsZeroXApproved();
-        checkIsShareTokenApproved();
-        checkIsFillOrderApproved();
-      }
-    }, [isLogged, address]);
+      checkIsZeroXApproved();
+      checkIsShareTokenApproved();
+      checkIsFillOrderApproved();
+    }
+  }, [isLogged, address]);
 
-
-  const accountSetup = isZeroXApproved && isShareTokenApproved && isFillOrderAprpoved;
+  const accountSetup =
+    isZeroXApproved && isShareTokenApproved && isFillOrderAprpoved;
   return (
     <header className={Styles.TopBar}>
       <div className={Styles.Logo}>
@@ -185,9 +186,17 @@ const TopBar = () => {
           />
         )}
 
-        {(isLogged || restoredAccount) && !accountSetup && currentOnboardingStep < TOTAL_ONBOARDING_STEPS && ethToDaiRate && (
-          <PrimaryButton text={'Continue account setup'} action={() => handleShowOnboarding(currentOnboardingStep, setModal)} />
-        )}
+        {(isLogged || restoredAccount) &&
+          !accountSetup &&
+          currentOnboardingStep < TOTAL_ONBOARDING_STEPS &&
+          ethToDaiRate && (
+            <PrimaryButton
+              text={'Continue account setup'}
+              action={() =>
+                handleShowOnboarding(currentOnboardingStep, setModal)
+              }
+            />
+          )}
 
         {(!isLogged || (!isMobile && LoggedOrRestored)) && <HelpResources />}
         {!isMobile && <OddsMenu />}
@@ -214,7 +223,7 @@ const TopBar = () => {
           >
             <button
               onClick={() => {
-                toggleHeader(BETSLIP_SELECTED.MY_BETS);
+                Betslip.actions.toggleHeader(BETSLIP_SELECTED.MY_BETS);
                 setBetslipMinimized(false);
               }}
             >

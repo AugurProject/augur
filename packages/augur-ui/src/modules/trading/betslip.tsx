@@ -87,7 +87,7 @@ export const Betslip = () => {
       >
         <div onClick={() => !betslipMinimized && setBetslipMinimized(true)}>
           <button onClick={() => setBetslipMinimized(!betslipMinimized)}>
-            Betslip ({betslipCount}) {ThickChevron}
+            {isMyBets ? 'My Bets' : `Betslip (${betslipCount})`} {ThickChevron}
           </button>
         </div>
         <section className={Styles.Container}>
