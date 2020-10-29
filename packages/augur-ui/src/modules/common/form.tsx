@@ -234,9 +234,9 @@ export const Error = (props: ErrorProps) => (
 );
 
 export interface BaseRadioButtonProp {
-  id: string;
-  checked: boolean;
-  value?: string;
+  id?: string | number;
+  checked?: boolean;
+  value?: string | number;
 }
 export interface RadioCardProps extends BaseRadioButtonProp {
   header: string;
@@ -253,7 +253,7 @@ interface RadioGroupProps {
   onChange: Function;
   radioButtons: BaseRadioButtonProp[];
   market?: MarketData;
-  defaultSelected?: string | null;
+  defaultSelected?: string | number | null;
   children?: any[];
   reportAction?: Function;
   inputtedReportingStake?: DisputeInputtedValues;
@@ -269,7 +269,7 @@ interface RadioGroupProps {
 }
 
 export interface RadioGroupState {
-  selected: string | null;
+  selected: string | number | null;
 }
 
 export interface RadioBarProps extends BaseRadioButtonProp {
@@ -305,8 +305,8 @@ export interface ReportingRadioBarProps extends BaseRadioButtonProp {
 }
 
 export interface RadioTwoLineBarProps extends BaseRadioButtonProp {
-  header: string;
-  description: string;
+  header?: string;
+  description?: string;
   onChange: Function;
   error?: boolean;
   hideRadioButton?: boolean;
@@ -753,8 +753,8 @@ export class CategoryMultiSelect extends Component<
             onChangeInput={v =>
               this.handleUpdate(selected, getNewValues(v, 2, values))
             }
-            showText={customTertiary}
-            showIcon={showTertiaryDropdown || customTertiary}
+            showText={!!customTertiary}
+            showIcon={!!(showTertiaryDropdown || customTertiary)}
             showDropdown={showTertiaryDropdown}
             autoCompleteList={tertiaryAutoComplete}
             removable
@@ -1105,7 +1105,7 @@ export class ReportingRadioBar extends Component<ReportingRadioBarProps, {}> {
               {checked && (
                 <DisputingBondsView
                   market={market}
-                  id={id}
+                  id={String(id)}
                   isInvalid={isInvalid}
                   inputScalarOutcome={inputScalarOutcome}
                   updateScalarOutcome={updateScalarOutcome}
@@ -1122,7 +1122,7 @@ export class ReportingRadioBar extends Component<ReportingRadioBarProps, {}> {
           {!isDisputing && checked && (
             <ReportingBondsView
               market={market}
-              id={id}
+              id={String(id)}
               inputScalarOutcome={inputScalarOutcome}
               updateScalarOutcome={updateScalarOutcome}
               reportAction={reportAction}
