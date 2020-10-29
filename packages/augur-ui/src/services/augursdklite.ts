@@ -1,5 +1,6 @@
 import { AugurLite } from '@augurproject/sdk-lite';
-import { ContractAddresses, NetworkId } from '@augurproject/utils';
+import { Addresses } from '@augurproject/sdk-lite/build/AugurLite';
+import { NetworkId } from '@augurproject/utils';
 import { JsonRpcProvider } from 'ethers/providers';
 
 export class SDKLite {
@@ -8,7 +9,7 @@ export class SDKLite {
   // Async to remain consistent with the sdk 'makeClient' method.
   async makeLiteClient(
     provider: JsonRpcProvider,
-    addresses: ContractAddresses,
+    addresses: Addresses,
     networkId: NetworkId,
     ): Promise<AugurLite> {
 

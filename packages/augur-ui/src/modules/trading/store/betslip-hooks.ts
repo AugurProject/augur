@@ -49,11 +49,17 @@ export interface betslipItemsType {
       wager?: string;
       shares?: string;
       toWin?: string;
+      normalizedPrice?: string;
+      recentlyUpdated?: boolean;
+      outcome?: string;
     }[];
   }[];
-};
+}
 
-export const calculateBetslipTotals = betslip => {
+export const calculateBetslipTotals = (betslip: {
+  count: number;
+  items: betslipItemsType;
+}) => {
   let totalWager = ZERO;
   let potential = ZERO;
   let fees = ZERO;
@@ -249,7 +255,12 @@ export function BetslipReducer(state, action) {
       const toWin = convertToWin(order.max, shares);
       const prevWager = betslipItems[marketId].orders[orderId].wager;
       if (betslipItems[marketId]?.orders)
-        betslipItems[marketId].orders[orderId] = { ...order, orderId, shares, toWin };
+        betslipItems[marketId].orders[orderId] = {
+          ...order,
+          orderId,
+          shares,
+          toWin,
+        };
       if (prevWager !== order.wager) {
         checkForConsumingOwnOrderError(
           marketId,

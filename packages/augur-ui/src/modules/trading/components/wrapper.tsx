@@ -152,16 +152,12 @@ const Wrapper = ({
     userOpenOrders,
     loginAccount: {
       balances: { dai, eth },
-      tradingApproved,
     },
     theme,
     isLogged,
     restoredAccount,
     blockchain: { currentAugurTimestamp: currentTimestamp },
     actions: { setModal },
-    env: {
-      ui: { reportingOnly: disableTrading },
-    },
   } = useAppStatusStore();
   const {
     orderProperties,

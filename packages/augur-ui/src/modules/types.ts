@@ -161,6 +161,7 @@ export interface MarketData extends MarketInfo {
   scalarDenomination: string | null;
   author: string;
   isForking?: boolean;
+  orderBook?: { [outcome: number]: LiquidityOrder[] };
 }
 
 export interface ForkingInfo {

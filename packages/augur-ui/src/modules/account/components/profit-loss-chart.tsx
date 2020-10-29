@@ -60,6 +60,7 @@ const getOptions = () => ({
     endOnTick: false,
     startOnTick: false,
     tickLength: 4,
+    tickPositions: undefined,
     labels: {
       style: null,
       format: '{value:%b %d}',
@@ -209,7 +210,7 @@ const ProfitLossChart = ({ width, data }: ChartProps) => {
       [] as dataObject[]
     )
     .map((d: dataObject) => getAreaSpline(d.arr));
-
+    // @ts-ignore
     const newOptions: Highcharts.Options = Object.assign(options, {
       series,
     }) as Highcharts.Options;

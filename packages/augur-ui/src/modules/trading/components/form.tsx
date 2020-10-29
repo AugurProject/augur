@@ -190,7 +190,7 @@ interface FromProps {
   clearOrderConfirmation: Function;
   initialLiquidity?: boolean;
   tradingTutorial?: boolean;
-}
+};
 
 const getStartState = ({
   endTime,
@@ -544,12 +544,13 @@ const Form = ({
               placeholder="0.00"
               value={quantityValue}
               tabIndex={tradingTutorial ? -1 : 1}
-              onTouchStart={e =>
+              onTouchStart={e => {
+                // @ts-ignore
                 e.target.scrollIntoView({
                   block: 'nearest',
                   behavior: 'smooth',
-                })
-              }
+                });
+              }}
               onChange={e => {
                 updateAndValidate(QUANTITY, e.target.value);
               }}
@@ -590,12 +591,13 @@ const Form = ({
                 placeholder="0.00"
                 tabIndex={tradingTutorial ? -1 : 2}
                 value={orderPrice}
-                onTouchStart={e =>
+                onTouchStart={e => {
+                  // @ts-ignore
                   e.target.scrollIntoView({
                     block: 'nearest',
                     behavior: 'smooth',
                   })
-                }
+                }}
                 onChange={e => 
                   updateAndValidate(PRICE, e.target.value)
                 }
@@ -637,12 +639,13 @@ const Form = ({
                 placeholder="0"
                 tabIndex={tradingTutorial ? -1 : 2}
                 value={percentage}
-                onTouchStart={e =>
+                onTouchStart={e =>{
+                  // @ts-ignore
                   e.target.scrollIntoView({
                     block: 'nearest',
                     behavior: 'smooth',
                   })
-                }
+                }}
                 onChange={e => {
                   const percentage = e.target.value;
                   setState({ ...state, percentage });
@@ -689,12 +692,13 @@ const Form = ({
                   ? createBigNumber(orderDaiEstimate).toNumber()
                   : orderDaiEstimate
               }
-              onTouchStart={e =>
+              onTouchStart={e => {
+                // @ts-ignore
                 e.target.scrollIntoView({
                   block: 'nearest',
                   behavior: 'smooth',
                 })
-              }
+              }}
               onChange={e =>
                 updateAndValidate(EST_DAI, e.target.value)
               }

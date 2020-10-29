@@ -31,9 +31,9 @@ interface TestResults {
   errorCount: number;
 }
 
-interface InidivualOutcomeOrderBook {
-  asks: Order[];
-  bids: Order[];
+interface IndividualOutcomeOrderbook {
+  asks?: Order[];
+  bids?: Order[];
 }
 
 interface Props {
@@ -43,7 +43,7 @@ interface Props {
   selectedNav: string;
   selectedOutcome: MarketInfoOutcome;
   currentTimestamp: number;
-  orderBook: InidivualOutcomeOrderBook;
+  orderBook: IndividualOutcomeOrderbook;
   initialLiquidity?: boolean;
 }
 const {
