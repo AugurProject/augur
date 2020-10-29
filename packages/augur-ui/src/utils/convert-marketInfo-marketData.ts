@@ -56,7 +56,7 @@ export function convertMarketInfoToMarketData(
     finalizationTimeFormatted: marketInfo.finalizationTime
       ? convertUnixToFormattedDate(marketInfo.finalizationTime)
       : null,
-    consensusFormatted: processConsensus(marketInfo),
+    consensusFormatted: null,
     defaultSelectedOutcomeId: getDefaultOutcomeSelected(marketInfo.marketType),
     reportingFeeRatePercent: formatPercent(reportingFee * 100, {
       positiveSign: false,
@@ -89,7 +89,8 @@ export function convertMarketInfoToMarketData(
       marketInfo.isWarpSync,
     ),
   };
-
+  const formattedConsensus = processConsensus(marketData);
+  marketData.consensusFormatted = formattedConsensus;
   return marketData;
 }
 
@@ -243,7 +244,7 @@ function processDisputeInfo(
 }
 
 function processConsensus(
-  market: MarketInfo
+  market: MarketData
 ): ConsensusFormatted | null {
   const isScalar = market.marketType === SCALAR;
   if (market.reportingState === REPORTING_STATE.FINALIZED) {

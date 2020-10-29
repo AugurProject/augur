@@ -4,13 +4,7 @@ import {
   getWager,
   getShares,
 } from './get-odds';
-import {
-  INSUFFICIENT_FUNDS_ERROR,
-  BUY,
-  SELL,
-  ZERO,
-  ONE,
-} from 'modules/common/constants';
+import { BUY, SELL, ZERO, ONE } from 'modules/common/constants';
 import { getOutcomeNameWithOutcome } from './get-outcome';
 import { BET_STATUS } from 'modules/trading/store/constants';
 import { Markets } from 'modules/markets/store/markets';
@@ -21,13 +15,10 @@ import { createBigNumber } from './create-big-number';
 import { totalTradingBalance } from 'modules/auth/helpers/login-account';
 import { runSimulateTrade } from 'modules/trades/actions/update-trade-cost-shares';
 import { calcOrderShareProfitLoss } from 'modules/trades/helpers/calc-order-profit-loss-percents';
-import {
-  findMultipleOf,
-} from 'modules/trading/helpers/form-helpers';
-import {
-  DEFAULT_TRADE_INTERVAL
-} from '@augurproject/utils';
+import { findMultipleOf } from 'modules/trading/helpers/form-helpers';
+import { DEFAULT_TRADE_INTERVAL } from '@augurproject/utils';
 import { convertDisplayAmountToOnChainAmount } from '@augurproject/sdk';
+import { betslipItemsType } from 'modules/trading/store/betslip-hooks';
 
 export const convertPositionToBet = (position, marketInfo) => {
   const avgPrice = position.priorPosition
@@ -82,7 +73,7 @@ export const findProceeds = (realizedPercent, realizedCost, settlementFee) => {
   return a.minus(b);
 };
 
-const { FILLED, FAILED } = BET_STATUS;
+const { FAILED } = BET_STATUS;
 
 export const placeBet = async (marketId, order, orderId) => {
   const { marketInfos } = Markets.get();
@@ -100,9 +91,7 @@ export const placeBet = async (marketId, order, orderId) => {
     market.maxPrice,
     order.shares,
     order.price,
-    0,
-    '0',
-    undefined
+    '0'
   )
     .then(() => {
       Betslip.actions.trash(marketId, orderId);
@@ -116,7 +105,7 @@ export const placeBet = async (marketId, order, orderId) => {
     });
 };
 
-export const checkForDisablingPlaceBets = betslipItems => {
+export const checkForDisablingPlaceBets = (betslipItems: betslipItemsType) => {
   let placeBetsDisabled = false;
   Object.values(betslipItems).map(market => {
     market.orders.map(order => {
@@ -178,7 +167,9 @@ export const checkInsufficientFunds = (
 
   let availableDai = totalTradingBalance();
 
-  return longETHpotentialProfit.gt(createBigNumber(availableDai)) ? 'Insufficient funds' : '';
+  return longETHpotentialProfit.gt(createBigNumber(availableDai))
+    ? 'Insufficient funds'
+    : '';
 };
 
 const getTopBid = (orderBooks, bet, tickSize) => {
@@ -232,13 +223,16 @@ const getTopBid = (orderBooks, bet, tickSize) => {
 
 export const checkForConsumingOwnOrderError = (marketId, order, orderId) => {
   runBetslipTrade(marketId, order, false, simulateTradeData => {
-      Betslip.actions.modifyBet(marketId, orderId, {
+    Betslip.actions.modifyBet(marketId, orderId, {
       ...order,
       selfTrade: simulateTradeData.selfTrade,
-      errorMessage: simulateTradeData.selfTrade && order.errorMessage === '' ? 'Consuming own order' : order.errorMessage
+      errorMessage:
+        simulateTradeData.selfTrade && order.errorMessage === ''
+          ? 'Consuming own order'
+          : order.errorMessage,
     });
   });
-}
+};
 
 export const getOrderShareProfitLoss = (bet, orderBooks, cb) => {
   const { marketInfos } = Markets.get();
@@ -286,7 +280,7 @@ export const getOrderShareProfitLoss = (bet, orderBooks, cb) => {
       : null;
 
     const quantity = createBigNumber(
-      Math.min(shareCost, trade.reversal.quantity)
+      Math.min(shareCost.toNumber(), trade.reversal.quantity)
     );
     const orderCost =
       orderShareProfitLoss &&

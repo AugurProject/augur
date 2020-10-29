@@ -156,10 +156,10 @@ export interface MarketData extends MarketInfo {
   pending?: boolean;
   status?: string;
   hasPendingLiquidityOrders?: boolean;
-  noShowBondAmount?: string;
-  isWarpSync?: boolean;
-  scalarDenomination?: string;
-  author?: string;
+  noShowBondAmount: string;
+  isWarpSync: boolean;
+  scalarDenomination: string | null;
+  author: string;
   isForking?: boolean;
 }
 
@@ -202,7 +202,7 @@ export interface UserReports {
 }
 export interface FormattedNumber {
   fullPrecision: number | string;
-  roundedValue: BigNumber;
+  roundedValue: number | string;
   roundedFormatted: string;
   formatted: string;
   formattedValue: number | string;

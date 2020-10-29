@@ -46,6 +46,19 @@ import getValueFromlocalStorage from 'utils/get-local-storage-value';
 
 const NETWORK_ID_POLL_INTERVAL_DURATION = 10000;
 
+interface AugurEnv {
+  AUGUR_ENV?: string;
+  AUGUR_HOSTED?: boolean;
+  AUTO_LOGIN?: boolean;
+  REPORTING_ONLY?: boolean;
+  CONFIGURATION?: SDKConfiguration;
+  CURRENT_BRANCH?: string;
+  CURRENT_COMMITHASH?: string;
+  ENABLE_MAINNET?: boolean;
+  ETHEREUM_NETWORK?: string;
+  IPFS_STABLE_LOADER_HASH?: string;
+};
+
 async function loadAccountIfStored() {
   const loggedInUser = getLoggedInUserFromLocalStorage();
   const loggedInAccount = (loggedInUser && loggedInUser.address) || null;
@@ -157,7 +170,8 @@ function pollForNetwork() {
   setInterval(() => {
     const { modal } = AppStatus.get();
     const { setModal, closeModal } = AppStatus.actions;
-    if (!process.env.ENABLE_MAINNET) {
+    const processEnvRef: AugurEnv = process.env;
+    if (!processEnvRef.ENABLE_MAINNET) {
       const isMainnet = checkIfMainnet();
       if (isMainnet && isEmpty(modal)) {
         setModal({
@@ -185,10 +199,10 @@ export const connectAugur = async (
   switch(loggedInAccountType) {
     case null:
       break;
+    // @ts-ignore
     case ACCOUNT_TYPES.WEB3WALLET:
       // If the account type is web3 we need a global web3 object
       if(!isGlobalWeb3()) break;
-      /* falls through */
     default:
       const address = toChecksumAddress(loggedInAccount);
       const accountObject = {
@@ -212,6 +226,7 @@ export const connectAugur = async (
 
   // Disable mesh for googleBot
   if (isGoogleBot()) {
+    // @ts-ignore
     config = mergeConfig(config, {
       zeroX: { mesh: { enabled: false } },
       warpSync: {
@@ -221,6 +236,7 @@ export const connectAugur = async (
   }
 
   if (isMobileSafari()) {
+    // @ts-ignore
     config = mergeConfig(config, {
       warpSync: {
         autoReport: false,
@@ -284,8 +300,8 @@ export const connectAugur = async (
       return callback(`SDK could not be created, see console for more information`, { config });
     }
 
-
-  if (process.env.REPORTING_ONLY && !getValueFromlocalStorage(DISCLAIMER_SEEN)) {
+  const processEnvRef: AugurEnv = process.env;
+  if (processEnvRef.REPORTING_ONLY && !getValueFromlocalStorage(DISCLAIMER_SEEN)) {
     const { setModal } = AppStatus.actions;
     setModal({
       type: MODAL_REPORTING_ONLY
@@ -343,7 +359,8 @@ export const initAugur = async (
   }: initAugurParams,
   callback: NodeStyleCallback = logError
 ) => {
-  const config: SDKConfiguration = process.env.CONFIGURATION;
+  const processEnvRef: AugurEnv = process.env;
+  const config: SDKConfiguration = processEnvRef.CONFIGURATION;
 
   if (ethereumNodeHttp) {
     config.ethereum.http = ethereumNodeHttp;

@@ -40,6 +40,19 @@ const {
 const { BETSLIP, MY_BETS, MATCHED, UNMATCHED } = BETSLIP_SELECTED;
 const { UNSENT, PENDING, CLOSED } = BET_STATUS;
 
+export interface betslipItemsType {
+  marketId: {
+    description: string;
+    orders: {
+      orderId: string;
+      errorMessage?: string;
+      wager?: string;
+      shares?: string;
+      toWin?: string;
+    }[];
+  }[];
+};
+
 export const calculateBetslipTotals = betslip => {
   let totalWager = ZERO;
   let potential = ZERO;
@@ -63,8 +76,8 @@ export const calculateBetslipTotals = betslip => {
 
 export function BetslipReducer(state, action) {
   let updatedState = { ...state };
-  const betslipItems = updatedState.betslip.items;
-  const matchedItems = updatedState.matched.items;
+  const betslipItems: betslipItemsType = updatedState.betslip.items;
+  const matchedItems: betslipItemsType = updatedState.matched.items;
   const {
     blockchain: { currentAugurTimestamp },
   } = AppStatus.get();
