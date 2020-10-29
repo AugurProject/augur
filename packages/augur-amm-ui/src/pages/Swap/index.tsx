@@ -73,6 +73,15 @@ function Swap({ marketId, amm }: RouteComponentProps<{ inputCurrencyId?: string;
     marketId,
     amm
   )
+  useEffect(() => {
+    if (outputAmount) {
+      const slippage = new BN(allowedSlippage).div(100).div(100)
+      const slipAmount = new BN(String(outputAmount.raw))
+        .minus(new BN(String(outputAmount.raw)).multipliedBy(slippage))
+        .decimalPlaces(0)
+      setMinAmount(String(slipAmount))
+    }
+  }, [trade, outputAmount, allowedSlippage, setMinAmount])
 
   useEffect(() => {
     trade &&
@@ -94,17 +103,7 @@ function Swap({ marketId, amm }: RouteComponentProps<{ inputCurrencyId?: string;
         .catch(e => {
           setOutputAmount(null)
         })
-  }, [augurClient, chainId, trade])
-
-  useEffect(() => {
-    if (outputAmount) {
-      const slippage = new BN(allowedSlippage).div(100).div(100)
-      const slipAmount = new BN(String(outputAmount.raw))
-        .minus(new BN(String(outputAmount.raw)).multipliedBy(slippage))
-        .decimalPlaces(0)
-      setMinAmount(String(slipAmount))
-    }
-  }, [trade, outputAmount, allowedSlippage, setMinAmount])
+  }, [trade?.inputAmount?.toFixed()])
 
   const parsedAmounts = {
     [Field.INPUT]: independentField === Field.INPUT ? parsedAmount : trade?.inputAmount,
