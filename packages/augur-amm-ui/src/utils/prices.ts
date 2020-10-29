@@ -1,8 +1,7 @@
 import { BIPS_BASE, BLOCKED_PRICE_IMPACT_NON_EXPERT } from '../constants'
-import { CurrencyAmount, Fraction, JSBI, Percent, TokenAmount, Trade, TradeType } from '@uniswap/sdk'
+import { CurrencyAmount, JSBI, Percent, TokenAmount } from '@uniswap/sdk'
 import { ALLOWED_PRICE_IMPACT_HIGH, ALLOWED_PRICE_IMPACT_LOW, ALLOWED_PRICE_IMPACT_MEDIUM } from '../constants'
 import { Field } from '../state/swap/actions'
-import { basisPointsToPercent } from './index'
 import { TradeInfo } from '../hooks/Trades'
 import { BigNumber as BN } from 'bignumber.js'
 
@@ -15,16 +14,11 @@ export function computePriceImpact(trade, minAmount): { priceImpactWithoutFee: P
   if (!trade || !minAmount) return {priceImpactWithoutFee: undefined, slippageAdjustedAmounts: undefined}
   const currencyOutDecimals = trade?.currencyOut?.decimals
   const executionPrice = trade?.executionPrice
-  const inputAmount = trade?.inputAmount?.raw
 
-  const calcPrice = new BN(minAmount).div(new BN(String(inputAmount)))
-  // weird math to use Percent object
-  const impact = calcPrice
-    .minus(new BN(executionPrice.toSignificant(6)))
-    .div(calcPrice)
-    .abs()
-    .times(100)
-    .toFixed(0)
+  const calcPrice = new BN(minAmount).div(new BN(String(trade.inputAmount.raw)))
+  const adjPrice = new BN(String(trade.executionPrice.quotient)).div(new BN(10).pow(trade.currencyOut.decimals))
+  const diff = calcPrice.minus(new BN(String(adjPrice)))
+  const impact = diff.div(calcPrice).abs().times(100).toFixed(0)
   const adjMinAmount = String(new BN(minAmount).div(new BN(10).pow(new BN(currencyOutDecimals))).toFixed(8))
 
   return {
@@ -65,7 +59,7 @@ export function computeSlippageAdjustedAmounts(
   trade: TradeInfo | undefined,
   allowedSlippage: number
 ): { [field in Field]?: CurrencyAmount } {
-  const pct = basisPointsToPercent(allowedSlippage)
+  //const pct = basisPointsToPercent(allowedSlippage)
 
   return {
     [Field.INPUT]: trade.inputAmount,

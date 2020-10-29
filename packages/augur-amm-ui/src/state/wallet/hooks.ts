@@ -1,5 +1,5 @@
 import { Currency, CurrencyAmount, ETHER, JSBI, Token, TokenAmount } from '@uniswap/sdk'
-import { memo, useMemo } from 'react'
+import { useMemo } from 'react'
 import ERC20_INTERFACE from '../../constants/abis/erc20'
 import { useActiveWeb3React } from '../../hooks'
 import { useMulticallContract } from '../../hooks/useContract'
@@ -9,11 +9,10 @@ import {
   useMultipleContractSingleData,
   useMultipleContractMultipleData
 } from '../multicall/hooks'
-import { useAllMarketData, useMarketCashAddresses } from '../../contexts/Markets'
+import { useAllMarketData } from '../../contexts/Markets'
 import { ParaShareToken } from '@augurproject/sdk-lite'
 import { Interface } from 'ethers/lib/utils'
-import { BigNumber as BN } from 'bignumber.js'
-import { MarketTokens, ZERO_ADDRESS } from '../../constants'
+import { ZERO_ADDRESS } from '../../constants'
 import { MarketCurrency } from '../../model/MarketCurrency'
 /**
  * Returns a map of the given addresses to their eventually consistent ETH balances.

@@ -59,9 +59,7 @@ function TokenPage({ marketId }) {
     symbol,
     priceUSD,
     oneDayVolumeUSD,
-    volumeChangeUSD,
     oneDayVolumeUT,
-    volumeChangeUT,
     priceChangeUSD,
     oneDayTxns
   } = useTokenData(marketId)
