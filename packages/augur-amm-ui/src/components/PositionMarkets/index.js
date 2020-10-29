@@ -6,7 +6,7 @@ import utc from 'dayjs/plugin/utc'
 import { Box, Flex, Text } from 'rebass'
 import { Divider } from '..'
 import { useDarkModeManager } from '../../contexts/LocalStorage'
-import { formatTime } from '../../utils'
+import { formatTime, formatShares } from '../../utils'
 import { useMedia } from 'react-use'
 import { withRouter } from 'react-router-dom'
 import { TYPE } from '../../Theme'
@@ -169,8 +169,8 @@ function PositionMarketList({ positions, loading, itemMax = 20 }) {
             {item?.market?.description}
           </BasicLink>
         </DataText>
-        <DataText area="noShares">{item.noAmount || '0'}</DataText>
-        <DataText area="yesShares">{item.yesAmount || '0'}</DataText>
+        <DataText area="noShares">{formatShares(item.noAmount || '0')}</DataText>
+        <DataText area="yesShares">{formatShares(item.yesAmount || '0')}</DataText>
         {!below800 && (
           <DataText area="status">
             <span
