@@ -6,18 +6,17 @@ import { useCallback, useEffect, useMemo, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useActiveWeb3React } from '../../hooks'
 import { useCurrency, useMarketToken } from '../../hooks/Tokens'
-import { TradeInfo, useTradeExactIn } from '../../hooks/Trades'
+import { TradeInfo, getTradeExactIn } from '../../hooks/Trades'
 import useParsedQueryString from '../../hooks/useParsedQueryString'
 import { isAddress } from '../../utils'
 import { AppDispatch, AppState } from '../index'
-import { useCurrencyBalances } from '../wallet/hooks'
+import { MarketBalance, useCurrencyBalances } from '../wallet/hooks'
 import { Field, replaceSwapState, selectCurrency, setRecipient, switchCurrencies, typeInput } from './actions'
 import { SwapState } from './reducer'
 import { useUserSlippageTolerance } from '../user/hooks'
 import { computeSlippageAdjustedAmounts } from '../../utils/prices'
 import { useLocation } from 'react-router-dom'
 import { MarketCurrency } from '../../model/MarketCurrency'
-import { useMarketAmm } from '../../contexts/Markets'
 
 export function useSwapState(): AppState['swap'] {
   return useSelector<AppState, AppState['swap']>(state => state.swap)
@@ -109,8 +108,9 @@ function involvesAddress(trade: Trade, checksummedAddress: string): boolean {
 
 // from the current swap inputs, compute the best trade and return it.
 export function useDerivedSwapInfo(
-  marketId: string,
-  amm: string
+  account: string,
+  ammExchange,
+  userCashBalances: MarketBalance
 ): {
   currencies: { [field in Field]?: Currency }
   currencyBalances: { [field in Field]?: CurrencyAmount }
@@ -118,8 +118,7 @@ export function useDerivedSwapInfo(
   v2Trade: TradeInfo | undefined
   inputError?: string
 } {
-  const { account } = useActiveWeb3React()
-  const ammExchange = useMarketAmm(marketId, amm)
+
   const {
     typedValue,
     [Field.INPUT]: { currencyId: inputCurrencyId },
@@ -144,12 +143,13 @@ export function useDerivedSwapInfo(
 
   const parsedAmount = tryParseAmount(typedValue, inputCurrency ?? undefined)
 
-  const v2Trade = useTradeExactIn(
+  const v2Trade = useMemo(() => getTradeExactIn(
     ammExchange,
     inputCurrency,
     parsedAmount,
-    outputCurrency ?? undefined
-  )
+    outputCurrency ?? undefined,
+    userCashBalances
+  ), [inputCurrencyId, outputCurrencyId, typedValue])
 
   const currencyBalances = {
     [Field.INPUT]: relevantTokenBalances[0],
