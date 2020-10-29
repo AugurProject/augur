@@ -11,10 +11,8 @@ import Styles from 'modules/market/components/market-orders-positions-table/open
 import {
   MarketData,
   UIOrder,
-  DefaultOrderProperties,
 } from 'modules/types';
 import {
-  addCanceledOrder,
   addCanceledOrder,
 } from 'modules/pending-queue/actions/pending-queue-management';
 import { TXEventName } from '@augurproject/sdk-lite';

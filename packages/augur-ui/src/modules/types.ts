@@ -404,6 +404,7 @@ export interface NewMarketPropertiesValidations {
 }
 
 export interface NewMarketPropertyValidations {
+  description?: string;
   settlementFee?: string;
   scalarDenomination?: string;
   affiliateFee?: string;

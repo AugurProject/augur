@@ -706,7 +706,7 @@ export interface NumberedListProps {
   maxList: number;
   placeholder: string;
   updateList: Function;
-  errorMessage?: string;
+  errorMessage?: string | string[];
   hideAdd?: boolean;
   onRemoved?: Function;
 }
@@ -735,7 +735,7 @@ export const NumberedInput = ({
           onChange={value => onChange(value, number)}
           value={value}
           placeholder={placeholder}
-          maxLength="32"
+          maxLength={32}
           errorMessage={errorMessage}
         />
         {removable && <button onClick={e => onRemove(number)}>{XIcon}</button>}
@@ -880,7 +880,7 @@ export const NoFundsErrors = ({
         <DismissableNotice
           title="Not enough ETH in your wallet"
           description={`You have ${availableEthFormatted.formatted} ETH of ${totalEth.formatted} required to create this market`}
-          show={true}
+          show
           buttonType={DISMISSABLE_NOTICE_BUTTON_TYPES.BUTTON}
           buttonText="Add Funds"
           buttonAction={() => setModal({ type: MODAL_ADD_FUNDS, fundType: DAI })}
@@ -890,7 +890,7 @@ export const NoFundsErrors = ({
         <DismissableNotice
           title="Not enough REPv2 in your wallet"
           description={`You have ${availableRepFormatted.formatted} REPv2 of ${totalRep.formatted} required to create this market.`}
-          show={true}
+          show
           buttonText="Add Funds"
           buttonAction={() => setModal({ type: MODAL_ADD_FUNDS, fundType: REP })}
           buttonType={DISMISSABLE_NOTICE_BUTTON_TYPES.BUTTON}
@@ -898,9 +898,8 @@ export const NoFundsErrors = ({
       )}
       {noDai && (
         <DismissableNotice
-          alternate
           title="Not enough $ (DAI) in your wallet"
-          show={true}
+          show
           buttonText="Add Funds"
           buttonAction={() => setModal({ type: MODAL_ADD_FUNDS, fundType: DAI })}
           buttonType={DISMISSABLE_NOTICE_BUTTON_TYPES.BUTTON}
@@ -2070,9 +2069,9 @@ const OutcomeDropdownInput = ({
     <div>
       <span>{`${number + 1}.`}</span>
       <FormDropdown
-        id={'outcomeDropDown'}
+        id='outcomeDropDown'
         defaultValue={defaultValue}
-        staticLabel={'Select Value'}
+        staticLabel='Select Value'
         onChange={value => onChange(value)}
         options={list}
         errorMessage={errorMessage}

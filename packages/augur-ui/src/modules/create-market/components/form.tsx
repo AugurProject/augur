@@ -33,11 +33,7 @@ import {
   TEMPLATE_PICKER,
   TEMPLATE_INPUTS,
   TEMPLATE,
-  ExchangeClosingMessage,
   MovieWednesdayAfterOpeningMessage,
-  AugurMarketsContent,
-  EventDetailsContent,
-  ReviewContent,
 } from 'modules/create-market/constants';
 import {
   CATEGORICAL,
@@ -50,9 +46,6 @@ import {
   MODAL_CREATE_MARKET,
   YES_NO_OUTCOMES,
   ZERO,
-  MODAL_ADD_FUNDS,
-  ETH,
-  CREATEMARKET,
   APPROVE,
 } from 'modules/common/constants';
 import { PrimaryButton, SecondaryButton } from 'modules/common/buttons';
@@ -60,7 +53,6 @@ import {
   LargeHeader,
   ExplainerBlock,
   ContentBlock,
-  MultipleExplainerBlock,
 } from 'modules/create-market/components/common';
 import FormDetails from 'modules/create-market/components/form-details';
 import Review from 'modules/create-market/components/review';
@@ -89,7 +81,7 @@ import {
   convertUnixToFormattedDate,
 } from 'utils/format-date';
 import TemplatePicker from 'modules/create-market/components/template-picker';
-import { ApprovalTxButtonLabel, BulkTxLabel } from 'modules/common/labels';
+import { ApprovalTxButtonLabel } from 'modules/common/labels';
 import Styles from 'modules/create-market/components/form.styles.less';
 import { MarketType } from 'modules/create-market/components/market-type';
 import {
@@ -124,7 +116,6 @@ import {
   marketCreationStarted,
   marketCreationSaved,
 } from 'services/analytics/helpers';
-import getValueFromlocalStorage from 'utils/get-local-storage-value';
 import parsePath from 'modules/routes/helpers/parse-path';
 import { approvalsNeededMarketCreation, approveMarketCreation } from 'modules/contracts/actions/contractCalls';
 
@@ -875,8 +866,8 @@ export const Form = ({ isTemplate, updatePage }) => {
               <ApprovalTxButtonLabel
                 className={Styles.MultipleTransactions}
                 ignore={Boolean(process.env.REPORTING_ONLY)}
-                title={'Approve to create the market'}
-                buttonName={'Approve'}
+                title='Approve to create the market'
+                buttonName='Approve'
                 userEthBalance={balances.eth}
                 gasPrice={gasPrice}
                 hideAddFunds

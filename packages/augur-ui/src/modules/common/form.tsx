@@ -248,20 +248,20 @@ export interface RadioCardProps extends BaseRadioButtonProp {
 }
 
 interface RadioGroupProps {
-  id: string;
+  id?: string;
   light?: boolean;
   onChange: Function;
   radioButtons: BaseRadioButtonProp[];
   market?: MarketData;
   defaultSelected?: string | null;
   children?: any[];
-  reportAction: Function;
+  reportAction?: Function;
   inputtedReportingStake?: DisputeInputtedValues;
   updateInputtedStake?: Function;
   updateScalarOutcome?: Function;
   inputScalarOutcome?: string;
   stake?: StakeDetails;
-  userCurrentDisputeRound:
+  userCurrentDisputeRound?:
     | Getters.Accounts.UserCurrentOutcomeDisputeStake[]
     | [];
   hideRadioButton?: boolean;
