@@ -163,14 +163,14 @@
   "averageBlocktime": 15000,
   "ui": {
     "showReloadModal": false,
+    "liteProvider": "torus",
     "trackBestOffer": false,
     "trackMarketInvalidBids": true,
     "reportingOnly": false,
     "fallbackProvider": "torus",
-    "liteProvider": "torus",
     "primaryProvider": "wallet",
-    "marketCreationEnabled": true,
-    "reportingEnabled": true
+    "marketCreationEnabled": false,
+    "reportingEnabled": false
   },
   "paraDeploys": {
     "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2": {
