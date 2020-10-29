@@ -210,6 +210,7 @@ const MarketsListFilters = ({
 
             <RadioBarGroup
               radioButtons={marketTypeFilterValues}
+              light
               defaultSelected={filterSortOptions.marketTypeFilter}
               onChange={(value: string) =>
                 isMobile

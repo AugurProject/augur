@@ -2830,11 +2830,8 @@ div.ButtonsRow:last-of-type {
 
     > div:nth-of-type(2) {
       display: grid;
-      grid-template-columns: 4fr 3fr 3fr;
-      grid-template-rows: auto;
-      grid-gap: @size-16;
+      grid-template-columns: repeat(3, auto);
       align-items: flex-end;
-      justify-content: space-between;
       background-color: var(--color-table-header);
       border-radius: @size-3;
       padding: @size-12;
@@ -2871,6 +2868,7 @@ div.ButtonsRow:last-of-type {
         margin: 0 @size-5;
         border-right: @size-1 solid var(--color-secondary-action-outline);
         padding-left: @size-12;
+        padding-right: @size-24;
 
         > div {
           > span:first-of-type {
@@ -2898,6 +2896,7 @@ div.ButtonsRow:last-of-type {
 
         color: var(--color-primary-text);
         padding: 0 0 @size-10 @size-5;
+        margin-left: @size-24;
       }
 
       @media @breakpoint-mobile-mid {
@@ -2940,13 +2939,37 @@ div.ButtonsRow:last-of-type {
 :root[theme='SPORTS'] {
   .Gas {
     border: none;
+    max-width: @size-600;
 
     > main {
       > button {
+        .text-12;
+
         background-color: transparent;
         border: @size-1 solid var(--color-dark-grey);
         border-radius: @border-radius-default;
         color: var(--color-secondary-text);
+        text-transform: capitalize;
+        padding: @size-10 @size-8;
+        position: relative;
+
+        > span {
+          margin-left: @size-8;
+
+          > svg {
+            margin-left: @size-12;
+            margin-right: @size-3;
+          }
+
+          &::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            width: @size-1;
+            background-color: var(--color-dark-grey);
+          }
+        }
 
         > span > svg > path {
           stroke: var(--color-primary-text);
@@ -2982,6 +3005,32 @@ div.ButtonsRow:last-of-type {
 
         > p:last-of-type {
           .text-14;
+        }
+      }
+
+      > div:first-of-type {
+        > div {
+          padding: @size-8;
+
+          > div:first-of-type {
+            margin-bottom: @size-1;
+
+            > span {
+              .text-12-semi-bold;
+
+              color: var(--color-primary-text);
+
+              &:last-of-type {
+                .text-12;
+              }
+            }
+          }
+
+          > div:last-of-type {
+            > span {
+              color: var(--color-secondary-text);
+            }
+          }
         }
       }
 
@@ -3030,6 +3079,10 @@ div.ButtonsRow:last-of-type {
         &:disabled {
           opacity: 0.5;
         }
+      }
+
+      > p:last-of-type {
+        color: var(--color-secondary-text);
       }
     }
   }
