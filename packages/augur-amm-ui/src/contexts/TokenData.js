@@ -4,9 +4,7 @@ import { client } from '../apollo/client'
 import {
   CASH_TOKEN_DATA,
   FILTERED_TRANSACTIONS,
-  TOKEN_CHART,
   PRICES_BY_BLOCK,
-  DAILY_DERIVED_ETH
 } from '../apollo/queries'
 
 import { useEthPrice } from './GlobalData'
@@ -225,7 +223,7 @@ const getCashTokenData = async (cashes = []) => {
     .startOf('minute')
     .unix()
 
-  let bulkResults = {}
+  let bulkResults = []
   try {
     bulkResults = await Promise.all(
       cashes.map(async cash => {
@@ -251,7 +249,7 @@ const getCashTokenData = async (cashes = []) => {
   } catch (e) {
     console.log(e)
   }
-  return bulkResults.reduce((p, a) => ({...p, [a.id]: a}), {})
+  return (bulkResults || []).reduce((p, a) => ({...p, [a.id]: a}), {})
 }
 
 const getTokenTransactions = async allPairsFormatted => {
@@ -361,74 +359,6 @@ const getIntervalTokenData = async (tokenAddress, startTime, interval = 3600, la
     console.log('error fetching blocks')
     return []
   }
-}
-
-const getTokenChartData = async tokenAddress => {
-  let data = []
-  const utcEndTime = dayjs.utc()
-  let utcStartTime = utcEndTime.subtract(1, 'year')
-  let startTime = utcStartTime.startOf('minute').unix() - 1
-
-  try {
-    let allFound = false
-    let skip = 0
-    while (!allFound) {
-      let result = await client.query({
-        query: TOKEN_CHART,
-        variables: {
-          tokenAddr: tokenAddress,
-          skip
-        },
-        fetchPolicy: 'cache-first'
-      })
-      if (result.data.tokenDayDatas.length < 1000) {
-        allFound = true
-      }
-      skip += 1000
-      data = data.concat(result.data.tokenDayDatas)
-    }
-
-    let dayIndexSet = new Set()
-    let dayIndexArray = []
-    const oneDay = 24 * 60 * 60
-    data.forEach((dayData, i) => {
-      // add the day index to the set of days
-      dayIndexSet.add((data[i].date / oneDay).toFixed(0))
-      dayIndexArray.push(data[i])
-      dayData.dailyVolumeUSD = parseFloat(dayData.dailyVolumeUSD)
-    })
-
-    // fill in empty days
-    let timestamp = data[0] && data[0].date ? data[0].date : startTime
-    let latestLiquidityUSD = data[0] && data[0].totalLiquidityUSD
-    let latestPriceUSD = data[0] && data[0].priceUSD
-    let latestPairDatas = data[0] && data[0].mostLiquidPairs
-    let index = 1
-    while (timestamp < utcEndTime.startOf('minute').unix() - oneDay) {
-      const nextDay = timestamp + oneDay
-      let currentDayIndex = (nextDay / oneDay).toFixed(0)
-      if (!dayIndexSet.has(currentDayIndex)) {
-        data.push({
-          date: nextDay,
-          dayString: nextDay,
-          dailyVolumeUSD: 0,
-          priceUSD: latestPriceUSD,
-          totalLiquidityUSD: latestLiquidityUSD,
-          mostLiquidPairs: latestPairDatas
-        })
-      } else {
-        latestLiquidityUSD = dayIndexArray[index].totalLiquidityUSD
-        latestPriceUSD = dayIndexArray[index].priceUSD
-        latestPairDatas = dayIndexArray[index].mostLiquidPairs
-        index = index + 1
-      }
-      timestamp = nextDay
-    }
-    data = data.sort((a, b) => (parseInt(a.date) > parseInt(b.date) ? 1 : -1))
-  } catch (e) {
-    console.log(e)
-  }
-  return data
 }
 
 export function Updater() {
@@ -557,21 +487,6 @@ export function useTokenPairs(marketId) {
   }, [marketId, tokenPairs, updateAllPairs, amms])
 
   return tokenPairs || []
-}
-
-export function useTokenChartData(tokenAddress) {
-  const [state, { updateChartData }] = useTokenDataContext()
-  const chartData = state?.[tokenAddress]?.chartData
-  useEffect(() => {
-    async function checkForChartData() {
-      if (!chartData) {
-        let data = await getTokenChartData(tokenAddress)
-        updateChartData(tokenAddress, data)
-      }
-    }
-    checkForChartData()
-  }, [chartData, tokenAddress, updateChartData])
-  return chartData
 }
 
 /**

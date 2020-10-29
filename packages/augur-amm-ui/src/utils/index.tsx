@@ -168,15 +168,20 @@ export async function splitQuery(query, localClient, vars, list, skipCount = 100
  * @param {Int} timestamp in seconds
  */
 export async function getBlockFromTimestamp(timestamp) {
-  let result = await blockClient.query({
-    query: GET_BLOCK,
-    variables: {
-      timestampFrom: timestamp,
-      timestampTo: timestamp + 600
-    },
-    fetchPolicy: 'cache-first'
-  })
-  return result?.data?.blocks?.[0]?.number
+  let result = null
+  try {
+    result = await blockClient.query({
+      query: GET_BLOCK,
+      variables: {
+        timestampFrom: timestamp,
+        timestampTo: timestamp + 600
+      },
+      fetchPolicy: 'cache-first'
+    })
+  } catch(e) {
+    console.error(e)
+  }
+  return result ? result?.data?.blocks?.[0]?.number : 0
 }
 
 /**

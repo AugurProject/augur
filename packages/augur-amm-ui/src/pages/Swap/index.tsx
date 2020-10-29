@@ -304,7 +304,7 @@ function Swap({ marketId, amm }: RouteComponentProps<{ inputCurrencyId?: string;
                     <Text fontWeight={500} fontSize={14} color={theme.text2}>
                       Avg Price
                     </Text>
-                    <TradePrice trade={trade} />
+                    <TradePrice trade={trade} estTokenAmount={outputAmount} />
                   </RowBetween>
                 )}
                 <RowBetween align="center">

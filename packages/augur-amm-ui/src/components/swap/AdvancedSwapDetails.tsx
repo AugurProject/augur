@@ -22,16 +22,15 @@ export function TradeSummary({ trade, allowedSlippage, minAmount }: { trade: Tra
       [Field.INPUT]: "-"
     }
   })
-  const isExactIn = trade.tradeType === TradeType.EXACT_INPUT
 
   useEffect(() => {
     if (minAmount) {
       const calcPrice = new BN(minAmount).div(new BN(String(trade.inputAmount.raw)))
       // weird math to use Percent object
-      const diff = calcPrice.minus(new BN(trade.executionPrice.toSignificant(6)))
+      const adjPrice = new BN(String(trade.executionPrice.quotient)).div(new BN(10).pow(trade.currencyOut.decimals))
+      const diff = calcPrice.minus(new BN(String(adjPrice)))
       const impact = diff.div(calcPrice).abs().times(100).toFixed(0)
       const adjMinAmount = String(new BN(minAmount).div(new BN(10).pow(new BN(trade.currencyOut.decimals))).toFixed(8))
-
       const breakdown = {
           priceImpactWithoutFee: new Percent(JSBI.BigInt(impact), BIPS_BASE),
           realizedLPFee: "0", // ignore this for now
@@ -50,16 +49,13 @@ export function TradeSummary({ trade, allowedSlippage, minAmount }: { trade: Tra
         <RowBetween>
           <RowFixed>
             <TYPE.black fontSize={14} fontWeight={400} color={theme.text2}>
-              {isExactIn ? 'Minimum received' : 'Maximum sold'}
+              {'Minimum received'}
             </TYPE.black>
             <QuestionHelper text="Your transaction will revert if there is a large, unfavorable price movement before it is confirmed." />
           </RowFixed>
           <RowFixed>
             <TYPE.black color={theme.text1} fontSize={14}>
-              {isExactIn
-                ? breakdown.slippageAdjustedAmounts[Field.OUTPUT]
-                : breakdown.slippageAdjustedAmounts[Field.INPUT]
-              }
+              {breakdown.slippageAdjustedAmounts[Field.OUTPUT]}
             </TYPE.black>
           </RowFixed>
         </RowBetween>
