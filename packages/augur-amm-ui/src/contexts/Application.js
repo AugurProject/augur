@@ -363,7 +363,7 @@ export function useAugurClient() {
     if (!augurClient) {
       createAugurClient()
     }
-  }, [updateAugurClient, augurClient, library, chainId, augurConfig])
+  }, [updateAugurClient, augurClient, library, chainId, augurConfig, account])
 
   return augurClient
 }

@@ -110,11 +110,10 @@ function TokenPage({ marketId }) {
     setUsingUtVolume(oneDayVolumeUSD === 0 ? true : false)
   }, [oneDayVolumeUSD])
 
-  const volumeChange = formattedPercent(!usingUtVolume ? volumeChangeUSD : volumeChangeUT)
 
   const below1080 = useMedia('(max-width: 1080px)')
   const below800 = useMedia('(max-width: 800px)')
-  const below600 = useMedia('(max-width: 600px)')
+  //const below600 = useMedia('(max-width: 600px)')
 
   // format for long symbol
   const LENGTH = below1080 ? 10 : 16

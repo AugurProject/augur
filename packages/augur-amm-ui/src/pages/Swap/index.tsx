@@ -34,6 +34,8 @@ import { RouteComponentProps } from 'react-router-dom'
 import { TradeInfo } from '../../hooks/Trades'
 import { estimateTrade } from '../../utils'
 import { useAugurClient } from '../../contexts/Application'
+import { useMarketAmm } from '../../contexts/Markets'
+import { useMarketBalance } from '../../state/wallet/hooks'
 
 const ClickableText = styled(Text)`
   text-align: end;
@@ -57,6 +59,8 @@ function Swap({ marketId, amm }: RouteComponentProps<{ inputCurrencyId?: string;
 
   const toggleWalletModal = useWalletModalToggle() // toggle wallet when disconnected
   const { account } = useActiveWeb3React()
+  const ammExchange = useMarketAmm(marketId, amm)
+  const userCashBalances = useMarketBalance(marketId, ammExchange?.shareToken?.cash?.id)
 
   // for expert mode
   const toggleSettings = useToggleSettingsMenu()
@@ -70,9 +74,36 @@ function Swap({ marketId, amm }: RouteComponentProps<{ inputCurrencyId?: string;
   // swap state
   const { independentField, typedValue, recipient } = useSwapState()
   const { v2Trade: trade, currencyBalances, parsedAmount, currencies, inputError: swapInputError } = useDerivedSwapInfo(
-    marketId,
-    amm
-  )
+    account,
+    ammExchange,
+    userCashBalances
+   )
+
+  useEffect(() => {
+    async function estimate(augurClient, trade) {
+      try {
+        const result = await estimateTrade(augurClient, trade);
+        if (result) {
+          console.log('estimate trade', result)
+          const outToken = new Token(
+            chainId,
+            trade.marketId,
+            trade.currencyOut.decimals,
+            trade.currencyOut.symbol,
+            trade.currencyOut.name
+          )
+          const estCurrency = new TokenAmount(outToken, JSBI.BigInt(String(result)))
+          setOutputAmount(estCurrency)
+        }
+      } catch (e) {
+        setOutputAmount(null)
+      }
+    }
+    if (trade && trade.currencyIn) {
+      estimate(augurClient, trade)
+    }
+  }, [augurClient, chainId, trade, trade])
+
   useEffect(() => {
     if (outputAmount) {
       const slippage = new BN(allowedSlippage).div(100).div(100)
@@ -82,28 +113,6 @@ function Swap({ marketId, amm }: RouteComponentProps<{ inputCurrencyId?: string;
       setMinAmount(String(slipAmount))
     }
   }, [trade, outputAmount, allowedSlippage, setMinAmount])
-
-  useEffect(() => {
-    trade &&
-      estimateTrade(augurClient, trade)
-        .then(result => {
-          if (result) {
-            console.log('estimate trade', result)
-            const outToken = new Token(
-              chainId,
-              trade.marketId,
-              trade.currencyOut.decimals,
-              trade.currencyOut.symbol,
-              trade.currencyOut.name
-            )
-            const estCurrency = new TokenAmount(outToken, JSBI.BigInt(String(result)))
-            setOutputAmount(estCurrency)
-          }
-        })
-        .catch(e => {
-          setOutputAmount(null)
-        })
-  }, [trade?.inputAmount?.toFixed()])
 
   const parsedAmounts = {
     [Field.INPUT]: independentField === Field.INPUT ? parsedAmount : trade?.inputAmount,
@@ -340,8 +349,8 @@ function Swap({ marketId, amm }: RouteComponentProps<{ inputCurrencyId?: string;
                   ) : approvalSubmitted && approval === ApprovalState.APPROVED ? (
                     'Approved'
                   ) : (
-                    'Approve ' + currencies[Field.INPUT]?.symbol
-                  )}
+                        'Approve ' + currencies[Field.INPUT]?.symbol
+                      )}
                 </ButtonConfirmed>
                 <ButtonError
                   onClick={() => {
@@ -364,29 +373,29 @@ function Swap({ marketId, amm }: RouteComponentProps<{ inputCurrencyId?: string;
                 </ButtonError>
               </RowBetween>
             ) : (
-              <ButtonError
-                onClick={() => {
-                  setSwapState({
-                    tradeToConfirm: trade,
-                    attemptingTxn: false,
-                    swapErrorMessage: undefined,
-                    showConfirm: true,
-                    txHash: undefined
-                  })
-                }}
-                id="swap-button"
-                disabled={!isValid || priceImpactSeverity > 3 || !!swapCallbackError}
-                error={isValid && priceImpactSeverity > 2 && !swapCallbackError}
-              >
-                <Text fontSize={20} fontWeight={500}>
-                  {swapInputError
-                    ? swapInputError
-                    : priceImpactSeverity > 3
-                    ? `Price Impact Too High`
-                    : `Swap${priceImpactSeverity > 2 ? ' Anyway' : ''}`}
-                </Text>
-              </ButtonError>
-            )}
+                    <ButtonError
+                      onClick={() => {
+                        setSwapState({
+                          tradeToConfirm: trade,
+                          attemptingTxn: false,
+                          swapErrorMessage: undefined,
+                          showConfirm: true,
+                          txHash: undefined
+                        })
+                      }}
+                      id="swap-button"
+                      disabled={!isValid || priceImpactSeverity > 3 || !!swapCallbackError}
+                      error={isValid && priceImpactSeverity > 2 && !swapCallbackError}
+                    >
+                      <Text fontSize={20} fontWeight={500}>
+                        {swapInputError
+                          ? swapInputError
+                          : priceImpactSeverity > 3
+                            ? `Price Impact Too High`
+                            : `Swap${priceImpactSeverity > 2 ? ' Anyway' : ''}`}
+                      </Text>
+                    </ButtonError>
+                  )}
             {showApproveFlow && (
               <Column style={{ marginTop: '1rem' }}>
                 <ProgressSteps steps={[approval === ApprovalState.APPROVED]} />
