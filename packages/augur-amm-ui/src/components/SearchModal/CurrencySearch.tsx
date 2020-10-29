@@ -1,16 +1,15 @@
 import { Currency } from '@uniswap/sdk'
-import React, { useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react'
+import React, { useCallback, useEffect, useRef, useState } from 'react'
 import ReactGA from 'react-ga'
 import { FixedSizeList } from 'react-window'
 import { Text } from 'rebass'
-import { ThemeContext } from 'styled-components'
 import { useActiveWeb3React } from '../../hooks'
 import { useAllMarketTokens } from '../../hooks/Tokens'
 import { CloseIcon} from '../../Theme'
 import { isAddress } from '../../utils'
 import Column from '../Column'
 import QuestionHelper from '../QuestionHelper'
-import Row, { RowBetween } from '../Row'
+import { RowBetween } from '../Row'
 import CommonBases from './CommonBases'
 import CurrencyList from './CurrencyList'
 import { PaddedColumn, Separator } from './styleds'
@@ -37,8 +36,6 @@ export function CurrencySearch({
   onChangeList
 }: CurrencySearchProps) {
   const { chainId } = useActiveWeb3React()
-  const theme = useContext(ThemeContext)
-
   const fixedList = useRef<FixedSizeList>()
   const [searchQuery, setSearchQuery] = useState<string>('')
   const { marketId, cash, amm } = useSwapQueryParam()

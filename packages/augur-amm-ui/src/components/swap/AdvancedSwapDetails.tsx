@@ -92,8 +92,6 @@ export interface AdvancedSwapDetailsProps {
 }
 
 export function AdvancedSwapDetails({ trade, minAmount }: AdvancedSwapDetailsProps) {
-  const theme = useContext(ThemeContext)
-
   const [allowedSlippage] = useUserSlippageTolerance()
 
   return (

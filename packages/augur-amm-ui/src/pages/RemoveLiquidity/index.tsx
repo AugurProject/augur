@@ -1,6 +1,6 @@
 import { TransactionResponse } from '@ethersproject/providers'
 import React, { useCallback, useContext, useState } from 'react'
-import { ArrowDown, Plus } from 'react-feather'
+import { ArrowDown } from 'react-feather'
 import ReactGA from 'react-ga'
 import { RouteComponentProps } from 'react-router'
 import { Text } from 'rebass'
@@ -10,14 +10,12 @@ import { LightCard } from '../../components/Card'
 import { AutoColumn, ColumnCenter } from '../../components/Column'
 import TransactionConfirmationModal, { ConfirmationModalContent } from '../../components/TransactionConfirmationModal'
 import { AddRemoveTabs } from '../../components/NavigationTabs'
-import Row, { RowBetween, RowFixed } from '../../components/Row'
-import { BigNumber as BN } from 'bignumber.js'
+import Row, { RowBetween } from '../../components/Row'
 import Slider from '../../components/Slider'
 import TokenLogo from '../../components/TokenLogo'
 import { useActiveWeb3React } from '../../hooks'
 import { useCurrency, useToken } from '../../hooks/Tokens'
 import useTransactionDeadline from '../../hooks/useTransactionDeadline'
-import { TYPE } from '../../Theme'
 import { useTransactionAdder } from '../../state/transactions/hooks'
 
 import AppBody from '../AppBody'
@@ -40,7 +38,7 @@ function RemoveLiquidity({
 }: RouteComponentProps<{ ammExchangeId: string; marketId: string }>) {
   const augurClient = useAugurClient()
   const { account, chainId, library } = useActiveWeb3React()
-  const [userTokenBalances, loading] = useLPTokenBalances()
+  const [userTokenBalances] = useLPTokenBalances()
   const ammExchange = useMarketAmm(marketId, ammExchangeId)
   const currencyA = useCurrency(ammExchange.cash)
   const currencyLP = useCurrency(ammExchangeId)

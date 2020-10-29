@@ -251,7 +251,7 @@ export function useAmmMarkets(balances) {
   const { markets } = state
   const ammMarkets = []
   if (markets) {
-    Object.keys(balances).map(ammId => {
+    Object.keys(balances).forEach(ammId => {
       const balance = balances[ammId]
       const market = markets.find(m => m.amms.map(a => a.id).includes(ammId))
       const groupedAmms = market ? market.amms.reduce((group, a) => ({ ...group, [a.id]: a }), {}) : {}

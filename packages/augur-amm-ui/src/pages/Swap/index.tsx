@@ -1,5 +1,5 @@
 import { CurrencyAmount, JSBI, Token, TokenAmount } from '@uniswap/sdk'
-import React, { useCallback, useContext, useEffect, useMemo, useState } from 'react'
+import React, { useCallback, useContext, useEffect, useState } from 'react'
 import { ArrowDown } from 'react-feather'
 import ReactGA from 'react-ga'
 import { Text } from 'rebass'
@@ -102,7 +102,7 @@ function Swap({ marketId, amm }: RouteComponentProps<{ inputCurrencyId?: string;
     if (trade && trade.currencyIn) {
       estimate(augurClient, trade)
     }
-  }, [augurClient, chainId, trade, trade])
+  }, [augurClient, chainId, trade])
 
   useEffect(() => {
     if (outputAmount) {
@@ -204,7 +204,7 @@ function Swap({ marketId, amm }: RouteComponentProps<{ inputCurrencyId?: string;
           txHash: undefined
         })
       })
-  }, [tradeToConfirm, account, priceImpactWithoutFee, showConfirm, swapCallback, trade])
+  }, [tradeToConfirm, priceImpactWithoutFee, showConfirm, swapCallback, trade])
 
   // warnings on slippage
   const priceImpactSeverity = warningSeverity(priceImpactWithoutFee)

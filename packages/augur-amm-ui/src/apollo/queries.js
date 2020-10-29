@@ -798,20 +798,6 @@ export const TOKENS_DYNAMIC = block => {
   return gql(queryString)
 }
 
-export const DAILY_DERIVED_ETH = (tokenAddress) => {
-const query = `
-{
-  token(id: "${tokenAddress}"){
-    id
-   symbol
-   derivedETH
-  }
- }
-`
-}
-
-
-
 export const TOKEN_DATA = (tokenAddress, block) => {
   const queryString = `
     ${TokenFields}

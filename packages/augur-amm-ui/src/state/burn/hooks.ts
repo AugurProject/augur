@@ -1,11 +1,10 @@
 import { Percent, Token, TokenAmount } from '@uniswap/sdk'
-import { useCallback, useMemo } from 'react'
+import { useCallback } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 
 import { useActiveWeb3React } from '../../hooks'
 import { getRemoveLiquidity } from '../../utils'
 import { AppDispatch, AppState } from '../index'
-import { tryParseAmount } from '../swap/hooks'
 import { Field, typeInput } from './actions'
 
 export function useBurnState(): AppState['burn'] {
