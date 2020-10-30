@@ -26,6 +26,7 @@ import { AppStatus } from 'modules/app/store/app-status';
 import { Markets } from 'modules/markets/store/markets';
 import { updateAlert } from 'modules/alerts/actions/alerts';
 import { checkAccountApproval } from 'modules/auth/actions/approve-account';
+import { MarketData } from 'modules/types';
 
 export const placeMarketTrade = async ({
   marketId,
@@ -43,7 +44,7 @@ export const placeMarketTrade = async ({
     blockchain: { currentAugurTimestamp },
   } = AppStatus.get();
   const autoFailOrder = zeroXStatus === ZEROX_STATUSES.ERROR;
-  const market: MarketInfo = marketInfos[marketId];
+  const market: MarketData = marketInfos[marketId];
   if (!tradeInProgress || !market || outcomeId == null) {
     return console.error(
       `required parameters not found for market ${marketId} outcome ${outcomeId}`

@@ -259,6 +259,7 @@ export const SportsBet = ({ bet, market }) => {
             valueKey="toWin"
             modifyBet={modifyBet}
             noEdit
+            errorCheck={null}
             orderErrorMessage=""
           />
         </>
@@ -290,7 +291,7 @@ export const SportsMyBet = ({ bet }) => {
   let message = null;
   let messageAction = null;
   let wagerToShow = wager;
-  let classToApply = Styles.NEWFILL;
+  let classToApply = null;
   const { PARTIALLY_FILLED, FAILED, PENDING } = BET_STATUS;
   switch (status) {
     case PARTIALLY_FILLED:
@@ -342,18 +343,30 @@ export const SportsMyBet = ({ bet }) => {
     </div>
   );
 };
+
+interface BetslipInputProps {
+  label: string;
+  value: string;
+  valueKey: string;
+  modifyBet: Function;
+  orderErrorMessage?: string;
+  errorCheck?: Function;
+  disabled?: boolean;
+  noEdit?: boolean;
+  noForcedText?: boolean;
+}
 // this is actually a common component, doing this for ease
 export const BetslipInput = ({
   label,
   value,
   valueKey,
   modifyBet,
-  orderErrorMessage,
+  orderErrorMessage = '',
   disabled = false,
   noEdit = false,
-  errorCheck,
+  errorCheck = (newVal: string) => ({ checkError: false, errorMessage: '' }),
   noForcedText = false,
-}) => {
+}: BetslipInputProps) => {
   const betslipInput = useRef(null);
   const [curVal, setCurVal] = useState(
     value ? formatDai(value).formatted : null

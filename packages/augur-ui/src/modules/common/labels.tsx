@@ -145,6 +145,8 @@ export interface LinearPropertyLabelProps {
   regularCase?: boolean;
   positive?: boolean;
   showColor?: boolean;
+  secondary?: boolean;
+  recentlyUpdated?: boolean;
 }
 
 export interface LinearPropertyLabelTooltipProps {
