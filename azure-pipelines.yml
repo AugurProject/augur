@@ -482,6 +482,7 @@ jobs:
   - template: .azure-templates/amm-build-to-s3.yml
     parameters:
       name: deploy_amm_deploys_to_amm
+      environment: v2
       deployBucketName: amm.augur.sh
       cloudfrontDistributionId: E1833GTELJSE42
       triggerBranch: refs/heads/para_deploys
