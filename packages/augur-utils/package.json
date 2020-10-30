@@ -1,6 +1,6 @@
 {
   "name": "@augurproject/utils",
-  "version": "2.1.10",
+  "version": "2.1.12",
   "description": "Grab bag of formatting and ABI encoding/decoding functions",
   "author": "The Augur Developers <team@augur.net>",
   "license": "MIT",
