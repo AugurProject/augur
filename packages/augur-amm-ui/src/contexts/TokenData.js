@@ -247,7 +247,7 @@ const getCashTokenData = async (cashes = []) => {
       })
     )
   } catch (e) {
-    console.log(e)
+    console.error(e)
   }
   return (bulkResults || []).reduce((p, a) => ({...p, [a.id]: a}), {})
 }
@@ -532,7 +532,7 @@ export function useTokenDayPriceData() {
   useEffect(() => {
     async function getData() {
       if (cashes && cashes.length > 0) {
-        let cashTokens = await getCashTokenData(cashes)
+        let cashTokens = await getCashTokenData(cashes).catch(e => console.error(e))
         // TOOD: should get values using mainnet token addresses
         console.log('mainnet addresses should have data, cashTokens result', cashTokens)
         updateCashTokens(cashTokens)
