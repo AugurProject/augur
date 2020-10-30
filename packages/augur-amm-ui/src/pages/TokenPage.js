@@ -17,7 +17,7 @@ import { useMedia } from 'react-use'
 import { useEffect } from 'react'
 import { PageWrapper, ContentWrapper } from '../components'
 import FormattedName from '../components/FormattedName'
-import { useMarketNonExistingAmms, useMarketAmmExchanges, useMarketCashTokens } from '../contexts/Markets'
+import { useMarketNonExistingAmms, useMarketAmmExchanges, useMarketCashTokens, useMarketVolumeByCash } from '../contexts/Markets'
 import { ButtonOutlined } from '../components/ButtonStyled'
 import { BigNumber as BN } from 'bignumber.js'
 
@@ -58,8 +58,6 @@ function TokenPage({ marketId }) {
     name,
     symbol,
     priceUSD,
-    oneDayVolumeUSD,
-    oneDayVolumeUT,
     priceChangeUSD,
     oneDayTxns
   } = useTokenData(marketId)
@@ -68,6 +66,7 @@ function TokenPage({ marketId }) {
   const cashTokens = useMarketCashTokens()
   const cashData = useTokenDayPriceData()
   const allExchanges = useMarketAmmExchanges(marketId)
+  const volumes = useMarketVolumeByCash(marketId)
 
   useEffect(() => {
     document.querySelector('body').scrollTo(0, 0)
@@ -94,19 +93,12 @@ function TokenPage({ marketId }) {
   const price = priceUSD ? formattedNum(priceUSD, true) : ''
   const priceChange = priceChangeUSD ? formattedPercent(priceChangeUSD) : ''
 
-  // volume
-  const volume =
-    oneDayVolumeUSD || oneDayVolumeUSD === 0
-      ? formattedNum(oneDayVolumeUSD === 0 ? oneDayVolumeUT : oneDayVolumeUSD, true)
-      : oneDayVolumeUSD === 0
-      ? '$0'
-      : '-'
+  const [volume, setVolume] = useState('-')
 
-  // mark if using untracked volume
-  const [usingUtVolume, setUsingUtVolume] = useState(false)
   useEffect(() => {
-    setUsingUtVolume(oneDayVolumeUSD === 0 ? true : false)
-  }, [oneDayVolumeUSD])
+    const { totalDiff } = volumes;
+    setVolume(totalDiff)
+  }, [volumes])
 
 
   const below1080 = useMedia('(max-width: 1080px)')
@@ -200,7 +192,7 @@ function TokenPage({ marketId }) {
                 <Panel>
                   <AutoColumn gap="20px">
                     <RowBetween>
-                      <TYPE.main>Volume (24hrs) {usingUtVolume}</TYPE.main>
+                      <TYPE.main>Volume (24hrs)</TYPE.main>
                       <div />
                     </RowBetween>
                     <RowBetween align="flex-end">
