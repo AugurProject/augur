@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react'
+import React, { useMemo, useState } from 'react'
 import { TokenAmount } from '@uniswap/sdk'
 import { useContext } from 'react'
 import { Repeat } from 'react-feather'

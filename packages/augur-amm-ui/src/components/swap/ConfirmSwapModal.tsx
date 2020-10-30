@@ -1,5 +1,5 @@
-import { currencyEquals, TokenAmount, Trade } from '@uniswap/sdk'
-import React, { useCallback, useMemo } from 'react'
+import { TokenAmount } from '@uniswap/sdk'
+import React, { useCallback } from 'react'
 import { TradeInfo } from '../../hooks/Trades'
 import TransactionConfirmationModal, {
   ConfirmationModalContent,
@@ -8,24 +8,9 @@ import TransactionConfirmationModal, {
 import SwapModalFooter from './SwapModalFooter'
 import SwapModalHeader from './SwapModalHeader'
 
-/**
- * Returns true if the trade requires a confirmation of details before we can submit it
- * @param tradeA trade A
- * @param tradeB trade B
- */
-function tradeMeaningfullyDiffers(tradeA: TradeInfo, tradeB: TradeInfo): boolean {
-  return (
-    tradeA.tradeType !== tradeB.tradeType ||
-    !currencyEquals(tradeA.inputAmount.currency, tradeB.inputAmount.currency) ||
-    !tradeA.inputAmount.equalTo(tradeB.inputAmount) ||
-    !currencyEquals(tradeA.outputAmount.currency, tradeB.outputAmount.currency) ||
-    !tradeA.outputAmount.equalTo(tradeB.outputAmount)
-  )
-}
 
 export default function ConfirmSwapModal({
   trade,
-  originalTrade,
   onAcceptChanges,
   allowedSlippage,
   onConfirm,
@@ -65,7 +50,7 @@ export default function ConfirmSwapModal({
         outputAmount={outputAmount}
       />
     ) : null
-  }, [allowedSlippage, onAcceptChanges, recipient, showAcceptChanges, trade])
+  }, [allowedSlippage, onAcceptChanges, recipient, showAcceptChanges, trade, outputAmount])
 
   const modalBottom = useCallback(() => {
     return trade ? (
@@ -74,12 +59,11 @@ export default function ConfirmSwapModal({
         trade={trade}
         disabledConfirm={showAcceptChanges}
         swapErrorMessage={swapErrorMessage}
-        allowedSlippage={allowedSlippage}
         minAmount={minAmount}
         outputAmount={outputAmount}
       />
     ) : null
-  }, [allowedSlippage, onConfirm, showAcceptChanges, swapErrorMessage, trade, outputAmount])
+  }, [onConfirm, showAcceptChanges, swapErrorMessage, trade, outputAmount, minAmount])
 
   // text to show while loading
   const pendingText = `Swapping ${trade?.inputAmount?.toSignificant(6)} ${

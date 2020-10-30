@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from 'react'
+import React, { useState, useEffect } from 'react'
 import styled from 'styled-components'
 import dayjs from 'dayjs'
 import utc from 'dayjs/plugin/utc'
@@ -13,8 +13,6 @@ import Link from '../Link'
 import { Divider, EmptyCard } from '..'
 import DropdownSelect from '../DropdownSelect'
 import { TYPE } from '../../Theme'
-import { useMarketCashTokens } from '../../contexts/Markets'
-import { useTokenDayPriceData } from '../../contexts/TokenData'
 import { BigNumber as BN } from 'bignumber.js'
 
 dayjs.extend(utc)

@@ -211,7 +211,7 @@ export function useMultipleContractMultipleData(
               : undefined
           })).flat()
         : [],
-    [addresses, callInputs, fragment]
+    [addresses, callInputs, fragment, contractInterface]
   )
 
   const results = useCallsData(calls, options)

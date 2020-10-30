@@ -1,4 +1,4 @@
-import { BIPS_BASE, BIPS_CONSTANT as BIPS_CONSTANT, BLOCKED_PRICE_IMPACT_NON_EXPERT } from '../constants'
+import { BIPS_BASE, BIPS_CONSTANT, BLOCKED_PRICE_IMPACT_NON_EXPERT } from '../constants'
 import { CurrencyAmount, JSBI, Percent, TokenAmount } from '@uniswap/sdk'
 import { ALLOWED_PRICE_IMPACT_HIGH, ALLOWED_PRICE_IMPACT_LOW, ALLOWED_PRICE_IMPACT_MEDIUM } from '../constants'
 import { Field } from '../state/swap/actions'
