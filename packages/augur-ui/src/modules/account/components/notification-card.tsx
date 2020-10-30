@@ -11,16 +11,17 @@ export interface NotificationProps {
   isImportant: boolean;
   redIcon?: boolean;
   isNew: boolean;
+  isRead: boolean;
   title: string;
   noCounter: boolean;
   hideCheckbox?: boolean;
   children: React.StatelessComponent | Array<React.StatelessComponent>;
 }
 
-export const NotificationCard = ({ isNew, isImportant, redIcon, title, children, noCounter, hideCheckbox }: NotificationProps) => (
+export const NotificationCard = ({ isNew, isRead, isImportant, redIcon, title, children, noCounter, hideCheckbox }: NotificationProps) => (
   <div
     className={classNames(Styles.NotificationCard, {
-      [Styles.NewNotificationCard]: isNew,
+      [Styles.UnreadNotificationCard]: !isRead,
       [Styles.noCounter]: noCounter,
       [Styles.HasCheckbox]: hideCheckbox
     })}
