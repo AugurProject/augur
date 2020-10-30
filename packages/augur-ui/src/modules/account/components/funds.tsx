@@ -31,9 +31,9 @@ const Funds = () => {
       />
       <LinearPropertyLabel
         value={formatDai(totalFrozenFunds, { removeComma: true }).full}
-        underline={theme === THEMES.TRADING}
+        underline
         label={theme === THEMES.TRADING ? TOTAL_FROZEN_FUNDS : TOTAL_EXPOSURE}
-        onValueClick={theme === THEMES.TRADING ? () => setModal({ type: MODAL_FROZEN_FUNDS }) : null}
+        onValueClick={() => setModal({ type: MODAL_FROZEN_FUNDS })}
       />
     </section>
   );
