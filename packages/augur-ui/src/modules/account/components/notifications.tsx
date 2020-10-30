@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useHistory } from 'react-router';
 import { orderBy } from 'lodash';
 import EmptyDisplay from 'modules/portfolio/components/common/empty-display';
@@ -56,7 +56,7 @@ function getRows(
   disputingWindowEndTime,
   disabledNotifications
 ) {
-  return orderBy(notifications, 'isNew', ['desc'])
+  return orderBy(notifications, ['isNew', 'isRead'], ['desc', 'asc'])
     .filter(notification => !notification.hideNotification)
     .map(({
       buttonAction,
@@ -66,6 +66,7 @@ function getRows(
       id,
       isImportant,
       isNew,
+      isRead,
       market,
       markets,
       queueId,
@@ -95,6 +96,7 @@ function getRows(
         isImportant,
         redIcon,
         isNew,
+        isRead,
         title,
         buttonLabel,
         buttonAction,
@@ -176,6 +178,19 @@ function getRows(
     });
 }
 
+function markAsNotNew({ id }: Notification, stateNotifications, updateNotifications) {
+  const newState = stateNotifications.map(
+    (notification: Notification | null) => {
+      if (notification?.id === id) {
+        notification.isNew = false;
+      }
+
+      return notification;
+    }
+  );
+  updateNotifications(newState);
+}
+
 function getButtonAction(
   notification: Notification,
   history,
@@ -192,8 +207,9 @@ function getButtonAction(
   function markAsRead({ id }: Notification) {
     const newState = stateNotifications.map(
       (notification: Notification | null) => {
-        if (notification && notification.id === id) {
+        if (notification?.id === id) {
           notification.isNew = false;
+          notification.isRead = true;
         }
 
         return notification;
@@ -360,6 +376,13 @@ const Notifications = ({ toggle }: NotificationsProps) => {
   );
   const rows = getRows(notifications, currentTime, (disputeWindow?.endTime ||
   0), disabledNotifications);
+
+  useEffect(() => {
+    return () => {
+      const notifications = getNotifications();
+      notifications.map(notification => markAsNotNew(notification, notifications, updateNotifications));
+    };
+  }, []);
 
   return (
     <QuadBox
