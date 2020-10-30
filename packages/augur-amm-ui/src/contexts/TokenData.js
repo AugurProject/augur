@@ -127,7 +127,9 @@ function reducer(state, { type, payload }) {
 }
 
 export default function Provider({ children }) {
-  const [state, dispatch] = useReducer(reducer, {})
+  const [state, dispatch] = useReducer(reducer, {
+    [CASH_DATA]: {}
+  })
   const update = useCallback((tokenAddress, data) => {
     dispatch({
       type: UPDATE,
@@ -527,10 +529,14 @@ export function useTokenDayPriceData() {
   useEffect(() => {
     async function getData() {
       if (cashes && cashes.length > 0) {
-        let cashTokens = await getCashTokenData(cashes).catch(e => console.error(e))
-        // TOOD: should get values using mainnet token addresses
-        console.log('mainnet addresses should have data, cashTokens result', cashTokens)
-        updateCashTokens(cashTokens)
+        try {
+          let cashTokens = await getCashTokenData(cashes).catch(e => console.error(e))
+          // TOOD: should get values using mainnet token addresses
+          console.log('mainnet addresses should have data, cashTokens result', cashTokens)
+          updateCashTokens(cashTokens)
+        } catch(e) {
+          console.error(e)
+        }
       }
     }
     if (!cashTokens || Object.keys(cashTokens) === 0) getData()
