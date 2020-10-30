@@ -93,16 +93,16 @@ def test_amm_subsequent_liquidity(contractsFixture, market, cash, shareToken, fa
     if not contractsFixture.paraAugur:
         return skip("Test is only for para augur")
 
+    cash.approve(factory.address, 10 ** 48)
+
     initialSets = 100 * ATTO
     initialCost = initialSets * 1000
     cash.faucet(initialCost)
-    cash.approve(factory.address, 10 ** 48)
     amm.addInitialLiquidity(initialCost, 10**18, True, account0)
 
     subsequentSets = 100 * ATTO
     subsequentCost = subsequentSets * 1000
     cash.faucet(subsequentCost)
-    cash.approve(factory.address, 10 ** 48)
     amm.addLiquidity(subsequentCost, account0)
 
     totalSets = initialSets + subsequentSets
@@ -118,6 +118,20 @@ def test_amm_subsequent_liquidity(contractsFixture, market, cash, shareToken, fa
     assert shareToken.balanceOfMarketOutcome(market.address, INVALID, amm.address) == totalSets
     assert shareToken.balanceOfMarketOutcome(market.address, NO, amm.address) == totalSets
     assert shareToken.balanceOfMarketOutcome(market.address, YES, amm.address) == totalSets
+
+    # Now test adding liquidity after entering position
+
+    cost = 1000 * 10 * ATTO
+    sharesReceived = amm.rateEnterPosition(cost, True)
+    cash.faucet(cost)
+    amm.enterPosition(cost, True, sharesReceived)
+
+    finalSets = 100 * ATTO
+    finalCost = finalSets * 1000
+    cash.faucet(finalCost)
+    lpTokens = amm.addLiquidity(finalCost, account0)
+    assert lpTokens > 0
+
 
 def test_amm_60_40_liquidity(contractsFixture, market, cash, shareToken, factory, amm, account0, kitchenSinkSnapshot):
     if not contractsFixture.paraAugur:
@@ -173,6 +187,12 @@ def test_amm_60_40_liquidity(contractsFixture, market, cash, shareToken, factory
     assert shareToken.balanceOfMarketOutcome(market.address, INVALID, amm.address) == remainingInvalidShares
     assert shareToken.balanceOfMarketOutcome(market.address, NO, amm.address) == remainingNoShares
     assert shareToken.balanceOfMarketOutcome(market.address, YES, amm.address) == remainingYesShares
+
+    finalSets = 100 * ATTO
+    finalCost = finalSets * 1000
+    cash.faucet(finalCost)
+    lpTokens = amm.addLiquidity(finalCost, account0)
+    assert lpTokens > 0
 
 def test_amm_yes_position(contractsFixture, market, shareToken, cash, factory, amm, account0):
     if not contractsFixture.paraAugur:
