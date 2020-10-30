@@ -15,6 +15,7 @@ import { useBetslipStore } from 'modules/trading/store/betslip';
 
 import Styles from 'modules/trading/betslip.styles.less';
 import { PrimaryButton } from 'modules/common/buttons';
+import { betslipItemsType, BetslipMarketItemType } from 'modules/trading/store/betslip-hooks';
 
 export const Betslip = () => {
   const {
@@ -24,7 +25,7 @@ export const Betslip = () => {
     actions: { setBetslipMinimized },
   } = useAppStatusStore();
   const {
-    selected: { header, subHeader },
+    selected: { header },
     betslip: { count: betslipCount, items: betslipItems },
     matched: { items: matchedItems },
     actions: { toggleSubHeader },
@@ -60,13 +61,13 @@ export const Betslip = () => {
     }
   }, [theme]);
 
-  const isSportsBook = theme === THEMES.SPORTS;
   const isMyBets = header === BETSLIP_SELECTED.MY_BETS;
   const myBetsCount = matchedCount;
   const isSelectedEmpty = isMyBets ? myBetsCount === 0 : betslipCount === 0;
   let marketItems = isMyBets
     ? Object.entries(filteredMatchedItems)
     : Object.entries(betslipItems);
+
   if (isMyBets) {
     marketItems.map(
       item =>
@@ -79,7 +80,7 @@ export const Betslip = () => {
     );
   }
   let oddsChanged = false;
-  Object.values(betslipItems).map(market => {
+  Object.values(betslipItems).map((market: BetslipMarketItemType) => {
     const recentlyUpdated = market?.orders.filter(item => item.recentlyUpdated);
     if (recentlyUpdated.length > 0) {
       oddsChanged = true;

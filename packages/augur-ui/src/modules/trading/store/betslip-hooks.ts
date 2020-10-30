@@ -40,20 +40,22 @@ const {
 const { BETSLIP, MY_BETS, MATCHED, UNMATCHED } = BETSLIP_SELECTED;
 const { UNSENT, PENDING, CLOSED } = BET_STATUS;
 
-export interface betslipItemsType {
-  marketId?: {
-    description: string;
-    orders: {
-      orderId: string;
-      errorMessage?: string;
-      wager?: string;
-      shares?: string;
-      toWin?: string;
-      normalizedPrice?: string;
-      recentlyUpdated?: boolean;
-      outcome?: string;
-    }[];
+export interface BetslipMarketItemType {
+  description: string;
+  orders: {
+    orderId: string;
+    errorMessage?: string;
+    wager?: string;
+    shares?: string;
+    toWin?: string;
+    normalizedPrice?: string;
+    recentlyUpdated?: boolean;
+    outcome?: string;
   }[];
+}
+
+export interface betslipItemsType {
+  marketId?: BetslipMarketItemType[];
 }
 
 export const calculateBetslipTotals = (betslip: {
