@@ -178,19 +178,6 @@ function getRows(
     });
 }
 
-function markAsNotNew({ id }: Notification, stateNotifications, updateNotifications) {
-  const newState = stateNotifications.map(
-    (notification: Notification | null) => {
-      if (notification?.id === id) {
-        notification.isNew = false;
-      }
-
-      return notification;
-    }
-  );
-  updateNotifications(newState);
-}
-
 function getButtonAction(
   notification: Notification,
   history,
@@ -376,6 +363,19 @@ const Notifications = ({ toggle }: NotificationsProps) => {
   );
   const rows = getRows(notifications, currentTime, (disputeWindow?.endTime ||
   0), disabledNotifications);
+
+  const markAsNotNew =({ id }: Notification, stateNotifications, updateNotifications) => {
+    const newState = stateNotifications.map(
+      (notification: Notification | null) => {
+        if (notification?.id === id) {
+          notification.isNew = false;
+        }
+
+        return notification;
+      }
+    );
+    updateNotifications(newState);
+  };
 
   useEffect(() => {
     return () => {
