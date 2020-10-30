@@ -18,6 +18,7 @@ import {
   TABLET_MAX,
   ZERO,
   MODAL_CLAIM_MARKETS_PROCEEDS,
+  SPORTS_GROUP_MARKET_TYPES,
 } from 'modules/common/constants';
 import Media from 'react-media';
 import { CashoutButton, PrimaryButton } from 'modules/common/buttons';
@@ -116,7 +117,12 @@ export const Game = ({ row, type }: GameProps) => {
   const {
     marketInfos
   } = useMarketsStore();
+  const {
+    isMobile,
+  } = useAppStatusStore();
   const marketInfo = marketInfos[row.marketId];
+  const formattedStart = convertUnixToFormattedDate(row.startTime);
+  const formattedEnd = convertUnixToFormattedDate(row.endTime);
   return (
     <div className={Styles.Game}>
       <div>
@@ -135,13 +141,13 @@ export const Game = ({ row, type }: GameProps) => {
           <CountdownProgress
             alignRight
             label="Estimated Event Start Time"
-            value={convertUnixToFormattedDate(row.startTime).formattedUtc}
+            value={isMobile ? formattedStart.formattedUtcShortDate : formattedStart.formattedUtc}
           />
         ) : (
           <CountdownProgress
             alignRight
             label="Event Expiration Time"
-            value={convertUnixToFormattedDate(row.endTime).formattedUtc}
+            value={isMobile ? formattedEnd.formattedUtcShortDate : formattedEnd.formattedUtc}
           />
         )}
         <MarketLink id={row.id}>
@@ -185,7 +191,12 @@ export interface BetRowProps {
   isEvent?: Boolean;
 }
 
-export const BetRow = ({ outcome, showExtraRow, isEvent }: BetRowProps) => (
+export const BetRow = ({ outcome, showExtraRow, isEvent }: BetRowProps) => {
+  let value = isEvent ? outcome.sportsBook?.title : outcome.description;
+  if (isEvent && outcome.sportsBook?.groupType === SPORTS_GROUP_MARKET_TYPES.COMBO_MONEY_LINE) {
+    value = 'Money line';
+  }
+  return (
   <Media query={TABLET_MAX}>
     {matches =>
       matches ? (
@@ -196,11 +207,11 @@ export const BetRow = ({ outcome, showExtraRow, isEvent }: BetRowProps) => (
             {showExtraRow && (
               <span>
                 {isEvent && <TemplateShield market={outcome} />}
-                {outcome.highRisk && (
+                {outcome.highRisk ? (
                   <RedFlag market={{ mostLikelyInvalid: true, id: 0 }} />
-                )}
+                ) : null}
                 <span>
-                  {isEvent ? outcome.description : outcome.sportsBook?.title}
+                  {value}
                 </span>
               </span>
             )}
@@ -237,4 +248,4 @@ export const BetRow = ({ outcome, showExtraRow, isEvent }: BetRowProps) => (
       )
     }
   </Media>
-);
+);}
