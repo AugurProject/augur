@@ -45,6 +45,7 @@ jobs:
           aws cloudfront create-invalidation --distribution-id ${DISTRIBUTION_ID} --paths "/index.html"
         displayName: 'push build to S3'
         env:
+          AUGUR_ENV: ${{ parameters.environment }}
           AWS_ACCESS_KEY_ID: $(AWS_KEY_ID)
           AWS_SECRET_ACCESS_KEY: $(AWS_SECRET_KEY)
           BUCKET_NAME: ${{ parameters.deployBucketName }}
