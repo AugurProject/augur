@@ -28,6 +28,7 @@ export default function Web3ReactManager({ children }: { children: JSX.Element }
   useEffect(() => {
     if (triedEager && !networkActive && !networkError && !active) {
       activateNetwork(network)
+      console.log('network', JSON.stringify(network, null, 1))
     }
   }, [triedEager, networkActive, networkError, activateNetwork, active])
 
