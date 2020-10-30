@@ -44,7 +44,6 @@ function GlobalPage() {
   // get data for lists and totals
   const markets = useMarketsByAMM()
   const cashes = useMarketCashAddresses()
-  // const { totalLiquidityUSD, oneDayVolumeUSD, volumeChangeUSD, liquidityChangeUSD } = useGlobalData()
 
   // breakpoints
   const below800 = useMedia('(max-width: 800px)')
