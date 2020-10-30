@@ -1165,13 +1165,19 @@ export const InputFactory = ({
     return null;
   }
 };
+interface SimpleTimeSelectorProps {
+  currentTime: number;
+  onChange: Function;
+  openTop?: boolean;
+  isAfter?: boolean;
+};
 
 export const SimpleTimeSelector = ({
   currentTime,
   onChange,
   openTop,
   isAfter,
-}: EstimatedStartSelectorProps) => {
+}:SimpleTimeSelectorProps) => {
   const [endTime, setEndTime] = useState(null);
   const [hour, setHour] = useState(null);
   const [minute, setMinute] = useState(null);

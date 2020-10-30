@@ -80,6 +80,10 @@ export interface DefaultButtonProps {
   customConfirmedButtonText?: string;
   className?: string;
   phantom?: boolean;
+  lightBorder?: boolean;
+  tiny?: boolean;
+  processing?: boolean;
+  dark?: boolean;
 }
 
 export interface SortButtonProps {

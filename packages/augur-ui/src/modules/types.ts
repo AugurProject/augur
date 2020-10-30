@@ -162,6 +162,7 @@ export interface MarketData extends MarketInfo {
   author: string;
   isForking?: boolean;
   orderBook?: { [outcome: number]: LiquidityOrder[] };
+  setEndTime?: string;
 }
 
 export interface ForkingInfo {
@@ -819,6 +820,9 @@ export interface Trade {
   orderShareProfit: FormattedNumber;
   orderShareTradingFee: FormattedNumber;
   numFills: number;
+  selfTrade: boolean;
+  loopLimit: number;
+  gasLimit?: BigNumber;
 }
 
 export interface PriceTimeSeriesData {

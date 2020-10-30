@@ -31,7 +31,7 @@ interface TestResults {
   errorCount: number;
 }
 
-interface IndividualOutcomeOrderbook {
+export interface IndividualOutcomeOrderbook {
   asks?: Order[];
   bids?: Order[];
 }

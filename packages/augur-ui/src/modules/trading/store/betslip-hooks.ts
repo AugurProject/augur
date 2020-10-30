@@ -41,7 +41,7 @@ const { BETSLIP, MY_BETS, MATCHED, UNMATCHED } = BETSLIP_SELECTED;
 const { UNSENT, PENDING, CLOSED } = BET_STATUS;
 
 export interface betslipItemsType {
-  marketId: {
+  marketId?: {
     description: string;
     orders: {
       orderId: string;
@@ -57,8 +57,8 @@ export interface betslipItemsType {
 }
 
 export const calculateBetslipTotals = (betslip: {
-  count: number;
-  items: betslipItemsType;
+  count?: number;
+  items?: betslipItemsType;
 }) => {
   let totalWager = ZERO;
   let potential = ZERO;

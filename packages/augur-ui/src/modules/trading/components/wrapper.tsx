@@ -12,7 +12,6 @@ import {
   DISCLAIMER_SEEN,
   MODAL_LOGIN,
   MODAL_ADD_FUNDS,
-  MODAL_INITIALIZE_ACCOUNT,
   MODAL_DISCLAIMER,
   TRADING_TUTORIAL,
 } from 'modules/common/constants';
@@ -47,8 +46,11 @@ import { canPostOrder } from 'modules/trades/actions/can-post-order';
 import { getIsTutorial, getIsPreview } from 'modules/market/store/market-utils';
 import { useTradingStore } from 'modules/trading/store/trading';
 import {
+  IndividualOutcomeOrderbook,
   orderValidation,
 } from 'modules/trading/helpers/form-helpers';
+import { IndividualOutcomeOrderBook, MarketData, OutcomeFormatted } from 'modules/types';
+
 const getMarketPath = (id, theme) => ({
   pathname: makePath(MARKET),
   search: makeQuery({
@@ -56,6 +58,11 @@ const getMarketPath = (id, theme) => ({
     [THEME_NAME]: theme,
   }),
 });
+
+interface defaultTradeProps {
+  market: MarketData;
+  selectedOutcome: OutcomeFormatted;
+}
 
 const getDefaultTrade = ({
   market: {
@@ -65,10 +72,9 @@ const getDefaultTrade = ({
     maxPrice,
     minPrice,
     cumulativeScale,
-    makerFee,
   },
   selectedOutcome,
-}) => {
+}: defaultTradeProps) => {
   if (!marketType || (!selectedOutcome && !isFinite(selectedOutcome.id)))
     return null;
   return generateTrade(
@@ -79,7 +85,6 @@ const getDefaultTrade = ({
       maxPrice,
       minPrice,
       cumulativeScale,
-      makerFee,
     },
     {}
   );
@@ -138,6 +143,14 @@ const OrderTicketHeader = ({ market, updateTradeTotalCost }) => {
   );
 };
 
+interface WrapperProps {
+  selectedOutcome: OutcomeFormatted;
+  market: MarketData;
+  updateSelectedOutcome: Function;
+  updateLiquidity?: Function;
+  tutorialNext?: Function;
+  orderBook: IndividualOutcomeOrderbook;
+}
 const Wrapper = ({
   market,
   selectedOutcome,
@@ -145,7 +158,7 @@ const Wrapper = ({
   updateLiquidity,
   tutorialNext,
   orderBook,
-}) => {
+}: WrapperProps) => {
   const {
     newMarket,
     accountPositions,
@@ -168,7 +181,7 @@ const Wrapper = ({
   const isPreview = getIsPreview(location);
   const initialLiquidity = isPreview && !isTutorial;
   const [trade, setTrade] = useState(
-    getDefaultTrade({ market, selectedOutcome })
+    getDefaultTrade({ market: market, selectedOutcome })
   );
   const [isSimulatingTrade, setIsSimulatingTrade] = useState(false);
   const marketId = market.id;
@@ -212,10 +225,10 @@ const Wrapper = ({
   }
 
   function clearOrderConfirmation() {
-    setTrade(getDefaultTrade({ market, selectedOutcome }));
+    setTrade(getDefaultTrade({ market: market, selectedOutcome }));
   }
 
-  function handlePlaceMarketTrade(market, selectedOutcome) {
+  function handlePlaceMarketTrade(market: MarketData, selectedOutcome: OutcomeFormatted) {
     orderSubmitted(orderProperties.selectedNav, market.id);
     let tradeInProgress = trade;
     if (orderProperties.expirationDate) {
@@ -475,10 +488,6 @@ const Wrapper = ({
     return actionButton;
   }
 
-  const insufficientFunds =
-    trade &&
-    (trade.costInDai && createBigNumber(trade.costInDai.value).gte(createBigNumber(availableDai)) ||
-    (trade.totalCost && initialLiquidity && createBigNumber(trade.totalCost.value).gte(createBigNumber(availableDai))));
   const orderEmpty =
     orderProperties.orderPrice === '' &&
     orderProperties.orderQuantity === '' &&

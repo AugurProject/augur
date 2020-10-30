@@ -451,7 +451,7 @@ const Form = ({
       time: fastForwardTime,
       unit: expirationDateOption,
     } = calcOrderExpirationTimeRemaining(
-      endTime,
+      Number(endTime),
       currentTimestamp
     );
     setState({
@@ -744,12 +744,12 @@ const Form = ({
                 time: fastForwardTime,
                 unit: expirationDateOption,
               } = calcOrderExpirationTimeRemaining(
-                endTime,
+                Number(endTime),
                 currentTimestamp
               );
               const timestamp =
                 advancedOption === EXPIRATION
-                  ? calcOrderExpirationTime(endTime, currentTimestamp)
+                  ? calcOrderExpirationTime(Number(endTime), currentTimestamp)
                   : null;
               updateAndValidate(EXPIRATION_DATE, timestamp);
               updateOrderProperties({
@@ -776,6 +776,7 @@ const Form = ({
                         value === '' || isNaN(value) ? 0 : parseInt(value);
                       updateAndValidate(
                         EXPIRATION_DATE,
+                        // @ts-ignore
                         moment
                           .unix(currentTimestamp)
                           .add(addedValue, expirationDateOption)

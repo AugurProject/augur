@@ -30,9 +30,9 @@ import {
   QuestionIcon,
 } from 'modules/common/icons';
 import {
+  formatDai,
   formatGasCostToEther,
   formatShares,
-  formatNumber,
 } from 'utils/format-number';
 import { createBigNumber } from 'utils/create-big-number';
 import { Trade, MarketData, OutcomeFormatted } from 'modules/types';
@@ -121,7 +121,6 @@ export const Confirm = ({
       ui: { reportingOnly: disableTrading },
     },
     newMarket,
-    pendingQueue,
     loginAccount: {
       balances: { eth },
       tradingApproved,
@@ -140,7 +139,6 @@ export const Confirm = ({
     availableDai = availableDai.minus(newMarket.initialLiquidityDai);
   }
 
-  const sweepStatus = pendingQueue[TRANSACTIONS]?.[CREATEAUGURWALLET]?.status;
   const gasPrice = gasPriceInfo.userDefinedGasPrice || gasPriceInfo.average;
   const availableEth = createBigNumber(eth);
   const { id: selectedOutcomeId, description: outcomeName } = selectedOutcome;
@@ -180,7 +178,7 @@ export const Confirm = ({
       )
     : ZERO;
 
-  const gasCostDai = getGasCost(gasLimit, gasPrice, ethToDaiRate);
+  const gasCostDai = getGasCost(gasLimit.toNumber(), createBigNumber(gasPrice), ethToDaiRate);
   const displayfee = `$${gasCostDai.formattedValue}`;
 
   const messages = (() => {
@@ -324,12 +322,12 @@ export const Confirm = ({
             value={orderShareTradingFee}
             showDenomination={true}
           />
-          {gasCostDai.roundedValue.gt(0) > 0 && hasFills && (
+          {createBigNumber(gasCostDai.roundedValue).gt(0) && hasFills && (
             <TransactionFeeLabelToolTip
               isError={createBigNumber(gasCostDai.value).gt(
                 createBigNumber(orderShareProfit.value)
               )}
-              gasCostDai={displayfee}
+              gasCostDai={formatDai(displayfee)}
             />
           )}
           <LinearPropertyLabel
@@ -391,12 +389,12 @@ export const Confirm = ({
             value={potentialDaiLoss}
             showDenomination
           />
-          {gasCostDai.roundedValue.gt(0) > 0 && hasFills && (
+          {createBigNumber(gasCostDai.roundedValue).gt(0) && hasFills && (
             <TransactionFeeLabelToolTip
               isError={createBigNumber(gasCostDai.value).gt(
                 createBigNumber(potentialDaiProfit.value)
               )}
-              gasCostDai={postOnlyOrder ? `0.00` : gasCostDai}
+              gasCostDai={postOnlyOrder ? formatDai(0) : gasCostDai}
             />
           )}
           {!tradingApproved &&
