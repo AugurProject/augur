@@ -23,9 +23,9 @@ import {
   THEMES,
 } from 'modules/common/constants';
 import { selectMarket } from 'modules/markets/selectors/market';
+import { selectMarkets } from 'modules/markets/selectors/markets-all';
 import userOpenOrders from 'modules/orders/selectors/user-open-orders';
 import {
-  Notification,
   MarketClaimablePositions,
   MarketReportClaimableContracts,
   Notification,
