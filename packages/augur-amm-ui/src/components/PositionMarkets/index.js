@@ -226,7 +226,7 @@ function PositionMarketList({ positions, loading, itemMax = 20 }) {
               setSortDirection(sortedColumn !== SORT_FIELD.STATUS ? true : !sortDirection)
             }}
           >
-            No Shares
+            "No" Shares
           </Text>
         </Flex>
         <Flex alignItems="center">
@@ -237,7 +237,7 @@ function PositionMarketList({ positions, loading, itemMax = 20 }) {
               setSortDirection(sortedColumn !== SORT_FIELD.STATUS ? true : !sortDirection)
             }}
           >
-            Yes Shares
+            "Yes" Shares
           </Text>
         </Flex>
         {!below800 && (
