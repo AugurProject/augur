@@ -1,5 +1,7 @@
 #!/usr/bin/env python
 
+from math import ceil
+
 from eth_tester.exceptions import TransactionFailed
 from pytest import raises, fixture, mark, skip
 
@@ -45,8 +47,7 @@ def test_amm_add_with_liquidity2(contractsFixture, market, cash, shareToken, fac
 
     ammAddress = factory.addAMMWithLiquidity(market.address, shareToken.address, cost, ratioFactor, keepYes)
 
-
-def test_amm_liquidity(contractsFixture, market, cash, shareToken, factory, amm, account0, kitchenSinkSnapshot):
+def test_amm_initial_liquidity(contractsFixture, market, cash, shareToken, factory, amm, account0, kitchenSinkSnapshot):
     if not contractsFixture.paraAugur:
         return skip("Test is only for para augur")
 
@@ -87,6 +88,91 @@ def test_amm_liquidity(contractsFixture, market, cash, shareToken, factory, amm,
     assert shareToken.balanceOfMarketOutcome(market.address, INVALID, amm.address) == remainingSets
     assert shareToken.balanceOfMarketOutcome(market.address, NO, amm.address) == remainingSets
     assert shareToken.balanceOfMarketOutcome(market.address, YES, amm.address) == remainingSets
+
+def test_amm_subsequent_liquidity(contractsFixture, market, cash, shareToken, factory, amm, account0, kitchenSinkSnapshot):
+    if not contractsFixture.paraAugur:
+        return skip("Test is only for para augur")
+
+    initialSets = 100 * ATTO
+    initialCost = initialSets * 1000
+    cash.faucet(initialCost)
+    cash.approve(factory.address, 10 ** 48)
+    amm.addInitialLiquidity(initialCost, 10**18, True, account0)
+
+    subsequentSets = 100 * ATTO
+    subsequentCost = subsequentSets * 1000
+    cash.faucet(subsequentCost)
+    cash.approve(factory.address, 10 ** 48)
+    amm.addLiquidity(subsequentCost, account0)
+
+    totalSets = initialSets + subsequentSets
+
+    assert cash.balanceOf(account0) == 0  # user did not receive cash, just shares
+    assert cash.balanceOf(amm.address) == 0  # shares are just passed along to user; no cash suddenly appears
+
+    # user receives no shares
+    assert shareToken.balanceOfMarketOutcome(market.address, INVALID, account0) == 0
+    assert shareToken.balanceOfMarketOutcome(market.address, NO, account0) == 0
+    assert shareToken.balanceOfMarketOutcome(market.address, YES, account0) == 0
+    # AMM has initial and subsequent liquidity shares
+    assert shareToken.balanceOfMarketOutcome(market.address, INVALID, amm.address) == totalSets
+    assert shareToken.balanceOfMarketOutcome(market.address, NO, amm.address) == totalSets
+    assert shareToken.balanceOfMarketOutcome(market.address, YES, amm.address) == totalSets
+
+def test_amm_60_40_liquidity(contractsFixture, market, cash, shareToken, factory, amm, account0, kitchenSinkSnapshot):
+    if not contractsFixture.paraAugur:
+        return skip("Test is only for para augur")
+
+    sets = 100 * ATTO
+    cost = sets * 1000
+
+    cash.faucet(cost)
+    cash.approve(factory.address, 10 ** 48)
+
+    yesPercent = 0.4
+    noPercent = 1 - yesPercent
+    ratio = 10**18 * yesPercent / noPercent
+    yesShares = 66666666666666675200 # approximately 2/3 aka 60%
+    keptYesShares = sets - yesShares
+
+    lpTokens = amm.addInitialLiquidity(cost, ratio, True, account0)
+
+    assert lpTokens == 81649658092772608498 # skewed ratio means fewer shares which means fewer LP tokens
+
+    # all cash was used to buy complete sets
+    assert cash.balanceOf(account0) == 0
+    assert cash.balanceOf(amm.address) == 0
+    # user did not get any shares themselves: they go to the AMM
+    assert shareToken.balanceOfMarketOutcome(market.address, INVALID, account0) == 0
+    assert shareToken.balanceOfMarketOutcome(market.address, YES, account0) == keptYesShares
+    assert shareToken.balanceOfMarketOutcome(market.address, NO, account0) == 0
+    # AMM has 60 Yes shares and 40 No shares
+    assert shareToken.balanceOfMarketOutcome(market.address, INVALID, amm.address) == sets
+    assert shareToken.balanceOfMarketOutcome(market.address, YES, amm.address) == yesShares
+    assert shareToken.balanceOfMarketOutcome(market.address, NO, amm.address) == sets
+
+    assert amm.balanceOf(account0) > 0
+
+    removedLPTokens = 8164965809277260850 # remove 1/10th of liquidity (rounded up)
+    recoveredInvalidShares = sets // 10
+    recoveredNoShares = sets // 10
+    recoveredYesShares = yesShares // 10
+    remainingInvalidShares = sets - recoveredInvalidShares
+    remainingNoShares = sets - recoveredNoShares
+    remainingYesShares = yesShares - recoveredYesShares
+    amm.removeLiquidity(removedLPTokens, 0)
+
+    assert cash.balanceOf(account0) == 0  # user did not receive cash, just shares
+    assert cash.balanceOf(amm.address) == 0  # shares are just passed along to user; no cash suddenly appears
+
+    # user receives 10 of each share
+    assert shareToken.balanceOfMarketOutcome(market.address, INVALID, account0) == recoveredInvalidShares
+    assert shareToken.balanceOfMarketOutcome(market.address, NO, account0) == recoveredNoShares
+    assert shareToken.balanceOfMarketOutcome(market.address, YES, account0) == recoveredYesShares + keptYesShares
+    # AMM still has 90 of each share
+    assert shareToken.balanceOfMarketOutcome(market.address, INVALID, amm.address) == remainingInvalidShares
+    assert shareToken.balanceOfMarketOutcome(market.address, NO, amm.address) == remainingNoShares
+    assert shareToken.balanceOfMarketOutcome(market.address, YES, amm.address) == remainingYesShares
 
 def test_amm_yes_position(contractsFixture, market, shareToken, cash, factory, amm, account0):
     if not contractsFixture.paraAugur:
@@ -152,7 +238,6 @@ def test_amm_no_position(contractsFixture, market, shareToken, cash, factory, am
     assert shareToken.balanceOfMarketOutcome(market.address, NO, account0) == sharesReceived
     assert shareToken.balanceOfMarketOutcome(market.address, YES, account0) == 0
 
-
 def test_amm_swap(contractsFixture, market, shareToken, cash, factory, amm, account0):
     if not contractsFixture.paraAugur:
         return skip("Test is only for para augur")
@@ -216,7 +301,6 @@ def test_amm_fees(contractsFixture, market, shareToken, cash, factory, amm, acco
     assert shareToken.balanceOfMarketOutcome(market.address, YES, amm.address) == 0
     assert shareToken.balanceOfMarketOutcome(market.address, NO, amm.address) == 0
     assert cash.balanceOf(amm.address) == 0
-
 
 # TODO: Figure out if the returns are correct when selling LP tokens minted _after_ fees were generated.
 #       Right now it looks incorrect but it's possible (likely even) that the combined value of returned shares+cash are equal to the value put in when adding liquidity.
