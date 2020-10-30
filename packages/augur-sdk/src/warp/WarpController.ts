@@ -23,7 +23,7 @@ import { IpfsInfo } from '../state/db/WarpSyncCheckpointsDB';
 import { Markets } from '../state/getter/Markets';
 import { Checkpoints } from './Checkpoints';
 
-export const WARPSYNC_VERSION = '1';
+export const WARPSYNC_VERSION = '2';
 const FILE_FETCH_TIMEOUT = 10000; // 10 seconds
 
 type NameOfType<T, R> = {
