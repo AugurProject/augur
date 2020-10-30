@@ -207,16 +207,9 @@ export class WarpController {
       if (newBlock.number - newEndBlock.number < 30) return;
 
       await this.db.prune(newEndBlock.timestamp);
-      /*
-       * To create the checkpoint properly we need to discover the boundary blocks around the end time.
-       **/
-      const hash = (await this.createCheckpoint(newEndBlock)).toString();
 
-      this.augur.events.emit(SubscriptionEventName.WarpSyncHashUpdated, {
-        hash,
-      });
-
-      return hash;
+      // This version of the client will no longer generate a
+      // warp sync because it does not know about the para deploy logs.
     }
 
     // nothing left to do.
