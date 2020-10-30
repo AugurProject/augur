@@ -31,8 +31,8 @@ export enum Field {
 }
 
 export enum MarketTokens {
-  YES_SHARES = 'Yes Shares',
-  NO_SHARES = 'No Shares'
+  YES_SHARES = '"Yes" Shares',
+  NO_SHARES = '"No" Shares'
 }
 
 export const LABEL_WETH = 'wETH'
