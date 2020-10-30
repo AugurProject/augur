@@ -1,47 +1,22 @@
-import { JSBI, Percent } from '@uniswap/sdk'
-import React, { useContext, useEffect, useState } from 'react'
+import { TokenAmount } from '@uniswap/sdk'
+import React, { useContext, useMemo } from 'react'
 import { ThemeContext } from 'styled-components'
 import { TradeInfo } from '../../hooks/Trades'
-import { Field } from '../../state/swap/actions'
-import { useUserSlippageTolerance } from '../../state/user/hooks'
 import { TYPE } from '../../Theme'
 import { AutoColumn } from '../Column'
 import QuestionHelper from '../QuestionHelper'
 import { RowBetween, RowFixed } from '../Row'
 import FormattedPriceImpact from './FormattedPriceImpact'
-import { BigNumber as BN } from 'bignumber.js'
-import { BIPS_BASE } from '../../constants'
+import { computePriceImpact } from '../../utils/prices'
 
-export function TradeSummary({ trade, allowedSlippage, minAmount }: { trade: TradeInfo; allowedSlippage: number, minAmount: string }) {
+export function TradeSummary({ trade, minAmount, outputAmount }: { trade: TradeInfo; minAmount: string, outputAmount: TokenAmount }) {
   const theme = useContext(ThemeContext)
-  const [breakdown, setBreakdown] = useState({
-    priceImpactWithoutFee: new Percent(JSBI.BigInt(0)),
-    realizedLPFee: "-",
-    slippageAdjustedAmounts: {
-      [Field.OUTPUT]: "-",
-      [Field.INPUT]: "-"
-    }
-  })
 
-  useEffect(() => {
-    if (minAmount) {
-      const calcPrice = new BN(minAmount).div(new BN(String(trade.inputAmount.raw)))
-      // weird math to use Percent object
-      const adjPrice = new BN(String(trade.executionPrice.quotient)).div(new BN(10).pow(trade.currencyOut.decimals))
-      const diff = calcPrice.minus(new BN(String(adjPrice)))
-      const impact = diff.div(calcPrice).abs().times(100).toFixed(0)
-      const adjMinAmount = String(new BN(minAmount).div(new BN(10).pow(new BN(trade.currencyOut.decimals))).toFixed(8))
-      const breakdown = {
-          priceImpactWithoutFee: new Percent(JSBI.BigInt(impact), BIPS_BASE),
-          realizedLPFee: "0", // ignore this for now
-          slippageAdjustedAmounts: {
-            [Field.OUTPUT]: `${adjMinAmount}`,
-            [Field.INPUT]: "0"
-          }
-        }
-        setBreakdown(breakdown)
-    }
-  }, [trade, setBreakdown, allowedSlippage, minAmount])
+  const { priceImpactWithoutFee, slippageAdjustedAmounts } = useMemo(() => computePriceImpact(trade, minAmount, outputAmount), [
+    trade,
+    minAmount,
+    outputAmount
+  ])
 
   return (
     <>
@@ -55,7 +30,10 @@ export function TradeSummary({ trade, allowedSlippage, minAmount }: { trade: Tra
           </RowFixed>
           <RowFixed>
             <TYPE.black color={theme.text1} fontSize={14}>
-              {breakdown.slippageAdjustedAmounts[Field.OUTPUT]}
+              {slippageAdjustedAmounts}
+            </TYPE.black>
+            <TYPE.black fontSize={14} marginLeft={'4px'}>
+              {trade?.currencyOut?.symbol}
             </TYPE.black>
           </RowFixed>
         </RowBetween>
@@ -66,7 +44,7 @@ export function TradeSummary({ trade, allowedSlippage, minAmount }: { trade: Tra
             </TYPE.black>
             <QuestionHelper text="The difference between the market price and estimated price due to trade size." />
           </RowFixed>
-          <FormattedPriceImpact priceImpact={breakdown.priceImpactWithoutFee} />
+          <FormattedPriceImpact priceImpact={priceImpactWithoutFee} />
         </RowBetween>
 
         {/*<RowBetween>
@@ -89,15 +67,15 @@ export interface AdvancedSwapDetailsProps {
   trade?: TradeInfo
   allowedSlippage?: number
   minAmount?: string
+  outputAmount?: TokenAmount
 }
 
-export function AdvancedSwapDetails({ trade, minAmount }: AdvancedSwapDetailsProps) {
-  const [allowedSlippage] = useUserSlippageTolerance()
+export function AdvancedSwapDetails({ trade, minAmount, outputAmount }: AdvancedSwapDetailsProps) {
 
   return (
     <AutoColumn gap="md">
       {trade && minAmount && (
-        <TradeSummary trade={trade} minAmount={minAmount} allowedSlippage={allowedSlippage} />
+        <TradeSummary trade={trade} minAmount={minAmount} outputAmount={outputAmount} />
       )}
     </AutoColumn>
   )

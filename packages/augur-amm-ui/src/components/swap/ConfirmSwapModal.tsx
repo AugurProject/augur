@@ -36,7 +36,7 @@ export default function ConfirmSwapModal({
   attemptingTxn,
   txHash,
   minAmount,
-  outputAmount
+  outputAmount,
 }: {
   isOpen: boolean
   trade: TradeInfo | undefined
@@ -76,9 +76,10 @@ export default function ConfirmSwapModal({
         swapErrorMessage={swapErrorMessage}
         allowedSlippage={allowedSlippage}
         minAmount={minAmount}
+        outputAmount={outputAmount}
       />
     ) : null
-  }, [allowedSlippage, onConfirm, showAcceptChanges, swapErrorMessage, trade])
+  }, [allowedSlippage, onConfirm, showAcceptChanges, swapErrorMessage, trade, outputAmount])
 
   // text to show while loading
   const pendingText = `Swapping ${trade?.inputAmount?.toSignificant(6)} ${

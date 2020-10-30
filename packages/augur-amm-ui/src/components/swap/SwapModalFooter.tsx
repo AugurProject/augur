@@ -13,6 +13,7 @@ import { AutoRow, RowBetween, RowFixed } from '../Row'
 import FormattedPriceImpact from './FormattedPriceImpact'
 import { StyledBalanceMaxMini, SwapCallbackError } from './styleds'
 import { BigNumber as BN } from 'bignumber.js'
+import { TokenAmount } from '@uniswap/sdk'
 
 export default function SwapModalFooter({
   trade,
@@ -20,7 +21,8 @@ export default function SwapModalFooter({
   allowedSlippage,
   swapErrorMessage,
   disabledConfirm,
-  minAmount
+  minAmount,
+  outputAmount
 }: {
   trade: TradeInfo
   allowedSlippage: number
@@ -28,12 +30,14 @@ export default function SwapModalFooter({
   swapErrorMessage: string | undefined
   disabledConfirm: boolean
   minAmount: string
+  outputAmount: TokenAmount
 }) {
   const [showInverted, setShowInverted] = useState<boolean>(false)
   const theme = useContext(ThemeContext)
-  const { priceImpactWithoutFee, slippageAdjustedAmounts } = useMemo(() => computePriceImpact(trade, minAmount), [
+  const { priceImpactWithoutFee, slippageAdjustedAmounts } = useMemo(() => computePriceImpact(trade, minAmount, outputAmount), [
     trade,
-    minAmount
+    minAmount,
+    outputAmount
   ])
   const severity = warningSeverity(priceImpactWithoutFee)
   const [priceRate, setPriceRate] = useState(null)
