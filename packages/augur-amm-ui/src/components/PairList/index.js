@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from 'react'
+import React, { useState, useEffect } from 'react'
 import { useMedia } from 'react-use'
 import dayjs from 'dayjs'
 import LocalLoader from '../LocalLoader'
@@ -19,24 +19,6 @@ import { calculateLiquidity, formattedNum } from '../../utils'
 import { BigNumber as BN } from 'bignumber.js'
 
 dayjs.extend(utc)
-
-const PageButtons = styled.div`
-  width: 100%;
-  display: flex;
-  justify-content: center;
-  margin-top: 2em;
-  margin-bottom: 0.5em;
-`
-
-const Arrow = styled.div`
-  color: ${({ theme }) => theme.primary1};
-  opacity: ${faded => (faded ? 0.3 : 1)};
-  padding: 0 20px;
-  user-select: none;
-  :hover {
-    cursor: pointer;
-  }
-`
 
 const List = styled(Box)`
   -webkit-overflow-scrolling: touch;
@@ -79,20 +61,12 @@ const DashGrid = styled.div`
 
 const ListWrapper = styled.div``
 
-const SORT_FIELD = {
-  LIQ: 0,
-  VOL: 1,
-  VOL_7DAYS: 3,
-  FEES: 4,
-  APY: 5
-}
-
-function PairList({ allExchanges, color, disbaleLinks, marketId, maxItems = 10 }) {
+function PairList({ allExchanges, disbaleLinks, marketId }) {
   const below600 = useMedia('(max-width: 600px)')
   const below740 = useMedia('(max-width: 740px)')
-  const below800 = useMedia('(max-width: 800px)')
-  const below1080 = useMedia('(max-width: 1080px)')
-  const [userTokenBalances, loading] = useLPTokenBalances()
+  //const below800 = useMedia('(max-width: 800px)')
+  //const below1080 = useMedia('(max-width: 1080px)')
+  const [userTokenBalances] = useLPTokenBalances()
 
   const ListItem = ({ ammExchange, index }) => {
     const [hasLPTokens, setHasLpTokens] = useState(false)
@@ -103,7 +77,7 @@ function PairList({ allExchanges, color, disbaleLinks, marketId, maxItems = 10 }
       if (userTokenBalances) {
         setHasLpTokens(greaterThanZero(userTokenBalances[ammExchange.id]))
       }
-    }, [userTokenBalances, ammExchange])
+    }, [ammExchange])
     // calculate USD value from eth price
     let liquidityUSD = 0
     let yesVolumeUSD = '0'

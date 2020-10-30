@@ -467,65 +467,6 @@ const getEthPrice = async () => {
   return [ethPrice, ethPriceOneDay, priceChangeETH]
 }
 
-const PAIRS_TO_FETCH = 500
-const TOKENS_TO_FETCH = 500
-
-/**
- * Loop through every pair on uniswap, used for search
- */
-async function getAllPairsOnUniswap() {
-  try {
-    let allFound = false
-    let pairs = []
-    let skipCount = 0
-    while (!allFound) {
-      let result = await client.query({
-        query: ALL_PAIRS,
-        variables: {
-          skip: skipCount
-        },
-        fetchPolicy: 'cache-first'
-      })
-      skipCount = skipCount + PAIRS_TO_FETCH
-      pairs = pairs.concat(result?.data?.pairs)
-      if (result?.data?.pairs.length < PAIRS_TO_FETCH || pairs.length > PAIRS_TO_FETCH) {
-        allFound = true
-      }
-    }
-    return pairs
-  } catch (e) {
-    console.log(e)
-  }
-}
-
-/**
- * Loop through every token on uniswap, used for search
- */
-async function getAllTokensOnUniswap() {
-  try {
-    let allFound = false
-    let skipCount = 0
-    let tokens = []
-    while (!allFound) {
-      let result = await client.query({
-        query: ALL_TOKENS,
-        variables: {
-          skip: skipCount
-        },
-        fetchPolicy: 'cache-first'
-      })
-      tokens = tokens.concat(result?.data?.tokens)
-      if (result?.data?.tokens?.length < TOKENS_TO_FETCH || tokens.length > TOKENS_TO_FETCH) {
-        allFound = true
-      }
-      skipCount = skipCount += TOKENS_TO_FETCH
-    }
-    return tokens
-  } catch (e) {
-    console.log(e)
-  }
-}
-
 /**
  * Hook that fetches overview data, plus all tokens and pairs for search
  */

@@ -217,11 +217,6 @@ export default function Provider({ children }) {
 }
 
 const getCashTokenData = async (cashes = []) => {
-  const utcCurrentTime = dayjs()
-  const utcOneDayBack = utcCurrentTime
-    .subtract(1, 'day')
-    .startOf('minute')
-    .unix()
 
   let bulkResults = []
   try {
@@ -376,7 +371,7 @@ export function Updater() {
       }
     }
     if (!cashTokens || Object.keys(cashTokens) === 0) getData()
-  }, [updateCashTokens, cashes])
+  }, [updateCashTokens, cashes, cashTokens])
   return null
 }
 
@@ -539,7 +534,7 @@ export function useTokenDayPriceData() {
       }
     }
     if (!cashTokens || Object.keys(cashTokens) === 0) getData()
-  }, [updateCashTokens, cashes])
+  }, [updateCashTokens, cashes, cashTokens])
 
   return cashTokens
 }

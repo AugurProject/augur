@@ -3,7 +3,6 @@ import {
   CurrencyAmount,
   JSBI,
   Percent,
-  Price,
   TradeType
 } from '@uniswap/sdk'
 

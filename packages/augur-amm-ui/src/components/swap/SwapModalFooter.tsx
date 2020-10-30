@@ -18,14 +18,12 @@ import { TokenAmount } from '@uniswap/sdk'
 export default function SwapModalFooter({
   trade,
   onConfirm,
-  allowedSlippage,
   swapErrorMessage,
   disabledConfirm,
   minAmount,
   outputAmount
 }: {
   trade: TradeInfo
-  allowedSlippage: number
   onConfirm: () => void
   swapErrorMessage: string | undefined
   disabledConfirm: boolean
