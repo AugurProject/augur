@@ -320,17 +320,14 @@ export const ProcessingButton = ({
     status === TXEventName.Pending ||
     status === TXEventName.AwaitingSigning
   ) {
-    buttonText = props.spinner ? <Spinner /> : 'Processing...';
-    if (props.smallSpinner) {
-      buttonText = <span className={Styles.LoadingEllipse}>{LoadingEllipse}</span>;
-    }
+    buttonText = props.spinner ? <Spinner /> : <span className={Styles.LoadingEllipse}>{LoadingEllipse}</span>;
     isDisabled = true;
     processing = true;
   }
   const failed = status === TXEventName.Failure;
   const confirmed = status === TXEventName.Success;
   if (failed) {
-    buttonText = props.smallSpinner ? (<span>Failed.<b>Retry</b></span>) : 'Failed';
+    buttonText = <span>Failed.<b>Retry</b></span>;
   }
   if (confirmed) {
     buttonText = 'Confirmed';
@@ -341,7 +338,7 @@ export const ProcessingButton = ({
   }
   const cancel = () => removePendingData(queueId, queueName);
   if (failed || confirmed) {
-    buttonAction = props.smallSpinner ? e => props.action(e) : e => cancel(e);
+    buttonAction = e => props.action(e);
     icon = XIcon;
     isDisabled = false;
   }
@@ -996,7 +993,6 @@ export const CashoutButton = ({
           queueName={CASHOUT}
           queueId={queueId}
           cancelButton
-          smallSpinner
           action={() => cashout()}
         />
         :

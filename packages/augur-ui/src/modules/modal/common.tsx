@@ -829,7 +829,6 @@ export const ActionRows = ({ rows }: ActionRowsProps) => {
             submitTextButtton={!isSports}
             secondaryButton={isSports}
             tiny={isSports}
-            smallSpinner={isSports}
           />
         )}
       </div>

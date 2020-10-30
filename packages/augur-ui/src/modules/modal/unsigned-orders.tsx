@@ -174,7 +174,6 @@ const orderRow = (
             <ProcessingButton
               key={Button.text}
               {...Button}
-              smallSpinner
               secondaryButton
               tiny
               propsStatus={status}
