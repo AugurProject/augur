@@ -59,7 +59,6 @@ export function CurrencySearch({
 
   const handleCurrencySelect = useCallback(
     (currency: Currency) => {
-      console.log('handleCurrencySelect aa', currency)
       onCurrencySelect(currency)
       onDismiss()
     },

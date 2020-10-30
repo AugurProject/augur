@@ -52,7 +52,6 @@ const ClickableText = styled(Text)`
 `
 
 function Swap({ marketId, amm }: RouteComponentProps<{ inputCurrencyId?: string; outputCurrencyId?: string }>) {
-  console.log('Swap render ...')
   const { chainId } = useActiveWeb3React()
   const augurClient = useAugurClient()
   const theme = useContext(ThemeContext)
@@ -232,7 +231,6 @@ function Swap({ marketId, amm }: RouteComponentProps<{ inputCurrencyId?: string;
 
   const handleInputSelect = useCallback(
     inputCurrency => {
-      console.log('inputCurrency swap', inputCurrency)
       setApprovalSubmitted(false) // reset 2 step UI for approvals
       onCurrencySelection(Field.INPUT, inputCurrency)
     },
@@ -404,7 +402,7 @@ function Swap({ marketId, amm }: RouteComponentProps<{ inputCurrencyId?: string;
           </BottomGrouping>
         </Wrapper>
       </AppBody>
-      <AdvancedSwapDetailsDropdown trade={trade} allowedSlippage={allowedSlippage} minAmount={minAmount} />
+      <AdvancedSwapDetailsDropdown trade={trade} allowedSlippage={allowedSlippage} minAmount={minAmount} outputAmount={outputAmount} />
     </>
   )
 }

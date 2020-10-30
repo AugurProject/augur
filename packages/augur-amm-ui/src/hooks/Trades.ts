@@ -10,6 +10,7 @@ import {
 import { AmmExchangeInfo, MarketTokens } from '../constants'
 import { MarketCurrency } from '../model/MarketCurrency'
 import { MarketBalance } from '../state/wallet/hooks'
+import { BigNumber as BN } from 'bignumber.js'
 
 export interface TradeInfo {
   marketId: string
@@ -24,7 +25,7 @@ export interface TradeInfo {
   maxAmountIn?: number
   minAmountOut?: number
   priceImpact?: Percent
-  executionPrice?: Price
+  executionPrice?: string
   minAmount?: string
 }
 
@@ -53,21 +54,17 @@ export function getTradeExactIn(
 
   if (currencyAmountIn && currencyOut && inputCurrency) {
     // do any amount conversion here
-    const no = JSBI.BigInt(String(Number(ammExchange.percentageNo) / 100).substring(6))
-    const yes = JSBI.BigInt(String(Number(ammExchange.percentageYes) / 100).substring(6))
-    let executionPrice = new Price(
-      currencyOut,
-      currencyOut,
-      JSBI.BigInt(1),
-      currencyOut.symbol === MarketTokens.NO_SHARES ? no : yes
-    )
+    const no = new BN(ammExchange.percentageNo).div(100)
+    const yes = new BN(ammExchange.percentageYes).div(100)
+    let executionPrice = currencyOut.symbol === MarketTokens.NO_SHARES ? no : yes
+
     console.log('no price', String(no))
     console.log('yes price', String(yes))
     if (!(currencyOut instanceof MarketCurrency)) {
       // cash out use inverse of currencyIn percentage
       const exchange = inputCurrency.symbol === MarketTokens.NO_SHARES ? no : yes
       // TODO: need to check this rate
-      executionPrice = new Price(currencyOut, currencyOut, JSBI.BigInt(1), exchange)
+      executionPrice = exchange
     }
 
     return {
@@ -80,7 +77,7 @@ export function getTradeExactIn(
       inputAmount: currencyAmountIn,
       balance: userCashBalances,
       priceImpact: new Percent(JSBI.BigInt(0)),
-      executionPrice
+      executionPrice: String(executionPrice)
     }
   }
   return null

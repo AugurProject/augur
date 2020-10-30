@@ -7,12 +7,6 @@ import { TYPE } from '../../Theme'
 
 const BAD_IMAGES = {}
 
-const Inline = styled.div`
-  display: flex;
-  align-items: center;
-  align-self: center;
-`
-
 const Image = styled.img<{ size }>`
   width: ${({ size }) => size};
   height: ${({ size }) => size};
@@ -21,10 +15,11 @@ const Image = styled.img<{ size }>`
   box-shadow: 0px 6px 10px rgba(0, 0, 0, 0.075);
 `
 
-const StyledEthereumLogo = styled.div<{ size }>`
+const StyledLogo = styled.div<{ size }>`
   display: flex;
   align-items: center;
   justify-content: center;
+  white-space: nowrap;
 
   > img {
     width: ${({ size }) => size};
@@ -47,20 +42,23 @@ export default function TokenLogo({ tokenInfo, showSymbol = false, size = '24px'
 
   if (cashtoken && cashtoken.address) {
     return (
-      <StyledEthereumLogo size={size} {...rest}>
+      <StyledLogo size={size} {...rest}>
         <img src={require(`../../assets/${cashtoken.asset}`)} style={{ borderRadius: '24px' }} alt="Trading token" />
-        <TYPE.light style={{ fontSize: size, paddingLeft: '0.25rem', fontWeight: '500' }}>
-          {showSymbol ? <span style={{paddingLeft: '0.15rem'}}>{cashtoken.symbol}</span> : ''}
+        <TYPE.light style={{ fontSize: size, paddingLeft: '0.25rem', fontWeight: '500', textTransform: 'uppercase' }}>
+          {showSymbol ? <span style={{ paddingLeft: '0.15rem' }}>{cashtoken.symbol || tokenInfo?.symbol}</span> : ''}
         </TYPE.light>
-      </StyledEthereumLogo>
+      </StyledLogo>
     )
   }
 
   if (error || BAD_IMAGES[address]) {
     return (
-      <Inline>
+      <StyledLogo size={size} {...rest}>
         <Image src={market} size={size} style={{ borderRadius: '24px' }} alt="Augur Market" />
-      </Inline>
+        <TYPE.light style={{ fontSize: size, paddingLeft: '0.25rem', fontWeight: '500', textTransform: 'uppercase' }}>
+          {showSymbol ? <span style={{ paddingLeft: '0.15rem' }}>{tokenInfo?.symbol}</span> : ''}
+        </TYPE.light>
+      </StyledLogo>
     )
   }
 
@@ -69,7 +67,7 @@ export default function TokenLogo({ tokenInfo, showSymbol = false, size = '24px'
   )}/logo.png`
 
   return (
-    <Inline>
+    <StyledLogo size={size} {...rest}>
       <Image
         {...rest}
         alt={''}
@@ -81,6 +79,6 @@ export default function TokenLogo({ tokenInfo, showSymbol = false, size = '24px'
           event.preventDefault()
         }}
       />
-    </Inline>
+    </StyledLogo>
   )
 }

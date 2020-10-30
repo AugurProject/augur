@@ -1,4 +1,4 @@
-import { BIPS_BASE, BLOCKED_PRICE_IMPACT_NON_EXPERT } from '../constants'
+import { BIPS_BASE, BIPS_CONSTANT as BIPS_CONSTANT, BLOCKED_PRICE_IMPACT_NON_EXPERT } from '../constants'
 import { CurrencyAmount, JSBI, Percent, TokenAmount } from '@uniswap/sdk'
 import { ALLOWED_PRICE_IMPACT_HIGH, ALLOWED_PRICE_IMPACT_LOW, ALLOWED_PRICE_IMPACT_MEDIUM } from '../constants'
 import { Field } from '../state/swap/actions'
@@ -9,20 +9,30 @@ const BASE_FEE = new Percent(JSBI.BigInt(30), JSBI.BigInt(10000))
 const ONE_HUNDRED_PERCENT = new Percent(JSBI.BigInt(10000), JSBI.BigInt(10000))
 const INPUT_FRACTION_AFTER_FEE = ONE_HUNDRED_PERCENT.subtract(BASE_FEE)
 
-export function computePriceImpact(trade, minAmount): { priceImpactWithoutFee: Percent; slippageAdjustedAmounts: string } {
-
-  if (!trade || !minAmount) return {priceImpactWithoutFee: undefined, slippageAdjustedAmounts: undefined}
-  const currencyOutDecimals = trade?.currencyOut?.decimals
-  const executionPrice = trade?.executionPrice
-
-  const calcPrice = new BN(minAmount).div(new BN(String(trade.inputAmount.raw)))
-  const adjPrice = new BN(String(trade.executionPrice.quotient)).div(new BN(10).pow(trade.currencyOut.decimals))
-  const diff = calcPrice.minus(new BN(String(adjPrice)))
-  const impact = diff.div(calcPrice).abs().times(100).toFixed(0)
-  const adjMinAmount = String(new BN(minAmount).div(new BN(10).pow(new BN(currencyOutDecimals))).toFixed(8))
-
+export function computePriceImpact(
+  trade,
+  minAmount,
+  outputAmount: TokenAmount
+): { priceImpactWithoutFee: Percent; slippageAdjustedAmounts: string } {
+  if (!trade || !minAmount || !outputAmount) return { priceImpactWithoutFee: undefined, slippageAdjustedAmounts: undefined }
+  const currencyInDecimals = new BN(trade?.currencyIn?.decimals)
+  const currencyOutDecimals = new BN(trade?.currencyOut?.decimals)
+  const displayExecutionPct = new BN(trade.executionPrice)
+  const rawInputAmount = new BN(String(trade?.inputAmount?.raw))
+  const rawOutputAmount = new BN(String(outputAmount?.raw))
+  const displayInputAmount = rawInputAmount.div(new BN(10).pow(new BN(currencyInDecimals)))
+  const rawSlipRate = rawOutputAmount.div(rawInputAmount)
+  const rawNonSlipRate = displayExecutionPct.times(displayInputAmount)
+  console.log('raw prices', String(rawInputAmount), String(rawOutputAmount), String(rawSlipRate))
+  console.log('non slip price', String(rawNonSlipRate), '=', String(displayExecutionPct), '*', String(displayInputAmount))
+  console.log('price diff', String(rawNonSlipRate), String(rawSlipRate))
+  const impact = (new BN(1).minus(((rawSlipRate.minus(rawNonSlipRate)).div(rawNonSlipRate)).abs()))
+  console.log('price impact', String(impact))
+  const adjMinAmount = String(new BN(String(rawOutputAmount)).div(new BN(10).pow(new BN(currencyOutDecimals))).toFixed(8))
+  const prepDecimal = impact.times(new BN(BIPS_CONSTANT)).toFixed(0)
+  console.log('adjMinAmount', adjMinAmount)
   return {
-    priceImpactWithoutFee: new Percent(JSBI.BigInt(impact), BIPS_BASE),
+    priceImpactWithoutFee: new Percent(JSBI.BigInt(prepDecimal), BIPS_BASE),
     slippageAdjustedAmounts: adjMinAmount
   }
 }
@@ -79,7 +89,5 @@ export function formatExecutionPrice(trade?: TradeInfo, inverted?: boolean): str
   if (!trade) {
     return ''
   }
-  return `${trade?.executionPrice?.toSignificant(6)} ${trade?.currencyOut?.symbol} / ${
-        trade?.currencyIn?.symbol
-      }`
+  return `${trade?.executionPrice} ${trade?.currencyOut?.symbol} / ${trade?.currencyIn?.symbol}`
 }

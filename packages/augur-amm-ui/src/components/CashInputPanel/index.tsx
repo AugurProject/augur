@@ -7,7 +7,6 @@ import TokenLogo from '../TokenLogo'
 import { RowBetween } from '../Row'
 import { TYPE } from '../../Theme'
 import { Input as NumericalInput } from '../NumericalInput'
-import { ReactComponent as DropDown } from '../../assets/dropdown.svg'
 import { useActiveWeb3React } from '../../hooks'
 
 const InputRow = styled.div<{ selected: boolean }>`
@@ -138,7 +137,7 @@ export default function CashInputPanel({
             </RowBetween>
           </LabelRow>
         )}
-        <InputRow style={{ display: 'flex' }} selected={disableCurrencySelect}>
+        <InputRow selected={disableCurrencySelect}>
           <>
             <NumericalInput
               className="token-amount-input"

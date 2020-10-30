@@ -21,6 +21,7 @@ export const timeframeOptions = {
 // one basis point
 export const ONE_BIPS = new Percent(JSBI.BigInt(1), JSBI.BigInt(10000))
 export const BIPS_BASE = JSBI.BigInt(10000)
+export const BIPS_CONSTANT = 10000
 
 export const NetworkContextName = 'NETWORK'
 

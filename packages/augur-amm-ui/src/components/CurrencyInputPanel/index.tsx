@@ -5,7 +5,6 @@ import { darken } from 'polished'
 import { useCurrencyBalance } from '../../state/wallet/hooks'
 import CurrencySearchModal from '../SearchModal/CurrencySearchModal'
 import TokenLogo from '../TokenLogo'
-import DoubleCurrencyLogo from '../DoubleLogo'
 import { RowBetween } from '../Row'
 import { TYPE } from '../../Theme'
 import { Input as NumericalInput } from '../NumericalInput'
@@ -14,13 +13,14 @@ import { useActiveWeb3React } from '../../hooks'
 const InputRow = styled.div<{ selected: boolean }>`
   ${({ theme }) => theme.flexRowNoWrap}
   align-items: center;
+  display: flex;
   padding: ${({ selected }) => (selected ? '0.75rem 0.5rem 0.75rem 1rem' : '0.75rem 0.75rem 0.75rem 1rem')};
 `
 
 const CurrencySelect = styled.button<{ selected: boolean }>`
   align-items: center;
   height: 2.2rem;
-  font-size: 20px;
+  font-size: 18px;
   font-weight: 500;
   background-color: ${({ selected, theme }) => (selected ? theme.bg1 : theme.primary1)};
   color: ${({ selected, theme }) => (selected ? theme.text1 : theme.white)};
@@ -73,7 +73,7 @@ const Container = styled.div<{ hideInput: boolean }>`
 
 const StyledTokenName = styled.span<{ active?: boolean }>`
   ${({ active }) => (active ? '  margin: 0 0.25rem 0 0.75rem;' : '  margin: 0 0.25rem 0 0.25rem;')}
-  font-size:  ${({ active }) => (active ? '20px' : '16px')};
+  font-size:  ${({ active }) => (active ? '18px' : '12px')};
 
 `
 
@@ -130,7 +130,6 @@ export default function CurrencyInputPanel({
   currency,
   disableCurrencySelect = false,
   hideBalance = false,
-  pair = null, // used for double token logo
   hideInput = false,
   otherCurrency,
   id,
@@ -148,6 +147,8 @@ export default function CurrencyInputPanel({
     setModalOpen(false)
   }, [setModalOpen])
 
+console.log('currency', currency)
+
   return (
     <InputPanel id={id}>
       <Container hideInput={hideInput}>
@@ -162,7 +163,7 @@ export default function CurrencyInputPanel({
                   onClick={onMax}
                   color={theme.text2}
                   fontWeight={500}
-                  fontSize={14}
+                  fontSize={18}
                   style={{ display: 'inline', cursor: 'pointer' }}
                 >
                   {!hideBalance && !!currency && selectedCurrencyBalance
@@ -199,24 +200,13 @@ export default function CurrencyInputPanel({
             }}
           >
             <Aligner>
-              {pair ? (
-                <DoubleCurrencyLogo token0={pair.token0} token1={pair.token1} size={18} margin={true} />
-              ) : currency ? (
-                <TokenLogo tokenInfo={currency} size={'18px'} />
+              {currency ? (
+                <TokenLogo tokenInfo={currency} showSymbol size={'16px'} />
               ) : null}
-              {pair ? (
-                <StyledTokenName className="pair-name-container">
-                  {pair?.token0.symbol}:{pair?.token1.symbol}
-                </StyledTokenName>
-              ) : (
-                <StyledTokenName className="token-symbol-container" active={Boolean(currency && currency.symbol)}>
-                  {(currency && currency.symbol && currency.symbol.length > 20
-                    ? currency.symbol.slice(0, 4) +
-                      '...' +
-                      currency.symbol.slice(currency.symbol.length - 5, currency.symbol.length)
-                    : currency?.symbol) || 'Select Token'}
-                </StyledTokenName>
-              )}
+              <StyledTokenName className="token-symbol-container" active={Boolean(currency && currency.symbol)}>
+                {!currency && 'Select Token'}
+              </StyledTokenName>
+
             </Aligner>
           </CurrencySelect>
         </InputRow>
