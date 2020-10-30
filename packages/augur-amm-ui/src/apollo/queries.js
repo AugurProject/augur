@@ -121,6 +121,55 @@ export const GET_MARKETS = blockNumber => {
       id
     }
   }
+  past: markets(block: { number: ${blockNumber} }, where: { marketType: YES_NO, description_not: null }) {
+    description
+    id
+    endTimestamp
+    status
+    amms {
+      id
+      shareToken {
+        id
+        cash {
+          id
+        }
+      }
+      volumeYes
+      volumeNo
+      percentageYes
+      percentageNo
+      liquidity
+      liquidityCash
+      liquidityYes
+      liquidityNo
+      liquidityInvalid
+      totalSupply
+      cashBalance
+      swaps {
+        id
+        tx_hash
+        timestamp
+        yesShares
+        noShares
+      }
+      enters {
+        id
+        tx_hash
+        timestamp
+        yesShares
+        noShares
+        cash
+      }
+      exits {
+        id
+        tx_hash
+        timestamp
+        yesShares
+        noShares
+        cash
+      }
+    }
+  }
 }
  `
  return gql(queryString)
@@ -359,77 +408,6 @@ export const USER_POSITIONS = gql`
         totalSupply
       }
       liquidityTokenBalance
-    }
-  }
-`
-
-export const USER_TRANSACTIONS = gql`
-  query transactions($user: Bytes!) {
-    mints(orderBy: timestamp, orderDirection: desc, where: { to: $user }) {
-      id
-      transaction {
-        id
-        timestamp
-      }
-      pair {
-        id
-        token0 {
-          id
-          symbol
-        }
-        token1 {
-          id
-          symbol
-        }
-      }
-      to
-      liquidity
-      amount0
-      amount1
-      amountUSD
-    }
-    burns(orderBy: timestamp, orderDirection: desc, where: { sender: $user }) {
-      id
-      transaction {
-        id
-        timestamp
-      }
-      pair {
-        id
-        token0 {
-          symbol
-        }
-        token1 {
-          symbol
-        }
-      }
-      sender
-      to
-      liquidity
-      amount0
-      amount1
-      amountUSD
-    }
-    swaps(orderBy: timestamp, orderDirection: desc, where: { to: $user }) {
-      id
-      transaction {
-        id
-        timestamp
-      }
-      pair {
-        token0 {
-          symbol
-        }
-        token1 {
-          symbol
-        }
-      }
-      amount0In
-      amount0Out
-      amount1In
-      amount1Out
-      amountUSD
-      to
     }
   }
 `

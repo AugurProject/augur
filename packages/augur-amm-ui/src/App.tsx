@@ -7,9 +7,7 @@ import GlobalPage from './pages/GlobalPage'
 import TokenPage from './pages/TokenPage'
 import { useGlobalData, useGlobalChartData } from './contexts/GlobalData'
 import { isAddress } from './utils'
-import AccountPage from './pages/AccountPage'
 import AllMarketsPage from './pages/AllMarketsPage'
-import AccountLookup from './pages/AccountLookup'
 import LocalLoader from './components/LocalLoader'
 import { useLatestBlock } from './contexts/Application'
 import RemoveLiquidity from './pages/RemoveLiquidity'
@@ -106,22 +104,6 @@ function App() {
                   }
                 }}
               />
-              <Route
-                exacts
-                strict
-                path="/account/:accountAddress"
-                render={({ match }) => {
-                  if (isAddress(match.params.accountAddress.toLowerCase())) {
-                    return (
-                      <LayoutWrapper savedOpen={savedOpen} setSavedOpen={setSavedOpen}>
-                        <AccountPage account={match.params.accountAddress.toLowerCase()} />
-                      </LayoutWrapper>
-                    )
-                  } else {
-                    return <Redirect to="/home" />
-                  }
-                }}
-              />
               <Route path="/home">
                   <GlobalPage />
               </Route>
@@ -184,25 +166,6 @@ function App() {
                   }
                 }}
               />
-              {/*
-              <Route path="/tokens">
-                <LayoutWrapper savedOpen={savedOpen} setSavedOpen={setSavedOpen}>
-                  <AllTokensPage />
-                </LayoutWrapper>
-              </Route>
-
-              <Route path="/pairs">
-                <LayoutWrapper savedOpen={savedOpen} setSavedOpen={setSavedOpen}>
-                  <AllPairsPage />
-                </LayoutWrapper>
-              </Route>
-              */}
-              <Route path="/accounts">
-                <LayoutWrapper savedOpen={savedOpen} setSavedOpen={setSavedOpen}>
-                  <AccountLookup />
-                </LayoutWrapper>
-              </Route>
-
               <Redirect to="/home" />
             </Switch>
         ) : (

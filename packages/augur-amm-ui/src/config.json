@@ -1,5 +1,6 @@
 {
   "1": {
+    "networkId": "1",
     "Cashes": [
       { "address": "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2", "name": "wrapped ETH", "symbol": "wETH" },
       {
@@ -12,6 +13,7 @@
     "network": "mainnet"
   },
   "42": {
+    "networkId": "42",
     "Cashes": [
       {
         "address": "0x7290c2b7D5Fc91a112d462fe06aBBB8948668f56",

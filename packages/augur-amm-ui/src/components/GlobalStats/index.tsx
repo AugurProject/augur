@@ -6,7 +6,7 @@ import { useGlobalData, useEthPrice } from '../../contexts/GlobalData'
 import { calculateLiquidity, formattedNum, localNumber } from '../../utils'
 import UniPrice from '../UniPrice'
 import { TYPE } from '../../Theme'
-import { useMarketCashTokens, useTotalLiquidity } from '../../contexts/Markets'
+import { useMarketCashTokens, useTotalLiquidity, useVolumesByCash, useAmmTransactions } from '../../contexts/Markets'
 import { useTokenDayPriceData } from '../../contexts/TokenData'
 import { BigNumber as BN } from 'bignumber.js'
 
@@ -29,12 +29,15 @@ export default function GlobalStats() {
 
   const [showPriceCard] = useState(false)
   const [globalLiquidity, setGlobalLiquidity] = useState("-")
+  const [oneDayVolume, setOneDayVolume] = useState("-")
+  const [oneDayTx, setOneDayTx] = useState("-")
   const cashTokens = useMarketCashTokens()
   const cashData = useTokenDayPriceData()
-  const { oneDayVolumeUSD, oneDayTxns } = useGlobalData()
   const [ethPrice] = useEthPrice()
   const formattedEthPrice = ethPrice ? formattedNum(ethPrice, true) : '-'
   const liquidities = useTotalLiquidity()
+  const ammVolumes = useVolumesByCash()
+  const ammTransactions = useAmmTransactions()
 
   useEffect(() => {
     let total = new BN("0")
@@ -46,7 +49,13 @@ export default function GlobalStats() {
     }
     const liq = formattedNum(String(total), true);
     setGlobalLiquidity(String(liq))
-  }, [liquidities, cashData, cashTokens, setGlobalLiquidity])
+
+    const { totalDiff } = ammVolumes;
+    setOneDayVolume(totalDiff)
+
+    const { totalDiff: tx } = ammTransactions;
+    setOneDayTx(tx)
+  }, [liquidities, cashData, cashTokens, ammVolumes, ammTransactions ])
 
   return (
     <Header>
@@ -74,13 +83,13 @@ export default function GlobalStats() {
           <TYPE.boxed mb={'0.5rem'} mr={'0.25rem'}>
             <TYPE.boxedRow>Volume (24 hrs): </TYPE.boxedRow>
             <TYPE.boxedRow>
-              <TYPE.largeHeader>${localNumber(oneDayVolumeUSD)}</TYPE.largeHeader>
+              <TYPE.largeHeader>${localNumber(oneDayVolume)}</TYPE.largeHeader>
             </TYPE.boxedRow>
           </TYPE.boxed>
           <TYPE.boxed mb={'0.5rem'}>
             <TYPE.boxedRow>Transactions (24 hrs):</TYPE.boxedRow>
             <TYPE.boxedRow>
-              <TYPE.largeHeader>{oneDayTxns}</TYPE.largeHeader>
+              <TYPE.largeHeader>{oneDayTx}</TYPE.largeHeader>
             </TYPE.boxedRow>
           </TYPE.boxed>
         </RowFixed>

@@ -30,6 +30,7 @@ export class AMMExchange {
   }
 
   async doEnterPosition(cash: BigNumber, buyYes: boolean, minShares: BigNumber): Promise<TransactionResponse> {
+    console.log(String(cash), buyYes, String(minShares))
     return this.contract.enterPosition(cash.toFixed(), buyYes, minShares.toFixed());
   }
 
@@ -80,6 +81,7 @@ export class AMMExchange {
   }
 
   async doSwap(inputShares: Shares, inputYes: boolean, minShares: Shares): Promise<TransactionResponse> {
+    console.log('doSwap', String(inputShares), inputYes, String(minShares))
     return this.contract.swap(inputShares, inputYes, minShares);
   }
 

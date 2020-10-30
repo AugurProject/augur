@@ -1,7 +1,7 @@
 import React, { createContext, useContext, useReducer, useMemo, useCallback, useEffect, useState } from 'react'
 import { usePairData } from './PairData'
 import { client } from '../apollo/client'
-import { USER_TRANSACTIONS, USER_POSITIONS, USER_HISTORY, PAIR_DAY_DATA_BULK } from '../apollo/queries'
+import { USER_POSITIONS, USER_HISTORY, PAIR_DAY_DATA_BULK } from '../apollo/queries'
 import { useTimeframe, useStartTimestamp } from './Application'
 import dayjs from 'dayjs'
 import utc from 'dayjs/plugin/utc'
@@ -131,34 +131,6 @@ export default function Provider({ children }) {
       {children}
     </UserContext.Provider>
   )
-}
-
-export function useUserTransactions(account) {
-  const [state, { updateTransactions }] = useUserContext()
-  const transactions = state?.[account]?.[TRANSACTIONS_KEY]
-  useEffect(() => {
-    async function fetchData(account) {
-      try {
-        let result = await client.query({
-          query: USER_TRANSACTIONS,
-          variables: {
-            user: account
-          },
-          fetchPolicy: 'no-cache'
-        })
-        if (result?.data) {
-          updateTransactions(account, result?.data)
-        }
-      } catch (e) {
-        console.log(e)
-      }
-    }
-    if (!transactions && account) {
-      fetchData(account)
-    }
-  }, [account, transactions, updateTransactions])
-
-  return transactions || {}
 }
 
 /**
