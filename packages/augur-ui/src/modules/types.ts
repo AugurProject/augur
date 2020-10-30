@@ -316,6 +316,7 @@ export interface Notification {
   isImportant: boolean;
   redIcon?: boolean;
   isNew: boolean;
+  isRead: boolean;
   title: string;
   buttonLabel: string;
   buttonAction: ButtonActionType;

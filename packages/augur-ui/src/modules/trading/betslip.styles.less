@@ -78,7 +78,6 @@
       top: calc(@top-bar-height + @size-1);
       right: -@size-326;
       bottom: 0;
-      left: 0;
       justify-content: flex-end;
       z-index: @mask-modal;
 
@@ -101,7 +100,7 @@
 
       &.Minimized {
         background: transparent;
-        left: 0;
+        pointer-events: none;
         right: -@size-326;
         z-index: @mask-modal;
 
@@ -112,6 +111,7 @@
         > div {
           display: flex;
           align-items: flex-end;
+          pointer-events: all;
 
           > button:first-of-type {
             transform: rotate(-0.25turn) translate(-@size-107, @size-54);
