@@ -10,7 +10,7 @@ import {
   HELP_CENTER,
   HELP_CENTER_ADD_FUNDS,
   HELP_CENTER_HOW_TO_TRADE,
-  HELP_CENTER_HOW_TO_DISPUTE,
+  HELP_CENTER_HOW_TO_DISPUTE, MODAL_HELP,
 } from 'modules/common/constants';
 import { MARKET } from 'modules/routes/constants/views';
 import makeQuery from 'modules/routes/helpers/make-query';
@@ -125,7 +125,7 @@ export const HelpIcon = ({
 };
 
 export const HelpResources = () => {
-  const { isHelpMenuOpen, actions: { setIsHelpMenuOpen } } = useAppStatusStore();
+  const { isHelpMenuOpen, isMobile, actions: { setIsHelpMenuOpen, setModal } } = useAppStatusStore();
   return (
     <div
       className={classNames(Styles.HelpResources, {
@@ -134,7 +134,7 @@ export const HelpResources = () => {
       onClick={event => event.stopPropagation()}
     >
       <HelpIcon
-        updateHelpMenuState={setIsHelpMenuOpen}
+        updateHelpMenuState={isMobile ? () => setModal({ type: MODAL_HELP }) : setIsHelpMenuOpen}
         isHelpMenuOpen={isHelpMenuOpen}
       />
       {isHelpMenuOpen && (
