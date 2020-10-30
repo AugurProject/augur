@@ -3,8 +3,8 @@
   "compilerOptions": {
     "outDir": "build",
     "rootDir": "src",
-    "target": "ES6",
-    "module": "ESNEXT",
+    "target": "ES2017",
+    "module": "ES2015",
     "jsx": "react",
     "noImplicitAny": false,
     "allowSyntheticDefaultImports": true,
