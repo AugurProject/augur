@@ -84,7 +84,7 @@
 
       -webkit-transform: translateX(-@size-326);
       transform: translateX(-@size-326);
-      transition: transform .3s cubic-bezier(0.44, 0, 0.56, 1);
+      transition: transform .3s cubic-bezier(0.44, 0, 0.56, 1), left .3s ease-in-out;
       will-change: transform;
 
       > div {
@@ -101,13 +101,13 @@
 
       &.Minimized {
         background: transparent;
-        left: 0;
+        left: 100%;
         right: -@size-326;
         z-index: @mask-modal;
 
         -webkit-transform: none;
         transform: none;
-        transition: transform .3s cubic-bezier(0.44, 0, 0.56, 1);
+        transition: transform .3s cubic-bezier(0.44, 0, 0.56, 1), left .3s ease-in-out;
 
         > div {
           display: flex;
@@ -154,7 +154,7 @@
 
         -webkit-transform: none;
         transform: none;
-        transition: transform .3s cubic-bezier(0.44, 0, 0.56, 1);
+        transition: transform .3s cubic-bezier(0.44, 0, 0.56, 1), left .3s ease-in-out;
 
         > div {
           width: 100%;
