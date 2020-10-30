@@ -17,10 +17,8 @@ import {
   ETH_PRICE,
   ALL_PAIRS,
   ALL_TOKENS,
-  TOP_LPS_PER_PAIRS
 } from '../apollo/queries'
 import weekOfYear from 'dayjs/plugin/weekOfYear'
-import { useAllPairData } from './PairData'
 const UPDATE = 'UPDATE'
 const UPDATE_TXNS = 'UPDATE_TXNS'
 const UPDATE_CHART = 'UPDATE_CHART'
@@ -541,12 +539,8 @@ export function useGlobalData() {
     async function fetchData() {
       let globalData = await getGlobalData(ethPrice, oldEthPrice)
       globalData && update(globalData)
-
-      let allPairs = await getAllPairsOnUniswap()
-      updateAllPairsInUniswap(allPairs)
-
-      let allTokens = await getAllTokensOnUniswap()
-      updateAllTokensInUniswap(allTokens)
+      updateAllPairsInUniswap([])
+      updateAllTokensInUniswap([])
     }
     if (!data && ethPrice && oldEthPrice) {
       fetchData()
@@ -627,13 +621,6 @@ export function useEthPrice() {
   return [ethPrice, ethPriceOld]
 }
 
-export function useAllPairsInUniswap() {
-  const [state] = useGlobalDataContext()
-  let allPairs = state?.allPairs
-
-  return allPairs || []
-}
-
 export function useAllTokensInUniswap() {
   const [state] = useGlobalDataContext()
   let allTokens = state?.allTokens
@@ -641,71 +628,3 @@ export function useAllTokensInUniswap() {
   return allTokens || []
 }
 
-/**
- * Get the top liquidity positions based on USD size
- * @TODO Not a perfect lookup needs improvement
- */
-export function useTopLps() {
-  const [state, { updateTopLps }] = useGlobalDataContext()
-  let topLps = state?.topLps
-
-  const allPairs = useAllPairData()
-
-  useEffect(() => {
-    async function fetchData() {
-      // get top 20 by reserves
-      let topPairs = Object.keys(allPairs)
-        ?.sort((a, b) => parseFloat(allPairs[a].reserveUSD > allPairs[b].reserveUSD ? -1 : 1))
-        ?.slice(0, 99)
-        .map(pair => pair)
-
-      let topLpLists = await Promise.all(
-        topPairs.map(async pair => {
-          // for each one, fetch top LPs
-          try {
-            const { data: results } = await client.query({
-              query: TOP_LPS_PER_PAIRS,
-              variables: {
-                pair: pair.toString()
-              },
-              fetchPolicy: 'cache-first'
-            })
-            if (results) {
-              return results.liquidityPositions
-            }
-          } catch (e) {}
-        })
-      )
-
-      // get the top lps from the results formatted
-      const topLps = []
-      topLpLists
-        .filter(i => !!i) // check for ones not fetched correctly
-        .map(list => {
-          return list.map(entry => {
-            const pairData = allPairs[entry.pair.id]
-            return topLps.push({
-              user: entry.user,
-              pairName: pairData.token0.symbol + '-' + pairData.token1.symbol,
-              pairAddress: entry.pair.id,
-              token0: pairData.token0.id,
-              token1: pairData.token1.id,
-              usd:
-                (parseFloat(entry.liquidityTokenBalance) / parseFloat(pairData.totalSupply)) *
-                parseFloat(pairData.reserveUSD)
-            })
-          })
-        })
-
-      const sorted = topLps.sort((a, b) => (a.usd > b.usd ? -1 : 1))
-      const shorter = sorted.splice(0, 100)
-      updateTopLps(shorter)
-    }
-
-    if (!topLps && allPairs && Object.keys(allPairs).length > 0) {
-      fetchData()
-    }
-  })
-
-  return topLps
-}

@@ -599,50 +599,6 @@ export const TOKEN_SEARCH = gql`
   }
 `
 
-export const PAIR_SEARCH = gql`
-  query pairs($tokens: [Bytes]!, $id: String) {
-    as0: pairs(where: { token0_in: $tokens }) {
-      id
-      token0 {
-        id
-        symbol
-        name
-      }
-      token1 {
-        id
-        symbol
-        name
-      }
-    }
-    as1: pairs(where: { token1_in: $tokens }) {
-      id
-      token0 {
-        id
-        symbol
-        name
-      }
-      token1 {
-        id
-        symbol
-        name
-      }
-    }
-    asAddress: pairs(where: { id: $id }) {
-      id
-      token0 {
-        id
-        symbol
-        name
-      }
-      token1 {
-        id
-        symbol
-        name
-      }
-    }
-  }
-`
-
 export const ALL_PAIRS = gql`
   query pairs($skip: Int!) {
     pairs(first: 500, skip: $skip, orderBy: trackedReserveETH, orderDirection: desc) {

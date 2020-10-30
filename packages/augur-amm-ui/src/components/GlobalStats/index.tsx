@@ -2,9 +2,8 @@ import React, { useEffect, useState } from 'react'
 import styled from 'styled-components'
 import { RowFixed, RowBetween } from '../Row'
 import { useMedia } from 'react-use'
-import { useGlobalData, useEthPrice } from '../../contexts/GlobalData'
+import { useEthPrice } from '../../contexts/GlobalData'
 import { calculateLiquidity, formattedNum, localNumber } from '../../utils'
-import UniPrice from '../UniPrice'
 import { TYPE } from '../../Theme'
 import { useMarketCashTokens, useTotalLiquidity, useVolumesByCash, useAmmTransactions } from '../../contexts/Markets'
 import { useTokenDayPriceData } from '../../contexts/TokenData'
@@ -27,7 +26,6 @@ export default function GlobalStats() {
   //  const below400 = useMedia('(max-width: 400px)')
   const below816 = useMedia('(max-width: 816px)')
 
-  const [showPriceCard] = useState(false)
   const [globalLiquidity, setGlobalLiquidity] = useState("-")
   const [oneDayVolume, setOneDayVolume] = useState("-")
   const [oneDayTx, setOneDayTx] = useState("-")
@@ -71,7 +69,6 @@ export default function GlobalStats() {
             </TYPE.boxedRow>
             <TYPE.boxedRow>
               <TYPE.largeHeader>{formattedEthPrice}</TYPE.largeHeader>
-              {showPriceCard && <UniPrice />}
             </TYPE.boxedRow>
           </TYPE.boxed>
           <TYPE.boxed mb={'0.5rem'} mr={'0.25rem'}>

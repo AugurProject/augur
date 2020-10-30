@@ -6,9 +6,7 @@ import LocalStorageContextProvider, { Updater as LocalStorageContextUpdater } fr
 import AccountContextProvider from './contexts/Account'
 import TokenDataContextProvider, { Updater as TokenDataContextUpdater } from './contexts/TokenData'
 import GlobalDataContextProvider from './contexts/GlobalData'
-import PairDataContextProvider, { Updater as PairDataContextUpdater } from './contexts/PairData'
 import ApplicationContextProvider from './contexts/Application'
-import UserContextProvider from './contexts/User'
 import MarketsProvider, { Updater as MarketsProviderContextUpdater } from './contexts/Markets'
 import App from './App'
 import { createWeb3ReactRoot, Web3ReactProvider } from '@web3-react/core'
@@ -38,11 +36,9 @@ function ContextProviders({ children }) {
         <AccountContextProvider>
           <TokenDataContextProvider>
             <GlobalDataContextProvider>
-              <PairDataContextProvider>
-                <MarketsProvider>
-                  <UserContextProvider>{children}</UserContextProvider>
-                </MarketsProvider>
-              </PairDataContextProvider>
+              <MarketsProvider>
+                {children}
+              </MarketsProvider>
             </GlobalDataContextProvider>
           </TokenDataContextProvider>
         </AccountContextProvider>
@@ -55,7 +51,6 @@ function Updaters() {
   return (
     <>
       <LocalStorageContextUpdater />
-      <PairDataContextUpdater />
       <TokenDataContextUpdater />
       <MarketsProviderContextUpdater />
       <TransactionUpdater />
@@ -73,10 +68,10 @@ ReactDOM.render(
         <ContextProviders>
           <Updaters />
           <ThemeProvider>
-          <BrowserRouter>
+            <BrowserRouter>
               <ThemedGlobalStyle />
               <App />
-              </BrowserRouter>
+            </BrowserRouter>
           </ThemeProvider>
         </ContextProviders>
       </Provider>
