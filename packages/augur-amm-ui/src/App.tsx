@@ -5,7 +5,6 @@ import { client } from './apollo/client'
 import { Route, Switch, Redirect } from 'react-router-dom'
 import GlobalPage from './pages/GlobalPage'
 import TokenPage from './pages/TokenPage'
-import { useGlobalData, useGlobalChartData } from './contexts/GlobalData'
 import { isAddress } from './utils'
 import AllMarketsPage from './pages/AllMarketsPage'
 import LocalLoader from './components/LocalLoader'
@@ -40,9 +39,9 @@ const HeaderWrapper = styled.div`
  */
 const LayoutWrapper = ({ children, savedOpen, setSavedOpen }) => {
   return (
-      <ContentWrapper>
-        {children}
-      </ContentWrapper>
+    <ContentWrapper>
+      {children}
+    </ContentWrapper>
   )
 }
 
@@ -66,10 +65,8 @@ const BodyWrapper = styled.div`
 
 function App() {
   const [savedOpen, setSavedOpen] = useState(false)
-
-  const globalData = useGlobalData()
-  const globalChartData = useGlobalChartData()
   const latestBlock = useLatestBlock()
+
   return (
     <ApolloProvider client={client}>
       <AppWrapper>
@@ -78,100 +75,95 @@ function App() {
           <Header />
         </HeaderWrapper>
         <BodyWrapper>
-        <Popups />
-        <Web3ReactManager>
-        {latestBlock &&
-        globalData &&
-        Object.keys(globalData).length > 0 &&
-        globalChartData &&
-        Object.keys(globalChartData).length > 0 ? (
-
-            <Switch>
-              <Route
-                exacts
-                strict
-                path="/token/:marketId"
-                render={({ match }) => {
-                  const { marketId } = match.params
-                  if (marketId && isAddress(marketId.toLowerCase())) {
-                    return (
-                      <LayoutWrapper savedOpen={savedOpen} setSavedOpen={setSavedOpen}>
-                        <TokenPage marketId={marketId} />
-                      </LayoutWrapper>
-                    )
-                  } else {
-                    return <Redirect to="/home" />
-                  }
-                }}
-              />
-              <Route path="/home">
+          <Popups />
+          <Web3ReactManager>
+            {latestBlock ? (
+              <Switch>
+                <Route
+                  exacts
+                  strict
+                  path="/token/:marketId"
+                  render={({ match }) => {
+                    const { marketId } = match.params
+                    if (marketId && isAddress(marketId.toLowerCase())) {
+                      return (
+                        <LayoutWrapper savedOpen={savedOpen} setSavedOpen={setSavedOpen}>
+                          <TokenPage marketId={marketId} />
+                        </LayoutWrapper>
+                      )
+                    } else {
+                      return <Redirect to="/home" />
+                    }
+                  }}
+                />
+                <Route path="/home">
                   <GlobalPage />
-              </Route>
-              <Route path="/pools">
+                </Route>
+                <Route path="/pools">
                   <UserPools />
-              </Route>
-              <Route path="/positions">
+                </Route>
+                <Route path="/positions">
                   <UserPositions />
-              </Route>
-              <Route path="/markets">
-                <LayoutWrapper savedOpen={savedOpen} setSavedOpen={setSavedOpen}>
-                  <AllMarketsPage />
-                </LayoutWrapper>
-              </Route>
-              <Route
-                exacts
-                strict
-                path="/add/:marketId/:cash/:amm"
-                render={({ match }) => {
-                  const { marketId, amm, cash } = match.params
+                </Route>
+                <Route path="/markets">
+                  <LayoutWrapper savedOpen={savedOpen} setSavedOpen={setSavedOpen}>
+                    <AllMarketsPage />
+                  </LayoutWrapper>
+                </Route>
+                <Route
+                  exacts
+                  strict
+                  path="/add/:marketId/:cash/:amm"
+                  render={({ match }) => {
+                    const { marketId, amm, cash } = match.params
 
-                  if (isAddress(marketId.toLowerCase()) && isAddress(cash.toLowerCase())) {
-                    return (
-                      <AddLiquidity marketId={marketId} amm={amm} cash={cash} />
-                    )
-                  } else {
-                    return <Redirect to="/home" />
-                  }
-                }}
-              />
-              <Route
-                exacts
-                strict
-                path="/remove/:marketId/:amm"
-                render={({ match }) => {
-                  const { marketId, amm } = match.params
+                    if (isAddress(marketId.toLowerCase()) && isAddress(cash.toLowerCase())) {
+                      return (
+                        <AddLiquidity marketId={marketId} amm={amm} cash={cash} />
+                      )
+                    } else {
+                      return <Redirect to="/home" />
+                    }
+                  }}
+                />
+                <Route
+                  exacts
+                  strict
+                  path="/remove/:marketId/:amm"
+                  render={({ match }) => {
+                    const { marketId, amm } = match.params
 
-                  if (isAddress(marketId.toLowerCase()) && isAddress(amm.toLowerCase())) {
-                    return (
-                      <RemoveLiquidity marketId={marketId} ammExchangeId={amm} />
-                    )
-                  } else {
-                    return <Redirect to="/home" />
-                  }
-                }}
-              />
-              <Route
-                exacts
-                strict
-                path="/swap/:marketId/:cash/:amm"
-                render={({ match }) => {
-                  const { marketId, cash, amm } = match.params
+                    if (isAddress(marketId.toLowerCase()) && isAddress(amm.toLowerCase())) {
+                      return (
+                        <RemoveLiquidity marketId={marketId} ammExchangeId={amm} />
+                      )
+                    } else {
+                      return <Redirect to="/home" />
+                    }
+                  }}
+                />
+                <Route
+                  exacts
+                  strict
+                  path="/swap/:marketId/:cash/:amm"
+                  render={({ match }) => {
+                    const { marketId, cash, amm } = match.params
 
-                  if (isAddress(marketId.toLowerCase())) {
-                    return (
-                      <Swap marketId={marketId} cash={cash} amm={amm} />
-                    )
-                  } else {
-                    return <Redirect to="/home" />
-                  }
-                }}
-              />
-              <Redirect to="/home" />
-            </Switch>
-        ) : (
-          <LocalLoader />
-        )}
-        </Web3ReactManager>
+                    if (isAddress(marketId.toLowerCase())) {
+                      return (
+                        <Swap marketId={marketId} cash={cash} amm={amm} />
+                      )
+                    } else {
+                      return <Redirect to="/home" />
+                    }
+                  }}
+                />
+                <Redirect to="/home" />
+              </Switch>
+            ) : (
+                <LocalLoader />
+              )}
+          </Web3ReactManager>
         </BodyWrapper>
       </AppWrapper>
     </ApolloProvider>

@@ -18,12 +18,15 @@ export const healthClient = new ApolloClient({
   shouldBatch: true
 })
 
-export const blockClient = new ApolloClient({
-  link: new HttpLink({
-    uri: 'https://api.thegraph.com/subgraphs/name/blocklytics/ethereum-blocks'
-  }),
-  cache: new InMemoryCache()
-})
+export function blockClient(uri) {
+  return new ApolloClient({
+    link: new HttpLink({
+      uri
+    }),
+    cache: new InMemoryCache(),
+    shouldBatch: true
+  })
+}
 
 export function augurV2Client(uri) {
   return new ApolloClient({

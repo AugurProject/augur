@@ -61,6 +61,10 @@ function GlobalPage() {
   }
 
   useEffect(() => {
+    setFilteredMarkets(markets)
+  },[markets.length])
+
+  useEffect(() => {
     document.querySelector('body').scrollTo({
       behavior: 'smooth',
       top: 0

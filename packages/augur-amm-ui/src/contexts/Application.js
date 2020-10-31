@@ -373,6 +373,11 @@ function getConfig() {
   return config[String(network)]
 }
 
+export function getNetworkId() {
+  const config = getConfig()
+  return config.networkId;
+}
+
 export function useConfig() {
   return getConfig()
 }

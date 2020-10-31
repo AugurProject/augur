@@ -10,6 +10,7 @@
       }
     ],
     "augurClient": "https://api.thegraph.com/subgraphs/name/augurproject/augur-v2",
+    "blockClient": "https://api.thegraph.com/subgraphs/name/blocklytics/ethereum-blocks",
     "network": "mainnet"
   },
   "42": {
@@ -35,6 +36,7 @@
       }
     ],
     "augurClient": "https://api.thegraph.com/subgraphs/name/augurproject/augur-v2-staging",
+    "blockClient": "https://api.thegraph.com/subgraphs/name/blocklytics/kovan-blocks",
     "network": "kovan"
   }
 }

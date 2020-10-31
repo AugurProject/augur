@@ -4,8 +4,8 @@ import dayjs from 'dayjs'
 import { ethers } from 'ethers'
 import utc from 'dayjs/plugin/utc'
 import relativeTime from 'dayjs/plugin/relativeTime'
-import { client, blockClient } from '../apollo/client'
-import { GET_BLOCK, GET_BLOCKS, SHARE_VALUE } from '../apollo/queries'
+import { blockClient } from '../apollo/client'
+import { GET_BLOCK } from '../apollo/queries'
 import { Text } from 'rebass'
 import _Decimal from 'decimal.js-light'
 import toFormat from 'toformat'
@@ -75,8 +75,7 @@ export function getPoolLink(token0Address, token1Address = null, remove = false)
     return (
       `https://uniswap.exchange/` +
       (remove ? `remove` : `add`) +
-      `/${token0Address === '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2' ? 'ETH' : token0Address}/${
-        token1Address === '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2' ? 'ETH' : token1Address
+      `/${token0Address === '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2' ? 'ETH' : token0Address}/${token1Address === '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2' ? 'ETH' : token1Address
       }`
     )
   }
@@ -86,9 +85,8 @@ export function getSwapLink(token0Address, token1Address = null) {
   if (!token1Address) {
     return `https://uniswap.exchange/swap?inputCurrency=${token0Address}`
   } else {
-    return `https://uniswap.exchange/swap?inputCurrency=${
-      token0Address === '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2' ? 'ETH' : token0Address
-    }&outputCurrency=${token1Address === '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2' ? 'ETH' : token1Address}`
+    return `https://uniswap.exchange/swap?inputCurrency=${token0Address === '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2' ? 'ETH' : token0Address
+      }&outputCurrency=${token1Address === '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2' ? 'ETH' : token1Address}`
   }
 }
 
@@ -167,145 +165,16 @@ export async function splitQuery(query, localClient, vars, list, skipCount = 100
  * @dev Query speed is optimized by limiting to a 600-second period
  * @param {Int} timestamp in seconds
  */
-export async function getBlockFromTimestamp(timestamp) {
+export async function getBlockFromTimestamp(timestamp, url) {
   let result = null
   try {
-    result = await blockClient.query({
-      query: GET_BLOCK,
-      variables: {
-        timestampFrom: timestamp,
-        timestampTo: timestamp + 600
-      },
-      fetchPolicy: 'cache-first'
+    result = await blockClient(url).query({
+      query: GET_BLOCK(timestamp)
     })
-  } catch(e) {
-    console.error(e)
+  } catch (e) {
+    console.error('getBlockFromTimestamp', e)
   }
   return result ? result?.data?.blocks?.[0]?.number : 0
-}
-
-/**
- * @notice Fetches block objects for an array of timestamps.
- * @dev blocks are returned in chronological order (ASC) regardless of input.
- * @dev blocks are returned at string representations of Int
- * @dev timestamps are returns as they were provided; not the block time.
- * @param {Array} timestamps
- */
-export async function getBlocksFromTimestamps(timestamps, skipCount = 500) {
-  if (timestamps?.length === 0) {
-    return []
-  }
-
-  let fetchedData = await splitQuery(GET_BLOCKS, blockClient, [], timestamps, skipCount)
-
-  let blocks = []
-  if (fetchedData) {
-    for (var t in fetchedData) {
-      if (fetchedData[t].length > 0) {
-        blocks.push({
-          timestamp: t.split('t')[1],
-          number: fetchedData[t][0]['number']
-        })
-      }
-    }
-  }
-  return blocks
-}
-
-export async function getLiquidityTokenBalanceOvertime(account, timestamps) {
-  // get blocks based on timestamps
-  const blocks = await getBlocksFromTimestamps(timestamps)
-
-  // get historical share values with time travel queries
-  let result = await client.query({
-    query: SHARE_VALUE(account, blocks),
-    fetchPolicy: 'cache-first'
-  })
-
-  let values = []
-  for (var row in result?.data) {
-    let timestamp = row.split('t')[1]
-    if (timestamp) {
-      values.push({
-        timestamp,
-        balance: 0
-      })
-    }
-  }
-}
-
-/**
- * @notice Example query using time travel queries
- * @dev TODO - handle scenario where blocks are not available for a timestamps (e.g. current time)
- * @param {String} pairAddress
- * @param {Array} timestamps
- */
-export async function getShareValueOverTime(pairAddress, timestamps) {
-  if (!timestamps) {
-    const utcCurrentTime = dayjs()
-    const utcSevenDaysBack = utcCurrentTime.subtract(8, 'day').unix()
-    timestamps = getTimestampRange(utcSevenDaysBack, 86400, 7)
-  }
-
-  // get blocks based on timestamps
-  const blocks = await getBlocksFromTimestamps(timestamps)
-
-  // get historical share values with time travel queries
-  let result = await client.query({
-    query: SHARE_VALUE(pairAddress, blocks),
-    fetchPolicy: 'cache-first'
-  })
-
-  let values = []
-  for (var row in result?.data) {
-    let timestamp = row.split('t')[1]
-    let sharePriceUsd = parseFloat(result.data[row]?.reserveUSD) / parseFloat(result.data[row]?.totalSupply)
-    if (timestamp) {
-      values.push({
-        timestamp,
-        sharePriceUsd,
-        totalSupply: result.data[row].totalSupply,
-        reserve0: result.data[row].reserve0,
-        reserve1: result.data[row].reserve1,
-        reserveUSD: result.data[row].reserveUSD,
-        token0DerivedETH: result.data[row].token0.derivedETH,
-        token1DerivedETH: result.data[row].token1.derivedETH,
-        roiUsd: values && values[0] ? sharePriceUsd / values[0]['sharePriceUsd'] : 1,
-        ethPrice: 0,
-        token0PriceUSD: 0,
-        token1PriceUSD: 0
-      })
-    }
-  }
-
-  // add eth prices
-  let index = 0
-  for (var brow in result?.data) {
-    let timestamp = brow.split('b')[1]
-    if (timestamp) {
-      values[index].ethPrice = result.data[brow].ethPrice
-      values[index].token0PriceUSD = result.data[brow].ethPrice * values[index].token0DerivedETH
-      values[index].token1PriceUSD = result.data[brow].ethPrice * values[index].token1DerivedETH
-      index += 1
-    }
-  }
-
-  return values
-}
-
-/**
- * @notice Creates an evenly-spaced array of timestamps
- * @dev Periods include a start and end timestamp. For example, n periods are defined by n+1 timestamps.
- * @param {Int} timestamp_from in seconds
- * @param {Int} period_length in seconds
- * @param {Int} periods
- */
-export function getTimestampRange(timestamp_from, period_length, periods) {
-  let timestamps = []
-  for (let i = 0; i <= periods; i++) {
-    timestamps.push(timestamp_from + i * period_length)
-  }
-  return timestamps
 }
 
 export const toNiceDateYear = date => dayjs.utc(dayjs.unix(date)).format('MMMM DD, YYYY')

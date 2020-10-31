@@ -3,8 +3,6 @@ import React, { createContext, useContext, useReducer, useMemo, useCallback, use
 import { client } from '../apollo/client'
 import {
   CASH_TOKEN_DATA,
-  FILTERED_TRANSACTIONS,
-  PRICES_BY_BLOCK,
 } from '../apollo/queries'
 
 import { useEthPrice } from './GlobalData'
@@ -14,11 +12,7 @@ import utc from 'dayjs/plugin/utc'
 
 import {
   isAddress,
-  getBlocksFromTimestamps,
-  splitQuery
 } from '../utils'
-import { timeframeOptions } from '../constants'
-import { useLatestBlock, getCashInfo } from './Application'
 import { useMarket, useAllMarketCashes } from './Markets'
 
 const UPDATE = 'UPDATE'
@@ -219,7 +213,6 @@ export default function Provider({ children }) {
 }
 
 const getCashTokenData = async (cashes = []) => {
-
   let bulkResults = []
   try {
     bulkResults = await Promise.all(
@@ -247,115 +240,6 @@ const getCashTokenData = async (cashes = []) => {
     console.error(e)
   }
   return (bulkResults || []).reduce((p, a) => ({...p, [a.id]: a}), {})
-}
-
-const getTokenTransactions = async allPairsFormatted => {
-  const transactions = {}
-  try {
-    let result = await client.query({
-      query: FILTERED_TRANSACTIONS,
-      variables: {
-        allPairs: allPairsFormatted
-      },
-      fetchPolicy: 'cache-first'
-    })
-    transactions.mints = result.data.mints
-    transactions.burns = result.data.burns
-    transactions.swaps = result.data.swaps
-  } catch (e) {
-    console.log(e)
-  }
-  return transactions
-}
-/*
-const getTokenPairs = async tokenAddress => {
-  try {
-    // fetch all current and historical data
-    let result = await client.query({
-      query: TOKEN_DATA(tokenAddress),
-      fetchPolicy: 'cache-first'
-    })
-    return result.data?.['pairs0'].concat(result.data?.['pairs1'])
-  } catch (e) {
-    console.log(e)
-  }
-}
-*/
-const getIntervalTokenData = async (tokenAddress, startTime, interval = 3600, latestBlock) => {
-  const utcEndTime = dayjs.utc()
-  let time = startTime
-
-  // create an array of hour start times until we reach current hour
-  // buffer by half hour to catch case where graph isnt synced to latest block
-  const timestamps = []
-  while (time < utcEndTime.unix()) {
-    timestamps.push(time)
-    time += interval
-  }
-
-  // backout if invalid timestamp format
-  if (timestamps.length === 0) {
-    return []
-  }
-
-  // once you have all the timestamps, get the blocks for each timestamp in a bulk query
-  let blocks
-  try {
-    blocks = await getBlocksFromTimestamps(timestamps, 100)
-
-    // catch failing case
-    if (!blocks || blocks.length === 0) {
-      return []
-    }
-
-    if (latestBlock) {
-      blocks = blocks.filter(b => {
-        return parseFloat(b.number) <= parseFloat(latestBlock)
-      })
-    }
-
-    let result = await splitQuery(PRICES_BY_BLOCK, client, [tokenAddress], blocks, 50)
-
-    // format token ETH price results
-    let values = []
-    for (var row in result) {
-      let timestamp = row.split('t')[1]
-      let derivedETH = parseFloat(result[row]?.derivedETH)
-      if (timestamp) {
-        values.push({
-          timestamp,
-          derivedETH
-        })
-      }
-    }
-
-    // go through eth usd prices and assign to original values array
-    let index = 0
-    for (var brow in result) {
-      let timestamp = brow.split('b')[1]
-      if (timestamp) {
-        values[index].priceUSD = result[brow].ethPrice * values[index].derivedETH
-        index += 1
-      }
-    }
-
-    let formattedHistory = []
-
-    // for each hour, construct the open and close price
-    for (let i = 0; i < values.length - 1; i++) {
-      formattedHistory.push({
-        timestamp: values[i].timestamp,
-        open: parseFloat(values[i].priceUSD),
-        close: parseFloat(values[i + 1].priceUSD)
-      })
-    }
-
-    return formattedHistory
-  } catch (e) {
-    console.log(e)
-    console.log('error fetching blocks')
-    return []
-  }
 }
 
 export function Updater() {
@@ -404,121 +288,10 @@ export function useTokenData(tokenAddress) {
         }
         update(tokenAddress, data)
       }
-      /* should have all the data needed on markets context
-      getTokenData(market, tokenAddress, ethPrice, ethPriceOld).then(data => {
-        update(tokenAddress, data)
-      })
-      */
     }
   }, [ethPrice, ethPriceOld, tokenAddress, tokenData, update, market])
 
   return tokenData || {}
-}
-
-export function useTokenTransactions(tokenAddress) {
-  const [state, { updateTokenTxns }] = useTokenDataContext()
-  const tokenTxns = state?.[tokenAddress]?.txns
-
-  const allPairsFormatted =
-    state[tokenAddress] &&
-    state[tokenAddress].TOKEN_PAIRS_KEY &&
-    state[tokenAddress].TOKEN_PAIRS_KEY.map(pair => {
-      return pair.id
-    })
-
-  useEffect(() => {
-    async function checkForTxns() {
-      if (!tokenTxns && allPairsFormatted) {
-        let transactions = await getTokenTransactions(allPairsFormatted)
-        updateTokenTxns(tokenAddress, transactions)
-      }
-    }
-    checkForTxns()
-  }, [tokenTxns, tokenAddress, updateTokenTxns, allPairsFormatted])
-
-  return tokenTxns || []
-}
-
-export function useTokenPairs(marketId) {
-  const [state, { updateAllPairs }] = useTokenDataContext()
-  const market = useMarket(marketId)
-  const { amms } = market || {}
-  const tokenPairs = state?.[marketId]?.[TOKEN_PAIRS_KEY]
-
-  useEffect(() => {
-    async function fetchData() {
-      console.log('user token pairs', amms)
-      let allPairs = []
-      if (amms && amms.length > 0) {
-        allPairs = amms.filter(a => a.liquidity !== "0").reduce((p, amm) => {
-          const { shareToken, id: ammId } = amm
-          const { id, cash } = shareToken
-          return [
-            ...p,
-            {
-              token0: { id: cash.id, symbol: getCashInfo(cash.id)?.symbol },
-              token1: { id, symbol: 'Yes' },
-              ammId,
-              oneDayVolumeUSD: 1, // this comes from amm stats
-              reserveUSD: 2,
-              trackedReserveUSD: 3,
-              oneWeekVolumeUSD: 4
-            },
-            {
-              token0: { id: cash.id, symbol: getCashInfo(cash.id)?.symbol },
-              token1: { id, symbol: 'No' },
-              ammId,
-              oneDayVolumeUSD: 1,
-              reserveUSD: 2,
-              trackedReserveUSD: 3,
-              oneWeekVolumeUSD: 4
-            }
-          ]
-        }, [])
-        updateAllPairs(marketId, allPairs)
-      }
-    }
-    if (!tokenPairs && isAddress(marketId)) {
-      fetchData()
-    }
-  }, [marketId, tokenPairs, updateAllPairs, amms])
-
-  return tokenPairs || []
-}
-
-/**
- * get candlestick data for a token - saves in context based on the window and the
- * interval size
- * @param {*} tokenAddress
- * @param {*} timeWindow // a preset time window from constant - how far back to look
- * @param {*} interval  // the chunk size in seconds - default is 1 hour of 3600s
- */
-export function useTokenPriceData(tokenAddress, timeWindow, interval = 3600) {
-  const [state, { updatePriceData }] = useTokenDataContext()
-  const chartData = state?.[tokenAddress]?.[timeWindow]?.[interval]
-  const latestBlock = useLatestBlock()
-
-  useEffect(() => {
-    const currentTime = dayjs.utc()
-    const windowSize = timeWindow === timeframeOptions.MONTH ? 'month' : 'week'
-    const startTime =
-      timeWindow === timeframeOptions.ALL_TIME
-        ? 1589760000
-        : currentTime
-            .subtract(1, windowSize)
-            .startOf('hour')
-            .unix()
-
-    async function fetch() {
-      let data = await getIntervalTokenData(tokenAddress, startTime, interval, latestBlock)
-      updatePriceData(tokenAddress, data, timeWindow, interval)
-    }
-    if (!chartData) {
-      fetch()
-    }
-  }, [chartData, interval, timeWindow, tokenAddress, updatePriceData, latestBlock])
-
-  return chartData
 }
 
 export function useTokenDayPriceData() {
