@@ -224,7 +224,7 @@ const getEthPrice = async (url) => {
     ethPriceOneDay = oneDayBackPrice
 
   } catch (e) {
-    console.error(e)
+    console.error('error getting eth price')
     ethPrice = TESTNET_ETH_PRICE
     ethPriceOneDay = TESTNET_ETH_PRICE
     console.error(`going to default eth price to ${ethPrice} just for testing`)
