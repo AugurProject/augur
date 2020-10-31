@@ -225,7 +225,7 @@ const getCashTokenData = async (cashes = []) => {
           fetchPolicy: 'cache-first'
         })
         let tokenData = {usdPrice: usdPrice?.data?.tokenDayDatas[0], id: cash }
-
+console.log('tokenData.usdPrice', tokenData.usdPrice)
         if (!tokenData.usdPrice) {
           // TOOD remove this, used only form kovan testing
           tokenData = {
@@ -298,7 +298,6 @@ export function useTokenDayPriceData() {
   const [state, { updateCashTokens }] = useTokenDataContext()
   const cashTokens = state[CASH_DATA]
   const cashes = useAllMarketCashes()
-
   useEffect(() => {
     async function getData() {
       if (cashes && cashes.length > 0) {
@@ -312,7 +311,7 @@ export function useTokenDayPriceData() {
         }
       }
     }
-    if (!cashTokens || Object.keys(cashTokens) === 0) getData()
+    if (!cashTokens || Object.keys(cashTokens).length === 0) getData()
   }, [updateCashTokens, cashes, cashTokens])
 
   return cashTokens
