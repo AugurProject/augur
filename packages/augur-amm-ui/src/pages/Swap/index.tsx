@@ -101,7 +101,7 @@ function Swap({ marketId, amm }: RouteComponentProps<{ inputCurrencyId?: string;
     if (trade && trade.currencyIn) {
       estimate(augurClient, trade)
     }
-  }, [augurClient, chainId, trade])
+  }, [trade])
 
   useEffect(() => {
     if (outputAmount) {

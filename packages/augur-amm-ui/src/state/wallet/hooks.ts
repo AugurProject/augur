@@ -131,7 +131,7 @@ export function useMarketShareBalances(): [MarketBalance[], boolean] {
   const { account } = useActiveWeb3React()
 
   const userAccount = account ? account : ZERO_ADDRESS
-  const paraTokenAdds: string[] = paraShareTokens.map(p => p.id)
+  const paraTokenAdds: string[] = (paraShareTokens || []).map(p => p.id)
 
   const inputs: [] = useMemo(
     () =>
@@ -150,7 +150,7 @@ export function useMarketShareBalances(): [MarketBalance[], boolean] {
 
   const anyLoading: boolean = useMemo(() => balances.some(callState => callState.loading), [balances])
   const keyedMarkets = (markets || []).reduce((p, m) => ({ ...p, [m.id]: m }), {})
-  const keyedParaTokens = paraShareTokens.reduce((p, t) => ({ ...p, [t.id]: t }), {})
+  const keyedParaTokens = (paraShareTokens || []).reduce((p, t) => ({ ...p, [t.id]: t }), {})
 
   return [
     useMemo(

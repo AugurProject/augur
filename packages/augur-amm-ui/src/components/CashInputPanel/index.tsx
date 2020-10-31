@@ -103,15 +103,10 @@ export default function CashInputPanel({
   customBalanceText
 }: CashInputPanelProps) {
 
-  //const [modalOpen, setModalOpen] = useState(false)
   const { account } = useActiveWeb3React()
   const selectedCurrencyBalance = useCurrencyBalance(account ?? undefined, currency ?? undefined)
   const theme = useContext(ThemeContext)
 
-  /*  const handleDismissSearch = useCallback(() => {
-    setModalOpen(false)
-  }, [setModalOpen])
-*/
   return (
     <InputPanel id={id}>
       <Container hideInput={hideInput}>
@@ -147,7 +142,6 @@ export default function CashInputPanel({
               }}
             />
           </>
-          {account && currency && <StyledBalanceMax onClick={onMax}>MAX</StyledBalanceMax>}
           <Aligner>{currency ? <TokenLogo tokenInfo={currency} showSymbol size={'24px'} /> : null}</Aligner>
         </InputRow>
       </Container>

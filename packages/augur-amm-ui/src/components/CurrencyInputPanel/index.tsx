@@ -174,7 +174,6 @@ export default function CurrencyInputPanel({
         )}
         <InputRow style={hideInput ? { padding: '0', borderRadius: '8px' } : {}} selected={disableCurrencySelect}>
           {!hideInput && (
-            <>
               <NumericalInput
                 className="token-amount-input"
                 disabled={disableInput}
@@ -183,10 +182,6 @@ export default function CurrencyInputPanel({
                   onUserInput(val)
                 }}
               />
-              {account && currency && showMaxButton && label !== 'To' && (
-                <StyledBalanceMax onClick={onMax}>MAX</StyledBalanceMax>
-              )}
-            </>
           )}
           <CurrencySelect
             selected={!!currency}
@@ -199,7 +194,7 @@ export default function CurrencyInputPanel({
           >
             <Aligner>
               {currency ? (
-                <TokenLogo tokenInfo={currency} showSymbol size={'16px'} />
+                <TokenLogo tokenInfo={currency} showSymbol size={'16px'} style={{ textOverflow: 'ellipsis', overflow: 'hidden'}} />
               ) : null}
               <StyledTokenName className="token-symbol-container" active={Boolean(currency && currency.symbol)}>
                 {!currency && 'Select Token'}
