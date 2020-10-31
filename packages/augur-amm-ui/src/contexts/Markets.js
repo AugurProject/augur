@@ -7,7 +7,6 @@ import { augurV2Client } from '../apollo/client'
 import { GET_MARKETS } from '../apollo/queries'
 import { useConfig, useParaDeploys } from '../contexts/Application'
 import { getBlockFromTimestamp } from '../utils'
-import { NetworkId } from '../constants'
 
 const UPDATE = 'UPDATE'
 const UPDATE_MARKETS = ' UPDATE_MARKETS'
@@ -107,17 +106,15 @@ export default function Provider({ children }) {
   )
 }
 
-const roughlyTestnetBlockDiff = 10631525
 async function getPastDayBlockNumber(config) {
   const utcCurrentTime = dayjs.utc()
-  const utcOneDayBack = utcCurrentTime.subtract(1, 'day').unix()
-  let block = await getBlockFromTimestamp(utcOneDayBack)
-  if (config.networkId !== NetworkId.Mainnet) {
-    // theGraph calls for latest block is for mainnet
-    // adjust for testnet
-    block = Number(block) + Number(roughlyTestnetBlockDiff)
+  let block = null
+  try {
+    const utcOneDayBack = utcCurrentTime.subtract(1, 'day').unix()
+    block = await getBlockFromTimestamp(utcOneDayBack, config.blockClient)
+  } catch (e) {
+    console.error('get past day block number', e)
   }
-  console.log('utcOneDayBack', utcOneDayBack, block)
   return block
 }
 
