@@ -1,29 +1,29 @@
 module.exports = {
-  title: 'My Site',
-  tagline: 'The tagline of my site',
+  title: 'Augur Docs',
+  tagline: 'Augur Documentation',
   url: 'https://your-docusaurus-test-site.com',
   baseUrl: '/',
   onBrokenLinks: 'throw',
   favicon: 'img/favicon.ico',
-  organizationName: 'facebook', // Usually your GitHub org/user name.
-  projectName: 'docusaurus', // Usually your repo name.
+  organizationName: 'augur', // Usually your GitHub org/user name.
+  projectName: 'augur', // Usually your repo name.
   themeConfig: {
     navbar: {
-      title: 'My Site',
+      title: 'Augur Docs',
       logo: {
         alt: 'My Site Logo',
-        src: 'img/logo.svg',
+        src: 'img/augur-logo/Glyph/Color.svg',
+        srcDark: 'img/augur-logo/Glyph/White.svg',
       },
       items: [
         {
-          to: 'docs/',
-          activeBasePath: 'docs',
-          label: 'Docs',
+          to: 'docs/SUMMARY',
+          activeBasePath: '/',
+          label: 'Overview',
           position: 'left',
         },
-        {to: 'blog', label: 'Blog', position: 'left'},
         {
-          href: 'https://github.com/facebook/docusaurus',
+          href: 'https://github.com/AugurProject/augur',
           label: 'GitHub',
           position: 'right',
         },
@@ -49,17 +49,21 @@ module.exports = {
           title: 'Community',
           items: [
             {
-              label: 'Stack Overflow',
-              href: 'https://stackoverflow.com/questions/tagged/docusaurus',
-            },
-            {
               label: 'Discord',
-              href: 'https://discordapp.com/invite/docusaurus',
+              href: 'https://invite.augur.net/',
             },
             {
               label: 'Twitter',
-              href: 'https://twitter.com/docusaurus',
+              href: 'https://twitter.com/AugurProject',
             },
+            {
+              label: 'Reddit',
+              href: 'https://www.reddit.com/r/Augur/',
+            },
+            {
+              label: 'Facebook',
+              href: 'https://www.facebook.com/augurproject/',
+            }
           ],
         },
         {
@@ -67,16 +71,20 @@ module.exports = {
           items: [
             {
               label: 'Blog',
-              to: 'blog',
+              href: 'https://augur.net/blog',
             },
             {
               label: 'GitHub',
-              href: 'https://github.com/facebook/docusaurus',
+              href: 'https://github.com/AugurProject',
+            },
+            {
+              label: 'Bug Bounty',
+              href: 'https://augur.net/developers',
             },
           ],
         },
       ],
-      copyright: `Copyright © ${new Date().getFullYear()} My Project, Inc. Built with Docusaurus.`,
+      copyright: `Copyright © ${new Date().getFullYear()} PM Research LTD. Built with Docusaurus.`,
     },
   },
   presets: [
@@ -86,7 +94,7 @@ module.exports = {
         docs: {
           path: '../docs',
           // It is recommended to set document id as docs home page (`docs/` path).
-          homePageId: 'SUMMARY',
+          homePageId: 'Summary',
           sidebarPath: require.resolve('./sidebars.js'),
           // Please change this to your repo.
           editUrl:

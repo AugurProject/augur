@@ -3,13 +3,14 @@ import clsx from 'clsx';
 import Layout from '@theme/Layout';
 import Link from '@docusaurus/Link';
 import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
+import useThemeContext from '@theme/hooks/useThemeContext';
 import useBaseUrl from '@docusaurus/useBaseUrl';
 import styles from './styles.module.css';
 
-const features = [
+const features = (imageUrl) => [
   {
     title: <>Easy to Use</>,
-    imageUrl: 'img/undraw_docusaurus_mountain.svg',
+    imageUrl: '/img/augur-logo/augur-logo-full/vertical/whiteblank.svg',
     description: (
       <>
         Docusaurus was designed from the ground up to be easily installed and
@@ -18,8 +19,8 @@ const features = [
     ),
   },
   {
-    title: <>Focus on What Matters</>,
-    imageUrl: 'img/undraw_docusaurus_tree.svg',
+    title: <>Focus on What Matters</>,  //center
+    imageUrl,
     description: (
       <>
         Docusaurus lets you focus on your docs, and we&apos;ll do the chores. Go
@@ -29,7 +30,7 @@ const features = [
   },
   {
     title: <>Powered by React</>,
-    imageUrl: 'img/undraw_docusaurus_react.svg',
+    imageUrl: '/img/augur-logo/augur-logo-full/vertical/whiteblank.svg',
     description: (
       <>
         Extend or customize your website layout by reusing React. Docusaurus can
@@ -54,6 +55,45 @@ function Feature({imageUrl, title, description}) {
   );
 }
 
+function Header() {
+  const context = useDocusaurusContext();
+  const {siteConfig = {}} = context;
+  return <header className={clsx('hero hero--primary', styles.heroBanner)}>
+    <div className="container">
+      <h1 className="hero__title">{siteConfig.title}</h1>
+      <p className="hero__subtitle">{siteConfig.tagline}</p>
+      <div className={styles.buttons}>
+        <Link
+          className={clsx(
+            'button button--outline button--secondary button--lg',
+            styles.getStarted,
+          )}
+          to={useBaseUrl('docs/SUMMARY')}>
+          Get Started
+        </Link>
+      </div>
+    </div>
+  </header>
+}
+
+function Main(){
+  const { isDarkTheme } = useThemeContext();
+  const imageUrl= isDarkTheme ? '/img/augur-logo/augur-logo-full/vertical/white.svg' : '/img/augur-logo/augur-logo-full/vertical/black.svg';
+  return <main>
+    {features(imageUrl).length > 0 && (
+      <section className={styles.features}>
+        <div className="container">
+          <div className="row">
+            {features(imageUrl).map((props, idx) => (
+              <Feature key={idx} {...props} />
+            ))}
+          </div>
+        </div>
+      </section>
+    )}
+  </main>
+}
+
 function Home() {
   const context = useDocusaurusContext();
   const {siteConfig = {}} = context;
@@ -61,35 +101,8 @@ function Home() {
     <Layout
       title={`Hello from ${siteConfig.title}`}
       description="Description will go into a meta tag in <head />">
-      <header className={clsx('hero hero--primary', styles.heroBanner)}>
-        <div className="container">
-          <h1 className="hero__title">{siteConfig.title}</h1>
-          <p className="hero__subtitle">{siteConfig.tagline}</p>
-          <div className={styles.buttons}>
-            <Link
-              className={clsx(
-                'button button--outline button--secondary button--lg',
-                styles.getStarted,
-              )}
-              to={useBaseUrl('docs/')}>
-              Get Started
-            </Link>
-          </div>
-        </div>
-      </header>
-      <main>
-        {features && features.length > 0 && (
-          <section className={styles.features}>
-            <div className="container">
-              <div className="row">
-                {features.map((props, idx) => (
-                  <Feature key={idx} {...props} />
-                ))}
-              </div>
-            </div>
-          </section>
-        )}
-      </main>
+      <Header/>
+      <Main/>
     </Layout>
   );
 }

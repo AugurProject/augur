@@ -1,17 +1,23 @@
-# Table of contents
+---
+title: 'Summary'
+---
 
-* [Augur](../README.md)
+# Overview:
+* [What is Augur](overview/whatisaugur.md)
+* [Concepts](overview/concepts.md)
+* [Dev Guide](overview/README.md)
+    * [Monorepo Overview](overview/monorepoOverview.md)
+    * [Testnet Dev Guide](overview/testnetdevGuide.md)
+    * [Local Dev Guide](overview/localdevGuide.md)
+    * [Tools (using flash)](overview/Tools.md)
 
-## Quick Start
-
-* [Introduction](quick-start/untitled-1.md)
-
-## Contracts
-
+## Archetecture
 * [Contracts Overview](contracts/overview.md)
-* [Index](contracts/index.md)
+* [Middleware Overview](archetecture/middlewareOverview.md)
+* [UI Overview](archetecture/uiOverview.md)
 
-## SDK
+## API
 
-* [Index](sdk/index.md)
-
+* [Contracts](contracts/index.md)
+* [Augur SDK](sdk/index.md)
+* [The Graph](sdk/theGraph.md)
