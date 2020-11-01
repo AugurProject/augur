@@ -1,10 +1,12 @@
 ---
+title: Introduction
+sidebar_label: Introduction
 description: >-
   An introduction to Augur's code structure, the monorepo, and the tools
   necessary to develop within it.
+...
 ---
 
-# Introduction
 
 Augur has [moved all development](https://github.com/AugurProject/augur) into the monorepo structure popularized by huge javascript projects like React and Webpack. In a monorepo, all project packages, plugins, and components are bundled together into one physical git repository. This greatly simplifies dependency management, making cross-module changes in atomic commits, simplifies cross-module testing, and means developers to access all parts of the code without changing configurations.
 
