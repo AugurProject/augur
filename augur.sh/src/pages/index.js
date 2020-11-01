@@ -10,7 +10,7 @@ import styles from './styles.module.css';
 const features = (imageUrl) => [
   {
     title: <>Easy to Use</>,
-    imageUrl: '/img/augur-logo/augur-logo-full/vertical/whiteblank.svg',
+    imageUrl: '/img/augur-logo/augur-logo-full/vertical/Whiteblank.svg',
     description: (
       <>
         Docusaurus was designed from the ground up to be easily installed and
@@ -30,7 +30,7 @@ const features = (imageUrl) => [
   },
   {
     title: <>Powered by React</>,
-    imageUrl: '/img/augur-logo/augur-logo-full/vertical/whiteblank.svg',
+    imageUrl: '/img/augur-logo/augur-logo-full/vertical/Whiteblank.svg',
     description: (
       <>
         Extend or customize your website layout by reusing React. Docusaurus can
@@ -78,7 +78,7 @@ function Header() {
 
 function Main(){
   const { isDarkTheme } = useThemeContext();
-  const imageUrl= isDarkTheme ? '/img/augur-logo/augur-logo-full/vertical/white.svg' : '/img/augur-logo/augur-logo-full/vertical/black.svg';
+  const imageUrl= isDarkTheme ? '/img/augur-logo/augur-logo-full/vertical/White.svg' : '/img/augur-logo/augur-logo-full/vertical/Black.svg';
   return <main>
     {features(imageUrl).length > 0 && (
       <section className={styles.features}>
