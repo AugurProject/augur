@@ -302,7 +302,7 @@ const getWindowLabels = (
 };
 
 export interface WindowProgressProps {
-  description: string;
+  description?: string;
 }
 
 export const WindowProgress = ({ description }: WindowProgressProps) => {

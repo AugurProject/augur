@@ -17,12 +17,10 @@ import {
   ExclamationCircle,
 } from 'modules/common/icons';
 import ReactTooltip from 'react-tooltip';
-import {
-  addPendingData,
-} from 'modules/pending-queue/actions/pending-queue-management';
+import { addPendingData } from 'modules/pending-queue/actions/pending-queue-management';
 
 import TooltipStyles from 'modules/common/tooltip.styles.less';
-import { createBigNumber, BigNumber } from 'utils/create-big-number';
+import { createBigNumber } from 'utils/create-big-number';
 import {
   SELL,
   BOUGHT,
@@ -67,17 +65,16 @@ import {
   AugurMarketsContent,
   EventDetailsContent,
 } from 'modules/create-market/constants';
-import {
-  MultipleExplainerBlock,
-} from 'modules/create-market/components/common';
+import { MultipleExplainerBlock } from 'modules/create-market/components/common';
 import { hasTemplateTextInputs } from '@augurproject/templates';
 import { getDurationBetween } from 'utils/format-date';
 import { useTimer } from 'modules/common/progress';
 import { getTransactionLabel } from 'modules/auth/helpers/get-gas-price';
-
+import noop from 'utils/noop';
 
 export interface MarketTypeProps {
   marketType: string;
+  isWarpSync?: boolean;
 }
 
 export interface MarketStatusProps {
@@ -237,7 +234,7 @@ interface ButtonObj {
 interface WordTrailProps {
   typeLabel: string;
   items: Array<ButtonObj>;
-  children: Array<any>;
+  children?: Array<any>;
 }
 
 interface CategoryTagTrailProps {
@@ -332,8 +329,12 @@ interface TypeLabelProps {
   type: string;
 }
 
-export const TypeLabel = ({type}: TypeLabelProps) => (
-  <span className={classNames(Styles.TypeLabel, {[Styles.Ask]: type !== BUY})}>{type}</span>
+export const TypeLabel = ({ type }: TypeLabelProps) => (
+  <span
+    className={classNames(Styles.TypeLabel, { [Styles.Ask]: type !== BUY })}
+  >
+    {type}
+  </span>
 );
 
 interface TemplateShieldProps {
@@ -366,7 +367,7 @@ export const TemplateShield = ({ market }: TemplateShieldProps) => {
         className={TooltipStyles.Tooltip}
         effect="solid"
         place="right"
-        type='light'
+        type="light"
         event="mouseover mouseenter"
         eventOff="mouseleave mouseout scroll mousewheel blur"
       >
@@ -438,12 +439,7 @@ export const DataArchivedLabel = ({ label }: DataArchivedProps) => {
   );
 };
 
-export const TimeLabel = ({
-  label,
-  time,
-  hint,
-  large,
-}: TimeLabelProps) => (
+export const TimeLabel = ({ label, time, hint, large }: TimeLabelProps) => (
   <div className={classNames(Styles.TimeLabel, { [Styles.Large]: large })}>
     <span>
       {label}
@@ -482,40 +478,40 @@ export const FullTimeLabel = ({
   large,
   hideContent = false,
 }: FullTimeLabelProps) => (
-    <div className={classNames(Styles.FullTimeLabel, { [Styles.Large]: large })}>
-      {!hideContent &&
-        <>
-          <span>
-            {label}
-            {hint && (
-              <>
-                <label
-                  className={TooltipStyles.TooltipHint}
-                  data-tip
-                  data-for={`tooltip-${label.replace(' ', '-')}`}
-                  data-iscapture={true}
-                >
-                  {QuestionIcon}
-                </label>
-                <ReactTooltip
-                  id={`tooltip-${label.replace(' ', '-')}`}
-                  className={TooltipStyles.Tooltip}
-                  effect="solid"
-                  place="right"
-                  type="light"
-                  event="mouseover mouseenter"
-                  eventOff="mouseleave mouseout scroll mousewheel blur"
-                >
-                  {hint}
-                </ReactTooltip>
-              </>
-            )}
-          </span>
-          <span>{time.formattedUtc}</span>
-          <span>{time.formattedLocalShortWithUtcOffsetWithoutSeconds}</span>
-        </>
-      }
-    </div>
+  <div className={classNames(Styles.FullTimeLabel, { [Styles.Large]: large })}>
+    {!hideContent && (
+      <>
+        <span>
+          {label}
+          {hint && (
+            <>
+              <label
+                className={TooltipStyles.TooltipHint}
+                data-tip
+                data-for={`tooltip-${label.replace(' ', '-')}`}
+                data-iscapture={true}
+              >
+                {QuestionIcon}
+              </label>
+              <ReactTooltip
+                id={`tooltip-${label.replace(' ', '-')}`}
+                className={TooltipStyles.Tooltip}
+                effect="solid"
+                place="right"
+                type="light"
+                event="mouseover mouseenter"
+                eventOff="mouseleave mouseout scroll mousewheel blur"
+              >
+                {hint}
+              </ReactTooltip>
+            </>
+          )}
+        </span>
+        <span>{time.formattedUtc}</span>
+        <span>{time.formattedLocalShortWithUtcOffsetWithoutSeconds}</span>
+      </>
+    )}
+  </div>
 );
 
 export const DashlineNormal = () => (
@@ -730,10 +726,10 @@ interface HoverValueLabelProps {
 }
 
 export const HoverValueLabel = ({
-    value = null,
-    showDenomination = false,
-    useFull = false
-  }: HoverValueLabelProps) => {
+  value = null,
+  showDenomination = false,
+  useFull = false,
+}: HoverValueLabelProps) => {
   const [hover, setHover] = useState(false);
   if (value === null) return <span />;
 
@@ -793,7 +789,7 @@ export const HoverValueLabel = ({
       )}
     </span>
   );
-}
+};
 
 export const InvalidLabel = ({
   text,
@@ -822,7 +818,7 @@ export const InvalidLabel = ({
       <label
         data-tip
         data-for={`${keyId}-${text ? text.replace(/\s+/g, '-') : ''}`}
-        data-iscapture={true}
+        data-iscapture
         onClick={event => openModal(event)}
       >
         {QuestionIcon}
@@ -873,7 +869,7 @@ export const PropertyLabel = ({
             className={TooltipStyles.TooltipHint}
             data-tip
             data-for={`tooltip-${label.replace(' ', '-')}`}
-            data-iscapture={true}
+            data-iscapture
           >
             {QuestionIcon}
           </label>
@@ -905,11 +901,7 @@ export const TransactionFeeLabel = ({
 }: TransactionFeeLabelProps) => {
   const label = getTransactionLabel();
   return (
-    <LinearPropertyLabel
-      label={label}
-      value={gasCostDai}
-      showDenomination
-    />
+    <LinearPropertyLabel label={label} value={gasCostDai} showDenomination />
   );
 };
 
@@ -925,7 +917,7 @@ export const TransactionFeeLabelToolTip = ({
       showDenomination
       highlight
       accentValue={isError}
-      id='transaction_fee'
+      id="transaction_fee"
       tipText="Est. TX Fee is not included in profit and loss"
     />
   );
@@ -947,7 +939,7 @@ export const LinearPropertyLabel = ({
   secondary,
   recentlyUpdated,
   positive,
-  showColor
+  showColor,
 }: LinearPropertyLabelProps) => (
   <div
     className={classNames(Styles.LinearPropertyLabel, {
@@ -960,8 +952,10 @@ export const LinearPropertyLabel = ({
     <span
       className={classNames({
         [Styles.RegularCase]: regularCase,
-    })}
-    >{label}</span>
+      })}
+    >
+      {label}
+    </span>
     <DashlineNormal />
     {useValueLabel ? (
       <ValueLabel
@@ -1024,40 +1018,46 @@ interface LiquidityDepletedLabelProps {
 export const LiquidityDepletedLabel = ({
   market,
 }: LiquidityDepletedLabelProps) => {
-  const { theme, actions: { setModal } } = useAppStatusStore();
+  const {
+    theme,
+    actions: { setModal },
+  } = useAppStatusStore();
   const isSports = theme === THEMES.SPORTS;
-  const showLabel = (
-    !isSports && (
-      !market.passDefaultLiquiditySpread ||
-      market.hasPendingLiquidityOrders
-    ) && market.marketStatus !== constants.MARKET_CLOSED
-  );
+  const showLabel =
+    !isSports &&
+    (!market.passDefaultLiquiditySpread || market.hasPendingLiquidityOrders) &&
+    market.marketStatus !== constants.MARKET_CLOSED;
   return (
     <>
-      {showLabel && (<span
-        className={classNames(Styles.LiquidityDepletedLabel)}
-        data-tip
-        data-for={'liquidityDepleted' + market.id}
-        data-iscapture={true}
-      >
-        LIQUIDITY DEPLETED
-        <ReactTooltip
-          id={'liquidityDepleted' + market.id}
-          className={TooltipStyles.Tooltip}
-          effect="solid"
-          place="top"
-          type="light"
-          event="mouseover mouseenter"
-          eventOff="mouseleave mouseout scroll mousewheel blur"
+      {showLabel && (
+        <span
+          className={classNames(Styles.LiquidityDepletedLabel)}
+          data-tip
+          data-for={'liquidityDepleted' + market.id}
+          data-iscapture={true}
         >
-          No longer passing the Liquidity spread filter, add more liquidity to
-          have your market seen. Liquidity indicator updates every minute.
-        </ReactTooltip>
-      </span>)}
+          LIQUIDITY DEPLETED
+          <ReactTooltip
+            id={'liquidityDepleted' + market.id}
+            className={TooltipStyles.Tooltip}
+            effect="solid"
+            place="top"
+            type="light"
+            event="mouseover mouseenter"
+            eventOff="mouseleave mouseout scroll mousewheel blur"
+          >
+            No longer passing the Liquidity spread filter, add more liquidity to
+            have your market seen. Liquidity indicator updates every minute.
+          </ReactTooltip>
+        </span>
+      )}
       {isSports && (
-          <button className={Styles.AddLiquidityButton} onClick={() => setModal({ type: MODAL_ADD_LIQUIDITY, market })}>
-            Add more liquidity
-          </button>
+        <button
+          className={Styles.AddLiquidityButton}
+          onClick={() => setModal({ type: MODAL_ADD_LIQUIDITY, market })}
+        >
+          Add more liquidity
+        </button>
       )}
     </>
   );
@@ -1068,7 +1068,7 @@ export interface MarketStatusLabelProps {
   reportingState: string;
   mini?: boolean;
   isWarpSync?: boolean;
-};
+}
 
 export const MarketStatusLabel = ({
   reportingState,
@@ -1089,7 +1089,9 @@ export const MarketStatusLabel = ({
       break;
     case REPORTING_STATE.AWAITING_FINALIZATION:
       resolved = true;
-      text = isSportsbook ? constants.MARKET_STATUS_MESSAGES.RESOLVED : constants.MARKET_STATUS_MESSAGES.AWAITING_RESOLVED;
+      text = isSportsbook
+        ? constants.MARKET_STATUS_MESSAGES.RESOLVED
+        : constants.MARKET_STATUS_MESSAGES.AWAITING_RESOLVED;
       break;
     case REPORTING_STATE.FINALIZED:
       resolved = true;
@@ -1097,7 +1099,9 @@ export const MarketStatusLabel = ({
       break;
     default:
       reporting = true;
-      text = isSportsbook ? constants.MARKET_STATUS_MESSAGES.IN_SETTLEMENT : constants.MARKET_STATUS_MESSAGES.IN_REPORTING;
+      text = isSportsbook
+        ? constants.MARKET_STATUS_MESSAGES.IN_SETTLEMENT
+        : constants.MARKET_STATUS_MESSAGES.IN_REPORTING;
       break;
   }
 
@@ -1119,7 +1123,12 @@ export const MarketStatusLabel = ({
   );
 };
 
-export const InReportingLabel = ({ reportingState, disputeInfo, isWarpSync, isForkingMarket }: InReportingLabelProps) => {
+export const InReportingLabel = ({
+  reportingState,
+  disputeInfo,
+  isWarpSync,
+  isForkingMarket,
+}: InReportingLabelProps) => {
   const { theme } = useAppStatusStore();
   const isSportsbook = theme === THEMES.SPORTS;
 
@@ -1131,7 +1140,12 @@ export const InReportingLabel = ({ reportingState, disputeInfo, isWarpSync, isFo
   ];
 
   if (!reportingStates.includes(reportingState)) {
-    return <MarketStatusLabel reportingState={reportingState} isWarpSync={isWarpSync} />;
+    return (
+      <MarketStatusLabel
+        reportingState={reportingState}
+        isWarpSync={isWarpSync}
+      />
+    );
   }
 
   let reportingExtraText: string | null;
@@ -1143,9 +1157,13 @@ export const InReportingLabel = ({ reportingState, disputeInfo, isWarpSync, isFo
   } else if (reportingState === REPORTING_STATE.OPEN_REPORTING) {
     reportingExtraText = constants.OPEN_REPORTING;
   } else if (disputeInfo && disputeInfo.disputePacingOn) {
-    reportingExtraText = isSportsbook ? constants.MARKET_STATUS_MESSAGES.IN_SETTLEMENT : constants.SLOW_DISPUTE;
+    reportingExtraText = isSportsbook
+      ? constants.MARKET_STATUS_MESSAGES.IN_SETTLEMENT
+      : constants.SLOW_DISPUTE;
   } else if (disputeInfo && !disputeInfo.disputePacingOn) {
-    reportingExtraText = isSportsbook ? constants.MARKET_STATUS_MESSAGES.IN_SETTLEMENT : constants.FAST_DISPUTE;
+    reportingExtraText = isSportsbook
+      ? constants.MARKET_STATUS_MESSAGES.IN_SETTLEMENT
+      : constants.FAST_DISPUTE;
   } else {
     reportingExtraText = null;
   }
@@ -1191,8 +1209,8 @@ export const PendingLabel = ({ status }: PendingLabelProps) => (
       [Styles.Failure]: status === TXEventName.Failure,
     })}
     data-tip
-    data-for={'processing'}
-    data-iscapture={true}
+    data-for='processing'
+    data-iscapture
   >
     {(!status ||
       status === TXEventName.Pending ||
@@ -1202,7 +1220,7 @@ export const PendingLabel = ({ status }: PendingLabelProps) => (
           Processing <ClipLoader size={8} color="#ffffff" />
         </span>
         <ReactTooltip
-          id={'processing'}
+          id='processing'
           className={TooltipStyles.Tooltip}
           effect="solid"
           place="top"
@@ -1590,63 +1608,81 @@ export const ApprovalTxButtonLabel = ({
   title,
   buttonName,
   account,
-  userEthBalance = "0",
+  userEthBalance = '0',
   gasPrice,
   checkApprovals,
   doApprovals,
   approvalType,
   isApprovalCallback,
-  addFunds,
+  addFunds = noop,
   className = null,
   disabled = false,
   ignore = false,
   hideAddFunds = false,
 }) => {
-
   const [approvalsNeeded, setApprovalsNeeded] = useState(0);
   const [insufficientEth, setInsufficientEth] = useState(false);
   const [description, setDescription] = useState('');
   const [isProcessing, setIsProcessing] = useState(false);
 
   useEffect(() => {
-      const gasNeeded = constants.APPROVE_GAS_ESTIMATE.times(approvalsNeeded);
-      const ethNeededForGas = createBigNumber(
-        formatGasCostToEther(
-          gasNeeded,
-          { decimalsRounded: 4 },
-          createBigNumber(GWEI_CONVERSION).multipliedBy(gasPrice)
-        )
+    const gasNeeded = constants.APPROVE_GAS_ESTIMATE.times(approvalsNeeded);
+    const ethNeededForGas = createBigNumber(
+      formatGasCostToEther(
+        gasNeeded,
+        { decimalsRounded: 4 },
+        createBigNumber(GWEI_CONVERSION).multipliedBy(gasPrice)
+      )
+    );
+    const notEnoughEth =
+      createBigNumber(userEthBalance).lt(createBigNumber(ethNeededForGas)) &&
+      !hideAddFunds;
+    setInsufficientEth(notEnoughEth);
+    if (notEnoughEth) {
+      const ethDo = formatEther(ethNeededForGas);
+      setDescription(
+        `Insufficient ETH to approve trading. ${ethDo.formatted} ETH cost.`
       );
-      const notEnoughEth = createBigNumber(userEthBalance).lt(createBigNumber(ethNeededForGas)) && !hideAddFunds;
-      setInsufficientEth(notEnoughEth);
-      if (notEnoughEth) {
-        const ethDo = formatEther(ethNeededForGas);
-        setDescription(`Insufficient ETH to approve trading. ${ethDo.formatted} ETH cost.`);
-      } else {
-        switch(approvalType) {
-          case constants.CREATEMARKET:
-          setDescription('Approval requires one signing. Once confirmed, click create.');
+    } else {
+      switch (approvalType) {
+        case constants.CREATEMARKET:
+          setDescription(
+            'Approval requires one signing. Once confirmed, click create.'
+          );
           break;
-          case constants.PUBLICTRADE:
-            setDescription(`Approval requires ${approvalsNeeded} signing${approvalsNeeded > 1 ? 's' : ''} before you can place your order.`)
+        case constants.PUBLICTRADE:
+          setDescription(
+            `Approval requires ${approvalsNeeded} signing${
+              approvalsNeeded > 1 ? 's' : ''
+            } before you can place your order.`
+          );
           break;
-          case constants.ADDLIQUIDITY:
-            setDescription(`Approval requires ${approvalsNeeded} signing${approvalsNeeded > 1 ? 's' : ''}. Once confirmed you can submit your orders.`)
+        case constants.ADDLIQUIDITY:
+          setDescription(
+            `Approval requires ${approvalsNeeded} signing${
+              approvalsNeeded > 1 ? 's' : ''
+            }. Once confirmed you can submit your orders.`
+          );
           break;
-          case constants.APPROVE:
-            setDescription('Approval required before converting (to enable your wallet to interact with the Ethereum network)')
+        case constants.APPROVE:
+          setDescription(
+            'Approval required before converting (to enable your wallet to interact with the Ethereum network)'
+          );
           break;
-          default:
-            setDescription(`Approval requires ${approvalsNeeded} signing${approvalsNeeded > 1 ? 's' : ''}. Once confirmed you can place your order.`)
+        default:
+          setDescription(
+            `Approval requires ${approvalsNeeded} signing${
+              approvalsNeeded > 1 ? 's' : ''
+            }. Once confirmed you can place your order.`
+          );
           break;
-        }
-
       }
-  }, [userEthBalance, gasPrice, approvalsNeeded])
+    }
+  }, [userEthBalance, gasPrice, approvalsNeeded]);
 
-  const handleAddPendingData = (status) => {
-    addPendingData(constants.APPROVALS, constants.TRANSACTIONS, status, '', { })
-  }
+  const handleAddPendingData = status => {
+    addPendingData(constants.APPROVALS, constants.TRANSACTIONS, status, '', {});
+  };
 
   function doCheckApprovals() {
     checkApprovals(account).then(approvalsNeeded => {
@@ -1662,40 +1698,40 @@ export const ApprovalTxButtonLabel = ({
     doCheckApprovals();
   }, []);
 
-  return (
-    (!ignore && approvalsNeeded > 0) ? (
-      <div className={classNames(className)}>
-        <DismissableNotice
-          show={true}
-          title={title}
-          buttonAction={(account) => {
-            if (insufficientEth) {
-              addFunds();
-            } else {
-              handleAddPendingData(TXEventName.Pending);
-              setIsProcessing(true)
-              doApprovals(account).then(() => {
+  return !ignore && approvalsNeeded > 0 ? (
+    <div className={classNames(className)}>
+      <DismissableNotice
+        show={true}
+        title={title}
+        buttonAction={account => {
+          if (insufficientEth) {
+            addFunds();
+          } else {
+            handleAddPendingData(TXEventName.Pending);
+            setIsProcessing(true);
+            doApprovals(account)
+              .then(() => {
                 doCheckApprovals();
                 setIsProcessing(false);
-              }).catch(() => {
+              })
+              .catch(() => {
                 handleAddPendingData(TXEventName.Failure);
-                setIsProcessing(false)
+                setIsProcessing(false);
               });
-            }
-          }}
-          buttonText={insufficientEth ? 'Add Funds' : buttonName}
-          queueName={constants.TRANSACTIONS}
-          disabled={disabled || isProcessing}
-          error={insufficientEth}
-          queueId={constants.APPROVALS}
-          description={description}
-          customPendingButtonText={'Process...'}
-          buttonType={DISMISSABLE_NOTICE_BUTTON_TYPES.BUTTON}
-        />
-      </div>
-    ) : null
-  )
-}
+          }
+        }}
+        buttonText={insufficientEth ? 'Add Funds' : buttonName}
+        queueName={constants.TRANSACTIONS}
+        disabled={disabled || isProcessing}
+        error={insufficientEth}
+        queueId={constants.APPROVALS}
+        description={description}
+        customPendingButtonText={'Process...'}
+        buttonType={DISMISSABLE_NOTICE_BUTTON_TYPES.BUTTON}
+      />
+    </div>
+  ) : null;
+};
 
 interface BulkTxLabelProps {
   count: number;
@@ -1733,7 +1769,7 @@ export const AutoCancelOrdersNotice = () => (
     <DismissableNotice
       show
       buttonType={DISMISSABLE_NOTICE_BUTTON_TYPES.NONE}
-      title={`When cashing out, all open orders will automatically be cancelled, positions are left unchanged.`}
+      title="When cashing out, all open orders will automatically be cancelled, positions are left unchanged."
     />
   </div>
 );
@@ -1792,20 +1828,27 @@ ValueDenomination.defaultProps = {
   hideDenomination: false,
 };
 
-export const MarketStateLabel = (props: MarketStateLabelProps) => (
+export const MarketStateLabel = ({
+  handleClick,
+  loading,
+  marketType,
+  label,
+  selected,
+  count,
+}: MarketStateLabelProps) => (
   <div
-    onClick={() => props.handleClick()}
+    onClick={() => handleClick()}
     className={classNames(Styles.MarketLabel, {
-      [Styles.selected]: props.selected,
-      [Styles.loading]: props.loading,
-      [Styles.open]: props.marketType === constants.MARKET_OPEN,
-      [Styles.inReporting]: props.marketType === constants.MARKET_REPORTING,
-      [Styles.resolved]: props.marketType === constants.MARKET_CLOSED,
+      [Styles.selected]: selected,
+      [Styles.loading]: loading,
+      [Styles.open]: marketType === constants.MARKET_OPEN,
+      [Styles.inReporting]: marketType === constants.MARKET_REPORTING,
+      [Styles.resolved]: marketType === constants.MARKET_CLOSED,
     })}
   >
-    <div>{props.label}</div>
-    {props.selected && !props.loading && <div>({props.count})</div>}
-    {props.loading && props.selected && (
+    <div>{label}</div>
+    {selected && !loading && <div>({count})</div>}
+    {loading && selected && (
       <div>
         <span>{LoadingEllipse}</span>
       </div>
@@ -1817,31 +1860,31 @@ interface DiscordLinkProps {
   label?: string;
 }
 
-export const DiscordLink = (props: DiscordLinkProps) => (
+export const DiscordLink = ({ label }: DiscordLinkProps) => (
   <div className={Styles.discordLink}>
-    {props.label}
+    {label}
     <a href={DISCORD_LINK} target="_blank" rel="noopener noreferrer">
       Discord
     </a>
   </div>
 );
 
-export const AddFundsHelp = props => (
+export const AddFundsHelp = ({ showAddFundsModal, walletType }) => (
   <ol>
     <li>
-      Add ETH to your {props.walletType} trading account.{' '}
-      {props.walletType === ACCOUNT_TYPES.WEB3WALLET
+      Add ETH to your {walletType} trading account.{' '}
+      {walletType === ACCOUNT_TYPES.WEB3WALLET
         ? ''
-        : `${props.walletType} are our secure account and payment partners. ${props.walletType} will enable you to process the transaction fee without requiring Dai.`}{' '}
-      {props.walletType === ACCOUNT_TYPES.WEB3WALLET ? null : (
-        <span onClick={() => props.showAddFundsModal()}>
-          Add ETH to your {props.walletType} trading account
+        : `${walletType} are our secure account and payment partners. ${walletType} will enable you to process the transaction fee without requiring Dai.`}{' '}
+      {walletType === ACCOUNT_TYPES.WEB3WALLET ? null : (
+        <span onClick={() => showAddFundsModal()}>
+          Add ETH to your {walletType} trading account
         </span>
       )}
     </li>
     <li>
-      After you have sent the ETH to your {props.walletType} trading account you
-      can then return and make the transaction.
+      After you have sent the ETH to your {walletType} trading account you can
+      then return and make the transaction.
     </li>
   </ol>
 );

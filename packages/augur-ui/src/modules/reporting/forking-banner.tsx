@@ -11,9 +11,7 @@ import {
 } from 'modules/common/constants';
 import { ExclamationCircle } from 'modules/common/icons';
 import { CountdownProgress } from 'modules/common/progress';
-
-import { DateFormattedObject } from 'modules/types';
-
+// @ts-ignore
 import Styles from 'modules/reporting/forking.styles.less';
 import { useAppStatusStore } from 'modules/app/store/app-status';
 import { selectReportingWinningsByMarket } from 'modules/positions/selectors/select-reporting-winnings-by-market';

@@ -4,7 +4,7 @@
     "outDir": "build",
     "rootDir": "src",
     "target": "ES2017",
-    "module": "ES2015",
+    "module": "es2020",
     "jsx": "react",
     "noImplicitAny": false,
     "allowSyntheticDefaultImports": true,

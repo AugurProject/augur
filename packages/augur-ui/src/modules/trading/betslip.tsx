@@ -15,7 +15,7 @@ import { useBetslipStore } from 'modules/trading/store/betslip';
 
 import Styles from 'modules/trading/betslip.styles.less';
 import { PrimaryButton } from 'modules/common/buttons';
-import { betslipItemsType, BetslipMarketItemType } from 'modules/trading/store/betslip-hooks';
+import { BetslipMarketItemType } from 'modules/trading/store/betslip-hooks';
 
 export const Betslip = () => {
   const {
