@@ -48,6 +48,7 @@
     "@openzeppelin/gsn-helpers": "0.2.3",
     "cid-tool": "0.4.0",
     "commander": "4.1.0",
+    "cross-fetch": "3.0.4",
     "deepmerge": "4.2.2",
     "ethereum-keyfile-recognizer": "1.0.2",
     "ethereumjs-blockstream": "7.0.0",
@@ -59,7 +60,9 @@
     "ethjs-signer": "0.1.1",
     "ganache-core": "2.9.1",
     "ipfs": "0.40.0",
+    "lz-string": "1.4.4",
     "lodash": "4.17.19",
+    "moment": "2.26.0",
     "options-parser": "0.4.0",
     "readline-sync": "^1.4.10",
     "tsyringe": "3.2.0"
