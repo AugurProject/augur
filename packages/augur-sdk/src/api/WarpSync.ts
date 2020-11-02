@@ -32,6 +32,9 @@ export class WarpSync {
     const winningBondAddress = await market.getWinningReportingParticipant_();
     const winningParticipant = this.augur.contracts.getReportingParticipant(winningBondAddress);
     const payout = await winningParticipant.getPayoutNumerators_();
+
+    if(!payout[2]) throw new Error('Market has yet to be reported on.');
+
     return this.getWarpSyncHashFromPayout(payout[2]);
   }
 
