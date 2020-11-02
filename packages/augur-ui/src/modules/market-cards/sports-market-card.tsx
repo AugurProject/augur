@@ -20,13 +20,13 @@ import Styles from 'modules/market-cards/sports-market-card.styles.less';
 import MarketTitle from 'modules/market/components/common/market-title';
 import { ThickChevron } from 'modules/common/icons';
 import { LoadingCard } from 'modules/market-cards/market-card';
-import { MarketInfos } from 'modules/types';
+import { MarketData } from 'modules/types';
 
 interface SportsMarketCardProps {
   sportsGroup: {
     id: string;
     type: string;
-    markets: Array<MarketInfos>;
+    markets: Array<MarketData>;
     marketTypes: Array<string>;
   };
   loading: boolean;
@@ -98,7 +98,7 @@ export const SportsMarketCard = ({
           )}
           <CountdownProgress
             label="Estimated Start Time"
-            time={formatTime(market.sportsBook.estTimestamp)}
+            time={formatTime(Number(market.sportsBook.estTimestamp))}
             reportingState={reportingState}
           />
           <span className={Styles.Matched}>
