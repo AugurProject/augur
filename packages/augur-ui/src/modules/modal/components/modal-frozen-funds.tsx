@@ -85,7 +85,7 @@ export const ModalFrozenFunds = () => {
               <span>{bk.title}</span>
               {bk.rows.map(row => (
                 <div key={row.key}>
-                  <MarketTitle id={row.marketId} />
+                  <MarketTitle hideWarning id={row.marketId} />
                   <LinearPropertyLabel {...row} />
                 </div>
               ))}
