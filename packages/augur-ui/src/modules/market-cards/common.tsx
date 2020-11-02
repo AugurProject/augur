@@ -85,6 +85,7 @@ import { useMarketsStore } from 'modules/markets/store/markets';
 import { hasStakeInMarket } from 'modules/account/helpers/common';
 import { CountdownProgress } from 'modules/common/progress';
 import { isMarketView } from 'modules/market/components/market-view/betting-market-view';
+import { ReactText } from 'react';
 
 export interface PercentProps {
   percent: number;
@@ -455,7 +456,7 @@ interface SportsOutcomeProps {
   volume: string;
   outcomeId: number;
   outcomeLabel: string;
-  market: MarketInfos | MarketData;
+  market?: MarketData;
 }
 
 export const SportsOutcome = ({
@@ -487,8 +488,8 @@ export const SportsOutcome = ({
     poolId && liquidityPools[poolId] && liquidityPools[poolId][outcomeId];
   let topLabel = null;
   let disabled = true;
-  let label = '-';
-  let subLabel = '';
+  let label: string | ReactText = '-';
+  let subLabel: string | ReactText = '';
   let action = () => {};
   if (isWinningOutcome && sportsBook) {
     topLabel = determineTopLabel(sportsBook, outcomeId, outcomeLabel);
@@ -1573,7 +1574,6 @@ export const TopRow = ({ market, categoriesWithClick, sportMarkets }) => {
     >
       {marketStatus === MARKET_REPORTING && (
         <InReportingLabel
-          marketStatus={marketStatus}
           reportingState={reportingState}
           disputeInfo={disputeInfo}
           isWarpSync={market.isWarpSync}
