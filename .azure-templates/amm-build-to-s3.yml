@@ -6,7 +6,7 @@ parameters:
   - name: triggerBranch
     displayName: 'The branch name that will trigger this build and deploy (e.g. "dev")'
   - name: environment
-    display and: 'The environment used to build the ui, e.g. v2'
+    displayName: 'The environment used to build the ui, e.g. v2'
   - name: cloudfrontDistributionId
     displayName: 'The cloudfront distribution id in order to clear the cache on deploy (e.g. E2K6239JF3WYG6)'
 
