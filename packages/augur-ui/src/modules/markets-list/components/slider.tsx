@@ -20,10 +20,10 @@ interface SliderImage {
 }
 
 interface SliderImages {
-  alignment: 'left' | 'center' | 'right';
+  alignment: 'left' | 'center' | 'right' | string;
   image: SliderImage | string;
-  text: string;
-  altText: string;
+  text?: string;
+  altText?: string;
   button?: SliderButton;
   noOverlay?: boolean;
 }

@@ -1,12 +1,12 @@
 import React, { ReactNode, useEffect, useState } from 'react';
-import { Market } from 'modules/portfolio/types';
+import { MarketData } from 'modules/types';
 import EmptyDisplay from 'modules/portfolio/components/common/empty-display';
 import Styles from 'modules/portfolio/components/common/quad-box.styles.less';
 import QuadBox, { QuadBoxProps } from 'modules/portfolio/components/common/quad-box';
 import classNames from 'classnames';
 
 export interface FilterSwitchBoxProps extends QuadBoxProps {
-  data: Market[];
+  data: MarketData[];
   filterComp: Function;
   filterLabel: string;
   renderRows: Function;
@@ -57,7 +57,7 @@ const FilterSwitchBox = ({
     setFilteredData(filteredData);
   };
 
-  const applySearch = (input: string, filteredData: Market[]) => {
+  const applySearch = (input: string, filteredData: MarketData[]) => {
     return filteredData.filter(filterComp.bind(applySearch, input));
   };
 

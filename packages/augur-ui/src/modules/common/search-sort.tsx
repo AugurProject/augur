@@ -5,7 +5,7 @@ import { SquareDropdown } from 'modules/common/selection';
 import { SearchBar } from 'modules/common/search';
 import { NameValuePair } from 'modules/portfolio/types';
 
-import Styles from 'modules/common/search-sort.styles';
+import Styles from 'modules/common/search-sort.styles.less';
 
 export interface SearchSortProps {
   sortByOptions: Array<NameValuePair>;
@@ -18,7 +18,7 @@ export interface SearchSortProps {
 }
 
 export interface SearchSortState {
-  showSortByOptions: Boolean;
+  showSortByOptions: boolean;
   showCheckbox: boolean;
 }
 
@@ -31,7 +31,7 @@ export class SearchSort extends React.Component<
     showCheckbox: true,
   };
 
-  onFocus = (hide: Boolean) => {
+  onFocus = (hide: boolean) => {
     this.setState({ showSortByOptions: hide, showCheckbox: hide });
   };
 

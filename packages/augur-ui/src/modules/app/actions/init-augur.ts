@@ -1,11 +1,10 @@
-import type { SDKConfiguration } from '@augurproject/artifacts';
 import { augurSdk } from "services/augursdk";
 import { augurSdkLite } from "services/augursdklite";
 import { getNetworkId } from 'modules/contracts/actions/contractCalls';
 import isGlobalWeb3 from 'modules/auth/helpers/is-global-web3';
 import { checkIfMainnet } from 'modules/app/actions/check-if-mainnet';
 import logError from 'utils/log-error';
-import { isDevNetworkId, mergeConfig } from '@augurproject/utils';
+import { isDevNetworkId, mergeConfig, SDKConfiguration } from '@augurproject/utils';
 import { toChecksumAddress } from 'ethereumjs-util';
 import { JsonRpcProvider, Web3Provider } from 'ethers/providers';
 import { loginWithFortmatic } from 'modules/auth/actions/login-with-fortmatic';
@@ -20,7 +19,6 @@ import {
   MODAL_ERROR,
   MODAL_LOADING,
   MODAL_NETWORK_DISABLED,
-  MODAL_NETWORK_DISCONNECTED,
   MODAL_NETWORK_MISMATCH,
   NETWORK_NAMES,
   SIGNIN_SIGN_WALLET,
@@ -47,6 +45,19 @@ import getValueFromlocalStorage from 'utils/get-local-storage-value';
 
 
 const NETWORK_ID_POLL_INTERVAL_DURATION = 10000;
+
+interface AugurEnv {
+  AUGUR_ENV?: string;
+  AUGUR_HOSTED?: boolean;
+  AUTO_LOGIN?: boolean;
+  REPORTING_ONLY?: boolean;
+  CONFIGURATION?: SDKConfiguration;
+  CURRENT_BRANCH?: string;
+  CURRENT_COMMITHASH?: string;
+  ENABLE_MAINNET?: boolean;
+  ETHEREUM_NETWORK?: string;
+  IPFS_STABLE_LOADER_HASH?: string;
+};
 
 async function loadAccountIfStored() {
   const loggedInUser = getLoggedInUserFromLocalStorage();
@@ -105,7 +116,7 @@ const isNetworkMismatch = async config => {
 
 const isCorrectNetwork = async (config) => {
   const { setModal } = AppStatus.actions;
-  const chainId = await ethereum.request({ method: 'eth_chainId' });
+  const chainId = await windowRef.ethereum.request({ method: 'eth_chainId' });
   const web3NetworkId = String(createBigNumber(chainId));
   const privateNetwork = isPrivateNetwork(config.networkId);
   const isMisMatched  = privateNetwork ?
@@ -159,7 +170,8 @@ function pollForNetwork() {
   setInterval(() => {
     const { modal } = AppStatus.get();
     const { setModal, closeModal } = AppStatus.actions;
-    if (!process.env.ENABLE_MAINNET) {
+    const processEnvRef: AugurEnv = process.env;
+    if (!processEnvRef.ENABLE_MAINNET) {
       const isMainnet = checkIfMainnet();
       if (isMainnet && isEmpty(modal)) {
         setModal({
@@ -187,6 +199,7 @@ export const connectAugur = async (
   switch(loggedInAccountType) {
     case null:
       break;
+    // @ts-ignore
     case ACCOUNT_TYPES.WEB3WALLET:
       // If the account type is web3 we need a global web3 object
       if(!isGlobalWeb3()) break;
@@ -213,6 +226,7 @@ export const connectAugur = async (
 
   // Disable mesh for googleBot
   if (isGoogleBot()) {
+    // @ts-ignore
     config = mergeConfig(config, {
       zeroX: { mesh: { enabled: false } },
       warpSync: {
@@ -222,6 +236,7 @@ export const connectAugur = async (
   }
 
   if (isMobileSafari()) {
+    // @ts-ignore
     config = mergeConfig(config, {
       warpSync: {
         autoReport: false,
@@ -230,7 +245,6 @@ export const connectAugur = async (
     })
   }
 
-  let useWeb3 = false;
   const we3Provider = await detectEthereumProvider();
   if (we3Provider) {
     try {
@@ -238,7 +252,6 @@ export const connectAugur = async (
       if (!correctNetwork) {
         return callback(null);
       }
-    useWeb3 = correctNetwork;
     } catch(e) {
       console.error('Error with web3 provider, moving on');
     }
@@ -287,8 +300,8 @@ export const connectAugur = async (
       return callback(`SDK could not be created, see console for more information`, { config });
     }
 
-
-  if (process.env.REPORTING_ONLY && !getValueFromlocalStorage(DISCLAIMER_SEEN)) {
+  const processEnvRef: AugurEnv = process.env;
+  if (processEnvRef.REPORTING_ONLY && !getValueFromlocalStorage(DISCLAIMER_SEEN)) {
     const { setModal } = AppStatus.actions;
     setModal({
       type: MODAL_REPORTING_ONLY
@@ -346,7 +359,8 @@ export const initAugur = async (
   }: initAugurParams,
   callback: NodeStyleCallback = logError
 ) => {
-  const config: SDKConfiguration = process.env.CONFIGURATION;
+  const processEnvRef: AugurEnv = process.env;
+  const config: SDKConfiguration = processEnvRef.CONFIGURATION;
 
   if (ethereumNodeHttp) {
     config.ethereum.http = ethereumNodeHttp;

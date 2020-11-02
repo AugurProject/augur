@@ -1,4 +1,5 @@
 import { loadUniverseDetails } from 'modules/universe/actions/load-universe-details';
+import { History } from 'history';
 import { loadUniverseForkingInfo } from 'modules/universe/actions/load-forking-info';
 import { loadDisputeWindow } from 'modules/auth/actions/load-dispute-window';
 import { loadAccountData } from 'modules/auth/actions/load-account-data';

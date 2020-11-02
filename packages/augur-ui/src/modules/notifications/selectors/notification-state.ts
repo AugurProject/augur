@@ -1,4 +1,3 @@
-import { selectMarkets } from 'modules/markets/selectors/markets-all';
 import { MarketReportingState } from '@augurproject/sdk-lite';
 import {
   CANCELORDERS,
@@ -21,16 +20,10 @@ import {
   TYPE_VIEW_DETAILS,
   TYPE_VIEW_ORDERS,
   ZERO,
-  REDEEMSTAKE,
-  SUBMIT_DISPUTE,
-  TRANSACTIONS,
-  SUBMIT_REPORT,
-  CLAIMMARKETSPROCEEDS,
-  CANCELORDERS,
-  FINALIZE,
   THEMES,
 } from 'modules/common/constants';
 import { selectMarket } from 'modules/markets/selectors/market';
+import { selectMarkets } from 'modules/markets/selectors/markets-all';
 import userOpenOrders from 'modules/orders/selectors/user-open-orders';
 import {
   MarketClaimablePositions,

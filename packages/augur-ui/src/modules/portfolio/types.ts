@@ -1,7 +1,7 @@
 export interface NameValuePair {
   label: string;
   value: string;
-  comp: Function | null;
+  comp?: Function | null;
 }
 
 export interface KeyValuePair {

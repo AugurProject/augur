@@ -1,8 +1,7 @@
-import type { SDKConfiguration } from '@augurproject/artifacts';
 import type { EthersSigner } from '@augurproject/contract-dependencies-ethers';
 import type { Augur, Connectors } from '@augurproject/sdk';
 
-import { NetworkId } from '@augurproject/utils';
+import { NetworkId, SDKConfiguration } from '@augurproject/utils';
 import type { JsonRpcProvider } from 'ethers/providers';
 import { NULL_ADDRESS } from 'modules/common/constants';
 
@@ -10,7 +9,6 @@ import {
   listenToUpdates,
   unListenToEvents,
 } from 'modules/events/actions/listen-to-updates';
-import { BigNumber } from 'utils/create-big-number';
 import { isEmpty } from 'utils/is-empty';
 import { isLocalHost } from 'utils/is-localhost';
 import { analytics } from './analytics';
@@ -20,6 +18,7 @@ import { isMobileSafari, isSafari } from 'utils/is-safari';
 export class SDK {
   client: Augur | null = null;
   isSubscribed = false;
+  sdk = null;
   private connector:Connectors.BaseConnector;
   private config: SDKConfiguration;
 
@@ -113,7 +112,7 @@ export class SDK {
     provider: JsonRpcProvider,
     signer: EthersSigner,
     expectedNetworkId: NetworkId,
-    primaryProvider: string,
+    primaryProvider: string = '',
   ) {
     if (!this.client) {
       throw new Error('Trying to sync user data before Augur is initialized');

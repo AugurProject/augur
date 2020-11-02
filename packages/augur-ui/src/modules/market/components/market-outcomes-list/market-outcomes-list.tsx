@@ -4,17 +4,11 @@ import Media from 'react-media';
 import classNames from 'classnames';
 import { ToggleExtendButton } from 'modules/common/buttons';
 import { SMALL_MOBILE } from 'modules/common/constants';
-import SharedStyles
-  from 'modules/market/components/market-orders-positions-table/open-orders-table.styles.less';
-
 import { MarketOutcome } from 'modules/common/table-rows';
-
 import Styles from 'modules/market/components/market-outcomes-list/market-outcomes-list.styles.less';
-import SharedStyles from 'modules/market/components/market-orders-positions-table/open-orders-table.styles.less';
 import HeaderStyles from 'modules/portfolio/components/common/data-table-header.styles.less';
-import { ToggleExtendButton } from 'modules/common/buttons';
-import { SMALL_MOBILE } from 'modules/common/constants';
-import type { Getters } from '@augurproject/sdk';
+import SharedStyles from 'modules/market/components/market-orders-positions-table/open-orders-table.styles.less';
+import type { OutcomeOrderBook } from '@augurproject/sdk-lite';
 import { selectSortedMarketOutcomes } from 'modules/markets/selectors/market';
 import { MarketData } from 'modules/types';
 
@@ -26,7 +20,7 @@ interface MarketOutcomesListProps {
   toggle?: Function;
   hideOutcomes?: boolean;
   preview: boolean;
-  orderBook: Getters.Markets.OutcomeOrderBook;
+  orderBook: OutcomeOrderBook;
 }
 
 const MarketOutcomesList = ({

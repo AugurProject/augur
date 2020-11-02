@@ -3,7 +3,6 @@ import React from 'react';
 import { Proceeds } from 'modules/modal/proceeds';
 import { useAppStatusStore } from 'modules/app/store/app-status';
 import {
-  CLAIM_FEES_GAS_COST,
   CLAIM_STAKE_FEES,
   REDEEMSTAKE,
   DISAVOWCROWDSOURCERS,
@@ -15,13 +14,11 @@ import {
   CLAIM_MARKETS_PROCEEDS,
   PROCEEDS_TO_CLAIM_TITLE,
   MAX_BULK_CLAIM_MARKETS_PROCEEDS_COUNT,
-  NEW_ORDER_GAS_ESTIMATE,
   THEMES,
 } from 'modules/common/constants';
 import { selectReportingWinningsByMarket } from 'modules/positions/selectors/select-reporting-winnings-by-market';
 import { getTransactionLabel } from 'modules/auth/helpers/get-gas-price';
 import {
-  MarketReportClaimableContracts,
   MarketClaimablePositions,
   MarketData,
 } from 'modules/types';
@@ -33,18 +30,14 @@ import {
 } from 'modules/reporting/actions/claim-reporting-fees';
 import {
   formatAttoRep,
-  formatEther,
   formatBlank,
   formatAttoDai,
   formatDai,
-  formatGasCostToEther,
 } from 'utils/format-number';
-import { displayGasInDai } from 'modules/app/actions/get-ethToDai-rate';
 import { addPendingData } from 'modules/pending-queue/actions/pending-queue-management';
 import { disavowMarket } from 'modules/contracts/actions/contractCalls';
-import { TXEventName } from '@augurproject/sdk-lite';
+import { TXEventName, MarketInfoOutcome } from '@augurproject/sdk-lite';
 import { getLoginAccountClaimableWinnings } from 'modules/positions/selectors/login-account-claimable-winnings';
-import { labelWithTooltip } from 'modules/common/labels.styles.less';
 import {
   startClaimingMarketsProceeds,
   claimMarketsProceedsGas,
@@ -54,9 +47,7 @@ import { usePendingOrdersStore } from 'modules/app/store/pending-orders';
 import { selectMarket } from 'modules/markets/selectors/market';
 import { cancelAllOpenOrders } from 'modules/orders/actions/cancel-order';
 import { totalTradingBalance } from 'modules/auth/helpers/login-account';
-import { createBigNumber } from 'utils/create-big-number';
 import { startOrderSending } from 'modules/orders/actions/liquidity-management';
-import { Getters } from '@augurproject/sdk';
 import getUserOpenOrders from 'modules/orders/selectors/user-open-orders';
 import { getGasCost } from 'modules/modal/gas';
 import { getWager } from 'utils/get-odds';
@@ -595,7 +586,7 @@ export const ModalUnsignedOrders = () => {
   let numberOfTransactions = 0;
   let totalCost = ZERO;
 
-  market.outcomes.forEach((outcome: Getters.Markets.MarketInfoOutcome) => {
+  market.outcomes.forEach((outcome: MarketInfoOutcome) => {
     liquidity &&
       liquidity[outcome.id] &&
       liquidity[outcome.id].forEach((order: any, index: number) => {

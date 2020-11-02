@@ -1,4 +1,4 @@
-import type { Getters } from '@augurproject/sdk';
+import type { OutcomeOrderBook } from '@augurproject/sdk-lite';
 import memoize from 'memoizee';
 import { ASKS, BIDS } from 'modules/common/constants';
 import { QuantityOutcomeOrderBook } from 'modules/types';
@@ -20,7 +20,7 @@ function calculateMaxValues(mostShares) {
   );
 }
 export const orderAndAssignCumulativeShares = memoize(
-  (orderBook: Getters.Markets.OutcomeOrderBook): QuantityOutcomeOrderBook => {
+  (orderBook: OutcomeOrderBook): QuantityOutcomeOrderBook => {
     if (!orderBook) {
       return { spread: null, bids: [], asks: [] };
     }

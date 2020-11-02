@@ -1,8 +1,10 @@
+import { windowRef } from 'utils/window-ref';
+
 export default function() {
-  if (typeof window === "undefined") return false;
-  if (!window) return false;
-  if (!window.ethereum) {
-    if (window.web3 && window.web3.currentProvider) return true;
+  if (typeof windowRef === "undefined") return false;
+  if (!windowRef) return false;
+  if (!windowRef.ethereum) {
+    if (windowRef.web3 && windowRef.web3.currentProvider) return true;
     return false;
   }
   return true;

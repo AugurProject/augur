@@ -1,7 +1,6 @@
 import React from 'react';
 
 import { CloseButton } from 'modules/common/buttons';
-import type { UniverseDetails } from '@augurproject/sdk/src/state/getter/Universe';
 import UniverseCard from 'modules/universe-cards/components/universe-card';
 
 import Styles from 'modules/modal/modal.styles.less';

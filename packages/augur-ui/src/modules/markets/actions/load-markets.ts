@@ -10,11 +10,12 @@ import {
   MODAL_MARKET_NOT_FOUND,
 } from 'modules/common/constants';
 import * as _ from 'lodash';
-import { Getters } from '@augurproject/sdk';
 import {
   GetMarketsSortBy,
   MarketReportingState,
   TemplateFilters,
+  MarketList,
+  MaxLiquiditySpread,
 } from '@augurproject/sdk-lite';
 import { addUpdateMarketInfos } from 'modules/markets/actions/update-markets-data';
 import { LoadReportingMarketsOptions } from 'modules/types';
@@ -140,7 +141,7 @@ export const loadMarketsByFilter = async (
     limit: Number(filterOptions.limit),
     offset: paginationOffset * Number(filterOptions.limit),
     reportingStates,
-    maxLiquiditySpread: filterOptions.maxLiquiditySpread as Getters.Markets.MaxLiquiditySpread,
+    maxLiquiditySpread: filterOptions.maxLiquiditySpread as MaxLiquiditySpread,
     ...sort,
     templateFilter,
     marketTypeFilter: filterOptions.marketTypeFilter,
@@ -267,14 +268,14 @@ const loadReportingMarkets = (
     reportingState,
     null,
     filterOptions,
-    false,
-    getMarkets(reportingState, params, cb)
+    false
   );
+  getMarkets(reportingState, params, cb);
 };
 
 const getMarkets = (reportingState, params, cb) => async () => {
   const augur = augurSdk.get();
-  const marketList: Getters.Markets.MarketList = await augur.getMarkets({
+  const marketList: MarketList = await augur.getMarkets({
     ...params,
   });
 
@@ -287,6 +288,8 @@ const getMarkets = (reportingState, params, cb) => async () => {
     return {
       marketIds,
     };
+  } else {
+    return {};
   }
 };
 

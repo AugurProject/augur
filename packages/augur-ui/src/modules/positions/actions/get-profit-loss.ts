@@ -15,7 +15,7 @@ export const getProfitLoss = async ({
   const {
     loginAccount: { address: account },
   } = AppStatus.get();
-  if (!account) return false;
+  if (!account) return [];
   const Augur = augurSdk.get();
   return Augur.getProfitLoss({
     universe,

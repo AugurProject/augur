@@ -2,7 +2,7 @@ import memoize from "memoizee";
 
 import { BIDS, ASKS } from "modules/common/constants";
 
-import { createBigNumber } from "utils/create-big-number";
+import { createBigNumber, BigNumber } from "utils/create-big-number";
 import { MarketDepth } from "./order-for-market-depth";
 
 

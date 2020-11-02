@@ -11,7 +11,7 @@ import { updatePlatformTimeframeData } from 'modules/account/actions/update-plat
 export interface StatsProps {
   updateSelected?: Function;
   timeframe?: number;
-  isPlatform: boolean;
+  isPlatform?: boolean;
 }
 
 const DEFAULT_OPTIONS = {

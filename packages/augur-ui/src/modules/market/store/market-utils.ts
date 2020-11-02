@@ -32,7 +32,7 @@ const {
   ORDER_BOOK,
 } = TRADING_TUTORIAL_STEPS;
 
-export const getIsTutorial = marketId => marketId === TRADING_TUTORIAL;
+export const getIsTutorial = (marketId: string | undefined) => marketId === TRADING_TUTORIAL;
 export const getIsPreview = location =>
   parsePath(location.pathname)[0] === CREATE_MARKET;
 export const getTutorialPreview = (marketId, location) => {
@@ -104,7 +104,7 @@ export const handleStyleCalculation = (
     [Styles.FillsTutorial]: tradingTutorial && tutorialStep === MY_FILLS,
     [Styles.PositionsTutorial]: tradingTutorial && tutorialStep === POSITIONS,
   }),
-  OrderBookStyle: classNames(Styles.OrderBook, {
+  OrderBookStyle: classNames(Styles.Orders, {
     [Styles.hide]: extendTradeHistory,
     [Styles.show]: extendOrderBook,
     [Styles.OrderBookTutorial]: tradingTutorial && tutorialStep === ORDER_BOOK,

@@ -40,8 +40,7 @@ import {
 import classNames from 'classnames';
 import { getNetworkId, placeTrade } from 'modules/contracts/actions/contractCalls';
 import Styles from 'modules/common/buttons.styles.less';
-import { MARKET_TEMPLATES } from 'modules/create-market/constants';
-import type { Getters } from '@augurproject/sdk';
+import { MARKET_TEMPLATES, MarketCardTemplate } from 'modules/create-market/constants';
 import { TXEventName } from '@augurproject/sdk-lite';
 import { addCategoryStats } from 'modules/create-market/get-template';
 import ChevronFlip from 'modules/common/chevron-flip';
@@ -81,6 +80,10 @@ export interface DefaultButtonProps {
   customConfirmedButtonText?: string;
   className?: string;
   phantom?: boolean;
+  lightBorder?: boolean;
+  tiny?: boolean;
+  processing?: boolean;
+  dark?: boolean;
 }
 
 export interface SortButtonProps {
@@ -1071,7 +1074,7 @@ export const SortButton = (props: SortButtonProps) => (
 
 export interface CategoryButtonsProps {
   action: Function;
-  categoryStats: Getters.Markets.CategoryStats;
+  categoryStats: CategoryStats;
 }
 
 export const CategoryButtons = ({
@@ -1079,7 +1082,7 @@ export const CategoryButtons = ({
   categoryStats = {},
 }: CategoryButtonsProps) => (
   <div className={Styles.CategoryButtons}>
-    {MARKET_TEMPLATES.map((item, idx) => {
+    {MARKET_TEMPLATES.map((item: MarketCardTemplate, idx) => {
       const hasData = Object.keys(categoryStats).length > 0;
       const card = addCategoryStats(null, item, categoryStats);
       return (

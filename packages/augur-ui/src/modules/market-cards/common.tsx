@@ -1,7 +1,7 @@
 import React, { useEffect, useState, Fragment } from 'react';
 import { useLocation } from 'react-router';
 import ReactTooltip from 'react-tooltip';
-import { MarketReportingState } from '@augurproject/sdk-lite';
+import { MarketReportingState, StakeDetails } from '@augurproject/sdk-lite';
 import classNames from 'classnames';
 import Clipboard from 'clipboard';
 
@@ -21,9 +21,6 @@ import {
   YES_NO,
   ZERO,
   BUY,
-  INVALID_OUTCOME_LABEL,
-  SUBMIT_DISPUTE,
-  SCALAR_DOWN_ID,
   THEMES,
   BETTING_BACK,
   BETTING_LAY,
@@ -65,7 +62,6 @@ import {
 import { calculateTotalOrderValue } from 'modules/trades/helpers/calc-order-profit-loss-percents';
 import { BigNumber, createBigNumber } from 'utils/create-big-number';
 import { formatAttoRep, formatDai, formatNumber } from 'utils/format-number';
-import { Getters } from '@augurproject/sdk';
 import { ProcessingButton, BettingBackLayButton } from 'modules/common/buttons';
 import {
   CategoryTagTrail,
@@ -208,9 +204,9 @@ export const Outcome = ({
 
 export interface DisputeOutcomeProps {
   description: string;
-  invalid?: Boolean;
+  invalid?: boolean;
   index: number;
-  stake: Getters.Markets.StakeDetails | null;
+  stake: StakeDetails | null;
   id: number;
   canDispute: boolean;
   canSupport: boolean;

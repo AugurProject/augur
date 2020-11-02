@@ -8,6 +8,7 @@ import { useAppStatusStore } from 'modules/app/store/app-status';
 
 interface AuthenticatedRouteProps {
   component: any;
+  path: string;
 }
 
 const AuthenticatedRoute = ({

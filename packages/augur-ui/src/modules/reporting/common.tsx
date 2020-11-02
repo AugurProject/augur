@@ -52,9 +52,15 @@ import {
   formatGasCostToEther,
   formatPercent,
   formatAttoDai,
+  formatNumber,
 } from 'utils/format-number';
 import { MarketProgress } from 'modules/common/progress';
-import { InfoIcon, InformationIcon, QuestionIcon, XIcon } from 'modules/common/icons';
+import {
+  InfoIcon,
+  InformationIcon,
+  QuestionIcon,
+  XIcon,
+} from 'modules/common/icons';
 import ChevronFlip from 'modules/common/chevron-flip';
 import FormStyles from 'modules/common/form.styles.less';
 import TooltipStyles from 'modules/common/tooltip.styles.less';
@@ -119,9 +125,11 @@ export const DismissableNotice = ({
   return (
     <>
       {show ? (
-        <div className={classNames(Styles.DismissableNotice, className, {
+        <div
+          className={classNames(Styles.DismissableNotice, className, {
             [Styles.Error]: error,
-         })}>
+          })}
+        >
           <span>{InformationIcon}</span>
           <div>
             <div>{title}</div>
@@ -453,7 +461,11 @@ export const DisputingBondsView = ({
     universe: { warpSyncHash },
   } = useAppStatusStore();
   const gasPrice = gasPriceInfo.userDefinedGasPrice || gasPriceInfo.average;
-  const gasCostDai = getGasCost(DISPUTE_GAS_COST, gasPrice, ethToDaiRate);
+  const gasCostDai = getGasCost(
+    DISPUTE_GAS_COST.toNumber(),
+    createBigNumber(gasPrice),
+    ethToDaiRate
+  );
 
   const displayfee = `$${gasCostDai.formattedValue}`;
 
@@ -515,7 +527,6 @@ export const DisputingBondsView = ({
         inputStakeValue === '.' ||
         inputStakeValue === '0.')
     ) {
-      setStakeError
       setState({
         ...state,
         stakeError: 'Enter a valid number',
@@ -588,7 +599,7 @@ export const DisputingBondsView = ({
         />
       )}
       <TextInput
-        placeholder={'0.0000'}
+        placeholder="0.0000"
         value={String(stakeValue)}
         onChange={value => updateInputtedStakeLocal(value)}
         errorMessage={stakeError}
@@ -599,13 +610,13 @@ export const DisputingBondsView = ({
           <CancelTextButton
             noIcon
             action={() => updateInputtedStakeLocal(String(min))}
-            text={'MIN'}
+            text="MIN"
           />
           |
           <CancelTextButton
             noIcon
             action={() => updateInputtedStakeLocal(String(remaining))}
-            text={'FILL DISPUTE BOND'}
+            text="FILL DISPUTE BOND"
           />
         </section>
       )}
@@ -617,7 +628,7 @@ export const DisputingBondsView = ({
         }
         value={formatRep(stakeValue || ZERO).formatted + ' REPv2'}
       />
-      <TransactionFeeLabel gasCostDai={displayfee} />
+      <TransactionFeeLabel gasCostDai={formatNumber(displayfee)} />
       <PrimaryButton
         text="Confirm"
         action={() => {
@@ -674,7 +685,7 @@ export const ReportingBondsView = ({
   const owesRep = migrateMarket
     ? migrateMarket
     : !openReporting &&
-      !forkingInfo?.forkingMarket === market.id &&
+      forkingInfo?.forkingMarket === market.id &&
       !isSameAddress(market.author, address);
   const enoughRepBalance = owesRep
     ? userAttoRep.gte(createBigNumber(market.noShowBondAmount))
@@ -682,7 +693,11 @@ export const ReportingBondsView = ({
   userAttoRep = convertAttoValueToDisplayValue(userAttoRep);
 
   const gasPrice = gasPriceInfo.userDefinedGasPrice || gasPriceInfo.average;
-  const gasCostDai = getGasCost(INITAL_REPORT_GAS_COST, gasPrice, ethToDaiRate);
+  const gasCostDai = getGasCost(
+    INITAL_REPORT_GAS_COST.toNumber(),
+    createBigNumber(gasPrice),
+    ethToDaiRate
+  );
   const displayfee = `$${gasCostDai.formattedValue}`;
 
   const [state, setState] = useState({
@@ -714,9 +729,7 @@ export const ReportingBondsView = ({
           ...state,
           threshold: String(convertAttoValueToDisplayValue(threshold)),
         });
-        const gasLimit = await reportAction(true).catch(e =>
-          console.error(e)
-        );
+        const gasLimit = await reportAction(true).catch(e => console.error(e));
         setState({
           ...state,
           gasEstimate: gasLimit || INITAL_REPORT_GAS_COST,
@@ -888,7 +901,7 @@ export const ReportingBondsView = ({
         </div>
       )}
       <div>
-        <TransactionFeeLabel gasCostDai={displayfee} />
+        <TransactionFeeLabel gasCostDai={formatNumber(displayfee)} />
         {insufficientFunds && (
           <span className={FormStyles.ErrorText}>
             Insufficient Funds to complete transaction
@@ -1103,7 +1116,9 @@ export const UserRepDisplay = () => {
             id="get-rep"
           />
         </div>
-        {!isLogged && <p>Connect a wallet to see your Available REPv2 Balance</p>}
+        {!isLogged && (
+          <p>Connect a wallet to see your Available REPv2 Balance</p>
+        )}
         {isLogged && hasStakedRep && (
           <>
             <div />
@@ -1181,7 +1196,7 @@ export const ParticipationTokensView = () => {
           .times(ONE_HUNDRED_BECAUSE_PERCENTAGES)
       : 0
   );
-  let pastParticipationTokensPurchased =
+  let pastParticipationTokensPurchased: BigNumber | FormattedNumber =
     (participationTokens &&
       createBigNumber(participationTokens.totalClaimable)) ||
     ZERO;
@@ -1240,9 +1255,7 @@ export const ParticipationTokensView = () => {
         info
         header="Total Participation Tokens Purchased"
         subheader={purchasedParticipationTokens.formatted}
-        tooltipText={
-          'The total amount of participation tokens purchased by reporters in the current window'
-        }
+        tooltipText="The total amount of participation tokens purchased by reporters in the current window"
       />
       <Subheaders
         info
@@ -1325,14 +1338,10 @@ export const ReleasableRepNotice = () => {
 
   return (
     <DismissableNotice
-      show={true}
+      show
       buttonType={DISMISSABLE_NOTICE_BUTTON_TYPES.NONE}
-      title={
-        'You Still have REPv2 locked up in dispute Bonds and Participation Tokens.'
-      }
-      description={
-        'Please follow the instructions given in the banner at the top of this site or the notification in your account summary.'
-      }
+      title="You Still have REPv2 locked up in dispute Bonds and Participation Tokens."
+      description="Please follow the instructions given in the banner at the top of this site or the notification in your account summary."
     />
   );
 };

@@ -1,29 +1,28 @@
 import { createBigNumber } from "utils/create-big-number";
-import type { Getters } from "@augurproject/sdk";
-import type { TxStatus } from "@augurproject/sdk-lite"
+import type { TXStatus, MarketInfo } from "@augurproject/sdk-lite"
 import { convertOnChainPriceToDisplayPrice } from "@augurproject/utils"
 import { TX_OUTCOMES, TX_PRICES, TX_TYPES, ZERO, BUY, SELL } from "modules/common/constants";
 import { PendingOrders } from "modules/app/store/pending-orders";
 
 export function deleteMultipleLiquidityOrders(
-  tx: Events.TXStatus,
-  market: Getters.Markets.MarketInfo,
+  tx: TXStatus,
+  market: MarketInfo,
 ) {
   const payloads = processMultipleLiquidityOrders(tx, market)
   payloads.map(payload => PendingOrders.actions.updateSuccessfulLiquidity(payload));
 }
 
 export function setLiquidityMultipleOrdersStatus(
-  tx: Events.TXStatus,
-  market: Getters.Markets.MarketInfo,
+  tx: TXStatus,
+  market: MarketInfo,
 ) {
   const payloads = processMultipleLiquidityOrders(tx, market);
   payloads.map(payload => PendingOrders.actions.updateLiquidityStatus(payload));
 }
 
 export function processMultipleLiquidityOrders(
-  tx: Events.TXStatus,
-  market: Getters.Markets.MarketInfo
+  tx: TXStatus,
+  market: MarketInfo
 ) {
   const outcomes = tx.transaction.params[TX_OUTCOMES];
   const prices = tx.transaction.params[TX_PRICES];
@@ -55,7 +54,7 @@ interface Tx {
 
 export function processLiquidityOrder(
   tx: Tx,
-  market: Getters.Markets.MarketInfo
+  market: MarketInfo
 ) {
   const { outcomeId, orderType, orderPrice } = tx;
   const { transactionHash } = market;

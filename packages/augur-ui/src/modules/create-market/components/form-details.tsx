@@ -29,7 +29,6 @@ import {
   DESIGNATED_REPORTER_ADDRESS,
   CATEGORIES,
   OUTCOMES,
-  MARKET_COPY_LIST,
   DEFAULT_TICK_SIZE,
   MARKET_COPY_LIST,
 } from 'modules/create-market/constants';

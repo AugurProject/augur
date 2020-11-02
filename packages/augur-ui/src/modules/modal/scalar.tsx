@@ -5,7 +5,7 @@ import { Checkbox } from 'modules/common/form';
 import { PrimaryButton, ExternalLinkButton } from 'modules/common/buttons';
 import { MarketTypeLabel } from 'modules/common/labels';
 import { HELP_CENTER_SCALAR_MARKETS, SCALAR, SCALAR_MODAL_SEEN } from 'modules/common/constants';
-import Styles from 'modules/modal/modal.styles';
+import Styles from 'modules/modal/modal.styles.less';
 import { useAppStatusStore } from 'modules/app/store/app-status';
 
 interface ScalarProps {
@@ -29,7 +29,7 @@ export const Scalar = ({ cb = () => { } }: ScalarProps) => {
   return (
     <div className={Styles.Scalar}>
       <Title
-        title={'A note on Scalar Markets'}
+        title='A note on Scalar Markets'
         closeAction={handleclose}
       />
       <main>

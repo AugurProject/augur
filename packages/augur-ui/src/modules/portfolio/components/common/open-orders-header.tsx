@@ -4,10 +4,10 @@ import classNames from "classnames";
 import Styles from "modules/portfolio/components/common/data-table-header.styles.less";
 
 interface OpenOrdersHeaderProps {
-  extendedView?: Boolean;
-  showTotalCost?: Boolean;
-  noRightMargin?: Boolean;
-  initialLiquidity?: Boolean;
+  extendedView?: boolean;
+  showTotalCost?: boolean;
+  noRightMargin?: boolean;
+  initialLiquidity?: boolean;
 }
 
 const OpenOrdersHeader = (props: OpenOrdersHeaderProps) => (

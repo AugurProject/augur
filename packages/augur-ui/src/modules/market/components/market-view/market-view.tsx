@@ -14,7 +14,6 @@ import MarketTradeHistory from 'modules/market/components/market-trade-history/m
 import { MarketComments } from 'modules/market/components/common/comments/market-comments';
 import {
   MODAL_SCALAR_MARKET,
-  MODAL_TUTORIAL_INTRO,
   MODAL_TUTORIAL_OUTRO,
   PUBLICFILLORDER,
   SCALAR,
@@ -43,7 +42,7 @@ import { getDefaultOutcomeSelected } from 'utils/convert-marketInfo-marketData';
 import makePath from 'modules/routes/helpers/make-path';
 import { MARKETS } from 'modules/routes/constants/views';
 import { formatOrderBook } from 'modules/create-market/helpers/format-order-book';
-import type { Getters } from '@augurproject/sdk';
+import type { OutcomeOrderBook } from '@augurproject/sdk-lite';
 import { StatusErrorMessage } from 'modules/common/labels';
 import parseQuery from 'modules/routes/helpers/parse-query';
 import {
@@ -66,7 +65,6 @@ import {
   MARKET_INFO,
   TUTORIAL_FILL_ALERT,
   TRADING_TUTORIAL_MARKET,
-  DEFAULT_ORDER_PROPERTIES,
   EMPTY_FORMATTED_BOOK,
   FORMATTED_TUTORIAL_BOOK,
 } from 'modules/market/store/constants';
@@ -125,7 +123,7 @@ const MarketView = ({
   const defaultOutcomeId = market?.defaultSelectedOutcomeId;
   const cat5 = findType(market);
   const zeroXSynced = zeroXStatus === ZEROX_STATUSES.SYNCED;
-  const orderBook: Getters.Markets.OutcomeOrderBook = preview ? market.orderBook : ((orderBooks[marketId] || {}).orderBook || EMPTY_FORMATTED_BOOK);
+  const orderBook: OutcomeOrderBook = preview ? market.orderBook : ((orderBooks[marketId] || {}).orderBook || EMPTY_FORMATTED_BOOK);
   const [state, setState] = useState({
     pane: null,
     introShowing: false,

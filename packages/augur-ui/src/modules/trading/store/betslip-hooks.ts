@@ -1,5 +1,5 @@
 import { useReducer } from 'react';
-import { convertToWin, getWager, getShares } from 'utils/get-odds';
+import { convertToWin, getShares } from 'utils/get-odds';
 
 import { ZERO } from 'modules/common/constants';
 import {
@@ -17,6 +17,7 @@ import {
 } from 'utils/betslip-helpers';
 import { AppStatus } from 'modules/app/store/app-status';
 import deepClone from 'utils/deep-clone';
+import { windowRef } from 'utils/window-ref';
 
 const {
   CASH_OUT,
@@ -37,9 +38,30 @@ const {
   CLEAR_BETSLIP,
 } = BETSLIP_ACTIONS;
 const { BETSLIP, MY_BETS, MATCHED, UNMATCHED } = BETSLIP_SELECTED;
-const { UNSENT, PENDING, CLOSED, FILLED } = BET_STATUS;
+const { UNSENT, PENDING, CLOSED } = BET_STATUS;
 
-export const calculateBetslipTotals = betslip => {
+export interface BetslipMarketItemType {
+  description: string;
+  orders: {
+    orderId: string;
+    errorMessage?: string;
+    wager?: string;
+    shares?: string;
+    toWin?: string;
+    normalizedPrice?: string;
+    recentlyUpdated?: boolean;
+    outcome?: string;
+  }[];
+}
+
+export interface betslipItemsType {
+  marketId?: BetslipMarketItemType[];
+}
+
+export const calculateBetslipTotals = (betslip: {
+  count?: number;
+  items?: betslipItemsType;
+}) => {
   let totalWager = ZERO;
   let potential = ZERO;
   let fees = ZERO;
@@ -62,8 +84,8 @@ export const calculateBetslipTotals = betslip => {
 
 export function BetslipReducer(state, action) {
   let updatedState = { ...state };
-  const betslipItems = updatedState.betslip.items;
-  const matchedItems = updatedState.matched.items;
+  const betslipItems: betslipItemsType = updatedState.betslip.items;
+  const matchedItems: betslipItemsType = updatedState.matched.items;
   const {
     blockchain: { currentAugurTimestamp },
   } = AppStatus.get();
@@ -235,7 +257,12 @@ export function BetslipReducer(state, action) {
       const toWin = convertToWin(order.max, shares);
       const prevWager = betslipItems[marketId].orders[orderId].wager;
       if (betslipItems[marketId]?.orders)
-        betslipItems[marketId].orders[orderId] = { ...order, orderId, shares, toWin };
+        betslipItems[marketId].orders[orderId] = {
+          ...order,
+          orderId,
+          shares,
+          toWin,
+        };
       if (prevWager !== order.wager) {
         checkForConsumingOwnOrderError(
           marketId,
@@ -275,15 +302,15 @@ export function BetslipReducer(state, action) {
     default:
       throw new Error(`Error: ${action.type} not caught by Betslip reducer`);
   }
-  window.betslip = updatedState;
-  window.stores.betslip = updatedState;
+  windowRef.betslip = updatedState;
+  windowRef.stores.betslip = updatedState;
   return updatedState;
 }
 
 export const useBetslip = (defaultState = MOCK_BETSLIP_STATE) => {
   const [state, dispatch] = useReducer(BetslipReducer, defaultState);
-  window.betslip = state;
-  window.stores.betslip = state;
+  windowRef.betslip = state;
+  windowRef.stores.betslip = state;
   return {
     ...state,
     actions: {

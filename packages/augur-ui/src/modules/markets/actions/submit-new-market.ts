@@ -1,10 +1,8 @@
-import { ZERO } from 'modules/common/constants';
 import noop from 'utils/noop';
 import { sortOrders } from 'modules/orders/helpers/liquidity';
 import { NodeStyleCallback, NewMarket, CreateMarketData } from 'modules/types';
 import {
   createMarket,
-  approveToTrade,
 } from 'modules/contracts/actions/contractCalls';
 import {
   getConstructedMarketId,
@@ -12,10 +10,8 @@ import {
 } from 'modules/create-market/helpers/construct-market-params';
 import { createMarketRetry } from 'modules/contracts/actions/contractCalls';
 import { buildResolutionDetails } from 'modules/create-market/get-template';
-import type {
-  TemplateInput,
-} from '@augurproject/templates';
 import {
+  TemplateInput,
   TemplateInputType,
   UserInputDateTime,
 } from '@augurproject/templates';

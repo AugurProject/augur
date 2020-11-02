@@ -4,11 +4,12 @@
     "outDir": "build",
     "rootDir": "src",
     "target": "ES2017",
-    "module": "ES2015",
+    "module": "es2020",
     "jsx": "react",
     "noImplicitAny": false,
+    "allowSyntheticDefaultImports": true,
     "baseUrl": "src",
-    "moduleResolution": "Node",
+    "moduleResolution": "node",
     "paths": {
       "assets/*": [
         "./assets/*"
@@ -32,8 +33,7 @@
         "./utils/*"
       ]
     },
-    "allowSyntheticDefaultImports": true,
-    "esModuleInterop": false,
+    "esModuleInterop": true,
     "resolveJsonModule": false
   },
   "include": [

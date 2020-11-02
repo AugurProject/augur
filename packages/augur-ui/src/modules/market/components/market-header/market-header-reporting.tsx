@@ -3,8 +3,6 @@ import ReactTooltip from 'react-tooltip';
 import classNames from 'classnames';
 import { ProcessingButton } from 'modules/common/buttons';
 import {
-  CLAIMMARKETSPROCEEDS,
-  FINALIZE,
   INVALID_OUTCOME_LABEL,
   PROCEEDS_TO_CLAIM_TITLE,
   REPORTING_STATE,
@@ -24,8 +22,7 @@ import { finalizeMarket } from 'modules/contracts/actions/contractCalls';
 import { useAppStatusStore } from 'modules/app/store/app-status';
 import { isSameAddress } from 'utils/isSameAddress';
 import { createBigNumber } from 'utils/create-big-number';
-import Styles
-  from 'modules/market/components/market-header/market-header-reporting.styles.less';
+import Styles from 'modules/market/components/market-header/market-header-reporting.styles.less';
 import { MarketData } from 'modules/types';
 
 import { getOutcomeNameWithOutcome } from 'utils/get-outcome';

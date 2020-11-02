@@ -4,8 +4,8 @@ import { OpenOrder } from 'modules/common/table-rows';
 import { FilledOrder } from "modules/common/table-rows";
 
 import Styles from 'modules/portfolio/components/common/order-market-row.styles.less';
-
-import { Market, Order } from 'modules/portfolio/types';
+import { UIOrder } from 'modules/types';
+import { Market } from 'modules/portfolio/types';
 import MarketTitle from 'modules/market/components/common/market-title';
 
 export interface OrderMarketRowProps {
@@ -28,7 +28,7 @@ const OrderMarketRow = ({ market, filledOrders }: OrderMarketRowProps) => {
         <MarketTitle id={market.marketId} />
       </div>
       <div>
-        {orders.map((order: Order) =>
+        {orders.map((order: UIOrder) =>
           filledOrders ? (
             <FilledOrder key={'sFilledOrder_' + order.id} filledOrder={order} />
           ) : (

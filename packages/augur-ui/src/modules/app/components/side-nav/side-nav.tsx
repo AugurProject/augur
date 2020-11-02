@@ -6,7 +6,7 @@ import classNames from 'classnames';
 import { ThemeSwitch } from 'modules/app/components/theme-switch';
 import makePath from 'modules/routes/helpers/make-path';
 import ConnectDropdown from 'modules/auth/connect-dropdown';
-import { Dot, helpIcon, MobileNavCloseIcon, LogoutIcon, AddIcon, ShortChevron } from 'modules/common/icons';
+import { Dot, helpIcon, MobileNavCloseIcon, LogoutIcon, AddIcon, ShortChevron, Chevron } from 'modules/common/icons';
 import { NavMenuItem } from 'modules/types';
 import Styles from 'modules/app/components/side-nav/side-nav.styles.less';
 import { HelpIcon } from 'modules/app/components/help-resources';
@@ -16,7 +16,6 @@ import {
   PrimaryButton,
 } from 'modules/common/buttons';
 import TooltipStyles from 'modules/common/tooltip.styles.less';
-import { helpIcon, Chevron, Dot } from 'modules/common/icons';
 import { useAppStatusStore } from 'modules/app/store/app-status';
 import {
   MIGRATE_FROM_LEG_REP_TOKEN,

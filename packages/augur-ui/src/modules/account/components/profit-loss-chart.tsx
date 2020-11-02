@@ -60,15 +60,21 @@ const getOptions = () => ({
     endOnTick: false,
     startOnTick: false,
     tickLength: 4,
+    tickPositions: undefined,
     labels: {
       style: null,
       format: '{value:%b %d}',
-      formatter() {
+      formatter: function() {
         if (this.isLast) return 'Today';
         if (this.isFirst) {
           return Highcharts.dateFormat('%d %b %Y', this.value);
+        } else {
+          return '';
         }
       },
+      isLast: false,
+      isFirst: false,
+      value: null,
     },
     crosshair: false,
   },
@@ -81,12 +87,13 @@ const getOptions = () => ({
     labels: {
       style: null,
       format: '${value:.2f}',
-      formatter() {
+      formatter: function() {
         return formatDai(this.value, { removeComma: true }).full;
       },
       align: 'left',
       x: 0,
       y: -2,
+      value: null,
     },
     tickPositioner: (min, max) => {
       let arr = []
@@ -203,7 +210,7 @@ const ProfitLossChart = ({ width, data }: ChartProps) => {
       [] as dataObject[]
     )
     .map((d: dataObject) => getAreaSpline(d.arr));
-
+    // @ts-ignore
     const newOptions: Highcharts.Options = Object.assign(options, {
       series,
     }) as Highcharts.Options;

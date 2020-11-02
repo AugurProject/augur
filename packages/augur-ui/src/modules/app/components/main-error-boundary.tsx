@@ -4,8 +4,8 @@ import makePath from 'modules/routes/helpers/make-path';
 import { DEFAULT_VIEW } from 'modules/routes/constants/views';
 import { SecondaryButton } from 'modules/common/buttons';
 
-import Styles from 'modules/app/components/main-error-boundary.styles';
-import ButtonStyles from 'modules/common/buttons.styles';
+import Styles from 'modules/app/components/main-error-boundary.styles.less';
+import ButtonStyles from 'modules/common/buttons.styles.less';
 
 interface MEBState {
   hasError: boolean;
