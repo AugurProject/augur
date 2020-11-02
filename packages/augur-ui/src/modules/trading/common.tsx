@@ -64,15 +64,10 @@ export const EmptyState = () => {
           ? `You need to Sign in to start betting!`
           : `Need help placing a bet?`}
       </h4>
-      {!isLogged ? (
+      {!isLogged && (
         <PrimaryButton
           text="Signup"
           action={() => setModal({ type: MODAL_SIGNUP })}
-        />
-      ) : (
-        <SecondaryButton
-          text="View tutorial"
-          action={() => console.log('add tutorial link')}
         />
       )}
     </>
