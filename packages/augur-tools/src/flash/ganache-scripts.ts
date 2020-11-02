@@ -1,4 +1,10 @@
 const compilerOutput = require('@augurproject/artifacts/build/contracts.json');
+import {
+  ContractDeployer,
+  EthersFastSubmitWallet,
+} from '@augurproject/core/build';
+import { ParaAugurDeployer } from '@augurproject/core/build/libraries/ParaAugurDeployer';
+import { ParaContractDeployer } from '@augurproject/core/build/libraries/ParaContractDeployer';
 import { EthersProvider } from '@augurproject/ethersjs-provider';
 import { SDKConfiguration } from '@augurproject/utils';
 import * as fs from 'async-file';
@@ -9,8 +15,8 @@ import {
   createSeed,
   deployContracts,
   hashContracts,
-  loadSeed,
-  makeGanacheProvider,
+  loadSeed, makeDependencies,
+  makeGanacheProvider, makeSigner,
   Seed,
   startGanacheServer,
   writeSeeds,
@@ -76,16 +82,49 @@ export function addGanacheScripts(flash: FlashSession) {
       const config = this.deriveConfig({
         deploy: { normalTime: false, writeArtifacts: true },
       });
-      const { addresses } = await deployContracts(
-        this.network,
-        provider,
-        this.getAccount(),
-        compilerOutput,
-        config
-      );
-      config.addresses = addresses;
 
-      const defaultSeed = await createSeed(provider, db, addresses, {});
+      const signer = await EthersFastSubmitWallet.create(this.accounts[0], provider)
+      const dependencies = makeDependencies(
+        this.accounts[0],
+        provider,
+        signer
+      );
+
+      const contractDeployer = new ContractDeployer(
+        config,
+        dependencies,
+        provider.provider,
+        signer,
+        compilerOutput
+      );
+      const addresses = await contractDeployer.deploy(this.network);
+
+      const paraContractDeployer = new ParaContractDeployer(
+        this.config,
+        dependencies,
+        provider,
+        signer,
+        compilerOutput,
+      )
+      const paraDeployerAddress = await paraContractDeployer.deploy(this.network);
+
+      this.config.addresses = {
+        ...addresses,
+        "ParaDeployer": paraDeployerAddress
+      };
+
+      console.log('hello');
+
+
+      const paraDeployer = new ParaAugurDeployer(
+        this.config,
+        dependencies,
+        provider,
+        signer,
+        compilerOutput,
+      )
+      const paraDeploys = await paraDeployer.deploy(this.network, this.config.addresses.WETH9);
+      const defaultSeed = await createSeed(provider, db, addresses, paraDeploys);
 
       const seeds = {
         [name]: defaultSeed,
@@ -184,7 +223,7 @@ async function makeSeed(
   name = 'default',
   filepath = defaultSeedPath
 ) {
-  const seed = await createSeed(provider, ganacheDb, config.addresses);
+  const seed = await createSeed(provider, ganacheDb, config.addresses, {});
   const seeds = {};
   seeds[name] = seed;
   await writeSeeds(seeds, filepath);

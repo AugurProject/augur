@@ -86,11 +86,8 @@ import {
   waitForSigint,
   waitForSync,
 } from './util';
-import { ParaContractDeployer } from '@augurproject/core/build/libraries/ParaContractDeployer';
-import { ParaAugurDeployer } from '@augurproject/core/build/libraries/ParaAugurDeployer';
 
-import { ContractDependenciesEthers } from '@augurproject/contract-dependencies-ethers';
-import {deploySideChainContracts} from '../libs/blockchain';
+import { deploySideChainContracts } from '../libs/blockchain';
 
 const compilerOutput = require('@augurproject/artifacts/build/contracts.json');
 

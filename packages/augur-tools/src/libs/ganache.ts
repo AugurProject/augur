@@ -1,6 +1,6 @@
 const compilerOutput = require('@augurproject/artifacts/build/contracts.json');
 import { EthersProvider } from '@augurproject/ethersjs-provider';
-import { ContractAddresses } from '@augurproject/utils';
+import { ContractAddresses, ParaDeploys } from '@augurproject/utils';
 import * as fs from 'async-file';
 import crypto from 'crypto';
 import { ethers } from 'ethers';
@@ -17,6 +17,7 @@ interface Metadata {
 
 export interface Seed {
   addresses: ContractAddresses;
+  paraDeploys: ParaDeploys;
   contractsHash: string;
   data: LevelDBRow[];
   metadata: Metadata;
@@ -188,7 +189,7 @@ export function addSeedToSeedFile(
 export function seedFromSeedFile(seedFile: SeedFile, seedName: string): Seed {
   const { contractsHash, addresses, seeds } = seedFile;
   const { data, metadata } = seeds[seedName];
-  return { contractsHash, addresses, data, metadata };
+  return { contractsHash, addresses, data, metadata, paraDeploys: {} };
 }
 
 export function seedFileFromSeed(seed: Seed): SeedFile {
@@ -204,10 +205,12 @@ export async function createSeed(
   provider: EthersProvider,
   db: MemDown,
   addresses: ContractAddresses,
+  paraDeploys: ParaDeploys = {},
   metadata: Metadata = {}
 ): Promise<Seed> {
   return {
     addresses,
+    paraDeploys,
     contractsHash: hashContracts(),
     data: await extractSeed(db),
     metadata,
