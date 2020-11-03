@@ -137,16 +137,6 @@ const TopNav = ({ isLogged, menuData }: TopNavProps) => {
             </Fragment>
           );
         })}
-
-        {!isLogged && (
-          <div className={Styles.BettingUI}>
-            <ExternalLinkText
-              title="Betting UI"
-              label=" - Coming Soon!"
-              URL="https://augur.net"
-            />
-          </div>
-        )}
         {isLogged && theme === THEMES.SPORTS && (
           <AddFundsButton />
         )}
