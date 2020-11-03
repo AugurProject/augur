@@ -8,7 +8,7 @@ import Clipboard from 'clipboard';
 import MarketLink from 'modules/market/components/market-link/market-link';
 import { FavoritesButton } from 'modules/common/buttons';
 import { DotSelection } from 'modules/common/selection';
-import { MarketProgress } from 'modules/common/progress';
+import { formatTime, MarketProgress } from 'modules/common/progress';
 import SocialMediaButtons from 'modules/market/components/common/social-media-buttons';
 import {
   INVALID_OUTCOME_ID,
@@ -455,14 +455,14 @@ interface SportsOutcomeProps {
   volume: string;
   outcomeId: number;
   outcomeLabel: string;
-  market: MarketInfos | MarketData;
+  market?: MarketData;
 }
 
 export const SportsOutcome = ({
   title = undefined,
   outcomeId,
   outcomeLabel,
-  market = {},
+  market,
 }: SportsOutcomeProps) => {
   const { liquidityPools } = useMarketsStore();
   const {
@@ -479,7 +479,7 @@ export const SportsOutcome = ({
     minPrice,
     maxPrice,
     consensusFormatted,
-  } = market;
+  } = market || {};
   const isWinningOutcome =
     consensusFormatted?.winningOutcome === String(outcomeId);
   const poolId = sportsBook?.liquidityPool;
@@ -580,6 +580,7 @@ export const OutcomeGroupFooter = ({
   const { actions: { setModal }} = useAppStatusStore();
   const location = useLocation();
   const { isGroupPage } = isMarketView(location);
+  const isDaily = sportsGroup.type === SPORTS_GROUP_TYPES.DAILY;
   let content;
   // if ShowLeader passed, info on leading outcome and total volume put in footer.
   if (showLeader || isGroupPage) {
@@ -628,6 +629,7 @@ export const OutcomeGroupFooter = ({
     <div
       className={classNames(Styles.OutcomeGroupFooter, {
         [Styles.NoLeader]: content === null,
+        [Styles.Daily]: isDaily && !isGroupPage,
       })}
     >
       {content}
@@ -1544,9 +1546,10 @@ export const LoadingMarketCard = () => (
 export interface TopRowProps {
   market: MarketData;
   categoriesWithClick: Array<{ label: string; onClick: Function }>;
+  showStart?: boolean;
 }
 
-export const TopRow = ({ market, categoriesWithClick }) => {
+export const TopRow = ({ market, categoriesWithClick, showStart }) => {
   useEffect(() => {
     const clipboardMarketId = new Clipboard('#copy_marketId');
     const clipboardAuthor = new Clipboard('#copy_author');
@@ -1595,6 +1598,11 @@ export const TopRow = ({ market, categoriesWithClick }) => {
       <CategoryTagTrail categories={categoriesWithClick} />
       {theme !== THEMES.TRADING ? (
         <>
+          {showStart && <CountdownProgress
+            label="Estimated Start Time"
+            time={formatTime(Number(market.sportsBook.estTimestamp))}
+            reportingState={reportingState}
+          />}
         </>
       ) : (
         <MarketProgress

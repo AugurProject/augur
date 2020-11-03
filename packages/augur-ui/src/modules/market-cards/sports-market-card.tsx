@@ -53,7 +53,9 @@ export const SportsMarketCard = ({
   loading,
 }: SportsMarketCardProps) => {
   const [showMore, setShowMore] = useState(determineStartState(sportsGroup));
-  const { actions: { setModal }} = useAppStatusStore();
+  const {
+    actions: { setModal },
+  } = useAppStatusStore();
   const location = useLocation();
   const history = useHistory();
   if (loading) {
@@ -88,14 +90,20 @@ export const SportsMarketCard = ({
     >
       <TopRow
         market={market}
+        showStart={type === COMBO}
         categoriesWithClick={getCategoriesWithClick(categories, history)}
       />
       <MarketTitle id={market.id} headerType={headerType} />
       <SportsGroupMarkets sportsGroup={sportsGroup} />
       {!isFutures && (
-        <article>
+        <article className={classNames({
+          [Styles.ComboFooter]: type === COMBO
+        })}>
           {showMoreButtonVisible && (
-            <button className={Styles.showMoreButton} onClick={() => setShowMore(!showMore)}>
+            <button
+              className={Styles.showMoreButton}
+              onClick={() => setShowMore(!showMore)}
+            >
               {ThickChevron} {`${showMore ? 'Show Less' : moreWagersText}`}
             </button>
           )}
@@ -110,8 +118,8 @@ export const SportsMarketCard = ({
               })
             }
           >
-          {Rules} Rules
-        </button>
+            {Rules} Rules
+          </button>
           <CountdownProgress
             label="Estimated Start Time"
             time={formatTime(Number(market.sportsBook.estTimestamp))}

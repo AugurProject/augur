@@ -57,9 +57,11 @@
     }
 
     > span[class*="ProgressLabel"] {
+      display: none;
       flex-flow: row nowrap;
   
       @media @breakpoint-mobile {
+        display: flex;
         flex-flow: column nowrap;
 
         > span {
@@ -72,7 +74,7 @@
       .RulesButton;
   
       display: none;
-  
+
       @media @breakpoint-mobile {
         display: flex;
       }
@@ -106,6 +108,12 @@
         justify-content: center;
         flex: 1 100%;
         margin-bottom: @size-8;
+      }
+    }
+
+    &.ComboFooter {
+      > button.RulesButton {
+        display: flex;
       }
     }
   }

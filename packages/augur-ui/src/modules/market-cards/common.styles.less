@@ -1708,6 +1708,17 @@
 				padding: @size-8;
 				margin-top: @size-10;
 			}
+
+			&.Daily {
+				> button.RulesButton,
+				> span[class*="ProgressLabel"] {
+					display: none;
+				}
+
+				> span:first-of-type {
+					margin-top: 0;
+				}
+			}
 		}
 	}
 
