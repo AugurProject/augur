@@ -65,7 +65,7 @@ type NumStrBigNumber = number | BigNumber | string;
 
 export const ETHER_NUMBER_OF_DECIMALS = 4;
 export const SHARES_SCALAR_NUMBER_OF_DECIMALS = 4;
-export const SHARES_NUMBER_OF_DECIMALS = 4;
+export const SHARES_NUMBER_OF_DECIMALS = 0;
 
 const SMALLEST_NUMBER_DECIMAL_PLACES = 8;
 const USUAL_NUMBER_DECIMAL_PLACES = 4;
