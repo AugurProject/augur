@@ -291,13 +291,27 @@
     background: var(--color-module-background);
     border-bottom: @size-1 solid var(--color-dark-grey);
     display: flex;
-    justify-content: center;
     flex-direction: row;
     padding: @size-16 @size-12;
     width: 100%;
+    justify-content: space-between;
+    align-items: center;
 
-    > button {
-      width: 100%;
+    > span {
+      .text-12-semi-bold;
+
+      text-transform: uppercase;
+      color: var(--color-primary-text);
+    }
+
+    > button > svg {
+      width: @size-12;
+      height: @size-12;
+      margin: 0 0 0 @size-4;
+
+      > path {
+        stroke: var(--color-dark-grey);
+      }
     }
   }
 }
@@ -416,21 +430,17 @@
     }
 
     @media @breakpoint-mobile-tablet {
-      > div > div:first-of-type {
-        display: block;
+      > div > div:first-of-type > div:first-of-type {
+        display: flex;
 
-        > div:first-of-type {
-          display: flex;
-
-          > span {
-            width: @size-12;
-            margin-left: @size-4;
-          }
+        > span {
+          width: @size-12;
+          margin-left: @size-4;
         }
       }
 
 
-      &:last-of-type > div > div:first-of-type{
+      &:last-of-type > div > div:first-of-type {
         display: flex;
       }
     }
@@ -507,7 +517,7 @@
     text-transform: uppercase;
 
     > svg {
-      width: @size-10;
+      width: @size-16;
       height: @size-16;
       margin-right: @size-6;
     }
@@ -519,6 +529,24 @@
 
   @media @breakpoint-mobile-tablet {
     border-bottom: @size-1 solid var(--color-secondary-action-outline);
+
+    .MobileAddFunds {
+      background-color: var(--color-page-background);
+
+      > button {
+        .text-10-semi-bold;
+
+        text-transform: uppercase;
+
+        > svg {
+          margin: 0 @size-4 0 0;
+
+          > path {
+            stroke: var(--color-primary-text);
+          }
+        }
+      }
+    }
   }
 }
 
