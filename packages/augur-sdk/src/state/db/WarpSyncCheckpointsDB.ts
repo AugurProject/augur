@@ -1,6 +1,7 @@
 import { Market } from '@augurproject/core/build/libraries/ContractInterfaces';
 import { Address } from '@augurproject/sdk-lite';
 import { Block } from '@ethersproject/providers';
+import { NULL_ADDRESS } from '../getter/types';
 import { AbstractTable } from './AbstractTable';
 import { DB } from './DB';
 
@@ -33,6 +34,13 @@ export interface WarpCheckpointDocument {
   end?: WarpCheckpointBlock;
 }
 
+function serializeBlock(block: Block) {
+  return Object.assign({}, block, {
+    gasLimit: block.gasLimit.toHexString(),
+    gasUsed: block.gasUsed.toHexString(),
+  })
+}
+
 export class WarpSyncCheckpointsDB extends AbstractTable {
   constructor(networkId: number, db: DB) {
     super(networkId, 'WarpSyncCheckpoints', db.dexieDB);
@@ -46,28 +54,30 @@ export class WarpSyncCheckpointsDB extends AbstractTable {
     return this.table.orderBy('end.number').last();
   }
 
-  async createInitialCheckpoint(initialBlock: Block, market: Market) {
-    const beginBlock = Object.assign({}, initialBlock, {
-      gasLimit: initialBlock.gasLimit.toHexString(),
-      gasUsed: initialBlock.gasUsed.toHexString(),
-    })
+  async createWarpSyncFileCheckpoint(initialBlock: Block, endBlock: Block, hash: string) {
     return this.upsertDocument(initialBlock.number, {
-      begin: beginBlock,
+      begin: serializeBlock(initialBlock),
+      // this value isn't important.
+      end: serializeBlock(endBlock),
+      endTimestamp: endBlock.timestamp,
+      market: NULL_ADDRESS,
+    });
+  }
+
+  async createInitialCheckpoint(initialBlock: Block, market: Market) {
+    return this.upsertDocument(initialBlock.number, {
+      begin: serializeBlock(initialBlock),
       endTimestamp: (await market.getEndTime_()).toNumber(),
       market: market.address,
     });
   }
 
-  async createCheckpoint(end: Block, hash: string) {
+  async createCheckpoint(endBlock: Block, hash: string) {
     const mostRecentCheckpoint = await this.getMostRecentCheckpoint();
-    const endBlock = Object.assign({}, end, {
-      gasLimit: end.gasLimit.toHexString(),
-      gasUsed: end.gasUsed.toHexString(),
-    })
 
     // These might be served by a dexie transaction.
     await this.upsertDocument(mostRecentCheckpoint._id, {
-      end: endBlock,
+      end: serializeBlock(endBlock),
       hash,
     });
   }
