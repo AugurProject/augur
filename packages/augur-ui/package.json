@@ -1,6 +1,6 @@
 {
   "name": "@augurproject/ui",
-  "version": "2.1.13-beta.0",
+  "version": "2.1.13-beta0",
   "description": "Augur UI",
   "author": "The Augur Developers <team@augur.net>",
   "license": "AAL",
@@ -49,7 +49,7 @@
     "3id-blockchain-utils": "0.3.3",
     "@0x/order-utils": "10.2.4",
     "@analytics/segment": "0.4.0",
-    "@augurproject/sdk": "^2.1.13-beta.0",
+    "@augurproject/sdk": "^2.1.13-beta0",
     "@augurproject/sdk-lite": "^2.1.12",
     "@augurproject/utils": "^2.1.12",
     "@metamask/detect-provider": "1.1.0",
@@ -107,7 +107,7 @@
     "web3": "1.2.1"
   },
   "devDependencies": {
-    "@augurproject/tools": "^2.1.13-beta.0",
+    "@augurproject/tools": "^2.1.13-beta0",
     "@babel/core": "7.9.0",
     "@babel/preset-env": "7.9.5",
     "@babel/preset-react": "7.9.4",
