@@ -1081,7 +1081,7 @@ export const SportsMarketContainer = ({
         ) : null}
       </header>
       <div>{innerContent}</div>
-      {isFutures && <OutcomeGroupFooter market={market} sportsGroup={sportsGroup} />}
+      <OutcomeGroupFooter market={market} sportsGroup={sportsGroup} />
     </section>
   );
 };
