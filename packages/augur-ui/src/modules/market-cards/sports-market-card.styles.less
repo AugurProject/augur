@@ -61,23 +61,24 @@
   
       @media @breakpoint-mobile {
         flex-flow: column nowrap;
+
+        > span {
+          text-align: right;
+        }
       }
     }
   
-    > span.Matched {
-      .MatchedLine;
+    > button.RulesButton {
+      .RulesButton;
   
       display: none;
   
       @media @breakpoint-mobile {
         display: flex;
-        flex-flow: column nowrap;
-        height: unset;
-        align-items: flex-end;
       }
     }
   
-    > button:last-of-type {
+    > button.showMoreButton {
       .text-10-semi-bold;
   
       color: var(--color-primary-text);
@@ -123,7 +124,7 @@
       display: flex;
     }
 
-    > article > button:last-of-type > svg {
+    > article > button.showMoreButton > svg {
       transform: rotate(.5turn);
     }
   }
