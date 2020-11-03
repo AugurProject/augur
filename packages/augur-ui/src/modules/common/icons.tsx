@@ -590,6 +590,14 @@ export const AddIcon = (
   </svg>
 );
 
+export const BettingAddIcon = (
+  <svg viewBox="0 0 12 12" fill="none">
+    <path d="M6 3V9" stroke-width="2" stroke-miterlimit="10" stroke-linecap="square"/>
+    <path d="M9 6H3" stroke-width="2" stroke-miterlimit="10" stroke-linecap="square"/>
+  </svg>
+
+)
+
 export const ZoomOutIcon = (
   <svg viewBox="0 0 12 2">
     <rect width="12" height="2" />
