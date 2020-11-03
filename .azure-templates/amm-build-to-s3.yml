@@ -1,18 +1,18 @@
 parameters:
   - name: name
     displayName: 'Job name'
+  - name: environment
+    displayName: 'The environment used to build the ui, e.g. v2'
   - name: deployBucketName
     displayName: 'Environment domain used for this deploy (e.g. staging.augur.net)'
   - name: triggerBranch
     displayName: 'The branch name that will trigger this build and deploy (e.g. "dev")'
-  - name: environment
-    displayName: 'The environment used to build the ui, e.g. v2'
   - name: cloudfrontDistributionId
     displayName: 'The cloudfront distribution id in order to clear the cache on deploy (e.g. E2K6239JF3WYG6)'
 
 jobs:
   - job: ${{ parameters.name }}
-    displayName: Deploy AMM client build to ${{ parameters.deployBucketName }}
+    displayName: Deploy AMM client  ${{ parameters.environment }} build to ${{ parameters.deployBucketName }}
     condition: |
       and
       (
@@ -33,10 +33,12 @@ jobs:
         displayName: yarn build
       - bash: |
           set -euo pipefail
+          echo "Building for ${AUGUR_ENV}"
           ( cd packages/augur-amm-ui && yarn build)
         displayName: ui build
         env:
           NODE_OPTIONS: "--max_old_space_size=6144"
+          AUGUR_ENV: ${{ parameters.environment }}
       - script: |
           set -euo pipefail
           python3 -m venv venv && \
@@ -47,7 +49,6 @@ jobs:
           aws cloudfront create-invalidation --distribution-id ${DISTRIBUTION_ID} --paths "/*"
         displayName: 'push build to S3'
         env:
-          AUGUR_ENV: ${{ parameters.environment }}
           AWS_ACCESS_KEY_ID: $(AWS_KEY_ID)
           AWS_SECRET_ACCESS_KEY: $(AWS_SECRET_KEY)
           BUCKET_NAME: ${{ parameters.deployBucketName }}
