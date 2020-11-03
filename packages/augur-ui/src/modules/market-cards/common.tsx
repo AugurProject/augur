@@ -8,7 +8,7 @@ import Clipboard from 'clipboard';
 import MarketLink from 'modules/market/components/market-link/market-link';
 import { FavoritesButton } from 'modules/common/buttons';
 import { DotSelection } from 'modules/common/selection';
-import { MarketProgress } from 'modules/common/progress';
+import { formatTime, MarketProgress } from 'modules/common/progress';
 import SocialMediaButtons from 'modules/market/components/common/social-media-buttons';
 import {
   INVALID_OUTCOME_ID,
@@ -455,14 +455,14 @@ interface SportsOutcomeProps {
   volume: string;
   outcomeId: number;
   outcomeLabel: string;
-  market: MarketInfos | MarketData;
+  market?: MarketData;
 }
 
 export const SportsOutcome = ({
   title = undefined,
   outcomeId,
   outcomeLabel,
-  market = {},
+  market,
 }: SportsOutcomeProps) => {
   const { liquidityPools } = useMarketsStore();
   const {
@@ -479,7 +479,7 @@ export const SportsOutcome = ({
     minPrice,
     maxPrice,
     consensusFormatted,
-  } = market;
+  } = market || {};
   const isWinningOutcome =
     consensusFormatted?.winningOutcome === String(outcomeId);
   const poolId = sportsBook?.liquidityPool;
@@ -572,11 +572,15 @@ export const OutcomeGroupFooter = ({
     volumeFormatted,
     endTimeFormatted,
     reportingState,
+    sportsBook: { header },
   },
+  sportsGroup,
   showLeader = false,
 }) => {
+  const { actions: { setModal }} = useAppStatusStore();
   const location = useLocation();
   const { isGroupPage } = isMarketView(location);
+  const isDaily = sportsGroup.type === SPORTS_GROUP_TYPES.DAILY;
   let content;
   // if ShowLeader passed, info on leading outcome and total volume put in footer.
   if (showLeader || isGroupPage) {
@@ -599,9 +603,19 @@ export const OutcomeGroupFooter = ({
     content = (
       <Fragment key="content">
         <MarketLink id={id}>{ThickChevron} View Market Details</MarketLink>
-        <span className={Styles.MatchedLine}>
-          Matched<b>{volumeFormatted.full}</b>
-        </span>
+        <button
+            className={Styles.RulesButton}
+            onClick={() =>
+              setModal({
+                type: MODAL_MARKET_RULES,
+                sportMarkets: sportsGroup.markets,
+                description: header,
+                endTime: endTimeFormatted.formattedUtc,
+              })
+            }
+          >
+          {Rules} Rules
+        </button>
         <CountdownProgress
           label="Event Expiration"
           time={endTimeFormatted}
@@ -615,6 +629,7 @@ export const OutcomeGroupFooter = ({
     <div
       className={classNames(Styles.OutcomeGroupFooter, {
         [Styles.NoLeader]: content === null,
+        [Styles.Daily]: isDaily && !isGroupPage,
       })}
     >
       {content}
@@ -977,8 +992,8 @@ export const SportsMarketContainer = ({
     ) : (
       <h6>{title}</h6>
     );
-  const isGrid = data.length > 4;
-  if (isGrid) {
+  // const isGrid = data.length > 4;
+  if (isFutures) {
     innerContent = <MultiOutcomeMarketGrid key={marketId} data={data} />;
   } else {
     innerContent = <MultiOutcomeMarketRow key={marketId} data={data} />;
@@ -1068,7 +1083,7 @@ export const SportsMarketContainer = ({
         ) : null}
       </header>
       <div>{innerContent}</div>
-      {isFutures && <OutcomeGroupFooter market={market} />}
+      <OutcomeGroupFooter market={market} sportsGroup={sportsGroup} />
     </section>
   );
 };
@@ -1531,10 +1546,10 @@ export const LoadingMarketCard = () => (
 export interface TopRowProps {
   market: MarketData;
   categoriesWithClick: Array<{ label: string; onClick: Function }>;
-  sportMarkets: MarketData;
+  showStart?: boolean;
 }
 
-export const TopRow = ({ market, categoriesWithClick, sportMarkets }) => {
+export const TopRow = ({ market, categoriesWithClick, showStart }) => {
   useEffect(() => {
     const clipboardMarketId = new Clipboard('#copy_marketId');
     const clipboardAuthor = new Clipboard('#copy_author');
@@ -1542,7 +1557,6 @@ export const TopRow = ({ market, categoriesWithClick, sportMarkets }) => {
   const {
     theme,
     isLogged,
-    actions: { setModal },
   } = useAppStatusStore();
   const {
     marketType,
@@ -1551,13 +1565,12 @@ export const TopRow = ({ market, categoriesWithClick, sportMarkets }) => {
     marketStatus,
     author,
     reportingState,
-    volumeFormatted,
     disputeInfo,
     endTimeFormatted,
     isTemplate,
     mostLikelyInvalid,
     isWarpSync,
-    sportsBook: { groupType, header },
+    sportsBook: { groupType },
   } = market;
   const isScalar = marketType === SCALAR;
   const isFutures = groupType === SPORTS_GROUP_TYPES.FUTURES;
@@ -1573,9 +1586,9 @@ export const TopRow = ({ market, categoriesWithClick, sportMarkets }) => {
     >
       {marketStatus === MARKET_REPORTING && (
         <InReportingLabel
-          marketStatus={marketStatus}
           reportingState={reportingState}
           disputeInfo={disputeInfo}
+          endTimeFormatted={endTimeFormatted}
           isWarpSync={market.isWarpSync}
         />
       )}
@@ -1585,22 +1598,11 @@ export const TopRow = ({ market, categoriesWithClick, sportMarkets }) => {
       <CategoryTagTrail categories={categoriesWithClick} />
       {theme !== THEMES.TRADING ? (
         <>
-          <span className={Styles.MatchedLine}>
-            Matched<b>{` ${volumeFormatted.full}`}</b>
-          </span>
-          <button
-            className={Styles.RulesButton}
-            onClick={() =>
-              setModal({
-                type: MODAL_MARKET_RULES,
-                sportMarkets,
-                description: header,
-                endTime: endTimeFormatted.formattedUtc,
-              })
-            }
-          >
-            {Rules} Rules
-          </button>
+          {showStart && <CountdownProgress
+            label="Estimated Start Time"
+            time={formatTime(Number(market.sportsBook.estTimestamp))}
+            reportingState={reportingState}
+          />}
         </>
       ) : (
         <MarketProgress

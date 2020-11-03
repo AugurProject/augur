@@ -770,6 +770,31 @@
 	}
 }
 
+.RulesButton {
+	.text-10-semi-bold;
+
+	align-items: center;
+	color: var(--color-primary-text);
+	display: flex;
+	flex-flow: row nowrap;
+	height: @size-18;
+	text-transform: uppercase;
+
+	@media @breakpoint-mobile-tablet {
+		grid-column: 3;
+	}
+
+	> svg {
+		height: @size-12;
+		width: @size-15;
+		margin-right: @size-4;
+
+		> path {
+			stroke: var(--color-secondary-text);
+		}
+	}
+}
+
 :root[theme="BETTING"],
 :root[theme="SPORTS"] {
 	.TopRow {
@@ -868,31 +893,6 @@
 				flex: 1;
 			}
 		}
-	}
-
-  .RulesButton {
-    .text-10-semi-bold;
-
-		align-items: center;
-    color: var(--color-primary-text);
-		display: flex;
-    flex-flow: row nowrap;
-		height: @size-18;
-		text-transform: uppercase;
-
-		@media @breakpoint-mobile-tablet {
-			grid-column: 3;
-		}
-
-    > svg {
-      height: @size-12;
-      width: @size-15;
-      margin-right: @size-4;
-
-      > path {
-        stroke: var(--color-secondary-text);
-      }
-    }
 	}
 
 	.MultiOutcomeMarketGrid {
@@ -1614,10 +1614,9 @@
 		flex-flow: row-reverse nowrap;
 		padding: 0;
 
-		> span.MatchedLine {
-			margin: 0 @size-8;
-			justify-content: unset;
+		> button.RulesButton {
 			display: flex;
+			margin: 0 @size-8;
 		}
 
 		> span[class*="ProgressLabel"] {
@@ -1682,20 +1681,22 @@
 			padding: @size-12 @size-10 @size-10;
 			border-top: @size-1 solid var(--color-outline);
 
-			> span,
 			> span[class*="ProgressLabel"] {
 				flex: 1;
 				display: flex;
 				margin: 0;
+				align-items: flex-end;
 
-				&.MatchedLine {
-					height: unset;
-					flex-flow: column nowrap;
-					justify-content: center;
-					align-items: flex-end;
-					margin: 0;
-					margin-left: @size-8;
+				> span {
+					text-align: right;
 				}
+			}
+
+			> button.RulesButton {
+				align-self: baseline;
+				order: 1;
+				margin: 0;
+				margin-right: @size-8;
 			}
 
 			> span:first-of-type {
@@ -1706,6 +1707,17 @@
 				justify-content: center;
 				padding: @size-8;
 				margin-top: @size-10;
+			}
+
+			&.Daily {
+				> button.RulesButton,
+				> span[class*="ProgressLabel"] {
+					display: none;
+				}
+
+				> span:first-of-type {
+					margin-top: 0;
+				}
 			}
 		}
 	}

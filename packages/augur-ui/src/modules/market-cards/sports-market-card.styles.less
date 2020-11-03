@@ -57,27 +57,30 @@
     }
 
     > span[class*="ProgressLabel"] {
-      flex-flow: row nowrap;
-  
-      @media @breakpoint-mobile {
-        flex-flow: column nowrap;
-      }
-    }
-  
-    > span.Matched {
-      .MatchedLine;
-  
       display: none;
+      flex-flow: row nowrap;
   
       @media @breakpoint-mobile {
         display: flex;
         flex-flow: column nowrap;
-        height: unset;
-        align-items: flex-end;
+
+        > span {
+          text-align: right;
+        }
       }
     }
   
-    > button:last-of-type {
+    > button.RulesButton {
+      .RulesButton;
+  
+      display: none;
+
+      @media @breakpoint-mobile {
+        display: flex;
+      }
+    }
+  
+    > button.showMoreButton {
       .text-10-semi-bold;
   
       color: var(--color-primary-text);
@@ -107,6 +110,12 @@
         margin-bottom: @size-8;
       }
     }
+
+    &.ComboFooter {
+      > button.RulesButton {
+        display: flex;
+      }
+    }
   }
 
   > section[class*="SportsMarketContainer"] {
@@ -123,7 +132,7 @@
       display: flex;
     }
 
-    > article > button:last-of-type > svg {
+    > article > button.showMoreButton > svg {
       transform: rotate(.5turn);
     }
   }
