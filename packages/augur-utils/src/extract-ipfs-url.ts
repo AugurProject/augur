@@ -28,7 +28,7 @@ export function extractIPFSUrl(urlString: string): IPFSEndpointInfo {
     const matches = cidV1Pattern.exec(url.hostname);
     return {
       version: IPFSHashVersion.CIDv1,
-      url: `.ipfs.${matches[1]}`
+      url: `${url.protocol}//${matches[1]}/ipfs`
     }
   }
 

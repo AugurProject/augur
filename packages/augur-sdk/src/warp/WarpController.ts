@@ -303,13 +303,8 @@ export class WarpController {
       let fileResult;
       switch (this.ipfsEndpointInfo.version) {
         case IPFSHashVersion.CIDv0:
-          fileResult = await fetch(`${this.ipfsEndpointInfo.url}/ipfs/${ipfsHash}${ipfsPath}`)
-          .then(item => item.arrayBuffer())
-          .then(item => new Uint8Array(item))
-          break;
         case IPFSHashVersion.CIDv1:
-          const base32Hash = CIDTool.base32(ipfsHash)
-          fileResult = await fetch(`https://cloudflare-ipfs.com/ipfs/${base32Hash}${ipfsPath}`)
+          fileResult = await fetch(`${this.ipfsEndpointInfo.url}/${ipfsHash}${ipfsPath}`)
           .then(item => item.arrayBuffer())
           .then(item => new Uint8Array(item))
           break;
