@@ -1,6 +1,6 @@
 {
   "name": "@augurproject/core",
-  "version": "2.1.12",
+  "version": "2.1.13-beta.1",
   "description": "Core augur contracts and deployment process",
   "author": "The Augur Developers <team@augur.net>",
   "repository": "http://github.com/AugurProject/augur-core",
@@ -69,7 +69,7 @@
     "prepare": "tsc -b"
   },
   "dependencies": {
-    "@augurproject/artifacts": "^2.1.12",
+    "@augurproject/artifacts": "^2.1.13-beta.1",
     "@augurproject/contract-dependencies-ethers": "^2.1.10",
     "@augurproject/solidity-docgen": "0.2.0-alpha.3",
     "bignumber.js": "9.0.0",
