@@ -31,7 +31,7 @@
   }
 }
 
-.dark {
+.noAlerts {
   background-color: var(--color-dark-grey);
 }
 
@@ -130,6 +130,26 @@
   .AlertsView {
     flex-direction: column-reverse;
     background: var(--color-module-background);
+    pointer-events: all;
+
+    @media @breakpoint-mobile {
+      &.isOpen {
+        bottom: 0;
+        max-height: unset;
+
+        > div:not(.dismissContainer) {
+          height: 100%;
+        }
+      }
+
+      &.noAlerts {
+        flex-direction: column;
+
+        > article {
+          order: 2;
+        }
+      }
+    }
   }
 
   article.NullStateMessage {
@@ -153,6 +173,7 @@
     right: 0;
     box-shadow: 0 @size-2 @size-2 var(--color-secondary-text-50);
     border-radius: 0 0 @border-radius-default @border-radius-default;
+    pointer-events: none;
   }
 
   .box {
