@@ -29,7 +29,7 @@ export interface Addresses {
   WarpSync: string;
 }
 
-const FILE_FETCH_TIMEOUT = 10000; // 10 seconds
+const FILE_FETCH_TIMEOUT = 30000; // 10 seconds
 
 export class AugurLite {
   readonly hotLoading: HotLoading;
