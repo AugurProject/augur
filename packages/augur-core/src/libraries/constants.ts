@@ -77,6 +77,8 @@ export const INTERNAL_CONTRACTS = [
     'Timelock',
     'FeePotStakingRewards',
     // SideChain
+    'AugurPushBridge',
+    'TestBridgeContract',
     'SideChainAugur',
     'SideChainShareToken',
     'SideChainAugurTrading',

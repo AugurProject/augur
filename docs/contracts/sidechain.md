@@ -6,15 +6,21 @@ title: Sidechain
 
 ## Contracts
 
-### `ContractExists`
+### `AugurPushBridge`
 
 
 
-<div class="contract-index"><span class="contract-index-title">Functions</span><ul><li><a href="#ContractExists.exists(address)"><code class="function-signature">exists(address _address)</code></a></li></ul></div>
+<div class="contract-index"><span class="contract-index-title">Functions</span><ul><li><a href="#AugurPushBridge.bridgeMarket(contract IMarket)"><code class="function-signature">bridgeMarket(contract IMarket _market)</code></a></li><li><a href="#AugurPushBridge.bridgeReportingFee(contract IUniverse)"><code class="function-signature">bridgeReportingFee(contract IUniverse _universe)</code></a></li></ul></div>
 
 
 
-<h4><a class="anchor" aria-hidden="true" id="ContractExists.exists(address)"></a><code class="function-signature">exists(address _address) <span class="return-arrow">→</span> <span class="return-type">bool</span></code><span class="function-visibility">internal</span></h4>
+<h4><a class="anchor" aria-hidden="true" id="AugurPushBridge.bridgeMarket(contract IMarket)"></a><code class="function-signature">bridgeMarket(contract IMarket _market) <span class="return-arrow">→</span> <span class="return-type">struct IAugurPushBridge.MarketData</span></code><span class="function-visibility">external</span></h4>
+
+
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="AugurPushBridge.bridgeReportingFee(contract IUniverse)"></a><code class="function-signature">bridgeReportingFee(contract IUniverse _universe) <span class="return-arrow">→</span> <span class="return-type">uint256</span></code><span class="function-visibility">external</span></h4>
 
 
 
@@ -360,6 +366,28 @@ title: Sidechain
 
 
 
+### `IAugurPushBridge`
+
+
+
+<div class="contract-index"><span class="contract-index-title">Functions</span><ul><li><a href="#IAugurPushBridge.bridgeMarket(contract IMarket)"><code class="function-signature">bridgeMarket(contract IMarket _market)</code></a></li><li><a href="#IAugurPushBridge.bridgeReportingFee(contract IUniverse)"><code class="function-signature">bridgeReportingFee(contract IUniverse _universe)</code></a></li></ul></div>
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="IAugurPushBridge.bridgeMarket(contract IMarket)"></a><code class="function-signature">bridgeMarket(contract IMarket _market) <span class="return-arrow">→</span> <span class="return-type">struct IAugurPushBridge.MarketData</span></code><span class="function-visibility">external</span></h4>
+
+
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="IAugurPushBridge.bridgeReportingFee(contract IUniverse)"></a><code class="function-signature">bridgeReportingFee(contract IUniverse _universe) <span class="return-arrow">→</span> <span class="return-type">uint256</span></code><span class="function-visibility">external</span></h4>
+
+
+
+
+
+
+
 ### `IAugurTrading`
 
 
@@ -422,7 +450,13 @@ title: Sidechain
 
 
 
-<div class="contract-index"><span class="contract-index-title">Functions</span><ul><li class="inherited"><a href="sidechain#IERC20.totalSupply()"><code class="function-signature">totalSupply()</code></a></li><li class="inherited"><a href="sidechain#IERC20.balanceOf(address)"><code class="function-signature">balanceOf(address owner)</code></a></li><li class="inherited"><a href="sidechain#IERC20.transfer(address,uint256)"><code class="function-signature">transfer(address to, uint256 amount)</code></a></li><li class="inherited"><a href="sidechain#IERC20.transferFrom(address,address,uint256)"><code class="function-signature">transferFrom(address from, address to, uint256 amount)</code></a></li><li class="inherited"><a href="sidechain#IERC20.approve(address,uint256)"><code class="function-signature">approve(address spender, uint256 amount)</code></a></li><li class="inherited"><a href="sidechain#IERC20.allowance(address,address)"><code class="function-signature">allowance(address owner, address spender)</code></a></li></ul><span class="contract-index-title">Events</span><ul><li class="inherited"><a href="sidechain#IERC20.Transfer(address,address,uint256)"><code class="function-signature">Transfer(address from, address to, uint256 value)</code></a></li><li class="inherited"><a href="sidechain#IERC20.Approval(address,address,uint256)"><code class="function-signature">Approval(address owner, address spender, uint256 value)</code></a></li></ul></div>
+<div class="contract-index"><span class="contract-index-title">Functions</span><ul><li><a href="#ICash.faucet(uint256)"><code class="function-signature">faucet(uint256 _amount)</code></a></li><li class="inherited"><a href="sidechain#IERC20.totalSupply()"><code class="function-signature">totalSupply()</code></a></li><li class="inherited"><a href="sidechain#IERC20.balanceOf(address)"><code class="function-signature">balanceOf(address owner)</code></a></li><li class="inherited"><a href="sidechain#IERC20.transfer(address,uint256)"><code class="function-signature">transfer(address to, uint256 amount)</code></a></li><li class="inherited"><a href="sidechain#IERC20.transferFrom(address,address,uint256)"><code class="function-signature">transferFrom(address from, address to, uint256 amount)</code></a></li><li class="inherited"><a href="sidechain#IERC20.approve(address,uint256)"><code class="function-signature">approve(address spender, uint256 amount)</code></a></li><li class="inherited"><a href="sidechain#IERC20.allowance(address,address)"><code class="function-signature">allowance(address owner, address spender)</code></a></li></ul><span class="contract-index-title">Events</span><ul><li class="inherited"><a href="sidechain#IERC20.Transfer(address,address,uint256)"><code class="function-signature">Transfer(address from, address to, uint256 value)</code></a></li><li class="inherited"><a href="sidechain#IERC20.Approval(address,address,uint256)"><code class="function-signature">Approval(address owner, address spender, uint256 value)</code></a></li></ul></div>
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="ICash.faucet(uint256)"></a><code class="function-signature">faucet(uint256 _amount) <span class="return-arrow">→</span> <span class="return-type">bool</span></code><span class="function-visibility">public</span></h4>
+
+
 
 
 
@@ -921,82 +955,6 @@ MUST emit when the URI is updated for a token ID.
 
 
 <h4><a class="anchor" aria-hidden="true" id="IMarket.getOpenInterest()"></a><code class="function-signature">getOpenInterest() <span class="return-arrow">→</span> <span class="return-type">uint256</span></code><span class="function-visibility">public</span></h4>
-
-
-
-
-
-
-
-### `IMarketGetter`
-
-
-
-<div class="contract-index"><span class="contract-index-title">Functions</span><ul><li><a href="#IMarketGetter.isValid(address)"><code class="function-signature">isValid(address _market)</code></a></li><li><a href="#IMarketGetter.isFinalized(address)"><code class="function-signature">isFinalized(address _market)</code></a></li><li><a href="#IMarketGetter.isFinalizedAsInvalid(address)"><code class="function-signature">isFinalizedAsInvalid(address _market)</code></a></li><li><a href="#IMarketGetter.getOwner(address)"><code class="function-signature">getOwner(address _market)</code></a></li><li><a href="#IMarketGetter.getCreatorFee(address)"><code class="function-signature">getCreatorFee(address _market)</code></a></li><li><a href="#IMarketGetter.getUniverse(address)"><code class="function-signature">getUniverse(address _market)</code></a></li><li><a href="#IMarketGetter.getNumTicks(address)"><code class="function-signature">getNumTicks(address _market)</code></a></li><li><a href="#IMarketGetter.getNumberOfOutcomes(address)"><code class="function-signature">getNumberOfOutcomes(address _market)</code></a></li><li><a href="#IMarketGetter.getWinningPayoutNumerator(address,uint256)"><code class="function-signature">getWinningPayoutNumerator(address _market, uint256 _outcome)</code></a></li><li><a href="#IMarketGetter.getAffiliateFeeDivisor(address)"><code class="function-signature">getAffiliateFeeDivisor(address _market)</code></a></li><li><a href="#IMarketGetter.getOrCacheReportingFeeDivisor()"><code class="function-signature">getOrCacheReportingFeeDivisor()</code></a></li></ul></div>
-
-
-
-<h4><a class="anchor" aria-hidden="true" id="IMarketGetter.isValid(address)"></a><code class="function-signature">isValid(address _market) <span class="return-arrow">→</span> <span class="return-type">bool</span></code><span class="function-visibility">external</span></h4>
-
-
-
-
-
-<h4><a class="anchor" aria-hidden="true" id="IMarketGetter.isFinalized(address)"></a><code class="function-signature">isFinalized(address _market) <span class="return-arrow">→</span> <span class="return-type">bool</span></code><span class="function-visibility">external</span></h4>
-
-
-
-
-
-<h4><a class="anchor" aria-hidden="true" id="IMarketGetter.isFinalizedAsInvalid(address)"></a><code class="function-signature">isFinalizedAsInvalid(address _market) <span class="return-arrow">→</span> <span class="return-type">bool</span></code><span class="function-visibility">external</span></h4>
-
-
-
-
-
-<h4><a class="anchor" aria-hidden="true" id="IMarketGetter.getOwner(address)"></a><code class="function-signature">getOwner(address _market) <span class="return-arrow">→</span> <span class="return-type">address</span></code><span class="function-visibility">external</span></h4>
-
-
-
-
-
-<h4><a class="anchor" aria-hidden="true" id="IMarketGetter.getCreatorFee(address)"></a><code class="function-signature">getCreatorFee(address _market) <span class="return-arrow">→</span> <span class="return-type">uint256</span></code><span class="function-visibility">external</span></h4>
-
-
-
-
-
-<h4><a class="anchor" aria-hidden="true" id="IMarketGetter.getUniverse(address)"></a><code class="function-signature">getUniverse(address _market) <span class="return-arrow">→</span> <span class="return-type">contract IUniverse</span></code><span class="function-visibility">external</span></h4>
-
-
-
-
-
-<h4><a class="anchor" aria-hidden="true" id="IMarketGetter.getNumTicks(address)"></a><code class="function-signature">getNumTicks(address _market) <span class="return-arrow">→</span> <span class="return-type">uint256</span></code><span class="function-visibility">external</span></h4>
-
-
-
-
-
-<h4><a class="anchor" aria-hidden="true" id="IMarketGetter.getNumberOfOutcomes(address)"></a><code class="function-signature">getNumberOfOutcomes(address _market) <span class="return-arrow">→</span> <span class="return-type">uint256</span></code><span class="function-visibility">external</span></h4>
-
-
-
-
-
-<h4><a class="anchor" aria-hidden="true" id="IMarketGetter.getWinningPayoutNumerator(address,uint256)"></a><code class="function-signature">getWinningPayoutNumerator(address _market, uint256 _outcome) <span class="return-arrow">→</span> <span class="return-type">uint256</span></code><span class="function-visibility">external</span></h4>
-
-
-
-
-
-<h4><a class="anchor" aria-hidden="true" id="IMarketGetter.getAffiliateFeeDivisor(address)"></a><code class="function-signature">getAffiliateFeeDivisor(address _market) <span class="return-arrow">→</span> <span class="return-type">uint256</span></code><span class="function-visibility">external</span></h4>
-
-
-
-
-
-<h4><a class="anchor" aria-hidden="true" id="IMarketGetter.getOrCacheReportingFeeDivisor()"></a><code class="function-signature">getOrCacheReportingFeeDivisor() <span class="return-arrow">→</span> <span class="return-type">uint256</span></code><span class="function-visibility">external</span></h4>
 
 
 
@@ -2158,6 +2116,98 @@ MUST emit when the URI is updated for a token ID.
 
 
 
+### `ContractExists`
+
+
+
+<div class="contract-index"><span class="contract-index-title">Functions</span><ul><li><a href="#ContractExists.exists(address)"><code class="function-signature">exists(address _address)</code></a></li></ul></div>
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="ContractExists.exists(address)"></a><code class="function-signature">exists(address _address) <span class="return-arrow">→</span> <span class="return-type">bool</span></code><span class="function-visibility">internal</span></h4>
+
+
+
+
+
+
+
+### `IMarketGetter`
+
+
+
+<div class="contract-index"><span class="contract-index-title">Functions</span><ul><li><a href="#IMarketGetter.isValid(address)"><code class="function-signature">isValid(address _market)</code></a></li><li><a href="#IMarketGetter.isFinalized(address)"><code class="function-signature">isFinalized(address _market)</code></a></li><li><a href="#IMarketGetter.isFinalizedAsInvalid(address)"><code class="function-signature">isFinalizedAsInvalid(address _market)</code></a></li><li><a href="#IMarketGetter.getOwner(address)"><code class="function-signature">getOwner(address _market)</code></a></li><li><a href="#IMarketGetter.getCreatorFee(address)"><code class="function-signature">getCreatorFee(address _market)</code></a></li><li><a href="#IMarketGetter.getUniverse(address)"><code class="function-signature">getUniverse(address _market)</code></a></li><li><a href="#IMarketGetter.getNumTicks(address)"><code class="function-signature">getNumTicks(address _market)</code></a></li><li><a href="#IMarketGetter.getNumberOfOutcomes(address)"><code class="function-signature">getNumberOfOutcomes(address _market)</code></a></li><li><a href="#IMarketGetter.getWinningPayoutNumerator(address,uint256)"><code class="function-signature">getWinningPayoutNumerator(address _market, uint256 _outcome)</code></a></li><li><a href="#IMarketGetter.getAffiliateFeeDivisor(address)"><code class="function-signature">getAffiliateFeeDivisor(address _market)</code></a></li><li><a href="#IMarketGetter.getOrCacheReportingFeeDivisor()"><code class="function-signature">getOrCacheReportingFeeDivisor()</code></a></li></ul></div>
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="IMarketGetter.isValid(address)"></a><code class="function-signature">isValid(address _market) <span class="return-arrow">→</span> <span class="return-type">bool</span></code><span class="function-visibility">external</span></h4>
+
+
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="IMarketGetter.isFinalized(address)"></a><code class="function-signature">isFinalized(address _market) <span class="return-arrow">→</span> <span class="return-type">bool</span></code><span class="function-visibility">external</span></h4>
+
+
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="IMarketGetter.isFinalizedAsInvalid(address)"></a><code class="function-signature">isFinalizedAsInvalid(address _market) <span class="return-arrow">→</span> <span class="return-type">bool</span></code><span class="function-visibility">external</span></h4>
+
+
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="IMarketGetter.getOwner(address)"></a><code class="function-signature">getOwner(address _market) <span class="return-arrow">→</span> <span class="return-type">address</span></code><span class="function-visibility">external</span></h4>
+
+
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="IMarketGetter.getCreatorFee(address)"></a><code class="function-signature">getCreatorFee(address _market) <span class="return-arrow">→</span> <span class="return-type">uint256</span></code><span class="function-visibility">external</span></h4>
+
+
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="IMarketGetter.getUniverse(address)"></a><code class="function-signature">getUniverse(address _market) <span class="return-arrow">→</span> <span class="return-type">contract IUniverse</span></code><span class="function-visibility">external</span></h4>
+
+
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="IMarketGetter.getNumTicks(address)"></a><code class="function-signature">getNumTicks(address _market) <span class="return-arrow">→</span> <span class="return-type">uint256</span></code><span class="function-visibility">external</span></h4>
+
+
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="IMarketGetter.getNumberOfOutcomes(address)"></a><code class="function-signature">getNumberOfOutcomes(address _market) <span class="return-arrow">→</span> <span class="return-type">uint256</span></code><span class="function-visibility">external</span></h4>
+
+
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="IMarketGetter.getWinningPayoutNumerator(address,uint256)"></a><code class="function-signature">getWinningPayoutNumerator(address _market, uint256 _outcome) <span class="return-arrow">→</span> <span class="return-type">uint256</span></code><span class="function-visibility">external</span></h4>
+
+
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="IMarketGetter.getAffiliateFeeDivisor(address)"></a><code class="function-signature">getAffiliateFeeDivisor(address _market) <span class="return-arrow">→</span> <span class="return-type">uint256</span></code><span class="function-visibility">external</span></h4>
+
+
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="IMarketGetter.getOrCacheReportingFeeDivisor()"></a><code class="function-signature">getOrCacheReportingFeeDivisor() <span class="return-arrow">→</span> <span class="return-type">uint256</span></code><span class="function-visibility">external</span></h4>
+
+
+
+
+
+
+
 ### `SideChainAugur`
 
 
@@ -2528,7 +2578,7 @@ _Available since v3.3._
 
 
 
-<div class="contract-index"><span class="contract-index-title">Functions</span><ul><li><a href="#ISideChainShareToken.initialize(contract IAugur)"><code class="function-signature">initialize(contract IAugur _augur)</code></a></li><li><a href="#ISideChainShareToken.initializeMarket(address,uint256,uint256)"><code class="function-signature">initializeMarket(address _market, uint256 _numOutcomes, uint256 _numTicks)</code></a></li><li><a href="#ISideChainShareToken.unsafeTransferFrom(address,address,uint256,uint256)"><code class="function-signature">unsafeTransferFrom(address _from, address _to, uint256 _id, uint256 _value)</code></a></li><li><a href="#ISideChainShareToken.unsafeBatchTransferFrom(address,address,uint256[],uint256[])"><code class="function-signature">unsafeBatchTransferFrom(address _from, address _to, uint256[] _ids, uint256[] _values)</code></a></li><li><a href="#ISideChainShareToken.claimTradingProceeds(address,address)"><code class="function-signature">claimTradingProceeds(address _market, address _shareHolder)</code></a></li><li><a href="#ISideChainShareToken.getMarket(uint256)"><code class="function-signature">getMarket(uint256 _tokenId)</code></a></li><li><a href="#ISideChainShareToken.getOutcome(uint256)"><code class="function-signature">getOutcome(uint256 _tokenId)</code></a></li><li><a href="#ISideChainShareToken.getTokenId(address,uint256)"><code class="function-signature">getTokenId(address _market, uint256 _outcome)</code></a></li><li><a href="#ISideChainShareToken.getTokenIds(address,uint256[])"><code class="function-signature">getTokenIds(address _market, uint256[] _outcomes)</code></a></li><li><a href="#ISideChainShareToken.buyCompleteSets(address,address,uint256)"><code class="function-signature">buyCompleteSets(address _market, address _account, uint256 _amount)</code></a></li><li><a href="#ISideChainShareToken.buyCompleteSetsForTrade(address,uint256,uint256,address,address)"><code class="function-signature">buyCompleteSetsForTrade(address _market, uint256 _amount, uint256 _longOutcome, address _longRecipient, address _shortRecipient)</code></a></li><li><a href="#ISideChainShareToken.sellCompleteSets(address,address,address,uint256)"><code class="function-signature">sellCompleteSets(address _market, address _holder, address _recipient, uint256 _amount)</code></a></li><li><a href="#ISideChainShareToken.sellCompleteSetsForTrade(address,uint256,uint256,address,address,address,address,uint256,address)"><code class="function-signature">sellCompleteSetsForTrade(address _market, uint256 _outcome, uint256 _amount, address _shortParticipant, address _longParticipant, address _shortRecipient, address _longRecipient, uint256 _price, address _sourceAccount)</code></a></li><li><a href="#ISideChainShareToken.totalSupplyForMarketOutcome(address,uint256)"><code class="function-signature">totalSupplyForMarketOutcome(address _market, uint256 _outcome)</code></a></li><li><a href="#ISideChainShareToken.balanceOfMarketOutcome(address,uint256,address)"><code class="function-signature">balanceOfMarketOutcome(address _market, uint256 _outcome, address _account)</code></a></li><li><a href="#ISideChainShareToken.lowestBalanceOfMarketOutcomes(address,uint256[],address)"><code class="function-signature">lowestBalanceOfMarketOutcomes(address _market, uint256[] _outcomes, address _account)</code></a></li><li class="inherited"><a href="sidechain#IERC1155.safeTransferFrom(address,address,uint256,uint256,bytes)"><code class="function-signature">safeTransferFrom(address from, address to, uint256 id, uint256 value, bytes data)</code></a></li><li class="inherited"><a href="sidechain#IERC1155.safeBatchTransferFrom(address,address,uint256[],uint256[],bytes)"><code class="function-signature">safeBatchTransferFrom(address from, address to, uint256[] ids, uint256[] values, bytes data)</code></a></li><li class="inherited"><a href="sidechain#IERC1155.setApprovalForAll(address,bool)"><code class="function-signature">setApprovalForAll(address operator, bool approved)</code></a></li><li class="inherited"><a href="sidechain#IERC1155.isApprovedForAll(address,address)"><code class="function-signature">isApprovedForAll(address owner, address operator)</code></a></li><li class="inherited"><a href="sidechain#IERC1155.balanceOf(address,uint256)"><code class="function-signature">balanceOf(address owner, uint256 id)</code></a></li><li class="inherited"><a href="sidechain#IERC1155.totalSupply(uint256)"><code class="function-signature">totalSupply(uint256 id)</code></a></li><li class="inherited"><a href="sidechain#IERC1155.balanceOfBatch(address[],uint256[])"><code class="function-signature">balanceOfBatch(address[] owners, uint256[] ids)</code></a></li></ul><span class="contract-index-title">Events</span><ul><li class="inherited"><a href="sidechain#IERC1155.TransferSingle(address,address,address,uint256,uint256)"><code class="function-signature">TransferSingle(address operator, address from, address to, uint256 id, uint256 value)</code></a></li><li class="inherited"><a href="sidechain#IERC1155.TransferBatch(address,address,address,uint256[],uint256[])"><code class="function-signature">TransferBatch(address operator, address from, address to, uint256[] ids, uint256[] values)</code></a></li><li class="inherited"><a href="sidechain#IERC1155.ApprovalForAll(address,address,bool)"><code class="function-signature">ApprovalForAll(address owner, address operator, bool approved)</code></a></li><li class="inherited"><a href="sidechain#IERC1155.URI(string,uint256)"><code class="function-signature">URI(string value, uint256 id)</code></a></li></ul></div>
+<div class="contract-index"><span class="contract-index-title">Functions</span><ul><li><a href="#ISideChainShareToken.initialize(contract IAugur)"><code class="function-signature">initialize(contract IAugur _augur)</code></a></li><li><a href="#ISideChainShareToken.initializeMarket(address,uint256,uint256)"><code class="function-signature">initializeMarket(address _market, uint256 _numOutcomes, uint256 _numTicks)</code></a></li><li><a href="#ISideChainShareToken.unsafeTransferFrom(address,address,uint256,uint256)"><code class="function-signature">unsafeTransferFrom(address _from, address _to, uint256 _id, uint256 _value)</code></a></li><li><a href="#ISideChainShareToken.unsafeBatchTransferFrom(address,address,uint256[],uint256[])"><code class="function-signature">unsafeBatchTransferFrom(address _from, address _to, uint256[] _ids, uint256[] _values)</code></a></li><li><a href="#ISideChainShareToken.claimTradingProceeds(address,address)"><code class="function-signature">claimTradingProceeds(address _market, address _shareHolder)</code></a></li><li><a href="#ISideChainShareToken.getMarket(uint256)"><code class="function-signature">getMarket(uint256 _tokenId)</code></a></li><li><a href="#ISideChainShareToken.getOutcome(uint256)"><code class="function-signature">getOutcome(uint256 _tokenId)</code></a></li><li><a href="#ISideChainShareToken.getTokenId(address,uint256)"><code class="function-signature">getTokenId(address _market, uint256 _outcome)</code></a></li><li><a href="#ISideChainShareToken.getTokenIds(address,uint256[])"><code class="function-signature">getTokenIds(address _market, uint256[] _outcomes)</code></a></li><li><a href="#ISideChainShareToken.buyCompleteSets(address,address,uint256)"><code class="function-signature">buyCompleteSets(address _market, address _account, uint256 _amount)</code></a></li><li><a href="#ISideChainShareToken.buyCompleteSetsForTrade(address,uint256,uint256,address,address)"><code class="function-signature">buyCompleteSetsForTrade(address _market, uint256 _amount, uint256 _longOutcome, address _longRecipient, address _shortRecipient)</code></a></li><li><a href="#ISideChainShareToken.sellCompleteSets(address,address,address,uint256)"><code class="function-signature">sellCompleteSets(address _market, address _holder, address _recipient, uint256 _amount)</code></a></li><li><a href="#ISideChainShareToken.sellCompleteSetsForTrade(address,uint256,uint256,address,address,address,address,uint256,address)"><code class="function-signature">sellCompleteSetsForTrade(address _market, uint256 _outcome, uint256 _amount, address _shortParticipant, address _longParticipant, address _shortRecipient, address _longRecipient, uint256 _price, address _sourceAccount)</code></a></li><li><a href="#ISideChainShareToken.totalSupplyForMarketOutcome(address,uint256)"><code class="function-signature">totalSupplyForMarketOutcome(address _market, uint256 _outcome)</code></a></li><li><a href="#ISideChainShareToken.balanceOfMarketOutcome(address,uint256,address)"><code class="function-signature">balanceOfMarketOutcome(address _market, uint256 _outcome, address _account)</code></a></li><li><a href="#ISideChainShareToken.lowestBalanceOfMarketOutcomes(address,uint256[],address)"><code class="function-signature">lowestBalanceOfMarketOutcomes(address _market, uint256[] _outcomes, address _account)</code></a></li><li class="inherited"><a href="#IERC1155.safeTransferFrom(address,address,uint256,uint256,bytes)"><code class="function-signature">safeTransferFrom(address from, address to, uint256 id, uint256 value, bytes data)</code></a></li><li class="inherited"><a href="#IERC1155.safeBatchTransferFrom(address,address,uint256[],uint256[],bytes)"><code class="function-signature">safeBatchTransferFrom(address from, address to, uint256[] ids, uint256[] values, bytes data)</code></a></li><li class="inherited"><a href="#IERC1155.setApprovalForAll(address,bool)"><code class="function-signature">setApprovalForAll(address operator, bool approved)</code></a></li><li class="inherited"><a href="#IERC1155.isApprovedForAll(address,address)"><code class="function-signature">isApprovedForAll(address owner, address operator)</code></a></li><li class="inherited"><a href="#IERC1155.balanceOf(address,uint256)"><code class="function-signature">balanceOf(address owner, uint256 id)</code></a></li><li class="inherited"><a href="#IERC1155.totalSupply(uint256)"><code class="function-signature">totalSupply(uint256 id)</code></a></li><li class="inherited"><a href="#IERC1155.balanceOfBatch(address[],uint256[])"><code class="function-signature">balanceOfBatch(address[] owners, uint256[] ids)</code></a></li></ul><span class="contract-index-title">Events</span><ul><li class="inherited"><a href="#IERC1155.TransferSingle(address,address,address,uint256,uint256)"><code class="function-signature">TransferSingle(address operator, address from, address to, uint256 id, uint256 value)</code></a></li><li class="inherited"><a href="#IERC1155.TransferBatch(address,address,address,uint256[],uint256[])"><code class="function-signature">TransferBatch(address operator, address from, address to, uint256[] ids, uint256[] values)</code></a></li><li class="inherited"><a href="#IERC1155.ApprovalForAll(address,address,bool)"><code class="function-signature">ApprovalForAll(address owner, address operator, bool approved)</code></a></li><li class="inherited"><a href="#IERC1155.URI(string,uint256)"><code class="function-signature">URI(string value, uint256 id)</code></a></li></ul></div>
 
 
 
@@ -4276,7 +4326,7 @@ Pops the last byte off of a byte array by modifying its length.
 
 
 
-<div class="contract-index"><span class="contract-index-title">Functions</span><ul><li><a href="#SideChainZeroXTrade.initialize(contract ISideChainAugur,contract ISideChainAugurTrading)"><code class="function-signature">initialize(contract ISideChainAugur _augur, contract ISideChainAugurTrading _augurTrading)</code></a></li><li><a href="#SideChainZeroXTrade.safeTransferFrom(address,address,uint256,uint256,bytes)"><code class="function-signature">safeTransferFrom(address from, address to, uint256 id, uint256 value, bytes data)</code></a></li><li><a href="#SideChainZeroXTrade.safeBatchTransferFrom(address,address,uint256[],uint256[],bytes)"><code class="function-signature">safeBatchTransferFrom(address from, address to, uint256[] ids, uint256[] values, bytes data)</code></a></li><li><a href="#SideChainZeroXTrade.balanceOf(address,uint256)"><code class="function-signature">balanceOf(address owner, uint256 id)</code></a></li><li><a href="#SideChainZeroXTrade.totalSupply(uint256)"><code class="function-signature">totalSupply(uint256 id)</code></a></li><li><a href="#SideChainZeroXTrade.bidBalance(address,address,uint8,uint256)"><code class="function-signature">bidBalance(address _owner, address _market, uint8 _outcome, uint256 _price)</code></a></li><li><a href="#SideChainZeroXTrade.askBalance(address,address,uint8,uint256)"><code class="function-signature">askBalance(address _owner, address _market, uint8 _outcome, uint256 _price)</code></a></li><li><a href="#SideChainZeroXTrade.cashAvailableForTransferFrom(address,address)"><code class="function-signature">cashAvailableForTransferFrom(address _owner, address _sender)</code></a></li><li><a href="#SideChainZeroXTrade.balanceOfBatch(address[],uint256[])"><code class="function-signature">balanceOfBatch(address[] owners, uint256[] ids)</code></a></li><li><a href="#SideChainZeroXTrade.setApprovalForAll(address,bool)"><code class="function-signature">setApprovalForAll(address operator, bool approved)</code></a></li><li><a href="#SideChainZeroXTrade.isApprovedForAll(address,address)"><code class="function-signature">isApprovedForAll(address owner, address operator)</code></a></li><li><a href="#SideChainZeroXTrade.trade(uint256,bytes32,bytes32,uint256,uint256,struct IExchange.Order[],bytes[])"><code class="function-signature">trade(uint256 _requestedFillAmount, bytes32 _fingerprint, bytes32 _tradeGroupId, uint256 _maxProtocolFeeDai, uint256 _maxTrades, struct IExchange.Order[] _orders, bytes[] _signatures)</code></a></li><li><a href="#SideChainZeroXTrade.fillOrderNoThrow(struct IExchange.Order,uint256,bytes,uint256)"><code class="function-signature">fillOrderNoThrow(struct IExchange.Order _order, uint256 _takerAssetFillAmount, bytes _signature, uint256 _protocolFee)</code></a></li><li><a href="#SideChainZeroXTrade.validateOrder(struct IExchange.Order,uint256)"><code class="function-signature">validateOrder(struct IExchange.Order _order, uint256 _fillAmountRemaining)</code></a></li><li><a href="#SideChainZeroXTrade.cancelOrders(struct IExchange.Order[],bytes[],uint256)"><code class="function-signature">cancelOrders(struct IExchange.Order[] _orders, bytes[] _signatures, uint256 _maxProtocolFeeDai)</code></a></li><li><a href="#SideChainZeroXTrade.creatorHasFundsForTrade(struct IExchange.Order,uint256)"><code class="function-signature">creatorHasFundsForTrade(struct IExchange.Order _order, uint256 _amount)</code></a></li><li><a href="#SideChainZeroXTrade.getTransferFromAllowed()"><code class="function-signature">getTransferFromAllowed()</code></a></li><li><a href="#SideChainZeroXTrade.encodeAssetData(address,uint256,uint8,uint8)"><code class="function-signature">encodeAssetData(address _market, uint256 _price, uint8 _outcome, uint8 _type)</code></a></li><li><a href="#SideChainZeroXTrade.getTokenId(address,uint256,uint8,uint8)"><code class="function-signature">getTokenId(address _market, uint256 _price, uint8 _outcome, uint8 _type)</code></a></li><li><a href="#SideChainZeroXTrade.unpackTokenId(uint256)"><code class="function-signature">unpackTokenId(uint256 _tokenId)</code></a></li><li><a href="#SideChainZeroXTrade.decodeAssetData(bytes)"><code class="function-signature">decodeAssetData(bytes _assetData)</code></a></li><li><a href="#SideChainZeroXTrade.decodeTradeAssetData(bytes)"><code class="function-signature">decodeTradeAssetData(bytes _assetData)</code></a></li><li><a href="#SideChainZeroXTrade.parseOrderData(struct IExchange.Order)"><code class="function-signature">parseOrderData(struct IExchange.Order _order)</code></a></li><li><a href="#SideChainZeroXTrade.getZeroXTradeTokenData(bytes)"><code class="function-signature">getZeroXTradeTokenData(bytes _assetData)</code></a></li><li><a href="#SideChainZeroXTrade.getTokenIdFromOrder(struct IExchange.Order)"><code class="function-signature">getTokenIdFromOrder(struct IExchange.Order _order)</code></a></li><li><a href="#SideChainZeroXTrade.createZeroXOrder(uint8,uint256,uint256,address,uint8,uint256,uint256)"><code class="function-signature">createZeroXOrder(uint8 _type, uint256 _attoshares, uint256 _price, address _market, uint8 _outcome, uint256 _expirationTimeSeconds, uint256 _salt)</code></a></li><li><a href="#SideChainZeroXTrade.createZeroXOrderFor(address,uint8,uint256,uint256,address,uint8,uint256,uint256)"><code class="function-signature">createZeroXOrderFor(address _maker, uint8 _type, uint256 _attoshares, uint256 _price, address _market, uint8 _outcome, uint256 _expirationTimeSeconds, uint256 _salt)</code></a></li><li><a href="#SideChainZeroXTrade.encodeEIP1271OrderWithHash(struct IExchange.Order,bytes32)"><code class="function-signature">encodeEIP1271OrderWithHash(struct IExchange.Order _zeroXOrder, bytes32 _orderHash)</code></a></li><li><a href="#SideChainZeroXTrade.fallback()"><code class="function-signature">fallback()</code></a></li><li class="inherited"><a href="sidechain#Initializable.endInitialization()"><code class="function-signature">endInitialization()</code></a></li><li class="inherited"><a href="sidechain#Initializable.getInitialized()"><code class="function-signature">getInitialized()</code></a></li></ul><span class="contract-index-title">Events</span><ul><li class="inherited"><a href="sidechain#IERC1155.TransferSingle(address,address,address,uint256,uint256)"><code class="function-signature">TransferSingle(address operator, address from, address to, uint256 id, uint256 value)</code></a></li><li class="inherited"><a href="sidechain#IERC1155.TransferBatch(address,address,address,uint256[],uint256[])"><code class="function-signature">TransferBatch(address operator, address from, address to, uint256[] ids, uint256[] values)</code></a></li><li class="inherited"><a href="sidechain#IERC1155.ApprovalForAll(address,address,bool)"><code class="function-signature">ApprovalForAll(address owner, address operator, bool approved)</code></a></li><li class="inherited"><a href="sidechain#IERC1155.URI(string,uint256)"><code class="function-signature">URI(string value, uint256 id)</code></a></li></ul></div>
+<div class="contract-index"><span class="contract-index-title">Functions</span><ul><li><a href="#SideChainZeroXTrade.initialize(contract ISideChainAugur,contract ISideChainAugurTrading)"><code class="function-signature">initialize(contract ISideChainAugur _augur, contract ISideChainAugurTrading _augurTrading)</code></a></li><li><a href="#SideChainZeroXTrade.safeTransferFrom(address,address,uint256,uint256,bytes)"><code class="function-signature">safeTransferFrom(address from, address to, uint256 id, uint256 value, bytes data)</code></a></li><li><a href="#SideChainZeroXTrade.safeBatchTransferFrom(address,address,uint256[],uint256[],bytes)"><code class="function-signature">safeBatchTransferFrom(address from, address to, uint256[] ids, uint256[] values, bytes data)</code></a></li><li><a href="#SideChainZeroXTrade.balanceOf(address,uint256)"><code class="function-signature">balanceOf(address owner, uint256 id)</code></a></li><li><a href="#SideChainZeroXTrade.totalSupply(uint256)"><code class="function-signature">totalSupply(uint256 id)</code></a></li><li><a href="#SideChainZeroXTrade.bidBalance(address,address,uint8,uint256)"><code class="function-signature">bidBalance(address _owner, address _market, uint8 _outcome, uint256 _price)</code></a></li><li><a href="#SideChainZeroXTrade.askBalance(address,address,uint8,uint256)"><code class="function-signature">askBalance(address _owner, address _market, uint8 _outcome, uint256 _price)</code></a></li><li><a href="#SideChainZeroXTrade.cashAvailableForTransferFrom(address,address)"><code class="function-signature">cashAvailableForTransferFrom(address _owner, address _sender)</code></a></li><li><a href="#SideChainZeroXTrade.balanceOfBatch(address[],uint256[])"><code class="function-signature">balanceOfBatch(address[] owners, uint256[] ids)</code></a></li><li><a href="#SideChainZeroXTrade.setApprovalForAll(address,bool)"><code class="function-signature">setApprovalForAll(address operator, bool approved)</code></a></li><li><a href="#SideChainZeroXTrade.isApprovedForAll(address,address)"><code class="function-signature">isApprovedForAll(address owner, address operator)</code></a></li><li><a href="#SideChainZeroXTrade.trade(uint256,bytes32,bytes32,uint256,uint256,struct IExchange.Order[],bytes[])"><code class="function-signature">trade(uint256 _requestedFillAmount, bytes32 _fingerprint, bytes32 _tradeGroupId, uint256 _maxProtocolFeeDai, uint256 _maxTrades, struct IExchange.Order[] _orders, bytes[] _signatures)</code></a></li><li><a href="#SideChainZeroXTrade.fillOrderNoThrow(struct IExchange.Order,uint256,bytes,uint256)"><code class="function-signature">fillOrderNoThrow(struct IExchange.Order _order, uint256 _takerAssetFillAmount, bytes _signature, uint256 _protocolFee)</code></a></li><li><a href="#SideChainZeroXTrade.validateOrder(struct IExchange.Order,uint256)"><code class="function-signature">validateOrder(struct IExchange.Order _order, uint256 _fillAmountRemaining)</code></a></li><li><a href="#SideChainZeroXTrade.cancelOrders(struct IExchange.Order[],bytes[],uint256)"><code class="function-signature">cancelOrders(struct IExchange.Order[] _orders, bytes[] _signatures, uint256 _maxProtocolFeeDai)</code></a></li><li><a href="#SideChainZeroXTrade.creatorHasFundsForTrade(struct IExchange.Order,uint256)"><code class="function-signature">creatorHasFundsForTrade(struct IExchange.Order _order, uint256 _amount)</code></a></li><li><a href="#SideChainZeroXTrade.getTransferFromAllowed()"><code class="function-signature">getTransferFromAllowed()</code></a></li><li><a href="#SideChainZeroXTrade.encodeAssetData(address,uint256,uint8,uint8)"><code class="function-signature">encodeAssetData(address _market, uint256 _price, uint8 _outcome, uint8 _type)</code></a></li><li><a href="#SideChainZeroXTrade.getTokenId(address,uint256,uint8,uint8)"><code class="function-signature">getTokenId(address _market, uint256 _price, uint8 _outcome, uint8 _type)</code></a></li><li><a href="#SideChainZeroXTrade.unpackTokenId(uint256)"><code class="function-signature">unpackTokenId(uint256 _tokenId)</code></a></li><li><a href="#SideChainZeroXTrade.decodeAssetData(bytes)"><code class="function-signature">decodeAssetData(bytes _assetData)</code></a></li><li><a href="#SideChainZeroXTrade.decodeTradeAssetData(bytes)"><code class="function-signature">decodeTradeAssetData(bytes _assetData)</code></a></li><li><a href="#SideChainZeroXTrade.parseOrderData(struct IExchange.Order)"><code class="function-signature">parseOrderData(struct IExchange.Order _order)</code></a></li><li><a href="#SideChainZeroXTrade.getZeroXTradeTokenData(bytes)"><code class="function-signature">getZeroXTradeTokenData(bytes _assetData)</code></a></li><li><a href="#SideChainZeroXTrade.getTokenIdFromOrder(struct IExchange.Order)"><code class="function-signature">getTokenIdFromOrder(struct IExchange.Order _order)</code></a></li><li><a href="#SideChainZeroXTrade.createZeroXOrder(uint8,uint256,uint256,address,uint8,uint256,uint256)"><code class="function-signature">createZeroXOrder(uint8 _type, uint256 _attoshares, uint256 _price, address _market, uint8 _outcome, uint256 _expirationTimeSeconds, uint256 _salt)</code></a></li><li><a href="#SideChainZeroXTrade.createZeroXOrderFor(address,uint8,uint256,uint256,address,uint8,uint256,uint256)"><code class="function-signature">createZeroXOrderFor(address _maker, uint8 _type, uint256 _attoshares, uint256 _price, address _market, uint8 _outcome, uint256 _expirationTimeSeconds, uint256 _salt)</code></a></li><li><a href="#SideChainZeroXTrade.encodeEIP1271OrderWithHash(struct IExchange.Order,bytes32)"><code class="function-signature">encodeEIP1271OrderWithHash(struct IExchange.Order _zeroXOrder, bytes32 _orderHash)</code></a></li><li><a href="#SideChainZeroXTrade.fallback()"><code class="function-signature">fallback()</code></a></li><li class="inherited"><a href="sidechain#Initializable.endInitialization()"><code class="function-signature">endInitialization()</code></a></li><li class="inherited"><a href="sidechain#Initializable.getInitialized()"><code class="function-signature">getInitialized()</code></a></li></ul><span class="contract-index-title">Events</span><ul><li class="inherited"><a href="#IERC1155.TransferSingle(address,address,address,uint256,uint256)"><code class="function-signature">TransferSingle(address operator, address from, address to, uint256 id, uint256 value)</code></a></li><li class="inherited"><a href="#IERC1155.TransferBatch(address,address,address,uint256[],uint256[])"><code class="function-signature">TransferBatch(address operator, address from, address to, uint256[] ids, uint256[] values)</code></a></li><li class="inherited"><a href="#IERC1155.ApprovalForAll(address,address,bool)"><code class="function-signature">ApprovalForAll(address owner, address operator, bool approved)</code></a></li><li class="inherited"><a href="#IERC1155.URI(string,uint256)"><code class="function-signature">URI(string value, uint256 id)</code></a></li></ul></div>
 
 
 
@@ -4470,6 +4520,134 @@ Decode ERC-1155 asset data from the format described in the AssetProxy contract 
 
 
 <h4><a class="anchor" aria-hidden="true" id="SideChainZeroXTrade.fallback()"></a><code class="function-signature">fallback()</code><span class="function-visibility">external</span></h4>
+
+
+
+
+
+
+
+### `IOICash`
+
+
+
+<div class="contract-index"><span class="contract-index-title">Functions</span><ul><li><a href="#IOICash.initialize(contract IAugur,contract IUniverse)"><code class="function-signature">initialize(contract IAugur _augur, contract IUniverse _universe)</code></a></li><li class="inherited"><a href="sidechain#IERC20.totalSupply()"><code class="function-signature">totalSupply()</code></a></li><li class="inherited"><a href="sidechain#IERC20.balanceOf(address)"><code class="function-signature">balanceOf(address owner)</code></a></li><li class="inherited"><a href="sidechain#IERC20.transfer(address,uint256)"><code class="function-signature">transfer(address to, uint256 amount)</code></a></li><li class="inherited"><a href="sidechain#IERC20.transferFrom(address,address,uint256)"><code class="function-signature">transferFrom(address from, address to, uint256 amount)</code></a></li><li class="inherited"><a href="sidechain#IERC20.approve(address,uint256)"><code class="function-signature">approve(address spender, uint256 amount)</code></a></li><li class="inherited"><a href="sidechain#IERC20.allowance(address,address)"><code class="function-signature">allowance(address owner, address spender)</code></a></li></ul><span class="contract-index-title">Events</span><ul><li class="inherited"><a href="sidechain#IERC20.Transfer(address,address,uint256)"><code class="function-signature">Transfer(address from, address to, uint256 value)</code></a></li><li class="inherited"><a href="sidechain#IERC20.Approval(address,address,uint256)"><code class="function-signature">Approval(address owner, address spender, uint256 value)</code></a></li></ul></div>
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="IOICash.initialize(contract IAugur,contract IUniverse)"></a><code class="function-signature">initialize(contract IAugur _augur, contract IUniverse _universe)</code><span class="function-visibility">external</span></h4>
+
+
+
+
+
+
+
+### `TestBridgeContract`
+
+
+
+<div class="contract-index"><span class="contract-index-title">Functions</span><ul><li><a href="#TestBridgeContract.constructor(contract ICash,contract IOICash,contract IUniverse,contract IAugurPushBridge)"><code class="function-signature">constructor(contract ICash _cash, contract IOICash _OICash, contract IUniverse _universe, contract IAugurPushBridge _augurPushBridge)</code></a></li><li><a href="#TestBridgeContract.pullMarketData(contract IMarket)"><code class="function-signature">pullMarketData(contract IMarket _market)</code></a></li><li><a href="#TestBridgeContract.pullReportingFeeDivisor()"><code class="function-signature">pullReportingFeeDivisor()</code></a></li><li><a href="#TestBridgeContract.deposit(uint256)"><code class="function-signature">deposit(uint256 _amount)</code></a></li><li><a href="#TestBridgeContract.withdraw(uint256)"><code class="function-signature">withdraw(uint256 _amount)</code></a></li><li><a href="#TestBridgeContract.moveFees(address)"><code class="function-signature">moveFees(address _target)</code></a></li><li><a href="#TestBridgeContract.isValid(address)"><code class="function-signature">isValid(address _market)</code></a></li><li><a href="#TestBridgeContract.isFinalized(address)"><code class="function-signature">isFinalized(address _market)</code></a></li><li><a href="#TestBridgeContract.isFinalizedAsInvalid(address)"><code class="function-signature">isFinalizedAsInvalid(address _market)</code></a></li><li><a href="#TestBridgeContract.getOwner(address)"><code class="function-signature">getOwner(address _market)</code></a></li><li><a href="#TestBridgeContract.getCreatorFee(address)"><code class="function-signature">getCreatorFee(address _market)</code></a></li><li><a href="#TestBridgeContract.getUniverse(address)"><code class="function-signature">getUniverse(address _market)</code></a></li><li><a href="#TestBridgeContract.getNumTicks(address)"><code class="function-signature">getNumTicks(address _market)</code></a></li><li><a href="#TestBridgeContract.getNumberOfOutcomes(address)"><code class="function-signature">getNumberOfOutcomes(address _market)</code></a></li><li><a href="#TestBridgeContract.getWinningPayoutNumerator(address,uint256)"><code class="function-signature">getWinningPayoutNumerator(address _market, uint256 _outcome)</code></a></li><li><a href="#TestBridgeContract.getAffiliateFeeDivisor(address)"><code class="function-signature">getAffiliateFeeDivisor(address _market)</code></a></li><li><a href="#TestBridgeContract.getOrCacheReportingFeeDivisor()"><code class="function-signature">getOrCacheReportingFeeDivisor()</code></a></li></ul></div>
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="TestBridgeContract.constructor(contract ICash,contract IOICash,contract IUniverse,contract IAugurPushBridge)"></a><code class="function-signature">constructor(contract ICash _cash, contract IOICash _OICash, contract IUniverse _universe, contract IAugurPushBridge _augurPushBridge)</code><span class="function-visibility">public</span></h4>
+
+
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="TestBridgeContract.pullMarketData(contract IMarket)"></a><code class="function-signature">pullMarketData(contract IMarket _market) <span class="return-arrow">→</span> <span class="return-type">bool</span></code><span class="function-visibility">public</span></h4>
+
+
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="TestBridgeContract.pullReportingFeeDivisor()"></a><code class="function-signature">pullReportingFeeDivisor() <span class="return-arrow">→</span> <span class="return-type">bool</span></code><span class="function-visibility">public</span></h4>
+
+
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="TestBridgeContract.deposit(uint256)"></a><code class="function-signature">deposit(uint256 _amount) <span class="return-arrow">→</span> <span class="return-type">bool</span></code><span class="function-visibility">public</span></h4>
+
+
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="TestBridgeContract.withdraw(uint256)"></a><code class="function-signature">withdraw(uint256 _amount) <span class="return-arrow">→</span> <span class="return-type">bool</span></code><span class="function-visibility">public</span></h4>
+
+
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="TestBridgeContract.moveFees(address)"></a><code class="function-signature">moveFees(address _target) <span class="return-arrow">→</span> <span class="return-type">bool</span></code><span class="function-visibility">public</span></h4>
+
+
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="TestBridgeContract.isValid(address)"></a><code class="function-signature">isValid(address _market) <span class="return-arrow">→</span> <span class="return-type">bool</span></code><span class="function-visibility">external</span></h4>
+
+
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="TestBridgeContract.isFinalized(address)"></a><code class="function-signature">isFinalized(address _market) <span class="return-arrow">→</span> <span class="return-type">bool</span></code><span class="function-visibility">external</span></h4>
+
+
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="TestBridgeContract.isFinalizedAsInvalid(address)"></a><code class="function-signature">isFinalizedAsInvalid(address _market) <span class="return-arrow">→</span> <span class="return-type">bool</span></code><span class="function-visibility">external</span></h4>
+
+
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="TestBridgeContract.getOwner(address)"></a><code class="function-signature">getOwner(address _market) <span class="return-arrow">→</span> <span class="return-type">address</span></code><span class="function-visibility">external</span></h4>
+
+
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="TestBridgeContract.getCreatorFee(address)"></a><code class="function-signature">getCreatorFee(address _market) <span class="return-arrow">→</span> <span class="return-type">uint256</span></code><span class="function-visibility">external</span></h4>
+
+
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="TestBridgeContract.getUniverse(address)"></a><code class="function-signature">getUniverse(address _market) <span class="return-arrow">→</span> <span class="return-type">contract IUniverse</span></code><span class="function-visibility">external</span></h4>
+
+
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="TestBridgeContract.getNumTicks(address)"></a><code class="function-signature">getNumTicks(address _market) <span class="return-arrow">→</span> <span class="return-type">uint256</span></code><span class="function-visibility">external</span></h4>
+
+
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="TestBridgeContract.getNumberOfOutcomes(address)"></a><code class="function-signature">getNumberOfOutcomes(address _market) <span class="return-arrow">→</span> <span class="return-type">uint256</span></code><span class="function-visibility">external</span></h4>
+
+
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="TestBridgeContract.getWinningPayoutNumerator(address,uint256)"></a><code class="function-signature">getWinningPayoutNumerator(address _market, uint256 _outcome) <span class="return-arrow">→</span> <span class="return-type">uint256</span></code><span class="function-visibility">external</span></h4>
+
+
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="TestBridgeContract.getAffiliateFeeDivisor(address)"></a><code class="function-signature">getAffiliateFeeDivisor(address _market) <span class="return-arrow">→</span> <span class="return-type">uint256</span></code><span class="function-visibility">external</span></h4>
+
+
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="TestBridgeContract.getOrCacheReportingFeeDivisor()"></a><code class="function-signature">getOrCacheReportingFeeDivisor() <span class="return-arrow">→</span> <span class="return-type">uint256</span></code><span class="function-visibility">public</span></h4>
 
 
 
