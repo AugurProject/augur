@@ -786,6 +786,20 @@ export class Users {
       profitLossRecords
     );
 
+    const shareTokenBalances = await db.ShareTokenBalanceChangedRollup.where(
+      '[universe+account]'
+    )
+      .equals([params.universe, params.account])
+      .toArray();
+
+    const shareTokenBalancesByMarket = _.groupBy(shareTokenBalances, 'market');
+    const shareTokenBalancesByMarketAndOutcome = _.mapValues(
+      shareTokenBalancesByMarket,
+      marketShares => {
+        return _.keyBy(marketShares, 'outcome');
+      }
+    );
+
     const profitLossResultsByMarketAndOutcome = reduceMarketAndOutcomeDocsToOnlyLatest(
       groupedProfitLossRecords
     );
@@ -819,7 +833,9 @@ export class Users {
       await getOrderFilledRecordsByMarketAndOutcome(db, orders)
     );
 
-    const marketIds = _.keys(profitLossResultsByMarketAndOutcome);
+    const shareMarketIds = _.keys(shareTokenBalancesByMarketAndOutcome)
+    const profitMarketIds = _.keys(profitLossResultsByMarketAndOutcome);
+    const marketIds = _.uniq([...shareMarketIds, ...profitMarketIds])
 
     const marketsData = await db.Markets.where('market')
       .anyOf(marketIds)
@@ -830,19 +846,6 @@ export class Users {
       .anyOf(marketIds)
       .toArray();
     const marketFinalizedByMarket = _.keyBy(marketFinalizedResults, 'market');
-
-    const shareTokenBalances = await db.ShareTokenBalanceChangedRollup.where(
-      '[universe+account]'
-    )
-      .equals([params.universe, params.account])
-      .toArray();
-    const shareTokenBalancesByMarket = _.groupBy(shareTokenBalances, 'market');
-    const shareTokenBalancesByMarketAndOutcome = _.mapValues(
-      shareTokenBalancesByMarket,
-      marketShares => {
-        return _.keyBy(marketShares, 'outcome');
-      }
-    );
 
     const endTime = await augur.contracts.augur.getTimestamp_();
     const periodInterval = ONE_DAY * 60 * 60 * 24;
@@ -956,11 +959,12 @@ export class Users {
       }
     );
 
-    tradingPositions = _.flatten(
+
+    const profitTradingPositions = _.flatten(
       _.values(_.mapValues(tradingPositionsByMarketAndOutcome, _.values))
     ).filter(t => t !== null);
 
-    marketTradingPositions = _.mapValues(
+    const marketTradingPositionsWithShares = _.mapValues(
       tradingPositionsByMarketAndOutcome,
       tradingPositionsByOutcome => {
         const tradingPositions = _.values(
@@ -969,6 +973,65 @@ export class Users {
         return sumTradingPositions(tradingPositions);
       }
     );
+
+    // fold in user's share balance
+    // add in shares if not already in trading positions, could be external market shares
+    marketTradingPositions = _.reduce(shareMarketIds, (positions, market) =>
+      positions[market] ? positions : {...positions, [market]: {
+        timestamp:0,frozenFunds:0,marketId:market,realized:0,unrealized:0,unrealized24Hr:0,total:0,unrealizedCost:0,realizedCost:0,totalCost:0,realizedPercent:0,unrealizedPercent:0,unrealized24HrPercent:0,totalPercent:0,currentValue:0,userSharesBalances:{}
+      }
+    }, marketTradingPositionsWithShares)
+
+    tradingPositions = _.reduce(shareTokenBalances, (p, shareTokenBalance) => {
+      if (allOrdersFilledResultsByMarketAndOutcome[shareTokenBalance.market] && allOrdersFilledResultsByMarketAndOutcome[shareTokenBalance.market][shareTokenBalance.outcome]){
+        const pl = allOrdersFilledResultsByMarketAndOutcome[shareTokenBalance.market][shareTokenBalance.outcome];
+        if (new BigNumber(pl.amount).eq(new BigNumber(shareTokenBalance.balance))) return p
+      }
+      const position = p.find(pos => pos.marketId === shareTokenBalance.market && new BigNumber(pos.outcome).eq(new BigNumber(shareTokenBalance.outcome)))
+
+      const marketData = markets[shareTokenBalance.market]
+      const tickSize = numTicksToTickSize(
+        new BigNumber(marketData.numTicks),
+        new BigNumber(marketData.prices[0]),
+        new BigNumber(marketData.prices[1])
+      )
+
+      const quantity: BigNumber = convertOnChainAmountToDisplayAmount(
+        new BigNumber(shareTokenBalance.balance),
+        tickSize,
+        augur.precision
+      );
+
+      if (position) {
+        position.netPosition = new BigNumber(position.netPosition).plus(quantity).toFixed()
+        position.rawPosition = new BigNumber(position.rawPosition).plus(quantity).toFixed()
+        return p
+      }
+
+      return [...p, {
+        timestamp: 0,
+        frozenFunds: "0",
+        marketId: shareTokenBalance.market,
+        outcome: new BigNumber(shareTokenBalance.outcome).toNumber(),
+        netPosition: quantity.toFixed(),
+        rawPosition: quantity.toFixed(),
+        averagePrice: "0",
+        realized: "0",
+        unrealized: "0",
+        unrealized24Hr: "0",
+        total: "0",
+        unrealizedCost: "0",
+        realizedCost: "0",
+        totalCost: "0",
+        realizedPercent: "0",
+        unrealizedPercent: "0",
+        unrealized24HrPercent: "0",
+        totalPercent: "0",
+        currentValue: "0"
+      }]
+
+    }, profitTradingPositions)
+
     // Create mapping for market/outcome balances
     const tokenBalanceChangedLogs = await db.ShareTokenBalanceChangedRollup.where(
       '[account+market+outcome]'
