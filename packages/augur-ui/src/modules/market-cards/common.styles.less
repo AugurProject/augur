@@ -1407,8 +1407,8 @@
 			border-top-right-radius: @border-radius-default;
 			border-top-left-radius: @border-radius-default;
 			border-bottom: @size-1 solid var(--color-outline);
-			max-height: @size-30;
-			height: @size-30;
+			max-height: @size-35;
+			min-height: @size-30;
 			padding: 0 @size-12;
 
 			> h6 {
@@ -1419,7 +1419,8 @@
 				text-transform: uppercase;
 				align-items: center;
 				text-overflow: ellipsis;
-				padding-right: @size-12;
+				// padding-right: @size-12;
+				padding: @size-5 @size-12 @size-5 0;
 			}
 
 			> span[class*="ProgressLabel"] {
@@ -1459,9 +1460,12 @@
 				justify-content: space-between;
 
 				&.toggleCollapsed {
-					// margin-left: auto;
 					width: @size-24;
 					justify-content: flex-end;
+
+					@media @breakpoint-mobile {
+						margin-left: @size-8;
+					}
 				}
 
 				> h6 {
