@@ -974,7 +974,7 @@ export class Users {
       }
     );
 
-    // need to fold in shareMarketIds
+    // fold in user's share balance
     // add in shares if not already in trading positions, could be external market shares
     marketTradingPositions = _.reduce(shareMarketIds, (positions, market) =>
       positions[market] ? positions : {...positions, [market]: {
@@ -983,8 +983,12 @@ export class Users {
     }, marketTradingPositionsWithShares)
 
     tradingPositions = _.reduce(shareTokenBalances, (p, shareTokenBalance) => {
-      const position = p.find(p => p.marketId === shareTokenBalance.market && p.outcome === shareTokenBalance.outcome)
-      if (position) return p
+      if (allOrdersFilledResultsByMarketAndOutcome[shareTokenBalance.market] && allOrdersFilledResultsByMarketAndOutcome[shareTokenBalance.market][shareTokenBalance.outcome]){
+        const pl = allOrdersFilledResultsByMarketAndOutcome[shareTokenBalance.market][shareTokenBalance.outcome];
+        if (new BigNumber(pl.amount).eq(new BigNumber(shareTokenBalance.balance))) return p
+      }
+      const position = p.find(pos => pos.marketId === shareTokenBalance.market && new BigNumber(pos.outcome).eq(new BigNumber(shareTokenBalance.outcome)))
+
       const marketData = markets[shareTokenBalance.market]
       const tickSize = numTicksToTickSize(
         new BigNumber(marketData.numTicks),
@@ -997,6 +1001,12 @@ export class Users {
         tickSize,
         augur.precision
       );
+
+      if (position) {
+        position.netPosition = new BigNumber(position.netPosition).plus(quantity).toFixed()
+        position.rawPosition = new BigNumber(position.rawPosition).plus(quantity).toFixed()
+        return p
+      }
 
       return [...p, {
         timestamp: 0,
