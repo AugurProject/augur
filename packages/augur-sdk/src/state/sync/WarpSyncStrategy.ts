@@ -6,6 +6,7 @@ import { Block } from '@ethersproject/providers';
 import _ from 'lodash';
 import { WarpController } from '../../warp/WarpController';
 import { DB } from '../db/DB';
+import { NULL_ADDRESS } from '../getter/types';
 
 const BULKSYNC_HORIZON = SECONDS_IN_A_DAY.multipliedBy(7).toNumber();
 
@@ -25,8 +26,6 @@ export class WarpSyncStrategy {
     currentBlock: Block,
     ipfsRootHash?: string,
   ): Promise<number | undefined> {
-    await this.warpSyncController.createInitialCheckpoint();
-
     // This is the warp hash for the value '0' which means there isn't yet a finalized hash.
     if (
       ipfsRootHash &&
@@ -51,10 +50,12 @@ export class WarpSyncStrategy {
     ) {
       let logs;
       let endBlockNumber;
+      let startBlockNumber;
 
       try {
         const checkpoint = await this.warpSyncController.getCheckpointFile(ipfsRootHash);
         logs = checkpoint.logs;
+        startBlockNumber = checkpoint.startBlockNumber;
         endBlockNumber = checkpoint.endBlockNumber;
       } catch(e) {
         logger.error(`Couldn't get checkpoint file: ${e}`);
@@ -64,15 +65,17 @@ export class WarpSyncStrategy {
       // Blow it all away and refresh.
       logger.debug("Applying Warp Sync File");
       await this.warpSyncController.destroyAndRecreateDB();
-      await this.warpSyncController.createInitialCheckpoint();
+
+      await this.db.warpCheckpoints.createWarpSyncFileCheckpoint(
+        await this.provider.getBlock(startBlockNumber),
+        await this.provider.getBlock(endBlockNumber),
+        ipfsRootHash
+      )
 
       const maxBlock = await this.processFile(logs);
 
       // Update the WarpSync checkpoint db.
-      await this.db.warpCheckpoints.createCheckpoint(
-        await this.provider.getBlock(endBlockNumber),
-        ipfsRootHash
-      );
+      await this.warpSyncController.createInitialCheckpoint(true);
 
       return maxBlock;
     }
