@@ -110,7 +110,8 @@ export const toWeeklyDate = date => {
 }
 
 export const formatShares = (num = 0) => {
-  const displayValue = new BN(num).div(new BN(10).pow(18))
+    // pow of 15 matches shares in trading UI
+  const displayValue = new BN(num).div(new BN(10).pow(15))
   return toSignificant(String(displayValue), 6)
 }
 
