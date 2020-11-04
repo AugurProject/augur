@@ -414,15 +414,6 @@ const MainAppContent = ({
       id="mainContent"
     >
       {isMarketsView && !isTrading && <MarketsInnerNav />}
-      {!isLogged && currentPath === MARKETS && (
-        <div className={Styles.BettingUI}>
-          <ExternalLinkText
-            title='Betting UI'
-            label=' - Coming Soon!'
-            URL='https://augur.net'
-          />
-        </div>
-      )}
       <BetslipProvider>
         <MarketsProvider>
           <ForkingBanner />
