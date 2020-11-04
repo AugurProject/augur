@@ -83,6 +83,7 @@ export const generateTrade = memoize(
     );
 
     return {
+      gasLimit: createBigNumber(0),
       side,
       numShares,
       limitPrice,

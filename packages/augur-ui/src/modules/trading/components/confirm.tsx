@@ -178,7 +178,7 @@ export const Confirm = ({
       )
     : ZERO;
 
-  const gasCostDai = getGasCost(gasLimit.toNumber(), createBigNumber(gasPrice), ethToDaiRate);
+  const gasCostDai = getGasCost(gasLimit ? gasLimit.toNumber() : ZERO.toNumber(), createBigNumber(gasPrice), ethToDaiRate);
   const displayfee = `$${gasCostDai.formattedValue}`;
 
   const messages = (() => {
