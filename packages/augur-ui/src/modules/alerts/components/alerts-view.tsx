@@ -22,6 +22,8 @@ const AlertsView = () => {
     actions: { setIsAlertsMenuOpen, clearAlerts, removeAlert },
   } = useAppStatusStore();
   const alertsVisible = isLogged && isAlertsMenuOpen;
+  const hasAlerts = alerts?.length;
+
   useEffect(() => {
     if (alertsVisible) {
       alerts.forEach(alert =>
@@ -43,7 +45,7 @@ const AlertsView = () => {
       <section
         id="alerts_view"
         className={classNames(Styles.AlertsView, {
-          [Styles.dark]: !(alerts && alerts.length),
+          [Styles.noAlerts]: !(hasAlerts),
           [Styles.isOpen]: isAlertsMenuOpen,
         })}
       >
