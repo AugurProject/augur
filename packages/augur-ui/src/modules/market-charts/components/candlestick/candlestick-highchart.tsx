@@ -2,6 +2,7 @@ import React, { useRef, useMemo, useEffect, useState } from 'react';
 import { createBigNumber, BigNumber } from 'utils/create-big-number';
 import Highcharts from 'highcharts/highstock';
 import NoDataToDisplay from 'highcharts/modules/no-data-to-display';
+// @ts-ignore
 import Styles from 'modules/market-charts/components/candlestick/candlestick.styles.less';
 import { DAI } from 'modules/common/constants';
 import { PriceTimeSeriesData } from 'modules/types';
@@ -101,7 +102,6 @@ const getChartData = (
     priceTimeSeries.length > 0 &&
     currentTimeInSeconds > 1000
   ) {
-    console.log(1);
     const num = fullRange / period;
     for (let i = 0; i <= num; i++) {
       priceBuckets.push(start + i * period);
@@ -139,7 +139,6 @@ const getChartData = (
       }
     });
   } else {
-    console.log(2);
     priceTimeSeries.forEach(price => {
       const {
         open,
@@ -160,6 +159,17 @@ const getChartData = (
   };
 }
 
+interface HighcartsChart extends Highcharts.Chart {
+  renderTo?: string | Element | React.ReactNode;
+}
+
+interface AugurAxis extends Highcharts.Axis {
+  dataMin?: number;
+  dataMax?: number;
+  minRange?: number;
+  isDirty?: boolean;
+};
+
 export const CandlestickHighchart = ({
   priceTimeSeries,
   selectedPeriod,
@@ -175,12 +185,12 @@ export const CandlestickHighchart = ({
   } = useAppStatusStore();
   const container = useRef(null);
   const [forceRender, setForceRender] = useState(false);
-  const chart = Highcharts.charts.find(
-    chart => chart?.renderTo === container.current
+  const chart: HighcartsChart = Highcharts.charts.find(
+    (chart: HighcartsChart) => chart?.renderTo === container.current
   );
   const mouseOut = evt => {
     const { x: timestamp } = evt.target;
-    if (chart?.xAxis && !chart.xAxis[0].isDirty) {
+    if (chart?.xAxis && !(chart.xAxis[0] as AugurAxis).isDirty) {
       chart.xAxis[0].removePlotBand('new-plot-band');
       handleVolumeBarUpdate(chart, false, timestamp);
     }
@@ -246,6 +256,7 @@ export const CandlestickHighchart = ({
       volumeType,
       currentTimeInSeconds
     ),
+    // @ts-ignore
     [priceTimeSeries.flat().length, selectedPeriod, volumeType]
   );
 
@@ -266,8 +277,8 @@ export const CandlestickHighchart = ({
 
   useEffect(() => {
     NoDataToDisplay(Highcharts);
-    const chart = Highcharts.charts.find(
-      chart => chart?.renderTo === container.current
+    const chart: HighcartsChart = Highcharts.charts.find(
+      (chart: HighcartsChart) => chart?.renderTo === container.current
     );
     if (!chart || chart?.renderTo !== container.current) {
       // needs to be done because container ref is null on first load.
@@ -275,7 +286,7 @@ export const CandlestickHighchart = ({
     }
     return () => {
       Highcharts.charts
-        .find(chart => chart?.renderTo === container.current)
+        .find((chart: HighcartsChart) => chart?.renderTo === container.current)
         ?.destroy();
     };
   }, []);
@@ -285,17 +296,17 @@ export const CandlestickHighchart = ({
       e.preventDefault();
       if (!chart) return;
       const spinAmount = Math.ceil(e.wheelDelta / 100);
-      const changeRate = spinAmount * chart.xAxis[0].minRange;
+      const changeRate = spinAmount * (chart.xAxis[0] as AugurAxis).minRange;
       const priceTimePeriod = (priceTimeSeries[0] && priceTimeSeries[0].period) || 0;
       const { dataMax } = chart.xAxis[0].getExtremes();
-      const maxMin = dataMax - chart.xAxis[0].minRange;
+      const maxMin = dataMax - (chart.xAxis[0] as AugurAxis).minRange;
       const xMin = isNaN((priceTimePeriod + changeRate)) ? priceTimePeriod : priceTimePeriod + changeRate;
       const dataMin = xMin > maxMin ? maxMin : xMin;
   
       chart.xAxis[0].setExtremes(dataMin, dataMax, false);
       chart.yAxis[0].setExtremes(
-        chart.yAxis[0].dataMin * 0.95,
-        chart.yAxis[0].dataMax * 1.05
+        (chart.yAxis[0] as AugurAxis).dataMin * 0.95,
+        (chart.yAxis[0] as AugurAxis).dataMax * 1.05
       );
     };
 
@@ -313,13 +324,14 @@ export const CandlestickHighchart = ({
 
   useMemo(() => {
     if (container.current && !chart) {
+      // @ts-ignore
       Highcharts.stockChart(container.current, options);
-      const chart = Highcharts.charts.find(
-        chart => chart?.renderTo === container.current
+      const chart: HighcartsChart = Highcharts.charts.find(
+        (chart: HighcartsChart) => chart?.renderTo === container.current
       );
       chart.yAxis[0].setExtremes(
-        chart.yAxis[0].dataMin * 0.95,
-        chart.yAxis[0].dataMax * 1.05
+        (chart.yAxis[0] as AugurAxis).dataMin * 0.95,
+        (chart.yAxis[0] as AugurAxis).dataMax * 1.05
       );
     }
   }, [options, container.current]);
