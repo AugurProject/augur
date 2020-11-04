@@ -83,7 +83,6 @@ export function useMulticallContract(): Contract | null {
 
 export function useMerkleDistributorContract(): Contract | null {
   const { chainId } = useActiveWeb3React()
-  console.log(`${chainId} chain is being used`)
   // todo: not sure if this is needed
   return null
   //return useContract(chainId ? MERKLE_DISTRIBUTOR_ADDRESS[chainId] : undefined, MERKLE_DISTRIBUTOR_ABI, true)
