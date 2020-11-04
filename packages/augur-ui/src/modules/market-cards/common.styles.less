@@ -830,17 +830,18 @@
 		}
 
 		> div[class*='DotSelection'] {
+			height: @size-18;
+			width: @size-18;
 
 			@media @breakpoint-mobile-tablet {
 				grid-column: 4;
 			}
 
 			> button > svg {
-				height: @size-18;
-				width: @size-18;
 				fill: var(--color-inactive-text);
 				stroke: none;
 			}
+
 			> div {
 				border: 0;
 				box-shadow: 0 0 @size-4 var(--color-primary-text-15);
@@ -887,7 +888,6 @@
 			display: flex;
 			flex-flow: row nowrap;
 			text-overflow: ellipsis;
-			overflow: hidden;
 
 			> div[class*="CategoryTrail"] {
 				flex: 1;

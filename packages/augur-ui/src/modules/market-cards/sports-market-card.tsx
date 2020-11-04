@@ -23,7 +23,7 @@ import { Rules, ThickChevron } from 'modules/common/icons';
 import { LoadingCard } from 'modules/market-cards/market-card';
 import { MarketData } from 'modules/types';
 import { useAppStatusStore } from 'modules/app/store/app-status';
-// import CommonStyles from 'modules/market-cards/common.styles.less';
+
 
 interface SportsMarketCardProps {
   sportsGroup: {
@@ -66,7 +66,7 @@ export const SportsMarketCard = ({
   const { type, markets } = sportsGroup;
   const isFutures = type === FUTURES;
   const market = markets[0];
-  const { categories, reportingState, endTimeFormatted } = market;
+  const { categories, reportingState } = market;
   const displayableMarkets = markets.reduce(reduceToUniquePools, []);
   const numExtraWagers =
     type === COMBO

@@ -80,7 +80,6 @@ export interface MarketTypeProps {
 export interface MarketStatusProps {
   marketStatus: string;
   reportingState: string;
-  endTimeFormatted: DateFormattedObject;
   currentAugurTimestamp: number;
   isWarpSync?: boolean;
   mini?: boolean;
@@ -89,8 +88,8 @@ export interface MarketStatusProps {
 export interface InReportingLabelProps {
   disputeInfo: DisputeInfo;
   reportingState: string;
-  endTimeFormatted: DateFormattedObject;
   isWarpSync?: boolean;
+  isForkingMarket?: boolean;
 }
 
 export interface MovementLabelProps {
