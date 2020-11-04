@@ -144,11 +144,11 @@ const orderRow = (
       <span>{formatMarketShares(marketType, quantity).formatted}</span>
       <span>{formatDai(Number(price)).formatted}</span>
       <span>{formatDai(Number(orderEstimate)).full}</span>
-      <div>
+      <div className={Styles.OrdersButtons}>
         {buttons.map((Button: DefaultButtonProps, index: number) => {
           if (index === 0)
             return isTrading ? (
-              <CancelTextButton
+              <SubmitTextButton
                 key={Button.text}
                 {...Button}
                 disabled={status && status !== TXEventName.Failure}
@@ -167,7 +167,7 @@ const orderRow = (
               key={Button.text}
               {...Button}
               propsStatus={status}
-              submitTextButtton
+              cancelButton
               disabled={status && status !== TXEventName.Failure}
             />
           ) : (

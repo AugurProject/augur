@@ -165,7 +165,7 @@
     height: @size-16;
 
     LinearGradient > stop {
-      stop-color: var(--color-reporting);
+      stop-color: var(--color-secondary-text);
     }
   }
 }
@@ -203,6 +203,14 @@
 :root[theme='SPORTS'] {
   .Button {
     .text-14-bold;
+  }
+
+  .LoadingEllipse {
+    > svg {
+      LinearGradient > stop {
+        stop-color: var(--color-reporting);
+      }
+    }
   }
 
   .SecondaryButton {
@@ -907,17 +915,6 @@
       border-bottom: @size-1 solid var(--color-primary-text);
     }
   }
-  .ProcessingCheckmark {
-    > svg {
-      margin: 0;
-      width: @size-12;
-      height: @size-10;
-
-      > path {
-        fill: var(--color-open);
-      }
-    }
-  }
 
   .PendingIconButton {
     &.NEWFILL {
@@ -1083,6 +1080,29 @@
       }
     }
   }
+
+  &.Failed {
+    border: 0;
+    background: transparent;
+    color: var(--color-error);
+
+    > span {
+      > svg {
+        width: @size-7;
+        height: @size-8;
+        margin-left: @size-4;
+
+        > path {
+          fill: var(--color-error);
+        }
+      }
+    }
+
+    &:hover:enabled,
+    &:hover {
+      background: transparent;
+    }
+  }
 }
 
 .SubmitTextButton {
@@ -1223,6 +1243,18 @@
           stroke: var(--color-inactive-text);
         }
       }
+    }
+  }
+}
+
+.ProcessingCheckmark {
+  > svg {
+    margin: 0;
+    width: @size-12;
+    height: @size-10;
+
+    > path {
+      fill: var(--color-open);
     }
   }
 }

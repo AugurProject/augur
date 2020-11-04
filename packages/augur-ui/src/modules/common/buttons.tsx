@@ -35,7 +35,7 @@ import {
   AddIcon,
   LoadingEllipse,
   Trash,
-  AlternateCheckMark, RefreshIcon
+  AlternateCheckMark, RefreshIcon, RetryIcon
 } from 'modules/common/icons';
 import classNames from 'classnames';
 import { getNetworkId, placeTrade } from 'modules/contracts/actions/contractCalls';
@@ -281,6 +281,7 @@ export interface ProcessingButtonProps extends DefaultButtonProps {
   matchingId?: string;
   nonMatchingIds?: Array<String>;
   autoHideConfirm?: boolean;
+  hideRetry?: boolean;
 }
 
 export const ProcessingButton = ({
@@ -290,6 +291,7 @@ export const ProcessingButton = ({
   nonMatchingIds = null,
   propsStatus,
   autoHideConfirm = false,
+  hideRetry,
   ...props
 }: ProcessingButtonProps) => {
   const { pendingQueue, theme } = useAppStatusStore();
@@ -330,14 +332,16 @@ export const ProcessingButton = ({
   const failed = status === TXEventName.Failure;
   const confirmed = status === TXEventName.Success;
   if (failed) {
-    buttonText = <span>Failed.<b>Retry</b></span>;
+    buttonText = <span>Failed{isSports ? '.' : ''}{!hideRetry && (isSports ? <b>Retry</b> : RetryIcon)}</span>;
   }
-  if (confirmed) {
-    buttonText = 'Confirmed';
-
-    if (props.customConfirmedButtonText) {
-      buttonText = props.customConfirmedButtonText;
-    }
+  if (confirmed && props.customConfirmedButtonText) {
+    buttonText = props.customConfirmedButtonText;
+  } else if (confirmed) {
+    return (
+      <div className={Styles.ProcessingCheckmark}>
+        {AlternateCheckMark}
+      </div>
+    );
   }
   const cancel = () => removePendingData(queueId, queueName);
   if (failed || confirmed) {
@@ -355,13 +359,6 @@ export const ProcessingButton = ({
     }
   }
 
-  if (confirmed && isSports) {
-    return (
-      <div className={Styles.ProcessingCheckmark}>
-        {AlternateCheckMark}
-      </div>
-    );
-  }
   return (
     <>
       {props.secondaryButton && (
