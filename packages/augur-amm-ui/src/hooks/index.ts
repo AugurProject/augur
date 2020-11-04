@@ -10,7 +10,6 @@ import { useLatestBlock } from '../contexts/Application'
 import { createAction } from '@reduxjs/toolkit'
 import { useDispatch, useSelector } from 'react-redux'
 import { Currency, CurrencyAmount, ETHER, JSBI, Token, TokenAmount } from '@uniswap/sdk'
-import { useMulticallContract } from './useContract'
 import ERC20_INTERFACE from '../constants/abis/erc20'
 import { AppDispatch, AppState } from '../state'
 import { injected } from '../connectors'
@@ -20,6 +19,7 @@ import { useWeb3React as useWeb3ReactCore } from '@web3-react/core'
 import { Web3ReactContextInterface } from '@web3-react/core/dist/types'
 import { NetworkContextName } from '../constants'
 import { isMobile } from 'react-device-detect'
+import { useETHBalances } from '../state/wallet/hooks'
 
 export function useColor(tokenAddress, token) {
   const [color, setColor] = useState('#2172E5')
@@ -379,43 +379,6 @@ export function useSingleContractMultipleData(
   return useMemo(() => {
     return results.map(result => toCallState(result, contract?.interface, fragment, latestBlockNumber))
   }, [fragment, contract, results, latestBlockNumber])
-}
-
-/**
- * Returns a map of the given addresses to their eventually consistent ETH balances.
- */
-export function useETHBalances(
-  uncheckedAddresses?: (string | undefined)[]
-): { [address: string]: CurrencyAmount | undefined } {
-  const multicallContract = useMulticallContract()
-
-  const addresses: string[] = useMemo(
-    () =>
-      uncheckedAddresses
-        ? uncheckedAddresses
-            .map(isAddress)
-            .filter((a): a is string => a !== false)
-            .sort()
-        : [],
-    [uncheckedAddresses]
-  )
-
-  const results = useSingleContractMultipleData(
-    multicallContract,
-    'getEthBalance',
-    addresses.map(address => [address])
-  )
-
-  return useMemo(
-    () =>
-      addresses.reduce<{ [address: string]: CurrencyAmount }>((memo, address, i) => {
-        const value = results?.[i]?.result?.[0]
-        console.log('useETHBalances value', value)
-        if (value) memo[address] = CurrencyAmount.ether(JSBI.BigInt(value.toString()))
-        return memo
-      }, {}),
-    [addresses, results]
-  )
 }
 
 export function useMultipleContractSingleData(

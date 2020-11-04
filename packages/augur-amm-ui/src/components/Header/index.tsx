@@ -8,13 +8,13 @@ import styled from 'styled-components'
 
 import { useActiveWeb3React } from '../../hooks'
 import { useDarkModeManager } from '../../state/user/hooks'
-import { useETHBalances } from '../../state/wallet/hooks'
 
 import { YellowCard } from '../Card'
 import Settings from '../Settings'
 
 import Row, { RowFixed } from '../Row'
 import Web3Status from '../Web3Status'
+import { useETHBalances } from '../../state/wallet/hooks'
 
 const HeaderFrame = styled.div`
   display: flex;
