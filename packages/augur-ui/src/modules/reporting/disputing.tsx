@@ -9,7 +9,7 @@ import { ParticipationTokensView } from 'modules/reporting/common';
 import { HEADER_TYPE, SMALL_MOBILE, MODAL_DR_QUICK_GUIDE } from 'modules/common/constants';
 import ModuleTabs from 'modules/market/components/common/module-tabs/module-tabs';
 import ModulePane from 'modules/market/components/common/module-tabs/module-pane';
-
+// @ts-ignore
 import Styles from 'modules/reporting/disputing.styles.less';
 import { DISPUTING_HEAD_TAGS } from 'modules/seo/helmet-configs';
 import { HelmetTag } from 'modules/seo/helmet-tag';

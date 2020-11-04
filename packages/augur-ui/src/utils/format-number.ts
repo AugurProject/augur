@@ -1,4 +1,4 @@
-import type { tickSizeToNumTickWithDisplayPrices } from '@augurproject/sdk';
+import { tickSizeToNumTickWithDisplayPrices } from '@augurproject/sdk';
 import {
   encodeNumberAsBase10String,
   encodeNumberAsJSNumber,
@@ -278,7 +278,7 @@ export function formatNone(): FormattedNumber {
     value: 0,
     formattedValue: 0,
     formatted: '-',
-    roundedValue: createBigNumber(0),
+    roundedValue: 0,
     rounded: '-',
     roundedFormatted: '-',
     minimized: '-',
@@ -294,7 +294,7 @@ export function formatBlank(): FormattedNumber {
     value: 0,
     formattedValue: 0,
     formatted: '',
-    roundedValue: createBigNumber(0),
+    roundedValue: 0,
     rounded: '',
     roundedFormatted: '',
     minimized: '',
@@ -334,7 +334,7 @@ export function sumAndformatGasCostToEther(
     createBigNumber(gasPrice)
   );
 
-  return formatGasCost(estimatedGasCost, opts).value;
+  return formatGasCost(estimatedGasCost, opts).formatted;
 }
 
 export function formatGasCostToEther(
@@ -443,9 +443,9 @@ export function formatAmerican(
   num: NumStrBigNumber,
   opts: FormattedNumberOptions = optionsBlank()
 ): FormattedNumber {
-  const value = num.decimalPlaces(4);
+  const value = createBigNumber(num, 10).decimalPlaces(4);
   const processedNum = formatNumber(value, { ...opts, positiveSign: true });
-  processedNum.fullPrecision = num.toFixed();
+  processedNum.fullPrecision = createBigNumber(num, 10).toFixed();
   return processedNum;
 }
 
@@ -499,8 +499,8 @@ export function formatNumber(
     o.value = 0;
     o.formattedValue = 0;
     o.formatted = '0';
-    o.roundedValue = 0;
-    o.rounded = '0';
+    o.roundedValue = '0';
+    o.rounded = 0;
     o.roundedFormatted = '0';
     o.minimized = '0';
     o.fullPrecision = '0';
@@ -561,7 +561,7 @@ export function formatNumber(
     o.roundedValue = value
       .times(decimalsRoundedValue)
       .integerValue(roundingMode)
-      .dividedBy(decimalsRoundedValue);
+      .dividedBy(decimalsRoundedValue).toNumber();
     o.roundedFormatted = bigUnitPostfix
       ? addBigUnitPostfix(value, o.roundedValue.toFixed(decimalsRounded), removeComma)
       : addCommas(o.roundedValue.toFixed(decimalsRounded), removeComma);

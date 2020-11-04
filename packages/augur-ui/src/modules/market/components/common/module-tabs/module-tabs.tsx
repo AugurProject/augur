@@ -10,12 +10,12 @@ import { StatusDotTooltip } from 'modules/common/labels';
 interface ModuleTabsProps {
   className?: string;
   selected?: number;
-  children: ModulePane[];
+  children: ModulePane[] | Element | Element[] | React.ReactNode;
   fillWidth?: boolean;
   fillForMobile?: boolean;
   noBorder?: boolean;
   id?: string;
-  leftButton: React.ReactNode;
+  leftButton?: React.ReactNode;
   scrollOver?: boolean;
   showToggle?: boolean;
   toggle?: Function;

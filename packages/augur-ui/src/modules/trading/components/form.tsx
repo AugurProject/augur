@@ -17,7 +17,7 @@ import { TextInput } from 'modules/common/form';
 import getPrecision from 'utils/get-number-precision';
 import convertExponentialToDecimal from 'utils/convert-exponential';
 import { MarketData } from 'modules/types';
-import type { Getters } from "@augurproject/sdk";
+import type { MarketInfoOutcome } from "@augurproject/sdk-lite";
 import { CancelTextButton, SecondaryButton } from 'modules/common/buttons';
 import moment from 'moment';
 import {
@@ -182,15 +182,15 @@ const getGasConfirmEstimate = async () => {
 
 interface FromProps {
   market: MarketData;
-  selectedOutcome: Getters.Markets.MarketInfoOutcome;
+  selectedOutcome: MarketInfoOutcome;
   updateSelectedOutcome: Function;
   clearOrderForm: Function;
   updateTradeTotalCost: Function;
   updateTradeNumShares: Function;
   clearOrderConfirmation: Function;
-  initialLiquidity?: Boolean;
+  initialLiquidity?: boolean;
   tradingTutorial?: boolean;
-}
+};
 
 const getStartState = ({
   endTime,
@@ -451,7 +451,7 @@ const Form = ({
       time: fastForwardTime,
       unit: expirationDateOption,
     } = calcOrderExpirationTimeRemaining(
-      endTime,
+      Number(endTime),
       currentTimestamp
     );
     setState({
@@ -544,12 +544,13 @@ const Form = ({
               placeholder="0.00"
               value={quantityValue}
               tabIndex={tradingTutorial ? -1 : 1}
-              onTouchStart={e =>
+              onTouchStart={e => {
+                // @ts-ignore
                 e.target.scrollIntoView({
                   block: 'nearest',
                   behavior: 'smooth',
-                })
-              }
+                });
+              }}
               onChange={e => {
                 updateAndValidate(QUANTITY, e.target.value);
               }}
@@ -590,12 +591,13 @@ const Form = ({
                 placeholder="0.00"
                 tabIndex={tradingTutorial ? -1 : 2}
                 value={orderPrice}
-                onTouchStart={e =>
+                onTouchStart={e => {
+                  // @ts-ignore
                   e.target.scrollIntoView({
                     block: 'nearest',
                     behavior: 'smooth',
                   })
-                }
+                }}
                 onChange={e => 
                   updateAndValidate(PRICE, e.target.value)
                 }
@@ -637,12 +639,13 @@ const Form = ({
                 placeholder="0"
                 tabIndex={tradingTutorial ? -1 : 2}
                 value={percentage}
-                onTouchStart={e =>
+                onTouchStart={e =>{
+                  // @ts-ignore
                   e.target.scrollIntoView({
                     block: 'nearest',
                     behavior: 'smooth',
                   })
-                }
+                }}
                 onChange={e => {
                   const percentage = e.target.value;
                   setState({ ...state, percentage });
@@ -689,12 +692,13 @@ const Form = ({
                   ? createBigNumber(orderDaiEstimate).toNumber()
                   : orderDaiEstimate
               }
-              onTouchStart={e =>
+              onTouchStart={e => {
+                // @ts-ignore
                 e.target.scrollIntoView({
                   block: 'nearest',
                   behavior: 'smooth',
                 })
-              }
+              }}
               onChange={e =>
                 updateAndValidate(EST_DAI, e.target.value)
               }
@@ -740,12 +744,12 @@ const Form = ({
                 time: fastForwardTime,
                 unit: expirationDateOption,
               } = calcOrderExpirationTimeRemaining(
-                endTime,
+                Number(endTime),
                 currentTimestamp
               );
               const timestamp =
                 advancedOption === EXPIRATION
-                  ? calcOrderExpirationTime(endTime, currentTimestamp)
+                  ? calcOrderExpirationTime(Number(endTime), currentTimestamp)
                   : null;
               updateAndValidate(EXPIRATION_DATE, timestamp);
               updateOrderProperties({
@@ -772,6 +776,7 @@ const Form = ({
                         value === '' || isNaN(value) ? 0 : parseInt(value);
                       updateAndValidate(
                         EXPIRATION_DATE,
+                        // @ts-ignore
                         moment
                           .unix(currentTimestamp)
                           .add(addedValue, expirationDateOption)

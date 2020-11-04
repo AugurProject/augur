@@ -1,4 +1,3 @@
-import { selectMarkets } from 'modules/markets/selectors/markets-all';
 import { MarketReportingState } from '@augurproject/sdk-lite';
 import {
   CANCELORDERS,
@@ -21,13 +20,6 @@ import {
   TYPE_VIEW_DETAILS,
   TYPE_VIEW_ORDERS,
   ZERO,
-  REDEEMSTAKE,
-  SUBMIT_DISPUTE,
-  TRANSACTIONS,
-  SUBMIT_REPORT,
-  CLAIMMARKETSPROCEEDS,
-  CANCELORDERS,
-  FINALIZE,
   THEMES,
 } from 'modules/common/constants';
 import { selectMarket } from 'modules/markets/selectors/market';
@@ -36,13 +28,10 @@ import userOpenOrders from 'modules/orders/selectors/user-open-orders';
 import {
   MarketClaimablePositions,
   MarketReportClaimableContracts,
+  Notification,
 } from 'modules/types';
 import { getLoginAccountClaimableWinnings } from 'modules/positions/selectors/login-account-claimable-winnings';
 import { selectReportingWinningsByMarket } from 'modules/positions/selectors/select-reporting-winnings-by-market';
-import {
-  MarketClaimablePositions,
-  MarketReportClaimableContracts,
-} from 'modules/types';
 import { isSameAddress } from 'utils/isSameAddress';
 import { AppStatus } from 'modules/app/store/app-status';
 import { Markets } from 'modules/markets/store/markets';
@@ -230,6 +219,7 @@ export const getNotifications = (): Notification[] => {
       type: NOTIFICATION_TYPES.claimReportingFees,
       isImportant: false,
       isNew: true,
+      isRead: false,
       title: CLAIM_REPORTING_FEES_TITLE,
       buttonLabel: TYPE_VIEW_DETAILS,
       market: null,
@@ -246,6 +236,7 @@ export const getNotifications = (): Notification[] => {
       type: NOTIFICATION_TYPES.proceedsToClaim,
       isImportant: false,
       isNew: true,
+      isRead: false,
       title: PROCEEDS_TO_CLAIM_TITLE,
       buttonLabel: TYPE_VIEW_DETAILS,
       market: null,
@@ -266,6 +257,7 @@ export const getNotifications = (): Notification[] => {
       );
       if (storedNotification) {
         notification.isNew = storedNotification.isNew;
+        notification.isRead = storedNotification.isRead;
         notification.hideNotification = storedNotification.hideNotification;
       }
       return notification;
@@ -296,6 +288,7 @@ const generateCards = (markets, type) => {
         type,
         isImportant: false,
         isNew: true,
+        isRead: false,
         title: RESOLVED_MARKETS_OPEN_ORDERS_TITLE,
         buttonLabel: TYPE_VIEW_ORDERS,
         queueName: CANCELORDERS,
@@ -307,6 +300,7 @@ const generateCards = (markets, type) => {
         isImportant: true,
         redIcon: true,
         isNew: true,
+        isRead: false,
         title: REPORTING_ENDS_SOON_TITLE,
         buttonLabel: TYPE_REPORT,
         queueName: SUBMIT_REPORT,
@@ -316,6 +310,7 @@ const generateCards = (markets, type) => {
         type,
         isImportant: false,
         isNew: true,
+        isRead: false,
         title: TYPE_DISPUTE,
         buttonLabel: TYPE_DISPUTE,
         queueName: SUBMIT_DISPUTE,
@@ -325,6 +320,7 @@ const generateCards = (markets, type) => {
         type,
         isImportant: false,
         isNew: true,
+        isRead: false,
         title: SIGN_SEND_ORDERS,
         buttonLabel: TYPE_VIEW_ORDERS,
       };
@@ -333,6 +329,7 @@ const generateCards = (markets, type) => {
         type,
         isImportant: false,
         isNew: true,
+        isRead: false,
         title: PROCEEDS_TO_CLAIM_TITLE,
         buttonLabel: TYPE_VIEW_DETAILS,
         queueName: TRANSACTIONS,
@@ -343,6 +340,7 @@ const generateCards = (markets, type) => {
         type,
         isImportant: false,
         isNew: true,
+        isRead: false,
         title: MARKET_IS_MOST_LIKELY_INVALID_TITLE,
         buttonLabel: TYPE_VIEW_DETAILS,
       };
@@ -351,6 +349,7 @@ const generateCards = (markets, type) => {
         type,
         isImportant: false,
         isNew: true,
+        isRead: false,
         title: 'Finalize Warp Sync Market',
         buttonLabel: TYPE_VIEW_DETAILS,
         queueName: TRANSACTIONS,

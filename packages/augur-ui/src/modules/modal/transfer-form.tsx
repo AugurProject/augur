@@ -298,7 +298,6 @@ export const TransferForm = () => {
           text={'Send'}
           action={() => {
             transferFunds(formattedAmount.fullPrecision, currency, address);
-            if (autoClose) closeAction();
           }}
           queueName={TRANSACTIONS}
           queueId={currency === ETH ? SENDETHER : TRANSFER}

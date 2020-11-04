@@ -7,7 +7,7 @@ import { Checkbox } from 'modules/common/form';
 import PaginationStyles from 'modules/common/pagination.styles.less';
 import Styles from 'modules/reporting/components/markets-in-dispute.styles.less';
 
-import { MarketData, ReportingListState } from 'modules/types';
+import { ReportingListState } from 'modules/types';
 import { LoadingMarketCard } from 'modules/market-cards/common';
 import { Pagination } from 'modules/common/pagination';
 import { REPORTING_STATE, SMALL_MOBILE } from 'modules/common/constants';
@@ -202,7 +202,7 @@ const MarketsInDispute = () => {
                 isChecked={checkBox.didCheck}
                 onClick={(e: React.SyntheticEvent) => {
                   e.preventDefault();
-                  checkBox.action(e);
+                  checkBox.action();
                 }}
               />
               {checkBox.label}

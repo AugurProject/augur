@@ -1,4 +1,4 @@
-import { NewMarket, BaseAction, UIOrder } from "modules/types";
+import { NewMarket, UIOrder } from "modules/types";
 import { AppStatus } from "modules/app/store/app-status";
 
 export const ADD_ORDER_TO_NEW_MARKET = "ADD_ORDER_TO_NEW_MARKET";

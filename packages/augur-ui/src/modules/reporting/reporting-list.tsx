@@ -2,16 +2,20 @@ import React, { useState, useEffect } from 'react';
 import { ReportingCard } from 'modules/reporting/common';
 
 import Styles from 'modules/reporting/common.styles.less';
-import { Getters } from '@augurproject/sdk';
 import { Pagination } from 'modules/common/pagination';
 import PaginationStyles from 'modules/common/pagination.styles.less';
 import { LoadingMarketCard } from 'modules/market-cards/common';
-import { MarketReportingState } from '@augurproject/sdk-lite';
+import { MarketReportingState, MarketList } from '@augurproject/sdk-lite';
 import { useMarketsStore } from 'modules/markets/store/markets';
 import { selectMarket } from 'modules/markets/selectors/market';
 import { useAppStatusStore } from 'modules/app/store/app-status';
 import { REPORTING_STATE } from 'modules/common/constants';
-import { loadUpcomingDesignatedReportingMarkets, loadDesignatedReportingMarkets, loadOpenReportingMarkets } from 'modules/markets/actions/load-markets';
+import {
+  loadUpcomingDesignatedReportingMarkets,
+  loadDesignatedReportingMarkets,
+  loadOpenReportingMarkets,
+} from 'modules/markets/actions/load-markets';
+import { MarketData } from 'modules/types';
 
 const ITEMS_PER_SECTION = 5;
 const NUM_LOADING_CARDS = 2;
@@ -23,26 +27,33 @@ export interface ReportingListProps {
   emptyHeader: string;
   emptySubheader: string;
   reportingType: string;
-  isLoadingMarkets: boolean;
-  markets: string[];
+  isLoadingMarkets?: boolean;
+  markets?: MarketData[];
 }
 
-export const ReportingList = (props: ReportingListProps) => {
+export const ReportingList = ({
+  title,
+  reportingType,
+  isLoadingMarkets,
+  markets,
+  showLoggedOut,
+  loggedOutMessage,
+  emptyHeader,
+  emptySubheader,
+}: ReportingListProps) => {
   const content = [];
 
-  if (!props.isLoadingMarkets) {
+  if (!isLoadingMarkets) {
     content.push(
-      props.markets.map(market => (
-        <ReportingCard market={market} key={market.id} />
-      ))
+      markets.map(market => <ReportingCard market={market} key={market.id} />)
     );
-    if (props.showLoggedOut)
-      content.push(<span key={'loggedOut'}>{props.loggedOutMessage}</span>);
-    if (props.markets.length === 0 && !props.showLoggedOut) {
+    if (showLoggedOut)
+      content.push(<span key="loggedOut">{loggedOutMessage}</span>);
+    if (markets.length === 0 && !showLoggedOut) {
       content.push(
-        <React.Fragment key={'empty'}>
-          <span>{props.emptyHeader}</span>
-          <span>{props.emptySubheader}</span>
+        <React.Fragment key="empty">
+          <span>{emptyHeader}</span>
+          <span>{emptySubheader}</span>
         </React.Fragment>
       );
     }
@@ -50,21 +61,19 @@ export const ReportingList = (props: ReportingListProps) => {
 
   return (
     <div className={Styles.ReportingList}>
-      {props.reportingType === MarketReportingState.OpenReporting ? (
-        <h1>{props.title}</h1>
+      {reportingType === MarketReportingState.OpenReporting ? (
+        <h1>{title}</h1>
       ) : (
-        <span>{props.title}</span>
+        <span>{title}</span>
       )}
-      <div key={props.reportingType}>
-        {props.isLoadingMarkets &&
+      <div key={reportingType}>
+        {isLoadingMarkets &&
           new Array(NUM_LOADING_CARDS)
             .fill(null)
             .map((prop, index) => (
-              <LoadingMarketCard
-                key={`${index}-${props.reportingType}-loading`}
-              />
+              <LoadingMarketCard key={`${index}-${reportingType}-loading`} />
             ))}
-        {!props.isLoadingMarkets && content}
+        {!isLoadingMarkets && content}
       </div>
     </div>
   );
@@ -72,7 +81,7 @@ export const ReportingList = (props: ReportingListProps) => {
 
 interface PaginatorProps extends ReportingListProps {
   reportingType: string;
-  showLoggedOut: boolean;
+  showLoggedOut?: boolean;
   title: string;
   loggedOutMessage?: string;
   emptyHeader: string;
@@ -109,7 +118,7 @@ export const Paginator = ({
     loadMarkets(offset, limit, reportingType, processMarkets);
   }
 
-  function processMarkets(err, marketResults: Getters.Markets.MarketList) {
+  function processMarkets(err, marketResults: MarketList) {
     setIsLoadingMarkets(false);
     if (err) return console.log('error', err);
     if (!marketResults || !marketResults.markets || !marketResults.meta) return;
@@ -146,14 +155,16 @@ export const Paginator = ({
   return (
     <>
       <ReportingList
-        markets={markets}
-        title={title}
-        showLoggedOut={showLoggedOut}
-        reportingType={reportingType}
-        isLoadingMarkets={isLoadingMarkets}
-        loggedOutMessage={loggedOutMessage}
-        emptyHeader={emptyHeader}
-        emptySubheader={emptySubheader}
+        {...{
+          markets,
+          title,
+          showLoggedOut,
+          reportingType,
+          isLoadingMarkets,
+          loggedOutMessage,
+          emptyHeader,
+          emptySubheader,
+        }}
       />
       {showPagination && (
         <div className={PaginationStyles.PaginationContainer}>

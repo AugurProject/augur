@@ -8,24 +8,21 @@ import {
   POPULAR_CATEGORIES,
   MODAL_SIGNUP,
 } from 'modules/common/constants';
-import { Getters } from '@augurproject/sdk';
+import { MarketList } from '@augurproject/sdk-lite';
 import { PrimaryButton, CategoryButtons } from 'modules/common/buttons';
 import makePath from 'modules/routes/helpers/make-path';
 import { MARKETS } from 'modules/routes/constants/views';
 import { CategorySelector } from 'modules/common/selection';
-import { AppStatus, useAppStatusStore } from 'modules/app/store/app-status';
-import { selectMarketStats } from '../selectors/markets-list';
+import { useAppStatusStore } from 'modules/app/store/app-status';
 import { selectMarkets } from 'modules/markets/selectors/markets-all';
 import { loadMarketsByFilter } from 'modules/markets/actions/load-markets';
 import { useEffect } from 'react';
 import { useLocation, useHistory } from 'react-router';
-import { useMarketsStore } from 'modules/markets/store/markets';
 
 const MarketsView = () => {
   const location = useLocation();
   const history = useHistory();
   const componentWrapper = useRef();
-  const marketStats = selectMarketStats();
   let markets = selectMarkets();
   const {
     marketsList: { isSearching },
@@ -34,11 +31,8 @@ const MarketsView = () => {
     isLogged,
     theme,
     restoredAccount,
-    actions: { setModal },
+    actions: { setModal, updateMarketsList },
   } = useAppStatusStore();
-  const {
-    actions: { updateMarketsList }
-  } = useMarketsStore();
   let { isConnected } = useAppStatusStore();
 
   const [state, setState] = useState({
@@ -69,7 +63,7 @@ const MarketsView = () => {
         offset: 1,
         limit: 25,
       },
-      (err, result: Getters.Markets.MarketList) => {
+      (err, result: MarketList) => {
         if (err) return console.log('Error loadMarketsFilter:', err);
         if (componentWrapper) {
           const filterSortedMarkets = result.markets.map(m => m.id);
@@ -77,7 +71,7 @@ const MarketsView = () => {
             ...state,
             filterSortedMarkets,
           });
-          AppStatus.actions.updateMarketsList({
+          updateMarketsList({
             isSearching: false,
             meta: result.meta,
           });

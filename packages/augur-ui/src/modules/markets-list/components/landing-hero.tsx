@@ -5,13 +5,6 @@ import { ExternalLinkButton, PrimaryButton } from 'modules/common/buttons';
 import { MODAL_SIGNUP, THEMES } from 'modules/common/constants';
 import { useAppStatusStore } from 'modules/app/store/app-status';
 import { Slider } from 'modules/markets-list/components/slider';
-import Image3Mobile from '../../../assets/images/banner-3-1011x741.png';
-import Image3Tablet from '../../../assets/images/banner-3-1486x494.png';
-import Image3Medium from '../../../assets/images/banner-3-1522x456.png';
-import Image3Big from '../../../assets/images/banner-3-1920x456.png';
-import SportsbookBanner from 'assets/images/sportsbook-banner.png';
-import ImageDesktop from '../../../assets/images/banner-desktop-1920x456.png';
-import AmericanFootball from '../../../assets/images/american-football.png';
 import noop from 'utils/noop';
 
 const imagesBase = [
@@ -19,10 +12,10 @@ const imagesBase = [
     alignment: 'center',
     noOverlay: false,
     image: {
-      mobile: ImageDesktop,
-      tablet: ImageDesktop,
-      medium: ImageDesktop,
-      big: ImageDesktop,
+      mobile: "images/banner-desktop-1920x456.png",
+      tablet: "images/banner-desktop-1920x456.png",
+      medium: "images/banner-desktop-1920x456.png",
+      big: "images/banner-desktop-1920x456.png",
     },
     text: 'No Limits. Lower Fees.\nBet on anything you want.',
     button: {
@@ -34,10 +27,10 @@ const imagesBase = [
     alignment: 'right',
     noOverlay: false,
     image: {
-      mobile: AmericanFootball,
-      tablet: AmericanFootball,
-      medium: AmericanFootball,
-      big: AmericanFootball,
+      mobile: "images/american-football.png",
+      tablet: "images/american-football.png",
+      medium: "images/american-football.png",
+      big: "images/american-football.png",
     },
     text: '+1000\nMarkets',
     button: {
@@ -50,10 +43,10 @@ const imagesBase = [
     alignment: 'center',
     noOverlay: true,
     image: {
-      mobile: Image3Mobile,
-      tablet: Image3Tablet,
-      medium: Image3Medium,
-      big: Image3Big,
+      mobile: 'images/banner-3-1011x741.png',
+      tablet: 'images/banner-3-1486x494.png',
+      medium: 'images/banner-3-1522x456.png',
+      big: 'images/banner-3-1920x456.png',
     },
     text: '',
     button: {
@@ -112,7 +105,7 @@ export const LandingHero = () => {
       ) : (
         <section className={Styles.LandingHeroSlider}>
           <Slider images={images} />
-          <div style={{ backgroundImage: `url(${SportsbookBanner})` }}>
+          <div style={{ backgroundImage: `url(images/sportsbook-banner.png)` }}>
             <h2>
               No Limits. Lower Fees.
               <br />

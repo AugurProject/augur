@@ -7,14 +7,14 @@ import { TestNetReputationToken } from '@augurproject/core/build/libraries/Gener
 import type {
   CreateCategoricalMarketParams,
   CreateScalarMarketParams,
-  Getters,
   PlaceTradeDisplayParams,
   SimulateTradeData,
 } from '@augurproject/sdk';
 import {
   calculatePayoutNumeratorsArray,
   ExtraInfoTemplate,
-  AccountData
+  AccountData,
+  MarketInfo
 } from '@augurproject/sdk-lite';
 import {
   convertDisplayAmountToOnChainAmount,
@@ -35,7 +35,6 @@ import {
   TEN_TO_THE_EIGHTEENTH_POWER,
   ZERO,
   NETWORK_IDS,
-  ACCOUNT_ACTIVATION_GAS_COST,
   DISPUTE_GAS_COST,
 } from 'modules/common/constants';
 import { constructMarketParams } from 'modules/create-market/helpers/construct-market-params';
@@ -1102,7 +1101,7 @@ export async function createLiquidityOrder(order: MarketLiquidityOrder) {
 }
 
 export async function createLiquidityOrders(
-  market: Getters.Markets.MarketInfo,
+  market: MarketInfo,
   orders: LiquidityOrder[]
 ) {
   const Augur = augurSdk.get();

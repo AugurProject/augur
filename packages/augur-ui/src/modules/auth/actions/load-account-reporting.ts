@@ -26,7 +26,7 @@ async function loadReportingHistory() {
 
   const notification = notifications.find(n => n.type === NOTIFICATION_TYPES.claimReportingFees);
   if (notification) {
-    updateNotifications([{...notification, isImportant: true, isNew: true}]);
+    updateNotifications([{...notification, isImportant: true, isNew: true, isRead: false}]);
   }
   updateLoginAccount({ reporting });
   if (marketIds.length > 0) loadMarketsInfoIfNotLoaded(marketIds);

@@ -119,7 +119,7 @@ export interface StakeDetails {
   isInvalidOutcome: boolean;
   isMalformedOutcome: boolean;
   tentativeWinning: boolean;
-  warpSyncHash: string;
+  warpSyncHash?: string;
 }
 
 export interface MarketPriceCandlestick {

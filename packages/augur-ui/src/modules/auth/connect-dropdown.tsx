@@ -22,7 +22,7 @@ import {
   v2AugurLogo,
   CopyAlternateIcon,
   DirectionArrow,
-  AddIcon,
+  AddIcon, BettingAddIcon,
 } from 'modules/common/icons';
 import { PrimaryButton, SecondaryButton } from 'modules/common/buttons';
 import { formatDai, formatEther, formatRep } from 'utils/format-number';
@@ -191,10 +191,11 @@ const ConnectDropdown = () => {
       )}
       <div className={Styles.AccountInfo}>
         <div className={Styles.MobileAddFunds}>
+          <span>Your account</span>
           <PrimaryButton
             action={() => setModal({ type: MODAL_ADD_FUNDS })}
             text="Add Funds"
-            icon={AddIcon}
+            icon={BettingAddIcon}
           />
         </div>
 
@@ -257,16 +258,14 @@ const ConnectDropdown = () => {
         {gasCostDai.value && <div className={Styles.GasEdit}>
           <div>
             <div>
-              <div>
-                Transaction fee
-                {renderToolTip(
-                  'tooltip--gasEdit',
-                  <p>The fee for processing your transactions.</p>
-                )}
-              </div>
-              <div>
-                ${gasCostDai.formattedValue} / Trade ({gasPriceSpeed} {gasPriceTime})
-              </div>
+              Transaction fee
+              {renderToolTip(
+                'tooltip--gasEdit',
+                <p>The fee for processing your transactions.</p>
+              )}
+            </div>
+            <div>
+              ${gasCostDai.formattedValue} / Trade ({gasPriceSpeed} {gasPriceTime})
             </div>
           </div>
           <SecondaryButton

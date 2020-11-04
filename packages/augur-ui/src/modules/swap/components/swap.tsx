@@ -30,7 +30,7 @@ import {
 } from 'modules/contracts/actions/contractCalls';
 
 import Styles from 'modules/swap/components/index.styles.less';
-import { ExternalLinkButton, ProcessingButton } from 'modules/common/buttons';
+import { ProcessingButton } from 'modules/common/buttons';
 import { augurSdk } from 'services/augursdk';
 import { useAppStatusStore } from 'modules/app/store/app-status';
 import { ApprovalTxButtonLabel } from 'modules/common/labels';

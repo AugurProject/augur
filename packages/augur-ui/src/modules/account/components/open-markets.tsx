@@ -18,7 +18,7 @@ function filterComp(input: any, market: any) {
 }
 
 interface OpenMarketsProps {
-  toggle: Function;
+  toggle?: Function;
 }
 
 interface LoginAcccountPositionsMarketsInfo {
@@ -102,7 +102,7 @@ const OpenMarkets = ({ toggle }: OpenMarketsProps) => {
           <span>{!isTrading ? '24H change' : '24hr'}</span>
           <MovementLabel
             showIcon
-            showBracket={isTrading}
+            showBrackets={isTrading}
             showPlusMinus
             value={totalPercentage}
             useFull

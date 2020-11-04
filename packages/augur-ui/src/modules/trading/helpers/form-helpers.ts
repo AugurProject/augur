@@ -11,15 +11,16 @@ import { FORM_INPUT_TYPES } from 'modules/trading/store/constants';
 import { createBigNumber, BigNumber } from 'utils/create-big-number';
 import { calcPercentageFromPrice } from 'utils/format-number';
 import getPrecision from 'utils/get-number-precision';
-import type { Getters } from "@augurproject/sdk";
 import {
+  Order,
   getTradeInterval,
+  MarketInfoOutcome,
 } from '@augurproject/sdk-lite';
 import {
   tickSizeToNumTickWithDisplayPrices,
   convertDisplayAmountToOnChainAmount,
   QUINTILLION,
-  DEFAULT_TRADE_INTERVAL
+  DEFAULT_TRADE_INTERVAL,
 } from '@augurproject/utils';
 
 import { MarketData } from 'modules/types';
@@ -30,15 +31,20 @@ interface TestResults {
   errorCount: number;
 }
 
+export interface IndividualOutcomeOrderbook {
+  asks?: Order[];
+  bids?: Order[];
+}
+
 interface Props {
   market: MarketData;
   maxPrice: BigNumber;
   minPrice: BigNumber;
   selectedNav: string;
-  selectedOutcome: Getters.Markets.MarketInfoOutcome;
+  selectedOutcome: MarketInfoOutcome;
   currentTimestamp: number;
-  orderBook: Getters.Markets.OutcomeOrderBook;
-  initialLiquidity?: Boolean;
+  orderBook: IndividualOutcomeOrderbook;
+  initialLiquidity?: boolean;
 }
 const {
   PRICE,
@@ -105,8 +111,8 @@ export const testPrice = (
     const message = usePercent
       ? `Percent must be less than best ask of ${calcPercentageFromPrice(
           orderBook?.asks[0].price,
-          minPrice,
-          maxPrice
+          minPrice.toString(),
+          maxPrice.toString()
         )}`
       : `Price must be less than best ask of ${orderBook?.asks[0].price}`;
     errorCount += 1;
@@ -122,8 +128,8 @@ export const testPrice = (
     const message = usePercent
       ? `Percent must be more than best bid of ${calcPercentageFromPrice(
           orderBook.bids[0].price,
-          minPrice,
-          maxPrice
+          minPrice.toString(),
+          maxPrice.toString()
         )}`
       : `Price must be more than best bid of ${orderBook.bids[0].price}`;
     errorCount += 1;
@@ -148,9 +154,7 @@ export const testTotal = (
   if (value && createBigNumber(value).lt(0)) {
     errorCount += 1;
     passedTest = false;
-    errors[EST_DAI].push(
-      'Total Order Value must be greater than 0'
-    );
+    errors[EST_DAI].push('Total Order Value must be greater than 0');
   }
   return { isOrderValid: passedTest, errors, errorCount };
 };
@@ -165,25 +169,15 @@ export const testPropertyCombo = (
   let errorCount = 0;
   if (quantity && estEth && !price) {
     errorCount += 1;
-    errors[PRICE].push(
-      'Price is needed with Quantity or Total Value'
-    );
+    errors[PRICE].push('Price is needed with Quantity or Total Value');
   }
-  if (
-    changedProperty === QUANTITY &&
-    createBigNumber(quantity).lte(0)
-  ) {
+  if (changedProperty === QUANTITY && createBigNumber(quantity).lte(0)) {
     errorCount += 1;
     errors[QUANTITY].push('Quantity must be greater than 0');
   }
-  if (
-    changedProperty === EST_DAI &&
-    createBigNumber(estEth).lte(0)
-  ) {
+  if (changedProperty === EST_DAI && createBigNumber(estEth).lte(0)) {
     errorCount += 1;
-    errors[EST_DAI].push(
-      'Total Order Value must be greater than 0'
-    );
+    errors[EST_DAI].push('Total Order Value must be greater than 0');
   }
 
   return { isOrderValid: errorCount === 0, errors, errorCount };
@@ -254,9 +248,7 @@ export const testQuantityAndExpiry = (
   if (value && value.lt(0.000000001) && !value.eq(0) && !fromExternal) {
     errorCount += 1;
     passedTest = false;
-    errors[QUANTITY].push(
-      'Quantity must be greater than 0.000000001'
-    );
+    errors[QUANTITY].push('Quantity must be greater than 0.000000001');
   }
   if (
     !isScalar &&
@@ -289,7 +281,10 @@ export const testQuantityAndExpiry = (
   }
 
   if (
-    !convertDisplayAmountToOnChainAmount(value, market.tickSize)
+    !convertDisplayAmountToOnChainAmount(
+      value,
+      createBigNumber(market.tickSize)
+    )
       .mod(tradeInterval)
       .isEqualTo(0)
   ) {
@@ -344,14 +339,11 @@ export const orderValidation = (
   let isOrderValid = true;
   let errorCount = 0;
 
-  const price =
-    order[PRICE] && createBigNumber(order[PRICE]);
+  const price = order[PRICE] && createBigNumber(order[PRICE]);
 
-  const quantity =
-    order[QUANTITY] && createBigNumber(order[QUANTITY]);
+  const quantity = order[QUANTITY] && createBigNumber(order[QUANTITY]);
 
-  const total =
-    order[EST_DAI] && createBigNumber(order[EST_DAI]);
+  const total = order[EST_DAI] && createBigNumber(order[EST_DAI]);
 
   const expiration = order[EXPIRATION_DATE] ? order[EXPIRATION_DATE] : null;
 

@@ -1,5 +1,5 @@
-import React, { Component, useState, useEffect } from 'react';
-import { MarketData, DisputeInputtedValues } from 'modules/types';
+import React, { useState, useEffect } from 'react';
+import { DisputeInputtedValues } from 'modules/types';
 import { Title } from 'modules/modal/common';
 import { SecondaryButton } from 'modules/common/buttons';
 import {
@@ -10,7 +10,6 @@ import {
 } from 'modules/common/labels';
 import {
   ReportingRadioBarGroup,
-  ReportingRadioBarProps,
   MigrateRepInfo,
   Error,
 } from 'modules/common/form';
@@ -38,7 +37,6 @@ import {
 } from 'modules/contracts/actions/contractCalls';
 
 import Styles from 'modules/modal/modal.styles.less';
-import type { Getters } from '@augurproject/sdk';
 import { TXEventName } from '@augurproject/sdk-lite';
 import { loadAccountCurrentDisputeHistory } from 'modules/auth/actions/load-account-reporting';
 import { ReleasableRepNotice } from 'modules/reporting/common';

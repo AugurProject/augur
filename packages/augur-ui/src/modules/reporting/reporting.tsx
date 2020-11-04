@@ -1,14 +1,13 @@
 import React from 'react';
 import Media from "react-media";
 
-import { ButtonActionType } from 'modules/types';
 import { ReportingModalButton } from 'modules/reporting/common';
 import { Paginator as ReportingList} from 'modules/reporting/reporting-list';
 import { UserRepDisplay } from 'modules/reporting/common';
 import { REPORTING_STATE, SMALL_MOBILE, TABLET, TINY, DESKTOP, LARGE_DESKTOP, MODAL_DR_QUICK_GUIDE } from "modules/common/constants";
 import ModuleTabs from "modules/market/components/common/module-tabs/module-tabs";
 import ModulePane from "modules/market/components/common/module-tabs/module-pane";
-
+// @ts-ignore
 import Styles from 'modules/reporting/reporting.styles.less';
 import { REPORTING_HEAD_TAGS } from 'modules/seo/helmet-configs';
 import { HelmetTag } from 'modules/seo/helmet-tag';
@@ -41,7 +40,7 @@ const Reporting = () => {
                   <UserRepDisplay />
                   <ReportingList
                     reportingType={REPORTING_STATE.DESIGNATED_REPORTING}
-                    title={'Designated Reporting'}
+                    title='Designated Reporting'
                     showLoggedOut={showLoggedOut}
                     loggedOutMessage='Connect a wallet to see your markets that are ready for Reporting.'
                     emptyHeader='There are no markets available for you to Report on.'
@@ -49,7 +48,7 @@ const Reporting = () => {
                   />
                   <ReportingList
                     reportingType={REPORTING_STATE.PRE_REPORTING}
-                    title={'Upcoming Designated Reporting'}
+                    title='Upcoming Designated Reporting'
                     showLoggedOut={showLoggedOut}
                     loggedOutMessage='Connect a wallet to see your markets that will soon be ready to Report on.'
                     emptyHeader='There are no markets coming up in the next week for you to Report on.'
@@ -64,7 +63,7 @@ const Reporting = () => {
                   />
                   <ReportingList
                     reportingType={REPORTING_STATE.OPEN_REPORTING}
-                    title={'Open Reporting'}
+                    title='Open Reporting'
                     emptyHeader='There are currently no markets in Open Reporting.'
                     emptySubheader='Markets appear here if a Designated Reporter fails to show up.'
                   />
@@ -76,7 +75,7 @@ const Reporting = () => {
                 <div>
                   <ReportingList
                     reportingType={REPORTING_STATE.DESIGNATED_REPORTING}
-                    title={'Designated Reporting'}
+                    title='Designated Reporting'
                     showLoggedOut={showLoggedOut}
                     loggedOutMessage='Connect a wallet to see your markets that are ready for Reporting.'
                     emptyHeader='There are no markets available for you to Report on.'
@@ -84,7 +83,7 @@ const Reporting = () => {
                   />
                   <ReportingList
                     reportingType={REPORTING_STATE.PRE_REPORTING}
-                    title={'Upcoming Designated Reporting'}
+                    title='Upcoming Designated Reporting'
                     showLoggedOut={showLoggedOut}
                     loggedOutMessage='Connect a wallet to see your markets that will soon be ready to Report on.'
                     emptyHeader='There are no markets coming up in the next week for you to Report on.'
@@ -100,7 +99,7 @@ const Reporting = () => {
                   <UserRepDisplay />
                   <ReportingList
                     reportingType={REPORTING_STATE.OPEN_REPORTING}
-                    title={'Open Reporting'}
+                    title='Open Reporting'
                     emptyHeader='There are currently no markets in Open Reporting.'
                     emptySubheader='Markets appear here once if a Designated Reporter fails to show up.'
                   />
@@ -112,7 +111,7 @@ const Reporting = () => {
                 <div>
                   <ReportingList
                     reportingType={REPORTING_STATE.DESIGNATED_REPORTING}
-                    title={'Designated Reporting'}
+                    title='Designated Reporting'
                     showLoggedOut={showLoggedOut}
                     loggedOutMessage='Connect a wallet to see your markets that are ready for Reporting.'
                     emptyHeader='There are no markets available for you to Report on.'
@@ -120,7 +119,7 @@ const Reporting = () => {
                   />
                   <ReportingList
                     reportingType={REPORTING_STATE.PRE_REPORTING}
-                    title={'Upcoming Designated Reporting'}
+                    title='Upcoming Designated Reporting'
                     showLoggedOut={showLoggedOut}
                     loggedOutMessage='Connect a wallet to see your markets that will soon be ready to Report on.'
                     emptyHeader='There are no markets coming up in the next week for you to Report on.'
@@ -128,7 +127,7 @@ const Reporting = () => {
                   />
                   <ReportingList
                     reportingType={REPORTING_STATE.OPEN_REPORTING}
-                    title={'Open Reporting'}
+                    title='Open Reporting'
                     emptyHeader='There are currently no markets in Open Reporting.'
                     emptySubheader='Markets appear here once if a Designated Reporter fails to show up.'
                   />

@@ -95,7 +95,6 @@ import { loadAccountData } from 'modules/auth/actions/load-account-data';
 import { wrapLogHandler } from './wrap-log-handler';
 import { AppStatus } from 'modules/app/store/app-status';
 import { Markets } from 'modules/markets/store/markets';
-import { PendingOrders } from 'modules/app/store/pending-orders';
 import { loadGasPriceInfo } from 'modules/app/actions/load-gas-price-info';
 import { loadUniverseDetails } from 'modules/universe/actions/load-universe-details';
 

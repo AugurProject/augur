@@ -8,6 +8,7 @@ import type { Getters } from '@augurproject/sdk';
 import { LinearPropertyLabel } from 'modules/common/labels';
 import MarketTitle from 'modules/market/components/common/market-title';
 import { useAppStatusStore } from 'modules/app/store/app-status';
+import { THEMES } from 'modules/common/constants';
 const FROZEN_FUNDS_KEYS = ['openOrders', 'positions', 'createdMarkets'];
 const TITLES = {
   [FROZEN_FUNDS_KEYS[0]]: `Open Orders`,
@@ -22,9 +23,10 @@ const TOTAL_TITLES = {
 };
 
 export const ModalFrozenFunds = () => {
-  const { universe: { id: universe }, loginAccount: { address: account }, actions: { closeModal }} = useAppStatusStore();
+  const { theme, universe: { id: universe }, loginAccount: { address: account }, actions: { closeModal }} = useAppStatusStore();
   const [breakdowns, setBreakdowns] = useState([]);
   const [total, setTotal] = useState(formatDai('0'));
+  const isSportsTheme = theme === THEMES.SPORTS;
 
   async function getBreakdown() {
     try {
@@ -75,7 +77,7 @@ export const ModalFrozenFunds = () => {
 
   return (
     <div className={Styles.FrozenFundsBreakdown}>
-      <Title title="Frozen Funds" closeAction={() => closeModal()} />
+      <Title title={isSportsTheme ? 'Total Exposure' : "Frozen Funds"} closeAction={() => closeModal()} />
       <main>
         <section>
           {breakdowns.map(bk => (
@@ -83,7 +85,7 @@ export const ModalFrozenFunds = () => {
               <span>{bk.title}</span>
               {bk.rows.map(row => (
                 <div key={row.key}>
-                  <MarketTitle id={row.marketId} />
+                  <MarketTitle hideWarning id={row.marketId} />
                   <LinearPropertyLabel {...row} />
                 </div>
               ))}

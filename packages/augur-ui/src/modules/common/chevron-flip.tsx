@@ -3,7 +3,7 @@ import classNames from "classnames";
 
 import Styles from "modules/common/chevron-flip.styles";
 
-const ChevronFlipIcon = (className = "", noHardStroke = false) => (
+const ChevronFlipIcon = (className = "") => (
   <svg className={className} viewBox="0 0 16 16">
     <g
       stroke="none"
@@ -87,9 +87,7 @@ const ChevronFlip: React.FC<ChevronFlipProps> = ({
             [Styles.quick]: quick,
             [Styles.instant]: instant,
             [Styles.hover]: hover
-          }),
-          stroke,
-          noHardStroke
+          })
         )}
     </span>
   );

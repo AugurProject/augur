@@ -26,14 +26,13 @@ import {
   SORT_OPTIONS_SPORTS,
 } from 'modules/common/constants';
 import { PillSelection } from 'modules/common/selection';
-import { Getters } from '@augurproject/sdk';
+import { MarketList } from '@augurproject/sdk-lite';
 import classNames from 'classnames';
 import { LandingHero } from 'modules/markets-list/components/landing-hero';
 import { HelmetTag } from 'modules/seo/helmet-tag';
 import { MARKETS_VIEW_HEAD_TAGS } from 'modules/seo/helmet-configs';
 import FilterSearch from 'modules/filter-sort/filter-search';
 import { useAppStatusStore } from 'modules/app/store/app-status';
-import { SportsSortButton } from 'modules/common/buttons';
 import parseQuery from 'modules/routes/helpers/parse-query';
 import { useMarketsStore } from 'modules/markets/store/markets';
 import { getMarkets } from 'modules/markets/selectors/markets-all';
@@ -51,7 +50,6 @@ import {
 } from 'modules/app/store/constants';
 import { updateLoginAccountSettings } from '../actions/update-login-account-settings';
 import { marketListViewed } from 'services/analytics/helpers';
-import { categoriesGroup } from 'modules/app/components/inner-nav/category-filters.styles.less';
 
 const PAGINATION_COUNT = 10;
 
@@ -258,7 +256,7 @@ const MarketsView = () => {
         templateFilter,
         marketTypeFilter,
       },
-      (err, result: Getters.Markets.MarketList) => {
+      (err, result: MarketList) => {
         if (err) return console.log('Error loadMarketsFilter:', err);
         if (componentWrapper.current) {
           // categories is also on results

@@ -20,7 +20,6 @@ import {
   THEMES,
 } from './constants';
 import {
-  formatNumber,
   formatBlank,
   calcPercentageFromPrice,
   formatMarketShares,
@@ -32,8 +31,7 @@ import { selectMarketOutcomeBestBidAsk } from 'modules/markets/selectors/select-
 import { useMarketsStore } from 'modules/markets/store/markets';
 import { useAppStatusStore } from 'modules/app/store/app-status';
 import { OutcomeFormatted, UIOrder } from 'modules/types';
-import { Getters } from '@augurproject/sdk';
-import { TXEventName } from '@augurproject/sdk-lite';
+import { TXEventName, OutcomeOrderBook } from '@augurproject/sdk-lite';
 import { removeCanceledOrder } from 'modules/pending-queue/actions/pending-queue-management';
 import { removePendingOrder } from 'modules/orders/actions/pending-orders-management';
 import { Properties } from './row-column';
@@ -43,9 +41,9 @@ import { BET_STATUS } from 'modules/trading/store/constants';
 import { useBetslipStore } from 'modules/trading/store/betslip';
 
 interface MyBetsRowProps {
-  outcome: Object;
-  showExtraRow: Boolean;
-  isEvent: Boolean;
+  outcome: any;
+  showExtraRow: boolean;
+  isEvent: boolean;
 }
 
 export const MyBetsRow = ({
@@ -139,7 +137,7 @@ export const MyBetsRow = ({
 
 interface MarketOutcomeProps {
   outcome: OutcomeFormatted;
-  orderBook: Getters.Markets.OutcomeOrderBook;
+  orderBook: OutcomeOrderBook;
   preview: Boolean;
   marketId: string;
   updateSelectedOutcome: Function;
@@ -321,13 +319,13 @@ export const MarketOutcome = ({
 
 interface OpenOrderProps {
   openOrder: UIOrder;
-  extendedViewNotOnMobile: Boolean;
+  extendedViewNotOnMobile?: boolean;
   marketId: string;
 }
 
 export const OpenOrder = ({
   openOrder,
-  extendedViewNotOnMobile,
+  extendedViewNotOnMobile = false,
   marketId,
 }: OpenOrderProps) => {
   const {
@@ -463,12 +461,12 @@ export const OpenOrder = ({
 
 interface FilledOrderProps {
   filledOrder: UIOrder;
-  extendedViewNotOnMobile: Boolean;
+  extendedViewNotOnMobile?: boolean;
 }
 
 export const FilledOrder = ({
   filledOrder,
-  extendedViewNotOnMobile,
+  extendedViewNotOnMobile = false,
 }: FilledOrderProps) => {
   const { marketInfos } = useMarketsStore();
   const {

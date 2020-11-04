@@ -8,7 +8,6 @@ import { windowRef } from 'utils/window-ref';
 import { editEndpointParams } from 'utils/edit-endpoint-params';
 import { MODAL_NETWORK_CONNECT } from 'modules/common/constants';
 import { WindowApp } from 'modules/types';
-import type { SDKConfiguration } from '@augurproject/sdk-lite';
 import { useAppStatusStore } from 'modules/app/store/app-status';
 import { isWeb3Transport } from 'modules/contracts/actions/contractCalls';
 

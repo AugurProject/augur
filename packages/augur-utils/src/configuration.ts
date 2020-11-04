@@ -111,7 +111,8 @@ export interface SDKConfiguration {
     trackMarketInvalidBids?: boolean,
     fallbackProvider?: 'jsonrpc' | 'torus',
     liteProvider?: 'jsonrpc' | 'default',
-    primaryProvider?: 'jsonrpc' | 'wallet'
+    primaryProvider?: 'jsonrpc' | 'wallet',
+    reportingOnly?: boolean,
   },
   concurrentDBOperationsLimit?: number
 }

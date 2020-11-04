@@ -78,7 +78,6 @@
       top: calc(@top-bar-height + @size-1);
       right: -@size-326;
       bottom: 0;
-      left: 0;
       justify-content: flex-end;
       z-index: @mask-modal;
 
@@ -101,7 +100,7 @@
 
       &.Minimized {
         background: transparent;
-        left: 0;
+        pointer-events: none;
         right: -@size-326;
         z-index: @mask-modal;
 
@@ -112,6 +111,7 @@
         > div {
           display: flex;
           align-items: flex-end;
+          pointer-events: all;
 
           > button:first-of-type {
             transform: rotate(-0.25turn) translate(-@size-107, @size-54);
@@ -139,11 +139,15 @@
         align-items: center;
 
         > button:first-of-type {
+          .text-16-bold;
+
+          text-transform: capitalize;
           height: @size-64;
 
           > svg {
             position: absolute;
             right: @size-18;
+            height: @size-8;
           }
         }
       }
@@ -307,7 +311,7 @@
         }
 
         > div:first-of-type {
-          margin-top: @size-8;
+          margin-bottom: @size-8;
         }
       }
     }

@@ -1,6 +1,6 @@
 import React, { Component, useState, useEffect, useRef } from 'react';
 import classNames from 'classnames';
-import Styles from 'modules/common/selection.styles';
+import Styles from 'modules/common/selection.styles.less';
 import { ThickChevron, Chevron, ShareIcon, SlimArrow, AlternateCheckMark } from 'modules/common/icons';
 import ReactTooltip from 'react-tooltip';
 import TooltipStyles from 'modules/common/tooltip.styles.less';

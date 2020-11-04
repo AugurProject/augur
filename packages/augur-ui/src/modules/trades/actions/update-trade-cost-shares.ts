@@ -1,14 +1,14 @@
-import { createBigNumber } from 'utils/create-big-number';
+import { createBigNumber, BigNumber } from 'utils/create-big-number';
 import { BUY, ZERO, ZEROX_GAS_FEE, BUY_INDEX } from 'modules/common/constants';
 import logError from 'utils/log-error';
 import { generateTrade } from 'modules/trades/helpers/generate-trade';
-import { BigNumber } from 'bignumber.js';
 import { NodeStyleCallback, AccountPosition } from 'modules/types';
 import {
   simulateTrade,
   simulateTradeGasLimit,
 } from 'modules/contracts/actions/contractCalls';
-import type { Getters, SimulateTradeData } from '@augurproject/sdk';
+import type { SimulateTradeData } from '@augurproject/sdk';
+import { MarketInfo } from '@augurproject/sdk-lite';
 import { AppStatus } from 'modules/app/store/app-status';
 import { Markets } from 'modules/markets/store/markets';
 
@@ -117,7 +117,7 @@ export const updateTradeShares = ({
 
 export const runSimulateTrade = async (
   newTradeDetails: any,
-  market: Getters.Markets.MarketInfo,
+  market: MarketInfo,
   marketId: string,
   outcomeId: number,
   accountPositions: AccountPosition,

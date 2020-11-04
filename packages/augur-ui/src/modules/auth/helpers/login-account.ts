@@ -1,11 +1,9 @@
 import generateDownloadAccountLink from './generate-download-account-link';
 import getValue from 'utils/get-value';
-import { formatRep, formatDai, formatEther, formatNone, formatAttoEth } from 'utils/format-number';
+import { formatRep, formatDai, formatEther, formatNone } from 'utils/format-number';
 import { ZERO } from 'modules/common/constants';
 import { createBigNumber, BigNumber } from "utils/create-big-number";
 import { AppStatus } from 'modules/app/store/app-status';
-import { DESIRED_SIGNER_ETH_BALANCE } from '@augurproject/sdk';
-import { FormattedNumber } from 'modules/types';
 
 export const getLoginAccountFormatted = loginAccount => {
   const genAccountProperties = generateDownloadAccountLink(

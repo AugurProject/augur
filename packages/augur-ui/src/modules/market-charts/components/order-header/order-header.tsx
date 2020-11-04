@@ -3,7 +3,6 @@ import Styles from 'modules/market-charts/components/order-header/order-header.s
 import { ToggleExtendButton } from 'modules/common/buttons';
 import { ZEROX_STATUSES_TOOLTIP } from 'modules/common/constants';
 import { StatusDotTooltip } from 'modules/common/labels';
-import classNames from 'classnames';
 import { useAppStatusStore } from 'modules/app/store/app-status';
 
 interface OrderHeaderProps {

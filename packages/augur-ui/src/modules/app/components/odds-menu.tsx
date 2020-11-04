@@ -5,7 +5,7 @@ import { Gear, CheckMark } from 'modules/common/icons';
 import { useAppStatusStore } from 'modules/app/store/app-status';
 import { ODDS_TYPE, MODAL_ODDS, TIME_FORMATS } from 'modules/common/constants';
 
-import Styles from 'modules/app/components/odds-menu.styles';
+import Styles from 'modules/app/components/odds-menu.styles.less';
 import {
   SecondaryButton,
   PrimaryButton,

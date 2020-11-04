@@ -14,19 +14,22 @@ import {
   HEADER_TYPE,
   SPORTS_GROUP_TYPES,
   SPORTS_GROUP_MARKET_TYPES,
+  MODAL_MARKET_RULES,
 } from 'modules/common/constants';
 import { CountdownProgress, formatTime } from 'modules/common/progress';
 import Styles from 'modules/market-cards/sports-market-card.styles.less';
 import MarketTitle from 'modules/market/components/common/market-title';
-import { ThickChevron } from 'modules/common/icons';
+import { Rules, ThickChevron } from 'modules/common/icons';
 import { LoadingCard } from 'modules/market-cards/market-card';
-import { MarketInfos } from 'modules/types';
+import { MarketData } from 'modules/types';
+import { useAppStatusStore } from 'modules/app/store/app-status';
+
 
 interface SportsMarketCardProps {
   sportsGroup: {
     id: string;
     type: string;
-    markets: Array<MarketInfos>;
+    markets: Array<MarketData>;
     marketTypes: Array<string>;
   };
   loading: boolean;
@@ -50,6 +53,9 @@ export const SportsMarketCard = ({
   loading,
 }: SportsMarketCardProps) => {
   const [showMore, setShowMore] = useState(determineStartState(sportsGroup));
+  const {
+    actions: { setModal },
+  } = useAppStatusStore();
   const location = useLocation();
   const history = useHistory();
   if (loading) {
@@ -60,7 +66,7 @@ export const SportsMarketCard = ({
   const { type, markets } = sportsGroup;
   const isFutures = type === FUTURES;
   const market = markets[0];
-  const { categories, reportingState, endTimeFormatted } = market;
+  const { categories, reportingState } = market;
   const displayableMarkets = markets.reduce(reduceToUniquePools, []);
   const numExtraWagers =
     type === COMBO
@@ -84,26 +90,41 @@ export const SportsMarketCard = ({
     >
       <TopRow
         market={market}
-        sportMarkets={markets}
+        showStart={type === COMBO}
         categoriesWithClick={getCategoriesWithClick(categories, history)}
       />
       <MarketTitle id={market.id} headerType={headerType} />
       <SportsGroupMarkets sportsGroup={sportsGroup} />
       {!isFutures && (
-        <article>
+        <article className={classNames({
+          [Styles.ComboFooter]: type === COMBO
+        })}>
           {showMoreButtonVisible && (
-            <button onClick={() => setShowMore(!showMore)}>
+            <button
+              className={Styles.showMoreButton}
+              onClick={() => setShowMore(!showMore)}
+            >
               {ThickChevron} {`${showMore ? 'Show Less' : moreWagersText}`}
             </button>
           )}
+          <button
+            className={Styles.RulesButton}
+            onClick={() =>
+              setModal({
+                type: MODAL_MARKET_RULES,
+                sportMarkets: sportsGroup.markets,
+                description: market.sportsBook.header,
+                endTime: endTimeFormatted.formattedUtc,
+              })
+            }
+          >
+            {Rules} Rules
+          </button>
           <CountdownProgress
             label="Estimated Start Time"
-            time={formatTime(market.sportsBook.estTimestamp)}
+            time={formatTime(Number(market.sportsBook.estTimestamp))}
             reportingState={reportingState}
           />
-          <span className={Styles.Matched}>
-            Matched<b>{` ${market.volumeFormatted.full}`}</b>
-          </span>
         </article>
       )}
     </div>

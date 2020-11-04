@@ -1,7 +1,7 @@
 import React, { useState, useMemo, useEffect } from 'react';
 import classNames from 'classnames';
 import PriceHistory from 'modules/market-charts/components/price-history/price-history';
-import Styles from 'modules/market-charts/sports-group-charts.styles';
+import Styles from 'modules/market-charts/sports-group-charts.styles.less';
 import { selectMarket } from 'modules/markets/selectors/market';
 import { SquareDropdown } from 'modules/common/selection';
 import { SPORTS_GROUP_TYPES } from 'modules/common/constants';

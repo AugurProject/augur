@@ -45,7 +45,7 @@ function filterComp(input, market) {
 }
 
 interface FavoritesProps {
-  toggle: Function;
+  toggle?: Function;
 }
 
 const Favorites = ({

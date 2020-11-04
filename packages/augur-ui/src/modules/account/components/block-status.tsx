@@ -1,5 +1,5 @@
 import React from 'react';
-
+import { BigNumber } from 'utils/create-big-number';
 import { formatNumber } from 'utils/format-number';
 import { SYNC_BEHIND, SYNC_PROCESSED } from 'modules/common/constants';
 import { LinearPropertyLabel } from 'modules/common/labels';
@@ -8,8 +8,8 @@ import Styles from 'modules/account/components/status.styles.less';
 
 export interface BlockStatusProps {
   blocksBehind: string | number;
-  lastProcessedBlockBn: number;
-  highestBlockBn: number;
+  lastProcessedBlockBn: BigNumber;
+  highestBlockBn: BigNumber;
 }
 
 const BlockStatus = ({

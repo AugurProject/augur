@@ -1,4 +1,3 @@
-import { createSelector } from 'reselect';
 import * as constants from 'modules/common/constants';
 
 import { selectMarket } from 'modules/markets/selectors/market';

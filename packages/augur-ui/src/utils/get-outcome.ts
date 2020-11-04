@@ -1,3 +1,4 @@
+import { MarketInfo } from '@augurproject/sdk-lite';
 import {
   YES_NO,
   CATEGORICAL,

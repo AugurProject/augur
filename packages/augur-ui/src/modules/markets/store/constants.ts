@@ -19,7 +19,7 @@ export const DEFAULT_MARKETS_STATE = {
 export const STUBBED_MARKETS_ACTIONS = {
   updateOrderBook: (marketId, orderBook, payload) => {},
   clearOrderBook: () => {},
-  updateMarketsData: marketInfos => {},
+  updateMarketsData: (marketInfos, payload = undefined) => {},
   removeMarket: marketId => {},
   bulkMarketTradingHistory: (keyedMarketTradingHistory, payload) => {},
   updateReportingList: (reportingState, marketIds, params, isLoading) => {},

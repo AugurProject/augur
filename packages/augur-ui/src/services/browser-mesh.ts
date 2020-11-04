@@ -2,15 +2,14 @@ import type {
   Config,
   ContractAddresses as ZeroXContractAddresses,
 } from '@0x/mesh-browser-lite';
-import type {
-  ContractAddresses,
-  SDKConfiguration,
-} from '@augurproject/artifacts';
+// import type {
+//   ContractAddresses,
+// } from '@augurproject/utils';
 
 import { SubscriptionEventName } from '@augurproject/sdk-lite';
 import type { ZeroX } from '@augurproject/sdk';
 
-import { NetworkId } from "@augurproject/utils";
+import { NetworkId, SDKConfiguration, ContractAddresses } from "@augurproject/utils";
 import { retry } from 'async';
 import * as Comlink from 'comlink';
 import { SupportedProvider } from 'ethereum-types';

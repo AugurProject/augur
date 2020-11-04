@@ -14,7 +14,6 @@ import {
   MarketTypeName,
   MaxLiquiditySpread,
   TemplateFilters,
-  MarketTypeName,
 } from '@augurproject/sdk-lite';
 
 // Help Center links

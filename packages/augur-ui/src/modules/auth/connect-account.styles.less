@@ -19,7 +19,7 @@
   &.selected {
     &:before {
       content: '';
-    
+
       background: var(--color-module-background);
       bottom: -@size-1;
       height: @size-3;
@@ -27,7 +27,7 @@
       transform: translateX(@size-1);
       width: calc(100% - @size-2);
       z-index: @default-z-index;
-    
+
       @media @breakpoint-mobile-tablet {
         display: none;
       }
@@ -169,6 +169,9 @@
 
     &.selected {
       > div:first-of-type {
+        background-color: var(--color-page-background);
+        border-top: @size-3 solid var(--color-primary-action);
+
         &:hover {
           background-color: var(--color-page-background);
         }
@@ -198,10 +201,6 @@
       &:hover {
         background-color: var(--color-secondary-text-25);
         border-top: @size-3 solid var(--color-primary-action);
-      }
-
-      @media @breakpoint-mobile {
-        padding: @size-12;
       }
 
       > div:first-of-type {
@@ -235,6 +234,34 @@
       > span {
         display: block;
         color: var(--color-module-background);
+      }
+    }
+  }
+
+  @media @breakpoint-mobile-tablet {
+    .ConnectAccount {
+      > div:first-of-type {
+        height: 100%;
+        border-right: 0;
+        padding: @size-12;
+
+        > div:first-of-type > span {
+          margin: 0 0 0 @size-8;
+        }
+      }
+    }
+
+    .ConnectDropdown {
+      border: 0;
+    }
+
+    .AccountInfo {
+      > div {
+        max-width: @size-88;
+
+        > span {
+          .text-12-bold;
+        }
       }
     }
   }

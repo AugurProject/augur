@@ -1,8 +1,3 @@
-import type { Getters } from '@augurproject/sdk';
-import {
-  selectCurrentTimestamp,
-  selectMarketInfosState,
-} from 'appStore/select-state';
 import {
   INVALID_OUTCOME_ID,
   SCALAR,
@@ -12,7 +7,7 @@ import {
 } from 'modules/common/constants';
 import { MarketData, OutcomeFormatted } from 'modules/types';
 import { convertMarketInfoToMarketData } from 'utils/convert-marketInfo-marketData';
-import { Getters } from '@augurproject/sdk';
+import { StakeDetails } from '@augurproject/sdk-lite';
 import { createBigNumber } from 'utils/create-big-number';
 import { AppStatus } from 'modules/app/store/app-status';
 import { Markets } from 'modules/markets/store/markets';
@@ -49,7 +44,7 @@ export const selectSortedMarketOutcomes = (marketType, outcomes: OutcomeFormatte
 export const selectSortedDisputingOutcomes = (
   marketType: string,
   outcomes: OutcomeFormatted[],
-  stakes: Getters.Markets.StakeDetails[] | null,
+  stakes: StakeDetails[] | null,
   isWarpSync: boolean
 ): OutcomeFormatted[] => {
   if (!stakes || stakes.length === 0)
@@ -61,7 +56,7 @@ export const selectSortedDisputingOutcomes = (
   return buildYesNoCategoricalDisputingOutcomes(outcomes, sortedStakes);
 };
 
-const sortStakes = (stakes: Getters.Markets.StakeDetails[]) => {
+const sortStakes = (stakes: StakeDetails[]) => {
   const winning = stakes.filter(s => s.tentativeWinning);
   const nonWinning = stakes.filter(s => !s.tentativeWinning);
   const sortedOutcomes = nonWinning.sort((a, b) => {
@@ -76,7 +71,7 @@ const sortStakes = (stakes: Getters.Markets.StakeDetails[]) => {
 
 const buildScalarDisputingOutcomes = (
   outcomes: OutcomeFormatted[],
-  sortedStakes: Getters.Markets.StakeDetails[],
+  sortedStakes: StakeDetails[],
   isWarpSync: boolean,
 ) => {
   // always add invalid
@@ -114,7 +109,7 @@ const buildScalarDisputingOutcomes = (
 
 const buildYesNoCategoricalDisputingOutcomes = (
   outcomes: OutcomeFormatted[],
-  sortedStakes: Getters.Markets.StakeDetails[]
+  sortedStakes: StakeDetails[]
 ) => {
   const stakedOutcomes: OutcomeFormatted[] = sortedStakes
     .map(stake =>

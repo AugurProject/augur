@@ -1,4 +1,5 @@
-import { Getters } from '@augurproject/sdk';
+import type { Getters } from '@augurproject/sdk';
+import { StakeDetails } from '@augurproject/sdk-lite';
 import classNames from 'classnames';
 import React, { useState, useEffect, Component } from 'react';
 import { useHistory } from 'react-router';
@@ -33,7 +34,6 @@ import {
   RightAngle,
   SearchIcon,
   XIcon,
-  ExclamationCircle,
   AlternateXIcon,
 } from 'modules/common/icons';
 import debounce from 'utils/debounce';
@@ -48,7 +48,6 @@ import { NameValuePair, SquareDropdown } from 'modules/common/selection';
 import 'react-dates/lib/css/_datepicker.css';
 import { PulseLoader } from 'react-spinners';
 import { BigNumber, createBigNumber } from 'utils/create-big-number';
-import { formatAttoRep } from 'utils/format-number';
 import { getTimezones, UTC_Default } from 'utils/get-timezones';
 import noop from 'utils/noop';
 import {
@@ -235,9 +234,9 @@ export const Error = (props: ErrorProps) => (
 );
 
 export interface BaseRadioButtonProp {
-  id: string;
-  checked: boolean;
-  value?: string;
+  id?: string | number;
+  checked?: boolean;
+  value?: string | number;
 }
 export interface RadioCardProps extends BaseRadioButtonProp {
   header: string;
@@ -249,20 +248,20 @@ export interface RadioCardProps extends BaseRadioButtonProp {
 }
 
 interface RadioGroupProps {
-  id: string;
+  id?: string;
   light?: boolean;
   onChange: Function;
   radioButtons: BaseRadioButtonProp[];
   market?: MarketData;
-  defaultSelected?: string | null;
+  defaultSelected?: string | number | null;
   children?: any[];
-  reportAction: Function;
+  reportAction?: Function;
   inputtedReportingStake?: DisputeInputtedValues;
   updateInputtedStake?: Function;
   updateScalarOutcome?: Function;
   inputScalarOutcome?: string;
-  stake?: Getters.Markets.StakeDetails;
-  userCurrentDisputeRound:
+  stake?: StakeDetails;
+  userCurrentDisputeRound?:
     | Getters.Accounts.UserCurrentOutcomeDisputeStake[]
     | [];
   hideRadioButton?: boolean;
@@ -270,11 +269,11 @@ interface RadioGroupProps {
 }
 
 export interface RadioGroupState {
-  selected: string | null;
+  selected: string | number | null;
 }
 
 export interface RadioBarProps extends BaseRadioButtonProp {
-  header: string;
+  header?: string;
   onChange?: Function;
   expandable?: boolean;
   error?: boolean;
@@ -292,7 +291,7 @@ export interface ReportingRadioBarProps extends BaseRadioButtonProp {
   updateChecked?: Function;
   expandable?: boolean;
   error?: boolean;
-  stake: Getters.Markets.StakeDetails | null;
+  stake: StakeDetails | null;
   isInvalid?: boolean;
   inputtedReportingStake?: DisputeInputtedValues;
   updateInputtedStake?: Function;
@@ -306,8 +305,8 @@ export interface ReportingRadioBarProps extends BaseRadioButtonProp {
 }
 
 export interface RadioTwoLineBarProps extends BaseRadioButtonProp {
-  header: string;
-  description: string;
+  header?: string;
+  description?: string;
   onChange: Function;
   error?: boolean;
   hideRadioButton?: boolean;
@@ -754,8 +753,8 @@ export class CategoryMultiSelect extends Component<
             onChangeInput={v =>
               this.handleUpdate(selected, getNewValues(v, 2, values))
             }
-            showText={customTertiary}
-            showIcon={showTertiaryDropdown || customTertiary}
+            showText={!!customTertiary}
+            showIcon={!!(showTertiaryDropdown || customTertiary)}
             showDropdown={showTertiaryDropdown}
             autoCompleteList={tertiaryAutoComplete}
             removable
@@ -1106,7 +1105,7 @@ export class ReportingRadioBar extends Component<ReportingRadioBarProps, {}> {
               {checked && (
                 <DisputingBondsView
                   market={market}
-                  id={id}
+                  id={String(id)}
                   isInvalid={isInvalid}
                   inputScalarOutcome={inputScalarOutcome}
                   updateScalarOutcome={updateScalarOutcome}
@@ -1123,7 +1122,7 @@ export class ReportingRadioBar extends Component<ReportingRadioBarProps, {}> {
           {!isDisputing && checked && (
             <ReportingBondsView
               market={market}
-              id={id}
+              id={String(id)}
               inputScalarOutcome={inputScalarOutcome}
               updateScalarOutcome={updateScalarOutcome}
               reportAction={reportAction}
@@ -1139,7 +1138,7 @@ export class ReportingRadioBar extends Component<ReportingRadioBarProps, {}> {
 }
 
 export const RadioBar = ({
-  header,
+  header = '',
   onChange,
   checked,
   value,

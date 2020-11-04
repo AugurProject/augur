@@ -13,8 +13,9 @@ import { THEMES } from 'modules/common/constants';
 import { BETSLIP_SELECTED } from 'modules/trading/store/constants';
 import { useBetslipStore } from 'modules/trading/store/betslip';
 
-import Styles from 'modules/trading/betslip.styles';
+import Styles from 'modules/trading/betslip.styles.less';
 import { PrimaryButton } from 'modules/common/buttons';
+import { BetslipMarketItemType } from 'modules/trading/store/betslip-hooks';
 
 export const Betslip = () => {
   const {
@@ -24,7 +25,7 @@ export const Betslip = () => {
     actions: { setBetslipMinimized },
   } = useAppStatusStore();
   const {
-    selected: { header, subHeader },
+    selected: { header },
     betslip: { count: betslipCount, items: betslipItems },
     matched: { items: matchedItems },
     actions: { toggleSubHeader },
@@ -44,7 +45,7 @@ export const Betslip = () => {
     if (filteredOrders.length > 0) {
       filteredMatchedItems[marketId] = {
         ...filteredMatchedItems[marketId],
-        orders: filteredOrders
+        orders: filteredOrders,
       };
       matchedCount += filteredOrders.length;
     } else {
@@ -60,19 +61,26 @@ export const Betslip = () => {
     }
   }, [theme]);
 
-  const isSportsBook = theme === THEMES.SPORTS;
   const isMyBets = header === BETSLIP_SELECTED.MY_BETS;
   const myBetsCount = matchedCount;
   const isSelectedEmpty = isMyBets ? myBetsCount === 0 : betslipCount === 0;
   let marketItems = isMyBets
     ? Object.entries(filteredMatchedItems)
     : Object.entries(betslipItems);
+
   if (isMyBets) {
-    marketItems.map(item => item[1].orders = item[1].orders.sort((a, b) => b.timestamp - a.timestamp));
-    marketItems = marketItems.sort((a, b) => b[1].orders[0].timestamp - a[1].orders[0].timestamp);
+    marketItems.map(
+      item =>
+        (item[1].orders = item[1].orders.sort(
+          (a, b) => b.timestamp - a.timestamp
+        ))
+    );
+    marketItems = marketItems.sort(
+      (a, b) => b[1].orders[0].timestamp - a[1].orders[0].timestamp
+    );
   }
   let oddsChanged = false;
-  Object.values(betslipItems).map(market => {
+  Object.values(betslipItems).map((market: BetslipMarketItemType) => {
     const recentlyUpdated = market?.orders.filter(item => item.recentlyUpdated);
     if (recentlyUpdated.length > 0) {
       oddsChanged = true;
@@ -87,7 +95,7 @@ export const Betslip = () => {
       >
         <div onClick={() => !betslipMinimized && setBetslipMinimized(true)}>
           <button onClick={() => setBetslipMinimized(!betslipMinimized)}>
-            Betslip ({betslipCount}) {ThickChevron}
+            {isMyBets ? 'My Bets' : `Betslip (${betslipCount})`} {ThickChevron}
           </button>
         </div>
         <section className={Styles.Container}>
@@ -103,26 +111,28 @@ export const Betslip = () => {
               <EmptyState />
             ) : (
               <>
-                {step !== 0 && !isMyBets && <span>Please review your bets:</span>}
+                {step !== 0 && !isMyBets && (
+                  <span>Please review your bets:</span>
+                )}
                 <BetslipList marketItems={marketItems} />
-                {oddsChanged && !isMyBets &&
-                  <span>
-                    Highlighted odds changed since you selected them.
-                  </span>
-                }
+                {oddsChanged && !isMyBets && (
+                  <span>Highlighted odds changed since you selected them.</span>
+                )}
                 <BetslipFooter />
               </>
             )}
           </section>
         </section>
       </aside>
-      <PrimaryButton
-        text={`Betslip (${betslipCount})`}
-        action={() => setBetslipMinimized(!betslipMinimized)}
-        className={classNames(Styles.OpenBetslipButton, {
-          [Styles.Minimized]: betslipMinimized,
-        })}
-      />
+      {betslipCount > 0 && (
+        <PrimaryButton
+          text={`Betslip (${betslipCount})`}
+          action={() => setBetslipMinimized(!betslipMinimized)}
+          className={classNames(Styles.OpenBetslipButton, {
+            [Styles.Minimized]: betslipMinimized,
+          })}
+        />
+      )}
     </>
   );
 };

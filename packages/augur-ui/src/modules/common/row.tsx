@@ -10,32 +10,32 @@ import PositionExpandedContent from 'modules/portfolio/components/common/positio
 import RowColumn, { Properties } from 'modules/common/row-column';
 import { SMALL_MOBILE } from 'modules/common/constants';
 
-import Styles from 'modules/common/row.styles';
+import Styles from 'modules/common/row.styles.less';
 
 export interface StyleOptions {
-  position?: Boolean;
-  openOrder?: Boolean;
-  filledOrder?: Boolean;
-  initialLiquidity?: Boolean;
-  noToggle?: Boolean;
-  showExpandedToggleOnMobile?: Boolean;
-  isFirst?: Boolean;
-  outcome?: Boolean;
+  position?: boolean;
+  openOrder?: boolean;
+  filledOrder?: boolean;
+  initialLiquidity?: boolean;
+  noToggle?: boolean;
+  showExpandedToggleOnMobile?: boolean;
+  isFirst?: boolean;
+  outcome?: boolean;
   colorId?: string;
-  active?: Boolean;
-  isInvalid?: Boolean;
-  myBetRow?: Boolean;
-  failed?: Boolean;
+  active?: boolean;
+  isInvalid?: boolean;
+  myBetRow?: boolean;
+  failed?: boolean;
 }
 
 export interface RowProps {
   rowProperties: Order | FilledOrderInterface;
   columnProperties: Array<Properties>;
   styleOptions: StyleOptions;
-  isSingle?: Boolean;
+  isSingle?: boolean;
   rowOnClick?: Function;
-  extendedView?: Boolean;
-  extendedViewNotOnMobile?: Boolean;
+  extendedView?: boolean;
+  extendedViewNotOnMobile?: boolean;
 }
 
 const RowContent = (props: RowProps) => {

@@ -1,3 +1,15 @@
+interface dbType {
+  objectStoreNames: Array<any>;
+};
+
+interface EventTargetType extends EventTarget {
+  result: dbType;
+};
+
+interface EventType extends Event {
+  target: EventTargetType;
+};
+
 export function showIndexedDbSize() {
   'use strict';
 
@@ -7,16 +19,15 @@ export function showIndexedDbSize() {
       dbnames.map(dbname =>
         new Promise(function(resolve, reject) {
           var request = window.indexedDB.open(dbname);
-          request.onsuccess = function(event) {
+          request.onsuccess = function(event: EventType) {
             const db = event.target.result;
             resolve(db);
           };
-        }).then(async db => {
+        }).then(async (db: dbType) => {
           var PromiseArray = [];
-          console.log('total:', db.objectStoreNames.length);
           for (var i = 0; i < db.objectStoreNames.length; i++) {
             PromiseArray.push(
-              await getObjectStoreData(db, db.objectStoreNames[i], i)
+              await getObjectStoreData(db, db.objectStoreNames[i])
             );
           }
           console.log('done', JSON.stringify(PromiseArray));
@@ -31,6 +42,7 @@ export function showIndexedDbSize() {
 
   function getObjectStoreData(db, storename) {
     return new Promise(function(resolve, reject) {
+      // @ts-ignore
       var trans = db.transaction(storename, IDBTransaction.READ_ONLY);
       var store = trans.objectStore(storename);
       var items = [];
