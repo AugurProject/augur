@@ -88,6 +88,11 @@ const BettingMarketView = () => {
   }, [showCopied]);
 
   useEffect(() => {
+    document.getElementById("mainContent")?.scrollTo(0, 0);
+    window.scrollTo(0, 1);
+  }, []);
+
+  useEffect(() => {
     if (sportsGroup.current === null && market?.sportsBook?.groupId) {
       sportsGroup.current = getSportsGroupsFromSportsIDs(
         [market.sportsBook.groupId],
