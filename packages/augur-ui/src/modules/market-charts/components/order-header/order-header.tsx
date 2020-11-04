@@ -1,4 +1,5 @@
 import React from 'react';
+// @ts-ignore
 import Styles from 'modules/market-charts/components/order-header/order-header.styles.less';
 import { ToggleExtendButton } from 'modules/common/buttons';
 import { ZEROX_STATUSES_TOOLTIP } from 'modules/common/constants';

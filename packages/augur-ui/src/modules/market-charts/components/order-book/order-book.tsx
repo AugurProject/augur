@@ -13,6 +13,7 @@ import {
   INVALID_OUTCOME_ID,
 } from 'modules/common/constants';
 import { CancelTextButton } from 'modules/common/buttons';
+// @ts-ignore
 import Styles from 'modules/market-charts/components/order-book/order-book.styles.less';
 import {
   QuantityOutcomeOrderBook,
@@ -85,15 +86,13 @@ const OrderBookSide = ({
   usePercent,
 }: OrderBookSideProps) => {
   const { updateOrderProperties } = Trading.actions;
-  const side = useRef({
-    current: { clientHeight: 0, scrollHeight: 0, scrollTop: 0 },
-  });
+  const side = useRef({ clientHeight: 0, scrollHeight: 0, scrollTop: 0 });
   const { hoveredSide, hoveredOrderIndex } = hoverState;
   const isAsks = type === ASKS;
   const isScalar = marketType === SCALAR;
   const opts = { removeComma: true };
   const orderBookOrders = processedOrderbook[type] || [];
-  const { clientHeight, scrollHeight } = side.current;
+  const { clientHeight, scrollHeight }  = side.current;
   const isScrollable = orderBookOrders.length * 20 >= clientHeight;
 
   useEffect(() => {
@@ -118,6 +117,7 @@ const OrderBookSide = ({
         [Styles.Asks]: isAsks,
         [Styles.Scrollable]: isScrollable,
       })}
+      // @ts-ignore
       ref={side}
     >
       {orderBookOrders.length === 0 && (
@@ -259,7 +259,9 @@ const OrderBook = ({
       }, expirationMaxSeconds * 1000);
       return () => clearTimeout(timer);
     }
+    return () => {};
   }, [expirationTime]);
+
   const sideProps = {
     pricePrecision,
     processedOrderbook,
@@ -271,6 +273,7 @@ const OrderBook = ({
     orderbookLoading,
     usePercent,
   };
+
   return (
     <section className={Styles.OrderBook}>
       <OrderHeader

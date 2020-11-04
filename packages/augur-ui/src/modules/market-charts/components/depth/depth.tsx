@@ -2,28 +2,24 @@ import React, { useRef, useState, useEffect } from 'react';
 import * as d3 from 'd3';
 import ReactFauxDOM from 'react-faux-dom';
 import memoize from 'memoizee';
-import { createBigNumber, BigNumber } from 'utils/create-big-number';
+import { createBigNumber } from 'utils/create-big-number';
 import { ASKS, BIDS, BUY, SELL, ZERO } from 'modules/common/constants';
-
+// @ts-ignore
 import Styles from 'modules/market-charts/components/depth/depth.styles.less';
-import orderForMarketDepth, {
-  MarketDepth,
-} from 'modules/markets/helpers/order-for-market-depth';
+import orderForMarketDepth from 'modules/markets/helpers/order-for-market-depth';
 import { ZoomOutIcon, ZoomInIcon } from 'modules/common/icons';
 import getOrderBookKeys from 'modules/markets/helpers/get-orderbook-keys';
 import getPrecision from 'utils/get-number-precision';
 import { isEmpty } from 'utils/is-empty';
 import { Trading } from 'modules/trading/store/trading';
+import { IndividualOutcomeOrderBook, MarketData, NewMarket } from 'modules/types';
 
 interface DepthChartProps {
-  marketDepth: MarketDepth;
-  pricePrecision: number;
+  market: MarketData | NewMarket;
   updateHoveredPrice: Function;
   updateHoveredDepth: Function;
-  marketMin: BigNumber;
-  marketMax: BigNumber;
-  hasOrders: boolean;
   hoveredPriceProp?: any;
+  orderBook?: IndividualOutcomeOrderBook;
 }
 
 const ZOOM_LEVELS = [1, 0.8, 0.6, 0.4, 0.2];
@@ -73,10 +69,10 @@ const DepthChart = ({
   orderBook,
   market,
   hoveredPriceProp,
-}) => {
-  const depthChartThis = useRef();
+}: DepthChartProps) => {
+  const depthChartThis = useRef(null);
   const depthContainerThis = useRef(null);
-  const drawParamsThis = useRef();
+  const drawParamsThis = useRef(null);
   const containerHeightThis = useRef(0);
   const containerWidthThis = useRef(0);
   const {
@@ -137,6 +133,7 @@ const DepthChart = ({
       hasOrders,
       zoom,
     });
+    // @ts-ignore
   }, [Object.values(marketDepth).flat().length, orderBookKeys?.min.toFixed(), orderBookKeys?.mid.toFixed(), orderBookKeys?.max.toFixed()]);
 
   useEffect(() => {

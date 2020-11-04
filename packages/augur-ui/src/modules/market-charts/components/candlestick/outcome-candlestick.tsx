@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { PERIODS, VOLUME_DAI_SHARES, DAI } from 'modules/common/constants';
 import { SquareDropdown, StaticLabelDropdown } from 'modules/common/selection';
+// @ts-ignore
 import Styles from 'modules/market-charts/components/candlestick/outcome-candlestick.styles.less';
 import { CandlestickHighchart } from 'modules/market-charts/components/candlestick/candlestick-highchart';
 import { CandlestickOchl } from 'modules/market-charts/components/candlestick/candlestick-ochl';
@@ -29,16 +30,16 @@ const OutcomeCandlestick = ({
 }: OutcomeCandlestickProps) => {
   const [volumeType, setVolumeType] = useState(DAI);
   const [hoveredPeriod, setHoverPeriod] = useState({
-    open: '',
-    close: '',
-    high: '',
-    low: '',
-    volume: '',
+    open: null,
+    close: null,
+    high: null,
+    low: null,
+    volume: null,
   });
   const [defaultCandlePeriod] = useState(selectedPeriod);
   const staticMenuLabel = 'Show Volume in';
   const staticLabel =
-    hoveredPeriod.volume === ''
+    hoveredPeriod.volume === null
       ? staticMenuLabel
       : `V: ${hoveredPeriod.volume.toFixed(fixedPrecision)}`;
 

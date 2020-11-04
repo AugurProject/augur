@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useMemo, useState } from 'react';
 import { createBigNumber } from 'utils/create-big-number';
 import Highcharts from 'highcharts/highstock';
 import NoDataToDisplay from 'highcharts/modules/no-data-to-display';
+// @ts-ignore
 import Styles from 'modules/market-charts/components/price-history/price-history.styles.less';
 import {
   SCALAR,
@@ -47,6 +48,10 @@ interface PriceHistoryProps {
 }
 
 const pricePrecision = 4;
+
+interface HighcartsChart extends Highcharts.Chart {
+  renderTo?: string | Element | React.ReactNode;
+}
 
 const PriceHistory = ({
   selectedOutcomeId = 9,
@@ -97,14 +102,15 @@ const PriceHistory = ({
   );
   useMemo(() => {
     if (container.current) {
-      const chart = Highcharts.charts.find(
-        chart => chart?.renderTo === container.current
+      const chart: HighcartsChart = Highcharts.charts.find(
+        (chart: HighcartsChart) => chart?.renderTo === container.current
       );
       const series =
         (priceTimeArray.length === 0 || isArchived)
           ? []
           : handleSeries(priceTimeArray, selectedOutcomeId, 0, isTrading);
       if (!chart || chart?.renderTo !== container.current) {
+        // @ts-ignore
         Highcharts.stockChart(container.current, { ...options, series });
       } else {
         series?.forEach((seriesObj, index) => {
@@ -118,6 +124,7 @@ const PriceHistory = ({
       }
     }
   }, [
+    // @ts-ignore
     priceTimeArray.flat().length,
     isArchived,
     selectedOutcomeId,
@@ -127,8 +134,8 @@ const PriceHistory = ({
 
   useEffect(() => {
     NoDataToDisplay(Highcharts);
-    const chart = Highcharts.charts.find(
-      chart => chart?.renderTo === container.current
+    const chart: HighcartsChart = Highcharts.charts.find(
+      (chart: HighcartsChart) => chart?.renderTo === container.current
     );
     if (!chart || chart?.renderTo !== container.current) {
       // needs to be done because container ref is null on first load.
@@ -136,7 +143,7 @@ const PriceHistory = ({
     }
     return () => {
       Highcharts.charts
-        .find(chart => chart?.renderTo === container.current)
+        .find((chart: HighcartsChart) => chart?.renderTo === container.current)
         ?.destroy();
     };
   }, []);
@@ -230,7 +237,7 @@ const getOptions = ({
     line: {
       dataGrouping: {
         forced: true,
-        units: [['minute', [1]]],
+        // units: [['minute', [1]]],
       },
     },
     series: {
