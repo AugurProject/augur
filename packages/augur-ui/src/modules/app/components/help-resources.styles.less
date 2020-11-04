@@ -200,6 +200,7 @@
     > span {
       border-left: @size-1 solid var(--color-secondary-text-50);
       border-right: @size-1 solid var(--color-secondary-text-50);
+      border-bottom: @size-3 solid transparent;
 
       &:hover {
         border-top: @size-3 solid var(--color-primary-action);
@@ -228,7 +229,7 @@
           > circle {
             fill: var(--color-primary-text);
           }
-  
+
           > path {
             fill: var(--color-module-background);
           }
@@ -236,7 +237,7 @@
       }
     }
   }
-  
+
   .HelpMenu {
     box-shadow: @size-2 @size-2 @size-5 var(--color-secondary-text-50);
     background: var(--color-table-header);
@@ -289,6 +290,22 @@
 
     > li:nth-of-type(3) {
       border-top: 0;
+    }
+  }
+
+  @media @breakpoint-mobile-tablet {
+    .HelpResources {
+      max-height: @size-64;
+      max-width: @size-64;
+      height: @size-64;
+      flex: none;
+    }
+
+    .HelpIcon {
+      > span {
+        padding: @size-16 @size-21;
+        height: 100%;
+      }
     }
   }
 }

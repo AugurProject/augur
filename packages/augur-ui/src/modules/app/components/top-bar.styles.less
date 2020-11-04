@@ -264,7 +264,7 @@
         max-width: none;
       }
 
-      > button[class*='SecondaryButton'][title*='Login'] {
+      > button[class*='SecondaryButton'][title*='Connect'] {
         border: @size-1 solid var(--color-secondary-action);
         color: var(--color-secondary-action);
         background: transparent;
@@ -288,8 +288,7 @@
         }
       }
 
-      > button:not([title*='Signup']),
-      > button:not([title*='Login']) {
+      > button:not([title*='Signup']):not([title*='Connect']) {
         order: 2;
 
         &[class*='Confirmed'] {
@@ -306,6 +305,17 @@
 
         @media @breakpoint-mobile-tablet {
           display: none;
+        }
+      }
+    }
+
+    @media @breakpoint-mobile-tablet {
+      > div:last-of-type {
+        > button[class*='SecondaryButton'][title*='Connect'],
+        > button[class*='PrimaryButton'][title*='Signup'] {
+          .text-10-semi-bold;
+
+          text-transform: uppercase;
         }
       }
     }
