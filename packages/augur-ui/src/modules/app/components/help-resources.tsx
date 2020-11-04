@@ -1,7 +1,7 @@
 import React from 'react';
 import classNames from 'classnames';
 
-import { QuestionIcon } from 'modules/common/icons';
+import { BettingQuestionIcon, QuestionIcon } from 'modules/common/icons';
 import { ExternalLinkButton } from 'modules/common/buttons';
 
 import Styles from 'modules/app/components/help-resources.styles.less';
@@ -119,7 +119,7 @@ export const HelpIcon = ({
       onClick={event => event.stopPropagation()}
     >
       <span onClick={() => updateHelpMenuState(!isHelpMenuOpen)}>
-        {QuestionIcon}
+        {BettingQuestionIcon}
       </span>
     </div>
   );
