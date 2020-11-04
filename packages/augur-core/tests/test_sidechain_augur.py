@@ -46,6 +46,10 @@ def test_rep_fees(kitchenSinkFixture, universe, cash, market):
     if not kitchenSinkFixture.sideChain:
         return
 
+    #testBridge = kitchenSinkFixture.contracts["TestBridgeContract"]
+    #assert testBridge.pullMarketData(market.address)
+    #assert testBridge.pullReportingFeeDivisor()
+
     shareToken = kitchenSinkFixture.getShareToken()
     expectedValue = 100 * market.getNumTicks()
     expectedReporterFees = expectedValue / universe.getOrCacheReportingFeeDivisor()
@@ -60,6 +64,8 @@ def test_rep_fees(kitchenSinkFixture, universe, cash, market):
     finalizeMarket(kitchenSinkFixture, market, [0, 0, 10**3])
 
     originalShareTokenBalance = cash.balanceOf(shareToken.address)
+
+    #assert testBridge.pullMarketData(market.address)
 
     # redeem shares with a1
     shareToken.claimTradingProceeds(market.address, kitchenSinkFixture.accounts[1], longTo32Bytes(11))

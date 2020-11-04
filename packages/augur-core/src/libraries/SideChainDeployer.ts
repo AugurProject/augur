@@ -66,10 +66,13 @@ Deploying to: ${env}
         const addresses = {};
 
         if (!this.configuration.deploy.isProduction) {
+            const sideChainCashAddress = await this.construct(this.contracts.get("Cash"), []);
+            const augurPushBridgeAddress = await this.construct(this.contracts.get("AugurPushBridge"), []);
+            const testBridgeContractAddress = await this.construct(this.contracts.get("TestBridgeContract"), [sideChainCashAddress, this.configuration.addresses.OICash, this.configuration.addresses.Universe, augurPushBridgeAddress]);
             sideChainExternalAddresses = {
-                Cash: this.configuration.addresses.Cash,
-                MarketGetter: this.configuration.addresses.Cash,
-                RepFeeTarget: this.configuration.addresses.Cash,
+                Cash: sideChainCashAddress,
+                MarketGetter: testBridgeContractAddress,
+                RepFeeTarget: testBridgeContractAddress,
                 ZeroXExchange: this.configuration.addresses.Exchange
             }
         } else if (!sideChainExternalAddresses) {

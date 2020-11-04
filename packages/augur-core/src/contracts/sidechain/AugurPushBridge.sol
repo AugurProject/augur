@@ -26,6 +26,6 @@ contract AugurPushBridge is IAugurPushBridge {
     }
 
     function bridgeReportingFee(IUniverse _universe) external returns (uint256) {
-        return _universe.getReportingFeeDivisor();
+        return _universe.getOrCacheReportingFeeDivisor();
     }
 }
