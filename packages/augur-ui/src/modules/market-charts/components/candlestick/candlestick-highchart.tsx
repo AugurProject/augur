@@ -195,11 +195,11 @@ export const CandlestickHighchart = ({
       handleVolumeBarUpdate(chart, false, timestamp);
     }
     updateHoveredPeriod({
-      open: '',
-      close: '',
-      high: '',
-      low: '',
-      volume: '',
+      open: null,
+      close: null,
+      high: null,
+      low: null,
+      volume: null,
     });
   };
 
@@ -238,13 +238,13 @@ export const CandlestickHighchart = ({
       chart.xAxis[0].addPlotBand(plotBand);
       handleVolumeBarUpdate(chart, true, timestamp);
       updateHoveredPeriod({
-        open: open ? createBigNumber(open) : '',
-        close: close ? createBigNumber(close) : '',
-        high: high ? createBigNumber(high) : '',
-        low: low ? createBigNumber(low) : '',
+        open: open ? createBigNumber(open) : null,
+        close: close ? createBigNumber(close) : null,
+        high: high ? createBigNumber(high) : null,
+        low: low ? createBigNumber(low) : null,
         volume: pts
           ? createBigNumber(volumeType === DAI ? pts.volume : pts.shareVolume)
-          : '',
+          : null,
       });
     }
   };

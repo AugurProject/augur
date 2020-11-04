@@ -35,7 +35,7 @@ export const Candlestick = ({
     daysPassed < 1 ? DEFAULT_SHORT_PERIODS_VALUE : DEFAULT_PERIODS_VALUE
   );
   useEffect(() => {
-    if (!isArchived) return;
+    if (!isArchived) return () => {};
     let isMounted = true;
     loadCandleStickData(
       {
