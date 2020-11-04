@@ -1,7 +1,7 @@
 import React from 'react';
 import classNames from 'classnames';
 
-import { BettingQuestionIcon, QuestionIcon } from 'modules/common/icons';
+import { BettingQuestionIcon } from 'modules/common/icons';
 import { ExternalLinkButton } from 'modules/common/buttons';
 
 import Styles from 'modules/app/components/help-resources.styles.less';
