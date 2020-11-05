@@ -1,5 +1,5 @@
 import { TransactionResponse } from '@ethersproject/providers'
-import React, { useCallback, useContext, useState } from 'react'
+import React, { useCallback, useContext, useMemo, useState } from 'react'
 import { ArrowDown } from 'react-feather'
 import ReactGA from 'react-ga'
 import { RouteComponentProps } from 'react-router'
@@ -14,7 +14,7 @@ import Row, { RowBetween } from '../../components/Row'
 import Slider from '../../components/Slider'
 import TokenLogo from '../../components/TokenLogo'
 import { useActiveWeb3React } from '../../hooks'
-import { useCurrency, useToken } from '../../hooks/Tokens'
+import { useCurrency } from '../../hooks/Tokens'
 import useTransactionDeadline from '../../hooks/useTransactionDeadline'
 import { useTransactionAdder } from '../../state/transactions/hooks'
 
@@ -30,7 +30,8 @@ import { useWalletModalToggle } from '../../state/application/hooks'
 import { useLPTokenBalances } from '../../state/wallet/hooks'
 import { useMarketAmm } from '../../contexts/Markets'
 import { tryParseAmount } from '../../state/swap/hooks'
-import { removeAmmLiquidity } from '../../utils'
+import { formatCollateral, formatShares, removeAmmLiquidity } from '../../utils'
+import { Token } from '@uniswap/sdk'
 
 function RemoveLiquidity({
   ammExchangeId,
@@ -41,8 +42,7 @@ function RemoveLiquidity({
   const [userTokenBalances] = useLPTokenBalances()
   const ammExchange = useMarketAmm(marketId, ammExchangeId)
   const currencyA = useCurrency(ammExchange.cash)
-  const currencyLP = useCurrency(ammExchangeId)
-  const tokenLp = useToken(ammExchangeId)
+  const currencyLP = useMemo(() => new Token(chainId, ammExchangeId, 18), [ammExchangeId])
   const ammFactory = useAmmFactoryAddress()
   const [liquidity, setLiquidity] = useState('0')
   const [breakdown, setBreakdown] = useState({ noShares: '0', yesShares: '0', cashShares: '0' })
@@ -131,7 +131,7 @@ function RemoveLiquidity({
             <TokenLogo tokenInfo={ammExchange.cash} showSymbol size={'12px'} />
           </Text>
           <Text fontSize={24} fontWeight={500} style={{ marginLeft: '10px' }}>
-            {breakdown.cashShares}
+            {formatCollateral(breakdown.cashShares, currencyA?.decimals)}
           </Text>
         </RowBetween>
       </AutoColumn>
@@ -171,7 +171,7 @@ function RemoveLiquidity({
 
     console.log('setting liquidity', newLiquidity)
     setLiquidity(newLiquidity)
-    getRemoveLiquidityBreakdown(augurClient, tokenLp, newLiquidity, result => {
+    getRemoveLiquidityBreakdown(augurClient, ammExchangeId, newLiquidity, result => {
       setBreakdown(result)
       setError(null)
     })
@@ -254,7 +254,7 @@ function RemoveLiquidity({
                     <Text fontSize={12} fontWeight={500}>
                       LP Tokens:
                     </Text>
-                    <Text fontSize={12}>{liquidity}</Text>
+                    <Text fontSize={12}>{formatShares(liquidity)}</Text>
                   </RowBetween>
                   <RowBetween>
                     <Text fontSize={12} fontWeight={500}>
@@ -270,7 +270,7 @@ function RemoveLiquidity({
                   </RowBetween>
                   <RowBetween>
                     <TokenLogo showSymbol size={'12px'} tokenInfo={ammExchange.cash} />
-                    <Text fontSize={12}>{breakdown?.cashShares}</Text>
+                    <Text fontSize={12}>{formatCollateral(breakdown?.cashShares, currencyA?.decimals)}</Text>
                   </RowBetween>
                 </AutoColumn>
               </LightCard>
