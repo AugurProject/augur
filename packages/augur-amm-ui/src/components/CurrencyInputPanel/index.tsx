@@ -73,32 +73,8 @@ const Container = styled.div<{ hideInput: boolean }>`
 
 const StyledTokenName = styled.span<{ active?: boolean }>`
   ${({ active }) => (active ? '  margin: 0 0.25rem 0 0.75rem;' : '  margin: 0 0.25rem 0 0.25rem;')}
-  font-size:  ${({ active }) => (active ? '18px' : '12px')};
+  font-size:  ${({ active }) => (active ? '14px' : '12px')};
 
-`
-
-const StyledBalanceMax = styled.button`
-  height: 28px;
-  background-color: ${({ theme }) => theme.primary5};
-  border: 1px solid ${({ theme }) => theme.primary5};
-  border-radius: 0.5rem;
-  font-size: 0.875rem;
-
-  font-weight: 500;
-  cursor: pointer;
-  margin-right: 0.5rem;
-  color: ${({ theme }) => theme.primaryText1};
-  :hover {
-    border: 1px solid ${({ theme }) => theme.primary1};
-  }
-  :focus {
-    border: 1px solid ${({ theme }) => theme.primary1};
-    outline: none;
-  }
-
-  ${({ theme }) => theme.mediaWidth.upToExtraSmall`
-    margin-right: 0.5rem;
-  `};
 `
 
 interface CurrencyInputPanelProps {
@@ -124,7 +100,6 @@ export default function CurrencyInputPanel({
   value,
   onUserInput,
   onMax,
-  showMaxButton,
   label = 'Input',
   onCurrencySelect,
   currency,
@@ -161,7 +136,7 @@ export default function CurrencyInputPanel({
                   onClick={onMax}
                   color={theme.text2}
                   fontWeight={500}
-                  fontSize={18}
+                  fontSize={14}
                   style={{ display: 'inline', cursor: 'pointer' }}
                 >
                   {!hideBalance && !!currency && selectedCurrencyBalance
@@ -194,7 +169,7 @@ export default function CurrencyInputPanel({
           >
             <Aligner>
               {currency ? (
-                <TokenLogo tokenInfo={currency} showSymbol size={'16px'} style={{ textOverflow: 'ellipsis', overflow: 'hidden'}} />
+                <TokenLogo tokenInfo={currency} showSymbol size={'14px'} style={{ textOverflow: 'ellipsis', overflow: 'hidden'}} />
               ) : null}
               <StyledTokenName className="token-symbol-container" active={Boolean(currency && currency.symbol)}>
                 {!currency && 'Select Token'}

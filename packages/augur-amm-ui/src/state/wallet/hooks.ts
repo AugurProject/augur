@@ -173,6 +173,7 @@ export function useMarketShareBalances(): [MarketBalance[], boolean] {
                     if (item === undefined) {
                       const outcomes = ['0', '0', '0']
                       outcomes[outcome] = String(amount)
+                      console.log('user balance market shares', marketId, outcome, String(amount))
                       return (memo[key] = {
                         cash: keyedParaTokens[ptokenAddr].cash.id,
                         marketId,
