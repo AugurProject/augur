@@ -66,7 +66,7 @@ export const SportsMarketCard = ({
   const { type, markets } = sportsGroup;
   const isFutures = type === FUTURES;
   const market = markets[0];
-  const { categories, reportingState } = market;
+  const { categories, reportingState, endTimeFormatted } = market;
   const displayableMarkets = markets.reduce(reduceToUniquePools, []);
   const numExtraWagers =
     type === COMBO

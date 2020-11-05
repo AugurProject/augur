@@ -16,6 +16,7 @@ import { ExclamationCircle } from 'modules/common/icons';
 import { selectMarket } from 'modules/markets/selectors/market';
 import { useAppStatusStore } from 'modules/app/store/app-status';
 import { THEMES } from 'modules/common/constants';
+import { markets } from 'modules/portfolio/components/markets/markets.styles.less';
 
 interface MarketTitleProps {
   id: string;
@@ -48,7 +49,7 @@ const MarketTitle: React.FC<MarketTitleProps> = ({
   const template = market.template;
 
   const marketHeader =
-    theme === THEMES.SPORTS ? market.sportsBook.header : description;
+    theme === THEMES.SPORTS && market?.sportsBook?.header ? market?.sportsBook?.header : description;
 
   return isTemplate && theme !== THEMES.SPORTS ? (
     <MarketLink
