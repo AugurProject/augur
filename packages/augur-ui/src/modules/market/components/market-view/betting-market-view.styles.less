@@ -17,11 +17,21 @@
     flex-direction: column;
     margin-bottom: @size-24;
 
+    @media @breakpoint-mobile {
+      margin-bottom: @size-16;
+    }
+
     > span {
       .text-30-bold;
 
       color: var(--color-primary-text);
       margin: @size-24 0;
+
+      @media @breakpoint-mobile-tablet {
+        .text-20-bold;
+
+        margin: @size-16 0;
+      }
     }
 
     > div:nth-of-type(2) {
@@ -30,12 +40,9 @@
       max-width: 70%;
 
       @media @breakpoint-mobile-tablet {
-        flex-flow: column nowrap;
+        flex-flow: row nowrap;
         max-width: 100%;
 
-        > div:not(:first-of-type) {
-          margin-top: @size-8;
-        }
       }
 
       > div > span {
@@ -44,16 +51,40 @@
         &:first-of-type {
           margin-bottom: @size-2;
 
+          @media @breakpoint-mobile {
+            .text-10-semi-bold;
+          }
+
           > label {
             height: @size-14;
             width: @size-14;
 
+            @media @breakpoint-mobile {
+              height: @size-12;
+              width: @size-12;
+            }
+
             > svg {
               height: @size-14;
               width: @size-14;
+
+              @media @breakpoint-mobile {
+                height: @size-12;
+                width: @size-12;
+              }
             }
           }
         }
+
+        @media @breakpoint-mobile {
+          &:nth-of-type(2) {
+            .text-12-semi-bold;
+          }
+  
+          &:nth-of-type(3) {
+            .text-10;
+          }
+        } 
       }
 
       > div:last-of-type {

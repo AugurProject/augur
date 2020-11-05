@@ -120,7 +120,7 @@ export interface MovementTextProps {
 
 export interface PropertyLabelProps {
   label: string;
-  value: string;
+  value: string | React.ReactText;
   hint?: React.ReactNode;
   large?: boolean;
 }
