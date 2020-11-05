@@ -225,7 +225,6 @@ const getCashTokenData = async (cashes = []) => {
           fetchPolicy: 'cache-first'
         })
         let tokenData = {usdPrice: usdPrice?.data?.tokenDayDatas[0], id: cash }
-console.log('tokenData.usdPrice', tokenData.usdPrice)
         if (!tokenData.usdPrice) {
           // TOOD remove this, used only form kovan testing
           tokenData = {

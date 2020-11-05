@@ -111,25 +111,24 @@ const DataText = styled(Flex)`
 const SORT_FIELD = {
   LIQ: 'totalLiquidityUSD',
   VOL: 'oneDayVolumeUSD',
-  SYMBOL: 'symbol',
-  NAME: 'name',
+  NAME: 'description',
   PRICE: 'priceUSD',
   CHANGE: 'priceChangeUSD',
   DESCRIPTION: 'description',
   STATUS: 'status',
-  ENDTIMESTAMP: 'endTimestamp'
+  ENDTIMESTAMP: 'endTimestamp',
+  LIQUIDITY: 'liquidity'
 }
 
-function MarketList({ markets, itemMax = 10 }) {
+function MarketList({ markets, itemMax = 15 }) {
   // page state
   const [page, setPage] = useState(1)
   const [maxPage, setMaxPage] = useState(1)
   const [darkMode] = useDarkModeManager()
 
   // sorting
-  const [sortDirection, setSortDirection] = useState(true)
-  const [sortedColumn, setSortedColumn] = useState(SORT_FIELD.STATUS)
-
+  const [sortedData, setSortedData] = useState({ sortedColumn: SORT_FIELD.STATUS, sortDirection: -1 })
+  const [filteredList, setFilteredList] = useState(markets)
   const below680 = useMedia('(max-width: 680px)')
   const below800 = useMedia('(max-width: 816px)')
 
@@ -148,18 +147,27 @@ function MarketList({ markets, itemMax = 10 }) {
     }
   }, [markets, itemMax])
 
-  const filteredList = useMemo(() => {
-    return markets
+  useEffect(() => {
+    const filteredMarkets = markets
       .sort((a, b) => {
-        if (sortedColumn === SORT_FIELD.SYMBOL || sortedColumn === SORT_FIELD.NAME) {
-          return a[sortedColumn] > b[sortedColumn] ? (sortDirection ? -1 : 1) * 1 : (sortDirection ? -1 : 1) * -1
+        if (sortedData.sortedColumn === SORT_FIELD.NAME || sortedData.sortedColumn === SORT_FIELD.STATUS) {
+          return a[sortedData.sortedColumn] > b[sortedData.sortedColumn] ? sortedData.sortDirection : sortedData.sortDirection * -1
         }
-        return parseFloat(a[sortedColumn]) > parseFloat(b[sortedColumn])
-          ? (sortDirection ? -1 : 1) * 1
-          : (sortDirection ? -1 : 1) * -1
+        if (sortedData.sortedColumn === SORT_FIELD.LIQUIDITY) {
+          if (!a?.amm?.liquidity) return sortedData.sortDirection;
+          if (!b?.amm?.liquidity) return sortedData.sortDirection * -1;
+          return a?.amm?.liquidity > b?.amm?.liquidity ? sortedData.sortDirection : sortedData.sortDirection * -1
+        }
+        if (sortedData.sortedColumn === SORT_FIELD.ENDTIMESTAMP) {
+          return a.endTimestamp > b.endTimestamp ? sortedData.sortDirection : sortedData.sortDirection * -1
+        }
+        return parseFloat(a[sortedData.sortedColumn]) > parseFloat(b[sortedData.sortedColumn])
+          ? sortedData.sortDirection
+          : sortedData.sortDirection * -1
       })
       .slice(itemMax * (page - 1), page * itemMax)
-  }, [markets, itemMax, page, sortDirection, sortedColumn])
+    setFilteredList(filteredMarkets)
+  }, [markets, itemMax, page, sortedData])
 
   const ListItem = ({ marketData, index }) => {
     const ammExchange = marketData?.amm
@@ -194,14 +202,14 @@ function MarketList({ markets, itemMax = 10 }) {
                 !darkMode
                   ? {}
                   : marketData.status === 'TRADING'
-                  ? { color: '#7DFFA8' }
-                  : marketData.status === 'DISPUTING'
-                  ? { color: '#F1E700' }
-                  : marketData.status === 'REPORTING'
-                  ? { color: '#F1E700' }
-                  : marketData.status === 'FINALIZED'
-                  ? { color: '#F12B00' }
-                  : {}
+                    ? { color: '#7DFFA8' }
+                    : marketData.status === 'DISPUTING'
+                      ? { color: '#F1E700' }
+                      : marketData.status === 'REPORTING'
+                        ? { color: '#F1E700' }
+                        : marketData.status === 'FINALIZED'
+                          ? { color: '#F12B00' }
+                          : {}
               }
             >
               {marketData.status}
@@ -227,17 +235,25 @@ function MarketList({ markets, itemMax = 10 }) {
             area="name"
             fontWeight="500"
             onClick={e => {
-              setSortedColumn(SORT_FIELD.DESCRIPTION)
-              setSortDirection(sortedColumn !== SORT_FIELD.DESCRIPTION ? true : !sortDirection)
+              const direction = (sortedData.sortedColumn !== SORT_FIELD.DESCRIPTION ? -1 : sortedData.sortDirection * -1)
+              setSortedData({ sortedColumn: SORT_FIELD.DESCRIPTION, sortDirection: direction })
             }}
           >
             {below680 ? 'Symbol' : 'Description'}{' '}
-            {sortedColumn === SORT_FIELD.DESCRIPTION ? (!sortDirection ? '↑' : '↓') : ''}
+            {sortedData.sortedColumn === SORT_FIELD.DESCRIPTION ? (sortedData.sortDirection === 1 ? '↑' : '↓') : ''}
           </ClickableText>
         </Flex>
         {!below680 && (
           <Flex alignItems="center">
-            <Text area="liquidity">Liquidity</Text>
+            <ClickableText
+              aread="liquidity"
+              onClick={e => {
+                const direction = (sortedData.sortedColumn !== SORT_FIELD.LIQUIDITY ? -1 : sortedData.sortDirection * -1)
+                setSortedData({ sortedColumn: SORT_FIELD.LIQUIDITY, sortDirection: direction })
+              }}
+            >
+              Liquidity {sortedData.sortedColumn === SORT_FIELD.LIQUIDITY ? (sortedData.sortDirection === 1 ? '↑' : '↓') : ''}
+            </ClickableText>
           </Flex>
         )}
         <Flex alignItems="center">
@@ -251,11 +267,11 @@ function MarketList({ markets, itemMax = 10 }) {
             <ClickableText
               area="status"
               onClick={e => {
-                setSortedColumn(SORT_FIELD.STATUS)
-                setSortDirection(sortedColumn !== SORT_FIELD.STATUS ? true : !sortDirection)
+                const direction = (sortedData.sortedColumn !== SORT_FIELD.STATUS ? -1 : sortedData.sortDirection * -1)
+                setSortedData({ sortedColumn: SORT_FIELD.STATUS, sortDirection: direction })
               }}
             >
-              Status {sortedColumn === SORT_FIELD.STATUS ? (!sortDirection ? '↑' : '↓') : ''}
+              Status {sortedData.sortedColumn === SORT_FIELD.STATUS ? (sortedData.sortDirection === 1 ? '↑' : '↓') : ''}
             </ClickableText>
           </Flex>
         )}
@@ -264,12 +280,12 @@ function MarketList({ markets, itemMax = 10 }) {
             <ClickableText
               area="timestamp"
               onClick={e => {
-                setSortedColumn(SORT_FIELD.ENDTIMESTAMP)
-                setSortDirection(sortedColumn !== SORT_FIELD.ENDTIMESTAMP ? true : !sortDirection)
+                const direction = (sortedData.sortedColumn !== SORT_FIELD.ENDTIMESTAMP ? 1 : sortedData.sortDirection * -1)
+                setSortedData({ sortedColumn: SORT_FIELD.ENDTIMESTAMP, sortDirection: direction })
               }}
             >
               Market Ends
-              {sortedColumn === SORT_FIELD.ENDTIMESTAMP ? (!sortDirection ? '↑' : '↓') : ''}
+              {sortedData.sortedColumn === SORT_FIELD.ENDTIMESTAMP ? (sortedData.sortDirection === 1 ? '↑' : '↓') : ''}
             </ClickableText>
           </Flex>
         )}

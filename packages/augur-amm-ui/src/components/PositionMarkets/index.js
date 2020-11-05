@@ -202,7 +202,7 @@ function PositionMarketList({ positions, loading, itemMax = 20 }) {
       <DashGrid center={true} style={{ height: 'fit-content', padding: '0 1.125rem 1rem 1.125rem' }}>
         {!below680 && (
           <Flex alignItems="center">
-            <Text area="Currency">Currency</Text>
+            <Text area="Currency"></Text>
           </Flex>
         )}
         <Flex alignItems="center" justifyContent="flex-start">
