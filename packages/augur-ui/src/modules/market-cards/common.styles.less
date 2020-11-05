@@ -809,6 +809,14 @@
 			margin-bottom: 0;
 		}
 
+		> span[class*="ProgressLabel"] {
+			display: none;
+
+			&[class*="SecondBreakpoint"] {
+				display: flex;
+			}
+		}
+
 		@media @breakpoint-mobile-tablet {
 			grid-template-columns: @size-20 1fr 0fr 0fr 0fr;
 			margin-bottom: 0;
@@ -1413,13 +1421,19 @@
 
 			> h6 {
 				.text-10-semi-bold;
-				.limit-lines(2);
+				.limit-lines(1);
 
 				color: var(--color-secondary-text);
 				text-transform: uppercase;
 				align-items: center;
 				text-overflow: ellipsis;
-				padding: @size-5 @size-12 @size-5 0;
+				padding: 0 @size-12 0 0;
+
+				@media @breakpoint-mobile {
+					.limit-lines(2);
+
+					margin: @size-5 0;
+				}
 			}
 
 			> span[class*="ProgressLabel"] {
