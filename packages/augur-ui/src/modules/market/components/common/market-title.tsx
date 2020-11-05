@@ -16,7 +16,6 @@ import { ExclamationCircle } from 'modules/common/icons';
 import { selectMarket } from 'modules/markets/selectors/market';
 import { useAppStatusStore } from 'modules/app/store/app-status';
 import { THEMES } from 'modules/common/constants';
-import { markets } from 'modules/portfolio/components/markets/markets.styles.less';
 
 interface MarketTitleProps {
   id: string;
