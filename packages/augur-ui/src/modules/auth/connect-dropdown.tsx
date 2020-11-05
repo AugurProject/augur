@@ -63,7 +63,11 @@ const useGasInfo = () => {
   };
 };
 
-const ConnectDropdown = () => {
+interface ConnectDropdownProps {
+  toggleDropdown: Function;
+}
+
+const ConnectDropdown = ({toggleDropdown}: ConnectDropdownProps) => {
   const [showMetaMaskHelper, setShowMetaMaskHelper] = useState(false);
   const [isCopied, setIsCopied] = useState(false);
 
@@ -322,6 +326,7 @@ const ConnectDropdown = () => {
         <button className={Styles.Logout} onClick={() => logout()}>
           Logout {LogoutIcon}
         </button>
+        <div onClick={() => toggleDropdown()} />
       </div>
     </div>
   );

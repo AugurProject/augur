@@ -7,8 +7,12 @@
   border-radius: @size-3;
   min-width: @account-details-menu-width;
 
-  > div:last-of-type {
+  > div:nth-last-of-type(2) {
     border-bottom: 0;
+  }
+
+  > div:last-of-type {
+    display: none;
   }
 
   @media @breakpoint-mobile-tablet {
@@ -16,6 +20,12 @@
     min-width: 100%;
     height: 100vh;
     background-color: var(--color-dark-grey-80);
+
+    > div:last-of-type {
+      display: block;
+      height: 100%;
+      width: 100%;
+    }
   }
 }
 
@@ -70,6 +80,7 @@
 
 .AccountFunds {
   .SharedStyles;
+  .text-12-semi-bold;
 
   background: var(--color-table-header);
 
@@ -123,7 +134,7 @@
     justify-content: flex-end;
 
     @media @breakpoint-mobile-tablet {
-      .mono-12-medium;
+      .mono-12-semi-bold;
     }
 
     > div {
@@ -450,8 +461,8 @@
     background: var(--color-module-background);
 
     > svg {
-      width: @size-22;
-      height: @size-18;
+      width: @size-24;
+      height: @size-24;
 
       > g > path {
         fill: var(--color-primary-text);
@@ -532,11 +543,14 @@
 
     .MobileAddFunds {
       background-color: var(--color-page-background);
+      padding: @size-12;
 
       > button {
         .text-10-semi-bold;
 
         text-transform: uppercase;
+        height: @size-36;
+        max-height: @size-36;
 
         > svg {
           margin: 0 @size-4 0 0;
