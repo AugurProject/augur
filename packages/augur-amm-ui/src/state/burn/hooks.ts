@@ -3,7 +3,7 @@ import { useCallback } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 
 import { useActiveWeb3React } from '../../hooks'
-import { getRemoveLiquidity } from '../../utils'
+import { formatShares, getRemoveLiquidity } from '../../utils'
 import { AppDispatch, AppState } from '../index'
 import { Field, typeInput } from './actions'
 
@@ -52,13 +52,18 @@ export function useDerivedBurnInfo(
   return { parsedAmounts, error }
 }
 
-export function getRemoveLiquidityBreakdown(augurClient, currencyLp: Token, userLiquidity: string, setMethod: Function) {
+export function getRemoveLiquidityBreakdown(augurClient, currencyLp: string, userLiquidity: string, setMethod: Function) {
   return getRemoveLiquidity({
-    ammAddress: currencyLp.address,
+    ammAddress: currencyLp,
     augurClient,
     lpTokens: userLiquidity
   }).then(results => {
-    setMethod(results)
+    const breakdown = {
+      noShares: formatShares(results.noShares),
+      yesShares: formatShares(results.yesShares),
+      cashShares: results.cashShares
+    }
+    setMethod(breakdown)
   })
 }
 

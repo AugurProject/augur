@@ -109,9 +109,16 @@ export const toWeeklyDate = date => {
   return dayjs.utc(wkStart).format('MMM DD') + ' - ' + dayjs.utc(wkEnd).format('MMM DD')
 }
 
-export const formatShares = (num = 0) => {
+export const formatShares = (num = "0") => {
     // pow of 15 matches shares in trading UI
   const displayValue = new BN(num).div(new BN(10).pow(15))
+  return toSignificant(String(displayValue), 6)
+}
+
+export const formatCollateral = (num = "0", sig = 18) => {
+  if (num === "0") return "0"
+  // pow of 15 matches shares in trading UI
+  const displayValue = new BN(num).div(new BN(10).pow(sig))
   return toSignificant(String(displayValue), 6)
 }
 
