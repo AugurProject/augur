@@ -30,7 +30,7 @@ import { useWalletModalToggle } from '../../state/application/hooks'
 import { useLPTokenBalances } from '../../state/wallet/hooks'
 import { useMarketAmm } from '../../contexts/Markets'
 import { tryParseAmount } from '../../state/swap/hooks'
-import { formatCollateral, formatShares, removeAmmLiquidity } from '../../utils'
+import { formatTokenAmount, formatShares, removeAmmLiquidity } from '../../utils'
 import { Token } from '@uniswap/sdk'
 
 function RemoveLiquidity({
@@ -131,7 +131,7 @@ function RemoveLiquidity({
             <TokenLogo tokenInfo={ammExchange.cash} showSymbol size={'12px'} />
           </Text>
           <Text fontSize={24} fontWeight={500} style={{ marginLeft: '10px' }}>
-            {formatCollateral(breakdown.cashShares, currencyA?.decimals)}
+            {formatTokenAmount(breakdown.cashShares, currencyA?.decimals)}
           </Text>
         </RowBetween>
       </AutoColumn>
@@ -270,7 +270,7 @@ function RemoveLiquidity({
                   </RowBetween>
                   <RowBetween>
                     <TokenLogo showSymbol size={'12px'} tokenInfo={ammExchange.cash} />
-                    <Text fontSize={12}>{formatCollateral(breakdown?.cashShares, currencyA?.decimals)}</Text>
+                    <Text fontSize={12}>{formatTokenAmount(breakdown?.cashShares, currencyA?.decimals)}</Text>
                   </RowBetween>
                 </AutoColumn>
               </LightCard>
