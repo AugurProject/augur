@@ -72,7 +72,7 @@ const ConnectAccount = () => {
           }
         )}
       >
-        <ConnectDropdown />
+        <ConnectDropdown toggleDropdown={toggleDropdown} />
       </div>
     </div>
   );
