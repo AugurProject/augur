@@ -115,7 +115,7 @@ export function formatDate(d, timezone: string = null): DateFormattedObject {
     )} ${localAMPM} ${timezoneName}`,
     formattedLocalShortDateTimeNoTimezone: `${
       shortMonths[date.getMonth()]
-    } ${date.getDate()} ${date.getFullYear()} ${convertTwoDigitValues(local24hrTimeWithSeconds).join(
+    } ${date.getDate()} ${date.getFullYear()}, ${convertTwoDigitValues(local24hrTimeWithSeconds).join(
       ':'
     )}`,
     formattedUtc: `${

@@ -731,7 +731,7 @@
 	padding: @size-8;
 
 	> h3 {
-		.text-12-semi-bold;
+		.text-14-bold;
 
 		color: var(--color-primary-text);
 		text-transform: capitalize;
@@ -809,6 +809,17 @@
 			margin-bottom: 0;
 		}
 
+		> span[class*="ProgressLabel"] {
+			> span:first-of-type {
+				.text-12;
+			}
+			> span:last-of-type {
+				.text-12-bold;
+
+				text-transform: capitalize;
+			}
+		}
+
 		@media @breakpoint-mobile-tablet {
 			grid-template-columns: @size-20 1fr 0fr 0fr 0fr;
 			margin-bottom: 0;
@@ -826,6 +837,7 @@
 
 			@media @breakpoint-mobile-tablet {
 				grid-column: 5;
+				margin-left: 0;
 			}
 		}
 
@@ -840,6 +852,9 @@
 			> button > svg {
 				fill: var(--color-inactive-text);
 				stroke: none;
+				height: @size-18;
+				width: @size-18;
+				transform: none;
 			}
 
 			> div {
@@ -1150,7 +1165,20 @@
 				}
 
 				> span:last-of-type {
-					.text-12-semi-bold;
+					.text-12-bold;
+
+					text-transform: capitalize;
+				}
+			}
+
+			> div[class*="DotSelection"] {
+				height: @size-18;
+				width: @size-18;
+
+				> button > svg {
+					height: @size-18;
+					width: @size-18;
+					transform: none;
 				}
 			}
 
@@ -1221,6 +1249,17 @@
 					}
 				}
 			}
+
+			> header {
+				background: var(--color-page-background);
+			}
+
+			@media @breakpoint-mobile {
+				> div > section.MultiOutcomeMarketRow > article,
+				> div > section.MultiOutcomeMarketGrid > article {
+					background: var(--color-module-background);
+				}
+			}
 		}
 
 		&.ComboContainer {
@@ -1255,6 +1294,7 @@
 				> li:first-of-type {
 					background: var(--color-table-header);
 					height: @size-30;
+					display: flex;
 
 						> button {
 						.text-10-semi-bold;
@@ -1398,6 +1438,12 @@
 					}
 				}
 			}
+
+			&.GroupPage {
+				> ul > li:not(:first-of-type) {
+					background: var(--color-module-background);
+				}
+			}
 		}
 
 		> header {
@@ -1413,13 +1459,19 @@
 
 			> h6 {
 				.text-10-semi-bold;
-				.limit-lines(2);
+				.limit-lines(1);
 
 				color: var(--color-secondary-text);
 				text-transform: uppercase;
 				align-items: center;
 				text-overflow: ellipsis;
-				padding: @size-5 @size-12 @size-5 0;
+				padding: 0 @size-12 0 0;
+
+				@media @breakpoint-mobile {
+					.limit-lines(2);
+
+					margin: @size-5 0;
+				}
 			}
 
 			> span[class*="ProgressLabel"] {
@@ -1433,15 +1485,12 @@
 					display: none;
 				}
 
-				@media @breakpoint-mobile {
-					display: none;
-				}
-
 				> span {
 					margin: 0;
 
 					&:last-of-type {
 						margin-left: @size-4;
+						text-transform: capitalize;
 					}
 				}
 			}
@@ -1622,6 +1671,12 @@
 		> span[class*="ProgressLabel"] {
 			display: none;
 			margin: 0 @size-8;
+
+			> span:last-of-type {
+				.text-12-bold;
+
+				text-transform: capitalize;
+			}
 		}
 
 		&.NoLeader {

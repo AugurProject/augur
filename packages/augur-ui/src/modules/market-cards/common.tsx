@@ -622,6 +622,7 @@ export const OutcomeGroupFooter = ({
           time={endTimeFormatted}
           reportingState={reportingState}
           forceLongDate
+          onlyFinalCountdown
         />
       </Fragment>
     );
@@ -993,8 +994,8 @@ export const SportsMarketContainer = ({
     ) : (
       <h6>{title}</h6>
     );
-  // const isGrid = data.length > 4;
-  if (isFutures) {
+  const isGrid = data.length > 4;
+  if (isFutures || isGrid) {
     innerContent = <MultiOutcomeMarketGrid key={marketId} data={data} />;
   } else {
     innerContent = <MultiOutcomeMarketRow key={marketId} data={data} />;
@@ -1034,6 +1035,7 @@ export const SportsMarketContainer = ({
           time={market.endTimeFormatted}
           reportingState={market.reportingState}
           forceLongDate
+          onlyFinalCountdown
         />
         <DotSelection
           customClass={classNames({ [Styles.ShowCopied]: isCopied })}
@@ -1065,6 +1067,7 @@ export const SportsMarketContainer = ({
         [Styles.Collapsed]:
           forceCollapse || (isCollapsed && queryId !== marketId),
         [Styles.NoHeader]: noHeader,
+        [Styles.GroupPage]: isGroupPage,
       })}
     >
       <header>
@@ -1603,6 +1606,8 @@ export const TopRow = ({ market, categoriesWithClick, showStart }) => {
             label="Estimated Start Time"
             time={formatTime(Number(market.sportsBook.estTimestamp))}
             reportingState={reportingState}
+            forceLongDate
+            onlyFinalCountdown
           />}
         </>
       ) : (

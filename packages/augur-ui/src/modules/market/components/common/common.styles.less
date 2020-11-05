@@ -11,6 +11,10 @@
   padding-right: @size-8;
   margin: @size-8 0 @size-4;
 
+  > section {
+    display: none;
+  }
+
   @media @breakpoint-mobile {
     min-height: @size-40;
     max-height: @size-40;
@@ -214,12 +218,14 @@
       }
     }
 
+    > section > div[class*='WordTrail'] > button[class*='WordTrailButton'],
     > div[class*='WordTrail'] > button[class*='WordTrailButton'] {
       .mono-12-semi-bold;
 
       color: var(--color-primary-text);
     }
 
+    > section > button[class*="BackButton"],
     > button[class*='BackButton'] {
       height: @size-20;
       width: @size-20;
@@ -271,6 +277,30 @@
         margin-left: 0;
       }
     }
+
+    @media @breakpoint-mobile {
+      display: flex;
+      flex-flow: row wrap;
+      max-height: unset;
+
+      > section {
+        display: flex;
+        flex: 1 100%;
+        background: var(--color-module-background);
+        padding: @size-10 @size-12;
+        border-bottom: @size-1 solid var(--color-dark-grey);
+        margin: 0 -@size-12 @size-16;
+      }
+
+      > button[class*='BackButton'],
+      > div[class*="WordTrail"] {
+        display: none;
+      }
+
+      > button[id='facebookButton'] {
+        margin-left: auto;
+      }
+    }
   }
 
   .CopyButton > div {
@@ -308,6 +338,8 @@
     width: @size-2;
     top: @size-4;
     bottom: @size-4;
+    border-bottom-right-radius: @border-radius-default;
+    border-top-right-radius: @border-radius-default;
   }
 
   > svg {
