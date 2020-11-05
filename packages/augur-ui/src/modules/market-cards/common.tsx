@@ -622,6 +622,7 @@ export const OutcomeGroupFooter = ({
           time={endTimeFormatted}
           reportingState={reportingState}
           forceLongDate
+          onlyFinalCountdown
         />
       </Fragment>
     );
@@ -1004,6 +1005,7 @@ export const SportsMarketContainer = ({
     const { tradingPositionsPerMarket = null } =
       accountPositions[marketId] || {};
     const newBase = window.location.href.replace('markets', 'market?id=');
+    console.log("futures,", market);
     headingContent = (
       <Fragment key={`${marketId}-heading`}>
         <h6 title={market.description}>{market.description}</h6>
@@ -1034,6 +1036,7 @@ export const SportsMarketContainer = ({
           time={market.endTimeFormatted}
           reportingState={market.reportingState}
           forceLongDate
+          onlyFinalCountdown
         />
         <DotSelection
           customClass={classNames({ [Styles.ShowCopied]: isCopied })}
@@ -1603,6 +1606,8 @@ export const TopRow = ({ market, categoriesWithClick, showStart }) => {
             label="Estimated Start Time"
             time={formatTime(Number(market.sportsBook.estTimestamp))}
             reportingState={reportingState}
+            forceLongDate
+            onlyFinalCountdown
           />}
         </>
       ) : (

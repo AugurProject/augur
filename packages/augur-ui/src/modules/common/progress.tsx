@@ -4,7 +4,6 @@ import * as format from 'utils/format-date';
 import classNames from 'classnames';
 import { DateFormattedObject } from 'modules/types';
 import { REPORTING_STATE } from 'modules/common/constants';
-import { formatDate } from 'utils/format-date';
 import { useAppStatusStore } from 'modules/app/store/app-status';
 
 export interface CountdownProgressProps {
@@ -17,6 +16,7 @@ export interface CountdownProgressProps {
   reportingState?: string;
   value?: string;
   forceLongDate?: boolean;
+  onlyFinalCountdown?: boolean;
 }
 
 export interface TimeProgressBarProps {
@@ -203,6 +203,7 @@ export const CountdownProgress = ({
   reportingState,
   value,
   forceLongDate = false,
+  onlyFinalCountdown = false,
 }: CountdownProgressProps) => {
   const currentTime = useTimer();
 
@@ -228,18 +229,23 @@ export const CountdownProgress = ({
     );
 
     timeLeft = time.timestamp - currentTime;
-    countdown = (countdownBreakpoint || OneWeek) >= timeLeft && timeLeft > 0;
-    valueString = forceLongDate
-      ? time.formattedLocalShortDateTimeNoTimezone
-      : countdown &&
-        reportingState !== REPORTING_STATE.AWAITING_FINALIZATION &&
-        reportingState !== REPORTING_STATE.FINALIZED
-      ? `${daysRemaining}:${
-          hoursRemaining >= 10 ? hoursRemaining : '0' + hoursRemaining
-        }:${
-          minutesRemaining >= 10 ? minutesRemaining : '0' + minutesRemaining
-        }:${secondsRemaining >= 10 ? secondsRemaining : '0' + secondsRemaining}`
-      : time.formattedLocalShortDateSecondary;
+    countdown =
+      (countdownBreakpoint || onlyFinalCountdown ? OneDay : OneWeek) >=
+        timeLeft && timeLeft > 0;
+    valueString =
+      countdown &&
+      reportingState !== REPORTING_STATE.AWAITING_FINALIZATION &&
+      reportingState !== REPORTING_STATE.FINALIZED
+        ? `${onlyFinalCountdown ? `` : `${daysRemaining}:`}${
+            hoursRemaining >= 10 ? hoursRemaining : `0${hoursRemaining}`
+          }:${
+            minutesRemaining >= 10 ? minutesRemaining : `0${minutesRemaining}`
+          }:${
+            secondsRemaining >= 10 ? secondsRemaining : `0${secondsRemaining}`
+          }`
+        : forceLongDate
+        ? time.formattedLocalShortDateTimeNoTimezone
+        : time.formattedLocalShortDateSecondary;
   }
   const breakpointOne =
     timeLeft <= firstBreakpoint && timeLeft > secondBreakpoint && countdown;
@@ -247,7 +253,7 @@ export const CountdownProgress = ({
   return (
     <span
       className={classNames(Styles.ProgressLabel, {
-        [Styles.FirstBreakpoint]: breakpointOne,
+        [Styles.FirstBreakpoint]: breakpointOne && !onlyFinalCountdown,
         [Styles.SecondBreakpoint]: breakpointTwo,
         [Styles.Finished]: timeLeft < 0,
         [Styles.AlignRight]: alignRight,
