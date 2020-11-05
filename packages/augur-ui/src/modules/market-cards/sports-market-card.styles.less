@@ -57,12 +57,8 @@
     }
 
     > span[class*="ProgressLabel"] {
-      display: none;
+      display: flex;
       flex-flow: row nowrap;
-
-      &[class*="SecondBreakpoint"] {
-        display: flex;
-      }
   
       @media @breakpoint-mobile {
         display: flex;
