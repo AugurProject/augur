@@ -18,14 +18,10 @@ const Routes = p => {
   return (
     <Switch>
       <Route path={makePath(VIEWS.MARKETS)} component={COMPONENTS.Markets} />
-      {theme === THEMES.SPORTS ? (
-        <Route
+      <Route
           path={makePath(VIEWS.MARKET)}
-          component={COMPONENTS.BettingMarket}
+          component={theme === THEMES.SPORTS ? COMPONENTS.BettingMarket : COMPONENTS.Market}
         />
-      ) : (
-        <Route path={makePath(VIEWS.MARKET)} component={COMPONENTS.Market} />
-      )}
       <Route
         path={makePath(VIEWS.LANDING_PAGE)}
         component={COMPONENTS.MarketsLandingPage}
