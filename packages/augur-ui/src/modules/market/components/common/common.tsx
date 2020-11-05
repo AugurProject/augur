@@ -1,7 +1,7 @@
 import { MarketData, QueryEndpoints } from 'modules/types';
 import { useHistory } from 'react-router';
 import React, { useEffect } from 'react';
-import * as classNames from 'classnames';
+import classNames from 'classnames';
 import Clipboard from 'clipboard';
 import { CATEGORY_PARAM_NAME } from 'modules/common/constants';
 import { LeftChevron, CopyAlternateIcon } from 'modules/common/icons';
@@ -42,7 +42,6 @@ export const HeadingBar = ({
     description,
     categories,
     reportingState,
-    marketStatus,
     disputeInfo,
   } = market;
   const {
@@ -80,12 +79,17 @@ export const HeadingBar = ({
         [Styles.ExpandedHeading]: expandedDetails,
       })}
     >
+      <section>
+        <button className={Styles.BackButton} onClick={() => history.goBack()}>
+          {LeftChevron} <span>Back</span>
+        </button>
+        <WordTrail items={[...categoriesWithClick]} typeLabel="Categories" />
+      </section>
       <button className={Styles.BackButton} onClick={() => history.goBack()}>
         {LeftChevron} <span>Back</span>
       </button>
       {showReportingLabel && (
         <InReportingLabel
-          marketStatus={marketStatus}
           reportingState={reportingState}
           disputeInfo={disputeInfo}
         />
@@ -93,7 +97,7 @@ export const HeadingBar = ({
       {isScalar && <MarketTypeLabel marketType={marketType} />}
       <RedFlag market={market} />
       {market.isTemplate && <TemplateShield market={market} />}
-      <WordTrail items={[...categoriesWithClick]} />
+      <WordTrail items={[...categoriesWithClick]} typeLabel="Categories" />
       <SocialMediaButtons marketAddress={id} marketDescription={description} />
       <div
         id="copy_marketURL"
