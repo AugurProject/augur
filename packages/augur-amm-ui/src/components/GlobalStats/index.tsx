@@ -3,7 +3,7 @@ import styled from 'styled-components'
 import { RowFixed, RowBetween } from '../Row'
 import { useMedia } from 'react-use'
 import { useEthPrice } from '../../contexts/GlobalData'
-import { calculateLiquidity, formattedNum, localNumber } from '../../utils'
+import { calculateLiquidity, formatShares, formattedNum, localNumber } from '../../utils'
 import { TYPE } from '../../Theme'
 import { useMarketCashTokens, useTotalLiquidity, useVolumesByCash, useAmmTransactions } from '../../contexts/Markets'
 import { useTokenDayPriceData } from '../../contexts/TokenData'
@@ -49,7 +49,8 @@ export default function GlobalStats() {
     setGlobalLiquidity(String(liq))
 
     const { totalDiff } = ammVolumes;
-    setOneDayVolume(totalDiff)
+    const diffInUSD = formatShares(totalDiff)
+    setOneDayVolume(diffInUSD)
 
     const { totalDiff: tx } = ammTransactions;
     setOneDayTx(tx)
@@ -80,7 +81,7 @@ export default function GlobalStats() {
           <TYPE.boxed mb={'0.5rem'} mr={'0.25rem'}>
             <TYPE.boxedRow>Volume (24 hrs): </TYPE.boxedRow>
             <TYPE.boxedRow>
-              <TYPE.largeHeader>${localNumber(oneDayVolume)}</TYPE.largeHeader>
+              <TYPE.largeHeader>${oneDayVolume}</TYPE.largeHeader>
             </TYPE.boxedRow>
           </TYPE.boxed>
           <TYPE.boxed mb={'0.5rem'}>
