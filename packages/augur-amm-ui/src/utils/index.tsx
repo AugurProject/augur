@@ -110,12 +110,13 @@ export const toWeeklyDate = date => {
 }
 
 export const formatShares = (num = "0") => {
-    // pow of 15 matches shares in trading UI
-  const displayValue = new BN(num).div(new BN(10).pow(15))
+  const tickSize = 1000;
+    // pow of 15 matches shares in trading UI something to do with num ticks
+  const displayValue = new BN(num).times(tickSize).div(new BN(10).pow(18))
   return toSignificant(String(displayValue), 6)
 }
 
-export const formatCollateral = (num = "0", sig = 18) => {
+export const formatTokenAmount = (num = "0", sig = 18) => {
   if (num === "0") return "0"
   // pow of 15 matches shares in trading UI
   const displayValue = new BN(num).div(new BN(10).pow(sig))
