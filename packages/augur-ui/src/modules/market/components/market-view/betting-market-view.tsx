@@ -68,6 +68,14 @@ const BettingMarketView = () => {
   const market = selectMarket(marketId);
   const markets = getMarkets();
 
+  const [rendered, setRendered] = useState(false);
+
+  useEffect(() => {
+    document.getElementById("mainContent")?.scrollTo(0, 0);
+    window.scrollTo(0, 1);
+    setRendered(true);
+  }, []);
+
   useEffect(() => {
     if (!market?.sportsBook) {
       updateMarketsData(
@@ -86,11 +94,6 @@ const BettingMarketView = () => {
     }
     return () => (isMounted = false);
   }, [showCopied]);
-
-  useEffect(() => {
-    document.getElementById("mainContent")?.scrollTo(0, 0);
-    window.scrollTo(0, 1);
-  }, []);
 
   useEffect(() => {
     if (sportsGroup.current === null && market?.sportsBook?.groupId) {
@@ -136,7 +139,7 @@ const BettingMarketView = () => {
     }
   }, [marketTradingHistory[marketId]]);
 
-  if (!market) {
+  if (!market || !rendered) {
     if (augurSdk.client && market === null && !forceLoad) {
       setForceLoad(true);
     }

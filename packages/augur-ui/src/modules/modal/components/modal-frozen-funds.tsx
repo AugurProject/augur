@@ -105,7 +105,7 @@ export const ModalFrozenFunds = () => {
         </section>
       </main>
       <div className={Styles.ButtonsRow}>
-        <SecondaryButton text="Cancel" action={() => closeModal()} />
+        <SecondaryButton text="Close" action={() => closeModal()} />
       </div>
     </div>
   );

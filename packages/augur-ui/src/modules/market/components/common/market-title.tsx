@@ -48,7 +48,7 @@ const MarketTitle: React.FC<MarketTitleProps> = ({
   const template = market.template;
 
   const marketHeader =
-    theme === THEMES.SPORTS ? market.sportsBook.header : description;
+    theme === THEMES.SPORTS && market?.sportsBook?.header ? market?.sportsBook?.header : description;
 
   return isTemplate && theme !== THEMES.SPORTS ? (
     <MarketLink
