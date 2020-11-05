@@ -1005,7 +1005,6 @@ export const SportsMarketContainer = ({
     const { tradingPositionsPerMarket = null } =
       accountPositions[marketId] || {};
     const newBase = window.location.href.replace('markets', 'market?id=');
-    console.log("futures,", market);
     headingContent = (
       <Fragment key={`${marketId}-heading`}>
         <h6 title={market.description}>{market.description}</h6>
@@ -1068,6 +1067,7 @@ export const SportsMarketContainer = ({
         [Styles.Collapsed]:
           forceCollapse || (isCollapsed && queryId !== marketId),
         [Styles.NoHeader]: noHeader,
+        [Styles.GroupPage]: isGroupPage,
       })}
     >
       <header>
