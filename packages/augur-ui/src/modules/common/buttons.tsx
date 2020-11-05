@@ -35,7 +35,7 @@ import {
   AddIcon,
   LoadingEllipse,
   Trash,
-  AlternateCheckMark, RefreshIcon
+  AlternateCheckMark, RefreshIcon, RetryIcon
 } from 'modules/common/icons';
 import classNames from 'classnames';
 import { getNetworkId, placeTrade } from 'modules/contracts/actions/contractCalls';
@@ -281,6 +281,7 @@ export interface ProcessingButtonProps extends DefaultButtonProps {
   matchingId?: string;
   nonMatchingIds?: Array<String>;
   autoHideConfirm?: boolean;
+  hideRetry?: boolean;
 }
 
 export const ProcessingButton = ({
@@ -290,6 +291,7 @@ export const ProcessingButton = ({
   nonMatchingIds = null,
   propsStatus,
   autoHideConfirm = false,
+  hideRetry,
   ...props
 }: ProcessingButtonProps) => {
   const { pendingQueue, theme } = useAppStatusStore();
@@ -323,28 +325,27 @@ export const ProcessingButton = ({
     status === TXEventName.Pending ||
     status === TXEventName.AwaitingSigning
   ) {
-    buttonText = props.spinner ? <Spinner /> : 'Processing...';
-    if (props.smallSpinner) {
-      buttonText = <span className={Styles.LoadingEllipse}>{LoadingEllipse}</span>;
-    }
+    buttonText = props.spinner ? <Spinner /> : <span className={Styles.LoadingEllipse}>{LoadingEllipse}</span>;
     isDisabled = true;
     processing = true;
   }
   const failed = status === TXEventName.Failure;
   const confirmed = status === TXEventName.Success;
   if (failed) {
-    buttonText = props.smallSpinner ? (<span>Failed.<b>Retry</b></span>) : 'Failed';
+    buttonText = <span>Failed{isSports ? '.' : ''}{!hideRetry && (isSports ? <b>Retry</b> : RetryIcon)}</span>;
   }
-  if (confirmed) {
-    buttonText = 'Confirmed';
-
-    if (props.customConfirmedButtonText) {
-      buttonText = props.customConfirmedButtonText;
-    }
+  if (confirmed && props.customConfirmedButtonText) {
+    buttonText = props.customConfirmedButtonText;
+  } else if (confirmed) {
+    return (
+      <div className={Styles.ProcessingCheckmark}>
+        {AlternateCheckMark}
+      </div>
+    );
   }
   const cancel = () => removePendingData(queueId, queueName);
   if (failed || confirmed) {
-    buttonAction = props.smallSpinner ? e => props.action(e) : e => cancel(e);
+    buttonAction = e => props.action(e);
     icon = XIcon;
     isDisabled = false;
   }
@@ -358,13 +359,6 @@ export const ProcessingButton = ({
     }
   }
 
-  if (confirmed && isSports) {
-    return (
-      <div className={Styles.ProcessingCheckmark}>
-        {AlternateCheckMark}
-      </div>
-    );
-  }
   return (
     <>
       {props.secondaryButton && (
@@ -999,7 +993,6 @@ export const CashoutButton = ({
           queueName={CASHOUT}
           queueId={queueId}
           cancelButton
-          smallSpinner
           action={() => cashout()}
         />
         :

@@ -111,6 +111,7 @@ const Template = ({
             queueName={queueName}
             queueId={queueId || market.id }
             cancelButton
+            hideRetry
           />
         :
           <CancelTextButton
