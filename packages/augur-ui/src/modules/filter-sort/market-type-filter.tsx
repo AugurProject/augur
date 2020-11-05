@@ -6,7 +6,7 @@ import {
   MARKET_CLOSED,
 } from 'modules/common/constants';
 import { MarketStateLabel }  from 'modules/common/labels';
-
+// @ts-ignore
 import Styles from 'modules/filter-sort/market-type-filter.styles.less';
 
 interface MarketTypeFilterProps {

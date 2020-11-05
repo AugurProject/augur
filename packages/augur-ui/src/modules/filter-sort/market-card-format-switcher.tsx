@@ -2,6 +2,7 @@ import React from 'react';
 import { Compact, Classic, Expanded } from 'modules/common/icons';
 import { MARKET_CARD_FORMATS } from 'modules/common/constants';
 import classNames from 'classnames';
+// @ts-ignore
 import Styles from 'modules/filter-sort/market-card-format-switcher.styles.less';
 import { useAppStatusStore } from 'modules/app/store/app-status';
 

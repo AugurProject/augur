@@ -10,6 +10,7 @@ import {
   SEARCH_FILTER_PLACHOLDER_MOBILE,
   SEARCH_FILTER_PLACHOLDER,
 } from 'modules/common/constants';
+// @ts-ignore
 import Styles from 'modules/filter-sort/filter-search.styles.less';
 import { useAppStatusStore } from 'modules/app/store/app-status';
 
@@ -115,7 +116,11 @@ export const FilterSearchPure = forwardRef(({
   onBlur,
   isSearchingMarkets = false,
 }: FilterSearchPureProps, ref) => (
-  <article ref={ref} className={Styles.FilterSearch}>
+  <article
+    // @ts-ignore
+    ref={ref}
+    className={Styles.FilterSearch}
+  >
     <Input
       className={Styles.Search}
       isSearch
