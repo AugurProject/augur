@@ -16,9 +16,11 @@ contract WethWrapperForAMMExchange {
     uint256 public NO;
     uint256 public YES;
 
-    constructor(IAMMExchange _amm, WETH9 _weth) public {
+    uint256 private constant MAX_APPROVAL_AMOUNT = 2 ** 256 - 1;
+
+    constructor(IAMMExchange _amm) public {
         amm = _amm;
-        weth = _weth;
+        weth = WETH9(address(uint160(address(_amm.cash()))));
 
         IParaShareToken _shareToken = _amm.shareToken();
         IMarket _market = _amm.augurMarket();
@@ -28,19 +30,20 @@ contract WethWrapperForAMMExchange {
         INVALID = _shareToken.getTokenId(_market, 0);
         NO = _shareToken.getTokenId(_market, 1);
         YES = shareToken.getTokenId(_market, 2);
+
+        weth.approve(address(_amm.factory()), MAX_APPROVAL_AMOUNT);
     }
 
     function addLiquidity(address recipient) public payable returns (uint256) {
-        weth.deposit.value(msg.value);
+        weth.deposit.value(msg.value)();
         uint256 lpTokens = amm.addLiquidity(msg.value, recipient);
         amm.transfer(msg.sender, lpTokens);
         return lpTokens;
     }
 
     function addInitialLiquidity(uint256 _ratioFactor, bool _keepYes, address _recipient) external payable returns (uint256) {
-        weth.deposit.value(msg.value);
+        weth.deposit.value(msg.value)();
         uint256 lpTokens = amm.addInitialLiquidity(msg.value, _ratioFactor, _keepYes, _recipient);
-        amm.transfer(msg.sender, lpTokens);
         return lpTokens;
     }
 
@@ -55,7 +58,7 @@ contract WethWrapperForAMMExchange {
 
     function enterPosition(bool _buyYes, uint256 _minShares) public payable returns (uint256) {
         uint256 _setsToBuy = msg.value / numTicks; // safemath division is identical to regular division
-        weth.deposit.value(msg.value);
+        weth.deposit.value(msg.value)();
 
         uint256 shares = amm.enterPosition(msg.value, _buyYes, _minShares);
         if (_buyYes) {
