@@ -16,6 +16,7 @@ import { LogFilterAggregator } from './logs/LogFilterAggregator';
 import { BlockAndLogStreamerSyncStrategy } from './sync/BlockAndLogStreamerSyncStrategy';
 import { BulkSyncStrategy } from './sync/BulkSyncStrategy';
 import { WarpSyncStrategy } from './sync/WarpSyncStrategy';
+import { GraphQLLogProvider } from '../graph/GraphQLLogProvider';
 
 export async function buildSyncStrategies(client:Augur, db:Promise<DB>, provider: EthersProvider, logFilterAggregator: LogFilterAggregator, config: SDKConfiguration) {
   const warpController = new WarpController((await db), client, provider,
@@ -27,9 +28,12 @@ export async function buildSyncStrategies(client:Augur, db:Promise<DB>, provider
     const uploadBlockNumber = config.uploadBlockNumber;
     const currentBlockNumber = await provider.getBlockNumber();
 
-    const bulkSyncStrategy = new BulkSyncStrategy(provider.getLogs,
+    const logProvider = new GraphQLLogProvider("https://api.thegraph.com/subgraphs/name/augurproject/augur-v2-base-staging");
+
+    const bulkSyncStrategy = new BulkSyncStrategy(logProvider.getLogs.bind(logProvider),
       contractAddresses, logFilterAggregator.onLogsAdded,
-      client.contractEvents.parseLogs);
+      (logs: any[]) => { return logs; }
+    );
     const blockAndLogStreamerSyncStrategy = BlockAndLogStreamerSyncStrategy.create(
       provider,
       contractAddresses,
