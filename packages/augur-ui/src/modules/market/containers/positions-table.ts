@@ -12,7 +12,8 @@ const mapStateToProps = (state: AppState, ownProps: any) => {
   if (!marketId) {
     marketId = ownProps.market.id;
   }
-  let  positions = selectUserMarketPositions(state, marketId);
+  let positions = selectUserMarketPositions(state, marketId);
+
   if (ownProps.positions) {
     positions = mergePositions(ownProps.positions, positions);
   }

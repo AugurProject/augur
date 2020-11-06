@@ -232,7 +232,7 @@ export async function getUserMakretShareTokenBalances(market: MarketInfos, accou
     const outcomeId = o.id;
     return contracts.shareToken.balanceOfMarketOutcome_(market.marketId, new BigNumber(outcomeId), account)
   }))
-  const shareBalances = balances.map((b, i) => ({
+  const shareBalances = balances.filter(b => !(new BigNumber(b).eq(0))).map((b, i) => ({
     marketId: market.marketId,
     quantity: formatDai(String(convertOnChainAmountToDisplayAmount(b, market.tickSize))),
     rawPosition: formatDai(String(convertOnChainAmountToDisplayAmount(b, market.tickSize))),
@@ -264,6 +264,7 @@ export async function getUserMakretShareTokenBalances(market: MarketInfos, accou
       decimalsRounded: 2,
     }),
   }))
+  shareBalances.map(s => console.log(s))
   return shareBalances;
 }
 
