@@ -302,9 +302,19 @@
         g.highcharts-xaxis-labels > text {
           .text-10-semi-bold;
 
-          > tspan {
+          fill: var(--color-secondary-text);
+
+          > tspan,
+          > title {
             .text-10-semi-bold;
+
+            fill: var(--color-secondary-text);
           }
+        }
+
+        g.highcharts-xaxis-labels,
+        g.highcharts-yaxis-labels {
+          fill: var(--color-secondary-text);
         }
       }
     }
