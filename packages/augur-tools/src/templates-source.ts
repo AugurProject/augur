@@ -5847,8 +5847,8 @@ export const TEMPLATES = {
           },
           {
             marketType: CATEGORICAL,
-            question: `MLB: Which player will win the [0] [1]?`,
-            example: `MLB: Which Player will win the 2019 American League Cy Young award?`,
+            question: `MLB: Who will win the [0] [1]?`,
+            example: `MLB: Who will win the 2019 American League Cy Young award?`,
             header: `[0] [1] winner`,
             groupName: groupTypes.FUTURES,
             inputs: [
