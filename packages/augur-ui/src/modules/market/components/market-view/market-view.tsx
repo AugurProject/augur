@@ -22,7 +22,7 @@ import {
   TUTORIAL_QUANTITY,
 } from 'modules/common/constants';
 import { LeftChevron } from 'modules/common/icons';
-import { getNetworkId } from 'modules/contracts/actions/contractCalls';
+import { getNetworkId, getUserMakretShareTokenBalances } from 'modules/contracts/actions/contractCalls';
 import { formatOrderBook } from 'modules/create-market/helpers/format-order-book';
 import MarketChartsPane
   from 'modules/market-charts/containers/market-charts-pane';
@@ -118,6 +118,7 @@ interface MarketViewState {
   tutorialError: string;
   hasShownScalarModal: boolean;
   hotPromise: Promise<HotLoadMarketInfo>;
+  userMarketShares: string[];
 }
 
 export default class MarketView extends Component<
@@ -170,6 +171,7 @@ export default class MarketView extends Component<
           ...this.DEFAULT_ORDER_PROPERTIES,
         },
       },
+      userMarketShares: []
     };
 
     this.updateSelectedOutcome = this.updateSelectedOutcome.bind(this);
@@ -193,6 +195,7 @@ export default class MarketView extends Component<
       tradingTutorial,
       loadMarketOrderBook,
       preview,
+      account,
     } = this.props;
 
     this.tradingTutorialWidthCheck();
@@ -201,6 +204,9 @@ export default class MarketView extends Component<
       loadMarketsInfo(marketId);
       loadMarketOrderBook(marketId);
       loadMarketTradingHistory(marketId);
+      getUserMakretShareTokenBalances(this.props.market, account).then(balances => {
+        this.setState({ userMarketShares: balances })
+      })
     }
   }
 
@@ -228,6 +234,7 @@ export default class MarketView extends Component<
       closeMarketLoadingModalOnly,
       preview,
       loadHotMarket,
+      account,
     } = prevProps;
     if (
       this.props.outcomeId !== prevProps.outcomeId &&
@@ -271,6 +278,9 @@ export default class MarketView extends Component<
       this.props.loadMarketOrderBook(this.props.marketId);
       this.props.loadMarketsInfo(this.props.marketId);
       this.props.loadMarketTradingHistory(this.props.marketId);
+      getUserMakretShareTokenBalances(this.props.market, account).then(balances => {
+        this.setState({ userMarketShares: balances })
+      })
     }
     if (!this.props.isMarketLoading) {
       if (closeMarketLoadingModalOnly) closeMarketLoadingModalOnly(this.props.modalShowing);
@@ -503,6 +513,7 @@ export default class MarketView extends Component<
       tutorialStep,
       tutorialError,
       pane,
+      userMarketShares,
     } = this.state;
     if (isMarketLoading && !market) {
       return (
@@ -978,7 +989,7 @@ export default class MarketView extends Component<
                       tradingTutorial={tradingTutorial}
                       orders={orders}
                       fills={fills}
-                      positions={positions}
+                      positions={positions || userMarketShares}
                       selected={selected}
                     />
                     {tradingTutorial &&
