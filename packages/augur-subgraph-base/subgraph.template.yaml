@@ -1,0 +1,187 @@
+specVersion: 0.0.2
+description: Subgraph for the Augur v2 ({{ network }}) contracts which tracks Universes, Markets, all the market events and disputing process, all user related balances and token events within the Augur ecosystem (Reputation, Participation and Dispute tokens), as well as metadata from the Augur contract.
+repository: https://github.com/AugurProject/augur-v2-subgraph
+schema:
+  file: ./schema.graphql
+dataSources:
+  - kind: ethereum/contract
+    name: Augur
+    network: {{ ethereum.network }}
+    source:
+      address: '{{ addresses.Augur }}'
+      abi: Augur
+      startBlock: {{ uploadBlockNumber }}
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.4
+      language: wasm/assemblyscript
+      file: ./src/Augur.ts
+      entities:
+        - CompleteSetsPurchased
+        - CompleteSetsSold
+        - DesignatedReportStakeChanged
+        - DisputeCrowdsourcerCompleted
+        - DisputeCrowdsourcerContribution
+        - DisputeCrowdsourcerCreated
+        - DisputeCrowdsourcerRedeemed
+        - DisputeWindowCreated
+        - FinishDeployment
+        - InitialReportSubmitted
+        - InitialReporterRedeemed
+        - InitialReporterTransferred
+        - MarketCreated
+        - MarketFinalized
+        - MarketMigrated
+        - MarketOIChanged
+        - MarketParticipantsDisavowed
+        - MarketRepBondTransferred
+        - MarketTransferred
+        - NoShowBondChanged
+        - ParticipationTokensRedeemed
+        - RegisterContract
+        - ReportingFeeChanged
+        - ReportingParticipantDisavowed
+        - ShareTokenBalanceChanged
+        - TimestampSet
+        - TokenBalanceChanged
+        - TokensBurned
+        - TokensMinted
+        - TokensTransferred
+        - TradingProceedsClaimed
+        - UniverseCreated
+        - UniverseForked
+        - ValidityBondChanged
+        - WarpSyncDataUpdated
+      abis:
+        - name: Augur
+          file: ./abis/Augur.json
+      eventHandlers:
+        - event: CompleteSetsPurchased(indexed address,indexed address,indexed address,uint256,uint256)
+          handler: handleCompleteSetsPurchased
+        - event: CompleteSetsSold(indexed address,indexed address,indexed address,uint256,uint256,uint256)
+          handler: handleCompleteSetsSold
+        - event: DesignatedReportStakeChanged(indexed address,uint256)
+          handler: handleDesignatedReportStakeChanged
+        - event: DisputeCrowdsourcerCompleted(indexed address,indexed address,address,uint256[],uint256,uint256,bool,uint256,uint256,uint256,uint256)
+          handler: handleDisputeCrowdsourcerCompleted
+        - event: DisputeCrowdsourcerContribution(indexed address,indexed address,indexed address,address,uint256,string,uint256[],uint256,uint256,uint256,uint256)
+          handler: handleDisputeCrowdsourcerContribution
+        - event: DisputeCrowdsourcerCreated(indexed address,indexed address,address,uint256[],uint256,uint256)
+          handler: handleDisputeCrowdsourcerCreated
+        - event: DisputeCrowdsourcerRedeemed(indexed address,indexed address,indexed address,address,uint256,uint256,uint256[],uint256)
+          handler: handleDisputeCrowdsourcerRedeemed
+        - event: DisputeWindowCreated(indexed address,address,uint256,uint256,uint256,bool)
+          handler: handleDisputeWindowCreated
+        - event: FinishDeployment()
+          handler: handleFinishDeployment
+        - event: InitialReportSubmitted(indexed address,indexed address,indexed address,address,uint256,bool,uint256[],string,uint256,uint256,uint256)
+          handler: handleInitialReportSubmitted
+        - event: InitialReporterRedeemed(indexed address,indexed address,indexed address,address,uint256,uint256,uint256[],uint256)
+          handler: handleInitialReporterRedeemed
+        - event: InitialReporterTransferred(indexed address,indexed address,address,address)
+          handler: handleInitialReporterTransferred
+        - event: MarketCreated(indexed address,uint256,string,address,indexed address,address,uint256,int256[],uint8,uint256,bytes32[],uint256,uint256)
+          handler: handleMarketCreated
+        - event: MarketFinalized(indexed address,indexed address,uint256,uint256[])
+          handler: handleMarketFinalized
+        - event: MarketMigrated(indexed address,indexed address,indexed address)
+          handler: handleMarketMigrated
+        - event: MarketOIChanged(indexed address,indexed address,uint256)
+          handler: handleMarketOIChanged
+        - event: MarketParticipantsDisavowed(indexed address,indexed address)
+          handler: handleMarketParticipantsDisavowed
+        - event: MarketRepBondTransferred(indexed address,address,address,address)
+          handler: handleMarketRepBondTransferred
+        - event: MarketTransferred(indexed address,indexed address,address,address)
+          handler: handleMarketTransferred
+        - event: NoShowBondChanged(indexed address,uint256)
+          handler: handleNoShowBondChanged
+        - event: ParticipationTokensRedeemed(indexed address,indexed address,indexed address,uint256,uint256,uint256)
+          handler: handleParticipationTokensRedeemed
+        - event: RegisterContract(address,bytes32)
+          handler: handleRegisterContract
+        - event: ReportingFeeChanged(indexed address,uint256)
+          handler: handleReportingFeeChanged
+        - event: ReportingParticipantDisavowed(indexed address,indexed address,address)
+          handler: handleReportingParticipantDisavowed
+        - event: ShareTokenBalanceChanged(indexed address,indexed address,indexed address,uint256,uint256)
+          handler: handleShareTokenBalanceChanged
+        - event: TimestampSet(uint256)
+          handler: handleTimestampSet
+        - event: TokenBalanceChanged(indexed address,indexed address,address,uint8,address,uint256,uint256)
+          handler: handleTokenBalanceChanged
+        - event: TokensBurned(indexed address,indexed address,indexed address,uint256,uint8,address,uint256)
+          handler: handleTokensBurned
+        - event: TokensMinted(indexed address,indexed address,indexed address,uint256,uint8,address,uint256)
+          handler: handleTokensMinted
+        - event: TokensTransferred(indexed address,address,indexed address,indexed address,uint256,uint8,address)
+          handler: handleTokensTransferred
+        - event: TradingProceedsClaimed(indexed address,indexed address,address,uint256,uint256,uint256,uint256,uint256)
+          handler: handleTradingProceedsClaimed
+        - event: UniverseCreated(indexed address,indexed address,uint256[],uint256)
+          handler: handleUniverseCreated
+        - event: UniverseForked(indexed address,address)
+          handler: handleUniverseForked
+        - event: ValidityBondChanged(indexed address,uint256)
+          handler: handleValidityBondChanged
+        - event: WarpSyncDataUpdated(indexed address,uint256,uint256)
+          handler: handleWarpSyncDataUpdated
+  - kind: ethereum/contract
+    name: AugurTrading
+    network: {{ ethereum.network }}
+    source:
+      address: '{{ addresses.AugurTrading }}'
+      abi: AugurTrading
+      startBlock: {{ uploadBlockNumber }}
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.4
+      language: wasm/assemblyscript
+      file: ./src/AugurTrading.ts
+      entities:
+        - CancelZeroXOrder
+        - MarketVolumeChanged
+        - OrderEvent
+        - ProfitLossChanged
+      abis:
+        - name: AugurTrading
+          file: ./abis/AugurTrading.json
+      eventHandlers:
+        - event: CancelZeroXOrder(indexed address,indexed address,indexed address,uint256,uint256,uint256,uint8,bytes32)
+          handler: handleCancelZeroXOrder
+        - event: MarketVolumeChanged(indexed address,indexed address,uint256,uint256[],uint256,uint256)
+          handler: handleMarketVolumeChanged
+        - event: OrderEvent(indexed address,indexed address,indexed uint8,uint8,bytes32,bytes32,address[],uint256[])
+          handler: handleOrderEvent
+        - event: ProfitLossChanged(indexed address,indexed address,indexed address,uint256,int256,uint256,int256,int256,int256,uint256)
+          handler: handleProfitLossChanged
+  - kind: ethereum/contract
+    name: ShareToken
+    network: {{ ethereum.network }}
+    source:
+      address: '{{ addresses.ShareToken }}'
+      abi: ShareToken
+      startBlock: {{ uploadBlockNumber }}
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.4
+      language: wasm/assemblyscript
+      file: ./src/ShareToken.ts
+      entities:
+        - CancelZeroXOrder
+        - MarketVolumeChanged
+        - OrderEvent
+        - ProfitLossChanged
+      abis:
+        - name: ShareToken
+          file: ./abis/ShareToken.json
+      eventHandlers:
+        - event: ApprovalForAll(indexed address,indexed address,bool)
+          handler: handleApprovalForAll
+        - event: TransferBatch(indexed address,indexed address,indexed address,uint256[],uint256[])
+          handler: handleTransferBatch
+        - event: TransferSingle(indexed address,indexed address,indexed address,uint256,uint256)
+          handler: handleTransferSingle
+        - event: URI(string,indexed uint256)
+          handler: handleURI
+
