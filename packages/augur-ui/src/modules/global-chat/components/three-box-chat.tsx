@@ -35,7 +35,7 @@ const ThreeBoxChat = ({
       spaceName="augur"
       threadName="globalChat"
       // Required props for context A) & B)
-      box={box}
+      box={(box as [any])}
       currentUserAddr={address}
       // optional
       openOnMount={openOnMount}

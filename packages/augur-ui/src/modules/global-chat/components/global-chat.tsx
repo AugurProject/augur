@@ -1,10 +1,10 @@
-import React, { lazy, Suspense, useState, useEffect, useReducer, useMemo } from 'react';
+import React, { lazy, Suspense, useState } from 'react';
+// @ts-ignore
 import Styles from 'modules/global-chat/components/global-chat.styles.less';
 import { SecondaryButton } from 'modules/common/buttons';
 import { useAppStatusStore } from 'modules/app/store/app-status';
 import { Close, ThickChevron } from 'modules/common/icons';
 import classNames from 'classnames';
-import { THEMES } from 'modules/common/constants';
 
 const ThreeBoxChat = lazy(() =>
   import(/* webpackChunkName: '3box-chat' */ 'modules/global-chat/components/three-box-chat')
@@ -59,7 +59,7 @@ export const GlobalChat = () => {
           <ThreeBoxChat
             provider={provider}
             initialize3box={setInitialized3Box}
-            initialized3box={initialized3box || {}}
+            initialized3box={initialized3box}
             openOnMount
             popupChat
           />

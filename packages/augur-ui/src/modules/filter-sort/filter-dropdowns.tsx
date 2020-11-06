@@ -1,6 +1,7 @@
 import React from 'react';
 import { useHistory, useLocation } from 'react-router';
 import { SORT_OPTIONS, DEFAULT_MARKET_OFFSET, THEMES, SORT_OPTIONS_SPORTS } from 'modules/common/constants';
+// @ts-ignore
 import Styles from 'modules/filter-sort/filter-dropdowns.styles.less';
 import parseQuery from 'modules/routes/helpers/parse-query';
 import makeQuery from 'modules/routes/helpers/make-query';

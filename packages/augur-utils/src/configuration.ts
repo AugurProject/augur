@@ -98,7 +98,7 @@ export interface SDKConfiguration {
     certificateKeyFile?: string;
   },
   plugins?: {
-    chat?: 'orbit',
+    chat?: 'orbit' | '3box',
     comments?: 'facebook',
   },
   flash?: {

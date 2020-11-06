@@ -35,7 +35,7 @@ export const use3box = (provider, initialize3box, initialized3box, chatOrComment
     const addressFromProvider = (await provider.enable())[0];
     let publicProfile;
 
-    if (initialized3box.address && addressFromProvider === initialized3box.address) {
+    if (initialized3box?.address && addressFromProvider === initialized3box?.address) {
       threeBoxInstance = initialized3box.box;
       publicProfile = initialized3box.profile;
     } else {
