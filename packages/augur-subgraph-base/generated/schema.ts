@@ -57,6 +57,15 @@ export class CompleteSetsPurchased extends Entity {
     this.set("blockHash", Value.fromString(value));
   }
 
+  get blockNumber(): BigInt {
+    let value = this.get("blockNumber");
+    return value.toBigInt();
+  }
+
+  set blockNumber(value: BigInt) {
+    this.set("blockNumber", Value.fromBigInt(value));
+  }
+
   get logIndex(): string {
     let value = this.get("logIndex");
     return value.toString();
@@ -191,6 +200,15 @@ export class CompleteSetsSold extends Entity {
 
   set blockHash(value: string) {
     this.set("blockHash", Value.fromString(value));
+  }
+
+  get blockNumber(): BigInt {
+    let value = this.get("blockNumber");
+    return value.toBigInt();
+  }
+
+  set blockNumber(value: BigInt) {
+    this.set("blockNumber", Value.fromBigInt(value));
   }
 
   get logIndex(): string {
@@ -344,6 +362,15 @@ export class DesignatedReportStakeChanged extends Entity {
     this.set("blockHash", Value.fromString(value));
   }
 
+  get blockNumber(): BigInt {
+    let value = this.get("blockNumber");
+    return value.toBigInt();
+  }
+
+  set blockNumber(value: BigInt) {
+    this.set("blockNumber", Value.fromBigInt(value));
+  }
+
   get logIndex(): string {
     let value = this.get("logIndex");
     return value.toString();
@@ -441,6 +468,15 @@ export class DisputeCrowdsourcerCompleted extends Entity {
 
   set blockHash(value: string) {
     this.set("blockHash", Value.fromString(value));
+  }
+
+  get blockNumber(): BigInt {
+    let value = this.get("blockNumber");
+    return value.toBigInt();
+  }
+
+  set blockNumber(value: BigInt) {
+    this.set("blockNumber", Value.fromBigInt(value));
   }
 
   get logIndex(): string {
@@ -637,6 +673,15 @@ export class DisputeCrowdsourcerContribution extends Entity {
 
   set blockHash(value: string) {
     this.set("blockHash", Value.fromString(value));
+  }
+
+  get blockNumber(): BigInt {
+    let value = this.get("blockNumber");
+    return value.toBigInt();
+  }
+
+  set blockNumber(value: BigInt) {
+    this.set("blockNumber", Value.fromBigInt(value));
   }
 
   get logIndex(): string {
@@ -843,6 +888,15 @@ export class DisputeCrowdsourcerCreated extends Entity {
     this.set("blockHash", Value.fromString(value));
   }
 
+  get blockNumber(): BigInt {
+    let value = this.get("blockNumber");
+    return value.toBigInt();
+  }
+
+  set blockNumber(value: BigInt) {
+    this.set("blockNumber", Value.fromBigInt(value));
+  }
+
   get logIndex(): string {
     let value = this.get("logIndex");
     return value.toString();
@@ -992,6 +1046,15 @@ export class DisputeCrowdsourcerRedeemed extends Entity {
 
   set blockHash(value: string) {
     this.set("blockHash", Value.fromString(value));
+  }
+
+  get blockNumber(): BigInt {
+    let value = this.get("blockNumber");
+    return value.toBigInt();
+  }
+
+  set blockNumber(value: BigInt) {
+    this.set("blockNumber", Value.fromBigInt(value));
   }
 
   get logIndex(): string {
@@ -1168,6 +1231,15 @@ export class DisputeWindowCreated extends Entity {
     this.set("blockHash", Value.fromString(value));
   }
 
+  get blockNumber(): BigInt {
+    let value = this.get("blockNumber");
+    return value.toBigInt();
+  }
+
+  set blockNumber(value: BigInt) {
+    this.set("blockNumber", Value.fromBigInt(value));
+  }
+
   get logIndex(): string {
     let value = this.get("logIndex");
     return value.toString();
@@ -1296,6 +1368,15 @@ export class FinishDeployment extends Entity {
     this.set("blockHash", Value.fromString(value));
   }
 
+  get blockNumber(): BigInt {
+    let value = this.get("blockNumber");
+    return value.toBigInt();
+  }
+
+  set blockNumber(value: BigInt) {
+    this.set("blockNumber", Value.fromBigInt(value));
+  }
+
   get logIndex(): string {
     let value = this.get("logIndex");
     return value.toString();
@@ -1367,6 +1448,15 @@ export class InitialReportSubmitted extends Entity {
 
   set blockHash(value: string) {
     this.set("blockHash", Value.fromString(value));
+  }
+
+  get blockNumber(): BigInt {
+    let value = this.get("blockNumber");
+    return value.toBigInt();
+  }
+
+  set blockNumber(value: BigInt) {
+    this.set("blockNumber", Value.fromBigInt(value));
   }
 
   get logIndex(): string {
@@ -1573,6 +1663,15 @@ export class InitialReporterRedeemed extends Entity {
     this.set("blockHash", Value.fromString(value));
   }
 
+  get blockNumber(): BigInt {
+    let value = this.get("blockNumber");
+    return value.toBigInt();
+  }
+
+  set blockNumber(value: BigInt) {
+    this.set("blockNumber", Value.fromBigInt(value));
+  }
+
   get logIndex(): string {
     let value = this.get("logIndex");
     return value.toString();
@@ -1750,6 +1849,15 @@ export class InitialReporterTransferred extends Entity {
     this.set("blockHash", Value.fromString(value));
   }
 
+  get blockNumber(): BigInt {
+    let value = this.get("blockNumber");
+    return value.toBigInt();
+  }
+
+  set blockNumber(value: BigInt) {
+    this.set("blockNumber", Value.fromBigInt(value));
+  }
+
   get logIndex(): string {
     let value = this.get("logIndex");
     return value.toString();
@@ -1883,6 +1991,15 @@ export class MarketCreated extends Entity {
 
   set blockHash(value: string) {
     this.set("blockHash", Value.fromString(value));
+  }
+
+  get blockNumber(): BigInt {
+    let value = this.get("blockNumber");
+    return value.toBigInt();
+  }
+
+  set blockNumber(value: BigInt) {
+    this.set("blockNumber", Value.fromBigInt(value));
   }
 
   get logIndex(): string {
@@ -2101,6 +2218,15 @@ export class MarketFinalized extends Entity {
     this.set("blockHash", Value.fromString(value));
   }
 
+  get blockNumber(): BigInt {
+    let value = this.get("blockNumber");
+    return value.toBigInt();
+  }
+
+  set blockNumber(value: BigInt) {
+    this.set("blockNumber", Value.fromBigInt(value));
+  }
+
   get logIndex(): string {
     let value = this.get("logIndex");
     return value.toString();
@@ -2218,6 +2344,15 @@ export class MarketMigrated extends Entity {
 
   set blockHash(value: string) {
     this.set("blockHash", Value.fromString(value));
+  }
+
+  get blockNumber(): BigInt {
+    let value = this.get("blockNumber");
+    return value.toBigInt();
+  }
+
+  set blockNumber(value: BigInt) {
+    this.set("blockNumber", Value.fromBigInt(value));
   }
 
   get logIndex(): string {
@@ -2338,6 +2473,15 @@ export class MarketOIChanged extends Entity {
     this.set("blockHash", Value.fromString(value));
   }
 
+  get blockNumber(): BigInt {
+    let value = this.get("blockNumber");
+    return value.toBigInt();
+  }
+
+  set blockNumber(value: BigInt) {
+    this.set("blockNumber", Value.fromBigInt(value));
+  }
+
   get logIndex(): string {
     let value = this.get("logIndex");
     return value.toString();
@@ -2454,6 +2598,15 @@ export class MarketParticipantsDisavowed extends Entity {
     this.set("blockHash", Value.fromString(value));
   }
 
+  get blockNumber(): BigInt {
+    let value = this.get("blockNumber");
+    return value.toBigInt();
+  }
+
+  set blockNumber(value: BigInt) {
+    this.set("blockNumber", Value.fromBigInt(value));
+  }
+
   get logIndex(): string {
     let value = this.get("logIndex");
     return value.toString();
@@ -2559,6 +2712,15 @@ export class MarketRepBondTransferred extends Entity {
 
   set blockHash(value: string) {
     this.set("blockHash", Value.fromString(value));
+  }
+
+  get blockNumber(): BigInt {
+    let value = this.get("blockNumber");
+    return value.toBigInt();
+  }
+
+  set blockNumber(value: BigInt) {
+    this.set("blockNumber", Value.fromBigInt(value));
   }
 
   get logIndex(): string {
@@ -2696,6 +2858,15 @@ export class MarketTransferred extends Entity {
     this.set("blockHash", Value.fromString(value));
   }
 
+  get blockNumber(): BigInt {
+    let value = this.get("blockNumber");
+    return value.toBigInt();
+  }
+
+  set blockNumber(value: BigInt) {
+    this.set("blockNumber", Value.fromBigInt(value));
+  }
+
   get logIndex(): string {
     let value = this.get("logIndex");
     return value.toString();
@@ -2831,6 +3002,15 @@ export class NoShowBondChanged extends Entity {
     this.set("blockHash", Value.fromString(value));
   }
 
+  get blockNumber(): BigInt {
+    let value = this.get("blockNumber");
+    return value.toBigInt();
+  }
+
+  set blockNumber(value: BigInt) {
+    this.set("blockNumber", Value.fromBigInt(value));
+  }
+
   get logIndex(): string {
     let value = this.get("logIndex");
     return value.toString();
@@ -2928,6 +3108,15 @@ export class ParticipationTokensRedeemed extends Entity {
 
   set blockHash(value: string) {
     this.set("blockHash", Value.fromString(value));
+  }
+
+  get blockNumber(): BigInt {
+    let value = this.get("blockNumber");
+    return value.toBigInt();
+  }
+
+  set blockNumber(value: BigInt) {
+    this.set("blockNumber", Value.fromBigInt(value));
   }
 
   get logIndex(): string {
@@ -3075,6 +3264,15 @@ export class RegisterContract extends Entity {
     this.set("blockHash", Value.fromString(value));
   }
 
+  get blockNumber(): BigInt {
+    let value = this.get("blockNumber");
+    return value.toBigInt();
+  }
+
+  set blockNumber(value: BigInt) {
+    this.set("blockNumber", Value.fromBigInt(value));
+  }
+
   get logIndex(): string {
     let value = this.get("logIndex");
     return value.toString();
@@ -3176,6 +3374,15 @@ export class ReportingFeeChanged extends Entity {
     this.set("blockHash", Value.fromString(value));
   }
 
+  get blockNumber(): BigInt {
+    let value = this.get("blockNumber");
+    return value.toBigInt();
+  }
+
+  set blockNumber(value: BigInt) {
+    this.set("blockNumber", Value.fromBigInt(value));
+  }
+
   get logIndex(): string {
     let value = this.get("logIndex");
     return value.toString();
@@ -3273,6 +3480,15 @@ export class ReportingParticipantDisavowed extends Entity {
 
   set blockHash(value: string) {
     this.set("blockHash", Value.fromString(value));
+  }
+
+  get blockNumber(): BigInt {
+    let value = this.get("blockNumber");
+    return value.toBigInt();
+  }
+
+  set blockNumber(value: BigInt) {
+    this.set("blockNumber", Value.fromBigInt(value));
   }
 
   get logIndex(): string {
@@ -3397,6 +3613,15 @@ export class ShareTokenBalanceChanged extends Entity {
 
   set blockHash(value: string) {
     this.set("blockHash", Value.fromString(value));
+  }
+
+  get blockNumber(): BigInt {
+    let value = this.get("blockNumber");
+    return value.toBigInt();
+  }
+
+  set blockNumber(value: BigInt) {
+    this.set("blockNumber", Value.fromBigInt(value));
   }
 
   get logIndex(): string {
@@ -3535,6 +3760,15 @@ export class TimestampSet extends Entity {
     this.set("blockHash", Value.fromString(value));
   }
 
+  get blockNumber(): BigInt {
+    let value = this.get("blockNumber");
+    return value.toBigInt();
+  }
+
+  set blockNumber(value: BigInt) {
+    this.set("blockNumber", Value.fromBigInt(value));
+  }
+
   get logIndex(): string {
     let value = this.get("logIndex");
     return value.toString();
@@ -3609,6 +3843,15 @@ export class TokenBalanceChanged extends Entity {
 
   set blockHash(value: string) {
     this.set("blockHash", Value.fromString(value));
+  }
+
+  get blockNumber(): BigInt {
+    let value = this.get("blockNumber");
+    return value.toBigInt();
+  }
+
+  set blockNumber(value: BigInt) {
+    this.set("blockNumber", Value.fromBigInt(value));
   }
 
   get logIndex(): string {
@@ -3773,6 +4016,15 @@ export class TokensBurned extends Entity {
     this.set("blockHash", Value.fromString(value));
   }
 
+  get blockNumber(): BigInt {
+    let value = this.get("blockNumber");
+    return value.toBigInt();
+  }
+
+  set blockNumber(value: BigInt) {
+    this.set("blockNumber", Value.fromBigInt(value));
+  }
+
   get logIndex(): string {
     let value = this.get("logIndex");
     return value.toString();
@@ -3935,6 +4187,15 @@ export class TokensMinted extends Entity {
     this.set("blockHash", Value.fromString(value));
   }
 
+  get blockNumber(): BigInt {
+    let value = this.get("blockNumber");
+    return value.toBigInt();
+  }
+
+  set blockNumber(value: BigInt) {
+    this.set("blockNumber", Value.fromBigInt(value));
+  }
+
   get logIndex(): string {
     let value = this.get("logIndex");
     return value.toString();
@@ -4095,6 +4356,15 @@ export class TokensTransferred extends Entity {
 
   set blockHash(value: string) {
     this.set("blockHash", Value.fromString(value));
+  }
+
+  get blockNumber(): BigInt {
+    let value = this.get("blockNumber");
+    return value.toBigInt();
+  }
+
+  set blockNumber(value: BigInt) {
+    this.set("blockNumber", Value.fromBigInt(value));
   }
 
   get logIndex(): string {
@@ -4273,6 +4543,15 @@ export class TradingProceedsClaimed extends Entity {
     this.set("blockHash", Value.fromString(value));
   }
 
+  get blockNumber(): BigInt {
+    let value = this.get("blockNumber");
+    return value.toBigInt();
+  }
+
+  set blockNumber(value: BigInt) {
+    this.set("blockNumber", Value.fromBigInt(value));
+  }
+
   get logIndex(): string {
     let value = this.get("logIndex");
     return value.toString();
@@ -4436,6 +4715,15 @@ export class UniverseCreated extends Entity {
     this.set("blockHash", Value.fromString(value));
   }
 
+  get blockNumber(): BigInt {
+    let value = this.get("blockNumber");
+    return value.toBigInt();
+  }
+
+  set blockNumber(value: BigInt) {
+    this.set("blockNumber", Value.fromBigInt(value));
+  }
+
   get logIndex(): string {
     let value = this.get("logIndex");
     return value.toString();
@@ -4555,6 +4843,15 @@ export class UniverseForked extends Entity {
     this.set("blockHash", Value.fromString(value));
   }
 
+  get blockNumber(): BigInt {
+    let value = this.get("blockNumber");
+    return value.toBigInt();
+  }
+
+  set blockNumber(value: BigInt) {
+    this.set("blockNumber", Value.fromBigInt(value));
+  }
+
   get logIndex(): string {
     let value = this.get("logIndex");
     return value.toString();
@@ -4656,6 +4953,15 @@ export class ValidityBondChanged extends Entity {
     this.set("blockHash", Value.fromString(value));
   }
 
+  get blockNumber(): BigInt {
+    let value = this.get("blockNumber");
+    return value.toBigInt();
+  }
+
+  set blockNumber(value: BigInt) {
+    this.set("blockNumber", Value.fromBigInt(value));
+  }
+
   get logIndex(): string {
     let value = this.get("logIndex");
     return value.toString();
@@ -4747,6 +5053,15 @@ export class WarpSyncDataUpdated extends Entity {
 
   set blockHash(value: string) {
     this.set("blockHash", Value.fromString(value));
+  }
+
+  get blockNumber(): BigInt {
+    let value = this.get("blockNumber");
+    return value.toBigInt();
+  }
+
+  set blockNumber(value: BigInt) {
+    this.set("blockNumber", Value.fromBigInt(value));
   }
 
   get logIndex(): string {
@@ -4849,6 +5164,15 @@ export class CancelZeroXOrder extends Entity {
 
   set blockHash(value: string) {
     this.set("blockHash", Value.fromString(value));
+  }
+
+  get blockNumber(): BigInt {
+    let value = this.get("blockNumber");
+    return value.toBigInt();
+  }
+
+  set blockNumber(value: BigInt) {
+    this.set("blockNumber", Value.fromBigInt(value));
   }
 
   get logIndex(): string {
@@ -5022,6 +5346,15 @@ export class MarketVolumeChanged extends Entity {
     this.set("blockHash", Value.fromString(value));
   }
 
+  get blockNumber(): BigInt {
+    let value = this.get("blockNumber");
+    return value.toBigInt();
+  }
+
+  set blockNumber(value: BigInt) {
+    this.set("blockNumber", Value.fromBigInt(value));
+  }
+
   get logIndex(): string {
     let value = this.get("logIndex");
     return value.toString();
@@ -5157,6 +5490,15 @@ export class OrderEvent extends Entity {
 
   set blockHash(value: string) {
     this.set("blockHash", Value.fromString(value));
+  }
+
+  get blockNumber(): BigInt {
+    let value = this.get("blockNumber");
+    return value.toBigInt();
+  }
+
+  set blockNumber(value: BigInt) {
+    this.set("blockNumber", Value.fromBigInt(value));
   }
 
   get logIndex(): string {
@@ -5328,6 +5670,15 @@ export class ProfitLossChanged extends Entity {
 
   set blockHash(value: string) {
     this.set("blockHash", Value.fromString(value));
+  }
+
+  get blockNumber(): BigInt {
+    let value = this.get("blockNumber");
+    return value.toBigInt();
+  }
+
+  set blockNumber(value: BigInt) {
+    this.set("blockNumber", Value.fromBigInt(value));
   }
 
   get logIndex(): string {
@@ -5517,6 +5868,15 @@ export class ParaAugurDeployFinished extends Entity {
     this.set("blockHash", Value.fromString(value));
   }
 
+  get blockNumber(): BigInt {
+    let value = this.get("blockNumber");
+    return value.toBigInt();
+  }
+
+  set blockNumber(value: BigInt) {
+    this.set("blockNumber", Value.fromBigInt(value));
+  }
+
   get logIndex(): string {
     let value = this.get("logIndex");
     return value.toString();
@@ -5658,6 +6018,15 @@ export class ParaAugurTradingDeployed extends Entity {
     this.set("blockHash", Value.fromString(value));
   }
 
+  get blockNumber(): BigInt {
+    let value = this.get("blockNumber");
+    return value.toBigInt();
+  }
+
+  set blockNumber(value: BigInt) {
+    this.set("blockNumber", Value.fromBigInt(value));
+  }
+
   get logIndex(): string {
     let value = this.get("logIndex");
     return value.toString();
@@ -5757,6 +6126,15 @@ export class ApprovalForAll extends Entity {
 
   set blockHash(value: string) {
     this.set("blockHash", Value.fromString(value));
+  }
+
+  get blockNumber(): BigInt {
+    let value = this.get("blockNumber");
+    return value.toBigInt();
+  }
+
+  set blockNumber(value: BigInt) {
+    this.set("blockNumber", Value.fromBigInt(value));
   }
 
   get logIndex(): string {
@@ -5867,6 +6245,15 @@ export class TransferBatch extends Entity {
 
   set blockHash(value: string) {
     this.set("blockHash", Value.fromString(value));
+  }
+
+  get blockNumber(): BigInt {
+    let value = this.get("blockNumber");
+    return value.toBigInt();
+  }
+
+  set blockNumber(value: BigInt) {
+    this.set("blockNumber", Value.fromBigInt(value));
   }
 
   get logIndex(): string {
@@ -6005,6 +6392,15 @@ export class TransferSingle extends Entity {
     this.set("blockHash", Value.fromString(value));
   }
 
+  get blockNumber(): BigInt {
+    let value = this.get("blockNumber");
+    return value.toBigInt();
+  }
+
+  set blockNumber(value: BigInt) {
+    this.set("blockNumber", Value.fromBigInt(value));
+  }
+
   get logIndex(): string {
     let value = this.get("logIndex");
     return value.toString();
@@ -6130,6 +6526,15 @@ export class URI extends Entity {
 
   set blockHash(value: string) {
     this.set("blockHash", Value.fromString(value));
+  }
+
+  get blockNumber(): BigInt {
+    let value = this.get("blockNumber");
+    return value.toBigInt();
+  }
+
+  set blockNumber(value: BigInt) {
+    this.set("blockNumber", Value.fromBigInt(value));
   }
 
   get logIndex(): string {
