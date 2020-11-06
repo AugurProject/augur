@@ -47,8 +47,8 @@ export function handleCancelZeroXOrder(event: CancelZeroXOrderEvent): void {
   let entity = new CancelZeroXOrderEntity(id);
 
   entity.blockHash = event.block.hash.toHexString();
-  entity.blockNumber = event.block.number;
-  entity.logIndex = event.logIndex.toString();
+  entity.blockNumber = event.block.number.toI32();
+  entity.logIndex = event.logIndex.toI32();
   entity.name = "CancelZeroXOrder";
   entity.transactionHash = event.transaction.hash.toHexString();
 
@@ -58,7 +58,7 @@ export function handleCancelZeroXOrder(event: CancelZeroXOrderEvent): void {
   entity.outcome = event.params.outcome.toHexString();
   entity.price = event.params.price.toHexString();
   entity.amount = event.params.amount.toHexString();
-  entity.orderType = BigInt.fromI32(event.params.orderType).toHexString();
+  entity.orderType = event.params.orderType;
   entity.orderHash = event.params.orderHash;
 
   entity.save();
@@ -69,8 +69,8 @@ export function handleMarketVolumeChanged(event: MarketVolumeChangedEvent): void
   let entity = new MarketVolumeChangedEntity(id);
 
   entity.blockHash = event.block.hash.toHexString();
-  entity.blockNumber = event.block.number;
-  entity.logIndex = event.logIndex.toString();
+  entity.blockNumber = event.block.number.toI32();
+  entity.logIndex = event.logIndex.toI32();
   entity.name = "MarketVolumeChanged";
   entity.transactionHash = event.transaction.hash.toHexString();
 
@@ -89,15 +89,15 @@ export function handleOrderEvent(event: OrderEventEvent): void {
   let entity = new OrderEventEntity(id);
 
   entity.blockHash = event.block.hash.toHexString();
-  entity.blockNumber = event.block.number;
-  entity.logIndex = event.logIndex.toString();
+  entity.blockNumber = event.block.number.toI32();
+  entity.logIndex = event.logIndex.toI32();
   entity.name = "OrderEvent";
   entity.transactionHash = event.transaction.hash.toHexString();
 
   entity.universe = event.params.universe.toHexString();
   entity.market = event.params.market.toHexString();
-  entity.eventType = BigInt.fromI32(event.params.eventType).toHexString();
-  entity.orderType = BigInt.fromI32(event.params.orderType).toHexString();
+  entity.eventType = event.params.eventType;
+  entity.orderType = event.params.orderType;
   entity.orderId = event.params.orderId;
   entity.tradeGroupId = event.params.tradeGroupId;
   entity.addressData = mapAddressArray(event.params.addressData);
@@ -111,8 +111,8 @@ export function handleProfitLossChanged(event: ProfitLossChangedEvent): void {
   let entity = new ProfitLossChangedEntity(id);
 
   entity.blockHash = event.block.hash.toHexString();
-  entity.blockNumber = event.block.number;
-  entity.logIndex = event.logIndex.toString();
+  entity.blockNumber = event.block.number.toI32();
+  entity.logIndex = event.logIndex.toI32();
   entity.name = "ProfitLossChanged";
   entity.transactionHash = event.transaction.hash.toHexString();
 
@@ -129,4 +129,3 @@ export function handleProfitLossChanged(event: ProfitLossChangedEvent): void {
 
   entity.save();
 }
-
