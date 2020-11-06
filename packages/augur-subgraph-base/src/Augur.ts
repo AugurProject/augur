@@ -109,8 +109,8 @@ export function handleCompleteSetsPurchased(event: CompleteSetsPurchasedEvent): 
   let entity = new CompleteSetsPurchasedEntity(id);
 
   entity.blockHash = event.block.hash.toHexString();
-  entity.blockNumber = event.block.number;
-  entity.logIndex = event.logIndex.toString();
+  entity.blockNumber = event.block.number.toI32();
+  entity.logIndex = event.logIndex.toI32();
   entity.name = "CompleteSetsPurchased";
   entity.transactionHash = event.transaction.hash.toHexString();
 
@@ -128,8 +128,8 @@ export function handleCompleteSetsSold(event: CompleteSetsSoldEvent): void {
   let entity = new CompleteSetsSoldEntity(id);
 
   entity.blockHash = event.block.hash.toHexString();
-  entity.blockNumber = event.block.number;
-  entity.logIndex = event.logIndex.toString();
+  entity.blockNumber = event.block.number.toI32();
+  entity.logIndex = event.logIndex.toI32();
   entity.name = "CompleteSetsSold";
   entity.transactionHash = event.transaction.hash.toHexString();
 
@@ -148,8 +148,8 @@ export function handleDesignatedReportStakeChanged(event: DesignatedReportStakeC
   let entity = new DesignatedReportStakeChangedEntity(id);
 
   entity.blockHash = event.block.hash.toHexString();
-  entity.blockNumber = event.block.number;
-  entity.logIndex = event.logIndex.toString();
+  entity.blockNumber = event.block.number.toI32();
+  entity.logIndex = event.logIndex.toI32();
   entity.name = "DesignatedReportStakeChanged";
   entity.transactionHash = event.transaction.hash.toHexString();
 
@@ -164,8 +164,8 @@ export function handleDisputeCrowdsourcerCompleted(event: DisputeCrowdsourcerCom
   let entity = new DisputeCrowdsourcerCompletedEntity(id);
 
   entity.blockHash = event.block.hash.toHexString();
-  entity.blockNumber = event.block.number;
-  entity.logIndex = event.logIndex.toString();
+  entity.blockNumber = event.block.number.toI32();
+  entity.logIndex = event.logIndex.toI32();
   entity.name = "DisputeCrowdsourcerCompleted";
   entity.transactionHash = event.transaction.hash.toHexString();
 
@@ -189,8 +189,8 @@ export function handleDisputeCrowdsourcerContribution(event: DisputeCrowdsourcer
   let entity = new DisputeCrowdsourcerContributionEntity(id);
 
   entity.blockHash = event.block.hash.toHexString();
-  entity.blockNumber = event.block.number;
-  entity.logIndex = event.logIndex.toString();
+  entity.blockNumber = event.block.number.toI32();
+  entity.logIndex = event.logIndex.toI32();
   entity.name = "DisputeCrowdsourcerContribution";
   entity.transactionHash = event.transaction.hash.toHexString();
 
@@ -214,8 +214,8 @@ export function handleDisputeCrowdsourcerCreated(event: DisputeCrowdsourcerCreat
   let entity = new DisputeCrowdsourcerCreatedEntity(id);
 
   entity.blockHash = event.block.hash.toHexString();
-  entity.blockNumber = event.block.number;
-  entity.logIndex = event.logIndex.toString();
+  entity.blockNumber = event.block.number.toI32();
+  entity.logIndex = event.logIndex.toI32();
   entity.name = "DisputeCrowdsourcerCreated";
   entity.transactionHash = event.transaction.hash.toHexString();
 
@@ -234,8 +234,8 @@ export function handleDisputeCrowdsourcerRedeemed(event: DisputeCrowdsourcerRede
   let entity = new DisputeCrowdsourcerRedeemedEntity(id);
 
   entity.blockHash = event.block.hash.toHexString();
-  entity.blockNumber = event.block.number;
-  entity.logIndex = event.logIndex.toString();
+  entity.blockNumber = event.block.number.toI32();
+  entity.logIndex = event.logIndex.toI32();
   entity.name = "DisputeCrowdsourcerRedeemed";
   entity.transactionHash = event.transaction.hash.toHexString();
 
@@ -256,8 +256,8 @@ export function handleDisputeWindowCreated(event: DisputeWindowCreatedEvent): vo
   let entity = new DisputeWindowCreatedEntity(id);
 
   entity.blockHash = event.block.hash.toHexString();
-  entity.blockNumber = event.block.number;
-  entity.logIndex = event.logIndex.toString();
+  entity.blockNumber = event.block.number.toI32();
+  entity.logIndex = event.logIndex.toI32();
   entity.name = "DisputeWindowCreated";
   entity.transactionHash = event.transaction.hash.toHexString();
 
@@ -276,8 +276,8 @@ export function handleFinishDeployment(event: FinishDeploymentEvent): void {
   let entity = new FinishDeploymentEntity(id);
 
   entity.blockHash = event.block.hash.toHexString();
-  entity.blockNumber = event.block.number;
-  entity.logIndex = event.logIndex.toString();
+  entity.blockNumber = event.block.number.toI32();
+  entity.logIndex = event.logIndex.toI32();
   entity.name = "FinishDeployment";
   entity.transactionHash = event.transaction.hash.toHexString();
 
@@ -290,8 +290,8 @@ export function handleInitialReportSubmitted(event: InitialReportSubmittedEvent)
   let entity = new InitialReportSubmittedEntity(id);
 
   entity.blockHash = event.block.hash.toHexString();
-  entity.blockNumber = event.block.number;
-  entity.logIndex = event.logIndex.toString();
+  entity.blockNumber = event.block.number.toI32();
+  entity.logIndex = event.logIndex.toI32();
   entity.name = "InitialReportSubmitted";
   entity.transactionHash = event.transaction.hash.toHexString();
 
@@ -315,8 +315,8 @@ export function handleInitialReporterRedeemed(event: InitialReporterRedeemedEven
   let entity = new InitialReporterRedeemedEntity(id);
 
   entity.blockHash = event.block.hash.toHexString();
-  entity.blockNumber = event.block.number;
-  entity.logIndex = event.logIndex.toString();
+  entity.blockNumber = event.block.number.toI32();
+  entity.logIndex = event.logIndex.toI32();
   entity.name = "InitialReporterRedeemed";
   entity.transactionHash = event.transaction.hash.toHexString();
 
@@ -337,8 +337,8 @@ export function handleInitialReporterTransferred(event: InitialReporterTransferr
   let entity = new InitialReporterTransferredEntity(id);
 
   entity.blockHash = event.block.hash.toHexString();
-  entity.blockNumber = event.block.number;
-  entity.logIndex = event.logIndex.toString();
+  entity.blockNumber = event.block.number.toI32();
+  entity.logIndex = event.logIndex.toI32();
   entity.name = "InitialReporterTransferred";
   entity.transactionHash = event.transaction.hash.toHexString();
 
@@ -355,8 +355,8 @@ export function handleMarketCreated(event: MarketCreatedEvent): void {
   let entity = new MarketCreatedEntity(id);
 
   entity.blockHash = event.block.hash.toHexString();
-  entity.blockNumber = event.block.number;
-  entity.logIndex = event.logIndex.toString();
+  entity.blockNumber = event.block.number.toI32();
+  entity.logIndex = event.logIndex.toI32();
   entity.name = "MarketCreated";
   entity.transactionHash = event.transaction.hash.toHexString();
 
@@ -368,7 +368,7 @@ export function handleMarketCreated(event: MarketCreatedEvent): void {
   entity.designatedReporter = event.params.designatedReporter.toHexString();
   entity.feePerCashInAttoCash = event.params.feePerCashInAttoCash.toHexString();
   entity.prices = mapArray(event.params.prices);
-  entity.marketType = BigInt.fromI32(event.params.marketType).toHexString();
+  entity.marketType = event.params.marketType;
   entity.numTicks = event.params.numTicks.toHexString();
   entity.outcomes = event.params.outcomes;
   entity.noShowBond = event.params.noShowBond.toHexString();
@@ -382,8 +382,8 @@ export function handleMarketFinalized(event: MarketFinalizedEvent): void {
   let entity = new MarketFinalizedEntity(id);
 
   entity.blockHash = event.block.hash.toHexString();
-  entity.blockNumber = event.block.number;
-  entity.logIndex = event.logIndex.toString();
+  entity.blockNumber = event.block.number.toI32();
+  entity.logIndex = event.logIndex.toI32();
   entity.name = "MarketFinalized";
   entity.transactionHash = event.transaction.hash.toHexString();
 
@@ -400,8 +400,8 @@ export function handleMarketMigrated(event: MarketMigratedEvent): void {
   let entity = new MarketMigratedEntity(id);
 
   entity.blockHash = event.block.hash.toHexString();
-  entity.blockNumber = event.block.number;
-  entity.logIndex = event.logIndex.toString();
+  entity.blockNumber = event.block.number.toI32();
+  entity.logIndex = event.logIndex.toI32();
   entity.name = "MarketMigrated";
   entity.transactionHash = event.transaction.hash.toHexString();
 
@@ -417,8 +417,8 @@ export function handleMarketOIChanged(event: MarketOIChangedEvent): void {
   let entity = new MarketOIChangedEntity(id);
 
   entity.blockHash = event.block.hash.toHexString();
-  entity.blockNumber = event.block.number;
-  entity.logIndex = event.logIndex.toString();
+  entity.blockNumber = event.block.number.toI32();
+  entity.logIndex = event.logIndex.toI32();
   entity.name = "MarketOIChanged";
   entity.transactionHash = event.transaction.hash.toHexString();
 
@@ -434,8 +434,8 @@ export function handleMarketParticipantsDisavowed(event: MarketParticipantsDisav
   let entity = new MarketParticipantsDisavowedEntity(id);
 
   entity.blockHash = event.block.hash.toHexString();
-  entity.blockNumber = event.block.number;
-  entity.logIndex = event.logIndex.toString();
+  entity.blockNumber = event.block.number.toI32();
+  entity.logIndex = event.logIndex.toI32();
   entity.name = "MarketParticipantsDisavowed";
   entity.transactionHash = event.transaction.hash.toHexString();
 
@@ -450,8 +450,8 @@ export function handleMarketRepBondTransferred(event: MarketRepBondTransferredEv
   let entity = new MarketRepBondTransferredEntity(id);
 
   entity.blockHash = event.block.hash.toHexString();
-  entity.blockNumber = event.block.number;
-  entity.logIndex = event.logIndex.toString();
+  entity.blockNumber = event.block.number.toI32();
+  entity.logIndex = event.logIndex.toI32();
   entity.name = "MarketRepBondTransferred";
   entity.transactionHash = event.transaction.hash.toHexString();
 
@@ -468,8 +468,8 @@ export function handleMarketTransferred(event: MarketTransferredEvent): void {
   let entity = new MarketTransferredEntity(id);
 
   entity.blockHash = event.block.hash.toHexString();
-  entity.blockNumber = event.block.number;
-  entity.logIndex = event.logIndex.toString();
+  entity.blockNumber = event.block.number.toI32();
+  entity.logIndex = event.logIndex.toI32();
   entity.name = "MarketTransferred";
   entity.transactionHash = event.transaction.hash.toHexString();
 
@@ -486,8 +486,8 @@ export function handleNoShowBondChanged(event: NoShowBondChangedEvent): void {
   let entity = new NoShowBondChangedEntity(id);
 
   entity.blockHash = event.block.hash.toHexString();
-  entity.blockNumber = event.block.number;
-  entity.logIndex = event.logIndex.toString();
+  entity.blockNumber = event.block.number.toI32();
+  entity.logIndex = event.logIndex.toI32();
   entity.name = "NoShowBondChanged";
   entity.transactionHash = event.transaction.hash.toHexString();
 
@@ -502,8 +502,8 @@ export function handleParticipationTokensRedeemed(event: ParticipationTokensRede
   let entity = new ParticipationTokensRedeemedEntity(id);
 
   entity.blockHash = event.block.hash.toHexString();
-  entity.blockNumber = event.block.number;
-  entity.logIndex = event.logIndex.toString();
+  entity.blockNumber = event.block.number.toI32();
+  entity.logIndex = event.logIndex.toI32();
   entity.name = "ParticipationTokensRedeemed";
   entity.transactionHash = event.transaction.hash.toHexString();
 
@@ -522,8 +522,8 @@ export function handleRegisterContract(event: RegisterContractEvent): void {
   let entity = new RegisterContractEntity(id);
 
   entity.blockHash = event.block.hash.toHexString();
-  entity.blockNumber = event.block.number;
-  entity.logIndex = event.logIndex.toString();
+  entity.blockNumber = event.block.number.toI32();
+  entity.logIndex = event.logIndex.toI32();
   entity.name = "RegisterContract";
   entity.transactionHash = event.transaction.hash.toHexString();
 
@@ -538,8 +538,8 @@ export function handleReportingFeeChanged(event: ReportingFeeChangedEvent): void
   let entity = new ReportingFeeChangedEntity(id);
 
   entity.blockHash = event.block.hash.toHexString();
-  entity.blockNumber = event.block.number;
-  entity.logIndex = event.logIndex.toString();
+  entity.blockNumber = event.block.number.toI32();
+  entity.logIndex = event.logIndex.toI32();
   entity.name = "ReportingFeeChanged";
   entity.transactionHash = event.transaction.hash.toHexString();
 
@@ -554,8 +554,8 @@ export function handleReportingParticipantDisavowed(event: ReportingParticipantD
   let entity = new ReportingParticipantDisavowedEntity(id);
 
   entity.blockHash = event.block.hash.toHexString();
-  entity.blockNumber = event.block.number;
-  entity.logIndex = event.logIndex.toString();
+  entity.blockNumber = event.block.number.toI32();
+  entity.logIndex = event.logIndex.toI32();
   entity.name = "ReportingParticipantDisavowed";
   entity.transactionHash = event.transaction.hash.toHexString();
 
@@ -571,8 +571,8 @@ export function handleShareTokenBalanceChanged(event: ShareTokenBalanceChangedEv
   let entity = new ShareTokenBalanceChangedEntity(id);
 
   entity.blockHash = event.block.hash.toHexString();
-  entity.blockNumber = event.block.number;
-  entity.logIndex = event.logIndex.toString();
+  entity.blockNumber = event.block.number.toI32();
+  entity.logIndex = event.logIndex.toI32();
   entity.name = "ShareTokenBalanceChanged";
   entity.transactionHash = event.transaction.hash.toHexString();
 
@@ -590,8 +590,8 @@ export function handleTimestampSet(event: TimestampSetEvent): void {
   let entity = new TimestampSetEntity(id);
 
   entity.blockHash = event.block.hash.toHexString();
-  entity.blockNumber = event.block.number;
-  entity.logIndex = event.logIndex.toString();
+  entity.blockNumber = event.block.number.toI32();
+  entity.logIndex = event.logIndex.toI32();
   entity.name = "TimestampSet";
   entity.transactionHash = event.transaction.hash.toHexString();
 
@@ -605,15 +605,15 @@ export function handleTokenBalanceChanged(event: TokenBalanceChangedEvent): void
   let entity = new TokenBalanceChangedEntity(id);
 
   entity.blockHash = event.block.hash.toHexString();
-  entity.blockNumber = event.block.number;
-  entity.logIndex = event.logIndex.toString();
+  entity.blockNumber = event.block.number.toI32();
+  entity.logIndex = event.logIndex.toI32();
   entity.name = "TokenBalanceChanged";
   entity.transactionHash = event.transaction.hash.toHexString();
 
   entity.universe = event.params.universe.toHexString();
   entity.owner = event.params.owner.toHexString();
   entity.token = event.params.token.toHexString();
-  entity.tokenType = BigInt.fromI32(event.params.tokenType).toHexString();
+  entity.tokenType = event.params.tokenType;
   entity.market = event.params.market.toHexString();
   entity.balance = event.params.balance.toHexString();
   entity.outcome = event.params.outcome.toHexString();
@@ -626,8 +626,8 @@ export function handleTokensBurned(event: TokensBurnedEvent): void {
   let entity = new TokensBurnedEntity(id);
 
   entity.blockHash = event.block.hash.toHexString();
-  entity.blockNumber = event.block.number;
-  entity.logIndex = event.logIndex.toString();
+  entity.blockNumber = event.block.number.toI32();
+  entity.logIndex = event.logIndex.toI32();
   entity.name = "TokensBurned";
   entity.transactionHash = event.transaction.hash.toHexString();
 
@@ -635,7 +635,7 @@ export function handleTokensBurned(event: TokensBurnedEvent): void {
   entity.token = event.params.token.toHexString();
   entity.target = event.params.target.toHexString();
   entity.amount = event.params.amount.toHexString();
-  entity.tokenType = BigInt.fromI32(event.params.tokenType).toHexString();
+  entity.tokenType = event.params.tokenType;
   entity.market = event.params.market.toHexString();
   entity.totalSupply = event.params.totalSupply.toHexString();
 
@@ -647,8 +647,8 @@ export function handleTokensMinted(event: TokensMintedEvent): void {
   let entity = new TokensMintedEntity(id);
 
   entity.blockHash = event.block.hash.toHexString();
-  entity.blockNumber = event.block.number;
-  entity.logIndex = event.logIndex.toString();
+  entity.blockNumber = event.block.number.toI32();
+  entity.logIndex = event.logIndex.toI32();
   entity.name = "TokensMinted";
   entity.transactionHash = event.transaction.hash.toHexString();
 
@@ -656,7 +656,7 @@ export function handleTokensMinted(event: TokensMintedEvent): void {
   entity.token = event.params.token.toHexString();
   entity.target = event.params.target.toHexString();
   entity.amount = event.params.amount.toHexString();
-  entity.tokenType = BigInt.fromI32(event.params.tokenType).toHexString();
+  entity.tokenType = event.params.tokenType;
   entity.market = event.params.market.toHexString();
   entity.totalSupply = event.params.totalSupply.toHexString();
 
@@ -668,8 +668,8 @@ export function handleTokensTransferred(event: TokensTransferredEvent): void {
   let entity = new TokensTransferredEntity(id);
 
   entity.blockHash = event.block.hash.toHexString();
-  entity.blockNumber = event.block.number;
-  entity.logIndex = event.logIndex.toString();
+  entity.blockNumber = event.block.number.toI32();
+  entity.logIndex = event.logIndex.toI32();
   entity.name = "TokensTransferred";
   entity.transactionHash = event.transaction.hash.toHexString();
 
@@ -678,7 +678,7 @@ export function handleTokensTransferred(event: TokensTransferredEvent): void {
   entity.from = event.params.from.toHexString();
   entity.to = event.params.to.toHexString();
   entity.value = event.params.value.toHexString();
-  entity.tokenType = BigInt.fromI32(event.params.tokenType).toHexString();
+  entity.tokenType = event.params.tokenType;
   entity.market = event.params.market.toHexString();
 
   entity.save();
@@ -689,8 +689,8 @@ export function handleTradingProceedsClaimed(event: TradingProceedsClaimedEvent)
   let entity = new TradingProceedsClaimedEntity(id);
 
   entity.blockHash = event.block.hash.toHexString();
-  entity.blockNumber = event.block.number;
-  entity.logIndex = event.logIndex.toString();
+  entity.blockNumber = event.block.number.toI32();
+  entity.logIndex = event.logIndex.toI32();
   entity.name = "TradingProceedsClaimed";
   entity.transactionHash = event.transaction.hash.toHexString();
 
@@ -711,8 +711,8 @@ export function handleUniverseCreated(event: UniverseCreatedEvent): void {
   let entity = new UniverseCreatedEntity(id);
 
   entity.blockHash = event.block.hash.toHexString();
-  entity.blockNumber = event.block.number;
-  entity.logIndex = event.logIndex.toString();
+  entity.blockNumber = event.block.number.toI32();
+  entity.logIndex = event.logIndex.toI32();
   entity.name = "UniverseCreated";
   entity.transactionHash = event.transaction.hash.toHexString();
 
@@ -729,8 +729,8 @@ export function handleUniverseForked(event: UniverseForkedEvent): void {
   let entity = new UniverseForkedEntity(id);
 
   entity.blockHash = event.block.hash.toHexString();
-  entity.blockNumber = event.block.number;
-  entity.logIndex = event.logIndex.toString();
+  entity.blockNumber = event.block.number.toI32();
+  entity.logIndex = event.logIndex.toI32();
   entity.name = "UniverseForked";
   entity.transactionHash = event.transaction.hash.toHexString();
 
@@ -745,8 +745,8 @@ export function handleValidityBondChanged(event: ValidityBondChangedEvent): void
   let entity = new ValidityBondChangedEntity(id);
 
   entity.blockHash = event.block.hash.toHexString();
-  entity.blockNumber = event.block.number;
-  entity.logIndex = event.logIndex.toString();
+  entity.blockNumber = event.block.number.toI32();
+  entity.logIndex = event.logIndex.toI32();
   entity.name = "ValidityBondChanged";
   entity.transactionHash = event.transaction.hash.toHexString();
 
@@ -761,8 +761,8 @@ export function handleWarpSyncDataUpdated(event: WarpSyncDataUpdatedEvent): void
   let entity = new WarpSyncDataUpdatedEntity(id);
 
   entity.blockHash = event.block.hash.toHexString();
-  entity.blockNumber = event.block.number;
-  entity.logIndex = event.logIndex.toString();
+  entity.blockNumber = event.block.number.toI32();
+  entity.logIndex = event.logIndex.toI32();
   entity.name = "WarpSyncDataUpdated";
   entity.transactionHash = event.transaction.hash.toHexString();
 
@@ -772,4 +772,3 @@ export function handleWarpSyncDataUpdated(event: WarpSyncDataUpdatedEvent): void
 
   entity.save();
 }
-

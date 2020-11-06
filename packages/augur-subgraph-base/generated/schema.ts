@@ -57,22 +57,22 @@ export class CompleteSetsPurchased extends Entity {
     this.set("blockHash", Value.fromString(value));
   }
 
-  get blockNumber(): BigInt {
+  get blockNumber(): i32 {
     let value = this.get("blockNumber");
-    return value.toBigInt();
+    return value.toI32();
   }
 
-  set blockNumber(value: BigInt) {
-    this.set("blockNumber", Value.fromBigInt(value));
+  set blockNumber(value: i32) {
+    this.set("blockNumber", Value.fromI32(value));
   }
 
-  get logIndex(): string {
+  get logIndex(): i32 {
     let value = this.get("logIndex");
-    return value.toString();
+    return value.toI32();
   }
 
-  set logIndex(value: string) {
-    this.set("logIndex", Value.fromString(value));
+  set logIndex(value: i32) {
+    this.set("logIndex", Value.fromI32(value));
   }
 
   get name(): string {
@@ -202,22 +202,22 @@ export class CompleteSetsSold extends Entity {
     this.set("blockHash", Value.fromString(value));
   }
 
-  get blockNumber(): BigInt {
+  get blockNumber(): i32 {
     let value = this.get("blockNumber");
-    return value.toBigInt();
+    return value.toI32();
   }
 
-  set blockNumber(value: BigInt) {
-    this.set("blockNumber", Value.fromBigInt(value));
+  set blockNumber(value: i32) {
+    this.set("blockNumber", Value.fromI32(value));
   }
 
-  get logIndex(): string {
+  get logIndex(): i32 {
     let value = this.get("logIndex");
-    return value.toString();
+    return value.toI32();
   }
 
-  set logIndex(value: string) {
-    this.set("logIndex", Value.fromString(value));
+  set logIndex(value: i32) {
+    this.set("logIndex", Value.fromI32(value));
   }
 
   get name(): string {
@@ -362,22 +362,22 @@ export class DesignatedReportStakeChanged extends Entity {
     this.set("blockHash", Value.fromString(value));
   }
 
-  get blockNumber(): BigInt {
+  get blockNumber(): i32 {
     let value = this.get("blockNumber");
-    return value.toBigInt();
+    return value.toI32();
   }
 
-  set blockNumber(value: BigInt) {
-    this.set("blockNumber", Value.fromBigInt(value));
+  set blockNumber(value: i32) {
+    this.set("blockNumber", Value.fromI32(value));
   }
 
-  get logIndex(): string {
+  get logIndex(): i32 {
     let value = this.get("logIndex");
-    return value.toString();
+    return value.toI32();
   }
 
-  set logIndex(value: string) {
-    this.set("logIndex", Value.fromString(value));
+  set logIndex(value: i32) {
+    this.set("logIndex", Value.fromI32(value));
   }
 
   get name(): string {
@@ -470,22 +470,22 @@ export class DisputeCrowdsourcerCompleted extends Entity {
     this.set("blockHash", Value.fromString(value));
   }
 
-  get blockNumber(): BigInt {
+  get blockNumber(): i32 {
     let value = this.get("blockNumber");
-    return value.toBigInt();
+    return value.toI32();
   }
 
-  set blockNumber(value: BigInt) {
-    this.set("blockNumber", Value.fromBigInt(value));
+  set blockNumber(value: i32) {
+    this.set("blockNumber", Value.fromI32(value));
   }
 
-  get logIndex(): string {
+  get logIndex(): i32 {
     let value = this.get("logIndex");
-    return value.toString();
+    return value.toI32();
   }
 
-  set logIndex(value: string) {
-    this.set("logIndex", Value.fromString(value));
+  set logIndex(value: i32) {
+    this.set("logIndex", Value.fromI32(value));
   }
 
   get name(): string {
@@ -675,22 +675,22 @@ export class DisputeCrowdsourcerContribution extends Entity {
     this.set("blockHash", Value.fromString(value));
   }
 
-  get blockNumber(): BigInt {
+  get blockNumber(): i32 {
     let value = this.get("blockNumber");
-    return value.toBigInt();
+    return value.toI32();
   }
 
-  set blockNumber(value: BigInt) {
-    this.set("blockNumber", Value.fromBigInt(value));
+  set blockNumber(value: i32) {
+    this.set("blockNumber", Value.fromI32(value));
   }
 
-  get logIndex(): string {
+  get logIndex(): i32 {
     let value = this.get("logIndex");
-    return value.toString();
+    return value.toI32();
   }
 
-  set logIndex(value: string) {
-    this.set("logIndex", Value.fromString(value));
+  set logIndex(value: i32) {
+    this.set("logIndex", Value.fromI32(value));
   }
 
   get name(): string {
@@ -888,22 +888,22 @@ export class DisputeCrowdsourcerCreated extends Entity {
     this.set("blockHash", Value.fromString(value));
   }
 
-  get blockNumber(): BigInt {
+  get blockNumber(): i32 {
     let value = this.get("blockNumber");
-    return value.toBigInt();
+    return value.toI32();
   }
 
-  set blockNumber(value: BigInt) {
-    this.set("blockNumber", Value.fromBigInt(value));
+  set blockNumber(value: i32) {
+    this.set("blockNumber", Value.fromI32(value));
   }
 
-  get logIndex(): string {
+  get logIndex(): i32 {
     let value = this.get("logIndex");
-    return value.toString();
+    return value.toI32();
   }
 
-  set logIndex(value: string) {
-    this.set("logIndex", Value.fromString(value));
+  set logIndex(value: i32) {
+    this.set("logIndex", Value.fromI32(value));
   }
 
   get name(): string {
@@ -1048,22 +1048,22 @@ export class DisputeCrowdsourcerRedeemed extends Entity {
     this.set("blockHash", Value.fromString(value));
   }
 
-  get blockNumber(): BigInt {
+  get blockNumber(): i32 {
     let value = this.get("blockNumber");
-    return value.toBigInt();
+    return value.toI32();
   }
 
-  set blockNumber(value: BigInt) {
-    this.set("blockNumber", Value.fromBigInt(value));
+  set blockNumber(value: i32) {
+    this.set("blockNumber", Value.fromI32(value));
   }
 
-  get logIndex(): string {
+  get logIndex(): i32 {
     let value = this.get("logIndex");
-    return value.toString();
+    return value.toI32();
   }
 
-  set logIndex(value: string) {
-    this.set("logIndex", Value.fromString(value));
+  set logIndex(value: i32) {
+    this.set("logIndex", Value.fromI32(value));
   }
 
   get name(): string {
@@ -1231,22 +1231,22 @@ export class DisputeWindowCreated extends Entity {
     this.set("blockHash", Value.fromString(value));
   }
 
-  get blockNumber(): BigInt {
+  get blockNumber(): i32 {
     let value = this.get("blockNumber");
-    return value.toBigInt();
+    return value.toI32();
   }
 
-  set blockNumber(value: BigInt) {
-    this.set("blockNumber", Value.fromBigInt(value));
+  set blockNumber(value: i32) {
+    this.set("blockNumber", Value.fromI32(value));
   }
 
-  get logIndex(): string {
+  get logIndex(): i32 {
     let value = this.get("logIndex");
-    return value.toString();
+    return value.toI32();
   }
 
-  set logIndex(value: string) {
-    this.set("logIndex", Value.fromString(value));
+  set logIndex(value: i32) {
+    this.set("logIndex", Value.fromI32(value));
   }
 
   get name(): string {
@@ -1368,22 +1368,22 @@ export class FinishDeployment extends Entity {
     this.set("blockHash", Value.fromString(value));
   }
 
-  get blockNumber(): BigInt {
+  get blockNumber(): i32 {
     let value = this.get("blockNumber");
-    return value.toBigInt();
+    return value.toI32();
   }
 
-  set blockNumber(value: BigInt) {
-    this.set("blockNumber", Value.fromBigInt(value));
+  set blockNumber(value: i32) {
+    this.set("blockNumber", Value.fromI32(value));
   }
 
-  get logIndex(): string {
+  get logIndex(): i32 {
     let value = this.get("logIndex");
-    return value.toString();
+    return value.toI32();
   }
 
-  set logIndex(value: string) {
-    this.set("logIndex", Value.fromString(value));
+  set logIndex(value: i32) {
+    this.set("logIndex", Value.fromI32(value));
   }
 
   get name(): string {
@@ -1450,22 +1450,22 @@ export class InitialReportSubmitted extends Entity {
     this.set("blockHash", Value.fromString(value));
   }
 
-  get blockNumber(): BigInt {
+  get blockNumber(): i32 {
     let value = this.get("blockNumber");
-    return value.toBigInt();
+    return value.toI32();
   }
 
-  set blockNumber(value: BigInt) {
-    this.set("blockNumber", Value.fromBigInt(value));
+  set blockNumber(value: i32) {
+    this.set("blockNumber", Value.fromI32(value));
   }
 
-  get logIndex(): string {
+  get logIndex(): i32 {
     let value = this.get("logIndex");
-    return value.toString();
+    return value.toI32();
   }
 
-  set logIndex(value: string) {
-    this.set("logIndex", Value.fromString(value));
+  set logIndex(value: i32) {
+    this.set("logIndex", Value.fromI32(value));
   }
 
   get name(): string {
@@ -1663,22 +1663,22 @@ export class InitialReporterRedeemed extends Entity {
     this.set("blockHash", Value.fromString(value));
   }
 
-  get blockNumber(): BigInt {
+  get blockNumber(): i32 {
     let value = this.get("blockNumber");
-    return value.toBigInt();
+    return value.toI32();
   }
 
-  set blockNumber(value: BigInt) {
-    this.set("blockNumber", Value.fromBigInt(value));
+  set blockNumber(value: i32) {
+    this.set("blockNumber", Value.fromI32(value));
   }
 
-  get logIndex(): string {
+  get logIndex(): i32 {
     let value = this.get("logIndex");
-    return value.toString();
+    return value.toI32();
   }
 
-  set logIndex(value: string) {
-    this.set("logIndex", Value.fromString(value));
+  set logIndex(value: i32) {
+    this.set("logIndex", Value.fromI32(value));
   }
 
   get name(): string {
@@ -1849,22 +1849,22 @@ export class InitialReporterTransferred extends Entity {
     this.set("blockHash", Value.fromString(value));
   }
 
-  get blockNumber(): BigInt {
+  get blockNumber(): i32 {
     let value = this.get("blockNumber");
-    return value.toBigInt();
+    return value.toI32();
   }
 
-  set blockNumber(value: BigInt) {
-    this.set("blockNumber", Value.fromBigInt(value));
+  set blockNumber(value: i32) {
+    this.set("blockNumber", Value.fromI32(value));
   }
 
-  get logIndex(): string {
+  get logIndex(): i32 {
     let value = this.get("logIndex");
-    return value.toString();
+    return value.toI32();
   }
 
-  set logIndex(value: string) {
-    this.set("logIndex", Value.fromString(value));
+  set logIndex(value: i32) {
+    this.set("logIndex", Value.fromI32(value));
   }
 
   get name(): string {
@@ -1993,22 +1993,22 @@ export class MarketCreated extends Entity {
     this.set("blockHash", Value.fromString(value));
   }
 
-  get blockNumber(): BigInt {
+  get blockNumber(): i32 {
     let value = this.get("blockNumber");
-    return value.toBigInt();
+    return value.toI32();
   }
 
-  set blockNumber(value: BigInt) {
-    this.set("blockNumber", Value.fromBigInt(value));
+  set blockNumber(value: i32) {
+    this.set("blockNumber", Value.fromI32(value));
   }
 
-  get logIndex(): string {
+  get logIndex(): i32 {
     let value = this.get("logIndex");
-    return value.toString();
+    return value.toI32();
   }
 
-  set logIndex(value: string) {
-    this.set("logIndex", Value.fromString(value));
+  set logIndex(value: i32) {
+    this.set("logIndex", Value.fromI32(value));
   }
 
   get name(): string {
@@ -2133,13 +2133,13 @@ export class MarketCreated extends Entity {
     this.set("prices", Value.fromStringArray(value));
   }
 
-  get marketType(): string {
+  get marketType(): i32 {
     let value = this.get("marketType");
-    return value.toString();
+    return value.toI32();
   }
 
-  set marketType(value: string) {
-    this.set("marketType", Value.fromString(value));
+  set marketType(value: i32) {
+    this.set("marketType", Value.fromI32(value));
   }
 
   get numTicks(): string {
@@ -2218,22 +2218,22 @@ export class MarketFinalized extends Entity {
     this.set("blockHash", Value.fromString(value));
   }
 
-  get blockNumber(): BigInt {
+  get blockNumber(): i32 {
     let value = this.get("blockNumber");
-    return value.toBigInt();
+    return value.toI32();
   }
 
-  set blockNumber(value: BigInt) {
-    this.set("blockNumber", Value.fromBigInt(value));
+  set blockNumber(value: i32) {
+    this.set("blockNumber", Value.fromI32(value));
   }
 
-  get logIndex(): string {
+  get logIndex(): i32 {
     let value = this.get("logIndex");
-    return value.toString();
+    return value.toI32();
   }
 
-  set logIndex(value: string) {
-    this.set("logIndex", Value.fromString(value));
+  set logIndex(value: i32) {
+    this.set("logIndex", Value.fromI32(value));
   }
 
   get name(): string {
@@ -2346,22 +2346,22 @@ export class MarketMigrated extends Entity {
     this.set("blockHash", Value.fromString(value));
   }
 
-  get blockNumber(): BigInt {
+  get blockNumber(): i32 {
     let value = this.get("blockNumber");
-    return value.toBigInt();
+    return value.toI32();
   }
 
-  set blockNumber(value: BigInt) {
-    this.set("blockNumber", Value.fromBigInt(value));
+  set blockNumber(value: i32) {
+    this.set("blockNumber", Value.fromI32(value));
   }
 
-  get logIndex(): string {
+  get logIndex(): i32 {
     let value = this.get("logIndex");
-    return value.toString();
+    return value.toI32();
   }
 
-  set logIndex(value: string) {
-    this.set("logIndex", Value.fromString(value));
+  set logIndex(value: i32) {
+    this.set("logIndex", Value.fromI32(value));
   }
 
   get name(): string {
@@ -2473,22 +2473,22 @@ export class MarketOIChanged extends Entity {
     this.set("blockHash", Value.fromString(value));
   }
 
-  get blockNumber(): BigInt {
+  get blockNumber(): i32 {
     let value = this.get("blockNumber");
-    return value.toBigInt();
+    return value.toI32();
   }
 
-  set blockNumber(value: BigInt) {
-    this.set("blockNumber", Value.fromBigInt(value));
+  set blockNumber(value: i32) {
+    this.set("blockNumber", Value.fromI32(value));
   }
 
-  get logIndex(): string {
+  get logIndex(): i32 {
     let value = this.get("logIndex");
-    return value.toString();
+    return value.toI32();
   }
 
-  set logIndex(value: string) {
-    this.set("logIndex", Value.fromString(value));
+  set logIndex(value: i32) {
+    this.set("logIndex", Value.fromI32(value));
   }
 
   get name(): string {
@@ -2598,22 +2598,22 @@ export class MarketParticipantsDisavowed extends Entity {
     this.set("blockHash", Value.fromString(value));
   }
 
-  get blockNumber(): BigInt {
+  get blockNumber(): i32 {
     let value = this.get("blockNumber");
-    return value.toBigInt();
+    return value.toI32();
   }
 
-  set blockNumber(value: BigInt) {
-    this.set("blockNumber", Value.fromBigInt(value));
+  set blockNumber(value: i32) {
+    this.set("blockNumber", Value.fromI32(value));
   }
 
-  get logIndex(): string {
+  get logIndex(): i32 {
     let value = this.get("logIndex");
-    return value.toString();
+    return value.toI32();
   }
 
-  set logIndex(value: string) {
-    this.set("logIndex", Value.fromString(value));
+  set logIndex(value: i32) {
+    this.set("logIndex", Value.fromI32(value));
   }
 
   get name(): string {
@@ -2714,22 +2714,22 @@ export class MarketRepBondTransferred extends Entity {
     this.set("blockHash", Value.fromString(value));
   }
 
-  get blockNumber(): BigInt {
+  get blockNumber(): i32 {
     let value = this.get("blockNumber");
-    return value.toBigInt();
+    return value.toI32();
   }
 
-  set blockNumber(value: BigInt) {
-    this.set("blockNumber", Value.fromBigInt(value));
+  set blockNumber(value: i32) {
+    this.set("blockNumber", Value.fromI32(value));
   }
 
-  get logIndex(): string {
+  get logIndex(): i32 {
     let value = this.get("logIndex");
-    return value.toString();
+    return value.toI32();
   }
 
-  set logIndex(value: string) {
-    this.set("logIndex", Value.fromString(value));
+  set logIndex(value: i32) {
+    this.set("logIndex", Value.fromI32(value));
   }
 
   get name(): string {
@@ -2858,22 +2858,22 @@ export class MarketTransferred extends Entity {
     this.set("blockHash", Value.fromString(value));
   }
 
-  get blockNumber(): BigInt {
+  get blockNumber(): i32 {
     let value = this.get("blockNumber");
-    return value.toBigInt();
+    return value.toI32();
   }
 
-  set blockNumber(value: BigInt) {
-    this.set("blockNumber", Value.fromBigInt(value));
+  set blockNumber(value: i32) {
+    this.set("blockNumber", Value.fromI32(value));
   }
 
-  get logIndex(): string {
+  get logIndex(): i32 {
     let value = this.get("logIndex");
-    return value.toString();
+    return value.toI32();
   }
 
-  set logIndex(value: string) {
-    this.set("logIndex", Value.fromString(value));
+  set logIndex(value: i32) {
+    this.set("logIndex", Value.fromI32(value));
   }
 
   get name(): string {
@@ -3002,22 +3002,22 @@ export class NoShowBondChanged extends Entity {
     this.set("blockHash", Value.fromString(value));
   }
 
-  get blockNumber(): BigInt {
+  get blockNumber(): i32 {
     let value = this.get("blockNumber");
-    return value.toBigInt();
+    return value.toI32();
   }
 
-  set blockNumber(value: BigInt) {
-    this.set("blockNumber", Value.fromBigInt(value));
+  set blockNumber(value: i32) {
+    this.set("blockNumber", Value.fromI32(value));
   }
 
-  get logIndex(): string {
+  get logIndex(): i32 {
     let value = this.get("logIndex");
-    return value.toString();
+    return value.toI32();
   }
 
-  set logIndex(value: string) {
-    this.set("logIndex", Value.fromString(value));
+  set logIndex(value: i32) {
+    this.set("logIndex", Value.fromI32(value));
   }
 
   get name(): string {
@@ -3110,22 +3110,22 @@ export class ParticipationTokensRedeemed extends Entity {
     this.set("blockHash", Value.fromString(value));
   }
 
-  get blockNumber(): BigInt {
+  get blockNumber(): i32 {
     let value = this.get("blockNumber");
-    return value.toBigInt();
+    return value.toI32();
   }
 
-  set blockNumber(value: BigInt) {
-    this.set("blockNumber", Value.fromBigInt(value));
+  set blockNumber(value: i32) {
+    this.set("blockNumber", Value.fromI32(value));
   }
 
-  get logIndex(): string {
+  get logIndex(): i32 {
     let value = this.get("logIndex");
-    return value.toString();
+    return value.toI32();
   }
 
-  set logIndex(value: string) {
-    this.set("logIndex", Value.fromString(value));
+  set logIndex(value: i32) {
+    this.set("logIndex", Value.fromI32(value));
   }
 
   get name(): string {
@@ -3264,22 +3264,22 @@ export class RegisterContract extends Entity {
     this.set("blockHash", Value.fromString(value));
   }
 
-  get blockNumber(): BigInt {
+  get blockNumber(): i32 {
     let value = this.get("blockNumber");
-    return value.toBigInt();
+    return value.toI32();
   }
 
-  set blockNumber(value: BigInt) {
-    this.set("blockNumber", Value.fromBigInt(value));
+  set blockNumber(value: i32) {
+    this.set("blockNumber", Value.fromI32(value));
   }
 
-  get logIndex(): string {
+  get logIndex(): i32 {
     let value = this.get("logIndex");
-    return value.toString();
+    return value.toI32();
   }
 
-  set logIndex(value: string) {
-    this.set("logIndex", Value.fromString(value));
+  set logIndex(value: i32) {
+    this.set("logIndex", Value.fromI32(value));
   }
 
   get name(): string {
@@ -3374,22 +3374,22 @@ export class ReportingFeeChanged extends Entity {
     this.set("blockHash", Value.fromString(value));
   }
 
-  get blockNumber(): BigInt {
+  get blockNumber(): i32 {
     let value = this.get("blockNumber");
-    return value.toBigInt();
+    return value.toI32();
   }
 
-  set blockNumber(value: BigInt) {
-    this.set("blockNumber", Value.fromBigInt(value));
+  set blockNumber(value: i32) {
+    this.set("blockNumber", Value.fromI32(value));
   }
 
-  get logIndex(): string {
+  get logIndex(): i32 {
     let value = this.get("logIndex");
-    return value.toString();
+    return value.toI32();
   }
 
-  set logIndex(value: string) {
-    this.set("logIndex", Value.fromString(value));
+  set logIndex(value: i32) {
+    this.set("logIndex", Value.fromI32(value));
   }
 
   get name(): string {
@@ -3482,22 +3482,22 @@ export class ReportingParticipantDisavowed extends Entity {
     this.set("blockHash", Value.fromString(value));
   }
 
-  get blockNumber(): BigInt {
+  get blockNumber(): i32 {
     let value = this.get("blockNumber");
-    return value.toBigInt();
+    return value.toI32();
   }
 
-  set blockNumber(value: BigInt) {
-    this.set("blockNumber", Value.fromBigInt(value));
+  set blockNumber(value: i32) {
+    this.set("blockNumber", Value.fromI32(value));
   }
 
-  get logIndex(): string {
+  get logIndex(): i32 {
     let value = this.get("logIndex");
-    return value.toString();
+    return value.toI32();
   }
 
-  set logIndex(value: string) {
-    this.set("logIndex", Value.fromString(value));
+  set logIndex(value: i32) {
+    this.set("logIndex", Value.fromI32(value));
   }
 
   get name(): string {
@@ -3615,22 +3615,22 @@ export class ShareTokenBalanceChanged extends Entity {
     this.set("blockHash", Value.fromString(value));
   }
 
-  get blockNumber(): BigInt {
+  get blockNumber(): i32 {
     let value = this.get("blockNumber");
-    return value.toBigInt();
+    return value.toI32();
   }
 
-  set blockNumber(value: BigInt) {
-    this.set("blockNumber", Value.fromBigInt(value));
+  set blockNumber(value: i32) {
+    this.set("blockNumber", Value.fromI32(value));
   }
 
-  get logIndex(): string {
+  get logIndex(): i32 {
     let value = this.get("logIndex");
-    return value.toString();
+    return value.toI32();
   }
 
-  set logIndex(value: string) {
-    this.set("logIndex", Value.fromString(value));
+  set logIndex(value: i32) {
+    this.set("logIndex", Value.fromI32(value));
   }
 
   get name(): string {
@@ -3760,22 +3760,22 @@ export class TimestampSet extends Entity {
     this.set("blockHash", Value.fromString(value));
   }
 
-  get blockNumber(): BigInt {
+  get blockNumber(): i32 {
     let value = this.get("blockNumber");
-    return value.toBigInt();
+    return value.toI32();
   }
 
-  set blockNumber(value: BigInt) {
-    this.set("blockNumber", Value.fromBigInt(value));
+  set blockNumber(value: i32) {
+    this.set("blockNumber", Value.fromI32(value));
   }
 
-  get logIndex(): string {
+  get logIndex(): i32 {
     let value = this.get("logIndex");
-    return value.toString();
+    return value.toI32();
   }
 
-  set logIndex(value: string) {
-    this.set("logIndex", Value.fromString(value));
+  set logIndex(value: i32) {
+    this.set("logIndex", Value.fromI32(value));
   }
 
   get name(): string {
@@ -3845,22 +3845,22 @@ export class TokenBalanceChanged extends Entity {
     this.set("blockHash", Value.fromString(value));
   }
 
-  get blockNumber(): BigInt {
+  get blockNumber(): i32 {
     let value = this.get("blockNumber");
-    return value.toBigInt();
+    return value.toI32();
   }
 
-  set blockNumber(value: BigInt) {
-    this.set("blockNumber", Value.fromBigInt(value));
+  set blockNumber(value: i32) {
+    this.set("blockNumber", Value.fromI32(value));
   }
 
-  get logIndex(): string {
+  get logIndex(): i32 {
     let value = this.get("logIndex");
-    return value.toString();
+    return value.toI32();
   }
 
-  set logIndex(value: string) {
-    this.set("logIndex", Value.fromString(value));
+  set logIndex(value: i32) {
+    this.set("logIndex", Value.fromI32(value));
   }
 
   get name(): string {
@@ -3932,13 +3932,13 @@ export class TokenBalanceChanged extends Entity {
     }
   }
 
-  get tokenType(): string {
+  get tokenType(): i32 {
     let value = this.get("tokenType");
-    return value.toString();
+    return value.toI32();
   }
 
-  set tokenType(value: string) {
-    this.set("tokenType", Value.fromString(value));
+  set tokenType(value: i32) {
+    this.set("tokenType", Value.fromI32(value));
   }
 
   get market(): string | null {
@@ -4016,22 +4016,22 @@ export class TokensBurned extends Entity {
     this.set("blockHash", Value.fromString(value));
   }
 
-  get blockNumber(): BigInt {
+  get blockNumber(): i32 {
     let value = this.get("blockNumber");
-    return value.toBigInt();
+    return value.toI32();
   }
 
-  set blockNumber(value: BigInt) {
-    this.set("blockNumber", Value.fromBigInt(value));
+  set blockNumber(value: i32) {
+    this.set("blockNumber", Value.fromI32(value));
   }
 
-  get logIndex(): string {
+  get logIndex(): i32 {
     let value = this.get("logIndex");
-    return value.toString();
+    return value.toI32();
   }
 
-  set logIndex(value: string) {
-    this.set("logIndex", Value.fromString(value));
+  set logIndex(value: i32) {
+    this.set("logIndex", Value.fromI32(value));
   }
 
   get name(): string {
@@ -4112,13 +4112,13 @@ export class TokensBurned extends Entity {
     this.set("amount", Value.fromString(value));
   }
 
-  get tokenType(): string {
+  get tokenType(): i32 {
     let value = this.get("tokenType");
-    return value.toString();
+    return value.toI32();
   }
 
-  set tokenType(value: string) {
-    this.set("tokenType", Value.fromString(value));
+  set tokenType(value: i32) {
+    this.set("tokenType", Value.fromI32(value));
   }
 
   get market(): string | null {
@@ -4187,22 +4187,22 @@ export class TokensMinted extends Entity {
     this.set("blockHash", Value.fromString(value));
   }
 
-  get blockNumber(): BigInt {
+  get blockNumber(): i32 {
     let value = this.get("blockNumber");
-    return value.toBigInt();
+    return value.toI32();
   }
 
-  set blockNumber(value: BigInt) {
-    this.set("blockNumber", Value.fromBigInt(value));
+  set blockNumber(value: i32) {
+    this.set("blockNumber", Value.fromI32(value));
   }
 
-  get logIndex(): string {
+  get logIndex(): i32 {
     let value = this.get("logIndex");
-    return value.toString();
+    return value.toI32();
   }
 
-  set logIndex(value: string) {
-    this.set("logIndex", Value.fromString(value));
+  set logIndex(value: i32) {
+    this.set("logIndex", Value.fromI32(value));
   }
 
   get name(): string {
@@ -4283,13 +4283,13 @@ export class TokensMinted extends Entity {
     this.set("amount", Value.fromString(value));
   }
 
-  get tokenType(): string {
+  get tokenType(): i32 {
     let value = this.get("tokenType");
-    return value.toString();
+    return value.toI32();
   }
 
-  set tokenType(value: string) {
-    this.set("tokenType", Value.fromString(value));
+  set tokenType(value: i32) {
+    this.set("tokenType", Value.fromI32(value));
   }
 
   get market(): string | null {
@@ -4358,22 +4358,22 @@ export class TokensTransferred extends Entity {
     this.set("blockHash", Value.fromString(value));
   }
 
-  get blockNumber(): BigInt {
+  get blockNumber(): i32 {
     let value = this.get("blockNumber");
-    return value.toBigInt();
+    return value.toI32();
   }
 
-  set blockNumber(value: BigInt) {
-    this.set("blockNumber", Value.fromBigInt(value));
+  set blockNumber(value: i32) {
+    this.set("blockNumber", Value.fromI32(value));
   }
 
-  get logIndex(): string {
+  get logIndex(): i32 {
     let value = this.get("logIndex");
-    return value.toString();
+    return value.toI32();
   }
 
-  set logIndex(value: string) {
-    this.set("logIndex", Value.fromString(value));
+  set logIndex(value: i32) {
+    this.set("logIndex", Value.fromI32(value));
   }
 
   get name(): string {
@@ -4471,13 +4471,13 @@ export class TokensTransferred extends Entity {
     this.set("value", Value.fromString(value));
   }
 
-  get tokenType(): string {
+  get tokenType(): i32 {
     let value = this.get("tokenType");
-    return value.toString();
+    return value.toI32();
   }
 
-  set tokenType(value: string) {
-    this.set("tokenType", Value.fromString(value));
+  set tokenType(value: i32) {
+    this.set("tokenType", Value.fromI32(value));
   }
 
   get market(): string | null {
@@ -4543,22 +4543,22 @@ export class TradingProceedsClaimed extends Entity {
     this.set("blockHash", Value.fromString(value));
   }
 
-  get blockNumber(): BigInt {
+  get blockNumber(): i32 {
     let value = this.get("blockNumber");
-    return value.toBigInt();
+    return value.toI32();
   }
 
-  set blockNumber(value: BigInt) {
-    this.set("blockNumber", Value.fromBigInt(value));
+  set blockNumber(value: i32) {
+    this.set("blockNumber", Value.fromI32(value));
   }
 
-  get logIndex(): string {
+  get logIndex(): i32 {
     let value = this.get("logIndex");
-    return value.toString();
+    return value.toI32();
   }
 
-  set logIndex(value: string) {
-    this.set("logIndex", Value.fromString(value));
+  set logIndex(value: i32) {
+    this.set("logIndex", Value.fromI32(value));
   }
 
   get name(): string {
@@ -4715,22 +4715,22 @@ export class UniverseCreated extends Entity {
     this.set("blockHash", Value.fromString(value));
   }
 
-  get blockNumber(): BigInt {
+  get blockNumber(): i32 {
     let value = this.get("blockNumber");
-    return value.toBigInt();
+    return value.toI32();
   }
 
-  set blockNumber(value: BigInt) {
-    this.set("blockNumber", Value.fromBigInt(value));
+  set blockNumber(value: i32) {
+    this.set("blockNumber", Value.fromI32(value));
   }
 
-  get logIndex(): string {
+  get logIndex(): i32 {
     let value = this.get("logIndex");
-    return value.toString();
+    return value.toI32();
   }
 
-  set logIndex(value: string) {
-    this.set("logIndex", Value.fromString(value));
+  set logIndex(value: i32) {
+    this.set("logIndex", Value.fromI32(value));
   }
 
   get name(): string {
@@ -4843,22 +4843,22 @@ export class UniverseForked extends Entity {
     this.set("blockHash", Value.fromString(value));
   }
 
-  get blockNumber(): BigInt {
+  get blockNumber(): i32 {
     let value = this.get("blockNumber");
-    return value.toBigInt();
+    return value.toI32();
   }
 
-  set blockNumber(value: BigInt) {
-    this.set("blockNumber", Value.fromBigInt(value));
+  set blockNumber(value: i32) {
+    this.set("blockNumber", Value.fromI32(value));
   }
 
-  get logIndex(): string {
+  get logIndex(): i32 {
     let value = this.get("logIndex");
-    return value.toString();
+    return value.toI32();
   }
 
-  set logIndex(value: string) {
-    this.set("logIndex", Value.fromString(value));
+  set logIndex(value: i32) {
+    this.set("logIndex", Value.fromI32(value));
   }
 
   get name(): string {
@@ -4953,22 +4953,22 @@ export class ValidityBondChanged extends Entity {
     this.set("blockHash", Value.fromString(value));
   }
 
-  get blockNumber(): BigInt {
+  get blockNumber(): i32 {
     let value = this.get("blockNumber");
-    return value.toBigInt();
+    return value.toI32();
   }
 
-  set blockNumber(value: BigInt) {
-    this.set("blockNumber", Value.fromBigInt(value));
+  set blockNumber(value: i32) {
+    this.set("blockNumber", Value.fromI32(value));
   }
 
-  get logIndex(): string {
+  get logIndex(): i32 {
     let value = this.get("logIndex");
-    return value.toString();
+    return value.toI32();
   }
 
-  set logIndex(value: string) {
-    this.set("logIndex", Value.fromString(value));
+  set logIndex(value: i32) {
+    this.set("logIndex", Value.fromI32(value));
   }
 
   get name(): string {
@@ -5055,22 +5055,22 @@ export class WarpSyncDataUpdated extends Entity {
     this.set("blockHash", Value.fromString(value));
   }
 
-  get blockNumber(): BigInt {
+  get blockNumber(): i32 {
     let value = this.get("blockNumber");
-    return value.toBigInt();
+    return value.toI32();
   }
 
-  set blockNumber(value: BigInt) {
-    this.set("blockNumber", Value.fromBigInt(value));
+  set blockNumber(value: i32) {
+    this.set("blockNumber", Value.fromI32(value));
   }
 
-  get logIndex(): string {
+  get logIndex(): i32 {
     let value = this.get("logIndex");
-    return value.toString();
+    return value.toI32();
   }
 
-  set logIndex(value: string) {
-    this.set("logIndex", Value.fromString(value));
+  set logIndex(value: i32) {
+    this.set("logIndex", Value.fromI32(value));
   }
 
   get name(): string {
@@ -5166,22 +5166,22 @@ export class CancelZeroXOrder extends Entity {
     this.set("blockHash", Value.fromString(value));
   }
 
-  get blockNumber(): BigInt {
+  get blockNumber(): i32 {
     let value = this.get("blockNumber");
-    return value.toBigInt();
+    return value.toI32();
   }
 
-  set blockNumber(value: BigInt) {
-    this.set("blockNumber", Value.fromBigInt(value));
+  set blockNumber(value: i32) {
+    this.set("blockNumber", Value.fromI32(value));
   }
 
-  get logIndex(): string {
+  get logIndex(): i32 {
     let value = this.get("logIndex");
-    return value.toString();
+    return value.toI32();
   }
 
-  set logIndex(value: string) {
-    this.set("logIndex", Value.fromString(value));
+  set logIndex(value: i32) {
+    this.set("logIndex", Value.fromI32(value));
   }
 
   get name(): string {
@@ -5280,13 +5280,13 @@ export class CancelZeroXOrder extends Entity {
     this.set("amount", Value.fromString(value));
   }
 
-  get orderType(): string {
+  get orderType(): i32 {
     let value = this.get("orderType");
-    return value.toString();
+    return value.toI32();
   }
 
-  set orderType(value: string) {
-    this.set("orderType", Value.fromString(value));
+  set orderType(value: i32) {
+    this.set("orderType", Value.fromI32(value));
   }
 
   get orderHash(): Bytes | null {
@@ -5346,22 +5346,22 @@ export class MarketVolumeChanged extends Entity {
     this.set("blockHash", Value.fromString(value));
   }
 
-  get blockNumber(): BigInt {
+  get blockNumber(): i32 {
     let value = this.get("blockNumber");
-    return value.toBigInt();
+    return value.toI32();
   }
 
-  set blockNumber(value: BigInt) {
-    this.set("blockNumber", Value.fromBigInt(value));
+  set blockNumber(value: i32) {
+    this.set("blockNumber", Value.fromI32(value));
   }
 
-  get logIndex(): string {
+  get logIndex(): i32 {
     let value = this.get("logIndex");
-    return value.toString();
+    return value.toI32();
   }
 
-  set logIndex(value: string) {
-    this.set("logIndex", Value.fromString(value));
+  set logIndex(value: i32) {
+    this.set("logIndex", Value.fromI32(value));
   }
 
   get name(): string {
@@ -5492,22 +5492,22 @@ export class OrderEvent extends Entity {
     this.set("blockHash", Value.fromString(value));
   }
 
-  get blockNumber(): BigInt {
+  get blockNumber(): i32 {
     let value = this.get("blockNumber");
-    return value.toBigInt();
+    return value.toI32();
   }
 
-  set blockNumber(value: BigInt) {
-    this.set("blockNumber", Value.fromBigInt(value));
+  set blockNumber(value: i32) {
+    this.set("blockNumber", Value.fromI32(value));
   }
 
-  get logIndex(): string {
+  get logIndex(): i32 {
     let value = this.get("logIndex");
-    return value.toString();
+    return value.toI32();
   }
 
-  set logIndex(value: string) {
-    this.set("logIndex", Value.fromString(value));
+  set logIndex(value: i32) {
+    this.set("logIndex", Value.fromI32(value));
   }
 
   get name(): string {
@@ -5562,22 +5562,22 @@ export class OrderEvent extends Entity {
     }
   }
 
-  get eventType(): string {
+  get eventType(): i32 {
     let value = this.get("eventType");
-    return value.toString();
+    return value.toI32();
   }
 
-  set eventType(value: string) {
-    this.set("eventType", Value.fromString(value));
+  set eventType(value: i32) {
+    this.set("eventType", Value.fromI32(value));
   }
 
-  get orderType(): string {
+  get orderType(): i32 {
     let value = this.get("orderType");
-    return value.toString();
+    return value.toI32();
   }
 
-  set orderType(value: string) {
-    this.set("orderType", Value.fromString(value));
+  set orderType(value: i32) {
+    this.set("orderType", Value.fromI32(value));
   }
 
   get orderId(): Bytes | null {
@@ -5672,22 +5672,22 @@ export class ProfitLossChanged extends Entity {
     this.set("blockHash", Value.fromString(value));
   }
 
-  get blockNumber(): BigInt {
+  get blockNumber(): i32 {
     let value = this.get("blockNumber");
-    return value.toBigInt();
+    return value.toI32();
   }
 
-  set blockNumber(value: BigInt) {
-    this.set("blockNumber", Value.fromBigInt(value));
+  set blockNumber(value: i32) {
+    this.set("blockNumber", Value.fromI32(value));
   }
 
-  get logIndex(): string {
+  get logIndex(): i32 {
     let value = this.get("logIndex");
-    return value.toString();
+    return value.toI32();
   }
 
-  set logIndex(value: string) {
-    this.set("logIndex", Value.fromString(value));
+  set logIndex(value: i32) {
+    this.set("logIndex", Value.fromI32(value));
   }
 
   get name(): string {
@@ -5868,22 +5868,22 @@ export class ParaAugurDeployFinished extends Entity {
     this.set("blockHash", Value.fromString(value));
   }
 
-  get blockNumber(): BigInt {
+  get blockNumber(): i32 {
     let value = this.get("blockNumber");
-    return value.toBigInt();
+    return value.toI32();
   }
 
-  set blockNumber(value: BigInt) {
-    this.set("blockNumber", Value.fromBigInt(value));
+  set blockNumber(value: i32) {
+    this.set("blockNumber", Value.fromI32(value));
   }
 
-  get logIndex(): string {
+  get logIndex(): i32 {
     let value = this.get("logIndex");
-    return value.toString();
+    return value.toI32();
   }
 
-  set logIndex(value: string) {
-    this.set("logIndex", Value.fromString(value));
+  set logIndex(value: i32) {
+    this.set("logIndex", Value.fromI32(value));
   }
 
   get name(): string {
@@ -6018,22 +6018,22 @@ export class ParaAugurTradingDeployed extends Entity {
     this.set("blockHash", Value.fromString(value));
   }
 
-  get blockNumber(): BigInt {
+  get blockNumber(): i32 {
     let value = this.get("blockNumber");
-    return value.toBigInt();
+    return value.toI32();
   }
 
-  set blockNumber(value: BigInt) {
-    this.set("blockNumber", Value.fromBigInt(value));
+  set blockNumber(value: i32) {
+    this.set("blockNumber", Value.fromI32(value));
   }
 
-  get logIndex(): string {
+  get logIndex(): i32 {
     let value = this.get("logIndex");
-    return value.toString();
+    return value.toI32();
   }
 
-  set logIndex(value: string) {
-    this.set("logIndex", Value.fromString(value));
+  set logIndex(value: i32) {
+    this.set("logIndex", Value.fromI32(value));
   }
 
   get name(): string {
@@ -6128,22 +6128,22 @@ export class ApprovalForAll extends Entity {
     this.set("blockHash", Value.fromString(value));
   }
 
-  get blockNumber(): BigInt {
+  get blockNumber(): i32 {
     let value = this.get("blockNumber");
-    return value.toBigInt();
+    return value.toI32();
   }
 
-  set blockNumber(value: BigInt) {
-    this.set("blockNumber", Value.fromBigInt(value));
+  set blockNumber(value: i32) {
+    this.set("blockNumber", Value.fromI32(value));
   }
 
-  get logIndex(): string {
+  get logIndex(): i32 {
     let value = this.get("logIndex");
-    return value.toString();
+    return value.toI32();
   }
 
-  set logIndex(value: string) {
-    this.set("logIndex", Value.fromString(value));
+  set logIndex(value: i32) {
+    this.set("logIndex", Value.fromI32(value));
   }
 
   get name(): string {
@@ -6247,22 +6247,22 @@ export class TransferBatch extends Entity {
     this.set("blockHash", Value.fromString(value));
   }
 
-  get blockNumber(): BigInt {
+  get blockNumber(): i32 {
     let value = this.get("blockNumber");
-    return value.toBigInt();
+    return value.toI32();
   }
 
-  set blockNumber(value: BigInt) {
-    this.set("blockNumber", Value.fromBigInt(value));
+  set blockNumber(value: i32) {
+    this.set("blockNumber", Value.fromI32(value));
   }
 
-  get logIndex(): string {
+  get logIndex(): i32 {
     let value = this.get("logIndex");
-    return value.toString();
+    return value.toI32();
   }
 
-  set logIndex(value: string) {
-    this.set("logIndex", Value.fromString(value));
+  set logIndex(value: i32) {
+    this.set("logIndex", Value.fromI32(value));
   }
 
   get name(): string {
@@ -6392,22 +6392,22 @@ export class TransferSingle extends Entity {
     this.set("blockHash", Value.fromString(value));
   }
 
-  get blockNumber(): BigInt {
+  get blockNumber(): i32 {
     let value = this.get("blockNumber");
-    return value.toBigInt();
+    return value.toI32();
   }
 
-  set blockNumber(value: BigInt) {
-    this.set("blockNumber", Value.fromBigInt(value));
+  set blockNumber(value: i32) {
+    this.set("blockNumber", Value.fromI32(value));
   }
 
-  get logIndex(): string {
+  get logIndex(): i32 {
     let value = this.get("logIndex");
-    return value.toString();
+    return value.toI32();
   }
 
-  set logIndex(value: string) {
-    this.set("logIndex", Value.fromString(value));
+  set logIndex(value: i32) {
+    this.set("logIndex", Value.fromI32(value));
   }
 
   get name(): string {
@@ -6528,22 +6528,22 @@ export class URI extends Entity {
     this.set("blockHash", Value.fromString(value));
   }
 
-  get blockNumber(): BigInt {
+  get blockNumber(): i32 {
     let value = this.get("blockNumber");
-    return value.toBigInt();
+    return value.toI32();
   }
 
-  set blockNumber(value: BigInt) {
-    this.set("blockNumber", Value.fromBigInt(value));
+  set blockNumber(value: i32) {
+    this.set("blockNumber", Value.fromI32(value));
   }
 
-  get logIndex(): string {
+  get logIndex(): i32 {
     let value = this.get("logIndex");
-    return value.toString();
+    return value.toI32();
   }
 
-  set logIndex(value: string) {
-    this.set("logIndex", Value.fromString(value));
+  set logIndex(value: i32) {
+    this.set("logIndex", Value.fromI32(value));
   }
 
   get name(): string {

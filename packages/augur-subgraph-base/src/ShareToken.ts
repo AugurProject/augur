@@ -47,8 +47,8 @@ export function handleApprovalForAll(event: ApprovalForAllEvent): void {
   let entity = new ApprovalForAllEntity(id);
 
   entity.blockHash = event.block.hash.toHexString();
-  entity.blockNumber = event.block.number;
-  entity.logIndex = event.logIndex.toString();
+  entity.blockNumber = event.block.number.toI32();
+  entity.logIndex = event.logIndex.toI32();
   entity.name = "ApprovalForAll";
   entity.transactionHash = event.transaction.hash.toHexString();
 
@@ -64,8 +64,8 @@ export function handleTransferBatch(event: TransferBatchEvent): void {
   let entity = new TransferBatchEntity(id);
 
   entity.blockHash = event.block.hash.toHexString();
-  entity.blockNumber = event.block.number;
-  entity.logIndex = event.logIndex.toString();
+  entity.blockNumber = event.block.number.toI32();
+  entity.logIndex = event.logIndex.toI32();
   entity.name = "TransferBatch";
   entity.transactionHash = event.transaction.hash.toHexString();
 
@@ -83,8 +83,8 @@ export function handleTransferSingle(event: TransferSingleEvent): void {
   let entity = new TransferSingleEntity(id);
 
   entity.blockHash = event.block.hash.toHexString();
-  entity.blockNumber = event.block.number;
-  entity.logIndex = event.logIndex.toString();
+  entity.blockNumber = event.block.number.toI32();
+  entity.logIndex = event.logIndex.toI32();
   entity.name = "TransferSingle";
   entity.transactionHash = event.transaction.hash.toHexString();
 
@@ -102,8 +102,8 @@ export function handleURI(event: URIEvent): void {
   let entity = new URIEntity(id);
 
   entity.blockHash = event.block.hash.toHexString();
-  entity.blockNumber = event.block.number;
-  entity.logIndex = event.logIndex.toString();
+  entity.blockNumber = event.block.number.toI32();
+  entity.logIndex = event.logIndex.toI32();
   entity.name = "URI";
   entity.transactionHash = event.transaction.hash.toHexString();
 
@@ -112,4 +112,3 @@ export function handleURI(event: URIEvent): void {
 
   entity.save();
 }
-

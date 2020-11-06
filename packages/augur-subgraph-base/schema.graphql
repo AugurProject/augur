@@ -3,9 +3,9 @@ type CompleteSetsPurchased @entity {
 
   blockHash: String!
 
-  blockNumber: BigInt!
+  blockNumber: Int!
 
-  logIndex: String!
+  logIndex: Int!
 
   name: String!
 
@@ -27,9 +27,9 @@ type CompleteSetsSold @entity {
 
   blockHash: String!
 
-  blockNumber: BigInt!
+  blockNumber: Int!
 
-  logIndex: String!
+  logIndex: Int!
 
   name: String!
 
@@ -53,9 +53,9 @@ type DesignatedReportStakeChanged @entity {
 
   blockHash: String!
 
-  blockNumber: BigInt!
+  blockNumber: Int!
 
-  logIndex: String!
+  logIndex: Int!
 
   name: String!
 
@@ -71,9 +71,9 @@ type DisputeCrowdsourcerCompleted @entity {
 
   blockHash: String!
 
-  blockNumber: BigInt!
+  blockNumber: Int!
 
-  logIndex: String!
+  logIndex: Int!
 
   name: String!
 
@@ -107,9 +107,9 @@ type DisputeCrowdsourcerContribution @entity {
 
   blockHash: String!
 
-  blockNumber: BigInt!
+  blockNumber: Int!
 
-  logIndex: String!
+  logIndex: Int!
 
   name: String!
 
@@ -143,9 +143,9 @@ type DisputeCrowdsourcerCreated @entity {
 
   blockHash: String!
 
-  blockNumber: BigInt!
+  blockNumber: Int!
 
-  logIndex: String!
+  logIndex: Int!
 
   name: String!
 
@@ -169,9 +169,9 @@ type DisputeCrowdsourcerRedeemed @entity {
 
   blockHash: String!
 
-  blockNumber: BigInt!
+  blockNumber: Int!
 
-  logIndex: String!
+  logIndex: Int!
 
   name: String!
 
@@ -199,9 +199,9 @@ type DisputeWindowCreated @entity {
 
   blockHash: String!
 
-  blockNumber: BigInt!
+  blockNumber: Int!
 
-  logIndex: String!
+  logIndex: Int!
 
   name: String!
 
@@ -223,9 +223,9 @@ type FinishDeployment @entity {
 
   blockHash: String!
 
-  blockNumber: BigInt!
+  blockNumber: Int!
 
-  logIndex: String!
+  logIndex: Int!
 
   name: String!
 
@@ -237,9 +237,9 @@ type InitialReportSubmitted @entity {
 
   blockHash: String!
 
-  blockNumber: BigInt!
+  blockNumber: Int!
 
-  logIndex: String!
+  logIndex: Int!
 
   name: String!
 
@@ -273,9 +273,9 @@ type InitialReporterRedeemed @entity {
 
   blockHash: String!
 
-  blockNumber: BigInt!
+  blockNumber: Int!
 
-  logIndex: String!
+  logIndex: Int!
 
   name: String!
 
@@ -303,9 +303,9 @@ type InitialReporterTransferred @entity {
 
   blockHash: String!
 
-  blockNumber: BigInt!
+  blockNumber: Int!
 
-  logIndex: String!
+  logIndex: Int!
 
   name: String!
 
@@ -325,9 +325,9 @@ type MarketCreated @entity {
 
   blockHash: String!
 
-  blockNumber: BigInt!
+  blockNumber: Int!
 
-  logIndex: String!
+  logIndex: Int!
 
   name: String!
 
@@ -349,7 +349,7 @@ type MarketCreated @entity {
 
   prices: [String!]!
 
-  marketType: String!
+  marketType: Int!
 
   numTicks: String!
 
@@ -365,9 +365,9 @@ type MarketFinalized @entity {
 
   blockHash: String!
 
-  blockNumber: BigInt!
+  blockNumber: Int!
 
-  logIndex: String!
+  logIndex: Int!
 
   name: String!
 
@@ -387,9 +387,9 @@ type MarketMigrated @entity {
 
   blockHash: String!
 
-  blockNumber: BigInt!
+  blockNumber: Int!
 
-  logIndex: String!
+  logIndex: Int!
 
   name: String!
 
@@ -407,9 +407,9 @@ type MarketOIChanged @entity {
 
   blockHash: String!
 
-  blockNumber: BigInt!
+  blockNumber: Int!
 
-  logIndex: String!
+  logIndex: Int!
 
   name: String!
 
@@ -427,9 +427,9 @@ type MarketParticipantsDisavowed @entity {
 
   blockHash: String!
 
-  blockNumber: BigInt!
+  blockNumber: Int!
 
-  logIndex: String!
+  logIndex: Int!
 
   name: String!
 
@@ -445,9 +445,9 @@ type MarketRepBondTransferred @entity {
 
   blockHash: String!
 
-  blockNumber: BigInt!
+  blockNumber: Int!
 
-  logIndex: String!
+  logIndex: Int!
 
   name: String!
 
@@ -467,9 +467,9 @@ type MarketTransferred @entity {
 
   blockHash: String!
 
-  blockNumber: BigInt!
+  blockNumber: Int!
 
-  logIndex: String!
+  logIndex: Int!
 
   name: String!
 
@@ -489,9 +489,9 @@ type NoShowBondChanged @entity {
 
   blockHash: String!
 
-  blockNumber: BigInt!
+  blockNumber: Int!
 
-  logIndex: String!
+  logIndex: Int!
 
   name: String!
 
@@ -507,9 +507,9 @@ type ParticipationTokensRedeemed @entity {
 
   blockHash: String!
 
-  blockNumber: BigInt!
+  blockNumber: Int!
 
-  logIndex: String!
+  logIndex: Int!
 
   name: String!
 
@@ -533,9 +533,9 @@ type RegisterContract @entity {
 
   blockHash: String!
 
-  blockNumber: BigInt!
+  blockNumber: Int!
 
-  logIndex: String!
+  logIndex: Int!
 
   name: String!
 
@@ -551,9 +551,9 @@ type ReportingFeeChanged @entity {
 
   blockHash: String!
 
-  blockNumber: BigInt!
+  blockNumber: Int!
 
-  logIndex: String!
+  logIndex: Int!
 
   name: String!
 
@@ -569,9 +569,9 @@ type ReportingParticipantDisavowed @entity {
 
   blockHash: String!
 
-  blockNumber: BigInt!
+  blockNumber: Int!
 
-  logIndex: String!
+  logIndex: Int!
 
   name: String!
 
@@ -589,9 +589,9 @@ type ShareTokenBalanceChanged @entity {
 
   blockHash: String!
 
-  blockNumber: BigInt!
+  blockNumber: Int!
 
-  logIndex: String!
+  logIndex: Int!
 
   name: String!
 
@@ -613,9 +613,9 @@ type TimestampSet @entity {
 
   blockHash: String!
 
-  blockNumber: BigInt!
+  blockNumber: Int!
 
-  logIndex: String!
+  logIndex: Int!
 
   name: String!
 
@@ -629,9 +629,9 @@ type TokenBalanceChanged @entity {
 
   blockHash: String!
 
-  blockNumber: BigInt!
+  blockNumber: Int!
 
-  logIndex: String!
+  logIndex: Int!
 
   name: String!
 
@@ -643,7 +643,7 @@ type TokenBalanceChanged @entity {
 
   token: String
 
-  tokenType: String!
+  tokenType: Int!
 
   market: String
 
@@ -657,9 +657,9 @@ type TokensBurned @entity {
 
   blockHash: String!
 
-  blockNumber: BigInt!
+  blockNumber: Int!
 
-  logIndex: String!
+  logIndex: Int!
 
   name: String!
 
@@ -673,7 +673,7 @@ type TokensBurned @entity {
 
   amount: String!
 
-  tokenType: String!
+  tokenType: Int!
 
   market: String
 
@@ -685,9 +685,9 @@ type TokensMinted @entity {
 
   blockHash: String!
 
-  blockNumber: BigInt!
+  blockNumber: Int!
 
-  logIndex: String!
+  logIndex: Int!
 
   name: String!
 
@@ -701,7 +701,7 @@ type TokensMinted @entity {
 
   amount: String!
 
-  tokenType: String!
+  tokenType: Int!
 
   market: String
 
@@ -713,9 +713,9 @@ type TokensTransferred @entity {
 
   blockHash: String!
 
-  blockNumber: BigInt!
+  blockNumber: Int!
 
-  logIndex: String!
+  logIndex: Int!
 
   name: String!
 
@@ -731,7 +731,7 @@ type TokensTransferred @entity {
 
   value: String!
 
-  tokenType: String!
+  tokenType: Int!
 
   market: String
 }
@@ -741,9 +741,9 @@ type TradingProceedsClaimed @entity {
 
   blockHash: String!
 
-  blockNumber: BigInt!
+  blockNumber: Int!
 
-  logIndex: String!
+  logIndex: Int!
 
   name: String!
 
@@ -771,9 +771,9 @@ type UniverseCreated @entity {
 
   blockHash: String!
 
-  blockNumber: BigInt!
+  blockNumber: Int!
 
-  logIndex: String!
+  logIndex: Int!
 
   name: String!
 
@@ -793,9 +793,9 @@ type UniverseForked @entity {
 
   blockHash: String!
 
-  blockNumber: BigInt!
+  blockNumber: Int!
 
-  logIndex: String!
+  logIndex: Int!
 
   name: String!
 
@@ -811,9 +811,9 @@ type ValidityBondChanged @entity {
 
   blockHash: String!
 
-  blockNumber: BigInt!
+  blockNumber: Int!
 
-  logIndex: String!
+  logIndex: Int!
 
   name: String!
 
@@ -829,9 +829,9 @@ type WarpSyncDataUpdated @entity {
 
   blockHash: String!
 
-  blockNumber: BigInt!
+  blockNumber: Int!
 
-  logIndex: String!
+  logIndex: Int!
 
   name: String!
 
@@ -849,9 +849,9 @@ type CancelZeroXOrder @entity {
 
   blockHash: String!
 
-  blockNumber: BigInt!
+  blockNumber: Int!
 
-  logIndex: String!
+  logIndex: Int!
 
   name: String!
 
@@ -869,7 +869,7 @@ type CancelZeroXOrder @entity {
 
   amount: String!
 
-  orderType: String!
+  orderType: Int!
 
   orderHash: Bytes
 }
@@ -879,9 +879,9 @@ type MarketVolumeChanged @entity {
 
   blockHash: String!
 
-  blockNumber: BigInt!
+  blockNumber: Int!
 
-  logIndex: String!
+  logIndex: Int!
 
   name: String!
 
@@ -905,9 +905,9 @@ type OrderEvent @entity {
 
   blockHash: String!
 
-  blockNumber: BigInt!
+  blockNumber: Int!
 
-  logIndex: String!
+  logIndex: Int!
 
   name: String!
 
@@ -917,9 +917,9 @@ type OrderEvent @entity {
 
   market: String
 
-  eventType: String!
+  eventType: Int!
 
-  orderType: String!
+  orderType: Int!
 
   orderId: Bytes
 
@@ -935,9 +935,9 @@ type ProfitLossChanged @entity {
 
   blockHash: String!
 
-  blockNumber: BigInt!
+  blockNumber: Int!
 
-  logIndex: String!
+  logIndex: Int!
 
   name: String!
 
@@ -969,9 +969,9 @@ type ParaAugurDeployFinished @entity {
 
   blockHash: String!
 
-  blockNumber: BigInt!
+  blockNumber: Int!
 
-  logIndex: String!
+  logIndex: Int!
 
   name: String!
 
@@ -991,9 +991,9 @@ type ParaAugurTradingDeployed @entity {
 
   blockHash: String!
 
-  blockNumber: BigInt!
+  blockNumber: Int!
 
-  logIndex: String!
+  logIndex: Int!
 
   name: String!
 
@@ -1009,9 +1009,9 @@ type ApprovalForAll @entity {
 
   blockHash: String!
 
-  blockNumber: BigInt!
+  blockNumber: Int!
 
-  logIndex: String!
+  logIndex: Int!
 
   name: String!
 
@@ -1029,9 +1029,9 @@ type TransferBatch @entity {
 
   blockHash: String!
 
-  blockNumber: BigInt!
+  blockNumber: Int!
 
-  logIndex: String!
+  logIndex: Int!
 
   name: String!
 
@@ -1053,9 +1053,9 @@ type TransferSingle @entity {
 
   blockHash: String!
 
-  blockNumber: BigInt!
+  blockNumber: Int!
 
-  logIndex: String!
+  logIndex: Int!
 
   name: String!
 
@@ -1075,9 +1075,9 @@ type URI @entity {
 
   blockHash: String!
 
-  blockNumber: BigInt!
+  blockNumber: Int!
 
-  logIndex: String!
+  logIndex: Int!
 
   name: String!
 
@@ -1085,3 +1085,4 @@ type URI @entity {
 
   value: String!
 }
+
