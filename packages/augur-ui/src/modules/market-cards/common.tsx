@@ -1168,7 +1168,6 @@ export const prepareSportsGroup = (
         market={market}
         sportsGroup={sportsGroup}
         startOpen={startOpen}
-        noHeader={isGroupPage && startOpen}
         title={market.sportsBook.title}
       />
     );
@@ -1197,7 +1196,6 @@ export const prepareSportsGroup = (
           className={Styles.RelatedMarketsDivider}
         >
           {dividerText}
-          {QuestionIcon}
         </section>
       );
     }
@@ -1209,7 +1207,6 @@ export const prepareSportsGroup = (
         market={market}
         sportsGroup={sportsGroup}
         startOpen={startOpen}
-        noHeader={isGroupPage && startOpen}
         title={market.sportsBook.title}
       />
     );

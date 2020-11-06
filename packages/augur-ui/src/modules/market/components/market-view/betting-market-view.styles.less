@@ -64,8 +64,8 @@
             width: @size-14;
 
             @media @breakpoint-mobile {
-              height: @size-12;
-              width: @size-12;
+              height: @size-10;
+              width: @size-10;
             }
 
             > svg {
@@ -73,8 +73,8 @@
               width: @size-14;
 
               @media @breakpoint-mobile {
-                height: @size-12;
-                width: @size-12;
+                height: @size-10;
+                width: @size-10;
               }
             }
           }
@@ -87,6 +87,8 @@
   
           &:nth-of-type(3) {
             .text-10;
+
+            margin-top: @size-2;
           }
         } 
       }
@@ -113,7 +115,7 @@
         margin-bottom: @size-24;
       }
 
-      > div[class*="ReportingSubHeaders"] {
+      > div[class*="ReportingSubheaders"] {
         > span:first-of-type {
           .text-10-semi-bold;
 
@@ -151,10 +153,11 @@
 
     @media @breakpoint-mobile {
       flex-flow: column nowrap;
-      margin-top: 0;
+      margin-top: @size-8;
 
       > div,
       > div:not(:first-of-type) {
+        margin-top: @size-8;
         margin-left: 0;
         width: 100%;
       }

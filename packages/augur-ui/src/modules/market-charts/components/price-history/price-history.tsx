@@ -258,7 +258,7 @@ const getOptions = ({
     lineWidth: isTrading ? 1 : 0,
     labels: {
       style: null,
-      format: isTrading ? '{value:%H:%M}' : '{value:%l:%M %p}',
+      format: isTrading ? '{value:%H:%M}' : '{value:%l:%M<br/>%p}',
       y: isTrading ? undefined : 27,
     },
     crosshair: {

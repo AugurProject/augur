@@ -48,6 +48,16 @@
     grid-column: 1;
     grid-row: 1;
     align-items: flex-start;
+    
+    @media @breakpoint-mobile-tablet {
+      flex-flow: column nowrap;
+      align-items: center;
+      margin-bottom: @size-4;
+
+      &[class*="Minimal"] {
+        height: unset;
+      }
+    }
 
     > span:first-of-type {
       .text-16-bold;

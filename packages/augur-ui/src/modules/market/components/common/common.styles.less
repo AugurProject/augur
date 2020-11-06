@@ -282,6 +282,7 @@
       display: flex;
       flex-flow: row wrap;
       max-height: unset;
+      grid-gap: @size-16 @size-8;
 
       > section {
         display: flex;
@@ -289,7 +290,11 @@
         background: var(--color-module-background);
         padding: @size-10 @size-12;
         border-bottom: @size-1 solid var(--color-dark-grey);
-        margin: 0 -@size-12 @size-16;
+        margin: 0 -@size-12;
+
+        > div[class*='WordTrail'] > button[class*='WordTrailButton'] {
+          .text-10-semi-bold;
+        }
       }
 
       > button[class*='BackButton'],

@@ -48,19 +48,19 @@
 
   &.Error {
     background: var(--color-error-20);
-    border-bottom: @size-2 solid var(--color-error);;
-    border-left: @size-4 solid var(--color-error);;
-    border-right: @size-2 solid var(--color-error);;
-    border-top: @size-2 solid var(--color-error);;
+    border-bottom: @size-2 solid var(--color-error);
+    border-left: @size-4 solid var(--color-error);
+    border-right: @size-2 solid var(--color-error);
+    border-top: @size-2 solid var(--color-error);
 
     > span {
       > svg {
-        fill: var(--color-error);;
+        fill: var(--color-error);
       }
 
       > circle {
-        fill: var(--color-error);;
-        stroke: var(--color-error);;
+        fill: var(--color-error);
+        stroke: var(--color-error);
       }
     }
 
@@ -106,7 +106,7 @@
   padding: @size-20;
   flex-direction: column;
 
-  >span:first-of-type {
+  > span:first-of-type {
     .text-14;
 
     color: var(--color-primary-text);
@@ -208,7 +208,7 @@
   }
 }
 
-div.ReportingSubheaders {
+.ReportingSubheaders {
   display: flex;
   flex-direction: column;
 
@@ -271,9 +271,8 @@ div.ReportingSubheaders {
   }
 }
 
-
-:root[theme="BETTING"],
-:root[theme="SPORTS"] {
+:root[theme='BETTING'],
+:root[theme='SPORTS'] {
   .PreFilledStake {
     background-color: var(--color-page-background);
   }
@@ -293,43 +292,44 @@ div.ReportingSubheaders {
     }
   }
 
-  div.ReportingSubheaders {
+  .ReportingSubheaders {
+    > span {
+      .text-12-medium;
 
-      > span {
-        .text-12-medium;
+      color: var(--color-secondary-text);
 
-        color: var(--color-secondary-text);
+      > label {
+        margin-bottom: 0;
 
-        > label {
-          margin-bottom: 0;
+        > svg {
+          fill: none;
+          height: @size-14;
+          margin-left: @size-4;
+          width: @size-14;
 
-          > svg {
+          > circle {
             fill: none;
-            height: @size-14;
-            margin-left: @size-4;
-            width: @size-14;
-    
-            > circle {
-              fill: none;
-              stroke: var(--color-secondary-text);
-            }
-    
-            > path {
-              fill: var(--color-secondary-text);
-            }
+            stroke: var(--color-secondary-text);
+          }
+
+          > path {
+            fill: var(--color-secondary-text);
           }
         }
       }
+    }
 
-      > p > span {
-        .text-16;
+    > p > span {
+      .text-16;
 
-        color: var(--color-primary-text);
-        margin-top: @size-4;
-        line-height: 140%;
-      }
+      color: var(--color-primary-text);
+      margin-top: @size-4;
+      line-height: 140%;
+    }
   }
 }
+
+
 
 .ReportingModalButton {
   .text-14;
@@ -689,8 +689,8 @@ div.ReportingSubheaders {
       margin-top: @size-16;
     }
 
-    > div[class*="DismissableNotice"] {
-      margin-top: @size-16
+    > div[class*='DismissableNotice'] {
+      margin-top: @size-16;
     }
   }
 }
