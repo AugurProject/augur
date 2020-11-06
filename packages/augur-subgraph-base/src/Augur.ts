@@ -77,7 +77,7 @@ import {
 
 
 function mapAddressArray(arr:Address[]):string[] {
-  let result = new Array<string>(arr.length);
+  let result = new Array<string>();
   for (let i = 0; i < arr.length; i++) {
     result.push(arr[i].toHexString());
   }
@@ -86,7 +86,7 @@ function mapAddressArray(arr:Address[]):string[] {
 }
 
 function mapByteArray(arr:Bytes[]):string[] {
-  let result = new Array<string>(arr.length);
+  let result = new Array<string>();
   for (let i = 0; i < arr.length; i++) {
     result.push(arr[i].toHexString());
   }
@@ -95,7 +95,7 @@ function mapByteArray(arr:Bytes[]):string[] {
 }
 
 function mapArray(arr: BigInt[]):string[] {
-  let result = new Array<string>(arr.length);
+  let result = new Array<string>();
   for (let i = 0; i < arr.length; i++) {
     result.push(arr[i].toHexString());
   }
