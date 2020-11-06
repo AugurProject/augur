@@ -47,6 +47,7 @@ export function handleCancelZeroXOrder(event: CancelZeroXOrderEvent): void {
   let entity = new CancelZeroXOrderEntity(id);
 
   entity.blockHash = event.block.hash.toHexString();
+  entity.blockNumber = event.block.number;
   entity.logIndex = event.logIndex.toString();
   entity.name = "CancelZeroXOrder";
   entity.transactionHash = event.transaction.hash.toHexString();
@@ -68,6 +69,7 @@ export function handleMarketVolumeChanged(event: MarketVolumeChangedEvent): void
   let entity = new MarketVolumeChangedEntity(id);
 
   entity.blockHash = event.block.hash.toHexString();
+  entity.blockNumber = event.block.number;
   entity.logIndex = event.logIndex.toString();
   entity.name = "MarketVolumeChanged";
   entity.transactionHash = event.transaction.hash.toHexString();
@@ -87,6 +89,7 @@ export function handleOrderEvent(event: OrderEventEvent): void {
   let entity = new OrderEventEntity(id);
 
   entity.blockHash = event.block.hash.toHexString();
+  entity.blockNumber = event.block.number;
   entity.logIndex = event.logIndex.toString();
   entity.name = "OrderEvent";
   entity.transactionHash = event.transaction.hash.toHexString();
@@ -108,6 +111,7 @@ export function handleProfitLossChanged(event: ProfitLossChangedEvent): void {
   let entity = new ProfitLossChangedEntity(id);
 
   entity.blockHash = event.block.hash.toHexString();
+  entity.blockNumber = event.block.number;
   entity.logIndex = event.logIndex.toString();
   entity.name = "ProfitLossChanged";
   entity.transactionHash = event.transaction.hash.toHexString();
