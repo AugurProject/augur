@@ -5885,6 +5885,45 @@ export const TEMPLATES = {
             },
           },
           {
+            marketType: CATEGORICAL,
+            question: `MLB: Which player will win the [0] [1]?`,
+            example: `MLB: Which player will win the 2019 American League Cy Young award?`,
+            header: `[0] [1] winner`,
+            groupName: groupTypes.FUTURES,
+            inputs: [
+              {
+                id: 0,
+                type: TemplateInputType.DROPDOWN,
+                placeholder: `Year`,
+                groupKey: YEAR,
+                validationType: ValidationType.YEAR_YEAR_RANGE,
+                values: LIST_VALUES.YEARS,
+              },
+              {
+                id: 1,
+                type: TemplateInputType.DROPDOWN,
+                placeholder: `Award`,
+                groupKey: EVENT,
+                values: LIST_VALUES.BASEBALL_AWARDS,
+              },
+              {
+                id: 2,
+                type: TemplateInputType.ADDED_OUTCOME,
+                placeholder: `Other (Field)`,
+              },
+            ],
+            resolutionRules: {
+              [REQUIRED]: [
+                {
+                  text: `If the winner is not listed as a market outcome, the market should resolve as 'Other (Field)'`,
+                },
+                {
+                  text: `If the award in the market question is not awarded for any reason by event expiration, this market should resolve as 'Invalid'`,
+                },
+              ],
+            },
+          },
+          {
             marketType: SCALAR,
             question: `MLB: Total number of wins the [0] will finish the [1] regular season with?`,
             example: `MLB: Total number of wins the LA Dodgers will finish the 2019 regular season with?`,
@@ -7107,6 +7146,59 @@ export const TEMPLATES = {
                     placeholder: `Event`,
                     groupKey: EVENT,
                     values: LIST_VALUES.FOOTBALL_EVENT,
+                  },
+                  {
+                    id: 2,
+                    type: TemplateInputType.ADDED_OUTCOME,
+                    placeholder: `Other (Field)`,
+                  },
+                  {
+                    id: 3,
+                    type:
+                      TemplateInputType.USER_DESCRIPTION_DROPDOWN_OUTCOME_DEP,
+                    inputSourceId: 1,
+                    placeholder: `Select Team`,
+                    values: FOOTBALL_EVENT_DEP_TEAMS,
+                  },
+                ],
+                resolutionRules: {
+                  [REQUIRED]: [
+                    {
+                      text: `If the winner is not listed as a market outcome, the market should resolve as 'Other (Field)'`,
+                    },
+                    {
+                      text: `If the season is officially cancelled and the event in the market is not played, this market should resolve as 'Invalid'`,
+                    },
+                    {
+                      text: `If the league suspends play and starts up again at a later date, and the winner of the event in the market is determined before the Market’s Event Expiration begins, this market is still valid and should be settled accordingly.`,
+                    },
+                    {
+                      text: `If the league suspends play and starts up again at a later date, and the winner of the event in the market is determined after the Market’s Event Expiration begins, this market should resolve as 'Invalid'.`,
+                    },
+                  ],
+                },
+              },
+              {
+                marketType: CATEGORICAL,
+                question: `Which NFL team will win the [0] [1]?`,
+                example: `Which NFL team will win the 2020 AFC Championship game?`,
+                header: `[0] [1] winner`,
+                groupName: groupTypes.FUTURES,
+                inputs: [
+                  {
+                    id: 0,
+                    type: TemplateInputType.DROPDOWN,
+                    placeholder: `Year`,
+                    groupKey: YEAR,
+                    validationType: ValidationType.YEAR_YEAR_RANGE,
+                    values: LIST_VALUES.YEARS,
+                  },
+                  {
+                    id: 1,
+                    type: TemplateInputType.DROPDOWN,
+                    placeholder: `Event`,
+                    groupKey: EVENT,
+                    values: LIST_VALUES.FOOTBALL_EVENT_UPDATED,
                   },
                   {
                     id: 2,
