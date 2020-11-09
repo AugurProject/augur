@@ -57,7 +57,6 @@ import {
   FormattedNumber,
   MarketData,
   OutcomeFormatted,
-  MarketInfos,
 } from 'modules/types';
 import { calculateTotalOrderValue } from 'modules/trades/helpers/calc-order-profit-loss-percents';
 import { BigNumber, createBigNumber } from 'utils/create-big-number';
@@ -603,7 +602,7 @@ export const OutcomeGroupFooter = ({
   } else {
     content = (
       <Fragment key="content">
-        <MarketLink id={id}>{ThickChevron} View Market Details</MarketLink>
+        <MarketLink id={id}>View Market Details</MarketLink>
         <button
             className={Styles.RulesButton}
             onClick={() =>
