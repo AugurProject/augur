@@ -128,7 +128,7 @@ export const startOrderSending = async ({
   if (!liquidity) {
     return;
   }
-  Object.keys(liquidity).filter(order => order.status === TXEventName.Success).map(outcomeId => {
+  Object.keys(liquidity).filter(order => order.status !== TXEventName.Success).map(outcomeId => {
     orders = [...orders, ...liquidity[outcomeId]];
   });
 

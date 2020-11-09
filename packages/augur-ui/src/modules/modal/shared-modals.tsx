@@ -584,6 +584,9 @@ export const ModalUnsignedOrders = () => {
   const market = selectMarket(modal.marketId);
   let availableDai = totalTradingBalance();
   const liquidity = pendingLiquidityOrders[market.transactionHash];
+  if (!liquidity) {
+    closeModal();
+  }
   let numberOfTransactions = 0;
   let totalCost = ZERO;
 
