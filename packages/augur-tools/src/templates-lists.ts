@@ -79,8 +79,8 @@ export const LIST_VALUES = {
   ],
   FOOTBALL_EVENT: [
     'Super Bowl',
-    'AFC Championship Game',
-    'NFC Championship Game',
+    'AFC Championship game',
+    'NFC Championship game',
   ],
   DRAFT_PICK_NUMBER: ['1st', '2nd', '3rd'],
   NFL_DRAFT_POSITIONS: [
