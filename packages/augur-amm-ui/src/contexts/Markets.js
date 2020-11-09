@@ -190,12 +190,11 @@ export function useMarketsByAMMLiquidityVolume() {
           if (amm) {
             const cashToken = cashTokens[s.cash]
             // liquidity in USD
-            const displayUsd = calculateLiquidity(
+            newMarket.amm.liquidityUSD = calculateLiquidity(
               Number(cashToken?.decimals),
               String(amm?.liquidity),
               String(cashPrice)
             )
-            newMarket.amm.liquidityUSD = String(formattedNum(String(displayUsd), true))
             if (hasPastMarket) {
               // add 24 hour volume, find correct cash
               const pastCashAmm = [...hasPastMarket.amms].find(a => a.shareToken.cash.id === s.cash)
@@ -211,6 +210,16 @@ export function useMarketsByAMMLiquidityVolume() {
                 const volume24hrUsd = calculateLiquidity(
                   Number(cashToken?.decimals),
                   String(volYestwentyfour.plus(volNotwentyfour)),
+                  String(cashPrice)
+                )
+                newMarket.amm.volumeNo24hrUSD = calculateLiquidity(
+                  Number(cashToken?.decimals),
+                  String(volNotwentyfour),
+                  String(cashPrice)
+                )
+                newMarket.amm.volumeYes24hrUSD = calculateLiquidity(
+                  Number(cashToken?.decimals),
+                  String(volYestwentyfour),
                   String(cashPrice)
                 )
                 newMarket.amm.volume24hrUSD = volume24hrUsd
@@ -271,8 +280,9 @@ export function useMarketAmm(marketId, amm) {
 }
 
 export function useMarketAmmExchanges(marketId) {
-  const market = useMarket(marketId)
-  const ammExchanges = market && market.amms && market.amms.length > 0 ? market.amms : []
+  const marketsLV = useMarketsByAMMLiquidityVolume()
+  const markets = marketsLV.filter(m => m.id === marketId)
+  const ammExchanges = (markets && markets.length > 0) ? markets.reduce((p, m) => [...p, m.amm], []) : []
 
   return ammExchanges.map(ammExchange => ({
     ...ammExchange,
