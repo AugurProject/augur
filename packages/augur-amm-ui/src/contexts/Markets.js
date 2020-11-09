@@ -2,11 +2,12 @@ import React, { createContext, useContext, useReducer, useMemo, useCallback, use
 
 import dayjs from 'dayjs'
 import utc from 'dayjs/plugin/utc'
-import { BigNumber as BN } from 'bignumber.js'
+import BigNumber, { BigNumber as BN } from 'bignumber.js'
 import { augurV2Client } from '../apollo/client'
 import { GET_MARKETS } from '../apollo/queries'
 import { useConfig, useParaDeploys } from '../contexts/Application'
-import { getBlockFromTimestamp } from '../utils'
+import { getBlockFromTimestamp, calculateLiquidity, formattedNum } from '../utils'
+import { useTokenDayPriceData } from '../contexts/TokenData'
 
 const UPDATE = 'UPDATE'
 const UPDATE_MARKETS = ' UPDATE_MARKETS'
@@ -153,7 +154,10 @@ function shapeMarketsByAmm(markets) {
   const marketsByAmm = (markets || []).reduce((p, m) => {
     if (!m.amms || m.amms.length === 0) return [...p, { ...m, amm: null }]
     const splitOut = m.amms.map(amm => {
-      return { ...m, amm, cash: amm.shareToken.cash.id }
+      // TODO: this data will come from graph call
+      const priceYes = Number(amm.percentageNo) / 100
+      const priceNo = Number(amm.percentageYes) / 100
+      return { ...m, amm: { ...amm, priceYes, priceNo }, cash: amm.shareToken.cash.id }
     })
     return p.concat(splitOut)
   }, [])
@@ -164,6 +168,59 @@ export function useMarketsByAMM() {
   const [state] = useMarketDataContext()
   const { markets } = state
   return shapeMarketsByAmm(markets)
+}
+
+export function useMarketsByAMMLiquidityVolume() {
+  const [state] = useMarketDataContext()
+  const cashData = useTokenDayPriceData()
+  const cashTokens = useMarketCashTokens()
+  const { markets, past } = state
+  const shapedMarkets = shapeMarketsByAmm(markets)
+  const keyedPastMarkets = past
+    ? past.filter(p => p.amms.length > 0).reduce((group, a) => ({ ...group, [a.id]: a }), {})
+    : {}
+  return useMemo(() => {
+    return shapedMarkets
+      ? shapedMarkets.map(s => {
+          const newMarket = { ...s }
+          const { amm } = newMarket
+          const cashPrice =
+            cashData && cashData[s.cash] && cashData[s.cash]?.priceUSD ? cashData[s.cash]?.priceUSD : '0'
+          const hasPastMarket = keyedPastMarkets[s.id]
+          if (amm) {
+            const cashToken = cashTokens[s.cash]
+            // liquidity in USD
+            const displayUsd = calculateLiquidity(
+              Number(cashToken?.decimals),
+              String(amm?.liquidity),
+              String(cashPrice)
+            )
+            newMarket.amm.liquidityUSD = String(formattedNum(String(displayUsd), true))
+            if (hasPastMarket) {
+              // add 24 hour volume, find correct cash
+              const pastCashAmm = [...hasPastMarket.amms].find(a => a.shareToken.cash.id === s.cash)
+              if (pastCashAmm) {
+                const volNotwentyfour = new BigNumber(amm.volumeNo)
+                  .minus(new BigNumber(pastCashAmm.volumeNo))
+                  .times(amm.priceNo)
+                  .times(new BigNumber(cashPrice))
+                const volYestwentyfour = new BigNumber(amm.volumeYes)
+                  .minus(new BigNumber(pastCashAmm.volumeYes))
+                  .times(amm.priceYes)
+                  .times(new BigNumber(cashPrice))
+                  const volume24hrUsd = calculateLiquidity(
+                    Number(cashToken?.decimals),
+                    String(volYestwentyfour.plus(volNotwentyfour)),
+                    String(cashPrice)
+                  )
+                newMarket.amm.volume24hrUSD = volume24hrUsd
+              }
+            }
+          }
+          return newMarket
+        })
+      : []
+  }, [cashData, shapedMarkets, keyedPastMarkets])
 }
 
 export function useMarketsByAMMPast() {
@@ -243,18 +300,20 @@ export function useMarketCashAddresses() {
 
 export function useMarketCashTokens() {
   const deploys = useParaDeploys()
-  const cashes = Object.keys(deploys).reduce(
-    (p, address) => ({
-      ...p,
-      [address.toLowerCase()]: {
-        address: address.toLowerCase(),
-        decimals: deploys[address].decimals,
-        name: deploys[address]?.name,
-        symbol: deploys[address]?.name
-      }
-    }),
-    {}
-  )
+  const cashes = deploys
+    ? Object.keys(deploys).reduce(
+        (p, address) => ({
+          ...p,
+          [address.toLowerCase()]: {
+            address: address.toLowerCase(),
+            decimals: deploys[address].decimals,
+            name: deploys[address]?.name,
+            symbol: deploys[address]?.name
+          }
+        }),
+        {}
+      )
+    : {}
   return cashes
 }
 
