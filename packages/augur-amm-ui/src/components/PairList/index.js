@@ -70,60 +70,31 @@ function PairList({ allExchanges, disbaleLinks, marketId }) {
 
   const ListItem = ({ ammExchange, index }) => {
     const [hasLPTokens, setHasLpTokens] = useState(false)
-    const cashData = useTokenDayPriceData()
-    const cashToken = useToken(ammExchange.cash)
 
     useEffect(() => {
       if (userTokenBalances) {
         setHasLpTokens(greaterThanZero(userTokenBalances[ammExchange.id]))
       }
     }, [ammExchange])
-    // calculate USD value from eth price
-    let liquidityUSD = 0
-    let yesVolumeUSD = '0'
-    let noVolumeUSD = '0'
-    if (
-      cashData &&
-      ammExchange?.liquidity &&
-      cashToken?.decimals &&
-      cashData[ammExchange?.cash] &&
-      cashData[ammExchange?.cash]?.priceUSD
-    ) {
-      const collUSD = String(cashData[ammExchange.cash].priceUSD)
-      const liq = calculateLiquidity(Number(cashToken?.decimals), String(ammExchange.liquidity), collUSD)
-      liquidityUSD = formattedNum(String(liq), true)
-      const yesPrice = new BN(ammExchange.percentageYes).div(100)
-      const noPrice = new BN(ammExchange.percentageNo).div(100)
-      const yesVolUSD = new BN(ammExchange.volumeYes)
-        .div(new BN(10).pow(18))
-        .times(yesPrice)
-        .times(collUSD)
-      const noVolUSD = new BN(ammExchange.volumeNo)
-        .div(new BN(10).pow(18))
-        .times(noPrice)
-        .times(collUSD)
-      yesVolumeUSD = formattedNum(yesVolUSD, true)
-      noVolumeUSD = formattedNum(noVolUSD, true)
-    }
 
     if (ammExchange) {
       return (
         <DashGrid style={{ height: '48px', alignItems: 'center' }} disbaleLinks={disbaleLinks} focus={true}>
           <TokenLogo size={below600 ? 16 : 18} tokenInfo={ammExchange.cash} margin={!below740} />
           <TYPE.header area="name" fontWeight="500">
-            {Number(ammExchange.percentageNo).toFixed(2)}
+            {Number(ammExchange.priceNo).toFixed(2)}
           </TYPE.header>
           <TYPE.header area="name" fontWeight="500">
-            {Number(ammExchange.percentageYes).toFixed(2)}
+            {Number(ammExchange.priceYes).toFixed(2)}
           </TYPE.header>
           <TYPE.header area="name" fontWeight="500">
-            {liquidityUSD}
+            {formattedNum(ammExchange.liquidityUSD, true)}
           </TYPE.header>
           <TYPE.header area="name" fontWeight="500">
-            {noVolumeUSD}
+            {formattedNum(ammExchange.volumeNo24hrUSD, true)}
           </TYPE.header>
           <TYPE.header area="name" fontWeight="500">
-            {yesVolumeUSD}
+            {formattedNum(ammExchange.volumeYes24hrUSD, true)}
           </TYPE.header>
           <TYPE.header area="name" fontWeight="500">
             <RowFixed style={{ flexFlow: 'row nowrap', justifyContent: 'space-between', marginTop: '0.5rem' }}>
@@ -173,8 +144,8 @@ function PairList({ allExchanges, disbaleLinks, marketId }) {
             style={{ height: 'fit-content', padding: '0 1.125rem 1rem 1.125rem' }}
           >
             <TYPE.header area="collateral"></TYPE.header>
-            <TYPE.header area="YesPercent">Yes %</TYPE.header>
-            <TYPE.header area="NoPercent">No %</TYPE.header>
+            <TYPE.header area="YesPercent">Yes</TYPE.header>
+            <TYPE.header area="NoPercent">No</TYPE.header>
             <TYPE.header area="liquidity">Liquidity</TYPE.header>
             <TYPE.header area="volumeYes">Yes Vol (24h)</TYPE.header>
             <TYPE.header area="volumeNo">No Vol (24h)</TYPE.header>

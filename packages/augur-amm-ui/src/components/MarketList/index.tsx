@@ -185,7 +185,7 @@ function MarketList({ markets, itemMax = 15 }) {
             {marketData.description}
           </BasicLink>
         </DataText>
-        {!below816 && <DataText area="liquidity">{marketData.amm ? marketData.amm.liquidityUSD : '-'}</DataText>}
+        {!below816 && <DataText area="liquidity">{marketData.amm ? formattedNum(marketData.amm.liquidityUSD, true) : '-'}</DataText>}
         {!below816 && <DataText area="volume24hr">{marketData.amm ? formattedNum(marketData.amm.volume24hrUSD, true) : '-'}</DataText>}
         <DataText area="noPercent">{marketData.amm ? Number(marketData.amm.priceNo).toFixed(2) : '-'}</DataText>
         <DataText area="yesPercent">{marketData.amm ? Number(marketData.amm.priceYes).toFixed(2) : '-'}</DataText>

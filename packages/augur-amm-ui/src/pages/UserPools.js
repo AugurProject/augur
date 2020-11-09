@@ -10,7 +10,6 @@ import { AutoRow } from '../components/Row'
 function UserPoolsPage() {
   const [userTokenBalances, loading] = useLPTokenBalances()
 
-  console.log('userTokenBalances, loading', userTokenBalances, loading)
   useEffect(() => {
     document.querySelector('body').scrollTo({
       behavior: 'smooth',
