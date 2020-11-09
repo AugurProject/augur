@@ -282,6 +282,8 @@ export interface ProcessingButtonProps extends DefaultButtonProps {
   nonMatchingIds?: Array<String>;
   autoHideConfirm?: boolean;
   hideRetry?: boolean;
+  submitAllButton?: boolean;
+  dontShowNotificationButton?: boolean;
 }
 
 export const ProcessingButton = ({
@@ -293,6 +295,7 @@ export const ProcessingButton = ({
   autoHideConfirm = false,
   hideRetry,
   submitAllButton,
+  dontShowNotificationButton,
   ...props
 }: ProcessingButtonProps) => {
   const { pendingQueue, theme } = useAppStatusStore();
@@ -303,6 +306,9 @@ export const ProcessingButton = ({
     pendingQueue[queueName][queueId];
 
   if (submitAllButton && !pendingData.data.submitAllButton) {
+    pendingData = null;
+  }
+  if (dontShowNotificationButton && pendingData.data.dontShowNotificationButton) {
     pendingData = null;
   }
   let status = propsStatus ? propsStatus : pendingData && pendingData.status;

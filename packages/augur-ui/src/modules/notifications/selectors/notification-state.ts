@@ -326,7 +326,8 @@ const generateCards = (markets, type) => {
         title: SIGN_SEND_ORDERS,
         buttonLabel: TYPE_VIEW_ORDERS,
         queueName: LIQUIDITY_ORDERS,
-        queueId: market.transactionHash
+        queueId: market.transactionHash,
+        dontShowNotificationButton: true
       };
     } else if (type === NOTIFICATION_TYPES.proceedsToClaim) {
       defaults = {

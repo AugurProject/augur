@@ -329,6 +329,7 @@ export interface Notification {
   queueId?: string;
   hideCheckbox?: boolean;
   hideNotification?: boolean;
+  dontShowNotificationButton?: boolean;
 }
 
 export interface OrderStatus {
@@ -388,7 +389,6 @@ export interface LiquidityOrder {
   mySize?: string;
   cumulativeShares?: string;
   shares: string;
-  updatedTime: number;
 }
 export interface NewMarketPropertiesValidations {
   description?: string;

@@ -439,7 +439,6 @@ export function AppStatusReducer(state, action) {
         [queueName]: {
           ...updatedState[PENDING_QUEUE][queueName],
           [pendingId]: {
-            updatedTime: Date.now(),
             status,
             data: info,
             hash,
@@ -459,7 +458,6 @@ export function AppStatusReducer(state, action) {
             item.hash = newHash;
             item.blockNumber = blockNumber;
             item.status = status;
-            item.updatedTime = Date.now();
           }
         });
         updatedState[PENDING_QUEUE][queueName] = {

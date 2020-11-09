@@ -23,28 +23,30 @@ const {
   UPDATE_TX_PARAM_HASH_TX_HASH,
   UPDATE_LIQUIDITY_ORDER_STATUS,
   DELETE_SUCCESSFUL_LIQUIDITY_ORDER,
-  DELETE_SUCCESSFUL_LIQUIDITY_ORDERS
+  DELETE_SUCCESSFUL_LIQUIDITY_ORDERS,
 } = PENDING_ORDERS_ACTIONS;
 
-const updatePendingQueue = (updatedState) => {
+const updatePendingQueue = updatedState => {
   Object.keys(updatedState[PENDING_LIQUIDITY_ORDERS]).map(txHash => {
     const marketOrders = updatedState[PENDING_LIQUIDITY_ORDERS][txHash];
     let statusTracker = {
       [TXEventName.Pending]: 0,
       [TXEventName.Success]: 0,
       [TXEventName.Failure]: 0,
-      'none': 0,
-    }
+      none: 0,
+    };
     let totalCount = 0;
-    Object.keys(marketOrders).map(outcome => marketOrders[outcome].map(order => {
+    Object.keys(marketOrders).map(outcome =>
+      marketOrders[outcome].map(order => {
         const orderStatus = order.status ? order.status : 'none';
         statusTracker[orderStatus] = statusTracker[orderStatus] + 1;
         totalCount = totalCount + 1;
       })
-    )
+    );
 
     let status = '';
     let submitAllButton = false;
+
     if (statusTracker[TXEventName.Pending] > 0) {
       status = TXEventName.Pending;
     } else if (statusTracker[TXEventName.Failure] > 0) {
@@ -64,10 +66,28 @@ const updatePendingQueue = (updatedState) => {
       submitAllButton = true;
     }
     AppStatus.actions.addPendingData(txHash, LIQUIDITY_ORDERS, status, '', '', {
-      submitAllButton
+      submitAllButton,
+      dontShowNotificationButton: false,
     });
-  })
-}
+    if (status === TXEventName.Failure) {
+      setTimeout(
+        () =>
+          AppStatus.actions.addPendingData(
+            txHash,
+            LIQUIDITY_ORDERS,
+            status,
+            '',
+            '',
+            {
+              submitAllButton,
+              dontShowNotificationButton: true,
+            }
+          ),
+        2000
+      );
+    }
+  });
+};
 
 export function PendingOrdersReducer(state, action) {
   const updatedState = { ...state };
@@ -113,7 +133,7 @@ export function PendingOrdersReducer(state, action) {
           delete pendingLiquidityOrders[marketId];
         }
       });
-      
+
       updatedState[PENDING_LIQUIDITY_ORDERS] = {
         ...pendingLiquidityOrders,
       };
@@ -172,7 +192,6 @@ export function PendingOrdersReducer(state, action) {
           parseFloat(order.price) === parseFloat(price)
         ) {
           order.status = eventName;
-          order.updatedTime = Date.now();
         }
       });
       updatedState[PENDING_LIQUIDITY_ORDERS] = {
@@ -317,7 +336,8 @@ export const usePendingOrders = (defaultState = DEFAULT_PENDING_ORDERS) => {
           type: LOAD_PENDING_LIQUIDITY_ORDERS,
           pendingLiquidityOrders,
         }),
-      deleteSuccessfulOrders: () => dispatch({type: DELETE_SUCCESSFUL_LIQUIDITY_ORDERS}),
+      deleteSuccessfulOrders: () =>
+        dispatch({ type: DELETE_SUCCESSFUL_LIQUIDITY_ORDERS }),
       clearAllMarketLiquidity: ({ txParamHash }) =>
         dispatch({ type: CLEAR_ALL_MARKET_ORDERS, txParamHash }),
       updateLiquidityHash: ({ txParamHash, txHash }) =>

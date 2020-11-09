@@ -36,6 +36,7 @@ interface BaseProps {
   queueId?: string;
   hideCheckbox?: boolean;
   checkCheckbox?: Function;
+  dontShowNotificationButton?: boolean;
 }
 
 interface OpenOrdersResolvedMarketsTemplateProps extends BaseProps {
@@ -93,6 +94,7 @@ const Template = ({
   queueName,
   queueId,
   hideCheckbox,
+  dontShowNotificationButton
 }: TemplateProps) => {
   const showCounter = market && notificationsWithCountdown.includes(type);
   return (
@@ -112,6 +114,7 @@ const Template = ({
             queueId={queueId || market.id }
             cancelButton
             hideRetry
+            dontShowNotificationButton={dontShowNotificationButton}
           />
         :
           <CancelTextButton
