@@ -17,6 +17,7 @@ import { LogFilterAggregator } from './logs/LogFilterAggregator';
 import { BlockAndLogStreamerSyncStrategy } from './sync/BlockAndLogStreamerSyncStrategy';
 import { BulkSyncStrategy } from './sync/BulkSyncStrategy';
 import { WarpSyncStrategy } from './sync/WarpSyncStrategy';
+import { GraphQLLogProvider } from '../graph/GraphQLLogProvider';
 
 export async function buildSyncStrategies(client:Augur, db:Promise<DB>, provider: EthersProvider, logFilterAggregator: LogFilterAggregator, config: SDKConfiguration) {
   const warpController = new WarpController((await db), client, provider,
@@ -28,9 +29,19 @@ export async function buildSyncStrategies(client:Augur, db:Promise<DB>, provider
     const uploadBlockNumber = config.uploadBlockNumber;
     const currentBlockNumber = await provider.getBlockNumber();
 
-    const bulkSyncStrategy = new BulkSyncStrategy(provider.getLogs,
-      contractAddresses, logFilterAggregator.onLogsAdded,
-      client.contractEvents.parseLogs);
+    let bulkSyncStrategy;
+
+    if (config.graph && config.graph.logSubgraphURL) {
+      const logProvider = new GraphQLLogProvider(config.graph.logSubgraphURL);
+      bulkSyncStrategy = new BulkSyncStrategy(logProvider.getLogs.bind(logProvider),
+        contractAddresses, logFilterAggregator.onLogsAdded,
+        (logs: any[]) => { return logs; }
+      );
+    } else {
+      bulkSyncStrategy = new BulkSyncStrategy(provider.getLogs,
+        contractAddresses, logFilterAggregator.onLogsAdded,
+        client.contractEvents.parseLogs);
+    }
     const blockAndLogStreamerSyncStrategy = BlockAndLogStreamerSyncStrategy.create(
       provider,
       contractAddresses,

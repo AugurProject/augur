@@ -57,6 +57,9 @@ export interface SDKConfiguration {
     writeArtifacts?: boolean,
     externalAddresses?: ExternalAddresses,
   },
+  graph?: {
+    logSubgraphURL: string
+  }
   warpSync?: {
     createCheckpoints?: boolean,
     autoReport?: boolean
