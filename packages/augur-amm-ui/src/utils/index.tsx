@@ -9,7 +9,7 @@ import { GET_BLOCK } from '../apollo/queries'
 import { Text } from 'rebass'
 import _Decimal from 'decimal.js-light'
 import toFormat from 'toformat'
-import { MarketTokens, timeframeOptions, TokenAddressMap } from '../constants'
+import { DISTRO_NO_ID, DISTRO_YES_ID, MarketTokens, timeframeOptions, TokenAddressMap } from '../constants'
 import Numeral from 'numeral'
 import { BigNumber } from '@ethersproject/bignumber'
 import { ChainId, JSBI, Percent, Token, CurrencyAmount, Currency, ETHER } from '@uniswap/sdk'
@@ -508,6 +508,10 @@ export function addAmmLiquidity({
     String(cashAmount),
     String(distroPercentage)
   )
+  // odds are the opposite to pool percentage. swich up Yes and No
+  const poolYesPercent = new BN(distroPercentage[DISTRO_NO_ID])
+  const poolNoPercent = new BN(distroPercentage[DISTRO_YES_ID])
+
   return augurClient.ammFactory.addLiquidity(
     account,
     ammAddress,
@@ -515,8 +519,8 @@ export function addAmmLiquidity({
     marketId,
     sharetoken,
     new BN(cashAmount),
-    new BN(distroPercentage[0]),
-    new BN(distroPercentage[1])
+    poolNoPercent,
+    poolYesPercent
   )
 }
 

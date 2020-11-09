@@ -251,7 +251,7 @@ function AddLiquidity({ amm, marketId, cash }: RouteComponentProps<{ amm?: strin
               showCommonBases
             />
             <ColumnCenter>
-              <TYPE.small>Distribution</TYPE.small>
+              <TYPE.small>ODDS:</TYPE.small>
             </ColumnCenter>
             <DistributionPanel
               updateDistribution={setCurrentDistribution}

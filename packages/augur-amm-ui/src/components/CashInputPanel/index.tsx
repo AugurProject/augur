@@ -12,6 +12,7 @@ import { useActiveWeb3React } from '../../hooks'
 const InputRow = styled.div<{ selected: boolean }>`
   ${({ theme }) => theme.flexRowNoWrap}
   align-items: center;
+  display: flex;
   padding: ${({ selected }) => (selected ? '0.75rem 0.5rem 0.75rem 1rem' : '0.75rem 0.75rem 0.75rem 1rem')};
 `
 
@@ -121,7 +122,7 @@ export default function CashInputPanel({
                   onClick={onMax}
                   color={theme.text2}
                   fontWeight={500}
-                  fontSize={14}
+                  fontSize={18}
                   style={{ display: 'inline', cursor: 'pointer' }}
                 >
                   {!hideBalance && !!currency && selectedCurrencyBalance
@@ -142,7 +143,7 @@ export default function CashInputPanel({
               }}
             />
           </>
-          <Aligner>{currency ? <TokenLogo tokenInfo={currency} showSymbol size={'24px'} /> : null}</Aligner>
+          <Aligner>{currency ? <TokenLogo tokenInfo={currency} showSymbol size={'18px'} /> : null}</Aligner>
         </InputRow>
       </Container>
     </InputPanel>
