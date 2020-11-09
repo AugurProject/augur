@@ -208,11 +208,11 @@ export function useMarketsByAMMLiquidityVolume() {
                   .minus(new BigNumber(pastCashAmm.volumeYes))
                   .times(amm.priceYes)
                   .times(new BigNumber(cashPrice))
-                  const volume24hrUsd = calculateLiquidity(
-                    Number(cashToken?.decimals),
-                    String(volYestwentyfour.plus(volNotwentyfour)),
-                    String(cashPrice)
-                  )
+                const volume24hrUsd = calculateLiquidity(
+                  Number(cashToken?.decimals),
+                  String(volYestwentyfour.plus(volNotwentyfour)),
+                  String(cashPrice)
+                )
                 newMarket.amm.volume24hrUSD = volume24hrUsd
               }
             }
@@ -245,9 +245,12 @@ export function useAllMarketCashes() {
 
 export function useShareTokens(cash) {
   const [state] = useMarketDataContext()
-  const shareToken =
-    state?.paraShareTokens ?? (state?.paraShareTokens || []).find(s => s.cash.id.toLowerCase() === cash?.toLowerCase())
-  return shareToken[0].id
+  let shareTokenAddress = undefined
+  if (cash && state?.paraShareTokens) {
+    const shareToken = (state?.paraShareTokens || []).find(s => s.cash.id.toLowerCase() === cash.toLowerCase())
+    if (shareToken) shareTokenAddress = shareToken?.cash?.id
+  }
+  return shareTokenAddress
 }
 
 export function useMarketAmm(marketId, amm) {

@@ -5,6 +5,7 @@ import { RowBetween } from '../Row'
 import { TYPE } from '../../Theme'
 import { Input as NumericalInput } from '../NumericalInput'
 import { AutoColumn } from '../Column'
+import { DISTRO_NO_ID, DISTRO_YES_ID } from '../../constants'
 
 const InputPanel = styled.div<{ disabled?: boolean }>`
   ${({ theme }) => theme.flexColumnNoWrap}
@@ -30,12 +31,10 @@ export default function DistributionPanel({
   id
 }: DistributionPanelProps) {
   const YES = 'YES'
-  const YES_ID = 0
   const NO = 'NO'
-  const NO_ID = 1
 
-  const [yesInput, setYesInput] = useState(distroPercentage[YES_ID])
-  const [noInput, setNoInput] = useState(distroPercentage[NO_ID])
+  const [yesInput, setYesInput] = useState(distroPercentage[DISTRO_YES_ID])
+  const [noInput, setNoInput] = useState(distroPercentage[DISTRO_NO_ID])
 
   const setDistributionInput = (value: number, type) => {
     let yes, no = 0

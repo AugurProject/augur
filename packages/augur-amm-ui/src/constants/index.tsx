@@ -23,6 +23,9 @@ export const timeframeOptions = {
   ALL_TIME: 'All time'
 }
 
+export const DISTRO_YES_ID = 0
+export const DISTRO_NO_ID = 1
+
 // one basis point
 export const ONE_BIPS = new Percent(JSBI.BigInt(1), JSBI.BigInt(10000))
 export const BIPS_BASE = JSBI.BigInt(10000)
