@@ -1734,11 +1734,13 @@
 			> span:first-of-type {
 				flex: 1 100%;
 				order: 3;
-				border: @size-1 solid var(--color-outline);
-				border-radius: @border-radius-default;
 				justify-content: center;
-				padding: @size-8;
 				margin-top: @size-10;
+
+				> a {
+					padding: 0;
+					justify-content: flex-end;
+				}
 			}
 
 			&.Daily {
