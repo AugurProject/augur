@@ -83,7 +83,7 @@ function Swap({ marketId, amm }: RouteComponentProps<{ inputCurrencyId?: string;
       try {
         const result = await estimateTrade(augurClient, trade);
         if (result) {
-          console.log('estimate trade', result)
+          console.log('estimate trade', result, trade)
           const outToken = new Token(
             chainId,
             trade.marketId,

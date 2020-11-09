@@ -21,7 +21,6 @@ export default function TradePrice({ trade, estTokenAmount }: TradePriceProps) {
 
   useMemo(() => {
     if (!estTokenAmount) return setPriceRate(null)
-    console.log('trade price estTokenAmount', String(estTokenAmount.raw))
     const receivedAmountDisplay = trade.inputAmount.divide(estTokenAmount)
     const InPerOut = receivedAmountDisplay
     const OutPerIn = estTokenAmount.divide(trade.inputAmount)

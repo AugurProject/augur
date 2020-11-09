@@ -124,7 +124,6 @@ export function useDerivedSwapInfo(
 
   const parsedAmount = tryParseAmount(typedValue, inputCurrency ?? undefined)
 
-  console.log(inputCurrencyId, outputCurrencyId, typedValue)
   const v2Trade = useMemo(() => getTradeExactIn(
     ammExchange,
     inputCurrency,
