@@ -102,7 +102,7 @@ export function useLPTokenBalances(): [{ [tokenAddress: string]: string | undefi
           ? ammAddresses.reduce<{ [tokenAddress: string]: string | undefined }>((memo, address, i) => {
               const value = balances?.[i]?.result?.[0]
               const amount = value ? value.toString() : undefined
-              if (amount) {
+              if (amount && amount !== "0") {
                 memo[address] = amount
               }
               return memo

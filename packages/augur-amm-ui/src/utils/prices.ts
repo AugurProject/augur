@@ -23,14 +23,10 @@ export function computePriceImpact(
   const displayInputAmount = rawInputAmount.div(new BN(10).pow(new BN(currencyInDecimals)))
   const rawSlipRate = rawOutputAmount.div(rawInputAmount)
   const rawNonSlipRate = displayExecutionPct.times(displayInputAmount)
-  console.log('raw prices', String(rawInputAmount), String(rawOutputAmount), String(rawSlipRate))
-  console.log('non slip price', String(rawNonSlipRate), '=', String(displayExecutionPct), '*', String(displayInputAmount))
-  console.log('price diff', String(rawNonSlipRate), String(rawSlipRate))
   const impact = (new BN(1).minus(((rawSlipRate.minus(rawNonSlipRate)).div(rawNonSlipRate)).abs()))
-  console.log('price impact', String(impact))
   const adjMinAmount = String(new BN(String(rawOutputAmount)).div(new BN(10).pow(new BN(currencyOutDecimals))).toFixed(8))
   const prepDecimal = impact.times(new BN(BIPS_CONSTANT)).toFixed(0)
-  console.log('adjMinAmount', adjMinAmount)
+
   return {
     priceImpactWithoutFee: new Percent(JSBI.BigInt(prepDecimal), BIPS_BASE),
     slippageAdjustedAmounts: adjMinAmount
