@@ -1,0 +1,78 @@
+specVersion: 0.0.2
+description: Subgraph for the Augur v2 ({{=<% %>=}}{{ network }}<%={{ }}=%>) contracts which tracks Universes, Markets, all the market events and disputing process, all user related balances and token events within the Augur ecosystem (Reputation, Participation and Dispute tokens), as well as metadata from the Augur contract.
+repository: https://github.com/AugurProject/augur-v2-subgraph
+schema:
+  file: ./schema.graphql
+dataSources:
+  - kind: ethereum/contract
+    name: Augur
+    network: {{=<% %>=}}{{ ethereum.network }}<%={{ }}=%>
+    source:
+      address: '{{=<% %>=}}{{ addresses.Augur }}<%={{ }}=%>'
+      abi: Augur
+      startBlock: {{=<% %>=}}{{ uploadBlockNumber }}<%={{ }}=%>
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.4
+      language: wasm/assemblyscript
+      file: ./src/Augur.ts
+      entities:
+        {{#Augur}}
+        - {{name}}
+        {{/Augur}}
+      abis:
+        - name: Augur
+          file: ./abis/Augur.json
+      eventHandlers:
+        {{#Augur}}
+        - event: {{inputs}}
+          handler: handle{{name}}
+        {{/Augur}}
+  - kind: ethereum/contract
+    name: AugurTrading
+    network: {{=<% %>=}}{{ ethereum.network }}<%={{ }}=%>
+    source:
+      address: '{{=<% %>=}}{{ addresses.AugurTrading }}<%={{ }}=%>'
+      abi: AugurTrading
+      startBlock: {{=<% %>=}}{{ uploadBlockNumber }}<%={{ }}=%>
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.4
+      language: wasm/assemblyscript
+      file: ./src/AugurTrading.ts
+      entities:
+      {{#AugurTrading}}
+        - {{name}}
+      {{/AugurTrading}}
+      abis:
+        - name: AugurTrading
+          file: ./abis/AugurTrading.json
+      eventHandlers:
+      {{#AugurTrading}}
+        - event: {{inputs}}
+          handler: handle{{name}}
+      {{/AugurTrading}}
+  - kind: ethereum/contract
+    name: ShareToken
+    network: {{=<% %>=}}{{ ethereum.network }}<%={{ }}=%>
+    source:
+      address: '{{=<% %>=}}{{ addresses.ShareToken }}<%={{ }}=%>'
+      abi: ShareToken
+      startBlock: {{=<% %>=}}{{ uploadBlockNumber }}<%={{ }}=%>
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.4
+      language: wasm/assemblyscript
+      file: ./src/ShareToken.ts
+      entities:
+      {{#AugurTrading}}
+        - {{name}}
+      {{/AugurTrading}}
+      abis:
+        - name: ShareToken
+          file: ./abis/ShareToken.json
+      eventHandlers:
+      {{#ShareToken}}
+        - event: {{inputs}}
+          handler: handle{{name}}
+      {{/ShareToken}}

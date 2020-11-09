@@ -1,0 +1,60 @@
+import { Address, BigInt, Bytes } from '@graphprotocol/graph-ts';
+import {
+{{#Entities}}
+  {{name}} as {{name}}Event,
+{{/Entities}}
+} from '../generated/{{Name}}/{{Name}}';
+
+import {
+{{#Entities}}
+  {{name}} as {{name}}Entity,
+{{/Entities}}
+} from '../generated/schema';
+
+
+function mapAddressArray(arr:Address[]):string[] {
+  let result = new Array<string>();
+  for (let i = 0; i < arr.length; i++) {
+    result.push(arr[i].toHexString());
+  }
+
+  return result;
+}
+
+function mapByteArray(arr:Bytes[]):string[] {
+  let result = new Array<string>();
+  for (let i = 0; i < arr.length; i++) {
+    result.push(arr[i].toHexString());
+  }
+
+  return result;
+}
+
+function mapArray(arr: BigInt[]):string[] {
+  let result = new Array<string>();
+  for (let i = 0; i < arr.length; i++) {
+    result.push(arr[i].toHexString());
+  }
+
+  return result;
+}
+
+{{#Entities}}
+
+export function handle{{name}}(event: {{name}}Event): void {
+  let id = event.transaction.hash.toHexString() + "-" + event.logIndex.toString();
+  let entity = new {{name}}Entity(id);
+
+  entity.blockHash = event.block.hash.toHexString();
+  entity.blockNumber = event.block.number.toI32();
+  entity.logIndex = event.logIndex.toI32();
+  entity.name = "{{name}}";
+  entity.transactionHash = event.transaction.hash.toHexString();
+
+  {{#inputs}}
+  entity.{{name}} = {{#GetTemplateForType}}{{name}}{{/GetTemplateForType}};
+  {{/inputs}}
+
+  entity.save();
+}
+{{/Entities}}

@@ -1169,6 +1169,11 @@ export class ContractAPI {
     );
   }
 
+  async getReportedWarpSyncData(): Promise<string> {
+    const market = await this.getWarpSyncMarket();
+    return this.augur.warpSync.getWarpSyncHashFromMarket(market);
+  }
+
   async getLastWarpSyncData(): Promise<WarpSyncData> {
     return this.augur.warpSync.getLastWarpSyncData(
       this.augur.contracts.universe.address
