@@ -149,5 +149,8 @@
     "fallbackProvider": "torus",
     "primaryProvider": "wallet"
   },
+  "graph": {
+    "logSubgraphURL": "https://api.thegraph.com/subgraphs/name/augurproject/augur-v2-base-staging"
+  },
   "averageBlocktime": 2000
 }
