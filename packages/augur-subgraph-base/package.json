@@ -1,6 +1,7 @@
 {
-  "name": "augur-v2-base-staging",
+  "name": "@augurproject/subgraph-base",
   "version": "0.1.0",
+  "private": true,
   "scripts": {
     "prepare:abi:Augur": "node ../augur-tools/build/flash/cli.js abi -c Augur > abis/Augur.json",
     "prepare:abi:AugurTrading": "node ../augur-tools/build/flash/cli.js abi -c AugurTrading > abis/AugurTrading.json",
