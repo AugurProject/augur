@@ -1,0 +1,20 @@
+{{#Entities}}
+type {{name}} @entity {
+  id: ID!
+
+  blockHash: String!
+
+  blockNumber: Int!
+
+  logIndex: Int!
+
+  name: String!
+
+  transactionHash: String!
+  {{#inputs}}
+
+  {{name}}: {{type}}
+  {{/inputs}}
+}
+
+{{/Entities}}
