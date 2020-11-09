@@ -1,12 +1,12 @@
 const fs = require('fs');
 const mustache = require('mustache');
 
-const augur = require('@augurproject/subgraph/abis/Augur.json');
-const shareToken = require('@augurproject/subgraph/abis/ShareToken.json');
-const augurTrading = require('@augurproject/subgraph/abis/AugurTrading.json');
+const augur = require('../abis/Augur.json');
+const shareToken = require('../abis/ShareToken.json');
+const augurTrading = require('../abis/AugurTrading.json');
 
-const paraDeployer = require('@augurproject/subgraph/abis/ParaDeployer.json');
-const paraShareToken = require('@augurproject/subgraph/abis/ParaShareToken.json');
+const paraDeployer = require('../abis/ParaDeployer.json');
+const paraShareToken = require('../abis/ParaShareToken.json');
 
 function buildit(abi) {
   return abi.filter((item) => {
