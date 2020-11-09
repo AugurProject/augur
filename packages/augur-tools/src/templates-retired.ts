@@ -18,6 +18,14 @@ export const retiredTemplates: RetiredTemplate[] = [
     autoFail: false,
   },
   {
+    hash: '0xb5736277a4da5c89d067e6492bf15bda4ddf58a597521efe0170fb658608a4e5',
+    autoFail: false
+  },
+  {
+    hash: '0x0b503a6e1133857d9203fbee57bd156f134efa90efb9bda722cb22f7f397126e',
+    autoFail: false
+  },
+  {
     hash: '0x15c80278a399d602a5575dff5c570fb6ca25829c902513c82ab14023974d488d',
     autoFail: false,
   },
