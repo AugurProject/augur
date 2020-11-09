@@ -282,15 +282,15 @@ export function useMarketAmm(marketId, amm) {
 export function useMarketAmmExchanges(marketId) {
   const marketsLV = useMarketsByAMMLiquidityVolume()
   const markets = marketsLV.filter(m => m.id === marketId)
-  const ammExchanges = (markets && markets.length > 0) ? markets.reduce((p, m) => [...p, m.amm], []) : []
+  const ammExchanges = (markets.length > 0 && markets.filter(m => m.amm).length > 0) ? markets.reduce((p, m) => [...p, m.amm], []) : []
 
-  return ammExchanges.map(ammExchange => ({
+  return ammExchanges.length > 0 ? ammExchanges.map(ammExchange => ({
     ...ammExchange,
     hasLiquidity: ammExchange?.liquidity && ammExchange?.liquidity !== '0',
     id: ammExchange?.id,
     cash: ammExchange?.shareToken?.cash?.id,
     sharetoken: ammExchange?.shareToken?.id
-  }))
+  })) : []
 }
 
 export function useMarketNonExistingAmms(marketId) {

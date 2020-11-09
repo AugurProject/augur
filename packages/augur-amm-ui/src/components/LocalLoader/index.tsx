@@ -19,7 +19,7 @@ const Loader = styled.div`
   & > * {
     width: 72px;
   }
-  height: 100vh;
+  height: 30vh;
 `
 
 const LocalLoader = () => {

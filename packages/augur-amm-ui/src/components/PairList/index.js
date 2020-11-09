@@ -13,10 +13,7 @@ import { ButtonLight, ButtonPrimary } from '../ButtonStyled'
 import { useLPTokenBalances } from '../../state/wallet/hooks'
 import { TYPE, StyledInternalLink } from '../../Theme'
 import { greaterThanZero } from '../../utils'
-import { useTokenDayPriceData } from '../../contexts/TokenData'
-import { useToken } from '../../hooks/Tokens'
-import { calculateLiquidity, formattedNum } from '../../utils'
-import { BigNumber as BN } from 'bignumber.js'
+import { formattedNum } from '../../utils'
 
 dayjs.extend(utc)
 

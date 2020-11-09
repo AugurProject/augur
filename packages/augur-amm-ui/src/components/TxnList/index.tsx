@@ -157,7 +157,7 @@ function processTransactions(allExchanges, cashData, cashTokens) {
     return allExchanges.map(e => {
       const price = e.cash ? cashData[e.cash]?.priceUSD : 1
       const decimals = cashTokens ? cashTokens[e.cash]?.decimals : 18
-      const enters = e.enters.map(mint => ({
+      const enters = (e.enters || []).map(mint => ({
         hash: mint.tx_hash,
         timestamp: mint.timestamp || 0,
         type: TXN_TYPE.ADD,
@@ -169,7 +169,7 @@ function processTransactions(allExchanges, cashData, cashTokens) {
         amountUSD: String(calcCash(mint.cash, decimals, price)),
       }))
 
-      const exits = e.exits.map(burn => ({
+      const exits = (e.exits || []).map(burn => ({
         hash: burn.tx_hash,
         timestamp: burn.timestamp || 0,
         type: TXN_TYPE.REMOVE,
@@ -181,7 +181,7 @@ function processTransactions(allExchanges, cashData, cashTokens) {
         amountUSD: String(calcCash(burn.cash, decimals, price)),
       }))
 
-      const swaps = e.swaps.map(swap => {
+      const swaps = (e.swaps || []).map(swap => {
         const netToken0 = swap.yesShares - swap.noShares
         const netToken1 = swap.noShares - swap.yesShares
 

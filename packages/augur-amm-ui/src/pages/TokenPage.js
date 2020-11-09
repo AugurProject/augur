@@ -6,7 +6,7 @@ import Panel from '../components/Panel'
 import TokenLogo from '../components/TokenLogo'
 import PairList from '../components/PairList'
 import Loader from '../components/LocalLoader'
-import { RowBetween, RowFixed, RowStart } from '../components/Row'
+import { RowBetween, RowFixed, RowStart, AutoRow } from '../components/Row'
 import { AutoColumn } from '../components/Column'
 import TxnList from '../components/TxnList'
 import { formattedNum, formattedPercent, localNumber, calculateLiquidity } from '../utils'
@@ -231,10 +231,12 @@ function TokenPage({ marketId }) {
                 padding: '1.125rem 0 '
               }}
             >
-              {marketId && allExchanges ? (
+              {marketId && allExchanges && allExchanges.length > 0 ? (
                 <PairList color={backgroundColor} marketId={marketId} allExchanges={allExchanges} />
               ) : (
-                <Loader />
+                <AutoRow justify={'center'}>
+                  <TYPE.light>No Exchanges</TYPE.light>
+                </AutoRow>
               )}
             </Panel>
             <RowBetween mt={40} mb={'1rem'}>
