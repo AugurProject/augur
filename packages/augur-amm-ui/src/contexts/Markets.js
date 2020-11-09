@@ -257,7 +257,7 @@ export function useShareTokens(cash) {
   let shareTokenAddress = undefined
   if (cash && state?.paraShareTokens) {
     const shareToken = (state?.paraShareTokens || []).find(s => s.cash.id.toLowerCase() === cash.toLowerCase())
-    if (shareToken) shareTokenAddress = shareToken?.cash?.id
+    if (shareToken) shareTokenAddress = shareToken?.id
   }
   return shareTokenAddress
 }
