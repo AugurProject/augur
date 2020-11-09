@@ -46,7 +46,7 @@ function AddLiquidity({ amm, marketId, cash }: RouteComponentProps<{ amm?: strin
 
   // TODO disabled initial liq for testing only
   const ammData = useMarketAmm(marketId, amm)
-  const hasLiquidity = ammData?.hasLiquidity
+  const [hasLiquidity, setHasLiquidity] = useState(ammData?.hasLiquidity)
 
   const currencyA = useCurrency(cash)
 
@@ -149,8 +149,10 @@ function AddLiquidity({ amm, marketId, cash }: RouteComponentProps<{ amm?: strin
           action: 'Add',
           label: [currencies[Field.CURRENCY_A]?.symbol].join('/')
         })
+        setHasLiquidity(true)
       })
       .catch(error => {
+        setHasLiquidity(false)
         setAttemptingTxn(false)
         // we only care if the error is something _other_ than the user rejected the tx
         if (error?.code !== 4001) {
