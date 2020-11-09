@@ -17,8 +17,8 @@
     "create-local": "graph create augurproject/augur-v2-base-staging --node http://127.0.0.1:8020",
     "codegen": "graph codegen",
     "build": "graph build",
-    "deploy:staging": "graph deploy augurproject/augur-v2-base-staging --access-token $GRAPH_TOKEN --ipfs https://api.thegraph.com/ipfs/ --node https://api.thegraph.com/deploy/",
-    "deploy:mainnet": "graph deploy augurproject/augur-v2-base --access-token $GRAPH_TOKEN --ipfs https://api.thegraph.com/ipfs/ --node https://api.thegraph.com/deploy/",
+    "deploy:staging": "yarn prepare:staging && graph deploy augurproject/augur-v2-base-staging --access-token $GRAPH_TOKEN --ipfs https://api.thegraph.com/ipfs/ --node https://api.thegraph.com/deploy/",
+    "deploy:mainnet": "yarn prepare:mainnet && graph deploy augurproject/augur-v2-base --access-token $GRAPH_TOKEN --ipfs https://api.thegraph.com/ipfs/ --node https://api.thegraph.com/deploy/",
     "deploy-local": "graph deploy augurproject/augur-v2-base-staging --ipfs http://localhost:5001 --node http://127.0.0.1:8020"
   },
   "devDependencies": {
