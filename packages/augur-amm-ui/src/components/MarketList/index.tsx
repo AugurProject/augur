@@ -42,7 +42,7 @@ const List = styled(Box)`
 const DashGrid = styled.div`
   display: grid;
   grid-gap: 0.5em;
-  grid-template-columns: 0.5fr 50% 1fr 0.5fr 0.5fr 1fr 1fr;
+  grid-template-columns: 0.5fr 50% 1fr 1fr 0.5fr 0.5fr 1fr 1fr;
   grid-template-areas: 'logo description liquidity noPercent yesPercent status timestamp';
   padding: 0 1.125rem;
 
@@ -59,7 +59,7 @@ const DashGrid = styled.div`
   @media screen and (min-width: 1080px) {
     display: grid;
     grid-gap: 0.5em;
-    grid-template-columns: 0.5fr 5fr 1fr 0.5fr 0.5fr 1fr 1fr;
+    grid-template-columns: 0.5fr 5fr 1fr 1fr 0.5fr 0.5fr 1fr 1fr;
     grid-template-areas: 'logo description liquidity noPercent yesPercent status timestamp';
   }
 
@@ -117,7 +117,8 @@ const SORT_FIELD = {
   DESCRIPTION: 'description',
   STATUS: 'status',
   ENDTIMESTAMP: 'endTimestamp',
-  LIQUIDITY: 'liquidity'
+  LIQUIDITY: 'liquidity',
+  VOL_24_HR: 'volume24hr'
 }
 
 function MarketList({ markets, itemMax = 15 }) {
@@ -130,7 +131,7 @@ function MarketList({ markets, itemMax = 15 }) {
   const [sortedData, setSortedData] = useState({ sortedColumn: SORT_FIELD.STATUS, sortDirection: -1 })
   const [filteredList, setFilteredList] = useState(markets)
   const below680 = useMedia('(max-width: 680px)')
-  const below800 = useMedia('(max-width: 816px)')
+  const below816 = useMedia('(max-width: 816px)')
 
   useEffect(() => {
     setMaxPage(1) // edit this to do modular
@@ -158,6 +159,11 @@ function MarketList({ markets, itemMax = 15 }) {
           if (!b?.amm?.liquidity) return sortedData.sortDirection * -1;
           return a?.amm?.liquidity > b?.amm?.liquidity ? sortedData.sortDirection : sortedData.sortDirection * -1
         }
+        if (sortedData.sortedColumn === SORT_FIELD.VOL_24_HR) {
+          if (!a?.amm?.volume24hrUSD) return sortedData.sortDirection;
+          if (!b?.amm?.volume24hrUSD) return sortedData.sortDirection * -1;
+          return a?.amm?.volume24hrUSD > b?.amm?.volume24hrUSD ? sortedData.sortDirection : sortedData.sortDirection * -1
+        }
         if (sortedData.sortedColumn === SORT_FIELD.ENDTIMESTAMP) {
           return a.endTimestamp > b.endTimestamp ? sortedData.sortDirection : sortedData.sortDirection * -1
         }
@@ -170,19 +176,6 @@ function MarketList({ markets, itemMax = 15 }) {
   }, [markets, itemMax, page, sortedData])
 
   const ListItem = ({ marketData, index }) => {
-    const ammExchange = marketData?.amm
-    const cashTokens = useMarketCashTokens()
-    const cashData = useTokenDayPriceData()
-    let liquidityUSD = '-'
-    if (ammExchange?.liquidity && cashTokens && cashData?.[marketData?.cash] && cashData?.[marketData?.cash]?.priceUSD) {
-      const cashToken = cashTokens[marketData.cash]
-      const displayUsd = calculateLiquidity(
-        Number(cashToken?.decimals),
-        String(ammExchange?.liquidity),
-        String(cashData[marketData?.cash]?.priceUSD)
-      )
-      liquidityUSD = String(formattedNum(String(displayUsd), true))
-    }
 
     return (
       <DashGrid style={{ height: '48px', alignContent: 'center' }} >
@@ -192,10 +185,11 @@ function MarketList({ markets, itemMax = 15 }) {
             {marketData.description}
           </BasicLink>
         </DataText>
-        {!below680 && <DataText area="liquidity">{liquidityUSD}</DataText>}
-        <DataText area="noPercent">{marketData.amm ? Number(marketData.amm.percentageNo).toFixed(2) : '-'}</DataText>
-        <DataText area="yesPercent">{marketData.amm ? Number(marketData.amm.percentageYes).toFixed(2) : '-'}</DataText>
-        {!below800 && (
+        {!below816 && <DataText area="liquidity">{marketData.amm ? marketData.amm.liquidityUSD : '-'}</DataText>}
+        {!below816 && <DataText area="volume24hr">{marketData.amm ? formattedNum(marketData.amm.volume24hrUSD, true) : '-'}</DataText>}
+        <DataText area="noPercent">{marketData.amm ? Number(marketData.amm.priceNo).toFixed(2) : '-'}</DataText>
+        <DataText area="yesPercent">{marketData.amm ? Number(marketData.amm.priceYes).toFixed(2) : '-'}</DataText>
+        {!below816 && (
           <DataText area="status">
             <span
               style={
@@ -216,7 +210,7 @@ function MarketList({ markets, itemMax = 15 }) {
             </span>
           </DataText>
         )}
-        {!below800 && <DataText area="timestamp">{formatTime(marketData.endTimestamp)}</DataText>}
+        {!below816 && <DataText area="timestamp">{formatTime(marketData.endTimestamp)}</DataText>}
       </DashGrid>
     )
   }
@@ -239,14 +233,14 @@ function MarketList({ markets, itemMax = 15 }) {
               setSortedData({ sortedColumn: SORT_FIELD.DESCRIPTION, sortDirection: direction })
             }}
           >
-            {below680 ? 'Symbol' : 'Description'}{' '}
+            {below816 ? 'Symbol' : 'Description'}{' '}
             {sortedData.sortedColumn === SORT_FIELD.DESCRIPTION ? (sortedData.sortDirection === 1 ? '↑' : '↓') : ''}
           </ClickableText>
         </Flex>
-        {!below680 && (
+        {!below816 && (
           <Flex alignItems="center">
             <ClickableText
-              aread="liquidity"
+              area="liquidity"
               onClick={e => {
                 const direction = (sortedData.sortedColumn !== SORT_FIELD.LIQUIDITY ? -1 : sortedData.sortDirection * -1)
                 setSortedData({ sortedColumn: SORT_FIELD.LIQUIDITY, sortDirection: direction })
@@ -256,13 +250,26 @@ function MarketList({ markets, itemMax = 15 }) {
             </ClickableText>
           </Flex>
         )}
+        {!below816 && (
+          <Flex alignItems="center">
+            <ClickableText
+              area="volume 24hr"
+              onClick={e => {
+                const direction = (sortedData.sortedColumn !== SORT_FIELD.VOL_24_HR ? -1 : sortedData.sortDirection * -1)
+                setSortedData({ sortedColumn: SORT_FIELD.VOL_24_HR, sortDirection: direction })
+              }}
+            >
+              24hr Volume {sortedData.sortedColumn === SORT_FIELD.VOL_24_HR ? (sortedData.sortDirection === 1 ? '↑' : '↓') : ''}
+            </ClickableText>
+          </Flex>
+        )}
         <Flex alignItems="center">
-          <Text area="No Percent">{below680 ? 'No' : 'No %'}</Text>
+          <Text area="No Price">No</Text>
         </Flex>
         <Flex alignItems="center">
-          <Text area="Yes Percent">{below680 ? 'Yes' : 'Yes %'}</Text>
+          <Text area="Yes Price">Yes</Text>
         </Flex>
-        {!below800 && (
+        {!below816 && (
           <Flex alignItems="center">
             <ClickableText
               area="status"
@@ -275,7 +282,7 @@ function MarketList({ markets, itemMax = 15 }) {
             </ClickableText>
           </Flex>
         )}
-        {!below800 && (
+        {!below816 && (
           <Flex alignItems="center">
             <ClickableText
               area="timestamp"
