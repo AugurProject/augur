@@ -73,6 +73,10 @@ interface UnsignedOrdersProps {
   initialProcessing?: boolean;
 }
 
+export const shouldBeHidden = (updatedTime) => {
+  const secondsPassed = (Date.now() - updatedTime) / 1000;
+  return secondsPassed > 2;
+}
 const orderRow = (
   order: LiquidityOrder,
   {
@@ -100,7 +104,16 @@ const orderRow = (
     orderEstimate,
     index,
     status,
+    updatedTime
   } = order;
+  if (status === TXEventName.Success && shouldBeHidden(updatedTime)) {
+    removeLiquidity({
+      txParamHash: transactionHash,
+      outcomeId,
+      orderId: index,
+    });
+    return null;
+  }
   const buttons = [
     {
       text: 'cancel',
@@ -231,7 +244,7 @@ export const UnsignedOrders = ({
   const newButtons = [
     {
       ...buttons[0],
-      text: processing ? 'Processing...' : buttons[0].text,
+      text: buttons[0].text,
       disabled: !isApproved || buttons[0].disabled || processing,
       action: actionForSubmitAllButton,
     },

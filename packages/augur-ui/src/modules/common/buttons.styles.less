@@ -117,6 +117,34 @@
   &:disabled {
     background: var(--color-primary-action-40);
   }
+
+  &.Failed {
+    border: 0;
+    background: transparent;
+    color: var(--color-error);
+
+    > span {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      display: flex;
+
+      > svg {
+        width: @size-7;
+        height: @size-8;
+        margin-left: @size-4;
+
+        > path {
+          fill: var(--color-error);
+        }
+      }
+    }
+
+    &:hover,
+    &:focus {
+      background: transparent;
+    }
+  }
 }
 .TextUnderlineButton {
   .text-12-bold;

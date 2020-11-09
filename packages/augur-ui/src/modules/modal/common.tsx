@@ -349,7 +349,7 @@ export const ButtonsRow = (props: ButtonsRowProps) => (
         return null;
       }
 
-      if (index === 0) return <PrimaryButton key={Button.text} {...Button} />;
+      if (index === 0) return <ProcessingButton key={Button.text} {...Button} />;
       return <SecondaryButton key={Button.text} {...Button} />;
     })}
   </div>

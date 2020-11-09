@@ -292,15 +292,19 @@ export const ProcessingButton = ({
   propsStatus,
   autoHideConfirm = false,
   hideRetry,
+  submitAllButton,
   ...props
 }: ProcessingButtonProps) => {
   const { pendingQueue, theme } = useAppStatusStore();
   const isSports = theme === THEMES.SPORTS;
   let disabled = false;
-  const pendingData =
+  let pendingData =
     pendingQueue[queueName] &&
     pendingQueue[queueName][queueId];
 
+  if (submitAllButton && !pendingData.data.submitAllButton) {
+    pendingData = null;
+  }
   let status = propsStatus ? propsStatus : pendingData && pendingData.status;
   if (pendingData) {
     if (
@@ -346,7 +350,6 @@ export const ProcessingButton = ({
   const cancel = () => removePendingData(queueId, queueName);
   if (failed || confirmed) {
     buttonAction = e => props.action(e);
-    icon = XIcon;
     isDisabled = false;
   }
 

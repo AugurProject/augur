@@ -388,6 +388,7 @@ export interface LiquidityOrder {
   mySize?: string;
   cumulativeShares?: string;
   shares: string;
+  updatedTime: number;
 }
 export interface NewMarketPropertiesValidations {
   description?: string;

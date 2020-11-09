@@ -15,6 +15,7 @@ import {
   PROCEEDS_TO_CLAIM_TITLE,
   MAX_BULK_CLAIM_MARKETS_PROCEEDS_COUNT,
   THEMES,
+  LIQUIDITY_ORDERS,
 } from 'modules/common/constants';
 import { selectReportingWinningsByMarket } from 'modules/positions/selectors/select-reporting-winnings-by-market';
 import { getTransactionLabel } from 'modules/auth/helpers/get-gas-price';
@@ -589,9 +590,15 @@ export const ModalUnsignedOrders = () => {
   market.outcomes.forEach((outcome: MarketInfoOutcome) => {
     liquidity &&
       liquidity[outcome.id] &&
+      liquidity[outcome.id].filter(order => order.status === TXEventName.SuccessforEach).forEach((order: any, index: number) => {
+        numberOfTransactions += 1;
+      });
+  });
+  market.outcomes.forEach((outcome: MarketInfoOutcome) => {
+    liquidity &&
+      liquidity[outcome.id] &&
       liquidity[outcome.id].forEach((order: any, index: number) => {
         totalCost = totalCost.plus(order.orderEstimate);
-        numberOfTransactions += 1;
       });
   });
   const liquidityArray = [].concat.apply([], Object.values(liquidity));
@@ -609,13 +616,7 @@ export const ModalUnsignedOrders = () => {
     maxPrice,
     transactionHash,
   } = market;
-  // all orders have been created or removed.
-  if (numberOfTransactions === 0) {
-    if (modal.cb) {
-      modal.cb();
-    }
-    closeModal();
-  }
+ 
   return (
     <UnsignedOrders
       title='Unsigned Orders'
@@ -656,6 +657,9 @@ export const ModalUnsignedOrders = () => {
         {
           disabled: insufficientFunds,
           text: 'Submit All',
+          queueName: LIQUIDITY_ORDERS,
+          queueId: transactionHash,
+          submitAllButton: true,
           action: () => startOrderSending({ marketId }),
         },
         // Temporarily removed because there is no confirmation, the button just cancels everything on a single click

@@ -8,6 +8,8 @@ import {
 import { LiquidityOrder } from 'modules/types';
 import { windowRef } from 'utils/window-ref';
 import { TXEventName } from '@augurproject/sdk-lite';
+import { AppStatus } from './app-status';
+import { LIQUIDITY_ORDERS } from 'modules/common/constants';
 
 const {
   UPDATE_PENDING_ORDER,
@@ -23,6 +25,49 @@ const {
   DELETE_SUCCESSFUL_LIQUIDITY_ORDER,
   DELETE_SUCCESSFUL_LIQUIDITY_ORDERS
 } = PENDING_ORDERS_ACTIONS;
+
+const updatePendingQueue = (updatedState) => {
+  Object.keys(updatedState[PENDING_LIQUIDITY_ORDERS]).map(txHash => {
+    const marketOrders = updatedState[PENDING_LIQUIDITY_ORDERS][txHash];
+    let statusTracker = {
+      [TXEventName.Pending]: 0,
+      [TXEventName.Success]: 0,
+      [TXEventName.Failure]: 0,
+      'none': 0,
+    }
+    let totalCount = 0;
+    Object.keys(marketOrders).map(outcome => marketOrders[outcome].map(order => {
+        const orderStatus = order.status ? order.status : 'none';
+        statusTracker[orderStatus] = statusTracker[orderStatus] + 1;
+        totalCount = totalCount + 1;
+      })
+    )
+
+    let status = '';
+    let submitAllButton = false;
+    if (statusTracker[TXEventName.Pending] > 0) {
+      status = TXEventName.Pending;
+    } else if (statusTracker[TXEventName.Failure] > 0) {
+      status = TXEventName.Failure;
+    } else if (statusTracker[TXEventName.Success] > 0) {
+      status = TXEventName.Success;
+    }
+
+    if (statusTracker[TXEventName.Success] === totalCount) {
+      status = TXEventName.Success;
+    }
+    if (statusTracker[TXEventName.Failure] === totalCount) {
+      status = TXEventName.Failure;
+    }
+
+    if (statusTracker['none'] === 0) {
+      submitAllButton = true;
+    }
+    AppStatus.actions.addPendingData(txHash, LIQUIDITY_ORDERS, status, '', '', {
+      submitAllButton
+    });
+  })
+}
 
 export function PendingOrdersReducer(state, action) {
   const updatedState = { ...state };
@@ -127,6 +172,7 @@ export function PendingOrdersReducer(state, action) {
           parseFloat(order.price) === parseFloat(price)
         ) {
           order.status = eventName;
+          order.updatedTime = Date.now();
         }
       });
       updatedState[PENDING_LIQUIDITY_ORDERS] = {
@@ -231,6 +277,7 @@ export function PendingOrdersReducer(state, action) {
     default:
       console.error(`Error: ${action.type} not caught by Pending reducer.`);
   }
+  updatePendingQueue(updatedState);
   windowRef.pendingOrders = updatedState;
   windowRef.stores.pendingOrders = updatedState;
   return updatedState;
