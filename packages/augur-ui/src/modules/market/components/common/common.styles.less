@@ -209,7 +209,6 @@
     > button:not([class*='BackButton']),
     > button:not(:first-of-type) {
       height: @size-20;
-      margin-left: @size-20;
       width: @size-20;
 
       > svg {
@@ -269,7 +268,7 @@
 
     @media @breakpoint-mobile-tablet {
       grid-gap: 0 @size-4;
-      grid-template-columns: min-content 1fr repeat(4, @size-20);
+      grid-template-columns: min-content 1fr repeat(3, @size-20);
 
       > div[class*='CopyButton'],
       > button:not([class*='BackButton']),
@@ -320,6 +319,37 @@
     &:before {
       border-bottom: @size-5 solid var(--color-primary-text-80);
       top: -@size-6;
+    }
+  }
+}
+
+:root[theme='SPORTS'] {
+  .HeadingBar {
+    grid-gap: 0 @size-8;
+
+    @media @breakpoint-mobile {
+      grid-gap: @size-16 @size-8;
+    }
+
+    > button,
+    > span {
+      margin: 0;
+    }
+
+    > button[class*="BackButton"] {
+      margin-right: 0;
+    }
+
+    > div[class*="CopyButton"] {
+      margin: 0;
+    }
+
+    > button[id*="facebookButton"] {
+      margin-left: auto;
+    }
+
+    > button[class*="FavoriteButton"] {
+      display: none;
     }
   }
 }
