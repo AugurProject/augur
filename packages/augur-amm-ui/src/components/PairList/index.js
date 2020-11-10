@@ -79,10 +79,10 @@ function PairList({ allExchanges, disbaleLinks, marketId }) {
         <DashGrid style={{ height: '48px', alignItems: 'center' }} disbaleLinks={disbaleLinks} focus={true}>
           <TokenLogo size={below600 ? 16 : 18} tokenInfo={ammExchange.cash} margin={!below740} />
           <TYPE.header area="name" fontWeight="500">
-            {Number(ammExchange.priceNo).toFixed(2)}
+            {Number(ammExchange.priceYes).toFixed(2)}
           </TYPE.header>
           <TYPE.header area="name" fontWeight="500">
-            {Number(ammExchange.priceYes).toFixed(2)}
+            {Number(ammExchange.priceNo).toFixed(2)}
           </TYPE.header>
           <TYPE.header area="name" fontWeight="500">
             {formattedNum(ammExchange.liquidityUSD, true)}
