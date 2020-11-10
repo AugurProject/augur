@@ -43,8 +43,8 @@ export const SportsGroupCharts = ({ sportsGroup, marketId }) => {
     const options = sportsGroup.markets.map(m => {
       return {
         value: m.id,
-        label: m.description,
-        name: m.description,
+        label: m.sportsBook.title,
+        name: m.sportsBook.title,
       };
     });
     return {

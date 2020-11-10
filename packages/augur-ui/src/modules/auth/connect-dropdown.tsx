@@ -20,7 +20,6 @@ import {
   Open,
   Pencil,
   v2AugurLogo,
-  CopyAlternateIcon,
   DirectionArrow,
   AddIcon, BettingAddIcon,
 } from 'modules/common/icons';
@@ -34,6 +33,7 @@ import { getGasCost } from 'modules/modal/gas';
 import TooltipStyles from 'modules/common/tooltip.styles.less';
 import CommonModalStyles from 'modules/modal/common.styles.less';
 import Styles from 'modules/auth/connect-dropdown.styles.less';
+import { createBigNumber } from 'utils/create-big-number';
 
 const useGasInfo = () => {
   const {
@@ -84,9 +84,9 @@ const ConnectDropdown = ({toggleDropdown}: ConnectDropdownProps) => {
     ethToDaiRate,
     actions: { setModal },
   } = useAppStatusStore();
-  const { gasPriceTime, gasPriceSpeed, userDefinedGasPrice } = useGasInfo();
+  const { gasPriceTime, gasPriceSpeed } = useGasInfo();
   const gasPrice = gasPriceInfo.userDefinedGasPrice || gasPriceInfo.average;
-  const gasCostDai = getGasCost(TRADE_ORDER_GAS_MODAL_ESTIMATE, gasPrice, ethToDaiRate);
+  const gasCostDai = getGasCost(TRADE_ORDER_GAS_MODAL_ESTIMATE.toNumber(), createBigNumber(gasPrice), ethToDaiRate);
 
   const parentUniverseId = parentUniId !== NULL_ADDRESS ? parentUniId : null;
 
@@ -278,37 +278,6 @@ const ConnectDropdown = ({toggleDropdown}: ConnectDropdownProps) => {
             icon={Pencil}
           />
         </div>}
-        <div className={Styles.GasEdit}>
-          <div>
-            <div>
-              Refer a friend
-              {renderToolTip(
-                'tooltip--referral',
-                <span>
-                  <span>Referral Link</span>
-                  <div>
-                    Invite friends to Augur using this link and collect a
-                    portion of the market fees whenever they trade in markets.
-                  </div>
-                </span>
-              )}
-            </div>
-            <div>{referralLink}</div>
-          </div>
-          <span
-            id="copy_referral"
-            data-clipboard-text={referralLink}
-            className={isCopied ? Styles.ShowCopied : null}
-          >
-            <SecondaryButton
-              small
-              action={() => copyClicked()}
-              text="Copy"
-              icon={CopyAlternateIcon}
-            />
-          </span>
-        </div>
-
         {(parentUniverseId !== null || !!forkingInfo) && (
           <div className={Styles.WalletProvider}>
             <div>

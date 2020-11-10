@@ -43,7 +43,6 @@ import {
   MARKET_ID_PARAM_NAME,
   AFFILIATE_NAME,
 } from 'modules/routes/constants/param-names';
-import { ExternalLinkText } from 'modules/common/buttons';
 import { HelmetTag } from 'modules/seo/helmet-tag';
 import { APP_HEAD_TAGS } from 'modules/seo/helmet-configs';
 import { MyBetsInnerNav } from 'modules/portfolio/components/common/my-bets-inner-nav';
