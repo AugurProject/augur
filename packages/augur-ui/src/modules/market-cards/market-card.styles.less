@@ -39,7 +39,7 @@
       display: none;
     }
 
-    > div {
+    > div:not([class*="hoverIconTray"]) {
       flex-direction: column;
       text-transform: uppercase;
       text-align: left;
@@ -425,7 +425,6 @@
       border: @size-1 solid var(--color-secondary-action-outline);
       border-radius: @border-radius-default;
       height: @size-32;
-      justify-content: center;
       margin-top: @size-8;
       margin-bottom: 0;
     }
@@ -434,6 +433,8 @@
       grid-row: unset;
       margin-bottom: 0;
       margin-top: @size-8;
+      align-items: center;
+      justify-content: center;
     }
   }
 }
