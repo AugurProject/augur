@@ -29,11 +29,21 @@ export function blockClient(uri) {
 }
 
 export function augurV2Client(uri) {
+  const defaultOptions = {
+    watchQuery: {
+      fetchPolicy: 'no-cache',
+      errorPolicy: 'ignore',
+    },
+    query: {
+      fetchPolicy: 'no-cache',
+      errorPolicy: 'all',
+    },
+  }
   return new ApolloClient({
     link: new HttpLink({
       uri
     }),
     cache: new InMemoryCache(),
-    shouldBatch: true
+    defaultOptions: defaultOptions
   })
 }
