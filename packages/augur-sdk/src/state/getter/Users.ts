@@ -981,6 +981,12 @@ export class Users {
     }, marketTradingPositionsWithShares)
 
     tradingPositions = _.reduce(shareTokenBalances, (p, shareTokenBalance) => {
+      if (allOrdersFilledResultsByMarketAndOutcome[shareTokenBalance.market] && allOrdersFilledResultsByMarketAndOutcome[shareTokenBalance.market][shareTokenBalance.outcome]){
+        const pl = allOrdersFilledResultsByMarketAndOutcome[shareTokenBalance.market][shareTokenBalance.outcome];
+        if (new BigNumber(pl.amount).eq(new BigNumber(shareTokenBalance.balance))) return p
+      }
+      const position = p.find(pos => pos.marketId === shareTokenBalance.market && new BigNumber(pos.outcome).eq(new BigNumber(shareTokenBalance.outcome)))
+
       const marketData = markets[shareTokenBalance.market]
       const tickSize = numTicksToTickSize(
         new BigNumber(marketData.numTicks),
@@ -992,16 +998,6 @@ export class Users {
         new BigNumber(shareTokenBalance.balance),
         tickSize
       );
-
-      const hasShort = p.filter(pos => pos.marketId === shareTokenBalance.market && new BigNumber(pos.netPosition).lt(0) && new BigNumber(pos.netPosition).abs().eq(quantity))
-      if (hasShort && hasShort.length > 0) return p;
-
-      if (allOrdersFilledResultsByMarketAndOutcome[shareTokenBalance.market] && allOrdersFilledResultsByMarketAndOutcome[shareTokenBalance.market][shareTokenBalance.outcome]){
-        const pl = allOrdersFilledResultsByMarketAndOutcome[shareTokenBalance.market][shareTokenBalance.outcome];
-        if (new BigNumber(pl.amount).eq(quantity) || new BigNumber(quantity).eq(0)) return p
-      }
-      const position = p.find(pos => pos.marketId === shareTokenBalance.market && new BigNumber(pos.outcome).eq(new BigNumber(shareTokenBalance.outcome)))
-
 
       if (position) {
         position.netPosition = new BigNumber(position.netPosition).plus(quantity).toFixed()

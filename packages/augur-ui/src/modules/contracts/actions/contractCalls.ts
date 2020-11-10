@@ -14,8 +14,7 @@ import type {
 import {
   calculatePayoutNumeratorsArray,
   ExtraInfoTemplate,
-  AccountData,
-  convertOnChainAmountToDisplayAmount
+  AccountData
 } from '@augurproject/sdk-lite';
 import {
   convertDisplayAmountToOnChainAmount,
@@ -38,14 +37,12 @@ import {
   NETWORK_IDS,
   ACCOUNT_ACTIVATION_GAS_COST,
   DISPUTE_GAS_COST,
-  LONG,
 } from 'modules/common/constants';
 import { constructMarketParams } from 'modules/create-market/helpers/construct-market-params';
 import {
   CreateMarketData,
   FormattedNumber,
   LiquidityOrder,
-  MarketInfos,
 } from 'modules/types';
 // put all calls to contracts here that need conversion from display values to onChain values
 import { augurSdk } from 'services/augursdk';
@@ -54,14 +51,10 @@ import { BigNumber, createBigNumber } from 'utils/create-big-number';
 import {
   formatAttoDai,
   formatAttoRep,
-  formatDai,
-  formatDaiPrice,
-  formatNone,
   formatPercent,
 } from 'utils/format-number';
 import { generateTradeGroupId } from 'utils/generate-trade-group-id';
 import { getFingerprint } from 'utils/get-fingerprint';
-import { getOutcomeNameWithOutcome } from 'utils/get-outcome';
 
 export function isWeb3Transport(): boolean {
   return augurSdk.isWeb3Transport;
@@ -223,49 +216,6 @@ export async function getDaiBalance(address: string): Promise<number> {
   const { contracts } = augurSdk.get();
   const balance = await contracts.cash.balanceOf_(address);
   return createBigNumber(String(balance)).dividedBy(ETHER);
-}
-
-// super hack, do not merge anywhere important
-export async function getUserMakretShareTokenBalances(market: MarketInfos, account: string): Promise<any[]> {
-  const { contracts } = augurSdk.get();
-  const balances = await Promise.all(market.outcomes.map(o => {
-    const outcomeId = o.id;
-    return contracts.shareToken.balanceOfMarketOutcome_(market.marketId, new BigNumber(outcomeId), account)
-  }))
-  const shareBalances = balances.filter(b => !(new BigNumber(b).eq(0))).map((b, i) => ({
-    marketId: market.marketId,
-    quantity: formatDai(String(convertOnChainAmountToDisplayAmount(b, market.tickSize))),
-    rawPosition: formatDai(String(convertOnChainAmountToDisplayAmount(b, market.tickSize))),
-    outcomeId: i,
-    outcomeName: getOutcomeNameWithOutcome(market, String(i), i === 0),
-    type: LONG,
-    averagePrice: formatDai(ZERO),
-    currentValue: formatDai(ZERO),
-    purchasePrice: formatDaiPrice(ZERO, { decimals: 3, decimalsRounded: 3 }),
-    realizedNet: formatDai(ZERO),
-    unrealizedNet: formatDai(ZERO),
-    unrealized24Hr: formatDai(ZERO),
-    realizedPercent: formatPercent(ZERO, {
-      decimalsRounded: 2,
-    }),
-    unrealizedPercent: formatPercent(ZERO, { decimalsRounded: 2 }),
-    unrealized24HrPercent: formatPercent(ZERO, { decimalsRounded: 2 }),
-    totalCost: formatDai(ZERO),
-    totalValue: formatDai(ZERO),
-    lastPrice: formatNone(),
-    totalReturns: formatDai(ZERO),
-    valueChange: formatPercent(
-      ZERO,
-      {
-        decimalsRounded: 2,
-      }
-    ),
-    totalPercent: formatPercent(ZERO, {
-      decimalsRounded: 2,
-    }),
-  }))
-  shareBalances.map(s => console.log(s))
-  return shareBalances;
 }
 
 export async function sendDai_estimateGas(address: string, amount: string): Promise<BigNumber> {
@@ -648,7 +598,7 @@ export async function getCreateMarketBreakdown() {
   const { contracts } = augurSdk.get();
   const vBond = await contracts.universe.getOrCacheValidityBond_();
   const noShowBond = await contracts.universe.getOrCacheMarketRepBond_();
-  const validityBondFormatted = formatAttoDai(vBond, { decimals: 2, decimalsRounded: 2 });
+  const validityBondFormatted = formatAttoDai(vBond, { decimals: 2, decimalsRounded: 2});
   const noShowFormatted = formatAttoRep(noShowBond, {
     decimals: 4,
   });
@@ -747,7 +697,7 @@ export interface doReportDisputeAddStake {
 }
 
 export async function doInitialReport_estimaetGas(report: doReportDisputeAddStake) {
-  if (report.isWarpSync) return doInitialReportWarpSync_estimaetGas(report);
+  if(report.isWarpSync) return doInitialReportWarpSync_estimaetGas(report);
   const market = getMarket(report.marketId);
   if (!market) return false;
   const payoutNumerators = await getPayoutNumerators(report);
@@ -759,7 +709,7 @@ export async function doInitialReport_estimaetGas(report: doReportDisputeAddStak
 }
 
 export async function doInitialReport(report: doReportDisputeAddStake) {
-  if (report.isWarpSync) return doInitialReportWarpSync(report);
+  if(report.isWarpSync) return doInitialReportWarpSync(report);
   const market = getMarket(report.marketId);
   if (!market) return false;
   const payoutNumerators = await getPayoutNumerators(report);
@@ -879,14 +829,14 @@ async function getPayoutNumerators(inputs: doReportDisputeAddStake) {
   return inputs.isWarpSync
     ? await augur.getPayoutFromWarpSyncHash(inputs.warpSyncHash || FAKE_HASH)
     : calculatePayoutNumeratorsArray(
-      inputs.maxPrice,
-      inputs.minPrice,
-      inputs.numTicks,
-      inputs.numOutcomes,
-      inputs.marketType,
-      inputs.outcomeId,
-      inputs.isInvalid
-    );
+        inputs.maxPrice,
+        inputs.minPrice,
+        inputs.numTicks,
+        inputs.numOutcomes,
+        inputs.marketType,
+        inputs.outcomeId,
+        inputs.isInvalid
+      );
 }
 
 export interface CreateNewMarketParams {
@@ -998,14 +948,14 @@ export function createMarketRetry(market: CreateMarketData) {
 
   return createMarket(newMarket, true);
 }
-const APPROVAL_AMOUNT = new BigNumber(2 ** 255).minus(1);
+const APPROVAL_AMOUNT = new BigNumber(2**255).minus(1);
 const APPROVAL_TEST_AMOUNT = new BigNumber(0);
 export async function isContractApproval(account, contract, approvalContract): Promise<boolean> {
   try {
     const currentAllowance = await approvalContract.allowance_(account, contract);
     return currentAllowance.gt(APPROVAL_TEST_AMOUNT);
   }
-  catch (error) {
+  catch(error) {
     throw error;
   }
 }
@@ -1032,37 +982,37 @@ export async function approvalsNeededToTrade(address): Promise<number> {
   return (approvals.length > 0 ? approvals.length + 1 : 0); // add additional 1 for referral address
 }
 
-export async function approveZeroX(address,) {
+export async function approveZeroX(address, ) {
   const { contracts } = augurSdk.get();
   try {
     if (!(await isContractApproval(address, contracts.ZeroXTrade.address, contracts.cash))) {
       return await contracts.cash.approve(contracts.ZeroXTrade.address, APPROVAL_AMOUNT);
     }
-  } catch (error) {
+  } catch(error) {
     console.error('approveZeroX', error);
     return false;
   }
 }
 
-export async function approveShareToken(address,) {
+export async function approveShareToken(address, ) {
   const { contracts } = augurSdk.get();
   try {
     if (!(await contracts.shareToken.isApprovedForAll_(address, contracts.fillOrder.address))) {
       return await contracts.shareToken.setApprovalForAll(contracts.fillOrder.address, true);
     }
-  } catch (error) {
+  } catch(error) {
     console.error('approveShareToken', error);
     return false;
   }
 }
 
-export async function approveFillOrder(address,) {
+export async function approveFillOrder(address, ) {
   const { contracts } = augurSdk.get();
   try {
     if (!(await isContractApproval(address, contracts.fillOrder.address, contracts.cash))) {
       return await contracts.cash.approve(contracts.fillOrder.address, APPROVAL_AMOUNT);
     }
-  } catch (error) {
+  } catch(error) {
     console.error('approveFillOrder', error);
     return false;
   }
