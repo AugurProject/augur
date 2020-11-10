@@ -231,7 +231,7 @@ export const UnsignedOrders = ({
   const newButtons = [
     {
       ...buttons[0],
-      text: processing ? 'Processing...' : buttons[0].text,
+      text: buttons[0].text,
       disabled: !isApproved || buttons[0].disabled || processing,
       action: actionForSubmitAllButton,
     },

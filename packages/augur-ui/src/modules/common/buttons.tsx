@@ -35,12 +35,20 @@ import {
   AddIcon,
   LoadingEllipse,
   Trash,
-  AlternateCheckMark, RefreshIcon, RetryIcon
+  AlternateCheckMark,
+  RefreshIcon,
+  RetryIcon,
 } from 'modules/common/icons';
 import classNames from 'classnames';
-import { getNetworkId, placeTrade } from 'modules/contracts/actions/contractCalls';
+import {
+  getNetworkId,
+  placeTrade,
+} from 'modules/contracts/actions/contractCalls';
 import Styles from 'modules/common/buttons.styles.less';
-import { MARKET_TEMPLATES, MarketCardTemplate } from 'modules/create-market/constants';
+import {
+  MARKET_TEMPLATES,
+  MarketCardTemplate,
+} from 'modules/create-market/constants';
 import { TXEventName } from '@augurproject/sdk-lite';
 import { addCategoryStats } from 'modules/create-market/get-template';
 import ChevronFlip from 'modules/common/chevron-flip';
@@ -163,7 +171,7 @@ export const PrimaryButton = ({
   confirmed,
   failed,
   icon,
-  className
+  className,
 }: DefaultButtonProps) => (
   <>
     {URL && (
@@ -181,8 +189,7 @@ export const PrimaryButton = ({
     {!URL && (
       <button
         onClick={e => action(e)}
-        className={classNames(Styles.PrimaryButton,
-          className, {
+        className={classNames(Styles.PrimaryButton, className, {
           [Styles.Confirmed]: confirmed,
           [Styles.Failed]: failed,
         })}
@@ -204,9 +211,10 @@ export const RefreshButton = ({
   <>
     <button
       onClick={e => action(e)}
-      className={classNames(Styles.SecondaryButton,
+      className={classNames(
+        Styles.SecondaryButton,
         Styles.Small,
-        Styles.Phantom,
+        Styles.Phantom
       )}
       data-tip
       data-for={'refresh-tooltip'}
@@ -218,7 +226,7 @@ export const RefreshButton = ({
       {RefreshIcon}
     </button>
     <ReactTooltip
-      id='refresh-tooltip'
+      id="refresh-tooltip"
       className={classNames(TooltipStyles.Tooltip, TooltipStyles.RefreshSort)}
       effect="solid"
       place="top"
@@ -226,7 +234,7 @@ export const RefreshButton = ({
       event="mouseover mouseenter"
       eventOff="mouseleave mouseout scroll mousewheel blur"
     >
-        <p>{'Refresh market sort by'}</p>
+      <p>{'Refresh market sort by'}</p>
     </ReactTooltip>
   </>
 );
@@ -244,7 +252,7 @@ export const SecondaryButton = ({
   tiny,
   processing,
   phantom,
-  dark
+  dark,
 }: DefaultButtonProps) => (
   <button
     onClick={e => action(e)}
@@ -256,7 +264,7 @@ export const SecondaryButton = ({
       [Styles.LightBorder]: lightBorder,
       [Styles.Tiny]: tiny,
       [Styles.Processing]: processing,
-      [Styles.Dark]: dark
+      [Styles.Dark]: dark,
     })}
     disabled={disabled}
     title={title || text}
@@ -282,6 +290,8 @@ export interface ProcessingButtonProps extends DefaultButtonProps {
   nonMatchingIds?: Array<String>;
   autoHideConfirm?: boolean;
   hideRetry?: boolean;
+  submitAllButton?: boolean;
+  dontShowNotificationButton?: boolean;
 }
 
 export const ProcessingButton = ({
@@ -292,15 +302,21 @@ export const ProcessingButton = ({
   propsStatus,
   autoHideConfirm = false,
   hideRetry,
+  submitAllButton,
+  dontShowNotificationButton,
   ...props
 }: ProcessingButtonProps) => {
   const { pendingQueue, theme } = useAppStatusStore();
   const isSports = theme === THEMES.SPORTS;
   let disabled = false;
-  const pendingData =
-    pendingQueue[queueName] &&
-    pendingQueue[queueName][queueId];
+  let pendingData = pendingQueue[queueName] && pendingQueue[queueName][queueId];
 
+  if (
+    (submitAllButton && !pendingData.data.submitAllButton) ||
+    (dontShowNotificationButton && pendingData.data.dontShowNotificationButton)
+  ) {
+    pendingData = null;
+  }
   let status = propsStatus ? propsStatus : pendingData && pendingData.status;
   if (pendingData) {
     if (
@@ -325,28 +341,34 @@ export const ProcessingButton = ({
     status === TXEventName.Pending ||
     status === TXEventName.AwaitingSigning
   ) {
-    buttonText = props.spinner ? <Spinner /> : <span className={Styles.LoadingEllipse}>{LoadingEllipse}</span>;
+    buttonText = props.spinner ? (
+      <Spinner />
+    ) : (
+      <span className={Styles.LoadingEllipse}>{LoadingEllipse}</span>
+    );
     isDisabled = true;
     processing = true;
   }
   const failed = status === TXEventName.Failure;
   const confirmed = status === TXEventName.Success;
   if (failed) {
-    buttonText = <span>Failed{isSports ? '.' : ''}{!hideRetry && (isSports ? <b>Retry</b> : RetryIcon)}</span>;
+    buttonText = (
+      <span>
+        Failed{isSports ? '.' : ''}
+        {!hideRetry && (isSports ? <b>Retry</b> : RetryIcon)}
+      </span>
+    );
   }
   if (confirmed && props.customConfirmedButtonText) {
     buttonText = props.customConfirmedButtonText;
   } else if (confirmed) {
     return (
-      <div className={Styles.ProcessingCheckmark}>
-        {AlternateCheckMark}
-      </div>
+      <div className={Styles.ProcessingCheckmark}>{AlternateCheckMark}</div>
     );
   }
   const cancel = () => removePendingData(queueId, queueName);
   if (failed || confirmed) {
     buttonAction = e => props.action(e);
-    icon = XIcon;
     isDisabled = false;
   }
 
@@ -561,7 +583,7 @@ export const CancelTextButton = ({
   confirmed,
   failed,
   icon,
-  processing
+  processing,
 }: DefaultButtonProps) => (
   <button
     onClick={e => action(e)}
@@ -653,7 +675,6 @@ export const ParagraphButton = (props: DefaultButtonProps) => (
   </button>
 );
 
-
 export const DepositButton = (props: DefaultActionButtonProps) => (
   <button
     onClick={e => props.action(e)}
@@ -664,7 +685,6 @@ export const DepositButton = (props: DefaultActionButtonProps) => (
     Add funds
   </button>
 );
-
 
 export const AddFundsButton = (props: DefaultActionButtonProps) => {
   const {
@@ -678,8 +698,7 @@ export const AddFundsButton = (props: DefaultActionButtonProps) => {
       icon={AddIcon}
     />
   );
-}
-
+};
 
 export const TransferButton = (props: DefaultActionButtonProps) => (
   <button
@@ -815,18 +834,11 @@ interface PendingIconButtonProps {
   bet: Object;
 }
 
-export const PendingIconButton = ({
-  bet
-}: PendingIconButtonProps) => {
+export const PendingIconButton = ({ bet }: PendingIconButtonProps) => {
   const {
     actions: { trash },
   } = useBetslipStore();
-  const {
-    status,
-    marketId,
-    orderId,
-    timestampUpdated
-  } = bet;
+  const { status, marketId, orderId, timestampUpdated } = bet;
   const [isRecentUpdate, setIsRecentUpdate] = useState(true);
   useEffect(() => {
     setIsRecentUpdate(true);
@@ -871,38 +883,40 @@ export const PendingIconButton = ({
       break;
   }
   return (
-  <button
-    className={classNames(Styles.PendingIconButton, classToApply)}
-    onClick={() => iconAction()}
-  >
-    {icon}
-  </button>
+    <button
+      className={classNames(Styles.PendingIconButton, classToApply)}
+      onClick={() => iconAction()}
+    >
+      {icon}
+    </button>
   );
-}
+};
 
 interface CashoutButtonProps {
   bet: Object;
 }
 
-export const CashoutButton = ({
-  bet
-}: CashoutButtonProps) => {
+export const CashoutButton = ({ bet }: CashoutButtonProps) => {
   let cashoutDisabled = true;
   let cashoutText = 'cashout not available';
-  let didWin = bet.potentialDaiProfit ? createBigNumber(bet.potentialDaiProfit).gt(ZERO) : false;
-  let loss = bet.potentialDaiProfit ? createBigNumber(bet.potentialDaiProfit).lt(ZERO) : false;
+  let didWin = bet.potentialDaiProfit
+    ? createBigNumber(bet.potentialDaiProfit).gt(ZERO)
+    : false;
+  let loss = bet.potentialDaiProfit
+    ? createBigNumber(bet.potentialDaiProfit).lt(ZERO)
+    : false;
   let cashout = () => bet.cashout();
   let wonStyle = false;
 
   const {
-      accountPositions: positions,
-      loginAccount: { address: account },
-      pendingQueue,
-      actions: { addPendingData, setModal }
+    accountPositions: positions,
+    loginAccount: { address: account },
+    pendingQueue,
+    actions: { addPendingData, setModal },
   } = useAppStatusStore();
   const { marketInfos, orderBooks } = useMarketsStore();
   const {
-    actions: { updateMatched }
+    actions: { updateMatched },
   } = useBetslipStore();
 
   const queueId = `${bet.marketId}_${bet.orderId}`;
@@ -913,89 +927,123 @@ export const CashoutButton = ({
 
   useEffect(() => {
     if (market) {
-      getOrderShareProfitLoss(bet, orderBooks, (potentialDaiProfit, topBidPrice, orderCost) => {
-        updateMatched(bet.marketId, bet.orderId, {
-          ...bet,
-          topBidPrice,
-          orderCost,
-          potentialDaiProfit,
-          closedPotentialDaiProfit: position?.priorPosition ? position.realized : null,
-          closedOrderCost: position?.priorPosition ? findProceeds(
-            position.realizedPercent,
-            position.realizedCost,
-            market.settlementFee
-          )
-        : null,
-        })
-      })
+      getOrderShareProfitLoss(
+        bet,
+        orderBooks,
+        (potentialDaiProfit, topBidPrice, orderCost) => {
+          updateMatched(bet.marketId, bet.orderId, {
+            ...bet,
+            topBidPrice,
+            orderCost,
+            potentialDaiProfit,
+            closedPotentialDaiProfit: position?.priorPosition
+              ? position.realized
+              : null,
+            closedOrderCost: position?.priorPosition
+              ? findProceeds(
+                  position.realizedPercent,
+                  position.realizedCost,
+                  market.settlementFee
+                )
+              : null,
+          });
+        }
+      );
     }
   }, [market, orderBooks[bet.marketId]]);
 
   if (position?.priorPosition) {
-    didWin = bet.closedPotentialDaiProfit ? createBigNumber(bet.closedPotentialDaiProfit).gt(ZERO) : false;
-    loss = bet.closedPotentialDaiProfit ? createBigNumber(bet.closedPotentialDaiProfit).lt(ZERO) : false;
+    didWin = bet.closedPotentialDaiProfit
+      ? createBigNumber(bet.closedPotentialDaiProfit).gt(ZERO)
+      : false;
+    loss = bet.closedPotentialDaiProfit
+      ? createBigNumber(bet.closedPotentialDaiProfit).lt(ZERO)
+      : false;
     cashoutText = (
       <>
-       {didWin ? 'Won: ' : 'Loss: '} <span>{formatDai(bet.closedOrderCost).full}</span>
+        {didWin ? 'Won: ' : 'Loss: '}{' '}
+        <span>{formatDai(bet.closedOrderCost).full}</span>
       </>
     );
-  } else if (createBigNumber(marketPositions?.tradingPositionsPerMarket?.unclaimedProceeds).gt(ZERO) && market?.consensus?.outcome == bet.outcomeId ) {
+  } else if (
+    createBigNumber(
+      marketPositions?.tradingPositionsPerMarket?.unclaimedProceeds
+    ).gt(ZERO) &&
+    market?.consensus?.outcome == bet.outcomeId
+  ) {
     cashoutText = (
       <>
-       Won:<span>{formatDai(marketPositions?.tradingPositionsPerMarket?.unclaimedProceeds).full}</span>
+        Won:
+        <span>
+          {
+            formatDai(
+              marketPositions?.tradingPositionsPerMarket?.unclaimedProceeds
+            ).full
+          }
+        </span>
       </>
     );
     wonStyle = true;
   } else if (!bet.topBidPrice) {
     cashoutText = 'cashout not available';
-  } else if (position && market?.reportingState !== REPORTING_STATE.AWAITING_FINALIZATION && market?.reportingState !== REPORTING_STATE.FINALIZED) {
-      cashoutText = (
-        <>
-          Cashout <span>{bet.orderCost ? formatDai(bet.orderCost).full : '$0.00'}</span>
-        </>
-      );
-      cashoutDisabled = false;
-      cashout = () => {
-        setModal({
-          type: MODAL_CASHOUT_BET,
-          wager: bet.wager,
-          odds: convertToOdds(bet.normalizedPrice).full,
-          cashOut: bet.orderCost,
-          positive: bet.potentialDaiProfit.gt(ZERO),
-          cb: () => {
-            addPendingData(queueId, CASHOUT, TXEventName.Pending, '', {});
-            (async () =>
-              await placeTrade(
-                SELL_INDEX,
-                bet.marketId,
-                market.numOutcomes,
-                bet.outcomeId,
-                true,
-                market.numTicks,
-                market.minPrice,
-                market.maxPrice,
-                bet.shares,
-                bet.topBidPrice,
-                0,
-                '0',
-                undefined
-              ).then(() => addPendingData(queueId, CASHOUT, TXEventName.Success, '', {})
-              ).catch(error => addPendingData(queueId, CASHOUT, TXEventName.Failure, '', {}))
-          )();
-        }});
-    }
+  } else if (
+    position &&
+    market?.reportingState !== REPORTING_STATE.AWAITING_FINALIZATION &&
+    market?.reportingState !== REPORTING_STATE.FINALIZED
+  ) {
+    cashoutText = (
+      <>
+        Cashout{' '}
+        <span>{bet.orderCost ? formatDai(bet.orderCost).full : '$0.00'}</span>
+      </>
+    );
+    cashoutDisabled = false;
+    cashout = () => {
+      setModal({
+        type: MODAL_CASHOUT_BET,
+        wager: bet.wager,
+        odds: convertToOdds(bet.normalizedPrice).full,
+        cashOut: bet.orderCost,
+        positive: bet.potentialDaiProfit.gt(ZERO),
+        cb: () => {
+          addPendingData(queueId, CASHOUT, TXEventName.Pending, '', {});
+          (async () =>
+            await placeTrade(
+              SELL_INDEX,
+              bet.marketId,
+              market.numOutcomes,
+              bet.outcomeId,
+              true,
+              market.numTicks,
+              market.minPrice,
+              market.maxPrice,
+              bet.shares,
+              bet.topBidPrice,
+              0,
+              '0',
+              undefined
+            )
+              .then(() =>
+                addPendingData(queueId, CASHOUT, TXEventName.Success, '', {})
+              )
+              .catch(error =>
+                addPendingData(queueId, CASHOUT, TXEventName.Failure, '', {})
+              ))();
+        },
+      });
+    };
   }
 
   return (
     <>
-      {pending && !position?.priorPosition ?
+      {pending && !position?.priorPosition ? (
         <ProcessingButton
           queueName={CASHOUT}
           queueId={queueId}
           cancelButton
           action={() => cashout()}
         />
-        :
+      ) : (
         <button
           onClick={() => cashout()}
           className={classNames(Styles.CashoutButton, {
@@ -1003,13 +1051,13 @@ export const CashoutButton = ({
             [Styles.Loss]: loss,
             [Styles.CashedOut]: position?.priorPosition,
             [Styles.CashoutAvailable]: !cashoutDisabled,
-            [Styles.WonPreCashout]: wonStyle
+            [Styles.WonPreCashout]: wonStyle,
           })}
           disabled={cashoutDisabled}
         >
           {cashoutText}
         </button>
-      }
+      )}
     </>
   );
 };

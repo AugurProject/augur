@@ -1,20 +1,29 @@
 import { createBigNumber } from 'utils/create-big-number';
 
-import { BUY, MAX_BULK_ORDER_COUNT, PUBLICTRADE, ZERO } from 'modules/common/constants';
+import {
+  BUY,
+  MAX_BULK_ORDER_COUNT,
+  PUBLICTRADE,
+  ZERO,
+} from 'modules/common/constants';
 import { LiquidityOrder, CreateLiquidityOrders } from 'modules/types';
 import {
   createLiquidityOrder,
   isTransactionConfirmed,
   approveToTrade,
   placeTrade,
-  approvalsNeededToTrade
+  approvalsNeededToTrade,
 } from 'modules/contracts/actions/contractCalls';
-import { TXEventName, MarketInfo, OutcomeOrderBook } from '@augurproject/sdk-lite';
+import {
+  TXEventName,
+  MarketInfo,
+  OutcomeOrderBook,
+} from '@augurproject/sdk-lite';
 import { processLiquidityOrder } from 'modules/events/actions/liquidity-transactions';
 import {
   convertDisplayAmountToOnChainAmount,
   convertDisplayPriceToOnChainPrice,
-} from "@augurproject/utils"
+} from '@augurproject/utils';
 import { AppStatus } from 'modules/app/store/app-status';
 import { Markets } from 'modules/markets/store/markets';
 import { PendingOrders } from 'modules/app/store/pending-orders';
@@ -29,7 +38,9 @@ export const loadPendingLiquidityOrders = (
   const ordersWithHashes = [];
   Object.keys(pendingLiquidityOrders).map((txMarketHashId: string) => {
     Object.keys(pendingLiquidityOrders[txMarketHashId]).map(outcomeId => {
-      pendingLiquidityOrders[txMarketHashId][outcomeId] = pendingLiquidityOrders[txMarketHashId][outcomeId].filter(o => o);
+      pendingLiquidityOrders[txMarketHashId][
+        outcomeId
+      ] = pendingLiquidityOrders[txMarketHashId][outcomeId].filter(o => o);
       const orders = pendingLiquidityOrders[txMarketHashId][outcomeId];
       orders.map((o: LiquidityOrder) => {
         if (o === null) {
@@ -63,7 +74,7 @@ export const loadPendingLiquidityOrders = (
   });
 };
 
-export const sendLiquidityOrder = async (options) => {
+export const sendLiquidityOrder = async options => {
   const { order, marketId, loginAccount } = options;
   const { marketInfos } = Markets.get();
   const market = marketInfos[marketId];
@@ -115,11 +126,11 @@ const sendOrder = async options => {
 };
 
 export const startOrderSending = async ({
-  marketId
+  marketId,
 }: CreateLiquidityOrders) => {
   const { marketInfos } = Markets.get();
   const { pendingLiquidityOrders } = PendingOrders.get();
-  const {  zeroXEnabled } = AppStatus.get();
+  const { zeroXEnabled } = AppStatus.get();
   const chunkOrders = !zeroXEnabled;
 
   const market = marketInfos[marketId];
@@ -128,9 +139,11 @@ export const startOrderSending = async ({
   if (!liquidity) {
     return;
   }
-  Object.keys(liquidity).map(outcomeId => {
-    orders = [...orders, ...liquidity[outcomeId]];
-  });
+  Object.keys(liquidity)
+    .filter(order => order.status !== TXEventName.Success)
+    .map(outcomeId => {
+      orders = [...orders, ...liquidity[outcomeId]];
+    });
 
   await checkAccountApproval();
   if (!chunkOrders) {
@@ -154,7 +167,9 @@ const createZeroXLiquidityOrders = async (
   market: MarketInfo,
   orders: LiquidityOrder[]
 ) => {
-  const { blockchain: { currentAugurTimestamp: timestamp }} = AppStatus.get();
+  const {
+    blockchain: { currentAugurTimestamp: timestamp },
+  } = AppStatus.get();
   try {
     const fingerprint = undefined; // TODO: get this from state
     let i = 0;
@@ -224,6 +239,15 @@ const createZeroXLiquidityOrders = async (
             price: o.price,
             eventName: TXEventName.Success,
           });
+          setTimeout(
+            () =>
+              PendingOrders.actions.removeLiquidity({
+                txParamHash: market.transactionHash,
+                outcomeId: o.outcomeId,
+                orderId: o.index,
+              }),
+            3000
+          );
         })
         .catch(err => {
           const properties = processLiquidityOrder(

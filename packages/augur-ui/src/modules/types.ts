@@ -329,6 +329,7 @@ export interface Notification {
   queueId?: string;
   hideCheckbox?: boolean;
   hideNotification?: boolean;
+  dontShowNotificationButton?: boolean;
 }
 
 export interface OrderStatus {

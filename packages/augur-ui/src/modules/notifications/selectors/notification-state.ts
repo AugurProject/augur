@@ -21,6 +21,7 @@ import {
   TYPE_VIEW_ORDERS,
   ZERO,
   THEMES,
+  LIQUIDITY_ORDERS,
 } from 'modules/common/constants';
 import { selectMarket } from 'modules/markets/selectors/market';
 import { selectMarkets } from 'modules/markets/selectors/markets-all';
@@ -277,6 +278,7 @@ const getRequiredMarketData = market => ({
   myPositionsSummary: market.myPositionsSummary || {},
   outstandingReturns: market.outstandingReturns || null,
   finalizationTime: market.finalizationTime,
+  transactionHash: market.transactionHash
 });
 
 // Build notification objects and include market data
@@ -323,6 +325,9 @@ const generateCards = (markets, type) => {
         isRead: false,
         title: SIGN_SEND_ORDERS,
         buttonLabel: TYPE_VIEW_ORDERS,
+        queueName: LIQUIDITY_ORDERS,
+        queueId: market.transactionHash,
+        dontShowNotificationButton: true
       };
     } else if (type === NOTIFICATION_TYPES.proceedsToClaim) {
       defaults = {

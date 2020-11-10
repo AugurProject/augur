@@ -75,6 +75,7 @@ function getRows(
       title,
       totalProceeds,
       type,
+      dontShowNotificationButton
     }) => {
       const templateProps = {
         claimReportingFees,
@@ -88,6 +89,7 @@ function getRows(
         type,
         queueName,
         queueId,
+        dontShowNotificationButton
       };
 
       const notificationCardProps = {
@@ -101,6 +103,7 @@ function getRows(
         buttonLabel,
         buttonAction,
         hideCheckbox,
+        dontShowNotificationButton
       };
 
       const isDisabled: boolean =
@@ -255,16 +258,6 @@ function getButtonAction(
           setModal({
             type: MODAL_UNSIGNED_ORDERS,
             marketId,
-            cb: () => {
-              const queryLink: QueryEndpoints = {
-                [MARKET_ID_PARAM_NAME]: marketId,
-                [THEME_NAME]: getHTMLTheme(),
-              };
-              history.push({
-                pathname: makePath(MARKET, null),
-                search: makeQuery(queryLink),
-              });
-            },
           });
         }
       };
