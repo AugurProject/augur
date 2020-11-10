@@ -158,8 +158,7 @@ export default class MarketsView extends Component<
     }
 
     if (isConnected !== prevProps.isConnected && isConnected) {
-      const { hotLoadedMarketList } = this.state;
-      return hotLoadedMarketList ? this.populateMarketsInPlace() : this.updateFilteredMarkets();
+      return this.updateFilteredMarkets();
     }
 
     if(!isConnected && canHotload !== prevProps.canHotload && canHotload ) {
