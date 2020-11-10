@@ -99,7 +99,7 @@ export interface SDKConfiguration {
   },
   plugins?: {
     chat?: 'orbit' | '3box',
-    comments?: 'facebook',
+    comments?: 'facebook' | '3box',
   },
   flash?: {
     syncSDK?: boolean,

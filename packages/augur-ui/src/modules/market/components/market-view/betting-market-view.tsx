@@ -53,6 +53,7 @@ const BettingMarketView = () => {
   } = useMarketsStore();
   const {
     actions: { setTheme },
+    env: { plugins }
   } = useAppStatusStore();
   const location = useLocation();
   const [showCopied, setShowCopied] = useState(false);
@@ -153,7 +154,6 @@ const BettingMarketView = () => {
     description,
     details,
     settlementFee,
-    template,
     sportsBook,
     reportingState,
     mostLikelyInvalid,
@@ -161,8 +161,7 @@ const BettingMarketView = () => {
   const header = sportsBook ? sportsBook.header : description;
   const estDateTime = sportsBook?.estTimestamp;
   const startTimeFormatted =
-    estDateTime && convertUnixToFormattedDate(estDateTime);
-  const networkId = getNetworkId();
+    estDateTime && convertUnixToFormattedDate(Number(estDateTime));
   const isFinalized = reportingState === FINALIZED;
   return (
     <div className={Styles.BettingMarketView}>
@@ -267,11 +266,11 @@ const BettingMarketView = () => {
         />
         <InfoTicket
           icon={DaiLogoIcon}
-          value={formatDai(sportsGroup.current?.totalVolume || '0').full}
+          value={String(formatDai(sportsGroup.current?.totalVolume || '0').full)}
           subheader="Is the amount traded on this event"
         />
       </div>
-      <MarketComments marketId={marketId} networkId={networkId} />
+      {plugins && plugins.comments && <MarketComments marketId={marketId} />}
     </div>
   );
 };
