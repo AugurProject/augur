@@ -130,6 +130,7 @@ export function PendingOrdersReducer(state, action) {
       updatedState[PENDING_LIQUIDITY_ORDERS] = {
         ...pendingLiquidityOrders,
       };
+      updatePendingQueue(updatedState);
       break;
     }
     case DELETE_SUCCESSFUL_LIQUIDITY_ORDER: {
@@ -157,6 +158,7 @@ export function PendingOrdersReducer(state, action) {
       updatedState[PENDING_LIQUIDITY_ORDERS] = {
         ...pendingLiquidityOrders,
       };
+      updatePendingQueue(updatedState);
       break;
     }
     case UPDATE_TX_PARAM_HASH_TX_HASH: {
@@ -232,6 +234,7 @@ export function PendingOrdersReducer(state, action) {
       updatedState[PENDING_LIQUIDITY_ORDERS] = {
         ...pendingLiquidityOrders,
       };
+      updatePendingQueue(updatedState);
       break;
     }
     case CLEAR_ALL_MARKET_ORDERS: {
@@ -285,7 +288,6 @@ export function PendingOrdersReducer(state, action) {
           delete updatedState[PENDING_ORDERS][action.marketId];
         }
       }
-      updatePendingQueue(updatedState);
       break;
     }
     default:

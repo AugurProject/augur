@@ -153,10 +153,9 @@ export const addCanceledOrder = (
 ) => {
   addPendingData(orderId, CANCELORDER, status, hash, { marketId });
   // updatePendingQueue(queueName, updatedState[PENDING_QUEUE]);
-
-  if (status === TXEventName.Success) {
-    setTimeout(() => removeCanceledOrder(orderId), 3000);
-  }
+  // if (status === TXEventName.Success) {
+  //   setTimeout(() => removeCanceledOrder(orderId), 3000);
+  // }
 };
 
 export const removeCanceledOrder = (orderId: string) =>
@@ -311,16 +310,15 @@ const processingPendingOrders = (
 };
 
 export const updatePendingQueue = (managingQueueName) => {
+  // clean up this function and duplicate
   let updateQueueName = managingQueueName;
   let useMarketId = false;
-
+  let totalCount = 0;
+  
   if (managingQueueName === CANCELORDER) {
     updateQueueName = CANCELORDERS;
     useMarketId = true;
-  }
-
-  let totalCount = 0;
-  if (managingQueueName === CLAIMMARKETSPROCEEDS) {
+  } else if (managingQueueName === CLAIMMARKETSPROCEEDS) {
     const accountMarketClaimablePositions: MarketClaimablePositions = getLoginAccountClaimableWinnings();
     totalCount = accountMarketClaimablePositions.markets.length;
   } else if (managingQueueName === REDEEMSTAKE) {
