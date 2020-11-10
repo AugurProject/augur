@@ -49,7 +49,7 @@ export default function GlobalStats() {
     setGlobalLiquidity(String(liq))
 
     const { totalDiff } = ammVolumes;
-    const diffInUSD = formatShares(totalDiff)
+    const diffInUSD = totalDiff ? formatShares(totalDiff) : "0"
     setOneDayVolume(diffInUSD)
 
     const { totalDiff: tx } = ammTransactions;

@@ -428,7 +428,7 @@ function useCalcVolumes(markets, marketsPast) {
     const volume = Object.keys(volumeYes).reduce(
       (p, c) => ({
         ...p,
-        [c]: volumeYes[c].plus(volumeNo[c])
+        [c]: volumeYes[c].plus(volumeNo[c] || 0)
       }),
       {}
     )
@@ -436,7 +436,7 @@ function useCalcVolumes(markets, marketsPast) {
     const past = Object.keys(volumeYesPast).reduce(
       (p, c) => ({
         ...p,
-        [c]: volumeYesPast[c].plus(volumeNoPast[c])
+        [c]: volumeYesPast[c].plus(volumeNoPast[c] || 0)
       }),
       {}
     )
@@ -444,12 +444,12 @@ function useCalcVolumes(markets, marketsPast) {
     const diff = Object.keys(volume).reduce(
       (p, c) => ({
         ...p,
-        [c]: volume[c].minus(past[c])
+        [c]: volume[c].minus(past[c] || 0)
       }),
       {}
     )
 
-    const totalDiff = Object.keys(diff).reduce((p, c) => p.plus(new BN(diff[c])), new BN(0))
+    const totalDiff = Object.keys(diff).reduce((p, c) => p.plus(new BN(diff[c] || 0)), new BN(0))
     return { volume, past, diff, totalDiff: String(totalDiff) }
   }, [markets, marketsPast])
 }
