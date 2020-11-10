@@ -95,6 +95,8 @@ export interface AmmExchangeInfo {
   hasLiquidity: boolean
   cash: string
   sharetoken: string
+  priceYes: string
+  priceNo: string
 }
 
 export type TokenAddressMap = Readonly<{ [chainId in ChainId]: Readonly<{ [tokenAddress: string]: WrappedTokenInfo }> }>

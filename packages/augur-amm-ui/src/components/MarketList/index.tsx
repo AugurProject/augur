@@ -187,8 +187,8 @@ function MarketList({ markets, itemMax = 15 }) {
         </DataText>
         {!below816 && <DataText area="liquidity">{marketData.amm ? formattedNum(marketData.amm.liquidityUSD, true) : '-'}</DataText>}
         {!below816 && <DataText area="volume24hr">{marketData.amm ? formattedNum(marketData.amm.volume24hrUSD, true) : '-'}</DataText>}
-        <DataText area="noPercent">{marketData.amm ? Number(marketData.amm.priceNo).toFixed(2) : '-'}</DataText>
         <DataText area="yesPercent">{marketData.amm ? Number(marketData.amm.priceYes).toFixed(2) : '-'}</DataText>
+        <DataText area="noPercent">{marketData.amm ? Number(marketData.amm.priceNo).toFixed(2) : '-'}</DataText>
         {!below816 && (
           <DataText area="status">
             <span
@@ -264,10 +264,10 @@ function MarketList({ markets, itemMax = 15 }) {
           </Flex>
         )}
         <Flex alignItems="center">
-          <Text area="No Price">No</Text>
+          <Text area="No Price">Yes</Text>
         </Flex>
         <Flex alignItems="center">
-          <Text area="Yes Price">Yes</Text>
+          <Text area="Yes Price">No</Text>
         </Flex>
         {!below816 && (
           <Flex alignItems="center">

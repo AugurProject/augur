@@ -9,7 +9,7 @@ import Loader from '../components/LocalLoader'
 import { RowBetween, RowFixed, RowStart, AutoRow } from '../components/Row'
 import { AutoColumn } from '../components/Column'
 import TxnList from '../components/TxnList'
-import { formattedNum, formattedPercent, localNumber, calculateLiquidity } from '../utils'
+import { formattedNum, formattedPercent, localNumber, calculateLiquidity, formatShares } from '../utils'
 import { useTokenData, useTokenDayPriceData } from '../contexts/TokenData'
 import { TYPE, StyledInternalLink } from '../Theme'
 import { useColor } from '../hooks'
@@ -97,7 +97,7 @@ function TokenPage({ marketId }) {
 
   useEffect(() => {
     const { totalDiff } = volumes;
-    setVolume(totalDiff)
+    setVolume(formatShares(totalDiff))
   }, [volumes])
 
 
@@ -197,7 +197,7 @@ function TokenPage({ marketId }) {
                     </RowBetween>
                     <RowBetween align="flex-end">
                       <TYPE.main fontSize={'1.5rem'} lineHeight={1} fontWeight={500}>
-                        {volume}
+                        {formattedNum(volume, true)}
                       </TYPE.main>
                     </RowBetween>
                   </AutoColumn>

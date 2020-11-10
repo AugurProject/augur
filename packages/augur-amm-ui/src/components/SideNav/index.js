@@ -111,58 +111,6 @@ function SideNav({ history }) {
                     Overview
                   </Option>
                 </BasicLink>
-                {/*
-                <BasicLink to="/markets">
-                  <Option
-                    activeText={
-                      (history.location.pathname.split('/')[1] === 'markets' ||
-                        history.location.pathname.split('/')[1] === 'market') ??
-                      undefined
-                    }
-                  >
-                    <DollarSign size={20} style={{ marginRight: '.75rem' }} />
-                    Markets
-                  </Option>
-                </BasicLink>
-
-                <BasicLink to="/tokens">
-                  <Option
-                    activeText={
-                      (history.location.pathname.split('/')[1] === 'tokens' ||
-                        history.location.pathname.split('/')[1] === 'token') ??
-                      undefined
-                    }
-                  >
-                    <Disc size={20} style={{ marginRight: '.75rem' }} />
-                    Tokens
-                  </Option>
-                </BasicLink>
-
-                <BasicLink to="/pairs">
-                  <Option
-                    activeText={
-                      (history.location.pathname.split('/')[1] === 'pairs' ||
-                        history.location.pathname.split('/')[1] === 'pair') ??
-                      undefined
-                    }
-                  >
-                    <PieChart size={20} style={{ marginRight: '.75rem' }} />
-                    Pairs
-                  </Option>
-                </BasicLink>
-
-                <BasicLink to="/accounts">
-                  <Option
-                    activeText={
-                      (history.location.pathname.split('/')[1] === 'accounts' ||
-                        history.location.pathname.split('/')[1] === 'account') ??
-                      undefined
-                    }
-                  >
-                    <List size={20} style={{ marginRight: '.75rem' }} />
-                    Accounts
-                  </Option>
-                </BasicLink> */}
               </AutoColumn>
             )}
           </AutoColumn>

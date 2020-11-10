@@ -53,8 +53,8 @@ export function getTradeExactIn(
 
   if (currencyAmountIn && currencyOut && inputCurrency) {
     // do any amount conversion here
-    const no = new BN(ammExchange.percentageNo).div(100)
-    const yes = new BN(ammExchange.percentageYes).div(100)
+    const no = new BN(ammExchange.priceNo)
+    const yes = new BN(ammExchange.priceYes)
     let executionPrice = currencyOut.symbol === MarketTokens.NO_SHARES ? no : yes
 
     console.log('no price', String(no))

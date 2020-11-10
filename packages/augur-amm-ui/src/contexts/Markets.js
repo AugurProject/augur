@@ -153,15 +153,24 @@ export function useAllMarketData() {
 function shapeMarketsByAmm(markets) {
   const marketsByAmm = (markets || []).reduce((p, m) => {
     if (!m.amms || m.amms.length === 0) return [...p, { ...m, amm: null }]
-    const splitOut = m.amms.map(amm => {
-      // TODO: this data will come from graph call
-      const priceYes = Number(amm.percentageNo) / 100
-      const priceNo = Number(amm.percentageYes) / 100
-      return { ...m, amm: { ...amm, priceYes, priceNo }, cash: amm.shareToken.cash.id }
-    })
+    const splitOut = m.amms.map(amm =>
+      ({ ...m, amm: shapeAMMData(amm), cash: amm.shareToken.cash.id })
+    )
     return p.concat(splitOut)
   }, [])
   return marketsByAmm
+}
+
+function shapeAMMData(amm) {
+  return {
+    ...amm,
+    // TODO: this data will come from graph call
+    priceYes: Number(amm.percentageNo) / 100,
+    priceNo: Number(amm.percentageYes) / 100,
+    cash: amm.shareToken.cash.id,
+    sharetoken: amm?.shareToken?.id,
+    hasLiquidity: amm?.liquidity && amm?.liquidity !== '0'
+  }
 }
 
 export function useMarketsByAMM() {
@@ -267,30 +276,27 @@ export function useMarketAmm(marketId, amm) {
   let ammExchange = null
   let doesExist = market && market.amms && market.amms.length > 0
   if (doesExist) {
-    ammExchange = market.amms.find(a => a.id.toLowerCase() === amm?.toLowerCase())
+    const exchange = market.amms.find(a => a.id.toLowerCase() === amm?.toLowerCase())
+    ammExchange = exchange ? shapeAMMData(exchange) : null
   }
-
-  return {
-    ...ammExchange,
-    hasLiquidity: ammExchange?.liquidity && ammExchange?.liquidity !== '0',
-    id: ammExchange?.id,
-    cash: ammExchange?.shareToken?.cash?.id,
-    sharetoken: ammExchange?.shareToken?.id
-  }
+  return ammExchange
 }
 
 export function useMarketAmmExchanges(marketId) {
   const marketsLV = useMarketsByAMMLiquidityVolume()
   const markets = marketsLV.filter(m => m.id === marketId)
-  const ammExchanges = (markets.length > 0 && markets.filter(m => m.amm).length > 0) ? markets.reduce((p, m) => [...p, m.amm], []) : []
+  const ammExchanges =
+    markets.length > 0 && markets.filter(m => m.amm).length > 0 ? markets.reduce((p, m) => [...p, m.amm], []) : []
 
-  return ammExchanges.length > 0 ? ammExchanges.map(ammExchange => ({
-    ...ammExchange,
-    hasLiquidity: ammExchange?.liquidity && ammExchange?.liquidity !== '0',
-    id: ammExchange?.id,
-    cash: ammExchange?.shareToken?.cash?.id,
-    sharetoken: ammExchange?.shareToken?.id
-  })) : []
+  return ammExchanges.length > 0
+    ? ammExchanges.map(ammExchange => ({
+        ...ammExchange,
+        hasLiquidity: ammExchange?.liquidity && ammExchange?.liquidity !== '0',
+        id: ammExchange?.id,
+        cash: ammExchange?.shareToken?.cash?.id,
+        sharetoken: ammExchange?.shareToken?.id
+      }))
+    : []
 }
 
 export function useMarketNonExistingAmms(marketId) {
@@ -363,8 +369,8 @@ function sumAmmParam(markets, param) {
         if (!m.amm) return p
         const currentCash = p[m.cash.toLowerCase()]
         return currentCash
-          ? { ...p, [m.cash.toLowerCase()]: new BN(m.amm[param]).plus(currentCash) }
-          : { ...p, [m.cash.toLowerCase()]: new BN(m.amm[param]) }
+          ? { ...p, [m.cash.toLowerCase()]: new BN(m.amm[param] || 0).plus(currentCash) }
+          : { ...p, [m.cash.toLowerCase()]: new BN(m.amm[param] || 0) }
       }, {})
     : {}
 }

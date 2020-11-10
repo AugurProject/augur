@@ -24,7 +24,7 @@ const List = styled(Box)`
 const DashGrid = styled.div`
   display: grid;
   grid-gap: 0.25rem;
-  grid-template-columns: 0.5fr 1fr 1fr 1fr 1fr 1.5fr;
+  grid-template-columns: 0.5fr 0.5fr 0.5fr 1fr 1.5fr;
   grid-template-areas: 'name';
   padding: 0 0.75rem;
 
@@ -40,18 +40,18 @@ const DashGrid = styled.div`
 
   @media screen and (max-width: 800px) {
     padding: 0 0.75rem;
-    grid-template-columns: 0.5fr 1fr 1fr 1fr 1.5fr;
+    grid-template-columns: 0.5fr 0.5fr 0.5fr 1fr 1.5fr;
     grid-template-areas: ' name';
   }
 
   @media screen and (min-width: 1080px) {
     padding: 0 0.75rem;
-    grid-template-columns: 0.5fr 1fr 1fr 1fr 1fr 1fr 1.5fr;
+    grid-template-columns: 0.5fr 0.5fr 0.5fr 1fr 1fr 1fr 1.5fr;
     grid-template-areas: ' name';
   }
 
   @media screen and (min-width: 1200px) {
-    grid-template-columns: 0.5fr 1fr 1fr 1fr 1fr 1fr 1.5fr;
+    grid-template-columns: 0.5fr 0.5fr 0.5fr 1fr 1fr 1fr 1.5fr;
     grid-template-areas: ' name';
   }
 `
@@ -62,7 +62,7 @@ function PairList({ allExchanges, disbaleLinks, marketId }) {
   const below600 = useMedia('(max-width: 600px)')
   const below740 = useMedia('(max-width: 740px)')
   //const below800 = useMedia('(max-width: 800px)')
-  //const below1080 = useMedia('(max-width: 1080px)')
+  const below1080 = useMedia('(max-width: 1080px)')
   const [userTokenBalances] = useLPTokenBalances()
 
   const ListItem = ({ ammExchange, index }) => {
@@ -87,12 +87,12 @@ function PairList({ allExchanges, disbaleLinks, marketId }) {
           <TYPE.header area="name" fontWeight="500">
             {formattedNum(ammExchange.liquidityUSD, true)}
           </TYPE.header>
-          <TYPE.header area="name" fontWeight="500">
+          {!below1080 && <TYPE.header area="name" fontWeight="500">
             {formattedNum(ammExchange.volumeNo24hrUSD, true)}
-          </TYPE.header>
-          <TYPE.header area="name" fontWeight="500">
+          </TYPE.header>}
+          {!below1080 && <TYPE.header area="name" fontWeight="500">
             {formattedNum(ammExchange.volumeYes24hrUSD, true)}
-          </TYPE.header>
+          </TYPE.header>}
           <TYPE.header area="name" fontWeight="500">
             <RowFixed style={{ flexFlow: 'row nowrap', justifyContent: 'space-between', marginTop: '0.5rem' }}>
               <StyledInternalLink disabled={!hasLPTokens} to={`/remove/${marketId}/${ammExchange.id}`}>
@@ -144,8 +144,8 @@ function PairList({ allExchanges, disbaleLinks, marketId }) {
             <TYPE.header area="YesPercent">Yes</TYPE.header>
             <TYPE.header area="NoPercent">No</TYPE.header>
             <TYPE.header area="liquidity">Liquidity</TYPE.header>
-            <TYPE.header area="volumeYes">Yes Vol (24h)</TYPE.header>
-            <TYPE.header area="volumeNo">No Vol (24h)</TYPE.header>
+            {!below1080 && <TYPE.header area="volumeYes">Yes Vol (24h)</TYPE.header>}
+            {!below1080 && <TYPE.header area="volumeNo">No Vol (24h)</TYPE.header>}
             <TYPE.header area="uniswap"></TYPE.header>
           </DashGrid>
           <Divider />

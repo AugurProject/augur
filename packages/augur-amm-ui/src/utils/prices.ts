@@ -15,20 +15,21 @@ export function computePriceImpact(
   outputAmount: TokenAmount
 ): { priceImpactWithoutFee: Percent; slippageAdjustedAmounts: string } {
   if (!trade || !minAmount || !outputAmount) return { priceImpactWithoutFee: undefined, slippageAdjustedAmounts: undefined }
-  const currencyInDecimals = new BN(trade?.currencyIn?.decimals)
+
   const currencyOutDecimals = new BN(trade?.currencyOut?.decimals)
-  const displayExecutionPct = new BN(trade.executionPrice)
+  const displayActualPrice = new BN(trade.executionPrice)
   const rawInputAmount = new BN(String(trade?.inputAmount?.raw))
   const rawOutputAmount = new BN(String(outputAmount?.raw))
-  const displayInputAmount = rawInputAmount.div(new BN(10).pow(new BN(currencyInDecimals)))
-  const rawSlipRate = rawOutputAmount.div(rawInputAmount)
-  const rawNonSlipRate = displayExecutionPct.times(displayInputAmount)
-  const impact = (new BN(1).minus(((rawSlipRate.minus(rawNonSlipRate)).div(rawNonSlipRate)).abs()))
+
+  // normalize price by num ticks and pool percentage convert to price
+  const rawSlipRate = rawInputAmount.div(rawOutputAmount).div(1000)
+  const impact = (rawSlipRate.minus(displayActualPrice)).div(displayActualPrice)
+  console.log('slippage:', String(displayActualPrice), '-', String(rawSlipRate), '/', String(displayActualPrice), '=', String(impact))
   const adjMinAmount = String(new BN(String(rawOutputAmount)).div(new BN(10).pow(new BN(currencyOutDecimals))).toFixed(8))
-  const prepDecimal = impact.times(new BN(BIPS_CONSTANT)).toFixed(0)
+  const prepDecimal = new Percent(JSBI.BigInt(impact.times(new BN(BIPS_CONSTANT)).toFixed(0)), BIPS_BASE)
 
   return {
-    priceImpactWithoutFee: new Percent(JSBI.BigInt(prepDecimal), BIPS_BASE),
+    priceImpactWithoutFee: prepDecimal,
     slippageAdjustedAmounts: adjMinAmount
   }
 }
