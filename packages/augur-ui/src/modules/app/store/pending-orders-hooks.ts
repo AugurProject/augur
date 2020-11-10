@@ -49,18 +49,11 @@ const updatePendingQueue = updatedState => {
 
     if (statusTracker[TXEventName.Pending] > 0) {
       status = TXEventName.Pending;
-    } else if (statusTracker[TXEventName.Failure] > 0) {
-      status = TXEventName.Failure;
     } else if (statusTracker[TXEventName.Success] > 0) {
       status = TXEventName.Success;
-    }
-
-    if (statusTracker[TXEventName.Success] === totalCount) {
-      status = TXEventName.Success;
-    }
-    if (statusTracker[TXEventName.Failure] === totalCount) {
+    } else if (statusTracker[TXEventName.Failure] > 0) {
       status = TXEventName.Failure;
-    }
+    } 
 
     if (statusTracker['none'] === 0) {
       submitAllButton = true;
