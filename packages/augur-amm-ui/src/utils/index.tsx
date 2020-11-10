@@ -508,9 +508,9 @@ export function addAmmLiquidity({
     String(cashAmount),
     String(distroPercentage)
   )
-  // odds are the opposite to pool percentage. swich up Yes and No
-  const poolYesPercent = new BN(distroPercentage[DISTRO_NO_ID])
-  const poolNoPercent = new BN(distroPercentage[DISTRO_YES_ID])
+
+  const poolYesPercent = new BN(distroPercentage[DISTRO_YES_ID])
+  const poolNoPercent = new BN(distroPercentage[DISTRO_NO_ID])
 
   return augurClient.ammFactory.addLiquidity(
     account,
