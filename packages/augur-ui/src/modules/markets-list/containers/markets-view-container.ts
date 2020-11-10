@@ -61,7 +61,6 @@ const mapStateToProps = (state: AppState, { location }) => {
     : MARKET_CARD_FORMATS.CLASSIC;
 
   return {
-    canHotload: state.connection.canHotload,
     isConnected: state.connection.isConnected && state.universe.id != null,
     isLogged: state.authStatus.isLogged,
     restoredAccount: state.authStatus.restoredAccount,
@@ -150,14 +149,6 @@ const mapDispatchToProps = (
         pageNumber
       )
     ),
-  hotLoadMarketList: async (cb) => {
-    // We don't want to fire call back.
-    if(await augurSdkLite.get().doesDBAlreadyExist()) return;
-
-    const marketsInfo = await augurSdkLite.get().getMarketCreatedLogs(isGoogleBot());
-    dispatch(handleMarketsUpdatedLog({ marketsInfo }));
-    cb(marketsInfo);
-  },
   loadMarketsInfo: marketIds => dispatch(loadMarketsInfo(marketIds)),
 });
 
