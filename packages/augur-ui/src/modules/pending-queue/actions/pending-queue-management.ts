@@ -15,13 +15,21 @@ import {
   TX_CHECK_BLOCKNUMBER_LIMIT,
   SUBMIT_REPORT,
   SUBMIT_DISPUTE,
+  LIQUIDITY_ORDERS,
+  CANCELORDERS,
+  CLAIMMARKETSPROCEEDS,
+  REDEEMSTAKE,
 } from 'modules/common/constants';
 import { updatePendingOrderStatus } from 'modules/orders/actions/pending-orders-management';
 import { AppStatus } from 'modules/app/store/app-status';
 
 import { generateTxParameterIdFromString } from 'utils/generate-tx-parameter-id';
-import { calculatePayoutNumeratorsArray, TXEventName } from '@augurproject/sdk-lite';
+import {
+  calculatePayoutNumeratorsArray,
+  TXEventName,
+} from '@augurproject/sdk-lite';
 import { PendingOrders } from 'modules/app/store/pending-orders';
+import { PENDING_LIQUIDITY_ORDERS } from 'modules/app/store/constants';
 export const ADD_PENDING_DATA = 'ADD_PENDING_DATA';
 export const REMOVE_PENDING_DATA = 'REMOVE_PENDING_DATA';
 export const REMOVE_PENDING_DATA_BY_HASH = 'REMOVE_PENDING_DATA_BY_HASH';
@@ -74,8 +82,9 @@ export const addPendingData = (
   status: string,
   hash: string,
   info?: CreateMarketData | object
-) =>
+) => {
   addPendingDataWithBlockNumber(pendingId, queueName, status, hash, info);
+};
 
 const addPendingDataWithBlockNumber = (
   pendingId: string,
@@ -93,7 +102,7 @@ const addPendingDataWithBlockNumber = (
     status,
     blockNumber,
     hash,
-    info,
+    info
   );
 };
 
@@ -134,12 +143,17 @@ export const removePendingDataByHash = (hash: string, queueName: string) => {
 export const addCanceledOrder = (
   orderId: string,
   status: string,
-  hash: string
+  hash: string,
+  marketId?: string
 ) => {
-  addPendingData(orderId, CANCELORDER, status, hash);
+  addPendingData(orderId, CANCELORDER, status, hash, { marketId });
+  if (status === TXEventName.Pending) {
+    setTimeout(() => removeCanceledOrder(orderId), 3000);
+  }
 };
 
-export const removeCanceledOrder = (orderId: string) => removePendingData(orderId, CANCELORDER);
+export const removeCanceledOrder = (orderId: string) =>
+  removePendingData(orderId, CANCELORDER);
 
 export const addPendingReport = (
   report: doReportDisputeAddStake,
@@ -178,11 +192,11 @@ const addPendingReportDispute = (
 };
 
 export const updatePendingReportHash = (transaction, hash, status) => {
-  updatePendingReportDisputehash(transaction, SUBMIT_REPORT, hash, status)
+  updatePendingReportDisputehash(transaction, SUBMIT_REPORT, hash, status);
 };
 
 export const updatePendingDisputeHash = (transaction, hash, status) => {
-  updatePendingReportDisputehash(transaction, SUBMIT_DISPUTE, hash, status)
+  updatePendingReportDisputehash(transaction, SUBMIT_DISPUTE, hash, status);
 };
 
 const updatePendingReportDisputehash = (
@@ -286,5 +300,87 @@ const processingPendingOrders = (
           order.hash
         )
       );
+  });
+};
+
+export const updatePendingQueue = (managingQueueName, updatedState) => {
+  if (
+    managingQueueName === TRANSACTIONS ||
+    managingQueueName !== REDEEMSTAKE ||
+    managingQueueName !== CLAIMMARKETSPROCEEDS ||
+    managingQueueName !== PENDING_LIQUIDITY_ORDERS ||
+    managingQueueName !== CANCELORDER
+  ) {
+    return;
+  }
+  let updateQueueName = managingQueueName;
+  let useMarketId = false;
+
+  switch (managingQueueName) {
+    case PENDING_LIQUIDITY_ORDERS:
+      updateQueueName = LIQUIDITY_ORDERS;
+      useMarketId = true;
+      break;
+    case CANCELORDER:
+      updateQueueName = CANCELORDERS;
+      break;
+    default:
+      updateQueueName = managingQueueName;
+      break;
+  }
+
+  Object.keys(updatedState[managingQueueName]).map(txHash => {
+    const order = updatedState[managingQueueName][txHash];
+    let statusTracker = {
+      [TXEventName.Pending]: 0,
+      [TXEventName.Success]: 0,
+      [TXEventName.Failure]: 0,
+      none: 0,
+    };
+    let totalCount = 0;
+    // Object.keys(marketOrders).map(outcome =>
+    //   marketOrders[outcome].map(order => {
+    const orderStatus = order.status ? order.status : 'none';
+    statusTracker[orderStatus] = statusTracker[orderStatus] + 1;
+    totalCount = totalCount + 1;
+    //   })
+    // );
+
+    // let status = '';
+    // let submitAllButton = false;
+
+    // if (statusTracker[TXEventName.Pending] > 0) {
+    //   status = TXEventName.Pending;
+    // } else if (statusTracker[TXEventName.Success] > 0) {
+    //   status = TXEventName.Success;
+    // } else if (statusTracker[TXEventName.Failure] > 0) {
+    //   status = TXEventName.Failure;
+    // }
+
+    // if (statusTracker['none'] === 0) {
+    //   submitAllButton = true;
+    // }
+
+    // let queueId =
+    //   managingQueueName === updateQueueName ? updateQueueName : txHash;
+    // if (useMarketId) {
+    //   queueId = order.data.marketId;
+    // }
+    // const queueName =
+    //   managingQueueName === updateQueueName ? TRANSACTIONS : updateQueueName;
+    // AppStatus.actions.addPendingData(queueId, queueName, status, '', '', {
+    //   submitAllButton,
+    //   dontShowNotificationButton: false,
+    // });
+    // if (status === TXEventName.Failure) {
+    //   setTimeout(
+    //     () =>
+    //       AppStatus.actions.addPendingData(queueId, queueName, status, '', '', {
+    //         submitAllButton,
+    //         dontShowNotificationButton: true,
+    //       }),
+    //     2000
+    //   );
+    // }
   });
 };

@@ -16,6 +16,7 @@ import {
   MAX_BULK_CLAIM_MARKETS_PROCEEDS_COUNT,
   THEMES,
   LIQUIDITY_ORDERS,
+  CANCELORDERS,
 } from 'modules/common/constants';
 import { selectReportingWinningsByMarket } from 'modules/positions/selectors/select-reporting-winnings-by-market';
 import { getTransactionLabel } from 'modules/auth/helpers/get-gas-price';
@@ -543,8 +544,11 @@ export const ModalOpenOrders = () => {
       buttons={[
         {
           text: 'Cancel All',
+          queueName: CANCELORDERS,
+          queueId: marketId,
+          submitAllButton: true,
           action: () => {
-            cancelAllOpenOrders(openOrders);
+            cancelAllOpenOrders(openOrders, marketId);
             closeModal();
           },
         },

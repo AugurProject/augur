@@ -85,9 +85,9 @@ const MarketOrdersPositionsTable: React.FC<MarketOrdersPositionsTableProps> = ({
           <div className={Styles.Footer}>
             <CancelTextButton
               action={() => {
-                cancelAllOpenOrders(openOrders);
+                cancelAllOpenOrders(openOrders, marketId);
                 openOrders.forEach(order => {
-                  addCanceledOrder(order.id, TXEventName.Pending, null);
+                  addCanceledOrder(order.id, TXEventName.Pending, null, marketId);
                 });
               }}
               text="Cancel All"

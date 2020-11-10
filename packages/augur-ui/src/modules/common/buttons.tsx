@@ -312,8 +312,8 @@ export const ProcessingButton = ({
   let pendingData = pendingQueue[queueName] && pendingQueue[queueName][queueId];
 
   if (
-    (submitAllButton && !pendingData.data.submitAllButton) ||
-    (dontShowNotificationButton && pendingData.data.dontShowNotificationButton)
+    (submitAllButton && ! pendingData?.data?.submitAllButton) ||
+    (dontShowNotificationButton && pendingData?.data?.dontShowNotificationButton)
   ) {
     pendingData = null;
   }
@@ -321,7 +321,7 @@ export const ProcessingButton = ({
   if (pendingData) {
     if (
       (matchingId !== null &&
-        String(pendingData.data?.matchingId) !== String(matchingId)) ||
+        String(pendingData?.data?.matchingId) !== String(matchingId)) ||
       (nonMatchingIds &&
         nonMatchingIds.length &&
         nonMatchingIds.includes(pendingData.data.matchingId))

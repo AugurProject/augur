@@ -6,7 +6,7 @@ import { addCanceledOrder } from 'modules/pending-queue/actions/pending-queue-ma
 
 const BATCH_CANCEL_MAX = 4;
 
-export const cancelAllOpenOrders = async orders => {
+export const cancelAllOpenOrders = async (orders, marketId) => {
   let orderHashes = orders.map(order => order.id);
 
   try {
@@ -17,12 +17,12 @@ export const cancelAllOpenOrders = async orders => {
       var i = 0;
       while(i < orderHashes.length) {
         var orderHashesToCancel = orderHashes.slice(i, Math.min(i + BATCH_CANCEL_MAX, orderHashes.length));
-        setCancelOrderStatus(orderHashesToCancel);
+        setCancelOrderStatus(orderHashesToCancel, marketId);
         await cancelZeroXOpenBatchOrders(orderHashesToCancel);
         i += BATCH_CANCEL_MAX;
       }
     } else {
-      setCancelOrderStatus(orderHashes)
+      setCancelOrderStatus(orderHashes, marketId)
       await cancelZeroXOpenBatchOrders(orderHashes);
     }
     orders.forEach(order => {
@@ -30,15 +30,15 @@ export const cancelAllOpenOrders = async orders => {
     });
   } catch (error) {
     console.error('Error canceling batch orders', error);
-    setCancelOrderStatus(orders.map(o => o.id));
+    setCancelOrderStatus(orders.map(o => o.id), marketId);
     throw error;
   }
 };
 
-export const cancelOrder = async order => {
+export const cancelOrder = async (order, marketId) => {
   try {
     const { id } = order;
-    setCancelOrderStatus([id]);
+    setCancelOrderStatus([id], marketId);
     sendCancelAlert(order);
     await cancelZeroXOpenOrder(id);
   } catch (error) {
@@ -65,6 +65,6 @@ const sendCancelAlert = (order) => {
   addAlert(alert);
 };
 
-const setCancelOrderStatus = (ids: string[]) => {
-  ids.map(id => addCanceledOrder(id, TXEventName.Pending, null));
+const setCancelOrderStatus = (ids: string[], marketId) => {
+  ids.map(id => addCanceledOrder(id, TXEventName.Pending, marketId));
 }

@@ -295,6 +295,7 @@ const generateCards = (markets, type) => {
         buttonLabel: TYPE_VIEW_ORDERS,
         queueName: CANCELORDERS,
         queueId: market.id,
+        dontShowNotificationButton: true
       };
     } else if (type === NOTIFICATION_TYPES.reportOnMarkets) {
       defaults = {

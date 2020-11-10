@@ -268,24 +268,23 @@ export const addUpdateTransaction = async (txStatus: Events.TXStatus) => {
       case CANCELORDER: {
         const orderId =
           transaction.params && transaction.params.order[TX_ORDER_ID];
-        addCanceledOrder(orderId, eventName, hash);
+        const marketId = parseZeroXMakerAssetData(transaction.params.order.makerAssetData).market;
+        addCanceledOrder(orderId, eventName, hash, marketId);
         break;
       }
       case BATCHCANCELORDERS: {
         const orders = (transaction.params && transaction.params.orders) || [];
-        orders.map(order => addCanceledOrder(order.orderId, eventName, hash));
+        orders.map(order => {
+          const marketId = parseZeroXMakerAssetData(order.makerAssetData).market;
+          addCanceledOrder(order.orderId, eventName, hash, marketId)
+        });
         break;
       }
       case CANCELORDERS: {
         const orders = (transaction.params && transaction.params._orders) || [];
         orders.map(order => {
-          addCanceledOrder(order.orderId, eventName, hash);
-          addPendingData(
-            parseZeroXMakerAssetData(order.makerAssetData).market,
-            CANCELORDERS,
-            eventName,
-            hash
-          );
+          const marketId = parseZeroXMakerAssetData(order.makerAssetData).market;
+          addCanceledOrder(order.orderId, eventName, hash, marketId);
           if (eventName === TXEventName.Success) {
             const alert = {
               params: {

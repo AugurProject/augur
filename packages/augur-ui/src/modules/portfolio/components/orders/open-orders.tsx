@@ -27,7 +27,7 @@ interface OpenOrdersProps {
   toggle?: () => void;
   extend?: boolean;
   hide?: boolean;
-  cancelAllOpenOrders: (orders: UIOrder[]) => void;
+  cancelAllOpenOrders: (orders: UIOrder[], marketId) => void;
 }
 
 interface OpenOrdersState {
@@ -89,17 +89,7 @@ const OpenOrders = ({
       toggle={toggle}
       hide={hide}
       extend={extend}
-      footer={
-        openOrders.length > 0 ? (
-          <div className={Styles.PortfolioFooter}>
-            <CancelTextButton
-              action={() => cancelAllOpenOrders(openOrders)}
-              text="Cancel All"
-              disabled={hasPending}
-            />
-          </div>
-        ) : null
-      }
+      footer={null}
     />
   );
 };
