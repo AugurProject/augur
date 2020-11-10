@@ -17,6 +17,7 @@ import {
   THEMES,
   LIQUIDITY_ORDERS,
   CANCELORDERS,
+  CLAIMMARKETSPROCEEDS,
 } from 'modules/common/constants';
 import { selectReportingWinningsByMarket } from 'modules/positions/selectors/select-reporting-winnings-by-market';
 import { getTransactionLabel } from 'modules/auth/helpers/get-gas-price';
@@ -420,6 +421,8 @@ export const ModalClaimMarketsProceeds = () => {
           status: pending && pending.status,
           properties,
           text: 'Claim',
+          queueName: CLAIMMARKETSPROCEEDS,
+          queueId: marketId,
           action: showBreakdown
             ? () => startClaimingMarketsProceeds([marketId], account, () => {})
             : null,

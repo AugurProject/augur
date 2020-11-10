@@ -309,12 +309,12 @@ const processingPendingOrders = (
   });
 };
 
-export const updatePendingQueue = (managingQueueName) => {
+export const updatePendingQueue = managingQueueName => {
   // clean up this function and duplicate
   let updateQueueName = managingQueueName;
   let useMarketId = false;
   let totalCount = 0;
-  
+
   if (managingQueueName === CANCELORDER) {
     updateQueueName = CANCELORDERS;
     useMarketId = true;
@@ -362,7 +362,10 @@ export const updatePendingQueue = (managingQueueName) => {
       status = TXEventName.Failure;
     }
 
-    if (statusTracker['none'] === 0 && Object.keys(pendingQueue).length === totalCount) {
+    if (
+      statusTracker['none'] === 0 &&
+      Object.keys(pendingQueue).length === totalCount
+    ) {
       submitAllButton = true;
     }
 
@@ -372,7 +375,11 @@ export const updatePendingQueue = (managingQueueName) => {
       submitAllButton,
       dontShowNotificationButton: false,
     });
-    if (status === TXEventName.Failure) {
+    if (
+      status === TXEventName.Failure ||
+      (status === TXEventName.Success &&
+        statusTracker[TXEventName.Success] !== totalCount)
+    ) {
       setTimeout(
         () =>
           AppStatus.actions.addPendingData(queueId, queueName, status, '', '', {

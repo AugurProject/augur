@@ -247,6 +247,7 @@ export const getNotifications = (): Notification[] => {
       id: NOTIFICATION_TYPES.proceedsToClaim,
       queueName: TRANSACTIONS,
       queueId: CLAIMMARKETSPROCEEDS,
+      dontShowNotificationButton: true
     });
   }
 
