@@ -120,19 +120,16 @@
     "chat": "orbit"
   },
   "warpSync": {
-    "enabled": true,
+    "enabled": false,
     "autoReport": false,
-    "createCheckpoints": true
-
+    "createCheckpoints": false
   },
   "syncing": {
     "enabled": true
-
   },
   "sdk": {
     "enabled": false,
     "ws": "ws://localhost:60557"
-
   },
   "server": {
     "httpPort": 9003,
@@ -143,7 +140,6 @@
     "startWS": true,
     "wssPort": 9002,
     "startWSS": true
-
   },
   "logLevel": 2,
   "showReloadModal": false,
