@@ -130,6 +130,7 @@ export function PendingOrdersReducer(state, action) {
       updatedState[PENDING_LIQUIDITY_ORDERS] = {
         ...pendingLiquidityOrders,
       };
+      updatePendingQueue(updatedState);
       break;
     }
     case DELETE_SUCCESSFUL_LIQUIDITY_ORDER: {
@@ -157,6 +158,7 @@ export function PendingOrdersReducer(state, action) {
       updatedState[PENDING_LIQUIDITY_ORDERS] = {
         ...pendingLiquidityOrders,
       };
+      updatePendingQueue(updatedState);
       break;
     }
     case UPDATE_TX_PARAM_HASH_TX_HASH: {
@@ -190,6 +192,7 @@ export function PendingOrdersReducer(state, action) {
       updatedState[PENDING_LIQUIDITY_ORDERS] = {
         ...pendingLiquidityOrders,
       };
+      updatePendingQueue(updatedState);
       break;
     }
     case UPDATE_LIQUIDITY_ORDER: {
@@ -231,6 +234,7 @@ export function PendingOrdersReducer(state, action) {
       updatedState[PENDING_LIQUIDITY_ORDERS] = {
         ...pendingLiquidityOrders,
       };
+      updatePendingQueue(updatedState);
       break;
     }
     case CLEAR_ALL_MARKET_ORDERS: {
@@ -289,7 +293,6 @@ export function PendingOrdersReducer(state, action) {
     default:
       console.error(`Error: ${action.type} not caught by Pending reducer.`);
   }
-  updatePendingQueue(updatedState);
   windowRef.pendingOrders = updatedState;
   windowRef.stores.pendingOrders = updatedState;
   return updatedState;
