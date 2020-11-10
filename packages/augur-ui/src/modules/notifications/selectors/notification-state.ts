@@ -228,6 +228,7 @@ export const getNotifications = (): Notification[] => {
       queueName: TRANSACTIONS,
       queueId: REDEEMSTAKE,
       id: NOTIFICATION_TYPES.claimReportingFees,
+      dontShowNotificationButton: true
     });
   }
 
@@ -340,6 +341,7 @@ const generateCards = (markets, type) => {
         buttonLabel: TYPE_VIEW_DETAILS,
         queueName: TRANSACTIONS,
         queueId: CLAIMMARKETSPROCEEDS,
+        dontShowNotificationButton: true
       };
     } else if (type === NOTIFICATION_TYPES.marketIsMostLikelyInvalid) {
       defaults = {

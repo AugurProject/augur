@@ -66,5 +66,5 @@ const sendCancelAlert = (order) => {
 };
 
 const setCancelOrderStatus = (ids: string[], marketId) => {
-  ids.map(id => addCanceledOrder(id, TXEventName.Pending, marketId));
+  ids.map(id => addCanceledOrder(id, TXEventName.Pending, '', marketId));
 }

@@ -50,6 +50,7 @@ import {
   updatePendingReportHash,
   updatePendingDisputeHash,
   removePendingDataByHash,
+  updatePendingQueue,
 } from 'modules/pending-queue/actions/pending-queue-management';
 import { convertUnixToFormattedDate } from 'utils/format-date';
 import { TransactionMetadataParams } from '@augurproject/contract-dependencies-ethers';
@@ -187,6 +188,7 @@ export const addUpdateTransaction = async (txStatus: Events.TXStatus) => {
             ...transaction,
           })
         );
+        updatePendingQueue(REDEEMSTAKE);
         break;
       }
       case CLAIMMARKETSPROCEEDS: {
@@ -204,6 +206,7 @@ export const addUpdateTransaction = async (txStatus: Events.TXStatus) => {
             ...transaction,
           });
         }
+        updatePendingQueue(CLAIMMARKETSPROCEEDS);
         break;
       }
       case BUYPARTICIPATIONTOKENS: {
@@ -270,6 +273,7 @@ export const addUpdateTransaction = async (txStatus: Events.TXStatus) => {
           transaction.params && transaction.params.order[TX_ORDER_ID];
         const marketId = parseZeroXMakerAssetData(transaction.params.order.makerAssetData).market;
         addCanceledOrder(orderId, eventName, hash, marketId);
+        updatePendingQueue(CANCELORDER);
         break;
       }
       case BATCHCANCELORDERS: {
@@ -278,6 +282,7 @@ export const addUpdateTransaction = async (txStatus: Events.TXStatus) => {
           const marketId = parseZeroXMakerAssetData(order.makerAssetData).market;
           addCanceledOrder(order.orderId, eventName, hash, marketId)
         });
+        updatePendingQueue(CANCELORDER);
         break;
       }
       case CANCELORDERS: {
@@ -297,6 +302,7 @@ export const addUpdateTransaction = async (txStatus: Events.TXStatus) => {
             updateAlert(order.orderId, alert);
           }
         });
+        updatePendingQueue(CANCELORDER);
         break;
       }
       case DOINITIALREPORT: {

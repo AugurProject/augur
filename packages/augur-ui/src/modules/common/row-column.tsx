@@ -187,13 +187,11 @@ function selectColumn(columnType: string, properties: Properties) {
         ? 'Failed'
         : 'Processing ...';
       const isDisabled = !failed && !confirmed;
-      const icon = failed || confirmed ? XIcon : null;
       return pending ? (
         <span>
           <CancelTextButton
             confirmed={confirmed}
             failed={failed}
-            icon={icon}
             text={buttonText}
             action={action}
             disabled={isDisabled}

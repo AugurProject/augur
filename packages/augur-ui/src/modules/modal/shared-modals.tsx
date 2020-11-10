@@ -532,7 +532,13 @@ export const ModalOpenOrders = () => {
   const userOpenOrders = getUserOpenOrders(modal.marketId) || [];
   const openOrders = userOpenOrders;
   const { description: marketTitle, marketId } = market;
-
+  if (openOrders.length === 0) {
+    if (modal.cb) {
+      modal.cb();
+    }
+    closeModal();
+    return null;
+  }
   return (
     <UnsignedOrders
       title='Open Orders in resolved market'

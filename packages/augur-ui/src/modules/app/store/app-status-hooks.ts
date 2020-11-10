@@ -46,7 +46,7 @@ import {
   INITIALIZED_3BOX,
 } from 'modules/app/store/constants';
 import { EMPTY_STATE } from 'modules/create-market/constants';
-import { ZERO, NEW_ORDER_GAS_ESTIMATE, THEMES } from 'modules/common/constants';
+import { ZERO, NEW_ORDER_GAS_ESTIMATE, THEMES, CANCELORDER, CLAIMMARKETSPROCEEDS, REDEEMSTAKE } from 'modules/common/constants';
 import { createBigNumber } from 'utils/create-big-number';
 import { LiquidityOrder } from 'modules/types';
 import { windowRef } from 'utils/window-ref';
@@ -435,19 +435,16 @@ export function AppStatusReducer(state, action) {
     }
     case ADD_PENDING_DATA: {
       const { pendingId, queueName, status, blockNumber, hash, info } = action;
-      updatedState[PENDING_QUEUE] = {
-        ...updatedState[PENDING_QUEUE],
-        [queueName]: {
-          ...updatedState[PENDING_QUEUE][queueName],
-          [pendingId]: {
-            status,
-            data: info,
-            hash,
-            blockNumber,
-          },
+      updatedState[PENDING_QUEUE][queueName] = {
+        ...updatedState[PENDING_QUEUE][queueName],
+        [pendingId]: {
+          status,
+          data: info,
+          hash,
+          blockNumber,
         },
       };
-      updatePendingQueue(queueName, updatedState[PENDING_QUEUE]);
+      //updatePendingQueue(queueName, updatedState[PENDING_QUEUE]);
       break;
     }
     case UPDATE_PENDING_DATA_BY_HASH: {
@@ -467,7 +464,7 @@ export function AppStatusReducer(state, action) {
           ...queue,
         };
       }
-      updatePendingQueue(queueName, updatedState[PENDING_QUEUE]);
+      //updatePendingQueue(queueName, updatedState[PENDING_QUEUE]);
       break;
     }
     case REMOVE_PENDING_DATA: {
@@ -492,7 +489,7 @@ export function AppStatusReducer(state, action) {
           delete updatedState[PENDING_QUEUE][queueName];
         }
       }
-      updatePendingQueue(queueName, updatedState[PENDING_QUEUE]);
+      //updatePendingQueue(queueName, updatedState[PENDING_QUEUE]);
       break;
     }
     case REFRESH_USER_OPEN_ORDERS: {
