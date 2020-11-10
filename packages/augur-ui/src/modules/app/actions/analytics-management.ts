@@ -10,7 +10,7 @@ export const loadAnalytics = (analytics: Analytics, prevCurrentAugurTimestamp) =
         const analytic = analytics[id];
         const { blockchain: { currentAugurTimestamp }} = AppStatus.get();
         const { addAnalytic, removeAnalytic } = AppStatus.actions;
-        if ((currentAugurTimestamp - analytic.properties.addedTimestamp) > SEND_DELAY_SECONDS) {
+        if ((currentAugurTimestamp - analytic.payload.addedTimestamp) > SEND_DELAY_SECONDS) {
           sendAnalytic(analytic);
           removeAnalytic(id);
         } else {
