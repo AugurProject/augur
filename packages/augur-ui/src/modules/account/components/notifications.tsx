@@ -56,7 +56,8 @@ function getRows(
   disputingWindowEndTime,
   disabledNotifications
 ) {
-  return orderBy(notifications, ['isNew', 'isRead'], ['desc', 'asc'])
+  // return orderBy(notifications, ['isNew', 'isRead'], ['desc', 'asc'])
+  return orderBy(notifications, ['lastUpdated'], ['desc'])
     .filter(notification => !notification.hideNotification)
     .map(({
       buttonAction,
@@ -91,7 +92,6 @@ function getRows(
         queueId,
         dontShowNotificationButton
       };
-
       const notificationCardProps = {
         id,
         type,
@@ -354,6 +354,7 @@ const Notifications = ({ toggle }: NotificationsProps) => {
       )}
     </div>
   );
+
   const rows = getRows(notifications, currentTime, (disputeWindow?.endTime ||
   0), disabledNotifications);
 
