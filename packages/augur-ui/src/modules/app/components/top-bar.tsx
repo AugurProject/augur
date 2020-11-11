@@ -36,7 +36,7 @@ import {
 import { useAppStatusStore } from 'modules/app/store/app-status';
 import { getInfoAlertsAndSeenCount } from 'modules/alerts/helpers/alerts';
 import AlertsContainer from 'modules/alerts/components/alerts-view';
-import { Betslip, useBetslipStore } from 'modules/trading/store/betslip';
+import { Betslip } from 'modules/trading/store/betslip';
 import { BETSLIP_SELECTED } from 'modules/trading/store/constants';
 import Styles from 'modules/app/components/top-bar.styles.less';
 import { getCoreStats } from 'modules/auth/helpers/login-account';

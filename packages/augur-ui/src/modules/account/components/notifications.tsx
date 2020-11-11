@@ -56,7 +56,7 @@ function getRows(
   disputingWindowEndTime,
   disabledNotifications
 ) {
-  return orderBy(notifications, ['isNew','lastUpdated'], ['desc', 'desc'])
+  return orderBy(notifications, ['isNew','isRead','lastUpdated'], ['desc', 'asc', 'desc'])
     .filter(notification => !notification.hideNotification)
     .map(({
       buttonAction,
@@ -325,6 +325,38 @@ function getButtonAction(
 }
 
 const Notifications = ({ toggle }: NotificationsProps) => {
+  const {
+    labelContent,
+    rows,
+    notificationCount,
+  } = useNotifications();
+
+  return (
+    <QuadBox
+      title={NOTIFICATIONS_TITLE}
+      headerComplement={labelContent}
+      toggle={toggle}
+      customClass={classNames({
+        [Styles.HasNotifications]: notificationCount !== 0,
+      })}
+      content={
+        notificationCount === 0 ? (
+          <EmptyDisplay
+            selectedTab=""
+            filterLabel={NOTIFICATIONS_LABEL}
+            search=""
+            title={NOTIFICATIONS_TITLE}
+            icon={MessagesIcon}
+          />
+        ) : (
+          rows
+        )
+      }
+    />
+  );
+};
+
+export const useNotifications = () => {
   const [disabledNotifications, setDisabledNotifications] = useState({});
   const {
     universe: { disputeWindow },
@@ -378,29 +410,12 @@ const Notifications = ({ toggle }: NotificationsProps) => {
     };
   }, []);
 
-  return (
-    <QuadBox
-      title={NOTIFICATIONS_TITLE}
-      headerComplement={labelContent}
-      toggle={toggle}
-      customClass={classNames({
-        [Styles.HasNotifications]: notificationCount !== 0,
-      })}
-      content={
-        notificationCount === 0 ? (
-          <EmptyDisplay
-            selectedTab=""
-            filterLabel={NOTIFICATIONS_LABEL}
-            search=""
-            title={NOTIFICATIONS_TITLE}
-            icon={MessagesIcon}
-          />
-        ) : (
-          rows
-        )
-      }
-    />
-  );
+  return {
+    labelContent,
+    rows,
+    notificationCount,
+    newNotificationCount
+  };
 };
 
 export default Notifications;

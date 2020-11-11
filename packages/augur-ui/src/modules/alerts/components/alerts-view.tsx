@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import classNames from 'classnames';
 
 import NullStateMessage from 'modules/common/null-state-message';
@@ -9,9 +9,15 @@ import Styles from 'modules/alerts/components/alerts-view.styles.less';
 import ToggleHeightStyles from 'utils/toggle-height.styles.less';
 import { useAppStatusStore } from 'modules/app/store/app-status';
 import { getInfoAlertsAndSeenCount } from 'modules/alerts/helpers/alerts';
-import { INFO } from 'modules/common/constants';
+import { INFO, THEMES } from 'modules/common/constants';
+import { NOTIFICATIONS, ALERTS } from 'modules/app/store/constants';
 import { updateExistingAlert } from '../actions/alerts';
+import { useNotifications } from 'modules/account/components/notifications';
 
+const TABS = {
+  NOTIFICATIONS,
+  ALERTS,
+};
 const AlertsView = () => {
   const { alerts } = getInfoAlertsAndSeenCount();
   const {
@@ -21,6 +27,9 @@ const AlertsView = () => {
     isAlertsMenuOpen,
     actions: { setIsAlertsMenuOpen, clearAlerts, removeAlert },
   } = useAppStatusStore();
+  const { rows, newNotificationCount, notificationCount } = useNotifications();
+  const [tab, setTab] = useState(ALERTS);
+  const isSports = theme === THEMES.SPORTS;
   const alertsVisible = isLogged && isAlertsMenuOpen;
   const hasAlerts = alerts?.length;
 
@@ -30,22 +39,27 @@ const AlertsView = () => {
         updateExistingAlert(alert.uniqueId, { ...alert, seen: true })
       );
     } else {
-      alerts.forEach(alert => updateExistingAlert(alert.uniqueId, { ...alert }));
+      alerts.forEach(alert =>
+        updateExistingAlert(alert.uniqueId, { ...alert })
+      );
     }
   }, [alertsVisible, theme, oddsType]);
 
   return (
     <div
-      className={classNames(Styles.parent, {
-        [ToggleHeightStyles.target]: true,
-        [ToggleHeightStyles.quick]: true,
-        [ToggleHeightStyles.open]: isAlertsMenuOpen,
-      })}
+      className={classNames(
+        Styles.parent,
+        ToggleHeightStyles.target,
+        ToggleHeightStyles.quick,
+        {
+          [ToggleHeightStyles.open]: isAlertsMenuOpen,
+        }
+      )}
     >
       <section
         id="alerts_view"
         className={classNames(Styles.AlertsView, {
-          [Styles.noAlerts]: !(hasAlerts),
+          [Styles.noAlerts]: !hasAlerts,
           [Styles.isOpen]: isAlertsMenuOpen,
         })}
       >
@@ -62,7 +76,7 @@ const AlertsView = () => {
           <div className={Styles.box}>
             {alerts.map((alert, i) => (
               <Alert
-                key={`${i}-${alert.uniqueId}-${alert.title}`}
+                key={alert.uniqueId}
                 removeAlert={() => removeAlert(alert.uniqueId, alert.name)}
                 timestampInMilliseconds={alert.timestamp}
                 {...alert}
@@ -85,6 +99,10 @@ const AlertsView = () => {
             </button>
           ) : null}
         </div>
+        <ul className={Styles.SportsHeader}>
+          <li>{`${NOTIFICATIONS} (${notificationCount})`}</li>
+          <li>{`${ALERTS} (${alerts.length})`}</li>
+        </ul>
       </section>
     </div>
   );

@@ -125,6 +125,10 @@
   }
 }
 
+.SportsHeader {
+  display: none;
+}
+
 :root[theme="BETTING"],
 :root[theme="SPORTS"] {
   .AlertsView {
@@ -230,5 +234,22 @@
         border-bottom: @size-1 solid var(--color-primary-text);
       }
     }
+  }
+}
+
+:root[theme="SPORTS"] {
+  .SportsHeader {
+    background-color: var(--color-page-background);
+    border-bottom: @size-1 solid var(--color-dark-grey);
+    border-radius: 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 @size-12;
+    margin: 0;
+  }
+
+  .DismissContainer {
+    display: none;
   }
 }
