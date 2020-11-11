@@ -61,6 +61,7 @@ const AlertsView = () => {
         className={classNames(Styles.AlertsView, {
           [Styles.noAlerts]: !hasAlerts,
           [Styles.isOpen]: isAlertsMenuOpen,
+          [Styles.AlertsTab]: (isSports && tab === ALERTS && alerts.length)
         })}
       >
         <button
@@ -100,8 +101,18 @@ const AlertsView = () => {
           ) : null}
         </div>
         <ul className={Styles.SportsHeader}>
-          <li>{`${NOTIFICATIONS} (${notificationCount})`}</li>
-          <li>{`${ALERTS} (${alerts.length})`}</li>
+          <li
+            className={classNames({ [Styles.Selected]: tab === NOTIFICATIONS })}
+          >
+            <button
+              onClick={() => setTab(NOTIFICATIONS)}
+            >{`${NOTIFICATIONS} (${notificationCount})`}</button>
+          </li>
+          <li className={classNames({ [Styles.Selected]: tab === ALERTS })}>
+            <button
+              onClick={() => setTab(ALERTS)}
+            >{`${ALERTS} (${alerts.length})`}</button>
+          </li>
         </ul>
       </section>
     </div>
