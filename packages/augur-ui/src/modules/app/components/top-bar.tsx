@@ -46,6 +46,7 @@ import {
   approveShareTokenCheck,
   approveZeroXCheck,
 } from 'modules/contracts/actions/contractCalls';
+import { getNotifications } from 'modules/notifications/selectors/notification-state';
 
 const handleShowOnboarding = (currentOnboardingStep, setModal) => {
   let nextStep = MODAL_AUGUR_USES_DAI;
@@ -164,6 +165,11 @@ const TopBar = () => {
 
   const accountSetup =
     isZeroXApproved && isShareTokenApproved && isFillOrderAprpoved;
+  const newNotificationCount = getNotifications().filter(item => item.isNew)
+    .length;
+  const totalUnseenCount = isSports
+    ? newNotificationCount + unseenCount
+    : unseenCount;
   return (
     <header className={Styles.TopBar}>
       <div className={Styles.Logo}>
@@ -236,14 +242,14 @@ const TopBar = () => {
             <button
               className={classNames(Styles.alerts, {
                 [Styles.alertsDark]: isAlertsMenuOpen,
-                [Styles.Empty]: unseenCount < 1,
+                [Styles.Empty]: totalUnseenCount < 1,
               })}
               onClick={() => {
                 setIsAlertsMenuOpen(!isAlertsMenuOpen);
               }}
               tabIndex={-1}
             >
-              {Alerts(unseenCount)}
+              {Alerts(totalUnseenCount)}
             </button>
             <AlertsContainer />
           </div>
