@@ -563,7 +563,7 @@ export const ModalOpenOrders = () => {
           queueId: marketId,
           submitAllButton: true,
           action: () => {
-            cancelAllOpenOrders(openOrders, marketId);
+            cancelAllOpenOrders(openOrders);
             closeModal();
           },
         },
