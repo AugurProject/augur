@@ -52,7 +52,6 @@ import { LiquidityOrder } from 'modules/types';
 import { windowRef } from 'utils/window-ref';
 import { formatDai, formatShares } from 'utils/format-number';
 import { track, MODAL_CLOSED } from 'services/analytics/helpers';
-import { updatePendingQueue } from 'modules/pending-queue/actions/pending-queue-management';
 const {
   SET_THEME,
   SET_ODDS,
@@ -444,7 +443,6 @@ export function AppStatusReducer(state, action) {
           blockNumber,
         },
       };
-      //updatePendingQueue(queueName, updatedState[PENDING_QUEUE]);
       break;
     }
     case UPDATE_PENDING_DATA_BY_HASH: {
@@ -464,7 +462,6 @@ export function AppStatusReducer(state, action) {
           ...queue,
         };
       }
-      //updatePendingQueue(queueName, updatedState[PENDING_QUEUE]);
       break;
     }
     case REMOVE_PENDING_DATA: {
@@ -489,7 +486,6 @@ export function AppStatusReducer(state, action) {
           delete updatedState[PENDING_QUEUE][queueName];
         }
       }
-      //updatePendingQueue(queueName, updatedState[PENDING_QUEUE]);
       break;
     }
     case REFRESH_USER_OPEN_ORDERS: {

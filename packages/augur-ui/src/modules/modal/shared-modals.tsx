@@ -329,6 +329,9 @@ export const ModalClaimFees = () => {
               {
                 text: CLAIM_ALL_TITLE,
                 disabled: modalRows.find(market => market.status === 'pending'),
+                submitAllButton: true,
+                queueName: TRANSACTIONS,
+                queueId: REDEEMSTAKE,
                 action: () => {
                   redeemStake(allRedeemStakeOptions, () => {
                     if (modal.cb) {
@@ -503,6 +506,9 @@ export const ModalClaimMarketsProceeds = () => {
           disabled: claimableMarkets.find(
             market => market.status === 'pending'
           ),
+          submitAllButton: true,
+          queueName: TRANSACTIONS,
+          queueId: CLAIMMARKETSPROCEEDS,
           action: () => {
             startClaimingMarketsProceeds(
               claimableMarkets.map(m => m.marketId),

@@ -30,7 +30,6 @@ export const cancelAllOpenOrders = async (orders, marketId) => {
     });
   } catch (error) {
     console.error('Error canceling batch orders', error);
-    setCancelOrderStatus(orders.map(o => o.id), marketId);
     throw error;
   }
 };

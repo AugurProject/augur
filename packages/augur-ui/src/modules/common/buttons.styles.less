@@ -6,6 +6,36 @@
   }
 }
 
+.FailedProcessingButton {
+  border: 0;
+  background: transparent;
+  color: var(--color-error);
+
+  > span {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    display: flex;
+
+    > svg {
+      width: @size-8;
+      height: @size-8;
+      margin-left: @size-4;
+
+      > path {
+        fill: var(--color-error);
+      }
+    }
+  }
+
+  &:hover,
+  &:focus:enabled,
+  &:focus,
+  &:hover:enabled {
+    background: transparent;
+  }
+}
+
 .Button {
   .text-12-bold;
 
@@ -119,33 +149,7 @@
   }
 
   &.Failed {
-    border: 0;
-    background: transparent;
-    color: var(--color-error);
-
-    > span {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      display: flex;
-
-      > svg {
-        width: @size-7;
-        height: @size-8;
-        margin-left: @size-4;
-
-        > path {
-          fill: var(--color-error);
-        }
-      }
-    }
-
-    &:hover,
-    &:focus:enabled,
-    &:focus,
-    &:hover:enabled {
-      background: transparent;
-    }
+    .FailedProcessingButton;
   }
 }
 .TextUnderlineButton {
@@ -1112,26 +1116,7 @@
   }
 
   &.Failed {
-    border: 0;
-    background: transparent;
-    color: var(--color-error);
-
-    > span {
-      > svg {
-        width: @size-7;
-        height: @size-8;
-        margin-left: @size-4;
-
-        > path {
-          fill: var(--color-error);
-        }
-      }
-    }
-
-    &:hover:enabled,
-    &:hover {
-      background: transparent;
-    }
+    .FailedProcessingButton;
   }
 }
 
@@ -1162,7 +1147,7 @@
   }
 
   &.Failed {
-    color: var(--color-error);
+    .FailedProcessingButton;
   }
 
   &.Confirmed {

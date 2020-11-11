@@ -62,7 +62,6 @@ import { PendingOrders } from 'modules/app/store/pending-orders';
 
 const ADD_PENDING_QUEUE_METHOD_CALLS = [
   BUYPARTICIPATIONTOKENS,
-  REDEEMSTAKE,
   MIGRATE_FROM_LEG_REP_TOKEN,
   APPROVE_FROM_LEG_REP_TOKEN,
   BATCHCANCELORDERS,
@@ -77,7 +76,6 @@ const ADD_PENDING_QUEUE_METHOD_CALLS = [
   SWAPETHFOREXACTTOKENS,
   SENDETHER,
   TRANSFER,
-  CLAIMMARKETSPROCEEDS,
   FINALIZE,
   APPROVE,
   SETREFERRER,
@@ -193,19 +191,15 @@ export const addUpdateTransaction = async (txStatus: Events.TXStatus) => {
       }
       case CLAIMMARKETSPROCEEDS: {
         const params = transaction.params;
-        if (params._markets.length === 1) {
+        params._markets.map(market => {
           addPendingData(
-            params._markets[0],
+            market,
             CLAIMMARKETSPROCEEDS,
             eventName,
             hash,
             { ...transaction }
           );
-        } else {
-          addUpdatePendingTransaction(methodCall, eventName, hash, {
-            ...transaction,
-          });
-        }
+        })
         updatePendingQueue(CLAIMMARKETSPROCEEDS);
         break;
       }
@@ -273,7 +267,7 @@ export const addUpdateTransaction = async (txStatus: Events.TXStatus) => {
           transaction.params && transaction.params.order[TX_ORDER_ID];
         const marketId = parseZeroXMakerAssetData(transaction.params.order.makerAssetData).market;
         addCanceledOrder(orderId, eventName, hash, marketId);
-        updatePendingQueue(CANCELORDER);
+        updatePendingQueue(CANCELORDER, marketId);
         break;
       }
       case BATCHCANCELORDERS: {
@@ -287,8 +281,9 @@ export const addUpdateTransaction = async (txStatus: Events.TXStatus) => {
       }
       case CANCELORDERS: {
         const orders = (transaction.params && transaction.params._orders) || [];
+        let marketId = '';
         orders.map(order => {
-          const marketId = parseZeroXMakerAssetData(order.makerAssetData).market;
+          marketId = parseZeroXMakerAssetData(order.makerAssetData).market;
           addCanceledOrder(order.orderId, eventName, hash, marketId);
           if (eventName === TXEventName.Success) {
             const alert = {
@@ -302,7 +297,7 @@ export const addUpdateTransaction = async (txStatus: Events.TXStatus) => {
             updateAlert(order.orderId, alert);
           }
         });
-        updatePendingQueue(CANCELORDER);
+        updatePendingQueue(CANCELORDER, marketId);
         break;
       }
       case DOINITIALREPORT: {
