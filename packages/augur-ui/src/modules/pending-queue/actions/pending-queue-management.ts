@@ -424,6 +424,7 @@ export const manageAndUpdatePendingQueue = (
     totalCount
   );
 };
+
 export const updatePendingQueue = (
   managingQueueName: string,
   marketId?: string
@@ -440,7 +441,7 @@ export const updatePendingQueue = (
   ).filter(order =>
     managingQueueName === CANCELORDER ? order.data.marketId === marketId : true
   );
-  
+
   if (managingQueueName === CANCELORDER) {
     queueName = CANCELORDERS;
     queueId = marketId;

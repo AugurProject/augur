@@ -7,14 +7,9 @@ import {
 } from 'modules/app/store/constants';
 import { LiquidityOrder } from 'modules/types';
 import { windowRef } from 'utils/window-ref';
-import { TXEventName } from '@augurproject/sdk-lite';
-import { AppStatus } from './app-status';
 import { LIQUIDITY_ORDERS } from 'modules/common/constants';
 import {
-  evaluateStatusTracker,
-  findOrderStatus,
   manageAndUpdatePendingQueue,
-  updatePendingDataBasedOnQueue,
 } from 'modules/pending-queue/actions/pending-queue-management';
 
 const {
