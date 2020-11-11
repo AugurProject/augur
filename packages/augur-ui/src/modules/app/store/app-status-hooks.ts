@@ -46,7 +46,7 @@ import {
   INITIALIZED_3BOX,
 } from 'modules/app/store/constants';
 import { EMPTY_STATE } from 'modules/create-market/constants';
-import { ZERO, NEW_ORDER_GAS_ESTIMATE, THEMES, CANCELORDER, CLAIMMARKETSPROCEEDS, REDEEMSTAKE } from 'modules/common/constants';
+import { ZERO, NEW_ORDER_GAS_ESTIMATE, THEMES } from 'modules/common/constants';
 import { createBigNumber } from 'utils/create-big-number';
 import { LiquidityOrder } from 'modules/types';
 import { windowRef } from 'utils/window-ref';
