@@ -21,10 +21,10 @@ import {
   CLAIMMARKETSPROCEEDS,
   REDEEMSTAKE,
   ZERO,
+  BATCHCANCELORDERS,
 } from 'modules/common/constants';
 import { updatePendingOrderStatus } from 'modules/orders/actions/pending-orders-management';
 import { AppStatus } from 'modules/app/store/app-status';
-import getUserOpenOrders from 'modules/orders/selectors/user-open-orders';
 
 import { generateTxParameterIdFromString } from 'utils/generate-tx-parameter-id';
 import {
@@ -32,9 +32,10 @@ import {
   TXEventName,
 } from '@augurproject/sdk-lite';
 import { PendingOrders } from 'modules/app/store/pending-orders';
-import { PENDING_LIQUIDITY_ORDERS } from 'modules/app/store/constants';
 import { getLoginAccountClaimableWinnings } from 'modules/positions/selectors/login-account-claimable-winnings';
 import { selectReportingWinningsByMarket } from 'modules/positions/selectors/select-reporting-winnings-by-market';
+import selectMarketsOpenOrders from 'modules/portfolio/selectors/select-markets-open-orders';
+
 export const ADD_PENDING_DATA = 'ADD_PENDING_DATA';
 export const REMOVE_PENDING_DATA = 'REMOVE_PENDING_DATA';
 export const REMOVE_PENDING_DATA_BY_HASH = 'REMOVE_PENDING_DATA_BY_HASH';
@@ -321,10 +322,7 @@ export const evaluateStatusTracker = (
     status = TXEventName.Failure;
   }
 
-  if (
-    statusTracker['none'] === 0 &&
-    pendingQueue.length === totalCount
-  ) {
+  if (statusTracker['none'] === 0 && pendingQueue.length === totalCount) {
     submitAllButton = true;
   }
   return {
@@ -369,11 +367,14 @@ export const findOrderStatus = status => {
   return orderStatus;
 };
 
-const findTotalCount = (managingQueueName, queueId) => {
+const findTotalCount = (managingQueueName, marketId) => {
   let totalCount = 0;
+  let openOrdersCount = 0;
   if (managingQueueName === CANCELORDER) {
-    const userOpenOrders = getUserOpenOrders(queueId) || [];
+    const { marketsObj, openOrders } = selectMarketsOpenOrders();
+    const userOpenOrders = marketsObj[marketId] || [];
     totalCount = userOpenOrders.length;
+    openOrdersCount = openOrders.length;
   } else if (managingQueueName === CLAIMMARKETSPROCEEDS) {
     const accountMarketClaimablePositions: MarketClaimablePositions = getLoginAccountClaimableWinnings();
     totalCount = accountMarketClaimablePositions.markets.length;
@@ -385,11 +386,18 @@ const findTotalCount = (managingQueueName, queueId) => {
       totalCount = totalCount + 1;
     }
   }
-  return totalCount;
-}
+  return {
+    totalCount,
+    openOrdersCount,
+  };
+};
 
-export const manageAndUpdatePendingQueue = (pendingQueue, totalCount, queueId, queueName) => {
-
+export const manageAndUpdatePendingQueue = (
+  pendingQueue,
+  totalCount: number,
+  queueId: string,
+  queueName: string,
+) => {
   let statusTracker = {
     [TXEventName.Pending]: 0,
     [TXEventName.Success]: 0,
@@ -415,23 +423,43 @@ export const manageAndUpdatePendingQueue = (pendingQueue, totalCount, queueId, q
     statusTracker,
     totalCount
   );
-}
+};
 export const updatePendingQueue = (
   managingQueueName: string,
   marketId?: string
 ) => {
   let queueId = managingQueueName;
   let queueName = TRANSACTIONS;
-  if (managingQueueName === CANCELORDER) {
-    queueName = CANCELORDERS; 
-    queueId = marketId;
-  } 
-  const pendingQueue = Object.values(AppStatus.get().pendingQueue[managingQueueName]).filter(
-    order =>
-      managingQueueName === CANCELORDER ?
-      order.data.marketId === marketId : true
+  const { totalCount, openOrdersCount } = findTotalCount(
+    managingQueueName,
+    marketId
   );
 
-  const totalCount = findTotalCount(managingQueueName, queueId);
-  manageAndUpdatePendingQueue(pendingQueue, totalCount, queueId, queueName);
+  const pendingQueue = Object.values(
+    AppStatus.get().pendingQueue[managingQueueName]
+  ).filter(order =>
+    managingQueueName === CANCELORDER ? order.data.marketId === marketId : true
+  );
+  
+  if (managingQueueName === CANCELORDER) {
+    queueName = CANCELORDERS;
+    queueId = marketId;
+    // check if BATCHCANCELORDER button should have status updated 
+    const batchPendingQueue = Object.values(
+      AppStatus.get().pendingQueue[managingQueueName]
+    );
+    manageAndUpdatePendingQueue(
+      batchPendingQueue,
+      openOrdersCount,
+      BATCHCANCELORDERS,
+      TRANSACTIONS,
+    );
+  }
+
+  manageAndUpdatePendingQueue(
+    pendingQueue,
+    totalCount,
+    queueId,
+    queueName
+  );
 };
