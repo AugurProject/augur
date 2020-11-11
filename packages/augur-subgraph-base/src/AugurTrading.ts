@@ -1,4 +1,5 @@
-import { Address, BigInt, Bytes } from '@graphprotocol/graph-ts';
+import { Address, BigDecimal, BigInt, Bytes, crypto, log } from '@graphprotocol/graph-ts';
+import { toChecksumAddress, mapAddressArray, mapByteArray, mapArray } from './utils';
 import {
   CancelZeroXOrder as CancelZeroXOrderEvent,
   MarketVolumeChanged as MarketVolumeChangedEvent,
@@ -13,35 +14,6 @@ import {
   ProfitLossChanged as ProfitLossChangedEntity,
 } from '../generated/schema';
 
-
-function mapAddressArray(arr:Address[]):string[] {
-  let result = new Array<string>();
-  for (let i = 0; i < arr.length; i++) {
-    result.push(arr[i].toHexString());
-  }
-
-  return result;
-}
-
-function mapByteArray(arr:Bytes[]):string[] {
-  let result = new Array<string>();
-  for (let i = 0; i < arr.length; i++) {
-    result.push(arr[i].toHexString());
-  }
-
-  return result;
-}
-
-function mapArray(arr: BigInt[]):string[] {
-  let result = new Array<string>();
-  for (let i = 0; i < arr.length; i++) {
-    result.push(arr[i].toHexString());
-  }
-
-  return result;
-}
-
-
 export function handleCancelZeroXOrder(event: CancelZeroXOrderEvent): void {
   let id = event.transaction.hash.toHexString() + "-" + event.logIndex.toString();
   let entity = new CancelZeroXOrderEntity(id);
@@ -52,9 +24,9 @@ export function handleCancelZeroXOrder(event: CancelZeroXOrderEvent): void {
   entity.name = "CancelZeroXOrder";
   entity.transactionHash = event.transaction.hash.toHexString();
 
-  entity.universe = event.params.universe.toHexString();
-  entity.market = event.params.market.toHexString();
-  entity.account = event.params.account.toHexString();
+  entity.universe = toChecksumAddress(event.params.universe);
+  entity.market = toChecksumAddress(event.params.market);
+  entity.account = toChecksumAddress(event.params.account);
   entity.outcome = event.params.outcome.toHexString();
   entity.price = event.params.price.toHexString();
   entity.amount = event.params.amount.toHexString();
@@ -74,8 +46,8 @@ export function handleMarketVolumeChanged(event: MarketVolumeChangedEvent): void
   entity.name = "MarketVolumeChanged";
   entity.transactionHash = event.transaction.hash.toHexString();
 
-  entity.universe = event.params.universe.toHexString();
-  entity.market = event.params.market.toHexString();
+  entity.universe = toChecksumAddress(event.params.universe);
+  entity.market = toChecksumAddress(event.params.market);
   entity.volume = event.params.volume.toHexString();
   entity.outcomeVolumes = mapArray(event.params.outcomeVolumes);
   entity.totalTrades = event.params.totalTrades.toHexString();
@@ -94,8 +66,8 @@ export function handleOrderEvent(event: OrderEventEvent): void {
   entity.name = "OrderEvent";
   entity.transactionHash = event.transaction.hash.toHexString();
 
-  entity.universe = event.params.universe.toHexString();
-  entity.market = event.params.market.toHexString();
+  entity.universe = toChecksumAddress(event.params.universe);
+  entity.market = toChecksumAddress(event.params.market);
   entity.eventType = event.params.eventType;
   entity.orderType = event.params.orderType;
   entity.orderId = event.params.orderId;
@@ -116,9 +88,9 @@ export function handleProfitLossChanged(event: ProfitLossChangedEvent): void {
   entity.name = "ProfitLossChanged";
   entity.transactionHash = event.transaction.hash.toHexString();
 
-  entity.universe = event.params.universe.toHexString();
-  entity.market = event.params.market.toHexString();
-  entity.account = event.params.account.toHexString();
+  entity.universe = toChecksumAddress(event.params.universe);
+  entity.market = toChecksumAddress(event.params.market);
+  entity.account = toChecksumAddress(event.params.account);
   entity.outcome = event.params.outcome.toHexString();
   entity.netPosition = event.params.netPosition.toHexString();
   entity.avgPrice = event.params.avgPrice.toHexString();

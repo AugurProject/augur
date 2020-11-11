@@ -35,6 +35,8 @@ const buildFile = (name, abi) => {
             return `event.params.${this.name}`;
           case "address[]":
             return `mapAddressArray(event.params.${this.name})`;
+          case "address":
+            return `toChecksumAddress(event.params.${this.name})`;
           case "uint256[]":
           case "int256[]":
             return `mapArray(event.params.${this.name})`;

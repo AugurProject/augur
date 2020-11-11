@@ -1,4 +1,5 @@
-import { Address, BigInt, Bytes } from '@graphprotocol/graph-ts';
+import { Address, BigDecimal, BigInt, Bytes, crypto, log } from '@graphprotocol/graph-ts';
+import { toChecksumAddress, mapAddressArray, mapByteArray, mapArray } from './utils';
 import {
   ApprovalForAll as ApprovalForAllEvent,
   TransferBatch as TransferBatchEvent,
@@ -13,35 +14,6 @@ import {
   URI as URIEntity,
 } from '../generated/schema';
 
-
-function mapAddressArray(arr:Address[]):string[] {
-  let result = new Array<string>();
-  for (let i = 0; i < arr.length; i++) {
-    result.push(arr[i].toHexString());
-  }
-
-  return result;
-}
-
-function mapByteArray(arr:Bytes[]):string[] {
-  let result = new Array<string>();
-  for (let i = 0; i < arr.length; i++) {
-    result.push(arr[i].toHexString());
-  }
-
-  return result;
-}
-
-function mapArray(arr: BigInt[]):string[] {
-  let result = new Array<string>();
-  for (let i = 0; i < arr.length; i++) {
-    result.push(arr[i].toHexString());
-  }
-
-  return result;
-}
-
-
 export function handleApprovalForAll(event: ApprovalForAllEvent): void {
   let id = event.transaction.hash.toHexString() + "-" + event.logIndex.toString();
   let entity = new ApprovalForAllEntity(id);
@@ -52,8 +24,8 @@ export function handleApprovalForAll(event: ApprovalForAllEvent): void {
   entity.name = "ApprovalForAll";
   entity.transactionHash = event.transaction.hash.toHexString();
 
-  entity.owner = event.params.owner.toHexString();
-  entity.operator = event.params.operator.toHexString();
+  entity.owner = toChecksumAddress(event.params.owner);
+  entity.operator = toChecksumAddress(event.params.operator);
   entity.approved = event.params.approved;
 
   entity.save();
@@ -69,9 +41,9 @@ export function handleTransferBatch(event: TransferBatchEvent): void {
   entity.name = "TransferBatch";
   entity.transactionHash = event.transaction.hash.toHexString();
 
-  entity.operator = event.params.operator.toHexString();
-  entity.from = event.params.from.toHexString();
-  entity.to = event.params.to.toHexString();
+  entity.operator = toChecksumAddress(event.params.operator);
+  entity.from = toChecksumAddress(event.params.from);
+  entity.to = toChecksumAddress(event.params.to);
   entity.ids = mapArray(event.params.ids);
   entity.values = mapArray(event.params.values);
 
@@ -88,9 +60,9 @@ export function handleTransferSingle(event: TransferSingleEvent): void {
   entity.name = "TransferSingle";
   entity.transactionHash = event.transaction.hash.toHexString();
 
-  entity.operator = event.params.operator.toHexString();
-  entity.from = event.params.from.toHexString();
-  entity.to = event.params.to.toHexString();
+  entity.operator = toChecksumAddress(event.params.operator);
+  entity.from = toChecksumAddress(event.params.from);
+  entity.to = toChecksumAddress(event.params.to);
   entity.id = event.params.id.toHexString();
   entity.value = event.params.value.toHexString();
 
