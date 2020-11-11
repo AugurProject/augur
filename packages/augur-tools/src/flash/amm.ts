@@ -6,7 +6,6 @@ import { FlashArguments, FlashSession } from './flash';
 
 import { AMMFactory } from '@augurproject/sdk-lite';
 import { updateConfig } from '@augurproject/artifacts';
-import { mergeConfig, SDKConfiguration } from '@augurproject/utils/build';
 
 const compilerOutput = require('@augurproject/artifacts/build/contracts.json');
 
