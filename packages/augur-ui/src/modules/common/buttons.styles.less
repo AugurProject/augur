@@ -1118,13 +1118,18 @@
   &.Failed {
     .FailedProcessingButton;
   }
+
+  &.Processing {
+    background: transparent;
+    border: 0;
+  }
 }
 
 .SubmitTextButton {
   .mono-10;
 
   align-items: center;
-  color: var(--color-primary-action);
+  color: var(--color-primary-text);
   display: flex;
   flex-flow: row nowrap;
   line-height: @size-10;
