@@ -40,15 +40,14 @@ export class AMMFactory {
       return this.contract.addAMM(market, paraShareToken);
     }
 
+    const factor = new BigNumber(10 ** 18);
+    const total = yesPercent.plus(noPercent);
     const keepYes = noPercent.gt(yesPercent);
+    const ratio = (keepYes
+      ? factor.times(yesPercent).div(total)
+      : factor.times(noPercent).div(total)
+    ).idiv(1) // must be an integer
 
-    let ratio = keepYes // more NO shares than YES shares
-      ? new BigNumber(10**18).times(yesPercent).div(noPercent)
-      : new BigNumber(10**18).times(noPercent).div(yesPercent);
-
-    // must be integers
-    cash = cash.idiv(1);
-    ratio = ratio.idiv(1);
     if (existingAmmAddress) {
       if (hasLiquidity) {
         return amm.addLiquidity(account, cash)
