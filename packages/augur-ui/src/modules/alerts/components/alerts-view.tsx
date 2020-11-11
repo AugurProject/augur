@@ -73,7 +73,8 @@ const AlertsView = () => {
         >
           {Close}
         </button>
-        {alerts && alerts.length ? (
+        {tab === ALERTS ? 
+        (alerts && alerts.length) ? (
           <div className={Styles.box}>
             {alerts.map((alert, i) => (
               <Alert
@@ -89,6 +90,18 @@ const AlertsView = () => {
             icon={Alerts(0)}
             className={Styles.NullStateMessage}
             message="You don’t have any alerts"
+            subMessage="We’ll let you know when you have an update!"
+          />
+        ) : 
+        (notificationCount ? (
+          <div className={Styles.box}>
+            {rows.map((card, i) => card)}
+          </div>
+        ) : (
+          <NullStateMessage
+            icon={Alerts(0)}
+            className={Styles.NullStateMessage}
+            message="You don’t have any notifications"
             subMessage="We’ll let you know when you have an update!"
           />
         )}
