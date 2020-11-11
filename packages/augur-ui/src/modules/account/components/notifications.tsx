@@ -56,7 +56,6 @@ function getRows(
   disputingWindowEndTime,
   disabledNotifications
 ) {
-  // return orderBy(notifications, ['isNew', 'isRead'], ['desc', 'asc'])
   return orderBy(notifications, ['lastUpdated'], ['desc'])
     .filter(notification => !notification.hideNotification)
     .map(({
@@ -200,6 +199,7 @@ function getButtonAction(
         if (notification?.id === id) {
           notification.isNew = false;
           notification.isRead = true;
+          notification.lastUpdated = new Date().getTime();
         }
 
         return notification;
