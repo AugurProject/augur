@@ -10,6 +10,12 @@ import { windowRef } from 'utils/window-ref';
 import { TXEventName } from '@augurproject/sdk-lite';
 import { AppStatus } from './app-status';
 import { LIQUIDITY_ORDERS } from 'modules/common/constants';
+import {
+  evaluateStatusTracker,
+  findOrderStatus,
+  manageAndUpdatePendingQueue,
+  updatePendingDataBasedOnQueue,
+} from 'modules/pending-queue/actions/pending-queue-management';
 
 const {
   UPDATE_PENDING_ORDER,
@@ -23,63 +29,17 @@ const {
   UPDATE_TX_PARAM_HASH_TX_HASH,
   UPDATE_LIQUIDITY_ORDER_STATUS,
   DELETE_SUCCESSFUL_LIQUIDITY_ORDER,
-  DELETE_SUCCESSFUL_LIQUIDITY_ORDERS,
 } = PENDING_ORDERS_ACTIONS;
 
-const updatePendingQueue = updatedState => {
-  Object.keys(updatedState[PENDING_LIQUIDITY_ORDERS]).map(txHash => {
-    const marketOrders = updatedState[PENDING_LIQUIDITY_ORDERS][txHash];
-    let statusTracker = {
-      [TXEventName.Pending]: 0,
-      [TXEventName.Success]: 0,
-      [TXEventName.Failure]: 0,
-      none: 0,
-    };
-    let totalCount = 0;
-    Object.keys(marketOrders).map(outcome =>
-      marketOrders[outcome].map(order => {
-        const orderStatus = order.status ? order.status : 'none';
-        statusTracker[orderStatus] = statusTracker[orderStatus] + 1;
-        totalCount = totalCount + 1;
-      })
-    );
-
-    let status = '';
-    let submitAllButton = false;
-
-    if (statusTracker[TXEventName.Pending] > 0) {
-      status = TXEventName.Pending;
-    } else if (statusTracker[TXEventName.Success] > 0) {
-      status = TXEventName.Success;
-    } else if (statusTracker[TXEventName.Failure] > 0) {
-      status = TXEventName.Failure;
-    } 
-
-    if (statusTracker['none'] === 0) {
-      submitAllButton = true;
-    }
-    AppStatus.actions.addPendingData(txHash, LIQUIDITY_ORDERS, status, '', '', {
-      submitAllButton,
-      dontShowNotificationButton: false,
-    });
-    if (status === TXEventName.Failure) {
-      setTimeout(
-        () =>
-          AppStatus.actions.addPendingData(
-            txHash,
-            LIQUIDITY_ORDERS,
-            status,
-            '',
-            '',
-            {
-              submitAllButton,
-              dontShowNotificationButton: true,
-            }
-          ),
-        2000
-      );
-    }
-  });
+const updatePendingQueueBasedOnOrders = (updatedState, txHash) => {
+  const marketOrders = updatedState[PENDING_LIQUIDITY_ORDERS][txHash];
+  let pendingQueue = [];
+  Object.keys(marketOrders).map(outcome =>
+    marketOrders[outcome].map(order => {
+      pendingQueue.push(order);
+    })
+  );
+  manageAndUpdatePendingQueue(pendingQueue, pendingQueue.length, txHash, LIQUIDITY_ORDERS);
 };
 
 export function PendingOrdersReducer(state, action) {
@@ -109,30 +69,6 @@ export function PendingOrdersReducer(state, action) {
       };
       break;
     }
-    case DELETE_SUCCESSFUL_LIQUIDITY_ORDERS: {
-      const pendingLiquidityOrders = updatedState[PENDING_LIQUIDITY_ORDERS];
-      Object.keys(pendingLiquidityOrders).map(marketId => {
-        Object.keys(pendingLiquidityOrders[marketId]).map(outcome => {
-          pendingLiquidityOrders[marketId][outcome].map((order, key) => {
-            if (order.status === TXEventName.Success) {
-              delete pendingLiquidityOrders[marketId][outcome][key];
-            }
-          });
-          if (pendingLiquidityOrders[marketId][outcome].length == 0) {
-            delete pendingLiquidityOrders[marketId][outcome];
-          }
-        });
-        if (Object.keys(pendingLiquidityOrders[marketId]).length == 0) {
-          delete pendingLiquidityOrders[marketId];
-        }
-      });
-
-      updatedState[PENDING_LIQUIDITY_ORDERS] = {
-        ...pendingLiquidityOrders,
-      };
-      updatePendingQueue(updatedState);
-      break;
-    }
     case DELETE_SUCCESSFUL_LIQUIDITY_ORDER: {
       const { txParamHash, outcomeId, type, price } = action.data;
       const pendingLiquidityOrders = updatedState[PENDING_LIQUIDITY_ORDERS];
@@ -158,7 +94,7 @@ export function PendingOrdersReducer(state, action) {
       updatedState[PENDING_LIQUIDITY_ORDERS] = {
         ...pendingLiquidityOrders,
       };
-      updatePendingQueue(updatedState);
+      updatePendingQueueBasedOnOrders(updatedState, txParamHash);
       break;
     }
     case UPDATE_TX_PARAM_HASH_TX_HASH: {
@@ -192,7 +128,7 @@ export function PendingOrdersReducer(state, action) {
       updatedState[PENDING_LIQUIDITY_ORDERS] = {
         ...pendingLiquidityOrders,
       };
-      updatePendingQueue(updatedState);
+      updatePendingQueueBasedOnOrders(updatedState, txParamHash);
       break;
     }
     case UPDATE_LIQUIDITY_ORDER: {
@@ -234,7 +170,7 @@ export function PendingOrdersReducer(state, action) {
       updatedState[PENDING_LIQUIDITY_ORDERS] = {
         ...pendingLiquidityOrders,
       };
-      updatePendingQueue(updatedState);
+      updatePendingQueueBasedOnOrders(updatedState, txParamHash);
       break;
     }
     case CLEAR_ALL_MARKET_ORDERS: {
@@ -332,8 +268,6 @@ export const usePendingOrders = (defaultState = DEFAULT_PENDING_ORDERS) => {
           type: LOAD_PENDING_LIQUIDITY_ORDERS,
           pendingLiquidityOrders,
         }),
-      deleteSuccessfulOrders: () =>
-        dispatch({ type: DELETE_SUCCESSFUL_LIQUIDITY_ORDERS }),
       clearAllMarketLiquidity: ({ txParamHash }) =>
         dispatch({ type: CLEAR_ALL_MARKET_ORDERS, txParamHash }),
       updateLiquidityHash: ({ txParamHash, txHash }) =>

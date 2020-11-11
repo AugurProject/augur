@@ -429,8 +429,8 @@ export const OpenOrder = ({
       showCountdown: true,
       expiry: expiry,
       currentTimestamp: currentTimestamp,
-      pending: !!isCanceling || (openOrder.status && openOrder.status !== OPEN),
-      status: !!isCanceling ? isCanceling.status : openOrder.status,
+      queueName: CANCELORDER,
+      queueId: openOrder.id,
       action: async (e: Event) => {
         e.stopPropagation();
         if (!!isCanceling) {

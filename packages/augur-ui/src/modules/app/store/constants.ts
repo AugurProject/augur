@@ -87,7 +87,6 @@ export const DEFAULT_PENDING_ORDERS = {
 };
 
 export const STUBBED_PENDING_ORDERS_ACTIONS = {
-  deleteSuccessfulOrders: () => {},
   addLiquidity: ({ liquidityOrders, txParamHash }) => {},
   updateLiquidity: ({ order, updates, txParamHash, outcomeId }) => {},
   removeLiquidity: ({ txParamHash, outcomeId, orderId }) => {},
@@ -108,7 +107,6 @@ export const STUBBED_PENDING_ORDERS_ACTIONS = {
 };
 
 export const PENDING_ORDERS_ACTIONS = {
-  DELETE_SUCCESSFUL_LIQUIDITY_ORDERS: 'DELETE_SUCCESSFUL_LIQUIDITY_ORDERS',
   UPDATE_PENDING_ORDER: 'UPDATE_PENDING_ORDER',
   REMOVE_PENDING_ORDER: 'REMOVE_PENDING_ORDER',
   UPDATE_LIQUIDITY_ORDER: 'UPDATE_LIQUIDITY_ORDER',

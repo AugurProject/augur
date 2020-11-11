@@ -369,16 +369,11 @@ export const findOrderStatus = status => {
   return orderStatus;
 };
 
-export const updatePendingQueue = (
-  managingQueueName: string,
-  marketId?: string
-) => {
-  // clean up this function and duplicate
-  let updateQueueName = managingQueueName;
+const findTotalCount = (managingQueueName, queueId) => {
   let totalCount = 0;
-
   if (managingQueueName === CANCELORDER) {
-    updateQueueName = CANCELORDERS;
+    const userOpenOrders = getUserOpenOrders(queueId) || [];
+    totalCount = userOpenOrders.length;
   } else if (managingQueueName === CLAIMMARKETSPROCEEDS) {
     const accountMarketClaimablePositions: MarketClaimablePositions = getLoginAccountClaimableWinnings();
     totalCount = accountMarketClaimablePositions.markets.length;
@@ -390,13 +385,11 @@ export const updatePendingQueue = (
       totalCount = totalCount + 1;
     }
   }
+  return totalCount;
+}
 
-  const pendingQueue = Object.values(AppStatus.get().pendingQueue[managingQueueName]).filter(
-    order =>
-      managingQueueName === CANCELORDER ?
-      order.data.marketId === marketId : true
-  );
-  console.log(pendingQueue);
+export const manageAndUpdatePendingQueue = (pendingQueue, totalCount, queueId, queueName) => {
+
   let statusTracker = {
     [TXEventName.Pending]: 0,
     [TXEventName.Success]: 0,
@@ -407,15 +400,6 @@ export const updatePendingQueue = (
     let orderStatus = findOrderStatus(order.status);
     statusTracker[orderStatus] = statusTracker[orderStatus] + 1;
   });
-
-  let queueId = updateQueueName;
-  const queueName =
-    managingQueueName === updateQueueName ? TRANSACTIONS : updateQueueName;
-  if (managingQueueName === CANCELORDER) {
-    queueId = marketId;
-    const userOpenOrders = getUserOpenOrders(queueId) || [];
-    totalCount = userOpenOrders.length;
-  }
 
   const { status, submitAllButton } = evaluateStatusTracker(
     statusTracker,
@@ -431,4 +415,23 @@ export const updatePendingQueue = (
     statusTracker,
     totalCount
   );
+}
+export const updatePendingQueue = (
+  managingQueueName: string,
+  marketId?: string
+) => {
+  let queueId = managingQueueName;
+  let queueName = TRANSACTIONS;
+  if (managingQueueName === CANCELORDER) {
+    queueName = CANCELORDERS; 
+    queueId = marketId;
+  } 
+  const pendingQueue = Object.values(AppStatus.get().pendingQueue[managingQueueName]).filter(
+    order =>
+      managingQueueName === CANCELORDER ?
+      order.data.marketId === marketId : true
+  );
+
+  const totalCount = findTotalCount(managingQueueName, queueId);
+  manageAndUpdatePendingQueue(pendingQueue, totalCount, queueId, queueName);
 };
