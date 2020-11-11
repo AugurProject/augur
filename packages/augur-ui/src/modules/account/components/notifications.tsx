@@ -18,7 +18,7 @@ import {
   ReportEndingSoonTemplate,
   UnsignedOrdersTemplate,
 } from 'modules/account/components/notifications-templates';
-import { Notification, QueryEndpoints, } from 'modules/types';
+import { Notification, QueryEndpoints } from 'modules/types';
 import {
   MODAL_CLAIM_FEES,
   MODAL_CLAIM_MARKETS_PROCEEDS,
@@ -56,7 +56,7 @@ function getRows(
   disputingWindowEndTime,
   disabledNotifications
 ) {
-  return orderBy(notifications, ['lastUpdated'], ['desc'])
+  return orderBy(notifications, ['isNew','lastUpdated'], ['desc', 'desc'])
     .filter(notification => !notification.hideNotification)
     .map(({
       buttonAction,
