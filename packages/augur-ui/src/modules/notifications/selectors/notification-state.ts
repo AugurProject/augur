@@ -262,6 +262,7 @@ export const getNotifications = (): Notification[] => {
         notification.isNew = storedNotification.isNew;
         notification.isRead = storedNotification.isRead;
         notification.hideNotification = storedNotification.hideNotification;
+        notification.lastUpdated = storedNotification.lastUpdated;
       }
       return notification;
     });
@@ -287,12 +288,14 @@ const getRequiredMarketData = market => ({
 const generateCards = (markets, type) => {
   const getDefaults = market => {
     let defaults = {};
+    const lastUpdated = new Date().getTime();
     if (type === NOTIFICATION_TYPES.resolvedMarketsOpenOrders) {
       defaults = {
         type,
         isImportant: false,
         isNew: true,
         isRead: false,
+        lastUpdated,
         title: RESOLVED_MARKETS_OPEN_ORDERS_TITLE,
         buttonLabel: TYPE_VIEW_ORDERS,
         queueName: CANCELORDERS,
@@ -306,6 +309,7 @@ const generateCards = (markets, type) => {
         redIcon: true,
         isNew: true,
         isRead: false,
+        lastUpdated,
         title: REPORTING_ENDS_SOON_TITLE,
         buttonLabel: TYPE_REPORT,
         queueName: SUBMIT_REPORT,
@@ -316,6 +320,7 @@ const generateCards = (markets, type) => {
         isImportant: false,
         isNew: true,
         isRead: false,
+        lastUpdated,
         title: TYPE_DISPUTE,
         buttonLabel: TYPE_DISPUTE,
         queueName: SUBMIT_DISPUTE,
@@ -326,6 +331,7 @@ const generateCards = (markets, type) => {
         isImportant: false,
         isNew: true,
         isRead: false,
+        lastUpdated,
         title: SIGN_SEND_ORDERS,
         buttonLabel: TYPE_VIEW_ORDERS,
         queueName: LIQUIDITY_ORDERS,
@@ -338,6 +344,7 @@ const generateCards = (markets, type) => {
         isImportant: false,
         isNew: true,
         isRead: false,
+        lastUpdated,
         title: PROCEEDS_TO_CLAIM_TITLE,
         buttonLabel: TYPE_VIEW_DETAILS,
         queueName: TRANSACTIONS,
@@ -350,6 +357,7 @@ const generateCards = (markets, type) => {
         isImportant: false,
         isNew: true,
         isRead: false,
+        lastUpdated,
         title: MARKET_IS_MOST_LIKELY_INVALID_TITLE,
         buttonLabel: TYPE_VIEW_DETAILS,
       };
@@ -359,6 +367,7 @@ const generateCards = (markets, type) => {
         isImportant: false,
         isNew: true,
         isRead: false,
+        lastUpdated,
         title: 'Finalize Warp Sync Market',
         buttonLabel: TYPE_VIEW_DETAILS,
         queueName: TRANSACTIONS,

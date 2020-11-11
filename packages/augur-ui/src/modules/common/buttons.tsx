@@ -312,7 +312,7 @@ export const ProcessingButton = ({
   let pendingData = pendingQueue[queueName] && pendingQueue[queueName][queueId];
 
   if (
-    (submitAllButton && ! pendingData?.data?.submitAllButton) ||
+    (submitAllButton && !pendingData?.data?.submitAllButton) ||
     (dontShowNotificationButton && pendingData?.data?.dontShowNotificationButton)
   ) {
     pendingData = null;
