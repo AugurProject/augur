@@ -547,6 +547,12 @@ Deploying to: ${env}
         return factory.address;
     }
 
+    async uploadWethAMMContract(ammFactory: string, wethParaShareToken: string): Promise<string> {
+        const wethAmm = this.contracts.get('WethWrapperForAMMExchange');
+        wethAmm.address = await this.construct(wethAmm, [ammFactory, wethParaShareToken]);
+        return wethAmm.address;
+    }
+
     async uploadAccountLoaderContract(augurAddress: string, augurTradingAddress: string): Promise<string> {
         console.log('Uploading Account Loader contract');
         const contract = this.contracts.get('AccountLoader');

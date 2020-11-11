@@ -21806,7 +21806,7 @@
 			"name": "cash",
 			"outputs": [
 				{
-					"internalType": "contract ICash",
+					"internalType": "contract IERC20",
 					"name": "",
 					"type": "address"
 				}
@@ -22009,7 +22009,7 @@
 					"type": "address"
 				},
 				{
-					"internalType": "contract IParaShareToken",
+					"internalType": "contract ParaShareToken",
 					"name": "_shareToken",
 					"type": "address"
 				},
@@ -22309,11 +22309,42 @@
 		},
 		{
 			"constant": true,
+			"inputs": [
+				{
+					"internalType": "address",
+					"name": "_owner",
+					"type": "address"
+				}
+			],
+			"name": "shareBalances",
+			"outputs": [
+				{
+					"internalType": "uint256",
+					"name": "_invalid",
+					"type": "uint256"
+				},
+				{
+					"internalType": "uint256",
+					"name": "_no",
+					"type": "uint256"
+				},
+				{
+					"internalType": "uint256",
+					"name": "_yes",
+					"type": "uint256"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": true,
 			"inputs": [],
 			"name": "shareToken",
 			"outputs": [
 				{
-					"internalType": "contract IParaShareToken",
+					"internalType": "contract ParaShareToken",
 					"name": "",
 					"type": "address"
 				}
@@ -22479,7 +22510,7 @@
 					"type": "address"
 				},
 				{
-					"internalType": "contract IParaShareToken",
+					"internalType": "contract ParaShareToken",
 					"name": "_para",
 					"type": "address"
 				}
@@ -22505,7 +22536,7 @@
 					"type": "address"
 				},
 				{
-					"internalType": "contract IParaShareToken",
+					"internalType": "contract ParaShareToken",
 					"name": "_para",
 					"type": "address"
 				},
@@ -22546,7 +22577,7 @@
 					"type": "address"
 				},
 				{
-					"internalType": "contract IParaShareToken",
+					"internalType": "contract ParaShareToken",
 					"name": "_para",
 					"type": "address"
 				}
@@ -22644,7 +22675,7 @@
 					"type": "address"
 				},
 				{
-					"internalType": "contract IParaShareToken",
+					"internalType": "contract ParaShareToken",
 					"name": "_para",
 					"type": "address"
 				}
@@ -22670,7 +22701,52 @@
 					"type": "address"
 				},
 				{
-					"internalType": "contract IParaShareToken",
+					"internalType": "contract ParaShareToken",
+					"name": "_para",
+					"type": "address"
+				},
+				{
+					"internalType": "address",
+					"name": "_from",
+					"type": "address"
+				},
+				{
+					"internalType": "address",
+					"name": "_to",
+					"type": "address"
+				},
+				{
+					"internalType": "uint256",
+					"name": "_invalidAmount",
+					"type": "uint256"
+				},
+				{
+					"internalType": "uint256",
+					"name": "_noAmount",
+					"type": "uint256"
+				},
+				{
+					"internalType": "uint256",
+					"name": "_yesAmount",
+					"type": "uint256"
+				}
+			],
+			"name": "shareTransfer",
+			"outputs": [],
+			"payable": false,
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"constant": false,
+			"inputs": [
+				{
+					"internalType": "contract IMarket",
+					"name": "_market",
+					"type": "address"
+				},
+				{
+					"internalType": "contract ParaShareToken",
 					"name": "_para",
 					"type": "address"
 				},
@@ -30273,8 +30349,13 @@
 		{
 			"inputs": [
 				{
-					"internalType": "contract IAMMExchange",
-					"name": "_amm",
+					"internalType": "contract IAMMFactory",
+					"name": "_factory",
+					"type": "address"
+				},
+				{
+					"internalType": "contract ParaShareToken",
+					"name": "_shareToken",
 					"type": "address"
 				}
 			],
@@ -30283,53 +30364,18 @@
 			"type": "constructor"
 		},
 		{
-			"constant": true,
-			"inputs": [],
-			"name": "INVALID",
-			"outputs": [
-				{
-					"internalType": "uint256",
-					"name": "",
-					"type": "uint256"
-				}
-			],
-			"payable": false,
-			"stateMutability": "view",
-			"type": "function"
-		},
-		{
-			"constant": true,
-			"inputs": [],
-			"name": "NO",
-			"outputs": [
-				{
-					"internalType": "uint256",
-					"name": "",
-					"type": "uint256"
-				}
-			],
-			"payable": false,
-			"stateMutability": "view",
-			"type": "function"
-		},
-		{
-			"constant": true,
-			"inputs": [],
-			"name": "YES",
-			"outputs": [
-				{
-					"internalType": "uint256",
-					"name": "",
-					"type": "uint256"
-				}
-			],
-			"payable": false,
-			"stateMutability": "view",
-			"type": "function"
+			"payable": true,
+			"stateMutability": "payable",
+			"type": "fallback"
 		},
 		{
 			"constant": false,
 			"inputs": [
+				{
+					"internalType": "contract IMarket",
+					"name": "_market",
+					"type": "address"
+				},
 				{
 					"internalType": "uint256",
 					"name": "_ratioFactor",
@@ -30362,8 +30408,13 @@
 			"constant": false,
 			"inputs": [
 				{
+					"internalType": "contract IMarket",
+					"name": "_market",
+					"type": "address"
+				},
+				{
 					"internalType": "address",
-					"name": "recipient",
+					"name": "_recipient",
 					"type": "address"
 				}
 			],
@@ -30380,23 +30431,13 @@
 			"type": "function"
 		},
 		{
-			"constant": true,
-			"inputs": [],
-			"name": "amm",
-			"outputs": [
-				{
-					"internalType": "contract IAMMExchange",
-					"name": "",
-					"type": "address"
-				}
-			],
-			"payable": false,
-			"stateMutability": "view",
-			"type": "function"
-		},
-		{
 			"constant": false,
 			"inputs": [
+				{
+					"internalType": "contract IMarket",
+					"name": "_market",
+					"type": "address"
+				},
 				{
 					"internalType": "bool",
 					"name": "_buyYes",
@@ -30424,6 +30465,11 @@
 			"constant": false,
 			"inputs": [
 				{
+					"internalType": "contract IMarket",
+					"name": "_market",
+					"type": "address"
+				},
+				{
 					"internalType": "uint256",
 					"name": "_minCashPayout",
 					"type": "uint256"
@@ -30444,6 +30490,11 @@
 		{
 			"constant": false,
 			"inputs": [
+				{
+					"internalType": "contract IMarket",
+					"name": "_market",
+					"type": "address"
+				},
 				{
 					"internalType": "uint256",
 					"name": "_invalidShares",
@@ -30480,12 +30531,33 @@
 		{
 			"constant": true,
 			"inputs": [],
-			"name": "numTicks",
+			"name": "factory",
 			"outputs": [
 				{
-					"internalType": "uint256",
+					"internalType": "contract IAMMFactory",
 					"name": "",
-					"type": "uint256"
+					"type": "address"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [
+				{
+					"internalType": "contract IMarket",
+					"name": "_market",
+					"type": "address"
+				}
+			],
+			"name": "getAMM",
+			"outputs": [
+				{
+					"internalType": "contract IAMMExchange",
+					"name": "",
+					"type": "address"
 				}
 			],
 			"payable": false,
@@ -30495,6 +30567,11 @@
 		{
 			"constant": false,
 			"inputs": [
+				{
+					"internalType": "contract IMarket",
+					"name": "_market",
+					"type": "address"
+				},
 				{
 					"internalType": "uint256",
 					"name": "_poolTokensToSell",
@@ -30539,7 +30616,7 @@
 			"name": "shareToken",
 			"outputs": [
 				{
-					"internalType": "contract IParaShareToken",
+					"internalType": "contract ParaShareToken",
 					"name": "",
 					"type": "address"
 				}

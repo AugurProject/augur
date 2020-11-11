@@ -174,6 +174,7 @@ class ContractsFixture:
         self.paraAugur = request.config.option.paraAugur
         self.sideChain = request.config.option.sideChain
         self.logListener = None
+        self.amm_fee = 3  # 3/1000
         if self.coverageMode:
             self.logListener = self.writeLogToFile
             self.relativeContractsPath = '../coverageEnv/contracts'
@@ -450,9 +451,11 @@ class ContractsFixture:
         self.upload("../src/contracts/trading/erc20proxy1155/ERC20Proxy1155Nexus.sol", constructorArgs=[masterProxy.address, shareToken.address])
 
     def uploadAMMContracts(self):
-        self.amm_fee = 3 # 3/1000
         masterProxy = self.upload('../src/contracts/para/AMMExchange.sol')
         self.upload('../src/contracts/para/AMMFactory.sol', constructorArgs=[masterProxy.address, self.amm_fee])
+
+    def uploadWethWrappedAmm(self, factory, shareToken):
+        return self.upload("../src/contracts/para/WethWrapperForAMMExchange.sol", constructorArgs=[factory.address, shareToken.address])
 
     def upload0xContracts(self):
         chainId = 123456
@@ -520,7 +523,7 @@ class ContractsFixture:
 
     def approveCentralAuthority(self):
         contractsNeedingApproval = ['Augur','FillOrder','CreateOrder','ZeroXTrade', 'ParaAugur', 'ParaZeroXTrade']
-        contractsToApprove = ['Cash', 'ParaAugurCash']
+        contractsToApprove = ['Cash', 'ParaAugurCash', 'WETH9']
         testersGivingApproval = [self.accounts[x] for x in range(0,8)]
         for testerKey in testersGivingApproval:
             for contractName in contractsToApprove:
@@ -531,7 +534,6 @@ class ContractsFixture:
             for contractName in contractsToSetApproval:
                 for authorityName in contractsNeedingApproval:
                     self.contracts[contractName].setApprovalForAll(self.contracts[authorityName].address, True, sender=testerKey)
-
 
     def uploadAugur(self):
         # We have to upload Augur first
@@ -565,9 +567,14 @@ class ContractsFixture:
 
         paraAugurCash = self.upload("../src/contracts/Cash.sol", "ParaAugurCash", "Cash")
         paraDeployer.addToken(paraAugurCash.address, 10**19)
-        while paraDeployer.paraDeployProgress(paraAugurCash.address) < 13:
-            with PrintGasUsed(self, "PARA DEPLOY STAGE: %i" % paraDeployer.paraDeployProgress(paraAugurCash.address), 0):
+        while paraDeployer.paraDeployProgress(paraAugurCash.address) < 14:
+            with PrintGasUsed(self, "PARA DEPLOY CASH STAGE: %i" % paraDeployer.paraDeployProgress(paraAugurCash.address), 0):
                 paraDeployer.progressDeployment(paraAugurCash.address)
+
+        paraDeployer.addToken(WETH9, 10 ** 18)
+        while paraDeployer.paraDeployProgress(WETH9) < 14:
+            with PrintGasUsed(self, "PARA DEPLOY WETH STAGE: %i" % paraDeployer.paraDeployProgress(WETH9), 0):
+                paraDeployer.progressDeployment(WETH9)
 
         self.generateAndStoreSignature("../src/contracts/para/FeePot.sol")
         self.generateAndStoreSignature("../src/contracts/para/ParaUniverse.sol")
@@ -586,6 +593,16 @@ class ContractsFixture:
         self.contracts["ParaRepOracle"] = self.applySignature('RepOracle', paraAugur.lookup("ParaRepOracle"))
         self.contracts["ParaShareToken"] = self.applySignature('ParaShareToken', paraAugur.lookup("ShareToken"))
         self.contracts["ParaZeroXTrade"] = self.applySignature('ParaZeroXTrade', paraAugurTrading.lookup("ZeroXTrade"))
+
+        paraWethAugurAddress = paraDeployer.paraAugurs(WETH9)
+        paraWethAugurTradingAddress = paraDeployer.paraAugurTradings(WETH9)
+        paraWethAugur = self.applySignature('ParaAugur', paraWethAugurAddress)
+        paraWethAugurTrading = self.applySignature('ParaAugurTrading', paraWethAugurTradingAddress)
+        self.contracts["ParaWethAugur"] = paraWethAugur
+        self.contracts["ParaWethAugurTrading"] = paraWethAugurTrading
+        self.contracts["ParaWethRepOracle"] = self.applySignature('RepOracle', paraWethAugur.lookup("ParaRepOracle"))
+        self.contracts["ParaWethShareToken"] = self.applySignature('ParaShareToken', paraWethAugur.lookup("ShareToken"))
+        self.contracts["ParaWethZeroXTrade"] = self.applySignature('ParaZeroXTrade', paraWethAugurTrading.lookup("ZeroXTrade"))
 
         if self.paraAugur:
             self.contracts['AugurTrading'] = paraAugurTrading
@@ -640,7 +657,6 @@ class ContractsFixture:
             for contractName in contractsToSetApproval:
                 for authorityName in contractsNeedingApproval:
                     self.contracts[contractName].setApprovalForAll(self.contracts[authorityName].address, True, sender=testerKey)
-
 
     def uploadAugurTrading(self):
         # We have to upload Augur Trading before trading contracts
@@ -828,6 +844,7 @@ def augurInitializedSnapshot(fixture, baseSnapshot):
     fixture.upload0xContracts()
     fixture.uploadUniswapContracts()
     fixture.initializeAllContracts()
+    fixture.contracts["Universe"] = fixture.createUniverse()
     fixture.uploadParaAugur()
     fixture.uploadSideChainAugur()
     fixture.uploadERC20Proxy1155()
@@ -842,9 +859,8 @@ def kitchenSinkSnapshot(fixture, augurInitializedSnapshot):
     fixture.resetToSnapshot(augurInitializedSnapshot)
     legacyReputationToken = fixture.contracts['LegacyReputationToken']
     legacyReputationToken.faucet(11 * 10**6 * 10**18)
-    universe = fixture.createUniverse()
+    universe = fixture.contracts["Universe"]
     paraAugurCash = fixture.contracts['ParaAugurCash']
-    fixture.contracts["ParaDeployer"].progressDeployment(paraAugurCash.address)
     cash = fixture.contracts['Cash']
     shareToken = fixture.contracts['ShareToken']
     augur = fixture.contracts['Augur']

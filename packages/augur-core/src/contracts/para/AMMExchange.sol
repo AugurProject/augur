@@ -5,7 +5,7 @@ import 'ROOT/reporting/IMarket.sol';
 import 'ROOT/libraries/token/ERC20.sol';
 import 'ROOT/libraries/math/SafeMathInt256.sol';
 import 'ROOT/libraries/math/SafeMathUint256.sol';
-import 'ROOT/para/interfaces/IParaShareToken.sol';
+import 'ROOT/para/ParaShareToken.sol';
 import "ROOT/para/interfaces/IAMMFactory.sol";
 import "ROOT/para/interfaces/IAMMExchange.sol";
 import 'ROOT/libraries/token/SafeERC20.sol';
@@ -22,7 +22,7 @@ contract AMMExchange is IAMMExchange, ERC20 {
     event RemoveLiquidity(address sender, uint256 cash, uint256 noShares, uint256 yesShares);
     event SwapPosition(address sender, uint256 inputShares, uint256 outputShares, bool inputYes);
 
-    function initialize(IMarket _market, IParaShareToken _shareToken, uint256 _fee) public {
+    function initialize(IMarket _market, ParaShareToken _shareToken, uint256 _fee) public {
         require(cash == ICash(0)); // can only initialize once
         require(_fee <= 1000); // fee must be [0,1000]
 
@@ -31,12 +31,15 @@ contract AMMExchange is IAMMExchange, ERC20 {
         shareToken = _shareToken;
         augurMarket = _market;
         numTicks = _market.getNumTicks();
-        IERC20(cash).safeApprove(address(_shareToken), 2**256-1);
-        IERC20(cash).safeApprove(address(_shareToken.augur()), 2**256-1);
         INVALID = _shareToken.getTokenId(_market, 0);
         NO = _shareToken.getTokenId(_market, 1);
         YES = _shareToken.getTokenId(_market, 2);
         fee = _fee;
+
+        cash.safeApprove(address(_shareToken), 2**256-1);
+        cash.safeApprove(address(_shareToken.augur()), 2**256-1);
+
+        shareToken.setApprovalForAll(msg.sender, true);
     }
 
     // Adds shares to the liquidity pool by minting complete sets.
@@ -74,11 +77,11 @@ contract AMMExchange is IAMMExchange, ERC20 {
 
         if (_ratioFactor != 10**18) {
             if (_keepYes) {
-                _yesShares = _noShares * _ratioFactor / 10**18;
-                _yesSharesToUser = _noShares.sub(_yesShares);
+                _yesShares = _setsToBuy * _ratioFactor / 10**18;
+                _yesSharesToUser = _setsToBuy.sub(_yesShares);
             } else {
-                _noShares = _yesShares * _ratioFactor / 10**18;
-                _noSharesToUser = _yesShares.sub(_noShares);
+                _noShares = _setsToBuy * _ratioFactor / 10**18;
+                _noSharesToUser = _setsToBuy.sub(_noShares);
             }
         }
 
@@ -213,7 +216,7 @@ contract AMMExchange is IAMMExchange, ERC20 {
     function exitPosition(uint256 _invalidShares, uint256 _noShares, uint256 _yesShares, uint256 _minCashPayout) public returns (uint256) {
         (uint256 _cashPayout, uint256 _invalidFromUser, int256 _noFromUser, int256 _yesFromUser) = rateExitPosition(_invalidShares, _noShares, _yesShares);
 
-        require(_cashPayout >= _minCashPayout, "Proceeds were less than the required payout");
+        require(_cashPayout >= _minCashPayout, "AugurCP: Proceeds were less than the required payout");
         if (_noFromUser < 0) {
             shareToken.unsafeTransferFrom(address(this), msg.sender, NO, uint256(-_noFromUser));
             _noFromUser = 0;
@@ -223,7 +226,7 @@ contract AMMExchange is IAMMExchange, ERC20 {
             _yesFromUser = 0;
         }
 
-        shareTransfer(msg.sender, address(this), _invalidFromUser, uint256(_noFromUser), uint256(_yesFromUser));
+        factory.shareTransfer(augurMarket, shareToken, msg.sender, address(this), _invalidFromUser, uint256(_noFromUser), uint256(_yesFromUser));
         cash.transfer(msg.sender, _cashPayout);
 
         emit ExitPosition(msg.sender, _invalidShares, _noShares, _yesShares, _cashPayout);
@@ -316,7 +319,7 @@ contract AMMExchange is IAMMExchange, ERC20 {
         }
     }
 
-    function shareBalances(address _owner) private view returns (uint256 _invalid, uint256 _no, uint256 _yes) {
+    function shareBalances(address _owner) public view returns (uint256 _invalid, uint256 _no, uint256 _yes) {
         uint256[] memory _tokenIds = new uint256[](3);
         _tokenIds[0] = INVALID;
         _tokenIds[1] = NO;

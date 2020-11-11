@@ -70,10 +70,18 @@ Deploying to: ${env}
             deployProgress = new BigNumber(await this.paraDeployer.paraDeployProgress_(cashAddress));
         }
 
+        if (cashAddress === this.configuration.addresses.WarpSync && this.configuration.addresses.AMMFactory) {
+            await this.deployWethAMM();
+        }
+
         console.log('Writing artifacts');
         if (this.configuration.deploy.writeArtifacts) {
           await this.generateLocalEnvFile(env, blockNumber, this.configuration);
         }
+    }
+
+    async deployWethAMM() {
+
     }
 
     private async generateLocalEnvFile(env: string, uploadBlockNumber: number, config: SDKConfiguration): Promise<void> {

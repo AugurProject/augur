@@ -3,6 +3,7 @@ import requireAll from 'require-all';
 import { writeFile } from 'async-file';
 import { ContractAddresses, DEFAULT_SDK_CONFIGURATION, RecursivePartial, NetworkId, SDKConfiguration, configFromEnvvars, serializeConfig, mergeConfig, validConfigOrDie } from '@augurproject/utils';
 
+// Returns config for the provided network id. There can be multiple configuration "environments" per network id.
 export function getConfigForNetwork(networkId: NetworkId, breakOnMulti=true, validate=true): SDKConfiguration {
   let targetConfig: SDKConfiguration = null;
   Object.values(environments).forEach((config) => {
@@ -40,6 +41,7 @@ export function buildParaAddresses(config:SDKConfiguration): ContractAddresses {
   }
 }
 
+// Derives an SDKConfiguration instance from several sources, merged into a single object.
 export function buildConfig(env: string, specified: RecursivePartial<SDKConfiguration> = {}): SDKConfiguration {
   const config: RecursivePartial<SDKConfiguration> = mergeConfig(
     DEFAULT_SDK_CONFIGURATION,
@@ -50,6 +52,7 @@ export function buildConfig(env: string, specified: RecursivePartial<SDKConfigur
   return validConfigOrDie(config);
 }
 
+// Writes to disk the given SDKConfiguration instance, in the standard place, both source and build locations.
 export async function writeConfig(env: string, config: SDKConfiguration): Promise<void> {
   await Promise.all(['src', 'build'].map(async (dir: string) => {
     const filepath = path.join(__dirname, '..', dir, 'environments', `${env}.json`);
@@ -60,7 +63,7 @@ export async function writeConfig(env: string, config: SDKConfiguration): Promis
   environments[env] = config;
 }
 
-
+// Merges the given config with the one on disk, then writes the result to disk.
 export async function updateConfig(env: string, config: RecursivePartial<SDKConfiguration>): Promise<SDKConfiguration> {
   const original = environments[env] || {};
   const updated = mergeConfig(original, config);
@@ -69,6 +72,7 @@ export async function updateConfig(env: string, config: RecursivePartial<SDKConf
   return valid;
 }
 
+// Loads the config from disk.
 export function refreshSDKConfig(): void {
   // be sure to be in src dir, not build
   loadSDKConfigs('../src/environments');

@@ -2,110 +2,124 @@ pragma solidity 0.5.15;
 
 import 'ROOT/reporting/IMarket.sol';
 import "ROOT/para/interfaces/IAMMExchange.sol";
+import "ROOT/para/interfaces/IAMMFactory.sol";
 import "ROOT/0x/erc20/contracts/src/WETH9.sol";
-import 'ROOT/para/interfaces/IParaShareToken.sol';
-
+import 'ROOT/para/ParaShareToken.sol';
 
 
 contract WethWrapperForAMMExchange {
-    IAMMExchange public amm;
+    IAMMFactory public factory;
+    ParaShareToken public shareToken; // WETH para share token
     WETH9 public weth;
-    IParaShareToken public shareToken;
-    uint256 public numTicks;
-    uint256 public INVALID;
-    uint256 public NO;
-    uint256 public YES;
 
     uint256 private constant MAX_APPROVAL_AMOUNT = 2 ** 256 - 1;
 
-    constructor(IAMMExchange _amm) public {
-        amm = _amm;
-        weth = WETH9(address(uint160(address(_amm.cash()))));
-
-        IParaShareToken _shareToken = _amm.shareToken();
-        IMarket _market = _amm.augurMarket();
-
+    constructor(IAMMFactory _factory, ParaShareToken _shareToken) public {
+        factory = _factory;
         shareToken = _shareToken;
-        numTicks = amm.numTicks();
-        INVALID = _shareToken.getTokenId(_market, 0);
-        NO = _shareToken.getTokenId(_market, 1);
-        YES = shareToken.getTokenId(_market, 2);
+        weth = WETH9(address(uint160(address(_shareToken.cash()))));
 
-        weth.approve(address(_amm.factory()), MAX_APPROVAL_AMOUNT);
+        weth.approve(address(_factory), MAX_APPROVAL_AMOUNT);
+        _shareToken.setApprovalForAll(address(_factory), true);
     }
 
-    function addLiquidity(address recipient) public payable returns (uint256) {
+    // For WETH integration, since weth.withdraw() causes ETH to be sent here.
+    function() external payable {}
+
+    function getAMM(IMarket _market) public view returns (IAMMExchange) {
+        IAMMExchange _amm = IAMMExchange(factory.exchanges(address(_market), address(shareToken)));
+        require(address(_amm) != address(0), "No such AMM exists.");
+        return _amm;
+    }
+
+    function addInitialLiquidity(IMarket _market, uint256 _ratioFactor, bool _keepYes, address _recipient) external payable returns (uint256) {
         weth.deposit.value(msg.value)();
-        uint256 lpTokens = amm.addLiquidity(msg.value, recipient);
-        amm.transfer(msg.sender, lpTokens);
-        return lpTokens;
+        IAMMExchange _amm = getAMM(_market);
+        return _amm.addInitialLiquidity(msg.value, _ratioFactor, _keepYes, _recipient);
     }
 
-    function addInitialLiquidity(uint256 _ratioFactor, bool _keepYes, address _recipient) external payable returns (uint256) {
+    function addLiquidity(IMarket _market, address _recipient) public payable returns (uint256) {
         weth.deposit.value(msg.value)();
-        uint256 lpTokens = amm.addInitialLiquidity(msg.value, _ratioFactor, _keepYes, _recipient);
-        return lpTokens;
+        IAMMExchange _amm = getAMM(_market);
+        return _amm.addLiquidity(msg.value, _recipient);
     }
 
-    function removeLiquidity(uint256 _poolTokensToSell, uint256 _minSetsSold) external returns (uint256 _invalidShare, uint256 _noShare, uint256 _yesShare, uint256 _cashShare) {
-        (_invalidShare, _noShare, _yesShare, _cashShare) = amm.removeLiquidity(_poolTokensToSell, _minSetsSold);
+    function removeLiquidity(IMarket _market, uint256 _poolTokensToSell, uint256 _minSetsSold) external returns (uint256 _invalidShare, uint256 _noShare, uint256 _yesShare, uint256 _cashShare) {
+        IAMMExchange _amm = getAMM(_market);
+        _amm.transferFrom(msg.sender, address(this), _poolTokensToSell);
 
-        shareTransfer(address(this), msg.sender, _invalidShare, _noShare, _yesShare);
+        (_invalidShare, _noShare, _yesShare, _cashShare) = _amm.removeLiquidity(_poolTokensToSell, _minSetsSold);
+        shareTransfer(_market, address(this), msg.sender, _invalidShare, _noShare, _yesShare);
 
-        weth.withdraw(_cashShare);
-        msg.sender.transfer(_cashShare);
+        if (_cashShare > 0) {
+            weth.withdraw(_cashShare);
+            msg.sender.transfer(_cashShare);
+        }
     }
 
-    function enterPosition(bool _buyYes, uint256 _minShares) public payable returns (uint256) {
-        uint256 _setsToBuy = msg.value / numTicks; // safemath division is identical to regular division
+    function enterPosition(IMarket _market, bool _buyYes, uint256 _minShares) public payable returns (uint256) {
+        IAMMExchange _amm = getAMM(_market);
+        uint256 _numTicks = _market.getNumTicks();
+        uint256 _setsToBuy = msg.value / _numTicks; // safemath division is identical to regular division
         weth.deposit.value(msg.value)();
 
-        uint256 shares = amm.enterPosition(msg.value, _buyYes, _minShares);
+        uint256 shares = _amm.enterPosition(msg.value, _buyYes, _minShares);
         if (_buyYes) {
-            shareTransfer(address(this), msg.sender, _setsToBuy, 0, shares);
+            shareTransfer(_market, address(this), msg.sender, _setsToBuy, 0, shares);
         } else {
-            shareTransfer(address(this), msg.sender, _setsToBuy, shares, 0);
+            shareTransfer(_market, address(this), msg.sender, _setsToBuy, shares, 0);
         }
         return shares;
     }
 
-    function exitPosition(uint256 _invalidShares, uint256 _noShares, uint256 _yesShares, uint256 _minCashPayout) public returns (uint256) {
-        uint256 _cashPayout = amm.exitPosition(_invalidShares, _noShares, _yesShares, _minCashPayout);
-        weth.withdraw(_cashPayout);
-        msg.sender.transfer(_cashPayout);
+    function exitPosition(IMarket _market, uint256 _invalidShares, uint256 _noShares, uint256 _yesShares, uint256 _minCashPayout) public returns (uint256) {
+        IAMMExchange _amm = getAMM(_market);
+        shareTransfer(_market, msg.sender, address(this), _invalidShares, _noShares, _yesShares);
+        uint256 _cashPayout = _amm.exitPosition(_invalidShares, _noShares, _yesShares, _minCashPayout);
+
+        // Exiting a position can involve GAINING some shares
+        (uint256 _remainingInvalid, uint256 _remainingNo, uint256 _remainingYes) = _amm.shareBalances(address(this));
+        shareTransfer(_market, address(this), msg.sender, _remainingInvalid, _remainingNo, _remainingYes);
+
+        if (_cashPayout > 0) {
+            weth.withdraw(_cashPayout);
+            msg.sender.transfer(_cashPayout);
+        }
         return _cashPayout;
     }
 
-    function exitAll(uint256 _minCashPayout) external returns (uint256) {
-        uint256 _cashPayout = amm.exitAll(_minCashPayout);
-        weth.withdraw(_cashPayout);
-        msg.sender.transfer(_cashPayout);
-        return _cashPayout;
+    function exitAll(IMarket _market, uint256 _minCashPayout) external returns (uint256) {
+        IAMMExchange _amm = getAMM(_market);
+        (uint256 _invalid, uint256 _no, uint256 _yes) = _amm.shareBalances(msg.sender);
+        return exitPosition(_market, _invalid, _no, _yes, _minCashPayout);
     }
 
-    function shareTransfer(address _from, address _to, uint256 _invalidAmount, uint256 _noAmount, uint256 _yesAmount) private {
+    function shareTransfer(IMarket _market, address _from, address _to, uint256 _invalidAmount, uint256 _noAmount, uint256 _yesAmount) private {
+        uint256 _INVALID = shareToken.getTokenId(_market, 0);
+        uint256 _NO = shareToken.getTokenId(_market, 1);
+        uint256 _YES = shareToken.getTokenId(_market, 2);
+
         uint256 _size = (_invalidAmount != 0 ? 1 : 0) + (_noAmount != 0 ? 1 : 0) + (_yesAmount != 0 ? 1 : 0);
         uint256[] memory _tokenIds = new uint256[](_size);
         uint256[] memory _amounts = new uint256[](_size);
         if (_size == 0) {
             return;
         } else if (_size == 1) {
-            _tokenIds[0] = _invalidAmount != 0 ? INVALID : _noAmount != 0 ? NO : YES;
+            _tokenIds[0] = _invalidAmount != 0 ? _INVALID : _noAmount != 0 ? _NO : _YES;
             _amounts[0] = _invalidAmount != 0 ? _invalidAmount : _noAmount != 0 ? _noAmount : _yesAmount;
         } else if (_size == 2) {
-            _tokenIds[0] = _invalidAmount != 0 ? INVALID : NO;
-            _tokenIds[1] = _invalidAmount != 0 ? YES : NO;
+            _tokenIds[0] = _invalidAmount != 0 ? _INVALID : _NO;
+            _tokenIds[1] = _yesAmount != 0 ? _YES : _NO;
             _amounts[0] = _invalidAmount != 0 ? _invalidAmount : _noAmount;
-            _amounts[1] = _invalidAmount != 0 ? _yesAmount : _noAmount;
+            _amounts[1] = _yesAmount != 0 ? _yesAmount : _noAmount;
         } else {
-            _tokenIds[0] = INVALID;
-            _tokenIds[1] = NO;
-            _tokenIds[2] = YES;
+            _tokenIds[0] = _INVALID;
+            _tokenIds[1] = _NO;
+            _tokenIds[2] = _YES;
             _amounts[0] = _invalidAmount;
             _amounts[1] = _noAmount;
             _amounts[2] = _yesAmount;
         }
         shareToken.unsafeBatchTransferFrom(_from, _to, _tokenIds, _amounts);
     }
-
 }

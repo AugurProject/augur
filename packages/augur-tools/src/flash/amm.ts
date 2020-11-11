@@ -4,9 +4,9 @@ import { BigNumber } from 'bignumber.js';
 import { makeDependencies, makeSigner } from '..';
 import { FlashArguments, FlashSession } from './flash';
 
-import {
-  AMMFactory,
-} from '@augurproject/sdk-lite';
+import { AMMFactory } from '@augurproject/sdk-lite';
+import { updateConfig } from '@augurproject/artifacts';
+import { mergeConfig, SDKConfiguration } from '@augurproject/utils/build';
 
 const compilerOutput = require('@augurproject/artifacts/build/contracts.json');
 
@@ -32,7 +32,11 @@ export function addAMMScripts(flash: FlashSession) {
         compilerOutput
       );
 
-      await contractDeployer.uploadAMMContracts();
+      const factory = await contractDeployer.uploadAMMContracts();
+
+      await updateConfig(this.network, {
+        addresses: { AMMFactory: factory }
+      });
     }
   });
 
@@ -390,4 +394,38 @@ export function addAMMScripts(flash: FlashSession) {
       console.log(`AMM ${ammAddress} ${exists? 'exists' : 'does not exist'}`);
     }
   });
+
+  flash.addScript({
+    name: 'deploy-weth-amm',
+    options: [],
+    async call(this: FlashSession, args: FlashArguments) {
+      const serial = !Boolean(args.parallel);
+      if (this.noProvider()) return;
+
+      this.pushConfig({ deploy: { serial }});
+      console.log('Deploying: ', sanitizeConfig(this.config).deploy);
+
+      const signer = await makeSigner(this.accounts[0], this.provider);
+      const dependencies = makeDependencies(this.accounts[0], this.provider, signer);
+
+      const contractDeployer = new ContractDeployer(
+        this.config,
+        dependencies,
+        this.provider.provider,
+        signer,
+        compilerOutput
+      );
+
+      const ammFactory = this.config.addresses.AMMFactory;
+      const weth = this.config.addresses.WETH9;
+      const wethParaShareToken = this.config.paraDeploys[weth].addresses.ShareToken
+      const wethAmm = await contractDeployer.uploadWethAMMContract(ammFactory, wethParaShareToken);
+      console.log(`Deployed Weth AMM to: ${wethAmm}`);
+
+      await updateConfig(this.network, {
+        addresses: { WethWrapperForAMMExchange: wethAmm }
+      });
+    }
+  });
+
 }

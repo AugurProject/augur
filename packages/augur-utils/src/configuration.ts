@@ -73,8 +73,8 @@ export interface SDKConfiguration {
     enableFaucets: boolean,
     normalTime: boolean,
     savePrivateKey?: boolean,
-    privateKey: string,
-    contractInputPath: string,
+    privateKey?: string,
+    contractInputPath?: string,
     serial?: boolean,
     writeArtifacts?: boolean,
     externalAddresses?: ExternalAddresses,
@@ -401,8 +401,6 @@ export function isValidConfig(suspect: RecursivePartial<SDKConfiguration>): susp
   if (suspect.deploy) {
     if (typeof suspect.deploy.enableFaucets === 'undefined') return fail('deploy.enableFaucets');
     if (typeof suspect.deploy.normalTime === 'undefined') return fail('deploy.normalTime');
-    if (typeof suspect.deploy.privateKey === 'undefined') return fail('deploy.privateKey');
-    if (typeof suspect.deploy.contractInputPath === 'undefined') return fail('deploy.contractInputPath');
     if (typeof suspect.deploy.writeArtifacts === 'undefined') return fail('deploy.writeArtifacts');
   }
   if (suspect.ethereum) {
@@ -450,6 +448,7 @@ export function validConfigOrDie(config: RecursivePartial<SDKConfiguration>): SD
   }
 }
 
+// Takes several SDKConfiguration instances and combines them into one.
 export function mergeConfig(...configs: Array<RecursivePartial<SDKConfiguration>>): RecursivePartial<SDKConfiguration> {
   if (configs.length < 2) throw Error(`mergeConfig must be passed at least 2 configs, not ${configs.length} configs`);
 

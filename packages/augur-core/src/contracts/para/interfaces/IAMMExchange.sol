@@ -3,14 +3,14 @@ pragma solidity 0.5.15;
 import 'ROOT/ICash.sol';
 import 'ROOT/reporting/IMarket.sol';
 import 'ROOT/libraries/token/IERC20.sol';
-import 'ROOT/para/interfaces/IParaShareToken.sol';
+import 'ROOT/para/ParaShareToken.sol';
 import 'ROOT/para/interfaces/IAMMFactory.sol';
 
 
 contract IAMMExchange is IERC20 {
     IAMMFactory public factory;
-    ICash public cash;
-    IParaShareToken public shareToken;
+    IERC20 public cash;
+    ParaShareToken public shareToken;
     IMarket public augurMarket;
     uint256 public numTicks;
     uint256 public INVALID;
@@ -18,7 +18,7 @@ contract IAMMExchange is IERC20 {
     uint256 public YES;
     uint256 public fee; // [0-1000] how many thousandths of swaps should be kept as fees
 
-    function initialize(IMarket _market, IParaShareToken _shareToken, uint256 _fee) public;
+    function initialize(IMarket _market, ParaShareToken _shareToken, uint256 _fee) public;
 
     // Adds shares to the liquidity pool by minting complete sets.
     function addLiquidity(uint256 _cash, address _recipient) public returns (uint256);
@@ -52,4 +52,7 @@ contract IAMMExchange is IERC20 {
     // The fee is a portion of the shares being swapped.
     // Remove liquidity to collect fees.
     function poolConstant(uint256 _poolYes, uint256 _poolNo) public view returns (uint256);
+
+    function shareBalances(address _owner) public view returns (uint256 _invalid, uint256 _no, uint256 _yes);
+    function yesNoShareBalances(address _owner) public view returns (uint256 _no, uint256 _yes);
 }
