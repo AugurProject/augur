@@ -169,8 +169,8 @@ function PositionMarketList({ positions, loading, itemMax = 20 }) {
             {item?.market?.description}
           </BasicLink>
         </DataText>
-        <DataText area="noShares">{formatShares(item.noAmount || '0')}</DataText>
         <DataText area="yesShares">{formatShares(item.yesAmount || '0')}</DataText>
+        <DataText area="noShares">{formatShares(item.noAmount || '0')}</DataText>
         {!below800 && (
           <DataText area="status">
             <span
@@ -220,17 +220,6 @@ function PositionMarketList({ positions, loading, itemMax = 20 }) {
         </Flex>
         <Flex alignItems="center">
           <Text
-            area="No Shares"
-            onClick={e => {
-              setSortedColumn(SORT_FIELD.NO_SHARES)
-              setSortDirection(sortedColumn !== SORT_FIELD.STATUS ? true : !sortDirection)
-            }}
-          >
-            "No" Shares
-          </Text>
-        </Flex>
-        <Flex alignItems="center">
-          <Text
             area="Yes Shares"
             onClick={e => {
               setSortedColumn(SORT_FIELD.YES_SHARES)
@@ -238,6 +227,17 @@ function PositionMarketList({ positions, loading, itemMax = 20 }) {
             }}
           >
             "Yes" Shares
+          </Text>
+        </Flex>
+        <Flex alignItems="center">
+          <Text
+            area="No Shares"
+            onClick={e => {
+              setSortedColumn(SORT_FIELD.NO_SHARES)
+              setSortDirection(sortedColumn !== SORT_FIELD.STATUS ? true : !sortDirection)
+            }}
+          >
+            "No" Shares
           </Text>
         </Flex>
         {!below800 && (
