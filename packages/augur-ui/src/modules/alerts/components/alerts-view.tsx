@@ -14,10 +14,6 @@ import { NOTIFICATIONS, ALERTS } from 'modules/app/store/constants';
 import { updateExistingAlert } from '../actions/alerts';
 import { useNotifications } from 'modules/account/components/notifications';
 
-const TABS = {
-  NOTIFICATIONS,
-  ALERTS,
-};
 const AlertsView = () => {
   const { alerts } = getInfoAlertsAndSeenCount();
   const {
@@ -27,7 +23,12 @@ const AlertsView = () => {
     isAlertsMenuOpen,
     actions: { setIsAlertsMenuOpen, clearAlerts, removeAlert },
   } = useAppStatusStore();
-  const { rows, newNotificationCount, notificationCount } = useNotifications();
+  const {
+    rows,
+    markAllSeen,
+    notificationCount,
+    newNotificationCount,
+  } = useNotifications();
   const [tab, setTab] = useState(ALERTS);
   const isSports = theme === THEMES.SPORTS;
   const alertsVisible = isLogged && isAlertsMenuOpen;
@@ -44,6 +45,18 @@ const AlertsView = () => {
       );
     }
   }, [alertsVisible, theme, oddsType]);
+
+  useEffect(() => {
+    if (
+      isSports &&
+      tab === NOTIFICATIONS &&
+      !isAlertsMenuOpen &&
+      newNotificationCount > 0
+    ) {
+      markAllSeen();
+      // we are sports book, the tab is set to notification, and the alert menu is closed
+    }
+  }, [isAlertsMenuOpen]);
 
   return (
     <div
@@ -75,7 +88,9 @@ const AlertsView = () => {
         </button>
         {isSports && tab === NOTIFICATIONS ? (
           notificationCount ? (
-            <div className={Styles.box}>{rows.map((card, i) => card)}</div>
+            <div key={`${NOTIFICATIONS}box`} className={Styles.box}>
+              {rows.map((card, i) => card)}
+            </div>
           ) : (
             <NullStateMessage
               icon={Alerts(0)}
@@ -85,7 +100,7 @@ const AlertsView = () => {
             />
           )
         ) : alerts && alerts.length ? (
-          <div className={Styles.box}>
+          <div key={`${ALERTS}box`} className={Styles.box}>
             {alerts.map((alert, i) => (
               <Alert
                 key={alert.uniqueId}
@@ -121,7 +136,12 @@ const AlertsView = () => {
           </li>
           <li className={classNames({ [Styles.Selected]: tab === ALERTS })}>
             <button
-              onClick={() => setTab(ALERTS)}
+              onClick={() => {
+                if (isSports) {
+                  markAllSeen();
+                }
+                setTab(ALERTS);
+              }}
             >{`${ALERTS} (${alerts.length})`}</button>
           </li>
         </ul>

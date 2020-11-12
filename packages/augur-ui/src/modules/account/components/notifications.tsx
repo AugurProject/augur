@@ -403,14 +403,19 @@ export const useNotifications = () => {
     updateNotifications(newState);
   };
 
+  const markAllSeen = () => {
+    const notifications = getNotifications();
+    notifications.map(notification => markAsNotNew(notification, notifications, updateNotifications));
+  }
+
   useEffect(() => {
-    return () => {
-      const notifications = getNotifications();
-      notifications.map(notification => markAsNotNew(notification, notifications, updateNotifications));
-    };
+    return markAllSeen;
   }, []);
 
   return {
+    notifications,
+    markAsNotNew,
+    markAllSeen,
     labelContent,
     rows,
     notificationCount,
