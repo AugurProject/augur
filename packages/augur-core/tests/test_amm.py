@@ -227,6 +227,8 @@ def test_amm_yes_position(contractsFixture, market, shareToken, cash, factory, a
     assert payoutAll == applyFeeForEntryAndExit
     # assert payoutAll == inv * market.getNumTicks() # invalids relate to sets which relate to cash
 
+    shareToken.setApprovalForAll(factory.address, True)
+
     amm.exitAll(payoutAll)
 
     assert cash.balanceOf(account0) == payoutAll
@@ -279,7 +281,6 @@ def test_amm_swap(contractsFixture, market, shareToken, cash, factory, amm, acco
     # Entered Yes position earlier, which spent Cash for Yes shares, raising their value and therefore lowering the value of No shares.
     # Then sold 1e18 Yes shares for No shares, which are worth less than Yes shares.
     assert noSharesReceived == 1519467446212556723
-
 
     amm.swap(1 * ATTO, True, noSharesReceived)
 
