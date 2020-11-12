@@ -47,7 +47,7 @@ export function mapAddressArray(arr:Address[]):string[] {
 export function bigIntToHexString(bigint: BigInt):string {
   let hexString = bigint.toHexString();
   if (bigint.lt(ZERO)) {
-    hexString = `-${hexString}`;
+    hexString = "-" + hexString;
   }
   return hexString;
 }
