@@ -20,6 +20,7 @@ export const positionSummary = memoize(
 
     const {
       netPosition,
+      rawPosition,
       realized,
       realizedPercent,
       unrealized,
@@ -91,6 +92,7 @@ export const positionSummary = memoize(
       totalPercent: formatPercent(timesHundred(totalPercent || ZERO), {
         decimalsRounded: 2,
       }),
+      rawPosition: formatMarketShares(marketType, rawPosition),
     };
   },
   {

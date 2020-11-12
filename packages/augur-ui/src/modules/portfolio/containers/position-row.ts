@@ -24,6 +24,7 @@ const mergeProps = (sP: any, dP: any, oP: any) => {
     isFirst,
     showExpandedToggleOnMobile,
     updateSelectedOrderProperties,
+    showRawPositions,
   } = oP;
   let lastPrice = position.lastPrice;
   let purchasePrice = position.purchasePrice;
@@ -55,17 +56,17 @@ const mergeProps = (sP: any, dP: any, oP: any) => {
     {
       key: 'orderType',
       columnType: COLUMN_TYPES.POSITION_TYPE,
-      type: position.type,
+      type: showRawPositions ? '-' : position.type,
     },
     {
       key: 'originalQuantity',
       columnType: COLUMN_TYPES.VALUE,
-      value: position.quantity,
+      value: showRawPositions ? position.rawPosition : position.quantity,
       keyId: 'position-quantity-' + position.id,
       action: () => {
         updateSelectedOrderProperties({
-          orderQuantity: position.quantity.value,
-          selectedNav: position.type === SHORT ? BUY : SELL,
+          orderQuantity: showRawPositions ? position.rawPosition.value : position.quantity.value,
+          selectedNav: showRawPositions ? SELL : position.type === SHORT ? BUY : SELL,
           orderPrice: ''
         });
       },
