@@ -1,11 +1,11 @@
 const fs = require('fs');
 const mustache = require('mustache');
 
-const augur = require('@augurproject/subgraph/abis/Augur.json');
-const augurTrading = require('@augurproject/subgraph/abis/AugurTrading.json');
-const paraDeployer = require('@augurproject/subgraph/abis/ParaDeployer.json');
-const paraShareToken = require('@augurproject/subgraph/abis/ParaShareToken.json');
-const shareToken = require('@augurproject/subgraph/abis/ShareToken.json');
+const augur = require('../abis/Augur.json');
+const augurTrading = require('../abis/AugurTrading.json');
+const paraDeployer = require('../abis/ParaDeployer.json');
+const paraShareToken = require('../abis/ParaShareToken.json');
+const shareToken = require('../abis/ShareToken.json');
 
 
 function buildit(abi) {
@@ -30,7 +30,7 @@ function buildit(abi) {
 
 
 const template = fs.readFileSync('./templates/subgraph.template.mustache').toString();
-const yep = mustache.render(template,{
+const result = mustache.render(template,{
   Augur: buildit(augur),
   AugurTrading: buildit(augurTrading),
   ShareToken: buildit(shareToken),
@@ -38,4 +38,4 @@ const yep = mustache.render(template,{
   ParaShareToken: buildit(paraShareToken)
 });
 
-console.log(yep);
+fs.writeFileSync(`./subgraph.template.yaml`, result);

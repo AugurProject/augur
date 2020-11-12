@@ -168,10 +168,10 @@ dataSources:
       language: wasm/assemblyscript
       file: ./src/ShareToken.ts
       entities:
-        - CancelZeroXOrder
-        - MarketVolumeChanged
-        - OrderEvent
-        - ProfitLossChanged
+        - ApprovalForAll
+        - TransferBatch
+        - TransferSingle
+        - URI
       abis:
         - name: ShareToken
           file: ./abis/ShareToken.json
@@ -184,4 +184,3 @@ dataSources:
           handler: handleTransferSingle
         - event: URI(string,indexed uint256)
           handler: handleURI
-
