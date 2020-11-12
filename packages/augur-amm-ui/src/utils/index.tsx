@@ -509,8 +509,8 @@ export function addAmmLiquidity({
     String(distroPercentage)
   )
 
-  const poolYesPercent = new BN(distroPercentage[DISTRO_YES_ID])
-  const poolNoPercent = new BN(distroPercentage[DISTRO_NO_ID])
+  const poolYesPercent = new BN(distroPercentage[DISTRO_NO_ID])
+  const poolNoPercent = new BN(distroPercentage[DISTRO_YES_ID])
 
   return augurClient.ammFactory.addLiquidity(
     account,
