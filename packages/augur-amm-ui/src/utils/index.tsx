@@ -519,8 +519,8 @@ export function addAmmLiquidity({
     marketId,
     sharetoken,
     new BN(cashAmount),
+    poolYesPercent,
     poolNoPercent,
-    poolYesPercent
   )
 }
 

@@ -419,7 +419,7 @@ export function useAmmTransactions() {
     const tx = sumAmmTransactions(markets)
     const past = sumAmmTransactions(marketsPast)
 
-    const totalDiff = Object.keys(tx).reduce((p, t) => p + (tx[t] - past[t]), 0)
+    const totalDiff = Object.keys(tx).reduce((p, t) => p + ((tx[t] || 0) - (past[t] || 0)), 0)
     return { tx, past, totalDiff: String(totalDiff) }
   }, [markets, marketsPast])
 }
