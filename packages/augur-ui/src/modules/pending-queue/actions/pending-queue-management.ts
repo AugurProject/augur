@@ -1,5 +1,6 @@
 import {
   CreateMarketData,
+  MarketClaimablePositions,
   PendingOrdersType,
   PendingQueue,
 } from 'modules/types';
@@ -15,13 +16,26 @@ import {
   TX_CHECK_BLOCKNUMBER_LIMIT,
   SUBMIT_REPORT,
   SUBMIT_DISPUTE,
+  LIQUIDITY_ORDERS,
+  CANCELORDERS,
+  CLAIMMARKETSPROCEEDS,
+  REDEEMSTAKE,
+  ZERO,
+  BATCHCANCELORDERS,
 } from 'modules/common/constants';
 import { updatePendingOrderStatus } from 'modules/orders/actions/pending-orders-management';
 import { AppStatus } from 'modules/app/store/app-status';
 
 import { generateTxParameterIdFromString } from 'utils/generate-tx-parameter-id';
-import { calculatePayoutNumeratorsArray, TXEventName } from '@augurproject/sdk-lite';
+import {
+  calculatePayoutNumeratorsArray,
+  TXEventName,
+} from '@augurproject/sdk-lite';
 import { PendingOrders } from 'modules/app/store/pending-orders';
+import { getLoginAccountClaimableWinnings } from 'modules/positions/selectors/login-account-claimable-winnings';
+import { selectReportingWinningsByMarket } from 'modules/positions/selectors/select-reporting-winnings-by-market';
+import selectMarketsOpenOrders from 'modules/portfolio/selectors/select-markets-open-orders';
+
 export const ADD_PENDING_DATA = 'ADD_PENDING_DATA';
 export const REMOVE_PENDING_DATA = 'REMOVE_PENDING_DATA';
 export const REMOVE_PENDING_DATA_BY_HASH = 'REMOVE_PENDING_DATA_BY_HASH';
@@ -74,8 +88,9 @@ export const addPendingData = (
   status: string,
   hash: string,
   info?: CreateMarketData | object
-) =>
+) => {
   addPendingDataWithBlockNumber(pendingId, queueName, status, hash, info);
+};
 
 const addPendingDataWithBlockNumber = (
   pendingId: string,
@@ -93,7 +108,7 @@ const addPendingDataWithBlockNumber = (
     status,
     blockNumber,
     hash,
-    info,
+    info
   );
 };
 
@@ -134,12 +149,14 @@ export const removePendingDataByHash = (hash: string, queueName: string) => {
 export const addCanceledOrder = (
   orderId: string,
   status: string,
-  hash: string
+  hash: string,
+  marketId?: string
 ) => {
-  addPendingData(orderId, CANCELORDER, status, hash);
+  addPendingData(orderId, CANCELORDER, status, hash, { marketId });
 };
 
-export const removeCanceledOrder = (orderId: string) => removePendingData(orderId, CANCELORDER);
+export const removeCanceledOrder = (orderId: string) =>
+  removePendingData(orderId, CANCELORDER);
 
 export const addPendingReport = (
   report: doReportDisputeAddStake,
@@ -178,11 +195,11 @@ const addPendingReportDispute = (
 };
 
 export const updatePendingReportHash = (transaction, hash, status) => {
-  updatePendingReportDisputehash(transaction, SUBMIT_REPORT, hash, status)
+  updatePendingReportDisputehash(transaction, SUBMIT_REPORT, hash, status);
 };
 
 export const updatePendingDisputeHash = (transaction, hash, status) => {
-  updatePendingReportDisputehash(transaction, SUBMIT_DISPUTE, hash, status)
+  updatePendingReportDisputehash(transaction, SUBMIT_DISPUTE, hash, status);
 };
 
 const updatePendingReportDisputehash = (
@@ -287,4 +304,163 @@ const processingPendingOrders = (
         )
       );
   });
+};
+
+export const evaluateStatusTracker = (
+  statusTracker,
+  pendingQueue,
+  totalCount
+) => {
+  let status = '';
+  let submitAllButton = false;
+
+  if (statusTracker[TXEventName.Pending] > 0) {
+    status = TXEventName.Pending;
+  } else if (statusTracker[TXEventName.Success] > 0) {
+    status = TXEventName.Success;
+  } else if (statusTracker[TXEventName.Failure] > 0) {
+    status = TXEventName.Failure;
+  }
+
+  if (statusTracker['none'] === 0 && pendingQueue.length === totalCount) {
+    submitAllButton = true;
+  }
+  return {
+    status,
+    submitAllButton,
+  };
+};
+
+export const updatePendingDataBasedOnQueue = (
+  queueId,
+  queueName,
+  status,
+  submitAllButton,
+  statusTracker,
+  totalCount
+) => {
+  AppStatus.actions.addPendingData(queueId, queueName, status, '', '', {
+    submitAllButton,
+    dontShowNotificationButton: false,
+  });
+  if (
+    status === TXEventName.Failure ||
+    (status === TXEventName.Success &&
+      statusTracker[TXEventName.Success] !== totalCount)
+  ) {
+    setTimeout(
+      () =>
+        AppStatus.actions.addPendingData(queueId, queueName, status, '', '', {
+          submitAllButton,
+          dontShowNotificationButton: true,
+        }),
+      2000
+    );
+  }
+};
+
+export const findOrderStatus = status => {
+  let orderStatus = status ? status : 'none';
+  if (status === TXEventName.AwaitingSigning) {
+    orderStatus = TXEventName.Pending;
+  }
+  return orderStatus;
+};
+
+const findTotalCount = (managingQueueName, marketId) => {
+  let totalCount = 0;
+  let openOrdersCount = 0;
+  if (managingQueueName === CANCELORDER) {
+    const { marketsObj, openOrders } = selectMarketsOpenOrders();
+    const userOpenOrders = marketsObj[marketId] || [];
+    totalCount = userOpenOrders.length;
+    openOrdersCount = openOrders.length;
+  } else if (managingQueueName === CLAIMMARKETSPROCEEDS) {
+    const accountMarketClaimablePositions: MarketClaimablePositions = getLoginAccountClaimableWinnings();
+    totalCount = accountMarketClaimablePositions.markets.length;
+  } else if (managingQueueName === REDEEMSTAKE) {
+    const claimReportingFees = selectReportingWinningsByMarket();
+    const claimableMarkets = claimReportingFees.claimableMarkets;
+    totalCount = claimableMarkets.marketContracts.length;
+    if (claimReportingFees.participationContracts.unclaimedRep.gt(ZERO)) {
+      totalCount = totalCount + 1;
+    }
+  }
+  return {
+    totalCount,
+    openOrdersCount,
+  };
+};
+
+export const manageAndUpdatePendingQueue = (
+  pendingQueue,
+  totalCount: number,
+  queueId: string,
+  queueName: string,
+) => {
+  let statusTracker = {
+    [TXEventName.Pending]: 0,
+    [TXEventName.Success]: 0,
+    [TXEventName.Failure]: 0,
+    none: 0,
+  };
+  pendingQueue.map(order => {
+    let orderStatus = findOrderStatus(order.status);
+    statusTracker[orderStatus] = statusTracker[orderStatus] + 1;
+  });
+
+  const { status, submitAllButton } = evaluateStatusTracker(
+    statusTracker,
+    pendingQueue,
+    totalCount
+  );
+
+  updatePendingDataBasedOnQueue(
+    queueId,
+    queueName,
+    status,
+    submitAllButton,
+    statusTracker,
+    totalCount
+  );
+};
+
+export const updatePendingQueue = (
+  managingQueueName: string,
+  marketId?: string
+) => {
+  let queueId = managingQueueName;
+  let queueName = TRANSACTIONS;
+  const { totalCount, openOrdersCount } = findTotalCount(
+    managingQueueName,
+    marketId
+  );
+
+  const pendingQueue = Object.values(
+    AppStatus.get().pendingQueue[managingQueueName]
+  ).filter(order =>
+    managingQueueName === CANCELORDER ? order.data.marketId === marketId : true
+  );
+
+  if (managingQueueName === CANCELORDER) {
+    queueName = CANCELORDERS;
+    queueId = marketId;
+    // check if BATCHCANCELORDER button should have status updated 
+    const batchPendingQueue = Object.values(
+      AppStatus.get().pendingQueue[managingQueueName]
+    );
+    manageAndUpdatePendingQueue(
+      batchPendingQueue,
+      openOrdersCount,
+      BATCHCANCELORDERS,
+      TRANSACTIONS,
+    );
+  }
+
+  manageAndUpdatePendingQueue(
+    pendingQueue,
+    totalCount,
+    queueId,
+    queueName
+  );
 };

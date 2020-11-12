@@ -228,6 +228,7 @@ export const getNotifications = (): Notification[] => {
       queueName: TRANSACTIONS,
       queueId: REDEEMSTAKE,
       id: NOTIFICATION_TYPES.claimReportingFees,
+      dontShowNotificationButton: true
     });
   }
 
@@ -246,6 +247,7 @@ export const getNotifications = (): Notification[] => {
       id: NOTIFICATION_TYPES.proceedsToClaim,
       queueName: TRANSACTIONS,
       queueId: CLAIMMARKETSPROCEEDS,
+      dontShowNotificationButton: true
     });
   }
 
@@ -298,6 +300,7 @@ const generateCards = (markets, type) => {
         buttonLabel: TYPE_VIEW_ORDERS,
         queueName: CANCELORDERS,
         queueId: market.id,
+        dontShowNotificationButton: true
       };
     } else if (type === NOTIFICATION_TYPES.reportOnMarkets) {
       defaults = {
@@ -346,6 +349,7 @@ const generateCards = (markets, type) => {
         buttonLabel: TYPE_VIEW_DETAILS,
         queueName: TRANSACTIONS,
         queueId: CLAIMMARKETSPROCEEDS,
+        dontShowNotificationButton: true
       };
     } else if (type === NOTIFICATION_TYPES.marketIsMostLikelyInvalid) {
       defaults = {

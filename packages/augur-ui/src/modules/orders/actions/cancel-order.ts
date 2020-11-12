@@ -1,14 +1,25 @@
 import { TXEventName } from '@augurproject/sdk-lite';
+import { hash } from 'crypto-promise';
 import { addAlert } from 'modules/alerts/actions/alerts';
 import { BUY, CANCELORDERS } from 'modules/common/constants';
 import { cancelZeroXOpenBatchOrders, cancelZeroXOpenOrder, } from 'modules/contracts/actions/contractCalls';
 import { addCanceledOrder } from 'modules/pending-queue/actions/pending-queue-management';
+import { string } from 'prop-types';
 
 const BATCH_CANCEL_MAX = 4;
 
-export const cancelAllOpenOrders = async orders => {
-  let orderHashes = orders.map(order => order.id);
+interface orderHash {
+  hash: string;
+  marketId: string;
+}
 
+export const cancelAllOpenOrders = async (orders) => {
+  let orderHashes = orders.map(order => {
+    return {
+      hash: order.id,
+      marketId: order.marketId
+    }
+  });
   try {
     orders.forEach((order) => {
       sendCancelAlert(order);
@@ -18,27 +29,26 @@ export const cancelAllOpenOrders = async orders => {
       while(i < orderHashes.length) {
         var orderHashesToCancel = orderHashes.slice(i, Math.min(i + BATCH_CANCEL_MAX, orderHashes.length));
         setCancelOrderStatus(orderHashesToCancel);
-        await cancelZeroXOpenBatchOrders(orderHashesToCancel);
+        await cancelZeroXOpenBatchOrders(orderHashesToCancel.map(order => order.hash));
         i += BATCH_CANCEL_MAX;
       }
     } else {
       setCancelOrderStatus(orderHashes)
-      await cancelZeroXOpenBatchOrders(orderHashes);
+      await cancelZeroXOpenBatchOrders(orderHashes.map(order => order.hash));
     }
     orders.forEach(order => {
       sendCancelAlert(order);
     });
   } catch (error) {
     console.error('Error canceling batch orders', error);
-    setCancelOrderStatus(orders.map(o => o.id));
     throw error;
   }
 };
 
-export const cancelOrder = async order => {
+export const cancelOrder = async (order, marketId) => {
   try {
     const { id } = order;
-    setCancelOrderStatus([id]);
+    setCancelOrderStatus([{hash: id, marketId}]);
     sendCancelAlert(order);
     await cancelZeroXOpenOrder(id);
   } catch (error) {
@@ -65,6 +75,6 @@ const sendCancelAlert = (order) => {
   addAlert(alert);
 };
 
-const setCancelOrderStatus = (ids: string[]) => {
-  ids.map(id => addCanceledOrder(id, TXEventName.Pending, null));
+const setCancelOrderStatus = (ids: orderHash[]) => {
+  ids.map(id => addCanceledOrder(id.hash, TXEventName.Pending, '', id.marketId));
 }

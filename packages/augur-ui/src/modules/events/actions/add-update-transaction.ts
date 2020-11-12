@@ -50,6 +50,7 @@ import {
   updatePendingReportHash,
   updatePendingDisputeHash,
   removePendingDataByHash,
+  updatePendingQueue,
 } from 'modules/pending-queue/actions/pending-queue-management';
 import { convertUnixToFormattedDate } from 'utils/format-date';
 import { TransactionMetadataParams } from '@augurproject/contract-dependencies-ethers';
@@ -61,7 +62,6 @@ import { PendingOrders } from 'modules/app/store/pending-orders';
 
 const ADD_PENDING_QUEUE_METHOD_CALLS = [
   BUYPARTICIPATIONTOKENS,
-  REDEEMSTAKE,
   MIGRATE_FROM_LEG_REP_TOKEN,
   APPROVE_FROM_LEG_REP_TOKEN,
   BATCHCANCELORDERS,
@@ -76,7 +76,6 @@ const ADD_PENDING_QUEUE_METHOD_CALLS = [
   SWAPETHFOREXACTTOKENS,
   SENDETHER,
   TRANSFER,
-  CLAIMMARKETSPROCEEDS,
   FINALIZE,
   APPROVE,
   SETREFERRER,
@@ -187,23 +186,21 @@ export const addUpdateTransaction = async (txStatus: Events.TXStatus) => {
             ...transaction,
           })
         );
+        updatePendingQueue(REDEEMSTAKE);
         break;
       }
       case CLAIMMARKETSPROCEEDS: {
         const params = transaction.params;
-        if (params._markets.length === 1) {
+        params._markets.map(market => {
           addPendingData(
-            params._markets[0],
+            market,
             CLAIMMARKETSPROCEEDS,
             eventName,
             hash,
             { ...transaction }
           );
-        } else {
-          addUpdatePendingTransaction(methodCall, eventName, hash, {
-            ...transaction,
-          });
-        }
+        })
+        updatePendingQueue(CLAIMMARKETSPROCEEDS);
         break;
       }
       case BUYPARTICIPATIONTOKENS: {
@@ -268,24 +265,26 @@ export const addUpdateTransaction = async (txStatus: Events.TXStatus) => {
       case CANCELORDER: {
         const orderId =
           transaction.params && transaction.params.order[TX_ORDER_ID];
-        addCanceledOrder(orderId, eventName, hash);
+        const marketId = parseZeroXMakerAssetData(transaction.params.order.makerAssetData).market;
+        addCanceledOrder(orderId, eventName, hash, marketId);
+        updatePendingQueue(CANCELORDER, marketId);
         break;
       }
       case BATCHCANCELORDERS: {
         const orders = (transaction.params && transaction.params.orders) || [];
-        orders.map(order => addCanceledOrder(order.orderId, eventName, hash));
+        orders.map(order => {
+          const marketId = parseZeroXMakerAssetData(order.makerAssetData).market;
+          addCanceledOrder(order.orderId, eventName, hash, marketId)
+        });
+        updatePendingQueue(CANCELORDER);
         break;
       }
       case CANCELORDERS: {
         const orders = (transaction.params && transaction.params._orders) || [];
+        let marketId = '';
         orders.map(order => {
-          addCanceledOrder(order.orderId, eventName, hash);
-          addPendingData(
-            parseZeroXMakerAssetData(order.makerAssetData).market,
-            CANCELORDERS,
-            eventName,
-            hash
-          );
+          marketId = parseZeroXMakerAssetData(order.makerAssetData).market;
+          addCanceledOrder(order.orderId, eventName, hash, marketId);
           if (eventName === TXEventName.Success) {
             const alert = {
               params: {
@@ -298,6 +297,7 @@ export const addUpdateTransaction = async (txStatus: Events.TXStatus) => {
             updateAlert(order.orderId, alert);
           }
         });
+        updatePendingQueue(CANCELORDER, marketId);
         break;
       }
       case DOINITIALREPORT: {

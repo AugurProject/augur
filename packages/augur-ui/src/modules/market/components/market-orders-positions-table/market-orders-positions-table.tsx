@@ -87,7 +87,7 @@ const MarketOrdersPositionsTable: React.FC<MarketOrdersPositionsTableProps> = ({
               action={() => {
                 cancelAllOpenOrders(openOrders);
                 openOrders.forEach(order => {
-                  addCanceledOrder(order.id, TXEventName.Pending, null);
+                  addCanceledOrder(order.id, TXEventName.Pending, null, marketId);
                 });
               }}
               text="Cancel All"

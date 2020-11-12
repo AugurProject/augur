@@ -11,7 +11,7 @@ import {
   InvalidLabel,
   TypeLabel,
 } from 'modules/common/labels';
-import { CancelTextButton, CashoutButton, PendingIconButton } from 'modules/common/buttons';
+import { CancelTextButton, CashoutButton, PendingIconButton, ProcessingButton } from 'modules/common/buttons';
 import OutcomeTradingIndicator from "modules/market/components/common/outcome-trading-indicator/outcome-trading-indicator";
 import { DateFormattedObject, FormattedNumber } from 'modules/types';
 import { TXEventName } from '@augurproject/sdk-lite';
@@ -53,6 +53,8 @@ export interface Properties {
   marketId?: string;
   retryFnc?: Function;
   showTypeLabel?: boolean;
+  queueName?: string;
+  queueId?: string;
 }
 
 function selectColumn(columnType: string, properties: Properties) {
@@ -85,7 +87,9 @@ function selectColumn(columnType: string, properties: Properties) {
     templateShield,
     marketId,
     retryFnc,
-    showTypeLabel
+    showTypeLabel,
+    queueName,
+    queueId
   } = properties;
 
   switch (columnType) {
@@ -187,19 +191,7 @@ function selectColumn(columnType: string, properties: Properties) {
         ? 'Failed'
         : 'Processing ...';
       const isDisabled = !failed && !confirmed;
-      const icon = failed || confirmed ? XIcon : null;
-      return pending ? (
-        <span>
-          <CancelTextButton
-            confirmed={confirmed}
-            failed={failed}
-            icon={icon}
-            text={buttonText}
-            action={action}
-            disabled={isDisabled}
-          />
-        </span>
-      ) : (
+      return (
         <>
           {showCountdown && (
             <CountdownLabel
@@ -207,10 +199,13 @@ function selectColumn(columnType: string, properties: Properties) {
               expiry={expiry}
             />
           )}
-          <CancelTextButton
+          <ProcessingButton
             disabled={disabled}
             text={text}
+            cancelButton
             action={action}
+            queueName={queueName}
+            queueId={queueId}
           />
         </>
       );

@@ -178,6 +178,6 @@ function getUserOpenOrders(
       sharesEscrowed: formatMarketShares(marketType, order.sharesEscrowed),
       marketDescription,
       name,
-      cancelOrder: order => cancelOrder(order),
+      cancelOrder: order => cancelOrder(order, marketId),
     }));
 }

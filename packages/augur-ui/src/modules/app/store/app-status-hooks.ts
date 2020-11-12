@@ -434,16 +434,13 @@ export function AppStatusReducer(state, action) {
     }
     case ADD_PENDING_DATA: {
       const { pendingId, queueName, status, blockNumber, hash, info } = action;
-      updatedState[PENDING_QUEUE] = {
-        ...updatedState[PENDING_QUEUE],
-        [queueName]: {
-          ...updatedState[PENDING_QUEUE][queueName],
-          [pendingId]: {
-            status,
-            data: info,
-            hash,
-            blockNumber,
-          },
+      updatedState[PENDING_QUEUE][queueName] = {
+        ...updatedState[PENDING_QUEUE][queueName],
+        [pendingId]: {
+          status,
+          data: info,
+          hash,
+          blockNumber,
         },
       };
       break;

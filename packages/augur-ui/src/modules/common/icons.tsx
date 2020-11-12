@@ -2,7 +2,7 @@ import * as React from 'react';
 
 export const RetryIcon = (
   <svg
-    viewBox="0 0 7 8"
+    viewBox="0 0 8 8"
     fill="none"
   >
     <path

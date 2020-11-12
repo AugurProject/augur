@@ -16,6 +16,8 @@ import {
   MAX_BULK_CLAIM_MARKETS_PROCEEDS_COUNT,
   THEMES,
   LIQUIDITY_ORDERS,
+  CANCELORDERS,
+  CLAIMMARKETSPROCEEDS,
 } from 'modules/common/constants';
 import { selectReportingWinningsByMarket } from 'modules/positions/selectors/select-reporting-winnings-by-market';
 import { getTransactionLabel } from 'modules/auth/helpers/get-gas-price';
@@ -327,6 +329,9 @@ export const ModalClaimFees = () => {
               {
                 text: CLAIM_ALL_TITLE,
                 disabled: modalRows.find(market => market.status === 'pending'),
+                submitAllButton: true,
+                queueName: TRANSACTIONS,
+                queueId: REDEEMSTAKE,
                 action: () => {
                   redeemStake(allRedeemStakeOptions, () => {
                     if (modal.cb) {
@@ -419,6 +424,8 @@ export const ModalClaimMarketsProceeds = () => {
           status: pending && pending.status,
           properties,
           text: 'Claim',
+          queueName: CLAIMMARKETSPROCEEDS,
+          queueId: marketId,
           action: showBreakdown
             ? () => startClaimingMarketsProceeds([marketId], account, () => {})
             : null,
@@ -499,6 +506,9 @@ export const ModalClaimMarketsProceeds = () => {
           disabled: claimableMarkets.find(
             market => market.status === 'pending'
           ),
+          submitAllButton: true,
+          queueName: TRANSACTIONS,
+          queueId: CLAIMMARKETSPROCEEDS,
           action: () => {
             startClaimingMarketsProceeds(
               claimableMarkets.map(m => m.marketId),
@@ -531,7 +541,13 @@ export const ModalOpenOrders = () => {
   const userOpenOrders = getUserOpenOrders(modal.marketId) || [];
   const openOrders = userOpenOrders;
   const { description: marketTitle, marketId } = market;
-
+  if (openOrders.length === 0) {
+    if (modal.cb) {
+      modal.cb();
+    }
+    closeModal();
+    return null;
+  }
   return (
     <UnsignedOrders
       title='Open Orders in resolved market'
@@ -543,6 +559,9 @@ export const ModalOpenOrders = () => {
       buttons={[
         {
           text: 'Cancel All',
+          queueName: CANCELORDERS,
+          queueId: marketId,
+          submitAllButton: true,
           action: () => {
             cancelAllOpenOrders(openOrders);
             closeModal();
@@ -578,7 +597,6 @@ export const ModalUnsignedOrders = () => {
   } = useAppStatusStore();
   const {
     pendingLiquidityOrders,
-    actions: {deleteSuccessfulOrders}
   } = usePendingOrdersStore();
   let initialProcessing = false;
   const market = selectMarket(modal.marketId);
@@ -677,13 +695,11 @@ export const ModalUnsignedOrders = () => {
         {
           text: 'Close',
           action: () => {
-            deleteSuccessfulOrders();
             closeModal();
           },
         },
       ]}
       closeAction={() => {
-        deleteSuccessfulOrders();
         closeModal();
       }}
     />

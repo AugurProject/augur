@@ -321,7 +321,7 @@ export const ProcessingButton = ({
   if (pendingData) {
     if (
       (matchingId !== null &&
-        String(pendingData.data?.matchingId) !== String(matchingId)) ||
+        String(pendingData?.data?.matchingId) !== String(matchingId)) ||
       (nonMatchingIds &&
         nonMatchingIds.length &&
         nonMatchingIds.includes(pendingData.data.matchingId))
@@ -366,19 +366,11 @@ export const ProcessingButton = ({
       <div className={Styles.ProcessingCheckmark}>{AlternateCheckMark}</div>
     );
   }
-  const cancel = () => removePendingData(queueId, queueName);
+  
   if (failed || confirmed) {
     buttonAction = e => props.action(e);
     isDisabled = false;
-  }
-
-  if (autoHideConfirm) {
-    if (confirmed) {
-      icon = null;
-      setTimeout(() => {
-        cancel();
-      }, 3000);
-    }
+    icon = null;
   }
 
   return (
