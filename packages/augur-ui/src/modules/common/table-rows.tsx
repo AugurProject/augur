@@ -433,16 +433,7 @@ export const OpenOrder = ({
       queueId: openOrder.id,
       action: async (e: Event) => {
         e.stopPropagation();
-        if (!!isCanceling) {
-          removeCanceledOrder(openOrder.id);
-        } else if (
-          openOrder.status === TXEventName.Failure ||
-          openOrder.status === TXEventName.Success
-        ) {
-          removePendingOrder(openOrder.id, marketId);
-        } else {
-          await openOrder.cancelOrder(openOrder);
-        }
+        await openOrder.cancelOrder(openOrder);
       },
     },
   ];
