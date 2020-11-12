@@ -1,5 +1,5 @@
 import { Address, BigDecimal, BigInt, Bytes, crypto, log } from '@graphprotocol/graph-ts';
-import { toChecksumAddress, mapAddressArray, mapByteArray, mapArray } from './utils';
+import { toChecksumAddress, mapAddressArray, mapByteArray, mapArray, bigIntToHexString } from './utils';
 import {
 {{#Entities}}
   {{name}} as {{name}}Event,

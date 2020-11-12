@@ -1,5 +1,7 @@
 import { Address, BigDecimal, BigInt, Bytes, crypto, log } from '@graphprotocol/graph-ts';
 
+let ZERO = new BigInt(0);
+
 function upperCase(s: string): string {
   let letterMap = new Map<string, string>();
   letterMap.set('a', 'A');
@@ -40,6 +42,14 @@ export function mapAddressArray(arr:Address[]):string[] {
   }
 
   return result;
+}
+
+export function bigIntToHexString(bigint: BigInt):string {
+  let hexString = bigint.toHexString();
+  if (bigint.lt(ZERO)) {
+    hexString = `-${hexString}`;
+  }
+  return hexString;
 }
 
 export function mapByteArray(arr:Bytes[]):string[] {

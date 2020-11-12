@@ -44,7 +44,7 @@ const buildFile = (name, abi) => {
             return `event.params.${this.name}`;
         }
 
-        return `event.params.${this.name}.toHexString()`;
+        return `bigIntToHexString(event.params.${this.name})`;
       }
     }
   });

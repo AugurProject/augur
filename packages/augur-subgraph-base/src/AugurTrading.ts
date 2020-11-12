@@ -1,5 +1,5 @@
 import { Address, BigDecimal, BigInt, Bytes, crypto, log } from '@graphprotocol/graph-ts';
-import { toChecksumAddress, mapAddressArray, mapByteArray, mapArray } from './utils';
+import { toChecksumAddress, mapAddressArray, mapByteArray, mapArray, bigIntToHexString } from './utils';
 import {
   CancelZeroXOrder as CancelZeroXOrderEvent,
   MarketVolumeChanged as MarketVolumeChangedEvent,
@@ -27,9 +27,9 @@ export function handleCancelZeroXOrder(event: CancelZeroXOrderEvent): void {
   entity.universe = toChecksumAddress(event.params.universe);
   entity.market = toChecksumAddress(event.params.market);
   entity.account = toChecksumAddress(event.params.account);
-  entity.outcome = event.params.outcome.toHexString();
-  entity.price = event.params.price.toHexString();
-  entity.amount = event.params.amount.toHexString();
+  entity.outcome = bigIntToHexString(event.params.outcome);
+  entity.price = bigIntToHexString(event.params.price);
+  entity.amount = bigIntToHexString(event.params.amount);
   entity.orderType = event.params.orderType;
   entity.orderHash = event.params.orderHash;
 
@@ -48,10 +48,10 @@ export function handleMarketVolumeChanged(event: MarketVolumeChangedEvent): void
 
   entity.universe = toChecksumAddress(event.params.universe);
   entity.market = toChecksumAddress(event.params.market);
-  entity.volume = event.params.volume.toHexString();
+  entity.volume = bigIntToHexString(event.params.volume);
   entity.outcomeVolumes = mapArray(event.params.outcomeVolumes);
-  entity.totalTrades = event.params.totalTrades.toHexString();
-  entity.timestamp = event.params.timestamp.toHexString();
+  entity.totalTrades = bigIntToHexString(event.params.totalTrades);
+  entity.timestamp = bigIntToHexString(event.params.timestamp);
 
   entity.save();
 }
@@ -91,13 +91,13 @@ export function handleProfitLossChanged(event: ProfitLossChangedEvent): void {
   entity.universe = toChecksumAddress(event.params.universe);
   entity.market = toChecksumAddress(event.params.market);
   entity.account = toChecksumAddress(event.params.account);
-  entity.outcome = event.params.outcome.toHexString();
-  entity.netPosition = event.params.netPosition.toHexString();
-  entity.avgPrice = event.params.avgPrice.toHexString();
-  entity.realizedProfit = event.params.realizedProfit.toHexString();
-  entity.frozenFunds = event.params.frozenFunds.toHexString();
-  entity.realizedCost = event.params.realizedCost.toHexString();
-  entity.timestamp = event.params.timestamp.toHexString();
+  entity.outcome = bigIntToHexString(event.params.outcome);
+  entity.netPosition = bigIntToHexString(event.params.netPosition);
+  entity.avgPrice = bigIntToHexString(event.params.avgPrice);
+  entity.realizedProfit = bigIntToHexString(event.params.realizedProfit);
+  entity.frozenFunds = bigIntToHexString(event.params.frozenFunds);
+  entity.realizedCost = bigIntToHexString(event.params.realizedCost);
+  entity.timestamp = bigIntToHexString(event.params.timestamp);
 
   entity.save();
 }

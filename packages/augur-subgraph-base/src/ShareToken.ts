@@ -1,5 +1,5 @@
 import { Address, BigDecimal, BigInt, Bytes, crypto, log } from '@graphprotocol/graph-ts';
-import { toChecksumAddress, mapAddressArray, mapByteArray, mapArray } from './utils';
+import { toChecksumAddress, mapAddressArray, mapByteArray, mapArray, bigIntToHexString } from './utils';
 import {
   ApprovalForAll as ApprovalForAllEvent,
   TransferBatch as TransferBatchEvent,
@@ -63,8 +63,8 @@ export function handleTransferSingle(event: TransferSingleEvent): void {
   entity.operator = toChecksumAddress(event.params.operator);
   entity.from = toChecksumAddress(event.params.from);
   entity.to = toChecksumAddress(event.params.to);
-  entity.id = event.params.id.toHexString();
-  entity.value = event.params.value.toHexString();
+  entity.id = bigIntToHexString(event.params.id);
+  entity.value = bigIntToHexString(event.params.value);
 
   entity.save();
 }
@@ -80,7 +80,7 @@ export function handleURI(event: URIEvent): void {
   entity.transactionHash = event.transaction.hash.toHexString();
 
   entity.value = event.params.value;
-  entity.id = event.params.id.toHexString();
+  entity.id = bigIntToHexString(event.params.id);
 
   entity.save();
 }
