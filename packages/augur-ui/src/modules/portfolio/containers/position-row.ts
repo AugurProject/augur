@@ -6,7 +6,7 @@ import Row from 'modules/common/row';
 import { Properties } from 'modules/common/row-column';
 import { ThunkDispatch } from 'redux-thunk';
 import { Action } from 'redux';
-import { calcPercentageFromPrice } from 'utils/format-number';
+import { calcPercentageFromPrice, formatNone } from 'utils/format-number';
 
 const { COLUMN_TYPES, SHORT, BUY, SELL } = constants;
 
@@ -74,7 +74,7 @@ const mergeProps = (sP: any, dP: any, oP: any) => {
     {
       key: 'averagePrice',
       columnType: COLUMN_TYPES.VALUE,
-      value: purchasePrice,
+      value: showRawPositions ? formatNone() : purchasePrice,
       usePercent: purchasePrice && !!purchasePrice.percent,
       useFull: market?.marketType === constants.SCALAR ? false : true,
       showFullPrecision: market?.marketType === constants.SCALAR? true : false,
@@ -85,7 +85,7 @@ const mergeProps = (sP: any, dP: any, oP: any) => {
       hide: extendedView,
       key: 'totalCost',
       columnType: COLUMN_TYPES.VALUE,
-      value: position.totalCost,
+      value: showRawPositions ? formatNone() : position.totalCost,
       useFull: true,
       keyId: 'position-totalCost-' + position.id,
     },
@@ -93,7 +93,7 @@ const mergeProps = (sP: any, dP: any, oP: any) => {
       hide: extendedView,
       key: 'totalValue',
       columnType: COLUMN_TYPES.VALUE,
-      value: position.totalValue,
+      value: showRawPositions ? formatNone() : position.totalValue,
       useFull: true,
       keyId: 'position-totalValue-' + position.id,
     },
@@ -101,7 +101,7 @@ const mergeProps = (sP: any, dP: any, oP: any) => {
       hide: extendedView,
       key: 'lastPrice',
       columnType: COLUMN_TYPES.VALUE,
-      value: lastPrice,
+      value: showRawPositions ? formatNone() : lastPrice,
       usePercent: lastPrice && !!lastPrice.percent,
       useFull: true,
       keyId: 'position-lastPrice-' + position.id,
@@ -115,7 +115,7 @@ const mergeProps = (sP: any, dP: any, oP: any) => {
       showPlusMinus: true,
       hide: extendedView,
       columnType: COLUMN_TYPES.MOVEMENT_LABEL,
-      value: position.totalPercent,
+      value: showRawPositions ? formatNone() : position.totalPercent,
     });
   } else {
     columnProperties.push({
@@ -123,7 +123,7 @@ const mergeProps = (sP: any, dP: any, oP: any) => {
       hide: extendedView,
       columnType: COLUMN_TYPES.VALUE,
       useFull: true,
-      value: position.totalReturns,
+      value: showRawPositions ? formatNone() : position.totalReturns,
     });
   }
   columnProperties.push({
@@ -131,14 +131,14 @@ const mergeProps = (sP: any, dP: any, oP: any) => {
     hide: !extendedView,
     columnType: COLUMN_TYPES.VALUE,
     useFull: true,
-    value: position.unrealizedNet,
+    value: showRawPositions ? formatNone() : position.unrealizedNet,
   });
   columnProperties.push({
     key: 'realizedNet',
     hide: !extendedView,
     columnType: COLUMN_TYPES.VALUE,
     useFull: true,
-    value: position.realizedNet,
+    value: showRawPositions ? formatNone() : position.realizedNet,
   });
   return {
     ...oP,
