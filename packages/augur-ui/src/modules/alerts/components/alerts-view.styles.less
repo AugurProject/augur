@@ -24,7 +24,7 @@
     &::after {
       border: none;
       bottom: 0;
-      content: "";
+      content: '';
       display: none;
       right: 0;
     }
@@ -129,8 +129,12 @@
   display: none;
 }
 
-:root[theme="BETTING"],
-:root[theme="SPORTS"] {
+.SportsMobileHeading {
+  display: none;
+}
+
+:root[theme='BETTING'],
+:root[theme='SPORTS'] {
   .AlertsView {
     flex-direction: column-reverse;
     background: var(--color-module-background);
@@ -237,7 +241,7 @@
   }
 }
 
-:root[theme="SPORTS"] {
+:root[theme='SPORTS'] {
   .AlertsView {
     > .dismissContainer {
       display: none;
@@ -255,7 +259,7 @@
 
       > button {
         .mono-12-semi-bold;
-  
+
         color: var(--color-primary-text);
         text-transform: capitalize;
         background-color: var(--color-page-background);
@@ -266,7 +270,7 @@
         margin: 0;
         margin-left: auto;
         align-self: center;
-  
+
         &:after {
           content: '';
           position: absolute;
@@ -275,7 +279,7 @@
           right: 0;
           border-bottom: @size-1 dotted var(--color-primary-text);
         }
-  
+
         &:hover:after {
           border-bottom: @size-1 solid var(--color-primary-text);
         }
@@ -286,10 +290,77 @@
       > .dismissContainer {
         display: flex;
         order: 0;
-  
+
+        @media @breakpoint-mobile-tablet {
+          order: 4;
+        }
+
         > span {
           display: none;
         }
+      }
+    }
+
+    @media @breakpoint-mobile-tablet {
+      flex-direction: column;
+
+      &.isOpen {
+        top: 0;
+      }
+
+      > button.close {
+        display: none;
+      }
+
+      > .SportsMobileHeading {
+        display: flex;
+        flex-flow: row nowrap;
+        justify-content: center;
+        align-items: center;
+        padding: 0 @size-24;
+        min-height: @side-bar-top-menu-height-mobile;
+        height: @side-bar-top-menu-height-mobile;
+        max-height: @side-bar-top-menu-height-mobile;
+        order: 0;
+
+        > h1 {
+          .text-16-bold;
+
+          color: var(--color-primary-text);
+          flex: 1 100%;
+          text-align: center;
+          padding: 0;
+          margin: 0;
+        }
+
+        > button {
+          display: flex;
+
+          > svg {
+            height: @size-12;
+            width: @size-12;
+
+            > path {
+              fill: var(--color-primary-text);
+            }
+          }
+        }
+      }
+
+      > .SportsTabs {
+        order: 1;
+      }
+
+      > .box {
+        order: 2;
+      }
+
+      > .NullStateMessage {
+        order: 3;
+      }
+
+      > .dismissContainer {
+        order: 4;
       }
     }
   }
@@ -302,7 +373,7 @@
     order: 2;
   }
 
-  .SportsHeader {
+  .SportsTabs {
     background-color: var(--color-page-background);
     border-radius: 0;
     display: flex;
@@ -345,6 +416,4 @@
       }
     }
   }
-
-
 }

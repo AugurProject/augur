@@ -86,6 +86,17 @@ const AlertsView = () => {
         >
           {Close}
         </button>
+        <section className={Styles.SportsMobileHeading}>
+          <h1>Notifications & Alerts</h1>
+          <button
+            onClick={e => {
+              e.stopPropagation();
+              setIsAlertsMenuOpen(!isAlertsMenuOpen);
+            }}
+          >
+            {Close}
+          </button>
+        </section>
         {isSports && tab === NOTIFICATIONS ? (
           notificationCount ? (
             <div key={`${NOTIFICATIONS}box`} className={Styles.box}>
@@ -126,7 +137,7 @@ const AlertsView = () => {
             </button>
           ) : null}
         </div>
-        <ul className={Styles.SportsHeader}>
+        <ul className={Styles.SportsTabs}>
           <li
             className={classNames({ [Styles.Selected]: tab === NOTIFICATIONS })}
           >
