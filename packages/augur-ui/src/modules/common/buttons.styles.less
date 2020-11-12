@@ -131,6 +131,9 @@
   color: var(--color-dark-grey);
   max-height: @button-height-default;
   padding: @size-8 @size-12;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 
   &:not(:disabled):hover {
     background: var(--color-primary-action-90);
@@ -150,6 +153,12 @@
 
   &.Failed {
     .FailedProcessingButton;
+  }
+
+  > span > svg {
+    LinearGradient > stop {
+      stop-color: var(--color-dark-grey);
+    }
   }
 }
 .TextUnderlineButton {
@@ -193,6 +202,7 @@
   background: none;
   animation: spin 2s linear infinite;
   border: none;
+  line-height: @size-6;
 
   > svg {
     width: @size-16;
