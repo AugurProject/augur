@@ -46,6 +46,7 @@ import {
   approveShareTokenCheck,
   approveZeroXCheck,
 } from 'modules/contracts/actions/contractCalls';
+import { useNotifications } from 'modules/account/components/notifications';
 
 const handleShowOnboarding = (currentOnboardingStep, setModal) => {
   let nextStep = MODAL_AUGUR_USES_DAI;
@@ -115,9 +116,11 @@ const TopBar = () => {
     isMobile,
     isAlertsMenuOpen,
     ethToDaiRate,
-    notifications,
     actions: { setIsAlertsMenuOpen, setBetslipMinimized, setModal },
   } = useAppStatusStore();
+  const {
+    notificationCount,
+  } = useNotifications();
   const {
     matched: { count: MyBetsCount },
   } = Betslip.get();
@@ -166,7 +169,7 @@ const TopBar = () => {
   const accountSetup =
     isZeroXApproved && isShareTokenApproved && isFillOrderAprpoved;
   const totalUnseenCount = isSports
-    ? notifications.length + unseenCount
+    ? notificationCount + unseenCount
     : unseenCount;
 
   return (

@@ -147,6 +147,30 @@
       }
     }
 
+    > footer {
+      display: flex;
+      flex-flow: row nowrap;
+      flex: 1 100%;
+      align-items: flex-end;
+      justify-content: flex-end;
+
+      > button {
+        .text-10-semi-bold;
+
+        background: var(--color-module-background);
+        border: @size-1 solid var(--color-primary-text);
+        color: var(--color-primary-text);
+        text-transform: uppercase;
+        grid-gap: 0 @size-8;
+        flex-flow: row-reverse nowrap;
+        max-height: @size-36;
+
+        > svg {
+          margin: 0;
+        }
+      }
+    }
+
     @media @breakpoint-mobile-tablet {
       padding: @size-16 @size-12;
 
