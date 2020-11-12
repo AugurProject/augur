@@ -32,7 +32,16 @@ export class AMMFactory {
     return new AMMExchange(this.signerOrProvider, amm);
   }
 
-  async addLiquidity(account: string, existingAmmAddress: string, hasLiquidity: boolean, market: string, paraShareToken: string, cash: BigNumber = new BigNumber(0), yesPercent = new BigNumber(50), noPercent = new BigNumber(50)): Promise<TransactionResponse> {
+  async addLiquidity(
+    account: string,
+    existingAmmAddress: string,
+    hasLiquidity: boolean,
+    market: string,
+    paraShareToken: string,
+    cash: BigNumber = new BigNumber(0),
+    yesPercent = new BigNumber(50),
+    noPercent = new BigNumber(50)
+  ): Promise<TransactionResponse> {
     const ammAddress = existingAmmAddress ? existingAmmAddress : await this.ammAddress(market, paraShareToken);
     const amm = new AMMExchange(this.signerOrProvider, ammAddress);
 
@@ -41,11 +50,11 @@ export class AMMFactory {
     }
 
     const factor = new BigNumber(10 ** 18);
-    const total = yesPercent.plus(noPercent);
+    // const total = yesPercent.plus(noPercent);
     const keepYes = noPercent.gt(yesPercent);
     const ratio = (keepYes
-      ? factor.times(yesPercent).div(total)
-      : factor.times(noPercent).div(total)
+      ? factor.times(yesPercent).div(noPercent)
+      : factor.times(noPercent).div(yesPercent)
     ).idiv(1) // must be an integer
 
     if (existingAmmAddress) {
