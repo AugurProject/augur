@@ -509,6 +509,8 @@ export function addAmmLiquidity({
     String(distroPercentage)
   )
 
+  // converting odds to pool percentage. odds is the opposit of pool percentage
+  // same when converting pool percentage to price
   const poolYesPercent = new BN(distroPercentage[DISTRO_NO_ID])
   const poolNoPercent = new BN(distroPercentage[DISTRO_YES_ID])
 
