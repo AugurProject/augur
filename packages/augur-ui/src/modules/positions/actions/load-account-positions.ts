@@ -41,11 +41,11 @@ export const loadAllAccountPositions = () => async (dispatch: ThunkDispatch<void
   dispatch(updateUserFilledOrders(mixedCaseAddress, positionsPlus.userTradeHistory));
   if (positionsPlus.userPositions) {
     const positionData = userPositionProcessing(positionsPlus.userPositions);
-    if (positionData) dispatch(updateAccountPositionsData(positionData));
+    if (positionData) positionData.map(data => dispatch(updateAccountPositionsData(data)));
   }
   if (positionsPlus.userRawPositions) {
     const positionData = userPositionProcessing(positionsPlus.userRawPositions);
-    if (positionData) dispatch(updateAccountRawPositionsData(positionData));
+    if (positionData) positionData.map(data => dispatch(updateAccountRawPositionsData(data)));
   }
 
   if (positionsPlus.userPositionTotals) dispatch(updateLoginAccount(positionsPlus.userPositionTotals));
@@ -83,7 +83,8 @@ export const userPositionProcessing = (
       ),
     ])
   );
-  const data = userPositionsMarketIds.map((marketId: string) => {
+
+  return userPositionsMarketIds.map((marketId: string) => {
     const marketPositionData: AccountPosition = {};
     const marketPositions = positions.tradingPositions.filter(
       (position: any) => position.marketId === marketId
@@ -125,5 +126,4 @@ export const userPositionProcessing = (
       positionData: marketPositionData,
     };
   });
-  return data;
 };
