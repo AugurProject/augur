@@ -36,7 +36,7 @@ import {
 import { useAppStatusStore } from 'modules/app/store/app-status';
 import { getInfoAlertsAndSeenCount } from 'modules/alerts/helpers/alerts';
 import AlertsContainer from 'modules/alerts/components/alerts-view';
-import { Betslip, useBetslipStore } from 'modules/trading/store/betslip';
+import { Betslip } from 'modules/trading/store/betslip';
 import { BETSLIP_SELECTED } from 'modules/trading/store/constants';
 import Styles from 'modules/app/components/top-bar.styles.less';
 import { getCoreStats } from 'modules/auth/helpers/login-account';
@@ -46,6 +46,7 @@ import {
   approveShareTokenCheck,
   approveZeroXCheck,
 } from 'modules/contracts/actions/contractCalls';
+import { useNotifications } from 'modules/account/components/notifications';
 
 const handleShowOnboarding = (currentOnboardingStep, setModal) => {
   let nextStep = MODAL_AUGUR_USES_DAI;
@@ -118,6 +119,9 @@ const TopBar = () => {
     actions: { setIsAlertsMenuOpen, setBetslipMinimized, setModal },
   } = useAppStatusStore();
   const {
+    notificationCount,
+  } = useNotifications();
+  const {
     matched: { count: MyBetsCount },
   } = Betslip.get();
   const isSports = theme === THEMES.SPORTS;
@@ -164,6 +168,10 @@ const TopBar = () => {
 
   const accountSetup =
     isZeroXApproved && isShareTokenApproved && isFillOrderAprpoved;
+  const totalUnseenCount = isSports
+    ? notificationCount + unseenCount
+    : unseenCount;
+
   return (
     <header className={Styles.TopBar}>
       <div className={Styles.Logo}>
@@ -236,14 +244,14 @@ const TopBar = () => {
             <button
               className={classNames(Styles.alerts, {
                 [Styles.alertsDark]: isAlertsMenuOpen,
-                [Styles.Empty]: unseenCount < 1,
+                [Styles.Empty]: totalUnseenCount < 1,
               })}
               onClick={() => {
                 setIsAlertsMenuOpen(!isAlertsMenuOpen);
               }}
               tabIndex={-1}
             >
-              {Alerts(unseenCount)}
+              {Alerts(totalUnseenCount)}
             </button>
             <AlertsContainer />
           </div>

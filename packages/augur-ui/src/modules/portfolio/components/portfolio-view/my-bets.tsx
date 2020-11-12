@@ -4,7 +4,7 @@ import classNames from 'classnames';
 import Styles from 'modules/portfolio/components/portfolio-view/my-bets.styles.less';
 import {
   ExternalLinkButton,
-  PrimaryButton,
+  ViewTransactionsButton,
   FilterButton,
 } from 'modules/common/buttons';
 import { PillSelection, SquareDropdown } from 'modules/common/selection';
@@ -23,13 +23,14 @@ import {
   MARKET_REPORTING,
   MARKET_CLOSED,
   SPORTS_GROUP_TYPES,
+  MODAL_TRANSACTIONS,
 } from 'modules/common/constants';
 import { MARKETS } from 'modules/routes/constants/views';
-import { EmptyMagnifyingGlass, BetsIcon } from 'modules/common/icons';
+import { BetsIcon } from 'modules/common/icons';
 import { Game, Outcomes, ClaimWinnings } from '../common/common';
 import { useMyBetsStore } from 'modules/portfolio/store/my-bets';
 import { FilterSearchPure } from 'modules/filter-sort/filter-search';
-import { AppStatus } from 'modules/app/store/app-status';
+import { AppStatus, useAppStatusStore } from 'modules/app/store/app-status';
 import { useMarketsStore } from 'modules/markets/store/markets';
 import { useBetslipStore } from 'modules/trading/store/betslip';
 import {
@@ -37,7 +38,6 @@ import {
   findStartTime,
 } from 'modules/market/components/common/market-title';
 import EmptyDisplay from '../common/empty-display';
-import { getOutcomeNameWithOutcome } from 'utils/get-outcome';
 
 export const outcomesData = myBets =>
   myBets.reduce(
@@ -179,7 +179,7 @@ export const MyBets = () => {
       setSelectedMarketStateType,
     },
   } = useMyBetsStore();
-
+  const { actions: { setModal }} = useAppStatusStore();
   const [search, setSearch] = useState('');
 
   const { matched } = useBetslipStore();
@@ -312,6 +312,11 @@ export const MyBets = () => {
           ))}
         {rows.length > 0 && !showEvents && <Outcomes rows={rows} />}
       </div>
+      <footer>
+        <ViewTransactionsButton
+          action={() => setModal({ type: MODAL_TRANSACTIONS })}
+        />
+      </footer>
     </div>
   );
 };

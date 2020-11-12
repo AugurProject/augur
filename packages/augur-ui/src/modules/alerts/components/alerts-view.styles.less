@@ -24,7 +24,7 @@
     &::after {
       border: none;
       bottom: 0;
-      content: "";
+      content: '';
       display: none;
       right: 0;
     }
@@ -125,8 +125,16 @@
   }
 }
 
-:root[theme="BETTING"],
-:root[theme="SPORTS"] {
+.SportsHeader {
+  display: none;
+}
+
+.SportsMobileHeading {
+  display: none;
+}
+
+:root[theme='BETTING'],
+:root[theme='SPORTS'] {
   .AlertsView {
     flex-direction: column-reverse;
     background: var(--color-module-background);
@@ -228,6 +236,183 @@
 
       &:hover:after {
         border-bottom: @size-1 solid var(--color-primary-text);
+      }
+    }
+  }
+}
+
+:root[theme='SPORTS'] {
+  .AlertsView {
+    > .dismissContainer {
+      display: none;
+      background-color: var(--color-page-background);
+      border-bottom: 0;
+      border-radius: 0;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0 @size-12;
+      margin: 0;
+      min-height: @size-45;
+      height: @size-45;
+      max-height: @size-45;
+      border-top: @size-1 solid var(--color-dark-grey);
+
+      > button {
+        .mono-12-semi-bold;
+
+        color: var(--color-primary-text);
+        text-transform: capitalize;
+        background-color: var(--color-page-background);
+        border: none;
+        text-decoration: none;
+        position: relative;
+        padding: 0;
+        margin: 0;
+        margin-left: auto;
+        align-self: center;
+
+        &:after {
+          content: '';
+          position: absolute;
+          bottom: -@size-1;
+          left: 0;
+          right: 0;
+          border-bottom: @size-1 dotted var(--color-primary-text);
+        }
+
+        &:hover:after {
+          border-bottom: @size-1 solid var(--color-primary-text);
+        }
+      }
+    }
+
+    &.AlertsTab {
+      > .dismissContainer {
+        display: flex;
+        order: 0;
+
+        @media @breakpoint-mobile-tablet {
+          order: 4;
+        }
+
+        > span {
+          display: none;
+        }
+      }
+    }
+
+    @media @breakpoint-mobile-tablet {
+      flex-direction: column;
+
+      &.isOpen {
+        top: 0;
+      }
+
+      > button.close {
+        display: none;
+      }
+
+      > .SportsMobileHeading {
+        display: flex;
+        flex-flow: row nowrap;
+        justify-content: center;
+        align-items: center;
+        padding: 0 @size-24;
+        min-height: @side-bar-top-menu-height-mobile;
+        height: @side-bar-top-menu-height-mobile;
+        max-height: @side-bar-top-menu-height-mobile;
+        order: 0;
+
+        > h1 {
+          .text-16-bold;
+
+          color: var(--color-primary-text);
+          flex: 1 100%;
+          text-align: center;
+          padding: 0;
+          margin: 0;
+        }
+
+        > button {
+          display: flex;
+
+          > svg {
+            height: @size-12;
+            width: @size-12;
+
+            > path {
+              fill: var(--color-primary-text);
+            }
+          }
+        }
+      }
+
+      > .SportsTabs {
+        order: 1;
+      }
+
+      > .box {
+        order: 2;
+      }
+
+      > .NullStateMessage {
+        order: 3;
+      }
+
+      > .dismissContainer {
+        order: 4;
+      }
+    }
+  }
+
+  .box {
+    order: 1;
+  }
+
+  .NullStateMessage {
+    order: 2;
+  }
+
+  .SportsTabs {
+    background-color: var(--color-page-background);
+    border-radius: 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: 0;
+    height: @size-45;
+    min-height: @size-45;
+    max-height: @size-45;
+    order: 3;
+
+    > li {
+      border-bottom: @size-1 solid var(--color-dark-grey);
+      height: 100%;
+      width: 100%;
+      flex: 1 100%;
+      justify-content: center;
+      align-items: center;
+
+      > button {
+        .text-12-bold;
+
+        color: var(--color-secondary-text);
+        text-transform: uppercase;
+        height: 100%;
+        width: 100%;
+        flex: 1 100%;
+        justify-content: center;
+        align-items: center;
+        border-bottom: @size-1 solid transparent;
+      }
+
+      &.Selected {
+        border-bottom: @size-1 solid var(--color-primary-text);
+
+        > button {
+          border-bottom: @size-1 solid var(--color-primary-text);
+          color: var(--color-primary-text);
+        }
       }
     }
   }

@@ -310,6 +310,9 @@
     }
 
     @media @breakpoint-mobile-tablet {
+      height: @top-bar-height-mobile;
+      max-height: @top-bar-height-mobile;
+
       > div:last-of-type {
         > button[class*='SecondaryButton'][title*='Connect'],
         > button[class*='PrimaryButton'][title*='Signup'] {
@@ -354,6 +357,7 @@
         .alerts;
 
         border-right: 0;
+        border-left: @size-1 solid var(--color-secondary-text-50);
         flex: 1;
 
         > svg {
@@ -378,7 +382,7 @@
   .alerts {
     border-top: @size-3 solid transparent;
     border-right: @size-1 solid var(--color-secondary-text-50);
-    border-left: @size-1 solid var(--color-secondary-text-50);
+    border-left-color: var(--color-secondary-text-50);
 
     > svg {
       margin-left: @size-8;

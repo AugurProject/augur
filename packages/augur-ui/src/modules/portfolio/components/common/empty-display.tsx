@@ -7,7 +7,7 @@ export interface EmptyDisplayProps {
   filterLabel: string;
   selectedTab: string;
   search: string;
-  title: string;
+  title?: string;
   emptyTitle?: string;
   emptyText?: string;
   icon?: any;

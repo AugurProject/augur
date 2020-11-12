@@ -219,6 +219,10 @@
     box-shadow: 0 @size-4 @size-4 var(--color-primary-text-15);
     border-bottom-left-radius: @border-radius-default;
     border-bottom-right-radius: @border-radius-default;
+
+    @media @breakpoint-mobile-tablet {
+      margin-top: @top-bar-height-mobile;
+    }
   }
 
   .AccountInfo {
@@ -243,7 +247,7 @@
       > div:first-of-type {
         height: 100%;
         border-right: 0;
-        padding: @size-12;
+        padding: @size-6 @size-12;
 
         > div:first-of-type > span {
           margin: 0 0 0 @size-8;
