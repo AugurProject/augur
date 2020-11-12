@@ -372,8 +372,8 @@ const findTotalCount = (managingQueueName, marketId) => {
   let openOrdersCount = 0;
   if (managingQueueName === CANCELORDER) {
     const { marketsObj, openOrders } = selectMarketsOpenOrders();
-    const userOpenOrders = marketsObj[marketId] || [];
-    totalCount = userOpenOrders.length;
+    const marketData = marketsObj[marketId] || [];
+    totalCount = marketData?.userOpenOrders?.length;
     openOrdersCount = openOrders.length;
   } else if (managingQueueName === CLAIMMARKETSPROCEEDS) {
     const accountMarketClaimablePositions: MarketClaimablePositions = getLoginAccountClaimableWinnings();
