@@ -91,6 +91,7 @@ export const Betslip = () => {
       <aside
         className={classNames(Styles.Betslip, {
           [Styles.Minimized]: betslipMinimized,
+          [Styles.MyBetsBetslip]: isMyBets 
         })}
       >
         <div onClick={() => !betslipMinimized && setBetslipMinimized(true)}>
