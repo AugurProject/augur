@@ -85,7 +85,7 @@ function PairList({ allExchanges, disbaleLinks, marketId }) {
             {Number(ammExchange.priceNo).toFixed(2)}
           </TYPE.header>
           <TYPE.header area="name" fontWeight="500">
-            {formattedNum(ammExchange.liquidityUSD, true)}
+            {`${formattedNum(ammExchange.liquidity, false)} (${formattedNum(ammExchange.liquidityUSD, true)})`}
           </TYPE.header>
           {!below1080 && <TYPE.header area="name" fontWeight="500">
             {formattedNum(ammExchange.volumeNo24hrUSD, true)}

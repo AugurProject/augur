@@ -41,7 +41,7 @@ function RemoveLiquidity({
   const { account, chainId, library } = useActiveWeb3React()
   const [userTokenBalances] = useLPTokenBalances()
   const ammExchange = useMarketAmm(marketId, ammExchangeId)
-  const currencyA = useCurrency(ammExchange.cash)
+  const currencyA = useCurrency(ammExchange?.cash)
   const currencyLP = useMemo(() => new Token(chainId, ammExchangeId, 18), [ammExchangeId])
   const ammFactory = useAmmFactoryAddress()
   const [liquidity, setLiquidity] = useState('0')
@@ -82,7 +82,7 @@ function RemoveLiquidity({
     if (!liquidityAmount) throw new Error('missing liquidity amount')
 
     setAttemptingTxn(true)
-    await removeAmmLiquidity({ ammAddress: ammExchange.id, augurClient, lpTokens: liquidity })
+    await removeAmmLiquidity({ ammAddress: ammExchange?.id, augurClient, lpTokens: liquidity })
       .then((response: TransactionResponse) => {
         setAttemptingTxn(false)
 
@@ -128,7 +128,7 @@ function RemoveLiquidity({
 
         <RowBetween align="flex-end">
           <Text fontSize={12} fontWeight={500}>
-            <TokenLogo tokenInfo={ammExchange.cash} showSymbol size={'12px'} />
+            <TokenLogo tokenInfo={ammExchange?.cash} showSymbol size={'12px'} />
           </Text>
           <Text fontSize={24} fontWeight={500} style={{ marginLeft: '10px' }}>
             {formatTokenAmount(breakdown.cashShares, currencyA?.decimals)}
@@ -269,7 +269,7 @@ function RemoveLiquidity({
                     <Text fontSize={12}>{breakdown?.noShares}</Text>
                   </RowBetween>
                   <RowBetween>
-                    <TokenLogo showSymbol size={'12px'} tokenInfo={ammExchange.cash} />
+                    <TokenLogo showSymbol size={'12px'} tokenInfo={ammExchange?.cash} />
                     <Text fontSize={12}>{formatTokenAmount(breakdown?.cashShares, currencyA?.decimals)}</Text>
                   </RowBetween>
                 </AutoColumn>
