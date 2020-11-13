@@ -994,7 +994,7 @@ export const SportsMarketContainer = ({
       <h6>{title}</h6>
     );
   const isGrid = data.length > 4;
-  if (isFutures || isGrid) {
+  if (isFutures || isGrid || data.length === 2) {
     innerContent = <MultiOutcomeMarketGrid key={marketId} data={data} />;
   } else {
     innerContent = <MultiOutcomeMarketRow key={marketId} data={data} />;
