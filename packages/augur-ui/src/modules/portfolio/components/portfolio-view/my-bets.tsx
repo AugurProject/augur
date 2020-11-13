@@ -37,6 +37,7 @@ import {
   convertInputs,
   findStartTime,
 } from 'modules/market/components/common/market-title';
+import { getOutcomeNameWithOutcome } from 'utils/get-outcome';
 import EmptyDisplay from '../common/empty-display';
 
 export const outcomesData = myBets =>

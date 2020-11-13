@@ -61,14 +61,12 @@ export const SportsGroupCharts = ({ sportsGroup, marketId }) => {
   return (
     <section className={Styles.Container}>
       <div className={Styles.ChartArea}>
-        {marketNum <= 1 || sportsGroup.type === SPORTS_GROUP_TYPES.FUTURES ? (
-          <h4>Price History</h4>
-        ) : (
+        <h4>Price History</h4>
+        {marketNum > 1 && (
           <SquareDropdown
             defaultValue={selectedMarket}
             options={options}
             minimalStyle
-            preLabel="Price History"
             onChange={sortOption => setSelectedMarket(sortOption)}
             stretchOutOnMobile
           />

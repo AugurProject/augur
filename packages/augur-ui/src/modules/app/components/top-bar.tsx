@@ -188,7 +188,6 @@ const TopBar = () => {
             action={() => setModal({ type: MODAL_MIGRATE_REP })}
             queueName={TRANSACTIONS}
             queueId={MIGRATE_FROM_LEG_REP_TOKEN}
-            primaryButton
             spinner
             className={ButtonStyles.ProcessingSpinnerButton}
           />
@@ -199,7 +198,7 @@ const TopBar = () => {
           currentOnboardingStep < TOTAL_ONBOARDING_STEPS &&
           ethToDaiRate && (
             <PrimaryButton
-              text={'Continue account setup'}
+              text='Continue account setup'
               action={() =>
                 handleShowOnboarding(currentOnboardingStep, setModal)
               }
@@ -218,8 +217,8 @@ const TopBar = () => {
             />
             <PrimaryButton
               action={() => setModal({ type: MODAL_SIGNUP })}
-              title="Signup"
-              text="Signup"
+              title="Sign up"
+              text="Sign up"
             />
           </>
         )}

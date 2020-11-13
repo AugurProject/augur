@@ -1505,7 +1505,7 @@ export const StatusErrorMessage = () => {
 
 interface LinearPropertyLabelUnderlineTooltipProps
   extends LinearPropertyLabelProps {
-  tipText: string;
+  tipText?: string;
   id: string;
 }
 
@@ -1532,8 +1532,8 @@ export const LinearPropertyLabelUnderlineTooltip = ({
       data-for={`underlinetooltip-${id}`}
       data-iscapture={true}
     >
-      {value && value.formatted
-        ? `${showDenomination || useFull ? value.full : value.roundedFormatted}`
+      {value && (value as FormattedNumber).formatted
+        ? `${showDenomination || useFull ? (value as FormattedNumber).full : (value as FormattedNumber).roundedFormatted}`
         : value}
       <ReactTooltip
         id={`underlinetooltip-${id}`}

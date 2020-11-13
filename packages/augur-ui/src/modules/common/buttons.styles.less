@@ -689,9 +689,15 @@
       height: @size-18;
 
       > path {
-        fill: var(--color-primary-text);
+        stroke: var(--color-primary-text);
+        fill: none;
       }
     }
+  }
+
+  &:last-of-type > div > div:first-of-type > svg > path {
+    stroke: none;
+    fill: var(--color-primary-text);
   }
 
   > div > div:nth-of-type(2) {
