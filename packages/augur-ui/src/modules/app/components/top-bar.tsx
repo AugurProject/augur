@@ -188,7 +188,6 @@ const TopBar = () => {
             action={() => setModal({ type: MODAL_MIGRATE_REP })}
             queueName={TRANSACTIONS}
             queueId={MIGRATE_FROM_LEG_REP_TOKEN}
-            primaryButton
             spinner
             className={ButtonStyles.ProcessingSpinnerButton}
           />

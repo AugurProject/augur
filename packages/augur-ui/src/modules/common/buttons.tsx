@@ -217,9 +217,9 @@ export const RefreshButton = ({
         Styles.Phantom
       )}
       data-tip
-      data-for={'refresh-tooltip'}
+      data-for='refresh-tooltip'
       data-place="top"
-      data-iscapture={true}
+      data-iscapture
       disabled={disabled}
       title={title || text}
     >
@@ -234,7 +234,7 @@ export const RefreshButton = ({
       event="mouseover mouseenter"
       eventOff="mouseleave mouseout scroll mousewheel blur"
     >
-      <p>{'Refresh market sort by'}</p>
+      <p>Refresh market sort by</p>
     </ReactTooltip>
   </>
 );
@@ -290,6 +290,8 @@ export interface ProcessingButtonProps extends DefaultButtonProps {
   nonMatchingIds?: Array<String>;
   autoHideConfirm?: boolean;
   hideRetry?: boolean;
+  propsStatus?: string;
+  spinner?: boolean;
   submitAllButton?: boolean;
   dontShowNotificationButton?: boolean;
 }
@@ -334,7 +336,7 @@ export const ProcessingButton = ({
   disabled = props.disabled || disabled;
   let isDisabled = disabled;
   let icon = props.icon;
-  let buttonText = props.text;
+  let buttonText: any = props.text;
   let buttonAction = props.action;
   let processing = false;
   if (

@@ -3,15 +3,19 @@
 // Used in Betting UI
 .HelpIcon {
   z-index: @above-all-content-above;
+  height: 100%;
+  width: 100%;
 
   > span {
-    padding: @size-15 @size-17 @size-18;
+    align-items: center;
     display: flex;
     cursor: pointer;
-    max-height: @size-56;
     border-top: @size-3 solid transparent;
     border-left: @size-1 solid var(--color-module-background);
     border-right: @size-1 solid var(--color-module-background);
+    height: 100%;
+    justify-content: center;
+    width: 100%;
 
     > svg {
       width: @size-20;
@@ -31,11 +35,6 @@
     }
 
     @media @breakpoint-mobile-tablet {
-      padding: @size-12;
-      max-height: unset;
-      border-right: 0;
-      align-items: center;
-
       &:hover {
         background: var(--color-page-background);
       }
@@ -179,14 +178,14 @@
   color: var(--color-primary-text);
   display: flex;
   flex: 1;
-  max-height: @size-56;
-  max-width: @size-56;
   position: relative;
   z-index: @above-all-content-above;
 
-  @media @breakpoint-mobile {
+  @media @breakpoint-mobile-tablet {
     max-height: @top-bar-height-mobile;
     max-width: @top-bar-height-mobile;
+    height: @top-bar-height-mobile;
+    width: @top-bar-height-mobile;
   }
 }
 
@@ -290,22 +289,6 @@
 
     > li:nth-of-type(3) {
       border-top: 0;
-    }
-  }
-
-  @media @breakpoint-mobile-tablet {
-    .HelpResources {
-      max-height: @size-64;
-      max-width: @size-64;
-      height: @size-64;
-      flex: none;
-    }
-
-    .HelpIcon {
-      > span {
-        padding: @size-16 @size-21;
-        height: 100%;
-      }
     }
   }
 }
