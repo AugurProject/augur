@@ -3,7 +3,7 @@ import { isSameAddress } from 'utils/isSameAddress';
 import { AppState } from 'appStore';
 import { updateLoginAccount } from 'modules/account/actions/login-account';
 import { updateUserFilledOrders } from 'modules/markets/actions/market-trading-history-management';
-import { updateAccountPositionsData } from 'modules/positions/actions/account-positions';
+import { updateAccountPositionsData, updateAccountRawPositionsData } from 'modules/positions/actions/account-positions';
 import { AccountPosition, AccountPositionAction } from 'modules/types';
 import { Action } from 'redux';
 import { ThunkDispatch } from 'redux-thunk';
@@ -39,7 +39,15 @@ export const loadAllAccountPositions = () => async (dispatch: ThunkDispatch<void
   });
 
   dispatch(updateUserFilledOrders(mixedCaseAddress, positionsPlus.userTradeHistory));
-  if (positionsPlus.userPositions) dispatch(userPositionProcessing(positionsPlus.userPositions));
+  if (positionsPlus.userPositions) {
+    const positionData = userPositionProcessing(positionsPlus.userPositions);
+    if (positionData) positionData.map(data => dispatch(updateAccountPositionsData(data)));
+  }
+  if (positionsPlus.userRawPositions) {
+    const positionData = userPositionProcessing(positionsPlus.userRawPositions);
+    if (positionData) positionData.map(data => dispatch(updateAccountRawPositionsData(data)));
+  }
+
   if (positionsPlus.userPositionTotals) dispatch(updateLoginAccount(positionsPlus.userPositionTotals));
 };
 
@@ -62,11 +70,9 @@ export const loadAccountOnChainFrozenFundsTotals = () => async (
 
 export const userPositionProcessing = (
   positions: Getters.Users.UserTradingPositions,
-) => (
-  dispatch: ThunkDispatch<void, any, Action>,
 ) => {
   if (!positions || !positions.tradingPositions) {
-    return;
+    return null;
   }
 
   const userPositionsMarketIds: string[] = Array.from(
@@ -77,7 +83,8 @@ export const userPositionProcessing = (
       ),
     ])
   );
-  userPositionsMarketIds.forEach((marketId: string) => {
+
+  return userPositionsMarketIds.map((marketId: string) => {
     const marketPositionData: AccountPosition = {};
     const marketPositions = positions.tradingPositions.filter(
       (position: any) => position.marketId === marketId
@@ -114,10 +121,9 @@ export const userPositionProcessing = (
           position.marketId === marketId && position.outcome === outcomeId
       )[0];
     });
-    const positionData: AccountPositionAction = {
+    return  {
       marketId,
       positionData: marketPositionData,
     };
-    dispatch(updateAccountPositionsData(positionData));
   });
 };

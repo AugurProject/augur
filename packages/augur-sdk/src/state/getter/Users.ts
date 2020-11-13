@@ -220,6 +220,7 @@ export interface UserAccountDataResult extends UserPositionsPlusResult {
 export interface UserPositionsPlusResult {
   userTradeHistory: MarketTradingHistory;
   userPositions: UserTradingPositions;
+  userRawPositions: UserTradingPositions;
   userPositionTotals: UserPositionTotals;
 }
 
@@ -266,6 +267,7 @@ export class Users {
     let userTradeHistory = null;
     let userOpenOrders: UserOpenOrders = null;
     let userPositions: UserTradingPositions = null;
+    let userRawPositions: UserTradingPositions = null;
     let userStakedRep: AccountReportingHistory = null;
 
     marketList = await Markets.getMarkets(augur, db, {
@@ -290,6 +292,11 @@ export class Users {
     }
 
     userPositions = await Users.getUserTradingPositions(augur, db, {
+      account: params.account,
+      universe: params.universe,
+    });
+
+    userRawPositions = await Users.getRawUserTradingPositions(augur, db, {
       account: params.account,
       universe: params.universe,
     });
@@ -372,6 +379,7 @@ export class Users {
       userOpenOrders,
       userStakedRep,
       userPositions,
+      userRawPositions,
       userPositionTotals,
       marketsInfo: [
         ...(marketList || {}).markets,
@@ -405,6 +413,11 @@ export class Users {
       universe: params.universe,
     });
 
+    const userRawPositions = await Users.getRawUserTradingPositions(augur, db, {
+      account: params.account,
+      universe: params.universe,
+    });
+
     const profitLoss = await Users.getProfitLossSummary(augur, db, {
       account: params.account,
       universe: params.universe,
@@ -429,6 +442,7 @@ export class Users {
     return {
       userTradeHistory,
       userPositions,
+      userRawPositions,
       userPositionTotals,
     };
   }
@@ -749,6 +763,158 @@ export class Users {
       redeemedPositions,
     };
   }
+
+
+  @Getter('getUserTradingPositionsParams')
+  static async getRawUserTradingPositions(
+    augur: Augur,
+    db: DB,
+    params: t.TypeOf<typeof Users.getUserTradingPositionsParams>
+  ): Promise<UserTradingPositions> {
+    if (!params.universe && !params.marketId) {
+      throw new Error(
+        "'getRawUserTradingPositions' requires a 'universe' or 'marketId' param be provided"
+      );
+    }
+    let tradingPositions = null;
+    let marketTradingPositions = null;
+
+    const shareTokenBalances = await db.ShareTokenBalanceChangedRollup.where(
+      '[universe+account]'
+    )
+      .equals([params.universe, params.account])
+      .toArray();
+    const shareTokenBalancesByMarket = _.groupBy(shareTokenBalances, 'market');
+    const shareTokenBalancesByMarketAndOutcome = _.mapValues(
+      shareTokenBalancesByMarket,
+      marketShares => {
+        return _.keyBy(marketShares, 'outcome');
+      }
+    );
+
+    const marketIds = _.keys(shareTokenBalancesByMarketAndOutcome)
+    const marketsData = await db.Markets.where('market')
+      .anyOf(marketIds)
+      .toArray();
+    const markets = _.keyBy(marketsData, 'market');
+
+    // map Latest PLs to Trading Positions
+    const tradingPositionsByMarketAndOutcome = _.mapValues(
+      shareTokenBalancesByMarketAndOutcome,
+      shareTokenBalancesByOutcome => {
+        return _.mapValues(
+          shareTokenBalancesByOutcome,
+          (shareTokenResult) => {
+            const marketDoc = markets[shareTokenResult.market];
+
+            const tickSize = numTicksToTickSize(
+              new BigNumber(marketDoc.numTicks),
+              new BigNumber(marketDoc.prices[0]),
+              new BigNumber(marketDoc.prices[1])
+            )
+
+            const quantity: BigNumber = convertOnChainAmountToDisplayAmount(
+              new BigNumber(shareTokenResult.balance),
+              tickSize,
+            );
+            return {
+              timestamp: 0,
+              frozenFunds: "0",
+              marketId: shareTokenResult.market,
+              outcome: new BigNumber(shareTokenResult.outcome).toNumber(),
+              netPosition: quantity.toFixed(),
+              rawPosition: quantity.toFixed(),
+              averagePrice: "0",
+              realized: "0",
+              unrealized: "0",
+              unrealized24Hr: "0",
+              total: "0",
+              unrealizedCost: "0",
+              realizedCost: "0",
+              totalCost: "0",
+              realizedPercent: "0",
+              unrealizedPercent: "0",
+              unrealized24HrPercent: "0",
+              totalPercent: "0",
+              currentValue: "0"
+            }
+          }
+        );
+      }
+    );
+
+    tradingPositions = _.flatten(
+      _.values(_.mapValues(tradingPositionsByMarketAndOutcome, _.values))
+    ).filter(t => t !== null);
+
+    marketTradingPositions = _.mapValues(
+      tradingPositionsByMarketAndOutcome,
+      tradingPositionsByOutcome => {
+        const tradingPositions = _.values(
+          _.omitBy(tradingPositionsByOutcome, _.isNull)
+        );
+        return sumTradingPositions(tradingPositions);
+      }
+    );
+    // Create mapping for market/outcome balances
+    const tokenBalanceChangedLogs = await db.ShareTokenBalanceChangedRollup.where(
+      '[account+market+outcome]'
+    )
+      .between(
+        [params.account, Dexie.minKey],
+        [params.account, Dexie.maxKey],
+        true,
+        true
+      )
+      .and(log => {
+        return marketIds.includes(log.market);
+      })
+      .toArray();
+
+    const marketOutcomeBalances = {};
+    for (const tokenBalanceChangedLog of tokenBalanceChangedLogs) {
+      if (!marketOutcomeBalances[tokenBalanceChangedLog.market]) {
+        marketOutcomeBalances[tokenBalanceChangedLog.market] = {};
+      }
+      marketOutcomeBalances[tokenBalanceChangedLog.market][
+        new BigNumber(tokenBalanceChangedLog.outcome).toNumber()
+      ] = tokenBalanceChangedLog.balance;
+    }
+
+    for (const marketData of marketsData) {
+      marketTradingPositions[
+        marketData.market
+      ].userSharesBalances = marketOutcomeBalances[marketData.market]
+        ? Object.keys(marketOutcomeBalances[marketData.market]).reduce(
+            (p, outcome) => {
+              p[outcome] = String(
+                convertOnChainAmountToDisplayAmount(
+                  new BigNumber(
+                    marketOutcomeBalances[marketData.market][outcome]
+                  ),
+                  numTicksToTickSize(
+                    new BigNumber(marketData.numTicks),
+                    new BigNumber(marketData.prices[0]),
+                    new BigNumber(marketData.prices[1])
+                  )
+                )
+              );
+              return p;
+            },
+            {}
+          )
+        : {};
+    }
+
+    return {
+      tradingPositions,
+      tradingPositionsPerMarket: marketTradingPositions,
+      unrealizedRevenue24hChangePercent:'0',
+    };
+  }
+
+
+
 
   @Getter('getUserTradingPositionsParams')
   static async getUserTradingPositions(

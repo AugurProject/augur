@@ -8,6 +8,7 @@ import {
   updateUserFilledOrders,
 } from 'modules/markets/actions/market-trading-history-management';
 import { updateMarketsData } from 'modules/markets/actions/update-markets-data';
+import { updateAccountPositionsData, updateAccountRawPositionsData } from 'modules/positions/actions/account-positions';
 import { userPositionProcessing } from 'modules/positions/actions/load-account-positions';
 import { clearTransactions } from 'modules/transactions/actions/update-transactions-data';
 import { Action } from 'redux';
@@ -43,7 +44,14 @@ async function loadTransactions(
   dispatch(updateMarketsData(marketsDataById));
   dispatch(updateLoginAccount({ reporting: userData.userStakedRep }));
   if (userData.userOpenOrders) dispatch(refreshUserOpenOrders(userData.userOpenOrders.orders));
-  if (userData.userPositions) dispatch(userPositionProcessing(userData.userPositions));
+  if (userData.userPositions) {
+    const positionData = userPositionProcessing(userData.userPositions);
+    positionData.map( data => dispatch(updateAccountPositionsData(data)))
+  }
+  if (userData.userRawPositions) {
+    const positionData = userPositionProcessing(userData.userRawPositions);
+    positionData.map(data => dispatch(updateAccountRawPositionsData(data)))
+  }
   if (userData.userPositionTotals) dispatch(updateLoginAccount(userData.userPositionTotals));
 
   if (userData.userOpenOrders)
