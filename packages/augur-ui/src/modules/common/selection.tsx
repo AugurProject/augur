@@ -31,6 +31,7 @@ export interface DropdownProps {
   sort?: boolean;
   minimalStyle?: boolean
   preLabel?: string;
+  preLabelClean?: boolean;
   dontCheckInvalid?: boolean;
 }
 
@@ -212,7 +213,8 @@ class Dropdown extends Component<DropdownProps, DropdownState> {
       disabled,
       minimalStyle,
       preLabel,
-      dontCheckInvalid
+      dontCheckInvalid,
+      preLabelClean,
     } = this.props;
     const { selected, showList, isDisabled, sortedList } = this.state;
     return (
@@ -241,7 +243,7 @@ class Dropdown extends Component<DropdownProps, DropdownState> {
         data-for={'dropdown-' + id + staticLabel}
         data-iscapture={true}
       >
-        {preLabel && <span>{preLabel}:</span>}
+        {preLabel && <span>{`${preLabel}${preLabelClean ? '' : ':'}`}</span>}
         <button
           className={classNames(Styles.label, {
             [Styles.SelectedLabel]: selected,
