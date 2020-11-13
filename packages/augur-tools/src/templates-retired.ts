@@ -34,7 +34,7 @@ export const retiredTemplates: RetiredTemplate[] = [
     autoFail: false
   },
   {
-    hash: '0x0ab3d232c6f59838b07064d00574cb57a1c47d1b8cf3d4e4a0657d57b0b0aced',
+    hash: '0xa07d34e0849960c952b243b09546ef13468a958e9d59f96156e297b04a287baf',
     autoFail: false,
   }
 ]
