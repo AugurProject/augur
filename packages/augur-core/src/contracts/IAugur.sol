@@ -5,9 +5,10 @@ import 'ROOT/reporting/IUniverse.sol';
 import 'ROOT/reporting/IMarket.sol';
 import 'ROOT/reporting/IDisputeWindow.sol';
 import 'ROOT/trading/Order.sol';
-
+import 'ROOT/ICash.sol';
 
 contract IAugur {
+    IUniverse public genesisUniverse;
     function createChildUniverse(bytes32 _parentPayoutDistributionHash, uint256[] memory _parentPayoutNumerators) public returns (IUniverse);
     function isKnownUniverse(IUniverse _universe) public view returns (bool);
     function trustedCashTransfer(address _from, address _to, uint256 _amount) public returns (bool);
@@ -58,4 +59,7 @@ contract IAugur {
     function logNoShowBondChanged(uint256 _noShowBond) public returns (bool);
     function logReportingFeeChanged(uint256 _reportingFee) public returns (bool);
     function getUniverseForkIndex(IUniverse _universe) public view returns (uint256);
+    function getMarketType(IMarket _market) public view returns (IMarket.MarketType);
+    function getMarketOutcomes(IMarket _market) public view returns (bytes32[] memory _outcomes);
+    ICash public cash;
 }

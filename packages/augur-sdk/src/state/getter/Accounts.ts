@@ -478,7 +478,7 @@ export class Accounts<TBigNumber> {
         .toArray();
       const marketInfo = await Accounts.getMarketCreatedInfo(db, orderLogs);
       allFormattedLogs = allFormattedLogs.concat(
-        formatOrderFilledLogs(orderLogs, marketInfo)
+        formatOrderFilledLogs(orderLogs, marketInfo, augur.precision)
       );
       actionCoinComboIsValid = true;
     }
@@ -501,7 +501,7 @@ export class Accounts<TBigNumber> {
       );
 
       allFormattedLogs = allFormattedLogs.concat(
-        formatZeroXOrders(zeroXOpenOrders, marketInfo)
+        formatZeroXOrders(zeroXOpenOrders, marketInfo, augur.precision)
       );
       actionCoinComboIsValid = true;
     }
@@ -829,7 +829,8 @@ export class Accounts<TBigNumber> {
 
 function formatOrderFilledLogs(
   transactionLogs: ParsedOrderEventLog[],
-  marketInfo: MarketCreatedInfo
+  marketInfo: MarketCreatedInfo,
+  precision: BigNumber,
 ): AccountTransaction[] {
   return transactionLogs.reduce((p, transactionLog: ParsedOrderEventLog) => {
     const {
@@ -852,7 +853,8 @@ function formatOrderFilledLogs(
     const extraInfo = marketData.extraInfo;
     const quantity = convertOnChainAmountToDisplayAmount(
       onChainQuantity,
-      tickSize
+      tickSize,
+      precision,
     );
     const price = convertOnChainPriceToDisplayPrice(
       onChainPrice,
@@ -895,7 +897,8 @@ function formatOrderFilledLogs(
 
 function formatZeroXOrders(
   storedOrders: StoredOrder[],
-  marketInfo: MarketCreatedInfo
+  marketInfo: MarketCreatedInfo,
+  precision: BigNumber,
 ): AccountTransaction[] {
   return (storedOrders.reduce((p, order) => {
     const marketData = marketInfo[order.market];
@@ -906,7 +909,8 @@ function formatZeroXOrders(
     const tickSize = numTicksToTickSize(numTicks, minPrice, maxPrice);
     const quantity = convertOnChainAmountToDisplayAmount(
       new BigNumber(order.amount),
-      tickSize
+      tickSize,
+      precision,
     );
     const price = convertOnChainPriceToDisplayPrice(
       new BigNumber(order.price),

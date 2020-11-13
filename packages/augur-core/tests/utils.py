@@ -55,7 +55,7 @@ class TokenDelta():
         delta = self.delta
         resultDelta = newBalance - originalBalance
         diff = delta - resultDelta
-        assert diff < 1, self.err + ". Delta EXPECTED: %i ACTUAL: %i DIFF: %i" % (delta, resultDelta, diff)
+        assert abs(diff) < 1, self.err + ". Delta EXPECTED: %i ACTUAL: %i DIFF: %i" % (delta, resultDelta, diff)
 
 class BuyWithCash():
 
@@ -119,6 +119,7 @@ class PrintGasUsed():
             print("GAS USED WITH %s : %i" % (self.action, gasUsed))
 
 TRADE_EVENTS = ['OrderEvent','ProfitLossChanged','MarketVolumeChanged','CancelZeroXOrder']
+AUGUR_ETH_EVENTS = ['CompleteSetsPurchased','FinishDeployment','RegisterContract','ShareTokenBalanceChanged','ReportingFeeChanged','MarketOIChanged','TradingProceedsClaimed','CompleteSetsSold']
 
 class AssertLog():
 
@@ -130,7 +131,14 @@ class AssertLog():
         self.contract = contract
         if not self.contract:
             if eventName in TRADE_EVENTS:
-                self.contract = fixture.contracts['AugurTrading']
+                if fixture.sideChain:
+                    self.contract = fixture.contracts['SideChainAugurTrading']
+                else:
+                    self.contract = fixture.contracts['AugurTrading']
+            elif fixture.paraAugur and eventName in AUGUR_ETH_EVENTS:
+                self.contract = fixture.contracts['ParaAugur']
+            elif fixture.sideChain and eventName in AUGUR_ETH_EVENTS:
+                self.contract = fixture.contracts['SideChainAugur']
             else:
                 self.contract = fixture.contracts['Augur']
 

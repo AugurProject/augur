@@ -14,8 +14,8 @@ import {
 } from '@augurproject/tools';
 import { buildExtraInfo } from '@augurproject/tools/build/libs/templates';
 import { BigNumber } from 'bignumber.js';
-import { formatBytes32String } from 'ethers/utils';
 import { makeProvider } from '../../libs';
+import {ethers} from 'ethers';
 
 // Non-destructive version of splice
 function addItemToArray(arr, postion, ...items) {
@@ -69,14 +69,14 @@ describe('Betting', () => {
         SPORTS,
         AMERICAN_FOOTBALL,
       ])),
-      outcomes: [teamA, teamB, tieNoWinner].map(formatBytes32String),
+      outcomes: [teamA, teamB, tieNoWinner].map(ethers.utils.formatBytes32String),
     });
     await john.createCategoricalMarket({
       endTime: new BigNumber(endTime),
       feePerCashInAttoCash,
       affiliateFeeDivisor: new BigNumber(0),
       designatedReporter: john.account.address,
-      outcomes: ['one', 'two', 'three'].map(formatBytes32String),
+      outcomes: ['one', 'two', 'three'].map(ethers.utils.formatBytes32String),
       extraInfo: JSON.stringify({
         categories: ['random', 'market'],
         description: 'random categorical market',

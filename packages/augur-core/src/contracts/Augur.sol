@@ -86,7 +86,6 @@ contract Augur is IAugur, IAugurCreationDataGetter {
     mapping(bytes32 => address) private registry;
 
     ITime public time;
-    IUniverse public genesisUniverse;
 
     uint256 public forkCounter;
     mapping (address => uint256) universeForkIndex;

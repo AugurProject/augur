@@ -214,7 +214,7 @@ def test_roundsOfReporting(rounds, localFixture, market, universe):
     (False, False),
 ])
 def test_forking(finalizeByMigration, manuallyDisavow, localFixture, universe, market, cash, categoricalMarket, scalarMarket):
-    shareToken = localFixture.contracts["ShareToken"]
+    shareToken = localFixture.getShareToken()
 
     time = localFixture.contracts["Time"].getTimestamp()
     farOutEndTime = time + (365 * 24 * 60 * 60)
@@ -291,11 +291,11 @@ def test_forking(finalizeByMigration, manuallyDisavow, localFixture, universe, m
     expectedYesOutcomePayout = newUniverse.payoutNumerators(YES)
     expectedNoOutcomePayout = newUniverse.payoutNumerators(NO)
 
-    expectedYesPayout = expectedYesOutcomePayout * shareToken.balanceOfMarketOutcome(market.address, YES, localFixture.accounts[0]) * .99 # to account for fees (creator fee goes to the claimer in this case)
+    expectedYesPayout = expectedYesOutcomePayout * shareToken.balanceOfMarketOutcome(market.address, YES, localFixture.accounts[0]) * .9999 # to account for fees (creator fee goes to the claimer in this case)
     with TokenDelta(cash, expectedYesPayout, localFixture.accounts[0], "Payout for Yes Shares was wrong in forking market"):
         shareToken.claimTradingProceeds(market.address, localFixture.accounts[0], longTo32Bytes(11))
 
-    expectedNoPayout = expectedNoOutcomePayout * shareToken.balanceOfMarketOutcome(market.address, NO, localFixture.accounts[1]) * .98 # to account for fees
+    expectedNoPayout = expectedNoOutcomePayout * shareToken.balanceOfMarketOutcome(market.address, NO, localFixture.accounts[1]) * .9899 # to account for fees
     with TokenDelta(cash, expectedNoPayout, localFixture.accounts[1], "Payout for No Shares was wrong in forking market"):
         shareToken.claimTradingProceeds(market.address, localFixture.accounts[1], longTo32Bytes(11))
 
@@ -307,7 +307,7 @@ def test_forking(finalizeByMigration, manuallyDisavow, localFixture, universe, m
     cost = categoricalMarket.getNumTicks() * numSets
     with BuyWithCash(cash, cost, localFixture.accounts[0], "buy complete set"):
         assert shareToken.publicBuyCompleteSets(categoricalMarket.address, numSets)
-    assert universe.getOpenInterestInAttoCash() == cost
+    assert localFixture.getOpenInterestInAttoCash(universe) == cost
 
     marketMigratedLog = {
         "market": categoricalMarket.address,
@@ -317,7 +317,13 @@ def test_forking(finalizeByMigration, manuallyDisavow, localFixture, universe, m
     with AssertLog(localFixture, "MarketMigrated", marketMigratedLog):
         assert categoricalMarket.migrateThroughOneFork([0,0,0,categoricalMarket.getNumTicks()], "")
 
-    assert universe.getOpenInterestInAttoCash() == 0
+    #For the augur ETH variant we'll need to generate the new universe to see this have an affect on the OI. The parent universe will still have the OI because its the same universe as the winner
+    if localFixture.paraAugur:
+        assert localFixture.getOpenInterestInAttoCash(universe) == cost
+        localFixture.contracts["ParaAugur"].generateParaUniverse(newUniverseAddress)
+        assert localFixture.getOpenInterestInAttoCash(newUniverse) == cost
+    else:
+        assert localFixture.getOpenInterestInAttoCash(universe) == 0
 
     # The dispute crowdsourcer has been disavowed
     newUniverse = localFixture.applySignature("Universe", categoricalMarket.getUniverse())
@@ -325,7 +331,7 @@ def test_forking(finalizeByMigration, manuallyDisavow, localFixture, universe, m
     assert categoricalDisputeCrowdsourcer.isDisavowed()
     assert not universe.isContainerForReportingParticipant(categoricalDisputeCrowdsourcer.address)
     assert not newUniverse.isContainerForReportingParticipant(categoricalDisputeCrowdsourcer.address)
-    assert newUniverse.getOpenInterestInAttoCash() == cost
+    assert localFixture.getOpenInterestInAttoCash(newUniverse) == cost
 
     # The initial report is still present however
     categoricalInitialReport = localFixture.applySignature("InitialReporter", categoricalMarket.participants(0))

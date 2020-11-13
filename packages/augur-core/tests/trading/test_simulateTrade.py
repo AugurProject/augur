@@ -94,8 +94,8 @@ def test_partial_fill(contractsFixture, cash, market, universe):
 
     account1 = contractsFixture.accounts[1]
 
-    simulate_then_trade(contractsFixture, LONG, market, outcome, amount, price, fillOnly, sender=account1)
-    simulate_then_trade(contractsFixture, SHORT, market, outcome, amount / 2, price, fillOnly)
+    simulate_then_trade(contractsFixture, cash, LONG, market, outcome, amount, price, fillOnly, sender=account1)
+    simulate_then_trade(contractsFixture, cash, SHORT, market, outcome, amount / 2, price, fillOnly)
 
 def test_multiple_trades(contractsFixture, cash, market, universe):
     outcome = YES
@@ -105,9 +105,9 @@ def test_multiple_trades(contractsFixture, cash, market, universe):
     numOrders = 10
 
     for i in range(numOrders):
-        simulate_then_trade(contractsFixture, SHORT, market, outcome, amount, i + 1, fillOnly, sender=account1)
+        simulate_then_trade(contractsFixture, cash, SHORT, market, outcome, amount, i + 1, fillOnly, sender=account1)
 
-    simulate_then_trade(contractsFixture, LONG, market, outcome, fix(numOrders - 0.5), numOrders + 10, fillOnly)
+    simulate_then_trade(contractsFixture, cash, LONG, market, outcome, fix(numOrders - 0.5), numOrders + 10, fillOnly)
 
 def test_self_trade(contractsFixture, cash, market, universe):
     outcome = YES
@@ -115,8 +115,8 @@ def test_self_trade(contractsFixture, cash, market, universe):
     price = 400
     fillOnly = False
 
-    simulate_then_trade(contractsFixture, LONG, market, outcome, amount, price, fillOnly)
-    simulate_then_trade(contractsFixture, SHORT, market, outcome, amount, price, fillOnly)
+    simulate_then_trade(contractsFixture, cash, LONG, market, outcome, amount, price, fillOnly)
+    simulate_then_trade(contractsFixture, cash, SHORT, market, outcome, amount, price, fillOnly)
 
 def test_fill_only(contractsFixture, cash, market, universe):
     outcome = YES
@@ -125,8 +125,8 @@ def test_fill_only(contractsFixture, cash, market, universe):
 
     account1 = contractsFixture.accounts[1]
 
-    simulate_then_trade(contractsFixture, LONG, market, outcome, amount, price, False, sender=account1)
-    simulate_then_trade(contractsFixture, SHORT, market, outcome, amount + fix(1), price, True)
+    simulate_then_trade(contractsFixture, cash, LONG, market, outcome, amount, price, False, sender=account1)
+    simulate_then_trade(contractsFixture, cash, SHORT, market, outcome, amount + fix(1), price, True)
 
 def test_fees(contractsFixture, cash, market, universe):
     outcome = YES
@@ -141,10 +141,10 @@ def test_fees(contractsFixture, cash, market, universe):
     expectedMarketCreatorFees = expectedValue / market.getMarketCreatorSettlementFeeDivisor()
     expectedSettlementFees = expectedReporterFees + expectedMarketCreatorFees
 
-    simulate_then_trade(contractsFixture, LONG, market, outcome, amount, price, fillOnly, sender=account1)
-    simulate_then_trade(contractsFixture, SHORT, market, outcome, amount, price, fillOnly)
-    simulate_then_trade(contractsFixture, SHORT, market, outcome, amount, price, fillOnly, sender=account1)
-    simulate_then_trade(contractsFixture, LONG, market, outcome, amount, price, fillOnly, expectedFees=expectedSettlementFees)
+    simulate_then_trade(contractsFixture, cash, LONG, market, outcome, amount, price, fillOnly, sender=account1)
+    simulate_then_trade(contractsFixture, cash, SHORT, market, outcome, amount, price, fillOnly)
+    simulate_then_trade(contractsFixture, cash, SHORT, market, outcome, amount, price, fillOnly, sender=account1)
+    simulate_then_trade(contractsFixture, cash, LONG, market, outcome, amount, price, fillOnly, expectedFees=expectedSettlementFees)
 
 def test_use_shares_multiple(contractsFixture, cash, market, universe):
     outcome = YES
@@ -155,17 +155,16 @@ def test_use_shares_multiple(contractsFixture, cash, market, universe):
     account1 = contractsFixture.accounts[1]
     account2 = contractsFixture.accounts[2]
     
-    simulate_then_trade(contractsFixture, LONG, market, outcome, amount, price, False, sender=account1)
-    simulate_then_trade(contractsFixture, SHORT, market, outcome, amount + fix(1), price, True)
+    simulate_then_trade(contractsFixture, cash, LONG, market, outcome, amount, price, False, sender=account1)
+    simulate_then_trade(contractsFixture, cash, SHORT, market, outcome, amount + fix(1), price, True)
 
-    simulate_then_trade(contractsFixture, LONG, market, outcome, amount, price, False, sender=account2)
-    simulate_then_trade(contractsFixture, SHORT, market, outcome, amount * 2, price, False, sender=account1)
+    simulate_then_trade(contractsFixture, cash, LONG, market, outcome, amount, price, False, sender=account2)
+    simulate_then_trade(contractsFixture, cash, SHORT, market, outcome, amount * 2, price, False, sender=account1)
 
-def simulate_then_trade(contractsFixture, direction, market, outcome, amount, price, fillOnly, sender=None, expectedFees=0):
+def simulate_then_trade(contractsFixture, cash, direction, market, outcome, amount, price, fillOnly, sender=None, expectedFees=0):
     trade = contractsFixture.contracts["Trade"]
     simulateTrade = contractsFixture.contracts["SimulateTrade"]
-    shareToken = contractsFixture.contracts["ShareToken"]
-    cash = contractsFixture.contracts["Cash"]
+    shareToken = contractsFixture.getShareToken()
     sender = sender if sender is not None else contractsFixture.accounts[0]
     shareTokenOutcome = outcome if direction == SHORT else ((outcome + 1) % 3)
 

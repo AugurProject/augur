@@ -29,8 +29,10 @@ contract AccountLoader is Initializable {
         uint256 attoREPperUSDC;
         uint256 attoREPperUSDT;
         uint256 attoUSDCperUSDT;
+        uint256 attoETHperCollateral;
         uint256 signerUSDC;
         uint256 signerUSDT;
+        uint256 signerCollateral;
     }
 
     IERC20 public cash;
@@ -47,13 +49,14 @@ contract AccountLoader is Initializable {
         uniswapFactory = IUniswapV2Factory(_augur.lookup("UniswapV2Factory"));
     }
 
-    function loadAccountData(address _account, IERC20 _reputationToken, IERC20 _USDC, IERC20 _USDT) public view returns (AccountData memory _data) {
+    function loadAccountData(address _account, IERC20 _reputationToken, IERC20 _USDC, IERC20 _USDT, IERC20 _collateral) public view returns (AccountData memory _data) {
         _data.signerETH = _account.balance;
         _data.signerDAI = cash.balanceOf(_account);
         _data.signerREP = _reputationToken.balanceOf(_account);
         _data.signerLegacyREP = legacyReputationToken.balanceOf(_account);
         _data.signerUSDC = _USDC.balanceOf(_account);
         _data.signerUSDT = _USDT.balanceOf(_account);
+        _data.signerCollateral = _collateral.balanceOf(_account);
 
         _data.attoDAIperREP = getExchangeRate(address(_reputationToken), address(cash));
         _data.attoDAIperETH = getExchangeRate(address(weth), address(cash));
@@ -65,6 +68,7 @@ contract AccountLoader is Initializable {
         _data.attoREPperUSDC = getExchangeRate(address(_USDC), address(_reputationToken));
         _data.attoREPperUSDT = getExchangeRate(address(_USDT), address(_reputationToken));
         _data.attoUSDCperUSDT = getExchangeRate(address(_USDT), address(_USDC));
+        _data.attoETHperCollateral = getExchangeRate(address(_collateral), address(weth));
 
         return _data;
     }

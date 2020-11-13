@@ -10,12 +10,13 @@ import program from 'commander';
 
 import ethereumKeyfileRecognizer from 'ethereum-keyfile-recognizer';
 import { ethers } from 'ethers';
-import { computeAddress } from 'ethers/utils';
 import * as fs from 'fs';
 import * as readlineSync from 'readline-sync';
 import { Account, ACCOUNTS } from '../constants';
+import { addAMMScripts } from './amm';
 import { FlashSession } from './flash';
 import { addGanacheScripts } from './ganache-scripts';
+import { addParaScripts } from './para';
 import { addScripts } from './scripts';
 
 import { addWarpSyncScripts } from './warp-sync';
@@ -60,7 +61,9 @@ async function run() {
   const flash = new FlashSession([]);
 
   addScripts(flash);
+  addAMMScripts(flash);
   addGanacheScripts(flash);
+  addParaScripts(flash);
   addWarpSyncScripts(flash);
 
   program
@@ -70,6 +73,7 @@ async function run() {
     .option('--key <key>', 'Private key to use, Overrides ETHEREUM_PRIVATE_KEY environment variable, if set.')
     .option('--keyfile <keyfile>', 'File containing private key to use. Overrides ETHEREUM_PRIVATE_KEY environment variable, if set.')
     .option('--network <network>', `Name of network to run on. Use "none" for commands that don't use a network. Environmental variable "ETHEREUM_PRIVATE_KEY" will take precedence if set.`, 'local')
+    .option('--para <para>', `Cash address of ParaAugur to use instead of core augur.`, 'none')
     .option('--skip-approval <skipApproval>', 'Do not approve', 'false')
     .option('--config <config>', 'JSON of configuration')
     .option('--configFile <configFile>', 'Path to configuration file');
@@ -91,10 +95,15 @@ async function run() {
         const opts = {...program.opts(), ...args};
         await processAccounts(flash, opts);
 
-        if(process.env.ETHEREUM_NETWORK) {
+        if (process.env.ETHEREUM_NETWORK) {
           flash.network = process.env.ETHEREUM_NETWORK;
         } else {
           flash.network = opts.network;
+        }
+        if (process.env.PARA_DEPLOY) {
+          flash.para = process.env.PARA_DEPLOY;
+        } else if (opts.para !== 'none') {
+          flash.para = opts.para;
         }
 
         let specified: RecursivePartial<SDKConfiguration> = {
@@ -102,6 +111,9 @@ async function run() {
             skipApproval: Boolean(opts.skipApproval?.toLowerCase() === 'true'),
           }
         };
+        if (flash.para) {
+          specified = mergeConfig(specified, { paraDeploy: flash.para })
+        }
         if (opts.configFile) {
           specified = mergeConfig(specified, JSON.parse(fs.readFileSync(opts.configFile).toString()));
         }
@@ -141,7 +153,7 @@ function accountFromPrivateKey(key: string): Account {
   key = cleanKey(key);
   return {
     privateKey: key,
-    address: computeAddress(key),
+    address: ethers.utils.computeAddress(key),
     initialBalance: 0, // not used here; only for ganache premining
   }
 }

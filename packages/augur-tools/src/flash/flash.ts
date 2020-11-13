@@ -1,3 +1,4 @@
+import { ethers } from 'ethers';
 import { EthersProvider } from '@augurproject/ethersjs-provider';
 import { Connectors, createClient } from '@augurproject/sdk';
 import { NewBlock, SubscriptionEventName } from '@augurproject/sdk-lite';
@@ -44,6 +45,7 @@ export class FlashSession {
   constructor(
     public accounts: Account[],
     public network?: string,
+    public para?: string,
     public config?: SDKConfiguration,
   ) {}
 
@@ -124,9 +126,9 @@ export class FlashSession {
   ): Promise<ContractAPI> {
     const provider = await providerFromConfig(config);
     const connector = new Connectors.SingleThreadConnector();
-    const signer = await makeSigner(account, provider);
+    const signer : ethers.Signer = await makeSigner(account, provider);
     const client = await createClient(config, connector, signer, provider);
-    const user = new ContractAPI(client, provider, account);
+    const user = new ContractAPI(client, provider, account, signer);
 
     if (!config.flash?.skipApproval) {
       await user.approveIfNecessary();

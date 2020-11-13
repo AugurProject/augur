@@ -1,9 +1,9 @@
 import { Abi } from "ethereum";
-import { Block, BlockTag, JsonRpcProvider } from "ethers/providers";
-import { Filter, Log, LogValues } from "@augurproject/types";
-import { NetworkId } from "@augurproject/utils";
+import { Block, BlockTag, JsonRpcProvider } from '@ethersproject/providers';
+import { Filter, Log, LogValues } from '@augurproject/types';
+import { NetworkId } from '@augurproject/utils';
 import { ethers } from "ethers";
-import { JSONRPCRequestPayload, JSONRPCErrorCallback } from "ethereum-types";
+import { JSONRPCRequestPayload, JSONRPCErrorCallback } from 'ethereum-types';
 
 export interface Provider {
   disconnect(): void;
@@ -15,7 +15,7 @@ export interface Provider {
   getEventTopic(contractName: string, eventName: string): string;
   encodeContractFunction(contractName: string, functionName: string, funcParams: any[]): string;
   parseLogValues(contractName: string, log: Log): LogValues;
-  getBalance(address: string): Promise<ethers.utils.BigNumber>;
+  getBalance(address: string): Promise<ethers.BigNumber>;
   sendAsync(payload: JSONRPCRequestPayload, callback: JSONRPCErrorCallback): void;
   setProvider(provider: JsonRpcProvider);
 }

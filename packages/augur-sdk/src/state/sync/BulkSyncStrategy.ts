@@ -1,6 +1,5 @@
 import { Filter, Log, ParsedLog } from '@augurproject/types';
 import * as _ from 'lodash';
-import { ExtendedFilter, LogCallbackType } from '../logs/LogFilterAggregator';
 import { AbstractSyncStrategy } from './AbstractSyncStrategy';
 import { SyncStrategy } from './index';
 import { chunkRange } from '@augurproject/utils';

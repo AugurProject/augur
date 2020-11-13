@@ -2,7 +2,6 @@ import { Account, NULL_ADDRESS, _1_HUNDRED_ETH } from '../constants';
 import { ContractAPI } from '..';
 import { ParsedLog } from '@augurproject/types';
 import { BigNumber } from 'bignumber.js';
-import { formatBytes32String } from 'ethers/utils';
 import { EthersProvider } from '@augurproject/ethersjs-provider';
 import { ethers } from 'ethers';
 import { SDKConfiguration } from '@augurproject/utils';
@@ -152,8 +151,8 @@ export class LogReplayer {
 
     console.log(`Replaying OrderEvent "${orderId}"`);
 
-    const betterOrderId = formatBytes32String('');
-    const worseOrderId = formatBytes32String('');
+    const betterOrderId = ethers.utils.formatBytes32String('');
+    const worseOrderId = ethers.utils.formatBytes32String('');
 
     const orderCreatorUser = await this.Account(orderCreator).then((account) => this.User(account));
 

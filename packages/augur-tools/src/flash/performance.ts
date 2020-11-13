@@ -8,7 +8,6 @@ import {
   validConfigOrDie,
 } from '@augurproject/utils';
 import { BigNumber } from 'bignumber.js';
-import { formatBytes32String } from 'ethers/utils';
 import { ContractAPI } from '..';
 import { Account } from '../constants';
 import { HDWallet } from '../libs/blockchain';
@@ -24,6 +23,7 @@ import {
   sleep,
   waitForFunding,
 } from './util';
+import {ethers} from 'ethers';
 
 export const FINNEY = new BigNumber(1e16);
 
@@ -76,8 +76,8 @@ export function setupMarketSet(maker: ContractAPI): Array<ReadiedPromise<Market>
     () => maker.createReasonableScalarMarket(`scalar #2 from ${maker.account.address}`),
     () => maker.createReasonableScalarMarket(`scalar #3 from ${maker.account.address}`),
     () => maker.createReasonableScalarMarket(`scalar #4 from ${maker.account.address}`),
-    () => maker.createReasonableMarket(['foo', 'bar', 'zeitgeist', 'mary', 'bob'].map(formatBytes32String), `cat #1 from ${maker.account.address}`),
-    () => maker.createReasonableMarket(['torrent', 'rainstorm', 'shower', 'puddle-maker'].map(formatBytes32String), `cat #2 from ${maker.account.address}`),
+    () => maker.createReasonableMarket(['foo', 'bar', 'zeitgeist', 'mary', 'bob'].map(ethers.utils.formatBytes32String), `cat #1 from ${maker.account.address}`),
+    () => maker.createReasonableMarket(['torrent', 'rainstorm', 'shower', 'puddle-maker'].map(ethers.utils.formatBytes32String), `cat #2 from ${maker.account.address}`),
   ]
 }
 

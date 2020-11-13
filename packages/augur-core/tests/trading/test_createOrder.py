@@ -80,7 +80,7 @@ def test_publicCreateOrder_List_Logic(contractsFixture, cash, market):
 def test_publicCreateOrder_bid2(contractsFixture, cash, market, universe):
     orders = contractsFixture.contracts['Orders']
     createOrder = contractsFixture.contracts['CreateOrder']
-    shareToken = contractsFixture.contracts["ShareToken"]
+    shareToken = contractsFixture.getShareToken()
 
     orderType = BID
     amount = fix(1)
@@ -111,7 +111,7 @@ def test_publicCreateOrder_bid2(contractsFixture, cash, market, universe):
 
 def test_createOrder_failure(contractsFixture, cash, market):
     createOrder = contractsFixture.contracts['CreateOrder']
-    shareToken = contractsFixture.contracts['ShareToken']
+    shareToken = contractsFixture.getShareToken()
 
     with raises(TransactionFailed):
         createOrder.createOrder(contractsFixture.accounts[1], ASK, fix(1), 40, market.address, YES, longTo32Bytes(0), longTo32Bytes(0), longTo32Bytes(42), nullAddress, sender=contractsFixture.accounts[1])
@@ -148,8 +148,8 @@ def test_createOrder_failure(contractsFixture, cash, market):
 def test_ask_withPartialShares(contractsFixture, universe, cash, market):
     orders = contractsFixture.contracts['Orders']
     createOrder = contractsFixture.contracts['CreateOrder']
-    shareToken = contractsFixture.contracts['ShareToken']
-    shareToken = contractsFixture.contracts["ShareToken"]
+    shareToken = contractsFixture.getShareToken()
+    shareToken = contractsFixture.getShareToken()
 
     # buy fix(2) complete sets
     with BuyWithCash(cash, fix(2, market.getNumTicks()), contractsFixture.accounts[1], "buy complete set"):

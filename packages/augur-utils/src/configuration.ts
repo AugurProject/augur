@@ -28,13 +28,35 @@ export function deepCopy<T>(x: T): T {
   return JSON.parse(JSON.stringify(x));
 }
 
+export interface ParaDeploys {
+  [cashAddress: string]: {
+    uploadBlockNumber?: number,
+    name: string,
+    decimals: number,
+    addresses: ParaAddresses
+  };
+}
+
+export interface SideChainDeploy {
+    uploadBlockNumber?: number,
+    addresses: SideChainAddresses
+}
+
 export interface SDKConfiguration {
   networkId: NetworkId,
   uploadBlockNumber?: number,
   addresses?: ContractAddresses,
+  paraDeploys?: ParaDeploys
+  paraDeploy?: string; // cashAddress of paraDeploy to use instead of base augur deploy
+  sideChain?: SideChainDeploy,
+  governance?: {
+    uploadBlockNumber?: number,
+    addresses: GovernanceAddresses
+  }
   averageBlocktime?: number,
   logLevel?: LoggerLevels, // In the JSON configs an integer will need to be used.
   ethereum?: {
+    network?: string,
     http?: string,
     ws?: string,
     rpcRetryCount: number,
@@ -51,11 +73,12 @@ export interface SDKConfiguration {
     enableFaucets: boolean,
     normalTime: boolean,
     savePrivateKey?: boolean,
-    privateKey: string,
-    contractInputPath: string,
+    privateKey?: string,
+    contractInputPath?: string,
     serial?: boolean,
     writeArtifacts?: boolean,
     externalAddresses?: ExternalAddresses,
+    sideChainExternalAddresses?: SideChainExternalAddresses,
   },
   warpSync?: {
     createCheckpoints?: boolean,
@@ -112,27 +135,33 @@ export interface SDKConfiguration {
     fallbackProvider?: 'jsonrpc' | 'torus',
     liteProvider?: 'jsonrpc' | 'default',
     primaryProvider?: 'jsonrpc' | 'wallet',
-    reportingOnly?: boolean,
+    marketCreationEnabled?: boolean,
+    reportingEnabled?: boolean
   },
   concurrentDBOperationsLimit?: number
 }
 
-export interface ContractAddresses {
-  Universe: string;
-  Augur: string;
+export interface TradingAddresses {
   AugurTrading: string;
-  LegacyReputationToken: string;
   CancelOrder: string;
-  Cash: string;
-  USDC: string;
-  USDT: string;
-  ShareToken: string;
   CreateOrder: string;
   FillOrder: string;
   Order?: string;
   Orders: string;
   Trade: string;
   SimulateTrade: string;
+  ZeroXTrade?: string;
+  ProfitLoss?: string;
+}
+
+export interface ContractAddresses extends TradingAddresses {
+  Universe: string;
+  Augur: string;
+  LegacyReputationToken: string;
+  Cash: string;
+  USDC: string;
+  USDT: string;
+  ShareToken: string;
   Controller?: string;
   OrdersFinder?: string;
   OrdersFetcher?: string;
@@ -145,10 +174,8 @@ export interface ContractAddresses {
   RedeemStake?: string;
   GnosisSafeRegistry?: string;
   HotLoading?: string;
-  ZeroXTrade?: string;
   Affiliates?: string;
   AffiliateValidator?: string;
-  ProfitLoss?: string;
   WarpSync?: string;
   AugurWalletRegistry?: string;
   OICash?: string;
@@ -172,6 +199,46 @@ export interface ContractAddresses {
   DevUtils?: string;
   WETH9?: string;
   ZRXToken?: string;
+
+  // Para
+  OINexus?: string;
+  HotLoadingUniversal?: string;
+  ParaDeployer?: string;
+
+  // AMM
+  AMMFactory?: string;
+  WethWrapperForAMMExchange?: string;
+}
+
+export interface ParaAddresses extends TradingAddresses {
+  Augur: string;
+  Universe: string;
+  ShareToken: string;
+  Cash: string;
+  OICash?: string;
+}
+
+export interface SideChainAddresses {
+  Augur: string;
+  Universe: string;
+  ShareToken: string;
+  Cash: string;
+  Affiliates?: string;
+  AugurTrading: string;
+  FillOrder: string;
+  SimulateTrade: string;
+  ZeroXTrade?: string;
+  ProfitLoss?: string;
+  MarketGetter?: string;
+  RepFeeTarget?: string;
+}
+
+export interface GovernanceAddresses {
+  GovToken: string;
+  Timelock: string;
+  Governance: string;
+  InitialStakingRewards: string;
+  FeePot: string;
 }
 
 export interface ExternalAddresses {
@@ -184,6 +251,23 @@ export interface ExternalAddresses {
   UniswapV2Factory?: string;
   UniswapV2Router02?: string;
   RelayHubV2?: string;
+  SETH?: string;
+  BUSD?: string;
+  TUSD?: string;
+  SUSD?: string;
+  MUSD?: string;
+  YUSD?: string;
+  WBTC?: string;
+  renBTC?: string;
+  SBTC?: string;
+  TBTC?: string;
+}
+
+export interface SideChainExternalAddresses {
+  Cash: string;
+  MarketGetter: string;
+  RepFeeTarget: string;
+  ZeroXExchange: string;
 }
 
 // TS doesn't allow mapping of any type but string or number so we list it out manually
@@ -205,6 +289,7 @@ export const DEFAULT_SDK_CONFIGURATION: SDKConfiguration = {
   logLevel: LoggerLevels.warn,
   averageBlocktime: 2000,
   ethereum: {
+    network: "private",
     http: 'http://localhost:8545',
     ws: 'ws://localhost:8546',
     rpcRetryCount: 5,
@@ -220,7 +305,7 @@ export const DEFAULT_SDK_CONFIGURATION: SDKConfiguration = {
     isProduction: false,
     enableFaucets: true,
     normalTime: true,
-    privateKey: 'fae42052f82bed612a724fec3632f325f377120592c75bb78adfcceae6470c5a',
+    privateKey: '0xfae42052f82bed612a724fec3632f325f377120592c75bb78adfcceae6470c5a',
     contractInputPath: path.join(__dirname, '../../augur-artifacts/build/contracts.json'),
     writeArtifacts: true,
     serial: true,
@@ -274,7 +359,9 @@ export const DEFAULT_SDK_CONFIGURATION: SDKConfiguration = {
     trackMarketInvalidBids: true,
     fallbackProvider: 'torus',
     liteProvider: 'jsonrpc',
-    primaryProvider: 'wallet'
+    primaryProvider: 'wallet',
+    marketCreationEnabled: true,
+    reportingEnabled: true
   }
 };
 
@@ -314,8 +401,6 @@ export function isValidConfig(suspect: RecursivePartial<SDKConfiguration>): susp
   if (suspect.deploy) {
     if (typeof suspect.deploy.enableFaucets === 'undefined') return fail('deploy.enableFaucets');
     if (typeof suspect.deploy.normalTime === 'undefined') return fail('deploy.normalTime');
-    if (typeof suspect.deploy.privateKey === 'undefined') return fail('deploy.privateKey');
-    if (typeof suspect.deploy.contractInputPath === 'undefined') return fail('deploy.contractInputPath');
     if (typeof suspect.deploy.writeArtifacts === 'undefined') return fail('deploy.writeArtifacts');
   }
   if (suspect.ethereum) {
@@ -363,6 +448,7 @@ export function validConfigOrDie(config: RecursivePartial<SDKConfiguration>): SD
   }
 }
 
+// Takes several SDKConfiguration instances and combines them into one.
 export function mergeConfig(...configs: Array<RecursivePartial<SDKConfiguration>>): RecursivePartial<SDKConfiguration> {
   if (configs.length < 2) throw Error(`mergeConfig must be passed at least 2 configs, not ${configs.length} configs`);
 
@@ -418,6 +504,8 @@ export function configFromEnvvars(): RecursivePartial<SDKConfiguration> {
   if (t(e.SERVER_START_WS)) config = d(config, { server: { startWS: bool(e.SERVER_START_WS) }});
   if (t(e.SERVER_WSS_PORT)) config = d(config, { server: { wssPort: Number(e.SERVER_WSS_PORT) }});
   if (t(e.SERVER_START_WSS)) config = d(config, { server: { startWSS: bool(e.SERVER_START_WSS) }});
+
+  if (t(e.PARA_DEPLOY)) config = d(config, { paraDeploy: e.PARA_DEPLOY });
 
   if (t(e.UPLOAD_BLOCK_NUMBER)) config = d(config, { uploadBlockNumber: Number(e.UPLOAD_BLOCK_NUMBER) });
 

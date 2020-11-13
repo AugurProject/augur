@@ -39,10 +39,10 @@ FILL_ORDER_DOUBLE_REVERSE_POSITION    =   [
 ]
 
 @mark.parametrize('numOutcomes', range(2,8))
-def test_order_filling_take_shares(numOutcomes, localFixture, markets):
-    ZeroXTrade = localFixture.contracts['ZeroXTrade']
+def test_order_filling_take_shares(numOutcomes, cash, localFixture, markets):
+    ZeroXTrade = localFixture.getZeroXTrade()
     cash = localFixture.contracts['Cash']
-    shareToken = localFixture.contracts["ShareToken"]
+    shareToken = localFixture.getShareToken()
     expirationTime = localFixture.contracts['Time'].getTimestamp() + 10000
     salt = 5
     tradeGroupID = longTo32Bytes(42)
@@ -61,15 +61,15 @@ def test_order_filling_take_shares(numOutcomes, localFixture, markets):
     signatures = [signature]
 
     cost = amount * 50
-    localFixture.contracts["Cash"].faucet(cost, sender=localFixture.accounts[1])
+    cash.faucet(cost, sender=localFixture.accounts[1])
     with PrintGasUsed(localFixture, "FILL ORDER TAKE SHARES: %i" % numOutcomes, FILL_ORDER_TAKE_SHARES[numOutcomes-2]):
         ZeroXTrade.trade(amount, fingerprint, tradeGroupID, 0, 10, orders, signatures, sender=localFixture.accounts[1])
 
 @mark.parametrize('numOutcomes', range(2,8))
-def test_order_filling_both_eth(numOutcomes, localFixture, markets):
-    ZeroXTrade = localFixture.contracts['ZeroXTrade']
+def test_order_filling_both_eth(numOutcomes, cash, localFixture, markets):
+    ZeroXTrade = localFixture.getZeroXTrade()
     cash = localFixture.contracts['Cash']
-    shareToken = localFixture.contracts["ShareToken"]
+    shareToken = localFixture.getShareToken()
     expirationTime = localFixture.contracts['Time'].getTimestamp() + 10000
     salt = 5
     tradeGroupID = longTo32Bytes(42)
@@ -84,21 +84,21 @@ def test_order_filling_both_eth(numOutcomes, localFixture, markets):
 
     for roundNum in [0, 1]:
         salt += roundNum
-        localFixture.contracts["Cash"].faucet(cost)
+        cash.faucet(cost)
         rawZeroXOrderData, orderHash = ZeroXTrade.createZeroXOrder(ASK, amount, 50, market.address, outcome, expirationTime, salt)
         signature = signOrder(orderHash, localFixture.privateKeys[0])
         orders = [rawZeroXOrderData]
         signatures = [signature]
 
-        localFixture.contracts["Cash"].faucet(cost, sender = localFixture.accounts[1])
+        cash.faucet(cost, sender = localFixture.accounts[1])
         with PrintGasUsed(localFixture, "ROUND %i: FILL ORDER BOTH ETH: %i" % (roundNum, numOutcomes), FILL_ORDER_BOTH_ETH[numOutcomes-2]):
             ZeroXTrade.trade(amount, fingerprint, tradeGroupID, 0, 10, orders, signatures, sender=localFixture.accounts[1])
 
 @mark.parametrize('numOutcomes', range(2,8))
-def test_order_filling_double_reverse(numOutcomes, localFixture, markets):
-    ZeroXTrade = localFixture.contracts['ZeroXTrade']
+def test_order_filling_double_reverse(numOutcomes, cash, localFixture, markets):
+    ZeroXTrade = localFixture.getZeroXTrade()
     cash = localFixture.contracts['Cash']
-    shareToken = localFixture.contracts["ShareToken"]
+    shareToken = localFixture.getShareToken()
     expirationTime = localFixture.contracts['Time'].getTimestamp() + 10000
     salt = 5
     tradeGroupID = longTo32Bytes(42)
@@ -108,19 +108,19 @@ def test_order_filling_double_reverse(numOutcomes, localFixture, markets):
     amount = fix(10)
     cost = amount * 50
 
-    localFixture.contracts["Cash"].faucet(amount * market.getNumTicks())
+    cash.faucet(amount * market.getNumTicks())
     assert shareToken.publicBuyCompleteSets(market.address, amount)
     outcome = 0
     shareTokenId = shareToken.getTokenId(market.address, outcome)
     shareToken.unsafeTransferFrom(localFixture.accounts[0], localFixture.accounts[1], shareTokenId, amount)
-    localFixture.contracts["Cash"].faucet(cost)
+    cash.faucet(cost)
     rawZeroXOrderData, orderHash = ZeroXTrade.createZeroXOrder(ASK, amount, 50, market.address, outcome, expirationTime, salt)
     signature = signOrder(orderHash, localFixture.privateKeys[0])
     fingerprint = longTo32Bytes(11)
     orders = [rawZeroXOrderData]
     signatures = [signature]
 
-    localFixture.contracts["Cash"].faucet(cost, sender = localFixture.accounts[1])
+    cash.faucet(cost, sender = localFixture.accounts[1])
     with PrintGasUsed(localFixture, "FILL ORDER BOTH REVERSE: %i" % numOutcomes, FILL_ORDER_DOUBLE_REVERSE_POSITION[numOutcomes-2]):
         ZeroXTrade.trade(amount, fingerprint, tradeGroupID, 0, 10, orders, signatures, sender=localFixture.accounts[1])
 

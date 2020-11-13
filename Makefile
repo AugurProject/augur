@@ -30,6 +30,12 @@ build-contracts: build-typescript venv
 	yarn workspace @augurproject/core build:contracts; \
 	deactivate
 
+build-artifacts: build-typescript venv
+	. venv/bin/activate; \
+	python3 -m pip install -r packages/augur-core/requirements.txt; \
+	yarn workspace @augurproject/core build:artifacts; \
+	deactivate
+
 docker-all: build-typescript
 	yarn docker:all
 

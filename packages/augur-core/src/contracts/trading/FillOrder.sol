@@ -6,7 +6,7 @@ import 'ROOT/trading/IFillOrder.sol';
 import 'ROOT/libraries/ReentrancyGuard.sol';
 import 'ROOT/libraries/math/SafeMathUint256.sol';
 import 'ROOT/reporting/IMarket.sol';
-import 'ROOT/ICash.sol';
+import 'ROOT/libraries/token/IERC20.sol';
 import 'ROOT/trading/IOrders.sol';
 import 'ROOT/reporting/IShareToken.sol';
 import 'ROOT/trading/IProfitLoss.sol';
@@ -14,6 +14,7 @@ import 'ROOT/trading/Order.sol';
 import 'ROOT/libraries/Initializable.sol';
 import 'ROOT/trading/IAugurTrading.sol';
 import 'ROOT/libraries/TokenId.sol';
+import 'ROOT/libraries/token/SafeERC20.sol';
 
 
 library Trade {
@@ -28,7 +29,7 @@ library Trade {
         IAugur augur;
         IAugurTrading augurTrading;
         IOrders orders;
-        ICash denominationToken;
+        IERC20 denominationToken;
         IProfitLoss profitLoss;
         IShareToken shareToken;
     }
@@ -36,7 +37,7 @@ library Trade {
     struct Contracts {
         IOrders orders;
         IMarket market;
-        ICash denominationToken;
+        IERC20 denominationToken;
         IShareToken shareToken;
         IAugur augur;
         IUniverse universe;
@@ -431,6 +432,7 @@ library Trade {
  * @notice Exposes functions to fill an order on the book
  */
 contract FillOrder is Initializable, ReentrancyGuard, IFillOrder {
+    using SafeERC20 for IERC20;
     using SafeMathUint256 for uint256;
     using Trade for Trade.Data;
 
@@ -450,7 +452,7 @@ contract FillOrder is Initializable, ReentrancyGuard, IFillOrder {
         endInitialization();
         augur = _augur;
         augurTrading = _augurTrading;
-        ICash _cash = ICash(augur.lookup("Cash"));
+        IERC20 _cash = IERC20(augur.lookup("Cash"));
         storedContracts = Trade.StoredContracts({
             augur: _augur,
             augurTrading: _augurTrading,
@@ -466,7 +468,7 @@ contract FillOrder is Initializable, ReentrancyGuard, IFillOrder {
         require(trade != address(0));
         zeroXTrade = _augurTrading.lookup("ZeroXTrade");
         require(zeroXTrade != address(0));
-        _cash.approve(address(_augur), MAX_APPROVAL_AMOUNT);
+        _cash.safeApprove(address(_augur), MAX_APPROVAL_AMOUNT);
     }
 
     /**

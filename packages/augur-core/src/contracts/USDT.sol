@@ -11,6 +11,10 @@ contract USDT is Cash {
     string constant public name = "USDT";
     string constant public symbol = "USDT";
 
+    constructor() public {
+        decimals = 6;
+    }
+
     function getTypeName() public view returns (bytes32) {
         return "USDT";
     }

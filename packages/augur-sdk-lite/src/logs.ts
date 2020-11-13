@@ -13,6 +13,12 @@ export interface GenericEventDBDescription {
   primaryKey?: string;
 }
 
+export interface ParaLog {
+  para?: {
+    cashAddress: string | null
+  }
+}
+
 export interface Log {
   blockNumber: number;
   blockHash: Bytes32;
@@ -29,7 +35,7 @@ export interface MarketsUpdatedLog {
   data: MarketData[];
 }
 
-export interface CompleteSetsPurchasedLog extends TimestampedLog {
+export interface CompleteSetsPurchasedLog extends TimestampedLog, ParaLog {
   universe: Address;
   market: Address;
   account: Address;
@@ -37,7 +43,7 @@ export interface CompleteSetsPurchasedLog extends TimestampedLog {
   marketOI: string;
 }
 
-export interface CompleteSetsSoldLog extends TimestampedLog {
+export interface CompleteSetsSoldLog extends TimestampedLog, ParaLog {
   universe: Address;
   market: Address;
   account: Address;
@@ -167,7 +173,7 @@ export interface MarketVolumeChangedLog extends Log {
   outcomeVolumes: string[];
 }
 
-export interface MarketOIChangedLog extends Log {
+export interface MarketOIChangedLog extends Log, ParaLog {
   universe: Address;
   market: Address;
   marketOI: string;
@@ -300,7 +306,7 @@ export enum TokenType {
   ParticipationToken,
 }
 
-export interface ReportingFeeChangedLog extends Log {
+export interface ReportingFeeChangedLog extends Log, ParaLog {
   universe: Address;
   reportingFee: string;
 }
@@ -325,7 +331,7 @@ export interface TokenBalanceChangedLog extends Log {
   outcome: string;
 }
 
-export interface ShareTokenBalanceChangedLog extends Log {
+export interface ShareTokenBalanceChangedLog extends Log, ParaLog {
   universe: Address;
   account: Address;
   market: Address;
@@ -333,7 +339,7 @@ export interface ShareTokenBalanceChangedLog extends Log {
   balance: string;
 }
 
-export interface TradingProceedsClaimedLog extends TimestampedLog {
+export interface TradingProceedsClaimedLog extends TimestampedLog, ParaLog {
   universe: Address;
   shareToken: Address;
   sender: Address;
