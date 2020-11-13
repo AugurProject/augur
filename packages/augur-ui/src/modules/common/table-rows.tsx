@@ -31,9 +31,7 @@ import { selectMarketOutcomeBestBidAsk } from 'modules/markets/selectors/select-
 import { useMarketsStore } from 'modules/markets/store/markets';
 import { useAppStatusStore } from 'modules/app/store/app-status';
 import { OutcomeFormatted, UIOrder } from 'modules/types';
-import { TXEventName, OutcomeOrderBook } from '@augurproject/sdk-lite';
-import { removeCanceledOrder } from 'modules/pending-queue/actions/pending-queue-management';
-import { removePendingOrder } from 'modules/orders/actions/pending-orders-management';
+import { OutcomeOrderBook } from '@augurproject/sdk-lite';
 import { Properties } from './row-column';
 import { convertToOdds } from 'utils/get-odds';
 import { Trading } from 'modules/trading/store/trading';
