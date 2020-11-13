@@ -982,7 +982,7 @@
 
       &:hover {
         border: @size-1 solid var(--color-secondary-action-outline);
-        cursor: pointer;
+        cursor: text;
       }
 
       &:focus {
@@ -1482,7 +1482,8 @@ button.MaxDark {
       background-color: var(--color-dark-grey);
       color: var(--color-primary-text);
       border: @size-1 solid var(--color-secondary-action);
-
+      cursor: pointer;
+      
       &.DateInput_input__disabled {
         color: var(--color-inactive-text);
       }
@@ -1924,6 +1925,7 @@ button.MaxDark {
   position: relative;
   max-height: @size-44;
   min-width: @size-210;
+  cursor: pointer;
 
   @media @breakpoint-mobile {
     max-height: unset;
