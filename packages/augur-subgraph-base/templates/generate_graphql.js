@@ -1,11 +1,6 @@
 const fs = require('fs');
 const mustache = require('mustache');
 
-const augur = require('@augurproject/subgraph/abis/Augur.json');
-const augurTrading = require('@augurproject/subgraph/abis/AugurTrading.json');
-const paraDeployer = require('@augurproject/subgraph/abis/ParaDeployer.json');
-const paraShareToken = require('@augurproject/subgraph/abis/ParaShareToken.json');
-
 const getTypeMapping = (abiType, abiName, eventName) => {
   const typeMap = {
     'address': 'String',
@@ -30,7 +25,8 @@ const getTypeMapping = (abiType, abiName, eventName) => {
   return s;
 }
 
-function buildit(abi) {
+function buildit(contractName) {
+  const abi = require(`../abis/${contractName}.json`);
   return abi.filter((item) => {
     return item.type === "event"
   }).map((event) => {
@@ -51,10 +47,12 @@ function buildit(abi) {
 const template = fs.readFileSync('./templates/graphentity.mustache').toString();
 const result = mustache.render(template,{
   Entities: [
-    ...buildit(augur),
-    ...buildit(augurTrading),
-    ...buildit(paraDeployer),
-    ...buildit(paraShareToken),
+    ...buildit('Augur'),
+    ...buildit('AugurTrading'),
+    ...buildit(`ShareToken`),
+    ...buildit('ParaAugur'),
+    ...buildit('ParaAugurTrading'),
+    ...buildit('ParaShareToken')
   ]
 });
 

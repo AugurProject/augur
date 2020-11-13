@@ -4,75 +4,32 @@ repository: https://github.com/AugurProject/augur-v2-subgraph
 schema:
   file: ./schema.graphql
 dataSources:
+{{#entities}}
+{{> contractPartial }}
+{{/entities}}
+
+templates:
+{{#templateEntities}}
   - kind: ethereum/contract
-    name: Augur
+    name: {{name}}
     network: {{=<% %>=}}{{ ethereum.network }}<%={{ }}=%>
     source:
-      address: '{{=<% %>=}}{{ addresses.Augur }}<%={{ }}=%>'
-      abi: Augur
-      startBlock: {{=<% %>=}}{{ uploadBlockNumber }}<%={{ }}=%>
+      abi: {{name}}
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.4
       language: wasm/assemblyscript
-      file: ./src/Augur.ts
+      file: ./src/{{name}}.ts
       entities:
-        {{#Augur}}
+      {{#events}}
         - {{name}}
-        {{/Augur}}
+      {{/events}}
       abis:
-        - name: Augur
-          file: ./abis/Augur.json
+        - name: {{name}}
+          file: ./abis/{{name}}.json
       eventHandlers:
-        {{#Augur}}
+      {{#events}}
         - event: {{inputs}}
           handler: handle{{name}}
-        {{/Augur}}
-  - kind: ethereum/contract
-    name: AugurTrading
-    network: {{=<% %>=}}{{ ethereum.network }}<%={{ }}=%>
-    source:
-      address: '{{=<% %>=}}{{ addresses.AugurTrading }}<%={{ }}=%>'
-      abi: AugurTrading
-      startBlock: {{=<% %>=}}{{ uploadBlockNumber }}<%={{ }}=%>
-    mapping:
-      kind: ethereum/events
-      apiVersion: 0.0.4
-      language: wasm/assemblyscript
-      file: ./src/AugurTrading.ts
-      entities:
-      {{#AugurTrading}}
-        - {{name}}
-      {{/AugurTrading}}
-      abis:
-        - name: AugurTrading
-          file: ./abis/AugurTrading.json
-      eventHandlers:
-      {{#AugurTrading}}
-        - event: {{inputs}}
-          handler: handle{{name}}
-      {{/AugurTrading}}
-  - kind: ethereum/contract
-    name: ShareToken
-    network: {{=<% %>=}}{{ ethereum.network }}<%={{ }}=%>
-    source:
-      address: '{{=<% %>=}}{{ addresses.ShareToken }}<%={{ }}=%>'
-      abi: ShareToken
-      startBlock: {{=<% %>=}}{{ uploadBlockNumber }}<%={{ }}=%>
-    mapping:
-      kind: ethereum/events
-      apiVersion: 0.0.4
-      language: wasm/assemblyscript
-      file: ./src/ShareToken.ts
-      entities:
-      {{#ShareToken}}
-        - {{name}}
-      {{/ShareToken}}
-      abis:
-        - name: ShareToken
-          file: ./abis/ShareToken.json
-      eventHandlers:
-      {{#ShareToken}}
-        - event: {{inputs}}
-          handler: handle{{name}}
-      {{/ShareToken}}
+      {{/events}}
+{{/templateEntities}}
