@@ -964,7 +964,7 @@ type ProfitLossChanged @entity {
   timestamp: String!
 }
 
-type ParaAugurDeployFinished @entity {
+type ApprovalForAll @entity {
   id: ID!
 
   blockHash: String!
@@ -977,16 +977,14 @@ type ParaAugurDeployFinished @entity {
 
   transactionHash: String!
 
-  paraAugur: String
+  owner: String
 
-  shareToken: String
+  operator: String
 
-  cash: String
-
-  OINexus: String
+  approved: Boolean!
 }
 
-type ParaAugurTradingDeployed @entity {
+type TransferBatch @entity {
   id: ID!
 
   blockHash: String!
@@ -999,9 +997,367 @@ type ParaAugurTradingDeployed @entity {
 
   transactionHash: String!
 
-  paraAugur: String
+  operator: String
 
-  cash: String
+  from: String
+
+  to: String
+
+  ids: [String!]!
+
+  values: [String!]!
+}
+
+type TransferSingle @entity {
+  id: ID!
+
+  blockHash: String!
+
+  blockNumber: Int!
+
+  logIndex: Int!
+
+  name: String!
+
+  transactionHash: String!
+
+  operator: String
+
+  from: String
+
+  to: String
+
+  value: String!
+}
+
+type URI @entity {
+  id: ID!
+
+  blockHash: String!
+
+  blockNumber: Int!
+
+  logIndex: Int!
+
+  name: String!
+
+  transactionHash: String!
+
+  value: String!
+}
+
+type CompleteSetsPurchased @entity {
+  id: ID!
+
+  blockHash: String!
+
+  blockNumber: Int!
+
+  logIndex: Int!
+
+  name: String!
+
+  transactionHash: String!
+
+  universe: String
+
+  market: String
+
+  account: String
+
+  numCompleteSets: String!
+
+  timestamp: String!
+
+  para: String
+}
+
+type CompleteSetsSold @entity {
+  id: ID!
+
+  blockHash: String!
+
+  blockNumber: Int!
+
+  logIndex: Int!
+
+  name: String!
+
+  transactionHash: String!
+
+  universe: String
+
+  market: String
+
+  account: String
+
+  numCompleteSets: String!
+
+  fees: String!
+
+  timestamp: String!
+
+  para: String
+}
+
+type FinishDeployment @entity {
+  id: ID!
+
+  blockHash: String!
+
+  blockNumber: Int!
+
+  logIndex: Int!
+
+  name: String!
+
+  transactionHash: String!
+}
+
+type MarketOIChanged @entity {
+  id: ID!
+
+  blockHash: String!
+
+  blockNumber: Int!
+
+  logIndex: Int!
+
+  name: String!
+
+  transactionHash: String!
+
+  universe: String
+
+  market: String
+
+  marketOI: String!
+
+  para: String
+}
+
+type RegisterContract @entity {
+  id: ID!
+
+  blockHash: String!
+
+  blockNumber: Int!
+
+  logIndex: Int!
+
+  name: String!
+
+  transactionHash: String!
+
+  contractAddress: String
+
+  key: Bytes
+}
+
+type ReportingFeeChanged @entity {
+  id: ID!
+
+  blockHash: String!
+
+  blockNumber: Int!
+
+  logIndex: Int!
+
+  name: String!
+
+  transactionHash: String!
+
+  universe: String
+
+  reportingFee: String!
+
+  para: String
+}
+
+type ShareTokenBalanceChanged @entity {
+  id: ID!
+
+  blockHash: String!
+
+  blockNumber: Int!
+
+  logIndex: Int!
+
+  name: String!
+
+  transactionHash: String!
+
+  universe: String
+
+  account: String
+
+  market: String
+
+  outcome: String!
+
+  balance: String!
+
+  para: String
+}
+
+type TradingProceedsClaimed @entity {
+  id: ID!
+
+  blockHash: String!
+
+  blockNumber: Int!
+
+  logIndex: Int!
+
+  name: String!
+
+  transactionHash: String!
+
+  universe: String
+
+  sender: String
+
+  market: String
+
+  outcome: String!
+
+  numShares: String!
+
+  numPayoutTokens: String!
+
+  fees: String!
+
+  timestamp: String!
+
+  para: String
+}
+
+type CancelZeroXOrder @entity {
+  id: ID!
+
+  blockHash: String!
+
+  blockNumber: Int!
+
+  logIndex: Int!
+
+  name: String!
+
+  transactionHash: String!
+
+  universe: String
+
+  market: String
+
+  account: String
+
+  outcome: String!
+
+  price: String!
+
+  amount: String!
+
+  orderType: Int!
+
+  orderHash: Bytes
+
+  para: String
+}
+
+type MarketVolumeChanged @entity {
+  id: ID!
+
+  blockHash: String!
+
+  blockNumber: Int!
+
+  logIndex: Int!
+
+  name: String!
+
+  transactionHash: String!
+
+  universe: String
+
+  market: String
+
+  volume: String!
+
+  outcomeVolumes: [String!]!
+
+  totalTrades: String!
+
+  timestamp: String!
+
+  para: String
+}
+
+type OrderEvent @entity {
+  id: ID!
+
+  blockHash: String!
+
+  blockNumber: Int!
+
+  logIndex: Int!
+
+  name: String!
+
+  transactionHash: String!
+
+  universe: String
+
+  market: String
+
+  eventType: Int!
+
+  orderType: Int!
+
+  orderId: Bytes
+
+  tradeGroupId: Bytes
+
+  addressData: [String!]!
+
+  uint256Data: [String!]!
+
+  para: String
+}
+
+type ProfitLossChanged @entity {
+  id: ID!
+
+  blockHash: String!
+
+  blockNumber: Int!
+
+  logIndex: Int!
+
+  name: String!
+
+  transactionHash: String!
+
+  universe: String
+
+  market: String
+
+  account: String
+
+  outcome: String!
+
+  netPosition: String!
+
+  avgPrice: String!
+
+  realizedProfit: String!
+
+  frozenFunds: String!
+
+  realizedCost: String!
+
+  timestamp: String!
+
+  para: String
 }
 
 type ApprovalForAll @entity {

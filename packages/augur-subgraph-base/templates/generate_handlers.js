@@ -20,9 +20,11 @@ function buildit(abi) {
 }
 
 const template = fs.readFileSync('./templates/handlers.mustache').toString();
-const buildFile = (name, abi) => {
+const buildFile = (contractName, pathPrefix = "") => {
+  const abi = require(`../abis/${contractName}.json`);
   const result = mustache.render(template, {
-    Name: name,
+    pathPrefix,
+    Name: contractName,
     Entities: buildit(abi),
     GetTemplateForType: function() {
       return function(...args) {
@@ -49,11 +51,13 @@ const buildFile = (name, abi) => {
     }
   });
 
-  fs.writeFileSync(`./src/${name}.ts`, result);
+  fs.writeFileSync(`./src/${contractName}.ts`, result);
 }
 
-buildFile("Augur", augur);
+buildFile("Augur");
+buildFile("AugurTrading");
+buildFile("ShareToken");
 
-buildFile("AugurTrading", augurTrading);
-
-buildFile("ShareToken", shareToken);
+buildFile("ParaAugur", "templates\/");
+buildFile("ParaAugurTrading", "templates\/");
+buildFile("ParaShareToken", "templates\/");
