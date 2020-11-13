@@ -28,13 +28,13 @@ export default function DistributionPanel({
   updateDistribution,
   disableInputs = false,
   distroPercentage = [50, 50],
-  id
 }: DistributionPanelProps) {
   const YES = 'YES'
   const NO = 'NO'
 
-  const [yesInput, setYesInput] = useState(distroPercentage[DISTRO_YES_ID])
-  const [noInput, setNoInput] = useState(distroPercentage[DISTRO_NO_ID])
+  // switch to convert already existing pool percentage to odds
+  const [yesInput, setYesInput] = useState(distroPercentage[DISTRO_NO_ID])
+  const [noInput, setNoInput] = useState(distroPercentage[DISTRO_YES_ID])
 
   const setDistributionInput = (value: number, type) => {
     let yes, no = 0
