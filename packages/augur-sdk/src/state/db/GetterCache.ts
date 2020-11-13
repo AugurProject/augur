@@ -83,6 +83,7 @@ export class GetterCache extends AbstractTable {
             "getMarketOutcomeBestOffer"
         ],
         [SubscriptionEventName.ProfitLossChanged]: [
+            "getRawUserTradingPositions",
             "getUserTradingPositions",
             "getProfitLoss",
             "getProfitLossSummary",

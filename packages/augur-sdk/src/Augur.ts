@@ -482,6 +482,12 @@ export class Augur<TProvider extends Provider = Provider> {
     return this.bindTo(Users.getUserTradingPositions)(params);
   };
 
+  getRawUserTradingPositions = (
+    params: Parameters<typeof Users.getRawUserTradingPositions>[2]
+  ): ReturnType<typeof Users.getRawUserTradingPositions> => {
+    return this.bindTo(Users.getRawUserTradingPositions)(params);
+  };
+
   getUserOpenOrders = (
     params: Parameters<typeof Users.getUserOpenOrders>[2]
   ): ReturnType<typeof Users.getUserOpenOrders> => {

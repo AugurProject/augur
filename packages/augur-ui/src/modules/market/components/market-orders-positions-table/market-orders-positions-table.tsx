@@ -69,6 +69,16 @@ const MarketOrdersPositionsTable: React.FC<MarketOrdersPositionsTableProps> = ({
           extendedView
           updateSelectedOrderProperties={updateSelectedOrderProperties}
           positions={positions}
+          showRawPositions={false}
+        />
+      </ModulePane>
+      <ModulePane label="Raw Positions">
+        <PositionsTable
+          marketId={marketId}
+          extendedView
+          updateSelectedOrderProperties={updateSelectedOrderProperties}
+          positions={positions}
+          showRawPositions={true}
         />
       </ModulePane>
     </ModuleTabs>

@@ -30,6 +30,7 @@ import orderBooks from 'modules/orders/reducers/order-books';
 import pendingOrders from 'modules/orders/reducers/pending-orders';
 import pendingQueue from 'modules/pending-queue/reducers/pending-queue';
 import accountPositions from 'modules/positions/reducers/account-positions';
+import accountRawPositions from 'modules/positions/reducers/account-raw-positions';
 import reportingListState
   from 'modules/reporting/reducers/reporting-list-state';
 import {
@@ -57,6 +58,7 @@ import {
   PendingQueue,
   ReportingListState,
   Universe,
+  accountRawPositions,
 } from 'modules/types';
 import universe from 'modules/universe/reducers/universe';
 
@@ -90,7 +92,8 @@ export function createReducer() {
     marketsList,
     reportingListState,
     analytics,
-    orderBooks
+    orderBooks,
+    accountRawPositions
   };
 }
 
@@ -126,4 +129,5 @@ export interface AppStateInterface {
   reportingListState: ReportingListState;
   analytics: Analytics;
   orderBooks: OrderBooks;
+  accountRawPositions: AccountPosition;
 }
