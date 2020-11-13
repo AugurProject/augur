@@ -18,14 +18,6 @@ export const retiredTemplates: RetiredTemplate[] = [
     autoFail: false,
   },
   {
-    hash: '0xb5736277a4da5c89d067e6492bf15bda4ddf58a597521efe0170fb658608a4e5',
-    autoFail: false
-  },
-  {
-    hash: '0x0b503a6e1133857d9203fbee57bd156f134efa90efb9bda722cb22f7f397126e',
-    autoFail: false
-  },
-  {
     hash: '0x15c80278a399d602a5575dff5c570fb6ca25829c902513c82ab14023974d488d',
     autoFail: false,
   },
@@ -35,6 +27,14 @@ export const retiredTemplates: RetiredTemplate[] = [
   },
   {
     hash: '0xfa9e34f291a4519cf0433c76e93561da1f2854d71a2550aebe9851055616f241',
+    autoFail: false,
+  }, 
+  {
+    hash: '0x876d4312d94ecffe58990877a673d2aa4055e13050c9a3bb4d2bfce8f6e05f28',
+    autoFail: false
+  },
+  {
+    hash: '0x0ab3d232c6f59838b07064d00574cb57a1c47d1b8cf3d4e4a0657d57b0b0aced',
     autoFail: false,
   }
 ]

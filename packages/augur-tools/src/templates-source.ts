@@ -7181,7 +7181,7 @@ export const TEMPLATES = {
               {
                 marketType: CATEGORICAL,
                 question: `Which NFL team will win the [0] [1]?`,
-                example: `Which NFL team will win the 2020 AFC Championship game?`,
+                example: `Which NFL team will win the 2020 AFC Championship?`,
                 header: `[0] [1] winner`,
                 groupName: groupTypes.FUTURES,
                 inputs: [
