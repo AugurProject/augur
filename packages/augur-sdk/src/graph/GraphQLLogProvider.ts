@@ -1,6 +1,10 @@
 import axios from 'axios';
 import { Filter, Log } from '@augurproject/types';
+import { retry } from 'async';
 import * as _ from 'lodash';
+
+const RETRY_TIMES = 3;
+const INTERVAL = 1000;
 
 const eventFields = {
   "marketCreated": ["universe", "endTime", "extraInfo", "market", "marketCreator", "designatedReporter", "feePerCashInAttoCash", "prices", "marketType", "numTicks", "outcomes", "noShowBond", "timestamp"],
@@ -54,21 +58,45 @@ export class GraphQLLogProvider {
   }
 
   async getLogs(filter: Filter): Promise<Log[]> {
-    const query = this.buildQuery(filter.fromBlock, filter.toBlock);
-    const result = await axios.post(this.subgraphUrl, { query });
-    return _.flatten(_.values(result.data.data));
-  }
 
-  buildQuery(fromBlock: string | number, toBlock: string | number): string {
+    return new Promise((resolve, reject) => {
+      retry({
+          times: RETRY_TIMES,
+          interval (retryCount) {
+            return INTERVAL * Math.pow(2, retryCount);
+          },
+          errorFilter (err) { return true; }
+        },
+        async () => {
+          const query = buildQuery(filter.fromBlock, filter.toBlock);
+          const result = await axios.post(this.subgraphUrl, { query });
+          if (result.data.errors !== undefined) {
+            const message = `GraphQL Log Request Got ${result.data.errors.length} Errors: ${JSON.stringify(result.data.errors)}`;
+            console.warn(message);
+            throw new Error(message);
+          }
+          return _.flatten(_.values(result.data.data));
+        },
+        (err, results) => {
+          if (err) {
+            reject(err);
+          }
+          resolve(results);
+        }
+      )
+    });
+  }
+}
+
+function buildQuery(fromBlock: string | number, toBlock: string | number): string {
     let eventQueries = "";
     for (const eventName in eventFields) {
-      const fields = GENERIC_LOG_FIELDS.concat(eventFields[eventName]);
-      eventQueries += `${eventName}s(where: { blockNumber_gte: ${fromBlock}, blockNumber_lte: ${toBlock} }) {${fields.join(",")}}`;
+        const fields = GENERIC_LOG_FIELDS.concat(eventFields[eventName]);
+        eventQueries += `${eventName}s(where: { blockNumber_gte: ${fromBlock}, blockNumber_lte: ${toBlock} }) {${fields.join(",")}}`;
     }
     return `
     {
       ${eventQueries}
     }
     `;
-  }
 }
