@@ -1,6 +1,6 @@
 {
   "name": "@augurproject/tools",
-  "version": "2.1.10",
+  "version": "2.1.9",
   "description": "Tools and dev dependencies",
   "author": "Augur Team <team@augur.net>",
   "license": "MIT",
@@ -27,6 +27,7 @@
     "deploy": "ts-node ./src/flash/cli deploy",
     "deploy:merge": "scripts/deploy-merge-addresses.py",
     "flash": "ts-node ./src/flash/cli",
+    "flash-built": "node ./build/flash/cli.js",
     "blockstream-console": "ts-node ./src/blockstream-console.ts",
     "run:gsn": "oz-gsn run-relayer",
     "prepare": "tsc -b"
@@ -40,18 +41,19 @@
   },
   "homepage": "https://github.com/augurproject/augur#readme",
   "dependencies": {
-    "@augurproject/artifacts": "^2.1.10",
-    "@augurproject/core": "^2.1.10",
-    "@augurproject/sdk": "^2.1.10",
-    "@augurproject/sdk-lite": "^2.1.10",
-    "@augurproject/utils": "^2.1.10",
+    "@augurproject/artifacts": "^2.1.9",
+    "@augurproject/core": "^2.1.9",
+    "@augurproject/sdk": "^2.1.9",
+    "@augurproject/sdk-lite": "^2.1.9",
+    "@augurproject/utils": "^2.1.9",
     "@openzeppelin/gsn-helpers": "0.2.3",
     "cid-tool": "0.4.0",
     "commander": "4.1.0",
+    "cross-fetch": "3.0.4",
     "deepmerge": "4.2.2",
     "ethereum-keyfile-recognizer": "1.0.2",
     "ethereumjs-blockstream": "7.0.0",
-    "ethers": "4.0.47",
+    "ethers": "5.0.17",
     "ethjs-abi": "0.2.1",
     "ethjs-account": "0.1.4",
     "ethjs-provider-http": "0.1.6",
@@ -59,7 +61,9 @@
     "ethjs-signer": "0.1.1",
     "ganache-core": "2.9.1",
     "ipfs": "0.40.0",
+    "lz-string": "1.4.4",
     "lodash": "4.17.19",
+    "moment": "2.26.0",
     "options-parser": "0.4.0",
     "readline-sync": "^1.4.10",
     "tsyringe": "3.2.0"
@@ -69,8 +73,8 @@
     "levelup": "4.2.0",
     "memdown": "4.1.0",
     "options-parser": "0.4.0",
-    "ts-node": "7.0.1",
-    "typescript": "3.8.3"
+    "ts-node": "9.0.0",
+    "typescript": "3.9.7"
   },
   "resolutions": {
     "**/memdown": "4.1.0"

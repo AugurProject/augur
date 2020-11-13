@@ -1,0 +1,1088 @@
+type CompleteSetsPurchased @entity {
+  id: ID!
+
+  blockHash: String!
+
+  blockNumber: Int!
+
+  logIndex: Int!
+
+  name: String!
+
+  transactionHash: String!
+
+  universe: String
+
+  market: String
+
+  account: String
+
+  numCompleteSets: String!
+
+  timestamp: String!
+}
+
+type CompleteSetsSold @entity {
+  id: ID!
+
+  blockHash: String!
+
+  blockNumber: Int!
+
+  logIndex: Int!
+
+  name: String!
+
+  transactionHash: String!
+
+  universe: String
+
+  market: String
+
+  account: String
+
+  numCompleteSets: String!
+
+  fees: String!
+
+  timestamp: String!
+}
+
+type DesignatedReportStakeChanged @entity {
+  id: ID!
+
+  blockHash: String!
+
+  blockNumber: Int!
+
+  logIndex: Int!
+
+  name: String!
+
+  transactionHash: String!
+
+  universe: String
+
+  designatedReportStake: String!
+}
+
+type DisputeCrowdsourcerCompleted @entity {
+  id: ID!
+
+  blockHash: String!
+
+  blockNumber: Int!
+
+  logIndex: Int!
+
+  name: String!
+
+  transactionHash: String!
+
+  universe: String
+
+  market: String
+
+  disputeCrowdsourcer: String
+
+  payoutNumerators: [String!]!
+
+  nextWindowStartTime: String!
+
+  nextWindowEndTime: String!
+
+  pacingOn: Boolean!
+
+  totalRepStakedInPayout: String!
+
+  totalRepStakedInMarket: String!
+
+  disputeRound: String!
+
+  timestamp: String!
+}
+
+type DisputeCrowdsourcerContribution @entity {
+  id: ID!
+
+  blockHash: String!
+
+  blockNumber: Int!
+
+  logIndex: Int!
+
+  name: String!
+
+  transactionHash: String!
+
+  universe: String
+
+  reporter: String
+
+  market: String
+
+  disputeCrowdsourcer: String
+
+  amountStaked: String!
+
+  description: String!
+
+  payoutNumerators: [String!]!
+
+  currentStake: String!
+
+  stakeRemaining: String!
+
+  disputeRound: String!
+
+  timestamp: String!
+}
+
+type DisputeCrowdsourcerCreated @entity {
+  id: ID!
+
+  blockHash: String!
+
+  blockNumber: Int!
+
+  logIndex: Int!
+
+  name: String!
+
+  transactionHash: String!
+
+  universe: String
+
+  market: String
+
+  disputeCrowdsourcer: String
+
+  payoutNumerators: [String!]!
+
+  size: String!
+
+  disputeRound: String!
+}
+
+type DisputeCrowdsourcerRedeemed @entity {
+  id: ID!
+
+  blockHash: String!
+
+  blockNumber: Int!
+
+  logIndex: Int!
+
+  name: String!
+
+  transactionHash: String!
+
+  universe: String
+
+  reporter: String
+
+  market: String
+
+  disputeCrowdsourcer: String
+
+  amountRedeemed: String!
+
+  repReceived: String!
+
+  payoutNumerators: [String!]!
+
+  timestamp: String!
+}
+
+type DisputeWindowCreated @entity {
+  id: ID!
+
+  blockHash: String!
+
+  blockNumber: Int!
+
+  logIndex: Int!
+
+  name: String!
+
+  transactionHash: String!
+
+  universe: String
+
+  disputeWindow: String
+
+  startTime: String!
+
+  endTime: String!
+
+  initial: Boolean!
+}
+
+type FinishDeployment @entity {
+  id: ID!
+
+  blockHash: String!
+
+  blockNumber: Int!
+
+  logIndex: Int!
+
+  name: String!
+
+  transactionHash: String!
+}
+
+type InitialReportSubmitted @entity {
+  id: ID!
+
+  blockHash: String!
+
+  blockNumber: Int!
+
+  logIndex: Int!
+
+  name: String!
+
+  transactionHash: String!
+
+  universe: String
+
+  reporter: String
+
+  market: String
+
+  initialReporter: String
+
+  amountStaked: String!
+
+  isDesignatedReporter: Boolean!
+
+  payoutNumerators: [String!]!
+
+  description: String!
+
+  nextWindowStartTime: String!
+
+  nextWindowEndTime: String!
+
+  timestamp: String!
+}
+
+type InitialReporterRedeemed @entity {
+  id: ID!
+
+  blockHash: String!
+
+  blockNumber: Int!
+
+  logIndex: Int!
+
+  name: String!
+
+  transactionHash: String!
+
+  universe: String
+
+  reporter: String
+
+  market: String
+
+  initialReporter: String
+
+  amountRedeemed: String!
+
+  repReceived: String!
+
+  payoutNumerators: [String!]!
+
+  timestamp: String!
+}
+
+type InitialReporterTransferred @entity {
+  id: ID!
+
+  blockHash: String!
+
+  blockNumber: Int!
+
+  logIndex: Int!
+
+  name: String!
+
+  transactionHash: String!
+
+  universe: String
+
+  market: String
+
+  from: String
+
+  to: String
+}
+
+type MarketCreated @entity {
+  id: ID!
+
+  blockHash: String!
+
+  blockNumber: Int!
+
+  logIndex: Int!
+
+  name: String!
+
+  transactionHash: String!
+
+  universe: String
+
+  endTime: String!
+
+  extraInfo: String!
+
+  market: String
+
+  marketCreator: String
+
+  designatedReporter: String
+
+  feePerCashInAttoCash: String!
+
+  prices: [String!]!
+
+  marketType: Int!
+
+  numTicks: String!
+
+  outcomes: [Bytes!]!
+
+  noShowBond: String!
+
+  timestamp: String!
+}
+
+type MarketFinalized @entity {
+  id: ID!
+
+  blockHash: String!
+
+  blockNumber: Int!
+
+  logIndex: Int!
+
+  name: String!
+
+  transactionHash: String!
+
+  universe: String
+
+  market: String
+
+  timestamp: String!
+
+  winningPayoutNumerators: [String!]!
+}
+
+type MarketMigrated @entity {
+  id: ID!
+
+  blockHash: String!
+
+  blockNumber: Int!
+
+  logIndex: Int!
+
+  name: String!
+
+  transactionHash: String!
+
+  market: String
+
+  originalUniverse: String
+
+  newUniverse: String
+}
+
+type MarketOIChanged @entity {
+  id: ID!
+
+  blockHash: String!
+
+  blockNumber: Int!
+
+  logIndex: Int!
+
+  name: String!
+
+  transactionHash: String!
+
+  universe: String
+
+  market: String
+
+  marketOI: String!
+}
+
+type MarketParticipantsDisavowed @entity {
+  id: ID!
+
+  blockHash: String!
+
+  blockNumber: Int!
+
+  logIndex: Int!
+
+  name: String!
+
+  transactionHash: String!
+
+  universe: String
+
+  market: String
+}
+
+type MarketRepBondTransferred @entity {
+  id: ID!
+
+  blockHash: String!
+
+  blockNumber: Int!
+
+  logIndex: Int!
+
+  name: String!
+
+  transactionHash: String!
+
+  universe: String
+
+  market: String
+
+  from: String
+
+  to: String
+}
+
+type MarketTransferred @entity {
+  id: ID!
+
+  blockHash: String!
+
+  blockNumber: Int!
+
+  logIndex: Int!
+
+  name: String!
+
+  transactionHash: String!
+
+  universe: String
+
+  market: String
+
+  from: String
+
+  to: String
+}
+
+type NoShowBondChanged @entity {
+  id: ID!
+
+  blockHash: String!
+
+  blockNumber: Int!
+
+  logIndex: Int!
+
+  name: String!
+
+  transactionHash: String!
+
+  universe: String
+
+  noShowBond: String!
+}
+
+type ParticipationTokensRedeemed @entity {
+  id: ID!
+
+  blockHash: String!
+
+  blockNumber: Int!
+
+  logIndex: Int!
+
+  name: String!
+
+  transactionHash: String!
+
+  universe: String
+
+  disputeWindow: String
+
+  account: String
+
+  attoParticipationTokens: String!
+
+  feePayoutShare: String!
+
+  timestamp: String!
+}
+
+type RegisterContract @entity {
+  id: ID!
+
+  blockHash: String!
+
+  blockNumber: Int!
+
+  logIndex: Int!
+
+  name: String!
+
+  transactionHash: String!
+
+  contractAddress: String
+
+  key: Bytes
+}
+
+type ReportingFeeChanged @entity {
+  id: ID!
+
+  blockHash: String!
+
+  blockNumber: Int!
+
+  logIndex: Int!
+
+  name: String!
+
+  transactionHash: String!
+
+  universe: String
+
+  reportingFee: String!
+}
+
+type ReportingParticipantDisavowed @entity {
+  id: ID!
+
+  blockHash: String!
+
+  blockNumber: Int!
+
+  logIndex: Int!
+
+  name: String!
+
+  transactionHash: String!
+
+  universe: String
+
+  market: String
+
+  reportingParticipant: String
+}
+
+type ShareTokenBalanceChanged @entity {
+  id: ID!
+
+  blockHash: String!
+
+  blockNumber: Int!
+
+  logIndex: Int!
+
+  name: String!
+
+  transactionHash: String!
+
+  universe: String
+
+  account: String
+
+  market: String
+
+  outcome: String!
+
+  balance: String!
+}
+
+type TimestampSet @entity {
+  id: ID!
+
+  blockHash: String!
+
+  blockNumber: Int!
+
+  logIndex: Int!
+
+  name: String!
+
+  transactionHash: String!
+
+  newTimestamp: String!
+}
+
+type TokenBalanceChanged @entity {
+  id: ID!
+
+  blockHash: String!
+
+  blockNumber: Int!
+
+  logIndex: Int!
+
+  name: String!
+
+  transactionHash: String!
+
+  universe: String
+
+  owner: String
+
+  token: String
+
+  tokenType: Int!
+
+  market: String
+
+  balance: String!
+
+  outcome: String!
+}
+
+type TokensBurned @entity {
+  id: ID!
+
+  blockHash: String!
+
+  blockNumber: Int!
+
+  logIndex: Int!
+
+  name: String!
+
+  transactionHash: String!
+
+  universe: String
+
+  token: String
+
+  target: String
+
+  amount: String!
+
+  tokenType: Int!
+
+  market: String
+
+  totalSupply: String!
+}
+
+type TokensMinted @entity {
+  id: ID!
+
+  blockHash: String!
+
+  blockNumber: Int!
+
+  logIndex: Int!
+
+  name: String!
+
+  transactionHash: String!
+
+  universe: String
+
+  token: String
+
+  target: String
+
+  amount: String!
+
+  tokenType: Int!
+
+  market: String
+
+  totalSupply: String!
+}
+
+type TokensTransferred @entity {
+  id: ID!
+
+  blockHash: String!
+
+  blockNumber: Int!
+
+  logIndex: Int!
+
+  name: String!
+
+  transactionHash: String!
+
+  universe: String
+
+  token: String
+
+  from: String
+
+  to: String
+
+  value: String!
+
+  tokenType: Int!
+
+  market: String
+}
+
+type TradingProceedsClaimed @entity {
+  id: ID!
+
+  blockHash: String!
+
+  blockNumber: Int!
+
+  logIndex: Int!
+
+  name: String!
+
+  transactionHash: String!
+
+  universe: String
+
+  sender: String
+
+  market: String
+
+  outcome: String!
+
+  numShares: String!
+
+  numPayoutTokens: String!
+
+  fees: String!
+
+  timestamp: String!
+}
+
+type UniverseCreated @entity {
+  id: ID!
+
+  blockHash: String!
+
+  blockNumber: Int!
+
+  logIndex: Int!
+
+  name: String!
+
+  transactionHash: String!
+
+  parentUniverse: String
+
+  childUniverse: String
+
+  payoutNumerators: [String!]!
+
+  creationTimestamp: String!
+}
+
+type UniverseForked @entity {
+  id: ID!
+
+  blockHash: String!
+
+  blockNumber: Int!
+
+  logIndex: Int!
+
+  name: String!
+
+  transactionHash: String!
+
+  universe: String
+
+  forkingMarket: String
+}
+
+type ValidityBondChanged @entity {
+  id: ID!
+
+  blockHash: String!
+
+  blockNumber: Int!
+
+  logIndex: Int!
+
+  name: String!
+
+  transactionHash: String!
+
+  universe: String
+
+  validityBond: String!
+}
+
+type WarpSyncDataUpdated @entity {
+  id: ID!
+
+  blockHash: String!
+
+  blockNumber: Int!
+
+  logIndex: Int!
+
+  name: String!
+
+  transactionHash: String!
+
+  universe: String
+
+  warpSyncHash: String!
+
+  marketEndTime: String!
+}
+
+type CancelZeroXOrder @entity {
+  id: ID!
+
+  blockHash: String!
+
+  blockNumber: Int!
+
+  logIndex: Int!
+
+  name: String!
+
+  transactionHash: String!
+
+  universe: String
+
+  market: String
+
+  account: String
+
+  outcome: String!
+
+  price: String!
+
+  amount: String!
+
+  orderType: Int!
+
+  orderHash: Bytes
+}
+
+type MarketVolumeChanged @entity {
+  id: ID!
+
+  blockHash: String!
+
+  blockNumber: Int!
+
+  logIndex: Int!
+
+  name: String!
+
+  transactionHash: String!
+
+  universe: String
+
+  market: String
+
+  volume: String!
+
+  outcomeVolumes: [String!]!
+
+  totalTrades: String!
+
+  timestamp: String!
+}
+
+type OrderEvent @entity {
+  id: ID!
+
+  blockHash: String!
+
+  blockNumber: Int!
+
+  logIndex: Int!
+
+  name: String!
+
+  transactionHash: String!
+
+  universe: String
+
+  market: String
+
+  eventType: Int!
+
+  orderType: Int!
+
+  orderId: Bytes
+
+  tradeGroupId: Bytes
+
+  addressData: [String!]!
+
+  uint256Data: [String!]!
+}
+
+type ProfitLossChanged @entity {
+  id: ID!
+
+  blockHash: String!
+
+  blockNumber: Int!
+
+  logIndex: Int!
+
+  name: String!
+
+  transactionHash: String!
+
+  universe: String
+
+  market: String
+
+  account: String
+
+  outcome: String!
+
+  netPosition: String!
+
+  avgPrice: String!
+
+  realizedProfit: String!
+
+  frozenFunds: String!
+
+  realizedCost: String!
+
+  timestamp: String!
+}
+
+type ParaAugurDeployFinished @entity {
+  id: ID!
+
+  blockHash: String!
+
+  blockNumber: Int!
+
+  logIndex: Int!
+
+  name: String!
+
+  transactionHash: String!
+
+  paraAugur: String
+
+  shareToken: String
+
+  cash: String
+
+  OINexus: String
+}
+
+type ParaAugurTradingDeployed @entity {
+  id: ID!
+
+  blockHash: String!
+
+  blockNumber: Int!
+
+  logIndex: Int!
+
+  name: String!
+
+  transactionHash: String!
+
+  paraAugur: String
+
+  cash: String
+}
+
+type ApprovalForAll @entity {
+  id: ID!
+
+  blockHash: String!
+
+  blockNumber: Int!
+
+  logIndex: Int!
+
+  name: String!
+
+  transactionHash: String!
+
+  owner: String
+
+  operator: String
+
+  approved: Boolean!
+}
+
+type TransferBatch @entity {
+  id: ID!
+
+  blockHash: String!
+
+  blockNumber: Int!
+
+  logIndex: Int!
+
+  name: String!
+
+  transactionHash: String!
+
+  operator: String
+
+  from: String
+
+  to: String
+
+  ids: [String!]!
+
+  values: [String!]!
+}
+
+type TransferSingle @entity {
+  id: ID!
+
+  blockHash: String!
+
+  blockNumber: Int!
+
+  logIndex: Int!
+
+  name: String!
+
+  transactionHash: String!
+
+  operator: String
+
+  from: String
+
+  to: String
+
+  value: String!
+}
+
+type URI @entity {
+  id: ID!
+
+  blockHash: String!
+
+  blockNumber: Int!
+
+  logIndex: Int!
+
+  name: String!
+
+  transactionHash: String!
+
+  value: String!
+}
+

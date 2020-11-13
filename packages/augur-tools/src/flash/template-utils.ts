@@ -1,6 +1,5 @@
 import { TEMPLATES, CategoryTemplate, isTemplateMarket, ExtraInfoTemplate, Template } from '@augurproject/templates';
-import { stringTo32ByteHex } from '@augurproject/sdk';
-import { BigNumber } from 'ethers/utils';
+import { ethers } from 'ethers';
 
 export const showTemplateByHash = (hash: string): Template => {
   console.log('show template by hash');
@@ -46,8 +45,8 @@ export const validateMarketTemplate = (
       details = splits.join('\n');
     }
 
-    const endTimeHex = new BigNumber(endTime).toHexString();
-    const creationTimeHex = new BigNumber(creationTime).toHexString();
+    const endTimeHex = ethers.BigNumber.from((endTime)).toHexString();
+    const creationTimeHex = ethers.BigNumber.from((creationTime)).toHexString();
     const errors = [];
     const result = isTemplateMarket(
       title,

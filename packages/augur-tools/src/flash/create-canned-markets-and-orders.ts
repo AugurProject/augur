@@ -1,5 +1,4 @@
 import { BigNumber } from 'bignumber.js';
-import { formatBytes32String } from 'ethers/utils';
 
 import { GenericAugurInterfaces } from '@augurproject/core';
 import { numTicksToTickSize, convertDisplayAmountToOnChainAmount, convertDisplayPriceToOnChainPrice, QUINTILLION } from '@augurproject/sdk';
@@ -7,6 +6,7 @@ import { numTicksToTickSize, convertDisplayAmountToOnChainAmount, convertDisplay
 import { ContractAPI } from '../libs/contract-api';
 import { cannedMarkets, CannedMarket, templatedCannedMarkets, templatedCannedBettingMarkets, testBadTemplateMarkets } from './data/canned-markets';
 import { _1_ETH } from '../constants';
+import {ethers} from 'ethers';
 
 export type Market = GenericAugurInterfaces.Market<BigNumber>;
 export interface CreatedCannedMarket {
@@ -77,7 +77,7 @@ async function createCannedMarket(person: ContractAPI, can: CannedMarket, faucet
 }
 
 function generateRandom32ByteHex() {
-  return formatBytes32String(String(Date.now()));
+  return ethers.utils.formatBytes32String(String(Date.now()));
 }
 
 async function placeOrder(person: ContractAPI,
@@ -93,10 +93,11 @@ async function placeOrder(person: ContractAPI,
     : numTicksToTickSize(new BigNumber('100'), new BigNumber('0'), new BigNumber('0x0de0b6b3a7640000'));
 
   const minDisplayPrice = new BigNumber(can.minPrice || '0');
-  const attoShares = convertDisplayAmountToOnChainAmount(shares, tickSize);
+  const precison = new BigNumber(10**18);
+  const attoShares = convertDisplayAmountToOnChainAmount(shares, tickSize, precison);
   const attoPrice = convertDisplayPriceToOnChainPrice(price, minDisplayPrice, tickSize);
-  const betterOrderId = formatBytes32String('');
-  const worseOrderId = formatBytes32String('');
+  const betterOrderId = ethers.utils.formatBytes32String('');
+  const worseOrderId = ethers.utils.formatBytes32String('');
 
   console.log('Shares:', attoShares.toString());
   console.log('Price:', attoPrice.toString());

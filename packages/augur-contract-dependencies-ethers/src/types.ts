@@ -1,3 +1,5 @@
+// These types mirror those in GenericContractInterfaces.ts without adding that file as a dependency.
+
 export type Primitive =
   | 'uint8'
   | 'uint64'
@@ -21,7 +23,7 @@ export interface AbiParameter {
   name: string;
   type: Primitive;
   internalType: any;
-  components?: Array<AbiParameter>;
+  components?: AbiParameter[];
 }
 
 export interface AbiEventParameter extends AbiParameter {
@@ -34,8 +36,8 @@ export interface AbiFunction {
   stateMutability: 'pure' | 'view' | 'payable' | 'nonpayable';
   constant: boolean;
   payable: boolean;
-  inputs: Array<AbiParameter>;
-  outputs: Array<AbiParameter>;
+  inputs: AbiParameter[];
+  outputs: AbiParameter[];
 }
 
 export interface Transaction<TBigNumber> {
@@ -49,18 +51,18 @@ export interface Transaction<TBigNumber> {
 
 export interface RawEvent {
   data: string;
-  topics: Array<string>;
+  topics: string[];
 }
 
 export interface TransactionReceipt {
   status: number;
-  logs: Array<RawEvent>;
+  logs: RawEvent[];
 }
 
 export interface Dependencies<TBigNumber> {
   keccak256(utf8String: string): string;
-  encodeParams(abi: AbiFunction, parameters: Array<any>): string;
-  decodeParams(abi: Array<AbiParameter>, encoded: string): Array<any>;
+  encodeParams(abi: AbiFunction, parameters: any[]): string;
+  decodeParams(abi: AbiParameter[], encoded: string): any[];
   getDefaultAddress(): Promise<string | undefined>;
   call(transaction: Transaction<TBigNumber>): Promise<string>;
   submitTransaction(

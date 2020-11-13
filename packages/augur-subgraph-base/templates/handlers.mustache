@@ -1,0 +1,32 @@
+import { Address, BigDecimal, BigInt, Bytes, crypto, log } from '@graphprotocol/graph-ts';
+import { toChecksumAddress, mapAddressArray, mapByteArray, mapArray, bigIntToHexString } from './utils';
+import {
+{{#Entities}}
+  {{name}} as {{name}}Event,
+{{/Entities}}
+} from '../generated/{{Name}}/{{Name}}';
+
+import {
+{{#Entities}}
+  {{name}} as {{name}}Entity,
+{{/Entities}}
+} from '../generated/schema';
+{{#Entities}}
+
+export function handle{{name}}(event: {{name}}Event): void {
+  let id = event.transaction.hash.toHexString() + "-" + event.logIndex.toString();
+  let entity = new {{name}}Entity(id);
+
+  entity.blockHash = event.block.hash.toHexString();
+  entity.blockNumber = event.block.number.toI32();
+  entity.logIndex = event.logIndex.toI32();
+  entity.name = "{{name}}";
+  entity.transactionHash = event.transaction.hash.toHexString();
+
+  {{#inputs}}
+  entity.{{name}} = {{#GetTemplateForType}}{{name}}{{/GetTemplateForType}};
+  {{/inputs}}
+
+  entity.save();
+}
+{{/Entities}}

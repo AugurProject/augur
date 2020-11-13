@@ -30,16 +30,18 @@ export function tickSizeToNumTickWithDisplayPrices(
 
 export function convertOnChainAmountToDisplayAmount(
   onChainAmount: BigNumber,
-  tickSize: BigNumber
+  tickSize: BigNumber,
+  precision: BigNumber,
 ) {
-  return onChainAmount.dividedBy(tickSize).dividedBy(QUINTILLION);
+  return onChainAmount.dividedBy(tickSize).dividedBy(precision);
 }
 
 export function convertDisplayAmountToOnChainAmount(
   displayAmount: BigNumber,
-  tickSize: BigNumber
+  tickSize: BigNumber,
+  precision: BigNumber,
 ) {
-  return displayAmount.multipliedBy(tickSize).multipliedBy(QUINTILLION);
+  return displayAmount.multipliedBy(tickSize).multipliedBy(precision);
 }
 
 export function convertOnChainPriceToDisplayPrice(

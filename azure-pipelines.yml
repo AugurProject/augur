@@ -1,14 +1,25 @@
 variables:
-  DOCKER_CI_BUILD_TAG: monorepo.$(Build.BuildID)
-  CORE_IMAGE_BUILD: augurproject/augur-core:$(DOCKER_CI_BUILD_TAG)
-  CORE_IMAGE_LATEST: augurproject/augur-core:monorepo
-  PRIMARY_NODE_VERSION: 10.16.x
-  GETH_VERSION: v1.9.9
-  SOLC_VERSION: v0.5.15
-  SOLC_MD5: 884dbc8c8ed01cc34799a6ffab11bc3a
-  VM_IMAGE: 'ubuntu-18.04'
-  YARN_REGISTRY: https://pkgs.dev.azure.com/augurproject/_packaging/npmPackages/npm/registry/
-  System.debug: true
+  - group: thegraph-credentials
+  - name: DOCKER_CI_BUILD_TAG
+    value: monorepo.$(Build.BuildID)
+  - name: CORE_IMAGE_BUILD
+    value: augurproject/augur-core:$(DOCKER_CI_BUILD_TAG)
+  - name: CORE_IMAGE_LATEST
+    value: augurproject/augur-core:monorepo
+  - name: PRIMARY_NODE_VERSION
+    value: 12.18.x
+  - name: GETH_VERSION
+    value: v1.9.19
+  - name: SOLC_VERSION
+    value: v0.5.15
+  - name: SOLC_MD5
+    value: 884dbc8c8ed01cc34799a6ffab11bc3a
+  - name: VM_IMAGE
+    value: 'ubuntu-18.04'
+  - name: YARN_REGISTRY
+    value: https://pkgs.dev.azure.com/augurproject/_packaging/npmPackages/npm/registry/
+  - name: System.debug
+    value: true
 
 trigger:
   batch: false
@@ -16,6 +27,7 @@ trigger:
     include:
       - dev
       - v2
+      - para_deploys
       - release/*
       - azure/*
       - refs/tags/*
@@ -34,7 +46,7 @@ jobs:
           if [[ "$(Build.SourceBranchName)" == "dev" || "$(Build.SourceBranchName)" == "v2" ]]; then
             GIT_COMMAND='git log -m -1 --name-only --pretty="format:" $(Build.SourceVersion)'
           else
-            GIT_COMMAND='git diff --name-only origin/dev..HEAD'
+            GIT_COMMAND='git diff --name-only origin/$(System.PullRequest.TargetBranch)..$(System.SourceVersion)'
           fi
           echo "running git command: $GIT_COMMAND"
           for f in $(eval "$GIT_COMMAND");
@@ -49,6 +61,11 @@ jobs:
               then
                 echo "found a core change: $f"
                 echo "##vso[task.setvariable variable=JOB_TRIGGER_CORE;isOutput=true]true"
+              fi
+              if [[ $f =~ .*augur-subgraph/.* ]] || [[ $f =~ .*packages/augur-artifacts/src/environments/* ]]
+              then
+                echo "found a subgraph-related change: $f"
+                echo "##vso[task.setvariable variable=JOB_TRIGGER_SUBGRAPH;isOutput=true]true"
               fi
               if [[ $f =~ .*augur-artifacts/src/contracts.json ]]
               then
@@ -240,7 +257,7 @@ jobs:
           cd packages/augur-tools/ethereum-nodes/geth-poa && docker image build --tag augurproject/dev-node-geth:$(GETH_VERSION) .
           docker tag augurproject/dev-node-geth:$(GETH_VERSION) augurproject/dev-node-geth:latest
           docker push augurproject/dev-node-geth:$(GETH_VERSION)
-          docker push augurproject/dev-node-geth:latest
+          #docker push augurproject/dev-node-geth:latest
         displayName: 'build and push dev-node-geth image'
       - task: Docker@1
         displayName: docker logout
@@ -302,7 +319,7 @@ jobs:
           export ETHEREUM_GAS_PRICE_IN_NANOETH=1
           export ETHEREUM_PRIVATE_KEY=0xfae42052f82bed612a724fec3632f325f377120592c75bb78adfcceae6470c5a
           if [[ "$(TESTS)" == "integration:geth" ]]; then
-            docker run -p 8545:8545 -p 47625:8546 --name geth --detach augurproject/dev-node-geth:v1.9.19
+            docker run -p 8545:8545 -p 47625:8546 --name geth --detach augurproject/dev-node-geth:v1.9.9
             yarn workspace @augurproject/core test:integration
             docker stop geth
           elif [[ "$(TESTS)" == "integration:parity" ]]; then
@@ -439,7 +456,8 @@ jobs:
   - template: .azure-templates/ui-build-to-s3.yml
     parameters:
       name: deploy_v2_to_reporting
-      environment: reporting
+      environment: v2
+      reportingOnly: true
       deployBucketName: v2-reporting.augur.net
       triggerBranch: refs/heads/v2
       cloudfrontDistributionId: E34VY4MHHEDAH9
@@ -452,6 +470,45 @@ jobs:
       triggerBranch: refs/heads/dev
       cloudfrontDistributionId: E2K6239JF3WYG6
 
+  - template: .azure-templates/ui-build-to-s3.yml
+    parameters:
+      name: deploy_para_deploys_to_para
+      environment: v2
+      deployBucketName: para.augur.net
+      triggerBranch: refs/heads/para_deploys
+      paraDeployTokenName: 'WETH'
+      cloudfrontDistributionId: E2XU7PSKOBRVV4
+
+  - template: .azure-templates/amm-build-to-s3.yml
+    parameters:
+      name: deploy_amm_deploys_to_amm
+      environment: v2
+      deployBucketName: amm.augur.sh
+      cloudfrontDistributionId: E1833GTELJSE42
+      triggerBranch: refs/heads/para_deploys
+
+  - job: deploy_thegraph
+    displayName: deploy thegraph
+    condition: |
+      and
+      (
+          succeeded(),
+          eq(variables['Build.SourceBranch'], 'refs/heads/para_deploys')
+      )
+    pool:
+      vmImage: $(VM_IMAGE)
+
+    steps:
+      - template: .azure-templates/node-setup.yml
+      - bash: |
+          cd ./packages/augur-subgraph
+          yarn prepare:abi
+          yarn prepare:staging
+          yarn codegen
+          yarn build
+          yarn deploy:staging
+        env:
+          GRAPH_TOKEN: $(GRAPH_TOKEN)
   - job: github_release
     displayName: github release
     dependsOn: PreFlightCheck
@@ -473,8 +530,10 @@ jobs:
           set -euo pipefail
           export ETHEREUM_NETWORK=v2
           ( cd packages/orbit-web && ./node_modules/.bin/webpack)
+          ( cd packages/augur-ui && REPORTING_ONLY=true ./node_modules/.bin/webpack)
+          mv packages/augur-ui/build reporting-build
           ( cd packages/augur-ui && ./node_modules/.bin/webpack)
-          ( cd packages/augur-ui/build && zip -r ../../../augur.zip *)
+          mv packages/augur-ui/build trading-build
         displayName: ui build
         env:
           NODE_OPTIONS: "--max_old_space_size=6144"
@@ -488,19 +547,31 @@ jobs:
       - bash: |
           set -euo pipefail
           ipfs init > /dev/null 2>&1
-          IPFS_HASH=$(ipfs add -r -Q -n --pin=false packages/augur-ui/build)
-          echo nothing > $IPFS_HASH.ipfs
-        displayName: ipfs hash of build dir
+          IPFS_HASH_REPORTING_V0=$(ipfs add -r -Q -n --pin=false --cid-version=0 reporting-build)
+          IPFS_HASH_REPORTING_V1=$(ipfs add -r -Q -n --pin=false --cid-version=1 reporting-build)
+          IPFS_HASH_TRADING_V0=$(ipfs add -r -Q -n --pin=false --cid-version=0 trading-build)
+          IPFS_HASH_TRADING_V1=$(ipfs add -r -Q -n --pin=false --cid-version=1 trading-build)
+          (
+          cat <<-EOF
+          # Augur V2 Release
+
+          ## IPFS Hashes
+          * Reporting UI
+            * CIDv0: ${IPFS_HASH_REPORTING_V0}
+            * CIDv1: ${IPFS_HASH_REPORTING_V1}
+          * Trading UI
+            * CIDv0: ${IPFS_HASH_TRADING_V0}
+            * CIDv1: ${IPFS_HASH_TRADING_V1}
+          ---
+          EOF
+          ) > release-notes.txt
+        displayName: Generate Release Notes
       - task: CopyFiles@2
         inputs:
-          #sourceFolder: # Optional
           contents: |
-            *.ipfs
+            release-notes.txt
           targetFolder: $(Build.ArtifactStagingDirectory)
           cleanTargetFolder: true
-          #overWrite: false # Optional
-          #flattenFolders: false # Optional
-          #preserveTimestamp: false # Optional
       - task: GitHubRelease@1
         displayName: 'GitHub release (create)'
         inputs:
@@ -509,6 +580,7 @@ jobs:
           tag: '$(Build.SourceBranchName)'
           title: 'Augur $(Build.SourceBranchName)'
           assets: '$(Build.ArtifactStagingDirectory)/*'
-          releaseNotesSource: inline
+          releaseNotesSource: filePath
+          releaseNotesFile: '$(Build.ArtifactStagingDirectory)/release-notes.txt'
           isDraft: true
           isPreRelease: true

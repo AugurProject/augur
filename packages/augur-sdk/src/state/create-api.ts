@@ -4,8 +4,7 @@ import { SubscriptionEventName } from '@augurproject/sdk-lite';
 import { logger, LoggerLevels, SDKConfiguration } from '@augurproject/utils';
 import { BigNumber } from 'bignumber.js';
 import { SupportedProvider } from 'ethereum-types';
-import { JsonRpcProvider } from 'ethers/providers';
-import { ContractEvents } from '../api/ContractEvents';
+import { JsonRpcProvider } from '@ethersproject/providers';
 import { ZeroX } from '../api/ZeroX';
 import { Augur } from '../Augur';
 import { BaseConnector, EmptyConnector } from '../connector';
@@ -17,6 +16,7 @@ import { LogFilterAggregator } from './logs/LogFilterAggregator';
 import { BlockAndLogStreamerSyncStrategy } from './sync/BlockAndLogStreamerSyncStrategy';
 import { BulkSyncStrategy } from './sync/BulkSyncStrategy';
 import { WarpSyncStrategy } from './sync/WarpSyncStrategy';
+import { GraphQLLogProvider } from '../graph/GraphQLLogProvider';
 
 export async function buildSyncStrategies(client:Augur, db:Promise<DB>, provider: EthersProvider, logFilterAggregator: LogFilterAggregator, config: SDKConfiguration) {
   const warpController = new WarpController((await db), client, provider,
@@ -28,9 +28,12 @@ export async function buildSyncStrategies(client:Augur, db:Promise<DB>, provider
     const uploadBlockNumber = config.uploadBlockNumber;
     const currentBlockNumber = await provider.getBlockNumber();
 
-    const bulkSyncStrategy = new BulkSyncStrategy(provider.getLogs,
+    const logProvider = new GraphQLLogProvider("https://api.thegraph.com/subgraphs/name/augurproject/augur-v2-base-staging");
+
+    const bulkSyncStrategy = new BulkSyncStrategy(logProvider.getLogs.bind(logProvider),
       contractAddresses, logFilterAggregator.onLogsAdded,
-      client.contractEvents.parseLogs);
+      (logs: any[]) => { return logs; }
+    );
     const blockAndLogStreamerSyncStrategy = BlockAndLogStreamerSyncStrategy.create(
       provider,
       contractAddresses,
@@ -55,7 +58,7 @@ export async function buildSyncStrategies(client:Augur, db:Promise<DB>, provider
       const { warpSyncHash } = await client.warpSync.getLastWarpSyncData(
         client.contracts.universe.address);
 
-      await warpSyncStrategy.start(currentBlock, warpSyncHash);
+      // await warpSyncStrategy.start(currentBlock, warpSyncHash);
     } catch (e) {
       logger.error('Unable to load warp sync file.', e);
     }
@@ -178,17 +181,8 @@ export async function createServer(config: SDKConfiguration, client?: Augur): Pr
   }
 
   const ethersProvider: EthersProvider = client.provider as EthersProvider;
-  const contractEvents = new ContractEvents(
-    ethersProvider,
-    client.config.addresses.Augur,
-    client.config.addresses.AugurTrading,
-    client.config.addresses.ShareToken,
-  );
 
-  const logFilterAggregator = LogFilterAggregator.create(
-    contractEvents.getEventTopics,
-    contractEvents.parseLogs,
-  );
+  const logFilterAggregator = LogFilterAggregator.create();
   const db = DB.createAndInitializeDB(
     Number(config.networkId),
     config.uploadBlockNumber,

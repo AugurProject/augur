@@ -6,7 +6,7 @@
     "http": "https://kovan.augur.net/ethereum-http",
     "rpcRetryCount": 5,
     "rpcRetryInterval": 0,
-    "rpcConcurrency": 8,
+    "rpcConcurrency": 40,
     "ws": "ws://localhost:8546"
   },
   "gas": {
@@ -25,6 +25,11 @@
   },
   "uniswap": {
     "exchangeRateBufferMultiplier": 1.075
+  },
+  "gsn": {
+    "enabled": true,
+    "minDaiForSignerETHBalanceInDAI": 40,
+    "desiredSignerBalanceInETH": 0.04
   },
   "zeroX": {
     "rpc": {
@@ -102,8 +107,8 @@
     "AuditFunds": "0x107694aCf8525c326a45984cba92c17e8aa981Ea",
     "AugurWalletRegistryV2": "0xe59A5988E6C73e392F37Bb8aEdAD078A8b96f394",
     "RelayHubV2": "0x6EFF7F7154347B4b2611cb9aeee5dE6a679FF41C",
-    "USDC": "0xf9Bf04bDd519B37Ffe988Ea3273e08Bf1406b523",
-    "USDT": "0x0e236158806f3A411f99Fbf512496D90D8FBE67C",
+    "USDC": "0x03722982dBb5b038348feF5a1Bc7f6e0f3d4C34E",
+    "USDT": "0x1997d08B1a9aeD5143b995e929707400625D5f6C",
     "AccountLoader": "0x679FA27db29b84BE82C2b6d1fBdEb583D8f89d40"
   },
   "server": {
@@ -134,7 +139,7 @@
   "ui": {
     "showReloadModal": true,
     "averageBlocktime": 2000,
-    "liteProvider": "torus",
+    "liteProvider": "jsonrpc",
     "trackBestOffer": true,
     "trackMarketInvalidBids": true,
     "fallbackProvider": "torus",

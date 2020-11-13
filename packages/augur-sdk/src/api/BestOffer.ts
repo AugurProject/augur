@@ -64,7 +64,7 @@ export class BestOffer {
           hasBestOffer &&
           poolBestPrice[_.first(_.keys(poolBestPrice))][
             Number(new BigNumber(order.outcome))
-          ]?.price || null;
+          ].price;
         // if outcome order is null, then no offers, send null for that outcome
         if (
           !poolBestPrice ||
@@ -87,18 +87,9 @@ export class BestOffer {
       })
     ).then((liquiditPoolsUpdated) => {
       if (_.keys(liquiditPoolsUpdated).length > 0) {
-          const poolsToSend = liquiditPoolsUpdated.reduce((acc, poolObj) => {	
-          // const update = { ...acc, ...poolObj };	
-          const liqId = _.keys(poolObj)[0];	
-          const update = acc[liqId] ? { ...acc, [liqId]: {	
-            ...acc[liqId],	
-            ...poolObj[liqId],	
-          }} : {...acc, ...poolObj };	
-          return update;	
-        }, {});
         this.augur.events.emit(
           SubscriptionEventName.LiquidityPoolUpdated,
-          poolsToSend
+          liquiditPoolsUpdated
         );
       }
     });

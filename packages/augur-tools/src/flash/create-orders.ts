@@ -1,8 +1,8 @@
 import { cannedMarkets, singleOutcomeAsks, singleOutcomeBids } from './data/canned-markets';
 import { BigNumber } from 'bignumber.js';
-import { formatBytes32String } from 'ethers/utils';
 import { QUINTILLION, numTicksToTickSizeWithDisplayPrices } from '@augurproject/sdk';
 import { ContractAPI } from '..';
+import {ethers} from 'ethers';
 
 const MILLION = QUINTILLION.multipliedBy(1000000);
 
@@ -37,7 +37,7 @@ export async function createYesNoZeroXOrders(
         numOutcomes: 3,
         outcome,
         tradeGroupId,
-        fingerprint: formatBytes32String('11'),
+        fingerprint: ethers.utils.formatBytes32String('11'),
         doNotCreateOrders: false,
         displayMinPrice: new BigNumber(0),
         displayMaxPrice: new BigNumber(1),
@@ -57,7 +57,7 @@ export async function createYesNoZeroXOrders(
         numOutcomes: 3,
         outcome,
         tradeGroupId,
-        fingerprint: formatBytes32String('11'),
+        fingerprint: ethers.utils.formatBytes32String('11'),
         doNotCreateOrders: false,
         displayMinPrice: new BigNumber(0),
         displayMaxPrice: new BigNumber(1),
@@ -134,7 +134,7 @@ export async function createCatZeroXOrders(
         numOutcomes: numOutcomes,
         outcome,
         tradeGroupId,
-        fingerprint: formatBytes32String('11'),
+        fingerprint: ethers.utils.formatBytes32String('11'),
         doNotCreateOrders: false,
         displayMinPrice: new BigNumber(0),
         displayMaxPrice: new BigNumber(1),
@@ -154,7 +154,7 @@ export async function createCatZeroXOrders(
         numOutcomes: 3,
         outcome,
         tradeGroupId,
-        fingerprint: formatBytes32String('11'),
+        fingerprint: ethers.utils.formatBytes32String('11'),
         doNotCreateOrders: false,
         displayMinPrice: new BigNumber(0),
         displayMaxPrice: new BigNumber(1),
@@ -196,7 +196,7 @@ export async function createSingleCatZeroXOrder(
     numOutcomes: numOutcomes,
     outcome,
     tradeGroupId,
-    fingerprint: formatBytes32String('11'),
+    fingerprint: ethers.utils.formatBytes32String('11'),
     doNotCreateOrders: false,
     displayMinPrice: new BigNumber(0),
     displayMaxPrice: new BigNumber(1),
@@ -260,7 +260,7 @@ export async function createScalarZeroXOrders(
         numOutcomes: 3 as 3 | 4 | 5 | 6 | 7,
         outcome,
         tradeGroupId,
-        fingerprint: formatBytes32String('11'),
+        fingerprint: ethers.utils.formatBytes32String('11'),
         doNotCreateOrders: false,
         displayMinPrice: minPrice,
         displayMaxPrice: maxPrice,
@@ -282,7 +282,7 @@ export async function createScalarZeroXOrders(
         numOutcomes: 3 as 3 | 4 | 5 | 6 | 7,
         outcome,
         tradeGroupId,
-        fingerprint: formatBytes32String('11'),
+        fingerprint: ethers.utils.formatBytes32String('11'),
         doNotCreateOrders: false,
         displayMinPrice: minPrice,
         displayMaxPrice: maxPrice,

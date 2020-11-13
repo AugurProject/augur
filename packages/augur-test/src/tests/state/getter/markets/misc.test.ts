@@ -10,9 +10,9 @@ import { ACCOUNTS, TestContractAPI } from '@augurproject/tools';
 import { TestEthersProvider } from '@augurproject/tools/build/libs/TestEthersProvider';
 import { stringTo32ByteHex } from '@augurproject/tools/build/libs/Utils';
 import { BigNumber } from 'bignumber.js';
-import { getAddress } from 'ethers/utils/address';
 import * as _ from 'lodash';
 import { _beforeAll, _beforeEach, outcome0, outcome1 } from './common';
+import {ethers} from 'ethers';
 
 describe('State API :: Markets :: ', () => {
   let john: TestContractAPI;
@@ -106,7 +106,7 @@ describe('State API :: Markets :: ', () => {
     // Test user portfolio filter
     marketList = await john.api.route('getMarkets', {
       universe: universe.address,
-      userPortfolioAddress: getAddress(ACCOUNTS[2].address),
+      userPortfolioAddress: ethers.utils.getAddress(ACCOUNTS[2].address),
     });
     expect(marketList.markets.length).toEqual(4);
     const marketIds = _.map(marketList.markets, 'id');

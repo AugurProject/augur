@@ -2,6 +2,9 @@ import { ethers } from 'ethers';
 import { BigNumber } from 'bignumber.js';
 import { ContractCompiler } from '../libraries/ContractCompiler';
 import { ContractDeployer } from '../libraries/ContractDeployer';
+import { ParaContractDeployer } from '../libraries/ParaContractDeployer';
+import { ParaAugurDeployer } from '../libraries/ParaAugurDeployer';
+import { SideChainDeployer } from '../libraries/SideChainDeployer';
 import { CompilerConfiguration } from '../libraries/CompilerConfiguration';
 import { ContractDependenciesEthers } from '@augurproject/contract-dependencies-ethers';
 import {
@@ -21,7 +24,6 @@ import {
 } from '../libraries/ContractInterfaces';
 import { Dependencies } from '../libraries/GenericContractInterfaces';
 import { EthersFastSubmitWallet } from '../libraries/EthersFastSubmitWallet';
-import { formatBytes32String } from 'ethers/utils';
 import { buildConfig } from '@augurproject/artifacts';
 
 const NULL_ADDRESS = '0x0000000000000000000000000000000000000000';
@@ -66,10 +68,11 @@ export class TestFixture {
         pretendToBeProduction = false
     ): Promise<TestFixture> => {
         const compilerConfiguration = CompilerConfiguration.create();
-        const config = buildConfig('test', {
+        let config = buildConfig('test', {
             deploy: {
                 isProduction: pretendToBeProduction,
                 normalTime: false,
+                writeArtifacts: true,
             },
         });
 
@@ -98,6 +101,48 @@ export class TestFixture {
             compiledContracts
         );
         await contractDeployer.deploy('test');
+
+        config = buildConfig('test');
+        const paraContractDeployer = new ParaContractDeployer(
+            config,
+            dependencies,
+            provider,
+            signer,
+            compiledContracts
+        );
+        await paraContractDeployer.deploy('test');
+
+        config = buildConfig('test');
+        const paraAugurDeployer = new ParaAugurDeployer(
+            config,
+            dependencies,
+            provider,
+            signer,
+            compiledContracts
+        );
+        await paraAugurDeployer.deploy('test', config.addresses.WETH9);
+
+        config = buildConfig('test');
+        const sideChainDeployer = new SideChainDeployer(
+            config,
+            dependencies,
+            provider,
+            signer,
+            compiledContracts
+        );
+        await sideChainDeployer.deploy('test');
+
+        /*
+        config = buildConfig('test');
+        const govContractDeployer = new GovernanceDeployer(
+            config,
+            dependencies,
+            provider,
+            signer,
+            compiledContracts
+        );
+        await govContractDeployer.deploy('test', config.addresses.WETH9);
+        */
 
         return new TestFixture(
             dependencies,
@@ -212,7 +257,7 @@ export class TestFixture {
 
         await this.cash.faucet(ethValue);
         await createOrder.publicCreateOrder(
-            type,
+            type.toNumber(),
             numShares,
             price,
             market,
@@ -248,7 +293,7 @@ export class TestFixture {
         await this.cash.faucet(ethValue);
 
         const bestPriceAmount = await trade.publicFillBestOrder_(
-            type,
+            type.toNumber(),
             marketAddress,
             outcome,
             numShares,
@@ -262,7 +307,7 @@ export class TestFixture {
         }
 
         await trade.publicFillBestOrder(
-            type,
+            type.toNumber(),
             marketAddress,
             outcome,
             numShares,
@@ -290,7 +335,7 @@ export class TestFixture {
     async claimTradingProceeds(
         market: Market,
         shareholder: string,
-        fingerprint = formatBytes32String('')
+        fingerprint = ethers.utils.formatBytes32String('')
     ): Promise<void> {
         const shareTokenContract = await this.contractDeployer.getContractAddress(
             'ShareToken'
@@ -338,7 +383,7 @@ export class TestFixture {
         );
         const orders = new Orders(this.dependencies, ordersContract);
 
-        const orderID = await orders.getBestOrderId_(type, market, outcome);
+        const orderID = await orders.getBestOrderId_(type.toNumber(), market, outcome);
         if (!orderID) {
             throw new Error('Unable to get order price');
         }

@@ -11,9 +11,9 @@ export type SomeTime =
 const RELAY_HUB_ADDRESS = '0xD216153c06E857cD7f72665E0aF1d7D82172F494';
 
 export class Contracts {
-  augur: ContractInterfaces.Augur;
+  augur: ContractInterfaces.ParaAugur;
   augurTrading: ContractInterfaces.AugurTrading;
-  universe: ContractInterfaces.Universe;
+  universe: ContractInterfaces.ParaUniverse;
   cash: ContractInterfaces.Cash;
   usdc: ContractInterfaces.USDC;
   usdt: ContractInterfaces.USDT;
@@ -26,7 +26,7 @@ export class Contracts {
   time: SomeTime | void;
   legacyReputationToken: ContractInterfaces.LegacyReputationToken;
   simulateTrade: ContractInterfaces.SimulateTrade;
-  ZeroXTrade: ContractInterfaces.ZeroXTrade;
+  ZeroXTrade: ContractInterfaces.ParaZeroXTrade;
   buyParticipationTokens: ContractInterfaces.BuyParticipationTokens;
   redeemStake: ContractInterfaces.RedeemStake;
   hotLoading: ContractInterfaces.HotLoading;
@@ -42,6 +42,10 @@ export class Contracts {
   weth: ContractInterfaces.WETH9;
   uniswap: ContractInterfaces.UniswapV2Router02;
   auditFunds: ContractInterfaces.AuditFunds;
+  paraUniverse: ContractInterfaces.ParaUniverse;
+  erc20Proxy1155: ContractInterfaces.ERC20Proxy1155Nexus;
+  ammFactory: ContractInterfaces.AMMFactory;
+  wethWrapperForAMMExchange: ContractInterfaces.WethWrapperForAMMExchange;
 
   reputationToken: SomeRepToken | null = null;
   private readonly dependencies: ContractDependenciesEthers;
@@ -51,13 +55,13 @@ export class Contracts {
     dependencies: ContractDependenciesEthers
   ) {
     this.dependencies = dependencies;
-    this.augur = new ContractInterfaces.Augur(dependencies, addresses.Augur);
+    this.augur = new ContractInterfaces.ParaAugur(dependencies, addresses.Augur);
     this.augurTrading = new ContractInterfaces.AugurTrading(
       dependencies,
       addresses.AugurTrading
     );
 
-    this.universe = new ContractInterfaces.Universe(
+    this.universe = new ContractInterfaces.ParaUniverse(
       dependencies,
       addresses.Universe
     );
@@ -90,7 +94,7 @@ export class Contracts {
       dependencies,
       addresses.SimulateTrade
     );
-    this.ZeroXTrade = new ContractInterfaces.ZeroXTrade(
+    this.ZeroXTrade = new ContractInterfaces.ParaZeroXTrade(
       dependencies,
       addresses.ZeroXTrade
     );
@@ -151,6 +155,18 @@ export class Contracts {
       dependencies,
       addresses.AuditFunds
     );
+    this.paraUniverse = new ContractInterfaces.ParaUniverse(
+      dependencies,
+      addresses.Universe
+    )
+    this.erc20Proxy1155 = new ContractInterfaces.ERC20Proxy1155Nexus(
+      dependencies,
+      addresses.ERC20Proxy1155Nexus
+    )
+    this.ammFactory = new ContractInterfaces.AMMFactory(
+      dependencies,
+      addresses.AMMFactory
+    )
 
     if (typeof addresses.Time !== 'undefined') {
       this.time = new ContractInterfaces.Time(dependencies, addresses.Time);
@@ -204,12 +220,20 @@ export class Contracts {
     return new ContractInterfaces.Market(this.dependencies, address);
   }
 
+  ammFromAddress(address: string): ContractInterfaces.AMMExchange {
+    return new ContractInterfaces.AMMExchange(this.dependencies, address);
+  }
+
   shareTokenFromAddress(address: string): ContractInterfaces.ShareToken {
     return new ContractInterfaces.ShareToken(this.dependencies, address);
   }
 
   disputeWindowFromAddress(address: string): ContractInterfaces.DisputeWindow {
     return new ContractInterfaces.DisputeWindow(this.dependencies, address);
+  }
+
+  feePotFromAddress(address: string): ContractInterfaces.FeePot {
+    return new ContractInterfaces.FeePot(this.dependencies, address);
   }
 
   getInitialReporter(
@@ -246,5 +270,21 @@ export class Contracts {
     address: string
   ): ContractInterfaces.UniswapV2Pair {
     return new ContractInterfaces.UniswapV2Pair(this.dependencies, address);
+  }
+
+  wethWrapperForAMMExchangeFromAddress(
+    address: string
+  ): ContractInterfaces.WethWrapperForAMMExchange {
+    return new ContractInterfaces.WethWrapperForAMMExchange(this.dependencies, address);
+  }
+
+  async getOriginCash(): Promise<ContractInterfaces.Cash> {
+    const originCash = await this.augur.getOriginCash_();
+    return new ContractInterfaces.Cash(this.dependencies, originCash);
+  }
+
+  async getOriginUniverse(): Promise<ContractInterfaces.Universe> {
+    const originUniverse = await this.universe.originUniverse_();
+    return new ContractInterfaces.Universe(this.dependencies, originUniverse);
   }
 }
