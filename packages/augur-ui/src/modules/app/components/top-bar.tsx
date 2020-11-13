@@ -198,7 +198,7 @@ const TopBar = () => {
           currentOnboardingStep < TOTAL_ONBOARDING_STEPS &&
           ethToDaiRate && (
             <PrimaryButton
-              text={'Continue account setup'}
+              text='Continue account setup'
               action={() =>
                 handleShowOnboarding(currentOnboardingStep, setModal)
               }
@@ -217,8 +217,8 @@ const TopBar = () => {
             />
             <PrimaryButton
               action={() => setModal({ type: MODAL_SIGNUP })}
-              title="Signup"
-              text="Signup"
+              title="Sign up"
+              text="Sign up"
             />
           </>
         )}

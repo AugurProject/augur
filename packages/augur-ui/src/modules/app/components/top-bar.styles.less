@@ -275,9 +275,18 @@
           background: var(--color-secondary-action);
           color: var(--color-primary-text);
         }
+
+        @media @breakpoint-mobile-tablet {
+          .text-10-semi-bold;
+
+          text-transform: uppercase;
+          padding: 0 @size-8;
+          max-height: @size-30;
+          height: @size-30;
+        }
       }
 
-      > button[class*='PrimaryButton'][title*='Signup'] {
+      > button[class*='PrimaryButton'][title*='Sign up'] {
         color: var(--color-module-background);
         order: 2;
 
@@ -286,9 +295,18 @@
           background: var(--color-secondary-action);
           color: var(--color-primary-text);
         }
+
+        @media @breakpoint-mobile-tablet {
+          .text-10-semi-bold;
+
+          text-transform: uppercase;
+          padding: 0 @size-8;
+          max-height: @size-30;
+          height: @size-30;
+        }
       }
 
-      > button:not([title*='Signup']):not([title*='Connect']) {
+      > button:not([title*='Sign up']):not([title*='Connect']) {
         order: 2;
 
         &[class*='Confirmed'] {

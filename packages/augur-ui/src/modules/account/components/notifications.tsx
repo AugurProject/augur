@@ -56,7 +56,7 @@ function getRows(
   disputingWindowEndTime,
   disabledNotifications
 ) {
-  return orderBy(notifications, ['isNew','isRead','lastUpdated'], ['desc', 'asc', 'desc'])
+  return orderBy(notifications, ['isNew','isRead','lastUpdated'], ['desc', 'desc', 'desc'])
     .filter(notification => !notification.hideNotification)
     .map(({
       buttonAction,
