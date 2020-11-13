@@ -11,7 +11,7 @@ export class BulkSyncStrategy extends AbstractSyncStrategy implements SyncStrate
     contractAddresses: string[],
     onLogsAdded: (blockNumber: number, logs: ParsedLog[]) => Promise<void>,
     protected parseLogs:(logs: Log[]) => ParsedLog[],
-    protected chunkSize = 100000,
+    protected chunkSize = 10000,
   ) {
     super(getLogs, contractAddresses, onLogsAdded);
   }
