@@ -24,13 +24,12 @@
   display: grid;
   grid-template-columns: 0fr 0fr 1fr;
   grid-template-rows: @size-32 0fr;
-  grid-gap: 0 @size-10;
+  grid-gap: @size-16 @size-10;
 
   @media @breakpoint-mobile-tablet {
     align-items: center;
     grid-template-columns: 1fr 1fr;
     max-width: 100%;
-    grid-gap: @size-16 @size-10;
   }
 
   > h4 {
