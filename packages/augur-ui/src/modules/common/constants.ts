@@ -162,6 +162,7 @@ export const NETWORK_IDS = {
   Private2: '102',
   Private3: '103',
   Private4: '104',
+  PrivateGeth: '12346',
 };
 
 export const ARCHIVED_MARKET_LENGTH = 60;
