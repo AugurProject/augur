@@ -494,6 +494,7 @@ export function addAmmLiquidity({
   augurClient,
   marketId,
   sharetoken,
+  fee,
   cashAmount,
   distroPercentage
 }) {
@@ -505,6 +506,7 @@ export function addAmmLiquidity({
     hasLiquidity,
     marketId,
     sharetoken,
+    fee,
     String(cashAmount),
     String(distroPercentage)
   )
@@ -520,6 +522,7 @@ export function addAmmLiquidity({
     hasLiquidity,
     marketId,
     sharetoken,
+    fee,
     new BN(cashAmount),
     poolYesPercent,
     poolNoPercent,

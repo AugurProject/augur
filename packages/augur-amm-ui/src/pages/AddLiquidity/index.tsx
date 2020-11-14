@@ -123,6 +123,9 @@ function AddLiquidity({ amm, marketId, cash }: RouteComponentProps<{ amm?: strin
       return
     }
 
+    // 3/1000 aka 0.3%
+    const fee = 3; // TODO this should be set by the user, not hard-coded
+
     setAttemptingTxn(true)
     await addAmmLiquidity({
       account,
@@ -131,6 +134,7 @@ function AddLiquidity({ amm, marketId, cash }: RouteComponentProps<{ amm?: strin
       augurClient,
       marketId,
       sharetoken,
+      fee,
       cashAmount: parsedAmountA.raw.toString(),
       distroPercentage
     })

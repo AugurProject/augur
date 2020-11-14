@@ -1392,6 +1392,13 @@ export function addScripts(flash: FlashSession) {
         flag: true,
       },
       {
+        name: 'performanceSetup',
+        abbr: 'P',
+        description:
+          'setup accounts for performance testing',
+        flag: true,
+      },
+      {
         name: 'parallel',
         abbr: 'p',
         description: 'deploy contracts non-serially',
@@ -1402,6 +1409,7 @@ export function addScripts(flash: FlashSession) {
       if (this.noProvider()) return;
       const serial = !Boolean(args.parallel);
       const createMarkets = Boolean(args.createMarkets);
+      const performanceSetup = Boolean(args.performanceSetup);
       const traderCount = Number(args.traders || 0);
 
       this.pushConfig({ deploy: { serial, normalTime: false }});
@@ -1413,8 +1421,10 @@ export function addScripts(flash: FlashSession) {
         await createCannedMarkets(user);
       }
 
-      const ethSource = await this.createUser(this.getAccount(), this.config);
-      await perfSetup(ethSource, 0, traderCount, serial, this.config);
+      if (performanceSetup) {
+        const ethSource = await this.createUser(this.getAccount(), this.config);
+        await perfSetup(ethSource, 0, traderCount, serial, this.config);
+      }
     },
   });
 
@@ -1434,6 +1444,13 @@ export function addScripts(flash: FlashSession) {
         flag: true,
       },
       {
+        name: 'performanceSetup',
+        abbr: 'P',
+        description:
+          'setup accounts for performance testing',
+        flag: true,
+      },
+      {
         name: 'parallel',
         abbr: 'p',
         description: 'deploy contracts non-serially',
@@ -1444,6 +1461,7 @@ export function addScripts(flash: FlashSession) {
       if (this.noProvider()) return;
       const serial = !Boolean(args.parallel);
       const createMarkets = Boolean(args.createMarkets);
+      const performanceSetup = Boolean(args.performanceSetup);
       const traderCount = Number(args.traders || 0);
 
       this.pushConfig({ deploy: { serial, normalTime: true }});
@@ -1455,8 +1473,10 @@ export function addScripts(flash: FlashSession) {
         await createCannedMarkets(user);
       }
 
-      const ethSource = await this.createUser(this.getAccount(), this.config);
-      await perfSetup(ethSource, 0, traderCount, serial, this.config);
+      if (performanceSetup) {
+        const ethSource = await this.createUser(this.getAccount(), this.config);
+        await perfSetup(ethSource, 0, traderCount, serial, this.config);
+      }
     },
   });
 

@@ -174,7 +174,6 @@ class ContractsFixture:
         self.paraAugur = request.config.option.paraAugur
         self.sideChain = request.config.option.sideChain
         self.logListener = None
-        self.amm_fee = 3  # 3/1000
         if self.coverageMode:
             self.logListener = self.writeLogToFile
             self.relativeContractsPath = '../coverageEnv/contracts'
@@ -452,7 +451,7 @@ class ContractsFixture:
 
     def uploadAMMContracts(self):
         masterProxy = self.upload('../src/contracts/para/AMMExchange.sol')
-        self.upload('../src/contracts/para/AMMFactory.sol', constructorArgs=[masterProxy.address, self.amm_fee])
+        self.upload('../src/contracts/para/AMMFactory.sol', constructorArgs=[masterProxy.address])
 
     def uploadWethWrappedAmm(self, factory, shareToken):
         return self.upload("../src/contracts/para/WethWrapperForAMMExchange.sol", constructorArgs=[factory.address, shareToken.address])

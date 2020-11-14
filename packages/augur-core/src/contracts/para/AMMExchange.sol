@@ -24,7 +24,7 @@ contract AMMExchange is IAMMExchange, ERC20 {
 
     function initialize(IMarket _market, ParaShareToken _shareToken, uint256 _fee) public {
         require(cash == ICash(0)); // can only initialize once
-        require(_fee <= 1000); // fee must be [0,1000]
+        require(_fee <= 150); // fee must be [0,150] aka 0-15%
 
         factory = IAMMFactory(msg.sender);
         cash = _shareToken.cash();
@@ -69,7 +69,7 @@ contract AMMExchange is IAMMExchange, ERC20 {
         require(_ratioFactor <= 10**18, "Ratio should be an amount relative to 10**18 (e.g 9 * 10**17 == .9)");
         require(_ratioFactor >= 10**17, "Ratio of 1:10 is the minimum");
         uint256 _setsToBuy = _cash.div(numTicks);
-        factory.transferCash(augurMarket, shareToken, _user, address(this), _cash);
+        factory.transferCash(augurMarket, shareToken, fee, _user, address(this), _cash);
         uint256 _yesShares = _setsToBuy;
         uint256 _noShares = _setsToBuy;
         uint256 _yesSharesToUser = 0;
@@ -172,7 +172,7 @@ contract AMMExchange is IAMMExchange, ERC20 {
 
         require(_sharesToBuy >= _minShares, "AugurCP: Too few shares would be received for given cash.");
 
-        factory.transferCash(augurMarket, shareToken, msg.sender, address(this), _cashCost);
+        factory.transferCash(augurMarket, shareToken, fee, msg.sender, address(this), _cashCost);
 
         uint256 _setsToBuy = _cashCost.div(numTicks);
 
@@ -226,7 +226,7 @@ contract AMMExchange is IAMMExchange, ERC20 {
             _yesFromUser = 0;
         }
 
-        factory.shareTransfer(augurMarket, shareToken, msg.sender, address(this), _invalidFromUser, uint256(_noFromUser), uint256(_yesFromUser));
+        factory.shareTransfer(augurMarket, shareToken, fee, msg.sender, address(this), _invalidFromUser, uint256(_noFromUser), uint256(_yesFromUser));
         cash.transfer(msg.sender, _cashPayout);
 
         emit ExitPosition(msg.sender, _invalidShares, _noShares, _yesShares, _cashPayout);

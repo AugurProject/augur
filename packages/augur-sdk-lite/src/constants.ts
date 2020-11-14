@@ -157,6 +157,7 @@ export const NETWORK_IDS = {
   Private2: '102',
   Private3: '103',
   Private4: '104',
+  PrivateGeth: '12346',
 };
 
 export enum TXEventName {

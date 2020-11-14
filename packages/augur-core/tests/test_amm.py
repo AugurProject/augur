@@ -6,6 +6,7 @@ from eth_tester.exceptions import TransactionFailed
 from pytest import raises, fixture, mark, skip
 
 
+FEE = 3 # 3/1000
 ATTO = 10 ** 18
 INVALID = 0
 NO = 1
@@ -18,7 +19,7 @@ def factory(sessionFixture):
 
 @fixture
 def amm(sessionFixture, factory, market, shareToken):
-    ammAddress = factory.addAMM(market.address, shareToken.address)
+    ammAddress = factory.addAMM(market.address, shareToken.address, FEE)
     return sessionFixture.applySignature("AMMExchange", ammAddress)
 
 @fixture
@@ -34,7 +35,7 @@ def test_amm_add_with_liquidity(contractsFixture, market, cash, shareToken, fact
     cash.faucet(cost)
     cash.approve(factory.address, 10 ** 48)
 
-    ammAddress = factory.addAMMWithLiquidity(market.address, shareToken.address, cost, ratioFactor, keepYes)
+    ammAddress = factory.addAMMWithLiquidity(market.address, shareToken.address, FEE, cost, ratioFactor, keepYes)
 
 
 def test_amm_add_with_liquidity2(contractsFixture, market, cash, shareToken, factory, account0):
@@ -45,7 +46,7 @@ def test_amm_add_with_liquidity2(contractsFixture, market, cash, shareToken, fac
     cash.faucet(cost)
     cash.approve(factory.address, 10 ** 48)
 
-    ammAddress = factory.addAMMWithLiquidity(market.address, shareToken.address, cost, ratioFactor, keepYes)
+    ammAddress = factory.addAMMWithLiquidity(market.address, shareToken.address, FEE, cost, ratioFactor, keepYes)
 
 def test_amm_initial_liquidity(contractsFixture, market, cash, shareToken, factory, amm, account0, kitchenSinkSnapshot):
     if not contractsFixture.paraAugur:
@@ -217,25 +218,18 @@ def test_amm_yes_position(contractsFixture, market, shareToken, cash, factory, a
     assert shareToken.balanceOfMarketOutcome(market.address, NO, account0) == 0
     assert shareToken.balanceOfMarketOutcome(market.address, YES, account0) == sharesReceived
 
-    # TODO the rates being returned are wrong, which is also messing up the rest of the test
     (payoutAll, inv, no, yes) = amm.rateExitAll()
     assert inv == sets
     assert no == -10135101402160364982
     assert yes == 19107898597839635018
-    # applyFeeForEntryAndExit = (cost * (1000 - contractsFixture.amm_fee) // 1000) * (1000 - contractsFixture.amm_fee) // 1000
-    applyFeeForEntryAndExit = (cost * (1000 - contractsFixture.amm_fee) // 1000)
+    applyFeeForEntryAndExit = (cost * (1000 - FEE) // 1000)
     assert payoutAll == applyFeeForEntryAndExit
-    # assert payoutAll == inv * market.getNumTicks() # invalids relate to sets which relate to cash
 
     shareToken.setApprovalForAll(factory.address, True)
 
     amm.exitAll(payoutAll)
 
     assert cash.balanceOf(account0) == payoutAll
-    # assert shareToken.balanceOfMarketOutcome(market.address, INVALID, account0) > 0
-    # assert shareToken.balanceOfMarketOutcome(market.address, INVALID, account0) < 10 * ATTO
-    # assert shareToken.balanceOfMarketOutcome(market.address, NO, account0) == 0
-    # assert shareToken.balanceOfMarketOutcome(market.address, YES, account0) == 0
 
 def test_amm_no_position(contractsFixture, market, shareToken, cash, factory, amm, account0):
     if not contractsFixture.paraAugur:

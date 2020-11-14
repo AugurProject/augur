@@ -26,26 +26,26 @@ contract WethWrapperForAMMExchange {
     // For WETH integration, since weth.withdraw() causes ETH to be sent here.
     function() external payable {}
 
-    function getAMM(IMarket _market) public view returns (IAMMExchange) {
-        IAMMExchange _amm = IAMMExchange(factory.exchanges(address(_market), address(shareToken)));
+    function getAMM(IMarket _market, uint256 _fee) public view returns (IAMMExchange) {
+        IAMMExchange _amm = IAMMExchange(factory.exchanges(address(_market), address(shareToken), _fee));
         require(address(_amm) != address(0), "No such AMM exists.");
         return _amm;
     }
 
-    function addInitialLiquidity(IMarket _market, uint256 _ratioFactor, bool _keepYes, address _recipient) external payable returns (uint256) {
+    function addInitialLiquidity(IMarket _market, uint256 _fee, uint256 _ratioFactor, bool _keepYes, address _recipient) external payable returns (uint256) {
         weth.deposit.value(msg.value)();
-        IAMMExchange _amm = getAMM(_market);
+        IAMMExchange _amm = getAMM(_market, _fee);
         return _amm.addInitialLiquidity(msg.value, _ratioFactor, _keepYes, _recipient);
     }
 
-    function addLiquidity(IMarket _market, address _recipient) public payable returns (uint256) {
+    function addLiquidity(IMarket _market, uint256 _fee, address _recipient) public payable returns (uint256) {
         weth.deposit.value(msg.value)();
-        IAMMExchange _amm = getAMM(_market);
+        IAMMExchange _amm = getAMM(_market, _fee);
         return _amm.addLiquidity(msg.value, _recipient);
     }
 
-    function removeLiquidity(IMarket _market, uint256 _poolTokensToSell, uint256 _minSetsSold) external returns (uint256 _invalidShare, uint256 _noShare, uint256 _yesShare, uint256 _cashShare) {
-        IAMMExchange _amm = getAMM(_market);
+    function removeLiquidity(IMarket _market, uint256 _fee, uint256 _poolTokensToSell, uint256 _minSetsSold) external returns (uint256 _invalidShare, uint256 _noShare, uint256 _yesShare, uint256 _cashShare) {
+        IAMMExchange _amm = getAMM(_market, _fee);
         _amm.transferFrom(msg.sender, address(this), _poolTokensToSell);
 
         (_invalidShare, _noShare, _yesShare, _cashShare) = _amm.removeLiquidity(_poolTokensToSell, _minSetsSold);
@@ -57,8 +57,8 @@ contract WethWrapperForAMMExchange {
         }
     }
 
-    function enterPosition(IMarket _market, bool _buyYes, uint256 _minShares) public payable returns (uint256) {
-        IAMMExchange _amm = getAMM(_market);
+    function enterPosition(IMarket _market, uint256 _fee, bool _buyYes, uint256 _minShares) public payable returns (uint256) {
+        IAMMExchange _amm = getAMM(_market, _fee);
         uint256 _numTicks = _market.getNumTicks();
         uint256 _setsToBuy = msg.value / _numTicks; // safemath division is identical to regular division
         weth.deposit.value(msg.value)();
@@ -72,8 +72,8 @@ contract WethWrapperForAMMExchange {
         return shares;
     }
 
-    function exitPosition(IMarket _market, uint256 _invalidShares, uint256 _noShares, uint256 _yesShares, uint256 _minCashPayout) public returns (uint256) {
-        IAMMExchange _amm = getAMM(_market);
+    function exitPosition(IMarket _market, uint256 _fee, uint256 _invalidShares, uint256 _noShares, uint256 _yesShares, uint256 _minCashPayout) public returns (uint256) {
+        IAMMExchange _amm = getAMM(_market, _fee);
         shareTransfer(_market, msg.sender, address(this), _invalidShares, _noShares, _yesShares);
         uint256 _cashPayout = _amm.exitPosition(_invalidShares, _noShares, _yesShares, _minCashPayout);
 
@@ -88,10 +88,10 @@ contract WethWrapperForAMMExchange {
         return _cashPayout;
     }
 
-    function exitAll(IMarket _market, uint256 _minCashPayout) external returns (uint256) {
-        IAMMExchange _amm = getAMM(_market);
+    function exitAll(IMarket _market, uint256 _fee, uint256 _minCashPayout) external returns (uint256) {
+        IAMMExchange _amm = getAMM(_market, _fee);
         (uint256 _invalid, uint256 _no, uint256 _yes) = _amm.shareBalances(msg.sender);
-        return exitPosition(_market, _invalid, _no, _yes, _minCashPayout);
+        return exitPosition(_market, _fee, _invalid, _no, _yes, _minCashPayout);
     }
 
     function shareTransfer(IMarket _market, address _from, address _to, uint256 _invalidAmount, uint256 _noAmount, uint256 _yesAmount) private {

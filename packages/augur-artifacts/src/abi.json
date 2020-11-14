@@ -22490,11 +22490,6 @@
 					"internalType": "address",
 					"name": "_proxyToClone",
 					"type": "address"
-				},
-				{
-					"internalType": "uint256",
-					"name": "_fee",
-					"type": "uint256"
 				}
 			],
 			"payable": false,
@@ -22513,6 +22508,11 @@
 					"internalType": "contract ParaShareToken",
 					"name": "_para",
 					"type": "address"
+				},
+				{
+					"internalType": "uint256",
+					"name": "_fee",
+					"type": "uint256"
 				}
 			],
 			"name": "addAMM",
@@ -22539,6 +22539,11 @@
 					"internalType": "contract ParaShareToken",
 					"name": "_para",
 					"type": "address"
+				},
+				{
+					"internalType": "uint256",
+					"name": "_fee",
+					"type": "uint256"
 				},
 				{
 					"internalType": "uint256",
@@ -22580,6 +22585,11 @@
 					"internalType": "contract ParaShareToken",
 					"name": "_para",
 					"type": "address"
+				},
+				{
+					"internalType": "uint256",
+					"name": "_fee",
+					"type": "uint256"
 				}
 			],
 			"name": "calculateAMMAddress",
@@ -22637,6 +22647,11 @@
 					"internalType": "address",
 					"name": "",
 					"type": "address"
+				},
+				{
+					"internalType": "uint256",
+					"name": "",
+					"type": "uint256"
 				}
 			],
 			"name": "exchanges",
@@ -22645,21 +22660,6 @@
 					"internalType": "address",
 					"name": "",
 					"type": "address"
-				}
-			],
-			"payable": false,
-			"stateMutability": "view",
-			"type": "function"
-		},
-		{
-			"constant": true,
-			"inputs": [],
-			"name": "fee",
-			"outputs": [
-				{
-					"internalType": "uint256",
-					"name": "",
-					"type": "uint256"
 				}
 			],
 			"payable": false,
@@ -22678,6 +22678,11 @@
 					"internalType": "contract ParaShareToken",
 					"name": "_para",
 					"type": "address"
+				},
+				{
+					"internalType": "uint256",
+					"name": "_fee",
+					"type": "uint256"
 				}
 			],
 			"name": "salt",
@@ -22704,6 +22709,11 @@
 					"internalType": "contract ParaShareToken",
 					"name": "_para",
 					"type": "address"
+				},
+				{
+					"internalType": "uint256",
+					"name": "_fee",
+					"type": "uint256"
 				},
 				{
 					"internalType": "address",
@@ -22749,6 +22759,11 @@
 					"internalType": "contract ParaShareToken",
 					"name": "_para",
 					"type": "address"
+				},
+				{
+					"internalType": "uint256",
+					"name": "_fee",
+					"type": "uint256"
 				},
 				{
 					"internalType": "address",
@@ -30378,6 +30393,11 @@
 				},
 				{
 					"internalType": "uint256",
+					"name": "_fee",
+					"type": "uint256"
+				},
+				{
+					"internalType": "uint256",
 					"name": "_ratioFactor",
 					"type": "uint256"
 				},
@@ -30413,6 +30433,11 @@
 					"type": "address"
 				},
 				{
+					"internalType": "uint256",
+					"name": "_fee",
+					"type": "uint256"
+				},
+				{
 					"internalType": "address",
 					"name": "_recipient",
 					"type": "address"
@@ -30437,6 +30462,11 @@
 					"internalType": "contract IMarket",
 					"name": "_market",
 					"type": "address"
+				},
+				{
+					"internalType": "uint256",
+					"name": "_fee",
+					"type": "uint256"
 				},
 				{
 					"internalType": "bool",
@@ -30471,6 +30501,11 @@
 				},
 				{
 					"internalType": "uint256",
+					"name": "_fee",
+					"type": "uint256"
+				},
+				{
+					"internalType": "uint256",
 					"name": "_minCashPayout",
 					"type": "uint256"
 				}
@@ -30494,6 +30529,11 @@
 					"internalType": "contract IMarket",
 					"name": "_market",
 					"type": "address"
+				},
+				{
+					"internalType": "uint256",
+					"name": "_fee",
+					"type": "uint256"
 				},
 				{
 					"internalType": "uint256",
@@ -30550,6 +30590,11 @@
 					"internalType": "contract IMarket",
 					"name": "_market",
 					"type": "address"
+				},
+				{
+					"internalType": "uint256",
+					"name": "_fee",
+					"type": "uint256"
 				}
 			],
 			"name": "getAMM",
@@ -30571,6 +30616,11 @@
 					"internalType": "contract IMarket",
 					"name": "_market",
 					"type": "address"
+				},
+				{
+					"internalType": "uint256",
+					"name": "_fee",
+					"type": "uint256"
 				},
 				{
 					"internalType": "uint256",
