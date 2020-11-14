@@ -92,7 +92,7 @@ function buildQuery(fromBlock: string | number, toBlock: string | number): strin
     let eventQueries = "";
     for (const eventName in eventFields) {
         const fields = GENERIC_LOG_FIELDS.concat(eventFields[eventName]);
-        eventQueries += `${eventName}s(where: { blockNumber_gte: ${fromBlock}, blockNumber_lte: ${toBlock} }) {${fields.join(",")}}`;
+        eventQueries += `${eventName}Events(where: { blockNumber_gte: ${fromBlock}, blockNumber_lte: ${toBlock} }) {${fields.join(",")}}`;
     }
     return `
     {
