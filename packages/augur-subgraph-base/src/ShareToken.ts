@@ -8,13 +8,13 @@ import {
 } from '../generated/ShareToken/ShareToken';
 
 import {
-  ApprovalForAll as ApprovalForAllEntity,
-  TransferBatch as TransferBatchEntity,
-  TransferSingle as TransferSingleEntity,
-  URI as URIEntity,
+  ApprovalForAllEvent as ApprovalForAllEntity,
+  TransferBatchEvent as TransferBatchEntity,
+  TransferSingleEvent as TransferSingleEntity,
+  URIEvent as URIEntity,
 } from '../generated/schema';
 
-export function handleApprovalForAll(event: ApprovalForAllEvent): void {
+export function handleApprovalForAllEvent(event: ApprovalForAllEvent): void {
   let id = event.transaction.hash.toHexString() + "-" + event.logIndex.toString();
   let entity = new ApprovalForAllEntity(id);
 
@@ -31,7 +31,7 @@ export function handleApprovalForAll(event: ApprovalForAllEvent): void {
   entity.save();
 }
 
-export function handleTransferBatch(event: TransferBatchEvent): void {
+export function handleTransferBatchEvent(event: TransferBatchEvent): void {
   let id = event.transaction.hash.toHexString() + "-" + event.logIndex.toString();
   let entity = new TransferBatchEntity(id);
 
@@ -50,7 +50,7 @@ export function handleTransferBatch(event: TransferBatchEvent): void {
   entity.save();
 }
 
-export function handleTransferSingle(event: TransferSingleEvent): void {
+export function handleTransferSingleEvent(event: TransferSingleEvent): void {
   let id = event.transaction.hash.toHexString() + "-" + event.logIndex.toString();
   let entity = new TransferSingleEntity(id);
 
@@ -69,7 +69,7 @@ export function handleTransferSingle(event: TransferSingleEvent): void {
   entity.save();
 }
 
-export function handleURI(event: URIEvent): void {
+export function handleURIEvent(event: URIEvent): void {
   let id = event.transaction.hash.toHexString() + "-" + event.logIndex.toString();
   let entity = new URIEntity(id);
 

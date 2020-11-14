@@ -7,29 +7,3 @@ dataSources:
 {{#entities}}
 {{> contractPartial }}
 {{/entities}}
-
-templates:
-{{#templateEntities}}
-  - kind: ethereum/contract
-    name: {{name}}
-    network: {{=<% %>=}}{{ ethereum.network }}<%={{ }}=%>
-    source:
-      abi: {{name}}
-    mapping:
-      kind: ethereum/events
-      apiVersion: 0.0.4
-      language: wasm/assemblyscript
-      file: ./src/{{name}}.ts
-      entities:
-      {{#events}}
-        - {{name}}
-      {{/events}}
-      abis:
-        - name: {{name}}
-          file: ./abis/{{name}}.json
-      eventHandlers:
-      {{#events}}
-        - event: {{inputs}}
-          handler: handle{{name}}
-      {{/events}}
-{{/templateEntities}}

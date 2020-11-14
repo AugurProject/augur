@@ -49,10 +49,7 @@ const result = mustache.render(template,{
   Entities: [
     ...buildit('Augur'),
     ...buildit('AugurTrading'),
-    ...buildit(`ShareToken`),
-    ...buildit('ParaAugur'),
-    ...buildit('ParaAugurTrading'),
-    ...buildit('ParaShareToken')
+    ...buildit(`ShareToken`)
   ]
 });
 
