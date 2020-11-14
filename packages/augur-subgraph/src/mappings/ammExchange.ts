@@ -1,4 +1,4 @@
-import { Address, BigInt, log } from '@graphprotocol/graph-ts';
+import { Address, BigInt } from '@graphprotocol/graph-ts';
 import {
   EnterPosition as EnterPositionEvent,
   ExitPosition as ExitPositionEvent,
@@ -16,6 +16,7 @@ import {
   SwapPosition,
 } from '../../generated/schema';
 import { updateAMM } from '../utils/helpers/amm';
+
 
 function updateAggregateValues(address: Address, cash: BigInt, noShares: BigInt, yesShares: BigInt): void {
   let ammExchange = AMMExchange.load(

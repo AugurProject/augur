@@ -13,38 +13,31 @@ contract AMMFactory is IAMMFactory, CloneFactory2 {
 
     IAMMExchange internal proxyToClone;
 
-    constructor(address _proxyToClone, uint256 _fee) public {
-        require(_fee <= 1000); // fee must be [0,1000]
-        fee = _fee;
+    constructor(address _proxyToClone) public {
         proxyToClone = IAMMExchange(_proxyToClone);
     }
 
-    function addAMM(IMarket _market, ParaShareToken _para) external returns (address) {
-        IAMMExchange _amm = IAMMExchange(createClone2(address(proxyToClone), salt(_market, _para)));
-        _amm.initialize(_market, _para, fee);
-        exchanges[address(_market)][address(_para)] = address(_amm);
+    function addAMM(IMarket _market, ParaShareToken _para, uint256 _fee) external returns (address) {
+        IAMMExchange _amm = IAMMExchange(createClone2(address(proxyToClone), salt(_market, _para, _fee)));
+        _amm.initialize(_market, _para, _fee);
+        exchanges[address(_market)][address(_para)][_fee] = address(_amm);
         return address(_amm);
     }
 
-    function addAMMWithLiquidity(IMarket _market, ParaShareToken _para, uint256 _cash, uint256 _ratioFactor, bool _keepYes) external returns (address) {
-        IAMMExchange _amm = IAMMExchange(createClone2(address(proxyToClone), salt(_market, _para)));
-        _amm.initialize(_market, _para, fee);
-        exchanges[address(_market)][address(_para)] = address(_amm);
+    function addAMMWithLiquidity(IMarket _market, ParaShareToken _para, uint256 _fee, uint256 _cash, uint256 _ratioFactor, bool _keepYes) external returns (address) {
+        IAMMExchange _amm = IAMMExchange(createClone2(address(proxyToClone), salt(_market, _para, _fee)));
+        _amm.initialize(_market, _para, _fee);
+        exchanges[address(_market)][address(_para)][_fee] = address(_amm);
 
         // User sends cash to factory, which turns cash into LP tokens and shares which it gives to the user.
         _para.cash().transferFrom(msg.sender, address(this), _cash);
-
         _amm.addInitialLiquidity(_cash, _ratioFactor, _keepYes, msg.sender);
 
         return address(_amm);
     }
 
-    function salt(IMarket _market, ParaShareToken _para) public pure returns (uint256) {
-        return uint256(keccak256(abi.encodePacked(_market, _para)));
-    }
-
-    function transferCash(IMarket _market, ParaShareToken _para, address sender, address recipient, uint256 quantity) public {
-        IAMMExchange amm = IAMMExchange(exchanges[address(_market)][address(_para)]);
+    function transferCash(IMarket _market, ParaShareToken _para, uint256 _fee, address sender, address recipient, uint256 quantity) public {
+        IAMMExchange amm = IAMMExchange(exchanges[address(_market)][address(_para)][_fee]);
         require(msg.sender == address(amm), "AugurCP: non-exchange tried to send cash");
 
         if (sender == address(this)) {
@@ -54,8 +47,8 @@ contract AMMFactory is IAMMFactory, CloneFactory2 {
         }
     }
 
-    function shareTransfer(IMarket _market, ParaShareToken _para, address _from, address _to, uint256 _invalidAmount, uint256 _noAmount, uint256 _yesAmount) public {
-        IAMMExchange amm = IAMMExchange(exchanges[address(_market)][address(_para)]);
+    function shareTransfer(IMarket _market, ParaShareToken _para, uint256 _fee, address _from, address _to, uint256 _invalidAmount, uint256 _noAmount, uint256 _yesAmount) public {
+        IAMMExchange amm = IAMMExchange(exchanges[address(_market)][address(_para)][_fee]);
         require(msg.sender == address(amm), "AugurCP: non-exchange tried to send shares");
 
         uint256 _INVALID = _para.getTokenId(_market, 0);
@@ -86,8 +79,12 @@ contract AMMFactory is IAMMFactory, CloneFactory2 {
         _para.unsafeBatchTransferFrom(_from, _to, _tokenIds, _amounts);
     }
 
+    function calculateAMMAddress(IMarket _market, ParaShareToken _para, uint256 _fee) public view returns (address) {
+        return clone2Address(address(proxyToClone), salt(_market, _para, _fee), address(this));
+    }
 
-    function calculateAMMAddress(IMarket _market, ParaShareToken _para) public view returns (address) {
-        return clone2Address(address(proxyToClone), salt(_market, _para), address(this));
+
+    function salt(IMarket _market, ParaShareToken _para, uint256 _fee) public pure returns (uint256) {
+        return uint256(keccak256(abi.encodePacked(_market, _para, _fee)));
     }
 }

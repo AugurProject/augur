@@ -17,13 +17,13 @@ export class AMMFactory {
     this.signerOrProvider = signerOrProvider;
   }
 
-  async ammExists(marketAddress: string, paraShareToken: string): Promise<boolean> {
-    const amm = await this.contract.exchanges(marketAddress, paraShareToken);
+  async ammExists(marketAddress: string, paraShareToken: string, fee: BigNumber): Promise<boolean> {
+    const amm = await this.contract.exchanges(marketAddress, paraShareToken, fee.toFixed());
     return typeof amm !== 'undefined';
   }
 
-  async getAMMExchange(marketAddress: string, paraShareToken: string): Promise<AMMExchange> {
-    const amm = await this.contract.exchanges(marketAddress, paraShareToken);
+  async getAMMExchange(marketAddress: string, paraShareToken: string, fee: BigNumber): Promise<AMMExchange> {
+    const amm = await this.contract.exchanges(marketAddress, paraShareToken, fee.toFixed());
 
     if (typeof amm === 'undefined') {
       throw new Error(`Market/Collateral pair ${marketAddress}/${paraShareToken} does not exist.`);
@@ -38,19 +38,19 @@ export class AMMFactory {
     hasLiquidity: boolean,
     market: string,
     paraShareToken: string,
+    fee: BigNumber,
     cash: BigNumber = new BigNumber(0),
     yesPercent = new BigNumber(50),
     noPercent = new BigNumber(50)
   ): Promise<TransactionResponse> {
-    const ammAddress = existingAmmAddress ? existingAmmAddress : await this.ammAddress(market, paraShareToken);
+    const ammAddress = existingAmmAddress ? existingAmmAddress : await this.ammAddress(market, paraShareToken, fee);
     const amm = new AMMExchange(this.signerOrProvider, ammAddress);
 
     if (cash.eq(0)) {
-      return this.contract.addAMM(market, paraShareToken);
+      return this.contract.addAMM(market, paraShareToken, fee);
     }
 
     const factor = new BigNumber(10 ** 18);
-    // const total = yesPercent.plus(noPercent);
     const keepYes = noPercent.gt(yesPercent);
     const ratio = (keepYes
       ? factor.times(yesPercent).div(noPercent)
@@ -63,7 +63,7 @@ export class AMMFactory {
       }
       return amm.doAddInitialLiquidity(account, cash, yesPercent, noPercent);
     }
-    return this.contract.addAMMWithLiquidity(market, paraShareToken, cash.toFixed(), ratio.toFixed(), keepYes);
+    return this.contract.addAMMWithLiquidity(market, paraShareToken, fee.toFixed(), cash.toFixed(), ratio.toFixed(), keepYes);
   }
 
   async getRemoveLiquidity(ammAddress: string, lpTokens: BigNumber): Promise<{noShares: BigNumber, yesShares: BigNumber, cashShares: BigNumber}> {
@@ -114,12 +114,12 @@ export class AMMFactory {
     return amm.doRemoveLiquidity(lpTokens);
   }
 
-  async addAMM(market: string, paraShareToken: string, cash: BigNumber = new BigNumber(0), yesPercent = new BigNumber(50), noPercent = new BigNumber(50)): Promise<AddAMMReturn> {
-    const ammAddress = await this.ammAddress(market, paraShareToken);
+  async addAMM(market: string, paraShareToken: string, fee: BigNumber, cash: BigNumber = new BigNumber(0), yesPercent = new BigNumber(50), noPercent = new BigNumber(50)): Promise<AddAMMReturn> {
+    const ammAddress = await this.ammAddress(market, paraShareToken, fee);
     const amm = new AMMExchange(this.signerOrProvider, ammAddress);
 
     if (cash.eq(0)) {
-      const txr: TransactionResponse = await this.contract.addAMM(market, paraShareToken);
+      const txr: TransactionResponse = await this.contract.addAMM(market, paraShareToken, fee.toFixed());
       await txr.wait();
       return { amm, lpTokens: new BigNumber(0) };
     }
@@ -138,14 +138,14 @@ export class AMMFactory {
     cash = cash.idiv(1);
     ratio = ratio.idiv(1);
 
-    const txr: TransactionResponse = await this.contract.addAMMWithLiquidity(market, paraShareToken, cash.toFixed(), ratio.toFixed(), keepYes);
+    const txr: TransactionResponse = await this.contract.addAMMWithLiquidity(market, paraShareToken, fee.toFixed(), cash.toFixed(), ratio.toFixed(), keepYes);
     const tx = await txr.wait();
     const liquidityLog = amm.extractLiquidityLog(tx);
     return { amm, lpTokens: liquidityLog.lpTokens };
   }
 
-  async ammAddress(marketAddress: string, paraShareToken: string): Promise<string> {
-    return this.contract.calculateAMMAddress(marketAddress, paraShareToken);
+  async ammAddress(marketAddress: string, paraShareToken: string, fee: BigNumber): Promise<string> {
+    return this.contract.calculateAMMAddress(marketAddress, paraShareToken, fee.toFixed());
   }
 }
 

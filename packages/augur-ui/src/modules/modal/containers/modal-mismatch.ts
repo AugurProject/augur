@@ -13,7 +13,10 @@ const mapDispatchToProps = () => ({});
 const mergeProps = (sP: AppState) => {
   const { expectedNetwork } = sP.modal;
   const description: Array<string> | undefined = [];
-  if (isMetaMask()) {
+  const chainIdMismatch = expectedNetwork === 'undefined' || typeof expectedNetwork === 'undefined';
+  if (isMetaMask() && chainIdMismatch) {
+    description.push(`MetaMask is configured with the wrong chainId. Fix it in MM settings > networks > YourNetwork`);
+  } else if (isMetaMask() && !chainIdMismatch) {
     description.push(`MetaMask is connected to the wrong Ethereum network. Please set the MetaMask network to: ${expectedNetwork}.`);
   } else {
     description.push(

@@ -543,7 +543,7 @@ Deploying to: ${env}
         const factory = this.contracts.get('AMMFactory');
         const masterProxy = this.contracts.get('AMMExchange');
         masterProxy.address = await this.construct(masterProxy, []);
-        factory.address = await this.construct(factory, [masterProxy.address, fee]);
+        factory.address = await this.construct(factory, [masterProxy.address]);
         return factory.address;
     }
 

@@ -915,35 +915,35 @@ See {_burn} and {_approve}.
 
 
 
-<div class="contract-index"><span class="contract-index-title">Functions</span><ul><li><a href="#IAMMFactory.addAMM(contract IMarket,contract ParaShareToken)"><code class="function-signature">addAMM(contract IMarket _market, contract ParaShareToken _para)</code></a></li><li><a href="#IAMMFactory.addAMMWithLiquidity(contract IMarket,contract ParaShareToken,uint256,uint256,bool)"><code class="function-signature">addAMMWithLiquidity(contract IMarket _market, contract ParaShareToken _para, uint256 _cash, uint256 _ratioFactor, bool _keepYes)</code></a></li><li><a href="#IAMMFactory.salt(contract IMarket,contract ParaShareToken)"><code class="function-signature">salt(contract IMarket _market, contract ParaShareToken _para)</code></a></li><li><a href="#IAMMFactory.transferCash(contract IMarket,contract ParaShareToken,address,address,uint256)"><code class="function-signature">transferCash(contract IMarket _market, contract ParaShareToken _para, address sender, address recipient, uint256 quantity)</code></a></li><li><a href="#IAMMFactory.shareTransfer(contract IMarket,contract ParaShareToken,address,address,uint256,uint256,uint256)"><code class="function-signature">shareTransfer(contract IMarket _market, contract ParaShareToken _para, address _from, address _to, uint256 _invalidAmount, uint256 _noAmount, uint256 _yesAmount)</code></a></li></ul></div>
+<div class="contract-index"><span class="contract-index-title">Functions</span><ul><li><a href="#IAMMFactory.addAMM(contract IMarket,contract ParaShareToken,uint256)"><code class="function-signature">addAMM(contract IMarket _market, contract ParaShareToken _para, uint256 _fee)</code></a></li><li><a href="#IAMMFactory.addAMMWithLiquidity(contract IMarket,contract ParaShareToken,uint256,uint256,uint256,bool)"><code class="function-signature">addAMMWithLiquidity(contract IMarket _market, contract ParaShareToken _para, uint256 _fee, uint256 _cash, uint256 _ratioFactor, bool _keepYes)</code></a></li><li><a href="#IAMMFactory.salt(contract IMarket,contract ParaShareToken,uint256)"><code class="function-signature">salt(contract IMarket _market, contract ParaShareToken _para, uint256 _fee)</code></a></li><li><a href="#IAMMFactory.transferCash(contract IMarket,contract ParaShareToken,uint256,address,address,uint256)"><code class="function-signature">transferCash(contract IMarket _market, contract ParaShareToken _para, uint256 _fee, address sender, address recipient, uint256 quantity)</code></a></li><li><a href="#IAMMFactory.shareTransfer(contract IMarket,contract ParaShareToken,uint256,address,address,uint256,uint256,uint256)"><code class="function-signature">shareTransfer(contract IMarket _market, contract ParaShareToken _para, uint256 _fee, address _from, address _to, uint256 _invalidAmount, uint256 _noAmount, uint256 _yesAmount)</code></a></li></ul></div>
 
 
 
-<h4><a class="anchor" aria-hidden="true" id="IAMMFactory.addAMM(contract IMarket,contract ParaShareToken)"></a><code class="function-signature">addAMM(contract IMarket _market, contract ParaShareToken _para) <span class="return-arrow">→</span> <span class="return-type">address</span></code><span class="function-visibility">external</span></h4>
-
-
-
-
-
-<h4><a class="anchor" aria-hidden="true" id="IAMMFactory.addAMMWithLiquidity(contract IMarket,contract ParaShareToken,uint256,uint256,bool)"></a><code class="function-signature">addAMMWithLiquidity(contract IMarket _market, contract ParaShareToken _para, uint256 _cash, uint256 _ratioFactor, bool _keepYes) <span class="return-arrow">→</span> <span class="return-type">address</span></code><span class="function-visibility">external</span></h4>
+<h4><a class="anchor" aria-hidden="true" id="IAMMFactory.addAMM(contract IMarket,contract ParaShareToken,uint256)"></a><code class="function-signature">addAMM(contract IMarket _market, contract ParaShareToken _para, uint256 _fee) <span class="return-arrow">→</span> <span class="return-type">address</span></code><span class="function-visibility">external</span></h4>
 
 
 
 
 
-<h4><a class="anchor" aria-hidden="true" id="IAMMFactory.salt(contract IMarket,contract ParaShareToken)"></a><code class="function-signature">salt(contract IMarket _market, contract ParaShareToken _para) <span class="return-arrow">→</span> <span class="return-type">uint256</span></code><span class="function-visibility">public</span></h4>
+<h4><a class="anchor" aria-hidden="true" id="IAMMFactory.addAMMWithLiquidity(contract IMarket,contract ParaShareToken,uint256,uint256,uint256,bool)"></a><code class="function-signature">addAMMWithLiquidity(contract IMarket _market, contract ParaShareToken _para, uint256 _fee, uint256 _cash, uint256 _ratioFactor, bool _keepYes) <span class="return-arrow">→</span> <span class="return-type">address</span></code><span class="function-visibility">external</span></h4>
 
 
 
 
 
-<h4><a class="anchor" aria-hidden="true" id="IAMMFactory.transferCash(contract IMarket,contract ParaShareToken,address,address,uint256)"></a><code class="function-signature">transferCash(contract IMarket _market, contract ParaShareToken _para, address sender, address recipient, uint256 quantity)</code><span class="function-visibility">public</span></h4>
+<h4><a class="anchor" aria-hidden="true" id="IAMMFactory.salt(contract IMarket,contract ParaShareToken,uint256)"></a><code class="function-signature">salt(contract IMarket _market, contract ParaShareToken _para, uint256 _fee) <span class="return-arrow">→</span> <span class="return-type">uint256</span></code><span class="function-visibility">public</span></h4>
 
 
 
 
 
-<h4><a class="anchor" aria-hidden="true" id="IAMMFactory.shareTransfer(contract IMarket,contract ParaShareToken,address,address,uint256,uint256,uint256)"></a><code class="function-signature">shareTransfer(contract IMarket _market, contract ParaShareToken _para, address _from, address _to, uint256 _invalidAmount, uint256 _noAmount, uint256 _yesAmount)</code><span class="function-visibility">public</span></h4>
+<h4><a class="anchor" aria-hidden="true" id="IAMMFactory.transferCash(contract IMarket,contract ParaShareToken,uint256,address,address,uint256)"></a><code class="function-signature">transferCash(contract IMarket _market, contract ParaShareToken _para, uint256 _fee, address sender, address recipient, uint256 quantity)</code><span class="function-visibility">public</span></h4>
+
+
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="IAMMFactory.shareTransfer(contract IMarket,contract ParaShareToken,uint256,address,address,uint256,uint256,uint256)"></a><code class="function-signature">shareTransfer(contract IMarket _market, contract ParaShareToken _para, uint256 _fee, address _from, address _to, uint256 _invalidAmount, uint256 _noAmount, uint256 _yesAmount)</code><span class="function-visibility">public</span></h4>
 
 
 
@@ -4044,47 +4044,47 @@ a contract or not this will not call `onERC1155Received` on `to`
 
 
 
-<div class="contract-index"><span class="contract-index-title">Functions</span><ul><li><a href="#AMMFactory.constructor(address,uint256)"><code class="function-signature">constructor(address _proxyToClone, uint256 _fee)</code></a></li><li><a href="#AMMFactory.addAMM(contract IMarket,contract ParaShareToken)"><code class="function-signature">addAMM(contract IMarket _market, contract ParaShareToken _para)</code></a></li><li><a href="#AMMFactory.addAMMWithLiquidity(contract IMarket,contract ParaShareToken,uint256,uint256,bool)"><code class="function-signature">addAMMWithLiquidity(contract IMarket _market, contract ParaShareToken _para, uint256 _cash, uint256 _ratioFactor, bool _keepYes)</code></a></li><li><a href="#AMMFactory.salt(contract IMarket,contract ParaShareToken)"><code class="function-signature">salt(contract IMarket _market, contract ParaShareToken _para)</code></a></li><li><a href="#AMMFactory.transferCash(contract IMarket,contract ParaShareToken,address,address,uint256)"><code class="function-signature">transferCash(contract IMarket _market, contract ParaShareToken _para, address sender, address recipient, uint256 quantity)</code></a></li><li><a href="#AMMFactory.shareTransfer(contract IMarket,contract ParaShareToken,address,address,uint256,uint256,uint256)"><code class="function-signature">shareTransfer(contract IMarket _market, contract ParaShareToken _para, address _from, address _to, uint256 _invalidAmount, uint256 _noAmount, uint256 _yesAmount)</code></a></li><li><a href="#AMMFactory.calculateAMMAddress(contract IMarket,contract ParaShareToken)"><code class="function-signature">calculateAMMAddress(contract IMarket _market, contract ParaShareToken _para)</code></a></li><li class="inherited"><a href="para#CloneFactory2.createClone2(address,uint256)"><code class="function-signature">createClone2(address target, uint256 salt)</code></a></li><li class="inherited"><a href="para#CloneFactory2.clone2Address(address,uint256,address)"><code class="function-signature">clone2Address(address target, uint256 salt, address creator)</code></a></li></ul></div>
+<div class="contract-index"><span class="contract-index-title">Functions</span><ul><li><a href="#AMMFactory.constructor(address)"><code class="function-signature">constructor(address _proxyToClone)</code></a></li><li><a href="#AMMFactory.addAMM(contract IMarket,contract ParaShareToken,uint256)"><code class="function-signature">addAMM(contract IMarket _market, contract ParaShareToken _para, uint256 _fee)</code></a></li><li><a href="#AMMFactory.addAMMWithLiquidity(contract IMarket,contract ParaShareToken,uint256,uint256,uint256,bool)"><code class="function-signature">addAMMWithLiquidity(contract IMarket _market, contract ParaShareToken _para, uint256 _fee, uint256 _cash, uint256 _ratioFactor, bool _keepYes)</code></a></li><li><a href="#AMMFactory.transferCash(contract IMarket,contract ParaShareToken,uint256,address,address,uint256)"><code class="function-signature">transferCash(contract IMarket _market, contract ParaShareToken _para, uint256 _fee, address sender, address recipient, uint256 quantity)</code></a></li><li><a href="#AMMFactory.shareTransfer(contract IMarket,contract ParaShareToken,uint256,address,address,uint256,uint256,uint256)"><code class="function-signature">shareTransfer(contract IMarket _market, contract ParaShareToken _para, uint256 _fee, address _from, address _to, uint256 _invalidAmount, uint256 _noAmount, uint256 _yesAmount)</code></a></li><li><a href="#AMMFactory.calculateAMMAddress(contract IMarket,contract ParaShareToken,uint256)"><code class="function-signature">calculateAMMAddress(contract IMarket _market, contract ParaShareToken _para, uint256 _fee)</code></a></li><li><a href="#AMMFactory.salt(contract IMarket,contract ParaShareToken,uint256)"><code class="function-signature">salt(contract IMarket _market, contract ParaShareToken _para, uint256 _fee)</code></a></li><li class="inherited"><a href="para#CloneFactory2.createClone2(address,uint256)"><code class="function-signature">createClone2(address target, uint256 salt)</code></a></li><li class="inherited"><a href="para#CloneFactory2.clone2Address(address,uint256,address)"><code class="function-signature">clone2Address(address target, uint256 salt, address creator)</code></a></li></ul></div>
 
 
 
-<h4><a class="anchor" aria-hidden="true" id="AMMFactory.constructor(address,uint256)"></a><code class="function-signature">constructor(address _proxyToClone, uint256 _fee)</code><span class="function-visibility">public</span></h4>
-
-
-
-
-
-<h4><a class="anchor" aria-hidden="true" id="AMMFactory.addAMM(contract IMarket,contract ParaShareToken)"></a><code class="function-signature">addAMM(contract IMarket _market, contract ParaShareToken _para) <span class="return-arrow">→</span> <span class="return-type">address</span></code><span class="function-visibility">external</span></h4>
+<h4><a class="anchor" aria-hidden="true" id="AMMFactory.constructor(address)"></a><code class="function-signature">constructor(address _proxyToClone)</code><span class="function-visibility">public</span></h4>
 
 
 
 
 
-<h4><a class="anchor" aria-hidden="true" id="AMMFactory.addAMMWithLiquidity(contract IMarket,contract ParaShareToken,uint256,uint256,bool)"></a><code class="function-signature">addAMMWithLiquidity(contract IMarket _market, contract ParaShareToken _para, uint256 _cash, uint256 _ratioFactor, bool _keepYes) <span class="return-arrow">→</span> <span class="return-type">address</span></code><span class="function-visibility">external</span></h4>
+<h4><a class="anchor" aria-hidden="true" id="AMMFactory.addAMM(contract IMarket,contract ParaShareToken,uint256)"></a><code class="function-signature">addAMM(contract IMarket _market, contract ParaShareToken _para, uint256 _fee) <span class="return-arrow">→</span> <span class="return-type">address</span></code><span class="function-visibility">external</span></h4>
 
 
 
 
 
-<h4><a class="anchor" aria-hidden="true" id="AMMFactory.salt(contract IMarket,contract ParaShareToken)"></a><code class="function-signature">salt(contract IMarket _market, contract ParaShareToken _para) <span class="return-arrow">→</span> <span class="return-type">uint256</span></code><span class="function-visibility">public</span></h4>
+<h4><a class="anchor" aria-hidden="true" id="AMMFactory.addAMMWithLiquidity(contract IMarket,contract ParaShareToken,uint256,uint256,uint256,bool)"></a><code class="function-signature">addAMMWithLiquidity(contract IMarket _market, contract ParaShareToken _para, uint256 _fee, uint256 _cash, uint256 _ratioFactor, bool _keepYes) <span class="return-arrow">→</span> <span class="return-type">address</span></code><span class="function-visibility">external</span></h4>
 
 
 
 
 
-<h4><a class="anchor" aria-hidden="true" id="AMMFactory.transferCash(contract IMarket,contract ParaShareToken,address,address,uint256)"></a><code class="function-signature">transferCash(contract IMarket _market, contract ParaShareToken _para, address sender, address recipient, uint256 quantity)</code><span class="function-visibility">public</span></h4>
+<h4><a class="anchor" aria-hidden="true" id="AMMFactory.transferCash(contract IMarket,contract ParaShareToken,uint256,address,address,uint256)"></a><code class="function-signature">transferCash(contract IMarket _market, contract ParaShareToken _para, uint256 _fee, address sender, address recipient, uint256 quantity)</code><span class="function-visibility">public</span></h4>
 
 
 
 
 
-<h4><a class="anchor" aria-hidden="true" id="AMMFactory.shareTransfer(contract IMarket,contract ParaShareToken,address,address,uint256,uint256,uint256)"></a><code class="function-signature">shareTransfer(contract IMarket _market, contract ParaShareToken _para, address _from, address _to, uint256 _invalidAmount, uint256 _noAmount, uint256 _yesAmount)</code><span class="function-visibility">public</span></h4>
+<h4><a class="anchor" aria-hidden="true" id="AMMFactory.shareTransfer(contract IMarket,contract ParaShareToken,uint256,address,address,uint256,uint256,uint256)"></a><code class="function-signature">shareTransfer(contract IMarket _market, contract ParaShareToken _para, uint256 _fee, address _from, address _to, uint256 _invalidAmount, uint256 _noAmount, uint256 _yesAmount)</code><span class="function-visibility">public</span></h4>
 
 
 
 
 
-<h4><a class="anchor" aria-hidden="true" id="AMMFactory.calculateAMMAddress(contract IMarket,contract ParaShareToken)"></a><code class="function-signature">calculateAMMAddress(contract IMarket _market, contract ParaShareToken _para) <span class="return-arrow">→</span> <span class="return-type">address</span></code><span class="function-visibility">public</span></h4>
+<h4><a class="anchor" aria-hidden="true" id="AMMFactory.calculateAMMAddress(contract IMarket,contract ParaShareToken,uint256)"></a><code class="function-signature">calculateAMMAddress(contract IMarket _market, contract ParaShareToken _para, uint256 _fee) <span class="return-arrow">→</span> <span class="return-type">address</span></code><span class="function-visibility">public</span></h4>
+
+
+
+
+
+<h4><a class="anchor" aria-hidden="true" id="AMMFactory.salt(contract IMarket,contract ParaShareToken,uint256)"></a><code class="function-signature">salt(contract IMarket _market, contract ParaShareToken _para, uint256 _fee) <span class="return-arrow">→</span> <span class="return-type">uint256</span></code><span class="function-visibility">public</span></h4>
 
 
 
@@ -6143,7 +6143,7 @@ Decode ERC-1155 asset data from the format described in the AssetProxy contract 
 
 
 
-<div class="contract-index"><span class="contract-index-title">Functions</span><ul><li><a href="#WethWrapperForAMMExchange.constructor(contract IAMMFactory,contract ParaShareToken)"><code class="function-signature">constructor(contract IAMMFactory _factory, contract ParaShareToken _shareToken)</code></a></li><li><a href="#WethWrapperForAMMExchange.fallback()"><code class="function-signature">fallback()</code></a></li><li><a href="#WethWrapperForAMMExchange.getAMM(contract IMarket)"><code class="function-signature">getAMM(contract IMarket _market)</code></a></li><li><a href="#WethWrapperForAMMExchange.addInitialLiquidity(contract IMarket,uint256,bool,address)"><code class="function-signature">addInitialLiquidity(contract IMarket _market, uint256 _ratioFactor, bool _keepYes, address _recipient)</code></a></li><li><a href="#WethWrapperForAMMExchange.addLiquidity(contract IMarket,address)"><code class="function-signature">addLiquidity(contract IMarket _market, address _recipient)</code></a></li><li><a href="#WethWrapperForAMMExchange.removeLiquidity(contract IMarket,uint256,uint256)"><code class="function-signature">removeLiquidity(contract IMarket _market, uint256 _poolTokensToSell, uint256 _minSetsSold)</code></a></li><li><a href="#WethWrapperForAMMExchange.enterPosition(contract IMarket,bool,uint256)"><code class="function-signature">enterPosition(contract IMarket _market, bool _buyYes, uint256 _minShares)</code></a></li><li><a href="#WethWrapperForAMMExchange.exitPosition(contract IMarket,uint256,uint256,uint256,uint256)"><code class="function-signature">exitPosition(contract IMarket _market, uint256 _invalidShares, uint256 _noShares, uint256 _yesShares, uint256 _minCashPayout)</code></a></li><li><a href="#WethWrapperForAMMExchange.exitAll(contract IMarket,uint256)"><code class="function-signature">exitAll(contract IMarket _market, uint256 _minCashPayout)</code></a></li></ul></div>
+<div class="contract-index"><span class="contract-index-title">Functions</span><ul><li><a href="#WethWrapperForAMMExchange.constructor(contract IAMMFactory,contract ParaShareToken)"><code class="function-signature">constructor(contract IAMMFactory _factory, contract ParaShareToken _shareToken)</code></a></li><li><a href="#WethWrapperForAMMExchange.fallback()"><code class="function-signature">fallback()</code></a></li><li><a href="#WethWrapperForAMMExchange.getAMM(contract IMarket,uint256)"><code class="function-signature">getAMM(contract IMarket _market, uint256 _fee)</code></a></li><li><a href="#WethWrapperForAMMExchange.addInitialLiquidity(contract IMarket,uint256,uint256,bool,address)"><code class="function-signature">addInitialLiquidity(contract IMarket _market, uint256 _fee, uint256 _ratioFactor, bool _keepYes, address _recipient)</code></a></li><li><a href="#WethWrapperForAMMExchange.addLiquidity(contract IMarket,uint256,address)"><code class="function-signature">addLiquidity(contract IMarket _market, uint256 _fee, address _recipient)</code></a></li><li><a href="#WethWrapperForAMMExchange.removeLiquidity(contract IMarket,uint256,uint256,uint256)"><code class="function-signature">removeLiquidity(contract IMarket _market, uint256 _fee, uint256 _poolTokensToSell, uint256 _minSetsSold)</code></a></li><li><a href="#WethWrapperForAMMExchange.enterPosition(contract IMarket,uint256,bool,uint256)"><code class="function-signature">enterPosition(contract IMarket _market, uint256 _fee, bool _buyYes, uint256 _minShares)</code></a></li><li><a href="#WethWrapperForAMMExchange.exitPosition(contract IMarket,uint256,uint256,uint256,uint256,uint256)"><code class="function-signature">exitPosition(contract IMarket _market, uint256 _fee, uint256 _invalidShares, uint256 _noShares, uint256 _yesShares, uint256 _minCashPayout)</code></a></li><li><a href="#WethWrapperForAMMExchange.exitAll(contract IMarket,uint256,uint256)"><code class="function-signature">exitAll(contract IMarket _market, uint256 _fee, uint256 _minCashPayout)</code></a></li></ul></div>
 
 
 
@@ -6159,43 +6159,43 @@ Decode ERC-1155 asset data from the format described in the AssetProxy contract 
 
 
 
-<h4><a class="anchor" aria-hidden="true" id="WethWrapperForAMMExchange.getAMM(contract IMarket)"></a><code class="function-signature">getAMM(contract IMarket _market) <span class="return-arrow">→</span> <span class="return-type">contract IAMMExchange</span></code><span class="function-visibility">public</span></h4>
+<h4><a class="anchor" aria-hidden="true" id="WethWrapperForAMMExchange.getAMM(contract IMarket,uint256)"></a><code class="function-signature">getAMM(contract IMarket _market, uint256 _fee) <span class="return-arrow">→</span> <span class="return-type">contract IAMMExchange</span></code><span class="function-visibility">public</span></h4>
 
 
 
 
 
-<h4><a class="anchor" aria-hidden="true" id="WethWrapperForAMMExchange.addInitialLiquidity(contract IMarket,uint256,bool,address)"></a><code class="function-signature">addInitialLiquidity(contract IMarket _market, uint256 _ratioFactor, bool _keepYes, address _recipient) <span class="return-arrow">→</span> <span class="return-type">uint256</span></code><span class="function-visibility">external</span></h4>
+<h4><a class="anchor" aria-hidden="true" id="WethWrapperForAMMExchange.addInitialLiquidity(contract IMarket,uint256,uint256,bool,address)"></a><code class="function-signature">addInitialLiquidity(contract IMarket _market, uint256 _fee, uint256 _ratioFactor, bool _keepYes, address _recipient) <span class="return-arrow">→</span> <span class="return-type">uint256</span></code><span class="function-visibility">external</span></h4>
 
 
 
 
 
-<h4><a class="anchor" aria-hidden="true" id="WethWrapperForAMMExchange.addLiquidity(contract IMarket,address)"></a><code class="function-signature">addLiquidity(contract IMarket _market, address _recipient) <span class="return-arrow">→</span> <span class="return-type">uint256</span></code><span class="function-visibility">public</span></h4>
+<h4><a class="anchor" aria-hidden="true" id="WethWrapperForAMMExchange.addLiquidity(contract IMarket,uint256,address)"></a><code class="function-signature">addLiquidity(contract IMarket _market, uint256 _fee, address _recipient) <span class="return-arrow">→</span> <span class="return-type">uint256</span></code><span class="function-visibility">public</span></h4>
 
 
 
 
 
-<h4><a class="anchor" aria-hidden="true" id="WethWrapperForAMMExchange.removeLiquidity(contract IMarket,uint256,uint256)"></a><code class="function-signature">removeLiquidity(contract IMarket _market, uint256 _poolTokensToSell, uint256 _minSetsSold) <span class="return-arrow">→</span> <span class="return-type">uint256,uint256,uint256,uint256</span></code><span class="function-visibility">external</span></h4>
+<h4><a class="anchor" aria-hidden="true" id="WethWrapperForAMMExchange.removeLiquidity(contract IMarket,uint256,uint256,uint256)"></a><code class="function-signature">removeLiquidity(contract IMarket _market, uint256 _fee, uint256 _poolTokensToSell, uint256 _minSetsSold) <span class="return-arrow">→</span> <span class="return-type">uint256,uint256,uint256,uint256</span></code><span class="function-visibility">external</span></h4>
 
 
 
 
 
-<h4><a class="anchor" aria-hidden="true" id="WethWrapperForAMMExchange.enterPosition(contract IMarket,bool,uint256)"></a><code class="function-signature">enterPosition(contract IMarket _market, bool _buyYes, uint256 _minShares) <span class="return-arrow">→</span> <span class="return-type">uint256</span></code><span class="function-visibility">public</span></h4>
+<h4><a class="anchor" aria-hidden="true" id="WethWrapperForAMMExchange.enterPosition(contract IMarket,uint256,bool,uint256)"></a><code class="function-signature">enterPosition(contract IMarket _market, uint256 _fee, bool _buyYes, uint256 _minShares) <span class="return-arrow">→</span> <span class="return-type">uint256</span></code><span class="function-visibility">public</span></h4>
 
 
 
 
 
-<h4><a class="anchor" aria-hidden="true" id="WethWrapperForAMMExchange.exitPosition(contract IMarket,uint256,uint256,uint256,uint256)"></a><code class="function-signature">exitPosition(contract IMarket _market, uint256 _invalidShares, uint256 _noShares, uint256 _yesShares, uint256 _minCashPayout) <span class="return-arrow">→</span> <span class="return-type">uint256</span></code><span class="function-visibility">public</span></h4>
+<h4><a class="anchor" aria-hidden="true" id="WethWrapperForAMMExchange.exitPosition(contract IMarket,uint256,uint256,uint256,uint256,uint256)"></a><code class="function-signature">exitPosition(contract IMarket _market, uint256 _fee, uint256 _invalidShares, uint256 _noShares, uint256 _yesShares, uint256 _minCashPayout) <span class="return-arrow">→</span> <span class="return-type">uint256</span></code><span class="function-visibility">public</span></h4>
 
 
 
 
 
-<h4><a class="anchor" aria-hidden="true" id="WethWrapperForAMMExchange.exitAll(contract IMarket,uint256)"></a><code class="function-signature">exitAll(contract IMarket _market, uint256 _minCashPayout) <span class="return-arrow">→</span> <span class="return-type">uint256</span></code><span class="function-visibility">external</span></h4>
+<h4><a class="anchor" aria-hidden="true" id="WethWrapperForAMMExchange.exitAll(contract IMarket,uint256,uint256)"></a><code class="function-signature">exitAll(contract IMarket _market, uint256 _fee, uint256 _minCashPayout) <span class="return-arrow">→</span> <span class="return-type">uint256</span></code><span class="function-visibility">external</span></h4>
 
 
 
